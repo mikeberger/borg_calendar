@@ -31,8 +31,11 @@ import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
 import net.sf.borg.common.util.Resource;
 import net.sf.borg.common.util.Version;
+import net.sf.borg.common.util.Warning;
+import net.sf.borg.common.util.XTree;
 import net.sf.borg.model.Appointment;
 import net.sf.borg.model.AppointmentModel;
+import net.sf.borg.model.AppointmentXMLAdapter;
 import net.sf.borg.model.db.DBException;
 
 
@@ -137,9 +140,26 @@ class AppointmentPanel extends JPanel
           newdatefield.setText("");
           newdatefield.setEditable(false);
           
+          // get default appt values, if any
+          Appointment defaultAppt = null;
+          String defApptXml = Prefs.getPref(PrefName.DEFAULT_APPT);
+          if( !defApptXml.equals(""))
+          {
+              try{
+                  XTree xt = XTree.readFromBuffer(defApptXml);
+                  AppointmentXMLAdapter axa = new AppointmentXMLAdapter();
+                  defaultAppt = (Appointment) axa.fromXml( xt );
+              }
+              catch( Exception e)
+              {
+                  Errmsg.errmsg(e);
+                  defaultAppt = null;
+              }
+          }
+          
           
           // a key of -1 means to show a new blank appointment
-          if( key_ == -1 )
+          if( key_ == -1 && defaultAppt == null )
           {
               
               if( mt.equals("true"))
@@ -183,7 +203,15 @@ class AppointmentPanel extends JPanel
                   
                
                   // get the appt Appointment from the calmodel
-                  Appointment r = AppointmentModel.getReference().getAppt(key_);
+                  Appointment r = null;
+                  if( key_ == -1 )
+                  {
+                      r = defaultAppt;
+                  }
+                  else
+                  {
+                      r = AppointmentModel.getReference().getAppt(key_);
+                  }
                   
                   // set hour and minute
                   Date d = r.getDate();
@@ -397,6 +425,7 @@ class AppointmentPanel extends JPanel
         foreverbox = new javax.swing.JCheckBox();
         jPanel4 = new javax.swing.JPanel();
         savebutton = new javax.swing.JButton();
+        savedefaultsbutton = new javax.swing.JButton();
 
         setLayout(new java.awt.GridBagLayout());
 
@@ -712,6 +741,19 @@ class AppointmentPanel extends JPanel
 
         jPanel4.add(savebutton);
 
+        savedefaultsbutton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/SaveAs16.gif")));
+        savedefaultsbutton.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("save_Def"));
+        savedefaultsbutton.setToolTipText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("sd_tip"));
+        savedefaultsbutton.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                saveDefaults(evt);
+            }
+        });
+
+        jPanel4.add(savedefaultsbutton);
+
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 4;
@@ -719,6 +761,26 @@ class AppointmentPanel extends JPanel
         add(jPanel4, gridBagConstraints);
 
     }//GEN-END:initComponents
+
+    private void saveDefaults(java.awt.event.ActionEvent evt)//GEN-FIRST:event_saveDefaults
+    {//GEN-HEADEREND:event_saveDefaults
+        
+        Appointment r = new Appointment();
+        try{
+            setAppt(r, false);
+        }
+        catch( Exception e)
+        {
+            Errmsg.errmsg(e);
+            return;
+        }
+ 
+        AppointmentXMLAdapter axa = new AppointmentXMLAdapter();
+        XTree xt = axa.toXml(r);
+        String s = xt.toString();
+        Prefs.putPref( PrefName.DEFAULT_APPT, s );
+        
+    }//GEN-LAST:event_saveDefaults
 
     private void savebuttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_savebuttonActionPerformed
         if( key_ == -1 )
@@ -791,7 +853,7 @@ class AppointmentPanel extends JPanel
                 
     // fill in an appt from the user data
     // returns changed key if any
-    private int setAppt(Appointment r)
+    private int setAppt(Appointment r, boolean validate) throws Warning, Exception
     {
         
         // get the hour and minute
@@ -819,8 +881,8 @@ class AppointmentPanel extends JPanel
             }
             catch( Exception e )
             {
-                Errmsg.notice(Resource.getResourceString("invdate"));
-                return(-1);
+            	if( validate )
+            		throw new Warning(Resource.getResourceString("invdate"));
             }
             
         }
@@ -838,112 +900,97 @@ class AppointmentPanel extends JPanel
             g.set( Calendar.HOUR_OF_DAY, hr );
             g.set( Calendar.MINUTE, min );
             newkey = AppointmentModel.dkey( g.get(Calendar.YEAR), g.get(Calendar.MONTH), g.get(Calendar.DATE));
-            
-            //System.out.println(newkey + g.toString() + nd.toGMTString());
+        }
+          
+        // set the appt date/time
+        r.setDate( g.getTime() );
+        
+        int du = (durhour.getSelectedIndex() * 60) + (durmin.getSelectedIndex() * 5 );
+        if( du != 0 )
+            r.setDuration( new Integer(du));
+        
+        // appointment text of some sort is required
+        if( appttextarea.getText().equals("") && validate )
+        {
+            throw new Warning(Resource.getResourceString("Please_enter_some_appointment_text"));
         }
         
+        // set text
+        r.setText( new String(appttextarea.getText()));
         
-        try
+        // to do
+        r.setTodo( todocb.isSelected() );
+        
+        // vacation, half-day, and private checkboxes
+        if( vacationcb.isSelected() )
+            r.setVacation( new Integer(1) );
+        if( halfdaycb.isSelected() )
+            r.setVacation( new Integer(2) );
+        if( holidaycb.isSelected() )
+            r.setHoliday( new Integer(1) );
+        
+        r.setPrivate( privatecb.isSelected() );
+        
+        // color
+        r.setColor( colorToEnglish((String)colorbox.getSelectedItem()));
+        
+        // repeat frequency
+        if( freq.getSelectedIndex() != 0 )
+            r.setFrequency( freqToEnglish((String)freq.getSelectedItem()) );
+        
+        // repeat times
+        Integer tm = null;
+        if( foreverbox.isSelected())
         {
-            
-            // set the appt date/time
-            r.setDate( g.getTime() );
-            
-            int du = (durhour.getSelectedIndex() * 60) + (durmin.getSelectedIndex() * 5 );
-            if( du != 0 )
-                r.setDuration( new Integer(du));
-            
-            // appointment text of some sort is required
-            if( appttextarea.getText().equals("") )
+            tm = new Integer(9999);
+        }
+        else
+        {
+            tm = (Integer) s_times.getValue();
+        }
+        
+        if( tm.intValue() != 1 )
+        {
+            try
             {
-                Errmsg.notice(Resource.getResourceString("Please_enter_some_appointment_text"));
-                return(-1);
-            }
-            
-            // set text
-            r.setText( new String(appttextarea.getText()));
-            
-            // to do
-            r.setTodo( todocb.isSelected() );
-            
-            // vacation, half-day, and private checkboxes
-            if( vacationcb.isSelected() )
-                r.setVacation( new Integer(1) );
-            if( halfdaycb.isSelected() )
-                r.setVacation( new Integer(2) );
-            if( holidaycb.isSelected() )
-                r.setHoliday( new Integer(1) );
-            
-            r.setPrivate( privatecb.isSelected() );
-            
-            // color
-            r.setColor( colorToEnglish((String)colorbox.getSelectedItem()));
-            
-            // repeat frequency
-            if( freq.getSelectedIndex() != 0 )
-                r.setFrequency( freqToEnglish((String)freq.getSelectedItem()) );
-            
-            // repeat times
-            Integer tm = null;
-            if( foreverbox.isSelected())
-            {
-                tm = new Integer(9999);
-            }
-            else
-            {
-                tm = (Integer) s_times.getValue();
-            }
-            
-            if( tm.intValue() != 1 )
-            {
-                try
-                {
-                    r.setTimes( tm );
-                    
-                    // set a boolean flag in SMDB if the appt repeats
-                    // this is very important for performance. When the model
-                    // first indexes the appts, it will only have to read and parse
-                    // the textual (non-boolean) data for repeating appointments
-                    // to calculate when the repeats fall. For non-repeating appts
-                    // the boolean will not be set and the model knows the appt can be indexed
-                    // on a single day - without needing to read the DB text.
-                    if( tm.intValue() > 1 )
-                        r.setRepeatFlag(true);
-                    else
-                        r.setRepeatFlag(false);
-                }
-                catch( Exception e )
-                {
-                    Errmsg.errmsg(new Exception(Resource.getResourceString("Could_not_parse_times:_") + tm ));
-                    return(-1);
-                }
+                r.setTimes( tm );
                 
+                // set a boolean flag in SMDB if the appt repeats
+                // this is very important for performance. When the model
+                // first indexes the appts, it will only have to read and parse
+                // the textual (non-boolean) data for repeating appointments
+                // to calculate when the repeats fall. For non-repeating appts
+                // the boolean will not be set and the model knows the appt can be indexed
+                // on a single day - without needing to read the DB text.
+                if( tm.intValue() > 1 )
+                    r.setRepeatFlag(true);
+                else
+                    r.setRepeatFlag(false);
+            }
+            catch( Exception e )
+            {
+            		throw new Exception(Resource.getResourceString("Could_not_parse_times:_") + tm );
             }
             
-            // check if times and frequency conflict - i.e. repeat once, 10 times
-            if( (freq.getSelectedIndex() != 0 && tm.intValue() == 1)
-            || (freq.getSelectedIndex() == 0 && tm.intValue() != 1))
-            {
-                Errmsg.notice(Resource.getResourceString("Repeat_Frequency/Times_Value_not_compatible"));
-                return(-1);
-            }
-            
-            String cat = (String) catbox.getSelectedItem();
-            //System.out.println(cat);
-            if( cat.equals("") || cat.equals(Resource.getResourceString("uncategorized")))
-            {
-                r.setCategory(null);
-            }
-            else
-            {
-                r.setCategory(cat);
-            }
-            
-        }catch( Exception e )
-        {
-            Errmsg.errmsg(e);
-            return(-1);
         }
+        
+        // check if times and frequency conflict - i.e. repeat once, 10 times
+        if( (freq.getSelectedIndex() != 0 && tm.intValue() == 1)
+                || (freq.getSelectedIndex() == 0 && tm.intValue() != 1))
+        {
+            if( validate )
+            	throw new Warning(Resource.getResourceString("Repeat_Frequency/Times_Value_not_compatible"));
+        }
+        
+        String cat = (String) catbox.getSelectedItem();
+        if( cat.equals("") || cat.equals(Resource.getResourceString("uncategorized")))
+        {
+            r.setCategory(null);
+        }
+        else
+        {
+            r.setCategory(cat);
+        }       
         
         return(newkey);
     }
@@ -985,7 +1032,19 @@ class AppointmentPanel extends JPanel
         // get a new appt from the model and set it from the user data
         AppointmentModel calmod_ = AppointmentModel.getReference();
         Appointment r = calmod_.newAppt();
-        int ret = setAppt(r);
+        int ret = 0;
+        try{
+            ret = setAppt(r, true);
+        }
+        catch( Warning w )
+        {
+            Errmsg.notice(w.getMessage());
+            return;
+        } catch (Exception e) {
+            Errmsg.errmsg(e);
+            return;
+        }
+
         if( ret < 0 )
             return;
         
@@ -1013,7 +1072,20 @@ class AppointmentPanel extends JPanel
         // get a new empty appt from the model and set it using the data the user has entered
         AppointmentModel calmod_ = AppointmentModel.getReference();
         Appointment r = calmod_.newAppt();
-        int newkey = setAppt(r);
+        int newkey = 0;
+        try{
+            newkey = setAppt(r, true);
+        }
+        catch( Warning w )
+        {
+            Errmsg.notice(w.getMessage());
+            return;
+        }
+        catch (Exception e) {
+            Errmsg.errmsg(e);
+            return;
+        }
+        
         if( newkey < 0 )
             return;
         
@@ -1071,6 +1143,7 @@ class AppointmentPanel extends JPanel
     private javax.swing.JCheckBox privatecb;
     private javax.swing.JSpinner s_times;
     private javax.swing.JButton savebutton;
+    private javax.swing.JButton savedefaultsbutton;
     private javax.swing.JCheckBox startap;
     private javax.swing.JComboBox starthour;
     private javax.swing.JComboBox startmin;

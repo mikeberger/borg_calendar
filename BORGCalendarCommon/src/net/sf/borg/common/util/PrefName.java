@@ -77,6 +77,7 @@ public class PrefName {
 		static public PrefName MILTIME = new PrefName( "miltime", "false");
 		static public PrefName WKSTARTHOUR = new PrefName( "wkStartHour", "7");
 		static public PrefName WKENDHOUR = new PrefName( "wkEndHour", "22");
+		static public PrefName DEFAULT_APPT = new PrefName("defaultAppt", "" );
 		
 		// reminders/popups
 		static public PrefName REMINDERS = new PrefName( "reminders", "true");

@@ -1,4 +1,8 @@
-Version 1.4
+Version 1.4 final
+--------------------
+Ability to save default values in the appt editor
+
+Version 1.4 beta
 ---------------------
 bundle the jgoodies look and feels with the product
 import/export iCal format
