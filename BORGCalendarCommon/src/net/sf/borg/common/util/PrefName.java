@@ -60,6 +60,7 @@ public class PrefName {
 		static public PrefName LASTEXPURL = new PrefName( "lastExpUrl", "");
 		static public PrefName LASTIMPURL = new PrefName( "lastImpUrl", "");
 		static public PrefName LASTIMPURLDAT = new PrefName( "lastImpUrlDat", "");
+		static public PrefName SHOWMEMFILES = new PrefName("showMemFiles", "false");
 					
 		// printing
 		static public PrefName LOGO = new PrefName( "logo", "");

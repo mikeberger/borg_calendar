@@ -304,6 +304,16 @@ public class CalendarView extends View {
 		listFiles.setModel(new DefaultListModel());
 		importMI.setEnabled(!AppHelper.isApplet());
 		exportMI.setEnabled(AppHelper.isApplication());
+		impical.setEnabled(!AppHelper.isApplet());
+		expical.setEnabled(!AppHelper.isApplet());
+		
+		String showmem = Prefs.getPref(PrefName.SHOWMEMFILES);
+		if( !showmem.equals("true") && !AppHelper.isApplet())
+		{
+			impXMLMem.setVisible(false);
+			expXMLMem.setVisible(false);
+			viewMem.setVisible(false);
+		}
 
         // show the window
         pack();
