@@ -28,6 +28,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -128,6 +130,29 @@ public class CalendarView extends View {
         init();
     }
     
+    private static class DayMouseListener implements MouseListener
+	{
+    	int year;
+    	int month;
+    	int date;
+    	public DayMouseListener(int year, int month, int date){
+    		this.date = date;
+    		this.year = year;
+    		this.month = month;
+    	}
+    	
+        public void mouseClicked(MouseEvent evt) {
+            AppointmentListView ag = new AppointmentListView(year, month, date);
+            ag.show();
+
+        }
+
+		public void mouseEntered(MouseEvent arg0) {}
+		public void mouseExited(MouseEvent arg0) {}
+		public void mousePressed(MouseEvent arg0) {}
+		public void mouseReleased(MouseEvent arg0) {}
+	}
+    
     private void init() {
         
         initComponents();
@@ -176,18 +201,17 @@ public class CalendarView extends View {
             daytext[i].setEditable(false);
             daynum[i] = new JButton("N");
             
-            // when the date button is pressed, call the borg controlling class
-            // to request popup of an appointment editor for the day
+            // when the date button is pressed, popup an appointment editor for the day
             daynum[i].addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent evt) {
                     JButton but = (JButton) evt.getSource();
                     int day = Integer.parseInt(but.getText());
                     // start the appt editor view
-                    //AppointmentListView ag = AppointmentListView.getReference(year_, month_, day);
-                    AppointmentListView ag = new AppointmentListView(year_, month_, day);
-                    ag.show();
+                    DayView dv = new DayView(month_, year_, day);
+                    dv.show();
                 }
             });
+
             
             // continue laying out the day panel. want the date button in upper right
             // and want the text pane top to be lower than the bottom of the
@@ -531,6 +555,11 @@ public class CalendarView extends View {
             // fill in the day boxes that correspond to days in this month
             for( int i = 0; i < 37; i++ ) {
                 
+            	MouseListener mls[] = daytext[i].getMouseListeners();
+            	for( int mli = 0; mli < mls.length; mli++ )
+            	{
+            		daytext[i].removeMouseListener(mls[mli]);
+            	}
                 int daynumber = i - fd + 1;
                 
                 
@@ -548,16 +577,16 @@ public class CalendarView extends View {
                     // once this happened, resizing the window would fix the Style
                     // so it probably is a swing bug
                     addString( daytext[i], "bug fix", "black" );
-                    
                     days[i].setVisible(false);
                 }
                 else {
                     
                     // set value of date button
                     daynum[i].setText(Integer.toString(daynumber));
+                    daytext[i].addMouseListener(new DayMouseListener( year_, month_, daynumber ));
                     
                     // get appointment info for the day's appointments from the data model
-                    Day di = Day.getDay( year_, month_, daynumber, showpub,showpriv);
+                    Day di = Day.getDay( year_, month_, daynumber, showpub,showpriv,true);
                     Collection appts = di.getAppts();
                     
                     if( appts != null ) {

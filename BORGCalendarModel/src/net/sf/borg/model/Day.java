@@ -165,14 +165,14 @@ public class Day
     // get a Day class for a given day - defaults to public appts only
 	public static Day getDay(int year, int month, int day ) throws Exception
     {
-        return( getDay( year, month, day, true, false ) );
+        return( getDay( year, month, day, true, false, true ) );
     }
     
     // get Day Class for a given day. indicate if public or private appts are to be included
     // The Day class is used by Views that need to present an entire day at a time.
     // The Day class contains all appointments, tasks, and holidays that fall on
     // a given day.
-	public static Day getDay(int year, int month, int day, boolean pub, boolean priv) throws Exception
+	public static Day getDay(int year, int month, int day, boolean pub, boolean priv, boolean prependTime) throws Exception
     {
         AppointmentModel calmod = AppointmentModel.getReference();
         // get the base day key
@@ -210,7 +210,7 @@ public class Day
                 }
                 
                 // add time in front of the appt text
-                if( !AppointmentModel.isNote(appt) )
+                if( !AppointmentModel.isNote(appt) && prependTime  )
                 {
                     Date d = appt.getDate();
                     SimpleDateFormat sdf = AppointmentModel.getTimeFormat();

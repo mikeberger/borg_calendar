@@ -44,8 +44,8 @@ import net.sf.borg.common.util.Prefs;
 import net.sf.borg.common.util.Resource;
 import net.sf.borg.common.util.Version;
 import net.sf.borg.model.Appointment;
-import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Day;
+import net.sf.borg.ui.ApptDayBoxLayout.ApptDayBox;
 
 
 
@@ -223,7 +223,7 @@ class WeekPanel extends JPanel implements Printable
             {
                 // get the appointment info for the given day
                 Day di = Day.getDay( cal.get(Calendar.YEAR), cal.get(Calendar.MONTH),
-                cal.get(Calendar.DATE), showpub, showpriv);
+                cal.get(Calendar.DATE), showpub, showpriv, false);
  
                 if( di != null )
                 {
@@ -231,8 +231,9 @@ class WeekPanel extends JPanel implements Printable
                     Collection appts = di.getAppts();
                     if( appts != null )
                     {
-                        
-                        Iterator it = appts.iterator();
+                        ApptDayBoxLayout layout = new ApptDayBoxLayout(appts, starthr, endhr );
+                        //Iterator it = appts.iterator();
+                        Iterator it = layout.getBoxes().iterator();
                         
                         // determine x coord for all appt text
                         int apptx = colleft + 2 * fontDesent;
@@ -247,7 +248,8 @@ class WeekPanel extends JPanel implements Printable
                         // loop through appts
                         while( it.hasNext() )
                         {
-                            Appointment ai = (Appointment) it.next();
+                        	ApptDayBox box = (ApptDayBox) it.next();
+                            Appointment ai = box.getAppt();
                             
                             // change color for a single appointment based on
                             // its color - only if color print option set
@@ -259,25 +261,14 @@ class WeekPanel extends JPanel implements Printable
                             else if( ai.getColor().equals("blue") )
                                 g2.setColor( Color.blue );
                             
-                            int hr = 0;
-                            int min = 0;
-                            Date d = ai.getDate();
-                            if( d != null )
-                            {
-                                GregorianCalendar acal = new GregorianCalendar();
-                                acal.setTime(d);
-                                hr = acal.get( Calendar.HOUR_OF_DAY );
-                                min = acal.get( Calendar.MINUTE );
-                            }
-                            
                             // add a single appt text
-                            // if the appt is a note (non-scheduled) or if it falls outside
-                            // the Y axis time range - leave it as a note on top
-                            if( AppointmentModel.isNote(ai) || hr < starthr || hr > endhr )
+                            // if the appt falls outside the grid - leave it as a note on top
+                            if( box.isOutsideGrid() )
                             {
                                 // appt is note or is outside timespan shown
                                 g2.clipRect(colleft, daytop, (int)colwidth, (int)aptop );
                                 g2.drawString( ai.getText(), apptx, notey );
+                                //System.out.println( ai.getText() + " " + notey );
                                 
                                 // increment Y coord for next note text
                                 notey += smfontHeight;
@@ -285,34 +276,27 @@ class WeekPanel extends JPanel implements Printable
                             else
                             {
                                 
-                                // draw appt box in the timed appt area
-                                int dur = 0;
-                                Integer duri = ai.getDuration();
-                                if( duri != null )
-                                {
-                                    dur = duri.intValue();
-                                }
-                                if( dur == 0 ) dur = 30;    // default to 30 mins if appt has not duration
-                                
-                                // calculate size of appt box
-                                int totmins = (endhr - starthr) * 60;   // total minutes in the Y-axis
-                                int mins_in = (hr-starthr)*60 + min;  // minutes from the top of the Y-axis for this appt
-                                int appttop = (int)(aptop + ((calbot-aptop) * mins_in)/totmins); // Y coord of appt box top
-                                int apptbot = appttop + (int)((dur*(calbot-aptop))/totmins);   // Y coord of appt box bottom - based on duration
-                                if( apptbot > calbot ) apptbot = calbot;    // clip bottom if appt bottom is past Y axis bottom
-                                
+                                int appttop = (int)( aptop + (calbot-aptop) * box.getTop());
+                                int apptbot = (int)( aptop + (calbot-aptop) * box.getBottom());
+                                double realwidth = colwidth - 4;
+                                int apptleft = (int) ( colleft + 2 + realwidth * box.getLeft());
+                                int apptright = (int) ( colleft + 2 + realwidth * box.getRight());
                                 // draw box outline
                                 g2.setColor( Color.BLACK );
-                                g2.drawRect( colleft + 2 , appttop, (int)colwidth - 5, apptbot - appttop );
+                               
+                                //System.out.println( ai.getText()+ " "  + apptleft + " " + apptright + " " + appttop + " " + apptbot  );
+                                g2.drawRect( apptleft , appttop, apptright - apptleft, apptbot - appttop );
                                 
                                 // fill the box with color
                                 g2.setColor( acolor[apptnum%3] );
-                                g2.fillRect( colleft + 2 , appttop, (int)colwidth - 5, apptbot - appttop );
+                                
+                                g2.fillRect( apptleft , appttop, apptright - apptleft, apptbot - appttop );
                                 
                                 // draw the appt text
                                 g2.setColor( Color.BLACK );
-                                g2.clipRect(colleft + 2, appttop, (int)colwidth - 5, apptbot - appttop );
-                                g2.drawString( ai.getText(), colleft + 2 + smfontHeight, appttop + smfontHeight );
+                                
+                                g2.clipRect( apptleft , appttop, apptright - apptleft, apptbot - appttop );
+                                g2.drawString( ai.getText(), apptleft + 2, appttop + smfontHeight );
                                 apptnum++;
                             }
                             

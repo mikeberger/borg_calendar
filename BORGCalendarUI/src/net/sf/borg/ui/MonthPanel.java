@@ -227,7 +227,7 @@ class MonthPanel extends JPanel implements Printable
                 {
                     
                     // get the appointment info for the given day
-                    Day di = Day.getDay( year, month, date, showpub, showpriv );
+                    Day di = Day.getDay( year, month, date, showpub, showpriv, true );
                     if( di != null )
                     {
                         if( cp.equals("true") )
