@@ -101,6 +101,8 @@
             <file src="borg.jar" targetdir="$INSTALL_PATH"/>
 	    <file src="lib/jh.jar" targetdir="$INSTALL_PATH/lib"/>
 	    <file src="lib/borghelp.jar" targetdir="$INSTALL_PATH/lib"/>
+	    <file src="lib/jcalendar.jar" targetdir="$INSTALL_PATH/lib"/>
+	    <file src="lib/license.jcalendar.txt" targetdir="$INSTALL_PATH/lib"/>
         </pack>
         <pack name="Windows Systray Support" os="windows" required="no">
 		<description>Support for a system tray icon (recommended for windows users)</description>
