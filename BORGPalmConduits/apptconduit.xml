@@ -7,5 +7,5 @@
   <name>BORG Appointment Conduit</name>
   <information>BORG Appointment Conduit</information>
   <classname>net.sf.borg.apptconduit.ApptCond</classname>
-  <classpath>borg.jar;</classpath>
+  <classpath>..\borg.jar;</classpath>
 </conduit>

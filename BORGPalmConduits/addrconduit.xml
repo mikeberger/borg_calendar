@@ -7,5 +7,5 @@
   <name>BORG Address Conduit</name>
   <information>BORG Address Conduit</information>
   <classname>net.sf.borg.addrconduit.AddrCond</classname>
-  <classpath>borg.jar;</classpath>
+  <classpath>..\borg.jar;</classpath>
 </conduit>
