@@ -61,11 +61,7 @@ class AppointmentPanel extends JPanel
       {
           AppointmentModel calmod_ = AppointmentModel.getReference();
           
-          year_ = year;
-          month_ = month;
-          day_ = day;
-
-          
+ 
           // init GUI
           initComponents();
           
@@ -112,10 +108,18 @@ class AppointmentPanel extends JPanel
             freq.addItem( Resource.getResourceString(freqs[i]));
           }
           
+          setDate( year, month, day );
          
       }
       
-    
+      public void setDate( int year, int month, int day)
+      {
+          year_ = year;
+          month_ = month;
+          day_ = day;
+
+          
+      }
      
       
       // set the view to a single appt (or a new blank)

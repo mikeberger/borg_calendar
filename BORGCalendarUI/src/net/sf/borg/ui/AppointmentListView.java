@@ -50,6 +50,7 @@ import net.sf.borg.common.util.Version;
 import net.sf.borg.model.Appointment;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.TaskModel;
+import de.wannawork.jcalendar.JCalendarComboBox;
 public class AppointmentListView extends View implements ListSelectionListener {
     
     static {
@@ -59,6 +60,7 @@ public class AppointmentListView extends View implements ListSelectionListener {
     private int key_;
     private List alist_ = null;
     private AppointmentPanel apanel_ = null;
+    private GregorianCalendar cal_ = null;
     
     
        private class TimeRenderer extends JLabel implements TableCellRenderer {
@@ -100,11 +102,9 @@ public class AppointmentListView extends View implements ListSelectionListener {
         
         addModel(AppointmentModel.getReference());
         addModel(TaskModel.getReference());
-        
-        key_ = AppointmentModel.dkey( year, month, day );
+         
         initComponents();
-        Date d = new GregorianCalendar(year,month,day).getTime();
-        setTitle( Resource.getResourceString("Appointment_Editor_for_") + DateFormat.getDateInstance(DateFormat.SHORT).format(d));
+ 
         // add scroll to the table
         jScrollPane1.setViewportView(jTable1);
         jScrollPane1.getViewport().setBackground( menuBar.getBackground());
@@ -127,9 +127,7 @@ public class AppointmentListView extends View implements ListSelectionListener {
         TableSorter tm = (TableSorter) jTable1.getModel();
         tm.addMouseListenerToHeaderInTable(jTable1);
         
-        // clear all rows
-        deleteAll();
-        
+ 
         // set column widths
         jTable1.getColumnModel().getColumn(0).setPreferredWidth(125);
         jTable1.getColumnModel().getColumn(1).setPreferredWidth(75);
@@ -149,13 +147,28 @@ public class AppointmentListView extends View implements ListSelectionListener {
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
         jPanel2.add(apanel_, gridBagConstraints);
-        apanel_.showapp(-1);
-        
-        refresh();
+
+        showDate( year,month,day);
         
         pack();
         
         manageMySize(PrefName.APPTLISTVIEWSIZE);
+    }
+    
+    private void showDate(int year, int month, int day)
+    {
+        cal_ = new GregorianCalendar(year,month,day);
+        getDateCB().setCalendar(cal_);
+        key_ = AppointmentModel.dkey( year, month, day );
+        Date d = cal_.getTime();
+        setTitle( Resource.getResourceString("Appointment_Editor_for_") + DateFormat.getDateInstance(DateFormat.SHORT).format(d));
+        
+        // clear all rows
+        deleteAll();
+        apanel_.setDate(year, month, day );
+        apanel_.showapp(-1);
+         
+        refresh();
     }
     
     public void destroy() {
@@ -202,6 +215,7 @@ public class AppointmentListView extends View implements ListSelectionListener {
     {
         
 
+        GridBagConstraints gridBagConstraints22 = new GridBagConstraints();
         jPanel2 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -240,13 +254,11 @@ public class AppointmentListView extends View implements ListSelectionListener {
 
         GridBagConstraints gridBagConstraints2 = new java.awt.GridBagConstraints();
         gridBagConstraints2.gridx = 0;
-        gridBagConstraints2.gridy = 0;
+        gridBagConstraints2.gridy = 1;
         gridBagConstraints2.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints2.weightx = 1.0;
         gridBagConstraints2.weighty = 10.0;
         gridBagConstraints2.insets = new java.awt.Insets(2, 2, 2, 2);
-        jPanel3.add(jScrollPane1, gridBagConstraints2);
-
         jPanel1.setLayout(new java.awt.GridLayout(0, 1));
 
         add.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Edit16.gif")));
@@ -297,11 +309,9 @@ public class AppointmentListView extends View implements ListSelectionListener {
 
         GridBagConstraints gridBagConstraints3 = new java.awt.GridBagConstraints();
         gridBagConstraints3.gridx = 0;
-        gridBagConstraints3.gridy = 1;
+        gridBagConstraints3.gridy = 2;
         gridBagConstraints3.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints3.insets = new java.awt.Insets(2, 2, 2, 2);
-        jPanel3.add(jPanel1, gridBagConstraints3);
-
         fileMenu.setBackground(menuBar.getBackground());
         fileMenu.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("File"));
         exitMenuItem.setBackground(fileMenu.getBackground());
@@ -321,7 +331,14 @@ public class AppointmentListView extends View implements ListSelectionListener {
         setJMenuBar(menuBar);
 
         this.setContentPane(getJPanel());
+        gridBagConstraints22.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints22.gridx = 0;
+        gridBagConstraints22.gridy = 0;
+        gridBagConstraints22.insets = new java.awt.Insets(2,2,2,2);
+        jPanel3.add(getJPanel4(), gridBagConstraints22);
+        jPanel3.add(jScrollPane1, gridBagConstraints2);
         jPanel1.add(delone, delone.getName());
+        jPanel3.add(jPanel1, gridBagConstraints3);
         jPanel1.add(dismiss, dismiss.getName());
     }//GEN-END:initComponents
     
@@ -445,6 +462,7 @@ public class AppointmentListView extends View implements ListSelectionListener {
     // End of variables declaration//GEN-END:variables
     
 	private JPanel jPanel = null;
+	private JPanel jPanel4 = null;
 	/**
 	 * This method initializes jPanel	
 	 * 	
@@ -473,4 +491,33 @@ public class AppointmentListView extends View implements ListSelectionListener {
 		}
 		return jPanel;
 	}
- }
+	/**
+	 * This method initializes jPanel4	
+	 * 	
+	 * @return javax.swing.JPanel	
+	 */  
+	private JCalendarComboBox cb_ = null;
+	private JCalendarComboBox getDateCB()
+	{
+		if (cb_ == null) {
+			cb_ = new JCalendarComboBox();
+			//cb.setCalendar(cal_);
+			cb_.addChangeListener(new javax.swing.event.ChangeListener() { 
+				public void stateChanged(javax.swing.event.ChangeEvent e) { 
+				    Calendar cal = cb_.getCalendar();
+					showDate(cal.get(Calendar.YEAR),cal.get(Calendar.MONTH), cal.get(Calendar.DATE));
+				}
+			});
+		}
+		
+		return( cb_ );
+	}
+	private JPanel getJPanel4() {
+		if (jPanel4 == null) {
+			jPanel4 = new JPanel();
+		
+			jPanel4.add(getDateCB());
+		}
+		return jPanel4;
+	}
+}
