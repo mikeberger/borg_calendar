@@ -182,7 +182,7 @@ public class AppointmentModel extends Model
     public void delAppt(Appointment appt)
     {
         try {
-            String sync = Prefs.getPref( PrefName.SYNC_APPT);
+            String sync = Prefs.getPref( PrefName.PALM_SYNC);
             if( sync.equals("true"))
             {
                 appt.setDeleted(true);

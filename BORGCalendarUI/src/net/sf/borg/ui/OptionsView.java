@@ -57,6 +57,7 @@ import net.sf.borg.common.util.Prefs;
 import net.sf.borg.common.util.Resource;
 import net.sf.borg.common.util.Version;
 import net.sf.borg.model.AppointmentModel;
+import java.awt.FlowLayout;
 // propgui displays the edit preferences window
 public class OptionsView extends View
 {
@@ -376,11 +377,27 @@ public class OptionsView extends View
         mins = Prefs.getIntPref(PrefName.BEEPINGMINS);
         beepmins.setValue(new Integer(mins));
          
+
+        
+        bg = Prefs.getPref(PrefName.PALM_SYNC);
+        if( bg.equals("true"))
+        {
+            palmcb.setSelected(true);
+        }
+        else
+        {
+            palmcb.setSelected(false);           
+        }
+        
         bg = Prefs.getPref(PrefName.SHARED);
         if( bg.equals("true") )
+        {
             sharedbox.setSelected(true);
+        }
         else
+        {
             sharedbox.setSelected(false);
+        }
         
         bg = Prefs.getPref(PrefName.ICALTODOEV );
         if( bg.equals("true") )
@@ -1254,8 +1271,6 @@ public class OptionsView extends View
         jTabbedPane1.addTab(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("popup_reminders"), jPanel6);
 
         sharedbox.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("shared"));
-        jPanel7.add(sharedbox);
-
         jTabbedPane1.addTab(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Multi_User"), jPanel7);
 
         GridBagConstraints gridBagConstraints67 = new java.awt.GridBagConstraints();
@@ -1307,7 +1322,9 @@ public class OptionsView extends View
         getJPanelUCS().add( btn_ucs_restore );
         
         JPanel njp = new JPanel();
+        GridBagConstraints gridBagConstraints310 = new GridBagConstraints();
         njp.setLayout( new BorderLayout() );
+        jPanel7.setLayout(new FlowLayout());
         njp.add( cb_ucs_marktodo, BorderLayout.WEST );
         njp.add( tf_ucs_marker, BorderLayout.CENTER );
         getJPanelUCS().add( njp );
@@ -1327,9 +1344,17 @@ public class OptionsView extends View
         gridBagConstraints111.gridx = 0;
         gridBagConstraints111.gridy = 6;
         gridBagConstraints111.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints310.gridx = 0;
+        gridBagConstraints310.gridy = 8;
+        gridBagConstraints310.ipadx = 0;
+        gridBagConstraints310.ipady = 0;
+        gridBagConstraints310.insets = new java.awt.Insets(0,0,0,0);
+        gridBagConstraints310.anchor = java.awt.GridBagConstraints.WEST;
+        jPanel7.add(sharedbox, null);
         jPanel3.add(revDayEditbox, gridBagConstraints51);
         jTabbedPane1.addTab("User Color Scheme", null, getJPanelUCS(), null);
         jPanel3.add(getExputcbox(), gridBagConstraints111);
+        jPanel3.add(getPalmcb(), gridBagConstraints310);
         jPanel2.add(getDoyBox(), gridBagConstraints110);
         pack();
     }//GEN-END:initComponents
@@ -1379,6 +1404,11 @@ public class OptionsView extends View
             Prefs.putPref(PrefName.SHARED, "true" );
         else
             Prefs.putPref(PrefName.SHARED, "false" );
+        
+        if( palmcb.isSelected() )
+            Prefs.putPref(PrefName.PALM_SYNC, "true" );
+        else
+            Prefs.putPref(PrefName.PALM_SYNC, "false" );
         
         Integer i = (Integer) beepmins.getValue();
         int cur = Prefs.getIntPref(PrefName.BEEPINGMINS);
@@ -1904,6 +1934,7 @@ public class OptionsView extends View
 	private JCheckBox doyBox = null;
 	private JCheckBox exputcbox = null;
 	private JPanel jPanelUCS = null;
+	private JCheckBox palmcb = null;
 	/**
 	 * This method initializes jPanel	
 	 * 	
@@ -1978,4 +2009,16 @@ public class OptionsView extends View
 		}
 		return jPanelUCS;
 	}
-     }
+	/**
+	 * This method initializes palmcb	
+	 * 	
+	 * @return javax.swing.JCheckBox	
+	 */    
+	private JCheckBox getPalmcb() {
+		if (palmcb == null) {
+			palmcb = new JCheckBox();
+			palmcb.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("palmopt"));
+		}
+		return palmcb;
+	}
+      }

@@ -170,6 +170,6 @@ public class PrefName {
 		// (bsv 2004-12-20)
 		
 		// synchronization
-		static public PrefName SYNC_ADDR = new PrefName("sync_addr", "false");
-		static public PrefName SYNC_APPT = new PrefName("sync_appt", "false");
+		static public PrefName PALM_SYNC = new PrefName("palm_sync", "false");
+
 }

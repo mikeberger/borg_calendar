@@ -188,7 +188,7 @@ public class AddressModel extends Model {
     public void delete( Address addr ) throws Exception {
         
         try {
-            String sync = Prefs.getPref( PrefName.SYNC_ADDR);
+            String sync = Prefs.getPref( PrefName.PALM_SYNC);
             if( sync.equals("true"))
             {
                 addr.setDeleted(true);

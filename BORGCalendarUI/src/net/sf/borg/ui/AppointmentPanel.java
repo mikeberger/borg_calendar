@@ -111,7 +111,7 @@ class AppointmentPanel extends JPanel
           
           setDate( year, month, day );
           
-          String palm = Prefs.getPref( PrefName.SYNC_APPT);
+          String palm = Prefs.getPref( PrefName.PALM_SYNC);
           if( !palm.equals("true"))
           {
               alarmcb.setEnabled(false);
