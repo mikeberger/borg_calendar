@@ -140,6 +140,9 @@
         </Component>
         <Component class="javax.swing.JButton" name="addtodo">
           <Properties>
+            <Property name="icon" type="javax.swing.Icon" editor="org.openide.explorer.propertysheet.editors.IconEditor">
+              <Image iconType="3" name="/resource/Save16.gif"/>
+            </Property>
             <Property name="text" type="java.lang.String" value="Add"/>
           </Properties>
           <Events>

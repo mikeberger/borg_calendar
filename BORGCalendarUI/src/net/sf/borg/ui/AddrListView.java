@@ -218,6 +218,7 @@ public class AddrListView extends View
         gridBagConstraints.weighty = 1.0;
         getContentPane().add(jScrollPane1, gridBagConstraints);
 
+        newbutton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Add16.gif")));
         newbutton.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Add_New"));
         newbutton.addActionListener(new java.awt.event.ActionListener()
         {
@@ -229,6 +230,7 @@ public class AddrListView extends View
 
         jPanel1.add(newbutton);
 
+        editbutton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Edit16.gif")));
         editbutton.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Edit"));
         editbutton.addActionListener(new java.awt.event.ActionListener()
         {
@@ -240,6 +242,7 @@ public class AddrListView extends View
 
         jPanel1.add(editbutton);
 
+        delbutton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Delete16.gif")));
         delbutton.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Delete"));
         delbutton.addActionListener(new java.awt.event.ActionListener()
         {
@@ -251,6 +254,7 @@ public class AddrListView extends View
 
         jPanel1.add(delbutton);
 
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Stop16.gif")));
         jButton1.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Dismiss"));
         jButton1.addActionListener(new java.awt.event.ActionListener()
         {

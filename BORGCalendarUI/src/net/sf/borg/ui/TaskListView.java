@@ -368,6 +368,7 @@ public class TaskListView extends View {
         getContentPane().add(jRadioButton9, gridBagConstraints);
 
         jButton21.setBackground(menuBar.getBackground());
+        jButton21.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Find16.gif")));
         jButton21.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Filter:"));
         jButton21.addActionListener(new java.awt.event.ActionListener()
         {

@@ -6,6 +6,7 @@ jump from search and todo list to appt editor
 refactoring of the model and database code
 improvements to reduce volume of JDBC activity between client and db
 Ability to run as a demo applet ("sandboxed mode")
+add "apply" button for options - no more immediate apply
 bug fixes
 
 Version 1.3.2
