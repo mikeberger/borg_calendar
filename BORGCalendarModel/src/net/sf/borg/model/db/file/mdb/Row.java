@@ -45,8 +45,12 @@ public class Row
         Version.addVersion("$Id$");
     }
 
-    private static SimpleDateFormat normalDateFormat_ = new SimpleDateFormat( "MM/dd/yy hh:mm aa" );
+    private static SimpleDateFormat normalDateFormat_ = new SimpleDateFormat( "MM/dd/yyyy hh:mm aa" );
+    private static SimpleDateFormat twoDigitYearFormat_ = new SimpleDateFormat( "MM/dd/yy hh:mm aa" );
    
+    static {
+    	normalDateFormat_.setLenient(false);
+    }
     // ---------------------------------------------------------------------------
     // ROW
     // This class contains a collection of data that can be accessed by field name
@@ -194,7 +198,16 @@ public class Row
                 Date d = new Date();
                 if( dateformat_ != null )
                 {
-                    d = dateformat_.parse(s);
+                	// determine which format to use
+                	// 2 or 4 digit year
+                	if( s.indexOf(' ') == 8 )
+                	{
+                		d = twoDigitYearFormat_.parse(s);
+                	}
+                	else
+                	{
+                		d = dateformat_.parse(s);
+                	}
                     return(d);
                 }
                 
