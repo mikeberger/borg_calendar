@@ -115,6 +115,22 @@ public class AppointmentVcalAdapter {
 				{
 					rec += "D7 " + until;
 				}
+				else if( freq.equals("weekdays"))
+				{
+					rec += "W1 MO TU WE TH FR " + until;
+				}
+				else if( freq.equals("mwf"))
+				{
+					rec += "W1 MO WE FR " + until;
+				}
+				else if( freq.equals("tth"))
+				{
+					rec += "W1 TU TH " + until;
+				}
+				else if( freq.equals("weekends"))
+				{
+					rec += "W1 SA SU " + until;
+				}
 				else if( freq.equals("biweekly"))
 				{
 					rec += "D14 " + until;

@@ -119,7 +119,6 @@ class Repeat
 	final static Calendar until(Calendar start, String frequency, int count)
 	{
 	    Calendar c = null;
-	    System.out.println("rpt " + frequency + ":" + count);
 	    
 	    if( count == 9999)
 	    {
