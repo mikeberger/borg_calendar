@@ -182,7 +182,7 @@ public class AddressModel extends Model {
         int num = addr.getKey();
         
         if( num == -1 ) {
-            int newkey = db_.maxkey() + 1;
+            int newkey = db_.nextkey();
             addr.setKey(newkey);
             try
             {  db_.addObj(addr, false); }

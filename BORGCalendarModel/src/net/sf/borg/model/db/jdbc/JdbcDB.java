@@ -76,6 +76,11 @@ abstract class JdbcDB implements BeanDB
     
     protected int userid_ = 1;
     
+    // For multiuser operation, we need to reserve key values even before a
+    // record is created in the database. Any value here overrides the current
+    // maximum key in a particular table.
+    protected int curMaxKey_ = Integer.MIN_VALUE;
+    
     /** Creates a new instance of JdbcDB */
     JdbcDB(String url, int userid) throws Exception
     {

@@ -146,9 +146,12 @@ class ApptJdbcDB extends JdbcDB implements AppointmentKeyFilter
         
     }
 
-    public int maxkey()
+    public int nextkey()
     {
-        return(0);
+     // TODO: Does this need to be implemented?!
+        int maxKey = 0;
+        curMaxKey_ = Math.max(curMaxKey_, maxKey);
+        return ++curMaxKey_;
     }
     
     public KeyedBean newObj()

@@ -121,7 +121,7 @@ public class UserModel extends Model {
         int num = u.getKey();
         
         if( num == -1 ) {
-            int newkey = db_.maxkey() + 1;
+            int newkey = db_.nextkey();
             u.setKey(newkey);
             try
             {  db_.addObj(u, false); }

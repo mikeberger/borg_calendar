@@ -295,9 +295,9 @@ public class TaskModel extends Model {
         Integer num = task.getTaskNumber();
         
         // if the task number is -1, it is a new task so
-        // get a new task number (the current highest + 1 )
+        // get a new task number.
         if( num.intValue() == -1 ) {
-            int newkey = db_.maxkey() + 1;
+            int newkey = db_.nextkey();
             task.setKey(newkey);
             task.setTaskNumber(new Integer(newkey));
             try

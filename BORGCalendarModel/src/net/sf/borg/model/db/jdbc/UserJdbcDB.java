@@ -94,13 +94,15 @@ class UserJdbcDB extends JdbcDB
         
     }
     
-    public int maxkey() throws Exception
+    public int nextkey() throws Exception
     {
         PreparedStatement stmt = connection_.prepareStatement("SELECT MAX(userid) FROM users" );
         ResultSet r = stmt.executeQuery();
+        int maxKey = 0;
         if( r.next() )
-            return( r.getInt(1) );
-        return(0);
+            maxKey = r.getInt(1);
+        curMaxKey_ = Math.max(curMaxKey_, maxKey);
+        return ++curMaxKey_;
     }
     
     public KeyedBean newObj()

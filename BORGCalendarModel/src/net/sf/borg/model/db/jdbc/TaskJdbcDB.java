@@ -125,14 +125,16 @@ class TaskJdbcDB extends JdbcDB
         
     }
     
-    public int maxkey() throws Exception
+    public int nextkey() throws Exception
     {
         PreparedStatement stmt = connection_.prepareStatement("SELECT MAX(tasknum) FROM tasks WHERE  userid = ?" );
         stmt.setInt( 1, userid_ );
         ResultSet r = stmt.executeQuery();
+        int maxKey = 0;
         if( r.next() )
-            return( r.getInt(1) );
-        return(0);
+            maxKey = r.getInt(1);
+        curMaxKey_ = Math.max(curMaxKey_, maxKey);
+        return ++curMaxKey_;
     }
     
     public KeyedBean newObj()

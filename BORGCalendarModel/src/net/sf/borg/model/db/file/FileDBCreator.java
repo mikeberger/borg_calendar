@@ -67,9 +67,9 @@ abstract class FileDBCreator implements BeanDB
 		return db_.getOptions();
 	}
 
-	public final int maxkey() throws Exception
+	public final int nextkey() throws Exception
 	{
-		return db_.maxkey();
+		return db_.nextkey();
 	}
 
 	public final KeyedBean newObj()

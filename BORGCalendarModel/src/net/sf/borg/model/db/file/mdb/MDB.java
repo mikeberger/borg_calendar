@@ -769,7 +769,7 @@ public class MDB {
 	}
 
 	// duh
-	public int maxkey() {
+	public int nextkey() {
                 try{
                     sync();
                 }
@@ -777,7 +777,7 @@ public class MDB {
                 {
                     Errmsg.errmsg(e);
                 }
-		return (maxkey_);
+		return (++maxkey_);
 	}
 
 	// write an entry to the log file in XML

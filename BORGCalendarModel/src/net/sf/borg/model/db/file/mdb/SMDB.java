@@ -283,7 +283,7 @@ public class SMDB
     public void close(){ db_.close(); }
     //public int getFlags() throws MDBException { return( db_.getFlags() ); }
     public int getFlags(int key) throws DBException { return( db_.getFlags(key) ); }
-    public int maxkey(){ return( db_.maxkey() ); }
+    public int nextkey(){ return db_.nextkey(); }
     public void setLogFile(String lf) throws DBException { db_.setLogFile(lf); }
     public String getLogFile() throws DBException { return( db_.getLogFile() ); }
     public void delete( int key ) throws Exception { db_.delete(key); }
