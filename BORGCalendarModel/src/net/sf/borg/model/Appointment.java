@@ -67,6 +67,18 @@ public class Appointment extends KeyedBean implements java.io.Serializable {
 	public String getCategory() { return( Category_ ); }
 	public void setCategory( String xx ){ Category_ = xx; }
 
+	private boolean New_;
+	public boolean getNew() { return( New_ ); }
+	public void setNew( boolean xx ){ New_ = xx; }
+
+	private boolean Modified_;
+	public boolean getModified() { return( Modified_ ); }
+	public void setModified( boolean xx ){ Modified_ = xx; }
+
+	private boolean Deleted_;
+	public boolean getDeleted() { return( Deleted_ ); }
+	public void setDeleted( boolean xx ){ Deleted_ = xx; }
+
 	protected Object clone() {
 		Appointment dst = new Appointment();
 		dst.setKey( getKey());
@@ -85,6 +97,9 @@ public class Appointment extends KeyedBean implements java.io.Serializable {
 		dst.setColor( getColor() );
 		dst.setRepeatFlag( getRepeatFlag() );
 		dst.setCategory( getCategory() );
+		dst.setNew( getNew() );
+		dst.setModified( getModified() );
+		dst.setDeleted( getDeleted() );
 		return(dst);
 	}
 }

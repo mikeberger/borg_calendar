@@ -33,6 +33,9 @@ public class AddressAdapter implements FileBeanAdapter {
 		ret.setWebPage( r.getString("WB"));
 		ret.setNotes( r.getString("NO"));
 		ret.setBirthday( r.getDate("BD"));
+		ret.setNew( r.getFlag(1));
+		ret.setModified( r.getFlag(2));
+		ret.setDeleted( r.getFlag(3));
 		return( ret );
 	}
 
@@ -65,6 +68,9 @@ public class AddressAdapter implements FileBeanAdapter {
 		ret.setField("WB", o.getWebPage());
 		ret.setField("NO", o.getNotes());
 		ret.setField("BD", o.getBirthday());
+		ret.setFlag(1,  o.getNew());
+		ret.setFlag(2,  o.getModified());
+		ret.setFlag(3,  o.getDeleted());
 		return( ret );
 	}
 

@@ -99,6 +99,18 @@ public class Address extends KeyedBean implements java.io.Serializable {
 	public Date getBirthday() { return( Birthday_ ); }
 	public void setBirthday( Date xx ){ Birthday_ = xx; }
 
+	private boolean New_;
+	public boolean getNew() { return( New_ ); }
+	public void setNew( boolean xx ){ New_ = xx; }
+
+	private boolean Modified_;
+	public boolean getModified() { return( Modified_ ); }
+	public void setModified( boolean xx ){ Modified_ = xx; }
+
+	private boolean Deleted_;
+	public boolean getDeleted() { return( Deleted_ ); }
+	public void setDeleted( boolean xx ){ Deleted_ = xx; }
+
 	protected Object clone() {
 		Address dst = new Address();
 		dst.setKey( getKey());
@@ -125,6 +137,9 @@ public class Address extends KeyedBean implements java.io.Serializable {
 		dst.setWebPage( getWebPage() );
 		dst.setNotes( getNotes() );
 		dst.setBirthday( getBirthday() );
+		dst.setNew( getNew() );
+		dst.setModified( getModified() );
+		dst.setDeleted( getDeleted() );
 		return(dst);
 	}
 }

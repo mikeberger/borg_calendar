@@ -66,6 +66,8 @@ public class AddressModel extends Model {
             Iterator ti = addrs.iterator();
             while( ti.hasNext() ) {
                 Address addr = (Address) ti.next();
+                if( addr.getDeleted() )
+                    continue;
                 
                 // use birthday to build a day key
                 Date bd = addr.getBirthday();
@@ -129,7 +131,27 @@ public class AddressModel extends Model {
     
     
     public Collection getAddresses() throws DBException, Exception {
-    	return db_.readAll();
+        Collection addrs = db_.readAll();
+        Iterator it = addrs.iterator();
+        while( it.hasNext())
+        {
+            Address addr = (Address) it.next();
+            if( addr.getDeleted())
+                it.remove();
+        }
+    	return addrs;
+    }
+    
+    public Collection getDeletedAddresses() throws DBException, Exception {
+        Collection addrs = db_.readAll();
+        Iterator it = addrs.iterator();
+        while( it.hasNext())
+        {
+            Address addr = (Address) it.next();
+            if( !addr.getDeleted())
+                it.remove();
+        }
+    	return addrs;
     }
     
     public Collection getAddresses( int daykey ) {
@@ -163,10 +185,19 @@ public class AddressModel extends Model {
 		load_map();
 	}
     
-    public void delete( int num ) throws Exception {
+    public void delete( Address addr ) throws Exception {
         
         try {
-            db_.delete(num);
+            String sync = Prefs.getPref( PrefName.SYNC_ADDR);
+            if( sync.equals("true"))
+            {
+                addr.setDeleted(true);
+                db_.updateObj(addr,false);
+            }
+            else
+            {
+                db_.delete(addr.getKey());
+            }
         }
         catch( Exception e ) {
             Errmsg.errmsg(e);
@@ -177,13 +208,36 @@ public class AddressModel extends Model {
         
     }
     
-    public void saveAddress(Address addr) throws Exception {
+    public void forceDelete( Address addr ) throws Exception {
+        
+        try {
+
+               db_.delete(addr.getKey());
+        }
+        catch( Exception e ) {
+            Errmsg.errmsg(e);
+        }
+        
+        load_map();
+        refreshListeners();
+        
+    }
+    public void saveAddress( Address addr ) throws Exception
+    {
+        saveAddress(addr,false);
+    }
+    
+    public void saveAddress(Address addr, boolean sync) throws Exception {
         
         int num = addr.getKey();
         
         if( num == -1 ) {
             int newkey = db_.nextkey();
             addr.setKey(newkey);
+            if( !sync)
+            {
+                addr.setNew(true);
+            }
             try
             {  db_.addObj(addr, false); }
             catch( DBException e ) {
@@ -192,6 +246,10 @@ public class AddressModel extends Model {
         }
         else {
             try {
+                if( !sync )
+                {
+                    addr.setModified(true);
+                }
                 db_.updateObj(addr, false);
             }
             catch( DBException e ) {

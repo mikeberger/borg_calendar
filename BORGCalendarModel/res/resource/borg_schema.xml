@@ -92,5 +92,26 @@
 		<type>String</type>
 		<longName>Category</longName>
 		<desc>Category</desc>
+	</field>
+		<field>
+		<name>NEW</name>
+		<type>boolean</type>
+        <flagNumber>4</flagNumber>
+		<longName>New</longName>
+		<desc>New Flag for Synchronization</desc>	
+	</field>
+		<field>
+		<name>MOD</name>
+		<type>boolean</type>
+        <flagNumber>5</flagNumber>
+		<longName>Modified</longName>
+		<desc>Modified Flag for Synchronization</desc>	
+	</field>
+		<field>
+		<name>DEL</name>
+		<type>boolean</type>
+        <flagNumber>6</flagNumber>
+		<longName>Deleted</longName>
+		<desc>Deleted Flag for Synchronization</desc>	
 	</field>	 
 </schema>

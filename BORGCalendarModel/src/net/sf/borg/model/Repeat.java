@@ -26,7 +26,7 @@ import java.util.GregorianCalendar;
 /**
  * A helper class for calculating repeating appointments.
  */
-class Repeat
+public class Repeat
 {
 	private Calendar start;
 	private Calendar cal;
@@ -116,7 +116,7 @@ class Repeat
 	}
 	
 	// return when the appt repeats until given the count
-	final static Calendar until(Calendar start, String frequency, int count)
+	final static public Calendar until(Calendar start, String frequency, int count)
 	{
 	    Calendar c = null;
 	    

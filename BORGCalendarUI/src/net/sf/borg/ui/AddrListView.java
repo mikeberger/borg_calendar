@@ -343,7 +343,7 @@ public class AddrListView extends View
             Object[] oa = addrs_.toArray();
             Address addr = (Address) oa[k];
             AddressModel amod = AddressModel.getReference();
-            amod.delete( addr.getKey() );
+            amod.delete( addr );
             
         }
         catch( Exception e )

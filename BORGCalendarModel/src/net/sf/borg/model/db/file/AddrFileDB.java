@@ -84,7 +84,7 @@ class AddrFileDB extends FileDBCreator
 			}
 			Schema oldsch = fdb.getSchema();
 			try {
-				oldsch.getType("BD");
+				oldsch.getType("DEL");
 			}
 			catch( Exception e ) {
 				// DB does not have new fields - update the schema

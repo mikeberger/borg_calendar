@@ -25,6 +25,9 @@ public class AppointmentAdapter implements FileBeanAdapter {
 		ret.setColor( r.getString("CL"));
 		ret.setRepeatFlag( r.getFlag(1));
 		ret.setCategory( r.getString("CAT"));
+		ret.setNew( r.getFlag(4));
+		ret.setModified( r.getFlag(5));
+		ret.setDeleted( r.getFlag(6));
 		return( ret );
 	}
 
@@ -49,6 +52,9 @@ public class AppointmentAdapter implements FileBeanAdapter {
 		ret.setField("CL", o.getColor());
 		ret.setFlag(1,  o.getRepeatFlag());
 		ret.setField("CAT", o.getCategory());
+		ret.setFlag(4,  o.getNew());
+		ret.setFlag(5,  o.getModified());
+		ret.setFlag(6,  o.getDeleted());
 		return( ret );
 	}
 

@@ -166,19 +166,65 @@ public class AppointmentModel extends Model
         return(appt);
     }
     
-    // delete a row from the database
-    public void delAppt(int key)
+    public void delAppt(int key )
     {
+        try{
+            Appointment appt = getAppt(key);
+            delAppt(appt);
+        }
+        catch( Exception e)
+        {
+            Errmsg.errmsg(e);
+        }
+    }
+    
+    // delete a row from the database
+    public void delAppt(Appointment appt)
+    {
+        try {
+            String sync = Prefs.getPref( PrefName.SYNC_APPT);
+            if( sync.equals("true"))
+            {
+                appt.setDeleted(true);
+                db_.updateObj(appt,false);
+            }
+            else
+            {
+                db_.delete(appt.getKey());
+            }
+        }
+        catch( Exception e ) {
+            Errmsg.errmsg(e);
+        }
+        
+        // even if delete fails - still refresh cache info
+        // and tell listeners - db failure may have been due to 
+        // a sync causing a record already deleted error
+        // this needs to be reflected in the map
         try
         {
-            // delete the row from the physical DB
-            db_.delete(key);
+            // recreate the appointment hashmap
+            buildMap();
             
+            // refresh all views that are displaying appt data from this model
+            refreshListeners();
         }
         catch( Exception e )
         {
             Errmsg.errmsg(e);
-           
+            return;
+        }
+    }
+    
+    // delete a row from the database
+    public void forceDelete(Appointment appt)
+    {
+        try 
+        {
+                db_.delete(appt.getKey());           
+        }
+        catch( Exception e ) {
+            Errmsg.errmsg(e);
         }
         
         // even if delete fails - still refresh cache info
@@ -240,7 +286,7 @@ public class AppointmentModel extends Model
     	Iterator it = apptList.iterator();
     	while( it.hasNext())
     	{
-    		saveAppt( (Appointment) it.next(), true, true );
+    		saveAppt( (Appointment) it.next(), true, true, false );
     	}
     	
     	// refresh GUI
@@ -259,14 +305,26 @@ public class AppointmentModel extends Model
 		}
 	}
     
+    // called only from palm sync conduit
+    public int syncSave( Appointment r )
+    {
+        if( r.getKey() == -1 )
+            saveAppt(r,true, false, true);
+        else
+            saveAppt(r,false,false,true);
+        
+        return( r.getKey());
+        
+    }
+    
     public void saveAppt( Appointment r, boolean add)
 	{
-    	saveAppt( r, add, false );
+    	saveAppt( r, add, false, false );
 	}
     
     // save an appt in SMDB
     // if bulk - don't update listeners
-    public void saveAppt( Appointment r, boolean add, boolean bulk)
+    public void saveAppt( Appointment r, boolean add, boolean bulk, boolean sync)
 	{
     	
     	try
@@ -309,11 +367,19 @@ public class AppointmentModel extends Model
     			
     			// key is now a free key
     			r.setKey(key);
+    			if( !sync )
+    			{
+    			    r.setNew(true);
+    			}
     			
     			db_.addObj(r, crypt);
     		}
     		else
     		{
+       			if( !sync )
+    			{
+    			    r.setModified(true);
+    			}
     			db_.updateObj(r, crypt );
     		}
     		
@@ -366,7 +432,7 @@ public class AppointmentModel extends Model
         {
             
             // load all appts into appt list
-			Iterator itr = db_.readAll().iterator();
+			Iterator itr = getAllAppts().iterator();
             while( itr.hasNext() )
             {
                 // read each appt
@@ -481,7 +547,7 @@ public class AppointmentModel extends Model
             // unless the user wants it deleted. if so, delete it.
             if( del )
             {
-                delAppt(key);
+                delAppt(appt);
             }
             else
             {
@@ -521,6 +587,8 @@ public class AppointmentModel extends Model
                 
                 // read the full appt from the DB and add to the vector
                 Appointment appt = (Appointment) db_.readObj(key);
+                if( appt.getDeleted())
+                    continue;
                 
                 // if category set, filter appts
                 
@@ -613,7 +681,7 @@ public class AppointmentModel extends Model
         try
         {
             // scan entire DB
-            Iterator itr = db_.readAll().iterator();
+            Iterator itr = getAllAppts().iterator();
             AppointmentKeyFilter kf = (AppointmentKeyFilter)db_;
             Collection rptkeys = kf.getRepeatKeys();
 
@@ -756,7 +824,7 @@ public class AppointmentModel extends Model
         // export appts      
         try
         {
-            Iterator itr = db_.readAll().iterator();
+            Iterator itr = getAllAppts().iterator();
             while( itr.hasNext() )
             {
                 Appointment ap = (Appointment) itr.next();
@@ -902,7 +970,7 @@ public class AppointmentModel extends Model
         
         TreeSet dbcat = new TreeSet();
         dbcat.add(Resource.getResourceString("uncategorized"));
-        Iterator itr = db_.readAll().iterator();
+        Iterator itr = getAllAppts().iterator();
         while( itr.hasNext() )
         {
             Appointment ap = (Appointment) itr.next();
@@ -973,7 +1041,28 @@ public class AppointmentModel extends Model
 
     public Collection getAllAppts() throws Exception
     {
-    	return( db_.readAll());
+        Collection appts = db_.readAll();
+        Iterator it = appts.iterator();
+        while( it.hasNext())
+        {
+            Appointment appt = (Appointment) it.next();
+            if( appt.getDeleted())
+                it.remove();
+        }
+    	return appts;
+    }
+    
+    public Collection getDeletedAppts() throws Exception
+    {
+        Collection appts = db_.readAll();
+        Iterator it = appts.iterator();
+        while( it.hasNext())
+        {
+            Appointment appt = (Appointment) it.next();
+            if( !appt.getDeleted())
+                it.remove();
+        }
+    	return appts;
     }
 
 }

@@ -168,4 +168,8 @@ public class PrefName {
 		// original color is Color(255,233,192)
 		static public PrefName UCS_WEEKDAY = new PrefName("ucs_weekday","13421772");
 		// (bsv 2004-12-20)
+		
+		// synchronization
+		static public PrefName SYNC_ADDR = new PrefName("sync_addr", "false");
+		static public PrefName SYNC_APPT = new PrefName("sync_appt", "false");
 }
