@@ -171,7 +171,7 @@ public class ApptDayBoxLayout {
 			acal.setTime(d);
 			double apstartmin = 60 * acal.get(Calendar.HOUR_OF_DAY)
 					+ acal.get(Calendar.MINUTE);
-			int dur = 14;
+			int dur = 29;	// default - to leave size for the appt text
 			Integer duri = ap.getDuration();
 			if (duri != null && duri.intValue() > 15) {
 				dur = duri.intValue() - 1;
