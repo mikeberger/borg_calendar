@@ -15,6 +15,7 @@ Copyright 2003 by ==Quiet==
  */
 package net.sf.borg.ui;
 
+import java.awt.GridBagConstraints;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Collection;
@@ -393,7 +394,6 @@ class AppointmentPanel extends JPanel
        */
     private void initComponents()//GEN-BEGIN:initComponents
     {
-        java.awt.GridBagConstraints gridBagConstraints;
 
         jLabel2 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
@@ -435,11 +435,11 @@ class AppointmentPanel extends JPanel
 
         jLabel2.setForeground(java.awt.Color.red);
         jLabel2.setText("jLabel2");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        add(jLabel2, gridBagConstraints);
+        GridBagConstraints gridBagConstraints2 = new java.awt.GridBagConstraints();
+        gridBagConstraints2.gridx = 0;
+        gridBagConstraints2.gridy = 0;
+        gridBagConstraints2.fill = java.awt.GridBagConstraints.BOTH;
+        add(jLabel2, gridBagConstraints2);
 
         jPanel1.setLayout(new java.awt.GridBagLayout());
 
@@ -453,21 +453,21 @@ class AppointmentPanel extends JPanel
         appttextarea.setMinimumSize(new java.awt.Dimension(284, 140));
         jScrollPane1.setViewportView(appttextarea);
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        jPanel1.add(jScrollPane1, gridBagConstraints);
+        GridBagConstraints gridBagConstraints1 = new java.awt.GridBagConstraints();
+        gridBagConstraints1.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints1.weightx = 1.0;
+        gridBagConstraints1.weighty = 1.0;
+        jPanel1.add(jScrollPane1, gridBagConstraints1);
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.5;
-        gridBagConstraints.weighty = 2.0;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(jPanel1, gridBagConstraints);
+        GridBagConstraints gridBagConstraints3 = new java.awt.GridBagConstraints();
+        gridBagConstraints3.gridx = 0;
+        gridBagConstraints3.gridy = 1;
+        gridBagConstraints3.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints3.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints3.weightx = 1.5;
+        gridBagConstraints3.weighty = 2.0;
+        gridBagConstraints3.insets = new java.awt.Insets(5, 5, 5, 5);
+        add(jPanel1, gridBagConstraints3);
 
         jPanel2.setLayout(new java.awt.GridBagLayout());
 
@@ -475,63 +475,63 @@ class AppointmentPanel extends JPanel
         starthour.setMaximumRowCount(24);
         starthour.setMinimumSize(new java.awt.Dimension(42, 36));
         starthour.setOpaque(false);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        jPanel2.add(starthour, gridBagConstraints);
+        GridBagConstraints gridBagConstraints4 = new java.awt.GridBagConstraints();
+        gridBagConstraints4.gridx = 1;
+        gridBagConstraints4.gridy = 0;
+        gridBagConstraints4.fill = java.awt.GridBagConstraints.BOTH;
+        jPanel2.add(starthour, gridBagConstraints4);
 
         startmin.setMaximumRowCount(12);
         startmin.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "00", "05", "10", "15", "20", "25", "30", "35", "40", "45", "50", "55" }));
         startmin.setOpaque(false);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
-        jPanel2.add(startmin, gridBagConstraints);
+        GridBagConstraints gridBagConstraints5 = new java.awt.GridBagConstraints();
+        gridBagConstraints5.gridx = 2;
+        gridBagConstraints5.gridy = 0;
+        gridBagConstraints5.fill = java.awt.GridBagConstraints.VERTICAL;
+        jPanel2.add(startmin, gridBagConstraints5);
 
         startap.setText("PM");
         startap.setOpaque(false);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 3;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        jPanel2.add(startap, gridBagConstraints);
+        GridBagConstraints gridBagConstraints6 = new java.awt.GridBagConstraints();
+        gridBagConstraints6.gridx = 3;
+        gridBagConstraints6.gridy = 0;
+        gridBagConstraints6.fill = java.awt.GridBagConstraints.BOTH;
+        jPanel2.add(startap, gridBagConstraints6);
 
         durhour.setMaximumRowCount(24);
         durhour.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23" }));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        jPanel2.add(durhour, gridBagConstraints);
+        GridBagConstraints gridBagConstraints7 = new java.awt.GridBagConstraints();
+        gridBagConstraints7.gridx = 1;
+        gridBagConstraints7.gridy = 1;
+        gridBagConstraints7.fill = java.awt.GridBagConstraints.BOTH;
+        jPanel2.add(durhour, gridBagConstraints7);
 
         durmin.setMaximumRowCount(12);
         durmin.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "00", "05", "10", "15", "20", "25", "30", "35", "40", "45", "50", "55" }));
         durmin.setOpaque(false);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
-        jPanel2.add(durmin, gridBagConstraints);
+        GridBagConstraints gridBagConstraints8 = new java.awt.GridBagConstraints();
+        gridBagConstraints8.gridx = 2;
+        gridBagConstraints8.gridy = 1;
+        gridBagConstraints8.fill = java.awt.GridBagConstraints.VERTICAL;
+        jPanel2.add(durmin, gridBagConstraints8);
 
         jLabel3.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Start_Time:"));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-        gridBagConstraints.insets = new java.awt.Insets(0, 7, 0, 7);
-        jPanel2.add(jLabel3, gridBagConstraints);
+        GridBagConstraints gridBagConstraints9 = new java.awt.GridBagConstraints();
+        gridBagConstraints9.gridx = 0;
+        gridBagConstraints9.gridy = 0;
+        gridBagConstraints9.fill = java.awt.GridBagConstraints.VERTICAL;
+        gridBagConstraints9.anchor = java.awt.GridBagConstraints.EAST;
+        gridBagConstraints9.insets = new java.awt.Insets(0, 7, 0, 7);
+        jPanel2.add(jLabel3, gridBagConstraints9);
 
         jLabel6.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Duration:"));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-        gridBagConstraints.insets = new java.awt.Insets(0, 8, 0, 8);
-        jPanel2.add(jLabel6, gridBagConstraints);
+        GridBagConstraints gridBagConstraints11 = new java.awt.GridBagConstraints();
+        gridBagConstraints11.gridx = 0;
+        gridBagConstraints11.gridy = 1;
+        gridBagConstraints11.fill = java.awt.GridBagConstraints.VERTICAL;
+        gridBagConstraints11.anchor = java.awt.GridBagConstraints.EAST;
+        gridBagConstraints11.insets = new java.awt.Insets(0, 8, 0, 8);
+        jPanel2.add(jLabel6, gridBagConstraints11);
 
         notecb.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("No_Specific_Time"));
         notecb.addActionListener(new java.awt.event.ActionListener()
@@ -542,34 +542,34 @@ class AppointmentPanel extends JPanel
             }
         });
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.gridwidth = 3;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        jPanel2.add(notecb, gridBagConstraints);
+        GridBagConstraints gridBagConstraints12 = new java.awt.GridBagConstraints();
+        gridBagConstraints12.gridx = 0;
+        gridBagConstraints12.gridy = 3;
+        gridBagConstraints12.gridwidth = 3;
+        gridBagConstraints12.fill = java.awt.GridBagConstraints.BOTH;
+        jPanel2.add(notecb, gridBagConstraints12);
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(13, 0, 13, 0);
-        jPanel2.add(jSeparator1, gridBagConstraints);
+        GridBagConstraints gridBagConstraints13 = new java.awt.GridBagConstraints();
+        gridBagConstraints13.gridx = 0;
+        gridBagConstraints13.gridy = 2;
+        gridBagConstraints13.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints13.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints13.insets = new java.awt.Insets(13, 0, 13, 0);
+        jPanel2.add(jSeparator1, gridBagConstraints13);
 
         jLabel8.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("newDate:"));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 4;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        jPanel2.add(jLabel8, gridBagConstraints);
+        GridBagConstraints gridBagConstraints14 = new java.awt.GridBagConstraints();
+        gridBagConstraints14.gridx = 2;
+        gridBagConstraints14.gridy = 4;
+        gridBagConstraints14.fill = java.awt.GridBagConstraints.BOTH;
+        jPanel2.add(jLabel8, gridBagConstraints14);
 
         newdatefield.setColumns(10);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 3;
-        gridBagConstraints.gridy = 4;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        jPanel2.add(newdatefield, gridBagConstraints);
+        GridBagConstraints gridBagConstraints15 = new java.awt.GridBagConstraints();
+        gridBagConstraints15.gridx = 3;
+        gridBagConstraints15.gridy = 4;
+        gridBagConstraints15.fill = java.awt.GridBagConstraints.BOTH;
+        jPanel2.add(newdatefield, gridBagConstraints15);
 
         chgdate.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("changedate"));
         chgdate.addActionListener(new java.awt.event.ActionListener()
@@ -580,20 +580,20 @@ class AppointmentPanel extends JPanel
             }
         });
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 4;
-        jPanel2.add(chgdate, gridBagConstraints);
+        GridBagConstraints gridBagConstraints16 = new java.awt.GridBagConstraints();
+        gridBagConstraints16.gridx = 0;
+        gridBagConstraints16.gridy = 4;
+        jPanel2.add(chgdate, gridBagConstraints16);
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(jPanel2, gridBagConstraints);
+        GridBagConstraints gridBagConstraints17 = new java.awt.GridBagConstraints();
+        gridBagConstraints17.gridx = 0;
+        gridBagConstraints17.gridy = 2;
+        gridBagConstraints17.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints17.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints17.weightx = 1.0;
+        gridBagConstraints17.weighty = 1.0;
+        gridBagConstraints17.insets = new java.awt.Insets(5, 5, 5, 5);
+        add(jPanel2, gridBagConstraints17);
 
         jPanel3.setLayout(new java.awt.GridBagLayout());
 
@@ -602,113 +602,113 @@ class AppointmentPanel extends JPanel
         jPanel3.setPreferredSize(new java.awt.Dimension(600, 120));
         todocb.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("To_Do"));
         todocb.setOpaque(false);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
-        jPanel3.add(todocb, gridBagConstraints);
+        GridBagConstraints gridBagConstraints21 = new java.awt.GridBagConstraints();
+        gridBagConstraints21.weightx = 1.0;
+        gridBagConstraints21.insets = new java.awt.Insets(4, 4, 4, 4);
+        jPanel3.add(todocb, gridBagConstraints21);
 
         vacationcb.setForeground(new java.awt.Color(0, 102, 0));
         vacationcb.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Vacation"));
         vacationcb.setOpaque(false);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
-        jPanel3.add(vacationcb, gridBagConstraints);
+        GridBagConstraints gridBagConstraints22 = new java.awt.GridBagConstraints();
+        gridBagConstraints22.weightx = 1.0;
+        gridBagConstraints22.insets = new java.awt.Insets(4, 4, 4, 4);
+        jPanel3.add(vacationcb, gridBagConstraints22);
 
         halfdaycb.setForeground(new java.awt.Color(0, 102, 102));
         halfdaycb.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Half_Day"));
         halfdaycb.setOpaque(false);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
-        jPanel3.add(halfdaycb, gridBagConstraints);
+        GridBagConstraints gridBagConstraints23 = new java.awt.GridBagConstraints();
+        gridBagConstraints23.weightx = 1.0;
+        gridBagConstraints23.insets = new java.awt.Insets(4, 4, 4, 4);
+        jPanel3.add(halfdaycb, gridBagConstraints23);
 
         holidaycb.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Holiday"));
         holidaycb.setOpaque(false);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
-        jPanel3.add(holidaycb, gridBagConstraints);
+        GridBagConstraints gridBagConstraints24 = new java.awt.GridBagConstraints();
+        gridBagConstraints24.weightx = 1.0;
+        gridBagConstraints24.insets = new java.awt.Insets(4, 4, 4, 4);
+        jPanel3.add(holidaycb, gridBagConstraints24);
 
         privatecb.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Private"));
         privatecb.setOpaque(false);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
-        jPanel3.add(privatecb, gridBagConstraints);
+        GridBagConstraints gridBagConstraints25 = new java.awt.GridBagConstraints();
+        gridBagConstraints25.weightx = 1.0;
+        gridBagConstraints25.insets = new java.awt.Insets(4, 4, 4, 4);
+        jPanel3.add(privatecb, gridBagConstraints25);
 
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel5.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Color"));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
-        jPanel3.add(jLabel5, gridBagConstraints);
+        GridBagConstraints gridBagConstraints26 = new java.awt.GridBagConstraints();
+        gridBagConstraints26.gridx = 0;
+        gridBagConstraints26.gridy = 1;
+        gridBagConstraints26.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints26.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints26.insets = new java.awt.Insets(4, 4, 4, 4);
+        jPanel3.add(jLabel5, gridBagConstraints26);
 
         colorbox.setOpaque(false);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
-        jPanel3.add(colorbox, gridBagConstraints);
+        GridBagConstraints gridBagConstraints27 = new java.awt.GridBagConstraints();
+        gridBagConstraints27.gridx = 1;
+        gridBagConstraints27.gridy = 1;
+        gridBagConstraints27.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints27.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints27.insets = new java.awt.Insets(4, 4, 4, 4);
+        jPanel3.add(colorbox, gridBagConstraints27);
 
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel4.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Frequency"));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
-        jPanel3.add(jLabel4, gridBagConstraints);
+        GridBagConstraints gridBagConstraints31 = new java.awt.GridBagConstraints();
+        gridBagConstraints31.gridx = 0;
+        gridBagConstraints31.gridy = 2;
+        gridBagConstraints31.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints31.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints31.insets = new java.awt.Insets(4, 4, 4, 4);
+        jPanel3.add(jLabel4, gridBagConstraints31);
 
         freq.setOpaque(false);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
-        jPanel3.add(freq, gridBagConstraints);
+        GridBagConstraints gridBagConstraints32 = new java.awt.GridBagConstraints();
+        gridBagConstraints32.gridx = 1;
+        gridBagConstraints32.gridy = 2;
+        gridBagConstraints32.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints32.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints32.insets = new java.awt.Insets(4, 4, 4, 4);
+        jPanel3.add(freq, gridBagConstraints32);
 
         s_times.setBorder(new javax.swing.border.EtchedBorder());
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 3;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
-        jPanel3.add(s_times, gridBagConstraints);
+        GridBagConstraints gridBagConstraints33 = new java.awt.GridBagConstraints();
+        gridBagConstraints33.gridx = 3;
+        gridBagConstraints33.gridy = 2;
+        gridBagConstraints33.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints33.insets = new java.awt.Insets(4, 4, 4, 4);
+        jPanel3.add(s_times, gridBagConstraints33);
 
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel1.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Times"));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
-        jPanel3.add(jLabel1, gridBagConstraints);
+        GridBagConstraints gridBagConstraints34 = new java.awt.GridBagConstraints();
+        gridBagConstraints34.gridx = 2;
+        gridBagConstraints34.gridy = 2;
+        gridBagConstraints34.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints34.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints34.insets = new java.awt.Insets(4, 4, 4, 4);
+        jPanel3.add(jLabel1, gridBagConstraints34);
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 3;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
-        jPanel3.add(catbox, gridBagConstraints);
+        GridBagConstraints gridBagConstraints35 = new java.awt.GridBagConstraints();
+        gridBagConstraints35.gridx = 3;
+        gridBagConstraints35.gridy = 1;
+        gridBagConstraints35.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints35.insets = new java.awt.Insets(4, 4, 4, 4);
+        jPanel3.add(catbox, gridBagConstraints35);
 
         jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel7.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Category"));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-        gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
-        jPanel3.add(jLabel7, gridBagConstraints);
+        GridBagConstraints gridBagConstraints36 = new java.awt.GridBagConstraints();
+        gridBagConstraints36.gridx = 2;
+        gridBagConstraints36.gridy = 1;
+        gridBagConstraints36.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints36.anchor = java.awt.GridBagConstraints.EAST;
+        gridBagConstraints36.insets = new java.awt.Insets(4, 4, 4, 4);
+        jPanel3.add(jLabel7, gridBagConstraints36);
 
         foreverbox.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("forever"));
         foreverbox.addActionListener(new java.awt.event.ActionListener()
@@ -719,19 +719,19 @@ class AppointmentPanel extends JPanel
             }
         });
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 4;
-        gridBagConstraints.gridy = 2;
-        jPanel3.add(foreverbox, gridBagConstraints);
+        GridBagConstraints gridBagConstraints37 = new java.awt.GridBagConstraints();
+        gridBagConstraints37.gridx = 4;
+        gridBagConstraints37.gridy = 2;
+        jPanel3.add(foreverbox, gridBagConstraints37);
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 2.0;
-        gridBagConstraints.weighty = 1.5;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(jPanel3, gridBagConstraints);
+        GridBagConstraints gridBagConstraints38 = new java.awt.GridBagConstraints();
+        gridBagConstraints38.gridx = 0;
+        gridBagConstraints38.gridy = 3;
+        gridBagConstraints38.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints38.weightx = 2.0;
+        gridBagConstraints38.weighty = 1.5;
+        gridBagConstraints38.insets = new java.awt.Insets(5, 5, 5, 5);
+        add(jPanel3, gridBagConstraints38);
 
         savebutton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Save16.gif")));
         savebutton.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Save"));
@@ -758,11 +758,11 @@ class AppointmentPanel extends JPanel
 
         jPanel4.add(savedefaultsbutton);
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 4;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        add(jPanel4, gridBagConstraints);
+        GridBagConstraints gridBagConstraints44 = new java.awt.GridBagConstraints();
+        gridBagConstraints44.gridx = 0;
+        gridBagConstraints44.gridy = 4;
+        gridBagConstraints44.fill = java.awt.GridBagConstraints.BOTH;
+        add(jPanel4, gridBagConstraints44);
 
     }//GEN-END:initComponents
 
