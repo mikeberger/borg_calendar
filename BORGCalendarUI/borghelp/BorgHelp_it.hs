@@ -37,7 +37,7 @@ Search
 javax.help.SearchView
   </type>
   <data engine="com.sun.java.help.search.DefaultSearchEngine">
-it/JavaHelpSearch
+JavaHelpSearch
   </data>
  </view>
 </helpset>
