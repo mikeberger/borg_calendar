@@ -19,16 +19,16 @@ Copyright 2003 by ==Quiet==
  */
 package net.sf.borg.ui;
 
-import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.text.DateFormat;
 import java.util.Collection;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.Vector;
 
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
@@ -40,7 +40,6 @@ import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.Task;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.TaskTypes;
-import javax.swing.JComboBox;
 /*
  * taskgui.java
  *
@@ -155,8 +154,8 @@ class TaskView extends View
         itemtext = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        sdatetext = new javax.swing.JTextField();
-        ddtext = new javax.swing.JTextField();
+        startdatechooser = new de.wannawork.jcalendar.JCalendarComboBox();
+        duedatechooser = new de.wannawork.jcalendar.JCalendarComboBox();
         pritext = new javax.swing.JTextField();
         patext = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
@@ -288,15 +287,6 @@ class TaskView extends View
         
         jLabel2.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Status"));
  
-        sdatetext.setColumns(10);
-        sdatetext.setText("sdatetext");
- 
-        ddtext.setText("ddtext");
- 
-        pritext.setText("pritext");
-
-        patext.setText("patext");
-
         jLabel3.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("StartDate"));
 
         jLabel4.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("DueDate"));
@@ -391,65 +381,78 @@ class TaskView extends View
         gridBagConstraints27.gridx = 0;
         gridBagConstraints27.gridy = 3;
         gridBagConstraints27.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints27.insets = new java.awt.Insets(4,4,4,4);
         gridBagConstraints28.gridx = 0;
         gridBagConstraints28.gridy = 4;
         gridBagConstraints28.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints28.insets = new java.awt.Insets(4,4,4,4);
         gridBagConstraints29.gridx = 0;
         gridBagConstraints29.gridy = 5;
         gridBagConstraints29.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints29.insets = new java.awt.Insets(4,4,4,4);
         gridBagConstraints30.gridx = 0;
         gridBagConstraints30.gridy = 6;
         gridBagConstraints30.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints30.insets = new java.awt.Insets(4,4,4,4);
         gridBagConstraints31.gridx = 0;
         gridBagConstraints31.gridy = 7;
         gridBagConstraints31.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints31.insets = new java.awt.Insets(4,4,4,4);
         gridBagConstraints32.gridx = 0;
         gridBagConstraints32.gridy = 8;
         gridBagConstraints32.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints32.insets = new java.awt.Insets(4,4,4,4);
         gridBagConstraints33.gridx = 1;
         gridBagConstraints33.gridy = 5;
         gridBagConstraints33.weightx = 1.0;
-        gridBagConstraints33.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints33.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints33.insets = new java.awt.Insets(4,4,4,4);
         gridBagConstraints34.gridx = 1;
         gridBagConstraints34.gridy = 4;
         gridBagConstraints34.weightx = 1.0;
-        gridBagConstraints34.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints34.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints34.insets = new java.awt.Insets(4,4,4,4);
         gridBagConstraints35.gridx = 1;
         gridBagConstraints35.gridy = 3;
         gridBagConstraints35.weightx = 1.0;
-        gridBagConstraints35.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints35.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints35.insets = new java.awt.Insets(4,4,4,4);
         gridBagConstraints37.gridx = 0;
         gridBagConstraints37.gridy = 0;
         gridBagConstraints37.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints37.insets = new java.awt.Insets(4,4,4,4);
         gridBagConstraints38.gridx = 1;
         gridBagConstraints38.gridy = 0;
         gridBagConstraints38.weightx = 1.0;
-        gridBagConstraints38.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints38.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints38.insets = new java.awt.Insets(4,4,4,4);
         gridBagConstraints1.gridx = 0;
         gridBagConstraints1.gridy = 1;
         gridBagConstraints1.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints1.insets = new java.awt.Insets(4,4,4,4);
         gridBagConstraints2.gridx = 1;
         gridBagConstraints2.gridy = 7;
         gridBagConstraints2.weightx = 1.0;
-        gridBagConstraints2.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints2.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints2.insets = new java.awt.Insets(4,4,4,4);
         gridBagConstraints3.gridx = 1;
         gridBagConstraints3.gridy = 6;
         gridBagConstraints3.weightx = 1.0;
-        gridBagConstraints3.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints3.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints3.insets = new java.awt.Insets(4,4,4,4);
         gridBagConstraints11.gridx = 1;
         gridBagConstraints11.gridy = 8;
         gridBagConstraints11.weightx = 1.0;
-        gridBagConstraints11.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        jPanel3.add(statebox, gridBagConstraints26);
- 
+        gridBagConstraints11.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints11.insets = new java.awt.Insets(4,4,4,4);
         jPanel3.add(jLabel7, gridBagConstraints27);
         jPanel3.add(jLabel3, gridBagConstraints28);
         jPanel3.add(jLabel4, gridBagConstraints29);
         jPanel3.add(jLabel5, gridBagConstraints30);
         jPanel3.add(jLabel6, gridBagConstraints31);
         jPanel3.add(catlabel, gridBagConstraints32);
-        jPanel3.add(ddtext, gridBagConstraints33);
-        jPanel3.add(sdatetext, gridBagConstraints34);
+        jPanel3.add(duedatechooser, gridBagConstraints33);
+        jPanel3.add(startdatechooser, gridBagConstraints34);
         jPanel3.add(typebox, gridBagConstraints35);
         jPanel3.add(jLabel1, gridBagConstraints37);
         jPanel3.add(itemtext, gridBagConstraints38);
@@ -457,6 +460,9 @@ class TaskView extends View
         jPanel3.add(patext, gridBagConstraints2);
         jPanel3.add(pritext, gridBagConstraints3);
         jPanel3.add(getCatbox(), gridBagConstraints11);
+			gridBagConstraints26.insets = new java.awt.Insets(4,4,4,4);
+			jPanel3.add(statebox, gridBagConstraints26);
+ 
  
 
     }//GEN-END:initComponents
@@ -467,8 +473,19 @@ class TaskView extends View
         if( curtype_ != null && !newtype.equals(curtype_))
         {
             // prompt for ok
-            int ret = JOptionPane.showConfirmDialog(null,
-            java.util.ResourceBundle.getBundle("resource/borg_resource").getString("chg_typ_warn"), "", JOptionPane.YES_NO_OPTION );
+            int ret;
+            if( itemtext.getText().equals("NEW"))
+            {
+                // don't warn if chging type on a brand new task
+                ret = JOptionPane.YES_OPTION;
+            }
+            else
+            {
+                ret = JOptionPane.showConfirmDialog(null,
+                        	java.util.ResourceBundle.getBundle("resource/borg_resource").getString("chg_typ_warn"), 
+                        	"", JOptionPane.YES_NO_OPTION );
+            }
+            
             if( ret == JOptionPane.YES_OPTION )
             {
                 curtype_ = newtype;
@@ -577,39 +594,6 @@ class TaskView extends View
             
             String num = itemtext.getText();
             
-            // if the start date is not valid, highlight the bad data and return
-            String sds = sdatetext.getText();
-            Date std = new Date();
-            if( sds.length() > 0 )
-            {
-                DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT);
-                try
-                { std = df.parse(sds); }
-                catch( Exception e )
-                {
-                    sdatetext.setBackground( Color.red );
-                    return;
-                }
-                sdatetext.setBackground( Color.white );
-            }
-            
-            // if the due date is not valid, highlight the bad data and return
-            String dds = ddtext.getText();
-            Date due = new Date();
-            if( dds.length() > 0 )
-            {
-                DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT);
-                try
-                { due = df.parse(dds); }
-                catch( Exception e )
-                {  ddtext.setBackground( Color.red ); return; }
-                ddtext.setBackground( Color.white );
-            }
-            else
-            {
-                due = null;
-            }
-            
             // allocate a new task object from the task data model
             TaskModel taskmod_ = TaskModel.getReference();
             Task task = taskmod_.newMR();
@@ -627,8 +611,8 @@ class TaskView extends View
             // fill in the taks fields from the screen
             task.setState((String)statebox.getSelectedItem());  // state
             task.setType((String)typebox.getSelectedItem());  // type
-            task.setStartDate(std);  // start date
-            task.setDueDate(due);  // due date
+            task.setStartDate(startdatechooser.getCalendar().getTime());  // start date
+            task.setDueDate(duedatechooser.getCalendar().getTime());  // due date
             task.setPriority(pritext.getText());  // priority
             task.setPersonAssigned(patext.getText());  // person assigned
             task.setDescription(jTextArea1.getText());   // description
@@ -727,18 +711,19 @@ class TaskView extends View
           setTitle(Resource.getResourceString("Item_") + task.getTaskNumber().toString() );
           
           // due date
+          GregorianCalendar gc = new GregorianCalendar();
           Date dd = task.getDueDate();
           if( dd != null )
-              ddtext.setText( DateFormat.getDateInstance(DateFormat.SHORT).format(dd));
-          else
-              ddtext.setText("");
+              gc.setTime(dd);
+
+          duedatechooser.setCalendar(gc);
           
-          // start date
-          Date sd = task.getStartDate();
-          if( sd != null )
-              sdatetext.setText( DateFormat.getDateInstance(DateFormat.SHORT).format(sd));
-          else
-              sdatetext.setText("");
+          GregorianCalendar gc2 = new GregorianCalendar();
+          dd = task.getStartDate();
+          if( dd != null )
+              gc2.setTime(dd);
+
+          startdatechooser.setCalendar(gc2);
           
           pritext.setText( task.getPriority() ); // priority
           patext.setText( task.getPersonAssigned() ); // person assigned
@@ -840,11 +825,6 @@ class TaskView extends View
           // title
           setTitle(Resource.getResourceString("NEW_Item"));
           
-          // set start date = today for default
-          sdatetext.setText( DateFormat.getDateInstance(DateFormat.SHORT).format(new Date())) ;
-          
-          
-          ddtext.setText( ""); // due date
           pritext.setText( "3" ); // priority default to 3
           patext.setText( "" ); // person assigned
           //cattext.setText("");
@@ -871,7 +851,6 @@ class TaskView extends View
           // need new task number
           itemtext.setText("NEW");
           itemtext.setEditable(false);
-          sdatetext.setText( DateFormat.getDateInstance(DateFormat.SHORT).format(new Date())) ;
           
           // clone must start in OPEN state
           statebox.removeAllItems();
@@ -942,8 +921,8 @@ class TaskView extends View
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextArea jTextArea2;
     private javax.swing.JTextField itemtext;
-    private javax.swing.JTextField sdatetext;
-    private javax.swing.JTextField ddtext;
+    private de.wannawork.jcalendar.JCalendarComboBox startdatechooser;
+    private de.wannawork.jcalendar.JCalendarComboBox duedatechooser;
     private javax.swing.JTextField pritext;
     private javax.swing.JTextField patext;
     private javax.swing.JComboBox statebox;
