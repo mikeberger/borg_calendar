@@ -16,9 +16,6 @@ BORG is normally built using ant. If you have ant (available at apache.org), the
 from command line in the ant folder, do - "ant fulldist". This will build the BORG zip files
 in the BORG Calendar Common directory. The jar files are put into the Common/dist directory.
 
-If you do not want to use ant and you know your way around Java, it should not take
-long to figure out how to build it your own way. However, using ant is much much easier.
-
 Eclipse
 -------
 Most BORG development is done using the Eclipse IDE. As BORG has grown larger, it has become
@@ -35,11 +32,10 @@ To use eclipse, each of the top 4 project folders must be imported as a project 
 The .project and .classpath files that configure eclipse are part of the source tree and should get the 4 projects
 all set up correctly. To build, you need to set up an Ant Build task under the eclipse exteral
 tools. You need to build the clean-build target if you just want borg.jar. You can build the fulldist target
-to get the ZIP files (binary and source).
+to get the ZIP files (binary and source). The built files will be in BORG Calendar/Common/dist.
 
 You should be able to use the eclipse debugger to debug the code. You should be able to run the main
 Borg class (Borg Calendar UI/src/net/sf.borg.control.Borg) from within eclipse. 
-I usually just run the built borg.jar.
 
 NetBeans
 --------
@@ -57,12 +53,14 @@ Brand new screens need not use NetBeans.
 
 I use NetBeans 3.6. I have given up on NetBeans 4.0 for now. It just won't find my resource bundle - and it
 messes up my forms and java files because of this.
-To set up BORG in netbeans 3.6, mount the borg_src folder, all 4 src folders, and the Common/res folder.
+To set up BORG in netbeans 3.6, mount the borg_src folder, the Common/res folder, and the UI/res folder.
 This should keep NetBeans all happy. 
 
 To see if this all worked, try to open a screen in the UI/src folder. AppointmentPanel would be good. If everything is
 set up right, the screen will appear in WYSIWYG mode and all of the labels on the panel will appear normal. If the labels
 appear with angles around them like this: <File>, then NetBeans is not finding res/resource/borg_resource.properties,
-which should be in a mounted source folder - and it is possibly trashing the form and java files.
+which should be in a mounted folder - and it is possibly trashing the form and java files.
+
+From inside Netbeans, I only edit the screens and start ant builds. I do not use the Netbeans debugger.
 
 
