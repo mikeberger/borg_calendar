@@ -32,6 +32,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -54,6 +55,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -80,6 +82,7 @@ import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.Appointment;
 import net.sf.borg.model.AppointmentIcalAdapter;
 import net.sf.borg.model.AppointmentModel;
+import net.sf.borg.model.AppointmentVcalAdapter;
 import net.sf.borg.model.Day;
 import net.sf.borg.model.Task;
 import net.sf.borg.model.TaskModel;
@@ -1615,6 +1618,7 @@ public class CalendarView extends View implements Prefs.Listener {
         setJMenuBar(menuBar);
 
         this.setContentPane(getJPanel());
+        impexpMenu.add(getExpvcal());
     }//GEN-END:initComponents
 
     private void impicalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_impicalActionPerformed
@@ -2293,6 +2297,7 @@ public class CalendarView extends View implements Prefs.Listener {
 
 	private JPanel jPanel = null;
 	private JPanel jPanel5 = null;
+	private JMenuItem expvcal = null;
     // called when a Prefs change notification is sent out
     // to all Prefs.Listeners
 	public void prefsChanged() {
@@ -2362,4 +2367,54 @@ public class CalendarView extends View implements Prefs.Listener {
 		}
 		return jPanel5;
 	}
-  }
+	/**
+	 * This method initializes expvcal	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */    
+	private JMenuItem getExpvcal() {
+		if (expvcal == null) {
+			expvcal = new JMenuItem();
+			expvcal.setText(ResourceBundle.getBundle("resource/borg_resource").getString("exp_vcal"));
+			expvcal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Export16.gif")));
+			expvcal.addActionListener(new java.awt.event.ActionListener() { 
+				public void actionPerformed(java.awt.event.ActionEvent e) {    
+			        File file;
+			        while( true ) {
+			            // prompt for a file
+			            JFileChooser chooser = new JFileChooser();
+			            
+			            chooser.setCurrentDirectory( new File(".") );
+			            chooser.setDialogTitle(Resource.getResourceString("choose_file"));
+			            chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+			            
+			            int returnVal = chooser.showOpenDialog(null);
+			            if(returnVal != JFileChooser.APPROVE_OPTION)
+			                return;
+			            
+			            String s = chooser.getSelectedFile().getAbsolutePath();
+			            file = new File(s);
+			            String err = null;
+			            
+			            if( err == null )
+			                break;
+			            
+			            Errmsg.notice( err );
+			        }
+			        
+			    	try {
+			    		FileWriter w = new FileWriter(file);
+						AppointmentVcalAdapter.exportVcal(w);
+						w.close();
+					} 
+			    	catch (Exception ex) {
+						Errmsg.errmsg(ex);
+					} 
+
+				}
+				
+			});
+		}
+		return expvcal;
+	}
+ }

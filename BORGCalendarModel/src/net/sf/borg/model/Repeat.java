@@ -115,6 +115,28 @@ class Repeat
 		return current;
 	}
 	
+	// return when the appt repeats until given the count
+	final static Calendar until(Calendar start, String frequency, int count)
+	{
+	    Calendar c = null;
+	    System.out.println("rpt " + frequency + ":" + count);
+	    
+	    if( count == 9999)
+	    {
+	        // for unlimited rpt, go for 2 years in the future
+	        c = new GregorianCalendar();
+	        c.add(Calendar.YEAR,2);
+	        return(c);
+	    }
+	    
+	    Repeat r = new Repeat(start,frequency);
+	    for( int i = 1; i < count; i++)
+	    {
+	        c = r.next();
+	    }
+	    
+	    return(c);
+	}
 	// calculate the next date of this repeat
 	final Calendar next()
 	{
