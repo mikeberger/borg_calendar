@@ -591,12 +591,11 @@ public class XTree
                     cur = tree;
                     return( tree );
                 }
-                else
-                {
-                    // add the empty element under the current element but don't
-                    // move the current pointer - the empty element will have no children
-                    cur.appendChild( data );
-                }
+                
+                // add the empty element under the current element but don't
+                // move the current pointer - the empty element will have no children
+                cur.appendChild( data );
+                
                 
             }
             // got element data - set the current element's value

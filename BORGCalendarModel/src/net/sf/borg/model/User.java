@@ -2,6 +2,7 @@
 package net.sf.borg.model;
 
 
+import java.util.*;
 import net.sf.borg.model.db.KeyedBean;
 
 public class User extends KeyedBean implements java.io.Serializable {
@@ -26,4 +27,4 @@ public class User extends KeyedBean implements java.io.Serializable {
 		dst.setUserId( getUserId() );
 		return(dst);
 	}
-};
+}

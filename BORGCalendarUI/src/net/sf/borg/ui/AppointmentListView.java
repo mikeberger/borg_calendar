@@ -24,7 +24,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
-import java.awt.event.ActionListener;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -62,9 +61,6 @@ public class AppointmentListView extends View implements ListSelectionListener {
     }
     
     private int key_;
-    private int year_;
-    private int month_;
-    private int day_;
     private List alist_ = null;
     private AppointmentPanel apanel_ = null;
     
@@ -110,10 +106,6 @@ public class AppointmentListView extends View implements ListSelectionListener {
         addModel(TaskModel.getReference());
         
         key_ = AppointmentModel.dkey( year, month, day );
-        year_ = year;
-        month_ = month;
-        day_ = day;
-        
         initComponents();
         Date d = new GregorianCalendar(year,month,day).getTime();
         setTitle( Resource.getResourceString("Appointment_Editor_for_") + DateFormat.getDateInstance(DateFormat.SHORT).format(d));
@@ -168,7 +160,6 @@ public class AppointmentListView extends View implements ListSelectionListener {
         pack();
     }
     
-    private ActionListener catal_ = null;
     public void destroy() {
         this.dispose();
     }
@@ -384,16 +375,16 @@ public class AppointmentListView extends View implements ListSelectionListener {
         if (lsm.isSelectionEmpty()) {
             apanel_.showapp(-1);
             return;
-        } else {
-            int row = lsm.getMinSelectionIndex();
-            //int row = jTable1.getSelectedRow();
-            if( row == -1 ) return;
-            TableSorter tm = (TableSorter) jTable1.getModel();
-            int i = tm.getMappedIndex(row);
-            
-            Integer apptkey = (Integer) alist_.get(i);
-            apanel_.showapp(apptkey.intValue());
         }
+        int row = lsm.getMinSelectionIndex();
+        //int row = jTable1.getSelectedRow();
+        if( row == -1 ) return;
+        TableSorter tm = (TableSorter) jTable1.getModel();
+        int i = tm.getMappedIndex(row);
+        
+        Integer apptkey = (Integer) alist_.get(i);
+        apanel_.showapp(apptkey.intValue());
+        
     }
     
     // refresh is called to update the table of shown tasks due to model changes or if the user

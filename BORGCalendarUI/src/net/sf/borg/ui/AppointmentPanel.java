@@ -37,7 +37,6 @@ import net.sf.borg.common.util.XTree;
 import net.sf.borg.model.Appointment;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.AppointmentXMLAdapter;
-import net.sf.borg.model.db.DBException;
 
 
 
@@ -49,7 +48,6 @@ class AppointmentPanel extends JPanel
     }
    
     private int key_;                           
-    private int dkey_;
     private int year_;
     private int month_;
     private int day_;
@@ -67,8 +65,7 @@ class AppointmentPanel extends JPanel
           year_ = year;
           month_ = month;
           day_ = day;
-          dkey_ = AppointmentModel.dkey( year, month, day );
-          
+
           
           // init GUI
           initComponents();
@@ -97,7 +94,7 @@ class AppointmentPanel extends JPanel
               Iterator it = cats.iterator();
               while( it.hasNext())
               {
-                  catbox.addItem( (String) it.next());
+                  catbox.addItem( it.next());
               }
               catbox.setSelectedIndex(0);
           }
@@ -1016,11 +1013,11 @@ class AppointmentPanel extends JPanel
     
     private String freqs[] =
     { "once", "daily", "weekly", "biweekly", "monthly", "monthly_day", "yearly", "weekdays", "weekends", "mwf", "tth" };
-    private String freqToEnglish( String freq )
+    private String freqToEnglish( String fr )
     {
         for( int i = 0; i < freqs.length; i++ )
         {
-            if( freq.equals(Resource.getResourceString(freqs[i])))
+            if( fr.equals(Resource.getResourceString(freqs[i])))
             {
                 return( freqs[i] );
             }
@@ -1052,21 +1049,7 @@ class AppointmentPanel extends JPanel
         if( ret < 0 )
             return;
         
-        int key = dkey_;
-        if( ret > 0 )
-            key = ret;
-        
- 
-        // tell the model to add the appt
-        try
-        {
-            calmod_.saveAppt(r, true);
-        }
-        catch( DBException e )
-        {
-            Errmsg.errmsg(e);
-            return;         
-        }
+        calmod_.saveAppt(r, true);
     }
     
     private void chg_appt()
@@ -1093,27 +1076,16 @@ class AppointmentPanel extends JPanel
         if( newkey < 0 )
             return;
         
-        try
+        // call the model to change the appt
+        if( newkey == 0)
         {
-            // call the model to change the appt
-            if( newkey == 0)
-            {
-                r.setKey(key_);
-                calmod_.saveAppt(r, false);
-            }
-            else
-            {
-                calmod_.delAppt(key_);
-                calmod_.saveAppt(r, true);
-                
-            }
-           
+            r.setKey(key_);
+            calmod_.saveAppt(r, false);
         }
-        catch( DBException e )
+        else
         {
-            
-            Errmsg.errmsg(e);
-            return;
+            calmod_.delAppt(key_);
+            calmod_.saveAppt(r, true);
             
         }
     }

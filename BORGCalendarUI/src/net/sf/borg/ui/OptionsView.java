@@ -319,7 +319,7 @@ public class OptionsView extends View
         
         Iterator it = lnfs.iterator();
         while( it.hasNext())
-            lnfBox.addItem( (String) it.next());
+            lnfBox.addItem( it.next());
         
         lnfBox.setSelectedItem(curlnf);
         

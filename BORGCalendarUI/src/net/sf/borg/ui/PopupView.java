@@ -44,6 +44,7 @@ import java.util.Map.Entry;
 
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
 import net.sf.borg.common.util.Errmsg;
@@ -192,7 +193,7 @@ public class PopupView extends View {
                     // add text to date
                     tx += " " + xx;
                     JLabel label = new JLabel(tx);
-                    label.setHorizontalAlignment(JLabel.CENTER);
+                    label.setHorizontalAlignment(SwingConstants.CENTER);
                     Container contentPane = jd.getContentPane();
                     contentPane.add(label, BorderLayout.CENTER);
                     jd.setSize(new Dimension(200, 100));

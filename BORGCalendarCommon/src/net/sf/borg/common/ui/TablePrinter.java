@@ -57,7 +57,7 @@ public class TablePrinter implements Printable
         //leave room for page number
         double pageHeight = pageFormat.getImageableHeight()-fontHeight;
         double pageWidth = pageFormat.getImageableWidth();
-        double tableWidth = (double) tableView.getColumnModel( ).getTotalColumnWidth();
+        double tableWidth = tableView.getColumnModel( ).getTotalColumnWidth();
         double scale = 1;
         if (tableWidth >= pageWidth)
         {

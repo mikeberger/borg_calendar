@@ -71,4 +71,4 @@ public class AddressAdapter implements FileBeanAdapter {
 	public KeyedBean newBean() {
 		return( new Address());
 	}
-};
+}

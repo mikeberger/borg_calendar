@@ -127,4 +127,4 @@ public class Address extends KeyedBean implements java.io.Serializable {
 		dst.setBirthday( getBirthday() );
 		return(dst);
 	}
-};
+}

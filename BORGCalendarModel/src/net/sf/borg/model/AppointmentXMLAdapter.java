@@ -87,4 +87,4 @@ public class AppointmentXMLAdapter extends BeanXMLAdapter {
 			ret.setCategory( val );
 		return( ret );
 	}
-};
+}

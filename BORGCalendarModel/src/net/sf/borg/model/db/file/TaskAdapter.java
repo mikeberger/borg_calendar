@@ -61,4 +61,4 @@ public class TaskAdapter implements FileBeanAdapter {
 	public KeyedBean newBean() {
 		return( new Task());
 	}
-};
+}

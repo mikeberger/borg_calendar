@@ -197,7 +197,7 @@ public class Day
                 Integer ik = (Integer) it.next();
                 
                 // read the appt from the DB
-                appt = (Appointment) calmod.getAppt(ik.intValue());
+                appt = calmod.getAppt(ik.intValue());
                 
                 // skip based on public/private flags
                 if( appt.getPrivate() )
@@ -420,7 +420,7 @@ public class Day
         }
         
         // load any tasks
-        l = (LinkedList) TaskModel.getReference().get_tasks( key );
+        l = TaskModel.getReference().get_tasks( key );
         if( l != null )
         {
             
@@ -459,7 +459,7 @@ public class Day
                 Date bd = addr.getBirthday();
                 GregorianCalendar g = new GregorianCalendar();
                 g.setTime(bd);
-                int bdyear = g.get(GregorianCalendar.YEAR);
+                int bdyear = g.get(Calendar.YEAR);
                 int yrs = year - bdyear;
                 if( yrs < 0 ) continue;
                 

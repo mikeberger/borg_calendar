@@ -205,7 +205,7 @@ public class AppointmentIcalAdapter {
 					Date dd = ap.getDate();
 					GregorianCalendar gc = new GregorianCalendar();
 					gc.setTime(dd);
-					rec += "MONTHLY;BYMONTHDAY=" + gc.get(GregorianCalendar.DATE);
+					rec += "MONTHLY;BYMONTHDAY=" + gc.get(java.util.Calendar.DATE);
 				}
 				else if( freq.equals("yearly"))
 				{
@@ -465,8 +465,8 @@ public class AppointmentIcalAdapter {
 		 
 		 if( warning.length() == 0)
 		 	return( null );
-		 else
-		 	return( warning.toString());
+		 
+		 return( warning.toString());
 		
 	}
 }

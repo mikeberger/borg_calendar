@@ -85,7 +85,7 @@ public class TableSorter extends DefaultTableModel
     // so, indexes[row] is the row of the real data in the
     // data array corresponding to row in the displayed table
     Vector          sortingColumns = new Vector();
-    boolean         ascending = true;
+    boolean         ascending_ = true;
     Class types_[];
     boolean canEdit_[];
     
@@ -282,7 +282,7 @@ public class TableSorter extends DefaultTableModel
             int result = compareRowsByColumn(row1, row2, column.intValue());
             if (result != 0)
             {
-                return ascending ? result : -result;
+                return ascending_ ? result : -result;
             }
         }
         return 0;
@@ -346,7 +346,7 @@ public class TableSorter extends DefaultTableModel
     public void sortByColumn(int column, boolean ascending)
     {
         
-        this.ascending = ascending;
+        this.ascending_ = ascending;
         sortingColumns.removeAllElements();
         sortingColumns.addElement(new Integer(column));
         sort();

@@ -82,7 +82,7 @@ public class AddressModel extends Model {
                 // add the task to the mrs_ Vector. This is used by the todo gui
                 Object o = bdmap_.get( new Integer(bdkey) );
                 if( o == null ) {
-                    o = (Object) new LinkedList();
+                    o = new LinkedList();
                     bdmap_.put( new Integer(bdkey), o );
                 }
                 
@@ -296,7 +296,7 @@ public class AddressModel extends Model {
     
     public void setLogging( boolean on ) throws Exception {
         if( on ) {
-            String dbdir = (String)Prefs.getPref(PrefName.DBDIR);
+            String dbdir = Prefs.getPref(PrefName.DBDIR);
             db_.setLogFile( dbdir + "/addr.log" );
         }
         else

@@ -31,7 +31,6 @@ import java.io.IOException;
 class MemFileOutputStream extends FilterOutputStream
 {
 	MemFileOutputStream(String file, MemFiles files)
-		throws IOException
 	{
 		super(new ByteArrayOutputStream());
 		this.files = files;

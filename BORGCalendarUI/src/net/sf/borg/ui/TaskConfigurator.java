@@ -32,6 +32,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.Resource;
@@ -292,9 +293,9 @@ public class TaskConfigurator extends View {
 			jScrollPane = new JScrollPane();
 			jScrollPane.setViewportView(getNextlist());
 			jScrollPane
-					.setVerticalScrollBarPolicy(javax.swing.JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+					.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 			jScrollPane
-					.setHorizontalScrollBarPolicy(javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+					.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		}
 		return jScrollPane;
 	}
@@ -329,9 +330,9 @@ public class TaskConfigurator extends View {
 			jScrollPane1 = new JScrollPane();
 			jScrollPane1.setViewportView(getTypelist());
 			jScrollPane1
-					.setHorizontalScrollBarPolicy(javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+					.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 			jScrollPane1
-					.setVerticalScrollBarPolicy(javax.swing.JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+					.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		}
 		return jScrollPane1;
 	}
@@ -346,9 +347,9 @@ public class TaskConfigurator extends View {
 			jScrollPane2 = new JScrollPane();
 			jScrollPane2.setViewportView(getStatelist());
 			jScrollPane2
-					.setHorizontalScrollBarPolicy(javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+					.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 			jScrollPane2
-					.setVerticalScrollBarPolicy(javax.swing.JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+					.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		}
 		return jScrollPane2;
 	}

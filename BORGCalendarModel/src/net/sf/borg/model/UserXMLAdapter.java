@@ -37,4 +37,4 @@ public class UserXMLAdapter extends BeanXMLAdapter {
 		ret.setUserId( BeanXMLAdapter.toInteger(val) );
 		return( ret );
 	}
-};
+}

@@ -108,4 +108,4 @@ public class TaskXMLAdapter extends BeanXMLAdapter {
 			ret.setCategory( val );
 		return( ret );
 	}
-};
+}

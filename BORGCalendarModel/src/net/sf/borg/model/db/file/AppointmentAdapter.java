@@ -55,4 +55,4 @@ public class AppointmentAdapter implements FileBeanAdapter {
 	public KeyedBean newBean() {
 		return( new Appointment());
 	}
-};
+}

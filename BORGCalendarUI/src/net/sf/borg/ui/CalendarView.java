@@ -58,6 +58,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
@@ -272,8 +273,8 @@ public class CalendarView extends View implements Prefs.Listener {
             // scrollbars will only appear if needed due to amount of appt text
             JScrollPane sp = new JScrollPane();
             sp.setViewportView(daytext[i]);
-            sp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-            sp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+            sp.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            sp.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
             sp.setBorder( new EmptyBorder(0,0,0,0) );
             sp.getHorizontalScrollBar().setPreferredSize(new Dimension(0,10));
             sp.getVerticalScrollBar().setPreferredSize(new Dimension(10,0));
@@ -308,8 +309,8 @@ public class CalendarView extends View implements Prefs.Listener {
         todoPreview.setEditable(false);
         JScrollPane sp = new JScrollPane();
         sp.setViewportView(todoPreview);
-        sp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        sp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        sp.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        sp.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         //sp.setBorder( new javax.swing.border.EmptyBorder(0,0,0,0) );
         sp.getHorizontalScrollBar().setPreferredSize(new Dimension(0,5));
         sp.getVerticalScrollBar().setPreferredSize(new Dimension(5,0));
@@ -333,8 +334,8 @@ public class CalendarView extends View implements Prefs.Listener {
         taskPreview.setEditable(false);
         sp = new JScrollPane();
         sp.setViewportView(taskPreview);
-        sp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        sp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        sp.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        sp.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         //sp.setBorder( new javax.swing.border.EmptyBorder(0,0,0,0) );
         sp.getHorizontalScrollBar().setPreferredSize(new Dimension(0,5));
         sp.getVerticalScrollBar().setPreferredSize(new Dimension(5,0));
@@ -396,8 +397,8 @@ public class CalendarView extends View implements Prefs.Listener {
 	{
 		if (urlstr.startsWith("mem:"))
 			return IOHelper.createOutputStream(urlstr);
-		else
-			return IOHelper.createOutputStream(new URL(urlstr));
+		
+		return IOHelper.createOutputStream(new URL(urlstr));
 	}
 
     /* set borg to current month and refresh the screen */
@@ -464,8 +465,6 @@ public class CalendarView extends View implements Prefs.Listener {
     // this is called when the user changes the font size
     void updStyles() {
         
-        
-        int fontsize = Prefs.getIntPref(PrefName.APPTFONTSIZE);
         
         Style def = StyleContext.getDefaultStyleContext().getStyle(StyleContext.DEFAULT_STYLE);
         

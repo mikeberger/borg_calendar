@@ -43,8 +43,6 @@ import net.sf.borg.model.Appointment;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Task;
 import net.sf.borg.model.TaskModel;
-import net.sf.borg.model.db.DBException;
-
 import javax.swing.JPanel;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
@@ -197,8 +195,6 @@ public class TodoView extends View {
      */
     private void initComponents()//GEN-BEGIN:initComponents
     {
-        java.awt.GridBagConstraints gridBagConstraints;
-
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jPanel1 = new javax.swing.JPanel();
@@ -413,8 +409,6 @@ public class TodoView extends View {
         
         GregorianCalendar g = new GregorianCalendar();
         g.setTime(std);
-        int key = AppointmentModel.dkey( g.get(Calendar.YEAR), g.get(Calendar.MONTH), g.get( Calendar.DATE));
-        
         AppointmentModel calmod_ = AppointmentModel.getReference();
         Appointment r = calmod_.newAppt();
         r.setDate(std);
@@ -427,17 +421,7 @@ public class TodoView extends View {
         r.setRepeatFlag(false);
         r.setCategory("");
         
-        // tell the model to add the appt
-        try {
-            calmod_.saveAppt(r, true);
-            
-        }
-        catch( DBException e ) {
-            
-            Errmsg.errmsg(e);
-            System.exit(1);
-            
-        }
+        calmod_.saveAppt(r, true);
         
     }//GEN-LAST:event_addtodoActionPerformed
     

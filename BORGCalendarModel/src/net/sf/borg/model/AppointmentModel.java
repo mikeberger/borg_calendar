@@ -259,14 +259,14 @@ public class AppointmentModel extends Model
 		}
 	}
     
-    public void saveAppt( Appointment r, boolean add) throws DBException
+    public void saveAppt( Appointment r, boolean add)
 	{
     	saveAppt( r, add, false );
 	}
     
     // save an appt in SMDB
     // if bulk - don't update listeners
-    public void saveAppt( Appointment r, boolean add, boolean bulk) throws DBException
+    public void saveAppt( Appointment r, boolean add, boolean bulk)
 	{
     	
     	try
@@ -283,7 +283,7 @@ public class AppointmentModel extends Model
     			// keep adding 1 until a key is found that has no appt
     			GregorianCalendar gcal = new GregorianCalendar();
     			gcal.setTime(r.getDate());
-    			int key = AppointmentModel.dkey( gcal.get(GregorianCalendar.YEAR), gcal.get(GregorianCalendar.MONTH), gcal.get(GregorianCalendar.DATE) );
+    			int key = AppointmentModel.dkey( gcal.get(Calendar.YEAR), gcal.get(Calendar.MONTH), gcal.get(Calendar.DATE) );
     			
     			try
 				{
@@ -640,7 +640,7 @@ public class AppointmentModel extends Model
                     Object o = map_.get( new Integer(dkey) );
                     if( o == null )
                     {
-                        o = (Object) new LinkedList();
+                        o = new LinkedList();
                         map_.put( new Integer(dkey), o );
                     }
                     
@@ -701,7 +701,7 @@ public class AppointmentModel extends Model
 							Object o = map_.get( new Integer(rkey) );
 							if( o == null )
 							{
-								o = (Object) new LinkedList();
+								o = new LinkedList();
 								map_.put( new Integer(rkey), o );
 							}
 							LinkedList l = (LinkedList)o;
@@ -911,10 +911,9 @@ public class AppointmentModel extends Model
         {
             return( new SimpleDateFormat("HH:mm"));
         }
-        else
-        {
-            return( new SimpleDateFormat("h:mm a"));
-        }
+ 
+        return( new SimpleDateFormat("h:mm a"));
+       
     }
     
     private Collection getDbCategories() throws Exception, DBException

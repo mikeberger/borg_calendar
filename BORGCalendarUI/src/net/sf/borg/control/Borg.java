@@ -535,7 +535,7 @@ public class Borg extends Controller implements OptionsView.RestartListener {
                 // read the appt
                 try
                 {
-                    appt = (Appointment) calmod_.getAppt(ik.intValue());
+                    appt = calmod_.getAppt(ik.intValue());
 
                     // an untimed appt (note) cannot force an auto start
                     if (AppointmentModel.isNote(appt))
@@ -728,7 +728,7 @@ public class Borg extends Controller implements OptionsView.RestartListener {
                 try
                 {
                     // read the appointment from the calendar model
-                    appt = (Appointment) calmod_.getAppt(ik.intValue());
+                    appt = calmod_.getAppt(ik.intValue());
 
                     // get the appt flags to see if the appointment is private
                     // if so, don't include it in the email

@@ -62,7 +62,7 @@ public class Errmsg
         Object options[] = new Object[1];
         options[0] = Resource.getResourceString("OK");
         
-        String showstack = (String)Prefs.getPref(PrefName.STACKTRACE);
+        String showstack = Prefs.getPref(PrefName.STACKTRACE);
         if( showstack.equals("true"))
         {
             // pop up a window showing the exception and an option

@@ -137,4 +137,4 @@ public class AddressXMLAdapter extends BeanXMLAdapter {
 		ret.setBirthday( BeanXMLAdapter.toDate(val) );
 		return( ret );
 	}
-};
+}

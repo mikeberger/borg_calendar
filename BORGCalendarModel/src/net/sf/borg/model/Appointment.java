@@ -87,4 +87,4 @@ public class Appointment extends KeyedBean implements java.io.Serializable {
 		dst.setCategory( getCategory() );
 		return(dst);
 	}
-};
+}

@@ -106,9 +106,9 @@ public class MDB {
 			if (ext != null) {
 				if (ext.equals("jdb")) {
 					return true;
-				} else {
-					return false;
 				}
+				
+				return false;
 			}
 			return false;
 		}
@@ -340,9 +340,6 @@ public class MDB {
 
 	private FileLock rwlock_ = null;
 
-	private int updateCount_ = 0;
-
-	// The lists of integer key to Block mappings
 	private HashMap index_;
 
 	private HashMap sysindex_;
@@ -1033,8 +1030,8 @@ public class MDB {
 			if (e.getRetCode() == DBException.RET_NOT_FOUND)
 				throw new DBException("delete: record not found",
 						DBException.RET_NOT_FOUND);
-			else
-				throw e;
+			
+			throw e;
 		}
 
 		// build a new block header to mark the record as deleted

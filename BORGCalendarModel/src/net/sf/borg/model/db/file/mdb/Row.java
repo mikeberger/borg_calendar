@@ -323,11 +323,6 @@ public class Row
             return( map_.toXml() );
         }
         
-        // print the row data for debugging
-        private void print() {
-            System.out.println( map_.passivate() );
-        }
-        
         // activate a Row from a String from the DB
         public void activate( String s ) {
             map_.activate(s);

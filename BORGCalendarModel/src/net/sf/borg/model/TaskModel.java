@@ -178,7 +178,7 @@ public class TaskModel extends Model {
                 // add the task to the mrs_ Vector. This is used by the todo gui
                 Object o = btmap_.get( new Integer(key) );
                 if( o == null ) {
-                    o = (Object) new LinkedList();
+                    o = new LinkedList();
                     btmap_.put( new Integer(key), o );
                 }
                 

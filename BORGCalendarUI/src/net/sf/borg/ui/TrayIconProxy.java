@@ -22,6 +22,7 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -155,7 +156,7 @@ public class TrayIconProxy {
     // Test listener for double-click events
     private class trayMouseListener extends MouseAdapter {
         public void mousePressed(MouseEvent evt) {
-            if ((evt.getModifiers() & MouseEvent.BUTTON1_MASK) != 0
+            if ((evt.getModifiers() & InputEvent.BUTTON1_MASK) != 0
                     && evt.getClickCount() == 2)
             {
                 CalendarView cg = CalendarView.getReference(true);

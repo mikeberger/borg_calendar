@@ -74,7 +74,7 @@ public class Sendmail
             SimpleDateFormat dFormat = new SimpleDateFormat("dd MMM yyyy HH:mm:ss Z",Locale.US);
             
             // skip past the hosts greeting line
-            String greeting = is.readLine();
+            is.readLine();
             
             // send the required commands, processing a response for some as required
             String hostname = InetAddress.getLocalHost().getCanonicalHostName();
