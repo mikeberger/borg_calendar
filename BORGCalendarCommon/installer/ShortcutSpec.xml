@@ -1,0 +1,28 @@
+<shortcuts>
+<programGroup defaultName="BORG Calendar" location="applications/startMenu"/>
+<shortcut name="BORG Calendar" target="$INSTALL_PATH/borg.jar"
+commandLine=""
+workingDirectory="$INSTALL_PATH"
+description=""
+initialState="normal"
+programGroup="yes"
+desktop="yes"
+applications="no"
+startMenu="no"
+startup="no">
+<createForPack name="Base"/>
+</shortcut>
+<shortcut name="Uninstall" 
+target="$INSTALL_PATH/Uninstaller/uninstaller.jar"
+workingDirectory="$INSTALL_PATH/Uninstaller"
+description=""
+initialState="normal"
+programGroup="yes"
+desktop="no"
+applications="no"
+startMenu="no"
+startup="no">
+<createForPack name="Base"/>
+</shortcut>
+</shortcuts>
+
