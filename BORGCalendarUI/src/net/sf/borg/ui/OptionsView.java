@@ -125,8 +125,8 @@ public class OptionsView extends View
         
         // set email server and address editable if the email option is
         // enabled
-        smtptext.setEditable( !emailbox.isSelected() );
-        emailtext.setEditable( !emailbox.isSelected() );
+        //smtptext.setEditable( !emailbox.isSelected() );
+        //emailtext.setEditable( !emailbox.isSelected() );
         
         // logging is not a preference - check the DB to see if logging is really on
         try
@@ -339,7 +339,6 @@ public class OptionsView extends View
         smtptext = new javax.swing.JTextField();
         emailtext = new javax.swing.JTextField();
         emailbox = new javax.swing.JCheckBox();
-        jLabel7 = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
         colorprint = new javax.swing.JCheckBox();
         logobox = new javax.swing.JCheckBox();
@@ -372,6 +371,7 @@ public class OptionsView extends View
         jPanel7 = new javax.swing.JPanel();
         sharedbox = new javax.swing.JCheckBox();
         jButton2 = new javax.swing.JButton();
+        applyButton = new javax.swing.JButton();
 
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
@@ -387,12 +387,6 @@ public class OptionsView extends View
 
         jPanel2.setName(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("appearance"));
         privbox.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Show_Private_Appointments"));
-        privbox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                privboxActionPerformed(evt);
-            }
-        });
-
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
@@ -402,12 +396,6 @@ public class OptionsView extends View
         jPanel2.add(privbox, gridBagConstraints);
 
         pubbox.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Show_Public_Appointments"));
-        pubbox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                pubboxActionPerformed(evt);
-            }
-        });
-
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -463,12 +451,6 @@ public class OptionsView extends View
         lnfBox.setMaximumSize(new java.awt.Dimension(131, 24));
         lnfBox.setPreferredSize(new java.awt.Dimension(50, 24));
         lnfBox.setAutoscrolls(true);
-        lnfBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                lnfBoxActionPerformed(evt);
-            }
-        });
-
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
@@ -478,12 +460,6 @@ public class OptionsView extends View
         jPanel2.add(lnfBox, gridBagConstraints);
 
         holiday1.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Show_U.S._Holidays"));
-        holiday1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                holiday1ActionPerformed(evt);
-            }
-        });
-
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
@@ -493,12 +469,6 @@ public class OptionsView extends View
         jPanel2.add(holiday1, gridBagConstraints);
 
         mondaycb.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Week_Starts_with_Monday"));
-        mondaycb.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mondaycbActionPerformed(evt);
-            }
-        });
-
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 4;
@@ -508,12 +478,6 @@ public class OptionsView extends View
         jPanel2.add(mondaycb, gridBagConstraints);
 
         miltime.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Use_24_hour_time_format"));
-        miltime.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                miltimeActionPerformed(evt);
-            }
-        });
-
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 4;
@@ -531,12 +495,6 @@ public class OptionsView extends View
         jPanel2.add(jLabel5, gridBagConstraints);
 
         wkstarthr.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "4", "5", "6", "7", "8", "9", "10", "11" }));
-        wkstarthr.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                wkstarthrActionPerformed(evt);
-            }
-        });
-
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 5;
@@ -546,12 +504,6 @@ public class OptionsView extends View
         jPanel2.add(wkstarthr, gridBagConstraints);
 
         wkendhr.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23" }));
-        wkendhr.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                wkendhrActionPerformed(evt);
-            }
-        });
-
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 6;
@@ -569,12 +521,6 @@ public class OptionsView extends View
         jPanel2.add(jLabel6, gridBagConstraints);
 
         wrapbox.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Wrap_Appointment_Text"));
-        wrapbox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                wrapboxActionPerformed(evt);
-            }
-        });
-
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
@@ -583,12 +529,6 @@ public class OptionsView extends View
         jPanel2.add(wrapbox, gridBagConstraints);
 
         canadabox.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Show_Canadian_Holidays"));
-        canadabox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                canadaboxActionPerformed(evt);
-            }
-        });
-
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 3;
@@ -603,12 +543,6 @@ public class OptionsView extends View
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
         jPanel2.add(jLabel8, gridBagConstraints);
-
-        localebox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                localeboxActionPerformed(evt);
-            }
-        });
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -635,12 +569,6 @@ public class OptionsView extends View
         jPanel2.add(jButton1, gridBagConstraints);
 
         colorsortbox.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("colorsort"));
-        colorsortbox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                colorsortboxActionPerformed(evt);
-            }
-        });
-
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 2;
@@ -717,6 +645,8 @@ public class OptionsView extends View
         jPanel1.add(jLabel2, gridBagConstraints);
 
         smtptext.setColumns(30);
+
+
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
@@ -725,6 +655,8 @@ public class OptionsView extends View
         jPanel1.add(smtptext, gridBagConstraints);
 
         emailtext.setColumns(30);
+ 
+
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 2;
@@ -733,12 +665,6 @@ public class OptionsView extends View
         jPanel1.add(emailtext, gridBagConstraints);
 
         emailbox.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Enable_Email"));
-        emailbox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                emailboxActionPerformed(evt);
-            }
-        });
-
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -746,21 +672,11 @@ public class OptionsView extends View
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         jPanel1.add(emailbox, gridBagConstraints);
 
-        jLabel7.setFont(new java.awt.Font("Dialog", 0, 10));
-        jLabel7.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("**_Must_be_disabled_to_edit_parameters_**"));
-        jPanel1.add(jLabel7, new java.awt.GridBagConstraints());
-
         jTabbedPane1.addTab(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("EmailParameters"), jPanel1);
 
         jPanel5.setLayout(new java.awt.GridBagLayout());
 
         colorprint.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Print_In_Color?"));
-        colorprint.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                colorprintActionPerformed(evt);
-            }
-        });
-
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -769,12 +685,6 @@ public class OptionsView extends View
         jPanel5.add(colorprint, gridBagConstraints);
 
         logobox.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Print_Logo_(GIF/JPG/PNG)"));
-        logobox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                logoboxActionPerformed(evt);
-            }
-        });
-
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -808,12 +718,6 @@ public class OptionsView extends View
         jPanel3.setLayout(new java.awt.GridBagLayout());
 
         logging.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Enable_Logging_(requires_program_restart)"));
-        logging.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                loggingActionPerformed(evt);
-            }
-        });
-
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
@@ -824,12 +728,6 @@ public class OptionsView extends View
 
         autoupdate.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Auto_Update_Check"));
         autoupdate.setToolTipText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Enable_a_daily_check_to_the_BORG_website_to_see_if_a_new_version_is_out._Does_not_update_the_product."));
-        autoupdate.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                autoupdateActionPerformed(evt);
-            }
-        });
-
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
@@ -854,12 +752,6 @@ public class OptionsView extends View
         jPanel3.add(versioncheck, gridBagConstraints);
 
         splashbox.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("splash"));
-        splashbox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                splashboxActionPerformed(evt);
-            }
-        });
-
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -868,12 +760,6 @@ public class OptionsView extends View
 
         backgbox.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Start_in_background_(Windows_only,_TrayIcon_req)"));
         backgbox.setToolTipText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Do_not_open_todo_and_month_view_on_startup,_start_in_systray"));
-        backgbox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                backgboxActionPerformed(evt);
-            }
-        });
-
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -883,12 +769,6 @@ public class OptionsView extends View
         jPanel3.add(backgbox, gridBagConstraints);
 
         stackbox.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("stackonerr"));
-        stackbox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                stackboxActionPerformed(evt);
-            }
-        });
-
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 4;
@@ -896,12 +776,6 @@ public class OptionsView extends View
         jPanel3.add(stackbox, gridBagConstraints);
 
         icaltodobox.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("icaltodo"));
-        icaltodobox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                icaltodoboxActionPerformed(evt);
-            }
-        });
-
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 5;
@@ -913,12 +787,6 @@ public class OptionsView extends View
         jPanel6.setLayout(new java.awt.GridBagLayout());
 
         popenablebox.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("enable_popups"));
-        popenablebox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                popenableboxActionPerformed(evt);
-            }
-        });
-
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -934,12 +802,6 @@ public class OptionsView extends View
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 8);
         jPanel6.add(jLabel9, gridBagConstraints);
-
-        popminbefore.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                popminbeforeStateChanged(evt);
-            }
-        });
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -965,12 +827,6 @@ public class OptionsView extends View
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 8);
         jPanel6.add(jLabel11, gridBagConstraints);
 
-        popminafter.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                popminafterStateChanged(evt);
-            }
-        });
-
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 3;
@@ -987,12 +843,6 @@ public class OptionsView extends View
         jPanel6.add(jLabel12, gridBagConstraints);
 
         soundbox.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("beeps"));
-        soundbox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                soundboxActionPerformed(evt);
-            }
-        });
-
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 5;
@@ -1008,12 +858,6 @@ public class OptionsView extends View
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 8);
         jPanel6.add(jLabel13, gridBagConstraints);
-
-        beepmins.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                beepminsStateChanged(evt);
-            }
-        });
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -1040,12 +884,6 @@ public class OptionsView extends View
         jPanel6.add(jLabel15, gridBagConstraints);
 
         checkfreq.setMinimumSize(new java.awt.Dimension(50, 20));
-        checkfreq.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                checkfreqStateChanged(evt);
-            }
-        });
-
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
@@ -1072,12 +910,6 @@ public class OptionsView extends View
         jTabbedPane1.addTab(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("popup_reminders"), jPanel6);
 
         sharedbox.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("shared"));
-        sharedbox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                sharedboxActionPerformed(evt);
-            }
-        });
-
         jPanel7.add(sharedbox);
 
         jTabbedPane1.addTab(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Multi_User"), jPanel7);
@@ -1085,6 +917,7 @@ public class OptionsView extends View
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
@@ -1101,130 +934,199 @@ public class OptionsView extends View
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         getContentPane().add(jButton2, gridBagConstraints);
+
+        applyButton.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("apply"));
+        applyButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                apply(evt);
+            }
+        });
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        getContentPane().add(applyButton, gridBagConstraints);
 
         pack();
     }//GEN-END:initComponents
 
-    private void icaltodoboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_icaltodoboxActionPerformed
+
+    private void apply(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_apply
+        applyChanges();
+    }//GEN-LAST:event_apply
+
+    private void applyChanges()
+    {
         if( icaltodobox.isSelected() )
             Prefs.putPref(PrefName.ICALTODOEV, "true" );
         else
             Prefs.putPref(PrefName.ICALTODOEV, "false" );
-    }//GEN-LAST:event_icaltodoboxActionPerformed
-
-    private void colorsortboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_colorsortboxActionPerformed
+        
         if( colorsortbox.isSelected() )
             Prefs.putPref(PrefName.COLORSORT, "true" );
         else
             Prefs.putPref(PrefName.COLORSORT, "false" );
-                
-        try
-        {
-            cg_.refresh();
-        }
-        catch( Exception e )
-        { Errmsg.errmsg(e); }
-    }//GEN-LAST:event_colorsortboxActionPerformed
-
-    private void stackboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stackboxActionPerformed
+        
         if( stackbox.isSelected() )
             Prefs.putPref(PrefName.STACKTRACE, "true" );
         else
             Prefs.putPref(PrefName.STACKTRACE, "false" );
-    }//GEN-LAST:event_stackboxActionPerformed
-
-    private void sharedboxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_sharedboxActionPerformed
-    {//GEN-HEADEREND:event_sharedboxActionPerformed
+        
         if( sharedbox.isSelected() )
             Prefs.putPref(PrefName.SHARED, "true" );
         else
             Prefs.putPref(PrefName.SHARED, "false" );
-    }//GEN-LAST:event_sharedboxActionPerformed
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-       
-        Font f = NwFontChooserS.showDialog(null, null,null);
-        String fs = NwFontChooserS.fontString(f);
-        Prefs.putPref(PrefName.DEFFONT, fs );
-        NwFontChooserS.setDefaultFont(f);
-        SwingUtilities.updateComponentTreeUI(this);
-        SwingUtilities.updateComponentTreeUI(cg_);
-    
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void beepminsStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_beepminsStateChanged
-    {//GEN-HEADEREND:event_beepminsStateChanged
+        
         Integer i = (Integer) beepmins.getValue();
         int cur = Prefs.getIntPref(PrefName.BEEPINGMINS);
         if( i.intValue() != cur )
             Prefs.putPref(PrefName.BEEPINGMINS, i);
-    }//GEN-LAST:event_beepminsStateChanged
-
-    private void popminafterStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_popminafterStateChanged
-    {//GEN-HEADEREND:event_popminafterStateChanged
-        Integer i = (Integer) popminafter.getValue();
-        int cur = Prefs.getIntPref(PrefName.POPAFTERMINS);
+        
+        i = (Integer) popminafter.getValue();
+        cur = Prefs.getIntPref(PrefName.POPAFTERMINS);
         if( i.intValue() != cur )
             Prefs.putPref(PrefName.POPAFTERMINS, i);
-    }//GEN-LAST:event_popminafterStateChanged
-
-    private void popminbeforeStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_popminbeforeStateChanged
-    {//GEN-HEADEREND:event_popminbeforeStateChanged
-        Integer i = (Integer) popminbefore.getValue();
-        int cur = Prefs.getIntPref(PrefName.POPBEFOREMINS);
+        
+        i = (Integer) popminbefore.getValue();
+        cur = Prefs.getIntPref(PrefName.POPBEFOREMINS);
         if( i.intValue() != cur )
             Prefs.putPref(PrefName.POPBEFOREMINS, i);
-    }//GEN-LAST:event_popminbeforeStateChanged
-
-    private void checkfreqStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_checkfreqStateChanged
-    {//GEN-HEADEREND:event_checkfreqStateChanged
-        Integer i = (Integer) checkfreq.getValue();//GEN-LAST:event_checkfreqStateChanged
-        int cur = Prefs.getIntPref(PrefName.REMINDERCHECKMINS);
+         
+        i = (Integer) checkfreq.getValue();
+        cur = Prefs.getIntPref(PrefName.REMINDERCHECKMINS);
         if( i.intValue() != cur )
             Prefs.putPref(PrefName.REMINDERCHECKMINS, i);
         
-    }
-    private void soundboxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_soundboxActionPerformed
-    {//GEN-HEADEREND:event_soundboxActionPerformed
         if( soundbox.isSelected() )
             Prefs.putPref(PrefName.BEEPINGREMINDERS, "true" );
         else
             Prefs.putPref(PrefName.BEEPINGREMINDERS, "false" );
-    }//GEN-LAST:event_soundboxActionPerformed
-
-    private void popenableboxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_popenableboxActionPerformed
-    {//GEN-HEADEREND:event_popenableboxActionPerformed
+        
         if( popenablebox.isSelected() )
             Prefs.putPref(PrefName.REMINDERS, "true" );
         else
             Prefs.putPref(PrefName.REMINDERS, "false" );
-    }//GEN-LAST:event_popenableboxActionPerformed
-
-    private void splashboxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_splashboxActionPerformed
-    {//GEN-HEADEREND:event_splashboxActionPerformed
+        
         if( splashbox.isSelected() )
             Prefs.putPref(PrefName.SPLASH, "true" );
         else
             Prefs.putPref(PrefName.SPLASH, "false" );
-    }//GEN-LAST:event_splashboxActionPerformed
-    
-    private void localeboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_localeboxActionPerformed
-        Locale locs[] = Locale.getAvailableLocales();
-        String choice = (String) localebox.getSelectedItem();
-        for( int i = 0; i < locs.length; i++ )
+        
+        // update US holiday preference and refresh the month view accordingly
+        if( canadabox.isSelected() )
+            Prefs.putPref(PrefName.SHOWCANHOLIDAYS, "true" );
+        else
+            Prefs.putPref(PrefName.SHOWCANHOLIDAYS, "false" );
+        
+        if( wrapbox.isSelected() )
+            Prefs.putPref(PrefName.WRAP, "true" );
+        else
+            Prefs.putPref(PrefName.WRAP, "false" );
+        
+        if( backgbox.isSelected() )
+            Prefs.putPref(PrefName.BACKGSTART, "true" );
+        else
+            Prefs.putPref(PrefName.BACKGSTART, "false" );
+        
+        if( miltime.isSelected() )
+            Prefs.putPref(PrefName.MILTIME, "true" );
+        else
+            Prefs.putPref(PrefName.MILTIME, "false" );
+        
+        if( mondaycb.isSelected() )
+            Prefs.putPref(PrefName.FIRSTDOW, new Integer(Calendar.MONDAY) );
+        else
+            Prefs.putPref(PrefName.FIRSTDOW, new Integer(Calendar.SUNDAY) );
+        
+        if( holiday1.isSelected() )
+            Prefs.putPref(PrefName.SHOWUSHOLIDAYS, "true" );
+        else
+            Prefs.putPref(PrefName.SHOWUSHOLIDAYS, "false" );
+        
+        // enable/disable auto-update-check
+        // value is the last day-of-year that check was done (1-365)
+        // phony value 400 will cause check during current day
+        // value -1 is the shut-off value
+        if( autoupdate.isSelected() )
+            Prefs.putPref(PrefName.VERCHKLAST, new Integer(400) );
+        else
+            Prefs.putPref(PrefName.VERCHKLAST, new Integer(-1) );
+        
+        if( privbox.isSelected() )
+            Prefs.putPref(PrefName.SHOWPRIVATE, "true" );
+        else
+            Prefs.putPref(PrefName.SHOWPRIVATE, "false" );
+        
+        // update the show public option and refresh the month view
+        if( pubbox.isSelected() )
+            Prefs.putPref(PrefName.SHOWPUBLIC, "true" );
+        else
+            Prefs.putPref(PrefName.SHOWPUBLIC, "false" );
+        
+        if( colorprint.isSelected() )
+            Prefs.putPref(PrefName.COLORPRINT, "true" );
+        else
+            Prefs.putPref(PrefName.COLORPRINT, "false" );
+        
+        if( !logobox.isSelected() )
         {
-            if( choice.equals(locs[i].getDisplayName()))
+            Prefs.putPref(PrefName.LOGO, "" );
+            logofile.setText("");
+        }
+        else
+        {
+            Prefs.putPref(PrefName.LOGO, logofile.getText() );
+        }
+        
+        if( emailbox.isSelected() )
+        {
+            Prefs.putPref(PrefName.EMAILENABLED, "true" );
+            Prefs.putPref(PrefName.EMAILSERVER, smtptext.getText() );
+            Prefs.putPref(PrefName.EMAILADDR, emailtext.getText() );
+        }
+        else
+            Prefs.putPref(PrefName.EMAILENABLED, "false" );
+        
+        // turn logging on/off
+        try
+        {
+            
+            if( logging.isSelected() )
             {
-                //Locale.setDefault(locs[i]);
-                Prefs.putPref(PrefName.COUNTRY, locs[i].getCountry() );
-                Prefs.putPref(PrefName.LANGUAGE, locs[i].getLanguage());
+            
+                AppointmentModel.getReference().setLogging(true);
+				AddressModel.getReference().setLogging(true);
+				TaskModel.getReference().setLogging(true);
+            }
+            else
+            {
+            
+			   	AppointmentModel.getReference().setLogging(false);
+			  	AddressModel.getReference().setLogging(false);
+			 	TaskModel.getReference().setLogging(false);
             }
         }
-    }//GEN-LAST:event_localeboxActionPerformed
-    
-    private void lnfBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lnfBoxActionPerformed
+        catch( Exception e )
+        {
+            Errmsg.errmsg(e);
+        }
+        
+        Locale locs[] = Locale.getAvailableLocales();
+        String choice = (String) localebox.getSelectedItem();
+        for( int ii = 0; ii < locs.length; ii++ )
+        {
+            if( choice.equals(locs[ii].getDisplayName()))
+            {
+                Prefs.putPref(PrefName.COUNTRY, locs[ii].getCountry() );
+                Prefs.putPref(PrefName.LANGUAGE, locs[ii].getLanguage());
+            }
+        }
         
         String newlnf = (String) lnfBox.getSelectedItem();
         String oldlnf = Prefs.getPref(PrefName.LNF);
@@ -1245,8 +1147,28 @@ public class OptionsView extends View
             }
         }
         
-    }//GEN-LAST:event_lnfBoxActionPerformed
+        try
+        {
+            cg_.setDayLabels();
+            cg_.refresh();
+        }
+        catch( Exception e )
+        { Errmsg.errmsg(e); }
+    }
+ 
+  
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+       
+        Font f = NwFontChooserS.showDialog(null, null,null);
+        String fs = NwFontChooserS.fontString(f);
+        Prefs.putPref(PrefName.DEFFONT, fs );
+        NwFontChooserS.setDefaultFont(f);
+        SwingUtilities.updateComponentTreeUI(this);
+        SwingUtilities.updateComponentTreeUI(cg_);
     
+    }//GEN-LAST:event_jButton1ActionPerformed
+    
+
     private void chgdbActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_chgdbActionPerformed
     {//GEN-HEADEREND:event_chgdbActionPerformed
         int ret = JOptionPane.showConfirmDialog(null, Resource.getResourceString("Really_change_the_database?"), Resource.getResourceString("Confirm_DB_Change"), JOptionPane.YES_NO_OPTION);
@@ -1258,49 +1180,7 @@ public class OptionsView extends View
         }
     }//GEN-LAST:event_chgdbActionPerformed
     
-    private void canadaboxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_canadaboxActionPerformed
-    {//GEN-HEADEREND:event_canadaboxActionPerformed
-        
-        // update US holiday preference and refresh the month view accordingly
-        if( canadabox.isSelected() )
-            Prefs.putPref(PrefName.SHOWCANHOLIDAYS, "true" );
-        else
-            Prefs.putPref(PrefName.SHOWCANHOLIDAYS, "false" );
-        
-        try
-        {
-            cg_.refresh();
-        }
-        catch( Exception e )
-        { Errmsg.errmsg(e); }
-    }//GEN-LAST:event_canadaboxActionPerformed
-    
-    private void wrapboxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_wrapboxActionPerformed
-    {//GEN-HEADEREND:event_wrapboxActionPerformed
-        if( wrapbox.isSelected() )
-            Prefs.putPref(PrefName.WRAP, "true" );
-        else
-            Prefs.putPref(PrefName.WRAP, "false" );
-    }//GEN-LAST:event_wrapboxActionPerformed
-    
-    private void backgboxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_backgboxActionPerformed
-    {//GEN-HEADEREND:event_backgboxActionPerformed
-        if( backgbox.isSelected() )
-            Prefs.putPref(PrefName.BACKGSTART, "true" );
-        else
-            Prefs.putPref(PrefName.BACKGSTART, "false" );
-    }//GEN-LAST:event_backgboxActionPerformed
-    
-    private void logoboxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_logoboxActionPerformed
-    {//GEN-HEADEREND:event_logoboxActionPerformed
-        if( !logobox.isSelected() )
-        {
-            Prefs.putPref(PrefName.LOGO, "" );
-            logofile.setText("");
-        }
-        
-    }//GEN-LAST:event_logoboxActionPerformed
-    
+ 
     private void logobrowseActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_logobrowseActionPerformed
     {//GEN-HEADEREND:event_logobrowseActionPerformed
         
@@ -1337,54 +1217,11 @@ public class OptionsView extends View
             Errmsg.notice( err );
         }
         
-        Prefs.putPref(PrefName.LOGO, logo );
-        
+ 
         // update text field - nothing else changes. DB change will take effect only on restart
         logofile.setText(logo);
     }//GEN-LAST:event_logobrowseActionPerformed
-    
-    private void wkendhrActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_wkendhrActionPerformed
-    {//GEN-HEADEREND:event_wkendhrActionPerformed
-        Prefs.putPref( PrefName.WKENDHOUR, (String)wkendhr.getSelectedItem());
-    }//GEN-LAST:event_wkendhrActionPerformed
-    
-    private void wkstarthrActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_wkstarthrActionPerformed
-    {//GEN-HEADEREND:event_wkstarthrActionPerformed
-        Prefs.putPref( PrefName.WKSTARTHOUR, (String)wkstarthr.getSelectedItem());
-        
-    }//GEN-LAST:event_wkstarthrActionPerformed
-    
-    private void miltimeActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_miltimeActionPerformed
-    {//GEN-HEADEREND:event_miltimeActionPerformed
-        if( miltime.isSelected() )
-            Prefs.putPref(PrefName.MILTIME, "true" );
-        else
-            Prefs.putPref(PrefName.MILTIME, "false" );
-        
-        try
-        {
-            cg_.refresh();
-        }
-        catch( Exception e )
-        { Errmsg.errmsg(e); }
-    }//GEN-LAST:event_miltimeActionPerformed
-    
-    private void mondaycbActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_mondaycbActionPerformed
-    {//GEN-HEADEREND:event_mondaycbActionPerformed
-        
-        if( mondaycb.isSelected() )
-            Prefs.putPref(PrefName.FIRSTDOW, new Integer(Calendar.MONDAY) );
-        else
-            Prefs.putPref(PrefName.FIRSTDOW, new Integer(Calendar.SUNDAY) );
-        
-        try
-        {
-            cg_.setDayLabels();
-            cg_.refresh();
-        }
-        catch( Exception e )
-        { Errmsg.errmsg(e); }
-    }//GEN-LAST:event_mondaycbActionPerformed
+   
     
     private void versioncheckActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_versioncheckActionPerformed
     {//GEN-HEADEREND:event_versioncheckActionPerformed
@@ -1410,62 +1247,7 @@ public class OptionsView extends View
         { Errmsg.errmsg(e); }
         
     }//GEN-LAST:event_versioncheckActionPerformed
-    
-    private void autoupdateActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_autoupdateActionPerformed
-    {//GEN-HEADEREND:event_autoupdateActionPerformed
-        // enable/disable auto-update-check
-        // value is the last day-of-year that check was done (1-365)
-        // phony value 400 will cause check during current day
-        // value -1 is the shut-off value
-        if( autoupdate.isSelected() )
-            Prefs.putPref(PrefName.VERCHKLAST, new Integer(400) );
-        else
-            Prefs.putPref(PrefName.VERCHKLAST, new Integer(-1) );
-        
-    }//GEN-LAST:event_autoupdateActionPerformed
-    
-    private void holiday1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_holiday1ActionPerformed
-        
-        // update US holiday preference and refresh the month view accordingly
-        if( holiday1.isSelected() )
-            Prefs.putPref(PrefName.SHOWUSHOLIDAYS, "true" );
-        else
-            Prefs.putPref(PrefName.SHOWUSHOLIDAYS, "false" );
-        
-        try
-        {
-            cg_.refresh();
-        }
-        catch( Exception e )
-        { Errmsg.errmsg(e); }
-    }//GEN-LAST:event_holiday1ActionPerformed
-    
-    private void loggingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loggingActionPerformed
-        
-        // turn logging on/off
-        try
-        {
-            
-            if( logging.isSelected() )
-            {
-            
-                AppointmentModel.getReference().setLogging(true);
-				AddressModel.getReference().setLogging(true);
-				TaskModel.getReference().setLogging(true);
-            }
-            else
-            {
-            
-			   	AppointmentModel.getReference().setLogging(false);
-			  	AddressModel.getReference().setLogging(false);
-			 	TaskModel.getReference().setLogging(false);
-            }
-        }
-        catch( Exception e )
-        {
-            Errmsg.errmsg(e);
-        }
-    }//GEN-LAST:event_loggingActionPerformed
+   
     
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         
@@ -1521,71 +1303,11 @@ public class OptionsView extends View
             Errmsg.errmsg(e);
         }
     }//GEN-LAST:event_decfontActionPerformed
-    
-    private void privboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_privboxActionPerformed
-        
-        // update the show private option and refresh the month view
-        if( privbox.isSelected() )
-            Prefs.putPref(PrefName.SHOWPRIVATE, "true" );
-        else
-            Prefs.putPref(PrefName.SHOWPRIVATE, "false" );
-        try
-        {
-            cg_.refresh();
-        }
-        catch( Exception e )
-        { Errmsg.errmsg(e); }
-        
-    }//GEN-LAST:event_privboxActionPerformed
-    
-    private void pubboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pubboxActionPerformed
-        
-        // update the show public option and refresh the month view
-        if( pubbox.isSelected() )
-            Prefs.putPref(PrefName.SHOWPUBLIC, "true" );
-        else
-            Prefs.putPref(PrefName.SHOWPUBLIC, "false" );
-        try
-        {
-            cg_.refresh();
-        }
-        catch( Exception e )
-        { Errmsg.errmsg(e); }
-        
-        
-    }//GEN-LAST:event_pubboxActionPerformed
-    
-    private void colorprintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_colorprintActionPerformed
-        if( colorprint.isSelected() )
-            Prefs.putPref(PrefName.COLORPRINT, "true" );
-        else
-            Prefs.putPref(PrefName.COLORPRINT, "false" );
-    }//GEN-LAST:event_colorprintActionPerformed
-    
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        
-        
+   
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {
         this.dispose();
-    }//GEN-LAST:event_jButton2ActionPerformed
-    
-    private void emailboxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_emailboxActionPerformed
-    {//GEN-HEADEREND:event_emailboxActionPerformed
+    }
         
-        // update the email enabled flag - and enable/disable the server and address
-        // text fields accordingly
-        if( emailbox.isSelected() )
-        {
-            Prefs.putPref(PrefName.EMAILENABLED, "true" );
-            Prefs.putPref(PrefName.EMAILSERVER, smtptext.getText() );
-            Prefs.putPref(PrefName.EMAILADDR, emailtext.getText() );
-        }
-        else
-            Prefs.putPref(PrefName.EMAILENABLED, "false" );
-        smtptext.setEditable( !emailbox.isSelected() );
-        emailtext.setEditable( !emailbox.isSelected() );
-        
-    }//GEN-LAST:event_emailboxActionPerformed
-    
     
     private void exitForm(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_exitForm
         this.dispose();
@@ -1642,6 +1364,7 @@ public class OptionsView extends View
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton applyButton;
     private javax.swing.JCheckBox autoupdate;
     private javax.swing.JCheckBox backgbox;
     private javax.swing.JSpinner beepmins;
@@ -1672,7 +1395,6 @@ public class OptionsView extends View
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
