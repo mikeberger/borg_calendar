@@ -97,6 +97,11 @@ class Repeat
 			tth = true;
 			incr = 0;
 		}
+		else if( frequency.startsWith("ndays"))
+		{
+            String n = frequency.substring(6);
+            incr = Integer.parseInt(n);
+		}
 	}
 	
 	final boolean isRepeating()
