@@ -560,6 +560,11 @@ public class CalendarView extends View {
             	{
             		daytext[i].removeMouseListener(mls[mli]);
             	}
+            	mls = days[i].getMouseListeners();
+            	for( int mli = 0; mli < mls.length; mli++ )
+            	{
+            		days[i].removeMouseListener(mls[mli]);
+            	}
                 int daynumber = i - fd + 1;
                 
                 
@@ -584,7 +589,7 @@ public class CalendarView extends View {
                     // set value of date button
                     daynum[i].setText(Integer.toString(daynumber));
                     daytext[i].addMouseListener(new DayMouseListener( year_, month_, daynumber ));
-                    
+                    days[i].addMouseListener(new DayMouseListener( year_, month_, daynumber ));
                     // get appointment info for the day's appointments from the data model
                     Day di = Day.getDay( year_, month_, daynumber, showpub,showpriv,true);
                     Collection appts = di.getAppts();
