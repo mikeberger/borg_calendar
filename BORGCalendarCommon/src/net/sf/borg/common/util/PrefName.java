@@ -135,8 +135,8 @@ public class PrefName {
 		
 		// bsv 2004-12-20
 		// user color scheme
-		static public PrefName UCS_ON = new PrefName("ucs_on","true");
-		static public PrefName UCS_ONTODO = new PrefName("ucs_ontodo","true");
+		static public PrefName UCS_ON = new PrefName("ucs_on","false");
+		static public PrefName UCS_ONTODO = new PrefName("ucs_ontodo","false");
 		static public PrefName UCS_MARKTODO = new PrefName("ucs_marktodo","true");
 		static public PrefName UCS_MARKER = new PrefName("ucs_marker",">>");
 		static public PrefName UCS_MARKERCOLOR = new PrefName("ucs_markercolor","16250609");
