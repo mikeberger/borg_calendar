@@ -512,6 +512,13 @@ public class CalendarView extends View implements Prefs.Listener {
             
             s = textPane.addStyle("strike", bl );
             StyleConstants.setStrikeThrough( s, true );
+            
+            URL icon = getClass().getResource("/resource/" + Prefs.getPref(PrefName.UCS_MARKER));
+            if( icon != null ){
+            	s = textPane.addStyle("icon", bl );
+            	StyleConstants.setIcon( s, new ImageIcon(icon) );
+            }
+            
         }
         catch( NoSuchFieldError e ) {
             // java 1.3 - just use black
@@ -715,7 +722,8 @@ public class CalendarView extends View implements Prefs.Listener {
                             	if( info.getTodo() && (nt == null || !nt.after(gc.getTime()))){
                             	    if( Prefs.getPref(PrefName.UCS_MARKER).endsWith(".gif"))
                             	    {
-                            	        daytext[i].insertIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/" + Prefs.getPref(PrefName.UCS_MARKER))));
+                            	        //daytext[i].insertIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/" + Prefs.getPref(PrefName.UCS_MARKER))));
+                            	    	addString( daytext[i], Prefs.getPref(PrefName.UCS_MARKER), "icon" );
                             	    }
                             	    else
                             	    {
