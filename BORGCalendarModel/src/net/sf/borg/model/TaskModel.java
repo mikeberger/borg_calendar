@@ -32,6 +32,7 @@ import java.util.TreeSet;
 import java.util.Vector;
 
 import net.sf.borg.common.util.Errmsg;
+import net.sf.borg.common.util.Resource;
 import net.sf.borg.common.util.Version;
 import net.sf.borg.common.util.XTree;
 import net.sf.borg.model.db.BeanDB;
@@ -159,6 +160,14 @@ public class TaskModel extends Model implements Model.Listener {
                 String status = mr.getState();
                 if( status.equals("CLOSED") || status.equals("PR"))
                     continue;
+                
+                String cat = mr.getCategory();
+                if( cat == null || cat.equals(""))
+                    cat = Resource.getResourceString("uncategorized");
+                
+                if( !CategoryModel.getReference().isShown(cat))
+                    continue;
+
                 
                 // use task due date to build a day key
                 Date due = mr.getDueDate();
