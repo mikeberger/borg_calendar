@@ -130,6 +130,10 @@
 		<description>Optional tool for repairing databases (rarely needed)</description>
             <file src="mdbtool.jar" targetdir="$INSTALL_PATH"/> 
         </pack>
+     <pack name="Palm Conduits" preselected="no" required="no">
+		<description>Palm Hot-Sync conduits for BORG (experimental)</description>
+            <file src="conduits" targetdir="$INSTALL_PATH"/> 
+        </pack>
 	<pack name="Sources" preselected="no" required="no">
             <description>The sources</description>
             <file src="borg_src.zip" targetdir="$INSTALL_PATH"/>

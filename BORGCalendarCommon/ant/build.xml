@@ -9,6 +9,7 @@
    <property name="prj.dbutil.dir" value="${basedir}/BORGCalendarDBUtilities" />
    <property name="prj.model.dir" value="${basedir}/BORGCalendarModel" />
    <property name="prj.ui.dir" value="${basedir}/BORGCalendarUI" />
+   <property name="prj.conduit.dir" value="${basedir}/BORGPalmConduits" />
    <property name="help.dir" value="${prj.ui.dir}/borghelp" />
 
    <property name="pkg" value="net/sf/borg" />
@@ -43,6 +44,10 @@
 
    <target name="init">
       <tstamp/>
+   </target>
+	
+   <target name="conduits">
+   		<ant dir="${prj.conduit.dir}" antfile="ant/build.xml" target="main" inheritAll="false"/>
    </target>
 	
 	<!-- regen help search indexes -->
@@ -248,6 +253,11 @@ build.number=${build.number}
 		<copy file="${iz.dir}/bin/native/izpack/ShellLink.dll" todir="${build.dir}/installer"/>
 		<copy todir="${build.dir}/installer">
 			<fileset dir="${prj.common.dir}/installer" includes="*"/>
+		</copy>
+		<mkdir dir="${build.dir}/installer/conduits"/>
+		<copy todir="${build.dir}/installer/conduits" >
+			<fileset dir="${prj.conduit.dir}/dist" includes="*"/>
+			<fileset dir="${prj.conduit.dir}" includes="License.BORGConduits"/>
 		</copy>
 		<exec executable="${iz.compile}" dir="${iz.dir}/bin" resolveExecutable="true">
 			<arg value="${build.dir}/installer/install.xml"/>

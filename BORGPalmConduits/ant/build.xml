@@ -17,7 +17,17 @@
    	  <pathelement location="${jsync.jar}"/>
    </path>
 
-
+	   <target name="src">
+	      <zip destfile="${dist.dir}/borgconduit_src.zip">
+	        <zipfileset dir="${basedir}" prefix="conduit">
+	           <exclude name="**/.metadata/**/*"/>
+	           <exclude name="**/build/**"/>
+	           <exclude name="**/classes/**"/>
+	           <exclude name="**/dist/**"/>
+	           <exclude name="**/gen/**"/>
+	        </zipfileset>
+	      </zip>
+	   </target>
 
    <!-- Compile -->
    <target name="compile">
@@ -95,7 +105,7 @@
  
                 
 
-   <target name="main" depends="clean,addr-jar,appt-jar,todo-jar" />
+   <target name="main" depends="clean,addr-jar,appt-jar,todo-jar,src" />
  
    
  
