@@ -56,6 +56,7 @@ public class Errmsg
         {
             // just send console output to stdout and exit
             System.out.println(e.toString() );
+            e.printStackTrace();
             return;
         }
         
