@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
+import java.util.StringTokenizer;
 
 import net.sf.borg.model.Appointment;
 import net.sf.borg.model.AppointmentModel;
@@ -349,6 +350,10 @@ public class RecordManager {
         }
         
         rec.setDescription(appt.getText());
+        
+        //
+        // NOTE == key,HVT,color,category
+        //
 
         String note = Integer.toString(appt.getKey()) + ",";
         if (appt.getHoliday() != null && appt.getHoliday().intValue() != 0)
@@ -362,6 +367,20 @@ public class RecordManager {
 
         if (appt.getTodo())
             note += "T";
+        
+        note += ",";
+        
+        if( appt.getColor() != null )
+        {
+            note += appt.getColor();
+        }
+            
+        note += ",";
+        
+        if( appt.getCategory() != null )
+        {
+            note += appt.getCategory();
+        }
         
         rec.setNote(note);
 
@@ -461,6 +480,7 @@ public class RecordManager {
         
     }
     
+    
     static public Appointment palmToBorg(DateRecord hh) {
         Appointment appt = AppointmentModel.getReference().newAppt();
         appt.setDate(hh.getStartDate());
@@ -469,19 +489,40 @@ public class RecordManager {
         if( notes != null )
         {
         
-            int idx = notes.indexOf(",");
-            if( idx != -1 )
+            // java 1.3 must be used --> has no String.split()
+            StringTokenizer tok = new StringTokenizer(notes,",");
+            String part = tok.nextToken(); // key
+            if( tok.hasMoreTokens())
             {
-                String atts = notes.substring(idx);
-                if( atts.indexOf("H") != -1 )
+                part = tok.nextToken();
+                if( part.indexOf("H") != -1 )
                     appt.setHoliday(new Integer(1));
-                if( atts.indexOf("T") != -1 )
+                if( part.indexOf("T") != -1 )
                     appt.setTodo(true);
-                if( atts.indexOf("V") != -1 )
-                    appt.setVacation(new Integer(1));
+                if( part.indexOf("V") != -1 )
+                    appt.setVacation(new Integer(1));  
                 
+                if( tok.hasMoreTokens())
+                {
+                    part = tok.nextToken();
+                    if( !part.equals(""))
+                    {
+                        appt.setColor(part);
+                    }
+                    
+                    if( tok.hasMoreTokens())
+                    {
+                        part = tok.nextToken();
+                        if( !part.equals(""))
+                        {
+                            appt.setCategory(part);
+                        }                                              
+                    }
+                }
             }
-        }
+        }  
+            
+
         
         appt.setText(hh.getDescription());
         
