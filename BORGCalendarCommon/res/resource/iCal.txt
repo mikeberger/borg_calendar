@@ -1,9 +1,6 @@
 BORG can use the ical4j library (ical4j.sourceforge.net) to export Appointment data to iCal
 format.
 
-In order to enable this feature, the ical4j.jar file in the lib folder of the distribution .zip file
-must be placed in the classpath of BORG. Executing the start.bat (windows) or start.sh (unix) should start
-borg with the correct classpath.
 
 LIMITATIONS
 -----------
