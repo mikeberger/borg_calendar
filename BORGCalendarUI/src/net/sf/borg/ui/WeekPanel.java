@@ -26,15 +26,19 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.Stroke;
+import java.awt.font.TextAttribute;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
+import java.text.AttributedString;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import javax.swing.JPanel;
 
@@ -85,6 +89,9 @@ class WeekPanel extends JPanel implements Printable
         Graphics2D  g2 = (Graphics2D) g;
         Font def_font = g2.getFont();
         Font sm_font = def_font.deriveFont(6f);
+        Map stmap = new HashMap();
+        stmap.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
+        stmap.put( TextAttribute.FONT, sm_font);
         
         g2.setColor(Color.white);
         g2.fillRect( 0, 0, (int)pageFormat.getWidth(), (int)pageFormat.getHeight() );
@@ -267,7 +274,22 @@ class WeekPanel extends JPanel implements Printable
                             {
                                 // appt is note or is outside timespan shown
                                 g2.clipRect(colleft, daytop, (int)colwidth, (int)aptop );
-                                g2.drawString( ai.getText(), apptx, notey );
+                                if( (ai.getColor() != null && ai.getColor().equals("strike")) ||
+                                        (ai.getTodo() && !(ai.getNextTodo() == null || !ai.getNextTodo().after(cal.getTime()))))
+                                {
+                                    //g2.setFont(strike_font);
+                                    //System.out.println(ai.getText());
+                                    // need to use AttributedString to work around a bug
+                                    AttributedString as = new AttributedString(ai.getText(),stmap);
+                                    g2.drawString( as.getIterator(), apptx, notey);
+                                }
+                                else
+                                {
+                                    //g2.setFont(sm_font);
+                                    g2.drawString( ai.getText(), apptx, notey );
+                                }
+                               
+                                
                                 //System.out.println( ai.getText() + " " + notey );
                                 
                                 // increment Y coord for next note text
@@ -296,7 +318,22 @@ class WeekPanel extends JPanel implements Printable
                                 g2.setColor( Color.BLACK );
                                 
                                 g2.clipRect( apptleft , appttop, apptright - apptleft, apptbot - appttop );
-                                g2.drawString( ai.getText(), apptleft + 2, appttop + smfontHeight );
+                                if( (ai.getColor() != null && ai.getColor().equals("strike")) || 
+                                        (ai.getTodo() && !(ai.getNextTodo() == null || !ai.getNextTodo().after(cal.getTime()))) )
+                                {
+                                    //g2.setFont(strike_font);
+                                    //System.out.println(ai.getText());
+                                    // need to use AttributedString to work around a bug
+                                    AttributedString as = new AttributedString(ai.getText(),stmap);
+                                    g2.drawString( as.getIterator(), apptleft + 2, appttop + smfontHeight );
+                                }
+                                else
+                                {
+                                    //g2.setFont(sm_font);
+                                    g2.drawString( ai.getText(), apptleft + 2, appttop + smfontHeight  );
+                                }
+                               
+                                
                                 apptnum++;
                             }
                             

@@ -41,8 +41,10 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.Map;
 
 import javax.swing.JPanel;
 
@@ -114,6 +116,10 @@ class MonthPanel extends JPanel implements Printable
         
         Font def_font = g2.getFont();
         Font sm_font = def_font.deriveFont(6f);
+        Map stmap = new HashMap();
+        stmap.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
+        stmap.put( TextAttribute.FONT, sm_font);
+        //Font strike_font = sm_font.deriveFont(stmap);
         
         
         g2.setColor(Color.white);
@@ -227,6 +233,7 @@ class MonthPanel extends JPanel implements Printable
                 {
                     
                     // get the appointment info for the given day
+                    GregorianCalendar gc = new GregorianCalendar(year_,month_,date);
                     Day di = Day.getDay( year, month, date, showpub, showpriv, true );
                     if( di != null )
                     {
@@ -298,7 +305,21 @@ class MonthPanel extends JPanel implements Printable
                                 }
                                 else
                                 {
-                                    g2.drawString( ai.getText(), apptx, appty );
+                                    if( (ai.getColor() != null && ai.getColor().equals("strike")) ||
+                                            (ai.getTodo() && !(ai.getNextTodo() == null || !ai.getNextTodo().after(gc.getTime()))) )
+                                    {
+                                        //g2.setFont(strike_font);
+                                        //System.out.println(ai.getText());
+                                        // need to use AttributedString to work around a bug
+                                        AttributedString as = new AttributedString(ai.getText(),stmap);
+                                        g2.drawString( as.getIterator(), apptx, appty);
+                                    }
+                                    else
+                                    {
+                                        //g2.setFont(sm_font);
+                                        g2.drawString( ai.getText(), apptx, appty );
+                                    }
+                                   
                                     
                                     // increment the Y coord
                                     appty += smfontHeight;
