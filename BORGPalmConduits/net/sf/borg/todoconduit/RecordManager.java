@@ -8,8 +8,11 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 
+import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.model.Appointment;
 import net.sf.borg.model.AppointmentModel;
+import net.sf.borg.model.Task;
+import net.sf.borg.model.TaskModel;
 import palm.conduit.SyncManager;
 import palm.conduit.SyncProperties;
 import palm.conduit.TodoRecord;
@@ -54,6 +57,41 @@ public class RecordManager {
             String note = Integer.toString(r.getKey()) + "," + sdf.format(nt);
             rec.setNote(note);
             SyncManager.writeRec(db, rec);
+        }
+        
+        Collection tasks = TaskModel.getReference().getTasks();
+        it = tasks.iterator();
+        while( it.hasNext() ) {
+            
+            Task r = (Task) it.next();
+            
+            String status = r.getState();
+            if( status.equals("CLOSED") || status.equals("PR"))
+                continue;
+            
+            // !!!!! only show first line of task text !!!!!!
+            String tx = "BT" + r.getTaskNumber() + ":";
+            String xx = r.getDescription();
+            int ii = xx.indexOf('\n');
+            if( ii != -1 ) {
+                tx += xx.substring(0,ii);
+            }
+            else {
+                tx += xx;
+            }
+            
+            TodoRecord rec = new TodoRecord();
+
+            rec.setId(0);
+            rec.setDescription(tx);
+
+            // date is the next todo field if present, otherwise
+            // the due date
+            Date nt = r.getDueDate();
+            rec.setDueDate(nt);
+            rec.setNote("-9999");
+            SyncManager.writeRec(db, rec);
+            
         }
 
     }

@@ -2,6 +2,7 @@ package net.sf.borg.todoconduit;
 
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.model.AppointmentModel;
+import net.sf.borg.model.TaskModel;
 import palm.conduit.Conduit;
 import palm.conduit.ConfigureConduitInfo;
 import palm.conduit.Log;
@@ -25,6 +26,7 @@ public class TodoCond implements Conduit {
 
         RecordManager recordMgr;
         AppointmentModel apptModel;
+        TaskModel taskModel;
 
         // Tell the log we are starting
         Log.startSync();
@@ -45,6 +47,10 @@ public class TodoCond implements Conduit {
                 String dbdir = props.pathName;
                 apptModel = AppointmentModel.create();
                 apptModel.open_db(dbdir, false, false, false, 1);
+                
+                taskModel = TaskModel.create();
+                taskModel.open_db(dbdir,false,false,1);
+                
 
                 //Create an instance of the RecordManager for synchronizing the
                 // records
@@ -54,6 +60,7 @@ public class TodoCond implements Conduit {
 
                 // Close DB
                 apptModel.close_db();
+                taskModel.close_db();
                 SyncManager.closeDB(db);
                 
                 // Single Log we are successful
