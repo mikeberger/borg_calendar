@@ -25,6 +25,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -52,6 +53,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -80,10 +82,6 @@ import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Day;
 import net.sf.borg.model.Task;
 import net.sf.borg.model.TaskModel;
-
-
-
-import java.awt.GridLayout;
 // This is the month view GUI
 // it is the main borg window
 // like most of the other borg window, you really need to check the netbeans form
@@ -182,6 +180,8 @@ public class CalendarView extends View implements Prefs.Listener {
         // the date buttons
         daynum = new JButton[37];
         
+        dayOfYear = new JLabel[37];
+        
         
         // initialize the days
         for( int i = 0; i < 37; i++ ) {
@@ -235,6 +235,7 @@ public class CalendarView extends View implements Prefs.Listener {
                 }
             });
 
+            dayOfYear[i] = new JLabel();
             
             // continue laying out the day panel. want the date button in upper right
             // and want the text pane top to be lower than the bottom of the
@@ -244,16 +245,24 @@ public class CalendarView extends View implements Prefs.Listener {
             days[i].setBorder(new BevelBorder(BevelBorder.RAISED));
             days[i].add(daynum[i]);
             cons = new GridBagConstraints();
-            cons.gridx = 0;
+            cons.gridx = 1;
             cons.gridy = 0;
             cons.gridwidth = 1;
             cons.fill = GridBagConstraints.NONE;
             cons.anchor = GridBagConstraints.NORTHEAST;
             days[i].add(daynum[i], cons);
             
+            cons = new GridBagConstraints();
+            cons.gridx = 0;
+            cons.gridy = 0;
+            cons.gridwidth = 1;
+            cons.fill = GridBagConstraints.NONE;
+            cons.anchor = GridBagConstraints.NORTHWEST;
+            days[i].add(dayOfYear[i], cons);
+            
             cons.gridx = 0;
             cons.gridy = 1;
-            cons.gridwidth = 1;
+            cons.gridwidth = 2;
             cons.weightx = 1.0;
             cons.weighty = 1.0;
             cons.fill = GridBagConstraints.BOTH;
@@ -575,6 +584,11 @@ public class CalendarView extends View implements Prefs.Listener {
             if( sp.equals("true") )
                 showpriv = true;
             
+            boolean showDayOfYear = false;
+            sp = Prefs.getPref( PrefName.DAYOFYEAR);
+            if( sp.equals("true"))
+            	showDayOfYear = true;
+            
             // fill in the day boxes that correspond to days in this month
             for( int i = 0; i < 37; i++ ) {
                 
@@ -613,9 +627,21 @@ public class CalendarView extends View implements Prefs.Listener {
                     daynum[i].setText(Integer.toString(daynumber));
                     daytext[i].addMouseListener(new DayMouseListener( year_, month_, daynumber ));
                     days[i].addMouseListener(new DayMouseListener( year_, month_, daynumber ));
+                    
+                    if( showDayOfYear )
+                    {
+                    	GregorianCalendar gc = new GregorianCalendar(year_,month_,daynumber);
+                    	dayOfYear[i].setText(Integer.toString(gc.get(Calendar.DAY_OF_YEAR)));
+                    }
+                    else
+                    {
+                    	dayOfYear[i].setText("");
+                    }
+                    
                     // get appointment info for the day's appointments from the data model
                     Day di = Day.getDay( year_, month_, daynumber, showpub,showpriv,true);
                     Collection appts = di.getAppts();
+                    
                     
                     if( appts != null ) {
                         Iterator it = appts.iterator();
@@ -2151,6 +2177,8 @@ public class CalendarView extends View implements Prefs.Listener {
     /** date buttons
      */
     private JButton daynum[];
+    
+    private JLabel dayOfYear[];
     
     private JTextPane todoPreview;
     private JTextPane taskPreview;

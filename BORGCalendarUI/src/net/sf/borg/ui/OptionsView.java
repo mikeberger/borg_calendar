@@ -54,6 +54,7 @@ import net.sf.borg.model.TaskModel;
 
 import javax.swing.JPanel;
 import java.awt.GridBagLayout;
+import javax.swing.JCheckBox;
 // propgui displays the edit preferences window
 public class OptionsView extends View
 {
@@ -227,6 +228,12 @@ public class OptionsView extends View
         else
             canadabox.setSelected(false);
         
+        ush = Prefs.getPref(PrefName.DAYOFYEAR);
+        if( ush.equals("true") )
+            doyBox.setSelected(true);
+        else
+            doyBox.setSelected(false);
+        
         String csort = Prefs.getPref(PrefName.COLORSORT);
         if( csort.equals("true") )
             colorsortbox.setSelected(true);
@@ -391,6 +398,7 @@ public class OptionsView extends View
         
 
         dbTypeGroup = new javax.swing.ButtonGroup();
+        GridBagConstraints gridBagConstraints110 = new GridBagConstraints();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel2 = new javax.swing.JPanel();
         privbox = new javax.swing.JCheckBox();
@@ -1159,6 +1167,11 @@ public class OptionsView extends View
         });
 
         this.setContentPane(getJPanel());
+        gridBagConstraints110.gridx = 1;
+        gridBagConstraints110.gridy = 7;
+        gridBagConstraints110.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints110.insets = new java.awt.Insets(4,4,4,4);
+        jPanel2.add(getDoyBox(), gridBagConstraints110);
         pack();
     }//GEN-END:initComponents
 
@@ -1273,6 +1286,11 @@ public class OptionsView extends View
             Prefs.putPref(PrefName.SHOWUSHOLIDAYS, "true" );
         else
             Prefs.putPref(PrefName.SHOWUSHOLIDAYS, "false" );
+        
+        if( doyBox.isSelected() )
+            Prefs.putPref(PrefName.DAYOFYEAR, "true" );
+        else
+            Prefs.putPref(PrefName.DAYOFYEAR, "false" );
         
         if( revDayEditbox.isSelected() )
             Prefs.putPref(PrefName.REVERSEDAYEDIT, "true" );
@@ -1671,6 +1689,7 @@ public class OptionsView extends View
     
 	private JPanel jPanel = null;
 	private JPanel jPanel10 = null;
+	private JCheckBox doyBox = null;
 	/**
 	 * This method initializes jPanel	
 	 * 	
@@ -1710,4 +1729,16 @@ public class OptionsView extends View
 		}
 		return jPanel10;
 	}
-  }
+	/**
+	 * This method initializes doyBox	
+	 * 	
+	 * @return javax.swing.JCheckBox	
+	 */    
+	private JCheckBox getDoyBox() {
+		if (doyBox == null) {
+			doyBox = new JCheckBox();
+			doyBox.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("showdoy"));
+		}
+		return doyBox;
+	}
+   }

@@ -91,6 +91,7 @@ public class PrefName {
 		static public PrefName WKSTARTHOUR = new PrefName( "wkStartHour", "7");
 		static public PrefName WKENDHOUR = new PrefName( "wkEndHour", "22");
 		static public PrefName DEFAULT_APPT = new PrefName("defaultAppt", "" );
+		static public PrefName DAYOFYEAR = new PrefName("showDayOfYear", "false");
 		
 		// reminders/popups
 		static public PrefName REMINDERS = new PrefName( "reminders", "true");
