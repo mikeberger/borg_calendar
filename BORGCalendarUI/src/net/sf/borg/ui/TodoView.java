@@ -374,6 +374,9 @@ public class TodoView extends View {
       AppointmentListView ag = new AppointmentListView(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE));
       ag.show();
       
+      CalendarView cv = CalendarView.getReference();
+      if( cv != null ) cv.goTo( cal );
+      
     }//GEN-LAST:event_jTable1MouseClicked
     
     private void addtodoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addtodoActionPerformed

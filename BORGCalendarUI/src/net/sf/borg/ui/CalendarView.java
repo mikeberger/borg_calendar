@@ -113,6 +113,11 @@ public class CalendarView extends View {
         return( singleton );
     }
     
+    public static CalendarView getReference()
+    {
+        return( singleton );
+    }
+    
     private CalendarView(RestartListener rl, boolean trayIcon) {
         super();
         trayIcon_ = trayIcon;
@@ -342,6 +347,13 @@ public class CalendarView extends View {
     /* set borg to current month and refresh the screen */
     private void today() throws Exception {
         GregorianCalendar cal = new GregorianCalendar();
+        month_ = cal.get(Calendar.MONTH);
+        year_ = cal.get(Calendar.YEAR);
+        refresh();
+    }
+    
+    public void goTo( Calendar cal )
+    {
         month_ = cal.get(Calendar.MONTH);
         year_ = cal.get(Calendar.YEAR);
         refresh();
