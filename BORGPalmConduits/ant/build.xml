@@ -7,7 +7,7 @@
 
    <property name="build.dir" value="${basedir}/build" />
    <property name="dist.dir" value="${basedir}/dist" />
-   <property name="borg.jar" value="C:/Documents and Settings/Owner/My Documents/borg/borg_src3/BORGCalendarCommon/dist/borg.jar"/>	
+   <property name="borg.jar" value="${basedir}/../BORGCalendarCommon/dist/borg.jar"/>	
    <property name="jsync.jar" value="C:/CDK403/Java/Bin/jsync/rt/jsync.jar"/>
    <property name="build.compiler" value="modern" />
 
