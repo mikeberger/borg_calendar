@@ -236,13 +236,14 @@ public class TaskModel extends Model {
     }
     
     // open the SMDB database
-    public void open_db(String file,boolean readonly, boolean shared) throws Exception {
+    public void open_db(String file,boolean readonly, boolean shared, int userid) throws Exception {
 		db_ =
 			BeanDataFactoryFactory.getInstance().getFactory(file).create(
 				Task.class,
 				file,
 				readonly,
-				shared);
+				shared,
+				userid);
         
         // get XML that models states/transitions
         // set to default if it does not exist

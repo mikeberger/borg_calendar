@@ -1,0 +1,22 @@
+<schema>
+	<cvsid>$Id$</cvsid>
+	<name>User</name>
+	<field>
+		<name>USER</name>
+		<type>String</type>
+		<longName>UserName</longName>
+		<desc>User Name</desc>
+	</field>
+	<field>
+		<name>PW</name>
+		<type>String</type>
+		<longName>Password</longName>
+		<desc>Password</desc>
+	</field>
+	<field>
+		<name>ID</name>
+		<type>Integer</type>
+		<longName>UserId</longName>
+		<desc>User ID</desc>
+	</field>	
+</schema>

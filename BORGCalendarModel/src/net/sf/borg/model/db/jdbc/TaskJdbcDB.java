@@ -45,9 +45,9 @@ class TaskJdbcDB extends JdbcDB
     }
              
     /** Creates a new instance of AppJdbcDB */
-    TaskJdbcDB(String url, String userid, String passwd)  throws Exception
+    TaskJdbcDB(String url, int userid)  throws Exception
     {
-        super( url, userid, passwd );
+        super( url, userid );
     }
     
     TaskJdbcDB(Connection conn) 
@@ -65,7 +65,7 @@ class TaskJdbcDB extends JdbcDB
         Task task = (Task) bean;
         
         stmt.setInt( 1, task.getKey() );
-        stmt.setInt( 2, 1 );
+        stmt.setInt( 2, userid_ );
 
         java.util.Date sd = task.getStartDate();        
         if( sd != null )
@@ -104,7 +104,7 @@ class TaskJdbcDB extends JdbcDB
     {
         PreparedStatement stmt = connection_.prepareStatement( "DELETE FROM tasks WHERE tasknum = ? AND userid = ?" );
         stmt.setInt( 1, key );
-        stmt.setInt( 2, 1 );
+        stmt.setInt( 2, userid_ );
         stmt.executeUpdate();
         
         delCache( key );
@@ -114,7 +114,7 @@ class TaskJdbcDB extends JdbcDB
     {
         ArrayList keys = new ArrayList();
         PreparedStatement stmt = connection_.prepareStatement("SELECT tasknum FROM tasks WHERE userid = ?" );
-        stmt.setInt( 1, 1 );
+        stmt.setInt( 1, userid_ );
         ResultSet rs = stmt.executeQuery();
         while( rs.next() )
         {
@@ -128,7 +128,7 @@ class TaskJdbcDB extends JdbcDB
     public int maxkey() throws Exception
     {
         PreparedStatement stmt = connection_.prepareStatement("SELECT MAX(tasknum) FROM tasks WHERE  userid = ?" );
-        stmt.setInt( 1, 1 );
+        stmt.setInt( 1, userid_ );
         ResultSet r = stmt.executeQuery();
         if( r.next() )
             return( r.getInt(1) );
@@ -144,14 +144,14 @@ class TaskJdbcDB extends JdbcDB
 	{
 		PreparedStatement stmt = connection_.prepareStatement("SELECT * FROM tasks WHERE tasknum = ? AND userid = ?" );
 		stmt.setInt( 1, key );
-		stmt.setInt( 2, 1 );
+		stmt.setInt( 2, userid_ );
 		return stmt;
 	}
 	
 	PreparedStatement getPSAll() throws SQLException
 	{
 		PreparedStatement stmt = connection_.prepareStatement("SELECT * FROM tasks WHERE userid = ?" );
-		stmt.setInt( 1, 1 );
+		stmt.setInt( 1, userid_ );
 		return stmt;
 	}
 	
@@ -214,7 +214,7 @@ class TaskJdbcDB extends JdbcDB
         stmt.setString( 15, task.getCategory() );
 
         stmt.setInt( 16, task.getKey() );
-        stmt.setInt( 17, 1 );
+        stmt.setInt( 17, userid_ );
 
         
         stmt.executeUpdate();

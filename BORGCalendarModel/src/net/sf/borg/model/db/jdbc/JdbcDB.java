@@ -74,9 +74,13 @@ abstract class JdbcDB implements BeanDB
     private boolean objectCacheOn_;  // is caching on?
     private HashMap objectCache_;  // the cache
     
+    protected int userid_ = 1;
+    
     /** Creates a new instance of JdbcDB */
-    JdbcDB(String url, String userid, String passwd) throws Exception
+    JdbcDB(String url, int userid) throws Exception
     {
+        userid_ = userid;
+        
         objectCacheOn_ = true;
         objectCache_ = new HashMap();
         
@@ -91,7 +95,7 @@ abstract class JdbcDB implements BeanDB
         
         if( globalConnection_ == null )
         {
-            globalConnection_ = DriverManager.getConnection( url, userid, passwd );
+            globalConnection_ = DriverManager.getConnection( url );
         }
  
         connection_ = globalConnection_;
@@ -211,7 +215,7 @@ abstract class JdbcDB implements BeanDB
     
     public void close() throws Exception
     {
-        if( connection_ != null )
+        if( connection_ != null && connection_ != globalConnection_ )
             connection_.close();
         connection_ = null;
     }
@@ -241,7 +245,7 @@ abstract class JdbcDB implements BeanDB
     {
         ArrayList keys = new ArrayList();
         PreparedStatement stmt = connection_.prepareStatement("SELECT name, value FROM options WHERE userid = ?" );
-        stmt.setInt( 1, 1 );
+        stmt.setInt( 1, userid_ );
         ResultSet rs = stmt.executeQuery();
         while( rs.next() )
         {
@@ -264,7 +268,7 @@ abstract class JdbcDB implements BeanDB
         try{
             PreparedStatement stmt = connection_.prepareStatement( "DELETE FROM options WHERE name = ? AND userid = ?" );
             stmt.setString( 1, oname );
-            stmt.setInt( 2, 1 );
+            stmt.setInt( 2, userid_ );
             stmt.executeUpdate();
         }
         catch( Exception e )
@@ -278,7 +282,7 @@ abstract class JdbcDB implements BeanDB
         
         
         stmt.setString( 1, oname );
-        stmt.setInt( 2, 1 );
+        stmt.setInt( 2, userid_ );
         stmt.setString( 3, value );
  
         stmt.executeUpdate();

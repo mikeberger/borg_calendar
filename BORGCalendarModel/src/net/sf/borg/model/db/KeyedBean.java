@@ -38,7 +38,9 @@ public abstract class KeyedBean implements Serializable
         
     /** Creates a new instance of KeyedBean */
     public KeyedBean()
-    {}
+    {
+        key_ = -1;
+    }
     
     public int getKey()
     {

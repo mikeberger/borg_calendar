@@ -87,11 +87,17 @@
          <arg value="${db.res.dir}/addr_schema.xml"/> 
       </java>
         
+      <java jar="${gen.dir}/genObj.jar" dir="${gen.dir}" fork="true" failonerror="true" >
+        <arg value="net.sf.borg.model"/> 
+        <arg value="${db.res.dir}/user_schema.xml"/> 
+      </java>
+       
       <copy todir="${prj.model.dir}/src/${pkg}/model">
          <fileset dir="${gen.dir}">
             <include name="Address.java"/>
             <include name="Task.java"/>
             <include name="Appointment.java"/>
+         	<include name="User.java"/>
             <include name="*XMLAdapter.java"/>
          </fileset>
       </copy>

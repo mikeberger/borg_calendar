@@ -569,14 +569,15 @@ public class AppointmentModel extends Model
     
     
     // open the SMDB database
-    public void open_db(String file, boolean readonly, boolean autostart, boolean shared) throws Exception
+    public void open_db(String file, boolean readonly, boolean autostart, boolean shared, int userid) throws Exception
     {
 		db_ =
 			BeanDataFactoryFactory.getInstance().getFactory(file).create(
 				Appointment.class,
 				file,
 				readonly,
-				shared);
+				shared,
+				userid);
         
         // init categories and currentcategories
         setCurrentCategories( new TreeSet(getCategories()));

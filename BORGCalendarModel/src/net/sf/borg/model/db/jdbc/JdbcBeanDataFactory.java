@@ -25,6 +25,7 @@ import java.sql.Connection;
 import net.sf.borg.model.Address;
 import net.sf.borg.model.Appointment;
 import net.sf.borg.model.Task;
+import net.sf.borg.model.User;
 import net.sf.borg.model.db.BeanDB;
 import net.sf.borg.model.db.IBeanDataFactory;
 
@@ -57,24 +58,24 @@ public class JdbcBeanDataFactory implements IBeanDataFactory
 		Class cls,
 		String file,
 		boolean readonly,
-		boolean shared)
+		boolean shared,
+		int userid)
 		throws Exception
 	{
 		if (cls == Address.class)
-			return new AddrJdbcDB( file, BUILTIN_USERID, BUILTIN_PASSWORD );
+			return new AddrJdbcDB( file, userid );
 		else if (cls == Task.class)
-			return new TaskJdbcDB( file, BUILTIN_USERID, BUILTIN_PASSWORD );
+			return new TaskJdbcDB( file, userid );
+		else if (cls == User.class)
+			return new UserJdbcDB( file );
 		else if (cls == Appointment.class)
-			return new ApptJdbcDB( file, BUILTIN_USERID, BUILTIN_PASSWORD );
+			return new ApptJdbcDB( file, userid );
 
 		throw new IllegalArgumentException(cls.getName());
 	}
 
 	// private //
 	private static final JdbcBeanDataFactory instance = new JdbcBeanDataFactory();
-	private static final String BUILTIN_USERID = "borg";
-	private static final String BUILTIN_PASSWORD = "borg";
-
 	private JdbcBeanDataFactory()
 	{
 	}

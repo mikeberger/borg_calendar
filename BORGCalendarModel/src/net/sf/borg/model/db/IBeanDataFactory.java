@@ -41,6 +41,7 @@ public interface IBeanDataFactory
 		Class cls,
 		String file,
 		boolean readonly,
-		boolean shared)
+		boolean shared,
+		int userid )
 		throws Exception;
 }

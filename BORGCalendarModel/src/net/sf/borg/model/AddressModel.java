@@ -140,7 +140,7 @@ public class AddressModel extends Model {
     }
     
     // open the SMDB database
-	public void open_db(String file, boolean readonly, boolean shared)
+	public void open_db(String file, boolean readonly, boolean shared, int userid)
 		throws Exception
 	{
 		db_ =
@@ -148,7 +148,8 @@ public class AddressModel extends Model {
 				Address.class,
 				file,
 				readonly,
-				shared);
+				shared,
+				userid);
 		load_map();
 	}
 

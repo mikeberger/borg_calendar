@@ -51,9 +51,9 @@ class ApptJdbcDB extends JdbcDB implements AppointmentKeyFilter
     }
        
     /** Creates a new instance of AppJdbcDB */
-    ApptJdbcDB(String url, String userid, String passwd) throws Exception
+    ApptJdbcDB(String url, int userid) throws Exception
     {
-        super( url, userid, passwd );
+        super( url, userid );
     }
     
     public void addObj(KeyedBean bean, boolean crypt) throws DBException, Exception
@@ -66,7 +66,7 @@ class ApptJdbcDB extends JdbcDB implements AppointmentKeyFilter
         
         stmt.setTimestamp( 1, new java.sql.Timestamp( appt.getDate().getTime()), Calendar.getInstance() );
         stmt.setInt( 2, appt.getKey() );
-        stmt.setInt( 3, 1 );
+        stmt.setInt( 3, userid_ );
         
         stmt.setInt( 4, toInt( appt.getDuration() ) );
         stmt.setString( 5, appt.getText() );
@@ -94,7 +94,7 @@ class ApptJdbcDB extends JdbcDB implements AppointmentKeyFilter
     {
         PreparedStatement stmt = connection_.prepareStatement( "DELETE FROM appointments WHERE appt_num = ? AND userid = ?" );
         stmt.setInt( 1, key );
-        stmt.setInt( 2, 1 );
+        stmt.setInt( 2, userid_ );
         stmt.executeUpdate();
         
         delCache( key );
@@ -104,7 +104,7 @@ class ApptJdbcDB extends JdbcDB implements AppointmentKeyFilter
     {
         ArrayList keys = new ArrayList();
         PreparedStatement stmt = connection_.prepareStatement("SELECT appt_num FROM appointments WHERE userid = ?" );
-        stmt.setInt( 1, 1 );
+        stmt.setInt( 1, userid_ );
         ResultSet rs = stmt.executeQuery();
         while( rs.next() )
         {
@@ -119,7 +119,7 @@ class ApptJdbcDB extends JdbcDB implements AppointmentKeyFilter
     {
         ArrayList keys = new ArrayList();
         PreparedStatement stmt = connection_.prepareStatement("SELECT appt_num FROM appointments WHERE userid = ? AND todo = '1'" );
-        stmt.setInt( 1, 1 );
+        stmt.setInt( 1, userid_ );
         ResultSet rs = stmt.executeQuery();
         while( rs.next() )
         {
@@ -134,7 +134,7 @@ class ApptJdbcDB extends JdbcDB implements AppointmentKeyFilter
     {
         ArrayList keys = new ArrayList();
         PreparedStatement stmt = connection_.prepareStatement("SELECT appt_num FROM appointments WHERE userid = ? AND repeat = '1'" );
-        stmt.setInt( 1, 1 );
+        stmt.setInt( 1, userid_ );
         ResultSet rs = stmt.executeQuery();
         while( rs.next() )
         {
@@ -144,20 +144,7 @@ class ApptJdbcDB extends JdbcDB implements AppointmentKeyFilter
         return( keys );
         
     }
-    /*
-    public boolean isRepeat(int key) throws Exception
-    {
-        PreparedStatement stmt = connection_.prepareStatement("SELECT repeat FROM appointments WHERE userid = ? AND appt_num = ?" );
-        stmt.setInt( 1, 1 );
-        stmt.setInt( 2, key );
-        ResultSet rs = stmt.executeQuery();
-        if( rs.next() && rs.getInt( "repeat" ) == 1 )
-        {
-            return(true);
-        }
-        return( false );
-        
-    }*/
+
     public int maxkey()
     {
         return(0);
@@ -172,14 +159,14 @@ class ApptJdbcDB extends JdbcDB implements AppointmentKeyFilter
 	{
 		PreparedStatement stmt = connection_.prepareStatement("SELECT * FROM appointments WHERE appt_num = ? AND userid = ?" );
 		stmt.setInt( 1, key );
-		stmt.setInt( 2, 1 );
+		stmt.setInt( 2, userid_ );
 		return stmt;
 	}
 	
 	PreparedStatement getPSAll() throws SQLException
 	{
 		PreparedStatement stmt = connection_.prepareStatement("SELECT * FROM appointments WHERE userid = ?" );
-		stmt.setInt( 1, 1 );
+		stmt.setInt( 1, userid_ );
 		return stmt;
 	}
 	
@@ -231,7 +218,7 @@ class ApptJdbcDB extends JdbcDB implements AppointmentKeyFilter
         stmt.setString( 12, appt.getColor());
         stmt.setInt( 13, toInt( appt.getRepeatFlag()) );
         stmt.setInt( 14, appt.getKey() );
-        stmt.setInt( 15, 1 );
+        stmt.setInt( 15, userid_ );
         
         stmt.executeUpdate();
         

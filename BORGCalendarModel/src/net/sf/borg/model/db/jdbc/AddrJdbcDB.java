@@ -44,9 +44,9 @@ class AddrJdbcDB extends JdbcDB
         Version.addVersion("$Id$");
     }
              
-    AddrJdbcDB(String url, String userid, String passwd) throws Exception
+    AddrJdbcDB(String url, int userid) throws Exception
     {
-        super( url, userid, passwd );
+        super( url, userid );
     }
     
     AddrJdbcDB(Connection conn) 
@@ -66,7 +66,7 @@ class AddrJdbcDB extends JdbcDB
         Address addr = (Address) bean;
         
         stmt.setInt( 1, addr.getKey() );
-        stmt.setInt( 2, 1 );
+        stmt.setInt( 2, userid_ );
 
         stmt.setString( 3, addr.getFirstName() );
         stmt.setString( 4, addr.getLastName());
@@ -106,7 +106,7 @@ class AddrJdbcDB extends JdbcDB
     {
         PreparedStatement stmt = connection_.prepareStatement( "DELETE FROM addresses WHERE address_num = ? AND userid = ?" );
         stmt.setInt( 1, key );
-        stmt.setInt( 2, 1 );
+        stmt.setInt( 2, userid_ );
         stmt.executeUpdate();
         
         delCache( key );
@@ -116,7 +116,7 @@ class AddrJdbcDB extends JdbcDB
     {
         ArrayList keys = new ArrayList();
         PreparedStatement stmt = connection_.prepareStatement("SELECT address_num FROM addresses WHERE userid = ? ORDER BY last_name, first_name" );
-        stmt.setInt( 1, 1 );
+        stmt.setInt( 1, userid_ );
         ResultSet rs = stmt.executeQuery();
         while( rs.next() )
         {
@@ -130,7 +130,7 @@ class AddrJdbcDB extends JdbcDB
     public int maxkey() throws Exception
     {
         PreparedStatement stmt = connection_.prepareStatement("SELECT MAX(address_num) FROM addresses WHERE  userid = ?" );
-        stmt.setInt( 1, 1 );
+        stmt.setInt( 1, userid_ );
         ResultSet r = stmt.executeQuery();
         if( r.next() )
             return( r.getInt(1) );
@@ -146,14 +146,14 @@ class AddrJdbcDB extends JdbcDB
 	{
 		PreparedStatement stmt = connection_.prepareStatement("SELECT * FROM addresses WHERE address_num = ? AND userid = ?" );
 		stmt.setInt( 1, key );
-		stmt.setInt( 2, 1 );
+		stmt.setInt( 2, userid_ );
 		return stmt;
 	}
 	
 	PreparedStatement getPSAll() throws SQLException
 	{
 		PreparedStatement stmt = connection_.prepareStatement("SELECT * FROM addresses WHERE userid = ?" );
-		stmt.setInt( 1, 1 );
+		stmt.setInt( 1, userid_ );
 		return stmt;
 	}
 	
@@ -199,7 +199,7 @@ class AddrJdbcDB extends JdbcDB
         Address addr = (Address) bean;
         
         stmt.setInt( 24, addr.getKey() );
-        stmt.setInt( 25, 1 );
+        stmt.setInt( 25, userid_ );
 
         stmt.setString( 1, addr.getFirstName() );
         stmt.setString( 2, addr.getLastName());

@@ -294,7 +294,21 @@ public class Borg extends Controller implements OptionsView.RestartListener {
             {
                 shared = true;
             }
-
+            
+            // default uid - this will eventually be set by a login/passwd lookup into
+            // a users table when multi-user support is added
+            int uid = 1;
+            
+            /*
+            if( Prefs.getPref( PrefName.DBTYPE ).equals("mysql"))
+            {
+                // validate user id for mysql
+                UserModel umod = UserModel.create();
+                register(umod);
+                umod.open_db(dbdir, readonly);
+                uid = umod.validate("ckb", "ckb");
+            }*/
+           
             // skip banner stuff if autostart or aplist on
             if (!aplist && !autostart && splash)
                 ban_.setText(Resource
@@ -347,7 +361,7 @@ public class Borg extends Controller implements OptionsView.RestartListener {
 
             calmod_ = AppointmentModel.create();
             register(calmod_);
-            calmod_.open_db(dbdir, readonly, autostart, shared);
+            calmod_.open_db(dbdir, readonly, autostart, shared,uid);
 
             // aplist only needs calendar data - so just print list of
             // appointments
@@ -376,14 +390,14 @@ public class Borg extends Controller implements OptionsView.RestartListener {
                         .getResourceString("Loading_Task_Database"));
             taskmod_ = TaskModel.create();
             register(taskmod_);
-            taskmod_.open_db(dbdir, readonly, shared);
+            taskmod_.open_db(dbdir, readonly, shared,uid);
 
             if (!autostart && splash)
                 ban_.setText(Resource
                         .getResourceString("Opening_Address_Database"));
             addrmod_ = AddressModel.create();
             register(addrmod_);
-            addrmod_.open_db(dbdir, readonly, shared);
+            addrmod_.open_db(dbdir, readonly, shared,uid);
 
             if (!autostart && splash)
                 ban_.setText(Resource.getResourceString("Opening_Main_Window"));
