@@ -83,6 +83,7 @@ import net.sf.borg.model.TaskModel;
 
 
 
+import java.awt.GridLayout;
 // This is the month view GUI
 // it is the main borg window
 // like most of the other borg window, you really need to check the netbeans form
@@ -1479,6 +1480,7 @@ public class CalendarView extends View implements Prefs.Listener {
 
         setJMenuBar(menuBar);
 
+        this.setContentPane(getJPanel());
     }//GEN-END:initComponents
 
     private void impicalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_impicalActionPerformed
@@ -2153,6 +2155,8 @@ public class CalendarView extends View implements Prefs.Listener {
     private JTextPane todoPreview;
     private JTextPane taskPreview;
 
+	private JPanel jPanel = null;
+	private JPanel jPanel5 = null;
     // called when a Prefs change notification is sent out
     // to all Prefs.Listeners
 	public void prefsChanged() {
@@ -2163,4 +2167,63 @@ public class CalendarView extends View implements Prefs.Listener {
         refresh();	
 	}
     
-}
+	/**
+	 * This method initializes jPanel	
+	 * 	
+	 * @return javax.swing.JPanel	
+	 */    
+	private JPanel getJPanel() {
+		if (jPanel == null) {
+			GridBagConstraints gridBagConstraints61 = new GridBagConstraints();
+			GridBagConstraints gridBagConstraints60 = new GridBagConstraints();
+			GridBagConstraints gridBagConstraints59 = new GridBagConstraints();
+			GridBagConstraints gridBagConstraints58 = new GridBagConstraints();
+			GridBagConstraints gridBagConstraints57 = new GridBagConstraints();
+			jPanel = new JPanel();
+			jPanel.setLayout(new GridBagLayout());
+			gridBagConstraints57.gridx = 0;
+			gridBagConstraints57.gridy = 0;
+			gridBagConstraints57.insets = new java.awt.Insets(4,4,4,4);
+			gridBagConstraints57.fill = java.awt.GridBagConstraints.HORIZONTAL;
+			gridBagConstraints58.gridx = 0;
+			gridBagConstraints58.gridy = 2;
+			gridBagConstraints58.insets = new java.awt.Insets(0,0,0,0);
+			gridBagConstraints58.fill = java.awt.GridBagConstraints.BOTH;
+			gridBagConstraints58.weightx = 1.0D;
+			gridBagConstraints58.weighty = 1.0D;
+			gridBagConstraints59.gridx = 1;
+			gridBagConstraints59.gridy = 2;
+			gridBagConstraints59.fill = java.awt.GridBagConstraints.VERTICAL;
+			gridBagConstraints60.gridx = 0;
+			gridBagConstraints60.gridy = 1;
+			gridBagConstraints60.fill = java.awt.GridBagConstraints.HORIZONTAL;
+			gridBagConstraints61.gridx = 0;
+			gridBagConstraints61.gridy = 3;
+			gridBagConstraints61.fill = java.awt.GridBagConstraints.BOTH;
+			jPanel.add(MonthLabel, gridBagConstraints57);
+			jPanel.add(jPanel1, gridBagConstraints58);
+			jPanel.add(jPanel3, gridBagConstraints59);
+			jPanel.add(jPanel2, gridBagConstraints60);
+			jPanel.add(getJPanel5(), gridBagConstraints61);
+		}
+		return jPanel;
+	}
+	/**
+	 * This method initializes jPanel5	
+	 * 	
+	 * @return javax.swing.JPanel	
+	 */    
+	private JPanel getJPanel5() {
+		if (jPanel5 == null) {
+			GridLayout gridLayout62 = new GridLayout();
+			jPanel5 = new JPanel();
+			jPanel5.setLayout(gridLayout62);
+			gridLayout62.setRows(1);
+			jPanel5.add(Prev, null);
+			jPanel5.add(Today, null);
+			jPanel5.add(Goto, null);
+			jPanel5.add(Next, null);
+		}
+		return jPanel5;
+	}
+  }
