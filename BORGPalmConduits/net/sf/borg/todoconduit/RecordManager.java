@@ -7,11 +7,13 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
+import java.util.Vector;
 
 import net.sf.borg.model.Appointment;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Task;
 import net.sf.borg.model.TaskModel;
+import palm.conduit.Category;
 import palm.conduit.Log;
 import palm.conduit.SyncManager;
 import palm.conduit.SyncProperties;
@@ -25,15 +27,34 @@ public class RecordManager {
     SyncProperties props;
     int db;
     static private SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+    CategoryManager cm = null;
+    Vector hhCats = null;
     
     public RecordManager(SyncProperties props, int db) {
         this.props = props;
         this.db = db;
+        cm = new CategoryManager( props, db );
     }
 
     public void WipeData() throws Exception {
 
         SyncManager.purgeAllRecs(db);
+        
+        if( hhCats == null)
+        {
+            hhCats = cm.getHHCategories();
+        }
+        
+        Iterator cit = hhCats.iterator();
+        while( cit.hasNext())
+        {
+            Category cat = (Category) cit.next();
+            cat.setName("");
+        }
+        Category uf = (Category) hhCats.elementAt(0);
+        uf.setId(0);
+        uf.setIndex(0);
+        uf.setName("Unfiled");
 
         AppointmentModel amod = AppointmentModel.getReference();
 
@@ -56,7 +77,44 @@ public class RecordManager {
             rec.setDueDate(nt);
             String note = Integer.toString(r.getKey()) + "," + sdf.format(nt);
             rec.setNote(note);
+            
+            String s = r.getCategory();
+            if( s == null)
+            {
+                rec.setCategoryIndex(0);
+            }
+            else
+            {
+                // check if new cat or one already in list
+                Category c = cm.matchName(s,hhCats);
+                if( c != null )
+                {
+                    rec.setCategoryIndex(c.getIndex());
+                }
+                else
+                {
+                    // add new
+                    int i = cm.getNextIndex(hhCats);
+                    if( i == -1 )
+                    {
+                        rec.setCategoryIndex(0);
+                        Log.err("cannot add category: " + s);
+                        
+                    }
+                    else
+                    {
+                        c = (Category) hhCats.elementAt(i);
+                        c.setId(i);
+                        c.setIndex(i);
+                        c.setName(s);
+                        rec.setCategoryIndex(i);
+                        
+                    }
+                       
+                }
+            }
             SyncManager.writeRec(db, rec);
+            
         }
         
         Collection tasks = TaskModel.getReference().getTasks();
@@ -93,6 +151,8 @@ public class RecordManager {
             SyncManager.writeRec(db, rec);
             
         }
+        
+        cm.writeHHCategories(hhCats);
 
     }
 
@@ -101,6 +161,13 @@ public class RecordManager {
     public void SyncData() throws Exception {
 
         TodoRecord hhRecord;
+        
+        
+        // get categories
+        if( hhCats == null)
+        {
+            hhCats = cm.getHHCategories();
+        }
 
         // get list og hh ids
         ArrayList hhids = new ArrayList();
@@ -231,6 +298,12 @@ public class RecordManager {
                     }
                 }
 
+                //category
+                String cat = cm.matchId(hhRecord.getCategoryIndex(), hhCats).getName();
+                if( !cat.equals("Unfiled"))
+                {
+                    appt.setCategory(cat);
+                } 
                 
                 AppointmentModel.getReference().syncSave(appt);
             }
@@ -283,12 +356,19 @@ public class RecordManager {
         
         return( "" );
     }
-    static public Appointment palmToBorg(TodoRecord hh) {
+    
+    public Appointment palmToBorg(TodoRecord hh) {
         Appointment appt = AppointmentModel.getReference().newAppt();
         appt.setKey(-1);
         appt.setDate(hh.getDueDate());
         appt.setTodo(true);
         appt.setText(hh.getDescription());
+        String cat = cm.matchId(hh.getCategoryIndex(), hhCats).getName();
+        if( !cat.equals("Unfiled"))
+        {
+            appt.setCategory(cat);
+        }
+        //System.out.println( appt.getText() + " " + cm.matchId(hh.getCategoryIndex(), hhCats).getName());
         return appt;
     }
 }
