@@ -484,6 +484,9 @@ public class CalendarView extends View implements Prefs.Listener {
             
             s = textPane.addStyle("smul", s );
             StyleConstants.setUnderline( s, true );
+            
+            s = textPane.addStyle("strike", bl );
+            StyleConstants.setStrikeThrough( s, true );
         }
         catch( NoSuchFieldError e ) {
             // java 1.3 - just use black
@@ -696,15 +699,22 @@ public class CalendarView extends View implements Prefs.Listener {
                             	 }
                             }
                             
+                            String color = info.getColor();
+                            // strike-through done todos
+                            if( info.getTodo() && !(nt == null || !nt.after(gc.getTime())) )
+                            {
+                                color = "strike";
+                            }
+                            
                             
                             // add the day's text in the right color. If the appt is the last
                             // one - don't add a trailing newline - it will make the text pane
                             // have one extra line - forcing an unecessary scrollbar at times
                             if( it.hasNext() ) {
-                                addString( daytext[i], info.getText() + "\n", info.getColor() );
+                                addString( daytext[i], info.getText() + "\n", color );
                             }
                             else
-                                addString( daytext[i], info.getText(), info.getColor() );
+                                addString( daytext[i], info.getText(), color );
                             
                         }
                     }

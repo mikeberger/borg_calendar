@@ -486,6 +486,7 @@ public class AppointmentModel extends Model
             else
             {
                 appt.setTodo(false);
+                appt.setColor("strike");
                 saveAppt( appt, false );
             }
         }

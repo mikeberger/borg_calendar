@@ -969,7 +969,7 @@ ialize the form.
     }
                 
     private String colors[] =
-    { "black", "red", "blue", "green", "white" };
+    { "black", "red", "blue", "green", "white", "strike" };
     private String colorToEnglish( String color )
     {
         for( int i = 0; i < colors.length; i++ )
