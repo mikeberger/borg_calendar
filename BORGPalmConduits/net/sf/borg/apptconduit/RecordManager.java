@@ -426,8 +426,7 @@ public class RecordManager {
                 rec.setRepeatType(REPEAT_MONTHLY_BY_DATE);
             }
             else if (freq.equals("yearly")) {
-                rec.setRepeatType(REPEAT_MONTHLY_BY_DATE);
-                rec.setRepeatFrequency(12);
+                rec.setRepeatType(REPEAT_YEARLY_BY_DATE);
             }
         }
 
@@ -496,6 +495,70 @@ public class RecordManager {
             long t = hh.getEndDate().getTime() - hh.getStartDate().getTime();
             appt.setDuration(new Integer((int)t/60000));
         }
+        
+        int rtype = hh.getRepeatType();
+        int freq = hh.getRepeatFrequency();
+        Date until = hh.getRepeatEndDate();
+        int days = 9999;
+        int months = 9999;
+        int years = 9999;
+        if( until != null )
+        {
+        	Date d = hh.getStartDate();
+        	long t = until.getTime() - d.getTime();
+        	//Log.out( d + " " + until + " " + t);
+        	GregorianCalendar cal = new GregorianCalendar();
+        	cal.setTime(d);
+        	int m1 = cal.get(cal.MONTH);
+        	int y1 = cal.get(cal.YEAR);
+        	cal.setTime(until);
+        	int m2 = cal.get(cal.MONTH);
+        	int y2 = cal.get(cal.YEAR);
+        	days = (int)(t/(1000*60*60*24));
+        	months = (y2-y1)*12 + m2-m1;
+        	years = y2-y1;
+        }
+        //Log.out("days=" + days);
+        //Log.out("rt=" + rtype);
+        //Log.out("freq=" + freq);
+        
+        if( (rtype == REPEAT_WEEKLY && freq == 1) ||
+        	(rtype == REPEAT_DAILY && freq == 7))
+        {
+        	appt.setFrequency("weekly");
+        	appt.setTimes( new Integer( 1+(days/7)));
+        	appt.setRepeatFlag(true);
+        }
+        else if( (rtype == REPEAT_WEEKLY && freq == 2) ||
+        		 (rtype == REPEAT_DAILY && freq == 14))
+        {
+           	appt.setFrequency("biweekly");
+        	appt.setTimes( new Integer( 1+(days/14)));
+        	appt.setRepeatFlag(true);
+        }
+        else if( rtype == REPEAT_DAILY && freq == 1)
+        {
+          	appt.setFrequency("daily");
+        	appt.setTimes( new Integer( 1+days));
+        	appt.setRepeatFlag(true);
+        }
+        else if( rtype == REPEAT_MONTHLY_BY_DATE && freq == 1)
+        {
+          	appt.setFrequency("monthly");
+        	appt.setTimes( new Integer( 1+months));
+        	appt.setRepeatFlag(true);
+        }
+        else if( (rtype == REPEAT_MONTHLY_BY_DATE && freq == 12) ||
+                 (rtype == REPEAT_YEARLY_BY_DATE ))
+        {
+          	appt.setFrequency("yearly");
+        	appt.setTimes( new Integer( 1+years));
+        	appt.setRepeatFlag(true);
+        }
+        	
+        	
+        if( days == 9999 )
+        	appt.setTimes( new Integer(9999));
         
 
         appt.setNew(hh.isNew());
