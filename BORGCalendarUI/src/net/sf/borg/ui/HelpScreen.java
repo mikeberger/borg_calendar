@@ -62,6 +62,8 @@ class HelpScreen extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("BORG");
+        this.setSize(165, 65);
+        this.setContentPane(jScrollPane1);
         addWindowListener(new java.awt.event.WindowAdapter()
         {
             public void windowClosing(java.awt.event.WindowEvent evt)
@@ -74,7 +76,7 @@ class HelpScreen extends javax.swing.JFrame {
         jEditorPane1.setPreferredSize(new java.awt.Dimension(700, 500));
         jScrollPane1.setViewportView(jEditorPane1);
 
-        getContentPane().add(jScrollPane1, java.awt.BorderLayout.CENTER);
+        //getContentPane().add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
         pack();
     }//GEN-END:initComponents
@@ -91,4 +93,4 @@ class HelpScreen extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
     
-}
+}  //  @jve:decl-index=0:visual-constraint="10,10"
