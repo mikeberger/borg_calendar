@@ -1,0 +1,39 @@
+To build BORG from the source, you need the JAVA SDK 1.4 or later, available from java.sun.com.
+You only need to build BORG if you want to modify it. Otherwise, the binary
+jar file - borg.jar - will run on ANY OS that has the Java runtime 1.4.
+
+BORG was built using ant. If you have ant (available at apache.org), then
+from command line in the ant folder, do - "ant fulldist". This will build the BORG zip files
+in the borg_src directory. The jar files are put into the borg_src/dist directory.
+
+If you do not want to use ant and you know your way around Java, it should not take
+long to figure out how to build it your own way. However, using ant is much much easier.
+
+The BORG screens were created using NetBeans. NetBeans is a free Java IDE
+available from netbeans.org. It contains a GUI builder. 
+
+I usually build BORG from within NetBeans, even when not changing screens. It has a nice Java
+editor and browser.  If you wish to modify the screens, using NetBeans would make it much easier. 
+Otherwise, there is no absolute reason that NetBeans must be used to edit the code. 
+However, if you want to modify the screens and incorporate them 
+back into the borg-calendar project at sourceforge, you will have to use
+netbeans.
+
+To set up BORG in netbeans, mount the borg_src2/src and borg_src2
+directories as a filesystem in the Explorer/Filesystems tab. 
+You should be able to explore to the borg_src2/ant/build item and click on
+it to show the various ant targets. Right-click on fulldist and select execute
+to start building. Send me email at i_flem@users.sourceforge.net with any
+questions. 
+
+If you want to run BORG from inside Netbeans, using the debugger for example, 
+you need to make a copy of the resource folder in the src folder. If you are lucky
+enough to be running Linux, you can just put a symbolic link in the src
+direcory (from the src directory, do ln -s ../resource . ). From windows, you
+must copy the folder. A shortcut is not good enough. I have yet to find a way
+around this. I don't like IDEs that try to enforce their own application directory structures
+on you. :(  
+
+=Quiet=
+
+http://borg-calendar.sourceforge.net

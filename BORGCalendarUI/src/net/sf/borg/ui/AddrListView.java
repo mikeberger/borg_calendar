@@ -1,0 +1,378 @@
+/*
+This file is part of BORG.
+ 
+    BORG is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+ 
+    BORG is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+ 
+    You should have received a copy of the GNU General Public License
+    along with BORG; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ 
+Copyright 2003 by ==Quiet==
+ */
+
+package net.sf.borg.ui;
+
+import java.util.Collection;
+import java.util.Iterator;
+
+import javax.swing.DefaultListSelectionModel;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.TableModelEvent;
+
+import net.sf.borg.common.ui.TablePrinter;
+import net.sf.borg.common.ui.TableSorter;
+import net.sf.borg.common.util.Errmsg;
+import net.sf.borg.common.util.Resource;
+import net.sf.borg.common.util.Version;
+import net.sf.borg.model.Address;
+import net.sf.borg.model.AddressModel;
+
+/**
+ *
+ * @author  MBERGER
+ */
+
+// the AddrListView displays a list of the current todo items and allows the
+// suer to mark them as done
+public class AddrListView extends View
+{
+    static
+    {
+        Version.addVersion("$Id$");
+    }
+    
+    private Collection addrs_;   // list of rows currently displayed
+    
+    private static AddrListView singleton = null;
+	public static AddrListView getReference()
+    {
+        if( singleton == null || !singleton.isShowing())
+            singleton = new AddrListView();
+        return( singleton );
+    }
+    
+    private AddrListView()
+    {
+        
+        super();
+        addModel( AddressModel.getReference() );
+        
+        // init the gui components
+        initComponents();
+        
+        // the todos will be displayed in a sorted table with 2 columns -
+        // data and todo text
+        jTable1.setModel(new TableSorter(
+        new String []
+        { Resource.getResourceString("First"), Resource.getResourceString("Last"), Resource.getResourceString("Email"), Resource.getResourceString("Screen_Name"), Resource.getResourceString("Home_Phone"), Resource.getResourceString("Work_Phone"),
+               Resource.getResourceString("Birthday") },
+        new Class []
+        {
+            java.lang.String.class,java.lang.String.class,java.lang.String.class,java.lang.String.class,java.lang.String.class,
+            java.lang.String.class, java.util.Date.class
+        }));
+        
+        refresh();
+        
+    }
+    
+    public void destroy()
+    {
+        this.dispose();
+    }
+    
+    public void refresh()
+    {
+        AddressModel addrmod_ = AddressModel.getReference();
+        
+        try
+        {
+            addrs_ = addrmod_.getAddresses();
+        }
+        catch( Exception e )
+        {
+            Errmsg.errmsg(e);
+            return;
+        }
+        
+        
+        // init the table to empty
+        TableSorter tm = (TableSorter) jTable1.getModel();
+        tm.addMouseListenerToHeaderInTable(jTable1);
+        tm.setRowCount(0);
+        
+        Iterator it = addrs_.iterator();
+        while( it.hasNext() )
+        {
+            Address r = (Address) it.next();
+            
+            try
+            {
+                
+                // add the table row
+                Object [] ro = new Object[7];
+                ro[0] = r.getFirstName();
+                ro[1] = r.getLastName();
+                ro[2] = r.getEmail();
+                ro[3] = r.getScreenName();
+                ro[4] = r.getHomePhone();
+                ro[5] = r.getWorkPhone();
+                ro[6] = r.getBirthday();
+                tm.addRow(ro);
+                tm.tableChanged(new TableModelEvent(tm));
+            }
+            catch( Exception e )
+            {
+                Errmsg.errmsg(e);
+                return;
+            }
+            
+        }
+        
+        // sort the table by last name
+        tm.sortByColumn(1);
+        
+    }
+    
+    private void editRow()
+    {
+        // figure out which row is selected to be marked as done
+        int index =  jTable1.getSelectedRow();
+        if( index == -1 ) return;
+        
+        try
+        {
+            // need to ask the table for the original (befor sorting) index of the selected row
+            TableSorter tm = (TableSorter) jTable1.getModel();
+            int k = tm.getMappedIndex(index);  // get original index - not current sorted position in tbl
+            Object[] oa = addrs_.toArray();
+            Address addr = (Address) oa[k];
+            new AddressView( addr ).show();
+        }
+        catch( Exception e )
+        {
+            Errmsg.errmsg(e);
+        }
+    }
+    /** This method is called from within the constructor to
+     * initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is
+     * always regenerated by the Form Editor.
+     */
+    private void initComponents()//GEN-BEGIN:initComponents
+    {
+        java.awt.GridBagConstraints gridBagConstraints;
+
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        jPanel1 = new javax.swing.JPanel();
+        newbutton = new javax.swing.JButton();
+        editbutton = new javax.swing.JButton();
+        delbutton = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
+        menuBar = new javax.swing.JMenuBar();
+        fileMenu = new javax.swing.JMenu();
+        printList = new javax.swing.JMenuItem();
+        exitMenuItem = new javax.swing.JMenuItem();
+
+        getContentPane().setLayout(new java.awt.GridBagLayout());
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Address_Book"));
+        addWindowListener(new java.awt.event.WindowAdapter()
+        {
+            public void windowClosing(java.awt.event.WindowEvent evt)
+            {
+                exitForm(evt);
+            }
+        });
+
+        jScrollPane1.setPreferredSize(new java.awt.Dimension(554, 404));
+        jTable1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0)));
+        jTable1.setGridColor(java.awt.Color.blue);
+        DefaultListSelectionModel mylsmodel = new DefaultListSelectionModel();
+        mylsmodel.setSelectionMode( ListSelectionModel.SINGLE_SELECTION);
+        jTable1.setSelectionModel(mylsmodel
+        );
+        jTable1.addMouseListener(new java.awt.event.MouseAdapter()
+        {
+            public void mouseClicked(java.awt.event.MouseEvent evt)
+            {
+                jTable1MouseClicked(evt);
+            }
+        });
+
+        jScrollPane1.setViewportView(jTable1);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        getContentPane().add(jScrollPane1, gridBagConstraints);
+
+        newbutton.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Add_New"));
+        newbutton.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                newbuttonActionPerformed(evt);
+            }
+        });
+
+        jPanel1.add(newbutton);
+
+        editbutton.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Edit"));
+        editbutton.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                editbuttonActionPerformed(evt);
+            }
+        });
+
+        jPanel1.add(editbutton);
+
+        delbutton.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Delete"));
+        delbutton.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                delbuttonActionPerformed(evt);
+            }
+        });
+
+        jPanel1.add(delbutton);
+
+        jButton1.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Dismiss"));
+        jButton1.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        jPanel1.add(jButton1);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        getContentPane().add(jPanel1, gridBagConstraints);
+
+        fileMenu.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Action"));
+        printList.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Print_List"));
+        printList.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                printListActionPerformed(evt);
+            }
+        });
+
+        fileMenu.add(printList);
+
+        exitMenuItem.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Exit"));
+        exitMenuItem.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                exitMenuItemActionPerformed(evt);
+            }
+        });
+
+        fileMenu.add(exitMenuItem);
+
+        menuBar.add(fileMenu);
+
+        setJMenuBar(menuBar);
+
+        pack();
+    }//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton1ActionPerformed
+    {//GEN-HEADEREND:event_jButton1ActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void delbuttonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_delbuttonActionPerformed
+    {//GEN-HEADEREND:event_delbuttonActionPerformed
+        // figure out which row is selected to be marked as done
+        int index =  jTable1.getSelectedRow();
+        if( index == -1 ) return;
+        
+        try
+        {
+            // need to ask the table for the original (befor sorting) index of the selected row
+            TableSorter tm = (TableSorter) jTable1.getModel();
+            int k = tm.getMappedIndex(index);  // get original index - not current sorted position in tbl
+            Object[] oa = addrs_.toArray();
+            Address addr = (Address) oa[k];
+            AddressModel amod = AddressModel.getReference();
+            amod.delete( addr.getKey() );
+            
+        }
+        catch( Exception e )
+        {
+            Errmsg.errmsg(e);
+        }
+    }//GEN-LAST:event_delbuttonActionPerformed
+    
+    private void jTable1MouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_jTable1MouseClicked
+    {//GEN-HEADEREND:event_jTable1MouseClicked
+        if( evt.getClickCount() < 2 ) return;
+        editRow();
+    }//GEN-LAST:event_jTable1MouseClicked
+    
+    private void editbuttonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_editbuttonActionPerformed
+    {//GEN-HEADEREND:event_editbuttonActionPerformed
+        editRow();
+    }//GEN-LAST:event_editbuttonActionPerformed
+    
+    private void newbuttonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_newbuttonActionPerformed
+    {//GEN-HEADEREND:event_newbuttonActionPerformed
+        Address addr = AddressModel.getReference().newAddress();
+        addr.setKey(-1);
+        new AddressView(addr).show();
+    }//GEN-LAST:event_newbuttonActionPerformed
+    
+    private void printListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printListActionPerformed
+        
+        // user has requested a print of the table
+        try
+        { TablePrinter.printTable(jTable1); }
+        catch( Exception e )
+        { Errmsg.errmsg(e); }
+    }//GEN-LAST:event_printListActionPerformed
+    
+    private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_exitMenuItemActionPerformed
+    
+    private void exitForm(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_exitForm
+        this.dispose();
+    }//GEN-LAST:event_exitForm
+    
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton delbutton;
+    private javax.swing.JButton editbutton;
+    private javax.swing.JMenuItem exitMenuItem;
+    private javax.swing.JMenu fileMenu;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable jTable1;
+    private javax.swing.JMenuBar menuBar;
+    private javax.swing.JButton newbutton;
+    private javax.swing.JMenuItem printList;
+    // End of variables declaration//GEN-END:variables
+    
+}

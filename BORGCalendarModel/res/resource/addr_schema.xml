@@ -1,0 +1,142 @@
+<schema>
+	<cvsid>$Id$</cvsid>
+	<name>Address</name>
+	<field>
+		<name>FN</name>
+		<type>String</type>
+		<longName>FirstName</longName>
+		<desc>First Name</desc>
+	</field>
+	<field>
+		<name>LN</name>
+		<type>String</type>
+		<longName>LastName</longName>
+		<desc>Last Name</desc>
+	</field>
+	<field>
+		<name>NN</name>
+		<type>String</type>
+		<longName>Nickname</longName>
+		<desc>Nickname</desc>
+	</field>	
+        <field>
+		<name>EM</name>
+		<type>String</type>
+		<longName>Email</longName>
+		<desc>Email Address</desc>
+	</field>	
+        <field>
+		<name>SN</name>
+		<type>String</type>
+		<longName>ScreenName</longName>
+		<desc>Screen Name</desc>
+	</field>	
+        <field>
+		<name>WP</name>
+		<type>String</type>
+		<longName>WorkPhone</longName>
+		<desc>Work Phone</desc>
+	</field>	
+        <field>
+		<name>HP</name>
+		<type>String</type>
+		<longName>HomePhone</longName>
+		<desc>Home Phone</desc>
+	</field>	
+        <field>
+		<name>FX</name>
+		<type>String</type>
+		<longName>Fax</longName>
+		<desc>Fax Number</desc>
+	</field>	
+        <field>
+		<name>PG</name>
+		<type>String</type>
+		<longName>Pager</longName>
+		<desc>Pager</desc>
+	</field>	
+        <field>
+		<name>SA</name>
+		<type>String</type>
+		<longName>StreetAddress</longName>
+		<desc>Street Address</desc>
+	</field>	
+        <field>
+		<name>CT</name>
+		<type>String</type>
+		<longName>City</longName>
+		<desc>City</desc>
+	</field>	
+        <field>
+		<name>ST</name>
+		<type>String</type>
+		<longName>State</longName>
+		<desc>State</desc>
+	</field>	
+        <field>
+		<name>ZC</name>
+		<type>String</type>
+		<longName>Zip</longName>
+		<desc>Zip Code</desc>
+	</field>	
+        <field>
+		<name>CN</name>
+		<type>String</type>
+		<longName>Country</longName>
+		<desc>Country</desc>
+	</field>	
+        <field>
+		<name>CMP</name>
+		<type>String</type>
+		<longName>Company</longName>
+		<desc>Company Name</desc>
+	</field>	
+        <field>
+		<name>WSA</name>
+		<type>String</type>
+		<longName>WorkStreetAddress</longName>
+		<desc>Work Street Address</desc>
+	</field>	
+        <field>
+		<name>WCT</name>
+		<type>String</type>
+		<longName>WorkCity</longName>
+		<desc>Work City</desc>
+	</field>	
+        <field>
+		<name>WST</name>
+		<type>String</type>
+		<longName>WorkState</longName>
+		<desc> Work State</desc>
+	</field>	
+        <field>
+		<name>WZC</name>
+		<type>String</type>
+		<longName>WorkZip</longName>
+		<desc>Work Zip Code</desc>
+	</field>	
+        <field>
+		<name>WCN</name>
+		<type>String</type>
+		<longName>WorkCountry</longName>
+		<desc>Work Country</desc>
+	</field>	
+        <field>
+		<name>WB</name>
+		<type>String</type>
+		<longName>WebPage</longName>
+		<desc>Web Page</desc>
+	</field>	
+        <field>
+		<name>NO</name>
+		<type>String</type>
+		<longName>Notes</longName>
+		<desc>Notes</desc>
+	</field>
+                <field>
+		<name>BD</name>
+		<type>Date</type>
+		<longName>Birthday</longName>
+		<desc>Birthday</desc>
+	</field>	
+</schema>

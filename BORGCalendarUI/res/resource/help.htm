@@ -1,0 +1,846 @@
+<html><head></head>
+<body><table style="width: 100%; font-family: helvetica,arial,sans-serif; background-color: rgb(255, 255, 255);">
+  <tbody>
+    <tr>
+      <td colspan="1" rowspan="1"><font size="+3">The BORG Calendar and
+Task Tracker HELP<br>
+      </font>
+      <hr style="width: 100%; height: 2px;"> <font size="+3"><br>
+      </font></td>
+    </tr>
+  </tbody>
+</table>
+<table style="font-family: helvetica,arial,sans-serif; width: 100%; background-color: rgb(255, 255, 255);" border="0" cellpadding="8" frame="border">
+  <tbody>
+    <tr>
+      <td style="text-align: left; vertical-align: top; background-color: rgb(255, 255, 255);">This
+Help file does not list every single feature of BORG. Anything that
+BORG does that is not listed here is either something obvious, or
+something that is mistakenly missing from this help.<br>
+      <h2 style="background-color: rgb(255, 255, 255);"><a name="mozTocId291266" class="mozTocH2"></a><span style="color: black;">The
+Database Files<o:p></o:p></span></h2>
+      <p style="background-color: rgb(255, 255, 255); margin-left: 30.24pt;"><span style="color: black;">When BORG starts for the first time, it prompts
+for the location to store its database files. BORG uses 3 files,
+borg.jdb for storing calendar appointments, mrdb.jdb for tasks, and
+addr.jdb for address/contact info. These files are in a binary format.
+I would suggest backing up these files every so often if you use BORG,
+in case of disk failure (not because BORG is buggy :)<o:p></o:p></span></p>
+      <p style="margin-left: 30.24pt;"><span style="color: black;">The
+database files are not simple data stores. These files are formatted to
+be highly resistant to corruption from disk space overruns and computer
+crashes. <o:p></o:p></span></p>
+      <h2><span style="color: black;">Internationalization</span></h2>
+      <p style="margin-left: 40px;"><span style="color: black;">BORG
+supports Locales (regional settings) as of release 1.3. The Locale can
+be switched from the Options screen. Once a new Locale is chosen, a
+restart is required before the new Locale is used. The date formats,
+month names, and weekday names are supported for all Locales listed.
+However, the majority of text strings in BORG come from a properties
+file. As of release 1.3, a Spanish property file has been created. So,
+except for this Help file and some README files, BORG supports Spanish.
+Translations to other languages would only require a translated version
+of the borg_resource.properties file that comes in the BORG jar file. <o:p></o:p></span></p>
+      <h2><a name="mozTocId172269" class="mozTocH2"></a><span style="color: black;">The Main Screen<o:p></o:p></span></h2>
+      <p style="margin-left: 30.24pt;"><span style="color: black;">The
+BORG main screen shows a single month at a time. The Navigation buttons
+appear on the bottom of the screen and are intuitive (Let me define
+intuitive. When I say intuitive, it means that I am describing
+something that I haven&#8217;t documented yet, and might not document,
+because it seems to be obvious enough. For example the "next" button on
+the main month window). <br>
+      </span></p>
+      <p style="margin-left: 30.24pt;"><span style="color: black;">If
+the current month is being viewed, the current day will appear dark
+pink. Weekends are shaded slightly darker than weekdays. Days marked as
+holidays appear the same color as weekends. Days can also be marked as
+vacation days, and if so, will appear green.<br>
+      <br>
+      <span style="color: rgb(153, 0, 0);">To add/remove/update
+appointments for a given day, just click on the button containing the
+date.</span><br>
+      </span></p>
+      <h4 style="margin-left: 40px;"><span style="color: black;">Week
+View<br>
+      </span></h4>
+      <div style="margin-left: 40px;"> To the right of each week is a
+button that will produce a "week view" when pressed. The week view is
+not interactive. It is a grid view of the week that plots the scheduled
+appointments for each day according to their start time and duration.
+The start and end range of the grid is user tunable. The week view can
+be sent to a printer via a menu option.<br>
+      </div>
+      <div style="margin-left: 80px;"> <br>
+      </div>
+      <div style="margin-left: 40px;">
+      <h4>Categories</h4>
+      <div style="margin-left: 40px;"> From the Categories menu on the
+main screen, appointment categories can be created and filtered.
+Each appointment can be assigned to a category.  The program can
+then filter appointments using a user-selected list of categories.
+Appointments that are in a category that is being shown behave normally
+and appear in the calendar, printouts, etc... Appointments that are in
+a category that is hidden, will remain in your database, but will not
+appear anywhere on any screen as long as their category is not being
+shown. This provides a way to manage "virtual" calendars in one
+database.<br>
+      </div>
+      <br>
+      </div>
+      <p style="margin-left: 60pt;"><span style="color: black;"><o:p></o:p></span></p>
+      <h2><a name="mozTocId409916" class="mozTocH2"></a><span style="color: black;">Editing appointments<o:p></o:p></span></h2>
+      <p style="margin-left: 60pt;"><span style="color: black;">When
+the appointment editor first appears (after clicking a date button),
+all of its fields are reset to default values and the text "<span style="background-color: rgb(255, 255, 255); color: rgb(255, 0, 0);">*****
+NEW APPT *****</span>" appears in the upper portion of the window. When
+this text appears, it means that the window is editing a new
+appointment that can be saved by hitting the Save button. <br>
+      </span></p>
+      <p style="margin-left: 60pt;"><span style="color: black;">If the
+day being edited has existing appointments, they can be edited by
+clicking the corresponding appointment in the appointment list. The
+Save button saves any data for the appointment being edited.<br>
+      <br>
+Most of the fields in this window are intuitive and require no special
+documentation. Some items bearing explanation are:<o:p></o:p></span></p>
+      <ul style="margin-left: 80px;"><li style="background-color: rgb(255, 255, 255);">If the "No
+specific time" checkbox is selected, no time string will appear in the
+main month display or print output and the appointment will be
+considered a non-scheduled appointment or "note". <br>
+        </li><li>The duration pulldown is new to Release 1.1 and affects the
+week view.<br>
+        </li><li>The color pulldown alters the appointment color on the main
+month view, and in the color printout.<o:p></o:p></li></ul>
+      <h3 style="margin-left: 60pt;"><a name="mozTocId536251" class="mozTocH3"></a><span style="color: black;">To Do's<o:p></o:p></span></h3>
+      <p style="margin-left: 1.25in;"><span style="color: black;">If
+the To Do checkbox is selected, the appointment will be marked as a To
+Do. It will appear on the To Do list window, and can be marked as done
+from the To Do window also.<o:p></o:p></span></p>
+      <h3 style="margin-left: 60pt;"><a name="mozTocId72760" class="mozTocH3"></a><span style="color: black;">Repeating
+Appointments<o:p></o:p></span></h3>
+      <p style="margin-left: 1.25in;"><span style="color: black;">The
+frequency pulldown allows you to set the frequency of an appointment
+that repeats. The times field should be set to the number of repeats
+desired.
+      </span></p>
+      <p style="margin-left: 1.25in;"><span style="color: black;">Note that there are two types of monthly appointments:
+      </span></p>
+<ul style="margin-left: 1.50in;">
+<li>ones that repeat on the same date each month (i.e. the 6th
+of each month)</li>
+<li>ones that repeat on the same day and relative week each month
+(i.e. the third Thursday of each month). With this type, if no
+such day exists for a given month, the appointment is skipped for
+that month, but the repeat count is still decremented.</li>
+</ul>
+	<p style="margin-left: 1.25in;"><span style="color: black;">When deleting repeated appointments, Delete One Only and Delete buttons
+offer the choice of either deleting just the one occurrence of the
+repeat on the current day being edited, or all of the occurrences.<br>
+      </span></p>
+      <p style="margin-left: 1.25in;"><span style="color: black;">FYI -
+repeats are only added to the calendar for 2 years from the present
+date. So  if  you repeat something yearly for 1000 years and
+try to look ahead to the year 3000, you will be disappointed.<br>
+      </span></p>
+      <p style="margin-left: 1.25in;"><span style="color: black;"><o:p></o:p></span></p>
+      <h3 style="margin-left: 60pt;"><a name="mozTocId890872" class="mozTocH3"></a><span style="color: black;">Repeating To Do's<o:p></o:p></span></h3>
+      <p style="margin: 0in 0in 12pt 1.25in;"><span style="color: black;">Repeating To Do's will appear as multiple times
+on the month view windows (as determined by the frequency and Times).
+However, they will only appear once on the To Do list - starting with
+occurrence number one. If a repeating To Do is marked as done on the To
+Do list, the NEXT occurrence of the To Do will then be placed on the To
+Do list - this is done until the last occurrence has been marked as
+done.<o:p></o:p></span></p>
+      <h3 style="margin-left: 60pt;"><a name="mozTocId889758" class="mozTocH3"></a><span style="color: black;">Vacation, Half
+Day, Holidays<o:p></o:p></span></h3>
+      <p style="margin-left: 1.25in;"><span style="color: black;">The
+vacation, half day, and holidays check boxes are used to mark the day
+in a different color on the main month view. <br>
+      </span></p>
+      <p style="margin-left: 1.25in;"><span style="color: black;">BORG
+currently can add certain US and Canadian holidays. This is an option
+from the preferences screen. BORG will also "guess" as to whether or
+not a US holiday should be marked using the holiday color or just
+normal day color. This is based on whether or not the holiday usually
+causes a day off from work in the US. So, for example, New Year's Day
+would be marked in weekend color, but Valentine's Day is not. <br>
+      </span></p>
+      <p style="margin-left: 1.25in;"><span style="color: black;">Whether
+or not you use the US holiday feature, if a certain day is a holiday
+for you, you can add an appointment with the name of the holiday and
+mark the Holiday checkbox.<o:p></o:p></span></p>
+      <h3 style="margin-left: 80px;"><a name="mozTocId938039" class="mozTocH3"></a><span style="color: black;">Private
+Appointments<o:p></o:p></span></h3>
+      <p style="margin: 0in 0in 12pt 1.25in;"><span style="color: black;"> Appointments marked as private using the
+private checkbox are processed differently from regular appointments in
+two ways:<o:p></o:p></span></p>
+      <p style="margin-left: 1.75in; text-indent: -0.25in;"><!--[if !supportLists]-->
+      <span style="color: black;">1.<span style="" times="" new="" roman="" ;="" font-style="" font-variant="" font-weight="" font-size="" 7pt="" line-height="" font-stretch="" normal="" font-size-adjust="" none="">
+      </span></span><span style="color: black;">The appointments only
+appear in the main month view and print output if the Options/Show
+Private checkbox is selected from the Options menu. In this way,
+Private appointments can be hidden when the calendar is used in a
+public setting. Example uses for private appointments would be to
+record certain doctor's appointments or to keep a log of your
+illnesses  or any other private non-work related items.<o:p></o:p></span></p>
+      <p style="margin-left: 1.75in; text-indent: -0.25in;"><!--[if !supportLists]-->
+      <span style="color: black;">2.<span style="" times="" new="" roman="" ;="" font-style="" font-variant="" font-weight="" font-size="" 7pt="" line-height="" font-stretch="" normal="" font-size-adjust="" none="">
+      </span></span><!--[endif]--> <span style="color: black;">Private
+appointments are encrypted in the borg.jdb file. Although anyone
+running BORG (WITH ACCESS TO YOUR FILES) can access even private
+appointments from a borg.jdb file, a casual snooper (like a sys-admin)
+who only gains access to the borg.jdb file and scans it for ascii text,
+will not  be able to decode the private appointments.<o:p></o:p></span></p>
+      <h2><a name="mozTocId728653" class="mozTocH2"></a><span style="color: black;">The To Do List<o:p></o:p></span></h2>
+      <div style="margin-left: 80px;"> The To Do list is accessed from
+the Action/To Do menu choice from the main Month screen. It also pops
+up upon start up. This list shows all appointments marked as To Do's
+that have not been marked as done. To Do's can be marked as done from
+the To Do window menu. There are 2 options to pick from when marking To
+Do's as done (from the Action menu). The "No Delete" option, removes
+the appointment from the To Do list, but leaves it on the calendar. The
+Delete option removes it from the calendar also (unless the todo has
+more repeats).<br>
+      <br>
+The To Do list can also be printed using its Action/Print List menu
+choice.<br>
+      </div>
+      <p><br>
+      </p>
+      <h2><a name="mozTocId597098" class="mozTocH2"></a>Pop-Up Reminders</h2>
+      <div style="margin-left: 80px;"> These appear  3 hours
+before appointments (and 30 minutes afterwards if you start BORG up
+within 30 minutes after an appointment). If you are starting BORG up
+within 30 minutes after an appointment, BORG figures that you may have
+forgotten about it. These default values can be changed from the
+options window.<br>
+      <br>
+Around 15 minutes before an appointment that has a pop-up displayed,
+BORG will make an audible beep noise, and will try to bring the pop-up
+window to the front to remind you about the appointment. This will
+continue every 5 minutes until you dispose of the pop-up. These default
+values can be changed from the options window.<br>
+      </div>
+      <h2><a name="mozTocId679776" class="mozTocH2"></a><!--[if !supportLineBreakNewLine]-->
+Email Reminders</h2>
+      <div style="margin-left: 80px;"> BORG can be set to send an email
+reminder each day for the next day's appointments. The options menu is
+where you can enable email reminders. If this feature is turned on,
+BORG will send out a single email reminder of the next days
+appointments once per day.<br>
+      </div>
+      <br>
+      <h2><a name="mozTocId399510" class="mozTocH2"></a><span style="color: black;">The Task Tracker<o:p></o:p></span></h2>
+      <p style="margin-left: 80px;">The Task Tracker is used to keep
+track of various tasks with defined start and end dates, different
+statuses, descriptions, and resolutions. <br>
+      </p>
+      <p style="margin-left: 80px;">It is up to the user to decide if
+something should be a task or regular appointment. Appointments can be
+used to hold simple tasks that require no special tracking, such as
+"pay mortgage" or "take out garbage". The task tracker is meant for
+longer running, more complex tasks, such as "code new BORG feature",
+"design new widget", or "re-floor bathroom" - things that have multiple
+steps to check off, that require documentation of a resolution, and/or
+have "sliding" due dates. <br>
+      </p>
+      <p style="margin-left: 80px;">The main Task Tracker window shows
+a scrollable list of tasks. The Task Tracker Action menu can be used to
+add, update, and delete tasks. The radiobuttons on top can be used to
+show just open or closed tasks, tasks that are done but have not been
+recorded for performance review (PR), or all tasks. <br>
+      </p>
+      <p style="margin-left: 80px;">A filter string can be typed in the
+text entry field. When the filter button is pressed, only tasks with
+text containing the filter string will be shown.<br>
+      </p>
+      <p style="margin-left: 80px;">Tasks can also be filtered
+according to their category, using the category pull-down choice box.<br>
+      </p>
+      <p style="margin-left: 80px;">Tasks with due dates will show on
+your calendar.<br>
+      </p>
+      <p style="margin-left: 80px;">The task tracker is also designed
+to keep track of tasks done for later recording on your list of
+accomplishments at work. This is called performance review (PR). It is
+hoped that most BORG users do not have to deal with this kind of hell.
+One of the things that BORG can be used for is to figure out what you
+have done during the year at performance review time - and to make sure
+you can keep things that you have already claimed credit for apart from
+things that you have not. Some users will not identify with this.
+Others may be groaning in sympathy at this point.<br>
+      </p>
+      <p style="margin-left: 80px;">Once added, tasks follow a set of <i>states,
+      </i>which are user-configurable in BORG.<br>
+      </p>
+      <p style="margin-left: 40px;">The different <span style="font-style: italic;">default</span> task types are shown below:</p>
+      <table style="border: medium none ; margin-left: 0.5in; border-collapse: collapse;" border="1" cellpadding="0" cellspacing="0">
+        <tbody>
+          <tr>
+            <td style="border-style: solid none; border-width: 1.5pt medium 0.75pt; border-top: 1.5pt solid green; border-bottom: 0.75pt solid green; padding: 0in 5.4pt; background-color: rgb(204, 204, 204);" valign="top">
+            <p style="margin-left: 0in;"><span style="color: windowtext;">TASK Type<o:p></o:p></span></p>
+            </td>
+            <td style="border-style: solid none; border-width: 1.5pt medium 0.75pt; border-top: 1.5pt solid green; border-bottom: 0.75pt solid green; padding: 0in 5.4pt; background-color: rgb(204, 204, 204);" valign="top">
+            <p style="margin-left: 0in;"><span style="color: windowtext;">Description<o:p></o:p></span></p>
+            </td>
+            <td style="border-style: solid none; border-width: 1.5pt medium 0.75pt; border-top: 1.5pt solid green; border-bottom: 0.75pt solid green; padding: 0in 5.4pt; background-color: rgb(204, 204, 204);" valign="top">
+            <p style="margin-left: 0in;"><span style="color: windowtext;">Allowable States (in no special order)<o:p></o:p></span></p>
+            </td>
+          </tr>
+          <tr>
+            <td style="border: medium none ; padding: 0in 5.4pt;" valign="top">
+            <p style="margin-left: 0in;"><span style="color: windowtext;">TASK<o:p></o:p></span></p>
+            </td>
+            <td style="border: medium none ; padding: 0in 5.4pt;" valign="top">
+            <p style="margin-left: 0in;"><span style="color: windowtext;">Normal task. Just something to do.<o:p></o:p></span></p>
+            </td>
+            <td style="border: medium none ; padding: 0in 5.4pt;" valign="top">
+            <p style="margin-left: 0in;"><span style="color: windowtext;">OPEN, IN_PRG, CLOSED, DEF, PR</span></p>
+            </td>
+          </tr>
+          <tr>
+            <td style="border: medium none ; padding: 0in 5.4pt;" valign="top">
+            <p style="margin-left: 0in;"><span style="color: windowtext;">ISSUE<o:p></o:p></span></p>
+            </td>
+            <td style="border: medium none ; padding: 0in 5.4pt;" valign="top">
+            <p style="margin-left: 0in;"><span style="color: windowtext;">An issue to be figured out<o:p></o:p></span></p>
+            </td>
+            <td style="border: medium none ; padding: 0in 5.4pt;" valign="top">
+            <p style="margin-left: 0in;"><span style="color: windowtext;">OPEN, IN_PRG, CLOSED, DEF, PR</span></p>
+            </td>
+          </tr>
+          <tr>
+            <td style="border: medium none ; padding: 0in 5.4pt;" valign="top">
+            <p style="margin-left: 0in;"><span style="color: windowtext;">CODE<o:p></o:p></span></p>
+            </td>
+            <td style="border: medium none ; padding: 0in 5.4pt;" valign="top">
+            <p style="margin-left: 0in;"><span style="color: windowtext;">Coding to be done<o:p></o:p></span></p>
+            </td>
+            <td style="border: medium none ; padding: 0in 5.4pt;" valign="top">
+            <p style="margin-left: 0in;"><span style="color: windowtext;">OPEN, DEV, TEST, DEF, PR, CLOSED<o:p></o:p></span></p>
+            </td>
+          </tr>
+          <tr>
+            <td style="border-style: none none solid; border-color: -moz-use-text-color -moz-use-text-color green; border-width: medium medium 1.5pt; padding: 0in 5.4pt;" valign="top">
+            <p style="margin-left: 0in;"><span style="color: windowtext;">DOC<o:p></o:p></span></p>
+            </td>
+            <td style="border-style: none none solid; border-color: -moz-use-text-color -moz-use-text-color green; border-width: medium medium 1.5pt; padding: 0in 5.4pt;" valign="top">
+            <p style="margin-left: 0in;"><span style="color: windowtext;">Document to write<o:p></o:p></span></p>
+            </td>
+            <td style="border-style: none none solid; border-color: -moz-use-text-color -moz-use-text-color green; border-width: medium medium 1.5pt; padding: 0in 5.4pt;" valign="top">
+            <p style="margin-left: 0in;"><span style="color: windowtext;">OPEN, IN_PRG, RVW, BL, CLOSED, DEF, PR</span></p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="margin: 0in 0in 12pt 30pt;"><span style="color: black;"><br>
+      </span></p>
+      <p style="margin: 0in 0in 12pt 30pt;"><span style="color: black;"><o:p></o:p></span></p>
+      <table style="border: medium none ; margin-left: 30pt; border-collapse: collapse;" border="1" cellpadding="0" cellspacing="0">
+        <tbody>
+          <tr>
+            <td style="border-style: solid none; border-width: 1.5pt medium 0.75pt; border-top: 1.5pt solid green; border-bottom: 0.75pt solid green; padding: 0in 5.4pt; width: 221.4pt;" valign="top" width="295">
+            <p style="margin-bottom: 12pt;">State</p>
+            </td>
+            <td style="border-style: solid none; border-width: 1.5pt medium 0.75pt; border-top: 1.5pt solid green; border-bottom: 0.75pt solid green; padding: 0in 5.4pt; width: 221.4pt;" valign="top" width="295">
+            <p style="margin-bottom: 12pt;">Meaning</p>
+            </td>
+          </tr>
+          <tr>
+            <td style="border: medium none ; padding: 0in 5.4pt; width: 221.4pt;" valign="top" width="295">
+            <p style="margin-bottom: 12pt;">OPEN</p>
+            </td>
+            <td style="border: medium none ; padding: 0in 5.4pt; width: 221.4pt;" valign="top" width="295">
+            <p style="margin-bottom: 12pt;">Not started yet</p>
+            </td>
+          </tr>
+          <tr>
+            <td style="border: medium none ; padding: 0in 5.4pt; width: 221.4pt;" valign="top" width="295">
+            <p style="margin-bottom: 12pt;">IN_PRG</p>
+            </td>
+            <td style="border: medium none ; padding: 0in 5.4pt; width: 221.4pt;" valign="top" width="295">
+            <p style="margin-bottom: 12pt;">In progress</p>
+            </td>
+          </tr>
+          <tr>
+            <td style="border: medium none ; padding: 0in 5.4pt; width: 221.4pt;" valign="top" width="295">
+            <p style="margin-bottom: 12pt;">DEV (for CODE)</p>
+            </td>
+            <td style="border: medium none ; padding: 0in 5.4pt; width: 221.4pt;" valign="top" width="295">
+            <p style="margin-bottom: 12pt;">Coding started</p>
+            </td>
+          </tr>
+          <tr>
+            <td style="border: medium none ; padding: 0in 5.4pt; width: 221.4pt;" valign="top" width="295">
+            <p style="margin-bottom: 12pt;">TEST (for CODE)</p>
+            </td>
+            <td style="border: medium none ; padding: 0in 5.4pt; width: 221.4pt;" valign="top" width="295">
+            <p style="margin-bottom: 12pt;">Coding done, testing started</p>
+            </td>
+          </tr>
+          <tr>
+            <td style="border: medium none ; padding: 0in 5.4pt; width: 221.4pt;" valign="top" width="295">
+            <p style="margin-bottom: 12pt;">PR</p>
+            </td>
+            <td style="border: medium none ; padding: 0in 5.4pt; width: 221.4pt;" valign="top" width="295">
+            <p style="margin-bottom: 12pt;">Task is done, but not yet
+recorded in the next PR(or performance review, or whatever nonsense
+your company does)</p>
+            </td>
+          </tr>
+          <tr>
+            <td style="border: medium none ; padding: 0in 5.4pt; width: 221.4pt;" valign="top" width="295">
+            <p style="margin-bottom: 12pt;">CLOSED</p>
+            </td>
+            <td style="border: medium none ; padding: 0in 5.4pt; width: 221.4pt;" valign="top" width="295">
+            <p style="margin-bottom: 12pt;">Task is complete</p>
+            </td>
+          </tr>
+          <tr>
+            <td style="border: medium none ; padding: 0in 5.4pt; width: 221.4pt;" valign="top" width="295">
+            <p style="margin-bottom: 12pt;">RVW (for DOC)</p>
+            </td>
+            <td style="border: medium none ; padding: 0in 5.4pt; width: 221.4pt;" valign="top" width="295">
+            <p style="margin-bottom: 12pt;">Document has been written.
+Is out for review.</p>
+            </td>
+          </tr>
+          <tr>
+            <td style="border: medium none ; padding: 0in 5.4pt; width: 221.4pt;" valign="top" width="295">
+            <p style="margin-bottom: 12pt;">BL (for DOC)</p>
+            </td>
+            <td style="border: medium none ; padding: 0in 5.4pt; width: 221.4pt;" valign="top" width="295">
+            <p style="margin-bottom: 12pt;">Document is &#8220;baselined&#8221;,
+meaning that is is approved. There still may be busy work required
+before the document is official.</p>
+            </td>
+          </tr>
+          <tr>
+            <td style="border-style: none none solid; border-color: -moz-use-text-color -moz-use-text-color green; border-width: medium medium 1.5pt; padding: 0in 5.4pt; width: 221.4pt;" valign="top" width="295">
+            <p style="margin-bottom: 12pt;">DEF</p>
+            </td>
+            <td style="border-style: none none solid; border-color: -moz-use-text-color -moz-use-text-color green; border-width: medium medium 1.5pt; padding: 0in 5.4pt; width: 221.4pt;" valign="top" width="295">
+            <p style="margin-bottom: 12pt;">Deferred &#8211; to be worked on
+at some future time. Not being worked on now.</p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="margin: 0in 0in 12pt 30pt;"><span style="color: black;"><br>
+      </span></p>
+      <p style="margin: 0in 0in 12pt 30pt;"><span style="color: rgb(255, 0, 0); text-decoration: underline;">If you
+don't like the default task types and states, you can change them.
+Please see the section below on Editing Task Types and States for more
+info. The default task states are used by the author and provide a good
+example of what can be done. There is no problem if you discard them
+all and replace them with your own.</span><br>
+      <span style="color: black;"></span></p>
+      <p style="margin: 0in 0in 12pt 30pt;"><span style="color: black;">When
+editing tasks, much of the functioning of the editor window is obvious.
+However:<o:p></o:p></span></p>
+      <ul><ul><li><!--[if !supportLists]--><!--[endif]--> <span style="color: black;">The PA (person assigned) and Pri (priority
+fields) don&#8217;t really do anything except hold data. Use them as you like.<o:p></o:p></span></li><li><!--[if !supportLists]--> <span style="color: black;">The
+standard BORG check boxes (subtasks) for CODE and DOC tasks might not
+apply to most users (especially those who aren&#8217;t developers). Just as
+an FYI, here are what the CODE checkboxes were created for: <br>
+            </span>
+            <ul><li><span style="color: black;">Delta = put code under
+source control <br>
+                </span></li><li><span style="color: black;">Blue Print = a date
+tracking blue print has been filled out &#8211; see ISO 9000 for more info &#8211;
+see Dilbert for more info on ISO 9000 <br>
+                </span></li><li><span style="color: black;">MR = a modification
+request has been issued (or change request, or whatever your build
+system might require to relate code to features/problems)<span style="">
+                <br>
+                </span></span></li><li><span style="color: black;"><span style=""></span>Code
+Insp = code inspection done.<o:p></o:p></span></li></ul>
+          </li><li><!--[if !supportLists]--> <span style="color: black;">Here
+are the DOC checkboxes: <br>
+            </span>
+            <ul><li><span style="color: black;">DocNum = an official
+document number has been established</span></li><li><span style="color: black;">VGs &#8211; viewgraphs have
+been prepared for the document presentation meeting</span></li><li><span style="color: black;">Blueprint (see above) <br>
+                </span></li><li><span style="color: black;">MR (see above)</span></li><li><span style="color: black;">Library = the document
+has been officially filed in some library.<o:p></o:p></span></li></ul>
+          </li></ul><ul><li><!--[if !supportLists]--> <span style="color: black;">The
+check boxes don&#8217;t affect any processing. However, the values are
+remembered on a per-task basis. So use them as you like. <br>
+            </span></li></ul></ul>
+      <div style="margin-left: 40px;">
+      <h3><a name="mozTocId783397" class="mozTocH3"></a>Subtasks</h3>
+For each task, 5 subtasks can be defined by the user. These 5 check
+boxes can be used to keep track of anything the user needs to take care
+of as part of the overall task. For example, if a task is to refinance
+your home, subtasks might be "get appraisal", "fax pay stubs", "mail
+application", "final closing", "new payment book rcv'd". The subtasks
+just are there to be checked-off. They do not affect any other
+processing.<br>
+      <br>
+Each task type can also have up to 5 type-specific subtasks that are
+common to all tasks of a particular type.. The type-specific subtasks
+can be altered by the user (as of Release 1.0). See below.<br>
+      <h3>Editing Task Types and States</h3>
+The default task tracker states defined above are probably adequate for
+some users and inadequate for others. the user has the capability to
+edit the list of task types and state transitions in the task tracker.
+To edit the task types and states, first use the option from the task
+tracker options menu that exports the task type information to an XML
+file. Save this file in case you need to revert back to it.<br>
+      <br>
+The format of this file is XML - but simplified XML. The simple XML
+parser in BORG cannot handle comments, attributes, prologs - so the
+file should just contain XML elements as described below.<br>
+      <br>
+The XML contains a root element. Under the root are elements for each
+task type. To add a new task type, just add an element under the root.<br>
+      <br>
+Inside each task type element, the allowed state transitions are
+described. For each allowed state, there is an element. This element
+should contain an empty element for each state that can be reached from
+that state. Up to 5 CB elements can be present per type. These are the
+type-specific check boxes.<br>
+      <br>
+Here is the default subtree for the TASK type:<br>
+      <br>
+      <span style="font-family: monospace;">&lt;root&gt;<br>
+    &lt;TASK&gt;<br>
+        &lt;OPEN&gt;<br>
+
+&lt;IN_PRG/&gt;<br>
+
+&lt;DEF/&gt;<br>
+        &lt;/OPEN&gt;<br>
+        &lt;DEF&gt;<br>
+
+&lt;OPEN/&gt;<br>
+
+&lt;IN_PRG/&gt;<br>
+        &lt;/DEF&gt;<br>
+        &lt;IN_PRG&gt;<br>
+
+&lt;DEF/&gt;<br>
+
+&lt;PR/&gt;<br>
+
+&lt;CLOSED/&gt;<br>
+        &lt;/IN_PRG&gt;<br>
+        &lt;PR&gt;<br>
+
+&lt;CLOSED/&gt;<br>
+        &lt;/PR&gt;<br>
+        &lt;CLOSED&gt;<br>
+
+&lt;IN_PRG/&gt;<br>
+        &lt;/CLOSED&gt;   <br>
+    &lt;/TASK&gt;<br>
+    &lt;ISS&gt;<br>
+        &lt;OPEN&gt;<br>
+
+&lt;IN_PRG/&gt;<br>
+
+&lt;DEF/&gt;<br>
+        &lt;/OPEN&gt;<br>
+        &lt;DEF&gt;<br>
+
+&lt;OPEN/&gt;<br>
+
+&lt;IN_PRG/&gt;<br>
+        &lt;/DEF&gt;<br>
+        &lt;IN_PRG&gt;<br>
+
+&lt;DEF/&gt;<br>
+
+&lt;PR/&gt;<br>
+
+&lt;CLOSED/&gt;<br>
+        &lt;/IN_PRG&gt;<br>
+        &lt;PR&gt;<br>
+
+&lt;CLOSED/&gt;<br>
+        &lt;/PR&gt;<br>
+        &lt;CLOSED&gt;<br>
+
+&lt;IN_PRG/&gt;<br>
+        &lt;/CLOSED&gt;  <br>
+    &lt;/ISS&gt;<br>
+    &lt;CODE&gt;<br>
+        &lt;OPEN&gt;<br>
+
+&lt;DEV/&gt;<br>
+
+&lt;DEF/&gt;<br>
+        &lt;/OPEN&gt;<br>
+        &lt;DEF&gt;<br>
+
+&lt;OPEN/&gt;<br>
+
+&lt;DEV/&gt;<br>
+        &lt;/DEF&gt;<br>
+        &lt;DEV&gt;<br>
+
+&lt;DEF/&gt;<br>
+
+&lt;TEST/&gt;<br>
+        &lt;/DEV&gt;<br>
+        &lt;TEST&gt;<br>
+
+&lt;DEV/&gt;<br>
+
+&lt;PR/&gt;<br>
+
+&lt;CLOSED/&gt;<br>
+
+&lt;/TEST&gt;    <br>
+        &lt;PR&gt;<br>
+
+&lt;CLOSED/&gt;<br>
+        &lt;/PR&gt;<br>
+        &lt;CLOSED&gt;<br>
+
+&lt;DEV/&gt;<br>
+        &lt;/CLOSED&gt;<br>
+        &lt;CB&gt;Delta&lt;/CB&gt;<br>
+
+&lt;CB&gt;Blueprint&lt;/CB&gt;<br>
+        &lt;CB&gt;MR&lt;/CB&gt;<br>
+        &lt;CB&gt;Code
+Insp&lt;/CB&gt;<br>
+    &lt;/CODE&gt;<br>
+    &lt;DOC&gt;<br>
+        &lt;OPEN&gt;<br>
+
+&lt;IN_PRG/&gt;<br>
+
+&lt;DEF/&gt;<br>
+        &lt;/OPEN&gt;<br>
+        &lt;DEF&gt;<br>
+
+&lt;OPEN/&gt;<br>
+
+&lt;IN_PRG/&gt;<br>
+        &lt;/DEF&gt;<br>
+        &lt;IN_PRG&gt;<br>
+
+&lt;RVW/&gt;<br>
+
+&lt;DEF/&gt;<br>
+        &lt;/IN_PRG&gt;<br>
+        &lt;RVW&gt;<br>
+
+&lt;BL/&gt;<br>
+
+&lt;IN_PRG/&gt;<br>
+        &lt;/RVW&gt;<br>
+        &lt;BL&gt;<br>
+
+&lt;RVW/&gt;<br>
+
+&lt;PR/&gt;<br>
+
+&lt;CLOSED/&gt;<br>
+        &lt;/BL&gt;<br>
+        &lt;PR&gt;<br>
+
+&lt;CLOSED/&gt;<br>
+        &lt;/PR&gt;<br>
+        &lt;CLOSED&gt;<br>
+
+&lt;IN_PRG/&gt;<br>
+        &lt;/CLOSED&gt;<br>
+        &lt;CB&gt;DocNum&lt;/CB&gt;<br>
+        &lt;CB&gt;VGs&lt;/CB&gt;<br>
+
+&lt;CB&gt;Blueprint&lt;/CB&gt;<br>
+        &lt;CB&gt;MR&lt;/CB&gt;<br>
+        &lt;CB&gt;Library&lt;/CB&gt;<br>
+    &lt;/DOC&gt;  <br>
+&lt;/root&gt;<br>
+      </span><span style="font-family: monospace;"></span><span style="font-family: monospace;"></span><br>
+      <br>
+So, as you can see, there is a TASK type of "TASK". From state "OPEN",
+you can transition to state "IN_PRG" or state "DEF", and so on...<br>
+      <br>
+      <span style="font-style: italic;">All task types start in state
+OPEN. This is hard-coded in BORG. All task types can be forced to
+CLOSED state from the task tracker Action menu no matter what the XML
+state information allows.</span><br>
+      <br>
+Once you have created the task type XML, it should be imported back
+into the task tracker using the import option in the task tracker
+Options menu.<br>
+      <br>
+BORG will not import invalid XML. If the XML is valid, but not correct,
+you can fix the XML and import it again. No damage will be done by
+logical errors in your XML, except that you might not be able to
+transition your tasks correctly.<br>
+      <br>
+      </div>
+      <h2>Address Book/Birthdays<a name="mozTocId287203" class="mozTocH2"></a></h2>
+      <a name="mozTocId287203" class="mozTocH2"> The address book is
+pretty self-explanatory. It holds addresses and other personal
+information.<br>
+      <br>
+There is a birthday field for each record in the address book. If a
+date is entered in this field, the person's
+birthday will appear on the calendar on the appropriate day each year.
+In addition, the person's age will appear on the calendar also.<br>
+      </a>
+      <h2>Options</h2>
+ <br>
+Most of the options from the options screens are self-explanatory -
+except:<br>
+      <br>
+Email - an email message is sent once a day only, and only for the next
+day's appointments. Provide the name of an SMTP server and email
+address to send to. BORG cannot send a user/password to the SMTP server
+at this time.<br>
+      <br>
+Changing the database directory (where you keep BORG files), does not
+affect the files. They are not moved. If you want to change directories
+and keep your data, copy the files to the new directory, change the dir
+in BORG, and then restart BORG.<br>
+      <br>
+Logging - the log records provide a record of BORG activity (DB
+adds/deletes). The Java version of BORG does not have any tools to take
+action on the log records (i.e. view them nicely or play them back into
+a DB).<br>
+      <br>
+Auto Update Check - this only causes BORG to compare the latest release
+number from the BORG sourceforge web site to the release that you are
+running. If the releases are different, a popup will inform you.
+Nothing else is done. The feature is off by default. The check is done
+once per day. Only stable release numbers are kept on the web. New Beta
+releases will not be detected.<br>
+      <br>
+Look And Feel - the combo box will be populated only with the installed
+look and feels in your JRE. The default is Metal. You can put new look
+and feels in your classpath and type the full class name into the combo
+box. BORG looks good with the default Metal L&amp;F and also the
+Kunststoff L&amp;F, and the PlasticXP l&amp;f from jgoodies.com,
+which is recommended. The Liquid L&amp;F looks ok too. Some of the
+other L&amp;Fs are not so appealing with BORG. No look and feels are
+distributed with BORG.<br>
+      <br>
+Holidays - Most US and Canadian holidays can be shown (optionally).
+Except for Christmas, religious/ethnic holidays are not yet included -
+mainly because they are usually lunar based and much harder to
+calculate - and because they aren't usually a day off from work. These
+can be added manually through the appointment editor.<br>
+      <br>
+Word Wrap - this will cause text to wrap in the month view and print.
+To take effect in the month view, the window must be destroyed and
+recreated either be restarting BORG, or by killing the window and
+re-opening from the systay icon (windows only).<br>
+      <br>
+Print Logo - A user defined print logo can be included on the month
+print. The logo space will be the last two empty boxes on the bottom
+right. This will have a size of 184x72 pixels. Any logo smaller than
+this will just be centered in this space. Any logo larger will be
+scaled to fit - retaining its aspect ratio. The logo can be GIF, JPG,
+or PNG. A color logo will print in color, even if the color-print
+option in BORG is turned off.<br>
+      <br>
+Start in Background - Windows only. This will cause BORG to start only
+as a systray icon. No other windows will be opened - except for
+reminder popups and the auto version check if applicable. BORG will
+still popup reminders and send email while running in the background.
+The main month view can be started by double clicking the systray icon
+or from the systray icon menu.<br>
+      <br>
+      <h2><a name="mozTocId232326" class="mozTocH2"></a>Printing</h2>
+For some users, printing a month view may be the most important part of
+BORG. Some users will print the next few months and use the printout as
+a "daily planner" until they can get back to BORG to update it online.
+There is ample room on the printout to jot new appointments.<br>
+      <br>
+The printing uses the Java print service to find a printer that can
+print the month view. It may take a few seconds before Java scans the
+printers on your system and pops up the printer selection box. <br>
+      <br>
+      <h2>Systray Icon (Windows only)<br>
+      </h2>
+      <p>Version 1.2 now supports  a systray icon. See file
+SYSTRAY.txt for information on how to set this up. <br>
+      </p>
+      <h2>Import/Export to XML</h2>
+BORG can export/import its data to/from XML. This is a fully functional
+export/import with an improved XML format as of release 1.2. The import/export actions can be
+found on the month view Action menu. Import/Export provides a good way
+to backup your data in human readable/editable form.<br><br>Import
+will merge data into the current database. This can be dangerous.
+Importing data back into the database it came from will create
+duplicates of<br>every item, whith no automatic way of cleaning them up, so be careful. <br><br>In 1.3.2, import from a URL was added. An example URL would be http://your.server.name/some/path/borg.xml.<br>Export
+to a URL will export all 3 databases as files borg.xml, mrdb.xml,
+addr.xml to wherever the URL points. You cannot use an http URL. You
+need to use something like FTP. For example,
+ftp://username@your.ftp.server/your/path. If a password is needed, you
+must specify in the URL -
+ftp://username:password@your.ftp.server/your/path. Besides providing a
+backup for your own data, Import/Export from URL could be used to share
+common data, such as meetings, holidays, etc...<br>
+      <br><h2>Command Line options:</h2><table style="width: 100%;" border="1"><tbody><tr><td>-db &lt;dir&gt;<br></td><td>set database directory<br></td></tr><tr><td>-trayname &lt;string&gt;<br></td><td>set tool tip text for system tray icon ( windows )<br></td></tr></tbody></table><br>
+      <h2>mdbtool.jar</h2>
+A file called mdbtool.jar is distributed with the BORG binary .zip
+file. It is a tool that can be used to debug, turn on logging, and do
+some other stuff for .jdb database files.  It is not vital to BORG
+and not fully documented. You shouldn't need to use it unless you
+playing with the database source code and need to do some debugging.<br>
+      <br>
+In version 1.2 some options were added to mdbtool.jar:<br>
+      <br>
+The Repair option will scan through a database looking for bad rows.
+Any bad rows will be marked as deleted, allowing the rest of the
+database to be accessed. Database corruption usually only occurs when a
+disk is bad, out of space, or during a computer crash. Usually, only 1
+database row will be affected. In most cases, BORG will automatically
+detect this and ignore bad rows. In rare cases, BORG will error and
+appear to not fully fill in an entire screen of data. This is the case
+where the repair tool can help. DO NOT RUN REPAIR UNLESS YOU HAVE A
+PROBLEM.<br>
+      <br>
+The Convert Dates option is only to be used under rare circumstances.
+Convert Dates will take a pre-1.2 BORG database and alter the date
+information to a standard format. Databases created by version 1.2 and
+later will be created using this standard format. THIS OPTION IS A BIT
+EXPERIMENTAL - and should only be used if needed. One reason to need
+this option is if you change locales (region setting) on your computer
+to use a date format different from the one you have been using with
+BORG 1.1 or earlier. Another reason would be if you try to copy a
+pre-1.2 db file to a machine that uses a different date format. If this
+happens, BORG will error trying to parse dates. If (AND ONLY IF) you
+get these date errors, then backup your db files, and run the Convert
+Dates option to make your DB files portable across locales. Do not run
+this option if you have no problems.<br>
+      <br>
+      <h2>RDBMS Support</h2>
+BORG 1.3 contains experimental support for keeping its data in a
+relational DB instead of normal files. Only a single user is supported
+per DB in this release (with the intent of supporting multiple users in
+a single DB in the future). However, multiple DBs can be created for
+multiple users. <br>
+See file RDBMS.txt for more information.<br>
+      <span style="font-weight: bold;"><br></span><span style="font-weight: bold;"></span><h2>Multi-User Support</h2>The multi-user support is in 1.3.2. You have to turn in on from the options menu and restart (if you want to use it).<br>
+<br>
+In general, the way it works is that all BORGs sharing the same DB
+files will use locking to prevent concurrent access. There will be a
+counter in the database that each client will use to determine if
+another clent has updated the database since the last time it checked
+the DB. If a client determines that the DB has been updated by another
+client, it will flush all cached data and rescan the database to sync
+up.<br>
+<br>
+A menu option has been added to force BORG to sync with the database.
+This is useful when you want to pull in other users' changes but have
+no desire to update the DB yourself. BORG will always sync the DB
+before it tries to update it, but if you are just browsing data, BORG
+will run from its cached data and not force a sync - hence the sync
+menu option in case you want to pick up someone elses changes.<br>
+<br><span style="font-weight: bold;">
+      </span>
+      <h2><a name="AutoStart_"></a></h2>
+
+      </td>
+    </tr>
+  </tbody>
+</table>
+</body></html>

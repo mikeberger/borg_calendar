@@ -1,0 +1,90 @@
+BORG TRANSLATION HOW-TO
+-----------------------
+
+This file describes how to translate the text strings in BORG to
+a new language.
+
+To change the text strings in BORG, you have to understand a little
+about the borg.jar file. A jar (Java archive) file is just a regular ZIP archive with
+some extra java related items in it. The borg.jar file can be unzipped
+using any tool that works on ZIP files, or using the jar tool that
+comes with the Java SDK.
+
+If you unzip the borg.jar file, you will find that it contains a number
+of folders - com, net, META-INF, and resource. All of the files containing
+the BORG text strings are in the resource folder. By editing files
+in the resource folder and then re-zipping the borg.jar file, you can
+change the strings shown by the GUI.
+
+There are 3 different categories of text strings shown in BORG:
+
+1. Strings that come from the Java Runtime
+------------------------------------------
+These are the Month and Day names. These strings always
+appear in the language associated with the locale that is
+set in the Appearance tab of the preferences window.
+Nothing has to be done to translate these strings.
+Just set a new locale, restart BORG, and you should see
+translated month and day names.
+
+
+2. Strings that come from Resource Bundles
+------------------------------------------
+These include all of the GUI labels, table headers, button text, and menu text
+except for the month and day names. These come from a resource bundle called
+borg_resource. Resource bundles are a standard way that Java uses to find properties
+for a given locale.
+
+When you set a locale in BORG, you are setting 2 data items used by Java - the country
+and language. Java has a 2 character code for each of these. 
+These codes can be found here: http://java.sun.com/j2se/1.4.2/docs/guide/intl/locale.doc.html
+
+When BORG needs to display a text string, it first looks for the string in a file called
+borg_resource_ll_cc.properties, where ll is the language and cc is the country code.
+For example, the file borg_resource_fe_CA is used first if the locale is set to French/Canada.
+If the given property is not found in the file, or the file does not exist, BORG will look
+for a file of the form borg_resource_ll.properties. Finally, the default file,
+borg_resource.properties is used. This default file is guaranteed to have all of the required
+strings. This search algorithm is standard for Java.
+
+The resource files included with BORG are:
+borg_resource.properties - for english
+borg_resource_es.properties - default for all spanish locales
+borg_resource_de.properties - default for all german locales (release 1.3.2)
+
+*** To create a new translation: *** 
+
+1. unzip borg.jar
+2. go to the resource folder. make a copy of borg_resources.properties and name it according to the locale you will use.
+3. For each string, replace the value on the right side of the equals (=) with the translated
+string. Do not touch the value to the left of the equals.
+4. re-zip borg.jar
+
+*** To change an existing translation: ***
+1. unzip borg.jar
+2. edit the resource file that you want to change
+3. re-zip the file
+
+If you use Java web start, I am not sure where the borg.jar file is kept, nor if it is ok
+to edit it. So download the borg ZIP file from sourceforge if you want to change
+the text strings.
+
+3. Strings that come from regular text or html files inside borg.jar
+--------------------------------------------------------------------
+These include the Help text, README, License, and CHANGES text.
+These come from regular text or html files in the resource directory.
+There is currently no support in BORG to show different versions of these
+files based on locale. If you want to change them, just edit them.
+If someone were to send me a translation of these files, I'd figure out a way
+to switch them based on locale.
+
+
+************************************************************************
+If you want to send me your translated properties file so that I can include it
+in the next release, email it to me at i_flem@users.sourceforge.net
+
+So far, I have gotten files from:
+
+Josu Gil Arriortua (Spanish)
+Philip Oettershagen (German)
+
