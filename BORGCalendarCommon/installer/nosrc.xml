@@ -14,10 +14,11 @@
     -->
     <info>
         <appname>BORG Calendar</appname>
-        <appversion>1.4.1</appversion>
+        <appversion>1.4.2</appversion>
         <authors>
             <author name="Michael Berger" email="i_flem@users.sourceforge.net"/>
 	    <author name="Mohan Embar" email="membar@users.sourceforge.net"/>
+	    <author name="Stepan Borodulin" email="painter2@users.sourceforge.net"/>
 	    <author name="Piero Trono (Italian Translation)" email="tropic@users.sourceforge.net"/>
 	    <author name="Stefan Pottinger (German Translation)" email="stpotti@users.sourceforge.net"/>
         </authors>

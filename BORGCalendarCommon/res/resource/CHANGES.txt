@@ -1,5 +1,18 @@
-Version 1.4.1
+Version 1.4.2
 -------------
+User tunable colors for the month view and todo list
+Export to vCalendar 1.0 (.vcs) format (used by Palm Desktop)
+Improved Todo GUI
+Highlight todo's on the month view
+Show done todo's with strike-through
+Add day navigation from appointment editor
+Other miscellaneous GUI improvements
+Option to export iCal in UTC (for outlook)
+Repeat every N days
+Bug fixes
+
+Version 1.4 patch 1 (1.4.1)
+---------------------------
 A GUI to edit the tracker's task types and states
 Screens will remember the size and position set by the user
 Support large numbers of categories (>100)
