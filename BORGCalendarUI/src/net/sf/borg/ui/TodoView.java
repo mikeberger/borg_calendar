@@ -25,11 +25,10 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.net.URL;
+import java.awt.GridLayout;
+import java.awt.Insets;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Collection;
@@ -39,16 +38,19 @@ import java.util.Iterator;
 import java.util.ResourceBundle;
 import java.util.Vector;
 
-import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultListSelectionModel;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
-import javax.swing.JTree;
+import javax.swing.JToggleButton;
 import javax.swing.ListSelectionModel;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.TableModelEvent;
+import javax.swing.table.DefaultTableCellRenderer;
 
 import net.sf.borg.common.ui.TablePrinter;
 import net.sf.borg.common.ui.TableSorter;
@@ -62,17 +64,7 @@ import net.sf.borg.model.Appointment;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Task;
 import net.sf.borg.model.TaskModel;
-import javax.swing.JButton;
-import javax.swing.ImageIcon;
-
-// bsv 2004-12-21
-import de.wannawork.jcalendar.*;
-import javax.swing.border.EmptyBorder;
-import java.text.*;
-import javax.swing.JToggleButton;
-import java.awt.*;
-import javax.swing.JComboBox;
-import javax.swing.table.*;
+import de.wannawork.jcalendar.JCalendarComboBox;
 
 /*
  * tdgui.java
@@ -110,10 +102,6 @@ public class TodoView extends View {
         // init the gui components
         initComponents();
         
-        String s = new java.text.SimpleDateFormat().toLocalizedPattern();
-        String date_tip = s.substring(0,s.indexOf(' '));
-        tododate.setToolTipText(date_tip);
-        
         // the todos will be displayed in a sorted table with 2 columns -
         // data and todo text
         jTable1.setModel(new TableSorter(
@@ -124,12 +112,6 @@ public class TodoView extends View {
                 jTable1.getColumnModel().getColumn(0).setPreferredWidth(140);
                 jTable1.getColumnModel().getColumn(1).setPreferredWidth(400);
                 jTable1.getColumnModel().getColumn(2).setPreferredWidth(120);
-//        jTable1.setModel(new TableSorter(
-//                new String []{ Resource.getResourceString("Date"), Resource.getResourceString("To_Do"),ResourceBundle.getBundle("resource/borg_resource").getString("Category")  },
-//                new Class []{ Date.class,java.lang.String.class, java.lang.String.class}));
-//                jTable1.getColumnModel().getColumn(0).setPreferredWidth(140);
-//                jTable1.getColumnModel().getColumn(1).setPreferredWidth(400);
-//                jTable1.getColumnModel().getColumn(2).setPreferredWidth(120);
 
         jTable1.setPreferredScrollableViewportSize(new Dimension( 660,400 ));
         
@@ -248,10 +230,7 @@ public class TodoView extends View {
         tod[1] = new String(Resource.getResourceString("======_Today_======"));
         tod[2] = "Today is";
         tod[3] = "pink";
-//        Object [] tod = new Object[2];
-//        tod[0] = d;
-//        tod[1] = new String(Resource.getResourceString("======_Today_======"));
-        
+
         tm.addRow(tod);
         tm.tableChanged(new TableModelEvent(tm));
         
@@ -278,11 +257,6 @@ public class TodoView extends View {
                 ro[2] = r.getCategory();
                 if ( r.getColor()==null ) ro[3] = "black";
                 else ro[3] = r.getColor();
-//                // add the table row
-//                Object [] ro = new Object[3];
-//                ro[0] = nt;
-//                ro[1] = tx;
-//                ro[2] = r.getCategory();
 
                 tm.addRow(ro);
                 tm.tableChanged(new TableModelEvent(tm));
@@ -312,11 +286,7 @@ public class TodoView extends View {
                 ro[1] = btstring;
                 ro[2] = mr.getCategory();
                 ro[3] = "navy";
-//                // add row to table
-//                Object [] ro = new Object[3];
-//                ro[0] = mr.getDueDate();
-//                ro[1] = btstring;
-//                ro[2] = mr.getCategory();
+
                 tm.addRow(ro);
                 tm.tableChanged(new TableModelEvent(tm));
             }
@@ -346,7 +316,6 @@ public class TodoView extends View {
         
         // place jcalendar here
         tododate_cb = new JCalendarComboBox();
-        tododate = new javax.swing.JTextField();
         
         addtodo = new javax.swing.JButton();
         GridBagConstraints gridBagConstraints8 = new GridBagConstraints();
@@ -429,7 +398,7 @@ public class TodoView extends View {
                 java.util.ResourceBundle.getBundle("resource/borg_resource").getString("todoquickentry"), 
                 javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, null));
         addtodo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Save16.gif")));
-        addtodo.setText("Add");
+        addtodo.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Add"));
         addtodo.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -616,37 +585,15 @@ public class TodoView extends View {
         
         String tdtext = todotext.getText();
         
-        // bsv 2004-12-21
-        // TODO must investigate how it works
-        // some stupid way
-        //SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
-        //tododate.setText( sdf.format( tododate_cb.getCalendar().getTime() ) );
-        // use current locale
-        DateFormat sdf = DateFormat.getDateInstance();
-        tododate.setText( sdf.format( tododate_cb.getCalendar().getTime() ) );
-
-        String tddate = tododate.getText();
-        
-        Date std = new Date();
-        
-        if( tdtext.length() == 0 || tddate.length() == 0 ) {
+        // bsv 2004-12-21        
+        if( tdtext.length() == 0  ) {
             Errmsg.notice(ResourceBundle.getBundle("resource/borg_resource").getString("todomissingdata"));
             return;
         }
-        DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT);
-        try {
-            std = df.parse(tddate);
-        }
-        catch( Exception e ) {
-            Errmsg.notice(ResourceBundle.getBundle("resource/borg_resource").getString("todo_date_invalid"));
-            return;
-        }
-        
-        GregorianCalendar g = new GregorianCalendar();
-        g.setTime(std);
+ 
         AppointmentModel calmod_ = AppointmentModel.getReference();
         Appointment r = calmod_.newAppt();
-        r.setDate(std);
+        r.setDate(tododate_cb.getCalendar().getTime());
         r.setText( tdtext );
         r.setTodo(true);
         r.setPrivate( false );
@@ -762,7 +709,6 @@ public class TodoView extends View {
     private javax.swing.JTable jTable1;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem printList;
-    private javax.swing.JTextField tododate;
     private javax.swing.JTextField todotext;
     
     // bsv 2004-12-21
