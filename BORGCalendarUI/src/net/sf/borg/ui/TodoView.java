@@ -66,6 +66,7 @@ import net.sf.borg.model.Task;
 import net.sf.borg.model.TaskModel;
 import de.wannawork.jcalendar.JCalendarComboBox;
 
+import javax.swing.JMenuItem;
 /*
  * tdgui.java
  *
@@ -478,7 +479,7 @@ public class TodoView extends View {
                 exitMenuItemActionPerformed(evt);
             }
         });
-
+        fileMenu.add(getCatmenuitem());
         fileMenu.add(exitMenuItem);
 
         menuBar.add(fileMenu);
@@ -561,6 +562,10 @@ public class TodoView extends View {
         JPanel bjp0 = new JPanel();
         bjp0.setLayout( new BorderLayout());
         bjp.setLayout( new GridLayout(1,5));
+        exitMenuItem.setIcon(new ImageIcon(getClass().getResource("/resource/Stop16.gif")));
+        printList.setIcon(new ImageIcon(getClass().getResource("/resource/Print16.gif")));
+        jMenuItem2.setIcon(new ImageIcon(getClass().getResource("/resource/Delete16.gif")));
+        jMenuItem1.setIcon(new ImageIcon(getClass().getResource("/resource/Properties16.gif")));
         bjp.add( jtbRed );
         bjp.add( jtbBlue );
         bjp.add( jtbGreen );
@@ -572,6 +577,7 @@ public class TodoView extends View {
         jPanel1.add(tododate_cb, gridBagConstraints9);
         jPanel1.add(bjp0, gridBagConstraints11);
         jPanel1.add(jLabel2, gridBagConstraints12);
+        
         jPanel1.add(jLabel1, gridBagConstraints13);
         jPanel1.add(todotext, gridBagConstraints14);
         pack();
@@ -754,6 +760,7 @@ public class TodoView extends View {
 	private JButton doneButton = null;
 	private JButton doneDelButton = null;
 	private JButton jButton = null;
+	private JMenuItem catmenuitem = null;
 	/**
 	 * This method initializes jPanel	
 	 * 	
@@ -858,4 +865,22 @@ public class TodoView extends View {
 		}
 		return jButton;
 	}
-     }  //  @jve:decl-index=0:visual-constraint="39,18"
+	/**
+	 * This method initializes catmenuitem	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */    
+	private JMenuItem getCatmenuitem() {
+		if (catmenuitem == null) {
+			catmenuitem = new JMenuItem();
+	        catmenuitem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Preferences16.gif")));
+	        catmenuitem.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("choosecat"));
+	        catmenuitem.addActionListener(new java.awt.event.ActionListener() { 
+	        	public void actionPerformed(java.awt.event.ActionEvent e) {    
+	        	    CategoryChooser.getReference().show();
+	        	}
+	        });
+		}
+		return catmenuitem;
+	}
+      }  //  @jve:decl-index=0:visual-constraint="39,18"
