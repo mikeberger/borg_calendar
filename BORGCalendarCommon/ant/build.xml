@@ -133,9 +133,13 @@
 
       <!-- Model / DB -->
       <javac srcdir="${prj.model.dir}/src"
+ 
              destdir="${build.dir}"
       	     classpathref="build.classpath"
              debug="on">
+       		<include name="**/*.java" />
+        	<exclude name="**/memory/**" />
+   			<exclude name="**/remote/**"/>
       </javac>
 
       <!-- DB Utilities -->

@@ -22,7 +22,7 @@ package net.sf.borg.model.db;
 
 import net.sf.borg.model.db.file.FileBeanDataFactory;
 import net.sf.borg.model.db.jdbc.JdbcBeanDataFactory;
-import net.sf.borg.model.db.remote.RemoteBeanDataFactory;
+//import net.sf.borg.model.db.remote.RemoteBeanDataFactory;
 import net.sf.borg.model.db.serial.SerialBeanDataFactory;
 
 /**
@@ -44,8 +44,8 @@ public class BeanDataFactoryFactory
 	{
 		if (file.startsWith("jdbc:"))
 			return JdbcBeanDataFactory.getInstance();
-		else if (file.startsWith("remote:"))
-			return RemoteBeanDataFactory.getInstance();
+		//else if (file.startsWith("remote:"))
+			//return RemoteBeanDataFactory.getInstance();
 		else if (file.startsWith("serialize:") || file.startsWith("mem:"))
 			return SerialBeanDataFactory.getInstance();
 		else // assume file
