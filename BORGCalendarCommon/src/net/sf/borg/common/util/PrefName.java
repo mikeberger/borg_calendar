@@ -112,7 +112,7 @@ public class PrefName {
 		static public PrefName APPTFONT = new PrefName( "apptfont", "SansSerif-10");
 		static public PrefName APPTFONTSIZE = new PrefName( "apptfontsize", new Integer(10));
 		static public PrefName PREVIEWFONT = new PrefName( "previewfont", "SansSerif-10");
-		static public PrefName LNF = new PrefName( "lnf", "javax.swing.plaf.metal.MetalLookAndFeel");
+		static public PrefName LNF = new PrefName( "lnf", "com.jgoodies.plaf.plastic.PlasticXPLookAndFeel");
 		static public PrefName NOLOCALE = new PrefName( "nolocale", "0");		
 		static public PrefName COUNTRY = new PrefName( "country", "");
 		static public PrefName LANGUAGE = new PrefName( "language", "");
