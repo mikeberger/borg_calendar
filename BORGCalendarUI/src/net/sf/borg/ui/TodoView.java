@@ -610,7 +610,12 @@ public class TodoView extends View {
  
         AppointmentModel calmod_ = AppointmentModel.getReference();
         Appointment r = calmod_.newAppt();
-        r.setDate(tododate_cb.getCalendar().getTime());
+        Calendar c = tododate_cb.getCalendar();
+        c.set( Calendar.HOUR, 0);
+        c.set( Calendar.MINUTE, 0);
+        c.set( Calendar.SECOND, 0);
+        c.set( Calendar.AM_PM, Calendar.AM);
+        r.setDate(c.getTime());
         r.setText( tdtext );
         r.setTodo(true);
         r.setPrivate( false );
