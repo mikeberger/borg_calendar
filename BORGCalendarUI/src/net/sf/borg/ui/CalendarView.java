@@ -658,9 +658,9 @@ public class CalendarView extends View implements Prefs.Listener {
                     daytext[i].addMouseListener(new DayMouseListener( year_, month_, daynumber ));
                     days[i].addMouseListener(new DayMouseListener( year_, month_, daynumber ));
                     
+                    GregorianCalendar gc = new GregorianCalendar(year_,month_,daynumber);
                     if( showDayOfYear )
-                    {
-                    	GregorianCalendar gc = new GregorianCalendar(year_,month_,daynumber);
+                    {                   	
                     	dayOfYear[i].setText(Integer.toString(gc.get(Calendar.DAY_OF_YEAR)));
                     }
                     else
@@ -682,8 +682,9 @@ public class CalendarView extends View implements Prefs.Listener {
                             Appointment info = (Appointment) it.next();
                             
                             // bsv 2004-12-23
+                            Date nt = info.getNextTodo();
                             if( Prefs.getPref(PrefName.UCS_MARKTODO).equals("true")){
-                            	if( info.getTodo() ){
+                            	if( info.getTodo() && (nt == null || !nt.after(gc.getTime()))){
                             	    if( Prefs.getPref(PrefName.UCS_MARKER).endsWith(".gif"))
                             	    {
                             	        daytext[i].insertIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/" + Prefs.getPref(PrefName.UCS_MARKER))));
@@ -788,39 +789,6 @@ public class CalendarView extends View implements Prefs.Listener {
 	                    }
                     }
                     
-//                    // old code
-//                    if( today == daynumber ) {
-//                        // today color is pink
-//                        daytext[i].setBackground( new Color(225,150,150));
-//                        days[i].setBackground( new Color(225,150,150));
-//                    }
-//                    else if( di.getHoliday() == 1 ) {
-//                        // holiday color
-//                        daytext[i].setBackground( new Color(245,203,162));
-//                        days[i].setBackground( new Color(245,203,162));
-//                    }
-//                    else if( di.getVacation() == 1 ) {
-//                        // vacation color
-//                        daytext[i].setBackground( new Color(155,255,153));
-//                        days[i].setBackground( new Color(155,255,153));
-//                    }
-//                    else if( di.getVacation() == 2 ) {
-//                        // half day color
-//                        daytext[i].setBackground( new Color(200,255,200));
-//                        days[i].setBackground( new Color(200,255,200));
-//                    }
-//                    else if( dow != Calendar.SUNDAY && dow != Calendar.SATURDAY ) {
-//                        // weekday color
-//                        days[i].setBackground( new Color(255,233,192));
-//                        daytext[i].setBackground( new Color(255,233,192));
-//                    }
-//                    else {
-//                        // weekend color
-//                        daytext[i].setBackground( new Color(245,203,162));
-//                        days[i].setBackground( new Color(245,203,162));
-//                    }
-//                    
-//                    // (old code)
                     // (bsv 2004-12-21)
                     days[i].setVisible(true);
                     
