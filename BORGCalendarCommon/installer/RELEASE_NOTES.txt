@@ -1,37 +1,21 @@
-==========================
-RELEASE NOTES for BORG 1.4
-==========================
+============================
+RELEASE NOTES for BORG 1.4.1
+============================
 
 The project home page is http://borg-calendar.sourceforge.net
 
 KNOWN ISSUES:
 -------------
 
-*** 1. Any options you have set in release 1.3.2 or earlier will be reset in 
-release 1.4 as the program will be storing its options in a slightly different 
+1. Any options you have set in release 1.3.2 or earlier will be reset in 
+release 1.4 or later as the program will be storing its options in a slightly different 
 location. You must re-select your database folder (just choose the same one). 
-Don't forget to set the email parameters if you use the email reminder feature.
 
-2. The default method of launching the appointment editor has changed from 
-pressing the date buttons to mouse clicking the text box. This change has 
-been requested and actually makes the launching of the day and week views 
-consistent. However, if you don't like this behavior, it can be changed 
-from the miscellaneous options screen.
+2. There may be new text strings that have not been translated. 
+Feel free to mail any translations to i_flem@users.sourceforge.net.
 
-3. There will be new text strings in 1.4 that have not been translated into 
-Spanish. Feel free to mail any translations to 
-i_flem@users.sourceforge.net. There is also a new Italian translation.
-
-4. It is known that some screens in the new help system contain formatting 
+3. It is known that some screens in the new help system contain formatting 
 that has slight imperfections under Java 1.4.2, but not Java 5.0.
-
-5. The iCal import/export has some limitations. Please see the help for 
-more information. Please report all problems/issues on the project 
-forums or bug tracker. It may be a good idea to test iCal imports on
-an alternate database.
-
-6. Information on a number of items that used to be in text files (RDBMS, iCal, SYSTRAY...) 
-has been moved to the online help. Check the help pages for this information.
 
 
 RUNNING

@@ -27,9 +27,8 @@ package net.sf.borg.ui;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.Rectangle;
-
-import javax.swing.JFrame;
 
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
@@ -78,7 +77,7 @@ abstract class View extends javax.swing.JFrame implements Model.Listener
         vs.setWidth(c.getBounds().width);
         vs.setHeight(c.getBounds().height);
         View v = (View) c;
-        vs.setMaximized(v.getExtendedState() == JFrame.MAXIMIZED_BOTH);
+        vs.setMaximized(v.getExtendedState() == Frame.MAXIMIZED_BOTH);
         
         Prefs.putPref(v.prefName_,vs.toString());
         
@@ -102,7 +101,7 @@ abstract class View extends javax.swing.JFrame implements Model.Listener
         
         if( vs.isMaximized())
         {
-            setExtendedState(JFrame.MAXIMIZED_BOTH);
+            setExtendedState(Frame.MAXIMIZED_BOTH);
         }
         else if( vs.getX() != -1 )
         {

@@ -16,6 +16,9 @@ BORG is normally built using ant. If you have ant (available at apache.org), the
 from command line in the ant folder, do - "ant fulldist". This will build the BORG zip files
 in the BORG Calendar Common directory. The jar files are put into the Common/dist directory.
 
+To recreate the search information in the help help jar, you need to have JavaHelp installed and you need to 
+edit the build.xml file with the path to JavaHelp. The regen-help target in the build.xml file will build the search data.
+
 Eclipse
 -------
 Most BORG development is done using the Eclipse IDE. As BORG has grown larger, it has become

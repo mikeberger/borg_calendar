@@ -1,3 +1,11 @@
+Version 1.4.1
+-------------
+A GUI to edit the tracker's task types and states
+Screens will remember the size and position set by the user
+Support large numbers of categories (>100)
+Option to show day of year numbers
+Bug Fixes
+
 Version 1.4 final
 --------------------
 Italian Translation from Piero Trono http://php-multishop.com tropic@users.sourceforge.net

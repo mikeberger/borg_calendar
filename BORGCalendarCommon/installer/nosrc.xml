@@ -127,10 +127,6 @@
 		<description>Optional tool for repairing databases (rarely needed)</description>
             <file src="mdbtool.jar" targetdir="$INSTALL_PATH"/> 
         </pack>
-	<pack name="Sources" preselected="no" required="no">
-            <description>The sources</description>
-            <file src="borg_src.zip" targetdir="$INSTALL_PATH"/>
-        </pack>
     </packs>
     
 </installation>
