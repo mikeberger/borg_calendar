@@ -10,5 +10,6 @@
 	<classpathentry kind="lib" path="lib/trayicon.jar"/>
 	<classpathentry kind="lib" path="lib/jh.jar"/>
 	<classpathentry kind="lib" path="borghelp"/>
+	<classpathentry kind="lib" path="/BORG Calendar Common/lib/looks-1.2.2.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

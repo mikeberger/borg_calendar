@@ -12,17 +12,17 @@ xmlns="http://www.w3.org/TR/REC-html40">
  <o:DocumentProperties>
   <o:Author>mike</o:Author>
   <o:LastAuthor>mike</o:LastAuthor>
-  <o:Revision>7</o:Revision>
-  <o:TotalTime>52</o:TotalTime>
+  <o:Revision>10</o:Revision>
+  <o:TotalTime>76</o:TotalTime>
   <o:Created>2004-11-05T19:09:00Z</o:Created>
-  <o:LastSaved>2004-11-05T20:04:00Z</o:LastSaved>
-  <o:Pages>4</o:Pages>
-  <o:Words>1457</o:Words>
-  <o:Characters>8309</o:Characters>
+  <o:LastSaved>2004-11-07T14:05:00Z</o:LastSaved>
+  <o:Pages>3</o:Pages>
+  <o:Words>1078</o:Words>
+  <o:Characters>6147</o:Characters>
   <o:Company>telcordia</o:Company>
-  <o:Lines>69</o:Lines>
-  <o:Paragraphs>16</o:Paragraphs>
-  <o:CharactersWithSpaces>10204</o:CharactersWithSpaces>
+  <o:Lines>51</o:Lines>
+  <o:Paragraphs>12</o:Paragraphs>
+  <o:CharactersWithSpaces>7548</o:CharactersWithSpaces>
   <o:Version>9.2720</o:Version>
  </o:DocumentProperties>
 </xml><![endif]-->
@@ -59,6 +59,36 @@ p.MsoNormal, li.MsoNormal, div.MsoNormal
 	mso-pagination:widow-orphan;
 	font-size:12.0pt;
 	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+p.MsoBodyTextIndent, li.MsoBodyTextIndent, div.MsoBodyTextIndent
+	{margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:.5in;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";}
+p.MsoBodyTextIndent2, li.MsoBodyTextIndent2, div.MsoBodyTextIndent2
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:30.0pt;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";}
+p.MsoBlockText, li.MsoBlockText, div.MsoBlockText
+	{margin-top:0in;
+	margin-right:30.0pt;
+	margin-bottom:0in;
+	margin-left:24.0pt;
+	margin-bottom:.0001pt;
+	text-indent:-24.0pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:Arial;
 	mso-fareast-font-family:"Times New Roman";}
 a:link, span.MsoHyperlink
 	{color:blue;
@@ -334,10 +364,10 @@ style='font-family:Arial'><o:p></o:p></span></h2>
 various tasks with defined start and end dates, different statuses,
 descriptions, and resolutions. <o:p></o:p></span></p>
 
-<p><span style='font-family:Arial'>It is up to the user to decide if something
-should be a task or regular appointment. Appointments can be used to hold
-simple tasks that require no special tracking, such as &quot;pay mortgage&quot;
-or &quot;take out garbage&quot;. The task tracker is meant for longer running,
+<p><span style='font-family:Arial'>It is up to the user to decide if something should
+be a task or regular appointment. Appointments can be used to hold simple tasks
+that require no special tracking, such as &quot;pay mortgage&quot; or
+&quot;take out garbage&quot;. The task tracker is meant for longer running,
 more complex tasks, such as &quot;code new BORG feature&quot;, &quot;design new
 widget&quot;, or &quot;re-floor bathroom&quot; - things that have multiple
 steps to check off, that require documentation of a resolution, and/or have
@@ -346,7 +376,7 @@ steps to check off, that require documentation of a resolution, and/or have
 <p><span style='font-family:Arial'>The main Task Tracker window shows a
 scrollable list of tasks. The Task Tracker Action menu can be used to add,
 update, and delete tasks. The radiobuttons on top can be used to show just open
-or closed tasks, or all tasks (ignore the PR button for now. <o:p></o:p></span></p>
+or closed tasks, or all tasks (ignore the PR button for now). <o:p></o:p></span></p>
 
 <p><span style='font-family:Arial'>A filter string can be typed in the text
 entry field. When the filter button is pressed, only tasks with text containing
@@ -365,7 +395,9 @@ do not have to deal with this kind of hell. One of the things that BORG can be
 used for is to figure out what you have done during the year at performance
 review time - and to make sure you can keep things that you have already
 claimed credit for apart from things that you have not. Some users will not
-identify with this. Others may be groaning in sympathy at this point.<o:p></o:p></span></p>
+identify with this. Others may be groaning in sympathy at this point. <i>An
+option should probably be added in the future to make the PR related
+functionality invisible for people who don’t care about it</i>.<o:p></o:p></span></p>
 
 <p><span style='font-family:Arial'>Once added, tasks follow a set of <i>states,
 </i>which are user-configurable in BORG.<o:p></o:p></span></p>
@@ -463,11 +495,12 @@ shown below:<o:p></o:p></span></p>
  mso-padding-alt:0in 0in 0in 0in'>
  <tr>
   <td width=295 valign=top style='width:221.4pt;border:solid black 2.25pt;
-  padding:0in 5.4pt 0in 5.4pt'>
+  background:#B3B3B3;padding:0in 5.4pt 0in 5.4pt'>
   <p style='margin-bottom:12.0pt'><span style='font-family:Arial'><u1:p></u1:p>State<o:p></o:p></span></p>
   </td>
   <td width=295 valign=top style='width:221.4pt;border:solid black 2.25pt;
-  border-left:none;mso-border-left-alt:solid black 2.25pt;padding:0in 5.4pt 0in 5.4pt'>
+  border-left:none;mso-border-left-alt:solid black 2.25pt;background:#B3B3B3;
+  padding:0in 5.4pt 0in 5.4pt'>
   <p style='margin-bottom:12.0pt'><span style='font-family:Arial'>Meaning<o:p></o:p></span></p>
   </td>
  </tr>
@@ -520,8 +553,8 @@ shown below:<o:p></o:p></span></p>
   none;border-bottom:solid black 2.25pt;border-right:solid black 2.25pt;
   mso-border-top-alt:solid black 2.25pt;mso-border-left-alt:solid black 2.25pt;
   padding:0in 5.4pt 0in 5.4pt'>
-  <p style='margin-bottom:12.0pt'><span style='font-family:Arial'>Coding done, testing
-  started<o:p></o:p></span></p>
+  <p style='margin-bottom:12.0pt'><span style='font-family:Arial'>Coding done,
+  testing started<o:p></o:p></span></p>
   </td>
  </tr>
  <tr>
@@ -573,9 +606,9 @@ shown below:<o:p></o:p></span></p>
   none;border-bottom:solid black 2.25pt;border-right:solid black 2.25pt;
   mso-border-top-alt:solid black 2.25pt;mso-border-left-alt:solid black 2.25pt;
   padding:0in 5.4pt 0in 5.4pt'>
-  <p style='margin-bottom:12.0pt'><span style='font-family:Arial'>Document is
-  “baselined”, meaning that is is approved. There still may be busy work
-  required before the document is official.<o:p></o:p></span></p>
+  <p style='margin-bottom:12.0pt'><span style='font-family:Arial'>Document is “baselined”,
+  meaning that is is approved. There still may be busy work required before the
+  document is official.<o:p></o:p></span></p>
   </td>
  </tr>
  <tr>
@@ -597,11 +630,11 @@ shown below:<o:p></o:p></span></p>
 30.0pt'><span style='font-family:Arial'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
 
 <p style='margin-top:0in;margin-right:0in;margin-bottom:12.0pt;margin-left:
-30.0pt'><u><span style='font-family:Arial;color:red'>If you don't like the
-default task types and states, you can change them. Please see the section
-below on Editing Task Types and States for more info. The default task states
-are used by the author and provide a good example of what can be done. There is
-no problem if you discard them all and replace them with your own.</span></u><span
+30.0pt'><u><span style='font-family:Arial;color:red'>If you don't like the default
+task types and states, you can change them. Please see the section below on
+Editing Task Types and States for more info. The default task states are used
+by the author and provide a good example of what can be done. There is no
+problem if you discard them all and replace them with your own.</span></u><span
 style='font-family:Arial'><o:p></o:p></span></p>
 
 <p style='margin-top:0in;margin-right:0in;margin-bottom:12.0pt;margin-left:
@@ -613,108 +646,119 @@ style='font-family:Arial'><o:p></o:p></span></p>
  <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
      mso-list:l0 level1 lfo3;tab-stops:list .5in'><span style='font-family:
      Arial;color:black'>The PA (person assigned) and Pri (priority fields)
-     don’t really do anything except hold data. Use them as you like.<u1:p></u1:p></span><span
-     style='font-family:Arial'><o:p></o:p></span></li>
- <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
-     mso-list:l0 level1 lfo3;tab-stops:list .5in'><span style='font-family:
-     Arial;color:black'>The standard BORG check boxes (subtasks) for CODE and
-     DOC tasks might not apply to most users (especially those who aren’t
-     developers). Just as an FYI, here are what the CODE checkboxes were
-     created for: </span><span style='font-family:Arial'><o:p></o:p></span></li>
- <ul type=circle>
-  <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:
-      auto;mso-list:l0 level2 lfo3;tab-stops:list 1.0in'><span
-      style='font-family:Arial;color:black'>Delta = put code under source
-      control </span><span style='font-family:Arial'><o:p></o:p></span></li>
-  <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:
-      auto;mso-list:l0 level2 lfo3;tab-stops:list 1.0in'><span
-      style='font-family:Arial;color:black'>Blue Print = a date tracking blue
-      print has been filled out – see ISO 9000 for more info – see Dilbert for
-      more info on ISO 9000 </span><span style='font-family:Arial'><o:p></o:p></span></li>
-  <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:
-      auto;mso-list:l0 level2 lfo3;tab-stops:list 1.0in'><span
-      style='font-family:Arial;color:black'>MR = a modification request has
-      been issued (or change request, or whatever your build system might
-      require to relate code to features/problems) </span><span
-      style='font-family:Arial'><o:p></o:p></span></li>
-  <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:
-      auto;mso-list:l0 level2 lfo3;tab-stops:list 1.0in'><span
-      style='font-family:Arial;color:black'>Code Insp = code inspection done.<u1:p></u1:p></span><span
-      style='font-family:Arial'><o:p></o:p></span></li>
- </ul>
- <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
-     mso-list:l0 level1 lfo3;tab-stops:list .5in'><span style='font-family:
-     Arial;color:black'>Here are the DOC checkboxes: </span><span
-     style='font-family:Arial'><o:p></o:p></span></li>
- <ul type=circle>
-  <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:
-      auto;mso-list:l0 level2 lfo3;tab-stops:list 1.0in'><span
-      style='font-family:Arial;color:black'>DocNum = an official document
-      number has been established</span><span style='font-family:Arial'><o:p></o:p></span></li>
-  <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:
-      auto;mso-list:l0 level2 lfo3;tab-stops:list 1.0in'><span
-      style='font-family:Arial;color:black'>VGs – viewgraphs have been prepared
-      for the document presentation meeting</span><span style='font-family:
-      Arial'><o:p></o:p></span></li>
-  <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:
-      auto;mso-list:l0 level2 lfo3;tab-stops:list 1.0in'><span
-      style='font-family:Arial;color:black'>Blueprint (see above) </span><span
-      style='font-family:Arial'><o:p></o:p></span></li>
-  <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:
-      auto;mso-list:l0 level2 lfo3;tab-stops:list 1.0in'><span
-      style='font-family:Arial;color:black'>MR (see above)</span><span
-      style='font-family:Arial'><o:p></o:p></span></li>
-  <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:
-      auto;mso-list:l0 level2 lfo3;tab-stops:list 1.0in'><span
-      style='font-family:Arial;color:black'>Library = the document has been officially
-      filed in some library.<u1:p></u1:p></span><span style='font-family:Arial'><o:p></o:p></span></li>
- </ul>
- <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
-     mso-list:l0 level1 lfo3;tab-stops:list .5in'><span style='font-family:
-     Arial;color:black'>The check boxes don’t affect any processing. However,
-     the values are remembered on a per-task basis. So use them as you like. </span><span
-     style='font-family:Arial'><o:p></o:p></span></li>
+     don’t really do anything except hold data. Use them as you like.<u1:p></u1:p><br
+     style='mso-special-character:line-break'>
+     <![if !supportLineBreakNewLine]><br style='mso-special-character:line-break'>
+     <![endif]></span><span style='font-family:Arial'><o:p></o:p></span></li>
 </ul>
 
 <h3 style='margin-left:30.0pt'><a name=mozTocId783397></a><span
 style='font-family:Arial'>Subtasks<o:p></o:p></span></h3>
 
 <p class=MsoNormal style='margin-left:30.0pt'><span style='font-family:Arial'>For
-each task, 5 subtasks can be defined by the user. These 5 check boxes can be used
-to keep track of anything the user needs to take care of as part of the overall
-task. For example, if a task is to refinance your home, subtasks might be
-&quot;get appraisal&quot;, &quot;fax pay stubs&quot;, &quot;mail
+each task, 5 subtasks can be defined by the user. These 5 check boxes can be
+used to keep track of anything the user needs to take care of as part of the
+overall task. For example, if a task is to refinance your home, subtasks might
+be &quot;get appraisal&quot;, &quot;fax pay stubs&quot;, &quot;mail
 application&quot;, &quot;final closing&quot;, &quot;new payment book
 rcv'd&quot;. The subtasks just are there to be checked-off. They do not affect
 any other processing.<br>
 <br>
 Each task type can also have up to 5 type-specific subtasks that are common to
 all tasks of a particular type.. The type-specific subtasks can be altered by
-the user. See below.<o:p></o:p></span></p>
+the user. <o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:30.0pt'><span style='font-family:Arial'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<ul type=disc>
+ <ul type=circle>
+  <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:
+      auto;mso-list:l0 level2 lfo3;tab-stops:list 1.0in'><span
+      style='font-family:Arial;color:black'>The standard BORG check boxes
+      (subtasks) for CODE and DOC tasks might not apply to most users
+      (especially those who aren’t developers). <b>Just as an FYI</b>, here are
+      what the CODE checkboxes were created for: </span><span style='font-family:
+      Arial'><o:p></o:p></span></li>
+  <ul type=square>
+   <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:
+       auto;mso-list:l0 level3 lfo3;tab-stops:list 1.5in'><span
+       style='font-family:Arial;color:black'>Delta = put code under source
+       control </span><span style='font-family:Arial'><o:p></o:p></span></li>
+   <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:
+       auto;mso-list:l0 level3 lfo3;tab-stops:list 1.5in'><span
+       style='font-family:Arial;color:black'>Blue Print = a date tracking blue
+       print has been filled out – see ISO 9000 for more info – see Dilbert for
+       more info on ISO 9000 </span><span style='font-family:Arial'><o:p></o:p></span></li>
+   <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:
+       auto;mso-list:l0 level3 lfo3;tab-stops:list 1.5in'><span
+       style='font-family:Arial;color:black'>MR = a modification request has
+       been issued (or change request, or whatever your build system might
+       require to relate code to features/problems) </span><span
+       style='font-family:Arial'><o:p></o:p></span></li>
+   <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:
+       auto;mso-list:l0 level3 lfo3;tab-stops:list 1.5in'><span
+       style='font-family:Arial;color:black'>Code Insp = code inspection done.<u1:p></u1:p></span><span
+       style='font-family:Arial'><o:p></o:p></span></li>
+  </ul>
+  <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:
+      auto;mso-list:l0 level2 lfo3;tab-stops:list 1.0in'><span
+      style='font-family:Arial;color:black'>Here are the DOC checkboxes: </span><span
+      style='font-family:Arial'><o:p></o:p></span></li>
+  <ul type=square>
+   <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:
+       auto;mso-list:l0 level3 lfo3;tab-stops:list 1.5in'><span
+       style='font-family:Arial;color:black'>DocNum = an official document
+       number has been established</span><span style='font-family:Arial'><o:p></o:p></span></li>
+   <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:
+       auto;mso-list:l0 level3 lfo3;tab-stops:list 1.5in'><span
+       style='font-family:Arial;color:black'>VGs – viewgraphs have been
+       prepared for the document presentation meeting</span><span
+       style='font-family:Arial'><o:p></o:p></span></li>
+   <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:
+       auto;mso-list:l0 level3 lfo3;tab-stops:list 1.5in'><span
+       style='font-family:Arial;color:black'>Blueprint (see above) </span><span
+       style='font-family:Arial'><o:p></o:p></span></li>
+   <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:
+       auto;mso-list:l0 level3 lfo3;tab-stops:list 1.5in'><span
+       style='font-family:Arial;color:black'>MR (see above)</span><span
+       style='font-family:Arial'><o:p></o:p></span></li>
+   <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:
+       auto;mso-list:l0 level3 lfo3;tab-stops:list 1.5in'><span
+       style='font-family:Arial;color:black'>Library = the document has been
+       officially filed in some library.<u1:p></u1:p><br>
+       <br style='mso-special-character:line-break'>
+       <![if !supportLineBreakNewLine]><br style='mso-special-character:line-break'>
+       <![endif]></span><span style='font-family:Arial'><o:p></o:p></span></li>
+  </ul>
+ </ul>
+</ul>
+
+<p class=MsoBodyTextIndent>Obviously, the above subtasks are very specific to
+the author. The default set of task and subtask types probably should be made
+more generic – or just easier to customize.</p>
+
+<p class=MsoNormal style='margin-left:30.0pt'><span style='font-family:Arial'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
 
 <h3 style='margin-left:30.0pt'><span style='font-family:Arial'>Editing Task
 Types and States<o:p></o:p></span></h3>
 
-<p class=MsoNormal style='margin-left:30.0pt'><span style='font-family:Arial'>The
-default task tracker states defined above are probably adequate for developers
-and inadequate for anyone else. The user has the capability to edit the list of
-task types and state transitions in the task tracker. To edit the task types
-and states, first use the option from the task tracker options menu that
-exports the task type information to an XML file. Save this file in case you
-need to revert back to it.<br>
+<p class=MsoBodyTextIndent2>The default task tracker states defined above are
+probably adequate for developers and inadequate for anyone else. The user has
+the capability to edit the list of task types and state transitions in the task
+tracker. To edit the task types and states, first use the option from the task
+tracker options menu that exports the task type information to an XML file.
+Save this file in case you need to revert back to it.<br>
 <br>
 The format of this file is XML - but simplified XML. The simple XML parser in
 BORG cannot handle comments, attributes, prologs - so the file should just
-contain XML elements as described below.<o:p></o:p></span></p>
+contain XML elements as described below.</p>
 
 <p class=MsoNormal style='margin-left:30.0pt'><span style='font-family:Arial'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
 
-<p class=MsoNormal style='margin-top:0in;margin-right:30.0pt;margin-bottom:
-0in;margin-left:24.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-style='font-family:Arial'>Why isn’t there a GUI to edit this instead of raw
-XML? Well, there hasn’t been any demand for that yet, and other things have
-taken priority.<br>
-<br>
+<p class=MsoNormal style='margin-left:30.0pt'><i><span style='font-family:Arial;
+color:red'>Obviously, some kind of GUI should be available to customize the
+task types instead of editing XML. This just hasn’t been done yet.<br>
+</span></i><span style='font-family:Arial'><br>
 Anyway, the XML contains a root element. Under the root are elements for each
 task type. To add a new task type, just add an element under the root.<br>
 <br>
@@ -723,10 +767,121 @@ each allowed state, there is an element. This element should contain an empty
 element for each state that can be reached from that state. Up to 5 CB elements
 can be present per type. These are the type-specific check boxes.<br>
 <br>
-Here is the default subtree for the TASK type:<br style='mso-special-character:
-line-break'>
+Here is an example subtree for the BORG_REL TASK type used by the author:<br
+style='mso-special-character:line-break'>
 <![if !supportLineBreakNewLine]><br style='mso-special-character:line-break'>
 <![endif]><o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:42.0pt;margin-bottom:
+0in;margin-left:.5in;margin-bottom:.0001pt;text-indent:-24.0pt'><span class=m1><span
+style='font-size:10.0pt;font-family:Verdana'><span style="mso-spacerun: yes">  
+</span>&lt;</span></span><span class=t1><span style='font-size:10.0pt;
+font-family:Verdana'>BORG_REL</span></span><span class=m1><span
+style='font-size:10.0pt;font-family:Verdana'>&gt;</span></span><span
+style='font-size:10.0pt;font-family:Verdana'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
+margin-left:48.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><b><span
+style='font-size:10.0pt;font-family:"Courier New"'><span style="mso-spacerun:
+yes"> </span></span></b><span style='font-size:10.0pt;font-family:Verdana'><span
+style="mso-spacerun: yes"> </span><span class=m1>&lt;</span><span class=t1>OPEN</span><span
+class=m1>&gt;</span><o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:66.0pt;margin-bottom:
+0in;margin-left:60.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
+class=b1><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
+style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
+class=t1>IN_PRG</span> <span class=m1>/&gt;</span> <o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt;text-indent:-12.0pt'><span class=b1><span
+style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
+style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;/</span><span
+class=t1>OPEN</span><span class=m1>&gt;</span><o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
+margin-left:48.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><b><span
+style='font-size:10.0pt;font-family:"Courier New"'><span style="mso-spacerun:
+yes">  </span></span></b><span class=m1><span style='font-size:10.0pt;
+font-family:Verdana'>&lt;</span></span><span class=t1><span style='font-size:
+10.0pt;font-family:Verdana'>IN_PRG</span></span><span class=m1><span
+style='font-size:10.0pt;font-family:Verdana'>&gt;</span></span><span
+style='font-size:10.0pt;font-family:Verdana'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:66.0pt;margin-bottom:
+0in;margin-left:60.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
+class=b1><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
+style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
+class=t1>CLOSED</span> <span class=m1>/&gt;</span> <o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt;text-indent:-12.0pt'><span class=b1><span
+style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
+style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;/</span><span
+class=t1>IN_PRG</span><span class=m1>&gt;</span><o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
+margin-left:48.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><b><span
+style='font-size:10.0pt;font-family:"Courier New"'><span style="mso-spacerun:
+yes">  </span></span></b><span class=m1><span style='font-size:10.0pt;
+font-family:Verdana'>&lt;</span></span><span class=t1><span style='font-size:
+10.0pt;font-family:Verdana'>CLOSED</span></span><span class=m1><span
+style='font-size:10.0pt;font-family:Verdana'>&gt;</span></span><span
+style='font-size:10.0pt;font-family:Verdana'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:66.0pt;margin-bottom:
+0in;margin-left:60.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
+class=b1><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
+style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
+class=t1>IN_PRG</span> <span class=m1>/&gt;</span> <o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt;text-indent:-12.0pt'><span class=b1><span
+style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
+style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;/</span><span
+class=t1>CLOSED</span><span class=m1>&gt;</span><o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
+margin-left:48.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span class=b1><span
+style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
+style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
+class=t1>CB</span><span class=m1>&gt;</span><span class=tx1>Web Start JAR</span><span
+class=m1>&lt;/</span><span class=t1>CB</span><span class=m1>&gt;</span> <o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
+margin-left:48.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span class=b1><span
+style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
+style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
+class=t1>CB</span><span class=m1>&gt;</span><span class=tx1>File Release</span><span
+class=m1>&lt;/</span><span class=t1>CB</span><span class=m1>&gt;</span> <o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
+margin-left:48.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span class=b1><span
+style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
+style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
+class=t1>CB</span><span class=m1>&gt;</span><span class=tx1>Update
+latest_version</span><span class=m1>&lt;/</span><span class=t1>CB</span><span
+class=m1>&gt;</span> <o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
+margin-left:48.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span class=b1><span
+style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
+style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
+class=t1>CB</span><span class=m1>&gt;</span><span class=tx1>Tag CVS</span><span
+class=m1>&lt;/</span><span class=t1>CB</span><span class=m1>&gt;</span> <o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
+margin-left:48.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span class=b1><span
+style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
+style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
+class=t1>CB</span><span class=m1>&gt;</span><span class=tx1>News</span><span
+class=m1>&lt;/</span><span class=t1>CB</span><span class=m1>&gt;</span> <o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:42.0pt;margin-bottom:
+0in;margin-left:24.0pt;margin-bottom:.0001pt;text-indent:-12.0pt'><span
+class=b1><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
+style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;/</span><span
+class=t1>BORG_REL</span><span class=m1>&gt;</span><o:p></o:p></span></p>
 
 <p class=MsoNormal style='margin-top:0in;margin-right:30.0pt;margin-bottom:
 0in;margin-left:24.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
@@ -734,698 +889,36 @@ style='font-family:Arial'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p><
 
 <p class=MsoNormal style='margin-top:0in;margin-right:30.0pt;margin-bottom:
 0in;margin-left:24.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-class=m1><span style='font-size:10.0pt;font-family:Verdana'>&lt;</span></span><span
-class=t1><span style='font-size:10.0pt;font-family:Verdana'>root</span></span><span
-class=m1><span style='font-size:10.0pt;font-family:Verdana'>&gt;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:42.0pt;margin-bottom:
-0in;margin-left:.5in;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-style='font-size:10.0pt;font-family:Verdana'><a
-href="..\..\..\..\Documents%20and%20SettingsOwnerDesktop%22" onfocus="h()"
-onclick="return false"><b><span style='font-family:"Courier New";color:red'>-</span></b></a>
-<span class=m1>&lt;</span><span class=t1>TASK</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:48.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-style='font-size:10.0pt;font-family:Verdana'><a
-href="..\..\..\..\Documents%20and%20SettingsOwnerDesktop%22" onfocus="h()"
-onclick="return false"><b><span style='font-family:"Courier New";color:red'>-</span></b></a>
-<span class=m1>&lt;</span><span class=t1>OPEN</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:66.0pt;margin-bottom:
-0in;margin-left:60.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-class=b1><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
-class=t1>IN_PRG</span> <span class=m1>/&gt;</span> <o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:66.0pt;margin-bottom:
-0in;margin-left:60.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-class=b1><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
-class=t1>DEF</span> <span class=m1>/&gt;</span> <o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:.5in;margin-bottom:.0001pt;text-indent:-12.0pt'><span class=b1><span
-style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;/</span><span
-class=t1>OPEN</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:48.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-style='font-size:10.0pt;font-family:Verdana'><a
-href="..\..\..\..\Documents%20and%20SettingsOwnerDesktop%22" onfocus="h()"
-onclick="return false"><b><span style='font-family:"Courier New";color:red'>-</span></b></a>
-<span class=m1>&lt;</span><span class=t1>DEF</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:66.0pt;margin-bottom:
-0in;margin-left:60.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-class=b1><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
-class=t1>OPEN</span> <span class=m1>/&gt;</span> <o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:66.0pt;margin-bottom:
-0in;margin-left:60.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-class=b1><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
-class=t1>IN_PRG</span> <span class=m1>/&gt;</span> <o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:.5in;margin-bottom:.0001pt;text-indent:-12.0pt'><span class=b1><span
-style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;/</span><span
-class=t1>DEF</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:48.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-style='font-size:10.0pt;font-family:Verdana'><a
-href="..\..\..\..\Documents%20and%20SettingsOwnerDesktop%22" onfocus="h()"
-onclick="return false"><b><span style='font-family:"Courier New";color:red'>-</span></b></a>
-<span class=m1>&lt;</span><span class=t1>IN_PRG</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:66.0pt;margin-bottom:
-0in;margin-left:60.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-class=b1><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
-class=t1>DEF</span> <span class=m1>/&gt;</span> <o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:66.0pt;margin-bottom:
-0in;margin-left:60.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-class=b1><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
-class=t1>PR</span> <span class=m1>/&gt;</span> <o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:66.0pt;margin-bottom:
-0in;margin-left:60.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-class=b1><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
-class=t1>CLOSED</span> <span class=m1>/&gt;</span> <o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:.5in;margin-bottom:.0001pt;text-indent:-12.0pt'><span class=b1><span
-style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;/</span><span
-class=t1>IN_PRG</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:48.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-style='font-size:10.0pt;font-family:Verdana'><a
-href="..\..\..\..\Documents%20and%20SettingsOwnerDesktop%22" onfocus="h()"
-onclick="return false"><b><span style='font-family:"Courier New";color:red'>-</span></b></a>
-<span class=m1>&lt;</span><span class=t1>PR</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:66.0pt;margin-bottom:
-0in;margin-left:60.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-class=b1><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
-class=t1>CLOSED</span> <span class=m1>/&gt;</span> <o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:.5in;margin-bottom:.0001pt;text-indent:-12.0pt'><span class=b1><span
-style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;/</span><span
-class=t1>PR</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:48.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-style='font-size:10.0pt;font-family:Verdana'><a
-href="..\..\..\..\Documents%20and%20SettingsOwnerDesktop%22" onfocus="h()"
-onclick="return false"><b><span style='font-family:"Courier New";color:red'>-</span></b></a>
-<span class=m1>&lt;</span><span class=t1>CLOSED</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:66.0pt;margin-bottom:
-0in;margin-left:60.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-class=b1><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
-class=t1>IN_PRG</span> <span class=m1>/&gt;</span> <o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:.5in;margin-bottom:.0001pt;text-indent:-12.0pt'><span class=b1><span
-style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;/</span><span
-class=t1>CLOSED</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:42.0pt;margin-bottom:
-0in;margin-left:24.0pt;margin-bottom:.0001pt;text-indent:-12.0pt'><span
-class=b1><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;/</span><span
-class=t1>TASK</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:42.0pt;margin-bottom:
-0in;margin-left:.5in;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-style='font-size:10.0pt;font-family:Verdana'><a
-href="..\..\..\..\Documents%20and%20SettingsOwnerDesktop%22" onfocus="h()"
-onclick="return false"><b><span style='font-family:"Courier New";color:red'>-</span></b></a>
-<span class=m1>&lt;</span><span class=t1>ISS</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:48.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-style='font-size:10.0pt;font-family:Verdana'><a
-href="..\..\..\..\Documents%20and%20SettingsOwnerDesktop%22" onfocus="h()"
-onclick="return false"><b><span style='font-family:"Courier New";color:red'>-</span></b></a>
-<span class=m1>&lt;</span><span class=t1>OPEN</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:66.0pt;margin-bottom:
-0in;margin-left:60.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-class=b1><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
-class=t1>IN_PRG</span> <span class=m1>/&gt;</span> <o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:66.0pt;margin-bottom:
-0in;margin-left:60.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-class=b1><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
-class=t1>DEF</span> <span class=m1>/&gt;</span> <o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:.5in;margin-bottom:.0001pt;text-indent:-12.0pt'><span class=b1><span
-style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;/</span><span
-class=t1>OPEN</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:48.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-style='font-size:10.0pt;font-family:Verdana'><a
-href="..\..\..\..\Documents%20and%20SettingsOwnerDesktop%22" onfocus="h()"
-onclick="return false"><b><span style='font-family:"Courier New";color:red'>-</span></b></a>
-<span class=m1>&lt;</span><span class=t1>DEF</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:66.0pt;margin-bottom:
-0in;margin-left:60.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-class=b1><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
-class=t1>OPEN</span> <span class=m1>/&gt;</span> <o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:66.0pt;margin-bottom:
-0in;margin-left:60.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-class=b1><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
-class=t1>IN_PRG</span> <span class=m1>/&gt;</span> <o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:.5in;margin-bottom:.0001pt;text-indent:-12.0pt'><span class=b1><span
-style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;/</span><span
-class=t1>DEF</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:48.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-style='font-size:10.0pt;font-family:Verdana'><a
-href="..\..\..\..\Documents%20and%20SettingsOwnerDesktop%22" onfocus="h()"
-onclick="return false"><b><span style='font-family:"Courier New";color:red'>-</span></b></a>
-<span class=m1>&lt;</span><span class=t1>IN_PRG</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:66.0pt;margin-bottom:
-0in;margin-left:60.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-class=b1><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
-class=t1>DEF</span> <span class=m1>/&gt;</span> <o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:66.0pt;margin-bottom:
-0in;margin-left:60.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-class=b1><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
-class=t1>PR</span> <span class=m1>/&gt;</span> <o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:66.0pt;margin-bottom:
-0in;margin-left:60.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-class=b1><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
-class=t1>CLOSED</span> <span class=m1>/&gt;</span> <o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:.5in;margin-bottom:.0001pt;text-indent:-12.0pt'><span class=b1><span
-style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;/</span><span
-class=t1>IN_PRG</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:48.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-style='font-size:10.0pt;font-family:Verdana'><a
-href="..\..\..\..\Documents%20and%20SettingsOwnerDesktop%22" onfocus="h()"
-onclick="return false"><b><span style='font-family:"Courier New";color:red'>-</span></b></a>
-<span class=m1>&lt;</span><span class=t1>PR</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:66.0pt;margin-bottom:
-0in;margin-left:60.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-class=b1><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
-class=t1>CLOSED</span> <span class=m1>/&gt;</span> <o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:.5in;margin-bottom:.0001pt;text-indent:-12.0pt'><span class=b1><span
-style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;/</span><span
-class=t1>PR</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:48.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-style='font-size:10.0pt;font-family:Verdana'><a
-href="..\..\..\..\Documents%20and%20SettingsOwnerDesktop%22" onfocus="h()"
-onclick="return false"><b><span style='font-family:"Courier New";color:red'>-</span></b></a>
-<span class=m1>&lt;</span><span class=t1>CLOSED</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:66.0pt;margin-bottom:
-0in;margin-left:60.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-class=b1><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
-class=t1>IN_PRG</span> <span class=m1>/&gt;</span> <o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:.5in;margin-bottom:.0001pt;text-indent:-12.0pt'><span class=b1><span
-style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;/</span><span
-class=t1>CLOSED</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:42.0pt;margin-bottom:
-0in;margin-left:24.0pt;margin-bottom:.0001pt;text-indent:-12.0pt'><span
-class=b1><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;/</span><span
-class=t1>ISS</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:42.0pt;margin-bottom:
-0in;margin-left:.5in;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-style='font-size:10.0pt;font-family:Verdana'><a
-href="..\..\..\..\Documents%20and%20SettingsOwnerDesktop%22" onfocus="h()"
-onclick="return false"><b><span style='font-family:"Courier New";color:red'>-</span></b></a>
-<span class=m1>&lt;</span><span class=t1>CODE</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:48.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-style='font-size:10.0pt;font-family:Verdana'><a
-href="..\..\..\..\Documents%20and%20SettingsOwnerDesktop%22" onfocus="h()"
-onclick="return false"><b><span style='font-family:"Courier New";color:red'>-</span></b></a>
-<span class=m1>&lt;</span><span class=t1>OPEN</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:66.0pt;margin-bottom:
-0in;margin-left:60.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-class=b1><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
-class=t1>DEV</span> <span class=m1>/&gt;</span> <o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:66.0pt;margin-bottom:
-0in;margin-left:60.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-class=b1><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
-class=t1>DEF</span> <span class=m1>/&gt;</span> <o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:.5in;margin-bottom:.0001pt;text-indent:-12.0pt'><span class=b1><span
-style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;/</span><span
-class=t1>OPEN</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:48.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-style='font-size:10.0pt;font-family:Verdana'><a
-href="..\..\..\..\Documents%20and%20SettingsOwnerDesktop%22" onfocus="h()"
-onclick="return false"><b><span style='font-family:"Courier New";color:red'>-</span></b></a>
-<span class=m1>&lt;</span><span class=t1>DEF</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:66.0pt;margin-bottom:
-0in;margin-left:60.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-class=b1><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
-class=t1>OPEN</span> <span class=m1>/&gt;</span> <o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:66.0pt;margin-bottom:
-0in;margin-left:60.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-class=b1><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
-class=t1>DEV</span> <span class=m1>/&gt;</span> <o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:.5in;margin-bottom:.0001pt;text-indent:-12.0pt'><span class=b1><span
-style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;/</span><span
-class=t1>DEF</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:48.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-style='font-size:10.0pt;font-family:Verdana'><a
-href="..\..\..\..\Documents%20and%20SettingsOwnerDesktop%22" onfocus="h()"
-onclick="return false"><b><span style='font-family:"Courier New";color:red'>-</span></b></a>
-<span class=m1>&lt;</span><span class=t1>DEV</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:66.0pt;margin-bottom:
-0in;margin-left:60.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-class=b1><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
-class=t1>DEF</span> <span class=m1>/&gt;</span> <o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:66.0pt;margin-bottom:
-0in;margin-left:60.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-class=b1><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
-class=t1>TEST</span> <span class=m1>/&gt;</span> <o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:.5in;margin-bottom:.0001pt;text-indent:-12.0pt'><span class=b1><span
-style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;/</span><span
-class=t1>DEV</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:48.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-style='font-size:10.0pt;font-family:Verdana'><a
-href="..\..\..\..\Documents%20and%20SettingsOwnerDesktop%22" onfocus="h()"
-onclick="return false"><b><span style='font-family:"Courier New";color:red'>-</span></b></a>
-<span class=m1>&lt;</span><span class=t1>TEST</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:66.0pt;margin-bottom:
-0in;margin-left:60.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-class=b1><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
-class=t1>DEV</span> <span class=m1>/&gt;</span> <o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:66.0pt;margin-bottom:
-0in;margin-left:60.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-class=b1><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
-class=t1>PR</span> <span class=m1>/&gt;</span> <o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:66.0pt;margin-bottom:
-0in;margin-left:60.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-class=b1><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
-class=t1>CLOSED</span> <span class=m1>/&gt;</span> <o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:.5in;margin-bottom:.0001pt;text-indent:-12.0pt'><span class=b1><span
-style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;/</span><span
-class=t1>TEST</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:48.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-style='font-size:10.0pt;font-family:Verdana'><a
-href="..\..\..\..\Documents%20and%20SettingsOwnerDesktop%22" onfocus="h()"
-onclick="return false"><b><span style='font-family:"Courier New";color:red'>-</span></b></a>
-<span class=m1>&lt;</span><span class=t1>PR</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:66.0pt;margin-bottom:
-0in;margin-left:60.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-class=b1><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
-class=t1>CLOSED</span> <span class=m1>/&gt;</span> <o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:.5in;margin-bottom:.0001pt;text-indent:-12.0pt'><span class=b1><span
-style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;/</span><span
-class=t1>PR</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:48.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-style='font-size:10.0pt;font-family:Verdana'><a
-href="..\..\..\..\Documents%20and%20SettingsOwnerDesktop%22" onfocus="h()"
-onclick="return false"><b><span style='font-family:"Courier New";color:red'>-</span></b></a>
-<span class=m1>&lt;</span><span class=t1>CLOSED</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:66.0pt;margin-bottom:
-0in;margin-left:60.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-class=b1><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
-class=t1>DEV</span> <span class=m1>/&gt;</span> <o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:.5in;margin-bottom:.0001pt;text-indent:-12.0pt'><span class=b1><span
-style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;/</span><span
-class=t1>CLOSED</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:48.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span class=b1><span
-style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
-class=t1>CB</span><span class=m1>&gt;</span><span class=tx1>Delta</span><span
-class=m1>&lt;/</span><span class=t1>CB</span><span class=m1>&gt;</span> <o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:48.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span class=b1><span
-style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
-class=t1>CB</span><span class=m1>&gt;</span><span class=tx1>Blueprint</span><span
-class=m1>&lt;/</span><span class=t1>CB</span><span class=m1>&gt;</span> <o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:48.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span class=b1><span
-style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
-class=t1>CB</span><span class=m1>&gt;</span><span class=tx1>MR</span><span
-class=m1>&lt;/</span><span class=t1>CB</span><span class=m1>&gt;</span> <o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:48.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span class=b1><span
-style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
-class=t1>CB</span><span class=m1>&gt;</span><span class=tx1>Code Insp</span><span
-class=m1>&lt;/</span><span class=t1>CB</span><span class=m1>&gt;</span> <o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:42.0pt;margin-bottom:
-0in;margin-left:24.0pt;margin-bottom:.0001pt;text-indent:-12.0pt'><span
-class=b1><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;/</span><span
-class=t1>CODE</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:42.0pt;margin-bottom:
-0in;margin-left:.5in;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-style='font-size:10.0pt;font-family:Verdana'><a
-href="..\..\..\..\Documents%20and%20SettingsOwnerDesktop%22" onfocus="h()"
-onclick="return false"><b><span style='font-family:"Courier New";color:red'>-</span></b></a>
-<span class=m1>&lt;</span><span class=t1>DOC</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:48.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-style='font-size:10.0pt;font-family:Verdana'><a
-href="..\..\..\..\Documents%20and%20SettingsOwnerDesktop%22" onfocus="h()"
-onclick="return false"><b><span style='font-family:"Courier New";color:red'>-</span></b></a>
-<span class=m1>&lt;</span><span class=t1>OPEN</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:66.0pt;margin-bottom:
-0in;margin-left:60.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-class=b1><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
-class=t1>IN_PRG</span> <span class=m1>/&gt;</span> <o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:66.0pt;margin-bottom:
-0in;margin-left:60.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-class=b1><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
-class=t1>DEF</span> <span class=m1>/&gt;</span> <o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:.5in;margin-bottom:.0001pt;text-indent:-12.0pt'><span class=b1><span
-style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;/</span><span
-class=t1>OPEN</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:48.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-style='font-size:10.0pt;font-family:Verdana'><a
-href="..\..\..\..\Documents%20and%20SettingsOwnerDesktop%22" onfocus="h()"
-onclick="return false"><b><span style='font-family:"Courier New";color:red'>-</span></b></a>
-<span class=m1>&lt;</span><span class=t1>DEF</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:66.0pt;margin-bottom:
-0in;margin-left:60.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-class=b1><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
-class=t1>OPEN</span> <span class=m1>/&gt;</span> <o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:66.0pt;margin-bottom:
-0in;margin-left:60.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-class=b1><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
-class=t1>IN_PRG</span> <span class=m1>/&gt;</span> <o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:.5in;margin-bottom:.0001pt;text-indent:-12.0pt'><span class=b1><span
-style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;/</span><span
-class=t1>DEF</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:48.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-style='font-size:10.0pt;font-family:Verdana'><a
-href="..\..\..\..\Documents%20and%20SettingsOwnerDesktop%22" onfocus="h()"
-onclick="return false"><b><span style='font-family:"Courier New";color:red'>-</span></b></a>
-<span class=m1>&lt;</span><span class=t1>IN_PRG</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:66.0pt;margin-bottom:
-0in;margin-left:60.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-class=b1><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
-class=t1>RVW</span> <span class=m1>/&gt;</span> <o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:66.0pt;margin-bottom:
-0in;margin-left:60.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-class=b1><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
-class=t1>DEF</span> <span class=m1>/&gt;</span> <o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:.5in;margin-bottom:.0001pt;text-indent:-12.0pt'><span class=b1><span
-style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;/</span><span
-class=t1>IN_PRG</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:48.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-style='font-size:10.0pt;font-family:Verdana'><a
-href="..\..\..\..\Documents%20and%20SettingsOwnerDesktop%22" onfocus="h()"
-onclick="return false"><b><span style='font-family:"Courier New";color:red'>-</span></b></a>
-<span class=m1>&lt;</span><span class=t1>RVW</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:66.0pt;margin-bottom:
-0in;margin-left:60.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-class=b1><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
-class=t1>BL</span> <span class=m1>/&gt;</span> <o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:66.0pt;margin-bottom:
-0in;margin-left:60.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-class=b1><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
-class=t1>IN_PRG</span> <span class=m1>/&gt;</span> <o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:.5in;margin-bottom:.0001pt;text-indent:-12.0pt'><span class=b1><span
-style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;/</span><span
-class=t1>RVW</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:48.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-style='font-size:10.0pt;font-family:Verdana'><a
-href="..\..\..\..\Documents%20and%20SettingsOwnerDesktop%22" onfocus="h()"
-onclick="return false"><b><span style='font-family:"Courier New";color:red'>-</span></b></a>
-<span class=m1>&lt;</span><span class=t1>BL</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:66.0pt;margin-bottom:
-0in;margin-left:60.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-class=b1><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
-class=t1>RVW</span> <span class=m1>/&gt;</span> <o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:66.0pt;margin-bottom:
-0in;margin-left:60.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-class=b1><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
-class=t1>PR</span> <span class=m1>/&gt;</span> <o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:66.0pt;margin-bottom:
-0in;margin-left:60.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-class=b1><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
-class=t1>CLOSED</span> <span class=m1>/&gt;</span> <o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:.5in;margin-bottom:.0001pt;text-indent:-12.0pt'><span class=b1><span
-style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;/</span><span
-class=t1>BL</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:48.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-style='font-size:10.0pt;font-family:Verdana'><a
-href="..\..\..\..\Documents%20and%20SettingsOwnerDesktop%22" onfocus="h()"
-onclick="return false"><b><span style='font-family:"Courier New";color:red'>-</span></b></a>
-<span class=m1>&lt;</span><span class=t1>PR</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:66.0pt;margin-bottom:
-0in;margin-left:60.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-class=b1><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
-class=t1>CLOSED</span> <span class=m1>/&gt;</span> <o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:.5in;margin-bottom:.0001pt;text-indent:-12.0pt'><span class=b1><span
-style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;/</span><span
-class=t1>PR</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:48.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-style='font-size:10.0pt;font-family:Verdana'><a
-href="..\..\..\..\Documents%20and%20SettingsOwnerDesktop%22" onfocus="h()"
-onclick="return false"><b><span style='font-family:"Courier New";color:red'>-</span></b></a>
-<span class=m1>&lt;</span><span class=t1>CLOSED</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:66.0pt;margin-bottom:
-0in;margin-left:60.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span
-class=b1><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
-class=t1>IN_PRG</span> <span class=m1>/&gt;</span> <o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:.5in;margin-bottom:.0001pt;text-indent:-12.0pt'><span class=b1><span
-style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;/</span><span
-class=t1>CLOSED</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:48.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span class=b1><span
-style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
-class=t1>CB</span><span class=m1>&gt;</span><span class=tx1>DocNum</span><span
-class=m1>&lt;/</span><span class=t1>CB</span><span class=m1>&gt;</span> <o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:48.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span class=b1><span
-style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
-class=t1>CB</span><span class=m1>&gt;</span><span class=tx1>VGs</span><span
-class=m1>&lt;/</span><span class=t1>CB</span><span class=m1>&gt;</span> <o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:48.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span class=b1><span
-style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
-class=t1>CB</span><span class=m1>&gt;</span><span class=tx1>Blueprint</span><span
-class=m1>&lt;/</span><span class=t1>CB</span><span class=m1>&gt;</span> <o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:48.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span class=b1><span
-style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
-class=t1>CB</span><span class=m1>&gt;</span><span class=tx1>MR</span><span
-class=m1>&lt;/</span><span class=t1>CB</span><span class=m1>&gt;</span> <o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:.75in;margin-bottom:0in;
-margin-left:48.0pt;margin-bottom:.0001pt;text-indent:-24.0pt'><span class=b1><span
-style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;</span><span
-class=t1>CB</span><span class=m1>&gt;</span><span class=tx1>Library</span><span
-class=m1>&lt;/</span><span class=t1>CB</span><span class=m1>&gt;</span> <o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:42.0pt;margin-bottom:
-0in;margin-left:24.0pt;margin-bottom:.0001pt;text-indent:-12.0pt'><span
-class=b1><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;/</span><span
-class=t1>DOC</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-top:0in;margin-right:30.0pt;margin-bottom:
-0in;margin-left:12.0pt;margin-bottom:.0001pt;text-indent:-12.0pt'><span
-class=b1><span style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></span><span
-style='font-size:10.0pt;font-family:Verdana'> <span class=m1>&lt;/</span><span
-class=t1>root</span><span class=m1>&gt;</span><o:p></o:p></span></p>
-
-<p class=MsoNormal style='margin-left:.5in'><span style='font-family:Arial'><br>
-So, as you can see, there is a TASK type of &quot;TASK&quot;. From state
-&quot;OPEN&quot;, you can transition to state &quot;IN_PRG&quot; or state
-&quot;DEF&quot;, and so on...<br>
-<br>
-<i>All task types start in state OPEN. This is hard-coded in BORG. All task
-types can be forced to CLOSED state from the task tracker Action menu no matter
-what the XML state information allows.</i><br>
+style='font-family:Arial'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-family:Arial'>The
+task type is BORG_REL. The task can have states OPEN, IN_PRG, CLOSED. Each
+state contains the list of states that it can transition to. For example, in
+the OPEN state, the only next state is IN_PRG. The CB elements show the
+subtasks that appear for any BORG_REL task.<br style='mso-special-character:
+line-break'>
+<![if !supportLineBreakNewLine]><br style='mso-special-character:line-break'>
+<![endif]><o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><i><span style='font-family:Arial'>All
+task types start in state OPEN. This is hard-coded in BORG. All task types can
+be forced to CLOSED state from the task tracker Action menu no matter what the
+XML state information allows.</span></i><span style='font-family:Arial'><br>
 <br>
 Once you have created the task type XML, it should be imported back into the
-task tracker using the import option in the task tracker Options menu.<br>
+task tracker using the import option in the task tracker Options menu. It must
+contain ALL of your states, not just new ones. Use the option to export the
+existing states to give yourself an XML file to start with.<br>
 <br>
-BORG will not import invalid XML. If the XML is valid, but not correct, you can
-fix the XML and import it again. No damage will be done by logical errors in
-your XML, except that you might not be able to transition your tasks correctly.<o:p></o:p></span></p>
+BORG will not import invalid XML. You must correct any errors in the XML
+structure.<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-family:Arial'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><span style='font-family:Arial'>If
+the XML is valid, but not correct, you can fix the XML and import it again. No
+damage will be done by logical errors in your XML, except that you might not be
+able to transition your tasks correctly.<o:p></o:p></span></p>
 
 </div>
 

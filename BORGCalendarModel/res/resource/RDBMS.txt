@@ -1,46 +1,38 @@
-At this point, only a single user is supported per DB, although multiple DBs can be created.
 
-BORG has ONLY been tested with MYSQL. Instructions here are for MYSQL only
+At this point, only a single user is supported per DB, although multiple DBs can be created. 
 
+BORG has ONLY been tested with MYSQL. Instructions here are for MYSQL only 
 Some familiarity with MYSQL is assumed in the instructions below.
-
 To use RDBMS support with MYSQL:
---------------------------------
+1.	Install MYSQL and make it accessible on your machine or network. See www.mysql.com for the software (which is free).
 
-1. Install MYSQL and make it accessible on your machine or network. See www.mysql.com
-   for the software (which is free).
+2.	Create a database for BORG data in MYSQL. Name it whatever you like.
 
-2. Create a database for BORG data in MYSQL. Name it whatever you like.
+3.	Create a user with at least select/insert/update/delete access to your database 
 
-3. Create a user with at least select/insert/update/delete access to your database 
-
-4. Create the BORG database tables in your database. This is done by running the SQL contained
-   in the borg.sql file that comes with BORG. How you run this depends on what tools
-   you are using. From the mysql command line you would do this:
+4.	Create the BORG database tables in your database. This is done by running the SQL contained in the borg.sql file 
+that comes with BORG. How you run this depends on what tools you are using. From the mysql command line you 
+would do this:
 
 mysql>use your-database-name
-mysql>source borg.sql               <=== you need the full path to borg.sql if it is not
-                                         in your current folder.
+mysql>source borg.sql               <=== you need the full path to borg.sql if it is not in your current folder.
 
-5. BORG looks for a database driver for MYSQL in the CLASSPATH. The driver
-   is ** NOT ** shipped with BORG. You have to download this separately.
-   BORG 1.3 was tested with MYSQL Connector/J from www.mysql.com/products/connector-j/index.html
-   To use this, download the latest stable version. Included should be a jar file called
-   something like: mysql-connector-java-3.0.11-stable-bin.jar. The easiest way to get this
-   file in the CLASSPATH is to just copy it to the lib/ext folder under where the JAVA Runtime
-   is installed.
+5.	BORG looks for a database driver for MYSQL in the CLASSPATH. The driver is ** NOT ** shipped with BORG. 
+You have to download this separately. BORG is tested with MYSQL Connector/J 
+from www.mysql.com/products/connector-j/index.html. To use this, download the latest stable version. 
+Included should be a jar file called something like: mysql-connector-java-3.0.11-stable-bin.jar. 
+Copy it to the lib/ext folder under where the JAVA Runtime is installed. 
+If you don’t correctly do this step, you will get an error saying that the Driver class cannot be found.
 
-6. Run BORG and set the MySQL database parameters from the database options screen.
+6.	Run BORG and set the MySQL database parameters from the database options screen.
+7.	You can transfer data from BORG data files by exporting the data to XML when using the file-based, switching  
+to the new MySQL DB, and then importing the data from XML.
 
-7. You can transfer data from BORG data files by exporting the data to XML, switching
-   your URL to the new empty DB URL, and then importing the data from XML.
-   
-====================================================================================================
-
-So, why use RDBMS???? I am not sure. It is much more complicated and requires more
-administration. I would imagine that some users are comfortable with setting up
-MYSQL and might want to take advantage of the fact that once the data is in an RDBMS, 
-ad-hoc data access is easy through SQL. An RDBMS also provides a path forward to allowing
-multi-user access or even a web interface in the future.
-
-MYSQL can also be run remotely!!
+So, why use RDBMS???? I am not sure. It is much more complicated and requires more administration. 
+I would imagine that some users are comfortable with setting up MYSQL and might want to take advantage 
+of the fact that once the data is in an RDBMS,  ad-hoc data access is easy through SQL. 
+An RDBMS also provides a path forward to allowing multi-user access or even a web interface in the future.
+MYSQL can also be run remotely!! If you have a secure network, no additional work is needed. 
+Just enter the remote hostname in BORG as the DB host. If you are going to run over the internet, 
+I would suggest using SSH-based tunneling to keep your data secure. The MySQL manual describes how to set this 
+up.

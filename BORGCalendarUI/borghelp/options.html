@@ -12,17 +12,17 @@ xmlns="http://www.w3.org/TR/REC-html40">
  <o:DocumentProperties>
   <o:Author>mike</o:Author>
   <o:LastAuthor>mike</o:LastAuthor>
-  <o:Revision>5</o:Revision>
-  <o:TotalTime>20</o:TotalTime>
+  <o:Revision>6</o:Revision>
+  <o:TotalTime>29</o:TotalTime>
   <o:Created>2004-11-05T20:47:00Z</o:Created>
-  <o:LastSaved>2004-11-05T21:09:00Z</o:LastSaved>
+  <o:LastSaved>2004-11-07T14:36:00Z</o:LastSaved>
   <o:Pages>2</o:Pages>
-  <o:Words>652</o:Words>
-  <o:Characters>3719</o:Characters>
+  <o:Words>728</o:Words>
+  <o:Characters>4151</o:Characters>
   <o:Company>telcordia</o:Company>
-  <o:Lines>30</o:Lines>
-  <o:Paragraphs>7</o:Paragraphs>
-  <o:CharactersWithSpaces>4567</o:CharactersWithSpaces>
+  <o:Lines>34</o:Lines>
+  <o:Paragraphs>8</o:Paragraphs>
+  <o:CharactersWithSpaces>5097</o:CharactersWithSpaces>
   <o:Version>9.2720</o:Version>
  </o:DocumentProperties>
 </xml><![endif]-->
@@ -49,6 +49,16 @@ h1
 	mso-font-kerning:0pt;
 	text-decoration:underline;
 	text-underline:single;}
+p.MsoBodyTextIndent, li.MsoBodyTextIndent, div.MsoBodyTextIndent
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:.5in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";}
 @page Section1
 	{size:8.5in 11.0in;
 	margin:1.0in 1.25in 1.0in 1.25in;
@@ -100,9 +110,9 @@ the <b><i>Options</i></b><i> </i>menu.&nbsp;<o:p></o:p></span></p>
 <p class=MsoNormal><span style='font-family:Arial'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
 
 <p class=MsoNormal><span style='font-family:Arial'>FYI – On some systems, the
-options screen does not appear instantly (like other screens). This delay is
-normal and is caused by the lookup (by the Java runtime) of the list of <span
-style="mso-spacerun: yes"> </span>“Look and Feels” installed on the system.<o:p></o:p></span></p>
+options screen does not appear instantly (like other screens). A delay is
+normal and is caused by the lookup (by the Java runtime) of the list of<span
+style="mso-spacerun: yes">  </span>“Look and Feels” installed on the system.<o:p></o:p></span></p>
 
 <p class=MsoNormal><span style='font-family:Arial'><br>
 Most of the options from the options screens are self-explanatory - except:<o:p></o:p></span></p>
@@ -116,19 +126,25 @@ Most of the options from the options screens are self-explanatory - except:<o:p>
 <ul style='margin-top:0in' type=disc>
  <li class=MsoNormal style='mso-list:l1 level1 lfo3;tab-stops:list .5in'><span
      style='font-family:Arial'>Look And Feel - the combo box will be populated
-     only with the installed look and feels in your JRE. The default is Metal. You
-     can put new look and feels in your classpath and type the full class name
-     into the combo box. BORG looks good with the default Metal L&amp;F
+     only with the installed look and feels in your JRE. The default is Metal.
+     You can put new look and feels in your classpath and type the full class
+     name into the combo box. BORG looks good with the default Metal L&amp;F
      (especially the Java 5.0 version) and the PlasticXP l&amp;f from
      jgoodies.com, which is recommended. The Liquid L&amp;F looks ok too. Some
      of the other L&amp;Fs are not so appealing with BORG. The PlasticXP look
-     and feel is distributed with BORG.<o:p></o:p></span></li>
+     and feel is distributed with BORG to make sure you have at least one good
+     looking one.<br style='mso-special-character:line-break'>
+     <![if !supportLineBreakNewLine]><br style='mso-special-character:line-break'>
+     <![endif]><o:p></o:p></span></li>
  <li class=MsoNormal style='mso-list:l1 level1 lfo3;tab-stops:list .5in'><span
      style='font-family:Arial'>Sort Appointments by Color – normally
      appointments on the same day are sorted by time. If this option is
      selected, the appointments are sorted first by color – red, blue, green,
-     black, white. This allows high-priority appointments (red) to move to the
-     top of the visible list for a day.<o:p></o:p></span></li>
+     black, white. This allows high-priority appointments (i.e. red) to move to
+     the top of the visible list for a day.<br style='mso-special-character:
+     line-break'>
+     <![if !supportLineBreakNewLine]><br style='mso-special-character:line-break'>
+     <![endif]><o:p></o:p></span></li>
  <li class=MsoNormal style='mso-list:l1 level1 lfo3;tab-stops:list .5in'><span
      style='font-family:Arial'>Week View Start and End Hour – the range of
      times shown on both the Week and Day View grids.<o:p></o:p></span></li>
@@ -152,7 +168,7 @@ Most of the options from the options screens are self-explanatory - except:<o:p>
      style='font-family:Arial'>Wrap Appointment Text - this will cause text to
      wrap in the month view and print. To take effect in the month view, the
      window must be destroyed and recreated either be restarting BORG, or by
-     killing the window and re-opening from the sysrtay icon (windows only).<o:p></o:p></span></li>
+     killing the window and re-opening from the systray icon (windows only).<o:p></o:p></span></li>
 </ul>
 
 <p class=MsoNormal><span style='font-family:Arial'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
@@ -163,24 +179,26 @@ Most of the options from the options screens are self-explanatory - except:<o:p>
 
 <ul style='margin-top:0in' type=disc>
  <li class=MsoNormal style='mso-list:l0 level1 lfo8;tab-stops:list .5in'><span
-     style='font-family:Arial'>Apply DB Change will restart BORG with the new
-     Database. No data is copied and the original database is not removed. You
-     can use import/export to move data from one database to another. If you
-     just want to copy jdb files to a new location – just copy them and change
-     to the new location from the options screen.<o:p></o:p></span></li>
+     style='font-family:Arial;color:red'>Apply DB Change</span><span
+     style='font-family:Arial'> will restart BORG with the new Database. No
+     data is copied and the original database is not removed. If you just want
+     to move or copy jdb files to a new location – just copy them and change to
+     the new location from the options screen. For more complicated DB changes –
+     like changing from local files to MySQL, just use import/export to XML to
+     move the data into the new database.<br style='mso-special-character:line-break'>
+     <![if !supportLineBreakNewLine]><br style='mso-special-character:line-break'>
+     <![endif]><o:p></o:p></span></li>
 </ul>
-
-<p class=MsoNormal><span style='font-family:Arial'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
 
 <p class=MsoNormal><b><u><span style='font-family:Arial'>Email Parameters</span></u></b><span
 style='font-family:Arial'><br style='mso-special-character:line-break'>
 <![if !supportLineBreakNewLine]><br style='mso-special-character:line-break'>
 <![endif]><o:p></o:p></span></p>
 
-<p class=MsoNormal><span style='font-family:Arial'>Email - an email message is
-sent once a day only, and only for the next day's appointments. Provide the
-name of an SMTP server and email address to send to. BORG cannot send a
-user/password to the SMTP server at this time.<o:p></o:p></span></p>
+<p class=MsoBodyTextIndent>An email message is sent once a day only, and only
+for the next day's appointments. Provide the name of an SMTP server and email
+address to send to. BORG cannot send a user/password to the SMTP server at this
+time.</p>
 
 <p class=MsoNormal><span style='font-family:Arial'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
 
@@ -208,8 +226,8 @@ user/password to the SMTP server at this time.<o:p></o:p></span></p>
 <ul style='margin-top:0in' type=disc>
  <li class=MsoNormal style='mso-list:l0 level1 lfo8;tab-stops:list .5in'><span
      style='font-family:Arial'>Logging - the log records provide a record of
-     BORG activity (DB adds/deletes). The Java version of BORG does not have
-     any tools to take action on the log records (i.e. view them nicely or play
+     BORG activity (DB adds/deletes). The Java version of BORG does not have any
+     tools to take action on the log records (i.e. view them nicely or play
      them back into a DB). There is no strong reason to turn on this feature.
      It is sort of a legacy feature from a much older C++ version of BORG.<o:p></o:p></span></li>
 </ul>
@@ -218,12 +236,12 @@ user/password to the SMTP server at this time.<o:p></o:p></span></p>
 
 <ul style='margin-top:0in' type=disc>
  <li class=MsoNormal style='mso-list:l0 level1 lfo8;tab-stops:list .5in'><span
-     style='font-family:Arial'>Auto Update Check - this only causes BORG to compare
-     the latest release number from the BORG sourceforge web site to the
-     release that you are running. If the releases are different, a popup will
-     inform you. Nothing else is done. The feature is off by default. The check
-     is done once per day. Only stable release numbers are kept on the web. New
-     Beta releases will not be detected.<o:p></o:p></span></li>
+     style='font-family:Arial'>Auto Update Check - this only causes BORG to
+     compare the latest release number from the BORG sourceforge web site to
+     the release that you are running. If the releases are different, a popup
+     will inform you. Nothing else is done. The feature is off by default. The
+     check is done once per day. Only stable release numbers are kept on the
+     web. New Beta releases will not be detected.<o:p></o:p></span></li>
 </ul>
 
 <p class=MsoNormal><span style='font-family:Arial'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
@@ -240,12 +258,25 @@ user/password to the SMTP server at this time.<o:p></o:p></span></p>
      style='font-family:Arial'>Show Stack Trace Option – if an error occurs and
      this option is set, a button will appear with the error screen to generate
      a stack trace. This can be used for debugging the error and can be sent to
-     the developers. This need not be turned on unless debugging is being done.<o:p></o:p></span></li>
+     the developers. This need not be turned on unless debugging is being done.<br
+     style='mso-special-character:line-break'>
+     <![if !supportLineBreakNewLine]><br style='mso-special-character:line-break'>
+     <![endif]><o:p></o:p></span></li>
  <li class=MsoNormal style='mso-list:l0 level1 lfo8;tab-stops:list .5in'><span
      style='font-family:Arial'>Export Todos as Events (iCal) – when exporting
      to iCal format, todos are exported as VToDo’s. Some calendar programs only
      display VtoDo’s on a checklist and not in their calendar. Check this
-     option to force to do’s to be exported as regular appointments (VEvents).<o:p></o:p></span></li>
+     option to force to do’s to be exported as regular appointments (VEvents).<br
+     style='mso-special-character:line-break'>
+     <![if !supportLineBreakNewLine]><br style='mso-special-character:line-break'>
+     <![endif]><o:p></o:p></span></li>
+ <li class=MsoNormal style='mso-list:l0 level1 lfo8;tab-stops:list .5in'><span
+     style='font-family:Arial'>Reverse the Date Button/Day Text mouse actions –
+     In release 1.4, the way to get the appointment editor was changed from clicking
+     to the date button to clicking the day text area. The date button was then
+     changed to pop up the new Day View. This change was asked for by a few
+     people. If you prefer to click the date button to get the editor, select
+     this option to restore the old behavior.<o:p></o:p></span></li>
 </ul>
 
 </div>

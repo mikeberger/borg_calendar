@@ -12,17 +12,17 @@ xmlns="http://www.w3.org/TR/REC-html40">
  <o:DocumentProperties>
   <o:Author>mike</o:Author>
   <o:LastAuthor>mike</o:LastAuthor>
-  <o:Revision>3</o:Revision>
-  <o:TotalTime>2</o:TotalTime>
+  <o:Revision>4</o:Revision>
+  <o:TotalTime>5</o:TotalTime>
   <o:Created>2004-11-05T21:11:00Z</o:Created>
-  <o:LastSaved>2004-11-05T21:13:00Z</o:LastSaved>
+  <o:LastSaved>2004-11-07T14:41:00Z</o:LastSaved>
   <o:Pages>1</o:Pages>
-  <o:Words>170</o:Words>
-  <o:Characters>970</o:Characters>
+  <o:Words>221</o:Words>
+  <o:Characters>1264</o:Characters>
   <o:Company>telcordia</o:Company>
-  <o:Lines>8</o:Lines>
-  <o:Paragraphs>1</o:Paragraphs>
-  <o:CharactersWithSpaces>1191</o:CharactersWithSpaces>
+  <o:Lines>10</o:Lines>
+  <o:Paragraphs>2</o:Paragraphs>
+  <o:CharactersWithSpaces>1552</o:CharactersWithSpaces>
   <o:Version>9.2720</o:Version>
  </o:DocumentProperties>
 </xml><![endif]-->
@@ -65,25 +65,33 @@ div.Section1
 
 <p class=MsoNormal><span style='font-family:Arial'>BORG can export/import its
 data to/from XML. This is a fully functional export/import with an improved XML
-format as of release 1.2. The import/export actions can be found on the month
-view Action menu. Import/Export provides a good way to backup your data in
-human readable/editable form.<br>
+format as of release 1.2. The import/export actions can be found on the month view
+Action menu. Import/Export provides a good way to backup your data in human
+readable/editable form.<br>
 <br>
-Import will merge data into the current database. This can be dangerous.
-Importing data back into the database it came from will create duplicates of every
-item, with no automatic way of cleaning them up, so be careful. <br>
+Import will merge data into the current database. This can be dangerous. <i>Importing
+data back into the database it came from will create duplicates of every item,
+with no automatic way of cleaning them up</i>, so be careful. <br>
 <br>
 In 1.3.2, import from a URL was added. An example URL would be <a
-href="http://your.server.name/some/path/borg.xml">http://your.server.name/some/path/borg.xml</a>.<o:p></o:p></span></p>
+href="http://your.server.name/some/path/borg.xml">http://your.server.name/some/path/borg.xml</a>.
+This allows you to import data from a website. This might be used if someone
+posted common appointments on the web to be imported by a number of people.<o:p></o:p></span></p>
 
 <p class=MsoNormal><span style='font-family:Arial'><br>
 Export to a URL will export all 3 databases as files borg.xml, mrdb.xml,
 addr.xml to wherever the URL points. You cannot use an http URL. You need to
-use something like FTP. For example, ftp://username@your.ftp.server/your/path.
-If a password is needed, you must specify in the URL -
-ftp://username:password@your.ftp.server/your/path. Besides providing a non-local
-backup for your own data, Import/Export from URL could be used to share common
-data, such as meetings, holidays, etc...<o:p></o:p></span></p>
+use something like FTP, and in general, this is a way to FTP your XML data. For
+example, <a href="ftp://username@your.ftp.server/your/path">ftp://username@your.ftp.server/your/path</a>
+is a URL that will FTP the XML files to a server that doesn&#8217;t require a
+password.. If a password is needed, you must specify in the URL -
+ftp://username:password@your.ftp.server/your/path. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-family:Arial'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-family:Arial'>Besides providing a
+non-local backup for your own data, Import/Export from URL could be used to
+share common data, such as meetings, holidays, etc...<o:p></o:p></span></p>
 
 </div>
 
