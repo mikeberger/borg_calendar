@@ -40,6 +40,7 @@ import net.fortuna.ical4j.model.component.VToDo;
 import net.fortuna.ical4j.model.parameter.Value;
 import net.fortuna.ical4j.model.property.Categories;
 import net.fortuna.ical4j.model.property.Clazz;
+import net.fortuna.ical4j.model.property.Description;
 import net.fortuna.ical4j.model.property.DtStart;
 import net.fortuna.ical4j.model.property.Duration;
 import net.fortuna.ical4j.model.property.ProdId;
@@ -76,8 +77,26 @@ public class AppointmentIcalAdapter {
 			}
 			
 			// add text
-			Summary sum = new Summary( ap.getText());
+			String appttext = ap.getText();
+			Summary sum = null;
+			Description desc = null;
+
+            int ii = appttext.indexOf('\n');
+            if( ii != -1 )
+            {
+                sum = new Summary(appttext.substring(0,ii));
+                desc = new Description( appttext.substring(ii+1));
+            }
+            else
+            {
+                sum = new Summary(appttext);
+            }
+            
 			ve.getProperties().add(sum);
+			if( desc != null )
+			{
+			    ve.getProperties().add(desc);
+			}
 			
 			// date
 			if( AppointmentModel.isNote(ap))
@@ -215,12 +234,20 @@ public class AppointmentIcalAdapter {
 			{
 				Appointment ap = amodel.newAppt();
 				PropertyList pl = comp.getProperties();
+				String appttext= null;
 				Property prop = pl.getProperty(Property.SUMMARY);
 				if( prop != null )
 				{
-					ap.setText( prop.getValue());
+					appttext += prop.getValue();
 				}
 				
+				prop = pl.getProperty(Property.DESCRIPTION);
+				if( prop != null )
+				{
+					appttext += "\n" + prop.getValue();
+				}
+				
+				ap.setText(appttext);
 				prop = pl.getProperty(Property.DTSTART);
 				if( prop != null)
 				{
