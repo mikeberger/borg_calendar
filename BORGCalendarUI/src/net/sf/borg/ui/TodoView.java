@@ -65,7 +65,7 @@ import javax.swing.ImageIcon;
 
 // bsv 2004-12-21
 import de.wannawork.jcalendar.*;
-
+import javax.swing.border.EmptyBorder;
 import java.text.*;
 import javax.swing.JToggleButton;
 import java.awt.*;
@@ -115,16 +115,28 @@ public class TodoView extends View {
         // the todos will be displayed in a sorted table with 2 columns -
         // data and todo text
         jTable1.setModel(new TableSorter(
-        new String []{ Resource.getResourceString("Date"), Resource.getResourceString("To_Do"),ResourceBundle.getBundle("resource/borg_resource").getString("Category")  },
-        new Class []{ Date.class,java.lang.String.class, java.lang.String.class}));
-        jTable1.getColumnModel().getColumn(0).setPreferredWidth(140);
-        jTable1.getColumnModel().getColumn(1).setPreferredWidth(400);
-        jTable1.getColumnModel().getColumn(2).setPreferredWidth(120);
+                new String []{ Resource.getResourceString("Date"), Resource.getResourceString("To_Do"),
+                		ResourceBundle.getBundle("resource/borg_resource").getString("Category"),
+						ResourceBundle.getBundle("resource/borg_resource").getString("Color")  },
+                new Class []{ Date.class,java.lang.String.class, java.lang.String.class, java.lang.String.class}));
+                jTable1.getColumnModel().getColumn(0).setPreferredWidth(140);
+                jTable1.getColumnModel().getColumn(1).setPreferredWidth(400);
+                jTable1.getColumnModel().getColumn(2).setPreferredWidth(120);
+//        jTable1.setModel(new TableSorter(
+//                new String []{ Resource.getResourceString("Date"), Resource.getResourceString("To_Do"),ResourceBundle.getBundle("resource/borg_resource").getString("Category")  },
+//                new Class []{ Date.class,java.lang.String.class, java.lang.String.class}));
+//                jTable1.getColumnModel().getColumn(0).setPreferredWidth(140);
+//                jTable1.getColumnModel().getColumn(1).setPreferredWidth(400);
+//                jTable1.getColumnModel().getColumn(2).setPreferredWidth(120);
+
         jTable1.setPreferredScrollableViewportSize(new Dimension( 660,400 ));
         
-        
+        // bsv 2004-12-22
+        // set more pretty renderer
         jTable1.setDefaultRenderer( Object.class, new TodayRenderer() );
         jTable1.setDefaultRenderer( Date.class, new TodayRenderer() );
+        
+        jTable1.removeColumn( jTable1.getColumnModel().getColumn(3) );
         
         refresh();
         
@@ -132,6 +144,7 @@ public class TodoView extends View {
         
     }
     
+    // bsv 2004-12-22
     class TodayRenderer extends DefaultTableCellRenderer{
         public Component getTableCellRendererComponent(
             JTable table, Object value, boolean isSelected, 
@@ -139,23 +152,49 @@ public class TodoView extends View {
             
             super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             
+            // it works but not consider current locale
             //SimpleDateFormat sdf = new SimpleDateFormat( "yyyy-MM-dd" );
             DateFormat sdf = DateFormat.getDateInstance();
             
             JLabel jl = new JLabel(getText());
             jl.setOpaque( true );
             if( isSelected ){
-            	jl.setForeground( Color.DARK_GRAY );
-            	jl.setBackground( Color.YELLOW );
+            	jl.setForeground( Color.BLACK );
+            	jl.setBackground( Color.ORANGE );
             } else {
-        		jl.setForeground( Color.BLACK );
+                String color = table.getModel().getValueAt(row,3).toString();
+                if( color.equals("red")){
+                	jl.setForeground( new Color((new Integer(Prefs.getPref( PrefName.UCS_RED))).intValue()) );
+                } else if( color.equals("blue")){
+                  	jl.setForeground( new Color((new Integer(Prefs.getPref( PrefName.UCS_BLUE))).intValue()) );
+                } else if( color.equals("green")){
+                  	jl.setForeground( new Color((new Integer(Prefs.getPref( PrefName.UCS_GREEN))).intValue()) );
+                } else if( color.equals("black")){
+                  	jl.setForeground( new Color((new Integer(Prefs.getPref( PrefName.UCS_BLACK))).intValue()) );
+                } else if( color.equals("white")){
+                  	jl.setForeground( new Color((new Integer(Prefs.getPref( PrefName.UCS_WHITE))).intValue()) );
+                } else if( color.equals("navy")){
+                  	jl.setForeground( new Color((new Integer(Prefs.getPref( PrefName.UCS_NAVY))).intValue()) );
+                } else if( color.equals("brick")){
+                  	jl.setForeground( new Color((new Integer(Prefs.getPref( PrefName.UCS_BRICK))).intValue()) );
+                } else if( color.equals("purple")){
+                  	jl.setForeground( new Color((new Integer(Prefs.getPref( PrefName.UCS_PURPLE))).intValue()) );
+                } else if( color.equals("pink") && column>1 ){
+                  	jl.setForeground( new Color((new Integer(Prefs.getPref( PrefName.UCS_TODAY))).intValue()) );
+                } else {
+                	jl.setForeground( Color.BLACK );
+                }
+//            	jl.setForeground( Color.BLACK );
                	if( table.getModel().getValueAt(row,1).equals(Resource.getResourceString("======_Today_======")) ){
-               		jl.setBackground( new Color(16751001) );
+               		//jl.setBackground( new Color(16751001) );
+               		jl.setBackground( new Color((new Integer(Prefs.getPref( PrefName.UCS_TODAY))).intValue()) );
                	} else {
                    	if( ((Date )(table.getModel().getValueAt(row,0))).getTime()>(new Date()).getTime() ){
-                   		jl.setBackground( new Color(192,192,192) );
+                   		//jl.setBackground( new Color(192,192,192) );
+                   		jl.setBackground( new Color((new Integer(Prefs.getPref( PrefName.UCS_DEFAULT))).intValue()) );
                    	} else {
-                   		jl.setBackground( new Color(216,216,216) );
+                   		//jl.setBackground( new Color(216,216,216) );
+                   		jl.setBackground( new Color((new Integer(Prefs.getPref( PrefName.UCS_WEEKDAY))).intValue()) );
                    	}
 //               		jl.setBackground( new Color(216,216,216) );
                	}
@@ -166,6 +205,7 @@ public class TodoView extends View {
             } else {
 
             }
+            jl.setBorder( new EmptyBorder(2,2,2,2));
             return jl;
             //return this;
         }
@@ -195,9 +235,17 @@ public class TodoView extends View {
         // add a tabel row to mark the current date - it will sort
         // to the right spot by date
         Date d = new Date();
-        Object [] tod = new Object[2];
+
+        //bsv 2004-12-22
+        Object [] tod = new Object[4];
         tod[0] = d;
         tod[1] = new String(Resource.getResourceString("======_Today_======"));
+        tod[2] = "Today is";
+        tod[3] = "pink";
+//        Object [] tod = new Object[2];
+//        tod[0] = d;
+//        tod[1] = new String(Resource.getResourceString("======_Today_======"));
+        
         tm.addRow(tod);
         tm.tableChanged(new TableModelEvent(tm));
         
@@ -216,11 +264,19 @@ public class TodoView extends View {
                     nt = r.getDate();
                 }
                 
+                // bsv 2004-12-22
                 // add the table row
-                Object [] ro = new Object[3];
+                Object [] ro = new Object[4];
                 ro[0] = nt;
                 ro[1] = tx;
                 ro[2] = r.getCategory();
+                ro[3] = r.getColor();
+//                // add the table row
+//                Object [] ro = new Object[3];
+//                ro[0] = nt;
+//                ro[1] = tx;
+//                ro[2] = r.getCategory();
+
                 tm.addRow(ro);
                 tm.tableChanged(new TableModelEvent(tm));
             }
@@ -242,11 +298,18 @@ public class TodoView extends View {
                 // build a string for the table - BT<task number> + description
                 String btstring = "BT" + mr.getTaskNumber().toString() + " " + mr.getDescription();
                 
+                // bsv 2004-12-22
                 // add row to table
-                Object [] ro = new Object[3];
+                Object [] ro = new Object[4];
                 ro[0] = mr.getDueDate();
                 ro[1] = btstring;
                 ro[2] = mr.getCategory();
+                ro[3] = "navy";
+//                // add row to table
+//                Object [] ro = new Object[3];
+//                ro[0] = mr.getDueDate();
+//                ro[1] = btstring;
+//                ro[2] = mr.getCategory();
                 tm.addRow(ro);
                 tm.tableChanged(new TableModelEvent(tm));
             }
@@ -274,7 +337,7 @@ public class TodoView extends View {
         jPanel1 = new javax.swing.JPanel();
         todotext = new javax.swing.JTextField();
         
-        // TODO place jcalendar here
+        // place jcalendar here
         tododate_cb = new JCalendarComboBox();
         tododate = new javax.swing.JTextField();
         
@@ -453,7 +516,7 @@ public class TodoView extends View {
         jPanel1.add(addtodo, gridBagConstraints8);
         
         // bsv 2004-12-21
-        // TODO set jtb size, set tuned colors
+        // set jtb size, set tuned colors
         Color ctemp;
         ctemp = new Color( (new Integer( Prefs.getPref(PrefName.UCS_RED))).intValue() );
         jtbRed.setBackground( Color.LIGHT_GRAY );
@@ -526,9 +589,12 @@ public class TodoView extends View {
         String tdtext = todotext.getText();
         
         // bsv 2004-12-21
-        // TODO investigate how it works
+        // TODO must investigate how it works
         // some stupid way
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+        //SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+        //tododate.setText( sdf.format( tododate_cb.getCalendar().getTime() ) );
+        // use current locale
+        DateFormat sdf = DateFormat.getDateInstance();
         tododate.setText( sdf.format( tododate_cb.getCalendar().getTime() ) );
 
         String tddate = tododate.getText();

@@ -578,7 +578,7 @@ public class OptionsView extends View
         // TODO add action listener to btn_ucs_restore
         btn_ucs_restore.addActionListener(new ActionListener(){
         	public void actionPerformed(ActionEvent e) {
-        		btn_ucs_red.setColorProperty(new Color(16711680));
+        		btn_ucs_red.setColorProperty(new Color(13369395));
         		btn_ucs_red.setColorByProperty();
         		btn_ucs_blue.setColorProperty(new Color(6684876));
         		btn_ucs_blue.setColorByProperty();
@@ -596,7 +596,7 @@ public class OptionsView extends View
         		btn_ucs_birthdays.setColorByProperty();
 //        		// Calendar view day background colors
 //        		// TODO choose correct colors
-        		btn_ucs_default.setColorProperty(new Color(13421772));
+        		btn_ucs_default.setColorProperty(new Color(11316396));
         		btn_ucs_default.setColorByProperty();
         		btn_ucs_today.setColorProperty(new Color(16751001));
         		btn_ucs_today.setColorByProperty();
