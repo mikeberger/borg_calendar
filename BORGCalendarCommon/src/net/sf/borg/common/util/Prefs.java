@@ -23,6 +23,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 
 /**
  * 
@@ -31,6 +32,33 @@ import java.io.ObjectOutputStream;
  */
 public class Prefs {
 
+	public interface Listener 
+	{
+		public abstract void prefsChanged();
+	}
+	
+	static private ArrayList listeners = new ArrayList();
+	
+    static public void register(Listener listener)
+    {
+        listeners.add(listener);
+    }
+    
+    static public void unregister(Listener listener)
+    {
+        listeners.remove(listener);
+    }
+    
+    // send a notification to all registered views
+    static public void notifyListeners()
+    {
+        for( int i = 0; i < listeners.size(); i++ )
+        {
+            Listener v = (Listener) listeners.get(i);
+            v.prefsChanged();
+        }
+    }
+    
 	public static String getPref(PrefName pn) {
 
 		return ((String) getPrefs().getPref(pn));

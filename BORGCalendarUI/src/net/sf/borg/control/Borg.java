@@ -136,6 +136,8 @@ public class Borg extends Controller implements OptionsView.RestartListener {
         // if an appointment is approaching
         boolean taskrpt = false;
 
+        OptionsView.setRestartListener(this);
+        
         // override for testing a different db
         String testdb = !AppHelper.isApplication() ? "mem:" : null;
 

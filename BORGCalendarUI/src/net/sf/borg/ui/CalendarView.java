@@ -56,6 +56,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
+import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.Style;
@@ -87,7 +88,7 @@ import net.sf.borg.model.TaskModel;
 // like most of the other borg window, you really need to check the netbeans form
 // editor to get the graphical picture of the whole window
 
-public class CalendarView extends View {
+public class CalendarView extends View implements Prefs.Listener{
     
     // current year/month being viewed
     private int year_;
@@ -123,6 +124,10 @@ public class CalendarView extends View {
         addModel(AppointmentModel.getReference());
         addModel(TaskModel.getReference());
         addModel(AddressModel.getReference());
+        
+        // register this view as a Prefs Listener to 
+        // be notified of Prefs changes
+        Prefs.register(this);
         init();
     }
     
@@ -2220,5 +2225,15 @@ public class CalendarView extends View {
     
     private JTextPane todoPreview;
     private JTextPane taskPreview;
+
+    // called when a Prefs change notification is sent out
+    // to all Prefs.Listeners
+	public void prefsChanged() {
+		//System.out.println("pr called");
+		SwingUtilities.updateComponentTreeUI(this);
+		updStyles();
+        setDayLabels();
+        refresh();	
+	}
     
 }

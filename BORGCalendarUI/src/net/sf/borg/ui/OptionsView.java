@@ -44,7 +44,6 @@ import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
 import net.sf.borg.common.util.Resource;
 import net.sf.borg.common.util.Version;
-import net.sf.borg.control.Borg;
 import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.TaskModel;
@@ -66,8 +65,7 @@ public class OptionsView extends View
 		public void restart();
 	}
     
-	private CalendarView cg_;
-    private RestartListener rl_;  // someone to call to request a restart
+    static private RestartListener rl_ = null;  // someone to call to request a restart
     
     private static OptionsView singleton = null;
     public static OptionsView getReference() {
@@ -75,13 +73,17 @@ public class OptionsView extends View
             singleton = new OptionsView();
         return( singleton );
     }
+    
+    static public void setRestartListener( RestartListener rl )
+    {
+    	rl_ = rl;
+    }
+    
     private OptionsView()
     {
         super();
         
         addModel(AppointmentModel.getReference());
-        cg_ = CalendarView.getReference();
-        rl_ = Borg.getReference();
         initComponents();
         
         // set the various screen items based on the existing user preferences
@@ -1160,13 +1162,8 @@ public class OptionsView extends View
             }
         }
         
-        try
-        {
-            cg_.setDayLabels();
-            cg_.refresh();
-        }
-        catch( Exception e )
-        { Errmsg.errmsg(e); }
+        Prefs.notifyListeners();
+        
     }
  
   
@@ -1178,7 +1175,7 @@ public class OptionsView extends View
         Prefs.putPref(PrefName.DEFFONT, fs );
         NwFontChooserS.setDefaultFont(f);
         SwingUtilities.updateComponentTreeUI(this);
-        SwingUtilities.updateComponentTreeUI(cg_);
+        Prefs.notifyListeners();
     
     }//GEN-LAST:event_jButton1ActionPerformed
     
@@ -1190,7 +1187,8 @@ public class OptionsView extends View
         {
             String dbdir = jTextField3.getText();
             Prefs.putPref(PrefName.DBDIR, dbdir );
-            rl_.restart();
+            if( rl_ != null )
+            	rl_.restart();
         }
     }//GEN-LAST:event_chgdbActionPerformed
     
@@ -1282,19 +1280,7 @@ public class OptionsView extends View
         String s = NwFontChooserS.fontString(f);
   
         Prefs.putPref( PrefName.PREVIEWFONT, s );
-        
-        // update styles used in month view text panes with new font size
-        cg_.updStyles();
-        
-        try
-        {
-            // refresh the month view
-            cg_.refresh();
-        }
-        catch( Exception e )
-        {
-            Errmsg.errmsg(e);
-        }
+        Prefs.notifyListeners();
         
     }//GEN-LAST:event_incfontActionPerformed
     
@@ -1305,19 +1291,8 @@ public class OptionsView extends View
         String s = NwFontChooserS.fontString(f);
   
         Prefs.putPref(PrefName.APPTFONT, s );
+        Prefs.notifyListeners();
         
-        // update styles used in month view text panes with new font size
-        cg_.updStyles();
-        
-        try
-        {
-            // refresh the month view
-            cg_.refresh();
-        }
-        catch( Exception e )
-        {
-            Errmsg.errmsg(e);
-        }
     }//GEN-LAST:event_decfontActionPerformed
 
         
