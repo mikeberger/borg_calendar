@@ -44,6 +44,7 @@ import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
 import net.sf.borg.common.util.Resource;
 import net.sf.borg.common.util.Version;
+import net.sf.borg.control.Borg;
 import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.TaskModel;
@@ -65,16 +66,22 @@ public class OptionsView extends View
 		public void restart();
 	}
     
-    private CalendarView cg_;     // the parent calendar window
+	private CalendarView cg_;
     private RestartListener rl_;  // someone to call to request a restart
     
-    OptionsView(CalendarView cg, RestartListener rl)
+    private static OptionsView singleton = null;
+    public static OptionsView getReference() {
+        if( singleton == null || !singleton.isShowing())
+            singleton = new OptionsView();
+        return( singleton );
+    }
+    private OptionsView()
     {
         super();
         
         addModel(AppointmentModel.getReference());
-        cg_ = cg;
-        rl_ = rl;
+        cg_ = CalendarView.getReference();
+        rl_ = Borg.getReference();
         initComponents();
         
         // set the various screen items based on the existing user preferences

@@ -24,12 +24,6 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Image;
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.InputStream;
 import java.net.URL;
 import java.text.DateFormat;
@@ -65,17 +59,12 @@ import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Task;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.TaskRpt;
-import net.sf.borg.ui.AddrListView;
 import net.sf.borg.ui.Banner;
 import net.sf.borg.ui.CalendarView;
 import net.sf.borg.ui.OptionsView;
 import net.sf.borg.ui.PopupView;
-import net.sf.borg.ui.TaskListView;
 import net.sf.borg.ui.TodoView;
-
-import com.jeans.trayicon.TrayIconPopup;
-import com.jeans.trayicon.TrayIconPopupSimpleItem;
-import com.jeans.trayicon.WindowsTrayIcon;
+import net.sf.borg.ui.TrayIconProxy;
 
 /*
  * borg.java
@@ -107,7 +96,13 @@ public class Borg extends Controller implements OptionsView.RestartListener {
 
     private java.util.Timer timer_;
 
-    private WindowsTrayIcon WTIcon = null;
+	static private Borg singleton = null;
+	static public Borg getReference()
+	{
+		if( singleton == null )
+			singleton = new Borg();
+		return( singleton );
+	}
 
     // this is the main for the borg application
     public static void main(String args[]) {
@@ -394,39 +389,8 @@ public class Borg extends Controller implements OptionsView.RestartListener {
             {
                 try
                 {
-                    if (WTIcon == null)
-                    {
-                        WindowsTrayIcon.initTrayIcon("BORG");
-                        Image image = Toolkit.getDefaultToolkit().getImage(
-                                getClass().getResource("/resource/borg16.jpg"));
-                        WTIcon = new WindowsTrayIcon(image, 16, 16);
-                        WTIcon.setToolTipText(trayname);
-                        TrayIconPopup popup = new TrayIconPopup();
-                        TrayIconPopupSimpleItem item = new TrayIconPopupSimpleItem(
-                                Resource.getResourceString("Open_Calendar"));
-                        item.setDefault(true);
-                        item.addActionListener(new OpenListener());
-                        popup.addMenuItem(item);
-                        item = new TrayIconPopupSimpleItem(Resource
-                                .getResourceString("Open_Task_List"));
-                        item.addActionListener(new TaskListener());
-                        popup.addMenuItem(item);
-                        item = new TrayIconPopupSimpleItem(Resource
-                                .getResourceString("Open_Address_Book"));
-                        item.addActionListener(new AddrListener());
-                        popup.addMenuItem(item);
-                        item = new TrayIconPopupSimpleItem(Resource
-                                .getResourceString("To_Do_List"));
-                        item.addActionListener(new TodoListener());
-                        popup.addMenuItem(item);
-                        item = new TrayIconPopupSimpleItem(Resource
-                                .getResourceString("Exit"));
-                        item.addActionListener(new ExitListener());
-                        popup.addMenuItem(item);
-                        WTIcon.setVisible(true);
-                        WTIcon.setPopup(popup);
-                        WTIcon.addMouseListener(new trayMouseListener());
-                    }
+                	TrayIconProxy tip = TrayIconProxy.getReference();
+                	tip.init(trayname);
                 }
                 catch (UnsatisfiedLinkError le)
                 {
@@ -470,7 +434,7 @@ public class Borg extends Controller implements OptionsView.RestartListener {
                     public void run() {
 
                         // start main month view
-                        CalendarView.getReference(Borg.this, trayI);
+                        CalendarView.getReference(trayI);
 
                         // start todo view if there are todos
                         if (AppointmentModel.getReference().haveTodos())
@@ -810,58 +774,5 @@ public class Borg extends Controller implements OptionsView.RestartListener {
         return;
     }
 
-    // Called when exit option in systray menu is chosen
-    static private class ExitListener implements ActionListener {
-
-        public void actionPerformed(ActionEvent e) {
-            WindowsTrayIcon.cleanUp();
-            System.exit(0);
-        }
-    }
-
-    // Called when open option is systray menu is chosen
-    private class OpenListener implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-            CalendarView cg = CalendarView.getReference(Borg.this, true);
-            cg.toFront();
-        }
-    }
-
-    static private class TaskListener implements ActionListener {
-
-        public void actionPerformed(ActionEvent e) {
-            TaskListView bt_ = TaskListView.getReference();
-            bt_.refresh();
-            bt_.show();
-        }
-    }
-
-    static private class AddrListener implements ActionListener {
-
-        public void actionPerformed(ActionEvent e) {
-            AddrListView ab = AddrListView.getReference();
-            ab.refresh();
-            ab.show();
-        }
-    }
-
-    static private class TodoListener implements ActionListener {
-
-        public void actionPerformed(ActionEvent e) {
-            TodoView.getReference().show();
-        }
-    }
-
-    // Test listener for double-click events
-    private class trayMouseListener extends MouseAdapter {
-        public void mousePressed(MouseEvent evt) {
-            if ((evt.getModifiers() & MouseEvent.BUTTON1_MASK) != 0
-                    && evt.getClickCount() == 2)
-            {
-                CalendarView cg = CalendarView.getReference(Borg.this, true);
-                cg.toFront();
-            }
-        }
-    }
 
 }

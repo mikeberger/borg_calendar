@@ -79,9 +79,6 @@ import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Day;
 import net.sf.borg.model.Task;
 import net.sf.borg.model.TaskModel;
-import net.sf.borg.ui.OptionsView.RestartListener;
-
-import com.jeans.trayicon.WindowsTrayIcon;
 
 
 
@@ -96,7 +93,6 @@ public class CalendarView extends View {
     private int year_;
     private int month_;
     private boolean trayIcon_;
-    private RestartListener rl_;
     
     // the button we used to dismiss any child dialog
     private MemDialog dlgMemFiles;
@@ -109,9 +105,9 @@ public class CalendarView extends View {
     }
     
     private static CalendarView singleton = null;
-    public static CalendarView getReference(RestartListener rl, boolean trayIcon) {
+    public static CalendarView getReference(boolean trayIcon) {
         if( singleton == null || !singleton.isShowing())
-            singleton = new CalendarView(rl, trayIcon);
+            singleton = new CalendarView(trayIcon);
         return( singleton );
     }
     
@@ -120,10 +116,10 @@ public class CalendarView extends View {
         return( singleton );
     }
     
-    private CalendarView(RestartListener rl, boolean trayIcon) {
+    private CalendarView(boolean trayIcon) {
         super();
         trayIcon_ = trayIcon;
-        rl_ = rl;
+
         addModel(AppointmentModel.getReference());
         addModel(TaskModel.getReference());
         addModel(AddressModel.getReference());
@@ -1953,7 +1949,7 @@ public class CalendarView extends View {
     
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         // bring up the options window
-        new OptionsView(this, rl_).show();
+        OptionsView.getReference().show();
     }//GEN-LAST:event_jMenuItem1ActionPerformed
     
     private void licsendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_licsendActionPerformed
@@ -2114,7 +2110,7 @@ public class CalendarView extends View {
     
     private void exitMenuItemActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
         if( trayIcon_ ) {
-            WindowsTrayIcon.cleanUp();
+            TrayIconProxy.getReference().cleanUp();
         }
         if(  AppHelper.isApplet() ) {
             this.dispose();

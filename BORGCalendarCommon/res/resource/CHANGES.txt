@@ -4,6 +4,8 @@ Ability to save default values in the appt editor
 Repeat by Mon-Wed-Fri and Tues-Thurs
 Improved week view layout that handles overlapping events
 Day View
+Remove trayicon classes from borg.jar and bundle in lib dir instead
+Add Options option to the trayicon
 Bug Fixes
 
 Version 1.4 beta

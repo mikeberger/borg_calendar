@@ -35,7 +35,7 @@ public class Borglet extends JApplet {
 		AppHelper.setType(AppHelper.APPLET);
 		AppHelper.setCodeBase(getCodeBase());
 		
-		JButton bn = new JButton("Launch BORG");
+		JButton bn = new JButton("Launch BORG Applet");
 		bn.addActionListener
 		(
 			new ActionListener()
