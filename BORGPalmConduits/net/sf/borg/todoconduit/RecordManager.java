@@ -148,6 +148,42 @@ public class RecordManager {
             Date nt = r.getDueDate();
             rec.setDueDate(nt);
             rec.setNote("-9999,");
+            
+            String s = r.getCategory();
+            if( s == null)
+            {
+                rec.setCategoryIndex(0);
+            }
+            else
+            {
+                // check if new cat or one already in list
+                Category c = cm.matchName(s,hhCats);
+                if( c != null )
+                {
+                    rec.setCategoryIndex(c.getIndex());
+                }
+                else
+                {
+                    // add new
+                    int i = cm.getNextIndex(hhCats);
+                    if( i == -1 )
+                    {
+                        rec.setCategoryIndex(0);
+                        Log.err("cannot add category: " + s);
+                        
+                    }
+                    else
+                    {
+                        c = (Category) hhCats.elementAt(i);
+                        c.setId(i);
+                        c.setIndex(i);
+                        c.setName(s);
+                        rec.setCategoryIndex(i);
+                        
+                    }
+                       
+                }
+            }
             SyncManager.writeRec(db, rec);
             
         }
