@@ -1,6 +1,4 @@
 To build BORG from the source, you need the JAVA SDK 1.4 or later, available from java.sun.com.
-You only need to build BORG if you want to modify it. Otherwise, the binary
-jar file - borg.jar - will run on ANY OS that has the Java runtime 1.4.
 
 As of release 1.4 of BORG, the project has been split into 4 separate pieces:
 
@@ -12,16 +10,27 @@ As of release 1.4 of BORG, the project has been split into 4 separate pieces:
 
 The ant build file (build.xml) is in the ant folder in the Common sub-project.
 
-BORG is normally built using ant. If you have ant (available at apache.org), then
-from command line in the ant folder, do - "ant fulldist". This will build the BORG zip files
-in the BORG Calendar Common directory. The jar files are put into the Common/dist directory.
+Building
+--------
+BORG is built using ant. If you have ant (available at apache.org), then
+from command line in the BORGCalendarCommon/ant folder, you can do "ant fulldist".
+Below are the various ant targets that might be useful:
 
-To recreate the search information in the help help jar, you need to have JavaHelp installed and you need to 
-edit the build.xml file with the path to JavaHelp. The regen-help target in the build.xml file will build the search data.
+- ant regen-help - this will generate the search database for the online help. You only need to do this
+if you want to generate the search database. Without this step, the help will be readable, but not searchable.
+You need to install JavaHelp (http://java.sun.com/products/javahelp/) and modify the build.xml file with the JavaHelp
+path. This target is not executed as part of the fulldist target as it requires the optional JavaHelp package.
+
+- ant fulldist - This will build the BORG jar and zip files in the BORGCalendarCommon/dist directory. 
+borg.zip can be unzipped and borg.jar can be run. Running this target alone is sufficient to build the program.
+
+- ant installer - This will create the IzPack installers for BORG in the Common/dist folder. Both the source and non-source
+versions are created. The IzPack software is required (http://www.izforge.com/izpack) and the build.xml file must be
+updated with the path to this software. 
 
 Eclipse
 -------
-Most BORG development is done using the Eclipse IDE. As BORG has grown larger, it has become
+BORG development is done using the Eclipse IDE. As BORG has grown larger, it has become
 mainly an eclipse based project. It's getting a bit big to manage without an IDE.
 To use eclipse, you must import the 4 parts of BORG as projects. 
 
@@ -33,9 +42,8 @@ be added in the future.
 
 To use eclipse, each of the top 4 project folders must be imported as a project into eclipse.
 The .project and .classpath files that configure eclipse are part of the source tree and should get the 4 projects
-all set up correctly. To build, you need to set up an Ant Build task under the eclipse exteral
-tools. You need to build the clean-build target if you just want borg.jar. You can build the fulldist target
-to get the ZIP files (binary and source). The built files will be in BORG Calendar/Common/dist.
+all set up correctly. To build, you can set up an Ant Build task under the eclipse exteral
+tools. 
 
 You should be able to use the eclipse debugger to debug the code. You should be able to run the main
 Borg class (Borg Calendar UI/src/net/sf.borg.control.Borg) from within eclipse. 

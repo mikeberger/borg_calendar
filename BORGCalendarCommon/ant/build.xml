@@ -252,14 +252,18 @@ build.number=${build.number}
 			<arg value="${build.dir}/installer/install.xml"/>
 			<arg value="-b"/>
 			<arg value="${build.dir}/installer"/>
+			<arg value="-o"/>
+			<arg value="${build.dir}/installer/BORG_installer.jar"/>
 		</exec>
 		<exec executable="${iz.compile}" dir="${iz.dir}/bin" resolveExecutable="true">
 			<arg value="${build.dir}/installer/nosrc.xml"/>
 			<arg value="-b"/>
 			<arg value="${build.dir}/installer"/>
 			<arg value="-o"/>
-			<arg value="${build.dir}/installer/installer_nosrc.jar"/>
+			<arg value="${build.dir}/installer/BORG_installer_nosrc.jar"/>
 		</exec>
+		<copy todir="${dist.dir}" file="${build.dir}/installer/BORG_installer.jar"/>
+		<copy todir="${dist.dir}" file="${build.dir}/installer/BORG_installer_nosrc.jar"/>
 	</target>
 	
    <!-- Clean everything -->
