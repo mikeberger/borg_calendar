@@ -445,7 +445,7 @@ class TaskView extends View
                 TaskModel taskmod_ = TaskModel.getReference();
                 statebox.removeAllItems();
                 statebox.addItem( new String("OPEN"));                
-                String cblabels[] = taskmod_.checkBoxes( newtype );
+                String cblabels[] = taskmod_.getTaskTypes().checkBoxes( newtype );
                 jCheckBox1.setText(cblabels[0]);
                 jCheckBox2.setText(cblabels[1]);
                 jCheckBox3.setText(cblabels[2]);
@@ -715,7 +715,7 @@ class TaskView extends View
           typebox.setEditable(false);
           
           // fill in system controlled checkboxes
-          String cblabels[] = taskmod_.checkBoxes( type );
+          String cblabels[] = taskmod_.getTaskTypes().checkBoxes( type );
           jCheckBox1.setText(cblabels[0]);
           jCheckBox2.setText(cblabels[1]);
           jCheckBox3.setText(cblabels[2]);
@@ -805,7 +805,7 @@ class TaskView extends View
           
       }
       
-      Vector tv = taskmod_.getTaskTypes();
+      Vector tv = taskmod_.getTaskTypes().getTaskTypes();
       for( int i = 0; i < tv.size(); i++ )
       {
           typebox.addItem( tv.elementAt(i) );
@@ -834,7 +834,7 @@ class TaskView extends View
           // determine valid next states based on task type and current state
           String stat = task.getState();
           String type = task.getType();
-          Vector v = taskmod_.nextStates(stat,type);
+          Vector v = taskmod_.getTaskTypes().nextStates(stat,type);
           
           // set next state pulldown
           statebox.removeAllItems();

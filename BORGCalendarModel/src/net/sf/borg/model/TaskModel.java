@@ -19,11 +19,7 @@ Copyright 2003 by ==Quiet==
  */
 package net.sf.borg.model;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.net.URL;
 import java.sql.Connection;
 import java.util.Calendar;
 import java.util.Collection;
@@ -38,7 +34,6 @@ import java.util.Vector;
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
-import net.sf.borg.common.util.Resource;
 import net.sf.borg.common.util.Version;
 import net.sf.borg.common.util.XTree;
 import net.sf.borg.model.db.BeanDB;
@@ -74,14 +69,12 @@ public class TaskModel extends Model {
     }
     
     private BeanDB db_;           // the database
-    private Vector task_types_; // a list of the currently known task types
-    private XTree state_model_; // an XML tree containing the rules for the task state transitions
-    // per task type and status
-    
+
     // map of tasks keyed by day - for performance
     private HashMap btmap_;
     private Vector allmap_;
     private TreeSet categories_;
+    private TaskTypes taskTypes_ = new TaskTypes();
     
     public LinkedList get_tasks( int daykey ) {
         return( (LinkedList) btmap_.get( new Integer( daykey ) ));
@@ -92,8 +85,6 @@ public class TaskModel extends Model {
     }
     
     private TaskModel() {
-        state_model_ = null;
-        task_types_ = null;
         btmap_ = new HashMap();
         allmap_ = new Vector();
         categories_ = null;
@@ -118,6 +109,16 @@ public class TaskModel extends Model {
             System.exit(0);
         }
         db_ = null;
+    }
+    
+    public TaskTypes getTaskTypes()
+    {
+    	return( taskTypes_);
+    }
+    
+    public void saveTaskTypes() throws Exception
+    {
+        db_.setOption(new BorgOption("SMODEL", taskTypes_.toString()));
     }
     
     public Collection getCategories() throws Exception, DBException {
@@ -216,9 +217,8 @@ public class TaskModel extends Model {
         if( sm == null ) {
             try {
                 // load XML from a file in the JAR
-                URL tsurl = getClass().getResource("/resource/task_states.xml");
-                state_model_ = XTree.readFromURL(tsurl);
-                sm = state_model_.toString();
+            	taskTypes_.loadDefault();
+                sm = taskTypes_.toString();
                 db_.setOption(new BorgOption("SMODEL", sm ));
             }
             catch( Exception e ) {
@@ -227,11 +227,10 @@ public class TaskModel extends Model {
             }
         }
         else {
-            state_model_ = XTree.readFromBuffer(sm);
+        	taskTypes_.fromString(sm);
         }
         
         // init the task type list to null
-        task_types_ = null;
         load_map();
         
     }
@@ -252,9 +251,8 @@ public class TaskModel extends Model {
         if( sm == null ) {
             try {
                 // load XML from a file in the JAR
-                URL tsurl = getClass().getResource("/resource/task_states.xml");
-                state_model_ = XTree.readFromURL(tsurl);
-                sm = state_model_.toString();
+            	taskTypes_.loadDefault();
+                sm = taskTypes_.toString();
                 db_.setOption(new BorgOption("SMODEL", sm ));
             }
             catch( Exception e ) {
@@ -263,23 +261,10 @@ public class TaskModel extends Model {
             }
         }
         else {
-            state_model_ = XTree.readFromBuffer(sm);
+            taskTypes_.fromString(sm);
         }
         
-        // init the task type list to null
-        task_types_ = null;
-        
         load_map();
-        
-    }
-    
-    public void resetStates() throws Exception {
-        // load XML from a file in the JAR
-        URL tsurl = getClass().getResource("/resource/task_states.xml");
-        state_model_ = XTree.readFromURL(tsurl);
-        String sm = state_model_.toString();
-        db_.setOption(new BorgOption("SMODEL", sm ));
-        task_types_ = null;
         
     }
     
@@ -363,78 +348,6 @@ public class TaskModel extends Model {
         savetask(task);
     }
     
-    // get the list of checkbox strings for a given type
-    // from the state model
-    public String[] checkBoxes( String type ) {
-        
-        String ar[] = new String[5];
-        
-        // find the task type element under the XML root
-        XTree tp = state_model_.child(type);
-        if( !tp.exists()) {
-            Errmsg.notice(Resource.getResourceString("WARNING!_Could_not_find_task_type_") + type + Resource.getResourceString("checkbox_2") );
-        }
-        
-        for( int i = 0; i < 5; i++ ) {
-            
-            if( tp.child("CB", i+1 ).exists() ) {
-                ar[i] = tp.child("CB", i+1 ).value();
-            }
-            else {
-                ar[i] = "---------------";
-            }
-        }
-        
-        return ar;
-    }
-    // compute a vector of possible next states given the current task type and state
-    public Vector nextStates( String state, String type ) {
-        
-        Vector v = new Vector();
-        
-        // can always stay at the current state
-        v.add( state );
-        
-        // find the task type element under the XML root
-        XTree tp = state_model_.child(type);
-        if( !tp.exists()) {
-            Errmsg.notice(Resource.getResourceString("WARNING!_Could_not_find_task_type_") + type + Resource.getResourceString("state3") );
-            return v;
-        }
-        
-        // add any ALL states - these are states that any other state can jump to
-        // find ALL child element of the task element
-        XTree all = tp.child("ALL");
-        
-        // add all children of ALL as next states
-        for( int i = 1;; i++ ) {
-            XTree ch = all.child(i);
-            if( ch == null )
-                break;
-            if( ch.name().equals(state) )
-                continue;
-            v.add( ch.name() );
-        }
-        
-        
-        // add state specific arcs
-        // find the child of the task type element with name = the current state
-        XTree st = tp.child(state);
-        
-        // add names of all children of the current state node as possible next states
-        for( int i = 1;; i++ ) {
-            XTree ch = st.child(i);
-            if( ch == null )
-                break;
-            if( ch.name().equals(state) )
-                continue;
-            v.add( ch.name() );
-        }
-        
-        
-        return( v );
-    }
-    
     // export the task data for all tasks to XML
     public void export(Writer fw) throws Exception {
         
@@ -500,16 +413,8 @@ public class TaskModel extends Model {
                 if( opt == null ) continue;
                 
                 if( opt.name().equals("SMODEL")) {
-                    XTree newtree = XTree.readFromBuffer(opt.value());
-                    
-                    if( newtree != null ) {
-                        // if XML is valid - replace the current model
-                        state_model_ = newtree;
-                        task_types_ = null;
-                    }
-                    
-                    // update the model in the DB
-                    db_.setOption(new BorgOption("SMODEL", newtree.toString()));
+                	taskTypes_.fromString(opt.value());
+                    db_.setOption(new BorgOption("SMODEL", taskTypes_.toString()));
                     
                 }
                 else
@@ -554,50 +459,6 @@ public class TaskModel extends Model {
         }
         else
             db_.setLogFile(null);
-    }
-    
-    // write out the current XML task type/state model to a file as XML
-    public void exportStates(OutputStream ostr) throws Exception {
-        Writer fw = new OutputStreamWriter(ostr, "UTF8");
-        //FileWriter fw = new FileWriter(fname);
-        String sm = state_model_.toString();
-        fw.write(sm);
-        fw.close();
-    }
-    
-    // read a task type/state model from an XML file
-    public void importStates(InputStream istr) throws Exception {
-        // read XML from a file
-        XTree newtree = XTree.readFromStream(istr);
-        
-        if( newtree != null ) {
-            // if XML is valid - replace the current model
-            state_model_ = newtree;
-            task_types_ = null;
-        }
-        
-        // update the model in the DB
-        db_.setOption(new BorgOption("SMODEL", newtree.toString()));
-        
-        Errmsg.notice(Resource.getResourceString("model_updated") );
-    }
-    
-    // return the list of current known task types
-    public Vector getTaskTypes() {
-        // if the list was never retrieved yet - then get it from the
-        // children of the root of the XML task type/state model
-        if( task_types_ == null ) {
-            task_types_ = new Vector();
-            for( int n = 1;;n++ ) {
-                XTree ty = state_model_.child(n);
-                if( ty == null )
-                    break;
-                task_types_.add(ty.name());
-            }
-            
-        }
-        
-        return( task_types_ );
     }
     
     public void sync() throws DBException {
