@@ -50,6 +50,7 @@ import net.fortuna.ical4j.model.property.ProdId;
 import net.fortuna.ical4j.model.property.RRule;
 import net.fortuna.ical4j.model.property.Summary;
 import net.fortuna.ical4j.model.property.Uid;
+import net.fortuna.ical4j.model.property.Version;
 import net.sf.borg.common.io.IOHelper;
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
@@ -240,7 +241,7 @@ public class AppointmentIcalAdapter {
 		
 		PropertyList pl = new PropertyList();
 		pl.add(new ProdId("BORG Calendar"));
-		pl.add(new net.fortuna.ical4j.model.property.Version("1","4"));
+		pl.add(new Version());
 		net.fortuna.ical4j.model.Calendar cal = new net.fortuna.ical4j.model.Calendar( pl, clist );
 		
 
