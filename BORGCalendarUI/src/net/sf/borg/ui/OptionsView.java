@@ -155,6 +155,7 @@ public class OptionsView extends View
             jTabbedPane1.setEnabledAt(4,false);
             jTabbedPane1.setEnabledAt(5,false);
             jTabbedPane1.setEnabledAt(6,false);
+            jTabbedPane1.setEnabledAt(7,false);
             jTabbedPane1.setSelectedIndex(1);
             jButton2.setEnabled(false);
             applyButton.setEnabled(false);
