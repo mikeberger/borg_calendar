@@ -1,0 +1,70 @@
+==========================
+RELEASE NOTES for BORG 1.4
+==========================
+
+The project home page is http://borg-calendar.sourceforge.net
+
+KNOWN ISSUES:
+-------------
+
+*** 1. Any options you have set in release 1.3.2 or earlier will be reset in 
+release 1.4 as the program will be storing its options in a slightly different 
+location. You must re-select your database folder (just choose the same one). 
+Don't forget to set the email parameters if you use the email reminder feature.
+
+2. The default method of launching the appointment editor has changed from 
+pressing the date buttons to mouse clicking the text box. This change has 
+been requested and actually makes the launching of the day and week views 
+consistent. However, if you don't like this behavior, it can be changed 
+from the miscellaneous options screen.
+
+3. There will be new text strings in 1.4 that have not been translated into 
+Spanish. Feel free to mail any translations to 
+i_flem@users.sourceforge.net. There is also a new Italian translation.
+
+4. It is known that some screens in the new help system contain formatting 
+that has slight imperfections under Java 1.4.2, but not Java 5.0.
+
+5. The iCal import/export has some limitations. Please see the help for 
+more information. Please report all problems/issues on the project 
+forums or bug tracker. It may be a good idea to test iCal imports on
+an alternate database.
+
+6. Information on a number of items that used to be in text files (RDBMS, iCal, SYSTRAY...) 
+has been moved to the online help. Check the help pages for this information.
+
+
+RUNNING
+-------
+For Windows: The installer can create shortcuts in the start menu and 
+desktop (optional)
+   Otherwise, double-click borg.jar from windows explorer.
+   It is found in the install folder that you choose from the installer.
+
+Command Line (any OS): The quickest way to run BORG from a command line 
+is: java -jar borg.jar
+   This will work as long as the java executable from the JRE is in your PATH
+   on whatever OS you are running. 
+
+
+LOOK AND FEEL
+-------------
+The default look and feel is the Metal look and feel that comes with Java. 
+This can be changed by choosing a new look and feel from the options screen. 
+I would suggest the windows look and feel for XP users. I would suggest 
+the PlasticXP look and feel for everyone else. The PlasticXP look and feel 
+is bundled with BORG as of release 1.4. The default Metal look and feel 
+will actually look quite nice if you are running Java 5.0.
+
+
+LICENSE
+-------
+BORG is open source under the GPL. A copy of the GPL is included with it.
+Source is available from: http://sourceforge.net/projects/borg-calendar/
+If a less restrictive license is desired, send mail to 
+i_flem@users.sourceforge.net.
+
+DONATIONS
+---------
+This project does not want nor accept donations. It is coded for the fun of it.
+

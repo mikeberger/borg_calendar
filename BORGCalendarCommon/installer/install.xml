@@ -38,6 +38,21 @@
         <langpack iso3="fra"/>
         <langpack iso3="spa"/>
         <langpack iso3="deu"/>
+        <langpack iso3="cat"/>
+        <langpack iso3="dan"/>
+        <langpack iso3="fin"/>
+        <langpack iso3="hun"/>
+        <langpack iso3="ita"/>
+        <langpack iso3="jpn"/>
+        <langpack iso3="ned"/>
+        <langpack iso3="pol"/>
+        <langpack iso3="por"/>
+        <langpack iso3="rom"/>
+        <langpack iso3="rus"/>
+        <langpack iso3="spa"/>
+        <langpack iso3="svk"/>
+        <langpack iso3="swe"/>
+        <langpack iso3="ukr"/>
     </locale>
     
     <!-- 
@@ -47,6 +62,7 @@
     <resources>
         <res id="LicencePanel.licence" src="COPYING"/>
         <res id="InfoPanel.info" src="RELEASE_NOTES.txt"/>
+	<res id="InfoPanel.info_ita" src="RELEASE_NOTES.txt_ita"/>
 	<res src="ShortcutSpec.xml" id="shortcutSpec.xml"/>
 
     </resources>
@@ -76,6 +92,7 @@
         <pack name="Base" required="yes">
             <description>The base program and help files</description>
             <file src="RELEASE_NOTES.txt" targetdir="$INSTALL_PATH"/>
+            <file src="RELEASE_NOTES.txt_ita" targetdir="$INSTALL_PATH"/>
             <file src="COPYING" targetdir="$INSTALL_PATH"/>
             <file src="borg.jar" targetdir="$INSTALL_PATH"/>
 	    <file src="lib/jh.jar" targetdir="$INSTALL_PATH/lib"/>

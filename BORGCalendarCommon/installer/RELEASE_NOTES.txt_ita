@@ -1,0 +1,88 @@
+================================
+NOTE PER LA VERSIONE 1.4 di BORG
+================================
+
+La Home Page del progetto è http://borg-calendar.sourceforge.net
+
+
+PROBLEMI CONOSCIUTI:
+--------------------
+
+*** 1. Ogni opzione impostata nella versione 1.3.2 e nelle versioni precedenti
+sarà annullata e resettata nella versione 1.4 dato che il programma immagazzinerà
+le proprie informazioni in una ubicazione lievemente diversa.
+Bisogna selezionare nuovamente una directory per il database (giusto sceglierne una). 
+Non dimenticate di impostare i parametri e-mail se usate la caratteristica
+di ricordare gli eventi tramite l'invio delle email.
+
+2. Il metodo predefinito per lanciare l'editor degli appuntamenti è cambiato:
+prima occorreva un click sulla data del giorno, mentre ora bisogna cliccare
+il box del testo del giorno (il box più grande e colorato).
+Questa modifica è stata necessaria per permettere di avere, cliccando sul numero
+del giorno, una nuova finestra con una visuale più dettagliata del giorno
+(così come avviene cliccando sul numero della settimana).
+Comunque, se non vi piace questo comportamento, potete modificarlo
+dal menu "Opzioni/Modifica_Preferenze/Varie".
+
+3. Probabilmente ci saranno nuove stringhe che non saranno ancora tradotte
+in spagnolo nella versione 1.4.
+Siete liberi di inviare via email eventuali traduzioni all'indirizzo:
+i_flem@users.sourceforge.net.
+Ci sarà anche una traduzione in italiano.
+
+4. Si sa che alcune schermate nel nuovo Help in Linea contengono delle
+formattazioni con leggere imperfezioni sotto Java 1.4.2, ma non Java 5.0.
+
+5. Le operazioni di importazione/esportazione iCal hanno alcune limitazioni.
+Potete leggere l'Help in linea per ulteriori informazioni.
+Vi preghiamo di inviare ogni problema/bug riscontrato sul progetto
+nei forum o bug-traker del sito su sourceforge.
+Può essere una buon idea, per testare iCal, importare le informazioni in  
+un database alternativo.
+
+6. Informazioni su vari argomenti che prima erano in file di testo
+(RDBMS, iCal, SYSTRAY...) sono state spostate nell'Help in Linea.
+Controllate le pagine dell'Help per queste informazioni.
+
+
+AVVIO
+-----
+Per Windows: Il programma di installazione può creare una scorciatoia (accesso rapido)
+	nello Start Menu e nel Desktop (opzionale).
+	Altrimenti, si può avviare il programma con un doppio click sul
+	file borg.jardalla finestra di windows explorer.
+	Troverete questo file nella diretory che avete scelto nell'installazione.
+
+Linea di Comando (qualsiasi Sist. Op.): 
+	Il modo più breve per avviare BORG da una linea di comando è:
+	java -jar borg.jar
+	Questo funzionerà finché l'eseguibile java della JRE è nel vostrro PATH,
+	qualsiasi sistema operativo stiate utilizzando. 
+
+
+TEMA GRAFICO
+------------
+Il Tema grafico predefinito è il Metal, come caratteristica predefinita di java.
+Questo può essere modificato con la finestra che si apre tramite
+il menu "Opzioni/Modifica_Preferenze/Apparenza". 
+Io suggerirei il Tema di Windows per gli utenti di XP,
+ed il Tema PlasticXP per tutti gli altri.
+Quest'ultimo tema è compreso nel programma Borg dalla versione 1.4.
+Il tema predefinito Metal sembra veramente bello utilizando
+la versione 5.0 di Java.
+
+
+LICENZA
+-------
+BORG è software libero distribuito con licenza GNU GPL.
+Una copia di questa licenza è inclusa nel pacchetto.
+Il codice sorgente è disponibile su: http://sourceforge.net/projects/borg-calendar/
+Se desiderate una licenza meno restrittiva, spedite un'email a: 
+i_flem@users.sourceforge.net
+
+
+DONAZIONI
+---------
+Questo progetto non vuole né accetta donazioni.
+È programmato per il proprio divertimento.
+
