@@ -1938,7 +1938,7 @@ public class CalendarView extends View implements Prefs.Listener {
     private void SearchMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SearchMIActionPerformed
         // user wants to do a search, so prompt for search string and request search results
         String inputValue = JOptionPane.showInputDialog(Resource.getResourceString("Enter_search_string:"));
-        if( inputValue == null || inputValue.equals("") ) return;
+        if( inputValue == null ) return;
         // bring up srch window
         SearchView sg = new SearchView(inputValue );
         sg.show();
