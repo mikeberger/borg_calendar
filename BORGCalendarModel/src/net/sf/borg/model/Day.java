@@ -257,6 +257,22 @@ public class Day
             }
         }
         
+        if( month == 3 && day == nthdom( year, month, Calendar.SUNDAY, 1 ))
+        {           
+        	Appointment hol = new Appointment();
+        	hol.setColor("black");
+            hol.setText(Resource.getResourceString("Daylight_Savings_Time"));
+            ret.addAppt(hol);
+        }
+        	
+        if( month == 9 && day == nthdom( year, month, Calendar.SUNDAY, -1 ))
+        {
+        	Appointment hol = new Appointment();
+        	hol.setColor("black");
+            hol.setText(Resource.getResourceString("Standard_Time"));
+            ret.addAppt(hol);
+        }
+        
         // add canned US holidays
         // check user preferences first
         String show_us_hols = Prefs.getPref(PrefName.SHOWUSHOLIDAYS);
@@ -330,13 +346,8 @@ public class Day
             {
                 hol.setText(Resource.getResourceString("Thanksgiving"));
                 ret.setHoliday(1);
-            }else if( month == 3 && day == nthdom( year, month, Calendar.SUNDAY, 1 ))
-            {
-                hol.setText(Resource.getResourceString("Daylight_Savings_Time"));
-            }else if( month == 9 && day == nthdom( year, month, Calendar.SUNDAY, -1 ))
-            {
-                hol.setText(Resource.getResourceString("Standard_Time"));
             }
+
             
             if( hol.getText() != null  )
                 ret.addAppt(hol);        
@@ -389,14 +400,6 @@ public class Day
             else if( month == 9 && day == nthdom( year, month, Calendar.MONDAY, 2 ))
             {
                 hol.setText(Resource.getResourceString("Thanksgiving_(Can)"));
-            }
-            else if( month == 3 && day == nthdom( year, month, Calendar.SUNDAY, 1 ))
-            {
-                hol.setText(Resource.getResourceString("Daylight_Savings_Time"));
-            }
-            else if( month == 9 && day == nthdom( year, month, Calendar.SUNDAY, -1 ))
-            {
-                hol.setText(Resource.getResourceString("Standard_Time"));
             }
             else if( month == 4 )
             {
