@@ -288,6 +288,12 @@ public class OptionsView extends View
             sharedbox.setSelected(true);
         else
             sharedbox.setSelected(false);
+        
+        bg = Prefs.getPref("ical_todo_ev", "false" );
+        if( bg.equals("true") )
+            icaltodobox.setSelected(true);
+        else
+            icaltodobox.setSelected(false);
             
         logobrowse.setEnabled(AppHelper.isApplication());
     }
@@ -345,6 +351,7 @@ public class OptionsView extends View
         splashbox = new javax.swing.JCheckBox();
         backgbox = new javax.swing.JCheckBox();
         stackbox = new javax.swing.JCheckBox();
+        icaltodobox = new javax.swing.JCheckBox();
         jPanel6 = new javax.swing.JPanel();
         popenablebox = new javax.swing.JCheckBox();
         jLabel9 = new javax.swing.JLabel();
@@ -887,6 +894,19 @@ public class OptionsView extends View
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         jPanel3.add(stackbox, gridBagConstraints);
 
+        icaltodobox.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("icaltodo"));
+        icaltodobox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                icaltodoboxActionPerformed(evt);
+            }
+        });
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        jPanel3.add(icaltodobox, gridBagConstraints);
+
         jTabbedPane1.addTab(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("misc"), jPanel3);
 
         jPanel6.setLayout(new java.awt.GridBagLayout());
@@ -1085,6 +1105,13 @@ public class OptionsView extends View
 
         pack();
     }//GEN-END:initComponents
+
+    private void icaltodoboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_icaltodoboxActionPerformed
+        if( icaltodobox.isSelected() )
+            Prefs.putPref("ical_todo_ev", "true" );
+        else
+            Prefs.putPref("ical_todo_ev", "false" );
+    }//GEN-LAST:event_icaltodoboxActionPerformed
 
     private void colorsortboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_colorsortboxActionPerformed
         if( colorsortbox.isSelected() )
@@ -1626,6 +1653,7 @@ public class OptionsView extends View
     private javax.swing.JCheckBox emailbox;
     private javax.swing.JTextField emailtext;
     private javax.swing.JCheckBox holiday1;
+    private javax.swing.JCheckBox icaltodobox;
     private javax.swing.JButton incfont;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;

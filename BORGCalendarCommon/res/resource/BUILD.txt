@@ -53,17 +53,16 @@ However, if you want to modify the screens and incorporate them
 back into the borg-calendar project at sourceforge, you will have to use
 netbeans for now.
 
-Brand new screens need not use NetBeans - and probably should not.
+Brand new screens need not use NetBeans.
 
-To set up BORG in netbeans 4.0, add the BORG Calendar Common folder as an existing project 
-built by Ant. (this is an option when adding a project). Then when choosing the source folders, add the src
-and res folders from all 4 main BORG parts. I know this is a bit sucky. On the classpath screen, un-check the box that
-chooses a separate classpath for each source folder.
+I use NetBeans 3.6. I have given up on NetBeans 4.0 for now. It just won't find my resource bundle - and it
+messes up my forms and java files because of this.
+To set up BORG in netbeans 3.6, mount the borg_src folder, all 4 src folders, and the Common/res folder.
+This should keep NetBeans all happy. 
 
 To see if this all worked, try to open a screen in the UI/src folder. AppointmentPanel would be good. If everything is
 set up right, the screen will appear in WYSIWYG mode and all of the labels on the panel will appear normal. If the labels
 appear with angles around them like this: <File>, then NetBeans is not finding res/resource/borg_resource.properties,
-which should be in a mounted source folder.
+which should be in a mounted source folder - and it is possibly trashing the form and java files.
 
-Don't try to run the code from within NetBeans. Just build with ant and run the borg.jar file.
 

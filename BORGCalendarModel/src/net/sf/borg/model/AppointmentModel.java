@@ -918,4 +918,10 @@ public class AppointmentModel extends Model
     {
     	db_.close();
     }
+
+    public Collection getAllAppts() throws Exception
+    {
+    	return( db_.readAll());
+    }
+
 }

@@ -71,6 +71,7 @@ import net.sf.borg.common.util.Version;
 import net.sf.borg.common.util.XTree;
 import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.Appointment;
+import net.sf.borg.model.AppointmentIcalAdapter;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Day;
 import net.sf.borg.model.Task;
@@ -85,6 +86,7 @@ import com.jeans.trayicon.WindowsTrayIcon;
 // it is the main borg window
 // like most of the other borg window, you really need to check the netbeans form
 // editor to get the graphical picture of the whole window
+
 public class CalendarView extends View {
     
     // current year/month being viewed
@@ -124,6 +126,7 @@ public class CalendarView extends View {
         
         initComponents();
         
+        impical.setEnabled(false);
         
         GridBagConstraints cons;
         
@@ -827,6 +830,8 @@ public class CalendarView extends View {
         exportMI = new javax.swing.JMenuItem();
         expurl = new javax.swing.JMenuItem();
         expXMLMem = new javax.swing.JMenuItem();
+        impical = new javax.swing.JMenuItem();
+        expical = new javax.swing.JMenuItem();
         viewMem = new javax.swing.JMenuItem();
         helpmenu = new javax.swing.JMenu();
         helpMI = new javax.swing.JMenuItem();
@@ -836,7 +841,6 @@ public class CalendarView extends View {
         AboutMI = new javax.swing.JMenuItem();
 
         dlgMemoryFilesChooser.setTitle(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("dlgMemoryFilesChooser"));
-        dlgMemoryFilesChooser.setLocationRelativeTo(this);
         dlgMemoryFilesChooser.setModal(true);
         dlgMemoryFilesChooser.setName("dlgMemoryFilesChooser");
         pnlMainMemFilesChooser.setLayout(new java.awt.BorderLayout());
@@ -1298,6 +1302,24 @@ public class CalendarView extends View {
 
         impexpMenu.add(expXML);
 
+        impical.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("importical"));
+        impical.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                impicalActionPerformed(evt);
+            }
+        });
+
+        impexpMenu.add(impical);
+
+        expical.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("export_ical"));
+        expical.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                expicalActionPerformed(evt);
+            }
+        });
+
+        impexpMenu.add(expical);
+
         viewMem.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("viewMem"));
         viewMem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1360,6 +1382,49 @@ public class CalendarView extends View {
         setJMenuBar(menuBar);
 
     }//GEN-END:initComponents
+
+    private void impicalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_impicalActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_impicalActionPerformed
+
+    private void expicalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_expicalActionPerformed
+        // user wants to export the task and calendar DBs to an iCal file
+        File file;
+        while( true ) {
+            // prompt for a directory to store the files
+            JFileChooser chooser = new JFileChooser();
+            
+            chooser.setCurrentDirectory( new File(".") );
+            chooser.setDialogTitle(Resource.getResourceString("choose_file"));
+            chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            
+            int returnVal = chooser.showOpenDialog(null);
+            if(returnVal != JFileChooser.APPROVE_OPTION)
+                return;
+            
+            String s = chooser.getSelectedFile().getAbsolutePath();
+            file = new File(s);
+            String err = null;
+            
+            if( err == null )
+                break;
+            
+            Errmsg.notice( err );
+        }
+        
+    	try {
+			AppointmentIcalAdapter.exportIcal(file.getAbsolutePath());
+		} 
+    	catch (Exception e) {
+			Errmsg.errmsg(e);
+		} 
+		catch ( NoClassDefFoundError ne )
+		{
+			Errmsg.notice("Cannot find ICal library, export disabled");
+		}
+    	
+    	
+    }//GEN-LAST:event_expicalActionPerformed
 
     private void listFilesValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_listFilesValueChanged
         bnMemFilesChooserOK.setEnabled(listFiles.getSelectedIndex() != -1);
@@ -1892,6 +1957,7 @@ public class CalendarView extends View {
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu expXML;
     private javax.swing.JMenuItem expXMLMem;
+    private javax.swing.JMenuItem expical;
     private javax.swing.JMenuItem exportMI;
     private javax.swing.JMenuItem expurl;
     private javax.swing.JMenuItem gotomi;
@@ -1900,6 +1966,7 @@ public class CalendarView extends View {
     private javax.swing.JMenu impXML;
     private javax.swing.JMenuItem impXMLMem;
     private javax.swing.JMenu impexpMenu;
+    private javax.swing.JMenuItem impical;
     private javax.swing.JMenuItem importMI;
     private javax.swing.JMenuItem impurl;
     private javax.swing.JButton jButton1;

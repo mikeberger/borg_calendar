@@ -26,6 +26,8 @@
    <!-- Path References -->
    <path id="build.classpath">
       <pathelement location="${trayicon.zip}"/>
+   	  <pathelement location="${prj.common.dir}/lib/ical4j.jar"/>
+   	  <pathelement location="${prj.common.dir}/lib/commons-logging.jar"/>
    </path>
 
    <target name="init">
@@ -102,6 +104,7 @@
       <!-- Model / DB -->
       <javac srcdir="${prj.model.dir}/src"
              destdir="${build.dir}"
+      	     classpathref="build.classpath"
              debug="on">
       </javac>
 
@@ -154,6 +157,7 @@ build.number=${build.number}
             <include name="**/*.class"/>
          </fileset>
          <zipfileset src="${trayicon.zip}"/>
+
       </jar>
    </target>
 
