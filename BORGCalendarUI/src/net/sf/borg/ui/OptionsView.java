@@ -59,8 +59,8 @@ import net.sf.borg.model.TaskModel;
 
 // bsv 2004-12-20
 import net.sf.borg.common.ui.JButtonKnowsBgColor;
-
-
+import java.awt.BorderLayout;
+import javax.swing.JTextField;
 
 import javax.swing.JPanel;
 import java.awt.GridBagLayout;
@@ -413,6 +413,11 @@ public class OptionsView extends View
         bg = Prefs.getPref(PrefName.UCS_ONTODO );
         if( bg.equals("true") ) cb_ucs_ontodo.setSelected(true);
         	else cb_ucs_ontodo.setSelected(false);
+        bg = Prefs.getPref(PrefName.UCS_MARKTODO );
+        if( bg.equals("true") ) cb_ucs_marktodo.setSelected(true);
+        	else cb_ucs_marktodo.setSelected(false);
+        cp = Prefs.getPref(PrefName.UCS_MARKER);
+        tf_ucs_marker.setText(cp);
         mins = Integer.parseInt( Prefs.getPref(PrefName.UCS_RED) );
         btn_ucs_red.setColorProperty(new Color(mins));
         btn_ucs_red.setColorByProperty();
@@ -563,6 +568,8 @@ public class OptionsView extends View
         // bsv 2004-12-20
         cb_ucs_on = new javax.swing.JCheckBox("use user colors in month view");
         cb_ucs_ontodo = new javax.swing.JCheckBox("use user colors in todo list");
+        cb_ucs_marktodo = new javax.swing.JCheckBox("mark todo in month view");
+        tf_ucs_marker = new JTextField("! ");
         btn_ucs_red = new JButtonKnowsBgColor( "red", Color.WHITE, false );
         btn_ucs_blue = new JButtonKnowsBgColor( "blue", Color.WHITE, false );
         btn_ucs_green = new JButtonKnowsBgColor( "green", Color.WHITE, false );
@@ -1304,7 +1311,7 @@ public class OptionsView extends View
         });
 
         // added by bsv 2004-12-20
-        getJPanelUCS().setLayout( new GridLayout( 9,2 ));
+        getJPanelUCS().setLayout( new GridLayout( 10,2 ));
         // 1st column-2nd column
         //getJPanelUCS().add( new JLabel("to be improved :)") );
         getJPanelUCS().add( cb_ucs_on );
@@ -1325,6 +1332,18 @@ public class OptionsView extends View
         getJPanelUCS().add( btn_ucs_weekday );
         getJPanelUCS().add( btn_ucs_birthdays );
         getJPanelUCS().add( btn_ucs_restore );
+        
+        JPanel njp = new JPanel();
+        njp.setLayout( new BorderLayout() );
+        njp.add( cb_ucs_marktodo, BorderLayout.WEST );
+        njp.add( tf_ucs_marker, BorderLayout.CENTER );
+        getJPanelUCS().add( njp );
+//        getJPanelUCS().add( cb_ucs_marktodo );
+//        JPanel njp = new JPanel();
+//        njp.setLayout( new BorderLayout() );
+//        njp.add( new JLabel("marker text: "), BorderLayout.WEST );
+//        njp.add( tf_ucs_marker, BorderLayout.CENTER );
+//        getJPanelUCS().add( njp );
         // (added by bsv 2004-12-20)
         
         this.setContentPane(getJPanel());
@@ -1502,6 +1521,11 @@ public class OptionsView extends View
         	else Prefs.putPref(PrefName.UCS_ON, "false" );
         if( cb_ucs_ontodo.isSelected() ) Prefs.putPref(PrefName.UCS_ONTODO, "true" );
         	else Prefs.putPref(PrefName.UCS_ONTODO, "false" );
+        if( cb_ucs_marktodo.isSelected() ) {
+        	Prefs.putPref(PrefName.UCS_MARKTODO, "true" );
+        	Prefs.putPref(PrefName.UCS_MARKER, tf_ucs_marker.getText() );
+        }
+    	else Prefs.putPref(PrefName.UCS_MARKTODO, "false" );
 
         Integer ucsi = new Integer((btn_ucs_red.getColorProperty()).getRGB());
         Prefs.putPref(PrefName.UCS_RED, ucsi.toString() );
@@ -1905,6 +1929,8 @@ public class OptionsView extends View
     // added by bsv 2004-12-20
     private javax.swing.JCheckBox cb_ucs_on;
     private javax.swing.JCheckBox cb_ucs_ontodo;
+    private javax.swing.JCheckBox cb_ucs_marktodo;
+    private javax.swing.JTextField tf_ucs_marker;
     private JButtonKnowsBgColor btn_ucs_red;
     private JButtonKnowsBgColor btn_ucs_blue;
     private JButtonKnowsBgColor btn_ucs_green;
