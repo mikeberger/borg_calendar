@@ -7,6 +7,7 @@ Change to use category pull-down menu on task editor
 Allow GIF images to mark todos in calendar
 Simplified Chinese Translation
 Remove Logging feature
+Switch to JDIC for Windows and Linux Tray Icon Support
 Bug fixes
 
 Version 1.4.2

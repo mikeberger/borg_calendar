@@ -38,8 +38,6 @@
 
 <mapID target="email" url="email.html"/>
 
-<mapID target="systray" url="systray.html"/>
-
 <mapID target="printing" url="printing.html"/>
 
 <mapID target="ical" url="ical.html"/>

@@ -18,7 +18,7 @@
    <property name="gen.dir" value="${prj.common.dir}/gen" />
    <property name="dist.dir" value="${prj.common.dir}/dist" />
    <property name="doc.dir" value="${prj.common.dir}/doc" />
-   <property name="trayicon.jar" value="${prj.ui.dir}/lib/trayicon.jar"/>
+   <property name="trayicon.jar" value="${prj.ui.dir}/lib/jdic.jar"/>
 
    <property name="db.res.dir" value="${prj.model.dir}/res/resource" />
 
@@ -172,7 +172,7 @@ build.number=${build.number}
       <manifest file="${build.dir}/${pkg}/MANIFEST.MF">
          <attribute name="Built-By" value="${user.name}"/>
          <attribute name="Main-Class" value="${pkg}/control/Borg"/>
-      	 <attribute name="Class-Path" value="lib/trayicon.jar lib/jh.jar lib/borghelp.jar lib/ical4j.jar lib/commons-logging.jar lib/looks-1.2.2.jar lib/jcalendar.jar"/>
+      	 <attribute name="Class-Path" value="lib/jdic.jar lib/jh.jar lib/borghelp.jar lib/ical4j.jar lib/commons-logging.jar lib/looks-1.2.2.jar lib/jcalendar.jar"/>
       </manifest>
 
       <antcall target="zz_copyresources">
@@ -270,15 +270,16 @@ build.number=${build.number}
 			<arg value="-o"/>
 			<arg value="${build.dir}/installer/BORG_installer.jar"/>
 		</exec>
+		<!--
 		<exec executable="${iz.compile}" dir="${iz.dir}/bin" resolveExecutable="true">
 			<arg value="${build.dir}/installer/nosrc.xml"/>
 			<arg value="-b"/>
 			<arg value="${build.dir}/installer"/>
 			<arg value="-o"/>
 			<arg value="${build.dir}/installer/BORG_installer_nosrc.jar"/>
-		</exec>
+		</exec>-->
 		<copy todir="${dist.dir}" file="${build.dir}/installer/BORG_installer.jar"/>
-		<copy todir="${dist.dir}" file="${build.dir}/installer/BORG_installer_nosrc.jar"/>
+		<!--copy todir="${dist.dir}" file="${build.dir}/installer/BORG_installer_nosrc.jar"/-->
 	</target>
 	
    <!-- Clean everything -->

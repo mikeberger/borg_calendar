@@ -2215,9 +2215,7 @@ public class CalendarView extends View implements Prefs.Listener {
     }//GEN-LAST:event_NextActionPerformed
     
     private void exitMenuItemActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
-        if( trayIcon_ ) {
-            TrayIconProxy.getReference().cleanUp();
-        }
+
         if(  AppHelper.isApplet() ) {
             this.dispose();
         }

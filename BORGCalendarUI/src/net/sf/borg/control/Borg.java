@@ -60,10 +60,10 @@ import net.sf.borg.model.Task;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.ui.Banner;
 import net.sf.borg.ui.CalendarView;
+import net.sf.borg.ui.JDICTrayIconProxy;
 import net.sf.borg.ui.OptionsView;
 import net.sf.borg.ui.PopupView;
 import net.sf.borg.ui.TodoView;
-import net.sf.borg.ui.TrayIconProxy;
 
 /*
  * borg.java
@@ -413,15 +413,17 @@ public class Borg extends Controller implements OptionsView.RestartListener {
             {
                 try
                 {
-                	TrayIconProxy tip = TrayIconProxy.getReference();
+                	JDICTrayIconProxy tip = JDICTrayIconProxy.getReference();
                 	tip.init(trayname);
                 }
                 catch (UnsatisfiedLinkError le)
                 {
+                	Errmsg.errmsg(new Exception(le));
                     trayIcon = false;
                 }
                 catch (NoClassDefFoundError ncf)
                 {
+                	Errmsg.errmsg(new Exception(ncf));
                     trayIcon = false;
                 }
                 catch (Exception e)

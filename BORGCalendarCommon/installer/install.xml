@@ -15,13 +15,13 @@
     <info>
         <appname>BORG Calendar</appname>
         <appversion>1.5</appversion>
-        <authors>
+        <!--authors>
             <author name="Michael Berger" email="i_flem@users.sourceforge.net"/>
-	    <author name="Mohan Embar" email="membar@users.sourceforge.net"/>
-	    <author name="Stepan Borodulin" email="painter2@users.sourceforge.net"/>
-	    <author name="Piero Trono (Italian Translation)" email="tropic@users.sourceforge.net"/>
-	    <author name="Stefan Pottinger (German Translation)" email="stpotti@users.sourceforge.net"/>
-        </authors>
+	    	<author name="Mohan Embar" email="membar@users.sourceforge.net"/>
+	    	<author name="Stepan Borodulin" email="painter2@users.sourceforge.net"/>
+	    	<author name="Piero Trono (Italian Translation)" email="tropic@users.sourceforge.net"/>
+	    	<author name="Stefan Pottinger (German Translation)" email="stpotti@users.sourceforge.net"/>
+        </authors-->
 	<javaversion>1.4</javaversion>
 	<url>http://borg-calendar.sourceforge.net/</url>
     </info>
@@ -99,16 +99,20 @@
             <file src="RELEASE_NOTES.txt_ita" targetdir="$INSTALL_PATH"/>
             <file src="COPYING" targetdir="$INSTALL_PATH"/>
             <file src="borg.jar" targetdir="$INSTALL_PATH"/>
-	    <file src="lib/jh.jar" targetdir="$INSTALL_PATH/lib"/>
-	    <file src="lib/borghelp.jar" targetdir="$INSTALL_PATH/lib"/>
-	    <file src="lib/jcalendar.jar" targetdir="$INSTALL_PATH/lib"/>
-	    <file src="lib/license.jcalendar.txt" targetdir="$INSTALL_PATH/lib"/>
+	    	<file src="lib/jh.jar" targetdir="$INSTALL_PATH/lib"/>
+	    	<file src="lib/borghelp.jar" targetdir="$INSTALL_PATH/lib"/>
+	    	<file src="lib/jcalendar.jar" targetdir="$INSTALL_PATH/lib"/>
+	    	<file src="lib/license.jcalendar.txt" targetdir="$INSTALL_PATH/lib"/>
         </pack>
-        <pack name="Windows Systray Support" os="windows" required="no">
-		<description>Support for a system tray icon (recommended for windows users)</description>
-            <file src="TrayIcon12.dll" targetdir="$INSTALL_PATH"/> 
-	    <file src="lib/trayicon.jar" targetdir="$INSTALL_PATH/lib"/> 
-	    <file src="lib/TRAYICON.README" targetdir="$INSTALL_PATH/lib"/> 
+        <pack name="Systray Support" required="no">
+		<description>Support for a system tray icon (Recommended)</description>
+            <file src="lib/jdic.dll" os="windows" targetdir="$INSTALL_PATH/lib"/>
+            <file src="lib/libjdic.so" os="unix" targetdir="$INSTALL_PATH/lib"/>
+            <file src="lib/tray.dll" os="windows" targetdir="$INSTALL_PATH/lib"/>
+            <file src="lib/libtray.so" os="unix" targetdir="$INSTALL_PATH/lib"/>
+            <file src="lib/LICENSE_JDIC.txt" targetdir="$INSTALL_PATH/lib"/>
+	    	<singlefile src="lib/jdic-linux.jar" os="unix" target="$INSTALL_PATH/lib/jdic.jar"/> 
+	    	<file src="lib/jdic.jar" os="windows" targetdir="$INSTALL_PATH/lib"/>
         </pack>
         <pack name="PlasticXP Look and Feel" required="no">
 		<description>The plastic XP Look and feel. Recommended for users that don't have Java 5.0 or Windows XP. This will add the PlasticXP Look and Feel as a option in BORG.</description>
@@ -134,10 +138,10 @@
 		<description>Palm Hot-Sync conduits for BORG (experimental)</description>
             <file src="conduits" targetdir="$INSTALL_PATH"/> 
         </pack>
-	<pack name="Sources" preselected="no" required="no">
+	<!--pack name="Sources" preselected="no" required="no">
             <description>The sources</description>
             <file src="borg_src.zip" targetdir="$INSTALL_PATH"/>
-        </pack>
+        </pack-->
     </packs>
     
 </installation>

@@ -1,5 +1,5 @@
 ============================
-RELEASE NOTES for BORG 1.4.2
+RELEASE NOTES for BORG 1.5
 ============================
 
 The project home page is http://borg-calendar.sourceforge.net
@@ -7,14 +7,10 @@ The project home page is http://borg-calendar.sourceforge.net
 KNOWN ISSUES:
 -------------
 
-1. Any options you have set in release 1.3.2 or earlier will be reset in 
-release 1.4 or later as the program will be storing its options in a slightly different 
-location. You must re-select your database folder (just choose the same one). 
-
-2. There may be new text strings that have not been translated. 
+1. There may be new text strings that have not been translated. 
 Feel free to mail any translations to i_flem@users.sourceforge.net.
 
-3. It is known that some screens in the new help system contain formatting 
+2. It is known that some screens in the new help system contain formatting 
 that has slight imperfections under Java 1.4.2, but not Java 5.0.
 
 
@@ -29,16 +25,6 @@ Command Line (any OS): The quickest way to run BORG from a command line
 is: java -jar borg.jar
    This will work as long as the java executable from the JRE is in your PATH
    on whatever OS you are running. 
-
-
-LOOK AND FEEL
--------------
-The default look and feel is the Metal look and feel that comes with Java. 
-This can be changed by choosing a new look and feel from the options screen. 
-I would suggest the windows look and feel for XP users. I would suggest 
-the PlasticXP look and feel for everyone else. The PlasticXP look and feel 
-is bundled with BORG as of release 1.4. The default Metal look and feel 
-will actually look quite nice if you are running Java 5.0.
 
 
 LICENSE
