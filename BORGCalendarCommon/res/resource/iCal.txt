@@ -2,12 +2,8 @@ BORG can use the ical4j library (ical4j.sourceforge.net) to export Appointment d
 format.
 
 In order to enable this feature, the ical4j.jar file in the lib folder of the distribution .zip file
-must be placed in the classpath of BORG. One way to do this is to copy it into the lib/ext folder
-of the Java JRE that is being used to run BORG. This makes these jar files available to all java
-programs. Another way to do this is to add the file to the classpath when running BORG.
-For example, if the borg zip was unpacked to c:\borg, then BORG can be run like this:
-
-java -cp c:\borg\ical4j.jar;c:\borg\borg.jar  net.sf.borg.control.Borg
+must be placed in the classpath of BORG. Executing the start.bat (windows) or start.sh (unix) should start
+borg with the correct classpath.
 
 LIMITATIONS
 -----------

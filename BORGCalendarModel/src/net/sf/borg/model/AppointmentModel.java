@@ -233,49 +233,83 @@ public class AppointmentModel extends Model
     
     // save an appt in SMDB
     public void saveAppt( Appointment r, boolean add) throws DBException
-    {
-        
-        try
-        {
-            
-            // check is the appt is private and set encrypt flag if it is
-            boolean crypt = r.getPrivate();
-            
-            // update SMDB - either add new or update existing based on add flag
-            // pass encrypt flag
-            // SMDB will handle encryption
-            if( add )
-                db_.addObj(r, crypt);
-            else
-                db_.updateObj(r, crypt );
-            
-            // update category list
-            String cat = r.getCategory();
-            if( cat != null && !cat.equals("") && !categories_.contains(cat))
-                categories_.add( cat );
-            
-        }
-        catch( Exception e )
-        {
-            Errmsg.errmsg(e);
-            
-        }
-        
-        try
-        {
-            // recreate the appointment hashmap
-            buildMap();
-            
-            // refresh all views that are displaying appt data from this model
-            refreshListeners();
-        }
-        catch( Exception e )
-        {
-            Errmsg.errmsg(e);
-            return;
-        }
-        
-    }
+	{
+    	
+    	try
+		{
+    		
+    		// check is the appt is private and set encrypt flag if it is
+    		boolean crypt = r.getPrivate();
+    		
+    		if( add == true )
+    		{
+    			// get the next unused key for a given day
+    			// to do this, start with the "base" key for a given day.
+    			// then see if an appt has this key.
+    			// keep adding 1 until a key is found that has no appt
+    			GregorianCalendar gcal = new GregorianCalendar();
+    			gcal.setTime(r.getDate());
+    			int key = AppointmentModel.dkey( gcal.get(GregorianCalendar.YEAR), gcal.get(GregorianCalendar.MONTH), gcal.get(GregorianCalendar.DATE) );
+    			
+    			try
+				{
+    				while( true )
+    				{
+    					Appointment ap = getAppt(key);
+    					if( ap == null ) break;
+    					key++;
+    				}
+				}
+    			catch( DBException e )
+				{
+    				if( e.getRetCode() != DBException.RET_NOT_FOUND )
+    				{
+    					throw e;
+    				}
+				}
+    			catch( Exception ee )
+				{
+    				Errmsg.errmsg(ee);
+    				return;
+				}
+    			
+    			// key is now a free key
+    			r.setKey(key);
+    			
+    			db_.addObj(r, crypt);
+    		}
+    		else
+    		{
+    			db_.updateObj(r, crypt );
+    		}
+    		
+    		// update category list
+    		String cat = r.getCategory();
+    		if( cat != null && !cat.equals("") && !categories_.contains(cat))
+    			categories_.add( cat );
+    		
+		}
+    	catch( Exception e )
+		{
+    		Errmsg.errmsg(e);
+    		
+		}
+    	
+    	try
+		{
+    		// recreate the appointment hashmap
+    		buildMap();
+    		
+    		// refresh all views that are displaying appt data from this model
+    		refreshListeners();
+		}
+    	catch( Exception e )
+		{
+    		Errmsg.errmsg(e);
+    		return;
+		}
+    	
+	}
     
     // get an appt from the database by key
     public Appointment getAppt(int key) throws DBException, Exception

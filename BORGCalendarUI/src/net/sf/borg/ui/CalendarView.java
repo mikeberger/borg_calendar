@@ -126,8 +126,6 @@ public class CalendarView extends View {
         
         initComponents();
         
-        impical.setEnabled(false);
-        
         GridBagConstraints cons;
         
         // the day boxes - which will contain a date button and day text
@@ -1384,14 +1382,47 @@ public class CalendarView extends View {
     }//GEN-END:initComponents
 
     private void impicalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_impicalActionPerformed
-        // TODO add your handling code here:
+        File file;
+        while( true ) {
+            // prompt for a file
+            JFileChooser chooser = new JFileChooser();
+            
+            chooser.setCurrentDirectory( new File(".") );
+            chooser.setDialogTitle(Resource.getResourceString("choose_file"));
+            chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            
+            int returnVal = chooser.showOpenDialog(null);
+            if(returnVal != JFileChooser.APPROVE_OPTION)
+                return;
+            
+            String s = chooser.getSelectedFile().getAbsolutePath();
+            file = new File(s);
+            String err = null;
+            
+            if( err == null )
+                break;
+            
+            Errmsg.notice( err );
+        }
+        
+    	try {
+			AppointmentIcalAdapter.importIcal(file.getAbsolutePath());
+		} 
+    	catch (Exception e) {
+			Errmsg.errmsg(e);
+		} 
+		catch ( NoClassDefFoundError ne )
+		{
+			Errmsg.notice("Cannot find ICal library, import disabled");
+		}
+    	
     }//GEN-LAST:event_impicalActionPerformed
 
     private void expicalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_expicalActionPerformed
         // user wants to export the task and calendar DBs to an iCal file
         File file;
         while( true ) {
-            // prompt for a directory to store the files
+            // prompt for a file
             JFileChooser chooser = new JFileChooser();
             
             chooser.setCurrentDirectory( new File(".") );

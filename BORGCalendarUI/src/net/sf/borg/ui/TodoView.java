@@ -410,32 +410,9 @@ public class TodoView extends View {
         r.setTimes(new Integer(1));
         r.setRepeatFlag(false);
         r.setCategory("");
-                
-        // get the next unused key for a given day
-        // to do this, start with the "base" key for a given day.
-        // then see if an appt has this key.
-        // keep adding 1 until a key is found that has no appt
-        try {
-            while( true ) {
-                Appointment ap = calmod_.getAppt(key);
-                if( ap == null ) break;
-                key++;
-            }
-        }
-        catch( DBException e ) {
-            if( e.getRetCode() != DBException.RET_NOT_FOUND ) {
-                Errmsg.errmsg(e);
-                return;
-            }
-        }
-        catch( Exception ee ) {
-            Errmsg.errmsg(ee);
-            return;
-        }
         
         // tell the model to add the appt
         try {
-            r.setKey(key);
             calmod_.saveAppt(r, true);
             
         }

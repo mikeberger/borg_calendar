@@ -19,16 +19,20 @@ Copyright 2003 by ==Quiet==
  */
 package net.sf.borg.model;
 
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 
+import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.CalendarOutputter;
+import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.CategoryList;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.ComponentList;
 import net.fortuna.ical4j.model.ParameterList;
+import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.Recur;
 import net.fortuna.ical4j.model.component.VEvent;
@@ -188,5 +192,46 @@ public class AppointmentIcalAdapter {
 		CalendarOutputter op = new CalendarOutputter();
 		op.output( cal, oostr );
 		oostr.close();
+	}
+	
+	static public void importIcal( String file ) throws Exception
+	{
+		CalendarBuilder builder = new CalendarBuilder();
+		InputStream is = IOHelper.openStream(file);
+		Calendar cal = builder.build(is);
+		is.close();
+		
+		AppointmentModel amodel = AppointmentModel.getReference();
+		ComponentList clist = cal.getComponents();
+		Iterator it = clist.iterator();
+		while( it.hasNext())
+		{
+			Component comp = (Component) it.next();
+			if( comp instanceof VEvent || comp instanceof VToDo)
+			{
+				Appointment ap = amodel.newAppt();
+				PropertyList pl = comp.getProperties();
+				Property prop = pl.getProperty(Property.SUMMARY);
+				if( prop != null )
+				{
+					ap.setText( prop.getValue());
+				}
+				
+				prop = pl.getProperty(Property.DTSTART);
+				if( prop != null)
+				{
+					DtStart dts = (DtStart) prop;
+					Date d = dts.getTime();
+					ap.setDate(d);
+		            
+				}
+				
+				amodel.saveAppt(ap, true);
+				
+			}
+		}
+		
+		 
+		
 	}
 }
