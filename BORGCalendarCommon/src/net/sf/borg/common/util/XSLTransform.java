@@ -10,7 +10,6 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
 
-import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;

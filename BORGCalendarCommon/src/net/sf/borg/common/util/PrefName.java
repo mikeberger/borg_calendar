@@ -19,7 +19,6 @@ Copyright 2003 by ==Quiet==
  */
 package net.sf.borg.common.util;
 
-import java.awt.Color;
 import java.util.Calendar;
 
 
