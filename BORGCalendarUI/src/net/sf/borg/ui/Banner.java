@@ -26,8 +26,12 @@ Copyright 2003 by ==Quiet==
 
 package net.sf.borg.ui;
 
-import net.sf.borg.common.util.Version;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 
+import javax.swing.JPanel;
+
+import net.sf.borg.common.util.Version;
 /**
  *
  * @author  mbb
@@ -86,7 +90,6 @@ public class Banner extends javax.swing.JFrame {
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/borg.jpg")));
         jLabel1.setIconTextGap(0);
-        jLabel1.setPreferredSize(null);
         jLabel1.setOpaque(true);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
@@ -101,6 +104,8 @@ public class Banner extends javax.swing.JFrame {
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTH;
+        this.setSize(364, 322);
+        this.setContentPane(getJPanel());
         getContentPane().add(jTextField1, gridBagConstraints);
 
         pack();
@@ -117,4 +122,33 @@ public class Banner extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
     
-}
+	private JPanel jPanel = null;
+	/**
+	 * This method initializes jPanel	
+	 * 	
+	 * @return javax.swing.JPanel	
+	 */    
+	private JPanel getJPanel() {
+		if (jPanel == null) {
+			GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
+			GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
+			jPanel = new JPanel();
+			jPanel.setLayout(new GridBagLayout());
+			gridBagConstraints2.gridx = 0;
+			gridBagConstraints2.gridy = 0;
+			gridBagConstraints2.ipadx = 0;
+			gridBagConstraints2.ipady = 0;
+			gridBagConstraints2.weightx = 1.0D;
+			gridBagConstraints2.weighty = 1.0D;
+			gridBagConstraints2.fill = java.awt.GridBagConstraints.BOTH;
+			gridBagConstraints3.gridx = 0;
+			gridBagConstraints3.gridy = 1;
+			gridBagConstraints3.fill = java.awt.GridBagConstraints.HORIZONTAL;
+			gridBagConstraints3.ipadx = 0;
+			gridBagConstraints3.ipady = 0;
+			jPanel.add(jLabel1, gridBagConstraints2);
+			jPanel.add(jTextField1, gridBagConstraints3);
+		}
+		return jPanel;
+	}
+ }  //  @jve:decl-index=0:visual-constraint="116,35"
