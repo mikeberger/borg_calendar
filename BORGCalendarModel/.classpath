@@ -3,8 +3,8 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="res"/>
-	<classpathentry kind="src" path="/BORG Calendar Common"/>
-	<classpathentry kind="lib" path="/BORG Calendar Common/lib/commons-logging.jar"/>
-	<classpathentry kind="lib" path="/BORG Calendar Common/lib/ical4j.jar"/>
+	<classpathentry kind="src" path="/BORGCalendarCommon"/>
+	<classpathentry kind="lib" path="/BORGCalendarCommon/lib/commons-logging.jar"/>
+	<classpathentry kind="lib" path="/BORGCalendarCommon/lib/ical4j.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
