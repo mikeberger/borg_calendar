@@ -23,6 +23,10 @@
 
    <property name="build.compiler" value="modern" />
    <property name="ant.dir" value="${prj.common.dir}/ant" />
+	
+   <!-- PATH to javahelp - must be changed only if you want to regen the help indexes -->
+	<property name="jh.bin" value ="c:/jh2.0/javahelp/bin"/>
+	<property name="jhindexer" value="jhindexer.bat"/>
    
    <!-- Path References -->
    <path id="build.classpath">
@@ -35,6 +39,14 @@
    <target name="init">
       <tstamp/>
    </target>
+	
+	<!-- regen help search indexes -->
+	<target name="regen-help" >
+		<exec dir="${help.dir}" executable="${jh.bin}/${jhindexer}">
+			<arg value="default"/>
+			<arg value="it"/>
+	    </exec>
+	</target>
    
    <!-- Gen -->
    <target name="gen" depends="init">
