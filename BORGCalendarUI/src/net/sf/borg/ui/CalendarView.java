@@ -143,8 +143,20 @@ public class CalendarView extends View implements Prefs.Listener {
     	}
     	
         public void mouseClicked(MouseEvent evt) {
-            AppointmentListView ag = new AppointmentListView(year, month, date);
-            ag.show();
+            String reverseActions = Prefs.getPref(PrefName.REVERSEDAYEDIT);
+            if( reverseActions.equals("true"))
+            {
+                // start the appt editor view
+            	DayView dv = new DayView(month, year, date);
+            	dv.show();
+            }
+            else
+            {
+            	AppointmentListView ag = new AppointmentListView(year, month, date);
+                ag.show();
+
+            }
+            
 
         }
 
@@ -207,9 +219,18 @@ public class CalendarView extends View implements Prefs.Listener {
                 public void actionPerformed(ActionEvent evt) {
                     JButton but = (JButton) evt.getSource();
                     int day = Integer.parseInt(but.getText());
+                    String reverseActions = Prefs.getPref(PrefName.REVERSEDAYEDIT);
+                    if( reverseActions.equals("true"))
+                    {
+                    	AppointmentListView ag = new AppointmentListView(year_, month_, day);
+                    	ag.show();
+                    }
+                    else
+                    {
                     // start the appt editor view
-                    DayView dv = new DayView(month_, year_, day);
-                    dv.show();
+                    	DayView dv = new DayView(month_, year_, day);
+                    	dv.show();
+                    }
                 }
             });
 

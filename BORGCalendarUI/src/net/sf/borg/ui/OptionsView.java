@@ -266,6 +266,12 @@ public class OptionsView extends View
         else
             wrapbox.setSelected(false);
         
+        bg = Prefs.getPref(PrefName.REVERSEDAYEDIT);
+        if( bg.equals("true") )
+            revDayEditbox.setSelected(true);
+        else
+        	revDayEditbox.setSelected(false);
+        
         // auto update check
         int au = Prefs.getIntPref(PrefName.VERCHKLAST );
         if(au != -1 )
@@ -441,6 +447,7 @@ public class OptionsView extends View
         backgbox = new javax.swing.JCheckBox();
         stackbox = new javax.swing.JCheckBox();
         icaltodobox = new javax.swing.JCheckBox();
+        revDayEditbox = new javax.swing.JCheckBox();
         jPanel6 = new javax.swing.JPanel();
         popenablebox = new javax.swing.JCheckBox();
         jLabel9 = new javax.swing.JLabel();
@@ -984,6 +991,13 @@ public class OptionsView extends View
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         jPanel3.add(icaltodobox, gridBagConstraints);
 
+        revDayEditbox.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("revdayedit"));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        jPanel3.add(revDayEditbox, gridBagConstraints);
+
         jTabbedPane1.addTab(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("misc"), jPanel3);
 
         jPanel6.setLayout(new java.awt.GridBagLayout());
@@ -1271,6 +1285,11 @@ public class OptionsView extends View
             Prefs.putPref(PrefName.SHOWUSHOLIDAYS, "true" );
         else
             Prefs.putPref(PrefName.SHOWUSHOLIDAYS, "false" );
+        
+        if( revDayEditbox.isSelected() )
+            Prefs.putPref(PrefName.REVERSEDAYEDIT, "true" );
+        else
+            Prefs.putPref(PrefName.REVERSEDAYEDIT, "false" );
         
         Prefs.putPref( PrefName.WKENDHOUR, wkendhr.getSelectedItem());
         Prefs.putPref( PrefName.WKSTARTHOUR, wkstarthr.getSelectedItem());
@@ -1650,6 +1669,7 @@ public class OptionsView extends View
     private javax.swing.JSpinner popminbefore;
     private javax.swing.JCheckBox privbox;
     private javax.swing.JCheckBox pubbox;
+    private javax.swing.JCheckBox revDayEditbox;
     private javax.swing.JCheckBox sharedbox;
     private javax.swing.JTextField smtptext;
     private javax.swing.JCheckBox soundbox;

@@ -70,6 +70,10 @@ public class PrefName {
 		static public PrefName LASTIMPURL = new PrefName( "lastImpUrl", "");
 		static public PrefName LASTIMPURLDAT = new PrefName( "lastImpUrlDat", "");
 		static public PrefName SHOWMEMFILES = new PrefName("showMemFiles", "false");
+		
+		// have to explain this one - reverse the way that the appt editor and day view
+		// windows are summoned for people who can't adjust
+		static public PrefName REVERSEDAYEDIT = new PrefName("reverseDayEdit", "false");
 					
 		// printing
 		static public PrefName LOGO = new PrefName( "logo", "");
