@@ -133,8 +133,10 @@ public class TodoView extends View {
         
         // bsv 2004-12-22
         // set more pretty renderer
-        jTable1.setDefaultRenderer( Object.class, new TodayRenderer() );
-        jTable1.setDefaultRenderer( Date.class, new TodayRenderer() );
+        if( Prefs.getPref(PrefName.UCS_ONTODO).equals("true") ){
+        	jTable1.setDefaultRenderer( Object.class, new TodayRenderer() );
+        	jTable1.setDefaultRenderer( Date.class, new TodayRenderer() );
+        }
         
         jTable1.removeColumn( jTable1.getColumnModel().getColumn(3) );
         

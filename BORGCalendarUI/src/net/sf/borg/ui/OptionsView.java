@@ -410,6 +410,9 @@ public class OptionsView extends View
         bg = Prefs.getPref(PrefName.UCS_ON );
         if( bg.equals("true") ) cb_ucs_on.setSelected(true);
         	else cb_ucs_on.setSelected(false);
+        bg = Prefs.getPref(PrefName.UCS_ONTODO );
+        if( bg.equals("true") ) cb_ucs_ontodo.setSelected(true);
+        	else cb_ucs_ontodo.setSelected(false);
         mins = Integer.parseInt( Prefs.getPref(PrefName.UCS_RED) );
         btn_ucs_red.setColorProperty(new Color(mins));
         btn_ucs_red.setColorByProperty();
@@ -559,6 +562,7 @@ public class OptionsView extends View
         
         // bsv 2004-12-20
         cb_ucs_on = new javax.swing.JCheckBox("use user color settings");
+        cb_ucs_ontodo = new javax.swing.JCheckBox("use colored todolist");
         btn_ucs_red = new JButtonKnowsBgColor( "red", Color.WHITE, false );
         btn_ucs_blue = new JButtonKnowsBgColor( "blue", Color.WHITE, false );
         btn_ucs_green = new JButtonKnowsBgColor( "green", Color.WHITE, false );
@@ -1302,8 +1306,9 @@ public class OptionsView extends View
         // added by bsv 2004-12-20
         getJPanelUCS().setLayout( new GridLayout( 9,2 ));
         // 1st column-2nd column
-        getJPanelUCS().add( new JLabel("to be improved :)") );
+        //getJPanelUCS().add( new JLabel("to be improved :)") );
         getJPanelUCS().add( cb_ucs_on );
+        getJPanelUCS().add( cb_ucs_ontodo );
         getJPanelUCS().add( btn_ucs_red );
         getJPanelUCS().add( btn_ucs_default );
         getJPanelUCS().add( btn_ucs_blue );
@@ -1495,6 +1500,8 @@ public class OptionsView extends View
         // bsv 2004-12-20
         if( cb_ucs_on.isSelected() ) Prefs.putPref(PrefName.UCS_ON, "true" );
         	else Prefs.putPref(PrefName.UCS_ON, "false" );
+        if( cb_ucs_ontodo.isSelected() ) Prefs.putPref(PrefName.UCS_ONTODO, "true" );
+        	else Prefs.putPref(PrefName.UCS_ONTODO, "false" );
 
         Integer ucsi = new Integer((btn_ucs_red.getColorProperty()).getRGB());
         Prefs.putPref(PrefName.UCS_RED, ucsi.toString() );
@@ -1897,6 +1904,7 @@ public class OptionsView extends View
     
     // added by bsv 2004-12-20
     private javax.swing.JCheckBox cb_ucs_on;
+    private javax.swing.JCheckBox cb_ucs_ontodo;
     private JButtonKnowsBgColor btn_ucs_red;
     private JButtonKnowsBgColor btn_ucs_blue;
     private JButtonKnowsBgColor btn_ucs_green;
