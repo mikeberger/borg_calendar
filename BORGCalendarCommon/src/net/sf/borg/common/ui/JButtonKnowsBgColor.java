@@ -4,7 +4,7 @@
  * TODO To change the template for this generated file go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-package borg_src3.BORGCalendarCommon.src.net.sf.borg.common.ui;
+package net.sf.borg.common.ui;
 
 import javax.swing.JButton;
 
