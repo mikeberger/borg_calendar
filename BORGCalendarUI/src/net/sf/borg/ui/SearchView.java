@@ -36,6 +36,9 @@ import net.sf.borg.common.util.Version;
 import net.sf.borg.model.Appointment;
 import net.sf.borg.model.AppointmentModel;
 
+import javax.swing.JPanel;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
 /*
  * srchgui.java
  *
@@ -150,7 +153,7 @@ class SearchView extends View{
 
         jScrollPane1.setViewportView(jTable1);
 
-        getContentPane().add(jScrollPane1, java.awt.BorderLayout.CENTER);
+        //getContentPane().add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
         fileMenu.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Action"));
         exitMenuItem.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Exit"));
@@ -175,6 +178,7 @@ class SearchView extends View{
 
         setJMenuBar(menuBar);
 
+			this.setContentPane(getJPanel());
         pack();
     }//GEN-END:initComponents
 
@@ -253,4 +257,25 @@ class SearchView extends View{
     private javax.swing.JMenuBar menuBar;
     // End of variables declaration//GEN-END:variables
     
-}
+	private JPanel jPanel = null;
+	/**
+	 * This method initializes jPanel	
+	 * 	
+	 * @return javax.swing.JPanel	
+	 */    
+	private JPanel getJPanel() {
+		if (jPanel == null) {
+			GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
+			jPanel = new JPanel();
+			jPanel.setLayout(new GridBagLayout());
+			gridBagConstraints1.gridx = 0;
+			gridBagConstraints1.gridy = 0;
+			gridBagConstraints1.weightx = 1.0;
+			gridBagConstraints1.weighty = 1.0;
+			gridBagConstraints1.fill = java.awt.GridBagConstraints.BOTH;
+			gridBagConstraints1.insets = new java.awt.Insets(5,5,5,5);
+			jPanel.add(jScrollPane1, gridBagConstraints1);
+		}
+		return jPanel;
+	}
+ }
