@@ -734,7 +734,7 @@ public class OptionsView extends View
         versioncheck.setFont(new java.awt.Font("Dialog", 0, 10));
         versioncheck.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Check_for_updates_now"));
         versioncheck.setToolTipText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Check_for_the_latest_BORG_version_now"));
-        versioncheck.setBorder(new javax.swing.border.BevelBorder(javax.swing.border.BevelBorder.RAISED));
+        versioncheck.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         versioncheck.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 versioncheckActionPerformed(evt);

@@ -38,6 +38,8 @@ class Repeat
 	private boolean monthly_same_day;
 	private boolean weekends;
 	private boolean weekdays;
+	private boolean mwf;
+	private boolean tth;
 	private int count;
 
 	private int incr;
@@ -53,6 +55,8 @@ class Repeat
 		incr = 1;
 		weekdays = false;
 		weekends = false;
+		mwf = false;
+		tth = false;
 		monthly_same_day = false;
 		field = Calendar.DATE;
 		dayOfWeek = 0;
@@ -82,6 +86,16 @@ class Repeat
 		else if( frequency.equals("weekends"))
 		{
 			weekends = true;
+		}
+		else if( frequency.equals("mwf"))
+		{
+			mwf = true;
+			incr = 0;
+		}		
+		else if( frequency.equals("tth"))
+		{
+			tth = true;
+			incr = 0;
 		}
 	}
 	
@@ -133,6 +147,30 @@ class Repeat
 				cal.add( Calendar.DATE, 2 );
 			else if( dow == Calendar.FRIDAY )
 				cal.add( Calendar.DATE, 1 );
+		}
+		else if( mwf )
+		{
+			int dow = cal.get(Calendar.DAY_OF_WEEK );
+			if( dow == Calendar.FRIDAY )
+			{
+				cal.add( Calendar.DATE, 3 );
+			}
+			else 
+			{
+				cal.add( Calendar.DATE, 2 );
+			}
+		}
+		else if( tth )
+		{
+			int dow = cal.get(Calendar.DAY_OF_WEEK );
+			if( dow == Calendar.THURSDAY )
+			{
+				cal.add( Calendar.DATE, 5 );
+			}
+			else 
+			{
+				cal.add( Calendar.DATE, 2 );
+			}
 		}
 		else if (monthly_same_day)
 		{

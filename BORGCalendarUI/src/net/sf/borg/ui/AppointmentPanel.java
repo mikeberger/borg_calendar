@@ -330,6 +330,10 @@ class AppointmentPanel extends JPanel
                           fin = 7;
                       else if( rpt.equals("weekends"))
                           fin = 8;
+                      else if( rpt.equals("mwf"))
+                        fin = 9;
+                      else if( rpt.equals("tth"))
+                        fin = 10;
                   }
                   freq.setSelectedIndex(fin);
                   
@@ -1011,7 +1015,7 @@ class AppointmentPanel extends JPanel
     }
     
     private String freqs[] =
-    { "once", "daily", "weekly", "biweekly", "monthly", "monthly_day", "yearly", "weekdays", "weekends" };
+    { "once", "daily", "weekly", "biweekly", "monthly", "monthly_day", "yearly", "weekdays", "weekends", "mwf", "tth" };
     private String freqToEnglish( String freq )
     {
         for( int i = 0; i < freqs.length; i++ )
@@ -1022,7 +1026,7 @@ class AppointmentPanel extends JPanel
             }
         }
         
-        return( "black" );
+        return( "once" );
     }
     
     private void add_appt()
