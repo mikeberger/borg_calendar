@@ -116,6 +116,11 @@ public class Crypt {
                 }
                 // letter
                 int d = Character.digit(c,Character.MAX_RADIX );
+                if( d == -1 )
+                {
+                	result += c;
+                	continue;
+                }
                 d = d - 10;
                 //System.out.println(d);
                 int ran = r_.nextInt(3);
@@ -141,6 +146,11 @@ public class Crypt {
             }
             if( Character.isLetter(c1) ) {
                 int d = Character.digit(c1,Character.MAX_RADIX);
+                if( d == -1 )
+                {
+                	result += c1;
+                	continue;
+                }
                 d = d - aval;
                 result += Character.forDigit(d, Character.MAX_RADIX);
             }
@@ -177,7 +187,7 @@ public class Crypt {
         return( result );
     }
     
-    static void main( String[] args ) {
+    static public void main( String[] args ) {
         try{
             Crypt mc = new Crypt("123456789123456789");
             String in = "abcdefghijklmnopqrstuvwxyz";
@@ -188,7 +198,7 @@ public class Crypt {
             res = mc.encrypt(in);
             System.out.println(res);
             System.out.println( mc.decrypt(res) );
-            in = "AaBbCcDd";
+            in = "œŸæó¹ê³AaBbCcDd";
             res = mc.encrypt(in);
             System.out.println(res);
             System.out.println( mc.decrypt(res) );
