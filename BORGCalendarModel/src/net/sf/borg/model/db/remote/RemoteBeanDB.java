@@ -61,7 +61,7 @@ class RemoteBeanDB implements BeanDB
 		checkReadOnly();
 		call(
 			"addObj",
-			new IRemoteProxy.ComposedObject(bean, new Boolean(crypt)));
+			new IRemoteProxy.ComposedObject(bean, Boolean.valueOf(crypt)));
 	}
 
 	public final synchronized void updateObj(KeyedBean bean, boolean crypt) throws DBException, Exception
@@ -69,7 +69,7 @@ class RemoteBeanDB implements BeanDB
 		checkReadOnly();
 		call(
 			"updateObj",
-			new IRemoteProxy.ComposedObject(bean, new Boolean(crypt)));
+			new IRemoteProxy.ComposedObject(bean, Boolean.valueOf(crypt)));
 	}
 
 	public final synchronized void delete(int key) throws Exception
@@ -104,9 +104,9 @@ class RemoteBeanDB implements BeanDB
 		// ignore this - we're sharing
 	}
 
-	public final synchronized int maxkey() throws Exception
+	public final synchronized int nextkey() throws Exception
 	{
-		return ((Integer) call("maxkey", null)).intValue();
+		return ((Integer) call("nextkey", null)).intValue();
 	}
 
 	public final synchronized void setLogFile(String lf) throws DBException
@@ -138,7 +138,7 @@ class RemoteBeanDB implements BeanDB
 				.getProxy(impl)
 				.execute(xmlstr);
 		XTree xmlResult = XTree.readFromBuffer(result);
-		return XmlObjectHelper.toResult(xmlResult);
+		return XmlObjectHelper.fromXml(xmlResult);
 	}
 	
 	protected void checkReadOnly() throws DBException
