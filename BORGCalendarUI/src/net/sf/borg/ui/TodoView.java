@@ -45,6 +45,9 @@ import net.sf.borg.model.Task;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.db.DBException;
 
+import javax.swing.JPanel;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
 /*
  * tdgui.java
  *
@@ -202,6 +205,13 @@ public class TodoView extends View {
         todotext = new javax.swing.JTextField();
         tododate = new javax.swing.JTextField();
         addtodo = new javax.swing.JButton();
+        GridBagConstraints gridBagConstraints8 = new GridBagConstraints();
+        GridBagConstraints gridBagConstraints9 = new GridBagConstraints();
+        GridBagConstraints gridBagConstraints10 = new GridBagConstraints();
+        GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
+        GridBagConstraints gridBagConstraints12 = new GridBagConstraints();
+        GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
+        GridBagConstraints gridBagConstraints14 = new GridBagConstraints();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -213,7 +223,7 @@ public class TodoView extends View {
         printList = new javax.swing.JMenuItem();
         exitMenuItem = new javax.swing.JMenuItem();
 
-        getContentPane().setLayout(new java.awt.GridBagLayout());
+        //getContentPane().setLayout(new java.awt.GridBagLayout());
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("To_Do_List"));
@@ -230,8 +240,7 @@ public class TodoView extends View {
         jTable1.setGridColor(java.awt.Color.blue);
         DefaultListSelectionModel mylsmodel = new DefaultListSelectionModel();
         mylsmodel.setSelectionMode( ListSelectionModel.SINGLE_SELECTION);
-        jTable1.setSelectionModel(mylsmodel
-        );
+        jTable1.setSelectionModel(mylsmodel );
         jTable1.addMouseListener(new java.awt.event.MouseAdapter()
         {
             public void mouseClicked(java.awt.event.MouseEvent evt)
@@ -242,28 +251,9 @@ public class TodoView extends View {
 
         jScrollPane1.setViewportView(jTable1);
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        getContentPane().add(jScrollPane1, gridBagConstraints);
-
         jPanel1.setLayout(new java.awt.GridBagLayout());
 
         jPanel1.setMinimumSize(new java.awt.Dimension(550, 102));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        jPanel1.add(todotext, gridBagConstraints);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        jPanel1.add(tododate, gridBagConstraints);
 
         addtodo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Save16.gif")));
         addtodo.setText("Add");
@@ -275,51 +265,18 @@ public class TodoView extends View {
             }
         });
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 2;
-        jPanel1.add(addtodo, gridBagConstraints);
-
+        
         jLabel1.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("To_Do"));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        jPanel1.add(jLabel1, gridBagConstraints);
-
+ 
         jLabel2.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Date"));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        jPanel1.add(jLabel2, gridBagConstraints);
-
+ 
         jLabel3.setFont(new java.awt.Font("MS Sans Serif", 2, 10));
         jLabel3.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("quicktodonotice"));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.insets = new java.awt.Insets(15, 0, 0, 0);
-        jPanel1.add(jLabel3, gridBagConstraints);
 
         jLabel4.setFont(new java.awt.Font("MS Sans Serif", 3, 13));
         jLabel4.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("todoquickentry"));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 10, 0);
-        jPanel1.add(jLabel4, gridBagConstraints);
+ 
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.insets = new java.awt.Insets(20, 0, 0, 0);
-        getContentPane().add(jPanel1, gridBagConstraints);
 
         fileMenu.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Action"));
         jMenuItem1.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Done_(No_Delete)"));
@@ -370,6 +327,46 @@ public class TodoView extends View {
 
         setJMenuBar(menuBar);
 
+        this.setContentPane(getJPanel());
+
+        gridBagConstraints8.gridx = 2;
+        gridBagConstraints8.gridy = 2;
+        gridBagConstraints8.insets = new java.awt.Insets(4,4,4,4);
+        gridBagConstraints9.gridx = 1;
+        gridBagConstraints9.gridy = 2;
+        gridBagConstraints9.weightx = 0.0D;
+        gridBagConstraints9.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints9.insets = new java.awt.Insets(0,4,4,4);
+        gridBagConstraints10.gridx = 0;
+        gridBagConstraints10.gridy = 0;
+        gridBagConstraints10.insets = new java.awt.Insets(4,4,4,4);
+        gridBagConstraints10.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints11.gridx = 0;
+        gridBagConstraints11.gridy = 3;
+        gridBagConstraints11.insets = new java.awt.Insets(4,4,4,4);
+        gridBagConstraints11.gridwidth = 3;
+        gridBagConstraints12.gridx = 1;
+        gridBagConstraints12.gridy = 1;
+        gridBagConstraints12.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints12.weightx = 1.0D;
+        gridBagConstraints12.insets = new java.awt.Insets(4,4,0,0);
+        gridBagConstraints13.gridx = 0;
+        gridBagConstraints13.gridy = 1;
+        gridBagConstraints13.insets = new java.awt.Insets(4,4,0,0);
+        gridBagConstraints13.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints13.weightx = 1.0D;
+        gridBagConstraints14.gridx = 0;
+        gridBagConstraints14.gridy = 2;
+        gridBagConstraints14.weightx = 0.0D;
+        gridBagConstraints14.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints14.insets = new java.awt.Insets(0,4,4,4);
+        jPanel1.add(addtodo, gridBagConstraints8);
+        jPanel1.add(tododate, gridBagConstraints9);
+        jPanel1.add(jLabel4, gridBagConstraints10);
+        jPanel1.add(jLabel3, gridBagConstraints11);
+        jPanel1.add(jLabel2, gridBagConstraints12);
+        jPanel1.add(jLabel1, gridBagConstraints13);
+        jPanel1.add(todotext, gridBagConstraints14);
         pack();
     }//GEN-END:initComponents
 
@@ -528,4 +525,32 @@ public class TodoView extends View {
     private javax.swing.JTextField todotext;
     // End of variables declaration//GEN-END:variables
     
-}
+	private JPanel jPanel = null;
+	/**
+	 * This method initializes jPanel	
+	 * 	
+	 * @return javax.swing.JPanel	
+	 */    
+	private JPanel getJPanel() {
+		if (jPanel == null) {
+			GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
+			GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
+			jPanel = new JPanel();
+			jPanel.setLayout(new GridBagLayout());
+			gridBagConstraints1.gridx = 0;
+			gridBagConstraints1.gridy = 0;
+			gridBagConstraints1.weightx = 1.0;
+			gridBagConstraints1.weighty = 1.0;
+			gridBagConstraints1.fill = java.awt.GridBagConstraints.BOTH;
+			gridBagConstraints1.insets = new java.awt.Insets(4,4,4,4);
+			gridBagConstraints1.gridwidth = 1;
+			gridBagConstraints2.gridx = 0;
+			gridBagConstraints2.gridy = 1;
+			gridBagConstraints2.insets = new java.awt.Insets(4,4,4,4);
+			gridBagConstraints2.fill = java.awt.GridBagConstraints.HORIZONTAL;
+			jPanel.add(jScrollPane1, gridBagConstraints1);
+			jPanel.add(jPanel1, gridBagConstraints2);
+		}
+		return jPanel;
+	}
+ }  //  @jve:decl-index=0:visual-constraint="39,18"

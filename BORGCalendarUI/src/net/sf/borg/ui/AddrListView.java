@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import javax.swing.DefaultListSelectionModel;
+import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.TableModelEvent;
 
@@ -35,6 +36,8 @@ import net.sf.borg.common.util.Version;
 import net.sf.borg.model.Address;
 import net.sf.borg.model.AddressModel;
 
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
 /**
  *
  * @author  MBERGER
@@ -183,7 +186,8 @@ public class AddrListView extends View
         printList = new javax.swing.JMenuItem();
         exitMenuItem = new javax.swing.JMenuItem();
 
-        getContentPane().setLayout(new java.awt.GridBagLayout());
+        this.setContentPane(getJPanel());
+        //getContentPane().setLayout(new java.awt.GridBagLayout());
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Address_Book"));
@@ -299,6 +303,7 @@ public class AddrListView extends View
 
         setJMenuBar(menuBar);
 
+        
         pack();
     }//GEN-END:initComponents
 
@@ -377,6 +382,31 @@ public class AddrListView extends View
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JButton newbutton;
     private javax.swing.JMenuItem printList;
-    // End of variables declaration//GEN-END:variables
-    
-}
+	private JPanel jPanel = null;
+	/**
+	 * This method initializes jPanel	
+	 * 	
+	 * @return javax.swing.JPanel	
+	 */    
+	private JPanel getJPanel() {
+		if (jPanel == null) {
+			GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
+			GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
+			jPanel = new JPanel();
+			jPanel.setLayout(new GridBagLayout());
+			gridBagConstraints1.gridx = 0;
+			gridBagConstraints1.gridy = 0;
+			gridBagConstraints1.weightx = 1.0;
+			gridBagConstraints1.weighty = 1.0;
+			gridBagConstraints1.fill = java.awt.GridBagConstraints.BOTH;
+			gridBagConstraints1.insets = new java.awt.Insets(4,4,4,4);
+			gridBagConstraints2.gridx = 0;
+			gridBagConstraints2.gridy = 1;
+			gridBagConstraints2.insets = new java.awt.Insets(4,4,4,4);
+			gridBagConstraints2.fill = java.awt.GridBagConstraints.BOTH;
+			jPanel.add(jScrollPane1, gridBagConstraints1);
+			jPanel.add(jPanel1, gridBagConstraints2);
+		}
+		return jPanel;
+	}
+ }
