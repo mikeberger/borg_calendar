@@ -678,6 +678,14 @@ public class CalendarView extends View implements Prefs.Listener {
                             
                             Appointment info = (Appointment) it.next();
                             
+                            // bsv 2004-12-23
+                            if( Prefs.getPref(PrefName.UCS_MARKTODO).equals("true")){
+                            	if( info.getTodo() ){
+                            		addString( daytext[i], Prefs.getPref(PrefName.UCS_MARKER), info.getColor() );
+                            	}
+                            }
+                            
+                            
                             // add the day's text in the right color. If the appt is the last
                             // one - don't add a trailing newline - it will make the text pane
                             // have one extra line - forcing an unecessary scrollbar at times

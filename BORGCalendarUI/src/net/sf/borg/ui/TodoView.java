@@ -276,7 +276,8 @@ public class TodoView extends View {
                 ro[0] = nt;
                 ro[1] = tx;
                 ro[2] = r.getCategory();
-                ro[3] = r.getColor();
+                if ( r.getColor()==null ) ro[3] = "black";
+                else ro[3] = r.getColor();
 //                // add the table row
 //                Object [] ro = new Object[3];
 //                ro[0] = nt;
