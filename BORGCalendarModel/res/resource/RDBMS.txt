@@ -1,13 +1,6 @@
-Release 1.3 provides the ability to store data in a relational database instead of flat files.
-*** If you don't want to play with this experimental feature, then you do not need to read this file ***
-
 At this point, only a single user is supported per DB, although multiple DBs can be created.
 
-This support is experimental. If you use it, export your data to XML frequently and use it at your
-own risk.
-
-BORG 1.3 has ONLY been tested with MYSQL. The code might work with HSQLDB,
-but was not tested at all with HSQLDB. Instructions here are for MYSQL only
+BORG has ONLY been tested with MYSQL. Instructions here are for MYSQL only
 
 Some familiarity with MYSQL is assumed in the instructions below.
 
@@ -20,8 +13,6 @@ To use RDBMS support with MYSQL:
 2. Create a database for BORG data in MYSQL. Name it whatever you like.
 
 3. Create a user with at least select/insert/update/delete access to your database 
-   The default user and password that BORG tries
-   to use will be borg/borg unless otherwise specified.
 
 4. Create the BORG database tables in your database. This is done by running the SQL contained
    in the borg.sql file that comes with BORG. How you run this depends on what tools
@@ -39,36 +30,17 @@ mysql>source borg.sql               <=== you need the full path to borg.sql if i
    file in the CLASSPATH is to just copy it to the lib/ext folder under where the JAVA Runtime
    is installed.
 
-6. Run BORG and change the database to a URL of the form:
-
-    jdbc:mysql://host:port/database?user=yourusername&password=yourpassword
-
-   Where host, port, database, yourusername, yourpassword are things you have to provide.
-
-   For example, if your database is on your local machine, using the default port (3306) and
-   you have database=borgdb, user=fred and password=derf, the URL would be:
-
-   jdbc:mysql://localhost/borgdb?user=fred&password=derf
-
-   The default user and password is borg/borg if you omit this data:
-
-   jdbc:mysql://localhost/borgdb
-
-   You can alter the URL through the preferences menu, or by running borg with the -db
-   option like this: java -jar borg.jar -db <url>
+6. Run BORG and set the MySQL database parameters from the database options screen.
 
 7. You can transfer data from BORG data files by exporting the data to XML, switching
    your URL to the new empty DB URL, and then importing the data from XML.
    
 ====================================================================================================
 
-So, why use RDBMS???? I am not sure. It it much more complicated and requires more
+So, why use RDBMS???? I am not sure. It is much more complicated and requires more
 administration. I would imagine that some users are comfortable with setting up
 MYSQL and might want to take advantage of the fact that once the data is in an RDBMS, 
 ad-hoc data access is easy through SQL. An RDBMS also provides a path forward to allowing
 multi-user access or even a web interface in the future.
 
-If you find advantages to using an RDBMS, please provide feedback in the project
-forums at https://sourceforge.net/projects/borg-calendar/. Without feedback, the RDBMS
-support might just remain experimental, as IMHO, keeping data in 3 DB files seems
-much more appealing to most users due to the simplicity.
+MYSQL can also be run remotely!!
