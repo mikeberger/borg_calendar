@@ -178,10 +178,10 @@ build.number=${build.number}
       <zip destfile="${dist.dir}/borg_src.zip">
         <zipfileset dir="${basedir}" prefix="borg_src">
            <exclude name="**/.metadata/**/*"/>
-           <exclude name="**/build/**/*"/>
-           <exclude name="**/classes/**/*"/>
-           <exclude name="**/dist/**/*"/>
-           <exclude name="**/gen/**/*"/>
+           <exclude name="**/build/**"/>
+           <exclude name="**/classes/**"/>
+           <exclude name="**/dist/**"/>
+           <exclude name="**/gen/**"/>
         </zipfileset>
         <zipfileset dir="${build.dir}/resource">
            <include name="COPYING"/>
