@@ -16,7 +16,7 @@
    <property name="gen.dir" value="${prj.common.dir}/gen" />
    <property name="dist.dir" value="${prj.common.dir}/dist" />
    <property name="doc.dir" value="${prj.common.dir}/doc" />
-   <property name="trayicon.zip" value="${prj.ui.dir}/lib/tray_icon.zip"/>
+   <property name="trayicon.jar" value="${prj.ui.dir}/lib/trayicon.jar"/>
 
    <property name="db.res.dir" value="${prj.model.dir}/res/resource" />
 
@@ -25,7 +25,7 @@
    
    <!-- Path References -->
    <path id="build.classpath">
-      <pathelement location="${trayicon.zip}"/>
+      <pathelement location="${trayicon.jar}"/>
    	  <pathelement location="${prj.common.dir}/lib/ical4j.jar"/>
    	  <pathelement location="${prj.common.dir}/lib/commons-logging.jar"/>
    </path>
@@ -156,7 +156,7 @@ build.number=${build.number}
             <include name="resource/*"/>
             <include name="**/*.class"/>
          </fileset>
-         <zipfileset src="${trayicon.zip}"/>
+         <zipfileset src="${trayicon.jar}"/>
 
       </jar>
    </target>

@@ -2,7 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/tray_icon.zip"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/Owner/My Documents/borg/borg_src3/BORG Calendar UI/lib/trayicon.jar"/>
 	<classpathentry kind="src" path="/BORG Calendar Common"/>
 	<classpathentry kind="src" path="/BORG Calendar Model"/>
 	<classpathentry kind="lib" path="res"/>
