@@ -193,6 +193,18 @@ public class AppointmentModel extends Model
                 db_.delete(appt.getKey());
             }
         }
+        catch ( java.lang.NoClassDefFoundError ncf)
+        {
+            // cannot find Prefs during sync
+            try{
+                db_.delete(appt.getKey());
+            }
+            catch( Exception e)
+            {
+                Errmsg.errmsg(e);
+            }
+            
+        }
         catch( Exception e ) {
             Errmsg.errmsg(e);
         }
