@@ -47,6 +47,8 @@ import net.sf.borg.model.Appointment;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Task;
 import net.sf.borg.model.TaskModel;
+import javax.swing.JButton;
+import javax.swing.ImageIcon;
 /*
  * tdgui.java
  *
@@ -206,7 +208,6 @@ public class TodoView extends View {
         addtodo = new javax.swing.JButton();
         GridBagConstraints gridBagConstraints8 = new GridBagConstraints();
         GridBagConstraints gridBagConstraints9 = new GridBagConstraints();
-        GridBagConstraints gridBagConstraints10 = new GridBagConstraints();
         GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
         GridBagConstraints gridBagConstraints12 = new GridBagConstraints();
         GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
@@ -214,7 +215,6 @@ public class TodoView extends View {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -254,6 +254,9 @@ public class TodoView extends View {
 
         jPanel1.setMinimumSize(new java.awt.Dimension(550, 102));
 
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null,
+                java.util.ResourceBundle.getBundle("resource/borg_resource").getString("todoquickentry"), 
+                javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, null));
         addtodo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Save16.gif")));
         addtodo.setText("Add");
         addtodo.addActionListener(new java.awt.event.ActionListener()
@@ -272,8 +275,6 @@ public class TodoView extends View {
         jLabel3.setFont(new java.awt.Font("MS Sans Serif", 2, 10));
         jLabel3.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("quicktodonotice"));
 
-        jLabel4.setFont(new java.awt.Font("MS Sans Serif", 3, 13));
-        jLabel4.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("todoquickentry"));
  
 
 
@@ -336,10 +337,6 @@ public class TodoView extends View {
         gridBagConstraints9.weightx = 0.0D;
         gridBagConstraints9.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints9.insets = new java.awt.Insets(0,4,4,4);
-        gridBagConstraints10.gridx = 0;
-        gridBagConstraints10.gridy = 0;
-        gridBagConstraints10.insets = new java.awt.Insets(4,4,4,4);
-        gridBagConstraints10.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints11.gridx = 0;
         gridBagConstraints11.gridy = 3;
         gridBagConstraints11.insets = new java.awt.Insets(4,4,4,4);
@@ -361,7 +358,6 @@ public class TodoView extends View {
         gridBagConstraints14.insets = new java.awt.Insets(0,4,4,4);
         jPanel1.add(addtodo, gridBagConstraints8);
         jPanel1.add(tododate, gridBagConstraints9);
-        jPanel1.add(jLabel4, gridBagConstraints10);
         jPanel1.add(jLabel3, gridBagConstraints11);
         jPanel1.add(jLabel2, gridBagConstraints12);
         jPanel1.add(jLabel1, gridBagConstraints13);
@@ -500,7 +496,6 @@ public class TodoView extends View {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JPanel jPanel1;
@@ -513,6 +508,9 @@ public class TodoView extends View {
     // End of variables declaration//GEN-END:variables
     
 	private JPanel jPanel = null;
+	private JPanel jPanel2 = null;
+	private JButton doneButton = null;
+	private JButton doneDelButton = null;
 	/**
 	 * This method initializes jPanel	
 	 * 	
@@ -520,6 +518,7 @@ public class TodoView extends View {
 	 */    
 	private JPanel getJPanel() {
 		if (jPanel == null) {
+			GridBagConstraints gridBagConstraints15 = new GridBagConstraints();
 			GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
 			GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
 			jPanel = new JPanel();
@@ -532,12 +531,65 @@ public class TodoView extends View {
 			gridBagConstraints1.insets = new java.awt.Insets(4,4,4,4);
 			gridBagConstraints1.gridwidth = 1;
 			gridBagConstraints2.gridx = 0;
-			gridBagConstraints2.gridy = 1;
+			gridBagConstraints2.gridy = 2;
 			gridBagConstraints2.insets = new java.awt.Insets(4,4,4,4);
 			gridBagConstraints2.fill = java.awt.GridBagConstraints.HORIZONTAL;
+			gridBagConstraints15.gridx = 0;
+			gridBagConstraints15.gridy = 1;
+			gridBagConstraints15.fill = java.awt.GridBagConstraints.BOTH;
 			jPanel.add(jScrollPane1, gridBagConstraints1);
 			jPanel.add(jPanel1, gridBagConstraints2);
+			jPanel.add(getJPanel2(), gridBagConstraints15);
 		}
 		return jPanel;
 	}
- }  //  @jve:decl-index=0:visual-constraint="39,18"
+	/**
+	 * This method initializes jPanel2	
+	 * 	
+	 * @return javax.swing.JPanel	
+	 */    
+	private JPanel getJPanel2() {
+		if (jPanel2 == null) {
+			jPanel2 = new JPanel();
+			jPanel2.add(getDoneButton(), null);
+			jPanel2.add(getDoneDelButton(), null);
+		}
+		return jPanel2;
+	}
+	/**
+	 * This method initializes doneButton	
+	 * 	
+	 * @return javax.swing.JButton	
+	 */    
+	private JButton getDoneButton() {
+		if (doneButton == null) {
+			doneButton = new JButton();
+			doneButton.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Done_(No_Delete)"));
+			doneButton.addActionListener(new java.awt.event.ActionListener() { 
+				public void actionPerformed(java.awt.event.ActionEvent e) {    
+					dtcommon(false);
+				}
+			});
+			doneButton.setIcon(new ImageIcon(getClass().getResource("/resource/Properties16.gif")));
+		}
+		return doneButton;
+	}
+	/**
+	 * This method initializes doneDelButton	
+	 * 	
+	 * @return javax.swing.JButton	
+	 */    
+	private JButton getDoneDelButton() {
+		if (doneDelButton == null) {
+			doneDelButton = new JButton();
+			doneDelButton.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Done_(Delete)"));
+			doneDelButton.addActionListener(new java.awt.event.ActionListener() { 
+				public void actionPerformed(java.awt.event.ActionEvent e) {    
+					dtcommon(true);
+				}
+			});
+			doneDelButton.setIcon(new ImageIcon(getClass().getResource("/resource/Delete16.gif")));
+		}
+		return doneDelButton;
+	}
+    }  //  @jve:decl-index=0:visual-constraint="39,18"
