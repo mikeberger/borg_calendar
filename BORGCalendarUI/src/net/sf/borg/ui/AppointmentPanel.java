@@ -308,7 +308,7 @@ class AppointmentPanel extends JPanel
                   
                   // repeat frequency
                   String rpt = r.getFrequency();
-                  if( rpt.startsWith("ndays"))
+                  if( rpt != null && rpt.startsWith("ndays"))
                   {
                       String n = rpt.substring(6);
                       ndays.setValue( new Integer(n));
