@@ -33,6 +33,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.TimeZone;
 import java.util.TreeSet;
 
 import net.sf.borg.common.util.PrefName;
@@ -51,8 +52,6 @@ public class Day
     {
         Version.addVersion("$Id$");
     }
-    
-    
 
     /** class to compare appointment strings for sorting */
     // this is the sorting used for print output and month display
@@ -259,15 +258,19 @@ public class Day
             }
         }
         
-        if( month == 3 && day == nthdom( year, month, Calendar.SUNDAY, 1 ))
+        // daylight savings time
+        GregorianCalendar gc = new GregorianCalendar(year, month, day, 11, 00);
+        boolean dstNow = TimeZone.getDefault().inDaylightTime(gc.getTime());
+        gc.add(Calendar.DATE,-1);       
+        boolean dstYesterday = TimeZone.getDefault().inDaylightTime(gc.getTime());
+        if( dstNow && !dstYesterday )
         {           
         	Appointment hol = new Appointment();
         	hol.setColor("black");
             hol.setText(Resource.getResourceString("Daylight_Savings_Time"));
             ret.addAppt(hol);
         }
-        	
-        if( month == 9 && day == nthdom( year, month, Calendar.SUNDAY, -1 ))
+        else if( !dstNow && dstYesterday )
         {
         	Appointment hol = new Appointment();
         	hol.setColor("black");
@@ -405,7 +408,7 @@ public class Day
             }
             else if( month == 4 )
             {
-                GregorianCalendar gc = new GregorianCalendar( year, month, 25 );
+                gc = new GregorianCalendar( year, month, 25 );
                 int diff  = gc.get( Calendar.DAY_OF_WEEK );
                 diff += 5;
                 if( diff > 7 ) diff -= 7;
