@@ -72,6 +72,7 @@ import javax.swing.text.StyledDocument;
 import net.sf.borg.common.app.AppHelper;
 import net.sf.borg.common.io.IOHelper;
 import net.sf.borg.common.io.OSServicesHome;
+import net.sf.borg.common.ui.OverwriteConfirm;
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
@@ -1984,6 +1985,7 @@ public class CalendarView extends View implements Prefs.Listener {
             chooser.setCurrentDirectory( new File(".") );
             chooser.setDialogTitle(Resource.getResourceString("Please_choose_directory_to_place_XML_files"));
             chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            chooser.setApproveButtonText(Resource.getResourceString("select_export_dir"));
             
             int returnVal = chooser.showOpenDialog(null);
             if(returnVal != JFileChooser.APPROVE_OPTION)
@@ -2009,24 +2011,35 @@ public class CalendarView extends View implements Prefs.Listener {
         }
         
         try {
-            String fname = dir.getAbsolutePath() + "/borg.xml";
-            OutputStream ostr = IOHelper.createOutputStream(fname);
-            Writer fw = new OutputStreamWriter(ostr, "UTF8");            
-            AppointmentModel.getReference().export(fw);
-            fw.close();
-            
-            fname = dir.getAbsolutePath() + "/mrdb.xml";
-			ostr = IOHelper.createOutputStream(fname);
-			fw = new OutputStreamWriter(ostr, "UTF8");            
-            TaskModel.getReference().export(fw);
-            fw.close();
-            
-            fname = dir.getAbsolutePath() + "/addr.xml";
-			ostr = IOHelper.createOutputStream(fname);
-			fw = new OutputStreamWriter(ostr, "UTF8");            
-            AddressModel.getReference().export(fw);
-            fw.close();
-            
+        	
+        	JOptionPane.showMessageDialog(null, Resource.getResourceString("export_notice") + dir.getAbsolutePath() );
+        	
+        	String fname = dir.getAbsolutePath() + "/borg.xml";
+        	if( OverwriteConfirm.checkOverwrite(fname))
+        	{
+        		OutputStream ostr = IOHelper.createOutputStream(fname);
+        		Writer fw = new OutputStreamWriter(ostr, "UTF8");            
+        		AppointmentModel.getReference().export(fw);
+        		fw.close();
+        	}
+        	
+        	fname = dir.getAbsolutePath() + "/mrdb.xml";
+        	if( OverwriteConfirm.checkOverwrite(fname))
+        	{                  		
+        		OutputStream ostr = IOHelper.createOutputStream(fname);
+        		Writer fw = new OutputStreamWriter(ostr, "UTF8");            
+        		TaskModel.getReference().export(fw);
+        		fw.close();
+        	}
+        	
+        	fname = dir.getAbsolutePath() + "/addr.xml";
+        	if( OverwriteConfirm.checkOverwrite(fname))
+        	{
+        		OutputStream ostr = IOHelper.createOutputStream(fname);
+        		Writer fw = new OutputStreamWriter(ostr, "UTF8");            
+        		AddressModel.getReference().export(fw);
+        		fw.close();
+        	}
         }
         catch( Exception e) {
             Errmsg.errmsg(e);
