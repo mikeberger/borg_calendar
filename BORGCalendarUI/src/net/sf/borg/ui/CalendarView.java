@@ -1144,6 +1144,7 @@ public class CalendarView extends View {
         menuBar.setBorder(new javax.swing.border.BevelBorder(javax.swing.border.BevelBorder.RAISED));
         ActionMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Application16.gif")));
         ActionMenu.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Action"));
+        TaskTrackMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Application16.gif")));
         TaskTrackMI.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Task_Tracking"));
         TaskTrackMI.addActionListener(new java.awt.event.ActionListener()
         {
@@ -1215,6 +1216,7 @@ public class CalendarView extends View {
 
         ActionMenu.add(printprev);
 
+        syncMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Refresh16.gif")));
         syncMI.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Synchronize"));
         syncMI.addActionListener(new java.awt.event.ActionListener()
         {
@@ -1305,6 +1307,7 @@ public class CalendarView extends View {
 
         catmenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Preferences16.gif")));
         catmenu.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Categories"));
+        jMenuItem2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Preferences16.gif")));
         jMenuItem2.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("choosecat"));
         jMenuItem2.setActionCommand("Choose Displayed Categories");
         jMenuItem2.addActionListener(new java.awt.event.ActionListener()
@@ -1317,6 +1320,7 @@ public class CalendarView extends View {
 
         catmenu.add(jMenuItem2);
 
+        jMenuItem3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Add16.gif")));
         jMenuItem3.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("addcat"));
         jMenuItem3.addActionListener(new java.awt.event.ActionListener()
         {
@@ -1328,6 +1332,7 @@ public class CalendarView extends View {
 
         catmenu.add(jMenuItem3);
 
+        jMenuItem4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Delete16.gif")));
         jMenuItem4.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("remcat"));
         jMenuItem4.addActionListener(new java.awt.event.ActionListener()
         {
@@ -1343,6 +1348,7 @@ public class CalendarView extends View {
 
         impexpMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Export16.gif")));
         impexpMenu.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("impexpMenu"));
+        impXML.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Import16.gif")));
         impXML.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("impXML"));
         importMI.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("impmenu"));
         importMI.addActionListener(new java.awt.event.ActionListener()
@@ -1379,6 +1385,7 @@ public class CalendarView extends View {
 
         impexpMenu.add(impXML);
 
+        expXML.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Export16.gif")));
         expXML.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("expXML"));
         exportMI.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("expmenu"));
         exportMI.addActionListener(new java.awt.event.ActionListener()

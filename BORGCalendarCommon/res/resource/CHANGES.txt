@@ -1,5 +1,6 @@
 Version 1.4
 ---------------------
+bundle the jgoodies look and feels with the product
 import/export iCal format
 new type of monthly repeat by week/day of week
 jump from search and todo list to appt editor

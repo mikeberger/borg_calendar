@@ -138,7 +138,7 @@ build.number=${build.number}
       <manifest file="${build.dir}/${pkg}/MANIFEST.MF">
          <attribute name="Built-By" value="${user.name}"/>
          <attribute name="Main-Class" value="${pkg}/control/Borg"/>
-      	 <attribute name="Class-Path" value="lib/ical4j.jar lib/commons-logging.jar"/>
+      	 <attribute name="Class-Path" value="lib/ical4j.jar lib/commons-logging.jar lib/looks-1.2.2.jar"/>
       </manifest>
 
       <antcall target="zz_copyresources">
@@ -199,7 +199,6 @@ build.number=${build.number}
       <zip destfile="${dist.dir}/borg.zip">
          <fileset dir="${dist.dir}" includes="*.jar"/>       
          <fileset dir="${build.dir}/resource" includes="COPYING,*.txt"/> 
-      	 <fileset dir="${prj.common.dir}/res/resource" includes="*.bat,*.sh"/>
          <fileset dir="${db.res.dir}" includes="borg.sql"/>
       	 <fileset dir="${prj.common.dir}" includes="lib/*"/>
          <zipfileset dir="${prj.ui.dir}/bin"/> 
