@@ -1736,6 +1736,7 @@ public class CalendarView extends View implements Prefs.Listener {
     private void readmeActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_readmeActionPerformed
     {//GEN-HEADEREND:event_readmeActionPerformed
         new HelpScreen("/resource/README.txt").show();
+
     }//GEN-LAST:event_readmeActionPerformed
     
     private void chglogActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_chglogActionPerformed
@@ -1964,7 +1965,14 @@ public class CalendarView extends View implements Prefs.Listener {
     
     private void helpMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_helpMIActionPerformed
         // show the help page
-        new HelpScreen("/resource/help.htm").show();
+        //new HelpScreen("/resource/help.htm").show();
+    	try{
+    		HelpProxy.launchHelp();
+    	}
+    	catch( Exception e)
+		{
+    		Errmsg.errmsg(e);
+		}
     }//GEN-LAST:event_helpMIActionPerformed
     
     

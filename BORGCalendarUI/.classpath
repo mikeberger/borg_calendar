@@ -8,5 +8,7 @@
 	<classpathentry kind="lib" path="/BORG Calendar Common/lib/commons-logging.jar"/>
 	<classpathentry kind="lib" path="/BORG Calendar Common/lib/ical4j.jar"/>
 	<classpathentry kind="lib" path="lib/trayicon.jar"/>
+	<classpathentry kind="lib" path="lib/jh.jar"/>
+	<classpathentry kind="lib" path="borghelp"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

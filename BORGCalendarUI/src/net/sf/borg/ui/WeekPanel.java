@@ -223,7 +223,7 @@ class WeekPanel extends JPanel implements Printable
             {
                 // get the appointment info for the given day
                 Day di = Day.getDay( cal.get(Calendar.YEAR), cal.get(Calendar.MONTH),
-                cal.get(Calendar.DATE), showpub, showpriv, false);
+                cal.get(Calendar.DATE), showpub, showpriv, true);
  
                 if( di != null )
                 {

@@ -113,7 +113,9 @@ public class Day
                 // if we got here, one or both appt had no time
                 // and the date parse barfed - so just compare
                 // strings lexicographically
-                return( s1.compareTo(s2) );
+            	int res = s1.compareTo(s2);
+            	if( res != 0 ) return(res);
+                return( 1 );
             }
         }
         

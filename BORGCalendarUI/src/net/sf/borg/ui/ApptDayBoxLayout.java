@@ -155,6 +155,7 @@ public class ApptDayBoxLayout {
 		double startmin = starthr * 60;
 		double endmin = endhr * 60;
 
+		
 		ArrayList list = new ArrayList();
 		// initialize the boxes
 		Iterator it = appts.iterator();

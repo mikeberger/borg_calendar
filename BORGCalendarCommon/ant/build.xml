@@ -9,6 +9,7 @@
    <property name="prj.dbutil.dir" value="${basedir}/BORG Calendar DB Utilities" />
    <property name="prj.model.dir" value="${basedir}/BORG Calendar Model" />
    <property name="prj.ui.dir" value="${basedir}/BORG Calendar UI" />
+   <property name="help.dir" value="${prj.ui.dir}/borghelp" />
 
    <property name="pkg" value="net/sf/borg" />
 
@@ -28,6 +29,7 @@
       <pathelement location="${trayicon.jar}"/>
    	  <pathelement location="${prj.common.dir}/lib/ical4j.jar"/>
    	  <pathelement location="${prj.common.dir}/lib/commons-logging.jar"/>
+   	  <pathelement location="${prj.ui.dir}/lib/jh.jar"/>
    </path>
 
    <target name="init">
@@ -138,7 +140,7 @@ build.number=${build.number}
       <manifest file="${build.dir}/${pkg}/MANIFEST.MF">
          <attribute name="Built-By" value="${user.name}"/>
          <attribute name="Main-Class" value="${pkg}/control/Borg"/>
-      	 <attribute name="Class-Path" value="lib/trayicon.jar lib/ical4j.jar lib/commons-logging.jar lib/looks-1.2.2.jar"/>
+      	 <attribute name="Class-Path" value="lib/trayicon.jar lib/jh.jar lib/borghelp.jar lib/ical4j.jar lib/commons-logging.jar lib/looks-1.2.2.jar"/>
       </manifest>
 
       <antcall target="zz_copyresources">
@@ -160,7 +162,16 @@ build.number=${build.number}
 
       </jar>
    </target>
-
+	
+   <target name="help-jar" depends="compile">
+   	   <mkdir dir="${build.dir}/lib"/>
+	   <jar jarfile="${build.dir}/lib/borghelp.jar">
+	         <fileset dir="${help.dir}">
+	            <include name="**"/>
+	         </fileset>
+	      </jar>
+   </target>
+	
    <target name="mdbtool-jar" depends="compile">
       <mkdir dir="${dist.dir}" />
       <manifest file="${build.dir}/${pkg}/model/db/file/mdb/MANIFEST.MF">
@@ -198,6 +209,7 @@ build.number=${build.number}
       <zip destfile="${dist.dir}/borg.zip">
          <fileset dir="${dist.dir}" includes="*.jar"/>       
          <fileset dir="${build.dir}/resource" includes="COPYING,*.txt"/> 
+      	 <fileset dir="${build.dir}" includes="lib/borghelp.jar"/>
          <fileset dir="${db.res.dir}" includes="borg.sql"/>
       	 <fileset dir="${prj.common.dir}" includes="lib/*"/>
       	 <fileset dir="${prj.ui.dir}" includes="lib/*"/>
@@ -231,7 +243,7 @@ build.number=${build.number}
       </javadoc>
    </target>
                 
-   <target name="clean-build" depends="clean,borg-jar,mdbtool-jar" />
+   <target name="clean-build" depends="clean,borg-jar,mdbtool-jar,help-jar" />
    <target name="main" depends="clean-build" />
    <target name="fulldist" depends="borg_prog,borg_src"/>
    
