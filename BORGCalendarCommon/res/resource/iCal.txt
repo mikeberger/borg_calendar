@@ -1,0 +1,40 @@
+BORG can use the ical4j library (ical4j.sourceforge.net) to export Appointment data to iCal
+format.
+
+In order to enable this feature, the ical4j.jar file in the lib folder of the distribution .zip file
+must be placed in the classpath of BORG. One way to do this is to copy it into the lib/ext folder
+of the Java JRE that is being used to run BORG. This makes these jar files available to all java
+programs. Another way to do this is to add the file to the classpath when running BORG.
+For example, if the borg zip was unpacked to c:\borg, then BORG can be run like this:
+
+java -cp c:\borg\ical4j.jar;c:\borg\borg.jar  net.sf.borg.control.Borg
+
+LIMITATIONS
+-----------
+
+Every iCal based program seems to pick and choose which elements of iCal format they want to use
+and which way they interpret them.
+The iCal files produced by BORG have been tested with phpicalendar. (and a little with Mozilla Calendar, which
+has problems).
+
+Not every feature in BORG corresponds to something in iCal format that other iCal
+based calendars will understand.
+
+The following features are limited based on my results with phpicalendar:
+1. Repeat by Monthly(day), weekdays, and weekends will not export correctly. All other repeat options are exported correctly
+2. Tasks from the task tracker are not exported
+3. Address book information is not exported
+4. Built-in US and Canadian Holidays are not exported
+5. Appt occurrences in a repeating sequence that are marked as deleted using Delete-One-Only will appear as not-deleted when exported.
+6. Appts marked as Todo's can be exported as a VToDo or a VEvent, not both. This is a new option on the misc option tab. In iCal based programs, VToDo's usually
+appear in a task list and NOT in the calendar itself. VEvents appear in the calendar, but not on the task list.
+I suggest setting the option to export them as VEvents. In addition, the information about which occurrences of a 
+repeating todo have been completed will not be exported.
+
+Most of the above are limited because the iCal programs (like Mozilla Calendar and phpicalendar) do not have
+corresponding functionality.
+
+As you try to use the exported iCal data, feel free to log bugs or feature requests in the project trackers.
+I have only limited ways to test this, and I expect that once users try things out with other programs,
+like Ximian and Apple iCal, more issues will become apparent.
+  

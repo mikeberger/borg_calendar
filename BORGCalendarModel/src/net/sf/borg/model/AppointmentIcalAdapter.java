@@ -20,6 +20,8 @@ Copyright 2003 by ==Quiet==
 package net.sf.borg.model;
 
 import java.io.OutputStream;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
 
 import net.fortuna.ical4j.data.CalendarOutputter;
@@ -59,13 +61,13 @@ public class AppointmentIcalAdapter {
 			CategoryList catlist = new CategoryList();
 			Appointment ap = (Appointment) it.next();
 			Component ve = null;
-			if( ap.getTodo() && todo_as_ev)
+			if( ap.getTodo() && !todo_as_ev)
 			{
-				ve = new VEvent();
+				ve = new VToDo();
 			}
 			else
 			{
-				ve = new VToDo();
+				ve = new VEvent();
 			}
 			
 			// add text
@@ -150,7 +152,10 @@ public class AppointmentIcalAdapter {
 				}
 				else if( freq.equals("monthly"))
 				{
-					rec += "MONTHLY";
+					Date dd = ap.getDate();
+					GregorianCalendar gc = new GregorianCalendar();
+					gc.setTime(dd);
+					rec += "MONTHLY;BYMONTHDAY=" + gc.get(GregorianCalendar.DATE);
 				}
 				else if( freq.equals("yearly"))
 				{
@@ -162,7 +167,10 @@ public class AppointmentIcalAdapter {
 					rec += "DAILY";
 				}
 				
-				rec += ";COUNT=" + ap.getTimes();
+				if( ap.getTimes().intValue() != 9999 )
+				{
+					rec += ";COUNT=" + ap.getTimes();
+				}
 				//System.out.println(rec);
 				
 				ve.getProperties().add( new RRule( new Recur(rec)));

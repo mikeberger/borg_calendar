@@ -1,5 +1,6 @@
-Version 1.?
+Version 1.4
 ---------------------
+export to iCal format
 new type of monthly repeat by week/day of week
 jump from search and todo list to appt editor
 refactoring of the model and database code

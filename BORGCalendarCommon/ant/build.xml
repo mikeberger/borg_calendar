@@ -198,7 +198,8 @@ build.number=${build.number}
       <zip destfile="${dist.dir}/borg.zip">
          <fileset dir="${dist.dir}" includes="*.jar"/>       
          <fileset dir="${build.dir}/resource" includes="COPYING,*.txt"/>    
-         <fileset dir="${db.res.dir}" includes="borg.sql"/> 
+         <fileset dir="${db.res.dir}" includes="borg.sql"/>
+      	 <fileset dir="${prj.common.dir}" includes="lib/*"/>
          <zipfileset dir="${prj.ui.dir}/bin"/> 
       </zip>
    </target>
