@@ -20,8 +20,23 @@ Copyright 2004 by Mohan Embar - http://www.thisiscool.com/
 
 package net.sf.borg.model.db.remote;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
 import net.sf.borg.common.util.XTree;
+import net.sf.borg.model.Address;
+import net.sf.borg.model.AddressXMLAdapter;
+import net.sf.borg.model.Appointment;
+import net.sf.borg.model.AppointmentXMLAdapter;
 import net.sf.borg.model.BorgOption;
+import net.sf.borg.model.Task;
+import net.sf.borg.model.TaskXMLAdapter;
+import net.sf.borg.model.User;
+import net.sf.borg.model.UserXMLAdapter;
+import net.sf.borg.model.db.BeanXMLAdapter;
+import net.sf.borg.model.db.KeyedBean;
 
 /**
  * Helps marshal and unmarshal between objects and XML.
@@ -30,18 +45,7 @@ public class XmlObjectHelper
 {
 	public static XTree toXml(Object o) throws Exception
 	{
-		/*
 	    return toXml(null, o);
-	    for (int i=0; i<XML_CLASSES.length; ++i)
-		{
-			if (o.getClass() == XML_CLASSES[i].getObjectClass())
-			{
-			    
-			}
-				return XML_CLASSES[i].toXml(null, o);
-		}
-		*/
-		throw new IllegalArgumentException(o.getClass().getName());
 	}
 
 	public static Object fromXml(XTree xml) throws Exception
@@ -59,11 +63,35 @@ public class XmlObjectHelper
 	// private //
 	private static final IXmlObjectHelper[] XML_CLASSES =
 	{
-	
+	    new BorgOptionXmlObjectHelper(),
+	    new CollectionXmlObjectHelper(),
+	    new RemoteParmsXmlObjectHelper(),
+	    new ComposedObjectXmlObjectHelper(),
+	    new KeyedBeanXmlObjectHelper
+	    (
+	        Address.class,
+	        "Address",
+	        new AddressXMLAdapter()
+	    ),
+	    new KeyedBeanXmlObjectHelper
+	    (
+	        Appointment.class,
+	        "Appointment",
+	        new AppointmentXMLAdapter()
+	    ),
+	    new KeyedBeanXmlObjectHelper
+	    (
+	        Task.class,
+	        "Task",
+	        new TaskXMLAdapter()
+	    ),
+	    new KeyedBeanXmlObjectHelper
+	    (
+	        User.class,
+	        "User",
+	        new UserXMLAdapter()
+	    ),
 	};
-	
-	private XmlObjectHelper()
-	{}
 	
 	private static void addPrimitive(XTree xml, String name, String val)
 	{
@@ -115,6 +143,24 @@ public class XmlObjectHelper
 	    return tree;
 	}
 	
+	private XmlObjectHelper()
+	{}
+	
+	public static XTree toXml(XTree parent, Object o)
+	{
+	    for (int i=0; i<XML_CLASSES.length; ++i)
+		{
+			if (XML_CLASSES[i].getObjectClass().isAssignableFrom(o.getClass()))
+			{
+			    IXmlObjectHelper iXmlObjectHelper = XML_CLASSES[i]; 
+			    XTree tree = createTree(parent, iXmlObjectHelper.getObjectRootName());
+			    iXmlObjectHelper.populate(tree, o);
+			    return tree;
+			}
+		}
+		throw new IllegalArgumentException(o.getClass().getName());
+	}
+
 	////////////////////////////////////////////////////////////
 	// nested interface IXmlObjectHelper
 	
@@ -181,16 +227,69 @@ public class XmlObjectHelper
 
         public final void populate(XTree xtree, Object o)
         {
+            Collection col = (Collection) o;
+            Iterator itr = col.iterator();
+            while (itr.hasNext())
+            {
+                Object oChild = itr.next();
+                toXml(xtree, oChild);
+            }
         }
 
         public Object fromXml(XTree xml)
         {
-			String value = xml.value();
-			return Boolean.valueOf(value);
+            // FUTURE: With the current XTree implementation,
+            // this operation requires O(n^2) time to execute, where
+            // n is the number of children.
+            List lst = new ArrayList();
+            int numChildren = xml.numChildren();
+            for (int i=0; i<numChildren; ++i)
+            {
+                XTree child = xml.child(i);
+                Object oChild = fromXml(child);
+                lst.add(oChild);
+            }
+            return lst;
 		}
 	}
 
 	// end nested class CollectionXmlObjectHelper
+	////////////////////////////////////////////////////////////
+
+	////////////////////////////////////////////////////////////
+	// nested class RemoteParmsXmlObjectHelper
+	
+	private static class RemoteParmsXmlObjectHelper
+		implements IXmlObjectHelper
+	{
+		public Class getObjectClass()
+        {
+            return IRemoteProxy.Parms.class;
+        }
+
+		public final String getObjectRootName()
+		{
+		    return "RemoteParms";
+		}
+
+        public final void populate(XTree xtree, Object o)
+        {
+            IRemoteProxy.Parms parms = (IRemoteProxy.Parms) o;
+            addPrimitive(xtree, "Class", parms.getClassString());
+            addPrimitive(xtree, "Command", parms.getCommand());
+            toXml(xtree, parms.getArgs());
+        }
+
+        public Object fromXml(XTree xml)
+        {
+            String classString = getStringPrimitive(xml, "Class");
+            String command = getStringPrimitive(xml, "Command");
+            Object args = fromXml(xml.child(2));
+            return new IRemoteProxy.Parms(classString, command, args);
+		}
+	}
+
+	// end nested class RemoteParmsXmlObjectHelper
 	////////////////////////////////////////////////////////////
 
 	////////////////////////////////////////////////////////////
@@ -201,7 +300,7 @@ public class XmlObjectHelper
 	{
 		public Class getObjectClass()
         {
-            return Boolean.class;
+            return IRemoteProxy.ComposedObject.class;
         }
 
 		public final String getObjectRootName()
@@ -211,12 +310,16 @@ public class XmlObjectHelper
 
         public final void populate(XTree xtree, Object o)
         {
+            IRemoteProxy.ComposedObject co = (IRemoteProxy.ComposedObject) o;
+            toXml(xtree, co.getO1());
+            toXml(xtree, co.getO2());
         }
 
         public Object fromXml(XTree xml)
         {
-			String value = xml.value();
-			return Boolean.valueOf(value);
+            Object o1 = fromXml(xml.child(0));
+            Object o2 = fromXml(xml.child(1));
+            return new IRemoteProxy.ComposedObject(o1,o2);
 		}
 	}
 
@@ -231,23 +334,43 @@ public class XmlObjectHelper
 	{
 		public Class getObjectClass()
         {
-            return Boolean.class;
+            return cls;
         }
 
 		public final String getObjectRootName()
 		{
-		    return "KeyedBean";
+		    return objectRootName;
 		}
 
-        public final void populate(XTree xtree, Object o)
+		public final void populate(XTree xtree, Object o)
         {
+            XTree xml = xmlAdapter.toXml((KeyedBean) o);
+            xtree.adopt(xml);
         }
 
         public Object fromXml(XTree xml)
         {
-			String value = xml.value();
-			return Boolean.valueOf(value);
+            KeyedBean keyedBean = xmlAdapter.fromXml(xml);
+            return keyedBean;
 		}
+        
+        // "package"
+        KeyedBeanXmlObjectHelper
+        (
+            Class cls,
+            String objectRootName,
+            BeanXMLAdapter xmlAdapter
+        )
+        {
+            this.cls = cls;
+            this.objectRootName = objectRootName;
+            this.xmlAdapter = xmlAdapter;
+        }
+        
+        // private //
+        private Class cls;
+        private String objectRootName;
+        private BeanXMLAdapter xmlAdapter;
 	}
 
 	// end nested class KeyedBeanXmlObjectHelper
