@@ -204,8 +204,8 @@ public class TodoView extends View {
             if( column ==0){
             	jl.setText( sdf.format(value) );
             	//jl.setText( value.toString() );
-            } else {
-
+            } else if ( column ==1) {
+            	jl.setToolTipText( jl.getText() );
             }
             jl.setBorder( new EmptyBorder(2,2,2,2));
             return jl;
