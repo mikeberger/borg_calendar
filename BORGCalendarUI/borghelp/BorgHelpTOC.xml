@@ -28,6 +28,8 @@
 
  <tocitem text="Pop-Up Reminders" target="popups"/>
 
+ <tocitem text="Searching" target="search"/>
+
  <tocitem text="Printing" target="printing"/>
 
  <tocitem text="Systray Icon (Windows only)" target="systray"/>

@@ -12,17 +12,17 @@ xmlns="http://www.w3.org/TR/REC-html40">
 <!--[if gte mso 9]><xml>
  <o:DocumentProperties>
   <o:LastAuthor>mike</o:LastAuthor>
-  <o:Revision>6</o:Revision>
-  <o:TotalTime>9</o:TotalTime>
+  <o:Revision>7</o:Revision>
+  <o:TotalTime>12</o:TotalTime>
   <o:Created>2004-11-05T21:33:00Z</o:Created>
-  <o:LastSaved>2004-11-07T14:48:00Z</o:LastSaved>
+  <o:LastSaved>2004-11-11T02:52:00Z</o:LastSaved>
   <o:Pages>1</o:Pages>
-  <o:Words>384</o:Words>
-  <o:Characters>2191</o:Characters>
+  <o:Words>437</o:Words>
+  <o:Characters>2491</o:Characters>
   <o:Company>telcordia</o:Company>
-  <o:Lines>18</o:Lines>
+  <o:Lines>20</o:Lines>
   <o:Paragraphs>4</o:Paragraphs>
-  <o:CharactersWithSpaces>2690</o:CharactersWithSpaces>
+  <o:CharactersWithSpaces>3059</o:CharactersWithSpaces>
   <o:Version>9.2720</o:Version>
  </o:DocumentProperties>
 </xml><![endif]-->
@@ -127,8 +127,8 @@ mso-bidi-font-size:10.0pt;font-family:Arial;mso-fareast-font-family:"MS Mincho"'
 
 <p class=MsoPlainText style='tab-stops:45.0pt'><b><u><span style='font-size:
 12.0pt;mso-bidi-font-size:10.0pt;font-family:Arial;mso-fareast-font-family:
-"MS Mincho"'>Every iCal based program seems to pick and choose which elements
-of iCal format they want to use and which way they interpret them. Different
+"MS Mincho"'>Every iCal based program seems to pick and choose which elements of
+iCal format they want to use and which way they interpret them. Different
 programs also seem to use<span style="mso-spacerun: yes">  </span>non-standard
 amounts of whitespace.</span></u></b><span style='font-size:12.0pt;mso-bidi-font-size:
 10.0pt;font-family:Arial;mso-fareast-font-family:"MS Mincho"'> The ical4j
@@ -141,9 +141,9 @@ mso-bidi-font-size:10.0pt;font-family:Arial;mso-fareast-font-family:"MS Mincho"'
 
 <p class=MsoPlainText style='tab-stops:45.0pt'><span style='font-size:12.0pt;
 mso-bidi-font-size:10.0pt;font-family:Arial;mso-fareast-font-family:"MS Mincho"'>The
-iCal files produced by BORG have been tested with phpicalendar and outlook.
-(and a little with Mozilla Calendar,<span style="mso-spacerun: yes"> 
-</span>which has serious performance problems when importing my 4000
+iCal import/export has been tested in a limited way with phpicalendar, outlook,
+and Apple iCal. (and a little with Mozilla Calendar,<span style="mso-spacerun:
+yes">  </span>which has serious performance problems when importing my 4000
 appointments).<o:p></o:p></span></p>
 
 <p class=MsoPlainText style='tab-stops:45.0pt'><span style='font-size:12.0pt;
@@ -217,7 +217,10 @@ style='font-size:12.0pt;mso-bidi-font-size:10.0pt;font-family:Arial;mso-fareast-
 mso-bidi-font-size:10.0pt;font-family:Arial;mso-fareast-font-family:"MS Mincho"'>There
 are also items from other programs that will be ignored on import. For example,
 iCal data concerning meeting participants is ignored. There is simply no
-corresponding functionality in BORG. <o:p></o:p></span></p>
+corresponding functionality in BORG. BORG cannot handle appointments that use
+the repeat UNTIL clause (instead of number of occurrences). BORG cannot handle
+certain complex repeat types. A warning will be displayed when BORG ignores an
+imported appt.<o:p></o:p></span></p>
 
 <p class=MsoPlainText style='margin-left:.25in;tab-stops:45.0pt'><span
 style='font-size:12.0pt;mso-bidi-font-size:10.0pt;font-family:Arial;mso-fareast-font-family:
@@ -260,7 +263,8 @@ simply delete an entire imported calendar if you don't want it any longer.<o:p><
 
 <p class=MsoPlainText style='tab-stops:45.0pt'><span style='font-size:12.0pt;
 mso-bidi-font-size:10.0pt;font-family:Arial;mso-fareast-font-family:"MS Mincho"'>BORG
-cannot do this yet.<o:p></o:p></span></p>
+cannot do this yet. However, a “bulk delete” was added to the search results
+screen which will delete all appointments selected in the search results.<o:p></o:p></span></p>
 
 </div>
 

@@ -4,6 +4,8 @@
 <map version="1.0">
 <mapID target="top" url="index.html"/>
 
+<mapID target="search" url="search.html"/>
+
 <mapID target="index" url="index.html"/>
 
 <mapID target="todo" url="todo.html"/>
