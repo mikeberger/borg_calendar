@@ -684,8 +684,15 @@ public class CalendarView extends View implements Prefs.Listener {
                             // bsv 2004-12-23
                             if( Prefs.getPref(PrefName.UCS_MARKTODO).equals("true")){
                             	if( info.getTodo() ){
-                            		addString( daytext[i], Prefs.getPref(PrefName.UCS_MARKER), info.getColor() );
-                            	}
+                            	    if( Prefs.getPref(PrefName.UCS_MARKER).endsWith(".gif"))
+                            	    {
+                            	        daytext[i].insertIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/" + Prefs.getPref(PrefName.UCS_MARKER))));
+                            	    }
+                            	    else
+                            	    {
+                            	        addString( daytext[i], Prefs.getPref(PrefName.UCS_MARKER), info.getColor() );
+                            	    }	                           	
+                            	 }
                             }
                             
                             
