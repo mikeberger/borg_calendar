@@ -63,8 +63,8 @@ class WeekPanel extends JPanel implements Printable
     
     // set up dash line stroke
     final static private float dash1[] =
-    {10.0f};
-    final static private BasicStroke dashed = new BasicStroke(0.05f,BasicStroke.CAP_BUTT,BasicStroke.JOIN_MITER,3.0f, dash1, 0.0f);
+    {1.0f, 3.0f};
+    final static private BasicStroke dashed = new BasicStroke(0.02f,BasicStroke.CAP_BUTT,BasicStroke.JOIN_MITER,3.0f, dash1, 0.0f);
     
     // print does the actual formatting of the printout
     public int print(Graphics g, PageFormat pageFormat,int pageIndex) throws PrinterException
@@ -122,7 +122,7 @@ class WeekPanel extends JPanel implements Printable
         cal.add(Calendar.DATE, 6 );
         Date end = cal.getTime();
         SimpleDateFormat sd = new SimpleDateFormat("MMM dd, yyyy");
-        String title = sd.format(beg) + Resource.getResourceString("__through__") + sd.format(end);
+        String title = sd.format(beg) + " " + Resource.getResourceString("__through__") + " " + sd.format(end);
         
         // reset cal
         cal.setTime(beg);
