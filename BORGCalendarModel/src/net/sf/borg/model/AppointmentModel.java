@@ -232,8 +232,40 @@ public class AppointmentModel extends Model
         }
     }
     
-    // save an appt in SMDB
+    // add a bulk list of appts and update the GUI afterwards
+    public void bulkAdd( Collection apptList ) throws Exception
+	{
+    	// add list of appts
+    	Iterator it = apptList.iterator();
+    	while( it.hasNext())
+    	{
+    		saveAppt( (Appointment) it.next(), true, true );
+    	}
+    	
+    	// refresh GUI
+   		try
+		{
+			// recreate the appointment hashmap
+			buildMap();
+			
+			// refresh all views that are displaying appt data from this model
+			refreshListeners();
+		}
+		catch( Exception e )
+		{
+			Errmsg.errmsg(e);
+			return;
+		}
+	}
+    
     public void saveAppt( Appointment r, boolean add) throws DBException
+	{
+    	saveAppt( r, add, false );
+	}
+    
+    // save an appt in SMDB
+    // if bulk - don't update listeners
+    public void saveAppt( Appointment r, boolean add, boolean bulk) throws DBException
 	{
     	
     	try
@@ -296,19 +328,22 @@ public class AppointmentModel extends Model
     		
 		}
     	
-    	try
-		{
-    		// recreate the appointment hashmap
-    		buildMap();
-    		
-    		// refresh all views that are displaying appt data from this model
-    		refreshListeners();
-		}
-    	catch( Exception e )
-		{
-    		Errmsg.errmsg(e);
-    		return;
-		}
+    	if( !bulk )
+    	{
+    		try
+			{
+    			// recreate the appointment hashmap
+    			buildMap();
+    			
+    			// refresh all views that are displaying appt data from this model
+    			refreshListeners();
+			}
+    		catch( Exception e )
+			{
+    			Errmsg.errmsg(e);
+    			return;
+			}
+    	}
     	
 	}
     

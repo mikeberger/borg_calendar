@@ -21,6 +21,9 @@ package net.sf.borg.model;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
@@ -46,6 +49,7 @@ import net.fortuna.ical4j.model.property.Duration;
 import net.fortuna.ical4j.model.property.ProdId;
 import net.fortuna.ical4j.model.property.RRule;
 import net.fortuna.ical4j.model.property.Summary;
+import net.fortuna.ical4j.model.property.Uid;
 import net.sf.borg.common.io.IOHelper;
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
@@ -71,10 +75,28 @@ public class AppointmentIcalAdapter {
 			{
 				ve = new VToDo();
 			}
+			else if( ap.getTodo())
+			{
+				ve = new VEvent();
+				catlist.add("ToDo");
+			}
 			else
 			{
 				ve = new VEvent();
 			}
+			
+			// unique-id
+			String hostname = "";
+			try {
+		        InetAddress addr = InetAddress.getLocalHost();
+		    
+		        // Get hostname
+		        hostname = addr.getHostName();
+		    } catch (UnknownHostException e) {
+		    }
+			String uidval = String.valueOf(ap.getKey()) + "@" + hostname;
+			Uid uid = new Uid(uidval);
+			ve.getProperties().add(uid);
 			
 			// add text
 			String appttext = ap.getText();
@@ -211,6 +233,10 @@ public class AppointmentIcalAdapter {
 		pl.add(new ProdId("BORG Calendar"));
 		pl.add(new net.fortuna.ical4j.model.property.Version("1","4"));
 		net.fortuna.ical4j.model.Calendar cal = new net.fortuna.ical4j.model.Calendar( pl, clist );
+		
+
+		cal.validate();
+
 		OutputStream oostr = IOHelper.createOutputStream(filename);
 		CalendarOutputter op = new CalendarOutputter();
 		op.output( cal, oostr );
@@ -224,6 +250,10 @@ public class AppointmentIcalAdapter {
 		Calendar cal = builder.build(is);
 		is.close();
 		
+		cal.validate();
+
+		ArrayList aplist = new ArrayList();
+		
 		AppointmentModel amodel = AppointmentModel.getReference();
 		ComponentList clist = cal.getComponents();
 		Iterator it = clist.iterator();
@@ -234,7 +264,7 @@ public class AppointmentIcalAdapter {
 			{
 				Appointment ap = amodel.newAppt();
 				PropertyList pl = comp.getProperties();
-				String appttext= null;
+				String appttext = "";
 				Property prop = pl.getProperty(Property.SUMMARY);
 				if( prop != null )
 				{
@@ -285,6 +315,10 @@ public class AppointmentIcalAdapter {
 						else if( cat.equals("Vacation"))
 						{
 							ap.setVacation(new Integer(1));
+						}
+						else if( cat.equals("ToDo"))
+						{
+							ap.setTodo(true);
 						}
 						else if( cat.equals("black") | cat.equals("red") || cat.equals("green")
 									|| cat.equals("blue") || cat.equals("white"))
@@ -351,12 +385,12 @@ public class AppointmentIcalAdapter {
 					}
 				}
 
-				amodel.saveAppt(ap, true);
-				
+				//amodel.saveAppt(ap, true);
+				aplist.add(ap);
 			}
 		}
 		
-		 
+		 amodel.bulkAdd(aplist);
 		
 	}
 }
