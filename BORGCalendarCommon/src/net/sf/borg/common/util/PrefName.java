@@ -144,7 +144,7 @@ public class PrefName {
 		static public PrefName UCS_BLACK = new PrefName("ucs_black","13107");
 		static public PrefName UCS_WHITE = new PrefName("ucs_white","16250609");
 		// use if for task tracker items
-		static public PrefName UCS_NAVY = new PrefName("ucs_navy","102");
+		static public PrefName UCS_NAVY = new PrefName("ucs_navy","13158");
 		// use it for system generated holidays
 		static public PrefName UCS_PURPLE = new PrefName("ucs_purple","10027212");
 		// use it for system generated birthdays
@@ -153,16 +153,16 @@ public class PrefName {
 		// TODO choose correct colors
 		static public PrefName UCS_DEFAULT = new PrefName("ucs_default","13421772");
 		// original color is Color(225,150,150)
-		static public PrefName UCS_TODAY = new PrefName("ucs_today","16764108");
+		static public PrefName UCS_TODAY = new PrefName("ucs_today","16751001");
 		// original color is Color(245,203,162)
-		static public PrefName UCS_HOLIDAY = new PrefName("ucs_holiday","16764159");
+		static public PrefName UCS_HOLIDAY = new PrefName("ucs_holiday","16764108");
 		// original color is Color(155,255,153)
-		static public PrefName UCS_VACATION = new PrefName("ucs_vacation","16777113");
+		static public PrefName UCS_VACATION = new PrefName("ucs_vacation","13434828");
 		// original color is Color(200,255,200)
 		static public PrefName UCS_HALFDAY = new PrefName("ucs_halfday","13421823");
 		// original color is Color(245,203,162)
-		static public PrefName UCS_WEEKEND = new PrefName("ucs_weekend","16751001");
+		static public PrefName UCS_WEEKEND = new PrefName("ucs_weekend","16764057");
 		// original color is Color(255,233,192)
-		static public PrefName UCS_WEEKDAY = new PrefName("ucs_weekday","16750899");
+		static public PrefName UCS_WEEKDAY = new PrefName("ucs_weekday","13421772");
 		// (bsv 2004-12-20)
 }

@@ -588,7 +588,7 @@ public class OptionsView extends View
         		btn_ucs_black.setColorByProperty();
         		btn_ucs_white.setColorProperty(new Color(16250609));
         		btn_ucs_white.setColorByProperty();
-        		btn_ucs_tasks.setColorProperty(new Color(102));
+        		btn_ucs_tasks.setColorProperty(new Color(13158));
         		btn_ucs_tasks.setColorByProperty();
         		btn_ucs_holidays.setColorProperty(new Color(10027212));
         		btn_ucs_holidays.setColorByProperty();
@@ -598,17 +598,17 @@ public class OptionsView extends View
 //        		// TODO choose correct colors
         		btn_ucs_default.setColorProperty(new Color(13421772));
         		btn_ucs_default.setColorByProperty();
-        		btn_ucs_today.setColorProperty(new Color(16764108));
+        		btn_ucs_today.setColorProperty(new Color(16751001));
         		btn_ucs_today.setColorByProperty();
-        		btn_ucs_holiday.setColorProperty(new Color(16764159));
+        		btn_ucs_holiday.setColorProperty(new Color(16764108));
         		btn_ucs_holiday.setColorByProperty();
-        		btn_ucs_vacation.setColorProperty(new Color(16777113));
+        		btn_ucs_vacation.setColorProperty(new Color(13434828));
         		btn_ucs_vacation.setColorByProperty();
         		btn_ucs_halfday.setColorProperty(new Color(13421823));
         		btn_ucs_halfday.setColorByProperty();
-        		btn_ucs_weekend.setColorProperty(new Color(16751001));
+        		btn_ucs_weekend.setColorProperty(new Color(16764057));
         		btn_ucs_weekend.setColorByProperty();
-        		btn_ucs_weekday.setColorProperty(new Color(16750899));
+        		btn_ucs_weekday.setColorProperty(new Color(13421772));
         		btn_ucs_weekday.setColorByProperty();
         	}
         });
