@@ -31,7 +31,15 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.TreeSet;
 
+// bsv 2004-12-20
+import java.awt.GridLayout;
+import java.awt.Color;
+import javax.swing.JLabel;
+import javax.swing.JButton;
+
+
 import javax.swing.ImageIcon;
+import javax.swing.JColorChooser;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -49,11 +57,16 @@ import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.TaskModel;
 
+// bsv 2004-12-20
+import net.sf.borg.common.ui.JButtonKnowsBgColor;
 
 
 
 import javax.swing.JPanel;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.JCheckBox;
 // propgui displays the edit preferences window
 public class OptionsView extends View
@@ -392,6 +405,60 @@ public class OptionsView extends View
         else
             icaltodobox.setSelected(false);
             
+        // bsv 2004-12-20
+        // initiate user color scheme variables
+        bg = Prefs.getPref(PrefName.UCS_ON );
+        if( bg.equals("true") ) cb_ucs_on.setSelected(true);
+        	else cb_ucs_on.setSelected(false);
+        mins = Integer.parseInt( Prefs.getPref(PrefName.UCS_RED) );
+        btn_ucs_red.setColorProperty(new Color(mins));
+        btn_ucs_red.setColorByProperty();
+        mins = Integer.parseInt( Prefs.getPref(PrefName.UCS_BLUE) );
+        btn_ucs_blue.setColorProperty(new Color(mins));
+        btn_ucs_blue.setColorByProperty();
+        mins = Integer.parseInt( Prefs.getPref(PrefName.UCS_GREEN) );
+        btn_ucs_green.setColorProperty(new Color(mins));
+        btn_ucs_green.setColorByProperty();
+        mins = Integer.parseInt( Prefs.getPref(PrefName.UCS_BLACK) );
+        btn_ucs_black.setColorProperty(new Color(mins));
+        btn_ucs_black.setColorByProperty();
+        mins = Integer.parseInt( Prefs.getPref(PrefName.UCS_WHITE) );
+        btn_ucs_white.setColorProperty(new Color(mins));
+        btn_ucs_white.setColorByProperty();
+
+        mins = Integer.parseInt( Prefs.getPref(PrefName.UCS_NAVY) );
+        btn_ucs_tasks.setColorProperty(new Color(mins));
+        btn_ucs_tasks.setColorByProperty();
+        mins = Integer.parseInt( Prefs.getPref(PrefName.UCS_PURPLE) );
+        btn_ucs_holidays.setColorProperty(new Color(mins));
+        btn_ucs_holidays.setColorByProperty();
+        mins = Integer.parseInt( Prefs.getPref(PrefName.UCS_BRICK) );
+        btn_ucs_birthdays.setColorProperty(new Color(mins));
+        btn_ucs_birthdays.setColorByProperty();
+        
+        mins = Integer.parseInt( Prefs.getPref(PrefName.UCS_DEFAULT) );
+        btn_ucs_default.setColorProperty(new Color(mins));
+        btn_ucs_default.setColorByProperty();
+        mins = Integer.parseInt( Prefs.getPref(PrefName.UCS_TODAY) );
+        btn_ucs_today.setColorProperty(new Color(mins));
+        btn_ucs_today.setColorByProperty();
+        mins = Integer.parseInt( Prefs.getPref(PrefName.UCS_HOLIDAY) );
+        btn_ucs_holiday.setColorProperty(new Color(mins));
+        btn_ucs_holiday.setColorByProperty();
+        mins = Integer.parseInt( Prefs.getPref(PrefName.UCS_HALFDAY) );
+        btn_ucs_halfday.setColorProperty(new Color(mins));
+        btn_ucs_halfday.setColorByProperty();
+        mins = Integer.parseInt( Prefs.getPref(PrefName.UCS_VACATION) );
+        btn_ucs_vacation.setColorProperty(new Color(mins));
+        btn_ucs_vacation.setColorByProperty();
+        mins = Integer.parseInt( Prefs.getPref(PrefName.UCS_WEEKEND) );
+        btn_ucs_weekend.setColorProperty(new Color(mins));
+        btn_ucs_weekend.setColorByProperty();
+        mins = Integer.parseInt( Prefs.getPref(PrefName.UCS_WEEKDAY) );
+        btn_ucs_weekday.setColorProperty(new Color(mins));
+        btn_ucs_weekday.setColorByProperty();
+        // (bsv 2004-12-20)
+        
         logobrowse.setEnabled(AppHelper.isApplication());
         
         
@@ -489,6 +556,64 @@ public class OptionsView extends View
         sharedbox = new javax.swing.JCheckBox();
         jButton2 = new javax.swing.JButton();
         applyButton = new javax.swing.JButton();
+        
+        // bsv 2004-12-20
+        cb_ucs_on = new javax.swing.JCheckBox("use user color settings");
+        btn_ucs_red = new JButtonKnowsBgColor( "red", Color.WHITE, false );
+        btn_ucs_blue = new JButtonKnowsBgColor( "blue", Color.WHITE, false );
+        btn_ucs_green = new JButtonKnowsBgColor( "green", Color.WHITE, false );
+        btn_ucs_black = new JButtonKnowsBgColor( "black", Color.WHITE, false );
+        btn_ucs_white = new JButtonKnowsBgColor( "white", Color.WHITE, false );
+        btn_ucs_tasks = new JButtonKnowsBgColor( "tasks", Color.WHITE, false );
+        btn_ucs_holidays = new JButtonKnowsBgColor( "holidays", Color.WHITE, false );
+        btn_ucs_birthdays = new JButtonKnowsBgColor( "birthdays", Color.WHITE, false );
+        btn_ucs_default = new JButtonKnowsBgColor( "default", Color.WHITE, true );
+        btn_ucs_holiday = new JButtonKnowsBgColor( "holiday", Color.WHITE, true );
+        btn_ucs_halfday = new JButtonKnowsBgColor( "halfday", Color.WHITE, true );
+        btn_ucs_vacation = new JButtonKnowsBgColor( "vacation", Color.WHITE, true );
+        btn_ucs_today = new JButtonKnowsBgColor( "today", Color.WHITE, true );
+        btn_ucs_weekend = new JButtonKnowsBgColor( "weekend", Color.WHITE, true );
+        btn_ucs_weekday = new JButtonKnowsBgColor( "weekday", Color.WHITE, true );
+        btn_ucs_restore = new JButton("restore defaults");
+        // TODO add action listener to btn_ucs_restore
+        btn_ucs_restore.addActionListener(new ActionListener(){
+        	public void actionPerformed(ActionEvent e) {
+        		btn_ucs_red.setColorProperty(new Color(16711680));
+        		btn_ucs_red.setColorByProperty();
+        		btn_ucs_blue.setColorProperty(new Color(6684876));
+        		btn_ucs_blue.setColorByProperty();
+        		btn_ucs_green.setColorProperty(new Color(39168));
+        		btn_ucs_green.setColorByProperty();
+        		btn_ucs_black.setColorProperty(new Color(13107));
+        		btn_ucs_black.setColorByProperty();
+        		btn_ucs_white.setColorProperty(new Color(16250609));
+        		btn_ucs_white.setColorByProperty();
+        		btn_ucs_tasks.setColorProperty(new Color(102));
+        		btn_ucs_tasks.setColorByProperty();
+        		btn_ucs_holidays.setColorProperty(new Color(10027212));
+        		btn_ucs_holidays.setColorByProperty();
+        		btn_ucs_birthdays.setColorProperty(new Color(10027008));
+        		btn_ucs_birthdays.setColorByProperty();
+//        		// Calendar view day background colors
+//        		// TODO choose correct colors
+        		btn_ucs_default.setColorProperty(new Color(13421772));
+        		btn_ucs_default.setColorByProperty();
+        		btn_ucs_today.setColorProperty(new Color(16764108));
+        		btn_ucs_today.setColorByProperty();
+        		btn_ucs_holiday.setColorProperty(new Color(16764159));
+        		btn_ucs_holiday.setColorByProperty();
+        		btn_ucs_vacation.setColorProperty(new Color(16777113));
+        		btn_ucs_vacation.setColorByProperty();
+        		btn_ucs_halfday.setColorProperty(new Color(13421823));
+        		btn_ucs_halfday.setColorByProperty();
+        		btn_ucs_weekend.setColorProperty(new Color(16751001));
+        		btn_ucs_weekend.setColorByProperty();
+        		btn_ucs_weekday.setColorProperty(new Color(16750899));
+        		btn_ucs_weekday.setColorByProperty();
+        	}
+        });
+        // (bsv 2004-12-20)
+        
 
         //getContentPane().setLayout(new java.awt.GridBagLayout());
 
@@ -1174,6 +1299,29 @@ public class OptionsView extends View
             }
         });
 
+        // added by bsv 2004-12-20
+        getJPanelUCS().setLayout( new GridLayout( 9,2 ));
+        // 1st column-2nd column
+        getJPanelUCS().add( new JLabel("to be improved :)") );
+        getJPanelUCS().add( cb_ucs_on );
+        getJPanelUCS().add( btn_ucs_red );
+        getJPanelUCS().add( btn_ucs_default );
+        getJPanelUCS().add( btn_ucs_blue );
+        getJPanelUCS().add( btn_ucs_today );
+        getJPanelUCS().add( btn_ucs_green );
+        getJPanelUCS().add( btn_ucs_holiday );
+        getJPanelUCS().add( btn_ucs_black );
+        getJPanelUCS().add( btn_ucs_halfday );
+        getJPanelUCS().add( btn_ucs_white );
+        getJPanelUCS().add( btn_ucs_vacation );
+        getJPanelUCS().add( btn_ucs_tasks );
+        getJPanelUCS().add( btn_ucs_weekend );
+        getJPanelUCS().add( btn_ucs_holidays );
+        getJPanelUCS().add( btn_ucs_weekday );
+        getJPanelUCS().add( btn_ucs_birthdays );
+        getJPanelUCS().add( btn_ucs_restore );
+        // (added by bsv 2004-12-20)
+        
         this.setContentPane(getJPanel());
         gridBagConstraints110.gridx = 1;
         gridBagConstraints110.gridy = 7;
@@ -1183,6 +1331,7 @@ public class OptionsView extends View
         gridBagConstraints111.gridy = 6;
         gridBagConstraints111.fill = java.awt.GridBagConstraints.HORIZONTAL;
         jPanel3.add(revDayEditbox, gridBagConstraints51);
+        jTabbedPane1.addTab("User Color Scheme", null, getJPanelUCS(), null);
         jPanel3.add(getExputcbox(), gridBagConstraints111);
         jPanel2.add(getDoyBox(), gridBagConstraints110);
         pack();
@@ -1342,6 +1491,46 @@ public class OptionsView extends View
             Prefs.putPref(PrefName.COLORPRINT, "true" );
         else
             Prefs.putPref(PrefName.COLORPRINT, "false" );
+
+        // bsv 2004-12-20
+        if( cb_ucs_on.isSelected() ) Prefs.putPref(PrefName.UCS_ON, "true" );
+        	else Prefs.putPref(PrefName.UCS_ON, "false" );
+
+        Integer ucsi = new Integer((btn_ucs_red.getColorProperty()).getRGB());
+        Prefs.putPref(PrefName.UCS_RED, ucsi.toString() );
+        ucsi = new Integer((btn_ucs_blue.getColorProperty()).getRGB());
+        Prefs.putPref(PrefName.UCS_BLUE, ucsi.toString() );
+        ucsi = new Integer((btn_ucs_green.getColorProperty()).getRGB());
+        Prefs.putPref(PrefName.UCS_GREEN, ucsi.toString() );
+        ucsi = new Integer((btn_ucs_black.getColorProperty()).getRGB());
+        Prefs.putPref(PrefName.UCS_BLACK, ucsi.toString() );
+        ucsi = new Integer((btn_ucs_white.getColorProperty()).getRGB());
+        Prefs.putPref(PrefName.UCS_WHITE, ucsi.toString() );
+
+        ucsi = new Integer((btn_ucs_tasks.getColorProperty()).getRGB());
+        Prefs.putPref(PrefName.UCS_NAVY, ucsi.toString() );
+        ucsi = new Integer((btn_ucs_holidays.getColorProperty()).getRGB());
+        Prefs.putPref(PrefName.UCS_PURPLE, ucsi.toString() );
+        ucsi = new Integer((btn_ucs_birthdays.getColorProperty()).getRGB());
+        Prefs.putPref(PrefName.UCS_BRICK, ucsi.toString() );
+        
+        ucsi = new Integer((btn_ucs_default.getColorProperty()).getRGB());
+        Prefs.putPref(PrefName.UCS_DEFAULT, ucsi.toString() );
+        ucsi = new Integer((btn_ucs_holiday.getColorProperty()).getRGB());
+        Prefs.putPref(PrefName.UCS_HOLIDAY, ucsi.toString() );
+        ucsi = new Integer((btn_ucs_halfday.getColorProperty()).getRGB());
+        Prefs.putPref(PrefName.UCS_HALFDAY, ucsi.toString() );
+        ucsi = new Integer((btn_ucs_vacation.getColorProperty()).getRGB());
+        Prefs.putPref(PrefName.UCS_VACATION, ucsi.toString() );
+        ucsi = new Integer((btn_ucs_today.getColorProperty()).getRGB());
+        Prefs.putPref(PrefName.UCS_TODAY, ucsi.toString() );
+        ucsi = new Integer((btn_ucs_weekend.getColorProperty()).getRGB());
+        Prefs.putPref(PrefName.UCS_WEEKEND, ucsi.toString() );
+        ucsi = new Integer((btn_ucs_weekday.getColorProperty()).getRGB());
+        Prefs.putPref(PrefName.UCS_WEEKDAY, ucsi.toString() );
+        // (bsv 2004-12-20)
+        
+        
         
         if( !logobox.isSelected() )
         {
@@ -1706,10 +1895,32 @@ public class OptionsView extends View
     private javax.swing.JCheckBox wrapbox;
     // End of variables declaration//GEN-END:variables
     
+    // added by bsv 2004-12-20
+    private javax.swing.JCheckBox cb_ucs_on;
+    private JButtonKnowsBgColor btn_ucs_red;
+    private JButtonKnowsBgColor btn_ucs_blue;
+    private JButtonKnowsBgColor btn_ucs_green;
+    private JButtonKnowsBgColor btn_ucs_black;
+    private JButtonKnowsBgColor btn_ucs_white;
+    private JButtonKnowsBgColor btn_ucs_tasks;
+    private JButtonKnowsBgColor btn_ucs_holidays;
+    private JButtonKnowsBgColor btn_ucs_birthdays;
+    private JButtonKnowsBgColor btn_ucs_default;
+    private JButtonKnowsBgColor btn_ucs_holiday;
+    private JButtonKnowsBgColor btn_ucs_vacation;
+    private JButtonKnowsBgColor btn_ucs_halfday;
+    private JButtonKnowsBgColor btn_ucs_today;
+    private JButtonKnowsBgColor btn_ucs_weekend;
+    private JButtonKnowsBgColor btn_ucs_weekday;
+    private JButton btn_ucs_restore;
+    // (added by bsv 2004-12-20)
+    
+    
 	private JPanel jPanel = null;
 	private JPanel jPanel10 = null;
 	private JCheckBox doyBox = null;
 	private JCheckBox exputcbox = null;
+	private JPanel jPanelUCS = null;
 	/**
 	 * This method initializes jPanel	
 	 * 	
@@ -1773,4 +1984,15 @@ public class OptionsView extends View
 		}
 		return exputcbox;
 	}
-    }
+	/**
+	 * This method initializes jPanel11	
+	 * 	
+	 * @return javax.swing.JPanel	
+	 */    
+	private JPanel getJPanelUCS() {
+		if (jPanelUCS == null) {
+			jPanelUCS = new JPanel();
+		}
+		return jPanelUCS;
+	}
+     }
