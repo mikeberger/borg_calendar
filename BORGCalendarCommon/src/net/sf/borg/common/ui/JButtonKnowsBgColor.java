@@ -56,13 +56,13 @@ public class JButtonKnowsBgColor extends JButton {
 	/**
 	 * @return Returns the color.
 	 */
-	protected Color getColorProperty() {
+	public Color getColorProperty() {
 		return colorProperty;
 	}
 	/**
 	 * @param color The color to set.
 	 */
-	protected void setColorProperty(Color color) {
+	public void setColorProperty(Color color) {
 		this.colorProperty = color;
 	}
 	/**
