@@ -118,7 +118,10 @@ public class AppointmentIcalAdapter {
 			}
 			
 			// add color as a cetegory
-			if( ap.getColor() != null && !ap.getColor().equals(""))
+			if( ap.getColor() != null && 
+					( ap.getColor().equals("black") || ap.getColor().equals("blue") || ap.getColor().equals("green")
+							|| ap.getColor().equals("red") || ap.getColor().equals("white") )
+					)
 			{
 				catlist.add( ap.getColor() );
 			}
@@ -227,6 +230,100 @@ public class AppointmentIcalAdapter {
 		            
 				}
 				
+				if( comp instanceof VToDo )
+				{
+					ap.setTodo(true);
+				}
+				
+				prop = pl.getProperty( Property.DURATION );
+				if( prop != null )
+				{
+					Duration dur = (Duration ) prop;
+					ap.setDuration( new Integer( (int)dur.getDuration() / 60) );
+				}
+				
+				prop = pl.getProperty( Property.CATEGORIES );
+				if( prop != null )
+				{
+					Categories cats = (Categories) prop;
+					CategoryList catlist = cats.getCategories();
+					Iterator cit = catlist.iterator();
+					while( cit.hasNext() )
+					{
+						String cat = (String) cit.next();
+						if( cat.equals("Holidays"))
+						{
+							ap.setHoliday(new Integer(1));
+						}
+						else if( cat.equals("Vacation"))
+						{
+							ap.setVacation(new Integer(1));
+						}
+						else if( cat.equals("black") | cat.equals("red") || cat.equals("green")
+									|| cat.equals("blue") || cat.equals("white"))
+						{
+							ap.setColor(cat);
+						}
+						else
+						{
+							ap.setCategory(cat);					
+						}
+					}
+				}
+				
+				prop = pl.getProperty( Property.CLASS );
+				if( prop != null )
+				{
+					Clazz clazz = (Clazz) prop;
+					if( clazz.getValue().equals(Clazz.PRIVATE))
+					{
+						ap.setPrivate(true);
+					}
+				}
+				
+				prop = pl.getProperty( Property.RRULE );
+				if( prop != null )
+				{
+					RRule rr = (RRule) prop;
+					Recur recur = rr.getRecur();
+					
+					int times = recur.getCount();
+					if( times < 1 )
+						times = 9999;
+					ap.setTimes( new Integer(times));
+	
+					ap.setRepeatFlag(true);
+					String freq = recur.getFrequency();
+					int interval = recur.getInterval();
+					if( freq.equals("DAILY"))
+					{
+						ap.setFrequency("daily");
+					}
+					else if( freq.equals("WEEKLY"))
+					{
+						if( interval == 2)
+						{
+							ap.setFrequency("biweekly");
+						}
+						else
+						{
+							ap.setFrequency("weekly");
+						}
+					}
+					else if( freq.equals("MONTHLY"))
+					{
+						ap.setFrequency("monthly");
+					}
+					else if( freq.equals("YEARLY"))
+					{
+						ap.setFrequency("yearly");
+					}
+					else
+					{
+						ap.setFrequency("daily");
+					}
+				}
+
 				amodel.saveAppt(ap, true);
 				
 			}
