@@ -70,23 +70,91 @@ public class OptionsView extends View
     private static OptionsView singleton = null;
     public static OptionsView getReference() {
         if( singleton == null || !singleton.isShowing())
-            singleton = new OptionsView();
+            singleton = new OptionsView(false);
         return( singleton );
     }
+    
     
     static public void setRestartListener( RestartListener rl )
     {
     	rl_ = rl;
     }
     
-    private OptionsView()
+    public static void dbSelectOnly()
     {
-        super();
+    	new OptionsView(true).show();
+    	
+    }
+    
+    // dbonly will only allow db changes
+    private OptionsView(boolean dbonly)
+    {
+    	super();
+ 
+    	initComponents();
+    	
+    	if( !dbonly )
+    	{       
+    		addModel(AppointmentModel.getReference());
+    	}
+    	else
+    	{
+    		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+    	}
+    	
         
-        addModel(AppointmentModel.getReference());
-        initComponents();
         
         // set the various screen items based on the existing user preferences
+        
+        
+        //
+        // database
+        //
+        String dbtype = Prefs.getPref( PrefName.DBTYPE );
+        if( dbtype.equals("local"))
+        {
+            localFileButton.setSelected(true); 
+            jPanel9.setVisible(true);
+            jPanel8.setVisible(false);
+          
+        }
+        else
+        {
+            MySQL.setSelected(true);
+        	jPanel8.setVisible(true);
+        	jPanel9.setVisible(false);
+
+        }
+        
+        String dbparam = Prefs.getPref(PrefName.DBDIR);
+        jTextField3.setText(dbparam);
+        
+        dbparam = Prefs.getPref(PrefName.DBNAME);
+        jTextField1.setText(dbparam);
+        dbparam = Prefs.getPref(PrefName.DBPORT);
+        jTextField4.setText(dbparam);
+        dbparam = Prefs.getPref(PrefName.DBHOST);
+        jTextField2.setText(dbparam);        
+        dbparam = Prefs.getPref(PrefName.DBUSER);
+        jTextField5.setText(dbparam);
+        dbparam = Prefs.getPref(PrefName.DBPASS);
+        jPasswordField1.setText(dbparam);
+        
+        if( dbonly )
+        {
+        	// disable lots of non-db-related stuff
+            jTabbedPane1.setEnabledAt(0,false);
+            jTabbedPane1.setEnabledAt(2,false);
+            jTabbedPane1.setEnabledAt(3,false);
+            jTabbedPane1.setEnabledAt(4,false);
+            jTabbedPane1.setEnabledAt(5,false);
+            jTabbedPane1.setEnabledAt(6,false);
+            jTabbedPane1.setSelectedIndex(1);
+            jButton2.setEnabled(false);
+            applyButton.setEnabled(false);
+            return;
+                
+        }
         
         // color print option
         String cp = Prefs.getPref(PrefName.COLORPRINT);
@@ -107,10 +175,7 @@ public class OptionsView extends View
         else
             privbox.setSelected(false);
         
-        // database directory
-        String dbdir = Prefs.getPref(PrefName.DBDIR);
-        jTextField3.setText(dbdir);
-        
+
         // print logo directory
         String logo = Prefs.getPref(PrefName.LOGO);
         logofile.setText(logo);
@@ -316,6 +381,7 @@ public class OptionsView extends View
     private void initComponents() {//GEN-BEGIN:initComponents
         java.awt.GridBagConstraints gridBagConstraints;
 
+        dbTypeGroup = new javax.swing.ButtonGroup();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel2 = new javax.swing.JPanel();
         privbox = new javax.swing.JCheckBox();
@@ -338,6 +404,20 @@ public class OptionsView extends View
         jButton1 = new javax.swing.JButton();
         colorsortbox = new javax.swing.JCheckBox();
         jPanel4 = new javax.swing.JPanel();
+        localFileButton = new javax.swing.JRadioButton();
+        MySQL = new javax.swing.JRadioButton();
+        jPanel8 = new javax.swing.JPanel();
+        jLabel7 = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
+        jLabel17 = new javax.swing.JLabel();
+        jTextField2 = new javax.swing.JTextField();
+        jLabel18 = new javax.swing.JLabel();
+        jTextField4 = new javax.swing.JTextField();
+        jLabel19 = new javax.swing.JLabel();
+        jTextField5 = new javax.swing.JTextField();
+        jLabel20 = new javax.swing.JLabel();
+        jPasswordField1 = new javax.swing.JPasswordField();
+        jPanel9 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jTextField3 = new javax.swing.JTextField();
         jButton5 = new javax.swing.JButton();
@@ -589,14 +669,121 @@ public class OptionsView extends View
 
         jPanel4.setLayout(new java.awt.GridBagLayout());
 
-        jLabel3.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("DataBase_Directory_or_URL"));
+        localFileButton.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("localFile"));
+        dbTypeGroup.add(localFileButton);
+        localFileButton.setActionCommand("local");
+        localFileButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                dbTypeAction(evt);
+            }
+        });
+
+        jPanel4.add(localFileButton, new java.awt.GridBagConstraints());
+
+        MySQL.setText("MySQL");
+        dbTypeGroup.add(MySQL);
+        MySQL.setActionCommand("mysql");
+        MySQL.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                dbTypeAction(evt);
+            }
+        });
+
+        jPanel4.add(MySQL, new java.awt.GridBagConstraints());
+
+        jPanel8.setLayout(new java.awt.GridBagLayout());
+
+        jPanel8.setBorder(new javax.swing.border.TitledBorder(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("MySQLInfo")));
+        jLabel7.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("DatabaseName"));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.insets = new java.awt.Insets(0, 4, 0, 4);
+        jPanel8.add(jLabel7, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        jPanel8.add(jTextField1, gridBagConstraints);
+
+        jLabel17.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("hostname"));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.insets = new java.awt.Insets(0, 4, 0, 4);
+        jPanel8.add(jLabel17, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        jPanel8.add(jTextField2, gridBagConstraints);
+
+        jLabel18.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("port"));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.insets = new java.awt.Insets(0, 4, 0, 4);
+        jPanel8.add(jLabel18, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        jPanel8.add(jTextField4, gridBagConstraints);
+
+        jLabel19.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("User"));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.insets = new java.awt.Insets(0, 4, 0, 4);
+        jPanel8.add(jLabel19, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        jPanel8.add(jTextField5, gridBagConstraints);
+
+        jLabel20.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Password"));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.insets = new java.awt.Insets(0, 4, 0, 4);
+        jPanel8.add(jLabel20, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        jPanel8.add(jPasswordField1, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        jPanel4.add(jPanel8, gridBagConstraints);
+
+        jPanel9.setLayout(new java.awt.GridBagLayout());
+
+        jPanel9.setBorder(new javax.swing.border.TitledBorder(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("localFileInfo")));
+        jLabel3.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("DataBase_Directory"));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(0, 8, 0, 0);
-        jPanel4.add(jLabel3, gridBagConstraints);
+        jPanel9.add(jLabel3, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -605,7 +792,7 @@ public class OptionsView extends View
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 0.5;
         gridBagConstraints.insets = new java.awt.Insets(4, 8, 4, 8);
-        jPanel4.add(jTextField3, gridBagConstraints);
+        jPanel9.add(jTextField3, gridBagConstraints);
 
         jButton5.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Browse"));
         jButton5.addActionListener(new java.awt.event.ActionListener() {
@@ -619,9 +806,19 @@ public class OptionsView extends View
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
-        jPanel4.add(jButton5, gridBagConstraints);
+        jPanel9.add(jButton5, gridBagConstraints);
 
-        chgdb.setForeground(new java.awt.Color(255, 51, 51));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        jPanel4.add(jPanel9, gridBagConstraints);
+
+        chgdb.setForeground(new java.awt.Color(255, 0, 51));
+        chgdb.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Refresh16.gif")));
         chgdb.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Apply_DB_Change"));
         chgdb.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -963,6 +1160,20 @@ public class OptionsView extends View
         pack();
     }//GEN-END:initComponents
 
+    private void dbTypeAction(java.awt.event.ActionEvent evt)//GEN-FIRST:event_dbTypeAction
+    {//GEN-HEADEREND:event_dbTypeAction
+        if( evt.getActionCommand().equals("mysql"))
+        {
+        	jPanel8.setVisible(true);
+        	jPanel9.setVisible(false);
+        }
+        else
+        {
+           	jPanel9.setVisible(true);
+        	jPanel8.setVisible(false);
+        }
+    }//GEN-LAST:event_dbTypeAction
+
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton2ActionPerformed
     {//GEN-HEADEREND:event_jButton2ActionPerformed
         this.dispose();
@@ -1187,8 +1398,27 @@ public class OptionsView extends View
         {
             String dbdir = jTextField3.getText();
             Prefs.putPref(PrefName.DBDIR, dbdir );
+            
+            if( MySQL.isSelected())
+            {
+            	Prefs.putPref( PrefName.DBTYPE, "mysql");
+            }
+            else
+            {
+            	Prefs.putPref( PrefName.DBTYPE, "local");
+            }
+            
+
+            Prefs.putPref( PrefName.DBNAME, jTextField1.getText());
+            Prefs.putPref( PrefName.DBPORT, jTextField4.getText());
+            Prefs.putPref( PrefName.DBHOST, jTextField2.getText());
+            Prefs.putPref( PrefName.DBUSER, jTextField5.getText());
+            Prefs.putPref( PrefName.DBPASS, jPasswordField1.getText());
+            
             if( rl_ != null )
             	rl_.restart();
+            
+            this.dispose();
         }
     }//GEN-LAST:event_chgdbActionPerformed
     
@@ -1334,9 +1564,6 @@ public class OptionsView extends View
 	        else if( !dir.isDirectory() ) {
 	            err = "Database Directory [" + dbdir + "] is not a directory";
 	        }
-	        else if( !dir.canWrite() ) {
-	            err = "Database Directory [" + dbdir + "] is not writable";
-	        }
 	        
 	        if( err == null )
 	            break;
@@ -1352,6 +1579,7 @@ public class OptionsView extends View
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JRadioButton MySQL;
     private javax.swing.JButton applyButton;
     private javax.swing.JCheckBox autoupdate;
     private javax.swing.JCheckBox backgbox;
@@ -1361,6 +1589,7 @@ public class OptionsView extends View
     private javax.swing.JButton chgdb;
     private javax.swing.JCheckBox colorprint;
     private javax.swing.JCheckBox colorsortbox;
+    private javax.swing.ButtonGroup dbTypeGroup;
     private javax.swing.JButton decfont;
     private javax.swing.JCheckBox emailbox;
     private javax.swing.JTextField emailtext;
@@ -1378,11 +1607,16 @@ public class OptionsView extends View
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
@@ -1392,10 +1626,18 @@ public class OptionsView extends View
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
+    private javax.swing.JPanel jPanel9;
+    private javax.swing.JPasswordField jPasswordField1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
+    private javax.swing.JTextField jTextField4;
+    private javax.swing.JTextField jTextField5;
     private javax.swing.JComboBox lnfBox;
+    private javax.swing.JRadioButton localFileButton;
     private javax.swing.JComboBox localebox;
     private javax.swing.JCheckBox logging;
     private javax.swing.JCheckBox logobox;

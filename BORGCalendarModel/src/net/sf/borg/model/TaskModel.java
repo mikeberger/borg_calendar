@@ -110,7 +110,8 @@ public class TaskModel extends Model {
     public void remove() {
         removeListeners();
         try {
-            db_.close();
+        	if( db_ != null )
+        		db_.close();
         }
         catch( Exception e ) {
             Errmsg.errmsg(e);

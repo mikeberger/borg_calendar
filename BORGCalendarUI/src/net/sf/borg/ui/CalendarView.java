@@ -88,7 +88,7 @@ import net.sf.borg.model.TaskModel;
 // like most of the other borg window, you really need to check the netbeans form
 // editor to get the graphical picture of the whole window
 
-public class CalendarView extends View implements Prefs.Listener{
+public class CalendarView extends View implements Prefs.Listener {
     
     // current year/month being viewed
     private int year_;
@@ -127,7 +127,7 @@ public class CalendarView extends View implements Prefs.Listener{
         
         // register this view as a Prefs Listener to 
         // be notified of Prefs changes
-        Prefs.register(this);
+        Prefs.addListener(this);
         init();
     }
     

@@ -48,10 +48,19 @@ public class PrefName {
 		Object getDefault() {
 			return default_;
 		}
-
+		
+		// database
+		static public PrefName DBTYPE = new PrefName( "dbtype", "local");
+		static public PrefName DBDIR = new PrefName( "dbdir", "not-set");
+		static public PrefName DBHOST = new PrefName( "dbhost", "localhost");
+		static public PrefName DBPORT = new PrefName( "dbport", "3306");
+		static public PrefName DBNAME = new PrefName( "dbname", "borg");
+		static public PrefName DBUSER = new PrefName( "dbuser", "borg");
+		static public PrefName DBPASS = new PrefName( "dbpass", "borg");
+		
+		
 		// misc
 		static public PrefName STACKTRACE = new PrefName( "stacktrace", "false");
-		static public PrefName DBDIR = new PrefName( "dbdir", "not-set");
 		static public PrefName BACKGSTART = new PrefName( "backgstart", "false");
 		static public PrefName SPLASH = new PrefName( "splash", "true");
 		static public PrefName VERCHKLAST = new PrefName( "ver_chk_last", new Integer(-1));

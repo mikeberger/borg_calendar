@@ -111,7 +111,8 @@ public class AppointmentModel extends Model
         removeListeners();
         try
         {
-            db_.close();
+        	if( db_ != null )
+        		db_.close();
         }
         catch( Exception e )
         {

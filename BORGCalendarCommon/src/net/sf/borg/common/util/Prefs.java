@@ -39,12 +39,12 @@ public class Prefs {
 	
 	static private ArrayList listeners = new ArrayList();
 	
-    static public void register(Listener listener)
+    static public void addListener(Listener listener)
     {
         listeners.add(listener);
     }
     
-    static public void unregister(Listener listener)
+    static public void removeListener(Listener listener)
     {
         listeners.remove(listener);
     }

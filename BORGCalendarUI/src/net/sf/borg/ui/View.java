@@ -60,7 +60,7 @@ abstract class View extends javax.swing.JFrame implements Model.Listener
     // function to call to register a view with the model
     protected void addModel(Model m)
     {
-        m.register(this);
+        m.addListener(this);
     }
      
     

@@ -116,11 +116,32 @@ public class Borg extends Controller implements OptionsView.RestartListener {
     }
 
     public void restart() {
-        timer_.cancel();
+    	if( timer_ != null )
+    		timer_.cancel();
         removeListeners();
         init(new String[0]);
     }
 
+    private String buildDbDir()
+    {
+        // get dir for DB
+    	String dbdir = "";
+    	String dbtype = Prefs.getPref( PrefName.DBTYPE );
+    	if( dbtype.equals("local"))
+    	{
+    		dbdir = Prefs.getPref(PrefName.DBDIR);
+    	}
+    	else
+    	{
+    		// build a mysql URL
+    		dbdir = "jdbc:mysql://" + Prefs.getPref( PrefName.DBHOST ) + ":" + Prefs.getPref( PrefName.DBPORT )
+				+ "/" + Prefs.getPref( PrefName.DBNAME ) + "?user=" + Prefs.getPref( PrefName.DBUSER ) +
+				"&password=" + Prefs.getPref( PrefName.DBPASS ) + "&autoReconnect=true";
+    	}
+    	
+    	return( dbdir );
+    }
+    
     // init will process the command line args, open and load the databases, and
     // start up the
     // main month view
@@ -246,12 +267,13 @@ public class Borg extends Controller implements OptionsView.RestartListener {
         boolean shared = false;
         try
         {
-            // get dir for DB
-            dbdir = Prefs.getPref(PrefName.DBDIR);
-
+ 
+            
             // init cal model & load data from database
             if (testdb != null)
                 dbdir = testdb;
+            else
+            	dbdir = buildDbDir();
 
             if (dbdir.equals("not-set"))
             {
@@ -268,12 +290,13 @@ public class Borg extends Controller implements OptionsView.RestartListener {
                     System.exit(0);
                 }
 
-                // pronpt for DB directory
-                dbdir = OptionsView.chooseDbDir(true);
-
-                // exit if user does not want to set DB dir
-                if (dbdir == null)
-                    System.exit(1);
+                JOptionPane.showMessageDialog(null, Resource.getResourceString("selectdb"), Resource.getResourceString("Notice"), JOptionPane.INFORMATION_MESSAGE);
+                
+                if( ban_ != null )
+                    ban_.dispose();
+                
+                OptionsView.dbSelectOnly();
+                return;
             }
 
             String shrd = Prefs.getPref(PrefName.SHARED);
@@ -471,7 +494,10 @@ public class Borg extends Controller implements OptionsView.RestartListener {
                             JOptionPane.YES_NO_OPTION);
             if (ret == JOptionPane.YES_OPTION)
             {
-                OptionsView.chooseDbDir(true);
+                if( ban_ != null )
+                    ban_.dispose();
+                OptionsView.dbSelectOnly();
+                return;
             }
 
             System.exit(1);

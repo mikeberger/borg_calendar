@@ -66,13 +66,13 @@ public abstract class Model
     }
     
     // function to call to register a view with the model
-    public void register(Listener listener)
+    public void addListener(Listener listener)
     {
         listeners.add(listener);
     }
     
    // function to call to runegister a view from the model
-    public void unregister(Listener listener)
+    public void removeListener(Listener listener)
     {
         listeners.remove(listener);
     }
