@@ -53,6 +53,7 @@ import net.fortuna.ical4j.model.property.Uid;
 import net.sf.borg.common.io.IOHelper;
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
+import net.sf.borg.common.util.Warning;
 
 
 public class AppointmentIcalAdapter {
@@ -137,7 +138,7 @@ public class AppointmentIcalAdapter {
 			// duration
 			if( ap.getDuration() != null )
 			{
-				ve.getProperties().add( new Duration( ap.getDuration().intValue()*60));
+				ve.getProperties().add( new Duration( ap.getDuration().intValue()*60*1000));
 			}
 			
 			// vacation is a category
@@ -243,8 +244,9 @@ public class AppointmentIcalAdapter {
 		oostr.close();
 	}
 	
-	static public void importIcal( String file ) throws Exception
+	static public String importIcal( String file ) throws Exception, Warning
 	{
+		StringBuffer warning = new StringBuffer();
 		CalendarBuilder builder = new CalendarBuilder();
 		InputStream is = IOHelper.openStream(file);
 		Calendar cal = builder.build(is);
@@ -265,9 +267,11 @@ public class AppointmentIcalAdapter {
 				Appointment ap = amodel.newAppt();
 				PropertyList pl = comp.getProperties();
 				String appttext = "";
+				String summary = "";
 				Property prop = pl.getProperty(Property.SUMMARY);
 				if( prop != null )
 				{
+					summary = prop.getValue();
 					appttext += prop.getValue();
 				}
 				
@@ -296,7 +300,19 @@ public class AppointmentIcalAdapter {
 				if( prop != null )
 				{
 					Duration dur = (Duration ) prop;
-					ap.setDuration( new Integer( (int)dur.getDuration() / 60) );
+					int durmin = (int)dur.getDuration() / 60000;
+					// skip the the duration if >= 1 day
+					// not much else we can do about it right now without getting
+					// really complicated
+					if( durmin < (24*60))
+					{						
+						ap.setDuration( new Integer( durmin)  );
+					}
+					else if( durmin > (24*60))
+					{
+						warning.append("WARNING: Cannot handle duration of [" + durmin + "] minutes for appt [" + summary + "], using 0\n" );
+					}
+					
 				}
 				
 				prop = pl.getProperty( Property.CATEGORIES );
@@ -347,7 +363,13 @@ public class AppointmentIcalAdapter {
 				{
 					RRule rr = (RRule) prop;
 					Recur recur = rr.getRecur();
-					
+
+					Date until = recur.getUntil();
+					if( until != null )
+					{
+						warning.append("ERROR: BORG cannot yet handle UNTIL clause for appt [" + summary + "], skipping\n" );
+						continue;
+					}
 					int times = recur.getCount();
 					if( times < 1 )
 						times = 9999;
@@ -381,8 +403,44 @@ public class AppointmentIcalAdapter {
 					}
 					else
 					{
-						ap.setFrequency("daily");
+						warning.append("ERROR: Cannot handle frequency of [" + freq + "], for appt [" + summary + "], skipping\n" );
+						continue;
 					}
+					
+					if( recur.getMonthList() != null)
+					{
+						// we can handle a month list of 1 month if we are repeating yearly
+						if( recur.getMonthList().size() > 1 || !ap.getFrequency().equals("yearly"))
+						{
+							warning.append("ERROR: BORG cannot yet handle the BYMONTH clause for appt [" + summary + "], skipping\n" );
+							continue;
+						}
+					}
+					
+					if( recur.getDayList() != null )
+					{
+						warning.append("ERROR: BORG cannot yet handle BYDAY clause for appt [" + summary + "], skipping\n" );
+						continue;
+					}
+					
+					if( recur.getMonthDayList() != null )
+					{
+						warning.append("ERROR: BORG cannot yet handle BYMONTHDAY clause for appt [" + summary + "], skipping\n" );
+						continue;
+					}
+					
+					if( recur.getYearDayList() != null )
+					{
+						warning.append("ERROR: BORG cannot yet handle BYYEARDAY clause for appt [" + summary + "], skipping\n" );
+						continue;
+					}
+					
+					if( recur.getWeekNoList() != null )
+					{
+						warning.append("ERROR: BORG cannot yet handle BYWEEKNO clause for appt [" + summary + "], skipping\n" );
+						continue;
+					}
+					
 				}
 
 				//amodel.saveAppt(ap, true);
@@ -391,6 +449,11 @@ public class AppointmentIcalAdapter {
 		}
 		
 		 amodel.bulkAdd(aplist);
+		 
+		 if( warning.length() == 0)
+		 	return( null );
+		 else
+		 	return( warning.toString());
 		
 	}
 }

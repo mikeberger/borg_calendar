@@ -1506,7 +1506,9 @@ public class CalendarView extends View implements Prefs.Listener {
         }
         
     	try {
-			AppointmentIcalAdapter.importIcal(file.getAbsolutePath());
+			String warnings = AppointmentIcalAdapter.importIcal(file.getAbsolutePath());
+			if( warnings != null)
+				Errmsg.notice(warnings);
 		} 
     	catch (Exception e) {
 			Errmsg.errmsg(e);

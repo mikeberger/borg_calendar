@@ -30,7 +30,7 @@ LICENSE
 -------
 BORG is open source under the GPL. A copy of the GPL is included with it.
 Source is available from: http://sourceforge.net/projects/borg-calendar/
-If a less restrictive license is desired, send mail to i_flem@users.sourceforge.com with 
+If a less restrictive license is desired, send mail to i_flem@users.sourceforge.net with 
 the reason why.
 
 DONATIONS
