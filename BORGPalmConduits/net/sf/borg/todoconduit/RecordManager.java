@@ -8,11 +8,11 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 
-import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.model.Appointment;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Task;
 import net.sf.borg.model.TaskModel;
+import palm.conduit.Log;
 import palm.conduit.SyncManager;
 import palm.conduit.SyncProperties;
 import palm.conduit.TodoRecord;
@@ -89,7 +89,7 @@ public class RecordManager {
             // the due date
             Date nt = r.getDueDate();
             rec.setDueDate(nt);
-            rec.setNote("-9999");
+            rec.setNote("-9999,");
             SyncManager.writeRec(db, rec);
             
         }
@@ -191,6 +191,48 @@ public class RecordManager {
                 }
                 catch (Exception e) {
                 }
+            }
+            else if( hhRecord.isModified())
+            {
+                // only modify text and date because a BORG todo is really an appt
+                // with many other non-todo fields
+                appt.setText(hhRecord.getDescription());
+                
+                Date nt = appt.getNextTodo();
+                if (nt == null) {
+                    nt = appt.getDate();
+                }
+ 
+                Date d = hhRecord.getDueDate();
+                if( d == null )
+                    d = new Date();
+                
+                if( nt != d ) // date chg
+                {
+                    GregorianCalendar cal = new GregorianCalendar();
+                    cal.setTime(nt);
+                    int d1 = cal.get(Calendar.DATE);
+                    int m1 = cal.get(Calendar.MONTH);
+                    cal.setTime(d);
+                    int d2 = cal.get(Calendar.DATE);
+                    int m2 = cal.get(Calendar.MONTH);
+                    
+                    // date change is detected only by chg of day/month
+                    // cannot just use chg of Date b/c time is not defined on palm
+                    if( d1 != d2 || m1 != m2 )
+                    {
+                        cal.set(Calendar.MINUTE,0);
+                        cal.set(Calendar.HOUR_OF_DAY,0);
+                        d = cal.getTime();
+                        appt.setDate(d);
+                        AppointmentModel.getReference().delAppt(appt);
+                        AppointmentModel.getReference().saveAppt(appt,true);
+                        return;
+                    }
+                }
+
+                
+                AppointmentModel.getReference().syncSave(appt);
             }
         }
 
