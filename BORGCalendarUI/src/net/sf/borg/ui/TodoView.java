@@ -32,8 +32,10 @@ import java.awt.GridBagLayout;
 import java.net.URL;
 import java.text.DateFormat;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Iterator;
 import java.util.ResourceBundle;
 import java.util.Vector;
 
@@ -69,7 +71,7 @@ import javax.swing.border.EmptyBorder;
 import java.text.*;
 import javax.swing.JToggleButton;
 import java.awt.*;
-//import javax.swing.*;
+import javax.swing.JComboBox;
 import javax.swing.table.*;
 
 /*
@@ -223,6 +225,8 @@ public class TodoView extends View {
     public void refresh() {
         AppointmentModel calmod_ = AppointmentModel.getReference();
         
+     
+        
         // get the to list from the data model
         tds_ = calmod_.get_todos();
         
@@ -366,6 +370,25 @@ public class TodoView extends View {
         jtbGreen = new JToggleButton("green",false);
         jtbBlack = new JToggleButton("black",true);
         jtbWhite = new JToggleButton("white",false);
+        // bsv 2004-12-23
+        cat_cb = new JComboBox();
+        // bsv 2004-12-23 original code taken from AppointmentPanel.java
+        try
+        {
+        	AppointmentModel amod = AppointmentModel.getReference(); 
+            Collection acats = amod.getCategories();
+            Iterator ait = acats.iterator();
+            while( ait.hasNext())
+            {
+                cat_cb.addItem( ait.next());
+            }
+            cat_cb.setSelectedIndex(0);
+        }
+        catch( Exception e )
+        {
+            Errmsg.errmsg(e);
+        }
+        
 
         //getContentPane().setLayout(new java.awt.GridBagLayout());
 
@@ -489,7 +512,7 @@ public class TodoView extends View {
         gridBagConstraints11.gridx = 0;
         gridBagConstraints11.gridy = 3;
         gridBagConstraints11.insets = new java.awt.Insets(0,0,0,0);
-        gridBagConstraints11.gridwidth = 1;
+        gridBagConstraints11.gridwidth = 2;
         gridBagConstraints11.weightx = 1.0D;
         //gridBagConstraints11.gridx = 0;
         //gridBagConstraints11.gridy = 3;
@@ -547,17 +570,19 @@ public class TodoView extends View {
         mutator.add( jtbBlack );
         mutator.add( jtbWhite );
         JPanel bjp = new JPanel();
-        //bjp.setLayout( new FlowLayout());
+        JPanel bjp0 = new JPanel();
+        bjp0.setLayout( new BorderLayout());
         bjp.setLayout( new GridLayout(1,5));
         bjp.add( jtbRed );
         bjp.add( jtbBlue );
         bjp.add( jtbGreen );
         bjp.add( jtbBlack );
         bjp.add( jtbWhite );
-        
+        bjp0.add( bjp, BorderLayout.WEST );
+        bjp0.add( cat_cb, BorderLayout.CENTER );
         
         jPanel1.add(tododate_cb, gridBagConstraints9);
-        jPanel1.add(bjp, gridBagConstraints11);
+        jPanel1.add(bjp0, gridBagConstraints11);
         jPanel1.add(jLabel2, gridBagConstraints12);
         jPanel1.add(jLabel1, gridBagConstraints13);
         jPanel1.add(todotext, gridBagConstraints14);
@@ -633,10 +658,25 @@ public class TodoView extends View {
         else r.setColor( "black");
         //r.setColor( "black");
         
+        
         r.setFrequency( "once" );
         r.setTimes(new Integer(1));
         r.setRepeatFlag(false);
-        r.setCategory("");
+
+        
+        // bsv 2004-12-23
+        // code taken from AppointmentPanel.java
+        String cat = (String) cat_cb.getSelectedItem();
+        //System.out.println( cat+"==" );
+        if( cat.equals("") || cat.equals(Resource.getResourceString("uncategorized")))
+        {
+            r.setCategory(null);
+        }
+        else
+        {
+            r.setCategory(cat);
+        }       
+        //r.setCategory("");
         
         calmod_.saveAppt(r, true);
         
@@ -731,6 +771,8 @@ public class TodoView extends View {
     private JToggleButton jtbGreen;
     private JToggleButton jtbBlack;
     private JToggleButton jtbWhite;
+    // bsv 2004-12-23
+    private JComboBox cat_cb;
     
     // End of variables declaration//GEN-END:variables
     
