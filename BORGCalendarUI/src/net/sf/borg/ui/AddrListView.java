@@ -23,13 +23,16 @@ package net.sf.borg.ui;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.io.File;
+import java.io.FileReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.ResourceBundle;
 
 import javax.swing.DefaultListSelectionModel;
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -46,6 +49,7 @@ import net.sf.borg.common.util.Version;
 import net.sf.borg.common.util.XSLTransform;
 import net.sf.borg.model.Address;
 import net.sf.borg.model.AddressModel;
+import net.sf.borg.model.AddressVcardAdapter;
 /**
  *
  * @author  MBERGER
@@ -288,6 +292,7 @@ public class AddrListView extends View
 
         fileMenu.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Action"));
         printList.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Print_List"));
+        printList.setIcon(new ImageIcon(getClass().getResource("/resource/Print16.gif")));
         printList.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -299,6 +304,7 @@ public class AddrListView extends View
         fileMenu.add(printList);
 
         exitMenuItem.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Exit"));
+        exitMenuItem.setIcon(new ImageIcon(getClass().getResource("/resource/Stop16.gif")));
         exitMenuItem.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -307,13 +313,13 @@ public class AddrListView extends View
             }
         });
 
-        fileMenu.add(exitMenuItem);
-
         menuBar.add(fileMenu);
 
         setJMenuBar(menuBar);
 
+        fileMenu.add(getImpvcard());
         fileMenu.add(getHtmlitem());
+        fileMenu.add(exitMenuItem);
         
         pack();
     }//GEN-END:initComponents
@@ -430,6 +436,7 @@ public class AddrListView extends View
 		if (htmlitem == null) {
 			htmlitem = new JMenuItem();
 			htmlitem.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("SaveHTML"));
+			htmlitem.setIcon(new ImageIcon(getClass().getResource("/resource/WebComponent16.gif")));
 			htmlitem.addActionListener(new java.awt.event.ActionListener() { 
 			    public void actionPerformed(java.awt.event.ActionEvent e) { 
 			        try{
@@ -465,5 +472,52 @@ public class AddrListView extends View
 			});
 		}
 		return htmlitem;
+	}
+	
+	private JMenuItem impvcard = null;
+	private JMenuItem getImpvcard() {
+		if (impvcard == null) {
+			impvcard = new JMenuItem();
+			impvcard.setText(ResourceBundle.getBundle("resource/borg_resource").getString("imp_vcard"));
+			impvcard.setIcon(new ImageIcon(getClass().getResource("/resource/Import16.gif")));
+			impvcard.addActionListener(new java.awt.event.ActionListener() { 
+				public void actionPerformed(java.awt.event.ActionEvent e) {    
+			        File file;
+			        while( true ) {
+			            // prompt for a file
+			            JFileChooser chooser = new JFileChooser();
+			            
+			            chooser.setCurrentDirectory( new File(".") );
+			            chooser.setDialogTitle(Resource.getResourceString("choose_file"));
+			            chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+			            
+			            int returnVal = chooser.showOpenDialog(null);
+			            if(returnVal != JFileChooser.APPROVE_OPTION)
+			                return;
+			            
+			            String s = chooser.getSelectedFile().getAbsolutePath();
+			            file = new File(s);
+			            String err = null;
+			            
+			            if( err == null )
+			                break;
+			            
+			            Errmsg.notice( err );
+			        }
+			        
+			    	try {
+			    		FileReader r = new FileReader(file);
+						AddressVcardAdapter.importVcard(r);
+						r.close();
+					} 
+			    	catch (Exception ex) {
+						Errmsg.errmsg(ex);
+					} 
+
+				
+				}
+			});
+		}
+		return impvcard;
 	}
   }
