@@ -21,6 +21,7 @@ Copyright 2004 by Mohan Embar - http://www.thisiscool.com/
 package net.sf.borg.common.io;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -68,7 +69,11 @@ public class IOHelper
 			return new MemFileOutputStream(file, files);
 		else if (AppHelper.getType() == AppHelper.APPLICATION)
 		{
-			return new FileOutputStream(file);
+			File fil = new File(file);
+			fil.getParentFile().mkdirs();
+				// create the containing directory if it doesn't
+				// already exist.
+			return new FileOutputStream(fil);
 		}
 		else
 			throw new IllegalArgumentException(AppHelper.getType().toString());
