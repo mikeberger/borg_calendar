@@ -159,6 +159,11 @@ public class RecordManager {
                 
                 // set time to 12:00
                 Date d = appt.getDate();
+                
+                // must set todo's with no date to current date - BORG does not
+                // support dateless todos
+                if( d == null )
+                    d = new Date();
                 GregorianCalendar cal = new GregorianCalendar();
                 cal.setTime(d);
                 cal.set(Calendar.MINUTE,0);
