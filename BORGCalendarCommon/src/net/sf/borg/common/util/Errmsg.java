@@ -85,6 +85,8 @@ public class Errmsg
             e.printStackTrace(ps);
             JOptionPane.showMessageDialog(null, bao.toString(), Resource.getResourceString("Stack_Trace"),
             JOptionPane.ERROR_MESSAGE);
+            // dump to console too for cut & paste
+            System.out.println(bao.toString());
         }
     }
     
