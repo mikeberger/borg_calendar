@@ -364,18 +364,45 @@ public class AppointmentIcalAdapter {
 					RRule rr = (RRule) prop;
 					Recur recur = rr.getRecur();
 
+					// if UNTIL present - only add first repeat - can't handle this yet
 					Date until = recur.getUntil();
 					if( until != null )
 					{
-						warning.append("ERROR: BORG cannot yet handle UNTIL clause for appt [" + summary + "], skipping\n" );
+						warning.append("WARNING: BORG cannot yet handle UNTIL clause for appt [" + summary + "], adding first occurrence only\n" );
+						aplist.add(ap);
+						continue;
+					}	
+					
+
+					
+					if( recur.getDayList() != null )
+					{
+							warning.append("WARNING: BORG cannot yet handle multiple day BYDAY clause for appt [" + summary + "], adding first occurrence only\n" );
+							aplist.add(ap);
+							continue;
+					}
+					
+					if( recur.getMonthDayList() != null )
+					{
+						warning.append("WARNING: BORG cannot yet handle BYMONTHDAY clause for appt [" + summary + "], adding first occurrence only\n" );
+						aplist.add(ap);
 						continue;
 					}
-					int times = recur.getCount();
-					if( times < 1 )
-						times = 9999;
-					ap.setTimes( new Integer(times));
-	
-					ap.setRepeatFlag(true);
+					
+					if( recur.getYearDayList() != null )
+					{
+						warning.append("WARNING: BORG cannot yet handle BYYEARDAY clause for appt [" + summary + "], adding first occurrence only\n" );
+						aplist.add(ap);
+						continue;
+					}
+					
+					if( recur.getWeekNoList() != null )
+					{
+						warning.append("WARNING: BORG cannot yet handle BYWEEKNO clause for appt [" + summary + "], adding first occurrence only\n" );
+						aplist.add(ap);
+						continue;
+					}
+
 					String freq = recur.getFrequency();
 					int interval = recur.getInterval();
 					if( freq.equals("DAILY"))
@@ -403,7 +430,8 @@ public class AppointmentIcalAdapter {
 					}
 					else
 					{
-						warning.append("ERROR: Cannot handle frequency of [" + freq + "], for appt [" + summary + "], skipping\n" );
+						warning.append("WARNING: Cannot handle frequency of [" + freq + "], for appt [" + summary + "], adding first occurrence only\n" );
+						aplist.add(ap);
 						continue;
 					}
 					
@@ -412,34 +440,19 @@ public class AppointmentIcalAdapter {
 						// we can handle a month list of 1 month if we are repeating yearly
 						if( recur.getMonthList().size() > 1 || !ap.getFrequency().equals("yearly"))
 						{
-							warning.append("ERROR: BORG cannot yet handle the BYMONTH clause for appt [" + summary + "], skipping\n" );
+							warning.append("WARNING: BORG cannot yet handle the BYMONTH clause for appt [" + summary + "], adding first occurrence only\n" );
+							ap.setFrequency("once");
+							aplist.add(ap);
 							continue;
 						}
 					}
 					
-					if( recur.getDayList() != null )
-					{
-						warning.append("ERROR: BORG cannot yet handle BYDAY clause for appt [" + summary + "], skipping\n" );
-						continue;
-					}
+					int times = recur.getCount();
+					if( times < 1 )
+						times = 9999;
 					
-					if( recur.getMonthDayList() != null )
-					{
-						warning.append("ERROR: BORG cannot yet handle BYMONTHDAY clause for appt [" + summary + "], skipping\n" );
-						continue;
-					}
-					
-					if( recur.getYearDayList() != null )
-					{
-						warning.append("ERROR: BORG cannot yet handle BYYEARDAY clause for appt [" + summary + "], skipping\n" );
-						continue;
-					}
-					
-					if( recur.getWeekNoList() != null )
-					{
-						warning.append("ERROR: BORG cannot yet handle BYWEEKNO clause for appt [" + summary + "], skipping\n" );
-						continue;
-					}
+					ap.setTimes( new Integer(times));	
+					ap.setRepeatFlag(true);
 					
 				}
 
