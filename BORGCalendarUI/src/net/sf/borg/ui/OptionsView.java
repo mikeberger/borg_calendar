@@ -1989,8 +1989,8 @@ public class OptionsView extends View
 	private JPanel getJPanel10() {
 		if (jPanel10 == null) {
 			jPanel10 = new JPanel();
-			jPanel10.add(jButton2, null);
 			jPanel10.add(applyButton, null);
+			jPanel10.add(jButton2, null);
 		}
 		return jPanel10;
 	}

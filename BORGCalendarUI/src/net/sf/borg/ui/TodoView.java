@@ -727,6 +727,7 @@ public class TodoView extends View {
 	private JPanel jPanel2 = null;
 	private JButton doneButton = null;
 	private JButton doneDelButton = null;
+	private JButton jButton = null;
 	/**
 	 * This method initializes jPanel	
 	 * 	
@@ -769,6 +770,7 @@ public class TodoView extends View {
 			jPanel2 = new JPanel();
 			jPanel2.add(getDoneButton(), null);
 			jPanel2.add(getDoneDelButton(), null);
+			jPanel2.add(getJButton(), null);
 		}
 		return jPanel2;
 	}
@@ -808,4 +810,26 @@ public class TodoView extends View {
 		}
 		return doneDelButton;
 	}
-    }  //  @jve:decl-index=0:visual-constraint="39,18"
+	/**
+	 * This method initializes jButton	
+	 * 	
+	 * @return javax.swing.JButton	
+	 */    
+	private void disp()
+	{
+	    this.dispose();
+	}
+	private JButton getJButton() {
+		if (jButton == null) {
+			jButton = new JButton();
+			jButton.setIcon(new ImageIcon(getClass().getResource("/resource/Stop16.gif")));
+			jButton.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Dismiss"));
+			jButton.addActionListener(new java.awt.event.ActionListener() { 
+				public void actionPerformed(java.awt.event.ActionEvent e) {    
+					disp();
+				}
+			});
+		}
+		return jButton;
+	}
+     }  //  @jve:decl-index=0:visual-constraint="39,18"

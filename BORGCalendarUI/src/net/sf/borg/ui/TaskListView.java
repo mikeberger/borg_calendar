@@ -52,6 +52,8 @@ import net.sf.borg.model.Task;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.db.DBException;
 
+import javax.swing.JButton;
+import javax.swing.ImageIcon;
 /*
  * btgui.java
  *
@@ -1063,6 +1065,8 @@ public class TaskListView extends View {
 
     private JPanel jPanel2 = null;
 
+	private JPanel jPanel1 = null;
+	private JButton jButton = null;
     /**
      * This method initializes jPanel
      * 
@@ -1070,6 +1074,7 @@ public class TaskListView extends View {
      */
     private JPanel getJPanel() {
         if (jPanel == null) {
+            GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
             GridBagConstraints gridBagConstraints20 = new GridBagConstraints();
             GridBagConstraints gridBagConstraints19 = new GridBagConstraints();
             GridBagConstraints gridBagConstraints15 = new GridBagConstraints();
@@ -1108,12 +1113,17 @@ public class TaskListView extends View {
             gridBagConstraints20.weightx = 1.0D;
             gridBagConstraints20.fill = java.awt.GridBagConstraints.BOTH;
             gridBagConstraints20.insets = new java.awt.Insets(4, 4, 4, 4);
+            gridBagConstraints1.gridx = 0;
+            gridBagConstraints1.gridy = 4;
+            gridBagConstraints1.fill = java.awt.GridBagConstraints.BOTH;
+            gridBagConstraints1.gridwidth = 4;
             jPanel.add(jButton21, gridBagConstraints8);
             jPanel.add(jTextField3, gridBagConstraints9);
             jPanel.add(jScrollPane1, gridBagConstraints11);
             jPanel.add(getJPanel2(), gridBagConstraints15);
             jPanel.add(jLabel1, gridBagConstraints19);
             jPanel.add(catbox, gridBagConstraints20);
+            jPanel.add(getJPanel1(), gridBagConstraints1);
         }
         return jPanel;
     }
@@ -1137,4 +1147,35 @@ public class TaskListView extends View {
         }
         return jPanel2;
     }
-} //  @jve:decl-index=0:visual-constraint="55,54"
+	/**
+	 * This method initializes jPanel1	
+	 * 	
+	 * @return javax.swing.JPanel	
+	 */    
+	private JPanel getJPanel1() {
+		if (jPanel1 == null) {
+			jPanel1 = new JPanel();
+			jPanel1.add(getJButton(), null);
+		}
+		return jPanel1;
+	}
+	/**
+	 * This method initializes jButton	
+	 * 	
+	 * @return javax.swing.JButton	
+	 */    
+	private void disp(){ this.dispose(); }
+	private JButton getJButton() {
+		if (jButton == null) {
+			jButton = new JButton();
+			jButton.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Dismiss"));
+			jButton.setIcon(new ImageIcon(getClass().getResource("/resource/Stop16.gif")));
+			jButton.addActionListener(new java.awt.event.ActionListener() { 
+				public void actionPerformed(java.awt.event.ActionEvent e) {    
+					disp();
+				}
+			});
+		}
+		return jButton;
+	}
+  } //  @jve:decl-index=0:visual-constraint="55,54"
