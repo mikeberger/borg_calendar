@@ -4,6 +4,7 @@ Palm Synchronization Conduits
 
 Version 1.4.2
 -------------
+Polish Translation from Rafa? Gawro?ski
 User tunable colors for the month view and todo list
 Export to vCalendar 1.0 (.vcs) format (used by Palm Desktop)
 Save Address or Task information as HTML using XSLT

@@ -12,17 +12,17 @@ xmlns="http://www.w3.org/TR/REC-html40">
  <o:DocumentProperties>
   <o:Author>mike</o:Author>
   <o:LastAuthor>mike</o:LastAuthor>
-  <o:Revision>6</o:Revision>
-  <o:TotalTime>9</o:TotalTime>
+  <o:Revision>7</o:Revision>
+  <o:TotalTime>10</o:TotalTime>
   <o:Created>2004-11-05T20:35:00Z</o:Created>
-  <o:LastSaved>2004-11-13T19:57:00Z</o:LastSaved>
+  <o:LastSaved>2005-01-26T23:32:00Z</o:LastSaved>
   <o:Pages>2</o:Pages>
-  <o:Words>733</o:Words>
-  <o:Characters>4183</o:Characters>
+  <o:Words>739</o:Words>
+  <o:Characters>4216</o:Characters>
   <o:Company>telcordia</o:Company>
-  <o:Lines>34</o:Lines>
+  <o:Lines>35</o:Lines>
   <o:Paragraphs>8</o:Paragraphs>
-  <o:CharactersWithSpaces>5137</o:CharactersWithSpaces>
+  <o:CharactersWithSpaces>5177</o:CharactersWithSpaces>
   <o:Version>9.2720</o:Version>
  </o:DocumentProperties>
 </xml><![endif]-->
@@ -86,6 +86,13 @@ a:visited, span.MsoHyperlinkFollowed
 	{color:purple;
 	text-decoration:underline;
 	text-underline:single;}
+pre
+	{margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Courier New";
+	mso-fareast-font-family:"Courier New";}
 @page Section1
 	{size:8.5in 11.0in;
 	margin:1.0in 1.25in 1.0in 1.25in;
@@ -102,15 +109,14 @@ div.Section1
 
 <div class=Section1>
 
-<h2><span style='font-family:Arial;color:black'>Internationalization</span><span
-style='font-family:Arial'><o:p></o:p></span></h2>
+<h2><span style='color:black'>Internationalization</span></h2>
 
 <p class=MsoNormal><span style='font-family:Arial;color:black'>BORG supports
 Locales (regional settings) as of release 1.3. The Locale can be switched from
-the <b><i>Options</i></b> screen. Once a new Locale is chosen, a restart is
-required before the new Locale is used. The date formats, month names, and weekday
-names are supported for all Locales listed. However, the majority of text
-strings in BORG come from a properties file. <o:p></o:p></span></p>
+the <b><i>Options</i></b> screen. Once a new Locale is chosen, a restart is required
+before the new Locale is used. The date formats, month names, and weekday names
+are supported for all Locales listed. However, the majority of text strings in
+BORG come from a properties file. <o:p></o:p></span></p>
 
 <p class=MsoNormal><span style='font-family:Arial;color:black'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
 
@@ -123,9 +129,9 @@ borg_resource.properties file that comes in the BORG jar file.<o:p></o:p></span>
 
 <p class=MsoNormal><i><span style='font-family:Arial;color:black'>During
 development, new strings are added to the program. However, the translations
-are not updated by the main developer. Therefore, some new text may appear in English
-for the German and Spanish locales until the translations are provided to the
-developer.<o:p></o:p></span></i></p>
+are not updated by the main developer. Therefore, some new text may appear in
+English for the German and Spanish locales until the translations are provided
+to the developer.<o:p></o:p></span></i></p>
 
 <p class=MsoNormal><span style='font-family:Arial;color:black'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
 
@@ -137,14 +143,14 @@ instructions on how to provide a new translation:<o:p></o:p></span></p>
 <p class=MsoBodyText>To change the text strings in BORG, you have to understand
 a little about the borg.jar file. A jar (Java archive) file is just a regular
 ZIP archive with some extra java related items in it. The borg.jar file can be
-unzipped using any tool that works on ZIP files, or using the jar tool that comes
-with the Java SDK.</p>
+unzipped using any tool that works on ZIP files, or using the jar tool that
+comes with the Java SDK.</p>
 
 <p class=MsoBodyText>If you unzip the borg.jar file, you will find that it
 contains a number of folders &#8211; i.e. net, META-INF, and resource. All of the
 files containing the BORG text strings are in the resource folder. By editing
-files in the resource folder and then re-zipping the borg.jar file, you can change
-the strings shown by the GUI.</p>
+files in the resource folder and then re-zipping the borg.jar file, you can
+change the strings shown by the GUI.</p>
 
 <p class=MsoBodyText>There are 3 different categories of text strings shown in
 BORG:</p>
@@ -157,13 +163,13 @@ that come from the Java Runtime</h1>
 
 </div>
 
-<p class=MsoBodyText>These are the Month and Day names. These strings always appear
-in the language associated with the locale that is set in the Appearance tab of
-the preferences window.<span style="mso-spacerun: yes">&nbsp; </span>Nothing
-has to be done to translate these strings.</p>
+<p class=MsoBodyText>These are the Month and Day names. These strings always
+appear in the language associated with the locale that is set in the Appearance
+tab of the preferences window.<span style="mso-spacerun: yes">&nbsp;
+</span>Nothing has to be done to translate these strings.</p>
 
-<p class=MsoBodyText>Just set a new locale, restart BORG, and you should see translated
-month and day names.</p>
+<p class=MsoBodyText>Just set a new locale, restart BORG, and you should see
+translated month and day names.</p>
 
 <p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
 
@@ -176,9 +182,9 @@ that come from Resource Bundles</h1>
 </div>
 
 <p class=MsoBodyText>These include all of the GUI labels, table headers, button
-text, and menu text except for the month and day names. These come from a resource
-bundle called borg_resource. Resource bundles are a standard way that Java uses
-to find properties for a given locale.</p>
+text, and menu text except for the month and day names. These come from a
+resource bundle called borg_resource. Resource bundles are a standard way that
+Java uses to find properties for a given locale.</p>
 
 <p class=MsoBodyText>When you set a locale in BORG, you are setting 2 data
 items used by Java - the country and language. Java has a 2 character code for
@@ -192,16 +198,16 @@ for the string in a file called borg_resource_ll_cc.properties, where ll is the
 language and cc is the country code.<span style="mso-spacerun: yes">&nbsp;
 </span>For example, the file borg_resource_fe_CA is used first if the locale is
 set to French/Canada.If the given property is not found in the file, or the
-file does not exist, BORG will look for a file of the form borg_resource_ll.properties.
-Finally, the default file, borg_resource.properties is used. This default file
-is guaranteed to have all of the required strings. This search algorithm is
-standard for Java.</p>
+file does not exist, BORG will look for a file of the form
+borg_resource_ll.properties. Finally, the default file,
+borg_resource.properties is used. This default file is guaranteed to have all
+of the required strings. This search algorithm is standard for Java.</p>
 
 <p class=MsoBodyText>The resource files included with BORG are:</p>
 
-<p class=MsoBodyText>borg_resource.properties - for english borg_resource_es.properties
-- default for all spanish locales borg_resource_de.properties - default for all
-german locales (release 1.3.2)</p>
+<p class=MsoBodyText>borg_resource.properties - for english
+borg_resource_es.properties - default for all spanish locales
+borg_resource_de.properties - default for all german locales (release 1.3.2)</p>
 
 <p class=MsoBodyText>*** To create a new translation: *** </p>
 
@@ -234,9 +240,9 @@ file</p>
 
 <p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
 
-<p class=MsoListContinue>If you use Java web start, I am not sure where the
-borg.jar file is kept, nor if it is ok to edit it. So download the borg ZIP
-file from sourceforge if you want to change the text strings.</p>
+<p class=MsoListContinue>If you use Java web start, I am not sure where the borg.jar
+file is kept, nor if it is ok to edit it. So download the borg ZIP file from
+sourceforge if you want to change the text strings.</p>
 
 <h1>3.<span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp; </span>Strings
 that come from regular text or html files inside borg.jar</h1>
@@ -275,6 +281,10 @@ href="mailto:i_flem@users.sourceforge.net">i_flem@users.sourceforge.net</a></p>
 <p class=MsoNormal>Piero Trono <a href="http://php-multishop.com/">http://php-multishop.com</a>
 <a href="mailto:tropic@users.sourceforge.net">tropic@users.sourceforge.net</a>
 (Italian)</p>
+
+<p class=MsoNormal>Rafa&#322; Gawro&#324;ski (Polish)</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
 
 <p class=MsoNormal><span style='font-family:Arial'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
 
