@@ -138,7 +138,7 @@ public class PrefName {
 		// user color scheme
 		static public PrefName UCS_ON = new PrefName("ucs_on","true");
 		// appts categories
-		static public PrefName UCS_RED = new PrefName("ucs_red","16711680");
+		static public PrefName UCS_RED = new PrefName("ucs_red","13369395");
 		static public PrefName UCS_BLUE = new PrefName("ucs_blue","6684876");
 		static public PrefName UCS_GREEN = new PrefName("ucs_green","39168");
 		static public PrefName UCS_BLACK = new PrefName("ucs_black","13107");
@@ -151,7 +151,7 @@ public class PrefName {
 		static public PrefName UCS_BRICK = new PrefName("ucs_brick","10027008");
 		// Calendar view day background colors
 		// TODO choose correct colors
-		static public PrefName UCS_DEFAULT = new PrefName("ucs_default","13421772");
+		static public PrefName UCS_DEFAULT = new PrefName("ucs_default","11316396");
 		// original color is Color(225,150,150)
 		static public PrefName UCS_TODAY = new PrefName("ucs_today","16751001");
 		// original color is Color(245,203,162)
