@@ -27,7 +27,7 @@
         The gui preferences indication.
         Sets the installer window to 640x480. It will not be able to change the size.
     -->
-    <guiprefs width="640" height="480" resizable="no"/>
+    <guiprefs width="640" height="480" resizable="yes"/>
     
     <!-- 
         The locale section.
@@ -46,7 +46,7 @@
     -->
     <resources>
         <res id="LicencePanel.licence" src="COPYING"/>
-        <res id="InfoPanel.info" src="README.txt"/>
+        <res id="InfoPanel.info" src="RELEASE_NOTES.txt"/>
 	<res src="ShortcutSpec.xml" id="shortcutSpec.xml"/>
 
     </resources>
@@ -75,18 +75,15 @@
     <packs>
         <pack name="Base" required="yes">
             <description>The base program and help files</description>
-            <file src="README.txt" targetdir="$INSTALL_PATH"/>
+            <file src="RELEASE_NOTES.txt" targetdir="$INSTALL_PATH"/>
             <file src="COPYING" targetdir="$INSTALL_PATH"/>
             <file src="borg.jar" targetdir="$INSTALL_PATH"/>
-            <file src="CHANGES.txt" targetdir="$INSTALL_PATH"/>
-            <file src="TRANSLATE.txt" targetdir="$INSTALL_PATH"/>
 	    <file src="lib/jh.jar" targetdir="$INSTALL_PATH/lib"/>
 	    <file src="lib/borghelp.jar" targetdir="$INSTALL_PATH/lib"/>
         </pack>
         <pack name="Windows Systray Support" os="windows" required="no">
 		<description>Support for a system tray icon (recommended for windows users)</description>
             <file src="TrayIcon12.dll" targetdir="$INSTALL_PATH"/> 
-            <file src="SYSTRAY.txt" targetdir="$INSTALL_PATH"/> 
 	    <file src="lib/trayicon.jar" targetdir="$INSTALL_PATH/lib"/> 
 	    <file src="lib/TRAYICON.README" targetdir="$INSTALL_PATH/lib"/> 
         </pack>
@@ -97,7 +94,6 @@
         </pack>
         <pack name="iCal Support" required="no">
 		<description>Adds support for limited Import/Export to ICalendar format</description>
-            <file src="iCal.txt" targetdir="$INSTALL_PATH"/> 
 	    <file src="lib/commons-logging.jar" targetdir="$INSTALL_PATH/lib"/> 
 	    <file src="lib/ical4j.jar" targetdir="$INSTALL_PATH/lib"/> 
 	    <file src="lib/LICENSE.iCal4j" targetdir="$INSTALL_PATH/lib"/> 
@@ -105,7 +101,6 @@
         </pack>
 	<pack name="RDBMS Support" preselected="no" required="no">
 		<description>SQL needed to create a BORG database in MySQL</description>
-            <file src="RDBMS.txt" targetdir="$INSTALL_PATH"/> 
             <file src="borg.sql" targetdir="$INSTALL_PATH"/> 
         </pack>
 	<pack name="MDBTOOL" preselected="no" required="no">
@@ -115,7 +110,6 @@
 	<pack name="Sources" preselected="no" required="no">
             <description>The sources</description>
             <file src="borg_src.zip" targetdir="$INSTALL_PATH"/>
-            <file src="BUILD.txt" targetdir="$INSTALL_PATH"/>
         </pack>
     </packs>
     

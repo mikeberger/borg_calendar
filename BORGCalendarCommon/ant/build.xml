@@ -208,7 +208,7 @@ build.number=${build.number}
    <target name="borg_prog" depends="clean-build">
       <zip destfile="${dist.dir}/borg.zip">
          <fileset dir="${dist.dir}" includes="*.jar"/>       
-         <fileset dir="${build.dir}/resource" includes="COPYING,*.txt"/> 
+         <fileset dir="${build.dir}/resource" includes="COPYING"/> 
       	 <fileset dir="${build.dir}" includes="lib/borghelp.jar"/>
          <fileset dir="${db.res.dir}" includes="borg.sql"/>
       	 <fileset dir="${prj.common.dir}" includes="lib/*"/>
