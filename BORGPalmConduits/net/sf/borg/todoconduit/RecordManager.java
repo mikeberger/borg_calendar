@@ -2,8 +2,10 @@ package net.sf.borg.todoconduit;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
 
 import net.sf.borg.model.Appointment;
@@ -116,6 +118,16 @@ public class RecordManager {
             // add a new todo to BORG
             if (!hhRecord.isArchived() && !hhRecord.isDeleted()) {
                 appt = palmToBorg(hhRecord);
+                
+                // set time to 12:00
+                Date d = appt.getDate();
+                GregorianCalendar cal = new GregorianCalendar();
+                cal.setTime(d);
+                cal.set(Calendar.MINUTE,0);
+                cal.set(Calendar.HOUR_OF_DAY,0);
+                d = cal.getTime();
+                appt.setDate(d);
+                
                 addPCRecord(appt);
             }
         }

@@ -1,5 +1,6 @@
 package net.sf.borg.addrconduit;
 
+import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.model.AddressModel;
 import palm.conduit.Conduit;
 import palm.conduit.ConfigureConduitInfo;
@@ -24,6 +25,8 @@ public class AddrCond implements Conduit {
         RecordManager recordMgr;
         AddressModel addressModel;
 
+        Errmsg.console(true);
+        
         // Tell the log we are starting
         Log.startSync();
 

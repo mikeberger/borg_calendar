@@ -1,5 +1,6 @@
 package net.sf.borg.todoconduit;
 
+import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.model.AppointmentModel;
 import palm.conduit.Conduit;
 import palm.conduit.ConfigureConduitInfo;
@@ -19,6 +20,8 @@ public class TodoCond implements Conduit {
     public void open(SyncProperties props) {
 
         int db;
+        
+        Errmsg.console(true);
 
         RecordManager recordMgr;
         AppointmentModel apptModel;

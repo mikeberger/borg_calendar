@@ -1,5 +1,6 @@
 package net.sf.borg.apptconduit;
 
+import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.model.AppointmentModel;
 import palm.conduit.Conduit;
 import palm.conduit.ConfigureConduitInfo;
@@ -23,6 +24,8 @@ public class ApptCond implements Conduit {
         RecordManager recordMgr;
         AppointmentModel apptModel;
 
+        Errmsg.console(true);
+        
         // Tell the log we are starting
         Log.startSync();
 
