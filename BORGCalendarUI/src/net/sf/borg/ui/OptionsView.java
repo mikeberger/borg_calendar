@@ -1299,27 +1299,7 @@ public class OptionsView extends View
         });
 
         // added by bsv 2004-12-20
-        getJPanelUCS().setLayout( new GridLayout( 10,2 ));
-        // 1st column-2nd column
-        //getJPanelUCS().add( new JLabel("to be improved :)") );
-        getJPanelUCS().add( cb_ucs_on );
-        getJPanelUCS().add( cb_ucs_ontodo );
-        getJPanelUCS().add( btn_ucs_red );
-        getJPanelUCS().add( btn_ucs_default );
-        getJPanelUCS().add( btn_ucs_blue );
-        getJPanelUCS().add( btn_ucs_today );
-        getJPanelUCS().add( btn_ucs_green );
-        getJPanelUCS().add( btn_ucs_holiday );
-        getJPanelUCS().add( btn_ucs_black );
-        getJPanelUCS().add( btn_ucs_halfday );
-        getJPanelUCS().add( btn_ucs_white );
-        getJPanelUCS().add( btn_ucs_vacation );
-        getJPanelUCS().add( btn_ucs_tasks );
-        getJPanelUCS().add( btn_ucs_weekend );
-        getJPanelUCS().add( btn_ucs_holidays );
-        getJPanelUCS().add( btn_ucs_weekday );
-        getJPanelUCS().add( btn_ucs_birthdays );
-        getJPanelUCS().add( btn_ucs_restore );
+ 
         
         JPanel njp = new JPanel();
         GridBagConstraints gridBagConstraints310 = new GridBagConstraints();
@@ -2006,6 +1986,28 @@ public class OptionsView extends View
 	private JPanel getJPanelUCS() {
 		if (jPanelUCS == null) {
 			jPanelUCS = new JPanel();
+			jPanelUCS.setLayout( new GridLayout( 10,2 ));
+		        // 1st column-2nd column
+		        //getJPanelUCS().add( new JLabel("to be improved :)") );
+			jPanelUCS.add( cb_ucs_on );
+			jPanelUCS.add( cb_ucs_ontodo );
+			jPanelUCS.add( btn_ucs_red );
+			jPanelUCS.add( btn_ucs_default );
+			jPanelUCS.add( btn_ucs_blue );
+			jPanelUCS.add( btn_ucs_today );
+			jPanelUCS.add( btn_ucs_green );
+			jPanelUCS.add( btn_ucs_holiday );
+			jPanelUCS.add( btn_ucs_black );
+			jPanelUCS.add( btn_ucs_halfday );
+			jPanelUCS.add( btn_ucs_white );
+			jPanelUCS.add( btn_ucs_vacation );
+			jPanelUCS.add( btn_ucs_tasks );
+			jPanelUCS.add( btn_ucs_weekend );
+			jPanelUCS.add( btn_ucs_holidays );
+			jPanelUCS.add( btn_ucs_weekday );
+			jPanelUCS.add( btn_ucs_birthdays );
+			jPanelUCS.add( btn_ucs_restore );
+			
 		}
 		return jPanelUCS;
 	}
