@@ -27,6 +27,9 @@ import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.Version;
 import net.sf.borg.model.AppointmentModel;
 
+import javax.swing.JPanel;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
 /**
  *
  * @author  mberger
@@ -142,6 +145,8 @@ public class CategoryChooser extends View {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
+        this.setSize(250, 147);
+        this.setContentPane(getJPanel());
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         getContentPane().add(jPanel2, gridBagConstraints);
 
@@ -171,7 +176,32 @@ public class CategoryChooser extends View {
         this.dispose();
     }//GEN-LAST:event_exitForm
     
-    /**
+	/**
+	 * This method initializes jPanel	
+	 * 	
+	 * @return javax.swing.JPanel	
+	 */    
+	private JPanel getJPanel() {
+		if (jPanel == null) {
+			GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
+			GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
+			jPanel = new JPanel();
+			jPanel.setLayout(new GridBagLayout());
+			gridBagConstraints1.gridx = 0;
+			gridBagConstraints1.gridy = 0;
+			gridBagConstraints1.insets = new java.awt.Insets(4,4,4,4);
+			gridBagConstraints1.fill = java.awt.GridBagConstraints.BOTH;
+			gridBagConstraints1.weightx = 1.0D;
+			gridBagConstraints1.weighty = 1.0D;
+			gridBagConstraints2.gridx = 0;
+			gridBagConstraints2.gridy = 1;
+			gridBagConstraints2.insets = new java.awt.Insets(0,0,0,0);
+			jPanel.add(jPanel1, gridBagConstraints1);
+			jPanel.add(jPanel2, gridBagConstraints2);
+		}
+		return jPanel;
+	}
+     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
@@ -192,4 +222,5 @@ public class CategoryChooser extends View {
     private javax.swing.JPanel jPanel2;
     // End of variables declaration//GEN-END:variables
     
-}
+	private JPanel jPanel = null;
+}  //  @jve:decl-index=0:visual-constraint="10,10"
