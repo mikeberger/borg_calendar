@@ -407,15 +407,11 @@ public class TodoView extends View {
         
         // bsv 2004-12-21
         // TODO investigate how it works
-        //String tddate = tododate_cb.getCalendar().getTime().toString();
-        //System.out.println(tododate_cb.getCalendar().getTime().toString());
         // some stupid way
-        //tododate.setText( tododate_cb.getCalendar().getTime().toString() );
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
         tododate.setText( sdf.format( tododate_cb.getCalendar().getTime() ) );
-        System.out.println(tododate.getText());
+
         String tddate = tododate.getText();
-        //String tddate = tododate.getText();
         
         Date std = new Date();
         
