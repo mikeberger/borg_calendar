@@ -45,10 +45,10 @@ public class XTree
     }
     
     // the element's name and optional value
-    String	 name_, value_;
+    private String name_, value_;
     
     // pointers to other nodes in the tree
-    XTree firstChild_, sibling_, parent_, lastChild_;
+    private XTree firstChild_, sibling_, parent_, lastChild_;
     
     // create a new element as a child of this one with no name or value
     XTree newChild()
@@ -75,7 +75,7 @@ public class XTree
     { return( this != null_one );  }
     
     // the actual null node
-    static XTree null_one = new XTree();
+    private static final XTree null_one = new XTree();
     
     // initialize a node with name=ROOT
     public XTree()
@@ -128,7 +128,6 @@ public class XTree
             s = s.replaceAll("&amp;", "&" );
             s = s.replaceAll("&lt;", "<" );
             s = s.replaceAll("&gt;", ">" );
-
         }           
         value_ = s; 
         return(this);
@@ -238,21 +237,19 @@ public class XTree
     // get the value of an element
     // if the esc flag is non-zero, then
     // perform XML escaping on the data (for writing out as XML text)
-    public String value( int esc )
+    public String value(boolean esc)
     {
         
-        if( esc != 0  )
+        if( esc )
         {
             String ret = new String(value_);
             ret = ret.replaceAll("&", "&amp;" );
             ret = ret.replaceAll(">", "&gt;" );
             ret = ret.replaceAll("<", "&lt;" );
             return(ret);
-            
         }
         
         return( value_ );
-        
     }
     
     // read XML from a file or System.in if filename=""
@@ -289,18 +286,17 @@ public class XTree
     
     // convert the XML tree starting at the current node
     // to a String
-    static StringBuffer buf_;
     public String toString()
     {
-        buf_ = new StringBuffer("");
-        toString(0, this );
-        return(buf_.toString());
+        StringBuffer buf = new StringBuffer();
+        toString(0, buf, this);
+        return(buf.toString());
     }
     
     // recursive part of toString()
     // XML output is indented to be pretty.
     // level keeps track of the indent level
-    private void toString(int level, XTree root)
+    private void toString(int level, StringBuffer buf, XTree root)
     {
         
         XTree cur;
@@ -311,29 +307,27 @@ public class XTree
             // empty simple node
             if( cur.firstChild_ == null && cur.value_.equals("") )
             {
-                buf_.append( indent(level) + "<" + cur.name() + "/>\n");
+                buf.append( indent(level) + "<" + cur.name() + "/>\n");
                 continue;
             }
             
-            buf_.append(indent(level) + "<" + cur.name() + ">");
-            buf_.append( cur.value(1));
+            buf.append(indent(level) + "<" + cur.name() + ">");
+            buf.append( cur.value(true));
             
             if( cur.firstChild_ != null )
             {
-                buf_.append("\n");
-                cur.firstChild_.toString( level+1, root );
-                buf_.append(indent(level) + "</" + cur.name() + ">\n");
+             buf.append("\n");
+                cur.firstChild_.toString(level+1, buf, root );
+                buf.append(indent(level) + "</" + cur.name() + ">\n");
             }
             else
             {
-                buf_.append("</" + cur.name() + ">\n");
+             buf.append("</" + cur.name() + ">\n");
             }
-            
             
             if( root == cur)  break;
         }
         return;
-        
     }
     
     
@@ -402,19 +396,10 @@ public class XTree
     static final private int T_STRING = 4;    // other string data
     static final private int T_EOF = 5;       // end of input
     
-    
-    // this flag is used by the tokenizer to remember that
-    // it found an open bracket that ended processing of the
-    // last token. I would have liked to rewind the input
-    // to put the bracket back - but this was not supported
-    // for the input types I support in Java
-    // so the tokenizer has this one ugly spot that would
-    // have been a call to rewind or unget in C++
-    private static boolean open_found = false;
-    
     // the tokenizer (get_token) reads one token at a time from the input
     // and returns it to the main parser state machine
-    private static int get_token( Reader r, StringBuffer buf ) throws Exception
+    private static Token get_token( Reader r, StringBuffer buf, boolean open_found )
+     throws Exception
     {
         
         buf.setLength(0);
@@ -433,7 +418,8 @@ public class XTree
             { throw e; }
             
             // end of data
-            if( c == -1 ) return(T_EOF);
+            if( c == -1 )
+             return new Token(T_EOF, open_found);
             
             // not sure why this here - ignore 0 bytes???
             // must have found a problem with 0 bytes in files
@@ -463,7 +449,7 @@ public class XTree
                     // delete the trailing '/' to return just the
                     // element name
                     buf.deleteCharAt( buf.length() - 1 );
-                    return( T_EMPTY );
+                 return new Token(T_EMPTY, open_found);
                 }
                 
                 // if the beggining of the data was '/', then
@@ -472,11 +458,11 @@ public class XTree
                 if( buf.charAt(0) == '/' )
                 {
                     buf.deleteCharAt(0);
-                    return( T_CLOSE );
+                 return new Token(T_CLOSE, open_found);
                 }
                 
                 // guess we are just closing an opening element
-                return( T_OPEN );
+             return new Token(T_OPEN, open_found);
             }
             else if( ch == '<' )
             {
@@ -499,7 +485,7 @@ public class XTree
                     // we are holding string data
                     // we cannot start a new token now
                     // so return data. this is element value data
-                    return( T_STRING );
+                 return new Token(T_STRING, open_found);
                 }
             }
             else
@@ -512,26 +498,33 @@ public class XTree
                     all_white = false;
                 }
             }
-            
         }
     }
     
     // THIS IS NOT A FULL XML PARSER!!!
-    private  static XTree parse_xml( Reader r ) throws Exception
+    private static XTree parse_xml( Reader r ) throws Exception
     {
-        
         XTree tree = null;
         String data = "";
         XTree cur = null;
         
         StringBuffer buf = new StringBuffer();
-        open_found = false;
-        
+
+        // this flag is used by the tokenizer to remember that
+        // it found an open bracket that ended processing of the
+        // last token. I would have liked to rewind the input
+        // to put the bracket back - but this was not supported
+        // for the input types I support in Java
+        // so the tokenizer has this one ugly spot that would
+        // have been a call to rewind or unget in C++
+        boolean open_found = false;
         
         while( true )
         {
             // get next token
-            int tok = get_token(r, buf);
+         Token nextToken = get_token(r, buf, open_found);
+            int tok = nextToken.tokenType;
+            open_found = nextToken.open_found;
             data = buf.toString();
             //System.out.println( tok + " " + data);
             
@@ -653,7 +646,23 @@ public class XTree
         XTree tvo = XTree.readFromFile("");
         String s = tvo.toString();
         System.out.println(s);
-        
     }
     
+    ///////////////////////////////////////////////////////////
+    // nested class Token
+    
+    private static class Token
+ {
+     int tokenType;
+     boolean open_found;
+     
+     Token(int tokenType, boolean open_found)
+   {
+       this.tokenType = tokenType;
+       this.open_found = open_found;
+   }
+ }
+    
+    // end nested class Token
+    ///////////////////////////////////////////////////////////
 }
