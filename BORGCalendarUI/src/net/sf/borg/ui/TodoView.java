@@ -49,6 +49,12 @@ import net.sf.borg.model.Task;
 import net.sf.borg.model.TaskModel;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
+
+// bsv 2004-12-21
+import de.wannawork.jcalendar.*;
+import java.text.*;
+
+
 /*
  * tdgui.java
  *
@@ -204,7 +210,11 @@ public class TodoView extends View {
         jTable1 = new javax.swing.JTable();
         jPanel1 = new javax.swing.JPanel();
         todotext = new javax.swing.JTextField();
+        
+        // TODO place jcalendar here
+        tododate_cb = new JCalendarComboBox();
         tododate = new javax.swing.JTextField();
+        
         addtodo = new javax.swing.JButton();
         GridBagConstraints gridBagConstraints8 = new GridBagConstraints();
         GridBagConstraints gridBagConstraints9 = new GridBagConstraints();
@@ -357,7 +367,11 @@ public class TodoView extends View {
         gridBagConstraints14.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints14.insets = new java.awt.Insets(0,4,4,4);
         jPanel1.add(addtodo, gridBagConstraints8);
-        jPanel1.add(tododate, gridBagConstraints9);
+        
+        // bsv 2004-12-21
+        jPanel1.add(tododate_cb, gridBagConstraints9);
+        //jPanel1.add(tododate, gridBagConstraints9);
+        
         jPanel1.add(jLabel3, gridBagConstraints11);
         jPanel1.add(jLabel2, gridBagConstraints12);
         jPanel1.add(jLabel1, gridBagConstraints13);
@@ -390,7 +404,19 @@ public class TodoView extends View {
     private void addtodoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addtodoActionPerformed
         
         String tdtext = todotext.getText();
+        
+        // bsv 2004-12-21
+        // TODO investigate how it works
+        //String tddate = tododate_cb.getCalendar().getTime().toString();
+        //System.out.println(tododate_cb.getCalendar().getTime().toString());
+        // some stupid way
+        //tododate.setText( tododate_cb.getCalendar().getTime().toString() );
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+        tododate.setText( sdf.format( tododate_cb.getCalendar().getTime() ) );
+        System.out.println(tododate.getText());
         String tddate = tododate.getText();
+        //String tddate = tododate.getText();
+        
         Date std = new Date();
         
         if( tdtext.length() == 0 || tddate.length() == 0 ) {
@@ -505,6 +531,10 @@ public class TodoView extends View {
     private javax.swing.JMenuItem printList;
     private javax.swing.JTextField tododate;
     private javax.swing.JTextField todotext;
+    
+    // bsv 2004-12-21
+    private JCalendarComboBox tododate_cb;
+    
     // End of variables declaration//GEN-END:variables
     
 	private JPanel jPanel = null;
