@@ -169,6 +169,7 @@ public class CalendarView extends View implements Prefs.Listener {
 		public void mousePressed(MouseEvent arg0) {}
 		public void mouseReleased(MouseEvent arg0) {}
 	}
+
     
     private void init() {
         
@@ -309,6 +310,17 @@ public class CalendarView extends View implements Prefs.Listener {
                 super.setSize(d);
             }
         };
+        todoPreview.addMouseListener(new MouseListener()
+        	{           	
+                public void mouseClicked(MouseEvent evt) {
+                    	TodoView.getReference().show();
+                }
+        		public void mouseEntered(MouseEvent arg0) {}
+        		public void mouseExited(MouseEvent arg0) {}
+        		public void mousePressed(MouseEvent arg0) {}
+        		public void mouseReleased(MouseEvent arg0) {}
+        	} 
+        );
         todoPreview.setBackground( new Color( 204,204,204 ));
         todoPreview.setEditable(false);
         JScrollPane sp = new JScrollPane();
@@ -336,6 +348,19 @@ public class CalendarView extends View implements Prefs.Listener {
         };
         taskPreview.setBackground( new Color( 204,204,204 ));
         taskPreview.setEditable(false);
+        taskPreview.addMouseListener(new MouseListener()
+            	{           	
+                    public void mouseClicked(MouseEvent evt) {
+                        	TaskListView v = TaskListView.getReference();
+                        	v.refresh();
+                        	v.show();
+                    }
+            		public void mouseEntered(MouseEvent arg0) {}
+            		public void mouseExited(MouseEvent arg0) {}
+            		public void mousePressed(MouseEvent arg0) {}
+            		public void mouseReleased(MouseEvent arg0) {}
+            	} 
+            );
         sp = new JScrollPane();
         sp.setViewportView(taskPreview);
         sp.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
