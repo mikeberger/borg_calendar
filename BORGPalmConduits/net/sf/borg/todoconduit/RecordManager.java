@@ -219,7 +219,7 @@ public class RecordManager {
 
         if (appt == null) {
             // add a new todo to BORG
-            if (!hhRecord.isArchived() && !hhRecord.isDeleted()) {
+            if (!hhRecord.isArchived() && !hhRecord.isDeleted() && !hhRecord.isCompleted()) {
                 appt = palmToBorg(hhRecord);
                 
                 // set time to 12:00
