@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<conduit xmlns="url:org.palm.conduit:manager.v01">
+  <creator>date</creator>
+  <directory>borg</directory>
+  <file>file</file>
+  <remote>DatebookDB</remote>
+  <name>BORG Appointment Conduit</name>
+  <information>BORG Appointment Conduit</information>
+  <classname>net.sf.borg.apptconduit.ApptCond</classname>
+  <classpath>borg.jar;</classpath>
+</conduit>

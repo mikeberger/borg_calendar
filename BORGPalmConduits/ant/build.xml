@@ -15,7 +15,6 @@
    <path id="build.classpath">
       <pathelement location="${borg.jar}"/>
    	  <pathelement location="${jsync.jar}"/>
- 
    </path>
 
 
@@ -34,17 +33,20 @@
    </target>
 
    <target name="addr-jar" depends="compile">
+   	  
       <mkdir dir="${dist.dir}" />
 
       <manifest file="${build.dir}/${pkg}/MANIFEST.MF">
          <attribute name="Built-By" value="${user.name}"/>
       </manifest>
 
+   	  <copy file="${basedir}/addrconduit.xml" tofile="${build.dir}/conduit.xml" overwrite="true"/>
+   	
       <jar jarfile="${dist.dir}/addrconduit.jar" manifest="${build.dir}/${pkg}/MANIFEST.MF">
          <fileset dir="${build.dir}">
-            <include name="**/addrconduit/*.class"/>
+            <include name="**/addrconduit/*.class"/>  
+         	<include name="conduit.xml"/>
          </fileset>
-
       </jar>
    </target>
 	
@@ -54,10 +56,13 @@
 	      <manifest file="${build.dir}/${pkg}/MANIFEST.MF">
 	         <attribute name="Built-By" value="${user.name}"/>
 	      </manifest>
+	   	
+	   	<copy file="${basedir}/apptconduit.xml" tofile="${build.dir}/conduit.xml" overwrite="true"/>
 
 	      <jar jarfile="${dist.dir}/apptconduit.jar" manifest="${build.dir}/${pkg}/MANIFEST.MF">
 	         <fileset dir="${build.dir}">
 	            <include name="**/apptconduit/*.class"/>
+	         	<include name="conduit.xml"/>
 	         </fileset>
 
 	      </jar>
@@ -69,10 +74,13 @@
 	      <manifest file="${build.dir}/${pkg}/MANIFEST.MF">
 	         <attribute name="Built-By" value="${user.name}"/>
 	      </manifest>
-
+	   	
+	   	  <copy file="${basedir}/todoconduit.xml" tofile="${build.dir}/conduit.xml" overwrite="true"/>
+	   	
 	      <jar jarfile="${dist.dir}/todoconduit.jar" manifest="${build.dir}/${pkg}/MANIFEST.MF">
 	         <fileset dir="${build.dir}">
 	            <include name="**/todoconduit/*.class"/>
+	         	<include name="conduit.xml"/>
 	         </fileset>
 
 	      </jar>
