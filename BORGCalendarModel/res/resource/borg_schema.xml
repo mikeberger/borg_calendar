@@ -113,5 +113,11 @@
         <flagNumber>6</flagNumber>
 		<longName>Deleted</longName>
 		<desc>Deleted Flag for Synchronization</desc>	
-	</field>	 
+	</field>
+	<field>
+		<name>ALM</name>
+		<type>String</type>
+		<longName>Alarm</longName>
+		<desc>Alarm Flag to Control Palm Alarms</desc>	
+		</field> 
 </schema>

@@ -39,6 +39,7 @@ import net.sf.borg.model.Appointment;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.AppointmentXMLAdapter;
 
+import javax.swing.JCheckBox;
 class AppointmentPanel extends JPanel
 {
     static
@@ -109,6 +110,12 @@ class AppointmentPanel extends JPanel
           }
           
           setDate( year, month, day );
+          
+          String palm = Prefs.getPref( PrefName.SYNC_APPT);
+          if( !palm.equals("true"))
+          {
+              alarmcb.setEnabled(false);
+          }
          
       }
       
@@ -138,6 +145,8 @@ class AppointmentPanel extends JPanel
           startap.setEnabled(false);
           notecb.setSelected(true);
           chgdate.setSelected(false);
+          
+          
           
           // get default appt values, if any
           Appointment defaultAppt = null;
@@ -181,6 +190,7 @@ class AppointmentPanel extends JPanel
               halfdaycb.setSelected(false);      // half-day unchecked
               holidaycb.setSelected(false);      // holiday unchecked
               privatecb.setSelected(false);      // private unchecked
+              alarmcb.setSelected(false);
               appttextarea.setText("");             // clear appt text
               freq.setSelectedIndex(0);           // freq = once
               s_times.setEnabled(true);
@@ -274,6 +284,16 @@ class AppointmentPanel extends JPanel
                   ii = r.getHoliday();
                   if( ii != null && ii.intValue() == 1 )
                       holidaycb.setSelected(true);
+                  
+                  String alm = r.getAlarm();
+                  if( alm != null && alm.equals("Y"))
+                  {
+                      alarmcb.setSelected(true);
+                  }
+                  else
+                  {
+                      alarmcb.setSelected(false);
+                  }
                   
                   // private checkbox
                   privatecb.setSelected(r.getPrivate());
@@ -409,6 +429,7 @@ ialize the form.
     private void initComponents()//GEN-BEGIN:initComponents
     {
 
+        GridBagConstraints gridBagConstraints18 = new GridBagConstraints();
         jLabel2 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -739,11 +760,16 @@ ialize the form.
 			gridBagConstraints91.gridy = 5;
 			gridBagConstraints91.fill = java.awt.GridBagConstraints.BOTH;
 			gridBagConstraints15.insets = new java.awt.Insets(4,4,4,4);
+			gridBagConstraints18.gridx = 4;
+			gridBagConstraints18.gridy = 1;
+			gridBagConstraints18.fill = java.awt.GridBagConstraints.NONE;
+			gridBagConstraints18.insets = new java.awt.Insets(4,4,4,4);
 			this.add(jPanel3, gridBagConstraints38);
 			this.add(getJPanel(), gridBagConstraints81);
 			this.add(jPanel4, gridBagConstraints91);
 			jPanel2.add(durmin, gridBagConstraints8);
 
+			jPanel3.add(getRemBox(), gridBagConstraints18);
 			jPanel2.add(newdatefield, gridBagConstraints15);
     }//GEN-END:initComponents
 
@@ -898,6 +924,8 @@ ialize the form.
             r.setVacation( new Integer(2) );
         if( holidaycb.isSelected() )
             r.setHoliday( new Integer(1) );
+        if( alarmcb.isSelected() )
+            r.setAlarm( "Y" );
         
         r.setPrivate( privatecb.isSelected() );
         
@@ -1125,6 +1153,7 @@ ialize the form.
     private javax.swing.JCheckBox vacationcb;
 	private JPanel jPanel = null;
 	private JSpinner ndays = null;
+	private JCheckBox alarmcb = null;
 	/**
 	 * This method initializes jPanel	
 	 * 	
@@ -1184,4 +1213,16 @@ ialize the form.
 		}
 		return jPanel;
 	}
- }  //  @jve:decl-index=0:visual-constraint="10,10"
+	/**
+	 * This method initializes alarmcb	
+	 * 	
+	 * @return javax.swing.JCheckBox	
+	 */    
+	private JCheckBox getRemBox() {
+		if (alarmcb == null) {
+			alarmcb = new JCheckBox();
+			alarmcb.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Alarm"));
+		}
+		return alarmcb;
+	}
+  }  //  @jve:decl-index=0:visual-constraint="10,10"

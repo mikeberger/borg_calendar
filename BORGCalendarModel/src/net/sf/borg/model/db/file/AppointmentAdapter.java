@@ -28,6 +28,7 @@ public class AppointmentAdapter implements FileBeanAdapter {
 		ret.setNew( r.getFlag(4));
 		ret.setModified( r.getFlag(5));
 		ret.setDeleted( r.getFlag(6));
+		ret.setAlarm( r.getString("ALM"));
 		return( ret );
 	}
 
@@ -55,6 +56,7 @@ public class AppointmentAdapter implements FileBeanAdapter {
 		ret.setFlag(4,  o.getNew());
 		ret.setFlag(5,  o.getModified());
 		ret.setFlag(6,  o.getDeleted());
+		ret.setField("ALM", o.getAlarm());
 		return( ret );
 	}
 

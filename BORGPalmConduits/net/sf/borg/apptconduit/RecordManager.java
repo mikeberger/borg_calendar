@@ -365,6 +365,13 @@ public class RecordManager {
         
         rec.setNote(note);
 
+        String alm = appt.getAlarm();
+        if( alm != null && alm.equals("Y"))
+        {
+            rec.setIsAlarmed(true);
+            rec.setAlarmAdvanceTime(5);
+        }
+        
         // repeat stuff
         if (appt.getRepeatFlag()) {
             rec.setIsRepeating(true);
@@ -478,6 +485,9 @@ public class RecordManager {
         }
         
         appt.setText(hh.getDescription());
+        
+        if( hh.getIsAlarmed())
+            appt.setAlarm("Y");
         
         appt.setPrivate(hh.isPrivate());
         
