@@ -1,6 +1,10 @@
 Version 1.4 final
 --------------------
 Ability to save default values in the appt editor
+Repeat by Mon-Wed-Fri and Tues-Thurs
+Improved week view layout that handles overlapping events
+Day View
+Bug Fixes
 
 Version 1.4 beta
 ---------------------
