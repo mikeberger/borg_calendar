@@ -138,7 +138,7 @@ public class PrefName {
 		static public PrefName UCS_ON = new PrefName("ucs_on","false");
 		static public PrefName UCS_ONTODO = new PrefName("ucs_ontodo","false");
 		static public PrefName UCS_MARKTODO = new PrefName("ucs_marktodo","true");
-		static public PrefName UCS_MARKER = new PrefName("ucs_marker",">>");
+		static public PrefName UCS_MARKER = new PrefName("ucs_marker","redball.gif");
 		static public PrefName UCS_MARKERCOLOR = new PrefName("ucs_markercolor","16250609");
 		// appts categories
 		static public PrefName UCS_RED = new PrefName("ucs_red","13369395");
