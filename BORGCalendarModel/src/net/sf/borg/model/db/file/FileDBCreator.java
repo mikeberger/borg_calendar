@@ -52,11 +52,6 @@ abstract class FileDBCreator implements BeanDB
 		db_.delete(key);
 	}
 
-	public final String getLogFile() throws DBException
-	{
-		return db_.getLogFile();
-	}
-
 	public final String getOption(String oname) throws Exception
 	{
 		return db_.getOption(oname);
@@ -85,11 +80,6 @@ abstract class FileDBCreator implements BeanDB
 	public final KeyedBean readObj(int key) throws DBException, Exception
 	{
 		return db_.readObj(key);
-	}
-
-	public final void setLogFile(String lf) throws DBException
-	{
-		db_.setLogFile(lf);
 	}
 
 	public final void setOption(BorgOption option) throws Exception

@@ -21,8 +21,14 @@ Copyright 2003 by ==Quiet==
 
 package net.sf.borg.ui;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
@@ -31,43 +37,26 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.TreeSet;
 
-// bsv 2004-12-20
-import java.awt.GridLayout;
-import java.awt.Color;
-import javax.swing.JLabel;
-import javax.swing.JButton;
-
-
 import javax.swing.ImageIcon;
-import javax.swing.JColorChooser;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
 import net.sf.borg.common.app.AppHelper;
+import net.sf.borg.common.ui.JButtonKnowsBgColor;
 import net.sf.borg.common.ui.NwFontChooserS;
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
 import net.sf.borg.common.util.Resource;
 import net.sf.borg.common.util.Version;
-import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.AppointmentModel;
-import net.sf.borg.model.TaskModel;
-
-// bsv 2004-12-20
-import net.sf.borg.common.ui.JButtonKnowsBgColor;
-import java.awt.BorderLayout;
-import javax.swing.JTextField;
-
-import javax.swing.JPanel;
-import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.JCheckBox;
 // propgui displays the edit preferences window
 public class OptionsView extends View
 {
@@ -219,13 +208,6 @@ public class OptionsView extends View
         //smtptext.setEditable( !emailbox.isSelected() );
         //emailtext.setEditable( !emailbox.isSelected() );
         
-        // logging is not a preference - check the DB to see if logging is really on
-        try
-        {
-            logging.setSelected( AppointmentModel.getReference().isLogging() );
-        }
-        catch( Exception e )
-        { Errmsg.errmsg(e); }
         
         // US holidays
         String ush = Prefs.getPref(PrefName.SHOWUSHOLIDAYS);
@@ -536,7 +518,6 @@ public class OptionsView extends View
         logofile = new javax.swing.JTextField();
         logobrowse = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
-        logging = new javax.swing.JCheckBox();
         autoupdate = new javax.swing.JCheckBox();
         versioncheck = new javax.swing.JButton();
         splashbox = new javax.swing.JCheckBox();
@@ -1083,15 +1064,6 @@ public class OptionsView extends View
 
         jPanel3.setLayout(new java.awt.GridBagLayout());
 
-        logging.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Enable_Logging_(requires_program_restart)"));
-        GridBagConstraints gridBagConstraints44 = new java.awt.GridBagConstraints();
-        gridBagConstraints44.gridx = 0;
-        gridBagConstraints44.gridy = 2;
-        gridBagConstraints44.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints44.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints44.weightx = 1.0;
-        jPanel3.add(logging, gridBagConstraints44);
-
         autoupdate.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Auto_Update_Check"));
         autoupdate.setToolTipText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Enable_a_daily_check_to_the_BORG_website_to_see_if_a_new_version_is_out._Does_not_update_the_product."));
         GridBagConstraints gridBagConstraints45 = new java.awt.GridBagConstraints();
@@ -1581,30 +1553,7 @@ public class OptionsView extends View
         }
         else
             Prefs.putPref(PrefName.EMAILENABLED, "false" );
-        
-        // turn logging on/off
-        try
-        {
-            
-            if( logging.isSelected() )
-            {
-            
-                AppointmentModel.getReference().setLogging(true);
-				AddressModel.getReference().setLogging(true);
-				TaskModel.getReference().setLogging(true);
-            }
-            else
-            {
-            
-			   	AppointmentModel.getReference().setLogging(false);
-			  	AddressModel.getReference().setLogging(false);
-			 	TaskModel.getReference().setLogging(false);
-            }
-        }
-        catch( Exception e )
-        {
-            Errmsg.errmsg(e);
-        }
+       
         
         Locale locs[] = Locale.getAvailableLocales();
         String choice = (String) localebox.getSelectedItem();
@@ -1903,7 +1852,6 @@ public class OptionsView extends View
     private javax.swing.JComboBox lnfBox;
     private javax.swing.JRadioButton localFileButton;
     private javax.swing.JComboBox localebox;
-    private javax.swing.JCheckBox logging;
     private javax.swing.JCheckBox logobox;
     private javax.swing.JButton logobrowse;
     private javax.swing.JTextField logofile;

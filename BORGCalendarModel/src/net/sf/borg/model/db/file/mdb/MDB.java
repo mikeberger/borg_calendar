@@ -22,13 +22,11 @@ package net.sf.borg.model.db.file.mdb;
 import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -136,7 +134,7 @@ public class MDB {
 
 	// system keys - user cannot use keys this large - reserved for internal MDB
 	// use
-	protected static final int LOG_KEY = 2000000001; // key to the record that
+	//protected static final int LOG_KEY = 2000000001; // key to the record that
 													 // holds the
 
 	// log file name
@@ -330,12 +328,6 @@ public class MDB {
 
 	private int maxkey_; // highest key in the db
 
-	private FileWriter logfw_; // log file
-
-	private boolean cacheOn_; // caching flag
-
-	private HashMap cache_; // cache of text data from the db
-
 	private boolean sharedDB_ = false;
 
 	private FileLock rwlock_ = null;
@@ -481,16 +473,6 @@ public class MDB {
 
 	}
 
-	/**
-	 * turns on cache mechanism to cache entire row text. Greatly reduces I/O
-	 * for apps that repeatedly display many rows. Also - Java RandomAccessFile
-	 * has extreme performance issues over a network due to re-seeking to read
-	 * many rows. The cache mechanism greatly reduces this problem.
-	 */
-	public void cacheOn() {
-		cacheOn_ = true;
-	}
-
 	// remove lock files when destroyed
 	protected void finalize() throws Throwable {
 		close();
@@ -623,7 +605,6 @@ public class MDB {
 		}
 
 		// flush all cached data and re-sync
-		cache_.clear();
 		index_.clear();
 		sysindex_.clear();
 		flagmap_.clear();
@@ -661,9 +642,6 @@ public class MDB {
 		// init some stuff
 		locktype_ = locktype;
 		maxkey_ = 0;
-		cacheOn_ = false;
-
-		cache_ = new HashMap();
 
 		index_ = new HashMap();
 		sysindex_ = new HashMap(10);
@@ -738,23 +716,6 @@ public class MDB {
 		if (build_index() != DBException.RET_SUCCESS)
 			throw new DBException("Could not build index from file");
 
-		// open log file if RW mode
-		String lf = "";
-		logfw_ = null;
-		if (locktype_ == READ_WRITE || locktype_ == ADMIN) {
-			try {
-				lf = readSys(LOG_KEY);
-				logfw_ = new FileWriter(lf, true);
-			} catch (DBException e) {
-				if (e.getRetCode() != DBException.RET_NOT_FOUND)
-					throw e;
-			} catch (IOException ioe) {
-				//throw new MDBException( "Cannot open logfile: " + lf );
-				logfw_ = null;
-				System.out.println("Cannot open logfile: " + lf);
-			}
-		}
-
 		releaseLock(); // release read lock
 
 	}
@@ -778,33 +739,6 @@ public class MDB {
                     Errmsg.errmsg(e);
                 }
 		return (++maxkey_);
-	}
-
-	// write an entry to the log file in XML
-	private void writelog(String function, int key, String data)
-			throws DBException {
-
-		// exit if logging off
-		if (logfw_ == null)
-			return;
-
-		XTree xt = new XTree();
-		xt.name("LG");
-		xt.appendChild("EV", function); // function - add/delete
-		xt.appendChild("KE", Integer.toString(key)); // key
-		if (data != null && data.length() > 0)
-			xt.appendChild("DA", data); // text data
-		Date now = new Date();
-		xt.appendChild("TM", now.toString()); // time
-
-		try {
-			logfw_.write(xt.toString());
-			logfw_.write("\n");
-			logfw_.flush();
-		} catch (Exception e) {
-			throw new DBException("write failed:" + e.toString());
-		}
-
 	}
 
 	/**
@@ -848,9 +782,6 @@ public class MDB {
 		sync();
 
 		int bnum, main_bnum;
-
-		// save the original string, whole and unencrypted, for the cache
-		String stcache = st;
 
 		// add the first block - get free block number
 		main_bnum = add_new_entry(key, system);
@@ -970,16 +901,11 @@ public class MDB {
 
 		}
 
-		// if caching is on and this is a user block - cache the string
-		// data. later reads will go to the cache instead of the DB file
-		if (cacheOn_ && !system) {
-			cache_.put(new Integer(key), stcache);
-		}
+
 
 		// write a log record and update the map of user flags with the user's
 		// flags
 		if (!system) {
-			writelog("add", key, stcache);
 			flagmap_.put(new Integer(key), new Integer(flags));
 		}
 
@@ -1012,11 +938,6 @@ public class MDB {
 
 		getWriteLock();
 		sync();
-
-		// remove the text data from the cache
-		if (cacheOn_ && !system) {
-			cache_.remove(new Integer(key));
-		}
 
 		// remove the user flags data from the map
 		if (!system)
@@ -1094,10 +1015,6 @@ public class MDB {
 			}
 
 		}
-
-		// write log file entry
-		if (!system)
-			writelog("delete", key, null);
 
 		if (sharedDB_) {
 			sb.updateCount_++;
@@ -1191,35 +1108,6 @@ public class MDB {
 		return (flags.intValue());
 	}
 
-	// upate the logfile name. if lf is null, delete the logfile name
-	public void setLogFile(String lf) throws DBException {
-
-		try {
-			deleteSys(LOG_KEY);
-		} catch (DBException e) {
-			if (e.getRetCode() != DBException.RET_NOT_FOUND)
-				throw e;
-		}
-
-		if (lf != null && !lf.equals(""))
-			addSys(LOG_KEY, lf);
-	}
-
-	// get the current logfile name
-	public String getLogFile() throws DBException {
-		String lf;
-		try {
-			lf = readSys(LOG_KEY);
-		} catch (DBException e) {
-			if (e.getRetCode() != DBException.RET_NOT_FOUND)
-				throw e;
-
-			return null;
-		}
-
-		return (lf);
-	}
-
 	/**
 	 * retrieve record text with given key
 	 * 
@@ -1240,16 +1128,6 @@ public class MDB {
 
 	// main read function
 	private String read(int key, boolean system) throws DBException {
-
-		// if the record is a user record and caching is on - check if the text
-		// is already in the cache and return it if it is
-		if (cacheOn_ && !system) {
-			Object o = cache_.get(new Integer(key));
-			if (o != null) {
-				String s = (String) o;
-				return (s);
-			}
-		}
 
 		getReadLock();
 		sync();
@@ -1333,11 +1211,6 @@ public class MDB {
 		// decrypt if needed
 		if (cur_crypt_) {
 			s = mc_.decrypt(s);
-		}
-
-		// put text into cache for user records
-		if (cacheOn_ && !system) {
-			cache_.put(new Integer(key), s);
 		}
 
 		releaseLock();
@@ -1529,10 +1402,7 @@ public class MDB {
 				if (system || verbose) {
 
 					output.append(bnum + "\t");
-					if (system && k == LOG_KEY)
-						output.append("LOG");
-					else
-						output.append(k);
+					output.append(k);
 
 					// show the system flags
 					String flgs = "";
@@ -1628,7 +1498,6 @@ public class MDB {
 	 */
 	public String passivate() throws DBException {
 
-		cacheOn_ = false;
 		StringBuffer o = new StringBuffer();
 		o.ensureCapacity(100);
 		o.append("<MDB>\n");

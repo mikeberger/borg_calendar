@@ -131,6 +131,10 @@ public class SMDB
             setOption("NORM", "N");
     }
     
+    public boolean getNormalize()
+    {
+        return( normalize_);
+    }
 
     // get the Schema
     public Schema getSchema()
@@ -284,11 +288,9 @@ public class SMDB
     //public int getFlags() throws MDBException { return( db_.getFlags() ); }
     public int getFlags(int key) throws DBException { return( db_.getFlags(key) ); }
     public int nextkey(){ return db_.nextkey(); }
-    public void setLogFile(String lf) throws DBException { db_.setLogFile(lf); }
-    public String getLogFile() throws DBException { return( db_.getLogFile() ); }
     public void delete( int key ) throws Exception { db_.delete(key); }
 
-    protected void syncMDB() throws DBException
+    public void syncMDB() throws DBException
     {
         db_.sync();
     }

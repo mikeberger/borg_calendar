@@ -45,7 +45,5 @@ public interface BeanDB
     public void close() throws Exception;
     public int nextkey() throws Exception;
 
-    public void setLogFile(String lf) throws DBException;
-    public String getLogFile() throws DBException;
     public void sync() throws DBException;
 }

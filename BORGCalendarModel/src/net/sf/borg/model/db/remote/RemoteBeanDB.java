@@ -109,16 +109,6 @@ class RemoteBeanDB implements BeanDB
 		return ((Integer) call("nextkey", null)).intValue();
 	}
 
-	public final synchronized void setLogFile(String lf) throws DBException
-	{
-		// ignore this - we're sharing
-	}
-
-	public final synchronized String getLogFile() throws DBException
-	{
-		// not implemented - we're sharing
-		return null;
-	}
 
 	public final synchronized void sync() throws DBException
 	{

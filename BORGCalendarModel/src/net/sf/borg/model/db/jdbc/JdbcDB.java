@@ -225,12 +225,6 @@ abstract class JdbcDB implements BeanDB
         connection_ = null;
     }
     
-    public String getLogFile() throws DBException
-    {
-
-        return(null);
-    }
-    
     public String getOption(String oname) throws Exception
     {
         String ret = null;
@@ -260,10 +254,7 @@ abstract class JdbcDB implements BeanDB
         return( keys );
         
     }
-    
-    public void setLogFile(String lf) throws DBException
-    {
-    }
+   
     
     public void setOption(BorgOption option) throws Exception
     {

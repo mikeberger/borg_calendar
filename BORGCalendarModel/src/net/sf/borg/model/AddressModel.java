@@ -294,15 +294,6 @@ public class AddressModel extends Model {
         
     }
     
-    public void setLogging( boolean on ) throws Exception {
-        if( on ) {
-            String dbdir = Prefs.getPref(PrefName.DBDIR);
-            db_.setLogFile( dbdir + "/addr.log" );
-        }
-        else
-            db_.setLogFile(null);
-    }
-    
     public void sync() throws DBException {
         db_.sync();
         load_map();

@@ -851,26 +851,6 @@ public class AppointmentModel extends Model
         
     }
     
-    // turn on DB logging
-    public void setLogging( boolean on ) throws Exception
-    {
-        if( on )
-        {
-            String dbdir = Prefs.getPref(PrefName.DBDIR );
-            db_.setLogFile( dbdir + "/borg.log" );
-        }
-        else
-            db_.setLogFile(null);
-    }
-    
-    // check if logging is turned on
-    public boolean isLogging() throws Exception
-    {
-        String lf = db_.getLogFile();
-        if( lf != null && !lf.equals("") )
-            return( true );
-        return( false );
-    }
     
     public static boolean isNote( Appointment appt )
     {
