@@ -28,7 +28,6 @@ import javax.swing.JButton;
 
 import net.sf.borg.common.app.AppHelper;
 import net.sf.borg.common.util.Errmsg;
-import net.sf.borg.common.util.Resource;
 
 public class Borglet extends JApplet {
     public void init() {
