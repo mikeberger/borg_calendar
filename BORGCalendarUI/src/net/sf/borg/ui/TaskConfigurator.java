@@ -94,6 +94,7 @@ public class TaskConfigurator extends View {
 	private JButton jButton = null;
 	private JButton jButton1 = null;
 	private JPanel jPanel5 = null;
+	private JMenuItem jMenuItem9 = null;
 	public static TaskConfigurator getReference() {
 		if (singleton == null || !singleton.isShowing())
 			singleton = new TaskConfigurator();
@@ -728,6 +729,7 @@ public class TaskConfigurator extends View {
 		if (cbmenu == null) {
 			cbmenu = new JPopupMenu();
 			cbmenu.add(getJMenuItem8());
+			cbmenu.add(getJMenuItem9());
 		}
 		return cbmenu;
 	}
@@ -812,4 +814,24 @@ public class TaskConfigurator extends View {
 		}
 		return jPanel5;
 	}
-        } //  @jve:decl-index=0:visual-constraint="10,10"
+	/**
+	 * This method initializes jMenuItem9	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */    
+	private JMenuItem getJMenuItem9() {
+		if (jMenuItem9 == null) {
+			jMenuItem9 = new JMenuItem();
+			jMenuItem9.setText(Resource.getResourceString("Delete"));
+			jMenuItem9.addActionListener(new java.awt.event.ActionListener() { 
+				public void actionPerformed(java.awt.event.ActionEvent e) {    
+					if( subtasklist.getSelectedIndex() < 0) return;
+					TaskModel.getReference().getTaskTypes().changeCB(
+							(String) typelist.getSelectedValue(), subtasklist.getSelectedIndex(), null);
+					load();
+				}
+			});
+		}
+		return jMenuItem9;
+	}
+         } //  @jve:decl-index=0:visual-constraint="10,10"

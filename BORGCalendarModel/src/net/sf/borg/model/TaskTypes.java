@@ -38,6 +38,8 @@ public class TaskTypes {
     private XTree state_model_; // an XML tree containing the rules for the task state transitions
     // per task type and status
     
+    public static final String NOCBVALUE = "---------------";
+    
     public TaskTypes() {
         state_model_ = null;
         task_types_ = null;
@@ -218,6 +220,8 @@ public class TaskTypes {
 	// correspond to a checkbox
 	public void changeCB( String type, int index, String value )
 	{
+		if( value == null )
+			value = NOCBVALUE;
 	    XTree tp = state_model_.child(type);
 	    if( !tp.exists()) {
 	        Errmsg.notice(Resource.getResourceString("WARNING!_Could_not_find_task_type_") + type + Resource.getResourceString("checkbox_2") );
@@ -252,7 +256,7 @@ public class TaskTypes {
 	            ar[i] = tp.child("CB", i+1 ).value();
 	        }
 	        else {
-	            ar[i] = "---------------";
+	            ar[i] = NOCBVALUE;
 	        }
 	    }
 	    

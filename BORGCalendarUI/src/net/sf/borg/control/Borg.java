@@ -58,7 +58,6 @@ import net.sf.borg.model.Appointment;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Task;
 import net.sf.borg.model.TaskModel;
-import net.sf.borg.model.TaskRpt;
 import net.sf.borg.ui.Banner;
 import net.sf.borg.ui.CalendarView;
 import net.sf.borg.ui.OptionsView;
@@ -155,7 +154,7 @@ public class Borg extends Controller implements OptionsView.RestartListener {
         // this option is not really used anymore
         boolean autostart = false; // autostart feature - only bring up the GUI
         // if an appointment is approaching
-        boolean taskrpt = false;
+ 
 
         OptionsView.setRestartListener(this);
         
@@ -176,15 +175,6 @@ public class Borg extends Controller implements OptionsView.RestartListener {
             {
                 readonly = true;
                 aplist = true;
-
-                // set Errmsg class to log all errors to stdout, not using popup
-                // windows
-                Errmsg.console(true);
-            }
-            else if (args[i].equals("-taskrpt"))
-            {
-                readonly = true;
-                taskrpt = true;
 
                 // set Errmsg class to log all errors to stdout, not using popup
                 // windows
@@ -256,7 +246,7 @@ public class Borg extends Controller implements OptionsView.RestartListener {
         }
         
         // do not show the startup banner if autostart or aplist features are on
-        if (!taskrpt && !aplist && !autostart && splash)
+        if (!aplist && !autostart && splash)
         {
             ban_ = new Banner();
             ban_.setText(Resource.getResourceString("Initializing"));
@@ -306,7 +296,7 @@ public class Borg extends Controller implements OptionsView.RestartListener {
             }
 
             // skip banner stuff if autostart or aplist on
-            if (!taskrpt && !aplist && !autostart && splash)
+            if (!aplist && !autostart && splash)
                 ban_.setText(Resource
                         .getResourceString("Loading_Appt_Database"));
                         
@@ -381,19 +371,12 @@ public class Borg extends Controller implements OptionsView.RestartListener {
             Errmsg.console(false); // send errors to screen
 
             // init task model & load database
-            if (!taskrpt && !autostart && splash)
+            if (!autostart && splash)
                 ban_.setText(Resource
                         .getResourceString("Loading_Task_Database"));
             taskmod_ = TaskModel.create();
             register(taskmod_);
             taskmod_.open_db(dbdir, readonly, shared);
-
-            if (taskrpt)
-            {
-                System.out.println(TaskRpt.report(taskmod_));
-                System.exit(0);
-                return;
-            }
 
             if (!autostart && splash)
                 ban_.setText(Resource

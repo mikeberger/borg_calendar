@@ -32,6 +32,7 @@ import net.sf.borg.common.util.Resource;
 import net.sf.borg.common.util.Version;
 import net.sf.borg.model.Task;
 import net.sf.borg.model.TaskModel;
+import net.sf.borg.model.TaskTypes;
 
 
 
@@ -518,7 +519,7 @@ class TaskView extends View
         else if( field.equals("UT5") ) oldtext = task.getUserTask5();
         
         // if text was empty and still is - do nothing
-        if( (newtext == null || newtext.equals("") || newtext.equals("---------------")) &&
+        if( (newtext == null || newtext.equals("") || newtext.equals(TaskTypes.NOCBVALUE)) &&
         ( oldtext == null || oldtext.equals("") ))
             return;
         
@@ -665,16 +666,16 @@ class TaskView extends View
       // show a task editor for changing, cloning, or add of a task
       
       // init the checkbox strings to dashes
-      jCheckBox1.setText("---------------");
-      jCheckBox2.setText("---------------");
-      jCheckBox3.setText("---------------");
-      jCheckBox4.setText("---------------");
-      jCheckBox5.setText("---------------");
-      jCheckBox6.setText("---------------");
-      jCheckBox7.setText("---------------");
-      jCheckBox8.setText("---------------");
-      jCheckBox9.setText("---------------");
-      jCheckBox10.setText("---------------");
+      jCheckBox1.setText(TaskTypes.NOCBVALUE);
+      jCheckBox2.setText(TaskTypes.NOCBVALUE);
+      jCheckBox3.setText(TaskTypes.NOCBVALUE);
+      jCheckBox4.setText(TaskTypes.NOCBVALUE);
+      jCheckBox5.setText(TaskTypes.NOCBVALUE);
+      jCheckBox6.setText(TaskTypes.NOCBVALUE);
+      jCheckBox7.setText(TaskTypes.NOCBVALUE);
+      jCheckBox8.setText(TaskTypes.NOCBVALUE);
+      jCheckBox9.setText(TaskTypes.NOCBVALUE);
+      jCheckBox10.setText(TaskTypes.NOCBVALUE);
       
       // if we are showing an existing task - fil; in the gui fields form it
       if( task != null )
