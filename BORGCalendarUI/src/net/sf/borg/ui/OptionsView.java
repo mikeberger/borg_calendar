@@ -1637,7 +1637,7 @@ public class OptionsView extends View
             Prefs.putPref( PrefName.DBPORT, jTextField4.getText());
             Prefs.putPref( PrefName.DBHOST, jTextField2.getText());
             Prefs.putPref( PrefName.DBUSER, jTextField5.getText());
-            Prefs.putPref( PrefName.DBPASS, jPasswordField1.getText());
+            Prefs.putPref( PrefName.DBPASS, new String(jPasswordField1.getPassword()));
             
             if( rl_ != null )
             	rl_.restart();
