@@ -59,8 +59,8 @@ class ApptJdbcDB extends JdbcDB implements AppointmentKeyFilter
     public void addObj(KeyedBean bean, boolean crypt) throws DBException, Exception
     {
         PreparedStatement stmt = connection_.prepareStatement( "INSERT INTO appointments ( appt_date, appt_num, userid, duration, text, skip_list," +
-        " next_todo, vacation, holiday, private, times, frequency, todo, color, repeat ) VALUES " +
-        "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        " next_todo, vacation, holiday, private, times, frequency, todo, color, repeat, category ) VALUES " +
+        "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         
         Appointment appt = (Appointment) bean;
         
@@ -84,6 +84,7 @@ class ApptJdbcDB extends JdbcDB implements AppointmentKeyFilter
         stmt.setInt( 13, toInt( appt.getTodo()) );
         stmt.setString( 14, appt.getColor());
         stmt.setInt( 15, toInt( appt.getRepeatFlag()) );
+        stmt.setString( 16, appt.getCategory());
         
         stmt.executeUpdate();
         
@@ -187,6 +188,8 @@ class ApptJdbcDB extends JdbcDB implements AppointmentKeyFilter
 		appt.setTodo( r.getInt("todo") != 0 );
 		appt.setColor( r.getString("color"));
 		appt.setRepeatFlag( r.getInt("repeat" ) != 0 );
+		appt.setCategory( r.getString("category"));
+		
 		return appt;
 	}
 	
@@ -194,7 +197,7 @@ class ApptJdbcDB extends JdbcDB implements AppointmentKeyFilter
     {
         PreparedStatement stmt = connection_.prepareStatement( "UPDATE appointments SET  appt_date = ?, " +
         "duration = ?, text = ?, skip_list = ?," +
-        " next_todo = ?, vacation = ?, holiday = ?, private = ?, times = ?, frequency = ?, todo = ?, color = ?, repeat = ?" +
+        " next_todo = ?, vacation = ?, holiday = ?, private = ?, times = ?, frequency = ?, todo = ?, color = ?, repeat = ?, category = ?" +
         " WHERE appt_num = ? AND userid = ?");
         
         Appointment appt = (Appointment) bean;
@@ -217,9 +220,11 @@ class ApptJdbcDB extends JdbcDB implements AppointmentKeyFilter
         stmt.setInt( 11, toInt( appt.getTodo()) );
         stmt.setString( 12, appt.getColor());
         stmt.setInt( 13, toInt( appt.getRepeatFlag()) );
-        stmt.setInt( 14, appt.getKey() );
-        stmt.setInt( 15, userid_ );
+        stmt.setString( 14, appt.getCategory());
         
+        stmt.setInt( 15, appt.getKey() );
+        stmt.setInt( 16, userid_ );
+
         stmt.executeUpdate();
         
         delCache( appt.getKey() );

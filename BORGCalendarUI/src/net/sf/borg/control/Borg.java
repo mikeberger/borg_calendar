@@ -232,9 +232,11 @@ public class Borg extends Controller implements OptionsView.RestartListener {
         try
         {
             UIManager.setLookAndFeel(lnf);
+            UIManager.getLookAndFeelDefaults().put("ClassLoader", getClass().getClassLoader());
         }
         catch (Exception e)
         {
+            //System.out.println(e.toString());
         }
 
         String country = Prefs.getPref(PrefName.COUNTRY);

@@ -1388,6 +1388,7 @@ public class OptionsView extends View
         {
             try
             {
+                UIManager.getLookAndFeelDefaults().put("ClassLoader", getClass().getClassLoader());
                 UIManager.setLookAndFeel(newlnf);
                 // don't try to change the main window l&f - is doesn't work 100%
                 //SwingUtilities.updateComponentTreeUI(cg_);

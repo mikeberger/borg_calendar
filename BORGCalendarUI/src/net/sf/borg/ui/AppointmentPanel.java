@@ -950,7 +950,7 @@ class AppointmentPanel extends JPanel
             tm = (Integer) s_times.getValue();
         }
         
-        if( tm.intValue() != 1 )
+        if( tm.intValue() > 1 )
         {
             try
             {
@@ -973,6 +973,10 @@ class AppointmentPanel extends JPanel
             		throw new Exception(Resource.getResourceString("Could_not_parse_times:_") + tm );
             }
             
+        }
+        else
+        {
+            r.setTimes( new Integer(1));
         }
         
         // check if times and frequency conflict - i.e. repeat once, 10 times
