@@ -1,0 +1,119 @@
+<html>
+	<head>
+		<title>BORG Palm conduits</title>
+	</head>
+	<body style="font-size: 11px; font-family: Verdana, Arial, Helvetica, sans-serif; padding:14px;">
+
+	<h1>BORG Palm Conduits</h1>
+	<h2>Status: Experimental</h2>
+	Conduits are available to sync the BORG appointment database to the 
+	Palm datebook and todo applications. These conduits replace the existing
+	Palm conduits - Palm OS does not allow Palm apps to sync to 2 places. In other words,
+	if you install the BORG conduits, then Palm will no longer sync with 
+	Palm Desktop for datebook and todos.
+	<p>
+	These conduits are to be considered experimental (alpha quality) for
+	2 reasons:
+	<nl>
+	<li>They have only been tested on Palm OS 5.2 with datebook version 4.5.
+	It is likely that other versions of the Palm software will be problematic.</li>
+	<li>The BORG and Palm applications do not match in functionality and
+	database structure.</li>
+	</nl>
+	<p>
+	I've been syncing my Palm-based Garmin iQue 3600 PDA since January 2005.
+	I have well over 4000 appointments, and everything seems ok based on the way I
+	use BORG and Palm. However, due to variations in the Palm software and hardware,
+	I expect there to still be problems. So, only people willing to be alpha testers
+	need read on.
+ 	<h2>Required Software</h2>
+	<ul>
+		<li>Windows</li>
+		<li>BORG 1.5 or later using local files (MySQL NOT Supported for syncing)</li>
+		<li>Palm OS 5 (only 5.2 tested)</li>
+		<li>Palm JSync Suite</li>
+		<li>Java Conduit Manager (www.javaconduitmanager.org) or 
+		alternative conduit installer</li>
+	</ul>
+	<p>
+	The conduits are pure java and if there is a Linux port of JSync, then they should work. However, I 
+	don't know anything at all about the Palm environment under Linux.
+	<h2>Who should use this</h2>
+	At this stage, I suggest only users who use BORG as their primary calendar should proceed ahead. If you
+	use Palm Desktop and like it, then these conduits are not for you. If you just are curious about BORG
+	and just want to try out the conduits, but plan to switch back to Palm Desktop - run away now. The
+	Palm environment is not that user friendly when it comes to conduits, and backing out the BORG conduits
+	may be more complex than installing them. So, if you are not comfortable with the steps you read below, then
+	forget it for now and let others test out the initial versions.
+	<h2>Warnings and Limitations</h2>
+	The functionality of BORG and Palm do not match - just like Outlook and Palm do not match.
+	At this time, if you try to use a recurrence option in Palm that is not supported by BORG, the resulting
+	BORG appointment will repeat incorrectly. The same is true if you use a BORG recurrence option that Palm
+	does not support (i.e. repeat every N days).
+	<p>
+	There is some BORG data that has no corresponding field in the Palm databases. For example - vacation, 
+	holiday, category, color - (my version of datebook does not support these). This data will be stored on the
+	Palm in the Notes field. Therefore, you cannot use the Notes field in the datebook and todo once you start syncing
+	with BORG.
+	<h2>Installation Steps</h2>
+	<nl>
+	<li> Install BORG Release 1.5 (or later) including the optional conduits. </li>
+	The conduits will be placed in the "conduits" directory under the BORG install directory.
+	<li> Unless you already have software capable of installing Java conduits (you'd probably know if you did),
+	you should download and install the Java Conduit Manager software from 
+	http://www.javaconduitmanager.org/downloads.htm
+	Download the larger version that comes bundled with the Palm JSync software. You can download the smaller
+	version only if you already have the JSync software installed. Again, you'd know if you have this installed,
+	it does not come with your Palm software.</li>
+	<li>
+	Backup your Palm datebook and todo databases. I am not sure of all of the ways to do this. The datebook can be exported
+	from Palm Desktop. The best way might be to make backup copies of the Palm datebook and todo folders under
+	C:\Program Files\Palm\<i>your_palm_user_name</i></li>
+	<br>
+	<li>*** Now we reach a possible point of no return. To install the conduits, start the Java Conduit Manager and select the 
+	option to add a conduit. When asked to select a file, browse to the BORG appointment conduit (default location
+	would be: C:\Program Files\BORG Calendar\conduits\apptconduit.jar). This will remove your existing datebook
+	conduit and install the BORG conduit. The Java Conduit Manager should store information required for
+	restoring the original Palm datebook conduit - but I have seen it mess up at least once. I believe there
+	is a way to restore the original Palm conduits from your Palm software installation CD - but how do to this
+	may differ depending on your Palm device.
+	You should also use Java Conduit Manager to install the todo conduit (todoconduit.jar).
+	*** just to be clear - once you perform this step, you will no longer be able to sync with Palm Desktop
+	unless you back out the BORG conduits. Hopefully, Java Conduit Manager can do this without you needing to re-install
+	Palm Desktop - but I've seen this mess up.
+	<p>
+	*** do not install the address conduit. There is too much different between the BORG and Palm address databases
+	for me to suggest that people use it at this time. If you ONLY use the BORG address fields and stay away from
+	certain Palm address fields, it may be acceptable to you. Otherwise, forget it.</li>
+	<li>Make a new folder called borg under your Palm user folder (default would be:
+	C:\Program Files\Palm\<i>your_palm_user_name</i>\borg. Then copy your BORG database files there if you have any.
+	The BORG conduits can only sync if your database files are in this folder.</li>
+	<li>Start BORG and change the database location to C:\Program Files\Palm\<i>your_palm_user_name</i>\borg.</li>
+	<li>Select the new option on the miscellaneous options tab to support Palm Hot-Sync and restart BORG. Turning on this
+	option and doing a restart is very important to prevent data from being lost during a hot-sync.</li>
+	</nl>
+	<h2>Syncing for the First Time</h2>
+	First, syncing can only be done when BORG is not running, so stop BORG. 
+	<p>
+	Then for the first sync, it is best have BORG completely WIPE and REPLACE your Palm data. To do this,
+	go to the Custom menu option of the Palm Hot-Sync Manager. 
+	Select the BORG Appointment Conduit and hit the Change button. Select the option where BORG WIPES and Overwrites
+	the handheld. Do NOT select the default checkbox.
+	Of course, if you have Palm data that is not in BORG, then don't do this.
+	<p>
+	If you have an empty BORG database and want to transfer from the Palm to BORG, do not change the the type of
+	sync.
+	<p>
+	If you have data in both Palm and BORG - the conduits cannot tell that it is the same (I assume you'd have the
+	same appointments entered in each). You are likely to wind up with a big mess of duplicate data if you sync without
+	either emptying one or the other.
+	<p>
+	Hot sync your palm. After the sync is done, check the results. The Palm and BORG todo lists should match. The
+	Palm datebook and BORG Calendar should match.
+	<p>
+	If something has gone wrong, then you can check the hot-sync log (View Log menu option in Hot-Sync Manager).
+	<p> You should be able to back out the BORG conduits using Java Conduit Manager.
+	<h2>Alarms</h2>
+	In BORG 1.5, there is a new appointment option checkbox labelled "Alarm". This option does nothing at all in BORG.
+	However, if you check this, then the appointment will have its alarm set in the Palm datebook when you sync to the Palm.
+	</body>
