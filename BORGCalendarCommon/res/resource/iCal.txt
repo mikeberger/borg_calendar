@@ -9,14 +9,16 @@ LIMITATIONS
 -----------
 
 Every iCal based program seems to pick and choose which elements of iCal format they want to use
-and which way they interpret them.
-The iCal files produced by BORG have been tested with phpicalendar. (and a little with Mozilla Calendar, which
+and which way they interpret them. Different programs also seem to use non-standard amounts
+of whitespace. 
+
+The iCal files produced by BORG have been tested with phpicalendar and outlook. (and a little with Mozilla Calendar, which
 has problems).
 
 Not every feature in BORG corresponds to something in iCal format that other iCal
 based calendars will understand.
 
-The following features are limited based on my results with phpicalendar:
+The following are limitations:
 1. Repeat by Monthly(day), weekdays, and weekends will not export correctly. All other repeat options are exported correctly
 2. Tasks from the task tracker are not exported
 3. Address book information is not exported
