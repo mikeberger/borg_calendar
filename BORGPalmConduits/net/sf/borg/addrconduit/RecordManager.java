@@ -35,6 +35,12 @@ public class RecordManager {
         AddressRecord hhRecord;
         boolean forceReset = false;
         
+        // if pc wipes hh - delete hh db first
+        if( props.syncType == SyncProperties.SYNC_PC_TO_HH )
+        {
+            SyncManager.purgeAllRecs(db);
+        }
+        
         // get list og hh ids
         ArrayList hhids = new ArrayList();
         int recordCount = SyncManager.getDBRecordCount(db);

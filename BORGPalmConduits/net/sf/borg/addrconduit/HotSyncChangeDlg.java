@@ -140,10 +140,10 @@ public class HotSyncChangeDlg extends Dialog
 		gbc.weighty = 0;
 		gbc.gridwidth = 1;
 		gbc.fill = GridBagConstraints.NONE;
-		//optionsPanel.add(canvas, gbc);
+		optionsPanel.add(canvas, gbc);
 		// pc2hh checkbox
    		pc2hh.setCheckboxGroup(Group1);
-		pc2hh.setLabel("Desktop overwrites Handheld");
+		pc2hh.setLabel("Desktop WIPES Handheld!!!");
 		gbc.anchor = GridBagConstraints.NORTHWEST;
 		gbc.insets = new Insets(10, 20, 10, 20);
 		gbc.gridx = 1;
@@ -151,7 +151,7 @@ public class HotSyncChangeDlg extends Dialog
 		gbc.weightx = 0;
 		gbc.weighty = 0;
 		gbc.fill = GridBagConstraints.NONE;
-		//optionsPanel.add(pc2hh, gbc);
+		optionsPanel.add(pc2hh, gbc);
 		// hh2pc image
 		im = getToolkit().getImage("Sync2.gif");
 		ImageCanvas.waitForImage(this, im);
