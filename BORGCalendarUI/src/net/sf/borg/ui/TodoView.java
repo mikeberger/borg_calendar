@@ -233,7 +233,11 @@ public class TodoView extends View {
         
         // add a tabel row to mark the current date - it will sort
         // to the right spot by date
-        Date d = new Date();
+        GregorianCalendar gc = new GregorianCalendar();
+        gc.set(GregorianCalendar.HOUR_OF_DAY,23);
+        gc.set(GregorianCalendar.MINUTE,59);
+        
+        Date d = gc.getTime();
 
         //bsv 2004-12-22
         Object [] tod = new Object[5];
