@@ -22,22 +22,33 @@ package net.sf.borg.ui;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.io.File;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.Collection;
 import java.util.Iterator;
 
 import javax.swing.DefaultListSelectionModel;
+import javax.swing.JFileChooser;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.TableModelEvent;
 
+import net.sf.borg.common.io.IOHelper;
 import net.sf.borg.common.ui.TablePrinter;
 import net.sf.borg.common.ui.TableSorter;
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Resource;
 import net.sf.borg.common.util.Version;
+import net.sf.borg.common.util.XSLTransform;
 import net.sf.borg.model.Address;
 import net.sf.borg.model.AddressModel;
+import net.sf.borg.model.AppointmentModel;
+import net.sf.borg.model.TaskModel;
 /**
  *
  * @author  MBERGER
@@ -305,6 +316,7 @@ public class AddrListView extends View
 
         setJMenuBar(menuBar);
 
+        fileMenu.add(getHtmlitem());
         
         pack();
     }//GEN-END:initComponents
@@ -385,6 +397,7 @@ public class AddrListView extends View
     private javax.swing.JButton newbutton;
     private javax.swing.JMenuItem printList;
 	private JPanel jPanel = null;
+	private JMenuItem htmlitem = null;
 	/**
 	 * This method initializes jPanel	
 	 * 	
@@ -411,4 +424,48 @@ public class AddrListView extends View
 		}
 		return jPanel;
 	}
- }
+	/**
+	 * This method initializes htmlitem	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */    
+	private JMenuItem getHtmlitem() {
+		if (htmlitem == null) {
+			htmlitem = new JMenuItem();
+			htmlitem.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("SaveHTML"));
+			htmlitem.addActionListener(new java.awt.event.ActionListener() { 
+			    public void actionPerformed(java.awt.event.ActionEvent e) { 
+			        try{
+			            
+			            JFileChooser chooser = new JFileChooser();
+			            
+			            chooser.setCurrentDirectory( new File(".") );
+			            chooser.setDialogTitle(Resource.getResourceString("choose_file"));
+			            chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+			            
+			            int returnVal = chooser.showOpenDialog(null);
+			            if(returnVal != JFileChooser.APPROVE_OPTION)
+			                return;
+			            
+			            String s = chooser.getSelectedFile().getAbsolutePath();
+
+			            OutputStream ostr = IOHelper.createOutputStream(s);
+			            OutputStreamWriter fw = new OutputStreamWriter(ostr, "UTF8");            
+
+						StringWriter sw = new StringWriter();
+			            AddressModel.getReference().export(sw);
+			            String output = XSLTransform.transform( sw.toString(), "/resource/addr.xsl");
+			            fw.write(output);
+			            fw.close();
+			            
+			        }
+			        catch( Exception ex) {
+			            Errmsg.errmsg(ex);
+			        }
+			            
+			    }
+			});
+		}
+		return htmlitem;
+	}
+  }
