@@ -47,6 +47,7 @@ import java.util.Iterator;
 import javax.swing.JPanel;
 
 import net.sf.borg.common.util.Errmsg;
+import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
 import net.sf.borg.common.util.Version;
 import net.sf.borg.model.Appointment;
@@ -85,15 +86,15 @@ class MonthPanel extends JPanel implements Printable
         int month;
         boolean showpub = false;
         boolean showpriv = false;
-        String sp = Prefs.getPref("showpublic", "true" );
+        String sp = Prefs.getPref(PrefName.SHOWPUBLIC);
         if( sp.equals("true") )
             showpub = true;
-        sp = Prefs.getPref("showprivate", "false" );
+        sp = Prefs.getPref(PrefName.SHOWPRIVATE);
         if( sp.equals("true") )
             showpriv = true;
         
         boolean wrap = false;
-        sp = Prefs.getPref("wrap", "false" );
+        sp = Prefs.getPref(PrefName.WRAP);
         if( sp.equals("true") )
             wrap = true;
         
@@ -101,7 +102,7 @@ class MonthPanel extends JPanel implements Printable
         String cp = "false";
         try
         {
-            cp = Prefs.getPref("colorprint", "false");
+            cp = Prefs.getPref(PrefName.COLORPRINT);
         }
         catch( Exception e )
         {}
@@ -141,7 +142,7 @@ class MonthPanel extends JPanel implements Printable
         cal.add(Calendar.MONTH, pageIndex );
         year = cal.get(Calendar.YEAR);
         month = cal.get(Calendar.MONTH);
-        cal.setFirstDayOfWeek(Prefs.getPref("first_dow", Calendar.SUNDAY ));
+        cal.setFirstDayOfWeek(Prefs.getIntPref(PrefName.FIRSTDOW));
         
         Date then = cal.getTime();
         SimpleDateFormat sd = new SimpleDateFormat("MMMM yyyy");
@@ -303,7 +304,7 @@ class MonthPanel extends JPanel implements Printable
                                     appty += smfontHeight;
                                 }
                                 
-                                cal.setFirstDayOfWeek(Prefs.getPref("first_dow", Calendar.SUNDAY ));
+                                cal.setFirstDayOfWeek(Prefs.getIntPref(PrefName.FIRSTDOW ));
                                 
                                 // reset to black
                                 g2.setColor(Color.black);
@@ -341,7 +342,7 @@ class MonthPanel extends JPanel implements Printable
         }
         
         
-        String logo = Prefs.getPref("logo", "" );
+        String logo = Prefs.getPref(PrefName.LOGO);
         
         for( int col = 0; col < 8; col++ )
         {

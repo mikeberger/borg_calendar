@@ -39,6 +39,7 @@ import java.util.Iterator;
 import javax.swing.JPanel;
 
 import net.sf.borg.common.util.Errmsg;
+import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
 import net.sf.borg.common.util.Resource;
 import net.sf.borg.common.util.Version;
@@ -74,10 +75,10 @@ class WeekPanel extends JPanel implements Printable
         
         boolean showpub = false;
         boolean showpriv = false;
-        String sp = Prefs.getPref("showpublic", "true" );
+        String sp = Prefs.getPref(PrefName.SHOWPUBLIC );
         if( sp.equals("true") )
             showpub = true;
-        sp = Prefs.getPref("showprivate", "false" );
+        sp = Prefs.getPref(PrefName.SHOWPRIVATE );
         if( sp.equals("true") )
             showpriv = true;
         // set up default and small fonts
@@ -108,7 +109,7 @@ class WeekPanel extends JPanel implements Printable
         
         // set up calendar and determine first day of week from options
         GregorianCalendar cal = new GregorianCalendar( year_, month_, date_ );
-        int fdow = Prefs.getPref("first_dow", Calendar.SUNDAY );
+        int fdow = Prefs.getIntPref(PrefName.FIRSTDOW);
         cal.setFirstDayOfWeek(fdow);
         
         // move cal back to first dow for the chosen week
@@ -151,8 +152,8 @@ class WeekPanel extends JPanel implements Printable
         int calbot = (int)rowheight + daytop;
         
         // start and end hour = range of Y axis
-        String shr = Prefs.getPref("wkStartHour", "7");
-        String ehr = Prefs.getPref("wkEndHour","22" );
+        String shr = Prefs.getPref(PrefName.WKSTARTHOUR);
+        String ehr = Prefs.getPref(PrefName.WKENDHOUR);
         int starthr = 7;
         int endhr = 22;
         try
@@ -352,7 +353,7 @@ class WeekPanel extends JPanel implements Printable
         // draw the Y axis time labels
         g2.setFont(sm_font);
         boolean mt = false;
-        String mil = Prefs.getPref( "miltime", "true" );
+        String mil = Prefs.getPref( PrefName.MILTIME);
         if( mil.equals("true") ) mt = true;
         for( int row = 1; row < endhr - starthr; row++ )
         {

@@ -47,6 +47,7 @@ import javax.swing.JLabel;
 import javax.swing.WindowConstants;
 
 import net.sf.borg.common.util.Errmsg;
+import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
 import net.sf.borg.common.util.Version;
 import net.sf.borg.model.Appointment;
@@ -69,7 +70,7 @@ public class PopupView extends View {
             public void run() {
                 EventQueue.invokeLater(doPopupChk);
             }
-        }, 5*1000, Prefs.getPref("reminder_check_mins",5) * 60 * 1000);
+        }, 5*1000, Prefs.getIntPref(PrefName.REMINDERCHECKMINS) * 60 * 1000);
         
     }
     
@@ -101,17 +102,17 @@ public class PopupView extends View {
     // also beep and bring imminent popups to the front
     private void popup_chk() {
         
-        String enable = Prefs.getPref("reminders", "true");
+        String enable = Prefs.getPref(PrefName.REMINDERS);
         if( enable.equals("false"))
             return;
         
         // determine if we are popping up public/private appts
         boolean showpub = false;
         boolean showpriv = false;
-        String sp = Prefs.getPref("showpublic", "true" );
+        String sp = Prefs.getPref(PrefName.SHOWPUBLIC);
         if( sp.equals("true") )
             showpub = true;
-        sp = Prefs.getPref("showprivate", "false" );
+        sp = Prefs.getPref(PrefName.SHOWPRIVATE );
         if( sp.equals("true") )
             showpriv = true;
         
@@ -169,7 +170,7 @@ public class PopupView extends View {
                     
                     // skip the appt if it is more than 3 hrs away or more than 30 mins in the past
                     long mins_to_go = (acal.getTimeInMillis() - now.getTimeInMillis()) / (1000 * 60);
-                    if( mins_to_go > Prefs.getPref("pop_before_mins", 180) || mins_to_go < -1 * Prefs.getPref("pop_after_mins", 30) )
+                    if( mins_to_go > Prefs.getIntPref(PrefName.POPBEFOREMINS) || mins_to_go < -1 * Prefs.getIntPref(PrefName.POPAFTERMINS) )
                         continue;
                     
                     // skip appt if it is already in the pops list
@@ -207,7 +208,7 @@ public class PopupView extends View {
             }
         }
         
-        enable = Prefs.getPref("beeping_reminders", "true");
+        enable = Prefs.getPref(PrefName.BEEPINGREMINDERS);
         if( enable.equals("false"))
             return;
         
@@ -257,7 +258,7 @@ public class PopupView extends View {
                 
                 // if less than 15 mins (includes overdue appts) then make sound
                 // and bring to front. stop beeping 30 mins after the appt.
-                if( mins_to_go < Prefs.getPref("beeping_mins", 15) && mins_to_go > -1 * Prefs.getPref("pop_after_mins", 30) ) {
+                if( mins_to_go < Prefs.getIntPref(PrefName.BEEPINGMINS) && mins_to_go > -1 * Prefs.getIntPref(PrefName.POPAFTERMINS) ) {
                     fr.toFront();
                     
                     // play sound

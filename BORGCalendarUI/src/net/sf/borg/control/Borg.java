@@ -54,6 +54,7 @@ import net.sf.borg.common.app.AppHelper;
 import net.sf.borg.common.io.IOHelper;
 import net.sf.borg.common.ui.NwFontChooserS;
 import net.sf.borg.common.util.Errmsg;
+import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
 import net.sf.borg.common.util.Resource;
 import net.sf.borg.common.util.Sendmail;
@@ -205,13 +206,13 @@ public class Borg extends Controller implements OptionsView.RestartListener {
         }
 
         boolean splash = true;
-        String spl = Prefs.getPref("splash", "true");
+        String spl = Prefs.getPref(PrefName.SPLASH);
         if (spl.equals("false"))
         {
             splash = false;
         }
 
-        String deffont = Prefs.getPref("defaultfont", "");
+        String deffont = Prefs.getPref(PrefName.DEFFONT);
         if (!deffont.equals(""))
         {
             Font f = Font.decode(deffont);
@@ -219,8 +220,7 @@ public class Borg extends Controller implements OptionsView.RestartListener {
         }
         
         // set the look and feel
-        String lnf = Prefs.getPref("lnf",
-                "javax.swing.plaf.metal.MetalLookAndFeel");
+        String lnf = Prefs.getPref(PrefName.LNF);
         try
         {
             UIManager.setLookAndFeel(lnf);
@@ -229,8 +229,8 @@ public class Borg extends Controller implements OptionsView.RestartListener {
         {
         }
 
-        String country = Prefs.getPref("country", "");
-        String language = Prefs.getPref("language", "");
+        String country = Prefs.getPref(PrefName.COUNTRY);
+        String language = Prefs.getPref(PrefName.LANGUAGE);
 
         if (!language.equals(""))
         {
@@ -250,7 +250,7 @@ public class Borg extends Controller implements OptionsView.RestartListener {
         try
         {
             // get dir for DB
-            dbdir = Prefs.getPref("dbdir", "not-set");
+            dbdir = Prefs.getPref(PrefName.DBDIR);
 
             // init cal model & load data from database
             if (testdb != null)
@@ -279,7 +279,7 @@ public class Borg extends Controller implements OptionsView.RestartListener {
                     System.exit(1);
             }
 
-            String shrd = Prefs.getPref("shared", "false");
+            String shrd = Prefs.getPref(PrefName.SHARED);
             if (shrd.equals("true"))
             {
                 shared = true;
@@ -459,7 +459,7 @@ public class Borg extends Controller implements OptionsView.RestartListener {
 
             // only start to systray (i.e. no month/todo views, if
             // trayicon is available and option is set
-            String backgstart = Prefs.getPref("backgstart", "false");
+            String backgstart = Prefs.getPref(PrefName.BACKGSTART);
             if (backgstart.equals("false") || !trayIcon)
             {
                 //Schedule a job for the event-dispatching thread:
@@ -618,7 +618,7 @@ public class Borg extends Controller implements OptionsView.RestartListener {
         try
         {
             // check if the version check feature has been enabled
-            int vcl = Prefs.getPref("ver_chk_last", -1);
+            int vcl = Prefs.getIntPref(PrefName.VERCHKLAST);
             if (vcl == -1)
                 return;
 
@@ -678,7 +678,7 @@ public class Borg extends Controller implements OptionsView.RestartListener {
             }
 
             // set new version check day
-            Prefs.putPref("ver_chk_last", doy);
+            Prefs.putPref(PrefName.VERCHKLAST, new Integer(doy));
         }
         catch (Exception e)
         {
@@ -693,16 +693,16 @@ public class Borg extends Controller implements OptionsView.RestartListener {
     private void reminder() {
 
         // check if the email feature has been enabled
-        String email = Prefs.getPref("email_enabled", "false");
+        String email = Prefs.getPref(PrefName.EMAILENABLED);
         if (email.equals("false"))
             return;
 
         // get the SMTP host and address
-        String host = Prefs.getPref("email_server", "");
-        String addr = Prefs.getPref("email_addr", "");
+        String host = Prefs.getPref(PrefName.EMAILSERVER);
+        String addr = Prefs.getPref(PrefName.EMAILADDR);
 
         // get the last day that email was sent
-        int lastday = Prefs.getPref("email_last", 0);
+        int lastday = Prefs.getIntPref(PrefName.EMAILLAST);
 
         if (host.equals("") || addr.equals(""))
             return;
@@ -794,7 +794,7 @@ public class Borg extends Controller implements OptionsView.RestartListener {
         {
             String s = Sendmail.sendmail(host, 25, "Borg Reminder", tx, addr,
                     addr);
-            String ed = Prefs.getPref("email_debug", "0");
+            String ed = Prefs.getPref(PrefName.EMAILDEBUG);
             if (ed.equals("1"))
                 Errmsg.notice(s);
 
@@ -805,7 +805,7 @@ public class Borg extends Controller implements OptionsView.RestartListener {
         }
 
         // record that we sent email today
-        Prefs.putPref("email_last", doy);
+        Prefs.putPref(PrefName.EMAILLAST, new Integer(doy));
 
         return;
     }

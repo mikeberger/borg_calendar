@@ -65,6 +65,7 @@ import net.sf.borg.common.app.AppHelper;
 import net.sf.borg.common.io.IOHelper;
 import net.sf.borg.common.io.OSServicesHome;
 import net.sf.borg.common.util.Errmsg;
+import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
 import net.sf.borg.common.util.Resource;
 import net.sf.borg.common.util.Version;
@@ -149,7 +150,7 @@ public class CalendarView extends View {
             // as per the experts, this subclass of JTextPane is the only way to
             // stop word-wrap
             JTextPane jep = null;
-            String wrap = Prefs.getPref("wrap", "false" );
+            String wrap = Prefs.getPref(PrefName.WRAP);
             if( wrap.equals("true") ) {
                 jep = new JTextPane();
             }
@@ -290,7 +291,7 @@ public class CalendarView extends View {
             Errmsg.errmsg(e);
         }
         
-        String shared = Prefs.getPref("shared", "false");
+        String shared = Prefs.getPref(PrefName.SHARED);
         if( !shared.equals("true")) {
             syncMI.setEnabled(false);
         }
@@ -386,18 +387,18 @@ public class CalendarView extends View {
     void updStyles() {
         
         
-        int fontsize = Prefs.getPref("apptfontsize", 10 );
+        int fontsize = Prefs.getIntPref(PrefName.APPTFONTSIZE);
         
         Style def = StyleContext.getDefaultStyleContext().getStyle(StyleContext.DEFAULT_STYLE);
         
         // update all of the text panes
-        String s = Prefs.getPref("apptfont", "SansSerif-10");
+        String s = Prefs.getPref(PrefName.APPTFONT);
         Font f = Font.decode(s);
         for( int i = 0; i < 37; i++ ) {
             initStyles(daytext[i], def, f);
         }
         
-        s = Prefs.getPref("previewfont", "SansSerif-10");
+        s = Prefs.getPref(PrefName.PREVIEWFONT);
         f = Font.decode(s);
         
         initStyles( todoPreview, def, f );
@@ -429,7 +430,7 @@ public class CalendarView extends View {
     void setDayLabels() {
         // determine first day and last day of the month
         GregorianCalendar cal = new GregorianCalendar();
-        cal.setFirstDayOfWeek(Prefs.getPref("first_dow", Calendar.SUNDAY ));
+        cal.setFirstDayOfWeek(Prefs.getIntPref(PrefName.FIRSTDOW));
         cal.set(Calendar.DATE, 1 );
         cal.add( Calendar.DAY_OF_WEEK, cal.getFirstDayOfWeek() - cal.get(Calendar.DAY_OF_WEEK) );
         SimpleDateFormat dwf = new SimpleDateFormat("EEEE");
@@ -479,7 +480,7 @@ public class CalendarView extends View {
                 Today.setEnabled(true);
             }
             
-            cal.setFirstDayOfWeek(Prefs.getPref("first_dow", Calendar.SUNDAY ));
+            cal.setFirstDayOfWeek(Prefs.getIntPref(PrefName.FIRSTDOW));
             
             // set cal to day 1 of month
             cal.set( year_, month_, 1 );
@@ -498,10 +499,10 @@ public class CalendarView extends View {
             // set show public/private flags
             boolean showpub = false;
             boolean showpriv = false;
-            String sp = Prefs.getPref("showpublic", "true" );
+            String sp = Prefs.getPref(PrefName.SHOWPUBLIC );
             if( sp.equals("true") )
                 showpub = true;
-            sp = Prefs.getPref("showprivate", "false" );
+            sp = Prefs.getPref(PrefName.SHOWPRIVATE);
             if( sp.equals("true") )
                 showpriv = true;
             
@@ -1519,10 +1520,10 @@ public class CalendarView extends View {
     private void expurlActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_expurlActionPerformed
     {//GEN-HEADEREND:event_expurlActionPerformed
        try {
-            String prevurl = Prefs.getPref("lastExpUrl", "");
+            String prevurl = Prefs.getPref(PrefName.LASTEXPURL);
             String urlst = JOptionPane.showInputDialog(ResourceBundle.getBundle("resource/borg_resource").getString("enturl"), prevurl);
             if( urlst == null || urlst.equals("") ) return;
-            Prefs.putPref("lastExpUrl", urlst);
+            Prefs.putPref(PrefName.LASTEXPURL, urlst);
             expURLCommon(urlst);
         }
         catch( Exception e) {
@@ -1532,11 +1533,11 @@ public class CalendarView extends View {
     
 	private void impurlActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_impurlActionPerformed
         try{
-            String prevurl = Prefs.getPref("lastImpUrl", "");
+            String prevurl = Prefs.getPref(PrefName.LASTIMPURL);
             String urlst = JOptionPane.showInputDialog(ResourceBundle.getBundle("resource/borg_resource").getString("enturl"), prevurl);
             if( urlst == null || urlst.equals("") ) return;
             
-            Prefs.putPref("lastImpUrl", urlst);
+            Prefs.putPref(PrefName.LASTIMPURL, urlst);
             URL url = new URL(urlst);
             impURLCommon(urlst, IOHelper.openStream(url));
         }

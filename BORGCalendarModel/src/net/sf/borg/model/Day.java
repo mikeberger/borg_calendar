@@ -35,6 +35,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.TreeSet;
 
+import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
 import net.sf.borg.common.util.Resource;
 import net.sf.borg.common.util.Version;
@@ -78,7 +79,7 @@ public class Day
             String s1 = so1.getText();
             String s2 = so2.getText();
             
-            String csort = Prefs.getPref("color_sort", "true" ); 
+            String csort = Prefs.getPref(PrefName.COLORSORT); 
             if( csort.equals("true"))
             {
                 // color has first priority in the sort
@@ -258,7 +259,7 @@ public class Day
         
         // add canned US holidays
         // check user preferences first
-        String show_us_hols = Prefs.getPref("show_us_holidays", "true" );
+        String show_us_hols = Prefs.getPref(PrefName.SHOWUSHOLIDAYS);
         
         if( show_us_hols.equals("true") )
         {
@@ -344,7 +345,7 @@ public class Day
         
         // add canned Canadian holidays
         // check user preferences first
-        String show_can_hols = Prefs.getPref("show_can_holidays", "false" );      
+        String show_can_hols = Prefs.getPref(PrefName.SHOWCANHOLIDAYS);      
         if( show_can_hols.equals("true") )
         {
             

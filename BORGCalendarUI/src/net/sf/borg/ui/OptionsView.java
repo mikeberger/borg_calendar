@@ -40,6 +40,7 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import net.sf.borg.common.app.AppHelper;
 import net.sf.borg.common.ui.NwFontChooserS;
 import net.sf.borg.common.util.Errmsg;
+import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
 import net.sf.borg.common.util.Resource;
 import net.sf.borg.common.util.Version;
@@ -79,30 +80,30 @@ public class OptionsView extends View
         // set the various screen items based on the existing user preferences
         
         // color print option
-        String cp = Prefs.getPref("colorprint", "false" );
+        String cp = Prefs.getPref(PrefName.COLORPRINT);
         if( cp.equals("true") )
             colorprint.setSelected(true);
         else
             colorprint.setSelected(false);
         
         // options to show public and private appts
-        cp = Prefs.getPref("showpublic", "true" );
+        cp = Prefs.getPref(PrefName.SHOWPUBLIC );
         if( cp.equals("true") )
             pubbox.setSelected(true);
         else
             pubbox.setSelected(false);
-        cp = Prefs.getPref("showprivate", "false" );
+        cp = Prefs.getPref(PrefName.SHOWPRIVATE);
         if( cp.equals("true") )
             privbox.setSelected(true);
         else
             privbox.setSelected(false);
         
         // database directory
-        String dbdir = Prefs.getPref("dbdir", "not-set" );
+        String dbdir = Prefs.getPref(PrefName.DBDIR);
         jTextField3.setText(dbdir);
         
         // print logo directory
-        String logo = Prefs.getPref("logo", "" );
+        String logo = Prefs.getPref(PrefName.LOGO);
         logofile.setText(logo);
         if( !logo.equals("") )
             logobox.setSelected(true);
@@ -110,16 +111,16 @@ public class OptionsView extends View
             logobox.setSelected(false);
         
         // email enabled
-        cp = Prefs.getPref("email_enabled", "false" );
+        cp = Prefs.getPref(PrefName.EMAILENABLED );
         if( cp.equals("true") )
             emailbox.setSelected(true);
         else
             emailbox.setSelected(false);
         
         // email server and address
-        cp = Prefs.getPref("email_server", "" );
+        cp = Prefs.getPref(PrefName.EMAILSERVER);
         smtptext.setText(cp);
-        cp = Prefs.getPref("email_addr", "" );
+        cp = Prefs.getPref(PrefName.EMAILADDR);
         emailtext.setText(cp);
         
         // set email server and address editable if the email option is
@@ -136,63 +137,63 @@ public class OptionsView extends View
         { Errmsg.errmsg(e); }
         
         // US holidays
-        String ush = Prefs.getPref("show_us_holidays", "true" );
+        String ush = Prefs.getPref(PrefName.SHOWUSHOLIDAYS);
         if( ush.equals("true") )
             holiday1.setSelected(true);
         else
             holiday1.setSelected(false);
         
-        // US holidays
-        ush = Prefs.getPref("show_can_holidays", "false" );
+        // CAN holidays
+        ush = Prefs.getPref(PrefName.SHOWCANHOLIDAYS);
         if( ush.equals("true") )
             canadabox.setSelected(true);
         else
             canadabox.setSelected(false);
         
-        String csort = Prefs.getPref("color_sort", "true" );
+        String csort = Prefs.getPref(PrefName.COLORSORT);
         if( csort.equals("true") )
             colorsortbox.setSelected(true);
         else
             colorsortbox.setSelected(false);
         
-        int fdow = Prefs.getPref("first_dow", Calendar.SUNDAY );
+        int fdow = Prefs.getIntPref(PrefName.FIRSTDOW );
         if( fdow == Calendar.MONDAY )
             mondaycb.setSelected(true);
         else
             mondaycb.setSelected(false);
         
-        String mt = Prefs.getPref("miltime", "false" );
+        String mt = Prefs.getPref(PrefName.MILTIME);
         if( mt.equals("true") )
             miltime.setSelected(true);
         else
             miltime.setSelected(false);
         
-        String bg = Prefs.getPref("backgstart", "false" );
+        String bg = Prefs.getPref(PrefName.BACKGSTART);
         if( bg.equals("true") )
             backgbox.setSelected(true);
         else
             backgbox.setSelected(false);
         
-        String splash = Prefs.getPref("splash", "true" );
+        String splash = Prefs.getPref(PrefName.SPLASH);
         if( splash.equals("true") )
             splashbox.setSelected(true);
         else
             splashbox.setSelected(false);
         
-        String stacktrace = Prefs.getPref("stacktrace", "false" );
+        String stacktrace = Prefs.getPref(PrefName.STACKTRACE);
         if( stacktrace.equals("true") )
             stackbox.setSelected(true);
         else
             stackbox.setSelected(false);
         
-        bg = Prefs.getPref("wrap", "false" );
+        bg = Prefs.getPref(PrefName.WRAP);
         if( bg.equals("true") )
             wrapbox.setSelected(true);
         else
             wrapbox.setSelected(false);
         
         // auto update check
-        int au = Prefs.getPref("ver_chk_last", -1 );
+        int au = Prefs.getIntPref(PrefName.VERCHKLAST );
         if(au != -1 )
             autoupdate.setSelected(true);
         else
@@ -201,7 +202,7 @@ public class OptionsView extends View
         // add installed look and feels to lnfBox
         lnfBox.removeAllItems();
         TreeSet lnfs = new TreeSet();
-        String curlnf = Prefs.getPref("lnf", "javax.swing.plaf.metal.MetalLookAndFeel" );
+        String curlnf = Prefs.getPref(PrefName.LNF);
         LookAndFeelInfo lnfinfo[] = UIManager.getInstalledLookAndFeels();
         for( int i = 0; i < lnfinfo.length; i++ )
         {
@@ -232,13 +233,13 @@ public class OptionsView extends View
         
         lnfBox.setSelectedItem(curlnf);
         
-        String shr = Prefs.getPref("wkStartHour", "7" );
-        String ehr = Prefs.getPref("wkEndHour", "22" );
+        String shr = Prefs.getPref(PrefName.WKSTARTHOUR);
+        String ehr = Prefs.getPref(PrefName.WKENDHOUR);
         wkstarthr.setSelectedItem( shr );
         wkendhr.setSelectedItem( ehr );
         
         // add locales
-        String nolocale = Prefs.getPref("nolocale", "0");
+        String nolocale = Prefs.getPref(PrefName.NOLOCALE);
         if( !nolocale.equals("1"))
         {
             localebox.removeAllItems();
@@ -259,37 +260,37 @@ public class OptionsView extends View
         }
         
         // popups
-        bg = Prefs.getPref("reminders", "true" );
+        bg = Prefs.getPref(PrefName.REMINDERS);
         if( bg.equals("true") )
             popenablebox.setSelected(true);
         else
             popenablebox.setSelected(false);
         
-        bg = Prefs.getPref("beeping_reminders", "true" );
+        bg = Prefs.getPref(PrefName.BEEPINGREMINDERS);
         if( bg.equals("true") )
             soundbox.setSelected(true);
         else
             soundbox.setSelected(false);
         
-        int mins = Prefs.getPref("reminder_check_mins", 5 );
+        int mins = Prefs.getIntPref(PrefName.REMINDERCHECKMINS);
         checkfreq.setValue(new Integer(mins));
         
-        mins = Prefs.getPref("pop_before_mins", 180 );
+        mins = Prefs.getIntPref(PrefName.POPBEFOREMINS);
         popminbefore.setValue(new Integer(mins));
         
-        mins = Prefs.getPref("pop_after_mins", 30 );
+        mins = Prefs.getIntPref(PrefName.POPAFTERMINS );
         popminafter.setValue(new Integer(mins));
                
-        mins = Prefs.getPref("beeping_mins", 15 );
+        mins = Prefs.getIntPref(PrefName.BEEPINGMINS);
         beepmins.setValue(new Integer(mins));
          
-        bg = Prefs.getPref("shared", "false" );
+        bg = Prefs.getPref(PrefName.SHARED);
         if( bg.equals("true") )
             sharedbox.setSelected(true);
         else
             sharedbox.setSelected(false);
         
-        bg = Prefs.getPref("ical_todo_ev", "false" );
+        bg = Prefs.getPref(PrefName.ICALTODOEV );
         if( bg.equals("true") )
             icaltodobox.setSelected(true);
         else
@@ -1108,16 +1109,16 @@ public class OptionsView extends View
 
     private void icaltodoboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_icaltodoboxActionPerformed
         if( icaltodobox.isSelected() )
-            Prefs.putPref("ical_todo_ev", "true" );
+            Prefs.putPref(PrefName.ICALTODOEV, "true" );
         else
-            Prefs.putPref("ical_todo_ev", "false" );
+            Prefs.putPref(PrefName.ICALTODOEV, "false" );
     }//GEN-LAST:event_icaltodoboxActionPerformed
 
     private void colorsortboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_colorsortboxActionPerformed
         if( colorsortbox.isSelected() )
-            Prefs.putPref("color_sort", "true" );
+            Prefs.putPref(PrefName.COLORSORT, "true" );
         else
-            Prefs.putPref("color_sort", "false" );
+            Prefs.putPref(PrefName.COLORSORT, "false" );
                 
         try
         {
@@ -1129,24 +1130,24 @@ public class OptionsView extends View
 
     private void stackboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stackboxActionPerformed
         if( stackbox.isSelected() )
-            Prefs.putPref("stacktrace", "true" );
+            Prefs.putPref(PrefName.STACKTRACE, "true" );
         else
-            Prefs.putPref("stacktrace", "false" );
+            Prefs.putPref(PrefName.STACKTRACE, "false" );
     }//GEN-LAST:event_stackboxActionPerformed
 
     private void sharedboxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_sharedboxActionPerformed
     {//GEN-HEADEREND:event_sharedboxActionPerformed
         if( sharedbox.isSelected() )
-            Prefs.putPref("shared", "true" );
+            Prefs.putPref(PrefName.SHARED, "true" );
         else
-            Prefs.putPref("shared", "false" );
+            Prefs.putPref(PrefName.SHARED, "false" );
     }//GEN-LAST:event_sharedboxActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
        
         Font f = NwFontChooserS.showDialog(null, null,null);
         String fs = NwFontChooserS.fontString(f);
-        Prefs.putPref("defaultfont", fs );
+        Prefs.putPref(PrefName.DEFFONT, fs );
         NwFontChooserS.setDefaultFont(f);
         SwingUtilities.updateComponentTreeUI(this);
         SwingUtilities.updateComponentTreeUI(cg_);
@@ -1156,57 +1157,57 @@ public class OptionsView extends View
     private void beepminsStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_beepminsStateChanged
     {//GEN-HEADEREND:event_beepminsStateChanged
         Integer i = (Integer) beepmins.getValue();
-        int cur = Prefs.getPref("beeping_mins", 5);
+        int cur = Prefs.getIntPref(PrefName.BEEPINGMINS);
         if( i.intValue() != cur )
-            Prefs.putPref("beeping_mins", i.intValue());
+            Prefs.putPref(PrefName.BEEPINGMINS, i);
     }//GEN-LAST:event_beepminsStateChanged
 
     private void popminafterStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_popminafterStateChanged
     {//GEN-HEADEREND:event_popminafterStateChanged
         Integer i = (Integer) popminafter.getValue();
-        int cur = Prefs.getPref("pop_after_mins", 5);
+        int cur = Prefs.getIntPref(PrefName.POPAFTERMINS);
         if( i.intValue() != cur )
-            Prefs.putPref("pop_after_mins", i.intValue());
+            Prefs.putPref(PrefName.POPAFTERMINS, i);
     }//GEN-LAST:event_popminafterStateChanged
 
     private void popminbeforeStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_popminbeforeStateChanged
     {//GEN-HEADEREND:event_popminbeforeStateChanged
         Integer i = (Integer) popminbefore.getValue();
-        int cur = Prefs.getPref("pop_before_mins", 5);
+        int cur = Prefs.getIntPref(PrefName.POPBEFOREMINS);
         if( i.intValue() != cur )
-            Prefs.putPref("pop_before_mins", i.intValue());
+            Prefs.putPref(PrefName.POPBEFOREMINS, i);
     }//GEN-LAST:event_popminbeforeStateChanged
 
     private void checkfreqStateChanged(javax.swing.event.ChangeEvent evt)//GEN-FIRST:event_checkfreqStateChanged
     {//GEN-HEADEREND:event_checkfreqStateChanged
         Integer i = (Integer) checkfreq.getValue();//GEN-LAST:event_checkfreqStateChanged
-        int cur = Prefs.getPref("reminder_check_mins", 5);
+        int cur = Prefs.getIntPref(PrefName.REMINDERCHECKMINS);
         if( i.intValue() != cur )
-            Prefs.putPref("reminder_check_mins", i.intValue());
+            Prefs.putPref(PrefName.REMINDERCHECKMINS, i);
         
     }
     private void soundboxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_soundboxActionPerformed
     {//GEN-HEADEREND:event_soundboxActionPerformed
         if( soundbox.isSelected() )
-            Prefs.putPref("beeping_reminders", "true" );
+            Prefs.putPref(PrefName.BEEPINGREMINDERS, "true" );
         else
-            Prefs.putPref("beeping_reminders", "false" );
+            Prefs.putPref(PrefName.BEEPINGREMINDERS, "false" );
     }//GEN-LAST:event_soundboxActionPerformed
 
     private void popenableboxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_popenableboxActionPerformed
     {//GEN-HEADEREND:event_popenableboxActionPerformed
         if( popenablebox.isSelected() )
-            Prefs.putPref("reminders", "true" );
+            Prefs.putPref(PrefName.REMINDERS, "true" );
         else
-            Prefs.putPref("reminders", "false" );
+            Prefs.putPref(PrefName.REMINDERS, "false" );
     }//GEN-LAST:event_popenableboxActionPerformed
 
     private void splashboxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_splashboxActionPerformed
     {//GEN-HEADEREND:event_splashboxActionPerformed
         if( splashbox.isSelected() )
-            Prefs.putPref("splash", "true" );
+            Prefs.putPref(PrefName.SPLASH, "true" );
         else
-            Prefs.putPref("splash", "false" );
+            Prefs.putPref(PrefName.SPLASH, "false" );
     }//GEN-LAST:event_splashboxActionPerformed
     
     private void localeboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_localeboxActionPerformed
@@ -1217,8 +1218,8 @@ public class OptionsView extends View
             if( choice.equals(locs[i].getDisplayName()))
             {
                 //Locale.setDefault(locs[i]);
-                Prefs.putPref("country", locs[i].getCountry() );
-                Prefs.putPref("language", locs[i].getLanguage());
+                Prefs.putPref(PrefName.COUNTRY, locs[i].getCountry() );
+                Prefs.putPref(PrefName.LANGUAGE, locs[i].getLanguage());
             }
         }
     }//GEN-LAST:event_localeboxActionPerformed
@@ -1226,7 +1227,7 @@ public class OptionsView extends View
     private void lnfBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lnfBoxActionPerformed
         
         String newlnf = (String) lnfBox.getSelectedItem();
-        String oldlnf = Prefs.getPref("lnf", "javax.swing.plaf.metal.MetalLookAndFeel" );
+        String oldlnf = Prefs.getPref(PrefName.LNF);
         if( !newlnf.equals(oldlnf) )
         {
             try
@@ -1234,7 +1235,7 @@ public class OptionsView extends View
                 UIManager.setLookAndFeel(newlnf);
                 // don't try to change the main window l&f - is doesn't work 100%
                 //SwingUtilities.updateComponentTreeUI(cg_);
-                Prefs.putPref("lnf", newlnf );
+                Prefs.putPref(PrefName.LNF, newlnf );
             }
             catch( Exception e )
             {
@@ -1252,7 +1253,7 @@ public class OptionsView extends View
         if( ret == JOptionPane.YES_OPTION )
         {
             String dbdir = jTextField3.getText();
-            Prefs.putPref("dbdir", dbdir );
+            Prefs.putPref(PrefName.DBDIR, dbdir );
             rl_.restart();
         }
     }//GEN-LAST:event_chgdbActionPerformed
@@ -1262,9 +1263,9 @@ public class OptionsView extends View
         
         // update US holiday preference and refresh the month view accordingly
         if( canadabox.isSelected() )
-            Prefs.putPref("show_can_holidays", "true" );
+            Prefs.putPref(PrefName.SHOWCANHOLIDAYS, "true" );
         else
-            Prefs.putPref("show_can_holidays", "false" );
+            Prefs.putPref(PrefName.SHOWCANHOLIDAYS, "false" );
         
         try
         {
@@ -1277,24 +1278,24 @@ public class OptionsView extends View
     private void wrapboxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_wrapboxActionPerformed
     {//GEN-HEADEREND:event_wrapboxActionPerformed
         if( wrapbox.isSelected() )
-            Prefs.putPref("wrap", "true" );
+            Prefs.putPref(PrefName.WRAP, "true" );
         else
-            Prefs.putPref("wrap", "false" );
+            Prefs.putPref(PrefName.WRAP, "false" );
     }//GEN-LAST:event_wrapboxActionPerformed
     
     private void backgboxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_backgboxActionPerformed
     {//GEN-HEADEREND:event_backgboxActionPerformed
         if( backgbox.isSelected() )
-            Prefs.putPref("backgstart", "true" );
+            Prefs.putPref(PrefName.BACKGSTART, "true" );
         else
-            Prefs.putPref("backgstart", "false" );
+            Prefs.putPref(PrefName.BACKGSTART, "false" );
     }//GEN-LAST:event_backgboxActionPerformed
     
     private void logoboxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_logoboxActionPerformed
     {//GEN-HEADEREND:event_logoboxActionPerformed
         if( !logobox.isSelected() )
         {
-            Prefs.putPref("logo", "" );
+            Prefs.putPref(PrefName.LOGO, "" );
             logofile.setText("");
         }
         
@@ -1336,7 +1337,7 @@ public class OptionsView extends View
             Errmsg.notice( err );
         }
         
-        Prefs.putPref("logo", logo );
+        Prefs.putPref(PrefName.LOGO, logo );
         
         // update text field - nothing else changes. DB change will take effect only on restart
         logofile.setText(logo);
@@ -1344,21 +1345,21 @@ public class OptionsView extends View
     
     private void wkendhrActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_wkendhrActionPerformed
     {//GEN-HEADEREND:event_wkendhrActionPerformed
-        Prefs.putPref( "wkEndHour", (String)wkendhr.getSelectedItem());
+        Prefs.putPref( PrefName.WKENDHOUR, (String)wkendhr.getSelectedItem());
     }//GEN-LAST:event_wkendhrActionPerformed
     
     private void wkstarthrActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_wkstarthrActionPerformed
     {//GEN-HEADEREND:event_wkstarthrActionPerformed
-        Prefs.putPref( "wkStartHour", (String)wkstarthr.getSelectedItem());
+        Prefs.putPref( PrefName.WKSTARTHOUR, (String)wkstarthr.getSelectedItem());
         
     }//GEN-LAST:event_wkstarthrActionPerformed
     
     private void miltimeActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_miltimeActionPerformed
     {//GEN-HEADEREND:event_miltimeActionPerformed
         if( miltime.isSelected() )
-            Prefs.putPref("miltime", "true" );
+            Prefs.putPref(PrefName.MILTIME, "true" );
         else
-            Prefs.putPref("miltime", "false" );
+            Prefs.putPref(PrefName.MILTIME, "false" );
         
         try
         {
@@ -1372,9 +1373,9 @@ public class OptionsView extends View
     {//GEN-HEADEREND:event_mondaycbActionPerformed
         
         if( mondaycb.isSelected() )
-            Prefs.putPref("first_dow", Calendar.MONDAY );
+            Prefs.putPref(PrefName.FIRSTDOW, new Integer(Calendar.MONDAY) );
         else
-            Prefs.putPref("first_dow", Calendar.SUNDAY );
+            Prefs.putPref(PrefName.FIRSTDOW, new Integer(Calendar.SUNDAY) );
         
         try
         {
@@ -1417,9 +1418,9 @@ public class OptionsView extends View
         // phony value 400 will cause check during current day
         // value -1 is the shut-off value
         if( autoupdate.isSelected() )
-            Prefs.putPref("ver_chk_last", 400 );
+            Prefs.putPref(PrefName.VERCHKLAST, new Integer(400) );
         else
-            Prefs.putPref("ver_chk_last", -1 );
+            Prefs.putPref(PrefName.VERCHKLAST, new Integer(-1) );
         
     }//GEN-LAST:event_autoupdateActionPerformed
     
@@ -1427,9 +1428,9 @@ public class OptionsView extends View
         
         // update US holiday preference and refresh the month view accordingly
         if( holiday1.isSelected() )
-            Prefs.putPref("show_us_holidays", "true" );
+            Prefs.putPref(PrefName.SHOWUSHOLIDAYS, "true" );
         else
-            Prefs.putPref("show_us_holidays", "false" );
+            Prefs.putPref(PrefName.SHOWUSHOLIDAYS, "false" );
         
         try
         {
@@ -1483,7 +1484,7 @@ public class OptionsView extends View
         Font f = NwFontChooserS.showDialog(null, null, null);
         String s = NwFontChooserS.fontString(f);
   
-        Prefs.putPref( "previewfont", s );
+        Prefs.putPref( PrefName.PREVIEWFONT, s );
         
         // update styles used in month view text panes with new font size
         cg_.updStyles();
@@ -1505,7 +1506,7 @@ public class OptionsView extends View
         Font f = NwFontChooserS.showDialog(null, null, null);
         String s = NwFontChooserS.fontString(f);
   
-        Prefs.putPref( "apptfont", s );
+        Prefs.putPref(PrefName.APPTFONT, s );
         
         // update styles used in month view text panes with new font size
         cg_.updStyles();
@@ -1525,9 +1526,9 @@ public class OptionsView extends View
         
         // update the show private option and refresh the month view
         if( privbox.isSelected() )
-            Prefs.putPref("showprivate", "true" );
+            Prefs.putPref(PrefName.SHOWPRIVATE, "true" );
         else
-            Prefs.putPref("showprivate", "false" );
+            Prefs.putPref(PrefName.SHOWPRIVATE, "false" );
         try
         {
             cg_.refresh();
@@ -1541,9 +1542,9 @@ public class OptionsView extends View
         
         // update the show public option and refresh the month view
         if( pubbox.isSelected() )
-            Prefs.putPref("showpublic", "true" );
+            Prefs.putPref(PrefName.SHOWPUBLIC, "true" );
         else
-            Prefs.putPref("showpublic", "false" );
+            Prefs.putPref(PrefName.SHOWPUBLIC, "false" );
         try
         {
             cg_.refresh();
@@ -1556,9 +1557,9 @@ public class OptionsView extends View
     
     private void colorprintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_colorprintActionPerformed
         if( colorprint.isSelected() )
-            Prefs.putPref("colorprint", "true" );
+            Prefs.putPref(PrefName.COLORPRINT, "true" );
         else
-            Prefs.putPref("colorprint", "false" );
+            Prefs.putPref(PrefName.COLORPRINT, "false" );
     }//GEN-LAST:event_colorprintActionPerformed
     
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -1574,12 +1575,12 @@ public class OptionsView extends View
         // text fields accordingly
         if( emailbox.isSelected() )
         {
-            Prefs.putPref("email_enabled", "true" );
-            Prefs.putPref("email_server", smtptext.getText() );
-            Prefs.putPref("email_addr", emailtext.getText() );
+            Prefs.putPref(PrefName.EMAILENABLED, "true" );
+            Prefs.putPref(PrefName.EMAILSERVER, smtptext.getText() );
+            Prefs.putPref(PrefName.EMAILADDR, emailtext.getText() );
         }
         else
-            Prefs.putPref("email_enabled", "false" );
+            Prefs.putPref(PrefName.EMAILENABLED, "false" );
         smtptext.setEditable( !emailbox.isSelected() );
         emailtext.setEditable( !emailbox.isSelected() );
         
@@ -1634,7 +1635,7 @@ public class OptionsView extends View
 	    }
 	    
 	    if( update )
-	        Prefs.putPref("dbdir", dbdir );
+	        Prefs.putPref(PrefName.DBDIR, dbdir );
 	    return(dbdir);
 	}
     

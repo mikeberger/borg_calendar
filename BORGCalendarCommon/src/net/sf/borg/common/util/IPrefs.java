@@ -19,10 +19,8 @@ Copyright 2003 by ==Quiet==
  */
 package net.sf.borg.common.util;
 
-public interface IPrefs
+interface IPrefs
 {
-	public String getPref( String name, String def );
-	public void putPref( String name, String val );
-	public int getPref( String name, int def );
-	public void putPref( String name, int val );
+	public Object getPref( PrefName pn );
+	public void putPref( PrefName pn, Object val );
 }

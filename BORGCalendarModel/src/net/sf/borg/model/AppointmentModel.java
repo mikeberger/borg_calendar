@@ -34,6 +34,7 @@ import java.util.TreeSet;
 import java.util.Vector;
 
 import net.sf.borg.common.util.Errmsg;
+import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
 import net.sf.borg.common.util.Resource;
 import net.sf.borg.common.util.Version;
@@ -817,7 +818,7 @@ public class AppointmentModel extends Model
     {
         if( on )
         {
-            String dbdir = Prefs.getPref("dbdir", "not-set" );
+            String dbdir = Prefs.getPref(PrefName.DBDIR );
             db_.setLogFile( dbdir + "/borg.log" );
         }
         else
@@ -868,7 +869,7 @@ public class AppointmentModel extends Model
     
     public static SimpleDateFormat getTimeFormat()
     {
-        String mt = Prefs.getPref("miltime", "false" );
+        String mt = Prefs.getPref( PrefName.MILTIME );
         if( mt.equals("true"))
         {
             return( new SimpleDateFormat("HH:mm"));

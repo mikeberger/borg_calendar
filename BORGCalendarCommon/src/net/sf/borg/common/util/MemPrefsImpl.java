@@ -30,32 +30,7 @@ class MemPrefsImpl implements IPrefs, Serializable
 {
     private HashMap prefsMap = new HashMap();
     
-	public final String getPref( String name, String def )
-	{
-		String val = (String) prefsMap.get(name);
-		if( val == null ) val = def;
-		return(val);
-	}
 
-	public final void putPref( String name, String val )
-	{
-		prefsMap.put( name , val );
-		saveModified();
-	}
-
-	public final int getPref( String name, int def )
-	{
-		Integer val = (Integer) prefsMap.get(name);
-		if( val == null ) return(def);
-		return(val.intValue());
-	}
-
-	public final void putPref( String name, int val )
-	{
-		prefsMap.put( name , new Integer(val) );
-		saveModified();
-	}
-	
 	// private //
 	private static final String PREFS_FILE = "mem:/prefs.dat";
 	
@@ -80,4 +55,21 @@ class MemPrefsImpl implements IPrefs, Serializable
 			// It didn't work. Tough.
 		}
 	}
+
+	/* (non-Javadoc)
+	 * @see net.sf.borg.common.util.IPrefs#getPref(net.sf.borg.common.util.PrefName)
+	 */
+	public Object getPref(PrefName pn) {
+		Object val = prefsMap.get(pn.getName());
+		if( val == null ) val = pn.getDefault();
+		return(val);
+	}
+
+    /* (non-Javadoc)
+     * @see net.sf.borg.common.util.IPrefs#putPref(net.sf.borg.common.util.PrefName, java.lang.Object)
+     */
+    public void putPref(PrefName pn, Object val) {
+        prefsMap.put( pn.getName() , val );
+		saveModified();     
+    }
 }

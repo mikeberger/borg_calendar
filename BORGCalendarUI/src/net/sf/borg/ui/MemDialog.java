@@ -41,49 +41,28 @@ package net.sf.borg.ui;
 
 
 import java.awt.BorderLayout;
-
 import java.awt.FlowLayout;
-
 import java.awt.event.ActionEvent;
-
 import java.awt.event.ActionListener;
-
 import java.io.ByteArrayInputStream;
-
 import java.io.InputStream;
-
 import java.net.URL;
 
-
-
 import javax.swing.JButton;
-
 import javax.swing.JDialog;
-
 import javax.swing.JFrame;
-
 import javax.swing.JLabel;
-
 import javax.swing.JOptionPane;
-
 import javax.swing.JPanel;
-
 import javax.swing.JScrollPane;
-
 import javax.swing.JTextArea;
 
-
-
 import net.sf.borg.common.app.AppHelper;
-
 import net.sf.borg.common.io.IOHelper;
-
 import net.sf.borg.common.io.OSServicesHome;
-
 import net.sf.borg.common.util.Errmsg;
-
+import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
-
 import net.sf.borg.common.util.Resource;
 
 
@@ -370,7 +349,7 @@ public class MemDialog extends JDialog
 
 	{
 
-		String prevurl = Prefs.getPref("lastImpUrlDat", "");
+		String prevurl = Prefs.getPref(PrefName.LASTIMPURLDAT);
 
 		String urlst =
 
@@ -382,7 +361,7 @@ public class MemDialog extends JDialog
 
 		if( urlst == null || urlst.length()==0 ) return;
 
-		Prefs.putPref("lastImpUrlDat", urlst);
+		Prefs.putPref(PrefName.LASTIMPURLDAT, urlst);
 
 		URL url = new URL(urlst);
 

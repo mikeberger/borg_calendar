@@ -78,4 +78,31 @@ class PrefsImpl implements IPrefs
 	        return;
 	    }
 	}
+	
+	public Object getPref(PrefName pn) {
+        Preferences prefs = Preferences.userNodeForPackage(PrefsHome.class);
+        if( pn.getDefault() instanceof Integer)
+        {
+            int val = prefs.getInt(pn.getName(),((Integer)pn.getDefault()).intValue());
+            return( new Integer(val));
+        }
+        
+        String val = prefs.get(pn.getName(), (String) pn.getDefault() );
+		return(val);
+	}
+    /* (non-Javadoc)
+     * @see net.sf.borg.common.util.IPrefs#putPref(net.sf.borg.common.util.PrefName, java.lang.Object)
+     */
+    public void putPref(PrefName pn, Object val) {
+        
+        Preferences prefs = Preferences.userNodeForPackage(PrefsHome.class);
+        if( pn.getDefault() instanceof Integer)
+        {
+            prefs.putInt( pn.getName(), ((Integer) val).intValue());
+        }
+        else
+        {
+            prefs.put( pn.getName(), (String) val);
+        }
+    }
 }

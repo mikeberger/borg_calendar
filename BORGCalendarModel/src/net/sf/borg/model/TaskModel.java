@@ -36,6 +36,7 @@ import java.util.TreeSet;
 import java.util.Vector;
 
 import net.sf.borg.common.util.Errmsg;
+import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
 import net.sf.borg.common.util.Resource;
 import net.sf.borg.common.util.Version;
@@ -547,7 +548,7 @@ public class TaskModel extends Model {
     // turn on logging in the task SMDB
     public void setLogging( boolean on ) throws Exception {
         if( on ) {
-            String dbdir = Prefs.getPref("dbdir", "not-set" );
+            String dbdir = Prefs.getPref(PrefName.DBDIR);
             db_.setLogFile( dbdir + "/mrdb.log" );
         }
         else

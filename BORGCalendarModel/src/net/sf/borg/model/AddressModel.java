@@ -30,6 +30,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 import net.sf.borg.common.util.Errmsg;
+import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
 import net.sf.borg.common.util.Version;
 import net.sf.borg.common.util.XTree;
@@ -293,7 +294,7 @@ public class AddressModel extends Model {
     
     public void setLogging( boolean on ) throws Exception {
         if( on ) {
-            String dbdir = Prefs.getPref("dbdir", "not-set" );
+            String dbdir = (String)Prefs.getPref(PrefName.DBDIR);
             db_.setLogFile( dbdir + "/addr.log" );
         }
         else

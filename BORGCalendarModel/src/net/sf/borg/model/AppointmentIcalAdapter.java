@@ -46,6 +46,7 @@ import net.fortuna.ical4j.model.property.ProdId;
 import net.fortuna.ical4j.model.property.RRule;
 import net.fortuna.ical4j.model.property.Summary;
 import net.sf.borg.common.io.IOHelper;
+import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
 
 
@@ -54,10 +55,10 @@ public class AppointmentIcalAdapter {
 		
 		ComponentList clist = new ComponentList();	
 		boolean showpriv = false;
-		if( Prefs.getPref("showprivate", "false" ).equals("true") )
+		if( Prefs.getPref(PrefName.SHOWPRIVATE).equals("true") )
 			showpriv = true;
 		boolean todo_as_ev = false;
-		if( Prefs.getPref("ical_todo_ev", "false" ).equals("true") )
+		if( Prefs.getPref(PrefName.ICALTODOEV ).equals("true") )
 			todo_as_ev = true;		
 		Iterator it = AppointmentModel.getReference().getAllAppts().iterator();
 		while( it.hasNext() )

@@ -27,6 +27,7 @@ import javax.swing.JPanel;
 import javax.swing.SpinnerNumberModel;
 
 import net.sf.borg.common.util.Errmsg;
+import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
 import net.sf.borg.common.util.Resource;
 import net.sf.borg.common.util.Version;
@@ -74,7 +75,7 @@ class AppointmentPanel extends JPanel
           
           
           // set up hours pulldown
-          String mt = Prefs.getPref("miltime", "false" );
+          String mt = Prefs.getPref(PrefName.MILTIME);
           if( mt.equals("true"))
           {
               starthour.setModel(milHourModel);
@@ -121,7 +122,7 @@ class AppointmentPanel extends JPanel
       public void showapp(int key ) 
       {
           key_ = key;
-          String mt = Prefs.getPref("miltime", "false");
+          String mt = Prefs.getPref(PrefName.MILTIME);
           
           // assume "note" as default
           boolean note = true;
@@ -749,7 +750,7 @@ class AppointmentPanel extends JPanel
     {//GEN-HEADEREND:event_notecbActionPerformed
         if( notecb.isSelected() )
         {
-            String mt = Prefs.getPref("miltime", "false");
+            String mt = Prefs.getPref(PrefName.MILTIME);
             if( mt.equals("true"))
             {
                 starthour.setSelectedIndex(0);
@@ -785,7 +786,7 @@ class AppointmentPanel extends JPanel
         
         // get the hour and minute
         int hr = starthour.getSelectedIndex();
-        String mt = Prefs.getPref("miltime", "false" );
+        String mt = Prefs.getPref(PrefName.MILTIME);
         if( mt.equals("false"))
         {
             hr = hr + 1;
