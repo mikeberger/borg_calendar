@@ -2,38 +2,68 @@ To build BORG from the source, you need the JAVA SDK 1.4 or later, available fro
 You only need to build BORG if you want to modify it. Otherwise, the binary
 jar file - borg.jar - will run on ANY OS that has the Java runtime 1.4.
 
-BORG was built using ant. If you have ant (available at apache.org), then
+As of release 1.4 of BORG, the project has been split into 4 separate pieces:
+
+- Common
+- UI
+- Model
+- DB Utilities
+
+
+The ant build file (build.xml) is in the ant folder in the Common sub-project.
+
+BORG is normally built using ant. If you have ant (available at apache.org), then
 from command line in the ant folder, do - "ant fulldist". This will build the BORG zip files
-in the borg_src directory. The jar files are put into the borg_src/dist directory.
+in the BORG Calendar Common directory. The jar files are put into the Common/dist directory.
 
 If you do not want to use ant and you know your way around Java, it should not take
 long to figure out how to build it your own way. However, using ant is much much easier.
 
-The BORG screens were created using NetBeans. NetBeans is a free Java IDE
-available from netbeans.org. It contains a GUI builder. 
+Eclipse
+-------
+Most BORG development is done using the Eclipse IDE. As BORG has grown larger, it has become
+mainly an eclipse based project. It's getting a bit big to manage without an IDE.
+To use eclipse, you must import the 4 parts of BORG as projects. 
 
-I usually build BORG from within NetBeans, even when not changing screens. It has a nice Java
-editor and browser.  If you wish to modify the screens, using NetBeans would make it much easier. 
-Otherwise, there is no absolute reason that NetBeans must be used to edit the code. 
+When the 4 parts of BORG are imported into the eclipse IDE as projects, eclipse will enforce
+the dependencies (or rather lack of dependencies) between them. The eclipse projects are
+set up to enforce that Common depends on no other part of BORG, while Model only depends
+on Common. UI depends on Common and Model, and will not depend on a new Web-based UI that may
+be added in the future.
+
+To use eclipse, each of the top 4 project folders must be imported as a project into eclipse.
+The .project and .classpath files that configure eclipse are part of the source tree and should get the 4 projects
+all set up correctly. To build, you need to set up an Ant Build task under the eclipse exteral
+tools. You need to build the clean-build target if you just want borg.jar. You can build the fulldist target
+to get the ZIP files (binary and source).
+
+You should be able to use the eclipse debugger to debug the code. You should be able to run the main
+Borg class (Borg Calendar UI/src/net/sf.borg.control.Borg) from within eclipse. 
+I usually just run the built borg.jar.
+
+NetBeans
+--------
+The BORG screens were created using the NetBeans GUI builder. I would really like to remove this dependency
+on NetBeans, but have found no workable replacement yet among the eclipse plugins.
+In addition to visually laying out the GUI screens and generating some of the code, NetBeans manages the use
+of the resource bundle for the GUI containing the text strings shown on the GUI (in 3 languages).
+
+There is no absolute reason that NetBeans must be used to edit the GUI components. 
 However, if you want to modify the screens and incorporate them 
 back into the borg-calendar project at sourceforge, you will have to use
-netbeans.
+netbeans for now.
 
-To set up BORG in netbeans, mount the borg_src2/src and borg_src2
-directories as a filesystem in the Explorer/Filesystems tab. 
-You should be able to explore to the borg_src2/ant/build item and click on
-it to show the various ant targets. Right-click on fulldist and select execute
-to start building. Send me email at i_flem@users.sourceforge.net with any
-questions. 
+Brand new screens need not use NetBeans - and probably should not.
 
-If you want to run BORG from inside Netbeans, using the debugger for example, 
-you need to make a copy of the resource folder in the src folder. If you are lucky
-enough to be running Linux, you can just put a symbolic link in the src
-direcory (from the src directory, do ln -s ../resource . ). From windows, you
-must copy the folder. A shortcut is not good enough. I have yet to find a way
-around this. I don't like IDEs that try to enforce their own application directory structures
-on you. :(  
+To set up BORG in netbeans 4.0, add the BORG Calendar Common folder as an existing project 
+built by Ant. (this is an option when adding a project). Then when choosing the source folders, add the src
+and res folders from all 4 main BORG parts. I know this is a bit sucky. On the classpath screen, un-check the box that
+chooses a separate classpath for each source folder.
 
-=Quiet=
+To see if this all worked, try to open a screen in the UI/src folder. AppointmentPanel would be good. If everything is
+set up right, the screen will appear in WYSIWYG mode and all of the labels on the panel will appear normal. If the labels
+appear with angles around them like this: <File>, then NetBeans is not finding res/resource/borg_resource.properties,
+which should be in a mounted source folder.
 
-http://borg-calendar.sourceforge.net
+Don't try to run the code from within NetBeans. Just build with ant and run the borg.jar file.
+
