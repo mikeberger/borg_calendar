@@ -220,7 +220,7 @@ public class Borg extends Controller implements OptionsView.RestartListener {
         
         // set the look and feel
         String lnf = Prefs.getPref("lnf",
-                UIManager.getSystemLookAndFeelClassName());
+                "javax.swing.plaf.metal.MetalLookAndFeel");
         try
         {
             UIManager.setLookAndFeel(lnf);
