@@ -21,10 +21,15 @@ Copyright 2003 by ==Quiet==
 
 package net.sf.borg.ui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.net.URL;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -32,9 +37,14 @@ import java.util.GregorianCalendar;
 import java.util.ResourceBundle;
 import java.util.Vector;
 
+import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultListSelectionModel;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.JTree;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.TableModelEvent;
 
@@ -55,9 +65,12 @@ import javax.swing.ImageIcon;
 
 // bsv 2004-12-21
 import de.wannawork.jcalendar.*;
+
 import java.text.*;
 import javax.swing.JToggleButton;
 import java.awt.*;
+//import javax.swing.*;
+import javax.swing.table.*;
 
 /*
  * tdgui.java
@@ -108,11 +121,57 @@ public class TodoView extends View {
         jTable1.getColumnModel().getColumn(1).setPreferredWidth(400);
         jTable1.getColumnModel().getColumn(2).setPreferredWidth(120);
         jTable1.setPreferredScrollableViewportSize(new Dimension( 660,400 ));
+        
+        
+        jTable1.setDefaultRenderer( Object.class, new TodayRenderer() );
+        jTable1.setDefaultRenderer( Date.class, new TodayRenderer() );
+        
         refresh();
         
         manageMySize(PrefName.TODOVIEWSIZE);
         
     }
+    
+    class TodayRenderer extends DefaultTableCellRenderer{
+        public Component getTableCellRendererComponent(
+            JTable table, Object value, boolean isSelected, 
+            boolean hasFocus, int row, int column) {
+            
+            super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            
+            //SimpleDateFormat sdf = new SimpleDateFormat( "yyyy-MM-dd" );
+            DateFormat sdf = DateFormat.getDateInstance();
+            
+            JLabel jl = new JLabel(getText());
+            jl.setOpaque( true );
+            if( isSelected ){
+            	jl.setForeground( Color.DARK_GRAY );
+            	jl.setBackground( Color.YELLOW );
+            } else {
+        		jl.setForeground( Color.BLACK );
+               	if( table.getModel().getValueAt(row,1).equals(Resource.getResourceString("======_Today_======")) ){
+               		jl.setBackground( new Color(16751001) );
+               	} else {
+                   	if( ((Date )(table.getModel().getValueAt(row,0))).getTime()>(new Date()).getTime() ){
+                   		jl.setBackground( new Color(192,192,192) );
+                   	} else {
+                   		jl.setBackground( new Color(216,216,216) );
+                   	}
+//               		jl.setBackground( new Color(216,216,216) );
+               	}
+            }
+            if( column ==0){
+            	jl.setText( sdf.format(value) );
+            	//jl.setText( value.toString() );
+            } else {
+
+            }
+            return jl;
+            //return this;
+        }
+    }
+
+    
     
     public void destroy() {
         this.dispose();
