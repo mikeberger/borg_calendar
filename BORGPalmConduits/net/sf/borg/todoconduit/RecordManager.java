@@ -176,11 +176,9 @@ public class RecordManager {
             hhRecord = new TodoRecord();
             hhRecord.setIndex(recordIndex);
             SyncManager.readRecordByIndex(db, hhRecord);
-            if (hhRecord.isNew() || hhRecord.isArchived()
+            int id = getApptKey(hhRecord);
+            if (id == -1 || hhRecord.isNew() || hhRecord.isArchived()
                     || hhRecord.isDeleted() || hhRecord.isModified()) {
-                //Log.out(hhRecord.toFormattedString() + "mod: " +
-                // hhRecord.isModified());
-
                 hhids.add(new Integer(hhRecord.getId()));
             }
         }

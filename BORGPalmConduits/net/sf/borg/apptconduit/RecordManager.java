@@ -64,7 +64,8 @@ public class RecordManager {
             hhRecord = new DateRecord();
             hhRecord.setIndex(recordIndex);
             SyncManager.readRecordByIndex(db, hhRecord);
-            if (hhRecord.isNew() || hhRecord.isArchived()
+            int borgid = getApptKey(hhRecord);
+            if (borgid == -1 || hhRecord.isNew() || hhRecord.isArchived()
                     || hhRecord.isDeleted() || hhRecord.isModified()) {
                 hhids.add(new Integer(hhRecord.getId()));
             }
