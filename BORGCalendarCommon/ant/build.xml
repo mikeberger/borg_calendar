@@ -244,8 +244,7 @@ build.number=${build.number}
       	 <fileset dir="${build.dir}" includes="lib/borghelp.jar"/>
          <fileset dir="${db.res.dir}" includes="borg.sql"/>
       	 <fileset dir="${prj.common.dir}" includes="lib/*"/>
-      	 <fileset dir="${prj.ui.dir}" includes="lib/*"/>
-         <zipfileset dir="${prj.ui.dir}/bin"/> 
+      	 <fileset dir="${prj.ui.dir}" includes="lib/*"/> 
       </zip>
    </target>
    
