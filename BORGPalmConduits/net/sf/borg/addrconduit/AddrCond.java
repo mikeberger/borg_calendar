@@ -31,7 +31,7 @@ public class AddrCond implements Conduit {
         Log.startSync();
 
         try {
-            if (props.syncType != props.SYNC_DO_NOTHING) {
+            if (props.syncType != SyncProperties.SYNC_DO_NOTHING) {
 
                 db = SyncManager.openDB("AddressDB", 0, SyncManager.OPEN_READ
                         | SyncManager.OPEN_WRITE | SyncManager.OPEN_EXCLUSIVE);

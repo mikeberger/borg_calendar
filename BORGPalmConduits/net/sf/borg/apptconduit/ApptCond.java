@@ -30,7 +30,7 @@ public class ApptCond implements Conduit {
         Log.startSync();
 
         try {
-            if (props.syncType == props.SYNC_DO_NOTHING) {
+            if (props.syncType == SyncProperties.SYNC_DO_NOTHING) {
                
                 Log.out("OK ApptCond Do Nothing");
                 Log.endSync();
@@ -53,7 +53,7 @@ public class ApptCond implements Conduit {
                 recordMgr = new RecordManager(props, db);
                 
                 // send ALL records to HH if wipe option set by user OR is HH db is empty
-                if( props.syncType == props.SYNC_PC_TO_HH || numrecs == 0)
+                if( props.syncType == SyncProperties.SYNC_PC_TO_HH || numrecs == 0)
                 {
                     recordMgr.WipeData();
                 }

@@ -8,7 +8,7 @@ import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Panel;
-import java.awt.Rectangle;
+//import java.awt.Rectangle;
 
 
 //"Portions copyright (c) 1996-2002 PalmSource, Inc. or its affiliates.  All rights reserved."
@@ -237,8 +237,8 @@ public class HotSyncChangeDlg extends Dialog
 	{
 		if(b)
 		{
-			Rectangle bounds = getParent().getBounds();
-			Rectangle abounds = getBounds();
+			//Rectangle bounds = getParent().getBounds();
+			//Rectangle abounds = getBounds();
 			setLocation(50, 50);
 		}
 		super.setVisible(b);

@@ -48,8 +48,8 @@ public class ImageCanvas extends Component {
 			return new Dimension(image.getWidth(this),
 		                     	image.getHeight(this));
 		}
-		else 
-			return new Dimension(0,0);
+		 
+		return new Dimension(0,0);
 	}
 
 	public Dimension getPreferredSize() {

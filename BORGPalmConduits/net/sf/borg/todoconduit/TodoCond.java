@@ -32,7 +32,7 @@ public class TodoCond implements Conduit {
         Log.startSync();
 
         try {
-            if (props.syncType == props.SYNC_DO_NOTHING) {
+            if (props.syncType == SyncProperties.SYNC_DO_NOTHING) {
                
                 Log.out("OK TodoCond Do Nothing");
                 Log.endSync();

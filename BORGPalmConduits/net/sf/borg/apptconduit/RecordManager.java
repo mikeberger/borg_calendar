@@ -1,7 +1,6 @@
 package net.sf.borg.apptconduit;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -338,8 +337,6 @@ public class RecordManager {
         return firstRecord.equals(secondRecord);
     }
 
-    static private SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-
     static final public int REPEAT_NO_REPEAT = 0, 
     REPEAT_DAILY = 1,
     REPEAT_WEEKLY = 2,
@@ -572,11 +569,11 @@ public class RecordManager {
         	//Log.out( d + " " + until + " " + t);
         	GregorianCalendar cal = new GregorianCalendar();
         	cal.setTime(d);
-        	int m1 = cal.get(cal.MONTH);
-        	int y1 = cal.get(cal.YEAR);
+        	int m1 = cal.get(Calendar.MONTH);
+        	int y1 = cal.get(Calendar.YEAR);
         	cal.setTime(until);
-        	int m2 = cal.get(cal.MONTH);
-        	int y2 = cal.get(cal.YEAR);
+        	int m2 = cal.get(Calendar.MONTH);
+        	int y2 = cal.get(Calendar.YEAR);
         	days = (int)(t/(1000*60*60*24));
         	months = (y2-y1)*12 + m2-m1;
         	years = y2-y1;
