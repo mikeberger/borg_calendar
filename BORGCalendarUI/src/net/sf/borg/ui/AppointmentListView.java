@@ -53,6 +53,8 @@ import net.sf.borg.model.TaskModel;
 
 
 
+import javax.swing.JPanel;
+import java.awt.GridBagLayout;
 public class AppointmentListView extends View implements ListSelectionListener {
     
     static {
@@ -209,7 +211,7 @@ public class AppointmentListView extends View implements ListSelectionListener {
      */
     private void initComponents()//GEN-BEGIN:initComponents
     {
-        java.awt.GridBagConstraints gridBagConstraints;
+        
 
         jPanel2 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
@@ -224,7 +226,7 @@ public class AppointmentListView extends View implements ListSelectionListener {
         fileMenu = new javax.swing.JMenu();
         exitMenuItem = new javax.swing.JMenuItem();
 
-        getContentPane().setLayout(new java.awt.GridBagLayout());
+        //getContentPane().setLayout(new java.awt.GridBagLayout());
 
         setTitle(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Appointment_Editor"));
         addWindowListener(new java.awt.event.WindowAdapter()
@@ -236,15 +238,6 @@ public class AppointmentListView extends View implements ListSelectionListener {
         });
 
         jPanel2.setLayout(new java.awt.GridBagLayout());
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        getContentPane().add(jPanel2, gridBagConstraints);
-
         jPanel3.setLayout(new java.awt.GridBagLayout());
 
         jPanel3.setBorder(new javax.swing.border.TitledBorder(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("apptlist")));
@@ -256,14 +249,14 @@ public class AppointmentListView extends View implements ListSelectionListener {
         jTable1.setPreferredSize(new java.awt.Dimension(700, 500));
         jScrollPane1.setViewportView(jTable1);
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 10.0;
-        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
-        jPanel3.add(jScrollPane1, gridBagConstraints);
+        GridBagConstraints gridBagConstraints2 = new java.awt.GridBagConstraints();
+        gridBagConstraints2.gridx = 0;
+        gridBagConstraints2.gridy = 0;
+        gridBagConstraints2.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints2.weightx = 1.0;
+        gridBagConstraints2.weighty = 10.0;
+        gridBagConstraints2.insets = new java.awt.Insets(2, 2, 2, 2);
+        jPanel3.add(jScrollPane1, gridBagConstraints2);
 
         jPanel1.setLayout(new java.awt.GridLayout(0, 1));
 
@@ -303,8 +296,6 @@ public class AppointmentListView extends View implements ListSelectionListener {
             }
         });
 
-        jPanel1.add(delone);
-
         dismiss.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Stop16.gif")));
         dismiss.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Dismiss"));
         dismiss.addActionListener(new java.awt.event.ActionListener()
@@ -315,22 +306,12 @@ public class AppointmentListView extends View implements ListSelectionListener {
             }
         });
 
-        jPanel1.add(dismiss);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
-        jPanel3.add(jPanel1, gridBagConstraints);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 0.5;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        getContentPane().add(jPanel3, gridBagConstraints);
+        GridBagConstraints gridBagConstraints3 = new java.awt.GridBagConstraints();
+        gridBagConstraints3.gridx = 0;
+        gridBagConstraints3.gridy = 1;
+        gridBagConstraints3.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints3.insets = new java.awt.Insets(2, 2, 2, 2);
+        jPanel3.add(jPanel1, gridBagConstraints3);
 
         fileMenu.setBackground(menuBar.getBackground());
         fileMenu.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("File"));
@@ -350,6 +331,9 @@ public class AppointmentListView extends View implements ListSelectionListener {
 
         setJMenuBar(menuBar);
 
+        this.setContentPane(getJPanel());
+        jPanel1.add(delone, delone.getName());
+        jPanel1.add(dismiss, dismiss.getName());
     }//GEN-END:initComponents
     
     private void deloneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deloneActionPerformed
@@ -471,4 +455,33 @@ public class AppointmentListView extends View implements ListSelectionListener {
     private javax.swing.JMenuBar menuBar;
     // End of variables declaration//GEN-END:variables
     
-}
+	private JPanel jPanel = null;
+	/**
+	 * This method initializes jPanel	
+	 * 	
+	 * @return javax.swing.JPanel	
+	 */    
+	private JPanel getJPanel() {
+		if (jPanel == null) {
+			GridBagConstraints gridBagConstraints21 = new GridBagConstraints();
+			GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
+			jPanel = new JPanel();
+			jPanel.setLayout(new GridBagLayout());
+			gridBagConstraints11.gridx = 0;
+			gridBagConstraints11.gridy = 0;
+			gridBagConstraints11.gridwidth = 1;
+			gridBagConstraints11.gridheight = 1;
+			gridBagConstraints11.weighty = 1.0D;
+			gridBagConstraints11.weightx = 1.0D;
+			gridBagConstraints11.fill = java.awt.GridBagConstraints.BOTH;
+			gridBagConstraints21.gridx = 1;
+			gridBagConstraints21.gridy = 0;
+			gridBagConstraints21.gridheight = 1;
+			gridBagConstraints21.insets = new java.awt.Insets(0,0,0,0);
+			gridBagConstraints21.fill = java.awt.GridBagConstraints.BOTH;
+			jPanel.add(jPanel2, gridBagConstraints11);
+			jPanel.add(jPanel3, gridBagConstraints21);
+		}
+		return jPanel;
+	}
+ }
