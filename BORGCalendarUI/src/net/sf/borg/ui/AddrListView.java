@@ -451,7 +451,8 @@ public class AddrListView extends View
 
 						StringWriter sw = new StringWriter();
 			            AddressModel.getReference().export(sw);
-			            String output = XSLTransform.transform( sw.toString(), "/resource/addr.xsl");
+			            String sorted = XSLTransform.transform( sw.toString(), "/resource/addrsort.xsl");
+			            String output = XSLTransform.transform( sorted, "/resource/addr.xsl");
 			            fw.write(output);
 			            fw.close();
 			            
