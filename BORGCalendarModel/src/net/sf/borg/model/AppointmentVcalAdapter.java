@@ -51,7 +51,7 @@ public class AppointmentVcalAdapter {
 			String appttext = ap.getText();
 			
 			// escape data
-			appttext = appttext.replaceAll(";", "\\;");
+			appttext = appttext.replaceAll(";", "");
 
             int ii = appttext.indexOf('\n');
             if( ii != -1 )
