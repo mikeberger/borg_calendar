@@ -39,7 +39,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
 import net.sf.borg.common.io.OSServicesHome;
@@ -671,7 +670,7 @@ public class TaskListView extends View {
         int row = jTable1.getSelectedRow();
         if (row == -1)
             return;
-        DefaultTableModel tm = (DefaultTableModel) jTable1.getModel();
+        TableSorter tm = (TableSorter) jTable1.getModel();
         Integer num = (Integer) tm.getValueAt(row, 0);
         try {
             // force close of the task
@@ -695,7 +694,7 @@ public class TaskListView extends View {
         int row = jTable1.getSelectedRow();
         if (row == -1)
             return;
-        DefaultTableModel tm = (DefaultTableModel) jTable1.getModel();
+        TableSorter tm = (TableSorter) jTable1.getModel();
         Integer num = (Integer) tm.getValueAt(row, 0);
 
         // prompt for ok
@@ -728,7 +727,7 @@ public class TaskListView extends View {
         int row = jTable1.getSelectedRow();
         if (row == -1)
             return;
-        DefaultTableModel tm = (DefaultTableModel) jTable1.getModel();
+        TableSorter tm = (TableSorter) jTable1.getModel();
         Integer num = (Integer) tm.getValueAt(row, 0);
 
         // ask borg class to bring up a task editor window
@@ -744,7 +743,7 @@ public class TaskListView extends View {
         int row = jTable1.getSelectedRow();
         if (row == -1)
             return;
-        DefaultTableModel tm = (DefaultTableModel) jTable1.getModel();
+        TableSorter tm = (TableSorter) jTable1.getModel();
         Integer num = (Integer) tm.getValueAt(row, 0);
 
         // ask borg class to bring up a task editor window
@@ -759,7 +758,7 @@ public class TaskListView extends View {
         int row = jTable1.getSelectedRow();
         if (row == -1)
             return;
-        DefaultTableModel tm = (DefaultTableModel) jTable1.getModel();
+        TableSorter tm = (TableSorter) jTable1.getModel();
         Integer num = (Integer) tm.getValueAt(row, 0);
 
         // ask borg class to bring up a task editor window
