@@ -171,6 +171,11 @@ public class AppointmentListView extends View implements ListSelectionListener {
         refresh();
     }
     
+    public void showApp(int key)
+    {
+        apanel_.showapp(key);
+    }
+    
     public void destroy() {
         this.dispose();
     }

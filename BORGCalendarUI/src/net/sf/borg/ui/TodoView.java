@@ -105,11 +105,21 @@ public class TodoView extends View {
         // the todos will be displayed in a sorted table with 2 columns -
         // data and todo text
         jTable1.setModel(new TableSorter(
-                new String []{ Resource.getResourceString("Date"), Resource.getResourceString("To_Do"),
+                new String []{ 
+                        Resource.getResourceString("Date"), 
+                        Resource.getResourceString("To_Do"),
                 		ResourceBundle.getBundle("resource/borg_resource").getString("Category"),
-						ResourceBundle.getBundle("resource/borg_resource").getString("Color")  },
-                new Class []{ Date.class,java.lang.String.class, java.lang.String.class, java.lang.String.class}));
-                jTable1.getColumnModel().getColumn(0).setPreferredWidth(140);
+						ResourceBundle.getBundle("resource/borg_resource").getString("Color"),
+						"key"},
+                new Class []{ 
+                        Date.class,
+                        java.lang.String.class, 
+                        java.lang.String.class, 
+                        java.lang.String.class, 
+                        java.lang.Integer.class}
+                ));
+                
+        		jTable1.getColumnModel().getColumn(0).setPreferredWidth(140);
                 jTable1.getColumnModel().getColumn(1).setPreferredWidth(400);
                 jTable1.getColumnModel().getColumn(2).setPreferredWidth(120);
 
@@ -122,6 +132,7 @@ public class TodoView extends View {
         	jTable1.setDefaultRenderer( Date.class, new TodayRenderer() );
         }
         
+        jTable1.removeColumn( jTable1.getColumnModel().getColumn(3) );
         jTable1.removeColumn( jTable1.getColumnModel().getColumn(3) );
         
         refresh();
@@ -225,11 +236,12 @@ public class TodoView extends View {
         Date d = new Date();
 
         //bsv 2004-12-22
-        Object [] tod = new Object[4];
+        Object [] tod = new Object[5];
         tod[0] = d;
         tod[1] = new String(Resource.getResourceString("======_Today_======"));
         tod[2] = "Today is";
         tod[3] = "pink";
+        tod[4] = null;
 
         tm.addRow(tod);
         tm.tableChanged(new TableModelEvent(tm));
@@ -251,13 +263,14 @@ public class TodoView extends View {
                 
                 // bsv 2004-12-22
                 // add the table row
-                Object [] ro = new Object[4];
+                Object [] ro = new Object[5];
                 ro[0] = nt;
                 ro[1] = tx;
                 ro[2] = r.getCategory();
                 if ( r.getColor()==null ) ro[3] = "black";
                 else ro[3] = r.getColor();
 
+                ro[4] = new Integer(r.getKey());
                 tm.addRow(ro);
                 tm.tableChanged(new TableModelEvent(tm));
             }
@@ -281,11 +294,12 @@ public class TodoView extends View {
                 
                 // bsv 2004-12-22
                 // add row to table
-                Object [] ro = new Object[4];
+                Object [] ro = new Object[5];
                 ro[0] = mr.getDueDate();
                 ro[1] = btstring;
                 ro[2] = mr.getCategory();
                 ro[3] = "navy";
+                ro[4] = null;
 
                 tm.addRow(ro);
                 tm.tableChanged(new TableModelEvent(tm));
@@ -568,12 +582,15 @@ public class TodoView extends View {
       if( row == -1 ) return;
       TableSorter tm = (TableSorter) jTable1.getModel();
       Date d = (Date) tm.getValueAt(row,0);
+      Integer key = (Integer) tm.getValueAt(row,4);
       
       GregorianCalendar cal = new GregorianCalendar();
       cal.setTime(d);
       
       //bring up an appt editor window
       AppointmentListView ag = new AppointmentListView(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE));
+      if( key != null )
+          ag.showApp(key.intValue());
       ag.show();
       
       CalendarView cv = CalendarView.getReference();
