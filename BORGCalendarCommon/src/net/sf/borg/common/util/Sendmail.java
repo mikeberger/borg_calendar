@@ -88,7 +88,8 @@ public class Sendmail
             sb.append( senddata("From: " + from,os)) ;
             sb.append( senddata("To: " + to,os));
             
-            sb.append( senddata("Subject: " + subject ,os));
+            sb.append( senddata("Subject: " + subject,os));
+            sb.append( senddata("",os));
             sb.append( senddata(escapeMsg(message),os));
             sb.append( senddata(".",os));
             
