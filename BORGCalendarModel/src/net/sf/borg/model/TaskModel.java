@@ -61,7 +61,7 @@ import net.sf.borg.model.db.DBException;
 // unlike the calmodel, which needs to keep a map of appointments in local cache for various
 // functions, taskmodel does not keep a local map. the caching done by the SMDB database is sufficient
 // for taskmodel's needs
-public class TaskModel extends Model {
+public class TaskModel extends Model implements Model.Listener {
     static {
         Version.addVersion("$Id$");
     }
@@ -71,7 +71,6 @@ public class TaskModel extends Model {
     // map of tasks keyed by day - for performance
     private HashMap btmap_;
     private Vector allmap_;
-    private TreeSet categories_;
     private TaskTypes taskTypes_ = new TaskTypes();
     
     public LinkedList get_tasks( int daykey ) {
@@ -85,7 +84,6 @@ public class TaskModel extends Model {
     private TaskModel() {
         btmap_ = new HashMap();
         allmap_ = new Vector();
-        categories_ = null;
     }
     
     static private TaskModel self_ = null;
@@ -120,18 +118,17 @@ public class TaskModel extends Model {
     }
     
     public Collection getCategories() throws Exception, DBException {
-        if( categories_ == null ) {
-            categories_ = new TreeSet();
+        
+            TreeSet categories = new TreeSet();
             Iterator itr = db_.readAll().iterator();
             while( itr.hasNext() ) {
                 Task t = (Task) itr.next();
                 String cat = t.getCategory();
                 if( cat != null && !cat.equals("") )
-                    categories_.add( cat );
+                    categories.add( cat );
             }
-        }
-        
-        return( categories_ );
+                
+        return( categories );
         
     }
     
@@ -228,6 +225,10 @@ public class TaskModel extends Model {
         	taskTypes_.fromString(sm);
         }
         
+        
+        CategoryModel.getReference().addAll(getCategories());
+        CategoryModel.getReference().addListener(this);
+        
         // init the task type list to null
         load_map();
         
@@ -262,6 +263,9 @@ public class TaskModel extends Model {
         else {
             taskTypes_.fromString(sm);
         }
+        
+        CategoryModel.getReference().addAll(getCategories());
+        CategoryModel.getReference().addListener(this);
         
         load_map();
         
@@ -316,10 +320,6 @@ public class TaskModel extends Model {
             }
         }
         
-        // update category list
-        String cat = task.getCategory();
-        if( cat != null && !cat.equals("") && categories_ != null && !categories_.contains(cat))
-            categories_.add( cat );
         
         // have the borg class reload the calendar app side of things - so this is one model
         // notifying the other of a change through the controller
@@ -458,5 +458,20 @@ public class TaskModel extends Model {
     public void close_db() throws Exception
     {
     	db_.close();
+    }
+
+    /* (non-Javadoc)
+     * @see net.sf.borg.model.Model.Listener#refresh()
+     */
+    public void refresh() {
+        try{
+            load_map();
+            refreshListeners();
+        }
+        catch( Exception e )
+        {
+            Errmsg.errmsg(e);
+        }
+        
     }
 }

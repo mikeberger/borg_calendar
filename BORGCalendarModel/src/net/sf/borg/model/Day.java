@@ -41,9 +41,6 @@ import net.sf.borg.common.util.Prefs;
 import net.sf.borg.common.util.Resource;
 import net.sf.borg.common.util.Version;
 
-// bsv 2004-12-21
-import java.awt.Color;
-
 /**
  *
  * @author  mbb

@@ -24,6 +24,7 @@ import java.util.GregorianCalendar;
 import java.util.Iterator;
 
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
@@ -38,8 +39,7 @@ import net.sf.borg.common.util.XTree;
 import net.sf.borg.model.Appointment;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.AppointmentXMLAdapter;
-
-import javax.swing.JCheckBox;
+import net.sf.borg.model.CategoryModel;
 class AppointmentPanel extends JPanel
 {
     static
@@ -60,9 +60,7 @@ class AppointmentPanel extends JPanel
       
       public AppointmentPanel(int year, int month, int day)
       {
-          AppointmentModel calmod_ = AppointmentModel.getReference();
-          
- 
+
           // init GUI
           initComponents();
           
@@ -86,7 +84,7 @@ class AppointmentPanel extends JPanel
           
           try
           {
-              Collection cats = calmod_.getCategories();
+              Collection cats = CategoryModel.getReference().getCategories();
               Iterator it = cats.iterator();
               while( it.hasNext())
               {

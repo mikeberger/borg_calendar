@@ -83,6 +83,7 @@ import net.sf.borg.model.Appointment;
 import net.sf.borg.model.AppointmentIcalAdapter;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.AppointmentVcalAdapter;
+import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.Day;
 import net.sf.borg.model.Task;
 import net.sf.borg.model.TaskModel;
@@ -1828,7 +1829,8 @@ public class CalendarView extends View implements Prefs.Listener {
         String inputValue = JOptionPane.showInputDialog(Resource.getResourceString("AddCat"));
         if( inputValue == null || inputValue.equals("") ) return;
         try{
-            AppointmentModel.getReference().addCategory(inputValue);
+            CategoryModel.getReference().addCategory(inputValue);
+            CategoryModel.getReference().showCategory(inputValue);
         }
         catch( Exception e) {
             Errmsg.errmsg(e);
@@ -1837,7 +1839,7 @@ public class CalendarView extends View implements Prefs.Listener {
     
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
         try{
-            AppointmentModel.getReference().syncCategories();
+            CategoryModel.getReference().syncCategories();
         }
         catch( Exception e) {
             Errmsg.errmsg(e);

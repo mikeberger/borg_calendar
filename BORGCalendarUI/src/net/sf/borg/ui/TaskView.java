@@ -23,7 +23,9 @@ import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.text.DateFormat;
+import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.Vector;
 
 import javax.swing.JCheckBox;
@@ -34,9 +36,11 @@ import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Resource;
 import net.sf.borg.common.util.Version;
+import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.Task;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.TaskTypes;
+import javax.swing.JComboBox;
 /*
  * taskgui.java
  *
@@ -79,6 +83,21 @@ class TaskView extends View
         jTextArea1.setRows(15);
         jTextArea1.setColumns(40);
         
+        try
+        {
+            Collection cats = CategoryModel.getReference().getCategories();
+            Iterator it = cats.iterator();
+            while( it.hasNext())
+            {
+                catbox.addItem( it.next());
+            }
+            catbox.setSelectedIndex(0);
+        }
+        catch( Exception e )
+        {
+            Errmsg.errmsg(e);
+        }
+        
         // display the window
         pack();
         showtask( function, task );
@@ -112,6 +131,7 @@ class TaskView extends View
     {
         java.awt.GridBagConstraints gridBagConstraints;
 
+        GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
@@ -147,7 +167,6 @@ class TaskView extends View
         statebox = new javax.swing.JComboBox();
         typebox = new javax.swing.JComboBox();
         catlabel = new javax.swing.JLabel();
-        cattext = new javax.swing.JTextField();
         GridBagConstraints gridBagConstraints26 = new GridBagConstraints();
         GridBagConstraints gridBagConstraints27 = new GridBagConstraints();
         GridBagConstraints gridBagConstraints28 = new GridBagConstraints();
@@ -158,7 +177,6 @@ class TaskView extends View
         GridBagConstraints gridBagConstraints33 = new GridBagConstraints();
         GridBagConstraints gridBagConstraints34 = new GridBagConstraints();
         GridBagConstraints gridBagConstraints35 = new GridBagConstraints();
-        GridBagConstraints gridBagConstraints36 = new GridBagConstraints();
         jPanel4 = new javax.swing.JPanel();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
@@ -400,10 +418,6 @@ class TaskView extends View
         gridBagConstraints35.gridy = 3;
         gridBagConstraints35.weightx = 1.0;
         gridBagConstraints35.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints36.gridx = 1;
-        gridBagConstraints36.gridy = 8;
-        gridBagConstraints36.weightx = 1.0;
-        gridBagConstraints36.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints37.gridx = 0;
         gridBagConstraints37.gridy = 0;
         gridBagConstraints37.fill = java.awt.GridBagConstraints.BOTH;
@@ -422,6 +436,10 @@ class TaskView extends View
         gridBagConstraints3.gridy = 6;
         gridBagConstraints3.weightx = 1.0;
         gridBagConstraints3.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints11.gridx = 1;
+        gridBagConstraints11.gridy = 8;
+        gridBagConstraints11.weightx = 1.0;
+        gridBagConstraints11.fill = java.awt.GridBagConstraints.HORIZONTAL;
         jPanel3.add(statebox, gridBagConstraints26);
  
         jPanel3.add(jLabel7, gridBagConstraints27);
@@ -433,12 +451,12 @@ class TaskView extends View
         jPanel3.add(ddtext, gridBagConstraints33);
         jPanel3.add(sdatetext, gridBagConstraints34);
         jPanel3.add(typebox, gridBagConstraints35);
-        jPanel3.add(cattext, gridBagConstraints36);
         jPanel3.add(jLabel1, gridBagConstraints37);
         jPanel3.add(itemtext, gridBagConstraints38);
         jPanel3.add(jLabel2, gridBagConstraints1);
         jPanel3.add(patext, gridBagConstraints2);
         jPanel3.add(pritext, gridBagConstraints3);
+        jPanel3.add(getCatbox(), gridBagConstraints11);
  
 
     }//GEN-END:initComponents
@@ -615,8 +633,17 @@ class TaskView extends View
             task.setPersonAssigned(patext.getText());  // person assigned
             task.setDescription(jTextArea1.getText());   // description
             task.setResolution(jTextArea2.getText());   // resolution
-            task.setCategory( cattext.getText());
             
+            //task.setCategory( cattext.getText());
+            String cat = (String) catbox.getSelectedItem();
+            if( cat.equals("") || cat.equals(Resource.getResourceString("uncategorized")))
+            {
+                task.setCategory(null);
+            }
+            else
+            {
+                task.setCategory(cat);
+            }       
             // set the subtask (todo) field by concatenating
             // the numbers of all of the checked subtask boxes
             String td = "";
@@ -715,7 +742,19 @@ class TaskView extends View
           
           pritext.setText( task.getPriority() ); // priority
           patext.setText( task.getPersonAssigned() ); // person assigned
-          cattext.setText( task.getCategory() );
+          
+          
+          // cattext.setText( task.getCategory() );
+          String cat = task.getCategory();
+          if( cat != null && !cat.equals(""))
+          {
+              catbox.setSelectedItem(cat);
+          }
+          else
+          {
+              catbox.setSelectedIndex(0);
+          }
+          
           jTextArea1.setText( task.getDescription() );  // description
           jTextArea2.setText( task.getResolution() );  // resolution
           
@@ -808,7 +847,8 @@ class TaskView extends View
           ddtext.setText( ""); // due date
           pritext.setText( "3" ); // priority default to 3
           patext.setText( "" ); // person assigned
-          cattext.setText("");
+          //cattext.setText("");
+          catbox.setSelectedIndex(0);
           jTextArea1.setText( "" ); // desc
           jTextArea2.setText("" ); // resolution
           
@@ -867,7 +907,6 @@ class TaskView extends View
   
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel catlabel;
-    private javax.swing.JTextField cattext;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
@@ -912,6 +951,7 @@ class TaskView extends View
     // End of variables declaration//GEN-END:variables
     
 	private JPanel jPanel = null;
+	private JComboBox catbox = null;
 	/**
 	 * This method initializes jPanel	
 	 * 	
@@ -955,4 +995,15 @@ class TaskView extends View
 		}
 		return jPanel;
 	}
- }  //  @jve:decl-index=0:visual-constraint="115,46"
+	/**
+	 * This method initializes catbox	
+	 * 	
+	 * @return javax.swing.JComboBox	
+	 */    
+	private JComboBox getCatbox() {
+		if (catbox == null) {
+			catbox = new JComboBox();
+		}
+		return catbox;
+	}
+  }  //  @jve:decl-index=0:visual-constraint="115,46"

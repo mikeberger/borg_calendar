@@ -44,6 +44,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JToggleButton;
@@ -62,11 +63,10 @@ import net.sf.borg.common.util.Version;
 import net.sf.borg.common.util.Warning;
 import net.sf.borg.model.Appointment;
 import net.sf.borg.model.AppointmentModel;
+import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.Task;
 import net.sf.borg.model.TaskModel;
 import de.wannawork.jcalendar.JCalendarComboBox;
-
-import javax.swing.JMenuItem;
 /*
  * tdgui.java
  *
@@ -235,8 +235,8 @@ public class TodoView extends View {
         // add a tabel row to mark the current date - it will sort
         // to the right spot by date
         GregorianCalendar gc = new GregorianCalendar();
-        gc.set(GregorianCalendar.HOUR_OF_DAY,23);
-        gc.set(GregorianCalendar.MINUTE,59);
+        gc.set(Calendar.HOUR_OF_DAY,23);
+        gc.set(Calendar.MINUTE,59);
         
         Date d = gc.getTime();
 
@@ -364,8 +364,8 @@ public class TodoView extends View {
         // bsv 2004-12-23 original code taken from AppointmentPanel.java
         try
         {
-        	AppointmentModel amod = AppointmentModel.getReference(); 
-            Collection acats = amod.getCategories();
+        	
+            Collection acats = CategoryModel.getReference().getCategories();
             Iterator ait = acats.iterator();
             while( ait.hasNext())
             {

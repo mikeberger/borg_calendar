@@ -45,12 +45,6 @@ import net.sf.borg.model.db.BeanDataFactoryFactory;
 import net.sf.borg.model.db.DBException;
 
 
-
-
-
-
-
-
 // calmodel is the data model class for calendar data. calmodel is the only class that communicates
 // directly with the SMDB database class.
 // However, calmodel does allow the rest of the app to see Appointment objects. These are generic
@@ -74,13 +68,11 @@ import net.sf.borg.model.db.DBException;
 // the year/month/day of an appt. the integers for 2 consecutive days are numerically 100 apart -
 // allowing 100 appointments per day. the "base" key for a day ends in 00. appoinments for the day
 // are given the first unused integer greater than or equal to the "base" key. See dkey() below.
-public class AppointmentModel extends Model
+public class AppointmentModel extends Model implements Model.Listener
 {
     
     private BeanDB db_;       // the SMDB database - see mdb.SMDB
-    private Collection categories_;
-    private Collection currentCategories_ = null;
-    
+
     static
     {
         Version.addVersion("$Id$");
@@ -93,8 +85,6 @@ public class AppointmentModel extends Model
     private AppointmentModel()
     {
         map_ = new HashMap();
-        categories_ = null;
-        currentCategories_ = null;
     }
     
     static private AppointmentModel self_ = null;
@@ -135,30 +125,7 @@ public class AppointmentModel extends Model
         return( (dkey % 1000000) * 1000000);
     }
     
-    public void setCurrentCategories(Collection cats)
-    {
-        
-        currentCategories_ = cats;
-        
-        // rebuild the hashmap
-        try
-        {
-            buildMap();
-        }
-        catch( Exception e)
-        {
-            Errmsg.errmsg(e);
-        }
-        
-        // refresh all views that are displaying appt data from this model
-        refreshListeners();
-    }
-    
-    public Collection getCurrentCategories()
-    {
-        return( currentCategories_ );
-    }
-    
+
     // get a new row from SMDB. The row will internally contain the Appt schema
     public Appointment newAppt()
     {
@@ -397,8 +364,8 @@ public class AppointmentModel extends Model
     		
     		// update category list
     		String cat = r.getCategory();
-    		if( cat != null && !cat.equals("") && !categories_.contains(cat))
-    			categories_.add( cat );
+    		if( cat != null && !cat.equals("") )
+    		    CategoryModel.getReference().addCategory( cat );
     		
 		}
     	catch( Exception e )
@@ -457,7 +424,7 @@ public class AppointmentModel extends Model
                 if( cat == null || cat.equals(""))
                     cat = uncat;
                 
-                if( currentCategories_ != null && !currentCategories_.contains(cat))
+                if( !CategoryModel.getReference().isShown(cat))
                 {
                     continue;
                 }
@@ -607,7 +574,7 @@ public class AppointmentModel extends Model
                 String cat = appt.getCategory();
                 if( cat == null || cat.equals(""))
                     cat = uncat;
-                if( currentCategories_ != null && !currentCategories_.contains(cat))
+                if( !CategoryModel.getReference().isShown(cat))
                 {
                     continue;
                 }
@@ -661,7 +628,8 @@ public class AppointmentModel extends Model
 				userid);
         
         // init categories and currentcategories
-        setCurrentCategories( new TreeSet(getCategories()));
+        CategoryModel.getReference().addAll(getDbCategories());
+        CategoryModel.getReference().addListener(this);
         
         try
         {
@@ -677,6 +645,24 @@ public class AppointmentModel extends Model
         
     }
     
+    public Collection getDbCategories() throws Exception, DBException
+    {
+        
+        TreeSet dbcat = new TreeSet();
+        dbcat.add(Resource.getResourceString("uncategorized"));
+        Iterator itr = AppointmentModel.getReference().getAllAppts().iterator();
+        while( itr.hasNext() )
+        {
+            Appointment ap = (Appointment) itr.next();
+            String cat = ap.getCategory();
+            if( cat != null && !cat.equals("") )
+                dbcat.add( cat );
+        }
+        
+        
+        return( dbcat );
+        
+    }
     // the calmodel keeps a hashmap of days to appt keys to avoid hitting
     // the DB when possible - although the DB is cached too to some extent
     // buildmap will rebuild the map based on the DB
@@ -703,7 +689,7 @@ public class AppointmentModel extends Model
                 String cat = appt.getCategory();
                 if( cat == null || cat.equals(""))
                     cat = uncat;
-                if( currentCategories_ != null && !currentCategories_.contains(cat))
+                if( !CategoryModel.getReference().isShown(cat))
                 {
                     continue;
                 }
@@ -922,7 +908,7 @@ public class AppointmentModel extends Model
         // rebuild the hashmap
         buildMap();
         
-        syncCategories();
+        CategoryModel.getReference().syncCategories();
         
         // refresh all views that are displaying appt data from this model
         refreshListeners();
@@ -977,57 +963,7 @@ public class AppointmentModel extends Model
        
     }
     
-    private Collection getDbCategories() throws Exception, DBException
-    {
-        
-        TreeSet dbcat = new TreeSet();
-        dbcat.add(Resource.getResourceString("uncategorized"));
-        Iterator itr = getAllAppts().iterator();
-        while( itr.hasNext() )
-        {
-            Appointment ap = (Appointment) itr.next();
-            String cat = ap.getCategory();
-            if( cat != null && !cat.equals("") )
-                dbcat.add( cat );
-        }
-        
-        return( dbcat );
-        
-    }
-    
-    public void syncCategories() throws Exception, DBException
-    {
-        categories_ = getDbCategories();
-    }
-    
-    public void addCategory(String newcat) throws Exception
-    {
-        if( categories_ == null )
-            getCategories();
-        
-        categories_.add(newcat);
-        
-        if( currentCategories_ == null )
-        	setCurrentCategories( new TreeSet(getCategories()));
-        else
-        	currentCategories_.add(newcat);
-        
-    }
-    
-    public Collection getCategories() throws Exception, DBException
-    {
-        
-
-    	
-    	if( categories_ != null )
-            return( categories_ );
-        
-        categories_ = getDbCategories();
-
-        return( categories_ );
-        
-    }
-    
+   
     public void sync() throws DBException
     {
         db_.sync();
@@ -1076,5 +1012,24 @@ public class AppointmentModel extends Model
         }
     	return appts;
     }
+    /* (non-Javadoc)
+     * @see net.sf.borg.model.Model.Listener#refresh()
+     */
+    public void refresh() {
+        
+        try
+        {
+            buildMap();
+        }
+        catch( Exception e)
+        {
+            Errmsg.errmsg(e);
+        }
+        
+        // refresh all views that are displaying appt data from this model
+        refreshListeners();
+        
+    }
+
 
 }

@@ -16,23 +16,23 @@ Copyright 2003 by ==Quiet==
 
 package net.sf.borg.ui;
 
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.TreeSet;
 
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.Version;
 import net.sf.borg.model.AppointmentModel;
-
-import javax.swing.JPanel;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import javax.swing.JScrollPane;
-import javax.swing.JButton;
-import java.awt.GridLayout;
+import net.sf.borg.model.CategoryModel;
 /**
  *
  * @author  mberger
@@ -59,9 +59,9 @@ public class CategoryChooser extends View {
         
         // add current categories
         try{
-            AppointmentModel calmod = AppointmentModel.getReference();
-            Collection curcats = calmod.getCurrentCategories();
-            Collection allcats = calmod.getCategories();
+            CategoryModel catmod = CategoryModel.getReference();
+            Collection curcats = catmod.getShownCategories();
+            Collection allcats = catmod.getCategories();
             
             if( allcats == null ) {
                 allcats = new TreeSet();
@@ -169,7 +169,7 @@ public class CategoryChooser extends View {
                 newcats.add( cb.getText());
             }
         }
-        AppointmentModel.getReference().setCurrentCategories(newcats);
+        CategoryModel.getReference().setShownCategories(newcats);
         
     }//GEN-LAST:event_jButton1ActionPerformed
     

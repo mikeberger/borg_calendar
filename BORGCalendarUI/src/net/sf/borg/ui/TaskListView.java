@@ -59,6 +59,7 @@ import net.sf.borg.common.util.Resource;
 import net.sf.borg.common.util.Version;
 import net.sf.borg.common.util.XSLTransform;
 import net.sf.borg.common.util.XTree;
+import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.Task;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.TaskXMLAdapter;
@@ -92,9 +93,6 @@ public class TaskListView extends View {
     // need to
 
     // remember because I am overwriting it, but sometimes need to use it
-
-    private static String allcats = Resource
-            .getResourceString("All_Categories");
 
     private static TaskListView singleton = null;
 
@@ -226,22 +224,13 @@ public class TaskListView extends View {
         jTable1.getColumnModel().getColumn(6).setPreferredWidth(80);
         jTable1.getColumnModel().getColumn(7).setPreferredWidth(400);
         jTable1.setPreferredScrollableViewportSize(new Dimension(900, 400));
-        catbox.addItem(allcats);
-        catbox.setSelectedItem(allcats);
-
-        catal_ = new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                catboxActionPerformed(evt);
-            }
-        };
-        catbox.addActionListener(catal_);
 
         pack();
         
         manageMySize(PrefName.TASKLISTVIEWSIZE);
     }
 
-    private java.awt.event.ActionListener catal_ = null;
+
 
     public void destroy() {
         this.dispose();
@@ -306,11 +295,9 @@ public class TaskListView extends View {
         jRadioButton9 = new javax.swing.JRadioButton();
         jButton21 = new javax.swing.JButton();
         jTextField3 = new javax.swing.JTextField();
-        catbox = new javax.swing.JComboBox();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jRadioButton1 = new javax.swing.JRadioButton();
-        jLabel1 = new javax.swing.JLabel();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         printit = new javax.swing.JMenuItem();
@@ -406,12 +393,7 @@ public class TaskListView extends View {
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         getContentPane().add(jTextField3, gridBagConstraints);
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        getContentPane().add(catbox, gridBagConstraints);
+
 
         //jScrollPane1.setViewport(jScrollPane1.getViewport());
         jScrollPane1.setViewportView(jTable1);
@@ -451,15 +433,6 @@ public class TaskListView extends View {
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
         getContentPane().add(jRadioButton1, gridBagConstraints);
-
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel1.setText(java.util.ResourceBundle.getBundle(
-                "resource/borg_resource").getString("Category"));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        getContentPane().add(jLabel1, gridBagConstraints);
 
         fileMenu.setText(java.util.ResourceBundle.getBundle(
                 "resource/borg_resource").getString("File"));
@@ -594,6 +567,7 @@ public class TaskListView extends View {
         this.setContentPane(getJPanel());
        
 			printit.setIcon(new ImageIcon(getClass().getResource("/resource/Print16.gif")));
+			optMenu.add(getCatmenuitem());
     }
 
     private void edittypesActionPerformed(java.awt.event.ActionEvent evt) {
@@ -810,9 +784,6 @@ public class TaskListView extends View {
         this.dispose(); //System.exit(0);
     }
 
-    private void catboxActionPerformed(java.awt.event.ActionEvent evt) {
-        refresh();
-    }
 
     // refresh is called to update the table of shown tasks due to model changes
     // or if the user
@@ -829,37 +800,12 @@ public class TaskListView extends View {
 
         // get any filter string the user has typed
         String filt = filter();
-        String cat = (String) catbox.getSelectedItem();
-        if (cat.equals(allcats))
-            cat = null;
+
 
         try {
             TaskModel taskmod_ = TaskModel.getReference();
 
-            // check for new categories
-            // this code avoids blindly replacing the combobox model
-            // on every refresh
-            Collection cats = taskmod_.getCategories();
-            int numcats = cats.size();
-            int numcombo = catbox.getItemCount() - 1; // subtract "ALL" row
-            if (numcats != numcombo) {
-
-                // init categories
-                catbox.removeActionListener(catal_);
-                catbox.removeAllItems();
-                catbox.addItem(allcats);
-
-                Iterator it = cats.iterator();
-                while (it.hasNext()) {
-                    String c = (String) it.next();
-                    catbox.addItem(c);
-                    if (c.equals(cat))
-                        catbox.setSelectedItem(c);
-                }
-
-                catbox.addActionListener(catal_);
-
-            }
+ 
             Collection tasks = taskmod_.getTasks();
             Iterator ti = tasks.iterator();
             while (ti.hasNext()) {
@@ -882,6 +828,14 @@ public class TaskListView extends View {
                 // show perf rvw
                 if (which == 4 && !st.equals("PR"))
                     continue;
+                
+                // category
+                String cat = task.getCategory();
+                if( cat == null || cat.equals(""))
+                    cat = Resource.getResourceString("uncategorized");
+                
+                if( !CategoryModel.getReference().isShown(cat))
+                    continue;
 
                 // filter on user filter string
                 if (filt.length() != 0) {
@@ -900,13 +854,6 @@ public class TaskListView extends View {
                         continue;
                 }
 
-                if (cat != null) {
-                    String tcat = task.getCategory();
-                    if (tcat == null)
-                        continue;
-                    if (!tcat.equals(cat))
-                        continue;
-                }
 
                 // if we get here - we are displaying this task as a row
                 // so fill in an array of objects for the row
@@ -1023,8 +970,6 @@ public class TaskListView extends View {
 
     private javax.swing.JMenuItem add;
 
-    private javax.swing.JComboBox catbox;
-
     private javax.swing.JMenuItem change;
 
     private javax.swing.JMenuItem clone;
@@ -1046,8 +991,6 @@ public class TaskListView extends View {
     private javax.swing.JMenuItem impst;
 
     private javax.swing.JButton jButton21;
-
-    private javax.swing.JLabel jLabel1;
 
     private javax.swing.JRadioButton jRadioButton1;
 
@@ -1087,8 +1030,6 @@ public class TaskListView extends View {
     private JPanel getJPanel() {
         if (jPanel == null) {
             GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
-            GridBagConstraints gridBagConstraints20 = new GridBagConstraints();
-            GridBagConstraints gridBagConstraints19 = new GridBagConstraints();
             GridBagConstraints gridBagConstraints15 = new GridBagConstraints();
             GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
             GridBagConstraints gridBagConstraints9 = new GridBagConstraints();
@@ -1116,15 +1057,6 @@ public class TaskListView extends View {
             gridBagConstraints15.gridy = 0;
             gridBagConstraints15.gridwidth = 5;
             gridBagConstraints15.fill = java.awt.GridBagConstraints.HORIZONTAL;
-            gridBagConstraints19.gridx = 0;
-            gridBagConstraints19.gridy = 1;
-            gridBagConstraints19.fill = java.awt.GridBagConstraints.BOTH;
-            gridBagConstraints19.insets = new java.awt.Insets(4, 4, 4, 4);
-            gridBagConstraints20.gridx = 1;
-            gridBagConstraints20.gridy = 1;
-            gridBagConstraints20.weightx = 1.0D;
-            gridBagConstraints20.fill = java.awt.GridBagConstraints.BOTH;
-            gridBagConstraints20.insets = new java.awt.Insets(4, 4, 4, 4);
             gridBagConstraints1.gridx = 0;
             gridBagConstraints1.gridy = 4;
             gridBagConstraints1.fill = java.awt.GridBagConstraints.BOTH;
@@ -1133,8 +1065,6 @@ public class TaskListView extends View {
             jPanel.add(jTextField3, gridBagConstraints9);
             jPanel.add(jScrollPane1, gridBagConstraints11);
             jPanel.add(getJPanel2(), gridBagConstraints15);
-            jPanel.add(jLabel1, gridBagConstraints19);
-            jPanel.add(catbox, gridBagConstraints20);
             jPanel.add(getJPanel1(), gridBagConstraints1);
         }
         return jPanel;
@@ -1251,5 +1181,20 @@ public class TaskListView extends View {
 			});
 		}
 		return htmlitem;
+	}
+	
+	private JMenuItem catmenuitem;  //  @jve:decl-index=0:visual-constraint="73,12"
+	private JMenuItem getCatmenuitem() {
+		if (catmenuitem == null) {
+			catmenuitem = new JMenuItem();
+	        catmenuitem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Preferences16.gif")));
+	        catmenuitem.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("choosecat"));
+	        catmenuitem.addActionListener(new java.awt.event.ActionListener() { 
+	        	public void actionPerformed(java.awt.event.ActionEvent e) {    
+	        	    CategoryChooser.getReference().show();
+	        	}
+	        });
+		}
+		return catmenuitem;
 	}
   } //  @jve:decl-index=0:visual-constraint="55,54"
