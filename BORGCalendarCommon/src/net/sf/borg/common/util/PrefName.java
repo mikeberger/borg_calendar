@@ -138,6 +138,9 @@ public class PrefName {
 		// user color scheme
 		static public PrefName UCS_ON = new PrefName("ucs_on","true");
 		static public PrefName UCS_ONTODO = new PrefName("ucs_ontodo","true");
+		static public PrefName UCS_MARKTODO = new PrefName("ucs_marktodo","true");
+		static public PrefName UCS_MARKER = new PrefName("ucs_marker",">>");
+		static public PrefName UCS_MARKERCOLOR = new PrefName("ucs_markercolor","16250609");
 		// appts categories
 		static public PrefName UCS_RED = new PrefName("ucs_red","13369395");
 		static public PrefName UCS_BLUE = new PrefName("ucs_blue","6684876");
