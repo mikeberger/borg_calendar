@@ -17,7 +17,6 @@ package net.sf.borg.ui;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -39,6 +38,7 @@ import net.sf.borg.common.util.XTree;
 import net.sf.borg.model.Appointment;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.AppointmentXMLAdapter;
+
 class AppointmentPanel extends JPanel
 {
     static
@@ -134,8 +134,6 @@ class AppointmentPanel extends JPanel
           startap.setEnabled(false);
           notecb.setSelected(true);
           chgdate.setSelected(false);
-          newdatefield.setText("");
-          newdatefield.setEditable(false);
           
           // get default appt values, if any
           Appointment defaultAppt = null;
@@ -190,7 +188,7 @@ class AppointmentPanel extends JPanel
          
               
               chgdate.setEnabled(false);
-              
+              newdatefield.setEnabled(false);
               
           }else
           {
@@ -305,6 +303,7 @@ class AppointmentPanel extends JPanel
                   }
                   
                   chgdate.setEnabled(true);
+                  newdatefield.setEnabled(false);
                   
                   // repeat frequency
                   String rpt = r.getFrequency();
@@ -420,7 +419,7 @@ ialize the form.
         jLabel6 = new javax.swing.JLabel();
         notecb = new javax.swing.JCheckBox();
         jLabel8 = new javax.swing.JLabel();
-        newdatefield = new javax.swing.JTextField();
+        newdatefield = new de.wannawork.jcalendar.JCalendarComboBox();
         chgdate = new javax.swing.JCheckBox();
         jPanel3 = new javax.swing.JPanel();
         todocb = new javax.swing.JCheckBox();
@@ -564,7 +563,7 @@ ialize the form.
         gridBagConstraints14.gridx = 5;
         gridBagConstraints14.gridy = 1;
         gridBagConstraints14.fill = java.awt.GridBagConstraints.BOTH;
-        newdatefield.setColumns(10);
+        
         GridBagConstraints gridBagConstraints15 = new java.awt.GridBagConstraints();
         gridBagConstraints15.gridx = 6;
         gridBagConstraints15.gridy = 1;
@@ -735,12 +734,13 @@ ialize the form.
 			gridBagConstraints91.gridx = 0;
 			gridBagConstraints91.gridy = 5;
 			gridBagConstraints91.fill = java.awt.GridBagConstraints.BOTH;
+			gridBagConstraints15.insets = new java.awt.Insets(4,4,4,4);
 			this.add(jPanel3, gridBagConstraints38);
 			this.add(getJPanel(), gridBagConstraints81);
 			this.add(jPanel4, gridBagConstraints91);
 			jPanel2.add(durmin, gridBagConstraints8);
 
-        jPanel2.add(newdatefield, gridBagConstraints15);
+			jPanel2.add(newdatefield, gridBagConstraints15);
     }//GEN-END:initComponents
 
     private void saveDefaults(java.awt.event.ActionEvent evt)//GEN-FIRST:event_saveDefaults
@@ -793,9 +793,7 @@ ialize the form.
     }//GEN-LAST:event_foreverboxActionPerformed
     
     private void chgdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chgdateActionPerformed
-        if( !chgdate.isSelected() )
-            newdatefield.setText("");
-        newdatefield.setEditable( chgdate.isSelected() );
+        newdatefield.setEnabled( chgdate.isSelected() );
         
     }//GEN-LAST:event_chgdateActionPerformed
     
@@ -852,20 +850,7 @@ ialize the form.
         int newkey = 0;
         if( chgdate.isSelected())
         {
-            String newdatetext = newdatefield.getText();
-            nd = new Date();
-            
-            DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT);
-            try
-            {
-                nd = df.parse(newdatetext);
-            }
-            catch( Exception e )
-            {
-            	if( validate )
-            		throw new Warning(Resource.getResourceString("invdate"));
-            }
-            
+            nd = newdatefield.getCalendar().getTime();
         }
         
         int min = startmin.getSelectedIndex() * 5;
@@ -1123,7 +1108,7 @@ ialize the form.
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField newdatefield;
+    private de.wannawork.jcalendar.JCalendarComboBox newdatefield;
     private javax.swing.JCheckBox notecb;
     private javax.swing.JCheckBox privatecb;
     private javax.swing.JSpinner s_times;
