@@ -20,6 +20,8 @@ Copyright 2003 by ==Quiet==
 
 package net.sf.borg.ui;
 
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -31,13 +33,11 @@ import javax.swing.event.TableModelEvent;
 import net.sf.borg.common.ui.TablePrinter;
 import net.sf.borg.common.ui.TableSorter;
 import net.sf.borg.common.util.Errmsg;
+import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Resource;
 import net.sf.borg.common.util.Version;
 import net.sf.borg.model.Address;
 import net.sf.borg.model.AddressModel;
-
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
 /**
  *
  * @author  MBERGER
@@ -84,6 +84,8 @@ public class AddrListView extends View
         }));
         
         refresh();
+        
+        manageMySize(PrefName.ADDRLISTVIEWSIZE);
         
     }
     

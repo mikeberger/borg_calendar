@@ -25,6 +25,7 @@ Copyright 2003 by ==Quiet==
 
 package net.sf.borg.ui;
 
+import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Version;
 
 /**
@@ -32,7 +33,7 @@ import net.sf.borg.common.util.Version;
  * @author  mberger
  */
 // helpscrn just displays an HTML page in a window
-class HelpScreen extends javax.swing.JFrame {
+class HelpScreen extends View {
     
     static
     {
@@ -47,6 +48,8 @@ class HelpScreen extends javax.swing.JFrame {
         } catch (java.io.IOException e1) {
             e1.printStackTrace();
         }
+        
+        manageMySize(PrefName.HELPVIEWSIZE);
     }
     
     
@@ -92,5 +95,20 @@ class HelpScreen extends javax.swing.JFrame {
     private javax.swing.JEditorPane jEditorPane1;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
+    /* (non-Javadoc)
+     * @see net.sf.borg.ui.View#refresh()
+     */
+    public void refresh() {
+        // TODO Auto-generated method stub
+        
+    }
+
+
+    /* (non-Javadoc)
+     * @see net.sf.borg.ui.View#destroy()
+     */
+    public void destroy() {
+        this.dispose();       
+    }
     
 }  //  @jve:decl-index=0:visual-constraint="10,10"

@@ -19,6 +19,8 @@ Copyright 2003 by ==Quiet==
 */
 package net.sf.borg.ui;
 
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -26,19 +28,17 @@ import java.util.Vector;
 
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.TableModelEvent;
 
 import net.sf.borg.common.ui.TableSorter;
 import net.sf.borg.common.util.Errmsg;
+import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Resource;
 import net.sf.borg.common.util.Version;
 import net.sf.borg.model.Appointment;
 import net.sf.borg.model.AppointmentModel;
-
-import javax.swing.JPanel;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
 /*
  * srchgui.java
  *
@@ -78,6 +78,8 @@ class SearchView extends View{
                 
                 // do the search
                 load();
+                
+                manageMySize(PrefName.SRCHVIEWSIZE);
                 
         }
         

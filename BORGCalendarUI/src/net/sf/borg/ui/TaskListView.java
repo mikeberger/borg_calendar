@@ -23,6 +23,9 @@ package net.sf.borg.ui;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -33,6 +36,7 @@ import java.util.Iterator;
 import javax.swing.ButtonGroup;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableModel;
@@ -42,16 +46,12 @@ import net.sf.borg.common.io.OSServicesHome;
 import net.sf.borg.common.ui.TablePrinter;
 import net.sf.borg.common.ui.TableSorter;
 import net.sf.borg.common.util.Errmsg;
+import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Resource;
 import net.sf.borg.common.util.Version;
 import net.sf.borg.model.Task;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.db.DBException;
-
-import javax.swing.JPanel;
-import java.awt.GridLayout;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
 
 /*
  * btgui.java
@@ -227,6 +227,8 @@ public class TaskListView extends View {
         catbox.addActionListener(catal_);
 
         pack();
+        
+        manageMySize(PrefName.TASKLISTVIEWSIZE);
     }
 
     private java.awt.event.ActionListener catal_ = null;

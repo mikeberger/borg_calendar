@@ -116,5 +116,21 @@ public class PrefName {
 		static public PrefName COUNTRY = new PrefName( "country", "");
 		static public PrefName LANGUAGE = new PrefName( "language", "");
 	
+		// window sizes
+		static public PrefName CALVIEWSIZE = new PrefName("calviewsize","-1,-1,-1,-1,N");
+		static public PrefName ADDRVIEWSIZE = new PrefName("addrviewsize","-1,-1,-1,-1,N");
+		static public PrefName ADDRLISTVIEWSIZE = new PrefName("addrlistviewsize","-1,-1,-1,-1,N");
+		static public PrefName APPTLISTVIEWSIZE = new PrefName("apptlistviewsize","-1,-1,-1,-1,N");
+		static public PrefName DAYVIEWSIZE = new PrefName("dayviewsize","-1,-1,-1,-1,N");
+		static public PrefName MONTHPREVIEWSIZE = new PrefName("monthpreviewsize","-1,-1,-1,-1,N");
+		static public PrefName OPTVIEWSIZE = new PrefName("optviewsize","-1,-1,-1,-1,N");
+		static public PrefName SRCHVIEWSIZE = new PrefName("srchviewsize","-1,-1,-1,-1,N");
+		static public PrefName TASKCONFVIEWSIZE = new PrefName("taskconfviewsize","-1,-1,-1,-1,N");
+		static public PrefName TASKLISTVIEWSIZE = new PrefName("tasklistviewsize","-1,-1,-1,-1,N");
+		static public PrefName TASKVIEWSIZE = new PrefName("taskviewsize","-1,-1,-1,-1,N");
+		static public PrefName TODOVIEWSIZE = new PrefName("todoviewsize","-1,-1,-1,-1,N");
+		static public PrefName WEEKVIEWSIZE = new PrefName("weekviewsize","-1,-1,-1,-1,N");
+		static public PrefName HELPVIEWSIZE = new PrefName("helpviewsize","-1,-1,-1,-1,N");
 		
+
 }

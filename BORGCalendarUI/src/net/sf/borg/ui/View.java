@@ -25,6 +25,14 @@ Copyright 2003 by ==Quiet==
 
 package net.sf.borg.ui;
 
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Rectangle;
+
+import javax.swing.JFrame;
+
+import net.sf.borg.common.util.PrefName;
+import net.sf.borg.common.util.Prefs;
 import net.sf.borg.common.util.Version;
 import net.sf.borg.model.Model;
 
@@ -44,7 +52,11 @@ abstract class View extends javax.swing.JFrame implements Model.Listener
         Version.addVersion("$Id$");
     }
     
-    
+    private PrefName prefName_ = null;
+	private void initialize() {
+ 
+			
+	}
     public abstract void refresh();
     public abstract void destroy();
     
@@ -55,6 +67,21 @@ abstract class View extends javax.swing.JFrame implements Model.Listener
     
     public View()
     {
+        initialize();
+    }
+		
+    static private void recordSize( Component c )
+    {
+        ViewSize vs = new ViewSize();
+        vs.setX(c.getBounds().x);
+        vs.setY(c.getBounds().y);
+        vs.setWidth(c.getBounds().width);
+        vs.setHeight(c.getBounds().height);
+        View v = (View) c;
+        vs.setMaximized(v.getExtendedState() == JFrame.MAXIMIZED_BOTH);
+        
+        Prefs.putPref(v.prefName_,vs.toString());
+        
     }
       
     // function to call to register a view with the model
@@ -63,5 +90,40 @@ abstract class View extends javax.swing.JFrame implements Model.Listener
         m.addListener(this);
     }
      
+    // called from the subclass to cause the View to use preferences to 
+    // persist a View's size and locaiton if the user resizes it
+    public void manageMySize(PrefName pname)
+    {
+        prefName_ = pname;
+        
+        // set the initial size
+        String s = Prefs.getPref(prefName_);
+        ViewSize vs = ViewSize.fromString(s);
+        
+        if( vs.isMaximized())
+        {
+            setExtendedState(JFrame.MAXIMIZED_BOTH);
+        }
+        else if( vs.getX() != -1 )
+        {
+            setBounds( new Rectangle(vs.getX(),vs.getY(),vs.getWidth(),vs.getHeight()));            
+        }
+        else if( vs.getWidth() != -1 )
+        {
+            setSize(new Dimension(vs.getWidth(),vs.getHeight()));
+        }
+           
+        validate();
+        
+        // add listeners to record any changes
+        this.addComponentListener(new java.awt.event.ComponentAdapter() { 
+        	public void componentResized(java.awt.event.ComponentEvent e) {    
+        		recordSize( e.getComponent());
+        	}
+           	public void componentMoved(java.awt.event.ComponentEvent e) {    
+           	    recordSize( e.getComponent());
+        	}
+        });
+    }
     
 }

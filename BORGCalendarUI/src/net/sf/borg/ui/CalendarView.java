@@ -129,6 +129,7 @@ public class CalendarView extends View implements Prefs.Listener {
         // be notified of Prefs changes
         Prefs.addListener(this);
         init();
+        manageMySize(PrefName.CALVIEWSIZE);
     }
     
     private static class DayMouseListener implements MouseListener

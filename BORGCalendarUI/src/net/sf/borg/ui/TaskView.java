@@ -20,26 +20,23 @@ Copyright 2003 by ==Quiet==
 package net.sf.borg.ui;
 
 import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Vector;
 
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 import net.sf.borg.common.util.Errmsg;
+import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Resource;
 import net.sf.borg.common.util.Version;
 import net.sf.borg.model.Task;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.TaskTypes;
-
-
-
-
-import javax.swing.JPanel;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
 /*
  * taskgui.java
  *
@@ -85,6 +82,8 @@ class TaskView extends View
         // display the window
         pack();
         showtask( function, task );
+        
+        manageMySize(PrefName.TASKVIEWSIZE);
     }
     
     public void destroy()

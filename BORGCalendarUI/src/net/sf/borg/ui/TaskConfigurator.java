@@ -35,6 +35,7 @@ import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
 import net.sf.borg.common.util.Errmsg;
+import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Resource;
 import net.sf.borg.model.TaskModel;
 
@@ -107,6 +108,7 @@ public class TaskConfigurator extends View {
 		addModel(TaskModel.getReference());
 		initialize();
 		load();
+		manageMySize(PrefName.TASKCONFVIEWSIZE);
 	}
 
 	/**

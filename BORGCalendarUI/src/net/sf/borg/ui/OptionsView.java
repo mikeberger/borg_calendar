@@ -387,6 +387,9 @@ public class OptionsView extends View
             icaltodobox.setSelected(false);
             
         logobrowse.setEnabled(AppHelper.isApplication());
+        
+        
+        manageMySize(PrefName.OPTVIEWSIZE);
     }
     
     /** This method is called from within the constructor to

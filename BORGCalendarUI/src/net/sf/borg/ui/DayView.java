@@ -39,6 +39,7 @@ import javax.swing.JScrollPane;
 import javax.swing.border.BevelBorder;
 
 import net.sf.borg.common.util.Errmsg;
+import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Resource;
 import net.sf.borg.common.util.Version;
 import net.sf.borg.model.AppointmentModel;
@@ -149,6 +150,8 @@ class DayView extends View
         setDefaultCloseOperation( DISPOSE_ON_CLOSE );
         pack();
         setVisible(true);
+        
+        manageMySize(PrefName.DAYVIEWSIZE);
     }
     
     

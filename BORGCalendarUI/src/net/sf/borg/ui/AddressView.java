@@ -20,19 +20,18 @@ Copyright 2003 by ==Quiet==
 package net.sf.borg.ui;
 
 import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.text.DateFormat;
 import java.util.Date;
 
+import javax.swing.JPanel;
+
 import net.sf.borg.common.util.Errmsg;
+import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Resource;
 import net.sf.borg.common.util.Version;
 import net.sf.borg.model.Address;
 import net.sf.borg.model.AddressModel;
-
-
-
-import javax.swing.JPanel;
-import java.awt.GridBagLayout;
 /**
  *
  * @author  MBERGER
@@ -60,6 +59,8 @@ class AddressView extends View
         // display the window
         pack();
         showaddr();
+        
+        manageMySize(PrefName.ADDRVIEWSIZE);
     }
     
     public void destroy()

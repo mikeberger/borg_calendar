@@ -24,6 +24,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -33,6 +34,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
@@ -42,18 +44,12 @@ import javax.swing.table.TableCellRenderer;
 
 import net.sf.borg.common.ui.TableSorter;
 import net.sf.borg.common.util.Errmsg;
+import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Resource;
 import net.sf.borg.common.util.Version;
 import net.sf.borg.model.Appointment;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.TaskModel;
-
-
-
-
-
-import javax.swing.JPanel;
-import java.awt.GridBagLayout;
 public class AppointmentListView extends View implements ListSelectionListener {
     
     static {
@@ -158,6 +154,8 @@ public class AppointmentListView extends View implements ListSelectionListener {
         refresh();
         
         pack();
+        
+        manageMySize(PrefName.APPTLISTVIEWSIZE);
     }
     
     public void destroy() {
