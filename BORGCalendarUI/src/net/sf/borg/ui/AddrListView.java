@@ -26,7 +26,6 @@ import java.io.File;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
-import java.io.Writer;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -47,8 +46,6 @@ import net.sf.borg.common.util.Version;
 import net.sf.borg.common.util.XSLTransform;
 import net.sf.borg.model.Address;
 import net.sf.borg.model.AddressModel;
-import net.sf.borg.model.AppointmentModel;
-import net.sf.borg.model.TaskModel;
 /**
  *
  * @author  MBERGER

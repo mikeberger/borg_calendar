@@ -317,6 +317,7 @@ build.number=${build.number}
             <include name="COPYING"/>
             <include name="*.txt"/>
             <include name="*.gif"/>
+         	<include name="*.xsl"/>
          </fileset>
       </copy>
    </target>
