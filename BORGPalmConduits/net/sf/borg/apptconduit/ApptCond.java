@@ -29,7 +29,7 @@ public class ApptCond implements Conduit {
         try {
             if (props.syncType == props.SYNC_DO_NOTHING) {
                
-                Log.out("OK TodoCond Do Nothing");
+                Log.out("OK ApptCond Do Nothing");
                 Log.endSync();
             }
             else
@@ -37,6 +37,8 @@ public class ApptCond implements Conduit {
 
                 db = SyncManager.openDB("DatebookDB", 0, SyncManager.OPEN_READ
                         | SyncManager.OPEN_WRITE | SyncManager.OPEN_EXCLUSIVE);
+                
+                int numrecs = SyncManager.getDBRecordCount(db);
 
                 //read the pc records on the PC
                 String dbdir = props.pathName;
@@ -46,7 +48,9 @@ public class ApptCond implements Conduit {
                 //Create an instance of the RecordManager for synchronizing the
                 // records
                 recordMgr = new RecordManager(props, db);
-                if( props.syncType == props.SYNC_PC_TO_HH )
+                
+                // send ALL records to HH if wipe option set by user OR is HH db is empty
+                if( props.syncType == props.SYNC_PC_TO_HH || numrecs == 0)
                 {
                     recordMgr.WipeData();
                 }
@@ -61,7 +65,7 @@ public class ApptCond implements Conduit {
                 SyncManager.closeDB(db);
                 
                 // Single Log we are successful
-                Log.out("OK TodoCond Conduit");
+                Log.out("OK ApptCond Conduit");
                 Log.endSync();
             }
             

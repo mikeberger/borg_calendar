@@ -107,7 +107,7 @@ public class RecordManager {
 
         DateRecord hhRecord;
         
-        Log.out("Sync PC: " + appt.getKey() + " " + appt.getText());
+        //Log.out("Sync PC: " + appt.getKey() + " " + appt.getText());
 
         if (!appt.getNew()) {
 
@@ -151,7 +151,7 @@ public class RecordManager {
     public void synchronizeHHRecord(DateRecord hhRecord) throws Exception {
 
         Appointment appt = null;
-        Log.out("Sync HH: " + hhRecord.toFormattedString());
+        //Log.out("Sync HH: " + hhRecord.toFormattedString());
         // any record without a BORG id is considered new
         int id = getApptKey(hhRecord);
         if (id != -1 )
