@@ -202,13 +202,34 @@ public class RecordManager {
 
         // Record exists on both HH and PC
         if (appt.getDeleted() || !appt.getModified()) {
-
-            resetAttributes(hhRecord);
-            writeHHRecord(hhRecord);
-
-            Appointment modaddr = palmToBorg(hhRecord);
-            modaddr.setKey(appt.getKey());
-            resetPCAttributes(modaddr);
+            
+            // check for date change 
+            GregorianCalendar cal = new GregorianCalendar();
+            cal.setTime(hhRecord.getStartDate());
+            cal.set( Calendar.SECOND, 0);
+            cal.set( Calendar.MILLISECOND, 0);
+            Date fixdate = cal.getTime();
+            
+            if( !appt.getDeleted() && (appt.getDate().getTime() != fixdate.getTime()))
+            {
+                Log.out("date chg: " + appt.getText() + " " + appt.getDate() + "!=" + fixdate);
+                Log.out( appt.getDate().getTime() + "!=" + fixdate.getTime());
+                Appointment modappt = palmToBorg(hhRecord);
+                AppointmentModel.getReference().delAppt(appt);
+                AppointmentModel.getReference().saveAppt(modappt,true);
+                
+                deleteHHRecord(hhRecord);
+                
+            }
+            else
+            {               
+                resetAttributes(hhRecord);
+                writeHHRecord(hhRecord);
+                
+                Appointment modaddr = palmToBorg(hhRecord);
+                modaddr.setKey(appt.getKey());
+                resetPCAttributes(modaddr);
+            }
         }
         else if (compareRecords(hhRecord, appt)) {
             // both records have changed identically
