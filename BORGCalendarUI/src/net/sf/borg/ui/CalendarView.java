@@ -673,37 +673,111 @@ public class CalendarView extends View implements Prefs.Listener {
                     
                     // set the day color based on if the day is today, or if any of the
                     // appts for the day are holidays, vacation days, half-days, or weekends
-                    if( today == daynumber ) {
-                        // today color is pink
-                        daytext[i].setBackground( new Color(225,150,150));
-                        days[i].setBackground( new Color(225,150,150));
-                    }
-                    else if( di.getHoliday() == 1 ) {
-                        // holiday color
-                        daytext[i].setBackground( new Color(245,203,162));
-                        days[i].setBackground( new Color(245,203,162));
-                    }
-                    else if( di.getVacation() == 1 ) {
-                        // vacation color
-                        daytext[i].setBackground( new Color(155,255,153));
-                        days[i].setBackground( new Color(155,255,153));
-                    }
-                    else if( di.getVacation() == 2 ) {
-                        // half day color
-                        daytext[i].setBackground( new Color(200,255,200));
-                        days[i].setBackground( new Color(200,255,200));
-                    }
-                    else if( dow != Calendar.SUNDAY && dow != Calendar.SATURDAY ) {
-                        // weekday color
-                        days[i].setBackground( new Color(255,233,192));
-                        daytext[i].setBackground( new Color(255,233,192));
-                    }
-                    else {
-                        // weekend color
-                        daytext[i].setBackground( new Color(245,203,162));
-                        days[i].setBackground( new Color(245,203,162));
+                    // bsv 2004-12-21
+                    // TODO get "use user color settings" property
+                    boolean bUseUCS = ((Prefs.getPref(PrefName.UCS_ON)).equals("true"))?true:false;
+                    if( bUseUCS==false ){
+	                    if( today == daynumber ) {
+	                        // today color is pink
+	                        daytext[i].setBackground( new Color(225,150,150));
+	                        days[i].setBackground( new Color(225,150,150));
+	                    }
+	                    else if( di.getHoliday() == 1 ) {
+	                        // holiday color
+	                        daytext[i].setBackground( new Color(245,203,162));
+	                        days[i].setBackground( new Color(245,203,162));
+	                    }
+	                    else if( di.getVacation() == 1 ) {
+	                        // vacation color
+	                        daytext[i].setBackground( new Color(155,255,153));
+	                        days[i].setBackground( new Color(155,255,153));
+	                    }
+	                    else if( di.getVacation() == 2 ) {
+	                        // half day color
+	                        daytext[i].setBackground( new Color(200,255,200));
+	                        days[i].setBackground( new Color(200,255,200));
+	                    }
+	                    else if( dow != Calendar.SUNDAY && dow != Calendar.SATURDAY ) {
+	                        // weekday color
+	                        days[i].setBackground( new Color(255,233,192));
+	                        daytext[i].setBackground( new Color(255,233,192));
+	                    }
+	                    else {
+	                        // weekend color
+	                        daytext[i].setBackground( new Color(245,203,162));
+	                        days[i].setBackground( new Color(245,203,162));
+	                    }
+                    } else {
+                    	Color ctemp = new Color( (new Integer( Prefs.getPref(PrefName.UCS_DEFAULT))).intValue() );
+	                    if( today == daynumber ) {
+		                    ctemp = new Color( (new Integer( Prefs.getPref(PrefName.UCS_TODAY))).intValue() );
+	                        daytext[i].setBackground( ctemp );
+	                        days[i].setBackground( ctemp );
+	                    }
+	                    else if( di.getHoliday() == 1 ) {
+		                    ctemp = new Color( (new Integer( Prefs.getPref(PrefName.UCS_HOLIDAY))).intValue() );
+	                        daytext[i].setBackground( ctemp );
+	                        days[i].setBackground( ctemp );
+	                    }
+	                    else if( di.getVacation() == 1 ) {
+		                    ctemp = new Color( (new Integer( Prefs.getPref(PrefName.UCS_VACATION))).intValue() );
+	                        daytext[i].setBackground( ctemp );
+	                        days[i].setBackground( ctemp );
+	                    }
+	                    else if( di.getVacation() == 2 ) {
+	                        // half day color
+		                    ctemp = new Color( (new Integer( Prefs.getPref(PrefName.UCS_HALFDAY))).intValue() );
+	                        daytext[i].setBackground( ctemp );
+	                        days[i].setBackground( ctemp );
+	                    }
+	                    else if( dow != Calendar.SUNDAY && dow != Calendar.SATURDAY ) {
+	                        // weekday color
+		                    ctemp = new Color( (new Integer( Prefs.getPref(PrefName.UCS_WEEKDAY))).intValue() );
+	                        daytext[i].setBackground( ctemp );
+	                        days[i].setBackground( ctemp );
+	                    }
+	                    else {
+	                        // weekend color
+		                    ctemp = new Color( (new Integer( Prefs.getPref(PrefName.UCS_WEEKEND))).intValue() );
+	                        daytext[i].setBackground( ctemp );
+	                        days[i].setBackground( ctemp );
+	                    }
                     }
                     
+//                    // old code
+//                    if( today == daynumber ) {
+//                        // today color is pink
+//                        daytext[i].setBackground( new Color(225,150,150));
+//                        days[i].setBackground( new Color(225,150,150));
+//                    }
+//                    else if( di.getHoliday() == 1 ) {
+//                        // holiday color
+//                        daytext[i].setBackground( new Color(245,203,162));
+//                        days[i].setBackground( new Color(245,203,162));
+//                    }
+//                    else if( di.getVacation() == 1 ) {
+//                        // vacation color
+//                        daytext[i].setBackground( new Color(155,255,153));
+//                        days[i].setBackground( new Color(155,255,153));
+//                    }
+//                    else if( di.getVacation() == 2 ) {
+//                        // half day color
+//                        daytext[i].setBackground( new Color(200,255,200));
+//                        days[i].setBackground( new Color(200,255,200));
+//                    }
+//                    else if( dow != Calendar.SUNDAY && dow != Calendar.SATURDAY ) {
+//                        // weekday color
+//                        days[i].setBackground( new Color(255,233,192));
+//                        daytext[i].setBackground( new Color(255,233,192));
+//                    }
+//                    else {
+//                        // weekend color
+//                        daytext[i].setBackground( new Color(245,203,162));
+//                        days[i].setBackground( new Color(245,203,162));
+//                    }
+//                    
+//                    // (old code)
+                    // (bsv 2004-12-21)
                     days[i].setVisible(true);
                     
                 }
