@@ -2,6 +2,7 @@ Version 1.4.2
 -------------
 User tunable colors for the month view and todo list
 Export to vCalendar 1.0 (.vcs) format (used by Palm Desktop)
+Save Address or Task information as HTML using XSLT
 Improved Todo GUI
 Highlight todo's on the month view
 Show done todo's with strike-through

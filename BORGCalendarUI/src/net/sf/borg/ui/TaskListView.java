@@ -28,19 +28,28 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.StringWriter;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.TableCellRenderer;
 
+import net.sf.borg.common.io.IOHelper;
 import net.sf.borg.common.io.OSServicesHome;
 import net.sf.borg.common.ui.TablePrinter;
 import net.sf.borg.common.ui.TableSorter;
@@ -48,12 +57,12 @@ import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Resource;
 import net.sf.borg.common.util.Version;
+import net.sf.borg.common.util.XSLTransform;
+import net.sf.borg.common.util.XTree;
 import net.sf.borg.model.Task;
 import net.sf.borg.model.TaskModel;
+import net.sf.borg.model.TaskXMLAdapter;
 import net.sf.borg.model.db.DBException;
-
-import javax.swing.JButton;
-import javax.swing.ImageIcon;
 /*
  * btgui.java
  *
@@ -466,14 +475,15 @@ public class TaskListView extends View {
 
         exitMenuItem.setText(java.util.ResourceBundle.getBundle(
                 "resource/borg_resource").getString("Close"));
+        exitMenuItem.setIcon(new ImageIcon(getClass().getResource("/resource/Stop16.gif")));
         exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 exitMenuItemActionPerformed(evt);
             }
         });
-
+        fileMenu.add(getHtmlitem());
         fileMenu.add(exitMenuItem);
-
+        
         menuBar.add(fileMenu);
 
         editMenu.setText(java.util.ResourceBundle.getBundle(
@@ -582,6 +592,8 @@ public class TaskListView extends View {
 
         this.setSize(612, 456);
         this.setContentPane(getJPanel());
+       
+			printit.setIcon(new ImageIcon(getClass().getResource("/resource/Print16.gif")));
     }
 
     private void edittypesActionPerformed(java.awt.event.ActionEvent evt) {
@@ -1177,5 +1189,67 @@ public class TaskListView extends View {
 			});
 		}
 		return jButton;
+	}
+	
+	private JMenuItem htmlitem;
+	private JMenuItem getHtmlitem() {
+		if (htmlitem == null) {
+			htmlitem = new JMenuItem();
+			htmlitem.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("SaveHTML"));
+			htmlitem.setIcon(new ImageIcon(getClass().getResource("/resource/WebComponent16.gif")));
+			htmlitem.addActionListener(new java.awt.event.ActionListener() { 
+			    public void actionPerformed(java.awt.event.ActionEvent e) { 
+			        try{
+			            
+			            JFileChooser chooser = new JFileChooser();
+			            
+			            chooser.setCurrentDirectory( new File(".") );
+			            chooser.setDialogTitle(Resource.getResourceString("choose_file"));
+			            chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+			            
+			            int returnVal = chooser.showOpenDialog(null);
+			            if(returnVal != JFileChooser.APPROVE_OPTION)
+			                return;
+			            
+			            String s = chooser.getSelectedFile().getAbsolutePath();
+
+			            OutputStream ostr = IOHelper.createOutputStream(s);
+			            OutputStreamWriter fw = new OutputStreamWriter(ostr, "UTF8");            
+
+						StringWriter sw = new StringWriter();
+						sw.write("<TASKS>\n" );
+						// for each appt being shown in list
+				        TableSorter tm = (TableSorter) jTable1.getModel();
+				        TaskXMLAdapter txa = new TaskXMLAdapter();
+				        
+				        for(int row=0; row < tm.getRowCount() ;row++)
+				        {
+				            
+				            Integer num = (Integer) tm.getValueAt(row, 0);
+				            Task task = TaskModel.getReference().getMR(num.intValue());
+						
+							// convert to XML
+				            XTree xt = txa.toXml(task);
+				            sw.write(xt.toString());
+				            
+				        }
+				        
+				        sw.write("</TASKS>\n" );
+						// pass through XSLT
+			            String output = XSLTransform.transform( sw.toString(), "/resource/task.xsl");
+			            
+			            fw.write(output);
+			            fw.close();
+			            
+			            
+			        }
+			        catch( Exception ex) {
+			            Errmsg.errmsg(ex);
+			        }
+			            
+			    }
+			});
+		}
+		return htmlitem;
 	}
   } //  @jve:decl-index=0:visual-constraint="55,54"
