@@ -1,6 +1,13 @@
 Version 1.5
 -----------
 Palm Synchronization Conduits
+Add date chooser to task GUI
+Share categories between appointments and tasks.
+Change to use category pull-down menu on task editor
+Allow GIF images to mark todos in calendar
+Simplified Chinese Translation
+Remove Logging feature
+Bug fixes
 
 Version 1.4.2
 -------------
