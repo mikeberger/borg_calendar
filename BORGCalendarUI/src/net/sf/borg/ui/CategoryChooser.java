@@ -30,6 +30,9 @@ import net.sf.borg.model.AppointmentModel;
 import javax.swing.JPanel;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
+import javax.swing.JScrollPane;
+import javax.swing.JButton;
+import java.awt.GridLayout;
 /**
  *
  * @author  mberger
@@ -92,6 +95,7 @@ public class CategoryChooser extends View {
     {
         java.awt.GridBagConstraints gridBagConstraints;
 
+        GridLayout gridLayout2 = new GridLayout();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
@@ -113,13 +117,14 @@ public class CategoryChooser extends View {
 
         jPanel1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
         gridBagConstraints = new java.awt.GridBagConstraints();
+        jPanel2.setLayout(gridLayout2);
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
         getContentPane().add(jPanel1, gridBagConstraints);
 
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Save16.gif")));
-        jButton1.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Select"));
+        jButton1.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("apply"));
         jButton1.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -127,8 +132,6 @@ public class CategoryChooser extends View {
                 jButton1ActionPerformed(evt);
             }
         });
-
-        jPanel2.add(jButton1);
 
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Stop16.gif")));
         jButton2.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Dismiss"));
@@ -140,13 +143,16 @@ public class CategoryChooser extends View {
             }
         });
 
-        jPanel2.add(jButton2);
-
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         this.setSize(250, 147);
         this.setContentPane(getJPanel());
+        gridLayout2.setRows(1);
+        jPanel2.add(getJButton3(), null);
+        jPanel2.add(getJButton(), null);
+        jPanel2.add(jButton1, null);
+        jPanel2.add(jButton2, null);
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         getContentPane().add(jPanel2, gridBagConstraints);
 
@@ -183,25 +189,79 @@ public class CategoryChooser extends View {
 	 */    
 	private JPanel getJPanel() {
 		if (jPanel == null) {
+			GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
 			GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
-			GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
 			jPanel = new JPanel();
 			jPanel.setLayout(new GridBagLayout());
-			gridBagConstraints1.gridx = 0;
-			gridBagConstraints1.gridy = 0;
-			gridBagConstraints1.insets = new java.awt.Insets(4,4,4,4);
-			gridBagConstraints1.fill = java.awt.GridBagConstraints.BOTH;
-			gridBagConstraints1.weightx = 1.0D;
-			gridBagConstraints1.weighty = 1.0D;
 			gridBagConstraints2.gridx = 0;
 			gridBagConstraints2.gridy = 1;
 			gridBagConstraints2.insets = new java.awt.Insets(0,0,0,0);
-			jPanel.add(jPanel1, gridBagConstraints1);
+			gridBagConstraints2.weighty = 0.0D;
+			gridBagConstraints2.weightx = 1.0D;
+			gridBagConstraints11.weightx = 1.0;
+			gridBagConstraints11.weighty = 1.0;
+			gridBagConstraints11.fill = java.awt.GridBagConstraints.BOTH;
 			jPanel.add(jPanel2, gridBagConstraints2);
+			jPanel.add(getJScrollPane(), gridBagConstraints11);
 		}
 		return jPanel;
 	}
-     /**
+	/**
+	 * This method initializes jScrollPane	
+	 * 	
+	 * @return javax.swing.JScrollPane	
+	 */    
+	private JScrollPane getJScrollPane() {
+		if (jScrollPane == null) {
+			jScrollPane = new JScrollPane();
+			jScrollPane.setPreferredSize(new java.awt.Dimension(40,200));
+			jScrollPane.setViewportView(jPanel1);
+		}
+		return jScrollPane;
+	}
+	/**
+	 * This method initializes jButton	
+	 * 	
+	 * @return javax.swing.JButton	
+	 */    
+	private JButton getJButton() {
+		if (jButton == null) {
+			jButton = new JButton();
+			jButton.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("clear_all"));
+			jButton.addActionListener(new java.awt.event.ActionListener() { 
+				public void actionPerformed(java.awt.event.ActionEvent e) {    
+			        Iterator it = cbs.iterator();
+			        while( it.hasNext()) {
+			            JCheckBox cb = (JCheckBox) it.next();
+			            cb.setSelected(false);
+			        }
+				}
+			});
+		}
+		return jButton;
+	}
+	/**
+	 * This method initializes jButton3	
+	 * 	
+	 * @return javax.swing.JButton	
+	 */    
+	private JButton getJButton3() {
+		if (jButton3 == null) {
+			jButton3 = new JButton();
+			jButton3.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("select_all"));
+			jButton3.addActionListener(new java.awt.event.ActionListener() { 
+				public void actionPerformed(java.awt.event.ActionEvent e) {    
+			        Iterator it = cbs.iterator();
+			        while( it.hasNext()) {
+			            JCheckBox cb = (JCheckBox) it.next();
+			            cb.setSelected(true);
+			        }
+				}
+			});
+		}
+		return jButton3;
+	}
+        /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
@@ -223,4 +283,7 @@ public class CategoryChooser extends View {
     // End of variables declaration//GEN-END:variables
     
 	private JPanel jPanel = null;
-}  //  @jve:decl-index=0:visual-constraint="10,10"
+	private JScrollPane jScrollPane = null;
+	private JButton jButton = null;
+	private JButton jButton3 = null;
+}  //  @jve:decl-index=0:visual-constraint="180,110"
