@@ -38,6 +38,7 @@
    	  <pathelement location="${prj.common.dir}/lib/ical4j.jar"/>
    	  <pathelement location="${prj.common.dir}/lib/commons-logging.jar"/>
    	  <pathelement location="${prj.ui.dir}/lib/jh.jar"/>
+   	  <pathelement location="${prj.common.dir}/lib/jcalendar.jar"/>
    </path>
 
    <target name="init">

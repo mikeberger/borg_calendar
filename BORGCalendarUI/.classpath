@@ -11,5 +11,6 @@
 	<classpathentry kind="lib" path="/BORGCalendarCommon/lib/commons-logging.jar"/>
 	<classpathentry kind="lib" path="/BORGCalendarCommon/lib/ical4j.jar"/>
 	<classpathentry kind="lib" path="/BORGCalendarCommon/lib/looks-1.2.2.jar"/>
+	<classpathentry kind="lib" path="/BORGCalendarCommon/lib/jcalendar.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
