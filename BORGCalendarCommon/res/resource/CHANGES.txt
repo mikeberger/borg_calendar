@@ -1,5 +1,6 @@
 Version 1.4 final
 --------------------
+Italian Translation from Piero Trono http://php-multishop.com tropic@users.sourceforge.net
 Add Bulk Delete from Search Results Menu
 Add a new Help System based on JavaHelp
 Ability to save default values in the appt editor

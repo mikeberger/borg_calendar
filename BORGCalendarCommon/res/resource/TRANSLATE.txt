@@ -86,5 +86,5 @@ in the next release, email it to me at i_flem@users.sourceforge.net
 So far, I have gotten files from:
 
 Josu Gil Arriortua (Spanish)
-Philip Oettershagen (German)
-
+Philip Oettershagen and Stefan Pottinger(German)
+Piero Trono http://php-multishop.com tropic@users.sourceforge.net (Italian)

@@ -31,7 +31,6 @@ import java.awt.print.PrinterJob;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.Copies;
-import javax.print.attribute.standard.MediaSizeName;
 import javax.print.attribute.standard.OrientationRequested;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -63,7 +62,7 @@ class DayView extends View
     {
         PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
 	    aset.add(new Copies(1));
-        aset.add(MediaSizeName.NA_LETTER);
+        //aset.add(MediaSizeName.NA_LETTER);
         aset.add(OrientationRequested.LANDSCAPE);	
 
         PrinterJob printJob = PrinterJob.getPrinterJob();
