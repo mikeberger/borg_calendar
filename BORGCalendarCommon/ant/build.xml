@@ -175,7 +175,7 @@ build.number=${build.number}
       </jar>
    </target>
 	
-   <target name="help-jar" depends="compile">
+   <target name="help-jar">
    	   <mkdir dir="${build.dir}/lib"/>
 	   <jar jarfile="${build.dir}/lib/borghelp.jar">
 	         <fileset dir="${help.dir}">
