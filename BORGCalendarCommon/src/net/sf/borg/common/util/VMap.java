@@ -37,6 +37,8 @@ public class VMap extends HashMap {
         Iterator it = entrySet().iterator();
         while( it.hasNext() ) {
             Entry me = (Entry) it.next();
+            if( me.getValue() == null || me.getValue().equals(""))
+            	continue;
             buf.append((String)me.getKey() + "=");
             String val = (String) me.getValue();
             for( int i = 0; i < val.length(); i++ ) {
@@ -57,6 +59,8 @@ public class VMap extends HashMap {
         Iterator it = entrySet().iterator();
         while( it.hasNext() ) {
             Entry me = (Entry) it.next();
+            if( me.getValue() == null || me.getValue().equals(""))
+            	continue;
             buf.append("<" + (String)me.getKey() + ">");
             String val = (String) me.getValue();
             byte b[] = val.getBytes();
