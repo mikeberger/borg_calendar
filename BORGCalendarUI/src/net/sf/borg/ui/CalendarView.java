@@ -432,21 +432,48 @@ public class CalendarView extends View implements Prefs.Listener {
         StyleConstants.setItalic( bl, italic);
         StyleConstants.setFontSize(bl, fontsize);
         
+        // bsv 2004-12-21
+        // TODO get colors from options set
+        boolean bUseUCS = ((Prefs.getPref(PrefName.UCS_ON)).equals("true"))?true:false;
+        Color ctemp;
         try {
             Style s = textPane.addStyle("blue", bl);
-            StyleConstants.setForeground(s, Color.BLUE);
-            
+            // bsv 2004-12-21
+            ctemp = new Color( (new Integer( Prefs.getPref(PrefName.UCS_BLUE))).intValue() ); 
+            StyleConstants.setForeground(s, bUseUCS?(ctemp):(Color.BLUE));
+            //StyleConstants.setForeground(s, Color.BLUE);
             
             s = textPane.addStyle("red", bl);
-            StyleConstants.setForeground(s, Color.RED);
+            // bsv 2004-12-21
+            ctemp = new Color( (new Integer( Prefs.getPref(PrefName.UCS_RED))).intValue() ); 
+            StyleConstants.setForeground(s, bUseUCS?(ctemp):(Color.RED));
+            //StyleConstants.setForeground(s, Color.RED);
             
             
             s = textPane.addStyle("green", bl);
-            StyleConstants.setForeground(s, Color.GREEN);
+            // bsv 2004-12-21
+            ctemp = new Color( (new Integer( Prefs.getPref(PrefName.UCS_GREEN))).intValue() ); 
+            StyleConstants.setForeground(s, bUseUCS?(ctemp):(Color.GREEN));
+            //StyleConstants.setForeground(s, Color.GREEN);
             
             
             s = textPane.addStyle("white", bl);
-            StyleConstants.setForeground(s, Color.WHITE);
+            // bsv 2004-12-21
+            ctemp = new Color( (new Integer( Prefs.getPref(PrefName.UCS_WHITE))).intValue() ); 
+            StyleConstants.setForeground(s, bUseUCS?(ctemp):(Color.WHITE));
+            //StyleConstants.setForeground(s, Color.WHITE);
+
+            // bsv 2004-12-21
+            s = textPane.addStyle("navy", bl);
+            ctemp = new Color( (new Integer( Prefs.getPref(PrefName.UCS_NAVY))).intValue() ); 
+            StyleConstants.setForeground(s, bUseUCS?(ctemp):(new Color(0,0,102)));
+            s = textPane.addStyle("purple", bl);
+            ctemp = new Color( (new Integer( Prefs.getPref(PrefName.UCS_PURPLE))).intValue() ); 
+            StyleConstants.setForeground(s, bUseUCS?(ctemp):(new Color(102,0,102)));
+            s = textPane.addStyle("brick", bl);
+            ctemp = new Color( (new Integer( Prefs.getPref(PrefName.UCS_BRICK))).intValue() ); 
+            StyleConstants.setForeground(s, bUseUCS?(ctemp):(new Color(102,0,0)));
+            // (bsv 2004-12-21)
             
             s = textPane.addStyle("sm", bl );
             StyleConstants.setBold(s,false);
@@ -674,7 +701,6 @@ public class CalendarView extends View implements Prefs.Listener {
                     // set the day color based on if the day is today, or if any of the
                     // appts for the day are holidays, vacation days, half-days, or weekends
                     // bsv 2004-12-21
-                    // TODO get "use user color settings" property
                     boolean bUseUCS = ((Prefs.getPref(PrefName.UCS_ON)).equals("true"))?true:false;
                     if( bUseUCS==false ){
 	                    if( today == daynumber ) {

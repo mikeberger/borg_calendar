@@ -41,6 +41,8 @@ import net.sf.borg.common.util.Prefs;
 import net.sf.borg.common.util.Resource;
 import net.sf.borg.common.util.Version;
 
+// bsv 2004-12-21
+import java.awt.Color;
 
 /**
  *
@@ -60,15 +62,28 @@ public class Day
         
         private static int colornum( String color )
         {
-            if( color.equals("red"))
-                return(1);
-            if( color.equals("blue"))
-                return(2);
-            if( color.equals("green"))
-                return(3);
-            if( color.equals("white"))
-                return(5);
-            return(4);
+        	// bsv 2004-12-21
+            if( color.equals("red"))  	return(1);
+            if( color.equals("blue")) 	return(2);
+            if( color.equals("green"))	return(3);
+            if( color.equals("black"))	return(4);
+            if( color.equals("white"))	return(5);
+            if( color.equals("brick"))	return(6);
+            if( color.equals("navy"))	return(7);
+            if( color.equals("purple"))	return(8);
+            return(9);
+//            //oldcode
+//            if( color.equals("red"))
+//                return(1);
+//            if( color.equals("blue"))
+//                return(2);
+//            if( color.equals("green"))
+//                return(3);
+//            if( color.equals("white"))
+//                return(5);
+//            return(4);
+//            //(oldcode)
+            //(bsv 2004-12-21)
         }
         
         public int compare(java.lang.Object obj, java.lang.Object obj1)
@@ -294,7 +309,12 @@ public class Day
             // so, holidays only exist in the dayinfo objects, which are
             // temporary. they do not get added to the DB or even the appt map_
             Appointment hol = new Appointment();
-            hol.setColor("black");
+            
+            // bsv 2004-12-21
+            hol.setColor("purple");
+            //hol.setColor("black");
+            
+            
             hol.setText(null);
             if( month == 9 && day == 31 )
             {
@@ -366,7 +386,13 @@ public class Day
         {
             
             Appointment hol = new Appointment();
-            hol.setColor("black");
+
+            
+            // bsv 2004-12-21
+            hol.setColor("purple");
+            //hol.setColor("black");
+            
+            
             hol.setText(null);
             if( month == 0 && day == 1 )
             {
@@ -438,7 +464,11 @@ public class Day
                 
                 Appointment info = new Appointment();
                 String color = info.getColor();
-                if( color == null ) info.setColor("black");
+
+                // bsv 2004-12-21
+                if( color == null ) info.setColor("navy");
+                //if( color == null ) info.setColor("black");
+
                 info.setText(tx);
                 ret.addAppt(info);
             }
@@ -457,7 +487,10 @@ public class Day
         
                 Appointment info = new Appointment();
                 String color = info.getColor();
-                if( color == null ) info.setColor("black");
+
+                // bsv 2004-12-21
+                if( color == null ) info.setColor("brick");
+                //if( color == null ) info.setColor("black");
                 
                 Date bd = addr.getBirthday();
                 GregorianCalendar g = new GregorianCalendar();
