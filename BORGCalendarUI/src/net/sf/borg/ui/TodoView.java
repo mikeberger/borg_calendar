@@ -21,6 +21,7 @@ Copyright 2003 by ==Quiet==
 
 package net.sf.borg.ui;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -31,6 +32,7 @@ import java.util.GregorianCalendar;
 import java.util.ResourceBundle;
 import java.util.Vector;
 
+import javax.swing.ButtonGroup;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
@@ -40,6 +42,7 @@ import net.sf.borg.common.ui.TablePrinter;
 import net.sf.borg.common.ui.TableSorter;
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
+import net.sf.borg.common.util.Prefs;
 import net.sf.borg.common.util.Resource;
 import net.sf.borg.common.util.Version;
 import net.sf.borg.common.util.Warning;
@@ -53,7 +56,8 @@ import javax.swing.ImageIcon;
 // bsv 2004-12-21
 import de.wannawork.jcalendar.*;
 import java.text.*;
-
+import javax.swing.JToggleButton;
+import java.awt.*;
 
 /*
  * tdgui.java
@@ -231,6 +235,13 @@ public class TodoView extends View {
         jMenuItem2 = new javax.swing.JMenuItem();
         printList = new javax.swing.JMenuItem();
         exitMenuItem = new javax.swing.JMenuItem();
+        
+        // bsv 2004-12-21
+        jtbRed = new JToggleButton("red",false);
+        jtbBlue = new JToggleButton("blue",false);
+        jtbGreen = new JToggleButton("green",false);
+        jtbBlack = new JToggleButton("black",true);
+        jtbWhite = new JToggleButton("white",false);
 
         //getContentPane().setLayout(new java.awt.GridBagLayout());
 
@@ -262,7 +273,9 @@ public class TodoView extends View {
 
         jPanel1.setLayout(new java.awt.GridBagLayout());
 
-        jPanel1.setMinimumSize(new java.awt.Dimension(550, 102));
+        // bsv 2004-12-21
+        jPanel1.setMinimumSize(new java.awt.Dimension(550, 112));
+        //jPanel1.setMinimumSize(new java.awt.Dimension(550, 102));
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null,
                 java.util.ResourceBundle.getBundle("resource/borg_resource").getString("todoquickentry"), 
@@ -347,32 +360,80 @@ public class TodoView extends View {
         gridBagConstraints9.weightx = 0.0D;
         gridBagConstraints9.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints9.insets = new java.awt.Insets(0,4,4,4);
+
+        // bsv 2004-12-21
         gridBagConstraints11.gridx = 0;
         gridBagConstraints11.gridy = 3;
-        gridBagConstraints11.insets = new java.awt.Insets(4,4,4,4);
-        gridBagConstraints11.gridwidth = 3;
+        gridBagConstraints11.insets = new java.awt.Insets(0,0,0,0);
+        gridBagConstraints11.gridwidth = 1;
+        gridBagConstraints11.weightx = 1.0D;
+        //gridBagConstraints11.gridx = 0;
+        //gridBagConstraints11.gridy = 3;
+        //gridBagConstraints11.insets = new java.awt.Insets(4,4,4,4);
+        //gridBagConstraints11.gridwidth = 3;
+        
         gridBagConstraints12.gridx = 1;
         gridBagConstraints12.gridy = 1;
         gridBagConstraints12.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints12.weightx = 1.0D;
-        gridBagConstraints12.insets = new java.awt.Insets(4,4,0,0);
+        gridBagConstraints12.insets = new java.awt.Insets(0,4,0,0);
         gridBagConstraints13.gridx = 0;
         gridBagConstraints13.gridy = 1;
-        gridBagConstraints13.insets = new java.awt.Insets(4,4,0,0);
+        gridBagConstraints13.insets = new java.awt.Insets(0,4,0,0);
         gridBagConstraints13.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints13.weightx = 1.0D;
         gridBagConstraints14.gridx = 0;
         gridBagConstraints14.gridy = 2;
-        gridBagConstraints14.weightx = 0.0D;
+        
+        // bsv 2004-12-22
+        gridBagConstraints14.weightx = 10.0D;
+        //gridBagConstraints14.weightx = 0.0D;
+        
         gridBagConstraints14.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints14.insets = new java.awt.Insets(0,4,4,4);
         jPanel1.add(addtodo, gridBagConstraints8);
         
         // bsv 2004-12-21
-        jPanel1.add(tododate_cb, gridBagConstraints9);
-        //jPanel1.add(tododate, gridBagConstraints9);
+        // TODO set jtb size, set tuned colors
+        Color ctemp;
+        ctemp = new Color( (new Integer( Prefs.getPref(PrefName.UCS_RED))).intValue() );
+        jtbRed.setBackground( Color.LIGHT_GRAY );
+        jtbRed.setForeground( ctemp );
+        ctemp = new Color( (new Integer( Prefs.getPref(PrefName.UCS_BLUE))).intValue() );
+        jtbBlue.setBackground( Color.LIGHT_GRAY );
+        jtbBlue.setForeground( ctemp );
+        ctemp = new Color( (new Integer( Prefs.getPref(PrefName.UCS_GREEN))).intValue() );
+        jtbGreen.setBackground( Color.LIGHT_GRAY );
+        jtbGreen.setForeground( ctemp );
+        ctemp = new Color( (new Integer( Prefs.getPref(PrefName.UCS_BLACK))).intValue() );
+        jtbBlack.setBackground( Color.LIGHT_GRAY );
+        jtbBlack.setForeground( ctemp );
+        ctemp = new Color( (new Integer( Prefs.getPref(PrefName.UCS_WHITE))).intValue() );
+        jtbWhite.setBackground( Color.LIGHT_GRAY );
+        jtbWhite.setForeground( ctemp );
+        jtbRed.setMargin( new Insets(0,2,0,2));
+        jtbBlue.setMargin( new Insets(0,2,0,2));
+        jtbGreen.setMargin( new Insets(0,2,0,2));
+        jtbBlack.setMargin( new Insets(0,2,0,2));
+        jtbWhite.setMargin( new Insets(0,2,0,2));
+        ButtonGroup mutator = new ButtonGroup();
+        mutator.add( jtbRed );
+        mutator.add( jtbBlue );
+        mutator.add( jtbGreen );
+        mutator.add( jtbBlack );
+        mutator.add( jtbWhite );
+        JPanel bjp = new JPanel();
+        //bjp.setLayout( new FlowLayout());
+        bjp.setLayout( new GridLayout(1,5));
+        bjp.add( jtbRed );
+        bjp.add( jtbBlue );
+        bjp.add( jtbGreen );
+        bjp.add( jtbBlack );
+        bjp.add( jtbWhite );
         
-        jPanel1.add(jLabel3, gridBagConstraints11);
+        
+        jPanel1.add(tododate_cb, gridBagConstraints9);
+        jPanel1.add(bjp, gridBagConstraints11);
         jPanel1.add(jLabel2, gridBagConstraints12);
         jPanel1.add(jLabel1, gridBagConstraints13);
         jPanel1.add(todotext, gridBagConstraints14);
@@ -436,7 +497,15 @@ public class TodoView extends View {
         r.setText( tdtext );
         r.setTodo(true);
         r.setPrivate( false );
-        r.setColor( "black");
+        
+        // bsv 2004-12-21
+        if( jtbRed.isSelected() ) r.setColor( "red");
+        else if( jtbBlue.isSelected() ) r.setColor( "blue");
+        else if( jtbGreen.isSelected() ) r.setColor( "green");
+        else if( jtbWhite.isSelected() ) r.setColor( "white");
+        else r.setColor( "black");
+        //r.setColor( "black");
+        
         r.setFrequency( "once" );
         r.setTimes(new Integer(1));
         r.setRepeatFlag(false);
@@ -530,6 +599,11 @@ public class TodoView extends View {
     
     // bsv 2004-12-21
     private JCalendarComboBox tododate_cb;
+    private JToggleButton jtbRed;
+    private JToggleButton jtbBlue;
+    private JToggleButton jtbGreen;
+    private JToggleButton jtbBlack;
+    private JToggleButton jtbWhite;
     
     // End of variables declaration//GEN-END:variables
     
