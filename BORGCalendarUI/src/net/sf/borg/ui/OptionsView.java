@@ -1160,6 +1160,7 @@ public class OptionsView extends View
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
        
         Font f = NwFontChooserS.showDialog(null, null,null);
+        if( f == null) return;
         String fs = NwFontChooserS.fontString(f);
         Prefs.putPref(PrefName.DEFFONT, fs );
         NwFontChooserS.setDefaultFont(f);
@@ -1264,6 +1265,7 @@ public class OptionsView extends View
     private void incfontActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_incfontActionPerformed
         
         Font f = NwFontChooserS.showDialog(null, null, null);
+        if( f == null) return;
         String s = NwFontChooserS.fontString(f);
   
         Prefs.putPref( PrefName.PREVIEWFONT, s );
@@ -1286,6 +1288,7 @@ public class OptionsView extends View
     private void decfontActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_decfontActionPerformed
        
         Font f = NwFontChooserS.showDialog(null, null, null);
+        if( f == null) return;
         String s = NwFontChooserS.fontString(f);
   
         Prefs.putPref(PrefName.APPTFONT, s );

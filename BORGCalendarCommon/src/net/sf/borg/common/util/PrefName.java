@@ -69,7 +69,7 @@ public class PrefName {
 		
 		// what to show
 		static public PrefName SHOWPUBLIC = new PrefName( "showpublic", "true");
-		static public PrefName SHOWPRIVATE = new PrefName( "shpwprivate", "false");
+		static public PrefName SHOWPRIVATE = new PrefName( "showprivate", "false");
 		static public PrefName SHOWUSHOLIDAYS = new PrefName( "show_us_holidays", "true");
 		static public PrefName SHOWCANHOLIDAYS = new PrefName( "show_can_holidays", "false");
 		static public PrefName COLORSORT = new PrefName( "color_sort", "false");
@@ -92,7 +92,7 @@ public class PrefName {
 		static public PrefName EMAILDEBUG = new PrefName( "email_debug", "0");
 		
 		// font-LNF-locale
-		static public PrefName DEFFONT = new PrefName( "default_font", "");
+		static public PrefName DEFFONT = new PrefName( "defaultfont", "");
 		static public PrefName APPTFONT = new PrefName( "apptfont", "SansSerif-10");
 		static public PrefName APPTFONTSIZE = new PrefName( "apptfontsize", new Integer(10));
 		static public PrefName PREVIEWFONT = new PrefName( "previewfont", "SansSerif-10");
