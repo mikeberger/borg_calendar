@@ -561,8 +561,8 @@ public class OptionsView extends View
         applyButton = new javax.swing.JButton();
         
         // bsv 2004-12-20
-        cb_ucs_on = new javax.swing.JCheckBox("use user color settings");
-        cb_ucs_ontodo = new javax.swing.JCheckBox("use colored todolist");
+        cb_ucs_on = new javax.swing.JCheckBox("use user colors in month view");
+        cb_ucs_ontodo = new javax.swing.JCheckBox("use user colors in todo list");
         btn_ucs_red = new JButtonKnowsBgColor( "red", Color.WHITE, false );
         btn_ucs_blue = new JButtonKnowsBgColor( "blue", Color.WHITE, false );
         btn_ucs_green = new JButtonKnowsBgColor( "green", Color.WHITE, false );
