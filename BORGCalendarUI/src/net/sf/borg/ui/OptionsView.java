@@ -58,6 +58,8 @@ import net.sf.borg.common.util.Resource;
 import net.sf.borg.common.util.Version;
 import net.sf.borg.model.AppointmentModel;
 import java.awt.FlowLayout;
+import javax.swing.JLabel;
+import javax.swing.JComboBox;
 // propgui displays the edit preferences window
 public class OptionsView extends View
 {
@@ -113,7 +115,17 @@ public class OptionsView extends View
         
         // set the various screen items based on the existing user preferences
         
+    	String ls = Prefs.getPref(PrefName.LINESPACING);
+    	
+    	lsbox.addItem("-0.5");
+    	lsbox.addItem("-0.3");
+    	lsbox.addItem("-0.15");
+    	lsbox.addItem("0.0");
+    	lsbox.addItem("0.5");
+    	lsbox.addItem("1.0");
         
+    	lsbox.setSelectedItem(ls);
+    	
         //
         // database
         //
@@ -482,6 +494,7 @@ public class OptionsView extends View
         
 
         dbTypeGroup = new javax.swing.ButtonGroup();
+        lslabel = new JLabel();
         GridBagConstraints gridBagConstraints111 = new GridBagConstraints();
         GridBagConstraints gridBagConstraints110 = new GridBagConstraints();
         jTabbedPane1 = new javax.swing.JTabbedPane();
@@ -791,18 +804,14 @@ public class OptionsView extends View
         jLabel8.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("locale"));
         GridBagConstraints gridBagConstraints15 = new java.awt.GridBagConstraints();
         gridBagConstraints15.gridx = 0;
-        gridBagConstraints15.gridy = 9;
+        gridBagConstraints15.gridy = 10;
         gridBagConstraints15.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints15.insets = new java.awt.Insets(4, 4, 4, 4);
-        jPanel2.add(jLabel8, gridBagConstraints15);
-
         GridBagConstraints gridBagConstraints16 = new java.awt.GridBagConstraints();
         gridBagConstraints16.gridx = 1;
-        gridBagConstraints16.gridy = 9;
+        gridBagConstraints16.gridy = 10;
         gridBagConstraints16.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints16.insets = new java.awt.Insets(4, 4, 4, 4);
-        jPanel2.add(localebox, gridBagConstraints16);
-
         jButton1.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("set_def_font"));
         jButton1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -1302,19 +1311,14 @@ public class OptionsView extends View
  
         
         JPanel njp = new JPanel();
+        GridBagConstraints gridBagConstraints112 = new GridBagConstraints();
+        GridBagConstraints gridBagConstraints211 = new GridBagConstraints();
         GridBagConstraints gridBagConstraints310 = new GridBagConstraints();
         njp.setLayout( new BorderLayout() );
         jPanel7.setLayout(new FlowLayout());
         njp.add( cb_ucs_marktodo, BorderLayout.WEST );
         njp.add( tf_ucs_marker, BorderLayout.CENTER );
         getJPanelUCS().add( njp );
-//        getJPanelUCS().add( cb_ucs_marktodo );
-//        JPanel njp = new JPanel();
-//        njp.setLayout( new BorderLayout() );
-//        njp.add( new JLabel("marker text: "), BorderLayout.WEST );
-//        njp.add( tf_ucs_marker, BorderLayout.CENTER );
-//        getJPanelUCS().add( njp );
-        // (added by bsv 2004-12-20)
         
         this.setContentPane(getJPanel());
         gridBagConstraints110.gridx = 1;
@@ -1330,11 +1334,26 @@ public class OptionsView extends View
         gridBagConstraints310.ipady = 0;
         gridBagConstraints310.insets = new java.awt.Insets(0,0,0,0);
         gridBagConstraints310.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints112.gridx = 0;
+        gridBagConstraints112.gridy = 9;
+        lslabel.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("line_spacing"));
+        gridBagConstraints112.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints112.insets = new java.awt.Insets(4,4,4,4);
+        gridBagConstraints211.insets = new java.awt.Insets(4,4,4,4);
+        jPanel2.add(lslabel, gridBagConstraints112);
+        
+        gridBagConstraints211.gridx = 1;
+        gridBagConstraints211.gridy = 9;
+        gridBagConstraints211.weightx = 1.0;
+        gridBagConstraints211.fill = java.awt.GridBagConstraints.BOTH;
+        jPanel2.add(getLsbox(), gridBagConstraints211);
         jPanel7.add(sharedbox, null);
         jPanel3.add(revDayEditbox, gridBagConstraints51);
         jTabbedPane1.addTab("User Color Scheme", null, getJPanelUCS(), null);
         jPanel3.add(getExputcbox(), gridBagConstraints111);
         jPanel3.add(getPalmcb(), gridBagConstraints310);
+        jPanel2.add(jLabel8, gridBagConstraints15);
+        jPanel2.add(localebox, gridBagConstraints16);
         jPanel2.add(getDoyBox(), gridBagConstraints110);
         pack();
     }//GEN-END:initComponents
@@ -1596,6 +1615,9 @@ public class OptionsView extends View
                 return;
             }
         }
+        
+        String ls = (String) lsbox.getSelectedItem();
+        Prefs.putPref(PrefName.LINESPACING,ls);
         
         Prefs.notifyListeners();
         
@@ -1915,6 +1937,8 @@ public class OptionsView extends View
 	private JCheckBox exputcbox = null;
 	private JPanel jPanelUCS = null;
 	private JCheckBox palmcb = null;
+	private JLabel lslabel = null;
+	private JComboBox lsbox = null;
 	/**
 	 * This method initializes jPanel	
 	 * 	
@@ -2023,4 +2047,15 @@ public class OptionsView extends View
 		}
 		return palmcb;
 	}
-      }
+	/**
+	 * This method initializes lsbox	
+	 * 	
+	 * @return javax.swing.JComboBox	
+	 */    
+	private JComboBox getLsbox() {
+		if (lsbox == null) {
+			lsbox = new JComboBox();
+		}
+		return lsbox;
+	}
+       }

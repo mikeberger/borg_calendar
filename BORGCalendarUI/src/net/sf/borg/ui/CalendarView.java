@@ -461,9 +461,11 @@ public class CalendarView extends View implements Prefs.Listener {
         StyleConstants.setBold(bl, bold);
         StyleConstants.setItalic( bl, italic);
         StyleConstants.setFontSize(bl, fontsize);
+        String ls = Prefs.getPref(PrefName.LINESPACING);
+        float f = Float.parseFloat(ls);
+        StyleConstants.setLineSpacing(bl,f);
         
         // bsv 2004-12-21
-        // TODO get colors from options set
         boolean bUseUCS = ((Prefs.getPref(PrefName.UCS_ON)).equals("true"))?true:false;
         Color ctemp;
         try {
@@ -709,7 +711,7 @@ public class CalendarView extends View implements Prefs.Listener {
                     Day di = Day.getDay( year_, month_, daynumber, showpub,showpriv,true);
                     Collection appts = di.getAppts();
                     
-                    
+                    daytext[i].setParagraphAttributes(daytext[i].getStyle("black"),true);
                     if( appts != null ) {
                         Iterator it = appts.iterator();
                         
@@ -754,6 +756,7 @@ public class CalendarView extends View implements Prefs.Listener {
                         }
                     }
                     
+ 
                     // reset the text pane to show the top left of the appt text if the text
                     // scrolls up or right
                     daytext[i].setCaretPosition(0);

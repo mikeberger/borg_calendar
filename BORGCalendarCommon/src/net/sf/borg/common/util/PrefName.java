@@ -93,6 +93,7 @@ public class PrefName {
 		static public PrefName WKENDHOUR = new PrefName( "wkEndHour", "22");
 		static public PrefName DEFAULT_APPT = new PrefName("defaultAppt", "" );
 		static public PrefName DAYOFYEAR = new PrefName("showDayOfYear", "false");
+		static public PrefName LINESPACING = new PrefName("line_spacing", "0.0");
 		
 		// reminders/popups
 		static public PrefName REMINDERS = new PrefName( "reminders", "true");
