@@ -66,6 +66,7 @@ public class PrefName {
 		static public PrefName VERCHKLAST = new PrefName( "ver_chk_last", new Integer(-1));
 		static public PrefName SHARED = new PrefName( "shared", "false");
 		static public PrefName ICALTODOEV = new PrefName( "ical_todo_ev", "false");
+		static public PrefName ICALUTC = new PrefName( "icalutc", "true");
 		static public PrefName LASTEXPURL = new PrefName( "lastExpUrl", "");
 		static public PrefName LASTIMPURL = new PrefName( "lastImpUrl", "");
 		static public PrefName LASTIMPURLDAT = new PrefName( "lastImpUrlDat", "");

@@ -65,7 +65,11 @@ public class AppointmentIcalAdapter {
 			showpriv = true;
 		boolean todo_as_ev = false;
 		if( Prefs.getPref(PrefName.ICALTODOEV ).equals("true") )
-			todo_as_ev = true;		
+			todo_as_ev = true;	
+		boolean utc = true;
+		if( Prefs.getPref(PrefName.ICALUTC).equals("false") )
+			utc = false;
+
 		Iterator it = AppointmentModel.getReference().getAllAppts().iterator();
 		while( it.hasNext() )
 		{
@@ -131,7 +135,11 @@ public class AppointmentIcalAdapter {
 			}
 			else
 			{
-				DtStart dts = new DtStart(ap.getDate());
+			    DtStart dts = new DtStart(ap.getDate());
+				if( utc )
+			    {
+				    dts.setUtc(true);
+			    }
 				ve.getProperties().add(dts);
 			}
 			
