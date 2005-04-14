@@ -50,6 +50,8 @@ public class AppointmentXMLAdapter extends BeanXMLAdapter {
 			xt.appendChild("Deleted" ,  BeanXMLAdapter.toString(o.getDeleted()));
 		if( o.getAlarm() != null && !o.getAlarm().equals(""))
 			xt.appendChild("Alarm", o.getAlarm());
+		if( o.getReminderTimes() != null && !o.getReminderTimes().equals(""))
+			xt.appendChild("ReminderTimes", o.getReminderTimes());
 		return( xt );
 	}
 
@@ -102,6 +104,9 @@ public class AppointmentXMLAdapter extends BeanXMLAdapter {
 		val = xt.child("Alarm").value();
 		if( !val.equals("") )
 			ret.setAlarm( val );
+		val = xt.child("ReminderTimes").value();
+		if( !val.equals("") )
+			ret.setReminderTimes( val );
 		return( ret );
 	}
 }

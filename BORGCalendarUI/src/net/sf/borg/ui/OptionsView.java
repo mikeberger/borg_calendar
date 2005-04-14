@@ -23,6 +23,7 @@ package net.sf.borg.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -40,7 +41,9 @@ import java.util.TreeSet;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -57,9 +60,6 @@ import net.sf.borg.common.util.Prefs;
 import net.sf.borg.common.util.Resource;
 import net.sf.borg.common.util.Version;
 import net.sf.borg.model.AppointmentModel;
-import java.awt.FlowLayout;
-import javax.swing.JLabel;
-import javax.swing.JComboBox;
 // propgui displays the edit preferences window
 public class OptionsView extends View
 {
@@ -379,18 +379,7 @@ public class OptionsView extends View
         
         int mins = Prefs.getIntPref(PrefName.REMINDERCHECKMINS);
         checkfreq.setValue(new Integer(mins));
-        
-        mins = Prefs.getIntPref(PrefName.POPBEFOREMINS);
-        popminbefore.setValue(new Integer(mins));
-        
-        mins = Prefs.getIntPref(PrefName.POPAFTERMINS );
-        popminafter.setValue(new Integer(mins));
-               
-        mins = Prefs.getIntPref(PrefName.BEEPINGMINS);
-        beepmins.setValue(new Integer(mins));
-         
 
-        
         bg = Prefs.getPref(PrefName.PALM_SYNC);
         if( bg.equals("true"))
         {
@@ -399,6 +388,15 @@ public class OptionsView extends View
         else
         {
             palmcb.setSelected(false);           
+        }
+        bg = Prefs.getPref(PrefName.USESYSTEMBEEP);
+        if( bg.equals("true"))
+        {
+            useBeep.setSelected(true);
+        }
+        else
+        {
+            useBeep.setSelected(false);           
         }
         
         bg = Prefs.getPref(PrefName.SHARED);
@@ -494,7 +492,10 @@ public class OptionsView extends View
         
 
         dbTypeGroup = new javax.swing.ButtonGroup();
-        lslabel = new JLabel();
+         lslabel = new JLabel();
+         lslabel.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("line_spacing"));
+        GridBagConstraints gridBagConstraints112 = new GridBagConstraints();
+        GridBagConstraints gridBagConstraints113 = new GridBagConstraints();
         GridBagConstraints gridBagConstraints111 = new GridBagConstraints();
         GridBagConstraints gridBagConstraints110 = new GridBagConstraints();
         jTabbedPane1 = new javax.swing.JTabbedPane();
@@ -559,14 +560,11 @@ public class OptionsView extends View
         jPanel6 = new javax.swing.JPanel();
         popenablebox = new javax.swing.JCheckBox();
         jLabel9 = new javax.swing.JLabel();
-        popminbefore = new javax.swing.JSpinner();
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
-        popminafter = new javax.swing.JSpinner();
         jLabel12 = new javax.swing.JLabel();
         soundbox = new javax.swing.JCheckBox();
         jLabel13 = new javax.swing.JLabel();
-        beepmins = new javax.swing.JSpinner();
         jLabel14 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
         checkfreq = new javax.swing.JSpinner();
@@ -1164,54 +1162,6 @@ public class OptionsView extends View
         gridBagConstraints52.insets = new java.awt.Insets(0, 8, 0, 0);
         jPanel6.add(popenablebox, gridBagConstraints52);
 
-        jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-        jLabel9.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("pop_app"));
-        GridBagConstraints gridBagConstraints53 = new java.awt.GridBagConstraints();
-        gridBagConstraints53.gridx = 0;
-        gridBagConstraints53.gridy = 2;
-        gridBagConstraints53.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints53.insets = new java.awt.Insets(0, 0, 0, 8);
-        jPanel6.add(jLabel9, gridBagConstraints53);
-
-        GridBagConstraints gridBagConstraints54 = new java.awt.GridBagConstraints();
-        gridBagConstraints54.gridx = 1;
-        gridBagConstraints54.gridy = 2;
-        gridBagConstraints54.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints54.weightx = 1.0;
-        jPanel6.add(popminbefore, gridBagConstraints54);
-
-        jLabel10.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("min_bef_app"));
-        GridBagConstraints gridBagConstraints55 = new java.awt.GridBagConstraints();
-        gridBagConstraints55.gridx = 2;
-        gridBagConstraints55.gridy = 2;
-        gridBagConstraints55.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints55.insets = new java.awt.Insets(0, 8, 0, 8);
-        jPanel6.add(jLabel10, gridBagConstraints55);
-
-        jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-        jLabel11.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("pop_app"));
-        GridBagConstraints gridBagConstraints56 = new java.awt.GridBagConstraints();
-        gridBagConstraints56.gridx = 0;
-        gridBagConstraints56.gridy = 3;
-        gridBagConstraints56.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints56.insets = new java.awt.Insets(0, 0, 0, 8);
-        jPanel6.add(jLabel11, gridBagConstraints56);
-
-        GridBagConstraints gridBagConstraints57 = new java.awt.GridBagConstraints();
-        gridBagConstraints57.gridx = 1;
-        gridBagConstraints57.gridy = 3;
-        gridBagConstraints57.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints57.weightx = 1.0;
-        jPanel6.add(popminafter, gridBagConstraints57);
-
-        jLabel12.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("min_aft_app"));
-        GridBagConstraints gridBagConstraints58 = new java.awt.GridBagConstraints();
-        gridBagConstraints58.gridx = 2;
-        gridBagConstraints58.gridy = 3;
-        gridBagConstraints58.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints58.insets = new java.awt.Insets(0, 8, 0, 8);
-        jPanel6.add(jLabel12, gridBagConstraints58);
-
         soundbox.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("beeps"));
         GridBagConstraints gridBagConstraints59 = new java.awt.GridBagConstraints();
         gridBagConstraints59.gridx = 0;
@@ -1219,30 +1169,6 @@ public class OptionsView extends View
         gridBagConstraints59.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints59.insets = new java.awt.Insets(0, 8, 0, 0);
         jPanel6.add(soundbox, gridBagConstraints59);
-
-        jLabel13.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-        jLabel13.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("beepingstarts"));
-        GridBagConstraints gridBagConstraints60 = new java.awt.GridBagConstraints();
-        gridBagConstraints60.gridx = 0;
-        gridBagConstraints60.gridy = 6;
-        gridBagConstraints60.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints60.insets = new java.awt.Insets(0, 0, 0, 8);
-        jPanel6.add(jLabel13, gridBagConstraints60);
-
-        GridBagConstraints gridBagConstraints61 = new java.awt.GridBagConstraints();
-        gridBagConstraints61.gridx = 1;
-        gridBagConstraints61.gridy = 6;
-        gridBagConstraints61.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints61.weightx = 1.0;
-        jPanel6.add(beepmins, gridBagConstraints61);
-
-        jLabel14.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("min_bef_app"));
-        GridBagConstraints gridBagConstraints62 = new java.awt.GridBagConstraints();
-        gridBagConstraints62.gridx = 2;
-        gridBagConstraints62.gridy = 6;
-        gridBagConstraints62.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints62.insets = new java.awt.Insets(0, 8, 0, 8);
-        jPanel6.add(jLabel14, gridBagConstraints62);
 
         jLabel15.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
         jLabel15.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("min_between_chks"));
@@ -1311,8 +1237,8 @@ public class OptionsView extends View
  
         
         JPanel njp = new JPanel();
-        GridBagConstraints gridBagConstraints112 = new GridBagConstraints();
-        GridBagConstraints gridBagConstraints211 = new GridBagConstraints();
+        GridBagConstraints gridBagConstraints44 = new GridBagConstraints();
+        GridBagConstraints gridBagConstraints114 = new GridBagConstraints();
         GridBagConstraints gridBagConstraints310 = new GridBagConstraints();
         njp.setLayout( new BorderLayout() );
         jPanel7.setLayout(new FlowLayout());
@@ -1321,6 +1247,7 @@ public class OptionsView extends View
         getJPanelUCS().add( njp );
         
         this.setContentPane(getJPanel());
+        this.setSize(629, 493);
         gridBagConstraints110.gridx = 1;
         gridBagConstraints110.gridy = 7;
         gridBagConstraints110.fill = java.awt.GridBagConstraints.BOTH;
@@ -1334,29 +1261,39 @@ public class OptionsView extends View
         gridBagConstraints310.ipady = 0;
         gridBagConstraints310.insets = new java.awt.Insets(0,0,0,0);
         gridBagConstraints310.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints112.gridx = 0;
-        gridBagConstraints112.gridy = 9;
-        lslabel.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("line_spacing"));
-        gridBagConstraints112.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints112.insets = new java.awt.Insets(4,4,4,4);
-        gridBagConstraints211.insets = new java.awt.Insets(4,4,4,4);
-        jPanel2.add(lslabel, gridBagConstraints112);
-        
-        gridBagConstraints211.gridx = 1;
-        gridBagConstraints211.gridy = 9;
-        gridBagConstraints211.weightx = 1.0;
-        gridBagConstraints211.fill = java.awt.GridBagConstraints.BOTH;
-        jPanel2.add(getLsbox(), gridBagConstraints211);
+
+        gridBagConstraints112.gridx = 0;  
+        gridBagConstraints112.gridy = 9;  
+        gridBagConstraints112.anchor = java.awt.GridBagConstraints.WEST;  
+        gridBagConstraints112.insets = new java.awt.Insets(0, 8, 0, 0);
+
+        gridBagConstraints113.gridx = 0;  
+        gridBagConstraints113.gridy = 10;  
+        gridBagConstraints113.anchor = java.awt.GridBagConstraints.WEST;  
+        gridBagConstraints113.insets = new java.awt.Insets(0, 8, 0, 0);
+        gridBagConstraints114.gridx = 0;
+        gridBagConstraints114.gridy = 9;
+        gridBagConstraints114.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints114.insets = new java.awt.Insets(4,4,4,4);
+        gridBagConstraints44.gridx = 1;
+        gridBagConstraints44.gridy = 9;
+        gridBagConstraints44.weightx = 1.0;
+        gridBagConstraints44.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints44.insets = new java.awt.Insets(4,4,4,4);
         jPanel7.add(sharedbox, null);
         jPanel3.add(revDayEditbox, gridBagConstraints51);
         jTabbedPane1.addTab("User Color Scheme", null, getJPanelUCS(), null);
         jPanel3.add(getExputcbox(), gridBagConstraints111);
         jPanel3.add(getPalmcb(), gridBagConstraints310);
+        jPanel6.add(getUseBeep(), gridBagConstraints112);  
         jPanel2.add(jLabel8, gridBagConstraints15);
         jPanel2.add(localebox, gridBagConstraints16);
         jPanel2.add(getDoyBox(), gridBagConstraints110);
+        jPanel2.add(lslabel, gridBagConstraints114);
+        jPanel2.add(getLsbox(), gridBagConstraints44);
         pack();
     }//GEN-END:initComponents
+
 
     private void dbTypeAction(java.awt.event.ActionEvent evt)//GEN-FIRST:event_dbTypeAction
     {//GEN-HEADEREND:event_dbTypeAction
@@ -1408,24 +1345,9 @@ public class OptionsView extends View
             Prefs.putPref(PrefName.PALM_SYNC, "true" );
         else
             Prefs.putPref(PrefName.PALM_SYNC, "false" );
-        
-        Integer i = (Integer) beepmins.getValue();
-        int cur = Prefs.getIntPref(PrefName.BEEPINGMINS);
-        if( i.intValue() != cur )
-            Prefs.putPref(PrefName.BEEPINGMINS, i);
-        
-        i = (Integer) popminafter.getValue();
-        cur = Prefs.getIntPref(PrefName.POPAFTERMINS);
-        if( i.intValue() != cur )
-            Prefs.putPref(PrefName.POPAFTERMINS, i);
-        
-        i = (Integer) popminbefore.getValue();
-        cur = Prefs.getIntPref(PrefName.POPBEFOREMINS);
-        if( i.intValue() != cur )
-            Prefs.putPref(PrefName.POPBEFOREMINS, i);
-         
-        i = (Integer) checkfreq.getValue();
-        cur = Prefs.getIntPref(PrefName.REMINDERCHECKMINS);
+
+        Integer i = (Integer) checkfreq.getValue();
+        int cur = Prefs.getIntPref(PrefName.REMINDERCHECKMINS);
         if( i.intValue() != cur )
             Prefs.putPref(PrefName.REMINDERCHECKMINS, i);
         
@@ -1439,6 +1361,11 @@ public class OptionsView extends View
         else
             Prefs.putPref(PrefName.REMINDERS, "false" );
         
+        if( useBeep.isSelected() )
+            Prefs.putPref(PrefName.USESYSTEMBEEP, "true" );
+        else
+            Prefs.putPref(PrefName.USESYSTEMBEEP, "false" );
+
         if( splashbox.isSelected() )
             Prefs.putPref(PrefName.SPLASH, "true" );
         else
@@ -1829,7 +1756,6 @@ public class OptionsView extends View
     private javax.swing.JButton applyButton;
     private javax.swing.JCheckBox autoupdate;
     private javax.swing.JCheckBox backgbox;
-    private javax.swing.JSpinner beepmins;
     private javax.swing.JCheckBox canadabox;
     private javax.swing.JSpinner checkfreq;
     private javax.swing.JButton chgdb;
@@ -1937,6 +1863,7 @@ public class OptionsView extends View
 	private JCheckBox exputcbox = null;
 	private JPanel jPanelUCS = null;
 	private JCheckBox palmcb = null;
+	private JCheckBox useBeep = null;
 	private JLabel lslabel = null;
 	private JComboBox lsbox = null;
 	/**
@@ -2048,6 +1975,19 @@ public class OptionsView extends View
 		return palmcb;
 	}
 	/**
+	 * This method initializes useBeep	
+	 * 	
+	 * @return javax.swing.JCheckBox	
+	 */    
+	private JCheckBox getUseBeep() {
+		if (useBeep == null) {
+			useBeep = new JCheckBox();
+			useBeep.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Use_system_beep"));  
+		}
+		return useBeep;
+	}
+	
+	/**
 	 * This method initializes lsbox	
 	 * 	
 	 * @return javax.swing.JComboBox	
@@ -2058,4 +1998,4 @@ public class OptionsView extends View
 		}
 		return lsbox;
 	}
-       }
+ }  //  @jve:decl-index=0:visual-constraint="10,10"

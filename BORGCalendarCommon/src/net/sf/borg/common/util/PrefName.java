@@ -98,15 +98,16 @@ public class PrefName {
 		// reminders/popups
 		static public PrefName REMINDERS = new PrefName( "reminders", "true");
 		static public PrefName BEEPINGREMINDERS = new PrefName( "beeping_reminders", "true");
-		static public PrefName REMINDERCHECKMINS = new PrefName( "reminder_check_mins", new Integer(5));
-		static public PrefName POPBEFOREMINS = new PrefName( "pop_before_mins", new Integer(180));
-		static public PrefName POPAFTERMINS = new PrefName( "pop_after_mins", new Integer(30));
-		static public PrefName BEEPINGMINS = new PrefName( "beeping_mins", new Integer(15));
+		static public PrefName USESYSTEMBEEP = new PrefName( "system_beep", "true");
+		static public PrefName REMINDERCHECKMINS = new PrefName( "reminder_check_mins", new Integer(1));
 		static public PrefName EMAILENABLED = new PrefName( "email_enabled", "false");
 		static public PrefName EMAILSERVER = new PrefName( "email_server", "");
 		static public PrefName EMAILADDR = new PrefName( "email_addr", "");
 		static public PrefName EMAILLAST = new PrefName( "email_last", new Integer(0));
 		static public PrefName EMAILDEBUG = new PrefName( "email_debug", "0");
+
+		static public int[] REMMINUTES = new int[] { -10, -5, 0, 1, 2, 3, 4, 5, 10, 15, 20, 30, 45, 60, 90, 120, 180, 240, 300, 360};
+		
 		
 		// font-LNF-locale
 		static public PrefName DEFFONT = new PrefName( "defaultfont", "");
@@ -134,7 +135,7 @@ public class PrefName {
 		static public PrefName WEEKVIEWSIZE = new PrefName("weekviewsize","-1,-1,-1,-1,N");
 		static public PrefName HELPVIEWSIZE = new PrefName("helpviewsize","-1,-1,-1,-1,N");
 		
-		// bsv 2004-12-20
+		
 		// user color scheme
 		static public PrefName UCS_ON = new PrefName("ucs_on","false");
 		static public PrefName UCS_ONTODO = new PrefName("ucs_ontodo","false");

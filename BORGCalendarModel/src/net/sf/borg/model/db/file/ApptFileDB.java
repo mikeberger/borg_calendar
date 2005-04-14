@@ -114,7 +114,7 @@ class ApptFileDB extends FileDBCreator implements AppointmentKeyFilter
 		Schema oldsch = fdb.getSchema();
 		try
 		{
-			oldsch.getType("ALM");
+			oldsch.getType("REM");
 		}
 		catch( Exception e )
 		{

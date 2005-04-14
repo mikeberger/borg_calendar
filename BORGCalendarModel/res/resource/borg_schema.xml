@@ -119,5 +119,11 @@
 		<type>String</type>
 		<longName>Alarm</longName>
 		<desc>Alarm Flag to Control Palm Alarms</desc>	
-		</field> 
+	</field> 
+	<field>
+		<name>REM</name>
+		<type>String</type>
+		<longName>ReminderTimes</longName>
+		<desc>Which Reminders to Show</desc>	
+	</field> 
 </schema>
