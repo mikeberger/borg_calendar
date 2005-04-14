@@ -1,6 +1,7 @@
 Version 1.5
 -----------
 Palm Synchronization Conduits
+Improved Popup reminders with user tunable popup times per appointment
 Add date chooser to task GUI
 Share categories between appointments and tasks.
 Change to use category pull-down menu on task editor
