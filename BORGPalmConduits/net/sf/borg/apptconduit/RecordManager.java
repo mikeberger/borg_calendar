@@ -466,6 +466,13 @@ public class RecordManager {
             else if (freq.equals("yearly")) {
                 rec.setRepeatType(REPEAT_YEARLY_BY_DATE);
             }
+    		else if( freq.startsWith("ndays"))
+    		{
+                String n = freq.substring(6);
+                int incr = Integer.parseInt(n);
+                rec.setRepeatType(REPEAT_DAILY);
+                rec.setRepeatFrequency(incr);
+    		}
         }
 
         rec.setId(0);
