@@ -416,6 +416,17 @@ public class Borg extends Controller implements OptionsView.RestartListener {
             if (!autostart && splash)
                 ban_.dispose();
             ban_ = null;
+            
+            if (!AppHelper.isApplet())
+            {
+                timer_ = new java.util.Timer();
+                timer_.schedule(new TimerTask() {
+                    public void run() {
+                        reminder();
+                        version_chk();
+                    }
+                }, 10 * 1000, 20 * 60 * 1000);
+            }
 
         }
         catch (Exception e)
@@ -480,19 +491,11 @@ public class Borg extends Controller implements OptionsView.RestartListener {
             }
         }
 
-        if (!AppHelper.isApplet())
-        {
-            timer_ = new java.util.Timer();
-            timer_.schedule(new TimerTask() {
-                public void run() {
-                    reminder();
-                    version_chk();
-                }
-            }, 10 * 1000, 20 * 60 * 1000);
-        }
+
         
         // create popups view
         new PopupView();
+        
         // only start to systray (i.e. no month/todo views, if
         // trayicon is available and option is set
         String backgstart = Prefs.getPref(PrefName.BACKGSTART);
