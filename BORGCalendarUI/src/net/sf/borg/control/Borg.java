@@ -404,72 +404,14 @@ public class Borg extends Controller implements OptionsView.RestartListener {
             if (!autostart && splash)
                 ban_.setText(Resource.getResourceString("Opening_Main_Window"));
 
-            boolean trayIcon = true;
-            if (!AppHelper.isApplication())
-            {
-                trayIcon = false;
-            }
-            else
-            {
-                try
-                {
-                	JDICTrayIconProxy tip = JDICTrayIconProxy.getReference();
-                	tip.init(trayname);
-                }
-                catch (UnsatisfiedLinkError le)
-                {
-                	Errmsg.errmsg(new Exception(le));
-                    trayIcon = false;
-                }
-                catch (NoClassDefFoundError ncf)
-                {
-                	Errmsg.errmsg(new Exception(ncf));
-                    trayIcon = false;
-                }
-                catch (Exception e)
-                {
-                    Errmsg.errmsg(e);
-                    System.exit(0);
-                }
-            }
-
-            if (!AppHelper.isApplet())
-            {
-                timer_ = new java.util.Timer();
-                timer_.schedule(new TimerTask() {
-                    public void run() {
-                        reminder();
-                        version_chk();
-                    }
-                }, 10 * 1000, 20 * 60 * 1000);
-            }
-            
-            // create popups view
-            new PopupView();
-
-            // only start to systray (i.e. no month/todo views, if
-            // trayicon is available and option is set
-            String backgstart = Prefs.getPref(PrefName.BACKGSTART);
-            if (backgstart.equals("false") || !trayIcon)
-            {
-                //Schedule a job for the event-dispatching thread:
-                //creating and showing this application's GUI.
-                final boolean trayI = trayIcon;
-
+            	final String traynm = trayname;
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
-
-                        // start main month view
-                        CalendarView.getReference(trayI);
-
-                        // start todo view if there are todos
-                        if (AppointmentModel.getReference().haveTodos())
-                        {
-                            startTodoView();
-                        }
+                    	swingStart(traynm);
                     }
-                });
-            }
+                }
+                );
+         
 
             if (!autostart && splash)
                 ban_.dispose();
@@ -507,6 +449,67 @@ public class Borg extends Controller implements OptionsView.RestartListener {
 
     }
 
+    private void swingStart(String trayname)
+    {
+        boolean trayIcon = true;
+        if (!AppHelper.isApplication())
+        {
+            trayIcon = false;
+        }
+        else
+        {
+            try
+            {
+            	JDICTrayIconProxy tip = JDICTrayIconProxy.getReference();
+            	tip.init(trayname);
+            }
+            catch (UnsatisfiedLinkError le)
+            {
+            	Errmsg.errmsg(new Exception(le));
+                trayIcon = false;
+            }
+            catch (NoClassDefFoundError ncf)
+            {
+            	Errmsg.errmsg(new Exception(ncf));
+                trayIcon = false;
+            }
+            catch (Exception e)
+            {
+                Errmsg.errmsg(e);
+                System.exit(0);
+            }
+        }
+
+        if (!AppHelper.isApplet())
+        {
+            timer_ = new java.util.Timer();
+            timer_.schedule(new TimerTask() {
+                public void run() {
+                    reminder();
+                    version_chk();
+                }
+            }, 10 * 1000, 20 * 60 * 1000);
+        }
+        
+        // create popups view
+        new PopupView();
+        // only start to systray (i.e. no month/todo views, if
+        // trayicon is available and option is set
+        String backgstart = Prefs.getPref(PrefName.BACKGSTART);
+        if (backgstart.equals("false") || !trayIcon)
+        {
+        	// start main month view
+        	CalendarView.getReference(trayIcon);
+
+        	// start todo view if there are todos
+        	if (AppointmentModel.getReference().haveTodos())
+        	{
+        		startTodoView();
+        	}
+        }
+    }
+   
+ 
     // check if we should auto_start
     // this function checks if an appointment is coming close
     // it does not check if BORG is already running or if the user is not logged
