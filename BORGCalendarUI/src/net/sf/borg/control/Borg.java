@@ -35,7 +35,9 @@ import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.StringTokenizer;
 import java.util.TimerTask;
+import java.util.Vector;
 
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -804,11 +806,20 @@ public class Borg extends Controller implements OptionsView.RestartListener {
         // send the email using SMTP
         try
         {
-            String s = Sendmail.sendmail(host, 25, "Borg Reminder", tx, addr,
-                    addr);
-            String ed = Prefs.getPref(PrefName.EMAILDEBUG);
-            if (ed.equals("1"))
-                Errmsg.notice(s);
+            StringTokenizer stk = new StringTokenizer(addr,",;");
+            while (stk.hasMoreTokens())
+            {
+                String a = stk.nextToken();
+                if( !a.equals("") )
+                {
+                    String s = Sendmail.sendmail(host, 25, "Borg Reminder", tx, a.trim(),
+                            a.trim());
+                    String ed = Prefs.getPref(PrefName.EMAILDEBUG);
+                    if (ed.equals("1"))
+                        Errmsg.notice(s);
+                }
+            }
+
 
         }
         catch (Exception e)
