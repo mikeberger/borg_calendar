@@ -436,14 +436,27 @@ public class Borg extends Controller implements OptionsView.RestartListener {
             // it does not exist anymore or something, so give the user a chance
             // to change it
             // if it will fix the problem
+        	
+        	
             Errmsg.errmsg(e);
-            String err = e.toString();
-            err += Resource.getResourceString("db_set_to") + dbdir;
-            err += Resource.getResourceString("bad_db_2");
+
+            // get rid of NESTED exceptions for SQL exceptions - they make the error window too large
+            String es = e.toString();
+            int i1 = es.indexOf("** BEGIN NESTED");
+            int i2 = es.indexOf("** END NESTED");
+            
+            if( i1 != -1 && i2 != -1 )
+            {
+            	int i3 = es.indexOf('\n', i1);
+            	String newstring = es.substring(0,i3) + "\n-- removed --\n" + es.substring(i2);
+                es = newstring;
+            }
+            es += Resource.getResourceString("db_set_to") + dbdir;
+            es += Resource.getResourceString("bad_db_2");
 
             // prompt for ok
             int ret = JOptionPane
-                    .showConfirmDialog(null, err, Resource
+                    .showConfirmDialog(null, es, Resource
                             .getResourceString("BORG_Error"),
                             JOptionPane.YES_NO_OPTION);
             if (ret == JOptionPane.YES_OPTION)

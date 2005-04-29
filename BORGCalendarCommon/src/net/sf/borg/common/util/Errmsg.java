@@ -74,7 +74,20 @@ public class Errmsg
         
         }
         
-        int option = JOptionPane.showOptionDialog(null, e.toString(), Resource.getResourceString("Error"),
+        // get rid of NESTED exceptions for SQL exceptions - they make the error window too large
+        String es = e.toString();
+        int i1 = es.indexOf("** BEGIN NESTED");
+        int i2 = es.indexOf("** END NESTED");
+        
+        if( i1 != -1 && i2 != -1 )
+        {
+        	int i3 = es.indexOf('\n', i1);
+        	String newstring = es.substring(0,i3) + "\n-- removed --\n" + es.substring(i2);
+            es = newstring;
+        }
+        
+        
+        int option = JOptionPane.showOptionDialog(null, es, Resource.getResourceString("Error"),
         JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE,
         null, options, options[0]);
         
