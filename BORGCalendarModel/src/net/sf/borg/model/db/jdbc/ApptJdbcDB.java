@@ -60,8 +60,8 @@ class ApptJdbcDB extends JdbcDB implements AppointmentKeyFilter
     public void addObj(KeyedBean bean, boolean crypt) throws DBException, Exception
     {
         PreparedStatement stmt = connection_.prepareStatement( "INSERT INTO appointments ( appt_date, appt_num, userid, duration, text, skip_list," +
-        " next_todo, vacation, holiday, private, times, frequency, todo, color, repeat, category ) VALUES " +
-        "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        " next_todo, vacation, holiday, private, times, frequency, todo, color, repeat, category, new, modified, deleted, alarm, reminders ) VALUES " +
+        "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         
         Appointment appt = (Appointment) bean;
         
@@ -86,7 +86,12 @@ class ApptJdbcDB extends JdbcDB implements AppointmentKeyFilter
         stmt.setString( 14, appt.getColor());
         stmt.setInt( 15, toInt( appt.getRepeatFlag()) );
         stmt.setString( 16, appt.getCategory());
-        
+               
+        stmt.setInt( 17, toInt( appt.getNew()));
+        stmt.setInt( 18, toInt( appt.getModified()));
+        stmt.setInt( 19, toInt( appt.getDeleted()));
+        stmt.setString( 20, appt.getAlarm());
+        stmt.setString( 21, appt.getReminderTimes());
         stmt.executeUpdate();
         
         writeCache( appt );
@@ -195,6 +200,11 @@ class ApptJdbcDB extends JdbcDB implements AppointmentKeyFilter
 		appt.setColor( r.getString("color"));
 		appt.setRepeatFlag( r.getInt("repeat" ) != 0 );
 		appt.setCategory( r.getString("category"));
+		appt.setNew( r.getInt("new" ) != 0 );
+		appt.setModified( r.getInt("modified" ) != 0 );
+		appt.setDeleted( r.getInt("deleted" ) != 0 );
+		appt.setAlarm( r.getString("alarm"));
+		appt.setReminderTimes( r.getString("reminders"));
 		
 		return appt;
 	}
@@ -203,7 +213,8 @@ class ApptJdbcDB extends JdbcDB implements AppointmentKeyFilter
     {
         PreparedStatement stmt = connection_.prepareStatement( "UPDATE appointments SET  appt_date = ?, " +
         "duration = ?, text = ?, skip_list = ?," +
-        " next_todo = ?, vacation = ?, holiday = ?, private = ?, times = ?, frequency = ?, todo = ?, color = ?, repeat = ?, category = ?" +
+        " next_todo = ?, vacation = ?, holiday = ?, private = ?, times = ?, frequency = ?, todo = ?, color = ?, repeat = ?, category = ?," +
+		" new = ?, modified = ?, deleted = ?, alarm = ?, reminders = ?" +
         " WHERE appt_num = ? AND userid = ?");
         
         Appointment appt = (Appointment) bean;
@@ -228,8 +239,15 @@ class ApptJdbcDB extends JdbcDB implements AppointmentKeyFilter
         stmt.setInt( 13, toInt( appt.getRepeatFlag()) );
         stmt.setString( 14, appt.getCategory());
         
-        stmt.setInt( 15, appt.getKey() );
-        stmt.setInt( 16, userid_ );
+ 
+        stmt.setInt( 15, toInt( appt.getNew()));
+        stmt.setInt( 16, toInt( appt.getModified()));
+        stmt.setInt( 17, toInt( appt.getDeleted()));
+        stmt.setString( 18, appt.getAlarm());
+        stmt.setString( 19, appt.getReminderTimes());
+        
+        stmt.setInt( 20, appt.getKey() );
+        stmt.setInt( 21, userid_ );
 
         stmt.executeUpdate();
         

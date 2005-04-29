@@ -59,9 +59,9 @@ class AddrJdbcDB extends JdbcDB
         PreparedStatement stmt = connection_.prepareStatement( "INSERT INTO addresses ( address_num, userid, " +
         "first_name, last_name, nickname, email, screen_name, work_phone," + 
         "home_phone, fax, pager, street, city, state, zip, country, company," +
-        "work_street, work_city, work_state, work_zip, work_country, webpage, notes, birthday) " +
+        "work_street, work_city, work_state, work_zip, work_country, webpage, notes, birthday, new, modified, deleted) " +
         " VALUES " +
-        "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         
         Address addr = (Address) bean;
         
@@ -95,7 +95,9 @@ class AddrJdbcDB extends JdbcDB
             stmt.setDate( 25, new java.sql.Date( bd.getTime()) );
         else
             stmt.setDate(25, null );
-        
+        stmt.setInt( 26, toInt( addr.getNew()));
+        stmt.setInt( 27, toInt( addr.getModified()));
+        stmt.setInt( 28, toInt( addr.getDeleted()));
         stmt.executeUpdate();
         
         writeCache( addr );
@@ -185,6 +187,9 @@ class AddrJdbcDB extends JdbcDB
 		addr.setWorkCountry( r.getString("work_country"));
 		addr.setWebPage( r.getString("webpage"));
 		addr.setNotes( r.getString("notes"));
+		addr.setNew( r.getInt("new" ) != 0 );
+		addr.setModified( r.getInt("modified" ) != 0 );
+		addr.setDeleted( r.getInt("deleted" ) != 0 );
 		if( r.getDate("birthday") != null )
 			addr.setBirthday( new java.util.Date( r.getDate("birthday").getTime()));
 		return addr;
@@ -196,14 +201,12 @@ class AddrJdbcDB extends JdbcDB
         PreparedStatement stmt = connection_.prepareStatement( "UPDATE addresses SET " +
         "first_name = ?, last_name = ?, nickname = ?, email = ?, screen_name = ?, work_phone = ?," + 
         "home_phone = ?, fax = ?, pager = ?, street = ?, city = ?, state = ?, zip = ?, country = ?, company = ?," +
-        "work_street = ?, work_city = ?, work_state = ?, work_zip = ?, work_country = ?, webpage = ?, notes = ?, birthday = ? " +
+        "work_street = ?, work_city = ?, work_state = ?, work_zip = ?, work_country = ?, webpage = ?, notes = ?, birthday = ?, new = ?, modified = ?, deleted = ? " +
         " WHERE address_num = ? AND userid = ?" );
         
         Address addr = (Address) bean;
         
-        stmt.setInt( 24, addr.getKey() );
-        stmt.setInt( 25, userid_ );
-
+ 
         stmt.setString( 1, addr.getFirstName() );
         stmt.setString( 2, addr.getLastName());
         stmt.setString( 3, addr.getNickname());
@@ -231,11 +234,16 @@ class AddrJdbcDB extends JdbcDB
             stmt.setDate( 23, new java.sql.Date( bd.getTime()) );
         else
             stmt.setDate(23, null );
+        stmt.setInt( 24, toInt( addr.getNew()));
+        stmt.setInt( 25, toInt( addr.getModified()));
+        stmt.setInt( 26, toInt( addr.getDeleted()));
+        
+        
+        stmt.setInt( 27, addr.getKey() );
+        stmt.setInt( 28, userid_ );
 
-        
         stmt.executeUpdate();
-        
-        
+               
         delCache( addr.getKey() );
         writeCache( addr );
     }
