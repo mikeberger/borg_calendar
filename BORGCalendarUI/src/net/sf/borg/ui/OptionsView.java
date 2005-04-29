@@ -23,7 +23,6 @@ package net.sf.borg.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -46,6 +45,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -299,7 +299,8 @@ public class OptionsView extends View
         int mins = Prefs.getIntPref(PrefName.REMINDERCHECKMINS);
         checkfreq.setValue(new Integer(mins));
 
-
+        mins = Prefs.getIntPref(PrefName.SYNCMINS);
+        syncmins.setValue(new Integer(mins));
             
         // bsv 2004-12-20
         // initiate user color scheme variables
@@ -368,6 +369,22 @@ public class OptionsView extends View
         
 
         dbTypeGroup = new javax.swing.ButtonGroup();
+         syncminlabel = new JLabel();
+         syncminlabel.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("sync_mins"));
+         GridBagConstraints gridBagConstraints53 = new GridBagConstraints();
+         gridBagConstraints53.gridx = 1;
+         gridBagConstraints53.gridy = 1;
+         gridBagConstraints53.fill = java.awt.GridBagConstraints.BOTH;
+         gridBagConstraints53.insets = new java.awt.Insets(4,4,4,4);
+         GridBagConstraints gridBagConstraints410 = new GridBagConstraints();
+         gridBagConstraints410.insets = new java.awt.Insets(4,4,4,4);
+         gridBagConstraints410.fill = java.awt.GridBagConstraints.BOTH;
+
+         gridBagConstraints53.gridx = 1;
+         gridBagConstraints53.gridy = 1;
+         gridBagConstraints53.weightx = 1.0;
+         gridBagConstraints53.fill = java.awt.GridBagConstraints.HORIZONTAL;
+
          lslabel = new JLabel();
          lslabel.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("line_spacing"));
         GridBagConstraints gridBagConstraints112 = new GridBagConstraints();
@@ -435,13 +452,7 @@ public class OptionsView extends View
         revDayEditbox = new javax.swing.JCheckBox();
         jPanel6 = new javax.swing.JPanel();
         popenablebox = new javax.swing.JCheckBox();
-        jLabel9 = new javax.swing.JLabel();
-        jLabel10 = new javax.swing.JLabel();
-        jLabel11 = new javax.swing.JLabel();
-        jLabel12 = new javax.swing.JLabel();
         soundbox = new javax.swing.JCheckBox();
-        jLabel13 = new javax.swing.JLabel();
-        jLabel14 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
         checkfreq = new javax.swing.JSpinner();
         jSeparator1 = new javax.swing.JSeparator();
@@ -1097,12 +1108,14 @@ public class OptionsView extends View
  
         
         JPanel njp = new JPanel();
+        GridBagConstraints gridBagConstraints211 = new GridBagConstraints();
+
         GridBagConstraints gridBagConstraints115 = new GridBagConstraints();
         GridBagConstraints gridBagConstraints44 = new GridBagConstraints();
         GridBagConstraints gridBagConstraints114 = new GridBagConstraints();
         GridBagConstraints gridBagConstraints310 = new GridBagConstraints();
         njp.setLayout( new BorderLayout() );
-        jPanel7.setLayout(new FlowLayout());
+        jPanel7.setLayout(new GridBagLayout());
         njp.add( cb_ucs_marktodo, BorderLayout.WEST );
         njp.add( tf_ucs_marker, BorderLayout.CENTER );
         getJPanelUCS().add( njp );
@@ -1145,7 +1158,15 @@ public class OptionsView extends View
         gridBagConstraints115.gridy = 2;
         gridBagConstraints115.insets = new java.awt.Insets(4,4,4,4);
         gridBagConstraints115.fill = java.awt.GridBagConstraints.BOTH;
-        jPanel7.add(sharedbox, null);
+        gridBagConstraints211.gridx = 0;
+        gridBagConstraints211.gridy = 0;
+        gridBagConstraints211.insets = new java.awt.Insets(4,4,4,4);
+        gridBagConstraints211.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints410.gridx = 0;
+        gridBagConstraints410.gridy = 1;
+
+        jPanel7.add(sharedbox, gridBagConstraints211);
+        jPanel7.add(getSyncMins(), gridBagConstraints53);
         jPanel2.add(incfont, gridBagConstraints2);
         jPanel2.add(decfont, gridBagConstraints3);
         jPanel3.add(revDayEditbox, gridBagConstraints51);
@@ -1165,6 +1186,7 @@ public class OptionsView extends View
         jPanel2.add(lslabel, gridBagConstraints114);
         jPanel2.add(getLsbox(), gridBagConstraints44);
         jPanel2.add(getTruncbox(), gridBagConstraints115);
+        jPanel7.add(syncminlabel, gridBagConstraints410);
         pack();
     }//GEN-END:initComponents
 
@@ -1224,6 +1246,10 @@ public class OptionsView extends View
         if( i.intValue() != cur )
             Prefs.putPref(PrefName.REMINDERCHECKMINS, i);
         
+        i = (Integer) syncmins.getValue();
+        cur = Prefs.getIntPref(PrefName.SYNCMINS);
+        if( i.intValue() != cur )
+            Prefs.putPref(PrefName.SYNCMINS, i);
         
         if( mondaycb.isSelected() )
             Prefs.putPref(PrefName.FIRSTDOW, new Integer(Calendar.MONDAY) );
@@ -1565,11 +1591,6 @@ public class OptionsView extends View
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
@@ -1583,7 +1604,6 @@ public class OptionsView extends View
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -1660,6 +1680,8 @@ public class OptionsView extends View
 	private JLabel lslabel = null;
 	private JComboBox lsbox = null;
 	private JCheckBox truncbox = null;
+	private JLabel syncminlabel = null;
+	private JTextField jTextField = null;
 	/**
 	 * This method initializes jPanel	
 	 * 	
@@ -1679,7 +1701,7 @@ public class OptionsView extends View
 			gridBagConstraints210.insets = new java.awt.Insets(4,4,4,4);
 			gridBagConstraints210.gridwidth = 1;
 			gridBagConstraints510.gridx = 0;
-			gridBagConstraints510.gridy = 1;
+			gridBagConstraints510.gridy = 2;
 			gridBagConstraints510.insets = new java.awt.Insets(4,4,4,4);
 			jPanel.add(jTabbedPane1, gridBagConstraints210);
 			jPanel.add(getJPanel10(), gridBagConstraints510);
@@ -1804,4 +1826,16 @@ public class OptionsView extends View
 		}
 		return truncbox;
 	}
-  }  //  @jve:decl-index=0:visual-constraint="107,15"
+	/**
+	 * This method initializes jTextField	
+	 * 	
+	 * @return javax.swing.JTextField	
+	 */    
+	private JSpinner syncmins;
+	private JSpinner getSyncMins() {
+		if (syncmins == null) {
+			syncmins = new JSpinner();
+		}
+		return syncmins;
+	}
+   }  //  @jve:decl-index=0:visual-constraint="107,15"

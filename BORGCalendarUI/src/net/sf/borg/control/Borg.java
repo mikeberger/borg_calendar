@@ -96,6 +96,7 @@ public class Borg extends Controller implements OptionsView.RestartListener {
     static private Banner ban_ = null; // start up banner
 
     private java.util.Timer timer_;
+    private java.util.Timer syncTimer_;
 
 	static private Borg singleton = null;
 	static public Borg getReference()
@@ -428,6 +429,29 @@ public class Borg extends Controller implements OptionsView.RestartListener {
                         version_chk();
                     }
                 }, 10 * 1000, 20 * 60 * 1000);
+                
+                // start autosync timer
+                int syncmins = Prefs.getIntPref(PrefName.SYNCMINS);
+                if( shared && syncmins != 0 )
+                {
+                    syncTimer_ = new java.util.Timer();
+                    syncTimer_.schedule(new TimerTask() {
+                        public void run() {
+                            SwingUtilities.invokeLater(new Runnable() {
+                                public void run() {
+                                    try {
+                                        AppointmentModel.getReference().sync();
+                                        AddressModel.getReference().sync();
+                                        TaskModel.getReference().sync();
+                                    }
+                                    catch( Exception e) {
+                                        Errmsg.errmsg(e);
+                                    }
+                                }
+                            });
+                        }
+                    }, syncmins * 60 * 1000, syncmins * 60 * 1000);
+                }
             }
 
         }
