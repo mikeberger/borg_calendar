@@ -238,20 +238,22 @@ public class Day
                     continue;
                 }
                 
-                // !!!!! only show first line of appointment text !!!!!!
-                int ii = xx.indexOf('\n');
-                if( ii != -1 )
+                
+                String trunc = Prefs.getPref(PrefName.TRUNCAPPT);
+                if( trunc.equals("true"))
                 {
-                    tx += xx.substring(0,ii);
+                	// !!!!! only show first line of appointment text !!!!!!
+                	int ii = xx.indexOf('\n');
+                	if( ii != -1 )
+                	{
+                		tx += xx.substring(0,ii);
+                	}
+                	else
+                	{
+                		tx += xx;
+                	}                
+                	appt.setText(tx);
                 }
-                else
-                {
-                    tx += xx;
-                }
-                
-                
-                appt.setText(tx);
-                
                 String color = appt.getColor();
                 if( color == null ) appt.setColor("black");
                 

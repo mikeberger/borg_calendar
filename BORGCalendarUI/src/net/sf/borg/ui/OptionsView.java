@@ -95,6 +95,23 @@ public class OptionsView extends View
     	
     }
     
+    static private void setCheckBox( JCheckBox box, PrefName pn )
+    {
+        String val = Prefs.getPref(pn);
+        if( val.equals("true") )
+            box.setSelected(true);
+        else
+            box.setSelected(false);  	
+    }
+    
+    static private void setBooleanPref( JCheckBox box, PrefName pn )
+    {
+        if( box.isSelected() )
+            Prefs.putPref(pn, "true" );
+        else
+            Prefs.putPref(pn, "false" );   	
+    }
+    
     // dbonly will only allow db changes
     private OptionsView(boolean dbonly)
     {
@@ -145,19 +162,12 @@ public class OptionsView extends View
 
         }
         
-        String dbparam = Prefs.getPref(PrefName.DBDIR);
-        jTextField3.setText(dbparam);
-        
-        dbparam = Prefs.getPref(PrefName.DBNAME);
-        jTextField1.setText(dbparam);
-        dbparam = Prefs.getPref(PrefName.DBPORT);
-        jTextField4.setText(dbparam);
-        dbparam = Prefs.getPref(PrefName.DBHOST);
-        jTextField2.setText(dbparam);        
-        dbparam = Prefs.getPref(PrefName.DBUSER);
-        jTextField5.setText(dbparam);
-        dbparam = Prefs.getPref(PrefName.DBPASS);
-        jPasswordField1.setText(dbparam);
+        dbDirText.setText(Prefs.getPref(PrefName.DBDIR));
+        dbNameText.setText(Prefs.getPref(PrefName.DBNAME));
+        dbPortText.setText(Prefs.getPref(PrefName.DBPORT));
+        dbHostText.setText(Prefs.getPref(PrefName.DBHOST));        
+        dbUserText.setText(Prefs.getPref(PrefName.DBUSER));
+        jPasswordField1.setText(Prefs.getPref(PrefName.DBPASS));
         
         if( dbonly )
         {
@@ -176,26 +186,30 @@ public class OptionsView extends View
                 
         }
         
-        // color print option
-        String cp = Prefs.getPref(PrefName.COLORPRINT);
-        if( cp.equals("true") )
-            colorprint.setSelected(true);
-        else
-            colorprint.setSelected(false);
+        // set various simple boolean checkboxes
+        setCheckBox( colorprint, PrefName.COLORPRINT);
+        setCheckBox( pubbox, PrefName.SHOWPUBLIC);
+        setCheckBox( privbox, PrefName.SHOWPRIVATE);
+        setCheckBox( emailbox, PrefName.EMAILENABLED);
+        setCheckBox( holiday1, PrefName.SHOWUSHOLIDAYS);
+        setCheckBox( canadabox, PrefName.SHOWCANHOLIDAYS);
+        setCheckBox( doyBox, PrefName.DAYOFYEAR);
+        setCheckBox( exputcbox, PrefName.ICALUTC);
+        setCheckBox( colorsortbox, PrefName.COLORSORT);
+        setCheckBox( miltime, PrefName.MILTIME);
+        setCheckBox( backgbox, PrefName.BACKGSTART);
+        setCheckBox( splashbox, PrefName.SPLASH);
+        setCheckBox( stackbox, PrefName.STACKTRACE);
+        setCheckBox( wrapbox, PrefName.WRAP);
+        setCheckBox( revDayEditbox, PrefName.REVERSEDAYEDIT);
+        setCheckBox( popenablebox, PrefName.REMINDERS);
+        setCheckBox( soundbox, PrefName.BEEPINGREMINDERS);
+        setCheckBox( palmcb, PrefName.PALM_SYNC);
+        setCheckBox( useBeep, PrefName.USESYSTEMBEEP);
+        setCheckBox( sharedbox, PrefName.SHARED);
+        setCheckBox( icaltodobox, PrefName.ICALTODOEV);
+        setCheckBox( truncbox, PrefName.TRUNCAPPT);
         
-        // options to show public and private appts
-        cp = Prefs.getPref(PrefName.SHOWPUBLIC );
-        if( cp.equals("true") )
-            pubbox.setSelected(true);
-        else
-            pubbox.setSelected(false);
-        cp = Prefs.getPref(PrefName.SHOWPRIVATE);
-        if( cp.equals("true") )
-            privbox.setSelected(true);
-        else
-            privbox.setSelected(false);
-        
-
         // print logo directory
         String logo = Prefs.getPref(PrefName.LOGO);
         logofile.setText(logo);
@@ -204,98 +218,15 @@ public class OptionsView extends View
         else
             logobox.setSelected(false);
         
-        // email enabled
-        cp = Prefs.getPref(PrefName.EMAILENABLED );
-        if( cp.equals("true") )
-            emailbox.setSelected(true);
-        else
-            emailbox.setSelected(false);
-        
         // email server and address
-        cp = Prefs.getPref(PrefName.EMAILSERVER);
-        smtptext.setText(cp);
-        cp = Prefs.getPref(PrefName.EMAILADDR);
-        emailtext.setText(cp);
-        
-        // set email server and address editable if the email option is
-        // enabled
-        //smtptext.setEditable( !emailbox.isSelected() );
-        //emailtext.setEditable( !emailbox.isSelected() );
-        
-        
-        // US holidays
-        String ush = Prefs.getPref(PrefName.SHOWUSHOLIDAYS);
-        if( ush.equals("true") )
-            holiday1.setSelected(true);
-        else
-            holiday1.setSelected(false);
-        
-        // CAN holidays
-        ush = Prefs.getPref(PrefName.SHOWCANHOLIDAYS);
-        if( ush.equals("true") )
-            canadabox.setSelected(true);
-        else
-            canadabox.setSelected(false);
-        
-        ush = Prefs.getPref(PrefName.DAYOFYEAR);
-        if( ush.equals("true") )
-            doyBox.setSelected(true);
-        else
-            doyBox.setSelected(false);
-        
-        ush = Prefs.getPref(PrefName.ICALUTC);
-        if( ush.equals("true") )
-            exputcbox.setSelected(true);
-        else
-            exputcbox.setSelected(false);
-        
-        String csort = Prefs.getPref(PrefName.COLORSORT);
-        if( csort.equals("true") )
-            colorsortbox.setSelected(true);
-        else
-            colorsortbox.setSelected(false);
+        smtptext.setText(Prefs.getPref(PrefName.EMAILSERVER));
+        emailtext.setText(Prefs.getPref(PrefName.EMAILADDR));
         
         int fdow = Prefs.getIntPref(PrefName.FIRSTDOW );
         if( fdow == Calendar.MONDAY )
             mondaycb.setSelected(true);
         else
             mondaycb.setSelected(false);
-        
-        String mt = Prefs.getPref(PrefName.MILTIME);
-        if( mt.equals("true") )
-            miltime.setSelected(true);
-        else
-            miltime.setSelected(false);
-        
-        String bg = Prefs.getPref(PrefName.BACKGSTART);
-        if( bg.equals("true") )
-            backgbox.setSelected(true);
-        else
-            backgbox.setSelected(false);
-        
-        String splash = Prefs.getPref(PrefName.SPLASH);
-        if( splash.equals("true") )
-            splashbox.setSelected(true);
-        else
-            splashbox.setSelected(false);
-        
-        String stacktrace = Prefs.getPref(PrefName.STACKTRACE);
-        if( stacktrace.equals("true") )
-            stackbox.setSelected(true);
-        else
-            stackbox.setSelected(false);
-        
-        bg = Prefs.getPref(PrefName.WRAP);
-        if( bg.equals("true") )
-            wrapbox.setSelected(true);
-        else
-            wrapbox.setSelected(false);
-        
-        bg = Prefs.getPref(PrefName.REVERSEDAYEDIT);
-        if( bg.equals("true") )
-            revDayEditbox.setSelected(true);
-        else
-        	revDayEditbox.setSelected(false);
         
         // auto update check
         int au = Prefs.getIntPref(PrefName.VERCHKLAST );
@@ -364,70 +295,19 @@ public class OptionsView extends View
             localebox.setEnabled(false);
         }
         
-        // popups
-        bg = Prefs.getPref(PrefName.REMINDERS);
-        if( bg.equals("true") )
-            popenablebox.setSelected(true);
-        else
-            popenablebox.setSelected(false);
-        
-        bg = Prefs.getPref(PrefName.BEEPINGREMINDERS);
-        if( bg.equals("true") )
-            soundbox.setSelected(true);
-        else
-            soundbox.setSelected(false);
         
         int mins = Prefs.getIntPref(PrefName.REMINDERCHECKMINS);
         checkfreq.setValue(new Integer(mins));
 
-        bg = Prefs.getPref(PrefName.PALM_SYNC);
-        if( bg.equals("true"))
-        {
-            palmcb.setSelected(true);
-        }
-        else
-        {
-            palmcb.setSelected(false);           
-        }
-        bg = Prefs.getPref(PrefName.USESYSTEMBEEP);
-        if( bg.equals("true"))
-        {
-            useBeep.setSelected(true);
-        }
-        else
-        {
-            useBeep.setSelected(false);           
-        }
-        
-        bg = Prefs.getPref(PrefName.SHARED);
-        if( bg.equals("true") )
-        {
-            sharedbox.setSelected(true);
-        }
-        else
-        {
-            sharedbox.setSelected(false);
-        }
-        
-        bg = Prefs.getPref(PrefName.ICALTODOEV );
-        if( bg.equals("true") )
-            icaltodobox.setSelected(true);
-        else
-            icaltodobox.setSelected(false);
+
             
         // bsv 2004-12-20
         // initiate user color scheme variables
-        bg = Prefs.getPref(PrefName.UCS_ON );
-        if( bg.equals("true") ) cb_ucs_on.setSelected(true);
-        	else cb_ucs_on.setSelected(false);
-        bg = Prefs.getPref(PrefName.UCS_ONTODO );
-        if( bg.equals("true") ) cb_ucs_ontodo.setSelected(true);
-        	else cb_ucs_ontodo.setSelected(false);
-        bg = Prefs.getPref(PrefName.UCS_MARKTODO );
-        if( bg.equals("true") ) cb_ucs_marktodo.setSelected(true);
-        	else cb_ucs_marktodo.setSelected(false);
-        cp = Prefs.getPref(PrefName.UCS_MARKER);
-        tf_ucs_marker.setText(cp);
+        setCheckBox( cb_ucs_on, PrefName.UCS_ON);
+        setCheckBox( cb_ucs_ontodo, PrefName.UCS_ONTODO);
+        setCheckBox( cb_ucs_marktodo, PrefName.UCS_MARKTODO);
+
+        tf_ucs_marker.setText(Prefs.getPref(PrefName.UCS_MARKER));
         mins = Integer.parseInt( Prefs.getPref(PrefName.UCS_RED) );
         btn_ucs_red.setColorProperty(new Color(mins));
         btn_ucs_red.setColorByProperty();
@@ -483,11 +363,7 @@ public class OptionsView extends View
         manageMySize(PrefName.OPTVIEWSIZE);
     }
     
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
-     */
+
     private void initComponents() {//GEN-BEGIN:initComponents
         
 
@@ -524,18 +400,18 @@ public class OptionsView extends View
         MySQL = new javax.swing.JRadioButton();
         jPanel8 = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        dbNameText = new javax.swing.JTextField();
         jLabel17 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
+        dbHostText = new javax.swing.JTextField();
         jLabel18 = new javax.swing.JLabel();
-        jTextField4 = new javax.swing.JTextField();
+        dbPortText = new javax.swing.JTextField();
         jLabel19 = new javax.swing.JLabel();
-        jTextField5 = new javax.swing.JTextField();
+        dbUserText = new javax.swing.JTextField();
         jLabel20 = new javax.swing.JLabel();
         jPasswordField1 = new javax.swing.JPasswordField();
         jPanel9 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
+        dbDirText = new javax.swing.JTextField();
         jButton5 = new javax.swing.JButton();
         chgdb = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
@@ -677,13 +553,11 @@ public class OptionsView extends View
 
         GridBagConstraints gridBagConstraints2 = new java.awt.GridBagConstraints();
         gridBagConstraints2.gridx = 1;
-        gridBagConstraints2.gridy = 8;
+        gridBagConstraints2.gridy = 9;
         gridBagConstraints2.fill = java.awt.GridBagConstraints.VERTICAL;
         gridBagConstraints2.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints2.weightx = 1.0;
         gridBagConstraints2.insets = new java.awt.Insets(4, 4, 4, 4);
-        jPanel2.add(incfont, gridBagConstraints2);
-
         decfont.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("set_appt_font"));
         decfont.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         decfont.addActionListener(new java.awt.event.ActionListener() {
@@ -694,13 +568,11 @@ public class OptionsView extends View
 
         GridBagConstraints gridBagConstraints3 = new java.awt.GridBagConstraints();
         gridBagConstraints3.gridx = 0;
-        gridBagConstraints3.gridy = 8;
+        gridBagConstraints3.gridy = 9;
         gridBagConstraints3.fill = java.awt.GridBagConstraints.VERTICAL;
         gridBagConstraints3.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints3.weightx = 1.0;
         gridBagConstraints3.insets = new java.awt.Insets(4, 4, 4, 4);
-        jPanel2.add(decfont, gridBagConstraints3);
-
         jLabel4.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Look_and_Feel:"));
         GridBagConstraints gridBagConstraints4 = new java.awt.GridBagConstraints();
         gridBagConstraints4.gridx = 0;
@@ -752,37 +624,29 @@ public class OptionsView extends View
         jLabel5.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Week_View_Start_Hour:_"));
         GridBagConstraints gridBagConstraints9 = new java.awt.GridBagConstraints();
         gridBagConstraints9.gridx = 0;
-        gridBagConstraints9.gridy = 5;
+        gridBagConstraints9.gridy = 6;
         gridBagConstraints9.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints9.insets = new java.awt.Insets(4, 4, 4, 4);
-        jPanel2.add(jLabel5, gridBagConstraints9);
-
         wkstarthr.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "4", "5", "6", "7", "8", "9", "10", "11" }));
         GridBagConstraints gridBagConstraints10 = new java.awt.GridBagConstraints();
         gridBagConstraints10.gridx = 1;
-        gridBagConstraints10.gridy = 5;
+        gridBagConstraints10.gridy = 6;
         gridBagConstraints10.fill = java.awt.GridBagConstraints.VERTICAL;
         gridBagConstraints10.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints10.insets = new java.awt.Insets(4, 4, 4, 4);
-        jPanel2.add(wkstarthr, gridBagConstraints10);
-
         wkendhr.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23" }));
         GridBagConstraints gridBagConstraints11 = new java.awt.GridBagConstraints();
         gridBagConstraints11.gridx = 1;
-        gridBagConstraints11.gridy = 6;
+        gridBagConstraints11.gridy = 7;
         gridBagConstraints11.fill = java.awt.GridBagConstraints.VERTICAL;
         gridBagConstraints11.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints11.insets = new java.awt.Insets(4, 4, 4, 4);
-        jPanel2.add(wkendhr, gridBagConstraints11);
-
         jLabel6.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Week_View_End_Hour:_"));
         GridBagConstraints gridBagConstraints12 = new java.awt.GridBagConstraints();
         gridBagConstraints12.gridx = 0;
-        gridBagConstraints12.gridy = 6;
+        gridBagConstraints12.gridy = 7;
         gridBagConstraints12.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints12.insets = new java.awt.Insets(4, 4, 4, 4);
-        jPanel2.add(jLabel6, gridBagConstraints12);
-
         wrapbox.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Wrap_Appointment_Text"));
         GridBagConstraints gridBagConstraints13 = new java.awt.GridBagConstraints();
         gridBagConstraints13.gridx = 0;
@@ -802,12 +666,12 @@ public class OptionsView extends View
         jLabel8.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("locale"));
         GridBagConstraints gridBagConstraints15 = new java.awt.GridBagConstraints();
         gridBagConstraints15.gridx = 0;
-        gridBagConstraints15.gridy = 10;
+        gridBagConstraints15.gridy = 11;
         gridBagConstraints15.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints15.insets = new java.awt.Insets(4, 4, 4, 4);
         GridBagConstraints gridBagConstraints16 = new java.awt.GridBagConstraints();
         gridBagConstraints16.gridx = 1;
-        gridBagConstraints16.gridy = 10;
+        gridBagConstraints16.gridy = 11;
         gridBagConstraints16.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints16.insets = new java.awt.Insets(4, 4, 4, 4);
         jButton1.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("set_def_font"));
@@ -820,21 +684,17 @@ public class OptionsView extends View
 
         GridBagConstraints gridBagConstraints17 = new java.awt.GridBagConstraints();
         gridBagConstraints17.gridx = 0;
-        gridBagConstraints17.gridy = 7;
+        gridBagConstraints17.gridy = 8;
         gridBagConstraints17.fill = java.awt.GridBagConstraints.VERTICAL;
         gridBagConstraints17.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints17.weightx = 1.0;
         gridBagConstraints17.insets = new java.awt.Insets(4, 4, 4, 4);
-        jPanel2.add(jButton1, gridBagConstraints17);
-
         colorsortbox.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("colorsort"));
         GridBagConstraints gridBagConstraints18 = new java.awt.GridBagConstraints();
-        gridBagConstraints18.gridx = 1;
-        gridBagConstraints18.gridy = 2;
+        gridBagConstraints18.gridx = 0;
+        gridBagConstraints18.gridy = 5;
         gridBagConstraints18.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints18.insets = new java.awt.Insets(4, 4, 4, 4);
-        jPanel2.add(colorsortbox, gridBagConstraints18);
-
         jTabbedPane1.addTab(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("appearance"), jPanel2);
 
         jPanel4.setLayout(new java.awt.GridBagLayout());
@@ -873,7 +733,7 @@ public class OptionsView extends View
         GridBagConstraints gridBagConstraints20 = new java.awt.GridBagConstraints();
         gridBagConstraints20.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints20.weightx = 1.0;
-        jPanel8.add(jTextField1, gridBagConstraints20);
+        jPanel8.add(dbNameText, gridBagConstraints20);
 
         jLabel17.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("hostname"));
         GridBagConstraints gridBagConstraints21 = new java.awt.GridBagConstraints();
@@ -888,7 +748,7 @@ public class OptionsView extends View
         gridBagConstraints22.gridy = 1;
         gridBagConstraints22.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints22.weightx = 1.0;
-        jPanel8.add(jTextField2, gridBagConstraints22);
+        jPanel8.add(dbHostText, gridBagConstraints22);
 
         jLabel18.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("port"));
         GridBagConstraints gridBagConstraints23 = new java.awt.GridBagConstraints();
@@ -903,7 +763,7 @@ public class OptionsView extends View
         gridBagConstraints24.gridy = 2;
         gridBagConstraints24.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints24.weightx = 1.0;
-        jPanel8.add(jTextField4, gridBagConstraints24);
+        jPanel8.add(dbPortText, gridBagConstraints24);
 
         jLabel19.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("User"));
         GridBagConstraints gridBagConstraints25 = new java.awt.GridBagConstraints();
@@ -918,7 +778,7 @@ public class OptionsView extends View
         gridBagConstraints26.gridy = 3;
         gridBagConstraints26.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints26.weightx = 1.0;
-        jPanel8.add(jTextField5, gridBagConstraints26);
+        jPanel8.add(dbUserText, gridBagConstraints26);
 
         jLabel20.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Password"));
         GridBagConstraints gridBagConstraints27 = new java.awt.GridBagConstraints();
@@ -962,7 +822,7 @@ public class OptionsView extends View
         gridBagConstraints31.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints31.weightx = 0.5;
         gridBagConstraints31.insets = new java.awt.Insets(4, 8, 4, 8);
-        jPanel9.add(jTextField3, gridBagConstraints31);
+        jPanel9.add(dbDirText, gridBagConstraints31);
 
         jButton5.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Browse"));
         jButton5.addActionListener(new java.awt.event.ActionListener() {
@@ -1237,6 +1097,7 @@ public class OptionsView extends View
  
         
         JPanel njp = new JPanel();
+        GridBagConstraints gridBagConstraints115 = new GridBagConstraints();
         GridBagConstraints gridBagConstraints44 = new GridBagConstraints();
         GridBagConstraints gridBagConstraints114 = new GridBagConstraints();
         GridBagConstraints gridBagConstraints310 = new GridBagConstraints();
@@ -1249,7 +1110,7 @@ public class OptionsView extends View
         this.setContentPane(getJPanel());
         this.setSize(629, 493);
         gridBagConstraints110.gridx = 1;
-        gridBagConstraints110.gridy = 7;
+        gridBagConstraints110.gridy = 5;
         gridBagConstraints110.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints110.insets = new java.awt.Insets(4,4,4,4);
         gridBagConstraints111.gridx = 0;
@@ -1272,25 +1133,38 @@ public class OptionsView extends View
         gridBagConstraints113.anchor = java.awt.GridBagConstraints.WEST;  
         gridBagConstraints113.insets = new java.awt.Insets(0, 8, 0, 0);
         gridBagConstraints114.gridx = 0;
-        gridBagConstraints114.gridy = 9;
+        gridBagConstraints114.gridy = 10;
         gridBagConstraints114.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints114.insets = new java.awt.Insets(4,4,4,4);
         gridBagConstraints44.gridx = 1;
-        gridBagConstraints44.gridy = 9;
+        gridBagConstraints44.gridy = 10;
         gridBagConstraints44.weightx = 1.0;
         gridBagConstraints44.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints44.insets = new java.awt.Insets(4,4,4,4);
+        gridBagConstraints115.gridx = 1;
+        gridBagConstraints115.gridy = 2;
+        gridBagConstraints115.insets = new java.awt.Insets(4,4,4,4);
+        gridBagConstraints115.fill = java.awt.GridBagConstraints.BOTH;
         jPanel7.add(sharedbox, null);
+        jPanel2.add(incfont, gridBagConstraints2);
+        jPanel2.add(decfont, gridBagConstraints3);
         jPanel3.add(revDayEditbox, gridBagConstraints51);
         jTabbedPane1.addTab("User Color Scheme", null, getJPanelUCS(), null);
         jPanel3.add(getExputcbox(), gridBagConstraints111);
         jPanel3.add(getPalmcb(), gridBagConstraints310);
         jPanel6.add(getUseBeep(), gridBagConstraints112);  
+        jPanel2.add(jLabel5, gridBagConstraints9);
+        jPanel2.add(wkstarthr, gridBagConstraints10);
+        jPanel2.add(wkendhr, gridBagConstraints11);
+        jPanel2.add(jLabel6, gridBagConstraints12);
+        jPanel2.add(jButton1, gridBagConstraints17);
+        jPanel2.add(colorsortbox, gridBagConstraints18);
         jPanel2.add(jLabel8, gridBagConstraints15);
         jPanel2.add(localebox, gridBagConstraints16);
         jPanel2.add(getDoyBox(), gridBagConstraints110);
         jPanel2.add(lslabel, gridBagConstraints114);
         jPanel2.add(getLsbox(), gridBagConstraints44);
+        jPanel2.add(getTruncbox(), gridBagConstraints115);
         pack();
     }//GEN-END:initComponents
 
@@ -1321,101 +1195,41 @@ public class OptionsView extends View
 
     private void applyChanges()
     {
-        if( icaltodobox.isSelected() )
-            Prefs.putPref(PrefName.ICALTODOEV, "true" );
-        else
-            Prefs.putPref(PrefName.ICALTODOEV, "false" );
-        
-        if( colorsortbox.isSelected() )
-            Prefs.putPref(PrefName.COLORSORT, "true" );
-        else
-            Prefs.putPref(PrefName.COLORSORT, "false" );
-        
-        if( stackbox.isSelected() )
-            Prefs.putPref(PrefName.STACKTRACE, "true" );
-        else
-            Prefs.putPref(PrefName.STACKTRACE, "false" );
-        
-        if( sharedbox.isSelected() )
-            Prefs.putPref(PrefName.SHARED, "true" );
-        else
-            Prefs.putPref(PrefName.SHARED, "false" );
-        
-        if( palmcb.isSelected() )
-            Prefs.putPref(PrefName.PALM_SYNC, "true" );
-        else
-            Prefs.putPref(PrefName.PALM_SYNC, "false" );
+    	
+        setBooleanPref( colorprint, PrefName.COLORPRINT);
+        setBooleanPref( pubbox, PrefName.SHOWPUBLIC);
+        setBooleanPref( privbox, PrefName.SHOWPRIVATE);
+        setBooleanPref( emailbox, PrefName.EMAILENABLED);
+        setBooleanPref( holiday1, PrefName.SHOWUSHOLIDAYS);
+        setBooleanPref( canadabox, PrefName.SHOWCANHOLIDAYS);
+        setBooleanPref( doyBox, PrefName.DAYOFYEAR);
+        setBooleanPref( exputcbox, PrefName.ICALUTC);
+        setBooleanPref( colorsortbox, PrefName.COLORSORT);
+        setBooleanPref( miltime, PrefName.MILTIME);
+        setBooleanPref( backgbox, PrefName.BACKGSTART);
+        setBooleanPref( splashbox, PrefName.SPLASH);
+        setBooleanPref( stackbox, PrefName.STACKTRACE);
+        setBooleanPref( wrapbox, PrefName.WRAP);
+        setBooleanPref( revDayEditbox, PrefName.REVERSEDAYEDIT);
+        setBooleanPref( popenablebox, PrefName.REMINDERS);
+        setBooleanPref( soundbox, PrefName.BEEPINGREMINDERS);
+        setBooleanPref( palmcb, PrefName.PALM_SYNC);
+        setBooleanPref( useBeep, PrefName.USESYSTEMBEEP);
+        setBooleanPref( sharedbox, PrefName.SHARED);
+        setBooleanPref( icaltodobox, PrefName.ICALTODOEV);
+        setBooleanPref( truncbox, PrefName.TRUNCAPPT);
 
         Integer i = (Integer) checkfreq.getValue();
         int cur = Prefs.getIntPref(PrefName.REMINDERCHECKMINS);
         if( i.intValue() != cur )
             Prefs.putPref(PrefName.REMINDERCHECKMINS, i);
         
-        if( soundbox.isSelected() )
-            Prefs.putPref(PrefName.BEEPINGREMINDERS, "true" );
-        else
-            Prefs.putPref(PrefName.BEEPINGREMINDERS, "false" );
-        
-        if( popenablebox.isSelected() )
-            Prefs.putPref(PrefName.REMINDERS, "true" );
-        else
-            Prefs.putPref(PrefName.REMINDERS, "false" );
-        
-        if( useBeep.isSelected() )
-            Prefs.putPref(PrefName.USESYSTEMBEEP, "true" );
-        else
-            Prefs.putPref(PrefName.USESYSTEMBEEP, "false" );
-
-        if( splashbox.isSelected() )
-            Prefs.putPref(PrefName.SPLASH, "true" );
-        else
-            Prefs.putPref(PrefName.SPLASH, "false" );
-        
-        // update US holiday preference and refresh the month view accordingly
-        if( canadabox.isSelected() )
-            Prefs.putPref(PrefName.SHOWCANHOLIDAYS, "true" );
-        else
-            Prefs.putPref(PrefName.SHOWCANHOLIDAYS, "false" );
-        
-        if( wrapbox.isSelected() )
-            Prefs.putPref(PrefName.WRAP, "true" );
-        else
-            Prefs.putPref(PrefName.WRAP, "false" );
-        
-        if( backgbox.isSelected() )
-            Prefs.putPref(PrefName.BACKGSTART, "true" );
-        else
-            Prefs.putPref(PrefName.BACKGSTART, "false" );
-        
-        if( miltime.isSelected() )
-            Prefs.putPref(PrefName.MILTIME, "true" );
-        else
-            Prefs.putPref(PrefName.MILTIME, "false" );
         
         if( mondaycb.isSelected() )
             Prefs.putPref(PrefName.FIRSTDOW, new Integer(Calendar.MONDAY) );
         else
             Prefs.putPref(PrefName.FIRSTDOW, new Integer(Calendar.SUNDAY) );
         
-        if( holiday1.isSelected() )
-            Prefs.putPref(PrefName.SHOWUSHOLIDAYS, "true" );
-        else
-            Prefs.putPref(PrefName.SHOWUSHOLIDAYS, "false" );
-        
-        if( doyBox.isSelected() )
-            Prefs.putPref(PrefName.DAYOFYEAR, "true" );
-        else
-            Prefs.putPref(PrefName.DAYOFYEAR, "false" );
-        
-        if( exputcbox.isSelected() )
-            Prefs.putPref(PrefName.ICALUTC, "true" );
-        else
-            Prefs.putPref(PrefName.ICALUTC, "false" );
-        
-        if( revDayEditbox.isSelected() )
-            Prefs.putPref(PrefName.REVERSEDAYEDIT, "true" );
-        else
-            Prefs.putPref(PrefName.REVERSEDAYEDIT, "false" );
         
         Prefs.putPref( PrefName.WKENDHOUR, wkendhr.getSelectedItem());
         Prefs.putPref( PrefName.WKSTARTHOUR, wkstarthr.getSelectedItem());
@@ -1429,32 +1243,15 @@ public class OptionsView extends View
         else
             Prefs.putPref(PrefName.VERCHKLAST, new Integer(-1) );
         
-        if( privbox.isSelected() )
-            Prefs.putPref(PrefName.SHOWPRIVATE, "true" );
-        else
-            Prefs.putPref(PrefName.SHOWPRIVATE, "false" );
-        
-        // update the show public option and refresh the month view
-        if( pubbox.isSelected() )
-            Prefs.putPref(PrefName.SHOWPUBLIC, "true" );
-        else
-            Prefs.putPref(PrefName.SHOWPUBLIC, "false" );
-        
-        if( colorprint.isSelected() )
-            Prefs.putPref(PrefName.COLORPRINT, "true" );
-        else
-            Prefs.putPref(PrefName.COLORPRINT, "false" );
 
         // bsv 2004-12-20
-        if( cb_ucs_on.isSelected() ) Prefs.putPref(PrefName.UCS_ON, "true" );
-        	else Prefs.putPref(PrefName.UCS_ON, "false" );
-        if( cb_ucs_ontodo.isSelected() ) Prefs.putPref(PrefName.UCS_ONTODO, "true" );
-        	else Prefs.putPref(PrefName.UCS_ONTODO, "false" );
+        setCheckBox( cb_ucs_on, PrefName.UCS_ON);
+        setCheckBox( cb_ucs_ontodo, PrefName.UCS_ONTODO);
+        setCheckBox( cb_ucs_marktodo, PrefName.UCS_MARKTODO);
+
         if( cb_ucs_marktodo.isSelected() ) {
-        	Prefs.putPref(PrefName.UCS_MARKTODO, "true" );
         	Prefs.putPref(PrefName.UCS_MARKER, tf_ucs_marker.getText() );
         }
-    	else Prefs.putPref(PrefName.UCS_MARKTODO, "false" );
 
         Integer ucsi = new Integer((btn_ucs_red.getColorProperty()).getRGB());
         Prefs.putPref(PrefName.UCS_RED, ucsi.toString() );
@@ -1504,13 +1301,9 @@ public class OptionsView extends View
         
         if( emailbox.isSelected() )
         {
-            Prefs.putPref(PrefName.EMAILENABLED, "true" );
             Prefs.putPref(PrefName.EMAILSERVER, smtptext.getText() );
             Prefs.putPref(PrefName.EMAILADDR, emailtext.getText() );
-        }
-        else
-            Prefs.putPref(PrefName.EMAILENABLED, "false" );
-       
+        }     
         
         Locale locs[] = Locale.getAvailableLocales();
         String choice = (String) localebox.getSelectedItem();
@@ -1569,7 +1362,7 @@ public class OptionsView extends View
         int ret = JOptionPane.showConfirmDialog(null, Resource.getResourceString("Really_change_the_database?"), Resource.getResourceString("Confirm_DB_Change"), JOptionPane.YES_NO_OPTION);
         if( ret == JOptionPane.YES_OPTION )
         {
-            String dbdir = jTextField3.getText();
+            String dbdir = dbDirText.getText();
             Prefs.putPref(PrefName.DBDIR, dbdir );
             
             if( MySQL.isSelected())
@@ -1582,10 +1375,10 @@ public class OptionsView extends View
             }
             
 
-            Prefs.putPref( PrefName.DBNAME, jTextField1.getText());
-            Prefs.putPref( PrefName.DBPORT, jTextField4.getText());
-            Prefs.putPref( PrefName.DBHOST, jTextField2.getText());
-            Prefs.putPref( PrefName.DBUSER, jTextField5.getText());
+            Prefs.putPref( PrefName.DBNAME, dbNameText.getText());
+            Prefs.putPref( PrefName.DBPORT, dbPortText.getText());
+            Prefs.putPref( PrefName.DBHOST, dbHostText.getText());
+            Prefs.putPref( PrefName.DBUSER, dbUserText.getText());
             Prefs.putPref( PrefName.DBPASS, new String(jPasswordField1.getPassword()));
             
             if( rl_ != null )
@@ -1671,7 +1464,7 @@ public class OptionsView extends View
         if( dbdir == null ) return;
         
         // update text field - nothing else changes. DB change will take effect only on restart
-        jTextField3.setText(dbdir);
+        dbDirText.setText(dbdir);
         
         
     }//GEN-LAST:event_jButton5ActionPerformed
@@ -1803,11 +1596,11 @@ public class OptionsView extends View
     private javax.swing.JPasswordField jPasswordField1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
+    private javax.swing.JTextField dbNameText;
+    private javax.swing.JTextField dbHostText;
+    private javax.swing.JTextField dbDirText;
+    private javax.swing.JTextField dbPortText;
+    private javax.swing.JTextField dbUserText;
     private javax.swing.JComboBox lnfBox;
     private javax.swing.JRadioButton localFileButton;
     private javax.swing.JComboBox localebox;
@@ -1866,6 +1659,7 @@ public class OptionsView extends View
 	private JCheckBox useBeep = null;
 	private JLabel lslabel = null;
 	private JComboBox lsbox = null;
+	private JCheckBox truncbox = null;
 	/**
 	 * This method initializes jPanel	
 	 * 	
@@ -1998,4 +1792,16 @@ public class OptionsView extends View
 		}
 		return lsbox;
 	}
- }  //  @jve:decl-index=0:visual-constraint="10,10"
+	/**
+	 * This method initializes truncbox	
+	 * 	
+	 * @return javax.swing.JCheckBox	
+	 */    
+	private JCheckBox getTruncbox() {
+		if (truncbox == null) {
+			truncbox = new JCheckBox();
+			truncbox.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("truncate_appts"));  
+		}
+		return truncbox;
+	}
+  }  //  @jve:decl-index=0:visual-constraint="107,15"
