@@ -185,7 +185,8 @@ class AddrJdbcDB extends JdbcDB
 		addr.setWorkCountry( r.getString("work_country"));
 		addr.setWebPage( r.getString("webpage"));
 		addr.setNotes( r.getString("notes"));
-		addr.setBirthday( r.getDate("birthday"));
+		if( r.getDate("birthday") != null )
+			addr.setBirthday( new java.util.Date( r.getDate("birthday").getTime()));
 		return addr;
 	}
 	

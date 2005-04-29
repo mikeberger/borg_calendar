@@ -31,6 +31,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 
 import net.sf.borg.common.util.Version;
 import net.sf.borg.model.Appointment;
@@ -178,11 +179,13 @@ class ApptJdbcDB extends JdbcDB implements AppointmentKeyFilter
 	{
 		Appointment appt = new Appointment();
 		appt.setKey(r.getInt("appt_num"));
-		appt.setDate( r.getTimestamp("appt_date"));
+		if( r.getTimestamp("appt_date") != null)
+			appt.setDate( new java.util.Date (r.getTimestamp("appt_date").getTime()));
 		appt.setDuration( new Integer(r.getInt("duration")));
 		appt.setText( r.getString("text"));
 		appt.setSkipList( toVect(r.getString("skip_list")));
-		appt.setNextTodo( r.getDate("next_todo"));
+		if( r.getDate("next_todo") != null )
+			appt.setNextTodo( new java.util.Date(r.getDate("next_todo").getTime()));
 		appt.setVacation( new Integer(r.getInt("vacation")));
 		appt.setHoliday( new Integer(r.getInt("holiday")));
 		appt.setPrivate( r.getInt("private") != 0 );

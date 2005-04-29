@@ -163,7 +163,8 @@ class TaskJdbcDB extends JdbcDB
 		task.setKey(r.getInt("tasknum"));
 		task.setTaskNumber(new Integer(r.getInt("tasknum")));
 		task.setStartDate( r.getDate("start_date"));
-		task.setDueDate( r.getDate("due_date"));
+		if( r.getDate("due_date") != null )
+			task.setDueDate( new java.util.Date( r.getDate("due_date").getTime()));
 		task.setPersonAssigned( r.getString("person_assigned"));
 		task.setPriority( r.getString("priority"));
 		task.setState( r.getString("state"));
