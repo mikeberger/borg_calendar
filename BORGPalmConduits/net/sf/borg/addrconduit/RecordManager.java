@@ -237,7 +237,7 @@ public class RecordManager {
 
     public void handleDeleted(Record hhRecord, Address addr) throws Exception{
 
-        if (addr.getModified()) {
+        if (addr.getModified() && !addr.getDeleted()) {
             // (HH = Delete and PC = Modified) causes HH record to be updated not deleted
             resetPCAttributes(addr);
             int hhid = hhRecord.getId();
