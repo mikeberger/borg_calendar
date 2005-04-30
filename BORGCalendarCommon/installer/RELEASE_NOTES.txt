@@ -13,6 +13,26 @@ Feel free to mail any translations to i_flem@users.sourceforge.net.
 2. It is known that some screens in the new help system contain formatting 
 that has slight imperfections under Java 1.4.2, but not Java 5.0.
 
+MySQL Users
+-----------
+This section only concerns users using MySQL to store BORG data. The overwhelming majority of
+users do not use MySQL. If you are unsure - then you are not using it.
+
+There are MySQL database changes required to run BORG 1.5.
+You must run the SQL in file update1_5.sql to upgrade a 1.4 database to 1.5.
+The borg.sql file has been updated with the SQL to create a new 1.5 database.
+Both the update1_5.sql and borg.sql files are not installed by default and are
+installed as part of the optional RDBMS support. 
+
+FYI
+---
+
+BORG can now prefix todo's in the main calendar window with animated GIFs.
+The program only comes with one animated GIF at this time. From the user color scheme
+options tab, there is an option to mark a todo with a character prefix. If you turn on
+this option and enter the string: redball.gif as the prefix, an animated red ball with prefix all todo
+items. This is the default, but users that have set another prefix in an earlier release must manually
+change this.
 
 RUNNING
 -------

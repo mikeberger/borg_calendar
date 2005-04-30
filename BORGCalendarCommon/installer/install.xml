@@ -65,7 +65,6 @@
     <resources>
         <res id="LicencePanel.licence" src="COPYING"/>
         <res id="InfoPanel.info" src="RELEASE_NOTES.txt"/>
-	<res id="InfoPanel.info_ita" src="RELEASE_NOTES.txt_ita"/>
 	<res src="ShortcutSpec.xml" id="shortcutSpec.xml"/>
 	<res id="installer.langsel.img" src="borg.jpg" />
 
@@ -96,7 +95,6 @@
         <pack name="Base" required="yes">
             <description>The base program and help files</description>
             <file src="RELEASE_NOTES.txt" targetdir="$INSTALL_PATH"/>
-            <file src="RELEASE_NOTES.txt_ita" targetdir="$INSTALL_PATH"/>
             <file src="COPYING" targetdir="$INSTALL_PATH"/>
             <file src="borg.jar" targetdir="$INSTALL_PATH"/>
 	    	<file src="lib/jh.jar" targetdir="$INSTALL_PATH/lib"/>
@@ -126,9 +124,10 @@
 	    <file src="lib/LICENSE.iCal4j" targetdir="$INSTALL_PATH/lib"/> 
 	    <file src="lib/LICENSE.commons-logging" targetdir="$INSTALL_PATH/lib"/> 
         </pack>
-	<pack name="RDBMS Support" preselected="no" required="no">
+	<pack name="RDBMS Support" preselected="yes" required="no">
 		<description>SQL needed to create a BORG database in MySQL</description>
-            <file src="borg.sql" targetdir="$INSTALL_PATH"/> 
+            <file src="borg.sql" targetdir="$INSTALL_PATH"/>
+            <file src="update1_5.sql" targetdir="$INSTALL_PATH"/> 
         </pack>
 	<pack name="MDBTOOL" preselected="no" required="no">
 		<description>Optional tool for repairing databases (rarely needed)</description>
