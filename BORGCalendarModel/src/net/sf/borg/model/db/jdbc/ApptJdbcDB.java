@@ -31,7 +31,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
 
 import net.sf.borg.common.util.Version;
 import net.sf.borg.model.Appointment;
