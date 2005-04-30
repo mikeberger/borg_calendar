@@ -425,7 +425,7 @@ public class RecordManager {
                 rec.setRepeatEndDate(untilcal.getTime());
             }
             
-            String freq = appt.getFrequency();
+            String freq = Repeat.getFreq(appt.getFrequency());
             if( freq == null || freq.equals(""))
                 freq = "daily";
             
@@ -466,10 +466,9 @@ public class RecordManager {
             else if (freq.equals("yearly")) {
                 rec.setRepeatType(REPEAT_YEARLY_BY_DATE);
             }
-    		else if( freq.startsWith("ndays"))
+    		else if( freq.equals("ndays"))
     		{
-                String n = freq.substring(6);
-                int incr = Integer.parseInt(n);
+                int incr = Repeat.getNDays(appt.getFrequency());
                 rec.setRepeatType(REPEAT_DAILY);
                 rec.setRepeatFrequency(incr);
     		}

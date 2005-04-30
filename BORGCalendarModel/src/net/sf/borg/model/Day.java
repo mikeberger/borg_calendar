@@ -252,8 +252,21 @@ public class Day
                 	{
                 		tx += xx;
                 	}                
-                	appt.setText(tx);
+                	
                 }
+                else
+                {
+                	tx += xx;
+                }
+                
+                // add repeat number
+                if( Repeat.getRptNum(appt.getFrequency()))
+                {
+                	Calendar cur = new GregorianCalendar( year, month, day );
+                	tx += " (" + Repeat.calculateRepeatNumber(cur, appt) + ")";
+                }
+                appt.setText(tx);
+                
                 String color = appt.getColor();
                 if( color == null ) appt.setColor("black");
                 

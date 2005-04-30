@@ -92,7 +92,7 @@ public class AppointmentVcalAdapter {
 			{
 				// build recur string
 				String rec = "RRULE:";
-				String freq = ap.getFrequency();
+				String freq = Repeat.getFreq(ap.getFrequency());
 				if( freq == null )
 				{
 				    w.write("END:VEVENT\r\n");

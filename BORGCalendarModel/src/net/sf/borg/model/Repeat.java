@@ -23,6 +23,8 @@ package net.sf.borg.model;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import net.sf.borg.common.util.Resource;
+
 /**
  * A helper class for calculating repeating appointments.
  */
@@ -31,7 +33,7 @@ public class Repeat
 	private Calendar start;
 	private Calendar cal;
 	private Calendar current;
-	private String frequency;
+	private String frequency_;
 	private int field;
 	private int dayOfWeekMonth;
 	private int dayOfWeek;
@@ -44,10 +46,74 @@ public class Repeat
 
 	private int incr;
 
+	static public String freqs[] = { "once", "daily", "weekly", "biweekly",
+			"monthly", "monthly_day", "yearly", "weekdays", "weekends", "mwf",
+			"tth", "ndays" };
+	
+	static public String freqToEnglish(String fr) {
+		for (int i = 0; i < freqs.length; i++) {
+			if (fr.equals(Resource.getResourceString(freqs[i]))) {
+				return (freqs[i]);
+			}
+		}
+		return ("once");
+	}
+	
+	// generate the frequency string stored in the appt record
+	static public String freqString( String uistring, Integer ndays, boolean rptnum )
+	{
+		String f = freqToEnglish(uistring);
+		if (f.equals("ndays")) {
+			f += "," + ndays;
+		}
+
+		if( rptnum)
+		{
+			f += ",Y";
+		}
+		
+		return(f);
+		
+	}
+	
+	static public String getFreq(String f)
+	{
+		if( f == null )
+			return null;
+		int i = f.indexOf(',');
+		if( i == -1 )
+			return(f);
+		return( f.substring(0,i));
+			
+	}
+	
+	static public boolean getRptNum(String f)
+	{
+		if( f == null ) return false;
+		if( f.endsWith(",Y"))
+			return true;
+		return false;
+	}
+	
+	static public int getNDays( String f )
+	{
+		if( f == null )
+			return 0;
+		if( !f.startsWith("ndays,"))
+			return(0);
+
+		int i2 = f.indexOf(',', 6);
+		if(  i2 != -1 )
+			return( Integer.parseInt(f.substring(6,i2)));
+
+		return( Integer.parseInt(f.substring(6)));
+			
+	}
+	
 	Repeat(Calendar start, String frequency)
 	{
 		this.start = start;
-		this.frequency = frequency;
+		this.frequency_ = frequency;
 		cal = new GregorianCalendar(0,0,0);
 		cal.setTime(start.getTime());
 		current = cal;
@@ -64,49 +130,50 @@ public class Repeat
 
 		if (!isRepeating()) return;
 		
-		if( frequency.equals("weekly"))
+		String freq = getFreq(frequency);
+		if( freq.equals("weekly"))
 			incr = 7;
-		else if( frequency.equals("biweekly"))
+		else if( freq.equals("biweekly"))
 			incr = 14;
-		else if( frequency.equals("monthly"))
+		else if( freq.equals("monthly"))
 			field = Calendar.MONTH;
-		else if( frequency.equals("monthly_day"))
+		else if( freq.equals("monthly_day"))
 		{
 			monthly_same_day = true;
 			incr = 0;
 			dayOfWeek = start.get(Calendar.DAY_OF_WEEK);
 			dayOfWeekMonth = start.get(Calendar.DAY_OF_WEEK_IN_MONTH);
 		}
-		else if( frequency.equals("yearly"))
+		else if( freq.equals("yearly"))
 			field = Calendar.YEAR;
-		else if( frequency.equals("weekdays"))
+		else if( freq.equals("weekdays"))
 		{
 			weekdays = true;
 		}
-		else if( frequency.equals("weekends"))
+		else if( freq.equals("weekends"))
 		{
 			weekends = true;
 		}
-		else if( frequency.equals("mwf"))
+		else if( freq.equals("mwf"))
 		{
 			mwf = true;
 			incr = 0;
 		}		
-		else if( frequency.equals("tth"))
+		else if( freq.equals("tth"))
 		{
 			tth = true;
 			incr = 0;
 		}
-		else if( frequency.startsWith("ndays"))
+		else if( freq.equals("ndays"))
 		{
-            String n = frequency.substring(6);
-            incr = Integer.parseInt(n);
+            incr = getNDays(frequency_);
 		}
 	}
 	
 	final boolean isRepeating()
 	{
-		return frequency!=null && !frequency.equals("once");
+		String freq = getFreq(frequency_);
+		return freq!=null && !freq.equals("once");
 	}
 	
 	// our current date
@@ -136,6 +203,26 @@ public class Repeat
 	    
 	    return(c);
 	}
+	
+	// calculate the number of the repeat
+	final static public int calculateRepeatNumber(Calendar current, Appointment appt)
+	{	    
+	    Calendar start = new GregorianCalendar();
+	    Calendar c = start;
+	    start.setTime(appt.getDate());
+	    Repeat r = new Repeat(start,appt.getFrequency());
+	    for( int i = 1; ; i++)
+	    {
+	    	if( (c.get(Calendar.YEAR) == current.get(Calendar.YEAR)) &&
+	    		(c.get(Calendar.DAY_OF_YEAR) == current.get(Calendar.DAY_OF_YEAR)) )
+	    		return(i);
+	    	if( c.after(current))
+	    		return(0);
+	        c = r.next();
+	    }
+	    
+	}
+	
 	// calculate the next date of this repeat
 	final Calendar next()
 	{

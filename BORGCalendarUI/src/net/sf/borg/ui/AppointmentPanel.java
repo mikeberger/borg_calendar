@@ -40,6 +40,7 @@ import net.sf.borg.model.Appointment;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.AppointmentXMLAdapter;
 import net.sf.borg.model.CategoryModel;
+import net.sf.borg.model.Repeat;
 
 class AppointmentPanel extends JPanel {
 	static {
@@ -98,8 +99,8 @@ class AppointmentPanel extends JPanel {
 			colorbox.addItem(Resource.getResourceString(colors[i]));
 		}
 
-		for (int i = 0; i < freqs.length; i++) {
-			freq.addItem(Resource.getResourceString(freqs[i]));
+		for (int i = 0; i < Repeat.freqs.length; i++) {
+			freq.addItem(Resource.getResourceString(Repeat.freqs[i]));
 		}
 
 		setDate(year, month, day);
@@ -174,10 +175,10 @@ class AppointmentPanel extends JPanel {
 			s_times.setEnabled(true);
 			s_times.setValue(new Integer(1)); // times = 1
 			foreverbox.setSelected(false);
-			jLabel2.setText(Resource.getResourceString("*****_NEW_APPT_*****")); // show
-																				 // New
-																				 // app
-																				 // indicator
+			rptnumbox.setSelected(false);
+			rptnumbox.setEnabled(false);
+			jLabel2.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("*****_NEW_APPT_*****")); 
+																				 
 
 			// only add menu choice active for a new appt
 
@@ -194,11 +195,15 @@ class AppointmentPanel extends JPanel {
 				// get the appt Appointment from the calmodel
 				Appointment r = null;
 				if (key_ == -1) {
+					jLabel2.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("*****_NEW_APPT_*****")); 
 					r = defaultAppt;
 				} else {
+					// erase New Appt indicator
+					jLabel2.setText("    ");
 					r = AppointmentModel.getReference().getAppt(key_);
 				}
 
+				
 				// set hour and minute
 				Date d = r.getDate();
 				GregorianCalendar g = new GregorianCalendar();
@@ -299,12 +304,13 @@ class AppointmentPanel extends JPanel {
 				newdatefield.setEnabled(false);
 
 				// repeat frequency
-				String rpt = r.getFrequency();
-				if (rpt != null && rpt.startsWith("ndays")) {
-					String n = rpt.substring(6);
-					ndays.setValue(new Integer(n));
-					rpt = "ndays";
+				String rpt = Repeat.getFreq(r.getFrequency());
+				
+				if (rpt != null && rpt.equals("ndays")) {
+					ndays.setValue(new Integer(Repeat.getNDays(r.getFrequency())));
 				}
+				
+			    rptnumbox.setSelected(Repeat.getRptNum(r.getFrequency()));
 
 				int fin = 0;
 				if (rpt != null) {
@@ -358,8 +364,6 @@ class AppointmentPanel extends JPanel {
 				} else {
 					catbox.setSelectedIndex(0);
 				}
-				// erase New Appt indicator
-				jLabel2.setText("    ");
 
 				// set custRemTimes
 				setCustRemTimes(r);
@@ -432,7 +436,7 @@ class AppointmentPanel extends JPanel {
 		setLayout(new java.awt.GridBagLayout());
 
 		jLabel2.setForeground(java.awt.Color.red);
-		jLabel2.setText("jLabel2");
+		//jLabel2.setText("jLabel2");
 		GridBagConstraints gridBagConstraints2 = new java.awt.GridBagConstraints();
 		gridBagConstraints2.gridx = 0;
 		gridBagConstraints2.gridy = 0;
@@ -940,14 +944,8 @@ class AppointmentPanel extends JPanel {
 		r.setColor(colorToEnglish((String) colorbox.getSelectedItem()));
 
 		// repeat frequency
-		if (freq.getSelectedIndex() != 0) {
-			String f = freqToEnglish((String) freq.getSelectedItem());
-			if (!f.equals("ndays")) {
-				r.setFrequency(f);
-			} else {
-				r.setFrequency(f + "," + ndays.getValue());
-			}
-
+		if (freq.getSelectedIndex() != 0) {			
+			r.setFrequency(Repeat.freqString((String) freq.getSelectedItem(), (Integer)ndays.getValue(), rptnumbox.isSelected()));
 		}
 
 		// repeat times
@@ -1010,19 +1008,6 @@ class AppointmentPanel extends JPanel {
 		return ("black");
 	}
 
-	private String freqs[] = { "once", "daily", "weekly", "biweekly",
-			"monthly", "monthly_day", "yearly", "weekdays", "weekends", "mwf",
-			"tth", "ndays" };
-
-	private String freqToEnglish(String fr) {
-		for (int i = 0; i < freqs.length; i++) {
-			if (fr.equals(Resource.getResourceString(freqs[i]))) {
-				return (freqs[i]);
-			}
-		}
-
-		return ("once");
-	}
 
 	// set the visibility and enabling of components that depend on the
 	// frequency pulldown
@@ -1030,12 +1015,14 @@ class AppointmentPanel extends JPanel {
 		if (freq.getSelectedIndex() == 0) {
 			s_times.setEnabled(false);
 			foreverbox.setEnabled(false);
+			rptnumbox.setEnabled(false);
 		} else {
 			s_times.setEnabled(true);
 			foreverbox.setEnabled(true);
+			rptnumbox.setEnabled(true);
 		}
 
-		if (freqToEnglish((String) freq.getSelectedItem()).equals("ndays")) {
+		if (Repeat.freqToEnglish((String) freq.getSelectedItem()).equals("ndays")) {
 			ndays.setVisible(true);
 		} else {
 			ndays.setVisible(false);
@@ -1180,14 +1167,12 @@ class AppointmentPanel extends JPanel {
 
 	private char[] custRemTimes;
 
-	/**
-	 * This method initializes jPanel
-	 * 
-	 * @return javax.swing.JPanel
-	 */
+	private JCheckBox rptnumbox = null;
+
 
 	private JPanel getJPanel() {
 		if (jPanel == null) {
+			GridBagConstraints gridBagConstraints19 = new GridBagConstraints();
 			GridBagConstraints gridBagConstraints28 = new GridBagConstraints();
 			GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
 			GridBagConstraints gridBagConstraints71 = new GridBagConstraints();
@@ -1231,6 +1216,10 @@ class AppointmentPanel extends JPanel {
 			gridBagConstraints28.gridy = 0;
 			gridBagConstraints28.insets = new java.awt.Insets(4, 4, 4, 4);
 			gridBagConstraints28.fill = java.awt.GridBagConstraints.HORIZONTAL;
+			gridBagConstraints19.gridx = 3;
+			gridBagConstraints19.gridy = 1;
+			gridBagConstraints19.insets = new java.awt.Insets(4,4,4,4);
+			gridBagConstraints19.fill = java.awt.GridBagConstraints.BOTH;
 			jPanel.add(jLabel4, gridBagConstraints31);
 			jPanel.add(freq, gridBagConstraints41);
 			jPanel.add(jLabel1, gridBagConstraints51);
@@ -1238,15 +1227,12 @@ class AppointmentPanel extends JPanel {
 			jPanel.add(foreverbox, gridBagConstraints71);
 			jPanel.add(ndays, gridBagConstraints28);
 
+			jPanel.add(getRptnumbox(), gridBagConstraints19);
 		}
 		return jPanel;
 	}
 
-	/**
-	 * This method initializes alarmcb
-	 * 
-	 * @return javax.swing.JCheckBox
-	 */
+
 	private JCheckBox getRemBox() {
 		if (alarmcb == null) {
 			alarmcb = new JCheckBox();
@@ -1332,5 +1318,17 @@ class AppointmentPanel extends JPanel {
 		}
 	}
 
-} //  @jve:decl-index=0:visual-constraint="10,10"
+	/**
+	 * This method initializes rptnumbox	
+	 * 	
+	 * @return javax.swing.JCheckBox	
+	 */    
+	private JCheckBox getRptnumbox() {
+		if (rptnumbox == null) {
+			rptnumbox = new JCheckBox();
+			rptnumbox.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("show_rpt_num"));
+		}
+		return rptnumbox;
+	}
+ } //  @jve:decl-index=0:visual-constraint="10,10"
 

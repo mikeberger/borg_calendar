@@ -476,7 +476,7 @@ public class AppointmentModel extends Model implements Model.Listener
         Date newtodo = null;
         
         Integer tms = appt.getTimes();
-        String rpt = appt.getFrequency();
+        String rpt = Repeat.getFreq(appt.getFrequency());
         
         // find next to do if it repeats by doing calendar math
         if(  tms != null && tms.intValue() > 1 && rpt != null && !rpt.equals("once"))
@@ -492,7 +492,7 @@ public class AppointmentModel extends Model implements Model.Listener
             ccal.setTime(curtodo);
             ncal.setTime(d);
             
-			Repeat repeat = new Repeat(ncal, rpt);
+			Repeat repeat = new Repeat(ncal, appt.getFrequency());
 			boolean stop = false;
             for( int i = 1; i < tm; i++ )
             {
@@ -740,7 +740,8 @@ public class AppointmentModel extends Model implements Model.Listener
                         Calendar current = repeat.current();
                         if (current == null)
                         {
-                        	repeat.next(); continue;
+                        	repeat.next(); 
+                        	continue;
                         } 
                         
 						// get the day key for the repeat
