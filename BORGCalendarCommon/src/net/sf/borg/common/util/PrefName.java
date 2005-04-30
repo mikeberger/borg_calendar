@@ -107,6 +107,7 @@ public class PrefName {
 		static public PrefName EMAILADDR = new PrefName( "email_addr", "");
 		static public PrefName EMAILLAST = new PrefName( "email_last", new Integer(0));
 		static public PrefName EMAILDEBUG = new PrefName( "email_debug", "0");
+		static public PrefName EMAILTIME = new PrefName( "email_time", new Integer(0));
 
 		static public int[] REMMINUTES = new int[] { -10, -5, 0, 1, 2, 3, 4, 5, 10, 15, 20, 30, 45, 60, 90, 120, 180, 240, 300, 360};
 		

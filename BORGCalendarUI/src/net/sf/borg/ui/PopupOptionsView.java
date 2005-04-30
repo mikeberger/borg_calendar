@@ -19,12 +19,9 @@
 
 package net.sf.borg.ui;
 
-import java.awt.Dimension;
-import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.Rectangle;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -34,7 +31,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import net.sf.borg.common.util.PrefName;
-import net.sf.borg.common.util.Prefs;
 import net.sf.borg.common.util.Version;
 import net.sf.borg.model.Appointment;
 

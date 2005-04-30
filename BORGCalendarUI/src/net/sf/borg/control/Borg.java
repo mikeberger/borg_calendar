@@ -36,8 +36,8 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
+import java.util.Timer;
 import java.util.TimerTask;
-import java.util.Vector;
 
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -95,8 +95,9 @@ public class Borg extends Controller implements OptionsView.RestartListener {
 
     static private Banner ban_ = null; // start up banner
 
-    private java.util.Timer timer_;
-    private java.util.Timer syncTimer_;
+    private java.util.Timer versionCheckTimer_ = null;
+    private java.util.Timer syncTimer_ = null;
+    private Timer mailTimer_ = null;
 
 	static private Borg singleton = null;
 	static public Borg getReference()
@@ -118,8 +119,12 @@ public class Borg extends Controller implements OptionsView.RestartListener {
     }
 
     public void restart() {
-    	if( timer_ != null )
-    		timer_.cancel();
+    	if( versionCheckTimer_ != null )
+    		versionCheckTimer_.cancel();
+    	if( syncTimer_ != null )
+    		syncTimer_.cancel();
+    	if( mailTimer_ != null )
+    		mailTimer_.cancel();
         removeListeners();
         init(new String[0]);
     }
@@ -373,7 +378,7 @@ public class Borg extends Controller implements OptionsView.RestartListener {
             // and exit. not used anymore
             if (aplist)
             {
-                reminder();
+                emailReminder(null);
                 System.exit(0);
                 return;
             }
@@ -422,13 +427,36 @@ public class Borg extends Controller implements OptionsView.RestartListener {
             
             if (!AppHelper.isApplet())
             {
-                timer_ = new java.util.Timer();
-                timer_.schedule(new TimerTask() {
+            	// start up version check timer
+                versionCheckTimer_ = new java.util.Timer();
+                versionCheckTimer_.schedule(new TimerTask() {
                     public void run() {
-                        reminder();
+                        //reminder();
                         version_chk();
                     }
                 }, 10 * 1000, 20 * 60 * 1000);
+                
+                // calculate email time in minutes from now
+                Calendar cal = new GregorianCalendar();
+                int emailmins = Prefs.getIntPref(PrefName.EMAILTIME);
+                int curmins = 60 * cal.get(Calendar.HOUR_OF_DAY) + cal.get( Calendar.MINUTE);
+                int mailtime = emailmins - curmins;
+                if( mailtime < 0 )
+                {
+                	// we are past mailtime - send it now
+                	emailReminder(null);
+                	
+                	// set timer for next mailtime
+                	mailtime += 24*60; // 24 hours from now
+                }
+
+            	// start up email check timer - every 24 hours
+                versionCheckTimer_ = new java.util.Timer();
+                versionCheckTimer_.schedule(new TimerTask() {
+                    public void run() {
+                        emailReminder(null);
+                    }
+                }, mailtime * 60 * 1000, 24 * 60 * 60 * 1000);
                 
                 // start autosync timer
                 int syncmins = Prefs.getIntPref(PrefName.SYNCMINS);
@@ -728,7 +756,7 @@ public class Borg extends Controller implements OptionsView.RestartListener {
     // send an email of the next day's appointments if the user has requested
     // this and
     // such an email has not been sent today yet.
-    private void reminder() {
+    static public void emailReminder(Calendar emailday) {
 
         // check if the email feature has been enabled
         String email = Prefs.getPref(PrefName.EMAILENABLED);
@@ -739,20 +767,34 @@ public class Borg extends Controller implements OptionsView.RestartListener {
         String host = Prefs.getPref(PrefName.EMAILSERVER);
         String addr = Prefs.getPref(PrefName.EMAILADDR);
 
-        // get the last day that email was sent
-        int lastday = Prefs.getIntPref(PrefName.EMAILLAST);
 
         if (host.equals("") || addr.equals(""))
             return;
+        
+        Calendar cal = new GregorianCalendar();
+        
+        // if no date passed, the timer has gone off and we need to check if we can send
+        // email now
+        int doy = -1;
+        if( emailday == null )
+        {
+        	// get the last day that email was sent
+        	int lastday = Prefs.getIntPref(PrefName.EMAILLAST);
 
-        // if email was already sent today - don't send again
-        GregorianCalendar cal = new GregorianCalendar();
-        int doy = cal.get(Calendar.DAY_OF_YEAR);
-        if (doy == lastday)
-            return;
-
-        // create the calendar model key for tomorrow
-        cal.add(Calendar.DATE, 1);
+        	// if email was already sent today - don't send again
+        	doy = cal.get(Calendar.DAY_OF_YEAR);
+        	if (doy == lastday)
+        		return;
+        	
+        	// create the calendar model key for tomorrow
+        	cal.add(Calendar.DATE, 1);
+        }
+        else
+        {
+        	// just send email for the given day
+        	cal = emailday;
+        }
+        
         int key = AppointmentModel.dkey(cal.get(Calendar.YEAR), cal
                 .get(Calendar.MONTH), cal.get(Calendar.DATE));
 
@@ -761,7 +803,7 @@ public class Borg extends Controller implements OptionsView.RestartListener {
                 + DateFormat.getDateInstance().format(cal.getTime()) + "\n";
 
         // get the list of appts for tomorrow
-        Collection l = calmod_.getAppts(key);
+        Collection l = AppointmentModel.getReference().getAppts(key);
         if (l != null)
         {
 
@@ -777,7 +819,7 @@ public class Borg extends Controller implements OptionsView.RestartListener {
                 try
                 {
                     // read the appointment from the calendar model
-                    appt = calmod_.getAppt(ik.intValue());
+                    appt = AppointmentModel.getReference().getAppt(ik.intValue());
 
                     // get the appt flags to see if the appointment is private
                     // if so, don't include it in the email
@@ -809,7 +851,7 @@ public class Borg extends Controller implements OptionsView.RestartListener {
         // load any task tracker items for the email
         // these items are cached in the calendar model
         // by date - but the taskmodel is the real owner of them
-        l = taskmod_.get_tasks(key);
+        l = TaskModel.getReference().get_tasks(key);
         if (l != null)
         {
 
@@ -852,7 +894,8 @@ public class Borg extends Controller implements OptionsView.RestartListener {
         }
 
         // record that we sent email today
-        Prefs.putPref(PrefName.EMAILLAST, new Integer(doy));
+        if( doy != -1 )
+        	Prefs.putPref(PrefName.EMAILLAST, new Integer(doy));
 
         return;
     }

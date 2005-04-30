@@ -33,6 +33,8 @@ import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
@@ -47,6 +49,7 @@ import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Resource;
 import net.sf.borg.common.util.Version;
+import net.sf.borg.control.Borg;
 import net.sf.borg.model.Appointment;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.TaskModel;
@@ -344,6 +347,7 @@ public class AppointmentListView extends View implements ListSelectionListener {
         jPanel3.add(jScrollPane1, gridBagConstraints2);
         jPanel1.add(delone, delone.getName());
         jPanel3.add(jPanel1, gridBagConstraints3);
+        jPanel1.add(getReminderButton(), null);
         jPanel1.add(dismiss, dismiss.getName());
     }//GEN-END:initComponents
     
@@ -502,6 +506,7 @@ public class AppointmentListView extends View implements ListSelectionListener {
 	 * @return javax.swing.JPanel	
 	 */  
 	private JCalendarComboBox cb_ = null;
+	private JButton reminderButton = null;  //  @jve:decl-index=0:visual-constraint="702,73"
 	private JCalendarComboBox getDateCB()
 	{
 		if (cb_ == null) {
@@ -525,4 +530,22 @@ public class AppointmentListView extends View implements ListSelectionListener {
 		}
 		return jPanel4;
 	}
-}
+	/**
+	 * This method initializes reminderButton	
+	 * 	
+	 * @return javax.swing.JButton	
+	 */    
+	private JButton getReminderButton() {
+		if (reminderButton == null) {
+			reminderButton = new JButton();
+			reminderButton.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("send_reminder"));
+			reminderButton.setIcon(new ImageIcon(getClass().getResource("/resource/ComposeMail16.gif")));
+			reminderButton.addActionListener(new java.awt.event.ActionListener() { 
+				public void actionPerformed(java.awt.event.ActionEvent e) {    
+					Borg.emailReminder(cal_);
+				}
+			});
+		}
+		return reminderButton;
+	}
+ }

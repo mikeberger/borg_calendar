@@ -33,6 +33,8 @@ import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.TreeSet;
@@ -47,6 +49,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.SpinnerDateModel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
@@ -142,6 +145,13 @@ public class OptionsView extends View
     	lsbox.addItem("1.0");
         
     	lsbox.setSelectedItem(ls);
+    	
+    	int emmins = Prefs.getIntPref(PrefName.EMAILTIME);
+    	Calendar cal = new GregorianCalendar(1980,1,1,0,0,0);
+    	cal.add(Calendar.MINUTE,emmins);
+    	emailtimebox.setValue(cal.getTime());
+
+    	
     	
         //
         // database
@@ -369,6 +379,7 @@ public class OptionsView extends View
         
 
         dbTypeGroup = new javax.swing.ButtonGroup();
+         remtimelabel = new JLabel();
          syncminlabel = new JLabel();
          syncminlabel.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("sync_mins"));
          GridBagConstraints gridBagConstraints53 = new GridBagConstraints();
@@ -1108,6 +1119,8 @@ public class OptionsView extends View
  
         
         JPanel njp = new JPanel();
+        GridBagConstraints gridBagConstraints116 = new GridBagConstraints();
+        GridBagConstraints gridBagConstraints212 = new GridBagConstraints();
         GridBagConstraints gridBagConstraints211 = new GridBagConstraints();
 
         GridBagConstraints gridBagConstraints115 = new GridBagConstraints();
@@ -1165,6 +1178,17 @@ public class OptionsView extends View
         gridBagConstraints410.gridx = 0;
         gridBagConstraints410.gridy = 1;
 
+        gridBagConstraints116.gridx = 0;
+        gridBagConstraints116.gridy = 3;
+        gridBagConstraints116.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints116.insets = new java.awt.Insets(4,4,4,4);
+        remtimelabel.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("reminder_time"));
+        gridBagConstraints212.gridx = 1;
+        gridBagConstraints212.gridy = 3;
+        gridBagConstraints212.weightx = 1.0;
+        gridBagConstraints212.fill = java.awt.GridBagConstraints.VERTICAL;
+        gridBagConstraints212.insets = new java.awt.Insets(4,4,4,4);
+        gridBagConstraints212.anchor = java.awt.GridBagConstraints.WEST;
         jPanel7.add(sharedbox, gridBagConstraints211);
         jPanel7.add(getSyncMins(), gridBagConstraints53);
         jPanel2.add(incfont, gridBagConstraints2);
@@ -1187,6 +1211,8 @@ public class OptionsView extends View
         jPanel2.add(getLsbox(), gridBagConstraints44);
         jPanel2.add(getTruncbox(), gridBagConstraints115);
         jPanel7.add(syncminlabel, gridBagConstraints410);
+        jPanel1.add(remtimelabel, gridBagConstraints116);
+        jPanel1.add(getEmailtimebox(), gridBagConstraints212);
         pack();
     }//GEN-END:initComponents
 
@@ -1361,6 +1387,13 @@ public class OptionsView extends View
                 return;
             }
         }
+        
+        Date d = (Date) emailtimebox.getValue();
+        Calendar cal = new GregorianCalendar();
+        cal.setTime(d);
+        int hour = cal.get(Calendar.HOUR_OF_DAY);
+        int min = cal.get(Calendar.MINUTE);
+        Prefs.putPref(PrefName.EMAILTIME, new Integer(hour*60+min));
         
         String ls = (String) lsbox.getSelectedItem();
         Prefs.putPref(PrefName.LINESPACING,ls);
@@ -1832,10 +1865,29 @@ public class OptionsView extends View
 	 * @return javax.swing.JTextField	
 	 */    
 	private JSpinner syncmins;
+	private JLabel remtimelabel = null;
+
 	private JSpinner getSyncMins() {
 		if (syncmins == null) {
 			syncmins = new JSpinner();
 		}
 		return syncmins;
 	}
-   }  //  @jve:decl-index=0:visual-constraint="107,15"
+	/**
+	 * This method initializes emailtimebox	
+	 * 	
+	 * @return javax.swing.JComboBox	
+	 */    
+	private JSpinner emailtimebox = null;
+	private JSpinner getEmailtimebox() {
+		if (emailtimebox == null) {
+			emailtimebox = new JSpinner(new SpinnerDateModel());
+			JSpinner.DateEditor de = new JSpinner.DateEditor(emailtimebox,"HH:mm");
+			emailtimebox.setEditor(de);
+			//emailtimebox.setValue(new Date());
+			
+			
+		}
+		return emailtimebox;
+	}
+    }  //  @jve:decl-index=0:visual-constraint="107,15"
