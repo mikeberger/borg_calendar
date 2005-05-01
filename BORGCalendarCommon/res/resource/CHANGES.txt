@@ -9,6 +9,13 @@ Allow GIF images to mark todos in calendar
 Simplified Chinese Translation
 Remove Logging feature
 Switch to JDIC for Windows and Linux Tray Icon Support
+Ability to send reminder email on demand for any day
+Option to show repeat occurrence number
+Multi-user DB auto-sync
+Tunable reminder email time
+Option not to truncate appointment text at one line
+Email to multiple addresses
+Tunable line-spacing in month view
 Bug fixes
 
 Version 1.4.2
