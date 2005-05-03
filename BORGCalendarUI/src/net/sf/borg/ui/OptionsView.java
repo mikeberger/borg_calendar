@@ -1297,9 +1297,9 @@ public class OptionsView extends View
         
 
         // bsv 2004-12-20
-        setCheckBox( cb_ucs_on, PrefName.UCS_ON);
-        setCheckBox( cb_ucs_ontodo, PrefName.UCS_ONTODO);
-        setCheckBox( cb_ucs_marktodo, PrefName.UCS_MARKTODO);
+        setBooleanPref( cb_ucs_on, PrefName.UCS_ON);
+        setBooleanPref( cb_ucs_ontodo, PrefName.UCS_ONTODO);
+        setBooleanPref( cb_ucs_marktodo, PrefName.UCS_MARKTODO);
 
         if( cb_ucs_marktodo.isSelected() ) {
         	Prefs.putPref(PrefName.UCS_MARKER, tf_ucs_marker.getText() );
