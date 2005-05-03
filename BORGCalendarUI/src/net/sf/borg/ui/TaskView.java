@@ -21,6 +21,7 @@ package net.sf.borg.ui;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -611,10 +612,23 @@ class TaskView extends View
             // fill in the taks fields from the screen
             task.setState((String)statebox.getSelectedItem());  // state
             task.setType((String)typebox.getSelectedItem());  // type
-            task.setStartDate(startdatechooser.getCalendar().getTime());  // start date
-            task.setDueDate(duedatechooser.getCalendar().getTime());  // due date
+            Calendar cal = startdatechooser.getCalendar();
+            cal.set(Calendar.HOUR,0);
+            cal.set(Calendar.MINUTE,0);
+            cal.set(Calendar.SECOND,0);
+            task.setStartDate(cal.getTime());  // start date
+            cal = duedatechooser.getCalendar();
+            cal.set(Calendar.HOUR,17);
+            cal.set(Calendar.MINUTE,0);
+            cal.set(Calendar.SECOND,1);
+            task.setDueDate(cal.getTime());  // due date
             task.setPriority(pritext.getText());  // priority
             task.setPersonAssigned(patext.getText());  // person assigned
+            if( jTextArea1.getText() == null || jTextArea1.getText().equals(""))
+           	{
+            	Errmsg.notice(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("empty_desc"));
+            	return;
+           	}
             task.setDescription(jTextArea1.getText());   // description
             task.setResolution(jTextArea2.getText());   // resolution
             

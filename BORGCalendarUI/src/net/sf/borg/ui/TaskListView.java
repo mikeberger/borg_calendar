@@ -33,8 +33,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
 
 import javax.swing.ButtonGroup;
@@ -872,10 +874,17 @@ public class TaskListView extends View {
                     ro[6] = new Integer(9999);
                 else {
                     Date dd = (Date) ro[5];
-                    Date now = new Date();
-                    int days = new Long((dd.getTime() - now.getTime())
+                    Calendar today = new GregorianCalendar();
+                    today.set(Calendar.HOUR,0);
+                    today.set(Calendar.MINUTE,0);
+                    today.set(Calendar.SECOND,0);
+                    //System.out.println( today.getTime() + " " + dd );
+                    //System.out.println( today.getTime().getTime() + " " + dd.getTime());
+               
+                    int days = new Long((dd.getTime() - today.getTime().getTime())
                             / (1000 * 60 * 60 * 24)).intValue();
-                    days++;
+                    //System.out.println( days );
+                    //days++;
                     // if due date is past, set days left to 0
                     // negative days are silly
                     if (days < 0)
