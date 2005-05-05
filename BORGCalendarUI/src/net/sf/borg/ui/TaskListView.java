@@ -875,16 +875,21 @@ public class TaskListView extends View {
                 else {
                     Date dd = (Date) ro[5];
                     Calendar today = new GregorianCalendar();
-                    today.set(Calendar.HOUR,0);
-                    today.set(Calendar.MINUTE,0);
-                    today.set(Calendar.SECOND,0);
-                    //System.out.println( today.getTime() + " " + dd );
-                    //System.out.println( today.getTime().getTime() + " " + dd.getTime());
-               
-                    int days = new Long((dd.getTime() - today.getTime().getTime())
+                    Calendar dcal = new GregorianCalendar();
+                    dcal.setTime(dd);
+                    
+                    // find days left
+                    int days = 0;
+                    if( dcal.get(Calendar.YEAR) == today.get(Calendar.YEAR))
+                    {
+                    	days = dcal.get(Calendar.DAY_OF_YEAR) - today.get(Calendar.DAY_OF_YEAR);
+                    }
+                    else
+                    {
+                    	days = new Long((dd.getTime() - today.getTime().getTime())
                             / (1000 * 60 * 60 * 24)).intValue();
-                    //System.out.println( days );
-                    //days++;
+                    }
+
                     // if due date is past, set days left to 0
                     // negative days are silly
                     if (days < 0)

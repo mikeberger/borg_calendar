@@ -613,14 +613,14 @@ class TaskView extends View
             task.setState((String)statebox.getSelectedItem());  // state
             task.setType((String)typebox.getSelectedItem());  // type
             Calendar cal = startdatechooser.getCalendar();
-            cal.set(Calendar.HOUR,0);
-            cal.set(Calendar.MINUTE,0);
-            cal.set(Calendar.SECOND,0);
+            //cal.set(Calendar.HOUR,0);
+            //cal.set(Calendar.MINUTE,0);
+            //cal.set(Calendar.SECOND,0);
             task.setStartDate(cal.getTime());  // start date
             cal = duedatechooser.getCalendar();
-            cal.set(Calendar.HOUR,17);
-            cal.set(Calendar.MINUTE,0);
-            cal.set(Calendar.SECOND,1);
+            //cal.set(Calendar.HOUR,17);
+            //cal.set(Calendar.MINUTE,0);
+            //cal.set(Calendar.SECOND,1);
             task.setDueDate(cal.getTime());  // due date
             task.setPriority(pritext.getText());  // priority
             task.setPersonAssigned(patext.getText());  // person assigned
