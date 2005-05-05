@@ -1143,7 +1143,7 @@ public class CalendarView extends View implements Prefs.Listener {
 
         jPanel2.setLayout(new java.awt.GridLayout(1, 7));
 
-        jPanel2.setBorder(new javax.swing.border.EtchedBorder());
+        jPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(0,0,0,0));
         jLabel1.setForeground(MonthLabel.getForeground());
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jPanel2.add(jLabel1);
