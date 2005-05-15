@@ -57,6 +57,10 @@ public class ApptCond implements Conduit {
                 {
                     recordMgr.WipeData();
                 }
+                else if( props.syncType == SyncProperties.SYNC_HH_TO_PC )
+                {
+                	recordMgr.quickSyncAndWipe();
+                }
                 else
                 {
                     recordMgr.SyncData();

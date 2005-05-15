@@ -30,7 +30,28 @@ public class RecordManager {
         this.props = props;
         this.db = db;
     }
+    
+    public void quickSyncAndWipe() throws Exception
+	{
 
+    	Log.out("Begin Quick Appt Sync from HH to PC only.");
+    	int count = 0;
+    	boolean allRecordsRead = false;
+    	while (!allRecordsRead) {
+    		
+    		try{
+    			DateRecord hhRecord = new DateRecord();
+    			SyncManager.readNextModifiedRec(db, hhRecord);   			    			
+    			synchronizeHHRecord(hhRecord);
+    			count++;
+    		}
+    		catch(SyncException e){
+    			allRecordsRead = true;
+    		}
+    	}
+    	Log.out("Synced " + count + " records. Begin Wipe and Copy from PC to HH.");
+    	WipeData();
+	}
     public void WipeData() throws Exception {
 
         SyncManager.purgeAllRecs(db);

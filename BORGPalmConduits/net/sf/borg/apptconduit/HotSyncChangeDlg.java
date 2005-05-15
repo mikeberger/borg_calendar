@@ -33,7 +33,7 @@ public class HotSyncChangeDlg extends Dialog
 
     /** Constant String indicating HandHeld should overwrite Desktop
     */
-    static final String SYNC_HH_TO_PC = "Handheld overwrites Desktop";
+    static final String SYNC_HH_TO_PC = "Quick Sync and WIPE";
 
     /** Constant String indicating Desktop should overwrite HandHeld
     */
@@ -151,7 +151,7 @@ public class HotSyncChangeDlg extends Dialog
 		gbc.fill = GridBagConstraints.NONE;
 		optionsPanel.add(pc2hh, gbc);
 		// hh2pc image
-		im = getToolkit().getImage("Sync2.gif");
+		im = getToolkit().getImage("Sync0.gif");
 		ImageCanvas.waitForImage(this, im);
 	    canvas = new ImageCanvas(im);
 		gbc.anchor = GridBagConstraints.NORTHWEST;
@@ -162,10 +162,10 @@ public class HotSyncChangeDlg extends Dialog
 		gbc.weighty = 0;
 		gbc.gridwidth = 1;
 		gbc.fill = GridBagConstraints.NONE;
-		//optionsPanel.add(canvas, gbc);
+		optionsPanel.add(canvas, gbc);
 		// hh2pc checkbox
    		hh2pc.setCheckboxGroup(Group1);
-		hh2pc.setLabel("Handheld overwrites Desktop");
+		hh2pc.setLabel("Quick Sync and WIPE (under development)");
 		gbc.anchor = GridBagConstraints.NORTHWEST;
 		gbc.insets = new Insets(10, 20, 10, 20);
 		gbc.gridx = 1;
@@ -173,7 +173,7 @@ public class HotSyncChangeDlg extends Dialog
 		gbc.weightx = 0;
 		gbc.weighty = 0;
 		gbc.fill = GridBagConstraints.NONE;
-		//optionsPanel.add(hh2pc, gbc);
+		optionsPanel.add(hh2pc, gbc);
 		// do_nothing image
 		im = getToolkit().getImage("Sync3.gif");
 		ImageCanvas.waitForImage(this, im);
