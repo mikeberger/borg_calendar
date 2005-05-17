@@ -2106,7 +2106,8 @@ public class CalendarView extends View implements Prefs.Listener {
 			Resource.getResourceString("translations") + "\n\n" +
 			build_info;
         Object opts[] =
-        {Resource.getResourceString("Dismiss"), Resource.getResourceString("Show_Detailed_Source_Version_Info") };
+        {Resource.getResourceString("Dismiss") /*, 
+         Resource.getResourceString("Show_Detailed_Source_Version_Info")*/ };
         int n = JOptionPane.showOptionDialog(null, info, Resource.getResourceString("About_BORG"), JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getClass().getResource("/resource/borg.jpg")), opts, opts[0]);
         if( n == JOptionPane.NO_OPTION ) {
             info = Resource.getResourceString("Versions_of_--Loaded--_Classes") + Version.getVersion();
