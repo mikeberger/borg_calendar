@@ -163,7 +163,7 @@ public class TaskModel extends Model implements Model.Listener {
                 
                 String cat = mr.getCategory();
                 if( cat == null || cat.equals(""))
-                    cat = Resource.getResourceString("uncategorized");
+                    cat = CategoryModel.UNCATEGORIZED;
                 
                 if( !CategoryModel.getReference().isShown(cat))
                     continue;

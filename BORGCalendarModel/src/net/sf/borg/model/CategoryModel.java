@@ -19,15 +19,20 @@ Copyright 2003 by ==Quiet==
  */
 package net.sf.borg.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.TreeSet;
 
+import net.sf.borg.common.util.Resource;
 import net.sf.borg.model.db.DBException;
 
 
 public class CategoryModel extends Model {
     
     static private CategoryModel self_ = new CategoryModel();
+    
+    static public final String UNCATEGORIZED = Resource.getResourceString("uncategorized");
+    
     public static CategoryModel getReference()
     { return( self_ ); }
     
@@ -52,7 +57,9 @@ public class CategoryModel extends Model {
     
     public Collection getCategories() throws Exception
     {
-        return( categories_ );        
+    	ArrayList cats = new ArrayList();
+    	cats.addAll(categories_);
+        return( cats );        
     }
     
     public void addCategory(String cat)
@@ -80,7 +87,9 @@ public class CategoryModel extends Model {
     
     public Collection getShownCategories()
     {
-        return( shownCategories_ );
+    	ArrayList cats = new ArrayList();
+    	cats.addAll(shownCategories_);
+        return( cats );
     }
 
     /* (non-Javadoc)

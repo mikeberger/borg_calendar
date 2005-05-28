@@ -406,7 +406,7 @@ public class AppointmentModel extends Model implements Model.Listener
     {
         
         Vector res = new Vector();
-        String uncat = Resource.getResourceString("uncategorized");
+        String uncat = CategoryModel.UNCATEGORIZED;
         try
         {
             
@@ -549,7 +549,7 @@ public class AppointmentModel extends Model implements Model.Listener
     public Vector get_todos()
     {
         
-        String uncat = Resource.getResourceString("uncategorized");
+        String uncat = CategoryModel.UNCATEGORIZED;
         Vector av = new Vector();
         try
         {
@@ -649,7 +649,7 @@ public class AppointmentModel extends Model implements Model.Listener
     {
         
         TreeSet dbcat = new TreeSet();
-        dbcat.add(Resource.getResourceString("uncategorized"));
+        dbcat.add(CategoryModel.UNCATEGORIZED);
         Iterator itr = AppointmentModel.getReference().getAllAppts().iterator();
         while( itr.hasNext() )
         {
@@ -670,7 +670,7 @@ public class AppointmentModel extends Model implements Model.Listener
     {
         // erase the current map
         map_.clear();
-        String uncat = Resource.getResourceString("uncategorized");
+        String uncat = CategoryModel.UNCATEGORIZED;
         
         // get the year for later
         GregorianCalendar cal = new GregorianCalendar();

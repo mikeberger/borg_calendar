@@ -253,7 +253,7 @@ public class AppointmentIcalAdapter {
 		oostr.close();
 	}
 	
-	static public String importIcal( String file ) throws Exception, Warning
+	static public String importIcal( String file, String category ) throws Exception, Warning
 	{
 		StringBuffer warning = new StringBuffer();
 		CalendarBuilder builder = new CalendarBuilder();
@@ -274,6 +274,13 @@ public class AppointmentIcalAdapter {
 			if( comp instanceof VEvent || comp instanceof VToDo)
 			{
 				Appointment ap = amodel.newAppt();
+				
+				if (category.equals("")
+						|| category.equals(CategoryModel.UNCATEGORIZED)) {
+					ap.setCategory(null);
+				} else {
+					ap.setCategory(category);
+				}
 				PropertyList pl = comp.getProperties();
 				String appttext = "";
 				String summary = "";
