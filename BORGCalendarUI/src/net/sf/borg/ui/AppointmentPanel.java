@@ -984,7 +984,7 @@ class AppointmentPanel extends JPanel {
 
 		String cat = (String) catbox.getSelectedItem();
 		if (cat.equals("")
-				|| cat.equals(Resource.getResourceString("uncategorized"))) {
+				|| cat.equals(CategoryModel.UNCATEGORIZED)) {
 			r.setCategory(null);
 		} else {
 			r.setCategory(cat);

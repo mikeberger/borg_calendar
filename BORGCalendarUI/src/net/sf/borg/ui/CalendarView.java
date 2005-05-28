@@ -1641,6 +1641,7 @@ public class CalendarView extends View implements Prefs.Listener {
         setJMenuBar(menuBar);
 
         this.setContentPane(getJPanel());
+        catmenu.add(getDelcatMI());
         impexpMenu.add(getExpvcal());
     }//GEN-END:initComponents
 
@@ -1667,12 +1668,21 @@ public class CalendarView extends View implements Prefs.Listener {
             
             Errmsg.notice( err );
         }
-        
-    	try {
-			String warnings = AppointmentIcalAdapter.importIcal(file.getAbsolutePath());
-			if( warnings != null)
-				Errmsg.notice(warnings);
-		} 
+        try {
+        	CategoryModel catmod = CategoryModel.getReference();
+        	Collection allcats = catmod.getCategories();
+        	Object[] cats = allcats.toArray();
+        	
+        	Object o = JOptionPane.showInputDialog(null,Resource.getResourceString("import_cat_choose"),
+        			"",JOptionPane.QUESTION_MESSAGE,null,cats,cats[0]);
+        	if( o == null)
+        		return;
+        	
+        	String warnings = AppointmentIcalAdapter.importIcal(file.getAbsolutePath(), (String)o);
+        	
+        	if( warnings != null)
+        		Errmsg.notice(warnings);
+        } 
     	catch (Exception e) {
 			Errmsg.errmsg(e);
 		} 
@@ -2337,6 +2347,7 @@ public class CalendarView extends View implements Prefs.Listener {
 	private JPanel jPanel = null;
 	private JPanel jPanel5 = null;
 	private JMenuItem expvcal = null;
+	private JMenuItem delcatMI = null;
     // called when a Prefs change notification is sent out
     // to all Prefs.Listeners
 	public void prefsChanged() {
@@ -2456,4 +2467,73 @@ public class CalendarView extends View implements Prefs.Listener {
 		}
 		return expvcal;
 	}
- }
+	/**
+	 * This method initializes delcatMI	
+	 * 	
+	 * @return javax.swing.JMenuItem	
+	 */    
+	private JMenuItem getDelcatMI() {
+		if (delcatMI == null) {
+			delcatMI = new JMenuItem();
+			delcatMI.setText(ResourceBundle.getBundle("resource/borg_resource").getString("delete_cat"));
+			delcatMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Delete16.gif")));
+			delcatMI.addActionListener(new java.awt.event.ActionListener() { 
+				public void actionPerformed(java.awt.event.ActionEvent e) { 
+					
+					try{
+						CategoryModel catmod = CategoryModel.getReference();
+						Collection allcats = catmod.getCategories();
+						allcats.remove(CategoryModel.UNCATEGORIZED);
+						if( allcats.isEmpty())
+							return;
+						Object[] cats = allcats.toArray();
+						
+						Object o = JOptionPane.showInputDialog(null,Resource.getResourceString("delete_cat_choose"),
+								"",JOptionPane.QUESTION_MESSAGE,null,cats,cats[0]);
+						if( o == null)
+							return;
+						
+						int ret = JOptionPane.showConfirmDialog(null, Resource.getResourceString("delcat_warn") + 
+								" [" + (String)o + "]!", 
+								"", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+						if (ret == JOptionPane.OK_OPTION) {
+							
+							
+							// appts
+							Iterator itr = AppointmentModel.getReference().getAllAppts().iterator();
+							while( itr.hasNext() )
+							{
+								Appointment ap = (Appointment) itr.next();
+								String cat = ap.getCategory();
+								if( cat != null && cat.equals((String)o) )
+									AppointmentModel.getReference().delAppt(ap);
+							}
+							
+							// tasks
+							itr = TaskModel.getReference().getTasks().iterator();
+							while( itr.hasNext() ) {
+								Task t = (Task) itr.next();
+								String cat = t.getCategory();
+								if( cat != null && cat.equals((String)o) )
+									TaskModel.getReference().delete(t.getKey());
+							}
+							
+							
+					        try{
+					            CategoryModel.getReference().syncCategories();
+					        }
+					        catch( Exception ex) {
+					            Errmsg.errmsg(ex);
+					        }
+						}
+					}
+					catch( Exception ex )
+					{
+						Errmsg.errmsg(ex);
+					}
+				}
+			});
+		}
+		return delcatMI;
+	}
+  }

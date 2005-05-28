@@ -1,5 +1,7 @@
 Version 1.5
 -----------
+Import iCal into a particular category (1.5 final only)
+Delete Category including appts and tasks (1.5 final only)
 Palm Synchronization Conduits
 Improved Popup reminders with user tunable popup times per appointment
 Add date chooser to task GUI

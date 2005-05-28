@@ -634,7 +634,7 @@ class TaskView extends View
             
             //task.setCategory( cattext.getText());
             String cat = (String) catbox.getSelectedItem();
-            if( cat.equals("") || cat.equals(Resource.getResourceString("uncategorized")))
+            if( cat.equals("") || cat.equals(CategoryModel.UNCATEGORIZED))
             {
                 task.setCategory(null);
             }

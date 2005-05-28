@@ -834,7 +834,7 @@ public class TaskListView extends View {
                 // category
                 String cat = task.getCategory();
                 if( cat == null || cat.equals(""))
-                    cat = Resource.getResourceString("uncategorized");
+                    cat = CategoryModel.UNCATEGORIZED; 
                 
                 if( !CategoryModel.getReference().isShown(cat))
                     continue;

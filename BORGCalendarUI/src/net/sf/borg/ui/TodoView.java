@@ -648,7 +648,7 @@ public class TodoView extends View {
         // code taken from AppointmentPanel.java
         String cat = (String) cat_cb.getSelectedItem();
         //System.out.println( cat+"==" );
-        if( cat.equals("") || cat.equals(Resource.getResourceString("uncategorized")))
+        if( cat.equals("") || cat.equals(CategoryModel.UNCATEGORIZED))
         {
             r.setCategory(null);
         }
