@@ -343,6 +343,7 @@ public class AppointmentListView extends View implements ListSelectionListener {
         gridBagConstraints22.gridx = 0;
         gridBagConstraints22.gridy = 0;
         gridBagConstraints22.insets = new java.awt.Insets(2,2,2,2);
+        jTable1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jPanel3.add(getJPanel4(), gridBagConstraints22);
         jPanel3.add(jScrollPane1, gridBagConstraints2);
         jPanel1.add(delone, delone.getName());
