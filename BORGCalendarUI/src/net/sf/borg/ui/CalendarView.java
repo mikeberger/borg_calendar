@@ -15,7 +15,7 @@ This file is part of BORG.
     along with BORG; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  
-Copyright 2003 by ==Quiet==
+Copyright 2003 by Mike Berger
  */
 
 package net.sf.borg.ui;
@@ -2128,11 +2128,13 @@ public class CalendarView extends View implements Prefs.Listener {
     
     private void SearchMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SearchMIActionPerformed
         // user wants to do a search, so prompt for search string and request search results
-        String inputValue = JOptionPane.showInputDialog(Resource.getResourceString("Enter_search_string:"));
-        if( inputValue == null ) return;
+    	
+    	new SearchView().show();
+        //String inputValue = JOptionPane.showInputDialog(Resource.getResourceString("Enter_search_string:"));
+        ////if( inputValue == null ) return;
         // bring up srch window
-        SearchView sg = new SearchView(inputValue );
-        sg.show();
+        //SearchView sg = new SearchView(inputValue );
+        //sg.show();
         
     }//GEN-LAST:event_SearchMIActionPerformed
     
