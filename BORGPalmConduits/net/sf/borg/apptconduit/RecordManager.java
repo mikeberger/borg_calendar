@@ -497,9 +497,9 @@ public class RecordManager {
 
         rec.setId(0);
 
-        rec.setIsNew(appt.getNew());
-        rec.setIsDeleted(appt.getDeleted());
-        rec.setIsModified(appt.getModified());
+        rec.setIsNew(false);
+        rec.setIsDeleted(false);
+        rec.setIsModified(false);
         return rec;
     }
 
@@ -648,9 +648,9 @@ public class RecordManager {
         	appt.setTimes( new Integer(9999));
         
 
-        appt.setNew(hh.isNew());
-        appt.setDeleted(hh.isDeleted());
-        appt.setModified(hh.isModified());
+        appt.setNew(false);
+        appt.setDeleted(false);
+        appt.setModified(false);
 
         return appt;
     }
