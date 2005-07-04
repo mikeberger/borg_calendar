@@ -20,8 +20,6 @@ Copyright 2003 by ==Quiet==
 
 package net.sf.borg.model.db.file;
 
-import java.sql.Connection;
-
 import net.sf.borg.model.Address;
 import net.sf.borg.model.Appointment;
 import net.sf.borg.model.Task;
@@ -43,6 +41,7 @@ public class FileBeanDataFactory implements IBeanDataFactory
 	}
 
 	// IBeanDataFactory overrides
+	/*
 	public final BeanDB create(Class cls, Connection cnxn)
 	{
 		throw new IllegalArgumentException(cls.getName());
@@ -69,6 +68,36 @@ public class FileBeanDataFactory implements IBeanDataFactory
 		creator.init(file,readonly,shared);
 		return creator;
 	}
+	*/
+	/**
+	 * Replacing the old signature, this new one should receive the url String
+	 * using the format <code>filename::isReadonly::isShared</code>.<br>
+	 * Example: <code>/home/user/borg/files::false::true</code><br>
+	 * @see net.sf.borg.model.db.IBeanDataFactory#create(java.lang.Class, java.lang.String, int)
+	 */
+	public final BeanDB create(
+			Class cls,
+			String url,
+			int userid)
+			throws Exception
+		{
+			String[] fileArray = url.split("::");
+			String file = fileArray[0];
+			boolean readonly = Boolean.valueOf(fileArray[1]).booleanValue();
+			boolean shared = Boolean.valueOf(fileArray[2]).booleanValue();
+	    	FileDBCreator creator = null;
+			if (cls == Address.class)
+				creator = new AddrFileDB();
+			else if (cls == Task.class)
+				creator = new TaskFileDB();
+			else if (cls == Appointment.class)
+				creator = new ApptFileDB();
+			else
+				throw new IllegalArgumentException(cls.getName());
+				
+			creator.init(file,readonly,shared);
+			return creator;
+		}
 
 	// private //
 	private static final FileBeanDataFactory instance = new FileBeanDataFactory();

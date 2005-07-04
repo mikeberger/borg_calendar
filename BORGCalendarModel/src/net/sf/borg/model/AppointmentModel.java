@@ -617,14 +617,12 @@ public class AppointmentModel extends Model implements Model.Listener
     
     
     // open the SMDB database
-    public void open_db(String file, boolean readonly, boolean autostart, boolean shared, int userid) throws Exception
+    public void open_db(String factoryClassName, String url, int userid) throws Exception
     {
 		db_ =
-			BeanDataFactoryFactory.getInstance().getFactory(file).create(
+			BeanDataFactoryFactory.getInstance().getFactory(factoryClassName).create(
 				Appointment.class,
-				file,
-				readonly,
-				shared,
+				url,
 				userid);
         
         // init categories and currentcategories

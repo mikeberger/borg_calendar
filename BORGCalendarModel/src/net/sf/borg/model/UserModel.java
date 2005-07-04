@@ -91,16 +91,14 @@ public class UserModel extends Model {
     }
     
     // open the SMDB database
-	public void open_db(String file, boolean readonly)
+	public void open_db(String factoryClassName, String url, int userid)
 		throws Exception
 	{
 		db_ =
-			BeanDataFactoryFactory.getInstance().getFactory(file).create(
+			BeanDataFactoryFactory.getInstance().getFactory(factoryClassName).create(
 				User.class,
-				file,
-				readonly,
-				false,
-				0);
+				url,
+				userid);
 	}
     
     public void delete( int num ) throws Exception {

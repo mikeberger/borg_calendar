@@ -20,7 +20,6 @@ Copyright 2003 by ==Quiet==
 
 package net.sf.borg.model.db;
 
-import java.sql.Connection;
 
 
 /**
@@ -30,13 +29,18 @@ import java.sql.Connection;
 public interface IBeanDataFactory
 {
 	/**
-	 * Creation method which accepts a database connection.
+	 * Creation method.
 	 */
-	public BeanDB create(Class cls, Connection cnxn);
+	public BeanDB create(Class cls, String url, int userid) throws Exception;
 
 	/**
+	 * Creation method which accepts a database connection.
+	 */  /*
+	public BeanDB create(Class cls, Connection cnxn);
+*/
+	/**
 	 * Creation method which accepts class creation parameters.
-	 */
+	 */  /*
 	public BeanDB create(
 		Class cls,
 		String file,
@@ -44,4 +48,5 @@ public interface IBeanDataFactory
 		boolean shared,
 		int userid )
 		throws Exception;
+*/
 }

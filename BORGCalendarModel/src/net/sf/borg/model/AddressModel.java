@@ -20,7 +20,6 @@ Copyright 2003 by ==Quiet==
 package net.sf.borg.model;
 
 import java.io.Writer;
-import java.sql.Connection;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -162,20 +161,19 @@ public class AddressModel extends Model {
     }
     
     // open the SMDB database
-	public void open_db(String file, boolean readonly, boolean shared, int userid)
+	public void open_db(String factoryClassName, String url, int userid)
 		throws Exception
 	{
 		db_ =
-			BeanDataFactoryFactory.getInstance().getFactory(file).create(
+			BeanDataFactoryFactory.getInstance().getFactory(factoryClassName).create(
 				Address.class,
-				file,
-				readonly,
-				shared,
+				url,
 				userid);
 		load_map();
 	}
 
 	// open using a JDBC database
+	/*
 	public void open_db(Connection conn) throws Exception
 	{
 		db_ =
@@ -184,7 +182,7 @@ public class AddressModel extends Model {
 				conn);
 		load_map();
 	}
-    
+    */
     public void delete( Address addr ) throws Exception {
         
         try {

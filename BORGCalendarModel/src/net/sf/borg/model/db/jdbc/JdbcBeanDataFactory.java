@@ -20,8 +20,6 @@ Copyright 2003 by ==Quiet==
 
 package net.sf.borg.model.db.jdbc;
 
-import java.sql.Connection;
-
 import net.sf.borg.model.Address;
 import net.sf.borg.model.Appointment;
 import net.sf.borg.model.Task;
@@ -44,6 +42,7 @@ public class JdbcBeanDataFactory implements IBeanDataFactory
 	}
 
 	// IBeanDataFactory overrides
+	/*
 	public final BeanDB create(Class cls, Connection cnxn)
 	{
 		if (cls == Address.class)
@@ -73,6 +72,24 @@ public class JdbcBeanDataFactory implements IBeanDataFactory
 
 		throw new IllegalArgumentException(cls.getName());
 	}
+	*/
+	public final BeanDB create(
+			Class cls,
+			String url,
+			int userid)
+			throws Exception
+		{
+			if (cls == Address.class)
+				return new AddrJdbcDB( url, userid );
+			else if (cls == Task.class)
+				return new TaskJdbcDB( url, userid );
+			else if (cls == User.class)
+				return new UserJdbcDB( url );
+			else if (cls == Appointment.class)
+				return new ApptJdbcDB( url, userid );
+
+			throw new IllegalArgumentException(cls.getName());
+		}
 
 	// private //
 	private static final JdbcBeanDataFactory instance = new JdbcBeanDataFactory();

@@ -20,10 +20,7 @@ Copyright 2003 by ==Quiet==
 
 package net.sf.borg.model.db;
 
-import net.sf.borg.model.db.file.FileBeanDataFactory;
-import net.sf.borg.model.db.jdbc.JdbcBeanDataFactory;
-//import net.sf.borg.model.db.remote.RemoteBeanDataFactory;
-import net.sf.borg.model.db.serial.SerialBeanDataFactory;
+import java.lang.reflect.Method;
 
 /**
  * A singleton instance which creates an
@@ -39,7 +36,12 @@ public class BeanDataFactoryFactory
 	{
 		return instance;
 	}
-
+	 public final IBeanDataFactory getFactory(String className) throws Exception 
+	 { 
+	 	Method getInst = Class.forName(className).getMethod("getInstance",null); 
+	 	return (IBeanDataFactory) getInst.invoke(null,null); 
+	 } 
+/*
 	public final IBeanDataFactory getFactory(String file)
 	{
 		if (file.startsWith("jdbc:"))
@@ -51,7 +53,7 @@ public class BeanDataFactoryFactory
 		else // assume file
 			return FileBeanDataFactory.getInstance();
 	}
-
+*/
 	// private //
 	private static final BeanDataFactoryFactory instance = new BeanDataFactoryFactory();
 

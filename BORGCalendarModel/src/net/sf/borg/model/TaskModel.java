@@ -20,7 +20,6 @@ Copyright 2003 by ==Quiet==
 package net.sf.borg.model;
 
 import java.io.Writer;
-import java.sql.Connection;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -32,7 +31,6 @@ import java.util.TreeSet;
 import java.util.Vector;
 
 import net.sf.borg.common.util.Errmsg;
-import net.sf.borg.common.util.Resource;
 import net.sf.borg.common.util.Version;
 import net.sf.borg.common.util.XTree;
 import net.sf.borg.model.db.BeanDB;
@@ -206,7 +204,7 @@ public class TaskModel extends Model implements Model.Listener {
         
         
     }
-    
+    /*
     // open using a JDBC database
     public void open_db(Connection conn) throws Exception {
 		db_ =
@@ -242,15 +240,13 @@ public class TaskModel extends Model implements Model.Listener {
         load_map();
         
     }
-    
+    */
     // open the SMDB database
-    public void open_db(String file,boolean readonly, boolean shared, int userid) throws Exception {
+    public void open_db(String factoryClassName, String url, int userid) throws Exception {
 		db_ =
-			BeanDataFactoryFactory.getInstance().getFactory(file).create(
+			BeanDataFactoryFactory.getInstance().getFactory(factoryClassName).create(
 				Task.class,
-				file,
-				readonly,
-				shared,
+				url,
 				userid);
         
         // get XML that models states/transitions
