@@ -39,7 +39,7 @@ public class AddrCond implements Conduit {
                 //read the pc records on the PC
                 String dbdir = props.pathName;
                 addressModel = AddressModel.create();
-                addressModel.open_db(dbdir, false, false, 1);
+                addressModel.open_db("net.sf.borg.model.db.file.FileBeanDataFactory", dbdir, 1);
 
                 //Create an instance of the RecordManager for synchronizing the
                 // records
