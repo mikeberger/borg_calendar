@@ -81,10 +81,21 @@ public class FileBeanDataFactory implements IBeanDataFactory
 			int userid)
 			throws Exception
 		{
-			String[] fileArray = url.split("::");
-			String file = fileArray[0];
-			boolean readonly = Boolean.valueOf(fileArray[1]).booleanValue();
-			boolean shared = Boolean.valueOf(fileArray[2]).booleanValue();
+			boolean readonly = false;
+			boolean shared = false;
+			String file = url;
+			try{
+				String[] fileArray = url.split("::");
+				file = fileArray[0];
+				readonly = Boolean.valueOf(fileArray[1]).booleanValue();
+				shared = Boolean.valueOf(fileArray[2]).booleanValue();
+			}
+			catch( java.lang.NoSuchMethodError e )
+			{
+				// the Palm conduits run in JRE 1.3
+				// so we must ignore that split() does not exist
+			}
+			
 	    	FileDBCreator creator = null;
 			if (cls == Address.class)
 				creator = new AddrFileDB();
