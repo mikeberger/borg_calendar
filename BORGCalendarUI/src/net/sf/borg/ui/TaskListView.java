@@ -201,12 +201,13 @@ public class TaskListView extends View {
                 Resource.getResourceString("Status"),
                 Resource.getResourceString("Type"),
                 Resource.getResourceString("Category"),
+                Resource.getResourceString("Pri"),
                 Resource.getResourceString("Start_Date"),
                 Resource.getResourceString("Due_Date"),
                 Resource.getResourceString("Days_Left"),
                 Resource.getResourceString("Description") }, new Class[] {
                 java.lang.Integer.class, java.lang.String.class,
-                java.lang.String.class, java.lang.String.class, Date.class,
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, Date.class,
                 Date.class, java.lang.Integer.class, java.lang.String.class }));
 
         // set up for sorting when a column header is clicked
@@ -221,10 +222,10 @@ public class TaskListView extends View {
         jTable1.getColumnModel().getColumn(1).setPreferredWidth(80);
         jTable1.getColumnModel().getColumn(2).setPreferredWidth(80);
         jTable1.getColumnModel().getColumn(3).setPreferredWidth(80);
-        jTable1.getColumnModel().getColumn(4).setPreferredWidth(120);
         jTable1.getColumnModel().getColumn(5).setPreferredWidth(120);
-        jTable1.getColumnModel().getColumn(6).setPreferredWidth(80);
-        jTable1.getColumnModel().getColumn(7).setPreferredWidth(400);
+        jTable1.getColumnModel().getColumn(6).setPreferredWidth(120);
+        jTable1.getColumnModel().getColumn(7).setPreferredWidth(80);
+        jTable1.getColumnModel().getColumn(8).setPreferredWidth(400);
         jTable1.setPreferredScrollableViewportSize(new Dimension(900, 400));
 
         pack();
@@ -859,21 +860,22 @@ public class TaskListView extends View {
 
                 // if we get here - we are displaying this task as a row
                 // so fill in an array of objects for the row
-                Object[] ro = new Object[8];
+                Object[] ro = new Object[9];
                 ro[0] = task.getTaskNumber(); // task number
                 ro[1] = task.getState(); // task state
                 ro[2] = task.getType(); // task type
                 ro[3] = task.getCategory();
-                ro[4] = task.getStartDate(); // task start date
-                ro[5] = task.getDueDate(); // task due date
+                ro[4] = task.getPriority();
+                ro[5] = task.getStartDate(); // task start date
+                ro[6] = task.getDueDate(); // task due date
 
                 // calculate days left - today - duedate
-                if (ro[5] == null)
+                if (ro[6] == null)
                     // 9999 days left if no due date - this is a (cringe, ack,
                     // thptt) magic value
-                    ro[6] = new Integer(9999);
+                    ro[7] = new Integer(9999);
                 else {
-                    Date dd = (Date) ro[5];
+                    Date dd = (Date) ro[6];
                     Calendar today = new GregorianCalendar();
                     Calendar dcal = new GregorianCalendar();
                     dcal.setTime(dd);
@@ -894,7 +896,7 @@ public class TaskListView extends View {
                     // negative days are silly
                     if (days < 0)
                         days = 0;
-                    ro[6] = new Integer(days);
+                    ro[7] = new Integer(days);
                 }
 
                 // strip newlines from the description
@@ -906,7 +908,7 @@ public class TaskListView extends View {
                         continue;
                     tmp += c;
                 }
-                ro[7] = tmp;
+                ro[8] = tmp;
 
                 // add the task row to table
                 addRow(ro);
