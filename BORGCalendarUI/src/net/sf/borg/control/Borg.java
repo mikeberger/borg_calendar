@@ -368,10 +368,43 @@ public class Borg extends Controller implements OptionsView.RestartListener {
 					}
             	}
             }
+            
+            // determine DB Factory class name
+            String factoryClass = "net.sf.borg.model.db.file.FileBeanDataFactory";
+    		if (dbdir.startsWith("jdbc:"))
+    		{
+    			factoryClass = "net.sf.borg.model.db.jdbc.JdbcBeanDataFactory";
+    		}
+    		else if (dbdir.startsWith("serialize:") || dbdir.startsWith("mem:"))
+    		{
+    			factoryClass = "net.sf.borg.model.db.serial.SerialBeanDataFactory";
+    		}
+    		else
+    		{
+    			// using default File DB
+    			// append parms to url
+    			if( readonly )
+    			{
+    				dbdir += "::true";
+    			}
+    			else
+    			{
+    				dbdir += "::false";
+    			}
+    			if( shared )
+    			{
+    				dbdir += "::true";
+    			}
+    			else
+    			{
+    				dbdir += "::false";
+    			}
+    		}
+
 
             calmod_ = AppointmentModel.create();
             register(calmod_);
-            calmod_.open_db(dbdir, readonly, autostart, shared,uid);
+            calmod_.open_db(factoryClass, dbdir, uid);
 
             // aplist only needs calendar data - so just print list of
             // appointments
@@ -400,14 +433,14 @@ public class Borg extends Controller implements OptionsView.RestartListener {
                         .getResourceString("Loading_Task_Database"));
             taskmod_ = TaskModel.create();
             register(taskmod_);
-            taskmod_.open_db(dbdir, readonly, shared,uid);
+            taskmod_.open_db(factoryClass, dbdir, uid);
 
             if (!autostart && splash)
                 ban_.setText(Resource
                         .getResourceString("Opening_Address_Database"));
             addrmod_ = AddressModel.create();
             register(addrmod_);
-            addrmod_.open_db(dbdir, readonly, shared,uid);
+            addrmod_.open_db(factoryClass, dbdir, uid);
 
             if (!autostart && splash)
                 ban_.setText(Resource.getResourceString("Opening_Main_Window"));
