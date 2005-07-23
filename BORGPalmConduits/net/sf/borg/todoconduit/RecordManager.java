@@ -128,7 +128,7 @@ public class RecordManager {
                 continue;
             
             // !!!!! only show first line of task text !!!!!!
-            String tx = "BT" + r.getTaskNumber() + ":";
+            /*String tx = "BT" + r.getTaskNumber() + ":";
             String xx = r.getDescription();
             int ii = xx.indexOf('\n');
             if( ii != -1 ) {
@@ -136,7 +136,8 @@ public class RecordManager {
             }
             else {
                 tx += xx;
-            }
+            }*/
+            String tx = r.getDescription();
             
             TodoRecord rec = new TodoRecord();
 
@@ -147,7 +148,7 @@ public class RecordManager {
             // the due date
             Date nt = r.getDueDate();
             rec.setDueDate(nt);
-            rec.setNote("-9999,");
+            rec.setNote("TASK," + r.getKey());
             
             String s = r.getCategory();
             if( s == null)
@@ -232,8 +233,20 @@ public class RecordManager {
         }
 
     }
-
+    
     public void synchronizeHHRecord(TodoRecord hhRecord) throws Exception {
+    	if( isTask(hhRecord))
+    	{
+    		syncTask(hhRecord);
+    	}
+    	else
+    	{
+    		syncAppt(hhRecord);
+    	}
+    }
+
+    
+    public void syncAppt(TodoRecord hhRecord) throws Exception {
 
         Appointment appt = null;
         //Log.out("Sync HH: " + hhRecord.toFormattedString());
@@ -344,9 +357,76 @@ public class RecordManager {
         }
 
     }
+    
+    public void syncTask(TodoRecord hhRecord) throws Exception {
+
+        Task task = null;
+        
+        // any record without a BORG id is considered new
+        int id = getTaskKey(hhRecord);
+        if (id != -1) {
+            try {
+                task = getTaskById(id);
+            }
+            catch (Exception e) {
+            }
+        }
+
+        // if todo points to a deleted BORG record - skip it
+        // do not add a new one
+        if (task == null && id != -1)
+            return;
+
+        if (task == null) {
+            // add a new task to BORG
+        	task = TaskModel.getReference().newMR();
+        	task.setTaskNumber(new Integer(-1));
+        	task.setState("OPEN");
+        	task.setType("TASK");
+        	task.setPriority("3");
+        	task.setStartDate( new Date());
+        	task.setDueDate(hhRecord.getDueDate());
+        	task.setDescription(hhRecord.getDescription());
+            String cat = cm.matchId(hhRecord.getCategoryIndex(), hhCats).getName();
+            if( !cat.equals("Unfiled"))
+            {
+                task.setCategory(cat);
+            }
+            TaskModel.getReference().savetask(task);
+
+        }
+        else {
+            if (hhRecord.isCompleted()) {
+                // close task
+                try {
+                    
+                    TaskModel.getReference().close(task.getKey());
+                }
+                catch (Exception e) {
+                }
+            }
+            else if( hhRecord.isModified())
+            {
+            	task.setDueDate(hhRecord.getDueDate());
+            	task.setDescription(hhRecord.getDescription());
+                String cat = cm.matchId(hhRecord.getCategoryIndex(), hhCats).getName();
+                if( !cat.equals("Unfiled"))
+                {
+                    task.setCategory(cat);
+                }
+                TaskModel.getReference().savetask(task);
+
+            }
+        }
+
+    }
 
     private Appointment getRecordById(int id) throws Exception {
         return (AppointmentModel.getReference().getAppt(id));
+    }
+    
+    private Task getTaskById(int id) throws Exception {
+        return (TaskModel.getReference().getMR(id));
     }
 
     private int addPCRecord(Appointment appt) throws Exception {
@@ -363,8 +443,50 @@ public class RecordManager {
             int idx = notes.indexOf(",");
             if (idx != -1) {
                 String id = notes.substring(0, idx);
+                if( id.equals("TASK"))
+                	return -1;
                 try {
                     int i = Integer.parseInt(id);
+                    return (i);
+                }
+                catch (Exception e) {
+                }
+
+            }
+        }
+
+        return (-1);
+
+    }
+    
+    static boolean isTask(TodoRecord hh)
+    {
+        String notes = hh.getNote();
+        if (notes != null) {
+            int idx = notes.indexOf(",");
+            if (idx != -1) {
+                String id = notes.substring(0, idx);
+                if( id.equals("TASK"))
+                	return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    static int getTaskKey(TodoRecord hh) {
+
+        String notes = hh.getNote();
+        if (notes != null) {
+
+            int idx = notes.indexOf(",");
+            if (idx != -1) {
+                String id = notes.substring(0, idx);
+                if( !id.equals("TASK"))
+                	return -1;
+                try {
+                	String key = notes.substring(idx+1);
+                    int i = Integer.parseInt(key);
                     return (i);
                 }
                 catch (Exception e) {
