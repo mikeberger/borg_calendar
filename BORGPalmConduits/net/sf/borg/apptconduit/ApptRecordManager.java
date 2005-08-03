@@ -21,12 +21,12 @@ import palm.conduit.SyncProperties;
 
 //"Portions copyright (c) 1996-2002 PalmSource, Inc. or its affiliates.  All rights reserved."
 
-public class RecordManager {
+public class ApptRecordManager {
 
     SyncProperties props;
     int db;
 
-    public RecordManager(SyncProperties props, int db) {
+    public ApptRecordManager(SyncProperties props, int db) {
         this.props = props;
         this.db = db;
     }
@@ -128,7 +128,7 @@ public class RecordManager {
 
         DateRecord hhRecord;
         
-        //Log.out("Sync PC: " + appt.getKey() + " " + appt.getText());
+        Log.out("Appt Sync PC: " + appt.getKey() + " " + appt.getText());
 
         if (!appt.getNew()) {
 
@@ -172,7 +172,7 @@ public class RecordManager {
     public void synchronizeHHRecord(DateRecord hhRecord) throws Exception {
 
         Appointment appt = null;
-        //Log.out("Sync HH: " + hhRecord.toFormattedString());
+        Log.out("Appt Sync HH: " + hhRecord.toFormattedString());
         // any record without a BORG id is considered new
         int id = getApptKey(hhRecord);
         if (id != -1 )

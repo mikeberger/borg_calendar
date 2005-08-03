@@ -2,6 +2,7 @@ package net.sf.borg.apptconduit;
 
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.model.AppointmentModel;
+import net.sf.borg.model.TaskModel;
 import palm.conduit.Conduit;
 import palm.conduit.ConfigureConduitInfo;
 import palm.conduit.Log;
@@ -19,10 +20,11 @@ public class ApptCond implements Conduit {
  
     public void open(SyncProperties props) {
 
-        int db;
 
-        RecordManager recordMgr;
+        ApptRecordManager recordMgr;
+        TodoRecordManager trecordMgr;
         AppointmentModel apptModel;
+        TaskModel taskModel;
 
         Errmsg.console(true);
         
@@ -37,20 +39,29 @@ public class ApptCond implements Conduit {
             }
             else
             {
-
-                db = SyncManager.openDB("DatebookDB", 0, SyncManager.OPEN_READ
-                        | SyncManager.OPEN_WRITE | SyncManager.OPEN_EXCLUSIVE);
-                
-                int numrecs = SyncManager.getDBRecordCount(db);
-
                 //read the pc records on the PC
                 String dbdir = props.pathName;
                 apptModel = AppointmentModel.create();
                 apptModel.open_db("net.sf.borg.model.db.file.FileBeanDataFactory", dbdir , 1);;
 
-                //Create an instance of the RecordManager for synchronizing the
-                // records
-                recordMgr = new RecordManager(props, db);
+                taskModel = TaskModel.create();
+                taskModel.open_db("net.sf.borg.model.db.file.FileBeanDataFactory", dbdir , 1);
+               
+                // have to get todo data into BORG, then get appt data, then sync back
+                // appt data and finally overwrite Todo data. 
+                if (props.syncType != SyncProperties.SYNC_DO_NOTHING) {
+                	Log.out("Sync Todo");
+                    int tododb = SyncManager.openDB("ToDoDB", 0, SyncManager.OPEN_READ
+                            | SyncManager.OPEN_WRITE | SyncManager.OPEN_EXCLUSIVE);
+                    trecordMgr = new net.sf.borg.apptconduit.TodoRecordManager(props, tododb);
+                	trecordMgr.SyncData();
+                	SyncManager.closeDB(tododb);
+                }
+                
+                int apptdb = SyncManager.openDB("DatebookDB", 0, SyncManager.OPEN_READ
+                        | SyncManager.OPEN_WRITE | SyncManager.OPEN_EXCLUSIVE);
+                recordMgr = new net.sf.borg.apptconduit.ApptRecordManager(props, apptdb);
+                int numrecs = SyncManager.getDBRecordCount(apptdb);
                 
                 // send ALL records to HH if wipe option set by user OR is HH db is empty
                 if( props.syncType == SyncProperties.SYNC_PC_TO_HH || numrecs == 0)
@@ -63,14 +74,25 @@ public class ApptCond implements Conduit {
                 }
                 else
                 {
+                	Log.out("Sync Appt");
                     recordMgr.SyncData();
                 }
+                
+                SyncManager.closeDB(apptdb);
 
-
+                if (props.syncType != SyncProperties.SYNC_DO_NOTHING) {
+                    int tododb = SyncManager.openDB("ToDoDB", 0, SyncManager.OPEN_READ
+                            | SyncManager.OPEN_WRITE | SyncManager.OPEN_EXCLUSIVE);
+                    trecordMgr = new net.sf.borg.apptconduit.TodoRecordManager(props, tododb);
+                    Log.out("Wipe Todo");
+                	trecordMgr.WipeData();
+                	SyncManager.closeDB(tododb);
+                }
+              
+                
                 // Close DB
                 apptModel.close_db();
-                SyncManager.closeDB(db);
-                
+                taskModel.close_db();
                 // Single Log we are successful
                 Log.out("OK ApptCond Conduit");
                 Log.endSync();

@@ -1,4 +1,4 @@
-package net.sf.borg.todoconduit;
+package net.sf.borg.apptconduit;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ import palm.conduit.TodoRecord;
 //"Portions copyright (c) 1996-2002 PalmSource, Inc. or its affiliates. All
 // rights reserved."
 
-public class RecordManager {
+public class TodoRecordManager {
 
     SyncProperties props;
     int db;
@@ -30,7 +30,7 @@ public class RecordManager {
     CategoryManager cm = null;
     Vector hhCats = null;
     
-    public RecordManager(SyncProperties props, int db) {
+    public TodoRecordManager(SyncProperties props, int db) {
         this.props = props;
         this.db = db;
         cm = new CategoryManager( props, db );
@@ -197,6 +197,7 @@ public class RecordManager {
     // after, we will wipe HH db and fully restore from BORG
     public void SyncData() throws Exception {
 
+    	Log.out("Todo SyncData()");
         TodoRecord hhRecord;
         
         
@@ -249,7 +250,7 @@ public class RecordManager {
     public void syncAppt(TodoRecord hhRecord) throws Exception {
 
         Appointment appt = null;
-        //Log.out("Sync HH: " + hhRecord.toFormattedString());
+        Log.out("Todo Sync HH: " + hhRecord.toFormattedString());
 
         // any record without a BORG id is considered new
         int id = getApptKey(hhRecord);
@@ -284,8 +285,7 @@ public class RecordManager {
                 cal.set(Calendar.HOUR_OF_DAY,0);
                 d = cal.getTime();
                 appt.setDate(d);
-                
-                addPCRecord(appt);
+                AppointmentModel.getReference().saveAppt(appt,true);
             }
         }
         else {
@@ -352,7 +352,9 @@ public class RecordManager {
                     appt.setCategory(cat);
                 } 
                 
-                AppointmentModel.getReference().syncSave(appt);
+                appt.setModified(true);
+                //AppointmentModel.getReference().syncSave(appt);
+                AppointmentModel.getReference().saveAppt(appt, false);
             }
         }
 
@@ -427,12 +429,6 @@ public class RecordManager {
     
     private Task getTaskById(int id) throws Exception {
         return (TaskModel.getReference().getMR(id));
-    }
-
-    private int addPCRecord(Appointment appt) throws Exception {
-
-        AppointmentModel.getReference().syncSave(appt);
-        return (appt.getKey());
     }
 
     static int getApptKey(TodoRecord hh) {

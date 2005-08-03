@@ -1,4 +1,4 @@
-package net.sf.borg.todoconduit;
+package net.sf.borg.apptconduit;
 
 import palm.conduit.*;
 import java.io.*;
