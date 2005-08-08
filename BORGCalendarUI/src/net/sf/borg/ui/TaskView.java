@@ -493,7 +493,7 @@ class TaskView extends View
                 // fill in system controlled checkboxes
                 TaskModel taskmod_ = TaskModel.getReference();
                 statebox.removeAllItems();
-                statebox.addItem( new String("OPEN"));                
+                statebox.addItem("OPEN");                
                 String cblabels[] = taskmod_.getTaskTypes().checkBoxes( newtype );
                 jCheckBox1.setText(cblabels[0]);
                 jCheckBox2.setText(cblabels[1]);
@@ -847,7 +847,7 @@ class TaskView extends View
           jTextArea2.setText("" ); // resolution
           
           // state always starts with OPEN for new tasks
-          statebox.addItem( new String("OPEN"));
+          statebox.addItem("OPEN");
           statebox.setEnabled(false);
           
       }
@@ -868,7 +868,7 @@ class TaskView extends View
           
           // clone must start in OPEN state
           statebox.removeAllItems();
-          statebox.addItem( new String("OPEN"));
+          statebox.addItem("OPEN");
           statebox.setEnabled(false);
           
           

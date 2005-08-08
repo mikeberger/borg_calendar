@@ -25,6 +25,7 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -40,6 +41,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
@@ -60,9 +62,16 @@ import net.sf.borg.model.Appointment;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Task;
 import net.sf.borg.model.TaskModel;
+import net.sf.borg.model.db.BeanDataFactoryFactory;
+import net.sf.borg.model.db.IBeanDataFactory;
+import net.sf.borg.model.db.remote.IRemoteProxy;
+import net.sf.borg.model.db.remote.IRemoteProxyProvider;
+import net.sf.borg.model.db.remote.RemoteProxyHome;
+import net.sf.borg.model.db.remote.http.HTTPRemoteProxy;
 import net.sf.borg.ui.Banner;
 import net.sf.borg.ui.CalendarView;
 import net.sf.borg.ui.JDICTrayIconProxy;
+import net.sf.borg.ui.LoginDialog;
 import net.sf.borg.ui.OptionsView;
 import net.sf.borg.ui.PopupView;
 import net.sf.borg.ui.TodoView;
@@ -115,7 +124,26 @@ public class Borg extends Controller implements OptionsView.RestartListener {
         b.init(args);
     }
 
-    private Borg() {
+    private Borg()
+    {
+        // If we're doing remote stuff, use HTTPRemoteProxy
+        RemoteProxyHome
+        	.getInstance()
+        	.setProxyProvider
+        	(
+        		new IRemoteProxyProvider()
+        		{
+					public final IRemoteProxy createProxy(String url)
+					{
+						return new HTTPRemoteProxy(url);
+					}
+
+					public final Credentials getCredentials()
+					{
+						return Borg.this.getCredentials();
+					}
+        		}
+        	);
     }
 
     public void restart() {
@@ -260,15 +288,14 @@ public class Borg extends Controller implements OptionsView.RestartListener {
         {
             ban_ = new Banner();
             ban_.setText(Resource.getResourceString("Initializing"));
-            ban_.show();
+            ban_.setVisible(true);
         }
-
+        
+        // Which database implementation are we using?
         String dbdir = "";
         boolean shared = false;
         try
         {
- 
-            
             // init cal model & load data from database
             if (testdb != null)
                 dbdir = testdb;
@@ -307,7 +334,7 @@ public class Borg extends Controller implements OptionsView.RestartListener {
             
             // default uid - this will eventually be set by a login/passwd lookup into
             // a users table when multi-user support is added
-            int uid = 1;
+            String uid = "$default";
             
             /*
             if( Prefs.getPref( PrefName.DBTYPE ).equals("mysql"))
@@ -369,42 +396,16 @@ public class Borg extends Controller implements OptionsView.RestartListener {
             	}
             }
             
-            // determine DB Factory class name
-            String factoryClass = "net.sf.borg.model.db.file.FileBeanDataFactory";
-    		if (dbdir.startsWith("jdbc:"))
-    		{
-    			factoryClass = "net.sf.borg.model.db.jdbc.JdbcBeanDataFactory";
-    		}
-    		else if (dbdir.startsWith("serialize:") || dbdir.startsWith("mem:"))
-    		{
-    			factoryClass = "net.sf.borg.model.db.serial.SerialBeanDataFactory";
-    		}
-    		else
-    		{
-    			// using default File DB
-    			// append parms to url
-    			if( readonly )
-    			{
-    				dbdir += "::true";
-    			}
-    			else
-    			{
-    				dbdir += "::false";
-    			}
-    			if( shared )
-    			{
-    				dbdir += "::true";
-    			}
-    			else
-    			{
-    				dbdir += "::false";
-    			}
-    		}
-
-
+            // Get our DB factory
+            StringBuffer tmp = new StringBuffer(dbdir);
+            IBeanDataFactory factory = BeanDataFactoryFactory.getInstance()
+					.getFactory(tmp, readonly, shared);
+            dbdir = tmp.toString();
+            	// let the factory tweak dbdir
+            
             calmod_ = AppointmentModel.create();
             register(calmod_);
-            calmod_.open_db(factoryClass, dbdir, uid);
+            calmod_.open_db(factory, dbdir, uid);
 
             // aplist only needs calendar data - so just print list of
             // appointments
@@ -433,14 +434,14 @@ public class Borg extends Controller implements OptionsView.RestartListener {
                         .getResourceString("Loading_Task_Database"));
             taskmod_ = TaskModel.create();
             register(taskmod_);
-            taskmod_.open_db(factoryClass, dbdir, uid);
+            taskmod_.open_db(factory, dbdir, uid);
 
             if (!autostart && splash)
                 ban_.setText(Resource
                         .getResourceString("Opening_Address_Database"));
             addrmod_ = AddressModel.create();
             register(addrmod_);
-            addrmod_.open_db(factoryClass, dbdir, uid);
+            addrmod_.open_db(factory, dbdir, uid);
 
             if (!autostart && splash)
                 ban_.setText(Resource.getResourceString("Opening_Main_Window"));
@@ -694,7 +695,7 @@ public class Borg extends Controller implements OptionsView.RestartListener {
         {
             // bring up todo window
             TodoView tg = TodoView.getReference();
-            tg.show();
+            tg.setVisible(true);
         }
         catch (Exception e)
         {
@@ -933,5 +934,47 @@ public class Borg extends Controller implements OptionsView.RestartListener {
         return;
     }
 
-
+    private IRemoteProxyProvider.Credentials getCredentials()
+    {
+    	// Find a suitable frame parent for the login dialog.
+    	JFrame parent = null;
+    	if (ban_ != null)
+    		parent = ban_;
+    	else
+    		parent = CalendarView.getReference();
+    	
+		final LoginDialog dlg = new LoginDialog(parent);
+    	Runnable runnable =
+    		new Runnable()
+    		{
+			public void run()
+			{
+				dlg.setVisible(true);
+			}
+    		};
+    		
+        // Bring up the login dialog. How we do this properly in
+    	// Swing depends on whether we're the event dispatch thread
+    	// or not.
+    	if (SwingUtilities.isEventDispatchThread())
+    		runnable.run();
+    	else
+    	{
+    		try
+    		{
+    			SwingUtilities.invokeAndWait(runnable);
+    		}
+    		catch (InvocationTargetException e)
+    		{}
+    		catch (InterruptedException e)
+    		{}
+    	}
+    		
+    	return
+    		new IRemoteProxyProvider.Credentials
+    		(
+    			dlg.getUsername(),
+				dlg.getPassword()
+			);
+    }
 }

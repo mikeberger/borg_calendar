@@ -154,12 +154,12 @@ public class CalendarView extends View implements Prefs.Listener {
             {
                 // start the appt editor view
             	DayView dv = new DayView(month, year, date);
-            	dv.show();
+            	dv.setVisible(true);
             }
             else
             {
             	AppointmentListView ag = new AppointmentListView(year, month, date);
-                ag.show();
+                ag.setVisible(true);
 
             }
             
@@ -232,13 +232,13 @@ public class CalendarView extends View implements Prefs.Listener {
                     if( reverseActions.equals("true"))
                     {
                     	AppointmentListView ag = new AppointmentListView(year_, month_, day);
-                    	ag.show();
+                    	ag.setVisible(true);
                     }
                     else
                     {
                     // start the appt editor view
                     	DayView dv = new DayView(month_, year_, day);
-                    	dv.show();
+                    	dv.setVisible(true);
                     }
                 }
             });
@@ -315,7 +315,7 @@ public class CalendarView extends View implements Prefs.Listener {
         todoPreview.addMouseListener(new MouseListener()
         	{           	
                 public void mouseClicked(MouseEvent evt) {
-                    	TodoView.getReference().show();
+                    	TodoView.getReference().setVisible(true);
                 }
         		public void mouseEntered(MouseEvent arg0) {}
         		public void mouseExited(MouseEvent arg0) {}
@@ -355,7 +355,7 @@ public class CalendarView extends View implements Prefs.Listener {
                     public void mouseClicked(MouseEvent evt) {
                         	TaskListView v = TaskListView.getReference();
                         	v.refresh();
-                        	v.show();
+                        	v.setVisible(true);
                     }
             		public void mouseEntered(MouseEvent arg0) {}
             		public void mouseExited(MouseEvent arg0) {}
@@ -1834,7 +1834,7 @@ public class CalendarView extends View implements Prefs.Listener {
         
     private void chglogActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_chglogActionPerformed
     {//GEN-HEADEREND:event_chglogActionPerformed
-        new HelpScreen("/resource/CHANGES.txt").show();
+        new HelpScreen("/resource/CHANGES.txt").setVisible(true);
     }//GEN-LAST:event_chglogActionPerformed
     
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
@@ -1861,14 +1861,14 @@ public class CalendarView extends View implements Prefs.Listener {
     }//GEN-LAST:event_jMenuItem4ActionPerformed
     
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-        CategoryChooser.getReference().show();
+        CategoryChooser.getReference().setVisible(true);
     }//GEN-LAST:event_jMenuItem2ActionPerformed
     
     private void AddressMIActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_AddressMIActionPerformed
     {//GEN-HEADEREND:event_AddressMIActionPerformed
         AddrListView ab = AddrListView.getReference();
         ab.refresh();
-        ab.show();
+        ab.setVisible(true);
     }//GEN-LAST:event_AddressMIActionPerformed
     
     private void impCommon( XTree xt ) throws Exception {
@@ -2061,12 +2061,12 @@ public class CalendarView extends View implements Prefs.Listener {
     
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         // bring up the options window
-        OptionsView.getReference().show();
+        OptionsView.getReference().setVisible(true);
     }//GEN-LAST:event_jMenuItem1ActionPerformed
     
     private void licsendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_licsendActionPerformed
         // show the open source license
-        new HelpScreen("/resource/license.htm").show();
+        new HelpScreen("/resource/license.htm").setVisible(true);
     }//GEN-LAST:event_licsendActionPerformed
     
     private void helpMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_helpMIActionPerformed
@@ -2085,7 +2085,7 @@ public class CalendarView extends View implements Prefs.Listener {
     private void TaskTrackMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TaskTrackMIActionPerformed
         TaskListView bt_ = TaskListView.getReference( );
         bt_.refresh();
-        bt_.show();
+        bt_.setVisible(true);
     }//GEN-LAST:event_TaskTrackMIActionPerformed
     
     private void AboutMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AboutMIActionPerformed
@@ -2129,7 +2129,7 @@ public class CalendarView extends View implements Prefs.Listener {
     private void SearchMIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SearchMIActionPerformed
         // user wants to do a search, so prompt for search string and request search results
     	
-    	new SearchView().show();
+    	new SearchView().setVisible(true);
         //String inputValue = JOptionPane.showInputDialog(Resource.getResourceString("Enter_search_string:"));
         ////if( inputValue == null ) return;
         // bring up srch window
@@ -2154,7 +2154,7 @@ public class CalendarView extends View implements Prefs.Listener {
     private void ToDoMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ToDoMenuActionPerformed
         // ask borg class to bring up the todo window
         try {
-            TodoView.getReference().show();
+            TodoView.getReference().setVisible(true);
         }
         catch( Exception e ) {
             Errmsg.errmsg(e);

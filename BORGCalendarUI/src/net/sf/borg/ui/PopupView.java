@@ -270,28 +270,28 @@ public class PopupView extends View {
 				if (alarmid != -999) {
 				    String time_msg;
 				    if (alarmid < 0) {
-					time_msg = new String( -alarmid
+					time_msg = -alarmid
 							+ " "
 							+ java.util.ResourceBundle.getBundle(
 									"resource/borg_resource").getString(
-									"minutes_ago"));
+									"minutes_ago");
 				    } else if (alarmid == 0) {
-					time_msg = new String( java.util.ResourceBundle.getBundle(
+					time_msg = java.util.ResourceBundle.getBundle(
 									"resource/borg_resource").getString(
-									"Now"));
+									"Now");
 				    }
 				    else {
-					time_msg = new String( alarmid
+					time_msg = alarmid
 							+ " "
 							+ java.util.ResourceBundle.getBundle(
 									"resource/borg_resource").getString(
-									"minute_reminder"));
+									"minute_reminder");
 				    }
 
 					fr.setText2(time_msg);
 					fr.setVisible(true);
 					fr.toFront();
-					fr.show();
+					fr.setVisible(true);
 
 					// play sound
 					if (Prefs.getPref(PrefName.USESYSTEMBEEP).equals("true")) {

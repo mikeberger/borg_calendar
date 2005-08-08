@@ -119,7 +119,7 @@ public class JDICTrayIconProxy {
         public void actionPerformed(ActionEvent e) {
             TaskListView bt_ = TaskListView.getReference();
             bt_.refresh();
-            bt_.show();
+            bt_.setVisible(true);
         }
     }
 
@@ -128,21 +128,21 @@ public class JDICTrayIconProxy {
         public void actionPerformed(ActionEvent e) {
             AddrListView ab = AddrListView.getReference();
             ab.refresh();
-            ab.show();
+            ab.setVisible(true);
         }
     }
 
     static private class TodoListener implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
-            TodoView.getReference().show();
+            TodoView.getReference().setVisible(true);
         }
     }
     
     static private class OptionsListener implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
-            OptionsView.getReference().show();
+            OptionsView.getReference().setVisible(true);
         }
     }
 

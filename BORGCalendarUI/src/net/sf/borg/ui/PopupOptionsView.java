@@ -59,7 +59,6 @@ public class PopupOptionsView extends JDialog {
 				"resource/borg_resource").getString("Popup_Times"));
 		appPanel_ = appPanel;
 		remtimes_ = remtimes;
-		String rems = new String(remtimes_);
 
 		jAlarmLabel = new JLabel(java.util.ResourceBundle.getBundle(
 				"resource/borg_resource").getString("custom_times_header")
@@ -147,35 +146,35 @@ public class PopupOptionsView extends JDialog {
 		int l = jj % 60;
 		String minStr;
 		String hrStr;
-		String minute = new String(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("Minute"));
-		String minutes = new String(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("Minutes"));
-		String hour = new String(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("Hour"));
-		String hours = new String(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("Hours"));
-		String before = new String(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("Before"));
-		String after = new String(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("After"));
+		String minute = java.util.ResourceBundle.getBundle(
+				"resource/borg_resource").getString("Minute");
+		String minutes = java.util.ResourceBundle.getBundle(
+				"resource/borg_resource").getString("Minutes");
+		String hour = java.util.ResourceBundle.getBundle(
+				"resource/borg_resource").getString("Hour");
+		String hours = java.util.ResourceBundle.getBundle(
+				"resource/borg_resource").getString("Hours");
+		String before = java.util.ResourceBundle.getBundle(
+				"resource/borg_resource").getString("Before");
+		String after = java.util.ResourceBundle.getBundle(
+				"resource/borg_resource").getString("After");
 
 		if (k > 1) {
-			hrStr = new String(k + " " + hours);
+			hrStr = k + " " + hours;
 		} else if (k > 0) {
-			hrStr = new String(k + " " + hour);
+			hrStr = k + " " + hour;
 		} else {
-			hrStr = new String("");
+			hrStr = "";
 		}
 		
 		if (l > 1) {
-			minStr = new String(l + " " + minutes);
+			minStr = l + " " + minutes;
 		} else if (l > 0) {
-			minStr = new String(l + " " + minute);
+			minStr = l + " " + minute;
 		} else if (k >= 1) {
-			minStr = new String("");
+			minStr = "";
 		} else {
-			minStr = new String(l + " " + minutes);
+			minStr = l + " " + minutes;
 		}
 
 		if( !hrStr.equals("") && !minStr.equals(""))
@@ -184,11 +183,11 @@ public class PopupOptionsView extends JDialog {
 
 		String bef_aft;
 		if (j > 0) {
-			bef_aft = new String(" " + before);
+			bef_aft = " " + before;
 		} else if (j == 0) {
-			bef_aft = new String("");
+			bef_aft = "";
 		} else {
-			bef_aft = new String(" " + after);
+			bef_aft = " " + after;
 		}
 		
 

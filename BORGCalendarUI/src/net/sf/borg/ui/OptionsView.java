@@ -94,7 +94,7 @@ public class OptionsView extends View
     
     public static void dbSelectOnly()
     {
-    	new OptionsView(true).show();
+    	new OptionsView(true).setVisible(true);
     	
     }
     

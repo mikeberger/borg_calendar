@@ -172,7 +172,7 @@ public class AddrListView extends View
             int k = tm.getMappedIndex(index);  // get original index - not current sorted position in tbl
             Object[] oa = addrs_.toArray();
             Address addr = (Address) oa[k];
-            new AddressView( addr ).show();
+            new AddressView( addr ).setVisible(true);
         }
         catch( Exception e )
         {
@@ -367,7 +367,7 @@ public class AddrListView extends View
     {//GEN-HEADEREND:event_newbuttonActionPerformed
         Address addr = AddressModel.getReference().newAddress();
         addr.setKey(-1);
-        new AddressView(addr).show();
+        new AddressView(addr).setVisible(true);
     }//GEN-LAST:event_newbuttonActionPerformed
     
     private void printListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printListActionPerformed

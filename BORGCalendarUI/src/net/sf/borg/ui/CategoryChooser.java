@@ -265,7 +265,7 @@ public class CategoryChooser extends View {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        new CategoryChooser().show();
+        new CategoryChooser().setVisible(true);
     }
     
     public void destroy() {

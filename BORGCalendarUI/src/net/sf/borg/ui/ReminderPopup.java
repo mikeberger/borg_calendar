@@ -182,7 +182,7 @@ public class ReminderPopup extends View {
                 this.dispose();
 	}
         else {
-                this.hide();
+                this.setVisible(false);
 	}
     }
 

@@ -574,7 +574,7 @@ public class TaskListView extends View {
     }
 
     private void edittypesActionPerformed(java.awt.event.ActionEvent evt) {
-        TaskConfigurator.getReference().show();
+        TaskConfigurator.getReference().setVisible(true);
     }
 
     private void resetstActionPerformed(java.awt.event.ActionEvent evt)
@@ -943,7 +943,7 @@ public class TaskListView extends View {
 
             // display the task editor
             TaskView tskg = TaskView.getReference(task, TaskView.T_CLONE);
-            tskg.show();
+            tskg.setVisible(true);
         } catch (Exception e) {
             Errmsg.errmsg(e);
             System.exit(1);
@@ -963,7 +963,7 @@ public class TaskListView extends View {
 
             // display the task editor
             TaskView tskg = TaskView.getReference(task, TaskView.T_CHANGE);
-            tskg.show();
+            tskg.setVisible(true);
 
         } catch (Exception e) {
             Errmsg.errmsg(e);
@@ -977,7 +977,7 @@ public class TaskListView extends View {
         try {
             // display the task editor
             TaskView tskg = TaskView.getReference(null, TaskView.T_ADD);
-            tskg.show();
+            tskg.setVisible(true);
         } catch (Exception e) {
             Errmsg.errmsg(e);
             System.exit(1);
@@ -1207,7 +1207,7 @@ public class TaskListView extends View {
 	        catmenuitem.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("choosecat"));
 	        catmenuitem.addActionListener(new java.awt.event.ActionListener() { 
 	        	public void actionPerformed(java.awt.event.ActionEvent e) {    
-	        	    CategoryChooser.getReference().show();
+	        	    CategoryChooser.getReference().setVisible(true);
 	        	}
 	        });
 		}

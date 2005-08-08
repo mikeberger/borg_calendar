@@ -923,7 +923,7 @@ class AppointmentPanel extends JPanel {
 		}
 
 		// set text
-		r.setText(new String(appttextarea.getText()));
+		r.setText(appttextarea.getText());
 
 		// to do
 		r.setTodo(todocb.isSelected());
@@ -1264,7 +1264,7 @@ class AppointmentPanel extends JPanel {
 	private void popupbuttonActionPerformed(java.awt.event.ActionEvent evt) {
 
 		PopupOptionsView pv = new PopupOptionsView(custRemTimes, this);
-		pv.show();
+		pv.setVisible(true);
 	}
 
 	// display a summary of the times selected for popup reminders
@@ -1309,12 +1309,12 @@ class AppointmentPanel extends JPanel {
 	}
 
 	public String getText() {
-		String labelstring = new String(appttextarea.getText());
-		if (appttextarea.getText().equals("")) {
+		String labelstring = appttextarea.getText();
+		if (labelstring.equals("")) {
 			return java.util.ResourceBundle.getBundle("resource/borg_resource")
 					.getString("*****_NEW_APPT_*****");
 		} else {
-			return appttextarea.getText();
+			return labelstring;
 		}
 	}
 

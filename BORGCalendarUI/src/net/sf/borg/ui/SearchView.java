@@ -50,8 +50,6 @@ public class SearchView extends View {
 
 	private javax.swing.JPanel jContentPane = null;
 
-	private static SearchView singleton = null;
-
 	private JCheckBox todocb = null;
 
 	private JCheckBox repeatcb = null;
@@ -729,7 +727,7 @@ public class SearchView extends View {
 		AppointmentListView ag = new AppointmentListView(
 				cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal
 						.get(Calendar.DATE));
-		ag.show();
+		ag.setVisible(true);
 
 		CalendarView cv = CalendarView.getReference();
 		if (cv != null)
@@ -768,7 +766,7 @@ public class SearchView extends View {
 					ArrayList appts = new ArrayList();
 					for (int i = 0; i < rows.length; i++) {
 						Integer key = (Integer) tm.getValueAt(rows[i], 2);
-						appts.add(tm.getValueAt(rows[i], 2));
+						appts.add(key);
 					}
 					
 					Iterator it = appts.iterator();

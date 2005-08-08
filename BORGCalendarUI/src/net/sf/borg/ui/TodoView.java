@@ -243,7 +243,7 @@ public class TodoView extends View {
         //bsv 2004-12-22
         Object [] tod = new Object[5];
         tod[0] = d;
-        tod[1] = new String(Resource.getResourceString("======_Today_======"));
+        tod[1] = Resource.getResourceString("======_Today_======");
         tod[2] = "Today is";
         tod[3] = "pink";
         tod[4] = null;
@@ -601,7 +601,7 @@ public class TodoView extends View {
       AppointmentListView ag = new AppointmentListView(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE));
       if( key != null )
           ag.showApp(key.intValue());
-      ag.show();
+      ag.setVisible(true);
       
       CalendarView cv = CalendarView.getReference();
       if( cv != null ) cv.goTo( cal );
@@ -877,7 +877,7 @@ public class TodoView extends View {
 	        catmenuitem.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("choosecat"));
 	        catmenuitem.addActionListener(new java.awt.event.ActionListener() { 
 	        	public void actionPerformed(java.awt.event.ActionEvent e) {    
-	        	    CategoryChooser.getReference().show();
+	        	    CategoryChooser.getReference().setVisible(true);
 	        	}
 	        });
 		}
