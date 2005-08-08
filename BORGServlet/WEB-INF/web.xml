@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE web-app
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+    "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+    <!-- General description of your web application -->
+    <display-name>BORG Calendar</display-name>
+    <description>BORG Calendar Backend</description>
+
+    <servlet>
+      <servlet-name>controller</servlet-name>
+      <description>BORG Calendar Controller Servlet</description>
+      <servlet-class>net.sf.borg.servlet.BORGServlet</servlet-class>
+	  <init-param>
+	    <param-name>dburl</param-name>
+	    <param-value>c:/temp/borgtest</param-value>
+	  </init-param>
+    </servlet>
+    
+    <servlet-mapping>
+      <servlet-name>controller</servlet-name>
+      <url-pattern>/app</url-pattern>
+    </servlet-mapping>
+
+    <security-constraint>
+       <web-resource-collection>
+          <web-resource-name>BORG Calendar Backend</web-resource-name>
+          <url-pattern>/app</url-pattern>
+       </web-resource-collection>
+       <auth-constraint>
+          <role-name>borg_user</role-name>
+       </auth-constraint>
+    </security-constraint>
+    
+    <login-config>
+       <auth-method>BASIC</auth-method>
+       <realm-name>BORG Calendar</realm-name>
+    </login-config>
+
+</web-app>
