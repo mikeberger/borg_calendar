@@ -20,12 +20,11 @@ Copyright 2003 by ==Quiet==
 
 package net.sf.borg.model.db.remote;
 
-import java.sql.Connection;
-
 import net.sf.borg.model.Address;
 import net.sf.borg.model.Appointment;
 import net.sf.borg.model.Task;
 import net.sf.borg.model.db.BeanDB;
+import net.sf.borg.model.db.DBException;
 import net.sf.borg.model.db.IBeanDataFactory;
 
 /**
@@ -44,18 +43,14 @@ public class RemoteBeanDataFactory implements IBeanDataFactory
 	}
 
 	// IBeanDataFactory overrides
-	public final BeanDB create(Class cls, Connection cnxn)
-	{
-		throw new IllegalArgumentException(cls.getName());
-	}
-
-	public final BeanDB create(
-		Class cls,
-		String file,
-		boolean readonly,
-		boolean shared,
-		int userid)
-		throws Exception
+	/**
+	 * Creates a <code>BeanDB</code> using the url string of the format
+	 * format <code>isReadOnly::remoteHttp</code>.<br>
+	 * Example: <code>false::http://www.myserver.org/borg/app</code><br>
+	 * @see net.sf.borg.model.db.IBeanDataFactory#create(java.lang.Class, java.lang.String, int)
+	 */
+	public final BeanDB create(Class cls, String url, String username)
+			throws Exception
 	{
 		String clsstr;
 		if (cls == Address.class)
@@ -68,10 +63,20 @@ public class RemoteBeanDataFactory implements IBeanDataFactory
 			throw new IllegalArgumentException(cls.getName());
 			
 		// Hack off the leading "remote:" to get the implementation.
-		int nColon = file.indexOf(':');
-		file = file.substring(nColon+1);
+		int nColon = url.indexOf(':');
+		url = url.substring(nColon+1);
 		
-		return new RemoteBeanDB(cls,clsstr,file,readonly);		
+		nColon = url.indexOf("::");
+		if (nColon == -1)
+			throw new DBException("Malformed remote connection string: "+url);
+		
+		boolean readonly = Boolean.valueOf(url.substring(0,nColon)).booleanValue();
+		String file = url.substring(nColon+2);
+		
+		if (cls == Appointment.class)
+			return new ApptRemoteBeanDB(clsstr,file,readonly,username);		
+		else
+			return new RemoteBeanDB(cls,clsstr,file,readonly,username);		
 	}
 
 	// private //

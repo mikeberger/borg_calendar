@@ -33,7 +33,6 @@ import java.io.Serializable;
  */
 public abstract class KeyedBean implements Serializable
 {
-    
     private int key_;
         
     /** Creates a new instance of KeyedBean */

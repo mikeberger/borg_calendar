@@ -34,8 +34,8 @@ import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.Version;
 import net.sf.borg.common.util.XTree;
 import net.sf.borg.model.db.BeanDB;
-import net.sf.borg.model.db.BeanDataFactoryFactory;
 import net.sf.borg.model.db.DBException;
+import net.sf.borg.model.db.IBeanDataFactory;
 
 
 
@@ -242,12 +242,13 @@ public class TaskModel extends Model implements Model.Listener {
     }
     */
     // open the SMDB database
-    public void open_db(String factoryClassName, String url, int userid) throws Exception {
+    public void open_db(IBeanDataFactory factory, String url, String username)
+			throws Exception {
 		db_ =
-			BeanDataFactoryFactory.getInstance().getFactory(factoryClassName).create(
+			factory.create(
 				Task.class,
 				url,
-				userid);
+				username);
         
         // get XML that models states/transitions
         // set to default if it does not exist

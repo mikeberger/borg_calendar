@@ -33,9 +33,8 @@ import net.sf.borg.model.AppointmentXMLAdapter;
 import net.sf.borg.model.BorgOption;
 import net.sf.borg.model.Task;
 import net.sf.borg.model.TaskXMLAdapter;
-import net.sf.borg.model.User;
-import net.sf.borg.model.UserXMLAdapter;
 import net.sf.borg.model.db.BeanXMLAdapter;
+import net.sf.borg.model.db.DBException;
 import net.sf.borg.model.db.KeyedBean;
 
 /**
@@ -43,28 +42,41 @@ import net.sf.borg.model.db.KeyedBean;
  */
 public class XmlObjectHelper
 {
-	public static XTree toXml(Object o) throws Exception
+	public static XTree toXml(Object o)
 	{
 	    return toXml(null, o);
 	}
 
 	public static Object fromXml(XTree xml) throws Exception
 	{
+		if (xml == null)
+			return null;
+		
 	    String name = xml.name();
-		Object result = null;
+	    if (name.equals("Null"))
+	    	return null;
+	    
 		for (int i=0; i<XML_CLASSES.length; ++i)
 		{
 			if (XML_CLASSES[i].getObjectRootName().equals(name))
-				return XML_CLASSES[i].fromXml(xml);
+				return XML_CLASSES[i].toObject(xml);
 		}
+		
 		throw new IllegalArgumentException(xml.name());
 	}
 
 	// private //
+	private static final PrimitiveXmlObjectHelper NULL_HELPER =
+		new PrimitiveXmlObjectHelper(null, "Null");
+	
 	private static final IXmlObjectHelper[] XML_CLASSES =
 	{
 	    new BorgOptionXmlObjectHelper(),
+	    new DBExceptionXmlObjectHelper(),
 	    new CollectionXmlObjectHelper(),
+	    new PrimitiveXmlObjectHelper(String.class, "String"),
+	    new PrimitiveXmlObjectHelper(Boolean.class, "Boolean"),
+	    new PrimitiveXmlObjectHelper(Integer.class, "Integer"),
 	    new RemoteParmsXmlObjectHelper(),
 	    new ComposedObjectXmlObjectHelper(),
 	    new KeyedBeanXmlObjectHelper
@@ -84,12 +96,6 @@ public class XmlObjectHelper
 	        Task.class,
 	        "Task",
 	        new TaskXMLAdapter()
-	    ),
-	    new KeyedBeanXmlObjectHelper
-	    (
-	        User.class,
-	        "User",
-	        new UserXMLAdapter()
 	    ),
 	};
 	
@@ -116,16 +122,16 @@ public class XmlObjectHelper
 	    return child.value();
 	}
 	
-	private static int getIntPrimitive(XTree xml, String name)
+	private static Integer getIntPrimitive(XTree xml, String name)
 	{
 	    String val = getStringPrimitive(xml,name);
-	    return Integer.parseInt(val);
+	    return Integer.valueOf(val);
 	}
 	
-	private static boolean getBooleanPrimitive(XTree xml, String name)
+	private static Boolean getBooleanPrimitive(XTree xml, String name)
 	{
 	    String val = getStringPrimitive(xml,name);
-	    return Boolean.valueOf(val).booleanValue();
+	    return Boolean.valueOf(val);
 	}
 	
 	private static XTree createTree(XTree parent, String name)
@@ -148,17 +154,27 @@ public class XmlObjectHelper
 	
 	public static XTree toXml(XTree parent, Object o)
 	{
-	    for (int i=0; i<XML_CLASSES.length; ++i)
+		IXmlObjectHelper helper = null;
+		if (o == null)
+			helper = NULL_HELPER;
+		else
 		{
-			if (XML_CLASSES[i].getObjectClass().isAssignableFrom(o.getClass()))
+		    for (int i=0; i<XML_CLASSES.length; ++i)
 			{
-			    IXmlObjectHelper iXmlObjectHelper = XML_CLASSES[i]; 
-			    XTree tree = createTree(parent, iXmlObjectHelper.getObjectRootName());
-			    iXmlObjectHelper.populate(tree, o);
-			    return tree;
+				if (XML_CLASSES[i].getObjectClass().isAssignableFrom(o.getClass()))
+				{
+				    helper = XML_CLASSES[i];
+				    break;
+				}
 			}
 		}
-		throw new IllegalArgumentException(o.getClass().getName());
+		
+	    if (helper == null)
+	    	throw new IllegalArgumentException(o.getClass().getName());
+	    
+	    XTree tree = createTree(parent, helper.getObjectRootName());
+	    helper.populate(tree, o);
+	    return tree;
 	}
 
 	////////////////////////////////////////////////////////////
@@ -169,7 +185,7 @@ public class XmlObjectHelper
 		public Class getObjectClass();
 		public String getObjectRootName();
         public void populate(XTree xtree, Object o);
-		public Object fromXml(XTree xml);
+		public Object toObject(XTree xml) throws Exception;
 	}
 
 	// end nested class IXmlObjectHelper
@@ -198,7 +214,7 @@ public class XmlObjectHelper
             addPrimitive(xtree, "Value", val.getValue());
         }
 
-        public final Object fromXml(XTree xml)
+        public final Object toObject(XTree xml) throws Exception
         {
             String key = getStringPrimitive(xml, "Key"); 
 			String value = getStringPrimitive(xml, "Value");
@@ -210,6 +226,92 @@ public class XmlObjectHelper
 	////////////////////////////////////////////////////////////
 
 	////////////////////////////////////////////////////////////
+	// nested class DBExceptionXmlObjectHelper
+	
+	private static class DBExceptionXmlObjectHelper
+		implements IXmlObjectHelper
+	{
+		public final Class getObjectClass()
+        {
+            return DBException.class;
+        }
+		
+		public final String getObjectRootName()
+		{
+		    return "DBException";
+		}
+
+        public final void populate(XTree xtree, Object o)
+        {
+            DBException val = (DBException) o;
+            addPrimitive(xtree, "Message", val.getMessage());
+            addPrimitive(xtree, "RetCode", val.getRetCode());
+        }
+
+        public final Object toObject(XTree xml) throws Exception
+        {
+            String message = getStringPrimitive(xml, "Message");
+            int retCode = getIntPrimitive(xml, "RetCode").intValue();
+			return new DBException(message, retCode);
+		}
+	}
+
+	// end nested class DBExceptionXmlObjectHelper
+	////////////////////////////////////////////////////////////
+
+	////////////////////////////////////////////////////////////
+	// nested class PrimitiveXmlObjectHelper
+	
+	private static class PrimitiveXmlObjectHelper
+		implements IXmlObjectHelper
+	{
+		public Class getObjectClass()
+        {
+            return cls;
+        }
+
+		public final String getObjectRootName()
+		{
+		    return name;
+		}
+
+        public final void populate(XTree xtree, Object o)
+        {
+        	if (o != null)
+        		xtree.value(o.toString());
+        }
+
+        public Object toObject(XTree xml) throws Exception
+        {
+        	String val = xml.value();
+        	Object o = null;
+        	if (name.equals("Null"))
+        		o = null;
+        	else if (name.equals("String"))
+        		o = val;
+        	else if (name.equals("Integer"))
+        		o = Integer.valueOf(val);
+        	else if (name.equals("Boolean"))
+        		o = Boolean.valueOf(val);
+            return o;
+		}
+        
+        // internal //
+        PrimitiveXmlObjectHelper(Class cls, String name)
+        {
+        	this.cls = cls;
+        	this.name = name;
+        }
+        
+        // private //
+        private Class cls;
+        private String name;
+	}
+
+	// end nested class PrimitiveXmlObjectHelper
+	////////////////////////////////////////////////////////////
+
+	////////////////////////////////////////////////////////////
 	// nested class CollectionXmlObjectHelper
 	
 	private static class CollectionXmlObjectHelper
@@ -217,7 +319,7 @@ public class XmlObjectHelper
 	{
 		public Class getObjectClass()
         {
-            return Boolean.class;
+            return Collection.class;
         }
 
 		public final String getObjectRootName()
@@ -236,14 +338,14 @@ public class XmlObjectHelper
             }
         }
 
-        public Object fromXml(XTree xml)
+        public Object toObject(XTree xml) throws Exception
         {
             // FUTURE: With the current XTree implementation,
             // this operation requires O(n^2) time to execute, where
             // n is the number of children.
             List lst = new ArrayList();
             int numChildren = xml.numChildren();
-            for (int i=0; i<numChildren; ++i)
+            for (int i=1; i<=numChildren; ++i)
             {
                 XTree child = xml.child(i);
                 Object oChild = fromXml(child);
@@ -277,15 +379,17 @@ public class XmlObjectHelper
             IRemoteProxy.Parms parms = (IRemoteProxy.Parms) o;
             addPrimitive(xtree, "Class", parms.getClassString());
             addPrimitive(xtree, "Command", parms.getCommand());
+            addPrimitive(xtree, "User", parms.getUser());
             toXml(xtree, parms.getArgs());
         }
 
-        public Object fromXml(XTree xml)
+        public Object toObject(XTree xml) throws Exception
         {
             String classString = getStringPrimitive(xml, "Class");
             String command = getStringPrimitive(xml, "Command");
-            Object args = fromXml(xml.child(2));
-            return new IRemoteProxy.Parms(classString, command, args);
+            String user = getStringPrimitive(xml, "User");
+            Object args = fromXml(xml.child(4));
+            return new IRemoteProxy.Parms(classString, command, args, user);
 		}
 	}
 
@@ -315,10 +419,10 @@ public class XmlObjectHelper
             toXml(xtree, co.getO2());
         }
 
-        public Object fromXml(XTree xml)
+        public Object toObject(XTree xml) throws Exception
         {
-            Object o1 = fromXml(xml.child(0));
-            Object o2 = fromXml(xml.child(1));
+            Object o1 = fromXml(xml.child(1));
+            Object o2 = fromXml(xml.child(2));
             return new IRemoteProxy.ComposedObject(o1,o2);
 		}
 	}
@@ -348,7 +452,7 @@ public class XmlObjectHelper
             xtree.adopt(xml);
         }
 
-        public Object fromXml(XTree xml)
+        public Object toObject(XTree xml)
         {
             KeyedBean keyedBean = xmlAdapter.fromXml(xml);
             return keyedBean;

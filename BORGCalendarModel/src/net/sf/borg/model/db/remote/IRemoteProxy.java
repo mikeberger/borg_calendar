@@ -20,6 +20,10 @@ Copyright 2004 by Mohan Embar - http://www.thisiscool.com/
 
 package net.sf.borg.model.db.remote;
 
+import net.sf.borg.model.Address;
+import net.sf.borg.model.Appointment;
+import net.sf.borg.model.Task;
+
 /**
  * Interface for executing a remote call.
  */
@@ -30,21 +34,35 @@ public interface IRemoteProxy
 
 public static class Parms
 {
-	public Parms(String clsstr, String command, Object args)
+	public Parms(String clsstr, String command, Object args, String user)
 	{
 		this.clsstr = clsstr;
 		this.command = command;
 		this.args = args;
+		this.user = user;
+
+		if (clsstr.equals("Address"))
+			cls = Address.class;
+		else if (clsstr.equals("Task"))
+			cls = Task.class;
+		else if (clsstr.equals("Appointment"))
+			cls = Appointment.class;
+		else
+			throw new IllegalArgumentException(clsstr);
 	}
 	
+	public final Class getMyClass()			{return cls;}
 	public final String getClassString()	{return clsstr;}
 	public final String getCommand()		{return command;}
 	public final Object getArgs()			{return args;}
+	public final String getUser()			{return user;}
 	
 	// private //
+	private Class cls;
 	private String clsstr;
 	private String command;
 	private Object args;
+	private String user;
 }
 
 // end nested class Parms
@@ -70,6 +88,7 @@ public static class ComposedObject
 
 // end nested class ComposedObject
 /////////////////////////////////////////////////////
-	
-public String execute(String strXml) throws Exception;
+
+public String execute(String strXml, IRemoteProxyProvider provider)
+		throws Exception;
 }

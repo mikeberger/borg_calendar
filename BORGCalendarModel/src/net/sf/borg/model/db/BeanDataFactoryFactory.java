@@ -36,24 +36,38 @@ public class BeanDataFactoryFactory
 	{
 		return instance;
 	}
-	 public final IBeanDataFactory getFactory(String className) throws Exception 
-	 { 
-	 	Method getInst = Class.forName(className).getMethod("getInstance",null); 
-	 	return (IBeanDataFactory) getInst.invoke(null,null); 
-	 } 
-/*
-	public final IBeanDataFactory getFactory(String file)
+
+	public final IBeanDataFactory getFactory(StringBuffer dbdir,
+			boolean readonly, boolean shared) throws Exception
 	{
-		if (file.startsWith("jdbc:"))
-			return JdbcBeanDataFactory.getInstance();
-		//else if (file.startsWith("remote:"))
-			//return RemoteBeanDataFactory.getInstance();
-		else if (file.startsWith("serialize:") || file.startsWith("mem:"))
-			return SerialBeanDataFactory.getInstance();
-		else // assume file
-			return FileBeanDataFactory.getInstance();
+		String db = dbdir.toString();
+        String factoryClass = null;
+		if (db.startsWith("jdbc:"))
+		{
+			factoryClass = "net.sf.borg.model.db.jdbc.JdbcBeanDataFactory";
+		}
+		else if (db.startsWith("serialize:") || db.startsWith("mem:"))
+		{
+			factoryClass = "net.sf.borg.model.db.serial.SerialBeanDataFactory";
+		}
+		else if (db.startsWith("remote:"))
+		{
+			factoryClass = "net.sf.borg.model.db.remote.RemoteBeanDataFactory";
+			
+			// Prepend "read only" flag.
+			dbdir.insert(7, readonly+"::");
+		}
+		else
+		{
+			// Use default File DB; append parms to url
+			factoryClass = "net.sf.borg.model.db.file.FileBeanDataFactory";
+			dbdir.append("::").append(readonly).append("::").append(shared);
+		}
+
+	 	Method getInst = Class.forName(factoryClass).getMethod("getInstance",null); 
+	 	return (IBeanDataFactory) getInst.invoke(null,null); 
 	}
-*/
+
 	// private //
 	private static final BeanDataFactoryFactory instance = new BeanDataFactoryFactory();
 

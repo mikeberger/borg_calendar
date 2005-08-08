@@ -45,9 +45,9 @@ class TaskJdbcDB extends JdbcDB
     }
              
     /** Creates a new instance of AppJdbcDB */
-    TaskJdbcDB(String url, int userid)  throws Exception
+    TaskJdbcDB(String url, String username)  throws Exception
     {
-        super( url, userid );
+        super( url, username );
     }
     
     TaskJdbcDB(Connection conn) 
@@ -57,7 +57,7 @@ class TaskJdbcDB extends JdbcDB
     
     public void addObj(KeyedBean bean, boolean crypt) throws DBException, Exception
     {
-        PreparedStatement stmt = connection_.prepareStatement( "INSERT INTO tasks ( tasknum, userid, start_date, due_date, person_assigned," + 
+        PreparedStatement stmt = connection_.prepareStatement( "INSERT INTO tasks ( tasknum, username, start_date, due_date, person_assigned," + 
         " priority, state, type, description, resolution, todo_list, user_task1," +
         " user_task2, user_task3, user_task4, user_task5, category) VALUES " +
         "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
@@ -65,7 +65,7 @@ class TaskJdbcDB extends JdbcDB
         Task task = (Task) bean;
         
         stmt.setInt( 1, task.getKey() );
-        stmt.setInt( 2, userid_ );
+        stmt.setString( 2, username_ );
 
         java.util.Date sd = task.getStartDate();        
         if( sd != null )
@@ -102,9 +102,9 @@ class TaskJdbcDB extends JdbcDB
     
     public void delete(int key) throws DBException, Exception
     {
-        PreparedStatement stmt = connection_.prepareStatement( "DELETE FROM tasks WHERE tasknum = ? AND userid = ?" );
+        PreparedStatement stmt = connection_.prepareStatement( "DELETE FROM tasks WHERE tasknum = ? AND username = ?" );
         stmt.setInt( 1, key );
-        stmt.setInt( 2, userid_ );
+        stmt.setString( 2, username_ );
         stmt.executeUpdate();
         
         delCache( key );
@@ -113,8 +113,8 @@ class TaskJdbcDB extends JdbcDB
     public Collection getKeys() throws Exception
     {
         ArrayList keys = new ArrayList();
-        PreparedStatement stmt = connection_.prepareStatement("SELECT tasknum FROM tasks WHERE userid = ?" );
-        stmt.setInt( 1, userid_ );
+        PreparedStatement stmt = connection_.prepareStatement("SELECT tasknum FROM tasks WHERE username = ?" );
+        stmt.setString( 1, username_ );
         ResultSet rs = stmt.executeQuery();
         while( rs.next() )
         {
@@ -127,8 +127,8 @@ class TaskJdbcDB extends JdbcDB
     
     public int nextkey() throws Exception
     {
-        PreparedStatement stmt = connection_.prepareStatement("SELECT MAX(tasknum) FROM tasks WHERE  userid = ?" );
-        stmt.setInt( 1, userid_ );
+        PreparedStatement stmt = connection_.prepareStatement("SELECT MAX(tasknum) FROM tasks WHERE  username = ?" );
+        stmt.setString( 1, username_ );
         ResultSet r = stmt.executeQuery();
         int maxKey = 0;
         if( r.next() )
@@ -144,16 +144,16 @@ class TaskJdbcDB extends JdbcDB
     
 	PreparedStatement getPSOne(int key) throws SQLException
 	{
-		PreparedStatement stmt = connection_.prepareStatement("SELECT * FROM tasks WHERE tasknum = ? AND userid = ?" );
+		PreparedStatement stmt = connection_.prepareStatement("SELECT * FROM tasks WHERE tasknum = ? AND username = ?" );
 		stmt.setInt( 1, key );
-		stmt.setInt( 2, userid_ );
+		stmt.setString( 2, username_ );
 		return stmt;
 	}
 	
 	PreparedStatement getPSAll() throws SQLException
 	{
-		PreparedStatement stmt = connection_.prepareStatement("SELECT * FROM tasks WHERE userid = ?" );
-		stmt.setInt( 1, userid_ );
+		PreparedStatement stmt = connection_.prepareStatement("SELECT * FROM tasks WHERE username = ?" );
+		stmt.setString( 1, username_ );
 		return stmt;
 	}
 	
@@ -185,7 +185,7 @@ class TaskJdbcDB extends JdbcDB
     {
         PreparedStatement stmt = connection_.prepareStatement( "UPDATE tasks SET  start_date = ?, due_date = ?, person_assigned = ?," + 
         " priority = ?, state = ?, type = ?, description = ?, resolution = ?, todo_list = ?, user_task1 = ?," +
-        " user_task2 = ?, user_task3 = ?, user_task4 = ?, user_task5 = ?, category = ? WHERE tasknum = ? AND userid = ?" );        
+        " user_task2 = ?, user_task3 = ?, user_task4 = ?, user_task5 = ?, category = ? WHERE tasknum = ? AND username = ?" );        
 
         Task task = (Task) bean;
         
@@ -217,7 +217,7 @@ class TaskJdbcDB extends JdbcDB
         stmt.setString( 15, task.getCategory() );
 
         stmt.setInt( 16, task.getKey() );
-        stmt.setInt( 17, userid_ );
+        stmt.setString( 17, username_ );
 
         
         stmt.executeUpdate();

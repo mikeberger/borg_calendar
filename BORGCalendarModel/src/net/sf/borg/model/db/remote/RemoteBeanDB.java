@@ -94,11 +94,6 @@ class RemoteBeanDB implements BeanDB
 		return (Collection) call("getOptions", null);
 	}
 
-	public final synchronized Collection getKeys() throws Exception
-	{
-		return (Collection) call("getKeys", null);
-	}
-
 	public final synchronized void close() throws Exception
 	{
 		// ignore this - we're sharing
@@ -109,7 +104,6 @@ class RemoteBeanDB implements BeanDB
 		return ((Integer) call("nextkey", null)).intValue();
 	}
 
-
 	public final synchronized void sync() throws DBException
 	{
 		// ignore this - we're sharing
@@ -119,31 +113,37 @@ class RemoteBeanDB implements BeanDB
 	protected Object call(String command, Object args) throws Exception
 	{
 		IRemoteProxy.Parms parms =
-			new IRemoteProxy.Parms(clsstr, command, args);
+			new IRemoteProxy.Parms(clsstr, command, args, user);
 		XTree xmlParms = XmlObjectHelper.toXml(parms);
 		String xmlstr = xmlParms.toString();
-		String result = 
-			RemoteProxyHome
-				.getInstance()
-				.getProxy(impl)
-				.execute(xmlstr);
+		RemoteProxyHome home = RemoteProxyHome.getInstance();
+		String result =
+			home.getProxy(impl).execute(xmlstr, home.getProxyProvider());
 		XTree xmlResult = XTree.readFromBuffer(result);
-		return XmlObjectHelper.fromXml(xmlResult);
+		
+		Object retval = XmlObjectHelper.fromXml(xmlResult);
+		if (retval instanceof Exception)
+			throw (Exception) retval;
+		else
+			return retval;
 	}
 	
 	protected void checkReadOnly() throws DBException
 	{
 		if (readonly)
-			throw new DBException("Database is read-only", DBException.RET_READ_ONLY);
+			throw new DBException("Database is read-only",
+					DBException.RET_READ_ONLY);
 	}
 	
 	// package //
-	RemoteBeanDB(Class cls, String clsstr, String impl, boolean readonly)
+	RemoteBeanDB(Class cls, String clsstr, String impl, boolean readonly,
+			String user)
 	{
 		this.cls = cls;
 		this.clsstr = clsstr;
 		this.impl = impl;
 		this.readonly = readonly;
+		this.user = user;
 	}
 	
 	// private //
@@ -151,4 +151,5 @@ class RemoteBeanDB implements BeanDB
 	private String clsstr;
 	private String impl;
 	private boolean readonly;
+	private String user;
 }

@@ -33,9 +33,10 @@ class ApptRemoteBeanDB extends RemoteBeanDB implements AppointmentKeyFilter
 	ApptRemoteBeanDB(
 		String clsstr,
 		String impl,
-		boolean readonly)
+		boolean readonly,
+		String user)
 	{
-		super(Appointment.class, clsstr, impl, readonly);
+		super(Appointment.class, clsstr, impl, readonly, user);
 	}
 
 	public Collection getTodoKeys() throws Exception

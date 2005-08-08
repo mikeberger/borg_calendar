@@ -20,8 +20,6 @@ Copyright 2003 by ==Quiet==
 
 package net.sf.borg.model.db;
 
-
-
 /**
  * Our {@link BeanDB BeanDB} creator factory interface.
  * @author Mohan Embar
@@ -31,22 +29,6 @@ public interface IBeanDataFactory
 	/**
 	 * Creation method.
 	 */
-	public BeanDB create(Class cls, String url, int userid) throws Exception;
-
-	/**
-	 * Creation method which accepts a database connection.
-	 */  /*
-	public BeanDB create(Class cls, Connection cnxn);
-*/
-	/**
-	 * Creation method which accepts class creation parameters.
-	 */  /*
-	public BeanDB create(
-		Class cls,
-		String file,
-		boolean readonly,
-		boolean shared,
-		int userid )
-		throws Exception;
-*/
+	public BeanDB create(Class cls, String url, String username)
+			throws Exception;
 }

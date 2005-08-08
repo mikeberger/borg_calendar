@@ -20,7 +20,6 @@ Copyright 2003 by Mohan Embar - http://www.thisiscool.com/
 
 package net.sf.borg.model.db.remote;
 
-
 /**
  * A home for retrieving our {@link IRemoteProxy IRemoteProxy}
  * implementation.
@@ -35,16 +34,28 @@ public class RemoteProxyHome
 		return instance;
 	}
 
-	public final IRemoteProxy getProxy(String file)
+	public final IRemoteProxy getProxy(String url)
 	{
-		// FIXME: return real implementation
-		return null;
+		return provider.createProxy(url);
+	}
+	
+	public final IRemoteProxyProvider getProxyProvider()
+	{
+		return this.provider;
+	}
+
+	public final void setProxyProvider(IRemoteProxyProvider provider)
+	{
+		if (this.provider != null)
+			throw new IllegalArgumentException("Proxy factory already set.");
+		this.provider = provider;
 	}
 
 	// private //
 	private static final RemoteProxyHome instance = new RemoteProxyHome();
+	
+	private IRemoteProxyProvider provider;
 
 	private RemoteProxyHome()
-	{
-	}
+	{}
 }

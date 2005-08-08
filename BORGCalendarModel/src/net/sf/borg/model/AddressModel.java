@@ -34,8 +34,8 @@ import net.sf.borg.common.util.Prefs;
 import net.sf.borg.common.util.Version;
 import net.sf.borg.common.util.XTree;
 import net.sf.borg.model.db.BeanDB;
-import net.sf.borg.model.db.BeanDataFactoryFactory;
 import net.sf.borg.model.db.DBException;
+import net.sf.borg.model.db.IBeanDataFactory;
 
 
 
@@ -161,14 +161,14 @@ public class AddressModel extends Model {
     }
     
     // open the SMDB database
-	public void open_db(String factoryClassName, String url, int userid)
+	public void open_db(IBeanDataFactory factory, String url, String username)
 		throws Exception
 	{
 		db_ =
-			BeanDataFactoryFactory.getInstance().getFactory(factoryClassName).create(
+			factory.create(
 				Address.class,
 				url,
-				userid);
+				username);
 		load_map();
 	}
 

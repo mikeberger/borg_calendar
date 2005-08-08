@@ -41,34 +41,6 @@ public class FileBeanDataFactory implements IBeanDataFactory
 	}
 
 	// IBeanDataFactory overrides
-	/*
-	public final BeanDB create(Class cls, Connection cnxn)
-	{
-		throw new IllegalArgumentException(cls.getName());
-	}
-
-	public final BeanDB create(
-		Class cls,
-		String file,
-		boolean readonly,
-		boolean shared,
-		int userid)
-		throws Exception
-	{
-    	FileDBCreator creator = null;
-		if (cls == Address.class)
-			creator = new AddrFileDB();
-		else if (cls == Task.class)
-			creator = new TaskFileDB();
-		else if (cls == Appointment.class)
-			creator = new ApptFileDB();
-		else
-			throw new IllegalArgumentException(cls.getName());
-			
-		creator.init(file,readonly,shared);
-		return creator;
-	}
-	*/
 	/**
 	 * Replacing the old signature, this new one should receive the url String
 	 * using the format <code>filename::isReadonly::isShared</code>.<br>
@@ -78,7 +50,7 @@ public class FileBeanDataFactory implements IBeanDataFactory
 	public final BeanDB create(
 			Class cls,
 			String url,
-			int userid)
+			String username)
 			throws Exception
 		{
 			boolean readonly = false;

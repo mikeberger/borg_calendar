@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="net/sf/borg/model/db/memory/|net/sf/borg/model/db/remote/" kind="src" path="src"/>
+	<classpathentry excluding="net/sf/borg/model/db/memory/" kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="res"/>
 	<classpathentry kind="src" path="/BORGCalendarCommon"/>

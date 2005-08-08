@@ -23,7 +23,6 @@ package net.sf.borg.model.db.jdbc;
 import net.sf.borg.model.Address;
 import net.sf.borg.model.Appointment;
 import net.sf.borg.model.Task;
-import net.sf.borg.model.User;
 import net.sf.borg.model.db.BeanDB;
 import net.sf.borg.model.db.IBeanDataFactory;
 
@@ -42,51 +41,18 @@ public class JdbcBeanDataFactory implements IBeanDataFactory
 	}
 
 	// IBeanDataFactory overrides
-	/*
-	public final BeanDB create(Class cls, Connection cnxn)
-	{
-		if (cls == Address.class)
-			return new AddrJdbcDB( cnxn );
-		else if (cls == Task.class)
-			return new TaskJdbcDB( cnxn );
-		
-		throw new IllegalArgumentException(cls.getName());
-	}
-
-	public final BeanDB create(
-		Class cls,
-		String file,
-		boolean readonly,
-		boolean shared,
-		int userid)
-		throws Exception
-	{
-		if (cls == Address.class)
-			return new AddrJdbcDB( file, userid );
-		else if (cls == Task.class)
-			return new TaskJdbcDB( file, userid );
-		else if (cls == User.class)
-			return new UserJdbcDB( file );
-		else if (cls == Appointment.class)
-			return new ApptJdbcDB( file, userid );
-
-		throw new IllegalArgumentException(cls.getName());
-	}
-	*/
 	public final BeanDB create(
 			Class cls,
 			String url,
-			int userid)
+			String username)
 			throws Exception
 		{
 			if (cls == Address.class)
-				return new AddrJdbcDB( url, userid );
+				return new AddrJdbcDB( url, username );
 			else if (cls == Task.class)
-				return new TaskJdbcDB( url, userid );
-			else if (cls == User.class)
-				return new UserJdbcDB( url );
+				return new TaskJdbcDB( url, username );
 			else if (cls == Appointment.class)
-				return new ApptJdbcDB( url, userid );
+				return new ApptJdbcDB( url, username );
 
 			throw new IllegalArgumentException(cls.getName());
 		}

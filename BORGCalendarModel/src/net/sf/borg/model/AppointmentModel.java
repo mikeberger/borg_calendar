@@ -41,8 +41,8 @@ import net.sf.borg.common.util.Version;
 import net.sf.borg.common.util.Warning;
 import net.sf.borg.common.util.XTree;
 import net.sf.borg.model.db.BeanDB;
-import net.sf.borg.model.db.BeanDataFactoryFactory;
 import net.sf.borg.model.db.DBException;
+import net.sf.borg.model.db.IBeanDataFactory;
 
 
 // calmodel is the data model class for calendar data. calmodel is the only class that communicates
@@ -617,13 +617,14 @@ public class AppointmentModel extends Model implements Model.Listener
     
     
     // open the SMDB database
-    public void open_db(String factoryClassName, String url, int userid) throws Exception
+    public void open_db(IBeanDataFactory factory, String url, String username)
+			throws Exception
     {
 		db_ =
-			BeanDataFactoryFactory.getInstance().getFactory(factoryClassName).create(
+			factory.create(
 				Appointment.class,
 				url,
-				userid);
+				username);
         
         // init categories and currentcategories
         CategoryModel.getReference().addAll(getDbCategories());

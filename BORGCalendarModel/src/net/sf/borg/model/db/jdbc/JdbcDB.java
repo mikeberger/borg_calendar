@@ -74,7 +74,7 @@ abstract class JdbcDB implements BeanDB
     private boolean objectCacheOn_;  // is caching on?
     private HashMap objectCache_;  // the cache
     
-    protected int userid_ = 1;
+    protected String username_;
     
     // For multiuser operation, we need to reserve key values even before a
     // record is created in the database. Any value here overrides the current
@@ -82,9 +82,9 @@ abstract class JdbcDB implements BeanDB
     protected int curMaxKey_ = Integer.MIN_VALUE;
     
     /** Creates a new instance of JdbcDB */
-    JdbcDB(String url, int userid) throws Exception
+    JdbcDB(String url, String username) throws Exception
     {
-        userid_ = userid;
+        username_ = username;
         
         objectCacheOn_ = true;
         objectCache_ = new HashMap();
@@ -228,7 +228,7 @@ abstract class JdbcDB implements BeanDB
     public String getOption(String oname) throws Exception
     {
         String ret = null;
-        PreparedStatement stmt = connection_.prepareStatement("SELECT value FROM options WHERE name = ? AND userid = ?" );
+        PreparedStatement stmt = connection_.prepareStatement("SELECT value FROM options WHERE name = ? AND username = ?" );
         stmt.setString( 1, oname );
         stmt.setInt( 2, 1 );
         ResultSet rs = stmt.executeQuery();
@@ -243,8 +243,8 @@ abstract class JdbcDB implements BeanDB
     public Collection getOptions() throws Exception
     {
         ArrayList keys = new ArrayList();
-        PreparedStatement stmt = connection_.prepareStatement("SELECT name, value FROM options WHERE userid = ?" );
-        stmt.setInt( 1, userid_ );
+        PreparedStatement stmt = connection_.prepareStatement("SELECT name, value FROM options WHERE username = ?" );
+        stmt.setString( 1, username_ );
         ResultSet rs = stmt.executeQuery();
         while( rs.next() )
         {
@@ -262,9 +262,9 @@ abstract class JdbcDB implements BeanDB
 		String value = option.getValue();
 
         try{
-            PreparedStatement stmt = connection_.prepareStatement( "DELETE FROM options WHERE name = ? AND userid = ?" );
+            PreparedStatement stmt = connection_.prepareStatement( "DELETE FROM options WHERE name = ? AND username = ?" );
             stmt.setString( 1, oname );
-            stmt.setInt( 2, userid_ );
+            stmt.setString( 2, username_ );
             stmt.executeUpdate();
         }
         catch( Exception e )
@@ -273,12 +273,12 @@ abstract class JdbcDB implements BeanDB
         if( value == null || value.equals("") )
             return;
         
-        PreparedStatement stmt = connection_.prepareStatement( "INSERT INTO options ( name, userid, value ) " + 
+        PreparedStatement stmt = connection_.prepareStatement( "INSERT INTO options ( name, username, value ) " + 
                     "VALUES ( ?, ?, ?)");
         
         
         stmt.setString( 1, oname );
-        stmt.setInt( 2, userid_ );
+        stmt.setString( 2, username_ );
         stmt.setString( 3, value );
  
         stmt.executeUpdate();

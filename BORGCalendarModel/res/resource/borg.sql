@@ -18,7 +18,7 @@
 
 CREATE TABLE `addresses` (
   `address_num` int(11) NOT NULL default '0',
-  `userid` int(11) NOT NULL default '0',
+  `username` varchar(25) NOT NULL,
   `first_name` varchar(25) default NULL,
   `last_name` varchar(25) default NULL,
   `nickname` varchar(25) default NULL,
@@ -45,8 +45,8 @@ CREATE TABLE `addresses` (
   `new` tinyint(4) NOT NULL default '0',
   `modified` tinyint(4) NOT NULL default '0',
   `deleted` tinyint(4) NOT NULL default '0',
-  PRIMARY KEY  (`address_num`,`userid`),
-  KEY `userid` (`userid`)
+  PRIMARY KEY  (`address_num`,`username`),
+  KEY `username` (`username`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -58,7 +58,7 @@ CREATE TABLE `addresses` (
 CREATE TABLE `appointments` (
   `appt_date` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   `appt_num` int(11) NOT NULL default '0',
-  `userid` int(11) NOT NULL default '0',
+  `username` varchar(25) NOT NULL,
   `duration` int(11) default NULL,
   `text` text NOT NULL,
   `skip_list` text,
@@ -77,9 +77,9 @@ CREATE TABLE `appointments` (
   `deleted` tinyint(4) NOT NULL default '0',
   `alarm` char(1) default NULL,
   `reminders` text,
-  PRIMARY KEY  (`appt_num`,`userid`),
-  KEY `todo` (`todo`,`userid`),
-  KEY `userid` (`userid`)
+  PRIMARY KEY  (`appt_num`,`username`),
+  KEY `todo` (`todo`,`username`),
+  KEY `username` (`username`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -90,9 +90,9 @@ CREATE TABLE `appointments` (
 
 CREATE TABLE `options` (
   `name` varchar(10) NOT NULL default '',
-  `userid` int(11) NOT NULL default '0',
+  `username` varchar(25) NOT NULL,
   `value` text NOT NULL,
-  PRIMARY KEY  (`name`,`userid`)
+  PRIMARY KEY  (`name`,`username`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -103,7 +103,7 @@ CREATE TABLE `options` (
 
 CREATE TABLE `tasks` (
   `tasknum` int(11) NOT NULL default '0',
-  `userid` int(11) NOT NULL default '0',
+  `username` varchar(25) NOT NULL,
   `start_date` date NOT NULL default '0000-00-00',
   `due_date` date default NULL,
   `person_assigned` varchar(10) default NULL,
@@ -119,8 +119,8 @@ CREATE TABLE `tasks` (
   `user_task4` varchar(25) default NULL,
   `user_task5` varchar(25) default NULL,
   `category` varchar(10) default NULL,
-  PRIMARY KEY  (`tasknum`,`userid`),
-  KEY `userid` (`userid`)
+  PRIMARY KEY  (`tasknum`,`username`),
+  KEY `username` (`username`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -131,8 +131,6 @@ CREATE TABLE `tasks` (
 
 CREATE TABLE `users` (
   `username` varchar(25) NOT NULL default '',
-  `userid` int(11) NOT NULL default '0',
   `password` varchar(25) NOT NULL default '',
   PRIMARY KEY  (`username`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-        
