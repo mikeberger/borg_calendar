@@ -102,9 +102,9 @@ public class XTree
     public XTree child(int n)
     {
         XTree ret;
-        for( ret = firstChild_; ret != null && n > 1;
-        ret = ret.sibling_, n--);
-        return(ret);
+		for (ret = firstChild_; ret != null && n > 1; ret = ret.sibling_, n--)
+			;
+		return (ret);
     }
     
     // get element name
@@ -242,7 +242,7 @@ public class XTree
         
         if( esc )
         {
-            String ret = new String(value_);
+            String ret = value_;
             ret = ret.replaceAll("&", "&amp;" );
             ret = ret.replaceAll(">", "&gt;" );
             ret = ret.replaceAll("<", "&lt;" );

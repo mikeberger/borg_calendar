@@ -7,14 +7,17 @@
 
    <property name="prj.common.dir" value="${basedir}/BORGCalendarCommon" />
    <property name="prj.dbutil.dir" value="${basedir}/BORGCalendarDBUtilities" />
+   <property name="prj.httpproxy.dir" value="${basedir}/BORGCalendarHTTPProxy" />
    <property name="prj.model.dir" value="${basedir}/BORGCalendarModel" />
    <property name="prj.ui.dir" value="${basedir}/BORGCalendarUI" />
+   <property name="prj.servlet.dir" value="${basedir}/BORGServlet" />
    <property name="prj.conduit.dir" value="${basedir}/BORGPalmConduits" />
    <property name="help.dir" value="${prj.ui.dir}/borghelp" />
 
    <property name="pkg" value="net/sf/borg" />
 
    <property name="build.dir" value="${prj.common.dir}/build" />
+   <property name="build.servlet.dir" value="${prj.common.dir}/build_servlet" />
    <property name="gen.dir" value="${prj.common.dir}/gen" />
    <property name="dist.dir" value="${prj.common.dir}/dist" />
    <property name="doc.dir" value="${prj.common.dir}/doc" />
@@ -36,10 +39,15 @@
    <!-- Path References -->
    <path id="build.classpath">
       <pathelement location="${trayicon.jar}"/>
-   	  <pathelement location="${prj.common.dir}/lib/ical4j.jar"/>
-   	  <pathelement location="${prj.common.dir}/lib/commons-logging.jar"/>
-   	  <pathelement location="${prj.ui.dir}/lib/jh.jar"/>
-   	  <pathelement location="${prj.common.dir}/lib/jcalendar.jar"/>
+ 	  <pathelement location="${prj.ui.dir}/lib/jh.jar"/>
+      <fileset dir="${prj.common.dir}/lib">
+        <include name="*.jar"/>
+      </fileset>
+   </path>
+
+   <path id="build.servlet.classpath">
+      <pathelement location="${build.dir}"/>
+   	  <path refid="build.classpath"/>
    </path>
 
    <target name="init">
@@ -97,11 +105,6 @@
          <arg value="${db.res.dir}/addr_schema.xml"/> 
       </java>
         
-      <java jar="${gen.dir}/genObj.jar" dir="${gen.dir}" fork="true" failonerror="true" >
-        <arg value="net.sf.borg.model"/> 
-        <arg value="${db.res.dir}/user_schema.xml"/> 
-      </java>
-       
       <copy todir="${prj.model.dir}/src/${pkg}/model">
          <fileset dir="${gen.dir}">
             <include name="Address.java"/>
@@ -124,6 +127,7 @@
    <!-- Compile -->
    <target name="compile" depends="gen">
       <mkdir dir="${build.dir}" />
+      <mkdir dir="${build.servlet.dir}" />
 
       <!-- Common -->
       <javac srcdir="${prj.common.dir}/src"
@@ -139,7 +143,14 @@
              debug="on">
        		<include name="**/*.java" />
         	<exclude name="**/memory/**" />
-   			<exclude name="**/remote/**"/>
+      </javac>
+
+      <!-- HTTP Proxy -->
+      <javac srcdir="${prj.httpproxy.dir}/src"
+             destdir="${build.dir}"
+      	     classpathref="build.classpath"
+             debug="on">
+     	  	<include name="**/*.java" />
       </javac>
 
       <!-- DB Utilities -->
@@ -154,7 +165,14 @@
              classpathref="build.classpath"
              debug="on">
       </javac>
-   </target>
+
+    <!-- Servlet -->
+    <javac srcdir="${prj.servlet.dir}/WEB-INF/src"
+           destdir="${build.servlet.dir}"
+           classpathref="build.servlet.classpath"
+           debug="on">
+    </javac>
+</target>
 
    <target name="borg-jar" depends="compile">
       <mkdir dir="${dist.dir}" />
@@ -195,6 +213,38 @@ build.number=${build.number}
       </jar>
    </target>
 	
+   <target name="borg-servlet-war" depends="compile, borg-jar">
+      <mkdir dir="${dist.dir}" />
+
+      <jar jarfile="${build.servlet.dir}/borg_servlet.jar">
+         <manifest>
+            <attribute name="Built-By" value="${user.name}"/>
+         </manifest>
+         <fileset dir="${build.servlet.dir}">
+            <include name="**/*.class"/>
+         </fileset>
+      </jar>
+
+      <jar jarfile="${dist.dir}/borg_servlet.war">
+        <manifest>
+           <attribute name="Built-By" value="${user.name}"/>
+        </manifest>
+        <fileset dir="${prj.servlet.dir}">
+          <include name="WEB-INF/web.xml"/>
+        </fileset>
+        <zipfileset
+      		dir="${build.servlet.dir}"
+          	includes="borg_servlet.jar"
+          	fullpath="WEB-INF/lib/borg_servlet.jar"
+         />
+        <zipfileset
+      		dir="${dist.dir}"
+          	includes="borg.jar"
+          	fullpath="WEB-INF/lib/borg.jar"
+         />
+      </jar>
+   </target>
+
    <target name="help-jar">
    	   <mkdir dir="${build.dir}/lib"/>
 	   <jar jarfile="${build.dir}/lib/borghelp.jar">
@@ -285,6 +335,7 @@ build.number=${build.number}
    <!-- Clean everything -->
    <target name="clean" depends="init">
       <delete quiet="true" dir="${build.dir}" />
+      <delete quiet="true" dir="${build.servlet.dir}" />
       <delete quiet="true" dir="${gen.dir}" />
       <delete quiet="true" dir="${dist.dir}" />
       <delete quiet="true" dir="${doc.dir}" />
@@ -308,7 +359,7 @@ build.number=${build.number}
       </javadoc>
    </target>
                 
-   <target name="clean-build" depends="clean,borg-jar,mdbtool-jar,help-jar" />
+   <target name="clean-build" depends="clean,borg-jar,borg-servlet-war,mdbtool-jar,help-jar" />
    <target name="main" depends="clean-build" />
    <target name="fulldist" depends="borg_prog,borg_src"/>
    

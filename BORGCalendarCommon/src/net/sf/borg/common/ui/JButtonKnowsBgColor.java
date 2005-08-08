@@ -51,7 +51,7 @@ public class JButtonKnowsBgColor extends JButton {
 		jf.getContentPane().add( jbkbc1, BorderLayout.CENTER );
 		jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		jf.setSize( 100, 200 );
-		jf.show();
+		jf.setVisible(true);
 	}
 	/**
 	 * @return Returns the color.

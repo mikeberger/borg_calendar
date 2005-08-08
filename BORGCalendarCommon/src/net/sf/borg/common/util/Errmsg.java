@@ -41,6 +41,11 @@ public class Errmsg
     {
         console_ = c;
     }
+	
+	public static boolean console()
+	{
+		return console_;
+	}
     
     // output an exception
     public static void errmsg( Exception e )
