@@ -3,6 +3,8 @@ package net.sf.borg.apptconduit;
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.TaskModel;
+import net.sf.borg.model.db.BeanDataFactoryFactory;
+import net.sf.borg.model.db.IBeanDataFactory;
 import palm.conduit.Conduit;
 import palm.conduit.ConfigureConduitInfo;
 import palm.conduit.Log;
@@ -41,11 +43,15 @@ public class ApptCond implements Conduit {
             {
                 //read the pc records on the PC
                 String dbdir = props.pathName;
+           
+                StringBuffer tmp = new StringBuffer(dbdir);
+                IBeanDataFactory factory = BeanDataFactoryFactory.getInstance().getFactory(tmp, false, false);
+                dbdir = tmp.toString();
                 apptModel = AppointmentModel.create();
-                apptModel.open_db("net.sf.borg.model.db.file.FileBeanDataFactory", dbdir , 1);;
+                apptModel.open_db(factory, dbdir , "");;
 
                 taskModel = TaskModel.create();
-                taskModel.open_db("net.sf.borg.model.db.file.FileBeanDataFactory", dbdir , 1);
+                taskModel.open_db(factory, dbdir , "");
                
                 // have to get todo data into BORG, then get appt data, then sync back
                 // appt data and finally overwrite Todo data. 
