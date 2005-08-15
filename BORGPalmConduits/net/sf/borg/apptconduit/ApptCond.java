@@ -46,7 +46,7 @@ public class ApptCond implements Conduit {
            
                 StringBuffer tmp = new StringBuffer(dbdir);
                 IBeanDataFactory factory = BeanDataFactoryFactory.getInstance().getFactory(tmp, false, false);
-                dbdir = tmp.toString();
+                //dbdir = tmp.toString();
                 apptModel = AppointmentModel.create();
                 apptModel.open_db(factory, dbdir , "");;
 

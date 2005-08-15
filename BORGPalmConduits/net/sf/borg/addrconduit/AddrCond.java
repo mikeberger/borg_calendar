@@ -43,7 +43,7 @@ public class AddrCond implements Conduit {
                 addressModel = AddressModel.create();
                 StringBuffer tmp = new StringBuffer(dbdir);
                 IBeanDataFactory factory = BeanDataFactoryFactory.getInstance().getFactory(tmp, false, false);
-                dbdir = tmp.toString();
+                //dbdir = tmp.toString();
                 addressModel.open_db(factory, dbdir, "borg");
 
                 //Create an instance of the RecordManager for synchronizing the
