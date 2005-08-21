@@ -75,8 +75,8 @@ public class RemoteBeanDataFactory implements IBeanDataFactory
 		
 		if (cls == Appointment.class)
 			return new ApptRemoteBeanDB(clsstr,file,readonly,username);		
-		else
-			return new RemoteBeanDB(cls,clsstr,file,readonly,username);		
+
+		return new RemoteBeanDB(cls,clsstr,file,readonly,username);		
 	}
 
 	// private //

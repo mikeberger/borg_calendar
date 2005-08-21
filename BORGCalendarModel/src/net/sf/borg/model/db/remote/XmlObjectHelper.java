@@ -109,10 +109,10 @@ public class XmlObjectHelper
 	    addPrimitive(xml, name, Integer.toString(val));
 	}
 	
-	private static void addPrimitive(XTree xml, String name, boolean val)
-	{
-	    addPrimitive(xml, name, Boolean.toString(val));
-	}
+	//private static void addPrimitive(XTree xml, String name, boolean val)
+	//{
+	    //addPrimitive(xml, name, Boolean.toString(val));
+	//}
 	
 	private static String getStringPrimitive(XTree xml, String name)
 	{
@@ -128,11 +128,11 @@ public class XmlObjectHelper
 	    return Integer.valueOf(val);
 	}
 	
-	private static Boolean getBooleanPrimitive(XTree xml, String name)
-	{
-	    String val = getStringPrimitive(xml,name);
-	    return Boolean.valueOf(val);
-	}
+	//private static Boolean getBooleanPrimitive(XTree xml, String name)
+	//{
+	    //String val = getStringPrimitive(xml,name);
+	    //return Boolean.valueOf(val);
+	//}
 	
 	private static XTree createTree(XTree parent, String name)
 	{

@@ -1663,8 +1663,6 @@ public class OptionsView extends View
     private javax.swing.JCheckBox miltime;
     private javax.swing.JCheckBox mondaycb;
     private javax.swing.JCheckBox popenablebox;
-    private javax.swing.JSpinner popminafter;
-    private javax.swing.JSpinner popminbefore;
     private javax.swing.JCheckBox privbox;
     private javax.swing.JCheckBox pubbox;
     private javax.swing.JCheckBox revDayEditbox;
@@ -1714,7 +1712,6 @@ public class OptionsView extends View
 	private JComboBox lsbox = null;
 	private JCheckBox truncbox = null;
 	private JLabel syncminlabel = null;
-	private JTextField jTextField = null;
 	/**
 	 * This method initializes jPanel	
 	 * 	

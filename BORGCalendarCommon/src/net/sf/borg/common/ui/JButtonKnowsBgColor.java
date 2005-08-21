@@ -38,7 +38,7 @@ public class JButtonKnowsBgColor extends JButton {
 			setBackground( getColorProperty() );
 		} else {
 			setForeground( getColorProperty() );
-		};
+		}
 	}
 
 	// for testing purposes only

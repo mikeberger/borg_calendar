@@ -1313,9 +1313,10 @@ class AppointmentPanel extends JPanel {
 		if (labelstring.equals("")) {
 			return java.util.ResourceBundle.getBundle("resource/borg_resource")
 					.getString("*****_NEW_APPT_*****");
-		} else {
-			return labelstring;
-		}
+		} 
+			
+		return labelstring;
+		
 	}
 
 	/**

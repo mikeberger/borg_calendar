@@ -124,8 +124,8 @@ class RemoteBeanDB implements BeanDB
 		Object retval = XmlObjectHelper.fromXml(xmlResult);
 		if (retval instanceof Exception)
 			throw (Exception) retval;
-		else
-			return retval;
+		
+		return retval;
 	}
 	
 	protected void checkReadOnly() throws DBException

@@ -346,9 +346,10 @@ public class PopupView extends View {
 		if (remTimes[i] == 'Y' && p.reminderShown(i) == 'N') {
 			p.setReminderShown(i);
 			return PrefName.REMMINUTES[i];
-		} else {
-			return -999;
-		}
+		}  
+		
+		return -999;
+		
 	}
 
 	final Runnable doPopupChk = new Runnable() {

@@ -2507,7 +2507,7 @@ public class CalendarView extends View implements Prefs.Listener {
 							{
 								Appointment ap = (Appointment) itr.next();
 								String cat = ap.getCategory();
-								if( cat != null && cat.equals((String)o) )
+								if( cat != null && cat.equals(o) )
 									AppointmentModel.getReference().delAppt(ap);
 							}
 							
@@ -2516,7 +2516,7 @@ public class CalendarView extends View implements Prefs.Listener {
 							while( itr.hasNext() ) {
 								Task t = (Task) itr.next();
 								String cat = t.getCategory();
-								if( cat != null && cat.equals((String)o) )
+								if( cat != null && cat.equals(o) )
 									TaskModel.getReference().delete(t.getKey());
 							}
 							

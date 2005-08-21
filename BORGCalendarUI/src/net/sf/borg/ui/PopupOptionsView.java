@@ -32,10 +32,8 @@ import javax.swing.JPanel;
 
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Version;
-import net.sf.borg.model.Appointment;
 
 public class PopupOptionsView extends JDialog {
-	private Appointment apptmt;
 	static {
 		Version.addVersion("$Id$");
 	}
@@ -121,7 +119,6 @@ public class PopupOptionsView extends JDialog {
 	}
 
 	private void saveButtonClicked(java.awt.event.ActionEvent evt) {
-		String rems = new String(remtimes_);
 		for (int i = 0; i < PrefName.REMMINUTES.length; ++i) {
 			if (alarmBoxes[i].isSelected()) {
 				remtimes_[i] = 'Y';
@@ -130,7 +127,7 @@ public class PopupOptionsView extends JDialog {
 			}
 
 		}
-		rems = new String(remtimes_);
+		
 		appPanel_.setPopupTimesString();
 		this.dispose();
 	}
