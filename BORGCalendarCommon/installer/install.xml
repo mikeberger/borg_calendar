@@ -94,6 +94,16 @@
 	    	<file src="lib/borghelp.jar" targetdir="$INSTALL_PATH/lib"/>
 	    	<file src="lib/jcalendar.jar" targetdir="$INSTALL_PATH/lib"/>
 	    	<file src="lib/license.jcalendar.txt" targetdir="$INSTALL_PATH/lib"/>
+	    	<file src="lib/commons-logging.jar" targetdir="$INSTALL_PATH/lib"/>
+	    	<file src="lib/commons-codec-1.3.jar" targetdir="$INSTALL_PATH/lib"/>
+	    	<file src="lib/commons-httpclient-3.0-rc3.jar" targetdir="$INSTALL_PATH/lib"/> 
+	    	<file src="lib/ical4j.jar" targetdir="$INSTALL_PATH/lib"/> 
+	    	<file src="lib/LICENSE.iCal4j" targetdir="$INSTALL_PATH/lib"/> 
+	    	<file src="lib/LICENSE.commons-logging" targetdir="$INSTALL_PATH/lib"/> 
+	    	<file src="lib/LICENSE.commons-codec" targetdir="$INSTALL_PATH/lib"/> 
+	    	<file src="lib/LICENSE.commons-httpclient" targetdir="$INSTALL_PATH/lib"/> 
+	    	<file src="borg.sql" targetdir="$INSTALL_PATH"/>
+            <file src="update1_5.sql" targetdir="$INSTALL_PATH"/>
         </pack>
         <pack name="Systray Support" required="no">
 		<description>Support for a system tray icon (Recommended)</description>
@@ -110,18 +120,6 @@
 	    <file src="lib/looks-1.2.2.jar" targetdir="$INSTALL_PATH/lib"/> 
 	    <file src="lib/LICENSE.looks" targetdir="$INSTALL_PATH/lib"/> 
         </pack>
-        <pack name="iCal Support" required="no">
-		<description>Adds support for limited Import/Export to ICalendar format</description>
-	    <file src="lib/commons-logging.jar" targetdir="$INSTALL_PATH/lib"/> 
-	    <file src="lib/ical4j.jar" targetdir="$INSTALL_PATH/lib"/> 
-	    <file src="lib/LICENSE.iCal4j" targetdir="$INSTALL_PATH/lib"/> 
-	    <file src="lib/LICENSE.commons-logging" targetdir="$INSTALL_PATH/lib"/> 
-        </pack>
-	<pack name="RDBMS Support" preselected="yes" required="no">
-		<description>SQL needed to create a BORG database in MySQL</description>
-            <file src="borg.sql" targetdir="$INSTALL_PATH"/>
-            <file src="update1_5.sql" targetdir="$INSTALL_PATH"/> 
-        </pack>
 	<pack name="MDBTOOL" preselected="no" required="no">
 		<description>Optional tool for repairing databases (rarely needed)</description>
             <file src="mdbtool.jar" targetdir="$INSTALL_PATH"/> 
@@ -130,10 +128,11 @@
 		<description>Palm Hot-Sync conduits for BORG (experimental)</description>
             <file src="conduits" targetdir="$INSTALL_PATH"/> 
         </pack>
-	<!--pack name="Sources" preselected="no" required="no">
-            <description>The sources</description>
-            <file src="borg_src.zip" targetdir="$INSTALL_PATH"/>
-        </pack-->
+     <pack name="Remote Server" preselected="no" required="no">
+		<description>Remote Server that can serve BORG Data over a network. Runs under Tomcat.</description>
+            <file src="borg_servlet.war" targetdir="$INSTALL_PATH"/> 
+        </pack>
+
     </packs>
     
 </installation>

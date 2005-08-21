@@ -202,7 +202,7 @@ build.number=${build.number}
       <manifest file="${build.dir}/${pkg}/MANIFEST.MF">
          <attribute name="Built-By" value="${user.name}"/>
          <attribute name="Main-Class" value="${pkg}/control/Borg"/>
-      	 <attribute name="Class-Path" value="lib/jdic.jar lib/jh.jar lib/borghelp.jar lib/ical4j.jar lib/commons-logging.jar lib/looks-1.2.2.jar lib/jcalendar.jar"/>
+      	 <attribute name="Class-Path" value="lib/jdic.jar lib/jh.jar lib/borghelp.jar lib/ical4j.jar lib/commons-logging.jar lib/looks-1.2.2.jar lib/jcalendar.jar lib/commons-httpclient-3.0-rc3.jar lib/commons-codec-1.3.jar"/>
       </manifest>
 
       <antcall target="zz_copyresources">
@@ -225,7 +225,7 @@ build.number=${build.number}
       </jar>
    </target>
 	
-   <target name="borg-servlet-war" depends="compile, borg-jar">
+   <target name="borg-servlet-war" depends="borg-jar">
       <mkdir dir="${dist.dir}" />
 
       <jar jarfile="${build.servlet.dir}/borg_servlet.jar">
@@ -301,7 +301,8 @@ build.number=${build.number}
    
    <target name="borg_prog" depends="clean-build">
       <zip destfile="${dist.dir}/borg.zip">
-         <fileset dir="${dist.dir}" includes="*.jar"/>       
+         <fileset dir="${dist.dir}" includes="*.jar"/> 
+      	 <fileset dir="${dist.dir}" includes="*.war"/>
          <fileset dir="${build.dir}/resource" includes="COPYING"/> 
       	 <fileset dir="${build.dir}" includes="lib/borghelp.jar"/>
          <fileset dir="${db.res.dir}" includes="borg.sql"/>
