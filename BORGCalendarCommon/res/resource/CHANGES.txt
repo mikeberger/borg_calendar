@@ -1,3 +1,11 @@
+Version 1.5.1
+-------------
+Tomcat-based data server
+Improved Search
+Bulk Delete and Change Category
+Fix some major Palm Sync Bugs
+Add PRI column to Task List View
+
 Version 1.5
 -----------
 Import iCal into a particular category (1.5 final only)
