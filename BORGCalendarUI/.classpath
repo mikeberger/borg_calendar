@@ -13,5 +13,6 @@
 	<classpathentry kind="lib" path="/BORGCalendarCommon/lib/jcalendar.jar"/>
 	<classpathentry kind="lib" path="lib/jdic.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/BORGCalendarHTTPProxy"/>
+	<classpathentry kind="lib" path="/BORGCalendarCommon/res"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

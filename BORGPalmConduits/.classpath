@@ -3,6 +3,7 @@
 	<classpathentry excluding="CVS|ant/|build/|classes/|dist/" kind="src" path=""/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="C:/CDK403/Java/Bin/jsync/rt/jsync.jar"/>
-	<classpathentry kind="lib" path="C:/eclipse/workspace/BORGCalendarCommon/dist/borg.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/BORGCalendarCommon"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/BORGCalendarModel"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
