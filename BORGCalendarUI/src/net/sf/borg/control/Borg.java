@@ -162,6 +162,10 @@ public class Borg extends Controller implements OptionsView.RestartListener {
     	{
     		dbdir = Prefs.getPref(PrefName.DBDIR);
     	}
+    	else if( dbtype.equals("remote"))
+    	{
+    		dbdir = "remote:" + Prefs.getPref(PrefName.DBURL);
+    	}
     	else
     	{
     		// build a mysql URL

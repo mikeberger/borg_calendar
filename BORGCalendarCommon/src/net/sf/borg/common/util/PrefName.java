@@ -57,6 +57,7 @@ public class PrefName {
 		static public PrefName DBNAME = new PrefName( "dbname", "borg");
 		static public PrefName DBUSER = new PrefName( "dbuser", "borg");
 		static public PrefName DBPASS = new PrefName( "dbpass", "borg");
+		static public PrefName DBURL = new PrefName( "dburl", "");
 		
 		
 		// misc
