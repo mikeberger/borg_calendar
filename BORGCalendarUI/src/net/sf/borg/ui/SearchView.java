@@ -94,6 +94,8 @@ public class SearchView extends View {
 
 	private JButton deleteButton = null;
 
+	private JButton catbut = null;
+
 	/**
 	 * This is the default constructor
 	 */
@@ -647,6 +649,10 @@ public class SearchView extends View {
 	 */
 	private JPanel getJPanel() {
 		if (jPanel == null) {
+			GridBagConstraints gridBagConstraints = new GridBagConstraints();
+			gridBagConstraints.gridx = 1;  // Generated
+			gridBagConstraints.weightx = 1.0D;  // Generated
+			gridBagConstraints.gridy = 1;  // Generated
 			GridBagConstraints gridBagConstraints41 = new GridBagConstraints();
 			GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
 			jPanel = new JPanel();
@@ -659,6 +665,7 @@ public class SearchView extends View {
 					javax.swing.border.TitledBorder.DEFAULT_POSITION, null,
 					null));
 			gridBagConstraints2.gridx = 0;
+			gridBagConstraints2.gridwidth = 2;  // Generated
 			gridBagConstraints2.gridy = 0;
 			gridBagConstraints2.weightx = 1.0;
 			gridBagConstraints2.weighty = 1.0;
@@ -666,9 +673,11 @@ public class SearchView extends View {
 			gridBagConstraints2.ipadx = 0;
 			gridBagConstraints2.insets = new java.awt.Insets(4, 4, 4, 4);
 			gridBagConstraints41.gridx = 0;
+			gridBagConstraints41.weightx = 1.0D;  // Generated
 			gridBagConstraints41.gridy = 1;
-			jPanel.add(getJScrollPane(), gridBagConstraints2);
-			jPanel.add(getDeleteButton(), gridBagConstraints41);
+			jPanel.add(getJScrollPane(), gridBagConstraints2);  // Generated
+			jPanel.add(getDeleteButton(), gridBagConstraints41);  // Generated
+			jPanel.add(getCatbut(), gridBagConstraints);  // Generated
 		}
 		return jPanel;
 	}
@@ -783,5 +792,64 @@ public class SearchView extends View {
 			});
 		}
 		return deleteButton;
+	}
+
+	/**
+	 * This method initializes catbut	
+	 * 	
+	 * @return javax.swing.JButton	
+	 */
+	private JButton getCatbut() {
+		if (catbut == null) {
+			catbut = new JButton();
+			catbut.setText(java.util.ResourceBundle.getBundle(
+			"resource/borg_resource").getString("chg_cat"));
+			catbut.setIcon(new ImageIcon(getClass().getResource("/resource/Preferences16.gif")));  // Generated
+			catbut.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					int rows[] = jTable1.getSelectedRows();
+					if (rows.length == 0) {
+						return;
+					}
+					
+					try{
+						
+						Collection allcats = CategoryModel.getReference().getCategories();
+						Object[] cats = allcats.toArray();
+						
+						Object o = JOptionPane.showInputDialog(null,Resource.getResourceString("cat_choose"),
+								"",JOptionPane.QUESTION_MESSAGE,null,cats,cats[0]);
+						if( o == null)
+							return;					
+						
+						TableSorter tm = (TableSorter) jTable1.getModel();
+						
+						ArrayList appts = new ArrayList();
+						for (int i = 0; i < rows.length; i++) {
+							Integer key = (Integer) tm.getValueAt(rows[i], 2);
+							appts.add(key);
+						}
+						
+						Iterator it = appts.iterator();
+						while( it.hasNext())
+						{
+							Integer key = (Integer) it.next();
+							Appointment ap = AppointmentModel.getReference().getAppt(key.intValue());
+							ap.setCategory((String)o);
+							AppointmentModel.getReference().saveAppt(ap,false);
+							
+						}
+					}
+					catch( Exception ex )
+					{
+						Errmsg.errmsg(ex);
+						return;
+					}
+					
+					load(); // force update
+				}
+			});
+		}
+		return catbut;
 	}
 } //  @jve:decl-index=0:visual-constraint="64,38"

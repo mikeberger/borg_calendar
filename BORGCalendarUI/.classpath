@@ -2,7 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="res"/>
 	<classpathentry kind="lib" path="lib/jh.jar"/>
 	<classpathentry kind="lib" path="borghelp"/>
 	<classpathentry kind="src" path="/BORGCalendarModel"/>
@@ -14,5 +13,6 @@
 	<classpathentry kind="lib" path="lib/jdic.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/BORGCalendarHTTPProxy"/>
 	<classpathentry kind="lib" path="/BORGCalendarCommon/res"/>
+	<classpathentry kind="lib" path="res"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>BORG Calendar UI</name>
+	<name>BORGCalendarUI</name>
 	<comment></comment>
 	<projects>
-		<project>BORG Calendar Common</project>
-		<project>BORG Calendar Model</project>
+		<project>BORGCalendarCommon</project>
+		<project>BORGCalendarModel</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
