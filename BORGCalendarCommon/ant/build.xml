@@ -132,6 +132,8 @@
       <!-- Common -->
       <javac srcdir="${prj.common.dir}/src"
              destdir="${build.dir}"
+      	target="1.3"
+   	    source="1.3"
              debug="on">
       </javac>
 
@@ -140,6 +142,8 @@
  
              destdir="${build.dir}"
       	     classpathref="build.classpath"
+     	target="1.3"
+   	    source="1.3"
              debug="on">
        		<include name="**/*.java" />
         	<exclude name="**/memory/**" />
@@ -149,6 +153,8 @@
       <javac srcdir="${prj.httpproxy.dir}/src"
              destdir="${build.dir}"
       	     classpathref="build.classpath"
+     	target="1.4"
+   	    source="1.4"
              debug="on">
      	  	<include name="**/*.java" />
       </javac>
@@ -156,12 +162,16 @@
       <!-- DB Utilities -->
       <javac srcdir="${prj.dbutil.dir}/src"
              destdir="${build.dir}"
+     	target="1.4"
+   	    source="1.4"
              debug="on">
       </javac>
 
       <!-- UI -->
       <javac srcdir="${prj.ui.dir}/src"
              destdir="${build.dir}"
+     	target="1.4"
+   	    source="1.4"
              classpathref="build.classpath"
              debug="on">
       </javac>
@@ -169,6 +179,8 @@
     <!-- Servlet -->
     <javac srcdir="${prj.servlet.dir}/WEB-INF/src"
            destdir="${build.servlet.dir}"
+     	target="1.4"
+   	    source="1.4"
            classpathref="build.servlet.classpath"
            debug="on">
     </javac>
@@ -320,16 +332,9 @@ build.number=${build.number}
 			<arg value="-o"/>
 			<arg value="${build.dir}/installer/BORG_installer.jar"/>
 		</exec>
-		<!--
-		<exec executable="${iz.compile}" dir="${iz.dir}/bin" resolveExecutable="true">
-			<arg value="${build.dir}/installer/nosrc.xml"/>
-			<arg value="-b"/>
-			<arg value="${build.dir}/installer"/>
-			<arg value="-o"/>
-			<arg value="${build.dir}/installer/BORG_installer_nosrc.jar"/>
-		</exec>-->
+
 		<copy todir="${dist.dir}" file="${build.dir}/installer/BORG_installer.jar"/>
-		<!--copy todir="${dist.dir}" file="${build.dir}/installer/BORG_installer_nosrc.jar"/-->
+		
 	</target>
 	
    <!-- Clean everything -->
