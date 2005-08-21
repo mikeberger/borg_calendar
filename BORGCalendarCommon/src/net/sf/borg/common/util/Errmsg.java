@@ -29,10 +29,6 @@ import javax.swing.JOptionPane;
 // output of an error to the screen includes stack trace
 public class Errmsg
 {
-    static
-    {
-        Version.addVersion("$Id$");
-    }
 
     private static boolean console_ = false;   // error to stdout only
     

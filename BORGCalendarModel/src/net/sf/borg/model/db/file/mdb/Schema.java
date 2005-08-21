@@ -31,7 +31,7 @@ import java.util.Map;
 import java.util.Vector;
 
 import net.sf.borg.common.util.VMap;
-import net.sf.borg.common.util.Version;
+
 import net.sf.borg.common.util.XTree;
 
 
@@ -52,11 +52,7 @@ public class Schema
     // ---------------------------------------------------------------------------
     // SCHEMA
     // ---------------------------------------------------------------------------
-    static
-    {
-        Version.addVersion("$Id$");
-    }   
-    
+
     
     // the mapping of type names to java classes
     // these are the types supported by SMDB

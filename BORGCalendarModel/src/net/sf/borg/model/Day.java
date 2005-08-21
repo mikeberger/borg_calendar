@@ -39,7 +39,7 @@ import java.util.TreeSet;
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
 import net.sf.borg.common.util.Resource;
-import net.sf.borg.common.util.Version;
+
 
 /**
  *
@@ -47,10 +47,7 @@ import net.sf.borg.common.util.Version;
  */
 public class Day
 {
-    static
-    {
-        Version.addVersion("$Id$");
-    }
+
 
     /** class to compare appointment strings for sorting */
     // this is the sorting used for print output and month display

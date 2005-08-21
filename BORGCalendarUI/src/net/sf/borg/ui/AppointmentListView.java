@@ -48,7 +48,7 @@ import net.sf.borg.common.ui.TableSorter;
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Resource;
-import net.sf.borg.common.util.Version;
+
 import net.sf.borg.control.Borg;
 import net.sf.borg.model.Appointment;
 import net.sf.borg.model.AppointmentModel;
@@ -56,9 +56,6 @@ import net.sf.borg.model.TaskModel;
 import de.wannawork.jcalendar.JCalendarComboBox;
 public class AppointmentListView extends View implements ListSelectionListener {
     
-    static {
-        Version.addVersion("$Id$");
-    }
     
     private int key_;
     private List alist_ = null;

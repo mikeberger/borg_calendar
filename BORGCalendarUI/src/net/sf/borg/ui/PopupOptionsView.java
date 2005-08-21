@@ -31,12 +31,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import net.sf.borg.common.util.PrefName;
-import net.sf.borg.common.util.Version;
+
 
 public class PopupOptionsView extends JDialog {
-	static {
-		Version.addVersion("$Id$");
-	}
+
 
 	private javax.swing.JLabel jAlarmLabel;
 	private javax.swing.JCheckBox[] alarmBoxes;

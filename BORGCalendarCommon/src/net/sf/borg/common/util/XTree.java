@@ -39,10 +39,7 @@ import java.net.URL;
 public class XTree
 {
     
-    static
-    {
-        Version.addVersion("$Id$");
-    }
+
     
     // the element's name and optional value
     private String name_, value_;

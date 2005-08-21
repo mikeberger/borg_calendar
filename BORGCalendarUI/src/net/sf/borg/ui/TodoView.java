@@ -59,7 +59,7 @@ import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
 import net.sf.borg.common.util.Resource;
-import net.sf.borg.common.util.Version;
+
 import net.sf.borg.common.util.Warning;
 import net.sf.borg.model.Appointment;
 import net.sf.borg.model.AppointmentModel;
@@ -81,10 +81,7 @@ import de.wannawork.jcalendar.JCalendarComboBox;
 // the tdgui displays a list of the current todo items and allows the
 // suer to mark them as done
 public class TodoView extends View {
-    static {
-        Version.addVersion("$Id$");
-    }
-    
+
     private Vector tds_;   // list of rows currently displayed in todo list
     
     private static TodoView singleton = null;

@@ -58,7 +58,7 @@ import net.sf.borg.common.ui.TableSorter;
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Resource;
-import net.sf.borg.common.util.Version;
+
 import net.sf.borg.common.util.XSLTransform;
 import net.sf.borg.common.util.XTree;
 import net.sf.borg.model.CategoryModel;
@@ -86,10 +86,7 @@ import net.sf.borg.model.db.DBException;
 // and calendar apps were completely separate apps.
 public class TaskListView extends View {
 
-    static {
-        Version
-                .addVersion("$Id$");
-    }
+ 
 
     private TableCellRenderer defrend_; // default table cell renderer which I
     // need to

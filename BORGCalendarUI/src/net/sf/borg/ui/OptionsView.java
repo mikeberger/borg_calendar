@@ -61,15 +61,12 @@ import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
 import net.sf.borg.common.util.Resource;
-import net.sf.borg.common.util.Version;
+
 import net.sf.borg.model.AppointmentModel;
 // propgui displays the edit preferences window
 public class OptionsView extends View
 {
-    static
-    {
-        Version.addVersion("$Id$");
-    }
+ 
     
 	// to break a dependency with the contol package
 	public interface RestartListener

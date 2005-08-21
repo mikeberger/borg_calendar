@@ -27,7 +27,7 @@ Copyright 2003 by Mike Berger
 package net.sf.borg.model;
 import java.util.ArrayList;
 
-import net.sf.borg.common.util.Version;
+
 
 /**
  *
@@ -40,11 +40,7 @@ import net.sf.borg.common.util.Version;
 // data changes
 public abstract class Model
 {
-    static
-    {
-        Version.addVersion("$Id$");
-    }
-    
+
     // list of views to notify when the model changes
     private ArrayList listeners;
 

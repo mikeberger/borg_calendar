@@ -77,7 +77,7 @@ import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
 import net.sf.borg.common.util.Resource;
-import net.sf.borg.common.util.Version;
+
 import net.sf.borg.common.util.XTree;
 import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.Appointment;
@@ -106,10 +106,7 @@ public class CalendarView extends View implements Prefs.Listener {
     // the file we chose in our memory file chooser dialog
     private String memFile;
     
-    static {
-        Version.addVersion("$Id$");
-    }
-    
+ 
     private static CalendarView singleton = null;
     public static CalendarView getReference(boolean trayIcon) {
         if( singleton == null || !singleton.isShowing())
@@ -2118,11 +2115,9 @@ public class CalendarView extends View implements Prefs.Listener {
         Object opts[] =
         {Resource.getResourceString("Dismiss") /*, 
          Resource.getResourceString("Show_Detailed_Source_Version_Info")*/ };
-        int n = JOptionPane.showOptionDialog(null, info, Resource.getResourceString("About_BORG"), JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getClass().getResource("/resource/borg.jpg")), opts, opts[0]);
-        if( n == JOptionPane.NO_OPTION ) {
-            info = Resource.getResourceString("Versions_of_--Loaded--_Classes") + Version.getVersion();
-            JOptionPane.showMessageDialog(null, info, Resource.getResourceString("BORG_Source_File_Details"), JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getClass().getResource("/resource/borg.jpg")));
-        }
+        JOptionPane.showOptionDialog(null, info, Resource.getResourceString("About_BORG"), JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getClass().getResource("/resource/borg.jpg")), opts, opts[0]);
+        
+       
         
     }//GEN-LAST:event_AboutMIActionPerformed
     

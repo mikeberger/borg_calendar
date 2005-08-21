@@ -33,7 +33,7 @@ import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
 import net.sf.borg.common.util.Resource;
-import net.sf.borg.common.util.Version;
+
 import net.sf.borg.common.util.Warning;
 import net.sf.borg.common.util.XTree;
 import net.sf.borg.model.Appointment;
@@ -43,10 +43,7 @@ import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.Repeat;
 
 class AppointmentPanel extends JPanel {
-	static {
-		Version
-				.addVersion("$Id$");
-	}
+
 
 	private int key_;
 

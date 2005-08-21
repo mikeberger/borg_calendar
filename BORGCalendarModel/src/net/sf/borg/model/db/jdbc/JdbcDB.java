@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
-import net.sf.borg.common.util.Version;
+
 import net.sf.borg.model.BorgOption;
 import net.sf.borg.model.db.BeanDB;
 import net.sf.borg.model.db.DBException;
@@ -54,10 +54,7 @@ import net.sf.borg.model.db.KeyedBean;
 // JdbcDB will also manage a common options table int he DB
 abstract class JdbcDB implements BeanDB
 {
-    static
-    {
-        Version.addVersion("$Id$");
-    }
+
     
     // common db connection shared by sub-classes. in BORG, all sub-classes
     // will manage a table in the same DB

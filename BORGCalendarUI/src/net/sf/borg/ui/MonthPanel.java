@@ -51,7 +51,7 @@ import javax.swing.JPanel;
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
-import net.sf.borg.common.util.Version;
+
 import net.sf.borg.model.Appointment;
 import net.sf.borg.model.Day;
 
@@ -61,10 +61,7 @@ import net.sf.borg.model.Day;
 // monthPanel handles the printing of a single month
 class MonthPanel extends JPanel implements Printable
 {
-    static
-    {
-        Version.addVersion("$Id$");
-    }
+
     
     private int year_;
     private int month_;

@@ -35,14 +35,11 @@ import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.Copies;
 import javax.swing.JTable;
 
-import net.sf.borg.common.util.Version;
+
 
 public class TablePrinter implements Printable
 {
-    static
-    {
-        Version.addVersion("$Id$");
-    }
+
     private JTable tableView;
     
     

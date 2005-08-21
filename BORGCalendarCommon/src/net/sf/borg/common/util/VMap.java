@@ -27,10 +27,7 @@ import java.util.Map.Entry;
 // format that I like. It also exports to XML
 // format is VMAP{ENTRY1=VALUE1;ENTRY2=VALUE2;....}
 public class VMap extends HashMap {
-    static
-    {
-        Version.addVersion("$Id$");
-    }    
+ 
     public String passivate() {
         StringBuffer buf = new StringBuffer();
         buf.append("VMAP{");

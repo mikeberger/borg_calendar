@@ -32,7 +32,7 @@ import java.awt.Rectangle;
 
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
-import net.sf.borg.common.util.Version;
+
 import net.sf.borg.model.Model;
 
 
@@ -46,10 +46,7 @@ import net.sf.borg.model.Model;
 // cand destroy allbacks from Models
 abstract class View extends javax.swing.JFrame implements Model.Listener
 {
-    static
-    {
-        Version.addVersion("$Id$");
-    }
+ 
     
     private PrefName prefName_ = null;
 	private void initialize() {

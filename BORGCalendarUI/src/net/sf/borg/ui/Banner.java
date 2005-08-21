@@ -31,7 +31,7 @@ import java.awt.GridBagLayout;
 
 import javax.swing.JPanel;
 
-import net.sf.borg.common.util.Version;
+
 /**
  *
  * @author  mbb
@@ -43,11 +43,7 @@ import net.sf.borg.common.util.Version;
 // you really have to see the form editor in netbeans to see the window layout
 public class Banner extends javax.swing.JFrame {
     
-    static
-    {
-        Version.addVersion("$Id$");
-    }
-
+ 
     /** Creates new form banner */
 	public Banner() {
         try{

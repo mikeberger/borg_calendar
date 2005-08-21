@@ -27,7 +27,7 @@ package net.sf.borg.control;
 
 import java.util.ArrayList;
 
-import net.sf.borg.common.util.Version;
+
 import net.sf.borg.model.Model;
 
 
@@ -44,11 +44,7 @@ import net.sf.borg.model.Model;
 
 abstract public class Controller
 {
-    static
-    {
-        Version.addVersion("$Id$");
-    }
-    
+ 
     private ArrayList listeners;
     
     public Controller()

@@ -42,10 +42,7 @@ import java.util.Locale;
 // Sendmail provides very very primitive SMTP mail capability
 public class Sendmail
 {
-    static
-    {
-        Version.addVersion("$Id$");
-    }
+
     static public String sendmail(        String host,
     int port,
     String subject,

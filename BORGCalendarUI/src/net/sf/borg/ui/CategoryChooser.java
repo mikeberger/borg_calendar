@@ -30,7 +30,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import net.sf.borg.common.util.Errmsg;
-import net.sf.borg.common.util.Version;
+
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.CategoryModel;
 /**
@@ -38,10 +38,7 @@ import net.sf.borg.model.CategoryModel;
  * @author  mberger
  */
 public class CategoryChooser extends View {
-    
-    static {
-        Version.addVersion("$Id$");
-    }
+ 
     private ArrayList cbs = null;
     
     private static CategoryChooser singleton = null;

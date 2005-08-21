@@ -28,7 +28,7 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 
 import net.sf.borg.common.util.VMap;
-import net.sf.borg.common.util.Version;
+
 
 /*
  * Row.java
@@ -40,10 +40,7 @@ import net.sf.borg.common.util.Version;
 // to Class types using a Schema
 public class Row
 {
-    static
-    {
-        Version.addVersion("$Id$");
-    }
+
 
     private static SimpleDateFormat normalDateFormat_ = new SimpleDateFormat( "MM/dd/yyyy hh:mm aa" );
     private static SimpleDateFormat twoDigitYearFormat_ = new SimpleDateFormat( "MM/dd/yy hh:mm aa" );

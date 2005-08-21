@@ -37,7 +37,7 @@ import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
 import net.sf.borg.common.util.Resource;
-import net.sf.borg.common.util.Version;
+
 import net.sf.borg.common.util.Warning;
 import net.sf.borg.common.util.XTree;
 import net.sf.borg.model.db.BeanDB;
@@ -73,10 +73,6 @@ public class AppointmentModel extends Model implements Model.Listener
     
     private BeanDB db_;       // the SMDB database - see mdb.SMDB
 
-    static
-    {
-        Version.addVersion("$Id$");
-    }
     
     /* map_ contains each "base" day key that has appts and maps it to a list of appt keys for
       that day.  */

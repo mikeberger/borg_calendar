@@ -1,5 +1,5 @@
 /*
-This file is part of BORG.
+$Id$\n$Id$$Id$This file is part of BORG.
  
     BORG is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

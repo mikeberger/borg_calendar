@@ -56,7 +56,7 @@ import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
 import net.sf.borg.common.util.Resource;
 import net.sf.borg.common.util.Sendmail;
-import net.sf.borg.common.util.Version;
+
 import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.Appointment;
 import net.sf.borg.model.AppointmentModel;
@@ -89,11 +89,7 @@ import net.sf.borg.ui.TodoView;
 // data changes.
 // Views can call other views.
 public class Borg extends Controller implements OptionsView.RestartListener {
-    static
-    {
-        Version
-                .addVersion("$Id$");
-    }
+
 
     // the calendar and task data models
     private AppointmentModel calmod_ = null;

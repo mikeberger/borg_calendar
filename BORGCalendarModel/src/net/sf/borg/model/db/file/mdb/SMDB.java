@@ -22,7 +22,7 @@ package net.sf.borg.model.db.file.mdb;
 import java.util.Collection;
 
 import net.sf.borg.common.util.VMap;
-import net.sf.borg.common.util.Version;
+
 import net.sf.borg.model.db.DBException;
 
 
@@ -47,10 +47,7 @@ import net.sf.borg.model.db.DBException;
 // for the DB file. So a user can store and retrieve an option by name (i.e. "ABC") in a SMDB.
 public class SMDB
 {
-    static
-    {
-        Version.addVersion("$Id$");
-    }
+
     
     private MDB db_;
     protected Schema schema_;     // the schema for the DB

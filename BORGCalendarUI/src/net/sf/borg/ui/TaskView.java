@@ -36,7 +36,7 @@ import javax.swing.JPanel;
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Resource;
-import net.sf.borg.common.util.Version;
+
 import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.Task;
 import net.sf.borg.model.TaskModel;
@@ -58,11 +58,7 @@ import net.sf.borg.model.TaskTypes;
 class TaskView extends View
 {
     
-    static
-    {
-        Version.addVersion("$Id$");
-    }
-    
+ 
     private static TaskView singleton = null;
     private String curtype_ = null;
     static TaskView getReference(Task task, int function) throws Exception

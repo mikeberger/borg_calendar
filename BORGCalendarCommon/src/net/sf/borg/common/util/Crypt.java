@@ -40,10 +40,7 @@ public class Crypt {
     private char[][] left;
     private char[] right;
     
-    static {
-        Version.addVersion("$Id$");
-    }
-    
+
     /** Creates new mcrypt */
     // mcrypt encrypts strings using a string to numeric code that I learned as
     // a kid and used to do with paper and pencil. 

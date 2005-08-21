@@ -29,7 +29,7 @@ import javax.swing.JPanel;
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Resource;
-import net.sf.borg.common.util.Version;
+
 import net.sf.borg.model.Address;
 import net.sf.borg.model.AddressModel;
 /**
@@ -41,10 +41,6 @@ import net.sf.borg.model.AddressModel;
 class AddressView extends View
 {
     
-    static
-    {
-        Version.addVersion("$Id$");
-    }
     
     private Address addr_;
     

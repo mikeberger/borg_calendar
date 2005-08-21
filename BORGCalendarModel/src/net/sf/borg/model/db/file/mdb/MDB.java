@@ -33,7 +33,7 @@ import javax.swing.filechooser.FileFilter;
 
 import net.sf.borg.common.util.Crypt;
 import net.sf.borg.common.util.Errmsg;
-import net.sf.borg.common.util.Version;
+
 import net.sf.borg.common.util.XTree;
 import net.sf.borg.model.db.DBException;
 
@@ -78,11 +78,7 @@ import net.sf.borg.model.db.DBException;
 
 public class MDB {
 
-    static {
-        Version
-                .addVersion("$Id$");
-    }
-
+ 
     /**
      * a file chooser filter that selects JDB files
      */

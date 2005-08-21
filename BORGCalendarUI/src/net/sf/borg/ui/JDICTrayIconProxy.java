@@ -28,7 +28,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
 import net.sf.borg.common.util.Resource;
-import net.sf.borg.common.util.Version;
+
 
 import org.jdesktop.jdic.tray.SystemTray;
 import org.jdesktop.jdic.tray.TrayIcon;
@@ -37,11 +37,7 @@ import org.jdesktop.jdic.tray.TrayIcon;
 
 
 public class JDICTrayIconProxy {
-	   static
-	    {
-	        Version
-	                .addVersion("$Id$");
-	    }
+
 	static private JDICTrayIconProxy singleton = null;
 	static public JDICTrayIconProxy getReference()
 	{

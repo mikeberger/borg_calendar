@@ -27,7 +27,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import net.sf.borg.common.util.Version;
+
 import net.sf.borg.model.Task;
 import net.sf.borg.model.db.DBException;
 import net.sf.borg.model.db.KeyedBean;
@@ -39,10 +39,7 @@ import net.sf.borg.model.db.KeyedBean;
  */
 class TaskJdbcDB extends JdbcDB
 {
-    static
-    {
-        Version.addVersion("$Id$");
-    }
+
              
     /** Creates a new instance of AppJdbcDB */
     TaskJdbcDB(String url, String username)  throws Exception

@@ -31,7 +31,7 @@ import java.util.TreeSet;
 import java.util.Vector;
 
 import net.sf.borg.common.util.Errmsg;
-import net.sf.borg.common.util.Version;
+
 import net.sf.borg.common.util.XTree;
 import net.sf.borg.model.db.BeanDB;
 import net.sf.borg.model.db.DBException;
@@ -61,9 +61,7 @@ import net.sf.borg.model.db.IBeanDataFactory;
 // functions, taskmodel does not keep a local map. the caching done by the SMDB database is sufficient
 // for taskmodel's needs
 public class TaskModel extends Model implements Model.Listener {
-    static {
-        Version.addVersion("$Id$");
-    }
+
     
     private BeanDB db_;           // the database
 

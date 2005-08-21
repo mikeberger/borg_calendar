@@ -46,7 +46,7 @@ import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
 import net.sf.borg.common.util.Resource;
-import net.sf.borg.common.util.Version;
+
 import net.sf.borg.model.Appointment;
 import net.sf.borg.model.Day;
 import net.sf.borg.ui.ApptDayBoxLayout.ApptDayBox;
@@ -56,10 +56,7 @@ import net.sf.borg.ui.ApptDayBoxLayout.ApptDayBox;
 // weekPanel handles the printing of a single week
 class WeekPanel extends JPanel implements Printable
 {
-    static
-    {
-        Version.addVersion("$Id$");
-    }
+
     
     private int year_;
     private int month_;

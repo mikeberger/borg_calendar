@@ -32,7 +32,7 @@ Copyright 2003 by Mike Berger
 
 package net.sf.borg.model.db;
 
-import net.sf.borg.common.util.Version;
+
 
 
 
@@ -41,9 +41,6 @@ import net.sf.borg.common.util.Version;
 // was easier than defining an exception class for each type
 // of exception and having to throw and catch them all
 public class DBException extends java.lang.Exception {
-    static {
-        Version.addVersion("$Id$");
-    } 
 
     private int retCode;
 

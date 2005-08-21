@@ -26,7 +26,7 @@ Copyright 2003 by Mike Berger
 package net.sf.borg.ui;
 
 import net.sf.borg.common.util.PrefName;
-import net.sf.borg.common.util.Version;
+
 
 /**
  *
@@ -35,10 +35,7 @@ import net.sf.borg.common.util.Version;
 // helpscrn just displays an HTML page in a window
 class HelpScreen extends View {
     
-    static
-    {
-        Version.addVersion("$Id$");
-    }
+
 
     /** Creates new form helpscrn */
     HelpScreen(String file) {

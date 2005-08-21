@@ -43,7 +43,7 @@ import java.util.Map.Entry;
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
-import net.sf.borg.common.util.Version;
+
 import net.sf.borg.model.Appointment;
 import net.sf.borg.model.AppointmentModel;
 
@@ -52,10 +52,7 @@ import net.sf.borg.model.AppointmentModel;
  * @author mberger
  */
 public class PopupView extends View {
-	static {
-		Version
-				.addVersion("$Id$");
-	}
+
 
 	/** Creates a new instance of popups */
 	public PopupView() {

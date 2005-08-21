@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import net.sf.borg.common.util.Version;
+
 import net.sf.borg.model.BorgOption;
 import net.sf.borg.model.db.BeanDB;
 import net.sf.borg.model.db.DBException;
@@ -46,10 +46,7 @@ import net.sf.borg.model.db.file.mdb.SMDB;
 
 class FileBeanDB extends SMDB implements BeanDB
 {
-    static
-    {
-        Version.addVersion("$Id$");
-    }
+
     
     private FileBeanAdapter adapter_; // adapter for converting Rows to DataBeans
     private boolean objectCacheOn_;  // is caching on? 

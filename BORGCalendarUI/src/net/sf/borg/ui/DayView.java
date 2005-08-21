@@ -41,7 +41,7 @@ import javax.swing.border.BevelBorder;
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Resource;
-import net.sf.borg.common.util.Version;
+
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.TaskModel;
 
@@ -51,10 +51,7 @@ import net.sf.borg.model.TaskModel;
 // weekView handles the printing of a single week
 class DayView extends View
 {
-    static
-    {
-        Version.addVersion("$Id$");
-    }
+
     
     private DayPanel dayPanel;
     

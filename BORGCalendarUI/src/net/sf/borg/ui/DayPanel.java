@@ -44,17 +44,14 @@ import javax.swing.JPanel;
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
-import net.sf.borg.common.util.Version;
+
 import net.sf.borg.model.Appointment;
 import net.sf.borg.model.Day;
 import net.sf.borg.ui.ApptDayBoxLayout.ApptDayBox;
 
 // weekPanel handles the printing of a single week
 class DayPanel extends JPanel implements Printable {
-	static {
-		Version
-				.addVersion("$Id$");
-	}
+
 
 	private int year_;
 

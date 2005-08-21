@@ -36,8 +36,5 @@ public class Warning extends Exception {
         super(msg);
     }
     
-    static {
-        Version.addVersion("$Id$");
-    } 
 
 }

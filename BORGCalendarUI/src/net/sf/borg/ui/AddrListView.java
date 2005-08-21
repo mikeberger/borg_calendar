@@ -45,7 +45,7 @@ import net.sf.borg.common.ui.TableSorter;
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Resource;
-import net.sf.borg.common.util.Version;
+
 import net.sf.borg.common.util.XSLTransform;
 import net.sf.borg.model.Address;
 import net.sf.borg.model.AddressModel;
@@ -59,10 +59,7 @@ import net.sf.borg.model.AddressVcardAdapter;
 // suer to mark them as done
 public class AddrListView extends View
 {
-    static
-    {
-        Version.addVersion("$Id$");
-    }
+
     
     private Collection addrs_;   // list of rows currently displayed
     
