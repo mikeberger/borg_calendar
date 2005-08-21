@@ -1,397 +1,416 @@
 <?xml version="1.0"?>
 <!-- $Id$ -->
 <project name="borg-calendar" default="main" basedir="../..">
-   <!-- Properties -->
-   <property name="Name" value="Borg" />
-   <property name="name" value="borg" />
+	<!-- Properties -->
+	<property name="Name" value="Borg" />
+	<property name="name" value="borg" />
 
-   <property name="prj.common.dir" value="${basedir}/BORGCalendarCommon" />
-   <property name="prj.dbutil.dir" value="${basedir}/BORGCalendarDBUtilities" />
-   <property name="prj.httpproxy.dir" value="${basedir}/BORGCalendarHTTPProxy" />
-   <property name="prj.model.dir" value="${basedir}/BORGCalendarModel" />
-   <property name="prj.ui.dir" value="${basedir}/BORGCalendarUI" />
-   <property name="prj.servlet.dir" value="${basedir}/BORGServlet" />
-   <property name="prj.conduit.dir" value="${basedir}/BORGPalmConduits" />
-   <property name="help.dir" value="${prj.ui.dir}/borghelp" />
+	<property name="prj.common.dir" value="${basedir}/BORGCalendarCommon" />
+	<property name="prj.dbutil.dir"
+	          value="${basedir}/BORGCalendarDBUtilities" />
+	<property name="prj.httpproxy.dir"
+	          value="${basedir}/BORGCalendarHTTPProxy" />
+	<property name="prj.model.dir" value="${basedir}/BORGCalendarModel" />
+	<property name="prj.ui.dir" value="${basedir}/BORGCalendarUI" />
+	<property name="prj.servlet.dir" value="${basedir}/BORGServlet" />
+	<property name="prj.conduit.dir" value="${basedir}/BORGPalmConduits" />
+	<property name="help.dir" value="${prj.ui.dir}/borghelp" />
 
-   <property name="pkg" value="net/sf/borg" />
+	<property name="pkg" value="net/sf/borg" />
 
-   <property name="build.dir" value="${prj.common.dir}/build" />
-   <property name="build.servlet.dir" value="${prj.common.dir}/build_servlet" />
-   <property name="gen.dir" value="${prj.common.dir}/gen" />
-   <property name="dist.dir" value="${prj.common.dir}/dist" />
-   <property name="doc.dir" value="${prj.common.dir}/doc" />
-   <property name="trayicon.jar" value="${prj.ui.dir}/lib/jdic.jar"/>
+	<property name="build.dir" value="${prj.common.dir}/build" />
+	<property name="build.servlet.dir"
+	          value="${prj.common.dir}/build_servlet" />
+	<property name="gen.dir" value="${prj.common.dir}/gen" />
+	<property name="dist.dir" value="${prj.common.dir}/dist" />
+	<property name="doc.dir" value="${prj.common.dir}/doc" />
+	<property name="trayicon.jar" value="${prj.ui.dir}/lib/jdic.jar" />
 
-   <property name="db.res.dir" value="${prj.model.dir}/res/resource" />
+	<property name="db.res.dir" value="${prj.model.dir}/res/resource" />
 
-   <property name="build.compiler" value="modern" />
-   <property name="ant.dir" value="${prj.common.dir}/ant" />
-	
-   <!-- PATH to javahelp - must be changed only if you want to regen the help indexes -->
-	<property name="jh.bin" value ="c:/jh2.0/javahelp/bin"/>
-	<property name="jhindexer" value="jhindexer.bat"/>
-	
-   <!-- PATH to IzPack dir to create the installer -->
-	<property name="iz.dir" value="c:/Program Files/IzPack"/>
-	<property name="iz.compile" value="compile.bat"/>
-   
-   <!-- Path References -->
-   <path id="build.classpath">
-      <pathelement location="${trayicon.jar}"/>
- 	  <pathelement location="${prj.ui.dir}/lib/jh.jar"/>
-      <fileset dir="${prj.common.dir}/lib">
-        <include name="*.jar"/>
-      </fileset>
-   </path>
+	<property name="build.compiler" value="modern" />
+	<property name="ant.dir" value="${prj.common.dir}/ant" />
 
-   <path id="build.servlet.classpath">
-      <pathelement location="${build.dir}"/>
-   	  <path refid="build.classpath"/>
-   </path>
+	<!-- PATH to javahelp - must be changed only if you want to regen the help indexes -->
+	<property name="jh.bin" value="c:/jh2.0/javahelp/bin" />
+	<property name="jhindexer" value="jhindexer.bat" />
 
-   <target name="init">
-      <tstamp/>
-   </target>
-	
-   <target name="conduits">
-   		<ant dir="${prj.conduit.dir}" antfile="ant/build.xml" target="main" inheritAll="false"/>
-   </target>
-	
-	<!-- regen help search indexes -->
-	<target name="regen-help" >
-		<exec dir="${help.dir}" executable="${jh.bin}/${jhindexer}">
-			<arg value="default"/>
-			<arg value="it"/>
-	    </exec>
+	<!-- PATH to IzPack dir to create the installer -->
+	<property name="iz.dir" value="c:/Program Files/IzPack" />
+	<property name="iz.compile" value="compile.bat" />
+
+	<!-- Path References -->
+	<path id="build.classpath">
+		<pathelement location="${trayicon.jar}" />
+		<pathelement location="${prj.ui.dir}/lib/jh.jar" />
+		<fileset dir="${prj.common.dir}/lib">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+
+	<path id="build.servlet.classpath">
+		<pathelement location="${build.dir}" />
+		<path refid="build.classpath" />
+	</path>
+
+	<target name="init">
+		<tstamp />
 	</target>
-   
-   <!-- Gen -->
-   <target name="gen" depends="init">
-      <mkdir dir="${gen.dir}" />
 
-      <javac destdir="${gen.dir}"
-             debug="on">
-        <src path="${prj.common.dir}/src"/>
-        <src path="${prj.dbutil.dir}/src"/>
-        <include name="${pkg}/common/util/XTree.java"/>
-        <include name="${pkg}/model/db/generate/GenerateDataObjects.java"/>
-      </javac>
+	<target name="conduits">
+		<ant dir="${prj.conduit.dir}"
+		     antfile="ant/build.xml"
+		     target="main"
+		     inheritAll="false" />
+	</target>
 
-      <manifest file="${gen.dir}/MANIFEST.MF">
-         <attribute name="Built-By" value="${user.name}"/>
-         <attribute name="Main-Class" value="${pkg}/model/db/generate/GenerateDataObjects"/>
-      </manifest>
+	<!-- regen help search indexes -->
+	<target name="regen-help">
+		<exec dir="${help.dir}" executable="${jh.bin}/${jhindexer}">
+			<arg value="default" />
+			<arg value="it" />
+		</exec>
+	</target>
 
-      <jar jarfile="${gen.dir}/genObj.jar" manifest="${gen.dir}/MANIFEST.MF">
-         <fileset dir="${gen.dir}">
-            <include name="${pkg}/common/util/*.class"/>
-            <include name="${pkg}/model/db/generate/*.class"/>
-         </fileset>
-      </jar>
+	<!-- Gen -->
+	<target name="gen" depends="init">
+		<mkdir dir="${gen.dir}" />
 
-      <java jar="${gen.dir}/genObj.jar" dir="${gen.dir}" fork="true" failonerror="true" >
-         <arg value="net.sf.borg.model"/> 
-         <arg value="${db.res.dir}/borg_schema.xml"/> 
-      </java>
+		<javac destdir="${gen.dir}" debug="on">
+			<src path="${prj.common.dir}/src" />
+			<src path="${prj.dbutil.dir}/src" />
+			<include name="${pkg}/common/util/XTree.java" />
+			<include name="${pkg}/model/db/generate/GenerateDataObjects.java" />
+		</javac>
 
-      <java jar="${gen.dir}/genObj.jar" dir="${gen.dir}" fork="true" failonerror="true" >
-         <arg value="net.sf.borg.model"/> 
-         <arg value="${db.res.dir}/mrdb_schema.xml"/> 
-      </java>
+		<manifest file="${gen.dir}/MANIFEST.MF">
+			<attribute name="Built-By" value="${user.name}" />
+			<attribute name="Main-Class"
+			           value="${pkg}/model/db/generate/GenerateDataObjects" />
+		</manifest>
 
-      <java jar="${gen.dir}/genObj.jar" dir="${gen.dir}" fork="true" failonerror="true" >
-         <arg value="net.sf.borg.model"/> 
-         <arg value="${db.res.dir}/addr_schema.xml"/> 
-      </java>
-        
-      <copy todir="${prj.model.dir}/src/${pkg}/model">
-         <fileset dir="${gen.dir}">
-            <include name="Address.java"/>
-            <include name="Task.java"/>
-            <include name="Appointment.java"/>
-         	<include name="User.java"/>
-            <include name="*XMLAdapter.java"/>
-         </fileset>
-      </copy>
-        
-      <copy todir="${prj.model.dir}/src/${pkg}/model/db/file">
-         <fileset dir="${gen.dir}">
-            <include name="TaskAdapter.java"/>
-            <include name="AddressAdapter.java"/>
-            <include name="AppointmentAdapter.java"/>
-         </fileset>
-      </copy>
-   </target>
+		<jar jarfile="${gen.dir}/genObj.jar" manifest="${gen.dir}/MANIFEST.MF">
+			<fileset dir="${gen.dir}">
+				<include name="${pkg}/common/util/*.class" />
+				<include name="${pkg}/model/db/generate/*.class" />
+			</fileset>
+		</jar>
 
-   <!-- Compile -->
-   <target name="compile" depends="gen">
-      <mkdir dir="${build.dir}" />
-      <mkdir dir="${build.servlet.dir}" />
+		<java jar="${gen.dir}/genObj.jar"
+		      dir="${gen.dir}"
+		      fork="true"
+		      failonerror="true">
+			<arg value="net.sf.borg.model" />
+			<arg value="${db.res.dir}/borg_schema.xml" />
+		</java>
 
-      <!-- Common -->
-      <javac srcdir="${prj.common.dir}/src"
-             destdir="${build.dir}"
-      	target="1.3"
-   	    source="1.3"
-             debug="on">
-      </javac>
+		<java jar="${gen.dir}/genObj.jar"
+		      dir="${gen.dir}"
+		      fork="true"
+		      failonerror="true">
+			<arg value="net.sf.borg.model" />
+			<arg value="${db.res.dir}/mrdb_schema.xml" />
+		</java>
 
-      <!-- Model / DB -->
-      <javac srcdir="${prj.model.dir}/src"
- 
-             destdir="${build.dir}"
-      	     classpathref="build.classpath"
-     	target="1.3"
-   	    source="1.3"
-             debug="on">
-       		<include name="**/*.java" />
-        	<exclude name="**/memory/**" />
-      </javac>
+		<java jar="${gen.dir}/genObj.jar"
+		      dir="${gen.dir}"
+		      fork="true"
+		      failonerror="true">
+			<arg value="net.sf.borg.model" />
+			<arg value="${db.res.dir}/addr_schema.xml" />
+		</java>
 
-      <!-- HTTP Proxy -->
-      <javac srcdir="${prj.httpproxy.dir}/src"
-             destdir="${build.dir}"
-      	     classpathref="build.classpath"
-     	target="1.4"
-   	    source="1.4"
-             debug="on">
-     	  	<include name="**/*.java" />
-      </javac>
+		<copy todir="${prj.model.dir}/src/${pkg}/model">
+			<fileset dir="${gen.dir}">
+				<include name="Address.java" />
+				<include name="Task.java" />
+				<include name="Appointment.java" />
+				<include name="User.java" />
+				<include name="*XMLAdapter.java" />
+			</fileset>
+		</copy>
 
-      <!-- DB Utilities -->
-      <javac srcdir="${prj.dbutil.dir}/src"
-             destdir="${build.dir}"
-     	target="1.4"
-   	    source="1.4"
-             debug="on">
-      </javac>
+		<copy todir="${prj.model.dir}/src/${pkg}/model/db/file">
+			<fileset dir="${gen.dir}">
+				<include name="TaskAdapter.java" />
+				<include name="AddressAdapter.java" />
+				<include name="AppointmentAdapter.java" />
+			</fileset>
+		</copy>
+	</target>
 
-      <!-- UI -->
-      <javac srcdir="${prj.ui.dir}/src"
-             destdir="${build.dir}"
-     	target="1.4"
-   	    source="1.4"
-             classpathref="build.classpath"
-             debug="on">
-      </javac>
+	<!-- Compile -->
+	<target name="compile" depends="gen">
+		<mkdir dir="${build.dir}" />
+		<mkdir dir="${build.servlet.dir}" />
 
-    <!-- Servlet -->
-    <javac srcdir="${prj.servlet.dir}/WEB-INF/src"
-           destdir="${build.servlet.dir}"
-     	target="1.4"
-   	    source="1.4"
-           classpathref="build.servlet.classpath"
-           debug="on">
-    </javac>
-</target>
+		<!-- Common -->
+		<javac srcdir="${prj.common.dir}/src"
+		       destdir="${build.dir}"
+		       target="1.3"
+		       source="1.3"
+		       debug="on">
+		</javac>
 
-   <target name="borg-jar" depends="compile">
-      <mkdir dir="${dist.dir}" />
-      <buildnumber file="${ant.dir}/build.number"/>
-      <tstamp>
-         <format property="build.time" pattern="MM/dd/yyyy hh:mm aa"/>
-      </tstamp>
-      <echo file="${build.dir}/properties" append="false">build.time=${build.time}
+		<!-- Model / DB -->
+		<javac srcdir="${prj.model.dir}/src"
+		       destdir="${build.dir}"
+		       classpathref="build.classpath"
+		       target="1.3"
+		       source="1.3"
+		       debug="on">
+			<include name="**/*.java" />
+			<exclude name="**/memory/**" />
+		</javac>
+
+		<!-- HTTP Proxy -->
+		<javac srcdir="${prj.httpproxy.dir}/src"
+		       destdir="${build.dir}"
+		       classpathref="build.classpath"
+		       target="1.4"
+		       source="1.4"
+		       debug="on">
+			<include name="**/*.java" />
+		</javac>
+
+		<!-- DB Utilities -->
+		<javac srcdir="${prj.dbutil.dir}/src"
+		       destdir="${build.dir}"
+		       target="1.4"
+		       source="1.4"
+		       debug="on">
+		</javac>
+
+		<!-- UI -->
+		<javac srcdir="${prj.ui.dir}/src"
+		       destdir="${build.dir}"
+		       target="1.4"
+		       source="1.4"
+		       classpathref="build.classpath"
+		       debug="on">
+		</javac>
+
+		<!-- Servlet -->
+		<javac srcdir="${prj.servlet.dir}/WEB-INF/src"
+		       destdir="${build.servlet.dir}"
+		       target="1.4"
+		       source="1.4"
+		       classpathref="build.servlet.classpath"
+		       debug="on">
+		</javac>
+	</target>
+
+	<target name="borg-jar" depends="compile">
+		<mkdir dir="${dist.dir}" />
+		<buildnumber file="${ant.dir}/build.number" />
+		<tstamp>
+			<format property="build.time" pattern="MM/dd/yyyy hh:mm aa" />
+		</tstamp>
+		<echo file="${build.dir}/properties" append="false">build.time=${build.time}
 build.number=${build.number}
 </echo>
-      <concat destfile="${build.dir}/properties" append="true">
-         <filelist dir="${ant.dir}" files="borg.version"/>
-      </concat>
+		<concat destfile="${build.dir}/properties" append="true">
+			<filelist dir="${ant.dir}" files="borg.version" />
+		</concat>
 
-      <manifest file="${build.dir}/${pkg}/MANIFEST.MF">
-         <attribute name="Built-By" value="${user.name}"/>
-         <attribute name="Main-Class" value="${pkg}/control/Borg"/>
-      	 <attribute name="Class-Path" value="lib/jdic.jar lib/jh.jar lib/borghelp.jar lib/ical4j.jar lib/commons-logging.jar lib/looks-1.2.2.jar lib/jcalendar.jar lib/commons-httpclient-3.0-rc3.jar lib/commons-codec-1.3.jar"/>
-      </manifest>
+		<manifest file="${build.dir}/${pkg}/MANIFEST.MF">
+			<attribute name="Built-By" value="${user.name}" />
+			<attribute name="Main-Class" value="${pkg}/control/Borg" />
+			<attribute name="Class-Path"
+			           value="lib/jdic.jar lib/jh.jar lib/borghelp.jar lib/ical4j.jar lib/commons-logging.jar lib/looks-1.2.2.jar lib/jcalendar.jar lib/commons-httpclient-3.0-rc3.jar lib/commons-codec-1.3.jar" />
+		</manifest>
 
-      <antcall target="zz_copyresources">
-         <param name="res.dir" value="${prj.common.dir}/res/resource"/>
-      </antcall>
-      <antcall target="zz_copyresources">
-         <param name="res.dir" value="${prj.model.dir}/res/resource"/>
-      </antcall>
-      <antcall target="zz_copyresources">
-         <param name="res.dir" value="${prj.ui.dir}/res/resource"/>
-      </antcall>
+		<antcall target="zz_copyresources">
+			<param name="res.dir" value="${prj.common.dir}/res/resource" />
+		</antcall>
+		<antcall target="zz_copyresources">
+			<param name="res.dir" value="${prj.model.dir}/res/resource" />
+		</antcall>
+		<antcall target="zz_copyresources">
+			<param name="res.dir" value="${prj.ui.dir}/res/resource" />
+		</antcall>
 
-      <jar jarfile="${dist.dir}/borg.jar" manifest="${build.dir}/${pkg}/MANIFEST.MF">
-         <fileset dir="${build.dir}">
-            <include name="properties"/>
-            <include name="resource/*"/>
-            <include name="**/*.class"/>
-         </fileset>
+		<jar jarfile="${dist.dir}/borg.jar"
+		     manifest="${build.dir}/${pkg}/MANIFEST.MF">
+			<fileset dir="${build.dir}">
+				<include name="properties" />
+				<include name="resource/*" />
+				<include name="**/*.class" />
+			</fileset>
 
-      </jar>
-   </target>
-	
-   <target name="borg-servlet-war" depends="borg-jar">
-      <mkdir dir="${dist.dir}" />
+		</jar>
+	</target>
 
-      <jar jarfile="${build.servlet.dir}/borg_servlet.jar">
-         <manifest>
-            <attribute name="Built-By" value="${user.name}"/>
-         </manifest>
-         <fileset dir="${build.servlet.dir}">
-            <include name="**/*.class"/>
-         </fileset>
-      </jar>
+	<target name="borg-servlet-war" depends="borg-jar">
+		<mkdir dir="${dist.dir}" />
 
-      <jar jarfile="${dist.dir}/borg_servlet.war">
-        <manifest>
-           <attribute name="Built-By" value="${user.name}"/>
-        </manifest>
-        <fileset dir="${prj.servlet.dir}">
-          <include name="WEB-INF/web.xml"/>
-        </fileset>
-        <zipfileset
-      		dir="${build.servlet.dir}"
-          	includes="borg_servlet.jar"
-          	fullpath="WEB-INF/lib/borg_servlet.jar"
-         />
-        <zipfileset
-      		dir="${dist.dir}"
-          	includes="borg.jar"
-          	fullpath="WEB-INF/lib/borg.jar"
-         />
-      </jar>
-   </target>
+		<jar jarfile="${build.servlet.dir}/borg_servlet.jar">
+			<manifest>
+				<attribute name="Built-By" value="${user.name}" />
+			</manifest>
+			<fileset dir="${build.servlet.dir}">
+				<include name="**/*.class" />
+			</fileset>
+		</jar>
 
-   <target name="help-jar">
-   	   <mkdir dir="${build.dir}/lib"/>
-	   <jar jarfile="${build.dir}/lib/borghelp.jar">
-	         <fileset dir="${help.dir}">
-	            <include name="**"/>
-	         </fileset>
-	      </jar>
-   </target>
-	
-   <target name="mdbtool-jar" depends="compile">
-      <mkdir dir="${dist.dir}" />
-      <manifest file="${build.dir}/${pkg}/model/db/file/mdb/MANIFEST.MF">
-         <attribute name="Built-By" value="${user.name}"/>
-         <attribute name="Main-Class" value="${pkg}/model/db/file/mdb/mdbtool"/>
-      </manifest>
+		<jar jarfile="${dist.dir}/borg_servlet.war">
+			<manifest>
+				<attribute name="Built-By" value="${user.name}" />
+			</manifest>
+			<fileset dir="${prj.servlet.dir}">
+				<include name="WEB-INF/web.xml" />
+			</fileset>
+			<zipfileset dir="${build.servlet.dir}"
+			            includes="borg_servlet.jar"
+			            fullpath="WEB-INF/lib/borg_servlet.jar" />
+			<zipfileset dir="${dist.dir}"
+			            includes="borg.jar"
+			            fullpath="WEB-INF/lib/borg.jar" />
+		</jar>
+	</target>
 
-      <jar jarfile="${dist.dir}/mdbtool.jar" manifest="${build.dir}/${pkg}/model/db/file/mdb/MANIFEST.MF">
-         <fileset dir="${build.dir}">
-            <include name="${pkg}/common/ui/*.class"/>
-            <include name="${pkg}/common/util/*.class"/>
-            <include name="${pkg}/model/db/file/mdb/*.class"/>
-            <include name="${pkg}/model/db/DBException.class"/>
-         </fileset>
-      </jar>
-   </target>
+	<target name="help-jar">
+		<mkdir dir="${build.dir}/lib" />
+		<jar jarfile="${build.dir}/lib/borghelp.jar">
+			<fileset dir="${help.dir}">
+				<include name="**" />
+			</fileset>
+		</jar>
+	</target>
 
-   <target name="borg_src" depends="clean-build">
-      <zip destfile="${dist.dir}/borg_src.zip">
-        <zipfileset dir="${basedir}" prefix="borg_src">
-           <exclude name="**/.metadata/**/*"/>
-           <exclude name="**/build/**"/>
-           <exclude name="**/classes/**"/>
-           <exclude name="**/dist/**"/>
-           <exclude name="**/gen/**"/>
-        </zipfileset>
-        <zipfileset dir="${build.dir}/resource">
-           <include name="COPYING"/>
-           <include name="*.txt"/>
-        </zipfileset>
-      </zip>
-   </target>
-   
-   <target name="borg_prog" depends="clean-build">
-      <zip destfile="${dist.dir}/borg.zip">
-         <fileset dir="${dist.dir}" includes="*.jar"/> 
-      	 <fileset dir="${dist.dir}" includes="*.war"/>
-         <fileset dir="${build.dir}/resource" includes="COPYING"/> 
-      	 <fileset dir="${build.dir}" includes="lib/borghelp.jar"/>
-         <fileset dir="${db.res.dir}" includes="borg.sql"/>
-      	 <fileset dir="${db.res.dir}" includes="update1_5.sql"/>
-      	 <fileset dir="${prj.common.dir}" includes="lib/*"/>
-      	 <fileset dir="${prj.ui.dir}" includes="lib/*"/> 
-      </zip>
-   </target>
-   
+	<target name="mdbtool-jar" depends="compile">
+		<mkdir dir="${dist.dir}" />
+		<manifest file="${build.dir}/${pkg}/model/db/file/mdb/MANIFEST.MF">
+			<attribute name="Built-By" value="${user.name}" />
+			<attribute name="Main-Class"
+			           value="${pkg}/model/db/file/mdb/mdbtool" />
+		</manifest>
+
+		<jar jarfile="${dist.dir}/mdbtool.jar"
+		     manifest="${build.dir}/${pkg}/model/db/file/mdb/MANIFEST.MF">
+			<fileset dir="${build.dir}">
+				<include name="${pkg}/common/ui/*.class" />
+				<include name="${pkg}/common/util/*.class" />
+				<include name="${pkg}/model/db/file/mdb/*.class" />
+				<include name="${pkg}/model/db/DBException.class" />
+			</fileset>
+		</jar>
+	</target>
+
+	<target name="borg_src" depends="clean-build">
+		<zip destfile="${dist.dir}/borg_src.zip">
+			<zipfileset dir="${basedir}" prefix="borg_src">
+				<exclude name="**/.metadata/**/*" />
+				<exclude name="**/build/**" />
+				<exclude name="**/classes/**" />
+				<exclude name="**/dist/**" />
+				<exclude name="**/gen/**" />
+			</zipfileset>
+			<zipfileset dir="${build.dir}/resource">
+				<include name="COPYING" />
+				<include name="*.txt" />
+			</zipfileset>
+		</zip>
+	</target>
+
+	<target name="borg_prog" depends="clean-build">
+		<zip destfile="${dist.dir}/borg.zip">
+			<fileset dir="${dist.dir}" includes="*.jar" />
+			<fileset dir="${dist.dir}" includes="*.war" />
+			<fileset dir="${build.dir}/resource" includes="COPYING" />
+			<fileset dir="${build.dir}" includes="lib/borghelp.jar" />
+			<fileset dir="${db.res.dir}" includes="borg.sql" />
+			<fileset dir="${db.res.dir}" includes="update1_5.sql" />
+			<fileset dir="${prj.common.dir}" includes="lib/*" />
+			<fileset dir="${prj.ui.dir}" includes="lib/*" />
+		</zip>
+	</target>
+
 	<target name="installer">
-		<mkdir dir="${build.dir}/installer"/>
-		<unzip src="${dist.dir}/borg.zip" dest="${build.dir}/installer"/>
-		<copy file="${dist.dir}/borg_src.zip" todir="${build.dir}/installer"/>
-		<copy file="${prj.ui.dir}/res/resource/borg.jpg" todir="${build.dir}/installer"/>
-		<copy file="${iz.dir}/bin/native/izpack/ShellLink.dll" todir="${build.dir}/installer"/>
+		<mkdir dir="${build.dir}/installer" />
+		<unzip src="${dist.dir}/borg.zip" dest="${build.dir}/installer" />
+		<copy file="${dist.dir}/borg_src.zip" todir="${build.dir}/installer" />
+		<copy file="${prj.ui.dir}/res/resource/borg.jpg"
+		      todir="${build.dir}/installer" />
+		<copy file="${iz.dir}/bin/native/izpack/ShellLink.dll"
+		      todir="${build.dir}/installer" />
 		<copy todir="${build.dir}/installer">
-			<fileset dir="${prj.common.dir}/installer" includes="*"/>
+			<fileset dir="${prj.common.dir}/installer" includes="*" />
 		</copy>
-		<mkdir dir="${build.dir}/installer/conduits"/>
-		<copy todir="${build.dir}/installer/conduits" >
-			<fileset dir="${prj.conduit.dir}/dist" includes="*"/>
-			<fileset dir="${prj.conduit.dir}" includes="License.BORGConduits"/>
+		<mkdir dir="${build.dir}/installer/conduits" />
+		<copy todir="${build.dir}/installer/conduits">
+			<fileset dir="${prj.conduit.dir}/dist" includes="*" />
+			<fileset dir="${prj.conduit.dir}" includes="License.BORGConduits" />
 		</copy>
-		<exec executable="${iz.compile}" dir="${iz.dir}/bin" resolveExecutable="true">
-			<arg value="${build.dir}/installer/install.xml"/>
-			<arg value="-b"/>
-			<arg value="${build.dir}/installer"/>
-			<arg value="-o"/>
-			<arg value="${build.dir}/installer/BORG_installer.jar"/>
+		<exec executable="${iz.compile}"
+		      dir="${iz.dir}/bin"
+		      resolveExecutable="true">
+			<arg value="${build.dir}/installer/install.xml" />
+			<arg value="-b" />
+			<arg value="${build.dir}/installer" />
+			<arg value="-o" />
+			<arg value="${build.dir}/installer/BORG_installer.jar" />
 		</exec>
 
-		<copy todir="${dist.dir}" file="${build.dir}/installer/BORG_installer.jar"/>
-		
-	</target>
-	
-   <!-- Clean everything -->
-   <target name="clean" depends="init">
-      <delete quiet="true" dir="${build.dir}" />
-      <delete quiet="true" dir="${build.servlet.dir}" />
-      <delete quiet="true" dir="${gen.dir}" />
-      <delete quiet="true" dir="${dist.dir}" />
-      <delete quiet="true" dir="${doc.dir}" />
-      <delete quiet="true" dir="${borg.prog.dir}" />
-      <antcall target="zz_delclassfiles">
-         <param name="src.dir" value="${prj.dbutil.dir}"/>
-      </antcall>
-      <antcall target="zz_delclassfiles">
-         <param name="src.dir" value="${prj.ui.dir}"/>
-      </antcall>
-   </target>
- 
-   <target name="javadoc" depends="init" >
-      <delete quiet="true" dir="${doc.dir}" />
-      <javadoc
-         access="package"
-         destdir="${doc.dir}"
-         classpathref="build.classpath">
-         <packageset dir="${prj.model.dir}/src" defaultexcludes="yes"/>
-         <packageset dir="${prj.ui.dir}/src" defaultexcludes="yes"/>
-      </javadoc>
-   </target>
-                
-   <target name="clean-build" depends="clean,borg-jar,borg-servlet-war,mdbtool-jar,help-jar" />
-   <target name="main" depends="clean-build" />
-   <target name="fulldist" depends="borg_prog,borg_src"/>
-   
-   <!-- "Private" targets -->
-   <target name="zz_delclassfiles">
-      <delete quiet="true" >
-         <!-- clean any class files from netbeans -->
-         <fileset dir="${src.dir}/net">
-            <include name="**/*.class"/>
-         </fileset>
-      </delete>
-   </target>
+		<copy todir="${dist.dir}"
+		      file="${build.dir}/installer/BORG_installer.jar" />
 
-   <target name="zz_copyresources">
-      <copy todir="${build.dir}/resource">
-         <fileset dir="${res.dir}">
-            <include name="*.jpg"/>
-            <include name="*.htm"/>
-            <include name="*.wav"/>
-            <include name="*.xml"/>
-            <include name="*.properties"/>
-            <include name="COPYING"/>
-            <include name="*.txt"/>
-            <include name="*.gif"/>
-         	<include name="*.xsl"/>
-         </fileset>
-      </copy>
-   </target>
+	</target>
+
+	<!-- Clean everything -->
+	<target name="clean" depends="init">
+		<delete quiet="true" dir="${build.dir}" />
+		<delete quiet="true" dir="${build.servlet.dir}" />
+		<delete quiet="true" dir="${gen.dir}" />
+		<delete quiet="true" dir="${dist.dir}" />
+		<delete quiet="true" dir="${doc.dir}" />
+		<delete quiet="true" dir="${borg.prog.dir}" />
+		<antcall target="zz_delclassfiles">
+			<param name="src.dir" value="${prj.dbutil.dir}" />
+		</antcall>
+		<antcall target="zz_delclassfiles">
+			<param name="src.dir" value="${prj.ui.dir}" />
+		</antcall>
+	</target>
+
+	<target name="javadoc" depends="init">
+		<delete quiet="true" dir="${doc.dir}" />
+		<javadoc access="package"
+		         destdir="${doc.dir}"
+		         classpathref="build.classpath">
+			<packageset dir="${prj.model.dir}/src" defaultexcludes="yes" />
+			<packageset dir="${prj.ui.dir}/src" defaultexcludes="yes" />
+		</javadoc>
+	</target>
+
+	<target name="clean-build"
+	        depends="clean,borg-jar,borg-servlet-war,mdbtool-jar,help-jar" />
+	<target name="main" depends="clean-build" />
+	<target name="fulldist" depends="borg_prog,borg_src" />
+
+	<!-- "Private" targets -->
+	<target name="zz_delclassfiles">
+		<delete quiet="true">
+			<!-- clean any class files from netbeans -->
+			<fileset dir="${src.dir}/net">
+				<include name="**/*.class" />
+			</fileset>
+		</delete>
+	</target>
+
+	<target name="zz_copyresources">
+		<copy todir="${build.dir}/resource">
+			<fileset dir="${res.dir}">
+				<include name="*.jpg" />
+				<include name="*.htm" />
+				<include name="*.wav" />
+				<include name="*.xml" />
+				<include name="*.properties" />
+				<include name="COPYING" />
+				<include name="*.txt" />
+				<include name="*.gif" />
+				<include name="*.xsl" />
+			</fileset>
+		</copy>
+	</target>
 </project>
