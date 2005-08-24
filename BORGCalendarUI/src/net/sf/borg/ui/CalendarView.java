@@ -694,7 +694,7 @@ public class CalendarView extends View implements Prefs.Listener {
                     daytext[i].addMouseListener(new DayMouseListener( year_, month_, daynumber ));
                     days[i].addMouseListener(new DayMouseListener( year_, month_, daynumber ));
                     
-                    GregorianCalendar gc = new GregorianCalendar(year_,month_,daynumber);
+                    GregorianCalendar gc = new GregorianCalendar(year_,month_,daynumber,23,59);
                     if( showDayOfYear )
                     {                   	
                     	dayOfYear[i].setText(Integer.toString(gc.get(Calendar.DAY_OF_YEAR)));
