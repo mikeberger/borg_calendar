@@ -23,7 +23,9 @@ package net.sf.borg.model.db.remote;
 import net.sf.borg.model.Address;
 import net.sf.borg.model.Appointment;
 import net.sf.borg.model.Task;
+import net.sf.borg.model.db.ApptCachingBeanDB;
 import net.sf.borg.model.db.BeanDB;
+import net.sf.borg.model.db.CachingBeanDB;
 import net.sf.borg.model.db.DBException;
 import net.sf.borg.model.db.IBeanDataFactory;
 
@@ -73,10 +75,15 @@ public class RemoteBeanDataFactory implements IBeanDataFactory
 		boolean readonly = Boolean.valueOf(url.substring(0,nColon)).booleanValue();
 		String file = url.substring(nColon+2);
 		
+		BeanDB db = null;
 		if (cls == Appointment.class)
-			return new ApptRemoteBeanDB(clsstr,file,readonly,username);		
-
-		return new RemoteBeanDB(cls,clsstr,file,readonly,username);		
+			db = new ApptCachingBeanDB(new ApptRemoteBeanDB(clsstr, file,
+					readonly, username));
+		else
+			db = new CachingBeanDB(new RemoteBeanDB(cls, clsstr, file,
+					readonly, username));
+		
+		return db;
 	}
 
 	// private //

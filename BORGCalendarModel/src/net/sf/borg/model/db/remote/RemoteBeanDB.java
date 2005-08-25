@@ -21,7 +21,6 @@
 package net.sf.borg.model.db.remote;
 
 import java.util.Collection;
-import java.util.HashMap;
 
 import net.sf.borg.common.util.XTree;
 import net.sf.borg.model.BorgOption;
@@ -33,32 +32,17 @@ import net.sf.borg.model.db.KeyedBean;
  * @author Mohan Embar
  */
 class RemoteBeanDB implements BeanDB {
-
-	private HashMap objectCache_; // the cache
-
 	// BeanDB overrides
 	public final synchronized Collection readAll() throws DBException,
 			Exception {
-		return (Collection) call("readAll", null);
+		Collection col = (Collection) call("readAll", null);
+		dirty = false;
+		return col;
 	}
 
 	public final synchronized KeyedBean readObj(int key) throws DBException,
 			Exception {
-		Object o = objectCache_.get(new Integer(key));
-
-		if (o != null) {
-			KeyedBean r = (KeyedBean) o;
-			return r.copy();
-		}
-
-		KeyedBean bean = (KeyedBean) call("readObj", new Integer(key));
-
-		// put the bean in the cache
-
-		objectCache_.put(new Integer(key), bean);
-
-		return bean.copy();
-
+		return (KeyedBean) call("readObj", new Integer(key));
 	}
 
 	public final synchronized KeyedBean newObj() {
@@ -75,7 +59,6 @@ class RemoteBeanDB implements BeanDB {
 		checkReadOnly();
 		call("addObj", new IRemoteProxy.ComposedObject(bean, Boolean
 				.valueOf(crypt)));
-		objectCache_.put( new Integer(bean.getKey()), bean.copy() );
 	}
 
 	public final synchronized void updateObj(KeyedBean bean, boolean crypt)
@@ -87,7 +70,6 @@ class RemoteBeanDB implements BeanDB {
 
 	public final synchronized void delete(int key) throws Exception {
 		checkReadOnly();
-		objectCache_.remove( new Integer(key) );
 		call("delete", new Integer(key));
 	}
 
@@ -113,8 +95,14 @@ class RemoteBeanDB implements BeanDB {
 		return ((Integer) call("nextkey", null)).intValue();
 	}
 
+    public final synchronized boolean isDirty() throws DBException
+    {
+    	// TODO: implement a way to check for external modification
+    	return dirty;
+    }
+    
 	public final synchronized void sync() throws DBException {
-		objectCache_ = new HashMap();
+		dirty = true;
 	}
 
 	// protected //
@@ -123,11 +111,11 @@ class RemoteBeanDB implements BeanDB {
 				args, user);
 		XTree xmlParms = XmlObjectHelper.toXml(parms);
 		String xmlstr = xmlParms.toString();
-		//System.out.println(xmlstr);
+//		System.out.println(xmlstr);
 		RemoteProxyHome home = RemoteProxyHome.getInstance();
 		String result = home.getProxy(impl).execute(xmlstr,
 				home.getProxyProvider());
-		//System.out.println(result);
+//		System.out.println(result);
 		XTree xmlResult = XTree.readFromBuffer(result);
 
 		Object retval = XmlObjectHelper.fromXml(xmlResult);
@@ -151,17 +139,13 @@ class RemoteBeanDB implements BeanDB {
 		this.impl = impl;
 		this.readonly = readonly;
 		this.user = user;
-		objectCache_ = new HashMap();
 	}
 
 	// private //
 	private Class cls;
-
 	private String clsstr;
-
 	private String impl;
-
 	private boolean readonly;
-
 	private String user;
+	private boolean dirty;
 }

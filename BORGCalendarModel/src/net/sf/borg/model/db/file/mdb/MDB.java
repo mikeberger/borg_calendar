@@ -603,8 +603,43 @@ public class MDB {
         return (false);
     }
 
+    // Are we out of sync?
+    // if we're not locked before entering this method, we attempt to acquire
+    // a read lock
+    public boolean isDirty() throws DBException {
+
+        // if we have exclusive access - don't bother doing anything
+        if (!sharedDB_)
+            return false;
+
+        boolean gotlock = false;
+        
+        try
+        {
+	        if (!haveLock()) {
+	            getReadLock();
+	            gotlock = true;
+	        }
+	
+	        int count = sb.updateCount_;
+	        int newcount = sb.readCounter(fp_);
+	        if (count == newcount) {
+	            // if the last count for this object matches the count read
+	            // from the file - nothing is needed, db is in sync
+	            return false;
+	        }
+        }
+        finally
+        {
+	        if (gotlock)
+	            releaseLock();
+        }
+        return true;
+    }
+
     // flush all cached data and recreate
-    // we must be locked before entering this method
+    // if we're not locked before entering this method, we attempt to acquire
+    // a read lock
     public void sync() throws DBException {
 
         // if we have exclusive access - don't bother doing anything
@@ -612,32 +647,37 @@ public class MDB {
             return;
 
         boolean gotlock = false;
-        if (!haveLock()) {
-            getReadLock();
-            gotlock = true;
+        
+        try
+        {
+	        if (!haveLock()) {
+	            getReadLock();
+	            gotlock = true;
+	        }
+	
+	        int count = sb.updateCount_;
+	        int newcount = sb.readCounter(fp_);
+	        if (count == newcount) {
+	            // if the last count for this object matches the count read
+	            // from the file - nothing is needed, db is in sync
+	            return;
+	        }
+	
+	        // flush all cached data and re-sync
+	        index_.clear();
+	        sysindex_.clear();
+	        flagmap_.clear();
+	        cur_key_idx_ = -1;
+	        cur_keys_ = null;
+	        freelist_.clear();
+	        lastblock_ = -1;
+	        build_index();
         }
-
-        int count = sb.updateCount_;
-        int newcount = sb.readCounter(fp_);
-        if (count == newcount) {
-            // if the last count for this object matches the count read
-            // from the file - nothing is needed, db is in sync
-            if (gotlock)
-                releaseLock();
-            return;
+        finally
+        {
+	        if (gotlock)
+	            releaseLock();
         }
-
-        // flush all cached data and re-sync
-        index_.clear();
-        sysindex_.clear();
-        flagmap_.clear();
-        cur_key_idx_ = -1;
-        cur_keys_ = null;
-        freelist_.clear();
-        lastblock_ = -1;
-        build_index();
-        if (gotlock)
-            releaseLock();
     }
 
     /**

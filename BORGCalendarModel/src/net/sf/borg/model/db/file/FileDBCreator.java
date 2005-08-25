@@ -87,6 +87,11 @@ abstract class FileDBCreator implements BeanDB
 		db_.setOption(option);
 	}
 
+    public final boolean isDirty() throws DBException
+    {
+    	return db_.isDirty();
+    }
+    
 	public final void sync() throws DBException
 	{
 		db_.sync();

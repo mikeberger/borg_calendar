@@ -47,8 +47,6 @@ import net.sf.borg.model.db.DBException;
 // for the DB file. So a user can store and retrieve an option by name (i.e. "ABC") in a SMDB.
 public class SMDB
 {
-
-    
     private MDB db_;
     protected Schema schema_;     // the schema for the DB
     
@@ -287,6 +285,11 @@ public class SMDB
     public int nextkey(){ return db_.nextkey(); }
     public void delete( int key ) throws Exception { db_.delete(key); }
 
+    public boolean isMDBDirty() throws DBException
+    {
+    	return db_.isDirty();
+    }
+    
     public void syncMDB() throws DBException
     {
         db_.sync();

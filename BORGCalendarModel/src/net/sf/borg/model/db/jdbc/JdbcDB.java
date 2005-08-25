@@ -117,6 +117,13 @@ abstract class JdbcDB implements BeanDB
         objectCacheOn_ = b;
     }
     
+    public boolean isDirty() throws DBException
+    {
+    	// TODO: implement a way to check for external DB
+    	// modification
+    	return false;
+    }
+    
     public void sync()
     {
         emptyCache();
