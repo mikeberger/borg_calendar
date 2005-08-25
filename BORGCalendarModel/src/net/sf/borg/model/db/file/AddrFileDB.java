@@ -31,9 +31,6 @@ import net.sf.borg.model.db.file.mdb.MDB;
 import net.sf.borg.model.db.file.mdb.SMDB;
 import net.sf.borg.model.db.file.mdb.Schema;
 
-
-
-
 class AddrFileDB extends FileDBCreator
 {
 	AddrFileDB()

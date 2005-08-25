@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-
 import net.sf.borg.model.BorgOption;
 import net.sf.borg.model.db.BeanDB;
 import net.sf.borg.model.db.DBException;
@@ -46,8 +45,6 @@ import net.sf.borg.model.db.file.mdb.SMDB;
 
 class FileBeanDB extends SMDB implements BeanDB
 {
-
-    
     private FileBeanAdapter adapter_; // adapter for converting Rows to DataBeans
     private boolean objectCacheOn_;  // is caching on? 
     private HashMap objectCache_;  // the cache
@@ -167,6 +164,11 @@ class FileBeanDB extends SMDB implements BeanDB
         super.delete(key);
     }
 
+    public final synchronized boolean isDirty() throws DBException
+    {
+    	return isMDBDirty();
+    }
+    
     public void sync() throws DBException {
         syncMDB();
         objectCache_ = new HashMap();
