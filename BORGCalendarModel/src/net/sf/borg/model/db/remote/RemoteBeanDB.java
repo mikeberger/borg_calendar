@@ -36,7 +36,6 @@ class RemoteBeanDB implements BeanDB {
 	public final synchronized Collection readAll() throws DBException,
 			Exception {
 		Collection col = (Collection) call("readAll", null);
-		dirty = false;
 		return col;
 	}
 
@@ -95,14 +94,14 @@ class RemoteBeanDB implements BeanDB {
 		return ((Integer) call("nextkey", null)).intValue();
 	}
 
-    public final synchronized boolean isDirty() throws DBException
+    public final synchronized boolean isDirty() throws DBException, Exception
     {
-    	// TODO: implement a way to check for external modification
-    	return dirty;
+		boolean result = ((Boolean) call("isDirty", null)).booleanValue();
+//		System.out.println("isDirty = "+result);
+		return result;
     }
     
 	public final synchronized void sync() throws DBException {
-		dirty = true;
 	}
 
 	// protected //
@@ -147,5 +146,4 @@ class RemoteBeanDB implements BeanDB {
 	private String impl;
 	private boolean readonly;
 	private String user;
-	private boolean dirty;
 }

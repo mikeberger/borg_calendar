@@ -44,6 +44,6 @@ public interface BeanDB
     public Collection getOptions() throws Exception;
     public void close() throws Exception;
     public int nextkey() throws Exception;
-    public boolean isDirty() throws DBException;
+    public boolean isDirty() throws DBException, Exception;
     public void sync() throws DBException;
 }

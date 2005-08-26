@@ -36,7 +36,6 @@ public class CachingBeanDB implements BeanDB
 	public CachingBeanDB(BeanDB delegate)
 	{
 	    this.delegate = delegate;
-		init();
 	}
 	
 	// BeanDB overrides
@@ -129,9 +128,25 @@ public class CachingBeanDB implements BeanDB
 		return delegate.nextkey();
 	}
 
-    public final synchronized boolean isDirty() throws DBException
+    public final synchronized boolean isDirty() throws DBException, Exception
     {
-    	return needsRefresh || delegate.isDirty();
+    	if (data == null) return true;
+    		// need to rebuild the world
+    	
+    	// HACK: We would like to ask our delegate BeanDB if s/he's dirty.
+    	// To avoid hammering the server though, we pretend we already know
+    	// the answer if we've performed the query less than a second ago
+    	// and the response was negative.
+    	long lCurTime = System.currentTimeMillis();
+    	if (lastNegativeDirtyQueryTimestamp != Long.MIN_VALUE
+				&& lCurTime <= (lastNegativeDirtyQueryTimestamp + 1000L))
+    		return false;
+    	
+    	boolean isDelegateDirty = delegate.isDirty();
+    	if (!isDelegateDirty)
+    		lastNegativeDirtyQueryTimestamp = lCurTime;
+    	
+    	return isDelegateDirty;
     }
     
 	public final synchronized void sync() throws DBException
@@ -145,7 +160,9 @@ public class CachingBeanDB implements BeanDB
 		if (!isDirty())
 			return false;
 		
-		init();
+//		System.out.println("Rebuilding the world....");
+		
+		data = new CachingDBCache();
 
 		// Repopulate our maps.
 		Map map = data.getObjectMap();
@@ -164,7 +181,6 @@ public class CachingBeanDB implements BeanDB
 			map.put(option.getKey(), option.getValue());
 		}
 		
-		needsRefresh = false;
 		return true;
 	}
 	
@@ -183,11 +199,5 @@ public class CachingBeanDB implements BeanDB
 	// private //
 	private BeanDB delegate;
 	private CachingDBCache data;
-	private boolean needsRefresh;
-	
-	private void init()
-	{
-		data = new CachingDBCache();
-		needsRefresh = true;
-	}
+	private long lastNegativeDirtyQueryTimestamp = Long.MIN_VALUE;
 }

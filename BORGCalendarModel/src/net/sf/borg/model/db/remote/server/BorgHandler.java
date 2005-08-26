@@ -46,12 +46,13 @@ public class BorgHandler
 		this.url = url;
 	}
 
-	// IRemoteProxy overrides
-	public final String execute(String strXml)
+	public final String execute(String strXml, String username, String sessionId)
 	{
 		Object result = null;
 		
 //		System.out.println("[INPUT] "+strXml);
+//		System.out.println("User: "+username);
+//		System.out.println("Session ID: "+sessionId);
 		
 		try
 		{
@@ -60,7 +61,7 @@ public class BorgHandler
 				(IRemoteProxy.Parms) XmlObjectHelper.fromXml(xmlParms);
 			
 			// Figure out what we need to do
-			BeanDB beanDB = getBeanDB(parms.getMyClass(), parms.getUser());
+			BeanDB beanDB = getBeanDB(parms, username);
 			String cmd = parms.getCommand();
 			
 			if (cmd.equals("readAll"))
@@ -76,6 +77,7 @@ public class BorgHandler
 			{
 				int key = ((Integer) parms.getArgs()).intValue();
 				beanDB.delete(key);
+				touch(sessionId);
 			}
 			else if (cmd.equals("getOption"))
 			{
@@ -98,10 +100,15 @@ public class BorgHandler
 			{
 				result = new Integer(beanDB.nextkey());
 			}
+			else if (cmd.equals("isDirty"))
+			{
+				result = new Boolean(isDirty(parms,sessionId));
+			}
 			else if (cmd.equals("setOption"))
 			{
 				BorgOption option = (BorgOption) parms.getArgs();
 				beanDB.setOption(option);
+				touch(sessionId);
 			}
 			else if (cmd.equals("addObj") || cmd.equals("updateObj"))
 			{
@@ -114,6 +121,8 @@ public class BorgHandler
 					beanDB.addObj(bean,crypt);
 				else
 					beanDB.updateObj(bean,crypt);
+
+				touch(sessionId);
 			}
 			else
 				throw new UnsupportedOperationException(cmd);
@@ -135,11 +144,20 @@ public class BorgHandler
 	// private //
 	private Map beanDBMap = new HashMap();
 	private String url;
+	private String lastUpdaterId = null;
+	private Map dirtyQuerierMap = new HashMap();
+		// who all has asked me if I'm dirty since the
+		// last time someone dirtied me?
 	
-	private BeanDB getBeanDB(Class cls, String username)
+	private static String createClassKey(IRemoteProxy.Parms parms, String key)
+	{
+		return parms.getMyClass().getName() + "_" + key;
+	}
+	
+	private BeanDB getBeanDB(IRemoteProxy.Parms parms, String username)
 		throws Exception
 	{
-		String key = cls.getName() + "_" + username;
+		String key = createClassKey(parms,username);
 			// TODO: bounce logged off users from the map
 		
 		BeanDB beanDB = (BeanDB) beanDBMap.get(key);
@@ -158,7 +176,7 @@ public class BorgHandler
 			try
 			{
 				Errmsg.console(true);
-				beanDB = factory.create(cls, db, username);
+				beanDB = factory.create(parms.getMyClass(), db, username);
 				beanDBMap.put(key,beanDB);
 			}
 			finally
@@ -167,5 +185,31 @@ public class BorgHandler
 			}
 		}
 		return beanDB;
+	}
+	
+	private void touch(String sessionId)
+	{
+		lastUpdaterId = sessionId;
+		dirtyQuerierMap.clear();
+	}
+	
+	private boolean isDirty(IRemoteProxy.Parms parms, String sessionId)
+	{
+		if (lastUpdaterId == null)
+			return false;
+		
+		if (sessionId.equals(lastUpdaterId))
+			return false;
+			// You were the one that last soiled me, so I'm not dirty to you.
+		
+		String key = createClassKey(parms,sessionId);
+		if (dirtyQuerierMap.containsKey(key))
+			return false;
+			// Nothing new has been dirtied since the last time you asked.
+		
+		dirtyQuerierMap.put(key,sessionId);
+			// doesn't matter what the value is.
+		
+		return true;
 	}
 }

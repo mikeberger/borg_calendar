@@ -9,6 +9,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import net.sf.borg.model.db.remote.server.BorgHandler;
 
@@ -47,11 +48,15 @@ public class BORGServlet extends HttpServlet
 		ostr.close();
 		String request = new String(ostr.toByteArray());
 		
+		// Ensure we have a session created.
+		HttpSession session = req.getSession(true);
+		
 		// Run it through our handler, getting the XML reply.
 		String replyString = null;
 		synchronized (handler)
 		{
-			replyString = handler.execute(request);
+			replyString = handler.execute(request, req.getUserPrincipal()
+					.getName(), session.getId());
 		}
 
 		// Pump this back to the client.

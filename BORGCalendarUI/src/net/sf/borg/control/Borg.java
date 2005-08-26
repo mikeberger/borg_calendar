@@ -131,13 +131,19 @@ public class Borg extends Controller implements OptionsView.RestartListener {
         		{
 					public final IRemoteProxy createProxy(String url)
 					{
-						return new HTTPRemoteProxy(url);
+						// No synchronization needed - we're single-threaded.
+						if (proxy == null)
+							proxy = new HTTPRemoteProxy(url);
+						return proxy;
 					}
 
 					public final Credentials getCredentials()
 					{
 						return Borg.this.getCredentials();
 					}
+					
+					// private //
+					private IRemoteProxy proxy = null;
         		}
         	);
     }
