@@ -65,7 +65,7 @@ public class ApptCachingBeanDB extends CachingBeanDB implements AppointmentKeyFi
 			if (appt.getTodo())
 				todoKeys.add(entry.getKey());
 			if (appt.getRepeatFlag())
-				todoKeys.add(entry.getKey());
+				repeatKeys.add(entry.getKey());
 		}
 
 		return true;
