@@ -475,7 +475,7 @@ public class AppointmentModel extends Model implements Model.Listener
         String rpt = Repeat.getFreq(appt.getFrequency());
         
         // find next to do if it repeats by doing calendar math
-        if(  tms != null && tms.intValue() > 1 && rpt != null && !rpt.equals("once"))
+        if(  tms != null && tms.intValue() > 1 && rpt != null && !rpt.equals(Repeat.ONCE))
         {
             int tm = tms.intValue();
             

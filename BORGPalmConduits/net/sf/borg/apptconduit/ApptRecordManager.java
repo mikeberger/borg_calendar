@@ -487,7 +487,7 @@ public class ApptRecordManager {
             else if (freq.equals("yearly")) {
                 rec.setRepeatType(REPEAT_YEARLY_BY_DATE);
             }
-    		else if( freq.equals("ndays"))
+    		else if( freq.equals(Repeat.NDAYS))
     		{
                 int incr = Repeat.getNDays(appt.getFrequency());
                 rec.setRepeatType(REPEAT_DAILY);

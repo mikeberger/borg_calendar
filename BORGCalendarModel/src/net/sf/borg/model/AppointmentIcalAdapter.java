@@ -457,7 +457,7 @@ public class AppointmentIcalAdapter {
 						if( recur.getMonthList().size() > 1 || !Repeat.getFreq(ap.getFrequency()).equals("yearly"))
 						{
 							warning.append("WARNING: BORG cannot yet handle the BYMONTH clause for appt [" + summary + "], adding first occurrence only\n" );
-							ap.setFrequency("once");
+							ap.setFrequency(Repeat.ONCE);
 							aplist.add(ap);
 							continue;
 						}

@@ -20,7 +20,9 @@ Copyright 2003 by Mike Berger
 
 package net.sf.borg.model;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.GregorianCalendar;
 
 import net.sf.borg.common.util.Resource;
@@ -33,22 +35,35 @@ public class Repeat
 	private Calendar start;
 	private Calendar cal;
 	private Calendar current;
-	private String frequency_;
+	private String frequency_; // passed in string containing multiple items
+	private String freq; // internal freq
 	private int field;
 	private int dayOfWeekMonth;
 	private int dayOfWeek;
-	private boolean monthly_same_day;
-	private boolean weekends;
-	private boolean weekdays;
-	private boolean mwf;
-	private boolean tth;
 	private int count;
 
 	private int incr;
 
-	static public String freqs[] = { "once", "daily", "weekly", "biweekly",
+	static public String NDAYS = "ndays";
+	static public String DAYLIST = "dlist";
+	static public String ONCE = "once";
+	static private String freqs[] = {ONCE, "daily", "weekly", "biweekly",
 			"monthly", "monthly_day", "yearly", "weekdays", "weekends", "mwf",
-			"tth", "ndays" };
+			"tth", NDAYS, DAYLIST };
+	
+	
+	static public String getFreqString(int i)
+	{
+		if( i < 0 || i >= freqs.length)
+			return null;
+		return(Resource.getResourceString(freqs[i]));
+	}
+	
+	static public String getFreqString( String fr )
+	{
+		if( fr == null ) fr = ONCE;
+		return(Resource.getResourceString(fr));
+	}
 	
 	static public String freqToEnglish(String fr) {
 		for (int i = 0; i < freqs.length; i++) {
@@ -56,15 +71,38 @@ public class Repeat
 				return (freqs[i]);
 			}
 		}
-		return ("once");
+		return (ONCE);
 	}
 	
 	// generate the frequency string stored in the appt record
-	static public String freqString( String uistring, Integer ndays, boolean rptnum )
+	// daylist is a collection of Calendar days (i.e. Calendar.SUNDAY)
+	static public String freqString( String uistring, Integer ndays, boolean rptnum, Collection daylist )
 	{
 		String f = freqToEnglish(uistring);
-		if (f.equals("ndays")) {
+		if (f.equals(NDAYS)) {
 			f += "," + ndays;
+		}
+		
+		if( f.equals(DAYLIST))
+		{
+			f += ",";
+			if( daylist != null )
+			{
+				if( daylist.contains(new Integer(Calendar.SUNDAY)))
+					f += "1";
+				if( daylist.contains(new Integer(Calendar.MONDAY)))
+					f += "2";
+				if( daylist.contains(new Integer(Calendar.TUESDAY)))
+					f += "3";
+				if( daylist.contains(new Integer(Calendar.WEDNESDAY)))
+					f += "4";
+				if( daylist.contains(new Integer(Calendar.THURSDAY)))
+					f += "5";
+				if( daylist.contains(new Integer(Calendar.FRIDAY)))
+					f += "6";
+				if( daylist.contains(new Integer(Calendar.SATURDAY)))
+					f += "7";
+			}
 		}
 
 		if( rptnum)
@@ -95,18 +133,52 @@ public class Repeat
 		return false;
 	}
 	
+	static public Collection getDaylist( String f )
+	{
+		ArrayList daylist = new ArrayList();
+		if( f == null || !f.startsWith(DAYLIST))
+			return daylist;
+
+		//System.out.println(f + " " + DAYLIST.length());
+		int i2 = f.indexOf(',', DAYLIST.length()+1);
+		String list = null;
+		if(  i2 != -1 )
+			list = f.substring(DAYLIST.length()+1,i2);
+		else
+			list = f.substring(DAYLIST.length()+1);
+
+		//System.out.println(list);
+		if( list.indexOf("1") != -1)
+			daylist.add(new Integer(Calendar.SUNDAY));
+		if( list.indexOf("2") != -1)
+			daylist.add(new Integer(Calendar.MONDAY));
+		if( list.indexOf("3") != -1)
+			daylist.add(new Integer(Calendar.TUESDAY));
+		if( list.indexOf("4") != -1)
+			daylist.add(new Integer(Calendar.WEDNESDAY));
+		if( list.indexOf("5") != -1)
+			daylist.add(new Integer(Calendar.THURSDAY));
+		if( list.indexOf("6") != -1)
+			daylist.add(new Integer(Calendar.FRIDAY));
+		if( list.indexOf("7") != -1)
+			daylist.add(new Integer(Calendar.SATURDAY));
+		
+		return( daylist );
+			
+	}
+	
 	static public int getNDays( String f )
 	{
 		if( f == null )
 			return 0;
-		if( !f.startsWith("ndays,"))
+		if( !f.startsWith(NDAYS))
 			return(0);
 
-		int i2 = f.indexOf(',', 6);
+		int i2 = f.indexOf(',', NDAYS.length()+1);
 		if(  i2 != -1 )
-			return( Integer.parseInt(f.substring(6,i2)));
+			return( Integer.parseInt(f.substring(NDAYS.length()+1,i2)));
 
-		return( Integer.parseInt(f.substring(6)));
+		return( Integer.parseInt(f.substring(NDAYS.length()+1)));
 			
 	}
 	
@@ -119,18 +191,13 @@ public class Repeat
 		current = cal;
 		count = 0;
 		incr = 1;
-		weekdays = false;
-		weekends = false;
-		mwf = false;
-		tth = false;
-		monthly_same_day = false;
 		field = Calendar.DATE;
 		dayOfWeek = 0;
 		dayOfWeekMonth = 0;
 
 		if (!isRepeating()) return;
 		
-		String freq = getFreq(frequency);
+		freq = getFreq(frequency);
 		if( freq.equals("weekly"))
 			incr = 7;
 		else if( freq.equals("biweekly"))
@@ -139,41 +206,34 @@ public class Repeat
 			field = Calendar.MONTH;
 		else if( freq.equals("monthly_day"))
 		{
-			monthly_same_day = true;
 			incr = 0;
 			dayOfWeek = start.get(Calendar.DAY_OF_WEEK);
 			dayOfWeekMonth = start.get(Calendar.DAY_OF_WEEK_IN_MONTH);
 		}
 		else if( freq.equals("yearly"))
 			field = Calendar.YEAR;
-		else if( freq.equals("weekdays"))
-		{
-			weekdays = true;
-		}
-		else if( freq.equals("weekends"))
-		{
-			weekends = true;
-		}
 		else if( freq.equals("mwf"))
 		{
-			mwf = true;
 			incr = 0;
 		}		
 		else if( freq.equals("tth"))
 		{
-			tth = true;
 			incr = 0;
 		}
-		else if( freq.equals("ndays"))
+		else if( freq.equals(NDAYS))
 		{
             incr = getNDays(frequency_);
+		}
+		else if( freq.equals(DAYLIST))
+		{
+            incr = 0;
 		}
 	}
 	
 	final boolean isRepeating()
 	{
-		String freq = getFreq(frequency_);
-		return freq!=null && !freq.equals("once");
+		String f = getFreq(frequency_);
+		return f!=null && !f.equals(ONCE);
 	}
 	
 	// our current date
@@ -239,7 +299,7 @@ public class Repeat
 		if (incr != 0)
 			cal.add(field, incr);
                             	
-		if( weekdays )
+		if( freq.equals("weekdays") )
 		{
 			int dow = cal.get(Calendar.DAY_OF_WEEK );
 			if( dow == Calendar.SATURDAY )
@@ -247,7 +307,7 @@ public class Repeat
 			else if( dow == Calendar.SUNDAY )
 				cal.add( Calendar.DATE, 1 );
 		}
-		else if( weekends )
+		else if( freq.equals("weekends") )
 		{
 			int dow = cal.get(Calendar.DAY_OF_WEEK );
 			if( dow == Calendar.MONDAY )
@@ -261,7 +321,7 @@ public class Repeat
 			else if( dow == Calendar.FRIDAY )
 				cal.add( Calendar.DATE, 1 );
 		}
-		else if( mwf )
+		else if( freq.equals("mwf") )
 		{
 			int dow = cal.get(Calendar.DAY_OF_WEEK );
 			if( dow == Calendar.FRIDAY )
@@ -273,7 +333,7 @@ public class Repeat
 				cal.add( Calendar.DATE, 2 );
 			}
 		}
-		else if( tth )
+		else if( freq.equals("tth") )
 		{
 			int dow = cal.get(Calendar.DAY_OF_WEEK );
 			if( dow == Calendar.THURSDAY )
@@ -285,7 +345,7 @@ public class Repeat
 				cal.add( Calendar.DATE, 2 );
 			}
 		}
-		else if (monthly_same_day)
+		else if (freq.equals("monthly_day"))
 		{
 			// Attempt to find a date falling on the
 			// same day of week and week number
@@ -298,6 +358,24 @@ public class Repeat
 			if (dowm != dayOfWeekMonth)
 				current = null;
 				// not enough days in this month
+		}
+		else if( freq.equals(DAYLIST))
+		{
+			Collection daylist = getDaylist(frequency_);
+			//System.out.println(daylist);
+			if( daylist != null && !daylist.isEmpty())
+			{
+				// advance to next day of the week in the list
+				while( true )
+				{
+					cal.add( Calendar.DATE,1);
+					int dow = cal.get(Calendar.DAY_OF_WEEK );
+					if( daylist.contains(new Integer(dow)))
+					{
+						break;
+					}
+				}
+			}
 		}
 		
 		// bug fix - if repeating by month/date, must adjust if original date was 

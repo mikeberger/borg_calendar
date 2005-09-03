@@ -59,11 +59,11 @@ import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
 import net.sf.borg.common.util.Resource;
-
 import net.sf.borg.common.util.Warning;
 import net.sf.borg.model.Appointment;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.CategoryModel;
+import net.sf.borg.model.Repeat;
 import net.sf.borg.model.Task;
 import net.sf.borg.model.TaskModel;
 import de.wannawork.jcalendar.JCalendarComboBox;
@@ -636,7 +636,7 @@ public class TodoView extends View {
         //r.setColor( "black");
         
         
-        r.setFrequency( "once" );
+        r.setFrequency( Repeat.ONCE );
         r.setTimes(new Integer(1));
         r.setRepeatFlag(false);
 

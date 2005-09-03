@@ -14,18 +14,22 @@ package net.sf.borg.ui;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 
+import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
+import javax.swing.JToggleButton;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 
@@ -33,7 +37,6 @@ import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
 import net.sf.borg.common.util.Resource;
-
 import net.sf.borg.common.util.Warning;
 import net.sf.borg.common.util.XTree;
 import net.sf.borg.model.Appointment;
@@ -96,8 +99,11 @@ class AppointmentPanel extends JPanel {
 			colorbox.addItem(Resource.getResourceString(colors[i]));
 		}
 
-		for (int i = 0; i < Repeat.freqs.length; i++) {
-			freq.addItem(Resource.getResourceString(Repeat.freqs[i]));
+		for (int i = 0; ; i++) {
+			String fs = Repeat.getFreqString(i);
+			if( fs == null )
+				break;
+			freq.addItem(fs);
 		}
 
 		setDate(year, month, day);
@@ -131,6 +137,14 @@ class AppointmentPanel extends JPanel {
 		startap.setEnabled(false);
 		notecb.setSelected(true);
 		chgdate.setSelected(false);
+		dl1.setSelected(false);
+		dl2.setSelected(false);
+		dl3.setSelected(false);
+		dl4.setSelected(false);
+		dl5.setSelected(false);
+		dl6.setSelected(false);
+		dl7.setSelected(false);
+	
 
 		// get default appt values, if any
 		Appointment defaultAppt = null;
@@ -184,6 +198,7 @@ class AppointmentPanel extends JPanel {
 
 			setCustRemTimes(null);
 			setPopupTimesString();
+		
 
 		} else {
 
@@ -303,39 +318,35 @@ class AppointmentPanel extends JPanel {
 				// repeat frequency
 				String rpt = Repeat.getFreq(r.getFrequency());
 				
-				if (rpt != null && rpt.equals("ndays")) {
+				if (rpt != null && rpt.equals(Repeat.NDAYS)) {
 					ndays.setValue(new Integer(Repeat.getNDays(r.getFrequency())));
+				}
+				
+				if (rpt != null && rpt.equals(Repeat.DAYLIST)) {
+					Collection daylist = Repeat.getDaylist(r.getFrequency());
+					if( daylist != null )
+					{
+						if( daylist.contains(new Integer(Calendar.SUNDAY)))
+							dl1.setSelected(true);
+						if( daylist.contains(new Integer(Calendar.MONDAY)))
+							dl2.setSelected(true);
+						if( daylist.contains(new Integer(Calendar.TUESDAY)))
+							dl3.setSelected(true);
+						if( daylist.contains(new Integer(Calendar.WEDNESDAY)))
+							dl4.setSelected(true);
+						if( daylist.contains(new Integer(Calendar.THURSDAY)))
+							dl5.setSelected(true);
+						if( daylist.contains(new Integer(Calendar.FRIDAY)))
+							dl6.setSelected(true);
+						if( daylist.contains(new Integer(Calendar.SATURDAY)))
+							dl7.setSelected(true);
+					}
 				}
 				
 			    rptnumbox.setSelected(Repeat.getRptNum(r.getFrequency()));
 
-				int fin = 0;
-				if (rpt != null) {
-					if (rpt.equals("weekly"))
-						fin = 2;
-					else if (rpt.equals("biweekly"))
-						fin = 3;
-					else if (rpt.equals("monthly"))
-						fin = 4;
-					else if (rpt.equals("monthly_day"))
-						fin = 5;
-					else if (rpt.equals("yearly"))
-						fin = 6;
-					else if (rpt.equals("daily"))
-						fin = 1;
-					else if (rpt.equals("weekdays"))
-						fin = 7;
-					else if (rpt.equals("weekends"))
-						fin = 8;
-					else if (rpt.equals("mwf"))
-						fin = 9;
-					else if (rpt.equals("tth"))
-						fin = 10;
-					else if (rpt.equals("ndays"))
-						fin = 11;
-				}
-				freq.setSelectedIndex(fin);
-
+			    freq.setSelectedItem(Repeat.getFreqString(rpt));
+			    
 				// repeat times
 				Integer tm = r.getTimes();
 				if (tm != null) {
@@ -941,8 +952,24 @@ class AppointmentPanel extends JPanel {
 		r.setColor(colorToEnglish((String) colorbox.getSelectedItem()));
 
 		// repeat frequency
-		if (freq.getSelectedIndex() != 0) {			
-			r.setFrequency(Repeat.freqString((String) freq.getSelectedItem(), (Integer)ndays.getValue(), rptnumbox.isSelected()));
+		if (freq.getSelectedIndex() != 0) {	
+			ArrayList daylist = new ArrayList();
+			if( dl1.isSelected())
+				daylist.add(new Integer(Calendar.SUNDAY));
+			if( dl2.isSelected())
+				daylist.add(new Integer(Calendar.MONDAY));
+			if( dl3.isSelected())
+				daylist.add(new Integer(Calendar.TUESDAY));
+			if( dl4.isSelected())
+				daylist.add(new Integer(Calendar.WEDNESDAY));
+			if( dl5.isSelected())
+				daylist.add(new Integer(Calendar.THURSDAY));
+			if( dl6.isSelected())
+				daylist.add(new Integer(Calendar.FRIDAY));
+			if( dl7.isSelected())
+				daylist.add(new Integer(Calendar.SATURDAY));
+			r.setFrequency(Repeat.freqString((String) freq.getSelectedItem(), (Integer)ndays.getValue(), 
+					rptnumbox.isSelected(),daylist));
 		}
 
 		// repeat times
@@ -1019,9 +1046,14 @@ class AppointmentPanel extends JPanel {
 			rptnumbox.setEnabled(true);
 		}
 
-		if (Repeat.freqToEnglish((String) freq.getSelectedItem()).equals("ndays")) {
+		if (Repeat.freqToEnglish((String) freq.getSelectedItem()).equals(Repeat.NDAYS)) {
 			ndays.setVisible(true);
+			dlistbuttonpanel.setVisible(false);
+		} else if( Repeat.freqToEnglish((String) freq.getSelectedItem()).equals(Repeat.DAYLIST)) {
+			dlistbuttonpanel.setVisible(true);
+			ndays.setVisible(false);
 		} else {
+			dlistbuttonpanel.setVisible(false);
 			ndays.setVisible(false);
 		}
 	}
@@ -1166,10 +1198,27 @@ class AppointmentPanel extends JPanel {
 
 	private JCheckBox rptnumbox = null;
 
+	private JPanel dlistbuttonpanel = null;
+
+	private JToggleButton dl1 = null;
+
+	private JToggleButton dl2 = null;
+
+	private JToggleButton dl3 = null;
+
+	private JToggleButton dl4 = null;
+
+	private JToggleButton dl5 = null;
+
+	private JToggleButton dl6 = null;
+
+	private JToggleButton dl7 = null;
+
 
 	private JPanel getJPanel() {
 		if (jPanel == null) {
 			GridBagConstraints gridBagConstraints19 = new GridBagConstraints();
+			GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
 			GridBagConstraints gridBagConstraints28 = new GridBagConstraints();
 			GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
 			GridBagConstraints gridBagConstraints71 = new GridBagConstraints();
@@ -1225,6 +1274,12 @@ class AppointmentPanel extends JPanel {
 			jPanel.add(ndays, gridBagConstraints28);
 
 			jPanel.add(getRptnumbox(), gridBagConstraints19);
+			
+			gridBagConstraints1.fill = java.awt.GridBagConstraints.BOTH;  // Generated
+			gridBagConstraints1.gridy = 0;  // Generated
+			gridBagConstraints1.gridx = 2;  // Generated
+			gridBagConstraints1.gridwidth = 2;
+			jPanel.add(getDlistbuttonpanel(), gridBagConstraints1);  // Generated
 		}
 		return jPanel;
 	}
@@ -1327,6 +1382,127 @@ class AppointmentPanel extends JPanel {
 			rptnumbox.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("show_rpt_num"));
 		}
 		return rptnumbox;
+	}
+
+	/**
+	 * This method initializes dlistbuttonpanel	
+	 * 	
+	 * @return javax.swing.JPanel	
+	 */
+	private JPanel getDlistbuttonpanel() {
+		if (dlistbuttonpanel == null) {
+			dlistbuttonpanel = new JPanel();
+			dlistbuttonpanel.setLayout(new BoxLayout(getDlistbuttonpanel(), BoxLayout.X_AXIS));  // Generated
+			dlistbuttonpanel.add(getDl1(), null);  // Generated
+			dlistbuttonpanel.add(getDl2(), null);  // Generated
+			dlistbuttonpanel.add(getDl3(), null);  // Generated
+			dlistbuttonpanel.add(getDl4(), null);  // Generated
+			dlistbuttonpanel.add(getDl5(), null);  // Generated
+			dlistbuttonpanel.add(getDl6(), null);  // Generated
+			dlistbuttonpanel.add(getDl7(), null);  // Generated
+		}
+		return dlistbuttonpanel;
+	}
+
+	// for setting labels
+	static private GregorianCalendar tmpcal = new GregorianCalendar();
+	static private SimpleDateFormat shortDayFmt = new SimpleDateFormat("EEE");
+	/**
+	 * This method initializes dl1	
+	 * 	
+	 * @return javax.swing.JToggleButton	
+	 */
+	private JToggleButton getDl1() {
+		if (dl1 == null) {
+			dl1 = new JToggleButton();			
+			tmpcal.set( Calendar.DAY_OF_WEEK, Calendar.SUNDAY);			
+			dl1.setText(shortDayFmt.format(tmpcal.getTime()));
+		}
+		return dl1;
+	}
+
+	/**
+	 * This method initializes dl2	
+	 * 	
+	 * @return javax.swing.JToggleButton	
+	 */
+	private JToggleButton getDl2() {
+		if (dl2 == null) {
+			dl2 = new JToggleButton();
+			tmpcal.set( Calendar.DAY_OF_WEEK, Calendar.MONDAY);			
+			dl2.setText(shortDayFmt.format(tmpcal.getTime()));
+		}
+		return dl2;
+	}
+
+	/**
+	 * This method initializes dl3	
+	 * 	
+	 * @return javax.swing.JToggleButton	
+	 */
+	private JToggleButton getDl3() {
+		if (dl3 == null) {
+			dl3 = new JToggleButton();
+			tmpcal.set( Calendar.DAY_OF_WEEK, Calendar.TUESDAY);			
+			dl3.setText(shortDayFmt.format(tmpcal.getTime()));
+		}
+		return dl3;
+	}
+
+	/**
+	 * This method initializes dl4	
+	 * 	
+	 * @return javax.swing.JToggleButton	
+	 */
+	private JToggleButton getDl4() {
+		if (dl4 == null) {
+			dl4 = new JToggleButton();
+			tmpcal.set( Calendar.DAY_OF_WEEK, Calendar.WEDNESDAY);			
+			dl4.setText(shortDayFmt.format(tmpcal.getTime()));
+		}
+		return dl4;
+	}
+
+	/**
+	 * This method initializes dl5	
+	 * 	
+	 * @return javax.swing.JToggleButton	
+	 */
+	private JToggleButton getDl5() {
+		if (dl5 == null) {
+			dl5 = new JToggleButton();
+			tmpcal.set( Calendar.DAY_OF_WEEK, Calendar.THURSDAY);			
+			dl5.setText(shortDayFmt.format(tmpcal.getTime()));
+		}
+		return dl5;
+	}
+
+	/**
+	 * This method initializes dl6	
+	 * 	
+	 * @return javax.swing.JToggleButton	
+	 */
+	private JToggleButton getDl6() {
+		if (dl6 == null) {
+			dl6 = new JToggleButton();
+			tmpcal.set( Calendar.DAY_OF_WEEK, Calendar.FRIDAY);			
+			dl6.setText(shortDayFmt.format(tmpcal.getTime()));
+		}
+		return dl6;
+	}
+
+	/**
+	 * This method initializes dl7	
+	 * 	
+	 * @return javax.swing.JToggleButton	
+	 */
+	private JToggleButton getDl7() {
+		if (dl7 == null) {
+			dl7 = new JToggleButton();
+			tmpcal.set( Calendar.DAY_OF_WEEK, Calendar.SATURDAY);			
+			dl7.setText(shortDayFmt.format(tmpcal.getTime()));
+		}
+		return dl7;
 	}
  } //  @jve:decl-index=0:visual-constraint="10,10"
 
