@@ -230,7 +230,7 @@ class MonthPanel extends JPanel implements Printable
                 {
                     
                     // get the appointment info for the given day
-                    GregorianCalendar gc = new GregorianCalendar(year_,month_,date);
+                    GregorianCalendar gc = new GregorianCalendar(year_,month_,date,23,59);
                     Day di = Day.getDay( year, month, date, showpub, showpriv, true );
                     if( di != null )
                     {
