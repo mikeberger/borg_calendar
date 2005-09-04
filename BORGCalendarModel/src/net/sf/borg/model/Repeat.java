@@ -32,6 +32,20 @@ import net.sf.borg.common.util.Resource;
  */
 public class Repeat
 {
+	private static final String TTH = "tth";
+	private static final String MWF = "mwf";
+	private static final String WEEKENDS = "weekends";
+	private static final String WEEKDAYS = "weekdays";
+	private static final String YEARLY = "yearly";
+	private static final String MONTHLY_DAY = "monthly_day";
+	private static final String MONTHLY = "monthly";
+	private static final String BIWEEKLY = "biweekly";
+	private static final String WEEKLY = "weekly";
+	private static final String DAILY = "daily";
+	public static final String NDAYS = "ndays";
+	public static final String DAYLIST = "dlist";
+	public static final String ONCE = "once";
+	
 	private Calendar start;
 	private Calendar cal;
 	private Calendar current;
@@ -44,12 +58,10 @@ public class Repeat
 
 	private int incr;
 
-	static public String NDAYS = "ndays";
-	static public String DAYLIST = "dlist";
-	static public String ONCE = "once";
-	static private String freqs[] = {ONCE, "daily", "weekly", "biweekly",
-			"monthly", "monthly_day", "yearly", "weekdays", "weekends", "mwf",
-			"tth", NDAYS, DAYLIST };
+
+	static private String freqs[] = {ONCE, DAILY, WEEKLY, BIWEEKLY,
+			MONTHLY, MONTHLY_DAY, YEARLY, WEEKDAYS, WEEKENDS, MWF,
+			TTH, NDAYS, DAYLIST };
 	
 	
 	static public String getFreqString(int i)
@@ -198,25 +210,25 @@ public class Repeat
 		if (!isRepeating()) return;
 		
 		freq = getFreq(frequency);
-		if( freq.equals("weekly"))
+		if( freq.equals(WEEKLY))
 			incr = 7;
-		else if( freq.equals("biweekly"))
+		else if( freq.equals(BIWEEKLY))
 			incr = 14;
-		else if( freq.equals("monthly"))
+		else if( freq.equals(MONTHLY))
 			field = Calendar.MONTH;
-		else if( freq.equals("monthly_day"))
+		else if( freq.equals(MONTHLY_DAY))
 		{
 			incr = 0;
 			dayOfWeek = start.get(Calendar.DAY_OF_WEEK);
 			dayOfWeekMonth = start.get(Calendar.DAY_OF_WEEK_IN_MONTH);
 		}
-		else if( freq.equals("yearly"))
+		else if( freq.equals(YEARLY))
 			field = Calendar.YEAR;
-		else if( freq.equals("mwf"))
+		else if( freq.equals(MWF))
 		{
 			incr = 0;
 		}		
-		else if( freq.equals("tth"))
+		else if( freq.equals(TTH))
 		{
 			incr = 0;
 		}
@@ -299,7 +311,7 @@ public class Repeat
 		if (incr != 0)
 			cal.add(field, incr);
                             	
-		if( freq.equals("weekdays") )
+		if( freq.equals(WEEKDAYS) )
 		{
 			int dow = cal.get(Calendar.DAY_OF_WEEK );
 			if( dow == Calendar.SATURDAY )
@@ -307,7 +319,7 @@ public class Repeat
 			else if( dow == Calendar.SUNDAY )
 				cal.add( Calendar.DATE, 1 );
 		}
-		else if( freq.equals("weekends") )
+		else if( freq.equals(WEEKENDS) )
 		{
 			int dow = cal.get(Calendar.DAY_OF_WEEK );
 			if( dow == Calendar.MONDAY )
@@ -321,7 +333,7 @@ public class Repeat
 			else if( dow == Calendar.FRIDAY )
 				cal.add( Calendar.DATE, 1 );
 		}
-		else if( freq.equals("mwf") )
+		else if( freq.equals(MWF) )
 		{
 			int dow = cal.get(Calendar.DAY_OF_WEEK );
 			if( dow == Calendar.FRIDAY )
@@ -333,7 +345,7 @@ public class Repeat
 				cal.add( Calendar.DATE, 2 );
 			}
 		}
-		else if( freq.equals("tth") )
+		else if( freq.equals(TTH) )
 		{
 			int dow = cal.get(Calendar.DAY_OF_WEEK );
 			if( dow == Calendar.THURSDAY )
@@ -345,7 +357,7 @@ public class Repeat
 				cal.add( Calendar.DATE, 2 );
 			}
 		}
-		else if (freq.equals("monthly_day"))
+		else if (freq.equals(MONTHLY_DAY))
 		{
 			// Attempt to find a date falling on the
 			// same day of week and week number
