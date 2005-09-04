@@ -118,7 +118,7 @@ class WeekPanel extends JPanel implements Printable {
 		Shape s = g2.getClip();
 
 		// set up calendar and determine first day of week from options
-		GregorianCalendar cal = new GregorianCalendar(year_, month_, date_);
+		GregorianCalendar cal = new GregorianCalendar(year_, month_, date_,23,59);
 		int fdow = Prefs.getIntPref(PrefName.FIRSTDOW);
 		cal.setFirstDayOfWeek(fdow);
 

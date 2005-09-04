@@ -112,7 +112,7 @@ class DayPanel extends JPanel implements Printable {
 		Shape s = g2.getClip();
 
 		// save begin/end date and build title
-		GregorianCalendar cal = new GregorianCalendar(year_, month_, date_);
+		GregorianCalendar cal = new GregorianCalendar(year_, month_, date_,23,59);
 		Date dt = cal.getTime();
 		SimpleDateFormat sd = new SimpleDateFormat("MMM dd, yyyy");
 		String title = sd.format(dt);
