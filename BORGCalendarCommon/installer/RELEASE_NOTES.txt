@@ -1,5 +1,5 @@
 ============================
-RELEASE NOTES for BORG 1.5
+RELEASE NOTES for BORG 1.5.1
 ============================
 
 The project home page is http://borg-calendar.sourceforge.net
@@ -10,7 +10,7 @@ KNOWN ISSUES:
 1. There may be new text strings that have not been translated. 
 Feel free to mail any translations to i_flem@users.sourceforge.net.
 
-2. It is known that some screens in the new help system contain formatting 
+2. It is known that some screens in the help system contain formatting 
 that has slight imperfections under Java 1.4.2, but not Java 5.0.
 
 MySQL Users
@@ -18,9 +18,9 @@ MySQL Users
 This section only concerns users using MySQL to store BORG data. The overwhelming majority of
 users do not use MySQL. If you are unsure - then you are not using it.
 
-There are MySQL database changes required to run BORG 1.5.
-You must run the SQL in file update1_5.sql to upgrade a 1.4 database to 1.5.
-The borg.sql file has been updated with the SQL to create a new 1.5 database.
+There are MySQL database changes for users migrating from BORG 1.4.x to BORG 1.5.x
+You must run the SQL in file update1_5.sql to upgrade a 1.4.x database to 1.5.x
+The borg.sql file has been updated with the SQL to create a new 1.5.x database.
 Both the update1_5.sql and borg.sql files are not installed by default and are
 installed as part of the optional RDBMS support. 
 
