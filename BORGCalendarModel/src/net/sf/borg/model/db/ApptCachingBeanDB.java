@@ -34,9 +34,28 @@ public class ApptCachingBeanDB extends CachingBeanDB implements AppointmentKeyFi
 	public ApptCachingBeanDB(BeanDB delegate)
 	{
 		super(delegate);
-//		filter = (AppointmentKeyFilter) delegate;
 	}
 	
+// BeanDB overrides
+	public final synchronized void addObj(KeyedBean bean, boolean crypt) throws DBException, Exception
+	{
+		super.addObj(bean,crypt);
+		rebuildKeys();
+	}
+
+	public final synchronized void updateObj(KeyedBean bean, boolean crypt) throws DBException, Exception
+	{
+		super.updateObj(bean,crypt);
+		rebuildKeys();
+	}
+
+	public final synchronized void delete(int key) throws Exception
+	{
+		super.delete(key);
+		rebuildKeys();
+	}
+
+// AppointmentKeyFilter overrides
 	public Collection getTodoKeys() throws Exception {
 		refresh();
 		return todoKeys;
@@ -51,9 +70,33 @@ public class ApptCachingBeanDB extends CachingBeanDB implements AppointmentKeyFi
 	// protected //
 	protected boolean refresh() throws Exception
 	{
-		if (!super.refresh())
+		if (inRefresh)
 			return false;
 		
+		try
+		{
+			inRefresh = true;
+			
+			if (!super.refresh())
+				return false;
+			
+			rebuildKeys();
+	
+			return true;
+		}
+		finally
+		{
+			inRefresh = false;
+		}
+	}
+	
+	// private //
+	private boolean inRefresh;
+	private List todoKeys = new ArrayList();
+	private List repeatKeys = new ArrayList();
+	
+	private void rebuildKeys() throws Exception
+	{
 		// Refresh our cached ToDo and Repeat keys.
 		todoKeys.clear();
 		repeatKeys.clear();
@@ -67,12 +110,5 @@ public class ApptCachingBeanDB extends CachingBeanDB implements AppointmentKeyFi
 			if (appt.getRepeatFlag())
 				repeatKeys.add(entry.getKey());
 		}
-
-		return true;
 	}
-	
-	// private //
-//	private AppointmentKeyFilter filter;
-	private List todoKeys = new ArrayList();
-	private List repeatKeys = new ArrayList();
 }

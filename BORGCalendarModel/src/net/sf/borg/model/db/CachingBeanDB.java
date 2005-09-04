@@ -61,19 +61,19 @@ public class CachingBeanDB implements BeanDB
 		}
 	}
 
-	public final synchronized void addObj(KeyedBean bean, boolean crypt) throws DBException, Exception
+	public synchronized void addObj(KeyedBean bean, boolean crypt) throws DBException, Exception
 	{
 		delegate.addObj(bean,crypt);
 		getObjectMap().put(new Integer(bean.getKey()), bean);
 	}
 
-	public final synchronized void updateObj(KeyedBean bean, boolean crypt) throws DBException, Exception
+	public synchronized void updateObj(KeyedBean bean, boolean crypt) throws DBException, Exception
 	{
 		delegate.updateObj(bean,crypt);
 		getObjectMap().put(new Integer(bean.getKey()), bean);
 	}
 
-	public final synchronized void delete(int key) throws Exception
+	public synchronized void delete(int key) throws Exception
 	{
 		getObjectMap().remove(new Integer(key));
 		delegate.delete(key);
@@ -184,13 +184,13 @@ public class CachingBeanDB implements BeanDB
 		return true;
 	}
 	
-	protected Map getObjectMap() throws Exception
+	protected final Map getObjectMap() throws Exception
 	{
 		refresh();
 		return data.getObjectMap();
 	}
 	
-	protected Map getOptionsMap() throws Exception
+	protected final Map getOptionsMap() throws Exception
 	{
 		refresh();
 		return data.getOptionsMap();

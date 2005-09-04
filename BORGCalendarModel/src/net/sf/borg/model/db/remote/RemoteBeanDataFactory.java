@@ -76,12 +76,20 @@ public class RemoteBeanDataFactory implements IBeanDataFactory
 		String file = url.substring(nColon+2);
 		
 		BeanDB db = null;
+		
 		if (cls == Appointment.class)
 			db = new ApptCachingBeanDB(new ApptRemoteBeanDB(clsstr, file,
 					readonly, username));
 		else
 			db = new CachingBeanDB(new RemoteBeanDB(cls, clsstr, file,
 					readonly, username));
+		
+		/*
+		if (cls == Appointment.class)
+			db = new ApptRemoteBeanDB(clsstr, file, readonly, username);
+		else
+			db = new RemoteBeanDB(cls, clsstr, file, readonly, username);
+		*/
 		
 		return db;
 	}
