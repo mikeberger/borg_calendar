@@ -21,6 +21,7 @@ package net.sf.borg.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.print.Printable;
@@ -96,6 +97,7 @@ class DayView extends View
         addModel(TaskModel.getReference());
         dayPanel = new DayPanel(month,year,date);        
         dayPanel.setBackground(Color.WHITE);
+        dayPanel.setPreferredSize(new Dimension(800,600));
         
         // for the preview, create a JFrame with the preview panel and print menubar
         JMenuBar menubar = new JMenuBar();

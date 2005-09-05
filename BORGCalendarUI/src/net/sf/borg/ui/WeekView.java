@@ -21,6 +21,7 @@ package net.sf.borg.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.print.Printable;
@@ -96,7 +97,8 @@ class WeekView extends View
         addModel(AppointmentModel.getReference());
         addModel(TaskModel.getReference());
         wkPanel = new WeekPanel(month,year,date);        
-        wkPanel.setBackground(Color.WHITE);       
+        wkPanel.setBackground(Color.WHITE); 
+        wkPanel.setPreferredSize(new Dimension(800,600));
         
         // for the preview, create a JFrame with the preview panel and print menubar
         JMenuBar menubar = new JMenuBar();
