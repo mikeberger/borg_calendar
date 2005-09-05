@@ -58,11 +58,14 @@ public class PopupView extends View {
 	public PopupView() {
 		addModel(AppointmentModel.getReference());
 		timer = new java.util.Timer();
+		// start popups at next minute on system clock
+		GregorianCalendar cur = new GregorianCalendar();
+		int secs_left = 60 - cur.get(Calendar.SECOND);
 		timer.schedule(new TimerTask() {
 			public void run() {
 				EventQueue.invokeLater(doPopupChk);
 			}
-		}, 5 * 1000, Prefs.getIntPref(PrefName.REMINDERCHECKMINS) * 60 * 1000);
+		}, secs_left * 1000, Prefs.getIntPref(PrefName.REMINDERCHECKMINS) * 60 * 1000);
 
 	}
 
@@ -165,9 +168,8 @@ public class PopupView extends View {
 
 					// skip the appt if it is outside the time frame of the
 					// reminder requests
-					long mins_to_go = (acal.getTimeInMillis() - now
-							.getTimeInMillis())
-							/ (1000 * 60);
+					long mins_to_go = acal.getTimeInMillis()/(1000*60) - 
+										now.getTimeInMillis()/(1000*60);
 
 					if (outside_reminder_times(mins_to_go))
 						continue;
@@ -257,9 +259,7 @@ public class PopupView extends View {
 				acal.set(now.get(Calendar.YEAR), now.get(Calendar.MONTH), now
 						.get(Calendar.DATE));
 
-				long mins_to_go = (acal.getTimeInMillis() - now
-						.getTimeInMillis())
-						/ (1000 * 60);
+				long mins_to_go = acal.getTimeInMillis()/(1000*60) - now.getTimeInMillis()/(1000*60);
 
 				// if alarm is due to be shown, show it and play sound if
 				// requested
