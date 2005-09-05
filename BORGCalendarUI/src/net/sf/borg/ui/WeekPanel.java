@@ -35,6 +35,7 @@ import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collection;
@@ -51,7 +52,6 @@ import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
 import net.sf.borg.common.util.Resource;
-
 import net.sf.borg.model.Appointment;
 import net.sf.borg.model.Day;
 import net.sf.borg.ui.ApptDayBoxLayout.ApptDayBox;
@@ -132,10 +132,11 @@ class WeekPanel extends JPanel implements Printable {
 		Date beg = cal.getTime();
 		cal.add(Calendar.DATE, 6);
 		Date end = cal.getTime();
-		SimpleDateFormat sd = new SimpleDateFormat("MMM dd, yyyy");
-		String title = sd.format(beg) + " "
+		DateFormat df = DateFormat.getDateInstance(DateFormat.LONG);
+		//SimpleDateFormat sd = new SimpleDateFormat("MMM dd, yyyy");
+		String title = df.format(beg) + " "
 				+ Resource.getResourceString("__through__") + " "
-				+ sd.format(end);
+				+ df.format(end);
 
 		// reset cal
 		cal.setTime(beg);
@@ -183,7 +184,8 @@ class WeekPanel extends JPanel implements Printable {
 		double tickheight = (calbot - aptop) / numhalfhours;
 
 		// format for day labels
-		SimpleDateFormat dfw = new SimpleDateFormat("EEE MMM dd");
+		//DateFormat dfs = DateFormat.getDateInstance(DateFormat.SHORT);
+		SimpleDateFormat dfw = new SimpleDateFormat("EEE dd");
 
 		// add day labels
 		for (int col = 0; col < 7; col++) {

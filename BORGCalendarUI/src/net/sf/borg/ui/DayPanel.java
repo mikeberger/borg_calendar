@@ -30,6 +30,7 @@ import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.text.AttributedString;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collection;
@@ -44,7 +45,6 @@ import javax.swing.JPanel;
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
-
 import net.sf.borg.model.Appointment;
 import net.sf.borg.model.Day;
 import net.sf.borg.ui.ApptDayBoxLayout.ApptDayBox;
@@ -114,8 +114,9 @@ class DayPanel extends JPanel implements Printable {
 		// save begin/end date and build title
 		GregorianCalendar cal = new GregorianCalendar(year_, month_, date_,23,59);
 		Date dt = cal.getTime();
-		SimpleDateFormat sd = new SimpleDateFormat("MMM dd, yyyy");
-		String title = sd.format(dt);
+		//SimpleDateFormat sd = new SimpleDateFormat("MMM dd, yyyy");
+		DateFormat df = DateFormat.getDateInstance(DateFormat.LONG);
+		String title = df.format(dt);
 
 		// determine placement of title at correct height and centered
 		// horizontally on page
