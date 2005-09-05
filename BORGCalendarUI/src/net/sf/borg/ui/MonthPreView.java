@@ -21,10 +21,8 @@ package net.sf.borg.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.print.PageFormat;
 import java.awt.print.PrinterJob;
 
 import javax.print.attribute.HashPrintRequestAttributeSet;
@@ -35,13 +33,11 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
 import javax.swing.border.BevelBorder;
 
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Resource;
-
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.TaskModel;
 
@@ -106,18 +102,9 @@ class MonthPreView extends View
         super();
         addModel(AppointmentModel.getReference());
         addModel(TaskModel.getReference());
-        monPanel = new MonthPanel(month,year);
-        
+        monPanel = new MonthPanel(month,year);       
         monPanel.setBackground(Color.WHITE);
-        PageFormat pf = new PageFormat();
-        pf.setOrientation( PageFormat.LANDSCAPE );
-        Double w = new Double( MonthPanel.prev_scale * pf.getWidth());
-        Double h = new Double( MonthPanel.prev_scale * pf.getHeight());
-        monPanel.setPreferredSize( new Dimension(w.intValue(), h.intValue()  ));
-        
-        JScrollPane sp = new JScrollPane(monPanel);
-        sp.setPreferredSize(new Dimension(w.intValue(), h.intValue()));
-        
+
         // for the preview, create a JFrame with the preview panel and print menubar
         JMenuBar menubar = new JMenuBar();
         JMenu pmenu = new JMenu();
@@ -149,7 +136,7 @@ class MonthPreView extends View
         
         setJMenuBar(menubar);
         
-        getContentPane().add(sp, BorderLayout.CENTER);
+        getContentPane().add(monPanel, BorderLayout.CENTER);
         setTitle(Resource.getResourceString("Month_View"));
         setDefaultCloseOperation( DISPOSE_ON_CLOSE );
         pack();

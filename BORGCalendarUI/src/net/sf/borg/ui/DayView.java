@@ -21,10 +21,8 @@ package net.sf.borg.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterJob;
 
@@ -35,13 +33,11 @@ import javax.print.attribute.standard.OrientationRequested;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JScrollPane;
 import javax.swing.border.BevelBorder;
 
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Resource;
-
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.TaskModel;
 
@@ -51,8 +47,7 @@ import net.sf.borg.model.TaskModel;
 // weekView handles the printing of a single week
 class DayView extends View
 {
-
-    
+   
     private DayPanel dayPanel;
     
  
@@ -60,12 +55,10 @@ class DayView extends View
     {
         PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
 	    aset.add(new Copies(1));
-        //aset.add(MediaSizeName.NA_LETTER);
         aset.add(OrientationRequested.LANDSCAPE);	
 
         PrinterJob printJob = PrinterJob.getPrinterJob();
         printJob.setPrintable(p);
-        //printJob.pageDialog(aset);
         if (printJob.printDialog(aset))
                 printJob.print(aset);
         
@@ -101,17 +94,8 @@ class DayView extends View
         super();
         addModel(AppointmentModel.getReference());
         addModel(TaskModel.getReference());
-        dayPanel = new DayPanel(month,year,date);
-        
+        dayPanel = new DayPanel(month,year,date);        
         dayPanel.setBackground(Color.WHITE);
-        PageFormat pf = new PageFormat();
-        pf.setOrientation( PageFormat.LANDSCAPE );
-        Double w = new Double( WeekPanel.prev_scale * pf.getWidth());
-        Double h = new Double( WeekPanel.prev_scale * pf.getHeight());
-        dayPanel.setPreferredSize( new Dimension(w.intValue(), h.intValue()  ));
-        
-        JScrollPane sp = new JScrollPane(dayPanel);
-        sp.setPreferredSize(new Dimension(w.intValue(), h.intValue()));
         
         // for the preview, create a JFrame with the preview panel and print menubar
         JMenuBar menubar = new JMenuBar();
@@ -142,7 +126,7 @@ class DayView extends View
         
         setJMenuBar(menubar);
         
-        getContentPane().add(sp, BorderLayout.CENTER);
+        getContentPane().add(dayPanel, BorderLayout.CENTER);
         setTitle(Resource.getResourceString("Day_View"));
         setDefaultCloseOperation( DISPOSE_ON_CLOSE );
         pack();

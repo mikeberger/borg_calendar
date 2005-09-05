@@ -70,14 +70,21 @@ class WeekPanel extends JPanel implements Printable {
 
 	final static private BasicStroke dashed = new BasicStroke(0.02f,
 			BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 3.0f, dash1, 0.0f);
-
+	
 	// print does the actual formatting of the printout
 	public int print(Graphics g, PageFormat pageFormat, int pageIndex)
 			throws PrinterException {
-
 		// only print 1 page
 		if (pageIndex > 0)
 			return Printable.NO_SUCH_PAGE;
+		return( drawIt(g,pageFormat.getWidth(), pageFormat.getHeight(), 
+				pageFormat.getImageableWidth(), pageFormat.getImageableHeight(),
+				pageFormat.getImageableX(), pageFormat.getImageableY()));
+	}
+	
+	private int drawIt(Graphics g, double width, double height, double pageWidth, 
+			double pageHeight, double pagex, double pagey )
+	{
 
 		boolean showpub = false;
 		boolean showpriv = false;
@@ -96,23 +103,18 @@ class WeekPanel extends JPanel implements Printable {
 		stmap.put(TextAttribute.FONT, sm_font);
 
 		g2.setColor(Color.white);
-		g2.fillRect(0, 0, (int) pageFormat.getWidth(), (int) pageFormat
-				.getHeight());
+		g2.fillRect(0, 0, (int) width, (int) height);
 		g2.setColor(Color.black);
 
 		// get font sizes
 		int fontHeight = g2.getFontMetrics().getHeight();
 		int fontDesent = g2.getFontMetrics().getDescent();
 
-		// get page size for the given printer
-		double pageHeight = pageFormat.getImageableHeight();
-		double pageWidth = pageFormat.getImageableWidth();
-
 		// translate coordinates based on the amount of the page that
 		// is going to be printable on - in other words, set upper right
 		// to upper right of printable area - not upper right corner of
 		// paper
-		g2.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
+		g2.translate(pagex, pagey);
 
 		// save original clip
 		Shape s = g2.getClip();
@@ -477,16 +479,16 @@ class WeekPanel extends JPanel implements Printable {
 	}
 
 	// scale up for the preview to make it easier to see
-	static double prev_scale = 1.5;
+	static private final double prev_scale = 1.5;
 
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		PageFormat pf = new PageFormat();
-		pf.setOrientation(PageFormat.LANDSCAPE);
 		try {
 			Graphics2D g2 = (Graphics2D) g;
 			g2.scale(prev_scale, prev_scale);
-			print(g, pf, 0);
+			drawIt(g,getWidth()/prev_scale, getHeight()/prev_scale, 
+					getWidth()/prev_scale-20, getHeight()/prev_scale-20,
+					10, 10);
 
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
