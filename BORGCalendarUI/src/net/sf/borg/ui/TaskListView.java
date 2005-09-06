@@ -902,7 +902,11 @@ public class TaskListView extends View {
                 for (int i = 0; de != null && i < de.length(); i++) {
                     char c = de.charAt(i);
                     if (c == '\n' || c == '\r')
-                        continue;
+                    {
+                    	tmp += ' ';
+                    	continue;
+                    }
+                        
                     tmp += c;
                 }
                 ro[8] = tmp;
