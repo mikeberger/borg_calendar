@@ -27,9 +27,6 @@ import java.util.List;
 import java.util.Map;
 
 import net.sf.borg.model.BorgOption;
-import net.sf.borg.model.db.BeanDB;
-import net.sf.borg.model.db.DBException;
-import net.sf.borg.model.db.KeyedBean;
 
 public class CachingBeanDB implements BeanDB
 {

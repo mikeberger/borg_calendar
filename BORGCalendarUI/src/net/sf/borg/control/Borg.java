@@ -1,19 +1,19 @@
 /*
  * This file is part of BORG.
- * 
+ *
  * BORG is free software; you can redistribute it and/or modify it under the
  * terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * BORG is distributed in the hope that it will be useful, but WITHOUT ANY
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
  * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with
  * BORG; if not, write to the Free Software Foundation, Inc., 59 Temple Place,
  * Suite 330, Boston, MA 02111-1307 USA
- * 
+ *
  * Copyright 2003 by Mike Berger
  */
 
@@ -35,7 +35,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.Locale;
-import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -56,7 +55,6 @@ import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
 import net.sf.borg.common.util.Resource;
 import net.sf.borg.common.util.Sendmail;
-
 import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.Appointment;
 import net.sf.borg.model.AppointmentModel;
@@ -78,7 +76,7 @@ import net.sf.borg.ui.TodoView;
 
 /*
  * borg.java
- * 
+ *
  * Created on August 15, 2001, 9:23 PM
  */
 
@@ -141,7 +139,7 @@ public class Borg extends Controller implements OptionsView.RestartListener {
 					{
 						return Borg.this.getCredentials();
 					}
-					
+
 					// private //
 					private IRemoteProxy proxy = null;
         		}
@@ -179,27 +177,27 @@ public class Borg extends Controller implements OptionsView.RestartListener {
 				+ "/" + Prefs.getPref( PrefName.DBNAME ) + "?user=" + Prefs.getPref( PrefName.DBUSER ) +
 				"&password=" + Prefs.getPref( PrefName.DBPASS ) + "&autoReconnect=true";
     	}
-    	
+
     	return( dbdir );
     }
-    
+
     // init will process the command line args, open and load the databases, and
     // start up the
     // main month view
     private void init(String args[]) {
 		AppHelper.freeze();
 			// prevent subsequent tampering with our environment
-		
+
         boolean readonly = false; // open DBs readonly
         boolean aplist = false; // do not start GUI, only generate a list of
         // appointments
         // this option is not really used anymore
         boolean autostart = false; // autostart feature - only bring up the GUI
         // if an appointment is approaching
- 
+
 
         OptionsView.setRestartListener(this);
-        
+
         // override for testing a different db
         String testdb = !AppHelper.isApplication() ? "mem:" : null;
 
@@ -268,7 +266,7 @@ public class Borg extends Controller implements OptionsView.RestartListener {
             Font f = Font.decode(deffont);
             NwFontChooserS.setDefaultFont(f);
         }
-        
+
         // set the look and feel
         String lnf = Prefs.getPref(PrefName.LNF);
         try
@@ -288,7 +286,7 @@ public class Borg extends Controller implements OptionsView.RestartListener {
         {
             Locale.setDefault(new Locale(language, country));
         }
-        
+
         // do not show the startup banner if autostart or aplist features are on
         if (!aplist && !autostart && splash)
         {
@@ -296,7 +294,7 @@ public class Borg extends Controller implements OptionsView.RestartListener {
             ban_.setText(Resource.getResourceString("Initializing"));
             ban_.setVisible(true);
         }
-        
+
         // Which database implementation are we using?
         String dbdir = "";
         boolean shared = false;
@@ -324,10 +322,10 @@ public class Borg extends Controller implements OptionsView.RestartListener {
                 }
 
                 JOptionPane.showMessageDialog(null, Resource.getResourceString("selectdb"), Resource.getResourceString("Notice"), JOptionPane.INFORMATION_MESSAGE);
-                
+
                 if( ban_ != null )
                     ban_.dispose();
-                
+
                 OptionsView.dbSelectOnly();
                 return;
             }
@@ -337,11 +335,11 @@ public class Borg extends Controller implements OptionsView.RestartListener {
             {
                 shared = true;
             }
-            
+
             // default uid - this will eventually be set by a login/passwd lookup into
             // a users table when multi-user support is added
             String uid = "$default";
-            
+
             /*
             if( Prefs.getPref( PrefName.DBTYPE ).equals("mysql"))
             {
@@ -351,12 +349,12 @@ public class Borg extends Controller implements OptionsView.RestartListener {
                 umod.open_db(dbdir, readonly);
                 uid = umod.validate("ckb", "ckb");
             }*/
-           
+
             // skip banner stuff if autostart or aplist on
             if (!aplist && !autostart && splash)
                 ban_.setText(Resource
                         .getResourceString("Loading_Appt_Database"));
-                        
+
             // If we're working from memory, give them the opportunity
             // to populate our memory files first.
             if (dbdir.startsWith("mem:"))
@@ -371,24 +369,22 @@ public class Borg extends Controller implements OptionsView.RestartListener {
 							JOptionPane.YES_NO_OPTION);
 					if (ret != JOptionPane.YES_OPTION)
 						break;
-						
+
 					String url = "";
 					URL codeBase = AppHelper.getCodeBase();
 					if (codeBase != null)
 						url = codeBase.toExternalForm() + "borg_mem.dat";
-						
+
 					try
 					{
 						String urlst =
 							JOptionPane.showInputDialog(
-								ResourceBundle.getBundle(
-									"resource/borg_resource").getString(
-									"enturl"),
+								Resource.getResourceString("enturl"),
 								url);
-								
+
 						if (urlst == null)
 							break;
-								
+
 						if(urlst.length() > 0)
 						{
 							IOHelper.loadMemoryFromURL(urlst);
@@ -401,14 +397,14 @@ public class Borg extends Controller implements OptionsView.RestartListener {
 					}
             	}
             }
-            
+
             // Get our DB factory
             StringBuffer tmp = new StringBuffer(dbdir);
             IBeanDataFactory factory = BeanDataFactoryFactory.getInstance()
 					.getFactory(tmp, readonly, shared);
             dbdir = tmp.toString();
             	// let the factory tweak dbdir
-            
+
             calmod_ = AppointmentModel.create();
             register(calmod_);
             calmod_.open_db(factory, dbdir, uid);
@@ -459,12 +455,12 @@ public class Borg extends Controller implements OptionsView.RestartListener {
                     }
                 }
                 );
-         
+
 
             if (!autostart && splash)
                 ban_.dispose();
             ban_ = null;
-            
+
             if (!AppHelper.isApplet())
             {
             	// start up version check timer
@@ -475,7 +471,7 @@ public class Borg extends Controller implements OptionsView.RestartListener {
                         version_chk();
                     }
                 }, 10 * 1000, 20 * 60 * 1000);
-                
+
                 // calculate email time in minutes from now
                 Calendar cal = new GregorianCalendar();
                 int emailmins = Prefs.getIntPref(PrefName.EMAILTIME);
@@ -485,7 +481,7 @@ public class Borg extends Controller implements OptionsView.RestartListener {
                 {
                 	// we are past mailtime - send it now
                 	emailReminder(null);
-                	
+
                 	// set timer for next mailtime
                 	mailtime += 24*60; // 24 hours from now
                 }
@@ -497,7 +493,7 @@ public class Borg extends Controller implements OptionsView.RestartListener {
                         emailReminder(null);
                     }
                 }, mailtime * 60 * 1000, 24 * 60 * 60 * 1000);
-                
+
                 // start autosync timer
                 int syncmins = Prefs.getIntPref(PrefName.SYNCMINS);
                 if( shared && syncmins != 0 )
@@ -530,15 +526,15 @@ public class Borg extends Controller implements OptionsView.RestartListener {
             // it does not exist anymore or something, so give the user a chance
             // to change it
             // if it will fix the problem
-        	
-        	
+
+
             Errmsg.errmsg(e);
 
             // get rid of NESTED exceptions for SQL exceptions - they make the error window too large
             String es = e.toString();
             int i1 = es.indexOf("** BEGIN NESTED");
             int i2 = es.indexOf("** END NESTED");
-            
+
             if( i1 != -1 && i2 != -1 )
             {
             	int i3 = es.indexOf('\n', i1);
@@ -599,10 +595,10 @@ public class Borg extends Controller implements OptionsView.RestartListener {
         }
 
 
-        
+
         // create popups view
         new PopupView();
-        
+
         // only start to systray (i.e. no month/todo views, if
         // trayicon is available and option is set
         String backgstart = Prefs.getPref(PrefName.BACKGSTART);
@@ -618,8 +614,8 @@ public class Borg extends Controller implements OptionsView.RestartListener {
         	}
         }
     }
-   
- 
+
+
     // check if we should auto_start
     // this function checks if an appointment is coming close
     // it does not check if BORG is already running or if the user is not logged
@@ -810,9 +806,9 @@ public class Borg extends Controller implements OptionsView.RestartListener {
 
         if (host.equals("") || addr.equals(""))
             return;
-        
+
         Calendar cal = new GregorianCalendar();
-        
+
         // if no date passed, the timer has gone off and we need to check if we can send
         // email now
         int doy = -1;
@@ -825,7 +821,7 @@ public class Borg extends Controller implements OptionsView.RestartListener {
         	doy = cal.get(Calendar.DAY_OF_YEAR);
         	if (doy == lastday)
         		return;
-        	
+
         	// create the calendar model key for tomorrow
         	cal.add(Calendar.DATE, 1);
         }
@@ -834,7 +830,7 @@ public class Borg extends Controller implements OptionsView.RestartListener {
         	// just send email for the given day
         	cal = emailday;
         }
-        
+
         int key = AppointmentModel.dkey(cal.get(Calendar.YEAR), cal
                 .get(Calendar.MONTH), cal.get(Calendar.DATE));
 
@@ -948,7 +944,7 @@ public class Borg extends Controller implements OptionsView.RestartListener {
     		parent = ban_;
     	else
     		parent = CalendarView.getReference();
-    	
+
 		final LoginDialog dlg = new LoginDialog(parent);
     	Runnable runnable =
     		new Runnable()
@@ -958,7 +954,7 @@ public class Borg extends Controller implements OptionsView.RestartListener {
 				dlg.setVisible(true);
 			}
     		};
-    		
+
         // Bring up the login dialog. How we do this properly in
     	// Swing depends on whether we're the event dispatch thread
     	// or not.
@@ -975,7 +971,7 @@ public class Borg extends Controller implements OptionsView.RestartListener {
     		catch (InterruptedException e)
     		{}
     	}
-    		
+
     	return
     		new IRemoteProxyProvider.Credentials
     		(

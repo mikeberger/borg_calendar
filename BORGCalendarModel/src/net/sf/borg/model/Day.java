@@ -1,20 +1,20 @@
 /*
 This file is part of BORG.
- 
+
     BORG is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 2 of the License, or
     (at your option) any later version.
- 
+
     BORG is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
- 
+
     You should have received a copy of the GNU General Public License
     along with BORG; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- 
+
 Copyright 2003 by Mike Berger
  */
  /*
@@ -53,7 +53,7 @@ public class Day
     // this is the sorting used for print output and month display
     private static class apcompare implements Comparator
     {
-        
+
         private static int colornum( String color )
         {
         	// bsv 2004-12-21
@@ -79,15 +79,15 @@ public class Day
 //            //(oldcode)
             //(bsv 2004-12-21)
         }
-        
+
         public int compare(java.lang.Object obj, java.lang.Object obj1)
         {
             Appointment so1 = (Appointment)obj;
             Appointment so2 = (Appointment)obj1;
             String s1 = so1.getText();
             String s2 = so2.getText();
-            
-            String csort = Prefs.getPref(PrefName.COLORSORT); 
+
+            String csort = Prefs.getPref(PrefName.COLORSORT);
             if( csort.equals("true"))
             {
                 // color has first priority in the sort
@@ -100,17 +100,17 @@ public class Day
                     return(-1);
                 }
             }
-            
+
             // get times if any
             SimpleDateFormat d1 = AppointmentModel.getTimeFormat();
-            
+
             try
             {
-                
+
                 // turn appt times from text into a Date for comparing
                 Date dt1 = d1.parse(s1.substring(0,8));
                 Date dt2 = d1.parse(s2.substring(0,8));
-                
+
                 // compare by date
                 if( dt1.after( dt2 ))
                     return(1);
@@ -126,58 +126,58 @@ public class Day
                 return( 1 );
             }
         }
-        
+
     }
-    
+
     private int holiday;        // set to indicate if any appt in the list is a holiday
     public int getHoliday()
-    { 
-        return( holiday ); 
+    {
+        return( holiday );
     }
-    
+
     public void setHoliday(int i)
-    { 
-        holiday = i; 
+    {
+        holiday = i;
     }
     private int vacation;
     // set to indicate the combined vacation status for all appts in the day
     public int getVacation()
-    { 
-        return( vacation ); 
+    {
+        return( vacation );
     }
-    
+
     public void setVacation(int i)
-    { 
-        vacation = i; 
+    {
+        vacation = i;
     }
-    
+
     private TreeSet appts;      // list of appts for the day
-    
+
     public Collection getAppts()
     {
         return( appts );
     }
-    
+
     public void addAppt(Appointment info)
     {
         appts.add(info);
     }
-    
+
     private Day()
     {
- 
+
         holiday = 0;
         vacation = 0;
         appts = new TreeSet(new apcompare());
-        
+
     }
-    
+
     // get a Day class for a given day - defaults to public appts only
 	public static Day getDay(int year, int month, int day ) throws Exception
     {
         return( getDay( year, month, day, true, false, true ) );
     }
-    
+
     // get Day Class for a given day. indicate if public or private appts are to be included
     // The Day class is used by Views that need to present an entire day at a time.
     // The Day class contains all appointments, tasks, and holidays that fall on
@@ -187,26 +187,26 @@ public class Day
         AppointmentModel calmod = AppointmentModel.getReference();
         // get the base day key
         int key = AppointmentModel.dkey( year, month, day );
-        
+
         Day ret = new Day();
-        
+
         // get the list of appt keys from the map_
         LinkedList l = (LinkedList) calmod.getAppts( key );
         if( l != null )
         {
             Iterator it = l.iterator();
             Appointment appt;
-            
+
             // iterate through the day's appts
             while( it.hasNext() )
             {
-                
+
                 String tx = "";
                 Integer ik = (Integer) it.next();
-                
+
                 // read the appt from the DB
                 appt = calmod.getAppt(ik.intValue());
-                
+
                 // skip based on public/private flags
                 if( appt.getPrivate() )
                 {
@@ -218,7 +218,7 @@ public class Day
                     if( !pub )
                         continue;
                 }
-                
+
                 // add time in front of the appt text
                 if( !AppointmentModel.isNote(appt) && prependTime  )
                 {
@@ -226,7 +226,7 @@ public class Day
                     SimpleDateFormat sdf = AppointmentModel.getTimeFormat();
                     tx += sdf.format(d) + " ";
                 }
-                
+
                 // if the text is empty - skip it - should never be
                 String xx = appt.getText();
                 if( xx == null )
@@ -234,8 +234,8 @@ public class Day
                     tx = "";
                     continue;
                 }
-                
-                
+
+
                 String trunc = Prefs.getPref(PrefName.TRUNCAPPT);
                 if( trunc.equals("true"))
                 {
@@ -248,14 +248,14 @@ public class Day
                 	else
                 	{
                 		tx += xx;
-                	}                
-                	
+                	}
+
                 }
                 else
                 {
                 	tx += xx;
                 }
-                
+
                 // add repeat number
                 if( Repeat.getRptNum(appt.getFrequency()))
                 {
@@ -263,32 +263,32 @@ public class Day
                 	tx += " (" + Repeat.calculateRepeatNumber(cur, appt) + ")";
                 }
                 appt.setText(tx);
-                
+
                 String color = appt.getColor();
                 if( color == null ) appt.setColor("black");
-                
+
                 // add apptto day
                 ret.addAppt(appt);
-                
+
                 // set vacation and holiday flags at dayinfo level
                 Integer v = appt.getVacation();
                 if( v != null && v.intValue() != 0 )
                     ret.setVacation(v.intValue());
-                
+
                 v = appt.getHoliday();
                 if( v != null && v.intValue() == 1 )
                     ret.setHoliday(1);
-                
+
             }
         }
-        
+
         // daylight savings time
         GregorianCalendar gc = new GregorianCalendar(year, month, day, 11, 00);
         boolean dstNow = TimeZone.getDefault().inDaylightTime(gc.getTime());
-        gc.add(Calendar.DATE,-1);       
+        gc.add(Calendar.DATE,-1);
         boolean dstYesterday = TimeZone.getDefault().inDaylightTime(gc.getTime());
         if( dstNow && !dstYesterday )
-        {           
+        {
         	Appointment hol = new Appointment();
         	hol.setColor("black");
             hol.setText(Resource.getResourceString("Daylight_Savings_Time"));
@@ -301,14 +301,14 @@ public class Day
             hol.setText(Resource.getResourceString("Standard_Time"));
             ret.addAppt(hol);
         }
-        
+
         // add canned US holidays
         // check user preferences first
         String show_us_hols = Prefs.getPref(PrefName.SHOWUSHOLIDAYS);
-        
+
         if( show_us_hols.equals("true") )
         {
-            
+
             // ok, we will add holiday appts
             // to the dayinfo for the US holidays below
             // the dayinfo.holiday flag is set if the holiday
@@ -318,12 +318,12 @@ public class Day
             // so, holidays only exist in the dayinfo objects, which are
             // temporary. they do not get added to the DB or even the appt map_
             Appointment hol = new Appointment();
-            
+
             // bsv 2004-12-21
             hol.setColor("purple");
             //hol.setColor("black");
-            
-            
+
+
             hol.setText(null);
             if( month == 9 && day == 31 )
             {
@@ -382,61 +382,61 @@ public class Day
                 ret.setHoliday(1);
             }
 
-            
+
             if( hol.getText() != null  )
-                ret.addAppt(hol);        
-            
+                ret.addAppt(hol);
+
         }
-        
+
         // add canned Canadian holidays
         // check user preferences first
-        String show_can_hols = Prefs.getPref(PrefName.SHOWCANHOLIDAYS);      
+        String show_can_hols = Prefs.getPref(PrefName.SHOWCANHOLIDAYS);
         if( show_can_hols.equals("true") )
         {
-            
+
             Appointment hol = new Appointment();
 
-            
+
             // bsv 2004-12-21
             hol.setColor("purple");
             //hol.setColor("black");
-            
-            
+
+
             hol.setText(null);
             if( month == 0 && day == 1 )
             {
                 hol.setText(Resource.getResourceString("New_Year's_Day"));
                 ret.setHoliday(1);
-            } 
+            }
             else if( month == 11 && day == 25 )
             {
                 hol.setText(Resource.getResourceString("Christmas"));
                 ret.setHoliday(1);
-            } 
+            }
             else if( month == 6 && day == 1 )
             {
                 hol.setText(Resource.getResourceString("Canada_Day"));
-            } 
+            }
             else if( month == 11 && day == 26 )
             {
                 hol.setText(Resource.getResourceString("Boxing_Day"));
-            } 
+            }
             else if( month == 7 && day == nthdom( year, month, Calendar.MONDAY, 1 ) )
             {
                 hol.setText(Resource.getResourceString("Civic_Holiday"));
-            } 
+            }
             else if( month == 10 && day == 11 )
             {
                 hol.setText(Resource.getResourceString("Remembrance_Day"));
-            } 
+            }
             else if( month == 8 && day == nthdom( year, month, Calendar.MONDAY, 1 ))
             {
                 hol.setText(Resource.getResourceString("Labour_Day_(Can)"));
-            } 
+            }
             else if( month == 2 && day == nthdom( year, month, Calendar.MONDAY, 2 ))
             {
                 hol.setText(Resource.getResourceString("Commonwealth_Day"));
-            } 
+            }
             else if( month == 9 && day == nthdom( year, month, Calendar.MONDAY, 2 ))
             {
                 hol.setText(Resource.getResourceString("Thanksgiving_(Can)"));
@@ -451,26 +451,26 @@ public class Day
                     hol.setText(Resource.getResourceString("Victoria_Day") );
                 }
             }
-            
+
             if( hol.getText() != null  )
-                ret.addAppt(hol);          
-            
+                ret.addAppt(hol);
+
         }
-        
+
         // load any tasks
         l = TaskModel.getReference().get_tasks( key );
         if( l != null )
         {
-            
+
             Iterator it = l.iterator();
-            
+
             while( it.hasNext() )
             {
-                
+
                 Task task = (Task) it.next();
                 String de = "BT" + task.getTaskNumber().toString() + " " + task.getDescription();
                 String tx = de.replace( '\n', ' ' );
-                
+
                 Appointment info = new Appointment();
                 String color = info.getColor();
 
@@ -482,43 +482,43 @@ public class Day
                 ret.addAppt(info);
             }
         }
-        
+
         // add birthdays from address book
         Collection addrs = AddressModel.getReference().getAddresses(key);
         if( addrs != null )
         {
             Iterator it = addrs.iterator();
-            
+
             while( it.hasNext() )
             {
-                
+
                 Address addr = (Address) it.next();
-        
+
                 Appointment info = new Appointment();
                 String color = info.getColor();
 
                 // bsv 2004-12-21
                 if( color == null ) info.setColor("brick");
                 //if( color == null ) info.setColor("black");
-                
+
                 Date bd = addr.getBirthday();
                 GregorianCalendar g = new GregorianCalendar();
                 g.setTime(bd);
                 int bdyear = g.get(Calendar.YEAR);
                 int yrs = year - bdyear;
                 if( yrs < 0 ) continue;
-                
-                String tx = java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Birthday") + ": " + addr.getFirstName() + " " + addr.getLastName() + "(" + yrs + ")";
+
+                String tx = Resource.getResourceString("Birthday") + ": " + addr.getFirstName() + " " + addr.getLastName() + "(" + yrs + ")";
                 info.setText(tx);
                 ret.addAppt(info);
             }
-            
-            
+
+
         }
         return( ret );
-        
+
     }
-    
+
     // compute nth day of month for calculating when certain holidays fall
     private static int nthdom( int year, int month, int dayofweek, int week )
     {
@@ -527,7 +527,7 @@ public class Day
         cal.set( Calendar.DAY_OF_WEEK_IN_MONTH, week );
         return( cal.get(Calendar.DATE));
     }
-    
-    
+
+
 }
 

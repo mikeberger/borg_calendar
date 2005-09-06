@@ -21,6 +21,8 @@ package net.sf.borg.model;
 
 import java.util.Collection;
 
+import net.sf.borg.model.db.BeanDB;
+
 /**
  * A {@link BeanDB BeanDB} subclass which allows efficient retrieval of
  * appointment ToDo and Repeat keys.

@@ -36,7 +36,6 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
-
 import net.sf.borg.model.BorgOption;
 import net.sf.borg.model.db.BeanDB;
 import net.sf.borg.model.db.DBException;

@@ -27,7 +27,6 @@ package net.sf.borg.control;
 
 import java.util.ArrayList;
 
-
 import net.sf.borg.model.Model;
 
 

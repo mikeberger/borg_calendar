@@ -27,7 +27,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 
-
 import net.sf.borg.model.Task;
 import net.sf.borg.model.db.DBException;
 import net.sf.borg.model.db.KeyedBean;

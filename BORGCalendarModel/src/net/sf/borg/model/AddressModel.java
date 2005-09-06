@@ -31,7 +31,6 @@ import java.util.LinkedList;
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
-
 import net.sf.borg.common.util.XTree;
 import net.sf.borg.model.db.BeanDB;
 import net.sf.borg.model.db.DBException;

@@ -32,7 +32,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 
-
 import net.sf.borg.model.Appointment;
 import net.sf.borg.model.AppointmentKeyFilter;
 import net.sf.borg.model.db.DBException;

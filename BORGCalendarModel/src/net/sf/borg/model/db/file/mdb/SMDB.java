@@ -22,7 +22,6 @@ package net.sf.borg.model.db.file.mdb;
 import java.util.Collection;
 
 import net.sf.borg.common.util.VMap;
-
 import net.sf.borg.model.db.DBException;
 
 
