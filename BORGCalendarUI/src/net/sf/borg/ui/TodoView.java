@@ -25,6 +25,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -40,6 +42,7 @@ import java.util.Vector;
 
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultListSelectionModel;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -138,7 +141,24 @@ public class TodoView extends View {
         manageMySize(PrefName.TODOVIEWSIZE);
         
     }
-    
+	static private class ToggleButtonIcon implements Icon
+	{
+		private Color color = Color.BLACK;
+		private  final int h = 10;
+		private  final int w = 30;
+		public ToggleButtonIcon( Color col ){ color = col; }
+		public int getIconHeight(){ return h; }
+		public int getIconWidth(){ return w; }
+		public void paintIcon(Component c,Graphics g,int x,int y)
+		{
+			Graphics2D g2 = (Graphics2D)g;
+			g2.setColor( Color.BLACK);
+			g2.drawRect(x,y,w,h);
+			g2.setColor(color);
+			g2.fillRect(x, y, w,h);
+		}
+	}
+	
     // bsv 2004-12-22
     class TodayRenderer extends DefaultTableCellRenderer{
         public Component getTableCellRendererComponent(
@@ -351,11 +371,11 @@ public class TodoView extends View {
         exitMenuItem = new javax.swing.JMenuItem();
         
         // bsv 2004-12-21
-        jtbRed = new JToggleButton("red",false);
-        jtbBlue = new JToggleButton("blue",false);
-        jtbGreen = new JToggleButton("green",false);
-        jtbBlack = new JToggleButton("black",true);
-        jtbWhite = new JToggleButton("white",false);
+        jtbRed = new JToggleButton("",false);
+        jtbBlue = new JToggleButton("",false);
+        jtbGreen = new JToggleButton("",false);
+        jtbBlack = new JToggleButton("",true);
+        jtbWhite = new JToggleButton("",false);
         // bsv 2004-12-23
         cat_cb = new JComboBox();
         // bsv 2004-12-23 original code taken from AppointmentPanel.java
@@ -528,22 +548,22 @@ public class TodoView extends View {
         
         // bsv 2004-12-21
         // set jtb size, set tuned colors
-        Color ctemp;
-        ctemp = new Color( (new Integer( Prefs.getPref(PrefName.UCS_RED))).intValue() );
+
+        jtbRed.setIcon( new ToggleButtonIcon(new Color( (new Integer( Prefs.getPref(PrefName.UCS_RED))).intValue() )));
         jtbRed.setBackground( Color.LIGHT_GRAY );
-        jtbRed.setForeground( ctemp );
-        ctemp = new Color( (new Integer( Prefs.getPref(PrefName.UCS_BLUE))).intValue() );
+   
+        jtbBlue.setIcon( new ToggleButtonIcon(new Color( (new Integer( Prefs.getPref(PrefName.UCS_BLUE))).intValue() )));
         jtbBlue.setBackground( Color.LIGHT_GRAY );
-        jtbBlue.setForeground( ctemp );
-        ctemp = new Color( (new Integer( Prefs.getPref(PrefName.UCS_GREEN))).intValue() );
+       
+        jtbGreen.setIcon( new ToggleButtonIcon(new Color( (new Integer( Prefs.getPref(PrefName.UCS_GREEN))).intValue() )));
         jtbGreen.setBackground( Color.LIGHT_GRAY );
-        jtbGreen.setForeground( ctemp );
-        ctemp = new Color( (new Integer( Prefs.getPref(PrefName.UCS_BLACK))).intValue() );
+
+        jtbBlack.setIcon( new ToggleButtonIcon(new Color( (new Integer( Prefs.getPref(PrefName.UCS_BLACK))).intValue() )));
         jtbBlack.setBackground( Color.LIGHT_GRAY );
-        jtbBlack.setForeground( ctemp );
-        ctemp = new Color( (new Integer( Prefs.getPref(PrefName.UCS_WHITE))).intValue() );
+
+        jtbWhite.setIcon( new ToggleButtonIcon(new Color( (new Integer( Prefs.getPref(PrefName.UCS_WHITE))).intValue() )));
         jtbWhite.setBackground( Color.LIGHT_GRAY );
-        jtbWhite.setForeground( ctemp );
+        //jtbWhite.setForeground( ctemp );
         jtbRed.setMargin( new Insets(0,2,0,2));
         jtbBlue.setMargin( new Insets(0,2,0,2));
         jtbGreen.setMargin( new Insets(0,2,0,2));

@@ -76,9 +76,9 @@ class AppointmentPanel extends JPanel {
 	
 	static private class SolidComboBoxIcon implements Icon
 	{
-		private static Color color = Color.BLACK;
-		private static final int h = 10;
-		private static final int w = 60;
+		private  Color color = Color.BLACK;
+		private  final int h = 10;
+		private  final int w = 60;
 		public SolidComboBoxIcon( Color col ){ color = col; }
 		public int getIconHeight(){ return h; }
 		public int getIconWidth(){ return w; }
@@ -133,7 +133,7 @@ class AppointmentPanel extends JPanel {
 			}
 			else
 			{
-				setForeground( Color.BLACK);
+				setForeground(Color.BLACK);
 				setText(Resource.getResourceString("strike"));
 				setIcon(null);
 			}
@@ -256,7 +256,7 @@ class AppointmentPanel extends JPanel {
 			durhour.setSelectedIndex(0);
 
 			todocb.setSelected(false); // todo unchecked
-			colorbox.setSelectedIndex(0); // color = black
+			colorbox.setSelectedIndex(3); // color = black
 			vacationcb.setSelected(false); // vacation unchecked
 			halfdaycb.setSelected(false); // half-day unchecked
 			holidaycb.setSelected(false); // holiday unchecked
@@ -383,16 +383,37 @@ class AppointmentPanel extends JPanel {
 				appttextarea.setText(t);
 
 				// color
-				String cl = r.getColor();
-				if (cl != null) {
-					try {
-						colorbox
-								.setSelectedItem(cl);
-					} catch (Exception e) {
-						colorbox.setSelectedIndex(0);
-					}
+				String sel = r.getColor();
+				if (sel != null) {
+					
+						if( sel.equals("black") )
+						{
+							colorbox.setSelectedIndex(3);
+						}
+						else if( sel.equals("red") )
+						{
+							colorbox.setSelectedIndex(0);
+						}
+						else if( sel.equals("blue") )
+						{
+							colorbox.setSelectedIndex(1);
+						}
+						else if( sel.equals("green") )
+						{
+							colorbox.setSelectedIndex(2);
+						}			
+						else if( sel.equals("white") )
+						{
+							colorbox.setSelectedIndex(4);
+						}
+						else
+						{
+							colorbox.setSelectedIndex(5);
+						}
+						
+					
 				} else {
-					colorbox.setSelectedIndex(0);
+					colorbox.setSelectedIndex(3);
 				}
 
 				chgdate.setEnabled(true);
@@ -1105,7 +1126,7 @@ class AppointmentPanel extends JPanel {
 
 	
 
-	private String colorToEnglish(String color) {
+	/*private String colorToEnglish(String color) {
 		for (int i = 0; i < colors.length; i++) {
 			if (color.equals(Resource.getResourceString(colors[i]))) {
 				return (colors[i]);
@@ -1113,7 +1134,7 @@ class AppointmentPanel extends JPanel {
 		}
 
 		return ("black");
-	}
+	}*/
 
 	// set the visibility and enabling of components that depend on the
 	// frequency pulldown
