@@ -126,7 +126,8 @@ private static ComponentParms parseParms(String resourceKey)
 			accel = KeyStroke.getKeyStroke(accelText);
 		}
 
-		mnemonic = KeyStroke.getKeyStroke(mnemonicText).getKeyCode();
+		if (mnemonicText.length() > 0)
+			mnemonic = KeyStroke.getKeyStroke(mnemonicText).getKeyCode();
 	}
 	return new ComponentParms(text,mnemonic,accel);
 }
