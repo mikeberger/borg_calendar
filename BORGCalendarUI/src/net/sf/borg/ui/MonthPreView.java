@@ -110,9 +110,9 @@ class MonthPreView extends View
         // for the preview, create a JFrame with the preview panel and print menubar
         JMenuBar menubar = new JMenuBar();
         JMenu pmenu = new JMenu();
-        pmenu.setText(Resource.getResourceString("Action"));
+        ResourceHelper.setText(pmenu, "Action");
         JMenuItem mitem = new JMenuItem();
-        mitem.setText(Resource.getResourceString("Print"));
+        ResourceHelper.setText(mitem, "Print");
         mitem.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent evt)
@@ -122,14 +122,12 @@ class MonthPreView extends View
         });
         pmenu.add(mitem);
         JMenuItem quititem = new JMenuItem();
-        quititem.setText(Resource.getResourceString("Dismiss"));
+        ResourceHelper.setText(quititem, "Dismiss");
         quititem.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent evt)
             {
-                try
-                {destroy();}catch(Exception e)
-                {}
+                try{destroy();}catch(Exception e){}
             }
         });
         pmenu.add(quititem);

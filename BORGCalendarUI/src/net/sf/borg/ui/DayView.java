@@ -38,12 +38,8 @@ import javax.swing.border.BevelBorder;
 
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
-import net.sf.borg.common.util.Resource;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.TaskModel;
-
-
-
 
 // weekView handles the printing of a single week
 class DayView extends View
@@ -102,9 +98,9 @@ class DayView extends View
         // for the preview, create a JFrame with the preview panel and print menubar
         JMenuBar menubar = new JMenuBar();
         JMenu pmenu = new JMenu();
-        pmenu.setText(Resource.getResourceString("Action"));
+        ResourceHelper.setText(pmenu, "Action");
         JMenuItem mitem = new JMenuItem();
-        mitem.setText(Resource.getResourceString("Print"));
+        ResourceHelper.setText(mitem, "Print");
         mitem.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent evt)
@@ -114,7 +110,7 @@ class DayView extends View
         });
         pmenu.add(mitem);
         JMenuItem quititem = new JMenuItem();
-        quititem.setText(Resource.getResourceString("Dismiss"));
+        ResourceHelper.setText(quititem, "Dismiss");
         quititem.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent evt)
