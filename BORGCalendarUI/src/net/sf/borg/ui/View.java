@@ -30,9 +30,10 @@ import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Rectangle;
 
+import javax.swing.JButton;
+
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
-
 import net.sf.borg.model.Model;
 
 
@@ -122,4 +123,25 @@ abstract class View extends javax.swing.JFrame implements Model.Listener
         });
     }
     
+    // protected //
+    protected void setDismissButton(final JButton bn)
+    {
+    	/*
+    	 * I had second thoughts about this. It allows you to dismiss
+    	 * the dialog boxes with [Escape], but this also happens when
+    	 * a menu is open.
+    	getRootPane()
+			.registerKeyboardAction
+			(
+				new ActionListener()
+				{
+					public final void actionPerformed(ActionEvent e) {
+						bn.getActionListeners()[0].actionPerformed(e);
+					}
+				},
+				KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
+				JComponent.WHEN_IN_FOCUSED_WINDOW
+			);
+		*/
+    }
 }

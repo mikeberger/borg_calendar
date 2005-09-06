@@ -30,7 +30,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import net.sf.borg.common.util.Errmsg;
-
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.CategoryModel;
 /**
@@ -38,9 +37,9 @@ import net.sf.borg.model.CategoryModel;
  * @author  mberger
  */
 public class CategoryChooser extends View {
- 
+
     private ArrayList cbs = null;
-    
+
     private static CategoryChooser singleton = null;
     static CategoryChooser getReference() {
         if( singleton == null || !singleton.isShowing())
@@ -49,23 +48,23 @@ public class CategoryChooser extends View {
     }
     /** Creates new form CategoryChooser */
     private CategoryChooser() {
-        
+
         addModel( AppointmentModel.getReference());
-        
+
         initComponents();
-        
+
         // add current categories
         try{
             CategoryModel catmod = CategoryModel.getReference();
             Collection curcats = catmod.getShownCategories();
             Collection allcats = catmod.getCategories();
-            
+
             if( allcats == null ) {
                 allcats = new TreeSet();
             }
-            
+
             cbs = new ArrayList();
-            
+
             Iterator it = allcats.iterator();
             while( it.hasNext() ) {
                 String cat = (String) it.next();
@@ -79,10 +78,10 @@ public class CategoryChooser extends View {
         catch( Exception e) {
             Errmsg.errmsg(e);
         }
-        
+
         pack();
     }
-    
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -101,7 +100,7 @@ public class CategoryChooser extends View {
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("catchooser"));
+        ResourceHelper.setTitle(this, "catchooser");
         addWindowListener(new java.awt.event.WindowAdapter()
         {
             public void windowClosing(java.awt.event.WindowEvent evt)
@@ -121,7 +120,7 @@ public class CategoryChooser extends View {
         getContentPane().add(jPanel1, gridBagConstraints);
 
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Save16.gif")));
-        jButton1.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("apply"));
+        ResourceHelper.setText(jButton1, "apply");
         jButton1.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -131,7 +130,7 @@ public class CategoryChooser extends View {
         });
 
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Stop16.gif")));
-        jButton2.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Dismiss"));
+        ResourceHelper.setText(jButton2, "Dismiss");
         jButton2.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -139,6 +138,7 @@ public class CategoryChooser extends View {
                 jButton2ActionPerformed(evt);
             }
         });
+        setDismissButton(jButton2);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -155,7 +155,7 @@ public class CategoryChooser extends View {
 
         pack();
     }//GEN-END:initComponents
-    
+
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // set categories
         TreeSet newcats = new TreeSet();
@@ -167,23 +167,23 @@ public class CategoryChooser extends View {
             }
         }
         CategoryModel.getReference().setShownCategories(newcats);
-        
+
     }//GEN-LAST:event_jButton1ActionPerformed
-    
+
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         this.dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
-    
+
     /** Exit the Application */
     private void exitForm(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_exitForm
         this.dispose();
     }//GEN-LAST:event_exitForm
-    
+
 	/**
-	 * This method initializes jPanel	
-	 * 	
-	 * @return javax.swing.JPanel	
-	 */    
+	 * This method initializes jPanel
+	 *
+	 * @return javax.swing.JPanel
+	 */
 	private JPanel getJPanel() {
 		if (jPanel == null) {
 			GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
@@ -204,10 +204,10 @@ public class CategoryChooser extends View {
 		return jPanel;
 	}
 	/**
-	 * This method initializes jScrollPane	
-	 * 	
-	 * @return javax.swing.JScrollPane	
-	 */    
+	 * This method initializes jScrollPane
+	 *
+	 * @return javax.swing.JScrollPane
+	 */
 	private JScrollPane getJScrollPane() {
 		if (jScrollPane == null) {
 			jScrollPane = new JScrollPane();
@@ -217,16 +217,16 @@ public class CategoryChooser extends View {
 		return jScrollPane;
 	}
 	/**
-	 * This method initializes jButton	
-	 * 	
-	 * @return javax.swing.JButton	
-	 */    
+	 * This method initializes jButton
+	 *
+	 * @return javax.swing.JButton
+	 */
 	private JButton getJButton() {
 		if (jButton == null) {
 			jButton = new JButton();
-			jButton.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("clear_all"));
-			jButton.addActionListener(new java.awt.event.ActionListener() { 
-				public void actionPerformed(java.awt.event.ActionEvent e) {    
+			ResourceHelper.setText(jButton, "clear_all");
+			jButton.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
 			        Iterator it = cbs.iterator();
 			        while( it.hasNext()) {
 			            JCheckBox cb = (JCheckBox) it.next();
@@ -238,16 +238,16 @@ public class CategoryChooser extends View {
 		return jButton;
 	}
 	/**
-	 * This method initializes jButton3	
-	 * 	
-	 * @return javax.swing.JButton	
-	 */    
+	 * This method initializes jButton3
+	 *
+	 * @return javax.swing.JButton
+	 */
 	private JButton getJButton3() {
 		if (jButton3 == null) {
 			jButton3 = new JButton();
-			jButton3.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("select_all"));
-			jButton3.addActionListener(new java.awt.event.ActionListener() { 
-				public void actionPerformed(java.awt.event.ActionEvent e) {    
+			ResourceHelper.setText(jButton3, "select_all");
+			jButton3.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
 			        Iterator it = cbs.iterator();
 			        while( it.hasNext()) {
 			            JCheckBox cb = (JCheckBox) it.next();
@@ -264,21 +264,21 @@ public class CategoryChooser extends View {
     public static void main(String args[]) {
         new CategoryChooser().setVisible(true);
     }
-    
+
     public void destroy() {
         this.dispose();
     }
-    
+
     public void refresh() {
     }
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     // End of variables declaration//GEN-END:variables
-    
+
 	private JPanel jPanel = null;
 	private JScrollPane jScrollPane = null;
 	private JButton jButton = null;

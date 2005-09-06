@@ -27,14 +27,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
-import net.sf.borg.common.util.Resource;
-
-
 import org.jdesktop.jdic.tray.SystemTray;
 import org.jdesktop.jdic.tray.TrayIcon;
-
-
-
 
 public class JDICTrayIconProxy {
 
@@ -59,29 +53,29 @@ public class JDICTrayIconProxy {
 			
             TIcon.setToolTip(trayname);
             JPopupMenu popup = new JPopupMenu();
-            JMenuItem item = new JMenuItem(
-                    Resource.getResourceString("Open_Calendar"));
+            JMenuItem item = new JMenuItem();
+            ResourceHelper.setText(item, "Open_Calendar");
             //item.setDefault(true);
             item.addActionListener(new OpenListener());
             popup.add(item);
-            item = new JMenuItem(Resource
-                    .getResourceString("Open_Task_List"));
+            item = new JMenuItem();
+            ResourceHelper.setText(item, "Open_Task_List");
             item.addActionListener(new TaskListener());
             popup.add(item);
-            item = new JMenuItem(Resource
-                    .getResourceString("Open_Address_Book"));
+            item = new JMenuItem();
+            ResourceHelper.setText(item, "Open_Address_Book");
             item.addActionListener(new AddrListener());
             popup.add(item);
-            item = new JMenuItem(Resource
-                    .getResourceString("To_Do_List"));
+            item = new JMenuItem();
+            ResourceHelper.setText(item, "To_Do_List");
             item.addActionListener(new TodoListener());
             popup.add(item);
-            item = new JMenuItem(Resource
-                    .getResourceString("Options"));
+            item = new JMenuItem();
+            ResourceHelper.setText(item, "Options");
             item.addActionListener(new OptionsListener());
             popup.add(item);
-            item = new JMenuItem(Resource
-                    .getResourceString("Exit"));
+            item = new JMenuItem();
+            ResourceHelper.setText(item, "Exit");
             item.addActionListener(new ExitListener());
             popup.add(item);
             

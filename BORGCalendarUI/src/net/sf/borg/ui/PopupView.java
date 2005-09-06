@@ -1,20 +1,20 @@
 /*
  This file is part of BORG.
- 
+
  BORG is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation; either version 2 of the License, or
  (at your option) any later version.
- 
+
  BORG is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
- 
+
  You should have received a copy of the GNU General Public License
  along with BORG; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- 
+
  Copyright 2003 by Mike Berger
  */
 /*
@@ -43,12 +43,12 @@ import java.util.Map.Entry;
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
-
+import net.sf.borg.common.util.Resource;
 import net.sf.borg.model.Appointment;
 import net.sf.borg.model.AppointmentModel;
 
 /**
- * 
+ *
  * @author mberger
  */
 public class PopupView extends View {
@@ -168,7 +168,7 @@ public class PopupView extends View {
 
 					// skip the appt if it is outside the time frame of the
 					// reminder requests
-					long mins_to_go = acal.getTimeInMillis()/(1000*60) - 
+					long mins_to_go = acal.getTimeInMillis()/(1000*60) -
 										now.getTimeInMillis()/(1000*60);
 
 					if (outside_reminder_times(mins_to_go))
@@ -238,7 +238,7 @@ public class PopupView extends View {
 				continue;
 			}
 
-			
+
 			try {
 				// read the appt and get the date
 				Appointment appt = AppointmentModel.getReference().getAppt(
@@ -269,20 +269,14 @@ public class PopupView extends View {
 				    if (alarmid < 0) {
 					time_msg = -alarmid
 							+ " "
-							+ java.util.ResourceBundle.getBundle(
-									"resource/borg_resource").getString(
-									"minutes_ago");
+							+ Resource.getResourceString("minutes_ago");
 				    } else if (alarmid == 0) {
-					time_msg = java.util.ResourceBundle.getBundle(
-									"resource/borg_resource").getString(
-									"Now");
+					time_msg = Resource.getResourceString("Now");
 				    }
 				    else {
 					time_msg = alarmid
 							+ " "
-							+ java.util.ResourceBundle.getBundle(
-									"resource/borg_resource").getString(
-									"minute_reminder");
+							+ Resource.getResourceString("minute_reminder");
 				    }
 
 					fr.setText2(time_msg);
@@ -311,7 +305,7 @@ public class PopupView extends View {
 	}
 
 	private boolean outside_reminder_times(long mins_to_go) {
-		return (mins_to_go > PrefName.REMMINUTES[PrefName.REMMINUTES.length - 1] || 
+		return (mins_to_go > PrefName.REMMINUTES[PrefName.REMMINUTES.length - 1] ||
 				mins_to_go < PrefName.REMMINUTES[0]);
 	}
 
@@ -343,10 +337,10 @@ public class PopupView extends View {
 		if (remTimes[i] == 'Y' && p.reminderShown(i) == 'N') {
 			p.setReminderShown(i);
 			return PrefName.REMMINUTES[i];
-		}  
-		
+		}
+
 		return -999;
-		
+
 	}
 
 	final Runnable doPopupChk = new Runnable() {

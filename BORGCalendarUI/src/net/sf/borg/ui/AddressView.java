@@ -1,20 +1,20 @@
 /*
 This file is part of BORG.
- 
+
     BORG is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 2 of the License, or
     (at your option) any later version.
- 
+
     BORG is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
- 
+
     You should have received a copy of the GNU General Public License
     along with BORG; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- 
+
 Copyright 2003 by Mike Berger
  */
 package net.sf.borg.ui;
@@ -29,7 +29,6 @@ import javax.swing.JPanel;
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Resource;
-
 import net.sf.borg.model.Address;
 import net.sf.borg.model.AddressModel;
 /**
@@ -40,33 +39,33 @@ import net.sf.borg.model.AddressModel;
 
 class AddressView extends View
 {
-    
-    
+
+
     private Address addr_;
-    
+
     public AddressView(Address addr)
     {
         super();
         addr_ = addr;
         addModel( AddressModel.getReference() );
-        
+
         initComponents();       // init the GUI widgets
-        
+
         // display the window
         pack();
         showaddr();
-        
+
         manageMySize(PrefName.ADDRVIEWSIZE);
     }
-    
+
     public void destroy()
     {
         this.dispose();
     }
-    
+
     public void refresh()
     {}
-    
+
     private void showaddr()
     {
         fntext.setText( addr_.getFirstName() );
@@ -100,7 +99,7 @@ class AddressView extends View
         else
             bdtext.setText("");
     }
-    
+
     private void saveaddr()
     {
         if( fntext.getText().equals("") || lntext.getText().equals("") )
@@ -108,7 +107,7 @@ class AddressView extends View
             Errmsg.notice(Resource.getResourceString("First_and_Last_name_are_Required") );
             return;
         }
-        
+
         addr_.setFirstName( fntext.getText() );
         addr_.setLastName( lntext.getText() );
         addr_.setNickname( nntext.getText() );
@@ -131,7 +130,7 @@ class AddressView extends View
         addr_.setWorkCountry( cntext1.getText() );
         addr_.setWorkZip( zctext1.getText() );
         addr_.setCompany( comptext.getText() );
-        
+
         Date bd = null;
         String bdt = bdtext.getText();
         if( bdt == null || bdt.equals(""))
@@ -150,11 +149,11 @@ class AddressView extends View
                 Errmsg.notice(Resource.getResourceString("invdate"));
                 return;
             }
-            
+
             if( bd != null )
                 addr_.setBirthday(bd);
         }
-        
+
         try
         {
             AddressModel.getReference().saveAddress( addr_ );
@@ -275,81 +274,81 @@ class AddressView extends View
 
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Address_Book_Entry"));
+        ResourceHelper.setTitle(this, "Address_Book_Entry");
         jTabbedPane1.setPreferredSize(new java.awt.Dimension(540, 400));
         jPanel1.setLayout(new java.awt.GridBagLayout());
 
-        jLabel1.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("First_Name:"));
+        ResourceHelper.setText(jLabel1, "First_Name:");
 
-        jLabel2.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Last_Name:"));
+        ResourceHelper.setText(jLabel2, "Last_Name:");
 
-        jLabel3.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Nickname:"));
+        ResourceHelper.setText(jLabel3, "Nickname:");
 
-        jLabel4.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Screen_Name:"));
+        ResourceHelper.setText(jLabel4, "Screen_Name:");
 
-        jLabel5.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Home_Phone:"));
+        ResourceHelper.setText(jLabel5, "Home_Phone:");
 
-        jLabel6.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Work_Phone:"));
-
-
-        jLabel7.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Pager:"));
+        ResourceHelper.setText(jLabel6, "Work_Phone:");
 
 
-        jLabel8.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Fax:"));
+        ResourceHelper.setText(jLabel7, "Pager:");
 
 
-        jLabel9.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Email:"));
+        ResourceHelper.setText(jLabel8, "Fax:");
 
 
-        jLabel14.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Web_Page:"));
+        ResourceHelper.setText(jLabel9, "Email:");
 
 
-        jLabel21.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Company"));
+        ResourceHelper.setText(jLabel14, "Web_Page:");
 
 
-        jLabel22.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Birthday"));
+        ResourceHelper.setText(jLabel21, "Company");
 
 
-        jTabbedPane1.addTab(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("contact"), jPanel1);
+        ResourceHelper.setText(jLabel22, "Birthday");
+
+
+        jTabbedPane1.addTab(Resource.getResourceString("contact"), jPanel1);
 
         jPanel2.setLayout(new java.awt.GridBagLayout());
 
         jPanel3.setLayout(new java.awt.GridBagLayout());
 
-        jPanel3.setBorder(new javax.swing.border.TitledBorder(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("HomeAddress")));
-        jLabel10.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Street_Address"));
+        jPanel3.setBorder(new javax.swing.border.TitledBorder(Resource.getResourceString("HomeAddress")));
+        ResourceHelper.setText(jLabel10, "Street_Address");
 
 
-        jLabel11.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("City:"));
+        ResourceHelper.setText(jLabel11, "City:");
 
 
-        jLabel12.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("State:"));
+        ResourceHelper.setText(jLabel12, "State:");
 
 
-        jLabel13.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Country:"));
+        ResourceHelper.setText(jLabel13, "Country:");
 
 
-        jLabel15.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Zip_Code:"));
+        ResourceHelper.setText(jLabel15, "Zip_Code:");
 
 
 
         jPanel5.setLayout(new java.awt.GridBagLayout());
 
-        jPanel5.setBorder(new javax.swing.border.TitledBorder(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("WorkAddress")));
-        jLabel16.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Street_Address"));
+        jPanel5.setBorder(new javax.swing.border.TitledBorder(Resource.getResourceString("WorkAddress")));
+        ResourceHelper.setText(jLabel16, "Street_Address");
 
         jLabel16.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel17.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("City:"));
+        ResourceHelper.setText(jLabel17, "City:");
 
         jLabel17.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel17.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        jLabel18.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("State:"));
+        ResourceHelper.setText(jLabel18, "State:");
 
         jLabel18.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel19.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Zip_Code:"));
+        ResourceHelper.setText(jLabel19, "Zip_Code:");
 
         jLabel19.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel20.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Country:"));
+        ResourceHelper.setText(jLabel20, "Country:");
 
 
 
@@ -359,10 +358,10 @@ class AddressView extends View
         satext1.setMinimumSize(new java.awt.Dimension(4, 50));
 
 
-        jTabbedPane1.addTab(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Address"), jPanel2);
+        jTabbedPane1.addTab(Resource.getResourceString("Address"), jPanel2);
 
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Save16.gif")));
-        jButton2.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Save"));
+        ResourceHelper.setText(jButton2, "Save");
         jButton2.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -374,7 +373,7 @@ class AddressView extends View
         jPanel4.add(jButton2);
 
         jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Stop16.gif")));
-        jButton3.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Dismiss"));
+        ResourceHelper.setText(jButton3, "Dismiss");
         this.setContentPane(getJPanel());
         gridBagConstraints8.gridx = 0;
         gridBagConstraints8.gridy = 0;
@@ -582,6 +581,7 @@ class AddressView extends View
                 jButton3ActionPerformed(evt);
             }
         });
+        setDismissButton(jButton3);
 
         jPanel4.add(jButton3);
 
@@ -593,7 +593,7 @@ class AddressView extends View
         jPanel1.add(jLabel3, gridBagConstraints10);
         jPanel1.add(jLabel4, gridBagConstraints11);
         jPanel5.add(jLabel18, gridBagConstraints41);
-        jTabbedPane1.addTab(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Notes"), getJPanel6());
+        jTabbedPane1.addTab(Resource.getResourceString("Notes"), getJPanel6());
         //jTabbedPane1.addTab(null, null, getJPanel6(), null);
         jPanel3.add(jLabel12, gridBagConstraints36);
         jPanel3.add(jLabel13, gridBagConstraints37);
@@ -631,20 +631,20 @@ class AddressView extends View
         jPanel1.add(emtext, gridBagConstraints30);
         jPanel1.add(sntext, gridBagConstraints31);
     }//GEN-END:initComponents
-    
+
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton3ActionPerformed
     {//GEN-HEADEREND:event_jButton3ActionPerformed
         this.dispose();
     }//GEN-LAST:event_jButton3ActionPerformed
-    
+
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton2ActionPerformed
     {//GEN-HEADEREND:event_jButton2ActionPerformed
         saveaddr();
     }//GEN-LAST:event_jButton2ActionPerformed
-    
-    
+
+
     // save a task
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField bdtext;
     private javax.swing.JTextField cntext;
@@ -700,14 +700,14 @@ class AddressView extends View
     private javax.swing.JTextField zctext;
     private javax.swing.JTextField zctext1;
     // End of variables declaration//GEN-END:variables
-    
+
 	private JPanel jPanel = null;
 	private JPanel jPanel6 = null;
 	/**
-	 * This method initializes jPanel	
-	 * 	
-	 * @return javax.swing.JPanel	
-	 */    
+	 * This method initializes jPanel
+	 *
+	 * @return javax.swing.JPanel
+	 */
 	private JPanel getJPanel() {
 		if (jPanel == null) {
 			GridBagConstraints gridBagConstraints7 = new GridBagConstraints();
@@ -727,10 +727,10 @@ class AddressView extends View
 		return jPanel;
 	}
 	/**
-	 * This method initializes jPanel6	
-	 * 	
-	 * @return javax.swing.JPanel	
-	 */    
+	 * This method initializes jPanel6
+	 *
+	 * @return javax.swing.JPanel
+	 */
 	private JPanel getJPanel6() {
 		if (jPanel6 == null) {
 			GridBagConstraints gridBagConstraints56 = new GridBagConstraints();

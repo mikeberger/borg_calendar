@@ -51,7 +51,6 @@ import javax.swing.JPanel;
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
-
 import net.sf.borg.model.Appointment;
 import net.sf.borg.model.Day;
 

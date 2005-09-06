@@ -24,12 +24,15 @@ package net.sf.borg.ui;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.WindowConstants;
+
 import net.sf.borg.common.util.PrefName;
+import net.sf.borg.common.util.Resource;
 
 public class ReminderPopup extends View {
     private JPanel jPanel = null;
@@ -102,7 +105,7 @@ public class ReminderPopup extends View {
     private JRadioButton getNoMoreButton() {
         if (noMoreButton == null) {
             noMoreButton = new JRadioButton();
-            noMoreButton.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("No_more"));
+            ResourceHelper.setText(noMoreButton, "No_more");
             noMoreButton.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         }
         return noMoreButton;
@@ -128,7 +131,7 @@ public class ReminderPopup extends View {
     private JButton getJButton() {
         if (jButton == null) {
             jButton = new JButton();
-            jButton.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("OK"));
+            ResourceHelper.setText(jButton, "OK");
             jButton.setActionCommand("close_it");
             jButton.addActionListener(new java.awt.event.ActionListener() {
                     public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -141,7 +144,7 @@ public class ReminderPopup extends View {
 
     public ReminderPopup() {
         super();
-        this.setTitle("Borg " + java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Reminder"));
+        this.setTitle("Borg " + Resource.getResourceString("Reminder"));
         jbInit();
         this.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
         remindersShown = new char[PrefName.REMMINUTES.length];

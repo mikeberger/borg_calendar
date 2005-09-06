@@ -1,20 +1,20 @@
 /*
 This file is part of BORG.
- 
+
     BORG is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 2 of the License, or
     (at your option) any later version.
- 
+
     BORG is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
- 
+
     You should have received a copy of the GNU General Public License
     along with BORG; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- 
+
 Copyright 2003 by Mike Berger
  */
 package net.sf.borg.ui;
@@ -36,7 +36,6 @@ import javax.swing.JPanel;
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Resource;
-
 import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.Task;
 import net.sf.borg.model.TaskModel;
@@ -57,8 +56,8 @@ import net.sf.borg.model.TaskTypes;
 // taskgui is a View that allows the user to edit a single task
 class TaskView extends View
 {
-    
- 
+
+
     private static TaskView singleton = null;
     private String curtype_ = null;
     static TaskView getReference(Task task, int function) throws Exception
@@ -67,18 +66,18 @@ class TaskView extends View
             singleton = new TaskView(task, function);
         return( singleton );
     }
-    
+
     private TaskView(Task task, int function) throws Exception
     {
         super();
         addModel( TaskModel.getReference() );
-        
+
         initComponents();       // init the GUI widgets
-        
+
         // set size of text area
         jTextArea1.setRows(15);
         jTextArea1.setColumns(40);
-        
+
         try
         {
             Collection cats = CategoryModel.getReference().getCategories();
@@ -93,31 +92,31 @@ class TaskView extends View
         {
             Errmsg.errmsg(e);
         }
-        
+
         // display the window
         pack();
         showtask( function, task );
-        
+
         manageMySize(PrefName.TASKVIEWSIZE);
     }
-    
+
     public void destroy()
     {
         this.dispose();
     }
-    
+
     // the different function values for calls to show task
     static int T_CLONE = 1;
     static int T_ADD = 2;
     static int T_CHANGE = 3;
-    
+
     // the task editor currently does not refresh itself when the task data model changes
     // - although it should not be changing while the task editor is open
     public void refresh()
     {}
-    
-    
-    
+
+
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -188,12 +187,12 @@ class TaskView extends View
         jTextArea1.setName("Description");
         jScrollPane1.setViewportView(jTextArea1);
 
-        jTabbedPane1.addTab(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Description"), jScrollPane1);
+        jTabbedPane1.addTab(Resource.getResourceString("Description"), jScrollPane1);
 
         jTextArea2.setLineWrap(true);
         jScrollPane2.setViewportView(jTextArea2);
 
-        jTabbedPane1.addTab(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Resolution"), jScrollPane2);
+        jTabbedPane1.addTab(Resource.getResourceString("Resolution"), jScrollPane2);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
@@ -211,7 +210,7 @@ class TaskView extends View
 
         jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.Y_AXIS));
 
-        jPanel1.setBorder(new javax.swing.border.TitledBorder(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Subtasks")));
+        jPanel1.setBorder(new javax.swing.border.TitledBorder(Resource.getResourceString("Subtasks")));
         jCheckBox1.setText("jCheckBox1");
         jPanel1.add(jCheckBox1);
 
@@ -235,7 +234,7 @@ class TaskView extends View
 
         jPanel2.setLayout(new javax.swing.BoxLayout(jPanel2, javax.swing.BoxLayout.Y_AXIS));
 
-        jPanel2.setBorder(new javax.swing.border.TitledBorder(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("UserDefinedSubtasks")));
+        jPanel2.setBorder(new javax.swing.border.TitledBorder(Resource.getResourceString("UserDefinedSubtasks")));
         jCheckBox6.setText("user defined subtask box");
         jPanel2.add(jCheckBox6);
 
@@ -254,7 +253,7 @@ class TaskView extends View
         jPanel2.add(jSeparator1);
 
         jButton1.setFont(new java.awt.Font("Dialog", 1, 10));
-        jButton1.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Set_Subtasks"));
+        ResourceHelper.setText(jButton1, "Set_Subtasks");
         //jButton1.setBorder(new javax.swing.border.EtchedBorder());
         jButton1.addActionListener(new java.awt.event.ActionListener()
         {
@@ -276,24 +275,24 @@ class TaskView extends View
 
         jPanel3.setLayout(new java.awt.GridBagLayout());
 
-        jPanel3.setBorder(new javax.swing.border.TitledBorder(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("TaskInformation")));
+        jPanel3.setBorder(new javax.swing.border.TitledBorder(Resource.getResourceString("TaskInformation")));
 
         itemtext.setText("itemtext");
-        
-        jLabel1.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Item_#"));
-        
-        jLabel2.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Status"));
- 
-        jLabel3.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("StartDate"));
 
-        jLabel4.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("DueDate"));
- 
-        jLabel5.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Pri"));
+        ResourceHelper.setText(jLabel1, "Item_#");
 
-        jLabel6.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("PA"));
- 
-        jLabel7.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Type"));
- 
+        ResourceHelper.setText(jLabel2, "Status");
+
+        ResourceHelper.setText(jLabel3, "StartDate");
+
+        ResourceHelper.setText(jLabel4, "DueDate");
+
+        ResourceHelper.setText(jLabel5, "Pri");
+
+        ResourceHelper.setText(jLabel6, "PA");
+
+        ResourceHelper.setText(jLabel7, "Type");
+
         typebox.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -303,8 +302,8 @@ class TaskView extends View
         });
 
 
-        catlabel.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Category"));
- 
+        ResourceHelper.setText(catlabel, "Category");
+
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -312,7 +311,7 @@ class TaskView extends View
         getContentPane().add(jPanel3, gridBagConstraints);
 
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Save16.gif")));
-        jButton2.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Save"));
+        ResourceHelper.setText(jButton2, "Save");
         jButton2.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -323,7 +322,7 @@ class TaskView extends View
 
         jPanel4.add(jButton2, jButton2.getName());
         jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Stop16.gif")));
-        jButton3.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Dismiss"));
+        ResourceHelper.setText(jButton3, "Dismiss");
         jButton3.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -331,6 +330,7 @@ class TaskView extends View
                 jButton3ActionPerformed(evt);
             }
         });
+        setDismissButton(jButton3);
 
         jPanel4.add(jButton3);
 
@@ -341,8 +341,8 @@ class TaskView extends View
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         getContentPane().add(jPanel4, gridBagConstraints);
 
-        jMenu1.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Menu"));
-        jMenuItem1.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Save"));
+        ResourceHelper.setText(jMenu1, "Menu");
+        ResourceHelper.setText(jMenuItem1, "Save");
         jMenuItem1.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -353,7 +353,7 @@ class TaskView extends View
 
         jMenu1.add(jMenuItem1);
 
-        jMenuItem2.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Dismiss"));
+        ResourceHelper.setText(jMenuItem2, "Dismiss");
         jMenuItem2.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -459,11 +459,11 @@ class TaskView extends View
         jPanel3.add(getCatbox(), gridBagConstraints11);
 			gridBagConstraints26.insets = new java.awt.Insets(4,4,4,4);
 			jPanel3.add(statebox, gridBagConstraints26);
- 
- 
+
+
 
     }//GEN-END:initComponents
-    
+
     private void typeboxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_typeboxActionPerformed
     {//GEN-HEADEREND:event_typeboxActionPerformed
         String newtype = (String)typebox.getSelectedItem();
@@ -479,17 +479,17 @@ class TaskView extends View
             else
             {
                 ret = JOptionPane.showConfirmDialog(null,
-                        	java.util.ResourceBundle.getBundle("resource/borg_resource").getString("chg_typ_warn"), 
+                		Resource.getResourceString("chg_typ_warn"),
                         	"", JOptionPane.YES_NO_OPTION );
             }
-            
+
             if( ret == JOptionPane.YES_OPTION )
             {
                 curtype_ = newtype;
                 // fill in system controlled checkboxes
                 TaskModel taskmod_ = TaskModel.getReference();
                 statebox.removeAllItems();
-                statebox.addItem("OPEN");                
+                statebox.addItem("OPEN");
                 String cblabels[] = taskmod_.getTaskTypes().checkBoxes( newtype );
                 jCheckBox1.setText(cblabels[0]);
                 jCheckBox2.setText(cblabels[1]);
@@ -507,94 +507,94 @@ class TaskView extends View
                 typebox.setSelectedItem(curtype_);
             }
         }
-        
+
     }//GEN-LAST:event_typeboxActionPerformed
-    
+
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton3ActionPerformed
     {//GEN-HEADEREND:event_jButton3ActionPerformed
         this.dispose();
     }//GEN-LAST:event_jButton3ActionPerformed
-    
+
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton2ActionPerformed
     {//GEN-HEADEREND:event_jButton2ActionPerformed
         savetask( evt );
     }//GEN-LAST:event_jButton2ActionPerformed
-    
+
     // edit user checkbox label
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        
+
         // user wants to edit a user tunable check box label
-        
+
         // prompt for which one
         String choices[] =
         {"1","2","3","4","5"};
         String inputValue = (String) JOptionPane.showInputDialog(null, Resource.getResourceString("Select_User_Checkbox_Number_to_Edit"), Resource.getResourceString("Select_Checkbox"), JOptionPane.QUESTION_MESSAGE, null, choices, choices[0]);
         JCheckBox b = null;
-        
+
         // set b depending on which checkbox they want to edit
         if( inputValue.equals("1") ) b = jCheckBox6;
         if( inputValue.equals("2") ) b = jCheckBox7;
         if( inputValue.equals("3") ) b = jCheckBox8;
         if( inputValue.equals("4") ) b = jCheckBox9;
         if( inputValue.equals("5") ) b = jCheckBox10;
-        
+
         // get the new text
         String newVal = JOptionPane.showInputDialog( null, Resource.getResourceString("Enter_new_value"), b.getText() );
-        
+
         // set the text value - this does no save anywhere except on the screen.
         // when the entire task is saved, this item will be saved too
         b.setText(newVal);
-        
-        
+
+
     }//GEN-LAST:event_jButton1ActionPerformed
-    
+
     // update the database fields for a task label from the labels on the screen
     private void updateUT(JCheckBox cb, Task task, String field) throws Exception
     {
         // get current screen label and label DB knows
         String newtext = cb.getText();
-        
-        
+
+
         String oldtext = "";
         if( field.equals("UT1") ) oldtext = task.getUserTask1();
         else if( field.equals("UT2") ) oldtext = task.getUserTask2();
         else if( field.equals("UT3") ) oldtext = task.getUserTask3();
         else if( field.equals("UT4") ) oldtext = task.getUserTask4();
         else if( field.equals("UT5") ) oldtext = task.getUserTask5();
-        
+
         // if text was empty and still is - do nothing
         if( (newtext == null || newtext.equals("") || newtext.equals(TaskTypes.NOCBVALUE)) &&
         ( oldtext == null || oldtext.equals("") ))
             return;
-        
+
         // if screen matches DB - do nothing
         if( newtext.equals(oldtext) )
             return;
-        
+
         // update the field in the DB Row object
         if( field.equals("UT1") ) task.setUserTask1(newtext);
         else if( field.equals("UT2") ) task.setUserTask2(newtext);
         else if( field.equals("UT3") ) task.setUserTask3(newtext);
         else if( field.equals("UT4") ) task.setUserTask4(newtext);
         else if( field.equals("UT5") ) task.setUserTask5(newtext);
-        
+
     }
-    
+
     // save a task
     private void savetask(java.awt.event.ActionEvent evt)//GEN-FIRST:event_savetask
     {//GEN-HEADEREND:event_savetask
-        
+
         // save a task from the data on the screen
-        
+
         try
         {
-            
+
             String num = itemtext.getText();
-            
+
             // allocate a new task object from the task data model
             TaskModel taskmod_ = TaskModel.getReference();
             Task task = taskmod_.newMR();
-            
+
             // set the task number to the current number for updates and
             // -1 for new tasks. task model will convert -1 to next available number
             if( num.equals("NEW") )
@@ -604,7 +604,7 @@ class TaskView extends View
             {
                 task.setTaskNumber(new Integer(num));
             }
-            
+
             // fill in the taks fields from the screen
             task.setState((String)statebox.getSelectedItem());  // state
             task.setType((String)typebox.getSelectedItem());  // type
@@ -622,12 +622,12 @@ class TaskView extends View
             task.setPersonAssigned(patext.getText());  // person assigned
             if( jTextArea1.getText() == null || jTextArea1.getText().equals(""))
            	{
-            	Errmsg.notice(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("empty_desc"));
+            	Errmsg.notice(Resource.getResourceString("empty_desc"));
             	return;
            	}
             task.setDescription(jTextArea1.getText());   // description
             task.setResolution(jTextArea2.getText());   // resolution
-            
+
             //task.setCategory( cattext.getText());
             String cat = (String) catbox.getSelectedItem();
             if( cat.equals("") || cat.equals(CategoryModel.UNCATEGORIZED))
@@ -637,7 +637,7 @@ class TaskView extends View
             else
             {
                 task.setCategory(cat);
-            }       
+            }
             // set the subtask (todo) field by concatenating
             // the numbers of all of the checked subtask boxes
             String td = "";
@@ -662,17 +662,17 @@ class TaskView extends View
             if( jCheckBox10.isSelected() == true )
                 td += "A";
             task.setTodoList(td);
-            
+
             // save the user defined subtask labels
             updateUT( jCheckBox6, task, "UT1" );
             updateUT( jCheckBox7, task, "UT2" );
             updateUT( jCheckBox8, task, "UT3" );
             updateUT( jCheckBox9, task, "UT4" );
             updateUT( jCheckBox10, task, "UT5" );
-            
+
             // save the task to the DB
             taskmod_.savetask(task);
-            
+
             // refresh window from DB - will update task number for
             // new tasks and will set the list of available next states from
             // the task model
@@ -684,20 +684,20 @@ class TaskView extends View
             // JOptionPane.showMessageDialog(null, e.toString(), "Error",
             // JOptionPane.ERROR_MESSAGE);
         }
-        
-        
+
+
     }//GEN-LAST:event_savetask
-    
+
   private void disact(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_disact
       this.dispose();
   }//GEN-LAST:event_disact
-  
+
   private void showtask(int function, Task task) throws Exception
   {
       TaskModel taskmod_ = TaskModel.getReference();
-      
+
       // show a task editor for changing, cloning, or add of a task
-      
+
       // init the checkbox strings to dashes
       jCheckBox1.setText(TaskTypes.NOCBVALUE);
       jCheckBox2.setText(TaskTypes.NOCBVALUE);
@@ -709,17 +709,17 @@ class TaskView extends View
       jCheckBox8.setText(TaskTypes.NOCBVALUE);
       jCheckBox9.setText(TaskTypes.NOCBVALUE);
       jCheckBox10.setText(TaskTypes.NOCBVALUE);
-      
+
       // if we are showing an existing task - fil; in the gui fields form it
       if( task != null )
       {
           // task number
           itemtext.setText( task.getTaskNumber().toString() );
           itemtext.setEditable(false);
-          
+
           // window title - "Item N"
           setTitle(Resource.getResourceString("Item_") + task.getTaskNumber().toString() );
-          
+
           // due date
           GregorianCalendar gc = new GregorianCalendar();
           Date dd = task.getDueDate();
@@ -727,18 +727,18 @@ class TaskView extends View
               gc.setTime(dd);
 
           duedatechooser.setCalendar(gc);
-          
+
           GregorianCalendar gc2 = new GregorianCalendar();
           dd = task.getStartDate();
           if( dd != null )
               gc2.setTime(dd);
 
           startdatechooser.setCalendar(gc2);
-          
+
           pritext.setText( task.getPriority() ); // priority
           patext.setText( task.getPersonAssigned() ); // person assigned
-          
-          
+
+
           // cattext.setText( task.getCategory() );
           String cat = task.getCategory();
           if( cat != null && !cat.equals(""))
@@ -749,18 +749,18 @@ class TaskView extends View
           {
               catbox.setSelectedIndex(0);
           }
-          
+
           jTextArea1.setText( task.getDescription() );  // description
           jTextArea2.setText( task.getResolution() );  // resolution
-          
+
           statebox.addItem( task.getState());   // state
           statebox.setEditable(false);
-          
+
           // type
           String type = task.getType();
           typebox.addItem( type );
           typebox.setEditable(false);
-          
+
           // fill in system controlled checkboxes
           String cblabels[] = taskmod_.getTaskTypes().checkBoxes( type );
           jCheckBox1.setText(cblabels[0]);
@@ -768,7 +768,7 @@ class TaskView extends View
           jCheckBox3.setText(cblabels[2]);
           jCheckBox4.setText(cblabels[3]);
           jCheckBox5.setText(cblabels[4]);
-          
+
           // set checkboxes based on digits in TD
           String td = task.getTodoList();
           if( td == null ) td = "";
@@ -812,7 +812,7 @@ class TaskView extends View
           {
               jCheckBox10.setSelected(true);
           }
-          
+
           // set labels for user defined subtasks
           String s = task.getUserTask1();
           if( s != null ) jCheckBox6.setText(s);
@@ -827,33 +827,33 @@ class TaskView extends View
       }
       else  // initialize new task
       {
-          
+
           // task number = NEW
           itemtext.setText( "NEW" );
           itemtext.setEditable(false);
-          
+
           // title
-          setTitle(Resource.getResourceString("NEW_Item"));
-          
+          ResourceHelper.setTitle(this, "NEW_Item");
+
           pritext.setText( "3" ); // priority default to 3
           patext.setText( "" ); // person assigned
           //cattext.setText("");
           catbox.setSelectedIndex(0);
           jTextArea1.setText( "" ); // desc
           jTextArea2.setText("" ); // resolution
-          
+
           // state always starts with OPEN for new tasks
           statebox.addItem("OPEN");
           statebox.setEnabled(false);
-          
+
       }
-      
+
       Vector tv = taskmod_.getTaskTypes().getTaskTypes();
       for( int i = 0; i < tv.size(); i++ )
       {
           typebox.addItem( tv.elementAt(i) );
       }
-      
+
       // cloning takes the fields filled in for an existing task and resets only those
       // that don't apply to the clone
       if( function == T_CLONE )
@@ -861,23 +861,23 @@ class TaskView extends View
           // need new task number
           itemtext.setText("NEW");
           itemtext.setEditable(false);
-          
+
           // clone must start in OPEN state
           statebox.removeAllItems();
           statebox.addItem("OPEN");
           statebox.setEnabled(false);
-          
-          
+
+
       }
       // change existing task
       else if( function == T_CHANGE)
       {
-          
+
           // determine valid next states based on task type and current state
           String stat = task.getState();
           String type = task.getType();
           Vector v = taskmod_.getTaskTypes().nextStates(stat,type);
-          
+
           // set next state pulldown
           statebox.removeAllItems();
           for( int i = 0; i < v.size(); i++ )
@@ -885,15 +885,15 @@ class TaskView extends View
               statebox.addItem( v.elementAt(i) );
           }
           statebox.setEnabled(true);
-          
+
       }
-      
+
       curtype_ = (String)typebox.getSelectedItem();
-      
+
   }
-  
-  
-  
+
+
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel catlabel;
     private javax.swing.JButton jButton1;
@@ -938,14 +938,14 @@ class TaskView extends View
     private javax.swing.JComboBox statebox;
     private javax.swing.JComboBox typebox;
     // End of variables declaration//GEN-END:variables
-    
+
 	private JPanel jPanel = null;
 	private JComboBox catbox = null;
 	/**
-	 * This method initializes jPanel	
-	 * 	
-	 * @return javax.swing.JPanel	
-	 */    
+	 * This method initializes jPanel
+	 *
+	 * @return javax.swing.JPanel
+	 */
 	private JPanel getJPanel() {
 		if (jPanel == null) {
 			GridBagConstraints gridBagConstraints25 = new GridBagConstraints();
@@ -985,10 +985,10 @@ class TaskView extends View
 		return jPanel;
 	}
 	/**
-	 * This method initializes catbox	
-	 * 	
-	 * @return javax.swing.JComboBox	
-	 */    
+	 * This method initializes catbox
+	 *
+	 * @return javax.swing.JComboBox
+	 */
 	private JComboBox getCatbox() {
 		if (catbox == null) {
 			catbox = new JComboBox();

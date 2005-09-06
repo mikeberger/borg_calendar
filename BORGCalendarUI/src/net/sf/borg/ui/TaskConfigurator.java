@@ -796,6 +796,7 @@ public class TaskConfigurator extends View {
 					TaskConfigurator.getReference().dispose();
 				}
 			});
+	        setDismissButton(jButton1);
 		}
 		return jButton1;
 	}

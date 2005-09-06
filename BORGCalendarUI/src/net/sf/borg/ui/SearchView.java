@@ -234,7 +234,7 @@ public class SearchView extends View {
 
 	/**
 	 * This method initializes this
-	 * 
+	 *
 	 * @return void
 	 */
 	private void initialize() {
@@ -242,13 +242,12 @@ public class SearchView extends View {
 				.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 		this.setSize(614, 485);
 		this.setContentPane(getJContentPane());
-		this.setTitle(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("srch"));
+		ResourceHelper.setTitle(this, "srch");
 	}
 
 	/**
 	 * This method initializes jContentPane
-	 * 
+	 *
 	 * @return javax.swing.JPanel
 	 */
 	private javax.swing.JPanel getJContentPane() {
@@ -286,14 +285,13 @@ public class SearchView extends View {
 
 	/**
 	 * This method initializes todocb
-	 * 
+	 *
 	 * @return javax.swing.JCheckBox
 	 */
 	private JCheckBox getTodocb() {
 		if (todocb == null) {
 			todocb = new JCheckBox();
-			todocb.setText(java.util.ResourceBundle.getBundle(
-					"resource/borg_resource").getString("To_Do"));
+			ResourceHelper.setText(todocb, "To_Do");
 			todocb.setPreferredSize(new java.awt.Dimension(10, 10));
 		}
 		return todocb;
@@ -301,14 +299,13 @@ public class SearchView extends View {
 
 	/**
 	 * This method initializes repeatcb
-	 * 
+	 *
 	 * @return javax.swing.JCheckBox
 	 */
 	private JCheckBox getRepeatcb() {
 		if (repeatcb == null) {
 			repeatcb = new JCheckBox();
-			repeatcb.setText(java.util.ResourceBundle.getBundle(
-					"resource/borg_resource").getString("repeating"));
+			ResourceHelper.setText(repeatcb, "repeating");
 			repeatcb.setPreferredSize(new java.awt.Dimension(100, 10));
 		}
 		return repeatcb;
@@ -316,14 +313,13 @@ public class SearchView extends View {
 
 	/**
 	 * This method initializes vacationcb
-	 * 
+	 *
 	 * @return javax.swing.JCheckBox
 	 */
 	private JCheckBox getVacationcb() {
 		if (vacationcb == null) {
 			vacationcb = new JCheckBox();
-			vacationcb.setText(java.util.ResourceBundle.getBundle(
-					"resource/borg_resource").getString("Vacation"));
+			ResourceHelper.setText(vacationcb, "Vacation");
 			vacationcb.setPreferredSize(new java.awt.Dimension(0, 0));
 		}
 		return vacationcb;
@@ -331,14 +327,13 @@ public class SearchView extends View {
 
 	/**
 	 * This method initializes holidaycb
-	 * 
+	 *
 	 * @return javax.swing.JCheckBox
 	 */
 	private JCheckBox getHolidaycb() {
 		if (holidaycb == null) {
 			holidaycb = new JCheckBox();
-			holidaycb.setText(java.util.ResourceBundle.getBundle(
-					"resource/borg_resource").getString("Holiday"));
+			ResourceHelper.setText(holidaycb, "Holiday");
 			holidaycb.setPreferredSize(new java.awt.Dimension(100, 10));
 		}
 		return holidaycb;
@@ -346,7 +341,7 @@ public class SearchView extends View {
 
 	/**
 	 * This method initializes jPanel1
-	 * 
+	 *
 	 * @return javax.swing.JPanel
 	 */
 	private JPanel getJPanel1() {
@@ -380,8 +375,7 @@ public class SearchView extends View {
 			gridBagConstraints13.gridy = 1;
 			gridBagConstraints13.insets = new java.awt.Insets(4, 4, 4, 4);
 			gridBagConstraints13.fill = java.awt.GridBagConstraints.HORIZONTAL;
-			jLabel2.setText(java.util.ResourceBundle.getBundle(
-					"resource/borg_resource").getString("Category"));
+			ResourceHelper.setText(jLabel2, "Category");
 			gridBagConstraints14.gridx = 1;
 			gridBagConstraints14.gridy = 1;
 			gridBagConstraints14.weightx = 1.0;
@@ -391,8 +385,7 @@ public class SearchView extends View {
 			gridBagConstraints15.gridy = 0;
 			gridBagConstraints15.insets = new java.awt.Insets(4, 4, 4, 4);
 			gridBagConstraints15.fill = java.awt.GridBagConstraints.HORIZONTAL;
-			jLabel3.setText(java.util.ResourceBundle.getBundle(
-					"resource/borg_resource").getString("SearchString"));
+			ResourceHelper.setText(jLabel3, "SearchString");
 			gridBagConstraints16.gridx = 1;
 			gridBagConstraints16.gridy = 0;
 			gridBagConstraints16.weightx = 1.0;
@@ -433,7 +426,7 @@ public class SearchView extends View {
 
 	/**
 	 * This method initializes startDateChooser
-	 * 
+	 *
 	 * @return de.wannawork.jcalendar.JCalendarComboBox
 	 */
 	private JCalendarComboBox getStartDateChooser() {
@@ -445,7 +438,7 @@ public class SearchView extends View {
 
 	/**
 	 * This method initializes endDateChooser
-	 * 
+	 *
 	 * @return de.wannawork.jcalendar.JCalendarComboBox
 	 */
 	private JCalendarComboBox getEndDateChooser() {
@@ -457,7 +450,7 @@ public class SearchView extends View {
 
 	/**
 	 * This method initializes catbox
-	 * 
+	 *
 	 * @return javax.swing.JComboBox
 	 */
 	private JComboBox getCatbox() {
@@ -469,7 +462,7 @@ public class SearchView extends View {
 
 	/**
 	 * This method initializes searchText
-	 * 
+	 *
 	 * @return javax.swing.JTextField
 	 */
 	private JTextField getSearchText() {
@@ -481,7 +474,7 @@ public class SearchView extends View {
 
 	/**
 	 * This method initializes jPanel2
-	 * 
+	 *
 	 * @return javax.swing.JPanel
 	 */
 	private JPanel getJPanel2() {
@@ -499,14 +492,13 @@ public class SearchView extends View {
 
 	/**
 	 * This method initializes searchButton
-	 * 
+	 *
 	 * @return javax.swing.JButton
 	 */
 	private JButton getSearchButton() {
 		if (searchButton == null) {
 			searchButton = new JButton();
-			searchButton.setText(java.util.ResourceBundle.getBundle(
-					"resource/borg_resource").getString("srch"));
+			ResourceHelper.setText(searchButton, "srch");
 			searchButton.setIcon(new ImageIcon(getClass().getResource(
 					"/resource/Find16.gif")));
 			searchButton.addActionListener(new java.awt.event.ActionListener() {
@@ -520,14 +512,13 @@ public class SearchView extends View {
 
 	/**
 	 * This method initializes dismissButton
-	 * 
+	 *
 	 * @return javax.swing.JButton
 	 */
 	private JButton getDismissButton() {
 		if (dismissButton == null) {
 			dismissButton = new JButton();
-			dismissButton.setText(java.util.ResourceBundle.getBundle(
-					"resource/borg_resource").getString("Dismiss"));
+			ResourceHelper.setText(dismissButton, "Dismiss");
 			dismissButton.setIcon(new ImageIcon(getClass().getResource(
 					"/resource/Stop16.gif")));
 			final View v = this;
@@ -537,41 +528,40 @@ public class SearchView extends View {
 							v.dispose();
 						}
 					});
+	        setDismissButton(dismissButton);
 		}
 		return dismissButton;
 	}
 
 	/**
 	 * This method initializes startDatecb
-	 * 
+	 *
 	 * @return javax.swing.JCheckBox
 	 */
 	private JCheckBox getStartDatecb() {
 		if (startDatecb == null) {
 			startDatecb = new JCheckBox();
-			startDatecb.setText(java.util.ResourceBundle.getBundle(
-					"resource/borg_resource").getString("StartDate"));
+			ResourceHelper.setText(startDatecb, "StartDate");
 		}
 		return startDatecb;
 	}
 
 	/**
 	 * This method initializes endDatecb
-	 * 
+	 *
 	 * @return javax.swing.JCheckBox
 	 */
 	private JCheckBox getEndDatecb() {
 		if (endDatecb == null) {
 			endDatecb = new JCheckBox();
-			endDatecb.setText(java.util.ResourceBundle.getBundle(
-					"resource/borg_resource").getString("EndDate"));
+			ResourceHelper.setText(endDatecb, "EndDate");
 		}
 		return endDatecb;
 	}
 
 	/**
 	 * This method initializes jPanel3
-	 * 
+	 *
 	 * @return javax.swing.JPanel
 	 */
 	private JPanel getJPanel3() {
@@ -625,7 +615,7 @@ public class SearchView extends View {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see net.sf.borg.ui.View#refresh()
 	 */
 	public void refresh() {
@@ -634,7 +624,7 @@ public class SearchView extends View {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see net.sf.borg.ui.View#destroy()
 	 */
 	public void destroy() {
@@ -644,7 +634,7 @@ public class SearchView extends View {
 
 	/**
 	 * This method initializes jPanel
-	 * 
+	 *
 	 * @return javax.swing.JPanel
 	 */
 	private JPanel getJPanel() {
@@ -658,9 +648,7 @@ public class SearchView extends View {
 			jPanel = new JPanel();
 			jPanel.setLayout(new GridBagLayout());
 			jPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null,
-					java.util.ResourceBundle
-							.getBundle("resource/borg_resource").getString(
-									"Search_Results"),
+					Resource.getResourceString("Search_Results"),
 					javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
 					javax.swing.border.TitledBorder.DEFAULT_POSITION, null,
 					null));
@@ -684,7 +672,7 @@ public class SearchView extends View {
 
 	/**
 	 * This method initializes jScrollPane
-	 * 
+	 *
 	 * @return javax.swing.JScrollPane
 	 */
 	private JScrollPane getJScrollPane() {
@@ -698,7 +686,7 @@ public class SearchView extends View {
 
 	/**
 	 * This method initializes jTable1
-	 * 
+	 *
 	 * @return javax.swing.JTable
 	 */
 	private JTable getJTable1() {
@@ -746,14 +734,13 @@ public class SearchView extends View {
 
 	/**
 	 * This method initializes deleteButton
-	 * 
+	 *
 	 * @return javax.swing.JButton
 	 */
 	private JButton getDeleteButton() {
 		if (deleteButton == null) {
 			deleteButton = new JButton();
-			deleteButton.setText(java.util.ResourceBundle.getBundle(
-					"resource/borg_resource").getString("delete_selected"));
+			ResourceHelper.setText(deleteButton, "delete_selected");
 			deleteButton.setIcon(new ImageIcon(getClass().getResource(
 					"/resource/Stop16.gif")));
 			deleteButton.addActionListener(new java.awt.event.ActionListener() {
@@ -777,16 +764,16 @@ public class SearchView extends View {
 						Integer key = (Integer) tm.getValueAt(rows[i], 2);
 						appts.add(key);
 					}
-					
+
 					Iterator it = appts.iterator();
 					while( it.hasNext())
 					{
 						Integer key = (Integer) it.next();
 						//System.out.println("delete appt " + key.intValue());
 						AppointmentModel.getReference().delAppt(key.intValue());
-						
+
 					}
-					
+
 					load(); // force update
 				}
 			});
@@ -795,15 +782,14 @@ public class SearchView extends View {
 	}
 
 	/**
-	 * This method initializes catbut	
-	 * 	
-	 * @return javax.swing.JButton	
+	 * This method initializes catbut
+	 *
+	 * @return javax.swing.JButton
 	 */
 	private JButton getCatbut() {
 		if (catbut == null) {
 			catbut = new JButton();
-			catbut.setText(java.util.ResourceBundle.getBundle(
-			"resource/borg_resource").getString("chg_cat"));
+			ResourceHelper.setText(catbut, "chg_cat");
 			catbut.setIcon(new ImageIcon(getClass().getResource("/resource/Preferences16.gif")));  // Generated
 			catbut.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -811,25 +797,25 @@ public class SearchView extends View {
 					if (rows.length == 0) {
 						return;
 					}
-					
+
 					try{
-						
+
 						Collection allcats = CategoryModel.getReference().getCategories();
 						Object[] cats = allcats.toArray();
-						
+
 						Object o = JOptionPane.showInputDialog(null,Resource.getResourceString("cat_choose"),
 								"",JOptionPane.QUESTION_MESSAGE,null,cats,cats[0]);
 						if( o == null)
-							return;					
-						
+							return;
+
 						TableSorter tm = (TableSorter) jTable1.getModel();
-						
+
 						ArrayList appts = new ArrayList();
 						for (int i = 0; i < rows.length; i++) {
 							Integer key = (Integer) tm.getValueAt(rows[i], 2);
 							appts.add(key);
 						}
-						
+
 						Iterator it = appts.iterator();
 						while( it.hasNext())
 						{
@@ -837,7 +823,7 @@ public class SearchView extends View {
 							Appointment ap = AppointmentModel.getReference().getAppt(key.intValue());
 							ap.setCategory((String)o);
 							AppointmentModel.getReference().saveAppt(ap,false);
-							
+
 						}
 					}
 					catch( Exception ex )
@@ -845,7 +831,7 @@ public class SearchView extends View {
 						Errmsg.errmsg(ex);
 						return;
 					}
-					
+
 					load(); // force update
 				}
 			});

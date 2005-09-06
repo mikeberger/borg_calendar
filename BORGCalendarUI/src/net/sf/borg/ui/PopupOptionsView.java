@@ -1,19 +1,19 @@
 /*
  * This file is part of BORG.
- * 
+ *
  * BORG is free software; you can redistribute it and/or modify it under the
  * terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * BORG is distributed in the hope that it will be useful, but WITHOUT ANY
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
  * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with
  * BORG; if not, write to the Free Software Foundation, Inc., 59 Temple Place,
  * Suite 330, Boston, MA 02111-1307 USA
- * 
+ *
  * Copyright 2003 by Mike Berger
  */
 
@@ -22,15 +22,21 @@ package net.sf.borg.ui;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.KeyStroke;
 
 import net.sf.borg.common.util.PrefName;
+import net.sf.borg.common.util.Resource;
 
 
 public class PopupOptionsView extends JDialog {
@@ -51,14 +57,13 @@ public class PopupOptionsView extends JDialog {
 
 		initialize();
 
-		this.setTitle(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("Popup_Times"));
+		ResourceHelper.setTitle(this, "Popup_Times");
 		appPanel_ = appPanel;
 		remtimes_ = remtimes;
 
-		jAlarmLabel = new JLabel(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("custom_times_header")
-				+ " '" + appPanel_.getText() + "'");
+		jAlarmLabel = new JLabel();
+		ResourceHelper.setText(jAlarmLabel, "custom_times_header");
+		jAlarmLabel.setText(jAlarmLabel.getText() + " '" + appPanel_.getText() + "'");
 		alarmBoxes = new JCheckBox[PrefName.REMMINUTES.length];
 		for (int i = 0; i < PrefName.REMMINUTES.length; ++i) {
 			alarmBoxes[i] = new JCheckBox(minutes_string(i));
@@ -92,7 +97,7 @@ public class PopupOptionsView extends JDialog {
 				alarmBoxes[i].setSelected(false);
 			}
 		}
-		
+
 		pack();
 
 
@@ -103,11 +108,11 @@ public class PopupOptionsView extends JDialog {
 
 	/**
 	 * This method initializes this
-	 * 
+	 *
 	 * @return void
 	 */
 	private void initialize() {
-        this.setContentPane(getJPanel());			
+        this.setContentPane(getJPanel());
 	}
 	public void destroy() {
 		this.dispose();
@@ -125,7 +130,7 @@ public class PopupOptionsView extends JDialog {
 			}
 
 		}
-		
+
 		appPanel_.setPopupTimesString();
 		this.dispose();
 	}
@@ -141,18 +146,12 @@ public class PopupOptionsView extends JDialog {
 		int l = jj % 60;
 		String minStr;
 		String hrStr;
-		String minute = java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("Minute");
-		String minutes = java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("Minutes");
-		String hour = java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("Hour");
-		String hours = java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("Hours");
-		String before = java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("Before");
-		String after = java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("After");
+		String minute = Resource.getResourceString("Minute");
+		String minutes = Resource.getResourceString("Minutes");
+		String hour = Resource.getResourceString("Hour");
+		String hours = Resource.getResourceString("Hours");
+		String before = Resource.getResourceString("Before");
+		String after = Resource.getResourceString("After");
 
 		if (k > 1) {
 			hrStr = k + " " + hours;
@@ -161,7 +160,7 @@ public class PopupOptionsView extends JDialog {
 		} else {
 			hrStr = "";
 		}
-		
+
 		if (l > 1) {
 			minStr = l + " " + minutes;
 		} else if (l > 0) {
@@ -184,14 +183,14 @@ public class PopupOptionsView extends JDialog {
 		} else {
 			bef_aft = " " + after;
 		}
-		
+
 
 		return hrStr + minStr + bef_aft;
 	}
 
 	/**
 	 * This method initializes jPanel
-	 * 
+	 *
 	 * @return javax.swing.JPanel
 	 */
 	private JPanel getJPanel() {
@@ -221,7 +220,7 @@ public class PopupOptionsView extends JDialog {
 
 	/**
 	 * This method initializes checkpanel
-	 * 
+	 *
 	 * @return javax.swing.JPanel
 	 */
 	private JPanel getCheckpanel() {
@@ -234,7 +233,7 @@ public class PopupOptionsView extends JDialog {
 
 	/**
 	 * This method initializes jPanel2
-	 * 
+	 *
 	 * @return javax.swing.JPanel
 	 */
 	private JPanel getButtonPanel() {
@@ -248,14 +247,13 @@ public class PopupOptionsView extends JDialog {
 
 	/**
 	 * This method initializes saveButton
-	 * 
+	 *
 	 * @return javax.swing.JButton
 	 */
 	private JButton getSaveButton() {
 		if (saveButton == null) {
 			saveButton = new JButton();
-			saveButton.setText(java.util.ResourceBundle.getBundle(
-					"resource/borg_resource").getString("Save"));
+			ResourceHelper.setText(saveButton, "Save");
 			saveButton.setIcon(new ImageIcon(getClass().getResource(
 					"/resource/Save16.gif")));
 			saveButton.addActionListener(new java.awt.event.ActionListener() {
@@ -269,14 +267,13 @@ public class PopupOptionsView extends JDialog {
 
 	/**
 	 * This method initializes jButton1
-	 * 
+	 *
 	 * @return javax.swing.JButton
 	 */
 	private JButton getJButton1() {
 		if (dismissButton == null) {
 			dismissButton = new JButton();
-			dismissButton.setText(java.util.ResourceBundle.getBundle(
-					"resource/borg_resource").getString("Dismiss"));
+			ResourceHelper.setText(dismissButton, "Dismiss");
 			dismissButton.setIcon(new ImageIcon(getClass().getResource(
 					"/resource/Stop16.gif")));
 			dismissButton.addActionListener(new java.awt.event.ActionListener() {
@@ -284,6 +281,18 @@ public class PopupOptionsView extends JDialog {
 					cancelButtonClicked(evt);
 				}
 			});
+	    	getRootPane()
+			.registerKeyboardAction
+			(
+				new ActionListener()
+				{
+					public final void actionPerformed(ActionEvent e) {
+						cancelButtonClicked(e);
+					}
+				},
+				KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
+				JComponent.WHEN_IN_FOCUSED_WINDOW
+			);
 		}
 		return dismissButton;
 	}
