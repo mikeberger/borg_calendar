@@ -1,20 +1,20 @@
 /*
  This file is part of BORG.
- 
+
  BORG is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation; either version 2 of the License, or
  (at your option) any later version.
- 
+
  BORG is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
- 
+
  You should have received a copy of the GNU General Public License
  along with BORG; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- 
+
  Copyright 2003 by Mike Berger
  */
 
@@ -58,7 +58,6 @@ import net.sf.borg.common.ui.TableSorter;
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Resource;
-
 import net.sf.borg.common.util.XSLTransform;
 import net.sf.borg.common.util.XTree;
 import net.sf.borg.model.CategoryModel;
@@ -73,7 +72,7 @@ import net.sf.borg.model.db.DBException;
  */
 
 /**
- * 
+ *
  * @author MBERGER
  * @version
  */
@@ -86,7 +85,7 @@ import net.sf.borg.model.db.DBException;
 // and calendar apps were completely separate apps.
 public class TaskListView extends View {
 
- 
+
 
     private TableCellRenderer defrend_; // default table cell renderer which I
     // need to
@@ -226,7 +225,7 @@ public class TaskListView extends View {
         jTable1.setPreferredScrollableViewportSize(new Dimension(900, 400));
 
         pack();
-        
+
         manageMySize(PrefName.TASKLISTVIEWSIZE);
     }
 
@@ -316,16 +315,14 @@ public class TaskListView extends View {
 
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
-        setTitle(java.util.ResourceBundle.getBundle("resource/borg_resource")
-                .getString("Task_Tracking"));
+        ResourceHelper.setTitle(this, "Task_Tracking");
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 exitForm(evt);
             }
         });
 
-        jRadioButton7.setText(java.util.ResourceBundle.getBundle(
-                "resource/borg_resource").getString("Open"));
+        ResourceHelper.setText(jRadioButton7, "Open");
         jRadioButton7.setName("which");
         jRadioButton7.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -338,8 +335,7 @@ public class TaskListView extends View {
         gridBagConstraints.weightx = 1.0;
         getContentPane().add(jRadioButton7, gridBagConstraints);
 
-        jRadioButton8.setText(java.util.ResourceBundle.getBundle(
-                "resource/borg_resource").getString("Closed"));
+        ResourceHelper.setText(jRadioButton8, "Closed");
         jRadioButton8.setName("which");
         jRadioButton8.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -354,8 +350,7 @@ public class TaskListView extends View {
         gridBagConstraints.weightx = 1.0;
         getContentPane().add(jRadioButton8, gridBagConstraints);
 
-        jRadioButton9.setText(java.util.ResourceBundle.getBundle(
-                "resource/borg_resource").getString("All"));
+        ResourceHelper.setText(jRadioButton9, "All");
         jRadioButton9.setName("which");
         jRadioButton9.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -372,8 +367,7 @@ public class TaskListView extends View {
 
         jButton21.setIcon(new javax.swing.ImageIcon(getClass().getResource(
                 "/resource/Find16.gif")));
-        jButton21.setText(java.util.ResourceBundle.getBundle(
-                "resource/borg_resource").getString("Filter:"));
+        ResourceHelper.setText(jButton21, "Filter:");
         jButton21.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton21ActionPerformed(evt);
@@ -419,8 +413,7 @@ public class TaskListView extends View {
         gridBagConstraints.weighty = 1.0;
         getContentPane().add(jScrollPane1, gridBagConstraints);
 
-        jRadioButton1.setText(java.util.ResourceBundle.getBundle(
-                "resource/borg_resource").getString("PerfRvw"));
+        ResourceHelper.setText(jRadioButton1, "PerfRvw");
         jRadioButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jRadioButton1ActionPerformed(evt);
@@ -434,10 +427,8 @@ public class TaskListView extends View {
         gridBagConstraints.weightx = 1.0;
         getContentPane().add(jRadioButton1, gridBagConstraints);
 
-        fileMenu.setText(java.util.ResourceBundle.getBundle(
-                "resource/borg_resource").getString("File"));
-        printit.setText(java.util.ResourceBundle.getBundle(
-                "resource/borg_resource").getString("Print_Task_List"));
+        ResourceHelper.setText(fileMenu, "File");
+        ResourceHelper.setText(printit, "Print_Task_List");
         printit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 printitActionPerformed(evt);
@@ -446,8 +437,7 @@ public class TaskListView extends View {
 
         fileMenu.add(printit);
 
-        exitMenuItem.setText(java.util.ResourceBundle.getBundle(
-                "resource/borg_resource").getString("Close"));
+        ResourceHelper.setText(exitMenuItem, "Exit");
         exitMenuItem.setIcon(new ImageIcon(getClass().getResource("/resource/Stop16.gif")));
         exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -456,13 +446,11 @@ public class TaskListView extends View {
         });
         fileMenu.add(getHtmlitem());
         fileMenu.add(exitMenuItem);
-        
+
         menuBar.add(fileMenu);
 
-        editMenu.setText(java.util.ResourceBundle.getBundle(
-                "resource/borg_resource").getString("Action"));
-        add.setText(java.util.ResourceBundle
-                .getBundle("resource/borg_resource").getString("Add"));
+        ResourceHelper.setText(editMenu, "Action");
+        ResourceHelper.setText(add, "Add");
         add.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 addActionPerformed(evt);
@@ -471,8 +459,7 @@ public class TaskListView extends View {
 
         editMenu.add(add);
 
-        change.setText(java.util.ResourceBundle.getBundle(
-                "resource/borg_resource").getString("Change"));
+        ResourceHelper.setText(change, "Change");
         change.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 changeActionPerformed(evt);
@@ -481,8 +468,7 @@ public class TaskListView extends View {
 
         editMenu.add(change);
 
-        clone.setText(java.util.ResourceBundle.getBundle(
-                "resource/borg_resource").getString("Clone"));
+        ResourceHelper.setText(clone, "Clone");
         clone.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cloneActionPerformed(evt);
@@ -491,8 +477,7 @@ public class TaskListView extends View {
 
         editMenu.add(clone);
 
-        delete.setText(java.util.ResourceBundle.getBundle(
-                "resource/borg_resource").getString("Delete"));
+        ResourceHelper.setText(delete, "Delete");
         delete.setName("delete");
         delete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -502,8 +487,7 @@ public class TaskListView extends View {
 
         editMenu.add(delete);
 
-        close.setText(java.util.ResourceBundle.getBundle(
-                "resource/borg_resource").getString("Close"));
+        ResourceHelper.setText(close, "Close");
         close.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 closeActionPerformed(evt);
@@ -514,10 +498,8 @@ public class TaskListView extends View {
 
         menuBar.add(editMenu);
 
-        optMenu.setText(java.util.ResourceBundle.getBundle(
-                "resource/borg_resource").getString("Options"));
-        edittypes.setText(java.util.ResourceBundle.getBundle(
-                "resource/borg_resource").getString("edit_types"));
+        ResourceHelper.setText(optMenu, "Options");
+        ResourceHelper.setText(edittypes, "edit_types");
         edittypes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 edittypesActionPerformed(evt);
@@ -526,9 +508,7 @@ public class TaskListView extends View {
 
         optMenu.add(edittypes);
 
-        impst.setText(java.util.ResourceBundle.getBundle(
-                "resource/borg_resource").getString(
-                "Import_Task_States_From_XML"));
+        ResourceHelper.setText(impst, "Import_Task_States_From_XML");
         impst.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 impstActionPerformed(evt);
@@ -537,9 +517,7 @@ public class TaskListView extends View {
 
         optMenu.add(impst);
 
-        expst.setText(java.util.ResourceBundle.getBundle(
-                "resource/borg_resource")
-                .getString("Export_Task_States_to_XML"));
+        ResourceHelper.setText(expst, "Export_Task_States_to_XML");
         expst.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 expstActionPerformed(evt);
@@ -548,9 +526,7 @@ public class TaskListView extends View {
 
         optMenu.add(expst);
 
-        resetst.setText(java.util.ResourceBundle.getBundle(
-                "resource/borg_resource").getString(
-                "Reset_Task_States_to_Default"));
+        ResourceHelper.setText(resetst, "Reset_Task_States_to_Default");
         resetst.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 resetstActionPerformed(evt);
@@ -565,7 +541,7 @@ public class TaskListView extends View {
 
         this.setSize(612, 456);
         this.setContentPane(getJPanel());
-       
+
 			printit.setIcon(new ImageIcon(getClass().getResource("/resource/Print16.gif")));
 			optMenu.add(getCatmenuitem());
     }
@@ -805,7 +781,7 @@ public class TaskListView extends View {
         try {
             TaskModel taskmod_ = TaskModel.getReference();
 
- 
+
             Collection tasks = taskmod_.getTasks();
             Iterator ti = tasks.iterator();
             while (ti.hasNext()) {
@@ -828,12 +804,12 @@ public class TaskListView extends View {
                 // show perf rvw
                 if (which == 4 && !st.equals("PR"))
                     continue;
-                
+
                 // category
                 String cat = task.getCategory();
                 if( cat == null || cat.equals(""))
-                    cat = CategoryModel.UNCATEGORIZED; 
-                
+                    cat = CategoryModel.UNCATEGORIZED;
+
                 if( !CategoryModel.getReference().isShown(cat))
                     continue;
 
@@ -876,7 +852,7 @@ public class TaskListView extends View {
                     Calendar today = new GregorianCalendar();
                     Calendar dcal = new GregorianCalendar();
                     dcal.setTime(dd);
-                    
+
                     // find days left
                     int days = 0;
                     if( dcal.get(Calendar.YEAR) == today.get(Calendar.YEAR))
@@ -1041,7 +1017,7 @@ public class TaskListView extends View {
 	private JButton jButton = null;
     /**
      * This method initializes jPanel
-     * 
+     *
      * @return javax.swing.JPanel
      */
     private JPanel getJPanel() {
@@ -1089,7 +1065,7 @@ public class TaskListView extends View {
 
     /**
      * This method initializes jPanel2
-     * 
+     *
      * @return javax.swing.JPanel
      */
     private JPanel getJPanel2() {
@@ -1107,10 +1083,10 @@ public class TaskListView extends View {
         return jPanel2;
     }
 	/**
-	 * This method initializes jPanel1	
-	 * 	
-	 * @return javax.swing.JPanel	
-	 */    
+	 * This method initializes jPanel1
+	 *
+	 * @return javax.swing.JPanel
+	 */
 	private JPanel getJPanel1() {
 		if (jPanel1 == null) {
 			jPanel1 = new JPanel();
@@ -1119,95 +1095,96 @@ public class TaskListView extends View {
 		return jPanel1;
 	}
 	/**
-	 * This method initializes jButton	
-	 * 	
-	 * @return javax.swing.JButton	
-	 */    
+	 * This method initializes jButton
+	 *
+	 * @return javax.swing.JButton
+	 */
 	private void disp(){ this.dispose(); }
 	private JButton getJButton() {
 		if (jButton == null) {
 			jButton = new JButton();
-			jButton.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Dismiss"));
+			ResourceHelper.setText(jButton, "Dismiss");
 			jButton.setIcon(new ImageIcon(getClass().getResource("/resource/Stop16.gif")));
-			jButton.addActionListener(new java.awt.event.ActionListener() { 
-				public void actionPerformed(java.awt.event.ActionEvent e) {    
+			jButton.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
 					disp();
 				}
 			});
+	        setDismissButton(jButton);
 		}
 		return jButton;
 	}
-	
+
 	private JMenuItem htmlitem;
 	private JMenuItem getHtmlitem() {
 		if (htmlitem == null) {
 			htmlitem = new JMenuItem();
-			htmlitem.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("SaveHTML"));
+			ResourceHelper.setText(htmlitem, "SaveHTML");
 			htmlitem.setIcon(new ImageIcon(getClass().getResource("/resource/WebComponent16.gif")));
-			htmlitem.addActionListener(new java.awt.event.ActionListener() { 
-			    public void actionPerformed(java.awt.event.ActionEvent e) { 
+			htmlitem.addActionListener(new java.awt.event.ActionListener() {
+			    public void actionPerformed(java.awt.event.ActionEvent e) {
 			        try{
-			            
+
 			            JFileChooser chooser = new JFileChooser();
-			            
+
 			            chooser.setCurrentDirectory( new File(".") );
 			            chooser.setDialogTitle(Resource.getResourceString("choose_file"));
 			            chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-			            
+
 			            int returnVal = chooser.showOpenDialog(null);
 			            if(returnVal != JFileChooser.APPROVE_OPTION)
 			                return;
-			            
+
 			            String s = chooser.getSelectedFile().getAbsolutePath();
 
 			            OutputStream ostr = IOHelper.createOutputStream(s);
-			            OutputStreamWriter fw = new OutputStreamWriter(ostr, "UTF8");            
+			            OutputStreamWriter fw = new OutputStreamWriter(ostr, "UTF8");
 
 						StringWriter sw = new StringWriter();
 						sw.write("<TASKS>\n" );
 						// for each appt being shown in list
 				        TableSorter tm = (TableSorter) jTable1.getModel();
 				        TaskXMLAdapter txa = new TaskXMLAdapter();
-				        
+
 				        for(int row=0; row < tm.getRowCount() ;row++)
 				        {
-				            
+
 				            Integer num = (Integer) tm.getValueAt(row, 0);
 				            Task task = TaskModel.getReference().getMR(num.intValue());
-						
+
 							// convert to XML
 				            XTree xt = txa.toXml(task);
 				            sw.write(xt.toString());
-				            
+
 				        }
-				        
+
 				        sw.write("</TASKS>\n" );
 						// pass through XSLT
 			            String output = XSLTransform.transform( sw.toString(), "/resource/task.xsl");
-			            
+
 			            fw.write(output);
 			            fw.close();
-			            
-			            
+
+
 			        }
 			        catch( Exception ex) {
 			            Errmsg.errmsg(ex);
 			        }
-			            
+
 			    }
 			});
 		}
 		return htmlitem;
 	}
-	
+
 	private JMenuItem catmenuitem;  //  @jve:decl-index=0:visual-constraint="73,12"
 	private JMenuItem getCatmenuitem() {
 		if (catmenuitem == null) {
 			catmenuitem = new JMenuItem();
 	        catmenuitem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Preferences16.gif")));
-	        catmenuitem.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("choosecat"));
-	        catmenuitem.addActionListener(new java.awt.event.ActionListener() { 
-	        	public void actionPerformed(java.awt.event.ActionEvent e) {    
+	        ResourceHelper.setText(catmenuitem, "choosecat");
+	        catmenuitem.addActionListener(new java.awt.event.ActionListener() {
+	        	public void actionPerformed(java.awt.event.ActionEvent e) {
 	        	    CategoryChooser.getReference().setVisible(true);
 	        	}
 	        });
