@@ -997,7 +997,8 @@ public class CalendarView extends View implements Prefs.Listener {
         }
         finally
         {
-        	requestFocus();
+        	// not sure I like this. this window pops in front of the appt list that I was working with
+        	//requestFocus();
         }
     }
     /** This method is called from within the constructor to
