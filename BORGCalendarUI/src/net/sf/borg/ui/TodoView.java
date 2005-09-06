@@ -522,10 +522,6 @@ public class TodoView extends View {
         gridBagConstraints11.insets = new java.awt.Insets(0,0,0,0);
         gridBagConstraints11.gridwidth = 2;
         gridBagConstraints11.weightx = 1.0D;
-        //gridBagConstraints11.gridx = 0;
-        //gridBagConstraints11.gridy = 3;
-        //gridBagConstraints11.insets = new java.awt.Insets(4,4,4,4);
-        //gridBagConstraints11.gridwidth = 3;
 
         gridBagConstraints12.gridx = 1;
         gridBagConstraints12.gridy = 1;
@@ -552,25 +548,25 @@ public class TodoView extends View {
         // set jtb size, set tuned colors
 
         jtbRed.setIcon( new ToggleButtonIcon(new Color( (new Integer( Prefs.getPref(PrefName.UCS_RED))).intValue() )));
-        jtbRed.setBackground( Color.LIGHT_GRAY );
+        //jtbRed.setBackground( Color.LIGHT_GRAY );
    
         jtbBlue.setIcon( new ToggleButtonIcon(new Color( (new Integer( Prefs.getPref(PrefName.UCS_BLUE))).intValue() )));
-        jtbBlue.setBackground( Color.LIGHT_GRAY );
+        //jtbBlue.setBackground( Color.LIGHT_GRAY );
        
         jtbGreen.setIcon( new ToggleButtonIcon(new Color( (new Integer( Prefs.getPref(PrefName.UCS_GREEN))).intValue() )));
-        jtbGreen.setBackground( Color.LIGHT_GRAY );
+        //jtbGreen.setBackground( Color.LIGHT_GRAY );
 
         jtbBlack.setIcon( new ToggleButtonIcon(new Color( (new Integer( Prefs.getPref(PrefName.UCS_BLACK))).intValue() )));
-        jtbBlack.setBackground( Color.LIGHT_GRAY );
+        //jtbBlack.setBackground( Color.LIGHT_GRAY );
 
         jtbWhite.setIcon( new ToggleButtonIcon(new Color( (new Integer( Prefs.getPref(PrefName.UCS_WHITE))).intValue() )));
-        jtbWhite.setBackground( Color.LIGHT_GRAY );
-        //jtbWhite.setForeground( ctemp );
-        jtbRed.setMargin( new Insets(0,2,0,2));
-        jtbBlue.setMargin( new Insets(0,2,0,2));
-        jtbGreen.setMargin( new Insets(0,2,0,2));
-        jtbBlack.setMargin( new Insets(0,2,0,2));
-        jtbWhite.setMargin( new Insets(0,2,0,2));
+        //jtbWhite.setBackground( Color.LIGHT_GRAY );
+        
+        jtbRed.setMargin( new Insets(0,0,0,0));
+        jtbBlue.setMargin( new Insets(0,0,0,0));
+        jtbGreen.setMargin( new Insets(0,0,0,0));
+        jtbBlack.setMargin( new Insets(0,0,0,0));
+        jtbWhite.setMargin( new Insets(0,0,0,0));
         ButtonGroup mutator = new ButtonGroup();
         mutator.add( jtbRed );
         mutator.add( jtbBlue );
