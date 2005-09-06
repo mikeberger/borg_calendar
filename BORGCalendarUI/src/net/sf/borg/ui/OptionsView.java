@@ -96,7 +96,7 @@ public class OptionsView extends View {
 
 	static private void setCheckBox(JCheckBox box, PrefName pn) {
 		String val = Prefs.getPref(pn);
-		if (val.equals("true"))
+		if (val.equals("true")) //$NON-NLS-1$
 			box.setSelected(true);
 		else
 			box.setSelected(false);
@@ -104,9 +104,9 @@ public class OptionsView extends View {
 
 	static private void setBooleanPref(JCheckBox box, PrefName pn) {
 		if (box.isSelected())
-			Prefs.putPref(pn, "true");
+			Prefs.putPref(pn, "true"); //$NON-NLS-1$
 		else
-			Prefs.putPref(pn, "false");
+			Prefs.putPref(pn, "false"); //$NON-NLS-1$
 	}
 
 	// dbonly will only allow db changes
@@ -129,12 +129,12 @@ public class OptionsView extends View {
 
 		String ls = Prefs.getPref(PrefName.LINESPACING);
 
-		lsbox.addItem("-0.5");
-		lsbox.addItem("-0.3");
-		lsbox.addItem("-0.15");
-		lsbox.addItem("0.0");
-		lsbox.addItem("0.5");
-		lsbox.addItem("1.0");
+		lsbox.addItem("-0.5"); //$NON-NLS-1$
+		lsbox.addItem("-0.3"); //$NON-NLS-1$
+		lsbox.addItem("-0.15"); //$NON-NLS-1$
+		lsbox.addItem("0.0"); //$NON-NLS-1$
+		lsbox.addItem("0.5"); //$NON-NLS-1$
+		lsbox.addItem("1.0"); //$NON-NLS-1$
 
 		lsbox.setSelectedItem(ls);
 
@@ -147,13 +147,13 @@ public class OptionsView extends View {
 		// database
 		//
 		String dbtype = Prefs.getPref(PrefName.DBTYPE);
-		if (dbtype.equals("local")) {
+		if (dbtype.equals("local")) { //$NON-NLS-1$
 			localFileButton.setSelected(true);
 			jPanel9.setVisible(true);
 			jPanel8.setVisible(false);
 			jPanel12.setVisible(false);
 
-		} else if (dbtype.equals("remote")) {
+		} else if (dbtype.equals("remote")) { //$NON-NLS-1$
 			remoteButton.setSelected(true);
 			jPanel8.setVisible(false);
 			jPanel9.setVisible(false);
@@ -218,7 +218,7 @@ public class OptionsView extends View {
 		// print logo directory
 		String logo = Prefs.getPref(PrefName.LOGO);
 		logofile.setText(logo);
-		if (!logo.equals(""))
+		if (!logo.equals("")) //$NON-NLS-1$
 			logobox.setSelected(true);
 		else
 			logobox.setSelected(false);
@@ -250,13 +250,13 @@ public class OptionsView extends View {
 			lnfs.add(name);
 		}
 		try {
-			Class.forName("com.jgoodies.plaf.plastic.PlasticXPLookAndFeel");
-			lnfs.add("com.jgoodies.plaf.plastic.PlasticXPLookAndFeel");
+			Class.forName("com.jgoodies.plaf.plastic.PlasticXPLookAndFeel"); //$NON-NLS-1$
+			lnfs.add("com.jgoodies.plaf.plastic.PlasticXPLookAndFeel"); //$NON-NLS-1$
 		} catch (Exception e) {
 		}
 		try {
-			Class.forName("com.incors.plaf.kunststoff.KunststoffLookAndFeel");
-			lnfs.add("com.incors.plaf.kunststoff.KunststoffLookAndFeel");
+			Class.forName("com.incors.plaf.kunststoff.KunststoffLookAndFeel"); //$NON-NLS-1$
+			lnfs.add("com.incors.plaf.kunststoff.KunststoffLookAndFeel"); //$NON-NLS-1$
 		} catch (Exception e) {
 		}
 
@@ -275,7 +275,7 @@ public class OptionsView extends View {
 
 		// add locales
 		String nolocale = Prefs.getPref(PrefName.NOLOCALE);
-		if (!nolocale.equals("1")) {
+		if (!nolocale.equals("1")) { //$NON-NLS-1$
 			localebox.removeAllItems();
 
 			Locale locs[] = Locale.getAvailableLocales();
@@ -362,7 +362,7 @@ public class OptionsView extends View {
 		remtimelabel = new JLabel();
 		syncminlabel = new JLabel();
 		syncminlabel.setText(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("sync_mins"));
+				"resource/borg_resource").getString("sync_mins")); //$NON-NLS-1$ //$NON-NLS-2$
 		GridBagConstraints gridBagConstraints53 = new GridBagConstraints();
 		gridBagConstraints53.gridx = 1;
 		gridBagConstraints53.gridy = 1;
@@ -379,7 +379,7 @@ public class OptionsView extends View {
 
 		lslabel = new JLabel();
 		lslabel.setText(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("line_spacing"));
+				"resource/borg_resource").getString("line_spacing")); //$NON-NLS-1$ //$NON-NLS-2$
 		GridBagConstraints gridBagConstraints112 = new GridBagConstraints();
 		GridBagConstraints gridBagConstraints113 = new GridBagConstraints();
 		GridBagConstraints gridBagConstraints111 = new GridBagConstraints();
@@ -454,30 +454,30 @@ public class OptionsView extends View {
 		applyButton = new javax.swing.JButton();
 
 		// bsv 2004-12-20
-		cb_ucs_on = new javax.swing.JCheckBox("use user colors in month view");
+		cb_ucs_on = new javax.swing.JCheckBox(Resource.getResourceString("ucolortext0")); //$NON-NLS-1$
 		cb_ucs_ontodo = new javax.swing.JCheckBox(
-				"use user colors in todo list");
-		cb_ucs_marktodo = new javax.swing.JCheckBox("mark todo in month view");
-		tf_ucs_marker = new JTextField("! ");
-		btn_ucs_red = new JButtonKnowsBgColor("red", Color.WHITE, false);
-		btn_ucs_blue = new JButtonKnowsBgColor("blue", Color.WHITE, false);
-		btn_ucs_green = new JButtonKnowsBgColor("green", Color.WHITE, false);
-		btn_ucs_black = new JButtonKnowsBgColor("black", Color.WHITE, false);
-		btn_ucs_white = new JButtonKnowsBgColor("white", Color.WHITE, false);
-		btn_ucs_tasks = new JButtonKnowsBgColor("tasks", Color.WHITE, false);
-		btn_ucs_holidays = new JButtonKnowsBgColor("holidays", Color.WHITE,
+				Resource.getResourceString("ucolortext1")); //$NON-NLS-1$
+		cb_ucs_marktodo = new javax.swing.JCheckBox(Resource.getResourceString("ucolortext2")); //$NON-NLS-1$
+		tf_ucs_marker = new JTextField("! "); //$NON-NLS-1$
+		btn_ucs_red = new JButtonKnowsBgColor(Resource.getResourceString("ucolortext4"), Color.WHITE, false); //$NON-NLS-1$
+		btn_ucs_blue = new JButtonKnowsBgColor(Resource.getResourceString("ucolortext5"), Color.WHITE, false); //$NON-NLS-1$
+		btn_ucs_green = new JButtonKnowsBgColor(Resource.getResourceString("ucolortext6"), Color.WHITE, false); //$NON-NLS-1$
+		btn_ucs_black = new JButtonKnowsBgColor(Resource.getResourceString("ucolortext7"), Color.WHITE, false); //$NON-NLS-1$
+		btn_ucs_white = new JButtonKnowsBgColor(Resource.getResourceString("ucolortext8"), Color.WHITE, false); //$NON-NLS-1$
+		btn_ucs_tasks = new JButtonKnowsBgColor(Resource.getResourceString("ucolortext9"), Color.WHITE, false); //$NON-NLS-1$
+		btn_ucs_holidays = new JButtonKnowsBgColor(Resource.getResourceString("ucolortext10"), Color.WHITE, //$NON-NLS-1$
 				false);
-		btn_ucs_birthdays = new JButtonKnowsBgColor("birthdays", Color.WHITE,
+		btn_ucs_birthdays = new JButtonKnowsBgColor(Resource.getResourceString("ucolortext11"), Color.WHITE, //$NON-NLS-1$
 				false);
-		btn_ucs_default = new JButtonKnowsBgColor("default", Color.WHITE, true);
-		btn_ucs_holiday = new JButtonKnowsBgColor("holiday", Color.WHITE, true);
-		btn_ucs_halfday = new JButtonKnowsBgColor("halfday", Color.WHITE, true);
-		btn_ucs_vacation = new JButtonKnowsBgColor("vacation", Color.WHITE,
+		btn_ucs_default = new JButtonKnowsBgColor(Resource.getResourceString("ucolortext12"), Color.WHITE, true); //$NON-NLS-1$
+		btn_ucs_holiday = new JButtonKnowsBgColor(Resource.getResourceString("ucolortext13"), Color.WHITE, true); //$NON-NLS-1$
+		btn_ucs_halfday = new JButtonKnowsBgColor(Resource.getResourceString("ucolortext14"), Color.WHITE, true); //$NON-NLS-1$
+		btn_ucs_vacation = new JButtonKnowsBgColor(Resource.getResourceString("ucolortext15"), Color.WHITE, //$NON-NLS-1$
 				true);
-		btn_ucs_today = new JButtonKnowsBgColor("today", Color.WHITE, true);
-		btn_ucs_weekend = new JButtonKnowsBgColor("weekend", Color.WHITE, true);
-		btn_ucs_weekday = new JButtonKnowsBgColor("weekday", Color.WHITE, true);
-		btn_ucs_restore = new JButton("restore defaults");
+		btn_ucs_today = new JButtonKnowsBgColor(Resource.getResourceString("ucolortext16"), Color.WHITE, true); //$NON-NLS-1$
+		btn_ucs_weekend = new JButtonKnowsBgColor(Resource.getResourceString("ucolortext17"), Color.WHITE, true); //$NON-NLS-1$
+		btn_ucs_weekday = new JButtonKnowsBgColor(Resource.getResourceString("ucolortext18"), Color.WHITE, true); //$NON-NLS-1$
+		btn_ucs_restore = new JButton("restore defaults"); //$NON-NLS-1$
 		// TODO add action listener to btn_ucs_restore
 		btn_ucs_restore.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -520,8 +520,8 @@ public class OptionsView extends View {
 		// getContentPane().setLayout(new java.awt.GridBagLayout());
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-		setTitle(java.util.ResourceBundle.getBundle("resource/borg_resource")
-				.getString("Options"));
+		setTitle(java.util.ResourceBundle.getBundle("resource/borg_resource") //$NON-NLS-1$
+				.getString("Options")); //$NON-NLS-1$
 		addWindowListener(new java.awt.event.WindowAdapter() {
 			public void windowClosing(java.awt.event.WindowEvent evt) {
 				exitForm(evt);
@@ -531,10 +531,10 @@ public class OptionsView extends View {
 		jPanel2.setLayout(new java.awt.GridBagLayout());
 
 		jPanel2.setName(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("appearance"));
+				"resource/borg_resource").getString("appearance")); //$NON-NLS-1$ //$NON-NLS-2$
 		privbox.setText(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource")
-				.getString("Show_Private_Appointments"));
+				"resource/borg_resource") //$NON-NLS-1$
+				.getString("Show_Private_Appointments")); //$NON-NLS-1$
 		GridBagConstraints gridBagConstraints0 = new java.awt.GridBagConstraints();
 		gridBagConstraints0.gridx = 1;
 		gridBagConstraints0.gridy = 1;
@@ -545,8 +545,8 @@ public class OptionsView extends View {
 
 		pubbox
 				.setText(java.util.ResourceBundle.getBundle(
-						"resource/borg_resource").getString(
-						"Show_Public_Appointments"));
+						"resource/borg_resource").getString( //$NON-NLS-1$
+						"Show_Public_Appointments")); //$NON-NLS-1$
 		GridBagConstraints gridBagConstraints1 = new java.awt.GridBagConstraints();
 		gridBagConstraints1.gridx = 0;
 		gridBagConstraints1.gridy = 1;
@@ -556,7 +556,7 @@ public class OptionsView extends View {
 		jPanel2.add(pubbox, gridBagConstraints1);
 
 		incfont.setText(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("set_pre_font"));
+				"resource/borg_resource").getString("set_pre_font")); //$NON-NLS-1$ //$NON-NLS-2$
 		incfont.setBorder(new javax.swing.border.SoftBevelBorder(
 				javax.swing.border.BevelBorder.RAISED));
 		incfont.addActionListener(new java.awt.event.ActionListener() {
@@ -573,7 +573,7 @@ public class OptionsView extends View {
 		gridBagConstraints2.weightx = 1.0;
 		gridBagConstraints2.insets = new java.awt.Insets(4, 4, 4, 4);
 		decfont.setText(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("set_appt_font"));
+				"resource/borg_resource").getString("set_appt_font")); //$NON-NLS-1$ //$NON-NLS-2$
 		decfont.setBorder(new javax.swing.border.SoftBevelBorder(
 				javax.swing.border.BevelBorder.RAISED));
 		decfont.addActionListener(new java.awt.event.ActionListener() {
@@ -590,7 +590,7 @@ public class OptionsView extends View {
 		gridBagConstraints3.weightx = 1.0;
 		gridBagConstraints3.insets = new java.awt.Insets(4, 4, 4, 4);
 		jLabel4.setText(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("Look_and_Feel:"));
+				"resource/borg_resource").getString("Look_and_Feel:")); //$NON-NLS-1$ //$NON-NLS-2$
 		GridBagConstraints gridBagConstraints4 = new java.awt.GridBagConstraints();
 		gridBagConstraints4.gridx = 0;
 		gridBagConstraints4.gridy = 0;
@@ -611,7 +611,7 @@ public class OptionsView extends View {
 		jPanel2.add(lnfBox, gridBagConstraints5);
 
 		holiday1.setText(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("Show_U.S._Holidays"));
+				"resource/borg_resource").getString("Show_U.S._Holidays")); //$NON-NLS-1$ //$NON-NLS-2$
 		GridBagConstraints gridBagConstraints6 = new java.awt.GridBagConstraints();
 		gridBagConstraints6.gridx = 0;
 		gridBagConstraints6.gridy = 3;
@@ -621,7 +621,7 @@ public class OptionsView extends View {
 		jPanel2.add(holiday1, gridBagConstraints6);
 
 		mondaycb.setText(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("Week_Starts_with_Monday"));
+				"resource/borg_resource").getString("Week_Starts_with_Monday")); //$NON-NLS-1$ //$NON-NLS-2$
 		GridBagConstraints gridBagConstraints7 = new java.awt.GridBagConstraints();
 		gridBagConstraints7.gridx = 1;
 		gridBagConstraints7.gridy = 4;
@@ -631,7 +631,7 @@ public class OptionsView extends View {
 		jPanel2.add(mondaycb, gridBagConstraints7);
 
 		miltime.setText(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("Use_24_hour_time_format"));
+				"resource/borg_resource").getString("Use_24_hour_time_format")); //$NON-NLS-1$ //$NON-NLS-2$
 		GridBagConstraints gridBagConstraints8 = new java.awt.GridBagConstraints();
 		gridBagConstraints8.gridx = 0;
 		gridBagConstraints8.gridy = 4;
@@ -641,14 +641,14 @@ public class OptionsView extends View {
 		jPanel2.add(miltime, gridBagConstraints8);
 
 		jLabel5.setText(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("Week_View_Start_Hour:_"));
+				"resource/borg_resource").getString("Week_View_Start_Hour:_")); //$NON-NLS-1$ //$NON-NLS-2$
 		GridBagConstraints gridBagConstraints9 = new java.awt.GridBagConstraints();
 		gridBagConstraints9.gridx = 0;
 		gridBagConstraints9.gridy = 6;
 		gridBagConstraints9.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints9.insets = new java.awt.Insets(4, 4, 4, 4);
 		wkstarthr.setModel(new javax.swing.DefaultComboBoxModel(new String[] {
-				"4", "5", "6", "7", "8", "9", "10", "11" }));
+				"4", "5", "6", "7", "8", "9", "10", "11" })); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$
 		GridBagConstraints gridBagConstraints10 = new java.awt.GridBagConstraints();
 		gridBagConstraints10.gridx = 1;
 		gridBagConstraints10.gridy = 6;
@@ -656,8 +656,8 @@ public class OptionsView extends View {
 		gridBagConstraints10.anchor = java.awt.GridBagConstraints.WEST;
 		gridBagConstraints10.insets = new java.awt.Insets(4, 4, 4, 4);
 		wkendhr.setModel(new javax.swing.DefaultComboBoxModel(new String[] {
-				"12", "13", "14", "15", "16", "17", "18", "19", "20", "21",
-				"22", "23" }));
+				"12", "13", "14", "15", "16", "17", "18", "19", "20", "21", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$ //$NON-NLS-10$
+				"22", "23" })); //$NON-NLS-1$ //$NON-NLS-2$
 		GridBagConstraints gridBagConstraints11 = new java.awt.GridBagConstraints();
 		gridBagConstraints11.gridx = 1;
 		gridBagConstraints11.gridy = 7;
@@ -665,14 +665,14 @@ public class OptionsView extends View {
 		gridBagConstraints11.anchor = java.awt.GridBagConstraints.WEST;
 		gridBagConstraints11.insets = new java.awt.Insets(4, 4, 4, 4);
 		jLabel6.setText(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("Week_View_End_Hour:_"));
+				"resource/borg_resource").getString("Week_View_End_Hour:_")); //$NON-NLS-1$ //$NON-NLS-2$
 		GridBagConstraints gridBagConstraints12 = new java.awt.GridBagConstraints();
 		gridBagConstraints12.gridx = 0;
 		gridBagConstraints12.gridy = 7;
 		gridBagConstraints12.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints12.insets = new java.awt.Insets(4, 4, 4, 4);
 		wrapbox.setText(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("Wrap_Appointment_Text"));
+				"resource/borg_resource").getString("Wrap_Appointment_Text")); //$NON-NLS-1$ //$NON-NLS-2$
 		GridBagConstraints gridBagConstraints13 = new java.awt.GridBagConstraints();
 		gridBagConstraints13.gridx = 0;
 		gridBagConstraints13.gridy = 2;
@@ -681,7 +681,7 @@ public class OptionsView extends View {
 		jPanel2.add(wrapbox, gridBagConstraints13);
 
 		canadabox.setText(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("Show_Canadian_Holidays"));
+				"resource/borg_resource").getString("Show_Canadian_Holidays")); //$NON-NLS-1$ //$NON-NLS-2$
 		GridBagConstraints gridBagConstraints14 = new java.awt.GridBagConstraints();
 		gridBagConstraints14.gridx = 1;
 		gridBagConstraints14.gridy = 3;
@@ -690,7 +690,7 @@ public class OptionsView extends View {
 		jPanel2.add(canadabox, gridBagConstraints14);
 
 		jLabel8.setText(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("locale"));
+				"resource/borg_resource").getString("locale")); //$NON-NLS-1$ //$NON-NLS-2$
 		GridBagConstraints gridBagConstraints15 = new java.awt.GridBagConstraints();
 		gridBagConstraints15.gridx = 0;
 		gridBagConstraints15.gridy = 11;
@@ -702,7 +702,7 @@ public class OptionsView extends View {
 		gridBagConstraints16.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints16.insets = new java.awt.Insets(4, 4, 4, 4);
 		jButton1.setText(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("set_def_font"));
+				"resource/borg_resource").getString("set_def_font")); //$NON-NLS-1$ //$NON-NLS-2$
 		jButton1.setBorder(new javax.swing.border.SoftBevelBorder(
 				javax.swing.border.BevelBorder.RAISED));
 		jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -719,22 +719,22 @@ public class OptionsView extends View {
 		gridBagConstraints17.weightx = 1.0;
 		gridBagConstraints17.insets = new java.awt.Insets(4, 4, 4, 4);
 		colorsortbox.setText(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("colorsort"));
+				"resource/borg_resource").getString("colorsort")); //$NON-NLS-1$ //$NON-NLS-2$
 		GridBagConstraints gridBagConstraints18 = new java.awt.GridBagConstraints();
 		gridBagConstraints18.gridx = 0;
 		gridBagConstraints18.gridy = 5;
 		gridBagConstraints18.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints18.insets = new java.awt.Insets(4, 4, 4, 4);
 		jTabbedPane1.addTab(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("appearance"), jPanel2);
+				"resource/borg_resource").getString("appearance"), jPanel2); //$NON-NLS-1$ //$NON-NLS-2$
 
 		jPanel8.setLayout(new java.awt.GridBagLayout());
 
 		jPanel8.setBorder(new javax.swing.border.TitledBorder(
-				java.util.ResourceBundle.getBundle("resource/borg_resource")
-						.getString("MySQLInfo")));
+				java.util.ResourceBundle.getBundle("resource/borg_resource") //$NON-NLS-1$
+						.getString("MySQLInfo"))); //$NON-NLS-1$
 		jLabel7.setText(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("DatabaseName"));
+				"resource/borg_resource").getString("DatabaseName")); //$NON-NLS-1$ //$NON-NLS-2$
 		GridBagConstraints gridBagConstraints19 = new java.awt.GridBagConstraints();
 		gridBagConstraints19.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints19.insets = new java.awt.Insets(0, 4, 0, 4);
@@ -746,7 +746,7 @@ public class OptionsView extends View {
 		jPanel8.add(dbNameText, gridBagConstraints20);
 
 		jLabel17.setText(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("hostname"));
+				"resource/borg_resource").getString("hostname")); //$NON-NLS-1$ //$NON-NLS-2$
 		GridBagConstraints gridBagConstraints21 = new java.awt.GridBagConstraints();
 		gridBagConstraints21.gridx = 0;
 		gridBagConstraints21.gridy = 1;
@@ -762,7 +762,7 @@ public class OptionsView extends View {
 		jPanel8.add(dbHostText, gridBagConstraints22);
 
 		jLabel18.setText(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("port"));
+				"resource/borg_resource").getString("port")); //$NON-NLS-1$ //$NON-NLS-2$
 		GridBagConstraints gridBagConstraints23 = new java.awt.GridBagConstraints();
 		gridBagConstraints23.gridx = 0;
 		gridBagConstraints23.gridy = 2;
@@ -778,7 +778,7 @@ public class OptionsView extends View {
 		jPanel8.add(dbPortText, gridBagConstraints24);
 
 		jLabel19.setText(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("User"));
+				"resource/borg_resource").getString("User")); //$NON-NLS-1$ //$NON-NLS-2$
 		GridBagConstraints gridBagConstraints25 = new java.awt.GridBagConstraints();
 		gridBagConstraints25.gridx = 0;
 		gridBagConstraints25.gridy = 3;
@@ -794,7 +794,7 @@ public class OptionsView extends View {
 		jPanel8.add(dbUserText, gridBagConstraints26);
 
 		jLabel20.setText(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("Password"));
+				"resource/borg_resource").getString("Password")); //$NON-NLS-1$ //$NON-NLS-2$
 		GridBagConstraints gridBagConstraints27 = new java.awt.GridBagConstraints();
 		gridBagConstraints27.gridx = 0;
 		gridBagConstraints27.gridy = 4;
@@ -811,10 +811,10 @@ public class OptionsView extends View {
 		jPanel9.setLayout(new java.awt.GridBagLayout());
 
 		jPanel9.setBorder(new javax.swing.border.TitledBorder(
-				java.util.ResourceBundle.getBundle("resource/borg_resource")
-						.getString("localFileInfo")));
+				java.util.ResourceBundle.getBundle("resource/borg_resource") //$NON-NLS-1$
+						.getString("localFileInfo"))); //$NON-NLS-1$
 		jLabel3.setText(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("DataBase_Directory"));
+				"resource/borg_resource").getString("DataBase_Directory")); //$NON-NLS-1$ //$NON-NLS-2$
 		GridBagConstraints gridBagConstraints30 = new java.awt.GridBagConstraints();
 		gridBagConstraints30.gridx = 0;
 		gridBagConstraints30.gridy = 0;
@@ -833,7 +833,7 @@ public class OptionsView extends View {
 		jPanel9.add(dbDirText, gridBagConstraints31);
 
 		jButton5.setText(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("Browse"));
+				"resource/borg_resource").getString("Browse")); //$NON-NLS-1$ //$NON-NLS-2$
 		jButton5.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				jButton5ActionPerformed(evt);
@@ -849,9 +849,9 @@ public class OptionsView extends View {
 
 		chgdb.setForeground(new java.awt.Color(255, 0, 51));
 		chgdb.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/Refresh16.gif")));
+				"/resource/Refresh16.gif"))); //$NON-NLS-1$
 		chgdb.setText(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("Apply_DB_Change"));
+				"resource/borg_resource").getString("Apply_DB_Change")); //$NON-NLS-1$ //$NON-NLS-2$
 		chgdb.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				chgdbActionPerformed(evt);
@@ -859,14 +859,14 @@ public class OptionsView extends View {
 		});
 
 		jTabbedPane1.addTab(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("DatabaseInformation"),
+				"resource/borg_resource").getString("DatabaseInformation"), //$NON-NLS-1$ //$NON-NLS-2$
 				getJPanel4());
 		jPanel2.add(jLabel4, gridBagConstraints4);
 
 		jPanel1.setLayout(new java.awt.GridBagLayout());
 
 		jLabel1.setText(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("SMTP_Server"));
+				"resource/borg_resource").getString("SMTP_Server")); //$NON-NLS-1$ //$NON-NLS-2$
 		GridBagConstraints gridBagConstraints35 = new java.awt.GridBagConstraints();
 		gridBagConstraints35.gridx = 0;
 		gridBagConstraints35.gridy = 1;
@@ -875,7 +875,7 @@ public class OptionsView extends View {
 		jPanel1.add(jLabel1, gridBagConstraints35);
 
 		jLabel2.setText(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("Your_Email_Address"));
+				"resource/borg_resource").getString("Your_Email_Address")); //$NON-NLS-1$ //$NON-NLS-2$
 		GridBagConstraints gridBagConstraints36 = new java.awt.GridBagConstraints();
 		gridBagConstraints36.gridx = 0;
 		gridBagConstraints36.gridy = 2;
@@ -900,7 +900,7 @@ public class OptionsView extends View {
 		jPanel1.add(emailtext, gridBagConstraints38);
 
 		emailbox.setText(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("Enable_Email"));
+				"resource/borg_resource").getString("Enable_Email")); //$NON-NLS-1$ //$NON-NLS-2$
 		GridBagConstraints gridBagConstraints39 = new java.awt.GridBagConstraints();
 		gridBagConstraints39.gridx = 0;
 		gridBagConstraints39.gridy = 0;
@@ -910,13 +910,13 @@ public class OptionsView extends View {
 
 		jTabbedPane1
 				.addTab(java.util.ResourceBundle.getBundle(
-						"resource/borg_resource").getString("EmailParameters"),
+						"resource/borg_resource").getString("EmailParameters"), //$NON-NLS-1$ //$NON-NLS-2$
 						jPanel1);
 
 		jPanel5.setLayout(new java.awt.GridBagLayout());
 
 		colorprint.setText(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("Print_In_Color?"));
+				"resource/borg_resource").getString("Print_In_Color?")); //$NON-NLS-1$ //$NON-NLS-2$
 		GridBagConstraints gridBagConstraints40 = new java.awt.GridBagConstraints();
 		gridBagConstraints40.gridx = 0;
 		gridBagConstraints40.gridy = 0;
@@ -926,8 +926,8 @@ public class OptionsView extends View {
 
 		logobox
 				.setText(java.util.ResourceBundle.getBundle(
-						"resource/borg_resource").getString(
-						"Print_Logo_(GIF/JPG/PNG)"));
+						"resource/borg_resource").getString( //$NON-NLS-1$
+						"Print_Logo_(GIF/JPG/PNG)")); //$NON-NLS-1$
 		GridBagConstraints gridBagConstraints43 = new java.awt.GridBagConstraints();
 		gridBagConstraints43.gridx = 0;
 		gridBagConstraints43.gridy = 1;
@@ -944,7 +944,7 @@ public class OptionsView extends View {
 		jPanel5.add(logofile, gridBagConstraints41);
 
 		logobrowse.setText(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("Browse"));
+				"resource/borg_resource").getString("Browse")); //$NON-NLS-1$ //$NON-NLS-2$
 		logobrowse.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				logobrowseActionPerformed(evt);
@@ -958,17 +958,17 @@ public class OptionsView extends View {
 		jPanel5.add(logobrowse, gridBagConstraints42);
 
 		jTabbedPane1.addTab(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("printing"), jPanel5);
+				"resource/borg_resource").getString("printing"), jPanel5); //$NON-NLS-1$ //$NON-NLS-2$
 
 		jPanel3.setLayout(new java.awt.GridBagLayout());
 
 		autoupdate.setText(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("Auto_Update_Check"));
+				"resource/borg_resource").getString("Auto_Update_Check")); //$NON-NLS-1$ //$NON-NLS-2$
 		autoupdate
 				.setToolTipText(java.util.ResourceBundle
-						.getBundle("resource/borg_resource")
+						.getBundle("resource/borg_resource") //$NON-NLS-1$
 						.getString(
-								"Enable_a_daily_check_to_the_BORG_website_to_see_if_a_new_version_is_out._Does_not_update_the_product."));
+								"Enable_a_daily_check_to_the_BORG_website_to_see_if_a_new_version_is_out._Does_not_update_the_product.")); //$NON-NLS-1$
 		GridBagConstraints gridBagConstraints45 = new java.awt.GridBagConstraints();
 		gridBagConstraints45.gridx = 0;
 		gridBagConstraints45.gridy = 3;
@@ -976,12 +976,12 @@ public class OptionsView extends View {
 		gridBagConstraints45.anchor = java.awt.GridBagConstraints.WEST;
 		jPanel3.add(autoupdate, gridBagConstraints45);
 
-		versioncheck.setFont(new java.awt.Font("Dialog", 0, 10));
+		versioncheck.setFont(new java.awt.Font("Dialog", 0, 10)); //$NON-NLS-1$
 		versioncheck.setText(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("Check_for_updates_now"));
+				"resource/borg_resource").getString("Check_for_updates_now")); //$NON-NLS-1$ //$NON-NLS-2$
 		versioncheck.setToolTipText(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString(
-				"Check_for_the_latest_BORG_version_now"));
+				"resource/borg_resource").getString( //$NON-NLS-1$
+				"Check_for_the_latest_BORG_version_now")); //$NON-NLS-1$
 		versioncheck.setBorder(new javax.swing.border.SoftBevelBorder(
 				javax.swing.border.BevelBorder.RAISED));
 		versioncheck.addActionListener(new java.awt.event.ActionListener() {
@@ -997,7 +997,7 @@ public class OptionsView extends View {
 		jPanel3.add(versioncheck, gridBagConstraints46);
 
 		splashbox.setText(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("splash"));
+				"resource/borg_resource").getString("splash")); //$NON-NLS-1$ //$NON-NLS-2$
 		GridBagConstraints gridBagConstraints47 = new java.awt.GridBagConstraints();
 		gridBagConstraints47.gridx = 0;
 		gridBagConstraints47.gridy = 0;
@@ -1005,13 +1005,13 @@ public class OptionsView extends View {
 		jPanel3.add(splashbox, gridBagConstraints47);
 
 		backgbox.setText(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString(
-				"Start_in_background_(Windows_only,_TrayIcon_req)"));
+				"resource/borg_resource").getString( //$NON-NLS-1$
+				"Start_in_background_(Windows_only,_TrayIcon_req)")); //$NON-NLS-1$
 		backgbox
 				.setToolTipText(java.util.ResourceBundle
-						.getBundle("resource/borg_resource")
+						.getBundle("resource/borg_resource") //$NON-NLS-1$
 						.getString(
-								"Do_not_open_todo_and_month_view_on_startup,_start_in_systray"));
+								"Do_not_open_todo_and_month_view_on_startup,_start_in_systray")); //$NON-NLS-1$
 		GridBagConstraints gridBagConstraints48 = new java.awt.GridBagConstraints();
 		gridBagConstraints48.gridx = 0;
 		gridBagConstraints48.gridy = 1;
@@ -1021,7 +1021,7 @@ public class OptionsView extends View {
 		jPanel3.add(backgbox, gridBagConstraints48);
 
 		stackbox.setText(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("stackonerr"));
+				"resource/borg_resource").getString("stackonerr")); //$NON-NLS-1$ //$NON-NLS-2$
 		GridBagConstraints gridBagConstraints49 = new java.awt.GridBagConstraints();
 		gridBagConstraints49.gridx = 0;
 		gridBagConstraints49.gridy = 4;
@@ -1029,7 +1029,7 @@ public class OptionsView extends View {
 		jPanel3.add(stackbox, gridBagConstraints49);
 
 		icaltodobox.setText(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("icaltodo"));
+				"resource/borg_resource").getString("icaltodo")); //$NON-NLS-1$ //$NON-NLS-2$
 		GridBagConstraints gridBagConstraints50 = new java.awt.GridBagConstraints();
 		gridBagConstraints50.gridx = 0;
 		gridBagConstraints50.gridy = 5;
@@ -1037,18 +1037,18 @@ public class OptionsView extends View {
 		jPanel3.add(icaltodobox, gridBagConstraints50);
 
 		revDayEditbox.setText(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("revdayedit"));
+				"resource/borg_resource").getString("revdayedit")); //$NON-NLS-1$ //$NON-NLS-2$
 		GridBagConstraints gridBagConstraints51 = new java.awt.GridBagConstraints();
 		gridBagConstraints51.gridx = 0;
 		gridBagConstraints51.gridy = 7;
 		gridBagConstraints51.fill = java.awt.GridBagConstraints.BOTH;
 		jTabbedPane1.addTab(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("misc"), jPanel3);
+				"resource/borg_resource").getString("misc"), jPanel3); //$NON-NLS-1$ //$NON-NLS-2$
 
 		jPanel6.setLayout(new java.awt.GridBagLayout());
 
 		popenablebox.setText(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("enable_popups"));
+				"resource/borg_resource").getString("enable_popups")); //$NON-NLS-1$ //$NON-NLS-2$
 		GridBagConstraints gridBagConstraints52 = new java.awt.GridBagConstraints();
 		gridBagConstraints52.gridx = 0;
 		gridBagConstraints52.gridy = 0;
@@ -1057,7 +1057,7 @@ public class OptionsView extends View {
 		jPanel6.add(popenablebox, gridBagConstraints52);
 
 		soundbox.setText(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("beeps"));
+				"resource/borg_resource").getString("beeps")); //$NON-NLS-1$ //$NON-NLS-2$
 		GridBagConstraints gridBagConstraints59 = new java.awt.GridBagConstraints();
 		gridBagConstraints59.gridx = 0;
 		gridBagConstraints59.gridy = 5;
@@ -1067,7 +1067,7 @@ public class OptionsView extends View {
 
 		jLabel15.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
 		jLabel15.setText(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("min_between_chks"));
+				"resource/borg_resource").getString("min_between_chks")); //$NON-NLS-1$ //$NON-NLS-2$
 		GridBagConstraints gridBagConstraints63 = new java.awt.GridBagConstraints();
 		gridBagConstraints63.gridx = 0;
 		gridBagConstraints63.gridy = 1;
@@ -1092,7 +1092,7 @@ public class OptionsView extends View {
 		jPanel6.add(jSeparator1, gridBagConstraints65);
 
 		jLabel16.setText(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("restart_req"));
+				"resource/borg_resource").getString("restart_req")); //$NON-NLS-1$ //$NON-NLS-2$
 		GridBagConstraints gridBagConstraints66 = new java.awt.GridBagConstraints();
 		gridBagConstraints66.gridx = 2;
 		gridBagConstraints66.gridy = 1;
@@ -1102,13 +1102,13 @@ public class OptionsView extends View {
 
 		jTabbedPane1
 				.addTab(java.util.ResourceBundle.getBundle(
-						"resource/borg_resource").getString("popup_reminders"),
+						"resource/borg_resource").getString("popup_reminders"), //$NON-NLS-1$ //$NON-NLS-2$
 						jPanel6);
 
 		sharedbox.setText(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("shared"));
+				"resource/borg_resource").getString("shared")); //$NON-NLS-1$ //$NON-NLS-2$
 		jTabbedPane1.addTab(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("Multi_User"), jPanel7);
+				"resource/borg_resource").getString("Multi_User"), jPanel7); //$NON-NLS-1$ //$NON-NLS-2$
 
 		GridBagConstraints gridBagConstraints67 = new java.awt.GridBagConstraints();
 		gridBagConstraints67.gridx = 0;
@@ -1120,9 +1120,9 @@ public class OptionsView extends View {
 		// getContentPane().add(jTabbedPane1, gridBagConstraints67);
 
 		jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/Stop16.gif")));
+				"/resource/Stop16.gif"))); //$NON-NLS-1$
 		jButton2.setText(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("Dismiss"));
+				"resource/borg_resource").getString("Dismiss")); //$NON-NLS-1$ //$NON-NLS-2$
 		jButton2.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				jButton2ActionPerformed(evt);
@@ -1130,9 +1130,9 @@ public class OptionsView extends View {
 		});
 
 		applyButton.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/Save16.gif")));
+				"/resource/Save16.gif"))); //$NON-NLS-1$
 		applyButton.setText(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("apply"));
+				"resource/borg_resource").getString("apply")); //$NON-NLS-1$ //$NON-NLS-2$
 		applyButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				apply(evt);
@@ -1207,7 +1207,7 @@ public class OptionsView extends View {
 		gridBagConstraints116.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints116.insets = new java.awt.Insets(4, 4, 4, 4);
 		remtimelabel.setText(java.util.ResourceBundle.getBundle(
-				"resource/borg_resource").getString("reminder_time"));
+				"resource/borg_resource").getString("reminder_time")); //$NON-NLS-1$ //$NON-NLS-2$
 		gridBagConstraints212.gridx = 1;
 		gridBagConstraints212.gridy = 3;
 		gridBagConstraints212.weightx = 1.0;
@@ -1219,7 +1219,7 @@ public class OptionsView extends View {
 		jPanel2.add(incfont, gridBagConstraints2);
 		jPanel2.add(decfont, gridBagConstraints3);
 		jPanel3.add(revDayEditbox, gridBagConstraints51);
-		jTabbedPane1.addTab("User Color Scheme", null, getJPanelUCS(), null);
+		jTabbedPane1.addTab("User Color Scheme", null, getJPanelUCS(), null); //$NON-NLS-1$
 		jPanel3.add(getExputcbox(), gridBagConstraints111);
 		jPanel3.add(getPalmcb(), gridBagConstraints310);
 		jPanel6.add(getUseBeep(), gridBagConstraints112);
@@ -1244,11 +1244,11 @@ public class OptionsView extends View {
 
 	private void dbTypeAction(java.awt.event.ActionEvent evt)// GEN-FIRST:event_dbTypeAction
 	{// GEN-HEADEREND:event_dbTypeAction
-		if (evt.getActionCommand().equals("mysql")) {
+		if (evt.getActionCommand().equals("mysql")) { //$NON-NLS-1$
 			jPanel8.setVisible(true);
 			jPanel9.setVisible(false);
 			jPanel12.setVisible(false);
-		} else if (evt.getActionCommand().equals("remote")) {
+		} else if (evt.getActionCommand().equals("remote")) { //$NON-NLS-1$
 			jPanel8.setVisible(false);
 			jPanel9.setVisible(false);
 			jPanel12.setVisible(true);
@@ -1364,8 +1364,8 @@ public class OptionsView extends View {
 		// (bsv 2004-12-20)
 
 		if (!logobox.isSelected()) {
-			Prefs.putPref(PrefName.LOGO, "");
-			logofile.setText("");
+			Prefs.putPref(PrefName.LOGO, ""); //$NON-NLS-1$
+			logofile.setText(""); //$NON-NLS-1$
 		} else {
 			Prefs.putPref(PrefName.LOGO, logofile.getText());
 		}
@@ -1388,7 +1388,7 @@ public class OptionsView extends View {
 		String oldlnf = Prefs.getPref(PrefName.LNF);
 		if (!newlnf.equals(oldlnf)) {
 			try {
-				UIManager.getLookAndFeelDefaults().put("ClassLoader",
+				UIManager.getLookAndFeelDefaults().put("ClassLoader", //$NON-NLS-1$
 						getClass().getClassLoader());
 				UIManager.setLookAndFeel(newlnf);
 				// don't try to change the main window l&f - is doesn't work
@@ -1432,19 +1432,19 @@ public class OptionsView extends View {
 	private void chgdbActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_chgdbActionPerformed
 	{// GEN-HEADEREND:event_chgdbActionPerformed
 		int ret = JOptionPane.showConfirmDialog(null, Resource
-				.getResourceString("Really_change_the_database?"), Resource
-				.getResourceString("Confirm_DB_Change"),
+				.getResourceString("Really_change_the_database?"), Resource //$NON-NLS-1$
+				.getResourceString("Confirm_DB_Change"), //$NON-NLS-1$
 				JOptionPane.YES_NO_OPTION);
 		if (ret == JOptionPane.YES_OPTION) {
 			String dbdir = dbDirText.getText();
 			Prefs.putPref(PrefName.DBDIR, dbdir);
 
 			if (MySQLButton.isSelected()) {
-				Prefs.putPref(PrefName.DBTYPE, "mysql");
+				Prefs.putPref(PrefName.DBTYPE, "mysql"); //$NON-NLS-1$
 			} else if( remoteButton.isSelected()){
-				Prefs.putPref(PrefName.DBTYPE, "remote");
+				Prefs.putPref(PrefName.DBTYPE, "remote"); //$NON-NLS-1$
 			}else {
-				Prefs.putPref(PrefName.DBTYPE, "local");
+				Prefs.putPref(PrefName.DBTYPE, "local"); //$NON-NLS-1$
 			}
 
 			Prefs.putPref(PrefName.DBNAME, dbNameText.getText());
@@ -1471,10 +1471,10 @@ public class OptionsView extends View {
 		while (true) {
 			JFileChooser chooser = new JFileChooser();
 
-			chooser.setCurrentDirectory(new File("."));
+			chooser.setCurrentDirectory(new File(".")); //$NON-NLS-1$
 			chooser
 					.setDialogTitle(Resource
-							.getResourceString("Please_choose_the_logo_file_-_GIF/JPG/PNG_only"));
+							.getResourceString("Please_choose_the_logo_file_-_GIF/JPG/PNG_only")); //$NON-NLS-1$
 			chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
 			int returnVal = chooser.showOpenDialog(null);
@@ -1485,11 +1485,11 @@ public class OptionsView extends View {
 			File lf = new File(logo);
 			String err = null;
 			if (!lf.exists()) {
-				err = Resource.getResourceString("File_[") + logo
-						+ Resource.getResourceString("]_does_not_exist");
+				err = Resource.getResourceString("File_[") + logo //$NON-NLS-1$
+						+ Resource.getResourceString("]_does_not_exist"); //$NON-NLS-1$
 			} else if (!lf.canRead()) {
-				err = Resource.getResourceString("Database_Directory_[") + logo
-						+ Resource.getResourceString("]_is_not_writable");
+				err = Resource.getResourceString("Database_Directory_[") + logo //$NON-NLS-1$
+						+ Resource.getResourceString("]_is_not_writable"); //$NON-NLS-1$
 			}
 
 			if (err == null)
@@ -1508,10 +1508,10 @@ public class OptionsView extends View {
 		try {
 			// get version and compare
 			URL webverurl = new URL(
-					"http://borg-calendar.sourceforge.net/latest_version");
+					"http://borg-calendar.sourceforge.net/latest_version"); //$NON-NLS-1$
 			InputStream is = webverurl.openStream();
 			int i;
-			String webver = "";
+			String webver = ""; //$NON-NLS-1$
 			while (true) {
 				i = is.read();
 				if (i == -1 || i == '\n' || i == '\r')
@@ -1519,15 +1519,15 @@ public class OptionsView extends View {
 				webver += (char) i;
 			}
 
-			String info = Resource.getResourceString("Your_BORG_version_=_")
+			String info = Resource.getResourceString("Your_BORG_version_=_") //$NON-NLS-1$
 					+ Resource.getVersion()
 					+ Resource
-							.getResourceString("Latest_version_at_sourceforge_=_")
+							.getResourceString("Latest_version_at_sourceforge_=_") //$NON-NLS-1$
 					+ webver;
 			JOptionPane.showMessageDialog(null, info, Resource
-					.getResourceString("BORG_Version_Check"),
+					.getResourceString("BORG_Version_Check"), //$NON-NLS-1$
 					JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getClass()
-							.getResource("/resource/borg.jpg")));
+							.getResource("/resource/borg.jpg"))); //$NON-NLS-1$
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
 		}
@@ -1589,9 +1589,9 @@ public class OptionsView extends View {
 		while (true) {
 			JFileChooser chooser = new JFileChooser();
 
-			chooser.setCurrentDirectory(new File("."));
+			chooser.setCurrentDirectory(new File(".")); //$NON-NLS-1$
 			chooser
-					.setDialogTitle("Please choose directory for database files");
+					.setDialogTitle("Please choose directory for database files"); //$NON-NLS-1$
 			chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
 			int returnVal = chooser.showOpenDialog(null);
@@ -1602,9 +1602,9 @@ public class OptionsView extends View {
 			File dir = new File(dbdir);
 			String err = null;
 			if (!dir.exists()) {
-				err = "Database Directory [" + dbdir + "] does not exist";
+				err = "Database Directory [" + dbdir + "] does not exist"; //$NON-NLS-1$ //$NON-NLS-2$
 			} else if (!dir.isDirectory()) {
-				err = "Database Directory [" + dbdir + "] is not a directory";
+				err = "Database Directory [" + dbdir + "] is not a directory"; //$NON-NLS-1$ //$NON-NLS-2$
 			}
 
 			if (err == null)
@@ -1931,7 +1931,7 @@ public class OptionsView extends View {
 		if (doyBox == null) {
 			doyBox = new JCheckBox();
 			doyBox.setText(java.util.ResourceBundle.getBundle(
-					"resource/borg_resource").getString("showdoy"));
+					"resource/borg_resource").getString("showdoy")); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		return doyBox;
 	}
@@ -1945,7 +1945,7 @@ public class OptionsView extends View {
 		if (exputcbox == null) {
 			exputcbox = new JCheckBox();
 			exputcbox.setText(java.util.ResourceBundle.getBundle(
-					"resource/borg_resource").getString("exputc"));
+					"resource/borg_resource").getString("exputc")); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		return exputcbox;
 	}
@@ -1993,7 +1993,7 @@ public class OptionsView extends View {
 		if (palmcb == null) {
 			palmcb = new JCheckBox();
 			palmcb.setText(java.util.ResourceBundle.getBundle(
-					"resource/borg_resource").getString("palmopt"));
+					"resource/borg_resource").getString("palmopt")); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		return palmcb;
 	}
@@ -2007,7 +2007,7 @@ public class OptionsView extends View {
 		if (useBeep == null) {
 			useBeep = new JCheckBox();
 			useBeep.setText(java.util.ResourceBundle.getBundle(
-					"resource/borg_resource").getString("Use_system_beep"));
+					"resource/borg_resource").getString("Use_system_beep")); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		return useBeep;
 	}
@@ -2033,7 +2033,7 @@ public class OptionsView extends View {
 		if (truncbox == null) {
 			truncbox = new JCheckBox();
 			truncbox.setText(java.util.ResourceBundle.getBundle(
-					"resource/borg_resource").getString("truncate_appts"));
+					"resource/borg_resource").getString("truncate_appts")); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		return truncbox;
 	}
@@ -2079,7 +2079,7 @@ public class OptionsView extends View {
 		if (emailtimebox == null) {
 			emailtimebox = new JSpinner(new SpinnerDateModel());
 			JSpinner.DateEditor de = new JSpinner.DateEditor(emailtimebox,
-					"HH:mm");
+					"HH:mm"); //$NON-NLS-1$
 			emailtimebox.setEditor(de);
 			// emailtimebox.setValue(new Date());
 
@@ -2114,9 +2114,9 @@ public class OptionsView extends View {
 	private JRadioButton getLocalFileButton() {
 		if (localFileButton == null) {
 			localFileButton = new JRadioButton();
-			localFileButton.setActionCommand("local");
+			localFileButton.setActionCommand("local"); //$NON-NLS-1$
 			localFileButton.setText(ResourceBundle.getBundle(
-					"resource/borg_resource").getString("localFile"));
+					"resource/borg_resource").getString("localFile")); //$NON-NLS-1$ //$NON-NLS-2$
 			localFileButton
 					.addActionListener(new java.awt.event.ActionListener() {
 						public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -2135,8 +2135,8 @@ public class OptionsView extends View {
 	private JRadioButton getMySQLButton() {
 		if (MySQLButton == null) {
 			MySQLButton = new JRadioButton();
-			MySQLButton.setActionCommand("mysql");
-			MySQLButton.setText("MySQL");
+			MySQLButton.setActionCommand("mysql"); //$NON-NLS-1$
+			MySQLButton.setText("MySQL"); //$NON-NLS-1$
 			MySQLButton.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					dbTypeAction(e);
@@ -2169,14 +2169,14 @@ public class OptionsView extends View {
 			gridBagConstraints.gridy = 0; // Generated
 
 			jLabel = new JLabel();
-			jLabel.setText("URL"); // Generated
+			jLabel.setText("URL"); // Generated //$NON-NLS-1$
 			jLabel.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT); // Generated
 			jLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT); // Generated
 			jPanel12 = new JPanel();
 			jPanel12.setLayout(new GridBagLayout()); // Generated
 			jPanel12.setBorder(javax.swing.BorderFactory.createTitledBorder(
 					null, ResourceBundle.getBundle(
-					"resource/borg_resource").getString("rem_server_info"),
+					"resource/borg_resource").getString("rem_server_info"), //$NON-NLS-1$ //$NON-NLS-2$
 					javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
 					javax.swing.border.TitledBorder.DEFAULT_POSITION, null,
 					null)); // Generated
@@ -2206,9 +2206,9 @@ public class OptionsView extends View {
 	private JRadioButton getRemoteButton() {
 		if (remoteButton == null) {
 			remoteButton = new JRadioButton();
-			remoteButton.setActionCommand("remote"); // Generated
+			remoteButton.setActionCommand("remote"); // Generated //$NON-NLS-1$
 			remoteButton.setText(ResourceBundle.getBundle(
-			"resource/borg_resource").getString("rem_server")); // Generated
+			"resource/borg_resource").getString("rem_server")); // Generated //$NON-NLS-1$ //$NON-NLS-2$
 			remoteButton.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					dbTypeAction(e);

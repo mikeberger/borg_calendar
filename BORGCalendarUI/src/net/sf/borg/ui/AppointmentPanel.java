@@ -12,6 +12,10 @@
  */
 package net.sf.borg.ui;
 
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.text.SimpleDateFormat;
@@ -24,12 +28,15 @@ import java.util.Iterator;
 
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JToggleButton;
+import javax.swing.ListCellRenderer;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 
@@ -47,7 +54,6 @@ import net.sf.borg.model.Repeat;
 
 class AppointmentPanel extends JPanel {
 
-
 	private int key_;
 
 	private int year_;
@@ -64,11 +70,87 @@ class AppointmentPanel extends JPanel {
 			new String[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
 					"10", "11", "12", "13", "14", "15", "16", "17", "18", "19",
 					"20", "21", "22", "23" });
+	
+	//private String colors[] = { "black", "red", "blue", "green", "white", "strike" };
+	private String colors[] = { "red", "blue", "green", "black", "white", "strike" };
+	
+	static private class SolidComboBoxIcon implements Icon
+	{
+		private static Color color = Color.BLACK;
+		private static final int h = 10;
+		private static final int w = 60;
+		public SolidComboBoxIcon( Color col ){ color = col; }
+		public int getIconHeight(){ return h; }
+		public int getIconWidth(){ return w; }
+		public void paintIcon(Component c,Graphics g,int x,int y)
+		{
+			Graphics2D g2 = (Graphics2D)g;
+			g2.setColor( Color.BLACK);
+			g2.drawRect(x,y,w,h);
+			g2.setColor(color);
+			g2.fillRect(x, y, w,h);
+		}
+	}
+	
+	static private class ColorBoxRenderer extends JLabel implements ListCellRenderer {
+
+		public ColorBoxRenderer() {
+			setOpaque(true);
+			setHorizontalAlignment(CENTER);
+			setVerticalAlignment(CENTER);
+		}
+
+		public Component getListCellRendererComponent(JList list, Object value,
+				int index, boolean isSelected, boolean cellHasFocus) {
+			String sel = (String) value;
+			
+			if (isSelected) {
+	            setBackground(list.getSelectionBackground());
+	        } else {
+	            setBackground(list.getBackground());
+	        }
+
+			setText(" ");
+			if( sel.equals("black") )
+			{
+				setIcon( new SolidComboBoxIcon(new Color(Integer.parseInt(Prefs.getPref(PrefName.UCS_BLACK)))));
+			}
+			else if( sel.equals("red") )
+			{
+				setIcon( new SolidComboBoxIcon(new Color(Integer.parseInt(Prefs.getPref(PrefName.UCS_RED)))));
+			}
+			else if( sel.equals("blue") )
+			{
+				setIcon( new SolidComboBoxIcon(new Color(Integer.parseInt(Prefs.getPref(PrefName.UCS_BLUE)))));
+			}
+			else if( sel.equals("green") )
+			{
+				setIcon( new SolidComboBoxIcon(new Color(Integer.parseInt(Prefs.getPref(PrefName.UCS_GREEN)))));
+			}			
+			else if( sel.equals("white") )
+			{
+				setIcon( new SolidComboBoxIcon(new Color(Integer.parseInt(Prefs.getPref(PrefName.UCS_WHITE)))));
+			}
+			else
+			{
+				setForeground( Color.BLACK);
+				setText(Resource.getResourceString("strike"));
+				setIcon(null);
+			}
+
+			return this;
+		}
+
+	}
 
 	public AppointmentPanel(int year, int month, int day) {
 
 		// init GUI
 		initComponents();
+		
+		ColorBoxRenderer cbr = new ColorBoxRenderer();
+		colorbox.setRenderer(cbr);
+		colorbox.setEditable(false);
 
 		// set up the spinner for repeat times
 		SpinnerNumberModel mod = (SpinnerNumberModel) s_times.getModel();
@@ -96,12 +178,12 @@ class AppointmentPanel extends JPanel {
 		}
 
 		for (int i = 0; i < colors.length; i++) {
-			colorbox.addItem(Resource.getResourceString(colors[i]));
+			colorbox.addItem(colors[i]);
 		}
 
-		for (int i = 0; ; i++) {
+		for (int i = 0;; i++) {
 			String fs = Repeat.getFreqString(i);
-			if( fs == null )
+			if (fs == null)
 				break;
 			freq.addItem(fs);
 		}
@@ -144,7 +226,6 @@ class AppointmentPanel extends JPanel {
 		dl5.setSelected(false);
 		dl6.setSelected(false);
 		dl7.setSelected(false);
-	
 
 		// get default appt values, if any
 		Appointment defaultAppt = null;
@@ -188,8 +269,10 @@ class AppointmentPanel extends JPanel {
 			foreverbox.setSelected(false);
 			rptnumbox.setSelected(false);
 			rptnumbox.setEnabled(false);
-			jLabel2.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("*****_NEW_APPT_*****")); 
-																				 
+			jLabel2
+					.setText(java.util.ResourceBundle.getBundle(
+							"resource/borg_resource").getString(
+							"*****_NEW_APPT_*****"));
 
 			// only add menu choice active for a new appt
 
@@ -198,7 +281,6 @@ class AppointmentPanel extends JPanel {
 
 			setCustRemTimes(null);
 			setPopupTimesString();
-		
 
 		} else {
 
@@ -207,7 +289,9 @@ class AppointmentPanel extends JPanel {
 				// get the appt Appointment from the calmodel
 				Appointment r = null;
 				if (key_ == -1) {
-					jLabel2.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("*****_NEW_APPT_*****")); 
+					jLabel2.setText(java.util.ResourceBundle.getBundle(
+							"resource/borg_resource").getString(
+							"*****_NEW_APPT_*****"));
 					r = defaultAppt;
 				} else {
 					// erase New Appt indicator
@@ -215,7 +299,6 @@ class AppointmentPanel extends JPanel {
 					r = AppointmentModel.getReference().getAppt(key_);
 				}
 
-				
 				// set hour and minute
 				Date d = r.getDate();
 				GregorianCalendar g = new GregorianCalendar();
@@ -304,7 +387,7 @@ class AppointmentPanel extends JPanel {
 				if (cl != null) {
 					try {
 						colorbox
-								.setSelectedItem(Resource.getResourceString(cl));
+								.setSelectedItem(cl);
 					} catch (Exception e) {
 						colorbox.setSelectedIndex(0);
 					}
@@ -317,36 +400,36 @@ class AppointmentPanel extends JPanel {
 
 				// repeat frequency
 				String rpt = Repeat.getFreq(r.getFrequency());
-				
+
 				if (rpt != null && rpt.equals(Repeat.NDAYS)) {
-					ndays.setValue(new Integer(Repeat.getNDays(r.getFrequency())));
+					ndays.setValue(new Integer(Repeat
+							.getNDays(r.getFrequency())));
 				}
-				
+
 				if (rpt != null && rpt.equals(Repeat.DAYLIST)) {
 					Collection daylist = Repeat.getDaylist(r.getFrequency());
-					if( daylist != null )
-					{
-						if( daylist.contains(new Integer(Calendar.SUNDAY)))
+					if (daylist != null) {
+						if (daylist.contains(new Integer(Calendar.SUNDAY)))
 							dl1.setSelected(true);
-						if( daylist.contains(new Integer(Calendar.MONDAY)))
+						if (daylist.contains(new Integer(Calendar.MONDAY)))
 							dl2.setSelected(true);
-						if( daylist.contains(new Integer(Calendar.TUESDAY)))
+						if (daylist.contains(new Integer(Calendar.TUESDAY)))
 							dl3.setSelected(true);
-						if( daylist.contains(new Integer(Calendar.WEDNESDAY)))
+						if (daylist.contains(new Integer(Calendar.WEDNESDAY)))
 							dl4.setSelected(true);
-						if( daylist.contains(new Integer(Calendar.THURSDAY)))
+						if (daylist.contains(new Integer(Calendar.THURSDAY)))
 							dl5.setSelected(true);
-						if( daylist.contains(new Integer(Calendar.FRIDAY)))
+						if (daylist.contains(new Integer(Calendar.FRIDAY)))
 							dl6.setSelected(true);
-						if( daylist.contains(new Integer(Calendar.SATURDAY)))
+						if (daylist.contains(new Integer(Calendar.SATURDAY)))
 							dl7.setSelected(true);
 					}
 				}
-				
-			    rptnumbox.setSelected(Repeat.getRptNum(r.getFrequency()));
 
-			    freq.setSelectedItem(Repeat.getFreqString(rpt));
-			    
+				rptnumbox.setSelected(Repeat.getRptNum(r.getFrequency()));
+
+				freq.setSelectedItem(Repeat.getFreqString(rpt));
+
 				// repeat times
 				Integer tm = r.getTimes();
 				if (tm != null) {
@@ -398,7 +481,7 @@ class AppointmentPanel extends JPanel {
 	 * NOT modify this code. The content of this method is always regenerated by
 	 * the Form Editor.
 	 */
-	private void initComponents()//GEN-BEGIN:initComponents
+	private void initComponents()// GEN-BEGIN:initComponents
 	{
 
 		GridBagConstraints gridBagConstraints18 = new GridBagConstraints();
@@ -444,7 +527,7 @@ class AppointmentPanel extends JPanel {
 		setLayout(new java.awt.GridBagLayout());
 
 		jLabel2.setForeground(java.awt.Color.red);
-		//jLabel2.setText("jLabel2");
+		// jLabel2.setText("jLabel2");
 		GridBagConstraints gridBagConstraints2 = new java.awt.GridBagConstraints();
 		gridBagConstraints2.gridx = 0;
 		gridBagConstraints2.gridy = 0;
@@ -796,7 +879,7 @@ class AppointmentPanel extends JPanel {
 		gridBagConstraints88.weighty = 0.0;
 		gridBagConstraints88.insets = new java.awt.Insets(4, 4, 4, 4);
 
-		//        this.add(jPanel, gridBagConstraints88);
+		// this.add(jPanel, gridBagConstraints88);
 
 		GridBagConstraints gridBagConstraints87 = new java.awt.GridBagConstraints();
 		gridBagConstraints87.gridx = 0;
@@ -806,10 +889,10 @@ class AppointmentPanel extends JPanel {
 		gridBagConstraints87.weighty = 0.0;
 		gridBagConstraints87.insets = new java.awt.Insets(4, 4, 4, 4);
 		this.add(jPanel5, gridBagConstraints87);
-	}//GEN-END:initComponents
+	}// GEN-END:initComponents
 
-	private void saveDefaults(java.awt.event.ActionEvent evt)//GEN-FIRST:event_saveDefaults
-	{//GEN-HEADEREND:event_saveDefaults
+	private void saveDefaults(java.awt.event.ActionEvent evt)// GEN-FIRST:event_saveDefaults
+	{// GEN-HEADEREND:event_saveDefaults
 
 		Appointment r = new Appointment();
 		try {
@@ -824,9 +907,9 @@ class AppointmentPanel extends JPanel {
 		String s = xt.toString();
 		Prefs.putPref(PrefName.DEFAULT_APPT, s);
 
-	}//GEN-LAST:event_saveDefaults
+	}// GEN-LAST:event_saveDefaults
 
-	private void savebuttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_savebuttonActionPerformed
+	private void savebuttonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_savebuttonActionPerformed
 		if (key_ == -1) {
 			add_appt();
 		} else {
@@ -835,10 +918,10 @@ class AppointmentPanel extends JPanel {
 
 		showapp(-1);
 
-	}//GEN-LAST:event_savebuttonActionPerformed
+	}// GEN-LAST:event_savebuttonActionPerformed
 
-	private void foreverboxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_foreverboxActionPerformed
-	{//GEN-HEADEREND:event_foreverboxActionPerformed
+	private void foreverboxActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_foreverboxActionPerformed
+	{// GEN-HEADEREND:event_foreverboxActionPerformed
 		if (foreverbox.isSelected()) {
 			s_times.setValue(new Integer(0));
 			s_times.setEnabled(false);
@@ -847,15 +930,15 @@ class AppointmentPanel extends JPanel {
 			s_times.setValue(new Integer(1));
 			s_times.setEnabled(true);
 		}
-	}//GEN-LAST:event_foreverboxActionPerformed
+	}// GEN-LAST:event_foreverboxActionPerformed
 
-	private void chgdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chgdateActionPerformed
+	private void chgdateActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_chgdateActionPerformed
 		newdatefield.setEnabled(chgdate.isSelected());
 
-	}//GEN-LAST:event_chgdateActionPerformed
+	}// GEN-LAST:event_chgdateActionPerformed
 
-	private void notecbActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_notecbActionPerformed
-	{//GEN-HEADEREND:event_notecbActionPerformed
+	private void notecbActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_notecbActionPerformed
+	{// GEN-HEADEREND:event_notecbActionPerformed
 		if (notecb.isSelected()) {
 			String mt = Prefs.getPref(PrefName.MILTIME);
 			if (mt.equals("true")) {
@@ -879,7 +962,7 @@ class AppointmentPanel extends JPanel {
 			durhour.setEnabled(true);
 			startap.setEnabled(true);
 		}
-	}//GEN-LAST:event_notecbActionPerformed
+	}// GEN-LAST:event_notecbActionPerformed
 
 	// fill in an appt from the user data
 	// returns changed key if any
@@ -949,27 +1032,29 @@ class AppointmentPanel extends JPanel {
 		r.setPrivate(privatecb.isSelected());
 
 		// color
-		r.setColor(colorToEnglish((String) colorbox.getSelectedItem()));
+		r.setColor((String) colorbox.getSelectedItem());
 
 		// repeat frequency
-		if (freq.getSelectedIndex() != 0) {	
+		if (freq.getSelectedIndex() != 0) {
 			ArrayList daylist = new ArrayList();
-			if( dl1.isSelected())
+			if (dl1.isSelected())
 				daylist.add(new Integer(Calendar.SUNDAY));
-			if( dl2.isSelected())
+			if (dl2.isSelected())
 				daylist.add(new Integer(Calendar.MONDAY));
-			if( dl3.isSelected())
+			if (dl3.isSelected())
 				daylist.add(new Integer(Calendar.TUESDAY));
-			if( dl4.isSelected())
+			if (dl4.isSelected())
 				daylist.add(new Integer(Calendar.WEDNESDAY));
-			if( dl5.isSelected())
+			if (dl5.isSelected())
 				daylist.add(new Integer(Calendar.THURSDAY));
-			if( dl6.isSelected())
+			if (dl6.isSelected())
 				daylist.add(new Integer(Calendar.FRIDAY));
-			if( dl7.isSelected())
+			if (dl7.isSelected())
 				daylist.add(new Integer(Calendar.SATURDAY));
-			r.setFrequency(Repeat.freqString((String) freq.getSelectedItem(), (Integer)ndays.getValue(), 
-					rptnumbox.isSelected(),daylist));
+			r.setFrequency(Repeat
+					.freqString((String) freq.getSelectedItem(),
+							(Integer) ndays.getValue(), rptnumbox.isSelected(),
+							daylist));
 		}
 
 		// repeat times
@@ -1007,8 +1092,7 @@ class AppointmentPanel extends JPanel {
 		}
 
 		String cat = (String) catbox.getSelectedItem();
-		if (cat.equals("")
-				|| cat.equals(CategoryModel.UNCATEGORIZED)) {
+		if (cat.equals("") || cat.equals(CategoryModel.UNCATEGORIZED)) {
 			r.setCategory(null);
 		} else {
 			r.setCategory(cat);
@@ -1019,8 +1103,7 @@ class AppointmentPanel extends JPanel {
 		return (newkey);
 	}
 
-	private String colors[] = { "black", "red", "blue", "green", "white",
-			"strike" };
+	
 
 	private String colorToEnglish(String color) {
 		for (int i = 0; i < colors.length; i++) {
@@ -1031,7 +1114,6 @@ class AppointmentPanel extends JPanel {
 
 		return ("black");
 	}
-
 
 	// set the visibility and enabling of components that depend on the
 	// frequency pulldown
@@ -1046,10 +1128,12 @@ class AppointmentPanel extends JPanel {
 			rptnumbox.setEnabled(true);
 		}
 
-		if (Repeat.freqToEnglish((String) freq.getSelectedItem()).equals(Repeat.NDAYS)) {
+		if (Repeat.freqToEnglish((String) freq.getSelectedItem()).equals(
+				Repeat.NDAYS)) {
 			ndays.setVisible(true);
 			dlistbuttonpanel.setVisible(false);
-		} else if( Repeat.freqToEnglish((String) freq.getSelectedItem()).equals(Repeat.DAYLIST)) {
+		} else if (Repeat.freqToEnglish((String) freq.getSelectedItem())
+				.equals(Repeat.DAYLIST)) {
 			dlistbuttonpanel.setVisible(true);
 			ndays.setVisible(false);
 		} else {
@@ -1214,7 +1298,6 @@ class AppointmentPanel extends JPanel {
 
 	private JToggleButton dl7 = null;
 
-
 	private JPanel getJPanel() {
 		if (jPanel == null) {
 			GridBagConstraints gridBagConstraints19 = new GridBagConstraints();
@@ -1264,7 +1347,7 @@ class AppointmentPanel extends JPanel {
 			gridBagConstraints28.fill = java.awt.GridBagConstraints.HORIZONTAL;
 			gridBagConstraints19.gridx = 3;
 			gridBagConstraints19.gridy = 1;
-			gridBagConstraints19.insets = new java.awt.Insets(4,4,4,4);
+			gridBagConstraints19.insets = new java.awt.Insets(4, 4, 4, 4);
 			gridBagConstraints19.fill = java.awt.GridBagConstraints.BOTH;
 			jPanel.add(jLabel4, gridBagConstraints31);
 			jPanel.add(freq, gridBagConstraints41);
@@ -1274,16 +1357,15 @@ class AppointmentPanel extends JPanel {
 			jPanel.add(ndays, gridBagConstraints28);
 
 			jPanel.add(getRptnumbox(), gridBagConstraints19);
-			
-			gridBagConstraints1.fill = java.awt.GridBagConstraints.BOTH;  // Generated
-			gridBagConstraints1.gridy = 0;  // Generated
-			gridBagConstraints1.gridx = 2;  // Generated
+
+			gridBagConstraints1.fill = java.awt.GridBagConstraints.BOTH; // Generated
+			gridBagConstraints1.gridy = 0; // Generated
+			gridBagConstraints1.gridx = 2; // Generated
 			gridBagConstraints1.gridwidth = 2;
-			jPanel.add(getDlistbuttonpanel(), gridBagConstraints1);  // Generated
+			jPanel.add(getDlistbuttonpanel(), gridBagConstraints1); // Generated
 		}
 		return jPanel;
 	}
-
 
 	private JCheckBox getRemBox() {
 		if (alarmcb == null) {
@@ -1321,13 +1403,15 @@ class AppointmentPanel extends JPanel {
 
 	// display a summary of the times selected for popup reminders
 	public void setPopupTimesString() {
-		StringBuffer time1 = new StringBuffer(PrefName.REMMINUTES.length * 5 + 15 );
-		StringBuffer time2 = new StringBuffer(PrefName.REMMINUTES.length * 5 + 15 );
+		StringBuffer time1 = new StringBuffer(
+				PrefName.REMMINUTES.length * 5 + 15);
+		StringBuffer time2 = new StringBuffer(
+				PrefName.REMMINUTES.length * 5 + 15);
 		if (custRemTimes != null) {
-		        int i = 0;
-			while ( PrefName.REMMINUTES[i] < 0 && i < PrefName.REMMINUTES.length ) {
+			int i = 0;
+			while (PrefName.REMMINUTES[i] < 0 && i < PrefName.REMMINUTES.length) {
 				if (custRemTimes[i] == 'Y') {
-					int abs = - PrefName.REMMINUTES[i];
+					int abs = -PrefName.REMMINUTES[i];
 					if (time1.length() > 0) {
 						time1 = time1.append(", ").append(abs);
 					} else {
@@ -1337,14 +1421,17 @@ class AppointmentPanel extends JPanel {
 				++i;
 			}
 			if (time1.length() > 0) {
-			    time1 = time1.append("   ").append(java.util.ResourceBundle
-                                     .getBundle("resource/borg_resource").getString("min_aft_app"));
+				time1 = time1.append("   ").append(
+						java.util.ResourceBundle.getBundle(
+								"resource/borg_resource").getString(
+								"min_aft_app"));
 			}
 
-			while ( i < PrefName.REMMINUTES.length ) {
+			while (i < PrefName.REMMINUTES.length) {
 				if (custRemTimes[i] == 'Y') {
 					if (time2.length() > 0) {
-						time2 = time2.append(", ").append(PrefName.REMMINUTES[i]);
+						time2 = time2.append(", ").append(
+								PrefName.REMMINUTES[i]);
 					} else {
 						time2 = time2.append(PrefName.REMMINUTES[i]);
 					}
@@ -1352,12 +1439,15 @@ class AppointmentPanel extends JPanel {
 				++i;
 			}
 			if (time2.length() > 0) {
-			    time2 = time2.append("   ").append(java.util.ResourceBundle
-                                          .getBundle("resource/borg_resource").getString("min_bef_app"));
+				time2 = time2.append("   ").append(
+						java.util.ResourceBundle.getBundle(
+								"resource/borg_resource").getString(
+								"min_bef_app"));
 			}
 
 		}
-		popupTimesLabel.setText("<html><p align=RIGHT>"+time1.toString()+ "<br>" + time2.toString());
+		popupTimesLabel.setText("<html><p align=RIGHT>" + time1.toString()
+				+ "<br>" + time2.toString());
 	}
 
 	public String getText() {
@@ -1365,144 +1455,148 @@ class AppointmentPanel extends JPanel {
 		if (labelstring.equals("")) {
 			return java.util.ResourceBundle.getBundle("resource/borg_resource")
 					.getString("*****_NEW_APPT_*****");
-		} 
-			
+		}
+
 		return labelstring;
-		
+
 	}
 
 	/**
-	 * This method initializes rptnumbox	
-	 * 	
-	 * @return javax.swing.JCheckBox	
-	 */    
+	 * This method initializes rptnumbox
+	 * 
+	 * @return javax.swing.JCheckBox
+	 */
 	private JCheckBox getRptnumbox() {
 		if (rptnumbox == null) {
 			rptnumbox = new JCheckBox();
-			rptnumbox.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("show_rpt_num"));
+			rptnumbox.setText(java.util.ResourceBundle.getBundle(
+					"resource/borg_resource").getString("show_rpt_num"));
 		}
 		return rptnumbox;
 	}
 
 	/**
-	 * This method initializes dlistbuttonpanel	
-	 * 	
-	 * @return javax.swing.JPanel	
+	 * This method initializes dlistbuttonpanel
+	 * 
+	 * @return javax.swing.JPanel
 	 */
 	private JPanel getDlistbuttonpanel() {
 		if (dlistbuttonpanel == null) {
 			dlistbuttonpanel = new JPanel();
-			dlistbuttonpanel.setLayout(new BoxLayout(getDlistbuttonpanel(), BoxLayout.X_AXIS));  // Generated
-			dlistbuttonpanel.add(getDl1(), null);  // Generated
-			dlistbuttonpanel.add(getDl2(), null);  // Generated
-			dlistbuttonpanel.add(getDl3(), null);  // Generated
-			dlistbuttonpanel.add(getDl4(), null);  // Generated
-			dlistbuttonpanel.add(getDl5(), null);  // Generated
-			dlistbuttonpanel.add(getDl6(), null);  // Generated
-			dlistbuttonpanel.add(getDl7(), null);  // Generated
+			dlistbuttonpanel.setLayout(new BoxLayout(getDlistbuttonpanel(),
+					BoxLayout.X_AXIS)); // Generated
+			dlistbuttonpanel.add(getDl1(), null); // Generated
+			dlistbuttonpanel.add(getDl2(), null); // Generated
+			dlistbuttonpanel.add(getDl3(), null); // Generated
+			dlistbuttonpanel.add(getDl4(), null); // Generated
+			dlistbuttonpanel.add(getDl5(), null); // Generated
+			dlistbuttonpanel.add(getDl6(), null); // Generated
+			dlistbuttonpanel.add(getDl7(), null); // Generated
 		}
 		return dlistbuttonpanel;
 	}
 
 	// for setting labels
 	static private GregorianCalendar tmpcal = new GregorianCalendar();
+
 	static private SimpleDateFormat shortDayFmt = new SimpleDateFormat("EEE");
+
 	/**
-	 * This method initializes dl1	
-	 * 	
-	 * @return javax.swing.JToggleButton	
+	 * This method initializes dl1
+	 * 
+	 * @return javax.swing.JToggleButton
 	 */
 	private JToggleButton getDl1() {
 		if (dl1 == null) {
-			dl1 = new JToggleButton();			
-			tmpcal.set( Calendar.DAY_OF_WEEK, Calendar.SUNDAY);			
+			dl1 = new JToggleButton();
+			tmpcal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
 			dl1.setText(shortDayFmt.format(tmpcal.getTime()));
 		}
 		return dl1;
 	}
 
 	/**
-	 * This method initializes dl2	
-	 * 	
-	 * @return javax.swing.JToggleButton	
+	 * This method initializes dl2
+	 * 
+	 * @return javax.swing.JToggleButton
 	 */
 	private JToggleButton getDl2() {
 		if (dl2 == null) {
 			dl2 = new JToggleButton();
-			tmpcal.set( Calendar.DAY_OF_WEEK, Calendar.MONDAY);			
+			tmpcal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
 			dl2.setText(shortDayFmt.format(tmpcal.getTime()));
 		}
 		return dl2;
 	}
 
 	/**
-	 * This method initializes dl3	
-	 * 	
-	 * @return javax.swing.JToggleButton	
+	 * This method initializes dl3
+	 * 
+	 * @return javax.swing.JToggleButton
 	 */
 	private JToggleButton getDl3() {
 		if (dl3 == null) {
 			dl3 = new JToggleButton();
-			tmpcal.set( Calendar.DAY_OF_WEEK, Calendar.TUESDAY);			
+			tmpcal.set(Calendar.DAY_OF_WEEK, Calendar.TUESDAY);
 			dl3.setText(shortDayFmt.format(tmpcal.getTime()));
 		}
 		return dl3;
 	}
 
 	/**
-	 * This method initializes dl4	
-	 * 	
-	 * @return javax.swing.JToggleButton	
+	 * This method initializes dl4
+	 * 
+	 * @return javax.swing.JToggleButton
 	 */
 	private JToggleButton getDl4() {
 		if (dl4 == null) {
 			dl4 = new JToggleButton();
-			tmpcal.set( Calendar.DAY_OF_WEEK, Calendar.WEDNESDAY);			
+			tmpcal.set(Calendar.DAY_OF_WEEK, Calendar.WEDNESDAY);
 			dl4.setText(shortDayFmt.format(tmpcal.getTime()));
 		}
 		return dl4;
 	}
 
 	/**
-	 * This method initializes dl5	
-	 * 	
-	 * @return javax.swing.JToggleButton	
+	 * This method initializes dl5
+	 * 
+	 * @return javax.swing.JToggleButton
 	 */
 	private JToggleButton getDl5() {
 		if (dl5 == null) {
 			dl5 = new JToggleButton();
-			tmpcal.set( Calendar.DAY_OF_WEEK, Calendar.THURSDAY);			
+			tmpcal.set(Calendar.DAY_OF_WEEK, Calendar.THURSDAY);
 			dl5.setText(shortDayFmt.format(tmpcal.getTime()));
 		}
 		return dl5;
 	}
 
 	/**
-	 * This method initializes dl6	
-	 * 	
-	 * @return javax.swing.JToggleButton	
+	 * This method initializes dl6
+	 * 
+	 * @return javax.swing.JToggleButton
 	 */
 	private JToggleButton getDl6() {
 		if (dl6 == null) {
 			dl6 = new JToggleButton();
-			tmpcal.set( Calendar.DAY_OF_WEEK, Calendar.FRIDAY);			
+			tmpcal.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY);
 			dl6.setText(shortDayFmt.format(tmpcal.getTime()));
 		}
 		return dl6;
 	}
 
 	/**
-	 * This method initializes dl7	
-	 * 	
-	 * @return javax.swing.JToggleButton	
+	 * This method initializes dl7
+	 * 
+	 * @return javax.swing.JToggleButton
 	 */
 	private JToggleButton getDl7() {
 		if (dl7 == null) {
 			dl7 = new JToggleButton();
-			tmpcal.set( Calendar.DAY_OF_WEEK, Calendar.SATURDAY);			
+			tmpcal.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
 			dl7.setText(shortDayFmt.format(tmpcal.getTime()));
 		}
 		return dl7;
 	}
- } //  @jve:decl-index=0:visual-constraint="10,10"
+} // @jve:decl-index=0:visual-constraint="10,10"
 
