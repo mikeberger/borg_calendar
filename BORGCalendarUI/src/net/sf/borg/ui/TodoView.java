@@ -1,21 +1,21 @@
 
 /*
 This file is part of BORG.
- 
+
     BORG is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 2 of the License, or
     (at your option) any later version.
- 
+
     BORG is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
- 
+
     You should have received a copy of the GNU General Public License
     along with BORG; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- 
+
 Copyright 2003 by Mike Berger
  */
 
@@ -25,6 +25,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
@@ -37,7 +38,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
-import java.util.ResourceBundle;
 import java.util.Vector;
 
 import javax.swing.ButtonGroup;
@@ -86,61 +86,62 @@ import de.wannawork.jcalendar.JCalendarComboBox;
 public class TodoView extends View {
 
     private Vector tds_;   // list of rows currently displayed in todo list
-    
+
     private static TodoView singleton = null;
 	public static TodoView getReference() {
         if( singleton == null || !singleton.isShowing())
             singleton = new TodoView();
         return( singleton );
     }
-    
+
     private TodoView() {
-        
+
         super();
         addModel( AppointmentModel.getReference() );
         addModel( TaskModel.getReference() );
-        
+
         // init the gui components
         initComponents();
-        
+
         // the todos will be displayed in a sorted table with 2 columns -
         // data and todo text
         jTable1.setModel(new TableSorter(
-                new String []{ 
-                        Resource.getResourceString("Date"), 
-                        Resource.getResourceString("To_Do"),
-                		ResourceBundle.getBundle("resource/borg_resource").getString("Category"),
-						ResourceBundle.getBundle("resource/borg_resource").getString("Color"),
+                new String []{
+                        ResourceHelper.getText("Date"),
+                        ResourceHelper.getText("To_Do"),
+                		ResourceHelper.getText("Category"),
+						ResourceHelper.getText("Color"),
 						"key"},
-                new Class []{ 
+                new Class []{
                         Date.class,
-                        java.lang.String.class, 
-                        java.lang.String.class, 
-                        java.lang.String.class, 
+                        java.lang.String.class,
+                        java.lang.String.class,
+                        java.lang.String.class,
                         java.lang.Integer.class}
                 ));
-                
+
         		jTable1.getColumnModel().getColumn(0).setPreferredWidth(140);
                 jTable1.getColumnModel().getColumn(1).setPreferredWidth(400);
                 jTable1.getColumnModel().getColumn(2).setPreferredWidth(120);
 
         jTable1.setPreferredScrollableViewportSize(new Dimension( 660,400 ));
-        
+
         // bsv 2004-12-22
         // set more pretty renderer
         if( Prefs.getPref(PrefName.UCS_ONTODO).equals("true") ){
         	jTable1.setDefaultRenderer( Object.class, new TodayRenderer() );
         	jTable1.setDefaultRenderer( Date.class, new TodayRenderer() );
         }
-        
+
         jTable1.removeColumn( jTable1.getColumnModel().getColumn(3) );
         jTable1.removeColumn( jTable1.getColumnModel().getColumn(3) );
-        
+
         refresh();
-        
+
         manageMySize(PrefName.TODOVIEWSIZE);
-        
+
     }
+
 	static private class ToggleButtonIcon implements Icon
 	{
 		private Color color = Color.BLACK;
@@ -162,15 +163,15 @@ public class TodoView extends View {
     // bsv 2004-12-22
     class TodayRenderer extends DefaultTableCellRenderer{
         public Component getTableCellRendererComponent(
-            JTable table, Object value, boolean isSelected, 
+            JTable table, Object value, boolean isSelected,
             boolean hasFocus, int row, int column) {
-            
+
             super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            
+
             // it works but not consider current locale
             //SimpleDateFormat sdf = new SimpleDateFormat( "yyyy-MM-dd" );
             DateFormat sdf = DateFormat.getDateInstance();
-            
+
             JLabel jl = new JLabel(getText());
             jl.setOpaque( true );
             if( isSelected ){
@@ -226,35 +227,35 @@ public class TodoView extends View {
         }
     }
 
-    
-    
+
+
     public void destroy() {
         this.dispose();
     }
-    
+
     // refresh the todo list if the data model changes
     public void refresh() {
         AppointmentModel calmod_ = AppointmentModel.getReference();
-        
-     
-        
+
+
+
         // get the to list from the data model
         tds_ = calmod_.get_todos();
-        
+
         // get the list of tasks from the data model
         Vector mrs = TaskModel.getReference().get_tasks();
-        
+
         // init the table to empty
         TableSorter tm = (TableSorter) jTable1.getModel();
         tm.addMouseListenerToHeaderInTable(jTable1);
         tm.setRowCount(0);
-        
+
         // add a tabel row to mark the current date - it will sort
         // to the right spot by date
         GregorianCalendar gc = new GregorianCalendar();
         gc.set(Calendar.HOUR_OF_DAY,23);
         gc.set(Calendar.MINUTE,59);
-        
+
         Date d = gc.getTime();
 
         //bsv 2004-12-22
@@ -267,22 +268,22 @@ public class TodoView extends View {
 
         tm.addRow(tod);
         tm.tableChanged(new TableModelEvent(tm));
-        
+
         // add the todo appointment rows to the table
         for( int i = 0; i < tds_.size(); i++ ) {
             Appointment r = (Appointment) tds_.elementAt(i);
-            
+
             try{
                 // get appt text
                 String tx = r.getText();
-                
+
                 // date is the next todo field if present, otherwise
                 // the due date
                 Date nt = r.getNextTodo();
                 if( nt == null ) {
                     nt = r.getDate();
                 }
-                
+
                 // bsv 2004-12-22
                 // add the table row
                 Object [] ro = new Object[5];
@@ -300,20 +301,20 @@ public class TodoView extends View {
                 Errmsg.errmsg(e);
                 return;
             }
-            
+
         }
-        
+
         // add the tasks to the list
         // add open tasks with due dates are considered as todos
         for( int i = 0; i < mrs.size(); i++ ) {
-            
+
             Task mr = (Task) mrs.elementAt(i);
-            
+
             try{
-                
+
                 // build a string for the table - BT<task number> + description
                 String btstring = "BT" + mr.getTaskNumber().toString() + " " + mr.getDescription();
-                
+
                 // bsv 2004-12-22
                 // add row to table
                 Object [] ro = new Object[5];
@@ -330,14 +331,14 @@ public class TodoView extends View {
                 Errmsg.errmsg(e);
                 return;
             }
-            
+
         }
-        
+
         // sort the table by date
         tm.sortByColumn(0);
-        
+
     }
-    
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -349,10 +350,10 @@ public class TodoView extends View {
         jTable1 = new javax.swing.JTable();
         jPanel1 = new javax.swing.JPanel();
         todotext = new javax.swing.JTextField();
-        
+
         // place jcalendar here
         tododate_cb = new JCalendarComboBox();
-        
+
         addtodo = new javax.swing.JButton();
         GridBagConstraints gridBagConstraints8 = new GridBagConstraints();
         GridBagConstraints gridBagConstraints9 = new GridBagConstraints();
@@ -369,7 +370,7 @@ public class TodoView extends View {
         jMenuItem2 = new javax.swing.JMenuItem();
         printList = new javax.swing.JMenuItem();
         exitMenuItem = new javax.swing.JMenuItem();
-        
+
         // bsv 2004-12-21
         jtbRed = new JToggleButton("",false);
         jtbBlue = new JToggleButton("",false);
@@ -381,7 +382,7 @@ public class TodoView extends View {
         // bsv 2004-12-23 original code taken from AppointmentPanel.java
         try
         {
-        	
+
             Collection acats = CategoryModel.getReference().getCategories();
             Iterator ait = acats.iterator();
             while( ait.hasNext())
@@ -394,12 +395,12 @@ public class TodoView extends View {
         {
             Errmsg.errmsg(e);
         }
-        
+
 
         //getContentPane().setLayout(new java.awt.GridBagLayout());
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("To_Do_List"));
+        ResourceHelper.setTitle(this, "To_Do_List");
         addWindowListener(new java.awt.event.WindowAdapter()
         {
             public void windowClosing(java.awt.event.WindowEvent evt)
@@ -431,10 +432,10 @@ public class TodoView extends View {
         //jPanel1.setMinimumSize(new java.awt.Dimension(550, 102));
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null,
-                java.util.ResourceBundle.getBundle("resource/borg_resource").getString("todoquickentry"), 
+        		Resource.getResourceString("todoquickentry"),
                 javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, null));
         addtodo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Save16.gif")));
-        addtodo.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Add"));
+        ResourceHelper.setText(addtodo, "Add");
         addtodo.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -443,19 +444,20 @@ public class TodoView extends View {
             }
         });
 
-        
-        jLabel1.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("To_Do"));
- 
-        jLabel2.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Date"));
- 
+
+        ResourceHelper.setText(jLabel1, "To_Do");
+        jLabel1.setLabelFor(todotext);
+        ResourceHelper.setText(jLabel2, "Date");
+        jLabel2.setLabelFor(tododate_cb);
+
         jLabel3.setFont(new java.awt.Font("MS Sans Serif", 2, 10));
-        jLabel3.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("quicktodonotice"));
-
- 
+        ResourceHelper.setText(jLabel3, "quicktodonotice");
 
 
-        fileMenu.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Action"));
-        jMenuItem1.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Done_(No_Delete)"));
+
+
+        ResourceHelper.setText(fileMenu, "Action");
+        ResourceHelper.setText(jMenuItem1, "Done_(No_Delete)");
         jMenuItem1.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -466,7 +468,7 @@ public class TodoView extends View {
 
         fileMenu.add(jMenuItem1);
 
-        jMenuItem2.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Done_(Delete)"));
+        ResourceHelper.setText(jMenuItem2, "Done_(Delete)");
         jMenuItem2.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -477,7 +479,7 @@ public class TodoView extends View {
 
         fileMenu.add(jMenuItem2);
 
-        printList.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Print_List"));
+        ResourceHelper.setText(printList, "Print_List");
         printList.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -488,7 +490,7 @@ public class TodoView extends View {
 
         fileMenu.add(printList);
 
-        exitMenuItem.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Exit"));
+        ResourceHelper.setText(exitMenuItem, "Exit");
         exitMenuItem.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -524,7 +526,7 @@ public class TodoView extends View {
         //gridBagConstraints11.gridy = 3;
         //gridBagConstraints11.insets = new java.awt.Insets(4,4,4,4);
         //gridBagConstraints11.gridwidth = 3;
-        
+
         gridBagConstraints12.gridx = 1;
         gridBagConstraints12.gridy = 1;
         gridBagConstraints12.fill = java.awt.GridBagConstraints.BOTH;
@@ -537,15 +539,15 @@ public class TodoView extends View {
         gridBagConstraints13.weightx = 1.0D;
         gridBagConstraints14.gridx = 0;
         gridBagConstraints14.gridy = 2;
-        
+
         // bsv 2004-12-22
         gridBagConstraints14.weightx = 10.0D;
         //gridBagConstraints14.weightx = 0.0D;
-        
+
         gridBagConstraints14.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints14.insets = new java.awt.Insets(0,4,4,4);
         jPanel1.add(addtodo, gridBagConstraints8);
-        
+
         // bsv 2004-12-21
         // set jtb size, set tuned colors
 
@@ -589,52 +591,64 @@ public class TodoView extends View {
         bjp.add( jtbBlack );
         bjp.add( jtbWhite );
         bjp0.add( bjp, BorderLayout.WEST );
-        bjp0.add( cat_cb, BorderLayout.CENTER );
         
+        JLabel lbl = new JLabel();
+        ResourceHelper.setText(lbl, "Category");
+        lbl.setLabelFor(cat_cb);
+        
+        JPanel yetAnotherInASeriesOfSeeminglyEndlessPanels = new JPanel();
+        yetAnotherInASeriesOfSeeminglyEndlessPanels.setLayout(new FlowLayout(FlowLayout.CENTER));
+
+        bjp0.add( yetAnotherInASeriesOfSeeminglyEndlessPanels, BorderLayout.CENTER );
+        yetAnotherInASeriesOfSeeminglyEndlessPanels.add( lbl );
+        yetAnotherInASeriesOfSeeminglyEndlessPanels.add( cat_cb );
+
         jPanel1.add(tododate_cb, gridBagConstraints9);
         jPanel1.add(bjp0, gridBagConstraints11);
         jPanel1.add(jLabel2, gridBagConstraints12);
-        
+
         jPanel1.add(jLabel1, gridBagConstraints13);
         jPanel1.add(todotext, gridBagConstraints14);
+        
+        setDismissButton(getJButton());
         pack();
     }//GEN-END:initComponents
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
       // ask controller to bring up appt editor on double click
       if( evt.getClickCount() < 2 ) return;
-      
+
       // get task number from column 0 of selected row
       int row = jTable1.getSelectedRow();
       if( row == -1 ) return;
       TableSorter tm = (TableSorter) jTable1.getModel();
       Date d = (Date) tm.getValueAt(row,0);
       Integer key = (Integer) tm.getValueAt(row,4);
-      
+
       GregorianCalendar cal = new GregorianCalendar();
       cal.setTime(d);
-      
+
       //bring up an appt editor window
       AppointmentListView ag = new AppointmentListView(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE));
       if( key != null )
           ag.showApp(key.intValue());
       ag.setVisible(true);
-      
+
       CalendarView cv = CalendarView.getReference();
       if( cv != null ) cv.goTo( cal );
-      
+
     }//GEN-LAST:event_jTable1MouseClicked
-    
+
     private void addtodoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addtodoActionPerformed
-        
+
         String tdtext = todotext.getText();
-        
-        // bsv 2004-12-21        
+
+        // bsv 2004-12-21
         if( tdtext.length() == 0  ) {
-            Errmsg.notice(ResourceBundle.getBundle("resource/borg_resource").getString("todomissingdata"));
+            Errmsg.notice(Resource.getResourceString("todomissingdata"));
             return;
         }
- 
+
         AppointmentModel calmod_ = AppointmentModel.getReference();
         Appointment r = calmod_.newAppt();
         Calendar c = tododate_cb.getCalendar();
@@ -646,7 +660,7 @@ public class TodoView extends View {
         r.setText( tdtext );
         r.setTodo(true);
         r.setPrivate( false );
-        
+
         // bsv 2004-12-21
         if( jtbRed.isSelected() ) r.setColor( "red");
         else if( jtbBlue.isSelected() ) r.setColor( "blue");
@@ -654,13 +668,13 @@ public class TodoView extends View {
         else if( jtbWhite.isSelected() ) r.setColor( "white");
         else r.setColor( "black");
         //r.setColor( "black");
-        
-        
+
+
         r.setFrequency( Repeat.ONCE );
         r.setTimes(new Integer(1));
         r.setRepeatFlag(false);
 
-        
+
         // bsv 2004-12-23
         // code taken from AppointmentPanel.java
         String cat = (String) cat_cb.getSelectedItem();
@@ -672,62 +686,64 @@ public class TodoView extends View {
         else
         {
             r.setCategory(cat);
-        }       
+        }
         //r.setCategory("");
-        
+
         calmod_.saveAppt(r, true);
         
+        requestFocus();
+
     }//GEN-LAST:event_addtodoActionPerformed
-    
+
     private void printListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printListActionPerformed
-        
+
         // user has requested a print of the table
         try { TablePrinter.printTable(jTable1); }
         catch( Exception e ){ Errmsg.errmsg(e); }
     }//GEN-LAST:event_printListActionPerformed
-    
+
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jMenuItem2ActionPerformed
     {//GEN-HEADEREND:event_jMenuItem2ActionPerformed
         // mark a todo done and delete it
         dtcommon(true);
     }//GEN-LAST:event_jMenuItem2ActionPerformed
-    
+
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jMenuItem1ActionPerformed
     {//GEN-HEADEREND:event_jMenuItem1ActionPerformed
         // make a todo done and do not delete it
         dtcommon(false);
     }//GEN-LAST:event_jMenuItem1ActionPerformed
-    
+
     // function to mark a todo as done
     private void dtcommon(boolean del) {
-        
+
         // figure out which row is selected to be marked as done
         int index =  jTable1.getSelectedRow();
         if( index == -1 ) return;
-        
+
         try {
-            
+
             // need to ask the table for the original (befor sorting) index of the selected row
             TableSorter tm = (TableSorter) jTable1.getModel();
             int k = tm.getMappedIndex(index);  // get original index - not current sorted position in tbl
-            
+
             // ignore the "today" row - which was the first in the original table (index=0)
             // can't mark it as done
             if( k == 0 ) return;
-            
+
             // do not allow the gui to mark a task as done - must go through tracker for that
             if( k > tds_.size() ) {
                 throw new Warning( Resource.getResourceString("Must_use_the_Task_Tracker_to_act_upon_a_task") );
             }
-            
+
             // get the appointment
             Appointment r = (Appointment) tds_.elementAt(k-1);
             int key = r.getKey();
-            
+
             // ask the calendar data model to mark it as done
             AppointmentModel.getReference().do_todo( key,del);
-            
-            
+
+
         }
         catch( Exception e ) {
             Errmsg.errmsg(e);
@@ -737,13 +753,13 @@ public class TodoView extends View {
     private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
         this.dispose();
     }//GEN-LAST:event_exitMenuItemActionPerformed
-    
+
     private void exitForm(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_exitForm
         this.dispose();
     }//GEN-LAST:event_exitForm
-    
-    
-    
+
+
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addtodo;
     private javax.swing.JMenuItem exitMenuItem;
@@ -759,7 +775,7 @@ public class TodoView extends View {
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem printList;
     private javax.swing.JTextField todotext;
-    
+
     // bsv 2004-12-21
     private JCalendarComboBox tododate_cb;
     private JToggleButton jtbRed;
@@ -769,9 +785,9 @@ public class TodoView extends View {
     private JToggleButton jtbWhite;
     // bsv 2004-12-23
     private JComboBox cat_cb;
-    
+
     // End of variables declaration//GEN-END:variables
-    
+
 	private JPanel jPanel = null;
 	private JPanel jPanel2 = null;
 	private JButton doneButton = null;
@@ -779,10 +795,10 @@ public class TodoView extends View {
 	private JButton jButton = null;
 	private JMenuItem catmenuitem = null;
 	/**
-	 * This method initializes jPanel	
-	 * 	
-	 * @return javax.swing.JPanel	
-	 */    
+	 * This method initializes jPanel
+	 *
+	 * @return javax.swing.JPanel
+	 */
 	private JPanel getJPanel() {
 		if (jPanel == null) {
 			GridBagConstraints gridBagConstraints15 = new GridBagConstraints();
@@ -811,10 +827,10 @@ public class TodoView extends View {
 		return jPanel;
 	}
 	/**
-	 * This method initializes jPanel2	
-	 * 	
-	 * @return javax.swing.JPanel	
-	 */    
+	 * This method initializes jPanel2
+	 *
+	 * @return javax.swing.JPanel
+	 */
 	private JPanel getJPanel2() {
 		if (jPanel2 == null) {
 			jPanel2 = new JPanel();
@@ -825,16 +841,16 @@ public class TodoView extends View {
 		return jPanel2;
 	}
 	/**
-	 * This method initializes doneButton	
-	 * 	
-	 * @return javax.swing.JButton	
-	 */    
+	 * This method initializes doneButton
+	 *
+	 * @return javax.swing.JButton
+	 */
 	private JButton getDoneButton() {
 		if (doneButton == null) {
 			doneButton = new JButton();
-			doneButton.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Done_(No_Delete)"));
-			doneButton.addActionListener(new java.awt.event.ActionListener() { 
-				public void actionPerformed(java.awt.event.ActionEvent e) {    
+			ResourceHelper.setText(doneButton, "Done_(No_Delete)");
+			doneButton.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
 					dtcommon(false);
 				}
 			});
@@ -843,16 +859,16 @@ public class TodoView extends View {
 		return doneButton;
 	}
 	/**
-	 * This method initializes doneDelButton	
-	 * 	
-	 * @return javax.swing.JButton	
-	 */    
+	 * This method initializes doneDelButton
+	 *
+	 * @return javax.swing.JButton
+	 */
 	private JButton getDoneDelButton() {
 		if (doneDelButton == null) {
 			doneDelButton = new JButton();
-			doneDelButton.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Done_(Delete)"));
-			doneDelButton.addActionListener(new java.awt.event.ActionListener() { 
-				public void actionPerformed(java.awt.event.ActionEvent e) {    
+			ResourceHelper.setText(doneDelButton, "Done_(Delete)");
+			doneDelButton.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
 					dtcommon(true);
 				}
 			});
@@ -861,10 +877,10 @@ public class TodoView extends View {
 		return doneDelButton;
 	}
 	/**
-	 * This method initializes jButton	
-	 * 	
-	 * @return javax.swing.JButton	
-	 */    
+	 * This method initializes jButton
+	 *
+	 * @return javax.swing.JButton
+	 */
 	private void disp()
 	{
 	    this.dispose();
@@ -873,31 +889,32 @@ public class TodoView extends View {
 		if (jButton == null) {
 			jButton = new JButton();
 			jButton.setIcon(new ImageIcon(getClass().getResource("/resource/Stop16.gif")));
-			jButton.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("Dismiss"));
-			jButton.addActionListener(new java.awt.event.ActionListener() { 
-				public void actionPerformed(java.awt.event.ActionEvent e) {    
+			ResourceHelper.setText(jButton, "Dismiss");
+			jButton.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
 					disp();
 				}
 			});
+	        setDismissButton(jButton);
 		}
 		return jButton;
 	}
 	/**
-	 * This method initializes catmenuitem	
-	 * 	
-	 * @return javax.swing.JMenuItem	
-	 */    
+	 * This method initializes catmenuitem
+	 *
+	 * @return javax.swing.JMenuItem
+	 */
 	private JMenuItem getCatmenuitem() {
 		if (catmenuitem == null) {
 			catmenuitem = new JMenuItem();
 	        catmenuitem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Preferences16.gif")));
-	        catmenuitem.setText(java.util.ResourceBundle.getBundle("resource/borg_resource").getString("choosecat"));
-	        catmenuitem.addActionListener(new java.awt.event.ActionListener() { 
-	        	public void actionPerformed(java.awt.event.ActionEvent e) {    
+	        ResourceHelper.setText(catmenuitem, "choosecat");
+	        catmenuitem.addActionListener(new java.awt.event.ActionListener() {
+	        	public void actionPerformed(java.awt.event.ActionEvent e) {
 	        	    CategoryChooser.getReference().setVisible(true);
 	        	}
 	        });
 		}
 		return catmenuitem;
 	}
-      }  //  @jve:decl-index=0:visual-constraint="39,18"
+}  //  @jve:decl-index=0:visual-constraint="39,18"
