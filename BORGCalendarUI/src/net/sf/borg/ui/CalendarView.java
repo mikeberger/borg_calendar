@@ -2106,6 +2106,7 @@ public class CalendarView extends View implements Prefs.Listener {
         }
 
         // build and show the version info.
+         
         String info = Resource.getResourceString("Berger-Organizer_v") + version + "\n" +
 			Resource.getResourceString("developers") + "\n" +
 			Resource.getResourceString("contrib") + "\n\n" +
@@ -2113,7 +2114,7 @@ public class CalendarView extends View implements Prefs.Listener {
 			Resource.getResourceString("translations") + "\n\n" +
 			build_info;
         Object opts[] =
-        {Resource.getResourceString("Dismiss") /*,
+        {ResourceHelper.getText("Dismiss") /*,
          Resource.getResourceString("Show_Detailed_Source_Version_Info")*/ };
         JOptionPane.showOptionDialog(null, info, Resource.getResourceString("About_BORG"), JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getClass().getResource("/resource/borg.jpg")), opts, opts[0]);
 
