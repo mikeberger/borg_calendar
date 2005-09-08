@@ -31,8 +31,10 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.TreeSet;
 
@@ -152,10 +154,17 @@ public class Day
     }
 
     private TreeSet appts;      // list of appts for the day
+    private Map untruncatedAppts = new HashMap();
 
     public Collection getAppts()
     {
         return( appts );
+    }
+    
+    public Appointment getUntruncatedAppointmentFor(Appointment appt)
+    {
+    	Appointment untruncated = (Appointment) untruncatedAppts.get(appt);
+    	return untruncated==null ? appt : untruncated;
     }
 
     public void addAppt(Appointment info)
@@ -200,8 +209,7 @@ public class Day
             // iterate through the day's appts
             while( it.hasNext() )
             {
-
-                String tx = "";
+                String tx="", txFull="";
                 Integer ik = (Integer) it.next();
 
                 // read the appt from the DB
@@ -225,13 +233,14 @@ public class Day
                     Date d = appt.getDate();
                     SimpleDateFormat sdf = AppointmentModel.getTimeFormat();
                     tx += sdf.format(d) + " ";
+                    txFull += sdf.format(d) + " ";
                 }
 
                 // if the text is empty - skip it - should never be
                 String xx = appt.getText();
                 if( xx == null )
                 {
-                    tx = "";
+                    tx = txFull = "";
                     continue;
                 }
 
@@ -249,18 +258,19 @@ public class Day
                 	{
                 		tx += xx;
                 	}
-
                 }
                 else
                 {
                 	tx += xx;
                 }
+            	txFull += xx;
 
                 // add repeat number
                 if( Repeat.getRptNum(appt.getFrequency()))
                 {
                 	Calendar cur = new GregorianCalendar( year, month, day );
                 	tx += " (" + Repeat.calculateRepeatNumber(cur, appt) + ")";
+                	txFull += " (" + Repeat.calculateRepeatNumber(cur, appt) + ")";
                 }
                 appt.setText(tx);
 
@@ -269,6 +279,13 @@ public class Day
 
                 // add apptto day
                 ret.addAppt(appt);
+                
+                if (!txFull.equals(tx))
+                {
+                	Appointment untruncated = (Appointment) appt.copy();
+                	untruncated.setText(txFull);
+                	ret.untruncatedAppts.put(appt,untruncated);
+                }
 
                 // set vacation and holiday flags at dayinfo level
                 Integer v = appt.getVacation();
