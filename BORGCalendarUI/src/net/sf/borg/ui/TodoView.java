@@ -413,7 +413,7 @@ public class TodoView extends View {
         jTable1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0)));
         jTable1.setGridColor(java.awt.Color.blue);
         DefaultListSelectionModel mylsmodel = new DefaultListSelectionModel();
-        mylsmodel.setSelectionMode( ListSelectionModel.SINGLE_SELECTION);
+        mylsmodel.setSelectionMode( ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         jTable1.setSelectionModel(mylsmodel );
         jTable1.addMouseListener(new java.awt.event.MouseAdapter()
         {
@@ -462,7 +462,7 @@ public class TodoView extends View {
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
             {
-                jMenuItem1ActionPerformed(evt);
+                onDoneNoDelete(evt);
             }
         });
 
@@ -473,7 +473,7 @@ public class TodoView extends View {
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
             {
-                jMenuItem2ActionPerformed(evt);
+                onDoneDelete(evt);
             }
         });
 
@@ -698,13 +698,13 @@ public class TodoView extends View {
         catch( Exception e ){ Errmsg.errmsg(e); }
     }//GEN-LAST:event_printListActionPerformed
 
-    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jMenuItem2ActionPerformed
+    private void onDoneDelete(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jMenuItem2ActionPerformed
     {//GEN-HEADEREND:event_jMenuItem2ActionPerformed
         // mark a todo done and delete it
         dtcommon(true);
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jMenuItem1ActionPerformed
+    private void onDoneNoDelete(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jMenuItem1ActionPerformed
     {//GEN-HEADEREND:event_jMenuItem1ActionPerformed
         // make a todo done and do not delete it
         dtcommon(false);
@@ -714,36 +714,38 @@ public class TodoView extends View {
     private void dtcommon(boolean del) {
 
         // figure out which row is selected to be marked as done
-        int index =  jTable1.getSelectedRow();
-        if( index == -1 ) return;
+        int[] indices =  jTable1.getSelectedRows();
+        for (int i=0; i<indices.length; ++i)
+        {
+        	int index = indices[i];
+            if( index == -1 ) continue;
+            try {
 
-        try {
+                // need to ask the table for the original (befor sorting) index of the selected row
+                TableSorter tm = (TableSorter) jTable1.getModel();
+                int k = tm.getMappedIndex(index);  // get original index - not current sorted position in tbl
 
-            // need to ask the table for the original (befor sorting) index of the selected row
-            TableSorter tm = (TableSorter) jTable1.getModel();
-            int k = tm.getMappedIndex(index);  // get original index - not current sorted position in tbl
+                // ignore the "today" row - which was the first in the original table (index=0)
+                // can't mark it as done
+                if( k == 0 ) return;
 
-            // ignore the "today" row - which was the first in the original table (index=0)
-            // can't mark it as done
-            if( k == 0 ) return;
+                // do not allow the gui to mark a task as done - must go through tracker for that
+                if( k > tds_.size() ) {
+                    throw new Warning( Resource.getResourceString("Must_use_the_Task_Tracker_to_act_upon_a_task") );
+                }
 
-            // do not allow the gui to mark a task as done - must go through tracker for that
-            if( k > tds_.size() ) {
-                throw new Warning( Resource.getResourceString("Must_use_the_Task_Tracker_to_act_upon_a_task") );
+                // get the appointment
+                Appointment r = (Appointment) tds_.elementAt(k-1);
+                int key = r.getKey();
+
+                // ask the calendar data model to mark it as done
+                AppointmentModel.getReference().do_todo( key,del);
+
+
             }
-
-            // get the appointment
-            Appointment r = (Appointment) tds_.elementAt(k-1);
-            int key = r.getKey();
-
-            // ask the calendar data model to mark it as done
-            AppointmentModel.getReference().do_todo( key,del);
-
-
-        }
-        catch( Exception e ) {
-            Errmsg.errmsg(e);
-            this.dispose();
+            catch( Exception e ) {
+                Errmsg.errmsg(e);
+            }
         }
     }
     private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
