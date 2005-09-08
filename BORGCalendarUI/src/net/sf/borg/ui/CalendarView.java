@@ -736,14 +736,13 @@ public class CalendarView extends View implements Prefs.Listener {
                             	 }
                             }
 
-                            boolean strike = false;
                             String color = info.getColor();
                             // strike-through done todos
                             if( info.getTodo() && !(nt == null || !nt.after(gc.getTime())) )
                             {
                                 color = "strike";
-                                strike = true;
                             }
+                            boolean strike = color.equals("strike");
 
 
                             // add the day's text in the right color. If the appt is the last
@@ -791,6 +790,7 @@ public class CalendarView extends View implements Prefs.Listener {
                         if (html.length() != 0)
                         {
                         	daytext[i].setToolTipText("<html>"+html+"</html>");
+                        	System.out.println(i+": "+html);
                         }
                     }
 
