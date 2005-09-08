@@ -185,12 +185,7 @@ public class CalendarView extends View implements Prefs.Listener {
 
         // the date buttons
         daynum = new JButton[37];
-        
-        // the appointment text strings
-        dayTextStrings = new StringBuffer[37];
-
         dayOfYear = new JLabel[37];
-
 
         // initialize the days
         for( int i = 0; i < 37; i++ ) {
@@ -2379,7 +2374,6 @@ public class CalendarView extends View implements Prefs.Listener {
      */
     private JPanel days[];
     private JTextPane daytext[];
-    private StringBuffer dayTextStrings[];
     
     /** date buttons
      */
