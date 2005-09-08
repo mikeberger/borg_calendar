@@ -767,7 +767,7 @@ public class TaskConfigurator extends View {
 	private JButton getJButton() {
 		if (jButton == null) {
 			jButton = new JButton();
-			jButton.setText(net.sf.borg.common.util.Resource.getResourceString("Save"));
+			ResourceHelper.setText(jButton, "Save");
 			jButton.addActionListener(new java.awt.event.ActionListener() { 
 				public void actionPerformed(java.awt.event.ActionEvent e) { 
 					try{
@@ -790,7 +790,7 @@ public class TaskConfigurator extends View {
 	private JButton getJButton1() {
 		if (jButton1 == null) {
 			jButton1 = new JButton();
-			jButton1.setText(net.sf.borg.common.util.Resource.getResourceString("Dismiss"));
+			ResourceHelper.setText(jButton1, "Dismiss");
 			jButton1.addActionListener(new java.awt.event.ActionListener() { 
 				public void actionPerformed(java.awt.event.ActionEvent e) {    
 					TaskConfigurator.getReference().dispose();

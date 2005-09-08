@@ -107,8 +107,8 @@ public class SearchView extends View {
 		// show the search results as a 2 column sortable table
 		// showing the appt date and text
 		jTable1.setModel(new TableSorter(new String[] {
-				Resource.getResourceString("Date"),
-				Resource.getResourceString("Item"), "key" }, new Class[] {
+				ResourceHelper.getText("Date"),
+				ResourceHelper.getText("Item"), "key" }, new Class[] {
 				Date.class, java.lang.String.class, Integer.class }));
 
 		// hide column with the key
