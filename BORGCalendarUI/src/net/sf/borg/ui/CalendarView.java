@@ -61,6 +61,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.ToolTipManager;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.Style;
@@ -130,6 +131,8 @@ public class CalendarView extends View implements Prefs.Listener {
         Prefs.addListener(this);
         init();
         manageMySize(PrefName.CALVIEWSIZE);
+        
+        ToolTipManager.sharedInstance().setDismissDelay(Integer.MAX_VALUE);
     }
 
     private static class DayMouseListener implements MouseListener
@@ -182,6 +185,9 @@ public class CalendarView extends View implements Prefs.Listener {
 
         // the date buttons
         daynum = new JButton[37];
+        
+        // the appointment text strings
+        dayTextStrings = new StringBuffer[37];
 
         dayOfYear = new JLabel[37];
 
@@ -550,7 +556,7 @@ public class CalendarView extends View implements Prefs.Listener {
 
     // adds a string to an appt text pane using a given style
     private void addString(JTextPane tp, String s, String style) throws Exception {
-
+        // Add the string.
         StyledDocument doc = tp.getStyledDocument();
 
         if( style == null ) style = "black";
@@ -655,8 +661,8 @@ public class CalendarView extends View implements Prefs.Listener {
 
             // fill in the day boxes that correspond to days in this month
             for( int i = 0; i < 37; i++ ) {
-
             	MouseListener mls[] = daytext[i].getMouseListeners();
+            	daytext[i].setToolTipText(null);
             	for( int mli = 0; mli < mls.length; mli++ )
             	{
             		daytext[i].removeMouseListener(mls[mli]);
@@ -709,6 +715,8 @@ public class CalendarView extends View implements Prefs.Listener {
                     daytext[i].setParagraphAttributes(daytext[i].getStyle("black"),true);
                     if( appts != null ) {
                         Iterator it = appts.iterator();
+                        
+                        StringBuffer html = new StringBuffer();
 
                         // iterate through the day's appts
                         while( it.hasNext() ) {
@@ -716,9 +724,11 @@ public class CalendarView extends View implements Prefs.Listener {
                             Appointment info = (Appointment) it.next();
 
                             // bsv 2004-12-23
+                            boolean bullet = false;
                             Date nt = info.getNextTodo();
                             if( Prefs.getPref(PrefName.UCS_MARKTODO).equals("true")){
                             	if( info.getTodo() && (nt == null || !nt.after(gc.getTime()))){
+                            		bullet = true;
                             	    if( Prefs.getPref(PrefName.UCS_MARKER).endsWith(".gif"))
                             	    {
                             	        //daytext[i].insertIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/" + Prefs.getPref(PrefName.UCS_MARKER))));
@@ -731,23 +741,61 @@ public class CalendarView extends View implements Prefs.Listener {
                             	 }
                             }
 
+                            boolean strike = false;
                             String color = info.getColor();
                             // strike-through done todos
                             if( info.getTodo() && !(nt == null || !nt.after(gc.getTime())) )
                             {
                                 color = "strike";
+                                strike = true;
                             }
 
 
                             // add the day's text in the right color. If the appt is the last
                             // one - don't add a trailing newline - it will make the text pane
                             // have one extra line - forcing an unecessary scrollbar at times
-                            if( it.hasNext() ) {
-                                addString( daytext[i], info.getText() + "\n", color );
-                            }
+                            String text = info.getText();
+                            
+                            if( it.hasNext() )
+                            	text += "\n"; // we're doing this to a String
+                            
+                            addString( daytext[i], text, color );
+                            
+                            // Compute the tooltip text.
+                            if (bullet)
+                            	html.append("<b>");
+                            if (strike)
+                            	html.append("<strike>");
                             else
-                                addString( daytext[i], info.getText(), color );
-
+                            	html.append("<font color=\""+color+"\">");
+                            String apptText =
+                            	di.getUntruncatedAppointmentFor(info).getText();
+                            if (apptText.indexOf('\n') != -1)
+                            {
+                            	StringBuffer temp = new StringBuffer();
+                            	for (int j=0; j<apptText.length(); ++j)
+                            	{
+                            		char ch = apptText.charAt(j);
+                            		if (ch == '\n')
+                            			temp.append("<br>");
+                            		else
+                            			temp.append(ch);
+                            	}
+                            	apptText = temp.toString();
+                            }
+                            html.append(apptText);
+                            if (bullet)
+                            	html.append("</b>");
+                            if (strike)
+                            	html.append("</strike>");
+                            else
+                            	html.append("</font>");
+                            if (it.hasNext())
+                            	html.append("<br>");
+                        }
+                        if (html.length() != 0)
+                        {
+                        	daytext[i].setToolTipText("<html>"+html+"</html>");
                         }
                     }
 
@@ -2330,9 +2378,9 @@ public class CalendarView extends View implements Prefs.Listener {
     /** array of day panels
      */
     private JPanel days[];
-
-
     private JTextPane daytext[];
+    private StringBuffer dayTextStrings[];
+    
     /** date buttons
      */
     private JButton daynum[];
