@@ -22,6 +22,7 @@ package net.sf.borg.ui;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileReader;
 import java.io.OutputStream;
@@ -34,6 +35,7 @@ import javax.swing.DefaultListSelectionModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.TableModelEvent;
@@ -156,9 +158,11 @@ public class AddrListView extends View
 
     private void editRow()
     {
-        // figure out which row is selected to be marked as done
+        // figure out which row is selected.
         int index =  jTable1.getSelectedRow();
         if( index == -1 ) return;
+        jTable1.getSelectionModel().setSelectionInterval(index,index);
+        	// ensure only one row is selected.
 
         try
         {
@@ -212,7 +216,7 @@ public class AddrListView extends View
         jTable1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0)));
         jTable1.setGridColor(java.awt.Color.blue);
         DefaultListSelectionModel mylsmodel = new DefaultListSelectionModel();
-        mylsmodel.setSelectionMode( ListSelectionModel.SINGLE_SELECTION);
+        mylsmodel.setSelectionMode( ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         jTable1.setSelectionModel(mylsmodel
         );
         jTable1.addMouseListener(new java.awt.event.MouseAdapter()
@@ -230,10 +234,12 @@ public class AddrListView extends View
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
         getContentPane().add(jScrollPane1, gridBagConstraints);
+        
+        ActionListener alAddNew, alEdit, alDelete;
 
         newbutton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Add16.gif")));
         ResourceHelper.setText(newbutton, "Add_New");
-        newbutton.addActionListener(new java.awt.event.ActionListener()
+        newbutton.addActionListener(alAddNew = new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
             {
@@ -245,7 +251,7 @@ public class AddrListView extends View
 
         editbutton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Edit16.gif")));
         ResourceHelper.setText(editbutton, "Edit");
-        editbutton.addActionListener(new java.awt.event.ActionListener()
+        editbutton.addActionListener(alEdit = new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
             {
@@ -257,7 +263,7 @@ public class AddrListView extends View
 
         delbutton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Delete16.gif")));
         ResourceHelper.setText(delbutton, "Delete");
-        delbutton.addActionListener(new java.awt.event.ActionListener()
+        delbutton.addActionListener(alDelete = new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
             {
@@ -287,6 +293,25 @@ public class AddrListView extends View
         getContentPane().add(jPanel1, gridBagConstraints);
 
         ResourceHelper.setText(fileMenu, "Action");
+        
+        JMenuItem mnuitm = new JMenuItem();
+        ResourceHelper.setText(mnuitm, "Add_New");
+        mnuitm.setIcon(newbutton.getIcon());
+        mnuitm.addActionListener(alAddNew);
+        fileMenu.add(mnuitm);
+        
+        mnuitm = new JMenuItem();
+        ResourceHelper.setText(mnuitm, "Edit");
+        mnuitm.setIcon(editbutton.getIcon());
+        mnuitm.addActionListener(alEdit);
+        fileMenu.add(mnuitm);
+        
+        mnuitm = new JMenuItem();
+        ResourceHelper.setText(mnuitm, "Delete");
+        mnuitm.setIcon(delbutton.getIcon());
+        mnuitm.addActionListener(alDelete);
+        fileMenu.add(mnuitm);
+        
         ResourceHelper.setText(printList, "Print_List");
         printList.setIcon(new ImageIcon(getClass().getResource("/resource/Print16.gif")));
         printList.addActionListener(new java.awt.event.ActionListener()
@@ -317,6 +342,17 @@ public class AddrListView extends View
         fileMenu.add(getHtmlitem());
         fileMenu.add(exitMenuItem);
 
+        new PopupMenuHelper
+        (
+        	jTable1,
+        	new PopupMenuHelper.Entry[]
+        	{
+        		new PopupMenuHelper.Entry(alAddNew, "Add_New"),
+        		new PopupMenuHelper.Entry(alEdit, "Edit"),
+        		new PopupMenuHelper.Entry(alDelete, "Delete"),
+        	}
+        );
+        
         pack();
     }//GEN-END:initComponents
 
@@ -328,24 +364,36 @@ public class AddrListView extends View
     private void delbuttonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_delbuttonActionPerformed
     {//GEN-HEADEREND:event_delbuttonActionPerformed
         // figure out which row is selected to be marked as done
-        int index =  jTable1.getSelectedRow();
-        if( index == -1 ) return;
-
-        try
+        int[] indices =  jTable1.getSelectedRows();
+        if (indices.length == 0) return;
+        
+		int ret = JOptionPane.showConfirmDialog(null, Resource
+				.getResourceString("Delete_Addresses"), ResourceHelper
+				.getText("Delete"), JOptionPane.OK_CANCEL_OPTION,
+				JOptionPane.QUESTION_MESSAGE);
+		if (ret != JOptionPane.OK_OPTION)
+			return;
+        
+        AddressModel amod = AddressModel.getReference();
+        for (int i=0; i<indices.length; ++i)
         {
-            // need to ask the table for the original (befor sorting) index of the selected row
-            TableSorter tm = (TableSorter) jTable1.getModel();
-            int k = tm.getMappedIndex(index);  // get original index - not current sorted position in tbl
-            Object[] oa = addrs_.toArray();
-            Address addr = (Address) oa[k];
-            AddressModel amod = AddressModel.getReference();
-            amod.delete( addr );
-
+        	int index = indices[i];
+	        try
+	        {
+	            // need to ask the table for the original (befor sorting) index of the selected row
+	            TableSorter tm = (TableSorter) jTable1.getModel();
+	            int k = tm.getMappedIndex(index);  // get original index - not current sorted position in tbl
+	            Object[] oa = addrs_.toArray();
+	            Address addr = (Address) oa[k];
+	            amod.delete(addr, false);
+	        }
+	        catch( Exception e )
+	        {
+	            Errmsg.errmsg(e);
+	        }
         }
-        catch( Exception e )
-        {
-            Errmsg.errmsg(e);
-        }
+        
+        amod.refresh();
     }//GEN-LAST:event_delbuttonActionPerformed
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_jTable1MouseClicked
