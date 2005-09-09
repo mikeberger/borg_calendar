@@ -32,7 +32,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -373,6 +372,7 @@ public class TodoView extends View {
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
+        jMenuItem4 = new javax.swing.JMenuItem();
         printList = new javax.swing.JMenuItem();
         exitMenuItem = new javax.swing.JMenuItem();
 
@@ -491,12 +491,27 @@ public class TodoView extends View {
             {
                 public void actionPerformed(java.awt.event.ActionEvent evt)
                 {
-                    onMoveToFollowingDay(evt);
+                    AppointmentListView.onMoveToFollowingDay(TodoView.this,
+    						getSelectedAppointments());
                 }
             };
         jMenuItem3.addActionListener(alMoveToFollowingDay);
 
         fileMenu.add(jMenuItem3);
+
+        ResourceHelper.setText(jMenuItem4, "changedate");
+        ActionListener alChangeDate =
+        	new java.awt.event.ActionListener()
+            {
+                public void actionPerformed(java.awt.event.ActionEvent evt)
+                {
+                    AppointmentListView.onChangeDate(TodoView.this,
+						getSelectedAppointments());
+                }
+            };
+        jMenuItem4.addActionListener(alChangeDate);
+
+        fileMenu.add(jMenuItem4);
 
         ResourceHelper.setText(printList, "Print_List");
         printList.addActionListener(new java.awt.event.ActionListener()
@@ -525,14 +540,6 @@ public class TodoView extends View {
         setJMenuBar(menuBar);
 
         // Set up the context menu for the table.
-        ActionListener alChangeDate =
-        	new java.awt.event.ActionListener()
-            {
-                public void actionPerformed(java.awt.event.ActionEvent evt)
-                {
-                    onChangeDate(evt);
-                }
-            };
         ActionListener alEdit =
         	new java.awt.event.ActionListener()
             {
@@ -628,6 +635,7 @@ public class TodoView extends View {
         bjp.setLayout( new GridLayout(1,5));
         exitMenuItem.setIcon(new ImageIcon(getClass().getResource("/resource/Stop16.gif")));
         printList.setIcon(new ImageIcon(getClass().getResource("/resource/Print16.gif")));
+        jMenuItem4.setIcon(new ImageIcon(getClass().getResource("/resource/Edit16.gif")));
         jMenuItem3.setIcon(new ImageIcon(getClass().getResource("/resource/Forward16.gif")));
         jMenuItem2.setIcon(new ImageIcon(getClass().getResource("/resource/Delete16.gif")));
         jMenuItem1.setIcon(new ImageIcon(getClass().getResource("/resource/Properties16.gif")));
@@ -767,44 +775,6 @@ public class TodoView extends View {
         dtcommon(false);
     }//GEN-LAST:event_jMenuItem1ActionPerformed
     
-    private void onMoveToFollowingDay(ActionEvent evt)
-    {
-        // Move all selected ToDos to following day
-    	List appts = getSelectedAppointments();
-    	AppointmentModel model = AppointmentModel.getReference();
-        for (int i=0; i<appts.size(); ++i)
-        {
-            try
-            {
-            	Appointment appt = (Appointment) appts.get(i);
-            	
-            	// Increment the day
-            	GregorianCalendar gcal = new GregorianCalendar();
-            	gcal.setTime(appt.getDate());
-            	gcal.add(Calendar.DAY_OF_YEAR, 1);
-            	appt.setDate(gcal.getTime());
-            	
-            	// The appointment needs a new key - delete the old ToDo
-            	// and save a new one with an updated key.
-            	model.delAppt(appt);
-            	int newkey = AppointmentModel.dkey(gcal);
-            	appt.setKey(newkey);
-            	model.saveAppt(appt, true, true, false);
-            		// save it
-            }
-            catch( Exception e ) {
-                Errmsg.errmsg(e);
-            }
-        }
-        if (appts.size() > 0)
-        	model.refresh();
-    }
-
-    private void onChangeDate(ActionEvent e)
-    {
-    	
-    }
-
     // function to mark a todo as done
     private List getSelectedAppointments()
     {
@@ -877,6 +847,7 @@ public class TodoView extends View {
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable todoTable;
