@@ -23,10 +23,13 @@ package net.sf.borg.ui;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionListener;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -105,11 +108,11 @@ public class AppointmentListView extends View implements ListSelectionListener {
         initComponents();
 
         // add scroll to the table
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(apptTable);
         jScrollPane1.getViewport().setBackground( menuBar.getBackground());
 
         // use a sorted table model
-        jTable1.setModel(new TableSorter(
+        apptTable.setModel(new TableSorter(
         new String []
         { Resource.getResourceString("Text"), Resource.getResourceString("Time") },
         new Class [] {
@@ -120,20 +123,20 @@ public class AppointmentListView extends View implements ListSelectionListener {
 
 
         // set renderer to the custom one for time
-        jTable1.setDefaultRenderer(java.util.Date.class, new AppointmentListView.TimeRenderer());
+        apptTable.setDefaultRenderer(java.util.Date.class, new AppointmentListView.TimeRenderer());
 
         // set up for sorting when a column header is clicked
-        TableSorter tm = (TableSorter) jTable1.getModel();
-        tm.addMouseListenerToHeaderInTable(jTable1);
+        TableSorter tm = (TableSorter) apptTable.getModel();
+        tm.addMouseListenerToHeaderInTable(apptTable);
 
 
         // set column widths
-        jTable1.getColumnModel().getColumn(0).setPreferredWidth(125);
-        jTable1.getColumnModel().getColumn(1).setPreferredWidth(75);
+        apptTable.getColumnModel().getColumn(0).setPreferredWidth(125);
+        apptTable.getColumnModel().getColumn(1).setPreferredWidth(75);
 
-        jTable1.setPreferredScrollableViewportSize(new Dimension( 150,100 ));
+        apptTable.setPreferredScrollableViewportSize(new Dimension( 150,100 ));
 
-        ListSelectionModel rowSM = jTable1.getSelectionModel();
+        ListSelectionModel rowSM = apptTable.getSelectionModel();
         rowSM.addListSelectionListener(this);
 
         apanel_ = new AppointmentPanel( year, month, day );
@@ -178,24 +181,102 @@ public class AppointmentListView extends View implements ListSelectionListener {
     public void destroy() {
         this.dispose();
     }
+    
+    // package //
+// Static helper methods for moving appointments - used by both
+// TodoView and AppointmentListView
+    static void onMoveToFollowingDay(Frame parent, List appts)
+    {
+        // Move all selected ToDos to following day
+        if (appts.size() == 0)
+        	return;
+        
+    	AppointmentModel model = AppointmentModel.getReference();
+        for (int i=0; i<appts.size(); ++i)
+        {
+            try
+            {
+            	Appointment appt = (Appointment) appts.get(i);
+            	
+            	// Increment the day
+            	GregorianCalendar gcal = new GregorianCalendar();
+            	gcal.setTime(appt.getDate());
+            	gcal.add(Calendar.DAY_OF_YEAR, 1);
+            	changeDate(appt, gcal);
+            	
+            }
+            catch( Exception e ) {
+                Errmsg.errmsg(e);
+            }
+        }
+        
+    	model.refresh();
+    }
+    
+    static void changeDate(Appointment appt, Calendar cal)
+    {
+    	// The appointment needs a new key - delete the old ToDo
+    	// and save a new one with an updated key.
+    	AppointmentModel model = AppointmentModel.getReference();
+    	model.delAppt(appt);
+    	int newkey = AppointmentModel.dkey(cal);
+    	appt.setDate(cal.getTime());
+    	appt.setKey(newkey);
+    	model.saveAppt(appt, true, true, false);
+    		// save it
+    }
+
+    static void onChangeDate(Frame parent, List appts)
+    {
+        // Move all selected ToDos to following day
+        if (appts.size() == 0)
+        	return;
+        
+    	AppointmentModel model = AppointmentModel.getReference();
+    	DateDialog dlg = new DateDialog(parent);
+    	Calendar cal = new GregorianCalendar();
+    	cal.setTime(((Appointment) appts.get(0)).getDate());
+    	dlg.setCalendar(cal);
+    	dlg.setVisible(true);
+    	Calendar dlgcal = dlg.getCalendar();
+    	if (dlgcal == null)
+    		return;
+    	
+    	cal.set(dlgcal.get(Calendar.YEAR), dlgcal.get(Calendar.MONTH), dlgcal
+				.get(Calendar.DAY_OF_MONTH));
+    	
+        for (int i=0; i<appts.size(); ++i)
+        {
+            try
+            {
+            	Appointment appt = (Appointment) appts.get(i);
+            	changeDate(appt, cal);
+            }
+            catch( Exception e ) {
+                Errmsg.errmsg(e);
+            }
+        }
+        
+    	model.refresh();
+    }
 
     // add a row to the sorted table
     private void addRow( Object [] ro ) {
-        TableSorter tm =   (TableSorter)jTable1.getModel();
+        TableSorter tm =   (TableSorter)apptTable.getModel();
         tm.addRow(ro);
         tm.tableChanged(new TableModelEvent(tm));
     }
 
     // delete all rows from the sorted table
     private void deleteAll() {
-        TableSorter tm = (TableSorter) jTable1.getModel();
+        TableSorter tm = (TableSorter) apptTable.getModel();
         tm.setRowCount(0);
         tm.tableChanged(new TableModelEvent(tm));
     }
 
     // do the default sort - by text
     private void defsort() {
-        TableSorter tm = (TableSorter) jTable1.getModel();
+        TableSorter tm = (TableSorter) apptTable.getModel();
         if( !tm.isSorted() )
             tm.sortByColumn(1);
         else
@@ -204,8 +285,8 @@ public class AppointmentListView extends View implements ListSelectionListener {
 
     // resize table based on row count
     private void resize() {
-        int row = jTable1.getRowCount();
-        jTable1.setPreferredSize(new Dimension(150, row*16));
+        int row = apptTable.getRowCount();
+        apptTable.setPreferredSize(new Dimension(150, row*16));
 
     }
 
@@ -223,7 +304,7 @@ public class AppointmentListView extends View implements ListSelectionListener {
         jPanel2 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        apptTable = new javax.swing.JTable();
         jPanel1 = new javax.swing.JPanel();
         add = new javax.swing.JButton();
         del = new javax.swing.JButton();
@@ -250,11 +331,11 @@ public class AppointmentListView extends View implements ListSelectionListener {
         jPanel3.setBorder(new javax.swing.border.TitledBorder(Resource.getResourceString("apptlist")));
         jScrollPane1.setBorder(null);
         jScrollPane1.setViewport(jScrollPane1.getViewport());
-        jTable1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0)));
-        jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
-        jTable1.setGridColor(java.awt.Color.blue);
-        jTable1.setPreferredSize(new java.awt.Dimension(700, 500));
-        jScrollPane1.setViewportView(jTable1);
+        apptTable.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0)));
+        apptTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
+        apptTable.setGridColor(java.awt.Color.blue);
+        apptTable.setPreferredSize(new java.awt.Dimension(700, 500));
+        jScrollPane1.setViewportView(apptTable);
 
         GridBagConstraints gridBagConstraints2 = new java.awt.GridBagConstraints();
         gridBagConstraints2.gridx = 0;
@@ -280,26 +361,31 @@ public class AppointmentListView extends View implements ListSelectionListener {
         del.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Delete16.gif")));
         ResourceHelper.setText(del, "Delete");
         del.setToolTipText(Resource.getResourceString("del_tip"));
-        del.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
+        
+        ActionListener alDel = 
+        	new java.awt.event.ActionListener()
             {
-                delActionPerformed(evt);
-            }
-        });
+                public void actionPerformed(java.awt.event.ActionEvent evt)
+                {
+                    delActionPerformed(evt);
+                }
+            };
+        del.addActionListener(alDel);
 
         jPanel1.add(del);
 
         delone.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Delete16.gif")));
         ResourceHelper.setText(delone, "Delete_One_Only");
         delone.setToolTipText(Resource.getResourceString("doo_tip"));
-        delone.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
+        ActionListener alDelOne = 
+        	new java.awt.event.ActionListener()
             {
-                deloneActionPerformed(evt);
-            }
-        });
+                public void actionPerformed(java.awt.event.ActionEvent evt)
+                {
+                    deloneActionPerformed(evt);
+                }
+            };
+        delone.addActionListener(alDelOne);
 
         dismiss.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Stop16.gif")));
         ResourceHelper.setText(dismiss, "Dismiss");
@@ -340,7 +426,38 @@ public class AppointmentListView extends View implements ListSelectionListener {
         gridBagConstraints22.gridx = 0;
         gridBagConstraints22.gridy = 0;
         gridBagConstraints22.insets = new java.awt.Insets(2,2,2,2);
-        jTable1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        apptTable.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        
+        ActionListener alMoveToFollowingDay =
+        	new java.awt.event.ActionListener()
+            {
+                public void actionPerformed(java.awt.event.ActionEvent evt)
+                {
+                    onMoveToFollowingDay(AppointmentListView.this, getSelectedAppointments());
+                }
+            };
+
+        ActionListener alChangeDate =
+        	new java.awt.event.ActionListener()
+            {
+                public void actionPerformed(java.awt.event.ActionEvent evt)
+                {
+                    onChangeDate(AppointmentListView.this, getSelectedAppointments());
+                }
+            };
+
+        new PopupMenuHelper
+        (
+        	apptTable,
+        	new PopupMenuHelper.Entry[]
+        	{
+        		new PopupMenuHelper.Entry(alDel, "Delete"),
+        		new PopupMenuHelper.Entry(alDelOne, "Delete_One_Only"),
+        		new PopupMenuHelper.Entry(alMoveToFollowingDay, "Move_To_Following_Day"),
+        		new PopupMenuHelper.Entry(alChangeDate, "changedate"),
+        	}
+        );
+        
         jPanel3.add(getJPanel4(), gridBagConstraints22);
         jPanel3.add(jScrollPane1, gridBagConstraints2);
         jPanel1.add(delone, delone.getName());
@@ -349,30 +466,63 @@ public class AppointmentListView extends View implements ListSelectionListener {
         jPanel1.add(dismiss, dismiss.getName());
     }//GEN-END:initComponents
 
+    private int[] getSelectedKeys()
+    {
+        int[] rows = apptTable.getSelectedRows();
+        List keyList = new ArrayList();
+        for (int i=0; i<rows.length; ++i)
+        {
+        	int row = rows[i];
+	        TableSorter tm = (TableSorter) apptTable.getModel();
+	        int j = tm.getMappedIndex(row);
+	
+	        keyList.add(alist_.get(j));
+        }
+        
+        int[] keys = new int[keyList.size()];
+        for (int i=0; i<keyList.size(); ++i)
+        	keys[i] = ((Integer) keyList.get(i)).intValue();
+        
+        return keys;
+    }
+    
+    private List getSelectedAppointments()
+    {
+    	int[] keys = getSelectedKeys();
+    	List appts = new ArrayList(keys.length);
+    	AppointmentModel model = AppointmentModel.getReference();
+    	for (int i=0; i<keys.length; ++i)
+    	{
+    		try
+    		{
+    			appts.add(model.getAppt(keys[i]));
+    		}
+    		catch (Exception e)
+    		{
+    			Errmsg.errmsg(e);
+    		}
+    	}
+    	return appts;
+    }
+    
     private void deloneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deloneActionPerformed
-        int row = jTable1.getSelectedRow();
-        if( row == -1 ) return;
-        TableSorter tm = (TableSorter) jTable1.getModel();
-        int i = tm.getMappedIndex(row);
-
-        Integer apptkey = (Integer) alist_.get(i);
-        AppointmentModel.getReference().delOneOnly(apptkey.intValue(),key_);
-        jTable1.clearSelection();
+    	int[] keys = getSelectedKeys();
+    	AppointmentModel model = AppointmentModel.getReference();
+    	for (int i=0; i<keys.length; ++i)
+	        model.delOneOnly(keys[i], key_);
+        apptTable.clearSelection();
     }//GEN-LAST:event_deloneActionPerformed
 
     private void delActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_delActionPerformed
-        int row = jTable1.getSelectedRow();
-        if( row == -1 ) return;
-        TableSorter tm = (TableSorter) jTable1.getModel();
-        int i = tm.getMappedIndex(row);
-
-        Integer apptkey = (Integer) alist_.get(i);
-        AppointmentModel.getReference().delAppt(apptkey.intValue());
-        jTable1.clearSelection();
+    	int[] keys = getSelectedKeys();
+    	AppointmentModel model = AppointmentModel.getReference();
+    	for (int i=0; i<keys.length; ++i)
+	        model.delAppt(keys[i]);
+        apptTable.clearSelection();
     }//GEN-LAST:event_delActionPerformed
 
     private void addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addActionPerformed
-        jTable1.clearSelection();
+        apptTable.clearSelection();
         apanel_.showapp(-1);
     }//GEN-LAST:event_addActionPerformed
 
@@ -401,7 +551,7 @@ public class AppointmentListView extends View implements ListSelectionListener {
         int row = lsm.getMinSelectionIndex();
         //int row = jTable1.getSelectedRow();
         if( row == -1 ) return;
-        TableSorter tm = (TableSorter) jTable1.getModel();
+        TableSorter tm = (TableSorter) apptTable.getModel();
         int i = tm.getMappedIndex(row);
 
         Integer apptkey = (Integer) alist_.get(i);
@@ -464,7 +614,7 @@ public class AppointmentListView extends View implements ListSelectionListener {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable apptTable;
     private javax.swing.JMenuBar menuBar;
     // End of variables declaration//GEN-END:variables
 
