@@ -114,6 +114,12 @@ public class AppointmentModel extends Model implements Model.Listener
         return((year - 1900) *1000000 + (month+1)*10000 + date*100 );
     }
     
+    public static int dkey(Calendar cal)
+    {
+        return dkey(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal
+				.get(Calendar.DATE));
+    }
+    
     // return a key that only considers month and date
     public static int birthdayKey( int dkey )
     {
@@ -315,7 +321,7 @@ public class AppointmentModel extends Model implements Model.Listener
     			// keep adding 1 until a key is found that has no appt
     			GregorianCalendar gcal = new GregorianCalendar();
     			gcal.setTime(r.getDate());
-    			int key = AppointmentModel.dkey( gcal.get(Calendar.YEAR), gcal.get(Calendar.MONTH), gcal.get(Calendar.DATE) );
+    			int key = AppointmentModel.dkey(gcal);
     			
     			try
 				{
@@ -739,11 +745,7 @@ public class AppointmentModel extends Model implements Model.Listener
                         } 
                         
 						// get the day key for the repeat
-						int rkey =
-							dkey(
-								current.get(Calendar.YEAR),
-								current.get(Calendar.MONTH),
-								current.get(Calendar.DATE));
+						int rkey = dkey(current);
                             
                         int cyear = current.get(Calendar.YEAR);
                         
@@ -873,7 +875,7 @@ public class AppointmentModel extends Model implements Model.Listener
                 Date d = appt.getDate();
                 GregorianCalendar gcal = new GregorianCalendar();
                 gcal.setTime(d);
-                int key = AppointmentModel.dkey( gcal.get(Calendar.YEAR), gcal.get(Calendar.MONTH), gcal.get(Calendar.DATE) );
+                int key = AppointmentModel.dkey(gcal);
                 appt.setKey(key);
             }
             

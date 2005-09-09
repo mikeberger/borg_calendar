@@ -20,7 +20,6 @@ Copyright 2003 by Mike Berger
 package net.sf.borg.model;
 
 import java.io.Writer;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -72,7 +71,7 @@ public class AddressModel extends Model {
                 GregorianCalendar g = new GregorianCalendar();
                 g.setTime(bd);
                 
-                int key = AppointmentModel.dkey( g.get(Calendar.YEAR), g.get(Calendar.MONTH), g.get(Calendar.DATE));
+                int key = AppointmentModel.dkey(g);
                 int bdkey = AppointmentModel.birthdayKey(key);
                 //System.out.println("key is " + Integer.toString(key) + " " + Integer.toString(bdkey) + " date is " + bd);
                 

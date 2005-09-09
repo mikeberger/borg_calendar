@@ -990,8 +990,7 @@ class AppointmentPanel extends JPanel {
 			g.setTime(nd);
 			g.set(Calendar.HOUR_OF_DAY, hr);
 			g.set(Calendar.MINUTE, min);
-			newkey = AppointmentModel.dkey(g.get(Calendar.YEAR), g
-					.get(Calendar.MONTH), g.get(Calendar.DATE));
+			newkey = AppointmentModel.dkey(g);
 		}
 
 		// set the appt date/time

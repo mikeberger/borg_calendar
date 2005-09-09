@@ -283,9 +283,9 @@ class TaskView extends View
 
         ResourceHelper.setText(jLabel2, "Status");
 
-        ResourceHelper.setText(jLabel3, "StartDate");
+        ResourceHelper.setText(jLabel3, "Start_Date");
 
-        ResourceHelper.setText(jLabel4, "DueDate");
+        ResourceHelper.setText(jLabel4, "Due_Date");
 
         ResourceHelper.setText(jLabel5, "Pri");
 

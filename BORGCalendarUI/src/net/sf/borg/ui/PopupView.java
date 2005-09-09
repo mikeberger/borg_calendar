@@ -111,14 +111,8 @@ public class PopupView extends View {
 		if (sp.equals("true"))
 			showpriv = true;
 
-		// get the current day/month/year
-		GregorianCalendar cal = new GregorianCalendar();
-		int month = cal.get(Calendar.MONTH);
-		int year = cal.get(Calendar.YEAR);
-		int day = cal.get(Calendar.DATE);
-
 		// get the key for today in the data model
-		int key = AppointmentModel.dkey(year, month, day);
+		int key = AppointmentModel.dkey(new GregorianCalendar());
 
 		// get the list of the today's appts
 		Collection l = AppointmentModel.getReference().getAppts(key);

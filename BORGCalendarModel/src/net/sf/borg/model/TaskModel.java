@@ -20,7 +20,6 @@ Copyright 2003 by Mike Berger
 package net.sf.borg.model;
 
 import java.io.Writer;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -170,7 +169,7 @@ public class TaskModel extends Model implements Model.Listener {
                 
                 GregorianCalendar g = new GregorianCalendar();
                 g.setTime(due);
-                int key = AppointmentModel.dkey( g.get(Calendar.YEAR), g.get(Calendar.MONTH), g.get(Calendar.DATE));
+                int key = AppointmentModel.dkey(g);
                 
                 
                 // add the task string to the btmap_
