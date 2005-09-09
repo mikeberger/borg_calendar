@@ -179,7 +179,7 @@ public class AddressModel extends Model {
 		load_map();
 	}
     */
-    public void delete( Address addr ) throws Exception {
+    public void delete(Address addr, boolean refresh) throws Exception {
         
         try {
             String sync = Prefs.getPref( PrefName.PALM_SYNC);
@@ -197,9 +197,8 @@ public class AddressModel extends Model {
             Errmsg.errmsg(e);
         }
         
-        load_map();
-        refreshListeners();
-        
+        if (refresh)
+        	refresh();
     }
     
     public void forceDelete( Address addr ) throws Exception {
@@ -212,9 +211,7 @@ public class AddressModel extends Model {
             Errmsg.errmsg(e);
         }
         
-        load_map();
-        refreshListeners();
-        
+        refresh();
     }
     public void saveAddress( Address addr ) throws Exception
     {
@@ -251,11 +248,8 @@ public class AddressModel extends Model {
             }
         }
         
-        load_map();
-        
         // inform views of data change
-        refreshListeners();
-        
+        refresh();
     }
     
     // allocate a new Row from the DB
@@ -341,15 +335,18 @@ public class AddressModel extends Model {
             saveAddress(addr);
         }
         
+        refresh();
+    }
+    
+    public void refresh()
+    {
         load_map();
         refreshListeners();
-        
     }
     
     public void sync() throws DBException {
         db_.sync();
-        load_map();
-        refreshListeners();
+        refresh();
     }
 
     public void close_db() throws Exception
