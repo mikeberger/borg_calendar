@@ -372,6 +372,7 @@ public class TodoView extends View {
         fileMenu = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
+        jMenuItem3 = new javax.swing.JMenuItem();
         printList = new javax.swing.JMenuItem();
         exitMenuItem = new javax.swing.JMenuItem();
 
@@ -484,6 +485,19 @@ public class TodoView extends View {
 
         fileMenu.add(jMenuItem2);
 
+        ResourceHelper.setText(jMenuItem3, "Move_To_Following_Day");
+        ActionListener alMoveToFollowingDay =
+        	new java.awt.event.ActionListener()
+            {
+                public void actionPerformed(java.awt.event.ActionEvent evt)
+                {
+                    onMoveToFollowingDay(evt);
+                }
+            };
+        jMenuItem3.addActionListener(alMoveToFollowingDay);
+
+        fileMenu.add(jMenuItem3);
+
         ResourceHelper.setText(printList, "Print_List");
         printList.addActionListener(new java.awt.event.ActionListener()
         {
@@ -511,20 +525,20 @@ public class TodoView extends View {
         setJMenuBar(menuBar);
 
         // Set up the context menu for the table.
-        ActionListener alMoveToFollowingDay =
-        	new java.awt.event.ActionListener()
-            {
-                public void actionPerformed(java.awt.event.ActionEvent evt)
-                {
-                    onMoveToFollowingDay(evt);
-                }
-            };
         ActionListener alChangeDate =
         	new java.awt.event.ActionListener()
             {
                 public void actionPerformed(java.awt.event.ActionEvent evt)
                 {
                     onChangeDate(evt);
+                }
+            };
+        ActionListener alEdit =
+        	new java.awt.event.ActionListener()
+            {
+                public void actionPerformed(java.awt.event.ActionEvent evt)
+                {
+                    onEditTodo();
                 }
             };
         new PopupMenuHelper
@@ -534,6 +548,7 @@ public class TodoView extends View {
         	{
         		new PopupMenuHelper.Entry(alDoneDelete, "Done_(Delete)"),
         		new PopupMenuHelper.Entry(alDoneNoDelete, "Done_(No_Delete)"),
+        		new PopupMenuHelper.Entry(alEdit, "Edit"),
         		new PopupMenuHelper.Entry(alMoveToFollowingDay, "Move_To_Following_Day"),
         		new PopupMenuHelper.Entry(alChangeDate, "changedate"),
         	}
@@ -613,6 +628,7 @@ public class TodoView extends View {
         bjp.setLayout( new GridLayout(1,5));
         exitMenuItem.setIcon(new ImageIcon(getClass().getResource("/resource/Stop16.gif")));
         printList.setIcon(new ImageIcon(getClass().getResource("/resource/Print16.gif")));
+        jMenuItem3.setIcon(new ImageIcon(getClass().getResource("/resource/Forward16.gif")));
         jMenuItem2.setIcon(new ImageIcon(getClass().getResource("/resource/Delete16.gif")));
         jMenuItem1.setIcon(new ImageIcon(getClass().getResource("/resource/Properties16.gif")));
         bjp.add( jtbRed );
@@ -647,27 +663,34 @@ public class TodoView extends View {
     private void todoTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_todoTableMouseClicked
       // ask controller to bring up appt editor on double click
       if( evt.getClickCount() < 2 ) return;
-
-      // get task number from column 0 of selected row
-      int row = todoTable.getSelectedRow();
-      if( row == -1 ) return;
-      TableSorter tm = (TableSorter) todoTable.getModel();
-      Date d = (Date) tm.getValueAt(row,0);
-      Integer key = (Integer) tm.getValueAt(row,4);
-
-      GregorianCalendar cal = new GregorianCalendar();
-      cal.setTime(d);
-
-      //bring up an appt editor window
-      AppointmentListView ag = new AppointmentListView(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE));
-      if( key != null )
-          ag.showApp(key.intValue());
-      ag.setVisible(true);
-
-      CalendarView cv = CalendarView.getReference();
-      if( cv != null ) cv.goTo( cal );
-
+      onEditTodo();
     }//GEN-LAST:event_todoTableMouseClicked
+    
+    private void onEditTodo()
+    {
+        // get task number from column 0 of selected row
+        int row = todoTable.getSelectedRow();
+        if( row == -1 ) return;
+        
+        // Ensure only one row is selected.
+        todoTable.getSelectionModel().setSelectionInterval(row,row);
+        
+        TableSorter tm = (TableSorter) todoTable.getModel();
+        Date d = (Date) tm.getValueAt(row,0);
+        Integer key = (Integer) tm.getValueAt(row,4);
+
+        GregorianCalendar cal = new GregorianCalendar();
+        cal.setTime(d);
+
+        //bring up an appt editor window
+        AppointmentListView ag = new AppointmentListView(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE));
+        if( key != null )
+            ag.showApp(key.intValue());
+        ag.setVisible(true);
+
+        CalendarView cv = CalendarView.getReference();
+        if( cv != null ) cv.goTo( cal );
+    }
 
     private void addtodoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addtodoActionPerformed
 
@@ -853,6 +876,7 @@ public class TodoView extends View {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable todoTable;
