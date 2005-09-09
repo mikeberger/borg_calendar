@@ -790,7 +790,7 @@ public class CalendarView extends View implements Prefs.Listener {
                         if (html.length() != 0)
                         {
                         	daytext[i].setToolTipText("<html>"+html+"</html>");
-                        	System.out.println(i+": "+html);
+//                        	System.out.println(i+": "+html);
                         }
                     }
 
