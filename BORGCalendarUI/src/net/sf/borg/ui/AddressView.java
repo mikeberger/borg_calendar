@@ -21,9 +21,14 @@ package net.sf.borg.ui;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.text.DateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
+import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import net.sf.borg.common.util.Errmsg;
@@ -65,6 +70,31 @@ class AddressView extends View
 
     public void refresh()
     {}
+    
+    private Date getDate()
+    {
+        Date bd = null;
+        String bdt = bdtext.getText();
+        if( bdt == null || bdt.equals(""))
+        {
+            return null;
+        }
+        else
+        {
+            DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT);
+            try
+            {
+                bd = df.parse(bdt);
+            }
+            catch( Exception e )
+            {
+                Errmsg.notice(Resource.getResourceString("invdate"));
+                return null;
+            }
+
+            return bd;
+        }
+    }
 
     private void showaddr()
     {
@@ -100,6 +130,22 @@ class AddressView extends View
             bdtext.setText("");
     }
 
+    private void onChooseDate()
+    {
+    	DateDialog dlg = new DateDialog(this);
+    	Calendar cal = new GregorianCalendar();
+    	Date bd = getDate();
+    	if (bd != null)
+    		cal.setTime(bd);
+    	dlg.setCalendar(cal);
+    	dlg.setVisible(true);
+    	Calendar dlgcal = dlg.getCalendar();
+    	if (dlgcal == null)
+    		return;
+        DateFormat sdf = DateFormat.getDateInstance(DateFormat.SHORT);
+        bdtext.setText( sdf.format(dlgcal.getTime()));
+    }
+    
     private void saveaddr()
     {
         if( fntext.getText().equals("") || lntext.getText().equals("") )
@@ -130,29 +176,7 @@ class AddressView extends View
         addr_.setWorkCountry( cntext1.getText() );
         addr_.setWorkZip( zctext1.getText() );
         addr_.setCompany( comptext.getText() );
-
-        Date bd = null;
-        String bdt = bdtext.getText();
-        if( bdt == null || bdt.equals(""))
-        {
-            addr_.setBirthday(null);
-        }
-        else
-        {
-            DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT);
-            try
-            {
-                bd = df.parse(bdt);
-            }
-            catch( Exception e )
-            {
-                Errmsg.notice(Resource.getResourceString("invdate"));
-                return;
-            }
-
-            if( bd != null )
-                addr_.setBirthday(bd);
-        }
+        addr_.setBirthday(getDate());
 
         try
         {
@@ -243,6 +267,7 @@ class AddressView extends View
         GridBagConstraints gridBagConstraints27 = new GridBagConstraints();
         GridBagConstraints gridBagConstraints28 = new GridBagConstraints();
         GridBagConstraints gridBagConstraints29 = new GridBagConstraints();
+        GridBagConstraints gridBagConstraints29a = new GridBagConstraints();
         GridBagConstraints gridBagConstraints30 = new GridBagConstraints();
         GridBagConstraints gridBagConstraints31 = new GridBagConstraints();
         GridBagConstraints gridBagConstraints32 = new GridBagConstraints();
@@ -463,6 +488,10 @@ class AddressView extends View
         gridBagConstraints29.gridy = 11;
         gridBagConstraints29.weightx = 1.0;
         gridBagConstraints29.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints29a.gridx = 2;
+        gridBagConstraints29a.gridy = 11;
+        gridBagConstraints29a.weightx = 0.06;
+        gridBagConstraints29a.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints30.gridx = 1;
         gridBagConstraints30.gridy = 8;
         gridBagConstraints30.weightx = 1.0;
@@ -628,6 +657,19 @@ class AddressView extends View
         jPanel1.add(fxtext, gridBagConstraints27);
         jPanel1.add(hptext, gridBagConstraints28);
         jPanel1.add(bdtext, gridBagConstraints29);
+        JButton bn = new JButton();
+        jPanel1.add(bn, gridBagConstraints29a);
+        ResourceHelper.setText(bn, "Date");
+        bn.addActionListener
+        (
+        	new ActionListener()
+        	{
+				public void actionPerformed(ActionEvent e)
+				{
+					onChooseDate();
+				}
+        	}
+        );
         jPanel1.add(emtext, gridBagConstraints30);
         jPanel1.add(sntext, gridBagConstraints31);
     }//GEN-END:initComponents
