@@ -121,6 +121,7 @@ class AddressView extends View
         zctext1.setText( addr_.getWorkZip() );
         comptext.setText( addr_.getCompany() );
         Date bd = addr_.getBirthday();
+        
         if( bd != null )
         {
             DateFormat sdf = DateFormat.getDateInstance(DateFormat.SHORT);
@@ -304,34 +305,46 @@ class AddressView extends View
         jPanel1.setLayout(new java.awt.GridBagLayout());
 
         ResourceHelper.setText(jLabel1, "First_Name:");
+        jLabel1.setLabelFor(fntext);
 
         ResourceHelper.setText(jLabel2, "Last_Name:");
+        jLabel2.setLabelFor(lntext);
 
         ResourceHelper.setText(jLabel3, "Nickname:");
+        jLabel3.setLabelFor(nntext);
 
         ResourceHelper.setText(jLabel4, "Screen_Name:");
+        jLabel4.setLabelFor(sntext);
 
         ResourceHelper.setText(jLabel5, "Home_Phone:");
+        jLabel5.setLabelFor(hptext);
 
         ResourceHelper.setText(jLabel6, "Work_Phone:");
+        jLabel6.setLabelFor(wptext);
 
 
         ResourceHelper.setText(jLabel7, "Pager:");
+        jLabel7.setLabelFor(pgtext);
 
 
         ResourceHelper.setText(jLabel8, "Fax:");
+        jLabel8.setLabelFor(fxtext);
 
 
         ResourceHelper.setText(jLabel9, "Email:");
+        jLabel9.setLabelFor(emtext);
 
 
         ResourceHelper.setText(jLabel14, "Web_Page:");
+        jLabel14.setLabelFor(wbtext);
 
 
         ResourceHelper.setText(jLabel21, "Company");
+        jLabel21.setLabelFor(comptext);
 
 
         ResourceHelper.setText(jLabel22, "Birthday");
+        jLabel22.setLabelFor(bdtext);
 
 
         jTabbedPane1.addTab(Resource.getResourceString("contact"), jPanel1);
@@ -341,39 +354,43 @@ class AddressView extends View
         jPanel3.setLayout(new java.awt.GridBagLayout());
 
         jPanel3.setBorder(new javax.swing.border.TitledBorder(Resource.getResourceString("HomeAddress")));
-        ResourceHelper.setText(jLabel10, "Street_Address");
+        ResourceHelper.setText(jLabel10, "Home_Street_Address");
+        jLabel10.setLabelFor(satext);
 
+        ResourceHelper.setText(jLabel11, "Home_City:");
+        jLabel11.setLabelFor(cttext);
 
-        ResourceHelper.setText(jLabel11, "City:");
+        ResourceHelper.setText(jLabel12, "Home_State:");
+        jLabel12.setLabelFor(sttext1);
 
+        ResourceHelper.setText(jLabel13, "Home_Country:");
+        jLabel13.setLabelFor(cntext1);
 
-        ResourceHelper.setText(jLabel12, "State:");
-
-
-        ResourceHelper.setText(jLabel13, "Country:");
-
-
-        ResourceHelper.setText(jLabel15, "Zip_Code:");
-
-
+        ResourceHelper.setText(jLabel15, "Home_Zip_Code:");
+        jLabel15.setLabelFor(zctext1);
 
         jPanel5.setLayout(new java.awt.GridBagLayout());
 
         jPanel5.setBorder(new javax.swing.border.TitledBorder(Resource.getResourceString("WorkAddress")));
-        ResourceHelper.setText(jLabel16, "Street_Address");
+        ResourceHelper.setText(jLabel16, "Work_Street_Address");
+        jLabel16.setLabelFor(satext1);
 
         jLabel16.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        ResourceHelper.setText(jLabel17, "City:");
+        ResourceHelper.setText(jLabel17, "Work_City:");
+        jLabel17.setLabelFor(cttext1);
 
         jLabel17.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel17.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        ResourceHelper.setText(jLabel18, "State:");
+        ResourceHelper.setText(jLabel18, "Work_State:");
+        jLabel18.setLabelFor(sttext);
 
         jLabel18.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        ResourceHelper.setText(jLabel19, "Zip_Code:");
+        ResourceHelper.setText(jLabel19, "Work_Zip_Code:");
+        jLabel19.setLabelFor(zctext);
 
         jLabel19.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        ResourceHelper.setText(jLabel20, "Country:");
+        ResourceHelper.setText(jLabel20, "Work_Country:");
+        jLabel20.setLabelFor(cntext);
 
 
 

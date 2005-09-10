@@ -513,10 +513,10 @@ class AppointmentPanel extends JPanel {
 		startap = new javax.swing.JCheckBox();
 		durhour = new javax.swing.JComboBox();
 		durmin = new javax.swing.JComboBox();
-		jLabel3 = new javax.swing.JLabel();
-		jLabel6 = new javax.swing.JLabel();
+		lblStartTime = new javax.swing.JLabel();
+		lblDuration = new javax.swing.JLabel();
 		notecb = new javax.swing.JCheckBox();
-		jLabel8 = new javax.swing.JLabel();
+		lblNewDate = new javax.swing.JLabel();
 		newdatefield = new de.wannawork.jcalendar.JCalendarComboBox();
 		chgdate = new javax.swing.JCheckBox();
 		jPanel3 = new javax.swing.JPanel();
@@ -525,14 +525,14 @@ class AppointmentPanel extends JPanel {
 		halfdaycb = new javax.swing.JCheckBox();
 		holidaycb = new javax.swing.JCheckBox();
 		privatecb = new javax.swing.JCheckBox();
-		jLabel5 = new javax.swing.JLabel();
+		lblColor = new javax.swing.JLabel();
 		colorbox = new javax.swing.JComboBox();
-		jLabel4 = new javax.swing.JLabel();
+		lblFrequency = new javax.swing.JLabel();
 		freq = new javax.swing.JComboBox();
 		s_times = new javax.swing.JSpinner();
-		jLabel1 = new javax.swing.JLabel();
+		lblTimes = new javax.swing.JLabel();
 		catbox = new javax.swing.JComboBox();
-		jLabel7 = new javax.swing.JLabel();
+		lblCategory = new javax.swing.JLabel();
 		foreverbox = new javax.swing.JCheckBox();
 		jPanel4 = new javax.swing.JPanel();
 		GridBagConstraints gridBagConstraints81 = new GridBagConstraints();
@@ -541,6 +541,14 @@ class AppointmentPanel extends JPanel {
 		savedefaultsbutton = new javax.swing.JButton();
 		ndays = new JSpinner();
 		ndays.setModel(new SpinnerNumberModel(2, 2, 3000, 1));
+		
+		lblStartTime.setLabelFor(starthour);
+		lblDuration.setLabelFor(durhour);
+		lblCategory.setLabelFor(catbox);
+		lblColor.setLabelFor(colorbox);
+		lblFrequency.setLabelFor(freq);
+		lblNewDate.setLabelFor(newdatefield);
+		lblTimes.setLabelFor(s_times);
 
 		setLayout(new java.awt.GridBagLayout());
 
@@ -628,23 +636,23 @@ class AppointmentPanel extends JPanel {
 		gridBagConstraints8.gridx = 2;
 		gridBagConstraints8.gridy = 1;
 		gridBagConstraints8.fill = java.awt.GridBagConstraints.VERTICAL;
-		ResourceHelper.setText(jLabel3, "Start_Time:");
+		ResourceHelper.setText(lblStartTime, "Start_Time:");
 		GridBagConstraints gridBagConstraints9 = new java.awt.GridBagConstraints();
 		gridBagConstraints9.gridx = 0;
 		gridBagConstraints9.gridy = 0;
 		gridBagConstraints9.fill = java.awt.GridBagConstraints.VERTICAL;
 		gridBagConstraints9.anchor = java.awt.GridBagConstraints.EAST;
 		gridBagConstraints9.insets = new java.awt.Insets(0, 7, 0, 7);
-		jPanel2.add(jLabel3, gridBagConstraints9);
+		jPanel2.add(lblStartTime, gridBagConstraints9);
 
-		ResourceHelper.setText(jLabel6, "Duration:");
+		ResourceHelper.setText(lblDuration, "Duration:");
 		GridBagConstraints gridBagConstraints11 = new java.awt.GridBagConstraints();
 		gridBagConstraints11.gridx = 0;
 		gridBagConstraints11.gridy = 1;
 		gridBagConstraints11.fill = java.awt.GridBagConstraints.VERTICAL;
 		gridBagConstraints11.anchor = java.awt.GridBagConstraints.EAST;
 		gridBagConstraints11.insets = new java.awt.Insets(0, 8, 0, 8);
-		jPanel2.add(jLabel6, gridBagConstraints11);
+		jPanel2.add(lblDuration, gridBagConstraints11);
 
 		ResourceHelper.setText(notecb, "No_Specific_Time");
 		freq.addActionListener(new java.awt.event.ActionListener() {
@@ -664,7 +672,7 @@ class AppointmentPanel extends JPanel {
 		gridBagConstraints12.gridy = 0;
 		gridBagConstraints12.gridwidth = 1;
 		gridBagConstraints12.fill = java.awt.GridBagConstraints.BOTH;
-		ResourceHelper.setText(jLabel8, "newDate:");
+		ResourceHelper.setText(lblNewDate, "newDate:");
 		GridBagConstraints gridBagConstraints14 = new java.awt.GridBagConstraints();
 		gridBagConstraints14.gridx = 5;
 		gridBagConstraints14.gridy = 1;
@@ -734,15 +742,15 @@ class AppointmentPanel extends JPanel {
 		gridBagConstraints25.insets = new java.awt.Insets(4, 4, 4, 4);
 		jPanel3.add(privatecb, gridBagConstraints25);
 
-		jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-		ResourceHelper.setText(jLabel5, "Color");
+		lblColor.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+		ResourceHelper.setText(lblColor, "Color");
 		GridBagConstraints gridBagConstraints26 = new java.awt.GridBagConstraints();
 		gridBagConstraints26.gridx = 0;
 		gridBagConstraints26.gridy = 1;
 		gridBagConstraints26.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints26.anchor = java.awt.GridBagConstraints.WEST;
 		gridBagConstraints26.insets = new java.awt.Insets(4, 4, 4, 4);
-		jPanel3.add(jLabel5, gridBagConstraints26);
+		jPanel3.add(lblColor, gridBagConstraints26);
 
 		colorbox.setOpaque(false);
 		GridBagConstraints gridBagConstraints27 = new java.awt.GridBagConstraints();
@@ -753,12 +761,12 @@ class AppointmentPanel extends JPanel {
 		gridBagConstraints27.insets = new java.awt.Insets(4, 4, 4, 4);
 		jPanel3.add(colorbox, gridBagConstraints27);
 
-		jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-		ResourceHelper.setText(jLabel4, "Frequency");
+		lblFrequency.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+		ResourceHelper.setText(lblFrequency, "Frequency");
 		freq.setOpaque(false);
 		s_times.setBorder(new javax.swing.border.EtchedBorder());
-		jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-		ResourceHelper.setText(jLabel1, "Times");
+		lblTimes.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+		ResourceHelper.setText(lblTimes, "Times");
 		GridBagConstraints gridBagConstraints35 = new java.awt.GridBagConstraints();
 		gridBagConstraints35.gridx = 3;
 		gridBagConstraints35.gridy = 1;
@@ -766,15 +774,15 @@ class AppointmentPanel extends JPanel {
 		gridBagConstraints35.insets = new java.awt.Insets(4, 4, 4, 4);
 		jPanel3.add(catbox, gridBagConstraints35);
 
-		jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-		ResourceHelper.setText(jLabel7, "Category");
+		lblCategory.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+		ResourceHelper.setText(lblCategory, "Category");
 		GridBagConstraints gridBagConstraints36 = new java.awt.GridBagConstraints();
 		gridBagConstraints36.gridx = 2;
 		gridBagConstraints36.gridy = 1;
 		gridBagConstraints36.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints36.anchor = java.awt.GridBagConstraints.EAST;
 		gridBagConstraints36.insets = new java.awt.Insets(4, 4, 4, 4);
-		jPanel3.add(jLabel7, gridBagConstraints36);
+		jPanel3.add(lblCategory, gridBagConstraints36);
 
 		ResourceHelper.setText(foreverbox, "forever");
 		foreverbox.addActionListener(new java.awt.event.ActionListener() {
@@ -819,7 +827,7 @@ class AppointmentPanel extends JPanel {
 		this.add(jPanel2, gridBagConstraints17);
 		this.setSize(531, 487);
 		jPanel2.add(notecb, gridBagConstraints12);
-		jPanel2.add(jLabel8, gridBagConstraints14);
+		jPanel2.add(lblNewDate, gridBagConstraints14);
 		gridBagConstraints16.fill = java.awt.GridBagConstraints.HORIZONTAL;
 		jPanel2.add(chgdate, gridBagConstraints16);
 		gridBagConstraints4.insets = new java.awt.Insets(2, 2, 2, 2);
@@ -1209,21 +1217,21 @@ class AppointmentPanel extends JPanel {
 
 	private javax.swing.JCheckBox holidaycb;
 
-	private javax.swing.JLabel jLabel1;
+	private javax.swing.JLabel lblTimes;
 
 	private javax.swing.JLabel jLabel2;
 
-	private javax.swing.JLabel jLabel3;
+	private javax.swing.JLabel lblStartTime;
 
-	private javax.swing.JLabel jLabel4;
+	private javax.swing.JLabel lblFrequency;
 
-	private javax.swing.JLabel jLabel5;
+	private javax.swing.JLabel lblColor;
 
-	private javax.swing.JLabel jLabel6;
+	private javax.swing.JLabel lblDuration;
 
-	private javax.swing.JLabel jLabel7;
+	private javax.swing.JLabel lblCategory;
 
-	private javax.swing.JLabel jLabel8;
+	private javax.swing.JLabel lblNewDate;
 
 	private javax.swing.JPanel jPanel1;
 
@@ -1339,9 +1347,9 @@ class AppointmentPanel extends JPanel {
 			gridBagConstraints19.gridy = 1;
 			gridBagConstraints19.insets = new java.awt.Insets(4,4,4,4);
 			gridBagConstraints19.fill = java.awt.GridBagConstraints.BOTH;
-			jPanel.add(jLabel4, gridBagConstraints31);
+			jPanel.add(lblFrequency, gridBagConstraints31);
 			jPanel.add(freq, gridBagConstraints41);
-			jPanel.add(jLabel1, gridBagConstraints51);
+			jPanel.add(lblTimes, gridBagConstraints51);
 			jPanel.add(s_times, gridBagConstraints61);
 			jPanel.add(foreverbox, gridBagConstraints71);
 			jPanel.add(ndays, gridBagConstraints28);

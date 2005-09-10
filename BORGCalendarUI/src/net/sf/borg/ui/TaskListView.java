@@ -26,6 +26,7 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionListener;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -179,20 +180,20 @@ public class TaskListView extends View {
         jRadioButton7.setSelected(true);
 
         // add scroll to the table
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(taskTable);
         //jScrollPane1.getViewport().setBackground( menuBar.getBackground());
 
         // save table cell default renderer for when the custom one is not being
         // used
-        defrend_ = jTable1.getDefaultRenderer(Integer.class);
+        defrend_ = taskTable.getDefaultRenderer(Integer.class);
 
         // set renderer to the custom one for integers
-        jTable1
+        taskTable
                 .setDefaultRenderer(Integer.class,
                         new TaskListView.DLRenderer());
 
         // use a sorted table model
-        jTable1.setModel(new TableSorter(new String[] {
+        taskTable.setModel(new TableSorter(new String[] {
                 Resource.getResourceString("Item_#"),
                 Resource.getResourceString("Status"),
                 Resource.getResourceString("Type"),
@@ -207,22 +208,22 @@ public class TaskListView extends View {
                 Date.class, java.lang.Integer.class, java.lang.String.class }));
 
         // set up for sorting when a column header is clicked
-        TableSorter tm = (TableSorter) jTable1.getModel();
-        tm.addMouseListenerToHeaderInTable(jTable1);
+        TableSorter tm = (TableSorter) taskTable.getModel();
+        tm.addMouseListenerToHeaderInTable(taskTable);
 
         // clear all rows
         deleteAll();
 
         // set column widths
-        jTable1.getColumnModel().getColumn(0).setPreferredWidth(80);
-        jTable1.getColumnModel().getColumn(1).setPreferredWidth(80);
-        jTable1.getColumnModel().getColumn(2).setPreferredWidth(80);
-        jTable1.getColumnModel().getColumn(3).setPreferredWidth(80);
-        jTable1.getColumnModel().getColumn(5).setPreferredWidth(120);
-        jTable1.getColumnModel().getColumn(6).setPreferredWidth(120);
-        jTable1.getColumnModel().getColumn(7).setPreferredWidth(80);
-        jTable1.getColumnModel().getColumn(8).setPreferredWidth(400);
-        jTable1.setPreferredScrollableViewportSize(new Dimension(900, 400));
+        taskTable.getColumnModel().getColumn(0).setPreferredWidth(80);
+        taskTable.getColumnModel().getColumn(1).setPreferredWidth(80);
+        taskTable.getColumnModel().getColumn(2).setPreferredWidth(80);
+        taskTable.getColumnModel().getColumn(3).setPreferredWidth(80);
+        taskTable.getColumnModel().getColumn(5).setPreferredWidth(120);
+        taskTable.getColumnModel().getColumn(6).setPreferredWidth(120);
+        taskTable.getColumnModel().getColumn(7).setPreferredWidth(80);
+        taskTable.getColumnModel().getColumn(8).setPreferredWidth(400);
+        taskTable.setPreferredScrollableViewportSize(new Dimension(900, 400));
 
         pack();
 
@@ -237,21 +238,21 @@ public class TaskListView extends View {
 
     // add a row to the sorted table
     private void addRow(Object[] ro) {
-        TableSorter tm = (TableSorter) jTable1.getModel();
+        TableSorter tm = (TableSorter) taskTable.getModel();
         tm.addRow(ro);
         tm.tableChanged(new TableModelEvent(tm));
     }
 
     // delete all rows from the sorted table
     private void deleteAll() {
-        TableSorter tm = (TableSorter) jTable1.getModel();
+        TableSorter tm = (TableSorter) taskTable.getModel();
         tm.setRowCount(0);
         tm.tableChanged(new TableModelEvent(tm));
     }
 
     // do the default sort - by days left - column 5
     private void defsort() {
-        TableSorter tm = (TableSorter) jTable1.getModel();
+        TableSorter tm = (TableSorter) taskTable.getModel();
         if (!tm.isSorted())
             tm.sortByColumn(6);
         else
@@ -260,8 +261,8 @@ public class TaskListView extends View {
 
     // resize table based on row count
     private void resize() {
-        int row = jTable1.getRowCount();
-        jTable1.setPreferredSize(new Dimension(1000, row * 16));
+        int row = taskTable.getRowCount();
+        taskTable.setPreferredSize(new Dimension(1000, row * 16));
 
     }
 
@@ -281,6 +282,11 @@ public class TaskListView extends View {
         return (4);
     }
 
+    private ActionListener getAL(JMenuItem mnuitm)
+    {
+    	return mnuitm.getActionListeners()[0];
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -295,7 +301,7 @@ public class TaskListView extends View {
         jButton21 = new javax.swing.JButton();
         jTextField3 = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        taskTable = new javax.swing.JTable();
         jRadioButton1 = new javax.swing.JRadioButton();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
@@ -390,15 +396,15 @@ public class TaskListView extends View {
 
 
         //jScrollPane1.setViewport(jScrollPane1.getViewport());
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(taskTable);
         jScrollPane1.setBorder(javax.swing.BorderFactory
                 .createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
-        jTable1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(
+        taskTable.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(
                 0, 0, 0)));
-        jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
-        jTable1.setGridColor(java.awt.Color.blue);
-        jTable1.setPreferredSize(new java.awt.Dimension(700, 500));
-        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+        taskTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
+        taskTable.setGridColor(java.awt.Color.blue);
+        taskTable.setPreferredSize(new java.awt.Dimension(700, 500));
+        taskTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 mouseClick(evt);
             }
@@ -497,7 +503,20 @@ public class TaskListView extends View {
         editMenu.add(close);
 
         menuBar.add(editMenu);
-
+        
+        new PopupMenuHelper
+        (
+        	taskTable,
+        	new PopupMenuHelper.Entry[]
+        	{
+        		new PopupMenuHelper.Entry(getAL(add), "Add"),
+        		new PopupMenuHelper.Entry(getAL(change), "Change"),
+        		new PopupMenuHelper.Entry(getAL(clone), "Clone"),
+        		new PopupMenuHelper.Entry(getAL(delete), "Delete"),
+        		new PopupMenuHelper.Entry(getAL(close), "Close"),
+        	}
+        );
+       
         ResourceHelper.setText(optMenu, "Options");
         ResourceHelper.setText(edittypes, "edit_types");
         edittypes.addActionListener(new java.awt.event.ActionListener() {
@@ -620,7 +639,7 @@ public class TaskListView extends View {
 
         // print the current table of tasks
         try {
-            TablePrinter.printTable(jTable1);
+            TablePrinter.printTable(taskTable);
         } catch (Exception e) {
             Errmsg.errmsg(e);
         }
@@ -631,10 +650,10 @@ public class TaskListView extends View {
         // force a task to closed state
 
         // get the task number from column 0 of the selected row
-        int row = jTable1.getSelectedRow();
+        int row = taskTable.getSelectedRow();
         if (row == -1)
             return;
-        TableSorter tm = (TableSorter) jTable1.getModel();
+        TableSorter tm = (TableSorter) taskTable.getModel();
         Integer num = (Integer) tm.getValueAt(row, 0);
         try {
             // force close of the task
@@ -655,10 +674,10 @@ public class TaskListView extends View {
         // delete selected row
 
         // get task number from column 0 of the selected row
-        int row = jTable1.getSelectedRow();
+        int row = taskTable.getSelectedRow();
         if (row == -1)
             return;
-        TableSorter tm = (TableSorter) jTable1.getModel();
+        TableSorter tm = (TableSorter) taskTable.getModel();
         Integer num = (Integer) tm.getValueAt(row, 0);
 
         // prompt for ok
@@ -688,10 +707,10 @@ public class TaskListView extends View {
             return;
 
         // get task number from column 0 of selected row
-        int row = jTable1.getSelectedRow();
+        int row = taskTable.getSelectedRow();
         if (row == -1)
             return;
-        TableSorter tm = (TableSorter) jTable1.getModel();
+        TableSorter tm = (TableSorter) taskTable.getModel();
         Integer num = (Integer) tm.getValueAt(row, 0);
 
         // ask borg class to bring up a task editor window
@@ -704,10 +723,10 @@ public class TaskListView extends View {
         // ask controller to bring up task editor
 
         // get task number from column 0 of selected row
-        int row = jTable1.getSelectedRow();
+        int row = taskTable.getSelectedRow();
         if (row == -1)
             return;
-        TableSorter tm = (TableSorter) jTable1.getModel();
+        TableSorter tm = (TableSorter) taskTable.getModel();
         Integer num = (Integer) tm.getValueAt(row, 0);
 
         // ask borg class to bring up a task editor window
@@ -719,10 +738,10 @@ public class TaskListView extends View {
         // ask controller to bring up clone editor
 
         // get task number from column 0 of selected row
-        int row = jTable1.getSelectedRow();
+        int row = taskTable.getSelectedRow();
         if (row == -1)
             return;
-        TableSorter tm = (TableSorter) jTable1.getModel();
+        TableSorter tm = (TableSorter) taskTable.getModel();
         Integer num = (Integer) tm.getValueAt(row, 0);
 
         // ask borg class to bring up a task editor window
@@ -995,7 +1014,7 @@ public class TaskListView extends View {
 
     private javax.swing.JScrollPane jScrollPane1;
 
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable taskTable;
 
     private javax.swing.JTextField jTextField3;
 
@@ -1143,7 +1162,7 @@ public class TaskListView extends View {
 						StringWriter sw = new StringWriter();
 						sw.write("<TASKS>\n" );
 						// for each appt being shown in list
-				        TableSorter tm = (TableSorter) jTable1.getModel();
+				        TableSorter tm = (TableSorter) taskTable.getModel();
 				        TaskXMLAdapter txa = new TaskXMLAdapter();
 
 				        for(int row=0; row < tm.getRowCount() ;row++)

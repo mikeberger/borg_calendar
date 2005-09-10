@@ -148,17 +148,17 @@ class TaskView extends View
         jButton1 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         itemtext = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
+        lblItemNum = new javax.swing.JLabel();
+        lblStatus = new javax.swing.JLabel();
         startdatechooser = new de.wannawork.jcalendar.JCalendarComboBox();
         duedatechooser = new de.wannawork.jcalendar.JCalendarComboBox();
         pritext = new javax.swing.JTextField();
         patext = new javax.swing.JTextField();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
+        lblStartDate = new javax.swing.JLabel();
+        lblDueDate = new javax.swing.JLabel();
+        lblPri = new javax.swing.JLabel();
+        lblPA = new javax.swing.JLabel();
+        lblType = new javax.swing.JLabel();
         statebox = new javax.swing.JComboBox();
         typebox = new javax.swing.JComboBox();
         catlabel = new javax.swing.JLabel();
@@ -279,19 +279,26 @@ class TaskView extends View
 
         itemtext.setText("itemtext");
 
-        ResourceHelper.setText(jLabel1, "Item_#");
+        ResourceHelper.setText(lblItemNum, "Item_#");
+        lblItemNum.setLabelFor(itemtext);
 
-        ResourceHelper.setText(jLabel2, "Status");
+        ResourceHelper.setText(lblStatus, "Status");
+        lblStatus.setLabelFor(statebox);
 
-        ResourceHelper.setText(jLabel3, "Start_Date");
+        ResourceHelper.setText(lblStartDate, "Start_Date");
+        lblStartDate.setLabelFor(startdatechooser);
 
-        ResourceHelper.setText(jLabel4, "Due_Date");
+        ResourceHelper.setText(lblDueDate, "Due_Date");
+        lblDueDate.setLabelFor(duedatechooser);
 
-        ResourceHelper.setText(jLabel5, "Pri");
+        ResourceHelper.setText(lblPri, "Pri");
+        lblPri.setLabelFor(pritext);
 
-        ResourceHelper.setText(jLabel6, "PA");
+        ResourceHelper.setText(lblPA, "PA");
+        lblPA.setLabelFor(patext);
 
-        ResourceHelper.setText(jLabel7, "Type");
+        ResourceHelper.setText(lblType, "Type");
+        lblType.setLabelFor(typebox);
 
         typebox.addActionListener(new java.awt.event.ActionListener()
         {
@@ -303,6 +310,7 @@ class TaskView extends View
 
 
         ResourceHelper.setText(catlabel, "Category");
+        catlabel.setLabelFor(getCatbox());
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -442,18 +450,18 @@ class TaskView extends View
         gridBagConstraints11.weightx = 1.0;
         gridBagConstraints11.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints11.insets = new java.awt.Insets(4,4,4,4);
-        jPanel3.add(jLabel7, gridBagConstraints27);
-        jPanel3.add(jLabel3, gridBagConstraints28);
-        jPanel3.add(jLabel4, gridBagConstraints29);
-        jPanel3.add(jLabel5, gridBagConstraints30);
-        jPanel3.add(jLabel6, gridBagConstraints31);
+        jPanel3.add(lblType, gridBagConstraints27);
+        jPanel3.add(lblStartDate, gridBagConstraints28);
+        jPanel3.add(lblDueDate, gridBagConstraints29);
+        jPanel3.add(lblPri, gridBagConstraints30);
+        jPanel3.add(lblPA, gridBagConstraints31);
         jPanel3.add(catlabel, gridBagConstraints32);
         jPanel3.add(duedatechooser, gridBagConstraints33);
         jPanel3.add(startdatechooser, gridBagConstraints34);
         jPanel3.add(typebox, gridBagConstraints35);
-        jPanel3.add(jLabel1, gridBagConstraints37);
+        jPanel3.add(lblItemNum, gridBagConstraints37);
         jPanel3.add(itemtext, gridBagConstraints38);
-        jPanel3.add(jLabel2, gridBagConstraints1);
+        jPanel3.add(lblStatus, gridBagConstraints1);
         jPanel3.add(patext, gridBagConstraints2);
         jPanel3.add(pritext, gridBagConstraints3);
         jPanel3.add(getCatbox(), gridBagConstraints11);
@@ -529,6 +537,7 @@ class TaskView extends View
         String choices[] =
         {"1","2","3","4","5"};
         String inputValue = (String) JOptionPane.showInputDialog(null, Resource.getResourceString("Select_User_Checkbox_Number_to_Edit"), Resource.getResourceString("Select_Checkbox"), JOptionPane.QUESTION_MESSAGE, null, choices, choices[0]);
+        if (inputValue==null) return;
         JCheckBox b = null;
 
         // set b depending on which checkbox they want to edit
@@ -909,13 +918,13 @@ class TaskView extends View
     private javax.swing.JCheckBox jCheckBox7;
     private javax.swing.JCheckBox jCheckBox8;
     private javax.swing.JCheckBox jCheckBox9;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel lblItemNum;
+    private javax.swing.JLabel lblStatus;
+    private javax.swing.JLabel lblStartDate;
+    private javax.swing.JLabel lblDueDate;
+    private javax.swing.JLabel lblPri;
+    private javax.swing.JLabel lblPA;
+    private javax.swing.JLabel lblType;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
