@@ -28,7 +28,9 @@ package net.sf.borg.ui;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
+import java.awt.Image;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -52,12 +54,12 @@ import net.sf.borg.model.Model;
 // cand destroy allbacks from Models
 abstract class View extends javax.swing.JFrame implements Model.Listener
 {
- 
-    
+	static Image image = Toolkit.getDefaultToolkit().getImage(
+			View.class.getResource("/resource/borg32x32.jpg"));
+
     private PrefName prefName_ = null;
 	private void initialize() {
- 
-			
+	    setIconImage(image);
 	}
     public abstract void refresh();
     public abstract void destroy();
