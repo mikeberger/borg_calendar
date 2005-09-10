@@ -94,7 +94,7 @@ public class NwFontChooserS extends JDialog {
         }
         private void initAll() {
             getContentPane().setLayout(null);
-            setBounds(50, 50, 425, 400);
+            setBounds(50, 50, 450, 450);
             addLists();
             addButtons();
             Sample.setBounds(10, 320, 415, 25);
