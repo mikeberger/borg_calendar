@@ -29,6 +29,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
@@ -266,6 +267,7 @@ public class OptionsView extends View {
 			lnfBox.addItem(it.next());
 
 		lnfBox.setSelectedItem(curlnf);
+		lnfBox.setEditable(false);
 
 		String shr = Prefs.getPref(PrefName.WKSTARTHOUR);
 		String ehr = Prefs.getPref(PrefName.WKENDHOUR);
@@ -361,6 +363,7 @@ public class OptionsView extends View {
 		remtimelabel = new JLabel();
 		syncminlabel = new JLabel();
 		ResourceHelper.setText(syncminlabel, "sync_mins");
+		syncminlabel.setLabelFor(getSyncMins());
 		GridBagConstraints gridBagConstraints53 = new GridBagConstraints();
 		gridBagConstraints53.gridx = 1;
 		gridBagConstraints53.gridy = 1;
@@ -377,6 +380,7 @@ public class OptionsView extends View {
 
 		lslabel = new JLabel();
 		ResourceHelper.setText(lslabel, "line_spacing");
+		lslabel.setLabelFor(getLsbox());
 		GridBagConstraints gridBagConstraints112 = new GridBagConstraints();
 		GridBagConstraints gridBagConstraints113 = new GridBagConstraints();
 		GridBagConstraints gridBagConstraints111 = new GridBagConstraints();
@@ -451,10 +455,12 @@ public class OptionsView extends View {
 		applyButton = new javax.swing.JButton();
 
 		// bsv 2004-12-20
-		cb_ucs_on = new javax.swing.JCheckBox(Resource.getResourceString("ucolortext0")); //$NON-NLS-1$
-		cb_ucs_ontodo = new javax.swing.JCheckBox(
-				Resource.getResourceString("ucolortext1")); //$NON-NLS-1$
-		cb_ucs_marktodo = new javax.swing.JCheckBox(Resource.getResourceString("ucolortext2")); //$NON-NLS-1$
+		cb_ucs_on = new javax.swing.JCheckBox();
+		ResourceHelper.setText(cb_ucs_on, "ucolortext0");
+		cb_ucs_ontodo = new javax.swing.JCheckBox();
+		ResourceHelper.setText(cb_ucs_ontodo, "ucolortext1");
+		cb_ucs_marktodo = new javax.swing.JCheckBox();
+		ResourceHelper.setText(cb_ucs_marktodo, "ucolortext2");
 		tf_ucs_marker = new JTextField("! "); //$NON-NLS-1$
 		btn_ucs_red = new JButtonKnowsBgColor(Resource.getResourceString("ucolortext4"), Color.WHITE, false); //$NON-NLS-1$
 		btn_ucs_blue = new JButtonKnowsBgColor(Resource.getResourceString("ucolortext5"), Color.WHITE, false); //$NON-NLS-1$
@@ -578,6 +584,7 @@ public class OptionsView extends View {
 		gridBagConstraints3.weightx = 1.0;
 		gridBagConstraints3.insets = new java.awt.Insets(4, 4, 4, 4);
 		ResourceHelper.setText(jLabel4, "Look_and_Feel:");
+		jLabel4.setLabelFor(lnfBox);
 		GridBagConstraints gridBagConstraints4 = new java.awt.GridBagConstraints();
 		gridBagConstraints4.gridx = 0;
 		gridBagConstraints4.gridy = 0;
@@ -625,6 +632,7 @@ public class OptionsView extends View {
 		jPanel2.add(miltime, gridBagConstraints8);
 
 		ResourceHelper.setText(jLabel5, "Week_View_Start_Hour:_");
+		jLabel5.setLabelFor(wkstarthr);
 		GridBagConstraints gridBagConstraints9 = new java.awt.GridBagConstraints();
 		gridBagConstraints9.gridx = 0;
 		gridBagConstraints9.gridy = 6;
@@ -648,6 +656,7 @@ public class OptionsView extends View {
 		gridBagConstraints11.anchor = java.awt.GridBagConstraints.WEST;
 		gridBagConstraints11.insets = new java.awt.Insets(4, 4, 4, 4);
 		ResourceHelper.setText(jLabel6, "Week_View_End_Hour:_");
+		jLabel6.setLabelFor(wkendhr);
 		GridBagConstraints gridBagConstraints12 = new java.awt.GridBagConstraints();
 		gridBagConstraints12.gridx = 0;
 		gridBagConstraints12.gridy = 7;
@@ -670,6 +679,7 @@ public class OptionsView extends View {
 		jPanel2.add(canadabox, gridBagConstraints14);
 
 		ResourceHelper.setText(jLabel8, "locale");
+		jLabel8.setLabelFor(localebox);
 		GridBagConstraints gridBagConstraints15 = new java.awt.GridBagConstraints();
 		gridBagConstraints15.gridx = 0;
 		gridBagConstraints15.gridy = 11;
@@ -708,6 +718,7 @@ public class OptionsView extends View {
 
 		jPanel8.setBorder(new javax.swing.border.TitledBorder(Resource.getResourceString("MySQLInfo")));
 		ResourceHelper.setText(jLabel7, "DatabaseName");
+		jLabel7.setLabelFor(dbNameText);
 		GridBagConstraints gridBagConstraints19 = new java.awt.GridBagConstraints();
 		gridBagConstraints19.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints19.insets = new java.awt.Insets(0, 4, 0, 4);
@@ -719,6 +730,7 @@ public class OptionsView extends View {
 		jPanel8.add(dbNameText, gridBagConstraints20);
 
 		ResourceHelper.setText(jLabel17, "hostname");
+		jLabel17.setLabelFor(dbHostText);
 		GridBagConstraints gridBagConstraints21 = new java.awt.GridBagConstraints();
 		gridBagConstraints21.gridx = 0;
 		gridBagConstraints21.gridy = 1;
@@ -734,6 +746,7 @@ public class OptionsView extends View {
 		jPanel8.add(dbHostText, gridBagConstraints22);
 
 		ResourceHelper.setText(jLabel18, "port");
+		jLabel18.setLabelFor(dbPortText);
 		GridBagConstraints gridBagConstraints23 = new java.awt.GridBagConstraints();
 		gridBagConstraints23.gridx = 0;
 		gridBagConstraints23.gridy = 2;
@@ -749,6 +762,7 @@ public class OptionsView extends View {
 		jPanel8.add(dbPortText, gridBagConstraints24);
 
 		ResourceHelper.setText(jLabel19, "User");
+		jLabel19.setLabelFor(dbUserText);
 		GridBagConstraints gridBagConstraints25 = new java.awt.GridBagConstraints();
 		gridBagConstraints25.gridx = 0;
 		gridBagConstraints25.gridy = 3;
@@ -764,6 +778,7 @@ public class OptionsView extends View {
 		jPanel8.add(dbUserText, gridBagConstraints26);
 
 		ResourceHelper.setText(jLabel20, "Password");
+		jLabel20.setLabelFor(jPasswordField1);
 		GridBagConstraints gridBagConstraints27 = new java.awt.GridBagConstraints();
 		gridBagConstraints27.gridx = 0;
 		gridBagConstraints27.gridy = 4;
@@ -781,6 +796,7 @@ public class OptionsView extends View {
 
 		jPanel9.setBorder(new javax.swing.border.TitledBorder(Resource.getResourceString("localFileInfo")));
 		ResourceHelper.setText(jLabel3, "DataBase_Directory");
+		jLabel3.setLabelFor(dbDirText);
 		GridBagConstraints gridBagConstraints30 = new java.awt.GridBagConstraints();
 		gridBagConstraints30.gridx = 0;
 		gridBagConstraints30.gridy = 0;
@@ -834,6 +850,7 @@ public class OptionsView extends View {
 		gridBagConstraints35.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints35.insets = new java.awt.Insets(0, 4, 0, 0);
 		jPanel1.add(jLabel1, gridBagConstraints35);
+		jLabel1.setLabelFor(smtptext);
 
 		ResourceHelper.setText(jLabel2, "Your_Email_Address");
 		GridBagConstraints gridBagConstraints36 = new java.awt.GridBagConstraints();
@@ -842,6 +859,7 @@ public class OptionsView extends View {
 		gridBagConstraints36.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints36.insets = new java.awt.Insets(0, 4, 0, 4);
 		jPanel1.add(jLabel2, gridBagConstraints36);
+		jLabel2.setLabelFor(emailtext);
 
 		smtptext.setColumns(30);
 		GridBagConstraints gridBagConstraints37 = new java.awt.GridBagConstraints();
@@ -999,6 +1017,7 @@ public class OptionsView extends View {
 
 		jLabel15.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
 		ResourceHelper.setText(jLabel15, "min_between_chks");
+		jLabel15.setLabelFor(getEmailtimebox());
 		GridBagConstraints gridBagConstraints63 = new java.awt.GridBagConstraints();
 		gridBagConstraints63.gridx = 0;
 		gridBagConstraints63.gridy = 1;
@@ -1131,6 +1150,7 @@ public class OptionsView extends View {
 		gridBagConstraints116.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints116.insets = new java.awt.Insets(4, 4, 4, 4);
 		ResourceHelper.setText(remtimelabel, "reminder_time");
+		remtimelabel.setLabelFor(emailtimebox);
 		gridBagConstraints212.gridx = 1;
 		gridBagConstraints212.gridy = 3;
 		gridBagConstraints212.weightx = 1.0;
@@ -2054,6 +2074,7 @@ public class OptionsView extends View {
 			MySQLButton = new JRadioButton();
 			MySQLButton.setActionCommand("mysql");
 			MySQLButton.setText("MySQL");
+			MySQLButton.setMnemonic(KeyEvent.VK_M);
 			MySQLButton.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					dbTypeAction(e);
@@ -2086,7 +2107,8 @@ public class OptionsView extends View {
 			gridBagConstraints.gridy = 0; // Generated
 
 			jLabel = new JLabel();
-			jLabel.setText("URL"); // Generated
+			ResourceHelper.setText(jLabel, "enturl");
+			jLabel.setLabelFor(getRemoteURLText());
 			jLabel.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT); // Generated
 			jLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT); // Generated
 			jPanel12 = new JPanel();
