@@ -110,10 +110,10 @@ public class TodoView extends View {
         // data and todo text
         todoTable.setModel(new TableSorter(
                 new String []{
-                        ResourceHelper.getText("Date"),
-                        ResourceHelper.getText("To_Do"),
-                		ResourceHelper.getText("Category"),
-						ResourceHelper.getText("Color"),
+                        Resource.getPlainResourceString("Date"),
+                        Resource.getPlainResourceString("To_Do"),
+                        Resource.getPlainResourceString("Category"),
+                        Resource.getPlainResourceString("Color"),
 						"key"},
                 new Class []{
                         Date.class,

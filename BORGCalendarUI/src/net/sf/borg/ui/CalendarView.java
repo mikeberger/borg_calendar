@@ -2157,7 +2157,7 @@ public class CalendarView extends View implements Prefs.Listener {
 			Resource.getResourceString("translations") + "\n\n" +
 			build_info;
         Object opts[] =
-        {ResourceHelper.getText("Dismiss") /*,
+        {Resource.getPlainResourceString("Dismiss") /*,
          Resource.getResourceString("Show_Detailed_Source_Version_Info")*/ };
         JOptionPane.showOptionDialog(null, info, Resource.getResourceString("About_BORG"), JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getClass().getResource("/resource/borg.jpg")), opts, opts[0]);
 

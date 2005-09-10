@@ -368,8 +368,8 @@ public class AddrListView extends View
         if (indices.length == 0) return;
         
 		int ret = JOptionPane.showConfirmDialog(null, Resource
-				.getResourceString("Delete_Addresses"), ResourceHelper
-				.getText("Delete"), JOptionPane.OK_CANCEL_OPTION,
+				.getResourceString("Delete_Addresses"), Resource
+				.getPlainResourceString("Delete"), JOptionPane.OK_CANCEL_OPTION,
 				JOptionPane.QUESTION_MESSAGE);
 		if (ret != JOptionPane.OK_OPTION)
 			return;

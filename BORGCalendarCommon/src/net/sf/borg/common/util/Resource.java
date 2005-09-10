@@ -23,12 +23,13 @@ import java.io.InputStream;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
+import javax.swing.KeyStroke;
 
 public class Resource
 {
 	private static String version_ = null;
 
-	static public String getResourceString( String key ) {
+	public static String getResourceString( String key ) {
 	    String res = ResourceBundle.getBundle("resource/borg_resource").getString(key);
 
 	    if( res.indexOf("\\n") == -1 )
@@ -51,7 +52,13 @@ public class Resource
 	    return( sb.toString() );
 	}
 
-	static public String getVersion()
+	public static String getPlainResourceString(String resourceKey)
+	{
+		ComponentParms parms = parseParms(resourceKey);
+		return parms.getText();
+	}
+
+	public static String getVersion()
 	{
 		if( version_ == null)
 		{
@@ -70,4 +77,72 @@ public class Resource
 
 		return( version_ );
 	}
+
+	public static ComponentParms parseParms(String resourceKey)
+	{
+		String parmsText = getResourceString(resourceKey);
+		
+		if (parmsText.startsWith("Goto"))
+			parmsText = parmsText.substring(0);
+
+		String text = parmsText;
+		int mnemonic = -1;
+		KeyStroke accel = null;
+		int pos;
+		if ((pos = parmsText.indexOf('|')) != -1)
+		{
+			text = parmsText.substring(0,pos);
+			String parmsTextRem = parmsText.substring(pos+1);
+			String mnemonicText = parmsTextRem;
+
+			if ((pos = parmsTextRem.indexOf('|')) != -1)
+			{
+				mnemonicText = parmsTextRem.substring(0,pos);
+				String accelText = parmsTextRem.substring(pos+1);
+				accel = KeyStroke.getKeyStroke(accelText);
+			}
+
+			if (mnemonicText.length() > 0)
+				mnemonic = KeyStroke.getKeyStroke(mnemonicText).getKeyCode();
+		}
+		return new ComponentParms(text,mnemonic,accel);
+	}
+
+////////////////////////////////////////////////////////////////
+// nested class ComponentParms
+
+	public static class ComponentParms
+	{
+		public final int getKeyEvent()
+		{
+			return keyEvent;
+		}
+	
+		public final KeyStroke getKeyStroke()
+		{
+			return keyStroke;
+		}
+	
+		public final String getText()
+		{
+			return text;
+		}
+	
+	// "internal" //
+		public ComponentParms(String text, int keyEvent, KeyStroke keyStroke)
+		{
+			this.text = text;
+			this.keyEvent = keyEvent;
+			this.keyStroke = keyStroke;
+		}
+	
+	// private //
+		private String text;
+		private int keyEvent;
+		private KeyStroke keyStroke;
+	}
+
+// end nested class ComponentParms
+////////////////////////////////////////////////////////////////
+
 }
