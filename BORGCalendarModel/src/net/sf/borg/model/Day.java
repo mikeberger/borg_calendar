@@ -525,7 +525,9 @@ public class Day
                 int yrs = year - bdyear;
                 if( yrs < 0 ) continue;
 
-                String tx = Resource.getResourceString("Birthday") + ": " + addr.getFirstName() + " " + addr.getLastName() + "(" + yrs + ")";
+                String tx = Resource.getPlainResourceString("Birthday") + ": "
+						+ addr.getFirstName() + " " + addr.getLastName() + "("
+						+ yrs + ")";
                 info.setText(tx);
                 ret.addAppt(info);
             }
