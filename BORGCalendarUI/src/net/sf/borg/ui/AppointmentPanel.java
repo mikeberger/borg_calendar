@@ -919,7 +919,7 @@ class AppointmentPanel extends JPanel {
 			chg_appt();
 		}
 
-		showapp(-1);
+		
 
 	}//GEN-LAST:event_savebuttonActionPerformed
 
@@ -1053,6 +1053,10 @@ class AppointmentPanel extends JPanel {
 				daylist.add(new Integer(Calendar.FRIDAY));
 			if( dl7.isSelected())
 				daylist.add(new Integer(Calendar.SATURDAY));
+			if (!Repeat.isCompatible(g,(String) freq.getSelectedItem(), daylist)) {
+				throw new Warning(Resource
+						.getResourceString("recur_compat"));
+			}
 			r.setFrequency(Repeat.freqString((String) freq.getSelectedItem(), (Integer)ndays.getValue(),
 					rptnumbox.isSelected(),daylist));
 		}
@@ -1162,6 +1166,8 @@ class AppointmentPanel extends JPanel {
 			return;
 
 		calmod_.saveAppt(r, true);
+		
+		showapp(-1);
 	}
 
 	private void chg_appt() {
@@ -1194,6 +1200,8 @@ class AppointmentPanel extends JPanel {
 			calmod_.saveAppt(r, true);
 
 		}
+		
+		showapp(-1);
 	}
 
 	// Variables declaration - do not modify//GEN-BEGIN:variables

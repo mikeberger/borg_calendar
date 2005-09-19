@@ -63,6 +63,25 @@ public class Repeat
 			MONTHLY, MONTHLY_DAY, YEARLY, WEEKDAYS, WEEKENDS, MWF,
 			TTH, NDAYS, DAYLIST };
 	
+	static public boolean isCompatible( Calendar date, String freq, Collection daylist )
+	{
+		String f = freqToEnglish(freq);
+		int day = date.get( Calendar.DAY_OF_WEEK);
+		if( f.equals(WEEKDAYS) && (day == Calendar.SATURDAY || day == Calendar.SUNDAY ))
+			return false;
+		else if( f.equals(WEEKENDS) && (day != Calendar.SATURDAY && day != Calendar.SUNDAY ))
+			return false;
+		else if( f.equals(MWF) && 
+				(day != Calendar.MONDAY && day != Calendar.WEDNESDAY && day != Calendar.FRIDAY))
+			return false;
+		else if( f.equals(TTH) && 
+				(day != Calendar.TUESDAY && day != Calendar.THURSDAY ))
+			return false;
+		else if( f.equals(DAYLIST) && !daylist.contains(new Integer(day)))
+			return false;
+		return true;
+	}
+	
 	
 	static public String getFreqString(int i)
 	{
