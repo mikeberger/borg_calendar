@@ -56,7 +56,7 @@ CREATE TABLE `addresses` (
 -- 
 
 CREATE TABLE `appointments` (
-  `appt_date` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `appt_date` timestamp NOT NULL default CURRENT_TIMESTAMP,
   `appt_num` int(11) NOT NULL default '0',
   `username` varchar(25) NOT NULL,
   `duration` int(11) default NULL,
@@ -67,7 +67,7 @@ CREATE TABLE `appointments` (
   `holiday` tinyint(4) NOT NULL default '0',
   `private` tinyint(4) NOT NULL default '0',
   `times` int(11) NOT NULL default '0',
-  `frequency` varchar(10) default NULL,
+  `frequency` varchar(20) default NULL,
   `todo` tinyint(4) NOT NULL default '0',
   `color` varchar(10) default NULL,
   `repeat` tinyint(4) NOT NULL default '0',
