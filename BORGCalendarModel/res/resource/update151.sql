@@ -1,0 +1,11 @@
+ALTER TABLE `appointments` CHANGE `frequency` `frequency` VARCHAR( 20 ) DEFAULT NULL;
+ALTER TABLE `appointments` CHANGE `userid` `username` VARCHAR( 25 ) NOT NULL;
+ALTER TABLE `tasks` CHANGE `userid` `username` VARCHAR( 25 ) NOT NULL;
+ALTER TABLE `addresses` CHANGE `userid` `username` VARCHAR( 25 ) NOT NULL;
+ALTER TABLE `options` CHANGE `userid` `username` VARCHAR( 25 ) NOT NULL;
+drop tables users;
+update addresses set username='$default';
+ALTER TABLE `appointments` CHANGE `appt_date` `appt_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP; 
+update appointments set username='$default';
+update tasks set username='$default';
+update options set username='$default';
