@@ -1,5 +1,10 @@
 Version 1.5.1
 -------------
+Keyboard Shortcuts
+Fulltext tooltips when hovering over days in the month view
+Todo and Appt quick change date and move to next date actions
+Todo and Appt List right click context menus
+Add date chooser for birthdays
 Flemish (Dutch Belgian) Translation by Rudy Defrene < sat2freak@users.sourceforge.net>
 Repeat by user-selected days of the week
 Tomcat-based data server
