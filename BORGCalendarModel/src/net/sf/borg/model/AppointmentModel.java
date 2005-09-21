@@ -350,6 +350,7 @@ public class AppointmentModel extends Model implements Model.Listener
     			if( !sync )
     			{
     			    r.setNew(true);
+    			    r.setDeleted(false);
     			}
     			
     			db_.addObj(r, crypt);
@@ -359,6 +360,7 @@ public class AppointmentModel extends Model implements Model.Listener
        			if( !sync )
     			{
     			    r.setModified(true);
+    			    r.setDeleted(false);
     			}
     			db_.updateObj(r, crypt );
     		}

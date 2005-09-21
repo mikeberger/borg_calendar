@@ -222,7 +222,7 @@ public class AppointmentListView extends View implements ListSelectionListener {
     	int newkey = AppointmentModel.dkey(cal);
     	appt.setDate(cal.getTime());
     	appt.setKey(newkey);
-    	model.saveAppt(appt, true, true, false);
+    	model.saveAppt(appt, true);
     		// save it
     }
 
