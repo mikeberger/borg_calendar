@@ -199,7 +199,7 @@ public class Borg extends Controller implements OptionsView.RestartListener {
         OptionsView.setRestartListener(this);
 
         // override for testing a different db
-        String testdb = !AppHelper.isApplication() ? "mem:" : null;
+        String testdb = !AppHelper.isApplication() ? "mem::false::false" : null;
 
         // override for tray icon name
         String trayname = "BORG";
@@ -287,7 +287,7 @@ public class Borg extends Controller implements OptionsView.RestartListener {
             Locale.setDefault(new Locale(language, country));
         }
         String version = Resource.getVersion();
-        if( version.indexOf("beta") != -1 )
+        if( version.indexOf("beta") != -1 && !AppHelper.isApplet())
             Errmsg.notice(Resource.getResourceString("betawarning"));
         
         // do not show the startup banner if autostart or aplist features are on
