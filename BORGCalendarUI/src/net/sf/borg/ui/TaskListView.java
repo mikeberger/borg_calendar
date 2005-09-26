@@ -194,15 +194,15 @@ public class TaskListView extends View {
 
         // use a sorted table model
         taskTable.setModel(new TableSorter(new String[] {
-                Resource.getResourceString("Item_#"),
-                Resource.getResourceString("Status"),
-                Resource.getResourceString("Type"),
-                Resource.getResourceString("Category"),
-                Resource.getResourceString("Pri"),
-                Resource.getResourceString("Start_Date"),
-                Resource.getResourceString("Due_Date"),
-                Resource.getResourceString("Days_Left"),
-                Resource.getResourceString("Description") }, new Class[] {
+                Resource.getPlainResourceString("Item_#"),
+                Resource.getPlainResourceString("Status"),
+                Resource.getPlainResourceString("Type"),
+                Resource.getPlainResourceString("Category"),
+                Resource.getPlainResourceString("Pri"),
+                Resource.getPlainResourceString("Start_Date"),
+                Resource.getPlainResourceString("Due_Date"),
+                Resource.getPlainResourceString("Days_Left"),
+                Resource.getPlainResourceString("Description") }, new Class[] {
                 java.lang.Integer.class, java.lang.String.class,
                 java.lang.String.class, java.lang.String.class, java.lang.String.class, Date.class,
                 Date.class, java.lang.Integer.class, java.lang.String.class }));

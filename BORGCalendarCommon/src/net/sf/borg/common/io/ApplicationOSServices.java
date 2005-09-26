@@ -92,7 +92,7 @@ public final void fileSave(
 	JFileChooser chooser = new JFileChooser();
             
 	chooser.setCurrentDirectory( new File(startDirectory) );
-	chooser.setDialogTitle(Resource.getResourceString("Save"));
+	chooser.setDialogTitle(Resource.getPlainResourceString("Save"));
 	chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
             
 	int returnVal = chooser.showOpenDialog(null);

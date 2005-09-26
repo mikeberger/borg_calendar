@@ -84,8 +84,8 @@ public class AddrListView extends View
         // data and todo text
         jTable1.setModel(new TableSorter(
         new String []
-        { Resource.getResourceString("First"), Resource.getResourceString("Last"), Resource.getResourceString("Email"), Resource.getResourceString("Screen_Name"), Resource.getResourceString("Home_Phone"), Resource.getResourceString("Work_Phone"),
-               Resource.getResourceString("Birthday") },
+        { Resource.getPlainResourceString("First"), Resource.getPlainResourceString("Last"), Resource.getPlainResourceString("Email"), Resource.getPlainResourceString("Screen_Name"), Resource.getPlainResourceString("Home_Phone"), Resource.getPlainResourceString("Work_Phone"),
+               Resource.getPlainResourceString("Birthday") },
         new Class []
         {
             java.lang.String.class,java.lang.String.class,java.lang.String.class,java.lang.String.class,java.lang.String.class,
