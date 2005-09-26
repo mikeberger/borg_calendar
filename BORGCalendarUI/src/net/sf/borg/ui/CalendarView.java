@@ -408,9 +408,9 @@ public class CalendarView extends View implements Prefs.Listener {
         pack();
         setVisible(true);
 
-        String version = Resource.getVersion();
-        if( version.indexOf("beta") != -1 )
-            Errmsg.notice(Resource.getResourceString("betawarning"));
+        //String version = Resource.getVersion();
+        //if( version.indexOf("beta") != -1 )
+            //Errmsg.notice(Resource.getResourceString("betawarning"));
 
     }
 
@@ -2139,7 +2139,7 @@ public class CalendarView extends View implements Prefs.Listener {
             Properties props = new Properties();
             props.load(is);
             is.close();
-            version = props.getProperty("borg.version");
+            version = Resource.getVersion();
             build_info = Resource.getResourceString("Build_Number:_") + props.getProperty("build.number") + Resource.getResourceString("Build_Time:_") + props.getProperty("build.time") + "\n";
 
 

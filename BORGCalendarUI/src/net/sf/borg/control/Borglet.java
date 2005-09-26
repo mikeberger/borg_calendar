@@ -28,6 +28,7 @@ import javax.swing.JButton;
 
 import net.sf.borg.common.app.AppHelper;
 import net.sf.borg.common.util.Errmsg;
+import net.sf.borg.common.util.Resource;
 
 public class Borglet extends JApplet {
     public void init() {
@@ -44,7 +45,7 @@ public class Borglet extends JApplet {
                 Properties props = new Properties();
                 props.load(is);
                 is.close();
-                version = props.getProperty("borg.version");
+                version = Resource.getVersion();
 
             }
             catch (Exception e) {

@@ -321,6 +321,7 @@ build.number=${build.number}
 			<fileset dir="${build.dir}" includes="lib/borghelp.jar" />
 			<fileset dir="${db.res.dir}" includes="borg.sql" />
 			<fileset dir="${db.res.dir}" includes="update1_5.sql" />
+			<fileset dir="${db.res.dir}" includes="update151.sql" />
 			<fileset dir="${prj.common.dir}" includes="lib/*" />
 			<fileset dir="${prj.ui.dir}" includes="lib/*" />
 		</zip>

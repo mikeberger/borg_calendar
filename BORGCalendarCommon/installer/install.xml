@@ -104,6 +104,7 @@
 	    	<file src="lib/LICENSE.commons-httpclient" targetdir="$INSTALL_PATH/lib"/> 
 	    	<file src="borg.sql" targetdir="$INSTALL_PATH"/>
             <file src="update1_5.sql" targetdir="$INSTALL_PATH"/>
+            <file src="update151.sql" targetdir="$INSTALL_PATH"/>
         </pack>
         <pack name="Systray Support" required="no">
 		<description>Support for a system tray icon (Recommended)</description>
