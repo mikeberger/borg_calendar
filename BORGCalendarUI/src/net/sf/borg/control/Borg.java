@@ -360,7 +360,7 @@ public class Borg extends Controller implements OptionsView.RestartListener {
 
             // If we're working from memory, give them the opportunity
             // to populate our memory files first.
-            if (dbdir.startsWith("mem:"))
+            /* if (dbdir.startsWith("mem:"))
             {
             	for (;;)
             	{
@@ -399,7 +399,7 @@ public class Borg extends Controller implements OptionsView.RestartListener {
 						Errmsg.errmsg(e);
 					}
             	}
-            }
+            }*/
 
             // Get our DB factory
             StringBuffer tmp = new StringBuffer(dbdir);
