@@ -335,7 +335,8 @@ public class Day
             // so, holidays only exist in the dayinfo objects, which are
             // temporary. they do not get added to the DB or even the appt map_
             Appointment hol = new Appointment();
-
+            hol.setDate( new GregorianCalendar(year, month, day, 00, 00).getTime());
+            
             // bsv 2004-12-21
             hol.setColor("purple");
             //hol.setColor("black");
@@ -412,7 +413,7 @@ public class Day
         {
 
             Appointment hol = new Appointment();
-
+            hol.setDate( new GregorianCalendar(year, month, day, 00, 00).getTime());
 
             // bsv 2004-12-21
             hol.setColor("purple");
@@ -489,6 +490,7 @@ public class Day
                 String tx = de.replace( '\n', ' ' );
 
                 Appointment info = new Appointment();
+                info.setDate( new GregorianCalendar(year, month, day, 00, 00).getTime());
                 String color = info.getColor();
 
                 // bsv 2004-12-21
