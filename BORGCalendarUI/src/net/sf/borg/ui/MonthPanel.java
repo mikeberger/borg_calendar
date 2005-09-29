@@ -145,7 +145,7 @@ class MonthPanel extends JPanel implements Printable
         
         // determine month title
         GregorianCalendar cal = new GregorianCalendar( year_, month_, 1 );
-        cal.add(Calendar.MONTH, pageIndex );
+        cal.add(Calendar.MONTH, pageIndex);
         year = cal.get(Calendar.YEAR);
         month = cal.get(Calendar.MONTH);
         cal.setFirstDayOfWeek(Prefs.getIntPref(PrefName.FIRSTDOW));
@@ -441,7 +441,7 @@ class MonthPanel extends JPanel implements Printable
             g2.scale( prev_scale, prev_scale );
 			drawIt(g,getWidth()/prev_scale, getHeight()/prev_scale, 
 					getWidth()/prev_scale-20, getHeight()/prev_scale-20,
-					10, 10, 1);
+					10, 10, 0);
             
         }
         catch( Exception e )
