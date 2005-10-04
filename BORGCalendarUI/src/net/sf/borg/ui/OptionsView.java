@@ -250,8 +250,18 @@ public class OptionsView extends View {
 			lnfs.add(name);
 		}
 		try {
-			Class.forName("com.jgoodies.plaf.plastic.PlasticXPLookAndFeel");
-			lnfs.add("com.jgoodies.plaf.plastic.PlasticXPLookAndFeel");
+			Class.forName("com.jgoodies.looks.plastic.PlasticLookAndFeel");
+			lnfs.add("com.jgoodies.looks.plastic.PlasticLookAndFeel");
+		} catch (Exception e) {
+		}
+		try {
+			Class.forName("com.jgoodies.looks.plastic.PlasticXPLookAndFeel");
+			lnfs.add("com.jgoodies.looks.plastic.PlasticXPLookAndFeel");
+		} catch (Exception e) {
+		}
+		try {
+			Class.forName("com.jgoodies.looks.plastic.Plastic3DLookAndFeel");
+			lnfs.add("com.jgoodies.looks.plastic.Plastic3DLookAndFeel");
 		} catch (Exception e) {
 		}
 		try {

@@ -118,7 +118,7 @@
         </pack>
         <pack name="PlasticXP Look and Feel" required="no">
 		<description>The plastic XP Look and feel. Recommended for users that don't have Java 5.0 or Windows XP. This will add the PlasticXP Look and Feel as a option in BORG.</description>
-	    <file src="lib/looks-1.2.2.jar" targetdir="$INSTALL_PATH/lib"/> 
+	    <file src="lib/looks-1.3.2.jar" targetdir="$INSTALL_PATH/lib"/> 
 	    <file src="lib/LICENSE.looks" targetdir="$INSTALL_PATH/lib"/> 
         </pack>
 	<pack name="MDBTOOL" preselected="no" required="no">
