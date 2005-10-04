@@ -255,6 +255,11 @@ public class OptionsView extends View {
 		} catch (Exception e) {
 		}
 		try {
+			Class.forName("com.jgoodies.looks.windows.WindowsLookAndFeel");
+			lnfs.add("com.jgoodies.looks.windows.WindowsLookAndFeel");
+		} catch (Exception e) {
+		}
+		try {
 			Class.forName("com.jgoodies.looks.plastic.PlasticXPLookAndFeel");
 			lnfs.add("com.jgoodies.looks.plastic.PlasticXPLookAndFeel");
 		} catch (Exception e) {
