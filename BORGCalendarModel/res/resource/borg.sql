@@ -1,16 +1,3 @@
--- phpMyAdmin SQL Dump
--- version 2.6.1-pl3
--- http://www.phpmyadmin.net
--- 
--- Host: localhost
--- Generation Time: Apr 29, 2005 at 06:36 PM
--- Server version: 4.1.7
--- PHP Version: 4.3.9
--- 
--- Database: `borg`
--- 
-
--- --------------------------------------------------------
 
 -- 
 -- Table structure for table `addresses`
@@ -123,14 +110,3 @@ CREATE TABLE `tasks` (
   KEY `username` (`username`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
--- --------------------------------------------------------
-
--- 
--- Table structure for table `users`
--- 
-
-CREATE TABLE `users` (
-  `username` varchar(25) NOT NULL default '',
-  `password` varchar(25) NOT NULL default '',
-  PRIMARY KEY  (`username`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
