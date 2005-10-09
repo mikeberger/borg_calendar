@@ -129,6 +129,7 @@ public class BorgHandler
 		}
 		catch (Exception e)
 		{
+			e.printStackTrace();
 			if (e instanceof DBException)
 				result = e;
 			else
