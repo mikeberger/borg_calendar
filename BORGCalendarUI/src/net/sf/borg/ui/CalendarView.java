@@ -49,6 +49,7 @@ import java.util.Properties;
 import java.util.TreeSet;
 import java.util.Vector;
 
+import javax.swing.Box;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -1639,6 +1640,8 @@ public class CalendarView extends View implements Prefs.Listener {
         impexpMenu.add(viewMem);
 
         menuBar.add(impexpMenu);
+        
+        menuBar.add(Box.createHorizontalGlue());
 
         helpmenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Help16.gif")));
         ResourceHelper.setText(helpmenu, "Help");
