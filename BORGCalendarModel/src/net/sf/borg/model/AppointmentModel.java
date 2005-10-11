@@ -405,7 +405,7 @@ public class AppointmentModel extends Model implements Model.Listener
     
     // search the appt DB using a search string and
     // create a Vector containing the results
-    public Vector get_srch(String s )
+    public Vector get_srch(String s, boolean case_sensitive )
     {
         
         Vector res = new Vector();
@@ -437,9 +437,22 @@ public class AppointmentModel extends Model implements Model.Listener
                 Date d = appt.getDate();
                 if( d == null || tx == null ) continue;
                 
-                // check if appt text contains the search string
-                if( tx.indexOf( s ) == -1 )
-                    continue;
+                if( case_sensitive )
+                {
+                    // check if appt text contains the search string
+                    if( tx.indexOf( s ) == -1 )
+                        continue;
+                }
+                else
+                {
+                    // check if appt text contains the search string
+                	String ltx = tx.toLowerCase();
+                	String ls = s.toLowerCase();
+                    if( ltx.indexOf( ls ) == -1 )
+                        continue;
+                }
+                
+
                 
                 // add the appt to the search results
                 res.add(appt);

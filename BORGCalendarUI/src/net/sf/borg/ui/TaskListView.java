@@ -71,6 +71,7 @@ import net.sf.borg.model.db.DBException;
  *
  * Created on August 3, 2001, 11:09 AM
  */
+import javax.swing.JCheckBox;
 
 /**
  *
@@ -844,9 +845,22 @@ public class TaskListView extends View {
                         r = "";
                     if (d == null)
                         d = "";
+                    
+                    if( caseBox.isSelected())
+                    {
+                        if (d.indexOf(filt) == -1 && r.indexOf(filt) == -1)
+                            continue;
+                    }
+                    else
+                    {
+                    	String lfilt = filt.toLowerCase();
+                    	String ld = d.toLowerCase();
+                    	String lr = r.toLowerCase();
+                        if (ld.indexOf(lfilt) == -1 && lr.indexOf(lfilt) == -1)
+                            continue;	
+                    }
 
-                    if (d.indexOf(filt) == -1 && r.indexOf(filt) == -1)
-                        continue;
+ 
                 }
 
 
@@ -1041,6 +1055,9 @@ public class TaskListView extends View {
      */
     private JPanel getJPanel() {
         if (jPanel == null) {
+            GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
+            gridBagConstraints2.gridx = 4;
+            gridBagConstraints2.gridy = 1;
             GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
             GridBagConstraints gridBagConstraints15 = new GridBagConstraints();
             GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
@@ -1063,7 +1080,7 @@ public class TaskListView extends View {
             gridBagConstraints11.weightx = 1.0;
             gridBagConstraints11.weighty = 1.0;
             gridBagConstraints11.fill = java.awt.GridBagConstraints.BOTH;
-            gridBagConstraints11.gridwidth = 4;
+            gridBagConstraints11.gridwidth = 5;
             gridBagConstraints11.insets = new java.awt.Insets(4, 4, 4, 4);
             gridBagConstraints15.gridx = 0;
             gridBagConstraints15.gridy = 0;
@@ -1072,12 +1089,13 @@ public class TaskListView extends View {
             gridBagConstraints1.gridx = 0;
             gridBagConstraints1.gridy = 4;
             gridBagConstraints1.fill = java.awt.GridBagConstraints.BOTH;
-            gridBagConstraints1.gridwidth = 4;
+            gridBagConstraints1.gridwidth = 5;
             jPanel.add(jButton21, gridBagConstraints8);
             jPanel.add(jTextField3, gridBagConstraints9);
             jPanel.add(jScrollPane1, gridBagConstraints11);
             jPanel.add(getJPanel2(), gridBagConstraints15);
             jPanel.add(getJPanel1(), gridBagConstraints1);
+            jPanel.add(getCaseBox(), gridBagConstraints2);
         }
         return jPanel;
     }
@@ -1197,6 +1215,7 @@ public class TaskListView extends View {
 	}
 
 	private JMenuItem catmenuitem;  //  @jve:decl-index=0:visual-constraint="73,12"
+	private JCheckBox caseBox = null;
 	private JMenuItem getCatmenuitem() {
 		if (catmenuitem == null) {
 			catmenuitem = new JMenuItem();
@@ -1209,5 +1228,20 @@ public class TaskListView extends View {
 	        });
 		}
 		return catmenuitem;
+	}
+
+
+
+	/**
+	 * This method initializes caseBox	
+	 * 	
+	 * @return javax.swing.JCheckBox	
+	 */
+	private JCheckBox getCaseBox() {
+		if (caseBox == null) {
+			caseBox = new JCheckBox();
+			caseBox.setText(Resource.getResourceString("case_sensitive"));
+		}
+		return caseBox;
 	}
   } //  @jve:decl-index=0:visual-constraint="55,54"

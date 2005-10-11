@@ -48,7 +48,6 @@ import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
 import net.sf.borg.common.app.AppHelper;
-import net.sf.borg.common.io.IOHelper;
 import net.sf.borg.common.ui.NwFontChooserS;
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
@@ -722,7 +721,7 @@ public class Borg extends Controller implements OptionsView.RestartListener {
     private void version_chk() {
         try
         {
-        	if( Resource.getVersion().contains("beta"))
+        	if( Resource.getVersion().indexOf("beta") != -1)
         		return;
         	
             // check if the version check feature has been enabled

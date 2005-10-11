@@ -96,6 +96,8 @@ public class SearchView extends View {
 
 	private JButton catbut = null;
 
+	private JCheckBox caseBox = null;
+
 	/**
 	 * This is the default constructor
 	 */
@@ -139,7 +141,7 @@ public class SearchView extends View {
 
 		// call the data model to do the actual search
 		AppointmentModel cal_ = AppointmentModel.getReference();
-		appts_ = cal_.get_srch(searchText.getText());
+		appts_ = cal_.get_srch(searchText.getText(),caseBox.isSelected());
 
 		TableSorter tm = (TableSorter) jTable1.getModel();
 		tm.addMouseListenerToHeaderInTable(jTable1);
@@ -346,6 +348,11 @@ public class SearchView extends View {
 	 */
 	private JPanel getJPanel1() {
 		if (jPanel1 == null) {
+			GridBagConstraints gridBagConstraints9 = new GridBagConstraints();
+			gridBagConstraints9.gridx = 2;
+			gridBagConstraints9.fill = java.awt.GridBagConstraints.BOTH;
+			gridBagConstraints9.insets = new java.awt.Insets(4,4,4,4);
+			gridBagConstraints9.gridy = 0;
 			jLabel3 = new JLabel();
 			jLabel2 = new JLabel();
 			GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
@@ -420,6 +427,7 @@ public class SearchView extends View {
 			jPanel1.add(getCatbox(), gridBagConstraints14);
 			jPanel1.add(jLabel3, gridBagConstraints15);
 			jPanel1.add(getSearchText(), gridBagConstraints16);
+			jPanel1.add(getCaseBox(), gridBagConstraints9);
 		}
 		return jPanel1;
 	}
@@ -837,5 +845,18 @@ public class SearchView extends View {
 			});
 		}
 		return catbut;
+	}
+
+	/**
+	 * This method initializes caseBox	
+	 * 	
+	 * @return javax.swing.JCheckBox	
+	 */
+	private JCheckBox getCaseBox() {
+		if (caseBox == null) {
+			caseBox = new JCheckBox();
+			caseBox.setText(Resource.getResourceString("case_sensitive"));
+		}
+		return caseBox;
 	}
 } //  @jve:decl-index=0:visual-constraint="64,38"
