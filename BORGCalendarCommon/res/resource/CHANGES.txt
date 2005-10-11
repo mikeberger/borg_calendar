@@ -13,6 +13,7 @@ Bulk Delete and Change Category
 Fix some major Palm Sync Bugs
 Add PRI column to Task List View
 Add word-wrap to week view
+Support both case sensitive and insensitive filtering/searching
 Upgrade to JGoodies Looks 1.3.2
 
 Version 1.5
