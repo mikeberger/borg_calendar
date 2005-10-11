@@ -73,27 +73,26 @@ class AddressView extends View
     
     private Date getDate()
     {
-        Date bd = null;
-        String bdt = bdtext.getText();
-        if( bdt == null || bdt.equals(""))
-        {
-            return null;
-        }
-        else
-        {
-            DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT);
-            try
-            {
-                bd = df.parse(bdt);
-            }
-            catch( Exception e )
-            {
-                Errmsg.notice(Resource.getResourceString("invdate"));
-                return null;
-            }
-
-            return bd;
-        }
+    	Date bd = null;
+    	String bdt = bdtext.getText();
+    	if( bdt == null || bdt.equals(""))
+    	{
+    		return null;
+    	}
+    	
+    	DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT);
+    	try
+    	{
+    		bd = df.parse(bdt);
+    	}
+    	catch( Exception e )
+    	{
+    		Errmsg.notice(Resource.getResourceString("invdate"));
+    		return null;
+    	}
+    	
+    	return bd;
+    	
     }
 
     private void showaddr()
