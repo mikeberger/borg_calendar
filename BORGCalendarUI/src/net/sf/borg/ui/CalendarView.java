@@ -38,6 +38,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.net.URL;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collection;
@@ -2206,30 +2207,18 @@ public class CalendarView extends View implements Prefs.Listener {
     private void GotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_GotoActionPerformed
 
         // GOTO a particular month
+    	DateDialog dlg = new DateDialog(this);
+    	dlg.setCalendar(new GregorianCalendar());
+    	dlg.setVisible(true);
+    	Calendar dlgcal = dlg.getCalendar();
+    	if (dlgcal == null)
+    		return;
 
-        // prompt for month/year
-        String in = JOptionPane.showInputDialog(Resource.getResourceString("Enter_a_Date_(mm/yyyy)"));
-        if( in == null ) return;
+    	month_ = dlgcal.get(Calendar.MONTH);
+    	year_ = dlgcal.get(Calendar.YEAR);
+    	refresh();
 
-        int index = in.indexOf('/');
-        if( index == -1 ) return;
-
-        // parse out MM/YYYY
-        String mo = in.substring(0,index);
-        String yr = in.substring(index+1);
-        try {
-            // just set the member month_ and year_ vars and call refresh to update the view
-            month_ = Integer.parseInt(mo)-1;
-            year_ = Integer.parseInt(yr);
-            refresh();
-        }
-        catch( Exception e ) {
-            Errmsg.errmsg(e);
-        }
-
-
-    }//GEN-LAST:event_GotoActionPerformed
-
+    }
 
     private void today(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_today
         try {
