@@ -14,18 +14,18 @@ xmlns="http://www.w3.org/TR/REC-html40">
  <o:DocumentProperties>
   <o:Author>mike</o:Author>
   <o:LastAuthor>mike</o:LastAuthor>
-  <o:Revision>9</o:Revision>
-  <o:TotalTime>55</o:TotalTime>
+  <o:Revision>10</o:Revision>
+  <o:TotalTime>61</o:TotalTime>
   <o:Created>2005-03-27T18:28:00Z</o:Created>
-  <o:LastSaved>2005-04-30T01:12:00Z</o:LastSaved>
+  <o:LastSaved>2005-10-14T01:38:00Z</o:LastSaved>
   <o:Pages>4</o:Pages>
-  <o:Words>2225</o:Words>
-  <o:Characters>12686</o:Characters>
+  <o:Words>2270</o:Words>
+  <o:Characters>12940</o:Characters>
   <o:Company>telcordia</o:Company>
-  <o:Lines>105</o:Lines>
+  <o:Lines>107</o:Lines>
   <o:Paragraphs>25</o:Paragraphs>
-  <o:CharactersWithSpaces>15579</o:CharactersWithSpaces>
-  <o:Version>9.2720</o:Version>
+  <o:CharactersWithSpaces>15891</o:CharactersWithSpaces>
+  <o:Version>9.6926</o:Version>
  </o:DocumentProperties>
  <o:OfficeDocumentSettings>
   <o:DoNotRelyOnCSS/>
@@ -330,13 +330,14 @@ style='font-size:12.0pt;font-family:"Times New Roman"'><o:p></o:p></span></font>
 <ol start=1 type=1>
  <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
      mso-list:l0 level1 lfo9;tab-stops:list .5in'><font size=3 face=Arial><span
-     style='font-size:12.0pt'>Get BORG 1.5 and install. Choose to install the
-     optional conduits. </span></font></li>
+     style='font-size:12.0pt'>Get BORG 1.5 or later and install. Choose to
+     install the optional conduits. </span></font></li>
  <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
      mso-list:l0 level1 lfo9;tab-stops:list .5in'><font size=3 face=Arial><span
-     style='font-size:12.0pt'>Get the java conduit manager (http://www.javaconduitmanager.org/downloads.htm).
-     Get the larger download that includes JSync - unless you already have
-     Jsync installed. Install jsync and java conduit manager. </span></font></li>
+     style='font-size:12.0pt'>Get the java conduit manager
+     (http://www.javaconduitmanager.org/downloads.htm). Get the larger download
+     that includes JSync - unless you already have Jsync installed. Install
+     jsync and java conduit manager. </span></font></li>
  <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
      mso-list:l0 level1 lfo9;tab-stops:list .5in'><font size=3 face=Arial><span
      style='font-size:12.0pt'>The BORG conduits require your BORG db files to
@@ -355,12 +356,17 @@ style='font-size:12.0pt;font-family:"Times New Roman"'><o:p></o:p></span></font>
      mso-list:l0 level1 lfo9;tab-stops:list .5in'><font size=3 face=Arial><span
      style='font-size:12.0pt'>Use the Java conduit manager to install the
      conduits, which can be found in a conduits folder where you installed the
-     BORG software. Only install the conduits you want to use. Do NOT install
-     the addressbook conduit unless you really want to be a tester for it. It
-     is not 100% done. </span></font></li>
+     BORG software. Only install the conduits you want to use. The apptconduit
+     replaces the palm datebook conduit. The addrconduit replaces the Palm
+     addressbook conduit.</span></font></li>
  <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
      mso-list:l0 level1 lfo9;tab-stops:list .5in'><font size=3 face=Arial><span
      style='font-size:12.0pt'>Restart the hot-sync manager </span></font></li>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+     mso-list:l0 level1 lfo9;tab-stops:list .5in'><font size=3 face=Arial><span
+     style='font-size:12.0pt'>Under the hot-sync manager custom menu &#8211;
+     configure the To Do conduit to do nothing. The BORG apptconduit syncs to
+     BOTH the datebook and todo list.</span></font></li>
  <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
      mso-list:l0 level1 lfo9;tab-stops:list .5in'><font size=3 face=Arial><span
      style='font-size:12.0pt'>For the first sync, if you want all BORG records
@@ -436,9 +442,9 @@ will not work the same for users that choose to turn on the Conduit support
 option. Why? Because normally, deleted records disappear from the BORG db when
 they are deleted. This can't happen for users who want to sync with a Palm. The
 conduits need to know which records were deleted. So, if the sync feature is
-turned on in BORG, deleted records will remain in the DB, marked as deleted. They
-will only disappear from the DB when a sync is done. So you don't want to turn
-on the sync support unless you are really going to use it. <br>
+turned on in BORG, deleted records will remain in the DB, marked as deleted.
+They will only disappear from the DB when a sync is done. So you don't want to
+turn on the sync support unless you are really going to use it. <br>
 <br>
 There were also other changes needed to allow the conduits to call into the
 BORG code. Most annoying was the fact that the Java conduit library (jsync)
@@ -472,15 +478,15 @@ you invoke the &quot;custom&quot; menu option of the palm hot-sync manager. </sp
 <h2><b><font size=3 face=Arial><span style='font-size:12.0pt;mso-bidi-font-size:
 18.0pt'>How does a normal conduit work?<o:p></o:p></span></font></b></h2>
 
-<p class=MsoNormal><font size=3 face=Arial><span style='font-size:12.0pt'>A
-normal conduit syncs 2 databases that HAVE THE SAME DB FIELDS. When the DB on
-the Palm and the DB on the PC have the same exact fields and keys, the conduit's
-job is simple. It does not matter if the data is stored on the PC using Palm
-.dat files, XML files, or even a relational database. The algorithm for
-matching records between the PC and Palm is simple, as is the mapping of data
-from one store to another. Usually, the applications that run off of the PC in
-this case are developed along with the Palm apps. For example, the Palm Desktop
-is developed to match (capability wise) with the Palm datebook, todolist, and
+<p class=MsoNormal><font size=3 face=Arial><span style='font-size:12.0pt'>A normal
+conduit syncs 2 databases that HAVE THE SAME DB FIELDS. When the DB on the Palm
+and the DB on the PC have the same exact fields and keys, the conduit's job is
+simple. It does not matter if the data is stored on the PC using Palm .dat
+files, XML files, or even a relational database. The algorithm for matching
+records between the PC and Palm is simple, as is the mapping of data from one
+store to another. Usually, the applications that run off of the PC in this case
+are developed along with the Palm apps. For example, the Palm Desktop is
+developed to match (capability wise) with the Palm datebook, todolist, and
 address book. You also have third-party PC apps developed to match the existing
 Palm apps - for example, a new non-Palm calendar program developed on the PC
 that is developed from scratch to match the Palm datebook DB format, but to
@@ -563,8 +569,8 @@ want - and they will be synced to the Palm. You can use the Palm to create/edit
 appointments - but not any way you want. <br>
 <br>
 Why? Two reasons. First, the conduit will need to store the
-&quot;asymmetric&quot; BORG information somewhere on the Palm. This will be
-done in the datebook NOTES field. So you can't use the notes field for your own
+&quot;asymmetric&quot; BORG information somewhere on the Palm. This will be done
+in the datebook NOTES field. So you can't use the notes field for your own
 notes. The conduit will store a string in the notes field that will contain the
 BORG DB key, the appointment color, and flags to indicate Todo, Vacation, and
 holiday. The BORG key is needed on the Palm to match the record to the BORG db.
@@ -587,12 +593,18 @@ carefully. </span></font></p>
 <h2><b><font size=3 face=Arial><span style='font-size:12.0pt;mso-bidi-font-size:
 18.0pt'>The Todo Conduit<o:p></o:p></span></font></b></h2>
 
+<p class=MsoNormal><font size=3 face=Arial><span style='font-size:12.0pt'>The
+Palm Todo Conduit should be shut off. The BORG datebook (appt) conduit will
+sync to the todo database on the palm as well as the datebook database.</span></font></p>
+
+<p class=MsoNormal><font size=3 face=Arial><span style='font-size:12.0pt'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></font></p>
+
 <p class=MsoNormal><font size=3 face=Arial><span style='font-size:12.0pt'>For
 todo items, changes made on the Palm to the Palm todo DB are first synced to
 BORG and then the Palm todo DB is wiped. Then the entire todo list from BORG is
 sent to the Palm. Since todo and appt records are the same thing in BORG, you
-actually wind up with todo appts being written to both the datebook and todo
-databases on the Palm. <br>
+actually wind up with todo appts being written to both the datebook and todo databases
+on the Palm. <br>
 <br>
 So what can you do on Palm? Almost everything, actually. You can create new
 todos on the Palm and they will be written to BORG as new Todo appts. You can

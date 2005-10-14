@@ -12,22 +12,44 @@ xmlns="http://www.w3.org/TR/REC-html40">
  <o:DocumentProperties>
   <o:Author>mike</o:Author>
   <o:LastAuthor>mike</o:LastAuthor>
-  <o:Revision>3</o:Revision>
-  <o:TotalTime>5</o:TotalTime>
+  <o:Revision>4</o:Revision>
+  <o:TotalTime>12</o:TotalTime>
   <o:Created>2004-11-05T20:43:00Z</o:Created>
-  <o:LastSaved>2004-11-07T14:22:00Z</o:LastSaved>
+  <o:LastSaved>2005-10-14T01:49:00Z</o:LastSaved>
   <o:Pages>1</o:Pages>
-  <o:Words>201</o:Words>
-  <o:Characters>1151</o:Characters>
+  <o:Words>272</o:Words>
+  <o:Characters>1555</o:Characters>
   <o:Company>telcordia</o:Company>
-  <o:Lines>9</o:Lines>
-  <o:Paragraphs>2</o:Paragraphs>
-  <o:CharactersWithSpaces>1413</o:CharactersWithSpaces>
-  <o:Version>9.2720</o:Version>
+  <o:Lines>12</o:Lines>
+  <o:Paragraphs>3</o:Paragraphs>
+  <o:CharactersWithSpaces>1909</o:CharactersWithSpaces>
+  <o:Version>9.6926</o:Version>
  </o:DocumentProperties>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:WordDocument>
+  <w:Compatibility>
+   <w:UseFELayout/>
+  </w:Compatibility>
+ </w:WordDocument>
 </xml><![endif]-->
 <style>
 <!--
+ /* Font Definitions */
+@font-face
+	{font-family:SimSun;
+	panose-1:2 1 6 0 3 1 1 1 1 1;
+	mso-font-alt:\5B8B\4F53;
+	mso-font-charset:134;
+	mso-generic-font-family:auto;
+	mso-font-pitch:variable;
+	mso-font-signature:3 135135232 16 0 262145 0;}
+@font-face
+	{font-family:"\@SimSun";
+	panose-1:2 1 6 0 3 1 1 1 1 1;
+	mso-font-charset:134;
+	mso-generic-font-family:auto;
+	mso-font-pitch:variable;
+	mso-font-signature:3 135135232 16 0 262145 0;}
  /* Style Definitions */
 p.MsoNormal, li.MsoNormal, div.MsoNormal
 	{mso-style-parent:"";
@@ -53,15 +75,31 @@ div.Section1
 
 <div class=Section1>
 
-<h2><span style='font-family:Arial'>Limited Multi-User Support<o:p></o:p></span></h2>
+<p class=MsoNormal><span style='font-family:Arial'>Multi User Support refers to
+the support for having multiple users connect to a single database.<o:p></o:p></span></p>
 
-<p class=MsoNormal><span style='font-family:Arial'>The multi-user support is in
-releases 1.3.2 and later. You have to turn in on from the options menu and
-restart (if you want to use it).<o:p></o:p></span></p>
+<p class=MsoNormal><span style='font-family:Arial;background:yellow;mso-highlight:
+yellow'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-family:Arial;background:yellow;mso-highlight:
+yellow'>As of Release 1.5.1, the best way to achieve true multi-user support is
+through the remote server. The remote server supports multiple remote
+connections to a single MySQL database with user authentication by user and password
+and separate data per user. Please check the remote server documentation for
+more information.</span><span style='font-family:Arial'><o:p></o:p></span></p>
+
+<h2><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></h2>
+
+<h2>Shared-File Limited Multi-User Support for a single database</h2>
+
+<p class=MsoNormal><span style='font-family:Arial'>A form of limited <span
+style="mso-spacerun: yes">&nbsp;</span>multi-user support is in releases 1.3.2
+and later to allow users to share a single calendar by simply opening the same
+database files at the same time. You have to turn in on from the options menu
+and restart (if you want to use it).<o:p></o:p></span></p>
 
 <p class=MsoNormal><span style='font-family:Arial'>This feature is not
-&#8220;full-blown&#8221; multi-user support. That would entail having logins and passwords,
-and databases partitioned by user.<o:p></o:p></span></p>
+&#8220;full-blown&#8221; multi-user support. <o:p></o:p></span></p>
 
 <p class=MsoNormal><u><span style='font-family:Arial'>This feature simply
 supports multi-user concurrent access to a single file-based database using
