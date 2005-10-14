@@ -43,4 +43,5 @@
 <mapID target="ical" url="ical.html"/>
 
 <mapID target="conduit" url="conduit.html"/>
+<mapID target="remote" url="remote.html"/>
 </map>

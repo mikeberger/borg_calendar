@@ -41,4 +41,5 @@
  <tocitem text="The MDBTOOL Utility" target="mdbtool"/>
 
  <tocitem text="Palm Hot-Sync Conduits" target="conduit"/>
+ <tocitem text="Remote Server" target="remote"/>
 </toc>
