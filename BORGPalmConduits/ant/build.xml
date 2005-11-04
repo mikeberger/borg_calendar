@@ -8,7 +8,7 @@
    <property name="build.dir" value="${basedir}/build" />
    <property name="dist.dir" value="${basedir}/dist" />
    <property name="borg.jar" value="${basedir}/../BORGCalendarCommon/dist/borg.jar"/>	
-   <property name="jsync.jar" value="C:/CDK403/Java/Bin/jsync/rt/jsync.jar"/>
+   <property name="jsync.jar" value="C:/Program Files/Palm/JSync/1.3/jsync.jar"/>
    <property name="build.compiler" value="modern" />
 
    <!-- Path References -->
