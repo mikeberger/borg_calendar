@@ -123,7 +123,7 @@ public class TaskListView extends View {
             // but days left is >10 and not the 9999 (infinite) value, then just
             // use the default
             // rendered for this cell
-            if (column != 6 || (i != 9999 && i >= 10))
+            if (column != 7 || (i != 9999 && i >= 10))
                 return defrend_.getTableCellRendererComponent(table, obj,
                         isSelected, hasFocus, row, column);
 
