@@ -462,54 +462,40 @@ public class CalendarView extends View implements Prefs.Listener {
         float f = Float.parseFloat(ls);
         StyleConstants.setLineSpacing(bl,f);
 
-        // bsv 2004-12-21
         boolean bUseUCS = ((Prefs.getPref(PrefName.UCS_ON)).equals("true"))?true:false;
         Color ctemp;
         try {
             Style s = textPane.addStyle("blue", bl);
-            // bsv 2004-12-21
             ctemp = new Color( (new Integer( Prefs.getPref(PrefName.UCS_BLUE))).intValue() );
-            StyleConstants.setForeground(s, bUseUCS?(ctemp):(Color.BLUE));
-            //StyleConstants.setForeground(s, Color.BLUE);
+            StyleConstants.setForeground(s, bUseUCS?(ctemp):(Color.BLUE));            
 
             s = textPane.addStyle("red", bl);
-            // bsv 2004-12-21
             ctemp = new Color( (new Integer( Prefs.getPref(PrefName.UCS_RED))).intValue() );
             StyleConstants.setForeground(s, bUseUCS?(ctemp):(Color.RED));
-            //StyleConstants.setForeground(s, Color.RED);
-
 
             s = textPane.addStyle("green", bl);
             // bsv 2004-12-21
             ctemp = new Color( (new Integer( Prefs.getPref(PrefName.UCS_GREEN))).intValue() );
             StyleConstants.setForeground(s, bUseUCS?(ctemp):(Color.GREEN));
-            //StyleConstants.setForeground(s, Color.GREEN);
-
 
             s = textPane.addStyle("white", bl);
-            // bsv 2004-12-21
             ctemp = new Color( (new Integer( Prefs.getPref(PrefName.UCS_WHITE))).intValue() );
             StyleConstants.setForeground(s, bUseUCS?(ctemp):(Color.WHITE));
-            //StyleConstants.setForeground(s, Color.WHITE);
 
-            // bsv 2004-12-21
             s = textPane.addStyle("navy", bl);
             ctemp = new Color( (new Integer( Prefs.getPref(PrefName.UCS_NAVY))).intValue() );
             StyleConstants.setForeground(s, bUseUCS?(ctemp):(new Color(0,0,102)));
+            
             s = textPane.addStyle("purple", bl);
             ctemp = new Color( (new Integer( Prefs.getPref(PrefName.UCS_PURPLE))).intValue() );
             StyleConstants.setForeground(s, bUseUCS?(ctemp):(new Color(102,0,102)));
+            
             s = textPane.addStyle("brick", bl);
             ctemp = new Color( (new Integer( Prefs.getPref(PrefName.UCS_BRICK))).intValue() );
             StyleConstants.setForeground(s, bUseUCS?(ctemp):(new Color(102,0,0)));
-            // (bsv 2004-12-21)
 
-            s = textPane.addStyle("sm", bl );
-            StyleConstants.setBold(s,false);
-            StyleConstants.setFontSize(s,fontsize);
-
-            s = textPane.addStyle("smul", s );
-            StyleConstants.setUnderline( s, true );
+            s = textPane.addStyle("ul", bl );            
+            StyleConstants.setUnderline(s, true );
 
             s = textPane.addStyle("strike", bl );
             StyleConstants.setStrikeThrough( s, true );
@@ -912,7 +898,7 @@ public class CalendarView extends View implements Prefs.Listener {
             // sort and add the todos
             Vector tds = AppointmentModel.getReference().get_todos();
             if( tds.size() > 0 ) {
-                addString( todoPreview, Resource.getResourceString("Todo_Preview") + "\n", "smul" );
+                addString( todoPreview, Resource.getResourceString("Todo_Preview") + "\n", "ul" );
 
 
                 // the treeset will sort by date
@@ -960,7 +946,7 @@ public class CalendarView extends View implements Prefs.Listener {
                         else {
                             tx = xx;
                         }
-                        addString( todoPreview, tx + "\n", "sm" );
+                        addString( todoPreview, tx + "\n", r.getColor() );
 
                     }
                     catch( Exception e)
@@ -970,8 +956,8 @@ public class CalendarView extends View implements Prefs.Listener {
                 todoPreview.setCaretPosition(0);
             }
             else {
-                addString( todoPreview, Resource.getResourceString("Todo_Preview") + "\n", "smul" );
-                addString( todoPreview, Resource.getResourceString("none_pending"), "sm" );
+                addString( todoPreview, Resource.getResourceString("Todo_Preview") + "\n", "ul" );
+                addString( todoPreview, Resource.getResourceString("none_pending"), "black" );
             }
 
 
@@ -982,7 +968,7 @@ public class CalendarView extends View implements Prefs.Listener {
             // sort and add the tasks
             Vector tks = TaskModel.getReference().get_tasks();
             if( tks.size() > 0 ) {
-                addString( taskPreview, Resource.getResourceString("Task_Preview") + "\n", "smul" );
+                addString( taskPreview, Resource.getResourceString("Task_Preview") + "\n", "ul" );
 
                 // the treeset will sort by date
                 TreeSet ts = new TreeSet(new Comparator() {
@@ -1022,7 +1008,7 @@ public class CalendarView extends View implements Prefs.Listener {
                         else {
                             tx = xx;
                         }
-                        addString( taskPreview, "BT" + r.getTaskNumber() + ":" + tx + "\n", "sm" );
+                        addString( taskPreview, "BT" + r.getTaskNumber() + ":" + tx + "\n", "black" );
 
                     }
                     catch( Exception e)
@@ -1032,8 +1018,8 @@ public class CalendarView extends View implements Prefs.Listener {
                 taskPreview.setCaretPosition(0);
             }
             else {
-                addString( taskPreview, Resource.getResourceString("Task_Preview") + "\n", "smul" );
-                addString( taskPreview, Resource.getResourceString("none_pending"), "sm" );
+                addString( taskPreview, Resource.getResourceString("Task_Preview") + "\n", "ul" );
+                addString( taskPreview, Resource.getResourceString("none_pending"), "black" );
             }
         }
         catch( Exception e ) {
