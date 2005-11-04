@@ -1,6 +1,6 @@
-==================================
-RELEASE NOTES for BORG 1.5.1 Beta
-==================================
+============================
+RELEASE NOTES for BORG 1.5.1
+============================
 
 The project home page is http://borg-calendar.sourceforge.net
 
@@ -24,10 +24,6 @@ MySQL Users
 -----------
 This section only concerns users using MySQL to store BORG data. The overwhelming majority of
 users do not use MySQL. If you are unsure - then you are not using it.
-
-Release 1.5.1 beta has only been lightly tested using MySQL. It is strongly suggested that any 
-MySQL users back up their data by exporting as XML, backup up the db, or even better, by adding the new 
-borg database for 1.5.1 under a new db user so that backing out to release 1.5 is possible.
 
 The SQL needed to transition from 1.5 to 1.5.1 is in file update151.sql.
 
