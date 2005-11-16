@@ -135,7 +135,7 @@ class ApptJdbcDB extends JdbcDB implements AppointmentKeyFilter
     public Collection getRepeatKeys() throws Exception
     {
         ArrayList keys = new ArrayList();
-        PreparedStatement stmt = connection_.prepareStatement("SELECT appt_num FROM appointments WHERE username = ? AND repeat = '1'" );
+        PreparedStatement stmt = connection_.prepareStatement("SELECT appt_num FROM appointments WHERE username = ? AND `repeat` = '1'" );
         stmt.setString( 1, username_ );
         ResultSet rs = stmt.executeQuery();
         while( rs.next() )
