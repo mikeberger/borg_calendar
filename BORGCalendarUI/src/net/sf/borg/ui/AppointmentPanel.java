@@ -889,9 +889,9 @@ class AppointmentPanel extends JPanel {
 		gridBagConstraints87.gridy = 4;
 		gridBagConstraints87.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints87.weightx = 0.0;
-		gridBagConstraints87.weighty = 0.0;
+		gridBagConstraints87.weighty = 1.0D;
 		gridBagConstraints87.insets = new java.awt.Insets(4, 4, 4, 4);
-		this.add(jPanel5, gridBagConstraints87);
+		this.add(jPanel5, gridBagConstraints87);  // Generated
 	}//GEN-END:initComponents
 
 	private void saveDefaults(java.awt.event.ActionEvent evt)//GEN-FIRST:event_saveDefaults
