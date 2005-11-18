@@ -257,6 +257,11 @@ public class TaskModel extends Model implements Model.Listener {
                 sm = taskTypes_.toString();
                 db_.setOption(new BorgOption("SMODEL", sm ));
             }
+            catch( NoSuchMethodError nsme )
+            {
+            	// running in a Palm conduit under JRE 1.3
+            	// ignore
+            }
             catch( Exception e ) {
                 Errmsg.errmsg(e);
                 System.exit(1);
