@@ -202,6 +202,10 @@ public class Borg extends Controller implements OptionsView.RestartListener {
 
         // override for tray icon name
         String trayname = "BORG";
+        
+        // default uid - this will eventually be set by a login/passwd lookup into
+        // a users table when multi-user support is added
+        String uid = "$default";
 
         // process command line args
         for (int i = 0; i < args.length; i++)
@@ -249,6 +253,16 @@ public class Borg extends Controller implements OptionsView.RestartListener {
                 // windows
                 Errmsg.console(true);
 
+            }
+            else if (args[i].equals("-username"))
+            {
+                i++;
+                if (i >= args.length)
+                {
+                    System.out.println("Error: missing username");
+                    System.exit(1);
+                }
+                uid = args[i];
             }
         }
 
@@ -338,9 +352,7 @@ public class Borg extends Controller implements OptionsView.RestartListener {
                 shared = true;
             }
 
-            // default uid - this will eventually be set by a login/passwd lookup into
-            // a users table when multi-user support is added
-            String uid = "$default";
+ 
 
             /*
             if( Prefs.getPref( PrefName.DBTYPE ).equals("mysql"))
