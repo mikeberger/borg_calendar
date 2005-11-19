@@ -42,16 +42,28 @@ public class ApptCond implements Conduit {
             else
             {
                 //read the pc records on the PC
+            	String loc = props.localName;
                 String dbdir = props.pathName;
-           
+                String user = props.userName;
+                Log.out("dbdir=" + dbdir);
+                Log.out("user=" + user);
+                Log.out("localName=" + loc);
+                
+                // hard-code MySQL kludge just for me for now
+                if( loc.equals("mysql"))
+                {
+                	dbdir = "jdbc:mysql://localhost/borg?user=borg&password=borg";
+                	user = "mbb";
+                }
+
                 StringBuffer tmp = new StringBuffer(dbdir);
                 IBeanDataFactory factory = BeanDataFactoryFactory.getInstance().getFactory(tmp, false, false);
                 //dbdir = tmp.toString();
                 apptModel = AppointmentModel.create();
-                apptModel.open_db(factory, dbdir , "");;
+                apptModel.open_db(factory, dbdir , user);
 
                 taskModel = TaskModel.create();
-                taskModel.open_db(factory, dbdir , "");
+                taskModel.open_db(factory, dbdir , user);
                
                 // have to get todo data into BORG, then get appt data, then sync back
                 // appt data and finally overwrite Todo data. 
