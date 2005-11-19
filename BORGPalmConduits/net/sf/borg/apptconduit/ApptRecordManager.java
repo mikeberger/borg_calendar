@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 
@@ -25,6 +26,7 @@ public class ApptRecordManager {
 
     SyncProperties props;
     int db;
+    HashMap hhmap = new HashMap();
 
     public ApptRecordManager(SyncProperties props, int db) {
         this.props = props;
@@ -77,7 +79,7 @@ public class ApptRecordManager {
 
         DateRecord hhRecord;
 
-        // get list og hh ids
+        // get list of hh ids of interest
         ArrayList hhids = new ArrayList();
         int recordCount = SyncManager.getDBRecordCount(db);
         for (int recordIndex = 0; recordIndex < recordCount; recordIndex++) {
@@ -88,6 +90,11 @@ public class ApptRecordManager {
             if (borgid == -1 || hhRecord.isNew() || hhRecord.isArchived()
                     || hhRecord.isDeleted() || hhRecord.isModified()) {
                 hhids.add(new Integer(hhRecord.getId()));
+            }
+            
+            if( borgid != -1 )
+            {
+            	hhmap.put(new Integer(borgid), new Integer(recordIndex));
             }
         }
 
@@ -310,6 +317,20 @@ public class ApptRecordManager {
 
     private DateRecord retrieveHHRecordByBorgId(int key) throws IOException {
 
+    	Integer hhkey = (Integer) hhmap.get( new Integer(key));
+    	if( hhkey != null )
+    	{
+            DateRecord hhRecord = new DateRecord();
+            hhRecord.setIndex(hhkey.intValue());
+            SyncManager.readRecordByIndex(db, hhRecord);
+            if (key == getApptKey(hhRecord)){
+            	Log.out("Found key in cache: " + key );
+            	return( hhRecord );
+            }
+    	}
+    	
+    	Log.out("Did not find key in cache: " + key );
+    	
         //get record count on the database
         int rc = SyncManager.getDBRecordCount(db);
 
@@ -319,9 +340,10 @@ public class ApptRecordManager {
             hhRecord.setIndex(ri);
             SyncManager.readRecordByIndex(db, hhRecord);
 
-            if (key == getApptKey(hhRecord))
+            if (key == getApptKey(hhRecord)){
+            	hhmap.put(new Integer(key), new Integer(ri));
                 return (hhRecord);
-
+            } 
         }
 
         return null;
