@@ -194,7 +194,7 @@ public class CachingBeanDB implements BeanDB
 	}
 
 	// private //
-	private BeanDB delegate;
+	protected BeanDB delegate;
 	private CachingDBCache data;
 	private long lastNegativeDirtyQueryTimestamp = Long.MIN_VALUE;
 }

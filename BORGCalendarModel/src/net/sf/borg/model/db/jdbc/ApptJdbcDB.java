@@ -36,13 +36,14 @@ import net.sf.borg.model.Appointment;
 import net.sf.borg.model.AppointmentKeyFilter;
 import net.sf.borg.model.db.DBException;
 import net.sf.borg.model.db.KeyedBean;
+import net.sf.borg.model.db.MultiUserDB;
 
 
 /**
  *
  * this is the JDBC layer for access to the appointment table
  */
-class ApptJdbcDB extends JdbcDB implements AppointmentKeyFilter
+class ApptJdbcDB extends JdbcDB implements AppointmentKeyFilter, MultiUserDB
 {
 
        
@@ -249,5 +250,22 @@ class ApptJdbcDB extends JdbcDB implements AppointmentKeyFilter
         delCache( appt.getKey() );
         writeCache( appt );
     }
+
+	public Collection getAllUsers() throws Exception {
+		
+		ArrayList users = new ArrayList();
+        PreparedStatement stmt = connection_.prepareStatement("SELECT DISTINCT username FROM appointments order by username" );
+        ResultSet rs = stmt.executeQuery();
+        while( rs.next() )
+        {
+            users.add( rs.getString("username"));
+        }
+        
+        return( users );
+	}
+
+
+		
+	
     
 }

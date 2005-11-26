@@ -24,11 +24,12 @@ import java.util.Collection;
 
 import net.sf.borg.model.Appointment;
 import net.sf.borg.model.AppointmentKeyFilter;
+import net.sf.borg.model.db.MultiUserDB;
 
 /**
  * @author Mohan Embar
  */
-class ApptRemoteBeanDB extends RemoteBeanDB implements AppointmentKeyFilter
+class ApptRemoteBeanDB extends RemoteBeanDB implements AppointmentKeyFilter, MultiUserDB
 {
 	ApptRemoteBeanDB(
 		String clsstr,
@@ -47,5 +48,10 @@ class ApptRemoteBeanDB extends RemoteBeanDB implements AppointmentKeyFilter
 	public Collection getRepeatKeys() throws Exception
 	{
 		return (Collection) call("getRepeatKeys", null);
+	}
+
+	public Collection getAllUsers() throws Exception {
+		
+		return (Collection) call("getAllUsers", null);
 	}
 }

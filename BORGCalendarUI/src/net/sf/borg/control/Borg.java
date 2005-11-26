@@ -57,6 +57,7 @@ import net.sf.borg.common.util.Sendmail;
 import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.Appointment;
 import net.sf.borg.model.AppointmentModel;
+import net.sf.borg.model.MultiUserModel;
 import net.sf.borg.model.Task;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.db.BeanDataFactoryFactory;
@@ -154,30 +155,6 @@ public class Borg extends Controller implements OptionsView.RestartListener {
     		mailTimer_.cancel();
         removeListeners();
         init(new String[0]);
-    }
-
-    private String buildDbDir()
-    {
-        // get dir for DB
-    	String dbdir = "";
-    	String dbtype = Prefs.getPref( PrefName.DBTYPE );
-    	if( dbtype.equals("local"))
-    	{
-    		dbdir = Prefs.getPref(PrefName.DBDIR);
-    	}
-    	else if( dbtype.equals("remote"))
-    	{
-    		dbdir = "remote:" + Prefs.getPref(PrefName.DBURL);
-    	}
-    	else
-    	{
-    		// build a mysql URL
-    		dbdir = "jdbc:mysql://" + Prefs.getPref( PrefName.DBHOST ) + ":" + Prefs.getPref( PrefName.DBPORT )
-				+ "/" + Prefs.getPref( PrefName.DBNAME ) + "?user=" + Prefs.getPref( PrefName.DBUSER ) +
-				"&password=" + Prefs.getPref( PrefName.DBPASS ) + "&autoReconnect=true";
-    	}
-
-    	return( dbdir );
     }
 
     // init will process the command line args, open and load the databases, and
@@ -320,7 +297,7 @@ public class Borg extends Controller implements OptionsView.RestartListener {
             if (testdb != null)
                 dbdir = testdb;
             else
-            	dbdir = buildDbDir();
+            	dbdir = BeanDataFactoryFactory.buildDbDir();
 
             if (dbdir.equals("not-set"))
             {
@@ -352,65 +329,11 @@ public class Borg extends Controller implements OptionsView.RestartListener {
                 shared = true;
             }
 
- 
-
-            /*
-            if( Prefs.getPref( PrefName.DBTYPE ).equals("mysql"))
-            {
-                // validate user id for mysql
-                UserModel umod = UserModel.create();
-                register(umod);
-                umod.open_db(dbdir, readonly);
-                uid = umod.validate("ckb", "ckb");
-            }*/
-
             // skip banner stuff if autostart or aplist on
             if (!aplist && !autostart && splash)
                 ban_.setText(Resource
                         .getResourceString("Loading_Appt_Database"));
 
-            // If we're working from memory, give them the opportunity
-            // to populate our memory files first.
-            /* if (dbdir.startsWith("mem:"))
-            {
-            	for (;;)
-            	{
-					int ret =
-						JOptionPane.showConfirmDialog(
-							ban_,
-							Resource.getResourceString("Sandboxed_Mode"),
-							Resource.getResourceString("Sandboxed_Mode_Title"),
-							JOptionPane.YES_NO_OPTION);
-					if (ret != JOptionPane.YES_OPTION)
-						break;
-
-					String url = "";
-					URL codeBase = AppHelper.getCodeBase();
-					if (codeBase != null)
-						url = codeBase.toExternalForm() + "borg_mem.dat";
-
-					try
-					{
-						String urlst =
-							JOptionPane.showInputDialog(
-								Resource.getResourceString("enturl"),
-								url);
-
-						if (urlst == null)
-							break;
-
-						if(urlst.length() > 0)
-						{
-							IOHelper.loadMemoryFromURL(urlst);
-							break;
-						}
-					}
-					catch (Exception e)
-					{
-						Errmsg.errmsg(e);
-					}
-            	}
-            }*/
 
             // Get our DB factory
             StringBuffer tmp = new StringBuffer(dbdir);
@@ -510,7 +433,8 @@ public class Borg extends Controller implements OptionsView.RestartListener {
 
                 // start autosync timer
                 int syncmins = Prefs.getIntPref(PrefName.SYNCMINS);
-                if( shared && syncmins != 0 )
+                String dbtype = Prefs.getPref(PrefName.DBTYPE);
+                if( (shared || dbtype.equals("remote"))&& syncmins != 0 )
                 {
                     syncTimer_ = new java.util.Timer();
                     syncTimer_.schedule(new TimerTask() {
@@ -518,6 +442,18 @@ public class Borg extends Controller implements OptionsView.RestartListener {
                             SwingUtilities.invokeLater(new Runnable() {
                                 public void run() {
                                     try {
+                                   		MultiUserModel mum = MultiUserModel.getReference();
+                                		Collection users = mum.getShownUsers();
+                                		if (users != null) {
+                                			Iterator mumit = users.iterator();
+                                			while (mumit.hasNext()) {
+                                				String user = (String) mumit.next();
+                                				AppointmentModel otherModel = AppointmentModel.getReference(user);
+                                				if( otherModel != null )
+                                					otherModel.sync();
+                                			}
+                                		}
+                                		
                                         AppointmentModel.getReference().sync();
                                         AddressModel.getReference().sync();
                                         TaskModel.getReference().sync();
@@ -991,6 +927,9 @@ public class Borg extends Controller implements OptionsView.RestartListener {
     		{}
     	}
 
+    	// save the remote username in class Borg so we have a way to know
+    	// who we are logged in as
+    	MultiUserModel.getReference().setOurUserName(dlg.getUsername());
     	return
     		new IRemoteProxyProvider.Credentials
     		(

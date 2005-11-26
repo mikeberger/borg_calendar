@@ -53,8 +53,10 @@ import javax.swing.Box;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -86,6 +88,7 @@ import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.AppointmentVcalAdapter;
 import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.Day;
+import net.sf.borg.model.MultiUserModel;
 import net.sf.borg.model.Task;
 import net.sf.borg.model.TaskModel;
 // This is the month view GUI
@@ -382,7 +385,9 @@ public class CalendarView extends View implements Prefs.Listener {
         }
 
         String shared = Prefs.getPref(PrefName.SHARED);
-        if( !shared.equals("true")) {
+        String dbtype = Prefs.getPref(PrefName.DBTYPE);
+        
+        if( !shared.equals("true") && !dbtype.equals("remote")) {
             syncMI.setEnabled(false);
         }
         else {
@@ -1627,6 +1632,53 @@ public class CalendarView extends View implements Prefs.Listener {
 
         menuBar.add(impexpMenu);
         
+        JMenu userMenu = new JMenu();
+        userMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Preferences16.gif")));
+        ResourceHelper.setText(userMenu, "users");
+        JMenuItem userChooserMI = new JMenuItem();
+        ResourceHelper.setText(userChooserMI,"selectusers");
+        userChooserMI.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            	String dbtype = Prefs.getPref(PrefName.DBTYPE);
+            	if( dbtype.equals("remote"))
+            		UserChooser.getReference().setVisible(true);
+            	else
+            		Errmsg.notice(Resource.getPlainResourceString("multiusernotice"));
+            }
+        });
+        JCheckBoxMenuItem publicMI = new JCheckBoxMenuItem();
+        try{
+        	publicMI.setSelected(AppointmentModel.getReference().isPublic());
+        }
+        catch( Exception e )
+        {
+        	Errmsg.errmsg(e);
+        }
+        ResourceHelper.setText(publicMI,"publiccal");
+        publicMI.addActionListener(new java.awt.event.ActionListener() {
+        	public void actionPerformed(java.awt.event.ActionEvent evt) {
+        		JCheckBoxMenuItem source = (JCheckBoxMenuItem) evt.getSource();
+        		try{
+        			if( source.isSelected())
+        			{
+        				AppointmentModel.getReference().setPublic(true);
+        			}
+        			else
+        			{
+        				AppointmentModel.getReference().setPublic(false);
+        			}
+        		}
+        		catch( Exception e)
+        		{
+        			Errmsg.errmsg(e);
+        		}
+        	}
+        });
+        userMenu.add(userChooserMI);
+        userMenu.add(publicMI);
+        menuBar.add(userMenu);
+        
+        
         menuBar.add(Box.createHorizontalGlue());
 
         helpmenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Help16.gif")));
@@ -1852,7 +1904,20 @@ public class CalendarView extends View implements Prefs.Listener {
     private void syncMIActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_syncMIActionPerformed
     {//GEN-HEADEREND:event_syncMIActionPerformed
         try {
-            AppointmentModel.getReference().sync();
+                      
+    		MultiUserModel mum = MultiUserModel.getReference();
+    		Collection users = mum.getShownUsers();
+    		if (users != null) {
+    			Iterator mumit = users.iterator();
+    			while (mumit.hasNext()) {
+    				String user = (String) mumit.next();
+    				AppointmentModel otherModel = AppointmentModel.getReference(user);
+    				if( otherModel != null )
+    					otherModel.sync();
+    			}
+    		}
+    		
+    		AppointmentModel.getReference().sync();
             AddressModel.getReference().sync();
             TaskModel.getReference().sync();
         }

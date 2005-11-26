@@ -22,6 +22,9 @@ package net.sf.borg.model.db;
 
 import java.lang.reflect.Method;
 
+import net.sf.borg.common.util.PrefName;
+import net.sf.borg.common.util.Prefs;
+
 /**
  * A singleton instance which creates an
  * {@link IBeanDataFactory IBeanDataFactory} based on the file type.
@@ -66,6 +69,30 @@ public class BeanDataFactoryFactory
 
 	 	Method getInst = Class.forName(factoryClass).getMethod("getInstance",null); 
 	 	return (IBeanDataFactory) getInst.invoke(null,null); 
+	}
+
+	public static String buildDbDir()
+	{
+	    // get dir for DB
+		String dbdir = "";
+		String dbtype = Prefs.getPref( PrefName.DBTYPE );
+		if( dbtype.equals("local"))
+		{
+			dbdir = Prefs.getPref(PrefName.DBDIR);
+		}
+		else if( dbtype.equals("remote"))
+		{
+			dbdir = "remote:" + Prefs.getPref(PrefName.DBURL);
+		}
+		else
+		{
+			// build a mysql URL
+			dbdir = "jdbc:mysql://" + Prefs.getPref( PrefName.DBHOST ) + ":" + Prefs.getPref( PrefName.DBPORT )
+				+ "/" + Prefs.getPref( PrefName.DBNAME ) + "?user=" + Prefs.getPref( PrefName.DBUSER ) +
+				"&password=" + Prefs.getPref( PrefName.DBPASS ) + "&autoReconnect=true";
+		}
+	
+		return( dbdir );
 	}
 
 	// private //

@@ -211,10 +211,11 @@ public class OptionsView extends View {
 		setCheckBox(soundbox, PrefName.BEEPINGREMINDERS);
 		setCheckBox(palmcb, PrefName.PALM_SYNC);
 		setCheckBox(useBeep, PrefName.USESYSTEMBEEP);
-		setCheckBox(sharedbox, PrefName.SHARED);
+		setCheckBox(sharedFileCheckBox, PrefName.SHARED);
 		setCheckBox(icaltodobox, PrefName.ICALTODOEV);
 		setCheckBox(truncbox, PrefName.TRUNCAPPT);
-
+		
+		
 		// print logo directory
 		String logo = Prefs.getPref(PrefName.LOGO);
 		logofile.setText(logo);
@@ -379,19 +380,6 @@ public class OptionsView extends View {
 		syncminlabel = new JLabel();
 		ResourceHelper.setText(syncminlabel, "sync_mins");
 		syncminlabel.setLabelFor(getSyncMins());
-		GridBagConstraints gridBagConstraints53 = new GridBagConstraints();
-		gridBagConstraints53.gridx = 1;
-		gridBagConstraints53.gridy = 1;
-		gridBagConstraints53.fill = java.awt.GridBagConstraints.BOTH;
-		gridBagConstraints53.insets = new java.awt.Insets(4, 4, 4, 4);
-		GridBagConstraints gridBagConstraints410 = new GridBagConstraints();
-		gridBagConstraints410.insets = new java.awt.Insets(4, 4, 4, 4);
-		gridBagConstraints410.fill = java.awt.GridBagConstraints.BOTH;
-
-		gridBagConstraints53.gridx = 1;
-		gridBagConstraints53.gridy = 1;
-		gridBagConstraints53.weightx = 1.0;
-		gridBagConstraints53.fill = java.awt.GridBagConstraints.HORIZONTAL;
 
 		lslabel = new JLabel();
 		ResourceHelper.setText(lslabel, "line_spacing");
@@ -464,8 +452,7 @@ public class OptionsView extends View {
 		checkfreq = new javax.swing.JSpinner();
 		jSeparator1 = new javax.swing.JSeparator();
 		jLabel16 = new javax.swing.JLabel();
-		jPanel7 = new javax.swing.JPanel();
-		sharedbox = new javax.swing.JCheckBox();
+		sharedFileCheckBox = new javax.swing.JCheckBox();
 		jButton2 = new javax.swing.JButton();
 		applyButton = new javax.swing.JButton();
 
@@ -1066,8 +1053,8 @@ public class OptionsView extends View {
 
 		ResourceHelper.addTab(jTabbedPane1, "popup_reminders", jPanel6);
 
-		ResourceHelper.setText(sharedbox, "shared");
-		ResourceHelper.addTab(jTabbedPane1, "Multi_User", jPanel7);
+		ResourceHelper.setText(sharedFileCheckBox, "shared");
+		ResourceHelper.addTab(jTabbedPane1, "Multi_User", getMultiUserPanel());
 
 		GridBagConstraints gridBagConstraints67 = new java.awt.GridBagConstraints();
 		gridBagConstraints67.gridx = 0;
@@ -1102,7 +1089,7 @@ public class OptionsView extends View {
 		JPanel njp = new JPanel();
 		GridBagConstraints gridBagConstraints116 = new GridBagConstraints();
 		GridBagConstraints gridBagConstraints212 = new GridBagConstraints();
-		GridBagConstraints gridBagConstraints211 = new GridBagConstraints();
+
 
 		GridBagConstraints gridBagConstraints115 = new GridBagConstraints();
 		GridBagConstraints gridBagConstraints44 = new GridBagConstraints();
@@ -1110,7 +1097,7 @@ public class OptionsView extends View {
 		GridBagConstraints gridBagConstraints310 = new GridBagConstraints();
 
 		njp.setLayout(new BorderLayout());
-		jPanel7.setLayout(new GridBagLayout());
+		
 		njp.add(cb_ucs_marktodo, BorderLayout.WEST);
 		njp.add(tf_ucs_marker, BorderLayout.CENTER);
 		getJPanelUCS().add(njp);
@@ -1153,12 +1140,8 @@ public class OptionsView extends View {
 		gridBagConstraints115.gridy = 2;
 		gridBagConstraints115.insets = new java.awt.Insets(4, 4, 4, 4);
 		gridBagConstraints115.fill = java.awt.GridBagConstraints.BOTH;
-		gridBagConstraints211.gridx = 0;
-		gridBagConstraints211.gridy = 0;
-		gridBagConstraints211.insets = new java.awt.Insets(4, 4, 4, 4);
-		gridBagConstraints211.fill = java.awt.GridBagConstraints.BOTH;
-		gridBagConstraints410.gridx = 0;
-		gridBagConstraints410.gridy = 1;
+
+
 
 		gridBagConstraints116.gridx = 0;
 		gridBagConstraints116.gridy = 3;
@@ -1172,8 +1155,7 @@ public class OptionsView extends View {
 		gridBagConstraints212.fill = java.awt.GridBagConstraints.VERTICAL;
 		gridBagConstraints212.insets = new java.awt.Insets(4, 4, 4, 4);
 		gridBagConstraints212.anchor = java.awt.GridBagConstraints.WEST;
-		jPanel7.add(sharedbox, gridBagConstraints211);
-		jPanel7.add(getSyncMins(), gridBagConstraints53);
+
 		jPanel2.add(incfont, gridBagConstraints2);
 		jPanel2.add(decfont, gridBagConstraints3);
 		jPanel3.add(revDayEditbox, gridBagConstraints51);
@@ -1193,7 +1175,7 @@ public class OptionsView extends View {
 		jPanel2.add(lslabel, gridBagConstraints114);
 		jPanel2.add(getLsbox(), gridBagConstraints44);
 		jPanel2.add(getTruncbox(), gridBagConstraints115);
-		jPanel7.add(syncminlabel, gridBagConstraints410);
+		
 		jPanel1.add(remtimelabel, gridBagConstraints116);
 		jPanel1.add(getEmailtimebox(), gridBagConstraints212);
 
@@ -1247,9 +1229,10 @@ public class OptionsView extends View {
 		setBooleanPref(soundbox, PrefName.BEEPINGREMINDERS);
 		setBooleanPref(palmcb, PrefName.PALM_SYNC);
 		setBooleanPref(useBeep, PrefName.USESYSTEMBEEP);
-		setBooleanPref(sharedbox, PrefName.SHARED);
+		setBooleanPref(sharedFileCheckBox, PrefName.SHARED);
 		setBooleanPref(icaltodobox, PrefName.ICALTODOEV);
 		setBooleanPref(truncbox, PrefName.TRUNCAPPT);
+		
 
 		Integer i = (Integer) checkfreq.getValue();
 		int cur = Prefs.getIntPref(PrefName.REMINDERCHECKMINS);
@@ -1652,8 +1635,6 @@ public class OptionsView extends View {
 
 	private javax.swing.JPanel jPanel6;
 
-	private javax.swing.JPanel jPanel7;
-
 	private javax.swing.JPanel jPanel8;
 
 	private javax.swing.JPanel jPanel9;
@@ -1696,7 +1677,7 @@ public class OptionsView extends View {
 
 	private javax.swing.JCheckBox revDayEditbox;
 
-	private javax.swing.JCheckBox sharedbox;
+	private javax.swing.JCheckBox sharedFileCheckBox;
 
 	private javax.swing.JTextField smtptext;
 
@@ -2168,5 +2149,46 @@ public class OptionsView extends View {
 			});
 		}
 		return remoteButton;
+	}
+	
+	//private JCheckBox publicCBox = new JCheckBox();
+	private JPanel getMultiUserPanel()
+	{
+		JPanel panel = new JPanel();
+		panel.setLayout(new GridBagLayout());
+		
+		GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
+		gridBagConstraints1.gridx = 0;
+		gridBagConstraints1.gridy = 0;
+		gridBagConstraints1.gridwidth = 2;
+		gridBagConstraints1.insets = new java.awt.Insets(4, 4, 4, 4);
+		gridBagConstraints1.fill = java.awt.GridBagConstraints.BOTH;
+		panel.add(sharedFileCheckBox, gridBagConstraints1);
+		
+		GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
+		gridBagConstraints2.gridx = 1;
+		gridBagConstraints2.gridy = 1;
+		gridBagConstraints2.insets = new java.awt.Insets(4, 4, 4, 4);
+		gridBagConstraints2.weightx = 1.0;
+		gridBagConstraints2.fill = java.awt.GridBagConstraints.HORIZONTAL;
+		panel.add(getSyncMins(), gridBagConstraints2);
+		
+		GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
+		gridBagConstraints3.insets = new java.awt.Insets(4, 4, 4, 4);
+		gridBagConstraints3.fill = java.awt.GridBagConstraints.BOTH;
+		gridBagConstraints3.gridx = 0;
+		gridBagConstraints3.gridy = 1;
+		gridBagConstraints3.weightx = 1.0;
+		panel.add(syncminlabel, gridBagConstraints3);
+		
+		/*GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
+		gridBagConstraints4.gridx = 0;
+		gridBagConstraints4.gridy = 0;
+		gridBagConstraints4.gridwidth = 2;
+		gridBagConstraints4.insets = new java.awt.Insets(4, 4, 4, 4);
+		gridBagConstraints4.fill = java.awt.GridBagConstraints.BOTH;
+		ResourceHelper.setText(publicCBox, "sharedoption"); 
+		panel.add(publicCBox, gridBagConstraints4);*/
+		return panel;
 	}
 } // @jve:decl-index=0:visual-constraint="107,15"

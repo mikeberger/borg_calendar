@@ -29,7 +29,7 @@ import java.util.Map;
 import net.sf.borg.model.Appointment;
 import net.sf.borg.model.AppointmentKeyFilter;
 
-public class ApptCachingBeanDB extends CachingBeanDB implements AppointmentKeyFilter
+public class ApptCachingBeanDB extends CachingBeanDB implements AppointmentKeyFilter, MultiUserDB
 {
 	public ApptCachingBeanDB(BeanDB delegate)
 	{
@@ -110,5 +110,13 @@ public class ApptCachingBeanDB extends CachingBeanDB implements AppointmentKeyFi
 			if (appt.getRepeatFlag())
 				repeatKeys.add(entry.getKey());
 		}
+	}
+
+	public Collection getAllUsers() throws Exception {
+		 if( delegate instanceof MultiUserDB)
+		 {
+			 return( ((MultiUserDB)delegate).getAllUsers());
+		 }
+		 return null;
 	}
 }

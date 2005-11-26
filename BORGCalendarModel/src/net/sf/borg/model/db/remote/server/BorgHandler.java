@@ -32,6 +32,7 @@ import net.sf.borg.model.db.BeanDataFactoryFactory;
 import net.sf.borg.model.db.DBException;
 import net.sf.borg.model.db.IBeanDataFactory;
 import net.sf.borg.model.db.KeyedBean;
+import net.sf.borg.model.db.MultiUserDB;
 import net.sf.borg.model.db.remote.IRemoteProxy;
 import net.sf.borg.model.db.remote.XmlObjectHelper;
 
@@ -61,7 +62,10 @@ public class BorgHandler
 				(IRemoteProxy.Parms) XmlObjectHelper.fromXml(xmlParms);
 			
 			// Figure out what we need to do
-			BeanDB beanDB = getBeanDB(parms, username);
+			String uid = parms.getUser();
+			if( uid.equals("$default"))
+				uid = username;
+			BeanDB beanDB = getBeanDB(parms, uid);
 			String cmd = parms.getCommand();
 			
 			if (cmd.equals("readAll"))
@@ -123,6 +127,10 @@ public class BorgHandler
 					beanDB.updateObj(bean,crypt);
 
 				touch(sessionId);
+			}
+			else if (cmd.equals("getAllUsers") && beanDB instanceof MultiUserDB)
+			{
+				result = ( (MultiUserDB) beanDB).getAllUsers();
 			}
 			else
 				throw new UnsupportedOperationException(cmd);

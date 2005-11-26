@@ -42,6 +42,7 @@ import net.sf.borg.common.util.XTree;
 import net.sf.borg.model.db.BeanDB;
 import net.sf.borg.model.db.DBException;
 import net.sf.borg.model.db.IBeanDataFactory;
+import net.sf.borg.model.db.MultiUserDB;
 
 
 // calmodel is the data model class for calendar data. calmodel is the only class that communicates
@@ -69,7 +70,33 @@ import net.sf.borg.model.db.IBeanDataFactory;
 // are given the first unused integer greater than or equal to the "base" key. See dkey() below.
 public class AppointmentModel extends Model implements Model.Listener
 {
+  
+    static private AppointmentModel default_reference_ = null;
+    static private HashMap refs_ = new HashMap();
     
+    public static AppointmentModel getReference()
+    { 
+    	return( default_reference_ ); 
+    }
+    
+    public static AppointmentModel getReference( String refName )
+    { 
+    	return( (AppointmentModel) refs_.get(refName) ); 
+    }
+    
+    public static AppointmentModel create()
+    {
+        default_reference_ = new AppointmentModel();
+        return(default_reference_);
+    }
+    
+    public static AppointmentModel create(String refName )
+    {
+        AppointmentModel am = new AppointmentModel();
+        refs_.put( refName, am );
+        return(am);
+    }
+	
     private BeanDB db_;       // the SMDB database - see mdb.SMDB
 
     
@@ -82,14 +109,7 @@ public class AppointmentModel extends Model implements Model.Listener
         map_ = new HashMap();
     }
     
-    static private AppointmentModel self_ = null;
-    public static AppointmentModel getReference()
-    { return( self_ ); }
-    public static AppointmentModel create()
-    {
-        self_ = new AppointmentModel();
-        return(self_);
-    }
+
     
     public void remove()
     {
@@ -645,6 +665,7 @@ public class AppointmentModel extends Model implements Model.Listener
         // init categories and currentcategories
         CategoryModel.getReference().addAll(getDbCategories());
         CategoryModel.getReference().addListener(this);
+        MultiUserModel.getReference().addListener(this);
         
         try
         {
@@ -665,7 +686,7 @@ public class AppointmentModel extends Model implements Model.Listener
         
         TreeSet dbcat = new TreeSet();
         dbcat.add(CategoryModel.UNCATEGORIZED);
-        Iterator itr = AppointmentModel.getReference().getAllAppts().iterator();
+        Iterator itr = getAllAppts().iterator();
         while( itr.hasNext() )
         {
             Appointment ap = (Appointment) itr.next();
@@ -1043,5 +1064,38 @@ public class AppointmentModel extends Model implements Model.Listener
         
     }
 
+    public Collection getAllUsers() throws Exception
+    {
+    	//System.out.println( db_.toString());
+    	if( db_ instanceof MultiUserDB)
+    	{
+    		return ((MultiUserDB) db_).getAllUsers();
+    	}
+    	
+    	return null;
+    }
 
+    public void setPublic( boolean b) throws Exception
+    {
+    	if( b )
+    	{
+    		db_.setOption(new BorgOption("PUBLIC", "true"));
+    	}
+    	else
+    	{
+    		db_.setOption(new BorgOption("PUBLIC", ""));
+    	}
+    }
+    
+    public boolean isPublic() throws Exception
+    {
+    	String s = db_.getOption("PUBLIC");
+    	if( s == null || !s.equals("true"))
+    	{
+    		return false;
+    	}
+    	
+    	return true;
+    }
+    
 }
