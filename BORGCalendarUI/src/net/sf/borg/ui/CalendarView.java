@@ -89,8 +89,10 @@ import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.AppointmentVcalAdapter;
 import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.Day;
+import net.sf.borg.model.MultiUserModel;
 import net.sf.borg.model.Task;
 import net.sf.borg.model.TaskModel;
+import net.sf.borg.model.db.BeanDataFactoryFactory;
 // This is the month view GUI
 // it is the main borg window
 // like most of the other borg window, you really need to check the netbeans form
@@ -294,10 +296,35 @@ public class CalendarView extends View implements Prefs.Listener {
         // add filler to the Grid
         jPanel1.add( new JPanel() );
         jPanel1.add( new JPanel() );
-        jPanel1.add( new JPanel() );
+        //jPanel1.add( new JPanel() );
 
 
         setDayLabels();
+        
+        //
+        // ToDo PREVIEW BOX
+        //
+        dbInfo = new JTextPane() {
+            public boolean getScrollableTracksViewportWidth() {
+                return false;
+            }
+            public void setSize(Dimension d) {
+                if(d.width < getParent().getSize().width) {
+                    d.width = getParent().getSize().width;
+                }
+                super.setSize(d);
+            }
+        };
+        dbInfo.setBackground( new Color( 204,204,204 ));
+        dbInfo.setEditable(false);
+        JScrollPane sp = new JScrollPane();
+        sp.setViewportView(dbInfo);
+        sp.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        sp.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        sp.getHorizontalScrollBar().setPreferredSize(new Dimension(0,5));
+        sp.getVerticalScrollBar().setPreferredSize(new Dimension(5,0));
+        jPanel1.add( sp );
+        
         //
         // ToDo PREVIEW BOX
         //
@@ -325,7 +352,7 @@ public class CalendarView extends View implements Prefs.Listener {
         );
         todoPreview.setBackground( new Color( 204,204,204 ));
         todoPreview.setEditable(false);
-        JScrollPane sp = new JScrollPane();
+        sp = new JScrollPane();
         sp.setViewportView(todoPreview);
         sp.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         sp.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -538,7 +565,7 @@ public class CalendarView extends View implements Prefs.Listener {
 
         initStyles( todoPreview, def, f );
         initStyles( taskPreview, def, f );
-
+        initStyles( dbInfo, def, f);
     }
 
     // adds a string to an appt text pane using a given style
@@ -895,137 +922,10 @@ public class CalendarView extends View implements Prefs.Listener {
             wk = cal.get( Calendar.WEEK_OF_YEAR );
             jButton5.setText( Integer.toString(wk));
 
+            refreshTodoView();
+            refreshTaskView();
+            refreshDbInfo();
 
-            // update todoPreview Box
-            StyledDocument tdoc = todoPreview.getStyledDocument();
-            tdoc.remove(0,tdoc.getLength());
-
-            // sort and add the todos
-            Vector tds = AppointmentModel.getReference().get_todos();
-            if( tds.size() > 0 ) {
-                addString( todoPreview, Resource.getResourceString("Todo_Preview") + "\n", "ul" );
-
-
-                // the treeset will sort by date
-                TreeSet ts = new TreeSet(new Comparator() {
-                    public int compare(java.lang.Object obj, java.lang.Object obj1) {
-                        try {
-                            Appointment r1 = (Appointment)obj;
-                            Appointment r2 = (Appointment)obj1;
-                            Date dt1 = r1.getNextTodo();
-                            if( dt1 == null ) {
-                                dt1 = r1.getDate();
-                            }
-                            Date dt2 = r2.getNextTodo();
-                            if( dt2 == null ) {
-                                dt2 = r2.getDate();
-                            }
-
-                            if( dt1.after( dt2 ))
-                                return(1);
-                            return(-1);
-                        }
-                        catch( Exception e ) {
-                            return(0);
-                        }
-                    }
-                });
-
-                // sort the todos by adding to the TreeSet
-                for( int i = 0; i < tds.size(); i++ ) {
-                    ts.add( tds.elementAt(i) );
-                }
-
-                Iterator it = ts.iterator();
-                while( it.hasNext() ) {
-                    try {
-                        Appointment r = (Appointment) it.next();
-
-                        // !!!!! only show first line of appointment text !!!!!!
-                        String tx = "";
-                        String xx = r.getText();
-                        int ii = xx.indexOf('\n');
-                        if( ii != -1 ) {
-                            tx = xx.substring(0,ii);
-                        }
-                        else {
-                            tx = xx;
-                        }
-                        addString( todoPreview, tx + "\n", r.getColor() );
-
-                    }
-                    catch( Exception e)
-                    { Errmsg.errmsg(e); }
-
-                }
-                todoPreview.setCaretPosition(0);
-            }
-            else {
-                addString( todoPreview, Resource.getResourceString("Todo_Preview") + "\n", "ul" );
-                addString( todoPreview, Resource.getResourceString("none_pending"), "black" );
-            }
-
-
-            // update taskPreview Box
-            StyledDocument tkdoc = taskPreview.getStyledDocument();
-            tkdoc.remove(0,tkdoc.getLength());
-
-            // sort and add the tasks
-            Vector tks = TaskModel.getReference().get_tasks();
-            if( tks.size() > 0 ) {
-                addString( taskPreview, Resource.getResourceString("Task_Preview") + "\n", "ul" );
-
-                // the treeset will sort by date
-                TreeSet ts = new TreeSet(new Comparator() {
-                    public int compare(java.lang.Object obj, java.lang.Object obj1) {
-                        try {
-                            Task r1 = (Task)obj;
-                            Task r2 = (Task)obj1;
-                            Date dt1 = r1.getDueDate();
-                            Date dt2 = r2.getDueDate();
-                            if( dt1.after( dt2 ))
-                                return(1);
-                            return(-1);
-                        }
-                        catch( Exception e ) {
-                            return(0);
-                        }
-                    }
-                });
-
-                // sort the tasks by adding to the treeset
-                for( int i = 0; i < tks.size(); i++ ) {
-                    ts.add( tks.elementAt(i) );
-                }
-
-                Iterator it = ts.iterator();
-                while( it.hasNext() ) {
-                    try {
-                        Task r = (Task) it.next();
-
-                        // !!!!! only show first line of task text !!!!!!
-                        String tx = "";
-                        String xx = r.getDescription();
-                        int ii = xx.indexOf('\n');
-                        if( ii != -1 ) {
-                            tx = xx.substring(0,ii);
-                        }
-                        else {
-                            tx = xx;
-                        }
-                        addString( taskPreview, "BT" + r.getTaskNumber() + ":" + tx + "\n", "black" );
-
-                    }
-                    catch( Exception e)
-                    { Errmsg.errmsg(e); }
-
-                }
-                taskPreview.setCaretPosition(0);
-            }
-            else {
-                addString( taskPreview, Resource.getResourceString("Task_Preview") + "\n", "ul" );
-                addString( taskPreview, Resource.getResourceString("none_pending"), "black" );
-            }
         }
         catch( Exception e ) {
             Errmsg.errmsg(e);
@@ -1036,6 +936,166 @@ public class CalendarView extends View implements Prefs.Listener {
         	//requestFocus();
         }
     }
+    
+    private void refreshDbInfo() throws Exception
+    {
+
+        StyledDocument tdoc = dbInfo.getStyledDocument();
+        tdoc.remove(0,tdoc.getLength());
+
+        addString( dbInfo, Resource.getResourceString("dbinfo") + "\n", "ul" );
+
+        addString( dbInfo, Resource.getPlainResourceString("Type") + ": ", "black");
+        addString( dbInfo, Prefs.getPref(PrefName.DBTYPE) + "\n", "blue");          
+        addString( dbInfo, "URL: ", "black");
+        addString( dbInfo, BeanDataFactoryFactory.buildDbDir() + "\n", "blue");
+        
+        if( Prefs.getPref(PrefName.DBTYPE).equals("remote"))
+        {
+        	addString( dbInfo, Resource.getPlainResourceString("User") + ": ", "black");
+        	addString( dbInfo, MultiUserModel.getReference().getOurUserName(), "blue");
+        }
+        dbInfo.setCaretPosition(0);
+    }
+    
+    private void refreshTodoView() throws Exception
+    {
+
+        // update todoPreview Box
+        StyledDocument tdoc = todoPreview.getStyledDocument();
+        tdoc.remove(0,tdoc.getLength());
+
+        // sort and add the todos
+        Vector tds = AppointmentModel.getReference().get_todos();
+        if( tds.size() > 0 ) {
+            addString( todoPreview, Resource.getResourceString("Todo_Preview") + "\n", "ul" );
+
+
+            // the treeset will sort by date
+            TreeSet ts = new TreeSet(new Comparator() {
+                public int compare(java.lang.Object obj, java.lang.Object obj1) {
+                    try {
+                        Appointment r1 = (Appointment)obj;
+                        Appointment r2 = (Appointment)obj1;
+                        Date dt1 = r1.getNextTodo();
+                        if( dt1 == null ) {
+                            dt1 = r1.getDate();
+                        }
+                        Date dt2 = r2.getNextTodo();
+                        if( dt2 == null ) {
+                            dt2 = r2.getDate();
+                        }
+
+                        if( dt1.after( dt2 ))
+                            return(1);
+                        return(-1);
+                    }
+                    catch( Exception e ) {
+                        return(0);
+                    }
+                }
+            });
+
+            // sort the todos by adding to the TreeSet
+            for( int i = 0; i < tds.size(); i++ ) {
+                ts.add( tds.elementAt(i) );
+            }
+
+            Iterator it = ts.iterator();
+            while( it.hasNext() ) {
+                try {
+                    Appointment r = (Appointment) it.next();
+
+                    // !!!!! only show first line of appointment text !!!!!!
+                    String tx = "";
+                    String xx = r.getText();
+                    int ii = xx.indexOf('\n');
+                    if( ii != -1 ) {
+                        tx = xx.substring(0,ii);
+                    }
+                    else {
+                        tx = xx;
+                    }
+                    addString( todoPreview, tx + "\n", r.getColor() );
+
+                }
+                catch( Exception e)
+                { Errmsg.errmsg(e); }
+
+            }
+            todoPreview.setCaretPosition(0);
+        }
+        else {
+            addString( todoPreview, Resource.getResourceString("Todo_Preview") + "\n", "ul" );
+            addString( todoPreview, Resource.getResourceString("none_pending"), "black" );
+        }
+
+    }
+    
+    private void refreshTaskView() throws Exception
+    {
+        // update taskPreview Box
+        StyledDocument tkdoc = taskPreview.getStyledDocument();
+        tkdoc.remove(0,tkdoc.getLength());
+
+        // sort and add the tasks
+        Vector tks = TaskModel.getReference().get_tasks();
+        if( tks.size() > 0 ) {
+            addString( taskPreview, Resource.getResourceString("Task_Preview") + "\n", "ul" );
+
+            // the treeset will sort by date
+            TreeSet ts = new TreeSet(new Comparator() {
+                public int compare(java.lang.Object obj, java.lang.Object obj1) {
+                    try {
+                        Task r1 = (Task)obj;
+                        Task r2 = (Task)obj1;
+                        Date dt1 = r1.getDueDate();
+                        Date dt2 = r2.getDueDate();
+                        if( dt1.after( dt2 ))
+                            return(1);
+                        return(-1);
+                    }
+                    catch( Exception e ) {
+                        return(0);
+                    }
+                }
+            });
+
+            // sort the tasks by adding to the treeset
+            for( int i = 0; i < tks.size(); i++ ) {
+                ts.add( tks.elementAt(i) );
+            }
+
+            Iterator it = ts.iterator();
+            while( it.hasNext() ) {
+                try {
+                    Task r = (Task) it.next();
+
+                    // !!!!! only show first line of task text !!!!!!
+                    String tx = "";
+                    String xx = r.getDescription();
+                    int ii = xx.indexOf('\n');
+                    if( ii != -1 ) {
+                        tx = xx.substring(0,ii);
+                    }
+                    else {
+                        tx = xx;
+                    }
+                    addString( taskPreview, "BT" + r.getTaskNumber() + ":" + tx + "\n", "black" );
+
+                }
+                catch( Exception e)
+                { Errmsg.errmsg(e); }
+
+            }
+            taskPreview.setCaretPosition(0);
+        }
+        else {
+            addString( taskPreview, Resource.getResourceString("Task_Preview") + "\n", "ul" );
+            addString( taskPreview, Resource.getResourceString("none_pending"), "black" );
+        }
+    }
+    
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -2410,6 +2470,7 @@ public class CalendarView extends View implements Prefs.Listener {
 
     private JTextPane todoPreview;
     private JTextPane taskPreview;
+    private JTextPane dbInfo;
 
 	private JPanel jPanel = null;
 	private JPanel jPanel5 = null;

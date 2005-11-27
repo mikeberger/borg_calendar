@@ -56,6 +56,10 @@ public class MultiUserModel extends Model {
     {
     	ourUserName_ = user;
     }
+    public String getOurUserName()
+    {
+    	return ourUserName_;
+    }
     
     public void syncWithDB( ) throws Exception
     {
