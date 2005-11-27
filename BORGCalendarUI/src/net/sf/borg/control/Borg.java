@@ -433,21 +433,7 @@ public class Borg extends Controller implements OptionsView.RestartListener {
                             SwingUtilities.invokeLater(new Runnable() {
                                 public void run() {
                                     try {
-                                   		MultiUserModel mum = MultiUserModel.getReference();
-                                		Collection users = mum.getShownUsers();
-                                		if (users != null) {
-                                			Iterator mumit = users.iterator();
-                                			while (mumit.hasNext()) {
-                                				String user = (String) mumit.next();
-                                				AppointmentModel otherModel = AppointmentModel.getReference(user);
-                                				if( otherModel != null )
-                                					otherModel.sync();
-                                			}
-                                		}
-                                		
-                                        AppointmentModel.getReference().sync();
-                                        AddressModel.getReference().sync();
-                                        TaskModel.getReference().sync();
+                                    	syncDBs();
                                     }
                                     catch( Exception e) {
                                         Errmsg.errmsg(e);
@@ -504,6 +490,26 @@ public class Borg extends Controller implements OptionsView.RestartListener {
 
     }
 
+    static public void syncDBs() throws Exception
+    {
+   		MultiUserModel mum = MultiUserModel.getReference();
+		Collection users = mum.getShownUsers();
+		if (users != null) {
+			Iterator mumit = users.iterator();
+			while (mumit.hasNext()) {
+				String user = (String) mumit.next();
+				AppointmentModel otherModel = AppointmentModel.getReference(user);
+				if( otherModel != null )
+					otherModel.sync();
+			}
+		}
+		
+        AppointmentModel.getReference().sync();
+        AddressModel.getReference().sync();
+        TaskModel.getReference().sync();
+
+    }
+    
     private void swingStart(String trayname)
     {
         boolean trayIcon = true;

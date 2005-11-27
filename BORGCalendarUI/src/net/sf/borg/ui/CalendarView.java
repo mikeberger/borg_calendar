@@ -81,6 +81,7 @@ import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
 import net.sf.borg.common.util.Resource;
 import net.sf.borg.common.util.XTree;
+import net.sf.borg.control.Borg;
 import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.Appointment;
 import net.sf.borg.model.AppointmentIcalAdapter;
@@ -88,7 +89,6 @@ import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.AppointmentVcalAdapter;
 import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.Day;
-import net.sf.borg.model.MultiUserModel;
 import net.sf.borg.model.Task;
 import net.sf.borg.model.TaskModel;
 // This is the month view GUI
@@ -1903,23 +1903,8 @@ public class CalendarView extends View implements Prefs.Listener {
 
     private void syncMIActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_syncMIActionPerformed
     {//GEN-HEADEREND:event_syncMIActionPerformed
-        try {
-                      
-    		MultiUserModel mum = MultiUserModel.getReference();
-    		Collection users = mum.getShownUsers();
-    		if (users != null) {
-    			Iterator mumit = users.iterator();
-    			while (mumit.hasNext()) {
-    				String user = (String) mumit.next();
-    				AppointmentModel otherModel = AppointmentModel.getReference(user);
-    				if( otherModel != null )
-    					otherModel.sync();
-    			}
-    		}
-    		
-    		AppointmentModel.getReference().sync();
-            AddressModel.getReference().sync();
-            TaskModel.getReference().sync();
+        try {                     
+        	Borg.syncDBs();
         }
         catch( Exception e) {
             Errmsg.errmsg(e);
