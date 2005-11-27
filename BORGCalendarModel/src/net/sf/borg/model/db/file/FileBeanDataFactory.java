@@ -66,6 +66,8 @@ public class FileBeanDataFactory implements IBeanDataFactory
 			{
 				// the Palm conduits run in JRE 1.3
 				// so we must ignore that split() does not exist
+				int idx = url.indexOf("::");
+				file = url.substring(0,idx);
 			}
 			
 	    	FileDBCreator creator = null;

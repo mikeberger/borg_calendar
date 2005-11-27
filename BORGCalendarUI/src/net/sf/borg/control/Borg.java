@@ -61,7 +61,6 @@ import net.sf.borg.model.MultiUserModel;
 import net.sf.borg.model.Task;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.db.BeanDataFactoryFactory;
-import net.sf.borg.model.db.IBeanDataFactory;
 import net.sf.borg.model.db.remote.IRemoteProxy;
 import net.sf.borg.model.db.remote.IRemoteProxyProvider;
 import net.sf.borg.model.db.remote.RemoteProxyHome;
@@ -334,17 +333,9 @@ public class Borg extends Controller implements OptionsView.RestartListener {
                 ban_.setText(Resource
                         .getResourceString("Loading_Appt_Database"));
 
-
-            // Get our DB factory
-            StringBuffer tmp = new StringBuffer(dbdir);
-            IBeanDataFactory factory = BeanDataFactoryFactory.getInstance()
-					.getFactory(tmp, readonly, shared);
-            dbdir = tmp.toString();
-            	// let the factory tweak dbdir
-
             calmod_ = AppointmentModel.create();
             register(calmod_);
-            calmod_.open_db(factory, dbdir, uid);
+            calmod_.open_db(dbdir, uid, readonly, shared);
 
             // aplist only needs calendar data - so just print list of
             // appointments
@@ -373,14 +364,14 @@ public class Borg extends Controller implements OptionsView.RestartListener {
                         .getResourceString("Loading_Task_Database"));
             taskmod_ = TaskModel.create();
             register(taskmod_);
-            taskmod_.open_db(factory, dbdir, uid);
+            taskmod_.open_db(dbdir, uid, readonly, shared);
 
             if (!autostart && splash)
                 ban_.setText(Resource
                         .getResourceString("Opening_Address_Database"));
             addrmod_ = AddressModel.create();
             register(addrmod_);
-            addrmod_.open_db(factory, dbdir, uid);
+            addrmod_.open_db(dbdir, uid, readonly, shared);
 
             if (!autostart && splash)
                 ban_.setText(Resource.getResourceString("Opening_Main_Window"));

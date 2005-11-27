@@ -25,7 +25,6 @@ import java.util.Iterator;
 
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.model.db.BeanDataFactoryFactory;
-import net.sf.borg.model.db.IBeanDataFactory;
 
 
 public class MultiUserModel extends Model {
@@ -74,14 +73,7 @@ public class MultiUserModel extends Model {
 				if (am == null) {
 					String dbdir = BeanDataFactoryFactory.buildDbDir();
 					am = AppointmentModel.create(user);
-					// Get our DB factory
-					StringBuffer tmp = new StringBuffer(dbdir);
-					IBeanDataFactory factory = BeanDataFactoryFactory
-							.getInstance().getFactory(tmp, true, false);
-					dbdir = tmp.toString();
-					// let the factory tweak dbdir
-
-					am.open_db(factory, dbdir, user);
+					am.open_db(dbdir, user, true, false);
 				}
     			//System.out.println(user + " " + am.isPublic());
     			if( am.isPublic())

@@ -32,6 +32,7 @@ import java.util.Vector;
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.XTree;
 import net.sf.borg.model.db.BeanDB;
+import net.sf.borg.model.db.BeanDataFactoryFactory;
 import net.sf.borg.model.db.DBException;
 import net.sf.borg.model.db.IBeanDataFactory;
 
@@ -238,8 +239,15 @@ public class TaskModel extends Model implements Model.Listener {
     }
     */
     // open the SMDB database
-    public void open_db(IBeanDataFactory factory, String url, String username)
+    public void open_db(String url, String username, boolean readonly, boolean shared)
 			throws Exception {
+    	
+		StringBuffer tmp = new StringBuffer(url);
+		IBeanDataFactory factory = BeanDataFactoryFactory
+				.getInstance().getFactory(tmp, readonly, shared);
+		url = tmp.toString();
+		// let the factory tweak dbdir
+		
 		db_ =
 			factory.create(
 				Task.class,

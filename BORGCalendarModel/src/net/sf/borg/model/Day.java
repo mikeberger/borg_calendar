@@ -42,7 +42,6 @@ import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
 import net.sf.borg.common.util.Resource;
 import net.sf.borg.model.db.BeanDataFactoryFactory;
-import net.sf.borg.model.db.IBeanDataFactory;
 
 /**
  * 
@@ -296,15 +295,8 @@ public class Day {
 						.getReference(user);
 				if (otherModel == null) {
 					String dbdir = BeanDataFactoryFactory.buildDbDir();
-					otherModel = AppointmentModel.create(user);
-					// Get our DB factory
-					StringBuffer tmp = new StringBuffer(dbdir);
-					IBeanDataFactory factory = BeanDataFactoryFactory
-							.getInstance().getFactory(tmp, true, false);
-					dbdir = tmp.toString();
-					// let the factory tweak dbdir
-
-					otherModel.open_db(factory, dbdir, user);
+					otherModel = AppointmentModel.create(user);					
+					otherModel.open_db(dbdir, user, true, false);
 				}
 				l = (LinkedList) otherModel.getAppts(key);
 				if (l != null) {

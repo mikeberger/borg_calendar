@@ -3,8 +3,6 @@ package net.sf.borg.apptconduit;
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.TaskModel;
-import net.sf.borg.model.db.BeanDataFactoryFactory;
-import net.sf.borg.model.db.IBeanDataFactory;
 import palm.conduit.Conduit;
 import palm.conduit.ConfigureConduitInfo;
 import palm.conduit.Log;
@@ -56,14 +54,11 @@ public class ApptCond implements Conduit {
                 	user = "mbb";
                 }
 
-                StringBuffer tmp = new StringBuffer(dbdir);
-                IBeanDataFactory factory = BeanDataFactoryFactory.getInstance().getFactory(tmp, false, false);
-                //dbdir = tmp.toString();
                 apptModel = AppointmentModel.create();
-                apptModel.open_db(factory, dbdir , user);
+                apptModel.open_db(dbdir , user, false, false);
 
                 taskModel = TaskModel.create();
-                taskModel.open_db(factory, dbdir , user);
+                taskModel.open_db(dbdir , user, false, false);
                
                 // have to get todo data into BORG, then get appt data, then sync back
                 // appt data and finally overwrite Todo data. 

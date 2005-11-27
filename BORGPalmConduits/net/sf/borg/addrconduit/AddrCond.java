@@ -2,8 +2,6 @@ package net.sf.borg.addrconduit;
 
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.model.AddressModel;
-import net.sf.borg.model.db.BeanDataFactoryFactory;
-import net.sf.borg.model.db.IBeanDataFactory;
 import palm.conduit.Conduit;
 import palm.conduit.ConfigureConduitInfo;
 import palm.conduit.Log;
@@ -41,10 +39,7 @@ public class AddrCond implements Conduit {
                 //read the pc records on the PC
                 String dbdir = props.pathName;
                 addressModel = AddressModel.create();
-                StringBuffer tmp = new StringBuffer(dbdir);
-                IBeanDataFactory factory = BeanDataFactoryFactory.getInstance().getFactory(tmp, false, false);
-                //dbdir = tmp.toString();
-                addressModel.open_db(factory, dbdir, "borg");
+                addressModel.open_db(dbdir, "borg", false, false);
 
                 //Create an instance of the RecordManager for synchronizing the
                 // records
