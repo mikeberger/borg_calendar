@@ -34,6 +34,11 @@ import net.sf.borg.model.MultiUserModel;
  *
  * @author  mberger
  */
+/*
+ * This class lets the user pick from a list of public calendars to view
+ * the list of public calendars will be the list of users on the remote server
+ * that have calendars set as public
+ */
 public class UserChooser extends View {
 
     private ArrayList cbs = null;

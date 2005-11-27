@@ -26,7 +26,12 @@ import java.util.Iterator;
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.model.db.BeanDataFactoryFactory;
 
-
+/*
+ * This class manages the list of public calendars being viewed
+ * The list of all possible public calendars is just the list of all user names in
+ * the appointment table on the remote database whose calendars are set to be public - 
+ * minus the current user's calendar
+ */
 public class MultiUserModel extends Model {
     
     static private MultiUserModel self_ = new MultiUserModel();
