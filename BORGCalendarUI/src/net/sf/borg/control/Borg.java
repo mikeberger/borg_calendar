@@ -87,14 +87,6 @@ import net.sf.borg.ui.TodoView;
 // Views can call other views.
 public class Borg extends Controller implements OptionsView.RestartListener {
 
-
-    // the calendar and task data models
-    private AppointmentModel calmod_ = null;
-
-    private TaskModel taskmod_ = null;
-
-    private AddressModel addrmod_ = null;
-
     static private Banner ban_ = null; // start up banner
 
     private java.util.Timer versionCheckTimer_ = null;
@@ -333,9 +325,9 @@ public class Borg extends Controller implements OptionsView.RestartListener {
                 ban_.setText(Resource
                         .getResourceString("Loading_Appt_Database"));
 
-            calmod_ = AppointmentModel.create();
-            register(calmod_);
-            calmod_.open_db(dbdir, uid, readonly, shared);
+            AppointmentModel calmod = AppointmentModel.create();
+            register(calmod);
+            calmod.open_db(dbdir, uid, readonly, shared);
 
             // aplist only needs calendar data - so just print list of
             // appointments
@@ -362,16 +354,16 @@ public class Borg extends Controller implements OptionsView.RestartListener {
             if (!autostart && splash)
                 ban_.setText(Resource
                         .getResourceString("Loading_Task_Database"));
-            taskmod_ = TaskModel.create();
-            register(taskmod_);
-            taskmod_.open_db(dbdir, uid, readonly, shared);
+            TaskModel taskmod = TaskModel.create();
+            register(taskmod);
+            taskmod.open_db(dbdir, uid, readonly, shared);
 
             if (!autostart && splash)
                 ban_.setText(Resource
                         .getResourceString("Opening_Address_Database"));
-            addrmod_ = AddressModel.create();
-            register(addrmod_);
-            addrmod_.open_db(dbdir, uid, readonly, shared);
+            AddressModel addrmod = AddressModel.create();
+            register(addrmod);
+            addrmod.open_db(dbdir, uid, readonly, shared);
 
             if (!autostart && splash)
                 ban_.setText(Resource.getResourceString("Opening_Main_Window"));
@@ -579,7 +571,8 @@ public class Borg extends Controller implements OptionsView.RestartListener {
                 .get(Calendar.MONTH), now.get(Calendar.DATE));
 
         // get the list of appts for today
-        Collection l = calmod_.getAppts(key);
+        AppointmentModel am = AppointmentModel.getReference();
+        Collection l = am.getAppts(key);
         if (l != null)
         {
 
@@ -595,7 +588,7 @@ public class Borg extends Controller implements OptionsView.RestartListener {
                 // read the appt
                 try
                 {
-                    appt = calmod_.getAppt(ik.intValue());
+                    appt = am.getAppt(ik.intValue());
 
                     // an untimed appt (note) cannot force an auto start
                     if (AppointmentModel.isNote(appt))
