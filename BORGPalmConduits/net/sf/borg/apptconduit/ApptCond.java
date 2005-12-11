@@ -51,7 +51,7 @@ public class ApptCond implements Conduit {
                 if( loc.equals("mysql"))
                 {
                 	dbdir = "jdbc:mysql://localhost/borg?user=borg&password=borg";
-                	user = "mbb";
+                	user = "$default";
                 }
 
                 apptModel = AppointmentModel.create();

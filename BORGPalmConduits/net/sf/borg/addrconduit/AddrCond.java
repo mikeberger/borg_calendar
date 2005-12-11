@@ -37,9 +37,22 @@ public class AddrCond implements Conduit {
                         | SyncManager.OPEN_WRITE | SyncManager.OPEN_EXCLUSIVE);
 
                 //read the pc records on the PC
+            	String loc = props.localName;
                 String dbdir = props.pathName;
+                String user = props.userName;
+                Log.out("dbdir=" + dbdir);
+                Log.out("user=" + user);
+                Log.out("localName=" + loc);
+                
+                // hard-code MySQL kludge just for me for now
+                if( loc.equals("mysql"))
+                {
+                	dbdir = "jdbc:mysql://localhost/borg?user=borg&password=borg";
+                	user = "$default";
+                }
+                
                 addressModel = AddressModel.create();
-                addressModel.open_db(dbdir, "borg", false, false);
+                addressModel.open_db(dbdir, user, false, false);
 
                 //Create an instance of the RecordManager for synchronizing the
                 // records
