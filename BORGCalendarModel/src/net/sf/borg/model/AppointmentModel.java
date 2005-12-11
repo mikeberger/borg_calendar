@@ -939,8 +939,14 @@ public class AppointmentModel extends Model implements Model.Listener
                     }
                     else
                     {
-                        throw me;
+                        Errmsg.errmsg(me);
+                        break;
                     }
+                }
+                catch( Exception e )
+                {
+                        Errmsg.errmsg(e);
+                        break;
                 }
             }
         }
