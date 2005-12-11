@@ -49,7 +49,8 @@ You should be able to use the eclipse debugger to debug the code. You should be 
 Borg class (Borg Calendar UI/src/net/sf.borg.control.Borg) from within eclipse. 
 
 The GUI screens are edited using the eclipse visual editor plugin. You do not need to use this to edit the GUI screens,
-but it helps.
+but it helps. ** UPDATE ** - The Eclipse visual editor seems to make a mess of the code more often than not - so I am no
+longer making an effort to use it.
 
 NetBeans
 --------
