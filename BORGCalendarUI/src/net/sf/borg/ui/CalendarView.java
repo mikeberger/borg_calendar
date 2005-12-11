@@ -414,11 +414,11 @@ public class CalendarView extends View implements Prefs.Listener {
         String shared = Prefs.getPref(PrefName.SHARED);
         String dbtype = Prefs.getPref(PrefName.DBTYPE);
         
-        if( !shared.equals("true") && !dbtype.equals("remote")) {
-            syncMI.setEnabled(false);
+        if( shared.equals("true") || dbtype.equals("remote") || dbtype.equals("mysql")) {
+            syncMI.setEnabled(true);
         }
         else {
-            syncMI.setEnabled(true);
+            syncMI.setEnabled(false);
         }
 
 		dlgMemFiles = new MemDialog(this);
@@ -2152,9 +2152,9 @@ public class CalendarView extends View implements Prefs.Listener {
             else if( !dir.isDirectory() ) {
                 err = "[" + s + Resource.getResourceString("]_is_not_a_directory");
             }
-            else if( !dir.canWrite() ) {
-                err = Resource.getResourceString("Directory_[") + s + Resource.getResourceString("]_is_not_writable");
-            }
+            //else if( !dir.canWrite() ) {
+                ////err = Resource.getResourceString("Directory_[") + s + Resource.getResourceString("]_is_not_writable");
+            //}
 
             if( err == null )
                 break;
