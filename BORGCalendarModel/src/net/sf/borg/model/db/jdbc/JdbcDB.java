@@ -233,7 +233,7 @@ abstract class JdbcDB implements BeanDB
         String ret = null;
         PreparedStatement stmt = connection_.prepareStatement("SELECT value FROM options WHERE name = ? AND username = ?" );
         stmt.setString( 1, oname );
-        stmt.setInt( 2, 1 );
+        stmt.setString( 2, username_ );
         ResultSet rs = stmt.executeQuery();
         if( rs.next() )
         {

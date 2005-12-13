@@ -611,6 +611,7 @@ public class TaskListView extends View {
 
             TaskModel taskmod_ = TaskModel.getReference();
             taskmod_.getTaskTypes().importStates(istr);
+            taskmod_.saveTaskTypes();
         } catch (Exception e) {
             Errmsg.errmsg(e);
         }
