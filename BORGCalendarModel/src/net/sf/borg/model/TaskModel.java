@@ -201,44 +201,8 @@ public class TaskModel extends Model implements Model.Listener {
         
         
     }
-    /*
-    // open using a JDBC database
-    public void open_db(Connection conn) throws Exception {
-		db_ =
-			BeanDataFactoryFactory.getInstance().getFactory("jdbc:").create(
-				Task.class,
-				conn);
 
-        // get XML that models states/transitions
-        // set to default if it does not exist
-        // see SMDB.java for the use of SMDB options
-        String sm = db_.getOption("SMODEL");
-        if( sm == null ) {
-            try {
-                // load XML from a file in the JAR
-            	taskTypes_.loadDefault();
-                sm = taskTypes_.toString();
-                db_.setOption(new BorgOption("SMODEL", sm ));
-            }
-            catch( Exception e ) {
-                Errmsg.errmsg(e);
-                System.exit(1);
-            }
-        }
-        else {
-        	taskTypes_.fromString(sm);
-        }
-        
-        
-        CategoryModel.getReference().addAll(getCategories());
-        CategoryModel.getReference().addListener(this);
-        
-        // init the task type list to null
-        load_map();
-        
-    }
-    */
-    // open the SMDB database
+    // open the database
     public void open_db(String url, String username, boolean readonly, boolean shared)
 			throws Exception {
     	
