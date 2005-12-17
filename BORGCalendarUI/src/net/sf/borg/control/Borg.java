@@ -53,7 +53,7 @@ import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
 import net.sf.borg.common.util.Resource;
-import net.sf.borg.common.util.Sendmail;
+import net.sf.borg.common.util.SendJavaMail;
 import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.Appointment;
 import net.sf.borg.model.AppointmentModel;
@@ -860,11 +860,11 @@ public class Borg extends Controller implements OptionsView.RestartListener {
                 String a = stk.nextToken();
                 if( !a.equals("") )
                 {
-                    String s = Sendmail.sendmail(host, 25, "Borg Reminder", tx, a.trim(),
-                            a.trim());
-                    String ed = Prefs.getPref(PrefName.EMAILDEBUG);
-                    if (ed.equals("1"))
-                        Errmsg.notice(s);
+                    SendJavaMail.sendMail(host, tx, a.trim(),
+                            a.trim(), Prefs.getPref(PrefName.EMAILUSER), Prefs.getPref(PrefName.EMAILPASS));
+                    //String ed = Prefs.getPref(PrefName.EMAILDEBUG);
+                    //if (ed.equals("1"))
+                       // Errmsg.notice(s);
                 }
             }
 

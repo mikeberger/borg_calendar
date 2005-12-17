@@ -48,6 +48,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
@@ -226,6 +227,8 @@ public class OptionsView extends View {
 		// email server and address
 		smtptext.setText(Prefs.getPref(PrefName.EMAILSERVER));
 		emailtext.setText(Prefs.getPref(PrefName.EMAILADDR));
+		usertext.setText(Prefs.getPref(PrefName.EMAILUSER));
+		smpw.setText(Prefs.getPref(PrefName.EMAILPASS));
 
 		int fdow = Prefs.getIntPref(PrefName.FIRSTDOW);
 		if (fdow == Calendar.MONDAY)
@@ -590,6 +593,9 @@ public class OptionsView extends View {
 		if (emailbox.isSelected()) {
 			Prefs.putPref(PrefName.EMAILSERVER, smtptext.getText());
 			Prefs.putPref(PrefName.EMAILADDR, emailtext.getText());
+			Prefs.putPref(PrefName.EMAILUSER, usertext.getText());
+			Prefs.putPref(PrefName.EMAILPASS, new String(smpw.getPassword()));
+			
 		}
 
 		Locale locs[] = Locale.getAvailableLocales();
@@ -1619,6 +1625,8 @@ public class OptionsView extends View {
 		return panel;
 	}
 
+	JTextField usertext = new JTextField();
+	JPasswordField smpw = new JPasswordField();
 	private JPanel getEmailPanel() {
 		JPanel emailPanel = new JPanel();
 		emailPanel.setLayout(new java.awt.GridBagLayout());
@@ -1632,10 +1640,44 @@ public class OptionsView extends View {
 		emailPanel.add(jLabel1, gridBagConstraints35);
 		jLabel1.setLabelFor(smtptext);
 
+		JLabel userlabel = new JLabel();
+		ResourceHelper.setText(userlabel, "SMTP_user");
+		GridBagConstraints gridBagConstraintsUL = new java.awt.GridBagConstraints();
+		gridBagConstraintsUL.gridx = 0;
+		gridBagConstraintsUL.gridy = 2;
+		gridBagConstraintsUL.fill = java.awt.GridBagConstraints.BOTH;
+		gridBagConstraintsUL.insets = new java.awt.Insets(0, 4, 0, 0);
+		emailPanel.add(userlabel, gridBagConstraintsUL);
+		userlabel.setLabelFor(usertext);
+		
+		GridBagConstraints gridBagConstraintsTF = new java.awt.GridBagConstraints();
+		gridBagConstraintsTF.gridx = 1;
+		gridBagConstraintsTF.gridy = 2;
+		gridBagConstraintsTF.fill = java.awt.GridBagConstraints.BOTH;
+		//gridBagConstraintsTF.insets = new java.awt.Insets(0, 4, 0, 0);
+		emailPanel.add(usertext, gridBagConstraintsTF);
+		
+		JLabel passlabel = new JLabel();
+		ResourceHelper.setText(passlabel, "SMTP_password");
+		GridBagConstraints gridBagConstraintsPWL = new java.awt.GridBagConstraints();
+		gridBagConstraintsPWL.gridx = 0;
+		gridBagConstraintsPWL.gridy = 3;
+		gridBagConstraintsPWL.fill = java.awt.GridBagConstraints.BOTH;
+		gridBagConstraintsPWL.insets = new java.awt.Insets(0, 4, 0, 0);
+		emailPanel.add(passlabel, gridBagConstraintsPWL);
+		passlabel.setLabelFor(smpw);
+		
+		GridBagConstraints gridBagConstraintsPW = new java.awt.GridBagConstraints();
+		gridBagConstraintsPW.gridx = 1;
+		gridBagConstraintsPW.gridy = 3;
+		gridBagConstraintsPW.fill = java.awt.GridBagConstraints.BOTH;
+		//gridBagConstraintsTF.insets = new java.awt.Insets(0, 4, 0, 0);
+		emailPanel.add(smpw, gridBagConstraintsPW);
+		
 		ResourceHelper.setText(jLabel2, "Your_Email_Address");
 		GridBagConstraints gridBagConstraints36 = new java.awt.GridBagConstraints();
 		gridBagConstraints36.gridx = 0;
-		gridBagConstraints36.gridy = 2;
+		gridBagConstraints36.gridy = 4;
 		gridBagConstraints36.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints36.insets = new java.awt.Insets(0, 4, 0, 4);
 		emailPanel.add(jLabel2, gridBagConstraints36);
@@ -1652,7 +1694,7 @@ public class OptionsView extends View {
 		emailtext.setColumns(30);
 		GridBagConstraints gridBagConstraints38 = new java.awt.GridBagConstraints();
 		gridBagConstraints38.gridx = 1;
-		gridBagConstraints38.gridy = 2;
+		gridBagConstraints38.gridy = 4;
 		gridBagConstraints38.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints38.weightx = 1.0;
 		emailPanel.add(emailtext, gridBagConstraints38);
@@ -1668,7 +1710,7 @@ public class OptionsView extends View {
 		GridBagConstraints gridBagConstraints116 = new GridBagConstraints();
 
 		gridBagConstraints116.gridx = 0;
-		gridBagConstraints116.gridy = 3;
+		gridBagConstraints116.gridy = 5;
 		gridBagConstraints116.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints116.insets = new java.awt.Insets(4, 4, 4, 4);
 		ResourceHelper.setText(remtimelabel, "reminder_time");
@@ -1677,7 +1719,7 @@ public class OptionsView extends View {
 
 		GridBagConstraints gridBagConstraints212 = new GridBagConstraints();
 		gridBagConstraints212.gridx = 1;
-		gridBagConstraints212.gridy = 3;
+		gridBagConstraints212.gridy = 5;
 		gridBagConstraints212.weightx = 1.0;
 		gridBagConstraints212.fill = java.awt.GridBagConstraints.VERTICAL;
 		gridBagConstraints212.insets = new java.awt.Insets(4, 4, 4, 4);
