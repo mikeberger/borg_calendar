@@ -1,5 +1,6 @@
 Version 1.5.1
 -------------
+Ability to open multiple shared calendars when using remote server
 Keyboard Shortcuts
 Fulltext tooltips when hovering over days in the month view
 Todo and Appt quick change date and move to next date actions
@@ -15,6 +16,7 @@ Add PRI column to Task List View
 Add word-wrap to week view
 Support both case sensitive and insensitive filtering/searching
 Upgrade to JGoodies Looks 1.3.2
+SMTP authentication support
 
 Version 1.5
 -----------
