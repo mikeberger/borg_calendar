@@ -618,6 +618,9 @@ public class OptionsView extends View {
 				// 100%
 				// SwingUtilities.updateComponentTreeUI(cg_);
 				Prefs.putPref(PrefName.LNF, newlnf);
+				// reset the option window's size since a change of LNF
+				// may cause the LNF combo box to be hidden
+				Prefs.putPref(PrefName.OPTVIEWSIZE, new ViewSize().toString());
 			} catch (Exception e) {
 				// Errmsg.notice( "Could not find look and feel: " + newlnf );
 				Errmsg.notice(e.toString());

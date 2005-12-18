@@ -25,8 +25,8 @@ public class ViewSize {
 
     private int x = -1;
     private int y = -1;
-    private int width = 0;
-    private int height = 0;
+    private int width = -1;
+    private int height = -1;
     private boolean maximized = false;
     
     public ViewSize()
