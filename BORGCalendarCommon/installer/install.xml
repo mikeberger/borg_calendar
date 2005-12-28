@@ -107,6 +107,9 @@
 	    	<file src="borg.sql" targetdir="$INSTALL_PATH"/>
             <file src="update1_5.sql" targetdir="$INSTALL_PATH"/>
             <file src="update151.sql" targetdir="$INSTALL_PATH"/>
+            <file src="lib/looks-1.3.2.jar" targetdir="$INSTALL_PATH/lib"/> 
+	        <file src="lib/LICENSE.looks" targetdir="$INSTALL_PATH/lib"/> 
+	        <file src="mdbtool.jar" targetdir="$INSTALL_PATH"/> 
         </pack>
         <pack name="Systray Support" required="no">
 		<description>Support for a system tray icon (Recommended)</description>
@@ -118,17 +121,8 @@
 	    	<singlefile src="lib/jdic-linux.jar" os="unix" target="$INSTALL_PATH/lib/jdic.jar"/> 
 	    	<file src="lib/jdic.jar" os="windows" targetdir="$INSTALL_PATH/lib"/>
         </pack>
-        <pack name="PlasticXP Look and Feel" required="no">
-		<description>The plastic XP Look and feel. Recommended for users that don't have Java 5.0 or Windows XP. This will add the PlasticXP Look and Feel as a option in BORG.</description>
-	    <file src="lib/looks-1.3.2.jar" targetdir="$INSTALL_PATH/lib"/> 
-	    <file src="lib/LICENSE.looks" targetdir="$INSTALL_PATH/lib"/> 
-        </pack>
-	<pack name="MDBTOOL" preselected="no" required="no">
-		<description>Optional tool for repairing databases (rarely needed)</description>
-            <file src="mdbtool.jar" targetdir="$INSTALL_PATH"/> 
-        </pack>
      <pack name="Palm Conduits" preselected="no" required="no">
-		<description>Palm Hot-Sync conduits for BORG (experimental)</description>
+		<description>Palm Hot-Sync conduits for BORG</description>
             <file src="conduits" targetdir="$INSTALL_PATH"/> 
         </pack>
      <pack name="Remote Server" preselected="no" required="no">
