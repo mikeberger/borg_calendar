@@ -301,6 +301,7 @@ build.number=${build.number}
 	<target name="borg_src" depends="clean-build">
 		<zip destfile="${dist.dir}/borg_src.zip">
 			<zipfileset dir="${basedir}" prefix="borg_src">
+				<include name="BORG*/**" />
 				<exclude name="**/.metadata/**/*" />
 				<exclude name="**/build/**" />
 				<exclude name="**/classes/**" />
