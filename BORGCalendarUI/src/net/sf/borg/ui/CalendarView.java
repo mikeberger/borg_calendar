@@ -904,8 +904,10 @@ public class CalendarView extends View implements Prefs.Listener {
             }
 
             // label the week buttons
-            // the buttons have bad names due to my lazy use of NetBeans
-            cal.setMinimalDaysInFirstWeek(4);
+            if( Prefs.getPref(PrefName.ISOWKNUMBER).equals("true"))
+            	cal.setMinimalDaysInFirstWeek(4);
+            else
+            	cal.setMinimalDaysInFirstWeek(1);
             cal.set( year_, month_, 1 );
             int wk = cal.get( Calendar.WEEK_OF_YEAR );
             jButton1.setText( Integer.toString(wk));

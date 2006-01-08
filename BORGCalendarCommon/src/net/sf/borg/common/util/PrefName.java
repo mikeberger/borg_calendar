@@ -96,6 +96,7 @@ public class PrefName {
 		static public PrefName DAYOFYEAR = new PrefName("showDayOfYear", "false");
 		static public PrefName LINESPACING = new PrefName("line_spacing", "0.0");
 		static public PrefName TRUNCAPPT = new PrefName("truncate_appt", "true");
+		static public PrefName ISOWKNUMBER = new PrefName("isowknumber", "true");
 		
 		// reminders/popups
 		static public PrefName REMINDERS = new PrefName( "reminders", "true");

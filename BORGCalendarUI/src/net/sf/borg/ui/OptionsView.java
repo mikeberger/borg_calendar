@@ -215,7 +215,8 @@ public class OptionsView extends View {
 		setCheckBox(sharedFileCheckBox, PrefName.SHARED);
 		setCheckBox(icaltodobox, PrefName.ICALTODOEV);
 		setCheckBox(truncbox, PrefName.TRUNCAPPT);
-
+		setCheckBox(iso8601Box, PrefName.ISOWKNUMBER);
+		
 		// print logo directory
 		String logo = Prefs.getPref(PrefName.LOGO);
 		logofile.setText(logo);
@@ -512,6 +513,7 @@ public class OptionsView extends View {
 		setBooleanPref(sharedFileCheckBox, PrefName.SHARED);
 		setBooleanPref(icaltodobox, PrefName.ICALTODOEV);
 		setBooleanPref(truncbox, PrefName.TRUNCAPPT);
+		setBooleanPref(iso8601Box, PrefName.ISOWKNUMBER);
 
 		Integer i = (Integer) checkfreq.getValue();
 		int cur = Prefs.getIntPref(PrefName.REMINDERCHECKMINS);
@@ -955,6 +957,8 @@ public class OptionsView extends View {
 	private javax.swing.JCheckBox soundbox;
 
 	private javax.swing.JCheckBox splashbox;
+	
+	private javax.swing.JCheckBox iso8601Box = new JCheckBox();
 
 	private javax.swing.JCheckBox stackbox;
 
@@ -1926,6 +1930,16 @@ public class OptionsView extends View {
 			}
 		});
 		appearancePanel.add(defFontButton, gridBagConstraints17);
+		
+		GridBagConstraints gridBagConstraints97 = new java.awt.GridBagConstraints();
+		gridBagConstraints97.gridx = 1;
+		gridBagConstraints97.gridy = 8;
+		gridBagConstraints97.fill = java.awt.GridBagConstraints.VERTICAL;
+		gridBagConstraints97.anchor = java.awt.GridBagConstraints.WEST;
+		gridBagConstraints97.weightx = 1.0;
+		gridBagConstraints97.insets = new java.awt.Insets(4, 4, 4, 4);
+		ResourceHelper.setText(iso8601Box, "ISO_week_number");
+		appearancePanel.add(iso8601Box, gridBagConstraints97);
 
 		GridBagConstraints gridBagConstraints18 = new java.awt.GridBagConstraints();
 		gridBagConstraints18.gridx = 0;
