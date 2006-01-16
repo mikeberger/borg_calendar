@@ -26,8 +26,10 @@ Copyright 2003 by Mike Berger
 
 package net.sf.borg.ui;
 
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Toolkit;
 
 import javax.swing.JPanel;
 
@@ -47,7 +49,14 @@ public class Banner extends javax.swing.JFrame {
     /** Creates new form banner */
 	public Banner() {
         try{
+        	setUndecorated(true);
             initComponents();
+            pack();
+            Dimension screenSize =
+                Toolkit.getDefaultToolkit().getScreenSize();
+              Dimension labelSize = jLabel1.getPreferredSize();
+              setLocation(screenSize.width/2 - (labelSize.width/2),
+                          screenSize.height/2 - (labelSize.height/2));
         }
         catch( NoSuchMethodError e )
         {
