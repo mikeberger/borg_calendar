@@ -42,7 +42,9 @@ import javax.mail.SendFailedException;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 
 public class SendJavaMail {
 	
@@ -141,5 +143,103 @@ public class SendJavaMail {
 		}
 	}
 
+	public static void sendCalMail(String host, String msgText, String from,
+			String to, String user, String pass, String cal) {
+
+		// create some properties and get the default Session
+		Properties props = new Properties();
+		props.put("mail.smtp.host", host);
+		String ed = Prefs.getPref(PrefName.EMAILDEBUG);
+        if (ed.equals("1"))
+           props.put("mail.debug", "true");
+
+		
+		Authenticator auth = null;
+		if( user != null && !user.equals("")&& pass != null && !pass.equals(""))
+		{
+			auth = new MyAuthenticator(user, pass);	
+			props.put("mail.smtp.auth", "true");
+		}
+		Session session = Session.getDefaultInstance(props, auth);
+
+		// session.setDebug(debug);
+
+		try {
+			
+			MimeMultipart mp = new MimeMultipart();
+			MimeBodyPart b1 = new MimeBodyPart();
+			b1.setContent(msgText,"text/plain");
+			mp.addBodyPart(b1);
+			
+			MimeBodyPart b2 = new MimeBodyPart();
+			b2.setContent(cal,"text/calendar");
+			b2.setFileName("meeting.ics");
+			b2.setDescription("Meeting Notice");
+			b2.setContentID("calendar_message");
+
+			b2.setHeader("Content-Class", "urn:content-classes:calendarmessage");
+			b2.setHeader("Content-ID","calendar_message");
+			b2.addHeaderLine("METHOD=REQUEST");
+			b2.addHeaderLine("charset=UTF-8");
+			b2.addHeaderLine("component=VEVENT");
+			
+			
+			mp.addBodyPart(b2);
+			
+			MimeMessage msg = new MimeMessage(session);
+			msg.setFrom(new InternetAddress(from));
+			InternetAddress[] address = { new InternetAddress(to) };
+			msg.setRecipients(Message.RecipientType.TO, address);
+			msg.setSubject("BORG Meeting Notice");
+			msg.setSentDate(new Date());
+			
+
+			msg.setContent(mp);
+			
+
+			Transport.send(msg);
+		} catch (MessagingException mex) {
+			System.out.println("\n--Exception handling in BORG.SendJavaMail");
+
+			mex.printStackTrace();
+			System.out.println();
+			Exception ex = mex;
+			do {
+				if (ex instanceof SendFailedException) {
+					SendFailedException sfex = (SendFailedException) ex;
+					Address[] invalid = sfex.getInvalidAddresses();
+					if (invalid != null) {
+						System.out.println("    ** Invalid Addresses");
+						if (invalid != null) {
+							for (int i = 0; i < invalid.length; i++)
+								System.out.println("         " + invalid[i]);
+						}
+					}
+					Address[] validUnsent = sfex.getValidUnsentAddresses();
+					if (validUnsent != null) {
+						System.out.println("    ** ValidUnsent Addresses");
+						if (validUnsent != null) {
+							for (int i = 0; i < validUnsent.length; i++)
+								System.out
+										.println("         " + validUnsent[i]);
+						}
+					}
+					Address[] validSent = sfex.getValidSentAddresses();
+					if (validSent != null) {
+						System.out.println("    ** ValidSent Addresses");
+						if (validSent != null) {
+							for (int i = 0; i < validSent.length; i++)
+								System.out.println("         " + validSent[i]);
+						}
+					}
+				}
+				System.out.println();
+				if (ex instanceof MessagingException)
+					ex = ((MessagingException) ex).getNextException();
+				else
+					ex = null;
+			} while (ex != null);
+		}
+	}
 
 }

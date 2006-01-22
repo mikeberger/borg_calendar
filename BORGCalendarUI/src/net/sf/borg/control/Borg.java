@@ -56,6 +56,7 @@ import net.sf.borg.common.util.Resource;
 import net.sf.borg.common.util.SendJavaMail;
 import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.Appointment;
+import net.sf.borg.model.AppointmentIcalAdapter;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.MultiUserModel;
 import net.sf.borg.model.Task;
@@ -736,14 +737,154 @@ public class Borg extends Controller implements OptionsView.RestartListener {
     }
 
     // send an email of the next day's appointments if the user has requested
-    // this and
-    // such an email has not been sent today yet.
-    static public void emailReminder(Calendar emailday) {
+	// this and
+	// such an email has not been sent today yet.
+	static public void emailReminder(Calendar emailday) {
+	
+	    // check if the email feature has been enabled
+	    String email = Prefs.getPref(PrefName.EMAILENABLED);
+	    if (email.equals("false"))
+	        return;
+	
+	    // get the SMTP host and address
+	    String host = Prefs.getPref(PrefName.EMAILSERVER);
+	    String addr = Prefs.getPref(PrefName.EMAILADDR);
+	
+	
+	    if (host.equals("") || addr.equals(""))
+	        return;
+	
+	    Calendar cal = new GregorianCalendar();
+	
+	    // if no date passed, the timer has gone off and we need to check if we can send
+	    // email now
+	    int doy = -1;
+	    if( emailday == null )
+	    {
+	    	// get the last day that email was sent
+	    	int lastday = Prefs.getIntPref(PrefName.EMAILLAST);
+	
+	    	// if email was already sent today - don't send again
+	    	doy = cal.get(Calendar.DAY_OF_YEAR);
+	    	if (doy == lastday)
+	    		return;
+	
+	    	// create the calendar model key for tomorrow
+	    	cal.add(Calendar.DATE, 1);
+	    }
+	    else
+	    {
+	    	// just send email for the given day
+	    	cal = emailday;
+	    }
+	
+	    int key = AppointmentModel.dkey(cal.get(Calendar.YEAR), cal
+	            .get(Calendar.MONTH), cal.get(Calendar.DATE));
+	
+	    // tx is the contents of the email
+	    String tx = "Appointments for "
+	            + DateFormat.getDateInstance().format(cal.getTime()) + "\n";
+	
+	    // get the list of appts for tomorrow
+	    Collection l = AppointmentModel.getReference().getAppts(key);
+	    if (l != null)
+	    {
+	
+	        Iterator it = l.iterator();
+	        Appointment appt;
+	
+	        // iterate through the day's appts
+	        while (it.hasNext())
+	        {
+	
+	            Integer ik = (Integer) it.next();
+	
+	            try
+	            {
+	                // read the appointment from the calendar model
+	                appt = AppointmentModel.getReference().getAppt(ik.intValue());
+	
+	                // get the appt flags to see if the appointment is private
+	                // if so, don't include it in the email
+	                if (appt.getPrivate())
+	                    continue;
+	
+	                if (!AppointmentModel.isNote(appt))
+	                {
+	                    // add the appointment time to the email if it is not a
+	                    // note
+	                    Date d = appt.getDate();
+	                    SimpleDateFormat df = AppointmentModel.getTimeFormat();
+	                    tx += df.format(d) + " ";
+	                }
+	
+	                // add the appointment text
+	                tx += appt.getText();
+	                tx += "\n";
+	            }
+	            catch (Exception e)
+	            {
+	                System.out.println(e.toString());
+	                return;
+	            }
+	        }
+	
+	    }
+	
+	    // load any task tracker items for the email
+	    // these items are cached in the calendar model
+	    // by date - but the taskmodel is the real owner of them
+	    l = TaskModel.getReference().get_tasks(key);
+	    if (l != null)
+	    {
+	
+	        Iterator it = l.iterator();
+	
+	        while (it.hasNext())
+	        {
+	            // add each task to the email - and remove newlines
+	
+	            Task task = (Task) it.next();
+	            tx += "Task[" + task.getTaskNumber() + "] ";
+	            String de = task.getDescription();
+	            tx += de.replace('\n', ' ');
+	            tx += "\n";
+	        }
+	    }
+	
+	    // send the email using SMTP
+	    try
+	    {
+	        StringTokenizer stk = new StringTokenizer(addr,",;");
+	        while (stk.hasMoreTokens())
+	        {
+	            String a = stk.nextToken();
+	            if( !a.equals("") )
+	            {
+	                SendJavaMail.sendMail(host, tx, a.trim(),
+	                        a.trim(), Prefs.getPref(PrefName.EMAILUSER), Prefs.getPref(PrefName.EMAILPASS));
+	                //String ed = Prefs.getPref(PrefName.EMAILDEBUG);
+	                //if (ed.equals("1"))
+	                   // Errmsg.notice(s);
+	            }
+	        }
+	
+	
+	    }
+	    catch (Exception e)
+	    {
+	        Errmsg.errmsg(e);
+	    }
+	
+	    // record that we sent email today
+	    if( doy != -1 )
+	    	Prefs.putPref(PrefName.EMAILLAST, new Integer(doy));
+	
+	    return;
+	}
 
-        // check if the email feature has been enabled
-        String email = Prefs.getPref(PrefName.EMAILENABLED);
-        if (email.equals("false"))
-            return;
+	
+    static public void emailMeeting(Appointment mtg) {
 
         // get the SMTP host and address
         String host = Prefs.getPref(PrefName.EMAILSERVER);
@@ -753,104 +894,7 @@ public class Borg extends Controller implements OptionsView.RestartListener {
         if (host.equals("") || addr.equals(""))
             return;
 
-        Calendar cal = new GregorianCalendar();
-
-        // if no date passed, the timer has gone off and we need to check if we can send
-        // email now
-        int doy = -1;
-        if( emailday == null )
-        {
-        	// get the last day that email was sent
-        	int lastday = Prefs.getIntPref(PrefName.EMAILLAST);
-
-        	// if email was already sent today - don't send again
-        	doy = cal.get(Calendar.DAY_OF_YEAR);
-        	if (doy == lastday)
-        		return;
-
-        	// create the calendar model key for tomorrow
-        	cal.add(Calendar.DATE, 1);
-        }
-        else
-        {
-        	// just send email for the given day
-        	cal = emailday;
-        }
-
-        int key = AppointmentModel.dkey(cal.get(Calendar.YEAR), cal
-                .get(Calendar.MONTH), cal.get(Calendar.DATE));
-
-        // tx is the contents of the email
-        String tx = "Appointments for "
-                + DateFormat.getDateInstance().format(cal.getTime()) + "\n";
-
-        // get the list of appts for tomorrow
-        Collection l = AppointmentModel.getReference().getAppts(key);
-        if (l != null)
-        {
-
-            Iterator it = l.iterator();
-            Appointment appt;
-
-            // iterate through the day's appts
-            while (it.hasNext())
-            {
-
-                Integer ik = (Integer) it.next();
-
-                try
-                {
-                    // read the appointment from the calendar model
-                    appt = AppointmentModel.getReference().getAppt(ik.intValue());
-
-                    // get the appt flags to see if the appointment is private
-                    // if so, don't include it in the email
-                    if (appt.getPrivate())
-                        continue;
-
-                    if (!AppointmentModel.isNote(appt))
-                    {
-                        // add the appointment time to the email if it is not a
-                        // note
-                        Date d = appt.getDate();
-                        SimpleDateFormat df = AppointmentModel.getTimeFormat();
-                        tx += df.format(d) + " ";
-                    }
-
-                    // add the appointment text
-                    tx += appt.getText();
-                    tx += "\n";
-                }
-                catch (Exception e)
-                {
-                    System.out.println(e.toString());
-                    return;
-                }
-            }
-
-        }
-
-        // load any task tracker items for the email
-        // these items are cached in the calendar model
-        // by date - but the taskmodel is the real owner of them
-        l = TaskModel.getReference().get_tasks(key);
-        if (l != null)
-        {
-
-            Iterator it = l.iterator();
-
-            while (it.hasNext())
-            {
-                // add each task to the email - and remove newlines
-
-                Task task = (Task) it.next();
-                tx += "Task[" + task.getTaskNumber() + "] ";
-                String de = task.getDescription();
-                tx += de.replace('\n', ' ');
-                tx += "\n";
-            }
-        }
-
+ 
         // send the email using SMTP
         try
         {
@@ -860,10 +904,10 @@ public class Borg extends Controller implements OptionsView.RestartListener {
                 String a = stk.nextToken();
                 if( !a.equals("") )
                 {
-                    SendJavaMail.sendMail(host, tx, a.trim(),
-                            a.trim(), Prefs.getPref(PrefName.EMAILUSER), Prefs.getPref(PrefName.EMAILPASS));
-                    //String ed = Prefs.getPref(PrefName.EMAILDEBUG);
-                    //if (ed.equals("1"))
+                    SendJavaMail.sendCalMail(host, mtg.getText(), a.trim(),
+                            a.trim(), Prefs.getPref(PrefName.EMAILUSER), Prefs.getPref(PrefName.EMAILPASS),
+                            AppointmentIcalAdapter.exportIcalToString(mtg));
+                    
                        // Errmsg.notice(s);
                 }
             }
@@ -875,9 +919,6 @@ public class Borg extends Controller implements OptionsView.RestartListener {
             Errmsg.errmsg(e);
         }
 
-        // record that we sent email today
-        if( doy != -1 )
-        	Prefs.putPref(PrefName.EMAILLAST, new Integer(doy));
 
         return;
     }
