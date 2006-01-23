@@ -144,7 +144,7 @@ public class SendJavaMail {
 	}
 
 	public static void sendCalMail(String host, String msgText, String from,
-			String to, String user, String pass, String cal) {
+			String to, String user, String pass, String cal, String vcal) {
 
 		// create some properties and get the default Session
 		Properties props = new Properties();
@@ -175,16 +175,23 @@ public class SendJavaMail {
 			b2.setContent(cal,"text/calendar");
 			b2.setFileName("meeting.ics");
 			b2.setDescription("Meeting Notice");
-			b2.setContentID("calendar_message");
 
-			b2.setHeader("Content-Class", "urn:content-classes:calendarmessage");
-			b2.setHeader("Content-ID","calendar_message");
-			b2.addHeaderLine("METHOD=REQUEST");
-			b2.addHeaderLine("charset=UTF-8");
-			b2.addHeaderLine("component=VEVENT");
 			
 			
 			mp.addBodyPart(b2);
+			
+			MimeBodyPart b3 = new MimeBodyPart();
+			b3.setContent(vcal,"text/calendar");
+			b3.setFileName("meeting.vcs");
+			b3.setDescription("Meeting Notice");
+			b3.setContentID("calendar_message");
+
+			b3.setHeader("Content-Class", "urn:content-classes:calendarmessage");
+			b3.setHeader("Content-ID","calendar_message");
+			
+			
+			
+			mp.addBodyPart(b3);
 			
 			MimeMessage msg = new MimeMessage(session);
 			msg.setFrom(new InternetAddress(from));
@@ -192,7 +199,9 @@ public class SendJavaMail {
 			msg.setRecipients(Message.RecipientType.TO, address);
 			msg.setSubject("BORG Meeting Notice");
 			msg.setSentDate(new Date());
-			
+			msg.addHeaderLine("METHOD=REQUEST");
+			msg.addHeaderLine("charset=UTF-8");
+			msg.addHeaderLine("component=VEVENT");
 
 			msg.setContent(mp);
 			

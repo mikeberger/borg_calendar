@@ -431,6 +431,7 @@ public class AppointmentListView extends View implements ListSelectionListener {
 		jPanel1.add(delone, delone.getName());
 		jPanel3.add(jPanel1, gridBagConstraints3);
 		jPanel1.add(getReminderButton(), null);
+		jPanel1.add(getMtgMailButton(), null);  // Generated
 		jPanel1.add(dismiss, dismiss.getName());
 	}// GEN-END:initComponents
 
@@ -635,6 +636,8 @@ public class AppointmentListView extends View implements ListSelectionListener {
 
 	private JButton reminderButton = null; // @jve:decl-index=0:visual-constraint="702,73"
 
+	private JButton mtgMailButton = null;
+
 	private JCalendarComboBox getDateCB() {
 		if (cb_ == null) {
 			cb_ = new JCalendarComboBox();
@@ -690,5 +693,43 @@ public class AppointmentListView extends View implements ListSelectionListener {
 					});
 		}
 		return reminderButton;
+	}
+
+	/**
+	 * This method initializes mtgMailButton	
+	 * 	
+	 * @return javax.swing.JButton	
+	 */
+	private JButton getMtgMailButton() {
+		if (mtgMailButton == null) {
+			mtgMailButton = new JButton();
+			ResourceHelper.setText(mtgMailButton, "send_meeting");
+			mtgMailButton.setIcon(new ImageIcon(getClass().getResource("/resource/ComposeMail16.gif")));  // Generated
+			mtgMailButton.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					sendMtgMail();
+				}
+			});
+		}
+		return mtgMailButton;
+	}
+	
+	private void sendMtgMail()
+	{
+		int[] rows = apptTable.getSelectedRows();
+		if( rows.length == 0)
+			return;
+		int k = rows[0];		
+		TableSorter tm = (TableSorter) apptTable.getModel();
+		int key = tm.getMappedIndex(k);
+
+		Integer apptkey = (Integer) alist_.get(key);
+		try {
+			Appointment mtg = AppointmentModel.getReference().getAppt(apptkey.intValue());
+			Borg.emailMeeting(mtg);
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
+		}
+		
 	}
 }

@@ -58,6 +58,7 @@ import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.Appointment;
 import net.sf.borg.model.AppointmentIcalAdapter;
 import net.sf.borg.model.AppointmentModel;
+import net.sf.borg.model.AppointmentVcalAdapter;
 import net.sf.borg.model.MultiUserModel;
 import net.sf.borg.model.Task;
 import net.sf.borg.model.TaskModel;
@@ -906,7 +907,8 @@ public class Borg extends Controller implements OptionsView.RestartListener {
                 {
                     SendJavaMail.sendCalMail(host, mtg.getText(), a.trim(),
                             a.trim(), Prefs.getPref(PrefName.EMAILUSER), Prefs.getPref(PrefName.EMAILPASS),
-                            AppointmentIcalAdapter.exportIcalToString(mtg));
+                            AppointmentIcalAdapter.exportIcalToString(mtg),
+                            AppointmentVcalAdapter.exportVcalToString(mtg));
                     
                        // Errmsg.notice(s);
                 }
