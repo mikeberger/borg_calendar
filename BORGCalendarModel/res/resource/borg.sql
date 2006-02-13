@@ -34,7 +34,7 @@ CREATE TABLE `addresses` (
   `deleted` tinyint(4) NOT NULL default '0',
   PRIMARY KEY  (`address_num`,`username`),
   KEY `username` (`username`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+);
 
 -- --------------------------------------------------------
 
@@ -67,7 +67,7 @@ CREATE TABLE `appointments` (
   PRIMARY KEY  (`appt_num`,`username`),
   KEY `todo` (`todo`,`username`),
   KEY `username` (`username`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+);
 
 -- --------------------------------------------------------
 
@@ -80,7 +80,7 @@ CREATE TABLE `options` (
   `username` varchar(25) NOT NULL,
   `value` text NOT NULL,
   PRIMARY KEY  (`name`,`username`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+);
 
 -- --------------------------------------------------------
 
@@ -108,5 +108,5 @@ CREATE TABLE `tasks` (
   `category` varchar(10) default NULL,
   PRIMARY KEY  (`tasknum`,`username`),
   KEY `username` (`username`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+);
 
