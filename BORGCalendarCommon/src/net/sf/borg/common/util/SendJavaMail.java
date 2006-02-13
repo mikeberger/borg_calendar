@@ -175,8 +175,11 @@ public class SendJavaMail {
 			b2.setContent(cal,"text/calendar");
 			b2.setFileName("meeting.ics");
 			b2.setDescription("Meeting Notice");
+		
+			b2.setContentID("calendar_message");
 
-			
+			b2.setHeader("Content-Class", "urn:content-classes:calendarmessage");
+			b2.setHeader("Content-ID","calendar_message");
 			
 			mp.addBodyPart(b2);
 			
