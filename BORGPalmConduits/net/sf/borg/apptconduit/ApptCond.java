@@ -53,7 +53,11 @@ public class ApptCond implements Conduit {
                 	dbdir = "jdbc:mysql://localhost/borg?user=borg&password=borg";
                 	user = "$default";
                 }
-
+                else if( loc.indexOf(':') != -1 )
+                {
+                	dbdir = loc;
+                }
+                Log.out("dbdir2=" + dbdir);
                 apptModel = AppointmentModel.create();
                 apptModel.open_db(dbdir , user, false, false);
 

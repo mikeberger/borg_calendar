@@ -50,6 +50,11 @@ public class AddrCond implements Conduit {
                 	dbdir = "jdbc:mysql://localhost/borg?user=borg&password=borg";
                 	user = "$default";
                 }
+                else if( loc.indexOf(':') != -1 )
+                {
+                	dbdir = loc;
+                }
+                Log.out("dbdir2=" + dbdir);
                 
                 addressModel = AddressModel.create();
                 addressModel.open_db(dbdir, user, false, false);
