@@ -24,12 +24,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.print.PrinterJob;
 
-import javax.print.attribute.HashPrintRequestAttributeSet;
-import javax.print.attribute.PrintRequestAttributeSet;
-import javax.print.attribute.standard.Copies;
-import javax.print.attribute.standard.OrientationRequested;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -38,6 +33,7 @@ import javax.swing.border.BevelBorder;
 
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
+import net.sf.borg.common.util.PrintHelper;
 import net.sf.borg.common.util.Resource;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.TaskModel;
@@ -51,7 +47,7 @@ class MonthPreView extends View
 
     private MonthPanel monPanel;
 
-    static private void printPrintable( MonthPanel p ) throws Exception
+    static private void printMonthPanel( MonthPanel p ) throws Exception
     {
         Object options[] = { new Integer(1), new Integer(2), new Integer(3), new Integer(4),
          new Integer(5), new Integer(6), new Integer(7), new Integer(8),
@@ -64,16 +60,7 @@ class MonthPreView extends View
         Integer i = (Integer) choice;
         p.setPages(i.intValue());
 
-        PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
-        aset.add(new Copies(1));
-        //aset.add(MediaSizeName.NA_LETTER);
-        aset.add(OrientationRequested.LANDSCAPE);
-
-        PrinterJob printJob = PrinterJob.getPrinterJob();
-        printJob.setPrintable(p);
-        //printJob.pageDialog(aset);
-        if (printJob.printDialog(aset))
-                printJob.print(aset);
+        PrintHelper.printPrintable(p);
 
     }
     static void printMonth(int month, int year) throws Exception
@@ -81,8 +68,8 @@ class MonthPreView extends View
 
         // use the Java print service
         // this relies on monthPanel.print to fill in a Graphic object and respond to the Printable API
-        MonthPanel cp = new MonthPanel(month,year);
-        printPrintable(cp);
+        MonthPanel cp = new MonthPanel(month,year);       
+        printMonthPanel(cp);
 
     }
 
@@ -90,7 +77,7 @@ class MonthPreView extends View
     {
         try
         {
-            printPrintable(monPanel);
+            printMonthPanel(monPanel);
         }
         catch( Exception e )
         {

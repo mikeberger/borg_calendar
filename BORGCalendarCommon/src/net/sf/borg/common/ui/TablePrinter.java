@@ -28,12 +28,10 @@ import java.awt.Graphics2D;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
-import java.awt.print.PrinterJob;
 
-import javax.print.attribute.HashPrintRequestAttributeSet;
-import javax.print.attribute.PrintRequestAttributeSet;
-import javax.print.attribute.standard.Copies;
 import javax.swing.JTable;
+
+import net.sf.borg.common.util.PrintHelper;
 
 
 
@@ -117,7 +115,7 @@ public class TablePrinter implements Printable
         return Printable.PAGE_EXISTS;
     }
     
-    static private void printPrintable( Printable p ) throws Exception
+    /*static private void printPrintable( Printable p ) throws Exception
     {
         PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
         aset.add(new Copies(1));
@@ -129,12 +127,12 @@ public class TablePrinter implements Printable
         if (printJob.printDialog(aset))
             printJob.print(aset);
         
-    }
+    }*/
     
     
     static public void printTable(JTable tbl) throws Exception
     {
-        printPrintable( new TablePrinter(tbl));
+        PrintHelper.printPrintable( new TablePrinter(tbl));
     }
     
     private TablePrinter( JTable c )

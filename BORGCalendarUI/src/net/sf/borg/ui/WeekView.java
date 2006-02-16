@@ -24,13 +24,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.print.Printable;
-import java.awt.print.PrinterJob;
 
-import javax.print.attribute.HashPrintRequestAttributeSet;
-import javax.print.attribute.PrintRequestAttributeSet;
-import javax.print.attribute.standard.Copies;
-import javax.print.attribute.standard.OrientationRequested;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -38,6 +32,7 @@ import javax.swing.border.BevelBorder;
 
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
+import net.sf.borg.common.util.PrintHelper;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.TaskModel;
 
@@ -48,31 +43,18 @@ class WeekView extends View
 
     private WeekPanel wkPanel;
 
-
-    static private void printPrintable( Printable p ) throws Exception
-    {
-        PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
-	    aset.add(new Copies(1));
-        aset.add(OrientationRequested.LANDSCAPE);
-
-        PrinterJob printJob = PrinterJob.getPrinterJob();
-        printJob.setPrintable(p);
-        if (printJob.printDialog(aset))
-                printJob.print(aset);
-
-    }
     static void printWeek(int month, int year, int date) throws Exception
     {
 
         // use the Java print service
         // this relies on weekPanel.print to fill in a Graphic object and respond to the Printable API
         WeekPanel cp = new WeekPanel(month,year,date);
-        printPrintable(cp);
+        PrintHelper.printPrintable(cp);
     }
 
     private void printWeek() throws Exception
     {
-        printPrintable(wkPanel);
+        PrintHelper.printPrintable(wkPanel);
     }
 
     private void printAction()
