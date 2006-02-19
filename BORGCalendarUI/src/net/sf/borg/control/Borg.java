@@ -992,6 +992,10 @@ public class Borg extends Controller implements OptionsView.RestartListener, Soc
 				return("sync error: " + e.toString());				
 			}
 		}
+		else if( msg.equals("shutdown"))
+		{
+			System.exit(0);
+		}
 		return("Unknown msg: " + msg);
 	}
 }
