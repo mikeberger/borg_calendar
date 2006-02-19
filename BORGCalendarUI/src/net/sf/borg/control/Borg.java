@@ -54,6 +54,8 @@ import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
 import net.sf.borg.common.util.Resource;
 import net.sf.borg.common.util.SendJavaMail;
+import net.sf.borg.common.util.SocketHandler;
+import net.sf.borg.common.util.SocketServer;
 import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.Appointment;
 import net.sf.borg.model.AppointmentIcalAdapter;
@@ -87,7 +89,7 @@ import net.sf.borg.ui.TodoView;
 // display data. Views register with their models to receive notifications of
 // data changes.
 // Views can call other views.
-public class Borg extends Controller implements OptionsView.RestartListener {
+public class Borg extends Controller implements OptionsView.RestartListener, SocketHandler {
 
     static private Banner ban_ = null; // start up banner
 
@@ -438,6 +440,12 @@ public class Borg extends Controller implements OptionsView.RestartListener {
                         }
                     }, syncmins * 60 * 1000, syncmins * 60 * 1000);
                 }
+                
+                int port = Prefs.getIntPref(PrefName.SOCKETPORT);
+                if( port != -1)
+                {
+                	new SocketServer(port,this);
+                }
             }
 
         }
@@ -485,7 +493,7 @@ public class Borg extends Controller implements OptionsView.RestartListener {
 
     }
 
-    static public void syncDBs() throws Exception
+    static public synchronized void syncDBs() throws Exception
     {
    		MultiUserModel mum = MultiUserModel.getReference();
 		Collection users = mum.getShownUsers();
@@ -971,4 +979,19 @@ public class Borg extends Controller implements OptionsView.RestartListener {
 				dlg.getPassword()
 			);
     }
+
+	public synchronized String processMessage(String msg) {
+		System.out.println("Got msg: " + msg);
+		if( msg.equals("sync"))
+		{
+			try {
+				syncDBs();
+				return("sync success");
+			} catch (Exception e) {
+				e.printStackTrace();
+				return("sync error: " + e.toString());				
+			}
+		}
+		return("Unknown msg: " + msg);
+	}
 }

@@ -72,6 +72,7 @@ public class PrefName {
 		static public PrefName LASTIMPURL = new PrefName( "lastImpUrl", "");
 		static public PrefName LASTIMPURLDAT = new PrefName( "lastImpUrlDat", "");
 		static public PrefName SHOWMEMFILES = new PrefName("showMemFiles", "false");
+		static public PrefName SOCKETPORT = new PrefName("socketport", new Integer(-1));
 		
 		// have to explain this one - reverse the way that the appt editor and day view
 		// windows are summoned for people who can't adjust
