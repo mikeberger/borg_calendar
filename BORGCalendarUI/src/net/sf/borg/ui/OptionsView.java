@@ -217,6 +217,9 @@ public class OptionsView extends View {
 		setCheckBox(truncbox, PrefName.TRUNCAPPT);
 		setCheckBox(iso8601Box, PrefName.ISOWKNUMBER);
 		
+		int socket = Prefs.getIntPref(PrefName.SOCKETPORT);
+		socketPort.setText(Integer.toString(socket));
+		
 		// print logo directory
 		String logo = Prefs.getPref(PrefName.LOGO);
 		logofile.setText(logo);
@@ -514,6 +517,18 @@ public class OptionsView extends View {
 		setBooleanPref(icaltodobox, PrefName.ICALTODOEV);
 		setBooleanPref(truncbox, PrefName.TRUNCAPPT);
 		setBooleanPref(iso8601Box, PrefName.ISOWKNUMBER);
+		
+		try{
+			int socket = Integer.parseInt(socketPort.getText());
+			Prefs.putPref(PrefName.SOCKETPORT, new Integer(socket));
+		}
+		catch(NumberFormatException e)
+		{
+			Errmsg.notice(Resource.getPlainResourceString("socket_warn"));
+			socketPort.setText("-1");
+			Prefs.putPref(PrefName.SOCKETPORT, new Integer(-1));
+			return;
+		}
 
 		Integer i = (Integer) checkfreq.getValue();
 		int cur = Prefs.getIntPref(PrefName.REMINDERCHECKMINS);
@@ -2138,6 +2153,7 @@ public class OptionsView extends View {
 		return printPanel;
 	}
 	
+	JTextField socketPort = new JTextField();
 	private JPanel getMiscPanel()
 	{
 		JPanel miscPanel = new JPanel();
@@ -2229,6 +2245,20 @@ public class OptionsView extends View {
 		gridBagConstraints310.anchor = java.awt.GridBagConstraints.WEST;
 		miscPanel.add(getPalmcb(), gridBagConstraints310);
 
+		JLabel sportlabel = new JLabel();
+		ResourceHelper.setText(sportlabel, "socket_port");
+		GridBagConstraints gridBagConstraints311 = new GridBagConstraints();
+		gridBagConstraints311.gridx = 0;
+		gridBagConstraints311.gridy = 9;		
+		gridBagConstraints311.anchor = java.awt.GridBagConstraints.WEST;
+		miscPanel.add(sportlabel, gridBagConstraints311);
+		
+		GridBagConstraints gridBagConstraints312 = new GridBagConstraints();
+		gridBagConstraints312.gridx = 1;
+		gridBagConstraints312.gridy = 9;		
+		gridBagConstraints312.fill = java.awt.GridBagConstraints.HORIZONTAL;
+		gridBagConstraints312.anchor = java.awt.GridBagConstraints.EAST;
+		miscPanel.add(socketPort, gridBagConstraints312);
 		return miscPanel;
 	}
 }
