@@ -1,3 +1,8 @@
+Version 1.5.2 (not released)
+-------------
+Socket Interface - available commands: shutdown, sync, open
+Updated German Translation - (also in 1.5.1.1)
+
 Version 1.5.1
 -------------
 Ability to open multiple shared (public) calendars when using remote server
