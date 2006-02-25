@@ -1,6 +1,7 @@
 package net.sf.borg.apptconduit;
 
 import net.sf.borg.common.util.Errmsg;
+import net.sf.borg.common.util.SocketClient;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.TaskModel;
 import palm.conduit.Conduit;
@@ -28,6 +29,12 @@ public class ApptCond implements Conduit {
 
         Errmsg.console(true);
         
+        
+        int port = 2929;
+		if (port != -1) {
+			SocketClient.sendMsg("localhost", port, "shutdown");
+		}
+		
         // Tell the log we are starting
         Log.startSync();
 

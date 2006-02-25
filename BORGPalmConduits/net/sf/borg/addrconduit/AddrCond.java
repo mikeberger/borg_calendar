@@ -1,6 +1,9 @@
 package net.sf.borg.addrconduit;
 
 import net.sf.borg.common.util.Errmsg;
+import net.sf.borg.common.util.PrefName;
+import net.sf.borg.common.util.Prefs;
+import net.sf.borg.common.util.SocketClient;
 import net.sf.borg.model.AddressModel;
 import palm.conduit.Conduit;
 import palm.conduit.ConfigureConduitInfo;
@@ -20,6 +23,11 @@ public class AddrCond implements Conduit {
   
     public void open(SyncProperties props) {
 
+    	int port = 2929;
+		if (port != -1) {
+			SocketClient.sendMsg("localhost", port, "shutdown");
+		}
+    	
         int db;
 
         RecordManager recordMgr;
