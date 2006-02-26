@@ -6,8 +6,6 @@
 	<property name="name" value="borg" />
 
 	<property name="prj.common.dir" value="${basedir}/BORGCalendarCommon" />
-	<property name="prj.dbutil.dir"
-	          value="${basedir}/BORGCalendarDBUtilities" />
 	<property name="prj.httpproxy.dir"
 	          value="${basedir}/BORGCalendarHTTPProxy" />
 	<property name="prj.model.dir" value="${basedir}/BORGCalendarModel" />
@@ -78,7 +76,7 @@
 
 		<javac destdir="${gen.dir}" debug="on">
 			<src path="${prj.common.dir}/src" />
-			<src path="${prj.dbutil.dir}/src" />
+			<src path="${prj.model.dir}/src" />
 			<include name="${pkg}/common/util/XTree.java" />
 			<include name="${pkg}/model/db/generate/GenerateDataObjects.java" />
 		</javac>
@@ -172,14 +170,6 @@
 		       source="1.4"
 		       debug="on">
 			<include name="**/*.java" />
-		</javac>
-
-		<!-- DB Utilities -->
-		<javac srcdir="${prj.dbutil.dir}/src"
-		       destdir="${build.dir}"
-		       target="1.4"
-		       source="1.4"
-		       debug="on">
 		</javac>
 
 		<!-- UI -->
@@ -368,9 +358,6 @@ build.number=${build.number}
 		<delete quiet="true" dir="${dist.dir}" />
 		<delete quiet="true" dir="${doc.dir}" />
 		<delete quiet="true" dir="${borg.prog.dir}" />
-		<antcall target="zz_delclassfiles">
-			<param name="src.dir" value="${prj.dbutil.dir}" />
-		</antcall>
 		<antcall target="zz_delclassfiles">
 			<param name="src.dir" value="${prj.ui.dir}" />
 		</antcall>
