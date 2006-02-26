@@ -1,8 +1,6 @@
 package net.sf.borg.addrconduit;
 
 import net.sf.borg.common.util.Errmsg;
-import net.sf.borg.common.util.PrefName;
-import net.sf.borg.common.util.Prefs;
 import net.sf.borg.common.util.SocketClient;
 import net.sf.borg.model.AddressModel;
 import palm.conduit.Conduit;
