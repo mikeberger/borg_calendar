@@ -6,8 +6,6 @@
 	<property name="name" value="borg" />
 
 	<property name="prj.common.dir" value="${basedir}/BORGCalendarCommon" />
-	<property name="prj.httpproxy.dir"
-	          value="${basedir}/BORGCalendarHTTPProxy" />
 	<property name="prj.model.dir" value="${basedir}/BORGCalendarModel" />
 	<property name="prj.ui.dir" value="${basedir}/BORGCalendarUI" />
 	<property name="prj.servlet.dir" value="${basedir}/BORGServlet" />
@@ -160,16 +158,6 @@
 		       debug="on">
 			<include name="**/*.java" />
 			<exclude name="**/memory/**" />
-		</javac>
-
-		<!-- HTTP Proxy -->
-		<javac srcdir="${prj.httpproxy.dir}/src"
-		       destdir="${build.dir}"
-		       classpathref="build.classpath"
-		       target="1.4"
-		       source="1.4"
-		       debug="on">
-			<include name="**/*.java" />
 		</javac>
 
 		<!-- UI -->
