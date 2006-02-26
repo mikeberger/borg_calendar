@@ -2,6 +2,8 @@ Version 1.5.2 (not released)
 -------------
 Socket Interface - available commands: shutdown, sync, open
 Updated German Translation - (also in 1.5.1.1)
+Track Closed Date for Tasks
+Track Elapsed Time for Tasks
 
 Version 1.5.1
 -------------

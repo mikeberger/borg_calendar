@@ -123,11 +123,11 @@ public class TaskListView extends View {
             // but days left is >10 and not the 9999 (infinite) value, then just
             // use the default
             // rendered for this cell
-            if (column != 7 || (i != 9999 && i >= 10))
+            if (column != 8 || (i != 9999 && i >= 10))
                 return defrend_.getTableCellRendererComponent(table, obj,
                         isSelected, hasFocus, row, column);
 
-            // add color to the days-left column (5) as the task due date
+            // add color to the days-left column as the task due date
             // approaches
 
             // default to white background unless row is selected
@@ -202,11 +202,12 @@ public class TaskListView extends View {
                 Resource.getPlainResourceString("Pri"),
                 Resource.getPlainResourceString("Start_Date"),
                 Resource.getPlainResourceString("Due_Date"),
+                Resource.getPlainResourceString("elapsed_time"),
                 Resource.getPlainResourceString("Days_Left"),
                 Resource.getPlainResourceString("Description") }, new Class[] {
                 java.lang.Integer.class, java.lang.String.class,
                 java.lang.String.class, java.lang.String.class, java.lang.String.class, Date.class,
-                Date.class, java.lang.Integer.class, java.lang.String.class }));
+                Date.class, java.lang.String.class, java.lang.Integer.class, java.lang.String.class }));
 
         // set up for sorting when a column header is clicked
         TableSorter tm = (TableSorter) taskTable.getModel();
@@ -223,7 +224,8 @@ public class TaskListView extends View {
         taskTable.getColumnModel().getColumn(5).setPreferredWidth(120);
         taskTable.getColumnModel().getColumn(6).setPreferredWidth(120);
         taskTable.getColumnModel().getColumn(7).setPreferredWidth(80);
-        taskTable.getColumnModel().getColumn(8).setPreferredWidth(400);
+        taskTable.getColumnModel().getColumn(8).setPreferredWidth(80);
+        taskTable.getColumnModel().getColumn(9).setPreferredWidth(400);
         taskTable.setPreferredScrollableViewportSize(new Dimension(900, 400));
 
         pack();
@@ -867,7 +869,7 @@ public class TaskListView extends View {
 
                 // if we get here - we are displaying this task as a row
                 // so fill in an array of objects for the row
-                Object[] ro = new Object[9];
+                Object[] ro = new Object[10];
                 ro[0] = task.getTaskNumber(); // task number
                 ro[1] = task.getState(); // task state
                 ro[2] = task.getType(); // task type
@@ -875,12 +877,43 @@ public class TaskListView extends View {
                 ro[4] = task.getPriority();
                 ro[5] = task.getStartDate(); // task start date
                 ro[6] = task.getDueDate(); // task due date
-
+               
+                // calc elapsed time
+                Date end = null;
+                if( task.getState().equals("CLOSED"))
+                {
+                	end = task.getCD();
+                }
+                else
+                {
+                	end = new Date();
+                }
+                
+                if( end == null )
+                {
+                	ro[7] = "*******";
+                }
+                else
+                {
+                	// curently, the dates do not record h/m/s, so can't get too accurate
+                	long msecs = end.getTime() - task.getStartDate().getTime();
+                	long hours = msecs / (1000 * 60 * 60);
+                	//long min = msecs / (1000 * 60);
+                	
+                	int days = (int) (hours / 24);
+                	//int hrs = (int) (hours % 24);
+                	//int mins = (int) (min % 60);
+                	if( days >= 1)
+                		ro[7] = Integer.toString(days) + "d";
+                	else
+                		ro[7] = "<1d";
+                }
+                
                 // calculate days left - today - duedate
                 if (ro[6] == null)
                     // 9999 days left if no due date - this is a (cringe, ack,
                     // thptt) magic value
-                    ro[7] = new Integer(9999);
+                    ro[8] = new Integer(9999);
                 else {
                     Date dd = (Date) ro[6];
                     Calendar today = new GregorianCalendar();
@@ -903,7 +936,7 @@ public class TaskListView extends View {
                     // negative days are silly
                     if (days < 0)
                         days = 0;
-                    ro[7] = new Integer(days);
+                    ro[8] = new Integer(days);
                 }
 
                 // strip newlines from the description
@@ -919,7 +952,7 @@ public class TaskListView extends View {
                         
                     tmp += c;
                 }
-                ro[8] = tmp;
+                ro[9] = tmp;
 
                 // add the task row to table
                 addRow(ro);
