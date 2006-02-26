@@ -291,6 +291,9 @@ public class TaskModel extends Model implements Model.Listener {
         else {
             // task exists - so update existing task in DB
             try {
+            	// update close date
+            	if( task.getState() != null && task.getState().equals("CLOSED"))
+            		task.setCD(new Date());
                 int key = task.getTaskNumber().intValue();
                 task.setKey(key);
                 db_.updateObj(task, false);

@@ -55,8 +55,8 @@ class TaskJdbcDB extends JdbcDB
     {
         PreparedStatement stmt = connection_.prepareStatement( "INSERT INTO tasks ( tasknum, username, start_date, due_date, person_assigned," + 
         " priority, state, type, description, resolution, todo_list, user_task1," +
-        " user_task2, user_task3, user_task4, user_task5, category) VALUES " +
-        "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        " user_task2, user_task3, user_task4, user_task5, category, close_date) VALUES " +
+        "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         
         Task task = (Task) bean;
         
@@ -88,7 +88,11 @@ class TaskJdbcDB extends JdbcDB
         stmt.setString( 15, task.getUserTask4() );
         stmt.setString( 16, task.getUserTask5() );
         stmt.setString( 17, task.getCategory() );
-
+        java.util.Date cd = task.getCD();
+        if( cd != null )
+            stmt.setDate( 18, new java.sql.Date( cd.getTime()) );
+        else
+            stmt.setDate(18, null ); 
         
         stmt.executeUpdate();
         
@@ -174,6 +178,8 @@ class TaskJdbcDB extends JdbcDB
 		task.setUserTask4( r.getString("user_task4"));
 		task.setUserTask5( r.getString("user_task5"));
 		task.setCategory( r.getString("category"));
+		if( r.getDate("close_date") != null )
+			task.setCD( new java.util.Date( r.getDate("close_date").getTime()));
 		return task;
 	}
 	
@@ -181,7 +187,7 @@ class TaskJdbcDB extends JdbcDB
     {
         PreparedStatement stmt = connection_.prepareStatement( "UPDATE tasks SET  start_date = ?, due_date = ?, person_assigned = ?," + 
         " priority = ?, state = ?, type = ?, description = ?, resolution = ?, todo_list = ?, user_task1 = ?," +
-        " user_task2 = ?, user_task3 = ?, user_task4 = ?, user_task5 = ?, category = ? WHERE tasknum = ? AND username = ?" );        
+        " user_task2 = ?, user_task3 = ?, user_task4 = ?, user_task5 = ?, category = ?, close_date = ? WHERE tasknum = ? AND username = ?" );        
 
         Task task = (Task) bean;
         
@@ -211,9 +217,14 @@ class TaskJdbcDB extends JdbcDB
         stmt.setString( 13, task.getUserTask4() );
         stmt.setString( 14, task.getUserTask5() );
         stmt.setString( 15, task.getCategory() );
+        java.util.Date cd = task.getCD();
+        if( cd != null )
+            stmt.setDate( 16, new java.sql.Date( cd.getTime()) );
+        else
+            stmt.setDate(16, null ); 
 
-        stmt.setInt( 16, task.getKey() );
-        stmt.setString( 17, username_ );
+        stmt.setInt( 17, task.getKey() );
+        stmt.setString( 18, username_ );
 
         
         stmt.executeUpdate();

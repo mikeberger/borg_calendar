@@ -511,6 +511,7 @@ public class MDB {
                 lock = fc.tryLock(0, 1, false);
             }
             catch (IOException e) {
+            	e.printStackTrace();
                 throw new DBException("Cannot lock DB " + filename_,
                         DBException.RET_CANT_LOCK);
             }

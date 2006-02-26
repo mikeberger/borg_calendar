@@ -21,6 +21,7 @@ package net.sf.borg.ui;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -30,8 +31,10 @@ import java.util.Vector;
 
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
@@ -40,11 +43,6 @@ import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.Task;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.TaskTypes;
-/*
- * taskgui.java
- *
- * Created on October 10, 2001, 3:04 PM
- */
 
 
 /**
@@ -126,6 +124,20 @@ class TaskView extends View
     {
         java.awt.GridBagConstraints gridBagConstraints;
 
+        GridBagConstraints gridBagConstraints210 = new GridBagConstraints();
+        gridBagConstraints210.gridx = 0;  // Generated
+        gridBagConstraints210.insets = new java.awt.Insets(4,4,4,4);  // Generated
+        gridBagConstraints210.gridy = 6;  // Generated
+        closeLabel = new JLabel();
+        closeLabel.setText("");  // Generated
+        closeLabel.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);  // Generated
+        closeLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);  // Generated
+        GridBagConstraints gridBagConstraints12 = new GridBagConstraints();
+        gridBagConstraints12.fill = java.awt.GridBagConstraints.BOTH;  // Generated
+        gridBagConstraints12.gridy = 6;  // Generated
+        gridBagConstraints12.weightx = 1.0;  // Generated
+        gridBagConstraints12.insets = new java.awt.Insets(4,4,4,4);  // Generated
+        gridBagConstraints12.gridx = 1;  // Generated
         GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -396,15 +408,15 @@ class TaskView extends View
         gridBagConstraints29.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints29.insets = new java.awt.Insets(4,4,4,4);
         gridBagConstraints30.gridx = 0;
-        gridBagConstraints30.gridy = 6;
+        gridBagConstraints30.gridy = 7;
         gridBagConstraints30.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints30.insets = new java.awt.Insets(4,4,4,4);
         gridBagConstraints31.gridx = 0;
-        gridBagConstraints31.gridy = 7;
+        gridBagConstraints31.gridy = 8;
         gridBagConstraints31.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints31.insets = new java.awt.Insets(4,4,4,4);
         gridBagConstraints32.gridx = 0;
-        gridBagConstraints32.gridy = 8;
+        gridBagConstraints32.gridy = 9;
         gridBagConstraints32.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints32.insets = new java.awt.Insets(4,4,4,4);
         gridBagConstraints33.gridx = 1;
@@ -436,40 +448,40 @@ class TaskView extends View
         gridBagConstraints1.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints1.insets = new java.awt.Insets(4,4,4,4);
         gridBagConstraints2.gridx = 1;
-        gridBagConstraints2.gridy = 7;
+        gridBagConstraints2.gridy = 8;
         gridBagConstraints2.weightx = 1.0;
         gridBagConstraints2.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints2.insets = new java.awt.Insets(4,4,4,4);
         gridBagConstraints3.gridx = 1;
-        gridBagConstraints3.gridy = 6;
+        gridBagConstraints3.gridy = 7;
         gridBagConstraints3.weightx = 1.0;
         gridBagConstraints3.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints3.insets = new java.awt.Insets(4,4,4,4);
         gridBagConstraints11.gridx = 1;
-        gridBagConstraints11.gridy = 8;
+        gridBagConstraints11.gridy = 9;
         gridBagConstraints11.weightx = 1.0;
         gridBagConstraints11.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints11.insets = new java.awt.Insets(4,4,4,4);
-        jPanel3.add(lblType, gridBagConstraints27);
-        jPanel3.add(lblStartDate, gridBagConstraints28);
-        jPanel3.add(lblDueDate, gridBagConstraints29);
-        jPanel3.add(lblPri, gridBagConstraints30);
-        jPanel3.add(lblPA, gridBagConstraints31);
-        jPanel3.add(catlabel, gridBagConstraints32);
-        jPanel3.add(duedatechooser, gridBagConstraints33);
-        jPanel3.add(startdatechooser, gridBagConstraints34);
-        jPanel3.add(typebox, gridBagConstraints35);
-        jPanel3.add(lblItemNum, gridBagConstraints37);
-        jPanel3.add(itemtext, gridBagConstraints38);
-        jPanel3.add(lblStatus, gridBagConstraints1);
-        jPanel3.add(patext, gridBagConstraints2);
-        jPanel3.add(pritext, gridBagConstraints3);
-        jPanel3.add(getCatbox(), gridBagConstraints11);
+        jPanel3.add(lblType, gridBagConstraints27);  // Generated
+        jPanel3.add(lblStartDate, gridBagConstraints28);  // Generated
+        jPanel3.add(lblDueDate, gridBagConstraints29);  // Generated
+        jPanel3.add(lblPri, gridBagConstraints30);  // Generated
+        jPanel3.add(lblPA, gridBagConstraints31);  // Generated
+        jPanel3.add(catlabel, gridBagConstraints32);  // Generated
+        jPanel3.add(duedatechooser, gridBagConstraints33);  // Generated
+        jPanel3.add(startdatechooser, gridBagConstraints34);  // Generated
+        jPanel3.add(typebox, gridBagConstraints35);  // Generated
+        jPanel3.add(lblItemNum, gridBagConstraints37);  // Generated
 			gridBagConstraints26.insets = new java.awt.Insets(4,4,4,4);
-			jPanel3.add(statebox, gridBagConstraints26);
-
-
-
+			jPanel3.add(itemtext, gridBagConstraints38);  // Generated
+			jPanel3.add(lblStatus, gridBagConstraints1);  // Generated
+			jPanel3.add(patext, gridBagConstraints2);  // Generated
+			jPanel3.add(pritext, gridBagConstraints3);  // Generated
+			jPanel3.add(getCatbox(), gridBagConstraints11);  // Generated
+			jPanel3.add(statebox, gridBagConstraints26);  // Generated
+			jPanel3.add(getCloseDate(), gridBagConstraints12);  // Generated
+			jPanel3.add(closeLabel, gridBagConstraints210);  // Generated
+			ResourceHelper.setText(closeLabel, "close_date");
     }//GEN-END:initComponents
 
     private void typeboxActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_typeboxActionPerformed
@@ -618,14 +630,8 @@ class TaskView extends View
             task.setState((String)statebox.getSelectedItem());  // state
             task.setType((String)typebox.getSelectedItem());  // type
             Calendar cal = startdatechooser.getCalendar();
-            //cal.set(Calendar.HOUR,0);
-            //cal.set(Calendar.MINUTE,0);
-            //cal.set(Calendar.SECOND,0);
             task.setStartDate(cal.getTime());  // start date
             cal = duedatechooser.getCalendar();
-            //cal.set(Calendar.HOUR,17);
-            //cal.set(Calendar.MINUTE,0);
-            //cal.set(Calendar.SECOND,1);
             task.setDueDate(cal.getTime());  // due date
             task.setPriority(pritext.getText());  // priority
             task.setPersonAssigned(patext.getText());  // person assigned
@@ -748,6 +754,9 @@ class TaskView extends View
           patext.setText( task.getPersonAssigned() ); // person assigned
 
 
+          Date cd = task.getCD();
+          if( cd != null )
+        	  closeDate.setText(DateFormat.getDateInstance(DateFormat.MEDIUM).format(cd));
           // cattext.setText( task.getCategory() );
           String cat = task.getCategory();
           if( cat != null && !cat.equals(""))
@@ -950,6 +959,8 @@ class TaskView extends View
 
 	private JPanel jPanel = null;
 	private JComboBox catbox = null;
+	private JTextField closeDate = null;
+	private JLabel closeLabel = null;
 	/**
 	 * This method initializes jPanel
 	 *
@@ -985,7 +996,7 @@ class TaskView extends View
 			gridBagConstraints25.gridx = 0;
 			gridBagConstraints25.gridy = 2;
 			gridBagConstraints25.gridwidth = 3;
-			jPanel.add(jPanel3, gridBagConstraints21);
+			jPanel.add(jPanel3, gridBagConstraints21);  // Generated
 			jPanel.add(jPanel1, gridBagConstraints22);
 			jPanel.add(jPanel2, gridBagConstraints23);
 			jPanel.add(jTabbedPane1, gridBagConstraints24);
@@ -1003,5 +1014,19 @@ class TaskView extends View
 			catbox = new JComboBox();
 		}
 		return catbox;
+	}
+
+	/**
+	 * This method initializes closeDate	
+	 * 	
+	 * @return javax.swing.JTextField	
+	 */
+	private JTextField getCloseDate() {
+		if (closeDate == null) {
+			closeDate = new JTextField();
+			
+			closeDate.setEditable(false);  // Generated
+		}
+		return closeDate;
 	}
   }  //  @jve:decl-index=0:visual-constraint="115,46"

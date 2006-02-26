@@ -106,6 +106,7 @@ CREATE TABLE `tasks` (
   `user_task4` varchar(25) default NULL,
   `user_task5` varchar(25) default NULL,
   `category` varchar(10) default NULL,
+  `close_date` date default NULL,
   PRIMARY KEY  (`tasknum`,`username`),
   KEY `username` (`username`)
 );
