@@ -216,6 +216,7 @@ public class OptionsView extends View {
 		setCheckBox(icaltodobox, PrefName.ICALTODOEV);
 		setCheckBox(truncbox, PrefName.TRUNCAPPT);
 		setCheckBox(iso8601Box, PrefName.ISOWKNUMBER);
+		setCheckBox(extraDayBox, PrefName.SHOWEXTRADAYS);
 		
 		int socket = Prefs.getIntPref(PrefName.SOCKETPORT);
 		socketPort.setText(Integer.toString(socket));
@@ -517,6 +518,7 @@ public class OptionsView extends View {
 		setBooleanPref(icaltodobox, PrefName.ICALTODOEV);
 		setBooleanPref(truncbox, PrefName.TRUNCAPPT);
 		setBooleanPref(iso8601Box, PrefName.ISOWKNUMBER);
+		setBooleanPref(extraDayBox, PrefName.SHOWEXTRADAYS);
 		
 		try{
 			int socket = Integer.parseInt(socketPort.getText());
@@ -1322,6 +1324,15 @@ public class OptionsView extends View {
 			ResourceHelper.setText(useBeep, "Use_system_beep");
 		}
 		return useBeep;
+	}
+
+	private JCheckBox extraDayBox;
+	private JCheckBox getExtraDayBox() {
+		if (extraDayBox == null) {
+			extraDayBox = new JCheckBox();
+			ResourceHelper.setText(extraDayBox, "show_extra");
+		}
+		return extraDayBox;
 	}
 
 	/**
@@ -2259,6 +2270,12 @@ public class OptionsView extends View {
 		gridBagConstraints312.fill = java.awt.GridBagConstraints.HORIZONTAL;
 		gridBagConstraints312.anchor = java.awt.GridBagConstraints.EAST;
 		miscPanel.add(socketPort, gridBagConstraints312);
+		
+		GridBagConstraints gridBagConstraints313 = new GridBagConstraints();
+		gridBagConstraints313.gridx = 0;
+		gridBagConstraints313.gridy = 10;		
+		gridBagConstraints313.fill = java.awt.GridBagConstraints.HORIZONTAL;
+		miscPanel.add(getExtraDayBox(), gridBagConstraints313);
 		return miscPanel;
 	}
 }

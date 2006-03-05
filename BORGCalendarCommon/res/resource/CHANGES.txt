@@ -1,5 +1,6 @@
 Version 1.5.2 (not released)
 -------------
+Show as many days from prior and next month as will fit in the current month view
 Socket Interface - available commands: shutdown, sync, open
 Updated German Translation - (also in 1.5.1.1)
 Track Closed Date for Tasks
