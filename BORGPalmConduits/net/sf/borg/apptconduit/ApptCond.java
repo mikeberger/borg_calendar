@@ -1,5 +1,8 @@
 package net.sf.borg.apptconduit;
 
+import java.io.FileInputStream;
+import java.util.Properties;
+
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.SocketClient;
 import net.sf.borg.model.AppointmentModel;
@@ -64,6 +67,21 @@ public class ApptCond implements Conduit {
                 {
                 	dbdir = loc;
                 }
+                
+                // check for properties file
+                String propfile = dbdir + "db.properties";
+                try{
+                	FileInputStream is = new FileInputStream(propfile);
+                	Properties dbprops = new Properties();
+                	dbprops.load(is);
+                	dbdir = dbprops.getProperty("dburl");
+                	user = dbprops.getProperty("user");
+                }
+                catch( Exception e)
+                {
+                	Log.out("Properties exception: " + e.toString());
+                }
+                
                 Log.out("dbdir2=" + dbdir);
                 apptModel = AppointmentModel.create();
                 apptModel.open_db(dbdir , user, false, false);
