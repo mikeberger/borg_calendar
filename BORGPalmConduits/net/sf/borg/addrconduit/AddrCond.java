@@ -1,5 +1,8 @@
 package net.sf.borg.addrconduit;
 
+import java.io.FileInputStream;
+import java.util.Properties;
+
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.SocketClient;
 import net.sf.borg.model.AddressModel;
@@ -50,16 +53,25 @@ public class AddrCond implements Conduit {
                 Log.out("user=" + user);
                 Log.out("localName=" + loc);
                 
-                // hard-code MySQL kludge just for me for now
-                if( loc.equals("mysql"))
-                {
-                	dbdir = "jdbc:mysql://localhost/borg?user=borg&password=borg";
-                	user = "$default";
-                }
-                else if( loc.indexOf(':') != -1 )
+                if( loc.indexOf(':') != -1 )
                 {
                 	dbdir = loc;
                 }
+                
+//              check for properties file
+                String propfile = dbdir + "/db.properties";
+                try{
+                	FileInputStream is = new FileInputStream(propfile);
+                	Properties dbprops = new Properties();
+                	dbprops.load(is);
+                	dbdir = dbprops.getProperty("dburl");
+                	user = dbprops.getProperty("user");
+                }
+                catch( Exception e)
+                {
+                	Log.out("Properties exception: " + e.toString());
+                }
+                
                 Log.out("dbdir2=" + dbdir);
                 
                 addressModel = AddressModel.create();

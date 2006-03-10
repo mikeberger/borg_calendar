@@ -57,19 +57,13 @@ public class ApptCond implements Conduit {
                 Log.out("user=" + user);
                 Log.out("localName=" + loc);
                 
-                // hard-code MySQL kludge just for me for now
-                if( loc.equals("mysql"))
-                {
-                	dbdir = "jdbc:mysql://localhost/borg?user=borg&password=borg";
-                	user = "$default";
-                }
-                else if( loc.indexOf(':') != -1 )
+                if( loc.indexOf(':') != -1 )
                 {
                 	dbdir = loc;
                 }
                 
                 // check for properties file
-                String propfile = dbdir + "db.properties";
+                String propfile = dbdir + "/db.properties";
                 try{
                 	FileInputStream is = new FileInputStream(propfile);
                 	Properties dbprops = new Properties();
