@@ -53,6 +53,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerDateModel;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
@@ -143,6 +144,8 @@ public class OptionsView extends View {
 		Calendar cal = new GregorianCalendar(1980, 1, 1, 0, 0, 0);
 		cal.add(Calendar.MINUTE, emmins);
 		emailtimebox.setValue(cal.getTime());
+		
+		getIndEmailtimebox().setValue(new Integer(Prefs.getIntPref(PrefName.INDIVEMAILMINS)));
 
 		//
 		// database
@@ -197,6 +200,7 @@ public class OptionsView extends View {
 		setCheckBox(pubbox, PrefName.SHOWPUBLIC);
 		setCheckBox(privbox, PrefName.SHOWPRIVATE);
 		setCheckBox(emailbox, PrefName.EMAILENABLED);
+		setCheckBox(indEmailBox, PrefName.INDIVEMAILENABLED);
 		setCheckBox(holiday1, PrefName.SHOWUSHOLIDAYS);
 		setCheckBox(canadabox, PrefName.SHOWCANHOLIDAYS);
 		setCheckBox(doyBox, PrefName.DAYOFYEAR);
@@ -499,6 +503,7 @@ public class OptionsView extends View {
 		setBooleanPref(pubbox, PrefName.SHOWPUBLIC);
 		setBooleanPref(privbox, PrefName.SHOWPRIVATE);
 		setBooleanPref(emailbox, PrefName.EMAILENABLED);
+		setBooleanPref(indEmailBox, PrefName.INDIVEMAILENABLED);
 		setBooleanPref(holiday1, PrefName.SHOWUSHOLIDAYS);
 		setBooleanPref(canadabox, PrefName.SHOWCANHOLIDAYS);
 		setBooleanPref(doyBox, PrefName.DAYOFYEAR);
@@ -531,9 +536,14 @@ public class OptionsView extends View {
 			Prefs.putPref(PrefName.SOCKETPORT, new Integer(-1));
 			return;
 		}
+		
+		Integer i = (Integer) getIndEmailtimebox().getValue();
+		int cur = Prefs.getIntPref(PrefName.INDIVEMAILMINS);
+		if (i.intValue() != cur)
+			Prefs.putPref(PrefName.INDIVEMAILMINS, i);
 
-		Integer i = (Integer) checkfreq.getValue();
-		int cur = Prefs.getIntPref(PrefName.REMINDERCHECKMINS);
+		i = (Integer) checkfreq.getValue();
+		cur = Prefs.getIntPref(PrefName.REMINDERCHECKMINS);
 		if (i.intValue() != cur)
 			Prefs.putPref(PrefName.REMINDERCHECKMINS, i);
 
@@ -1408,6 +1418,14 @@ public class OptionsView extends View {
 		}
 		return emailtimebox;
 	}
+	
+	JSpinner indEmailTime = null;
+	private JSpinner getIndEmailtimebox() {
+		if (indEmailTime == null) {
+			indEmailTime = new JSpinner(new SpinnerNumberModel());
+		}
+		return indEmailTime;
+	}
 
 	private JPanel getDbTypePanel() {
 		if (dbTypePanel == null) {
@@ -1660,6 +1678,7 @@ public class OptionsView extends View {
 
 	JTextField usertext = new JTextField();
 	JPasswordField smpw = new JPasswordField();
+	JCheckBox indEmailBox = new JCheckBox();
 	private JPanel getEmailPanel() {
 		JPanel emailPanel = new JPanel();
 		emailPanel.setLayout(new java.awt.GridBagLayout());
@@ -1758,6 +1777,33 @@ public class OptionsView extends View {
 		gridBagConstraints212.insets = new java.awt.Insets(4, 4, 4, 4);
 		gridBagConstraints212.anchor = java.awt.GridBagConstraints.WEST;
 		emailPanel.add(getEmailtimebox(), gridBagConstraints212);
+		
+		ResourceHelper.setText(indEmailBox, "Email_Ind");
+		GridBagConstraints gridBagConstraintse1 = new java.awt.GridBagConstraints();
+		gridBagConstraintse1.gridx = 0;
+		gridBagConstraintse1.gridy = 6;
+		gridBagConstraintse1.fill = java.awt.GridBagConstraints.BOTH;
+		gridBagConstraintse1.anchor = java.awt.GridBagConstraints.WEST;
+		emailPanel.add(indEmailBox, gridBagConstraintse1);
+		
+		JLabel itimel = new JLabel();
+		GridBagConstraints gridBagConstraintse3 = new GridBagConstraints();
+		gridBagConstraintse3.gridx = 0;
+		gridBagConstraintse3.gridy = 7;
+		gridBagConstraintse3.fill = java.awt.GridBagConstraints.BOTH;
+		gridBagConstraintse3.insets = new java.awt.Insets(4, 4, 4, 4);
+		ResourceHelper.setText(itimel, "Email_Ind_Min");
+		itimel.setLabelFor(getIndEmailtimebox());
+		emailPanel.add(itimel, gridBagConstraintse3);
+		
+		GridBagConstraints gridBagConstraintse2 = new GridBagConstraints();
+		gridBagConstraintse2.gridx = 1;
+		gridBagConstraintse2.gridy = 7;
+		gridBagConstraintse2.weightx = 1.0;
+		gridBagConstraintse2.fill = java.awt.GridBagConstraints.VERTICAL;
+		gridBagConstraintse2.insets = new java.awt.Insets(4, 4, 4, 4);
+		gridBagConstraintse2.anchor = java.awt.GridBagConstraints.WEST;
+		emailPanel.add(getIndEmailtimebox(), gridBagConstraintse2);
 
 		return emailPanel;
 	}

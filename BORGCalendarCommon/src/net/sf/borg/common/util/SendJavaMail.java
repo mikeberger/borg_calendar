@@ -94,7 +94,7 @@ public class SendJavaMail {
 			msg.setFrom(new InternetAddress(from));
 			InternetAddress[] address = { new InternetAddress(to) };
 			msg.setRecipients(Message.RecipientType.TO, address);
-			msg.setSubject("BORG Reminder");
+			msg.setSubject(Resource.getPlainResourceString("Reminder_Notice"));
 			msg.setSentDate(new Date());
 			msg.setText(msgText);
 
@@ -174,7 +174,7 @@ public class SendJavaMail {
 			MimeBodyPart b2 = new MimeBodyPart();
 			b2.setContent(cal,"text/calendar");
 			b2.setFileName("meeting.ics");
-			b2.setDescription("Meeting Notice");
+			b2.setDescription(Resource.getPlainResourceString("Reminder_Notice"));
 		
 			b2.setContentID("calendar_message");
 
@@ -186,7 +186,7 @@ public class SendJavaMail {
 			MimeBodyPart b3 = new MimeBodyPart();
 			b3.setContent(vcal,"text/calendar");
 			b3.setFileName("meeting.vcs");
-			b3.setDescription("Meeting Notice");
+			b3.setDescription(Resource.getPlainResourceString("Reminder_Notice"));
 			b3.setContentID("calendar_message");
 
 			b3.setHeader("Content-Class", "urn:content-classes:calendarmessage");
@@ -200,7 +200,7 @@ public class SendJavaMail {
 			msg.setFrom(new InternetAddress(from));
 			InternetAddress[] address = { new InternetAddress(to) };
 			msg.setRecipients(Message.RecipientType.TO, address);
-			msg.setSubject("BORG Meeting Notice");
+			msg.setSubject(Resource.getPlainResourceString("Reminder_Notice"));
 			msg.setSentDate(new Date());
 			msg.addHeaderLine("METHOD=REQUEST");
 			msg.addHeaderLine("charset=UTF-8");

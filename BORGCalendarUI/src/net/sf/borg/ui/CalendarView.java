@@ -27,8 +27,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
@@ -89,10 +87,8 @@ import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.AppointmentVcalAdapter;
 import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.Day;
-import net.sf.borg.model.MultiUserModel;
 import net.sf.borg.model.Task;
 import net.sf.borg.model.TaskModel;
-import net.sf.borg.model.db.BeanDataFactoryFactory;
 
 // This is the month view GUI
 // it is the main borg window

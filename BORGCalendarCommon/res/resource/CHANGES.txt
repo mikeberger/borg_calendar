@@ -5,6 +5,7 @@ Socket Interface - available commands: shutdown, sync, open
 Updated German Translation - (also in 1.5.1.1)
 Track Closed Date for Tasks
 Track Elapsed Time for Tasks
+Timed Individual Reminder Emails for Appointments 
 
 Version 1.5.1
 -------------

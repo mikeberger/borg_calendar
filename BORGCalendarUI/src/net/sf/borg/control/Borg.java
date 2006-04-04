@@ -27,15 +27,12 @@ import java.awt.Font;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.Locale;
-import java.util.StringTokenizer;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -53,17 +50,13 @@ import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
 import net.sf.borg.common.util.Resource;
-import net.sf.borg.common.util.SendJavaMail;
 import net.sf.borg.common.util.SocketClient;
 import net.sf.borg.common.util.SocketHandler;
 import net.sf.borg.common.util.SocketServer;
 import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.Appointment;
-import net.sf.borg.model.AppointmentIcalAdapter;
 import net.sf.borg.model.AppointmentModel;
-import net.sf.borg.model.AppointmentVcalAdapter;
 import net.sf.borg.model.MultiUserModel;
-import net.sf.borg.model.Task;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.db.BeanDataFactoryFactory;
 import net.sf.borg.model.db.remote.IRemoteProxy;
@@ -96,10 +89,12 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 	static private Banner ban_ = null; // start up banner
 
 	private java.util.Timer versionCheckTimer_ = null;
-
+	
 	private java.util.Timer syncTimer_ = null;
 
 	private Timer mailTimer_ = null;
+	
+	private EmailReminder emailReminder_ = null;
 
 	static private Borg singleton = null;
 
@@ -156,6 +151,7 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 			syncTimer_.cancel();
 		if (mailTimer_ != null)
 			mailTimer_.cancel();
+		emailReminder_.destroy();
 		removeListeners();
 		init(new String[0]);
 	}
@@ -323,10 +319,12 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 			// appointments
 			// and exit. not used anymore
 			if (aplist) {
-				emailReminder(null);
+				EmailReminder.sendDailyEmailReminder(null);
 				System.exit(0);
 				return;
 			}
+			
+			emailReminder_ = new EmailReminder();
 
 			if (autostart) {
 				// check if auto start conditions are true
@@ -385,20 +383,22 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 				int mailtime = emailmins - curmins;
 				if (mailtime < 0) {
 					// we are past mailtime - send it now
-					emailReminder(null);
+					EmailReminder.sendDailyEmailReminder(null);
 
 					// set timer for next mailtime
 					mailtime += 24 * 60; // 24 hours from now
 				}
 
 				// start up email check timer - every 24 hours
-				versionCheckTimer_ = new java.util.Timer();
-				versionCheckTimer_.schedule(new TimerTask() {
+				mailTimer_ = new java.util.Timer();
+				mailTimer_.schedule(new TimerTask() {
 					public void run() {
-						emailReminder(null);
+						EmailReminder.sendDailyEmailReminder(null);
 					}
 				}, mailtime * 60 * 1000, 24 * 60 * 60 * 1000);
-
+				
+				// individual email reminders
+				
 				// start autosync timer
 				int syncmins = Prefs.getIntPref(PrefName.SYNCMINS);
 				String dbtype = Prefs.getPref(PrefName.DBTYPE);
@@ -689,170 +689,6 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 			Errmsg.errmsg(e);
 		}
 
-	}
-
-	// send an email of the next day's appointments if the user has requested
-	// this and
-	// such an email has not been sent today yet.
-	static public void emailReminder(Calendar emailday) {
-
-		// check if the email feature has been enabled
-		String email = Prefs.getPref(PrefName.EMAILENABLED);
-		if (email.equals("false"))
-			return;
-
-		// get the SMTP host and address
-		String host = Prefs.getPref(PrefName.EMAILSERVER);
-		String addr = Prefs.getPref(PrefName.EMAILADDR);
-
-		if (host.equals("") || addr.equals(""))
-			return;
-
-		Calendar cal = new GregorianCalendar();
-
-		// if no date passed, the timer has gone off and we need to check if we
-		// can send
-		// email now
-		int doy = -1;
-		if (emailday == null) {
-			// get the last day that email was sent
-			int lastday = Prefs.getIntPref(PrefName.EMAILLAST);
-
-			// if email was already sent today - don't send again
-			doy = cal.get(Calendar.DAY_OF_YEAR);
-			if (doy == lastday)
-				return;
-
-			// create the calendar model key for tomorrow
-			cal.add(Calendar.DATE, 1);
-		} else {
-			// just send email for the given day
-			cal = emailday;
-		}
-
-		int key = AppointmentModel.dkey(cal.get(Calendar.YEAR), cal
-				.get(Calendar.MONTH), cal.get(Calendar.DATE));
-
-		// tx is the contents of the email
-		String tx = "Appointments for "
-				+ DateFormat.getDateInstance().format(cal.getTime()) + "\n";
-
-		// get the list of appts for tomorrow
-		Collection l = AppointmentModel.getReference().getAppts(key);
-		if (l != null) {
-
-			Iterator it = l.iterator();
-			Appointment appt;
-
-			// iterate through the day's appts
-			while (it.hasNext()) {
-
-				Integer ik = (Integer) it.next();
-
-				try {
-					// read the appointment from the calendar model
-					appt = AppointmentModel.getReference().getAppt(
-							ik.intValue());
-
-					// get the appt flags to see if the appointment is private
-					// if so, don't include it in the email
-					if (appt.getPrivate())
-						continue;
-
-					if (!AppointmentModel.isNote(appt)) {
-						// add the appointment time to the email if it is not a
-						// note
-						Date d = appt.getDate();
-						SimpleDateFormat df = AppointmentModel.getTimeFormat();
-						tx += df.format(d) + " ";
-					}
-
-					// add the appointment text
-					tx += appt.getText();
-					tx += "\n";
-				} catch (Exception e) {
-					System.out.println(e.toString());
-					return;
-				}
-			}
-
-		}
-
-		// load any task tracker items for the email
-		// these items are cached in the calendar model
-		// by date - but the taskmodel is the real owner of them
-		l = TaskModel.getReference().get_tasks(key);
-		if (l != null) {
-
-			Iterator it = l.iterator();
-
-			while (it.hasNext()) {
-				// add each task to the email - and remove newlines
-
-				Task task = (Task) it.next();
-				tx += "Task[" + task.getTaskNumber() + "] ";
-				String de = task.getDescription();
-				tx += de.replace('\n', ' ');
-				tx += "\n";
-			}
-		}
-
-		// send the email using SMTP
-		try {
-			StringTokenizer stk = new StringTokenizer(addr, ",;");
-			while (stk.hasMoreTokens()) {
-				String a = stk.nextToken();
-				if (!a.equals("")) {
-					SendJavaMail.sendMail(host, tx, a.trim(), a.trim(), Prefs
-							.getPref(PrefName.EMAILUSER), Prefs
-							.getPref(PrefName.EMAILPASS));
-					// String ed = Prefs.getPref(PrefName.EMAILDEBUG);
-					// if (ed.equals("1"))
-					// Errmsg.notice(s);
-				}
-			}
-
-		} catch (Exception e) {
-			Errmsg.errmsg(e);
-		}
-
-		// record that we sent email today
-		if (doy != -1)
-			Prefs.putPref(PrefName.EMAILLAST, new Integer(doy));
-
-		return;
-	}
-
-	static public void emailMeeting(Appointment mtg) {
-
-		// get the SMTP host and address
-		String host = Prefs.getPref(PrefName.EMAILSERVER);
-		String addr = Prefs.getPref(PrefName.EMAILADDR);
-
-		if (host.equals("") || addr.equals(""))
-			return;
-
-		// send the email using SMTP
-		try {
-			StringTokenizer stk = new StringTokenizer(addr, ",;");
-			while (stk.hasMoreTokens()) {
-				String a = stk.nextToken();
-				if (!a.equals("")) {
-					SendJavaMail.sendCalMail(host, mtg.getText(), a.trim(), a
-							.trim(), Prefs.getPref(PrefName.EMAILUSER), Prefs
-							.getPref(PrefName.EMAILPASS),
-							AppointmentIcalAdapter.exportIcalToString(mtg),
-							AppointmentVcalAdapter.exportVcalToString(mtg));
-
-					// Errmsg.notice(s);
-				}
-			}
-
-		} catch (Exception e) {
-			Errmsg.errmsg(e);
-		}
-
-		return;
 	}
 
 	private IRemoteProxyProvider.Credentials getCredentials() {

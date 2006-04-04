@@ -51,7 +51,7 @@ import net.sf.borg.common.ui.TableSorter;
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Resource;
-import net.sf.borg.control.Borg;
+import net.sf.borg.control.EmailReminder;
 import net.sf.borg.model.Appointment;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.TaskModel;
@@ -683,7 +683,7 @@ public class AppointmentListView extends View implements ListSelectionListener {
 							        cal = c;
 							    }
 							    public void run() {
-							    	Borg.emailReminder(cal);
+							    	EmailReminder.sendDailyEmailReminder(cal);
 							    }
 							}
 						    
@@ -726,7 +726,7 @@ public class AppointmentListView extends View implements ListSelectionListener {
 		Integer apptkey = (Integer) alist_.get(key);
 		try {
 			Appointment mtg = AppointmentModel.getReference().getAppt(apptkey.intValue());
-			Borg.emailMeeting(mtg);
+			EmailReminder.emailMeeting(mtg);
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
 		}
