@@ -77,7 +77,7 @@
         <panel classname="PacksPanel"/>
         <panel classname="InstallPanel"/>
         <panel classname="ShortcutPanel"/>
-        <panel classname="FinishPanel"/>
+        <panel classname="SimpleFinishPanel"/>
     </panels>
     
     <!-- 
