@@ -221,6 +221,7 @@ public class OptionsView extends View {
 		setCheckBox(truncbox, PrefName.TRUNCAPPT);
 		setCheckBox(iso8601Box, PrefName.ISOWKNUMBER);
 		setCheckBox(extraDayBox, PrefName.SHOWEXTRADAYS);
+		setCheckBox(useSysTray, PrefName.USESYSTRAY);
 		
 		int socket = Prefs.getIntPref(PrefName.SOCKETPORT);
 		socketPort.setText(Integer.toString(socket));
@@ -524,6 +525,7 @@ public class OptionsView extends View {
 		setBooleanPref(truncbox, PrefName.TRUNCAPPT);
 		setBooleanPref(iso8601Box, PrefName.ISOWKNUMBER);
 		setBooleanPref(extraDayBox, PrefName.SHOWEXTRADAYS);
+		setBooleanPref(useSysTray, PrefName.USESYSTRAY);
 		
 		try{
 			int socket = Integer.parseInt(socketPort.getText());
@@ -2211,6 +2213,7 @@ public class OptionsView extends View {
 	}
 	
 	JTextField socketPort = new JTextField();
+	JCheckBox useSysTray = new JCheckBox();
 	private JPanel getMiscPanel()
 	{
 		JPanel miscPanel = new JPanel();
@@ -2322,6 +2325,14 @@ public class OptionsView extends View {
 		gridBagConstraints313.gridy = 10;		
 		gridBagConstraints313.fill = java.awt.GridBagConstraints.HORIZONTAL;
 		miscPanel.add(getExtraDayBox(), gridBagConstraints313);
+		
+		GridBagConstraints gridBagConstraintsUST = new GridBagConstraints();
+		gridBagConstraintsUST.gridx = 0;
+		gridBagConstraintsUST.gridy = 11;		
+		gridBagConstraintsUST.fill = java.awt.GridBagConstraints.HORIZONTAL;
+		useSysTray.setText(Resource.getPlainResourceString("enable_systray"));
+		miscPanel.add(useSysTray, gridBagConstraintsUST);
+		
 		return miscPanel;
 	}
 }

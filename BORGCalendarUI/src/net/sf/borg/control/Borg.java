@@ -493,7 +493,9 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 
 	private void swingStart(String trayname) {
 		trayIcon = true;
-		if (!AppHelper.isApplication()) {
+		String usetray = Prefs.getPref(PrefName.USESYSTRAY);
+
+		if (!AppHelper.isApplication() || !usetray.equals("true")) {
 			trayIcon = false;
 		} else {
 			try {
