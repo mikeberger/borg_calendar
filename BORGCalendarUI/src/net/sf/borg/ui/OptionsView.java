@@ -1245,7 +1245,7 @@ public class OptionsView extends View {
 					.getResourceString("ucolortext17"), Color.WHITE, true); //$NON-NLS-1$
 			btn_ucs_weekday = new JButtonKnowsBgColor(Resource
 					.getResourceString("ucolortext18"), Color.WHITE, true); //$NON-NLS-1$
-			btn_ucs_restore = new JButton("restore defaults"); //$NON-NLS-1$
+			btn_ucs_restore = new JButton(Resource.getResourceString("restore_defaults")); //$NON-NLS-1$
 			// TODO add action listener to btn_ucs_restore
 			btn_ucs_restore.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
