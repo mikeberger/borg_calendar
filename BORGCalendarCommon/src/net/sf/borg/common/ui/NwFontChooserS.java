@@ -162,7 +162,7 @@ public class NwFontChooserS extends JDialog {
             Sample.setText("The quick brown fox jumped over the lazy dog.");
         }
         //////////////////////////////////////////////////////////////////////
-        public class NwList extends JPanel {
+        private class NwList extends JPanel {
             JList jl;
             JScrollPane sp;
             JLabel jt;

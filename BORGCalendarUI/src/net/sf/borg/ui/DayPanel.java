@@ -90,8 +90,9 @@ class DayPanel extends JPanel implements Printable {
 			showpriv = true;
 		// set up default and small fonts
 		Graphics2D g2 = (Graphics2D) g;
-		Font def_font = g2.getFont();
-		Font sm_font = def_font.deriveFont(8f);
+		//Font def_font = g2.getFont();
+		//Font sm_font = def_font.deriveFont(8f);
+		Font sm_font = Font.decode(Prefs.getPref(PrefName.DAYVIEWFONT));
         Map stmap = new HashMap();
         stmap.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
         stmap.put( TextAttribute.FONT, sm_font);

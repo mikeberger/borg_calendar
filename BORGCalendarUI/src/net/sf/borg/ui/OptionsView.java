@@ -392,8 +392,8 @@ public class OptionsView extends View {
 		jTabbedPane1 = new javax.swing.JTabbedPane();
 		privbox = new javax.swing.JCheckBox();
 		pubbox = new javax.swing.JCheckBox();
-		incfont = new javax.swing.JButton();
-		decfont = new javax.swing.JButton();
+		previewFontButton = new javax.swing.JButton();
+		apptFontButton = new javax.swing.JButton();
 		jLabel4 = new javax.swing.JLabel();
 		lnfBox = new javax.swing.JComboBox();
 		holiday1 = new javax.swing.JCheckBox();
@@ -458,6 +458,7 @@ public class OptionsView extends View {
 		});
 
 		ResourceHelper.addTab(jTabbedPane1, "appearance", getAppearancePanel());
+		ResourceHelper.addTab(jTabbedPane1, "fonts", getFontPanel());
 		ResourceHelper.addTab(jTabbedPane1, "DatabaseInformation", getDBPanel());
 		ResourceHelper.addTab(jTabbedPane1, "EmailParameters", getEmailPanel());
 		ResourceHelper.addTab(jTabbedPane1, "popup_reminders", getReminderPanel());
@@ -675,19 +676,6 @@ public class OptionsView extends View {
 
 	}
 
-	private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButton1ActionPerformed
-
-		Font f = NwFontChooserS.showDialog(null, null, null);
-		if (f == null)
-			return;
-		String fs = NwFontChooserS.fontString(f);
-		Prefs.putPref(PrefName.DEFFONT, fs);
-		NwFontChooserS.setDefaultFont(f);
-		SwingUtilities.updateComponentTreeUI(this);
-		Prefs.notifyListeners();
-
-	}// GEN-LAST:event_jButton1ActionPerformed
-
 	private void chgdbActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_chgdbActionPerformed
 	{// GEN-HEADEREND:event_chgdbActionPerformed
 		int ret = JOptionPane.showConfirmDialog(null, Resource
@@ -806,29 +794,24 @@ public class OptionsView extends View {
 
 	}// GEN-LAST:event_jButton5ActionPerformed
 
-	private void incfontActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_incfontActionPerformed
+	private void fontActionPerformed(java.awt.event.ActionEvent evt, PrefName fontname) {// GEN-FIRST:event_incfontActionPerformed
 
-		Font f = NwFontChooserS.showDialog(null, null, null);
+		Font pf = Font.decode(Prefs.getPref(fontname));
+		Font f = NwFontChooserS.showDialog(null, null, pf);
 		if (f == null)
 			return;
 		String s = NwFontChooserS.fontString(f);
 
-		Prefs.putPref(PrefName.PREVIEWFONT, s);
+		Prefs.putPref(fontname, s);
+		if( fontname == PrefName.DEFFONT)
+		{
+			NwFontChooserS.setDefaultFont(f);
+			SwingUtilities.updateComponentTreeUI(this);
+		}
+		
 		Prefs.notifyListeners();
 
-	}// GEN-LAST:event_incfontActionPerformed
-
-	private void decfontActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_decfontActionPerformed
-
-		Font f = NwFontChooserS.showDialog(null, null, null);
-		if (f == null)
-			return;
-		String s = NwFontChooserS.fontString(f);
-
-		Prefs.putPref(PrefName.APPTFONT, s);
-		Prefs.notifyListeners();
-
-	}// GEN-LAST:event_decfontActionPerformed
+	}
 
 	private void exitForm(java.awt.event.WindowEvent evt) {// GEN-FIRST:event_exitForm
 		this.dispose();
@@ -895,7 +878,7 @@ public class OptionsView extends View {
 
 	private javax.swing.ButtonGroup dbTypeGroup;
 
-	private javax.swing.JButton decfont;
+	private javax.swing.JButton apptFontButton;
 
 	private javax.swing.JCheckBox emailbox;
 
@@ -905,7 +888,7 @@ public class OptionsView extends View {
 
 	private javax.swing.JCheckBox icaltodobox;
 
-	private javax.swing.JButton incfont;
+	private javax.swing.JButton previewFontButton;
 
 	private javax.swing.JButton defFontButton;
 
@@ -1835,40 +1818,6 @@ public class OptionsView extends View {
 		gridBagConstraints1.insets = new java.awt.Insets(4, 4, 4, 4);
 		appearancePanel.add(pubbox, gridBagConstraints1);
 
-		GridBagConstraints gridBagConstraints2 = new java.awt.GridBagConstraints();
-		gridBagConstraints2.gridx = 1;
-		gridBagConstraints2.gridy = 9;
-		gridBagConstraints2.fill = java.awt.GridBagConstraints.VERTICAL;
-		gridBagConstraints2.anchor = java.awt.GridBagConstraints.WEST;
-		gridBagConstraints2.weightx = 1.0;
-		gridBagConstraints2.insets = new java.awt.Insets(4, 4, 4, 4);
-		ResourceHelper.setText(incfont, "set_pre_font");
-		incfont.setBorder(new javax.swing.border.SoftBevelBorder(
-				javax.swing.border.BevelBorder.RAISED));
-		incfont.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				incfontActionPerformed(evt);
-			}
-		});
-		appearancePanel.add(incfont, gridBagConstraints2);
-
-		GridBagConstraints gridBagConstraints3 = new java.awt.GridBagConstraints();
-		gridBagConstraints3.gridx = 0;
-		gridBagConstraints3.gridy = 9;
-		gridBagConstraints3.fill = java.awt.GridBagConstraints.VERTICAL;
-		gridBagConstraints3.anchor = java.awt.GridBagConstraints.WEST;
-		gridBagConstraints3.weightx = 1.0;
-		gridBagConstraints3.insets = new java.awt.Insets(4, 4, 4, 4);
-		ResourceHelper.setText(decfont, "set_appt_font");
-		decfont.setBorder(new javax.swing.border.SoftBevelBorder(
-				javax.swing.border.BevelBorder.RAISED));
-		decfont.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				decfontActionPerformed(evt);
-			}
-		});
-		appearancePanel.add(decfont, gridBagConstraints3);
-
 		ResourceHelper.setText(jLabel4, "Look_and_Feel:");
 		jLabel4.setLabelFor(lnfBox);
 		GridBagConstraints gridBagConstraints4 = new java.awt.GridBagConstraints();
@@ -1990,22 +1939,6 @@ public class OptionsView extends View {
 
 		appearancePanel.add(localebox, gridBagConstraints16);
 
-		GridBagConstraints gridBagConstraints17 = new java.awt.GridBagConstraints();
-		gridBagConstraints17.gridx = 0;
-		gridBagConstraints17.gridy = 8;
-		gridBagConstraints17.fill = java.awt.GridBagConstraints.VERTICAL;
-		gridBagConstraints17.anchor = java.awt.GridBagConstraints.WEST;
-		gridBagConstraints17.weightx = 1.0;
-		gridBagConstraints17.insets = new java.awt.Insets(4, 4, 4, 4);
-		ResourceHelper.setText(defFontButton, "set_def_font");
-		defFontButton.setBorder(new javax.swing.border.SoftBevelBorder(
-				javax.swing.border.BevelBorder.RAISED));
-		defFontButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jButton1ActionPerformed(evt);
-			}
-		});
-		appearancePanel.add(defFontButton, gridBagConstraints17);
 		
 		GridBagConstraints gridBagConstraints97 = new java.awt.GridBagConstraints();
 		gridBagConstraints97.gridx = 1;
@@ -2346,5 +2279,90 @@ public class OptionsView extends View {
 		miscPanel.add(useSysTray, gridBagConstraintsUST);
 		
 		return miscPanel;
+	}
+
+	private javax.swing.JButton dayFontButton = new JButton();
+	private javax.swing.JButton weekFontButton = new JButton();
+	private javax.swing.JButton monthFontButton = new JButton();
+	private JPanel getFontPanel() {
+		JPanel fontPanel = new JPanel();
+		fontPanel.setLayout(new FlowLayout());
+	
+		ResourceHelper.setText(previewFontButton, "set_pre_font");
+		previewFontButton.setBorder(new javax.swing.border.SoftBevelBorder(
+				javax.swing.border.BevelBorder.RAISED));
+		//previewFontButton.setFont(Font.decode(Prefs.getPref(PrefName.PREVIEWFONT)));
+		previewFontButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				fontActionPerformed(evt,PrefName.PREVIEWFONT);
+				//previewFontButton.setFont(Font.decode(Prefs.getPref(PrefName.PREVIEWFONT)));
+			}
+		});
+		fontPanel.add(previewFontButton);
+	
+		ResourceHelper.setText(apptFontButton, "set_appt_font");
+		apptFontButton.setBorder(new javax.swing.border.SoftBevelBorder(
+				javax.swing.border.BevelBorder.RAISED));
+		//apptFontButton.setFont(Font.decode(Prefs.getPref(PrefName.APPTFONT)));
+		apptFontButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				fontActionPerformed(evt,PrefName.APPTFONT);
+				//apptFontButton.setFont(Font.decode(Prefs.getPref(PrefName.APPTFONT)));
+			}
+		});
+		fontPanel.add(apptFontButton);
+	
+		
+		ResourceHelper.setText(defFontButton, "set_def_font");
+		defFontButton.setBorder(new javax.swing.border.SoftBevelBorder(
+				javax.swing.border.BevelBorder.RAISED));
+		//if( !Prefs.getPref(PrefName.DEFFONT).equals(""))
+			//defFontButton.setFont(Font.decode(Prefs.getPref(PrefName.DEFFONT)));
+		defFontButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				fontActionPerformed(evt,PrefName.DEFFONT);
+				//defFontButton.setFont(Font.decode(Prefs.getPref(PrefName.DEFFONT)));
+			}
+		});
+		fontPanel.add(defFontButton);
+		
+		ResourceHelper.setText(dayFontButton, "dview_font");
+		dayFontButton.setBorder(new javax.swing.border.SoftBevelBorder(
+				javax.swing.border.BevelBorder.RAISED));
+		//dayFontButton.setFont(Font.decode(Prefs.getPref(PrefName.DAYVIEWFONT)));
+		dayFontButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				fontActionPerformed(evt,PrefName.DAYVIEWFONT);
+				//dayFontButton.setFont(Font.decode(Prefs.getPref(PrefName.DAYVIEWFONT)));
+			}
+		});
+		fontPanel.add(dayFontButton);
+		
+		ResourceHelper.setText(weekFontButton, "wview_font");
+		weekFontButton.setBorder(new javax.swing.border.SoftBevelBorder(
+				javax.swing.border.BevelBorder.RAISED));
+		//weekFontButton.setFont(Font.decode(Prefs.getPref(PrefName.WEEKVIEWFONT)));
+		weekFontButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				fontActionPerformed(evt,PrefName.WEEKVIEWFONT);
+				//weekFontButton.setFont(Font.decode(Prefs.getPref(PrefName.WEEKVIEWFONT)));
+			}
+		});
+		fontPanel.add(weekFontButton);
+		
+		ResourceHelper.setText(monthFontButton, "mview_font");
+		monthFontButton.setBorder(new javax.swing.border.SoftBevelBorder(
+				javax.swing.border.BevelBorder.RAISED));
+		//monthFontButton.setFont(Font.decode(Prefs.getPref(PrefName.MONTHVIEWFONT)));
+		monthFontButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				fontActionPerformed(evt,PrefName.MONTHVIEWFONT);
+				//monthFontButton.setFont(Font.decode(Prefs.getPref(PrefName.MONTHVIEWFONT)));
+			}
+		});
+		fontPanel.add(monthFontButton);
+		
+	
+		return fontPanel;
 	}
 }
