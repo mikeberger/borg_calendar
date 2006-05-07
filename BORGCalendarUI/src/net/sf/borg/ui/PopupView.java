@@ -46,6 +46,7 @@ import net.sf.borg.common.util.Prefs;
 import net.sf.borg.common.util.Resource;
 import net.sf.borg.model.Appointment;
 import net.sf.borg.model.AppointmentModel;
+import net.sf.borg.model.ReminderTimes;
 
 /**
  *
@@ -301,20 +302,20 @@ public class PopupView extends View {
 	private boolean outside_reminder_times(long mins_to_go, Appointment appt) {
 		
 		int earliest = -999;
-		char[] remTimes = new char[PrefName.REMMINUTES.length];
+		char[] remTimes = new char[ReminderTimes.getNum()];
 		try {
 			remTimes = (appt.getReminderTimes()).toCharArray();
 
 		} catch (Exception e) {
-			for (int i = 0; i < PrefName.REMMINUTES.length; ++i) {
+			for (int i = 0; i < ReminderTimes.getNum(); ++i) {
 				remTimes[i] = 'N';
 			}
 		}
 
-		for( int i = 0; i < PrefName.REMMINUTES.length; i++ )
+		for( int i = 0; i < ReminderTimes.getNum(); i++ )
 		{
 			if( remTimes[i] == 'Y')
-				earliest = PrefName.REMMINUTES[i];
+				earliest = ReminderTimes.getTimes(i);
 		}
 		
 		//System.out.println("mtg =" + mins_to_go + " rt=" + appt.getReminderTimes() + " l=" + latest + " e=" + earliest);
@@ -322,7 +323,7 @@ public class PopupView extends View {
 			return true;
 
 		return (mins_to_go > earliest ||
-				mins_to_go < PrefName.REMMINUTES[0]);
+				mins_to_go < ReminderTimes.getTimes(0));
 	}
 
 	// If the reminder should be shown, return the "minutes before appointment"
@@ -330,29 +331,29 @@ public class PopupView extends View {
 	// of the requested reminder, so that we can display this in the reminder
 	// If it should not be shown, return -999
 	private int due_for_popup(long mins_to_go, Appointment appt, ReminderPopup p) {
-		char[] remTimes = new char[PrefName.REMMINUTES.length];
+		char[] remTimes = new char[ReminderTimes.getNum()];
 		try {
 			remTimes = (appt.getReminderTimes()).toCharArray();
 
 		} catch (Exception e) {
-			for (int i = 0; i < PrefName.REMMINUTES.length; ++i) {
+			for (int i = 0; i < ReminderTimes.getNum(); ++i) {
 				remTimes[i] = 'N';
 			}
 		}
 
 		int i = 0;
-		while (PrefName.REMMINUTES[i] < mins_to_go) {
+		while (ReminderTimes.getTimes(i) < mins_to_go) {
 			++i;
 		}
 
 		// shouldnt happen
-		if (i >= PrefName.REMMINUTES.length) {
+		if (i >= ReminderTimes.getNum()) {
 			return -999;
 		}
 
 		if (remTimes[i] == 'Y' && p.reminderShown(i) == 'N') {
 			p.setReminderShown(i);
-			return PrefName.REMMINUTES[i];
+			return ReminderTimes.getTimes(i);
 		}
 
 		return -999;

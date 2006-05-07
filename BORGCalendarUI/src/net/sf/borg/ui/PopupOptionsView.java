@@ -35,8 +35,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
-import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Resource;
+import net.sf.borg.model.ReminderTimes;
 
 
 public class PopupOptionsView extends JDialog {
@@ -51,6 +51,8 @@ public class PopupOptionsView extends JDialog {
 	private JPanel buttonPanel = null;
 	private JButton saveButton = null;
 	private JButton dismissButton = null;
+	private JButton clearButton = null;
+	private JButton allButton = null;
 
 	public PopupOptionsView(char[] remtimes, AppointmentPanel appPanel) {
 		super();
@@ -64,8 +66,8 @@ public class PopupOptionsView extends JDialog {
 		jAlarmLabel = new JLabel();
 		ResourceHelper.setText(jAlarmLabel, "custom_times_header");
 		jAlarmLabel.setText(jAlarmLabel.getText() + " '" + appPanel_.getText() + "'");
-		alarmBoxes = new JCheckBox[PrefName.REMMINUTES.length];
-		for (int i = 0; i < PrefName.REMMINUTES.length; ++i) {
+		alarmBoxes = new JCheckBox[ReminderTimes.getNum()];
+		for (int i = 0; i < ReminderTimes.getNum(); ++i) {
 			alarmBoxes[i] = new JCheckBox(minutes_string(i));
 		}
 
@@ -122,7 +124,7 @@ public class PopupOptionsView extends JDialog {
 	}
 
 	private void saveButtonClicked(java.awt.event.ActionEvent evt) {
-		for (int i = 0; i < PrefName.REMMINUTES.length; ++i) {
+		for (int i = 0; i < ReminderTimes.getNum(); ++i) {
 			if (alarmBoxes[i].isSelected()) {
 				remtimes_[i] = 'Y';
 			} else {
@@ -140,7 +142,7 @@ public class PopupOptionsView extends JDialog {
 	}
 
 	private String minutes_string(int i) {
-		int j = PrefName.REMMINUTES[i];
+		int j = ReminderTimes.getTimes(i);
 		int jj = (j >= 0 ? j : -j);
 		int k = jj / 60;
 		int l = jj % 60;
@@ -240,6 +242,8 @@ public class PopupOptionsView extends JDialog {
 		if (buttonPanel == null) {
 			buttonPanel = new JPanel();
 			buttonPanel.add(getSaveButton(), null);
+			buttonPanel.add(getClearButton(), null);  // Generated
+			buttonPanel.add(getAllButton(), null);  // Generated
 			buttonPanel.add(getJButton1(), null);
 		}
 		return buttonPanel;
@@ -295,5 +299,45 @@ public class PopupOptionsView extends JDialog {
 			);
 		}
 		return dismissButton;
+	}
+
+	/**
+	 * This method initializes clearButton	
+	 * 	
+	 * @return javax.swing.JButton	
+	 */
+	private JButton getClearButton() {
+		if (clearButton == null) {
+			clearButton = new JButton();
+			ResourceHelper.setText(clearButton, "clear_all");
+			clearButton.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					for (int i = 0; i < ReminderTimes.getNum(); ++i) {
+						alarmBoxes[i].setSelected(false);
+					}
+				}
+			});
+		}
+		return clearButton;
+	}
+
+	/**
+	 * This method initializes allButton	
+	 * 	
+	 * @return javax.swing.JButton	
+	 */
+	private JButton getAllButton() {
+		if (allButton == null) {
+			allButton = new JButton();
+			ResourceHelper.setText(allButton, "select_all");
+			allButton.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					for (int i = 0; i < ReminderTimes.getNum(); ++i) {
+						alarmBoxes[i].setSelected(true);
+					}
+				}
+			});
+		}
+		return allButton;
 	}
 } //  @jve:decl-index=0:visual-constraint="10,10"

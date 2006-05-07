@@ -114,7 +114,8 @@ public class PrefName {
 		static public PrefName EMAILTIME = new PrefName( "email_time", new Integer(0));
 		static public PrefName EMAILUSER = new PrefName( "email_user", "");
 		static public PrefName EMAILPASS = new PrefName( "email_pass", "");
-		static public int[] REMMINUTES = new int[] { -10, -5, 0, 1, 2, 3, 4, 5, 10, 15, 20, 30, 45, 60, 90, 120, 180, 240, 300, 360};
+		//static public int[] REMMINUTES = new int[] { -10, -5, 0, 1, 2, 3, 4, 5, 10, 15, 20, 30, 45, 60, 90, 120, 180, 240, 300, 360};
+		static public PrefName REMMINS = new PrefName( "remmins", "-10,-5,0,1,2,3,4,5,10,15,20,30,45,60,90,120,180,240,300,360");
 		static public PrefName INDIVEMAILENABLED = new PrefName( "indiv_email_enabled", "false");
 		static public PrefName INDIVEMAILMINS = new PrefName( "indiv_email_mins", new Integer(15));
 		// font-LNF-locale

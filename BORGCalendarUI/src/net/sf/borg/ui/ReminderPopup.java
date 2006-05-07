@@ -31,8 +31,8 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.WindowConstants;
 
-import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Resource;
+import net.sf.borg.model.ReminderTimes;
 
 public class ReminderPopup extends View {
     private JPanel jPanel = null;
@@ -147,8 +147,8 @@ public class ReminderPopup extends View {
         this.setTitle("Borg " + Resource.getResourceString("Reminder"));
         jbInit();
         this.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
-        remindersShown = new char[PrefName.REMMINUTES.length];
-        for (int i = 0; i < PrefName.REMMINUTES.length; ++i) {
+        remindersShown = new char[ReminderTimes.getNum()];
+        for (int i = 0; i < ReminderTimes.getNum(); ++i) {
             remindersShown[i] = 'N';
         }
 

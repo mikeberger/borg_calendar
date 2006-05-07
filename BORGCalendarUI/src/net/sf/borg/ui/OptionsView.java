@@ -668,6 +668,8 @@ public class OptionsView extends View {
 
 		String ls = (String) lsbox.getSelectedItem();
 		Prefs.putPref(PrefName.LINESPACING, ls);
+		
+		remTimePanel.setTimes();
 
 		Prefs.notifyListeners();
 
@@ -2101,6 +2103,8 @@ public class OptionsView extends View {
 		return localFilePanel;
 	}
 	
+	private ReminderTimePanel remTimePanel = new ReminderTimePanel();
+	
 	private JPanel getReminderPanel()
 	{
 		
@@ -2118,7 +2122,7 @@ public class OptionsView extends View {
 		ResourceHelper.setText(soundbox, "beeps");
 		GridBagConstraints gridBagConstraints59 = new java.awt.GridBagConstraints();
 		gridBagConstraints59.gridx = 0;
-		gridBagConstraints59.gridy = 5;
+		gridBagConstraints59.gridy = 3;
 		gridBagConstraints59.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints59.insets = new java.awt.Insets(0, 8, 0, 0);
 		reminderPanel.add(soundbox, gridBagConstraints59);
@@ -2143,7 +2147,7 @@ public class OptionsView extends View {
 
 		GridBagConstraints gridBagConstraints65 = new java.awt.GridBagConstraints();
 		gridBagConstraints65.gridx = 0;
-		gridBagConstraints65.gridy = 4;
+		gridBagConstraints65.gridy = 2;
 		gridBagConstraints65.gridwidth = java.awt.GridBagConstraints.REMAINDER;
 		gridBagConstraints65.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints65.insets = new java.awt.Insets(8, 8, 8, 8);
@@ -2160,10 +2164,18 @@ public class OptionsView extends View {
 
 		GridBagConstraints gridBagConstraints112 = new GridBagConstraints();
 		gridBagConstraints112.gridx = 0;
-		gridBagConstraints112.gridy = 9;
+		gridBagConstraints112.gridy = 4;
 		gridBagConstraints112.anchor = java.awt.GridBagConstraints.WEST;
 		gridBagConstraints112.insets = new java.awt.Insets(0, 8, 0, 0);
 		reminderPanel.add(getUseBeep(), gridBagConstraints112);
+		
+		GridBagConstraints gridBagConstraints113 = new GridBagConstraints();
+		gridBagConstraints113.gridx = 0;
+		gridBagConstraints113.gridy = 5;
+		gridBagConstraints113.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+		gridBagConstraints113.anchor = java.awt.GridBagConstraints.WEST;
+		gridBagConstraints113.insets = new java.awt.Insets(18, 18, 18, 18);
+		reminderPanel.add(remTimePanel,gridBagConstraints113 );
 		
 		return reminderPanel;
 	}

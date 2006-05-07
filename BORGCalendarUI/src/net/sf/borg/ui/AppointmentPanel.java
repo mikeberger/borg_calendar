@@ -50,6 +50,7 @@ import net.sf.borg.model.Appointment;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.AppointmentXMLAdapter;
 import net.sf.borg.model.CategoryModel;
+import net.sf.borg.model.ReminderTimes;
 import net.sf.borg.model.Repeat;
 
 class AppointmentPanel extends JPanel {
@@ -1384,8 +1385,8 @@ class AppointmentPanel extends JPanel {
 
 	private void setCustRemTimes(Appointment r) {
 		if (r == null) {
-			custRemTimes = new char[PrefName.REMMINUTES.length];
-			for (int i = 0; i < PrefName.REMMINUTES.length; ++i) {
+			custRemTimes = new char[ReminderTimes.getNum()];
+			for (int i = 0; i < ReminderTimes.getNum(); ++i) {
 				custRemTimes[i] = 'N';
 			}
 		} else {
@@ -1394,7 +1395,7 @@ class AppointmentPanel extends JPanel {
 				custRemTimes = (r.getReminderTimes()).toCharArray();
 
 			} catch (Exception e) {
-				for (int i = 0; i < PrefName.REMMINUTES.length; ++i) {
+				for (int i = 0; i < ReminderTimes.getNum(); ++i) {
 					custRemTimes[i] = 'N';
 				}
 			}
@@ -1409,13 +1410,13 @@ class AppointmentPanel extends JPanel {
 
 	// display a summary of the times selected for popup reminders
 	public void setPopupTimesString() {
-		StringBuffer time1 = new StringBuffer(PrefName.REMMINUTES.length * 5 + 15 );
-		StringBuffer time2 = new StringBuffer(PrefName.REMMINUTES.length * 5 + 15 );
+		StringBuffer time1 = new StringBuffer(ReminderTimes.getNum() * 5 + 15 );
+		StringBuffer time2 = new StringBuffer(ReminderTimes.getNum() * 5 + 15 );
 		if (custRemTimes != null) {
 		        int i = 0;
-			while ( PrefName.REMMINUTES[i] < 0 && i < PrefName.REMMINUTES.length ) {
+			while ( ReminderTimes.getTimes(i) < 0 && i < ReminderTimes.getNum() ) {
 				if (custRemTimes[i] == 'Y') {
-					int abs = - PrefName.REMMINUTES[i];
+					int abs = - ReminderTimes.getTimes(i);
 					if (time1.length() > 0) {
 						time1 = time1.append(", ").append(abs);
 					} else {
@@ -1428,12 +1429,12 @@ class AppointmentPanel extends JPanel {
 			    time1 = time1.append("   ").append(Resource.getResourceString("min_aft_app"));
 			}
 
-			while ( i < PrefName.REMMINUTES.length ) {
+			while ( i < ReminderTimes.getNum() ) {
 				if (custRemTimes[i] == 'Y') {
 					if (time2.length() > 0) {
-						time2 = time2.append(", ").append(PrefName.REMMINUTES[i]);
+						time2 = time2.append(", ").append(ReminderTimes.getTimes(i));
 					} else {
-						time2 = time2.append(PrefName.REMMINUTES[i]);
+						time2 = time2.append(ReminderTimes.getTimes(i));
 					}
 				}
 				++i;
