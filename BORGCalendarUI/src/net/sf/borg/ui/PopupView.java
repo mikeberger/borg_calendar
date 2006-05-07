@@ -165,7 +165,7 @@ public class PopupView extends View {
 					long mins_to_go = acal.getTimeInMillis()/(1000*60) -
 										now.getTimeInMillis()/(1000*60);
 
-					if (outside_reminder_times(mins_to_go))
+					if (outside_reminder_times(mins_to_go, appt))
 						continue;
 
 					// skip appt if it is already in the pops list
@@ -298,8 +298,30 @@ public class PopupView extends View {
 		}
 	}
 
-	private boolean outside_reminder_times(long mins_to_go) {
-		return (mins_to_go > PrefName.REMMINUTES[PrefName.REMMINUTES.length - 1] ||
+	private boolean outside_reminder_times(long mins_to_go, Appointment appt) {
+		
+		int earliest = -999;
+		char[] remTimes = new char[PrefName.REMMINUTES.length];
+		try {
+			remTimes = (appt.getReminderTimes()).toCharArray();
+
+		} catch (Exception e) {
+			for (int i = 0; i < PrefName.REMMINUTES.length; ++i) {
+				remTimes[i] = 'N';
+			}
+		}
+
+		for( int i = 0; i < PrefName.REMMINUTES.length; i++ )
+		{
+			if( remTimes[i] == 'Y')
+				earliest = PrefName.REMMINUTES[i];
+		}
+		
+		//System.out.println("mtg =" + mins_to_go + " rt=" + appt.getReminderTimes() + " l=" + latest + " e=" + earliest);
+		if( earliest == -999)
+			return true;
+
+		return (mins_to_go > earliest ||
 				mins_to_go < PrefName.REMMINUTES[0]);
 	}
 
