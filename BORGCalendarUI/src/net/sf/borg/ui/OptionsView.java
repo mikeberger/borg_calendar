@@ -182,13 +182,14 @@ public class OptionsView extends View {
 		if (dbonly) {
 			// disable lots of non-db-related stuff
 			jTabbedPane1.setEnabledAt(0, false);
-			jTabbedPane1.setEnabledAt(2, false);
+			jTabbedPane1.setEnabledAt(1, false);
 			jTabbedPane1.setEnabledAt(3, false);
 			jTabbedPane1.setEnabledAt(4, false);
 			jTabbedPane1.setEnabledAt(5, false);
 			jTabbedPane1.setEnabledAt(6, false);
 			jTabbedPane1.setEnabledAt(7, false);
-			jTabbedPane1.setSelectedIndex(1);
+			jTabbedPane1.setEnabledAt(8, false);
+			jTabbedPane1.setSelectedIndex(2);
 			dismissButton.setEnabled(false);
 			applyButton.setEnabled(false);
 			return;
