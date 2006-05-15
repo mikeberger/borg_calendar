@@ -268,21 +268,20 @@ public class Row
             
             // verify that the object passed in matches the type identified in the schema
             // for this field
-            Class c = o.getClass();
             Class c2 = schema_.getClass(field);
-            if( c != c2 )
-                throw new Exception("Invalid Object passed to setField: " + field + "=" + c2 + " " + c);
+            if( !c2.isInstance(o) )
+                throw new Exception("Invalid Object passed to setField: " + field + "=" + c2 + " " + o.toString());
             
             // for Strings, just cast the object, no conversion needed
-            if( c == java.lang.String.class) {
+            if( o instanceof java.lang.String) {
                 val = (String) o;
             }
             // convert Integer to String
-            else if( c == java.lang.Integer.class) {
+            else if( o instanceof java.lang.Integer) {
                 val = ((Integer)o).toString();
             }
             // convert date to a String
-            else if( c == Date.class) {
+            else if( o instanceof Date) {
                 if( dateformat_ != null )
                 {
                     val = dateformat_.format((Date) o );
@@ -293,7 +292,7 @@ public class Row
                 }
             }
             // convert a Vector of Strings to a single comma separated String
-            else if( c == Vector.class) {
+            else if( o instanceof Vector) {
                 
 		    Vector vect = (Vector)o;
 		    for(int i = 0; i < vect.size(); i++) {

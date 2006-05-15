@@ -35,10 +35,12 @@ import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.CategoryList;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.ComponentList;
+import net.fortuna.ical4j.model.Dur;
 import net.fortuna.ical4j.model.ParameterList;
 import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.Recur;
+import net.fortuna.ical4j.model.ValidationException;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VToDo;
 import net.fortuna.ical4j.model.parameter.Value;
@@ -52,7 +54,9 @@ import net.fortuna.ical4j.model.property.RRule;
 import net.fortuna.ical4j.model.property.Summary;
 import net.fortuna.ical4j.model.property.Uid;
 import net.fortuna.ical4j.model.property.Version;
+import net.fortuna.ical4j.util.CompatibilityHints;
 import net.sf.borg.common.io.IOHelper;
+import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
 import net.sf.borg.common.util.Warning;
@@ -127,17 +131,19 @@ public class AppointmentIcalAdapter {
 			    ve.getProperties().add(desc);
 			}
 			
+			ParameterList pl = new ParameterList();
+			pl.add(Value.DATE_TIME);
+			
 			// date
 			if( AppointmentModel.isNote(ap))
 			{
-				ParameterList pl = new ParameterList();
-				pl.add(new Value(Value.DATE));
-				DtStart dts = new DtStart(pl, ap.getDate());
+				
+				DtStart dts = new DtStart(pl, new net.fortuna.ical4j.model.DateTime(ap.getDate()));
 				ve.getProperties().add(dts);
 			}
 			else
 			{
-			    DtStart dts = new DtStart(ap.getDate());
+			    DtStart dts = new DtStart(pl,new net.fortuna.ical4j.model.DateTime(ap.getDate()));
 				if( utc )
 			    {
 				    dts.setUtc(true);
@@ -146,9 +152,9 @@ public class AppointmentIcalAdapter {
 			}
 			
 			// duration
-			if( ap.getDuration() != null )
+			if( ap.getDuration() != null && ap.getDuration().intValue() != 0)
 			{
-				ve.getProperties().add( new Duration( ap.getDuration().intValue()*60*1000));
+				ve.getProperties().add( new Duration( new Dur(0,0,ap.getDuration().intValue(),0)));
 			}
 			
 			// vacation is a category
@@ -166,7 +172,7 @@ public class AppointmentIcalAdapter {
 			// private
 			if( ap.getPrivate() && !showpriv )
 			{
-				ve.getProperties().add( new Clazz(Clazz.PRIVATE));
+				ve.getProperties().add( Clazz.PRIVATE);
 			}
 			
 			// add color as a cetegory
@@ -296,17 +302,19 @@ static public String exportIcalToString(Appointment ap) throws Exception {
 			    ve.getProperties().add(desc);
 			}
 			
+			ParameterList pl = new ParameterList();
+			pl.add(Value.DATE_TIME);
+			
 			// date
 			if( AppointmentModel.isNote(ap))
 			{
-				ParameterList pl = new ParameterList();
-				pl.add(new Value(Value.DATE));
-				DtStart dts = new DtStart(pl, ap.getDate());
+				
+				DtStart dts = new DtStart(pl, new net.fortuna.ical4j.model.DateTime(ap.getDate()));
 				ve.getProperties().add(dts);
 			}
 			else
 			{
-			    DtStart dts = new DtStart(ap.getDate());
+			    DtStart dts = new DtStart(pl,new net.fortuna.ical4j.model.DateTime(ap.getDate()));
 				if( true )
 			    {
 				    dts.setUtc(true);
@@ -315,9 +323,9 @@ static public String exportIcalToString(Appointment ap) throws Exception {
 			}
 			
 			// duration
-			if( ap.getDuration() != null )
+			if( ap.getDuration() != null && ap.getDuration().intValue() != 0)
 			{
-				ve.getProperties().add( new Duration( ap.getDuration().intValue()*60*1000));
+				ve.getProperties().add( new Duration( new Dur(0,0,ap.getDuration().intValue(),0)));
 			}
 			
 			// vacation is a category
@@ -335,7 +343,7 @@ static public String exportIcalToString(Appointment ap) throws Exception {
 			// private
 			if( ap.getPrivate() )
 			{
-				ve.getProperties().add( new Clazz(Clazz.PRIVATE));
+				ve.getProperties().add( Clazz.PRIVATE);
 			}
 			
 			// add color as a cetegory
@@ -409,10 +417,10 @@ static public String exportIcalToString(Appointment ap) throws Exception {
 			
 		
 		
-		PropertyList pl = new PropertyList();
-		pl.add(new ProdId("BORG Calendar"));
-		pl.add(new Version());
-		net.fortuna.ical4j.model.Calendar cal = new net.fortuna.ical4j.model.Calendar( pl, clist );
+		PropertyList ppl = new PropertyList();
+		ppl.add(new ProdId("BORG Calendar"));
+		ppl.add(new Version());
+		net.fortuna.ical4j.model.Calendar cal = new net.fortuna.ical4j.model.Calendar( ppl, clist );
 		
 
 		cal.validate();
@@ -427,13 +435,22 @@ static public String exportIcalToString(Appointment ap) throws Exception {
 	
 	static public String importIcal( String file, String category ) throws Exception, Warning
 	{
+		CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_OUTLOOK_COMPATIBILITY,true);
+		CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_PARSING,true);
+		CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_UNFOLDING,true);
 		StringBuffer warning = new StringBuffer();
 		CalendarBuilder builder = new CalendarBuilder();
 		InputStream is = IOHelper.openStream(file);
 		Calendar cal = builder.build(is);
 		is.close();
 		
-		cal.validate();
+		try{
+			cal.validate();
+		}
+		catch( ValidationException e)
+		{
+			Errmsg.notice("Ical4j validation error: " + e.getLocalizedMessage());
+		}
 
 		ArrayList aplist = new ArrayList();
 		
@@ -474,7 +491,7 @@ static public String exportIcalToString(Appointment ap) throws Exception {
 				if( prop != null)
 				{
 					DtStart dts = (DtStart) prop;
-					Date d = dts.getTime();
+					Date d = dts.getDate();
 					ap.setDate(d);
 		            
 				}
@@ -488,17 +505,18 @@ static public String exportIcalToString(Appointment ap) throws Exception {
 				if( prop != null )
 				{
 					Duration dur = (Duration ) prop;
-					int durmin = (int)dur.getDuration() / 60000;
+					
+					int durdays = dur.getDuration().getDays();
 					// skip the the duration if >= 1 day
 					// not much else we can do about it right now without getting
 					// really complicated
-					if( durmin < (24*60))
+					if( durdays < 1)
 					{						
-						ap.setDuration( new Integer( durmin)  );
+						ap.setDuration( new Integer( dur.getDuration().getMinutes())  );
 					}
-					else if( durmin > (24*60))
+					else
 					{
-						warning.append("WARNING: Cannot handle duration of [" + durmin + "] minutes for appt [" + summary + "], using 0\n" );
+						warning.append("WARNING: Cannot handle duration greater than 1 day for appt [" + summary + "], using 0\n" );
 					}
 					
 				}
@@ -562,7 +580,7 @@ static public String exportIcalToString(Appointment ap) throws Exception {
 					}	
 					
 
-					
+					/*
 					if( recur.getDayList() != null )
 					{
 							warning.append("WARNING: BORG cannot yet handle multiple day BYDAY clause for appt [" + summary + "], adding first occurrence only\n" );
@@ -590,14 +608,14 @@ static public String exportIcalToString(Appointment ap) throws Exception {
 						aplist.add(ap);
 						continue;
 					}
-
+					*/
 					String freq = recur.getFrequency();
 					int interval = recur.getInterval();
-					if( freq.equals("DAILY"))
+					if( freq.equals(Recur.DAILY))
 					{
 						ap.setFrequency("daily");
 					}
-					else if( freq.equals("WEEKLY"))
+					else if( freq.equals(Recur.WEEKLY))
 					{
 						if( interval == 2)
 						{
@@ -608,11 +626,11 @@ static public String exportIcalToString(Appointment ap) throws Exception {
 							ap.setFrequency("weekly");
 						}
 					}
-					else if( freq.equals("MONTHLY"))
+					else if( freq.equals(Recur.MONTHLY))
 					{
 						ap.setFrequency("monthly");
 					}
-					else if( freq.equals("YEARLY"))
+					else if( freq.equals(Recur.YEARLY))
 					{
 						ap.setFrequency("yearly");
 					}
@@ -623,6 +641,7 @@ static public String exportIcalToString(Appointment ap) throws Exception {
 						continue;
 					}
 					
+					/*
 					if( recur.getMonthList() != null)
 					{
 						// we can handle a month list of 1 month if we are repeating yearly
@@ -633,7 +652,7 @@ static public String exportIcalToString(Appointment ap) throws Exception {
 							aplist.add(ap);
 							continue;
 						}
-					}
+					}*/
 					
 					int times = recur.getCount();
 					if( times < 1 )
