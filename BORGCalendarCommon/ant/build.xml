@@ -304,6 +304,7 @@ build.number=${build.number}
 			<fileset dir="${db.res.dir}" includes="update151.sql" />
 			<fileset dir="${prj.common.dir}" includes="lib/*" />
 			<fileset dir="${prj.ui.dir}" includes="lib/*" />
+			<fileset dir="${help.dir}/default" includes="db.html" />
 		</zip>
 	</target>
 
