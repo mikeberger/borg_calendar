@@ -58,7 +58,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
-import net.sf.borg.common.app.AppHelper;
 import net.sf.borg.common.ui.JButtonKnowsBgColor;
 import net.sf.borg.common.ui.NwFontChooserS;
 import net.sf.borg.common.util.Errmsg;
@@ -382,7 +381,7 @@ public class OptionsView extends View {
 		btn_ucs_weekday.setColorByProperty();
 		// (bsv 2004-12-20)
 
-		logobrowse.setEnabled(AppHelper.isApplication());
+		logobrowse.setEnabled(true);
 
 		manageMySize(PrefName.OPTVIEWSIZE);
 	}

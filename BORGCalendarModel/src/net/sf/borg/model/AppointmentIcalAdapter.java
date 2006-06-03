@@ -19,6 +19,7 @@ Copyright 2003 by Mike Berger
  */
 package net.sf.borg.model;
 
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringWriter;
@@ -440,7 +441,7 @@ static public String exportIcalToString(Appointment ap) throws Exception {
 		CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_UNFOLDING,true);
 		StringBuffer warning = new StringBuffer();
 		CalendarBuilder builder = new CalendarBuilder();
-		InputStream is = IOHelper.openStream(file);
+		InputStream is = new FileInputStream(file);
 		Calendar cal = builder.build(is);
 		is.close();
 		

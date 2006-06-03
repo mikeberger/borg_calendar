@@ -44,7 +44,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
-import net.sf.borg.common.app.AppHelper;
 import net.sf.borg.common.ui.NwFontChooserS;
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
@@ -160,7 +159,7 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 	// start up the
 	// main month view
 	private void init(String args[]) {
-		AppHelper.freeze();
+		
 		// prevent subsequent tampering with our environment
 
 		boolean readonly = false; // open DBs readonly
@@ -173,7 +172,7 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 		OptionsView.setRestartListener(this);
 
 		// override for testing a different db
-		String testdb = !AppHelper.isApplication() ? "mem::false::false" : null;
+		String testdb =  null;
 
 		// override for tray icon name
 		String trayname = "BORG";
@@ -256,7 +255,7 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 			Locale.setDefault(new Locale(language, country));
 		}
 		String version = Resource.getVersion();
-		if (version.indexOf("beta") != -1 && !AppHelper.isApplet())
+		if (version.indexOf("beta") != -1 )
 			Errmsg.notice(Resource.getResourceString("betawarning"));
 
 		// do not show the startup banner if autostart or aplist features are on
@@ -365,7 +364,7 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 				ban_.dispose();
 			ban_ = null;
 
-			if (!AppHelper.isApplet()) {
+		
 				// start up version check timer
 				versionCheckTimer_ = new java.util.Timer();
 				versionCheckTimer_.schedule(new TimerTask() {
@@ -425,7 +424,7 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 				if (port != -1) {
 					new SocketServer(port, this);
 				}
-			}
+			
 
 		} catch (Exception e) {
 			// if something goes wrong, it might be that the database directory
@@ -495,7 +494,7 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 		trayIcon = true;
 		String usetray = Prefs.getPref(PrefName.USESYSTRAY);
 
-		if (!AppHelper.isApplication() || !usetray.equals("true")) {
+		if (!usetray.equals("true")) {
 			trayIcon = false;
 		} else {
 			try {

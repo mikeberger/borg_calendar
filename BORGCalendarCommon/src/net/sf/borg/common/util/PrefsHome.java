@@ -20,51 +20,47 @@
 
 package net.sf.borg.common.util;
 
-import net.sf.borg.common.app.AppHelper;
-
 /**
  * 
  * A home for our Preferences implementation.
- *  
+ * 
  */
 class PrefsHome {
 
-    /**
-     * 
-     * Our singleton implementation.
-     *  
-     */
-    public static PrefsHome getInstance() {
+	/**
+	 * 
+	 * Our singleton implementation.
+	 * 
+	 */
+	public static PrefsHome getInstance() {
 
-        return instance;
-    }
+		return instance;
+	}
 
-    /**
-     * 
-     * Retrieves our preferences implementation.
-     *  
-     */
-    public final IPrefs getPrefs() {
+	/**
+	 * 
+	 * Retrieves our preferences implementation.
+	 * 
+	 */
+	public final IPrefs getPrefs() {
 
-        return impl;
-    }
+		return impl;
+	}
 
-    // package //
-    final void setPrefs(IPrefs prefs) {
+	// package //
+	final void setPrefs(IPrefs prefs) {
 
-        impl = prefs;
-    }
+		impl = prefs;
+	}
 
-    // private //
-    private static final PrefsHome instance = new PrefsHome();
+	// private //
+	private static final PrefsHome instance = new PrefsHome();
 
-    private static IPrefs impl;
+	private static IPrefs impl;
 
-    private PrefsHome() {
+	private PrefsHome() {
 
-        if (AppHelper.isApplication())
-            impl = new PrefsImpl();
-        else
-            impl = new MemPrefsImpl();
-    }
+		impl = new PrefsImpl();
+
+	}
 }

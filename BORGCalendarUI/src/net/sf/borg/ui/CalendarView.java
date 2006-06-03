@@ -48,7 +48,6 @@ import java.util.TreeSet;
 import java.util.Vector;
 
 import javax.swing.Box;
-import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
@@ -70,9 +69,7 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
 
-import net.sf.borg.common.app.AppHelper;
 import net.sf.borg.common.io.IOHelper;
-import net.sf.borg.common.io.OSServicesHome;
 import net.sf.borg.common.ui.OverwriteConfirm;
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
@@ -106,12 +103,6 @@ public class CalendarView extends View implements Prefs.Listener {
 	private boolean trayIcon_;
 
 	static final private int NUM_DAY_BOXES = 40;
-
-	// the button we used to dismiss any child dialog
-	private MemDialog dlgMemFiles;
-
-	// the file we chose in our memory file chooser dialog
-	private String memFile;
 
 	private static CalendarView singleton = null;
 
@@ -423,28 +414,14 @@ public class CalendarView extends View implements Prefs.Listener {
 			syncMI.setEnabled(false);
 		}
 
-		dlgMemFiles = new MemDialog(this);
-		dlgMemoryFilesChooser.setSize(200, 350);
-		listFiles.setModel(new DefaultListModel());
-		importMI.setEnabled(!AppHelper.isApplet());
-		exportMI.setEnabled(AppHelper.isApplication());
-		impical.setEnabled(!AppHelper.isApplet());
-		expical.setEnabled(!AppHelper.isApplet());
-
-		String showmem = Prefs.getPref(PrefName.SHOWMEMFILES);
-		if (!showmem.equals("true") && !AppHelper.isApplet()) {
-			impXMLMem.setVisible(false);
-			expXMLMem.setVisible(false);
-			viewMem.setVisible(false);
-		}
+		importMI.setEnabled(true);
+		exportMI.setEnabled(true);
+		impical.setEnabled(true);
+		expical.setEnabled(true);
 
 		// show the window
 		pack();
 		setVisible(true);
-
-		// String version = Resource.getVersion();
-		// if( version.indexOf("beta") != -1 )
-		// Errmsg.notice(Resource.getResourceString("betawarning"));
 
 	}
 
@@ -452,11 +429,9 @@ public class CalendarView extends View implements Prefs.Listener {
 		this.dispose();
 	}
 
-	// create an OutputStream from a URL string, special-casing "mem:"
+	// create an OutputStream from a URL string
 	private OutputStream createOutputStreamFromURL(String urlstr)
 			throws Exception {
-		if (urlstr.startsWith("mem:"))
-			return IOHelper.createOutputStream(urlstr);
 
 		return IOHelper.createOutputStream(new URL(urlstr));
 	}
@@ -624,15 +599,7 @@ public class CalendarView extends View implements Prefs.Listener {
 	}
 
 	private void exit() {
-		if (IOHelper.isMemFilesDirty() && !AppHelper.isApplet()) {
-			setVisible(false);
-			JOptionPane.showMessageDialog(this, Resource
-					.getResourceString("Memory_Files_Changed"), Resource
-					.getResourceString("Memory_Files_Changed_Title"),
-					JOptionPane.INFORMATION_MESSAGE);
-			dlgMemFiles.setMemento(IOHelper.getMemFilesMemento());
-			dlgMemFiles.setVisible(true);
-		}
+
 		System.exit(0);
 	}
 
@@ -982,7 +949,7 @@ public class CalendarView extends View implements Prefs.Listener {
 
 			refreshTodoView();
 			refreshTaskView();
-			//refreshDbInfo();
+			// refreshDbInfo();
 
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
@@ -1155,13 +1122,6 @@ public class CalendarView extends View implements Prefs.Listener {
 	private void initComponents() {// GEN-BEGIN:initComponents
 		java.awt.GridBagConstraints gridBagConstraints;
 
-		dlgMemoryFilesChooser = new javax.swing.JDialog();
-		pnlMainMemFilesChooser = new javax.swing.JPanel();
-		lblMemChooser = new javax.swing.JLabel();
-		listFiles = new javax.swing.JList();
-		pnlButtonsMemFilesChooser = new javax.swing.JPanel();
-		bnMemFilesChooserOK = new javax.swing.JButton();
-		bnMemFilesChooserCancel = new javax.swing.JButton();
 		MonthLabel = new javax.swing.JLabel();
 		jPanel2 = new javax.swing.JPanel();
 		jLabel1 = new javax.swing.JLabel();
@@ -1208,69 +1168,19 @@ public class CalendarView extends View implements Prefs.Listener {
 		impXML = new javax.swing.JMenu();
 		importMI = new javax.swing.JMenuItem();
 		impurl = new javax.swing.JMenuItem();
-		impXMLMem = new javax.swing.JMenuItem();
+
 		expXML = new javax.swing.JMenu();
 		exportMI = new javax.swing.JMenuItem();
 		expurl = new javax.swing.JMenuItem();
-		expXMLMem = new javax.swing.JMenuItem();
+
 		impical = new javax.swing.JMenuItem();
 		expical = new javax.swing.JMenuItem();
-		viewMem = new javax.swing.JMenuItem();
+
 		helpmenu = new javax.swing.JMenu();
 		helpMI = new javax.swing.JMenuItem();
 		licsend = new javax.swing.JMenuItem();
 		chglog = new javax.swing.JMenuItem();
 		AboutMI = new javax.swing.JMenuItem();
-
-		ResourceHelper.setTitle(dlgMemoryFilesChooser, "dlgMemoryFilesChooser");
-		dlgMemoryFilesChooser.setModal(true);
-		dlgMemoryFilesChooser.setName("dlgMemoryFilesChooser");
-		pnlMainMemFilesChooser.setLayout(new java.awt.BorderLayout());
-
-		pnlMainMemFilesChooser.setMinimumSize(new java.awt.Dimension(200, 315));
-		pnlMainMemFilesChooser
-				.setPreferredSize(new java.awt.Dimension(200, 315));
-		ResourceHelper.setText(lblMemChooser, "lblMemChooser");
-		pnlMainMemFilesChooser.add(lblMemChooser, java.awt.BorderLayout.NORTH);
-
-		listFiles
-				.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-		listFiles
-				.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
-					public void valueChanged(
-							javax.swing.event.ListSelectionEvent evt) {
-						listFilesValueChanged(evt);
-					}
-				});
-
-		pnlMainMemFilesChooser.add(listFiles, java.awt.BorderLayout.CENTER);
-
-		dlgMemoryFilesChooser.getContentPane().add(pnlMainMemFilesChooser,
-				java.awt.BorderLayout.CENTER);
-
-		ResourceHelper.setText(bnMemFilesChooserOK, "OK");
-		bnMemFilesChooserOK
-				.addActionListener(new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						bnMemFilesChooserOKActionPerformed(evt);
-					}
-				});
-
-		pnlButtonsMemFilesChooser.add(bnMemFilesChooserOK);
-
-		ResourceHelper.setText(bnMemFilesChooserCancel, "Cancel");
-		bnMemFilesChooserCancel.setDefaultCapable(false);
-		bnMemFilesChooserCancel
-				.addActionListener(new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						bnMemFilesChooserCancelActionPerformed(evt);
-					}
-				});
-
-		pnlButtonsMemFilesChooser.add(bnMemFilesChooserCancel);
-
-		dlgMemoryFilesChooser.getContentPane().add(pnlButtonsMemFilesChooser,
-				java.awt.BorderLayout.SOUTH);
 
 		getContentPane().setLayout(new java.awt.GridBagLayout());
 
@@ -1701,15 +1611,6 @@ public class CalendarView extends View implements Prefs.Listener {
 
 		impXML.add(impurl);
 
-		ResourceHelper.setText(impXMLMem, "impXMLMem");
-		impXMLMem.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				impXMLMemActionPerformed(evt);
-			}
-		});
-
-		impXML.add(impXMLMem);
-
 		impexpMenu.add(impXML);
 
 		expXML.setIcon(new javax.swing.ImageIcon(getClass().getResource(
@@ -1732,15 +1633,6 @@ public class CalendarView extends View implements Prefs.Listener {
 		});
 
 		expXML.add(expurl);
-
-		ResourceHelper.setText(expXMLMem, "expXMLMem");
-		expXMLMem.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				expXMLMemActionPerformed(evt);
-			}
-		});
-
-		expXML.add(expXMLMem);
 
 		impexpMenu.add(expXML);
 
@@ -1765,15 +1657,6 @@ public class CalendarView extends View implements Prefs.Listener {
 		});
 
 		impexpMenu.add(expical);
-
-		ResourceHelper.setText(viewMem, "viewMem");
-		viewMem.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				viewMemActionPerformed(evt);
-			}
-		});
-
-		impexpMenu.add(viewMem);
 
 		menuBar.add(impexpMenu);
 
@@ -1950,60 +1833,6 @@ public class CalendarView extends View implements Prefs.Listener {
 
 	}// GEN-LAST:event_expicalActionPerformed
 
-	private void listFilesValueChanged(javax.swing.event.ListSelectionEvent evt) {// GEN-FIRST:event_listFilesValueChanged
-		bnMemFilesChooserOK.setEnabled(listFiles.getSelectedIndex() != -1);
-	}// GEN-LAST:event_listFilesValueChanged
-
-	private void bnMemFilesChooserCancelActionPerformed(
-			java.awt.event.ActionEvent evt) {// GEN-FIRST:event_bnMemFilesChooserCancelActionPerformed
-		memFile = null;
-		dlgMemoryFilesChooser.setVisible(false);
-	}// GEN-LAST:event_bnMemFilesChooserCancelActionPerformed
-
-	private void bnMemFilesChooserOKActionPerformed(
-			java.awt.event.ActionEvent evt) {// GEN-FIRST:event_bnMemFilesChooserOKActionPerformed
-		memFile = (String) listFiles.getSelectedValue();
-		dlgMemoryFilesChooser.setVisible(false);
-	}// GEN-LAST:event_bnMemFilesChooserOKActionPerformed
-
-	private void viewMemActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_viewMemActionPerformed
-		dlgMemFiles.setMemento(IOHelper.getMemFilesMemento());
-		dlgMemFiles.setVisible(true);
-	}// GEN-LAST:event_viewMemActionPerformed
-
-	private void impXMLMemActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_impXMLMemActionPerformed
-		try {
-			// Argh! This ugliness is because the dialog is not
-			// a subclass. Either you can't do this with NetBeans
-			// or I haven't figured it out....
-			bnMemFilesChooserOK.setEnabled(false);
-			String[] files = IOHelper.getMemFilesList();
-			DefaultListModel model = (DefaultListModel) listFiles.getModel();
-			model.removeAllElements();
-			for (int i = 0; i < files.length; ++i) {
-				model.addElement(files[i]);
-			}
-			dlgMemoryFilesChooser.setVisible(true);
-			if (memFile != null) {
-				impURLCommon(memFile, IOHelper.openStream(memFile));
-			}
-		} catch (Exception e) {
-			Errmsg.errmsg(e);
-		}
-	}// GEN-LAST:event_impXMLMemActionPerformed
-
-	private void expXMLMemActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_expXMLMemActionPerformed
-		try {
-			expURLCommon("mem:");
-			JOptionPane.showMessageDialog(this, Resource
-					.getResourceString("expXMLMemConfirmation"), Resource
-					.getResourceString("expXMLMemTitle"),
-					JOptionPane.INFORMATION_MESSAGE);
-		} catch (Exception e) {
-			Errmsg.errmsg(e);
-		}
-	}// GEN-LAST:event_expXMLMemActionPerformed
-
 	private void expurlActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_expurlActionPerformed
 	{// GEN-HEADEREND:event_expurlActionPerformed
 		try {
@@ -2029,7 +1858,7 @@ public class CalendarView extends View implements Prefs.Listener {
 
 			Prefs.putPref(PrefName.LASTIMPURL, urlst);
 			URL url = new URL(urlst);
-			impURLCommon(urlst, IOHelper.openStream(url));
+			impURLCommon(urlst, url.openStream());
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
 		}
@@ -2148,10 +1977,7 @@ public class CalendarView extends View implements Prefs.Listener {
 
 			// if( ret != JOptionPane.OK_OPTION )
 			// return;
-			InputStream istr = OSServicesHome
-					.getInstance()
-					.getServices()
-					.fileOpen(
+			InputStream istr = IOHelper.fileOpen(
 							".",
 							Resource
 									.getResourceString("Please_choose_File_to_Import_From"));
@@ -2436,18 +2262,13 @@ public class CalendarView extends View implements Prefs.Listener {
 	}// GEN-LAST:event_NextActionPerformed
 
 	private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_exitMenuItemActionPerformed
-
-		if (AppHelper.isApplet()) {
-			this.dispose();
-		} else {
-			exit();
-		}
+		exit();
 
 	}// GEN-LAST:event_exitMenuItemActionPerformed
 
 	/** Exit the Application */
 	private void exitForm(java.awt.event.WindowEvent evt) {// GEN-FIRST:event_exitForm
-		if (trayIcon_ || AppHelper.isApplet()) {
+		if (trayIcon_) {
 			this.dispose();
 		} else {
 			exit();
@@ -2482,21 +2303,13 @@ public class CalendarView extends View implements Prefs.Listener {
 
 	private javax.swing.JButton Today;
 
-	private javax.swing.JButton bnMemFilesChooserCancel;
-
-	private javax.swing.JButton bnMemFilesChooserOK;
-
 	private javax.swing.JMenu catmenu;
 
 	private javax.swing.JMenuItem chglog;
 
-	private javax.swing.JDialog dlgMemoryFilesChooser;
-
 	private javax.swing.JMenuItem exitMenuItem;
 
 	private javax.swing.JMenu expXML;
-
-	private javax.swing.JMenuItem expXMLMem;
 
 	private javax.swing.JMenuItem expical;
 
@@ -2511,8 +2324,6 @@ public class CalendarView extends View implements Prefs.Listener {
 	private javax.swing.JMenu helpmenu;
 
 	private javax.swing.JMenu impXML;
-
-	private javax.swing.JMenuItem impXMLMem;
 
 	private javax.swing.JMenu impexpMenu;
 
@@ -2562,21 +2373,15 @@ public class CalendarView extends View implements Prefs.Listener {
 
 	private javax.swing.JPanel jPanel4;
 
-	private javax.swing.JLabel lblMemChooser;
-
 	private javax.swing.JMenuItem licsend;
 
-	private javax.swing.JList listFiles;
+	// private javax.swing.JList listFiles;
 
 	private javax.swing.JMenuBar menuBar;
 
 	private javax.swing.JMenu navmenu;
 
 	private javax.swing.JMenuItem nextmi;
-
-	private javax.swing.JPanel pnlButtonsMemFilesChooser;
-
-	private javax.swing.JPanel pnlMainMemFilesChooser;
 
 	private javax.swing.JMenuItem prevmi;
 
@@ -2585,8 +2390,6 @@ public class CalendarView extends View implements Prefs.Listener {
 	private javax.swing.JMenuItem syncMI;
 
 	private javax.swing.JMenuItem todaymi;
-
-	private javax.swing.JMenuItem viewMem;
 
 	// End of variables declaration//GEN-END:variables
 

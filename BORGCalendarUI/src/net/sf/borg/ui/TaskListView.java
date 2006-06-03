@@ -43,6 +43,7 @@ import java.util.Iterator;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
@@ -53,7 +54,6 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.table.TableCellRenderer;
 
 import net.sf.borg.common.io.IOHelper;
-import net.sf.borg.common.io.OSServicesHome;
 import net.sf.borg.common.ui.TablePrinter;
 import net.sf.borg.common.ui.TableSorter;
 import net.sf.borg.common.util.Errmsg;
@@ -66,12 +66,6 @@ import net.sf.borg.model.Task;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.TaskXMLAdapter;
 import net.sf.borg.model.db.DBException;
-/*
- * btgui.java
- *
- * Created on August 3, 2001, 11:09 AM
- */
-import javax.swing.JCheckBox;
 
 /**
  *
@@ -603,10 +597,7 @@ public class TaskListView extends View {
             if (ret != JOptionPane.OK_OPTION)
                 return;
 
-            InputStream istr = OSServicesHome
-                    .getInstance()
-                    .getServices()
-                    .fileOpen(
+            InputStream istr = IOHelper.fileOpen(
                             ".",
                             Resource
                                     .getResourceString("Please_choose_File_to_Import_From"));
@@ -632,7 +623,7 @@ public class TaskListView extends View {
             ByteArrayInputStream istr = new ByteArrayInputStream(buf);
 
             // Export XML to the file
-            OSServicesHome.getInstance().getServices().fileSave(".", istr,
+            IOHelper.fileSave(".", istr,
                     "state_model.exp");
         } catch (Exception e) {
             Errmsg.errmsg(e);

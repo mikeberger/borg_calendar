@@ -49,10 +49,6 @@ public class BeanDataFactoryFactory
 		{
 			factoryClass = "net.sf.borg.model.db.jdbc.JdbcBeanDataFactory";
 		}
-		else if (db.startsWith("serialize:") || db.startsWith("mem:"))
-		{
-			factoryClass = "net.sf.borg.model.db.serial.SerialBeanDataFactory";
-		}
 		else if (db.startsWith("remote:"))
 		{
 			factoryClass = "net.sf.borg.model.db.remote.RemoteBeanDataFactory";
