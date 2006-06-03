@@ -119,7 +119,7 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 
 		// create a new borg object and call its init routing with the command
 		// line args
-		Borg b = new Borg();
+		Borg b = getReference();
 		b.init(args);
 	}
 
@@ -141,6 +141,12 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 					// private //
 					private IRemoteProxy proxy = null;
 				});
+	}
+	
+	static public void shutdown()
+	{
+		getReference().removeListeners();
+		System.exit(0);
 	}
 
 	public void restart() {

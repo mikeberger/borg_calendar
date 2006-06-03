@@ -196,7 +196,7 @@ build.number=${build.number}
 			<attribute name="Built-By" value="${user.name}" />
 			<attribute name="Main-Class" value="${pkg}/control/Borg" />
 			<attribute name="Class-Path"
-			           value="lib/jdic.jar lib/jh.jar lib/borghelp.jar lib/ical4j.jar lib/commons-logging.jar lib/looks-1.3.2.jar lib/jcalendar.jar lib/commons-httpclient-3.0-rc3.jar lib/commons-codec-1.3.jar lib/mail.jar lib/activation.jar" />
+			           value="lib/hsqldb.jar lib/jdic.jar lib/jh.jar lib/borghelp.jar lib/ical4j.jar lib/commons-logging.jar lib/looks-1.3.2.jar lib/jcalendar.jar lib/commons-httpclient-3.0-rc3.jar lib/commons-codec-1.3.jar lib/mail.jar lib/activation.jar" />
 		</manifest>
 
 		<antcall target="zz_copyresources">

@@ -57,7 +57,7 @@ CREATE TABLE `appointments` (
   `frequency` varchar(20) default NULL,
   `todo` tinyint(4) NOT NULL default '0',
   `color` varchar(10) default NULL,
-  `repeat` tinyint(4) NOT NULL default '0',
+   rpt tinyint(4) NOT NULL default '0',
   `category` varchar(15) default NULL,
   `new` tinyint(4) NOT NULL default '0',
   `modified` tinyint(4) NOT NULL default '0',

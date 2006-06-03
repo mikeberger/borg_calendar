@@ -60,6 +60,7 @@ public class PrefName {
 		static public PrefName DBURL = new PrefName( "dburl", "");
 		static public PrefName SHARED = new PrefName( "shared", "false");
 		static public PrefName SYNCMINS = new PrefName( "sync_mins", new Integer(0));
+		static public PrefName HSQLDBDIR = new PrefName( "hsqldbdir", "not-set");
 		
 		// misc
 		static public PrefName STACKTRACE = new PrefName( "stacktrace", "false");

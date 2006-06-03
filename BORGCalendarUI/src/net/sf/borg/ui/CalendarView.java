@@ -600,7 +600,7 @@ public class CalendarView extends View implements Prefs.Listener {
 
 	private void exit() {
 
-		System.exit(0);
+		Borg.shutdown();
 	}
 
 	/**

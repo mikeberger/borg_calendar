@@ -493,12 +493,12 @@ public class AppointmentListView extends View implements ListSelectionListener {
 	}// GEN-LAST:event_dismissActionPerformed
 
 	private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_exitMenuItemActionPerformed
-		this.dispose(); // System.exit(0);
+		this.dispose(); 
 	}// GEN-LAST:event_exitMenuItemActionPerformed
 
 	/** Exit the Application */
 	private void exitForm(java.awt.event.WindowEvent evt) {// GEN-FIRST:event_exitForm
-		this.dispose(); // System.exit(0);
+		this.dispose(); 
 	}// GEN-LAST:event_exitForm
 
 	public void valueChanged(ListSelectionEvent e) {
@@ -557,7 +557,6 @@ public class AppointmentListView extends View implements ListSelectionListener {
 
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
-			System.exit(1);
 		}
 
 		// resize the table based on new row count

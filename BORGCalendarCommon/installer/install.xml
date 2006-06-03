@@ -14,7 +14,7 @@
     -->
     <info>
         <appname>BORG Calendar</appname>
-        <appversion>1.5.1.2</appversion>
+        <appversion>1.5.2</appversion>
 	<javaversion>1.4</javaversion>
 	<url>http://borg-calendar.sourceforge.net/</url>
     </info>
@@ -92,6 +92,7 @@
             <file src="borg.jar" targetdir="$INSTALL_PATH"/>
 	    	<file src="lib/jh.jar" targetdir="$INSTALL_PATH/lib"/>
 	    	<file src="lib/borghelp.jar" targetdir="$INSTALL_PATH/lib"/>
+	    	<file src="lib/hsqldb.jar" targetdir="$INSTALL_PATH/lib"/>
 	    	<file src="lib/jcalendar.jar" targetdir="$INSTALL_PATH/lib"/>
 	    	<file src="lib/license.jcalendar.txt" targetdir="$INSTALL_PATH/lib"/>
 	    	<file src="lib/commons-logging.jar" targetdir="$INSTALL_PATH/lib"/>

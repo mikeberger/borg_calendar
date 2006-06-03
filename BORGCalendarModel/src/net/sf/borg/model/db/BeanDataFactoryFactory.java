@@ -80,6 +80,10 @@ public class BeanDataFactoryFactory
 		{
 			dbdir = "remote:" + Prefs.getPref(PrefName.DBURL);
 		}
+		else if( dbtype.equals("hsqldb"))
+		{
+			dbdir = "jdbc:hsqldb:file:" + Prefs.getPref(PrefName.HSQLDBDIR) + "/borg_";
+		}
 		else
 		{
 			// build a mysql URL
@@ -88,6 +92,7 @@ public class BeanDataFactoryFactory
 				"&password=" + Prefs.getPref( PrefName.DBPASS ) + "&autoReconnect=true";
 		}
 	
+		System.out.println("DB URL is: " + dbdir);
 		return( dbdir );
 	}
 

@@ -24,6 +24,8 @@ Copyright 2003 by Mike Berger
  */
 
 package net.sf.borg.model.db.jdbc;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -33,9 +35,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.model.BorgOption;
 import net.sf.borg.model.db.BeanDB;
 import net.sf.borg.model.db.DBException;
@@ -69,6 +73,7 @@ abstract class JdbcDB implements BeanDB
     // a flush of the cache
     private boolean objectCacheOn_;  // is caching on?
     private HashMap objectCache_;  // the cache
+    private String url_;
     
     protected String username_;
     
@@ -85,19 +90,62 @@ abstract class JdbcDB implements BeanDB
         objectCacheOn_ = true;
         objectCache_ = new HashMap();
         
-        // for now - support mysql
-        // it will be simple to switch Drivers in the future
-        // based on the url to support other DBs - but this
-        // may never happen
-        if( url.startsWith( "jdbc:mysql" ) )
-            Class.forName( "com.mysql.jdbc.Driver" );
-        else if( url.startsWith( "jdbc:hsqldb" ))
-            Class.forName( "org.hsqldb.jdbcDriver" );
-        
-        if( globalConnection_ == null )
-        {
-            globalConnection_ = DriverManager.getConnection( url );
-        }
+        url_ = url;
+        if (url.startsWith("jdbc:mysql")) {
+			Class.forName("com.mysql.jdbc.Driver");
+			if (globalConnection_ == null) {
+				globalConnection_ = DriverManager.getConnection(url);
+			}
+
+		} else if (url.startsWith("jdbc:hsqldb")) {
+			Class.forName("org.hsqldb.jdbcDriver");
+			if (globalConnection_ == null) {
+				Properties props = new Properties();
+				props.setProperty("user", "sa");
+				props.setProperty("password", "");
+				props.setProperty("shutdown", "true");
+				props.setProperty("ifexists", "true");
+				try{
+					globalConnection_ = DriverManager.getConnection(url, props);
+				}
+				catch( SQLException se)
+				{
+					if( se.getSQLState().equals("08003"))
+					{
+						// need to create the db
+						try {
+							System.out.println("Creating Database");
+							InputStream is = 
+								getClass().getResourceAsStream("/resource/borg_hsqldb.sql");
+							StringBuffer sb = new StringBuffer();
+							InputStreamReader r = new InputStreamReader(is);
+							while (true) {
+								int ch = r.read();
+								if (ch == -1)
+									break;
+								sb.append((char)ch);
+							}
+							props.setProperty("ifexists", "false");
+							globalConnection_ = DriverManager.getConnection(url, props);
+							execSQL(sb.toString());
+						} catch (Exception e2) {
+							throw e2;
+							//Errmsg.errmsg(e2);
+							//Errmsg.notice("Cannot create database...exiting");
+							//System.exit(1);
+						}
+					}else if( se.getMessage().indexOf("locked") != -1)
+					{
+						throw se;
+					}
+					else
+					{
+						throw se;
+					}
+				}
+			}
+
+		}
  
         connection_ = globalConnection_;
     }
@@ -109,6 +157,19 @@ abstract class JdbcDB implements BeanDB
         
         connection_ = conn;
     }
+    
+    private void cleanup() {
+		try {
+			if (globalConnection_ != null && !globalConnection_.isClosed()
+					&& url_.startsWith("jdbc:hsqldb")) {
+
+				execSQL("SHUTDOWN");
+
+			}
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
+		}
+	}
     
     // turn on caching
     public void cacheOn(boolean b)
@@ -175,7 +236,13 @@ abstract class JdbcDB implements BeanDB
         }
         return(vect);
     }
-    
+
+	static public ResultSet execSQL(String sql) throws Exception {
+		PreparedStatement stmt = globalConnection_.prepareStatement(sql);
+		stmt.execute();
+		return stmt.getResultSet();
+	}
+	
     protected void writeCache( KeyedBean bean )
     {
         // put a copy of the bean in the cache
@@ -223,8 +290,12 @@ abstract class JdbcDB implements BeanDB
     
     public void close() throws Exception
     {
+    	cleanup();
         if( connection_ != null && connection_ != globalConnection_ )
             connection_.close();
+        else if( globalConnection_ != null )
+        	globalConnection_.close();
+        globalConnection_ = null;
         connection_ = null;
     }
     

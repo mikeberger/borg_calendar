@@ -766,12 +766,12 @@ public class TaskListView extends View {
     }
 
     private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {
-        this.dispose(); //System.exit(0);
+        this.dispose(); 
     }
 
     /** Exit the Application */
     private void exitForm(java.awt.event.WindowEvent evt) {
-        this.dispose(); //System.exit(0);
+        this.dispose();
     }
 
 
@@ -952,12 +952,10 @@ public class TaskListView extends View {
         } catch (DBException e) {
             if (e.getRetCode() != DBException.RET_NOT_FOUND) {
                 Errmsg.errmsg(e);
-                System.exit(1);
             }
 
         } catch (Exception e) {
             Errmsg.errmsg(e);
-            System.exit(1);
         }
 
         // resize the table based on new row count
@@ -981,7 +979,6 @@ public class TaskListView extends View {
             tskg.setVisible(true);
         } catch (Exception e) {
             Errmsg.errmsg(e);
-            System.exit(1);
         }
 
     }
@@ -1002,7 +999,6 @@ public class TaskListView extends View {
 
         } catch (Exception e) {
             Errmsg.errmsg(e);
-            System.exit(1);
         }
 
     }
@@ -1015,7 +1011,6 @@ public class TaskListView extends View {
             tskg.setVisible(true);
         } catch (Exception e) {
             Errmsg.errmsg(e);
-            System.exit(1);
         }
     }
 

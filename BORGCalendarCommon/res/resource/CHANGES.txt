@@ -1,3 +1,11 @@
+Version 1.5.2
+-------------
+HSQLDB Standalone Database Support
+Make fonts in printouts, day, and week view tunable
+Make the popup reminder times tunable
+Add option to shutoff system tray
+Upgrade iCal libraries
+
 Version 1.5.1.2
 ---------------
 Show as many days from prior and next month as will fit in the current month view

@@ -56,7 +56,7 @@ class ApptJdbcDB extends JdbcDB implements AppointmentKeyFilter, MultiUserDB
     public void addObj(KeyedBean bean, boolean crypt) throws DBException, Exception
     {
         PreparedStatement stmt = connection_.prepareStatement( "INSERT INTO appointments (appt_date, appt_num, username, duration, text, skip_list," +
-        " next_todo, vacation, holiday, private, times, frequency, todo, color, `repeat`, category, new, modified, deleted, alarm, reminders ) VALUES " +
+        " next_todo, vacation, holiday, private, times, frequency, todo, color, rpt, category, new, modified, deleted, alarm, reminders ) VALUES " +
         "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         
         Appointment appt = (Appointment) bean;
@@ -136,7 +136,7 @@ class ApptJdbcDB extends JdbcDB implements AppointmentKeyFilter, MultiUserDB
     public Collection getRepeatKeys() throws Exception
     {
         ArrayList keys = new ArrayList();
-        PreparedStatement stmt = connection_.prepareStatement("SELECT appt_num FROM appointments WHERE username = ? AND `repeat` = '1'" );
+        PreparedStatement stmt = connection_.prepareStatement("SELECT appt_num FROM appointments WHERE username = ? AND rpt = '1'" );
         stmt.setString( 1, username_ );
         ResultSet rs = stmt.executeQuery();
         while( rs.next() )
@@ -194,7 +194,7 @@ class ApptJdbcDB extends JdbcDB implements AppointmentKeyFilter, MultiUserDB
 		appt.setFrequency( r.getString("frequency"));
 		appt.setTodo( r.getInt("todo") != 0 );
 		appt.setColor( r.getString("color"));
-		appt.setRepeatFlag( r.getInt("repeat" ) != 0 );
+		appt.setRepeatFlag( r.getInt("rpt" ) != 0 );
 		appt.setCategory( r.getString("category"));
 		appt.setNew( r.getInt("new" ) != 0 );
 		appt.setModified( r.getInt("modified" ) != 0 );
@@ -209,7 +209,7 @@ class ApptJdbcDB extends JdbcDB implements AppointmentKeyFilter, MultiUserDB
     {
         PreparedStatement stmt = connection_.prepareStatement( "UPDATE appointments SET  appt_date = ?, " +
         "duration = ?, text = ?, skip_list = ?," +
-        " next_todo = ?, vacation = ?, holiday = ?, private = ?, times = ?, frequency = ?, todo = ?, color = ?, `repeat` = ?, category = ?," +
+        " next_todo = ?, vacation = ?, holiday = ?, private = ?, times = ?, frequency = ?, todo = ?, color = ?, rpt = ?, category = ?," +
 		" new = ?, modified = ?, deleted = ?, alarm = ?, reminders = ?" +
         " WHERE appt_num = ? AND username = ?");
         

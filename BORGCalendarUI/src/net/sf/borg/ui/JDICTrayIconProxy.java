@@ -27,6 +27,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
+import net.sf.borg.control.Borg;
+
 import org.jdesktop.jdic.tray.SystemTray;
 import org.jdesktop.jdic.tray.TrayIcon;
 
@@ -92,7 +94,7 @@ public class JDICTrayIconProxy {
 
         public void actionPerformed(ActionEvent e) {
             //WindowsTrayIcon.cleanUp();
-            System.exit(0);
+           Borg.shutdown();
         }
     }
 

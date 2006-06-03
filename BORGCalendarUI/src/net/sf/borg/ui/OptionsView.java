@@ -119,6 +119,7 @@ public class OptionsView extends View {
 		dbTypeGroup.add(localFileButton);
 		dbTypeGroup.add(MySQLButton);
 		dbTypeGroup.add(remoteButton);
+		dbTypeGroup.add(hsqldbButton);
 
 		if (!dbonly) {
 			addModel(AppointmentModel.getReference());
@@ -143,8 +144,9 @@ public class OptionsView extends View {
 		Calendar cal = new GregorianCalendar(1980, 1, 1, 0, 0, 0);
 		cal.add(Calendar.MINUTE, emmins);
 		emailtimebox.setValue(cal.getTime());
-		
-		getIndEmailtimebox().setValue(new Integer(Prefs.getIntPref(PrefName.INDIVEMAILMINS)));
+
+		getIndEmailtimebox().setValue(
+				new Integer(Prefs.getIntPref(PrefName.INDIVEMAILMINS)));
 
 		//
 		// database
@@ -155,19 +157,26 @@ public class OptionsView extends View {
 			localFilePanel.setVisible(true);
 			mysqlPanel.setVisible(false);
 			remoteServerPanel.setVisible(false);
+			hsqldbPanel.setVisible(false);
 
 		} else if (dbtype.equals("remote")) {
 			remoteButton.setSelected(true);
 			mysqlPanel.setVisible(false);
 			localFilePanel.setVisible(false);
 			remoteServerPanel.setVisible(true);
-
+			hsqldbPanel.setVisible(false);
+		} else if (dbtype.equals("hsqldb")) {
+			hsqldbButton.setSelected(true);
+			mysqlPanel.setVisible(false);
+			localFilePanel.setVisible(false);
+			remoteServerPanel.setVisible(false);
+			hsqldbPanel.setVisible(true);
 		} else {
 			MySQLButton.setSelected(true);
 			mysqlPanel.setVisible(true);
 			localFilePanel.setVisible(false);
 			remoteServerPanel.setVisible(false);
-
+			hsqldbPanel.setVisible(false);
 		}
 
 		dbDirText.setText(Prefs.getPref(PrefName.DBDIR));
@@ -177,6 +186,7 @@ public class OptionsView extends View {
 		dbUserText.setText(Prefs.getPref(PrefName.DBUSER));
 		jPasswordField1.setText(Prefs.getPref(PrefName.DBPASS));
 		remoteURLText.setText(Prefs.getPref(PrefName.DBURL));
+		hsqldbdir.setText(Prefs.getPref(PrefName.HSQLDBDIR));
 
 		if (dbonly) {
 			// disable lots of non-db-related stuff
@@ -222,10 +232,10 @@ public class OptionsView extends View {
 		setCheckBox(iso8601Box, PrefName.ISOWKNUMBER);
 		setCheckBox(extraDayBox, PrefName.SHOWEXTRADAYS);
 		setCheckBox(useSysTray, PrefName.USESYSTRAY);
-		
+
 		int socket = Prefs.getIntPref(PrefName.SOCKETPORT);
 		socketPort.setText(Integer.toString(socket));
-		
+
 		// print logo directory
 		String logo = Prefs.getPref(PrefName.LOGO);
 		logofile.setText(logo);
@@ -459,9 +469,11 @@ public class OptionsView extends View {
 
 		ResourceHelper.addTab(jTabbedPane1, "appearance", getAppearancePanel());
 		ResourceHelper.addTab(jTabbedPane1, "fonts", getFontPanel());
-		ResourceHelper.addTab(jTabbedPane1, "DatabaseInformation", getDBPanel());
+		ResourceHelper
+				.addTab(jTabbedPane1, "DatabaseInformation", getDBPanel());
 		ResourceHelper.addTab(jTabbedPane1, "EmailParameters", getEmailPanel());
-		ResourceHelper.addTab(jTabbedPane1, "popup_reminders", getReminderPanel());
+		ResourceHelper.addTab(jTabbedPane1, "popup_reminders",
+				getReminderPanel());
 		ResourceHelper.addTab(jTabbedPane1, "printing", getPrintPanel());
 		ResourceHelper.addTab(jTabbedPane1, "Multi_User", getMultiUserPanel());
 		ResourceHelper.addTab(jTabbedPane1, "misc", getMiscPanel());
@@ -479,14 +491,22 @@ public class OptionsView extends View {
 			mysqlPanel.setVisible(true);
 			localFilePanel.setVisible(false);
 			remoteServerPanel.setVisible(false);
+			hsqldbPanel.setVisible(false);
 		} else if (evt.getActionCommand().equals("remote")) {
 			mysqlPanel.setVisible(false);
 			localFilePanel.setVisible(false);
 			remoteServerPanel.setVisible(true);
+			hsqldbPanel.setVisible(false);
+		} else if (evt.getActionCommand().equals("hsqldb")) {
+			mysqlPanel.setVisible(false);
+			localFilePanel.setVisible(false);
+			remoteServerPanel.setVisible(false);
+			hsqldbPanel.setVisible(true);
 		} else {
 			localFilePanel.setVisible(true);
 			mysqlPanel.setVisible(false);
 			remoteServerPanel.setVisible(false);
+			hsqldbPanel.setVisible(false);
 		}
 	}// GEN-LAST:event_dbTypeAction
 
@@ -527,19 +547,17 @@ public class OptionsView extends View {
 		setBooleanPref(iso8601Box, PrefName.ISOWKNUMBER);
 		setBooleanPref(extraDayBox, PrefName.SHOWEXTRADAYS);
 		setBooleanPref(useSysTray, PrefName.USESYSTRAY);
-		
-		try{
+
+		try {
 			int socket = Integer.parseInt(socketPort.getText());
 			Prefs.putPref(PrefName.SOCKETPORT, new Integer(socket));
-		}
-		catch(NumberFormatException e)
-		{
+		} catch (NumberFormatException e) {
 			Errmsg.notice(Resource.getPlainResourceString("socket_warn"));
 			socketPort.setText("-1");
 			Prefs.putPref(PrefName.SOCKETPORT, new Integer(-1));
 			return;
 		}
-		
+
 		Integer i = (Integer) getIndEmailtimebox().getValue();
 		int cur = Prefs.getIntPref(PrefName.INDIVEMAILMINS);
 		if (i.intValue() != cur)
@@ -627,7 +645,7 @@ public class OptionsView extends View {
 			Prefs.putPref(PrefName.EMAILADDR, emailtext.getText());
 			Prefs.putPref(PrefName.EMAILUSER, usertext.getText());
 			Prefs.putPref(PrefName.EMAILPASS, new String(smpw.getPassword()));
-			
+
 		}
 
 		Locale locs[] = Locale.getAvailableLocales();
@@ -669,7 +687,7 @@ public class OptionsView extends View {
 
 		String ls = (String) lsbox.getSelectedItem();
 		Prefs.putPref(PrefName.LINESPACING, ls);
-		
+
 		remTimePanel.setTimes();
 
 		Prefs.notifyListeners();
@@ -685,11 +703,15 @@ public class OptionsView extends View {
 		if (ret == JOptionPane.YES_OPTION) {
 			String dbdir = dbDirText.getText();
 			Prefs.putPref(PrefName.DBDIR, dbdir);
+			String hh = hsqldbdir.getText();
+			Prefs.putPref(PrefName.HSQLDBDIR, hh);
 
 			if (MySQLButton.isSelected()) {
 				Prefs.putPref(PrefName.DBTYPE, "mysql");
 			} else if (remoteButton.isSelected()) {
 				Prefs.putPref(PrefName.DBTYPE, "remote");
+			} else if (hsqldbButton.isSelected()) {
+				Prefs.putPref(PrefName.DBTYPE, "hsqldb");
 			} else {
 				Prefs.putPref(PrefName.DBTYPE, "local");
 			}
@@ -794,7 +816,21 @@ public class OptionsView extends View {
 
 	}// GEN-LAST:event_jButton5ActionPerformed
 
-	private void fontActionPerformed(java.awt.event.ActionEvent evt, PrefName fontname) {// GEN-FIRST:event_incfontActionPerformed
+	private void hsqldbActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButton5ActionPerformed
+
+		// browse for new database dir
+		String dbdir = OptionsView.chooseDbDir(false);
+		if (dbdir == null)
+			return;
+
+		// update text field - nothing else changes. DB change will take effect
+		// only on restart
+		hsqldbdir.setText(dbdir);
+
+	}
+
+	private void fontActionPerformed(java.awt.event.ActionEvent evt,
+			PrefName fontname) {// GEN-FIRST:event_incfontActionPerformed
 
 		Font pf = Font.decode(Prefs.getPref(fontname));
 		Font f = NwFontChooserS.showDialog(null, null, pf);
@@ -803,12 +839,11 @@ public class OptionsView extends View {
 		String s = NwFontChooserS.fontString(f);
 
 		Prefs.putPref(fontname, s);
-		if( fontname == PrefName.DEFFONT)
-		{
+		if (fontname == PrefName.DEFFONT) {
 			NwFontChooserS.setDefaultFont(f);
 			SwingUtilities.updateComponentTreeUI(this);
 		}
-		
+
 		Prefs.notifyListeners();
 
 	}
@@ -971,7 +1006,7 @@ public class OptionsView extends View {
 	private javax.swing.JCheckBox soundbox;
 
 	private javax.swing.JCheckBox splashbox;
-	
+
 	private javax.swing.JCheckBox iso8601Box = new JCheckBox();
 
 	private javax.swing.JCheckBox stackbox;
@@ -1054,20 +1089,13 @@ public class OptionsView extends View {
 	private JPanel getDBPanel() {
 
 		JPanel dbPanel = new JPanel();
-		GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
+		
 		dbPanel = new JPanel();
 		dbPanel.setLayout(new GridBagLayout());
-		gridBagConstraints1.gridx = 0;
-		gridBagConstraints1.gridy = 0;
-		gridBagConstraints1.weightx = 1.0;
-		gridBagConstraints1.weighty = 1.0;
-		gridBagConstraints1.fill = java.awt.GridBagConstraints.BOTH;
-		gridBagConstraints1.insets = new java.awt.Insets(4, 4, 4, 4);
-		gridBagConstraints1.gridwidth = 1;
 
 		GridBagConstraints gridBagConstraints2 = new java.awt.GridBagConstraints();
 		gridBagConstraints2.gridx = 0;
-		gridBagConstraints2.gridy = 2;
+		gridBagConstraints2.gridy = 1;
 		gridBagConstraints2.gridwidth = java.awt.GridBagConstraints.REMAINDER;
 		gridBagConstraints2.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints2.weightx = 1.0;
@@ -1076,7 +1104,7 @@ public class OptionsView extends View {
 
 		GridBagConstraints gridBagConstraints3 = new java.awt.GridBagConstraints();
 		gridBagConstraints3.gridx = 0;
-		gridBagConstraints3.gridy = 3;
+		gridBagConstraints3.gridy = 2;
 		gridBagConstraints3.gridwidth = java.awt.GridBagConstraints.REMAINDER;
 		gridBagConstraints3.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints3.weightx = 1.0;
@@ -1096,7 +1124,7 @@ public class OptionsView extends View {
 		dbPanel.add(chgdb, gridBagConstraints5); // Generated
 		chgdb.setForeground(new java.awt.Color(255, 0, 51));
 		chgdb.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-		"/resource/Refresh16.gif")));
+				"/resource/Refresh16.gif")));
 		ResourceHelper.setText(chgdb, "Apply_DB_Change");
 		chgdb.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1106,12 +1134,21 @@ public class OptionsView extends View {
 
 		GridBagConstraints gridBagConstraints6 = new java.awt.GridBagConstraints();
 		gridBagConstraints6.gridx = 0;
-		gridBagConstraints6.gridy = 4;
+		gridBagConstraints6.gridy = 3;
 		gridBagConstraints6.weightx = 1.0;
 		gridBagConstraints6.weighty = 1.0;
 		gridBagConstraints6.insets = new java.awt.Insets(4, 4, 4, 4);
-		gridBagConstraints6.fill = java.awt.GridBagConstraints.HORIZONTAL;	
+		gridBagConstraints6.fill = java.awt.GridBagConstraints.HORIZONTAL;
 		dbPanel.add(getRemoteServerPanel(), gridBagConstraints6); // Generated
+
+		GridBagConstraints gridBagConstraints6h = new java.awt.GridBagConstraints();
+		gridBagConstraints6h.gridx = 0;
+		gridBagConstraints6h.gridy = 4;
+		gridBagConstraints6h.weightx = 1.0;
+		gridBagConstraints6h.weighty = 1.0;
+		gridBagConstraints6h.insets = new java.awt.Insets(4, 4, 4, 4);
+		gridBagConstraints6h.fill = java.awt.GridBagConstraints.HORIZONTAL;
+		dbPanel.add(getHSQLDBPanel(), gridBagConstraints6h); // Generated
 
 		return dbPanel;
 	}
@@ -1188,7 +1225,6 @@ public class OptionsView extends View {
 		if (jPanelUCS == null) {
 			jPanelUCS = new JPanel();
 			jPanelUCS.setLayout(new GridLayout(10, 2));
-			
 
 			cb_ucs_on = new javax.swing.JCheckBox();
 			ResourceHelper.setText(cb_ucs_on, "ucolortext0");
@@ -1230,7 +1266,8 @@ public class OptionsView extends View {
 					.getResourceString("ucolortext17"), Color.WHITE, true); //$NON-NLS-1$
 			btn_ucs_weekday = new JButtonKnowsBgColor(Resource
 					.getResourceString("ucolortext18"), Color.WHITE, true); //$NON-NLS-1$
-			btn_ucs_restore = new JButton(Resource.getResourceString("restore_defaults")); //$NON-NLS-1$
+			btn_ucs_restore = new JButton(Resource
+					.getResourceString("restore_defaults")); //$NON-NLS-1$
 			// TODO add action listener to btn_ucs_restore
 			btn_ucs_restore.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
@@ -1324,6 +1361,7 @@ public class OptionsView extends View {
 	}
 
 	private JCheckBox extraDayBox;
+
 	private JCheckBox getExtraDayBox() {
 		if (extraDayBox == null) {
 			extraDayBox = new JCheckBox();
@@ -1405,8 +1443,9 @@ public class OptionsView extends View {
 		}
 		return emailtimebox;
 	}
-	
+
 	JSpinner indEmailTime = null;
+
 	private JSpinner getIndEmailtimebox() {
 		if (indEmailTime == null) {
 			indEmailTime = new JSpinner(new SpinnerNumberModel());
@@ -1424,6 +1463,7 @@ public class OptionsView extends View {
 			dbTypePanel.add(getLocalFileButton(), null); // Generated
 			dbTypePanel.add(getMySQLButton(), null); // Generated
 			dbTypePanel.add(getRemoteButton(), null); // Generated
+			dbTypePanel.add(getHSQLDBFileButton(), null);
 		}
 		return dbTypePanel;
 	}
@@ -1433,6 +1473,23 @@ public class OptionsView extends View {
 	 * 
 	 * @return javax.swing.JRadioButton
 	 */
+
+	private JRadioButton hsqldbButton;
+
+	private JRadioButton getHSQLDBFileButton() {
+		if (hsqldbButton == null) {
+			hsqldbButton = new JRadioButton();
+			hsqldbButton.setActionCommand("hsqldb");
+			ResourceHelper.setText(hsqldbButton, "hsqldb");
+			hsqldbButton.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					dbTypeAction(e);
+				}
+			});
+		}
+		return hsqldbButton;
+	}
+
 	private JRadioButton getLocalFileButton() {
 		if (localFileButton == null) {
 			localFileButton = new JRadioButton();
@@ -1664,8 +1721,11 @@ public class OptionsView extends View {
 	}
 
 	JTextField usertext = new JTextField();
+
 	JPasswordField smpw = new JPasswordField();
+
 	JCheckBox indEmailBox = new JCheckBox();
+
 	private JPanel getEmailPanel() {
 		JPanel emailPanel = new JPanel();
 		emailPanel.setLayout(new java.awt.GridBagLayout());
@@ -1688,14 +1748,14 @@ public class OptionsView extends View {
 		gridBagConstraintsUL.insets = new java.awt.Insets(0, 4, 0, 0);
 		emailPanel.add(userlabel, gridBagConstraintsUL);
 		userlabel.setLabelFor(usertext);
-		
+
 		GridBagConstraints gridBagConstraintsTF = new java.awt.GridBagConstraints();
 		gridBagConstraintsTF.gridx = 1;
 		gridBagConstraintsTF.gridy = 2;
 		gridBagConstraintsTF.fill = java.awt.GridBagConstraints.BOTH;
-		//gridBagConstraintsTF.insets = new java.awt.Insets(0, 4, 0, 0);
+		// gridBagConstraintsTF.insets = new java.awt.Insets(0, 4, 0, 0);
 		emailPanel.add(usertext, gridBagConstraintsTF);
-		
+
 		JLabel passlabel = new JLabel();
 		ResourceHelper.setText(passlabel, "SMTP_password");
 		GridBagConstraints gridBagConstraintsPWL = new java.awt.GridBagConstraints();
@@ -1705,14 +1765,14 @@ public class OptionsView extends View {
 		gridBagConstraintsPWL.insets = new java.awt.Insets(0, 4, 0, 0);
 		emailPanel.add(passlabel, gridBagConstraintsPWL);
 		passlabel.setLabelFor(smpw);
-		
+
 		GridBagConstraints gridBagConstraintsPW = new java.awt.GridBagConstraints();
 		gridBagConstraintsPW.gridx = 1;
 		gridBagConstraintsPW.gridy = 3;
 		gridBagConstraintsPW.fill = java.awt.GridBagConstraints.BOTH;
-		//gridBagConstraintsTF.insets = new java.awt.Insets(0, 4, 0, 0);
+		// gridBagConstraintsTF.insets = new java.awt.Insets(0, 4, 0, 0);
 		emailPanel.add(smpw, gridBagConstraintsPW);
-		
+
 		ResourceHelper.setText(jLabel2, "Your_Email_Address");
 		GridBagConstraints gridBagConstraints36 = new java.awt.GridBagConstraints();
 		gridBagConstraints36.gridx = 0;
@@ -1764,7 +1824,7 @@ public class OptionsView extends View {
 		gridBagConstraints212.insets = new java.awt.Insets(4, 4, 4, 4);
 		gridBagConstraints212.anchor = java.awt.GridBagConstraints.WEST;
 		emailPanel.add(getEmailtimebox(), gridBagConstraints212);
-		
+
 		ResourceHelper.setText(indEmailBox, "Email_Ind");
 		GridBagConstraints gridBagConstraintse1 = new java.awt.GridBagConstraints();
 		gridBagConstraintse1.gridx = 0;
@@ -1772,7 +1832,7 @@ public class OptionsView extends View {
 		gridBagConstraintse1.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraintse1.anchor = java.awt.GridBagConstraints.WEST;
 		emailPanel.add(indEmailBox, gridBagConstraintse1);
-		
+
 		JLabel itimel = new JLabel();
 		GridBagConstraints gridBagConstraintse3 = new GridBagConstraints();
 		gridBagConstraintse3.gridx = 0;
@@ -1782,7 +1842,7 @@ public class OptionsView extends View {
 		ResourceHelper.setText(itimel, "Email_Ind_Min");
 		itimel.setLabelFor(getIndEmailtimebox());
 		emailPanel.add(itimel, gridBagConstraintse3);
-		
+
 		GridBagConstraints gridBagConstraintse2 = new GridBagConstraints();
 		gridBagConstraintse2.gridx = 1;
 		gridBagConstraintse2.gridy = 7;
@@ -1939,7 +1999,6 @@ public class OptionsView extends View {
 
 		appearancePanel.add(localebox, gridBagConstraints16);
 
-		
 		GridBagConstraints gridBagConstraints97 = new java.awt.GridBagConstraints();
 		gridBagConstraints97.gridx = 1;
 		gridBagConstraints97.gridy = 8;
@@ -1964,7 +2023,7 @@ public class OptionsView extends View {
 		gridBagConstraints110.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints110.insets = new java.awt.Insets(4, 4, 4, 4);
 		appearancePanel.add(getDoyBox(), gridBagConstraints110);
-		
+
 		lslabel = new JLabel();
 		ResourceHelper.setText(lslabel, "line_spacing");
 		lslabel.setLabelFor(getLsbox());
@@ -1993,8 +2052,7 @@ public class OptionsView extends View {
 		return appearancePanel;
 	}
 
-	private JPanel getLocalFilePanel()
-	{
+	private JPanel getLocalFilePanel() {
 		localFilePanel = new JPanel();
 		localFilePanel.setLayout(new java.awt.GridBagLayout());
 
@@ -2035,12 +2093,59 @@ public class OptionsView extends View {
 
 		return localFilePanel;
 	}
-	
+
+	private JPanel hsqldbPanel;
+
+	JTextField hsqldbdir = new JTextField();
+
+	private JPanel getHSQLDBPanel() {
+		hsqldbPanel = new JPanel();
+		hsqldbPanel.setLayout(new java.awt.GridBagLayout());
+
+		JLabel hs1 = new JLabel();
+		hsqldbPanel.setBorder(new javax.swing.border.TitledBorder(Resource
+				.getResourceString("hsqldbinfo")));
+		ResourceHelper.setText(hs1, "DataBase_Directory");
+		hs1.setLabelFor(dbDirText);
+		GridBagConstraints gridBagConstraints30 = new java.awt.GridBagConstraints();
+		gridBagConstraints30.gridx = 0;
+		gridBagConstraints30.gridy = 0;
+		gridBagConstraints30.fill = java.awt.GridBagConstraints.BOTH;
+		gridBagConstraints30.anchor = java.awt.GridBagConstraints.WEST;
+		gridBagConstraints30.insets = new java.awt.Insets(0, 8, 0, 0);
+		hsqldbPanel.add(hs1, gridBagConstraints30);
+
+		GridBagConstraints gridBagConstraints31 = new java.awt.GridBagConstraints();
+		gridBagConstraints31.gridx = 0;
+		gridBagConstraints31.gridy = 1;
+		gridBagConstraints31.fill = java.awt.GridBagConstraints.BOTH;
+		gridBagConstraints31.anchor = java.awt.GridBagConstraints.WEST;
+		gridBagConstraints31.weightx = 0.5;
+		gridBagConstraints31.insets = new java.awt.Insets(4, 8, 4, 8);
+		hsqldbPanel.add(hsqldbdir, gridBagConstraints31);
+
+		JButton hsb1 = new JButton();
+		ResourceHelper.setText(hsb1, "Browse");
+		hsb1.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				hsqldbActionPerformed(evt);
+			}
+		});
+
+		GridBagConstraints gridBagConstraints32 = new java.awt.GridBagConstraints();
+		gridBagConstraints32.gridx = 1;
+		gridBagConstraints32.gridy = 1;
+		gridBagConstraints32.fill = java.awt.GridBagConstraints.BOTH;
+		gridBagConstraints32.insets = new java.awt.Insets(4, 4, 4, 4);
+		hsqldbPanel.add(hsb1, gridBagConstraints32);
+
+		return hsqldbPanel;
+	}
+
 	private ReminderTimePanel remTimePanel = new ReminderTimePanel();
-	
-	private JPanel getReminderPanel()
-	{
-		
+
+	private JPanel getReminderPanel() {
+
 		JPanel reminderPanel = new JPanel();
 		reminderPanel.setLayout(new java.awt.GridBagLayout());
 
@@ -2101,20 +2206,19 @@ public class OptionsView extends View {
 		gridBagConstraints112.anchor = java.awt.GridBagConstraints.WEST;
 		gridBagConstraints112.insets = new java.awt.Insets(0, 8, 0, 0);
 		reminderPanel.add(getUseBeep(), gridBagConstraints112);
-		
+
 		GridBagConstraints gridBagConstraints113 = new GridBagConstraints();
 		gridBagConstraints113.gridx = 0;
 		gridBagConstraints113.gridy = 5;
 		gridBagConstraints113.gridwidth = java.awt.GridBagConstraints.REMAINDER;
 		gridBagConstraints113.anchor = java.awt.GridBagConstraints.WEST;
 		gridBagConstraints113.insets = new java.awt.Insets(18, 18, 18, 18);
-		reminderPanel.add(remTimePanel,gridBagConstraints113 );
-		
+		reminderPanel.add(remTimePanel, gridBagConstraints113);
+
 		return reminderPanel;
 	}
-	
-	private JPanel getPrintPanel()
-	{
+
+	private JPanel getPrintPanel() {
 		JPanel printPanel = new JPanel();
 		printPanel.setLayout(new java.awt.GridBagLayout());
 
@@ -2156,13 +2260,14 @@ public class OptionsView extends View {
 		printPanel.add(logobrowse, gridBagConstraints42);
 		return printPanel;
 	}
-	
+
 	JTextField socketPort = new JTextField();
+
 	JCheckBox useSysTray = new JCheckBox();
-	private JPanel getMiscPanel()
-	{
+
+	private JPanel getMiscPanel() {
 		JPanel miscPanel = new JPanel();
-		
+
 		miscPanel.setLayout(new java.awt.GridBagLayout());
 
 		ResourceHelper.setText(autoupdate, "Auto_Update_Check");
@@ -2254,115 +2359,117 @@ public class OptionsView extends View {
 		ResourceHelper.setText(sportlabel, "socket_port");
 		GridBagConstraints gridBagConstraints311 = new GridBagConstraints();
 		gridBagConstraints311.gridx = 0;
-		gridBagConstraints311.gridy = 9;		
+		gridBagConstraints311.gridy = 9;
 		gridBagConstraints311.anchor = java.awt.GridBagConstraints.WEST;
 		miscPanel.add(sportlabel, gridBagConstraints311);
-		
+
 		GridBagConstraints gridBagConstraints312 = new GridBagConstraints();
 		gridBagConstraints312.gridx = 1;
-		gridBagConstraints312.gridy = 9;		
+		gridBagConstraints312.gridy = 9;
 		gridBagConstraints312.fill = java.awt.GridBagConstraints.HORIZONTAL;
 		gridBagConstraints312.anchor = java.awt.GridBagConstraints.EAST;
 		miscPanel.add(socketPort, gridBagConstraints312);
-		
+
 		GridBagConstraints gridBagConstraints313 = new GridBagConstraints();
 		gridBagConstraints313.gridx = 0;
-		gridBagConstraints313.gridy = 10;		
+		gridBagConstraints313.gridy = 10;
 		gridBagConstraints313.fill = java.awt.GridBagConstraints.HORIZONTAL;
 		miscPanel.add(getExtraDayBox(), gridBagConstraints313);
-		
+
 		GridBagConstraints gridBagConstraintsUST = new GridBagConstraints();
 		gridBagConstraintsUST.gridx = 0;
-		gridBagConstraintsUST.gridy = 11;		
+		gridBagConstraintsUST.gridy = 11;
 		gridBagConstraintsUST.fill = java.awt.GridBagConstraints.HORIZONTAL;
 		useSysTray.setText(Resource.getPlainResourceString("enable_systray"));
 		miscPanel.add(useSysTray, gridBagConstraintsUST);
-		
+
 		return miscPanel;
 	}
 
 	private javax.swing.JButton dayFontButton = new JButton();
+
 	private javax.swing.JButton weekFontButton = new JButton();
+
 	private javax.swing.JButton monthFontButton = new JButton();
+
 	private JPanel getFontPanel() {
 		JPanel fontPanel = new JPanel();
 		fontPanel.setLayout(new FlowLayout());
-	
+
 		ResourceHelper.setText(previewFontButton, "set_pre_font");
 		previewFontButton.setBorder(new javax.swing.border.SoftBevelBorder(
 				javax.swing.border.BevelBorder.RAISED));
-		//previewFontButton.setFont(Font.decode(Prefs.getPref(PrefName.PREVIEWFONT)));
-		previewFontButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				fontActionPerformed(evt,PrefName.PREVIEWFONT);
-				//previewFontButton.setFont(Font.decode(Prefs.getPref(PrefName.PREVIEWFONT)));
-			}
-		});
+		// previewFontButton.setFont(Font.decode(Prefs.getPref(PrefName.PREVIEWFONT)));
+		previewFontButton
+				.addActionListener(new java.awt.event.ActionListener() {
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						fontActionPerformed(evt, PrefName.PREVIEWFONT);
+						// previewFontButton.setFont(Font.decode(Prefs.getPref(PrefName.PREVIEWFONT)));
+					}
+				});
 		fontPanel.add(previewFontButton);
-	
+
 		ResourceHelper.setText(apptFontButton, "set_appt_font");
 		apptFontButton.setBorder(new javax.swing.border.SoftBevelBorder(
 				javax.swing.border.BevelBorder.RAISED));
-		//apptFontButton.setFont(Font.decode(Prefs.getPref(PrefName.APPTFONT)));
+		// apptFontButton.setFont(Font.decode(Prefs.getPref(PrefName.APPTFONT)));
 		apptFontButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				fontActionPerformed(evt,PrefName.APPTFONT);
-				//apptFontButton.setFont(Font.decode(Prefs.getPref(PrefName.APPTFONT)));
+				fontActionPerformed(evt, PrefName.APPTFONT);
+				// apptFontButton.setFont(Font.decode(Prefs.getPref(PrefName.APPTFONT)));
 			}
 		});
 		fontPanel.add(apptFontButton);
-	
-		
+
 		ResourceHelper.setText(defFontButton, "set_def_font");
 		defFontButton.setBorder(new javax.swing.border.SoftBevelBorder(
 				javax.swing.border.BevelBorder.RAISED));
-		//if( !Prefs.getPref(PrefName.DEFFONT).equals(""))
-			//defFontButton.setFont(Font.decode(Prefs.getPref(PrefName.DEFFONT)));
+		// if( !Prefs.getPref(PrefName.DEFFONT).equals(""))
+		// defFontButton.setFont(Font.decode(Prefs.getPref(PrefName.DEFFONT)));
 		defFontButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				fontActionPerformed(evt,PrefName.DEFFONT);
-				//defFontButton.setFont(Font.decode(Prefs.getPref(PrefName.DEFFONT)));
+				fontActionPerformed(evt, PrefName.DEFFONT);
+				// defFontButton.setFont(Font.decode(Prefs.getPref(PrefName.DEFFONT)));
 			}
 		});
 		fontPanel.add(defFontButton);
-		
+
 		ResourceHelper.setText(dayFontButton, "dview_font");
 		dayFontButton.setBorder(new javax.swing.border.SoftBevelBorder(
 				javax.swing.border.BevelBorder.RAISED));
-		//dayFontButton.setFont(Font.decode(Prefs.getPref(PrefName.DAYVIEWFONT)));
+		// dayFontButton.setFont(Font.decode(Prefs.getPref(PrefName.DAYVIEWFONT)));
 		dayFontButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				fontActionPerformed(evt,PrefName.DAYVIEWFONT);
-				//dayFontButton.setFont(Font.decode(Prefs.getPref(PrefName.DAYVIEWFONT)));
+				fontActionPerformed(evt, PrefName.DAYVIEWFONT);
+				// dayFontButton.setFont(Font.decode(Prefs.getPref(PrefName.DAYVIEWFONT)));
 			}
 		});
 		fontPanel.add(dayFontButton);
-		
+
 		ResourceHelper.setText(weekFontButton, "wview_font");
 		weekFontButton.setBorder(new javax.swing.border.SoftBevelBorder(
 				javax.swing.border.BevelBorder.RAISED));
-		//weekFontButton.setFont(Font.decode(Prefs.getPref(PrefName.WEEKVIEWFONT)));
+		// weekFontButton.setFont(Font.decode(Prefs.getPref(PrefName.WEEKVIEWFONT)));
 		weekFontButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				fontActionPerformed(evt,PrefName.WEEKVIEWFONT);
-				//weekFontButton.setFont(Font.decode(Prefs.getPref(PrefName.WEEKVIEWFONT)));
+				fontActionPerformed(evt, PrefName.WEEKVIEWFONT);
+				// weekFontButton.setFont(Font.decode(Prefs.getPref(PrefName.WEEKVIEWFONT)));
 			}
 		});
 		fontPanel.add(weekFontButton);
-		
+
 		ResourceHelper.setText(monthFontButton, "mview_font");
 		monthFontButton.setBorder(new javax.swing.border.SoftBevelBorder(
 				javax.swing.border.BevelBorder.RAISED));
-		//monthFontButton.setFont(Font.decode(Prefs.getPref(PrefName.MONTHVIEWFONT)));
+		// monthFontButton.setFont(Font.decode(Prefs.getPref(PrefName.MONTHVIEWFONT)));
 		monthFontButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				fontActionPerformed(evt,PrefName.MONTHVIEWFONT);
-				//monthFontButton.setFont(Font.decode(Prefs.getPref(PrefName.MONTHVIEWFONT)));
+				fontActionPerformed(evt, PrefName.MONTHVIEWFONT);
+				// monthFontButton.setFont(Font.decode(Prefs.getPref(PrefName.MONTHVIEWFONT)));
 			}
 		});
 		fontPanel.add(monthFontButton);
-		
-	
+
 		return fontPanel;
 	}
 }
