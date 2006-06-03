@@ -20,7 +20,7 @@ Copyright 2003 by Mike Berger
 
 package net.sf.borg.common.util;
 
-import javax.swing.JOptionPane;
+import net.sf.borg.common.ui.ScrolledDialog;
 
 
 
@@ -61,6 +61,8 @@ public class Errmsg
             return;
         }
         
+        ScrolledDialog.showError(e);
+        /*
         Object options[] = new Object[1];
         options[0] = Resource.getResourceString("OK");
         
@@ -102,7 +104,7 @@ public class Errmsg
             JOptionPane.ERROR_MESSAGE);
             // dump to console too for cut & paste
             System.out.println(bao.toString());
-        }
+        }*/
     }
     
     // output an informational notice
@@ -117,8 +119,8 @@ public class Errmsg
         }
         
         // info popup
-        JOptionPane.showMessageDialog(null, s, Resource.getResourceString("Notice"), JOptionPane.INFORMATION_MESSAGE);
-        
+        //JOptionPane.showMessageDialog(null, s, Resource.getResourceString("Notice"), JOptionPane.INFORMATION_MESSAGE);
+        ScrolledDialog.showNotice(s);
     }
     
 }
