@@ -55,7 +55,7 @@ import net.sf.borg.model.db.KeyedBean;
 // a single DB table - mainly for historical reasons
 // as each separate BORG file has always been called a "DB".
 // JdbcDB will also manage a common options table int he DB
-abstract class JdbcDB implements BeanDB
+abstract public class JdbcDB implements BeanDB
 {
 
     
@@ -82,6 +82,22 @@ abstract class JdbcDB implements BeanDB
     // maximum key in a particular table.
     protected int curMaxKey_ = Integer.MIN_VALUE;
     
+    static public void startTransaction() throws Exception {
+		globalConnection_.setAutoCommit(false);
+	}
+
+	static public void commitTransaction() throws Exception {
+		PreparedStatement stmt = globalConnection_.prepareStatement("COMMIT");
+		stmt.execute();
+		globalConnection_.setAutoCommit(true);
+	}
+
+	static public void rollbackTransaction() throws Exception {
+		PreparedStatement stmt = globalConnection_.prepareStatement("ROLLBACK");
+		stmt.execute();
+		globalConnection_.setAutoCommit(true);
+	}
+	
     /** Creates a new instance of JdbcDB */
     JdbcDB(String url, String username) throws Exception
     {
