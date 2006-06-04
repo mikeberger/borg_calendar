@@ -1,6 +1,5 @@
 package net.sf.borg.ui;
 
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.sql.ResultSet;
