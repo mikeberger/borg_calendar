@@ -63,6 +63,7 @@ public class TaskModel extends Model implements Model.Listener {
 
     
     private BeanDB db_;           // the database
+    public BeanDB getDB(){ return(db_); }
 
     // map of tasks keyed by day - for performance
     private HashMap btmap_;

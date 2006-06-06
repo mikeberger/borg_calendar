@@ -48,7 +48,7 @@ class RemoteBeanDB implements BeanDB {
 		try {
 			return (KeyedBean) cls.newInstance();
 		} catch (Exception e) {
-			throw new AssertionError(e.getClass().getName() + ": "
+			throw new RuntimeException(e.getClass().getName() + ": "
 					+ e.getMessage());
 		}
 	}

@@ -6,6 +6,11 @@ import java.util.Properties;
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.SocketClient;
 import net.sf.borg.model.AddressModel;
+import net.sf.borg.model.db.remote.IRemoteProxy;
+import net.sf.borg.model.db.remote.IRemoteProxyProvider;
+import net.sf.borg.model.db.remote.RemoteProxyHome;
+import net.sf.borg.model.db.remote.IRemoteProxyProvider.Credentials;
+import net.sf.borg.model.db.remote.socket.SocketProxy;
 import palm.conduit.Conduit;
 import palm.conduit.ConfigureConduitInfo;
 import palm.conduit.Log;
@@ -24,11 +29,6 @@ public class AddrCond implements Conduit {
   
     public void open(SyncProperties props) {
 
-    	int port = 2929;
-		if (port != -1) {
-			SocketClient.sendMsg("localhost", port, "shutdown");
-		}
-    	
         int db;
 
         RecordManager recordMgr;
@@ -36,6 +36,25 @@ public class AddrCond implements Conduit {
 
         Errmsg.console(true);
         
+//      If we're doing remote stuff, use SocketProxy
+		RemoteProxyHome.getInstance().setProxyProvider(
+				new IRemoteProxyProvider() {
+					public final IRemoteProxy createProxy(String url) {
+						// No synchronization needed - we're single-threaded.
+						if (proxy == null)
+							proxy = new SocketProxy(url);
+						return proxy;
+					}
+
+					public final Credentials getCredentials() {
+						return null;
+					}
+
+					// private //
+					private IRemoteProxy proxy = null;
+				});
+
+		
         // Tell the log we are starting
         Log.startSync();
 
@@ -72,6 +91,10 @@ public class AddrCond implements Conduit {
                 	Log.out("Properties exception: " + e.toString());
                 }
                 
+//              shutdown the app - unless we are using a remote socket interface
+				if (!dbdir.startsWith("remote:")) {
+					SocketClient.sendMsg("localhost", 2929, "shutdown");
+				}
                 Log.out("dbdir2=" + dbdir);
                 
                 addressModel = AddressModel.create();

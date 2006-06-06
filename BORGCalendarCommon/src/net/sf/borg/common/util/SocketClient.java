@@ -29,7 +29,7 @@ public class SocketClient {
 				System.out.println("Connection closed by server.");
 			}
 		} catch (IOException e) {
-			System.err.println(e);
+			//System.err.println(e);
 		}
 		// Always be sure to close the socket
 		finally {

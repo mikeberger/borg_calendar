@@ -54,7 +54,7 @@ public class CachingBeanDB implements BeanDB
 		}
 		catch (Exception e)
 		{
-			throw new AssertionError(e.getClass().getName()+": "+e.getMessage());
+			throw new RuntimeException(e.getClass().getName()+": "+e.getMessage());
 		}
 	}
 

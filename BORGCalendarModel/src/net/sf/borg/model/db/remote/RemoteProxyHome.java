@@ -46,8 +46,6 @@ public class RemoteProxyHome
 
 	public final void setProxyProvider(IRemoteProxyProvider provider)
 	{
-		if (this.provider != null)
-			throw new IllegalArgumentException("Proxy factory already set.");
 		this.provider = provider;
 	}
 

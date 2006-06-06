@@ -44,7 +44,7 @@ public class AddressModel extends Model {
 
     
     private BeanDB db_;           // the database
-    
+    public BeanDB getDB(){ return(db_); }
     
     private HashMap bdmap_ = new HashMap();
     

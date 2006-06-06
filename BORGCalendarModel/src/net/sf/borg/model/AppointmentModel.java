@@ -99,7 +99,7 @@ public class AppointmentModel extends Model implements Model.Listener
     }
 	
     private BeanDB db_;       // the SMDB database - see mdb.SMDB
-
+    public BeanDB getDB(){ return(db_); }
     
     /* map_ contains each "base" day key that has appts and maps it to a list of appt keys for
       that day.  */

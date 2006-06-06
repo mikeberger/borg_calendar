@@ -62,6 +62,7 @@ import net.sf.borg.model.db.remote.IRemoteProxy;
 import net.sf.borg.model.db.remote.IRemoteProxyProvider;
 import net.sf.borg.model.db.remote.RemoteProxyHome;
 import net.sf.borg.model.db.remote.http.HTTPRemoteProxy;
+import net.sf.borg.model.db.remote.server.SingleInstanceHandler;
 import net.sf.borg.ui.Banner;
 import net.sf.borg.ui.CalendarView;
 import net.sf.borg.ui.JDICTrayIconProxy;
@@ -748,6 +749,10 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 		} else if (msg.equals("open")) {
 			CalendarView.getReference(trayIcon).toFront();
 			return ("ok");
+		}
+		else if( msg.startsWith("<"))
+		{
+			return SingleInstanceHandler.execute(msg);
 		}
 		return ("Unknown msg: " + msg);
 	}
