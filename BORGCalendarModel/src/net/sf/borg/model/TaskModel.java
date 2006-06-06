@@ -226,7 +226,7 @@ public class TaskModel extends Model implements Model.Listener {
         if( sm == null ) {
             try {
                 // load XML from a file in the JAR
-            	System.out.println("Loading default task model");
+            	//System.out.println("Loading default task model");
             	taskTypes_.loadDefault();
                 sm = taskTypes_.toString();
                 db_.setOption(new BorgOption("SMODEL", sm ));

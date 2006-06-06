@@ -10,6 +10,7 @@ import java.util.Iterator;
 import net.sf.borg.model.Address;
 import net.sf.borg.model.AddressModel;
 import palm.conduit.AddressRecord;
+import palm.conduit.Log;
 import palm.conduit.Record;
 import palm.conduit.SyncException;
 import palm.conduit.SyncManager;
@@ -62,7 +63,7 @@ public class RecordManager {
 
         //get record count on the database
         recordCount = SyncManager.getDBRecordCount(db);
-
+        Log.out("recordCount=" + recordCount);
         Iterator it = hhids.iterator();
         while (it.hasNext()) {
 
@@ -81,6 +82,7 @@ public class RecordManager {
 
         
         addrs = amod.getAddresses();
+        Log.out("addrs.size=" + addrs.size());
         it = addrs.iterator();
         while (it.hasNext()) {
 

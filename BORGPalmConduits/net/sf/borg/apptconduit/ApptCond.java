@@ -10,6 +10,7 @@ import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.db.remote.IRemoteProxy;
 import net.sf.borg.model.db.remote.IRemoteProxyProvider;
 import net.sf.borg.model.db.remote.RemoteProxyHome;
+import net.sf.borg.model.db.remote.IRemoteProxyProvider.Credentials;
 import net.sf.borg.model.db.remote.socket.SocketProxy;
 import palm.conduit.Conduit;
 import palm.conduit.ConfigureConduitInfo;
@@ -45,7 +46,7 @@ public class ApptCond implements Conduit {
 					}
 
 					public final Credentials getCredentials() {
-						return null;
+						return new Credentials("$default", "$default");
 					}
 
 					// private //
@@ -89,7 +90,12 @@ public class ApptCond implements Conduit {
 				
 				// shutdown the app - unless we are using a remote socket interface
 				if (!dbdir.startsWith("remote:")) {
-					SocketClient.sendMsg("localhost", 2929, "shutdown");
+					try{
+						SocketClient.sendMsg("localhost", 2929, "shutdown");
+					}
+					catch(Exception e)
+					{
+					}
 				}
 				
 				Log.out("dbdir2=" + dbdir);

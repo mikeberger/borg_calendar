@@ -56,15 +56,13 @@ class RemoteBeanDB implements BeanDB {
 	public final synchronized void addObj(KeyedBean bean, boolean crypt)
 			throws DBException, Exception {
 		checkReadOnly();
-		call("addObj", new IRemoteProxy.ComposedObject(bean, Boolean
-				.valueOf(crypt)));
+		call("addObj", new IRemoteProxy.ComposedObject(bean, new Boolean(crypt)));
 	}
 
 	public final synchronized void updateObj(KeyedBean bean, boolean crypt)
 			throws DBException, Exception {
 		checkReadOnly();
-		call("updateObj", new IRemoteProxy.ComposedObject(bean, Boolean
-				.valueOf(crypt)));
+		call("updateObj", new IRemoteProxy.ComposedObject(bean, new Boolean(crypt)));
 	}
 
 	public final synchronized void delete(int key) throws Exception {
@@ -110,11 +108,11 @@ class RemoteBeanDB implements BeanDB {
 				args, user);
 		XTree xmlParms = XmlObjectHelper.toXml(parms);
 		String xmlstr = xmlParms.toString();
-//		System.out.println(xmlstr);
+		//System.out.println(xmlstr);
 		RemoteProxyHome home = RemoteProxyHome.getInstance();
 		String result = home.getProxy(impl).execute(xmlstr,
 				home.getProxyProvider());
-//		System.out.println(result);
+		//System.out.println(result);
 		XTree xmlResult = XTree.readFromBuffer(result);
 
 		Object retval = XmlObjectHelper.fromXml(xmlResult);

@@ -24,6 +24,7 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
@@ -110,11 +111,17 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 		// open existing BORG if there is one
 		int port = Prefs.getIntPref(PrefName.SOCKETPORT);
 		if (port != -1) {
-			String resp = SocketClient.sendMsg("localhost", port, "open");
-			if( resp != null && resp.equals("ok"))
-			{
-				System.exit(0);
+			String resp;
+			try {
+				resp = SocketClient.sendMsg("localhost", port, "open");
+				if( resp != null && resp.equals("ok"))
+				{
+					System.exit(0);
+				}
+			} catch (IOException e) {
+				// ignore
 			}
+			
 			
 		}
 

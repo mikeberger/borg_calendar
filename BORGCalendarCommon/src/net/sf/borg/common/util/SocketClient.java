@@ -14,7 +14,7 @@ public class SocketClient {
 		System.exit(0);
 	}
 
-	public static String sendMsg(String host, int port, String msg) {
+	public static String sendMsg(String host, int port, String msg) throws IOException {
 		Socket s = null;
 		String line = null;
 		try {
@@ -29,7 +29,9 @@ public class SocketClient {
 				System.out.println("Connection closed by server.");
 			}
 		} catch (IOException e) {
-			//System.err.println(e);
+			if (s != null)
+				s.close();
+			throw e;
 		}
 		// Always be sure to close the socket
 		finally {

@@ -98,7 +98,7 @@ public class SingleInstanceHandler
 			}
 			else if (cmd.equals("isDirty"))
 			{
-				result = new Boolean(beanDB.isDirty());
+				result = new Boolean(true/*beanDB.isDirty()*/);
 			}
 			else if (cmd.equals("setOption"))
 			{
@@ -136,6 +136,7 @@ public class SingleInstanceHandler
 		}
 		
 		String resultString = XmlObjectHelper.toXml(result).toString();
+		
 		System.out.println("[OUTPUT] "+resultString);
 		return resultString;
 	}

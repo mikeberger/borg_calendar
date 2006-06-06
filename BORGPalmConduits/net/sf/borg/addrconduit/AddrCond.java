@@ -46,7 +46,7 @@ public class AddrCond implements Conduit {
 					}
 
 					public final Credentials getCredentials() {
-						return null;
+						return new Credentials("$default", "$default");
 					}
 
 					// private //
@@ -92,10 +92,14 @@ public class AddrCond implements Conduit {
                 
 //              shutdown the app - unless we are using a remote socket interface
 				if (!dbdir.startsWith("remote:")) {
-					SocketClient.sendMsg("localhost", 2929, "shutdown");
+					try{
+						SocketClient.sendMsg("localhost", 2929, "shutdown");
+					}
+					catch(Exception e)
+					{}
 				}
                 Log.out("dbdir2=" + dbdir);
-                
+                Log.out("user2=" + user);
                 addressModel = AddressModel.create();
                 addressModel.open_db(dbdir, user, false, false);
 
