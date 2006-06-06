@@ -9,7 +9,8 @@ public class SocketProxy implements IRemoteProxy {
 	public SocketProxy(String url){}
 	public String execute(String strXml, IRemoteProxyProvider provider)
 			throws Exception {
-		return SocketClient.sendMsg("localhost", 2929, strXml);
+		String newMsg = strXml.replace('\n',' ');
+		return SocketClient.sendMsg("localhost", 2929, newMsg);
 
 	}
 
