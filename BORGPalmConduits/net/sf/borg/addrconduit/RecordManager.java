@@ -58,12 +58,13 @@ public class RecordManager {
         if( addrs.size() == 0 )
         {
             // force reset of all palm record borg pointers
+        	Log.out("Force Reset");
             forceReset = true;
         }
 
         //get record count on the database
         recordCount = SyncManager.getDBRecordCount(db);
-        Log.out("recordCount=" + recordCount);
+
         Iterator it = hhids.iterator();
         while (it.hasNext()) {
 
@@ -82,7 +83,6 @@ public class RecordManager {
 
         
         addrs = amod.getAddresses();
-        Log.out("addrs.size=" + addrs.size());
         it = addrs.iterator();
         while (it.hasNext()) {
 
@@ -107,6 +107,8 @@ public class RecordManager {
     public void synchronizePCRecord(Address addr) throws Exception {
 
 		AddressRecord hhRecord;
+		//AddressXMLAdapter ax = new AddressXMLAdapter();
+		//Log.out("sync PC rec - " + ax.toXml(addr));
 
         if (!addr.getNew()) {
 
@@ -262,10 +264,12 @@ public class RecordManager {
 
     private void writeHHRecord(Record record) throws SyncException, IOException
     {
+    	Log.out("write HH record - " + record.toString());
         SyncManager.writeRec(db,record);
     }
     
     private void deleteHHRecord(Record record) throws SyncException{
+    	Log.out("delete HH record - " + record.toString());
         SyncManager.deleteRecord(db, record);
     }
 

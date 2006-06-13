@@ -119,7 +119,7 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 					System.exit(0);
 				}
 			} catch (IOException e) {
-				// ignore
+				
 			}
 			
 			
@@ -742,7 +742,7 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 	}
 
 	public synchronized String processMessage(String msg) {
-		System.out.println("Got msg: " + msg);
+		//System.out.println("Got msg: " + msg);
 		if (msg.equals("sync")) {
 			try {
 				syncDBs();

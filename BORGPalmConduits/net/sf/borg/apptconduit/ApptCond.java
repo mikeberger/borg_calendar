@@ -10,7 +10,6 @@ import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.db.remote.IRemoteProxy;
 import net.sf.borg.model.db.remote.IRemoteProxyProvider;
 import net.sf.borg.model.db.remote.RemoteProxyHome;
-import net.sf.borg.model.db.remote.IRemoteProxyProvider.Credentials;
 import net.sf.borg.model.db.remote.socket.SocketProxy;
 import palm.conduit.Conduit;
 import palm.conduit.ConfigureConduitInfo;

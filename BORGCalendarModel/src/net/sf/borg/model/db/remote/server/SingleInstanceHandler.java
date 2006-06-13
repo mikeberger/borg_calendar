@@ -20,6 +20,7 @@ Copyright 2006 by Michael Berger
 
 package net.sf.borg.model.db.remote.server;
 
+import net.sf.borg.common.util.J13Helper;
 import net.sf.borg.common.util.XTree;
 import net.sf.borg.model.Address;
 import net.sf.borg.model.AddressModel;
@@ -44,12 +45,12 @@ import net.sf.borg.model.db.remote.XmlObjectHelper;
 public class SingleInstanceHandler
 {
 
-	public static String execute(String strXml)
+	public static String execute(String msg)
 	{
 		Object result = null;
 		
-		System.out.println("[INPUT] "+strXml);
-		
+		//System.out.println("[INPUT] "+msg);
+		String strXml = J13Helper.replace(msg, "%NEWLINE%", "\n");
 		try
 		{
 			XTree xmlParms = XTree.readFromBuffer(strXml);
@@ -98,7 +99,7 @@ public class SingleInstanceHandler
 			}
 			else if (cmd.equals("isDirty"))
 			{
-				result = new Boolean(true/*beanDB.isDirty()*/);
+				result = new Boolean(beanDB.isDirty());
 			}
 			else if (cmd.equals("setOption"))
 			{
@@ -136,8 +137,8 @@ public class SingleInstanceHandler
 		}
 		
 		String resultString = XmlObjectHelper.toXml(result).toString();
-		
-		System.out.println("[OUTPUT] "+resultString);
+		//System.out.println("[OUTPUT] "+resultString);
+		resultString = J13Helper.replace(resultString, "\n", "%NEWLINE%");
 		return resultString;
 	}
 	
