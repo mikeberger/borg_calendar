@@ -300,6 +300,7 @@ build.number=${build.number}
 			<fileset dir="${build.dir}/resource" includes="COPYING" />
 			<fileset dir="${build.dir}" includes="lib/borghelp.jar" />
 			<fileset dir="${db.res.dir}" includes="borg.sql" />
+			<fileset dir="${db.res.dir}" includes="borg_hsqldb.sql" />
 			<fileset dir="${db.res.dir}" includes="update1_5.sql" />
 			<fileset dir="${db.res.dir}" includes="update151.sql" />
 			<fileset dir="${prj.common.dir}" includes="lib/*" />
@@ -389,6 +390,7 @@ build.number=${build.number}
 				<include name="*.txt" />
 				<include name="*.gif" />
 				<include name="*.xsl" />
+				<include name="*.sql" />
 			</fileset>
 		</copy>
 	</target>

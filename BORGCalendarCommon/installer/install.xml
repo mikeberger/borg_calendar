@@ -106,6 +106,7 @@
 	    	<file src="lib/LICENSE.commons-codec" targetdir="$INSTALL_PATH/lib"/> 
 	    	<file src="lib/LICENSE.commons-httpclient" targetdir="$INSTALL_PATH/lib"/> 
 	    	<file src="borg.sql" targetdir="$INSTALL_PATH"/>
+	    	<file src="borg_hsqldb.sql" targetdir="$INSTALL_PATH"/>
             <file src="update1_5.sql" targetdir="$INSTALL_PATH"/>
             <file src="update151.sql" targetdir="$INSTALL_PATH"/>
             <file src="db.html" targetdir="$INSTALL_PATH"/>
