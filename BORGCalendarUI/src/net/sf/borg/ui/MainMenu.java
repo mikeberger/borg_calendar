@@ -22,6 +22,7 @@ import javax.swing.JOptionPane;
 
 import net.sf.borg.common.io.IOHelper;
 import net.sf.borg.common.ui.OverwriteConfirm;
+import net.sf.borg.common.ui.ScrolledDialog;
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
@@ -36,6 +37,7 @@ import net.sf.borg.model.AppointmentVcalAdapter;
 import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.Task;
 import net.sf.borg.model.TaskModel;
+import net.sf.borg.model.db.BeanDataFactoryFactory;
 
 public class MainMenu {
 	private JMenu ActionMenu = new javax.swing.JMenu();
@@ -105,6 +107,8 @@ public class MainMenu {
 	private JMenuItem chglog = new javax.swing.JMenuItem();
 
 	private JMenuItem AboutMI = new javax.swing.JMenuItem();
+	
+	private JMenuItem dbMI = new javax.swing.JMenuItem();
 
 	private JMenuBar menuBar = new JMenuBar();
 
@@ -426,6 +430,10 @@ public class MainMenu {
 		menuBar.add(userMenu);
 
 		menuBar.add(Box.createHorizontalGlue());
+		
+		//
+		// help menu
+		//
 
 		helpmenu.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 				"/resource/Help16.gif")));
@@ -456,6 +464,15 @@ public class MainMenu {
 		});
 
 		helpmenu.add(chglog);
+		
+		ResourceHelper.setText(dbMI, "DatabaseInformation");
+		dbMI.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				dbMIActionPerformed(evt);
+			}
+		});
+
+		helpmenu.add(dbMI);
 
 		ResourceHelper.setText(AboutMI, "About");
 		AboutMI.addActionListener(new java.awt.event.ActionListener() {
@@ -465,6 +482,8 @@ public class MainMenu {
 		});
 
 		helpmenu.add(AboutMI);
+		
+		
 
 		menuBar.add(helpmenu);
 		catmenu.add(getDelcatMI());
@@ -494,6 +513,27 @@ public class MainMenu {
 	public JMenuBar getMenuBar() {
 
 		return menuBar;
+	}
+	
+	private void dbMIActionPerformed(java.awt.event.ActionEvent evt)
+	{
+		String dbtype = Prefs.getPref(PrefName.DBTYPE);
+		String info = Resource.getPlainResourceString("DatabaseInformation") + ":\n\n";
+		info += dbtype + " URL: " + BeanDataFactoryFactory.buildDbDir() + "\n\n";
+		
+		try{
+			info += Resource.getPlainResourceString("appointments") + ": " + AppointmentModel.getReference().getAllAppts().size() + "\n";
+			info += Resource.getPlainResourceString("addresses") + ": " + AddressModel.getReference().getAddresses().size() + "\n";
+			info += Resource.getPlainResourceString("tasks") + ": " + TaskModel.getReference().getTasks().size() + "\n";
+		
+		}
+		catch( Exception e)
+		{
+			Errmsg.errmsg(e);
+			return;
+		}
+		
+		ScrolledDialog.showNotice(info);
 	}
 
 	// create an OutputStream from a URL string
