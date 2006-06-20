@@ -730,6 +730,10 @@ public class MainMenu {
 			AddressModel addrmod = AddressModel.getReference();
 			addrmod.importXml(xt);
 		}
+		
+		// show any newly imported categories
+		CategoryModel.getReference().syncCategories();
+		CategoryModel.getReference().showAll();
 	}
 
 	private void impURLCommon(String url, InputStream istr) throws Exception {

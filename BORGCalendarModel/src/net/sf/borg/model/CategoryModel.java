@@ -91,6 +91,13 @@ public class CategoryModel extends Model {
     	cats.addAll(shownCategories_);
         return( cats );
     }
+    
+    public void showAll()
+    {
+    	shownCategories_.clear();
+    	shownCategories_.addAll(categories_);
+    	refreshListeners();
+    }
 
     /* (non-Javadoc)
      * @see net.sf.borg.model.Model#remove()
