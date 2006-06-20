@@ -911,24 +911,6 @@ public class CalendarView extends View implements Prefs.Listener {
 		}
 	}
 
-	/*
-	 * private void refreshDbInfo() throws Exception {
-	 * 
-	 * StyledDocument tdoc = dbInfo.getStyledDocument(); tdoc.remove(0,
-	 * tdoc.getLength());
-	 * 
-	 * addString(dbInfo, Resource.getResourceString("dbinfo") + "\n", "ul");
-	 * 
-	 * addString(dbInfo, Resource.getPlainResourceString("Type") + ": ",
-	 * "black"); addString(dbInfo, Prefs.getPref(PrefName.DBTYPE) + "\n",
-	 * "blue"); addString(dbInfo, "URL: ", "black"); addString(dbInfo,
-	 * BeanDataFactoryFactory.buildDbDir() + "\n", "blue");
-	 * 
-	 * if (Prefs.getPref(PrefName.DBTYPE).equals("remote")) { addString(dbInfo,
-	 * Resource.getPlainResourceString("User") + ": ", "black");
-	 * addString(dbInfo, MultiUserModel.getReference().getOurUserName(),
-	 * "blue"); } dbInfo.setCaretPosition(0); }
-	 */
 	private void refreshTodoView() throws Exception {
 
 		// update todoPreview Box

@@ -36,29 +36,6 @@ import net.sf.borg.model.db.BeanDataFactoryFactory;
 import net.sf.borg.model.db.DBException;
 import net.sf.borg.model.db.IBeanDataFactory;
 
-
-
-
-
-
-
-// taksmodel is the data model class for task data. calmodel is the only class that communicates
-// directly with the SMDB database class for tasks.
-// However, taskmodel does allow the rest of the app to see Row objects. These are generic
-// database objects used to contain a map of field names to data. They represent
-// a row of the database. It would be overkill to build a formal task class to hold the
-// task data. C++ versions of BORG did this and wasted a lot of effort mapping things
-// into and out of the task class.
-
-// taskmodel sets the schema for SMDB. See open_db for this schema. This schema defines the fields
-// that are in each task Row.
-
-// records are keyed in SMDB using an integer key. taskmodel will use the task number as the key. the
-// number starts at 1 and just increases with each new task.
-
-// unlike the calmodel, which needs to keep a map of appointments in local cache for various
-// functions, taskmodel does not keep a local map. the caching done by the SMDB database is sufficient
-// for taskmodel's needs
 public class TaskModel extends Model implements Model.Listener {
 
     
