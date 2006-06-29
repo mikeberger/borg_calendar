@@ -46,15 +46,15 @@ public class Repeat
 	public static final String DAYLIST = "dlist";
 	public static final String ONCE = "once";
 	
-	private Calendar start;
+	private Calendar start_;
 	private Calendar cal;
-	private Calendar current;
+	private Calendar current_;
 	private String frequency_; // passed in string containing multiple items
-	private String freq; // internal freq
+	private String freq_; // internal freq
 	private int field;
 	private int dayOfWeekMonth;
 	private int dayOfWeek;
-	private int count;
+	private int count_;
 
 	private int incr;
 
@@ -215,12 +215,12 @@ public class Repeat
 	
 	Repeat(Calendar start, String frequency)
 	{
-		this.start = start;
+		this.start_ = start;
 		this.frequency_ = frequency;
 		cal = new GregorianCalendar(0,0,0);
 		cal.setTime(start.getTime());
-		current = cal;
-		count = 0;
+		current_ = cal;
+		count_ = 0;
 		incr = 1;
 		field = Calendar.DATE;
 		dayOfWeek = 0;
@@ -228,34 +228,34 @@ public class Repeat
 
 		if (!isRepeating()) return;
 		
-		freq = getFreq(frequency);
-		if( freq.equals(WEEKLY))
+		freq_ = getFreq(frequency);
+		if( freq_.equals(WEEKLY))
 			incr = 7;
-		else if( freq.equals(BIWEEKLY))
+		else if( freq_.equals(BIWEEKLY))
 			incr = 14;
-		else if( freq.equals(MONTHLY))
+		else if( freq_.equals(MONTHLY))
 			field = Calendar.MONTH;
-		else if( freq.equals(MONTHLY_DAY))
+		else if( freq_.equals(MONTHLY_DAY))
 		{
 			incr = 0;
 			dayOfWeek = start.get(Calendar.DAY_OF_WEEK);
 			dayOfWeekMonth = start.get(Calendar.DAY_OF_WEEK_IN_MONTH);
 		}
-		else if( freq.equals(YEARLY))
+		else if( freq_.equals(YEARLY))
 			field = Calendar.YEAR;
-		else if( freq.equals(MWF))
+		else if( freq_.equals(MWF))
 		{
 			incr = 0;
 		}		
-		else if( freq.equals(TTH))
+		else if( freq_.equals(TTH))
 		{
 			incr = 0;
 		}
-		else if( freq.equals(NDAYS))
+		else if( freq_.equals(NDAYS))
 		{
             incr = getNDays(frequency_);
 		}
-		else if( freq.equals(DAYLIST))
+		else if( freq_.equals(DAYLIST))
 		{
             incr = 0;
 		}
@@ -270,7 +270,7 @@ public class Repeat
 	// our current date
 	final Calendar current()
 	{
-		return current;
+		return current_;
 	}
 	
 	// return when the appt repeats until given the count
@@ -319,18 +319,18 @@ public class Repeat
 	{
 		if (!isRepeating())
 		{
-			current = null;
-			return current;
+			current_ = null;
+			return current_;
 		}
 		
-		current = cal;
-		++count;
+		current_ = cal;
+		++count_;
 		
 		// add the required increment
 		if (incr != 0)
 			cal.add(field, incr);
                             	
-		if( freq.equals(WEEKDAYS) )
+		if( freq_.equals(WEEKDAYS) )
 		{
 			int dow = cal.get(Calendar.DAY_OF_WEEK );
 			if( dow == Calendar.SATURDAY )
@@ -338,7 +338,7 @@ public class Repeat
 			else if( dow == Calendar.SUNDAY )
 				cal.add( Calendar.DATE, 1 );
 		}
-		else if( freq.equals(WEEKENDS) )
+		else if( freq_.equals(WEEKENDS) )
 		{
 			int dow = cal.get(Calendar.DAY_OF_WEEK );
 			if( dow == Calendar.MONDAY )
@@ -352,7 +352,7 @@ public class Repeat
 			else if( dow == Calendar.FRIDAY )
 				cal.add( Calendar.DATE, 1 );
 		}
-		else if( freq.equals(MWF) )
+		else if( freq_.equals(MWF) )
 		{
 			int dow = cal.get(Calendar.DAY_OF_WEEK );
 			if( dow == Calendar.FRIDAY )
@@ -364,7 +364,7 @@ public class Repeat
 				cal.add( Calendar.DATE, 2 );
 			}
 		}
-		else if( freq.equals(TTH) )
+		else if( freq_.equals(TTH) )
 		{
 			int dow = cal.get(Calendar.DAY_OF_WEEK );
 			if( dow == Calendar.THURSDAY )
@@ -376,21 +376,21 @@ public class Repeat
 				cal.add( Calendar.DATE, 2 );
 			}
 		}
-		else if (freq.equals(MONTHLY_DAY))
+		else if (freq_.equals(MONTHLY_DAY))
 		{
 			// Attempt to find a date falling on the
 			// same day of week and week number
 			// within a subsequent month.
-			cal.setTime(start.getTime());
-			cal.add(Calendar.MONTH, count);
+			cal.setTime(start_.getTime());
+			cal.add(Calendar.MONTH, count_);
 			cal.set(Calendar.DAY_OF_WEEK, dayOfWeek);
 			cal.set(Calendar.DAY_OF_WEEK_IN_MONTH, dayOfWeekMonth);
 			int dowm = cal.get(Calendar.DAY_OF_WEEK_IN_MONTH);
 			if (dowm != dayOfWeekMonth)
-				current = null;
+				current_ = null;
 				// not enough days in this month
 		}
-		else if( freq.equals(DAYLIST))
+		else if( freq_.equals(DAYLIST))
 		{
 			Collection daylist = getDaylist(frequency_);
 			//System.out.println(daylist);
@@ -411,7 +411,7 @@ public class Repeat
 		
 		// bug fix - if repeating by month/date, must adjust if original date was 
 		// 29, 30, or 31.
-		int startDate = start.get(Calendar.DATE);
+		int startDate = start_.get(Calendar.DATE);
 		int maxDate = cal.getActualMaximum(Calendar.DATE);
 		if( field == Calendar.MONTH )
 		{			
@@ -425,6 +425,6 @@ public class Repeat
 			}
 		}
 		
-		return current;
+		return current_;
 	}
 }
