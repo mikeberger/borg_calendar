@@ -38,8 +38,11 @@ import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Resource;
 import net.sf.borg.model.TaskModel;
+import net.sf.borg.model.TaskTypes;
 
 public class TaskConfigurator extends View {
+	
+	private TaskTypes taskTypes_;
 
 	private javax.swing.JPanel jContentPane = null;
 
@@ -97,17 +100,17 @@ public class TaskConfigurator extends View {
 	private JButton jButton1 = null;
 	private JPanel jPanel5 = null;
 	private JMenuItem jMenuItem9 = null;
-	public static TaskConfigurator getReference() {
+	public static TaskConfigurator getReference() throws Exception {
 		if (singleton == null || !singleton.isShowing())
 			singleton = new TaskConfigurator();
 		return (singleton);
 	}
 
-	private TaskConfigurator() {
+	private TaskConfigurator() throws Exception{
 		super();
-		addModel(TaskModel.getReference());
+		//addModel(TaskModel.getReference());
 		initialize();
-		load();
+		loadFromDB();
 		manageMySize(PrefName.TASKCONFVIEWSIZE);
 	}
 
@@ -122,15 +125,12 @@ public class TaskConfigurator extends View {
 		this.setContentPane(getJContentPane());
 	}
 
-	private void load() {
-		Object typesel = typelist.getSelectedValue();
-		TaskModel tm = TaskModel.getReference();
-		Vector types = tm.getTaskTypes().getTaskTypes();
-		typelist.setListData(types);
-		if( typesel != null )
-			typelist.setSelectedValue(typesel,true);
-
+	private void loadFromDB() throws Exception {
+		taskTypes_ = TaskModel.getReference().getTaskTypes().copy();		
+		refresh();
 	}
+	
+	
 
 	/**
 	 * This method initializes jContentPane
@@ -361,7 +361,7 @@ public class TaskConfigurator extends View {
 		String state = (String) statelist.getSelectedValue();
 		if (state == null)
 			return;
-		Vector states = TaskModel.getReference().getTaskTypes().nextStates(
+		Vector states = taskTypes_.nextStates(
 				state, type);
 		states.remove(state);
 		nextlist.setListData(states);
@@ -371,9 +371,9 @@ public class TaskConfigurator extends View {
 		String type = (String) typelist.getSelectedValue();
 		if (type == null)
 			return;
-		Vector states = TaskModel.getReference().getTaskTypes().getStates(type);
+		Vector states = taskTypes_.getStates(type);
 		statelist.setListData(states);
-		String cbs[] = TaskModel.getReference().getTaskTypes().checkBoxes(type);
+		String cbs[] = taskTypes_.checkBoxes(type);
 		subtasklist.setListData(cbs);
 		nextlist.setListData(new Vector());
 	}
@@ -438,7 +438,11 @@ public class TaskConfigurator extends View {
 	 * @see net.sf.borg.ui.View#refresh()
 	 */
 	public void refresh() {
-
+		Object typesel = typelist.getSelectedValue();
+		Vector types = taskTypes_.getTaskTypes();
+		typelist.setListData(types);
+		if( typesel != null )
+			typelist.setSelectedValue(typesel,true);
 	}
 
 	/*
@@ -466,8 +470,8 @@ public class TaskConfigurator extends View {
 							.showInputDialog(net.sf.borg.common.util.Resource.getResourceString("New_Task_Type"));
 					if (newtype == null)
 						return;
-					TaskModel.getReference().getTaskTypes().addType(newtype);
-					load();
+					taskTypes_.addType(newtype);
+					refresh();
 				}
 			});
 		}
@@ -494,9 +498,9 @@ public class TaskConfigurator extends View {
 							.showInputDialog(net.sf.borg.common.util.Resource.getResourceString("New_Task_Type"));
 					if (newtype == null)
 						return;
-					TaskModel.getReference().getTaskTypes().changeType(
+					taskTypes_.changeType(
 							(String) typelist.getSelectedValue(), newtype);
-					load();
+					refresh();
 				}
 			});
 		}
@@ -524,9 +528,9 @@ public class TaskConfigurator extends View {
 							net.sf.borg.common.util.Resource.getResourceString("Confirm_Delete"), JOptionPane.OK_CANCEL_OPTION);
 					if (ret != JOptionPane.OK_OPTION)
 						return;
-					TaskModel.getReference().getTaskTypes().deleteType(
+					taskTypes_.deleteType(
 							(String) typelist.getSelectedValue());
-					load();
+					refresh();
 				}
 			});
 		}
@@ -582,10 +586,10 @@ public class TaskConfigurator extends View {
 					String newstate = JOptionPane.showInputDialog(net.sf.borg.common.util.Resource.getResourceString("New_State"));
 					if (newstate == null)
 						return;
-					TaskModel.getReference().getTaskTypes().addState(
+					taskTypes_.addState(
 							(String) typelist.getSelectedValue(),
 							newstate);
-					load();
+					refresh();
 				}
 			});
 		}
@@ -611,10 +615,10 @@ public class TaskConfigurator extends View {
 					String newstate = JOptionPane.showInputDialog(net.sf.borg.common.util.Resource.getResourceString("New_State"));
 					if (newstate == null)
 						return;
-					TaskModel.getReference().getTaskTypes().changeState(
+					taskTypes_.changeState(
 							(String) typelist.getSelectedValue(),
 							(String) statelist.getSelectedValue(), newstate);
-					load();
+					refresh();
 				}
 			});
 		}
@@ -642,10 +646,10 @@ public class TaskConfigurator extends View {
 							net.sf.borg.common.util.Resource.getResourceString("Confirm_Delete"), JOptionPane.OK_CANCEL_OPTION);
 					if (ret != JOptionPane.OK_OPTION)
 						return;
-					TaskModel.getReference().getTaskTypes().deleteState(
+					taskTypes_.deleteState(
 							(String) typelist.getSelectedValue(),
 							(String) statelist.getSelectedValue());
-					load();
+					refresh();
 				}
 			});
 		}
@@ -680,17 +684,17 @@ public class TaskConfigurator extends View {
 						JOptionPane.showMessageDialog(null,net.sf.borg.common.util.Resource.getResourceString("Please_select_a_state"));
 						return;
 					}
-					Vector states = TaskModel.getReference().getTaskTypes().getStates((String)typelist.getSelectedValue());
+					Vector states = taskTypes_.getStates((String)typelist.getSelectedValue());
 					Object sarray[] = states.toArray();
 					String ns = (String) JOptionPane.showInputDialog(null,net.sf.borg.common.util.Resource.getResourceString("Select_next_state"), 
 							net.sf.borg.common.util.Resource.getResourceString("Select_next_state"), JOptionPane.QUESTION_MESSAGE,
 							null, sarray, sarray[0]);
 					if( ns == null ) return;
-					TaskModel.getReference().getTaskTypes().addNextState(
+					taskTypes_.addNextState(
 							(String)typelist.getSelectedValue(),
 							(String)statelist.getSelectedValue(),
 							ns);	
-					load();
+					refresh();
 				}
 			});
 		}
@@ -713,11 +717,11 @@ public class TaskConfigurator extends View {
 						return;
 					}
 					String ns = (String) nextlist.getSelectedValue();
-					TaskModel.getReference().getTaskTypes().deleteNextState(
+					taskTypes_.deleteNextState(
 							(String)typelist.getSelectedValue(),
 							(String)statelist.getSelectedValue(),
 							ns);	
-					load();
+					refresh();
 				}
 			});
 		}
@@ -751,9 +755,9 @@ public class TaskConfigurator extends View {
 					String cb = JOptionPane.showInputDialog(net.sf.borg.common.util.Resource.getResourceString("New_Subtask_Value"));
 					if (cb == null)
 						return;
-					TaskModel.getReference().getTaskTypes().changeCB(
+					taskTypes_.changeCB(
 							(String) typelist.getSelectedValue(), subtasklist.getSelectedIndex(), cb);
-					load();
+					refresh();
 				}
 			});
 		}
@@ -771,7 +775,8 @@ public class TaskConfigurator extends View {
 			jButton.addActionListener(new java.awt.event.ActionListener() { 
 				public void actionPerformed(java.awt.event.ActionEvent e) { 
 					try{
-						TaskModel.getReference().saveTaskTypes();
+						TaskModel.getReference().saveTaskTypes(taskTypes_);
+						TaskConfigurator.getReference().dispose();
 					}
 					catch( Exception ex)
 					{
@@ -793,7 +798,11 @@ public class TaskConfigurator extends View {
 			ResourceHelper.setText(jButton1, "Dismiss");
 			jButton1.addActionListener(new java.awt.event.ActionListener() { 
 				public void actionPerformed(java.awt.event.ActionEvent e) {    
-					TaskConfigurator.getReference().dispose();
+					try {
+						TaskConfigurator.getReference().dispose();
+					} catch (Exception e1) {
+						
+					}
 				}
 			});
 	        setDismissButton(jButton1);
@@ -830,9 +839,9 @@ public class TaskConfigurator extends View {
 			jMenuItem9.addActionListener(new java.awt.event.ActionListener() { 
 				public void actionPerformed(java.awt.event.ActionEvent e) {    
 					if( subtasklist.getSelectedIndex() < 0) return;
-					TaskModel.getReference().getTaskTypes().changeCB(
+					taskTypes_.changeCB(
 							(String) typelist.getSelectedValue(), subtasklist.getSelectedIndex(), null);
-					load();
+					refresh();
 				}
 			});
 		}

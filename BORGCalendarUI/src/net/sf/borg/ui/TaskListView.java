@@ -563,7 +563,11 @@ public class TaskListView extends View {
     }
 
     private void edittypesActionPerformed(java.awt.event.ActionEvent evt) {
-        TaskConfigurator.getReference().setVisible(true);
+        try {
+			TaskConfigurator.getReference().setVisible(true);
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
+		}
     }
 
     private void resetstActionPerformed(java.awt.event.ActionEvent evt)
@@ -604,7 +608,7 @@ public class TaskListView extends View {
 
             TaskModel taskmod_ = TaskModel.getReference();
             taskmod_.getTaskTypes().importStates(istr);
-            taskmod_.saveTaskTypes();
+            taskmod_.saveTaskTypes(null);
         } catch (Exception e) {
             Errmsg.errmsg(e);
         }

@@ -86,8 +86,12 @@ public class TaskModel extends Model implements Model.Listener {
     	return( taskTypes_);
     }
     
-    public void saveTaskTypes() throws Exception
+    public void saveTaskTypes(TaskTypes tt) throws Exception
     {
+    	if( tt != null ){
+    		tt.validate();
+    		taskTypes_ = tt.copy();
+    	}
         db_.setOption(new BorgOption("SMODEL", taskTypes_.toString()));
     }
     

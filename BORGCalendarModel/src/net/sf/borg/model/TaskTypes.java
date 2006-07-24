@@ -24,6 +24,8 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.net.URL;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.Vector;
 
 import net.sf.borg.common.util.Errmsg;
@@ -43,6 +45,14 @@ public class TaskTypes {
     public TaskTypes() {
         state_model_ = null;
         task_types_ = null;
+    }
+    
+    public TaskTypes copy() throws Exception
+    {
+    	String s = toString();
+    	TaskTypes o = new TaskTypes();
+    	o.fromString(s);
+    	return o;
     }
     
     public void fromString(String xml) throws Exception
@@ -331,6 +341,19 @@ public class TaskTypes {
 	    
 	    
 	    return( v );
+	}
+	
+	public void validate() throws Exception
+	{
+		Collection types = getTaskTypes();
+		Iterator it = types.iterator();
+		while( it.hasNext() )
+		{
+			String type = (String) it.next();
+			Collection states = getStates(type);
+			if( !states.contains("OPEN"))
+				throw new Exception( Resource.getPlainResourceString("NoOpenState") + type);
+		}
 	}
 	
 }
