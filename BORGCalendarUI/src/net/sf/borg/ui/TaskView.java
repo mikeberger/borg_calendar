@@ -509,7 +509,7 @@ class TaskView extends View
                 // fill in system controlled checkboxes
                 TaskModel taskmod_ = TaskModel.getReference();
                 statebox.removeAllItems();
-                statebox.addItem("OPEN");
+                statebox.addItem(taskmod_.getTaskTypes().getInitialState(newtype));
                 String cblabels[] = taskmod_.getTaskTypes().checkBoxes( newtype );
                 jCheckBox1.setText(cblabels[0]);
                 jCheckBox2.setText(cblabels[1]);
@@ -860,16 +860,18 @@ class TaskView extends View
           jTextArea1.setText( "" ); // desc
           jTextArea2.setText("" ); // resolution
 
-          // state always starts with OPEN for new tasks
-          statebox.addItem("OPEN");
-          statebox.setEnabled(false);
-
       }
 
       Vector tv = taskmod_.getTaskTypes().getTaskTypes();
       for( int i = 0; i < tv.size(); i++ )
       {
           typebox.addItem( tv.elementAt(i) );
+      }
+      
+      if( task == null )
+      {
+    	  statebox.addItem(taskmod_.getTaskTypes().getInitialState(typebox.getSelectedItem().toString()));
+          statebox.setEnabled(false);
       }
 
       // cloning takes the fields filled in for an existing task and resets only those
@@ -880,9 +882,9 @@ class TaskView extends View
           itemtext.setText("NEW");
           itemtext.setEditable(false);
 
-          // clone must start in OPEN state
+
           statebox.removeAllItems();
-          statebox.addItem("OPEN");
+          statebox.addItem(taskmod_.getTaskTypes().getInitialState(typebox.getSelectedItem().toString()));
           statebox.setEnabled(false);
 
 

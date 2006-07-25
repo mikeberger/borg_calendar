@@ -41,6 +41,8 @@ public class TaskTypes {
     // per task type and status
     
     public static final String NOCBVALUE = "---------------";
+    public static final String INITIAL_STATE = "__INIT__";
+    public static final String CHECKBOX = "CB";
     
     public TaskTypes() {
         state_model_ = null;
@@ -91,12 +93,12 @@ public class TaskTypes {
             return v;
         }
         
-        // add names of all children of the current state node as possible next states
+        // add names of all children of the current type node
         for( int i = 1;; i++ ) {
             XTree ch = tp.child(i);
             if( ch == null )
                 break;
-            if( ch.name().equals("CB") )
+            if( ch.name().equals(CHECKBOX) )
                 continue;
             v.add( ch.name() );
         }
@@ -237,14 +239,14 @@ public class TaskTypes {
 	        Errmsg.notice(Resource.getResourceString("WARNING!_Could_not_find_task_type_") + type + Resource.getResourceString("checkbox_2") );
 	    }
 	    
-	    XTree cb = tp.child("CB",index+1);
+	    XTree cb = tp.child(CHECKBOX,index+1);
 	    if( cb.exists() )
 	    {
 	    	cb.value(value);
 	    	return;
 	    }
 	    
-	    tp.appendChild("CB",value);
+	    tp.appendChild(CHECKBOX,value);
 	    
 	}
 	
@@ -262,8 +264,8 @@ public class TaskTypes {
 	    
 	    for( int i = 0; i < 5; i++ ) {
 	        
-	        if( tp.child("CB", i+1 ).exists() ) {
-	            ar[i] = tp.child("CB", i+1 ).value();
+	        if( tp.child(CHECKBOX, i+1 ).exists() ) {
+	            ar[i] = tp.child(CHECKBOX, i+1 ).value();
 	        }
 	        else {
 	            ar[i] = NOCBVALUE;
@@ -336,6 +338,8 @@ public class TaskTypes {
 	            break;
 	        if( ch.name().equals(state) )
 	            continue;
+	        if( ch.name().equals(INITIAL_STATE))
+	        	continue;
 	        v.add( ch.name() );
 	    }
 	    
@@ -354,6 +358,53 @@ public class TaskTypes {
 			if( !states.contains("OPEN"))
 				throw new Exception( Resource.getPlainResourceString("NoOpenState") + type);
 		}
+	}
+	
+	public void setInitialState(String type, String state)
+	{
+	    // find the task type element under the XML root
+	    XTree tp = state_model_.child(type);
+	    if( !tp.exists()) {
+	        return;
+	    }
+	    
+	    
+	    for( int i = 1;; i++ ) {
+	        XTree st = tp.child(i);
+	        if( st == null )
+	            break;
+	        if( st.name().equals(state) )
+	        {
+	        	if( !st.child(INITIAL_STATE).exists())
+	        		st.appendChild(INITIAL_STATE);
+	        }
+	        else if( st.child(INITIAL_STATE).exists())
+	        {
+	        	st.child(INITIAL_STATE).remove();
+	        }	        
+	    }
+	    
+	}
+	
+	public String getInitialState(String type)
+	{
+		 // find the task type element under the XML root
+	    XTree tp = state_model_.child(type);
+	    if( !tp.exists()) {
+	        return "OPEN";
+	    }
+	        
+	    for( int i = 1;; i++ ) {
+	        XTree st = tp.child(i);
+	        if( st == null )
+	            break;
+	        
+	        if( st.child(INITIAL_STATE).exists())
+	        	return st.name();
+	               
+	    }
+	    
+	    return("OPEN");
 	}
 	
 }

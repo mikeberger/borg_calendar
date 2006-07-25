@@ -19,19 +19,24 @@ Copyright 2004 by Mike Berger
  */
 package net.sf.borg.ui;
 
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.util.Vector;
 
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.ListCellRenderer;
 import javax.swing.ScrollPaneConstants;
 
 import net.sf.borg.common.util.Errmsg;
@@ -411,6 +416,35 @@ public class TaskConfigurator extends View {
 	 * 
 	 * @return javax.swing.JList
 	 */
+	 static private ListCellRenderer defrend_ = new DefaultListCellRenderer();
+	 private class TypeListRenderer extends JLabel implements ListCellRenderer {
+	     public TypeListRenderer() {
+	         setOpaque(true);
+	     }
+	     public Component getListCellRendererComponent(
+	         JList list,
+	         Object value,
+	         int index,
+	         boolean isSelected,
+	         boolean cellHasFocus)
+	     {
+	         setText(value.toString());
+	         
+	         String init = taskTypes_.getInitialState(typelist.getSelectedValue().toString());
+	         if( value.toString().equals(init))
+	         {	
+	        	 setBackground(isSelected ? Color.red : Color.white);
+	        	 setForeground(isSelected ? Color.white : Color.red);
+	         }
+	         else
+	         {
+	        	 return defrend_.getListCellRendererComponent(list,value,index,isSelected,cellHasFocus);
+	         }
+	         return this;
+	     }
+	 }
+
+	
 	private JList getStatelist() {
 		if (statelist == null) {
 			statelist = new JList();
@@ -428,6 +462,7 @@ public class TaskConfigurator extends View {
 							stateSelectHandler();
 						}
 					});
+			statelist.setCellRenderer(new TypeListRenderer());
 		}
 		return statelist;
 	}
@@ -548,6 +583,7 @@ public class TaskConfigurator extends View {
 			typemenu.add(getJMenuItem());
 			typemenu.add(getJMenuItem1());
 			typemenu.add(getJMenuItem2());
+			typemenu.add(getInitMenuItem());
 		}
 		return typemenu;
 	}
@@ -624,6 +660,34 @@ public class TaskConfigurator extends View {
 		}
 		return jMenuItem4;
 	}
+	
+	private JMenuItem initMI = null;
+	private JMenuItem getInitMenuItem() {
+		if (initMI == null) {
+			initMI = new JMenuItem();
+			initMI.setText(net.sf.borg.common.util.Resource.getResourceString("Set_Initial_State"));
+			initMI.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {					
+					if( typelist.getSelectedIndex() < 0 )
+					{
+						JOptionPane.showMessageDialog(null,net.sf.borg.common.util.Resource.getResourceString("Please_select_a_type"));
+						return;
+					}
+					Vector states = taskTypes_.getStates((String)typelist.getSelectedValue());
+					Object sarray[] = states.toArray();
+					String ns = (String) JOptionPane.showInputDialog(null,net.sf.borg.common.util.Resource.getResourceString("Select_initial_state"), 
+							net.sf.borg.common.util.Resource.getResourceString("Select_initial_state"), JOptionPane.QUESTION_MESSAGE,
+							null, sarray, sarray[0]);
+					if( ns == null ) return;
+					taskTypes_.setInitialState(
+							(String)typelist.getSelectedValue(),
+							ns);	
+					refresh();
+				}
+			});
+		}
+		return initMI;
+	}
 
 	/**
 	 * This method initializes jMenuItem5
@@ -676,7 +740,7 @@ public class TaskConfigurator extends View {
 	private JMenuItem getJMenuItem6() {
 		if (jMenuItem6 == null) {
 			jMenuItem6 = new JMenuItem();
-			jMenuItem6.setText(net.sf.borg.common.util.Resource.getResourceString("Add"));
+			jMenuItem6.setText(net.sf.borg.common.util.Resource.getPlainResourceString("Add"));
 			jMenuItem6.addActionListener(new java.awt.event.ActionListener() { 
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					if( statelist.getSelectedIndex() < 0 )
@@ -708,7 +772,7 @@ public class TaskConfigurator extends View {
 	private JMenuItem getJMenuItem7() {
 		if (jMenuItem7 == null) {
 			jMenuItem7 = new JMenuItem();
-			jMenuItem7.setText(net.sf.borg.common.util.Resource.getResourceString("Delete"));
+			jMenuItem7.setText(net.sf.borg.common.util.Resource.getPlainResourceString("Delete"));
 			jMenuItem7.addActionListener(new java.awt.event.ActionListener() { 
 				public void actionPerformed(java.awt.event.ActionEvent e) { 
 					if( nextlist.getSelectedIndex() < 0 )
