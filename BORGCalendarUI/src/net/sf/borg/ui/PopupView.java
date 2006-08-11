@@ -49,11 +49,10 @@ import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.ReminderTimes;
 
 /**
- *
+ * 
  * @author mberger
  */
 public class PopupView extends View {
-
 
 	/** Creates a new instance of popups */
 	public PopupView() {
@@ -66,7 +65,8 @@ public class PopupView extends View {
 			public void run() {
 				EventQueue.invokeLater(doPopupChk);
 			}
-		}, secs_left * 1000, Prefs.getIntPref(PrefName.REMINDERCHECKMINS) * 60 * 1000);
+		}, secs_left * 1000,
+				Prefs.getIntPref(PrefName.REMINDERCHECKMINS) * 60 * 1000);
 
 	}
 
@@ -141,34 +141,52 @@ public class PopupView extends View {
 					}
 
 					// don't popup "notes"
-					if (AppointmentModel.isNote(appt))
+					if (AppointmentModel.isNote(appt) && !appt.getTodo())
 						continue;
 
-					Date d = appt.getDate();
+					String tx = "";
 
-					SimpleDateFormat df = AppointmentModel.getTimeFormat();
-					String tx = df.format(d);
+					if (AppointmentModel.isNote(appt) && appt.getTodo() && appt.getReminderTimes().indexOf('Y') != -1) {
+						// non-timed todo
+						
+						// make sure todo is not done for today
+						GregorianCalendar td = new GregorianCalendar();
+						td.set(Calendar.HOUR_OF_DAY, 23);
+						td.set(Calendar.MINUTE, 59);
+						
+						Date nt = appt.getNextTodo();
+						if (nt != null && nt.after(td.getTime()))
+						{
+							continue;
+						}
+					} else {
+						Date d = appt.getDate();
 
-					// set appt time for computation
-					GregorianCalendar now = new GregorianCalendar();
-					GregorianCalendar acal = new GregorianCalendar();
-					acal.setTime(d);
+						SimpleDateFormat df = AppointmentModel.getTimeFormat();
+						tx = df.format(d);
 
-					// need to set appt time to today in case it is a repeating
-					// appt. if it is a repeat,
-					// the time will be right, but the day will be the day of
-					// the first repeat
-					acal.set(now.get(Calendar.YEAR), now.get(Calendar.MONTH),
-							now.get(Calendar.DATE));
+						// set appt time for computation
+						GregorianCalendar now = new GregorianCalendar();
+						GregorianCalendar acal = new GregorianCalendar();
+						acal.setTime(d);
 
-					// skip the appt if it is outside the time frame of the
-					// reminder requests
-					long mins_to_go = acal.getTimeInMillis()/(1000*60) -
-										now.getTimeInMillis()/(1000*60);
+						// need to set appt time to today in case it is a
+						// repeating
+						// appt. if it is a repeat,
+						// the time will be right, but the day will be the day
+						// of
+						// the first repeat
+						acal.set(now.get(Calendar.YEAR), now
+								.get(Calendar.MONTH), now.get(Calendar.DATE));
 
-					if (outside_reminder_times(mins_to_go, appt))
-						continue;
+						// skip the appt if it is outside the time frame of the
+						// reminder requests
+						long mins_to_go = acal.getTimeInMillis() / (1000 * 60)
+								- now.getTimeInMillis() / (1000 * 60);
 
+						if (outside_reminder_times(mins_to_go, appt))
+							continue;
+					}
 					// skip appt if it is already in the pops list
 					// this means that it is already showing - or was shown and
 					// killed already
@@ -233,66 +251,80 @@ public class PopupView extends View {
 				continue;
 			}
 
-
 			try {
 				// read the appt and get the date
 				Appointment appt = AppointmentModel.getReference().getAppt(
 						apptkey.intValue());
-				Date d = appt.getDate();
-				if (d == null)
-					continue;
+				
+				String time_msg;
+				
+				if (AppointmentModel.isNote(appt) && appt.getTodo()) {
+					
+					// show on the half hour or on startup
+					int min = new GregorianCalendar().get(Calendar.MINUTE);
+					if( fr.wasShown() && !(min == 0 || min == 30))
+						continue;
+					
+					time_msg = Resource.getPlainResourceString("To_Do") + " " + Resource.getPlainResourceString("Today");
+				} else {
+					Date d = appt.getDate();
+					if (d == null)
+						continue;
 
-				// determine how far away the appt is
-				GregorianCalendar acal = new GregorianCalendar();
-				acal.setTime(d);
-				GregorianCalendar now = new GregorianCalendar();
+					// determine how far away the appt is
+					GregorianCalendar acal = new GregorianCalendar();
+					acal.setTime(d);
+					GregorianCalendar now = new GregorianCalendar();
 
-				// need to set appt time to today in case it is a repeating
-				// appt. if it is a repeat,
-				// the time will be right, but the day will be the day of the
-				// first repeat
-				acal.set(now.get(Calendar.YEAR), now.get(Calendar.MONTH), now
-						.get(Calendar.DATE));
+					// need to set appt time to today in case it is a repeating
+					// appt. if it is a repeat,
+					// the time will be right, but the day will be the day of
+					// the
+					// first repeat
+					acal.set(now.get(Calendar.YEAR), now.get(Calendar.MONTH),
+							now.get(Calendar.DATE));
 
-				long mins_to_go = acal.getTimeInMillis()/(1000*60) - now.getTimeInMillis()/(1000*60);
+					long mins_to_go = acal.getTimeInMillis() / (1000 * 60)
+							- now.getTimeInMillis() / (1000 * 60);
 
-				// if alarm is due to be shown, show it and play sound if
-				// requested
-				int alarmid = due_for_popup(mins_to_go, appt, fr);
-				if (alarmid != -999) {
-				    String time_msg;
-				    if (alarmid < 0) {
-					time_msg = -alarmid
-							+ " "
-							+ Resource.getResourceString("minutes_ago");
-				    } else if (alarmid == 0) {
-					time_msg = Resource.getResourceString("Now");
-				    }
-				    else {
-					time_msg = alarmid
-							+ " "
-							+ Resource.getResourceString("minute_reminder");
-				    }
+					// if alarm is due to be shown, show it and play sound if
+					// requested
+					int alarmid = due_for_popup(mins_to_go, appt, fr);
+					if (alarmid == -999)
+						continue;
 
-					fr.setText2(time_msg);
-					fr.setVisible(true);
-					fr.toFront();
-					fr.setVisible(true);
-
-					// play sound
-					if (Prefs.getPref(PrefName.USESYSTEMBEEP).equals("true")) {
-						java.awt.Toolkit.getDefaultToolkit().beep();
+					
+					if (alarmid < 0) {
+						time_msg = -alarmid + " "
+								+ Resource.getResourceString("minutes_ago");
+					} else if (alarmid == 0) {
+						time_msg = Resource.getResourceString("Now");
 					} else {
-						URL snd = getClass().getResource("/resource/blip.wav");
-						AudioClip theSound;
-
-						theSound = Applet.newAudioClip(snd);
-
-						if (theSound != null) {
-							theSound.play();
-						}
+						time_msg = alarmid + " "
+								+ Resource.getResourceString("minute_reminder");
 					}
 				}
+				
+				fr.setText2(time_msg);
+				fr.setVisible(true);
+				fr.toFront();
+				fr.setVisible(true);
+				fr.setShown(true);
+
+				// play sound
+				if (Prefs.getPref(PrefName.USESYSTEMBEEP).equals("true")) {
+					java.awt.Toolkit.getDefaultToolkit().beep();
+				} else {
+					URL snd = getClass().getResource("/resource/blip.wav");
+					AudioClip theSound;
+
+					theSound = Applet.newAudioClip(snd);
+
+					if (theSound != null) {
+						theSound.play();
+					}
+				}
+
 			} catch (Exception e) {
 				// ignore errors here
 			}
@@ -300,7 +332,7 @@ public class PopupView extends View {
 	}
 
 	private boolean outside_reminder_times(long mins_to_go, Appointment appt) {
-		
+
 		int earliest = -999;
 		char[] remTimes = new char[ReminderTimes.getNum()];
 		try {
@@ -312,18 +344,17 @@ public class PopupView extends View {
 			}
 		}
 
-		for( int i = 0; i < ReminderTimes.getNum(); i++ )
-		{
-			if( remTimes[i] == 'Y')
+		for (int i = 0; i < ReminderTimes.getNum(); i++) {
+			if (remTimes[i] == 'Y')
 				earliest = ReminderTimes.getTimes(i);
 		}
-		
-		//System.out.println("mtg =" + mins_to_go + " rt=" + appt.getReminderTimes() + " l=" + latest + " e=" + earliest);
-		if( earliest == -999)
+
+		// System.out.println("mtg =" + mins_to_go + " rt=" +
+		// appt.getReminderTimes() + " l=" + latest + " e=" + earliest);
+		if (earliest == -999)
 			return true;
 
-		return (mins_to_go > earliest ||
-				mins_to_go < ReminderTimes.getTimes(0));
+		return (mins_to_go > earliest || mins_to_go < ReminderTimes.getTimes(0));
 	}
 
 	// If the reminder should be shown, return the "minutes before appointment"

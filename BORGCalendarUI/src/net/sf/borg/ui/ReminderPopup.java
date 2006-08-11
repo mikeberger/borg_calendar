@@ -42,7 +42,9 @@ public class ReminderPopup extends View {
     private JPanel jPanel1 = null;
     private JButton jButton = null;
     private char[] remindersShown;
-
+    private boolean shown_ = false;
+    public void setShown(boolean s){ shown_ = s; }
+    public boolean wasShown(){ return shown_; }
     /**
      * This method initializes this
      *
@@ -70,25 +72,28 @@ public class ReminderPopup extends View {
             jPanel = new JPanel();
             jPanel.setLayout(new GridBagLayout());
             gridBagConstraints9.gridx = 0;
+            gridBagConstraints9.weightx = 1.0D;  // Generated
             gridBagConstraints9.gridy = 1;
             gridBagConstraints9.ipadx = 100;
-            gridBagConstraints9.ipady = 10;
+            gridBagConstraints9.ipady = 5;
             gridBagConstraints9.insets = new java.awt.Insets(5, 0, 5, 0);
             gridBagConstraints10.gridx = 0;
+            gridBagConstraints10.weightx = 1.0D;  // Generated
             gridBagConstraints10.gridy = 3;
             gridBagConstraints10.ipadx = 100;
-            gridBagConstraints10.ipady = 43;
+            gridBagConstraints10.ipady = 0;
             gridBagConstraints10.insets = new java.awt.Insets(5, 0, 5, 0);
             gridBagConstraints11.gridx = 0;
+            gridBagConstraints11.weightx = 1.0D;  // Generated
             gridBagConstraints11.gridy = 2;
             gridBagConstraints11.ipadx = 100;
-            gridBagConstraints11.ipady = 10;
+            gridBagConstraints11.ipady = 5;
             gridBagConstraints11.insets = new java.awt.Insets(5, 0, 5, 0);
             gridBagConstraints15.gridx = 0;
             gridBagConstraints15.gridy = 4;
-            jPanel.add(jLabel1, gridBagConstraints9);
-            jPanel.add(jLabel2, gridBagConstraints11);
-            jPanel.add(getNoMoreButton(), gridBagConstraints10);
+            jPanel.add(jLabel1, gridBagConstraints9);  // Generated
+            jPanel.add(jLabel2, gridBagConstraints11);  // Generated
+            jPanel.add(getNoMoreButton(), gridBagConstraints10);  // Generated
             jPanel.add(getJPanel1(), gridBagConstraints15);
             jLabel1.setText("");
             jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
