@@ -57,7 +57,7 @@ import net.sf.borg.model.Day;
 import net.sf.borg.ui.ApptDayBoxLayout.ApptDayBox;
 
 // weekPanel handles the printing of a single week
-class WeekPanel extends JPanel implements Printable {
+class WeekPanel extends ApptBoxPanel implements Printable {
 
 	private int year_;
 
@@ -85,6 +85,8 @@ class WeekPanel extends JPanel implements Printable {
 	private int drawIt(Graphics g, double width, double height, double pageWidth, 
 			double pageHeight, double pagex, double pagey )
 	{
+		
+		clearBoxes();
 
 		boolean showpub = false;
 		boolean showpriv = false;
@@ -247,26 +249,35 @@ class WeekPanel extends JPanel implements Printable {
 
 			int colleft = (int) (timecolwidth + col * colwidth);
 			try {
-				// get the appointment info for the given day
-				Day di = Day.getDay(cal.get(Calendar.YEAR), cal
-						.get(Calendar.MONTH), cal.get(Calendar.DATE), showpub,
-						showpriv, true);
+								
+				if( layout[col] == null && needLoad == true )
+				{
+					//	 get the appointment info for the given day
+					Day di = Day.getDay(cal.get(Calendar.YEAR), cal
+							.get(Calendar.MONTH), cal.get(Calendar.DATE), showpub,
+							showpriv, true);
+					
+					if( di != null )
+					{
+						Collection appts = di.getAppts();
+						if (appts != null) {
+							layout[col] = new ApptDayBoxLayout(appts,
+									starthr, endhr);
+						}
+					}
+				}
+				
+				if (layout[col] != null) {
 
-				if (di != null) {
-
-					Collection appts = di.getAppts();
-					if (appts != null) {
-						ApptDayBoxLayout layout = new ApptDayBoxLayout(appts,
-								starthr, endhr);
 						// Iterator it = appts.iterator();
-						Iterator it = layout.getBoxes().iterator();
+						Iterator it = layout[col].getBoxes().iterator();
 
 						// determine x coord for all appt text
 						int apptx = colleft + 2 * fontDesent;
 
 						// determine Y coord for non-scheduled appts (notes)
 						// they will be above the timed appt area
-						int notey = daytop + smfontHeight;
+						int notey = daytop;// + smfontHeight;
 
 						// count of appts used to vary color
 						int apptnum = 0;
@@ -276,150 +287,17 @@ class WeekPanel extends JPanel implements Printable {
 							ApptDayBox box = (ApptDayBox) it.next();
 							Appointment ai = box.getAppt();
 
-							// change color for a single appointment based on
-							// its color - only if color print option set
-							g2.setColor(Color.black);
-							if (ai.getColor().equals("red"))
-								g2.setColor(Color.red);
-							else if (ai.getColor().equals("green"))
-								g2.setColor(Color.green);
-							else if (ai.getColor().equals("blue"))
-								g2.setColor(Color.blue);
-
 							// add a single appt text
 							// if the appt falls outside the grid - leave it as
 							// a note on top
 							if (box.isOutsideGrid()) {
-								// appt is note or is outside timespan shown
-								g2.clipRect(colleft, daytop, (int) colwidth,
-										(int) aptop);
-								if (wrap) {
-									String tx = ai.getText();
-									AttributedString as = new AttributedString(
-											tx, atmap);
-									AttributedCharacterIterator para = as
-											.getIterator();
-									int start = para.getBeginIndex();
-									int endi = para.getEndIndex();
-									LineBreakMeasurer lbm = new LineBreakMeasurer(
-											para, new FontRenderContext(null,
-													false, false));
-									lbm.setPosition(start);
-									int tt = notey;
-									while (lbm.getPosition() < endi) {
-										TextLayout tlayout = lbm
-												.nextLayout((int) colwidth
-														- (2 * fontDesent));
-										tt += tlayout.getAscent();
-										tlayout.draw(g2, apptx + 2, tt);
-										tt += tlayout.getDescent()
-												+ tlayout.getLeading();
-									}
-								} else {
-									if ((ai.getColor() != null && ai.getColor()
-											.equals("strike"))
-											|| (ai.getTodo() && !(ai
-													.getNextTodo() == null || !ai
-													.getNextTodo().after(
-															cal.getTime())))) {
-										// g2.setFont(strike_font);
-										// System.out.println(ai.getText());
-										// need to use AttributedString to work
-										// around a bug
-										AttributedString as = new AttributedString(
-												ai.getText(), stmap);
-										g2.drawString(as.getIterator(), apptx,
-												notey);
-									} else {
-										// g2.setFont(sm_font);
-										g2.drawString(ai.getText(), apptx,
-												notey);
-									}
-								}
-								// System.out.println( ai.getText() + " " +
-								// notey );
-
+								
+								addBox( box, colleft, notey, colwidth - 4, smfontHeight, acolor[apptnum % 3]);
 								// increment Y coord for next note text
 								notey += smfontHeight;
 							} else {
-
-								int appttop = (int) (aptop + (calbot - aptop)
-										* box.getTop());
-								int apptbot = (int) (aptop + (calbot - aptop)
-										* box.getBottom());
-								double realwidth = colwidth - 4;
-								int apptleft = (int) (colleft + 2 + realwidth
-										* box.getLeft());
-								int apptright = (int) (colleft + 2 + realwidth
-										* box.getRight());
-								// draw box outline
-								g2.setColor(Color.BLACK);
-
-								// System.out.println( ai.getText()+ " " +
-								// apptleft + " " + apptright + " " + appttop +
-								// " " + apptbot );
-								g2.drawRect(apptleft, appttop, apptright
-										- apptleft, apptbot - appttop);
-
-								// fill the box with color
-								g2.setColor(acolor[apptnum % 3]);
-
-								g2.fillRect(apptleft, appttop, apptright
-										- apptleft, apptbot - appttop);
-
-								// draw the appt text
-								g2.setColor(Color.BLACK);
-
-								g2.clipRect(apptleft, appttop, apptright
-										- apptleft, apptbot - appttop);
-
-								// add a single appt text
-								if (wrap) {
-									String tx = ai.getText();
-									AttributedString as = new AttributedString(
-											tx, atmap);
-									AttributedCharacterIterator para = as
-											.getIterator();
-									int start = para.getBeginIndex();
-									int endi = para.getEndIndex();
-									LineBreakMeasurer lbm = new LineBreakMeasurer(
-											para, new FontRenderContext(null,
-													false, false));
-									lbm.setPosition(start);
-									while (lbm.getPosition() < endi) {
-										TextLayout tlayout = lbm
-												.nextLayout(apptright
-														- apptleft
-														- (2 * fontDesent));
-										appttop += tlayout.getAscent();
-										tlayout.draw(g2, apptleft + 2, appttop);
-										appttop += tlayout.getDescent()
-												+ tlayout.getLeading();
-									}
-								} else {
-									if ((ai.getColor() != null && ai.getColor()
-											.equals("strike"))
-											|| (ai.getTodo() && !(ai
-													.getNextTodo() == null || !ai
-													.getNextTodo().after(
-															cal.getTime())))) {
-										// g2.setFont(strike_font);
-										// System.out.println(ai.getText());
-										// need to use AttributedString to work
-										// around a bug
-										AttributedString as = new AttributedString(
-												ai.getText(), stmap);
-										g2.drawString(as.getIterator(),
-												apptleft + 2, appttop
-														+ smfontHeight);
-									} else {
-										// g2.setFont(sm_font);
-										g2.drawString(ai.getText(),
-												apptleft + 2, appttop
-														+ smfontHeight);
-									}
-								}
-
+								
+								addBox( box, colleft, aptop, colwidth - 4, calbot -aptop, acolor[apptnum % 3]);
 								apptnum++;
 							}
 
@@ -431,8 +309,9 @@ class WeekPanel extends JPanel implements Printable {
 
 						}
 					}
-				}
+				
 
+				
 				// reset the clip or bad things happen
 				g2.setClip(s);
 
@@ -444,7 +323,8 @@ class WeekPanel extends JPanel implements Printable {
 			}
 
 		}
-
+		drawBoxes(g2);
+		
 		// draw the box lines last so they show on top of other stuff
 		// first - the horizontal lines
 		g2.drawLine(0, caltop, (int) pageWidth, caltop);
@@ -475,12 +355,11 @@ class WeekPanel extends JPanel implements Printable {
 			int colleft = (int) (timecolwidth + (col * colwidth));
 			g2.drawLine(colleft, caltop, colleft, calbot);
 		}
-
+		needLoad = false;
 		return Printable.PAGE_EXISTS;
 	}
 
-	// scale up for the preview to make it easier to see
-	static private final double prev_scale = 1.5;
+	
 
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -500,7 +379,18 @@ class WeekPanel extends JPanel implements Printable {
 		year_ = year;
 		month_ = month;
 		date_ = date;
+		clearData();
 
+	}
+	
+	private ApptDayBoxLayout layout[];
+	boolean needLoad = true;
+	public void clearData()
+	{
+		layout = new ApptDayBoxLayout[7];
+		for( int i = 0; i < 7; i++)
+			layout[i] = null;
+		needLoad = true;
 	}
 
 }

@@ -124,6 +124,8 @@ class WeekView extends View
 
     public void refresh()
     {
+    	wkPanel.clearData();
+    	wkPanel.repaint();
     }
 
 }

@@ -49,8 +49,7 @@ import net.sf.borg.model.Day;
 import net.sf.borg.ui.ApptDayBoxLayout.ApptDayBox;
 
 // weekPanel handles the printing of a single week
-class DayPanel extends JPanel implements Printable {
-
+class DayPanel extends ApptBoxPanel implements Printable {
 
 	private int year_;
 
@@ -70,16 +69,16 @@ class DayPanel extends JPanel implements Printable {
 		// only print 1 page
 		if (pageIndex > 0)
 			return Printable.NO_SUCH_PAGE;
-		return( drawIt(g,pageFormat.getWidth(), pageFormat.getHeight(), 
-				pageFormat.getImageableWidth(), pageFormat.getImageableHeight(),
-				pageFormat.getImageableX(), pageFormat.getImageableY()));
+		return (drawIt(g, pageFormat.getWidth(), pageFormat.getHeight(),
+				pageFormat.getImageableWidth(),
+				pageFormat.getImageableHeight(), pageFormat.getImageableX(),
+				pageFormat.getImageableY()));
 	}
-	
-	private int drawIt(Graphics g, double width, double height, double pageWidth, 
-			double pageHeight, double pagex, double pagey )
-	{
 
+	private int drawIt(Graphics g, double width, double height,
+			double pageWidth, double pageHeight, double pagex, double pagey) {
 
+		clearBoxes();
 		boolean showpub = false;
 		boolean showpriv = false;
 		String sp = Prefs.getPref(PrefName.SHOWPUBLIC);
@@ -90,12 +89,12 @@ class DayPanel extends JPanel implements Printable {
 			showpriv = true;
 		// set up default and small fonts
 		Graphics2D g2 = (Graphics2D) g;
-		//Font def_font = g2.getFont();
-		//Font sm_font = def_font.deriveFont(8f);
+		// Font def_font = g2.getFont();
+		// Font sm_font = def_font.deriveFont(8f);
 		Font sm_font = Font.decode(Prefs.getPref(PrefName.DAYVIEWFONT));
-        Map stmap = new HashMap();
-        stmap.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
-        stmap.put( TextAttribute.FONT, sm_font);
+		Map stmap = new HashMap();
+		stmap.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
+		stmap.put(TextAttribute.FONT, sm_font);
 
 		g2.setColor(Color.white);
 		g2.fillRect(0, 0, (int) width, (int) height);
@@ -106,8 +105,8 @@ class DayPanel extends JPanel implements Printable {
 		int fontDesent = g2.getFontMetrics().getDescent();
 
 		// get page size for the given printer
-		//double pageHeight = pageFormat.getImageableHeight();
-		//double pageWidth = pageFormat.getImageableWidth();
+		// double pageHeight = pageFormat.getImageableHeight();
+		// double pageWidth = pageFormat.getImageableWidth();
 
 		// translate coordinates based on the amount of the page that
 		// is going to be printable on - in other words, set upper right
@@ -119,9 +118,10 @@ class DayPanel extends JPanel implements Printable {
 		Shape s = g2.getClip();
 
 		// save begin/end date and build title
-		GregorianCalendar cal = new GregorianCalendar(year_, month_, date_,23,59);
+		GregorianCalendar cal = new GregorianCalendar(year_, month_, date_, 23,
+				59);
 		Date dt = cal.getTime();
-		//SimpleDateFormat sd = new SimpleDateFormat("MMM dd, yyyy");
+		// SimpleDateFormat sd = new SimpleDateFormat("MMM dd, yyyy");
 		DateFormat df = DateFormat.getDateInstance(DateFormat.LONG);
 		String title = df.format(dt);
 
@@ -192,134 +192,68 @@ class DayPanel extends JPanel implements Printable {
 
 		int colleft = (int) (timecolwidth);
 		try {
-			// get the appointment info for the given day
-			Day di = Day.getDay(cal.get(Calendar.YEAR),
-					cal.get(Calendar.MONTH), cal.get(Calendar.DATE), showpub,
-					showpriv, true);
 
-			if (di != null) {
+			if (needLoad) {
+				// get the appointment info for the given day
+				Day di = Day.getDay(cal.get(Calendar.YEAR), cal
+						.get(Calendar.MONTH), cal.get(Calendar.DATE), showpub,
+						showpriv, true);
 
-				Collection appts = di.getAppts();
-				if (appts != null) {
-					ApptDayBoxLayout layout = new ApptDayBoxLayout(appts,
-							starthr, endhr);
-					//Iterator it = appts.iterator();
-					Iterator it = layout.getBoxes().iterator();
+				if (di != null) {
 
-					// determine x coord for all appt text
-					int apptx = colleft + 2 * fontDesent;
-
-					// determine Y coord for non-scheduled appts (notes)
-					// they will be above the timed appt area
-					int notey = caltop + smfontHeight;
-
-					// count of appts used to vary color
-					int apptnum = 0;
-
-					// loop through appts
-					while (it.hasNext()) {
-						ApptDayBox box = (ApptDayBox) it.next();
-						Appointment ai = box.getAppt();
-
-						// change color for a single appointment based on
-						// its color - only if color print option set
-						g2.setColor(Color.black);
-						if (ai.getColor().equals("red"))
-							g2.setColor(Color.red);
-						else if (ai.getColor().equals("green"))
-							g2.setColor(Color.green);
-						else if (ai.getColor().equals("blue"))
-							g2.setColor(Color.blue);
-
-						// add a single appt text
-						// if the appt falls outside the grid - leave it as a
-						// note on top
-						if (box.isOutsideGrid()) {
-							// appt is note or is outside timespan shown
-							g2.clipRect(colleft, caltop, (int) colwidth,
-									(int) aptop);
-                            if( (ai.getColor() != null && ai.getColor().equals("strike")) ||
-                                    (ai.getTodo() && !(ai.getNextTodo() == null || !ai.getNextTodo().after(cal.getTime()))))
-                            {
-                                //g2.setFont(strike_font);
-                                //System.out.println(ai.getText());
-                                // need to use AttributedString to work around a bug
-                                AttributedString as = new AttributedString(ai.getText(),stmap);
-                                g2.drawString( as.getIterator(), apptx, notey);
-                            }
-                            else
-                            {
-                                //g2.setFont(sm_font);
-                                g2.drawString( ai.getText(), apptx, notey );
-                            }
-							//g2.drawString(ai.getText(), apptx, notey);
-							//System.out.println( ai.getText() + " " + notey );
-
-							// increment Y coord for next note text
-							notey += smfontHeight;
-						} else {
-
-							int appttop = (int) (aptop + (calbot - aptop)
-									* box.getTop());
-							int apptbot = (int) (aptop + (calbot - aptop)
-									* box.getBottom());
-							double realwidth = colwidth - 4;
-							int apptleft = (int) (colleft + 2 + realwidth
-									* box.getLeft());
-							int apptright = (int) (colleft + 2 + realwidth
-									* box.getRight());
-							// draw box outline
-							g2.setColor(Color.BLACK);
-
-							//System.out.println( ai.getText()+ " " + apptleft
-							// + " " + apptright + " " + appttop + " " + apptbot
-							// );
-							g2.drawRect(apptleft, appttop,
-									apptright - apptleft, apptbot - appttop);
-
-							// fill the box with color
-							g2.setColor(acolor[apptnum % 3]);
-
-							g2.fillRect(apptleft, appttop,
-									apptright - apptleft, apptbot - appttop);
-
-							// draw the appt text
-							g2.setColor(Color.BLACK);
-
-							g2.clipRect(apptleft, appttop,
-									apptright - apptleft, apptbot - appttop);
-							
-                            if( (ai.getColor() != null && ai.getColor().equals("strike")) || 
-                                    (ai.getTodo() && !(ai.getNextTodo() == null || !ai.getNextTodo().after(cal.getTime()))) )
-                            {
-                                //g2.setFont(strike_font);
-                                //System.out.println(ai.getText());
-                                // need to use AttributedString to work around a bug
-                                AttributedString as = new AttributedString(ai.getText(),stmap);
-                                g2.drawString( as.getIterator(), apptleft + 2, appttop + smfontHeight );
-                            }
-                            else
-                            {
-                                //g2.setFont(sm_font);
-                                g2.drawString( ai.getText(), apptleft + 2, appttop + smfontHeight  );
-                            }
-							//g2.drawString(ai.getText(), apptleft + 2, appttop
-									//+ smfontHeight);
-							
-							
-							apptnum++;
-						}
-
-						// reset to black
-						g2.setColor(Color.black);
-
-						// reset the clip
-						g2.setClip(s);
-
+					Collection appts = di.getAppts();
+					if (appts != null) {
+						layout = new ApptDayBoxLayout(appts, starthr, endhr);
 					}
 				}
 			}
 
+			if (layout != null) {
+
+				// Iterator it = appts.iterator();
+				Iterator it = layout.getBoxes().iterator();
+
+				// determine x coord for all appt text
+				int apptx = colleft + 2 * fontDesent;
+
+				// determine Y coord for non-scheduled appts (notes)
+				// they will be above the timed appt area
+				int notey = caltop;// + smfontHeight;
+
+				// count of appts used to vary color
+				int apptnum = 0;
+
+				// loop through appts
+				while (it.hasNext()) {
+					ApptDayBox box = (ApptDayBox) it.next();
+					Appointment ai = box.getAppt();
+
+
+					// add a single appt text
+					// if the appt falls outside the grid - leave it as a
+					// note on top
+					if (box.isOutsideGrid()) {
+						
+						addBox( box, colleft, notey, colwidth - 4, smfontHeight, acolor[apptnum % 3]);
+						// increment Y coord for next note text
+						notey += smfontHeight;
+					} else {
+
+						addBox( box, colleft, aptop, colwidth - 4, calbot -aptop, acolor[apptnum % 3]);
+						apptnum++;
+					}
+
+					// reset to black
+					g2.setColor(Color.black);
+
+					// reset the clip
+					g2.setClip(s);
+
+				}
+			}
+
+			drawBoxes(g2);
+			
 			// reset the clip or bad things happen
 			g2.setClip(s);
 
@@ -352,22 +286,20 @@ class DayPanel extends JPanel implements Printable {
 		}
 
 		g2.drawLine(colleft, caltop, colleft, calbot);
-		g2.drawLine((int)pageWidth, caltop, (int) pageWidth, calbot);
+		g2.drawLine((int) pageWidth, caltop, (int) pageWidth, calbot);
 
+		needLoad = false;
 		return Printable.PAGE_EXISTS;
 	}
-
-	// scale up for the preview to make it easier to see
-	static private final double prev_scale = 1.5;
 
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		try {
 			Graphics2D g2 = (Graphics2D) g;
 			g2.scale(prev_scale, prev_scale);
-			drawIt(g,getWidth()/prev_scale, getHeight()/prev_scale, 
-					getWidth()/prev_scale-20, getHeight()/prev_scale-20,
-					10, 10);
+			drawIt(g, getWidth() / prev_scale, getHeight() / prev_scale,
+					getWidth() / prev_scale - 20,
+					getHeight() / prev_scale - 20, 10, 10);
 
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
@@ -378,8 +310,15 @@ class DayPanel extends JPanel implements Printable {
 		year_ = year;
 		month_ = month;
 		date_ = date;
-
+		clearData();
 	}
 
-}
+	private ApptDayBoxLayout layout;
 
+	boolean needLoad = true;
+
+	public void clearData() {
+		layout = null;
+		needLoad = true;
+	}
+}

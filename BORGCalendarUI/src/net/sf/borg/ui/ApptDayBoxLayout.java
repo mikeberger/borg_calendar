@@ -65,6 +65,8 @@ public class ApptDayBoxLayout {
 		private int numOverLap = 0; // number of appts overlapping this one
 
 		private Appointment appt = null;
+		
+		private boolean isSelected = false;
 
 		public double getLeft() {
 			return left;
@@ -128,6 +130,14 @@ public class ApptDayBoxLayout {
 
 		public int getNumOverLap() {
 			return numOverLap;
+		}
+
+		public void setSelected(boolean isSelected) {
+			this.isSelected = isSelected;
+		}
+
+		public boolean isSelected() {
+			return isSelected;
 		}
 	}
 

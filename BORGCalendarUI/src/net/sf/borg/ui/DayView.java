@@ -124,6 +124,8 @@ class DayView extends View
 
     public void refresh()
     {
+    	dayPanel.clearData();
+    	dayPanel.repaint();
     }
 
 }
