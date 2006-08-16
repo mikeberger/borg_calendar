@@ -26,15 +26,10 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.Stroke;
-import java.awt.font.FontRenderContext;
-import java.awt.font.LineBreakMeasurer;
 import java.awt.font.TextAttribute;
-import java.awt.font.TextLayout;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
-import java.text.AttributedCharacterIterator;
-import java.text.AttributedString;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -46,13 +41,10 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 
-import javax.swing.JPanel;
-
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
 import net.sf.borg.common.util.Resource;
-import net.sf.borg.model.Appointment;
 import net.sf.borg.model.Day;
 import net.sf.borg.ui.ApptDayBoxLayout.ApptDayBox;
 
@@ -273,7 +265,7 @@ class WeekPanel extends ApptBoxPanel implements Printable {
 						Iterator it = layout[col].getBoxes().iterator();
 
 						// determine x coord for all appt text
-						int apptx = colleft + 2 * fontDesent;
+						//int apptx = colleft + 2 * fontDesent;
 
 						// determine Y coord for non-scheduled appts (notes)
 						// they will be above the timed appt area
@@ -285,7 +277,7 @@ class WeekPanel extends ApptBoxPanel implements Printable {
 						// loop through appts
 						while (it.hasNext()) {
 							ApptDayBox box = (ApptDayBox) it.next();
-							Appointment ai = box.getAppt();
+							//Appointment ai = box.getAppt();
 
 							// add a single appt text
 							// if the appt falls outside the grid - leave it as
@@ -381,6 +373,47 @@ class WeekPanel extends ApptBoxPanel implements Printable {
 		date_ = date;
 		clearData();
 
+	}
+	
+	public void next()
+	{
+		GregorianCalendar cal = new GregorianCalendar(year_, month_, date_,23,59);
+		cal.add(Calendar.DATE, 7);
+		year_ = cal.get(Calendar.YEAR);
+		month_ = cal.get(Calendar.MONTH);
+		date_ = cal.get(Calendar.DATE);
+		clearData();
+		repaint();
+	}
+	
+	public void prev()
+	{
+		GregorianCalendar cal = new GregorianCalendar(year_, month_, date_,23,59);
+		cal.add(Calendar.DATE, -7);
+		year_ = cal.get(Calendar.YEAR);
+		month_ = cal.get(Calendar.MONTH);
+		date_ = cal.get(Calendar.DATE);
+		clearData();
+		repaint();
+	}
+	
+	public void today()
+	{
+		GregorianCalendar cal = new GregorianCalendar();
+		year_ = cal.get(Calendar.YEAR);
+		month_ = cal.get(Calendar.MONTH);
+		date_ = cal.get(Calendar.DATE);
+		clearData();
+		repaint();
+	}
+	
+	public void goTo(Calendar cal)
+	{
+		year_ = cal.get(Calendar.YEAR);
+		month_ = cal.get(Calendar.MONTH);
+		date_ = cal.get(Calendar.DATE);
+		clearData();
+		repaint();
 	}
 	
 	private ApptDayBoxLayout layout[];

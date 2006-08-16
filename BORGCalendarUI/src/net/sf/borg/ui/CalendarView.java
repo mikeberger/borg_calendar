@@ -79,7 +79,7 @@ import net.sf.borg.model.TaskModel;
 // form
 // editor to get the graphical picture of the whole window
 
-public class CalendarView extends View implements Prefs.Listener {
+public class CalendarView extends View implements Prefs.Listener, Navigator {
 
 	// current year/month being viewed
 	private int year_;
@@ -406,7 +406,7 @@ public class CalendarView extends View implements Prefs.Listener {
 	}
 
 	/* set borg to current month and refresh the screen */
-	private void today() throws Exception {
+	public void today() {
 		GregorianCalendar cal = new GregorianCalendar();
 		month_ = cal.get(Calendar.MONTH);
 		year_ = cal.get(Calendar.YEAR);
@@ -1312,7 +1312,7 @@ public class CalendarView extends View implements Prefs.Listener {
 		gridBagConstraints.weightx = 0.1;
 		getContentPane().add(jPanel3, gridBagConstraints);
 
-		setJMenuBar(new MainMenu().getMenuBar());
+		setJMenuBar(new MainMenu(this).getMenuBar());
 
 		this.setContentPane(getJPanel());
 
@@ -1343,7 +1343,7 @@ public class CalendarView extends View implements Prefs.Listener {
 		new WeekView(month_, year_, 1);
 	}// GEN-LAST:event_jButton1ActionPerformed
 
-	public void GotoActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_GotoActionPerformed
+	private void GotoActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_GotoActionPerformed
 
 		// GOTO a particular month
 		DateDialog dlg = new DateDialog(this);
@@ -1368,7 +1368,7 @@ public class CalendarView extends View implements Prefs.Listener {
 		}
 	}// GEN-LAST:event_today
 
-	public void NextActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_NextActionPerformed
+	private void NextActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_NextActionPerformed
 		// go to next month - increment month/year and call refresh of view
 		if (month_ == 11) {
 			month_ = 0;
@@ -1534,7 +1534,7 @@ public class CalendarView extends View implements Prefs.Listener {
 		return jPanel5;
 	}
 
-	public void PrevActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_PrevActionPerformed
+	private void PrevActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_PrevActionPerformed
 		// go to previous month - decrement month/year and call refresh of view
 
 		if (month_ == 0) {
@@ -1549,5 +1549,14 @@ public class CalendarView extends View implements Prefs.Listener {
 			Errmsg.errmsg(e);
 		}// Add your handling code here:
 	}// GEN-LAST:event_PrevActionPerformed
+
+	public void next() {
+		NextActionPerformed(null);
+	}
+
+	public void prev() {
+		PrevActionPerformed(null);		
+	}
+
 
 }

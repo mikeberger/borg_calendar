@@ -15,7 +15,9 @@ import java.awt.font.TextLayout;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -64,6 +66,16 @@ public class ApptBoxPanel extends JPanel {
 						&& evt.getY() > realy && evt.getY() < (realy + realh)) {
 					b.layout.setSelected(true);
 					// System.out.println(true);
+					if( evt.getClickCount() > 1 )
+					{
+						Appointment ap = b.layout.getAppt();
+						GregorianCalendar cal = new GregorianCalendar();
+						cal.setTime(ap.getDate());
+						AppointmentListView ag = new AppointmentListView(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE));						
+				        ag.showApp(ap.getKey());
+				        ag.setVisible(true);
+
+					}
 				} else {
 					b.layout.setSelected(false);
 				}

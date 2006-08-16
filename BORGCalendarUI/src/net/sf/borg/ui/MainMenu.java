@@ -7,7 +7,9 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.net.URL;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.Properties;
 
@@ -113,8 +115,11 @@ public class MainMenu {
 	private JMenuBar menuBar = new JMenuBar();
 
 	JMenuItem sqlMI = new JMenuItem();
+	
+	Navigator nav_ = null;
 
-	public MainMenu() {
+	public MainMenu(Navigator nav) {
+		nav_ = nav;
 		menuBar.setBorder(new javax.swing.border.BevelBorder(
 				javax.swing.border.BevelBorder.RAISED));
 		ActionMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource(
@@ -166,7 +171,10 @@ public class MainMenu {
 
 		PrintMonthMI.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 				"/resource/Print16.gif")));
-		ResourceHelper.setText(PrintMonthMI, "pmonth");
+		if( nav_ instanceof CalendarView )
+			ResourceHelper.setText(PrintMonthMI, "pmonth");
+		else
+			ResourceHelper.setText(PrintMonthMI, "Print");
 		PrintMonthMI.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				PrintMonthMIActionPerformed(evt);
@@ -184,7 +192,8 @@ public class MainMenu {
 			}
 		});
 
-		ActionMenu.add(printprev);
+		if( nav_ instanceof CalendarView )
+			ActionMenu.add(printprev);
 
 		syncMI.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 				"/resource/Refresh16.gif")));
@@ -238,16 +247,16 @@ public class MainMenu {
 		navmenu.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 				"/resource/Refresh16.gif")));
 		ResourceHelper.setText(navmenu, "navmenu");
-		ResourceHelper.setText(nextmi, "Next_Month");
+		ResourceHelper.setText(nextmi, "Next");
 		nextmi.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				CalendarView.getReference().NextActionPerformed(evt);
+				nav_.next();
 			}
 		});
 
 		navmenu.add(nextmi);
 
-		ResourceHelper.setText(prevmi, "Previous_Month");
+		ResourceHelper.setText(prevmi, "Previous");
 		prevmi.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				PrevActionPerformed(evt);
@@ -259,7 +268,7 @@ public class MainMenu {
 		ResourceHelper.setText(todaymi, "Today");
 		todaymi.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				CalendarView.getReference().today(evt);
+				nav_.today();
 			}
 		});
 
@@ -268,7 +277,14 @@ public class MainMenu {
 		ResourceHelper.setText(gotomi, "Goto");
 		gotomi.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				CalendarView.getReference().GotoActionPerformed(evt);
+//				 GOTO a particular month
+				DateDialog dlg = new DateDialog(null);
+				dlg.setCalendar(new GregorianCalendar());
+				dlg.setVisible(true);
+				Calendar dlgcal = dlg.getCalendar();
+				if (dlgcal == null)
+					return;
+				nav_.goTo(dlgcal);
 			}
 		});
 
@@ -928,17 +944,30 @@ public class MainMenu {
 	}// GEN-LAST:event_licsendActionPerformed
 
 	private void PrevActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_PrevActionPerformed
-		CalendarView.getReference().PrevActionPerformed(evt);
+		nav_.prev();
 	}// GEN-LAST:event_PrevActionPerformed
 
 	private void PrintMonthMIActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_PrintMonthMIActionPerformed
 
+		if( nav_ instanceof CalendarView )
+		{
 		// print the current month
 		try {
 			MonthPreView.printMonth(CalendarView.getReference().getMonth(),
 					CalendarView.getReference().getYear());
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
+		}
+		}
+		else if( nav_ instanceof WeekView )
+		{
+			WeekView w = (WeekView) nav_;
+			w.print();
+		}
+		else if( nav_ instanceof DayView )
+		{
+			DayView w = (DayView) nav_;
+			w.print();
 		}
 
 	}// GEN-LAST:event_PrintMonthMIActionPerformed
