@@ -187,6 +187,9 @@ class DayPanel extends ApptBoxPanel implements Printable {
 		acolor[2] = new Color(255, 204, 204);
 
 		int colleft = (int) (timecolwidth);
+		
+		addDateZone(cal.getTime(), colleft, 0, colwidth, calbot ); 
+		
 		try {
 
 			if (needLoad) {

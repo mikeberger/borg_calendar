@@ -17,6 +17,7 @@ import java.text.AttributedString;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -45,11 +46,11 @@ public class ApptBoxPanel extends JPanel {
 		}
 
 		public void mouseClicked(MouseEvent evt) {
-			// System.out.println("mouse clicked " + evt.getX() + " " +
-			// evt.getY());
 
 			// determine which box is selected, if any
 			Iterator it = boxes.iterator();
+			boolean boxFound = false;
+			Box zone = null;
 			while (it.hasNext()) {
 
 				Box b = (Box) it.next();
@@ -64,6 +65,13 @@ public class ApptBoxPanel extends JPanel {
 				// + " " + realy + " " + realw + " " + realh);
 				if (evt.getX() > realx && evt.getX() < (realx + realw)
 						&& evt.getY() > realy && evt.getY() < (realy + realh)) {
+					
+					if( b.zone == true )
+					{
+						zone = b;
+						continue;
+					}
+					
 					b.layout.setSelected(true);
 					// System.out.println(true);
 					if( evt.getClickCount() > 1 )
@@ -74,13 +82,23 @@ public class ApptBoxPanel extends JPanel {
 						AppointmentListView ag = new AppointmentListView(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE));						
 				        ag.showApp(ap.getKey());
 				        ag.setVisible(true);
+				        boxFound = true;
 
 					}
 				} else {
+					if( b.zone == true )
+						continue;
 					b.layout.setSelected(false);
 				}
 			}
 
+			if( !boxFound && zone != null && evt.getClickCount() > 1)
+			{
+				GregorianCalendar cal = new GregorianCalendar();
+				cal.setTime(zone.date);
+				AppointmentListView ag = new AppointmentListView(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE));						
+		        ag.setVisible(true);		 
+			}
 			evt.getComponent().getParent().repaint();
 		}
 
@@ -109,6 +127,10 @@ public class ApptBoxPanel extends JPanel {
 		public ApptDayBoxLayout.ApptDayBox layout;
 
 		public Color color;
+		
+		public boolean zone = false;
+		
+		public Date date;
 
 	}
 
@@ -121,7 +143,7 @@ public class ApptBoxPanel extends JPanel {
 	public void addBox(ApptDayBoxLayout.ApptDayBox layout, double x, double y,
 			double w, double h, Color c) {
 		Box b = new Box();
-
+		b.zone = false;
 		
 		if( layout.isOutsideGrid())
 		{
@@ -140,6 +162,19 @@ public class ApptBoxPanel extends JPanel {
 		b.layout = layout;
 		b.color = c;
 
+		boxes.add(b);
+	}
+	
+	public void addDateZone(Date d, double x, double y,
+			double w, double h) {
+		Box b = new Box();
+		b.zone = true;
+		b.date = d;
+		b.x = (int)x;
+		b.y = (int)y;
+		b.h = (int)h;
+		b.w = (int)w;
+			
 		boxes.add(b);
 	}
 
@@ -165,6 +200,8 @@ public class ApptBoxPanel extends JPanel {
 		Iterator it = boxes.iterator();
 		while (it.hasNext()) {
 			Box b = (Box) it.next();
+			if( b.zone == true) continue;
+			
 			Appointment ai = null;
 			ai = b.layout.getAppt();
 

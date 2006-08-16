@@ -239,7 +239,12 @@ class WeekPanel extends ApptBoxPanel implements Printable {
 		// loop through the 7 days
 		for (int col = 0; col < 7; col++) {
 
+			 
 			int colleft = (int) (timecolwidth + col * colwidth);
+			
+//			 add a zone for each day to allow new appts to be edited
+			addDateZone(cal.getTime(), colleft, 0, colwidth, calbot ); 
+			
 			try {
 								
 				if( layout[col] == null && needLoad == true )
