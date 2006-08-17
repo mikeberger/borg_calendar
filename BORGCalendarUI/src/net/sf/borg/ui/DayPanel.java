@@ -233,12 +233,12 @@ class DayPanel extends ApptBoxPanel implements Printable {
 					// note on top
 					if (box.isOutsideGrid()) {
 						
-						addBox( box, colleft, notey, colwidth - 4, smfontHeight, acolor[apptnum % 3]);
+						addBox( box, colleft, notey, colwidth - 4, smfontHeight, acolor[apptnum % 3], cal.getTime());
 						// increment Y coord for next note text
 						notey += smfontHeight;
 					} else {
 
-						addBox( box, colleft, aptop, colwidth - 4, calbot -aptop, acolor[apptnum % 3]);
+						addBox( box, colleft, aptop, colwidth - 4, calbot -aptop, acolor[apptnum % 3], cal.getTime());
 						apptnum++;
 					}
 
@@ -319,6 +319,7 @@ class DayPanel extends ApptBoxPanel implements Printable {
 	public void clearData() {
 		layout = null;
 		needLoad = true;
+		setToolTipText(null);
 	}
 	
 	public void next()

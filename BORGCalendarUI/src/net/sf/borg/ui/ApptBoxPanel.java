@@ -8,6 +8,7 @@ import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.font.FontRenderContext;
 import java.awt.font.LineBreakMeasurer;
 import java.awt.font.TextAttribute;
@@ -40,12 +41,16 @@ public class ApptBoxPanel extends JPanel {
 
 	final static private BasicStroke regular = new BasicStroke(1.0f);
 
-	private class MyMouseListener implements MouseListener {
+	private class MyMouseListener implements MouseListener, MouseMotionListener {
+		
 		public MyMouseListener() {
 
 		}
 
 		public void mouseClicked(MouseEvent evt) {
+
+			if (evt.getClickCount() < 2)
+				return;
 
 			// determine which box is selected, if any
 			Iterator it = boxes.iterator();
@@ -65,39 +70,32 @@ public class ApptBoxPanel extends JPanel {
 				// + " " + realy + " " + realw + " " + realh);
 				if (evt.getX() > realx && evt.getX() < (realx + realw)
 						&& evt.getY() > realy && evt.getY() < (realy + realh)) {
-					
-					if( b.zone == true )
-					{
+
+					if (b.zone == true) {
 						zone = b;
 						continue;
 					}
-					
-					b.layout.setSelected(true);
-					// System.out.println(true);
-					if( evt.getClickCount() > 1 )
-					{
-						Appointment ap = b.layout.getAppt();
-						GregorianCalendar cal = new GregorianCalendar();
-						cal.setTime(ap.getDate());
-						AppointmentListView ag = new AppointmentListView(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE));						
-				        ag.showApp(ap.getKey());
-				        ag.setVisible(true);
-				        boxFound = true;
 
-					}
-				} else {
-					if( b.zone == true )
-						continue;
-					b.layout.setSelected(false);
+					Appointment ap = b.layout.getAppt();
+					GregorianCalendar cal = new GregorianCalendar();
+					cal.setTime(ap.getDate());
+					AppointmentListView ag = new AppointmentListView(cal
+							.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal
+							.get(Calendar.DATE));
+					ag.showApp(ap.getKey());
+					ag.setVisible(true);
+					boxFound = true;
+
 				}
 			}
 
-			if( !boxFound && zone != null && evt.getClickCount() > 1)
-			{
+			if (!boxFound && zone != null && evt.getClickCount() > 1) {
 				GregorianCalendar cal = new GregorianCalendar();
 				cal.setTime(zone.date);
-				AppointmentListView ag = new AppointmentListView(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE));						
-		        ag.setVisible(true);		 
+				AppointmentListView ag = new AppointmentListView(cal
+						.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal
+						.get(Calendar.DATE));
+				ag.setVisible(true);
 			}
 			evt.getComponent().getParent().repaint();
 		}
@@ -113,6 +111,46 @@ public class ApptBoxPanel extends JPanel {
 
 		public void mouseExited(MouseEvent arg0) {
 		}
+
+		public void mouseDragged(MouseEvent arg0) {
+			// TODO Auto-generated method stub
+
+		}
+
+		public void mouseMoved(MouseEvent evt) {
+
+			JPanel panel = (JPanel) evt.getComponent();
+			
+			Iterator it = boxes.iterator();
+			while (it.hasNext()) {
+
+				Box b = (Box) it.next();
+				if (b.zone == true)
+					continue;
+
+				// this is bad magic
+				int realx = (int) ((b.x + 10) * prev_scale);
+				int realy = (int) ((b.y + 10) * prev_scale);
+				int realh = (int) (b.h * prev_scale);
+				int realw = (int) (b.w * prev_scale);
+
+				
+				// System.out.println(b.layout.getAppt().getText() + " " + realx
+				// + " " + realy + " " + realw + " " + realh);
+				if (evt.getX() > realx && evt.getX() < (realx + realw)
+						&& evt.getY() > realy && evt.getY() < (realy + realh)) {
+
+					b.layout.setSelected(true);
+					panel.setToolTipText(b.layout.getAppt().getText());
+
+				} else {
+					b.layout.setSelected(false);
+				}
+			}
+
+			evt.getComponent().getParent().repaint();
+
+		}
 	}
 
 	private class Box {
@@ -127,9 +165,9 @@ public class ApptBoxPanel extends JPanel {
 		public ApptDayBoxLayout.ApptDayBox layout;
 
 		public Color color;
-		
+
 		public boolean zone = false;
-		
+
 		public Date date;
 
 	}
@@ -138,22 +176,21 @@ public class ApptBoxPanel extends JPanel {
 
 	public ApptBoxPanel() {
 		addMouseListener(new MyMouseListener());
+		addMouseMotionListener(new MyMouseListener());
 	};
 
 	public void addBox(ApptDayBoxLayout.ApptDayBox layout, double x, double y,
-			double w, double h, Color c) {
+			double w, double h, Color c, Date d) {
 		Box b = new Box();
 		b.zone = false;
-		
-		if( layout.isOutsideGrid())
-		{
-			b.x = (int)x;
-			b.y = (int)y;
-			b.h = (int)h;
-			b.w = (int)w;
-		}
-		else
-		{
+		b.date = d;
+
+		if (layout.isOutsideGrid()) {
+			b.x = (int) x;
+			b.y = (int) y;
+			b.h = (int) h;
+			b.w = (int) w;
+		} else {
 			b.x = (int) (x + 2 + w * layout.getLeft());
 			b.y = (int) (y + h * layout.getTop());
 			b.h = (int) ((layout.getBottom() - layout.getTop()) * h);
@@ -164,17 +201,16 @@ public class ApptBoxPanel extends JPanel {
 
 		boxes.add(b);
 	}
-	
-	public void addDateZone(Date d, double x, double y,
-			double w, double h) {
+
+	public void addDateZone(Date d, double x, double y, double w, double h) {
 		Box b = new Box();
 		b.zone = true;
 		b.date = d;
-		b.x = (int)x;
-		b.y = (int)y;
-		b.h = (int)h;
-		b.w = (int)w;
-			
+		b.x = (int) x;
+		b.y = (int) y;
+		b.h = (int) h;
+		b.w = (int) w;
+
 		boxes.add(b);
 	}
 
@@ -191,17 +227,14 @@ public class ApptBoxPanel extends JPanel {
 		if (sp.equals("true"))
 			wrap = true;
 		Hashtable atmap = null;
-		if (wrap) {
-			atmap = new Hashtable();
-			atmap.put(TextAttribute.FONT, sm_font);
-		}
 
 		Stroke stroke = g2.getStroke();
 		Iterator it = boxes.iterator();
 		while (it.hasNext()) {
 			Box b = (Box) it.next();
-			if( b.zone == true) continue;
-			
+			if (b.zone == true)
+				continue;
+
 			Appointment ai = null;
 			ai = b.layout.getAppt();
 
@@ -210,7 +243,7 @@ public class ApptBoxPanel extends JPanel {
 			// a note on top
 			if (b.layout.isOutsideGrid()) {
 				// appt is note or is outside timespan shown
-				//System.out.println(b.x + " " + b.y + " " + b.w + " " +b.h);
+				// System.out.println(b.x + " " + b.y + " " + b.w + " " +b.h);
 				g2.clipRect(b.x, 0, b.w, 100);
 				if (wrap) {
 					String tx = ai.getText();
@@ -230,29 +263,32 @@ public class ApptBoxPanel extends JPanel {
 						tt += tlayout.getDescent() + tlayout.getLeading();
 					}
 				} else {
+					GregorianCalendar cal = new GregorianCalendar();
+					cal.setTime(b.date);
 					if ((ai.getColor() != null && ai.getColor()
 							.equals("strike"))
-					/*
-					 * || (ai.getTodo() && !(ai.getNextTodo() == null || !ai
-					 * .getNextTodo().after(cal.getTime())))
-					 */) {
+					|| (ai.getTodo() && !(ai.getNextTodo() == null || !ai.getNextTodo().after(cal.getTime())))
+					 ) {
 						// g2.setFont(strike_font);
 						// System.out.println(ai.getText());
 						// need to use AttributedString to work
 						// around a bug
 						AttributedString as = new AttributedString(
 								ai.getText(), stmap);
-						g2.drawString(as.getIterator(), b.x+2, b.y + smfontHeight);
+						g2.drawString(as.getIterator(), b.x + 2, b.y
+								+ smfontHeight);
 					} else {
 						// g2.setFont(sm_font);
-						g2.drawString(ai.getText(), b.x+2, b.y + smfontHeight);
+						g2
+								.drawString(ai.getText(), b.x + 2, b.y
+										+ smfontHeight);
 					}
 				}
 
 				if (b.layout.isSelected()) {
 					g2.setStroke(regular);
 					g2.setColor(Color.BLUE);
-					g2.drawRect(b.x, b.y+2, b.w, b.h);
+					g2.drawRect(b.x, b.y + 2, b.w, b.h);
 					g2.setStroke(stroke);
 					g2.setColor(Color.BLACK);
 				}
@@ -326,12 +362,11 @@ public class ApptBoxPanel extends JPanel {
 								+ smfontHeight);
 					} else {
 						// g2.setFont(sm_font);
-						g2.drawString(ai.getText(), b.x + 2, b.y
+						g2
+								.drawString(ai.getText(), b.x + 2, b.y
 										+ smfontHeight);
 					}
 				}
-
-				
 
 			}
 			g2.setClip(s);

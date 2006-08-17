@@ -289,12 +289,12 @@ class WeekPanel extends ApptBoxPanel implements Printable {
 							// a note on top
 							if (box.isOutsideGrid()) {
 								
-								addBox( box, colleft, notey, colwidth - 4, smfontHeight, acolor[apptnum % 3]);
+								addBox( box, colleft, notey, colwidth - 4, smfontHeight, acolor[apptnum % 3],cal.getTime());
 								// increment Y coord for next note text
 								notey += smfontHeight;
 							} else {
 								
-								addBox( box, colleft, aptop, colwidth - 4, calbot -aptop, acolor[apptnum % 3]);
+								addBox( box, colleft, aptop, colwidth - 4, calbot -aptop, acolor[apptnum % 3], cal.getTime());
 								apptnum++;
 							}
 
@@ -429,6 +429,7 @@ class WeekPanel extends ApptBoxPanel implements Printable {
 		for( int i = 0; i < 7; i++)
 			layout[i] = null;
 		needLoad = true;
+		setToolTipText(null);
 	}
 
 }

@@ -170,6 +170,17 @@ public class AppointmentListView extends View implements ListSelectionListener {
 	}
 
 	public void showApp(int key) {
+		apptTable.clearSelection();
+		TableSorter tm = (TableSorter) apptTable.getModel();
+		int rows = tm.getRowCount();
+		for (int i = 0; i < rows; ++i) {
+			int j = tm.getMappedIndex(i);
+			Integer k = (Integer)alist_.get(j);
+			if( key == k.intValue())
+			{
+				apptTable.getSelectionModel().setSelectionInterval(i,i);
+			}
+		}
 		apanel_.showapp(key);
 	}
 
