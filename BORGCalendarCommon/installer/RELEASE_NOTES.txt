@@ -1,5 +1,5 @@
 ============================
-RELEASE NOTES for BORG 1.5.1
+RELEASE NOTES for BORG 1.5.2
 ============================
 
 The project home page is http://borg-calendar.sourceforge.net
@@ -16,22 +16,18 @@ Feel free to mail any translations to i_flem@users.sourceforge.net.
 There is nobody on the project actively updating the translations. Any
 received translations will be posted as patches.
 
-2. The HELP documentation has not been updated to reflect all of the changes in release
-1.5.1.
+2. All MySQL users must run ungrade script(s)
 
 MySQL Users
 -----------
 This section only concerns users using MySQL to store BORG data. 
 
+The SQL needed to transition from 1.5.1.2 to 1.5.2 is in file update152.sql.
+The SQL needed to transition from 1.5.1 to 1.5.1.2 is in file update1512.sql.
 The SQL needed to transition from 1.5 to 1.5.1 is in file update151.sql.
+The SQL needed to transition from 1.4.x to 1.5 is in file update1_5.sql.
 
-There are MySQL database changes for users migrating from BORG 1.4.x to BORG 1.5.
-You must run the SQL in file update1_5.sql to upgrade a 1.4.x database to 1.5 before 
-running update151.sql to get to 1.5.1. 
-
-The borg.sql file has been updated with the SQL to create a new 1.5.1 database.
-The SQL files are not installed by default and are
-installed as part of the optional RDBMS support. 
+The borg.sql file has been updated with the SQL to create a new 1.5.2 database.
 
 
 RUNNING
@@ -51,10 +47,3 @@ LICENSE
 -------
 BORG is open source under the GPL. A copy of the GPL is included with it.
 Source is available from: http://sourceforge.net/projects/borg-calendar/
-If a less restrictive license is desired, send mail to 
-i_flem@users.sourceforge.net.
-
-DONATIONS
----------
-This project does not want nor accept donations. It is coded for the fun of it.
-

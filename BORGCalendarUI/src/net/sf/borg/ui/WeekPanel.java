@@ -344,7 +344,7 @@ class WeekPanel extends ApptBoxPanel implements Printable {
 				hr = hr - 12;
 
 			String tmlabel = Integer.toString(hr) + ":00";
-			g2.drawString(tmlabel, smfontHeight, y + smfontHeight / 2);
+			g2.drawString(tmlabel, 2, y + smfontHeight / 2);
 		}
 
 		// the vertical lines

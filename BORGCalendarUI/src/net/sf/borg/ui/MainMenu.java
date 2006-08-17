@@ -953,8 +953,9 @@ public class MainMenu {
 		{
 		// print the current month
 		try {
-			MonthPreView.printMonth(CalendarView.getReference().getMonth(),
-					CalendarView.getReference().getYear());
+			CalendarView cv = (CalendarView) nav_;
+			MonthPreView.printMonth(cv.getMonth(),
+					cv.getYear());
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
 		}
@@ -974,8 +975,11 @@ public class MainMenu {
 
 	private void printprevActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_printprevActionPerformed
 	{// GEN-HEADEREND:event_printprevActionPerformed
-		new MonthPreView(CalendarView.getReference().getMonth(), CalendarView
-				.getReference().getYear());
+		if( nav_ instanceof CalendarView )
+		{			
+			CalendarView cv = (CalendarView) nav_;
+			new MonthPreView(cv.getMonth(), cv.getYear());
+		}
 	}// GEN-LAST:event_printprevActionPerformed
 
 	private void SearchMIActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_SearchMIActionPerformed

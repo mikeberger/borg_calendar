@@ -1,14 +1,15 @@
 To build BORG from the source, you need the JAVA SDK 1.4 or later, available from java.sun.com.
 
-As of release 1.4 of BORG, the project has been split into 4 separate pieces:
+As of release 1.5.2 of BORG, the product consists of the following eclipse projects:
 
-- Common
-- UI
-- Model
-- DB Utilities
+- BORGCalendarCommon
+- BORGCalendarUI
+- BORGCalendarModel
+- BORGPalmConduits
+- BORGServlet
 
 
-The ant build file (build.xml) is in the ant folder in the Common sub-project.
+The ant build file to build the entire thing is in the ant folder in the Common sub-project.
 
 Building
 --------
@@ -16,29 +17,29 @@ BORG is built using ant. If you have ant (available at apache.org), then
 from command line in the BORGCalendarCommon/ant folder, you can do "ant fulldist".
 Below are the various ant targets that might be useful:
 
+- ant fulldist - This will build the BORG jar and zip files in the BORGCalendarCommon/dist directory. 
+borg.zip can be unzipped and borg.jar can be run. 
+**** Running this target alone is sufficient to build the program. ****
+
+- ant installer - This will create the IzPack installers for BORG in the Common/dist folder. 
+The IzPack software is required (http://www.izforge.com/izpack) and the build.xml file must be
+updated with the path to this software. 
+
 - ant regen-help - this will generate the search database for the online help. You only need to do this
 if you want to generate the search database. Without this step, the help will be readable, but not searchable.
 You need to install JavaHelp (http://java.sun.com/products/javahelp/) and modify the build.xml file with the JavaHelp
 path. This target is not executed as part of the fulldist target as it requires the optional JavaHelp package.
 
-- ant fulldist - This will build the BORG jar and zip files in the BORGCalendarCommon/dist directory. 
-borg.zip can be unzipped and borg.jar can be run. Running this target alone is sufficient to build the program.
-
-- ant installer - This will create the IzPack installers for BORG in the Common/dist folder. Both the source and non-source
-versions are created. The IzPack software is required (http://www.izforge.com/izpack) and the build.xml file must be
-updated with the path to this software. 
-
 Eclipse
 -------
 BORG development is done using the Eclipse IDE. As BORG has grown larger, it has become
-mainly an eclipse based project. It's getting a bit big to manage without an IDE.
-To use eclipse, you must import the 4 parts of BORG as projects. 
+mainly an eclipse based project.
+To use eclipse, you must import the 5 parts of BORG as projects. 
 
-When the 4 parts of BORG are imported into the eclipse IDE as projects, eclipse will enforce
+When the 5 parts of BORG are imported into the eclipse IDE as projects, eclipse will enforce
 the dependencies (or rather lack of dependencies) between them. The eclipse projects are
 set up to enforce that Common depends on no other part of BORG, while Model only depends
-on Common. UI depends on Common and Model, and will not depend on a new Web-based UI that may
-be added in the future.
+on Common. UI depends on Common and Model, etc....
 
 To use eclipse, each of the top 4 project folders must be imported as a project into eclipse.
 The .project and .classpath files that configure eclipse are part of the source tree and should get the 4 projects
@@ -48,8 +49,8 @@ tools.
 You should be able to use the eclipse debugger to debug the code. You should be able to run the main
 Borg class (Borg Calendar UI/src/net/sf.borg.control.Borg) from within eclipse. 
 
-The GUI screens are edited using the eclipse visual editor plugin. You do not need to use this to edit the GUI screens,
-but it helps. ** UPDATE ** - The Eclipse visual editor seems to make a mess of the code more often than not - so I am no
+Most GUI screens were originally created via the Netbeans or Eclipse visual editors. You do not need to use this to edit the GUI screens,
+and I recommend that you don't. The Eclipse visual editor seems to make a mess of the code more often than not - so I am no
 longer making an effort to use it.
 
 NetBeans
