@@ -906,10 +906,10 @@ public class MainMenu {
 
 		// build and show the version info.
 
-		String info = Resource.getResourceString("Berger-Organizer_v")
-				+ version + "\n" + Resource.getResourceString("developers")
-				+ "\n" + Resource.getResourceString("contrib") + "\n\n"
-				+ "http://borg-calendar.sourceforge.net" + "\n\n"
+		String info = Resource.getResourceString("Berger-Organizer_v")+ version 
+				+ "\n\nhttp://borg-calendar.sourceforge.net\n\n" 
+				+ Resource.getResourceString("developers") + "\n"
+				+ Resource.getResourceString("contrib") + "\n\n"				
 				+ Resource.getResourceString("translations") + "\n\n"
 				+ build_info;
 		Object opts[] = { Resource.getPlainResourceString("Dismiss") /*
