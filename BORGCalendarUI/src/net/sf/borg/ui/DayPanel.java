@@ -160,6 +160,10 @@ class DayPanel extends ApptBoxPanel implements Printable {
 		// calculate size of Y-axis ticks (each half-hour)
 		int numhalfhours = (endhr - starthr) * 2;
 		double tickheight = (calbot - aptop) / numhalfhours;
+		
+		g2.setColor(new Color(224,224,255));
+		g2.fillRect(0,caltop,(int)timecolwidth,calbot-caltop);
+		g2.setColor(Color.BLACK);
 
 		// draw background for appt area
 		g2.setColor(new Color(255, 245, 225));

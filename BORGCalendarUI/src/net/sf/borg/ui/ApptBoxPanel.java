@@ -21,14 +21,11 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 
 import javax.swing.JPanel;
 
-import net.sf.borg.common.util.PrefName;
-import net.sf.borg.common.util.Prefs;
 import net.sf.borg.model.Appointment;
 
 public class ApptBoxPanel extends JPanel {
@@ -42,7 +39,7 @@ public class ApptBoxPanel extends JPanel {
 	final static private BasicStroke regular = new BasicStroke(1.0f);
 
 	private class MyMouseListener implements MouseListener, MouseMotionListener {
-		
+
 		public MyMouseListener() {
 
 		}
@@ -120,7 +117,7 @@ public class ApptBoxPanel extends JPanel {
 		public void mouseMoved(MouseEvent evt) {
 
 			JPanel panel = (JPanel) evt.getComponent();
-			
+
 			Iterator it = boxes.iterator();
 			while (it.hasNext()) {
 
@@ -134,7 +131,6 @@ public class ApptBoxPanel extends JPanel {
 				int realh = (int) (b.h * prev_scale);
 				int realw = (int) (b.w * prev_scale);
 
-				
 				// System.out.println(b.layout.getAppt().getText() + " " + realx
 				// + " " + realy + " " + realw + " " + realh);
 				if (evt.getX() > realx && evt.getX() < (realx + realw)
@@ -217,16 +213,10 @@ public class ApptBoxPanel extends JPanel {
 	public void drawBoxes(Graphics2D g2) {
 		Shape s = g2.getClip();
 		Font sm_font = g2.getFont();
-		int fontDesent = g2.getFontMetrics().getDescent();
 		int smfontHeight = g2.getFontMetrics().getHeight();
 		Map stmap = new HashMap();
 		stmap.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
 		stmap.put(TextAttribute.FONT, sm_font);
-		boolean wrap = false;
-		String sp = Prefs.getPref(PrefName.WRAP);
-		if (sp.equals("true"))
-			wrap = true;
-		Hashtable atmap = null;
 
 		Stroke stroke = g2.getStroke();
 		Iterator it = boxes.iterator();
@@ -242,47 +232,27 @@ public class ApptBoxPanel extends JPanel {
 			// if the appt falls outside the grid - leave it as
 			// a note on top
 			if (b.layout.isOutsideGrid()) {
+
 				// appt is note or is outside timespan shown
-				// System.out.println(b.x + " " + b.y + " " + b.w + " " +b.h);
-				g2.clipRect(b.x, 0, b.w, 100);
-				if (wrap) {
-					String tx = ai.getText();
-					AttributedString as = new AttributedString(tx, atmap);
-					AttributedCharacterIterator para = as.getIterator();
-					int start = para.getBeginIndex();
-					int endi = para.getEndIndex();
-					LineBreakMeasurer lbm = new LineBreakMeasurer(para,
-							new FontRenderContext(null, false, false));
-					lbm.setPosition(start);
-					int tt = b.y + smfontHeight;
-					while (lbm.getPosition() < endi) {
-						TextLayout tlayout = lbm.nextLayout(b.w
-								- (2 * fontDesent));
-						tt += tlayout.getAscent();
-						tlayout.draw(g2, b.x + 2, tt);
-						tt += tlayout.getDescent() + tlayout.getLeading();
-					}
+				g2.clipRect(b.x, 0, b.w, 1000);
+
+				GregorianCalendar cal = new GregorianCalendar();
+				cal.setTime(b.date);
+				if ((ai.getColor() != null && ai.getColor().equals("strike"))
+						|| (ai.getTodo() && !(ai.getNextTodo() == null || !ai
+								.getNextTodo().after(cal.getTime())))) {
+					// g2.setFont(strike_font);
+					// System.out.println(ai.getText());
+					// need to use AttributedString to work
+					// around a bug
+					AttributedString as = new AttributedString(ai.getText(),
+							stmap);
+					g2
+							.drawString(as.getIterator(), b.x + 2, b.y
+									+ smfontHeight);
 				} else {
-					GregorianCalendar cal = new GregorianCalendar();
-					cal.setTime(b.date);
-					if ((ai.getColor() != null && ai.getColor()
-							.equals("strike"))
-					|| (ai.getTodo() && !(ai.getNextTodo() == null || !ai.getNextTodo().after(cal.getTime())))
-					 ) {
-						// g2.setFont(strike_font);
-						// System.out.println(ai.getText());
-						// need to use AttributedString to work
-						// around a bug
-						AttributedString as = new AttributedString(
-								ai.getText(), stmap);
-						g2.drawString(as.getIterator(), b.x + 2, b.y
-								+ smfontHeight);
-					} else {
-						// g2.setFont(sm_font);
-						g2
-								.drawString(ai.getText(), b.x + 2, b.y
-										+ smfontHeight);
-					}
+					// g2.setFont(sm_font);
+					g2.drawString(ai.getText(), b.x + 2, b.y + smfontHeight);
 				}
 
 				if (b.layout.isSelected()) {
@@ -290,28 +260,23 @@ public class ApptBoxPanel extends JPanel {
 					g2.setColor(Color.BLUE);
 					g2.drawRect(b.x, b.y + 2, b.w, b.h);
 					g2.setStroke(stroke);
-					g2.setColor(Color.BLACK);
 				}
+				g2.setColor(Color.BLACK);
 			} else {
 
 				// fill the box with color
 				g2.setColor(b.color);
-
-				g2.fillRect(b.x, b.y, b.w, b.h);
+				g2.fill3DRect(b.x, b.y, b.w, b.h, true);
 
 				// draw box outline
 
 				if (b.layout.isSelected()) {
 					g2.setStroke(highlight);
 					g2.setColor(Color.BLUE);
+					g2.drawRect(b.x, b.y, b.w, b.h);
+					g2.setStroke(stroke);
 
-				} else {
-					g2.setStroke(regular);
-					g2.setColor(Color.BLACK);
 				}
-
-				g2.drawRect(b.x, b.y, b.w, b.h);
-				g2.setStroke(stroke);
 
 				// draw the appt text
 				g2.setColor(Color.BLACK);
@@ -329,44 +294,7 @@ public class ApptBoxPanel extends JPanel {
 				else if (ai.getColor().equals("blue"))
 					g2.setColor(Color.blue);
 
-				if (wrap) {
-					String tx = ai.getText();
-					AttributedString as = new AttributedString(tx, atmap);
-					AttributedCharacterIterator para = as.getIterator();
-					int start = para.getBeginIndex();
-					int endi = para.getEndIndex();
-					LineBreakMeasurer lbm = new LineBreakMeasurer(para,
-							new FontRenderContext(null, false, false));
-					lbm.setPosition(start);
-					while (lbm.getPosition() < endi) {
-						TextLayout tlayout = lbm.nextLayout(b.w
-								- (2 * fontDesent));
-						b.y += tlayout.getAscent();
-						tlayout.draw(g2, b.x + 2, b.y);
-						b.y += tlayout.getDescent() + tlayout.getLeading();
-					}
-				} else {
-					if ((ai.getColor() != null && ai.getColor()
-							.equals("strike"))
-					/*
-					 * || (ai.getTodo() && !(ai .getNextTodo() == null || !ai
-					 * .getNextTodo().after( cal.getTime())))
-					 */) {
-						// g2.setFont(strike_font);
-						// System.out.println(ai.getText());
-						// need to use AttributedString to work
-						// around a bug
-						AttributedString as = new AttributedString(
-								ai.getText(), stmap);
-						g2.drawString(as.getIterator(), b.x + 2, b.y
-								+ smfontHeight);
-					} else {
-						// g2.setFont(sm_font);
-						g2
-								.drawString(ai.getText(), b.x + 2, b.y
-										+ smfontHeight);
-					}
-				}
+				drawWrappedString(g2, ai.getText(), b.x, b.y, b.w);
 
 			}
 			g2.setClip(s);
@@ -381,6 +309,25 @@ public class ApptBoxPanel extends JPanel {
 		boxes.clear();
 	}
 
+	private void drawWrappedString(Graphics2D g2, String tx, int x, int y, int w) {
+		int fontDesent = g2.getFontMetrics().getDescent();
+		HashMap hm = new HashMap();
+		hm.put(TextAttribute.FONT, g2.getFont());
+		AttributedString as = new AttributedString(tx, hm);
+		AttributedCharacterIterator para = as.getIterator();
+		int start = para.getBeginIndex();
+		int endi = para.getEndIndex();
+		LineBreakMeasurer lbm = new LineBreakMeasurer(para,
+				new FontRenderContext(null, false, false));
+		lbm.setPosition(start);
+		int tt = y + 2;
+		while (lbm.getPosition() < endi) {
+			TextLayout tlayout = lbm.nextLayout(w - (2 * fontDesent));
+			tt += tlayout.getAscent();
+			tlayout.draw(g2, x + 2, tt);
+			tt += tlayout.getDescent() + tlayout.getLeading();
+		}
+	}
 	// mouse click callback
 
 }

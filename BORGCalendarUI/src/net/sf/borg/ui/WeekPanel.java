@@ -183,6 +183,11 @@ class WeekPanel extends ApptBoxPanel implements Printable {
 		// format for day labels
 		//DateFormat dfs = DateFormat.getDateInstance(DateFormat.SHORT);
 		SimpleDateFormat dfw = new SimpleDateFormat("EEE dd");
+		
+		g2.setColor(new Color(224,224,255));
+		g2.fillRect((int)timecolwidth,caltop, (int)(7*colwidth), daytop-caltop);
+		g2.fillRect(0,caltop,(int)timecolwidth,calbot-caltop);
+		g2.setColor(Color.BLACK);
 
 		// add day labels
 		for (int col = 0; col < 7; col++) {
