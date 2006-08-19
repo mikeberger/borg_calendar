@@ -146,7 +146,7 @@ public class PopupView extends View {
 
 					String tx = "";
 
-					if (AppointmentModel.isNote(appt) && appt.getTodo() && appt.getReminderTimes().indexOf('Y') != -1) {
+					if (AppointmentModel.isNote(appt) && appt.getTodo() && appt.getReminderTimes() != null  && appt.getReminderTimes().indexOf('Y') != -1) {
 						// non-timed todo
 						
 						// make sure todo is not done for today
