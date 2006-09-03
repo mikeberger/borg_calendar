@@ -213,7 +213,11 @@ public class RecordManager {
 			    
 			    Address modaddr = palmToBorg(hhRecord);
 			    modaddr.setKey(addr.getKey());
-			    resetPCAttributes(modaddr);
+			    modaddr.setModified(false);
+		        modaddr.setDeleted(false);
+		        modaddr.setNew(false);
+		        AddressModel.getReference().saveAddress(modaddr,true);
+			    //resetPCAttributes(modaddr);
 			}
             else if (compareRecords(hhRecord, addr)) {
                 // both records have changed identically
@@ -308,6 +312,9 @@ public class RecordManager {
 
     private void resetPCAttributes(Address addr) throws Exception{
 
+//    	 skip write to PC record if already reset
+    	if( addr.getModified() == false && addr.getDeleted() == false && addr.getNew() == false )
+    		return;
         addr.setModified(false);
         addr.setDeleted(false);
         addr.setNew(false);

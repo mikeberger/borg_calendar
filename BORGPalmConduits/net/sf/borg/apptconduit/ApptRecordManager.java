@@ -255,7 +255,11 @@ public class ApptRecordManager {
                 
                 Appointment modaddr = palmToBorg(hhRecord);
                 modaddr.setKey(appt.getKey());
-                resetPCAttributes(modaddr);
+                modaddr.setModified(false);
+                modaddr.setDeleted(false);
+                modaddr.setNew(false);
+                AppointmentModel.getReference().syncSave(modaddr);
+                
             }
         }
         else if (compareRecords(hhRecord, appt)) {
@@ -361,6 +365,10 @@ public class ApptRecordManager {
 
     private void resetPCAttributes(Appointment appt) throws Exception {
 
+    	// skip write to PC record if already reset
+    	if( appt.getModified() == false && appt.getDeleted() == false && appt.getNew() == false )
+    		return;
+    	
         appt.setModified(false);
         appt.setDeleted(false);
         appt.setNew(false);

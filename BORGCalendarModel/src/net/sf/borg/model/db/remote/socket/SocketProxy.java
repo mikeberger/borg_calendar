@@ -11,7 +11,9 @@ public class SocketProxy implements IRemoteProxy {
 	public String execute(String strXml, IRemoteProxyProvider provider)
 			throws Exception {
 		String newMsg = J13Helper.replace(strXml,"\n","%NEWLINE%");
+		//System.out.println("[REQUEST] "+newMsg);
 		String resp = SocketClient.sendMsg("localhost", 2929, newMsg);
+		//System.out.println("[RESPONSE] "+resp);
 		return J13Helper.replace(resp, "%NEWLINE%", "\n");
 
 	}

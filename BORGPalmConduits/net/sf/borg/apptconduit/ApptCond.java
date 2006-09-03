@@ -52,8 +52,6 @@ public class ApptCond implements Conduit {
 					private IRemoteProxy proxy = null;
 				});
 
-		
-
 		// Tell the log we are starting
 		Log.startSync();
 
@@ -86,17 +84,23 @@ public class ApptCond implements Conduit {
 				} catch (Exception e) {
 					Log.out("Properties exception: " + e.toString());
 				}
-				
-				// shutdown the app - unless we are using a remote socket interface
+
+				// shutdown the app - unless we are using a remote socket
+				// interface
 				if (!dbdir.startsWith("remote:")) {
-					try{
+					try {
 						SocketClient.sendMsg("localhost", 2929, "shutdown");
+					} catch (Exception e) {
 					}
-					catch(Exception e)
-					{
+				} else {
+					try {
+						SocketClient
+								.sendMsg("localhost", 2929,
+										"lock:Appointment HotSync In Progress...Please wait");
+					} catch (Exception e) {
 					}
 				}
-				
+
 				Log.out("dbdir2=" + dbdir);
 				apptModel = AppointmentModel.create();
 				apptModel.open_db(dbdir, user, false, false);
@@ -156,6 +160,13 @@ public class ApptCond implements Conduit {
 				// Single Log we are successful
 				Log.out("OK ApptCond Conduit");
 				Log.endSync();
+				if (dbdir.startsWith("remote:")) {
+					try {
+						SocketClient.sendMsg("localhost", 2929, "sync");
+						SocketClient.sendMsg("localhost", 2929, "unlock");
+					} catch (Exception e) {
+					}
+				}
 			}
 
 		} catch (Throwable t) {

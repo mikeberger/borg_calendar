@@ -16,26 +16,25 @@ import palm.conduit.Log;
 import palm.conduit.SyncManager;
 import palm.conduit.SyncProperties;
 
-// "Portions copyright (c) 1996-2002 PalmSource, Inc. or its affiliates.  All rights reserved."
+//"Portions copyright (c) 1996-2002 PalmSource, Inc. or its affiliates.  All rights reserved."
 
 public class AddrCond implements Conduit {
 
-    /**
-     * Name of the conduit to be displayed on the dialog
-     */
-    static final String NAME = "BORG Address Conduit";
+	/**
+	 * Name of the conduit to be displayed on the dialog
+	 */
+	static final String NAME = "BORG Address Conduit";
 
-  
-    public void open(SyncProperties props) {
+	public void open(SyncProperties props) {
 
-        int db;
+		int db;
 
-        RecordManager recordMgr;
-        AddressModel addressModel;
+		RecordManager recordMgr;
+		AddressModel addressModel;
 
-        Errmsg.console(true);
-        
-//      If we're doing remote stuff, use SocketProxy
+		Errmsg.console(true);
+
+		// If we're doing remote stuff, use SocketProxy
 		RemoteProxyHome.getInstance().setProxyProvider(
 				new IRemoteProxyProvider() {
 					public final IRemoteProxy createProxy(String url) {
@@ -53,103 +52,112 @@ public class AddrCond implements Conduit {
 					private IRemoteProxy proxy = null;
 				});
 
-		
-        // Tell the log we are starting
-        Log.startSync();
+		// Tell the log we are starting
+		Log.startSync();
 
-        try {
-            if (props.syncType != SyncProperties.SYNC_DO_NOTHING) {
+		try {
+			if (props.syncType != SyncProperties.SYNC_DO_NOTHING) {
 
-                db = SyncManager.openDB("AddressDB", 0, SyncManager.OPEN_READ
-                        | SyncManager.OPEN_WRITE | SyncManager.OPEN_EXCLUSIVE);
+				db = SyncManager.openDB("AddressDB", 0, SyncManager.OPEN_READ
+						| SyncManager.OPEN_WRITE | SyncManager.OPEN_EXCLUSIVE);
 
-                //read the pc records on the PC
-            	String loc = props.localName;
-                String dbdir = props.pathName;
-                String user = props.userName;
-                Log.out("dbdir=" + dbdir);
-                Log.out("user=" + user);
-                Log.out("localName=" + loc);
-                
-                if( loc.indexOf(':') != -1 )
-                {
-                	dbdir = loc;
-                }
-                
-//              check for properties file
-                String propfile = dbdir + "/db.properties";
-                try{
-                	FileInputStream is = new FileInputStream(propfile);
-                	Properties dbprops = new Properties();
-                	dbprops.load(is);
-                	dbdir = dbprops.getProperty("dburl");
-                	user = dbprops.getProperty("user");
-                }
-                catch( Exception e)
-                {
-                	Log.out("Properties exception: " + e.toString());
-                }
-                
-//              shutdown the app - unless we are using a remote socket interface
-				if (!dbdir.startsWith("remote:")) {
-					try{
-						SocketClient.sendMsg("localhost", 2929, "shutdown");
-					}
-					catch(Exception e)
-					{}
+				// read the pc records on the PC
+				String loc = props.localName;
+				String dbdir = props.pathName;
+				String user = props.userName;
+				Log.out("dbdir=" + dbdir);
+				Log.out("user=" + user);
+				Log.out("localName=" + loc);
+
+				if (loc.indexOf(':') != -1) {
+					dbdir = loc;
 				}
-                Log.out("dbdir2=" + dbdir);
-                Log.out("user2=" + user);
-                addressModel = AddressModel.create();
-                addressModel.open_db(dbdir, user, false, false);
 
-                //Create an instance of the RecordManager for synchronizing the
-                // records
-                recordMgr = new RecordManager(props, db);
-                recordMgr.SyncData();
+				// check for properties file
+				String propfile = dbdir + "/db.properties";
+				try {
+					FileInputStream is = new FileInputStream(propfile);
+					Properties dbprops = new Properties();
+					dbprops.load(is);
+					dbdir = dbprops.getProperty("dburl");
+					user = dbprops.getProperty("user");
+				} catch (Exception e) {
+					Log.out("Properties exception: " + e.toString());
+				}
 
-                // Close DB
-                addressModel.close_db();
-                SyncManager.closeDB(db);
-            }
+				// shutdown the app - unless we are using a remote socket
+				// interface
+				if (!dbdir.startsWith("remote:")) {
+					try {
+						SocketClient.sendMsg("localhost", 2929, "shutdown");
+					} catch (Exception e) {
+					}
+				} else {
+					try {
+						SocketClient
+								.sendMsg("localhost", 2929,
+										"lock:Address HotSync In Progress...Please wait");
+					} catch (Exception e) {
+					}
+				}
+				Log.out("dbdir2=" + dbdir);
+				Log.out("user2=" + user);
+				addressModel = AddressModel.create();
+				addressModel.open_db(dbdir, user, false, false);
 
-            // Single Log we are successful
-            Log.out("OK AddrCond Conduit");
-            Log.endSync();
+				// Create an instance of the RecordManager for synchronizing the
+				// records
+				recordMgr = new RecordManager(props, db);
+				recordMgr.SyncData();
 
-        }
-        catch (Throwable t) {
+				// Close DB
+				addressModel.close_db();
+				SyncManager.closeDB(db);
+				if (dbdir.startsWith("remote:")) {
+					try {
+						SocketClient.sendMsg("localhost", 2929, "sync");
+						SocketClient.sendMsg("localhost", 2929, "unlock");
+					} catch (Exception e) {
+					}
+				}
+			}
 
-            // If there was an error, dump the stack trace
-            // and tell the log the conduit failed
+			// Single Log we are successful
+			Log.out("OK AddrCond Conduit");
+			Log.endSync();
 
-            t.printStackTrace();
-            Log.abortSync();
-        }
-    }
+		} catch (Throwable t) {
 
-    /**
-     * Returns a String representation of the conduit name.
-     */
-    public String name() {
-        return NAME;
-    }
+			// If there was an error, dump the stack trace
+			// and tell the log the conduit failed
 
-    public int configure(ConfigureConduitInfo info) {
-        ConduitConfigure config = new ConduitConfigure(info, NAME);
-        config.createDialog();
+			t.printStackTrace();
+			Log.abortSync();
+		}
+	}
 
-        if (config.dataChanged) {
-            int propsValue = SyncProperties.SYNC_DO_NOTHING; //default
-            propsValue = config.saveState;
+	/**
+	 * Returns a String representation of the conduit name.
+	 */
+	public String name() {
+		return NAME;
+	}
 
-            if (config.setDefault) {
-                info.syncPermanent = propsValue;
-                info.syncPref = ConfigureConduitInfo.PREF_PERMANENT;
-            }
-            info.syncNew = propsValue;
-        }
+	public int configure(ConfigureConduitInfo info) {
+		ConduitConfigure config = new ConduitConfigure(info, NAME);
+		config.createDialog();
 
-        return 0;
-    }
+		if (config.dataChanged) {
+			int propsValue = SyncProperties.SYNC_DO_NOTHING; // default
+			propsValue = config.saveState;
+
+			if (config.setDefault) {
+				info.syncPermanent = propsValue;
+				info.syncPref = ConfigureConduitInfo.PREF_PERMANENT;
+			}
+			info.syncNew = propsValue;
+		}
+
+		return 0;
+	}
 }

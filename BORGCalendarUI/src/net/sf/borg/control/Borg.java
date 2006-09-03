@@ -45,6 +45,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
+import net.sf.borg.common.ui.ModalMessage;
 import net.sf.borg.common.ui.NwFontChooserS;
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
@@ -741,6 +742,9 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 				.getPassword());
 	}
 
+	
+	private ModalMessage modalMessage = null;
+
 	public synchronized String processMessage(String msg) {
 		//System.out.println("Got msg: " + msg);
 		if (msg.equals("sync")) {
@@ -756,6 +760,42 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 		} else if (msg.equals("open")) {
 			CalendarView.getReference(trayIcon).toFront();
 			return ("ok");
+		}
+		else if( msg.startsWith("lock:"))
+		{
+			final String lockmsg = msg.substring(5);
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					if( modalMessage == null )
+					{
+						modalMessage = new ModalMessage(lockmsg);
+						modalMessage.setVisible(true);
+					}
+					else
+					{
+						modalMessage.appendText(lockmsg);
+					}
+					
+					modalMessage.toFront();
+				}
+			});
+			
+			
+			return("ok");
+		}
+		else if( msg.equals("unlock"))
+		{
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					if( modalMessage != null )
+					{
+						modalMessage.dispose();
+						modalMessage = null;
+					}
+				}
+			});
+			
+			return("ok");
 		}
 		else if( msg.startsWith("<"))
 		{

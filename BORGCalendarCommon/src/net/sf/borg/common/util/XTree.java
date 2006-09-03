@@ -559,7 +559,7 @@ public class XTree {
 			// we should leave the parse before hitting this
 			else if (tok == T_EOF) {
 				if (cur != tree || tree == null) {
-					throw new Exception("Premature end of input");
+					throw new Exception("Premature end of input: " + buf.toString());
 				}
 
 				return (tree);
