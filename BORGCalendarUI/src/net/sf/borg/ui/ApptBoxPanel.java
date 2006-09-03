@@ -46,8 +46,8 @@ public class ApptBoxPanel extends JPanel {
 
 		public void mouseClicked(MouseEvent evt) {
 
-			if (evt.getClickCount() < 2)
-				return;
+			//if (evt.getClickCount() < 2)
+				//return;
 
 			// determine which box is selected, if any
 			Iterator it = boxes.iterator();
@@ -86,7 +86,7 @@ public class ApptBoxPanel extends JPanel {
 				}
 			}
 
-			if (!boxFound && zone != null && evt.getClickCount() > 1) {
+			if (!boxFound && zone != null ) {
 				GregorianCalendar cal = new GregorianCalendar();
 				cal.setTime(zone.date);
 				AppointmentListView ag = new AppointmentListView(cal
