@@ -911,7 +911,8 @@ public class MainMenu {
 				+ Resource.getResourceString("developers") + "\n"
 				+ Resource.getResourceString("contrib") + "\n\n"				
 				+ Resource.getResourceString("translations") + "\n\n"
-				+ build_info;
+				+ build_info + "\n"
+				+ "Java " + System.getProperty("java.version");
 		Object opts[] = { Resource.getPlainResourceString("Dismiss") /*
 																		 * ,
 																		 * Resource.getResourceString("Show_Detailed_Source_Version_Info")
