@@ -35,21 +35,25 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 
-import net.sf.borg.common.util.PrefName;
-import net.sf.borg.common.util.Prefs;
 import net.sf.borg.common.util.Resource;
 
 
 
 public class ModalMessage extends JDialog {
  
-    public ModalMessage(String s) {
+    public ModalMessage(String s, boolean enabled) {
         initComponents();    
         jTextArea.setText(s);
+        okButton.setEnabled(enabled);
         setModal(true);       
     }
 
+    public void setEnabled(boolean e)
+    {
+    	okButton.setEnabled(e);
+    }
     public void setText(String s)
     {
     	jTextArea.setText(s);
@@ -105,7 +109,7 @@ public class ModalMessage extends JDialog {
 			jPanel = new JPanel();
 			jPanel.setLayout(new GridBagLayout());  // Generated
 			jPanel.add(getJScrollPane(), gridBagConstraints);  // Generated
-			
+			jPanel.add(getButtonPanel(), gridBagConstraints1);
 		}
 		return jPanel;
 	}
@@ -142,11 +146,62 @@ public class ModalMessage extends JDialog {
 		return jTextArea;
 	}
 
+	/**
+	 * This method initializes buttonPanel	
+	 * 	
+	 * @return javax.swing.JPanel	
+	 */
+	private JPanel buttonPanel = null;
+	private JPanel getButtonPanel() {
+		if (buttonPanel == null) {
+			buttonPanel = new JPanel();
+			buttonPanel.add(getOkButton(), null);  // Generated
+			
+		}
+		return buttonPanel;
+	}
 
+
+
+	/**
+	 * This method initializes okButton	
+	 * 	
+	 * @return javax.swing.JButton	
+	 */
+	private JButton okButton = null;
+	private JButton getOkButton() {
+		if (okButton == null) {
+			okButton = new JButton();
+			okButton.setText(Resource.getResourceString("OK"));
+			okButton.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					doOk();
+				}
+			});
+		}
+		return okButton;
+	}
+
+	private void doOk()
+	{
+		this.dispose();
+	}
 
 
 	public static void main( String args[])
     {
-    	new ModalMessage("duh\nduh\nduh").setVisible(true);
+		final ModalMessage mm = new ModalMessage("duh\nduh\nduh", false);
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+		    	mm.setVisible(true);				
+			}
+		});
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+		    	mm.appendText("another line");
+		    	mm.setEnabled(true);				
+			}
+		});
+    	
     }
 }  //  @jve:decl-index=0:visual-constraint="10,10"

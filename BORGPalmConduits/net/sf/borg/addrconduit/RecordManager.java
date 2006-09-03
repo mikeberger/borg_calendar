@@ -10,7 +10,6 @@ import java.util.Iterator;
 import net.sf.borg.model.Address;
 import net.sf.borg.model.AddressModel;
 import palm.conduit.AddressRecord;
-import palm.conduit.Log;
 import palm.conduit.Record;
 import palm.conduit.SyncException;
 import palm.conduit.SyncManager;
@@ -58,7 +57,7 @@ public class RecordManager {
         if( addrs.size() == 0 )
         {
             // force reset of all palm record borg pointers
-        	Log.out("Force Reset");
+        	AddrCond.log("Force Reset");
             forceReset = true;
         }
 
@@ -108,7 +107,7 @@ public class RecordManager {
 
 		AddressRecord hhRecord;
 		//AddressXMLAdapter ax = new AddressXMLAdapter();
-		//Log.out("sync PC rec - " + ax.toXml(addr));
+		//AddrCond.log("sync PC rec - " + addr.getKey());
 
         if (!addr.getNew()) {
 
@@ -153,6 +152,7 @@ public class RecordManager {
 
     public void synchronizeHHRecord(AddressRecord hhRecord) throws Exception{
 
+    	//AddrCond.log("Addr Sync HH: " + hhRecord.getName());
         Address addr = null;      
         // any record without a BORG id is considered new
         String id = hhRecord.getCustom(1);
@@ -268,12 +268,12 @@ public class RecordManager {
 
     private void writeHHRecord(Record record) throws SyncException, IOException
     {
-    	Log.out("write HH record - " + record.toString());
+    	AddrCond.log("write HH record - " + record.toString());
         SyncManager.writeRec(db,record);
     }
     
     private void deleteHHRecord(Record record) throws SyncException{
-    	Log.out("delete HH record - " + record.toString());
+    	AddrCond.log("delete HH record - " + record.toString());
         SyncManager.deleteRecord(db, record);
     }
 
@@ -301,12 +301,13 @@ public class RecordManager {
     }
 
     private int addPCRecord(Address addr) throws Exception{
-        
+    	AddrCond.log("add PC record - " + addr.getKey());
         AddressModel.getReference().saveAddress(addr,true);
         return( addr.getKey());
     }
 
     private void deletePCRecord(Address addr) throws Exception{
+    	AddrCond.log("delete PC record - " + addr.getKey());
         AddressModel.getReference().forceDelete(addr);
     }
 

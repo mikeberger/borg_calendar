@@ -766,16 +766,16 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 			final String lockmsg = msg.substring(5);
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
-					if( modalMessage == null )
+					if( modalMessage == null || !modalMessage.isShowing())
 					{
-						modalMessage = new ModalMessage(lockmsg);
+						modalMessage = new ModalMessage(lockmsg, false);
 						modalMessage.setVisible(true);
 					}
 					else
 					{
 						modalMessage.appendText(lockmsg);
 					}
-					
+					modalMessage.setEnabled(false);
 					modalMessage.toFront();
 				}
 			});
@@ -787,10 +787,9 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 		{
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
-					if( modalMessage != null )
+					if( modalMessage.isShowing() )
 					{
-						modalMessage.dispose();
-						modalMessage = null;
+						modalMessage.setEnabled(true);
 					}
 				}
 			});

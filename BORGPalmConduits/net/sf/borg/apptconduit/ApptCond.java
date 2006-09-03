@@ -1,9 +1,11 @@
 package net.sf.borg.apptconduit;
 
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Properties;
 
 import net.sf.borg.common.util.Errmsg;
+import net.sf.borg.common.util.J13Helper;
 import net.sf.borg.common.util.SocketClient;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.TaskModel;
@@ -25,6 +27,19 @@ public class ApptCond implements Conduit {
 	 */
 	static final String NAME = "BORG Appt Conduit";
 
+	static public void log(String s)
+	{
+		Log.out(s);
+		String s2 = J13Helper.replace(s,"\n","%NL%");
+		try {
+			SocketClient
+			.sendMsg("localhost", 2929,
+					"lock:" + s2);
+		} catch (IOException e) {
+			
+		}
+	}
+	
 	public void open(SyncProperties props) {
 
 		ApptRecordManager recordMgr;
@@ -101,7 +116,8 @@ public class ApptCond implements Conduit {
 					}
 				}
 
-				Log.out("dbdir2=" + dbdir);
+				log("dbdir=" + dbdir);
+				log("user=" + user);
 				apptModel = AppointmentModel.create();
 				apptModel.open_db(dbdir, user, false, false);
 
@@ -112,7 +128,7 @@ public class ApptCond implements Conduit {
 				// sync back
 				// appt data and finally overwrite Todo data.
 				if (props.syncType != SyncProperties.SYNC_DO_NOTHING) {
-					Log.out("Sync Todo");
+					log("Sync Todo");
 					int tododb = SyncManager.openDB("ToDoDB", 0,
 							SyncManager.OPEN_READ | SyncManager.OPEN_WRITE
 									| SyncManager.OPEN_EXCLUSIVE);
@@ -137,7 +153,7 @@ public class ApptCond implements Conduit {
 				} else if (props.syncType == SyncProperties.SYNC_HH_TO_PC) {
 					recordMgr.quickSyncAndWipe();
 				} else {
-					Log.out("Sync Appt");
+					log("Sync Appt");
 					recordMgr.SyncData();
 				}
 
@@ -149,7 +165,7 @@ public class ApptCond implements Conduit {
 									| SyncManager.OPEN_EXCLUSIVE);
 					trecordMgr = new net.sf.borg.apptconduit.TodoRecordManager(
 							props, tododb);
-					Log.out("Wipe Todo");
+					log("Wipe Todo");
 					trecordMgr.WipeData();
 					SyncManager.closeDB(tododb);
 				}
@@ -158,11 +174,14 @@ public class ApptCond implements Conduit {
 				apptModel.close_db();
 				taskModel.close_db();
 				// Single Log we are successful
-				Log.out("OK ApptCond Conduit");
+				log("OK ApptCond Conduit");
 				Log.endSync();
 				if (dbdir.startsWith("remote:")) {
 					try {
 						SocketClient.sendMsg("localhost", 2929, "sync");
+						SocketClient
+						.sendMsg("localhost", 2929,
+								"lock:Appointment HotSync Completed");
 						SocketClient.sendMsg("localhost", 2929, "unlock");
 					} catch (Exception e) {
 					}

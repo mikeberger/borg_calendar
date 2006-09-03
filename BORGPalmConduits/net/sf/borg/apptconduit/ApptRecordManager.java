@@ -135,8 +135,8 @@ public class ApptRecordManager {
 
         DateRecord hhRecord;
         
-        Log.out("Appt Sync PC: " + appt.getKey() + " " + appt.getText());
-
+        ApptCond.log("Appt Sync PC: " + appt.getKey() + " " + appt.getText());
+        
         if (!appt.getNew()) {
 
             hhRecord = retrieveHHRecordByBorgId(appt.getKey());
@@ -179,7 +179,8 @@ public class ApptRecordManager {
     public void synchronizeHHRecord(DateRecord hhRecord) throws Exception {
 
         Appointment appt = null;
-        Log.out("Appt Sync HH: " + hhRecord.toFormattedString());
+        ApptCond.log("Appt Sync HH: " + hhRecord.toFormattedString());
+     
         // any record without a BORG id is considered new
         int id = getApptKey(hhRecord);
         if (id != -1 )
@@ -239,8 +240,8 @@ public class ApptRecordManager {
             
             if( !appt.getDeleted() && (appt.getDate().getTime() != fixdate.getTime()))
             {
-                Log.out("date chg: " + appt.getText() + " " + appt.getDate() + "!=" + fixdate);
-                Log.out( appt.getDate().getTime() + "!=" + fixdate.getTime());
+            	ApptCond.log("date chg: " + appt.getText() + " " + appt.getDate() + "!=" + fixdate);
+            	ApptCond.log( appt.getDate().getTime() + "!=" + fixdate.getTime());
                 Appointment modappt = palmToBorg(hhRecord);
                 AppointmentModel.getReference().delAppt(appt);
                 AppointmentModel.getReference().saveAppt(modappt,true);
@@ -328,12 +329,12 @@ public class ApptRecordManager {
             hhRecord.setIndex(hhkey.intValue());
             SyncManager.readRecordByIndex(db, hhRecord);
             if (key == getApptKey(hhRecord)){
-            	Log.out("Found key in cache: " + key );
+            	ApptCond.log("Found key in cache: " + key );
             	return( hhRecord );
             }
     	}
     	
-    	Log.out("Did not find key in cache: " + key );
+    	ApptCond.log("Did not find key in cache: " + key );
     	
         //get record count on the database
         int rc = SyncManager.getDBRecordCount(db);

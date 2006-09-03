@@ -1,9 +1,11 @@
 package net.sf.borg.addrconduit;
 
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Properties;
 
 import net.sf.borg.common.util.Errmsg;
+import net.sf.borg.common.util.J13Helper;
 import net.sf.borg.common.util.SocketClient;
 import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.db.remote.IRemoteProxy;
@@ -24,7 +26,18 @@ public class AddrCond implements Conduit {
 	 * Name of the conduit to be displayed on the dialog
 	 */
 	static final String NAME = "BORG Address Conduit";
-
+	static public void log(String s)
+	{
+		Log.out(s);
+		String s2 = J13Helper.replace(s,"\n","%NL%");
+		try {
+			SocketClient
+			.sendMsg("localhost", 2929,
+					"lock:" + s2);
+		} catch (IOException e) {
+			
+		}
+	}
 	public void open(SyncProperties props) {
 
 		int db;
@@ -100,8 +113,8 @@ public class AddrCond implements Conduit {
 					} catch (Exception e) {
 					}
 				}
-				Log.out("dbdir2=" + dbdir);
-				Log.out("user2=" + user);
+				log("dbdir=" + dbdir);
+				log("user=" + user);
 				addressModel = AddressModel.create();
 				addressModel.open_db(dbdir, user, false, false);
 
@@ -113,9 +126,13 @@ public class AddrCond implements Conduit {
 				// Close DB
 				addressModel.close_db();
 				SyncManager.closeDB(db);
+				log("OK AddrCond Conduit");
 				if (dbdir.startsWith("remote:")) {
 					try {
 						SocketClient.sendMsg("localhost", 2929, "sync");
+						SocketClient
+						.sendMsg("localhost", 2929,
+								"lock:Appointment HotSync Completed");
 						SocketClient.sendMsg("localhost", 2929, "unlock");
 					} catch (Exception e) {
 					}
@@ -123,7 +140,7 @@ public class AddrCond implements Conduit {
 			}
 
 			// Single Log we are successful
-			Log.out("OK AddrCond Conduit");
+			
 			Log.endSync();
 
 		} catch (Throwable t) {
