@@ -24,6 +24,7 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Frame;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
@@ -765,6 +766,7 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 			System.exit(0);
 		} else if (msg.equals("open")) {
 			MultiView.getMainView().toFront();
+			MultiView.getMainView().setState(Frame.NORMAL);
 			return ("ok");
 		}
 		else if( msg.startsWith("lock:"))

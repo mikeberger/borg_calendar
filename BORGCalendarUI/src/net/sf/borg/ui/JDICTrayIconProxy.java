@@ -18,6 +18,7 @@
  */
 package net.sf.borg.ui;
 
+import java.awt.Frame;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -114,6 +115,7 @@ public class JDICTrayIconProxy {
         public void actionPerformed(ActionEvent e) {
             MultiView mv = MultiView.getMainView();
             mv.toFront();
+            mv.setState(Frame.NORMAL);
         }
     }
 
