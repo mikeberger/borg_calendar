@@ -268,12 +268,12 @@ public class RecordManager {
 
     private void writeHHRecord(Record record) throws SyncException, IOException
     {
-    	AddrCond.log("write HH record - " + record.toString());
+    	AddrCond.log("write Palm record - " + record.toString());
         SyncManager.writeRec(db,record);
     }
     
     private void deleteHHRecord(Record record) throws SyncException{
-    	AddrCond.log("delete HH record - " + record.toString());
+    	AddrCond.log("delete Palm record - " + record.toString());
         SyncManager.deleteRecord(db, record);
     }
 
@@ -301,13 +301,13 @@ public class RecordManager {
     }
 
     private int addPCRecord(Address addr) throws Exception{
-    	AddrCond.log("add PC record - " + addr.getKey());
+    	AddrCond.log("add BORG record - " + addr.getKey());
         AddressModel.getReference().saveAddress(addr,true);
         return( addr.getKey());
     }
 
     private void deletePCRecord(Address addr) throws Exception{
-    	AddrCond.log("delete PC record - " + addr.getKey());
+    	AddrCond.log("delete BORG record - " + addr.getKey());
         AddressModel.getReference().forceDelete(addr);
     }
 

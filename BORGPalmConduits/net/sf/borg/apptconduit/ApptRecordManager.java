@@ -135,7 +135,7 @@ public class ApptRecordManager {
 
         DateRecord hhRecord;
         
-        ApptCond.log("Appt Sync PC: " + appt.getKey() + " " + appt.getText());
+        ApptCond.log("Sync BORG Record with Palm: " + appt.getKey() + " " + appt.getText());
         
         if (!appt.getNew()) {
 
@@ -179,7 +179,7 @@ public class ApptRecordManager {
     public void synchronizeHHRecord(DateRecord hhRecord) throws Exception {
 
         Appointment appt = null;
-        ApptCond.log("Appt Sync HH: " + hhRecord.toFormattedString());
+        ApptCond.log("Sync Palm Record with BORG: " + hhRecord.toFormattedString());
      
         // any record without a BORG id is considered new
         int id = getApptKey(hhRecord);

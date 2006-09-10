@@ -129,7 +129,7 @@ public class ApptCond implements Conduit {
 				// sync back
 				// appt data and finally overwrite Todo data.
 				if (props.syncType != SyncProperties.SYNC_DO_NOTHING) {
-					log("Sync Todo");
+					log("Sync Todos from Palm to Borg");
 					int tododb = SyncManager.openDB("ToDoDB", 0,
 							SyncManager.OPEN_READ | SyncManager.OPEN_WRITE
 									| SyncManager.OPEN_EXCLUSIVE);
@@ -150,11 +150,12 @@ public class ApptCond implements Conduit {
 				// is empty
 				if (props.syncType == SyncProperties.SYNC_PC_TO_HH
 						|| numrecs == 0) {
+					log("Wipe Palm/Sync Appts");
 					recordMgr.WipeData();
 				} else if (props.syncType == SyncProperties.SYNC_HH_TO_PC) {
 					recordMgr.quickSyncAndWipe();
 				} else {
-					log("Sync Appt");
+					log("Sync Appts");
 					recordMgr.SyncData();
 				}
 
@@ -166,7 +167,7 @@ public class ApptCond implements Conduit {
 									| SyncManager.OPEN_EXCLUSIVE);
 					trecordMgr = new net.sf.borg.apptconduit.TodoRecordManager(
 							props, tododb);
-					log("Wipe Todo");
+					log("Wipe Todos and load Palm from BORG");
 					trecordMgr.WipeData();
 					SyncManager.closeDB(tododb);
 				}
