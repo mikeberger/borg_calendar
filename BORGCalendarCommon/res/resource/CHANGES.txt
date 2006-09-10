@@ -2,7 +2,7 @@ Version 1.5.2
 -------------
 HSQLDB Standalone Database Support
 Allow navigation and access to the appt editor from day and week views
-Add main menubar to day and week views
+Combine Month/Day/Week views into one tabbed window
 Add full appt text on mouse-over to day and week views
 Add half-hourly reminder popups for the day's untimed todos
 Make fonts in printouts, day, and week view tunable

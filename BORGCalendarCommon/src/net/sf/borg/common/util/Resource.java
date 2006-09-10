@@ -20,6 +20,7 @@ Copyright 2003 by Mike Berger
 package net.sf.borg.common.util;
 
 import java.io.InputStream;
+import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
@@ -30,6 +31,7 @@ public class Resource
 	private static String version_ = null;
 
 	public static String getResourceString( String key ) {
+		try{
 	    String res = ResourceBundle.getBundle("resource/borg_resource").getString(key);
 
 	    if( res.indexOf("\\n") == -1 )
@@ -50,6 +52,11 @@ public class Resource
 	    //System.out.println(res);
 	    //System.out.println( sb.toString());
 	    return( sb.toString() );
+		}
+		catch( MissingResourceException m)
+		{
+			return( "??" + key + "??");
+		}
 	}
 
 	public static String getPlainResourceString(String resourceKey)
