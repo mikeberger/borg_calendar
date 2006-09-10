@@ -734,7 +734,7 @@ public class SearchView extends View {
 						.get(Calendar.DATE));
 		ag.setVisible(true);
 
-		CalendarView cv = CalendarView.getReference();
+		MultiView cv = MultiView.getMainView();
 		if (cv != null)
 			cv.goTo(cal);
 

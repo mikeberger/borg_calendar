@@ -8,4 +8,5 @@ public interface Navigator {
 	public void prev();
 	public void today();
 	public void goTo(Calendar cal);
+	public void print();
 }

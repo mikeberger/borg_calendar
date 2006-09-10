@@ -109,13 +109,13 @@ public class MainMenu {
 	private JMenuItem chglog = new javax.swing.JMenuItem();
 
 	private JMenuItem AboutMI = new javax.swing.JMenuItem();
-	
+
 	private JMenuItem dbMI = new javax.swing.JMenuItem();
 
 	private JMenuBar menuBar = new JMenuBar();
 
 	JMenuItem sqlMI = new JMenuItem();
-	
+
 	Navigator nav_ = null;
 
 	public MainMenu(Navigator nav) {
@@ -171,10 +171,8 @@ public class MainMenu {
 
 		PrintMonthMI.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 				"/resource/Print16.gif")));
-		if( nav_ instanceof CalendarView )
-			ResourceHelper.setText(PrintMonthMI, "pmonth");
-		else
-			ResourceHelper.setText(PrintMonthMI, "Print");
+
+		ResourceHelper.setText(PrintMonthMI, "Print");
 		PrintMonthMI.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				PrintMonthMIActionPerformed(evt);
@@ -185,15 +183,15 @@ public class MainMenu {
 
 		printprev.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 				"/resource/PrintPreview16.gif")));
-		ResourceHelper.setText(printprev, "pprev");
+		printprev.setText(Resource.getPlainResourceString("Month") + " "
+				+ Resource.getPlainResourceString("pprev"));
 		printprev.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				printprevActionPerformed(evt);
 			}
 		});
 
-		if( nav_ instanceof CalendarView )
-			ActionMenu.add(printprev);
+		ActionMenu.add(printprev);
 
 		syncMI.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 				"/resource/Refresh16.gif")));
@@ -216,6 +214,16 @@ public class MainMenu {
 		});
 
 		ActionMenu.add(sqlMI);
+
+		JMenuItem newWindowMI = new JMenuItem();
+		ResourceHelper.setText(newWindowMI, "New_Window");
+		newWindowMI.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				MultiView.openNewView();
+			}
+		});
+
+		ActionMenu.add(newWindowMI);
 
 		exitMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 				"/resource/Stop16.gif")));
@@ -277,7 +285,7 @@ public class MainMenu {
 		ResourceHelper.setText(gotomi, "Goto");
 		gotomi.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-//				 GOTO a particular month
+				// GOTO a particular month
 				DateDialog dlg = new DateDialog(null);
 				dlg.setCalendar(new GregorianCalendar());
 				dlg.setVisible(true);
@@ -446,7 +454,7 @@ public class MainMenu {
 		menuBar.add(userMenu);
 
 		menuBar.add(Box.createHorizontalGlue());
-		
+
 		//
 		// help menu
 		//
@@ -480,7 +488,7 @@ public class MainMenu {
 		});
 
 		helpmenu.add(chglog);
-		
+
 		ResourceHelper.setText(dbMI, "DatabaseInformation");
 		dbMI.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -498,8 +506,6 @@ public class MainMenu {
 		});
 
 		helpmenu.add(AboutMI);
-		
-		
 
 		menuBar.add(helpmenu);
 		catmenu.add(getDelcatMI());
@@ -530,25 +536,28 @@ public class MainMenu {
 
 		return menuBar;
 	}
-	
-	private void dbMIActionPerformed(java.awt.event.ActionEvent evt)
-	{
+
+	private void dbMIActionPerformed(java.awt.event.ActionEvent evt) {
 		String dbtype = Prefs.getPref(PrefName.DBTYPE);
-		String info = Resource.getPlainResourceString("DatabaseInformation") + ":\n\n";
-		info += dbtype + " URL: " + BeanDataFactoryFactory.buildDbDir() + "\n\n";
-		
-		try{
-			info += Resource.getPlainResourceString("appointments") + ": " + AppointmentModel.getReference().getAllAppts().size() + "\n";
-			info += Resource.getPlainResourceString("addresses") + ": " + AddressModel.getReference().getAddresses().size() + "\n";
-			info += Resource.getPlainResourceString("tasks") + ": " + TaskModel.getReference().getTasks().size() + "\n";
-		
-		}
-		catch( Exception e)
-		{
+		String info = Resource.getPlainResourceString("DatabaseInformation")
+				+ ":\n\n";
+		info += dbtype + " URL: " + BeanDataFactoryFactory.buildDbDir()
+				+ "\n\n";
+
+		try {
+			info += Resource.getPlainResourceString("appointments") + ": "
+					+ AppointmentModel.getReference().getAllAppts().size()
+					+ "\n";
+			info += Resource.getPlainResourceString("addresses") + ": "
+					+ AddressModel.getReference().getAddresses().size() + "\n";
+			info += Resource.getPlainResourceString("tasks") + ": "
+					+ TaskModel.getReference().getTasks().size() + "\n";
+
+		} catch (Exception e) {
 			Errmsg.errmsg(e);
 			return;
 		}
-		
+
 		ScrolledDialog.showNotice(info);
 	}
 
@@ -746,7 +755,7 @@ public class MainMenu {
 			AddressModel addrmod = AddressModel.getReference();
 			addrmod.importXml(xt);
 		}
-		
+
 		// show any newly imported categories
 		CategoryModel.getReference().syncCategories();
 		CategoryModel.getReference().showAll();
@@ -906,13 +915,13 @@ public class MainMenu {
 
 		// build and show the version info.
 
-		String info = Resource.getResourceString("Berger-Organizer_v")+ version 
-				+ "\n\nhttp://borg-calendar.sourceforge.net\n\n" 
+		String info = Resource.getResourceString("Berger-Organizer_v")
+				+ version + "\n\nhttp://borg-calendar.sourceforge.net\n\n"
 				+ Resource.getResourceString("developers") + "\n"
-				+ Resource.getResourceString("contrib") + "\n\n"				
+				+ Resource.getResourceString("contrib") + "\n\n"
 				+ Resource.getResourceString("translations") + "\n\n"
-				+ build_info + "\n"
-				+ "Java " + System.getProperty("java.version");
+				+ build_info + "\n" + "Java "
+				+ System.getProperty("java.version");
 		Object opts[] = { Resource.getPlainResourceString("Dismiss") /*
 																		 * ,
 																		 * Resource.getResourceString("Show_Detailed_Source_Version_Info")
@@ -950,35 +959,14 @@ public class MainMenu {
 
 	private void PrintMonthMIActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_PrintMonthMIActionPerformed
 
-		if( nav_ instanceof CalendarView )
-		{
-		// print the current month
-		try {
-			CalendarView cv = (CalendarView) nav_;
-			MonthPreView.printMonth(cv.getMonth(),
-					cv.getYear());
-		} catch (Exception e) {
-			Errmsg.errmsg(e);
-		}
-		}
-		else if( nav_ instanceof WeekView )
-		{
-			WeekView w = (WeekView) nav_;
-			w.print();
-		}
-		else if( nav_ instanceof DayView )
-		{
-			DayView w = (DayView) nav_;
-			w.print();
-		}
+		nav_.print();
 
 	}// GEN-LAST:event_PrintMonthMIActionPerformed
 
 	private void printprevActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_printprevActionPerformed
 	{// GEN-HEADEREND:event_printprevActionPerformed
-		if( nav_ instanceof CalendarView )
-		{			
-			CalendarView cv = (CalendarView) nav_;
+		if (nav_ instanceof MultiView) {
+			MultiView cv = (MultiView) nav_;
 			new MonthPreView(cv.getMonth(), cv.getYear());
 		}
 	}// GEN-LAST:event_printprevActionPerformed
@@ -988,12 +976,6 @@ public class MainMenu {
 		// search results
 
 		new SearchView().setVisible(true);
-		// String inputValue =
-		// JOptionPane.showInputDialog(Resource.getResourceString("Enter_search_string:"));
-		// //if( inputValue == null ) return;
-		// bring up srch window
-		// SearchView sg = new SearchView(inputValue );
-		// sg.show();
 
 	}// GEN-LAST:event_SearchMIActionPerformed
 

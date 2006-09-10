@@ -66,9 +66,9 @@ import net.sf.borg.model.db.remote.RemoteProxyHome;
 import net.sf.borg.model.db.remote.http.HTTPRemoteProxy;
 import net.sf.borg.model.db.remote.server.SingleInstanceHandler;
 import net.sf.borg.ui.Banner;
-import net.sf.borg.ui.CalendarView;
 import net.sf.borg.ui.JDICTrayIconProxy;
 import net.sf.borg.ui.LoginDialog;
+import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.OptionsView;
 import net.sf.borg.ui.PopupView;
 import net.sf.borg.ui.TodoView;
@@ -503,7 +503,11 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 
 	}
 
-	boolean trayIcon = true;
+	private boolean trayIcon = true;
+	public boolean hasTrayIcon()
+	{
+		return trayIcon;
+	}
 
 	private void swingStart(String trayname) {
 		trayIcon = true;
@@ -535,8 +539,10 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 		String backgstart = Prefs.getPref(PrefName.BACKGSTART);
 		if (backgstart.equals("false") || !trayIcon) {
 			// start main month view
-			CalendarView.getReference(trayIcon);
-
+			//CalendarView.getReference(trayIcon);
+			MultiView mv = MultiView.getMainView();
+			mv.setVisible(true);
+			
 			// start todo view if there are todos
 			if (AppointmentModel.getReference().haveTodos()) {
 				startTodoView();
@@ -713,7 +719,7 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 		if (ban_ != null)
 			parent = ban_;
 		else
-			parent = CalendarView.getReference();
+			parent = MultiView.getMainView();
 
 		final LoginDialog dlg = new LoginDialog(parent);
 		Runnable runnable = new Runnable() {
@@ -758,7 +764,7 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 		} else if (msg.equals("shutdown")) {
 			System.exit(0);
 		} else if (msg.equals("open")) {
-			CalendarView.getReference(trayIcon).toFront();
+			MultiView.getMainView().toFront();
 			return ("ok");
 		}
 		else if( msg.startsWith("lock:"))
