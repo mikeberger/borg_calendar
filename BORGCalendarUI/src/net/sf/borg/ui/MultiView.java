@@ -179,6 +179,7 @@ public class MultiView extends View implements Navigator {
 		wkPanel.repaint();
 		dayPanel.clearData();
 		dayPanel.repaint();
+		calPanel.refresh();
 	}
 
 	public void next() {
