@@ -49,7 +49,7 @@ import net.sf.borg.model.Day;
 import net.sf.borg.ui.ApptDayBoxLayout.ApptDayBox;
 
 // weekPanel handles the printing of a single week
-class WeekPanel extends ApptBoxPanel implements Printable {
+class WeekPanel extends ApptBoxPanel implements Prefs.Listener,Printable {
 
 	private int year_;
 
@@ -382,6 +382,7 @@ class WeekPanel extends ApptBoxPanel implements Printable {
 		month_ = month;
 		date_ = date;
 		clearData();
+        Prefs.addListener(this);
 
 	}
 	
@@ -436,5 +437,12 @@ class WeekPanel extends ApptBoxPanel implements Printable {
 		needLoad = true;
 		setToolTipText(null);
 	}
+    
+    public void prefsChanged()
+    {
+       clearData();
+       repaint();
+        
+    }
 
 }
