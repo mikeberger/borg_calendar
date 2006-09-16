@@ -46,29 +46,6 @@ import net.sf.borg.model.db.IBeanDataFactory;
 import net.sf.borg.model.db.MultiUserDB;
 
 
-// calmodel is the data model class for calendar data. calmodel is the only class that communicates
-// directly with the SMDB database class.
-// However, calmodel does allow the rest of the app to see Appointment objects. These are generic
-// objects used to contain a map of field names to data. They represent
-// a row of the database. It would be overkill to build a formal appointment class to hold the
-// appointment data. C++ versions of BORG did this and wasted a lot of effort mapping things
-// into and out of the Appointment class.
-
-// calmodel initially scans the entire appointment data base - reading only the record keys and the
-// boolean flags for each record. This is equivalent to reading indexed data in a regular database.
-// Unlike a fixed fielded database, SMDB stores its non-key data in a text format that has to be
-// parsed. So calmodel builds a map of the entire database in a HashMap that maps all days to a list
-// of that days appts. It does this from the appt keys alone without reading the full SMDB record. the full
-// SMDB record is only read for repeating appts to get the repeat frequency and times. Repeat appts
-// are a pain and have to be added to the appt map using calendar math to plot the date of each repeat.
-
-// calmodel sets the schema for SMDB. See open_db for this schema. This schema defines the fields
-// that are in each appt Appointment.
-
-// records are keyed in SMDB using an integer key. calmodel will use an integer build from
-// the year/month/day of an appt. the integers for 2 consecutive days are numerically 100 apart -
-// allowing 100 appointments per day. the "base" key for a day ends in 00. appoinments for the day
-// are given the first unused integer greater than or equal to the "base" key. See dkey() below.
 public class AppointmentModel extends Model implements Model.Listener
 {
   
@@ -651,7 +628,6 @@ public class AppointmentModel extends Model implements Model.Listener
         
         return(false);
     }
-    
     
     // open the SMDB database
     public void open_db(String url, String username, boolean readonly, boolean shared)
