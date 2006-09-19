@@ -67,8 +67,10 @@ public class MultiView extends View implements Navigator {
 	static public final int WEEK = 3;
 
 	public static MultiView getMainView() {
-		if (mainView == null || !mainView.isShowing())
+		if( mainView == null )
 			mainView = new MultiView();
+		else if (!mainView.isShowing())
+			mainView.show();
 		return (mainView);
 	}
 	
