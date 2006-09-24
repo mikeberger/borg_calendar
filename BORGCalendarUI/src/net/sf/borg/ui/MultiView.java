@@ -70,7 +70,7 @@ public class MultiView extends View implements Navigator {
 		if( mainView == null )
 			mainView = new MultiView();
 		else if (!mainView.isShowing())
-			mainView.show();
+			mainView.setVisible(true);
 		return (mainView);
 	}
 	

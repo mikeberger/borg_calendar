@@ -36,8 +36,10 @@ public class ApptDayBoxLayout {
 
 	// ApptDayBox holds the logical information needs to determine
 	// how an appointment box should be drawn in a day grid
-	public class ApptDayBox {
+	static public class ApptDayBox implements ApptBoxPanel.BoxModel {
 
+        private double startmin; 
+        private double endmin;
 		private boolean placed = false; // whether or not this box has been
 
 		// "placed" in the grid yet
@@ -67,36 +69,42 @@ public class ApptDayBoxLayout {
 		private Appointment appt = null;
 		
 		private boolean isSelected = false;
+        
+        public ApptDayBox(double sm, double em )
+        {
+            startmin = sm;
+            endmin = em;
+        }
 
-		public double getLeft() {
+		public double getLeftAdjustment() {
 			return left;
 		}
 
-		public void setLeft(double left) {
+		public void setLeftAdjustment(double left) {
 			this.left = left;
 		}
 
-		public double getTop() {
+		public double getTopAdjustment() {
 			return top;
 		}
 
-		public void setTop(double top) {
+		public void setTopAdjustment(double top) {
 			this.top = top;
 		}
 
-		public double getBottom() {
+		public double getBottomAdjustment() {
 			return bottom;
 		}
 
-		public void setBottom(double bottom) {
+		public void setBottomAdjustment(double bottom) {
 			this.bottom = bottom;
 		}
 
-		public double getRight() {
+		public double getRightAdjustment() {
 			return right;
 		}
 
-		public void setRight(double right) {
+		public void setRightAdjustment(double right) {
 			this.right = right;
 		}
 
@@ -139,7 +147,169 @@ public class ApptDayBoxLayout {
 		public boolean isSelected() {
 			return isSelected;
 		}
+
+        public void resize(boolean isTop, double y_fraction) throws Exception
+        {
+            // calculate new start hour or duration and update appt
+            double realtime = startmin + (endmin - startmin)*y_fraction;
+            int hour = (int)(realtime/60);
+            int min = (int)(realtime %60);
+           // System.out.println(y_fraction);
+           //System.out.println( "Resize to =" + hour +":" + min);
+            
+            
+            if( isTop )
+            {
+                // get appt from DB - one cached here has time prepended to text by Day.getDayInfo()
+                Appointment ap = AppointmentModel.getReference().getAppt(appt.getKey());
+                Date oldTime = ap.getDate();
+                GregorianCalendar newCal = new GregorianCalendar();
+                newCal.setTime(oldTime);
+                newCal.set(Calendar.HOUR_OF_DAY,hour);
+                int roundMin = (min / 5) * 5;
+                newCal.set(Calendar.MINUTE,roundMin);
+                Date newTime = newCal.getTime();
+                int newDur = ap.getDuration().intValue() + ((int)(oldTime.getTime() - newTime.getTime())/(1000*60));
+                //System.out.println( newTime.toString() + " " + newDur);
+                if( newDur < 5 ) return;
+                ap.setDate(newTime);
+                ap.setDuration(new Integer(newDur));
+                AppointmentModel.getReference().saveAppt(ap, false);
+            }
+            else
+            {
+//              get appt from DB - one cached here has time prepended to text by Day.getDayInfo()
+                Appointment ap = AppointmentModel.getReference().getAppt(appt.getKey());
+                Date start = ap.getDate();
+                long endtime = start.getTime() + (60*1000)*ap.getDuration().intValue();
+                Date oldEnd = new Date(endtime);
+                //System.out.println("oldend=" + oldEnd);
+                Calendar newEnd = new GregorianCalendar();
+                newEnd.setTime(oldEnd);
+                newEnd.set(Calendar.HOUR_OF_DAY,hour);
+                int roundMin = (min / 5) * 5;
+                newEnd.set(Calendar.MINUTE,roundMin);
+                //System.out.println("newEnd=" + newEnd.getTime());
+                //System.out.println("start=" + start.getTime());
+                int newDur = (int)(newEnd.getTime().getTime()-start.getTime())/(1000*60);
+                //System.out.println( "newDur=" + newDur);
+                if( newDur < 5 ) return;
+                ap.setDuration(new Integer(newDur));
+                AppointmentModel.getReference().saveAppt(ap, false);
+            }
+        }
+        
+
+        public void setText(String s)
+        {
+            // TODO Auto-generated method stub
+            
+        }
+
+        public String getText()
+        {
+            return appt.getText();
+        }
+
+        public String getTextColor()
+        {
+            if( appt == null ) return null;
+            GregorianCalendar cal = new GregorianCalendar();
+            cal.setTime(appt.getDate());
+            if ((appt.getColor() != null && appt.getColor().equals("strike"))
+                    || (appt.getTodo() && !(appt.getNextTodo() == null || !appt
+                            .getNextTodo().after(cal.getTime()))))
+            {
+                return( "strike" );
+            }
+            return appt.getColor();
+        }
+
+        public void dblClick()
+        {
+            GregorianCalendar cal = new GregorianCalendar();
+            cal.setTime(appt.getDate());
+            AppointmentListView ag = new AppointmentListView(cal
+                    .get(Calendar.YEAR), cal.get(Calendar.MONTH), cal
+                    .get(Calendar.DATE));
+            ag.showApp(appt.getKey());
+            ag.setVisible(true);
+        }
 	}
+    
+    static public class DateZone implements ApptBoxPanel.BoxModel
+    {
+        
+        private Date date;
+        
+        public DateZone( Date d)
+        {
+            this.date = d;
+        }
+
+        public void resize(boolean b, double d)
+        {
+        }
+
+        public void setText(String s)
+        {
+        }
+
+        public String getText()
+        {
+            return "";
+        }
+
+        public String getTextColor()
+        {
+            return "black";
+        }
+
+        public void dblClick()
+        {
+            GregorianCalendar cal = new GregorianCalendar();
+            cal.setTime(date);
+            AppointmentListView ag = new AppointmentListView(cal
+                    .get(Calendar.YEAR), cal.get(Calendar.MONTH), cal
+                    .get(Calendar.DATE));
+            ag.setVisible(true);
+        }
+
+        public double getBottomAdjustment()
+        {
+           return 0;
+        }
+
+        public double getRightAdjustment()
+        {
+           return 0;
+        }
+
+        public double getTopAdjustment()
+        {
+           return 0;
+        }
+
+        public double getLeftAdjustment()
+        {
+            return 0;
+        }
+
+        public boolean isOutsideGrid()
+        {
+            return false;
+        }
+
+        public boolean isSelected()
+        {
+            return false;
+        }
+
+        public void setSelected(boolean b)
+        {
+        }
+        
+    }
 
 	private TreeSet boxes = new TreeSet(new boxcompare()); // ApptDayBox objects sorted by number of overlaps
 
@@ -189,7 +359,7 @@ public class ApptDayBoxLayout {
 			double apendmin = apstartmin + dur;
 
 			// initialize the box
-			ApptDayBox box = new ApptDayBox();
+			ApptDayBox box = new ApptDayBox(startmin,endmin);
 			box.setAppt(ap);
 
 			// check if appt will fall in the grid
@@ -201,8 +371,8 @@ public class ApptDayBoxLayout {
 					apstartmin = startmin;
 				if (apendmin > endmin)
 					apendmin = endmin;
-				box.setTop((apstartmin - startmin) / (endmin - startmin));
-				box.setBottom((apendmin - startmin) / (endmin - startmin));
+				box.setTopAdjustment((apstartmin - startmin) / (endmin - startmin));
+				box.setBottomAdjustment((apendmin - startmin) / (endmin - startmin));
 			}
 
 			list.add(box);
@@ -225,8 +395,8 @@ public class ApptDayBoxLayout {
 					continue;
 
 				// detect overlap
-				if (otherBox.getTop() > curBox.getBottom()
-						|| otherBox.getBottom() < curBox.getTop()) {
+				if (otherBox.getTopAdjustment() > curBox.getBottomAdjustment()
+						|| otherBox.getBottomAdjustment() < curBox.getTopAdjustment()) {
 					// no overlap
 					continue;
 				}
@@ -259,20 +429,20 @@ public class ApptDayBoxLayout {
 					continue;
 
 				// detect overlap
-				if (otherBox.getTop() > curBox.getBottom()
-						|| otherBox.getBottom() < curBox.getTop()) {
+				if (otherBox.getTopAdjustment() > curBox.getBottomAdjustment()
+						|| otherBox.getBottomAdjustment() < curBox.getTopAdjustment()) {
 					// no overlap
 					continue;
 				}
 
 				if (otherBox.isPlaced()
-						&& otherBox.getRight() > maxRightOfPlaced) {
-					maxRightOfPlaced = otherBox.getRight();
+						&& otherBox.getRightAdjustment() > maxRightOfPlaced) {
+					maxRightOfPlaced = otherBox.getRightAdjustment();
 				}
 			}
 
-			curBox.setLeft(maxRightOfPlaced);
-			curBox.setRight(curBox.getLeft() + (1 / (1+(double)curBox.getNumOverLap())));
+			curBox.setLeftAdjustment(maxRightOfPlaced);
+			curBox.setRightAdjustment(curBox.getLeftAdjustment() + (1 / (1+(double)curBox.getNumOverLap())));
 			curBox.setPlaced(true);
 		}
 

@@ -14,22 +14,31 @@ import java.util.*;
 
 import javax.swing.JPanel;
 
-import net.sf.borg.model.Appointment;
+import net.sf.borg.common.util.Errmsg;
 
 public class ApptBoxPanel extends JPanel
 {
 
-    public static final double prev_scale = 1.5; // common preview scale
-
-    // factor
-
     final static private BasicStroke highlight = new BasicStroke(2.0f);
 
     final static private BasicStroke regular = new BasicStroke(1.0f);
+    
+    final static private int translation = 10;
+    
+    private int resizeMin = 0;
+    private int resizeMax = 0;
+    public void setResizeBounds(int min,int max)
+    {
+        resizeMin = min;
+        resizeMax = max;
+    }
 
     private class MyMouseListener implements MouseListener, MouseMotionListener
     {
 
+        private Box draggedBox = null;
+        private boolean resizeTop = true;
+        
         public MyMouseListener()
         {
 
@@ -39,45 +48,63 @@ public class ApptBoxPanel extends JPanel
         {
 
             //if (evt.getClickCount() < 2)
-            //return;
+               // return;
 
-            BoxInfo b = getBox(evt);
+            ClickedBoxInfo b = getBox(evt);
             if (b == null)
             {
                 // nothing
             }
-            else if (b.box.zone)
+            else if (b.box.type == Box.DATEZONE)
             {
-                GregorianCalendar cal = new GregorianCalendar();
-                cal.setTime(b.box.date);
-                AppointmentListView ag = new AppointmentListView(cal
-                        .get(Calendar.YEAR), cal.get(Calendar.MONTH), cal
-                        .get(Calendar.DATE));
-                ag.setVisible(true);
+                b.box.model.dblClick();
             }
             else
-            {
-                Appointment ap = b.box.layout.getAppt();
-                GregorianCalendar cal = new GregorianCalendar();
-                cal.setTime(ap.getDate());
-                AppointmentListView ag = new AppointmentListView(cal
-                        .get(Calendar.YEAR), cal.get(Calendar.MONTH), cal
-                        .get(Calendar.DATE));
-                
-                ag.showApp(ap.getKey());
-                ag.setVisible(true);
-                
+            {              
+                b.box.model.dblClick();
             }
 
-            evt.getComponent().getParent().repaint();
+            //evt.getComponent().getParent().repaint();
         }
 
         public void mousePressed(MouseEvent arg0)
         {
+            ClickedBoxInfo b = getBox(arg0);
+            if( b != null && !b.box.model.isOutsideGrid() && (b.onTopBorder || b.onBottomBorder))
+            {
+                draggedBox = b.box;  
+                setResizeBox(b.box.x,b.box.y,b.box.w,b.box.h);
+                if( b.onBottomBorder)
+                {
+                    resizeTop = false;
+                }
+                else
+                {
+                    resizeTop = true;
+                }
+            }
         }
 
         public void mouseReleased(MouseEvent arg0)
         {
+            if( draggedBox != null )
+            {
+                int y = arg0.getY();
+                y = Math.max(y,resizeMin);
+                y = Math.min(y,resizeMax);
+                try
+                {
+                    draggedBox.model.resize(resizeTop,(double)(y-resizeMin)/(double)(resizeMax-resizeMin));
+                }
+                catch (Exception e)
+                {
+                   Errmsg.errmsg(e);
+                }
+                draggedBox = null;
+                removeResizeBox();
+                arg0.getComponent().getParent().repaint();
+            }
+        
         }
 
         public void mouseEntered(MouseEvent arg0)
@@ -90,34 +117,50 @@ public class ApptBoxPanel extends JPanel
 
         public void mouseDragged(MouseEvent arg0)
         {
-            // TODO Auto-generated method stub
-
+            
+            if( draggedBox != null )
+            {               
+                if( resizeTop == true)
+                {
+                    int top = Math.max(arg0.getY(), resizeMin);
+                    setResizeBox(draggedBox.x,top,draggedBox.w,draggedBox.h+draggedBox.y-top);
+                }
+                else
+                {
+                    int bot = Math.min(arg0.getY(),resizeMax);
+                    setResizeBox(draggedBox.x,draggedBox.y,draggedBox.w,bot-draggedBox.y);
+                }
+                arg0.getComponent().repaint();
+            }          
         }
+        
 
-        private class BoxInfo
+        private class ClickedBoxInfo
         {
             public Box box;
 
-            public boolean onBorder;
+            public boolean onTopBorder;
+            public boolean onBottomBorder;
         }
 
-        private BoxInfo getBox(MouseEvent evt)
+        private ClickedBoxInfo getBox(MouseEvent evt)
         {
             //			 determine which box is selected, if any
             Iterator it = boxes.iterator();
             Box boxFound = null;
             Box zone = null;
-            boolean onBorder = false;
+            boolean onTopBorder = false;
+            boolean onBottomBorder = false;
             while (it.hasNext())
             {
 
                 Box b = (Box) it.next();
 
                 // this is bad magic
-                int realx = (int) ((b.x + 10) * prev_scale);
-                int realy = (int) ((b.y + 10) * prev_scale);
-                int realh = (int) (b.h * prev_scale);
-                int realw = (int) (b.w * prev_scale);
+                int realx = (int) (b.x + translation);
+                int realy = (int) (b.y + translation);
+                int realh = (int) (b.h );
+                int realw = (int) (b.w);
 
                 // System.out.println(b.layout.getAppt().getText() + " " + realx
                 // + " " + realy + " " + realw + " " + realh);
@@ -125,27 +168,30 @@ public class ApptBoxPanel extends JPanel
                         && evt.getY() > realy && evt.getY() < (realy + realh))
                 {
 
-                    if (b.zone == true)
+                    if (b.type == Box.DATEZONE)
                     {
                         zone = b;
                         continue;
                     }
 
-                    b.layout.setSelected(true);
+                    b.model.setSelected(true);
                     boxFound = b;
-                    if (Math.abs(evt.getY() - realy) < 3
-                            || Math.abs(evt.getY() - (realy + realh)) < 3)
+                    if (Math.abs(evt.getY() - realy) < 3 )
                     {
-                        onBorder = true;
+                        onTopBorder = true;
+                    }
+                    else if( Math.abs(evt.getY() - (realy + realh)) < 3)
+                    {
+                        onBottomBorder = true;
                     }
                 }
-                else if (b.zone == false)
+                else if (b.type == Box.APPTBOX)
                 {
-                    b.layout.setSelected(false);
+                    b.model.setSelected(false);
                 }
             }
 
-            BoxInfo ret = new BoxInfo();
+            ClickedBoxInfo ret = new ClickedBoxInfo();
             if (boxFound != null)
                 ret.box = boxFound;
             else if (zone != null)
@@ -153,7 +199,8 @@ public class ApptBoxPanel extends JPanel
             else
                 return null;
 
-            ret.onBorder = onBorder;
+            ret.onTopBorder = onTopBorder;
+            ret.onBottomBorder = onBottomBorder;
 
             return ret;
 
@@ -162,30 +209,57 @@ public class ApptBoxPanel extends JPanel
         public void mouseMoved(MouseEvent evt)
         {
 
+           
             JPanel panel = (JPanel) evt.getComponent();
 
-            BoxInfo b = getBox(evt);
-            if (b != null && !b.box.zone)
+            ClickedBoxInfo b = getBox(evt);
+            if (b != null && b.box.type == Box.APPTBOX)
             {
-                panel.setToolTipText(b.box.layout.getAppt().getText());
+                panel.setToolTipText(b.box.model.getText());
             }
 
-            /*
-             if ( b.onBorder ) {
-             panel.setCursor(new Cursor(Cursor.N_RESIZE_CURSOR));
-             } else if(b != null && !b.box.zone ){
-             panel.setCursor(new Cursor(Cursor.MOVE_CURSOR));
+            
+             if ( b != null && (b.onTopBorder || b.onBottomBorder) ) {
+                 panel.setCursor(new Cursor(Cursor.N_RESIZE_CURSOR));
+             } else if(b != null && b.box.type == Box.APPTBOX ){
+                 panel.setCursor(new Cursor(Cursor.TEXT_CURSOR));
              } else {
-             panel.setCursor(new Cursor(Cursor.HAND_CURSOR));
-             }*/
+                 panel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+             }
 
             evt.getComponent().getParent().repaint();
+             
 
         }
     }
 
-    private class Box
+    public interface BoxModel
     {
+        public void resize(boolean isTop, double y_fraction) throws Exception;
+
+        public void setText(String s);
+
+        public String getText();
+        public String getTextColor();
+
+        public void dblClick();
+        
+        public double getBottomAdjustment();
+        public double getRightAdjustment();
+        public double getTopAdjustment();
+        public double getLeftAdjustment();
+        public boolean isOutsideGrid();
+        
+        public boolean isSelected();
+        public void setSelected(boolean b);
+    }
+
+    
+    static private class Box
+    {
+        public static final int APPTBOX = 1;
+        public static final int DATEZONE = 2;
+        
         public int w;
 
         public int h;
@@ -194,13 +268,11 @@ public class ApptBoxPanel extends JPanel
 
         public int y;
 
-        public ApptDayBoxLayout.ApptDayBox layout;
+        public BoxModel model;
 
         public Color color;
 
-        public boolean zone = false;
-
-        public Date date;
+        public int type = APPTBOX;
 
     }
 
@@ -208,18 +280,36 @@ public class ApptBoxPanel extends JPanel
 
     public ApptBoxPanel()
     {
-        addMouseListener(new MyMouseListener());
-        addMouseMotionListener(new MyMouseListener());
+        MyMouseListener myOneListener = new MyMouseListener();
+        addMouseListener(myOneListener);
+        addMouseMotionListener(myOneListener);
     };
 
-    public void addBox(ApptDayBoxLayout.ApptDayBox layout, double x, double y,
-            double w, double h, Color c, Date d)
+    private static Rectangle resizeBox = null;
+    
+    public void setResizeBox(double x,double y,double w, double h)
+    {
+        if( resizeBox == null )
+            resizeBox = new Rectangle();
+        resizeBox.x = (int) x;
+        resizeBox.y = (int) y;
+        resizeBox.height = (int) h;
+        resizeBox.width = (int) w;
+        
+        
+    }
+    public void removeResizeBox()
+    {
+        resizeBox = null;
+    }
+    
+    public void addBox(BoxModel bm, double x, double y,
+            double w, double h, Color c)
     {
         Box b = new Box();
-        b.zone = false;
-        b.date = d;
+        b.type = Box.APPTBOX;
 
-        if (layout.isOutsideGrid())
+        if (bm.isOutsideGrid())
         {
             b.x = (int) x;
             b.y = (int) y;
@@ -228,26 +318,26 @@ public class ApptBoxPanel extends JPanel
         }
         else
         {
-            b.x = (int) (x + 2 + w * layout.getLeft());
-            b.y = (int) (y + h * layout.getTop());
-            b.h = (int) ((layout.getBottom() - layout.getTop()) * h);
-            b.w = (int) ((layout.getRight() - layout.getLeft()) * w);
+            b.x = (int) (x + 2 + w * bm.getLeftAdjustment());
+            b.y = (int) (y + h * bm.getTopAdjustment());
+            b.h = (int) ((bm.getBottomAdjustment() - bm.getTopAdjustment()) * h);
+            b.w = (int) ((bm.getRightAdjustment() - bm.getLeftAdjustment()) * w);
         }
-        b.layout = layout;
+        b.model = bm;
         b.color = c;
 
         boxes.add(b);
     }
 
-    public void addDateZone(Date d, double x, double y, double w, double h)
+    public void addDateZone(BoxModel bm, double x, double y, double w, double h)
     {
         Box b = new Box();
-        b.zone = true;
-        b.date = d;
+        b.type = Box.DATEZONE;
         b.x = (int) x;
         b.y = (int) y;
         b.h = (int) h;
         b.w = (int) w;
+        b.model = bm;
 
         boxes.add(b);
     }
@@ -266,44 +356,33 @@ public class ApptBoxPanel extends JPanel
         while (it.hasNext())
         {
             Box b = (Box) it.next();
-            if (b.zone == true)
-                continue;
+            if (b.type == Box.DATEZONE)
+                continue;           
 
-            Appointment ai = null;
-            ai = b.layout.getAppt();
 
             // add a single appt text
             // if the appt falls outside the grid - leave it as
             // a note on top
-            if (b.layout.isOutsideGrid())
+            if (b.model.isOutsideGrid())
             {
 
                 // appt is note or is outside timespan shown
                 g2.clipRect(b.x, 0, b.w, 1000);
 
-                GregorianCalendar cal = new GregorianCalendar();
-                cal.setTime(b.date);
-                if ((ai.getColor() != null && ai.getColor().equals("strike"))
-                        || (ai.getTodo() && !(ai.getNextTodo() == null || !ai
-                                .getNextTodo().after(cal.getTime()))))
+                if(  b.model.getTextColor().equals("strike"))
                 {
-                    // g2.setFont(strike_font);
-                    // System.out.println(ai.getText());
-                    // need to use AttributedString to work
-                    // around a bug
-                    AttributedString as = new AttributedString(ai.getText(),
+                   
+                    AttributedString as = new AttributedString(b.model.getText(),
                             stmap);
-                    g2
-                            .drawString(as.getIterator(), b.x + 2, b.y
-                                    + smfontHeight);
+                    g2.drawString(as.getIterator(), b.x + 2, b.y + smfontHeight);
                 }
                 else
                 {
                     // g2.setFont(sm_font);
-                    g2.drawString(ai.getText(), b.x + 2, b.y + smfontHeight);
+                    g2.drawString(b.model.getText(), b.x + 2, b.y + smfontHeight);
                 }
 
-                if (b.layout.isSelected())
+                if (b.model.isSelected())
                 {
                     g2.setStroke(regular);
                     g2.setColor(Color.BLUE);
@@ -321,7 +400,7 @@ public class ApptBoxPanel extends JPanel
 
                 // draw box outline
 
-                if (b.layout.isSelected())
+                if (b.model.isSelected())
                 {
                     g2.setStroke(highlight);
                     g2.setColor(Color.BLUE);
@@ -339,20 +418,27 @@ public class ApptBoxPanel extends JPanel
                 // change color for a single appointment based on
                 // its color - only if color print option set
                 g2.setColor(Color.black);
-                if (ai.getColor().equals("red"))
+                if (b.model.getTextColor().equals("red"))
                     g2.setColor(Color.red);
-                else if (ai.getColor().equals("green"))
+                else if (b.model.getTextColor().equals("green"))
                     g2.setColor(Color.green);
-                else if (ai.getColor().equals("blue"))
+                else if (b.model.getTextColor().equals("blue"))
                     g2.setColor(Color.blue);
 
-                drawWrappedString(g2, ai.getText(), b.x, b.y, b.w);
+                drawWrappedString(g2, b.model.getText(), b.x, b.y, b.w);
 
             }
             g2.setClip(s);
             g2.setColor(Color.black);
         }
 
+        if( resizeBox != null )
+        {
+            g2.setStroke(highlight);
+            g2.setColor(Color.RED);
+            g2.drawRect(resizeBox.x, resizeBox.y, resizeBox.width, resizeBox.height);
+            g2.setStroke(stroke);
+        }
         g2.setColor(Color.black);
 
     }
@@ -383,6 +469,6 @@ public class ApptBoxPanel extends JPanel
             tt += tlayout.getDescent() + tlayout.getLeading();
         }
     }
-    // mouse click callback
+   
 
 }

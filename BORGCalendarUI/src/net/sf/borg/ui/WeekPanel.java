@@ -19,27 +19,14 @@
  */
 package net.sf.borg.ui;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Shape;
-import java.awt.Stroke;
+import java.awt.*;
 import java.awt.font.TextAttribute;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
@@ -47,6 +34,7 @@ import net.sf.borg.common.util.Prefs;
 import net.sf.borg.common.util.Resource;
 import net.sf.borg.model.Day;
 import net.sf.borg.ui.ApptDayBoxLayout.ApptDayBox;
+import net.sf.borg.ui.ApptDayBoxLayout.DateZone;
 
 // weekPanel handles the printing of a single week
 class WeekPanel extends ApptBoxPanel implements Prefs.Listener,Printable {
@@ -69,17 +57,18 @@ class WeekPanel extends ApptBoxPanel implements Prefs.Listener,Printable {
 		// only print 1 page
 		if (pageIndex > 0)
 			return Printable.NO_SUCH_PAGE;
+        Font sm_font = Font.decode(Prefs.getPref(PrefName.MONTHVIEWFONT));
 		return( drawIt(g,pageFormat.getWidth(), pageFormat.getHeight(), 
 				pageFormat.getImageableWidth(), pageFormat.getImageableHeight(),
-				pageFormat.getImageableX(), pageFormat.getImageableY()));
+				pageFormat.getImageableX(), pageFormat.getImageableY(), sm_font));
 	}
 	
 	private int drawIt(Graphics g, double width, double height, double pageWidth, 
-			double pageHeight, double pagex, double pagey )
+			double pageHeight, double pagex, double pagey, Font sm_font )
 	{
 		
 		clearBoxes();
-
+        
 		boolean showpub = false;
 		boolean showpriv = false;
 		String sp = Prefs.getPref(PrefName.SHOWPUBLIC);
@@ -92,7 +81,7 @@ class WeekPanel extends ApptBoxPanel implements Prefs.Listener,Printable {
 		Graphics2D g2 = (Graphics2D) g;
 		//Font def_font = g2.getFont();
 		//Font sm_font = def_font.deriveFont(6f);
-		Font sm_font = Font.decode(Prefs.getPref(PrefName.WEEKVIEWFONT));
+		
 		Map stmap = new HashMap();
 		stmap.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
 		stmap.put(TextAttribute.FONT, sm_font);
@@ -105,12 +94,9 @@ class WeekPanel extends ApptBoxPanel implements Prefs.Listener,Printable {
 		int fontHeight = g2.getFontMetrics().getHeight();
 		int fontDesent = g2.getFontMetrics().getDescent();
 
-		// translate coordinates based on the amount of the page that
-		// is going to be printable on - in other words, set upper right
-		// to upper right of printable area - not upper right corner of
-		// paper
+		
 		g2.translate(pagex, pagey);
-
+		  
 		// save original clip
 		Shape s = g2.getClip();
 
@@ -164,6 +150,8 @@ class WeekPanel extends ApptBoxPanel implements Prefs.Listener,Printable {
 		// calculate the bottom and right edge of the grid
 		int calbot = (int) rowheight + daytop;
 
+        setResizeBounds((int)aptop,calbot);
+        
 		// start and end hour = range of Y axis
 		String shr = Prefs.getPref(PrefName.WKSTARTHOUR);
 		String ehr = Prefs.getPref(PrefName.WKENDHOUR);
@@ -248,7 +236,7 @@ class WeekPanel extends ApptBoxPanel implements Prefs.Listener,Printable {
 			int colleft = (int) (timecolwidth + col * colwidth);
 			
 //			 add a zone for each day to allow new appts to be edited
-			addDateZone(cal.getTime(), colleft, 0, colwidth, calbot ); 
+			addDateZone(new DateZone(cal.getTime()), colleft, 0, colwidth, calbot ); 
 			
 			try {
 								
@@ -294,12 +282,12 @@ class WeekPanel extends ApptBoxPanel implements Prefs.Listener,Printable {
 							// a note on top
 							if (box.isOutsideGrid()) {
 								
-								addBox( box, colleft, notey, colwidth - 4, smfontHeight, acolor[apptnum % 3],cal.getTime());
+								addBox( box, colleft, notey, colwidth - 4, smfontHeight, acolor[apptnum % 3]);
 								// increment Y coord for next note text
 								notey += smfontHeight;
 							} else {
 								
-								addBox( box, colleft, aptop, colwidth - 4, calbot -aptop, acolor[apptnum % 3], cal.getTime());
+								addBox( box, colleft, aptop, colwidth - 4, calbot -aptop, acolor[apptnum % 3]);
 								apptnum++;
 							}
 
@@ -366,11 +354,10 @@ class WeekPanel extends ApptBoxPanel implements Prefs.Listener,Printable {
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		try {
-			Graphics2D g2 = (Graphics2D) g;
-			g2.scale(prev_scale, prev_scale);
-			drawIt(g,getWidth()/prev_scale, getHeight()/prev_scale, 
-					getWidth()/prev_scale-20, getHeight()/prev_scale-20,
-					10, 10);
+            Font sm_font = Font.decode(Prefs.getPref(PrefName.WEEKVIEWFONT));
+			drawIt(g,getWidth(), getHeight(), 
+					getWidth()-20, getHeight()-20,
+					10, 10, sm_font);
 
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
