@@ -18,17 +18,12 @@
  */
 package net.sf.borg.ui;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Iterator;
-import java.util.TreeSet;
+import java.util.*;
 
+import net.sf.borg.common.util.*;
 import net.sf.borg.model.Appointment;
 import net.sf.borg.model.AppointmentModel;
+import net.sf.borg.model.AppointmentXMLAdapter;
 
 // This class determines the logical layout of appointment boxes within a
 // day given that appointments can overlap
@@ -199,6 +194,28 @@ public class ApptDayBoxLayout {
             }
         }
         
+        public void move(double y_fraction) throws Exception
+        {
+            // calculate new start hour or duration and update appt
+            double realtime = startmin + (endmin - startmin)*y_fraction;
+            int hour = (int)(realtime/60);
+            int min = (int)(realtime %60);
+                       
+            
+            // get appt from DB - one cached here has time prepended to text by Day.getDayInfo()
+            Appointment ap = AppointmentModel.getReference().getAppt(appt.getKey());
+            Date oldTime = ap.getDate();
+            GregorianCalendar newCal = new GregorianCalendar();
+            newCal.setTime(oldTime);
+            newCal.set(Calendar.HOUR_OF_DAY,hour);
+            int roundMin = (min / 5) * 5;
+            newCal.set(Calendar.MINUTE,roundMin);
+            Date newTime = newCal.getTime();
+            ap.setDate(newTime);
+            AppointmentModel.getReference().saveAppt(ap, false);
+            
+        }
+        
 
         public void setText(String s)
         {
@@ -225,7 +242,7 @@ public class ApptDayBoxLayout {
             return appt.getColor();
         }
 
-        public void dblClick()
+        public void edit()
         {
             GregorianCalendar cal = new GregorianCalendar();
             cal.setTime(appt.getDate());
@@ -235,21 +252,39 @@ public class ApptDayBoxLayout {
             ag.showApp(appt.getKey());
             ag.setVisible(true);
         }
+
+        public void create(double top, double bottom)
+        {
+            // TODO Auto-generated method stub
+            
+        }
+        
+        public void delete()
+        {
+            AppointmentModel.getReference().delAppt(appt.getKey());
+        }
 	}
     
     static public class DateZone implements ApptBoxPanel.BoxModel
     {
         
         private Date date;
+        private double startmin; 
+        private double endmin;
         
-        public DateZone( Date d)
+        public DateZone( Date d, double sm, double em)
         {
             this.date = d;
+            startmin = sm;
+            endmin = em;
         }
 
         public void resize(boolean b, double d)
         {
         }
+        
+        public void move(double d)
+        {}
 
         public void setText(String s)
         {
@@ -265,7 +300,7 @@ public class ApptDayBoxLayout {
             return "black";
         }
 
-        public void dblClick()
+        public void edit()
         {
             GregorianCalendar cal = new GregorianCalendar();
             cal.setTime(date);
@@ -307,6 +342,48 @@ public class ApptDayBoxLayout {
 
         public void setSelected(boolean b)
         {
+        }
+
+        public void delete(){};
+        public void create(double top, double bottom)
+        {
+            
+//          get default appt values, if any
+            Appointment appt = null;
+            String defApptXml = Prefs.getPref(PrefName.DEFAULT_APPT);
+            if (!defApptXml.equals("")) {
+                try {
+                    XTree xt = XTree.readFromBuffer(defApptXml);
+                    AppointmentXMLAdapter axa = new AppointmentXMLAdapter();
+                    appt = (Appointment) axa.fromXml(xt);
+                    
+                } catch (Exception e) {
+                    Errmsg.errmsg(e);
+                    appt = null;
+                }
+            }
+            
+            if( appt == null )
+            {
+                appt = AppointmentModel.getReference().newAppt();
+            }
+
+            //System.out.println(top + " " + bottom);
+            double realtime = startmin + (endmin - startmin)*top;
+            int hour = (int)(realtime/60);
+            int min = (int)(realtime %60);
+            min = (min / 5) * 5;
+            Calendar startCal = new GregorianCalendar();
+            startCal.setTime(date);
+            startCal.set(Calendar.HOUR_OF_DAY,hour);
+            startCal.set(Calendar.MINUTE,min);
+            appt.setDate(startCal.getTime());
+            
+            int dur = (int)((bottom-top)*(endmin-startmin));
+            dur = (dur / 5) * 5;
+            appt.setDuration(new Integer(dur));
+            appt.setText(Resource.getPlainResourceString("*****_NEW_APPT_*****"));
+            AppointmentModel.getReference().saveAppt(appt,true);
         }
         
     }

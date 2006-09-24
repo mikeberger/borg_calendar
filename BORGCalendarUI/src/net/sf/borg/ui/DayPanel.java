@@ -174,7 +174,7 @@ class DayPanel extends ApptBoxPanel implements Prefs.Listener, Printable {
 		int colleft = (int) (timecolwidth);
 		
         
-		addDateZone(new DateZone(cal.getTime()), colleft, 0, colwidth, calbot ); 
+		addDateZone(new DateZone(cal.getTime(),starthr*60,endhr*60), colleft, 0, colwidth, calbot ); 
 		
 		try {
 
@@ -219,12 +219,12 @@ class DayPanel extends ApptBoxPanel implements Prefs.Listener, Printable {
 					// note on top
 					if (box.isOutsideGrid()) {
 						
-						addBox( box, colleft, notey, colwidth - 4, smfontHeight, acolor[apptnum % 3]);
+						addBox( box, colleft+2, notey, colwidth - 4, smfontHeight, acolor[apptnum % 3]);
 						// increment Y coord for next note text
 						notey += smfontHeight;
 					} else {
 
-						addBox( box, colleft, aptop, colwidth - 4, calbot -aptop, acolor[apptnum % 3]);
+						addBox( box, colleft+4, aptop, colwidth - 8, calbot -aptop, acolor[apptnum % 3]);
 						apptnum++;
 					}
 
