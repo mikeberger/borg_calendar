@@ -251,7 +251,7 @@ class WeekPanel extends ApptBoxPanel implements Prefs.Listener,Printable {
 					{
 						Collection appts = di.getAppts();
 						if (appts != null) {
-							layout[col] = new ApptDayBoxLayout(appts,
+							layout[col] = new ApptDayBoxLayout(cal.getTime(), appts,
 									starthr, endhr);
 						}
 					}

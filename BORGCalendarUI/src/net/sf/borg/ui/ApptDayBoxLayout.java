@@ -35,6 +35,7 @@ public class ApptDayBoxLayout
     static public class ApptDayBox implements ApptBoxPanel.BoxModel
     {
 
+    	private Date date; // date being displayed - not necessarily date of appt
         private double startmin;
         private double endmin;
         private boolean isPlaced = false; // whether or not this box has been
@@ -68,10 +69,11 @@ public class ApptDayBoxLayout
 
         private boolean isSelected = false;
 
-        public ApptDayBox(double sm, double em)
+        public ApptDayBox(Date d, double sm, double em)
         {
             startmin = sm;
             endmin = em;
+            date = d;
         }
 
         public double getLeftAdjustment()
@@ -232,10 +234,9 @@ public class ApptDayBoxLayout
         {
             if (appt == null)
                 return null;
-            GregorianCalendar cal = new GregorianCalendar();
-            cal.setTime(appt.getDate());
+            
             if ((appt.getColor() != null && appt.getColor().equals("strike"))
-                    || (appt.getTodo() && !(appt.getNextTodo() == null || !appt.getNextTodo().after(cal.getTime()))))
+                    || (appt.getTodo() && !(appt.getNextTodo() == null || !appt.getNextTodo().after(date))))
             {
                 return ("strike");
             }
@@ -414,7 +415,7 @@ public class ApptDayBoxLayout
     }
 
     // create an ApptDatBoxLayout and layout the appts
-    public ApptDayBoxLayout(Collection appts, int starthr, int endhr)
+    public ApptDayBoxLayout(Date displayDate, Collection appts, int starthr, int endhr)
     {
 
         double startmin = starthr * 60;
@@ -444,7 +445,7 @@ public class ApptDayBoxLayout
             double apendmin = apstartmin + dur;
 
             // initialize the box
-            ApptDayBox box = new ApptDayBox(startmin, endmin);
+            ApptDayBox box = new ApptDayBox(displayDate, startmin, endmin);
             box.setAppt(ap);
 
             // check if appt will fall in the grid

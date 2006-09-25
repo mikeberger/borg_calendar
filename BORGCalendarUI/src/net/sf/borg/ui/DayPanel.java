@@ -188,7 +188,7 @@ class DayPanel extends ApptBoxPanel implements Prefs.Listener, Printable {
 
 					Collection appts = di.getAppts();
 					if (appts != null) {
-						layout = new ApptDayBoxLayout(appts, starthr, endhr);
+						layout = new ApptDayBoxLayout(cal.getTime(),appts, starthr, endhr);
 					}
 				}
 			}
