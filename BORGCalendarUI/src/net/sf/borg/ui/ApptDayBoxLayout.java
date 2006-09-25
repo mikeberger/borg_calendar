@@ -482,7 +482,7 @@ public class ApptDayBoxLayout
                 Calendar cal = new GregorianCalendar();
                 cal.setTime(curBox.appt.getDate());
                 int amin = cal.get(Calendar.HOUR_OF_DAY)*60 + cal.get(Calendar.MINUTE);
-                if( amin <= t+1 && (amin + curBox.appt.getDuration().intValue()) > t-1)
+                if( amin <= t && (amin + curBox.appt.getDuration().intValue()) > t)
                     lst.add(curBox);
 
             }
