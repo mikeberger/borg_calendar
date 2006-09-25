@@ -21,8 +21,8 @@ public class ApptBoxPanel extends JPanel
 {
 
     final static private BasicStroke highlight = new BasicStroke(2.0f);
-
     final static private BasicStroke regular = new BasicStroke(1.0f);
+    final static private BasicStroke thicker = new BasicStroke(4.0f);
 
     final static private int translation = 10;
 
@@ -561,10 +561,10 @@ public class ApptBoxPanel extends JPanel
         }
         if (dragNewBox != null)
         {
-            //g2.setStroke(highlight);
+            g2.setStroke(thicker);
             g2.setColor(Color.GREEN);
-            g2.fillRect(dragNewBox.x, dragNewBox.y, dragNewBox.width, dragNewBox.height);
-           // g2.setStroke(stroke);
+            g2.drawRect(dragNewBox.x, dragNewBox.y, dragNewBox.width, dragNewBox.height);
+            g2.setStroke(stroke);
         }
         g2.setColor(Color.black);
 
