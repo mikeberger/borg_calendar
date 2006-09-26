@@ -24,7 +24,7 @@ public class ApptBoxPanel extends JPanel
     final static private BasicStroke regular = new BasicStroke(1.0f);
     final static private BasicStroke thicker = new BasicStroke(4.0f);
 
-    final static private int translation = 10;
+    final static private int translation = -10; // to adjust, since since Graphics2D is translated 
 
     private JPopupMenu editmenu = null;
     private JPopupMenu addmenu = null;
@@ -58,6 +58,8 @@ public class ApptBoxPanel extends JPanel
 
         public void mouseClicked(MouseEvent evt)
         {
+            
+            evt.translatePoint(translation,translation);
 
             if (evt.getButton() == MouseEvent.BUTTON3)
             {
@@ -97,14 +99,17 @@ public class ApptBoxPanel extends JPanel
             
         }
 
-        public void mousePressed(MouseEvent arg0)
+        public void mousePressed(MouseEvent evt)
         {
-            if (arg0.getButton() == MouseEvent.BUTTON3)
+            
+            evt.translatePoint(translation,translation);
+            
+            if (evt.getButton() == MouseEvent.BUTTON3)
                 return;
 
             removeDragNewBox();
             dragStarted = false;
-            ClickedBoxInfo b = getClickedBoxInfo(arg0);
+            ClickedBoxInfo b = getClickedBoxInfo(evt);
             if (b != null && !b.box.model.isOutsideGrid() && (b.onTopBorder || b.onBottomBorder))
             {
                 draggedBox = b.box;
@@ -118,31 +123,33 @@ public class ApptBoxPanel extends JPanel
                     resizeTop = true;
                 }
                 isMove = false;
-                arg0.getComponent().getParent().repaint();
+                evt.getComponent().getParent().repaint();
             }
             else if( b != null && !b.box.model.isOutsideGrid() && b.box.type == UIBoxInfo.APPTBOX)
             {
                isMove = true;
                draggedBox = b.box;
                setResizeBox(b.box.x, b.box.y, b.box.w, b.box.h);
-               arg0.getComponent().getParent().repaint();
+               evt.getComponent().getParent().repaint();
             }
-            else if (b != null && arg0.getY() > resizeMin && arg0.getY() < resizeMax)
+            else if (b != null && evt.getY() > resizeMin && evt.getY() < resizeMax)
             {
                 // b is a date zone
                 draggedZone = b.zone;
                 //setDragNewBox(b.box.x, arg0.getY(), b.box.w, 2);
-                draggedAnchor = arg0.getY();
+                draggedAnchor = evt.getY();
             }
         }
 
-        public void mouseReleased(MouseEvent arg0)
+        public void mouseReleased(MouseEvent evt)
         {
-            if (arg0.getButton() == MouseEvent.BUTTON3)
+            evt.translatePoint(translation,translation);
+            
+            if (evt.getButton() == MouseEvent.BUTTON3)
                 return;
             if (draggedBox != null && !isMove && dragStarted)
             {
-                double y = arg0.getY();
+                double y = evt.getY();
                 y = Math.max(y, resizeMin);
                 y = Math.min(y, resizeMax);
                 try
@@ -173,21 +180,23 @@ public class ApptBoxPanel extends JPanel
             
             draggedBox = null;
             removeResizeBox();
-            arg0.getComponent().getParent().repaint();           
+            evt.getComponent().getParent().repaint();           
 
         }
 
-        public void mouseEntered(MouseEvent arg0)
+        public void mouseEntered(MouseEvent evt)
         {
         }
 
-        public void mouseExited(MouseEvent arg0)
+        public void mouseExited(MouseEvent evt)
         {
         }
 
-        public void mouseDragged(MouseEvent arg0)
+        public void mouseDragged(MouseEvent evt)
         {
-            if (arg0.getButton() == MouseEvent.BUTTON3)
+            evt.translatePoint(translation,translation);
+            
+            if (evt.getButton() == MouseEvent.BUTTON3)
                 return;
 
             dragStarted = true;
@@ -195,28 +204,28 @@ public class ApptBoxPanel extends JPanel
             {
                 if( isMove == true )
                 {
-                    int top = arg0.getY()-(draggedBox.h/2);
+                    int top = evt.getY()-(draggedBox.h/2);
                     if( top < resizeMin ) top = (int)resizeMin;
                     if( top + draggedBox.h > resizeMax) top = (int)resizeMax - draggedBox.h;
                     setResizeBox(draggedBox.x, top, draggedBox.w, draggedBox.h);
                 }
                 else if (resizeTop == true)
                 {
-                    int top = (int) Math.max(arg0.getY(), resizeMin);
+                    int top = (int) Math.max(evt.getY(), resizeMin);
                     setResizeBox(draggedBox.x, top, draggedBox.w, draggedBox.h + draggedBox.y - top);
                 }
                 else
                 {
-                    int bot = (int) Math.min(arg0.getY(), resizeMax);
+                    int bot = (int) Math.min(evt.getY(), resizeMax);
                     setResizeBox(draggedBox.x, draggedBox.y, draggedBox.w, bot - draggedBox.y);
                 }
-                arg0.getComponent().repaint();
+                evt.getComponent().repaint();
             }
             else if (draggedAnchor != -1)
             {
                 if( dragNewBox == null)
-                    setDragNewBox(draggedZone.x, arg0.getY(), draggedZone.w, 5);
-                double y = arg0.getY();
+                    setDragNewBox(draggedZone.x, evt.getY(), draggedZone.w, 5);
+                double y = evt.getY();
                 y = Math.max(y, resizeMin);
                 y = Math.min(y, resizeMax);
                 if (y > draggedAnchor)
@@ -227,12 +236,14 @@ public class ApptBoxPanel extends JPanel
                 {
                     setDragNewBox(dragNewBox.x, y, dragNewBox.width, draggedAnchor - y);
                 }
-                arg0.getComponent().repaint();
+                evt.getComponent().repaint();
             }
         }
 
         public void mouseMoved(MouseEvent evt)
         {
+            evt.translatePoint(translation,translation);
+            
             if (evt.getButton() == MouseEvent.BUTTON3)
                 return;
 
@@ -488,7 +499,7 @@ public class ApptBoxPanel extends JPanel
             {
 
                 // appt is note or is outside timespan shown
-                g2.clipRect(b.x, 0, b.w, 1000);
+                g2.clipRect(b.x, 0, b.w+1, 1000);
 
                 if (b.model.getTextColor().equals("strike"))
                 {
@@ -504,7 +515,7 @@ public class ApptBoxPanel extends JPanel
 
                 if (b.model.isSelected())
                 {
-                    g2.setStroke(regular);
+                    g2.setStroke(highlight);
                     g2.setColor(Color.BLUE);
                     g2.drawRect(b.x, b.y + 2, b.w, b.h);
                     g2.setStroke(stroke);
@@ -610,15 +621,11 @@ public class ApptBoxPanel extends JPanel
 
             UIBoxInfo b = (UIBoxInfo) it.next();
 
-            // this is bad magic
-            int realx = (int) (b.x + translation);
-            int realy = (int) (b.y + translation);
-            int realh = (int) (b.h );
-            int realw = (int) (b.w);
+            
 
             // System.out.println(b.layout.getAppt().getText() + " " + realx
             // + " " + realy + " " + realw + " " + realh);
-            if (evt.getX() > realx && evt.getX() < (realx + realw) && evt.getY() > realy && evt.getY() < (realy + realh))
+            if (evt.getX() > b.x && evt.getX() < (b.x + b.w) && evt.getY() > b.y && evt.getY() < (b.y + b.h))
             {
 
                 if (b.type == UIBoxInfo.DATEZONE)
@@ -629,11 +636,11 @@ public class ApptBoxPanel extends JPanel
 
                 b.model.setSelected(true);
                 boxFound = b;
-                if (Math.abs(evt.getY() - realy) < 4)
+                if (Math.abs(evt.getY() - b.y) < 4)
                 {
                     onTopBorder = true;
                 }
-                else if (Math.abs(evt.getY() - (realy + realh)) < 4)
+                else if (Math.abs(evt.getY() - (b.y + b.h)) < 4)
                 {
                     onBottomBorder = true;
                 }
