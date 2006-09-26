@@ -12,46 +12,14 @@
  */
 package net.sf.borg.ui;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import java.awt.*;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Iterator;
+import java.util.*;
 
-import javax.swing.BoxLayout;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.Icon;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JSpinner;
-import javax.swing.JToggleButton;
-import javax.swing.ListCellRenderer;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 
-import net.sf.borg.common.util.Errmsg;
-import net.sf.borg.common.util.PrefName;
-import net.sf.borg.common.util.Prefs;
-import net.sf.borg.common.util.Resource;
-import net.sf.borg.common.util.Warning;
-import net.sf.borg.common.util.XTree;
-import net.sf.borg.model.Appointment;
-import net.sf.borg.model.AppointmentModel;
-import net.sf.borg.model.AppointmentXMLAdapter;
-import net.sf.borg.model.CategoryModel;
-import net.sf.borg.model.ReminderTimes;
-import net.sf.borg.model.Repeat;
+import net.sf.borg.common.util.*;
+import net.sf.borg.model.*;
 
 class AppointmentPanel extends JPanel {
 
@@ -994,11 +962,12 @@ class AppointmentPanel extends JPanel {
 		GregorianCalendar g = new GregorianCalendar();
 
 		if (nd == null) {
-			g.set(year_, month_, day_, hr, min);
+			g.set(year_, month_, day_, hr, min,0);
 		} else {
 			g.setTime(nd);
 			g.set(Calendar.HOUR_OF_DAY, hr);
 			g.set(Calendar.MINUTE, min);
+            g.set(Calendar.SECOND,0);
 			newkey = AppointmentModel.dkey(g);
 		}
 
@@ -1195,6 +1164,16 @@ class AppointmentPanel extends JPanel {
 		// call the model to change the appt
 		if (newkey == 0) {
 			r.setKey(key_);
+            // need to preserve date from original appt
+            try
+            {
+                Appointment ap = calmod_.getAppt(key_);
+                r.setDate(ap.getDate());
+            }
+            catch (Exception e)
+            {
+                
+            }
 			calmod_.saveAppt(r, false);
 		} else {
 			calmod_.delAppt(key_);
