@@ -524,7 +524,9 @@ public class AppointmentModel extends Model implements Model.Listener
                 // signal that we're ready to break out of
                 // the loop as soon as we find a suitable ToDo date.
                 if (ncal!=null && /*ccal.equals(ncal)*/
-                        Math.abs(ncal.getTime().getTime() - ccal.getTime().getTime()) < 1000)
+                        ncal.get(Calendar.YEAR) == ccal.get(Calendar.YEAR) &&
+                        ncal.get(Calendar.MONTH) == ccal.get(Calendar.MONTH) &&
+                         ncal.get(Calendar.DATE) == ccal.get(Calendar.DATE) )      
                 	stop = true;
                 //System.out.println("ncal=" + ncal.getTime() + " stop=" + stop);
                 ncal = repeat.next();
