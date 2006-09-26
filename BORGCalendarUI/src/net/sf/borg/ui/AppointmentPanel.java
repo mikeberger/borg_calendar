@@ -1080,16 +1080,6 @@ class AppointmentPanel extends JPanel {
 
 	private String colors[] = { "red", "blue", "green", "black", "white", "strike" };
 
-	/*private String colorToEnglish(String color) {
-		for (int i = 0; i < colors.length; i++) {
-			if (color.equals(Resource.getResourceString(colors[i]))) {
-				return (colors[i]);
-			}
-		}
-
-		return ("black");
-	}*/
-
 	// set the visibility and enabling of components that depend on the
 	// frequency pulldown
 	private void timesEnable() {
@@ -1163,16 +1153,37 @@ class AppointmentPanel extends JPanel {
 
 		// call the model to change the appt
 		if (newkey == 0) {
-			r.setKey(key_);
-            // need to preserve date from original appt
-            try
-            {
-                Appointment ap = calmod_.getAppt(key_);
-                r.setDate(ap.getDate());
-            }
-            catch (Exception e)
-            {
+		    r.setKey(key_);
+		    // need to preserve data from original appt
+		    try
+		    {
+		        Appointment ap = calmod_.getAppt(key_);
+		        Calendar cal = new GregorianCalendar();
+                Calendar newCal = new GregorianCalendar();
                 
+                cal.setTime(ap.getDate());
+                newCal.setTime(r.getDate());
+                newCal.set(Calendar.YEAR, cal.get(Calendar.YEAR));
+                newCal.set(Calendar.MONTH, cal.get(Calendar.MONTH));
+                newCal.set(Calendar.DATE, cal.get(Calendar.DATE));
+                r.setDate(newCal.getTime());
+		        
+                AppointmentXMLAdapter aa = new AppointmentXMLAdapter();
+                
+                System.out.println(aa.toXml(r));
+                System.out.println(aa.toXml(ap));
+		        // determine if we can keep certain fields related to repeating and todos
+		        if( r.getTimes().intValue() == ap.getTimes().intValue() && r.getFrequency().equals(ap.getFrequency()) 
+		                && r.getTodo() == ap.getTodo() && r.getRepeatFlag() == ap.getRepeatFlag() )
+		        {
+		            // we can keep skip list and next todo
+                    r.setSkipList(ap.getSkipList());
+                    r.setNextTodo(ap.getNextTodo());
+		        }
+		    }
+		    catch (Exception e)
+		    {
+		        
             }
 			calmod_.saveAppt(r, false);
 		} else {
