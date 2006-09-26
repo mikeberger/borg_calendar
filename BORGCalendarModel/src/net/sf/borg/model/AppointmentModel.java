@@ -486,6 +486,8 @@ public class AppointmentModel extends Model implements Model.Listener
             curtodo = d;
         }
         
+        //System.out.println("curtodo=" + curtodo);
+        
         // newtodo will be the name of the next todo occurrence (if the todo repeats and is not done)
         Date newtodo = null;
         
@@ -510,6 +512,7 @@ public class AppointmentModel extends Model implements Model.Listener
 			boolean stop = false;
             for( int i = 1; i < tm; i++ )
             {
+                //System.out.println("i="+i);
 				// if we've found a suitable ToDo then stop.
 				if (ncal!=null && stop)
 	            {
@@ -520,10 +523,13 @@ public class AppointmentModel extends Model implements Model.Listener
                 // if we have gotten to the current todo,
                 // signal that we're ready to break out of
                 // the loop as soon as we find a suitable ToDo date.
-                if (ncal!=null && ccal.equals(ncal))
+                if (ncal!=null && /*ccal.equals(ncal)*/
+                        Math.abs(ncal.getTime().getTime() - ccal.getTime().getTime()) < 1000)
                 	stop = true;
-                	
+                //System.out.println("ncal=" + ncal.getTime() + " stop=" + stop);
                 ncal = repeat.next();
+                
+                //System.out.println("ncal2=" + ncal.getTime());
             }
         }
         
