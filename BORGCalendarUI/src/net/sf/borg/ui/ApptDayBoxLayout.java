@@ -449,7 +449,8 @@ public class ApptDayBoxLayout
             box.setAppt(ap);
 
             // check if appt will fall in the grid
-            if (AppointmentModel.isNote(ap) || apendmin < startmin || apstartmin >= endmin - 4)
+            if (AppointmentModel.isNote(ap) || apendmin < startmin || apstartmin >= endmin - 4
+                    || ap.getDuration() == null || ap.getDuration().intValue() == 0)
             {
                 box.setOutsideGrid(true);
             }
