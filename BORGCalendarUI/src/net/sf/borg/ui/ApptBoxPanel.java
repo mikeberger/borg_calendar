@@ -21,7 +21,7 @@ public class ApptBoxPanel extends JPanel
 {
 
     final static private BasicStroke highlight = new BasicStroke(2.0f);
-    final static private BasicStroke regular = new BasicStroke(1.0f);
+    //final static private BasicStroke regular = new BasicStroke(1.0f);
     final static private BasicStroke thicker = new BasicStroke(4.0f);
 
     final static private int translation = -10; // to adjust, since since Graphics2D is translated 
@@ -509,8 +509,18 @@ public class ApptBoxPanel extends JPanel
                 }
                 else
                 {
+//                  change color for a single appointment based on
+                    // its color - only if color print option set
+                    g2.setColor(Color.black);
+                    if (b.model.getTextColor().equals("red"))
+                        g2.setColor(Color.red);
+                    else if (b.model.getTextColor().equals("green"))
+                        g2.setColor(Color.green);
+                    else if (b.model.getTextColor().equals("blue"))
+                        g2.setColor(Color.blue);
                     // g2.setFont(sm_font);
                     g2.drawString(b.model.getText(), b.x + 2, b.y + smfontHeight);
+                    g2.setColor(Color.black);
                 }
 
                 if (b.model.isSelected())
