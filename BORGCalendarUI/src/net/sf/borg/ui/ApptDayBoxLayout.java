@@ -253,7 +253,7 @@ public class ApptDayBoxLayout
             ag.setVisible(true);
         }
 
-        public void create(double top, double bottom)
+        public void create(double top, double bottom, String text)
         {
             // TODO Auto-generated method stub
 
@@ -348,7 +348,7 @@ public class ApptDayBoxLayout
         {
         };
 
-        public void create(double top, double bottom)
+        public void create(double top, double bottom, String text)
         {
 
             //          get default appt values, if any
@@ -389,7 +389,7 @@ public class ApptDayBoxLayout
             int dur = (int) ((bottom - top) * (endmin - startmin));
             dur = (dur / 5) * 5;
             appt.setDuration(new Integer(dur));
-            appt.setText(Resource.getPlainResourceString("*****_NEW_APPT_*****"));
+            appt.setText(text);
             AppointmentModel.getReference().saveAppt(appt, true);
         }
 

@@ -1,7 +1,10 @@
 package net.sf.borg.ui;
 
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.font.FontRenderContext;
 import java.awt.font.LineBreakMeasurer;
 import java.awt.font.TextAttribute;
@@ -11,6 +14,7 @@ import java.text.AttributedString;
 import java.util.*;
 
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 
@@ -279,7 +283,7 @@ public class ApptBoxPanel extends JPanel
         
         public void move(double y_fraction) throws Exception;
 
-        public void create(double top, double bottom);
+        public void create(double top, double bottom, String text);
 
         public void delete();
 
@@ -342,6 +346,7 @@ public class ApptBoxPanel extends JPanel
 
     public ApptBoxPanel()
     {
+        final JPanel t = this;
         MyMouseListener myOneListener = new MyMouseListener();
         addMouseListener(myOneListener);
         addMouseMotionListener(myOneListener);
@@ -355,9 +360,11 @@ public class ApptBoxPanel extends JPanel
             {
                 if (dragNewBox != null)
                 {
+                    String text = JOptionPane.showInputDialog(t,Resource.getPlainResourceString("Please_enter_some_appointment_text"));
+                    if( text == null ) return;
                     double top = (dragNewBox.y - resizeMin) / (resizeMax - resizeMin);
                     double bot = (dragNewBox.y - resizeMin + dragNewBox.height) / (resizeMax - resizeMin);
-                    draggedZone.model.create(top, bot);
+                    draggedZone.model.create(top, bot,text);
                     draggedZone = null;
                     removeDragNewBox();
                     repaint();
