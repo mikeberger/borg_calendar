@@ -177,12 +177,24 @@ class WeekPanel extends ApptBoxPanel implements Prefs.Listener,Printable {
 		g2.fillRect(0,caltop,(int)timecolwidth,calbot-caltop);
 		g2.setColor(Color.BLACK);
 
+        Calendar today = new GregorianCalendar();
 		// add day labels
 		for (int col = 0; col < 7; col++) {
 
 			int colleft = (int) (timecolwidth + (col * colwidth));
 			String dayofweek = dfw.format(cal.getTime());
 			int swidth = g2.getFontMetrics().stringWidth(dayofweek);
+            
+            // highlight current day
+            if( today.get(Calendar.YEAR) == cal.get(Calendar.YEAR) &&
+                    today.get(Calendar.MONTH) == cal.get(Calendar.MONTH) &&
+                    today.get(Calendar.DATE) == cal.get(Calendar.DATE) )
+            {
+                g2.setColor(new Color(255,224,224));
+                g2.fillRect(colleft,caltop, (int)(colwidth), daytop-caltop);
+                g2.setColor(Color.BLACK);
+            }
+            
 			g2.drawString(dayofweek, (int) (colleft + (colwidth - swidth) / 2),
 					caltop + fontHeight);
 			cal.add(Calendar.DATE, 1);
