@@ -308,6 +308,8 @@ public class ApptBoxPanel extends JPanel
         public boolean isSelected();
 
         public void setSelected(boolean b);
+        
+        public String getTimeString(double y_fraction);
     }
 
     static private class UIBoxInfo
@@ -586,6 +588,12 @@ public class ApptBoxPanel extends JPanel
             g2.setColor(Color.RED);
             g2.drawRect(resizeBox.x, resizeBox.y, resizeBox.width, resizeBox.height);
             g2.setStroke(stroke);
+            double top = (resizeBox.y - resizeMin) / (resizeMax - resizeMin);
+            double bot = (resizeBox.y - resizeMin + resizeBox.height) / (resizeMax - resizeMin);
+            g2.setColor(Color.BLACK);
+            g2.drawString(draggedBox.model.getTimeString(top), resizeBox.x+2, resizeBox.y -2 ); 
+            g2.drawString(draggedBox.model.getTimeString(bot), resizeBox.x+2, resizeBox.y + resizeBox.height -2 );      
+       
         }
         if (dragNewBox != null)
         {
@@ -593,6 +601,11 @@ public class ApptBoxPanel extends JPanel
             g2.setColor(Color.GREEN);
             g2.drawRect(dragNewBox.x, dragNewBox.y, dragNewBox.width, dragNewBox.height);
             g2.setStroke(stroke);
+            double top = (dragNewBox.y - resizeMin) / (resizeMax - resizeMin);
+            double bot = (dragNewBox.y - resizeMin + dragNewBox.height) / (resizeMax - resizeMin);
+            g2.setColor(Color.BLACK);
+            g2.drawString(draggedZone.model.getTimeString(top), dragNewBox.x+2, dragNewBox.y -2 ); 
+            g2.drawString(draggedZone.model.getTimeString(bot), dragNewBox.x+2, dragNewBox.y + dragNewBox.height -2 );      
         }
         g2.setColor(Color.black);
 

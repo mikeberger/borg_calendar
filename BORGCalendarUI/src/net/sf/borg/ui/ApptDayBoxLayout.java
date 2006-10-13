@@ -18,9 +18,13 @@
  */
 package net.sf.borg.ui;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
-import net.sf.borg.common.util.*;
+import net.sf.borg.common.util.Errmsg;
+import net.sf.borg.common.util.PrefName;
+import net.sf.borg.common.util.Prefs;
+import net.sf.borg.common.util.XTree;
 import net.sf.borg.model.Appointment;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.AppointmentXMLAdapter;
@@ -263,6 +267,25 @@ public class ApptDayBoxLayout
         {
             AppointmentModel.getReference().delAppt(appt.getKey());
         }
+
+        public String getTimeString(double y_fraction)
+        {
+            return ApptDayBoxLayout.getTimeString(y_fraction, startmin, endmin);
+        }
+    }
+    
+    private static SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
+    private static String getTimeString( double y_fraction, double startmin, double endmin )
+    {
+        double realtime = startmin + (endmin - startmin) * y_fraction;
+        int hour = (int) (realtime / 60);
+        int min = (int) (realtime % 60);
+        GregorianCalendar newCal = new GregorianCalendar();
+        newCal.set(Calendar.HOUR_OF_DAY, hour);
+        int roundMin = (min / 5) * 5;
+        newCal.set(Calendar.MINUTE, roundMin);
+        Date newTime = newCal.getTime();
+        return sdf.format(newTime);
     }
 
     static public class DateZone implements ApptBoxPanel.BoxModel
@@ -386,11 +409,20 @@ public class ApptDayBoxLayout
             startCal.set(Calendar.MINUTE, min);
             appt.setDate(startCal.getTime());
 
-            int dur = (int) ((bottom - top) * (endmin - startmin));
-            dur = (dur / 5) * 5;
+            double realend = startmin + (endmin - startmin) * bottom;
+            int ehour = (int) (realend / 60);
+            int emin = (int) (realend % 60);
+            emin = (emin / 5) * 5;
+            int dur = 60*(ehour - hour) + emin - min;
+          
             appt.setDuration(new Integer(dur));
             appt.setText(text);
             AppointmentModel.getReference().saveAppt(appt, true);
+        }
+
+        public String getTimeString(double y_fraction)
+        {
+            return ApptDayBoxLayout.getTimeString(y_fraction, startmin, endmin);
         }
 
     }
