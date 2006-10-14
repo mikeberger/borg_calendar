@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Calendar;
 import java.util.Collection;
@@ -21,6 +22,9 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+
+import org.jdesktop.jdic.desktop.Desktop;
+import org.jdesktop.jdic.desktop.DesktopException;
 
 import net.sf.borg.common.io.IOHelper;
 import net.sf.borg.common.ui.OverwriteConfirm;
@@ -497,7 +501,24 @@ public class MainMenu {
 		});
 
 		helpmenu.add(dbMI);
+        
+        JMenuItem wsMI = new JMenuItem();
+        wsMI.setText("BORG " + Resource.getPlainResourceString("Website"));
+        wsMI.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                try
+                {
+                    Desktop.browse(new URL("http://borg-calendar.sourceforge.net"));
+                }
+                catch (Exception e)
+                {
+                    Errmsg.errmsg(e);
+                }
+            }
+        });
 
+        helpmenu.add(wsMI);
+        
 		ResourceHelper.setText(AboutMI, "About");
 		AboutMI.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
