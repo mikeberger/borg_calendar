@@ -9,6 +9,7 @@ import java.awt.font.FontRenderContext;
 import java.awt.font.LineBreakMeasurer;
 import java.awt.font.TextAttribute;
 import java.awt.font.TextLayout;
+import java.awt.geom.Rectangle2D;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 import java.util.*;
@@ -409,7 +410,7 @@ public class ApptBoxPanel extends JPanel
 
     };
 
-    private static Rectangle resizeBox = null;
+    private Rectangle resizeBox = null;
 
     public void setResizeBox(double x, double y, double w, double h)
     {
@@ -427,7 +428,7 @@ public class ApptBoxPanel extends JPanel
         resizeBox = null;
     }
 
-    private static Rectangle dragNewBox = null;
+    private Rectangle dragNewBox = null;
 
     public void setDragNewBox(double x, double y, double w, double h)
     {
@@ -590,7 +591,11 @@ public class ApptBoxPanel extends JPanel
             g2.setStroke(stroke);
             double top = (resizeBox.y - resizeMin) / (resizeMax - resizeMin);
             double bot = (resizeBox.y - resizeMin + resizeBox.height) / (resizeMax - resizeMin);
-            g2.setColor(Color.BLACK);
+            g2.setColor(new Color(50,50,50));
+            Rectangle2D bb = g2.getFont().getStringBounds("00:00", g2.getFontRenderContext());
+            g2.fillRect(resizeBox.x+2,resizeBox.y - (int) bb.getHeight(), (int)bb.getWidth(), (int)bb.getHeight() );
+            g2.fillRect(resizeBox.x+2,resizeBox.y + resizeBox.height - (int) bb.getHeight(), (int)bb.getWidth(), (int)bb.getHeight() );
+            g2.setColor(Color.WHITE);
             g2.drawString(draggedBox.model.getTimeString(top), resizeBox.x+2, resizeBox.y -2 ); 
             g2.drawString(draggedBox.model.getTimeString(bot), resizeBox.x+2, resizeBox.y + resizeBox.height -2 );      
        
@@ -603,9 +608,14 @@ public class ApptBoxPanel extends JPanel
             g2.setStroke(stroke);
             double top = (dragNewBox.y - resizeMin) / (resizeMax - resizeMin);
             double bot = (dragNewBox.y - resizeMin + dragNewBox.height) / (resizeMax - resizeMin);
-            g2.setColor(Color.BLACK);
+            g2.setColor(new Color(50,50,50));
+            Rectangle2D bb = g2.getFont().getStringBounds("00:00", g2.getFontRenderContext());
+            g2.fillRect(dragNewBox.x+2,dragNewBox.y - (int) bb.getHeight(), (int)bb.getWidth(), (int)bb.getHeight() );
+            g2.fillRect(dragNewBox.x+2,dragNewBox.y + dragNewBox.height - (int) bb.getHeight(), (int)bb.getWidth(), (int)bb.getHeight() );
+            g2.setColor(Color.WHITE);
             g2.drawString(draggedZone.model.getTimeString(top), dragNewBox.x+2, dragNewBox.y -2 ); 
             g2.drawString(draggedZone.model.getTimeString(bot), dragNewBox.x+2, dragNewBox.y + dragNewBox.height -2 );      
+            
         }
         g2.setColor(Color.black);
 
