@@ -153,7 +153,7 @@ public class ApptDayBoxLayout
         public void resize(boolean isTop, double y_fraction) throws Exception
         {
             // calculate new start hour or duration and update appt
-            double realtime = startmin + (endmin - startmin) * y_fraction;
+            int realtime = realMins(y_fraction, startmin, endmin);
             int hour = (int) (realtime / 60);
             int min = (int) (realtime % 60);
             // System.out.println(y_fraction);
@@ -205,7 +205,7 @@ public class ApptDayBoxLayout
         public void move(double y_fraction) throws Exception
         {
             // calculate new start hour or duration and update appt
-            double realtime = startmin + (endmin - startmin) * y_fraction;
+            int realtime = realMins(y_fraction, startmin, endmin);
             int hour = (int) (realtime / 60);
             int min = (int) (realtime % 60);
 
@@ -274,10 +274,19 @@ public class ApptDayBoxLayout
         }
     }
     
+    private static int realMins( double y_fraction, double startmin, double endmin )
+    {
+        double realtime = startmin + (endmin - startmin) * y_fraction;
+        // round it because the double math is causing errors when later converting to int
+        int min = 5 * (int) Math.round( realtime / 5 );
+        return min;
+        
+    }
+    
     private static SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
     private static String getTimeString( double y_fraction, double startmin, double endmin )
     {
-        double realtime = startmin + (endmin - startmin) * y_fraction;
+        int realtime = realMins(y_fraction, startmin, endmin);
         int hour = (int) (realtime / 60);
         int min = (int) (realtime % 60);
         GregorianCalendar newCal = new GregorianCalendar();
@@ -399,7 +408,7 @@ public class ApptDayBoxLayout
             }
 
             //System.out.println(top + " " + bottom);
-            double realtime = startmin + (endmin - startmin) * top;
+            int realtime = realMins(top, startmin, endmin);
             int hour = (int) (realtime / 60);
             int min = (int) (realtime % 60);
             min = (min / 5) * 5;
@@ -409,7 +418,7 @@ public class ApptDayBoxLayout
             startCal.set(Calendar.MINUTE, min);
             appt.setDate(startCal.getTime());
 
-            double realend = startmin + (endmin - startmin) * bottom;
+            int realend = realMins(bottom, startmin, endmin);
             int ehour = (int) (realend / 60);
             int emin = (int) (realend % 60);
             emin = (emin / 5) * 5;
@@ -472,7 +481,7 @@ public class ApptDayBoxLayout
             Integer duri = ap.getDuration();
             if (duri != null )
             {
-                dur = duri.intValue() - 1;
+                dur = duri.intValue();
             }
             double apendmin = apstartmin + dur;
 
@@ -493,7 +502,9 @@ public class ApptDayBoxLayout
                 if (apendmin > endmin)
                     apendmin = endmin;
                 box.setTopAdjustment((apstartmin - startmin) / (endmin - startmin));
-                box.setBottomAdjustment((apendmin - startmin) / (endmin - startmin));
+                // adjust the bottom ever so slightly that appts that touch top to bottom 
+                // do not get detected as overlapping when rounding errors creep in
+                box.setBottomAdjustment(((apendmin - startmin) / (endmin - startmin))- 1.0/10000);
             }
 
             list.add(box);
