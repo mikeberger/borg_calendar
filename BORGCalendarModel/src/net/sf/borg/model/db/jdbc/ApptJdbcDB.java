@@ -33,7 +33,7 @@ import java.util.Calendar;
 import java.util.Collection;
 
 import net.sf.borg.model.Appointment;
-import net.sf.borg.model.AppointmentKeyFilter;
+import net.sf.borg.model.db.AppointmentDB;
 import net.sf.borg.model.db.DBException;
 import net.sf.borg.model.db.KeyedBean;
 import net.sf.borg.model.db.MultiUserDB;
@@ -43,7 +43,7 @@ import net.sf.borg.model.db.MultiUserDB;
  *
  * this is the JDBC layer for access to the appointment table
  */
-class ApptJdbcDB extends JdbcDB implements AppointmentKeyFilter, MultiUserDB
+class ApptJdbcDB extends JdbcDB implements AppointmentDB, MultiUserDB
 {
 
        

@@ -27,9 +27,8 @@ import java.util.List;
 import java.util.Map;
 
 import net.sf.borg.model.Appointment;
-import net.sf.borg.model.AppointmentKeyFilter;
 
-public class ApptCachingBeanDB extends CachingBeanDB implements AppointmentKeyFilter, MultiUserDB
+public class ApptCachingBeanDB extends CachingBeanDB implements AppointmentDB, MultiUserDB
 {
 	public ApptCachingBeanDB(BeanDB delegate)
 	{

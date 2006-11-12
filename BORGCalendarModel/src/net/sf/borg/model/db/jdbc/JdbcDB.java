@@ -424,6 +424,8 @@ abstract public class JdbcDB implements BeanDB
 			if (stmt!=null) stmt.close();
 		}
 	}
+	
+	
     
     // package //
     abstract PreparedStatement getPSOne(int key) throws SQLException;

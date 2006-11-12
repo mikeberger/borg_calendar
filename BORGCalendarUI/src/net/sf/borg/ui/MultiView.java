@@ -173,7 +173,8 @@ public class MultiView extends View implements Navigator {
 	}
 
 	public void destroy() {
-		
+		this.dispose();
+		mainView = null;
 	}
 
 	public void refresh() {

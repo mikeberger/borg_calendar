@@ -25,11 +25,11 @@ import net.sf.borg.common.util.XTree;
 import net.sf.borg.model.Address;
 import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.Appointment;
-import net.sf.borg.model.AppointmentKeyFilter;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.BorgOption;
 import net.sf.borg.model.Task;
 import net.sf.borg.model.TaskModel;
+import net.sf.borg.model.db.AppointmentDB;
 import net.sf.borg.model.db.BeanDB;
 import net.sf.borg.model.db.DBException;
 import net.sf.borg.model.db.KeyedBean;
@@ -87,11 +87,11 @@ public class SingleInstanceHandler
 			}
 			else if (cmd.equals("getTodoKeys"))
 			{
-				result = ((AppointmentKeyFilter) beanDB).getTodoKeys();
+				result = ((AppointmentDB) beanDB).getTodoKeys();
 			}
 			else if (cmd.equals("getRepeatKeys"))
 			{
-				result = ((AppointmentKeyFilter) beanDB).getRepeatKeys();
+				result = ((AppointmentDB) beanDB).getRepeatKeys();
 			}
 			else if (cmd.equals("nextkey"))
 			{

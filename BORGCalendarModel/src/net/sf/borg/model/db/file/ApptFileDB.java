@@ -28,7 +28,7 @@ import java.util.Iterator;
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.Resource;
 import net.sf.borg.common.util.XTree;
-import net.sf.borg.model.AppointmentKeyFilter;
+import net.sf.borg.model.db.AppointmentDB;
 import net.sf.borg.model.db.DBException;
 import net.sf.borg.model.db.file.mdb.MDB;
 import net.sf.borg.model.db.file.mdb.SMDB;
@@ -37,7 +37,7 @@ import net.sf.borg.model.db.file.mdb.Schema;
 
 
 
-class ApptFileDB extends FileDBCreator implements AppointmentKeyFilter
+class ApptFileDB extends FileDBCreator implements AppointmentDB
 {
 	ApptFileDB()
 	{}

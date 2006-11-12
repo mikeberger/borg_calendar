@@ -23,13 +23,13 @@ package net.sf.borg.model.db.remote;
 import java.util.Collection;
 
 import net.sf.borg.model.Appointment;
-import net.sf.borg.model.AppointmentKeyFilter;
+import net.sf.borg.model.db.AppointmentDB;
 import net.sf.borg.model.db.MultiUserDB;
 
 /**
  * @author Mohan Embar
  */
-class ApptRemoteBeanDB extends RemoteBeanDB implements AppointmentKeyFilter, MultiUserDB
+class ApptRemoteBeanDB extends RemoteBeanDB implements AppointmentDB, MultiUserDB
 {
 	ApptRemoteBeanDB(
 		String clsstr,

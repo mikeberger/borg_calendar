@@ -25,8 +25,8 @@ import java.util.Map;
 
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.XTree;
-import net.sf.borg.model.AppointmentKeyFilter;
 import net.sf.borg.model.BorgOption;
+import net.sf.borg.model.db.AppointmentDB;
 import net.sf.borg.model.db.BeanDB;
 import net.sf.borg.model.db.BeanDataFactoryFactory;
 import net.sf.borg.model.db.DBException;
@@ -94,11 +94,11 @@ public class BorgHandler
 			}
 			else if (cmd.equals("getTodoKeys"))
 			{
-				result = ((AppointmentKeyFilter) beanDB).getTodoKeys();
+				result = ((AppointmentDB) beanDB).getTodoKeys();
 			}
 			else if (cmd.equals("getRepeatKeys"))
 			{
-				result = ((AppointmentKeyFilter) beanDB).getRepeatKeys();
+				result = ((AppointmentDB) beanDB).getRepeatKeys();
 			}
 			else if (cmd.equals("nextkey"))
 			{

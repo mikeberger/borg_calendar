@@ -65,20 +65,28 @@ class GenerateDataObjects
             if( !field.exists()  )
                 break;
             
-            XTree name = field.child("name");
-            if( !name.exists() )
-                throw new Exception("Cannot parse Schema XML - field found with no name");
-
-            
-            XTree type = field.child("type");
-            if( !type.exists() )
-                throw new Exception("Cannot parse Schema XML - field " + name.value() + " found with no type");
-            String fieldType = type.value();
-            String longName = name.value();
+            String longName = null;
             
             XTree longname = field.child("longName");
             if( longname.exists() )
                    longName = longname.value();
+            
+            if( !longname.exists() )
+            {
+        	XTree name = field.child("name");
+                if( name.exists() )
+                       longName = name.value();
+            }   
+              
+            if( longName == null )
+        	throw new Exception("Cannot parse Schema XML - field found with no name or longname");
+            
+            
+            XTree type = field.child("type");
+            if( !type.exists() )
+                throw new Exception("Cannot parse Schema XML - field " + longname.value() + " found with no type");
+            String fieldType = type.value();
+            
                         
             if( fieldType.equals( "StringVector" ))
                 fieldType = "Vector";

@@ -30,11 +30,13 @@ import java.util.TreeSet;
 import java.util.Vector;
 
 import net.sf.borg.common.util.Errmsg;
+import net.sf.borg.common.util.Resource;
 import net.sf.borg.common.util.XTree;
 import net.sf.borg.model.db.BeanDB;
 import net.sf.borg.model.db.BeanDataFactoryFactory;
 import net.sf.borg.model.db.DBException;
 import net.sf.borg.model.db.IBeanDataFactory;
+import net.sf.borg.model.db.SubtaskDB;
 
 public class TaskModel extends Model implements Model.Listener {
 
@@ -438,5 +440,33 @@ public class TaskModel extends Model implements Model.Listener {
             Errmsg.errmsg(e);
         }
         
+    }
+    
+    public Collection getSubTasks(int taskid) throws Exception
+    {
+	if ( db_ instanceof SubtaskDB == false)
+	    throw new Exception( Resource.getPlainResourceString("SubtaskNotSupported"));
+	
+	SubtaskDB sdb = (SubtaskDB) db_;
+	return sdb.getSubTasks(taskid);
+	
+    }
+
+    public void deleteSubTask(int id) throws Exception
+    {
+	if ( db_ instanceof SubtaskDB == false)
+	    throw new Exception( Resource.getPlainResourceString("SubtaskNotSupported"));
+	
+	SubtaskDB sdb = (SubtaskDB) db_;
+	sdb.deleteSubTask(id);
+    }
+
+    public void addSubTask(Subtask s) throws Exception
+    {
+	if ( db_ instanceof SubtaskDB == false)
+	    throw new Exception( Resource.getPlainResourceString("SubtaskNotSupported"));
+	
+	SubtaskDB sdb = (SubtaskDB) db_;
+	sdb.addSubTask(s);
     }
 }

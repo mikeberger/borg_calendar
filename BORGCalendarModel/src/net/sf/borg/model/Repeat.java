@@ -32,16 +32,16 @@ import net.sf.borg.common.util.Resource;
  */
 public class Repeat
 {
-	private static final String TTH = "tth";
-	private static final String MWF = "mwf";
-	private static final String WEEKENDS = "weekends";
-	private static final String WEEKDAYS = "weekdays";
-	private static final String YEARLY = "yearly";
-	private static final String MONTHLY_DAY = "monthly_day";
-	private static final String MONTHLY = "monthly";
-	private static final String BIWEEKLY = "biweekly";
-	private static final String WEEKLY = "weekly";
-	private static final String DAILY = "daily";
+	public static final String TTH = "tth";
+	public static final String MWF = "mwf";
+	public static final String WEEKENDS = "weekends";
+	public static final String WEEKDAYS = "weekdays";
+	public static final String YEARLY = "yearly";
+	public static final String MONTHLY_DAY = "monthly_day";
+	public static final String MONTHLY = "monthly";
+	public static final String BIWEEKLY = "biweekly";
+	public static final String WEEKLY = "weekly";
+	public static final String DAILY = "daily";
 	public static final String NDAYS = "ndays";
 	public static final String DAYLIST = "dlist";
 	public static final String ONCE = "once";
