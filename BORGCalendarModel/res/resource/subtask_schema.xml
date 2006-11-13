@@ -1,0 +1,38 @@
+<schema>
+	<name>Subtask</name>
+	<field>
+		<type>Integer</type>
+		<longName>Id</longName>
+		<desc>Sub Task ID</desc>
+	</field>
+	<field>
+		<type>Date</type>
+		<longName>CreateDate</longName>
+		<desc>Creation Date</desc>
+	</field>
+	<field>
+		<type>Date</type>
+		<longName>CloseDate</longName>
+		<desc>Close Date</desc>
+	</field>
+	<field>
+		<type>Date</type>
+		<longName>DueDate</longName>
+		<desc>Due Date</desc>
+	</field>
+	<field>
+		<type>String</type>
+		<longName>Type</longName>
+		<desc>Type</desc>
+	</field>
+	<field>
+		<type>String</type>
+		<longName>Description</longName>
+		<desc>Description</desc>
+	</field>
+	<field>
+		<type>Integer</type>
+		<longName>Task</longName>
+		<desc>Parent Task ID</desc>
+	</field>
+</schema>

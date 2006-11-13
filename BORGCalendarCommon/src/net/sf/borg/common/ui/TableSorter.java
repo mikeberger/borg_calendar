@@ -103,6 +103,8 @@ public class TableSorter extends AbstractTableModel {
             return o1.toString().compareTo(o2.toString());
         }
     };
+    
+    
 
     private Row[] viewToModel;
     private int[] modelToView;
@@ -509,11 +511,20 @@ public class TableSorter extends AbstractTableModel {
     
     private class NewTableModel extends DefaultTableModel{
         Class [] classes_;
+        boolean [] editable_;
         
-        public NewTableModel( String cols[], Class classes[])
+        public NewTableModel( String cols[], Class classes[], boolean editable[])
         {
             super( cols, 0 );
             classes_ = classes;
+            if( editable != null )
+        	editable_ = editable;
+            else
+            {
+        	editable_ = new boolean[cols.length];
+        	for(int i = 0; i < cols.length; i++)
+        	    editable_[i] = false;
+            }
         }
  
         public Class getColumnClass(int column) {
@@ -522,14 +533,20 @@ public class TableSorter extends AbstractTableModel {
         
         public boolean isCellEditable(int rowIndex, int columnIndex)
         {
-            return(false);
+            
+            return(editable_[columnIndex]);
         }
 
     }
     
+    public TableSorter( String cols[], Class classes[], boolean editable[])
+    {
+        setTableModel(new NewTableModel(cols,classes, editable));
+    }
+    
     public TableSorter( String cols[], Class classes[])
     {
-        setTableModel(new NewTableModel(cols,classes));
+        setTableModel(new NewTableModel(cols,classes, null));
     }
 
     /**
