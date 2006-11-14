@@ -225,8 +225,7 @@ public class ApptDayBoxLayout
 
         public void setText(String s)
         {
-            // TODO Auto-generated method stub
-
+           
         }
 
         public String getText()
@@ -259,8 +258,7 @@ public class ApptDayBoxLayout
 
         public void create(double top, double bottom, String text)
         {
-            // TODO Auto-generated method stub
-
+  
         }
 
         public void delete()

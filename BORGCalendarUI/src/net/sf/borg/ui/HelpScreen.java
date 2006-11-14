@@ -96,7 +96,6 @@ class HelpScreen extends View {
      * @see net.sf.borg.ui.View#refresh()
      */
     public void refresh() {
-        // TODO Auto-generated method stub
         
     }
 

@@ -150,7 +150,7 @@ class ApptJdbcDB extends JdbcDB implements AppointmentDB, MultiUserDB
 
     public int nextkey()
     {
-     // TODO: Does this need to be implemented?!
+     // Does this need to be implemented?!
         int maxKey = 0;
         curMaxKey_ = Math.max(curMaxKey_, maxKey);
         return ++curMaxKey_;

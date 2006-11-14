@@ -202,7 +202,7 @@ public class SearchView extends View {
 					&& !selcat.equals(r.getCategory()))
 				continue;
 
-			// TBD - TODO - normal date to midnight???
+			// normal date to midnight???
 			if (startDatecb.isSelected()) {
 				if (r.getDate().getTime() < starttime)
 					continue;
@@ -636,8 +636,7 @@ public class SearchView extends View {
 	 * @see net.sf.borg.ui.View#destroy()
 	 */
 	public void destroy() {
-		// TODO Auto-generated method stub
-
+	
 	}
 
 	/**

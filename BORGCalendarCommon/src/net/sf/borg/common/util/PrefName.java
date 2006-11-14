@@ -167,7 +167,7 @@ public class PrefName {
 		// use it for system generated birthdays
 		static public PrefName UCS_BRICK = new PrefName("ucs_brick","10027008");
 		// Calendar view day background colors
-		// TODO choose correct colors
+		
 		static public PrefName UCS_DEFAULT = new PrefName("ucs_default","11316396");
 		// original color is Color(225,150,150)
 		static public PrefName UCS_TODAY = new PrefName("ucs_today","16751001");

@@ -195,8 +195,8 @@ abstract public class JdbcDB implements BeanDB
     
     public boolean isDirty() throws DBException
     {
-    	// TODO: implement a way to check for external DB
-    	// modification
+    	// implement a way to check for external DB
+    	// modification???
     	return false;
     }
     

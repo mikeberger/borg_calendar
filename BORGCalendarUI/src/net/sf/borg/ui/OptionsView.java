@@ -1268,7 +1268,7 @@ public class OptionsView extends View {
 					.getResourceString("ucolortext18"), Color.WHITE, true); //$NON-NLS-1$
 			btn_ucs_restore = new JButton(Resource
 					.getResourceString("restore_defaults")); //$NON-NLS-1$
-			// TODO add action listener to btn_ucs_restore
+			
 			btn_ucs_restore.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					btn_ucs_red.setColorProperty(new Color(13369395));
@@ -1288,7 +1288,7 @@ public class OptionsView extends View {
 					btn_ucs_birthdays.setColorProperty(new Color(10027008));
 					btn_ucs_birthdays.setColorByProperty();
 					// // Calendar view day background colors
-					// // TODO choose correct colors
+					
 					btn_ucs_default.setColorProperty(new Color(11316396));
 					btn_ucs_default.setColorByProperty();
 					btn_ucs_today.setColorProperty(new Color(16751001));
