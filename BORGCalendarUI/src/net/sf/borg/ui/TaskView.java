@@ -43,6 +43,8 @@ import net.sf.borg.common.ui.TableSorter;
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Resource;
+import net.sf.borg.model.Address;
+import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.Subtask;
 import net.sf.borg.model.Task;
@@ -60,7 +62,7 @@ class TaskView extends View {
     private static TaskView singleton = null;
 
     private String curtype_ = null;
-    
+
     private JTable stable = new JTable();
 
     static TaskView getReference(Task task, int function) throws Exception {
@@ -91,27 +93,20 @@ class TaskView extends View {
 	}
 
 	stable.setModel(new TableSorter(new String[] {
-                Resource.getPlainResourceString("CLOSED"),
-                "#",
-                Resource.getPlainResourceString("Description"),
-                Resource.getPlainResourceString("Type"),
-                Resource.getPlainResourceString("Start_Date"),
-                Resource.getPlainResourceString("Due_Date"),
-                Resource.getPlainResourceString("close_date")
-                }, 
-                new Class[] {
-		java.lang.Boolean.class,
-		Integer.class,
-		java.lang.String.class,
-                java.lang.String.class, 
-                Date.class, 
-                Date.class, 
-                Date.class},
-                new boolean[] { true, false, true, false, true, true, false } ));
+		Resource.getPlainResourceString("CLOSED"), "#",
+		Resource.getPlainResourceString("Description"),
+		Resource.getPlainResourceString("Type"),
+		Resource.getPlainResourceString("Start_Date"),
+		Resource.getPlainResourceString("Due_Date"),
+		Resource.getPlainResourceString("close_date") }, new Class[] {
+		java.lang.Boolean.class, Integer.class, java.lang.String.class,
+		java.lang.String.class, Date.class, Date.class, Date.class },
+		new boolean[] { true, false, true, false, true, true, false }));
 	JScrollPane stpanel = new JScrollPane();
 	stpanel.setViewportView(stable);
-	jTabbedPane1.addTab(Resource.getPlainResourceString("Subtasks"), stpanel);
-	
+	jTabbedPane1.addTab(Resource.getPlainResourceString("Subtasks"),
+		stpanel);
+
 	stable.getColumnModel().getColumn(0).setPreferredWidth(5);
 	stable.getColumnModel().getColumn(1).setPreferredWidth(5);
 	stable.getColumnModel().getColumn(2).setPreferredWidth(300);
@@ -119,16 +114,54 @@ class TaskView extends View {
 	stable.getColumnModel().getColumn(4).setPreferredWidth(30);
 	stable.getColumnModel().getColumn(5).setPreferredWidth(30);
 	stable.getColumnModel().getColumn(6).setPreferredWidth(30);
-	
+
 	stable.setDefaultEditor(Date.class, new DateEditor());
-	
+
 	TableSorter ts = (TableSorter) stable.getModel();
-	
+
 	ts.addMouseListenerToHeaderInTable(stable);
-	Object[] o1 = {new Boolean(true), new Integer(1), "task 1 djdjjs", "User", new Date(), new Date(), null};
-	Object[] o2 = {new Boolean(false), new Integer(2), "task 2 dsfsdojfdsj  sdpjfposdf  sdfjdfjd djdjjs", "System", new Date(), new Date(), new Date()};
-	ts.addRow(o1);
-	ts.addRow(o2);
+	new PopupMenuHelper(stable, new PopupMenuHelper.Entry[] {
+		new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
+		    public void actionPerformed(java.awt.event.ActionEvent evt) {
+			Object o[] = { new Boolean(false), new Integer(0),
+				null, Resource.getPlainResourceString("user"),
+				new Date(), null, null };
+			TableSorter ts = (TableSorter) stable.getModel();
+
+			ts.addRow(o);
+		    }
+		}, "Add_New"),
+		new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
+		    public void actionPerformed(java.awt.event.ActionEvent evt) {
+			TableSorter ts = (TableSorter) stable.getModel();
+			int[] indices = stable.getSelectedRows();
+			if (indices.length == 0)
+			    return;
+
+			int ret = JOptionPane.showConfirmDialog(null, Resource
+				.getResourceString("Really_Delete_")
+				+ "?", Resource
+				.getPlainResourceString("Confirm_Delete"),
+				JOptionPane.OK_CANCEL_OPTION,
+				JOptionPane.QUESTION_MESSAGE);
+			if (ret != JOptionPane.OK_OPTION)
+			    return;
+
+			for (int i = 0; i < indices.length; ++i) {
+			    int index = indices[i];
+			    ts.removeRow(index);
+			}
+
+			// if table is now empty - add 1 row back
+			if (ts.getRowCount() == 0) {
+			    Object o[] = { new Boolean(false), new Integer(0),
+				    null,
+				    Resource.getPlainResourceString("user"),
+				    new Date(), null, null };
+			    ts.addRow(o);
+			}
+		    }
+		}, "Delete"), });
 	// display the window
 	pack();
 	showtask(function, task);
@@ -148,7 +181,7 @@ class TaskView extends View {
     static int T_CHANGE = 3;
 
     // the task editor currently does not refresh itself when the task data
-        // model changes
+    // model changes
     // - although it should not be changing while the task editor is open
     public void refresh() {
     }
@@ -494,7 +527,7 @@ class TaskView extends View {
 
 	    // set the task number to the current number for updates and
 	    // -1 for new tasks. task model will convert -1 to next
-                // available number
+	    // available number
 	    if (num.equals("NEW")) {
 		task.setTaskNumber(new Integer(-1));
 	    } else {
@@ -528,6 +561,10 @@ class TaskView extends View {
 	    // save the task to the DB
 	    taskmod_.savetask(task);
 
+	    // TODO - determine modified/new subtasks and save
+	    System.out.println(task.getTaskNumber());
+	    saveSubtasks(task.getTaskNumber().intValue());
+
 	    // refresh window from DB - will update task number for
 	    // new tasks and will set the list of available next states from
 	    // the task model
@@ -539,6 +576,40 @@ class TaskView extends View {
 	}
 
     }// GEN-LAST:event_savetask
+    
+    private void saveSubtasks(int tasknum) throws Exception
+    {
+	// loop through rows
+	TableSorter ts = (TableSorter) stable.getModel();
+	for( int r = 0; r < stable.getRowCount(); r++ )
+	{
+	    Object desc = ts.getValueAt(r, 2);
+	    if( desc == null || desc.equals(""))
+		continue;
+	    
+	    
+	    Integer id = (Integer)ts.getValueAt(r, 1);
+	    Boolean closed = (Boolean)ts.getValueAt(r, 0);
+	    String type = (String)ts.getValueAt(r, 3);
+	    Date crd = (Date)ts.getValueAt(r, 4);
+	    Date dd = (Date)ts.getValueAt(r, 5);
+	    Date cd = (Date)ts.getValueAt(r, 6);
+	    
+	    if( closed.booleanValue() == false && cd == null )
+		cd = new Date();
+	    
+	    Subtask s = new Subtask();
+	    s.setId(id);		
+	    s.setDescription((String)desc);
+	    s.setType(type);
+	    s.setCloseDate(cd);
+	    s.setDueDate(dd);
+	    s.setCreateDate(crd);
+	    s.setTask(new Integer(tasknum));
+	    TaskModel.getReference().saveSubTask(s);	    
+	    
+	}
+    }
 
     private void disact(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_disact
 	this.dispose();
@@ -550,7 +621,7 @@ class TaskView extends View {
 	// show a task editor for changing, cloning, or add of a task
 	TableSorter ts = (TableSorter) stable.getModel();
 	ts.setRowCount(0);
-	
+
 	// if we are showing an existing task - fil; in the gui fields form it
 	if (task != null) {
 	    // task number
@@ -601,21 +672,21 @@ class TaskView extends View {
 	    String type = task.getType();
 	    typebox.addItem(type);
 	    typebox.setEditable(false);
-	    
-//	  add subtasks
-	    Collection col = TaskModel.getReference().getSubTasks(task.getTaskNumber().intValue());
+
+	    // add subtasks
+	    Collection col = TaskModel.getReference().getSubTasks(
+		    task.getTaskNumber().intValue());
 	    Iterator it = col.iterator();
-	    while( it.hasNext())
-	    {
+	    while (it.hasNext()) {
 		Subtask s = (Subtask) it.next();
-		Object o[] = { s.getCloseDate() == null ? new Boolean(false) : new Boolean(true), s.getId(), s.getDescription(), s.getType(),
-			s.getCreateDate(), s.getDueDate(), s.getCloseDate() };
-		
+		Object o[] = {
+			s.getCloseDate() == null ? new Boolean(false)
+				: new Boolean(true), s.getId(),
+			s.getDescription(), s.getType(), s.getCreateDate(),
+			s.getDueDate(), s.getCloseDate() };
+
 		ts.addRow(o);
 	    }
-		
-	    
-		
 
 	} else // initialize new task
 	{
@@ -633,8 +704,7 @@ class TaskView extends View {
 	    catbox.setSelectedIndex(0);
 	    jTextArea1.setText(""); // desc
 	    jTextArea2.setText(""); // resolution
-	    
-	    
+
 	}
 
 	Vector tv = taskmod_.getTaskTypes().getTaskTypes();
@@ -649,7 +719,7 @@ class TaskView extends View {
 	}
 
 	// cloning takes the fields filled in for an existing task and resets
-        // only those
+	// only those
 	// that don't apply to the clone
 	if (function == T_CLONE) {
 	    // need new task number
@@ -666,7 +736,7 @@ class TaskView extends View {
 	else if (function == T_CHANGE) {
 
 	    // determine valid next states based on task type and current
-                // state
+	    // state
 	    String stat = task.getState();
 	    String type = task.getType();
 	    Vector v = taskmod_.getTaskTypes().nextStates(stat, type);
@@ -681,7 +751,12 @@ class TaskView extends View {
 	}
 
 	curtype_ = (String) typebox.getSelectedItem();
-
+	if (stable.getRowCount() == 0) {
+	    Object o[] = { new Boolean(false), new Integer(0), null,
+		    Resource.getPlainResourceString("user"), new Date(), null,
+		    null };
+	    ts.addRow(o);
+	}
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

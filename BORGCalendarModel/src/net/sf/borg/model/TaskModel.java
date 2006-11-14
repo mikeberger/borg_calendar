@@ -461,12 +461,20 @@ public class TaskModel extends Model implements Model.Listener {
 	sdb.deleteSubTask(id);
     }
 
-    public void addSubTask(Subtask s) throws Exception
+    public void saveSubTask(Subtask s) throws Exception
     {
 	if ( db_ instanceof SubtaskDB == false)
 	    throw new Exception( Resource.getPlainResourceString("SubtaskNotSupported"));
 	
 	SubtaskDB sdb = (SubtaskDB) db_;
-	sdb.addSubTask(s);
+	if( s.getId() == null || s.getId().intValue() <= 0)
+	{
+	    s.setId( new Integer(sdb.nextSubTaskKey(s.getTask().intValue())));
+	    sdb.addSubTask(s);
+	}
+	else
+	{
+	    sdb.updateSubTask(s);
+	}
     }
 }

@@ -314,4 +314,51 @@ class TaskJdbcDB extends JdbcDB implements SubtaskDB {
 	stmt.executeUpdate();
     }
 
+    public void updateSubTask(Subtask s) throws SQLException{
+	PreparedStatement stmt = connection_
+		.prepareStatement("UPDATE subtasks SET type = ?, create_date = ?, due_date = ?,"
+			+ " close_date = ?, description = ?, task = ?  WHERE id = ? AND username = ? "
+			);
+
+	stmt.setInt(7, s.getId().intValue());
+	stmt.setString(8, username_);
+	stmt.setString(1, s.getType());
+
+	java.util.Date sd = s.getCreateDate();
+	if (sd != null)
+	    stmt.setDate(2, new java.sql.Date(sd.getTime()));
+	else
+	    stmt.setDate(2, null);
+
+	java.util.Date dd = s.getDueDate();
+	if (dd != null)
+	    stmt.setDate(3, new java.sql.Date(dd.getTime()));
+	else
+	    stmt.setDate(3, null);
+	
+	java.util.Date cd = s.getCloseDate();
+	if (cd != null)
+	    stmt.setDate(4, new java.sql.Date(cd.getTime()));
+	else
+	    stmt.setDate(4, null);
+
+	stmt.setString(5, s.getDescription());
+	stmt.setInt(6, s.getTask().intValue());
+	
+	stmt.executeUpdate();
+    }
+    
+    public int nextSubTaskKey(int tasknum) throws Exception {
+	PreparedStatement stmt = connection_
+		.prepareStatement("SELECT MAX(id) FROM subtasks WHERE username = ? AND task = ?");
+	stmt.setString(1, username_);
+	stmt.setInt(2, tasknum);
+	ResultSet r = stmt.executeQuery();
+	int maxKey = 0;
+	if (r.next())
+	    maxKey = r.getInt(1);
+	curMaxKey_ = Math.max(curMaxKey_, maxKey);
+	return ++curMaxKey_;
+    }
+
 }
