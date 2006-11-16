@@ -37,7 +37,7 @@ public class DateEditor implements TableCellEditor , ChangeListener
 	}
 
 	public void cancelCellEditing() { 
-	    System.out.println("cancel");
+	    //System.out.println("cancel");
 	}
 
 	public Object getCellEditorValue() {

@@ -19,6 +19,7 @@
  */
 package net.sf.borg.ui;
 
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -43,8 +44,6 @@ import net.sf.borg.common.ui.TableSorter;
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Resource;
-import net.sf.borg.model.Address;
-import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.Subtask;
 import net.sf.borg.model.Task;
@@ -95,25 +94,19 @@ class TaskView extends View {
 	stable.setModel(new TableSorter(new String[] {
 		Resource.getPlainResourceString("CLOSED"), "#",
 		Resource.getPlainResourceString("Description"),
-		Resource.getPlainResourceString("Type"),
 		Resource.getPlainResourceString("Start_Date"),
 		Resource.getPlainResourceString("Due_Date"),
 		Resource.getPlainResourceString("close_date") }, new Class[] {
 		java.lang.Boolean.class, Integer.class, java.lang.String.class,
-		java.lang.String.class, Date.class, Date.class, Date.class },
-		new boolean[] { true, false, true, false, true, true, false }));
-	JScrollPane stpanel = new JScrollPane();
-	stpanel.setViewportView(stable);
-	jTabbedPane1.addTab(Resource.getPlainResourceString("Subtasks"),
-		stpanel);
+		Date.class, Date.class, Date.class }, new boolean[] { true,
+		false, true, true, true, false }));
 
 	stable.getColumnModel().getColumn(0).setPreferredWidth(5);
 	stable.getColumnModel().getColumn(1).setPreferredWidth(5);
 	stable.getColumnModel().getColumn(2).setPreferredWidth(300);
-	stable.getColumnModel().getColumn(3).setPreferredWidth(5);
+	stable.getColumnModel().getColumn(3).setPreferredWidth(30);
 	stable.getColumnModel().getColumn(4).setPreferredWidth(30);
 	stable.getColumnModel().getColumn(5).setPreferredWidth(30);
-	stable.getColumnModel().getColumn(6).setPreferredWidth(30);
 
 	stable.setDefaultEditor(Date.class, new DateEditor());
 
@@ -124,8 +117,7 @@ class TaskView extends View {
 		new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
 		    public void actionPerformed(java.awt.event.ActionEvent evt) {
 			Object o[] = { new Boolean(false), new Integer(0),
-				null, Resource.getPlainResourceString("user"),
-				new Date(), null, null };
+				null, new Date(), null, null };
 			TableSorter ts = (TableSorter) stable.getModel();
 
 			ts.addRow(o);
@@ -155,9 +147,7 @@ class TaskView extends View {
 			// if table is now empty - add 1 row back
 			if (ts.getRowCount() == 0) {
 			    Object o[] = { new Boolean(false), new Integer(0),
-				    null,
-				    Resource.getPlainResourceString("user"),
-				    new Date(), null, null };
+				    null, new Date(), null, null };
 			    ts.addRow(o);
 			}
 		    }
@@ -375,7 +365,7 @@ class TaskView extends View {
 
 	setJMenuBar(jMenuBar1);
 
-	this.setSize(560, 446);
+	this.setSize(560, 517);
 	this.setContentPane(getJPanel());
 
 	gridBagConstraints26.gridx = 1;
@@ -469,6 +459,7 @@ class TaskView extends View {
 	jPanel3.add(getCloseDate(), gridBagConstraints12);
 	jPanel3.add(closeLabel, gridBagConstraints210);
 	ResourceHelper.setText(closeLabel, "close_date");
+
     }// GEN-END:initComponents
 
     private void typeboxActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_typeboxActionPerformed
@@ -562,7 +553,7 @@ class TaskView extends View {
 	    taskmod_.savetask(task);
 
 	    // TODO - determine modified/new subtasks and save
-	    System.out.println(task.getTaskNumber());
+	    //System.out.println(task.getTaskNumber());
 	    saveSubtasks(task.getTaskNumber().intValue());
 
 	    // refresh window from DB - will update task number for
@@ -576,38 +567,35 @@ class TaskView extends View {
 	}
 
     }// GEN-LAST:event_savetask
-    
-    private void saveSubtasks(int tasknum) throws Exception
-    {
+
+    private void saveSubtasks(int tasknum) throws Exception {
 	// loop through rows
 	TableSorter ts = (TableSorter) stable.getModel();
-	for( int r = 0; r < stable.getRowCount(); r++ )
-	{
+	for (int r = 0; r < stable.getRowCount(); r++) {
 	    Object desc = ts.getValueAt(r, 2);
-	    if( desc == null || desc.equals(""))
+	    if (desc == null || desc.equals(""))
 		continue;
-	    
-	    
-	    Integer id = (Integer)ts.getValueAt(r, 1);
-	    Boolean closed = (Boolean)ts.getValueAt(r, 0);
-	    String type = (String)ts.getValueAt(r, 3);
-	    Date crd = (Date)ts.getValueAt(r, 4);
-	    Date dd = (Date)ts.getValueAt(r, 5);
-	    Date cd = (Date)ts.getValueAt(r, 6);
-	    
-	    if( closed.booleanValue() == false && cd == null )
+
+	    Integer id = (Integer) ts.getValueAt(r, 1);
+	    Boolean closed = (Boolean) ts.getValueAt(r, 0);
+	    Date crd = (Date) ts.getValueAt(r, 3);
+	    Date dd = (Date) ts.getValueAt(r, 4);
+	    Date cd = (Date) ts.getValueAt(r, 5);
+
+	    if (closed.booleanValue() == true && cd == null)
 		cd = new Date();
-	    
+	    else if (closed.booleanValue() == false && cd != null)
+		cd = null;
+
 	    Subtask s = new Subtask();
-	    s.setId(id);		
-	    s.setDescription((String)desc);
-	    s.setType(type);
+	    s.setId(id);
+	    s.setDescription((String) desc);
 	    s.setCloseDate(cd);
 	    s.setDueDate(dd);
 	    s.setCreateDate(crd);
 	    s.setTask(new Integer(tasknum));
-	    TaskModel.getReference().saveSubTask(s);	    
-	    
+	    TaskModel.getReference().saveSubTask(s);
+
 	}
     }
 
@@ -682,8 +670,8 @@ class TaskView extends View {
 		Object o[] = {
 			s.getCloseDate() == null ? new Boolean(false)
 				: new Boolean(true), s.getId(),
-			s.getDescription(), s.getType(), s.getCreateDate(),
-			s.getDueDate(), s.getCloseDate() };
+			s.getDescription(), s.getCreateDate(), s.getDueDate(),
+			s.getCloseDate() };
 
 		ts.addRow(o);
 	    }
@@ -753,8 +741,7 @@ class TaskView extends View {
 	curtype_ = (String) typebox.getSelectedItem();
 	if (stable.getRowCount() == 0) {
 	    Object o[] = { new Boolean(false), new Integer(0), null,
-		    Resource.getPlainResourceString("user"), new Date(), null,
-		    null };
+		    new Date(), null, null };
 	    ts.addRow(o);
 	}
     }
@@ -833,10 +820,15 @@ class TaskView extends View {
          */
     private JPanel getJPanel() {
 	if (jPanel == null) {
+	    GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
+	    gridBagConstraints4.fill = GridBagConstraints.BOTH;
+	    gridBagConstraints4.gridx = 0;
+	    gridBagConstraints4.gridy = 0;
+	    gridBagConstraints4.weightx = 1.0;
+	    gridBagConstraints4.weighty = 1.0;
+	    gridBagConstraints4.insets = new Insets(4, 4, 4, 4);
 	    GridBagConstraints gridBagConstraints25 = new GridBagConstraints();
 	    GridBagConstraints gridBagConstraints24 = new GridBagConstraints();
-	    GridBagConstraints gridBagConstraints23 = new GridBagConstraints();
-	    GridBagConstraints gridBagConstraints22 = new GridBagConstraints();
 	    GridBagConstraints gridBagConstraints21 = new GridBagConstraints();
 	    jPanel = new JPanel();
 	    jPanel.setLayout(new GridBagLayout());
@@ -844,27 +836,38 @@ class TaskView extends View {
 	    gridBagConstraints21.gridy = 0;
 	    gridBagConstraints21.fill = java.awt.GridBagConstraints.BOTH;
 	    gridBagConstraints21.weightx = 1.0D;
-	    gridBagConstraints22.gridx = 1;
-	    gridBagConstraints22.gridy = 0;
-	    gridBagConstraints22.fill = java.awt.GridBagConstraints.BOTH;
-	    gridBagConstraints22.weightx = 1.0D;
-	    gridBagConstraints23.gridx = 2;
-	    gridBagConstraints23.gridy = 0;
-	    gridBagConstraints23.fill = java.awt.GridBagConstraints.BOTH;
-	    gridBagConstraints23.weightx = 1.0D;
+
 	    gridBagConstraints24.gridx = 0;
 	    gridBagConstraints24.gridy = 1;
 	    gridBagConstraints24.weightx = 1.0;
 	    gridBagConstraints24.weighty = 1.0;
 	    gridBagConstraints24.fill = java.awt.GridBagConstraints.BOTH;
-	    gridBagConstraints24.gridwidth = 3;
+
 	    gridBagConstraints25.gridx = 0;
-	    gridBagConstraints25.gridy = 2;
-	    gridBagConstraints25.gridwidth = 3;
+	    gridBagConstraints25.gridy = 3;
+
 	    jPanel.add(jPanel3, gridBagConstraints21); // Generated
 
 	    jPanel.add(jTabbedPane1, gridBagConstraints24);
 	    jPanel.add(jPanel4, gridBagConstraints25);
+
+	    // subtasks
+	    GridBagConstraints stgbc = new GridBagConstraints();
+	    stgbc.gridx = 0;
+	    stgbc.gridy = 2;
+	    stgbc.weightx = 1.0;
+	    stgbc.weighty = 1.0;
+	    stgbc.fill = java.awt.GridBagConstraints.BOTH;
+
+	    JScrollPane stscroll = new JScrollPane();
+	    stscroll.setPreferredSize(new Dimension(300, 300));
+	    stscroll.setViewportView(stable);
+	    JPanel stpanel = new JPanel();
+	    stpanel.setLayout(new GridBagLayout());
+	    stpanel.setBorder(new javax.swing.border.TitledBorder(Resource
+		    .getResourceString("Subtasks")));
+	    stpanel.add(stscroll, gridBagConstraints4);
+	    jPanel.add(stpanel, stgbc);
 	}
 	return jPanel;
     }

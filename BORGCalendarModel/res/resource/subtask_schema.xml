@@ -22,11 +22,6 @@
 	</field>
 	<field>
 		<type>String</type>
-		<longName>Type</longName>
-		<desc>Type</desc>
-	</field>
-	<field>
-		<type>String</type>
 		<longName>Description</longName>
 		<desc>Description</desc>
 	</field>

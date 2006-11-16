@@ -234,7 +234,6 @@ class TaskJdbcDB extends JdbcDB implements SubtaskDB {
 	Subtask s = new Subtask();
 	s.setId(new Integer(r.getInt("id")));
 	s.setTask(new Integer(r.getInt("task")));
-	s.setType(r.getString("type"));
 	if (r.getTimestamp("due_date") != null)
 	    s.setDueDate(new java.util.Date(r.getTimestamp("due_date")
 		    .getTime()));
@@ -282,68 +281,66 @@ class TaskJdbcDB extends JdbcDB implements SubtaskDB {
 
     public void addSubTask(Subtask s) throws SQLException{
 	PreparedStatement stmt = connection_
-		.prepareStatement("INSERT INTO subtasks ( id, username, type, create_date, due_date,"
+		.prepareStatement("INSERT INTO subtasks ( id, username, create_date, due_date,"
 			+ " close_date, description, task ) VALUES "
-			+ "( ?, ?, ?, ?, ?, ?, ?, ?)");
+			+ "( ?, ?, ?, ?, ?, ?, ?)");
 
 	stmt.setInt(1, s.getId().intValue());
 	stmt.setString(2, username_);
-	stmt.setString(3, s.getType());
 
 	java.util.Date sd = s.getCreateDate();
 	if (sd != null)
-	    stmt.setDate(4, new java.sql.Date(sd.getTime()));
+	    stmt.setDate(3, new java.sql.Date(sd.getTime()));
 	else
-	    stmt.setDate(4, null);
+	    stmt.setDate(3, null);
 
 	java.util.Date dd = s.getDueDate();
 	if (dd != null)
-	    stmt.setDate(5, new java.sql.Date(dd.getTime()));
+	    stmt.setDate(4, new java.sql.Date(dd.getTime()));
 	else
-	    stmt.setDate(5, null);
+	    stmt.setDate(4, null);
 	
 	java.util.Date cd = s.getCloseDate();
 	if (cd != null)
-	    stmt.setDate(6, new java.sql.Date(cd.getTime()));
+	    stmt.setDate(5, new java.sql.Date(cd.getTime()));
 	else
-	    stmt.setDate(6, null);
+	    stmt.setDate(5, null);
 
-	stmt.setString(7, s.getDescription());
-	stmt.setInt(8, s.getTask().intValue());
+	stmt.setString(6, s.getDescription());
+	stmt.setInt(7, s.getTask().intValue());
 	
 	stmt.executeUpdate();
     }
 
     public void updateSubTask(Subtask s) throws SQLException{
 	PreparedStatement stmt = connection_
-		.prepareStatement("UPDATE subtasks SET type = ?, create_date = ?, due_date = ?,"
+		.prepareStatement("UPDATE subtasks SET create_date = ?, due_date = ?,"
 			+ " close_date = ?, description = ?, task = ?  WHERE id = ? AND username = ? "
 			);
 
-	stmt.setInt(7, s.getId().intValue());
-	stmt.setString(8, username_);
-	stmt.setString(1, s.getType());
+	stmt.setInt(6, s.getId().intValue());
+	stmt.setString(7, username_);
 
 	java.util.Date sd = s.getCreateDate();
 	if (sd != null)
-	    stmt.setDate(2, new java.sql.Date(sd.getTime()));
+	    stmt.setDate(1, new java.sql.Date(sd.getTime()));
 	else
-	    stmt.setDate(2, null);
+	    stmt.setDate(1, null);
 
 	java.util.Date dd = s.getDueDate();
 	if (dd != null)
-	    stmt.setDate(3, new java.sql.Date(dd.getTime()));
+	    stmt.setDate(2, new java.sql.Date(dd.getTime()));
 	else
-	    stmt.setDate(3, null);
+	    stmt.setDate(2, null);
 	
 	java.util.Date cd = s.getCloseDate();
 	if (cd != null)
-	    stmt.setDate(4, new java.sql.Date(cd.getTime()));
+	    stmt.setDate(3, new java.sql.Date(cd.getTime()));
 	else
-	    stmt.setDate(4, null);
+	    stmt.setDate(3, null);
 
-	stmt.setString(5, s.getDescription());
-	stmt.setInt(6, s.getTask().intValue());
+	stmt.setString(4, s.getDescription());
+	stmt.setInt(5, s.getTask().intValue());
 	
 	stmt.executeUpdate();
     }

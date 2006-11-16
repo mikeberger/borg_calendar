@@ -122,7 +122,6 @@ CREATE INDEX task_user ON tasks (username);
 CREATE CACHED TABLE subtasks (
   id integer default '0' NOT NULL,
   username varchar(25) NOT NULL,
-  type varchar(5) NOT NULL,
   create_date date NOT NULL ,
   due_date date default NULL,
   close_date date default NULL,
