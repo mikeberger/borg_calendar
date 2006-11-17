@@ -812,11 +812,11 @@ public class TaskListView extends View {
                 // filter on open/closed/all
 
                 // show open
-                if (which == 1 && (st.equals("CLOSED") || st.equals("PR")))
+                if (which == 1 && (st.equals(TaskModel.getReference().getTaskTypes().getFinalState(task.getType())) || st.equals("PR")))
                     continue;
 
                 // show closed
-                if (which == 2 && !st.equals("CLOSED") && !st.equals("PR"))
+                if (which == 2 && !st.equals(TaskModel.getReference().getTaskTypes().getFinalState(task.getType())) && !st.equals("PR"))
                     continue;
 
                 // show perf rvw

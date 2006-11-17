@@ -272,7 +272,7 @@ class TaskJdbcDB extends JdbcDB implements SubtaskDB {
 
     public void deleteSubTask(int id) throws SQLException {
 	PreparedStatement stmt = connection_
-		.prepareStatement("DELETE FROM tasks WHERE tasknum = ? AND username = ?");
+		.prepareStatement("DELETE FROM subtasks WHERE id = ? AND username = ?");
 	stmt.setInt(1, id);
 	stmt.setString(2, username_);
 	stmt.executeUpdate();
@@ -345,17 +345,15 @@ class TaskJdbcDB extends JdbcDB implements SubtaskDB {
 	stmt.executeUpdate();
     }
     
-    public int nextSubTaskKey(int tasknum) throws Exception {
+    public int nextSubTaskKey() throws Exception {
 	PreparedStatement stmt = connection_
-		.prepareStatement("SELECT MAX(id) FROM subtasks WHERE username = ? AND task = ?");
+		.prepareStatement("SELECT MAX(id) FROM subtasks WHERE username = ?");
 	stmt.setString(1, username_);
-	stmt.setInt(2, tasknum);
 	ResultSet r = stmt.executeQuery();
 	int maxKey = 0;
 	if (r.next())
 	    maxKey = r.getInt(1);
-	curMaxKey_ = Math.max(curMaxKey_, maxKey);
-	return ++curMaxKey_;
+	return ++maxKey;
     }
 
 }

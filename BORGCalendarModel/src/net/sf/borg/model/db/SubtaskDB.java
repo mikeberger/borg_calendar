@@ -16,6 +16,6 @@ public interface SubtaskDB {
     
     public void updateSubTask(Subtask s) throws SQLException;
     
-    public int nextSubTaskKey(int tasknum) throws Exception;
+    public int nextSubTaskKey() throws Exception;
 
 }

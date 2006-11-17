@@ -42,6 +42,7 @@ public class TaskTypes {
     
     public static final String NOCBVALUE = "---------------";
     public static final String INITIAL_STATE = "__INIT__";
+    public static final String FINAL_STATE = "__FINAL__";
     public static final String CHECKBOX = "CB";
     
     public TaskTypes() {
@@ -405,6 +406,27 @@ public class TaskTypes {
 	    }
 	    
 	    return("OPEN");
+	}
+	
+	public String getFinalState(String type)
+	{
+		 // find the task type element under the XML root
+	    XTree tp = state_model_.child(type);
+	    if( !tp.exists()) {
+	        return "CLOSED";
+	    }
+	        
+	    for( int i = 1;; i++ ) {
+	        XTree st = tp.child(i);
+	        if( st == null )
+	            break;
+	        
+	        if( st.child(FINAL_STATE).exists())
+	        	return st.name();
+	               
+	    }
+	    
+	    return("CLOSED");
 	}
 	
 }
