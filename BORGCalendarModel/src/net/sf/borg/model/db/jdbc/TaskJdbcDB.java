@@ -270,6 +270,28 @@ class TaskJdbcDB extends JdbcDB implements SubtaskDB {
 	}
     }
 
+    public Collection getSubTasks() throws SQLException {
+	PreparedStatement stmt = connection_
+		.prepareStatement("SELECT * from subtasks where username = ?");
+	ResultSet r = null;
+	try {
+	   
+	    stmt.setString(1, username_);
+	    r = stmt.executeQuery();
+	    List lst = new ArrayList();
+	    while (r.next()) {
+		Subtask s = createSubtask(r);
+		lst.add(s);
+	    }
+	    return lst;
+	} finally {
+	    if (r != null)
+		r.close();
+	    if (stmt != null)
+		stmt.close();
+	}
+    }
+
     public void deleteSubTask(int id) throws SQLException {
 	PreparedStatement stmt = connection_
 		.prepareStatement("DELETE FROM subtasks WHERE id = ? AND username = ?");

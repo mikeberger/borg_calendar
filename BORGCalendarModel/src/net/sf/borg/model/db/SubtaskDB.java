@@ -9,6 +9,8 @@ import net.sf.borg.model.Subtask;
 public interface SubtaskDB {
 
     public Collection getSubTasks(int taskid) throws SQLException;
+    
+    public Collection getSubTasks() throws SQLException;
 
     public void deleteSubTask(int id) throws SQLException;
 
