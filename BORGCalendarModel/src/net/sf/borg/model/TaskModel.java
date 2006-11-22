@@ -236,12 +236,13 @@ public class TaskModel extends Model implements Model.Listener {
     public void delete(int tasknum) throws Exception {
 
 	try {
-	    Collection subtasks = getSubTasks(tasknum);
-	    Iterator it = subtasks.iterator();
-	    while (it.hasNext()) {
-		Subtask st = (Subtask) it.next();
-		deleteSubTask(st.getId().intValue());
-	    }
+	    // have cascaded delete - don't need this
+	    //Collection subtasks = getSubTasks(tasknum);
+	    //Iterator it = subtasks.iterator();
+	    //while (it.hasNext()) {
+		//Subtask st = (Subtask) it.next();
+		//deleteSubTask(st.getId().intValue());
+	    //}
 	    db_.delete(tasknum);
 	} catch (Exception e) {
 	    Errmsg.errmsg(e);
@@ -505,5 +506,22 @@ public class TaskModel extends Model implements Model.Listener {
 	} else {
 	    sdb.updateSubTask(s);
 	}
+    }
+    
+    public void addLog(int taskid, String desc) throws Exception {
+	if (db_ instanceof SubtaskDB == false)
+	    throw new Exception(Resource
+		    .getPlainResourceString("SubtaskNotSupported"));
+	SubtaskDB sdb = (SubtaskDB) db_;
+	sdb.addLog(taskid, desc);	
+    }
+    
+    public Collection getLogs(int taskid ) throws Exception
+    {
+	if (db_ instanceof SubtaskDB == false)
+	    throw new Exception(Resource
+		    .getPlainResourceString("SubtaskNotSupported"));
+	SubtaskDB sdb = (SubtaskDB) db_;
+	return sdb.getLogs(taskid);
     }
 }

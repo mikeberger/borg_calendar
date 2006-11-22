@@ -201,7 +201,7 @@ public class TaskListView extends View {
                 Resource.getPlainResourceString("Description") }, new Class[] {
                 java.lang.Integer.class, java.lang.String.class,
                 java.lang.String.class, java.lang.String.class, java.lang.String.class, Date.class,
-                Date.class, java.lang.String.class, java.lang.Integer.class, java.lang.String.class }));
+                Date.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.String.class }));
 
         // set up for sorting when a column header is clicked
         TableSorter tm = (TableSorter) taskTable.getModel();
@@ -899,9 +899,9 @@ public class TaskListView extends View {
                 	//int hrs = (int) (hours % 24);
                 	//int mins = (int) (min % 60);
                 	if( days >= 1)
-                		ro[7] = Integer.toString(days) + "d";
+                		ro[7] = new Integer(days); //Integer.toString(days) + "d";
                 	else
-                		ro[7] = "<1d";
+                		ro[7] = new Integer(0); //"<1d";
                 }
                 
                 // calculate days left - today - duedate

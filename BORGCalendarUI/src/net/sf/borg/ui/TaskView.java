@@ -629,7 +629,7 @@ class TaskView extends View {
 	    // save the task to the DB
 	    taskmod_.savetask(task);
 
-	    // TODO - determine modified/new subtasks and save
+	    
 	    // System.out.println(task.getTaskNumber());
 	    saveSubtasks(task.getTaskNumber().intValue());
 

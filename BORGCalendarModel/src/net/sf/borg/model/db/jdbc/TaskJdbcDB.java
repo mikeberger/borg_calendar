@@ -377,5 +377,26 @@ class TaskJdbcDB extends JdbcDB implements SubtaskDB {
 	    maxKey = r.getInt(1);
 	return ++maxKey;
     }
+    
+    private int nextLogKey() throws Exception {
+	PreparedStatement stmt = connection_
+		.prepareStatement("SELECT MAX(id) FROM tasklog WHERE username = ?");
+	stmt.setString(1, username_);
+	ResultSet r = stmt.executeQuery();
+	int maxKey = 0;
+	if (r.next())
+	    maxKey = r.getInt(1);
+	return ++maxKey;
+    }
+
+    public void addLog(int taskid, String desc) throws SQLException {
+	// TODO Auto-generated method stub
+	
+    }
+
+    public Collection getLogs(int taskid) throws SQLException {
+	// TODO Auto-generated method stub
+	return null;
+    }
 
 }

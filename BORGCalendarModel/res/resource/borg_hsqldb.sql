@@ -129,5 +129,19 @@ CREATE CACHED TABLE subtasks (
   task integer default '0' NOT NULL,
   PRIMARY KEY  (id,username),
   FOREIGN KEY (task, username) REFERENCES tasks ( tasknum, username )
+     ON DELETE CASCADE
 );
 CREATE INDEX subtask_user ON subtasks (username);
+
+
+CREATE CACHED TABLE tasklog (
+  id integer default '0' NOT NULL,
+  username varchar(25) NOT NULL,
+  logtime datetime default '0000-00-00 00:00:00' NOT NULL,
+  description longvarchar NOT NULL,
+  task integer default '0' NOT NULL,
+  PRIMARY KEY ( id, username ),
+  FOREIGN KEY (task, username) REFERENCES tasks ( tasknum, username )
+     ON DELETE CASCADE
+);
+CREATE INDEX tasklog_user ON tasklog (username);
