@@ -197,7 +197,7 @@ class TaskView extends View {
 	defIntRend_ = stable.getDefaultRenderer(Integer.class);
 	defDateRend_ = stable.getDefaultRenderer(Date.class);
 	stable.setModel(new TableSorter(new String[] {
-		Resource.getPlainResourceString("done"),
+		Resource.getPlainResourceString("Closed"),
 		Resource.getPlainResourceString("subtask_id"),
 		Resource.getPlainResourceString("Description"),
 		Resource.getPlainResourceString("Start_Date"),
@@ -713,6 +713,7 @@ class TaskView extends View {
 	    }
 
 	    // save the task to the DB
+	    Task orig = TaskModel.getReference().getMR(task.getTaskNumber().intValue());
 	    taskmod_.savetask(task);
 
 	    
@@ -721,7 +722,12 @@ class TaskView extends View {
 	    
 	    if (num.equals("NEW"))
 	    {
-		TaskModel.getReference().addLog(task.getTaskNumber().intValue(), "Task Created");
+		TaskModel.getReference().addLog(task.getTaskNumber().intValue(), Resource.getPlainResourceString("Task_Created"));
+	    }
+	    else if( orig != null && !orig.getState().equals(task.getState()))
+	    {
+		    TaskModel.getReference().addLog(task.getTaskNumber().intValue(), Resource.getPlainResourceString("State_Change") + ": " + 
+			    orig.getState() + " --> " + task.getState());		
 	    }
 
 	    // refresh window from DB - will update task number for
@@ -741,8 +747,10 @@ class TaskView extends View {
 	Iterator it = tbd_.iterator();
 	while (it.hasNext()) {
 	    Integer id = (Integer) it.next();
-	    System.out.println("deleting sub task: " + id.intValue());
+	    //System.out.println("deleting sub task: " + id.intValue());
 	    TaskModel.getReference().deleteSubTask(id.intValue());
+	    TaskModel.getReference().addLog(tasknum, Resource.getPlainResourceString("subtask")
+		    + " " + id.toString() + " " + Resource.getPlainResourceString("deleted"));
 	}
 
 	tbd_.clear();
@@ -760,8 +768,12 @@ class TaskView extends View {
 	    Date dd = (Date) ts.getValueAt(r, 4);
 	    Date cd = (Date) ts.getValueAt(r, 6);
 
+	    boolean closing = false;
 	    if (closed.booleanValue() == true && cd == null)
+	    {
 		cd = new Date();
+		closing = true;
+	    }
 	    else if (closed.booleanValue() == false && cd != null)
 		cd = null;
 
@@ -773,7 +785,16 @@ class TaskView extends View {
 	    s.setCreateDate(crd);
 	    s.setTask(new Integer(tasknum));
 	    TaskModel.getReference().saveSubTask(s);
-
+	    if(id.intValue() == 0)
+	    {
+		TaskModel.getReference().addLog(tasknum, Resource.getPlainResourceString("subtask")
+			    + " " + s.getId().toString() + ": " + s.getDescription() + " "+ Resource.getPlainResourceString("created"));
+	    }
+	    if(closing)
+	    {
+		TaskModel.getReference().addLog(tasknum, Resource.getPlainResourceString("subtask")
+			    + " " + s.getId().toString() + ": " + s.getDescription() + " "+ Resource.getPlainResourceString("Closed"));
+	    }
 	}
     }
 
