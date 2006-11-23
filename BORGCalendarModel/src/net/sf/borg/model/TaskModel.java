@@ -20,6 +20,7 @@
 package net.sf.borg.model;
 
 import java.io.Writer;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -523,5 +524,32 @@ public class TaskModel extends Model implements Model.Listener {
 		    .getPlainResourceString("SubtaskNotSupported"));
 	SubtaskDB sdb = (SubtaskDB) db_;
 	return sdb.getLogs(taskid);
+    }
+    
+    public static int daysLeft(Date dd)
+    {
+	
+	if( dd == null ) return 0;
+        Calendar today = new GregorianCalendar();
+        Calendar dcal = new GregorianCalendar();
+        dcal.setTime(dd);
+
+        // find days left
+        int days = 0;
+        if( dcal.get(Calendar.YEAR) == today.get(Calendar.YEAR))
+        {
+        	days = dcal.get(Calendar.DAY_OF_YEAR) - today.get(Calendar.DAY_OF_YEAR);
+        }
+        else
+        {
+        	days = new Long((dd.getTime() - today.getTime().getTime())
+                / (1000 * 60 * 60 * 24)).intValue();
+        }
+
+        // if due date is past, set days left to 0
+        // negative days are silly
+        if (days < 0)
+            days = 0;
+       return days;
     }
 }

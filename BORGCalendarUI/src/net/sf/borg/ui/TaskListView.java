@@ -34,10 +34,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.Iterator;
 
 import javax.swing.ButtonGroup;
@@ -910,28 +908,8 @@ public class TaskListView extends View {
                     // thptt) magic value
                     ro[8] = new Integer(9999);
                 else {
-                    Date dd = (Date) ro[6];
-                    Calendar today = new GregorianCalendar();
-                    Calendar dcal = new GregorianCalendar();
-                    dcal.setTime(dd);
-
-                    // find days left
-                    int days = 0;
-                    if( dcal.get(Calendar.YEAR) == today.get(Calendar.YEAR))
-                    {
-                    	days = dcal.get(Calendar.DAY_OF_YEAR) - today.get(Calendar.DAY_OF_YEAR);
-                    }
-                    else
-                    {
-                    	days = new Long((dd.getTime() - today.getTime().getTime())
-                            / (1000 * 60 * 60 * 24)).intValue();
-                    }
-
-                    // if due date is past, set days left to 0
-                    // negative days are silly
-                    if (days < 0)
-                        days = 0;
-                    ro[8] = new Integer(days);
+                    Date dd = (Date)ro[6];
+                    ro[8] = new Integer(TaskModel.daysLeft(dd));
                 }
 
                 // strip newlines from the description
@@ -979,7 +957,7 @@ public class TaskListView extends View {
                 return;
 
             // display the task editor
-            TaskView tskg = TaskView.getReference(task, TaskView.T_CLONE);
+            TaskView tskg = new TaskView(task, TaskView.T_CLONE);
             tskg.setVisible(true);
         } catch (Exception e) {
             Errmsg.errmsg(e);
@@ -998,7 +976,7 @@ public class TaskListView extends View {
                 return;
 
             // display the task editor
-            TaskView tskg = TaskView.getReference(task, TaskView.T_CHANGE);
+            TaskView tskg = new TaskView(task, TaskView.T_CHANGE);
             tskg.setVisible(true);
 
         } catch (Exception e) {
@@ -1011,7 +989,7 @@ public class TaskListView extends View {
     private void task_add() {
         try {
             // display the task editor
-            TaskView tskg = TaskView.getReference(null, TaskView.T_ADD);
+            TaskView tskg = new TaskView(null, TaskView.T_ADD);
             tskg.setVisible(true);
         } catch (Exception e) {
             Errmsg.errmsg(e);

@@ -41,6 +41,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.table.TableCellRenderer;
 
 import net.sf.borg.common.ui.DateEditor;
@@ -63,17 +64,9 @@ import net.sf.borg.model.TaskTypes;
 // taskgui is a View that allows the user to edit a single task
 class TaskView extends View {
 
-    private static TaskView singleton = null;
-
     private JTable stable = new JTable();
 
     private ArrayList tbd_ = new ArrayList();
-
-    static TaskView getReference(Task task, int function) throws Exception {
-	if (singleton == null || !singleton.isShowing())
-	    singleton = new TaskView(task, function);
-	return (singleton);
-    }
 
     private TableCellRenderer defIntRend_;
     private TableCellRenderer defDateRend_;
@@ -115,9 +108,8 @@ class TaskView extends View {
             
             
             Date dd = (Date) obj;
-            Date now = new Date();
             
-            int days = ((int)dd.getTime() - (int)now.getTime()) / (1000*60*60*24); 
+            int days = TaskModel.daysLeft(dd); 
             
             JLabel l = (JLabel)defDateRend_.getTableCellRendererComponent(table, obj,
                     isSelected, hasFocus, row, column);
@@ -143,7 +135,7 @@ class TaskView extends View {
         }
     }
 
-    private TaskView(Task task, int function) throws Exception {
+    public TaskView(Task task, int function) throws Exception {
 	super();
 	addModel(TaskModel.getReference());
 
@@ -173,10 +165,11 @@ class TaskView extends View {
 		Resource.getPlainResourceString("Description"),
 		Resource.getPlainResourceString("Start_Date"),
 		Resource.getPlainResourceString("Due_Date"),
+		Resource.getPlainResourceString("Days_Left"),
 		Resource.getPlainResourceString("close_date") }, new Class[] {
 		java.lang.Boolean.class, Integer.class, java.lang.String.class,
-		Date.class, Date.class, Date.class }, new boolean[] { true,
-		false, true, true, true, false }));
+		Date.class, Date.class, Integer.class, Date.class }, new boolean[] { true,
+		false, true, true, true, false, false }));
 
 	stable.setDefaultRenderer(Integer.class, new STIntRenderer());
 	stable.setDefaultRenderer(Date.class, new STDDRenderer());
@@ -187,17 +180,19 @@ class TaskView extends View {
 	stable.getColumnModel().getColumn(3).setPreferredWidth(30);
 	stable.getColumnModel().getColumn(4).setPreferredWidth(30);
 	stable.getColumnModel().getColumn(5).setPreferredWidth(30);
+	stable.getColumnModel().getColumn(6).setPreferredWidth(30);
 
 	stable.setDefaultEditor(Date.class, new DateEditor());
 
 	TableSorter ts = (TableSorter) stable.getModel();
 
+	ts.sortByColumn(4);
 	ts.addMouseListenerToHeaderInTable(stable);
 	new PopupMenuHelper(stable, new PopupMenuHelper.Entry[] {
 		new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
 		    public void actionPerformed(java.awt.event.ActionEvent evt) {
 			Object o[] = { new Boolean(false), new Integer(0),
-				null, new Date(), null, null };
+				null, new Date(), null, null, null };
 			TableSorter ts = (TableSorter) stable.getModel();
 
 			ts.addRow(o);
@@ -229,7 +224,7 @@ class TaskView extends View {
 			// if table is now empty - add 1 row back
 			if (ts.getRowCount() == 0) {
 			    Object o[] = { new Boolean(false), new Integer(0),
-				    null, new Date(), null, null };
+				    null, new Date(), null, null, null };
 			    ts.addRow(o);
 			}
 		    }
@@ -267,6 +262,20 @@ class TaskView extends View {
     {
 	java.awt.GridBagConstraints gridBagConstraints;
 
+	GridBagConstraints gridBagConstraints22 = new GridBagConstraints();
+	gridBagConstraints22.gridx = 2;
+	gridBagConstraints22.insets = new Insets(4, 20, 4, 4);
+	gridBagConstraints22.gridy = 4;
+	daysLeftLabel = new JLabel();
+	daysLeftLabel.setText(Resource.getPlainResourceString("Days_Left"));
+	daysLeftLabel.setHorizontalTextPosition(SwingConstants.RIGHT);
+	daysLeftLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+	GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
+	gridBagConstraints13.fill = GridBagConstraints.BOTH;
+	gridBagConstraints13.gridy = 4;
+	gridBagConstraints13.weightx = 1.0;
+	gridBagConstraints13.insets = new Insets(4, 4, 4, 4);
+	gridBagConstraints13.gridx = 3;
 	GridBagConstraints gridBagConstraints210 = new GridBagConstraints();
 	gridBagConstraints210.gridx = 2; // Generated
 	gridBagConstraints210.insets = new Insets(4, 20, 4, 4); // Generated
@@ -540,6 +549,8 @@ class TaskView extends View {
 	jPanel3.add(statebox, gridBagConstraints26); // Generated
 	jPanel3.add(getCloseDate(), gridBagConstraints12);
 	jPanel3.add(closeLabel, gridBagConstraints210);
+	jPanel3.add(getDaysLeftText(), gridBagConstraints13);
+	jPanel3.add(daysLeftLabel, gridBagConstraints22);
 	ResourceHelper.setText(closeLabel, "close_date");
 
     }// GEN-END:initComponents
@@ -667,7 +678,7 @@ class TaskView extends View {
 	    Boolean closed = (Boolean) ts.getValueAt(r, 0);
 	    Date crd = (Date) ts.getValueAt(r, 3);
 	    Date dd = (Date) ts.getValueAt(r, 4);
-	    Date cd = (Date) ts.getValueAt(r, 5);
+	    Date cd = (Date) ts.getValueAt(r, 6);
 
 	    if (closed.booleanValue() == true && cd == null)
 		cd = new Date();
@@ -731,6 +742,10 @@ class TaskView extends View {
 	    if (cd != null)
 		closeDate.setText(DateFormat.getDateInstance(DateFormat.MEDIUM)
 			.format(cd));
+	    
+	    int daysleft = TaskModel.daysLeft(task.getDueDate());
+	    daysLeftText.setText( Integer.toString(daysleft));
+	    
 	    // cattext.setText( task.getCategory() );
 	    String cat = task.getCategory();
 	    if (cat != null && !cat.equals("")) {
@@ -760,6 +775,7 @@ class TaskView extends View {
 			s.getCloseDate() == null ? new Boolean(false)
 				: new Boolean(true), s.getId(),
 			s.getDescription(), s.getCreateDate(), s.getDueDate(),
+			new Integer(TaskModel.daysLeft(s.getDueDate())),
 			s.getCloseDate() };
 
 		ts.addRow(o);
@@ -829,7 +845,7 @@ class TaskView extends View {
 
 	if (stable.getRowCount() == 0) {
 	    Object o[] = { new Boolean(false), new Integer(0), null,
-		    new Date(), null, null };
+		    new Date(), null, null, null };
 	    ts.addRow(o);
 	}
     }
@@ -900,6 +916,10 @@ class TaskView extends View {
     private JTextField closeDate = null;
 
     private JLabel closeLabel = null;
+
+    private JTextField daysLeftText = null;
+
+    private JLabel daysLeftLabel = null;
 
     /**
          * This method initializes jPanel
@@ -984,5 +1004,18 @@ class TaskView extends View {
 	    closeDate.setEditable(false); // Generated
 	}
 	return closeDate;
+    }
+
+    /**
+     * This method initializes daysLeftText	
+     * 	
+     * @return javax.swing.JTextField	
+     */
+    private JTextField getDaysLeftText() {
+        if (daysLeftText == null) {
+    	daysLeftText = new JTextField();
+    	daysLeftText.setEditable(false);
+        }
+        return daysLeftText;
     }
 } // @jve:decl-index=0:visual-constraint="115,46"
