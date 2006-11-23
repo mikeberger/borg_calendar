@@ -108,38 +108,34 @@ public class TaskListView extends View {
                 Object obj, boolean isSelected, boolean hasFocus, int row,
                 int column) {
 
+            if ( obj instanceof Integer == false)
+        	return defrend_.getTableCellRendererComponent(table, obj,
+                        isSelected, hasFocus, row, column);
+            
             int i = ((Integer) obj).intValue();
 
-            // ok - if we are not drawing column 5 (days left) or if we are
-            // drawing days left
-            // but days left is >10 and not the 9999 (infinite) value, then just
-            // use the default
-            // rendered for this cell
-            if (column != 8 || (i != 9999 && i >= 10))
-                return defrend_.getTableCellRendererComponent(table, obj,
-                        isSelected, hasFocus, row, column);
+            
+            JLabel l = (JLabel) defrend_.getTableCellRendererComponent(table, obj,
+                    isSelected, hasFocus, row, column);
 
+            this.setText(((Integer) obj).toString());
+            this.setHorizontalAlignment(CENTER);
+            this.setBackground(l.getBackground());
+            this.setForeground(l.getForeground());
+            
+            if( column != 8 )
+        	return this;
+            
             // add color to the days-left column as the task due date
             // approaches
-
-            // default to white background unless row is selected
-            this.setBackground(Color.white);
-            if (isSelected)
-                this.setBackground(new Color(204, 204, 255));
-
-            // default to black foreground
-            this.setForeground(Color.black);
-
-            // render the text in the box to be the number of days left
-            this.setText(((Integer) obj).toString());
-
-            // align to the right
-            this.setHorizontalAlignment(RIGHT);
 
             // 9999 is used if no due date
             // so show stars - but don't alter the color
             if (i == 9999)
                 this.setText("******");
+            
+            if( isSelected )
+        	return this;
 
             // yellow alert -- <10 days left
             if (i < 10)

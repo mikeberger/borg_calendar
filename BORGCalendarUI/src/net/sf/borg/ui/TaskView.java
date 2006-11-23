@@ -66,12 +66,16 @@ import net.sf.borg.model.Tasklog;
 class TaskView extends View {
 
     private JTable stable = new JTable();
+
     private JTable logtable = new JTable();
 
     private ArrayList tbd_ = new ArrayList();
 
     private TableCellRenderer defIntRend_;
+
     private TableCellRenderer defDateRend_;
+
+    private TableCellRenderer defStringRend_;
 
     private class STIntRenderer extends JLabel implements TableCellRenderer {
 
@@ -86,12 +90,52 @@ class TaskView extends View {
 
 	    JLabel l = (JLabel) defIntRend_.getTableCellRendererComponent(
 		    table, obj, isSelected, hasFocus, row, column);
-	    l.setHorizontalAlignment(CENTER);
-	    return l;
+	    this.setHorizontalAlignment(CENTER);
+	    this.setForeground(l.getForeground());
+	    this.setBackground(l.getBackground());
+
+	    if (obj != null && obj instanceof Integer) {
+		int i = ((Integer) obj).intValue();
+		if (column == 1 && i == 0) {
+		    // this.setBackground(new Color(220, 220, 255));
+		    this.setText("--");
+		} else {
+		    this.setText(Integer.toString(i));
+		}
+	    }
+	    return this;
 
 	}
     }
-    
+
+    private class STStringRenderer extends JLabel implements TableCellRenderer {
+
+	public STStringRenderer() {
+	    super();
+	    setOpaque(true); // MUST do this for background to show up.
+	}
+
+	public Component getTableCellRendererComponent(JTable table,
+		Object obj, boolean isSelected, boolean hasFocus, int row,
+		int column) {
+
+	    JLabel l = (JLabel) defStringRend_.getTableCellRendererComponent(
+		    table, obj, isSelected, hasFocus, row, column);
+	    this.setForeground(l.getForeground());
+	    this.setBackground(l.getBackground());
+
+	    if (obj == null) {
+		this.setBackground(new Color(220, 220, 255));
+		this.setText("");
+	    } else {
+		this.setText((String) obj);
+	    }
+
+	    return this;
+
+	}
+    }
+
     private class LongDateRenderer extends JLabel implements TableCellRenderer {
 
 	public LongDateRenderer() {
@@ -104,72 +148,76 @@ class TaskView extends View {
 		int column) {
 
 	    Date d = (Date) obj;
-            JLabel l = (JLabel)defDateRend_.getTableCellRendererComponent(table, obj,
-                    isSelected, hasFocus, row, column);
-            
-            this.setBackground(l.getBackground());
-            this.setForeground(l.getForeground());
-            this.setText(DateFormat.getDateTimeInstance(DateFormat.MEDIUM,DateFormat.MEDIUM).format(d));
+	    JLabel l = (JLabel) defDateRend_.getTableCellRendererComponent(
+		    table, obj, isSelected, hasFocus, row, column);
+
+	    this.setBackground(l.getBackground());
+	    this.setForeground(l.getForeground());
+	    this.setText(DateFormat.getDateTimeInstance(DateFormat.MEDIUM,
+		    DateFormat.MEDIUM).format(d));
 	    return this;
 
 	}
     }
-    
+
     private class STDDRenderer extends JLabel implements TableCellRenderer {
 
-        public STDDRenderer() {
-            super();
-            setOpaque(true); //MUST do this for background to show up.
-        }
+	public STDDRenderer() {
+	    super();
+	    setOpaque(true); // MUST do this for background to show up.
+	}
 
-        public Component getTableCellRendererComponent(JTable table,
-                Object obj, boolean isSelected, boolean hasFocus, int row,
-                int column) {
+	public Component getTableCellRendererComponent(JTable table,
+		Object obj, boolean isSelected, boolean hasFocus, int row,
+		int column) {
 
-            Boolean closed = (Boolean) table.getModel().getValueAt(row, 0);
-            if( closed.booleanValue() == true || column != 4 || obj == null )
-        	return defDateRend_.getTableCellRendererComponent(table, obj,
-                        isSelected, hasFocus, row, column);
-            
-            
-            Date dd = (Date) obj;
-            
-            int days = TaskModel.daysLeft(dd); 
-            
-            JLabel l = (JLabel)defDateRend_.getTableCellRendererComponent(table, obj,
-                    isSelected, hasFocus, row, column);
-            
-            this.setBackground(l.getBackground());
-            this.setForeground(l.getForeground());
-            this.setText(DateFormat.getDateInstance().format(dd));
-            
-            if( !isSelected )
-            {
-        	// yellow alert -- <10 days left
-                if (days < 10)
-                    this.setBackground(Color.yellow);
+	    Boolean closed = (Boolean) table.getModel().getValueAt(row, 0);
 
-                // red alert -- <2 days left
-                if (days < 2) {
-                    this.setBackground(Color.red);
-                    this.setForeground(Color.white);
-                }
-            }
- 
-            return this;
-        }
+	    Date dd = (Date) obj;
+
+	    JLabel l = (JLabel) defDateRend_.getTableCellRendererComponent(
+		    table, obj, isSelected, hasFocus, row, column);
+
+	    this.setBackground(l.getBackground());
+	    this.setForeground(l.getForeground());
+	    this.setHorizontalAlignment(l.getHorizontalAlignment());
+	    if (dd != null)
+		this.setText(DateFormat.getDateInstance().format(dd));
+	    else {
+		this.setText("--");
+		this.setHorizontalAlignment(CENTER);
+	    }
+
+	    if (closed.booleanValue() == true || column != 4 || obj == null)
+		return this;
+
+	    int days = TaskModel.daysLeft(dd);
+
+	    if (!isSelected) {
+		// yellow alert -- <10 days left
+		if (days < 10)
+		    this.setBackground(Color.yellow);
+
+		// red alert -- <2 days left
+		if (days < 2) {
+		    this.setBackground(Color.red);
+		    this.setForeground(Color.white);
+		}
+	    }
+
+	    return this;
+	}
     }
 
     public TaskView(Task task, int function) throws Exception {
 	super();
 	addModel(TaskModel.getReference());
 
-	
 	initComponents(); // init the GUI widgets
 
 	initSubtaskTable();
 	initLogTable();
-	
+
 	// set size of text area
 	jTextArea1.setRows(15);
 	jTextArea1.setColumns(40);
@@ -185,31 +233,31 @@ class TaskView extends View {
 	    Errmsg.errmsg(e);
 	}
 
-	
 	pack();
 	showtask(function, task);
 
 	manageMySize(PrefName.TASKVIEWSIZE);
     }
-    
-    private void initSubtaskTable()
-    {
+
+    private void initSubtaskTable() {
 	defIntRend_ = stable.getDefaultRenderer(Integer.class);
 	defDateRend_ = stable.getDefaultRenderer(Date.class);
+	defStringRend_ = stable.getDefaultRenderer(String.class);
 	stable.setModel(new TableSorter(new String[] {
 		Resource.getPlainResourceString("Closed"),
 		Resource.getPlainResourceString("subtask_id"),
 		Resource.getPlainResourceString("Description"),
-		Resource.getPlainResourceString("Start_Date"),
+		Resource.getPlainResourceString("created"),
 		Resource.getPlainResourceString("Due_Date"),
 		Resource.getPlainResourceString("Days_Left"),
 		Resource.getPlainResourceString("close_date") }, new Class[] {
 		java.lang.Boolean.class, Integer.class, java.lang.String.class,
-		Date.class, Date.class, Integer.class, Date.class }, new boolean[] { true,
-		false, true, true, true, false, false }));
+		Date.class, Date.class, Integer.class, Date.class },
+		new boolean[] { true, false, true, true, true, false, false }));
 
 	stable.setDefaultRenderer(Integer.class, new STIntRenderer());
 	stable.setDefaultRenderer(Date.class, new STDDRenderer());
+	stable.setDefaultRenderer(String.class, new STStringRenderer());
 
 	stable.getColumnModel().getColumn(0).setPreferredWidth(5);
 	stable.getColumnModel().getColumn(1).setPreferredWidth(5);
@@ -229,7 +277,7 @@ class TaskView extends View {
 		new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
 		    public void actionPerformed(java.awt.event.ActionEvent evt) {
 			Object o[] = { new Boolean(false), new Integer(0),
-				null, new Date(), null, null, null };
+				null, null, null, null, null };
 			TableSorter ts = (TableSorter) stable.getModel();
 
 			ts.addRow(o);
@@ -267,20 +315,16 @@ class TaskView extends View {
 		    }
 		}, "Delete"), });
 	// display the window
-	
+
     }
 
-    private void initLogTable()
-    {
-	
+    private void initLogTable() {
+
 	logtable.setModel(new TableSorter(new String[] {
 		Resource.getPlainResourceString("Date"),
-		Resource.getPlainResourceString("Description"), }, 
-		new Class[] { Date.class, String.class }, 
-		new boolean[] { false,
-		false }));
+		Resource.getPlainResourceString("Description"), }, new Class[] {
+		Date.class, String.class }, new boolean[] { false, false }));
 
-	
 	logtable.getColumnModel().getColumn(0).setPreferredWidth(5);
 	logtable.getColumnModel().getColumn(1).setPreferredWidth(300);
 
@@ -290,21 +334,19 @@ class TaskView extends View {
 
 	ts.sortByColumn(0);
 	ts.addMouseListenerToHeaderInTable(logtable);
-	/*new PopupMenuHelper(logtable, new PopupMenuHelper.Entry[] {
-		new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
-		    public void actionPerformed(java.awt.event.ActionEvent evt) {
-			Object o[] = { new Boolean(false), new Integer(0),
-				null, new Date(), null, null, null };
-			TableSorter ts = (TableSorter) logtable.getModel();
+	/*
+         * new PopupMenuHelper(logtable, new PopupMenuHelper.Entry[] { new
+         * PopupMenuHelper.Entry(new java.awt.event.ActionListener() { public
+         * void actionPerformed(java.awt.event.ActionEvent evt) { Object o[] = {
+         * new Boolean(false), new Integer(0), null, new Date(), null, null,
+         * null }; TableSorter ts = (TableSorter) logtable.getModel();
+         * 
+         * ts.addRow(o); } }, "Add_New") });
+         * 
+         */
 
-			ts.addRow(o);
-		    }
-		}, "Add_New") });
-		
-	*/
-	
     }
-    
+
     public void destroy() {
 	this.dispose();
     }
@@ -415,12 +457,11 @@ class TaskView extends View {
 
 	jTabbedPane1.addTab(Resource.getResourceString("Resolution"),
 		jScrollPane2);
-	
+
 	JScrollPane logPane = new JScrollPane();
 	logPane.setViewportView(logtable);
 
-	jTabbedPane1.addTab(Resource.getResourceString("history"),
-		logPane);
+	jTabbedPane1.addTab(Resource.getResourceString("history"), logPane);
 
 	gridBagConstraints = new java.awt.GridBagConstraints();
 	GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
@@ -672,12 +713,14 @@ class TaskView extends View {
 			ts.addRow(o);
 		    }
 		}
+		task.setState(taskmod_.getTaskTypes().getInitialState(
+			(String) typebox.getSelectedItem()));
 	    } else {
 		task.setTaskNumber(new Integer(num));
+		task.setState((String) statebox.getSelectedItem());
 	    }
 
 	    // fill in the taks fields from the screen
-	    task.setState((String) statebox.getSelectedItem()); // state
 	    task.setType((String) typebox.getSelectedItem()); // type
 	    Calendar cal = startdatechooser.getCalendar();
 	    task.setStartDate(cal.getTime()); // start date
@@ -713,23 +756,43 @@ class TaskView extends View {
 	    }
 
 	    // save the task to the DB
-	    Task orig = TaskModel.getReference().getMR(task.getTaskNumber().intValue());
+	    Task orig = TaskModel.getReference().getMR(
+		    task.getTaskNumber().intValue());
 	    taskmod_.savetask(task);
 
-	    
 	    // System.out.println(task.getTaskNumber());
-	    saveSubtasks(task.getTaskNumber().intValue());
 	    
-	    if (num.equals("NEW"))
-	    {
-		TaskModel.getReference().addLog(task.getTaskNumber().intValue(), Resource.getPlainResourceString("Task_Created"));
-	    }
-	    else if( orig != null && !orig.getState().equals(task.getState()))
-	    {
-		    TaskModel.getReference().addLog(task.getTaskNumber().intValue(), Resource.getPlainResourceString("State_Change") + ": " + 
-			    orig.getState() + " --> " + task.getState());		
+
+	    if (num.equals("NEW")) {
+		TaskModel.getReference().addLog(
+			task.getTaskNumber().intValue(),
+			Resource.getPlainResourceString("Task_Created"));
+	    } else {
+		if (orig != null && !orig.getState().equals(task.getState())) {
+
+		    TaskModel.getReference().addLog(
+			    task.getTaskNumber().intValue(),
+			    Resource.getPlainResourceString("State_Change")
+				    + ": " + orig.getState() + " --> "
+				    + task.getState());
+		}
+		String newd = DateFormat.getDateInstance().format(task.getDueDate());
+		   String oldd = DateFormat.getDateInstance().format(orig.getDueDate());
+		if (orig != null && !newd.equals(oldd)) {
+
+		   
+		    TaskModel.getReference().addLog(
+			    task.getTaskNumber().intValue(),
+			    Resource.getPlainResourceString("DueDate") + " " +
+			    Resource.getPlainResourceString("Change")
+				    + ": " + oldd + " --> "
+				    + newd);
+		}
 	    }
 
+	    
+	    saveSubtasks(task.getTaskNumber().intValue());
+	    
 	    // refresh window from DB - will update task number for
 	    // new tasks and will set the list of available next states from
 	    // the task model
@@ -747,10 +810,13 @@ class TaskView extends View {
 	Iterator it = tbd_.iterator();
 	while (it.hasNext()) {
 	    Integer id = (Integer) it.next();
-	    //System.out.println("deleting sub task: " + id.intValue());
+	    // System.out.println("deleting sub task: " + id.intValue());
 	    TaskModel.getReference().deleteSubTask(id.intValue());
-	    TaskModel.getReference().addLog(tasknum, Resource.getPlainResourceString("subtask")
-		    + " " + id.toString() + " " + Resource.getPlainResourceString("deleted"));
+	    TaskModel.getReference().addLog(
+		    tasknum,
+		    Resource.getPlainResourceString("subtask") + " "
+			    + id.toString() + " "
+			    + Resource.getPlainResourceString("deleted"));
 	}
 
 	tbd_.clear();
@@ -765,16 +831,16 @@ class TaskView extends View {
 	    Integer id = (Integer) ts.getValueAt(r, 1);
 	    Boolean closed = (Boolean) ts.getValueAt(r, 0);
 	    Date crd = (Date) ts.getValueAt(r, 3);
+	    if (crd == null)
+		crd = new Date();
 	    Date dd = (Date) ts.getValueAt(r, 4);
 	    Date cd = (Date) ts.getValueAt(r, 6);
 
 	    boolean closing = false;
-	    if (closed.booleanValue() == true && cd == null)
-	    {
+	    if (closed.booleanValue() == true && cd == null) {
 		cd = new Date();
 		closing = true;
-	    }
-	    else if (closed.booleanValue() == false && cd != null)
+	    } else if (closed.booleanValue() == false && cd != null)
 		cd = null;
 
 	    Subtask s = new Subtask();
@@ -785,15 +851,21 @@ class TaskView extends View {
 	    s.setCreateDate(crd);
 	    s.setTask(new Integer(tasknum));
 	    TaskModel.getReference().saveSubTask(s);
-	    if(id.intValue() == 0)
-	    {
-		TaskModel.getReference().addLog(tasknum, Resource.getPlainResourceString("subtask")
-			    + " " + s.getId().toString() + ": " + s.getDescription() + " "+ Resource.getPlainResourceString("created"));
+	    if (id.intValue() == 0) {
+		TaskModel.getReference().addLog(
+			tasknum,
+			Resource.getPlainResourceString("subtask") + " "
+				+ s.getId().toString() + " "
+				+ Resource.getPlainResourceString("created")
+				+ ": " + s.getDescription());
 	    }
-	    if(closing)
-	    {
-		TaskModel.getReference().addLog(tasknum, Resource.getPlainResourceString("subtask")
-			    + " " + s.getId().toString() + ": " + s.getDescription() + " "+ Resource.getPlainResourceString("Closed"));
+	    if (closing) {
+		TaskModel.getReference().addLog(
+			tasknum,
+			Resource.getPlainResourceString("subtask") + " "
+				+ s.getId().toString() + " "
+				+ Resource.getPlainResourceString("Closed")
+				+ ": " + s.getDescription());
 	    }
 	}
     }
@@ -845,10 +917,10 @@ class TaskView extends View {
 	    if (cd != null)
 		closeDate.setText(DateFormat.getDateInstance(DateFormat.MEDIUM)
 			.format(cd));
-	    
+
 	    int daysleft = TaskModel.daysLeft(task.getDueDate());
-	    daysLeftText.setText( Integer.toString(daysleft));
-	    
+	    daysLeftText.setText(Integer.toString(daysleft));
+
 	    // cattext.setText( task.getCategory() );
 	    String cat = task.getCategory();
 	    if (cat != null && !cat.equals("")) {
@@ -883,15 +955,14 @@ class TaskView extends View {
 
 		ts.addRow(o);
 	    }
-	    
+
 	    // add log entries
-	    Collection logs = TaskModel.getReference().getLogs(task.getTaskNumber().intValue());
+	    Collection logs = TaskModel.getReference().getLogs(
+		    task.getTaskNumber().intValue());
 	    it = logs.iterator();
 	    while (it.hasNext()) {
 		Tasklog s = (Tasklog) it.next();
-		Object o[] = {
-			s.getlogTime(),
-			s.getDescription() };
+		Object o[] = { s.getlogTime(), s.getDescription() };
 
 		tslog.addRow(o);
 	    }
@@ -921,8 +992,8 @@ class TaskView extends View {
 	}
 
 	if (task == null) {
-	    statebox.addItem(taskmod_.getTaskTypes().getInitialState(
-		    typebox.getSelectedItem().toString()));
+	    // statebox.addItem(taskmod_.getTaskTypes().getInitialState(
+	    // typebox.getSelectedItem().toString()));
 	    statebox.setEnabled(false);
 	}
 
@@ -959,8 +1030,8 @@ class TaskView extends View {
 	}
 
 	if (stable.getRowCount() == 0) {
-	    Object o[] = { new Boolean(false), new Integer(0), null,
-		    new Date(), null, null, null };
+	    Object o[] = { new Boolean(false), new Integer(0), null, null,
+		    null, null, null };
 	    ts.addRow(o);
 	}
     }
@@ -1122,15 +1193,15 @@ class TaskView extends View {
     }
 
     /**
-     * This method initializes daysLeftText	
-     * 	
-     * @return javax.swing.JTextField	
-     */
+         * This method initializes daysLeftText
+         * 
+         * @return javax.swing.JTextField
+         */
     private JTextField getDaysLeftText() {
-        if (daysLeftText == null) {
-    	daysLeftText = new JTextField();
-    	daysLeftText.setEditable(false);
-        }
-        return daysLeftText;
+	if (daysLeftText == null) {
+	    daysLeftText = new JTextField();
+	    daysLeftText.setEditable(false);
+	}
+	return daysLeftText;
     }
 } // @jve:decl-index=0:visual-constraint="115,46"
