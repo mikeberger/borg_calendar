@@ -393,7 +393,7 @@ class TaskJdbcDB extends JdbcDB implements SubtaskDB {
 
 	public void addLog(int taskid, String desc) throws SQLException {
 		PreparedStatement stmt = connection_
-				.prepareStatement("INSERT INTO subtasks ( id, username, logtime, description, task ) VALUES "
+				.prepareStatement("INSERT INTO tasklog ( id, username, logtime, description, task ) VALUES "
 						+ "( ?, ?, ?, ?, ?)");
 
 		stmt.setInt(1, nextLogKey());
@@ -408,11 +408,28 @@ class TaskJdbcDB extends JdbcDB implements SubtaskDB {
 
 	}
 	
+	public void saveLog(Tasklog tlog) throws SQLException {
+		PreparedStatement stmt = connection_
+				.prepareStatement("INSERT INTO tasklog ( id, username, logtime, description, task ) VALUES "
+						+ "( ?, ?, ?, ?, ?)");
+
+		stmt.setInt(1, nextLogKey());
+		stmt.setString(2, username_);
+		Date d = tlog.getlogTime();
+		stmt.setTimestamp(3, new java.sql.Timestamp(d.getTime()), Calendar
+				.getInstance());
+		stmt.setString(4, tlog.getDescription());
+		stmt.setInt(5, tlog.getTask().intValue());
+
+		stmt.executeUpdate();
+
+	}
+	
 	private Tasklog createTasklog(ResultSet r) throws SQLException {
 		Tasklog s = new Tasklog();
 		s.setId(new Integer(r.getInt("id")));
 		s.setTask(new Integer(r.getInt("task")));
-		if (r.getTimestamp("due_date") != null)
+		if (r.getTimestamp("logtime") != null)
 			s.setlogTime(new java.util.Date(r.getTimestamp("logtime")
 					.getTime()));
 		s.setDescription(r.getString("description"));
@@ -428,6 +445,29 @@ class TaskJdbcDB extends JdbcDB implements SubtaskDB {
 
 			stmt.setString(1, username_);
 			stmt.setInt(2,taskid);
+			r = stmt.executeQuery();
+			List lst = new ArrayList();
+			while (r.next()) {
+				Tasklog s = createTasklog(r);
+				lst.add(s);
+			}
+			return lst;
+		} finally {
+			if (r != null)
+				r.close();
+			if (stmt != null)
+				stmt.close();
+		}
+		
+	}
+	
+	public Collection getLogs() throws SQLException {
+		PreparedStatement stmt = connection_
+				.prepareStatement("SELECT * from tasklog where username = ? ");
+		ResultSet r = null;
+		try {
+
+			stmt.setString(1, username_);
 			r = stmt.executeQuery();
 			List lst = new ArrayList();
 			while (r.next()) {

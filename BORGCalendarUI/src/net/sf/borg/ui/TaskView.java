@@ -54,6 +54,7 @@ import net.sf.borg.model.Subtask;
 import net.sf.borg.model.Task;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.TaskTypes;
+import net.sf.borg.model.Tasklog;
 
 /**
  * 
@@ -65,6 +66,7 @@ import net.sf.borg.model.TaskTypes;
 class TaskView extends View {
 
     private JTable stable = new JTable();
+    private JTable logtable = new JTable();
 
     private ArrayList tbd_ = new ArrayList();
 
@@ -86,6 +88,29 @@ class TaskView extends View {
 		    table, obj, isSelected, hasFocus, row, column);
 	    l.setHorizontalAlignment(CENTER);
 	    return l;
+
+	}
+    }
+    
+    private class LongDateRenderer extends JLabel implements TableCellRenderer {
+
+	public LongDateRenderer() {
+	    super();
+	    setOpaque(true); // MUST do this for background to show up.
+	}
+
+	public Component getTableCellRendererComponent(JTable table,
+		Object obj, boolean isSelected, boolean hasFocus, int row,
+		int column) {
+
+	    Date d = (Date) obj;
+            JLabel l = (JLabel)defDateRend_.getTableCellRendererComponent(table, obj,
+                    isSelected, hasFocus, row, column);
+            
+            this.setBackground(l.getBackground());
+            this.setForeground(l.getForeground());
+            this.setText(DateFormat.getDateTimeInstance(DateFormat.MEDIUM,DateFormat.MEDIUM).format(d));
+	    return this;
 
 	}
     }
@@ -139,10 +164,11 @@ class TaskView extends View {
 	super();
 	addModel(TaskModel.getReference());
 
+	
 	initComponents(); // init the GUI widgets
 
-	defIntRend_ = stable.getDefaultRenderer(Integer.class);
-	defDateRend_ = stable.getDefaultRenderer(Date.class);
+	initSubtaskTable();
+	initLogTable();
 	
 	// set size of text area
 	jTextArea1.setRows(15);
@@ -159,6 +185,17 @@ class TaskView extends View {
 	    Errmsg.errmsg(e);
 	}
 
+	
+	pack();
+	showtask(function, task);
+
+	manageMySize(PrefName.TASKVIEWSIZE);
+    }
+    
+    private void initSubtaskTable()
+    {
+	defIntRend_ = stable.getDefaultRenderer(Integer.class);
+	defDateRend_ = stable.getDefaultRenderer(Date.class);
 	stable.setModel(new TableSorter(new String[] {
 		Resource.getPlainResourceString("done"),
 		Resource.getPlainResourceString("subtask_id"),
@@ -230,12 +267,44 @@ class TaskView extends View {
 		    }
 		}, "Delete"), });
 	// display the window
-	pack();
-	showtask(function, task);
-
-	manageMySize(PrefName.TASKVIEWSIZE);
+	
     }
 
+    private void initLogTable()
+    {
+	
+	logtable.setModel(new TableSorter(new String[] {
+		Resource.getPlainResourceString("Date"),
+		Resource.getPlainResourceString("Description"), }, 
+		new Class[] { Date.class, String.class }, 
+		new boolean[] { false,
+		false }));
+
+	
+	logtable.getColumnModel().getColumn(0).setPreferredWidth(5);
+	logtable.getColumnModel().getColumn(1).setPreferredWidth(300);
+
+	logtable.setDefaultEditor(Date.class, new DateEditor());
+	logtable.setDefaultRenderer(Date.class, new LongDateRenderer());
+	TableSorter ts = (TableSorter) logtable.getModel();
+
+	ts.sortByColumn(0);
+	ts.addMouseListenerToHeaderInTable(logtable);
+	/*new PopupMenuHelper(logtable, new PopupMenuHelper.Entry[] {
+		new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
+		    public void actionPerformed(java.awt.event.ActionEvent evt) {
+			Object o[] = { new Boolean(false), new Integer(0),
+				null, new Date(), null, null, null };
+			TableSorter ts = (TableSorter) logtable.getModel();
+
+			ts.addRow(o);
+		    }
+		}, "Add_New") });
+		
+	*/
+	
+    }
+    
     public void destroy() {
 	this.dispose();
     }
@@ -346,6 +415,12 @@ class TaskView extends View {
 
 	jTabbedPane1.addTab(Resource.getResourceString("Resolution"),
 		jScrollPane2);
+	
+	JScrollPane logPane = new JScrollPane();
+	logPane.setViewportView(logtable);
+
+	jTabbedPane1.addTab(Resource.getResourceString("history"),
+		logPane);
 
 	gridBagConstraints = new java.awt.GridBagConstraints();
 	GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
@@ -643,6 +718,11 @@ class TaskView extends View {
 	    
 	    // System.out.println(task.getTaskNumber());
 	    saveSubtasks(task.getTaskNumber().intValue());
+	    
+	    if (num.equals("NEW"))
+	    {
+		TaskModel.getReference().addLog(task.getTaskNumber().intValue(), "Task Created");
+	    }
 
 	    // refresh window from DB - will update task number for
 	    // new tasks and will set the list of available next states from
@@ -707,6 +787,8 @@ class TaskView extends View {
 	// show a task editor for changing, cloning, or add of a task
 	TableSorter ts = (TableSorter) stable.getModel();
 	ts.setRowCount(0);
+	TableSorter tslog = (TableSorter) logtable.getModel();
+	tslog.setRowCount(0);
 
 	tbd_.clear();
 
@@ -779,6 +861,18 @@ class TaskView extends View {
 			s.getCloseDate() };
 
 		ts.addRow(o);
+	    }
+	    
+	    // add log entries
+	    Collection logs = TaskModel.getReference().getLogs(task.getTaskNumber().intValue());
+	    it = logs.iterator();
+	    while (it.hasNext()) {
+		Tasklog s = (Tasklog) it.next();
+		Object o[] = {
+			s.getlogTime(),
+			s.getDescription() };
+
+		tslog.addRow(o);
 	    }
 
 	} else // initialize new task

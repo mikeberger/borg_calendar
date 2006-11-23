@@ -377,6 +377,24 @@ public class TaskModel extends Model implements Model.Listener {
 	    if (e.getRetCode() != DBException.RET_NOT_FOUND)
 		Errmsg.errmsg(e);
 	}
+	
+	TasklogXMLAdapter tla = new TasklogXMLAdapter();
+
+	// export tasklogs
+	try {
+
+	    Collection logs = getLogs();
+	    Iterator ti = logs.iterator();
+	    while (ti.hasNext()) {
+		Tasklog tlog = (Tasklog) ti.next();
+
+		XTree xt = tla.toXml(tlog);
+		fw.write(xt.toString());
+	    }
+	} catch (DBException e) {
+	    if (e.getRetCode() != DBException.RET_NOT_FOUND)
+		Errmsg.errmsg(e);
+	}
 
 	
 	fw.write("</TASKS>");
@@ -388,6 +406,7 @@ public class TaskModel extends Model implements Model.Listener {
 
 	TaskXMLAdapter aa = new TaskXMLAdapter();
 	SubtaskXMLAdapter sa = new SubtaskXMLAdapter();
+	TasklogXMLAdapter la = new TasklogXMLAdapter();
 
 	// for each appt - create an Appointment and store
 	for (int i = 1;; i++) {
@@ -429,6 +448,16 @@ public class TaskModel extends Model implements Model.Listener {
 		try {
 		    subtask.setId(null);
 		    saveSubTask(subtask);
+		} catch (Exception e) {
+		    Errmsg.errmsg(e);
+		}
+	    }
+	    
+	    else if (ch.name().equals("Tasklog")) {
+		Tasklog tlog = (Tasklog) la.fromXml(ch);
+		try {
+		    tlog.setId(null);
+		    saveLog(tlog);
 		} catch (Exception e) {
 		    Errmsg.errmsg(e);
 		}
@@ -517,6 +546,14 @@ public class TaskModel extends Model implements Model.Listener {
 	sdb.addLog(taskid, desc);	
     }
     
+    public void saveLog(Tasklog tlog) throws Exception {
+	if (db_ instanceof SubtaskDB == false)
+	    throw new Exception(Resource
+		    .getPlainResourceString("SubtaskNotSupported"));
+	SubtaskDB sdb = (SubtaskDB) db_;
+	sdb.saveLog(tlog);	
+    }
+    
     public Collection getLogs(int taskid ) throws Exception
     {
 	if (db_ instanceof SubtaskDB == false)
@@ -524,6 +561,15 @@ public class TaskModel extends Model implements Model.Listener {
 		    .getPlainResourceString("SubtaskNotSupported"));
 	SubtaskDB sdb = (SubtaskDB) db_;
 	return sdb.getLogs(taskid);
+    }
+    
+    public Collection getLogs( ) throws Exception
+    {
+	if (db_ instanceof SubtaskDB == false)
+	    throw new Exception(Resource
+		    .getPlainResourceString("SubtaskNotSupported"));
+	SubtaskDB sdb = (SubtaskDB) db_;
+	return sdb.getLogs();
     }
     
     public static int daysLeft(Date dd)
