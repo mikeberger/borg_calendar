@@ -102,8 +102,7 @@ class TaskView extends View {
 		} else {
 		    this.setText(Integer.toString(i));
 		}
-	    }
-	    else if( obj == null )
+	    } else if (obj == null)
 		this.setText("--");
 	    return this;
 
@@ -242,7 +241,7 @@ class TaskView extends View {
     }
 
     private void initSubtaskTable() {
-	
+
 	defIntRend_ = stable.getDefaultRenderer(Integer.class);
 	defDateRend_ = stable.getDefaultRenderer(Date.class);
 	defStringRend_ = stable.getDefaultRenderer(String.class);
@@ -270,8 +269,7 @@ class TaskView extends View {
 	stable.getColumnModel().getColumn(5).setPreferredWidth(30);
 	stable.getColumnModel().getColumn(6).setPreferredWidth(30);
 
-	if( !TaskModel.getReference().hasSubTasks())
-	{
+	if (!TaskModel.getReference().hasSubTasks()) {
 	    stable.getTableHeader().setEnabled(false);
 	    stable.getTableHeader().setReorderingAllowed(false);
 	    stable.getTableHeader().setResizingAllowed(false);
@@ -325,7 +323,6 @@ class TaskView extends View {
 		    }
 		}, "Delete"), });
 
-	
     }
 
     private void initLogTable() {
@@ -344,8 +341,6 @@ class TaskView extends View {
 
 	ts.sortByColumn(0);
 	ts.addMouseListenerToHeaderInTable(logtable);
-	
-	
 
     }
 
@@ -464,11 +459,11 @@ class TaskView extends View {
 	logPane.setViewportView(logtable);
 
 	jTabbedPane1.addTab(Resource.getResourceString("history"), logPane);
-	if( !TaskModel.getReference().hasSubTasks())
-	{
-	    jTabbedPane1.setEnabledAt(jTabbedPane1.indexOfComponent(logPane), false);
+	if (!TaskModel.getReference().hasSubTasks()) {
+	    jTabbedPane1.setEnabledAt(jTabbedPane1.indexOfComponent(logPane),
+		    false);
 	}
-	
+
 	gridBagConstraints = new java.awt.GridBagConstraints();
 	GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
 	GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
@@ -707,8 +702,9 @@ class TaskView extends View {
 	    // set the task number to the current number for updates and
 	    // -1 for new tasks. task model will convert -1 to next
 	    // available number
+	    TableSorter ts = (TableSorter) stable.getModel();
 	    if (num.equals("NEW")) {
-		TableSorter ts = (TableSorter) stable.getModel();
+
 		task.setTaskNumber(new Integer(-1));
 		String cbs[] = TaskModel.getReference().getTaskTypes()
 			.checkBoxes((String) typebox.getSelectedItem());
@@ -721,6 +717,11 @@ class TaskView extends View {
 		}
 		task.setState(taskmod_.getTaskTypes().getInitialState(
 			(String) typebox.getSelectedItem()));
+	    } else if (num.equals("CLONE")) {
+		task.setTaskNumber(new Integer(-1));
+		task.setState(taskmod_.getTaskTypes().getInitialState(
+			(String) typebox.getSelectedItem()));
+
 	    } else {
 		task.setTaskNumber(new Integer(num));
 		task.setState((String) statebox.getSelectedItem());
@@ -750,7 +751,6 @@ class TaskView extends View {
 	    if (task.getState().equals(
 		    TaskModel.getReference().getTaskTypes().getFinalState(
 			    task.getState()))) {
-		TableSorter ts = (TableSorter) stable.getModel();
 		for (int r = 0; r < stable.getRowCount(); r++) {
 		    Boolean closed = (Boolean) ts.getValueAt(r, 0);
 		    if (closed.booleanValue() != true) {
@@ -767,9 +767,8 @@ class TaskView extends View {
 	    taskmod_.savetask(task);
 
 	    // System.out.println(task.getTaskNumber());
-	    
 
-	    if (num.equals("NEW")) {
+	    if (num.equals("NEW") || num.equals("CLONE")) {
 		TaskModel.getReference().addLog(
 			task.getTaskNumber().intValue(),
 			Resource.getPlainResourceString("Task_Created"));
@@ -782,23 +781,22 @@ class TaskView extends View {
 				    + ": " + orig.getState() + " --> "
 				    + task.getState());
 		}
-		String newd = DateFormat.getDateInstance().format(task.getDueDate());
-		   String oldd = DateFormat.getDateInstance().format(orig.getDueDate());
+		String newd = DateFormat.getDateInstance().format(
+			task.getDueDate());
+		String oldd = DateFormat.getDateInstance().format(
+			orig.getDueDate());
 		if (orig != null && !newd.equals(oldd)) {
 
-		   
 		    TaskModel.getReference().addLog(
 			    task.getTaskNumber().intValue(),
-			    Resource.getPlainResourceString("DueDate") + " " +
-			    Resource.getPlainResourceString("Change")
-				    + ": " + oldd + " --> "
-				    + newd);
+			    Resource.getPlainResourceString("DueDate") + " "
+				    + Resource.getPlainResourceString("Change")
+				    + ": " + oldd + " --> " + newd);
 		}
 	    }
 
-	    
 	    saveSubtasks(task.getTaskNumber().intValue());
-	    
+
 	    // refresh window from DB - will update task number for
 	    // new tasks and will set the list of available next states from
 	    // the task model
@@ -947,33 +945,36 @@ class TaskView extends View {
 	    typebox.setEnabled(false);
 
 	    // add subtasks
-	    if( TaskModel.getReference().hasSubTasks())
-	    {
-	    Collection col = TaskModel.getReference().getSubTasks(
-		    task.getTaskNumber().intValue());
-	    Iterator it = col.iterator();
-	    while (it.hasNext()) {
-		Subtask s = (Subtask) it.next();
-		Object o[] = {
-			s.getCloseDate() == null ? new Boolean(false)
-				: new Boolean(true), s.getId(),
-			s.getDescription(), s.getCreateDate(), s.getDueDate(),
-			s.getDueDate() != null ? new Integer(TaskModel.daysLeft(s.getDueDate())) : null,
-			s.getCloseDate() };
+	    if (TaskModel.getReference().hasSubTasks()) {
+		Collection col = TaskModel.getReference().getSubTasks(
+			task.getTaskNumber().intValue());
+		Iterator it = col.iterator();
+		while (it.hasNext()) {
+		    Subtask s = (Subtask) it.next();
+		    Object o[] = {
+			    s.getCloseDate() == null ? new Boolean(false)
+				    : new Boolean(true),
+			    s.getId(),
+			    s.getDescription(),
+			    s.getCreateDate(),
+			    s.getDueDate(),
+			    s.getDueDate() != null ? new Integer(TaskModel
+				    .daysLeft(s.getDueDate())) : null,
+			    s.getCloseDate() };
 
-		ts.addRow(o);
-	    }
+		    ts.addRow(o);
+		}
 
-	    // add log entries
-	    Collection logs = TaskModel.getReference().getLogs(
-		    task.getTaskNumber().intValue());
-	    it = logs.iterator();
-	    while (it.hasNext()) {
-		Tasklog s = (Tasklog) it.next();
-		Object o[] = { s.getlogTime(), s.getDescription() };
+		// add log entries
+		Collection logs = TaskModel.getReference().getLogs(
+			task.getTaskNumber().intValue());
+		it = logs.iterator();
+		while (it.hasNext()) {
+		    Tasklog s = (Tasklog) it.next();
+		    Object o[] = { s.getlogTime(), s.getDescription() };
 
-		tslog.addRow(o);
-	    }
+		    tslog.addRow(o);
+		}
 	    }
 
 	} else // initialize new task
@@ -1011,13 +1012,18 @@ class TaskView extends View {
 	// that don't apply to the clone
 	if (function == T_CLONE) {
 	    // need new task number
-	    itemtext.setText("NEW");
+	    itemtext.setText("CLONE");
 	    itemtext.setEditable(false);
 
 	    statebox.removeAllItems();
 	    statebox.addItem(taskmod_.getTaskTypes().getInitialState(
 		    typebox.getSelectedItem().toString()));
 	    statebox.setEnabled(false);
+
+	    // reset all subtask id's
+	    for (int row = 0; row < stable.getRowCount(); row++) {
+		stable.setValueAt(new Integer(0), row, 1);
+	    }
 
 	}
 	// change existing task
@@ -1171,8 +1177,7 @@ class TaskView extends View {
 		    .getResourceString("Subtasks")));
 	    stpanel.add(stscroll, gridBagConstraints4);
 	    jPanel.add(stpanel, stgbc);
-	    
-	    
+
 	}
 	return jPanel;
     }
