@@ -103,6 +103,8 @@ class TaskView extends View {
 		    this.setText(Integer.toString(i));
 		}
 	    }
+	    else if( obj == null )
+		this.setText("--");
 	    return this;
 
 	}
@@ -240,6 +242,7 @@ class TaskView extends View {
     }
 
     private void initSubtaskTable() {
+	
 	defIntRend_ = stable.getDefaultRenderer(Integer.class);
 	defDateRend_ = stable.getDefaultRenderer(Date.class);
 	defStringRend_ = stable.getDefaultRenderer(String.class);
@@ -267,6 +270,13 @@ class TaskView extends View {
 	stable.getColumnModel().getColumn(5).setPreferredWidth(30);
 	stable.getColumnModel().getColumn(6).setPreferredWidth(30);
 
+	if( !TaskModel.getReference().hasSubTasks())
+	{
+	    stable.getTableHeader().setEnabled(false);
+	    stable.getTableHeader().setReorderingAllowed(false);
+	    stable.getTableHeader().setResizingAllowed(false);
+	    return;
+	}
 	stable.setDefaultEditor(Date.class, new DateEditor());
 
 	TableSorter ts = (TableSorter) stable.getModel();
@@ -314,8 +324,8 @@ class TaskView extends View {
 			}
 		    }
 		}, "Delete"), });
-	// display the window
 
+	
     }
 
     private void initLogTable() {
@@ -334,16 +344,8 @@ class TaskView extends View {
 
 	ts.sortByColumn(0);
 	ts.addMouseListenerToHeaderInTable(logtable);
-	/*
-         * new PopupMenuHelper(logtable, new PopupMenuHelper.Entry[] { new
-         * PopupMenuHelper.Entry(new java.awt.event.ActionListener() { public
-         * void actionPerformed(java.awt.event.ActionEvent evt) { Object o[] = {
-         * new Boolean(false), new Integer(0), null, new Date(), null, null,
-         * null }; TableSorter ts = (TableSorter) logtable.getModel();
-         * 
-         * ts.addRow(o); } }, "Add_New") });
-         * 
-         */
+	
+	
 
     }
 
@@ -462,7 +464,11 @@ class TaskView extends View {
 	logPane.setViewportView(logtable);
 
 	jTabbedPane1.addTab(Resource.getResourceString("history"), logPane);
-
+	if( !TaskModel.getReference().hasSubTasks())
+	{
+	    jTabbedPane1.setEnabledAt(jTabbedPane1.indexOfComponent(logPane), false);
+	}
+	
 	gridBagConstraints = new java.awt.GridBagConstraints();
 	GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
 	GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
@@ -941,6 +947,8 @@ class TaskView extends View {
 	    typebox.setEnabled(false);
 
 	    // add subtasks
+	    if( TaskModel.getReference().hasSubTasks())
+	    {
 	    Collection col = TaskModel.getReference().getSubTasks(
 		    task.getTaskNumber().intValue());
 	    Iterator it = col.iterator();
@@ -950,7 +958,7 @@ class TaskView extends View {
 			s.getCloseDate() == null ? new Boolean(false)
 				: new Boolean(true), s.getId(),
 			s.getDescription(), s.getCreateDate(), s.getDueDate(),
-			new Integer(TaskModel.daysLeft(s.getDueDate())),
+			s.getDueDate() != null ? new Integer(TaskModel.daysLeft(s.getDueDate())) : null,
 			s.getCloseDate() };
 
 		ts.addRow(o);
@@ -965,6 +973,7 @@ class TaskView extends View {
 		Object o[] = { s.getlogTime(), s.getDescription() };
 
 		tslog.addRow(o);
+	    }
 	    }
 
 	} else // initialize new task
@@ -1029,7 +1038,7 @@ class TaskView extends View {
 
 	}
 
-	if (stable.getRowCount() == 0) {
+	if (TaskModel.getReference().hasSubTasks() && stable.getRowCount() == 0) {
 	    Object o[] = { new Boolean(false), new Integer(0), null, null,
 		    null, null, null };
 	    ts.addRow(o);
@@ -1162,6 +1171,8 @@ class TaskView extends View {
 		    .getResourceString("Subtasks")));
 	    stpanel.add(stscroll, gridBagConstraints4);
 	    jPanel.add(stpanel, stgbc);
+	    
+	    
 	}
 	return jPanel;
     }

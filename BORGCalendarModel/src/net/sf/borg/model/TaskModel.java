@@ -540,8 +540,9 @@ public class TaskModel extends Model implements Model.Listener {
     
     public void addLog(int taskid, String desc) throws Exception {
 	if (db_ instanceof SubtaskDB == false)
-	    throw new Exception(Resource
-		    .getPlainResourceString("SubtaskNotSupported"));
+	    return;
+	    //throw new Exception(Resource
+		    //.getPlainResourceString("SubtaskNotSupported"));
 	SubtaskDB sdb = (SubtaskDB) db_;
 	sdb.addLog(taskid, desc);	
     }
@@ -597,5 +598,10 @@ public class TaskModel extends Model implements Model.Listener {
         if (days < 0)
             days = 0;
        return days;
+    }
+    
+    public boolean hasSubTasks()
+    {
+	return db_ instanceof SubtaskDB;
     }
 }

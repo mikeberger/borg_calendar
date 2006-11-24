@@ -78,7 +78,7 @@ class FileBeanDB extends SMDB implements BeanDB
 	}
 
     // read a bean from the DB given the key
-    public KeyedBean readObj( int key ) throws DBException, Exception
+    public KeyedBean readObj( int key ) throws  Exception
     {
         
         // if the bean is in the cache - return it
@@ -93,19 +93,28 @@ class FileBeanDB extends SMDB implements BeanDB
             }
         }
         
-        Row sr = readRow( key );
-
-        KeyedBean bean = adapter_.fromRow(sr);
-        
-        // put the bean in the cache
-        if( objectCacheOn_ )
+        try{
+            Row sr = readRow( key );
+            KeyedBean bean = adapter_.fromRow(sr);
+//          put the bean in the cache
+            if( objectCacheOn_ )
+            {
+                objectCache_.put( new Integer(key), bean );
+            }
+            
+            // return a copy of the bean - so that changes to the bean
+            // do not update the cached bean
+            return bean.copy();
+        }
+        catch( DBException db)
         {
-            objectCache_.put( new Integer(key), bean );
+            if( db.getRetCode() != DBException.RET_NOT_FOUND)
+        	throw db;
+        	
         }
         
-        // return a copy of the bean - so that changes to the bean
-        // do not update the cached bean
-        return bean.copy();
+        return null;
+        
     }
     
     public KeyedBean newObj()
