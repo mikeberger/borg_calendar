@@ -51,11 +51,17 @@ public class TaskModel extends Model implements Model.Listener {
     private HashMap btmap_;
 
     private Vector allmap_;
+    
+    private HashMap stmap_;
 
     private TaskTypes taskTypes_ = new TaskTypes();
 
     public LinkedList get_tasks(int daykey) {
 	return ((LinkedList) btmap_.get(new Integer(daykey)));
+    }
+    
+    public LinkedList get_subtasks(int daykey) {
+	return ((LinkedList) stmap_.get(new Integer(daykey)));
     }
 
     public Vector get_tasks() {
@@ -64,6 +70,7 @@ public class TaskModel extends Model implements Model.Listener {
 
     private TaskModel() {
 	btmap_ = new HashMap();
+	stmap_ = new HashMap();
 	allmap_ = new Vector();
     }
 
@@ -122,18 +129,19 @@ public class TaskModel extends Model implements Model.Listener {
     }
 
     // load a map of tasks to day keys for performance. this is because the
-        // month views will
+    // month views will
     // repeatedly need to retrieve tasks per day and it would be slow to
-        // repeatedly traverse
+    // repeatedly traverse
     // the entire task DB looking for them
     // only tasks that are viewed by day need to be cached here - those that
-        // are not CLOSED and
+    // are not CLOSED and
     // have a due date - a small fraction of the total
     private void load_map() {
 
 	// clear map
 	btmap_.clear();
 	allmap_.clear();
+	stmap_.clear();
 	TaskTypes tt = TaskModel.getReference().getTaskTypes();
 
 	try {
@@ -177,6 +185,39 @@ public class TaskModel extends Model implements Model.Listener {
 		LinkedList l = (LinkedList) o;
 		l.add(mr);
 		allmap_.add(mr);
+	    }
+	    
+	    Collection subtasks = getSubTasks();
+	    ti = subtasks.iterator();
+	    while (ti.hasNext()) {
+		Subtask st = (Subtask) ti.next();
+
+		if( st.getCloseDate() != null || st.getDueDate() == null )
+		    continue;
+		
+		Task mr = getMR(st.getTask().intValue());
+		String cat = mr.getCategory();
+		if (cat == null || cat.equals(""))
+		    cat = CategoryModel.UNCATEGORIZED;
+
+		if (!CategoryModel.getReference().isShown(cat))
+		    continue;
+
+		// use task due date to build a day key
+		Date due = st.getDueDate();
+		GregorianCalendar g = new GregorianCalendar();
+		g.setTime(due);
+		int key = AppointmentModel.dkey(g);
+
+		// add the string to the btmap_
+		Object o = stmap_.get(new Integer(key));
+		if (o == null) {
+		    o = new LinkedList();
+		    stmap_.put(new Integer(key), o);
+		}
+
+		LinkedList l = (LinkedList) o;
+		l.add(st);
 	    }
 
 	} catch (DBException e) {
@@ -238,19 +279,19 @@ public class TaskModel extends Model implements Model.Listener {
 
 	try {
 	    // have cascaded delete - don't need this
-	    //Collection subtasks = getSubTasks(tasknum);
-	    //Iterator it = subtasks.iterator();
-	    //while (it.hasNext()) {
-		//Subtask st = (Subtask) it.next();
-		//deleteSubTask(st.getId().intValue());
-	    //}
+	    // Collection subtasks = getSubTasks(tasknum);
+	    // Iterator it = subtasks.iterator();
+	    // while (it.hasNext()) {
+	    // Subtask st = (Subtask) it.next();
+	    // deleteSubTask(st.getId().intValue());
+	    // }
 	    db_.delete(tasknum);
 	} catch (Exception e) {
 	    Errmsg.errmsg(e);
 	}
 
 	// have the borg class reload the calendar app side of things - so this
-        // is one model
+	// is one model
 	// notifying the other of a change through the controller
 	load_map();
 
@@ -293,7 +334,7 @@ public class TaskModel extends Model implements Model.Listener {
 	}
 
 	// have the borg class reload the calendar app side of things - so this
-        // is one model
+	// is one model
 	// notifying the other of a change through the controller
 	load_map();
 
@@ -359,7 +400,6 @@ public class TaskModel extends Model implements Model.Listener {
 		Errmsg.errmsg(e);
 	}
 
-	
 	SubtaskXMLAdapter sta = new SubtaskXMLAdapter();
 
 	// export subtasks
@@ -377,7 +417,7 @@ public class TaskModel extends Model implements Model.Listener {
 	    if (e.getRetCode() != DBException.RET_NOT_FOUND)
 		Errmsg.errmsg(e);
 	}
-	
+
 	TasklogXMLAdapter tla = new TasklogXMLAdapter();
 
 	// export tasklogs
@@ -396,7 +436,6 @@ public class TaskModel extends Model implements Model.Listener {
 		Errmsg.errmsg(e);
 	}
 
-	
 	fw.write("</TASKS>");
 
     }
@@ -433,16 +472,97 @@ public class TaskModel extends Model implements Model.Listener {
 		Task task = (Task) aa.fromXml(ch);
 		try {
 		    db_.addObj(task, false);
+		    // migrate from old subtask mechanism
+		    if (!task.getState().equals(
+			    TaskModel.getReference().getTaskTypes()
+				    .getFinalState(task.getType()))
+			    && task.getTodoList() != null
+			    && task.getUserTask1() != null) {
+			// add system subtasks
+			String todos = task.getTodoList();
+			String cbs[] = TaskModel.getReference().getTaskTypes()
+				.checkBoxes(task.getType());
+			for (int sti = 0; sti < cbs.length; sti++) {
+			    if (!cbs[sti].equals(TaskTypes.NOCBVALUE)) {
+				Subtask st = new Subtask();
+				st.setCreateDate(new Date());
+				st.setDescription(cbs[sti]);
+				st.setTask(task.getTaskNumber());
+				if (todos.contains(Integer.toString(sti))) {
+				    st.setCloseDate(new Date());
+				}
+				saveSubTask(st);
+			    }
+			}
+			if (task.getUserTask1() != null) {
+			    Subtask st = new Subtask();
+			    st.setCreateDate(new Date());
+			    st.setDescription(task.getUserTask1());
+			    st.setTask(task.getTaskNumber());
+			    if (todos.contains("6")) {
+				st.setCloseDate(new Date());
+			    }
+			    saveSubTask(st);
+			}
+			if (task.getUserTask2() != null) {
+			    Subtask st = new Subtask();
+			    st.setCreateDate(new Date());
+			    st.setDescription(task.getUserTask2());
+			    st.setTask(task.getTaskNumber());
+			    if (todos.contains("7")) {
+				st.setCloseDate(new Date());
+			    }
+			    saveSubTask(st);
+			}
+			if (task.getUserTask3() != null) {
+			    Subtask st = new Subtask();
+			    st.setCreateDate(new Date());
+			    st.setDescription(task.getUserTask3());
+			    st.setTask(task.getTaskNumber());
+			    if (todos.contains("8")) {
+				st.setCloseDate(new Date());
+			    }
+			    saveSubTask(st);
+			}
+			if (task.getUserTask4() != null) {
+			    Subtask st = new Subtask();
+			    st.setCreateDate(new Date());
+			    st.setDescription(task.getUserTask4());
+			    st.setTask(task.getTaskNumber());
+			    if (todos.contains("9")) {
+				st.setCloseDate(new Date());
+			    }
+			    saveSubTask(st);
+			}
+			if (task.getUserTask5() != null) {
+			    Subtask st = new Subtask();
+			    st.setCreateDate(new Date());
+			    st.setDescription(task.getUserTask5());
+			    st.setTask(task.getTaskNumber());
+			    if (todos.contains("A")) {
+				st.setCloseDate(new Date());
+			    }
+			    saveSubTask(st);
+			}
+			task.setTodoList(null);
+			task.setUserTask1(null);
+			task.setUserTask2(null);
+			task.setUserTask3(null);
+			task.setUserTask4(null);
+			task.setUserTask5(null);
+			savetask(task);
+		    }
 		} catch (DBException e) {
 		    if (e.getRetCode() == DBException.RET_DUPLICATE) {
 			task.setTaskNumber(new Integer(-1));
 			savetask(task);
+
 		    } else {
 			throw e;
 		    }
 		}
 	    }
-	    
+
 	    else if (ch.name().equals("Subtask")) {
 		Subtask subtask = (Subtask) sa.fromXml(ch);
 		try {
@@ -452,7 +572,7 @@ public class TaskModel extends Model implements Model.Listener {
 		    Errmsg.errmsg(e);
 		}
 	    }
-	    
+
 	    else if (ch.name().equals("Tasklog")) {
 		Tasklog tlog = (Tasklog) la.fromXml(ch);
 		try {
@@ -536,72 +656,69 @@ public class TaskModel extends Model implements Model.Listener {
 	} else {
 	    sdb.updateSubTask(s);
 	}
+	
+	load_map();
     }
-    
+
     public void addLog(int taskid, String desc) throws Exception {
 	if (db_ instanceof SubtaskDB == false)
 	    return;
-	    //throw new Exception(Resource
-		    //.getPlainResourceString("SubtaskNotSupported"));
+	// throw new Exception(Resource
+	// .getPlainResourceString("SubtaskNotSupported"));
 	SubtaskDB sdb = (SubtaskDB) db_;
-	sdb.addLog(taskid, desc);	
+	sdb.addLog(taskid, desc);
     }
-    
+
     public void saveLog(Tasklog tlog) throws Exception {
 	if (db_ instanceof SubtaskDB == false)
 	    throw new Exception(Resource
 		    .getPlainResourceString("SubtaskNotSupported"));
 	SubtaskDB sdb = (SubtaskDB) db_;
-	sdb.saveLog(tlog);	
+	sdb.saveLog(tlog);
     }
-    
-    public Collection getLogs(int taskid ) throws Exception
-    {
+
+    public Collection getLogs(int taskid) throws Exception {
 	if (db_ instanceof SubtaskDB == false)
 	    throw new Exception(Resource
 		    .getPlainResourceString("SubtaskNotSupported"));
 	SubtaskDB sdb = (SubtaskDB) db_;
 	return sdb.getLogs(taskid);
     }
-    
-    public Collection getLogs( ) throws Exception
-    {
+
+    public Collection getLogs() throws Exception {
 	if (db_ instanceof SubtaskDB == false)
 	    throw new Exception(Resource
 		    .getPlainResourceString("SubtaskNotSupported"));
 	SubtaskDB sdb = (SubtaskDB) db_;
 	return sdb.getLogs();
     }
-    
-    public static int daysLeft(Date dd)
-    {
-	
-	if( dd == null ) return 0;
-        Calendar today = new GregorianCalendar();
-        Calendar dcal = new GregorianCalendar();
-        dcal.setTime(dd);
 
-        // find days left
-        int days = 0;
-        if( dcal.get(Calendar.YEAR) == today.get(Calendar.YEAR))
-        {
-        	days = dcal.get(Calendar.DAY_OF_YEAR) - today.get(Calendar.DAY_OF_YEAR);
-        }
-        else
-        {
-        	days = new Long((dd.getTime() - today.getTime().getTime())
-                / (1000 * 60 * 60 * 24)).intValue();
-        }
+    public static int daysLeft(Date dd) {
 
-        // if due date is past, set days left to 0
-        // negative days are silly
-        if (days < 0)
-            days = 0;
-       return days;
+	if (dd == null)
+	    return 0;
+	Calendar today = new GregorianCalendar();
+	Calendar dcal = new GregorianCalendar();
+	dcal.setTime(dd);
+
+	// find days left
+	int days = 0;
+	if (dcal.get(Calendar.YEAR) == today.get(Calendar.YEAR)) {
+	    days = dcal.get(Calendar.DAY_OF_YEAR)
+		    - today.get(Calendar.DAY_OF_YEAR);
+	} else {
+	    days = new Long((dd.getTime() - today.getTime().getTime())
+		    / (1000 * 60 * 60 * 24)).intValue();
+	}
+
+	// if due date is past, set days left to 0
+	// negative days are silly
+	if (days < 0)
+	    days = 0;
+	return days;
     }
-    
-    public boolean hasSubTasks()
-    {
+
+    public boolean hasSubTasks() {
 	return db_ instanceof SubtaskDB;
     }
 }

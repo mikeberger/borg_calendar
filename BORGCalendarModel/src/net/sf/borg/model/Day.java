@@ -587,6 +587,36 @@ public class Day
                 ret.addAppt(info);
             }
         }
+        
+        //subtasks
+        l = TaskModel.getReference().get_subtasks(key);
+        if (l != null)
+        {
+
+            Iterator it = l.iterator();
+
+            while (it.hasNext())
+            {
+
+                Subtask st = (Subtask) it.next();
+                String de = "ST" + st.getId().toString() + " "
+                        + st.getDescription();
+                String tx = de.replace('\n', ' ');
+
+                Appointment info = new Appointment();
+                info.setDate(new GregorianCalendar(year, month, day, 00, 00)
+                        .getTime());
+                String color = info.getColor();
+
+                // bsv 2004-12-21
+                if (color == null)
+                    info.setColor("navy");
+                // if( color == null ) info.setColor("black");
+
+                info.setText(tx);
+                ret.addAppt(info);
+            }
+        }
 
         // add birthdays from address book
         Collection addrs = AddressModel.getReference().getAddresses(key);
