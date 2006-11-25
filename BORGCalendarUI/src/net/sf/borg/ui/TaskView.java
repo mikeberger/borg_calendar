@@ -34,6 +34,7 @@ import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.Vector;
 
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -284,18 +285,65 @@ class TaskView extends View {
 	new PopupMenuHelper(stable, new PopupMenuHelper.Entry[] {
 		new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
 		    public void actionPerformed(java.awt.event.ActionEvent evt) {
-			Object o[] = { new Boolean(false), new Integer(0),
-				null, null, null, null, null };
-			TableSorter ts = (TableSorter) stable.getModel();
-
-			ts.addRow(o);
+			insertSubtask();
 		    }
-		}, "Add_New"),
+		}, "Add_Subtask"),
 		new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
 		    public void actionPerformed(java.awt.event.ActionEvent evt) {
 			TableSorter ts = (TableSorter) stable.getModel();
+
+			Integer ids[] = getSelectedIds();
+
+			for (int i = 0; i < ids.length; ++i) {
+			    if (ids[i] == null)
+				continue;
+			    for (int row = 0; row < ts.getRowCount(); row++) {
+				Integer rowid = (Integer)ts.getValueAt(row, 1);
+				if( rowid != null && rowid.intValue() == ids[i].intValue())
+				{
+				    ts.setValueAt(null, row, 4);
+				    break;
+				}
+			    }
+			}
+		    }
+		}, "Clear_DueDate"),
+		new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
+		    public void actionPerformed(java.awt.event.ActionEvent evt) {
+			TableSorter ts = (TableSorter) stable.getModel();
+
 			int[] indices = stable.getSelectedRows();
 			if (indices.length == 0)
+			    return;
+
+			DateDialog dlg = new DateDialog(null);
+			dlg.setCalendar(new GregorianCalendar());
+			dlg.setVisible(true);
+			Calendar dlgcal = dlg.getCalendar();
+			if (dlgcal == null)
+			    return;
+
+			Integer ids[] = getSelectedIds();
+
+			for (int i = 0; i < ids.length; ++i) {
+			    if (ids[i] == null)
+				continue;
+			    for (int row = 0; row < ts.getRowCount(); row++) {
+				Integer rowid = (Integer)ts.getValueAt(row, 1);
+				if( rowid != null && rowid.intValue() == ids[i].intValue())
+				{
+				    ts.setValueAt(dlgcal.getTime(), row, 4);
+				    break;
+				}
+			    }
+			}
+		    }
+		}, "Set_DueDate"),
+		new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
+		    public void actionPerformed(java.awt.event.ActionEvent evt) {
+			TableSorter ts = (TableSorter) stable.getModel();
+			Integer ids[] = getSelectedIds();			
+			if (ids.length == 0)
 			    return;
 
 			int ret = JOptionPane.showConfirmDialog(null, Resource
@@ -307,22 +355,55 @@ class TaskView extends View {
 			if (ret != JOptionPane.OK_OPTION)
 			    return;
 
-			for (int i = 0; i < indices.length; ++i) {
-			    int index = indices[i];
-			    Integer id = (Integer) ts.getValueAt(index, 1);
-			    tbd_.add(id);
-			    ts.removeRow(index);
-			}
+			for (int i = 0; i < ids.length; ++i) {
+			    System.out.println(ids[i]);
+			    if (ids[i] == null)
+				continue;
+			    tbd_.add(ids[i]);
+			    for (int row = 0; row < ts.getRowCount(); row++) {
+				Integer rowid = (Integer)ts.getValueAt(row, 1);
+				if( rowid != null && rowid.intValue() == ids[i].intValue())
+				{				   
+				    // clear the row
+				    ts.setValueAt(new Boolean(false), row, 0);
+				    ts.setValueAt(null, row, 1);
+				    ts.setValueAt(null, row, 2);
+				    ts.setValueAt(null, row, 3);
+				    ts.setValueAt(null, row, 4);
+				    ts.setValueAt(null, row, 5);
+				    ts.setValueAt(null, row, 6);
+				    break;
+				}
+			    }
+			}			
 
 			// if table is now empty - add 1 row back
 			if (ts.getRowCount() == 0) {
-			    Object o[] = { new Boolean(false), new Integer(0),
-				    null, new Date(), null, null, null };
-			    ts.addRow(o);
+			    insertSubtask();
 			}
 		    }
 		}, "Delete"), });
 
+    }
+
+    private void insertSubtask() {
+	Object o[] = { new Boolean(false), null, null, null, null, null, null };
+	TableSorter ts = (TableSorter) stable.getModel();
+
+	ts.addRow(o);
+    }
+
+    private Integer[] getSelectedIds() {
+	TableSorter ts = (TableSorter) stable.getModel();
+	int[] indices = stable.getSelectedRows();
+	Integer[] ret = new Integer[indices.length];
+
+	for (int i = 0; i < indices.length; ++i) {
+	    int index = indices[i];
+	    ret[i] = (Integer) ts.getValueAt(index, 1);
+	}
+
+	return ret;
     }
 
     private void initLogTable() {
@@ -531,6 +612,7 @@ class TaskView extends View {
 	});
 
 	jPanel4.add(jButton2, jButton2.getName());
+
 	jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 		"/resource/Stop16.gif")));
 	ResourceHelper.setText(jButton3, "Dismiss");
@@ -540,8 +622,18 @@ class TaskView extends View {
 	    }
 	});
 	setDismissButton(jButton3);
-
 	jPanel4.add(jButton3);
+
+	JButton addst = new JButton();
+	addst.setIcon(new javax.swing.ImageIcon(getClass().getResource(
+		"/resource/Add16.gif")));
+	ResourceHelper.setText(addst, "Add_Subtask");
+	addst.addActionListener(new java.awt.event.ActionListener() {
+	    public void actionPerformed(java.awt.event.ActionEvent evt) {
+		insertSubtask();
+	    }
+	});
+	jPanel4.add(addst);
 
 	gridBagConstraints = new java.awt.GridBagConstraints();
 	gridBagConstraints.gridx = 0;
@@ -710,8 +802,8 @@ class TaskView extends View {
 			.checkBoxes((String) typebox.getSelectedItem());
 		for (int i = 0; i < cbs.length; i++) {
 		    if (!cbs[i].equals(TaskTypes.NOCBVALUE)) {
-			Object o[] = { new Boolean(false), new Integer(0),
-				cbs[i], new Date(), null, null };
+			Object o[] = { new Boolean(false), null, cbs[i],
+				new Date(), null, null };
 			ts.addRow(o);
 		    }
 		}
@@ -833,6 +925,7 @@ class TaskView extends View {
 		continue;
 
 	    Integer id = (Integer) ts.getValueAt(r, 1);
+
 	    Boolean closed = (Boolean) ts.getValueAt(r, 0);
 	    Date crd = (Date) ts.getValueAt(r, 3);
 	    if (crd == null)
@@ -855,7 +948,7 @@ class TaskView extends View {
 	    s.setCreateDate(crd);
 	    s.setTask(new Integer(tasknum));
 	    TaskModel.getReference().saveSubTask(s);
-	    if (id.intValue() == 0) {
+	    if (id == null || id.intValue() == 0) {
 		TaskModel.getReference().addLog(
 			tasknum,
 			Resource.getPlainResourceString("subtask") + " "
@@ -1022,7 +1115,7 @@ class TaskView extends View {
 
 	    // reset all subtask id's
 	    for (int row = 0; row < stable.getRowCount(); row++) {
-		stable.setValueAt(new Integer(0), row, 1);
+		stable.setValueAt(null, row, 1);
 	    }
 
 	}
@@ -1045,9 +1138,7 @@ class TaskView extends View {
 	}
 
 	if (TaskModel.getReference().hasSubTasks() && stable.getRowCount() == 0) {
-	    Object o[] = { new Boolean(false), new Integer(0), null, null,
-		    null, null, null };
-	    ts.addRow(o);
+	    insertSubtask();
 	}
     }
 
