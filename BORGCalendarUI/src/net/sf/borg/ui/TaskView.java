@@ -50,6 +50,7 @@ import net.sf.borg.common.ui.TableSorter;
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Resource;
+import net.sf.borg.common.util.Warning;
 import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.Subtask;
 import net.sf.borg.model.Task;
@@ -818,6 +819,7 @@ class TaskView extends View {
 
 	    // allocate a new task object from the task data model
 	    TaskModel taskmod_ = TaskModel.getReference();
+	    taskmod_.beginTransaction();
 	    Task task = taskmod_.newMR();
 
 	    // set the task number to the current number for updates and
@@ -916,22 +918,36 @@ class TaskView extends View {
 		}
 	    }
 
-	    saveSubtasks(task.getTaskNumber().intValue());
+	    saveSubtasks(task);
+	    taskmod_.commitTransaction();
 
 	    // refresh window from DB - will update task number for
 	    // new tasks and will set the list of available next states from
 	    // the task model
 	    showtask(T_CHANGE, task);
+	} catch (Warning w) {
+	    Errmsg.notice(w.getMessage());
+	    try {
+		TaskModel.getReference().rollbackTransaction();
+	    } catch (Exception e) {
+		Errmsg.errmsg(e);
+	    }
+
 	} catch (Exception e) {
 	    Errmsg.errmsg(e);
-	    // JOptionPane.showMessageDialog(null, e.toString(), "Error",
-	    // JOptionPane.ERROR_MESSAGE);
+	    try {
+		TaskModel.getReference().rollbackTransaction();
+	    } catch (Exception e1) {
+		Errmsg.errmsg(e1);
+	    }
+
 	}
 
     }// GEN-LAST:event_savetask
 
-    private void saveSubtasks(int tasknum) throws Exception {
+    private void saveSubtasks(Task task) throws Warning, Exception {
 
+	int tasknum = task.getTaskNumber().intValue();
 	Iterator it = tbd_.iterator();
 	while (it.hasNext()) {
 	    Integer id = (Integer) it.next();
@@ -974,6 +990,26 @@ class TaskView extends View {
 	    s.setDescription((String) desc);
 	    s.setCloseDate(cd);
 	    s.setDueDate(dd);
+
+	    // validate dd - make sure only date and not time is compared
+	    if (dd != null) {
+		GregorianCalendar tcal = new GregorianCalendar();
+		tcal.setTime(task.getDueDate());
+		tcal.set(Calendar.HOUR_OF_DAY, 0);
+		tcal.set(Calendar.MINUTE, 10);
+		tcal.set(Calendar.SECOND, 0);
+		GregorianCalendar dcal = new GregorianCalendar();
+		dcal.setTime(dd);
+		dcal.set(Calendar.HOUR_OF_DAY, 0);
+		dcal.set(Calendar.MINUTE, 0);
+		dcal.set(Calendar.SECOND, 0);
+		if (dcal.getTime().after(tcal.getTime())) {
+		    String msg = Resource.getPlainResourceString("stdd_warning") + ": " + desc; 
+		    throw new Warning(msg);
+		}
+
+	    }
+
 	    s.setCreateDate(crd);
 	    s.setTask(new Integer(tasknum));
 	    TaskModel.getReference().saveSubTask(s);
@@ -1000,7 +1036,7 @@ class TaskView extends View {
 	this.dispose();
     }// GEN-LAST:event_disact
 
-    private void loadLog(int taskid) throws Exception{
+    private void loadLog(int taskid) throws Exception {
 	TableSorter tslog = (TableSorter) logtable.getModel();
 	tslog.setRowCount(0);
 	// add log entries
@@ -1100,7 +1136,7 @@ class TaskView extends View {
 		}
 
 	    }
-	    
+
 	    loadLog(task.getTaskNumber().intValue());
 
 	} else // initialize new task

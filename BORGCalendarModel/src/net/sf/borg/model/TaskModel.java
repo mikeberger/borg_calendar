@@ -39,7 +39,7 @@ import net.sf.borg.model.db.DBException;
 import net.sf.borg.model.db.IBeanDataFactory;
 import net.sf.borg.model.db.SubtaskDB;
 
-public class TaskModel extends Model implements Model.Listener {
+public class TaskModel extends Model implements Model.Listener, Transactional {
 
     private BeanDB db_; // the database
 
@@ -720,5 +720,30 @@ public class TaskModel extends Model implements Model.Listener {
 
     public boolean hasSubTasks() {
 	return db_ instanceof SubtaskDB;
+    }
+
+    public void beginTransaction() throws Exception {
+	if( db_ instanceof Transactional )
+	{
+	    Transactional t = (Transactional) db_;
+	    t.beginTransaction();
+	}
+	
+    }
+
+    public void commitTransaction() throws Exception {
+	if( db_ instanceof Transactional )
+	{
+	    Transactional t = (Transactional) db_;
+	    t.commitTransaction();
+	}
+    }
+
+    public void rollbackTransaction() throws Exception {
+	if( db_ instanceof Transactional )
+	{
+	    Transactional t = (Transactional) db_;
+	    t.rollbackTransaction();
+	}
     }
 }

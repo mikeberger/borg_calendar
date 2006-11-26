@@ -110,7 +110,7 @@ public class SqlRunner extends JDialog {
 		try {
 			
 			// System.out.println(sb.toString());
-			JdbcDB.startTransaction();
+			TaskModel.getReference().beginTransaction();
 			ResultSet r = JdbcDB.execSQL(editor.getText());
 			String res = "";
 			if( r != null && r.next())
@@ -125,7 +125,7 @@ public class SqlRunner extends JDialog {
 					res += "\n";
 				}
 			}
-			JdbcDB.commitTransaction();
+			TaskModel.getReference().commitTransaction();
 			if( !res.equals(""))
 				ScrolledDialog.showNotice(res);
 				//JOptionPane.showMessageDialog(this, res);
@@ -135,7 +135,7 @@ public class SqlRunner extends JDialog {
 		} catch (Exception e) {
 			System.out.println(e.toString());
 			try {
-				JdbcDB.rollbackTransaction();
+			    TaskModel.getReference().rollbackTransaction();
 			} catch (Exception e2) {
 			}
 			Errmsg.errmsg(e);
