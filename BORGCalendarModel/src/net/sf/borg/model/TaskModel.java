@@ -470,6 +470,8 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 
 	    else if (ch.name().equals("Task")) {
 		Task task = (Task) aa.fromXml(ch);
+		if( task.getPriority() == null )
+		    task.setPriority(new Integer(3));
 		try {
 		    db_.addObj(task, false);
 		    // migrate from old subtask mechanism

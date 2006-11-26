@@ -385,7 +385,7 @@ public class TodoRecordManager {
         	task.setTaskNumber(new Integer(-1));
         	task.setState("OPEN");
         	task.setType("TASK");
-        	task.setPriority("3");
+        	task.setPriority(new Integer(3));
         	task.setStartDate( new Date());
         	task.setDueDate(hhRecord.getDueDate());
         	task.setDescription(hhRecord.getDescription());

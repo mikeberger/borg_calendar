@@ -56,9 +56,8 @@ class TaskJdbcDB extends JdbcDB implements SubtaskDB {
 			Exception {
 		PreparedStatement stmt = connection_
 				.prepareStatement("INSERT INTO tasks ( tasknum, username, start_date, due_date, person_assigned,"
-						+ " priority, state, type, description, resolution, todo_list, user_task1,"
-						+ " user_task2, user_task3, user_task4, user_task5, category, close_date) VALUES "
-						+ "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+						+ " priority, state, type, description, resolution, category, close_date) VALUES "
+						+ "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
 		Task task = (Task) bean;
 
@@ -78,23 +77,17 @@ class TaskJdbcDB extends JdbcDB implements SubtaskDB {
 			stmt.setDate(4, null);
 
 		stmt.setString(5, task.getPersonAssigned());
-		stmt.setString(6, task.getPriority());
+		stmt.setInt(6, task.getPriority().intValue());
 		stmt.setString(7, task.getState());
 		stmt.setString(8, task.getType());
 		stmt.setString(9, task.getDescription());
 		stmt.setString(10, task.getResolution());
-		stmt.setString(11, task.getTodoList());
-		stmt.setString(12, task.getUserTask1());
-		stmt.setString(13, task.getUserTask2());
-		stmt.setString(14, task.getUserTask3());
-		stmt.setString(15, task.getUserTask4());
-		stmt.setString(16, task.getUserTask5());
-		stmt.setString(17, task.getCategory());
+		stmt.setString(11, task.getCategory());
 		java.util.Date cd = task.getCD();
 		if (cd != null)
-			stmt.setDate(18, new java.sql.Date(cd.getTime()));
+			stmt.setDate(12, new java.sql.Date(cd.getTime()));
 		else
-			stmt.setDate(18, null);
+			stmt.setDate(12, null);
 
 		stmt.executeUpdate();
 
@@ -167,17 +160,11 @@ class TaskJdbcDB extends JdbcDB implements SubtaskDB {
 					.setDueDate(new java.util.Date(r.getDate("due_date")
 							.getTime()));
 		task.setPersonAssigned(r.getString("person_assigned"));
-		task.setPriority(r.getString("priority"));
+		task.setPriority(new Integer(r.getInt("priority")));
 		task.setState(r.getString("state"));
 		task.setType(r.getString("type"));
 		task.setDescription(r.getString("description"));
 		task.setResolution(r.getString("resolution"));
-		task.setTodoList(r.getString("todo_list"));
-		task.setUserTask1(r.getString("user_task1"));
-		task.setUserTask2(r.getString("user_task2"));
-		task.setUserTask3(r.getString("user_task3"));
-		task.setUserTask4(r.getString("user_task4"));
-		task.setUserTask5(r.getString("user_task5"));
 		task.setCategory(r.getString("category"));
 		if (r.getDate("close_date") != null)
 			task.setCD(new java.util.Date(r.getDate("close_date").getTime()));
@@ -188,8 +175,8 @@ class TaskJdbcDB extends JdbcDB implements SubtaskDB {
 			Exception {
 		PreparedStatement stmt = connection_
 				.prepareStatement("UPDATE tasks SET  start_date = ?, due_date = ?, person_assigned = ?,"
-						+ " priority = ?, state = ?, type = ?, description = ?, resolution = ?, todo_list = ?, user_task1 = ?,"
-						+ " user_task2 = ?, user_task3 = ?, user_task4 = ?, user_task5 = ?, category = ?, close_date = ? WHERE tasknum = ? AND username = ?");
+						+ " priority = ?, state = ?, type = ?, description = ?, resolution = ?,"
+						+ " category = ?, close_date = ? WHERE tasknum = ? AND username = ?");
 
 		Task task = (Task) bean;
 
@@ -206,26 +193,20 @@ class TaskJdbcDB extends JdbcDB implements SubtaskDB {
 			stmt.setDate(2, null);
 
 		stmt.setString(3, task.getPersonAssigned());
-		stmt.setString(4, task.getPriority());
+		stmt.setInt(4, task.getPriority().intValue());
 		stmt.setString(5, task.getState());
 		stmt.setString(6, task.getType());
 		stmt.setString(7, task.getDescription());
 		stmt.setString(8, task.getResolution());
-		stmt.setString(9, task.getTodoList());
-		stmt.setString(10, task.getUserTask1());
-		stmt.setString(11, task.getUserTask2());
-		stmt.setString(12, task.getUserTask3());
-		stmt.setString(13, task.getUserTask4());
-		stmt.setString(14, task.getUserTask5());
-		stmt.setString(15, task.getCategory());
+		stmt.setString(9, task.getCategory());
 		java.util.Date cd = task.getCD();
 		if (cd != null)
-			stmt.setDate(16, new java.sql.Date(cd.getTime()));
+			stmt.setDate(10, new java.sql.Date(cd.getTime()));
 		else
-			stmt.setDate(16, null);
+			stmt.setDate(10, null);
 
-		stmt.setInt(17, task.getKey());
-		stmt.setString(18, username_);
+		stmt.setInt(11, task.getKey());
+		stmt.setString(12, username_);
 
 		stmt.executeUpdate();
 

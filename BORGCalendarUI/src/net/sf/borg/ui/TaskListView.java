@@ -123,6 +123,27 @@ public class TaskListView extends View {
             this.setBackground(l.getBackground());
             this.setForeground(l.getForeground());
             
+            // priority
+            if( column == 4 ) {
+        	if( isSelected )
+            		return this;
+        	if( i == 1 ){
+        	    this.setBackground(new Color(255,120, 120));
+        	}
+        	else if( i == 2 ){
+        	    this.setBackground(new Color(255,200, 120));
+        	}
+        	else if( i == 3 ){
+        	    this.setBackground(new Color(255,255, 175));
+        	}
+        	else if( i == 4 ){
+        	    this.setBackground(new Color(220,220, 255));
+        	}
+        	else if( i == 5 ){
+        	    this.setBackground(new Color(200,255, 175));
+        	}
+        	return this;
+            }
             if( column != 8 )
         	return this;
             
@@ -194,7 +215,7 @@ public class TaskListView extends View {
                 Resource.getPlainResourceString("Days_Left"),
                 Resource.getPlainResourceString("Description") }, new Class[] {
                 java.lang.Integer.class, java.lang.String.class,
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, Date.class,
+                java.lang.String.class, java.lang.String.class, java.lang.Integer.class, Date.class,
                 Date.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.String.class }));
 
         // set up for sorting when a column header is clicked

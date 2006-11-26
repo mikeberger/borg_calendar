@@ -37,7 +37,7 @@
 	</field>
 	<field>
 		<name>PR</name>
-		<type>String</type>
+		<type>Integer</type>
 		<longName>Priority</longName>
 		<desc>Priority</desc>
 	</field>

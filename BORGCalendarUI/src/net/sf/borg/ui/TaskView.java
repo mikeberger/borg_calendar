@@ -522,7 +522,7 @@ class TaskView extends View {
 	lblStatus = new javax.swing.JLabel();
 	startdatechooser = new de.wannawork.jcalendar.JCalendarComboBox();
 	duedatechooser = new de.wannawork.jcalendar.JCalendarComboBox();
-	pritext = new javax.swing.JTextField();
+	pritext = new javax.swing.JComboBox();
 	patext = new javax.swing.JTextField();
 	lblStartDate = new javax.swing.JLabel();
 	lblDueDate = new javax.swing.JLabel();
@@ -791,6 +791,11 @@ class TaskView extends View {
 	jPanel3.add(getDaysLeftText(), gridBagConstraints13);
 	jPanel3.add(daysLeftLabel, gridBagConstraints22);
 	ResourceHelper.setText(closeLabel, "close_date");
+	
+	for( int p = 1; p <= 5; p++ )
+	{
+	    pritext.addItem(new Integer(p));
+	}
 
     }// GEN-END:initComponents
 
@@ -856,7 +861,8 @@ class TaskView extends View {
 	    task.setStartDate(cal.getTime()); // start date
 	    cal = duedatechooser.getCalendar();
 	    task.setDueDate(cal.getTime()); // due date
-	    task.setPriority(pritext.getText()); // priority
+	    Integer pri = (Integer)pritext.getSelectedItem();
+	    task.setPriority(pri); // priority
 	    task.setPersonAssigned(patext.getText()); // person assigned
 
 	    task.setDescription(jTextArea1.getText()); // description
@@ -1084,7 +1090,7 @@ class TaskView extends View {
 
 	    startdatechooser.setCalendar(gc2);
 
-	    pritext.setText(task.getPriority()); // priority
+	    pritext.setSelectedItem(task.getPriority()); // priority
 	    patext.setText(task.getPersonAssigned()); // person assigned
 
 	    Date cd = task.getCD();
@@ -1149,7 +1155,7 @@ class TaskView extends View {
 	    // title
 	    ResourceHelper.setTitle(this, "NEW_Item");
 
-	    pritext.setText("3"); // priority default to 3
+	    pritext.setSelectedItem(new Integer(3)); // priority default to 3
 	    patext.setText(""); // person assigned
 	    // cattext.setText("");
 	    catbox.setSelectedIndex(0);
@@ -1260,7 +1266,7 @@ class TaskView extends View {
 
     private de.wannawork.jcalendar.JCalendarComboBox duedatechooser;
 
-    private javax.swing.JTextField pritext;
+    private javax.swing.JComboBox pritext;
 
     private javax.swing.JTextField patext;
 
