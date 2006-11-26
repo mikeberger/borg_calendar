@@ -298,9 +298,10 @@ class TaskView extends View {
 			    if (ids[i] == null)
 				continue;
 			    for (int row = 0; row < ts.getRowCount(); row++) {
-				Integer rowid = (Integer)ts.getValueAt(row, 1);
-				if( rowid != null && rowid.intValue() == ids[i].intValue())
-				{
+				Integer rowid = (Integer) ts.getValueAt(row, 1);
+				if (rowid != null
+					&& rowid.intValue() == ids[i]
+						.intValue()) {
 				    ts.setValueAt(null, row, 4);
 				    break;
 				}
@@ -329,9 +330,10 @@ class TaskView extends View {
 			    if (ids[i] == null)
 				continue;
 			    for (int row = 0; row < ts.getRowCount(); row++) {
-				Integer rowid = (Integer)ts.getValueAt(row, 1);
-				if( rowid != null && rowid.intValue() == ids[i].intValue())
-				{
+				Integer rowid = (Integer) ts.getValueAt(row, 1);
+				if (rowid != null
+					&& rowid.intValue() == ids[i]
+						.intValue()) {
 				    ts.setValueAt(dlgcal.getTime(), row, 4);
 				    break;
 				}
@@ -342,7 +344,7 @@ class TaskView extends View {
 		new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
 		    public void actionPerformed(java.awt.event.ActionEvent evt) {
 			TableSorter ts = (TableSorter) stable.getModel();
-			Integer ids[] = getSelectedIds();			
+			Integer ids[] = getSelectedIds();
 			if (ids.length == 0)
 			    return;
 
@@ -361,9 +363,10 @@ class TaskView extends View {
 				continue;
 			    tbd_.add(ids[i]);
 			    for (int row = 0; row < ts.getRowCount(); row++) {
-				Integer rowid = (Integer)ts.getValueAt(row, 1);
-				if( rowid != null && rowid.intValue() == ids[i].intValue())
-				{				   
+				Integer rowid = (Integer) ts.getValueAt(row, 1);
+				if (rowid != null
+					&& rowid.intValue() == ids[i]
+						.intValue()) {
 				    // clear the row
 				    ts.setValueAt(new Boolean(false), row, 0);
 				    ts.setValueAt(null, row, 1);
@@ -375,7 +378,7 @@ class TaskView extends View {
 				    break;
 				}
 			    }
-			}			
+			}
 
 			// if table is now empty - add 1 row back
 			if (ts.getRowCount() == 0) {
@@ -422,6 +425,32 @@ class TaskView extends View {
 
 	ts.sortByColumn(0);
 	ts.addMouseListenerToHeaderInTable(logtable);
+	new PopupMenuHelper(logtable,
+		new PopupMenuHelper.Entry[] { new PopupMenuHelper.Entry(
+			new java.awt.event.ActionListener() {
+			    public void actionPerformed(
+				    java.awt.event.ActionEvent evt) {
+
+				String tasknum = itemtext.getText();
+				if (tasknum.equals("CLONE")
+					|| tasknum.equals("NEW"))
+				    return;
+				String logentry = JOptionPane
+					.showInputDialog(net.sf.borg.common.util.Resource
+						.getResourceString("Enter_Log"));
+				if (logentry == null)
+				    return;
+
+				try {
+				    TaskModel.getReference()
+					    .addLog(Integer.parseInt(tasknum),
+						    logentry);
+				    loadLog(Integer.parseInt(tasknum));
+				} catch (Exception e) {
+				    Errmsg.errmsg(e);
+				}
+			    }
+			}, "Add_Log"), });
 
     }
 
@@ -971,14 +1000,26 @@ class TaskView extends View {
 	this.dispose();
     }// GEN-LAST:event_disact
 
+    private void loadLog(int taskid) throws Exception{
+	TableSorter tslog = (TableSorter) logtable.getModel();
+	tslog.setRowCount(0);
+	// add log entries
+	Collection logs = TaskModel.getReference().getLogs(taskid);
+	Iterator it = logs.iterator();
+	while (it.hasNext()) {
+	    Tasklog s = (Tasklog) it.next();
+	    Object o[] = { s.getlogTime(), s.getDescription() };
+
+	    tslog.addRow(o);
+	}
+    }
+
     private void showtask(int function, Task task) throws Exception {
 	TaskModel taskmod_ = TaskModel.getReference();
 
 	// show a task editor for changing, cloning, or add of a task
 	TableSorter ts = (TableSorter) stable.getModel();
 	ts.setRowCount(0);
-	TableSorter tslog = (TableSorter) logtable.getModel();
-	tslog.setRowCount(0);
 
 	tbd_.clear();
 
@@ -1058,17 +1099,9 @@ class TaskView extends View {
 		    ts.addRow(o);
 		}
 
-		// add log entries
-		Collection logs = TaskModel.getReference().getLogs(
-			task.getTaskNumber().intValue());
-		it = logs.iterator();
-		while (it.hasNext()) {
-		    Tasklog s = (Tasklog) it.next();
-		    Object o[] = { s.getlogTime(), s.getDescription() };
-
-		    tslog.addRow(o);
-		}
 	    }
+	    
+	    loadLog(task.getTaskNumber().intValue());
 
 	} else // initialize new task
 	{
