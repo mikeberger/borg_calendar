@@ -599,7 +599,7 @@ public class Day
             {
 
                 Subtask st = (Subtask) it.next();
-                String de = "ST" + st.getId().toString() + " "
+                String de = "BT" + st.getTask() + "/ST" + st.getId().toString() + " "
                         + st.getDescription();
                 String tx = de.replace('\n', ' ');
 
