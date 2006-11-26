@@ -490,7 +490,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 				st.setCreateDate(new Date());
 				st.setDescription(cbs[sti]);
 				st.setTask(task.getTaskNumber());
-				if (todos.contains(Integer.toString(sti))) {
+				if (todos.indexOf(Integer.toString(sti)) != -1) {
 				    st.setCloseDate(new Date());
 				}
 				saveSubTask(st);
@@ -501,7 +501,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 			    st.setCreateDate(new Date());
 			    st.setDescription(task.getUserTask1());
 			    st.setTask(task.getTaskNumber());
-			    if (todos.contains("6")) {
+			    if (todos.indexOf("6") != -1) {
 				st.setCloseDate(new Date());
 			    }
 			    saveSubTask(st);
@@ -511,7 +511,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 			    st.setCreateDate(new Date());
 			    st.setDescription(task.getUserTask2());
 			    st.setTask(task.getTaskNumber());
-			    if (todos.contains("7")) {
+			    if (todos.indexOf("7") != -1) {
 				st.setCloseDate(new Date());
 			    }
 			    saveSubTask(st);
@@ -521,7 +521,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 			    st.setCreateDate(new Date());
 			    st.setDescription(task.getUserTask3());
 			    st.setTask(task.getTaskNumber());
-			    if (todos.contains("8")) {
+			    if (todos.indexOf("8") != -1) {
 				st.setCloseDate(new Date());
 			    }
 			    saveSubTask(st);
@@ -531,7 +531,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 			    st.setCreateDate(new Date());
 			    st.setDescription(task.getUserTask4());
 			    st.setTask(task.getTaskNumber());
-			    if (todos.contains("9")) {
+			    if (todos.indexOf("9") != -1) {
 				st.setCloseDate(new Date());
 			    }
 			    saveSubTask(st);
@@ -541,7 +541,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 			    st.setCreateDate(new Date());
 			    st.setDescription(task.getUserTask5());
 			    st.setTask(task.getTaskNumber());
-			    if (todos.contains("A")) {
+			    if (todos.indexOf("A") != -1) {
 				st.setCloseDate(new Date());
 			    }
 			    saveSubTask(st);

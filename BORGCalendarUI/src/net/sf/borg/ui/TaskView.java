@@ -197,15 +197,17 @@ class TaskView extends View {
 	    int days = TaskModel.daysLeft(dd);
 
 	    if (!isSelected) {
-		// yellow alert -- <10 days left
-		if (days < 10)
-		    this.setBackground(Color.yellow);
+//		 yellow alert -- <10 days left
+	            if (days < 10)
+	        	this.setBackground(new Color(255,255, 175));
+	            
+	            if (days < 5)
+	        	this.setBackground(new Color(255,200, 120));
 
-		// red alert -- <2 days left
-		if (days < 2) {
-		    this.setBackground(Color.red);
-		    this.setForeground(Color.white);
-		}
+	            // red alert -- <2 days left
+	            if (days < 2) {
+	        	this.setBackground(new Color(255,120, 120));
+	            }
 	    }
 
 	    return this;

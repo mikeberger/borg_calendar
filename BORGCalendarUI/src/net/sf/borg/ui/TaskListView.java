@@ -160,12 +160,14 @@ public class TaskListView extends View {
 
             // yellow alert -- <10 days left
             if (i < 10)
-                this.setBackground(Color.yellow);
+        	this.setBackground(new Color(255,255, 175));
+            
+            if (i < 5)
+        	this.setBackground(new Color(255,200, 120));
 
             // red alert -- <2 days left
             if (i < 2) {
-                this.setBackground(Color.red);
-                this.setForeground(Color.white);
+        	this.setBackground(new Color(255,120, 120));
             }
 
             return this;
