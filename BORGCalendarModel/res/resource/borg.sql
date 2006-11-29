@@ -1,8 +1,3 @@
-
--- 
--- Table structure for table `addresses`
--- 
-
 CREATE TABLE `addresses` (
   `address_num` int(11) NOT NULL default '0',
   `username` varchar(25) NOT NULL,
@@ -94,20 +89,40 @@ CREATE TABLE `tasks` (
   `start_date` date NOT NULL default '0000-00-00',
   `due_date` date default NULL,
   `person_assigned` varchar(10) default NULL,
-  `priority` varchar(10) default NULL,
+  `priority` tinyint(4) default '3',
   `state` varchar(10) NOT NULL default '',
   `type` varchar(10) NOT NULL default '',
   `description` text NOT NULL,
   `resolution` text,
-  `todo_list` varchar(20) default NULL,
-  `user_task1` varchar(25) default NULL,
-  `user_task2` varchar(25) default NULL,
-  `user_task3` varchar(25) default NULL,
-  `user_task4` varchar(25) default NULL,
-  `user_task5` varchar(25) default NULL,
   `category` varchar(10) default NULL,
   `close_date` date default NULL,
   PRIMARY KEY  (`tasknum`,`username`),
   KEY `username` (`username`)
 );
 
+CREATE TABLE subtasks (
+  id int(11) NOT NULL default '0' ,
+  username varchar(25) NOT NULL,
+  create_date date NOT NULL default '0000-00-00',
+  due_date date default NULL default '0000-00-00',
+  close_date date default NULL default '0000-00-00',
+  description text NOT NULL,
+  task integer NOT NULL default '0',
+  PRIMARY KEY  (id,username),
+  KEY `username` (`username`),
+  FOREIGN KEY (task, username) REFERENCES tasks ( tasknum, username )
+     ON DELETE CASCADE
+);
+
+
+CREATE TABLE tasklog (
+  id int(11) NOT NULL default '0',
+  username varchar(25) NOT NULL,
+  logtime datetime NOT NULL default '0000-00-00 00:00:00',
+  description text NOT NULL,
+  task int(11) NOT NULL default '0' ,
+  PRIMARY KEY ( id, username ),
+  KEY `username` (`username`),
+  FOREIGN KEY (task, username) REFERENCES tasks ( tasknum, username )
+     ON DELETE CASCADE
+);
