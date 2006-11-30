@@ -116,10 +116,10 @@ public class OptionsView extends View {
 
 		initComponents();
 		dbTypeGroup = new javax.swing.ButtonGroup();
-		dbTypeGroup.add(localFileButton);
+		dbTypeGroup.add(hsqldbButton);	
 		dbTypeGroup.add(MySQLButton);
 		dbTypeGroup.add(remoteButton);
-		dbTypeGroup.add(hsqldbButton);
+		dbTypeGroup.add(localFileButton);
 
 		if (!dbonly) {
 			addModel(AppointmentModel.getReference());
@@ -1460,10 +1460,11 @@ public class OptionsView extends View {
 			flowLayout.setHgap(40); // Generated
 			dbTypePanel = new JPanel();
 			dbTypePanel.setLayout(flowLayout); // Generated
-			dbTypePanel.add(getLocalFileButton(), null); // Generated
+			dbTypePanel.add(getHSQLDBFileButton(), null);	
 			dbTypePanel.add(getMySQLButton(), null); // Generated
 			dbTypePanel.add(getRemoteButton(), null); // Generated
-			dbTypePanel.add(getHSQLDBFileButton(), null);
+			dbTypePanel.add(getLocalFileButton(), null); // Generated
+			
 		}
 		return dbTypePanel;
 	}

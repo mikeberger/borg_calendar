@@ -884,6 +884,9 @@ class TaskView extends View {
 			    task.getState()))) {
 		for (int r = 0; r < stable.getRowCount(); r++) {
 		    Boolean closed = (Boolean) ts.getValueAt(r, 0);
+		    Integer id = (Integer) ts.getValueAt(r, 1);
+		    if( id == null || id.intValue() == 0)
+		    	continue;
 		    if (closed.booleanValue() != true) {
 			Errmsg.notice(Resource
 				.getResourceString("open_subtasks"));

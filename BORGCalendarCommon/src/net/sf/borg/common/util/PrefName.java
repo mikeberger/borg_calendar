@@ -50,7 +50,7 @@ public class PrefName {
 		}
 		
 		// database
-		static public PrefName DBTYPE = new PrefName( "dbtype", "local");
+		static public PrefName DBTYPE = new PrefName( "dbtype", "hsqldb");
 		static public PrefName DBDIR = new PrefName( "dbdir", "not-set");
 		static public PrefName DBHOST = new PrefName( "dbhost", "localhost");
 		static public PrefName DBPORT = new PrefName( "dbport", "3306");

@@ -82,6 +82,9 @@ public class BeanDataFactoryFactory
 		}
 		else if( dbtype.equals("hsqldb"))
 		{
+			String hdir = Prefs.getPref(PrefName.HSQLDBDIR);
+			if( hdir.equals("not-set"))
+				return hdir;
 			dbdir = "jdbc:hsqldb:file:" + Prefs.getPref(PrefName.HSQLDBDIR) + "/borg_";
 		}
 		else
