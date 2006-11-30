@@ -1,11 +1,11 @@
 ============================
-RELEASE NOTES for BORG 1.5.2
+RELEASE NOTES for BORG 1.6
 ============================
 
 The project home page is http://borg-calendar.sourceforge.net
 
 ***************************************************************
-*** MYSQL Users - database changes are required - See below ***
+*** MYSQL, HSQLDB Users - database changes are required - See below ***
 *************************************************************** 
 
 KNOWN ISSUES:
@@ -16,18 +16,13 @@ Feel free to mail any translations to i_flem@users.sourceforge.net.
 There is nobody on the project actively updating the translations. Any
 received translations will be posted as patches.
 
-2. All MySQL users must run ungrade script(s)
+2. MySQL and HSQLDB users must migrate to a new database schema.
 
-MySQL Users
------------
-This section only concerns users using MySQL to store BORG data. 
+--- TBD --- add instructions here
 
-The SQL needed to transition from 1.5.1.2 to 1.5.2 is in file update152.sql.
-The SQL needed to transition from 1.5.1 to 1.5.1.2 is in file update1512.sql.
-The SQL needed to transition from 1.5 to 1.5.1 is in file update151.sql.
-The SQL needed to transition from 1.4.x to 1.5 is in file update1_5.sql.
+3. The new Subtask features of the task tracker are not available for users of the local db files.
+All users are encouraged to switch to MySQL or HSQLDB.
 
-The borg.sql file has been updated with the SQL to create a new 1.5.2 database.
 
 
 RUNNING

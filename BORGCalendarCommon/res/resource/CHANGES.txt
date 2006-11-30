@@ -1,3 +1,8 @@
+Version 1.6
+-----------
+Redesign Subtasks in Task Tracker
+Add Task Log
+
 Version 1.5.2
 -------------
 HSQLDB Standalone Database Support
