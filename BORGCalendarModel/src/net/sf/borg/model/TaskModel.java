@@ -435,9 +435,35 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 	    if (e.getRetCode() != DBException.RET_NOT_FOUND)
 		Errmsg.errmsg(e);
 	}
+	
+	ProjectXMLAdapter pa = new ProjectXMLAdapter();
+
+	// export tasklogs
+	try {
+
+	    Collection projects = getProjects();
+	    Iterator ti = projects.iterator();
+	    while (ti.hasNext()) {
+		Project p = (Project) ti.next();
+
+		XTree xt = pa.toXml(p);
+		fw.write(xt.toString());
+	    }
+	} catch (DBException e) {
+	    if (e.getRetCode() != DBException.RET_NOT_FOUND)
+		Errmsg.errmsg(e);
+	}
 
 	fw.write("</TASKS>");
 
+    }
+
+    public Collection getProjects() throws Exception{
+	if (db_ instanceof TaskDB == false)
+	    throw new Exception(Resource
+		    .getPlainResourceString("SubtaskNotSupported"));
+	TaskDB sdb = (TaskDB) db_;
+	return sdb.getProjects();
     }
 
     // export the task data to a file in XML
@@ -446,6 +472,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 	TaskXMLAdapter aa = new TaskXMLAdapter();
 	SubtaskXMLAdapter sa = new SubtaskXMLAdapter();
 	TasklogXMLAdapter la = new TasklogXMLAdapter();
+	ProjectXMLAdapter pa = new ProjectXMLAdapter();
 
 	// for each appt - create an Appointment and store
 	for (int i = 1;; i++) {
@@ -580,6 +607,15 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 		try {
 		    tlog.setId(null);
 		    saveLog(tlog);
+		} catch (Exception e) {
+		    Errmsg.errmsg(e);
+		}
+	    }
+	    else if (ch.name().equals("Project")) {
+		Project p = (Project) pa.fromXml(ch);
+		try {
+		    p.setId(null);
+		    saveProject(p);
 		} catch (Exception e) {
 		    Errmsg.errmsg(e);
 		}
@@ -747,5 +783,21 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 	    Transactional t = (Transactional) db_;
 	    t.rollbackTransaction();
 	}
+    }
+    
+    public void saveProject(Project p) throws Exception {
+	if (db_ instanceof TaskDB == false)
+	    throw new Exception(Resource
+		    .getPlainResourceString("SubtaskNotSupported"));
+
+	TaskDB sdb = (TaskDB) db_;
+	if (p.getId() == null || p.getId().intValue() <= 0) {
+	    p.setId(new Integer(sdb.nextProjectKey()));
+	    sdb.addProject(p);
+	} else {
+	    sdb.updateProject(p);
+	}
+	
+	load_map();
     }
 }
