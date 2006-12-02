@@ -47,7 +47,7 @@ class TaskFileDB extends FileDBCreator
 		TaskAdapter ta = new TaskAdapter();
 		// set the schema for the task DB
 		Schema schema = new Schema();
-		URL schurl = getClass().getResource("/resource/mrdb_schema.xml");
+		URL schurl = getClass().getResource("/resource/task_schema.xml");
 		XTree sch_xml = XTree.readFromURL(schurl);
 		schema.setFromXML( sch_xml );
             

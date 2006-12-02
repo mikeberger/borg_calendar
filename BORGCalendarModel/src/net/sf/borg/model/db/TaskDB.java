@@ -3,11 +3,12 @@ package net.sf.borg.model.db;
 import java.sql.SQLException;
 import java.util.Collection;
 
+import net.sf.borg.model.Project;
 import net.sf.borg.model.Subtask;
 import net.sf.borg.model.Tasklog;
 
 
-public interface SubtaskDB {
+public interface TaskDB {
 
     public Collection getSubTasks(int taskid) throws SQLException;
     
@@ -27,5 +28,19 @@ public interface SubtaskDB {
     public void addLog(int taskid, String desc) throws SQLException;
     
     public void saveLog( Tasklog tlog ) throws SQLException;
+    
+    public Collection getProjects() throws SQLException;
+    
+    public Collection getTasks(int projectid) throws SQLException;
+    
+    public Project getProject(int projectid) throws SQLException;
+    
+    public void deleteProject(int id) throws SQLException;
+
+    public void addProject(Project p) throws SQLException;
+    
+    public void updateProject(Project p) throws SQLException;
+    
+    public int nextProjectKey() throws Exception;
 
 }

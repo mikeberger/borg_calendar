@@ -82,11 +82,16 @@ CREATE CACHED TABLE options (
   PRIMARY KEY  (name,username)
 );
 
--- --------------------------------------------------------
-
--- 
--- Table structure for table tasks
--- 
+CREATE CACHED TABLE projects (
+  id integer default '0' NOT NULL,
+  username varchar(25) NOT NULL,
+  start_date date NOT NULL ,
+  due_date date default NULL,
+  description longvarchar NOT NULL,
+  category varchar(10) default NULL,
+  PRIMARY KEY  (id,username)
+);
+CREATE INDEX project_user ON projects (username);
 
 CREATE CACHED TABLE tasks (
   tasknum integer default '0' NOT NULL,
@@ -101,7 +106,10 @@ CREATE CACHED TABLE tasks (
   resolution longvarchar,
   category varchar(10) default NULL,
   close_date date default NULL,
-  PRIMARY KEY  (tasknum,username)
+  project integer default NULL,
+  PRIMARY KEY  (tasknum,username),
+  FOREIGN KEY (project, username) REFERENCES projects ( id, username )
+     ON DELETE CASCADE
 );
 CREATE INDEX task_user ON tasks (username);
 
@@ -139,3 +147,5 @@ CREATE CACHED TABLE tasklog (
      ON DELETE CASCADE
 );
 CREATE INDEX tasklog_user ON tasklog (username);
+
+

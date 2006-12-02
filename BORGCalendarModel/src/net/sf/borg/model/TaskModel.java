@@ -37,7 +37,7 @@ import net.sf.borg.model.db.BeanDB;
 import net.sf.borg.model.db.BeanDataFactoryFactory;
 import net.sf.borg.model.db.DBException;
 import net.sf.borg.model.db.IBeanDataFactory;
-import net.sf.borg.model.db.SubtaskDB;
+import net.sf.borg.model.db.TaskDB;
 
 public class TaskModel extends Model implements Model.Listener, Transactional {
 
@@ -618,40 +618,40 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
     }
 
     public Collection getSubTasks(int taskid) throws Exception {
-	if (db_ instanceof SubtaskDB == false)
+	if (db_ instanceof TaskDB == false)
 	    throw new Exception(Resource
 		    .getPlainResourceString("SubtaskNotSupported"));
 
-	SubtaskDB sdb = (SubtaskDB) db_;
+	TaskDB sdb = (TaskDB) db_;
 	return sdb.getSubTasks(taskid);
 
     }
 
     public Collection getSubTasks() throws Exception {
-	if (db_ instanceof SubtaskDB == false)
+	if (db_ instanceof TaskDB == false)
 	    throw new Exception(Resource
 		    .getPlainResourceString("SubtaskNotSupported"));
 
-	SubtaskDB sdb = (SubtaskDB) db_;
+	TaskDB sdb = (TaskDB) db_;
 	return sdb.getSubTasks();
 
     }
 
     public void deleteSubTask(int id) throws Exception {
-	if (db_ instanceof SubtaskDB == false)
+	if (db_ instanceof TaskDB == false)
 	    throw new Exception(Resource
 		    .getPlainResourceString("SubtaskNotSupported"));
 
-	SubtaskDB sdb = (SubtaskDB) db_;
+	TaskDB sdb = (TaskDB) db_;
 	sdb.deleteSubTask(id);
     }
 
     public void saveSubTask(Subtask s) throws Exception {
-	if (db_ instanceof SubtaskDB == false)
+	if (db_ instanceof TaskDB == false)
 	    throw new Exception(Resource
 		    .getPlainResourceString("SubtaskNotSupported"));
 
-	SubtaskDB sdb = (SubtaskDB) db_;
+	TaskDB sdb = (TaskDB) db_;
 	if (s.getId() == null || s.getId().intValue() <= 0) {
 	    s.setId(new Integer(sdb.nextSubTaskKey()));
 	    sdb.addSubTask(s);
@@ -663,35 +663,35 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
     }
 
     public void addLog(int taskid, String desc) throws Exception {
-	if (db_ instanceof SubtaskDB == false)
+	if (db_ instanceof TaskDB == false)
 	    return;
 	// throw new Exception(Resource
 	// .getPlainResourceString("SubtaskNotSupported"));
-	SubtaskDB sdb = (SubtaskDB) db_;
+	TaskDB sdb = (TaskDB) db_;
 	sdb.addLog(taskid, desc);
     }
 
     public void saveLog(Tasklog tlog) throws Exception {
-	if (db_ instanceof SubtaskDB == false)
+	if (db_ instanceof TaskDB == false)
 	    throw new Exception(Resource
 		    .getPlainResourceString("SubtaskNotSupported"));
-	SubtaskDB sdb = (SubtaskDB) db_;
+	TaskDB sdb = (TaskDB) db_;
 	sdb.saveLog(tlog);
     }
 
     public Collection getLogs(int taskid) throws Exception {
-	if (db_ instanceof SubtaskDB == false)
+	if (db_ instanceof TaskDB == false)
 	    throw new Exception(Resource
 		    .getPlainResourceString("SubtaskNotSupported"));
-	SubtaskDB sdb = (SubtaskDB) db_;
+	TaskDB sdb = (TaskDB) db_;
 	return sdb.getLogs(taskid);
     }
 
     public Collection getLogs() throws Exception {
-	if (db_ instanceof SubtaskDB == false)
+	if (db_ instanceof TaskDB == false)
 	    throw new Exception(Resource
 		    .getPlainResourceString("SubtaskNotSupported"));
-	SubtaskDB sdb = (SubtaskDB) db_;
+	TaskDB sdb = (TaskDB) db_;
 	return sdb.getLogs();
     }
 
@@ -721,7 +721,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
     }
 
     public boolean hasSubTasks() {
-	return db_ instanceof SubtaskDB;
+	return db_ instanceof TaskDB;
     }
 
     public void beginTransaction() throws Exception {

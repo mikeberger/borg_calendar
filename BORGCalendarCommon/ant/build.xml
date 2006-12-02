@@ -105,7 +105,7 @@
 		      fork="true"
 		      failonerror="true">
 			<arg value="net.sf.borg.model" />
-			<arg value="${db.res.dir}/mrdb_schema.xml" />
+			<arg value="${db.res.dir}/task_schema.xml" />
 		</java>
 
 		<java jar="${gen.dir}/genObj.jar"
@@ -123,6 +123,14 @@
 					<arg value="net.sf.borg.model" />
 					<arg value="${db.res.dir}/subtask_schema.xml" />
 				</java>
+		
+		<java jar="${gen.dir}/genObj.jar"
+						      dir="${gen.dir}"
+						      fork="true"
+						      failonerror="true">
+							<arg value="net.sf.borg.model" />
+							<arg value="${db.res.dir}/project_schema.xml" />
+						</java>
 
 		<java jar="${gen.dir}/genObj.jar"
 						      dir="${gen.dir}"
@@ -139,6 +147,7 @@
 				<include name="Appointment.java" />
 				<include name="User.java" />
 				<include name="Subtask.java"/>
+				<include name="Project.java"/>
 				<include name="Tasklog.java"/>
 				<include name="*XMLAdapter.java" />
 			</fileset>

@@ -30,18 +30,19 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import net.sf.borg.model.Project;
 import net.sf.borg.model.Subtask;
 import net.sf.borg.model.Task;
 import net.sf.borg.model.Tasklog;
 import net.sf.borg.model.db.DBException;
 import net.sf.borg.model.db.KeyedBean;
-import net.sf.borg.model.db.SubtaskDB;
+import net.sf.borg.model.db.TaskDB;
 
 /**
  * 
  * this is the JDBC layer for access to the task table
  */
-class TaskJdbcDB extends JdbcDB implements SubtaskDB {
+class TaskJdbcDB extends JdbcDB implements TaskDB {
 
 	/** Creates a new instance of AppJdbcDB */
 	TaskJdbcDB(String url, String username) throws Exception {
@@ -56,8 +57,8 @@ class TaskJdbcDB extends JdbcDB implements SubtaskDB {
 			Exception {
 		PreparedStatement stmt = connection_
 				.prepareStatement("INSERT INTO tasks ( tasknum, username, start_date, due_date, person_assigned,"
-						+ " priority, state, type, description, resolution, category, close_date) VALUES "
-						+ "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+						+ " priority, state, type, description, resolution, category, close_date, project) VALUES "
+						+ "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
 		Task task = (Task) bean;
 
@@ -88,7 +89,10 @@ class TaskJdbcDB extends JdbcDB implements SubtaskDB {
 			stmt.setDate(12, new java.sql.Date(cd.getTime()));
 		else
 			stmt.setDate(12, null);
-
+		if( task.getProject() != null )
+		    stmt.setInt(13, task.getProject().intValue());
+		else
+		    stmt.setNull(13, java.sql.Types.INTEGER);
 		stmt.executeUpdate();
 
 		writeCache(task);
@@ -168,6 +172,7 @@ class TaskJdbcDB extends JdbcDB implements SubtaskDB {
 		task.setCategory(r.getString("category"));
 		if (r.getDate("close_date") != null)
 			task.setCD(new java.util.Date(r.getDate("close_date").getTime()));
+		task.setProject((Integer)r.getObject("project"));
 		return task;
 	}
 
@@ -176,7 +181,7 @@ class TaskJdbcDB extends JdbcDB implements SubtaskDB {
 		PreparedStatement stmt = connection_
 				.prepareStatement("UPDATE tasks SET  start_date = ?, due_date = ?, person_assigned = ?,"
 						+ " priority = ?, state = ?, type = ?, description = ?, resolution = ?,"
-						+ " category = ?, close_date = ? WHERE tasknum = ? AND username = ?");
+						+ " category = ?, close_date = ?, project = ? WHERE tasknum = ? AND username = ?");
 
 		Task task = (Task) bean;
 
@@ -207,6 +212,10 @@ class TaskJdbcDB extends JdbcDB implements SubtaskDB {
 
 		stmt.setInt(11, task.getKey());
 		stmt.setString(12, username_);
+		if( task.getProject() != null )
+		    stmt.setInt(13, task.getProject().intValue());
+		else
+		    stmt.setNull(13, java.sql.Types.INTEGER);
 
 		stmt.executeUpdate();
 
@@ -422,23 +431,24 @@ class TaskJdbcDB extends JdbcDB implements SubtaskDB {
 		PreparedStatement stmt = connection_
 				.prepareStatement("SELECT * from tasklog where username = ? and task = ?");
 		ResultSet r = null;
+		List lst = new ArrayList();
 		try {
 
 			stmt.setString(1, username_);
 			stmt.setInt(2,taskid);
 			r = stmt.executeQuery();
-			List lst = new ArrayList();
 			while (r.next()) {
 				Tasklog s = createTasklog(r);
 				lst.add(s);
 			}
-			return lst;
+			
 		} finally {
 			if (r != null)
 				r.close();
 			if (stmt != null)
 				stmt.close();
 		}
+		return lst;
 		
 	}
 	
@@ -465,4 +475,161 @@ class TaskJdbcDB extends JdbcDB implements SubtaskDB {
 		
 	}
 
+	public void addProject(Project p) throws SQLException {
+	    PreparedStatement stmt = connection_
+	    .prepareStatement("INSERT INTO projects ( id, username, start_date, due_date,"
+		    + " description, category ) VALUES "
+		    + "( ?, ?, ?, ?, ?, ?)");
+
+	    stmt.setInt(1, p.getId().intValue());
+	    stmt.setString(2, username_);
+
+	    java.util.Date sd = p.getStartDate();
+	    if (sd != null)
+		stmt.setDate(3, new java.sql.Date(sd.getTime()));
+	    else
+		stmt.setDate(3, null);
+
+	    java.util.Date dd = p.getDueDate();
+	    if (dd != null)
+		stmt.setDate(4, new java.sql.Date(dd.getTime()));
+	    else
+		stmt.setDate(4, null);
+
+	    stmt.setString(5, p.getDescription());
+	    stmt.setString(6, p.getCategory());
+
+	    stmt.executeUpdate();
+
+	}
+
+	public void deleteProject(int id) throws SQLException {
+	    PreparedStatement stmt = connection_
+	    .prepareStatement("DELETE FROM projects WHERE id = ? AND username = ?");
+	    stmt.setInt(1, id);
+	    stmt.setString(2, username_);
+	    stmt.executeUpdate();
+
+	}
+
+	public Project getProject(int projectid) throws SQLException {
+	    PreparedStatement stmt = connection_
+	    .prepareStatement("SELECT * FROM projects WHERE id = ? AND username = ?");
+	    stmt.setInt(1, projectid);
+	    stmt.setString(2, username_);
+	    Project p = null;
+	    ResultSet r = null;
+		try {
+		    r = stmt.executeQuery();
+		    if (r.next()) {
+			p = createProject(r);
+		    }
+		    
+		} finally {
+		    if (r != null)
+			r.close();
+		    if (stmt != null)
+			stmt.close();
+		}
+		return p;
+	}
+
+	public Collection getProjects() throws SQLException {
+	    PreparedStatement stmt = connection_
+	    .prepareStatement("SELECT * from projects where username = ?");
+	    ResultSet r = null;
+	    List lst = new ArrayList();
+	    try {
+
+		stmt.setString(1, username_);
+		r = stmt.executeQuery();
+		while (r.next()) {
+		    Project s = createProject(r);
+		    lst.add(s);
+		}
+
+	    } finally {
+		if (r != null)
+		    r.close();
+		if (stmt != null)
+		    stmt.close();
+	    }
+	    return lst;
+	}
+
+	public Collection getTasks(int projectid) throws SQLException {
+	    PreparedStatement stmt = connection_
+	    .prepareStatement("SELECT * from tasks where username = ? and project = ?");
+	    ResultSet r = null;
+	    List lst = new ArrayList();
+	    try {
+
+		stmt.setString(1, username_);
+		stmt.setInt(2,projectid);
+		r = stmt.executeQuery();
+		while (r.next()) {
+		    Task s = (Task)createFrom(r);
+		    lst.add(s);
+		}
+
+	    } finally {
+		if (r != null)
+		    r.close();
+		if (stmt != null)
+		    stmt.close();
+	    }
+	    return lst;
+	}
+
+	public int nextProjectKey() throws Exception {
+	    PreparedStatement stmt = connection_
+	    .prepareStatement("SELECT MAX(id) FROM projects WHERE username = ?");
+	    stmt.setString(1, username_);
+	    ResultSet r = stmt.executeQuery();
+	    int maxKey = 0;
+	    if (r.next())
+		maxKey = r.getInt(1);
+	    return ++maxKey;
+	}
+
+	public void updateProject(Project s) throws SQLException {
+	    PreparedStatement stmt = connection_
+	    .prepareStatement("UPDATE projects SET start_date = ?, due_date = ?,"
+		    + " description = ?, category = ?  WHERE id = ? AND username = ? ");
+
+	    stmt.setInt(5, s.getId().intValue());
+	    stmt.setString(6, username_);
+
+	    java.util.Date sd = s.getStartDate();
+	    if (sd != null)
+		stmt.setDate(1, new java.sql.Date(sd.getTime()));
+	    else
+		stmt.setDate(1, null);
+
+	    java.util.Date dd = s.getDueDate();
+	    if (dd != null)
+		stmt.setDate(2, new java.sql.Date(dd.getTime()));
+	    else
+		stmt.setDate(2, null);
+
+	    stmt.setString(3, s.getDescription());
+	    stmt.setString(4, s.getCategory());
+	    stmt.executeUpdate();
+	    
+	}
+
+	private Project createProject(ResultSet r) throws SQLException {
+		Project s = new Project();
+		s.setId(new Integer(r.getInt("id")));
+		if (r.getTimestamp("due_date") != null)
+			s.setDueDate(new java.util.Date(r.getTimestamp("due_date")
+					.getTime()));
+		if (r.getTimestamp("start_date") != null)
+			s.setStartDate(new java.util.Date(r.getTimestamp("start_date")
+					.getTime()));
+		s.setDescription(r.getString("description"));
+		s.setCategory(r.getString("category"));
+
+		return s;
+	}
 }

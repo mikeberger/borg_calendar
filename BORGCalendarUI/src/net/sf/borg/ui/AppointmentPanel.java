@@ -1157,7 +1157,7 @@ class AppointmentPanel extends JPanel {
 		newCal.set(Calendar.DATE, cal.get(Calendar.DATE));
 		r.setDate(newCal.getTime());
 
-		AppointmentXMLAdapter aa = new AppointmentXMLAdapter();
+		//AppointmentXMLAdapter aa = new AppointmentXMLAdapter();
 
 		//System.out.println(aa.toXml(r));
 		//System.out.println(aa.toXml(ap));
