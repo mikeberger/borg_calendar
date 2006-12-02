@@ -361,7 +361,7 @@ class TaskView extends View {
 			    return;
 
 			for (int i = 0; i < ids.length; ++i) {
-			    System.out.println(ids[i]);
+			    //System.out.println(ids[i]);
 			    if (ids[i] == null)
 				continue;
 			    tbd_.add(ids[i]);

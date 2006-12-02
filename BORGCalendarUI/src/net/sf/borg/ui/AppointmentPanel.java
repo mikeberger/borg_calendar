@@ -1159,8 +1159,8 @@ class AppointmentPanel extends JPanel {
 
 		AppointmentXMLAdapter aa = new AppointmentXMLAdapter();
 
-		System.out.println(aa.toXml(r));
-		System.out.println(aa.toXml(ap));
+		//System.out.println(aa.toXml(r));
+		//System.out.println(aa.toXml(ap));
 		// determine if we can keep certain fields related to repeating
                 // and todos
 		if (r.getTimes().intValue() == ap.getTimes().intValue()
