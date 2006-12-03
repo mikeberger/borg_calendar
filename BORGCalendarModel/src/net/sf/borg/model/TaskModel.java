@@ -41,764 +41,805 @@ import net.sf.borg.model.db.TaskDB;
 
 public class TaskModel extends Model implements Model.Listener, Transactional {
 
-    private BeanDB db_; // the database
+	private BeanDB db_; // the database
 
-    public BeanDB getDB() {
-	return (db_);
-    }
-
-    // map of tasks keyed by day - for performance
-    private HashMap btmap_;
-
-    private Vector allmap_;
-    
-    private HashMap stmap_;
-
-    private TaskTypes taskTypes_ = new TaskTypes();
-
-    public LinkedList get_tasks(int daykey) {
-	return ((LinkedList) btmap_.get(new Integer(daykey)));
-    }
-    
-    public LinkedList get_subtasks(int daykey) {
-	return ((LinkedList) stmap_.get(new Integer(daykey)));
-    }
-
-    public Vector get_tasks() {
-	return (allmap_);
-    }
-
-    private TaskModel() {
-	btmap_ = new HashMap();
-	stmap_ = new HashMap();
-	allmap_ = new Vector();
-    }
-
-    static private TaskModel self_ = null;
-
-    static public TaskModel getReference() {
-	return (self_);
-    }
-
-    public static TaskModel create() {
-	self_ = new TaskModel();
-	return (self_);
-    }
-
-    public void remove() {
-	removeListeners();
-	try {
-	    if (db_ != null)
-		db_.close();
-	} catch (Exception e) {
-	    Errmsg.errmsg(e);
-	    System.exit(0);
-	}
-	db_ = null;
-    }
-
-    public TaskTypes getTaskTypes() {
-	return (taskTypes_);
-    }
-
-    public void saveTaskTypes(TaskTypes tt) throws Exception {
-	if (tt != null) {
-	    tt.validate();
-	    taskTypes_ = tt.copy();
-	}
-	db_.setOption(new BorgOption("SMODEL", taskTypes_.toString()));
-    }
-
-    public Collection getCategories() throws Exception, DBException {
-
-	TreeSet categories = new TreeSet();
-	Iterator itr = db_.readAll().iterator();
-	while (itr.hasNext()) {
-	    Task t = (Task) itr.next();
-	    String cat = t.getCategory();
-	    if (cat != null && !cat.equals(""))
-		categories.add(cat);
+	public BeanDB getDB() {
+		return (db_);
 	}
 
-	return (categories);
+	// map of tasks keyed by day - for performance
+	private HashMap btmap_;
 
-    }
+	private Vector allmap_;
 
-    public Collection getTasks() throws DBException, Exception {
-	return db_.readAll();
-    }
+	private HashMap stmap_;
 
-    // load a map of tasks to day keys for performance. this is because the
-    // month views will
-    // repeatedly need to retrieve tasks per day and it would be slow to
-    // repeatedly traverse
-    // the entire task DB looking for them
-    // only tasks that are viewed by day need to be cached here - those that
-    // are not CLOSED and
-    // have a due date - a small fraction of the total
-    private void load_map() {
+	private TaskTypes taskTypes_ = new TaskTypes();
 
-	// clear map
-	btmap_.clear();
-	allmap_.clear();
-	stmap_.clear();
-	TaskTypes tt = TaskModel.getReference().getTaskTypes();
-
-	try {
-
-	    // iterate through tasks using taskmodel
-	    Collection tasks = getTasks();
-	    Iterator ti = tasks.iterator();
-	    while (ti.hasNext()) {
-		Task mr = (Task) ti.next();
-
-		// for each task, get state and skip CLOSED or PR tasks
-		String status = mr.getState();
-		if (status.equals(tt.getFinalState(mr.getType()))
-			|| status.equals("PR"))
-		    continue;
-
-		String cat = mr.getCategory();
-		if (cat == null || cat.equals(""))
-		    cat = CategoryModel.UNCATEGORIZED;
-
-		if (!CategoryModel.getReference().isShown(cat))
-		    continue;
-
-		// use task due date to build a day key
-		Date due = mr.getDueDate();
-		if (due == null)
-		    continue;
-
-		GregorianCalendar g = new GregorianCalendar();
-		g.setTime(due);
-		int key = AppointmentModel.dkey(g);
-
-		// add the task string to the btmap_
-		// add the task to the mrs_ Vector. This is used by the todo gui
-		Object o = btmap_.get(new Integer(key));
-		if (o == null) {
-		    o = new LinkedList();
-		    btmap_.put(new Integer(key), o);
-		}
-
-		LinkedList l = (LinkedList) o;
-		l.add(mr);
-		allmap_.add(mr);
-	    }
-	    
-	    Collection subtasks = getSubTasks();
-	    ti = subtasks.iterator();
-	    while (ti.hasNext()) {
-		Subtask st = (Subtask) ti.next();
-
-		if( st.getCloseDate() != null || st.getDueDate() == null )
-		    continue;
-		
-		Task mr = getMR(st.getTask().intValue());
-		String cat = mr.getCategory();
-		if (cat == null || cat.equals(""))
-		    cat = CategoryModel.UNCATEGORIZED;
-
-		if (!CategoryModel.getReference().isShown(cat))
-		    continue;
-
-		// use task due date to build a day key
-		Date due = st.getDueDate();
-		GregorianCalendar g = new GregorianCalendar();
-		g.setTime(due);
-		int key = AppointmentModel.dkey(g);
-
-		// add the string to the btmap_
-		Object o = stmap_.get(new Integer(key));
-		if (o == null) {
-		    o = new LinkedList();
-		    stmap_.put(new Integer(key), o);
-		}
-
-		LinkedList l = (LinkedList) o;
-		l.add(st);
-	    }
-
-	} catch (DBException e) {
-	    if (e.getRetCode() != DBException.RET_NOT_FOUND) {
-		Errmsg.errmsg(e);
-		return;
-	    }
-	} catch (Exception e) {
-
-	    Errmsg.errmsg(e);
-	    return;
+	public LinkedList get_tasks(int daykey) {
+		return ((LinkedList) btmap_.get(new Integer(daykey)));
 	}
 
-    }
-
-    // open the database
-    public void open_db(String url, String username, boolean readonly,
-	    boolean shared) throws Exception {
-
-	StringBuffer tmp = new StringBuffer(url);
-	IBeanDataFactory factory = BeanDataFactoryFactory.getInstance()
-		.getFactory(tmp, readonly, shared);
-	url = tmp.toString();
-	// let the factory tweak dbdir
-
-	db_ = factory.create(Task.class, url, username);
-
-	// get XML that models states/transitions
-	// set to default if it does not exist
-	// see SMDB.java for the use of SMDB options
-	String sm = db_.getOption("SMODEL");
-	if (sm == null) {
-	    try {
-		// load XML from a file in the JAR
-		// System.out.println("Loading default task model");
-		taskTypes_.loadDefault();
-		sm = taskTypes_.toString();
-		db_.setOption(new BorgOption("SMODEL", sm));
-	    } catch (NoSuchMethodError nsme) {
-		// running in a Palm conduit under JRE 1.3
-		// ignore
-	    } catch (Exception e) {
-		Errmsg.errmsg(e);
-		System.exit(1);
-	    }
-	} else {
-	    taskTypes_.fromString(sm);
+	public LinkedList get_subtasks(int daykey) {
+		return ((LinkedList) stmap_.get(new Integer(daykey)));
 	}
 
-	CategoryModel.getReference().addAll(getCategories());
-	CategoryModel.getReference().addListener(this);
-
-	load_map();
-
-    }
-
-    // delete a given task from the DB
-    public void delete(int tasknum) throws Exception {
-
-	try {
-	    // have cascaded delete - don't need this
-	    // Collection subtasks = getSubTasks(tasknum);
-	    // Iterator it = subtasks.iterator();
-	    // while (it.hasNext()) {
-	    // Subtask st = (Subtask) it.next();
-	    // deleteSubTask(st.getId().intValue());
-	    // }
-	    db_.delete(tasknum);
-	} catch (Exception e) {
-	    Errmsg.errmsg(e);
+	public Vector get_tasks() {
+		return (allmap_);
 	}
 
-	// have the borg class reload the calendar app side of things - so this
-	// is one model
-	// notifying the other of a change through the controller
-	load_map();
-
-	refreshListeners();
-
-    }
-
-    // save a task from a filled in task Row
-    public void savetask(Task task) throws Exception {
-
-	// add task to DB
-	Integer num = task.getTaskNumber();
-
-	// if the task number is -1, it is a new task so
-	// get a new task number.
-	if (num.intValue() == -1) {
-	    int newkey = db_.nextkey();
-	    task.setKey(newkey);
-	    task.setTaskNumber(new Integer(newkey));
-	    try {
-		db_.addObj(task, false);
-	    } catch (DBException e) {
-		Errmsg.errmsg(e);
-	    }
-	} else {
-	    // task exists - so update existing task in DB
-	    try {
-		// update close date
-		if (task.getState() != null
-			&& task.getState().equals(
-				TaskModel.getReference().getTaskTypes()
-					.getFinalState(task.getType())))
-		    task.setCD(new Date());
-		int key = task.getTaskNumber().intValue();
-		task.setKey(key);
-		db_.updateObj(task, false);
-	    } catch (DBException e) {
-		Errmsg.errmsg(e);
-	    }
+	private TaskModel() {
+		btmap_ = new HashMap();
+		stmap_ = new HashMap();
+		allmap_ = new Vector();
 	}
 
-	// have the borg class reload the calendar app side of things - so this
-	// is one model
-	// notifying the other of a change through the controller
-	load_map();
+	static private TaskModel self_ = null;
 
-	// inform views of data change
-	refreshListeners();
-
-    }
-
-    // allocate a new Row from the DB
-    public Task newMR() {
-	return ((Task) db_.newObj());
-    }
-
-    // read a task from the DB by task number
-    public Task getMR(int num) throws DBException, Exception {
-	return ((Task) db_.readObj(num));
-    }
-
-    // force a task to be updated to CLOSED state and saved
-    public void close(int num) throws Exception {
-	Task task = getMR(num);
-	task.setState(TaskModel.getReference().getTaskTypes().getFinalState(
-		task.getType()));
-	savetask(task);
-    }
-
-    // export the task data for all tasks to XML
-    public void export(Writer fw) throws Exception {
-
-	// FileWriter fw = new FileWriter(fname);
-	fw.write("<TASKS>\n");
-	TaskXMLAdapter ta = new TaskXMLAdapter();
-
-	// export options
-	try {
-	    Collection opts = db_.getOptions();
-	    Iterator opiter = opts.iterator();
-	    while (opiter.hasNext()) {
-		BorgOption option = (BorgOption) opiter.next();
-		XTree xt = new XTree();
-		xt.name("OPTION");
-		xt.appendChild(option.getKey(), option.getValue());
-		fw.write(xt.toString());
-	    }
-	} catch (DBException e) {
-	    if (e.getRetCode() != DBException.RET_NOT_FOUND)
-		Errmsg.errmsg(e);
+	static public TaskModel getReference() {
+		return (self_);
 	}
 
-	// export tasks
-	try {
-
-	    Collection tasks = getTasks();
-	    Iterator ti = tasks.iterator();
-	    while (ti.hasNext()) {
-		Task task = (Task) ti.next();
-
-		XTree xt = ta.toXml(task);
-		fw.write(xt.toString());
-	    }
-	} catch (DBException e) {
-	    if (e.getRetCode() != DBException.RET_NOT_FOUND)
-		Errmsg.errmsg(e);
+	public static TaskModel create() {
+		self_ = new TaskModel();
+		return (self_);
 	}
 
-	SubtaskXMLAdapter sta = new SubtaskXMLAdapter();
-
-	// export subtasks
-	try {
-
-	    Collection subtasks = getSubTasks();
-	    Iterator ti = subtasks.iterator();
-	    while (ti.hasNext()) {
-		Subtask stask = (Subtask) ti.next();
-
-		XTree xt = sta.toXml(stask);
-		fw.write(xt.toString());
-	    }
-	} catch (DBException e) {
-	    if (e.getRetCode() != DBException.RET_NOT_FOUND)
-		Errmsg.errmsg(e);
-	}
-
-	TasklogXMLAdapter tla = new TasklogXMLAdapter();
-
-	// export tasklogs
-	try {
-
-	    Collection logs = getLogs();
-	    Iterator ti = logs.iterator();
-	    while (ti.hasNext()) {
-		Tasklog tlog = (Tasklog) ti.next();
-
-		XTree xt = tla.toXml(tlog);
-		fw.write(xt.toString());
-	    }
-	} catch (DBException e) {
-	    if (e.getRetCode() != DBException.RET_NOT_FOUND)
-		Errmsg.errmsg(e);
-	}
-	
-	ProjectXMLAdapter pa = new ProjectXMLAdapter();
-
-	// export tasklogs
-	try {
-
-	    Collection projects = getProjects();
-	    Iterator ti = projects.iterator();
-	    while (ti.hasNext()) {
-		Project p = (Project) ti.next();
-
-		XTree xt = pa.toXml(p);
-		fw.write(xt.toString());
-	    }
-	} catch (DBException e) {
-	    if (e.getRetCode() != DBException.RET_NOT_FOUND)
-		Errmsg.errmsg(e);
-	}
-
-	fw.write("</TASKS>");
-
-    }
-
-    public Collection getProjects() throws Exception{
-	if (db_ instanceof TaskDB == false)
-	    throw new Exception(Resource
-		    .getPlainResourceString("SubtaskNotSupported"));
-	TaskDB sdb = (TaskDB) db_;
-	return sdb.getProjects();
-    }
-
-    // export the task data to a file in XML
-    public void importXml(XTree xt) throws Exception {
-
-	TaskXMLAdapter aa = new TaskXMLAdapter();
-	SubtaskXMLAdapter sa = new SubtaskXMLAdapter();
-	TasklogXMLAdapter la = new TasklogXMLAdapter();
-	ProjectXMLAdapter pa = new ProjectXMLAdapter();
-
-	// for each appt - create an Appointment and store
-	for (int i = 1;; i++) {
-	    XTree ch = xt.child(i);
-	    if (ch == null)
-		break;
-
-	    if (ch.name().equals("OPTION")) {
-		XTree opt = ch.child(1);
-		if (opt == null)
-		    continue;
-
-		if (opt.name().equals("SMODEL")) {
-		    taskTypes_.fromString(opt.value());
-		    db_.setOption(new BorgOption("SMODEL", taskTypes_
-			    .toString()));
-
-		} else {
-		    db_.setOption(new BorgOption(opt.name(), opt.value()));
-		}
-	    }
-
-	    else if (ch.name().equals("Task")) {
-		Task task = (Task) aa.fromXml(ch);
-		if( task.getPriority() == null )
-		    task.setPriority(new Integer(3));
+	public void remove() {
+		removeListeners();
 		try {
-		    db_.addObj(task, false);
-		    // migrate from old subtask mechanism
-		    if (!task.getState().equals(
-			    TaskModel.getReference().getTaskTypes()
-				    .getFinalState(task.getType()))
-			    && task.getTodoList() != null
-			    && task.getUserTask1() != null) {
-			// add system subtasks
-			String todos = task.getTodoList();
-			String cbs[] = TaskModel.getReference().getTaskTypes()
-				.checkBoxes(task.getType());
-			for (int sti = 0; sti < cbs.length; sti++) {
-			    if (!cbs[sti].equals(TaskTypes.NOCBVALUE)) {
-				Subtask st = new Subtask();
-				st.setCreateDate(new Date());
-				st.setDescription(cbs[sti]);
-				st.setTask(task.getTaskNumber());
-				if (todos.indexOf(Integer.toString(sti)) != -1) {
-				    st.setCloseDate(new Date());
+			if (db_ != null)
+				db_.close();
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
+			System.exit(0);
+		}
+		db_ = null;
+	}
+
+	public TaskTypes getTaskTypes() {
+		return (taskTypes_);
+	}
+
+	public void saveTaskTypes(TaskTypes tt) throws Exception {
+		if (tt != null) {
+			tt.validate();
+			taskTypes_ = tt.copy();
+		}
+		db_.setOption(new BorgOption("SMODEL", taskTypes_.toString()));
+	}
+
+	public Collection getCategories() throws Exception, DBException {
+
+		TreeSet categories = new TreeSet();
+		Iterator itr = db_.readAll().iterator();
+		while (itr.hasNext()) {
+			Task t = (Task) itr.next();
+			String cat = t.getCategory();
+			if (cat != null && !cat.equals(""))
+				categories.add(cat);
+		}
+
+		Collection projects = getProjects();
+		itr = projects.iterator();
+		while (itr.hasNext()) {
+			Project t = (Project) itr.next();
+			String cat = t.getCategory();
+			if (cat != null && !cat.equals(""))
+				categories.add(cat);
+		}
+
+		return (categories);
+
+	}
+
+	public Collection getTasks() throws DBException, Exception {
+		return db_.readAll();
+	}
+
+	// load a map of tasks to day keys for performance. this is because the
+	// month views will
+	// repeatedly need to retrieve tasks per day and it would be slow to
+	// repeatedly traverse
+	// the entire task DB looking for them
+	// only tasks that are viewed by day need to be cached here - those that
+	// are not CLOSED and
+	// have a due date - a small fraction of the total
+	private void load_map() {
+
+		// clear map
+		btmap_.clear();
+		allmap_.clear();
+		stmap_.clear();
+		TaskTypes tt = TaskModel.getReference().getTaskTypes();
+
+		try {
+
+			// iterate through tasks using taskmodel
+			Collection tasks = getTasks();
+			Iterator ti = tasks.iterator();
+			while (ti.hasNext()) {
+				Task mr = (Task) ti.next();
+
+				// for each task, get state and skip CLOSED or PR tasks
+				String status = mr.getState();
+				if (status.equals(tt.getFinalState(mr.getType()))
+						|| status.equals("PR"))
+					continue;
+
+				String cat = mr.getCategory();
+				if (cat == null || cat.equals(""))
+					cat = CategoryModel.UNCATEGORIZED;
+
+				if (!CategoryModel.getReference().isShown(cat))
+					continue;
+
+				// use task due date to build a day key
+				Date due = mr.getDueDate();
+				if (due == null)
+					continue;
+
+				GregorianCalendar g = new GregorianCalendar();
+				g.setTime(due);
+				int key = AppointmentModel.dkey(g);
+
+				// add the task string to the btmap_
+				// add the task to the mrs_ Vector. This is used by the todo gui
+				Object o = btmap_.get(new Integer(key));
+				if (o == null) {
+					o = new LinkedList();
+					btmap_.put(new Integer(key), o);
 				}
-				saveSubTask(st);
-			    }
+
+				LinkedList l = (LinkedList) o;
+				l.add(mr);
+				allmap_.add(mr);
 			}
-			if (task.getUserTask1() != null) {
-			    Subtask st = new Subtask();
-			    st.setCreateDate(new Date());
-			    st.setDescription(task.getUserTask1());
-			    st.setTask(task.getTaskNumber());
-			    if (todos.indexOf("6") != -1) {
-				st.setCloseDate(new Date());
-			    }
-			    saveSubTask(st);
+
+			Collection subtasks = getSubTasks();
+			ti = subtasks.iterator();
+			while (ti.hasNext()) {
+				Subtask st = (Subtask) ti.next();
+
+				if (st.getCloseDate() != null || st.getDueDate() == null)
+					continue;
+
+				Task mr = getMR(st.getTask().intValue());
+				String cat = mr.getCategory();
+				if (cat == null || cat.equals(""))
+					cat = CategoryModel.UNCATEGORIZED;
+
+				if (!CategoryModel.getReference().isShown(cat))
+					continue;
+
+				// use task due date to build a day key
+				Date due = st.getDueDate();
+				GregorianCalendar g = new GregorianCalendar();
+				g.setTime(due);
+				int key = AppointmentModel.dkey(g);
+
+				// add the string to the btmap_
+				Object o = stmap_.get(new Integer(key));
+				if (o == null) {
+					o = new LinkedList();
+					stmap_.put(new Integer(key), o);
+				}
+
+				LinkedList l = (LinkedList) o;
+				l.add(st);
 			}
-			if (task.getUserTask2() != null) {
-			    Subtask st = new Subtask();
-			    st.setCreateDate(new Date());
-			    st.setDescription(task.getUserTask2());
-			    st.setTask(task.getTaskNumber());
-			    if (todos.indexOf("7") != -1) {
-				st.setCloseDate(new Date());
-			    }
-			    saveSubTask(st);
-			}
-			if (task.getUserTask3() != null) {
-			    Subtask st = new Subtask();
-			    st.setCreateDate(new Date());
-			    st.setDescription(task.getUserTask3());
-			    st.setTask(task.getTaskNumber());
-			    if (todos.indexOf("8") != -1) {
-				st.setCloseDate(new Date());
-			    }
-			    saveSubTask(st);
-			}
-			if (task.getUserTask4() != null) {
-			    Subtask st = new Subtask();
-			    st.setCreateDate(new Date());
-			    st.setDescription(task.getUserTask4());
-			    st.setTask(task.getTaskNumber());
-			    if (todos.indexOf("9") != -1) {
-				st.setCloseDate(new Date());
-			    }
-			    saveSubTask(st);
-			}
-			if (task.getUserTask5() != null) {
-			    Subtask st = new Subtask();
-			    st.setCreateDate(new Date());
-			    st.setDescription(task.getUserTask5());
-			    st.setTask(task.getTaskNumber());
-			    if (todos.indexOf("A") != -1) {
-				st.setCloseDate(new Date());
-			    }
-			    saveSubTask(st);
-			}
-			task.setTodoList(null);
-			task.setUserTask1(null);
-			task.setUserTask2(null);
-			task.setUserTask3(null);
-			task.setUserTask4(null);
-			task.setUserTask5(null);
-			savetask(task);
-		    }
+
 		} catch (DBException e) {
-		    if (e.getRetCode() == DBException.RET_DUPLICATE) {
-			task.setTaskNumber(new Integer(-1));
-			savetask(task);
-
-		    } else {
-			throw e;
-		    }
-		}
-	    }
-
-	    else if (ch.name().equals("Subtask")) {
-		Subtask subtask = (Subtask) sa.fromXml(ch);
-		try {
-		    subtask.setId(null);
-		    saveSubTask(subtask);
+			if (e.getRetCode() != DBException.RET_NOT_FOUND) {
+				Errmsg.errmsg(e);
+				return;
+			}
 		} catch (Exception e) {
-		    Errmsg.errmsg(e);
-		}
-	    }
 
-	    else if (ch.name().equals("Tasklog")) {
-		Tasklog tlog = (Tasklog) la.fromXml(ch);
-		try {
-		    tlog.setId(null);
-		    saveLog(tlog);
-		} catch (Exception e) {
-		    Errmsg.errmsg(e);
+			Errmsg.errmsg(e);
+			return;
 		}
-	    }
-	    else if (ch.name().equals("Project")) {
-		Project p = (Project) pa.fromXml(ch);
-		try {
-		    p.setId(null);
-		    saveProject(p);
-		} catch (Exception e) {
-		    Errmsg.errmsg(e);
-		}
-	    }
+
 	}
 
-	// refresh all views that are displaying appt data from this model
-	load_map();
-	refreshListeners();
+	// open the database
+	public void open_db(String url, String username, boolean readonly,
+			boolean shared) throws Exception {
 
-    }
+		StringBuffer tmp = new StringBuffer(url);
+		IBeanDataFactory factory = BeanDataFactoryFactory.getInstance()
+				.getFactory(tmp, readonly, shared);
+		url = tmp.toString();
+		// let the factory tweak dbdir
 
-    public void sync() throws DBException {
-	db_.sync();
-	load_map();
-	refreshListeners();
-    }
+		db_ = factory.create(Task.class, url, username);
 
-    public void close_db() throws Exception {
-	db_.close();
-    }
+		// get XML that models states/transitions
+		// set to default if it does not exist
+		// see SMDB.java for the use of SMDB options
+		String sm = db_.getOption("SMODEL");
+		if (sm == null) {
+			try {
+				// load XML from a file in the JAR
+				// System.out.println("Loading default task model");
+				taskTypes_.loadDefault();
+				sm = taskTypes_.toString();
+				db_.setOption(new BorgOption("SMODEL", sm));
+			} catch (NoSuchMethodError nsme) {
+				// running in a Palm conduit under JRE 1.3
+				// ignore
+			} catch (Exception e) {
+				Errmsg.errmsg(e);
+				System.exit(1);
+			}
+		} else {
+			taskTypes_.fromString(sm);
+		}
 
-    /*
-         * (non-Javadoc)
-         * 
-         * @see net.sf.borg.model.Model.Listener#refresh()
-         */
-    public void refresh() {
-	try {
-	    load_map();
-	    refreshListeners();
-	} catch (Exception e) {
-	    Errmsg.errmsg(e);
+		CategoryModel.getReference().addAll(getCategories());
+		CategoryModel.getReference().addListener(this);
+
+		load_map();
+
 	}
 
-    }
+	// delete a given task from the DB
+	public void delete(int tasknum) throws Exception {
 
-    public Collection getSubTasks(int taskid) throws Exception {
-	if (db_ instanceof TaskDB == false)
-	    throw new Exception(Resource
-		    .getPlainResourceString("SubtaskNotSupported"));
+		try {
+			// have cascaded delete - don't need this
+			// Collection subtasks = getSubTasks(tasknum);
+			// Iterator it = subtasks.iterator();
+			// while (it.hasNext()) {
+			// Subtask st = (Subtask) it.next();
+			// deleteSubTask(st.getId().intValue());
+			// }
+			db_.delete(tasknum);
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
+		}
 
-	TaskDB sdb = (TaskDB) db_;
-	return sdb.getSubTasks(taskid);
+		// have the borg class reload the calendar app side of things - so this
+		// is one model
+		// notifying the other of a change through the controller
+		load_map();
 
-    }
+		refreshListeners();
 
-    public Collection getSubTasks() throws Exception {
-	if (db_ instanceof TaskDB == false)
-	    throw new Exception(Resource
-		    .getPlainResourceString("SubtaskNotSupported"));
-
-	TaskDB sdb = (TaskDB) db_;
-	return sdb.getSubTasks();
-
-    }
-
-    public void deleteSubTask(int id) throws Exception {
-	if (db_ instanceof TaskDB == false)
-	    throw new Exception(Resource
-		    .getPlainResourceString("SubtaskNotSupported"));
-
-	TaskDB sdb = (TaskDB) db_;
-	sdb.deleteSubTask(id);
-    }
-
-    public void saveSubTask(Subtask s) throws Exception {
-	if (db_ instanceof TaskDB == false)
-	    throw new Exception(Resource
-		    .getPlainResourceString("SubtaskNotSupported"));
-
-	TaskDB sdb = (TaskDB) db_;
-	if (s.getId() == null || s.getId().intValue() <= 0) {
-	    s.setId(new Integer(sdb.nextSubTaskKey()));
-	    sdb.addSubTask(s);
-	} else {
-	    sdb.updateSubTask(s);
 	}
 	
-	load_map();
-    }
+	public void deleteProject(int id) throws Exception {
 
-    public void addLog(int taskid, String desc) throws Exception {
-	if (db_ instanceof TaskDB == false)
-	    return;
-	// throw new Exception(Resource
-	// .getPlainResourceString("SubtaskNotSupported"));
-	TaskDB sdb = (TaskDB) db_;
-	sdb.addLog(taskid, desc);
-    }
+		try {
+			if (db_ instanceof TaskDB == false)
+				throw new Exception(Resource
+						.getPlainResourceString("SubtaskNotSupported"));
+			TaskDB sdb = (TaskDB) db_;
+			sdb.deleteProject(id);
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
+		}
 
-    public void saveLog(Tasklog tlog) throws Exception {
-	if (db_ instanceof TaskDB == false)
-	    throw new Exception(Resource
-		    .getPlainResourceString("SubtaskNotSupported"));
-	TaskDB sdb = (TaskDB) db_;
-	sdb.saveLog(tlog);
-    }
+		// have the borg class reload the calendar app side of things - so this
+		// is one model
+		// notifying the other of a change through the controller
+		load_map();
 
-    public Collection getLogs(int taskid) throws Exception {
-	if (db_ instanceof TaskDB == false)
-	    throw new Exception(Resource
-		    .getPlainResourceString("SubtaskNotSupported"));
-	TaskDB sdb = (TaskDB) db_;
-	return sdb.getLogs(taskid);
-    }
+		refreshListeners();
 
-    public Collection getLogs() throws Exception {
-	if (db_ instanceof TaskDB == false)
-	    throw new Exception(Resource
-		    .getPlainResourceString("SubtaskNotSupported"));
-	TaskDB sdb = (TaskDB) db_;
-	return sdb.getLogs();
-    }
-
-    public static int daysLeft(Date dd) {
-
-	if (dd == null)
-	    return 0;
-	Calendar today = new GregorianCalendar();
-	Calendar dcal = new GregorianCalendar();
-	dcal.setTime(dd);
-
-	// find days left
-	int days = 0;
-	if (dcal.get(Calendar.YEAR) == today.get(Calendar.YEAR)) {
-	    days = dcal.get(Calendar.DAY_OF_YEAR)
-		    - today.get(Calendar.DAY_OF_YEAR);
-	} else {
-	    days = new Long((dd.getTime() - today.getTime().getTime())
-		    / (1000 * 60 * 60 * 24)).intValue();
 	}
 
-	// if due date is past, set days left to 0
-	// negative days are silly
-	if (days < 0)
-	    days = 0;
-	return days;
-    }
+	// save a task from a filled in task Row
+	public void savetask(Task task) throws Exception {
 
-    public boolean hasSubTasks() {
-	return db_ instanceof TaskDB;
-    }
+		// add task to DB
+		Integer num = task.getTaskNumber();
 
-    public void beginTransaction() throws Exception {
-	if( db_ instanceof Transactional )
-	{
-	    Transactional t = (Transactional) db_;
-	    t.beginTransaction();
+		// if the task number is -1, it is a new task so
+		// get a new task number.
+		if (num.intValue() == -1) {
+			int newkey = db_.nextkey();
+			task.setKey(newkey);
+			task.setTaskNumber(new Integer(newkey));
+			try {
+				db_.addObj(task, false);
+			} catch (DBException e) {
+				Errmsg.errmsg(e);
+			}
+		} else {
+			// task exists - so update existing task in DB
+			try {
+				// update close date
+				if (task.getState() != null
+						&& task.getState().equals(
+								TaskModel.getReference().getTaskTypes()
+										.getFinalState(task.getType())))
+					task.setCD(new Date());
+				int key = task.getTaskNumber().intValue();
+				task.setKey(key);
+				db_.updateObj(task, false);
+			} catch (DBException e) {
+				Errmsg.errmsg(e);
+			}
+		}
+
+		// have the borg class reload the calendar app side of things - so this
+		// is one model
+		// notifying the other of a change through the controller
+		load_map();
+
+		// inform views of data change
+		refreshListeners();
+
 	}
-	
-    }
 
-    public void commitTransaction() throws Exception {
-	if( db_ instanceof Transactional )
-	{
-	    Transactional t = (Transactional) db_;
-	    t.commitTransaction();
+	// allocate a new Row from the DB
+	public Task newMR() {
+		return ((Task) db_.newObj());
 	}
-    }
 
-    public void rollbackTransaction() throws Exception {
-	if( db_ instanceof Transactional )
-	{
-	    Transactional t = (Transactional) db_;
-	    t.rollbackTransaction();
+	// read a task from the DB by task number
+	public Task getMR(int num) throws DBException, Exception {
+		return ((Task) db_.readObj(num));
 	}
-    }
-    
-    public void saveProject(Project p) throws Exception {
-	if (db_ instanceof TaskDB == false)
-	    throw new Exception(Resource
-		    .getPlainResourceString("SubtaskNotSupported"));
 
-	TaskDB sdb = (TaskDB) db_;
-	if (p.getId() == null || p.getId().intValue() <= 0) {
-	    p.setId(new Integer(sdb.nextProjectKey()));
-	    sdb.addProject(p);
-	} else {
-	    sdb.updateProject(p);
+	// force a task to be updated to CLOSED state and saved
+	public void close(int num) throws Exception {
+		
+		Task task = getMR(num);
+		task.setState(TaskModel.getReference().getTaskTypes().getFinalState(
+				task.getType()));
+		savetask(task);
 	}
-	
-	load_map();
-	refreshListeners();
-    }
+	public void closeProject(int num) throws Exception {
+		
+		Project p = getProject(num);
+		p.setStatus(Resource.getPlainResourceString("CLOSED"));
+		saveProject(p);
+	}
+
+	// export the task data for all tasks to XML
+	public void export(Writer fw) throws Exception {
+
+		// FileWriter fw = new FileWriter(fname);
+		fw.write("<TASKS>\n");
+		TaskXMLAdapter ta = new TaskXMLAdapter();
+
+		// export options
+		try {
+			Collection opts = db_.getOptions();
+			Iterator opiter = opts.iterator();
+			while (opiter.hasNext()) {
+				BorgOption option = (BorgOption) opiter.next();
+				XTree xt = new XTree();
+				xt.name("OPTION");
+				xt.appendChild(option.getKey(), option.getValue());
+				fw.write(xt.toString());
+			}
+		} catch (DBException e) {
+			if (e.getRetCode() != DBException.RET_NOT_FOUND)
+				Errmsg.errmsg(e);
+		}
+
+		// export tasks
+		try {
+
+			Collection tasks = getTasks();
+			Iterator ti = tasks.iterator();
+			while (ti.hasNext()) {
+				Task task = (Task) ti.next();
+
+				XTree xt = ta.toXml(task);
+				fw.write(xt.toString());
+			}
+		} catch (DBException e) {
+			if (e.getRetCode() != DBException.RET_NOT_FOUND)
+				Errmsg.errmsg(e);
+		}
+
+		SubtaskXMLAdapter sta = new SubtaskXMLAdapter();
+
+		// export subtasks
+		try {
+
+			Collection subtasks = getSubTasks();
+			Iterator ti = subtasks.iterator();
+			while (ti.hasNext()) {
+				Subtask stask = (Subtask) ti.next();
+
+				XTree xt = sta.toXml(stask);
+				fw.write(xt.toString());
+			}
+		} catch (DBException e) {
+			if (e.getRetCode() != DBException.RET_NOT_FOUND)
+				Errmsg.errmsg(e);
+		}
+
+		TasklogXMLAdapter tla = new TasklogXMLAdapter();
+
+		// export tasklogs
+		try {
+
+			Collection logs = getLogs();
+			Iterator ti = logs.iterator();
+			while (ti.hasNext()) {
+				Tasklog tlog = (Tasklog) ti.next();
+
+				XTree xt = tla.toXml(tlog);
+				fw.write(xt.toString());
+			}
+		} catch (DBException e) {
+			if (e.getRetCode() != DBException.RET_NOT_FOUND)
+				Errmsg.errmsg(e);
+		}
+
+		ProjectXMLAdapter pa = new ProjectXMLAdapter();
+
+		// export tasklogs
+		try {
+
+			Collection projects = getProjects();
+			Iterator ti = projects.iterator();
+			while (ti.hasNext()) {
+				Project p = (Project) ti.next();
+
+				XTree xt = pa.toXml(p);
+				fw.write(xt.toString());
+			}
+		} catch (DBException e) {
+			if (e.getRetCode() != DBException.RET_NOT_FOUND)
+				Errmsg.errmsg(e);
+		}
+
+		fw.write("</TASKS>");
+
+	}
+
+	public Collection getProjects() throws Exception {
+		if (db_ instanceof TaskDB == false)
+			throw new Exception(Resource
+					.getPlainResourceString("SubtaskNotSupported"));
+		TaskDB sdb = (TaskDB) db_;
+		return sdb.getProjects();
+	}
+
+	public Project getProject(int id) throws Exception {
+		if (db_ instanceof TaskDB == false)
+			throw new Exception(Resource
+					.getPlainResourceString("SubtaskNotSupported"));
+		TaskDB sdb = (TaskDB) db_;
+		return sdb.getProject(id);
+	}
+
+	// export the task data to a file in XML
+	public void importXml(XTree xt) throws Exception {
+
+		TaskXMLAdapter aa = new TaskXMLAdapter();
+		SubtaskXMLAdapter sa = new SubtaskXMLAdapter();
+		TasklogXMLAdapter la = new TasklogXMLAdapter();
+		ProjectXMLAdapter pa = new ProjectXMLAdapter();
+
+		// for each appt - create an Appointment and store
+		for (int i = 1;; i++) {
+			XTree ch = xt.child(i);
+			if (ch == null)
+				break;
+
+			if (ch.name().equals("OPTION")) {
+				XTree opt = ch.child(1);
+				if (opt == null)
+					continue;
+
+				if (opt.name().equals("SMODEL")) {
+					taskTypes_.fromString(opt.value());
+					db_.setOption(new BorgOption("SMODEL", taskTypes_
+							.toString()));
+
+				} else {
+					db_.setOption(new BorgOption(opt.name(), opt.value()));
+				}
+			}
+
+			else if (ch.name().equals("Task")) {
+				Task task = (Task) aa.fromXml(ch);
+				if (task.getPriority() == null)
+					task.setPriority(new Integer(3));
+				try {
+					db_.addObj(task, false);
+					// migrate from old subtask mechanism
+					if (!task.getState().equals(
+							TaskModel.getReference().getTaskTypes()
+									.getFinalState(task.getType()))
+							&& task.getTodoList() != null
+							&& task.getUserTask1() != null) {
+						// add system subtasks
+						String todos = task.getTodoList();
+						String cbs[] = TaskModel.getReference().getTaskTypes()
+								.checkBoxes(task.getType());
+						for (int sti = 0; sti < cbs.length; sti++) {
+							if (!cbs[sti].equals(TaskTypes.NOCBVALUE)) {
+								Subtask st = new Subtask();
+								st.setCreateDate(new Date());
+								st.setDescription(cbs[sti]);
+								st.setTask(task.getTaskNumber());
+								if (todos.indexOf(Integer.toString(sti)) != -1) {
+									st.setCloseDate(new Date());
+								}
+								saveSubTask(st);
+							}
+						}
+						if (task.getUserTask1() != null) {
+							Subtask st = new Subtask();
+							st.setCreateDate(new Date());
+							st.setDescription(task.getUserTask1());
+							st.setTask(task.getTaskNumber());
+							if (todos.indexOf("6") != -1) {
+								st.setCloseDate(new Date());
+							}
+							saveSubTask(st);
+						}
+						if (task.getUserTask2() != null) {
+							Subtask st = new Subtask();
+							st.setCreateDate(new Date());
+							st.setDescription(task.getUserTask2());
+							st.setTask(task.getTaskNumber());
+							if (todos.indexOf("7") != -1) {
+								st.setCloseDate(new Date());
+							}
+							saveSubTask(st);
+						}
+						if (task.getUserTask3() != null) {
+							Subtask st = new Subtask();
+							st.setCreateDate(new Date());
+							st.setDescription(task.getUserTask3());
+							st.setTask(task.getTaskNumber());
+							if (todos.indexOf("8") != -1) {
+								st.setCloseDate(new Date());
+							}
+							saveSubTask(st);
+						}
+						if (task.getUserTask4() != null) {
+							Subtask st = new Subtask();
+							st.setCreateDate(new Date());
+							st.setDescription(task.getUserTask4());
+							st.setTask(task.getTaskNumber());
+							if (todos.indexOf("9") != -1) {
+								st.setCloseDate(new Date());
+							}
+							saveSubTask(st);
+						}
+						if (task.getUserTask5() != null) {
+							Subtask st = new Subtask();
+							st.setCreateDate(new Date());
+							st.setDescription(task.getUserTask5());
+							st.setTask(task.getTaskNumber());
+							if (todos.indexOf("A") != -1) {
+								st.setCloseDate(new Date());
+							}
+							saveSubTask(st);
+						}
+						task.setTodoList(null);
+						task.setUserTask1(null);
+						task.setUserTask2(null);
+						task.setUserTask3(null);
+						task.setUserTask4(null);
+						task.setUserTask5(null);
+						savetask(task);
+					}
+				} catch (DBException e) {
+					if (e.getRetCode() == DBException.RET_DUPLICATE) {
+						task.setTaskNumber(new Integer(-1));
+						savetask(task);
+
+					} else {
+						throw e;
+					}
+				}
+			}
+
+			else if (ch.name().equals("Subtask")) {
+				Subtask subtask = (Subtask) sa.fromXml(ch);
+				try {
+					subtask.setId(null);
+					saveSubTask(subtask);
+				} catch (Exception e) {
+					Errmsg.errmsg(e);
+				}
+			}
+
+			else if (ch.name().equals("Tasklog")) {
+				Tasklog tlog = (Tasklog) la.fromXml(ch);
+				try {
+					tlog.setId(null);
+					saveLog(tlog);
+				} catch (Exception e) {
+					Errmsg.errmsg(e);
+				}
+			} else if (ch.name().equals("Project")) {
+				Project p = (Project) pa.fromXml(ch);
+				try {
+					p.setId(null);
+					saveProject(p);
+				} catch (Exception e) {
+					Errmsg.errmsg(e);
+				}
+			}
+		}
+
+		// refresh all views that are displaying appt data from this model
+		load_map();
+		refreshListeners();
+
+	}
+
+	public void sync() throws DBException {
+		db_.sync();
+		load_map();
+		refreshListeners();
+	}
+
+	public void close_db() throws Exception {
+		db_.close();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see net.sf.borg.model.Model.Listener#refresh()
+	 */
+	public void refresh() {
+		try {
+			load_map();
+			refreshListeners();
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
+		}
+
+	}
+
+	public Collection getSubTasks(int taskid) throws Exception {
+		if (db_ instanceof TaskDB == false)
+			throw new Exception(Resource
+					.getPlainResourceString("SubtaskNotSupported"));
+
+		TaskDB sdb = (TaskDB) db_;
+		return sdb.getSubTasks(taskid);
+
+	}
+
+	public Collection getSubTasks() throws Exception {
+		if (db_ instanceof TaskDB == false)
+			throw new Exception(Resource
+					.getPlainResourceString("SubtaskNotSupported"));
+
+		TaskDB sdb = (TaskDB) db_;
+		return sdb.getSubTasks();
+
+	}
+
+	public void deleteSubTask(int id) throws Exception {
+		if (db_ instanceof TaskDB == false)
+			throw new Exception(Resource
+					.getPlainResourceString("SubtaskNotSupported"));
+
+		TaskDB sdb = (TaskDB) db_;
+		sdb.deleteSubTask(id);
+	}
+
+	public void saveSubTask(Subtask s) throws Exception {
+		if (db_ instanceof TaskDB == false)
+			throw new Exception(Resource
+					.getPlainResourceString("SubtaskNotSupported"));
+
+		TaskDB sdb = (TaskDB) db_;
+		if (s.getId() == null || s.getId().intValue() <= 0) {
+			s.setId(new Integer(sdb.nextSubTaskKey()));
+			sdb.addSubTask(s);
+		} else {
+			sdb.updateSubTask(s);
+		}
+
+		load_map();
+	}
+
+	public void addLog(int taskid, String desc) throws Exception {
+		if (db_ instanceof TaskDB == false)
+			return;
+		// throw new Exception(Resource
+		// .getPlainResourceString("SubtaskNotSupported"));
+		TaskDB sdb = (TaskDB) db_;
+		sdb.addLog(taskid, desc);
+	}
+
+	public void saveLog(Tasklog tlog) throws Exception {
+		if (db_ instanceof TaskDB == false)
+			throw new Exception(Resource
+					.getPlainResourceString("SubtaskNotSupported"));
+		TaskDB sdb = (TaskDB) db_;
+		sdb.saveLog(tlog);
+	}
+
+	public Collection getLogs(int taskid) throws Exception {
+		if (db_ instanceof TaskDB == false)
+			throw new Exception(Resource
+					.getPlainResourceString("SubtaskNotSupported"));
+		TaskDB sdb = (TaskDB) db_;
+		return sdb.getLogs(taskid);
+	}
+
+	public Collection getLogs() throws Exception {
+		if (db_ instanceof TaskDB == false)
+			throw new Exception(Resource
+					.getPlainResourceString("SubtaskNotSupported"));
+		TaskDB sdb = (TaskDB) db_;
+		return sdb.getLogs();
+	}
+
+	public static int daysLeft(Date dd) {
+
+		if (dd == null)
+			return 0;
+		Calendar today = new GregorianCalendar();
+		Calendar dcal = new GregorianCalendar();
+		dcal.setTime(dd);
+
+		// find days left
+		int days = 0;
+		if (dcal.get(Calendar.YEAR) == today.get(Calendar.YEAR)) {
+			days = dcal.get(Calendar.DAY_OF_YEAR)
+					- today.get(Calendar.DAY_OF_YEAR);
+		} else {
+			days = new Long((dd.getTime() - today.getTime().getTime())
+					/ (1000 * 60 * 60 * 24)).intValue();
+		}
+
+		// if due date is past, set days left to 0
+		// negative days are silly
+		if (days < 0)
+			days = 0;
+		return days;
+	}
+
+	public boolean hasSubTasks() {
+		return db_ instanceof TaskDB;
+	}
+
+	public void beginTransaction() throws Exception {
+		if (db_ instanceof Transactional) {
+			Transactional t = (Transactional) db_;
+			t.beginTransaction();
+		}
+
+	}
+
+	public void commitTransaction() throws Exception {
+		if (db_ instanceof Transactional) {
+			Transactional t = (Transactional) db_;
+			t.commitTransaction();
+		}
+	}
+
+	public void rollbackTransaction() throws Exception {
+		if (db_ instanceof Transactional) {
+			Transactional t = (Transactional) db_;
+			t.rollbackTransaction();
+		}
+	}
+
+	public void saveProject(Project p) throws Exception {
+		if (db_ instanceof TaskDB == false)
+			throw new Exception(Resource
+					.getPlainResourceString("SubtaskNotSupported"));
+
+		TaskDB sdb = (TaskDB) db_;
+		if (p.getId() == null || p.getId().intValue() <= 0) {
+			p.setId(new Integer(sdb.nextProjectKey()));
+			sdb.addProject(p);
+		} else {
+			sdb.updateProject(p);
+		}
+
+		load_map();
+		refreshListeners();
+	}
 }

@@ -89,6 +89,7 @@ CREATE CACHED TABLE projects (
   due_date date default NULL,
   description longvarchar NOT NULL,
   category varchar(10) default NULL,
+  status varchar(10) default '' NOT NULL,
   PRIMARY KEY  (id,username)
 );
 CREATE INDEX project_user ON projects (username);

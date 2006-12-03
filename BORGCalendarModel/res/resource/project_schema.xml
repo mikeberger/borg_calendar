@@ -25,4 +25,9 @@
 		<longName>Category</longName>
 		<desc>Category</desc>
 	</field>
+	<field>
+		<type>String</type>
+		<longName>Status</longName>
+		<desc>Status</desc>
+	</field>
 </schema>

@@ -209,13 +209,13 @@ class TaskJdbcDB extends JdbcDB implements TaskDB {
 			stmt.setDate(10, new java.sql.Date(cd.getTime()));
 		else
 			stmt.setDate(10, null);
-
-		stmt.setInt(11, task.getKey());
-		stmt.setString(12, username_);
 		if( task.getProject() != null )
-		    stmt.setInt(13, task.getProject().intValue());
+		    stmt.setInt(11, task.getProject().intValue());
 		else
-		    stmt.setNull(13, java.sql.Types.INTEGER);
+		    stmt.setNull(11, java.sql.Types.INTEGER);
+		stmt.setInt(12, task.getKey());
+		stmt.setString(13, username_);
+		
 
 		stmt.executeUpdate();
 
@@ -478,8 +478,8 @@ class TaskJdbcDB extends JdbcDB implements TaskDB {
 	public void addProject(Project p) throws SQLException {
 	    PreparedStatement stmt = connection_
 	    .prepareStatement("INSERT INTO projects ( id, username, start_date, due_date,"
-		    + " description, category ) VALUES "
-		    + "( ?, ?, ?, ?, ?, ?)");
+		    + " description, category, status ) VALUES "
+		    + "( ?, ?, ?, ?, ?, ?, ?)");
 
 	    stmt.setInt(1, p.getId().intValue());
 	    stmt.setString(2, username_);
@@ -498,6 +498,7 @@ class TaskJdbcDB extends JdbcDB implements TaskDB {
 
 	    stmt.setString(5, p.getDescription());
 	    stmt.setString(6, p.getCategory());
+	    stmt.setString(7, p.getStatus());
 
 	    stmt.executeUpdate();
 
@@ -595,10 +596,10 @@ class TaskJdbcDB extends JdbcDB implements TaskDB {
 	public void updateProject(Project s) throws SQLException {
 	    PreparedStatement stmt = connection_
 	    .prepareStatement("UPDATE projects SET start_date = ?, due_date = ?,"
-		    + " description = ?, category = ?  WHERE id = ? AND username = ? ");
+		    + " description = ?, category = ?, status = ?  WHERE id = ? AND username = ? ");
 
-	    stmt.setInt(5, s.getId().intValue());
-	    stmt.setString(6, username_);
+	    stmt.setInt(6, s.getId().intValue());
+	    stmt.setString(7, username_);
 
 	    java.util.Date sd = s.getStartDate();
 	    if (sd != null)
@@ -614,6 +615,7 @@ class TaskJdbcDB extends JdbcDB implements TaskDB {
 
 	    stmt.setString(3, s.getDescription());
 	    stmt.setString(4, s.getCategory());
+	    stmt.setString(5, s.getStatus());
 	    stmt.executeUpdate();
 	    
 	}
@@ -629,6 +631,7 @@ class TaskJdbcDB extends JdbcDB implements TaskDB {
 					.getTime()));
 		s.setDescription(r.getString("description"));
 		s.setCategory(r.getString("category"));
+		s.setStatus(r.getString("status"));
 
 		return s;
 	}
