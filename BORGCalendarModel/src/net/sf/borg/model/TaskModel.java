@@ -799,5 +799,6 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 	}
 	
 	load_map();
+	refreshListeners();
     }
 }
