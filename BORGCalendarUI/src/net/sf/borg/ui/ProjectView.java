@@ -40,6 +40,7 @@ import net.sf.borg.common.util.Resource;
 import net.sf.borg.common.util.Warning;
 import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.Project;
+import net.sf.borg.model.Task;
 import net.sf.borg.model.TaskModel;
 
 /**
@@ -55,10 +56,6 @@ class ProjectView extends View {
 		addModel(TaskModel.getReference());
 
 		initComponents(); // init the GUI widgets
-
-		// set size of text area
-		jTextArea1.setRows(15);
-		jTextArea1.setColumns(40);
 
 		try {
 			Collection cats = CategoryModel.getReference().getCategories();
@@ -98,8 +95,46 @@ class ProjectView extends View {
 	{
 		java.awt.GridBagConstraints gridBagConstraints;
 
+		GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
+		gridBagConstraints6.fill = GridBagConstraints.BOTH;
+		gridBagConstraints6.gridy = 6;
+		gridBagConstraints6.weightx = 1.0;
+		gridBagConstraints6.insets = new Insets(4, 4, 4, 4);
+		gridBagConstraints6.gridx = 4;
+		GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
+		gridBagConstraints5.fill = GridBagConstraints.BOTH;
+		gridBagConstraints5.gridy = 5;
+		gridBagConstraints5.weightx = 1.0;
+		gridBagConstraints5.insets = new Insets(4, 4, 4, 4);
+		gridBagConstraints5.gridx = 4;
+		GridBagConstraints gridBagConstraints41 = new GridBagConstraints();
+		gridBagConstraints41.gridx = 3;
+		gridBagConstraints41.gridy = 6;
+		openLabel = new JLabel();
+		openLabel.setText(Resource.getPlainResourceString("open_tasks"));
+		GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
+		gridBagConstraints3.gridx = 3;
+		gridBagConstraints3.gridy = 5;
+		totalLabel = new JLabel();
+		totalLabel.setText(Resource.getPlainResourceString("total_tasks"));
+		GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
+		gridBagConstraints2.gridx = 1;
+
+		gridBagConstraints2.fill = GridBagConstraints.BOTH;
+		gridBagConstraints2.insets = new Insets(4, 4, 4, 4);
+		gridBagConstraints2.gridy = 5;
+		descLabel = new JLabel();
+		descLabel.setText(Resource.getPlainResourceString("Description"));
+		
+		GridBagConstraints gridBagConstraints12 = new GridBagConstraints();
+		gridBagConstraints12.fill = GridBagConstraints.BOTH;
+		gridBagConstraints12.gridy = 5;
+		gridBagConstraints12.weightx = 1.0;
+		gridBagConstraints12.weighty = 0.0;
+		gridBagConstraints12.insets = new Insets(4, 4, 4, 4);
+		gridBagConstraints12.gridx = 2;
 		GridBagConstraints gridBagConstraints22 = new GridBagConstraints();
-		gridBagConstraints22.gridx = 2;
+		gridBagConstraints22.gridx = 3;
 		gridBagConstraints22.insets = new Insets(4, 20, 4, 4);
 		gridBagConstraints22.gridy = 4;
 		daysLeftLabel = new JLabel();
@@ -111,7 +146,7 @@ class ProjectView extends View {
 		gridBagConstraints13.gridy = 4;
 		gridBagConstraints13.weightx = 1.0;
 		gridBagConstraints13.insets = new Insets(4, 4, 4, 4);
-		gridBagConstraints13.gridx = 3;
+		gridBagConstraints13.gridx = 4;
 		GridBagConstraints gridBagConstraints210 = new GridBagConstraints();
 		gridBagConstraints210.gridx = 2; // Generated
 		gridBagConstraints210.insets = new Insets(4, 20, 4, 4); // Generated
@@ -119,8 +154,8 @@ class ProjectView extends View {
 
 		GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
 
-		jScrollPane1 = new javax.swing.JScrollPane();
-		jTextArea1 = new javax.swing.JTextArea();
+		
+		description = new javax.swing.JTextField();
 
 		jPanel3 = new javax.swing.JPanel();
 		itemtext = new javax.swing.JTextField();
@@ -152,10 +187,7 @@ class ProjectView extends View {
 		getContentPane().setLayout(new java.awt.GridBagLayout());
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-		jTextArea1.setLineWrap(true);
-		jTextArea1.setName("Description");
-		jScrollPane1.setViewportView(jTextArea1);
-
+		
 		GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
 		GridBagConstraints gridBagConstraints37 = new GridBagConstraints();
 		GridBagConstraints gridBagConstraints38 = new GridBagConstraints();
@@ -167,8 +199,8 @@ class ProjectView extends View {
 
 		itemtext.setText("itemtext");
 
-		ResourceHelper.setText(lblItemNum, "Item_#");
-		lblItemNum.setLabelFor(itemtext);
+		lblItemNum.setText(Resource.getPlainResourceString("Item_#"));
+		
 
 		ResourceHelper.setText(lblStatus, "Status");
 		lblStatus.setLabelFor(statebox);
@@ -243,48 +275,48 @@ class ProjectView extends View {
 		this.setSize(560, 517);
 		this.setContentPane(getJPanel());
 
-		gridBagConstraints26.gridx = 1;
+		gridBagConstraints26.gridx = 2;
 		gridBagConstraints26.gridy = 1;
 		gridBagConstraints26.weightx = 1.0;
 		gridBagConstraints26.fill = java.awt.GridBagConstraints.HORIZONTAL;
 
-		gridBagConstraints28.gridx = 2;
+		gridBagConstraints28.gridx = 3;
 		gridBagConstraints28.gridy = 1;
 		gridBagConstraints28.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints28.insets = new java.awt.Insets(4, 4, 4, 4);
-		gridBagConstraints29.gridx = 0;
+		gridBagConstraints29.gridx = 1;
 		gridBagConstraints29.gridy = 4;
 		gridBagConstraints29.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints29.insets = new java.awt.Insets(4, 4, 4, 4);
 
-		gridBagConstraints32.gridx = 2;
+		gridBagConstraints32.gridx = 3;
 		gridBagConstraints32.gridy = 0;
 		gridBagConstraints32.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints32.insets = new Insets(4, 20, 4, 4);
-		gridBagConstraints33.gridx = 1;
+		gridBagConstraints33.gridx = 2;
 		gridBagConstraints33.gridy = 4;
 		gridBagConstraints33.weightx = 1.0;
 		gridBagConstraints33.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints33.insets = new java.awt.Insets(4, 4, 4, 4);
-		gridBagConstraints34.gridx = 3;
+		gridBagConstraints34.gridx = 4;
 		gridBagConstraints34.gridy = 1;
 		gridBagConstraints34.weightx = 1.0;
 		gridBagConstraints34.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints34.insets = new java.awt.Insets(4, 4, 4, 4);
-		gridBagConstraints37.gridx = 0;
+		gridBagConstraints37.gridx = 1;
 		gridBagConstraints37.gridy = 0;
 		gridBagConstraints37.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints37.insets = new java.awt.Insets(4, 4, 4, 4);
-		gridBagConstraints38.gridx = 1;
+		gridBagConstraints38.gridx = 2;
 		gridBagConstraints38.gridy = 0;
 		gridBagConstraints38.weightx = 1.0;
 		gridBagConstraints38.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints38.insets = new java.awt.Insets(4, 4, 4, 4);
-		gridBagConstraints1.gridx = 0;
+		gridBagConstraints1.gridx = 1;
 		gridBagConstraints1.gridy = 1;
 		gridBagConstraints1.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints1.insets = new java.awt.Insets(4, 4, 4, 4);
-		gridBagConstraints11.gridx = 3;
+		gridBagConstraints11.gridx = 4;
 		gridBagConstraints11.gridy = 0;
 		gridBagConstraints11.weightx = 1.0;
 		gridBagConstraints11.fill = java.awt.GridBagConstraints.BOTH;
@@ -292,20 +324,23 @@ class ProjectView extends View {
 
 		jPanel3.add(lblStartDate, gridBagConstraints28);
 		jPanel3.add(lblDueDate, gridBagConstraints29);
-
 		jPanel3.add(catlabel, gridBagConstraints32);
 		jPanel3.add(duedatechooser, gridBagConstraints33);
-		jPanel3.add(startdatechooser, gridBagConstraints34);
-		jPanel3.add(lblItemNum, gridBagConstraints37); // Generated
 		gridBagConstraints26.insets = new java.awt.Insets(4, 4, 4, 4);
-		jPanel3.add(itemtext, gridBagConstraints38); // Generated
-		jPanel3.add(lblStatus, gridBagConstraints1); // Generated
+		jPanel3.add(startdatechooser, gridBagConstraints34);
+		jPanel3.add(lblItemNum, gridBagConstraints37);
+		jPanel3.add(itemtext, gridBagConstraints38);
+		jPanel3.add(lblStatus, gridBagConstraints1);
 		jPanel3.add(getCatbox(), gridBagConstraints11);
-		jPanel3.add(statebox, gridBagConstraints26); // Generated
-
+		jPanel3.add(statebox, gridBagConstraints26);
 		jPanel3.add(getDaysLeftText(), gridBagConstraints13);
 		jPanel3.add(daysLeftLabel, gridBagConstraints22);
-
+		jPanel3.add(description, gridBagConstraints12);
+		jPanel3.add(descLabel, gridBagConstraints2);
+		jPanel3.add(totalLabel, gridBagConstraints3);
+		jPanel3.add(openLabel, gridBagConstraints41);
+		jPanel3.add(getTotalText(), gridBagConstraints5);
+		jPanel3.add(getOpenText(), gridBagConstraints6);
 	}// GEN-END:initComponents
 
 	private void jButton3ActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_jButton3ActionPerformed
@@ -322,7 +357,7 @@ class ProjectView extends View {
 	private void saveProject(java.awt.event.ActionEvent evt) {
 
 		// save a task from the data on the screen
-		if (jTextArea1.getText() == null || jTextArea1.getText().equals("")) {
+		if (description.getText() == null || description.getText().equals("")) {
 			Errmsg.notice(Resource.getResourceString("empty_desc"));
 			return;
 		}
@@ -358,7 +393,7 @@ class ProjectView extends View {
 			cal = duedatechooser.getCalendar();
 			p.setDueDate(cal.getTime()); // due date
 
-			p.setDescription(jTextArea1.getText()); // description
+			p.setDescription(description.getText()); // description
 
 			p.setStatus( (String)statebox.getSelectedItem());
 			String cat = (String) catbox.getSelectedItem();
@@ -425,10 +460,26 @@ class ProjectView extends View {
 				catbox.setSelectedIndex(0);
 			}
 
-			jTextArea1.setText(p.getDescription()); // description
+			description.setText(p.getDescription()); // description
 
 			// statebox.addItem(task.getState()); // state
 			statebox.setEditable(false);
+			
+			Collection ptasks = TaskModel.getReference().getTasks(
+				p.getId().intValue());
+			totalText.setText(Integer.toString(ptasks.size()));
+			int open = 0;
+			Iterator it = ptasks.iterator();
+			while (it.hasNext()) {
+			    Task pt = (Task) it.next();
+			    String stat = pt.getState();
+			    String type = pt.getType();
+			    if (!stat.equals(TaskModel.getReference().getTaskTypes()
+				    .getFinalState(type))) {
+				open++;
+			    }
+			}
+			openText.setText(Integer.toString(open));
 
 		} else // initialize new task
 		{
@@ -442,7 +493,9 @@ class ProjectView extends View {
 			statebox.addItem(Resource.getPlainResourceString("OPEN"));
 			statebox.setEnabled(false);
 			catbox.setSelectedIndex(0);
-			jTextArea1.setText(""); // desc
+			description.setText(""); // desc
+			totalText.setText("");
+			openText.setText("");
 
 		}
 
@@ -510,9 +563,7 @@ class ProjectView extends View {
 
 	private javax.swing.JPanel jPanel4;
 
-	private javax.swing.JScrollPane jScrollPane1;
-
-	private javax.swing.JTextArea jTextArea1;
+	private javax.swing.JTextField description;
 
 	private javax.swing.JTextField itemtext;
 
@@ -530,6 +581,16 @@ class ProjectView extends View {
 
 	private JLabel daysLeftLabel = null;
 
+	private JLabel descLabel = null;
+
+	private JLabel totalLabel = null;
+
+	private JLabel openLabel = null;
+
+	private JTextField totalText = null;
+
+	private JTextField openText = null;
+
 	/**
 	 * This method initializes jPanel
 	 * 
@@ -545,7 +606,6 @@ class ProjectView extends View {
 			gridBagConstraints4.weighty = 1.0;
 			gridBagConstraints4.insets = new Insets(4, 4, 4, 4);
 			GridBagConstraints gridBagConstraints25 = new GridBagConstraints();
-			GridBagConstraints gridBagConstraints24 = new GridBagConstraints();
 			GridBagConstraints gridBagConstraints21 = new GridBagConstraints();
 			jPanel = new JPanel();
 			jPanel.setLayout(new GridBagLayout());
@@ -554,18 +614,11 @@ class ProjectView extends View {
 			gridBagConstraints21.fill = java.awt.GridBagConstraints.BOTH;
 			gridBagConstraints21.weightx = 1.0D;
 
-			gridBagConstraints24.gridx = 0;
-			gridBagConstraints24.gridy = 1;
-			gridBagConstraints24.weightx = 1.0;
-			gridBagConstraints24.weighty = 1.0;
-			gridBagConstraints24.fill = java.awt.GridBagConstraints.BOTH;
-
 			gridBagConstraints25.gridx = 0;
 			gridBagConstraints25.gridy = 3;
 
 			jPanel.add(jPanel3, gridBagConstraints21); // Generated
 
-			jPanel.add(jScrollPane1, gridBagConstraints24);
 			jPanel.add(jPanel4, gridBagConstraints25);
 
 		}
@@ -595,5 +648,31 @@ class ProjectView extends View {
 			daysLeftText.setEditable(false);
 		}
 		return daysLeftText;
+	}
+
+	/**
+	 * This method initializes totalText	
+	 * 	
+	 * @return javax.swing.JTextField	
+	 */
+	private JTextField getTotalText() {
+	    if (totalText == null) {
+		totalText = new JTextField();
+		totalText.setEditable(false);
+	    }
+	    return totalText;
+	}
+
+	/**
+	 * This method initializes openText	
+	 * 	
+	 * @return javax.swing.JTextField	
+	 */
+	private JTextField getOpenText() {
+	    if (openText == null) {
+		openText = new JTextField();
+		openText.setEditable(false);
+	    }
+	    return openText;
 	}
 } // @jve:decl-index=0:visual-constraint="115,46"

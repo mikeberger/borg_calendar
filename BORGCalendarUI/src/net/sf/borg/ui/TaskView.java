@@ -1444,11 +1444,11 @@ class TaskView extends View {
 		return daysLeftText;
 	}
 
-	static private String getProjectString(Project p) {
+	static public String getProjectString(Project p) {
 		return p.getId().toString() + ":" + p.getDescription();
 	}
 
-	static private Integer getProjectId(String s) throws Exception {
+	static public Integer getProjectId(String s) throws Exception {
 		int i = s.indexOf(":");
 		if( i == -1 ) throw new Exception("Cannot parse project label");
 		String ss = s.substring(0, i);

@@ -32,6 +32,7 @@ import java.util.Vector;
 
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.Resource;
+import net.sf.borg.common.util.Warning;
 import net.sf.borg.common.util.XTree;
 import net.sf.borg.model.db.BeanDB;
 import net.sf.borg.model.db.BeanDataFactoryFactory;
@@ -391,10 +392,11 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 				task.getType()));
 		savetask(task);
 	}
-	public void closeProject(int num) throws Exception {
+	public void closeProject(int num) throws Exception, Warning {
 		
 		Project p = getProject(num);
 		p.setStatus(Resource.getPlainResourceString("CLOSED"));
+			
 		saveProject(p);
 	}
 
@@ -716,6 +718,16 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 		return sdb.getSubTasks();
 
 	}
+	
+	public Collection getTasks(int projectid) throws Exception {
+		if (db_ instanceof TaskDB == false)
+			throw new Exception(Resource
+					.getPlainResourceString("SubtaskNotSupported"));
+
+		TaskDB sdb = (TaskDB) db_;
+		return sdb.getTasks(projectid);
+
+	}
 
 	public void deleteSubTask(int id) throws Exception {
 		if (db_ instanceof TaskDB == false)
@@ -827,16 +839,37 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 	}
 
 	public void saveProject(Project p) throws Exception {
-		if (db_ instanceof TaskDB == false)
-			throw new Exception(Resource
-					.getPlainResourceString("SubtaskNotSupported"));
+	    if (db_ instanceof TaskDB == false)
+		throw new Exception(Resource
+			.getPlainResourceString("SubtaskNotSupported"));
 
-		TaskDB sdb = (TaskDB) db_;
-		if (p.getId() == null || p.getId().intValue() <= 0) {
-			p.setId(new Integer(sdb.nextProjectKey()));
-			sdb.addProject(p);
-		} else {
-			sdb.updateProject(p);
+	    if( p.getStatus().equals(Resource.getPlainResourceString("CLOSED")))
+	    {
+//		make sure that all tasks are closed
+		Collection ptasks = TaskModel.getReference().getTasks(
+			p.getId().intValue());
+
+		Iterator it = ptasks.iterator();
+		while (it.hasNext()) {
+		    Task pt = (Task) it.next();
+		    String stat = pt.getState();
+		    String type = pt.getType();
+		    if (!stat.equals(TaskModel.getReference().getTaskTypes()
+			    .getFinalState(type))) {
+			throw new Warning(Resource.getPlainResourceString("close_proj_warn"));
+		    }
+		}
+	    }
+	
+
+
+
+	    TaskDB sdb = (TaskDB) db_;
+	    if (p.getId() == null || p.getId().intValue() <= 0) {
+		p.setId(new Integer(sdb.nextProjectKey()));
+		sdb.addProject(p);
+	    } else {
+		sdb.updateProject(p);
 		}
 
 		load_map();
