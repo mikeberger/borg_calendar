@@ -773,6 +773,17 @@ public class TaskListView extends View {
     public void refresh() {
 
 	int row = 0;
+	
+	// reload project filter
+	Object o = projectBox.getSelectedItem();
+	try {
+	    loadProjectBox();
+	} catch (Exception e1) {
+	    Errmsg.errmsg(e1);
+	    return;
+	}
+	if( o != null )
+	    projectBox.setSelectedItem(o);
 
 	// clear all table rows
 	deleteAll();
@@ -1451,18 +1462,24 @@ public class TaskListView extends View {
 	return statusBox;
     }
 
-    JComboBox projectBox = null;
-
-    private JComboBox getProjectBox() throws Exception {
-	if (projectBox == null) {
-	    projectBox = new JComboBox();
-	    projectBox.addItem(Resource.getPlainResourceString("All"));
+    private void loadProjectBox() throws Exception
+    {
+	projectBox.removeAllItems();
+	projectBox.addItem(Resource.getPlainResourceString("All"));
 	    Collection projects = TaskModel.getReference().getProjects();
 	    Iterator pi = projects.iterator();
 	    while (pi.hasNext()) {
 		Project p = (Project) pi.next();
 		projectBox.addItem(TaskView.getProjectString(p));
 	    }
+    }
+    
+    JComboBox projectBox = null;
+
+    private JComboBox getProjectBox() throws Exception {
+	if (projectBox == null) {
+	    projectBox = new JComboBox();
+	    loadProjectBox();
 	    projectBox.addActionListener(new java.awt.event.ActionListener() {
 		public void actionPerformed(java.awt.event.ActionEvent evt) {
 		    refresh();
