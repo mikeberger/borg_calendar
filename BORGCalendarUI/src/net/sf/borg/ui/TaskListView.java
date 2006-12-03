@@ -338,6 +338,8 @@ public class TaskListView extends View {
     private JMenuItem delete = new JMenuItem();
 
     private JMenuItem close = new JMenuItem();
+    
+    private JMenuItem scmi = new JMenuItem();
 
     private void initMenuBar() {
 
@@ -421,6 +423,15 @@ public class TaskListView extends View {
 	});
 
 	editMenu.add(close);
+	
+	ResourceHelper.setText(scmi, "show_children");
+	scmi.addActionListener(new java.awt.event.ActionListener() {
+	    public void actionPerformed(java.awt.event.ActionEvent evt) {
+		showChildren();
+	    }
+	});
+
+	editMenu.add(scmi);
 
 	menuBar.add(editMenu);
 
@@ -672,6 +683,38 @@ public class TaskListView extends View {
 	    task_change(num.intValue());
 	}
 
+    }
+    
+    private void showChildren()
+    {
+	if (onProjectTab()) {
+
+	    int row = projectTable.getSelectedRow();
+	    if (row == -1)
+		return;
+	    TableSorter tm = (TableSorter) projectTable.getModel();
+	    Integer num = (Integer) tm.getValueAt(row, 0);
+
+	    try {
+		Project p = TaskModel.getReference().getProject(num.intValue());
+		showTasksForProject(p);
+	    } catch (Exception e) {
+		Errmsg.errmsg(e);
+	    }
+	    
+	    
+	} else {
+	    // get task number from column 0 of selected row
+	    int row = taskTable.getSelectedRow();
+	    if (row == -1)
+		return;
+	    TableSorter tm = (TableSorter) taskTable.getModel();
+	    Integer num = (Integer) tm.getValueAt(row, 0);
+
+	    // ask borg class to bring up a task editor window
+	    task_change(num.intValue());
+	}
+	
     }
 
     private void cloneActionPerformed(java.awt.event.ActionEvent evt) {
@@ -1218,7 +1261,8 @@ public class TaskListView extends View {
 		    new PopupMenuHelper.Entry(getAL(change), "Change"),
 		    new PopupMenuHelper.Entry(getAL(clone), "Clone"),
 		    new PopupMenuHelper.Entry(getAL(delete), "Delete"),
-		    new PopupMenuHelper.Entry(getAL(close), "Close"), });
+		    new PopupMenuHelper.Entry(getAL(close), "Close"),
+		    new PopupMenuHelper.Entry(getAL(scmi), "show_children")});
 
 	    // set column widths
 	    taskTable.getColumnModel().getColumn(0).setPreferredWidth(80);
@@ -1509,6 +1553,14 @@ public class TaskListView extends View {
 			    java.lang.String.class, String.class, Date.class,
 			    Date.class, java.lang.Integer.class, Integer.class,
 			    Integer.class, java.lang.String.class }));
+	    
+	    new PopupMenuHelper(projectTable, new PopupMenuHelper.Entry[] {
+		    new PopupMenuHelper.Entry(getAL(add), "Add"),
+		    new PopupMenuHelper.Entry(getAL(change), "Change"),
+		    new PopupMenuHelper.Entry(getAL(clone), "Clone"),
+		    new PopupMenuHelper.Entry(getAL(delete), "Delete"),
+		    new PopupMenuHelper.Entry(getAL(close), "Close"),
+		    new PopupMenuHelper.Entry(getAL(scmi), "show_children")});
 
 	    projectTable.getColumnModel().getColumn(0).setPreferredWidth(80);
 	    projectTable.getColumnModel().getColumn(1).setPreferredWidth(80);
@@ -1547,6 +1599,16 @@ public class TaskListView extends View {
 	    // .setPreferredScrollableViewportSize(new Dimension(900, 400));
 	}
 	return projectPanel;
+    }
+    
+    public void showTasksForProject(Project p)
+    {
+	tp.setSelectedIndex(1);
+	statusBox.setSelectedIndex(0);
+	String ps = TaskView.getProjectString(p);
+	projectBox.setSelectedItem(ps);
+	refresh();
+	this.toFront();
     }
 
 }

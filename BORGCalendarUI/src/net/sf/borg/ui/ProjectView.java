@@ -28,6 +28,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -221,18 +222,43 @@ class ProjectView extends View {
 		getContentPane().add(jPanel3, gridBagConstraints);
 
 		jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/Save16.gif")));
+		"/resource/Save16.gif")));
 		ResourceHelper.setText(jButton2, "Save");
 		jButton2.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jButton2ActionPerformed(evt);
-			}
+		    public void actionPerformed(java.awt.event.ActionEvent evt) {
+			jButton2ActionPerformed(evt);
+		    }
 		});
 
 		jPanel4.add(jButton2, jButton2.getName());
 
+		JButton showTasksButton = new JButton();
+		showTasksButton.setIcon(new javax.swing.ImageIcon(getClass().getResource(
+		"/resource/Preferences16.gif")));
+		ResourceHelper.setText(showTasksButton, "show_tasks");
+		showTasksButton.addActionListener(new java.awt.event.ActionListener() {
+		    public void actionPerformed(java.awt.event.ActionEvent evt) {
+			TaskListView tlv = TaskListView.getReference();
+			String num = itemtext.getText();
+			if(num.equals("NEW") || num.equals("CLONE"))
+			    return;
+			Project p;
+			try {
+			    p = TaskModel.getReference().getProject(Integer.parseInt(num));
+			} catch (Exception e) {
+			    Errmsg.errmsg(e);
+			    return;
+			}
+			tlv.showTasksForProject(p);
+			destroy();
+			
+		    }
+		});
+
+		jPanel4.add(showTasksButton, showTasksButton.getName());
+
 		jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/Stop16.gif")));
+		"/resource/Stop16.gif")));
 		ResourceHelper.setText(jButton3, "Dismiss");
 		jButton3.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {

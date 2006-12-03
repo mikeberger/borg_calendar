@@ -902,8 +902,7 @@ class TaskView extends View {
 			try{
 				task.setProject(getProjectId(proj));
 			} catch (Exception e) {
-				Errmsg.errmsg(e);
-				return;
+				// no project selected
 			}
 
 			if (cat.equals("") || cat.equals(CategoryModel.UNCATEGORIZED)) {
@@ -1112,7 +1111,8 @@ class TaskView extends View {
 		Iterator pi = projects.iterator();
 		while (pi.hasNext()) {
 			Project p = (Project) pi.next();
-			projBox.addItem(getProjectString(p));
+			if( p.getStatus().equals("OPEN"))
+			    projBox.addItem(getProjectString(p));
 		}
 
 		// if we are showing an existing task - fil; in the gui fields form it
