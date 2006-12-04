@@ -118,18 +118,23 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 			Task t = (Task) itr.next();
 			String cat = t.getCategory();
 			if (cat != null && !cat.equals(""))
-				categories.add(cat);
+			    categories.add(cat);
 		}
 
-		Collection projects = getProjects();
-		itr = projects.iterator();
-		while (itr.hasNext()) {
+		try{
+		    Collection projects = getProjects();
+		    itr = projects.iterator();
+		    while (itr.hasNext()) {
 			Project t = (Project) itr.next();
 			String cat = t.getCategory();
 			if (cat != null && !cat.equals(""))
-				categories.add(cat);
+			    categories.add(cat);
+		    }
 		}
-
+		catch(Exception e)
+		{
+		    // ignore this one
+		}
 		return (categories);
 
 	}
