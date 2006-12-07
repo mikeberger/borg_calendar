@@ -1,6 +1,7 @@
 Version 1.6
 -----------
 Redesign Subtasks in Task Tracker
+Add Projects to group Tasks
 Add Task Log
 
 Version 1.5.2
