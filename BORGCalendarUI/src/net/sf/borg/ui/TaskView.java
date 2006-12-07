@@ -58,6 +58,7 @@ import net.sf.borg.model.Task;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.TaskTypes;
 import net.sf.borg.model.Tasklog;
+import javax.swing.JSplitPane;
 
 /**
  * 
@@ -1345,13 +1346,23 @@ class TaskView extends View {
 
 	private JLabel daysLeftLabel = null;
 
+	private JSplitPane jSplitPane = null;
+
 	/**
 	 * This method initializes jPanel
 	 * 
 	 * @return javax.swing.JPanel
 	 */
+	JPanel stpanel = new JPanel();
 	private JPanel getJPanel() {
 		if (jPanel == null) {
+			GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
+			gridBagConstraints5.fill = GridBagConstraints.BOTH;
+			gridBagConstraints5.weighty = 1.0;
+			gridBagConstraints5.gridx = 0;
+			gridBagConstraints5.gridy = 1;
+			gridBagConstraints5.insets = new Insets(4, 4, 4, 4);
+			gridBagConstraints5.weightx = 1.0;
 			GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
 			gridBagConstraints4.fill = GridBagConstraints.BOTH;
 			gridBagConstraints4.gridx = 0;
@@ -1360,7 +1371,6 @@ class TaskView extends View {
 			gridBagConstraints4.weighty = 1.0;
 			gridBagConstraints4.insets = new Insets(4, 4, 4, 4);
 			GridBagConstraints gridBagConstraints25 = new GridBagConstraints();
-			GridBagConstraints gridBagConstraints24 = new GridBagConstraints();
 			GridBagConstraints gridBagConstraints21 = new GridBagConstraints();
 			jPanel = new JPanel();
 			jPanel.setLayout(new GridBagLayout());
@@ -1369,38 +1379,22 @@ class TaskView extends View {
 			gridBagConstraints21.fill = java.awt.GridBagConstraints.BOTH;
 			gridBagConstraints21.weightx = 1.0D;
 
-			gridBagConstraints24.gridx = 0;
-			gridBagConstraints24.gridy = 1;
-			gridBagConstraints24.weightx = 1.0;
-			gridBagConstraints24.weighty = 1.0;
-			gridBagConstraints24.fill = java.awt.GridBagConstraints.BOTH;
-
 			gridBagConstraints25.gridx = 0;
-			gridBagConstraints25.gridy = 3;
+			gridBagConstraints25.gridy = 2;
 
+			jPanel.add(getJSplitPane(), gridBagConstraints5);
 			jPanel.add(jPanel3, gridBagConstraints21); // Generated
 
-			jPanel.add(jTabbedPane1, gridBagConstraints24);
 			jPanel.add(jPanel4, gridBagConstraints25);
-
 			// subtasks
-			GridBagConstraints stgbc = new GridBagConstraints();
-			stgbc.gridx = 0;
-			stgbc.gridy = 2;
-			stgbc.weightx = 1.0;
-			stgbc.weighty = 1.0;
-			stgbc.fill = java.awt.GridBagConstraints.BOTH;
-
 			JScrollPane stscroll = new JScrollPane();
 			stscroll.setPreferredSize(new Dimension(300, 300));
 			stscroll.setViewportView(stable);
-			JPanel stpanel = new JPanel();
+			
 			stpanel.setLayout(new GridBagLayout());
 			stpanel.setBorder(new javax.swing.border.TitledBorder(Resource
 					.getResourceString("Subtasks")));
 			stpanel.add(stscroll, gridBagConstraints4);
-			jPanel.add(stpanel, stgbc);
-
 		}
 		return jPanel;
 	}
@@ -1456,5 +1450,22 @@ class TaskView extends View {
 		int pid = Integer.parseInt(ss);
 		return new Integer(pid);
 
+	}
+
+	/**
+	 * This method initializes jSplitPane	
+	 * 	
+	 * @return javax.swing.JSplitPane	
+	 */
+	private JSplitPane getJSplitPane() {
+	    if (jSplitPane == null) {
+		jSplitPane = new JSplitPane();
+		jSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
+		jSplitPane.setBottomComponent(stpanel);
+		jSplitPane.setPreferredSize(new Dimension(400, 400));
+		jSplitPane.setDividerLocation(100);
+		jSplitPane.setTopComponent(jTabbedPane1);
+	    }
+	    return jSplitPane;
 	}
 } // @jve:decl-index=0:visual-constraint="115,46"
