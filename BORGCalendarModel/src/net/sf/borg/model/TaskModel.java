@@ -427,6 +427,24 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 			if (e.getRetCode() != DBException.RET_NOT_FOUND)
 				Errmsg.errmsg(e);
 		}
+		
+		ProjectXMLAdapter pa = new ProjectXMLAdapter();
+
+		// export projects
+		try {
+
+			Collection projects = getProjects();
+			Iterator ti = projects.iterator();
+			while (ti.hasNext()) {
+				Project p = (Project) ti.next();
+
+				XTree xt = pa.toXml(p);
+				fw.write(xt.toString());
+			}
+		} catch (DBException e) {
+			if (e.getRetCode() != DBException.RET_NOT_FOUND)
+				Errmsg.errmsg(e);
+		}
 
 		// export tasks
 		try {
@@ -480,23 +498,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 				Errmsg.errmsg(e);
 		}
 
-		ProjectXMLAdapter pa = new ProjectXMLAdapter();
-
-		// export tasklogs
-		try {
-
-			Collection projects = getProjects();
-			Iterator ti = projects.iterator();
-			while (ti.hasNext()) {
-				Project p = (Project) ti.next();
-
-				XTree xt = pa.toXml(p);
-				fw.write(xt.toString());
-			}
-		} catch (DBException e) {
-			if (e.getRetCode() != DBException.RET_NOT_FOUND)
-				Errmsg.errmsg(e);
-		}
+		
 
 		fw.write("</TASKS>");
 

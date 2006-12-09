@@ -655,8 +655,8 @@ public class TaskListView extends View {
 	if (evt.getClickCount() < 2)
 	    return;
 
-	changeActionPerformed(null);
-
+	//changeActionPerformed(null);
+	showChildren();
     }
 
     private void changeActionPerformed(java.awt.event.ActionEvent evt) {
