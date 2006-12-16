@@ -44,6 +44,8 @@ import net.sf.borg.model.Project;
 import net.sf.borg.model.Task;
 import net.sf.borg.model.TaskModel;
 
+import com.toedter.calendar.JDateChooser;
+
 /**
  * 
  * @author MBERGER
@@ -162,8 +164,8 @@ class ProjectView extends View {
 		itemtext = new javax.swing.JTextField();
 		lblItemNum = new javax.swing.JLabel();
 		lblStatus = new javax.swing.JLabel();
-		startdatechooser = new de.wannawork.jcalendar.JCalendarComboBox();
-		duedatechooser = new de.wannawork.jcalendar.JCalendarComboBox();
+		startdatechooser = new JDateChooser();
+		duedatechooser = new JDateChooser();
 		lblStartDate = new javax.swing.JLabel();
 		lblDueDate = new javax.swing.JLabel();
 
@@ -593,9 +595,9 @@ class ProjectView extends View {
 
 	private javax.swing.JTextField itemtext;
 
-	private de.wannawork.jcalendar.JCalendarComboBox startdatechooser;
+	private JDateChooser startdatechooser;
 
-	private de.wannawork.jcalendar.JCalendarComboBox duedatechooser;
+	private JDateChooser duedatechooser;
 
 	private javax.swing.JComboBox statebox;
 

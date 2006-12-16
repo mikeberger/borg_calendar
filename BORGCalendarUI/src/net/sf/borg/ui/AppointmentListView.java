@@ -27,6 +27,8 @@ import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -55,7 +57,8 @@ import net.sf.borg.control.EmailReminder;
 import net.sf.borg.model.Appointment;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.TaskModel;
-import de.wannawork.jcalendar.JCalendarComboBox;
+
+import com.toedter.calendar.JDateChooser;
 
 public class AppointmentListView extends View implements ListSelectionListener {
 
@@ -412,6 +415,7 @@ public class AppointmentListView extends View implements ListSelectionListener {
 		gridBagConstraints22.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints22.gridx = 0;
 		gridBagConstraints22.gridy = 0;
+		gridBagConstraints22.weightx = 1.0;
 		gridBagConstraints22.insets = new java.awt.Insets(2, 2, 2, 2);
 		apptTable
 				.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
@@ -437,7 +441,7 @@ public class AppointmentListView extends View implements ListSelectionListener {
 						"Move_To_Following_Day"),
 				new PopupMenuHelper.Entry(alChangeDate, "changedate"), });
 
-		jPanel3.add(getJPanel4(), gridBagConstraints22);
+		jPanel3.add(getDateCB(), gridBagConstraints22);
 		jPanel3.add(jScrollPane1, gridBagConstraints2);
 		jPanel1.add(delone, delone.getName());
 		jPanel3.add(jPanel1, gridBagConstraints3);
@@ -606,7 +610,6 @@ public class AppointmentListView extends View implements ListSelectionListener {
 
 	private JPanel jPanel = null;
 
-	private JPanel jPanel4 = null;
 
 	/**
 	 * This method initializes jPanel
@@ -642,36 +645,39 @@ public class AppointmentListView extends View implements ListSelectionListener {
 	 * 
 	 * @return javax.swing.JPanel
 	 */
-	private JCalendarComboBox cb_ = null;
+	private JDateChooser cb_ = null;
 
 	private JButton reminderButton = null; // @jve:decl-index=0:visual-constraint="702,73"
 
 	private JButton mtgMailButton = null;
 
-	private JCalendarComboBox getDateCB() {
+	private JDateChooser getDateCB() {
 		if (cb_ == null) {
-			cb_ = new JCalendarComboBox();
+			cb_ = new JDateChooser();
 			// cb.setCalendar(cal_);
+			cb_.addPropertyChangeListener("date", new PropertyChangeListener(){
+
+			    public void propertyChange(PropertyChangeEvent arg0) {
+				Calendar cal = cb_.getCalendar();
+				showDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH),
+						cal.get(Calendar.DATE));
+				
+			    }
+			});
+			
+			/*
 			cb_.addChangeListener(new javax.swing.event.ChangeListener() {
 				public void stateChanged(javax.swing.event.ChangeEvent e) {
 					Calendar cal = cb_.getCalendar();
 					showDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH),
 							cal.get(Calendar.DATE));
 				}
-			});
+			});*/
 		}
 
 		return (cb_);
 	}
 
-	private JPanel getJPanel4() {
-		if (jPanel4 == null) {
-			jPanel4 = new JPanel();
-
-			jPanel4.add(getDateCB());
-		}
-		return jPanel4;
-	}
 
 	/**
 	 * This method initializes reminderButton

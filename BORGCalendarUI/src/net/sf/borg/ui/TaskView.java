@@ -40,12 +40,12 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.table.TableCellRenderer;
 
-import net.sf.borg.common.ui.DateEditor;
 import net.sf.borg.common.ui.TableSorter;
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
@@ -58,7 +58,9 @@ import net.sf.borg.model.Task;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.TaskTypes;
 import net.sf.borg.model.Tasklog;
-import javax.swing.JSplitPane;
+
+import com.toedter.calendar.JDateChooser;
+import com.toedter.calendar.JDateChooserCellEditor;
 
 /**
  * 
@@ -281,7 +283,7 @@ class TaskView extends View {
 			stable.getTableHeader().setResizingAllowed(false);
 			return;
 		}
-		stable.setDefaultEditor(Date.class, new DateEditor());
+		stable.setDefaultEditor(Date.class, new JDateChooserCellEditor());
 
 		TableSorter ts = (TableSorter) stable.getModel();
 
@@ -424,7 +426,7 @@ class TaskView extends View {
 		logtable.getColumnModel().getColumn(0).setPreferredWidth(5);
 		logtable.getColumnModel().getColumn(1).setPreferredWidth(300);
 
-		logtable.setDefaultEditor(Date.class, new DateEditor());
+		//logtable.setDefaultEditor(Date.class, new JDateChooserCellEditor());
 		logtable.setDefaultRenderer(Date.class, new LongDateRenderer());
 		TableSorter ts = (TableSorter) logtable.getModel();
 
@@ -526,8 +528,8 @@ class TaskView extends View {
 		itemtext = new javax.swing.JTextField();
 		lblItemNum = new javax.swing.JLabel();
 		lblStatus = new javax.swing.JLabel();
-		startdatechooser = new de.wannawork.jcalendar.JCalendarComboBox();
-		duedatechooser = new de.wannawork.jcalendar.JCalendarComboBox();
+		startdatechooser = new JDateChooser();
+		duedatechooser = new JDateChooser();
 		pritext = new javax.swing.JComboBox();
 		patext = new javax.swing.JTextField();
 		lblStartDate = new javax.swing.JLabel();
@@ -1320,9 +1322,9 @@ class TaskView extends View {
 
 	private javax.swing.JTextField itemtext;
 
-	private de.wannawork.jcalendar.JCalendarComboBox startdatechooser;
+	private JDateChooser startdatechooser;
 
-	private de.wannawork.jcalendar.JCalendarComboBox duedatechooser;
+	private JDateChooser duedatechooser;
 
 	private javax.swing.JComboBox pritext;
 

@@ -17,7 +17,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
-import de.wannawork.jcalendar.JCalendarComboBox;
+import com.toedter.calendar.JDateChooser;
 
 public class DateDialog extends JDialog
 {
@@ -45,7 +45,7 @@ public final void setCalendar(Calendar cal)
 }
 
 // private //
-private JCalendarComboBox dateComboBox;
+private JDateChooser dateComboBox;
 private Calendar calendar;
 
 private void initUI()
@@ -82,7 +82,7 @@ private void initCtrls()
 	JPanel pnlFields = new JPanel();
 	pnlInput.add(pnlFields, BorderLayout.CENTER);
 	pnlFields.setLayout(new GridLayout(0,1));
-	pnlFields.add(dateComboBox = new JCalendarComboBox());
+	pnlFields.add(dateComboBox = new JDateChooser());
 	
 	JPanel pnlLabels = new JPanel();
 	pnlInput.add(pnlLabels, BorderLayout.WEST);

@@ -72,12 +72,8 @@ import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.Repeat;
 import net.sf.borg.model.Task;
 import net.sf.borg.model.TaskModel;
-import de.wannawork.jcalendar.JCalendarComboBox;
-/*
- * tdgui.java
- *
- * Created on November 26, 2001, 3:12 PM
- */
+
+import com.toedter.calendar.JDateChooser;
 
 /**
  *
@@ -355,7 +351,7 @@ public class TodoView extends View {
         todotext = new javax.swing.JTextField();
 
         // place jcalendar here
-        tododate_cb = new JCalendarComboBox();
+        tododate_cb = new JDateChooser();
 
         addtodo = new javax.swing.JButton();
         GridBagConstraints gridBagConstraints8 = new GridBagConstraints();
@@ -856,7 +852,7 @@ public class TodoView extends View {
     private javax.swing.JTextField todotext;
 
     // bsv 2004-12-21
-    private JCalendarComboBox tododate_cb;
+    private JDateChooser tododate_cb;
     private JToggleButton jtbRed;
     private JToggleButton jtbBlue;
     private JToggleButton jtbGreen;

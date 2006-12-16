@@ -94,7 +94,7 @@
 	    	<file src="lib/borghelp.jar" targetdir="$INSTALL_PATH/lib"/>
 	    	<file src="lib/hsqldb.jar" targetdir="$INSTALL_PATH/lib"/>
 	    	<file src="lib/jcalendar.jar" targetdir="$INSTALL_PATH/lib"/>
-	    	<file src="lib/license.jcalendar.txt" targetdir="$INSTALL_PATH/lib"/>
+	    	<file src="lib/jcalendar-license.txt" targetdir="$INSTALL_PATH/lib"/>
 	    	<file src="lib/commons-logging.jar" targetdir="$INSTALL_PATH/lib"/>
 	    	<file src="lib/commons-codec-1.3.jar" targetdir="$INSTALL_PATH/lib"/>
 	    	<file src="lib/commons-httpclient-3.0-rc3.jar" targetdir="$INSTALL_PATH/lib"/> 

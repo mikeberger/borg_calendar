@@ -12,14 +12,48 @@
  */
 package net.sf.borg.ui;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Iterator;
 
-import javax.swing.*;
+import javax.swing.BoxLayout;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.Icon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.JToggleButton;
+import javax.swing.ListCellRenderer;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
 
-import net.sf.borg.common.util.*;
-import net.sf.borg.model.*;
+import net.sf.borg.common.util.Errmsg;
+import net.sf.borg.common.util.PrefName;
+import net.sf.borg.common.util.Prefs;
+import net.sf.borg.common.util.Resource;
+import net.sf.borg.common.util.Warning;
+import net.sf.borg.common.util.XTree;
+import net.sf.borg.model.Appointment;
+import net.sf.borg.model.AppointmentModel;
+import net.sf.borg.model.AppointmentXMLAdapter;
+import net.sf.borg.model.CategoryModel;
+import net.sf.borg.model.ReminderTimes;
+import net.sf.borg.model.Repeat;
+
+import com.toedter.calendar.JDateChooser;
 
 class AppointmentPanel extends JPanel {
 
@@ -474,7 +508,8 @@ class AppointmentPanel extends JPanel {
 	lblDuration = new javax.swing.JLabel();
 	notecb = new javax.swing.JCheckBox();
 	lblNewDate = new javax.swing.JLabel();
-	newdatefield = new de.wannawork.jcalendar.JCalendarComboBox();
+	newdatefield = new JDateChooser();
+	newdatefield.setDateFormatString("MMM dd, yyyy");
 	chgdate = new javax.swing.JCheckBox();
 	jPanel3 = new javax.swing.JPanel();
 	todocb = new javax.swing.JCheckBox();
@@ -639,6 +674,7 @@ class AppointmentPanel extends JPanel {
 	gridBagConstraints15.gridx = 6;
 	gridBagConstraints15.gridy = 1;
 	gridBagConstraints15.fill = java.awt.GridBagConstraints.BOTH;
+	
 	ResourceHelper.setText(chgdate, "changedate");
 	chgdate.addActionListener(new java.awt.event.ActionListener() {
 	    public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1231,7 +1267,7 @@ class AppointmentPanel extends JPanel {
 
     private javax.swing.JScrollPane jScrollPane1;
 
-    private de.wannawork.jcalendar.JCalendarComboBox newdatefield;
+    private JDateChooser newdatefield;
 
     private javax.swing.JCheckBox notecb;
 

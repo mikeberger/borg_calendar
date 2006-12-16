@@ -44,7 +44,8 @@ import net.sf.borg.common.util.Resource;
 import net.sf.borg.model.Appointment;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.CategoryModel;
-import de.wannawork.jcalendar.JCalendarComboBox;
+
+import com.toedter.calendar.JDateChooser;
 
 public class SearchView extends View {
 
@@ -60,9 +61,9 @@ public class SearchView extends View {
 
 	private JPanel jPanel1 = null;
 
-	private JCalendarComboBox startDateChooser = null;
+	private JDateChooser startDateChooser = null;
 
-	private JCalendarComboBox endDateChooser = null;
+	private JDateChooser endDateChooser = null;
 
 	private JLabel jLabel2 = null;
 
@@ -435,11 +436,11 @@ public class SearchView extends View {
 	/**
 	 * This method initializes startDateChooser
 	 *
-	 * @return de.wannawork.jcalendar.JCalendarComboBox
+	 * @return de.wannawork.jcalendar.JDateChooser
 	 */
-	private JCalendarComboBox getStartDateChooser() {
+	private JDateChooser getStartDateChooser() {
 		if (startDateChooser == null) {
-			startDateChooser = new JCalendarComboBox();
+			startDateChooser = new JDateChooser();
 		}
 		return startDateChooser;
 	}
@@ -447,11 +448,11 @@ public class SearchView extends View {
 	/**
 	 * This method initializes endDateChooser
 	 *
-	 * @return de.wannawork.jcalendar.JCalendarComboBox
+	 * @return de.wannawork.jcalendar.JDateChooser
 	 */
-	private JCalendarComboBox getEndDateChooser() {
+	private JDateChooser getEndDateChooser() {
 		if (endDateChooser == null) {
-			endDateChooser = new JCalendarComboBox();
+			endDateChooser = new JDateChooser();
 		}
 		return endDateChooser;
 	}
