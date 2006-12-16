@@ -20,63 +20,119 @@
 package net.sf.borg.common.util;
 
 import java.util.ArrayList;
+import java.util.prefs.Preferences;
 
 /**
  * 
  * Convenience class for retrieving preferences.
- *  
+ * 
  */
 public class Prefs {
 
-	public interface Listener 
-	{
-		public abstract void prefsChanged();
-	}
-	
-	static private ArrayList listeners = new ArrayList();
-	
-    static public void addListener(Listener listener)
-    {
-        listeners.add(listener);
+    public interface Listener {
+	public abstract void prefsChanged();
     }
-    
-    static public void removeListener(Listener listener)
-    {
-        listeners.remove(listener);
+
+    static private ArrayList listeners = new ArrayList();
+
+    static public void addListener(Listener listener) {
+	listeners.add(listener);
     }
-    
+
+    static public void removeListener(Listener listener) {
+	listeners.remove(listener);
+    }
+
     // send a notification to all registered views
-    static public void notifyListeners()
+    static public void notifyListeners() {
+	for (int i = 0; i < listeners.size(); i++) {
+	    Listener v = (Listener) listeners.get(i);
+	    v.prefsChanged();
+	}
+    }
+
+    public static String getPref( PrefName pn )
     {
-        for( int i = 0; i < listeners.size(); i++ )
-        {
-            Listener v = (Listener) listeners.get(i);
-            v.prefsChanged();
-        }
+	return (String) getPrefObject(pn);
     }
     
-	public static String getPref(PrefName pn) {
+    public static int getIntPref(PrefName pn) {
+	return (((Integer) Prefs.getPrefObject(pn)).intValue());
+    }
 
-		return ((String) getPrefs().getPref(pn));
+    
+
+    public static final String getPref(String name, String def) {
+	try {
+	    Preferences prefs = Preferences.userNodeForPackage(Prefs.class);
+	    String val = prefs.get(name, def);
+	    return (val);
+	} catch (NoClassDefFoundError e) {
+	    // must be 1.3
+	    return (def);
+	}
+    }
+
+    public static final void putPref(String name, String val) {
+	try {
+	    Preferences prefs = Preferences.userNodeForPackage(Prefs.class);
+	    prefs.put(name, val);
+	} catch (NoClassDefFoundError e) {
+	    // must be 1.3
+	    return;
+	}
+    }
+
+    public static final int getPref(String name, int def) {
+	try {
+	    Preferences prefs = Preferences.userNodeForPackage(Prefs.class);
+	    int val = prefs.getInt(name, def);
+	    return (val);
+	} catch (NoClassDefFoundError e) {
+	    // must be 1.3
+	    return (def);
+	}
+    }
+
+    public static final void putPref(String name, int val) {
+	try {
+	    Preferences prefs = Preferences.userNodeForPackage(Prefs.class);
+	    prefs.putInt(name, val);
+	} catch (NoClassDefFoundError e) {
+	    // must be 1.3
+	    return;
+	}
+    }
+
+    private static Object getPrefObject(PrefName pn) {
+	Preferences prefs = Preferences.userNodeForPackage(Prefs.class);
+	if (pn.getDefault() instanceof Integer) {
+	    int val = prefs.getInt(pn.getName(), ((Integer) pn.getDefault())
+		    .intValue());
+	    return (new Integer(val));
 	}
 
-	public static void putPref(PrefName pn, Object val) {
+	String val = prefs.get(pn.getName(), (String) pn.getDefault());
+	return (val);
+    }
 
-		getPrefs().putPref(pn, val);
+    /*
+         * (non-Javadoc)
+         * 
+         * @see net.sf.borg.common.util.IPrefs#putPref(net.sf.borg.common.util.PrefName,
+         *      java.lang.Object)
+         */
+    public static void putPref(PrefName pn, Object val) {
+
+	Preferences prefs = Preferences.userNodeForPackage(Prefs.class);
+	if (pn.getDefault() instanceof Integer) {
+	    prefs.putInt(pn.getName(), ((Integer) val).intValue());
+	} else {
+	    prefs.put(pn.getName(), (String) val);
 	}
+    }
 
-	public static int getIntPref(PrefName pn) {
-		return (((Integer) getPrefs().getPref(pn)).intValue());
-	}
+    private Prefs() {
 
-
-	// private //
-	private static IPrefs getPrefs() {
-
-		return PrefsHome.getInstance().getPrefs();
-	}
-
-	private Prefs() {
-
-	}
+    }
 }
