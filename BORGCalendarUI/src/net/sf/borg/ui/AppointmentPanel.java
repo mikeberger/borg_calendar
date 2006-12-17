@@ -928,6 +928,7 @@ class AppointmentPanel extends JPanel {
 
     private void chgdateActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_chgdateActionPerformed
 	newdatefield.setEnabled(chgdate.isSelected());
+	
 
     }// GEN-LAST:event_chgdateActionPerformed
 
@@ -977,7 +978,7 @@ class AppointmentPanel extends JPanel {
 	Date nd = null;
 	int newkey = 0;
 	if (chgdate.isSelected()) {
-	    nd = newdatefield.getCalendar().getTime();
+	    nd = newdatefield.getDate();
 	}
 
 	int min = startmin.getSelectedIndex() * 5;

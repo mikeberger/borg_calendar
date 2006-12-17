@@ -21,14 +21,8 @@ package net.sf.borg.ui;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.text.DateFormat;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 
-import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import net.sf.borg.common.util.Errmsg;
@@ -36,6 +30,8 @@ import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Resource;
 import net.sf.borg.model.Address;
 import net.sf.borg.model.AddressModel;
+
+import com.toedter.calendar.JDateChooser;
 /**
  *
  * @author  MBERGER
@@ -70,30 +66,6 @@ class AddressView extends View
 
     public void refresh()
     {}
-    
-    private Date getDate()
-    {
-    	Date bd = null;
-    	String bdt = bdtext.getText();
-    	if( bdt == null || bdt.equals(""))
-    	{
-    		return null;
-    	}
-    	
-    	DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT);
-    	try
-    	{
-    		bd = df.parse(bdt);
-    	}
-    	catch( Exception e )
-    	{
-    		Errmsg.notice(Resource.getResourceString("invdate"));
-    		return null;
-    	}
-    	
-    	return bd;
-    	
-    }
 
     private void showaddr()
     {
@@ -119,31 +91,11 @@ class AddressView extends View
         cntext1.setText( addr_.getWorkCountry() );
         zctext1.setText( addr_.getWorkZip() );
         comptext.setText( addr_.getCompany() );
-        Date bd = addr_.getBirthday();
         
-        if( bd != null )
-        {
-            DateFormat sdf = DateFormat.getDateInstance(DateFormat.SHORT);
-            bdtext.setText( sdf.format(bd));
-        }
-        else
-            bdtext.setText("");
-    }
-
-    private void onChooseDate()
-    {
-    	DateDialog dlg = new DateDialog(this);
-    	Calendar cal = new GregorianCalendar();
-    	Date bd = getDate();
-    	if (bd != null)
-    		cal.setTime(bd);
-    	dlg.setCalendar(cal);
-    	dlg.setVisible(true);
-    	Calendar dlgcal = dlg.getCalendar();
-    	if (dlgcal == null)
-    		return;
-        DateFormat sdf = DateFormat.getDateInstance(DateFormat.SHORT);
-        bdtext.setText( sdf.format(dlgcal.getTime()));
+        Date bd = addr_.getBirthday();
+        bdchooser.setDate(bd);
+        
+        
     }
     
     private void saveaddr()
@@ -176,7 +128,7 @@ class AddressView extends View
         addr_.setWorkCountry( cntext1.getText() );
         addr_.setWorkZip( zctext1.getText() );
         addr_.setCompany( comptext.getText() );
-        addr_.setBirthday(getDate());
+        addr_.setBirthday(bdchooser.getDate());
 
         try
         {
@@ -221,7 +173,7 @@ class AddressView extends View
         jLabel21 = new javax.swing.JLabel();
         comptext = new javax.swing.JTextField();
         jLabel22 = new javax.swing.JLabel();
-        bdtext = new javax.swing.JTextField();
+        bdchooser = new JDateChooser();
         jPanel2 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
@@ -343,7 +295,7 @@ class AddressView extends View
 
 
         ResourceHelper.setText(jLabel22, "Birthday");
-        jLabel22.setLabelFor(bdtext);
+        jLabel22.setLabelFor(bdchooser);
 
 
         jTabbedPane1.addTab(Resource.getResourceString("contact"), jPanel1);
@@ -672,20 +624,9 @@ class AddressView extends View
         jPanel1.add(wptext, gridBagConstraints26);
         jPanel1.add(fxtext, gridBagConstraints27);
         jPanel1.add(hptext, gridBagConstraints28);
-        jPanel1.add(bdtext, gridBagConstraints29);
-        JButton bn = new JButton();
-        jPanel1.add(bn, gridBagConstraints29a);
-        ResourceHelper.setText(bn, "Date");
-        bn.addActionListener
-        (
-        	new ActionListener()
-        	{
-				public void actionPerformed(ActionEvent e)
-				{
-					onChooseDate();
-				}
-        	}
-        );
+        jPanel1.add(bdchooser, gridBagConstraints29);
+       
+        
         jPanel1.add(emtext, gridBagConstraints30);
         jPanel1.add(sntext, gridBagConstraints31);
     }//GEN-END:initComponents
@@ -704,7 +645,7 @@ class AddressView extends View
     // save a task
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField bdtext;
+    private JDateChooser bdchooser;
     private javax.swing.JTextField cntext;
     private javax.swing.JTextField cntext1;
     private javax.swing.JTextField comptext;

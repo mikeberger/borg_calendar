@@ -79,9 +79,9 @@ public class SearchView extends View {
 
 	private JButton dismissButton = null;
 
-	private JCheckBox startDatecb = null;
+	private JLabel startDateLabel = null;
 
-	private JCheckBox endDatecb = null;
+	private JLabel endDateLabel = null;
 
 	private JPanel jPanel3 = null;
 
@@ -151,8 +151,9 @@ public class SearchView extends View {
 		String selcat = (String) catbox.getSelectedItem();
 
 		long starttime = 0;
-		if (startDatecb.isSelected()) {
-			Calendar cal = startDateChooser.getCalendar();
+		Calendar cal = startDateChooser.getCalendar();
+		if (cal != null) {
+			
 			cal.set(Calendar.HOUR_OF_DAY, 0);
 			cal.set(Calendar.MINUTE, 0);
 			cal.set(Calendar.SECOND, 0);
@@ -163,8 +164,9 @@ public class SearchView extends View {
 		}
 
 		long endtime = 0;
-		if (endDatecb.isSelected()) {
-			Calendar cal = endDateChooser.getCalendar();
+		cal = endDateChooser.getCalendar();
+		if (cal != null) {
+			
 			cal.set(Calendar.HOUR_OF_DAY, 23);
 			cal.set(Calendar.MINUTE, 59);
 			cal.set(Calendar.SECOND, 59);
@@ -204,12 +206,12 @@ public class SearchView extends View {
 				continue;
 
 			// normal date to midnight???
-			if (startDatecb.isSelected()) {
+			if (starttime != 0) {
 				if (r.getDate().getTime() < starttime)
 					continue;
 			}
 
-			if (endDatecb.isSelected()) {
+			if (endtime != 0) {
 				if (r.getDate().getTime() > endtime)
 					continue;
 			}
@@ -547,12 +549,12 @@ public class SearchView extends View {
 	 *
 	 * @return javax.swing.JCheckBox
 	 */
-	private JCheckBox getStartDatecb() {
-		if (startDatecb == null) {
-			startDatecb = new JCheckBox();
-			ResourceHelper.setText(startDatecb, "StartDate");
+	private JLabel getStartDatecb() {
+		if (startDateLabel == null) {
+			startDateLabel = new JLabel();
+			ResourceHelper.setText(startDateLabel, "StartDate");
 		}
-		return startDatecb;
+		return startDateLabel;
 	}
 
 	/**
@@ -560,12 +562,12 @@ public class SearchView extends View {
 	 *
 	 * @return javax.swing.JCheckBox
 	 */
-	private JCheckBox getEndDatecb() {
-		if (endDatecb == null) {
-			endDatecb = new JCheckBox();
-			ResourceHelper.setText(endDatecb, "EndDate");
+	private JLabel getEndDatecb() {
+		if (endDateLabel == null) {
+			endDateLabel = new JLabel();
+			ResourceHelper.setText(endDateLabel, "EndDate");
 		}
-		return endDatecb;
+		return endDateLabel;
 	}
 
 	/**

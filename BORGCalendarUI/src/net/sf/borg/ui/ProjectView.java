@@ -417,8 +417,10 @@ class ProjectView extends View {
 			// fill in the fields from the screen
 
 			Calendar cal = startdatechooser.getCalendar();
+			if( cal == null) cal = new GregorianCalendar();
 			p.setStartDate(cal.getTime()); // start date
 			cal = duedatechooser.getCalendar();
+			if( cal == null) cal = new GregorianCalendar();
 			p.setDueDate(cal.getTime()); // due date
 
 			p.setDescription(description.getText()); // description
@@ -524,6 +526,8 @@ class ProjectView extends View {
 			description.setText(""); // desc
 			totalText.setText("");
 			openText.setText("");
+			//duedatechooser.setCalendar(new GregorianCalendar());
+			//startdatechooser.setCalendar(new GregorianCalendar());
 
 		}
 

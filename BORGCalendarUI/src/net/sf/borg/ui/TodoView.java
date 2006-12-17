@@ -699,16 +699,17 @@ public class TodoView extends View {
     private void addtodoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addtodoActionPerformed
 
         String tdtext = todotext.getText();
+        Calendar c = tododate_cb.getCalendar();
 
         // bsv 2004-12-21
-        if( tdtext.length() == 0  ) {
+        if( tdtext.length() == 0  || c == null ) {
             Errmsg.notice(Resource.getResourceString("todomissingdata"));
             return;
         }
 
         AppointmentModel calmod_ = AppointmentModel.getReference();
         Appointment r = calmod_.newAppt();
-        Calendar c = tododate_cb.getCalendar();
+        
         c.set( Calendar.HOUR, 0);
         c.set( Calendar.MINUTE, 0);
         c.set( Calendar.SECOND, 0);

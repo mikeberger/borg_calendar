@@ -659,8 +659,13 @@ public class AppointmentListView extends View implements ListSelectionListener {
 
 			    public void propertyChange(PropertyChangeEvent arg0) {
 				Calendar cal = cb_.getCalendar();
-				showDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH),
+				if( cal != null )
+				{
+				    showDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH),
 						cal.get(Calendar.DATE));
+				}
+				else
+				    cb_.setCalendar(cal_);
 				
 			    }
 			});

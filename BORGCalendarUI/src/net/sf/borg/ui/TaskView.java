@@ -882,8 +882,11 @@ class TaskView extends View {
 			// fill in the taks fields from the screen
 			task.setType((String) typebox.getSelectedItem()); // type
 			Calendar cal = startdatechooser.getCalendar();
+			if( cal == null ) cal = new GregorianCalendar();
+			//startdatechooser.setCalendar(new GregorianCalendar());
 			task.setStartDate(cal.getTime()); // start date
 			cal = duedatechooser.getCalendar();
+			if( cal == null ) cal = new GregorianCalendar();
 			task.setDueDate(cal.getTime()); // due date
 			Integer pri = (Integer) pritext.getSelectedItem();
 			task.setPriority(pri); // priority
@@ -1226,6 +1229,8 @@ class TaskView extends View {
 			for (int i = 0; i < tv.size(); i++) {
 				typebox.addItem(tv.elementAt(i));
 			}
+			//duedatechooser.setCalendar(new GregorianCalendar());
+			//startdatechooser.setCalendar(new GregorianCalendar());
 
 		}
 
@@ -1252,7 +1257,9 @@ class TaskView extends View {
 			for (int row = 0; row < stable.getRowCount(); row++) {
 				stable.setValueAt(null, row, 1);
 			}
-
+			
+			
+			
 		}
 		// change existing task
 		else if (function == T_CHANGE) {
