@@ -34,6 +34,7 @@ import net.sf.borg.model.Project;
 import net.sf.borg.model.Subtask;
 import net.sf.borg.model.Task;
 import net.sf.borg.model.Tasklog;
+import net.sf.borg.model.db.BeanDB;
 import net.sf.borg.model.db.DBException;
 import net.sf.borg.model.db.KeyedBean;
 import net.sf.borg.model.db.TaskDB;
@@ -42,7 +43,7 @@ import net.sf.borg.model.db.TaskDB;
  * 
  * this is the JDBC layer for access to the task table
  */
-class TaskJdbcDB extends JdbcDB implements TaskDB {
+class TaskJdbcDB extends JdbcBeanDB implements BeanDB,TaskDB {
 
 	/** Creates a new instance of AppJdbcDB */
 	TaskJdbcDB(String url, String username) throws Exception {

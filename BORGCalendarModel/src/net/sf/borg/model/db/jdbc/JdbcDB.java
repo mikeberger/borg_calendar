@@ -34,8 +34,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -43,21 +41,15 @@ import java.util.Vector;
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.model.BorgOption;
 import net.sf.borg.model.Transactional;
-import net.sf.borg.model.db.BeanDB;
 import net.sf.borg.model.db.DBException;
-import net.sf.borg.model.db.KeyedBean;
+
 
 /**
  * 
  * @author mberger
  */
 // JdbcDB is a base class for JDBC based DBs for BORG
-// it contains caching logic and a common connection
-// for all db tables. Each subclass of JdbcDB manages
-// a single DB table - mainly for historical reasons
-// as each separate BORG file has always been called a "DB".
-// JdbcDB will also manage a common options table int he DB
-abstract public class JdbcDB implements BeanDB, Transactional {
+abstract public class JdbcDB implements /*BeanDB,*/ Transactional {
 
     // common db connection shared by sub-classes. in BORG, all sub-classes
     // will manage a table in the same DB
@@ -65,41 +57,21 @@ abstract public class JdbcDB implements BeanDB, Transactional {
 
     protected Connection connection_ = null;
 
-    // BORG needs its own caching. BORG rebuilds the map of DB data often
-    // and going to the DB is too expensive. If BORG is changed to support
-    // multi-user access, then the cache algorithm will have to be smarter.
-    // currently, it is assumed that a single BORG client is the only DB
-        // updater.
-    // in the future, if there are multiple writers, the DB will have to
-        // contain
-    // some info to indicate when another process has written the DB to
-        // force
-    // a flush of the cache
-    private boolean objectCacheOn_; // is caching on?
-
-    private HashMap objectCache_; // the cache
-
     private String url_;
 
     protected String username_;
-
-    // For multiuser operation, we need to reserve key values even before a
-    // record is created in the database. Any value here overrides the
-        // current
-    // maximum key in a particular table.
-    protected int curMaxKey_ = Integer.MIN_VALUE;
 
     public void beginTransaction() throws Exception {
 	globalConnection_.setAutoCommit(false);
     }
 
-    public void commitTransaction() throws Exception {
+    public final void commitTransaction() throws Exception {
 	PreparedStatement stmt = globalConnection_.prepareStatement("COMMIT");
 	stmt.execute();
 	globalConnection_.setAutoCommit(true);
     }
 
-    public void rollbackTransaction() throws Exception {
+    public final void rollbackTransaction() throws Exception {
 	PreparedStatement stmt = globalConnection_.prepareStatement("ROLLBACK");
 	stmt.execute();
 	globalConnection_.setAutoCommit(true);
@@ -109,9 +81,6 @@ abstract public class JdbcDB implements BeanDB, Transactional {
     /** Creates a new instance of JdbcDB */
     JdbcDB(String url, String username) throws Exception {
 	username_ = username;
-
-	objectCacheOn_ = true;
-	objectCache_ = new HashMap();
 
 	url_ = url;
 	if (url.startsWith("jdbc:mysql")) {
@@ -170,13 +139,11 @@ abstract public class JdbcDB implements BeanDB, Transactional {
     }
 
     JdbcDB(Connection conn) {
-	objectCacheOn_ = true;
-	objectCache_ = new HashMap();
-
+	
 	connection_ = conn;
     }
 
-    private void cleanup() {
+    private final void cleanup() {
 	try {
 	    if (globalConnection_ != null && !globalConnection_.isClosed()
 		    && url_.startsWith("jdbc:hsqldb")) {
@@ -189,10 +156,6 @@ abstract public class JdbcDB implements BeanDB, Transactional {
 	}
     }
 
-    // turn on caching
-    public void cacheOn(boolean b) {
-	objectCacheOn_ = b;
-    }
 
     public boolean isDirty() throws DBException {
 	// implement a way to check for external DB
@@ -200,11 +163,7 @@ abstract public class JdbcDB implements BeanDB, Transactional {
 	return false;
     }
 
-    public void sync() {
-	emptyCache();
-    }
-
-    protected static String toStr(Vector v) {
+    protected final static String toStr(Vector v) {
 	String val = "";
 	if (v == null)
 	    return ("");
@@ -219,19 +178,19 @@ abstract public class JdbcDB implements BeanDB, Transactional {
 	return (val);
     }
 
-    protected static int toInt(Integer in) {
+    protected final static int toInt(Integer in) {
 	if (in == null)
 	    return (0);
 	return (in.intValue());
     }
 
-    protected static int toInt(boolean in) {
+    protected final static int toInt(boolean in) {
 	if (in == false)
 	    return (0);
 	return (1);
     }
 
-    protected static Vector toVect(String s) {
+    protected final static Vector toVect(String s) {
 	if (s == null || s.equals(""))
 	    return (null);
 
@@ -245,50 +204,15 @@ abstract public class JdbcDB implements BeanDB, Transactional {
 	return (vect);
     }
 
-    static public ResultSet execSQL(String sql) throws Exception {
+    static final public ResultSet execSQL(String sql) throws Exception {
 	PreparedStatement stmt = globalConnection_.prepareStatement(sql);
 	stmt.execute();
 	return stmt.getResultSet();
     }
 
-    protected void writeCache(KeyedBean bean) {
-	// put a copy of the bean in the cache
-	if (objectCacheOn_) {
-	    objectCache_.put(new Integer(bean.getKey()), bean.copy());
-	}
-    }
 
-    protected void emptyCache() {
-	if (objectCacheOn_)
-	    objectCache_.clear();
-    }
 
-    protected void delCache(int key) {
-	// remove the bean from the cache
-	if (objectCacheOn_) {
-	    objectCache_.remove(new Integer(key));
-	}
-    }
-
-    protected KeyedBean readCache(int key) {
-	// need to remove cache here if DB has been updated
-	// by any other process besides this one
-	// TBD
-
-	// if the bean is in the cache - return it
-	if (objectCacheOn_) {
-	    Object o = objectCache_.get(new Integer(key));
-
-	    if (o != null) {
-		KeyedBean r = (KeyedBean) o;
-		return r.copy();
-	    }
-	}
-
-	return (null);
-    }
-
-    public void close() throws Exception {
+    public final void close() throws Exception {
 	cleanup();
 	if (connection_ != null && connection_ != globalConnection_)
 	    connection_.close();
@@ -298,7 +222,7 @@ abstract public class JdbcDB implements BeanDB, Transactional {
 	connection_ = null;
     }
 
-    public String getOption(String oname) throws Exception {
+    public final String getOption(String oname) throws Exception {
 	String ret = null;
 	PreparedStatement stmt = connection_
 		.prepareStatement("SELECT value FROM options WHERE name = ? AND username = ?");
@@ -312,7 +236,7 @@ abstract public class JdbcDB implements BeanDB, Transactional {
 	return (ret);
     }
 
-    public Collection getOptions() throws Exception {
+    public final Collection getOptions() throws Exception {
 	ArrayList keys = new ArrayList();
 	PreparedStatement stmt = connection_
 		.prepareStatement("SELECT name, value FROM options WHERE username = ?");
@@ -328,7 +252,7 @@ abstract public class JdbcDB implements BeanDB, Transactional {
 
     }
 
-    public void setOption(BorgOption option) throws Exception {
+    public final void setOption(BorgOption option) throws Exception {
 	String oname = option.getKey();
 	String value = option.getValue();
 
@@ -355,55 +279,5 @@ abstract public class JdbcDB implements BeanDB, Transactional {
 	stmt.executeUpdate();
     }
 
-    public Collection readAll() throws DBException, Exception {
-	PreparedStatement stmt = null;
-	ResultSet r = null;
-	try {
-	    stmt = getPSAll();
-	    r = stmt.executeQuery();
-	    List lst = new ArrayList();
-	    while (r.next()) {
-		KeyedBean bean = createFrom(r);
-		lst.add(bean);
-		writeCache(bean);
-	    }
-	    return lst;
-	} finally {
-	    if (r != null)
-		r.close();
-	    if (stmt != null)
-		stmt.close();
-	}
-    }
 
-    public KeyedBean readObj(int key) throws DBException, Exception {
-	KeyedBean bean = readCache(key);
-
-	if (bean != null)
-	    return bean;
-
-	PreparedStatement stmt = null;
-	ResultSet r = null;
-	try {
-	    stmt = getPSOne(key);
-	    r = stmt.executeQuery();
-	    if (r.next()) {
-		bean = createFrom(r);
-		writeCache(bean);
-	    }
-	    return bean;
-	} finally {
-	    if (r != null)
-		r.close();
-	    if (stmt != null)
-		stmt.close();
-	}
-    }
-
-    // package //
-    abstract PreparedStatement getPSOne(int key) throws SQLException;
-
-    abstract PreparedStatement getPSAll() throws SQLException;
-
-    abstract KeyedBean createFrom(ResultSet rs) throws SQLException;
 }

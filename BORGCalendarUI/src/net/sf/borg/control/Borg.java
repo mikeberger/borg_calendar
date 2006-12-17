@@ -55,9 +55,11 @@ import net.sf.borg.common.util.Resource;
 import net.sf.borg.common.util.SocketClient;
 import net.sf.borg.common.util.SocketHandler;
 import net.sf.borg.common.util.SocketServer;
+import net.sf.borg.common.util.Warning;
 import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.Appointment;
 import net.sf.borg.model.AppointmentModel;
+import net.sf.borg.model.MemoModel;
 import net.sf.borg.model.MultiUserModel;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.db.BeanDataFactoryFactory;
@@ -80,14 +82,14 @@ import net.sf.borg.ui.TodoView;
  * Created on August 15, 2001, 9:23 PM
  */
 
-//the borg class is responsible for starting up the appropriate models and
-//views.
-//The views directly interact with the models to
-//display data. Views register with their models to receive notifications of
-//data changes.
-//Views can call other views.
+// the borg class is responsible for starting up the appropriate models and
+// views.
+// The views directly interact with the models to
+// display data. Views register with their models to receive notifications of
+// data changes.
+// Views can call other views.
 public class Borg extends Controller implements OptionsView.RestartListener,
-SocketHandler {
+	SocketHandler {
 
     static private Banner ban_ = null; // start up banner
 
@@ -98,7 +100,7 @@ SocketHandler {
     private Timer mailTimer_ = null;
 
     private EmailReminder emailReminder_ = null;
-    
+
     private SocketServer socketServer_ = null;
 
     static private Borg singleton = null;
@@ -118,14 +120,12 @@ SocketHandler {
 	    String resp;
 	    try {
 		resp = SocketClient.sendMsg("localhost", port, "open");
-		if( resp != null && resp.equals("ok"))
-		{
+		if (resp != null && resp.equals("ok")) {
 		    System.exit(0);
 		}
 	    } catch (IOException e) {
 
 	    }
-
 
 	}
 
@@ -155,8 +155,7 @@ SocketHandler {
 		});
     }
 
-    static public void shutdown()
-    {
+    static public void shutdown() {
 	getReference().removeListeners();
 	System.exit(0);
     }
@@ -168,13 +167,14 @@ SocketHandler {
 	    syncTimer_.cancel();
 	if (mailTimer_ != null)
 	    mailTimer_.cancel();
-	if( emailReminder_ != null )
+	if (emailReminder_ != null)
 	    emailReminder_.destroy();
 	removeListeners();
 	init(new String[0]);
     }
 
-    // init will process the command line args, open and load the databases, and
+    // init will process the command line args, open and load the databases,
+        // and
     // start up the
     // main month view
     private void init(String args[]) {
@@ -185,7 +185,8 @@ SocketHandler {
 	boolean aplist = false; // do not start GUI, only generate a list of
 	// appointments
 	// this option is not really used anymore
-	boolean autostart = false; // autostart feature - only bring up the GUI
+	boolean autostart = false; // autostart feature - only bring up the
+                                        // GUI
 	// if an appointment is approaching
 
 	OptionsView.setRestartListener(this);
@@ -368,6 +369,22 @@ SocketHandler {
 	    AddressModel addrmod = AddressModel.create();
 	    register(addrmod);
 	    addrmod.open_db(dbdir, uid, readonly, shared);
+	    
+	    if (!autostart && splash)
+		ban_.setText(Resource
+			.getResourceString("Opening_Memo_Database"));
+	    MemoModel memomod = MemoModel.create();
+	    try{
+		
+		    memomod.open_db(dbdir, uid, readonly, shared);
+		    register(memomod);
+	    }
+	    catch( Warning w)
+	    {
+		Errmsg.notice(w.getMessage());
+	    }
+	    
+
 
 	    if (!autostart && splash)
 		ban_.setText(Resource.getResourceString("Opening_Main_Window"));
@@ -446,15 +463,18 @@ SocketHandler {
 
 
 	} catch (Exception e) {
-	    // if something goes wrong, it might be that the database directory
+	    // if something goes wrong, it might be that the database
+                // directory
 	    // is bad. Maybe
-	    // it does not exist anymore or something, so give the user a chance
+	    // it does not exist anymore or something, so give the user a
+                // chance
 	    // to change it
 	    // if it will fix the problem
 
 	    Errmsg.errmsg(e);
 
-	    // get rid of NESTED exceptions for SQL exceptions - they make the
+	    // get rid of NESTED exceptions for SQL exceptions - they make
+                // the
 	    // error window too large
 	    String es = e.toString();
 	    int i1 = es.indexOf("** BEGIN NESTED");
@@ -495,7 +515,7 @@ SocketHandler {
 	    while (mumit.hasNext()) {
 		String user = (String) mumit.next();
 		AppointmentModel otherModel = AppointmentModel
-		.getReference(user);
+			.getReference(user);
 		if (otherModel != null)
 		    otherModel.sync();
 	    }
@@ -508,8 +528,8 @@ SocketHandler {
     }
 
     private boolean trayIcon = true;
-    public boolean hasTrayIcon()
-    {
+
+    public boolean hasTrayIcon() {
 	return trayIcon;
     }
 
@@ -543,7 +563,7 @@ SocketHandler {
 	String backgstart = Prefs.getPref(PrefName.BACKGSTART);
 	if (backgstart.equals("false") || !trayIcon) {
 	    // start main month view
-	    //CalendarView.getReference(trayIcon);
+	    // CalendarView.getReference(trayIcon);
 	    MultiView mv = MultiView.getMainView();
 	    mv.setVisible(true);
 
@@ -556,7 +576,8 @@ SocketHandler {
 
     // check if we should auto_start
     // this function checks if an appointment is coming close
-    // it does not check if BORG is already running or if the user is not logged
+    // it does not check if BORG is already running or if the user is not
+        // logged
     // on - that will fall out elsewhere
     private boolean should_auto_start() {
 
@@ -592,7 +613,8 @@ SocketHandler {
 
 		    Date d = appt.getDate();
 
-		    // set acal to the appointments due time and calculate how
+		    // set acal to the appointments due time and calculate
+                        // how
 		    // many minutes
 		    // there are before the appointment time
 		    GregorianCalendar acal = new GregorianCalendar();
@@ -601,9 +623,11 @@ SocketHandler {
 			    .getTimeInMillis())
 			    / (1000 * 60);
 
-		    // if the appointment is less than 30 minutes away or within
+		    // if the appointment is less than 30 minutes away or
+                        // within
 		    // the past 5 minutes,
-		    // we can autostart borg. otherwise, look for the next appt
+		    // we can autostart borg. otherwise, look for the next
+                        // appt
 		    if (mins_to_go > 30 || mins_to_go < -5)
 			continue;
 
@@ -664,7 +688,7 @@ SocketHandler {
 
 	    // get version and compare
 	    URL webverurl = new URL(
-	    "http://borg-calendar.sourceforge.net/latest_version");
+		    "http://borg-calendar.sourceforge.net/latest_version");
 	    InputStream is = webverurl.openStream();
 	    int i;
 	    String webver = "";
@@ -685,11 +709,11 @@ SocketHandler {
 		    return;
 		}
 		String info = "A new version of BORG is available\nYour version = "
-		    + Resource.getVersion()
-		    + "\nNew version = "
-		    + webver
-		    + "\nCheck the BORG website at http://borg-calendar.sourceforge.net for details"
-		    + "\nuse the Edit Preferences menu to shut off this automatic check";
+			+ Resource.getVersion()
+			+ "\nNew version = "
+			+ webver
+			+ "\nCheck the BORG website at http://borg-calendar.sourceforge.net for details"
+			+ "\nuse the Edit Preferences menu to shut off this automatic check";
 
 		// Cannot use JOptionPane here since the dialog will pop up
 		// without
@@ -752,11 +776,10 @@ SocketHandler {
 		.getPassword());
     }
 
-
     private ModalMessage modalMessage = null;
 
     public synchronized String processMessage(String msg) {
-	//System.out.println("Got msg: " + msg);
+	// System.out.println("Got msg: " + msg);
 	if (msg.equals("sync")) {
 	    try {
 		syncDBs();
@@ -771,19 +794,14 @@ SocketHandler {
 	    MultiView.getMainView().toFront();
 	    MultiView.getMainView().setState(Frame.NORMAL);
 	    return ("ok");
-	}
-	else if( msg.startsWith("lock:"))
-	{
+	} else if (msg.startsWith("lock:")) {
 	    final String lockmsg = msg.substring(5);
 	    SwingUtilities.invokeLater(new Runnable() {
 		public void run() {
-		    if( modalMessage == null || !modalMessage.isShowing())
-		    {
+		    if (modalMessage == null || !modalMessage.isShowing()) {
 			modalMessage = new ModalMessage(lockmsg, false);
 			modalMessage.setVisible(true);
-		    }
-		    else
-		    {
+		    } else {
 			modalMessage.appendText(lockmsg);
 		    }
 		    modalMessage.setEnabled(false);
@@ -791,24 +809,18 @@ SocketHandler {
 		}
 	    });
 
-
-	    return("ok");
-	}
-	else if( msg.equals("unlock"))
-	{
+	    return ("ok");
+	} else if (msg.equals("unlock")) {
 	    SwingUtilities.invokeLater(new Runnable() {
 		public void run() {
-		    if( modalMessage.isShowing() )
-		    {
+		    if (modalMessage.isShowing()) {
 			modalMessage.setEnabled(true);
 		    }
 		}
 	    });
 
-	    return("ok");
-	}
-	else if( msg.startsWith("<"))
-	{
+	    return ("ok");
+	} else if (msg.startsWith("<")) {
 	    return SingleInstanceHandler.execute(msg);
 	}
 	return ("Unknown msg: " + msg);

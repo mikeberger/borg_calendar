@@ -31,4 +31,6 @@ public interface IBeanDataFactory
 	 */
 	public BeanDB create(Class cls, String url, String username)
 			throws Exception;
+	public MemoDB createMemoDB(String url, String username)
+			throws Exception;
 }

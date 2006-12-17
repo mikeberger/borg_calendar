@@ -149,4 +149,13 @@ CREATE CACHED TABLE tasklog (
 );
 CREATE INDEX tasklog_user ON tasklog (username);
 
-
+CREATE CACHED TABLE memos (
+  memoname varchar(50) NOT NULL,
+  username varchar(25) NOT NULL,
+  memotext longvarchar,
+  new integer default '0' NOT NULL,
+  modified integer default '0' NOT NULL,
+  deleted integer default '0' NOT NULL,
+  PRIMARY KEY  (memoname,username)
+);
+CREATE INDEX memo_user ON memos (username);

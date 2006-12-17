@@ -43,6 +43,7 @@ import net.sf.borg.common.util.Resource;
 import net.sf.borg.control.Borg;
 import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.AppointmentModel;
+import net.sf.borg.model.MemoModel;
 import net.sf.borg.model.TaskModel;
 
 // weekView handles the printing of a single week
@@ -59,6 +60,8 @@ public class MultiView extends View implements Navigator {
 	private WeekPanel wkPanel = null;
 
 	private CalendarPanel calPanel = null;
+	
+	private MemoPanel memoPanel = null;
 
 	static public final int DAY = 1;
 
@@ -84,6 +87,7 @@ public class MultiView extends View implements Navigator {
 		addModel(AppointmentModel.getReference());
 		addModel(TaskModel.getReference());
 		addModel(AddressModel.getReference());
+		addModel(MemoModel.getReference());
 		getLayeredPane().registerKeyboardAction(new ActionListener() {
 			public final void actionPerformed(ActionEvent e) {
 				if( Borg.getReference().hasTrayIcon())
@@ -160,6 +164,7 @@ public class MultiView extends View implements Navigator {
 					.get(Calendar.YEAR), cal_.get(Calendar.DATE));
 			wkPanel = new WeekPanel(cal_.get(Calendar.MONTH), cal_
 					.get(Calendar.YEAR), cal_.get(Calendar.DATE));
+			memoPanel = new MemoPanel();
 			// dayPanel.setBackground(Color.WHITE);
 			// dayPanel.setPreferredSize(new Dimension(800,600));
 			tabs_.addTab(Resource.getPlainResourceString("Month_View"), null,
@@ -168,6 +173,7 @@ public class MultiView extends View implements Navigator {
 					wkPanel);
 			tabs_.addTab(Resource.getPlainResourceString("Day_View"), null,
 					dayPanel);
+			tabs_.addTab(Resource.getPlainResourceString("Memos"), null, memoPanel);
 		}
 		return tabs_;
 	}
@@ -183,6 +189,7 @@ public class MultiView extends View implements Navigator {
 		dayPanel.clearData();
 		dayPanel.repaint();
 		calPanel.refresh();
+		memoPanel.refresh();
 	}
 
 	public void next() {

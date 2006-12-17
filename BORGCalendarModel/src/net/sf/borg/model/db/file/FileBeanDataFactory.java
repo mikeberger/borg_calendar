@@ -25,6 +25,7 @@ import net.sf.borg.model.Appointment;
 import net.sf.borg.model.Task;
 import net.sf.borg.model.db.BeanDB;
 import net.sf.borg.model.db.IBeanDataFactory;
+import net.sf.borg.model.db.MemoDB;
 
 /**
  * A singleton instance which creates class-specific {@link BeanDB BeanDB}
@@ -89,5 +90,10 @@ public class FileBeanDataFactory implements IBeanDataFactory
 
 	private FileBeanDataFactory()
 	{
+	}
+
+	public MemoDB createMemoDB(String url, String username) throws Exception {
+	    // TODO Auto-generated method stub
+	    return null;
 	}
 }

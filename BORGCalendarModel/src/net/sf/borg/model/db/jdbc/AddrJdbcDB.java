@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import net.sf.borg.model.Address;
+import net.sf.borg.model.db.BeanDB;
 import net.sf.borg.model.db.DBException;
 import net.sf.borg.model.db.KeyedBean;
 
@@ -36,7 +37,7 @@ import net.sf.borg.model.db.KeyedBean;
  *
  * this is the JDBC layer for access to the addresses table
  */
-class AddrJdbcDB extends JdbcDB
+class AddrJdbcDB extends JdbcBeanDB implements BeanDB
 {
 
              

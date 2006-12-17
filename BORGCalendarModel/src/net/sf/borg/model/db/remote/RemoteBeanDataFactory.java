@@ -28,6 +28,7 @@ import net.sf.borg.model.db.BeanDB;
 import net.sf.borg.model.db.CachingBeanDB;
 import net.sf.borg.model.db.DBException;
 import net.sf.borg.model.db.IBeanDataFactory;
+import net.sf.borg.model.db.MemoDB;
 
 /**
  * A singleton instance which creates class-specific {@link BeanDB BeanDB}
@@ -99,5 +100,10 @@ public class RemoteBeanDataFactory implements IBeanDataFactory
 
 	private RemoteBeanDataFactory()
 	{
+	}
+
+	public MemoDB createMemoDB(String url, String username) throws Exception {
+	    // TODO Auto-generated method stub
+	    return null;
 	}
 }

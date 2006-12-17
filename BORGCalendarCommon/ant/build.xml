@@ -140,6 +140,14 @@
 							<arg value="${db.res.dir}/tasklog_schema.xml" />
 						</java>
 		
+		<java jar="${gen.dir}/genObj.jar"
+						      dir="${gen.dir}"
+						      fork="true"
+						      failonerror="true">
+							<arg value="net.sf.borg.model" />
+							<arg value="${db.res.dir}/memo_schema.xml" />
+						</java>
+		
 		<copy todir="${prj.model.dir}/src/${pkg}/model">
 			<fileset dir="${gen.dir}">
 				<include name="Address.java" />
@@ -149,6 +157,7 @@
 				<include name="Subtask.java"/>
 				<include name="Project.java"/>
 				<include name="Tasklog.java"/>
+				<include name="Memo.java"/>
 				<include name="*XMLAdapter.java" />
 			</fileset>
 		</copy>
