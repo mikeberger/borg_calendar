@@ -64,11 +64,12 @@ public class JDICTrayIconProxy {
             item.addActionListener(new OpenListener());
             popup.add(item);
             
+            /*
             item = new JMenuItem();
             ResourceHelper.setText(item, "Open_Task_List");
             item.addActionListener(new TaskListener());
             popup.add(item);
-            
+            */
             item = new JMenuItem();
             ResourceHelper.setText(item, "Open_Address_Book");
             item.addActionListener(new AddrListener());
@@ -118,7 +119,7 @@ public class JDICTrayIconProxy {
             mv.setState(Frame.NORMAL);
         }
     }
-
+/*
     static private class TaskListener implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
@@ -127,7 +128,7 @@ public class JDICTrayIconProxy {
             bt_.setVisible(true);
         }
     }
-
+*/
     static private class AddrListener implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {

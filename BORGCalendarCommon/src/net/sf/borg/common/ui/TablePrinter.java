@@ -53,7 +53,7 @@ public class TablePrinter implements Printable
         double pageHeight = pageFormat.getImageableHeight()-fontHeight;
         double pageWidth = pageFormat.getImageableWidth();
         double tableWidth = tableView.getColumnModel( ).getTotalColumnWidth();
-        double scale = 1;
+        double scale = 1.0;
         if (tableWidth >= pageWidth)
         {
             scale =  pageWidth / tableWidth;
@@ -114,21 +114,6 @@ public class TablePrinter implements Printable
         
         return Printable.PAGE_EXISTS;
     }
-    
-    /*static private void printPrintable( Printable p ) throws Exception
-    {
-        PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
-        aset.add(new Copies(1));
-        //aset.add(MediaSizeName.NA_LETTER);
-        
-        PrinterJob printJob = PrinterJob.getPrinterJob();
-        printJob.setPrintable(p);
-        //printJob.pageDialog(aset);
-        if (printJob.printDialog(aset))
-            printJob.print(aset);
-        
-    }*/
-    
     
     static public void printTable(JTable tbl) throws Exception
     {

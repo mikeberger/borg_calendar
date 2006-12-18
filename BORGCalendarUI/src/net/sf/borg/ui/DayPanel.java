@@ -34,7 +34,7 @@ import net.sf.borg.ui.ApptDayBoxLayout.ApptDayBox;
 import net.sf.borg.ui.ApptDayBoxLayout.DateZone;
 
 // weekPanel handles the printing of a single week
-class DayPanel extends ApptBoxPanel implements Prefs.Listener, Printable {
+class DayPanel extends ApptBoxPanel implements Navigator, Prefs.Listener, Printable {
 
 	private int year_;
 
@@ -54,7 +54,7 @@ class DayPanel extends ApptBoxPanel implements Prefs.Listener, Printable {
 		// only print 1 page
 		if (pageIndex > 0)
 			return Printable.NO_SUCH_PAGE;
-        Font sm_font = Font.decode(Prefs.getPref(PrefName.MONTHVIEWFONT));
+        Font sm_font = Font.decode(Prefs.getPref(PrefName.DAYVIEWFONT));
 		return (drawIt(g, pageFormat.getWidth(), pageFormat.getHeight(),
 				pageFormat.getImageableWidth(),
 				pageFormat.getImageableHeight(), pageFormat.getImageableX(),

@@ -37,7 +37,7 @@ import net.sf.borg.ui.ApptDayBoxLayout.ApptDayBox;
 import net.sf.borg.ui.ApptDayBoxLayout.DateZone;
 
 // weekPanel handles the printing of a single week
-class WeekPanel extends ApptBoxPanel implements Prefs.Listener,Printable {
+class WeekPanel extends ApptBoxPanel implements Navigator, Prefs.Listener,Printable {
 
 	private int year_;
 
