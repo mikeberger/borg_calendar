@@ -25,6 +25,7 @@ import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.Resource;
 import net.sf.borg.model.Memo;
 import net.sf.borg.model.MemoModel;
+import javax.swing.JSplitPane;
 
 public class MemoPanel extends JPanel implements ListSelectionListener {
 
@@ -43,6 +44,10 @@ public class MemoPanel extends JPanel implements ListSelectionListener {
     private JButton saveButton = null;
 
     private JButton delButton = null;
+
+    private JScrollPane jScrollPane1 = null;
+
+    private JSplitPane jSplitPane = null;
 
     /**
          * This is the default constructor
@@ -66,30 +71,21 @@ public class MemoPanel extends JPanel implements ListSelectionListener {
          * @return void
          */
     private void initialize() {
+	GridBagConstraints gridBagConstraints21 = new GridBagConstraints();
+	gridBagConstraints21.fill = GridBagConstraints.BOTH;
+	gridBagConstraints21.weighty = 1.0;
+	gridBagConstraints21.gridx = 0;
+	gridBagConstraints21.gridy = 0;
+	gridBagConstraints21.weightx = 1.0;
 	GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
 	gridBagConstraints2.gridx = 0;
-	gridBagConstraints2.gridwidth = 3;
+	gridBagConstraints2.gridwidth = 1;
 	gridBagConstraints2.fill = GridBagConstraints.BOTH;
 	gridBagConstraints2.insets = new Insets(4, 4, 4, 4);
 	gridBagConstraints2.gridy = 1;
-	GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
-	gridBagConstraints1.fill = GridBagConstraints.BOTH;
-	gridBagConstraints1.insets = new Insets(4, 4, 4, 4);
-	gridBagConstraints1.gridx = 2;
-	gridBagConstraints1.gridy = 0;
-	gridBagConstraints1.weightx = 1.0;
-	GridBagConstraints gridBagConstraints = new GridBagConstraints();
-	gridBagConstraints.fill = GridBagConstraints.BOTH;
-	gridBagConstraints.gridy = 0;
-	gridBagConstraints.weightx = 0.2D;
-	gridBagConstraints.weighty = 1.0;
-	gridBagConstraints.insets = new Insets(4, 4, 4, 4);
-	gridBagConstraints.gridx = 0;
-	// this.setSize(300, 200);
 	this.setLayout(new GridBagLayout());
-	this.add(getJScrollPane(), gridBagConstraints);
-	this.add(getMemoText(), gridBagConstraints1);
 	this.add(getButtonPanel(), gridBagConstraints2);
+	this.add(getJSplitPane(), gridBagConstraints21);
     }
 
     /**
@@ -132,6 +128,7 @@ public class MemoPanel extends JPanel implements ListSelectionListener {
 	    memoText = new JTextArea();
 	    memoText.setLineWrap(true);
 
+	    memoText.setWrapStyleWord(true);
 	}
 	return memoText;
     }
@@ -324,5 +321,34 @@ public class MemoPanel extends JPanel implements ListSelectionListener {
 	    });
         }
         return delButton;
+    }
+
+    /**
+     * This method initializes jScrollPane1	
+     * 	
+     * @return javax.swing.JScrollPane	
+     */
+    private JScrollPane getJScrollPane1() {
+        if (jScrollPane1 == null) {
+    	jScrollPane1 = new JScrollPane();
+    	jScrollPane1.setPreferredSize(new Dimension(400, 400));
+    	jScrollPane1.setViewportView(getMemoText());
+        }
+        return jScrollPane1;
+    }
+
+    /**
+     * This method initializes jSplitPane	
+     * 	
+     * @return javax.swing.JSplitPane	
+     */
+    private JSplitPane getJSplitPane() {
+        if (jSplitPane == null) {
+    	jSplitPane = new JSplitPane();
+    	jSplitPane.setResizeWeight(0.2D);
+    	jSplitPane.setLeftComponent(getJScrollPane());
+    	jSplitPane.setRightComponent(getJScrollPane1());
+        }
+        return jSplitPane;
     }
 }
