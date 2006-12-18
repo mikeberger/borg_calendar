@@ -22,6 +22,7 @@ package net.sf.borg.model.db.remote;
 
 import net.sf.borg.model.Address;
 import net.sf.borg.model.Appointment;
+import net.sf.borg.model.Memo;
 import net.sf.borg.model.Task;
 
 /**
@@ -47,6 +48,8 @@ public static class Parms
 			cls = Task.class;
 		else if (clsstr.equals("Appointment"))
 			cls = Appointment.class;
+		else if (clsstr.equals("Memo"))
+			cls = Memo.class;
 		else
 			throw new IllegalArgumentException(clsstr);
 	}

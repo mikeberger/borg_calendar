@@ -103,7 +103,6 @@ public class RemoteBeanDataFactory implements IBeanDataFactory
 	}
 
 	public MemoDB createMemoDB(String url, String username) throws Exception {
-	    // TODO Auto-generated method stub
-	    return null;
+	    return new RemoteMemoDB(url,username);
 	}
 }

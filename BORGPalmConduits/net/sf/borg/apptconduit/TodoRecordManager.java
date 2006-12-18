@@ -11,8 +11,7 @@ import java.util.Vector;
 
 import net.sf.borg.model.Appointment;
 import net.sf.borg.model.AppointmentModel;
-import net.sf.borg.model.Task;
-import net.sf.borg.model.TaskModel;
+
 import palm.conduit.Category;
 import palm.conduit.Log;
 import palm.conduit.SyncManager;
@@ -117,6 +116,7 @@ public class TodoRecordManager {
             
         }
         
+        /*
         Collection tasks = TaskModel.getReference().getTasks();
         it = tasks.iterator();
         while( it.hasNext() ) {
@@ -128,15 +128,7 @@ public class TodoRecordManager {
                 continue;
             
             // !!!!! only show first line of task text !!!!!!
-            /*String tx = "BT" + r.getTaskNumber() + ":";
-            String xx = r.getDescription();
-            int ii = xx.indexOf('\n');
-            if( ii != -1 ) {
-                tx += xx.substring(0,ii);
-            }
-            else {
-                tx += xx;
-            }*/
+            
             String tx = r.getDescription();
             
             TodoRecord rec = new TodoRecord();
@@ -187,7 +179,7 @@ public class TodoRecordManager {
             }
             SyncManager.writeRec(db, rec);
             
-        }
+        }*/
         
         cm.writeHHCategories(hhCats);
 
@@ -238,7 +230,7 @@ public class TodoRecordManager {
     public void synchronizeHHRecord(TodoRecord hhRecord) throws Exception {
     	if( isTask(hhRecord))
     	{
-    		syncTask(hhRecord);
+    		//syncTask(hhRecord);
     	}
     	else
     	{
@@ -360,6 +352,7 @@ public class TodoRecordManager {
 
     }
     
+    /*
     public void syncTask(TodoRecord hhRecord) throws Exception {
 
         Task task = null;
@@ -421,15 +414,15 @@ public class TodoRecordManager {
             }
         }
 
-    }
+    }*/
 
     private Appointment getRecordById(int id) throws Exception {
         return (AppointmentModel.getReference().getAppt(id));
     }
-    
+    /*
     private Task getTaskById(int id) throws Exception {
         return (TaskModel.getReference().getMR(id));
-    }
+    }*/
 
     static int getApptKey(TodoRecord hh) {
 

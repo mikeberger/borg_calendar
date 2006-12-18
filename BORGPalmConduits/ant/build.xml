@@ -79,25 +79,25 @@
 
 	      </jar>
 	   </target>
+
 	
-	   <target name="todo-jar" depends="compile">
+	<target name="memo-jar" depends="compile">
+	   	  
 	      <mkdir dir="${dist.dir}" />
 
 	      <manifest file="${build.dir}/${pkg}/MANIFEST.MF">
 	         <attribute name="Built-By" value="${user.name}"/>
 	      </manifest>
+
+	   	  <copy file="${basedir}/memoconduit.xml" tofile="${build.dir}/conduit.xml" overwrite="true"/>
 	   	
-	   	  <copy file="${basedir}/todoconduit.xml" tofile="${build.dir}/conduit.xml" overwrite="true"/>
-	   	
-	      <jar jarfile="${dist.dir}/todoconduit.jar" manifest="${build.dir}/${pkg}/MANIFEST.MF">
+	      <jar jarfile="${dist.dir}/memoconduit.jar" manifest="${build.dir}/${pkg}/MANIFEST.MF">
 	         <fileset dir="${build.dir}">
-	            <include name="**/todoconduit/*.class"/>
+	            <include name="**/memoconduit/*.class"/>  
 	         	<include name="conduit.xml"/>
 	         </fileset>
-
 	      </jar>
 	   </target>
-	
 
    <!-- Clean everything -->
    <target name="clean" >
@@ -107,7 +107,7 @@
  
                 
 
-   <target name="main" depends="clean,addr-jar,appt-jar,src" />
+   <target name="main" depends="clean,addr-jar,appt-jar,memo-jar,src" />
  
    
  

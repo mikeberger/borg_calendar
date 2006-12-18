@@ -8,7 +8,7 @@ import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.J13Helper;
 import net.sf.borg.common.util.SocketClient;
 import net.sf.borg.model.AppointmentModel;
-import net.sf.borg.model.TaskModel;
+
 import net.sf.borg.model.db.remote.IRemoteProxy;
 import net.sf.borg.model.db.remote.IRemoteProxyProvider;
 import net.sf.borg.model.db.remote.RemoteProxyHome;
@@ -44,7 +44,7 @@ public class ApptCond implements Conduit {
 		ApptRecordManager recordMgr;
 		TodoRecordManager trecordMgr;
 		AppointmentModel apptModel;
-		TaskModel taskModel;
+		//TaskModel taskModel;
 
 		Errmsg.console(true);
 
@@ -121,10 +121,15 @@ public class ApptCond implements Conduit {
 				log("user=" + user);
 				apptModel = AppointmentModel.create();
 				apptModel.open_db(dbdir, user, false, false);
-
+/*
 				taskModel = TaskModel.create();
-				taskModel.open_db(dbdir, user, false, false);
-
+				try{
+				    taskModel.open_db(dbdir, user, false, false);
+				}
+				catch( Exception e)
+				{
+				     //ignore exception for subtasks no supported
+				}*/
 				// have to get todo data into BORG, then get appt data, then
 				// sync back
 				// appt data and finally overwrite Todo data.
@@ -174,7 +179,7 @@ public class ApptCond implements Conduit {
 
 				// Close DB
 				apptModel.close_db();
-				taskModel.close_db();
+				//taskModel.close_db();
 				// Single Log we are successful
 				log("OK ApptCond Conduit");
 				Log.endSync();

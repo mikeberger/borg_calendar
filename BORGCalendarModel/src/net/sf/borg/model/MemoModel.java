@@ -60,6 +60,11 @@ public class MemoModel extends Model {
 	}
 	db_ = null;
     }
+    
+    public MemoDB getDB()
+    {
+	return db_;
+    }
 
     public Collection getMemos() throws DBException, Exception {
 	Collection memos = db_.readAll();
@@ -174,6 +179,8 @@ public class MemoModel extends Model {
 
     public Memo getMemo(String name) throws DBException, Exception {
 	Memo m = db_.readMemo(name);
+	if( m == null )
+	    return null;
 	if( m.getDeleted() == true)
 	    return null;
 	return m;
@@ -234,5 +241,10 @@ public class MemoModel extends Model {
 
     public void close_db() throws Exception {
 	db_.close();
+    }
+    
+    public Memo getMemoByPalmId(int id) throws Exception
+    {
+	return db_.getMemoByPalmId(id);
     }
 }

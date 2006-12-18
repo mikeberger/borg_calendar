@@ -45,8 +45,8 @@ class MemoJdbcDB extends JdbcDB implements MemoDB {
 
     public void addMemo(Memo m) throws DBException, Exception {
 	PreparedStatement stmt = connection_
-		.prepareStatement("INSERT INTO memos ( memoname, username, memotext, new, modified, deleted) "
-			+ " VALUES " + "( ?, ?, ?, ?, ?, ?)");
+		.prepareStatement("INSERT INTO memos ( memoname, username, memotext, new, modified, deleted, palmid) "
+			+ " VALUES " + "( ?, ?, ?, ?, ?, ?, ?)");
 
 	stmt.setString(1, m.getMemoName());
 	stmt.setString(2, username_);
@@ -55,6 +55,10 @@ class MemoJdbcDB extends JdbcDB implements MemoDB {
 	stmt.setInt(4, toInt(m.getNew()));
 	stmt.setInt(5, toInt(m.getModified()));
 	stmt.setInt(6, toInt(m.getDeleted()));
+	if( m.getPalmId() != null )
+	    stmt.setInt(7, m.getPalmId().intValue());
+	else
+	    stmt.setNull(7, java.sql.Types.INTEGER);
 
 	stmt.executeUpdate();
 
@@ -62,7 +66,7 @@ class MemoJdbcDB extends JdbcDB implements MemoDB {
 
     public void delete(String name) throws DBException, Exception {
 	PreparedStatement stmt = connection_
-		.prepareStatement("DELETE FROM addresses WHERE memoname = ? AND username = ?");
+		.prepareStatement("DELETE FROM memos WHERE memoname = ? AND username = ?");
 	stmt.setString(1, name);
 	stmt.setString(2, username_);
 	stmt.executeUpdate();
@@ -82,6 +86,27 @@ class MemoJdbcDB extends JdbcDB implements MemoDB {
 
 	return (keys);
 
+    }
+    
+    public Memo getMemoByPalmId(int id) throws Exception
+    {
+	PreparedStatement stmt = connection_.prepareStatement("SELECT * FROM memos WHERE username = ? and palmid = ? ");
+	stmt.setString(1, username_);
+	stmt.setInt(2,id);
+	ResultSet r = null;
+	try {
+	    Memo m = null;
+	    r = stmt.executeQuery();
+	    if (r.next()) {
+		m = createFrom(r);
+	    }
+	    return m;
+	} finally {
+	    if (r != null)
+		r.close();
+	    if (stmt != null)
+		stmt.close();
+	}
     }
 
     private PreparedStatement getPSOne(String name) throws SQLException {
@@ -108,6 +133,10 @@ class MemoJdbcDB extends JdbcDB implements MemoDB {
 	m.setNew(r.getInt("new") != 0);
 	m.setModified(r.getInt("modified") != 0);
 	m.setDeleted(r.getInt("deleted") != 0);
+	int palmid = r.getInt("palmid");
+	if( !r.wasNull())
+	    m.setPalmId(new Integer(palmid));
+	
 
 	return m;
     }
@@ -157,7 +186,7 @@ class MemoJdbcDB extends JdbcDB implements MemoDB {
 
 	PreparedStatement stmt = connection_
 		.prepareStatement("UPDATE memos SET "
-			+ "memotext = ?, new = ?, modified = ?, deleted = ? "
+			+ "memotext = ?, new = ?, modified = ?, deleted = ?, palmid = ? "
 			+ " WHERE memoname = ? AND username = ?");
 
 	stmt.setString(1, m.getMemoText());
@@ -165,9 +194,13 @@ class MemoJdbcDB extends JdbcDB implements MemoDB {
 	stmt.setInt(2, toInt(m.getNew()));
 	stmt.setInt(3, toInt(m.getModified()));
 	stmt.setInt(4, toInt(m.getDeleted()));
+	if( m.getPalmId() != null )
+	    stmt.setInt(5, m.getPalmId().intValue());
+	else
+	    stmt.setNull(5, java.sql.Types.INTEGER);
 
-	stmt.setString(5, m.getMemoName());
-	stmt.setString(6, username_);
+	stmt.setString(6, m.getMemoName());
+	stmt.setString(7, username_);
 
 	stmt.executeUpdate();
 

@@ -19,5 +19,7 @@ public interface MemoDB {
     public void updateMemo(Memo m) throws DBException, Exception;
     
     public void close() throws Exception;
+    
+    public Memo getMemoByPalmId(int id) throws Exception;
 
 }

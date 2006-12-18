@@ -11,6 +11,11 @@
 		<desc>Memo Text</desc>
 	</field>
 	<field>
+		<type>Integer</type>
+		<longName>PalmId</longName>
+		<desc>Palm Id</desc>
+	</field>
+	<field>
 		<name>NEW</name>
 		<type>boolean</type>
         <flagNumber>1</flagNumber>

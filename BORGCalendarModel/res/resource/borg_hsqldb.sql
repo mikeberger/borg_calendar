@@ -153,6 +153,7 @@ CREATE CACHED TABLE memos (
   memoname varchar(50) NOT NULL,
   username varchar(25) NOT NULL,
   memotext longvarchar,
+  palmid integer,
   new integer default '0' NOT NULL,
   modified integer default '0' NOT NULL,
   deleted integer default '0' NOT NULL,
