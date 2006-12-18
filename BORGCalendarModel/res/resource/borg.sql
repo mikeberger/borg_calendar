@@ -31,14 +31,9 @@ CREATE TABLE `addresses` (
   KEY `username` (`username`)
 );
 
--- --------------------------------------------------------
-
--- 
--- Table structure for table `appointments`
--- 
 
 CREATE TABLE `appointments` (
-  `appt_date` timestamp NOT NULL default CURRENT_TIMESTAMP,
+  `appt_date` timestamp NOT NULL default '0000-00-00 00:00:00',
   `appt_num` int(11) NOT NULL default '0',
   `username` varchar(25) NOT NULL,
   `duration` int(11) default NULL,
@@ -64,11 +59,6 @@ CREATE TABLE `appointments` (
   KEY `username` (`username`)
 );
 
--- --------------------------------------------------------
-
--- 
--- Table structure for table `options`
--- 
 
 CREATE TABLE `options` (
   `name` varchar(10) NOT NULL default '',
@@ -77,11 +67,19 @@ CREATE TABLE `options` (
   PRIMARY KEY  (`name`,`username`)
 );
 
--- --------------------------------------------------------
 
--- 
--- Table structure for table `tasks`
--- 
+CREATE TABLE projects (
+  id int(11)  NOT NULL default '0',
+  username varchar(25) NOT NULL,
+  start_date date NOT NULL default '0000-00-00',
+  due_date date default NULL,
+  description text NOT NULL,
+  category varchar(10) default NULL,
+  status varchar(10) NOT NULL default '',
+  PRIMARY KEY  (id,username),
+  KEY `username` (`username`)
+);
+
 
 CREATE TABLE `tasks` (
   `tasknum` int(11) NOT NULL default '0',
@@ -96,7 +94,10 @@ CREATE TABLE `tasks` (
   `resolution` text,
   `category` varchar(10) default NULL,
   `close_date` date default NULL,
+  project integer default NULL,
   PRIMARY KEY  (`tasknum`,`username`),
+  FOREIGN KEY (project, username) REFERENCES projects ( id, username )
+     ON DELETE CASCADE,
   KEY `username` (`username`)
 );
 
@@ -126,3 +127,18 @@ CREATE TABLE tasklog (
   FOREIGN KEY (task, username) REFERENCES tasks ( tasknum, username )
      ON DELETE CASCADE
 );
+
+
+
+CREATE TABLE memos (
+  memoname varchar(50) NOT NULL,
+  username varchar(25) NOT NULL,
+  memotext text,
+  palmid int(11),
+  new int(11) NOT NULL default '0' ,
+  modified int(11) NOT NULL default '0' ,
+  deleted int(11)  NOT NULL default '0' ,
+  PRIMARY KEY  (memoname,username),
+  KEY `username` (`username`)
+);
+

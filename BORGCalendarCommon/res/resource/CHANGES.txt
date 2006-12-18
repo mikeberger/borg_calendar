@@ -3,6 +3,8 @@ Version 1.6
 Redesign Subtasks in Task Tracker
 Add Projects to group Tasks
 Add Task Log
+Add Simple Plain-Text memos, compatible with Palm-Desktop
+Add Palm Hot-Sync conduit for the new memos
 
 Version 1.5.2
 -------------

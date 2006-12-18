@@ -37,6 +37,7 @@ import net.sf.borg.model.AppointmentIcalAdapter;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.AppointmentVcalAdapter;
 import net.sf.borg.model.CategoryModel;
+import net.sf.borg.model.MemoModel;
 import net.sf.borg.model.Task;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.db.BeanDataFactoryFactory;
@@ -731,7 +732,7 @@ public class MainMenu {
 
 	private void impCommon(XTree xt) throws Exception {
 		String type = xt.name();
-		if (!type.equals("TASKS") && !type.equals("APPTS")
+		if (!type.equals("TASKS") && !type.equals("APPTS") && !type.equals("MEMOS")
 				&& !type.equals("ADDRESSES"))
 			throw new Exception(
 					Resource
@@ -751,6 +752,9 @@ public class MainMenu {
 		} else if (type.equals("APPTS")) {
 			AppointmentModel calmod = AppointmentModel.getReference();
 			calmod.importXml(xt);
+		} else if (type.equals("MEMOS")) {
+			MemoModel memomod = MemoModel.getReference();
+			memomod.importXml(xt);
 		} else {
 			AddressModel addrmod = AddressModel.getReference();
 			addrmod.importXml(xt);
@@ -784,6 +788,11 @@ public class MainMenu {
 		fos = createOutputStreamFromURL(url + "/addr.xml");
 		fw = new OutputStreamWriter(fos, "UTF8");
 		AddressModel.getReference().export(fw);
+		fw.close();
+		
+		fos = createOutputStreamFromURL(url + "/memo.xml");
+		fw = new OutputStreamWriter(fos, "UTF8");
+		MemoModel.getReference().export(fw);
 		fw.close();
 	}
 
@@ -1067,6 +1076,14 @@ public class MainMenu {
 				OutputStream ostr = IOHelper.createOutputStream(fname);
 				Writer fw = new OutputStreamWriter(ostr, "UTF8");
 				AddressModel.getReference().export(fw);
+				fw.close();
+			}
+			
+			fname = dir.getAbsolutePath() + "/memo.xml";
+			if (OverwriteConfirm.checkOverwrite(fname)) {
+				OutputStream ostr = IOHelper.createOutputStream(fname);
+				Writer fw = new OutputStreamWriter(ostr, "UTF8");
+				MemoModel.getReference().export(fw);
 				fw.close();
 			}
 		} catch (Exception e) {
