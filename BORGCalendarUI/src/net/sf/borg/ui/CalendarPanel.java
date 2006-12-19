@@ -305,6 +305,7 @@ public class CalendarPanel extends JPanel implements Prefs.Listener, Navigator {
 		};
 		taskPreview.setBackground(new Color(204, 204, 204));
 		taskPreview.setEditable(false);
+		/*
 		taskPreview.addMouseListener(new MouseListener() {
 			public void mouseClicked(MouseEvent evt) {
 				TaskListView v = TaskListView.getReference();
@@ -323,7 +324,7 @@ public class CalendarPanel extends JPanel implements Prefs.Listener, Navigator {
 
 			public void mouseReleased(MouseEvent arg0) {
 			}
-		});
+		});*/
 		sp = new JScrollPane();
 		sp.setViewportView(taskPreview);
 		sp

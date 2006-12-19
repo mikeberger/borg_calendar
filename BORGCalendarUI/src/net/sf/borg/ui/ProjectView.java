@@ -28,7 +28,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 
-import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -233,7 +232,7 @@ class ProjectView extends View {
 		});
 
 		jPanel4.add(jButton2, jButton2.getName());
-
+/*
 		JButton showTasksButton = new JButton();
 		showTasksButton.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 		"/resource/Preferences16.gif")));
@@ -258,7 +257,7 @@ class ProjectView extends View {
 		});
 
 		jPanel4.add(showTasksButton, showTasksButton.getName());
-
+*/
 		jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 		"/resource/Stop16.gif")));
 		ResourceHelper.setText(jButton3, "Dismiss");
