@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.util.Date;
 
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
@@ -13,6 +14,8 @@ public class StripedTable extends JTable {
     private TableCellRenderer defrend_ = null;
 
     private TableCellRenderer defDaterend_ = null;
+
+    private TableCellRenderer defBoolRend_ = null;
 
     private static Color STCOLOR = Color.white;
 
@@ -36,6 +39,18 @@ public class StripedTable extends JTable {
 	    if (obj instanceof Date) {
 		l = (JLabel) defDaterend_.getTableCellRendererComponent(table,
 			obj, isSelected, hasFocus, row, column);
+	    } else if (obj instanceof Boolean) {
+		Component c = defBoolRend_.getTableCellRendererComponent(table,
+			obj, isSelected, hasFocus, row, column);
+		
+		if (isSelected) {
+		    return c;
+		} else if (row % 2 == 0) {
+		    c.setBackground(STCOLOR);
+		} else {
+		    c.setBackground(Color.WHITE);
+		}
+		return c;
 	    } else {
 		l = (JLabel) defrend_.getTableCellRendererComponent(table, obj,
 			isSelected, hasFocus, row, column);
@@ -68,8 +83,10 @@ public class StripedTable extends JTable {
 	super();
 	defrend_ = this.getDefaultRenderer(String.class);
 	defDaterend_ = this.getDefaultRenderer(Date.class);
+	defBoolRend_ = this.getDefaultRenderer(Boolean.class);
 	this.setDefaultRenderer(Object.class, new StripedRenderer());
 	this.setDefaultRenderer(Date.class, new StripedRenderer());
 	this.setDefaultRenderer(Integer.class, new StripedRenderer());
+	this.setDefaultRenderer(Boolean.class, new StripedRenderer());
     }
 }

@@ -46,6 +46,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.table.TableCellRenderer;
 
+import net.sf.borg.common.ui.StripedTable;
 import net.sf.borg.common.ui.TableSorter;
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
@@ -71,9 +72,9 @@ import com.toedter.calendar.JDateChooserCellEditor;
 // taskgui is a View that allows the user to edit a single task
 class TaskView extends View {
 
-	private JTable stable = new JTable();
+	private StripedTable stable = new StripedTable();
 
-	private JTable logtable = new JTable();
+	private StripedTable logtable = new StripedTable();
 
 	private ArrayList tbd_ = new ArrayList();
 
@@ -117,14 +118,13 @@ class TaskView extends View {
 
 			JLabel l = (JLabel) defIntRend_.getTableCellRendererComponent(
 					table, obj, isSelected, hasFocus, row, column);
-			this.setHorizontalAlignment(CENTER);
+			this.setHorizontalAlignment(l.getHorizontalAlignment());
 			this.setForeground(l.getForeground());
 			this.setBackground(l.getBackground());
 
 			if (obj != null && obj instanceof Integer) {
 				int i = ((Integer) obj).intValue();
 				if (column == 1 && i == 0) {
-					// this.setBackground(new Color(220, 220, 255));
 					this.setText("--");
 				} else {
 					this.setText(Integer.toString(i));
