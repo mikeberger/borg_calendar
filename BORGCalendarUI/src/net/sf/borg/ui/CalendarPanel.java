@@ -770,21 +770,21 @@ public class CalendarPanel extends JPanel implements Prefs.Listener, Navigator {
 							days[i].setBackground(new Color(225, 150, 150));
 						} else if (di.getHoliday() == 1) {
 							// holiday color
-							daytext[i].setBackground(new Color(245, 203, 162));
-							days[i].setBackground(new Color(245, 203, 162));
-						} else if (di.getVacation() == 1) {
-							// vacation color
-							daytext[i].setBackground(new Color(155, 255, 153));
-							days[i].setBackground(new Color(155, 255, 153));
+							daytext[i].setBackground(new Color(255, 204, 204));
+							days[i].setBackground(new Color(255, 204, 204));
 						} else if (di.getVacation() == 2) {
+							// vacation color
+							daytext[i].setBackground(new Color(204, 204, 255));
+							days[i].setBackground(new Color(204, 204, 255));
+						} else if (di.getVacation() == 1) {
 							// half day color
-							daytext[i].setBackground(new Color(200, 255, 200));
-							days[i].setBackground(new Color(200, 255, 200));
+							daytext[i].setBackground(new Color(204, 255, 204));
+							days[i].setBackground(new Color(204, 255, 204));
 						} else if (dow != Calendar.SUNDAY
 								&& dow != Calendar.SATURDAY) {
 							// weekday color
-							days[i].setBackground(new Color(255, 233, 192));
-							daytext[i].setBackground(new Color(255, 233, 192));
+							days[i].setBackground(new Color(255, 255, 204));
+							daytext[i].setBackground(new Color(255, 255, 204));
 						} else {
 							// weekend color
 							daytext[i].setBackground(new Color(245, 203, 162));
@@ -831,7 +831,7 @@ public class CalendarPanel extends JPanel implements Prefs.Listener, Navigator {
 						}
 					}
 
-					// (bsv 2004-12-21)
+					
 					days[i].setVisible(true);
 
 				}

@@ -60,6 +60,7 @@ import javax.swing.UIManager.LookAndFeelInfo;
 
 import net.sf.borg.common.ui.JButtonKnowsBgColor;
 import net.sf.borg.common.ui.NwFontChooserS;
+import net.sf.borg.common.ui.StripedTable;
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
@@ -72,6 +73,11 @@ public class OptionsView extends View {
 	// to break a dependency with the contol package
 	public interface RestartListener {
 		public void restart();
+	}
+	
+	static{
+	    int rgb = Integer.parseInt(Prefs.getPref(PrefName.UCS_STRIPE));
+	    StripedTable.setStripeColor(new Color(rgb));
 	}
 
 	static private RestartListener rl_ = null; // someone to call to request a
@@ -389,7 +395,10 @@ public class OptionsView extends View {
 		mins = Integer.parseInt(Prefs.getPref(PrefName.UCS_WEEKDAY));
 		btn_ucs_weekday.setColorProperty(new Color(mins));
 		btn_ucs_weekday.setColorByProperty();
-		// (bsv 2004-12-20)
+		mins = Integer.parseInt(Prefs.getPref(PrefName.UCS_STRIPE));
+		btn_ucs_stripe.setColorProperty(new Color(mins));
+		btn_ucs_stripe.setColorByProperty();
+		
 
 		logobrowse.setEnabled(true);
 
@@ -631,7 +640,10 @@ public class OptionsView extends View {
 		Prefs.putPref(PrefName.UCS_WEEKEND, ucsi.toString());
 		ucsi = new Integer((btn_ucs_weekday.getColorProperty()).getRGB());
 		Prefs.putPref(PrefName.UCS_WEEKDAY, ucsi.toString());
-		// (bsv 2004-12-20)
+		ucsi = new Integer((btn_ucs_stripe.getColorProperty()).getRGB());
+		Prefs.putPref(PrefName.UCS_STRIPE, ucsi.toString());
+		StripedTable.setStripeColor(new Color(ucsi.intValue()));
+		
 
 		if (!logobox.isSelected()) {
 			Prefs.putPref(PrefName.LOGO, "");
@@ -1059,6 +1071,8 @@ public class OptionsView extends View {
 	private JButtonKnowsBgColor btn_ucs_weekend;
 
 	private JButtonKnowsBgColor btn_ucs_weekday;
+	
+	private JButtonKnowsBgColor btn_ucs_stripe;
 
 	private JButton btn_ucs_restore;
 
@@ -1266,6 +1280,9 @@ public class OptionsView extends View {
 					.getResourceString("ucolortext17"), Color.WHITE, true); //$NON-NLS-1$
 			btn_ucs_weekday = new JButtonKnowsBgColor(Resource
 					.getResourceString("ucolortext18"), Color.WHITE, true); //$NON-NLS-1$
+			btn_ucs_stripe = new JButtonKnowsBgColor(Resource
+				.getResourceString("stripecolor"), Color.WHITE, true);
+			
 			btn_ucs_restore = new JButton(Resource
 					.getResourceString("restore_defaults")); //$NON-NLS-1$
 			
@@ -1289,7 +1306,7 @@ public class OptionsView extends View {
 					btn_ucs_birthdays.setColorByProperty();
 					// // Calendar view day background colors
 					
-					btn_ucs_default.setColorProperty(new Color(11316396));
+					btn_ucs_default.setColorProperty(new Color(16777164));
 					btn_ucs_default.setColorByProperty();
 					btn_ucs_today.setColorProperty(new Color(16751001));
 					btn_ucs_today.setColorByProperty();
@@ -1301,8 +1318,10 @@ public class OptionsView extends View {
 					btn_ucs_halfday.setColorByProperty();
 					btn_ucs_weekend.setColorProperty(new Color(16764057));
 					btn_ucs_weekend.setColorByProperty();
-					btn_ucs_weekday.setColorProperty(new Color(13421772));
+					btn_ucs_weekday.setColorProperty(new Color(16777164));
 					btn_ucs_weekday.setColorByProperty();
+					btn_ucs_stripe.setColorProperty(new Color(15792890));
+					btn_ucs_stripe.setColorByProperty();
 				}
 			});
 
@@ -1323,6 +1342,7 @@ public class OptionsView extends View {
 			jPanelUCS.add(btn_ucs_holidays);
 			jPanelUCS.add(btn_ucs_weekday);
 			jPanelUCS.add(btn_ucs_birthdays);
+			jPanelUCS.add(btn_ucs_stripe);
 			jPanelUCS.add(btn_ucs_restore);
 
 			JPanel njp = new JPanel();

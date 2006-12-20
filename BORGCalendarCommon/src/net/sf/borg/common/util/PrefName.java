@@ -168,7 +168,7 @@ public class PrefName {
 		static public PrefName UCS_BRICK = new PrefName("ucs_brick","10027008");
 		// Calendar view day background colors
 		
-		static public PrefName UCS_DEFAULT = new PrefName("ucs_default","11316396");
+		static public PrefName UCS_DEFAULT = new PrefName("ucs_default","16777164");
 		// original color is Color(225,150,150)
 		static public PrefName UCS_TODAY = new PrefName("ucs_today","16751001");
 		// original color is Color(245,203,162)
@@ -180,8 +180,9 @@ public class PrefName {
 		// original color is Color(245,203,162)
 		static public PrefName UCS_WEEKEND = new PrefName("ucs_weekend","16764057");
 		// original color is Color(255,233,192)
-		static public PrefName UCS_WEEKDAY = new PrefName("ucs_weekday","13421772");
-		// (bsv 2004-12-20)
+		static public PrefName UCS_WEEKDAY = new PrefName("ucs_weekday","16777164");
+		static public PrefName UCS_STRIPE = new PrefName("ucs_stripe","15792890");
+		
 		
 		// synchronization
 		static public PrefName PALM_SYNC = new PrefName("palm_sync", "false");

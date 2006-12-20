@@ -11,9 +11,14 @@ import javax.swing.table.TableCellRenderer;
 public class StripedTable extends JTable {
 
     private TableCellRenderer defrend_ = null;
+
     private TableCellRenderer defDaterend_ = null;
 
-    private static final Color STCOLOR = new Color(240, 250, 250);
+    private static Color STCOLOR = Color.white;
+
+    public static void setStripeColor(Color c) {
+	STCOLOR = c;
+    }
 
     private class StripedRenderer extends JLabel implements TableCellRenderer {
 
@@ -27,23 +32,18 @@ public class StripedTable extends JTable {
 		int column) {
 
 	    JLabel l = null;
-	    
-	    if( obj instanceof Date )
-	    {
-		l = (JLabel) defDaterend_.getTableCellRendererComponent(table, obj,
-			    isSelected, hasFocus, row, column);
-	    }
-	    else
-	    {
+
+	    if (obj instanceof Date) {
+		l = (JLabel) defDaterend_.getTableCellRendererComponent(table,
+			obj, isSelected, hasFocus, row, column);
+	    } else {
 		l = (JLabel) defrend_.getTableCellRendererComponent(table, obj,
-			    isSelected, hasFocus, row, column);
+			isSelected, hasFocus, row, column);
 	    }
 	    this.setForeground(l.getForeground());
-	    if( isSelected )
-	    {
-		this.setBackground(l.getBackground());		
-	    }
-	    else if (row % 2 == 0) {
+	    if (isSelected) {
+		this.setBackground(l.getBackground());
+	    } else if (row % 2 == 0) {
 		this.setBackground(STCOLOR);
 	    } else {
 		this.setBackground(Color.WHITE);
@@ -52,13 +52,10 @@ public class StripedTable extends JTable {
 	    if (obj instanceof Integer) {
 		this.setText(((Integer) obj).toString());
 		this.setHorizontalAlignment(CENTER);
-	    }
-	    else if (obj instanceof Date) {
+	    } else if (obj instanceof Date) {
 		this.setText(l.getText());
 		this.setHorizontalAlignment(CENTER);
-	    }
-	    else
-	    {
+	    } else {
 		this.setText(l.getText());
 		this.setHorizontalAlignment(l.getHorizontalAlignment());
 	    }
