@@ -54,6 +54,9 @@ import net.sf.borg.model.ReminderTimes;
 import net.sf.borg.model.Repeat;
 
 import com.toedter.calendar.JDateChooser;
+import java.awt.Dimension;
+import javax.swing.JTextField;
+import java.awt.Insets;
 
 class AppointmentPanel extends JPanel {
 
@@ -379,7 +382,21 @@ class AppointmentPanel extends JPanel {
 
 		// set appt text
 		String t = r.getText();
-		appttextarea.setText(t);
+		String subj = "";
+		String det = "";
+		if( t == null ) t = "";
+		int nli = t.indexOf('\n');
+                if (nli != -1)
+                {
+                    subj = t.substring(0,nli);
+                    det = t.substring(nli+1);
+                }
+                else
+                {
+                    subj = t;
+                }
+		appttextarea.setText(det);
+		apptTitleField.setText(subj);
 
 		// color
 		String sel = r.getColor();
@@ -492,6 +509,17 @@ class AppointmentPanel extends JPanel {
     private void initComponents()// GEN-BEGIN:initComponents
     {
 
+	GridBagConstraints gridBagConstraints10 = new GridBagConstraints();
+	gridBagConstraints10.fill = GridBagConstraints.BOTH;
+	gridBagConstraints10.gridy = 0;
+	gridBagConstraints10.weightx = 1.0;
+	gridBagConstraints10.insets = new Insets(4, 4, 4, 4);
+	gridBagConstraints10.gridx = 1;
+	GridBagConstraints gridBagConstraints = new GridBagConstraints();
+	gridBagConstraints.gridx = 0;
+	gridBagConstraints.gridy = 0;
+	jLabel = new JLabel();
+	jLabel.setText(Resource.getPlainResourceString("subject"));
 	GridBagConstraints gridBagConstraints18 = new GridBagConstraints();
 	jLabel2 = new javax.swing.JLabel();
 	jPanel1 = new javax.swing.JPanel();
@@ -568,9 +596,12 @@ class AppointmentPanel extends JPanel {
 	GridBagConstraints gridBagConstraints1 = new java.awt.GridBagConstraints();
 	gridBagConstraints1.fill = java.awt.GridBagConstraints.BOTH;
 	gridBagConstraints1.weightx = 1.0;
+	gridBagConstraints1.gridy = 2;
+	gridBagConstraints1.gridwidth = 2;
 	gridBagConstraints1.weighty = 1.0;
 	jPanel1.add(jScrollPane1, gridBagConstraints1);
-
+	jPanel1.add(jLabel, gridBagConstraints);
+	jPanel1.add(getApptTitleField(), gridBagConstraints10);
 	GridBagConstraints gridBagConstraints3 = new java.awt.GridBagConstraints();
 	gridBagConstraints3.gridx = 0;
 	gridBagConstraints3.gridy = 1;
@@ -817,7 +848,7 @@ class AppointmentPanel extends JPanel {
 	gridBagConstraints12.insets = new java.awt.Insets(0, 30, 0, 0);
 	gridBagConstraints16.insets = new java.awt.Insets(0, 30, 0, 0);
 	this.add(jPanel2, gridBagConstraints17);
-	this.setSize(531, 487);
+	this.setSize(648, 590);
 	jPanel2.add(notecb, gridBagConstraints12);
 	jPanel2.add(lblNewDate, gridBagConstraints14);
 	gridBagConstraints16.fill = java.awt.GridBagConstraints.HORIZONTAL;
@@ -1008,7 +1039,8 @@ class AppointmentPanel extends JPanel {
 	}
 
 	// set text
-	r.setText(appttextarea.getText());
+	String t = apptTitleField.getText() + "\n" + appttextarea.getText();
+	r.setText(t);
 
 	// to do
 	r.setTodo(todocb.isSelected());
@@ -1513,6 +1545,10 @@ class AppointmentPanel extends JPanel {
 
     static private SimpleDateFormat shortDayFmt = new SimpleDateFormat("EEE");
 
+    private JLabel jLabel = null;
+
+    private JTextField apptTitleField = null;
+
     /**
          * This method initializes dl1
          * 
@@ -1609,6 +1645,18 @@ class AppointmentPanel extends JPanel {
 	    dl7.setText(shortDayFmt.format(tmpcal.getTime()));
 	}
 	return dl7;
+    }
+
+    /**
+     * This method initializes apptTitleField	
+     * 	
+     * @return javax.swing.JTextField	
+     */
+    private JTextField getApptTitleField() {
+        if (apptTitleField == null) {
+    	apptTitleField = new JTextField();
+        }
+        return apptTitleField;
     }
 } // @jve:decl-index=0:visual-constraint="10,10"
 
