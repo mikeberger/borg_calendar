@@ -18,6 +18,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -35,6 +36,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
+import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.ListCellRenderer;
 import javax.swing.SpinnerNumberModel;
@@ -54,9 +56,6 @@ import net.sf.borg.model.ReminderTimes;
 import net.sf.borg.model.Repeat;
 
 import com.toedter.calendar.JDateChooser;
-import java.awt.Dimension;
-import javax.swing.JTextField;
-import java.awt.Insets;
 
 class AppointmentPanel extends JPanel {
 
@@ -1033,7 +1032,7 @@ class AppointmentPanel extends JPanel {
 	    r.setDuration(new Integer(du));
 
 	// appointment text of some sort is required
-	if (appttextarea.getText().equals("") && validate) {
+	if (apptTitleField.getText().equals("") && validate) {
 	    throw new Warning(Resource
 		    .getResourceString("Please_enter_some_appointment_text"));
 	}

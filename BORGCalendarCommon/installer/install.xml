@@ -112,7 +112,7 @@
             <file src="update1512.sql" targetdir="$INSTALL_PATH"/>
             <file src="update152.sql" targetdir="$INSTALL_PATH"/>
             <file src="db.html" targetdir="$INSTALL_PATH"/>
-            <file src="lib/looks-1.3.2.jar" targetdir="$INSTALL_PATH/lib"/> 
+            <file src="lib/looks.jar" targetdir="$INSTALL_PATH/lib"/> 
 	        <file src="lib/LICENSE.looks" targetdir="$INSTALL_PATH/lib"/> 
 	        <file src="mdbtool.jar" targetdir="$INSTALL_PATH"/> 
         </pack>

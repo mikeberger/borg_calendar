@@ -59,6 +59,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableCellRenderer;
 
+import net.sf.borg.common.ui.StripedTable;
 import net.sf.borg.common.ui.TablePrinter;
 import net.sf.borg.common.ui.TableSorter;
 import net.sf.borg.common.util.Errmsg;
@@ -346,7 +347,7 @@ public class TodoView extends View {
     private void initComponents()//GEN-BEGIN:initComponents
     {
         jScrollPane1 = new javax.swing.JScrollPane();
-        todoTable = new javax.swing.JTable();
+        todoTable = new StripedTable();
         jPanel1 = new javax.swing.JPanel();
         todotext = new javax.swing.JTextField();
 
@@ -847,7 +848,7 @@ public class TodoView extends View {
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable todoTable;
+    private StripedTable todoTable;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem printList;
     private javax.swing.JTextField todotext;
