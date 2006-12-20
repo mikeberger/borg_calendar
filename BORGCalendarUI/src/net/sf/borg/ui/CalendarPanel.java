@@ -390,12 +390,12 @@ public class CalendarPanel extends JPanel implements Prefs.Listener, Navigator {
 			Style s = textPane.addStyle("blue", bl);
 			ctemp = new Color((new Integer(Prefs.getPref(PrefName.UCS_BLUE)))
 					.intValue());
-			StyleConstants.setForeground(s, bUseUCS ? (ctemp) : (Color.BLUE));
+			StyleConstants.setForeground(s, bUseUCS ? (ctemp) : (new Color(102,0,204)));
 
 			s = textPane.addStyle("red", bl);
 			ctemp = new Color((new Integer(Prefs.getPref(PrefName.UCS_RED)))
 					.intValue());
-			StyleConstants.setForeground(s, bUseUCS ? (ctemp) : (Color.RED));
+			StyleConstants.setForeground(s, bUseUCS ? (ctemp) : (new Color(204,0,51)));
 
 			s = textPane.addStyle("green", bl);
 		
