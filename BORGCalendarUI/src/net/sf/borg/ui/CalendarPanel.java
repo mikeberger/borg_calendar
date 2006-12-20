@@ -398,10 +398,10 @@ public class CalendarPanel extends JPanel implements Prefs.Listener, Navigator {
 			StyleConstants.setForeground(s, bUseUCS ? (ctemp) : (Color.RED));
 
 			s = textPane.addStyle("green", bl);
-			// bsv 2004-12-21
+		
 			ctemp = new Color((new Integer(Prefs.getPref(PrefName.UCS_GREEN)))
 					.intValue());
-			StyleConstants.setForeground(s, bUseUCS ? (ctemp) : (Color.GREEN));
+			StyleConstants.setForeground(s, bUseUCS ? (ctemp) : (new Color(0,153,0)));
 
 			s = textPane.addStyle("white", bl);
 			ctemp = new Color((new Integer(Prefs.getPref(PrefName.UCS_WHITE)))
@@ -766,8 +766,8 @@ public class CalendarPanel extends JPanel implements Prefs.Listener, Navigator {
 					} else if (bUseUCS == false) {
 						if (today == daynumber) {
 							// today color is pink
-							daytext[i].setBackground(new Color(225, 150, 150));
-							days[i].setBackground(new Color(225, 150, 150));
+							daytext[i].setBackground(new Color(255, 153, 153));
+							days[i].setBackground(new Color(255, 153, 153));
 						} else if (di.getHoliday() == 1) {
 							// holiday color
 							daytext[i].setBackground(new Color(255, 204, 204));
@@ -787,8 +787,8 @@ public class CalendarPanel extends JPanel implements Prefs.Listener, Navigator {
 							daytext[i].setBackground(new Color(255, 255, 204));
 						} else {
 							// weekend color
-							daytext[i].setBackground(new Color(245, 203, 162));
-							days[i].setBackground(new Color(245, 203, 162));
+							daytext[i].setBackground(new Color(255, 204, 153));
+							days[i].setBackground(new Color(255, 204, 153));
 						}
 					} else {
 						Color ctemp = new Color((new Integer(Prefs
