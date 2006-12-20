@@ -229,8 +229,8 @@ public class CalendarPanel extends JPanel implements Prefs.Listener, Navigator {
 			sp
 					.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 			sp.setBorder(new EmptyBorder(0, 0, 0, 0));
-			sp.getHorizontalScrollBar().setPreferredSize(new Dimension(0, 10));
-			sp.getVerticalScrollBar().setPreferredSize(new Dimension(10, 0));
+			sp.getHorizontalScrollBar().setPreferredSize(new Dimension(0, 5));
+			sp.getVerticalScrollBar().setPreferredSize(new Dimension(5, 0));
 			days[i].add(sp, cons);
 
 			jPanel1.add(days[i]);

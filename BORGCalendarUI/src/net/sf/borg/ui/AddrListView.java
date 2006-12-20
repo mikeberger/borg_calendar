@@ -215,7 +215,7 @@ public class AddrListView extends View
 
         jScrollPane1.setPreferredSize(new java.awt.Dimension(554, 404));
         jTable1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0)));
-        jTable1.setGridColor(java.awt.Color.blue);
+        //jTable1.setGridColor(java.awt.Color.blue);
         DefaultListSelectionModel mylsmodel = new DefaultListSelectionModel();
         mylsmodel.setSelectionMode( ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         jTable1.setSelectionModel(mylsmodel

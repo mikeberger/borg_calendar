@@ -413,7 +413,7 @@ public class TodoView extends View {
 
         jScrollPane1.setMinimumSize(new java.awt.Dimension(450, 21));
         todoTable.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0)));
-        todoTable.setGridColor(java.awt.Color.blue);
+        //todoTable.setGridColor(java.awt.Color.blue);
         DefaultListSelectionModel mylsmodel = new DefaultListSelectionModel();
         mylsmodel.setSelectionMode( ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         todoTable.setSelectionModel(mylsmodel );

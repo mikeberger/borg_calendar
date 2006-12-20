@@ -264,7 +264,7 @@ public class ProjectPanel extends JPanel {
 		new java.awt.Color(0, 0, 0)));
 	projectTable
 		.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
-	projectTable.setGridColor(java.awt.Color.blue);
+	//projectTable.setGridColor(java.awt.Color.blue);
 	// projectTable.setPreferredSize(new java.awt.Dimension(700,
 	// 500));
 	projectTable.addMouseListener(new java.awt.event.MouseAdapter() {

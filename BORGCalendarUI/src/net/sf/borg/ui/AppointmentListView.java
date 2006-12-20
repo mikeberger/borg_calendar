@@ -332,7 +332,7 @@ public class AppointmentListView extends View implements ListSelectionListener {
 		apptTable.setBorder(new javax.swing.border.LineBorder(
 				new java.awt.Color(0, 0, 0)));
 		apptTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
-		apptTable.setGridColor(java.awt.Color.blue);
+		//apptTable.setGridColor(java.awt.Color.blue);
 		apptTable.setPreferredSize(new java.awt.Dimension(700, 500));
 		jScrollPane1.setViewportView(apptTable);
 

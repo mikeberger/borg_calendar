@@ -315,7 +315,7 @@ public class TaskListPanel extends JPanel {
 	taskTable.setBorder(new javax.swing.border.LineBorder(
 		new java.awt.Color(0, 0, 0)));
 	taskTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
-	taskTable.setGridColor(java.awt.Color.blue);
+	//taskTable.setGridColor(java.awt.Color.blue);
 	taskTable.setPreferredSize(new java.awt.Dimension(700, 500));
 	taskTable.addMouseListener(new java.awt.event.MouseAdapter() {
 	    public void mouseClicked(java.awt.event.MouseEvent evt) {
