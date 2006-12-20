@@ -234,9 +234,7 @@ public class XmlObjectHelper {
 	public Object toObject(XTree xml) throws Exception {
 	    String val = xml.value();
 	    Object o = null;
-	    if (name.equals("Null"))
-		o = null;
-	    else if (name.equals("String"))
+	    if (name.equals("String"))
 		o = val;
 	    else if (name.equals("Integer"))
 		o = Integer.valueOf(val);

@@ -154,8 +154,8 @@ public class ApptDayBoxLayout
         {
             // calculate new start hour or duration and update appt
             int realtime = realMins(y_fraction, startmin, endmin);
-            int hour = (int) (realtime / 60);
-            int min = (int) (realtime % 60);
+            int hour = realtime / 60;
+            int min = realtime % 60;
             // System.out.println(y_fraction);
             //System.out.println( "Resize to =" + hour +":" + min);
 
@@ -206,8 +206,8 @@ public class ApptDayBoxLayout
         {
             // calculate new start hour or duration and update appt
             int realtime = realMins(y_fraction, startmin, endmin);
-            int hour = (int) (realtime / 60);
-            int min = (int) (realtime % 60);
+            int hour = realtime / 60;
+            int min = realtime % 60;
 
             // get appt from DB - one cached here has time prepended to text by Day.getDayInfo()
             Appointment ap = AppointmentModel.getReference().getAppt(appt.getKey());
@@ -285,8 +285,8 @@ public class ApptDayBoxLayout
     private static String getTimeString( double y_fraction, double startmin, double endmin )
     {
         int realtime = realMins(y_fraction, startmin, endmin);
-        int hour = (int) (realtime / 60);
-        int min = (int) (realtime % 60);
+        int hour = realtime / 60;
+        int min = realtime % 60;
         GregorianCalendar newCal = new GregorianCalendar();
         newCal.set(Calendar.HOUR_OF_DAY, hour);
         int roundMin = (min / 5) * 5;
@@ -396,7 +396,6 @@ public class ApptDayBoxLayout
                 catch (Exception e)
                 {
                     Errmsg.errmsg(e);
-                    appt = null;
                 }
             }
 
@@ -407,8 +406,8 @@ public class ApptDayBoxLayout
 
             //System.out.println(top + " " + bottom);
             int realtime = realMins(top, startmin, endmin);
-            int hour = (int) (realtime / 60);
-            int min = (int) (realtime % 60);
+            int hour = realtime / 60;
+            int min = realtime % 60;
             min = (min / 5) * 5;
             Calendar startCal = new GregorianCalendar();
             startCal.setTime(date);
@@ -417,8 +416,8 @@ public class ApptDayBoxLayout
             appt.setDate(startCal.getTime());
 
             int realend = realMins(bottom, startmin, endmin);
-            int ehour = (int) (realend / 60);
-            int emin = (int) (realend % 60);
+            int ehour = realend / 60;
+            int emin = realend % 60;
             emin = (emin / 5) * 5;
             int dur = 60*(ehour - hour) + emin - min;
           

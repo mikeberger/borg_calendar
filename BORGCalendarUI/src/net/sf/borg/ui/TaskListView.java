@@ -1435,12 +1435,12 @@ public class TaskListView extends View {
 	    Collection states = t.getStates(type);
 	    Iterator it2 = states.iterator();
 	    while (it2.hasNext()) {
-		ts.add((String) it2.next());
+		ts.add(it2.next());
 	    }
 	}
 	it = ts.iterator();
 	while (it.hasNext()) {
-	    s.addItem((String) it.next());
+	    s.addItem(it.next());
 	}
     }
 

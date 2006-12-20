@@ -34,7 +34,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
-import net.sf.borg.model.db.DBException;
 import net.sf.borg.model.db.KeyedBean;
 
 /**
@@ -130,7 +129,7 @@ abstract public class JdbcBeanDB extends JdbcDB {
     }
 
 
-    public Collection readAll() throws DBException, Exception {
+    public Collection readAll() throws Exception {
 	PreparedStatement stmt = null;
 	ResultSet r = null;
 	try {
@@ -151,7 +150,7 @@ abstract public class JdbcBeanDB extends JdbcDB {
 	}
     }
 
-    public KeyedBean readObj(int key) throws DBException, Exception {
+    public KeyedBean readObj(int key) throws Exception {
 	KeyedBean bean = readCache(key);
 
 	if (bean != null)

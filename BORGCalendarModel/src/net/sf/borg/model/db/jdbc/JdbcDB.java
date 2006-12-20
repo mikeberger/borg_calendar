@@ -41,7 +41,6 @@ import java.util.Vector;
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.model.BorgOption;
 import net.sf.borg.model.Transactional;
-import net.sf.borg.model.db.DBException;
 
 
 /**
@@ -157,7 +156,7 @@ abstract public class JdbcDB implements /*BeanDB,*/ Transactional {
     }
 
 
-    public boolean isDirty() throws DBException {
+    public boolean isDirty()  {
 	// implement a way to check for external DB
 	// modification???
 	return false;

@@ -242,7 +242,6 @@ class AppointmentPanel extends JPanel {
 		defaultAppt = (Appointment) axa.fromXml(xt);
 	    } catch (Exception e) {
 		Errmsg.errmsg(e);
-		defaultAppt = null;
 	    }
 	}
 

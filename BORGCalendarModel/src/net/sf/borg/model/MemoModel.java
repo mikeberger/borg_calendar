@@ -235,7 +235,7 @@ public class MemoModel extends Model {
 	refreshListeners();
     }
 
-    public void sync() throws DBException {
+    public void sync() {
 	refresh();
     }
 

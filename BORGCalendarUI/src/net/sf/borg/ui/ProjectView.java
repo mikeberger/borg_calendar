@@ -589,7 +589,9 @@ class ProjectView extends View {
 
 			// determine valid next states based on task type and current
 			// state
-			String state = p.getStatus();
+			String state = null;
+			if( p != null )
+			    state = p.getStatus();
 
 			// set next state pulldown
 			statebox.removeAllItems();

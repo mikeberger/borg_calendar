@@ -384,13 +384,12 @@ public class ApptBoxPanel extends JPanel
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
             {
-                if (popupBox == null || popupBox.type != UIBoxInfo.APPTBOX)
-                    return;
-                else
-                {
-                    popupBox.model.edit();
-                    repaint();
-                }
+        	if (popupBox == null || popupBox.type != UIBoxInfo.APPTBOX)
+        	    return;
+
+        	popupBox.model.edit();
+        	repaint();
+
             }
         });
         editmenu.add(mnuitm = new JMenuItem(Resource.getPlainResourceString("Delete")));

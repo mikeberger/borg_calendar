@@ -693,12 +693,10 @@ public class MainMenu {
 
 	    String s = chooser.getSelectedFile().getAbsolutePath();
 	    file = new File(s);
-	    String err = null;
+	    
+	    break;
 
-	    if (err == null)
-		break;
 
-	    Errmsg.notice(err);
 	}
 	try {
 	    CategoryModel catmod = CategoryModel.getReference();
@@ -741,12 +739,10 @@ public class MainMenu {
 
 	    String s = chooser.getSelectedFile().getAbsolutePath();
 	    file = new File(s);
-	    String err = null;
+	    
+	    break;
 
-	    if (err == null)
-		break;
-
-	    Errmsg.notice(err);
+	    
 	}
 
 	try {
@@ -1233,12 +1229,10 @@ public class MainMenu {
 
 			String s = chooser.getSelectedFile().getAbsolutePath();
 			file = new File(s);
-			String err = null;
+			
+			break;
 
-			if (err == null)
-			    break;
-
-			Errmsg.notice(err);
+			
 		    }
 
 		    try {

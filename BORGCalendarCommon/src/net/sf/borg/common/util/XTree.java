@@ -495,7 +495,7 @@ public class XTree {
 					tree = new XTree();
 					tree.name(data);
 					cur = tree;
-				} else {
+				} else if(cur != null ){
 					// add the element and move the current pointer to it
 					cur = cur.appendChild(data);
 				}
@@ -510,7 +510,7 @@ public class XTree {
 				// make sure the closing tag name matches the name of the
 				// current node
 				// that we are closing - otherwise error
-				if (!data.equals(cur.name())) {
+				if (cur != null && !data.equals(cur.name())) {
 					throw new Exception("Open name [" + cur.name()
 							+ "] does not match close name [" + data + "]");
 				}
@@ -518,7 +518,8 @@ public class XTree {
 				// closing an element just means that we move our pointer to the
 				// parent
 				// of the current element
-				cur = cur.parent(1);
+				if( cur != null )
+				    cur = cur.parent(1);
 
 				// when we find the close of the root - exit
 				if (cur == null) {
@@ -541,7 +542,8 @@ public class XTree {
 				// add the empty element under the current element but don't
 				// move the current pointer - the empty element will have no
 				// children
-				cur.appendChild(data);
+				if( cur != null )
+				    cur.appendChild(data);
 
 			}
 			// got element data - set the current element's value
@@ -552,8 +554,8 @@ public class XTree {
 				}
 
 				// remove escapes
-
-				cur.valueUnEscape(data);
+				if( cur != null )
+				    cur.valueUnEscape(data);
 			}
 			// end of file - probably an error
 			// we should leave the parse before hitting this

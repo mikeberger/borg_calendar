@@ -330,12 +330,14 @@ public class mdbtool extends javax.swing.JFrame
             
         }
         try{
-            db.setNormalize(true);
+            if( db != null )
+        	db.setNormalize(true);
         }
         catch( Exception e ){ errmsg(e); }
         
         System.out.println("\nDone");
-        db.close();
+        if( db != null)
+            db.close();
         db = null;
     }//GEN-LAST:event_convertActionPerformed
        

@@ -537,19 +537,17 @@ public class AddrListView extends View
 
 			            int returnVal = chooser.showOpenDialog(null);
 			            if(returnVal != JFileChooser.APPROVE_OPTION)
-			                return;
+			        	return;
 
 			            String s = chooser.getSelectedFile().getAbsolutePath();
 			            file = new File(s);
-			            String err = null;
 
-			            if( err == null )
-			                break;
+			            break;
 
-			            Errmsg.notice( err );
+
 			        }
 
-			    	try {
+			        try {
 			    		FileReader r = new FileReader(file);
 						AddressVcardAdapter.importVcard(r);
 						r.close();
