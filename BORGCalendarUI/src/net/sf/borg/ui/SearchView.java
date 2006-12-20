@@ -37,6 +37,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
+import net.sf.borg.common.ui.StripedTable;
 import net.sf.borg.common.ui.TableSorter;
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
@@ -91,7 +92,7 @@ public class SearchView extends View {
 
 	private JScrollPane jScrollPane = null;
 
-	private JTable jTable1 = null;
+	private StripedTable jTable1 = null;
 
 	private JButton deleteButton = null;
 
@@ -701,7 +702,7 @@ public class SearchView extends View {
 	 */
 	private JTable getJTable1() {
 		if (jTable1 == null) {
-			jTable1 = new JTable();
+			jTable1 = new StripedTable();
 			//jTable1.setPreferredSize(new java.awt.Dimension(90,90));
 			jTable1
 					.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);

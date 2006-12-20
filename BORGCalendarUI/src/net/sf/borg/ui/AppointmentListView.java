@@ -20,7 +20,6 @@
 
 package net.sf.borg.ui;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -49,6 +48,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.TableCellRenderer;
 
+import net.sf.borg.common.ui.StripedTable;
 import net.sf.borg.common.ui.TableSorter;
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
@@ -69,6 +69,8 @@ public class AppointmentListView extends View implements ListSelectionListener {
 	private AppointmentPanel apanel_ = null;
 
 	private GregorianCalendar cal_ = null;
+	
+	private TableCellRenderer defrend = null;
 
 	private class TimeRenderer extends JLabel implements TableCellRenderer {
 
@@ -81,14 +83,12 @@ public class AppointmentListView extends View implements ListSelectionListener {
 				Object obj, boolean isSelected, boolean hasFocus, int row,
 				int column) {
 
+		        Component c = defrend.getTableCellRendererComponent(table, obj, 
+		        	isSelected, hasFocus, row, column);
 			// default to white background unless row is selected
-			this.setBackground(Color.white);
-			if (isSelected)
-				this.setBackground(new Color(204, 204, 255));
-
-			// default to black foreground
-			this.setForeground(Color.black);
-
+			this.setBackground(c.getBackground());
+			this.setForeground(c.getForeground());
+			
 			Date d = (Date) obj;
 			GregorianCalendar cal = new GregorianCalendar();
 			cal.setTime(d);
@@ -122,6 +122,7 @@ public class AppointmentListView extends View implements ListSelectionListener {
 				java.lang.String.class, java.util.Date.class, }));
 
 		// set renderer to the custom one for time
+		defrend = apptTable.getDefaultRenderer(Date.class);
 		apptTable.setDefaultRenderer(java.util.Date.class,
 				new AppointmentListView.TimeRenderer());
 
@@ -302,7 +303,7 @@ public class AppointmentListView extends View implements ListSelectionListener {
 		jPanel2 = new javax.swing.JPanel();
 		jPanel3 = new javax.swing.JPanel();
 		jScrollPane1 = new javax.swing.JScrollPane();
-		apptTable = new javax.swing.JTable();
+		apptTable = new StripedTable();
 		jPanel1 = new javax.swing.JPanel();
 		add = new javax.swing.JButton();
 		del = new javax.swing.JButton();
@@ -602,7 +603,7 @@ public class AppointmentListView extends View implements ListSelectionListener {
 
 	private javax.swing.JScrollPane jScrollPane1;
 
-	private javax.swing.JTable apptTable;
+	private StripedTable apptTable;
 
 	private javax.swing.JMenuBar menuBar;
 

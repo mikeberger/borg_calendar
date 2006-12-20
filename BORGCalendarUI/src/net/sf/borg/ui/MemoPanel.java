@@ -14,18 +14,19 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import net.sf.borg.common.ui.StripedTable;
 import net.sf.borg.common.ui.TableSorter;
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.Resource;
 import net.sf.borg.model.Memo;
 import net.sf.borg.model.MemoModel;
-import javax.swing.JSplitPane;
 
 public class MemoPanel extends JPanel implements ListSelectionListener {
 
@@ -33,7 +34,7 @@ public class MemoPanel extends JPanel implements ListSelectionListener {
 
     private JScrollPane jScrollPane = null;
 
-    private JTable memoListTable = null;
+    private StripedTable memoListTable = null;
 
     private JTextArea memoText = null;
 
@@ -111,7 +112,7 @@ public class MemoPanel extends JPanel implements ListSelectionListener {
          */
     private JTable getMemoListTable() {
 	if (memoListTable == null) {
-	    memoListTable = new JTable();
+	    memoListTable = new StripedTable();
 	    memoListTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 	    memoListTable.setShowGrid(true);
 	}

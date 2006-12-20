@@ -41,6 +41,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.TableModelEvent;
 
 import net.sf.borg.common.io.IOHelper;
+import net.sf.borg.common.ui.StripedTable;
 import net.sf.borg.common.ui.TablePrinter;
 import net.sf.borg.common.ui.TableSorter;
 import net.sf.borg.common.util.Errmsg;
@@ -188,7 +189,7 @@ public class AddrListView extends View
         java.awt.GridBagConstraints gridBagConstraints;
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jTable1 = new StripedTable();
         jPanel1 = new javax.swing.JPanel();
         newbutton = new javax.swing.JButton();
         editbutton = new javax.swing.JButton();
@@ -439,7 +440,7 @@ public class AddrListView extends View
     private javax.swing.JButton jButton1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private StripedTable jTable1;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JButton newbutton;
     private javax.swing.JMenuItem printList;

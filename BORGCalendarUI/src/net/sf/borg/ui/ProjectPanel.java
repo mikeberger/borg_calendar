@@ -43,6 +43,7 @@ import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.TableCellRenderer;
 
+import net.sf.borg.common.ui.StripedTable;
 import net.sf.borg.common.ui.TablePrinter;
 import net.sf.borg.common.ui.TableSorter;
 import net.sf.borg.common.util.Errmsg;
@@ -81,22 +82,19 @@ public class ProjectPanel extends JPanel {
 		Object obj, boolean isSelected, boolean hasFocus, int row,
 		int column) {
 
-	    if (obj instanceof Integer == false)
-		return defrend_.getTableCellRendererComponent(table, obj,
+	    JLabel l = (JLabel)defrend_.getTableCellRendererComponent(table, obj,
 			isSelected, hasFocus, row, column);
 
+	    if( isSelected || obj == null || column != 7)
+		return l;
+	    
 	    int i = ((Integer) obj).intValue();
 
-	    JLabel l = (JLabel) defrend_.getTableCellRendererComponent(table,
-		    obj, isSelected, hasFocus, row, column);
-
-	    this.setText(((Integer) obj).toString());
-	    this.setHorizontalAlignment(CENTER);
+	    this.setText(l.getText());
+	    this.setHorizontalAlignment(l.getHorizontalAlignment());
 	    this.setBackground(l.getBackground());
 	    this.setForeground(l.getForeground());
 
-	    if (column != 7)
-		return this;
 
 	    // add color to the days-left column as the task due date
 	    // approaches
@@ -105,9 +103,6 @@ public class ProjectPanel extends JPanel {
 	    // so show stars - but don't alter the color
 	    if (i == 9999)
 		this.setText("******");
-
-	    if (isSelected)
-		return this;
 
 	    // yellow alert -- <10 days left
 	    if (i < 10)
@@ -201,7 +196,7 @@ public class ProjectPanel extends JPanel {
 	this.add(pnl, gridBagConstraints1);
 
 	JScrollPane jScrollPane1 = new JScrollPane();
-	projectTable = new JTable();
+	projectTable = new StripedTable();
 
 	GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
 
@@ -607,7 +602,7 @@ public class ProjectPanel extends JPanel {
 	}
     }
 
-    private javax.swing.JTable projectTable;
+    private StripedTable projectTable;
 
     private JComboBox pstatusBox = new JComboBox();
 

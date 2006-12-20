@@ -48,6 +48,7 @@ import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.TableCellRenderer;
 
+import net.sf.borg.common.ui.StripedTable;
 import net.sf.borg.common.ui.TablePrinter;
 import net.sf.borg.common.ui.TableSorter;
 import net.sf.borg.common.util.Errmsg;
@@ -90,24 +91,26 @@ public class TaskListPanel extends JPanel {
 		Object obj, boolean isSelected, boolean hasFocus, int row,
 		int column) {
 
-	    if (obj instanceof Integer == false)
-		return defrend_.getTableCellRendererComponent(table, obj,
-			isSelected, hasFocus, row, column);
-
-	    int i = ((Integer) obj).intValue();
-
+	    
+	    
 	    JLabel l = (JLabel) defrend_.getTableCellRendererComponent(table,
 		    obj, isSelected, hasFocus, row, column);
+	    
+	    if( obj == null ) return l;
+	    if( isSelected ) return l;
+	    if( column != 4 && column != 8 )
+		return l;
 
-	    this.setText(((Integer) obj).toString());
+	    this.setText(l.getText());
 	    this.setHorizontalAlignment(CENTER);
 	    this.setBackground(l.getBackground());
 	    this.setForeground(l.getForeground());
 
+	    int i = ((Integer) obj).intValue();
+
 	    // priority
 	    if (column == 4) {
-		if (isSelected)
-		    return this;
+		
 		if (i == 1) {
 		    this.setBackground(new Color(255, 120, 120));
 		} else if (i == 2) {
@@ -121,8 +124,7 @@ public class TaskListPanel extends JPanel {
 		}
 		return this;
 	    }
-	    if (column != 8)
-		return this;
+	    
 
 	    // add color to the days-left column as the task due date
 	    // approaches
@@ -131,9 +133,6 @@ public class TaskListPanel extends JPanel {
 	    // so show stars - but don't alter the color
 	    if (i == 9999)
 		this.setText("******");
-
-	    if (isSelected)
-		return this;
 
 	    // yellow alert -- <10 days left
 	    if (i < 10)
@@ -223,7 +222,7 @@ public class TaskListPanel extends JPanel {
 	change.setIcon(new ImageIcon(getClass().getResource("/resource/Edit16.gif")));
 	add.setIcon(new ImageIcon(getClass().getResource("/resource/Add16.gif")));
 	JScrollPane jScrollPane1 = new JScrollPane();
-	taskTable = new JTable();
+	taskTable = new StripedTable();
 	JButton jButton21 = new JButton();
 	jTextField3 = new javax.swing.JTextField();
 	GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
@@ -736,7 +735,7 @@ public class TaskListPanel extends JPanel {
 	}
     }
 
-    private javax.swing.JTable taskTable;
+    private StripedTable taskTable;
 
     private javax.swing.JTextField jTextField3;
 
