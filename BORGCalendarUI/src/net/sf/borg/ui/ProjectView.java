@@ -79,6 +79,27 @@ class ProjectView extends View {
 	public void destroy() {
 		this.dispose();
 	}
+	
+	static private boolean isAfter(Date d1, Date d2){
+
+	    GregorianCalendar tcal = new GregorianCalendar();
+	    tcal.setTime(d1);
+	    tcal.set(Calendar.HOUR_OF_DAY, 0);
+	    tcal.set(Calendar.MINUTE, 0);
+	    tcal.set(Calendar.SECOND, 0);
+	    GregorianCalendar dcal = new GregorianCalendar();
+	    dcal.setTime(d2);
+	    dcal.set(Calendar.HOUR_OF_DAY, 0);
+	    dcal.set(Calendar.MINUTE, 10);
+	    dcal.set(Calendar.SECOND, 0);
+	    //System.out.println( DateFormat.getDateTimeInstance().format(tcal.getTime()) + " " + 
+		    //DateFormat.getDateTimeInstance().format(dcal.getTime()) );
+	    if (tcal.getTime().after(dcal.getTime())) {
+		return true;
+	    }
+	    
+	    return false;
+	}
 
 	// the different function values for calls to show task
 	static int T_CLONE = 1;
@@ -432,6 +453,20 @@ class ProjectView extends View {
 				p.setCategory(cat);
 			}
 
+			if( p.getId().intValue() != -1)
+			{
+			    Collection tasks = TaskModel.getReference().getTasks(p.getId().intValue());
+			    Iterator it = tasks.iterator();
+			    while( it.hasNext())
+			    {
+				Task t = (Task) it.next();
+				if( isAfter( t.getDueDate(), p.getDueDate()))
+				{
+				    throw new Warning(Resource.getPlainResourceString("projdd_warning")+":"+t.getTaskNumber());
+				}
+			    }
+			}
+			
 			taskmod_.saveProject(p);
 
 			// System.out.println(task.getTaskNumber());

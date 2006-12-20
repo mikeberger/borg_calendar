@@ -82,6 +82,27 @@ class TaskView extends View {
 	private TableCellRenderer defDateRend_;
 
 	private TableCellRenderer defStringRend_;
+	
+	static private boolean isAfter(Date d1, Date d2){
+
+	    GregorianCalendar tcal = new GregorianCalendar();
+	    tcal.setTime(d1);
+	    tcal.set(Calendar.HOUR_OF_DAY, 0);
+	    tcal.set(Calendar.MINUTE, 0);
+	    tcal.set(Calendar.SECOND, 0);
+	    GregorianCalendar dcal = new GregorianCalendar();
+	    dcal.setTime(d2);
+	    dcal.set(Calendar.HOUR_OF_DAY, 0);
+	    dcal.set(Calendar.MINUTE, 10);
+	    dcal.set(Calendar.SECOND, 0);
+	    //System.out.println( DateFormat.getDateTimeInstance().format(tcal.getTime()) + " " + 
+		    //DateFormat.getDateTimeInstance().format(dcal.getTime()) );
+	    if (tcal.getTime().after(dcal.getTime())) {
+		return true;
+	    }
+	    
+	    return false;
+	}
 
 	private class STIntRenderer extends JLabel implements TableCellRenderer {
 
@@ -907,10 +928,21 @@ class TaskView extends View {
 			String proj = (String) projBox.getSelectedItem();
 			try{
 				task.setProject(getProjectId(proj));
+				
 			} catch (Exception e) {
 				// no project selected
 			}
 
+			if( task.getProject() != null )
+			{
+			    Project p = TaskModel.getReference().getProject(task.getProject().intValue());
+			    if( p != null && isAfter(task.getDueDate(),p.getDueDate()))
+			    {
+				throw new Warning(Resource
+					.getPlainResourceString("taskdd_warning"));
+			    }
+			}
+			
 			if (cat.equals("") || cat.equals(CategoryModel.UNCATEGORIZED)) {
 				task.setCategory(null);
 			} else {
@@ -1014,7 +1046,12 @@ class TaskView extends View {
 
 		// loop through rows
 		TableSorter ts = (TableSorter) stable.getModel();
+		
+		// stop editing
+		if( stable.isEditing())
+		    stable.getCellEditor().stopCellEditing();
 		for (int r = 0; r < stable.getRowCount(); r++) {
+		        
 			Object desc = ts.getValueAt(r, 2);
 			if (desc == null || desc.equals(""))
 				continue;
@@ -1022,12 +1059,13 @@ class TaskView extends View {
 			Integer id = (Integer) ts.getValueAt(r, 1);
 
 			Boolean closed = (Boolean) ts.getValueAt(r, 0);
+			
 			Date crd = (Date) ts.getValueAt(r, 3);
 			if (crd == null)
 				crd = new Date();
 			Date dd = (Date) ts.getValueAt(r, 4);
 			Date cd = (Date) ts.getValueAt(r, 6);
-
+			
 			boolean closing = false;
 			if (closed.booleanValue() == true && cd == null) {
 				cd = new Date();
@@ -1043,17 +1081,8 @@ class TaskView extends View {
 
 			// validate dd - make sure only date and not time is compared
 			if (dd != null) {
-				GregorianCalendar tcal = new GregorianCalendar();
-				tcal.setTime(task.getDueDate());
-				tcal.set(Calendar.HOUR_OF_DAY, 0);
-				tcal.set(Calendar.MINUTE, 10);
-				tcal.set(Calendar.SECOND, 0);
-				GregorianCalendar dcal = new GregorianCalendar();
-				dcal.setTime(dd);
-				dcal.set(Calendar.HOUR_OF_DAY, 0);
-				dcal.set(Calendar.MINUTE, 0);
-				dcal.set(Calendar.SECOND, 0);
-				if (dcal.getTime().after(tcal.getTime())) {
+			        if( isAfter( dd, task.getDueDate()))
+			        {
 					String msg = Resource
 							.getPlainResourceString("stdd_warning")
 							+ ": " + desc;
