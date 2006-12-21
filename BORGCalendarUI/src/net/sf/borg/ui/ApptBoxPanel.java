@@ -522,11 +522,11 @@ public class ApptBoxPanel extends JPanel
                     // its color - only if color print option set
                     g2.setColor(Color.black);
                     if (b.model.getTextColor().equals("red"))
-                        g2.setColor(Color.red);
+                        g2.setColor(new Color(204,0,51));
                     else if (b.model.getTextColor().equals("green"))
-                        g2.setColor(Color.green);
+                        g2.setColor(new Color(0,153,0));
                     else if (b.model.getTextColor().equals("blue"))
-                        g2.setColor(Color.blue);
+                        g2.setColor(new Color(102,0,204));
                     // g2.setFont(sm_font);
                     g2.drawString(b.model.getText(), b.x + 2, b.y + smfontHeight);
                     g2.setColor(Color.black);
@@ -569,11 +569,11 @@ public class ApptBoxPanel extends JPanel
                 // its color - only if color print option set
                 g2.setColor(Color.black);
                 if (b.model.getTextColor().equals("red"))
-                    g2.setColor(Color.red);
+                    g2.setColor(new Color(204,0,51));
                 else if (b.model.getTextColor().equals("green"))
-                    g2.setColor(Color.green);
+                    g2.setColor(new Color(0,153,0));
                 else if (b.model.getTextColor().equals("blue"))
-                    g2.setColor(Color.blue);
+                    g2.setColor(new Color(102,0,204));
 
                 drawWrappedString(g2, b.model.getText(), b.x, b.y, b.w);
 
