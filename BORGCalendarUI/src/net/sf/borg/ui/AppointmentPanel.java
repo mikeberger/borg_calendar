@@ -1038,7 +1038,9 @@ class AppointmentPanel extends JPanel {
 	}
 
 	// set text
-	String t = apptTitleField.getText() + "\n" + appttextarea.getText();
+	String t = apptTitleField.getText();
+	if( appttextarea.getText() != null && !appttextarea.getText().equals(""))
+		t += "\n" + appttextarea.getText();
 	r.setText(t);
 
 	// to do
