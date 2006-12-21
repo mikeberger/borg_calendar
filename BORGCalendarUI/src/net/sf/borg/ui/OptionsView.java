@@ -51,6 +51,7 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpinnerDateModel;
 import javax.swing.SpinnerNumberModel;
@@ -2079,11 +2080,27 @@ public class OptionsView extends View {
 
 		localFilePanel.setBorder(new javax.swing.border.TitledBorder(Resource
 				.getResourceString("localFileInfo")));
+		JTextArea warning = new JTextArea();
+		warning.setText("**** " + Resource.getPlainResourceString("mdb_deprecated") +  " ****");
+		GridBagConstraints gridBagConstraintsw = new java.awt.GridBagConstraints();
+		warning.setEditable(false);
+		warning.setWrapStyleWord(true);
+		warning.setLineWrap(true);
+		warning.setBackground(Color.white);
+		warning.setForeground(Color.red);
+		gridBagConstraintsw.gridx = 0;
+		gridBagConstraintsw.gridy = 0;
+		gridBagConstraintsw.weighty = 1.0;
+		gridBagConstraintsw.fill = java.awt.GridBagConstraints.BOTH;
+		gridBagConstraintsw.anchor = java.awt.GridBagConstraints.WEST;
+		gridBagConstraintsw.insets = new java.awt.Insets(0, 20, 0, 0);
+		localFilePanel.add(warning, gridBagConstraintsw);
+		
 		ResourceHelper.setText(jLabel3, "DataBase_Directory");
 		jLabel3.setLabelFor(dbDirText);
 		GridBagConstraints gridBagConstraints30 = new java.awt.GridBagConstraints();
 		gridBagConstraints30.gridx = 0;
-		gridBagConstraints30.gridy = 0;
+		gridBagConstraints30.gridy = 1;
 		gridBagConstraints30.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints30.anchor = java.awt.GridBagConstraints.WEST;
 		gridBagConstraints30.insets = new java.awt.Insets(0, 8, 0, 0);
@@ -2091,7 +2108,7 @@ public class OptionsView extends View {
 
 		GridBagConstraints gridBagConstraints31 = new java.awt.GridBagConstraints();
 		gridBagConstraints31.gridx = 0;
-		gridBagConstraints31.gridy = 1;
+		gridBagConstraints31.gridy = 2;
 		gridBagConstraints31.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints31.anchor = java.awt.GridBagConstraints.WEST;
 		gridBagConstraints31.weightx = 0.5;
@@ -2107,7 +2124,7 @@ public class OptionsView extends View {
 
 		GridBagConstraints gridBagConstraints32 = new java.awt.GridBagConstraints();
 		gridBagConstraints32.gridx = 1;
-		gridBagConstraints32.gridy = 1;
+		gridBagConstraints32.gridy = 2;
 		gridBagConstraints32.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints32.insets = new java.awt.Insets(4, 4, 4, 4);
 		localFilePanel.add(jButton5, gridBagConstraints32);

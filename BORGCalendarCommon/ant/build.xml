@@ -293,25 +293,6 @@ build.number=${build.number}
 		</jar>
 	</target>
 
-	<target name="mdbtool-jar" depends="compile">
-		<mkdir dir="${dist.dir}" />
-		<manifest file="${build.dir}/${pkg}/model/db/file/mdb/MANIFEST.MF">
-			<attribute name="Built-By" value="${user.name}" />
-			<attribute name="Main-Class"
-			           value="${pkg}/model/db/file/mdb/mdbtool" />
-		</manifest>
-
-		<jar jarfile="${dist.dir}/mdbtool.jar"
-		     manifest="${build.dir}/${pkg}/model/db/file/mdb/MANIFEST.MF">
-			<fileset dir="${build.dir}">
-				<include name="${pkg}/common/ui/*.class" />
-				<include name="${pkg}/common/util/*.class" />
-				<include name="${pkg}/model/db/file/mdb/*.class" />
-				<include name="${pkg}/model/db/DBException.class" />
-			</fileset>
-		</jar>
-	</target>
-
 	<target name="borg_src" depends="clean-build">
 		<zip destfile="${dist.dir}/borg_src.zip">
 			<zipfileset dir="${basedir}" prefix="borg_src">
@@ -402,7 +383,7 @@ build.number=${build.number}
 	</target>
 
 	<target name="clean-build"
-	        depends="clean,borg-jar,borg-servlet-war,mdbtool-jar,help-jar" />
+	        depends="clean,borg-jar,borg-servlet-war,help-jar" />
 	<target name="main" depends="clean-build" />
 	<target name="fulldist" depends="borg_prog,borg_src" />
 

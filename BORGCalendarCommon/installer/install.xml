@@ -114,7 +114,6 @@
             <file src="db.html" targetdir="$INSTALL_PATH"/>
             <file src="lib/looks.jar" targetdir="$INSTALL_PATH/lib"/> 
 	        <file src="lib/LICENSE.looks" targetdir="$INSTALL_PATH/lib"/> 
-	        <file src="mdbtool.jar" targetdir="$INSTALL_PATH"/> 
         </pack>
         <pack name="Systray Support" required="no">
 		<description>Support for a system tray icon (Recommended)</description>

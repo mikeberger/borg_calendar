@@ -23,6 +23,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 
 import net.sf.borg.common.io.IOHelper;
 import net.sf.borg.common.ui.OverwriteConfirm;
@@ -47,7 +49,7 @@ import net.sf.borg.model.db.BeanDataFactoryFactory;
 public class MainMenu {
     private JMenu ActionMenu = new javax.swing.JMenu();
 
-   // private JMenuItem TaskTrackMI = new javax.swing.JMenuItem();
+    // private JMenuItem TaskTrackMI = new javax.swing.JMenuItem();
 
     private JMenuItem ToDoMenu = new javax.swing.JMenuItem();
 
@@ -194,18 +196,7 @@ public class MainMenu {
 	ActionMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 		"/resource/Application16.gif")));
 	ResourceHelper.setText(ActionMenu, "Action");
-	/*
-	TaskTrackMI.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-		"/resource/Application16.gif")));
-	ResourceHelper.setText(TaskTrackMI, "Task_Tracking");
-	TaskTrackMI.addActionListener(new java.awt.event.ActionListener() {
-	    public void actionPerformed(java.awt.event.ActionEvent evt) {
-		TaskTrackMIActionPerformed(evt);
-	    }
-	});
 
-	ActionMenu.add(TaskTrackMI);
-	 */
 	ToDoMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 		"/resource/Properties16.gif")));
 	ResourceHelper.setText(ToDoMenu, "To_Do");
@@ -319,6 +310,8 @@ public class MainMenu {
 	});
 
 	OptionMenu.add(jMenuItem1);
+	
+	JMenu tsm = new JMenu(Resource.getPlainResourceString("task_state_options"));
 	JMenuItem edittypes = new JMenuItem();
 	JMenuItem impst = new JMenuItem();
 	JMenuItem expst = new JMenuItem();
@@ -330,7 +323,7 @@ public class MainMenu {
 	    }
 	});
 
-	OptionMenu.add(edittypes);
+	tsm.add(edittypes);
 
 	ResourceHelper.setText(impst, "Import_Task_States_From_XML");
 	impst.addActionListener(new java.awt.event.ActionListener() {
@@ -339,7 +332,7 @@ public class MainMenu {
 	    }
 	});
 
-	OptionMenu.add(impst);
+	tsm.add(impst);
 
 	ResourceHelper.setText(expst, "Export_Task_States_to_XML");
 	expst.addActionListener(new java.awt.event.ActionListener() {
@@ -348,7 +341,7 @@ public class MainMenu {
 	    }
 	});
 
-	OptionMenu.add(expst);
+	tsm.add(expst);
 
 	ResourceHelper.setText(resetst, "Reset_Task_States_to_Default");
 	resetst.addActionListener(new java.awt.event.ActionListener() {
@@ -357,8 +350,8 @@ public class MainMenu {
 	    }
 	});
 
-	OptionMenu.add(resetst);
-
+	tsm.add(resetst);
+	OptionMenu.add(tsm);
 	menuBar.add(OptionMenu);
 
 	navmenu.setIcon(new javax.swing.ImageIcon(getClass().getResource(
@@ -564,6 +557,22 @@ public class MainMenu {
 
 	menuBar.add(Box.createHorizontalGlue());
 
+	String dbtype = Prefs.getPref(PrefName.DBTYPE);
+	if (dbtype.equals("local")) {
+	    JMenu warning = new JMenu();
+	    warning.setIcon(new javax.swing.ImageIcon(getClass().getResource(
+	    "/resource/redball.gif")));
+	    warning.addMenuListener(new MenuListener() {
+
+		public void menuCanceled(MenuEvent arg0) {}
+
+		public void menuDeselected(MenuEvent arg0) {}
+
+		public void menuSelected(MenuEvent arg0) {
+		    Errmsg.notice(Resource.getPlainResourceString("mdb_deprecated"));}
+	    });
+	    menuBar.add(warning);
+	}
 	//
 	// help menu
 	//
@@ -621,7 +630,7 @@ public class MainMenu {
 	impexpMenu.add(getExpvcal());
 
 	String shared = Prefs.getPref(PrefName.SHARED);
-	String dbtype = Prefs.getPref(PrefName.DBTYPE);
+	//String dbtype = Prefs.getPref(PrefName.DBTYPE);
 
 	if (shared.equals("true") || dbtype.equals("remote")
 		|| dbtype.equals("mysql")) {
@@ -693,9 +702,8 @@ public class MainMenu {
 
 	    String s = chooser.getSelectedFile().getAbsolutePath();
 	    file = new File(s);
-	    
-	    break;
 
+	    break;
 
 	}
 	try {
@@ -739,10 +747,9 @@ public class MainMenu {
 
 	    String s = chooser.getSelectedFile().getAbsolutePath();
 	    file = new File(s);
-	    
+
 	    break;
 
-	    
 	}
 
 	try {
@@ -1011,7 +1018,7 @@ public class MainMenu {
 	String version = "";
 	try {
 	    // get the version and build info from a properties file in the
-                // jar
+	    // jar
 	    // file
 	    InputStream is = getClass().getResource("/properties").openStream();
 	    Properties props = new Properties();
@@ -1094,13 +1101,13 @@ public class MainMenu {
 	new SearchView().setVisible(true);
 
     }// GEN-LAST:event_SearchMIActionPerformed
-/*
-    private void TaskTrackMIActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_TaskTrackMIActionPerformed
-	TaskListView bt_ = TaskListView.getReference();
-	bt_.refresh();
-	bt_.setVisible(true);
-    }// GEN-LAST:event_TaskTrackMIActionPerformed
-*/
+    /*
+         * private void TaskTrackMIActionPerformed(java.awt.event.ActionEvent
+         * evt) {// GEN-FIRST:event_TaskTrackMIActionPerformed TaskListView bt_ =
+         * TaskListView.getReference(); bt_.refresh(); bt_.setVisible(true); }//
+         * GEN-LAST:event_TaskTrackMIActionPerformed
+         */
+
     private void ToDoMenuActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_ToDoMenuActionPerformed
 	// ask borg class to bring up the todo window
 	try {
@@ -1229,10 +1236,9 @@ public class MainMenu {
 
 			String s = chooser.getSelectedFile().getAbsolutePath();
 			file = new File(s);
-			
+
 			break;
 
-			
 		    }
 
 		    try {
