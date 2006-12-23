@@ -12,18 +12,18 @@ xmlns="http://www.w3.org/TR/REC-html40">
  <o:DocumentProperties>
   <o:Author>mike</o:Author>
   <o:LastAuthor>mike</o:LastAuthor>
-  <o:Revision>12</o:Revision>
-  <o:TotalTime>98</o:TotalTime>
+  <o:Revision>13</o:Revision>
+  <o:TotalTime>324</o:TotalTime>
   <o:Created>2004-11-05T19:09:00Z</o:Created>
-  <o:LastSaved>2005-04-30T01:06:00Z</o:LastSaved>
+  <o:LastSaved>2006-12-23T21:13:00Z</o:LastSaved>
   <o:Pages>3</o:Pages>
-  <o:Words>1100</o:Words>
-  <o:Characters>6274</o:Characters>
+  <o:Words>1090</o:Words>
+  <o:Characters>6218</o:Characters>
   <o:Company>telcordia</o:Company>
-  <o:Lines>52</o:Lines>
+  <o:Lines>51</o:Lines>
   <o:Paragraphs>12</o:Paragraphs>
-  <o:CharactersWithSpaces>7704</o:CharactersWithSpaces>
-  <o:Version>9.2720</o:Version>
+  <o:CharactersWithSpaces>7636</o:CharactersWithSpaces>
+  <o:Version>9.6926</o:Version>
  </o:DocumentProperties>
 </xml><![endif]--><!--[if gte mso 9]><xml>
  <w:WordDocument>
@@ -56,9 +56,8 @@ xmlns="http://www.w3.org/TR/REC-html40">
 	mso-font-alt:\5B8B\4F53;
 	mso-font-charset:134;
 	mso-generic-font-family:auto;
-	mso-font-format:other;
 	mso-font-pitch:variable;
-	mso-font-signature:1 135135232 16 0 262144 0;}
+	mso-font-signature:3 135135232 16 0 262145 0;}
 @font-face
 	{font-family:Verdana;
 	panose-1:2 11 6 4 3 5 4 4 2 4;
@@ -385,41 +384,58 @@ ul
 various tasks with defined start and end dates, different statuses,
 descriptions, and resolutions. <o:p></o:p></span></p>
 
-<p><span style='font-family:Arial'>It is up to the user to decide if something
-should be a task or regular appointment. Appointments can be used to hold
-simple tasks that require no special tracking, such as &quot;pay mortgage&quot;
-or &quot;take out garbage&quot;. The task tracker is meant for longer running,
+<p><span style='font-family:Arial'>It is up to the user to decide if something should
+be a task or regular appointment. Appointments can be used to hold simple tasks
+that require no special tracking, such as &quot;pay mortgage&quot; or
+&quot;take out garbage&quot;. The task tracker is meant for longer running,
 more complex tasks, such as &quot;code new BORG feature&quot;, &quot;design new
 widget&quot;, or &quot;re-floor bathroom&quot; - things that have multiple
 steps to check off, that require documentation of a resolution, and/or have
 &quot;sliding&quot; due dates. <o:p></o:p></span></p>
 
-<p><span style='font-family:Arial'>The main Task Tracker window shows a
-scrollable list of tasks. The Task Tracker Action menu can be used to add,
-update, and delete tasks. The radiobuttons on top can be used to show just open
-or closed tasks, or all tasks (ignore the PR button for now). <o:p></o:p></span></p>
+<p><span style='font-family:Arial'>There are 3 levels of objects managed by the
+task tracker – Projects, Tasks, and Subtasks.<o:p></o:p></span></p>
 
-<p><span style='font-family:Arial'>A filter string can be typed in the text
-entry field. When the filter button is pressed, only tasks with text containing
-the filter string will be shown.<o:p></o:p></span></p>
+<p><b><u><span style='font-family:Arial'>Projects<o:p></o:p></span></u></b></p>
+
+<p><span style='font-family:Arial'>Projects were added in release 1.6. <o:p></o:p></span></p>
+
+<p><span style='font-family:Arial'>A Project is simply a way to group related
+tasks. Each project can have any number of child tasks. All child tasks must have
+due dates on or before the project due date. A project cannot be closed unless
+all of its child tasks are closed.<o:p></o:p></span></p>
+
+<p><span style='font-family:Arial'>You are not required to use Projects. Tasks
+can still be created that are not part of any Project.<o:p></o:p></span></p>
+
+<p><span style='font-family:Arial'>From the Projects tab, you can use the
+buttons on the bottom of the screen to Add, Delete, Change, Close, or Clone
+Projects.<o:p></o:p></span></p>
+
+<p><span style='font-family:Arial'>Double-clicking on a project jumps to a
+table of open child tasks for that project.<o:p></o:p></span></p>
+
+<p><b><u><span style='font-family:Arial'>Tasks<o:p></o:p></span></u></b></p>
+
+<p><span style='font-family:Arial'>Tasks are complex activities that have start
+and end dates, and are created in an initial state (default is OPEN) and
+progress through a user definable tree of states to reach an end state (default
+is CLOSED).<o:p></o:p></span></p>
+
+<p><span style='font-family:Arial'>The tasks tab shows a scrollable list of
+tasks. The Task Tracker Action menu can be used to add, update, and delete
+tasks. <o:p></o:p></span></p>
+
+<p><span style='font-family:Arial'>Tasks can be filtered by project and status.
+A filter string can be typed in the text entry field. When the filter button is
+pressed, only tasks with descriptions containing the filter string will be
+shown.<o:p></o:p></span></p>
 
 <p><span style='font-family:Arial'>Tasks can also be filtered according to
 their category, using the category pull-down choice box.<o:p></o:p></span></p>
 
-<p><span style='font-family:Arial'>Tasks with due dates will show on your
-calendar on the due date.<o:p></o:p></span></p>
-
-<p><span style='font-family:Arial'>The task tracker is also designed to keep
-track of tasks done for later recording on your list of accomplishments at
-work. This is called performance review (PR). It is hoped that most BORG users
-do not have to deal with this kind of hell. One of the things that BORG can be
-used for is to figure out what you have done during the year at performance
-review time - and to make sure you can keep things that you have already
-claimed credit for apart from things that you have not. Some users will not
-identify with this. Others may be groaning in sympathy at this point. <o:p></o:p></span></p>
-
-<p><span style='font-family:Arial'>Once added, tasks follow a set of <i>states,
-</i>which are user-configurable in BORG.<o:p></o:p></span></p>
+<p><span style='font-family:Arial'>Tasks follow a set of <i>states, </i>which
+are user-configurable in BORG.<o:p></o:p></span></p>
 
 <p><span style='font-family:Arial'>The different <i>default</i> task types are
 shown below:<o:p></o:p></span></p>
@@ -565,7 +581,8 @@ shown below:<o:p></o:p></span></p>
  <tr>
   <td width=295 valign=top style='width:221.4pt;border:solid black 2.25pt;
   border-top:none;mso-border-top-alt:solid black 2.25pt;padding:0in 5.4pt 0in 5.4pt'>
-  <p style='margin-bottom:12.0pt'><span style='font-family:Arial'>TEST (for CODE)<o:p></o:p></span></p>
+  <p style='margin-bottom:12.0pt'><span style='font-family:Arial'>TEST (for
+  CODE)<o:p></o:p></span></p>
   </td>
   <td width=295 valign=top style='width:221.4pt;border-top:none;border-left:
   none;border-bottom:solid black 2.25pt;border-right:solid black 2.25pt;
@@ -648,12 +665,12 @@ shown below:<o:p></o:p></span></p>
 30.0pt'><span style='font-family:Arial'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
 
 <p style='margin-top:0in;margin-right:0in;margin-bottom:12.0pt;margin-left:
-30.0pt'><u><span style='font-family:Arial;color:red'>If you don't like the
-default task types and states, you can change them. Please see the section
-below on Editing Task Types and States for more info. The default task states
-are some of the ones used by the author and provide a good example of what can
-be done. There is no problem if you discard them all and replace them with your
-own.</span></u><span style='font-family:Arial'><o:p></o:p></span></p>
+30.0pt'><u><span style='font-family:Arial;color:red'>If you don't like the default
+task types and states, you can change them. Please see the section below on
+Editing Task Types and States for more info. The default task states are some
+of the ones used by the author and provide a good example of what can be done.
+There is no problem if you discard them all and replace them with your own.</span></u><span
+style='font-family:Arial'><o:p></o:p></span></p>
 
 <p style='margin-top:0in;margin-right:0in;margin-bottom:12.0pt;margin-left:
 30.0pt'><span style='font-family:Arial;color:black'>When editing tasks, much of
@@ -663,109 +680,42 @@ style='font-family:Arial'><o:p></o:p></span></p>
 <ul type=disc>
  <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
      mso-list:l0 level1 lfo3;tab-stops:list .5in'><span style='font-family:
-     Arial;color:black'>The PA (person assigned) and Pri (priority fields)
-     don’t really do anything except hold data. Use them as you like.<u1:p></u1:p><br
+     Arial;color:black'>The PA (person assigned) field doesn’t really do
+     anything except hold data. Use it as you like.<u1:p></u1:p><br
      style='mso-special-character:line-break'>
      <![if !supportLineBreakNewLine]><br style='mso-special-character:line-break'>
      <![endif]></span><span style='font-family:Arial'><o:p></o:p></span></li>
 </ul>
 
-<h3 style='margin-left:30.0pt'><a name=mozTocId783397></a>Subtasks</h3>
+<h3 style='margin-left:30.0pt'><a name=mozTocId783397></a><u>Subtasks<o:p></o:p></u></h3>
 
-<p class=MsoNormal style='margin-left:30.0pt'><span style='font-family:Arial'>For
-each task, 5 subtasks can be defined by the user. These 5 check boxes can be
-used to keep track of anything the user needs to take care of as part of the overall
-task. For example, if a task is to refinance your home, subtasks might be
-&quot;get appraisal&quot;, &quot;fax pay stubs&quot;, &quot;mail
-application&quot;, &quot;final closing&quot;, &quot;new payment book
-rcv'd&quot;. The subtasks just are there to be checked-off. They do not affect
-any other processing.<br>
-<br>
-Each task type can also have up to 5 type-specific subtasks that are common to
-all tasks of a particular type.. The type-specific subtasks can be altered by
-the user. <o:p></o:p></span></p>
+<p class=MsoNormal style='margin-left:30.0pt'><span style='font-family:Arial'>Subtasks
+are single units of work that do not progress through a set of states. They are
+either completed or not-completed.<o:p></o:p></span></p>
 
 <p class=MsoNormal style='margin-left:30.0pt'><span style='font-family:Arial'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
 
-<ul type=disc>
- <ul type=circle>
-  <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:
-      auto;mso-list:l0 level2 lfo3;tab-stops:list 1.0in'><span
-      style='font-family:Arial;color:black'>The standard BORG check boxes
-      (subtasks) for CODE and DOC tasks might not apply to most users
-      (especially those who aren’t developers). <b>Just as an FYI</b>, here are
-      what the CODE checkboxes were created for: </span><span style='font-family:
-      Arial'><o:p></o:p></span></li>
-  <ul type=square>
-   <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:
-       auto;mso-list:l0 level3 lfo3;tab-stops:list 1.5in'><span
-       style='font-family:Arial;color:black'>Delta = put code under source
-       control </span><span style='font-family:Arial'><o:p></o:p></span></li>
-   <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:
-       auto;mso-list:l0 level3 lfo3;tab-stops:list 1.5in'><span
-       style='font-family:Arial;color:black'>Blue Print = a date tracking blue
-       print has been filled out – see ISO 9000 for more info – see Dilbert for
-       more info on ISO 9000 </span><span style='font-family:Arial'><o:p></o:p></span></li>
-   <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:
-       auto;mso-list:l0 level3 lfo3;tab-stops:list 1.5in'><span
-       style='font-family:Arial;color:black'>MR = a modification request has
-       been issued (or change request, or whatever your build system might
-       require to relate code to features/problems) </span><span
-       style='font-family:Arial'><o:p></o:p></span></li>
-   <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:
-       auto;mso-list:l0 level3 lfo3;tab-stops:list 1.5in'><span
-       style='font-family:Arial;color:black'>Code Insp = code inspection done.<u1:p></u1:p></span><span
-       style='font-family:Arial'><o:p></o:p></span></li>
-  </ul>
-  <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:
-      auto;mso-list:l0 level2 lfo3;tab-stops:list 1.0in'><span
-      style='font-family:Arial;color:black'>Here are the DOC checkboxes: </span><span
-      style='font-family:Arial'><o:p></o:p></span></li>
-  <ul type=square>
-   <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:
-       auto;mso-list:l0 level3 lfo3;tab-stops:list 1.5in'><span
-       style='font-family:Arial;color:black'>DocNum = an official document
-       number has been established</span><span style='font-family:Arial'><o:p></o:p></span></li>
-   <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:
-       auto;mso-list:l0 level3 lfo3;tab-stops:list 1.5in'><span
-       style='font-family:Arial;color:black'>VGs – viewgraphs have been
-       prepared for the document presentation meeting</span><span
-       style='font-family:Arial'><o:p></o:p></span></li>
-   <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:
-       auto;mso-list:l0 level3 lfo3;tab-stops:list 1.5in'><span
-       style='font-family:Arial;color:black'>Blueprint (see above) </span><span
-       style='font-family:Arial'><o:p></o:p></span></li>
-   <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:
-       auto;mso-list:l0 level3 lfo3;tab-stops:list 1.5in'><span
-       style='font-family:Arial;color:black'>MR (see above)</span><span
-       style='font-family:Arial'><o:p></o:p></span></li>
-   <li class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:
-       auto;mso-list:l0 level3 lfo3;tab-stops:list 1.5in'><span
-       style='font-family:Arial;color:black'>Library = the document has been
-       officially filed in some library.<u1:p></u1:p><br>
-       <br style='mso-special-character:line-break'>
-       <![if !supportLineBreakNewLine]><br style='mso-special-character:line-break'>
-       <![endif]></span><span style='font-family:Arial'><o:p></o:p></span></li>
-  </ul>
- </ul>
-</ul>
+<p class=MsoBodyTextIndent2>As of BORG 1.6, a task can have any number of
+subtasks (even zero). Subtasks are managed from the same window used to edit a
+single tasks. Each subtask can have an optional due date. All subtasks must have
+due dates on or before the parent task’s due date. A task cannot be closed
+unless all of its subtasks are closed.</p>
 
-<p class=MsoBodyTextIndent>Obviously, the above subtasks are very specific to
-the author. They are just an example and can be deleted by the user.</p>
+<p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:.75in;
+margin-bottom:.0001pt'><span style='font-family:Arial'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
 
-<p class=MsoNormal style='margin-left:30.0pt'><span style='font-family:Arial'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+<h3 style='margin-left:30.0pt'><u><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></u></h3>
 
-<h3 style='margin-left:30.0pt'>Editing Task Types and States</h3>
+<h3 style='margin-left:30.0pt'><u>Editing Task Types and States<o:p></o:p></u></h3>
 
 <p class=MsoBodyTextIndent2>The default task tracker states defined above are
-probably adequate for a few developers and inadequate for anyone else. The user
-has the capability to edit the list of task types and state transitions in the
-task tracker. </p>
+probably adequate for some people, but not others. The user has the capability
+to edit the list of task types and state transitions in the task tracker. </p>
 
 <p class=MsoBodyTextIndent2><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
 
 <p class=MsoBodyTextIndent2>There is now a simple editor to help you edit the
-task types and states. It can be reached by chosing the first menu item under
+task types and states. It can be reached by choosing the first menu item under
 the options menu for the task tracking window. </p>
 
 <p class=MsoBodyTextIndent2><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
@@ -774,18 +724,18 @@ the options menu for the task tracking window. </p>
 next states, and subtasks (from left to right). If you select a task type on
 the left, the states list will reflect the states for that task type. If you
 select a state, the next state list will show the list of states that you can
-transition to from the selected state. If you select a task type, the subtask list
-will show the subtasks for that task type. These subtasks appear for all tasks
-of that type. Each task can also have user-tunable subtasks that can vary for
-tasks of the same task type. Those are edited per-task and are not edited from
-the task type editor.</p>
+transition to from the selected state. If you select a task type, the subtask
+list will show the <b><i>default</i> </b>subtasks for that task type. These
+subtasks are generated for all tasks of that type and are added when the task
+is created. These default subtasks are optional. Tasks do not need to have any
+default subtasks. </p>
 
 <p class=MsoBodyTextIndent2><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
 
 <p class=MsoBodyTextIndent2>To change anything, just select what you want to
 change and right-click on it. For example, to add a new state for a task type,
-select the task type and right click in the state column. One of the options
-that pops up will be to add a state.</p>
+select the task type and right click in the state column. One of the options that
+pops up will be to add a state.</p>
 
 <p class=MsoBodyTextIndent2><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
 
@@ -796,9 +746,9 @@ editor is not really that great at this time</p>
 
 <p class=MsoBodyTextIndent2><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
 
-<p class=MsoBodyTextIndent2>Below are the original instructions on how to edit
-the task types by editing an XML file. This can still be done, but is not recommended<span
-style='font-size:8.0pt;mso-bidi-font-size:12.0pt'>.<o:p></o:p></span></p>
+<p class=MsoBodyTextIndent2>Below are the original instructions on how to edit the
+task types by editing an XML file. This can still be done, but is not
+recommended<span style='font-size:8.0pt;mso-bidi-font-size:12.0pt'>.<o:p></o:p></span></p>
 
 <p class=MsoBodyTextIndent2><span style='font-size:8.0pt;mso-bidi-font-size:
 12.0pt'><br>
@@ -970,8 +920,8 @@ font-family:Arial'><br>
 <br>
 Once you have created the task type XML, it should be imported back into the
 task tracker using the import option in the task tracker Options menu. It must
-contain ALL of your states, not just new ones. Use the option to export the
-existing states to give yourself an XML file to start with.<br>
+contain ALL of your states, not just new ones. Use the option to export the existing
+states to give yourself an XML file to start with.<br>
 <br>
 BORG will not import invalid XML. You must correct any errors in the XML
 structure.<o:p></o:p></span></p>
@@ -982,8 +932,8 @@ mso-bidi-font-size:12.0pt;font-family:Arial'><![if !supportEmptyParas]>&nbsp;<![
 <p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
 mso-bidi-font-size:12.0pt;font-family:Arial'>If the XML is valid, but not
 correct, you can fix the XML and import it again. No damage will be done by
-logical errors in your XML, except that you might not be able to transition your
-tasks correctly.<o:p></o:p></span></p>
+logical errors in your XML, except that you might not be able to transition
+your tasks correctly.<o:p></o:p></span></p>
 
 </div>
 

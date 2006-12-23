@@ -16,6 +16,7 @@
 
 <mapID target="categories" url="categories.html"/>
 
+<mapID target="memos" url="memo.html"/>
 <mapID target="internationalization" url="internationalization.html"/>
 
 <mapID target="mainscreen" url="mainscreen.html"/>
@@ -25,8 +26,6 @@
 <mapID target="cmdline" url="cmdline.html"/>
 
 <mapID target="popups" url="popups.html"/>
-
-<mapID target="mdbtool" url="mdbtool.html"/>
 
 <mapID target="multiuser" url="multiuser.html"/>
 

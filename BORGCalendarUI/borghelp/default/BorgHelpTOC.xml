@@ -20,6 +20,7 @@
 
  <tocitem text="Categories" target="categories"/>
 
+ <tocitem text="Memos" target="memos"/>
  <tocitem text="Internationalization" target="internationalization"/>
 
  <tocitem text="Multi-User Support" target="multiuser"/>
@@ -37,8 +38,6 @@
  <tocitem text="Import/Export to XML" target="xml"/>
 
  <tocitem text="ICalendar Import/Export" target="ical"/>
-
- <tocitem text="The MDBTOOL Utility" target="mdbtool"/>
 
  <tocitem text="Palm Hot-Sync Conduits" target="conduit"/>
  <tocitem text="Remote Server" target="remote"/>

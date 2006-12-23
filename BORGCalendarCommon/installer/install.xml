@@ -73,14 +73,13 @@
         <panel classname="HelloPanel"/>
         <panel classname="InfoPanel"/>
         <panel classname="LicencePanel"/>
-        <panel classname="TargetPanel"/> 
-        <panel classname="PacksPanel"/>
+        <panel classname="TargetPanel"/>    
         <panel classname="InstallPanel"/>
         <panel classname="ShortcutPanel"/>
         <panel classname="SimpleFinishPanel"/>
     </panels>
     
-    <!-- 
+    <!-- <panel classname="PacksPanel"/>
         The packs section.
         We specify here our packs.
     -->
@@ -105,18 +104,12 @@
 	    	<file src="lib/LICENSE.commons-logging" targetdir="$INSTALL_PATH/lib"/> 
 	    	<file src="lib/LICENSE.commons-codec" targetdir="$INSTALL_PATH/lib"/> 
 	    	<file src="lib/LICENSE.commons-httpclient" targetdir="$INSTALL_PATH/lib"/> 
-	    	<file src="borg.sql" targetdir="$INSTALL_PATH"/>
+	    	<file src="borg_mysql.sql" targetdir="$INSTALL_PATH"/>
 	    	<file src="borg_hsqldb.sql" targetdir="$INSTALL_PATH"/>
-            <file src="update1_5.sql" targetdir="$INSTALL_PATH"/>
-            <file src="update151.sql" targetdir="$INSTALL_PATH"/>
-            <file src="update1512.sql" targetdir="$INSTALL_PATH"/>
-            <file src="update152.sql" targetdir="$INSTALL_PATH"/>
             <file src="db.html" targetdir="$INSTALL_PATH"/>
             <file src="lib/looks.jar" targetdir="$INSTALL_PATH/lib"/> 
 	        <file src="lib/LICENSE.looks" targetdir="$INSTALL_PATH/lib"/> 
-        </pack>
-        <pack name="Systray Support" required="no">
-		<description>Support for a system tray icon (Recommended)</description>
+	        <file src="conduits" targetdir="$INSTALL_PATH"/>
             <file src="lib/jdic.dll" os="windows" targetdir="$INSTALL_PATH/lib"/>
             <file src="lib/libjdic.so" os="unix" targetdir="$INSTALL_PATH/lib"/>
             <file src="lib/tray.dll" os="windows" targetdir="$INSTALL_PATH/lib"/>
@@ -124,13 +117,6 @@
             <file src="lib/LICENSE_JDIC.txt" targetdir="$INSTALL_PATH/lib"/>
 	    	<singlefile src="lib/jdic-linux.jar" os="unix" target="$INSTALL_PATH/lib/jdic.jar"/> 
 	    	<file src="lib/jdic.jar" os="windows" targetdir="$INSTALL_PATH/lib"/>
-        </pack>
-     <pack name="Palm Conduits" preselected="no" required="no">
-		<description>Palm Hot-Sync conduits for BORG</description>
-            <file src="conduits" targetdir="$INSTALL_PATH"/> 
-        </pack>
-     <pack name="Remote Server" preselected="no" required="no">
-		<description>Remote Server that can serve BORG Data over a network. Runs under Tomcat.</description>
             <file src="borg_servlet.war" targetdir="$INSTALL_PATH"/> 
         </pack>
 

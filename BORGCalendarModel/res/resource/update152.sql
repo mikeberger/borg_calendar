@@ -1,1 +1,0 @@
-ALTER TABLE appointments CHANGE COLUMN `repeat` rpt TINYINT(4) NOT NULL DEFAULT 0;

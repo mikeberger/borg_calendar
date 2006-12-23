@@ -316,12 +316,8 @@ build.number=${build.number}
 			<fileset dir="${dist.dir}" includes="*.war" />
 			<fileset dir="${build.dir}/resource" includes="COPYING" />
 			<fileset dir="${build.dir}" includes="lib/borghelp.jar" />
-			<fileset dir="${db.res.dir}" includes="borg.sql" />
+			<fileset dir="${db.res.dir}" includes="borg_mysql.sql" />
 			<fileset dir="${db.res.dir}" includes="borg_hsqldb.sql" />
-			<fileset dir="${db.res.dir}" includes="update1_5.sql" />
-			<fileset dir="${db.res.dir}" includes="update151.sql" />
-			<fileset dir="${db.res.dir}" includes="update1512.sql" />
-			<fileset dir="${db.res.dir}" includes="update152.sql" />
 			<fileset dir="${prj.common.dir}" includes="lib/*" />
 			<fileset dir="${prj.ui.dir}" includes="lib/*" />
 			<fileset dir="${help.dir}/default" includes="db.html" />
