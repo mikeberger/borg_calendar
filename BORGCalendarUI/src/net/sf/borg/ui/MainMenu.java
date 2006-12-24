@@ -630,8 +630,7 @@ public class MainMenu {
 	impexpMenu.add(getExpvcal());
 
 	String shared = Prefs.getPref(PrefName.SHARED);
-	//String dbtype = Prefs.getPref(PrefName.DBTYPE);
-
+	
 	if (shared.equals("true") || dbtype.equals("remote")
 		|| dbtype.equals("mysql")) {
 	    syncMI.setEnabled(true);
@@ -1193,12 +1192,15 @@ public class MainMenu {
 		fw.close();
 	    }
 
-	    fname = dir.getAbsolutePath() + "/memo.xml";
-	    if (OverwriteConfirm.checkOverwrite(fname)) {
-		OutputStream ostr = IOHelper.createOutputStream(fname);
-		Writer fw = new OutputStreamWriter(ostr, "UTF8");
-		MemoModel.getReference().export(fw);
-		fw.close();
+	    if( MemoModel.getReference().hasMemos() )
+	    {
+		fname = dir.getAbsolutePath() + "/memo.xml";
+		if (OverwriteConfirm.checkOverwrite(fname)) {
+		    OutputStream ostr = IOHelper.createOutputStream(fname);
+		    Writer fw = new OutputStreamWriter(ostr, "UTF8");
+		    MemoModel.getReference().export(fw);
+		    fw.close();
+		}
 	    }
 	} catch (Exception e) {
 	    Errmsg.errmsg(e);

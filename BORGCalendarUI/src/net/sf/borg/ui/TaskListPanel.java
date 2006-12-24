@@ -888,14 +888,19 @@ public class TaskListPanel extends JPanel {
     }
 
     private void loadProjectBox() throws Exception {
-	projectBox.removeAllItems();
-	projectBox.addItem(Resource.getPlainResourceString("All"));
-	Collection projects = TaskModel.getReference().getProjects();
-	Iterator pi = projects.iterator();
-	while (pi.hasNext()) {
-	    Project p = (Project) pi.next();
-	    projectBox.addItem(TaskView.getProjectString(p));
-	}
+    	projectBox.removeAllItems();
+    	projectBox.addItem(Resource.getPlainResourceString("All"));
+    	try{
+    		Collection projects = TaskModel.getReference().getProjects();
+    		Iterator pi = projects.iterator();
+    		while (pi.hasNext()) {
+    			Project p = (Project) pi.next();
+    			projectBox.addItem(TaskView.getProjectString(p));
+    		}
+    	}
+    	// ignore exception if projects not supported
+    	catch( Exception e)
+    	{}
     }
 
     JComboBox projectBox = null;

@@ -42,6 +42,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.table.TableCellRenderer;
@@ -49,6 +50,7 @@ import javax.swing.table.TableCellRenderer;
 import net.sf.borg.common.ui.StripedTable;
 import net.sf.borg.common.ui.TableSorter;
 import net.sf.borg.common.util.Errmsg;
+import net.sf.borg.common.util.NotSupportedWarning;
 import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Resource;
 import net.sf.borg.common.util.Warning;
@@ -687,11 +689,18 @@ class TaskView extends View {
 		addst.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 				"/resource/Add16.gif")));
 		ResourceHelper.setText(addst, "Add_Subtask");
+		if(TaskModel.getReference().hasSubTasks())
+		{
 		addst.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				insertSubtask();
 			}
 		});
+		}
+		else
+		{
+			addst.setEnabled(false);
+		}
 		jPanel4.add(addst);
 
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -1144,11 +1153,14 @@ class TaskView extends View {
 		projBox.removeAllItems();
 		projBox.addItem("");
 		Collection projects = taskmod_.getProjects();
-		Iterator pi = projects.iterator();
-		while (pi.hasNext()) {
-			Project p = (Project) pi.next();
-			if( p.getStatus().equals("OPEN"))
-			    projBox.addItem(getProjectString(p));
+		if( projects != null )
+		{
+			Iterator pi = projects.iterator();
+			while (pi.hasNext()) {
+				Project p = (Project) pi.next();
+				if( p.getStatus().equals("OPEN"))
+					projBox.addItem(getProjectString(p));
+			}
 		}
 
 		// if we are showing an existing task - fil; in the gui fields form it
@@ -1229,7 +1241,10 @@ class TaskView extends View {
 
 			}
 
-			loadLog(task.getTaskNumber().intValue());
+			try{
+				loadLog(task.getTaskNumber().intValue());
+			}
+			catch( NotSupportedWarning w){}
 			
 			Integer pid = task.getProject();
 			if( pid != null )
@@ -1395,6 +1410,7 @@ class TaskView extends View {
 	JPanel stpanel = new JPanel();
 	private JPanel getJPanel() {
 		if (jPanel == null) {
+			
 			GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
 			gridBagConstraints5.fill = GridBagConstraints.BOTH;
 			gridBagConstraints5.weighty = 1.0;
@@ -1434,6 +1450,7 @@ class TaskView extends View {
 			stpanel.setBorder(new javax.swing.border.TitledBorder(Resource
 					.getResourceString("Subtasks")));
 			stpanel.add(stscroll, gridBagConstraints4);
+			
 		}
 		return jPanel;
 	}
@@ -1500,7 +1517,17 @@ class TaskView extends View {
 	    if (jSplitPane == null) {
 		jSplitPane = new JSplitPane();
 		jSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
-		jSplitPane.setBottomComponent(stpanel);
+		if( TaskModel.getReference().hasSubTasks())
+		{
+			jSplitPane.setBottomComponent(stpanel);
+		}
+		else
+		{
+			JTextArea ta = new JTextArea();
+			ta.setText(Resource.getPlainResourceString("SubtaskNotSupported"));
+			ta.setEditable(false);
+			jSplitPane.setBottomComponent(ta);
+		}
 		jSplitPane.setPreferredSize(new Dimension(400, 400));
 		jSplitPane.setDividerLocation(100);
 		jSplitPane.setTopComponent(jTabbedPane1);

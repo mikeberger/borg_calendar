@@ -381,7 +381,7 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 	    }
 	    catch( Warning w)
 	    {
-		Errmsg.notice(w.getMessage());
+	    	//Errmsg.notice(w.getMessage());
 	    }
 	    
 

@@ -31,6 +31,7 @@ import java.util.TreeSet;
 import java.util.Vector;
 
 import net.sf.borg.common.util.Errmsg;
+import net.sf.borg.common.util.NotSupportedWarning;
 import net.sf.borg.common.util.Resource;
 import net.sf.borg.common.util.Warning;
 import net.sf.borg.common.util.XTree;
@@ -118,22 +119,20 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 			Task t = (Task) itr.next();
 			String cat = t.getCategory();
 			if (cat != null && !cat.equals(""))
-			    categories.add(cat);
+				categories.add(cat);
 		}
 
-		try{
-		    Collection projects = getProjects();
-		    itr = projects.iterator();
-		    while (itr.hasNext()) {
-			Project t = (Project) itr.next();
-			String cat = t.getCategory();
-			if (cat != null && !cat.equals(""))
-			    categories.add(cat);
-		    }
-		}
-		catch(Exception e)
-		{
-		    // ignore this one
+		try {
+			Collection projects = getProjects();
+			itr = projects.iterator();
+			while (itr.hasNext()) {
+				Project t = (Project) itr.next();
+				String cat = t.getCategory();
+				if (cat != null && !cat.equals(""))
+					categories.add(cat);
+			}
+		} catch (Exception e) {
+			// ignore this one
 		}
 		return (categories);
 
@@ -202,37 +201,39 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 				allmap_.add(mr);
 			}
 
-			Collection subtasks = getSubTasks();
-			ti = subtasks.iterator();
-			while (ti.hasNext()) {
-				Subtask st = (Subtask) ti.next();
+			if (db_ instanceof TaskDB) {
+				Collection subtasks = getSubTasks();
+				ti = subtasks.iterator();
+				while (ti.hasNext()) {
+					Subtask st = (Subtask) ti.next();
 
-				if (st.getCloseDate() != null || st.getDueDate() == null)
-					continue;
+					if (st.getCloseDate() != null || st.getDueDate() == null)
+						continue;
 
-				Task mr = getMR(st.getTask().intValue());
-				String cat = mr.getCategory();
-				if (cat == null || cat.equals(""))
-					cat = CategoryModel.UNCATEGORIZED;
+					Task mr = getMR(st.getTask().intValue());
+					String cat = mr.getCategory();
+					if (cat == null || cat.equals(""))
+						cat = CategoryModel.UNCATEGORIZED;
 
-				if (!CategoryModel.getReference().isShown(cat))
-					continue;
+					if (!CategoryModel.getReference().isShown(cat))
+						continue;
 
-				// use task due date to build a day key
-				Date due = st.getDueDate();
-				GregorianCalendar g = new GregorianCalendar();
-				g.setTime(due);
-				int key = AppointmentModel.dkey(g);
+					// use task due date to build a day key
+					Date due = st.getDueDate();
+					GregorianCalendar g = new GregorianCalendar();
+					g.setTime(due);
+					int key = AppointmentModel.dkey(g);
 
-				// add the string to the btmap_
-				Object o = stmap_.get(new Integer(key));
-				if (o == null) {
-					o = new LinkedList();
-					stmap_.put(new Integer(key), o);
+					// add the string to the btmap_
+					Object o = stmap_.get(new Integer(key));
+					if (o == null) {
+						o = new LinkedList();
+						stmap_.put(new Integer(key), o);
+					}
+
+					LinkedList l = (LinkedList) o;
+					l.add(st);
 				}
-
-				LinkedList l = (LinkedList) o;
-				l.add(st);
 			}
 
 		} catch (DBException e) {
@@ -313,12 +314,12 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 		refreshListeners();
 
 	}
-	
+
 	public void deleteProject(int id) throws Exception {
 
 		try {
 			if (db_ instanceof TaskDB == false)
-				throw new Exception(Resource
+				throw new NotSupportedWarning(Resource
 						.getPlainResourceString("SubtaskNotSupported"));
 			TaskDB sdb = (TaskDB) db_;
 			sdb.deleteProject(id);
@@ -391,17 +392,18 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 
 	// force a task to be updated to CLOSED state and saved
 	public void close(int num) throws Exception {
-		
+
 		Task task = getMR(num);
 		task.setState(TaskModel.getReference().getTaskTypes().getFinalState(
 				task.getType()));
 		savetask(task);
 	}
+
 	public void closeProject(int num) throws Exception, Warning {
-		
+
 		Project p = getProject(num);
 		p.setStatus(Resource.getPlainResourceString("CLOSED"));
-			
+
 		saveProject(p);
 	}
 
@@ -427,25 +429,27 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 			if (e.getRetCode() != DBException.RET_NOT_FOUND)
 				Errmsg.errmsg(e);
 		}
-		
+
 		ProjectXMLAdapter pa = new ProjectXMLAdapter();
 
 		// export projects
-		try {
+		if( TaskModel.getReference().hasSubTasks())
+		{
+			try {
 
-			Collection projects = getProjects();
-			Iterator ti = projects.iterator();
-			while (ti.hasNext()) {
-				Project p = (Project) ti.next();
+				Collection projects = getProjects();
+				Iterator ti = projects.iterator();
+				while (ti.hasNext()) {
+					Project p = (Project) ti.next();
 
-				XTree xt = pa.toXml(p);
-				fw.write(xt.toString());
+					XTree xt = pa.toXml(p);
+					fw.write(xt.toString());
+				}
+			} catch (DBException e) {
+				if (e.getRetCode() != DBException.RET_NOT_FOUND)
+					Errmsg.errmsg(e);
 			}
-		} catch (DBException e) {
-			if (e.getRetCode() != DBException.RET_NOT_FOUND)
-				Errmsg.errmsg(e);
 		}
-
 		// export tasks
 		try {
 
@@ -465,56 +469,55 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 		SubtaskXMLAdapter sta = new SubtaskXMLAdapter();
 
 		// export subtasks
-		try {
+		if( TaskModel.getReference().hasSubTasks())
+		{
+			try {
 
-			Collection subtasks = getSubTasks();
-			Iterator ti = subtasks.iterator();
-			while (ti.hasNext()) {
-				Subtask stask = (Subtask) ti.next();
+				Collection subtasks = getSubTasks();
+				Iterator ti = subtasks.iterator();
+				while (ti.hasNext()) {
+					Subtask stask = (Subtask) ti.next();
 
-				XTree xt = sta.toXml(stask);
-				fw.write(xt.toString());
+					XTree xt = sta.toXml(stask);
+					fw.write(xt.toString());
+				}
+			} catch (DBException e) {
+				if (e.getRetCode() != DBException.RET_NOT_FOUND)
+					Errmsg.errmsg(e);
 			}
-		} catch (DBException e) {
-			if (e.getRetCode() != DBException.RET_NOT_FOUND)
-				Errmsg.errmsg(e);
-		}
 
-		TasklogXMLAdapter tla = new TasklogXMLAdapter();
+			TasklogXMLAdapter tla = new TasklogXMLAdapter();
 
-		// export tasklogs
-		try {
+			// export tasklogs
+			try {
 
-			Collection logs = getLogs();
-			Iterator ti = logs.iterator();
-			while (ti.hasNext()) {
-				Tasklog tlog = (Tasklog) ti.next();
+				Collection logs = getLogs();
+				Iterator ti = logs.iterator();
+				while (ti.hasNext()) {
+					Tasklog tlog = (Tasklog) ti.next();
 
-				XTree xt = tla.toXml(tlog);
-				fw.write(xt.toString());
+					XTree xt = tla.toXml(tlog);
+					fw.write(xt.toString());
+				}
+			} catch (DBException e) {
+				if (e.getRetCode() != DBException.RET_NOT_FOUND)
+					Errmsg.errmsg(e);
 			}
-		} catch (DBException e) {
-			if (e.getRetCode() != DBException.RET_NOT_FOUND)
-				Errmsg.errmsg(e);
 		}
-
-		
-
 		fw.write("</TASKS>");
 
 	}
 
 	public Collection getProjects() throws Exception {
 		if (db_ instanceof TaskDB == false)
-			throw new Exception(Resource
-					.getPlainResourceString("SubtaskNotSupported"));
+			return null;
 		TaskDB sdb = (TaskDB) db_;
 		return sdb.getProjects();
 	}
 
 	public Project getProject(int id) throws Exception {
 		if (db_ instanceof TaskDB == false)
-			throw new Exception(Resource
+			throw new NotSupportedWarning(Resource
 					.getPlainResourceString("SubtaskNotSupported"));
 		TaskDB sdb = (TaskDB) db_;
 		return sdb.getProject(id);
@@ -708,7 +711,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 
 	public Collection getSubTasks(int taskid) throws Exception {
 		if (db_ instanceof TaskDB == false)
-			throw new Exception(Resource
+			throw new NotSupportedWarning(Resource
 					.getPlainResourceString("SubtaskNotSupported"));
 
 		TaskDB sdb = (TaskDB) db_;
@@ -718,17 +721,17 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 
 	public Collection getSubTasks() throws Exception {
 		if (db_ instanceof TaskDB == false)
-			throw new Exception(Resource
+			throw new NotSupportedWarning(Resource
 					.getPlainResourceString("SubtaskNotSupported"));
 
 		TaskDB sdb = (TaskDB) db_;
 		return sdb.getSubTasks();
 
 	}
-	
+
 	public Collection getTasks(int projectid) throws Exception {
 		if (db_ instanceof TaskDB == false)
-			throw new Exception(Resource
+			throw new NotSupportedWarning(Resource
 					.getPlainResourceString("SubtaskNotSupported"));
 
 		TaskDB sdb = (TaskDB) db_;
@@ -738,7 +741,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 
 	public void deleteSubTask(int id) throws Exception {
 		if (db_ instanceof TaskDB == false)
-			throw new Exception(Resource
+			throw new NotSupportedWarning(Resource
 					.getPlainResourceString("SubtaskNotSupported"));
 
 		TaskDB sdb = (TaskDB) db_;
@@ -747,7 +750,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 
 	public void saveSubTask(Subtask s) throws Exception {
 		if (db_ instanceof TaskDB == false)
-			throw new Exception(Resource
+			throw new NotSupportedWarning(Resource
 					.getPlainResourceString("SubtaskNotSupported"));
 
 		TaskDB sdb = (TaskDB) db_;
@@ -772,7 +775,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 
 	public void saveLog(Tasklog tlog) throws Exception {
 		if (db_ instanceof TaskDB == false)
-			throw new Exception(Resource
+			throw new NotSupportedWarning(Resource
 					.getPlainResourceString("SubtaskNotSupported"));
 		TaskDB sdb = (TaskDB) db_;
 		sdb.saveLog(tlog);
@@ -780,7 +783,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 
 	public Collection getLogs(int taskid) throws Exception {
 		if (db_ instanceof TaskDB == false)
-			throw new Exception(Resource
+			throw new NotSupportedWarning(Resource
 					.getPlainResourceString("SubtaskNotSupported"));
 		TaskDB sdb = (TaskDB) db_;
 		return sdb.getLogs(taskid);
@@ -788,7 +791,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 
 	public Collection getLogs() throws Exception {
 		if (db_ instanceof TaskDB == false)
-			throw new Exception(Resource
+			throw new NotSupportedWarning(Resource
 					.getPlainResourceString("SubtaskNotSupported"));
 		TaskDB sdb = (TaskDB) db_;
 		return sdb.getLogs();
@@ -846,37 +849,34 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 	}
 
 	public void saveProject(Project p) throws Exception {
-	    if (db_ instanceof TaskDB == false)
-		throw new Exception(Resource
-			.getPlainResourceString("SubtaskNotSupported"));
+		if (db_ instanceof TaskDB == false)
+			throw new NotSupportedWarning(Resource
+					.getPlainResourceString("SubtaskNotSupported"));
 
-	    if( p.getStatus().equals(Resource.getPlainResourceString("CLOSED")))
-	    {
-//		make sure that all tasks are closed
-		Collection ptasks = TaskModel.getReference().getTasks(
-			p.getId().intValue());
+		if (p.getStatus().equals(Resource.getPlainResourceString("CLOSED"))) {
+			// make sure that all tasks are closed
+			Collection ptasks = TaskModel.getReference().getTasks(
+					p.getId().intValue());
 
-		Iterator it = ptasks.iterator();
-		while (it.hasNext()) {
-		    Task pt = (Task) it.next();
-		    String stat = pt.getState();
-		    String type = pt.getType();
-		    if (!stat.equals(TaskModel.getReference().getTaskTypes()
-			    .getFinalState(type))) {
-			throw new Warning(Resource.getPlainResourceString("close_proj_warn"));
-		    }
+			Iterator it = ptasks.iterator();
+			while (it.hasNext()) {
+				Task pt = (Task) it.next();
+				String stat = pt.getState();
+				String type = pt.getType();
+				if (!stat.equals(TaskModel.getReference().getTaskTypes()
+						.getFinalState(type))) {
+					throw new Warning(Resource
+							.getPlainResourceString("close_proj_warn"));
+				}
+			}
 		}
-	    }
-	
 
-
-
-	    TaskDB sdb = (TaskDB) db_;
-	    if (p.getId() == null || p.getId().intValue() <= 0) {
-		p.setId(new Integer(sdb.nextProjectKey()));
-		sdb.addProject(p);
-	    } else {
-		sdb.updateProject(p);
+		TaskDB sdb = (TaskDB) db_;
+		if (p.getId() == null || p.getId().intValue() <= 0) {
+			p.setId(new Integer(sdb.nextProjectKey()));
+			sdb.addProject(p);
+		} else {
+			sdb.updateProject(p);
 		}
 
 		load_map();

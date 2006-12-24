@@ -34,6 +34,7 @@ import javax.swing.JComponent;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 import javax.swing.border.BevelBorder;
 import javax.swing.event.ChangeEvent;
@@ -41,6 +42,7 @@ import javax.swing.event.ChangeListener;
 
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
+import net.sf.borg.common.util.Prefs;
 import net.sf.borg.common.util.PrintHelper;
 import net.sf.borg.common.util.Resource;
 import net.sf.borg.control.Borg;
@@ -172,6 +174,8 @@ public class MultiView extends View implements Navigator {
 
     private JTabbedPane getTabs() {
 	if (tabs_ == null) {
+		
+		
 	    tabs_ = new JTabbedPane();
 
 	    calPanel = new CalendarPanel(this, cal_.get(Calendar.MONTH), cal_
@@ -180,11 +184,16 @@ public class MultiView extends View implements Navigator {
 		    .get(Calendar.YEAR), cal_.get(Calendar.DATE));
 	    wkPanel = new WeekPanel(cal_.get(Calendar.MONTH), cal_
 		    .get(Calendar.YEAR), cal_.get(Calendar.DATE));
-	    memoPanel = new MemoPanel();
+	    
+	    if( MemoModel.getReference().hasMemos())
+	    	memoPanel = new MemoPanel();
+	    
+	    
 	    taskPanel = new TaskListPanel();
-	    projPanel = new ProjectPanel();
-	    // dayPanel.setBackground(Color.WHITE);
-	    // dayPanel.setPreferredSize(new Dimension(800,600));
+	    
+	    if( TaskModel.getReference().hasSubTasks())
+	    	projPanel = new ProjectPanel();
+	    
 	    tabs_.addTab(Resource.getPlainResourceString("Month_View"), null,
 		    calPanel);
 	    tabs_.addTab(Resource.getPlainResourceString("Week_View"), null,
@@ -192,12 +201,32 @@ public class MultiView extends View implements Navigator {
 	    tabs_.addTab(Resource.getPlainResourceString("Day_View"), null,
 		    dayPanel);
 
-	    tabs_.addTab(Resource.getPlainResourceString("projects"), null,
-		    projPanel);
+	    if( !TaskModel.getReference().hasSubTasks())
+	    {
+	    	JTextArea ta = new JTextArea();
+	    	ta.setText(Resource.getPlainResourceString("ProjectsNotSupported"));
+	    	ta.setEditable(false);
+	    	tabs_.addTab(Resource.getPlainResourceString("projects"), null,
+	    			ta);
+	    }
+	    else
+	    	tabs_.addTab(Resource.getPlainResourceString("projects"), null,
+	    			projPanel);
+	    
 	    tabs_.addTab(Resource.getPlainResourceString("tasks"), null,
 		    taskPanel);
-	    tabs_.addTab(Resource.getPlainResourceString("Memos"), null,
-		    memoPanel);
+	    
+	    if( !MemoModel.getReference().hasMemos())
+	    {
+	    	JTextArea ta = new JTextArea();
+	    	ta.setText(Resource.getPlainResourceString("MemosNotSupported"));
+	    	ta.setEditable(false);
+	    	tabs_.addTab(Resource.getPlainResourceString("Memos"), null,
+	    			ta);
+	    }
+	    else
+	    	tabs_.addTab(Resource.getPlainResourceString("Memos"), null,
+	    			memoPanel);
 	    tabs_.addChangeListener(new ChangeListener() {
 		public void stateChanged(ChangeEvent e) {
 		    tabChanged();
@@ -218,9 +247,11 @@ public class MultiView extends View implements Navigator {
 	dayPanel.clearData();
 	dayPanel.repaint();
 	calPanel.refresh();
-	memoPanel.refresh();
+	if( memoPanel != null )
+		memoPanel.refresh();
 	taskPanel.refresh();
-	projPanel.refresh();
+	if( projPanel != null )
+		projPanel.refresh();
     }
 
     public void next() {

@@ -5,25 +5,54 @@ RELEASE NOTES for BORG 1.6
 The project home page is http://borg-calendar.sourceforge.net
 
 ***************************************************************
-*** MYSQL, HSQLDB Users - database changes are required - See below ***
+*** ALL Users - database changes are required - See below   ***
 *************************************************************** 
+
+DATABASE CHANGES
+----------------
+
+There are significant database changes in BORG 1.6. Scripts to upgrade from 1.5.2 are not
+available. Upgrade must be through Export/Import.
+
+Upgrade for MySQL and HSQLDB users
+----------------------------------
+
+1. Backup your database
+2. Export your database to XML files via the Import/Export menu option
+3. MySQL users - Create a new database using the borg_mysql.sql SQL and set BORG to use this
+   empty 1.6 database. Restart BORG.
+   HSQLDB users - change BORG to use a new folder for its database. Restart BORG to create a
+   new 1.6 database in this new folder.
+4. Import your database data from the XML files (borg.xml, mrdb.xml, addr.xml).
+
+Upgrade for Local Files Users
+-----------------------------
+It is recommended that all Local Files users switch to HSQLDB. The Local Files will still work in BORG
+1.6, but the new task tracker features (projects, subtasks) and the new memos features will not
+work with Local Files.
+
+1. Backup your database
+2. Export your database to XML files via the Import/Export menu option
+3. change BORG to use HSQLDB as its database and select a new folder for the database. 
+   Restart BORG to create a new 1.6 HSQLDB database in this new folder.
+4. Import your database data from the XML files (borg.xml, mrdb.xml, addr.xml).
+
 
 KNOWN ISSUES:
 -------------
 
-1. There WILL be new text strings that have not been translated. 
+1. There WILL be many new text strings that have not been translated. 
 Feel free to mail any translations to i_flem@users.sourceforge.net.
 There is nobody on the project actively updating the translations. Any
 received translations will be posted as patches.
 
-2. MySQL and HSQLDB users must migrate to a new database schema.
-
---- TBD --- add instructions here
+2. MySQL and HSQLDB users must migrate to a new database schema via Import/Export
 
 3. The new Subtask features of the task tracker are not available for users of the local db files.
 All users are encouraged to switch to MySQL or HSQLDB.
 
-
+4. The Task Priority field is an integer (1-5) in BORG 1.6. Values from an old database that are not
+   an integer between 1 and 5 will be converted to 3.
 
 RUNNING
 -------

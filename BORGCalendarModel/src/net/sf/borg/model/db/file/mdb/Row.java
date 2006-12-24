@@ -156,7 +156,19 @@ public class Row
             Object o = getField( field );
             if( o == null ) return( null );
             if( o.getClass() != java.lang.Integer.class )
-                throw new Exception( "Type Mismatch on Field " + field + ": " + o.getClass());
+            	try{
+            		int v = Integer.parseInt((String) o);
+            		return new Integer(v);
+            	}
+                catch( Exception e)
+                {
+                	// this horrible kludge in common code to support a transition in the Task table
+                	// is acceptable because all of this code is deprecated and to be deleted soon
+                	if( field.equals("PR"))
+                		return new Integer(3);
+                	throw new Exception( "Type Mismatch on Field " + field + ": " + o.getClass());
+                }
+                
             return( (Integer) o );
         }
         /** Gets object i from a Row. Can be used to iterate over the items
@@ -268,9 +280,9 @@ public class Row
             
             // verify that the object passed in matches the type identified in the schema
             // for this field
-            Class c2 = schema_.getClass(field);
-            if( !c2.isInstance(o) )
-                throw new Exception("Invalid Object passed to setField: " + field + "=" + c2 + " " + o.toString());
+            //Class c2 = schema_.getClass(field);
+           //if( !c2.isInstance(o) )
+                //throw new Exception("Invalid Object passed to setField: " + field + "=" + c2 + " " + o.toString());
             
             // for Strings, just cast the object, no conversion needed
             if( o instanceof java.lang.String) {

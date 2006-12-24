@@ -110,6 +110,7 @@
 	<field>
 		<type>Integer</type>
 		<longName>Project</longName>
+		<name>PROJ</name>
 		<desc>Parent Project ID</desc>
 	</field>
 </schema>

@@ -60,10 +60,16 @@ public class MemoModel extends Model {
 	}
 	db_ = null;
     }
-    
-    public MemoDB getDB()
-    {
+
+    public MemoDB getDB() {
 	return db_;
+    }
+    
+    public boolean hasMemos()
+    {
+	if( db_ != null )
+	    return true;
+	return false;
     }
 
     public Collection getMemos() throws DBException, Exception {
@@ -76,9 +82,9 @@ public class MemoModel extends Model {
 	}
 	return memos;
     }
-    
+
     public Collection getNames() throws DBException, Exception {
-	
+
 	return db_.getNames();
     }
 
@@ -102,16 +108,17 @@ public class MemoModel extends Model {
 	url = tmp.toString();
 	// let the factory tweak dbdir
 
-	db_ = factory.createMemoDB( url, username);
-	if( db_ == null )
-	    throw new Warning(Resource.getPlainResourceString("MemosNotSupported"));
+	db_ = factory.createMemoDB(url, username);
+	if (db_ == null)
+	    throw new Warning(Resource
+		    .getPlainResourceString("MemosNotSupported"));
     }
 
     public void delete(String name, boolean refresh) throws Exception {
 
 	try {
 	    Memo m = db_.readMemo(name);
-	    if( m == null )
+	    if (m == null)
 		return;
 	    String sync = Prefs.getPref(PrefName.PALM_SYNC);
 	    if (sync.equals("true")) {
@@ -139,8 +146,6 @@ public class MemoModel extends Model {
 
 	refresh();
     }
-    
-    
 
     public void saveMemo(Memo memo) throws Exception {
 	saveMemo(memo, false);
@@ -179,9 +184,9 @@ public class MemoModel extends Model {
 
     public Memo getMemo(String name) throws DBException, Exception {
 	Memo m = db_.readMemo(name);
-	if( m == null )
+	if (m == null)
 	    return null;
-	if( m.getDeleted() == true)
+	if (m.getDeleted() == true)
 	    return null;
 	return m;
     }
@@ -242,9 +247,8 @@ public class MemoModel extends Model {
     public void close_db() throws Exception {
 	db_.close();
     }
-    
-    public Memo getMemoByPalmId(int id) throws Exception
-    {
+
+    public Memo getMemoByPalmId(int id) throws Exception {
 	return db_.getMemoByPalmId(id);
     }
 }
