@@ -62,16 +62,6 @@ import com.toedter.calendar.JDateChooser;
 
 public class AppointmentListView extends View implements ListSelectionListener {
 
-	private int key_;
-
-	private List alist_ = null;
-
-	private AppointmentPanel apanel_ = null;
-
-	private GregorianCalendar cal_ = null;
-	
-	private TableCellRenderer defrend = null;
-
 	private class TimeRenderer extends JLabel implements TableCellRenderer {
 
 		public TimeRenderer() {
@@ -101,6 +91,123 @@ public class AppointmentListView extends View implements ListSelectionListener {
 			return this;
 		}
 	}
+
+	static void changeDate(Appointment appt, Calendar cal) {
+		// The appointment needs a new key - delete the old ToDo
+		// and save a new one with an updated key.
+		AppointmentModel model = AppointmentModel.getReference();
+		model.delAppt(appt);
+		int newkey = AppointmentModel.dkey(cal);
+		appt.setDate(cal.getTime());
+		appt.setKey(newkey);
+		model.saveAppt(appt, true);
+		// save it
+	}
+
+	static void onChangeDate(Frame parent, List appts) {
+		// Move all selected ToDos to following day
+		if (appts.size() == 0)
+			return;
+
+		AppointmentModel model = AppointmentModel.getReference();
+		DateDialog dlg = new DateDialog(parent);
+		Calendar cal = new GregorianCalendar();
+		cal.setTime(((Appointment) appts.get(0)).getDate());
+		dlg.setCalendar(cal);
+		dlg.setVisible(true);
+		Calendar dlgcal = dlg.getCalendar();
+		if (dlgcal == null)
+			return;
+
+		cal.set(dlgcal.get(Calendar.YEAR), dlgcal.get(Calendar.MONTH), dlgcal
+				.get(Calendar.DAY_OF_MONTH));
+
+		for (int i = 0; i < appts.size(); ++i) {
+			try {
+				Appointment appt = (Appointment) appts.get(i);
+				changeDate(appt, cal);
+			} catch (Exception e) {
+				Errmsg.errmsg(e);
+			}
+		}
+
+		model.refresh();
+	}
+
+	// package //
+	// Static helper methods for moving appointments - used by both
+	// TodoView and AppointmentListView
+	static void onMoveToFollowingDay(Frame parent, List appts) {
+		// Move all selected ToDos to following day
+		if (appts.size() == 0)
+			return;
+
+		AppointmentModel model = AppointmentModel.getReference();
+		for (int i = 0; i < appts.size(); ++i) {
+			try {
+				Appointment appt = (Appointment) appts.get(i);
+
+				// Increment the day
+				GregorianCalendar gcal = new GregorianCalendar();
+				gcal.setTime(appt.getDate());
+				gcal.add(Calendar.DAY_OF_YEAR, 1);
+				changeDate(appt, gcal);
+
+			} catch (Exception e) {
+				Errmsg.errmsg(e);
+			}
+		}
+
+		model.refresh();
+	}
+	
+	// Variables declaration - do not modify//GEN-BEGIN:variables
+	private javax.swing.JButton add;
+
+	private List alist_ = null;
+
+	private AppointmentPanel apanel_ = null;
+
+	private StripedTable apptTable;
+
+	private GregorianCalendar cal_ = null;
+
+	/**
+	 * This method initializes jPanel4
+	 * 
+	 * @return javax.swing.JPanel
+	 */
+	private JDateChooser cb_ = null;
+
+	private TableCellRenderer defrend = null;
+
+	private javax.swing.JButton del;
+
+	private javax.swing.JButton delone;
+
+	private javax.swing.JButton dismiss;
+
+	private javax.swing.JMenuItem exitMenuItem;
+
+	private javax.swing.JMenu fileMenu;
+
+	private JPanel jPanel = null;
+
+	private javax.swing.JPanel jPanel1;
+
+	private javax.swing.JPanel jPanel2;
+
+	private javax.swing.JPanel jPanel3;
+
+	private javax.swing.JScrollPane jScrollPane1;
+
+	private int key_;
+
+	private javax.swing.JMenuBar menuBar;
+
+	private JButton mtgMailButton = null;
+
+	private JButton reminderButton = null; // @jve:decl-index=0:visual-constraint="702,73"
 
 	/** Creates new form btgui */
 	public AppointmentListView(int year, int month, int day) {
@@ -157,20 +264,51 @@ public class AppointmentListView extends View implements ListSelectionListener {
 		manageMySize(PrefName.APPTLISTVIEWSIZE);
 	}
 
-	private void showDate(int year, int month, int day) {
-		cal_ = new GregorianCalendar(year, month, day);
-		getDateCB().setCalendar(cal_);
-		key_ = AppointmentModel.dkey(year, month, day);
-		Date d = cal_.getTime();
-		setTitle(Resource.getResourceString("Appointment_Editor_for_")
-				+ DateFormat.getDateInstance(DateFormat.SHORT).format(d));
+	public void destroy() {
+		this.dispose();
+	}
 
-		// clear all rows
+	// refresh is called to update the table of shown tasks due to model changes
+	// or if the user
+	// changes the filtering criteria
+	public void refresh() {
+
+		// clear all table rows
 		deleteAll();
-		apanel_.setDate(year, month, day);
-		apanel_.showapp(-1);
 
-		refresh();
+		try {
+
+			alist_ = AppointmentModel.getReference().getAppts(key_);
+			if (alist_ != null) {
+				Iterator it = alist_.iterator();
+				while (it.hasNext()) {
+					Integer key = (Integer) it.next();
+					Appointment ap = AppointmentModel.getReference().getAppt(
+							key.intValue());
+
+					Object[] ro = new Object[2];
+					ro[0] = ap.getText();
+
+					// just get time
+					Date d = ap.getDate();
+					GregorianCalendar cal = new GregorianCalendar();
+					cal.setTime(d);
+					cal.set(2000, 1, 1);
+					ro[1] = cal.getTime();
+
+					addRow(ro);
+				}
+			}
+
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
+		}
+
+		// resize the table based on new row count
+		resize();
+
+		// apply default sort to the table
+		defsort();
 	}
 
 	public void showApp(int key) {
@@ -188,90 +326,37 @@ public class AppointmentListView extends View implements ListSelectionListener {
 		apanel_.showapp(key);
 	}
 
-	public void destroy() {
-		this.dispose();
-	}
-
-	// package //
-	// Static helper methods for moving appointments - used by both
-	// TodoView and AppointmentListView
-	static void onMoveToFollowingDay(Frame parent, List appts) {
-		// Move all selected ToDos to following day
-		if (appts.size() == 0)
+	public void valueChanged(ListSelectionEvent e) {
+		// Ignore extra messages.
+		if (e.getValueIsAdjusting())
 			return;
 
-		AppointmentModel model = AppointmentModel.getReference();
-		for (int i = 0; i < appts.size(); ++i) {
-			try {
-				Appointment appt = (Appointment) appts.get(i);
-
-				// Increment the day
-				GregorianCalendar gcal = new GregorianCalendar();
-				gcal.setTime(appt.getDate());
-				gcal.add(Calendar.DAY_OF_YEAR, 1);
-				changeDate(appt, gcal);
-
-			} catch (Exception e) {
-				Errmsg.errmsg(e);
-			}
+		ListSelectionModel lsm = (ListSelectionModel) e.getSource();
+		if (lsm.isSelectionEmpty()) {
+			apanel_.showapp(-1);
+			return;
 		}
-
-		model.refresh();
-	}
-
-	static void changeDate(Appointment appt, Calendar cal) {
-		// The appointment needs a new key - delete the old ToDo
-		// and save a new one with an updated key.
-		AppointmentModel model = AppointmentModel.getReference();
-		model.delAppt(appt);
-		int newkey = AppointmentModel.dkey(cal);
-		appt.setDate(cal.getTime());
-		appt.setKey(newkey);
-		model.saveAppt(appt, true);
-		// save it
-	}
-
-	static void onChangeDate(Frame parent, List appts) {
-		// Move all selected ToDos to following day
-		if (appts.size() == 0)
+		int row = lsm.getMinSelectionIndex();
+		// int row = jTable1.getSelectedRow();
+		if (row == -1)
 			return;
+		TableSorter tm = (TableSorter) apptTable.getModel();
+		int i = tm.getMappedIndex(row);
 
-		AppointmentModel model = AppointmentModel.getReference();
-		DateDialog dlg = new DateDialog(parent);
-		Calendar cal = new GregorianCalendar();
-		cal.setTime(((Appointment) appts.get(0)).getDate());
-		dlg.setCalendar(cal);
-		dlg.setVisible(true);
-		Calendar dlgcal = dlg.getCalendar();
-		if (dlgcal == null)
-			return;
+		Integer apptkey = (Integer) alist_.get(i);
+		apanel_.showapp(apptkey.intValue());
 
-		cal.set(dlgcal.get(Calendar.YEAR), dlgcal.get(Calendar.MONTH), dlgcal
-				.get(Calendar.DAY_OF_MONTH));
-
-		for (int i = 0; i < appts.size(); ++i) {
-			try {
-				Appointment appt = (Appointment) appts.get(i);
-				changeDate(appt, cal);
-			} catch (Exception e) {
-				Errmsg.errmsg(e);
-			}
-		}
-
-		model.refresh();
 	}
+
+	private void addActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_addActionPerformed
+		apptTable.clearSelection();
+		apanel_.showapp(-1);
+	}// GEN-LAST:event_addActionPerformed
 
 	// add a row to the sorted table
 	private void addRow(Object[] ro) {
 		TableSorter tm = (TableSorter) apptTable.getModel();
 		tm.addRow(ro);
-		tm.tableChanged(new TableModelEvent(tm));
-	}
-
-	// delete all rows from the sorted table
-	private void deleteAll() {
-		TableSorter tm = (TableSorter) apptTable.getModel();
-		tm.setRowCount(0);
 		tm.tableChanged(new TableModelEvent(tm));
 	}
 
@@ -284,11 +369,187 @@ public class AppointmentListView extends View implements ListSelectionListener {
 			tm.sort();
 	}
 
-	// resize table based on row count
-	private void resize() {
-		int row = apptTable.getRowCount();
-		apptTable.setPreferredSize(new Dimension(150, row * 16));
+	private void delActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_delActionPerformed
+		int[] keys = getSelectedKeys();
+		AppointmentModel model = AppointmentModel.getReference();
+		for (int i = 0; i < keys.length; ++i)
+			model.delAppt(keys[i]);
+		apptTable.clearSelection();
+	}// GEN-LAST:event_delActionPerformed
 
+	// delete all rows from the sorted table
+	private void deleteAll() {
+		TableSorter tm = (TableSorter) apptTable.getModel();
+		tm.setRowCount(0);
+		tm.tableChanged(new TableModelEvent(tm));
+	}
+
+	private void deloneActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_deloneActionPerformed
+		int[] keys = getSelectedKeys();
+		AppointmentModel model = AppointmentModel.getReference();
+		for (int i = 0; i < keys.length; ++i)
+			model.delOneOnly(keys[i], key_);
+		apptTable.clearSelection();
+	}// GEN-LAST:event_deloneActionPerformed
+
+	private void dismissActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_dismissActionPerformed
+		this.dispose();
+	}// GEN-LAST:event_dismissActionPerformed
+
+	/** Exit the Application */
+	private void exitForm(java.awt.event.WindowEvent evt) {// GEN-FIRST:event_exitForm
+		this.dispose(); 
+	}// GEN-LAST:event_exitForm
+
+	private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_exitMenuItemActionPerformed
+		this.dispose(); 
+	}// GEN-LAST:event_exitMenuItemActionPerformed
+
+	private JDateChooser getDateCB() {
+		if (cb_ == null) {
+			cb_ = new JDateChooser();
+			// cb.setCalendar(cal_);
+			cb_.addPropertyChangeListener("date", new PropertyChangeListener(){
+
+			    public void propertyChange(PropertyChangeEvent arg0) {
+				Calendar cal = cb_.getCalendar();
+				if( cal != null )
+				{
+				    showDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH),
+						cal.get(Calendar.DATE));
+				}
+				else
+				    cb_.setCalendar(cal_);
+				
+			    }
+			});
+			
+			/*
+			cb_.addChangeListener(new javax.swing.event.ChangeListener() {
+				public void stateChanged(javax.swing.event.ChangeEvent e) {
+					Calendar cal = cb_.getCalendar();
+					showDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH),
+							cal.get(Calendar.DATE));
+				}
+			});*/
+		}
+
+		return (cb_);
+	}
+
+	// End of variables declaration//GEN-END:variables
+
+	/**
+	 * This method initializes jPanel
+	 * 
+	 * @return javax.swing.JPanel
+	 */
+	private JPanel getJPanel() {
+		if (jPanel == null) {
+			GridBagConstraints gridBagConstraints21 = new GridBagConstraints();
+			GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
+			jPanel = new JPanel();
+			jPanel.setLayout(new GridBagLayout());
+			gridBagConstraints11.gridx = 0;
+			gridBagConstraints11.gridy = 0;
+			gridBagConstraints11.gridwidth = 1;
+			gridBagConstraints11.gridheight = 1;
+			gridBagConstraints11.weighty = 1.0D;
+			gridBagConstraints11.weightx = 1.0D;
+			gridBagConstraints11.fill = java.awt.GridBagConstraints.BOTH;
+			gridBagConstraints21.gridx = 1;
+			gridBagConstraints21.gridy = 0;
+			gridBagConstraints21.gridheight = 1;
+			gridBagConstraints21.insets = new java.awt.Insets(0, 0, 0, 0);
+			gridBagConstraints21.fill = java.awt.GridBagConstraints.BOTH;
+			jPanel.add(jPanel2, gridBagConstraints11);
+			jPanel.add(jPanel3, gridBagConstraints21);
+		}
+		return jPanel;
+	}
+
+
+	/**
+	 * This method initializes mtgMailButton	
+	 * 	
+	 * @return javax.swing.JButton	
+	 */
+	private JButton getMtgMailButton() {
+		if (mtgMailButton == null) {
+			mtgMailButton = new JButton();
+			ResourceHelper.setText(mtgMailButton, "send_meeting");
+			mtgMailButton.setIcon(new ImageIcon(getClass().getResource("/resource/ComposeMail16.gif")));  // Generated
+			mtgMailButton.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					sendMtgMail();
+				}
+			});
+		}
+		return mtgMailButton;
+	}
+
+	/**
+	 * This method initializes reminderButton
+	 * 
+	 * @return javax.swing.JButton
+	 */
+	private JButton getReminderButton() {
+		if (reminderButton == null) {
+			reminderButton = new JButton();
+			ResourceHelper.setText(reminderButton, "send_reminder");
+			reminderButton.setIcon(new ImageIcon(getClass().getResource(
+					"/resource/ComposeMail16.gif")));
+			reminderButton
+					.addActionListener(new java.awt.event.ActionListener() {
+						public void actionPerformed(java.awt.event.ActionEvent e) {
+							 class MailThread extends Thread {
+							    private Calendar cal;
+								public MailThread(Calendar c) {
+							        cal = c;
+							    }
+							    public void run() {
+							    	EmailReminder.sendDailyEmailReminder(cal);
+							    }
+							}
+						    
+							 new MailThread(cal_).start();
+							
+						}
+					});
+		}
+		return reminderButton;
+	}
+
+	private List getSelectedAppointments() {
+		int[] keys = getSelectedKeys();
+		List appts = new ArrayList(keys.length);
+		AppointmentModel model = AppointmentModel.getReference();
+		for (int i = 0; i < keys.length; ++i) {
+			try {
+				appts.add(model.getAppt(keys[i]));
+			} catch (Exception e) {
+				Errmsg.errmsg(e);
+			}
+		}
+		return appts;
+	}
+
+	private int[] getSelectedKeys() {
+		int[] rows = apptTable.getSelectedRows();
+		List keyList = new ArrayList();
+		for (int i = 0; i < rows.length; ++i) {
+			int row = rows[i];
+			TableSorter tm = (TableSorter) apptTable.getModel();
+			int j = tm.getMappedIndex(row);
+
+			keyList.add(alist_.get(j));
+		}
+
+		int[] keys = new int[keyList.size()];
+		for (int i = 0; i < keyList.size(); ++i)
+			keys[i] = ((Integer) keyList.get(i)).intValue();
+
+		return keys;
 	}
 
 	/**
@@ -451,291 +712,14 @@ public class AppointmentListView extends View implements ListSelectionListener {
 		jPanel1.add(dismiss, dismiss.getName());
 	}// GEN-END:initComponents
 
-	private int[] getSelectedKeys() {
-		int[] rows = apptTable.getSelectedRows();
-		List keyList = new ArrayList();
-		for (int i = 0; i < rows.length; ++i) {
-			int row = rows[i];
-			TableSorter tm = (TableSorter) apptTable.getModel();
-			int j = tm.getMappedIndex(row);
 
-			keyList.add(alist_.get(j));
-		}
-
-		int[] keys = new int[keyList.size()];
-		for (int i = 0; i < keyList.size(); ++i)
-			keys[i] = ((Integer) keyList.get(i)).intValue();
-
-		return keys;
-	}
-
-	private List getSelectedAppointments() {
-		int[] keys = getSelectedKeys();
-		List appts = new ArrayList(keys.length);
-		AppointmentModel model = AppointmentModel.getReference();
-		for (int i = 0; i < keys.length; ++i) {
-			try {
-				appts.add(model.getAppt(keys[i]));
-			} catch (Exception e) {
-				Errmsg.errmsg(e);
-			}
-		}
-		return appts;
-	}
-
-	private void deloneActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_deloneActionPerformed
-		int[] keys = getSelectedKeys();
-		AppointmentModel model = AppointmentModel.getReference();
-		for (int i = 0; i < keys.length; ++i)
-			model.delOneOnly(keys[i], key_);
-		apptTable.clearSelection();
-	}// GEN-LAST:event_deloneActionPerformed
-
-	private void delActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_delActionPerformed
-		int[] keys = getSelectedKeys();
-		AppointmentModel model = AppointmentModel.getReference();
-		for (int i = 0; i < keys.length; ++i)
-			model.delAppt(keys[i]);
-		apptTable.clearSelection();
-	}// GEN-LAST:event_delActionPerformed
-
-	private void addActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_addActionPerformed
-		apptTable.clearSelection();
-		apanel_.showapp(-1);
-	}// GEN-LAST:event_addActionPerformed
-
-	private void dismissActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_dismissActionPerformed
-		this.dispose();
-	}// GEN-LAST:event_dismissActionPerformed
-
-	private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_exitMenuItemActionPerformed
-		this.dispose(); 
-	}// GEN-LAST:event_exitMenuItemActionPerformed
-
-	/** Exit the Application */
-	private void exitForm(java.awt.event.WindowEvent evt) {// GEN-FIRST:event_exitForm
-		this.dispose(); 
-	}// GEN-LAST:event_exitForm
-
-	public void valueChanged(ListSelectionEvent e) {
-		// Ignore extra messages.
-		if (e.getValueIsAdjusting())
-			return;
-
-		ListSelectionModel lsm = (ListSelectionModel) e.getSource();
-		if (lsm.isSelectionEmpty()) {
-			apanel_.showapp(-1);
-			return;
-		}
-		int row = lsm.getMinSelectionIndex();
-		// int row = jTable1.getSelectedRow();
-		if (row == -1)
-			return;
-		TableSorter tm = (TableSorter) apptTable.getModel();
-		int i = tm.getMappedIndex(row);
-
-		Integer apptkey = (Integer) alist_.get(i);
-		apanel_.showapp(apptkey.intValue());
+	// resize table based on row count
+	private void resize() {
+		int row = apptTable.getRowCount();
+		apptTable.setPreferredSize(new Dimension(150, row * 16));
 
 	}
 
-	// refresh is called to update the table of shown tasks due to model changes
-	// or if the user
-	// changes the filtering criteria
-	public void refresh() {
-
-		// clear all table rows
-		deleteAll();
-
-		try {
-
-			alist_ = AppointmentModel.getReference().getAppts(key_);
-			if (alist_ != null) {
-				Iterator it = alist_.iterator();
-				while (it.hasNext()) {
-					Integer key = (Integer) it.next();
-					Appointment ap = AppointmentModel.getReference().getAppt(
-							key.intValue());
-
-					Object[] ro = new Object[2];
-					ro[0] = ap.getText();
-
-					// just get time
-					Date d = ap.getDate();
-					GregorianCalendar cal = new GregorianCalendar();
-					cal.setTime(d);
-					cal.set(2000, 1, 1);
-					ro[1] = cal.getTime();
-
-					addRow(ro);
-				}
-			}
-
-		} catch (Exception e) {
-			Errmsg.errmsg(e);
-		}
-
-		// resize the table based on new row count
-		resize();
-
-		// apply default sort to the table
-		defsort();
-	}
-
-	// Variables declaration - do not modify//GEN-BEGIN:variables
-	private javax.swing.JButton add;
-
-	private javax.swing.JButton del;
-
-	private javax.swing.JButton delone;
-
-	private javax.swing.JButton dismiss;
-
-	private javax.swing.JMenuItem exitMenuItem;
-
-	private javax.swing.JMenu fileMenu;
-
-	private javax.swing.JPanel jPanel1;
-
-	private javax.swing.JPanel jPanel2;
-
-	private javax.swing.JPanel jPanel3;
-
-	private javax.swing.JScrollPane jScrollPane1;
-
-	private StripedTable apptTable;
-
-	private javax.swing.JMenuBar menuBar;
-
-	// End of variables declaration//GEN-END:variables
-
-	private JPanel jPanel = null;
-
-
-	/**
-	 * This method initializes jPanel
-	 * 
-	 * @return javax.swing.JPanel
-	 */
-	private JPanel getJPanel() {
-		if (jPanel == null) {
-			GridBagConstraints gridBagConstraints21 = new GridBagConstraints();
-			GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
-			jPanel = new JPanel();
-			jPanel.setLayout(new GridBagLayout());
-			gridBagConstraints11.gridx = 0;
-			gridBagConstraints11.gridy = 0;
-			gridBagConstraints11.gridwidth = 1;
-			gridBagConstraints11.gridheight = 1;
-			gridBagConstraints11.weighty = 1.0D;
-			gridBagConstraints11.weightx = 1.0D;
-			gridBagConstraints11.fill = java.awt.GridBagConstraints.BOTH;
-			gridBagConstraints21.gridx = 1;
-			gridBagConstraints21.gridy = 0;
-			gridBagConstraints21.gridheight = 1;
-			gridBagConstraints21.insets = new java.awt.Insets(0, 0, 0, 0);
-			gridBagConstraints21.fill = java.awt.GridBagConstraints.BOTH;
-			jPanel.add(jPanel2, gridBagConstraints11);
-			jPanel.add(jPanel3, gridBagConstraints21);
-		}
-		return jPanel;
-	}
-
-	/**
-	 * This method initializes jPanel4
-	 * 
-	 * @return javax.swing.JPanel
-	 */
-	private JDateChooser cb_ = null;
-
-	private JButton reminderButton = null; // @jve:decl-index=0:visual-constraint="702,73"
-
-	private JButton mtgMailButton = null;
-
-	private JDateChooser getDateCB() {
-		if (cb_ == null) {
-			cb_ = new JDateChooser();
-			// cb.setCalendar(cal_);
-			cb_.addPropertyChangeListener("date", new PropertyChangeListener(){
-
-			    public void propertyChange(PropertyChangeEvent arg0) {
-				Calendar cal = cb_.getCalendar();
-				if( cal != null )
-				{
-				    showDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH),
-						cal.get(Calendar.DATE));
-				}
-				else
-				    cb_.setCalendar(cal_);
-				
-			    }
-			});
-			
-			/*
-			cb_.addChangeListener(new javax.swing.event.ChangeListener() {
-				public void stateChanged(javax.swing.event.ChangeEvent e) {
-					Calendar cal = cb_.getCalendar();
-					showDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH),
-							cal.get(Calendar.DATE));
-				}
-			});*/
-		}
-
-		return (cb_);
-	}
-
-
-	/**
-	 * This method initializes reminderButton
-	 * 
-	 * @return javax.swing.JButton
-	 */
-	private JButton getReminderButton() {
-		if (reminderButton == null) {
-			reminderButton = new JButton();
-			ResourceHelper.setText(reminderButton, "send_reminder");
-			reminderButton.setIcon(new ImageIcon(getClass().getResource(
-					"/resource/ComposeMail16.gif")));
-			reminderButton
-					.addActionListener(new java.awt.event.ActionListener() {
-						public void actionPerformed(java.awt.event.ActionEvent e) {
-							 class MailThread extends Thread {
-							    private Calendar cal;
-								public MailThread(Calendar c) {
-							        cal = c;
-							    }
-							    public void run() {
-							    	EmailReminder.sendDailyEmailReminder(cal);
-							    }
-							}
-						    
-							 new MailThread(cal_).start();
-							
-						}
-					});
-		}
-		return reminderButton;
-	}
-
-	/**
-	 * This method initializes mtgMailButton	
-	 * 	
-	 * @return javax.swing.JButton	
-	 */
-	private JButton getMtgMailButton() {
-		if (mtgMailButton == null) {
-			mtgMailButton = new JButton();
-			ResourceHelper.setText(mtgMailButton, "send_meeting");
-			mtgMailButton.setIcon(new ImageIcon(getClass().getResource("/resource/ComposeMail16.gif")));  // Generated
-			mtgMailButton.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent e) {
-					sendMtgMail();
-				}
-			});
-		}
-		return mtgMailButton;
-	}
-	
 	private void sendMtgMail()
 	{
 		int[] rows = apptTable.getSelectedRows();
@@ -753,5 +737,21 @@ public class AppointmentListView extends View implements ListSelectionListener {
 			Errmsg.errmsg(e);
 		}
 		
+	}
+	
+	private void showDate(int year, int month, int day) {
+		cal_ = new GregorianCalendar(year, month, day);
+		getDateCB().setCalendar(cal_);
+		key_ = AppointmentModel.dkey(year, month, day);
+		Date d = cal_.getTime();
+		setTitle(Resource.getResourceString("Appointment_Editor_for_")
+				+ DateFormat.getDateInstance(DateFormat.SHORT).format(d));
+
+		// clear all rows
+		deleteAll();
+		apanel_.setDate(year, month, day);
+		apanel_.showapp(-1);
+
+		refresh();
 	}
 }

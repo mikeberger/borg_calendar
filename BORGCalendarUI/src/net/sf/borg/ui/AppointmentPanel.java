@@ -59,51 +59,6 @@ import com.toedter.calendar.JDateChooser;
 
 class AppointmentPanel extends JPanel {
 
-    private int key_;
-
-    private int year_;
-
-    private int month_;
-
-    private int day_;
-
-    static private DefaultComboBoxModel normHourModel = new DefaultComboBoxModel(
-	    new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
-		    "11", "12" });
-
-    static private DefaultComboBoxModel milHourModel = new DefaultComboBoxModel(
-	    new String[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
-		    "10", "11", "12", "13", "14", "15", "16", "17", "18", "19",
-		    "20", "21", "22", "23" });
-
-    static private class SolidComboBoxIcon implements Icon {
-	private Color color = Color.BLACK;
-
-	private final int h = 10;
-
-	private final int w = 60;
-
-	public SolidComboBoxIcon(Color col) {
-	    color = col;
-	}
-
-	public int getIconHeight() {
-	    return h;
-	}
-
-	public int getIconWidth() {
-	    return w;
-	}
-
-	public void paintIcon(Component c, Graphics g, int x, int y) {
-	    Graphics2D g2 = (Graphics2D) g;
-	    g2.setColor(Color.BLACK);
-	    g2.drawRect(x, y, w, h);
-	    g2.setColor(color);
-	    g2.fillRect(x, y, w, h);
-	}
-    }
-
     static private class ColorBoxRenderer extends JLabel implements
 	    ListCellRenderer {
 
@@ -149,6 +104,164 @@ class AppointmentPanel extends JPanel {
 	}
 
     }
+
+    static private class SolidComboBoxIcon implements Icon {
+	private Color color = Color.BLACK;
+
+	private final int h = 10;
+
+	private final int w = 60;
+
+	public SolidComboBoxIcon(Color col) {
+	    color = col;
+	}
+
+	public int getIconHeight() {
+	    return h;
+	}
+
+	public int getIconWidth() {
+	    return w;
+	}
+
+	public void paintIcon(Component c, Graphics g, int x, int y) {
+	    Graphics2D g2 = (Graphics2D) g;
+	    g2.setColor(Color.BLACK);
+	    g2.drawRect(x, y, w, h);
+	    g2.setColor(color);
+	    g2.fillRect(x, y, w, h);
+	}
+    }
+
+    static private DefaultComboBoxModel milHourModel = new DefaultComboBoxModel(
+	    new String[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
+		    "10", "11", "12", "13", "14", "15", "16", "17", "18", "19",
+		    "20", "21", "22", "23" });
+
+    static private DefaultComboBoxModel normHourModel = new DefaultComboBoxModel(
+	    new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
+		    "11", "12" });
+
+    static private SimpleDateFormat shortDayFmt = new SimpleDateFormat("EEE");
+
+    // for setting labels
+    static private GregorianCalendar tmpcal = new GregorianCalendar();
+
+    private JCheckBox alarmcb = null;
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextArea appttextarea;
+
+    private JTextField apptTitleField = null;
+
+    private javax.swing.JComboBox catbox;
+
+    private javax.swing.JCheckBox chgdate;
+
+    private javax.swing.JComboBox colorbox;
+
+    private String colors[] = { "red", "blue", "green", "black", "white",
+	    "strike" };
+
+    private char[] custRemTimes;
+
+    private int day_;
+
+    private JToggleButton dl1 = null;
+
+    private JToggleButton dl2 = null;
+
+    private JToggleButton dl3 = null;
+
+    private JToggleButton dl4 = null;
+
+    private JToggleButton dl5 = null;
+
+    private JToggleButton dl6 = null;
+
+    private JToggleButton dl7 = null;
+
+    private JPanel dlistbuttonpanel = null;
+
+    private javax.swing.JComboBox durhour;
+
+    private javax.swing.JComboBox durmin;
+
+    private javax.swing.JCheckBox foreverbox;
+
+    private javax.swing.JComboBox freq;
+
+    private javax.swing.JCheckBox halfdaycb;
+
+    private javax.swing.JCheckBox holidaycb;
+
+    private JLabel jLabel = null;
+
+    private javax.swing.JLabel jLabel2;
+
+    private JPanel jPanel = null;
+
+    private javax.swing.JPanel jPanel1;
+
+    private javax.swing.JPanel jPanel2;
+
+    private javax.swing.JPanel jPanel3;
+
+    private javax.swing.JPanel jPanel4;
+
+    private JPanel jPanel5;
+
+    private javax.swing.JScrollPane jScrollPane1;
+
+    private int key_;
+
+    private javax.swing.JLabel lblCategory;
+
+    private javax.swing.JLabel lblColor;
+
+    private javax.swing.JLabel lblDuration;
+
+    private javax.swing.JLabel lblFrequency;
+
+    private javax.swing.JLabel lblNewDate;
+
+    private javax.swing.JLabel lblStartTime;
+
+    private javax.swing.JLabel lblTimes;
+
+    private int month_;
+
+    private JSpinner ndays = null;
+
+    private JDateChooser newdatefield;
+
+    private javax.swing.JCheckBox notecb;
+
+    private JButton popupTimesBtn;
+
+    private JLabel popupTimesLabel;
+
+    private javax.swing.JCheckBox privatecb;
+
+    private JCheckBox rptnumbox = null;
+
+    private javax.swing.JSpinner s_times;
+
+    private javax.swing.JButton savebutton;
+
+    private javax.swing.JButton savedefaultsbutton;
+
+    private javax.swing.JCheckBox startap;
+
+    private javax.swing.JComboBox starthour;
+
+    private javax.swing.JComboBox startmin;
+
+    private javax.swing.JCheckBox todocb;
+
+    private javax.swing.JCheckBox vacationcb;
+
+    private int year_;
 
     public AppointmentPanel(int year, int month, int day) {
 
@@ -204,11 +317,64 @@ class AppointmentPanel extends JPanel {
 	setCustRemTimes(null);
     }
 
+    public String getText() {
+	String labelstring = appttextarea.getText();
+	if (labelstring.equals("")) {
+	    return Resource.getResourceString("*****_NEW_APPT_*****");
+	}
+
+	return labelstring;
+
+    }
+
     public void setDate(int year, int month, int day) {
 	year_ = year;
 	month_ = month;
 	day_ = day;
 
+    }
+
+    // display a summary of the times selected for popup reminders
+    public void setPopupTimesString() {
+	StringBuffer time1 = new StringBuffer(ReminderTimes.getNum() * 5 + 15);
+	StringBuffer time2 = new StringBuffer(ReminderTimes.getNum() * 5 + 15);
+	if (custRemTimes != null) {
+	    int i = 0;
+	    while (ReminderTimes.getTimes(i) < 0 && i < ReminderTimes.getNum()) {
+		if (custRemTimes[i] == 'Y') {
+		    int abs = -ReminderTimes.getTimes(i);
+		    if (time1.length() > 0) {
+			time1 = time1.append(", ").append(abs);
+		    } else {
+			time1 = time1.append(abs);
+		    }
+		}
+		++i;
+	    }
+	    if (time1.length() > 0) {
+		time1 = time1.append("   ").append(
+			Resource.getResourceString("min_aft_app"));
+	    }
+
+	    while (i < ReminderTimes.getNum()) {
+		if (custRemTimes[i] == 'Y') {
+		    if (time2.length() > 0) {
+			time2 = time2.append(", ").append(
+				ReminderTimes.getTimes(i));
+		    } else {
+			time2 = time2.append(ReminderTimes.getTimes(i));
+		    }
+		}
+		++i;
+	    }
+	    if (time2.length() > 0) {
+		time2 = time2.append("   ").append(
+			Resource.getResourceString("min_bef_app"));
+	    }
+
+	}
+	popupTimesLabel.setText("<html><p align=RIGHT>" + time1.toString()
+		+ "<br>" + time2.toString());
     }
 
     // set the view to a single appt (or a new blank)
@@ -495,6 +661,332 @@ class AppointmentPanel extends JPanel {
 
 	timesEnable();
 
+    }
+
+    private void add_appt() {
+	// user has requested an add of a new appt
+
+	// get a new appt from the model and set it from the user data
+	AppointmentModel calmod_ = AppointmentModel.getReference();
+	Appointment r = calmod_.newAppt();
+	int ret = 0;
+	try {
+	    ret = setAppt(r, true);
+	} catch (Warning w) {
+	    Errmsg.notice(w.getMessage());
+	    return;
+	} catch (Exception e) {
+	    Errmsg.errmsg(e);
+	    return;
+	}
+
+	if (ret < 0)
+	    return;
+
+	calmod_.saveAppt(r, true);
+
+	showapp(-1);
+    }
+
+    private void chg_appt() {
+	// user had selected appt change
+
+	// get a new empty appt from the model and set it using the data the
+	// user has entered
+	AppointmentModel calmod_ = AppointmentModel.getReference();
+	Appointment r = calmod_.newAppt();
+	int newkey = 0;
+	try {
+	    newkey = setAppt(r, true);
+	} catch (Warning w) {
+	    Errmsg.notice(w.getMessage());
+	    return;
+	} catch (Exception e) {
+	    Errmsg.errmsg(e);
+	    return;
+	}
+
+	if (newkey < 0)
+	    return;
+
+	// call the model to change the appt
+	if (newkey == 0) {
+	    r.setKey(key_);
+	    // need to preserve data from original appt
+	    try {
+		Appointment ap = calmod_.getAppt(key_);
+		Calendar cal = new GregorianCalendar();
+		Calendar newCal = new GregorianCalendar();
+
+		cal.setTime(ap.getDate());
+		newCal.setTime(r.getDate());
+		newCal.set(Calendar.YEAR, cal.get(Calendar.YEAR));
+		newCal.set(Calendar.MONTH, cal.get(Calendar.MONTH));
+		newCal.set(Calendar.DATE, cal.get(Calendar.DATE));
+		r.setDate(newCal.getTime());
+
+		//AppointmentXMLAdapter aa = new AppointmentXMLAdapter();
+
+		//System.out.println(aa.toXml(r));
+		//System.out.println(aa.toXml(ap));
+		// determine if we can keep certain fields related to repeating
+                // and todos
+		if (r.getTimes().intValue() == ap.getTimes().intValue()
+			&& Repeat.getFreq(r.getFrequency()).equals(Repeat.getFreq(ap.getFrequency()))
+			&& r.getTodo() == ap.getTodo()
+			&& r.getRepeatFlag() == ap.getRepeatFlag()) {
+		    // we can keep skip list and next todo
+		    r.setSkipList(ap.getSkipList());
+		    r.setNextTodo(ap.getNextTodo());
+		}
+	    } catch (Exception e) {
+
+	    }
+	    calmod_.saveAppt(r, false);
+	} else {
+	    calmod_.delAppt(key_);
+	    calmod_.saveAppt(r, true);
+
+	}
+
+	showapp(-1);
+    }
+
+    private void chgdateActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_chgdateActionPerformed
+	newdatefield.setEnabled(chgdate.isSelected());
+	
+
+    }// GEN-LAST:event_chgdateActionPerformed
+
+    private void foreverboxActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_foreverboxActionPerformed
+    {// GEN-HEADEREND:event_foreverboxActionPerformed
+	if (foreverbox.isSelected()) {
+	    s_times.setValue(new Integer(0));
+	    s_times.setEnabled(false);
+
+	} else {
+	    s_times.setValue(new Integer(1));
+	    s_times.setEnabled(true);
+	}
+    }// GEN-LAST:event_foreverboxActionPerformed
+
+    /**
+     * This method initializes apptTitleField	
+     * 	
+     * @return javax.swing.JTextField	
+     */
+    private JTextField getApptTitleField() {
+        if (apptTitleField == null) {
+    	apptTitleField = new JTextField();
+        }
+        return apptTitleField;
+    }
+
+    /**
+         * This method initializes dl1
+         * 
+         * @return javax.swing.JToggleButton
+         */
+    private JToggleButton getDl1() {
+	if (dl1 == null) {
+	    dl1 = new JToggleButton();
+	    tmpcal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+	    dl1.setText(shortDayFmt.format(tmpcal.getTime()));
+	}
+	return dl1;
+    }
+
+    /**
+         * This method initializes dl2
+         * 
+         * @return javax.swing.JToggleButton
+         */
+    private JToggleButton getDl2() {
+	if (dl2 == null) {
+	    dl2 = new JToggleButton();
+	    tmpcal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+	    dl2.setText(shortDayFmt.format(tmpcal.getTime()));
+	}
+	return dl2;
+    }
+
+    /**
+         * This method initializes dl3
+         * 
+         * @return javax.swing.JToggleButton
+         */
+    private JToggleButton getDl3() {
+	if (dl3 == null) {
+	    dl3 = new JToggleButton();
+	    tmpcal.set(Calendar.DAY_OF_WEEK, Calendar.TUESDAY);
+	    dl3.setText(shortDayFmt.format(tmpcal.getTime()));
+	}
+	return dl3;
+    }
+
+    /**
+         * This method initializes dl4
+         * 
+         * @return javax.swing.JToggleButton
+         */
+    private JToggleButton getDl4() {
+	if (dl4 == null) {
+	    dl4 = new JToggleButton();
+	    tmpcal.set(Calendar.DAY_OF_WEEK, Calendar.WEDNESDAY);
+	    dl4.setText(shortDayFmt.format(tmpcal.getTime()));
+	}
+	return dl4;
+    }
+
+    /**
+         * This method initializes dl5
+         * 
+         * @return javax.swing.JToggleButton
+         */
+    private JToggleButton getDl5() {
+	if (dl5 == null) {
+	    dl5 = new JToggleButton();
+	    tmpcal.set(Calendar.DAY_OF_WEEK, Calendar.THURSDAY);
+	    dl5.setText(shortDayFmt.format(tmpcal.getTime()));
+	}
+	return dl5;
+    }
+
+    /**
+         * This method initializes dl6
+         * 
+         * @return javax.swing.JToggleButton
+         */
+    private JToggleButton getDl6() {
+	if (dl6 == null) {
+	    dl6 = new JToggleButton();
+	    tmpcal.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY);
+	    dl6.setText(shortDayFmt.format(tmpcal.getTime()));
+	}
+	return dl6;
+    }
+
+    /**
+         * This method initializes dl7
+         * 
+         * @return javax.swing.JToggleButton
+         */
+    private JToggleButton getDl7() {
+	if (dl7 == null) {
+	    dl7 = new JToggleButton();
+	    tmpcal.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
+	    dl7.setText(shortDayFmt.format(tmpcal.getTime()));
+	}
+	return dl7;
+    }
+
+    /**
+         * This method initializes dlistbuttonpanel
+         * 
+         * @return javax.swing.JPanel
+         */
+    private JPanel getDlistbuttonpanel() {
+	if (dlistbuttonpanel == null) {
+	    dlistbuttonpanel = new JPanel();
+	    dlistbuttonpanel.setLayout(new BoxLayout(getDlistbuttonpanel(),
+		    BoxLayout.X_AXIS)); // Generated
+	    dlistbuttonpanel.add(getDl1(), null); // Generated
+	    dlistbuttonpanel.add(getDl2(), null); // Generated
+	    dlistbuttonpanel.add(getDl3(), null); // Generated
+	    dlistbuttonpanel.add(getDl4(), null); // Generated
+	    dlistbuttonpanel.add(getDl5(), null); // Generated
+	    dlistbuttonpanel.add(getDl6(), null); // Generated
+	    dlistbuttonpanel.add(getDl7(), null); // Generated
+	}
+	return dlistbuttonpanel;
+    }
+
+    private JPanel getJPanel() {
+	if (jPanel == null) {
+	    GridBagConstraints gridBagConstraints19 = new GridBagConstraints();
+	    GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
+	    GridBagConstraints gridBagConstraints28 = new GridBagConstraints();
+	    GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
+	    GridBagConstraints gridBagConstraints71 = new GridBagConstraints();
+	    GridBagConstraints gridBagConstraints61 = new GridBagConstraints();
+	    GridBagConstraints gridBagConstraints51 = new GridBagConstraints();
+	    GridBagConstraints gridBagConstraints41 = new GridBagConstraints();
+	    GridBagConstraints gridBagConstraints31 = new GridBagConstraints();
+	    jPanel = new JPanel();
+	    jPanel.setLayout(new GridBagLayout());
+	    jPanel.setBorder(new javax.swing.border.TitledBorder(null, Resource
+		    .getResourceString("Recurrence"),
+		    javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
+		    javax.swing.border.TitledBorder.DEFAULT_POSITION, null,
+		    null));
+	    gridBagConstraints31.gridx = 0;
+	    gridBagConstraints31.gridy = 0;
+	    gridBagConstraints31.insets = new java.awt.Insets(0, 0, 0, 0);
+	    gridBagConstraints41.gridx = 1;
+	    gridBagConstraints41.gridy = 0;
+	    gridBagConstraints41.anchor = java.awt.GridBagConstraints.SOUTHEAST;
+	    gridBagConstraints41.fill = java.awt.GridBagConstraints.HORIZONTAL;
+	    gridBagConstraints41.insets = new java.awt.Insets(4, 4, 4, 4);
+	    gridBagConstraints41.weightx = 0.0D;
+	    gridBagConstraints51.gridx = 0;
+	    gridBagConstraints51.gridy = 1;
+	    gridBagConstraints51.anchor = java.awt.GridBagConstraints.WEST;
+	    gridBagConstraints51.fill = java.awt.GridBagConstraints.BOTH;
+	    gridBagConstraints51.insets = new java.awt.Insets(4, 4, 4, 4);
+	    gridBagConstraints61.gridx = 1;
+	    gridBagConstraints61.gridy = 1;
+	    gridBagConstraints61.fill = java.awt.GridBagConstraints.BOTH;
+	    gridBagConstraints61.insets = new java.awt.Insets(4, 4, 4, 4);
+	    gridBagConstraints61.weightx = 0.0D;
+	    gridBagConstraints71.gridx = 2;
+	    gridBagConstraints71.gridy = 1;
+	    gridBagConstraints13.gridx = 4;
+	    gridBagConstraints13.gridy = 0;
+	    gridBagConstraints28.gridx = 2;
+	    gridBagConstraints28.gridy = 0;
+	    gridBagConstraints28.insets = new java.awt.Insets(4, 4, 4, 4);
+	    gridBagConstraints28.fill = java.awt.GridBagConstraints.HORIZONTAL;
+	    gridBagConstraints19.gridx = 3;
+	    gridBagConstraints19.gridy = 1;
+	    gridBagConstraints19.insets = new java.awt.Insets(4, 4, 4, 4);
+	    gridBagConstraints19.fill = java.awt.GridBagConstraints.BOTH;
+	    jPanel.add(lblFrequency, gridBagConstraints31);
+	    jPanel.add(freq, gridBagConstraints41);
+	    jPanel.add(lblTimes, gridBagConstraints51);
+	    jPanel.add(s_times, gridBagConstraints61);
+	    jPanel.add(foreverbox, gridBagConstraints71);
+	    jPanel.add(ndays, gridBagConstraints28);
+
+	    jPanel.add(getRptnumbox(), gridBagConstraints19);
+
+	    gridBagConstraints1.fill = java.awt.GridBagConstraints.BOTH; // Generated
+	    gridBagConstraints1.gridy = 0; // Generated
+	    gridBagConstraints1.gridx = 2; // Generated
+	    gridBagConstraints1.gridwidth = 2;
+	    jPanel.add(getDlistbuttonpanel(), gridBagConstraints1); // Generated
+	}
+	return jPanel;
+    }
+
+    private JCheckBox getRemBox() {
+	if (alarmcb == null) {
+	    alarmcb = new JCheckBox();
+	    ResourceHelper.setText(alarmcb, "Alarm");
+	}
+	return alarmcb;
+    }
+
+    /**
+         * This method initializes rptnumbox
+         * 
+         * @return javax.swing.JCheckBox
+         */
+    private JCheckBox getRptnumbox() {
+	if (rptnumbox == null) {
+	    rptnumbox = new JCheckBox();
+	    ResourceHelper.setText(rptnumbox, "show_rpt_num");
+	}
+	return rptnumbox;
     }
 
     /**
@@ -916,51 +1408,6 @@ class AppointmentPanel extends JPanel {
 	this.add(jPanel5, gridBagConstraints87); // Generated
     }// GEN-END:initComponents
 
-    private void saveDefaults(java.awt.event.ActionEvent evt)// GEN-FIRST:event_saveDefaults
-    {// GEN-HEADEREND:event_saveDefaults
-
-	Appointment r = new Appointment();
-	try {
-	    setAppt(r, false);
-	} catch (Exception e) {
-	    Errmsg.errmsg(e);
-	    return;
-	}
-
-	AppointmentXMLAdapter axa = new AppointmentXMLAdapter();
-	XTree xt = axa.toXml(r);
-	String s = xt.toString();
-	Prefs.putPref(PrefName.DEFAULT_APPT, s);
-
-    }// GEN-LAST:event_saveDefaults
-
-    private void savebuttonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_savebuttonActionPerformed
-	if (key_ == -1) {
-	    add_appt();
-	} else {
-	    chg_appt();
-	}
-
-    }// GEN-LAST:event_savebuttonActionPerformed
-
-    private void foreverboxActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_foreverboxActionPerformed
-    {// GEN-HEADEREND:event_foreverboxActionPerformed
-	if (foreverbox.isSelected()) {
-	    s_times.setValue(new Integer(0));
-	    s_times.setEnabled(false);
-
-	} else {
-	    s_times.setValue(new Integer(1));
-	    s_times.setEnabled(true);
-	}
-    }// GEN-LAST:event_foreverboxActionPerformed
-
-    private void chgdateActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_chgdateActionPerformed
-	newdatefield.setEnabled(chgdate.isSelected());
-	
-
-    }// GEN-LAST:event_chgdateActionPerformed
-
     private void notecbActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_notecbActionPerformed
     {// GEN-HEADEREND:event_notecbActionPerformed
 	if (notecb.isSelected()) {
@@ -987,6 +1434,39 @@ class AppointmentPanel extends JPanel {
 	    startap.setEnabled(true);
 	}
     }// GEN-LAST:event_notecbActionPerformed
+
+    private void popupbuttonActionPerformed(java.awt.event.ActionEvent evt) {
+
+	PopupOptionsView pv = new PopupOptionsView(custRemTimes, this);
+	pv.setVisible(true);
+    }
+
+    private void savebuttonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_savebuttonActionPerformed
+	if (key_ == -1) {
+	    add_appt();
+	} else {
+	    chg_appt();
+	}
+
+    }// GEN-LAST:event_savebuttonActionPerformed
+
+    private void saveDefaults(java.awt.event.ActionEvent evt)// GEN-FIRST:event_saveDefaults
+    {// GEN-HEADEREND:event_saveDefaults
+
+	Appointment r = new Appointment();
+	try {
+	    setAppt(r, false);
+	} catch (Exception e) {
+	    Errmsg.errmsg(e);
+	    return;
+	}
+
+	AppointmentXMLAdapter axa = new AppointmentXMLAdapter();
+	XTree xt = axa.toXml(r);
+	String s = xt.toString();
+	Prefs.putPref(PrefName.DEFAULT_APPT, s);
+
+    }// GEN-LAST:event_saveDefaults
 
     // fill in an appt from the user data
     // returns changed key if any
@@ -1134,8 +1614,24 @@ class AppointmentPanel extends JPanel {
 	return (newkey);
     }
 
-    private String colors[] = { "red", "blue", "green", "black", "white",
-	    "strike" };
+    private void setCustRemTimes(Appointment r) {
+	if (r == null) {
+	    custRemTimes = new char[ReminderTimes.getNum()];
+	    for (int i = 0; i < ReminderTimes.getNum(); ++i) {
+		custRemTimes[i] = 'N';
+	    }
+	} else {
+
+	    try {
+		custRemTimes = (r.getReminderTimes()).toCharArray();
+
+	    } catch (Exception e) {
+		for (int i = 0; i < ReminderTimes.getNum(); ++i) {
+		    custRemTimes[i] = 'N';
+		}
+	    }
+	}
+    }
 
     // set the visibility and enabling of components that depend on the
     // frequency pulldown
@@ -1162,502 +1658,6 @@ class AppointmentPanel extends JPanel {
 	    dlistbuttonpanel.setVisible(false);
 	    ndays.setVisible(false);
 	}
-    }
-
-    private void add_appt() {
-	// user has requested an add of a new appt
-
-	// get a new appt from the model and set it from the user data
-	AppointmentModel calmod_ = AppointmentModel.getReference();
-	Appointment r = calmod_.newAppt();
-	int ret = 0;
-	try {
-	    ret = setAppt(r, true);
-	} catch (Warning w) {
-	    Errmsg.notice(w.getMessage());
-	    return;
-	} catch (Exception e) {
-	    Errmsg.errmsg(e);
-	    return;
-	}
-
-	if (ret < 0)
-	    return;
-
-	calmod_.saveAppt(r, true);
-
-	showapp(-1);
-    }
-
-    private void chg_appt() {
-	// user had selected appt change
-
-	// get a new empty appt from the model and set it using the data the
-	// user has entered
-	AppointmentModel calmod_ = AppointmentModel.getReference();
-	Appointment r = calmod_.newAppt();
-	int newkey = 0;
-	try {
-	    newkey = setAppt(r, true);
-	} catch (Warning w) {
-	    Errmsg.notice(w.getMessage());
-	    return;
-	} catch (Exception e) {
-	    Errmsg.errmsg(e);
-	    return;
-	}
-
-	if (newkey < 0)
-	    return;
-
-	// call the model to change the appt
-	if (newkey == 0) {
-	    r.setKey(key_);
-	    // need to preserve data from original appt
-	    try {
-		Appointment ap = calmod_.getAppt(key_);
-		Calendar cal = new GregorianCalendar();
-		Calendar newCal = new GregorianCalendar();
-
-		cal.setTime(ap.getDate());
-		newCal.setTime(r.getDate());
-		newCal.set(Calendar.YEAR, cal.get(Calendar.YEAR));
-		newCal.set(Calendar.MONTH, cal.get(Calendar.MONTH));
-		newCal.set(Calendar.DATE, cal.get(Calendar.DATE));
-		r.setDate(newCal.getTime());
-
-		//AppointmentXMLAdapter aa = new AppointmentXMLAdapter();
-
-		//System.out.println(aa.toXml(r));
-		//System.out.println(aa.toXml(ap));
-		// determine if we can keep certain fields related to repeating
-                // and todos
-		if (r.getTimes().intValue() == ap.getTimes().intValue()
-			&& Repeat.getFreq(r.getFrequency()).equals(Repeat.getFreq(ap.getFrequency()))
-			&& r.getTodo() == ap.getTodo()
-			&& r.getRepeatFlag() == ap.getRepeatFlag()) {
-		    // we can keep skip list and next todo
-		    r.setSkipList(ap.getSkipList());
-		    r.setNextTodo(ap.getNextTodo());
-		}
-	    } catch (Exception e) {
-
-	    }
-	    calmod_.saveAppt(r, false);
-	} else {
-	    calmod_.delAppt(key_);
-	    calmod_.saveAppt(r, true);
-
-	}
-
-	showapp(-1);
-    }
-
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextArea appttextarea;
-
-    private javax.swing.JComboBox catbox;
-
-    private javax.swing.JCheckBox chgdate;
-
-    private javax.swing.JComboBox colorbox;
-
-    private javax.swing.JComboBox durhour;
-
-    private javax.swing.JComboBox durmin;
-
-    private javax.swing.JCheckBox foreverbox;
-
-    private javax.swing.JComboBox freq;
-
-    private javax.swing.JCheckBox halfdaycb;
-
-    private javax.swing.JCheckBox holidaycb;
-
-    private javax.swing.JLabel lblTimes;
-
-    private javax.swing.JLabel jLabel2;
-
-    private javax.swing.JLabel lblStartTime;
-
-    private javax.swing.JLabel lblFrequency;
-
-    private javax.swing.JLabel lblColor;
-
-    private javax.swing.JLabel lblDuration;
-
-    private javax.swing.JLabel lblCategory;
-
-    private javax.swing.JLabel lblNewDate;
-
-    private javax.swing.JPanel jPanel1;
-
-    private javax.swing.JPanel jPanel2;
-
-    private javax.swing.JPanel jPanel3;
-
-    private javax.swing.JPanel jPanel4;
-
-    private javax.swing.JScrollPane jScrollPane1;
-
-    private JDateChooser newdatefield;
-
-    private javax.swing.JCheckBox notecb;
-
-    private JButton popupTimesBtn;
-
-    private JLabel popupTimesLabel;
-
-    private JPanel jPanel5;
-
-    private javax.swing.JCheckBox privatecb;
-
-    private javax.swing.JSpinner s_times;
-
-    private javax.swing.JButton savebutton;
-
-    private javax.swing.JButton savedefaultsbutton;
-
-    private javax.swing.JCheckBox startap;
-
-    private javax.swing.JComboBox starthour;
-
-    private javax.swing.JComboBox startmin;
-
-    private javax.swing.JCheckBox todocb;
-
-    private javax.swing.JCheckBox vacationcb;
-
-    private JPanel jPanel = null;
-
-    private JSpinner ndays = null;
-
-    private JCheckBox alarmcb = null;
-
-    private char[] custRemTimes;
-
-    private JCheckBox rptnumbox = null;
-
-    private JPanel dlistbuttonpanel = null;
-
-    private JToggleButton dl1 = null;
-
-    private JToggleButton dl2 = null;
-
-    private JToggleButton dl3 = null;
-
-    private JToggleButton dl4 = null;
-
-    private JToggleButton dl5 = null;
-
-    private JToggleButton dl6 = null;
-
-    private JToggleButton dl7 = null;
-
-    private JPanel getJPanel() {
-	if (jPanel == null) {
-	    GridBagConstraints gridBagConstraints19 = new GridBagConstraints();
-	    GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
-	    GridBagConstraints gridBagConstraints28 = new GridBagConstraints();
-	    GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
-	    GridBagConstraints gridBagConstraints71 = new GridBagConstraints();
-	    GridBagConstraints gridBagConstraints61 = new GridBagConstraints();
-	    GridBagConstraints gridBagConstraints51 = new GridBagConstraints();
-	    GridBagConstraints gridBagConstraints41 = new GridBagConstraints();
-	    GridBagConstraints gridBagConstraints31 = new GridBagConstraints();
-	    jPanel = new JPanel();
-	    jPanel.setLayout(new GridBagLayout());
-	    jPanel.setBorder(new javax.swing.border.TitledBorder(null, Resource
-		    .getResourceString("Recurrence"),
-		    javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
-		    javax.swing.border.TitledBorder.DEFAULT_POSITION, null,
-		    null));
-	    gridBagConstraints31.gridx = 0;
-	    gridBagConstraints31.gridy = 0;
-	    gridBagConstraints31.insets = new java.awt.Insets(0, 0, 0, 0);
-	    gridBagConstraints41.gridx = 1;
-	    gridBagConstraints41.gridy = 0;
-	    gridBagConstraints41.anchor = java.awt.GridBagConstraints.SOUTHEAST;
-	    gridBagConstraints41.fill = java.awt.GridBagConstraints.HORIZONTAL;
-	    gridBagConstraints41.insets = new java.awt.Insets(4, 4, 4, 4);
-	    gridBagConstraints41.weightx = 0.0D;
-	    gridBagConstraints51.gridx = 0;
-	    gridBagConstraints51.gridy = 1;
-	    gridBagConstraints51.anchor = java.awt.GridBagConstraints.WEST;
-	    gridBagConstraints51.fill = java.awt.GridBagConstraints.BOTH;
-	    gridBagConstraints51.insets = new java.awt.Insets(4, 4, 4, 4);
-	    gridBagConstraints61.gridx = 1;
-	    gridBagConstraints61.gridy = 1;
-	    gridBagConstraints61.fill = java.awt.GridBagConstraints.BOTH;
-	    gridBagConstraints61.insets = new java.awt.Insets(4, 4, 4, 4);
-	    gridBagConstraints61.weightx = 0.0D;
-	    gridBagConstraints71.gridx = 2;
-	    gridBagConstraints71.gridy = 1;
-	    gridBagConstraints13.gridx = 4;
-	    gridBagConstraints13.gridy = 0;
-	    gridBagConstraints28.gridx = 2;
-	    gridBagConstraints28.gridy = 0;
-	    gridBagConstraints28.insets = new java.awt.Insets(4, 4, 4, 4);
-	    gridBagConstraints28.fill = java.awt.GridBagConstraints.HORIZONTAL;
-	    gridBagConstraints19.gridx = 3;
-	    gridBagConstraints19.gridy = 1;
-	    gridBagConstraints19.insets = new java.awt.Insets(4, 4, 4, 4);
-	    gridBagConstraints19.fill = java.awt.GridBagConstraints.BOTH;
-	    jPanel.add(lblFrequency, gridBagConstraints31);
-	    jPanel.add(freq, gridBagConstraints41);
-	    jPanel.add(lblTimes, gridBagConstraints51);
-	    jPanel.add(s_times, gridBagConstraints61);
-	    jPanel.add(foreverbox, gridBagConstraints71);
-	    jPanel.add(ndays, gridBagConstraints28);
-
-	    jPanel.add(getRptnumbox(), gridBagConstraints19);
-
-	    gridBagConstraints1.fill = java.awt.GridBagConstraints.BOTH; // Generated
-	    gridBagConstraints1.gridy = 0; // Generated
-	    gridBagConstraints1.gridx = 2; // Generated
-	    gridBagConstraints1.gridwidth = 2;
-	    jPanel.add(getDlistbuttonpanel(), gridBagConstraints1); // Generated
-	}
-	return jPanel;
-    }
-
-    private JCheckBox getRemBox() {
-	if (alarmcb == null) {
-	    alarmcb = new JCheckBox();
-	    ResourceHelper.setText(alarmcb, "Alarm");
-	}
-	return alarmcb;
-    }
-
-    private void setCustRemTimes(Appointment r) {
-	if (r == null) {
-	    custRemTimes = new char[ReminderTimes.getNum()];
-	    for (int i = 0; i < ReminderTimes.getNum(); ++i) {
-		custRemTimes[i] = 'N';
-	    }
-	} else {
-
-	    try {
-		custRemTimes = (r.getReminderTimes()).toCharArray();
-
-	    } catch (Exception e) {
-		for (int i = 0; i < ReminderTimes.getNum(); ++i) {
-		    custRemTimes[i] = 'N';
-		}
-	    }
-	}
-    }
-
-    private void popupbuttonActionPerformed(java.awt.event.ActionEvent evt) {
-
-	PopupOptionsView pv = new PopupOptionsView(custRemTimes, this);
-	pv.setVisible(true);
-    }
-
-    // display a summary of the times selected for popup reminders
-    public void setPopupTimesString() {
-	StringBuffer time1 = new StringBuffer(ReminderTimes.getNum() * 5 + 15);
-	StringBuffer time2 = new StringBuffer(ReminderTimes.getNum() * 5 + 15);
-	if (custRemTimes != null) {
-	    int i = 0;
-	    while (ReminderTimes.getTimes(i) < 0 && i < ReminderTimes.getNum()) {
-		if (custRemTimes[i] == 'Y') {
-		    int abs = -ReminderTimes.getTimes(i);
-		    if (time1.length() > 0) {
-			time1 = time1.append(", ").append(abs);
-		    } else {
-			time1 = time1.append(abs);
-		    }
-		}
-		++i;
-	    }
-	    if (time1.length() > 0) {
-		time1 = time1.append("   ").append(
-			Resource.getResourceString("min_aft_app"));
-	    }
-
-	    while (i < ReminderTimes.getNum()) {
-		if (custRemTimes[i] == 'Y') {
-		    if (time2.length() > 0) {
-			time2 = time2.append(", ").append(
-				ReminderTimes.getTimes(i));
-		    } else {
-			time2 = time2.append(ReminderTimes.getTimes(i));
-		    }
-		}
-		++i;
-	    }
-	    if (time2.length() > 0) {
-		time2 = time2.append("   ").append(
-			Resource.getResourceString("min_bef_app"));
-	    }
-
-	}
-	popupTimesLabel.setText("<html><p align=RIGHT>" + time1.toString()
-		+ "<br>" + time2.toString());
-    }
-
-    public String getText() {
-	String labelstring = appttextarea.getText();
-	if (labelstring.equals("")) {
-	    return Resource.getResourceString("*****_NEW_APPT_*****");
-	}
-
-	return labelstring;
-
-    }
-
-    /**
-         * This method initializes rptnumbox
-         * 
-         * @return javax.swing.JCheckBox
-         */
-    private JCheckBox getRptnumbox() {
-	if (rptnumbox == null) {
-	    rptnumbox = new JCheckBox();
-	    ResourceHelper.setText(rptnumbox, "show_rpt_num");
-	}
-	return rptnumbox;
-    }
-
-    /**
-         * This method initializes dlistbuttonpanel
-         * 
-         * @return javax.swing.JPanel
-         */
-    private JPanel getDlistbuttonpanel() {
-	if (dlistbuttonpanel == null) {
-	    dlistbuttonpanel = new JPanel();
-	    dlistbuttonpanel.setLayout(new BoxLayout(getDlistbuttonpanel(),
-		    BoxLayout.X_AXIS)); // Generated
-	    dlistbuttonpanel.add(getDl1(), null); // Generated
-	    dlistbuttonpanel.add(getDl2(), null); // Generated
-	    dlistbuttonpanel.add(getDl3(), null); // Generated
-	    dlistbuttonpanel.add(getDl4(), null); // Generated
-	    dlistbuttonpanel.add(getDl5(), null); // Generated
-	    dlistbuttonpanel.add(getDl6(), null); // Generated
-	    dlistbuttonpanel.add(getDl7(), null); // Generated
-	}
-	return dlistbuttonpanel;
-    }
-
-    // for setting labels
-    static private GregorianCalendar tmpcal = new GregorianCalendar();
-
-    static private SimpleDateFormat shortDayFmt = new SimpleDateFormat("EEE");
-
-    private JLabel jLabel = null;
-
-    private JTextField apptTitleField = null;
-
-    /**
-         * This method initializes dl1
-         * 
-         * @return javax.swing.JToggleButton
-         */
-    private JToggleButton getDl1() {
-	if (dl1 == null) {
-	    dl1 = new JToggleButton();
-	    tmpcal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-	    dl1.setText(shortDayFmt.format(tmpcal.getTime()));
-	}
-	return dl1;
-    }
-
-    /**
-         * This method initializes dl2
-         * 
-         * @return javax.swing.JToggleButton
-         */
-    private JToggleButton getDl2() {
-	if (dl2 == null) {
-	    dl2 = new JToggleButton();
-	    tmpcal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-	    dl2.setText(shortDayFmt.format(tmpcal.getTime()));
-	}
-	return dl2;
-    }
-
-    /**
-         * This method initializes dl3
-         * 
-         * @return javax.swing.JToggleButton
-         */
-    private JToggleButton getDl3() {
-	if (dl3 == null) {
-	    dl3 = new JToggleButton();
-	    tmpcal.set(Calendar.DAY_OF_WEEK, Calendar.TUESDAY);
-	    dl3.setText(shortDayFmt.format(tmpcal.getTime()));
-	}
-	return dl3;
-    }
-
-    /**
-         * This method initializes dl4
-         * 
-         * @return javax.swing.JToggleButton
-         */
-    private JToggleButton getDl4() {
-	if (dl4 == null) {
-	    dl4 = new JToggleButton();
-	    tmpcal.set(Calendar.DAY_OF_WEEK, Calendar.WEDNESDAY);
-	    dl4.setText(shortDayFmt.format(tmpcal.getTime()));
-	}
-	return dl4;
-    }
-
-    /**
-         * This method initializes dl5
-         * 
-         * @return javax.swing.JToggleButton
-         */
-    private JToggleButton getDl5() {
-	if (dl5 == null) {
-	    dl5 = new JToggleButton();
-	    tmpcal.set(Calendar.DAY_OF_WEEK, Calendar.THURSDAY);
-	    dl5.setText(shortDayFmt.format(tmpcal.getTime()));
-	}
-	return dl5;
-    }
-
-    /**
-         * This method initializes dl6
-         * 
-         * @return javax.swing.JToggleButton
-         */
-    private JToggleButton getDl6() {
-	if (dl6 == null) {
-	    dl6 = new JToggleButton();
-	    tmpcal.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY);
-	    dl6.setText(shortDayFmt.format(tmpcal.getTime()));
-	}
-	return dl6;
-    }
-
-    /**
-         * This method initializes dl7
-         * 
-         * @return javax.swing.JToggleButton
-         */
-    private JToggleButton getDl7() {
-	if (dl7 == null) {
-	    dl7 = new JToggleButton();
-	    tmpcal.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
-	    dl7.setText(shortDayFmt.format(tmpcal.getTime()));
-	}
-	return dl7;
-    }
-
-    /**
-     * This method initializes apptTitleField	
-     * 	
-     * @return javax.swing.JTextField	
-     */
-    private JTextField getApptTitleField() {
-        if (apptTitleField == null) {
-    	apptTitleField = new JTextField();
-        }
-        return apptTitleField;
     }
 } // @jve:decl-index=0:visual-constraint="10,10"
 

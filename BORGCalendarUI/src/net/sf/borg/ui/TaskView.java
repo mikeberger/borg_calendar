@@ -74,98 +74,6 @@ import com.toedter.calendar.JDateChooserCellEditor;
 // taskgui is a View that allows the user to edit a single task
 class TaskView extends View {
 
-	private StripedTable stable = new StripedTable();
-
-	private StripedTable logtable = new StripedTable();
-
-	private ArrayList tbd_ = new ArrayList();
-
-	private TableCellRenderer defIntRend_;
-
-	private TableCellRenderer defDateRend_;
-
-	private TableCellRenderer defStringRend_;
-	
-	static private boolean isAfter(Date d1, Date d2){
-
-	    GregorianCalendar tcal = new GregorianCalendar();
-	    tcal.setTime(d1);
-	    tcal.set(Calendar.HOUR_OF_DAY, 0);
-	    tcal.set(Calendar.MINUTE, 0);
-	    tcal.set(Calendar.SECOND, 0);
-	    GregorianCalendar dcal = new GregorianCalendar();
-	    dcal.setTime(d2);
-	    dcal.set(Calendar.HOUR_OF_DAY, 0);
-	    dcal.set(Calendar.MINUTE, 10);
-	    dcal.set(Calendar.SECOND, 0);
-	    //System.out.println( DateFormat.getDateTimeInstance().format(tcal.getTime()) + " " + 
-		    //DateFormat.getDateTimeInstance().format(dcal.getTime()) );
-	    if (tcal.getTime().after(dcal.getTime())) {
-		return true;
-	    }
-	    
-	    return false;
-	}
-
-	private class STIntRenderer extends JLabel implements TableCellRenderer {
-
-		public STIntRenderer() {
-			super();
-			setOpaque(true); // MUST do this for background to show up.
-		}
-
-		public Component getTableCellRendererComponent(JTable table,
-				Object obj, boolean isSelected, boolean hasFocus, int row,
-				int column) {
-
-			JLabel l = (JLabel) defIntRend_.getTableCellRendererComponent(
-					table, obj, isSelected, hasFocus, row, column);
-			this.setHorizontalAlignment(l.getHorizontalAlignment());
-			this.setForeground(l.getForeground());
-			this.setBackground(l.getBackground());
-
-			if (obj != null && obj instanceof Integer) {
-				int i = ((Integer) obj).intValue();
-				if (column == 1 && i == 0) {
-					this.setText("--");
-				} else {
-					this.setText(Integer.toString(i));
-				}
-			} else if (obj == null)
-				this.setText("--");
-			return this;
-
-		}
-	}
-
-	private class STStringRenderer extends JLabel implements TableCellRenderer {
-
-		public STStringRenderer() {
-			super();
-			setOpaque(true); // MUST do this for background to show up.
-		}
-
-		public Component getTableCellRendererComponent(JTable table,
-				Object obj, boolean isSelected, boolean hasFocus, int row,
-				int column) {
-
-			JLabel l = (JLabel) defStringRend_.getTableCellRendererComponent(
-					table, obj, isSelected, hasFocus, row, column);
-			this.setForeground(l.getForeground());
-			this.setBackground(l.getBackground());
-
-			if (obj == null) {
-				this.setBackground(new Color(220, 220, 255));
-				this.setText("");
-			} else {
-				this.setText((String) obj);
-			}
-
-			return this;
-
-		}
-	}
-
 	private class LongDateRenderer extends JLabel implements TableCellRenderer {
 
 		public LongDateRenderer() {
@@ -241,6 +149,204 @@ class TaskView extends View {
 		}
 	}
 
+	private class STIntRenderer extends JLabel implements TableCellRenderer {
+
+		public STIntRenderer() {
+			super();
+			setOpaque(true); // MUST do this for background to show up.
+		}
+
+		public Component getTableCellRendererComponent(JTable table,
+				Object obj, boolean isSelected, boolean hasFocus, int row,
+				int column) {
+
+			JLabel l = (JLabel) defIntRend_.getTableCellRendererComponent(
+					table, obj, isSelected, hasFocus, row, column);
+			this.setHorizontalAlignment(l.getHorizontalAlignment());
+			this.setForeground(l.getForeground());
+			this.setBackground(l.getBackground());
+
+			if (obj != null && obj instanceof Integer) {
+				int i = ((Integer) obj).intValue();
+				if (column == 1 && i == 0) {
+					this.setText("--");
+				} else {
+					this.setText(Integer.toString(i));
+				}
+			} else if (obj == null)
+				this.setText("--");
+			return this;
+
+		}
+	}
+
+	private class STStringRenderer extends JLabel implements TableCellRenderer {
+
+		public STStringRenderer() {
+			super();
+			setOpaque(true); // MUST do this for background to show up.
+		}
+
+		public Component getTableCellRendererComponent(JTable table,
+				Object obj, boolean isSelected, boolean hasFocus, int row,
+				int column) {
+
+			JLabel l = (JLabel) defStringRend_.getTableCellRendererComponent(
+					table, obj, isSelected, hasFocus, row, column);
+			this.setForeground(l.getForeground());
+			this.setBackground(l.getBackground());
+
+			if (obj == null) {
+				this.setBackground(new Color(220, 220, 255));
+				this.setText("");
+			} else {
+				this.setText((String) obj);
+			}
+
+			return this;
+
+		}
+	}
+
+	static int T_ADD = 2;
+
+	static int T_CHANGE = 3;
+	
+	// the different function values for calls to show task
+	static int T_CLONE = 1;
+
+	static public Integer getProjectId(String s) throws Exception {
+		int i = s.indexOf(":");
+		if( i == -1 ) throw new Exception("Cannot parse project label");
+		String ss = s.substring(0, i);
+
+		int pid = Integer.parseInt(ss);
+		return new Integer(pid);
+
+	}
+
+	static public String getProjectString(Project p) {
+		return p.getId().toString() + ":" + p.getDescription();
+	}
+
+	static private boolean isAfter(Date d1, Date d2){
+
+	    GregorianCalendar tcal = new GregorianCalendar();
+	    tcal.setTime(d1);
+	    tcal.set(Calendar.HOUR_OF_DAY, 0);
+	    tcal.set(Calendar.MINUTE, 0);
+	    tcal.set(Calendar.SECOND, 0);
+	    GregorianCalendar dcal = new GregorianCalendar();
+	    dcal.setTime(d2);
+	    dcal.set(Calendar.HOUR_OF_DAY, 0);
+	    dcal.set(Calendar.MINUTE, 10);
+	    dcal.set(Calendar.SECOND, 0);
+	    //System.out.println( DateFormat.getDateTimeInstance().format(tcal.getTime()) + " " + 
+		    //DateFormat.getDateTimeInstance().format(dcal.getTime()) );
+	    if (tcal.getTime().after(dcal.getTime())) {
+		return true;
+	    }
+	    
+	    return false;
+	}
+
+	private JComboBox catbox = null;
+
+	// Variables declaration - do not modify//GEN-BEGIN:variables
+	private javax.swing.JLabel catlabel;
+
+	private JTextField closeDate = null;
+
+	private JLabel closeLabel = null;
+
+	private JLabel daysLeftLabel = null;
+
+	private JTextField daysLeftText = null;
+
+	private TableCellRenderer defDateRend_;
+
+	private TableCellRenderer defIntRend_;
+
+	private TableCellRenderer defStringRend_;
+
+	private JDateChooser duedatechooser;
+
+	private javax.swing.JTextField itemtext;
+
+	private javax.swing.JButton jButton2;
+
+	private javax.swing.JButton jButton3;
+
+	private javax.swing.JMenu jMenu1;
+
+	private javax.swing.JMenuBar jMenuBar1;
+
+	private javax.swing.JMenuItem jMenuItem1;
+
+	private javax.swing.JMenuItem jMenuItem2;
+
+	private JPanel jPanel = null;
+
+	private javax.swing.JPanel jPanel3;
+
+	private javax.swing.JPanel jPanel4;
+
+	private javax.swing.JScrollPane jScrollPane1;
+
+	private javax.swing.JScrollPane jScrollPane2;
+
+	private JSplitPane jSplitPane = null;
+
+	private javax.swing.JTabbedPane jTabbedPane1;
+
+	private javax.swing.JTextArea jTextArea1;
+
+	private javax.swing.JTextArea jTextArea2;
+
+	private javax.swing.JLabel lblDueDate;
+
+	private javax.swing.JLabel lblItemNum;
+
+	private javax.swing.JLabel lblPA;
+
+	private javax.swing.JLabel lblPri;
+
+	private javax.swing.JLabel lblStartDate;
+
+	private javax.swing.JLabel lblStatus;
+
+	private javax.swing.JLabel lblType;
+
+	private StripedTable logtable = new StripedTable();
+
+	private javax.swing.JTextField patext;
+
+	private javax.swing.JComboBox pritext;
+
+	private StripedTable stable = new StripedTable();
+
+	private JDateChooser startdatechooser;
+
+	private javax.swing.JComboBox statebox;
+
+	private ArrayList tbd_ = new ArrayList();
+
+	private javax.swing.JComboBox typebox;
+
+	/**
+	 * This method is called from within the constructor to initialize the form.
+	 * WARNING: Do NOT modify this code. The content of this method is always
+	 * regenerated by the FormEditor.
+	 */
+	JComboBox projBox = new JComboBox();
+
+	/**
+	 * This method initializes jPanel
+	 * 
+	 * @return javax.swing.JPanel
+	 */
+	JPanel stpanel = new JPanel();
+
 	public TaskView(Task task, int function) throws Exception {
 		super();
 		addModel(TaskModel.getReference());
@@ -271,159 +377,133 @@ class TaskView extends View {
 		manageMySize(PrefName.TASKVIEWSIZE);
 	}
 
-	private void initSubtaskTable() {
-
-		defIntRend_ = stable.getDefaultRenderer(Integer.class);
-		defDateRend_ = stable.getDefaultRenderer(Date.class);
-		defStringRend_ = stable.getDefaultRenderer(String.class);
-		stable.setModel(new TableSorter(new String[] {
-				Resource.getPlainResourceString("Closed"),
-				Resource.getPlainResourceString("subtask_id"),
-				Resource.getPlainResourceString("Description"),
-				Resource.getPlainResourceString("created"),
-				Resource.getPlainResourceString("Due_Date"),
-				Resource.getPlainResourceString("Days_Left"),
-				Resource.getPlainResourceString("close_date") }, new Class[] {
-				java.lang.Boolean.class, Integer.class, java.lang.String.class,
-				Date.class, Date.class, Integer.class, Date.class },
-				new boolean[] { true, false, true, true, true, false, false }));
-
-		stable.setDefaultRenderer(Integer.class, new STIntRenderer());
-		stable.setDefaultRenderer(Date.class, new STDDRenderer());
-		stable.setDefaultRenderer(String.class, new STStringRenderer());
-
-		stable.getColumnModel().getColumn(0).setPreferredWidth(5);
-		stable.getColumnModel().getColumn(1).setPreferredWidth(5);
-		stable.getColumnModel().getColumn(2).setPreferredWidth(300);
-		stable.getColumnModel().getColumn(3).setPreferredWidth(30);
-		stable.getColumnModel().getColumn(4).setPreferredWidth(30);
-		stable.getColumnModel().getColumn(5).setPreferredWidth(30);
-		stable.getColumnModel().getColumn(6).setPreferredWidth(30);
-
-		if (!TaskModel.getReference().hasSubTasks()) {
-			stable.getTableHeader().setEnabled(false);
-			stable.getTableHeader().setReorderingAllowed(false);
-			stable.getTableHeader().setResizingAllowed(false);
-			return;
-		}
-		stable.setDefaultEditor(Date.class, new JDateChooserCellEditor());
-
-		TableSorter ts = (TableSorter) stable.getModel();
-
-		ts.sortByColumn(4);
-		ts.addMouseListenerToHeaderInTable(stable);
-		new PopupMenuHelper(stable, new PopupMenuHelper.Entry[] {
-				new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						insertSubtask();
-					}
-				}, "Add_Subtask"),
-				new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						TableSorter ts = (TableSorter) stable.getModel();
-
-						Integer ids[] = getSelectedIds();
-
-						for (int i = 0; i < ids.length; ++i) {
-							if (ids[i] == null)
-								continue;
-							for (int row = 0; row < ts.getRowCount(); row++) {
-								Integer rowid = (Integer) ts.getValueAt(row, 1);
-								if (rowid != null
-										&& rowid.intValue() == ids[i]
-												.intValue()) {
-									ts.setValueAt(null, row, 4);
-									break;
-								}
-							}
-						}
-					}
-				}, "Clear_DueDate"),
-				new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						TableSorter ts = (TableSorter) stable.getModel();
-
-						int[] indices = stable.getSelectedRows();
-						if (indices.length == 0)
-							return;
-
-						DateDialog dlg = new DateDialog(null);
-						dlg.setCalendar(new GregorianCalendar());
-						dlg.setVisible(true);
-						Calendar dlgcal = dlg.getCalendar();
-						if (dlgcal == null)
-							return;
-
-						Integer ids[] = getSelectedIds();
-
-						for (int i = 0; i < ids.length; ++i) {
-							if (ids[i] == null)
-								continue;
-							for (int row = 0; row < ts.getRowCount(); row++) {
-								Integer rowid = (Integer) ts.getValueAt(row, 1);
-								if (rowid != null
-										&& rowid.intValue() == ids[i]
-												.intValue()) {
-									ts.setValueAt(dlgcal.getTime(), row, 4);
-									break;
-								}
-							}
-						}
-					}
-				}, "Set_DueDate"),
-				new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						TableSorter ts = (TableSorter) stable.getModel();
-						Integer ids[] = getSelectedIds();
-						if (ids.length == 0)
-							return;
-
-						int ret = JOptionPane.showConfirmDialog(null, Resource
-								.getResourceString("Really_Delete_")
-								+ "?", Resource
-								.getPlainResourceString("Confirm_Delete"),
-								JOptionPane.OK_CANCEL_OPTION,
-								JOptionPane.QUESTION_MESSAGE);
-						if (ret != JOptionPane.OK_OPTION)
-							return;
-
-						for (int i = 0; i < ids.length; ++i) {
-							// System.out.println(ids[i]);
-							if (ids[i] == null)
-								continue;
-							tbd_.add(ids[i]);
-							for (int row = 0; row < ts.getRowCount(); row++) {
-								Integer rowid = (Integer) ts.getValueAt(row, 1);
-								if (rowid != null
-										&& rowid.intValue() == ids[i]
-												.intValue()) {
-									// clear the row
-									ts.setValueAt(new Boolean(false), row, 0);
-									ts.setValueAt(null, row, 1);
-									ts.setValueAt(null, row, 2);
-									ts.setValueAt(null, row, 3);
-									ts.setValueAt(null, row, 4);
-									ts.setValueAt(null, row, 5);
-									ts.setValueAt(null, row, 6);
-									break;
-								}
-							}
-						}
-
-						// if table is now empty - add 1 row back
-						if (ts.getRowCount() == 0) {
-							insertSubtask();
-						}
-					}
-				}, "Delete"), });
-
+	public void destroy() {
+		this.dispose();
 	}
 
-	private void insertSubtask() {
-		Object o[] = { new Boolean(false), null, null, null, null, null, null };
-		TableSorter ts = (TableSorter) stable.getModel();
+	// the task editor currently does not refresh itself when the task data
+	// model changes
+	// - although it should not be changing while the task editor is open
+	public void refresh() {
+	}
 
-		ts.addRow(o);
+	private void disact(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_disact
+		this.dispose();
+	}// GEN-LAST:event_disact
+
+	/**
+	 * This method initializes catbox
+	 * 
+	 * @return javax.swing.JComboBox
+	 */
+	private JComboBox getCatbox() {
+		if (catbox == null) {
+			catbox = new JComboBox();
+		}
+		return catbox;
+	}
+
+	// End of variables declaration//GEN-END:variables
+
+	/**
+	 * This method initializes closeDate
+	 * 
+	 * @return javax.swing.JTextField
+	 */
+	private JTextField getCloseDate() {
+		if (closeDate == null) {
+			closeDate = new JTextField();
+
+			closeDate.setEditable(false); // Generated
+		}
+		return closeDate;
+	}
+
+	/**
+	 * This method initializes daysLeftText
+	 * 
+	 * @return javax.swing.JTextField
+	 */
+	private JTextField getDaysLeftText() {
+		if (daysLeftText == null) {
+			daysLeftText = new JTextField();
+			daysLeftText.setEditable(false);
+		}
+		return daysLeftText;
+	}
+
+	private JPanel getJPanel() {
+		if (jPanel == null) {
+			
+			GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
+			gridBagConstraints5.fill = GridBagConstraints.BOTH;
+			gridBagConstraints5.weighty = 1.0;
+			gridBagConstraints5.gridx = 0;
+			gridBagConstraints5.gridy = 1;
+			gridBagConstraints5.insets = new Insets(4, 4, 4, 4);
+			gridBagConstraints5.weightx = 1.0;
+			GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
+			gridBagConstraints4.fill = GridBagConstraints.BOTH;
+			gridBagConstraints4.gridx = 0;
+			gridBagConstraints4.gridy = 0;
+			gridBagConstraints4.weightx = 1.0;
+			gridBagConstraints4.weighty = 1.0;
+			gridBagConstraints4.insets = new Insets(4, 4, 4, 4);
+			GridBagConstraints gridBagConstraints25 = new GridBagConstraints();
+			GridBagConstraints gridBagConstraints21 = new GridBagConstraints();
+			jPanel = new JPanel();
+			jPanel.setLayout(new GridBagLayout());
+			gridBagConstraints21.gridx = 0;
+			gridBagConstraints21.gridy = 0;
+			gridBagConstraints21.fill = java.awt.GridBagConstraints.BOTH;
+			gridBagConstraints21.weightx = 1.0D;
+
+			gridBagConstraints25.gridx = 0;
+			gridBagConstraints25.gridy = 2;
+
+			jPanel.add(getJSplitPane(), gridBagConstraints5);
+			jPanel.add(jPanel3, gridBagConstraints21); // Generated
+
+			jPanel.add(jPanel4, gridBagConstraints25);
+			// subtasks
+			JScrollPane stscroll = new JScrollPane();
+			stscroll.setPreferredSize(new Dimension(300, 300));
+			stscroll.setViewportView(stable);
+			
+			stpanel.setLayout(new GridBagLayout());
+			stpanel.setBorder(new javax.swing.border.TitledBorder(Resource
+					.getResourceString("Subtasks")));
+			stpanel.add(stscroll, gridBagConstraints4);
+			
+		}
+		return jPanel;
+	}
+
+	/**
+	 * This method initializes jSplitPane	
+	 * 	
+	 * @return javax.swing.JSplitPane	
+	 */
+	private JSplitPane getJSplitPane() {
+	    if (jSplitPane == null) {
+		jSplitPane = new JSplitPane();
+		jSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
+		if( TaskModel.getReference().hasSubTasks())
+		{
+			jSplitPane.setBottomComponent(stpanel);
+		}
+		else
+		{
+			JTextArea ta = new JTextArea();
+			ta.setText(Resource.getPlainResourceString("SubtaskNotSupported"));
+			ta.setEditable(false);
+			jSplitPane.setBottomComponent(ta);
+		}
+		jSplitPane.setPreferredSize(new Dimension(400, 400));
+		jSplitPane.setDividerLocation(100);
+		jSplitPane.setTopComponent(jTabbedPane1);
+	    }
+	    return jSplitPane;
 	}
 
 	private Integer[] getSelectedIds() {
@@ -438,75 +518,6 @@ class TaskView extends View {
 
 		return ret;
 	}
-
-	private void initLogTable() {
-
-		logtable.setModel(new TableSorter(new String[] {
-				Resource.getPlainResourceString("Date"),
-				Resource.getPlainResourceString("Description"), }, new Class[] {
-				Date.class, String.class }, new boolean[] { false, false }));
-
-		logtable.getColumnModel().getColumn(0).setPreferredWidth(5);
-		logtable.getColumnModel().getColumn(1).setPreferredWidth(300);
-
-		//logtable.setDefaultEditor(Date.class, new JDateChooserCellEditor());
-		logtable.setDefaultRenderer(Date.class, new LongDateRenderer());
-		TableSorter ts = (TableSorter) logtable.getModel();
-
-		ts.sortByColumn(0);
-		ts.addMouseListenerToHeaderInTable(logtable);
-		new PopupMenuHelper(logtable,
-				new PopupMenuHelper.Entry[] { new PopupMenuHelper.Entry(
-						new java.awt.event.ActionListener() {
-							public void actionPerformed(
-									java.awt.event.ActionEvent evt) {
-
-								String tasknum = itemtext.getText();
-								if (tasknum.equals("CLONE")
-										|| tasknum.equals("NEW"))
-									return;
-								String logentry = JOptionPane
-										.showInputDialog(net.sf.borg.common.util.Resource
-												.getResourceString("Enter_Log"));
-								if (logentry == null)
-									return;
-
-								try {
-									TaskModel.getReference()
-											.addLog(Integer.parseInt(tasknum),
-													logentry);
-									loadLog(Integer.parseInt(tasknum));
-								} catch (Exception e) {
-									Errmsg.errmsg(e);
-								}
-							}
-						}, "Add_Log"), });
-
-	}
-
-	public void destroy() {
-		this.dispose();
-	}
-
-	// the different function values for calls to show task
-	static int T_CLONE = 1;
-
-	static int T_ADD = 2;
-
-	static int T_CHANGE = 3;
-
-	// the task editor currently does not refresh itself when the task data
-	// model changes
-	// - although it should not be changing while the task editor is open
-	public void refresh() {
-	}
-
-	/**
-	 * This method is called from within the constructor to initialize the form.
-	 * WARNING: Do NOT modify this code. The content of this method is always
-	 * regenerated by the FormEditor.
-	 */
-	JComboBox projBox = new JComboBox();
 
 	private void initComponents()// GEN-BEGIN:initComponents
 	{
@@ -857,15 +868,314 @@ class TaskView extends View {
 
 	}// GEN-END:initComponents
 
-	private void jButton3ActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_jButton3ActionPerformed
-	{// GEN-HEADEREND:event_jButton3ActionPerformed
-		this.dispose();
-	}// GEN-LAST:event_jButton3ActionPerformed
+	private void initLogTable() {
+
+		logtable.setModel(new TableSorter(new String[] {
+				Resource.getPlainResourceString("Date"),
+				Resource.getPlainResourceString("Description"), }, new Class[] {
+				Date.class, String.class }, new boolean[] { false, false }));
+
+		logtable.getColumnModel().getColumn(0).setPreferredWidth(5);
+		logtable.getColumnModel().getColumn(1).setPreferredWidth(300);
+
+		//logtable.setDefaultEditor(Date.class, new JDateChooserCellEditor());
+		logtable.setDefaultRenderer(Date.class, new LongDateRenderer());
+		TableSorter ts = (TableSorter) logtable.getModel();
+
+		ts.sortByColumn(0);
+		ts.addMouseListenerToHeaderInTable(logtable);
+		new PopupMenuHelper(logtable,
+				new PopupMenuHelper.Entry[] { new PopupMenuHelper.Entry(
+						new java.awt.event.ActionListener() {
+							public void actionPerformed(
+									java.awt.event.ActionEvent evt) {
+
+								String tasknum = itemtext.getText();
+								if (tasknum.equals("CLONE")
+										|| tasknum.equals("NEW"))
+									return;
+								String logentry = JOptionPane
+										.showInputDialog(net.sf.borg.common.util.Resource
+												.getResourceString("Enter_Log"));
+								if (logentry == null)
+									return;
+
+								try {
+									TaskModel.getReference()
+											.addLog(Integer.parseInt(tasknum),
+													logentry);
+									loadLog(Integer.parseInt(tasknum));
+								} catch (Exception e) {
+									Errmsg.errmsg(e);
+								}
+							}
+						}, "Add_Log"), });
+
+	}
+
+	private void initSubtaskTable() {
+
+		defIntRend_ = stable.getDefaultRenderer(Integer.class);
+		defDateRend_ = stable.getDefaultRenderer(Date.class);
+		defStringRend_ = stable.getDefaultRenderer(String.class);
+		stable.setModel(new TableSorter(new String[] {
+				Resource.getPlainResourceString("Closed"),
+				Resource.getPlainResourceString("subtask_id"),
+				Resource.getPlainResourceString("Description"),
+				Resource.getPlainResourceString("created"),
+				Resource.getPlainResourceString("Due_Date"),
+				Resource.getPlainResourceString("Days_Left"),
+				Resource.getPlainResourceString("close_date") }, new Class[] {
+				java.lang.Boolean.class, Integer.class, java.lang.String.class,
+				Date.class, Date.class, Integer.class, Date.class },
+				new boolean[] { true, false, true, true, true, false, false }));
+
+		stable.setDefaultRenderer(Integer.class, new STIntRenderer());
+		stable.setDefaultRenderer(Date.class, new STDDRenderer());
+		stable.setDefaultRenderer(String.class, new STStringRenderer());
+
+		stable.getColumnModel().getColumn(0).setPreferredWidth(5);
+		stable.getColumnModel().getColumn(1).setPreferredWidth(5);
+		stable.getColumnModel().getColumn(2).setPreferredWidth(300);
+		stable.getColumnModel().getColumn(3).setPreferredWidth(30);
+		stable.getColumnModel().getColumn(4).setPreferredWidth(30);
+		stable.getColumnModel().getColumn(5).setPreferredWidth(30);
+		stable.getColumnModel().getColumn(6).setPreferredWidth(30);
+
+		if (!TaskModel.getReference().hasSubTasks()) {
+			stable.getTableHeader().setEnabled(false);
+			stable.getTableHeader().setReorderingAllowed(false);
+			stable.getTableHeader().setResizingAllowed(false);
+			return;
+		}
+		stable.setDefaultEditor(Date.class, new JDateChooserCellEditor());
+
+		TableSorter ts = (TableSorter) stable.getModel();
+
+		ts.sortByColumn(4);
+		ts.addMouseListenerToHeaderInTable(stable);
+		new PopupMenuHelper(stable, new PopupMenuHelper.Entry[] {
+				new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						insertSubtask();
+					}
+				}, "Add_Subtask"),
+				new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						TableSorter ts = (TableSorter) stable.getModel();
+
+						Integer ids[] = getSelectedIds();
+
+						for (int i = 0; i < ids.length; ++i) {
+							if (ids[i] == null)
+								continue;
+							for (int row = 0; row < ts.getRowCount(); row++) {
+								Integer rowid = (Integer) ts.getValueAt(row, 1);
+								if (rowid != null
+										&& rowid.intValue() == ids[i]
+												.intValue()) {
+									ts.setValueAt(null, row, 4);
+									break;
+								}
+							}
+						}
+					}
+				}, "Clear_DueDate"),
+				new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						TableSorter ts = (TableSorter) stable.getModel();
+
+						int[] indices = stable.getSelectedRows();
+						if (indices.length == 0)
+							return;
+
+						DateDialog dlg = new DateDialog(null);
+						dlg.setCalendar(new GregorianCalendar());
+						dlg.setVisible(true);
+						Calendar dlgcal = dlg.getCalendar();
+						if (dlgcal == null)
+							return;
+
+						Integer ids[] = getSelectedIds();
+
+						for (int i = 0; i < ids.length; ++i) {
+							if (ids[i] == null)
+								continue;
+							for (int row = 0; row < ts.getRowCount(); row++) {
+								Integer rowid = (Integer) ts.getValueAt(row, 1);
+								if (rowid != null
+										&& rowid.intValue() == ids[i]
+												.intValue()) {
+									ts.setValueAt(dlgcal.getTime(), row, 4);
+									break;
+								}
+							}
+						}
+					}
+				}, "Set_DueDate"),
+				new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						TableSorter ts = (TableSorter) stable.getModel();
+						Integer ids[] = getSelectedIds();
+						if (ids.length == 0)
+							return;
+
+						int ret = JOptionPane.showConfirmDialog(null, Resource
+								.getResourceString("Really_Delete_")
+								+ "?", Resource
+								.getPlainResourceString("Confirm_Delete"),
+								JOptionPane.OK_CANCEL_OPTION,
+								JOptionPane.QUESTION_MESSAGE);
+						if (ret != JOptionPane.OK_OPTION)
+							return;
+
+						for (int i = 0; i < ids.length; ++i) {
+							// System.out.println(ids[i]);
+							if (ids[i] == null)
+								continue;
+							tbd_.add(ids[i]);
+							for (int row = 0; row < ts.getRowCount(); row++) {
+								Integer rowid = (Integer) ts.getValueAt(row, 1);
+								if (rowid != null
+										&& rowid.intValue() == ids[i]
+												.intValue()) {
+									// clear the row
+									ts.setValueAt(new Boolean(false), row, 0);
+									ts.setValueAt(null, row, 1);
+									ts.setValueAt(null, row, 2);
+									ts.setValueAt(null, row, 3);
+									ts.setValueAt(null, row, 4);
+									ts.setValueAt(null, row, 5);
+									ts.setValueAt(null, row, 6);
+									break;
+								}
+							}
+						}
+
+						// if table is now empty - add 1 row back
+						if (ts.getRowCount() == 0) {
+							insertSubtask();
+						}
+					}
+				}, "Delete"), });
+
+	}
+	private void insertSubtask() {
+		Object o[] = { new Boolean(false), null, null, null, null, null, null };
+		TableSorter ts = (TableSorter) stable.getModel();
+
+		ts.addRow(o);
+	}
 
 	private void jButton2ActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_jButton2ActionPerformed
 	{// GEN-HEADEREND:event_jButton2ActionPerformed
 		savetask(evt);
 	}// GEN-LAST:event_jButton2ActionPerformed
+
+	private void jButton3ActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_jButton3ActionPerformed
+	{// GEN-HEADEREND:event_jButton3ActionPerformed
+		this.dispose();
+	}// GEN-LAST:event_jButton3ActionPerformed
+
+	private void loadLog(int taskid) throws Exception {
+		TableSorter tslog = (TableSorter) logtable.getModel();
+		tslog.setRowCount(0);
+		// add log entries
+		Collection logs = TaskModel.getReference().getLogs(taskid);
+		Iterator it = logs.iterator();
+		while (it.hasNext()) {
+			Tasklog s = (Tasklog) it.next();
+			Object o[] = { s.getlogTime(), s.getDescription() };
+
+			tslog.addRow(o);
+		}
+	}
+
+	private void saveSubtasks(Task task) throws Warning, Exception {
+
+		int tasknum = task.getTaskNumber().intValue();
+		Iterator it = tbd_.iterator();
+		while (it.hasNext()) {
+			Integer id = (Integer) it.next();
+			// System.out.println("deleting sub task: " + id.intValue());
+			TaskModel.getReference().deleteSubTask(id.intValue());
+			TaskModel.getReference().addLog(
+					tasknum,
+					Resource.getPlainResourceString("subtask") + " "
+							+ id.toString() + " "
+							+ Resource.getPlainResourceString("deleted"));
+		}
+
+		tbd_.clear();
+
+		// loop through rows
+		TableSorter ts = (TableSorter) stable.getModel();
+		
+		// stop editing
+		if( stable.isEditing())
+		    stable.getCellEditor().stopCellEditing();
+		for (int r = 0; r < stable.getRowCount(); r++) {
+		        
+			Object desc = ts.getValueAt(r, 2);
+			if (desc == null || desc.equals(""))
+				continue;
+
+			Integer id = (Integer) ts.getValueAt(r, 1);
+
+			Boolean closed = (Boolean) ts.getValueAt(r, 0);
+			
+			Date crd = (Date) ts.getValueAt(r, 3);
+			if (crd == null)
+				crd = new Date();
+			Date dd = (Date) ts.getValueAt(r, 4);
+			Date cd = (Date) ts.getValueAt(r, 6);
+			
+			boolean closing = false;
+			if (closed.booleanValue() == true && cd == null) {
+				cd = new Date();
+				closing = true;
+			} else if (closed.booleanValue() == false && cd != null)
+				cd = null;
+
+			Subtask s = new Subtask();
+			s.setId(id);
+			s.setDescription((String) desc);
+			s.setCloseDate(cd);
+			s.setDueDate(dd);
+
+			// validate dd - make sure only date and not time is compared
+			if (dd != null) {
+			        if( isAfter( dd, task.getDueDate()))
+			        {
+					String msg = Resource
+							.getPlainResourceString("stdd_warning")
+							+ ": " + desc;
+					throw new Warning(msg);
+				}
+
+			}
+
+			s.setCreateDate(crd);
+			s.setTask(new Integer(tasknum));
+			TaskModel.getReference().saveSubTask(s);
+			if (id == null || id.intValue() == 0) {
+				TaskModel.getReference().addLog(
+						tasknum,
+						Resource.getPlainResourceString("subtask") + " "
+								+ s.getId().toString() + " "
+								+ Resource.getPlainResourceString("created")
+								+ ": " + s.getDescription());
+			}
+			if (closing) {
+				TaskModel.getReference().addLog(
+						tasknum,
+						Resource.getPlainResourceString("subtask") + " "
+								+ s.getId().toString() + " "
+								+ Resource.getPlainResourceString("Closed")
+								+ ": " + s.getDescription());
+			}
+		}
+	}
 
 	// save a task
 	private void savetask(java.awt.event.ActionEvent evt)// GEN-FIRST:event_savetask
@@ -1040,110 +1350,6 @@ class TaskView extends View {
 		}
 
 	}// GEN-LAST:event_savetask
-
-	private void saveSubtasks(Task task) throws Warning, Exception {
-
-		int tasknum = task.getTaskNumber().intValue();
-		Iterator it = tbd_.iterator();
-		while (it.hasNext()) {
-			Integer id = (Integer) it.next();
-			// System.out.println("deleting sub task: " + id.intValue());
-			TaskModel.getReference().deleteSubTask(id.intValue());
-			TaskModel.getReference().addLog(
-					tasknum,
-					Resource.getPlainResourceString("subtask") + " "
-							+ id.toString() + " "
-							+ Resource.getPlainResourceString("deleted"));
-		}
-
-		tbd_.clear();
-
-		// loop through rows
-		TableSorter ts = (TableSorter) stable.getModel();
-		
-		// stop editing
-		if( stable.isEditing())
-		    stable.getCellEditor().stopCellEditing();
-		for (int r = 0; r < stable.getRowCount(); r++) {
-		        
-			Object desc = ts.getValueAt(r, 2);
-			if (desc == null || desc.equals(""))
-				continue;
-
-			Integer id = (Integer) ts.getValueAt(r, 1);
-
-			Boolean closed = (Boolean) ts.getValueAt(r, 0);
-			
-			Date crd = (Date) ts.getValueAt(r, 3);
-			if (crd == null)
-				crd = new Date();
-			Date dd = (Date) ts.getValueAt(r, 4);
-			Date cd = (Date) ts.getValueAt(r, 6);
-			
-			boolean closing = false;
-			if (closed.booleanValue() == true && cd == null) {
-				cd = new Date();
-				closing = true;
-			} else if (closed.booleanValue() == false && cd != null)
-				cd = null;
-
-			Subtask s = new Subtask();
-			s.setId(id);
-			s.setDescription((String) desc);
-			s.setCloseDate(cd);
-			s.setDueDate(dd);
-
-			// validate dd - make sure only date and not time is compared
-			if (dd != null) {
-			        if( isAfter( dd, task.getDueDate()))
-			        {
-					String msg = Resource
-							.getPlainResourceString("stdd_warning")
-							+ ": " + desc;
-					throw new Warning(msg);
-				}
-
-			}
-
-			s.setCreateDate(crd);
-			s.setTask(new Integer(tasknum));
-			TaskModel.getReference().saveSubTask(s);
-			if (id == null || id.intValue() == 0) {
-				TaskModel.getReference().addLog(
-						tasknum,
-						Resource.getPlainResourceString("subtask") + " "
-								+ s.getId().toString() + " "
-								+ Resource.getPlainResourceString("created")
-								+ ": " + s.getDescription());
-			}
-			if (closing) {
-				TaskModel.getReference().addLog(
-						tasknum,
-						Resource.getPlainResourceString("subtask") + " "
-								+ s.getId().toString() + " "
-								+ Resource.getPlainResourceString("Closed")
-								+ ": " + s.getDescription());
-			}
-		}
-	}
-
-	private void disact(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_disact
-		this.dispose();
-	}// GEN-LAST:event_disact
-
-	private void loadLog(int taskid) throws Exception {
-		TableSorter tslog = (TableSorter) logtable.getModel();
-		tslog.setRowCount(0);
-		// add log entries
-		Collection logs = TaskModel.getReference().getLogs(taskid);
-		Iterator it = logs.iterator();
-		while (it.hasNext()) {
-			Tasklog s = (Tasklog) it.next();
-			Object o[] = { s.getlogTime(), s.getDescription() };
-
-			tslog.addRow(o);
-		}
-	}
 
 	private void showtask(int function, Task task) throws Exception {
 		TaskModel taskmod_ = TaskModel.getReference();
@@ -1331,211 +1537,5 @@ class TaskView extends View {
 		if (TaskModel.getReference().hasSubTasks() && stable.getRowCount() == 0) {
 			insertSubtask();
 		}
-	}
-
-	// Variables declaration - do not modify//GEN-BEGIN:variables
-	private javax.swing.JLabel catlabel;
-
-	private javax.swing.JButton jButton2;
-
-	private javax.swing.JButton jButton3;
-
-	private javax.swing.JLabel lblItemNum;
-
-	private javax.swing.JLabel lblStatus;
-
-	private javax.swing.JLabel lblStartDate;
-
-	private javax.swing.JLabel lblDueDate;
-
-	private javax.swing.JLabel lblPri;
-
-	private javax.swing.JLabel lblPA;
-
-	private javax.swing.JLabel lblType;
-
-	private javax.swing.JMenu jMenu1;
-
-	private javax.swing.JMenuBar jMenuBar1;
-
-	private javax.swing.JMenuItem jMenuItem1;
-
-	private javax.swing.JMenuItem jMenuItem2;
-
-	private javax.swing.JPanel jPanel3;
-
-	private javax.swing.JPanel jPanel4;
-
-	private javax.swing.JScrollPane jScrollPane1;
-
-	private javax.swing.JScrollPane jScrollPane2;
-
-	private javax.swing.JTabbedPane jTabbedPane1;
-
-	private javax.swing.JTextArea jTextArea1;
-
-	private javax.swing.JTextArea jTextArea2;
-
-	private javax.swing.JTextField itemtext;
-
-	private JDateChooser startdatechooser;
-
-	private JDateChooser duedatechooser;
-
-	private javax.swing.JComboBox pritext;
-
-	private javax.swing.JTextField patext;
-
-	private javax.swing.JComboBox statebox;
-
-	private javax.swing.JComboBox typebox;
-
-	// End of variables declaration//GEN-END:variables
-
-	private JPanel jPanel = null;
-
-	private JComboBox catbox = null;
-
-	private JTextField closeDate = null;
-
-	private JLabel closeLabel = null;
-
-	private JTextField daysLeftText = null;
-
-	private JLabel daysLeftLabel = null;
-
-	private JSplitPane jSplitPane = null;
-
-	/**
-	 * This method initializes jPanel
-	 * 
-	 * @return javax.swing.JPanel
-	 */
-	JPanel stpanel = new JPanel();
-	private JPanel getJPanel() {
-		if (jPanel == null) {
-			
-			GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
-			gridBagConstraints5.fill = GridBagConstraints.BOTH;
-			gridBagConstraints5.weighty = 1.0;
-			gridBagConstraints5.gridx = 0;
-			gridBagConstraints5.gridy = 1;
-			gridBagConstraints5.insets = new Insets(4, 4, 4, 4);
-			gridBagConstraints5.weightx = 1.0;
-			GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
-			gridBagConstraints4.fill = GridBagConstraints.BOTH;
-			gridBagConstraints4.gridx = 0;
-			gridBagConstraints4.gridy = 0;
-			gridBagConstraints4.weightx = 1.0;
-			gridBagConstraints4.weighty = 1.0;
-			gridBagConstraints4.insets = new Insets(4, 4, 4, 4);
-			GridBagConstraints gridBagConstraints25 = new GridBagConstraints();
-			GridBagConstraints gridBagConstraints21 = new GridBagConstraints();
-			jPanel = new JPanel();
-			jPanel.setLayout(new GridBagLayout());
-			gridBagConstraints21.gridx = 0;
-			gridBagConstraints21.gridy = 0;
-			gridBagConstraints21.fill = java.awt.GridBagConstraints.BOTH;
-			gridBagConstraints21.weightx = 1.0D;
-
-			gridBagConstraints25.gridx = 0;
-			gridBagConstraints25.gridy = 2;
-
-			jPanel.add(getJSplitPane(), gridBagConstraints5);
-			jPanel.add(jPanel3, gridBagConstraints21); // Generated
-
-			jPanel.add(jPanel4, gridBagConstraints25);
-			// subtasks
-			JScrollPane stscroll = new JScrollPane();
-			stscroll.setPreferredSize(new Dimension(300, 300));
-			stscroll.setViewportView(stable);
-			
-			stpanel.setLayout(new GridBagLayout());
-			stpanel.setBorder(new javax.swing.border.TitledBorder(Resource
-					.getResourceString("Subtasks")));
-			stpanel.add(stscroll, gridBagConstraints4);
-			
-		}
-		return jPanel;
-	}
-
-	/**
-	 * This method initializes catbox
-	 * 
-	 * @return javax.swing.JComboBox
-	 */
-	private JComboBox getCatbox() {
-		if (catbox == null) {
-			catbox = new JComboBox();
-		}
-		return catbox;
-	}
-
-	/**
-	 * This method initializes closeDate
-	 * 
-	 * @return javax.swing.JTextField
-	 */
-	private JTextField getCloseDate() {
-		if (closeDate == null) {
-			closeDate = new JTextField();
-
-			closeDate.setEditable(false); // Generated
-		}
-		return closeDate;
-	}
-
-	/**
-	 * This method initializes daysLeftText
-	 * 
-	 * @return javax.swing.JTextField
-	 */
-	private JTextField getDaysLeftText() {
-		if (daysLeftText == null) {
-			daysLeftText = new JTextField();
-			daysLeftText.setEditable(false);
-		}
-		return daysLeftText;
-	}
-
-	static public String getProjectString(Project p) {
-		return p.getId().toString() + ":" + p.getDescription();
-	}
-
-	static public Integer getProjectId(String s) throws Exception {
-		int i = s.indexOf(":");
-		if( i == -1 ) throw new Exception("Cannot parse project label");
-		String ss = s.substring(0, i);
-
-		int pid = Integer.parseInt(ss);
-		return new Integer(pid);
-
-	}
-
-	/**
-	 * This method initializes jSplitPane	
-	 * 	
-	 * @return javax.swing.JSplitPane	
-	 */
-	private JSplitPane getJSplitPane() {
-	    if (jSplitPane == null) {
-		jSplitPane = new JSplitPane();
-		jSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
-		if( TaskModel.getReference().hasSubTasks())
-		{
-			jSplitPane.setBottomComponent(stpanel);
-		}
-		else
-		{
-			JTextArea ta = new JTextArea();
-			ta.setText(Resource.getPlainResourceString("SubtaskNotSupported"));
-			ta.setEditable(false);
-			jSplitPane.setBottomComponent(ta);
-		}
-		jSplitPane.setPreferredSize(new Dimension(400, 400));
-		jSplitPane.setDividerLocation(100);
-		jSplitPane.setTopComponent(jTabbedPane1);
-	    }
-	    return jSplitPane;
 	}
 } // @jve:decl-index=0:visual-constraint="115,46"

@@ -73,30 +73,12 @@ import net.sf.borg.model.TaskModel;
 
 public class CalendarPanel extends JPanel implements Prefs.Listener, Navigator {
 
-	// current year/month being viewed
-	private int year_;
-	private int month_;
-	private MultiView parent_ = null;
-	
-	static final private int NUM_DAY_BOXES = 40;
-
-	public CalendarPanel(MultiView parent, int month, int year) {
-		super();
-		month_ = month;
-		year_ = year;
-		parent_ = parent;
-		
-		init();
-		ToolTipManager.sharedInstance().setDismissDelay(Integer.MAX_VALUE);	
-		Prefs.addListener(this);
-	}
-
 	private static class DayMouseListener implements MouseListener {
-		int year;
-		int month;
 		int date;
 		boolean isDateButton_;
+		int month;
 		MultiView mv_;
+		int year;
 
 		public DayMouseListener(MultiView mv, int year, int month, int date,
 				boolean isDateButton) {
@@ -137,226 +119,82 @@ public class CalendarPanel extends JPanel implements Prefs.Listener, Navigator {
 		public void mouseReleased(MouseEvent arg0) {
 		}
 	}
+	static final private int NUM_DAY_BOXES = 40;
+	/**
+	 * date buttons
+	 */
+	private JButton daynum[];
+	
+	private JLabel dayOfYear[];
 
-	private void init() {
+	/**
+	 * array of day panels
+	 */
+	private JPanel days[];
 
-		initComponents();
+	private JTextPane daytext[];
 
-		GridBagConstraints cons;
-
-		// the day boxes - which will contain a date button and day text
-		days = new JPanel[NUM_DAY_BOXES];
-
-		// the day text areas
-		daytext = new JTextPane[NUM_DAY_BOXES];
-
-		// the date buttons
-		daynum = new JButton[NUM_DAY_BOXES];
-		dayOfYear = new JLabel[NUM_DAY_BOXES];
-
-		// initialize the days
-		for (int i = 0; i < NUM_DAY_BOXES; i++) {
-
-			// allocate a panel for each day
-			// and add a date button and non wrapping text pane
-			// in each
-			days[i] = new JPanel();
-			days[i].setLayout(new GridBagLayout());
-			// as per the experts, this subclass of JTextPane is the only way to
-			// stop word-wrap
-			JTextPane jep = null;
-			String wrap = Prefs.getPref(PrefName.WRAP);
-			if (wrap.equals("true")) {
-				jep = new JTextPane();
-			} else {
-				jep = new JTextPane() {
-					public boolean getScrollableTracksViewportWidth() {
-						return false;
-					}
-
-					public void setSize(Dimension d) {
-						if (d.width < getParent().getSize().width) {
-							d.width = getParent().getSize().width;
-						}
-						super.setSize(d);
-					}
-				};
-			}
-			daytext[i] = jep;
-			daytext[i].setEditable(false);
-			daynum[i] = new JButton("N");
-
-			dayOfYear[i] = new JLabel();
-
-			// continue laying out the day panel. want the date button in upper
-			// right
-			// and want the text pane top to be lower than the bottom of the
-			// button.
-			Insets is = new Insets(1, 4, 1, 4);
-			daynum[i].setMargin(is);
-			days[i].setBorder(new BevelBorder(BevelBorder.RAISED));
-			days[i].add(daynum[i]);
-			cons = new GridBagConstraints();
-			cons.gridx = 1;
-			cons.gridy = 0;
-			cons.gridwidth = 1;
-			cons.fill = GridBagConstraints.NONE;
-			cons.anchor = GridBagConstraints.NORTHEAST;
-			days[i].add(daynum[i], cons);
-
-			cons = new GridBagConstraints();
-			cons.gridx = 0;
-			cons.gridy = 0;
-			cons.gridwidth = 1;
-			cons.fill = GridBagConstraints.NONE;
-			cons.anchor = GridBagConstraints.NORTHWEST;
-			days[i].add(dayOfYear[i], cons);
-
-			cons.gridx = 0;
-			cons.gridy = 1;
-			cons.gridwidth = 2;
-			cons.weightx = 1.0;
-			cons.weighty = 1.0;
-			cons.fill = GridBagConstraints.BOTH;
-			cons.anchor = GridBagConstraints.NORTHWEST;
-
-			// put the appt text in an invisible scroll pane
-			// scrollbars will only appear if needed due to amount of appt text
-			JScrollPane sp = new JScrollPane();
-			sp.setViewportView(daytext[i]);
-			sp
-					.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-			sp
-					.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-			sp.setBorder(new EmptyBorder(0, 0, 0, 0));
-			sp.getHorizontalScrollBar().setPreferredSize(new Dimension(0, 5));
-			sp.getVerticalScrollBar().setPreferredSize(new Dimension(5, 0));
-			days[i].add(sp, cons);
-
-			jPanel1.add(days[i]);
-		}
-
-		// add filler to the Grid
-		// jPanel1.add(new JPanel());
-		// jPanel1.add(new JPanel());
-		// jPanel1.add( new JPanel() );
-
-		setDayLabels();
-
-		//
-		// ToDo PREVIEW BOX
-		//
-		todoPreview = new JTextPane() {
-			public boolean getScrollableTracksViewportWidth() {
-				return false;
-			}
-
-			public void setSize(Dimension d) {
-				if (d.width < getParent().getSize().width) {
-					d.width = getParent().getSize().width;
-				}
-				super.setSize(d);
-			}
-		};
-		todoPreview.addMouseListener(new MouseListener() {
-			public void mouseClicked(MouseEvent evt) {
-				TodoView.getReference().setVisible(true);
-			}
-
-			public void mouseEntered(MouseEvent arg0) {
-			}
-
-			public void mouseExited(MouseEvent arg0) {
-			}
-
-			public void mousePressed(MouseEvent arg0) {
-			}
-
-			public void mouseReleased(MouseEvent arg0) {
-			}
-		});
-		todoPreview.setBackground(new Color(204, 204, 204));
-		todoPreview.setEditable(false);
-		JScrollPane sp = new JScrollPane();
-		sp.setViewportView(todoPreview);
-		sp
-				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		sp
-				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-		// sp.setBorder( new javax.swing.border.EmptyBorder(0,0,0,0) );
-		sp.getHorizontalScrollBar().setPreferredSize(new Dimension(0, 5));
-		sp.getVerticalScrollBar().setPreferredSize(new Dimension(5, 0));
-		jPanel1.add(sp);
-
-		//
-		// TASK PREVIEW BOX
-		//
-		taskPreview = new JTextPane() {
-			public boolean getScrollableTracksViewportWidth() {
-				return false;
-			}
-
-			public void setSize(Dimension d) {
-				if (d.width < getParent().getSize().width) {
-					d.width = getParent().getSize().width;
-				}
-				super.setSize(d);
-			}
-		};
-		taskPreview.setBackground(new Color(204, 204, 204));
-		taskPreview.setEditable(false);
-		/*
-		taskPreview.addMouseListener(new MouseListener() {
-			public void mouseClicked(MouseEvent evt) {
-				TaskListView v = TaskListView.getReference();
-				v.refresh();
-				v.setVisible(true);
-			}
-
-			public void mouseEntered(MouseEvent arg0) {
-			}
-
-			public void mouseExited(MouseEvent arg0) {
-			}
-
-			public void mousePressed(MouseEvent arg0) {
-			}
-
-			public void mouseReleased(MouseEvent arg0) {
-			}
-		});*/
-		sp = new JScrollPane();
-		sp.setViewportView(taskPreview);
-		sp
-				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		sp
-				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-		// sp.setBorder( new javax.swing.border.EmptyBorder(0,0,0,0) );
-		sp.getHorizontalScrollBar().setPreferredSize(new Dimension(0, 5));
-		sp.getVerticalScrollBar().setPreferredSize(new Dimension(5, 0));
-		jPanel1.add(sp);
-
-		// update the styles used in the appointment text panes for the various
-		// appt text
-		// colors, based on the current font size set by the user
-		updStyles();
-
-		// init view to current month
-		try {
-			today();
-		} catch (Exception e) {
-			Errmsg.errmsg(e);
-		}
-
-	}
+	private javax.swing.JButton jButton1;
 
 
-	/* set borg to current month and refresh the screen */
-	public void today() {
-		GregorianCalendar cal = new GregorianCalendar();
-		month_ = cal.get(Calendar.MONTH);
-		year_ = cal.get(Calendar.YEAR);
-		refresh();
+	private javax.swing.JButton jButton2;
+
+	private javax.swing.JButton jButton3;
+
+	private javax.swing.JButton jButton4;
+
+	private javax.swing.JButton jButton5;
+
+	private javax.swing.JLabel jLabel1;
+
+	private javax.swing.JLabel jLabel3;
+
+
+
+	private javax.swing.JLabel jLabel4;
+
+	private javax.swing.JLabel jLabel5;
+
+	private javax.swing.JLabel jLabel6;
+
+	private javax.swing.JLabel jLabel7;
+
+	private javax.swing.JLabel jLabel8;
+
+	private javax.swing.JPanel jPanel1;
+
+	private javax.swing.JPanel jPanel2;
+
+	private javax.swing.JPanel jPanel3;
+
+	private javax.swing.JPanel jPanel4;
+
+	private int month_;
+
+	private javax.swing.JLabel MonthLabel;
+
+
+	// Variables declaration - do not modify//GEN-BEGIN:variables
+
+	
+	private MultiView parent_ = null;
+
+	private JTextPane taskPreview;
+
+	private JTextPane todoPreview;
+
+	// current year/month being viewed
+	private int year_;
+
+	public CalendarPanel(MultiView parent, int month, int year) {
+		super();
+		month_ = month;
+		year_ = year;
+		parent_ = parent;
+		
+		init();
+		ToolTipManager.sharedInstance().setDismissDelay(Integer.MAX_VALUE);	
+		Prefs.addListener(this);
 	}
 
 	public void goTo(Calendar cal) {
@@ -365,155 +203,33 @@ public class CalendarPanel extends JPanel implements Prefs.Listener, Navigator {
 		refresh();
 	}
 
-	// initialize the various text styles used for appointment
-	// text for a single text pane
-	private void initStyles(JTextPane textPane, Style def, Font font) {
-		// Initialize some styles.
-		Style bl = textPane.addStyle("black", def);
-		int fontsize = font.getSize();
-		String family = font.getFamily();
-		boolean bold = font.isBold();
-		boolean italic = font.isItalic();
+	public void next() {
+		NextActionPerformed(null);
+	}
 
-		StyleConstants.setFontFamily(bl, family);
-		StyleConstants.setBold(bl, bold);
-		StyleConstants.setItalic(bl, italic);
-		StyleConstants.setFontSize(bl, fontsize);
-		String ls = Prefs.getPref(PrefName.LINESPACING);
-		float f = Float.parseFloat(ls);
-		StyleConstants.setLineSpacing(bl, f);
+	// called when a Prefs change notification is sent out
+	// to all Prefs.Listeners
+	public void prefsChanged() {
+		// System.out.println("pr called");
+		SwingUtilities.updateComponentTreeUI(this);
+		updStyles();
+		setDayLabels();
+		refresh();
+	}
 
-		boolean bUseUCS = ((Prefs.getPref(PrefName.UCS_ON)).equals("true")) ? true
-				: false;
-		Color ctemp;
-		try {
-			Style s = textPane.addStyle("blue", bl);
-			ctemp = new Color((new Integer(Prefs.getPref(PrefName.UCS_BLUE)))
-					.intValue());
-			StyleConstants.setForeground(s, bUseUCS ? (ctemp) : (new Color(102,0,204)));
+	public void prev() {
+		PrevActionPerformed(null);		
+	}
 
-			s = textPane.addStyle("red", bl);
-			ctemp = new Color((new Integer(Prefs.getPref(PrefName.UCS_RED)))
-					.intValue());
-			StyleConstants.setForeground(s, bUseUCS ? (ctemp) : (new Color(204,0,51)));
-
-			s = textPane.addStyle("green", bl);
-		
-			ctemp = new Color((new Integer(Prefs.getPref(PrefName.UCS_GREEN)))
-					.intValue());
-			StyleConstants.setForeground(s, bUseUCS ? (ctemp) : (new Color(0,153,0)));
-
-			s = textPane.addStyle("white", bl);
-			ctemp = new Color((new Integer(Prefs.getPref(PrefName.UCS_WHITE)))
-					.intValue());
-			StyleConstants.setForeground(s, bUseUCS ? (ctemp) : (Color.WHITE));
-
-			s = textPane.addStyle("navy", bl);
-			ctemp = new Color((new Integer(Prefs.getPref(PrefName.UCS_NAVY)))
-					.intValue());
-			StyleConstants.setForeground(s, bUseUCS ? (ctemp) : (new Color(0,
-					0, 102)));
-
-			s = textPane.addStyle("purple", bl);
-			ctemp = new Color((new Integer(Prefs.getPref(PrefName.UCS_PURPLE)))
-					.intValue());
-			StyleConstants.setForeground(s, bUseUCS ? (ctemp) : (new Color(102,
-					0, 102)));
-
-			s = textPane.addStyle("brick", bl);
-			ctemp = new Color((new Integer(Prefs.getPref(PrefName.UCS_BRICK)))
-					.intValue());
-			StyleConstants.setForeground(s, bUseUCS ? (ctemp) : (new Color(102,
-					0, 0)));
-
-			s = textPane.addStyle("ul", bl);
-			StyleConstants.setUnderline(s, true);
-
-			s = textPane.addStyle("strike", bl);
-			StyleConstants.setStrikeThrough(s, true);
-
-			URL icon = getClass().getResource(
-					"/resource/" + Prefs.getPref(PrefName.UCS_MARKER));
-			if (icon != null) {
-				s = textPane.addStyle("icon", bl);
-				StyleConstants.setIcon(s, new ImageIcon(icon));
-			}
-
-		} catch (NoSuchFieldError e) {
-			// java 1.3 - just use black
+	public void print()
+	{
+//		 print the current month
+		try {			
+			MonthPreView.printMonth(month_,year_);
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
 		}
-
 	}
-
-	// update the text styles for all appt text panes
-	// this is called when the user changes the font size
-	void updStyles() {
-
-		Style def = StyleContext.getDefaultStyleContext().getStyle(
-				StyleContext.DEFAULT_STYLE);
-
-		// update all of the text panes
-		String s = Prefs.getPref(PrefName.APPTFONT);
-		Font f = Font.decode(s);
-		for (int i = 0; i < NUM_DAY_BOXES; i++) {
-			initStyles(daytext[i], def, f);
-		}
-
-		s = Prefs.getPref(PrefName.PREVIEWFONT);
-		f = Font.decode(s);
-
-		initStyles(todoPreview, def, f);
-		initStyles(taskPreview, def, f);
-		// initStyles(dbInfo, def, f);
-	}
-
-	// adds a string to an appt text pane using a given style
-	private void addString(JTextPane tp, String s, String style)
-			throws Exception {
-		// Add the string.
-		StyledDocument doc = tp.getStyledDocument();
-
-		if (style == null)
-			style = "black";
-
-		// get the right style based on the color
-		Style st = tp.getStyle(style);
-
-		// static can be null for old BORG DBs that have
-		// colors no longer supported. Only 2-3 people would encounter this.
-		// default to black
-		if (st == null)
-			st = tp.getStyle("black");
-
-		// add string to text pane
-		doc.insertString(doc.getLength(), s, st);
-
-	}
-
-	void setDayLabels() {
-		// determine first day and last day of the month
-		GregorianCalendar cal = new GregorianCalendar();
-		cal.setFirstDayOfWeek(Prefs.getIntPref(PrefName.FIRSTDOW));
-		cal.set(Calendar.DATE, 1);
-		cal.add(Calendar.DAY_OF_WEEK, cal.getFirstDayOfWeek()
-				- cal.get(Calendar.DAY_OF_WEEK));
-		SimpleDateFormat dwf = new SimpleDateFormat("EEEE");
-		jLabel1.setText(dwf.format(cal.getTime()));
-		cal.add(Calendar.DAY_OF_WEEK, 1);
-		jLabel3.setText(dwf.format(cal.getTime()));
-		cal.add(Calendar.DAY_OF_WEEK, 1);
-		jLabel4.setText(dwf.format(cal.getTime()));
-		cal.add(Calendar.DAY_OF_WEEK, 1);
-		jLabel5.setText(dwf.format(cal.getTime()));
-		cal.add(Calendar.DAY_OF_WEEK, 1);
-		jLabel6.setText(dwf.format(cal.getTime()));
-		cal.add(Calendar.DAY_OF_WEEK, 1);
-		jLabel7.setText(dwf.format(cal.getTime()));
-		cal.add(Calendar.DAY_OF_WEEK, 1);
-		jLabel8.setText(dwf.format(cal.getTime()));
-	}
-
-
 
 	/**
 	 * refresh displays a month on the main gui window and updates the todo and
@@ -872,140 +588,256 @@ public class CalendarPanel extends JPanel implements Prefs.Listener, Navigator {
 		}
 	}
 
-	private void refreshTodoView() throws Exception {
+	/* set borg to current month and refresh the screen */
+	public void today() {
+		GregorianCalendar cal = new GregorianCalendar();
+		month_ = cal.get(Calendar.MONTH);
+		year_ = cal.get(Calendar.YEAR);
+		refresh();
+	}
 
-		// update todoPreview Box
-		StyledDocument tdoc = todoPreview.getStyledDocument();
-		tdoc.remove(0, tdoc.getLength());
-
-		// sort and add the todos
-		Vector tds = AppointmentModel.getReference().get_todos();
-		if (tds.size() > 0) {
-			addString(todoPreview, Resource.getResourceString("Todo_Preview")
-					+ "\n", "ul");
-
-			// the treeset will sort by date
-			TreeSet ts = new TreeSet(new Comparator() {
-				public int compare(java.lang.Object obj, java.lang.Object obj1) {
-					try {
-						Appointment r1 = (Appointment) obj;
-						Appointment r2 = (Appointment) obj1;
-						Date dt1 = r1.getNextTodo();
-						if (dt1 == null) {
-							dt1 = r1.getDate();
-						}
-						Date dt2 = r2.getNextTodo();
-						if (dt2 == null) {
-							dt2 = r2.getDate();
-						}
-
-						if (dt1.after(dt2))
-							return (1);
-						return (-1);
-					} catch (Exception e) {
-						return (0);
-					}
-				}
-			});
-
-			// sort the todos by adding to the TreeSet
-			for (int i = 0; i < tds.size(); i++) {
-				ts.add(tds.elementAt(i));
-			}
-
-			Iterator it = ts.iterator();
-			while (it.hasNext()) {
-				try {
-					Appointment r = (Appointment) it.next();
-
-					// !!!!! only show first line of appointment text !!!!!!
-					String tx = "";
-					String xx = r.getText();
-					int ii = xx.indexOf('\n');
-					if (ii != -1) {
-						tx = xx.substring(0, ii);
-					} else {
-						tx = xx;
-					}
-					addString(todoPreview, tx + "\n", r.getColor());
-
-				} catch (Exception e) {
-					Errmsg.errmsg(e);
-				}
-
-			}
-			todoPreview.setCaretPosition(0);
-		} else {
-			addString(todoPreview, Resource.getResourceString("Todo_Preview")
-					+ "\n", "ul");
-			addString(todoPreview, Resource.getResourceString("none_pending"),
-					"black");
+	public void today(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_today
+		try {
+			// set view back to month containing today
+			today();
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
 		}
+	}// GEN-LAST:event_today
+
+	// adds a string to an appt text pane using a given style
+	private void addString(JTextPane tp, String s, String style)
+			throws Exception {
+		// Add the string.
+		StyledDocument doc = tp.getStyledDocument();
+
+		if (style == null)
+			style = "black";
+
+		// get the right style based on the color
+		Style st = tp.getStyle(style);
+
+		// static can be null for old BORG DBs that have
+		// colors no longer supported. Only 2-3 people would encounter this.
+		// default to black
+		if (st == null)
+			st = tp.getStyle("black");
+
+		// add string to text pane
+		doc.insertString(doc.getLength(), s, st);
 
 	}
 
-	private void refreshTaskView() throws Exception {
-		// update taskPreview Box
-		StyledDocument tkdoc = taskPreview.getStyledDocument();
-		tkdoc.remove(0, tkdoc.getLength());
+	private void init() {
 
-		// sort and add the tasks
-		Vector tks = TaskModel.getReference().get_tasks();
-		if (tks.size() > 0) {
-			addString(taskPreview, Resource.getResourceString("Task_Preview")
-					+ "\n", "ul");
+		initComponents();
 
-			// the treeset will sort by date
-			TreeSet ts = new TreeSet(new Comparator() {
-				public int compare(java.lang.Object obj, java.lang.Object obj1) {
-					try {
-						Task r1 = (Task) obj;
-						Task r2 = (Task) obj1;
-						Date dt1 = r1.getDueDate();
-						Date dt2 = r2.getDueDate();
-						if (dt1.after(dt2))
-							return (1);
-						return (-1);
-					} catch (Exception e) {
-						return (0);
+		GridBagConstraints cons;
+
+		// the day boxes - which will contain a date button and day text
+		days = new JPanel[NUM_DAY_BOXES];
+
+		// the day text areas
+		daytext = new JTextPane[NUM_DAY_BOXES];
+
+		// the date buttons
+		daynum = new JButton[NUM_DAY_BOXES];
+		dayOfYear = new JLabel[NUM_DAY_BOXES];
+
+		// initialize the days
+		for (int i = 0; i < NUM_DAY_BOXES; i++) {
+
+			// allocate a panel for each day
+			// and add a date button and non wrapping text pane
+			// in each
+			days[i] = new JPanel();
+			days[i].setLayout(new GridBagLayout());
+			// as per the experts, this subclass of JTextPane is the only way to
+			// stop word-wrap
+			JTextPane jep = null;
+			String wrap = Prefs.getPref(PrefName.WRAP);
+			if (wrap.equals("true")) {
+				jep = new JTextPane();
+			} else {
+				jep = new JTextPane() {
+					public boolean getScrollableTracksViewportWidth() {
+						return false;
 					}
-				}
-			});
 
-			// sort the tasks by adding to the treeset
-			for (int i = 0; i < tks.size(); i++) {
-				ts.add(tks.elementAt(i));
-			}
-
-			Iterator it = ts.iterator();
-			while (it.hasNext()) {
-				try {
-					Task r = (Task) it.next();
-
-					// !!!!! only show first line of task text !!!!!!
-					String tx = "";
-					String xx = r.getDescription();
-					int ii = xx.indexOf('\n');
-					if (ii != -1) {
-						tx = xx.substring(0, ii);
-					} else {
-						tx = xx;
+					public void setSize(Dimension d) {
+						if (d.width < getParent().getSize().width) {
+							d.width = getParent().getSize().width;
+						}
+						super.setSize(d);
 					}
-					addString(taskPreview, "BT" + r.getTaskNumber() + ":" + tx
-							+ "\n", "black");
-
-				} catch (Exception e) {
-					Errmsg.errmsg(e);
-				}
-
+				};
 			}
-			taskPreview.setCaretPosition(0);
-		} else {
-			addString(taskPreview, Resource.getResourceString("Task_Preview")
-					+ "\n", "ul");
-			addString(taskPreview, Resource.getResourceString("none_pending"),
-					"black");
+			daytext[i] = jep;
+			daytext[i].setEditable(false);
+			daynum[i] = new JButton("N");
+
+			dayOfYear[i] = new JLabel();
+
+			// continue laying out the day panel. want the date button in upper
+			// right
+			// and want the text pane top to be lower than the bottom of the
+			// button.
+			Insets is = new Insets(1, 4, 1, 4);
+			daynum[i].setMargin(is);
+			days[i].setBorder(new BevelBorder(BevelBorder.RAISED));
+			days[i].add(daynum[i]);
+			cons = new GridBagConstraints();
+			cons.gridx = 1;
+			cons.gridy = 0;
+			cons.gridwidth = 1;
+			cons.fill = GridBagConstraints.NONE;
+			cons.anchor = GridBagConstraints.NORTHEAST;
+			days[i].add(daynum[i], cons);
+
+			cons = new GridBagConstraints();
+			cons.gridx = 0;
+			cons.gridy = 0;
+			cons.gridwidth = 1;
+			cons.fill = GridBagConstraints.NONE;
+			cons.anchor = GridBagConstraints.NORTHWEST;
+			days[i].add(dayOfYear[i], cons);
+
+			cons.gridx = 0;
+			cons.gridy = 1;
+			cons.gridwidth = 2;
+			cons.weightx = 1.0;
+			cons.weighty = 1.0;
+			cons.fill = GridBagConstraints.BOTH;
+			cons.anchor = GridBagConstraints.NORTHWEST;
+
+			// put the appt text in an invisible scroll pane
+			// scrollbars will only appear if needed due to amount of appt text
+			JScrollPane sp = new JScrollPane();
+			sp.setViewportView(daytext[i]);
+			sp
+					.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+			sp
+					.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+			sp.setBorder(new EmptyBorder(0, 0, 0, 0));
+			sp.getHorizontalScrollBar().setPreferredSize(new Dimension(0, 5));
+			sp.getVerticalScrollBar().setPreferredSize(new Dimension(5, 0));
+			days[i].add(sp, cons);
+
+			jPanel1.add(days[i]);
 		}
+
+		// add filler to the Grid
+		// jPanel1.add(new JPanel());
+		// jPanel1.add(new JPanel());
+		// jPanel1.add( new JPanel() );
+
+		setDayLabels();
+
+		//
+		// ToDo PREVIEW BOX
+		//
+		todoPreview = new JTextPane() {
+			public boolean getScrollableTracksViewportWidth() {
+				return false;
+			}
+
+			public void setSize(Dimension d) {
+				if (d.width < getParent().getSize().width) {
+					d.width = getParent().getSize().width;
+				}
+				super.setSize(d);
+			}
+		};
+		todoPreview.addMouseListener(new MouseListener() {
+			public void mouseClicked(MouseEvent evt) {
+				TodoView.getReference().setVisible(true);
+			}
+
+			public void mouseEntered(MouseEvent arg0) {
+			}
+
+			public void mouseExited(MouseEvent arg0) {
+			}
+
+			public void mousePressed(MouseEvent arg0) {
+			}
+
+			public void mouseReleased(MouseEvent arg0) {
+			}
+		});
+		todoPreview.setBackground(new Color(204, 204, 204));
+		todoPreview.setEditable(false);
+		JScrollPane sp = new JScrollPane();
+		sp.setViewportView(todoPreview);
+		sp
+				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		sp
+				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+		// sp.setBorder( new javax.swing.border.EmptyBorder(0,0,0,0) );
+		sp.getHorizontalScrollBar().setPreferredSize(new Dimension(0, 5));
+		sp.getVerticalScrollBar().setPreferredSize(new Dimension(5, 0));
+		jPanel1.add(sp);
+
+		//
+		// TASK PREVIEW BOX
+		//
+		taskPreview = new JTextPane() {
+			public boolean getScrollableTracksViewportWidth() {
+				return false;
+			}
+
+			public void setSize(Dimension d) {
+				if (d.width < getParent().getSize().width) {
+					d.width = getParent().getSize().width;
+				}
+				super.setSize(d);
+			}
+		};
+		taskPreview.setBackground(new Color(204, 204, 204));
+		taskPreview.setEditable(false);
+		/*
+		taskPreview.addMouseListener(new MouseListener() {
+			public void mouseClicked(MouseEvent evt) {
+				TaskListView v = TaskListView.getReference();
+				v.refresh();
+				v.setVisible(true);
+			}
+
+			public void mouseEntered(MouseEvent arg0) {
+			}
+
+			public void mouseExited(MouseEvent arg0) {
+			}
+
+			public void mousePressed(MouseEvent arg0) {
+			}
+
+			public void mouseReleased(MouseEvent arg0) {
+			}
+		});*/
+		sp = new JScrollPane();
+		sp.setViewportView(taskPreview);
+		sp
+				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		sp
+				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+		// sp.setBorder( new javax.swing.border.EmptyBorder(0,0,0,0) );
+		sp.getHorizontalScrollBar().setPreferredSize(new Dimension(0, 5));
+		sp.getVerticalScrollBar().setPreferredSize(new Dimension(5, 0));
+		jPanel1.add(sp);
+
+		// update the styles used in the appointment text panes for the various
+		// appt text
+		// colors, based on the current font size set by the user
+		updStyles();
+
+		// init view to current month
+		try {
+			today();
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
+		}
+
 	}
 
 	/**
@@ -1180,41 +1012,87 @@ public class CalendarPanel extends JPanel implements Prefs.Listener, Navigator {
 
 	}// GEN-END:initComponents
 
-	private void jButton5ActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_jButton5ActionPerformed
-	{// GEN-HEADEREND:event_jButton5ActionPerformed
-		if( parent_ != null)
-		{
-			parent_.goTo( new GregorianCalendar(year_,month_,29));
-			parent_.setView(MultiView.WEEK);
-		}
-	}// GEN-LAST:event_jButton5ActionPerformed
+	// initialize the various text styles used for appointment
+	// text for a single text pane
+	private void initStyles(JTextPane textPane, Style def, Font font) {
+		// Initialize some styles.
+		Style bl = textPane.addStyle("black", def);
+		int fontsize = font.getSize();
+		String family = font.getFamily();
+		boolean bold = font.isBold();
+		boolean italic = font.isItalic();
 
-	private void jButton4ActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_jButton4ActionPerformed
-	{// GEN-HEADEREND:event_jButton4ActionPerformed
-		if( parent_ != null)
-		{
-			parent_.goTo( new GregorianCalendar(year_,month_,22));
-			parent_.setView(MultiView.WEEK);
-		}
-	}// GEN-LAST:event_jButton4ActionPerformed
+		StyleConstants.setFontFamily(bl, family);
+		StyleConstants.setBold(bl, bold);
+		StyleConstants.setItalic(bl, italic);
+		StyleConstants.setFontSize(bl, fontsize);
+		String ls = Prefs.getPref(PrefName.LINESPACING);
+		float f = Float.parseFloat(ls);
+		StyleConstants.setLineSpacing(bl, f);
 
-	private void jButton3ActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_jButton3ActionPerformed
-	{// GEN-HEADEREND:event_jButton3ActionPerformed
-		if( parent_ != null)
-		{
-			parent_.goTo( new GregorianCalendar(year_,month_,15));
-			parent_.setView(MultiView.WEEK);
-		}
-	}// GEN-LAST:event_jButton3ActionPerformed
+		boolean bUseUCS = ((Prefs.getPref(PrefName.UCS_ON)).equals("true")) ? true
+				: false;
+		Color ctemp;
+		try {
+			Style s = textPane.addStyle("blue", bl);
+			ctemp = new Color((new Integer(Prefs.getPref(PrefName.UCS_BLUE)))
+					.intValue());
+			StyleConstants.setForeground(s, bUseUCS ? (ctemp) : (new Color(102,0,204)));
 
-	private void jButton2ActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_jButton2ActionPerformed
-	{// GEN-HEADEREND:event_jButton2ActionPerformed
-		if( parent_ != null)
-		{
-			parent_.goTo( new GregorianCalendar(year_,month_,8));
-			parent_.setView(MultiView.WEEK);
+			s = textPane.addStyle("red", bl);
+			ctemp = new Color((new Integer(Prefs.getPref(PrefName.UCS_RED)))
+					.intValue());
+			StyleConstants.setForeground(s, bUseUCS ? (ctemp) : (new Color(204,0,51)));
+
+			s = textPane.addStyle("green", bl);
+		
+			ctemp = new Color((new Integer(Prefs.getPref(PrefName.UCS_GREEN)))
+					.intValue());
+			StyleConstants.setForeground(s, bUseUCS ? (ctemp) : (new Color(0,153,0)));
+
+			s = textPane.addStyle("white", bl);
+			ctemp = new Color((new Integer(Prefs.getPref(PrefName.UCS_WHITE)))
+					.intValue());
+			StyleConstants.setForeground(s, bUseUCS ? (ctemp) : (Color.WHITE));
+
+			s = textPane.addStyle("navy", bl);
+			ctemp = new Color((new Integer(Prefs.getPref(PrefName.UCS_NAVY)))
+					.intValue());
+			StyleConstants.setForeground(s, bUseUCS ? (ctemp) : (new Color(0,
+					0, 102)));
+
+			s = textPane.addStyle("purple", bl);
+			ctemp = new Color((new Integer(Prefs.getPref(PrefName.UCS_PURPLE)))
+					.intValue());
+			StyleConstants.setForeground(s, bUseUCS ? (ctemp) : (new Color(102,
+					0, 102)));
+
+			s = textPane.addStyle("brick", bl);
+			ctemp = new Color((new Integer(Prefs.getPref(PrefName.UCS_BRICK)))
+					.intValue());
+			StyleConstants.setForeground(s, bUseUCS ? (ctemp) : (new Color(102,
+					0, 0)));
+
+			s = textPane.addStyle("ul", bl);
+			StyleConstants.setUnderline(s, true);
+
+			s = textPane.addStyle("strike", bl);
+			StyleConstants.setStrikeThrough(s, true);
+
+			URL icon = getClass().getResource(
+					"/resource/" + Prefs.getPref(PrefName.UCS_MARKER));
+			if (icon != null) {
+				s = textPane.addStyle("icon", bl);
+				StyleConstants.setIcon(s, new ImageIcon(icon));
+			}
+
+		} catch (NoSuchFieldError e) {
+			// java 1.3 - just use black
 		}
-	}// GEN-LAST:event_jButton2ActionPerformed
+
+	}
+
+	// End of variables declaration//GEN-END:variables
 
 	private void jButton1ActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_jButton1ActionPerformed
 	{// GEN-HEADEREND:event_jButton1ActionPerformed
@@ -1225,14 +1103,41 @@ public class CalendarPanel extends JPanel implements Prefs.Listener, Navigator {
 		}
 	}// GEN-LAST:event_jButton1ActionPerformed
 
-	public void today(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_today
-		try {
-			// set view back to month containing today
-			today();
-		} catch (Exception e) {
-			Errmsg.errmsg(e);
+	private void jButton2ActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_jButton2ActionPerformed
+	{// GEN-HEADEREND:event_jButton2ActionPerformed
+		if( parent_ != null)
+		{
+			parent_.goTo( new GregorianCalendar(year_,month_,8));
+			parent_.setView(MultiView.WEEK);
 		}
-	}// GEN-LAST:event_today
+	}// GEN-LAST:event_jButton2ActionPerformed
+
+	private void jButton3ActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_jButton3ActionPerformed
+	{// GEN-HEADEREND:event_jButton3ActionPerformed
+		if( parent_ != null)
+		{
+			parent_.goTo( new GregorianCalendar(year_,month_,15));
+			parent_.setView(MultiView.WEEK);
+		}
+	}// GEN-LAST:event_jButton3ActionPerformed
+
+	private void jButton4ActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_jButton4ActionPerformed
+	{// GEN-HEADEREND:event_jButton4ActionPerformed
+		if( parent_ != null)
+		{
+			parent_.goTo( new GregorianCalendar(year_,month_,22));
+			parent_.setView(MultiView.WEEK);
+		}
+	}// GEN-LAST:event_jButton4ActionPerformed
+
+	private void jButton5ActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_jButton5ActionPerformed
+	{// GEN-HEADEREND:event_jButton5ActionPerformed
+		if( parent_ != null)
+		{
+			parent_.goTo( new GregorianCalendar(year_,month_,29));
+			parent_.setView(MultiView.WEEK);
+		}
+	}// GEN-LAST:event_jButton5ActionPerformed
 
 	private void NextActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_NextActionPerformed
 		// go to next month - increment month/year and call refresh of view
@@ -1249,76 +1154,8 @@ public class CalendarPanel extends JPanel implements Prefs.Listener, Navigator {
 		}
 	}// GEN-LAST:event_NextActionPerformed
 
-
-	// Variables declaration - do not modify//GEN-BEGIN:variables
-
-	
-	private javax.swing.JLabel MonthLabel;
-
-	private javax.swing.JButton jButton1;
-
-	private javax.swing.JButton jButton2;
-
-	private javax.swing.JButton jButton3;
-
-	private javax.swing.JButton jButton4;
-
-	private javax.swing.JButton jButton5;
-
-	private javax.swing.JLabel jLabel1;
-
-	private javax.swing.JLabel jLabel3;
-
-	private javax.swing.JLabel jLabel4;
-
-	private javax.swing.JLabel jLabel5;
-
-	private javax.swing.JLabel jLabel6;
-
-	private javax.swing.JLabel jLabel7;
-
-	private javax.swing.JLabel jLabel8;
-
-	private javax.swing.JPanel jPanel1;
-
-	private javax.swing.JPanel jPanel2;
-
-	private javax.swing.JPanel jPanel3;
-
-	private javax.swing.JPanel jPanel4;
-
-	// End of variables declaration//GEN-END:variables
-
-	/**
-	 * array of day panels
-	 */
-	private JPanel days[];
-
-	private JTextPane daytext[];
-
-	/**
-	 * date buttons
-	 */
-	private JButton daynum[];
-
-	private JLabel dayOfYear[];
-
-	private JTextPane todoPreview;
-
-	private JTextPane taskPreview;
-
 	// private JTextPane dbInfo;
 
-
-	// called when a Prefs change notification is sent out
-	// to all Prefs.Listeners
-	public void prefsChanged() {
-		// System.out.println("pr called");
-		SwingUtilities.updateComponentTreeUI(this);
-		updStyles();
-		setDayLabels();
-		refresh();
-	}
 
 	private void PrevActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_PrevActionPerformed
 		// go to previous month - decrement month/year and call refresh of view
@@ -1336,21 +1173,184 @@ public class CalendarPanel extends JPanel implements Prefs.Listener, Navigator {
 		}// Add your handling code here:
 	}// GEN-LAST:event_PrevActionPerformed
 
-	public void next() {
-		NextActionPerformed(null);
+	private void refreshTaskView() throws Exception {
+		// update taskPreview Box
+		StyledDocument tkdoc = taskPreview.getStyledDocument();
+		tkdoc.remove(0, tkdoc.getLength());
+
+		// sort and add the tasks
+		Vector tks = TaskModel.getReference().get_tasks();
+		if (tks.size() > 0) {
+			addString(taskPreview, Resource.getResourceString("Task_Preview")
+					+ "\n", "ul");
+
+			// the treeset will sort by date
+			TreeSet ts = new TreeSet(new Comparator() {
+				public int compare(java.lang.Object obj, java.lang.Object obj1) {
+					try {
+						Task r1 = (Task) obj;
+						Task r2 = (Task) obj1;
+						Date dt1 = r1.getDueDate();
+						Date dt2 = r2.getDueDate();
+						if (dt1.after(dt2))
+							return (1);
+						return (-1);
+					} catch (Exception e) {
+						return (0);
+					}
+				}
+			});
+
+			// sort the tasks by adding to the treeset
+			for (int i = 0; i < tks.size(); i++) {
+				ts.add(tks.elementAt(i));
+			}
+
+			Iterator it = ts.iterator();
+			while (it.hasNext()) {
+				try {
+					Task r = (Task) it.next();
+
+					// !!!!! only show first line of task text !!!!!!
+					String tx = "";
+					String xx = r.getDescription();
+					int ii = xx.indexOf('\n');
+					if (ii != -1) {
+						tx = xx.substring(0, ii);
+					} else {
+						tx = xx;
+					}
+					addString(taskPreview, "BT" + r.getTaskNumber() + ":" + tx
+							+ "\n", "black");
+
+				} catch (Exception e) {
+					Errmsg.errmsg(e);
+				}
+
+			}
+			taskPreview.setCaretPosition(0);
+		} else {
+			addString(taskPreview, Resource.getResourceString("Task_Preview")
+					+ "\n", "ul");
+			addString(taskPreview, Resource.getResourceString("none_pending"),
+					"black");
+		}
 	}
 
-	public void prev() {
-		PrevActionPerformed(null);		
-	}
-	public void print()
-	{
-//		 print the current month
-		try {			
-			MonthPreView.printMonth(month_,year_);
-		} catch (Exception e) {
-			Errmsg.errmsg(e);
+	private void refreshTodoView() throws Exception {
+
+		// update todoPreview Box
+		StyledDocument tdoc = todoPreview.getStyledDocument();
+		tdoc.remove(0, tdoc.getLength());
+
+		// sort and add the todos
+		Vector tds = AppointmentModel.getReference().get_todos();
+		if (tds.size() > 0) {
+			addString(todoPreview, Resource.getResourceString("Todo_Preview")
+					+ "\n", "ul");
+
+			// the treeset will sort by date
+			TreeSet ts = new TreeSet(new Comparator() {
+				public int compare(java.lang.Object obj, java.lang.Object obj1) {
+					try {
+						Appointment r1 = (Appointment) obj;
+						Appointment r2 = (Appointment) obj1;
+						Date dt1 = r1.getNextTodo();
+						if (dt1 == null) {
+							dt1 = r1.getDate();
+						}
+						Date dt2 = r2.getNextTodo();
+						if (dt2 == null) {
+							dt2 = r2.getDate();
+						}
+
+						if (dt1.after(dt2))
+							return (1);
+						return (-1);
+					} catch (Exception e) {
+						return (0);
+					}
+				}
+			});
+
+			// sort the todos by adding to the TreeSet
+			for (int i = 0; i < tds.size(); i++) {
+				ts.add(tds.elementAt(i));
+			}
+
+			Iterator it = ts.iterator();
+			while (it.hasNext()) {
+				try {
+					Appointment r = (Appointment) it.next();
+
+					// !!!!! only show first line of appointment text !!!!!!
+					String tx = "";
+					String xx = r.getText();
+					int ii = xx.indexOf('\n');
+					if (ii != -1) {
+						tx = xx.substring(0, ii);
+					} else {
+						tx = xx;
+					}
+					addString(todoPreview, tx + "\n", r.getColor());
+
+				} catch (Exception e) {
+					Errmsg.errmsg(e);
+				}
+
+			}
+			todoPreview.setCaretPosition(0);
+		} else {
+			addString(todoPreview, Resource.getResourceString("Todo_Preview")
+					+ "\n", "ul");
+			addString(todoPreview, Resource.getResourceString("none_pending"),
+					"black");
 		}
+
+	}
+
+	void setDayLabels() {
+		// determine first day and last day of the month
+		GregorianCalendar cal = new GregorianCalendar();
+		cal.setFirstDayOfWeek(Prefs.getIntPref(PrefName.FIRSTDOW));
+		cal.set(Calendar.DATE, 1);
+		cal.add(Calendar.DAY_OF_WEEK, cal.getFirstDayOfWeek()
+				- cal.get(Calendar.DAY_OF_WEEK));
+		SimpleDateFormat dwf = new SimpleDateFormat("EEEE");
+		jLabel1.setText(dwf.format(cal.getTime()));
+		cal.add(Calendar.DAY_OF_WEEK, 1);
+		jLabel3.setText(dwf.format(cal.getTime()));
+		cal.add(Calendar.DAY_OF_WEEK, 1);
+		jLabel4.setText(dwf.format(cal.getTime()));
+		cal.add(Calendar.DAY_OF_WEEK, 1);
+		jLabel5.setText(dwf.format(cal.getTime()));
+		cal.add(Calendar.DAY_OF_WEEK, 1);
+		jLabel6.setText(dwf.format(cal.getTime()));
+		cal.add(Calendar.DAY_OF_WEEK, 1);
+		jLabel7.setText(dwf.format(cal.getTime()));
+		cal.add(Calendar.DAY_OF_WEEK, 1);
+		jLabel8.setText(dwf.format(cal.getTime()));
+	}
+	// update the text styles for all appt text panes
+	// this is called when the user changes the font size
+	void updStyles() {
+
+		Style def = StyleContext.getDefaultStyleContext().getStyle(
+				StyleContext.DEFAULT_STYLE);
+
+		// update all of the text panes
+		String s = Prefs.getPref(PrefName.APPTFONT);
+		Font f = Font.decode(s);
+		for (int i = 0; i < NUM_DAY_BOXES; i++) {
+			initStyles(daytext[i], def, f);
+		}
+
+		s = Prefs.getPref(PrefName.PREVIEWFONT);
+		f = Font.decode(s);
+
+		initStyles(todoPreview, def, f);
+		initStyles(taskPreview, def, f);
+		// initStyles(dbInfo, def, f);
 	}
 
 }

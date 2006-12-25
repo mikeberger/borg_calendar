@@ -93,16 +93,6 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 
     static private Banner ban_ = null; // start up banner
 
-    private java.util.Timer versionCheckTimer_ = null;
-
-    private java.util.Timer syncTimer_ = null;
-
-    private Timer mailTimer_ = null;
-
-    private EmailReminder emailReminder_ = null;
-
-    private SocketServer socketServer_ = null;
-
     static private Borg singleton = null;
 
     static public Borg getReference() {
@@ -135,10 +125,62 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 	b.init(args);
     }
 
+    static public void shutdown() {
+	getReference().removeListeners();
+	System.exit(0);
+    }
+
+    static public synchronized void syncDBs() throws Exception {
+	MultiUserModel mum = MultiUserModel.getReference();
+	Collection users = mum.getShownUsers();
+	if (users != null) {
+	    Iterator mumit = users.iterator();
+	    while (mumit.hasNext()) {
+		String user = (String) mumit.next();
+		AppointmentModel otherModel = AppointmentModel
+			.getReference(user);
+		if (otherModel != null)
+		    otherModel.sync();
+	    }
+	}
+
+	AppointmentModel.getReference().sync();
+	AddressModel.getReference().sync();
+	TaskModel.getReference().sync();
+
+    }
+
+    static private int verToInt(String version) {
+	int res = 0;
+	String parts[] = version.split("[.]");
+	for (int i = 0; i < parts.length; i++) {
+	    res += Integer.parseInt(parts[i]) * Math.pow(10, (5 - i));
+	}
+
+	return (res);
+    }
+
+    private EmailReminder emailReminder_ = null;
+
+    private Timer mailTimer_ = null;
+
+    private ModalMessage modalMessage = null;
+
+    private SocketServer socketServer_ = null;
+
+    private java.util.Timer syncTimer_ = null;
+
+    private boolean trayIcon = true;
+
+    private java.util.Timer versionCheckTimer_ = null;
+
     private Borg() {
 	// If we're doing remote stuff, use HTTPRemoteProxy
 	RemoteProxyHome.getInstance().setProxyProvider(
 		new IRemoteProxyProvider() {
+		    // private //
+		    private IRemoteProxy proxy = null;
+
 		    public final IRemoteProxy createProxy(String url) {
 			// No synchronization needed - we're single-threaded.
 			if (proxy == null)
@@ -149,15 +191,59 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 		    public final Credentials getCredentials() {
 			return Borg.this.getCredentials();
 		    }
-
-		    // private //
-		    private IRemoteProxy proxy = null;
 		});
     }
 
-    static public void shutdown() {
-	getReference().removeListeners();
-	System.exit(0);
+    public boolean hasTrayIcon() {
+	return trayIcon;
+    }
+
+    public synchronized String processMessage(String msg) {
+	// System.out.println("Got msg: " + msg);
+	if (msg.equals("sync")) {
+	    try {
+		syncDBs();
+		return ("sync success");
+	    } catch (Exception e) {
+		e.printStackTrace();
+		return ("sync error: " + e.toString());
+	    }
+	} else if (msg.equals("shutdown")) {
+	    System.exit(0);
+	} else if (msg.equals("open")) {
+	    MultiView.getMainView().toFront();
+	    MultiView.getMainView().setState(Frame.NORMAL);
+	    return ("ok");
+	} else if (msg.startsWith("lock:")) {
+	    final String lockmsg = msg.substring(5);
+	    SwingUtilities.invokeLater(new Runnable() {
+		public void run() {
+		    if (modalMessage == null || !modalMessage.isShowing()) {
+			modalMessage = new ModalMessage(lockmsg, false);
+			modalMessage.setVisible(true);
+		    } else {
+			modalMessage.appendText(lockmsg);
+		    }
+		    modalMessage.setEnabled(false);
+		    modalMessage.toFront();
+		}
+	    });
+
+	    return ("ok");
+	} else if (msg.equals("unlock")) {
+	    SwingUtilities.invokeLater(new Runnable() {
+		public void run() {
+		    if (modalMessage.isShowing()) {
+			modalMessage.setEnabled(true);
+		    }
+		}
+	    });
+
+	    return ("ok");
+	} else if (msg.startsWith("<")) {
+	    return SingleInstanceHandler.execute(msg);
+	}
+	return ("Unknown msg: " + msg);
     }
 
     public void restart() {
@@ -171,6 +257,41 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 	    emailReminder_.destroy();
 	removeListeners();
 	init(new String[0]);
+    }
+
+    private IRemoteProxyProvider.Credentials getCredentials() {
+	// Find a suitable frame parent for the login dialog.
+	JFrame parent = null;
+	if (ban_ != null)
+	    parent = ban_;
+	else
+	    parent = MultiView.getMainView();
+
+	final LoginDialog dlg = new LoginDialog(parent);
+	Runnable runnable = new Runnable() {
+	    public void run() {
+		dlg.setVisible(true);
+	    }
+	};
+
+	// Bring up the login dialog. How we do this properly in
+	// Swing depends on whether we're the event dispatch thread
+	// or not.
+	if (SwingUtilities.isEventDispatchThread())
+	    runnable.run();
+	else {
+	    try {
+		SwingUtilities.invokeAndWait(runnable);
+	    } catch (InvocationTargetException e) {
+	    } catch (InterruptedException e) {
+	    }
+	}
+
+	// save the remote username in class Borg so we have a way to know
+	// who we are logged in as
+	MultiUserModel.getReference().setOurUserName(dlg.getUsername());
+	return new IRemoteProxyProvider.Credentials(dlg.getUsername(), dlg
+		.getPassword());
     }
 
     // init will process the command line args, open and load the databases,
@@ -507,73 +628,6 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 
     }
 
-    static public synchronized void syncDBs() throws Exception {
-	MultiUserModel mum = MultiUserModel.getReference();
-	Collection users = mum.getShownUsers();
-	if (users != null) {
-	    Iterator mumit = users.iterator();
-	    while (mumit.hasNext()) {
-		String user = (String) mumit.next();
-		AppointmentModel otherModel = AppointmentModel
-			.getReference(user);
-		if (otherModel != null)
-		    otherModel.sync();
-	    }
-	}
-
-	AppointmentModel.getReference().sync();
-	AddressModel.getReference().sync();
-	TaskModel.getReference().sync();
-
-    }
-
-    private boolean trayIcon = true;
-
-    public boolean hasTrayIcon() {
-	return trayIcon;
-    }
-
-    private void swingStart(String trayname) {
-	trayIcon = true;
-	String usetray = Prefs.getPref(PrefName.USESYSTRAY);
-
-	if (!usetray.equals("true")) {
-	    trayIcon = false;
-	} else {
-	    try {
-		JDICTrayIconProxy tip = JDICTrayIconProxy.getReference();
-		tip.init(trayname);
-	    } catch (UnsatisfiedLinkError le) {
-		Errmsg.errmsg(new Exception(le));
-		trayIcon = false;
-	    } catch (NoClassDefFoundError ncf) {
-		Errmsg.errmsg(new Exception(ncf));
-		trayIcon = false;
-	    } catch (Exception e) {
-		Errmsg.errmsg(e);
-		System.exit(0);
-	    }
-	}
-
-	// create popups view
-	new PopupView();
-
-	// only start to systray (i.e. no month/todo views, if
-	// trayicon is available and option is set
-	String backgstart = Prefs.getPref(PrefName.BACKGSTART);
-	if (backgstart.equals("false") || !trayIcon) {
-	    // start main month view
-	    // CalendarView.getReference(trayIcon);
-	    MultiView mv = MultiView.getMainView();
-	    mv.setVisible(true);
-
-	    // start todo view if there are todos
-	    if (AppointmentModel.getReference().haveTodos()) {
-		startTodoView();
-	    }
-	}
-    }
-
     // check if we should auto_start
     // this function checks if an appointment is coming close
     // it does not check if BORG is already running or if the user is not
@@ -660,14 +714,45 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 	}
     }
 
-    static private int verToInt(String version) {
-	int res = 0;
-	String parts[] = version.split("[.]");
-	for (int i = 0; i < parts.length; i++) {
-	    res += Integer.parseInt(parts[i]) * Math.pow(10, (5 - i));
+    private void swingStart(String trayname) {
+	trayIcon = true;
+	String usetray = Prefs.getPref(PrefName.USESYSTRAY);
+
+	if (!usetray.equals("true")) {
+	    trayIcon = false;
+	} else {
+	    try {
+		JDICTrayIconProxy tip = JDICTrayIconProxy.getReference();
+		tip.init(trayname);
+	    } catch (UnsatisfiedLinkError le) {
+		Errmsg.errmsg(new Exception(le));
+		trayIcon = false;
+	    } catch (NoClassDefFoundError ncf) {
+		Errmsg.errmsg(new Exception(ncf));
+		trayIcon = false;
+	    } catch (Exception e) {
+		Errmsg.errmsg(e);
+		System.exit(0);
+	    }
 	}
 
-	return (res);
+	// create popups view
+	new PopupView();
+
+	// only start to systray (i.e. no month/todo views, if
+	// trayicon is available and option is set
+	String backgstart = Prefs.getPref(PrefName.BACKGSTART);
+	if (backgstart.equals("false") || !trayIcon) {
+	    // start main month view
+	    // CalendarView.getReference(trayIcon);
+	    MultiView mv = MultiView.getMainView();
+	    mv.setVisible(true);
+
+	    // start todo view if there are todos
+	    if (AppointmentModel.getReference().haveTodos()) {
+		startTodoView();
+	    }
+	}
     }
 
     private void version_chk() {
@@ -739,90 +824,5 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 	    Errmsg.errmsg(e);
 	}
 
-    }
-
-    private IRemoteProxyProvider.Credentials getCredentials() {
-	// Find a suitable frame parent for the login dialog.
-	JFrame parent = null;
-	if (ban_ != null)
-	    parent = ban_;
-	else
-	    parent = MultiView.getMainView();
-
-	final LoginDialog dlg = new LoginDialog(parent);
-	Runnable runnable = new Runnable() {
-	    public void run() {
-		dlg.setVisible(true);
-	    }
-	};
-
-	// Bring up the login dialog. How we do this properly in
-	// Swing depends on whether we're the event dispatch thread
-	// or not.
-	if (SwingUtilities.isEventDispatchThread())
-	    runnable.run();
-	else {
-	    try {
-		SwingUtilities.invokeAndWait(runnable);
-	    } catch (InvocationTargetException e) {
-	    } catch (InterruptedException e) {
-	    }
-	}
-
-	// save the remote username in class Borg so we have a way to know
-	// who we are logged in as
-	MultiUserModel.getReference().setOurUserName(dlg.getUsername());
-	return new IRemoteProxyProvider.Credentials(dlg.getUsername(), dlg
-		.getPassword());
-    }
-
-    private ModalMessage modalMessage = null;
-
-    public synchronized String processMessage(String msg) {
-	// System.out.println("Got msg: " + msg);
-	if (msg.equals("sync")) {
-	    try {
-		syncDBs();
-		return ("sync success");
-	    } catch (Exception e) {
-		e.printStackTrace();
-		return ("sync error: " + e.toString());
-	    }
-	} else if (msg.equals("shutdown")) {
-	    System.exit(0);
-	} else if (msg.equals("open")) {
-	    MultiView.getMainView().toFront();
-	    MultiView.getMainView().setState(Frame.NORMAL);
-	    return ("ok");
-	} else if (msg.startsWith("lock:")) {
-	    final String lockmsg = msg.substring(5);
-	    SwingUtilities.invokeLater(new Runnable() {
-		public void run() {
-		    if (modalMessage == null || !modalMessage.isShowing()) {
-			modalMessage = new ModalMessage(lockmsg, false);
-			modalMessage.setVisible(true);
-		    } else {
-			modalMessage.appendText(lockmsg);
-		    }
-		    modalMessage.setEnabled(false);
-		    modalMessage.toFront();
-		}
-	    });
-
-	    return ("ok");
-	} else if (msg.equals("unlock")) {
-	    SwingUtilities.invokeLater(new Runnable() {
-		public void run() {
-		    if (modalMessage.isShowing()) {
-			modalMessage.setEnabled(true);
-		    }
-		}
-	    });
-
-	    return ("ok");
-	} else if (msg.startsWith("<")) {
-	    return SingleInstanceHandler.execute(msg);
-	}
-	return ("Unknown msg: " + msg);
     }
 }

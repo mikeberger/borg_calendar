@@ -69,8 +69,6 @@ import net.sf.borg.model.db.DBException;
 // and calendar apps were completely separate apps.
 public class ProjectPanel extends JPanel {
 
-    private TableCellRenderer defrend_;
-
     private class ProjIntRenderer extends JLabel implements TableCellRenderer {
 
 	public ProjIntRenderer() {
@@ -120,6 +118,34 @@ public class ProjectPanel extends JPanel {
 	}
     }
 
+    private JMenuItem add = new JMenuItem();
+
+    private JButton addbutton = null;
+
+    private JPanel buttonPanel = null;
+
+    private JMenuItem change = new JMenuItem();
+
+    private JButton changebutton1 = null;
+
+    private JMenuItem clone = new JMenuItem();
+
+    private JButton clonebutton1 = null;
+
+    private JMenuItem close = new JMenuItem();
+
+    private JButton closebutton1 = null;
+
+    private TableCellRenderer defrend_;
+
+    private JMenuItem delete = new JMenuItem();
+
+    private JButton deletebutton1 = null;
+
+    private StripedTable projectTable;
+
+    private JComboBox pstatusBox = new JComboBox();
+
     /** Creates new form btgui */
     public ProjectPanel() {
 	super();
@@ -135,11 +161,209 @@ public class ProjectPanel extends JPanel {
 
     }
 
+    public void print() {
+
+	// print the current table of tasks
+	try {
+	    TablePrinter.printTable(projectTable);
+	} catch (Exception e) {
+	    Errmsg.errmsg(e);
+	}
+    }
+
+    // refresh is called to update the table of shown tasks due to model
+    // changes
+    // or if the user
+    // changes the filtering criteria
+    public void refresh() {
+
+	int row = 0;
+
+	// clear all table rows
+
+	deleteAllProjects();
+
+	String pstatfilt = (String) pstatusBox.getSelectedItem();
+
+	try {
+	    TaskModel taskmod_ = TaskModel.getReference();
+
+	    // add projects to project table
+	    Collection projects = taskmod_.getProjects();
+	    Iterator ti = projects.iterator();
+	    while (ti.hasNext()) {
+
+		Project p = (Project) ti.next();
+
+		if (!pstatfilt.equals(Resource.getPlainResourceString("All"))
+			&& !pstatfilt.equals(p.getStatus()))
+		    continue;
+
+		// category
+		String cat = p.getCategory();
+		if (cat == null || cat.equals(""))
+		    cat = CategoryModel.UNCATEGORIZED;
+
+		if (!CategoryModel.getReference().isShown(cat))
+		    continue;
+
+		// if we get here - we are displaying this task as a row
+		// so fill in an array of objects for the row
+		Object[] ro = new Object[10];
+		ro[0] = p.getId();
+		ro[1] = p.getCategory();
+		ro[2] = p.getStatus();
+		ro[3] = p.getStartDate();
+		ro[4] = p.getDueDate();
+		Collection ptasks = TaskModel.getReference().getTasks(
+			p.getId().intValue());
+		ro[5] = new Integer(ptasks.size());
+		int open = 0;
+		Iterator it = ptasks.iterator();
+		while (it.hasNext()) {
+		    Task pt = (Task) it.next();
+		    String stat = pt.getState();
+		    String type = pt.getType();
+		    if (!stat.equals(TaskModel.getReference().getTaskTypes()
+			    .getFinalState(type))) {
+			open++;
+		    }
+		}
+		ro[6] = new Integer(open);
+		;
+		ro[7] = new Integer(0);
+
+		// calculate days left - today - duedate
+		if (ro[4] == null)
+		    // 9999 days left if no due date - this is a (cringe,
+		    // ack,
+		    // thptt) magic value
+		    ro[7] = new Integer(9999);
+		else {
+		    Date dd = (Date) ro[4];
+		    ro[7] = new Integer(TaskModel.daysLeft(dd));
+		}
+
+		// strip newlines from the description
+		String de = p.getDescription();
+		String tmp = "";
+		for (int i = 0; de != null && i < de.length(); i++) {
+		    char c = de.charAt(i);
+		    if (c == '\n' || c == '\r') {
+			tmp += ' ';
+			continue;
+		    }
+
+		    tmp += c;
+		}
+		ro[8] = tmp;
+
+		// add the task row to table
+		addRow(projectTable, ro);
+		row++;
+	    }
+
+	} catch (DBException e) {
+	    if (e.getRetCode() != DBException.RET_NOT_FOUND) {
+		Errmsg.errmsg(e);
+	    }
+
+	} catch (Exception e) {
+	    Errmsg.errmsg(e);
+	}
+
+    }
+
+    public void showTasksForProject(Project p) {
+	MultiView.getMainView().showTasksForProject(p);
+    }
+
+    private void addActionPerformed(java.awt.event.ActionEvent evt) {
+	// ask controller to bring up new task editor
+
+	project_add();
+
+    }
+
     // add a row to the sorted table
     private void addRow(JTable t, Object[] ro) {
 	TableSorter tm = (TableSorter) t.getModel();
 	tm.addRow(ro);
 	tm.tableChanged(new TableModelEvent(tm));
+    }
+
+    private void changeActionPerformed(java.awt.event.ActionEvent evt) {
+
+	int row = projectTable.getSelectedRow();
+	if (row == -1)
+	    return;
+	TableSorter tm = (TableSorter) projectTable.getModel();
+	Integer num = (Integer) tm.getValueAt(row, 0);
+
+	// ask borg class to bring up a task editor window
+	project_change(num.intValue());
+
+    }
+
+    private void cloneActionPerformed(java.awt.event.ActionEvent evt) {
+
+	// get task number from column 0 of selected row
+	int row = projectTable.getSelectedRow();
+	if (row == -1)
+	    return;
+	TableSorter tm = (TableSorter) projectTable.getModel();
+	Integer num = (Integer) tm.getValueAt(row, 0);
+
+	// ask borg class to bring up a task editor window
+	project_clone(num.intValue());
+
+    }
+
+    private void closeActionPerformed(java.awt.event.ActionEvent evt) {
+
+	// get the task number from column 0 of the selected row
+	int row = projectTable.getSelectedRow();
+	if (row == -1)
+	    return;
+	TableSorter tm = (TableSorter) projectTable.getModel();
+	Integer num = (Integer) tm.getValueAt(row, 0);
+	try {
+	    // force close of the task
+	    TaskModel taskmod_ = TaskModel.getReference();
+	    taskmod_.closeProject(num.intValue());
+	} catch (Warning w) {
+	    Errmsg.notice(w.getMessage());
+	} catch (Exception e) {
+	    Errmsg.errmsg(e);
+	}
+
+    }
+
+    private void deleteActionPerformed(java.awt.event.ActionEvent evt) {
+
+	// delete selected row
+
+	// get task number from column 0 of the selected row
+	int row = projectTable.getSelectedRow();
+	if (row == -1)
+	    return;
+	TableSorter tm = (TableSorter) projectTable.getModel();
+	Integer num = (Integer) tm.getValueAt(row, 0);
+
+	// prompt for ok
+	int ret = JOptionPane.showConfirmDialog(null, Resource
+		.getResourceString("Really_delete_number_")
+		+ num, "", JOptionPane.YES_NO_OPTION);
+	if (ret == JOptionPane.YES_OPTION) {
+	    // delete the task
+	    try {
+		TaskModel taskmod_ = TaskModel.getReference();
+		taskmod_.deleteProject(num.intValue());
+	    } catch (Exception e) {
+		Errmsg.errmsg(e);
+	    }
+	}
+
     }
 
     private void deleteAllProjects() {
@@ -148,10 +372,123 @@ public class ProjectPanel extends JPanel {
 	tm.tableChanged(new TableModelEvent(tm));
     }
 
+    /**
+     * This method initializes addbutton	
+     * 	
+     * @return javax.swing.JButton	
+     */
+    private JButton getAddbutton() {
+        if (addbutton == null) {
+    	addbutton = new JButton();
+    	addbutton.setText(Resource.getPlainResourceString("Add"));
+    	addbutton.setIcon(new ImageIcon(getClass().getResource("/resource/Add16.gif")));
+    	addbutton.addActionListener(new java.awt.event.ActionListener() {
+    	    public void actionPerformed(java.awt.event.ActionEvent e) {
+    		addActionPerformed(e);
+    	    }
+    	});
+        }
+        return addbutton;
+    }
+    
     private ActionListener getAL(JMenuItem mnuitm) {
 	return mnuitm.getActionListeners()[0];
     }
 
+    /**
+     * This method initializes buttonPanel	
+     * 	
+     * @return javax.swing.JPanel	
+     */
+    private JPanel getButtonPanel() {
+        if (buttonPanel == null) {
+    	buttonPanel = new JPanel();
+    	buttonPanel.setLayout(new FlowLayout());
+    	buttonPanel.add(getAddbutton(), null);
+    	buttonPanel.add(getChangebutton1(), null);
+    	buttonPanel.add(getDeletebutton1(), null);
+    	buttonPanel.add(getClosebutton1(), null);
+    	buttonPanel.add(getClonebutton1(), null);
+        }
+        return buttonPanel;
+    }
+
+    /**
+     * This method initializes changebutton1	
+     * 	
+     * @return javax.swing.JButton	
+     */
+    private JButton getChangebutton1() {
+        if (changebutton1 == null) {
+    	changebutton1 = new JButton();
+    	changebutton1.setIcon(new ImageIcon(getClass().getResource("/resource/Edit16.gif")));
+    	changebutton1.setText(Resource.getPlainResourceString("Change"));
+    	changebutton1.addActionListener(new java.awt.event.ActionListener() {
+    	    public void actionPerformed(java.awt.event.ActionEvent e) {
+    		changeActionPerformed(e);
+    	    }
+    	});
+        }
+        return changebutton1;
+    }
+
+    /**
+     * This method initializes clonebutton1	
+     * 	
+     * @return javax.swing.JButton	
+     */
+    private JButton getClonebutton1() {
+        if (clonebutton1 == null) {
+    	clonebutton1 = new JButton();
+    	clonebutton1.setIcon(new ImageIcon(getClass().getResource("/resource/Copy16.gif")));
+    	clonebutton1.setText(Resource.getPlainResourceString("Clone"));
+    	clonebutton1.addActionListener(new java.awt.event.ActionListener() {
+    	    public void actionPerformed(java.awt.event.ActionEvent e) {
+    		cloneActionPerformed(e);
+    	    }
+    	});
+        }
+        return clonebutton1;
+    }
+
+    /**
+     * This method initializes closebutton1	
+     * 	
+     * @return javax.swing.JButton	
+     */
+    private JButton getClosebutton1() {
+        if (closebutton1 == null) {
+    	closebutton1 = new JButton();
+    	closebutton1.setIcon(new ImageIcon(getClass().getResource("/resource/greenlight.gif")));
+    	closebutton1.setText(Resource.getPlainResourceString("Close"));
+    	closebutton1.addActionListener(new java.awt.event.ActionListener() {
+    	    public void actionPerformed(java.awt.event.ActionEvent e) {
+    		closeActionPerformed(e);
+    	    }
+    	});
+        }
+        return closebutton1;
+    }
+
+    /**
+     * This method initializes deletebutton1	
+     * 	
+     * @return javax.swing.JButton	
+     */
+    private JButton getDeletebutton1() {
+        if (deletebutton1 == null) {
+    	deletebutton1 = new JButton();
+    	deletebutton1.setIcon(new ImageIcon(getClass().getResource("/resource/Delete16.gif")));
+    	deletebutton1.setText(Resource.getPlainResourceString("Delete"));
+    	deletebutton1.addActionListener(new java.awt.event.ActionListener() {
+    	    public void actionPerformed(java.awt.event.ActionEvent e) {
+    		deleteActionPerformed(e);
+    	    }
+    	});
+        }
+        return deletebutton1;
+    }
+    
     /**
          * This method is called from within the constructor to initialize the
          * form. WARNING: Do NOT modify this code. The content of this method is
@@ -277,16 +614,6 @@ public class ProjectPanel extends JPanel {
 
     }
 
-    private JMenuItem add = new JMenuItem();
-
-    private JMenuItem change = new JMenuItem();
-
-    private JMenuItem clone = new JMenuItem();
-
-    private JMenuItem delete = new JMenuItem();
-
-    private JMenuItem close = new JMenuItem();
-
     private void initMenuBar() {
 
 	JMenuBar menuBar = new JMenuBar();
@@ -344,53 +671,6 @@ public class ProjectPanel extends JPanel {
 
     }
 
-    private void closeActionPerformed(java.awt.event.ActionEvent evt) {
-
-	// get the task number from column 0 of the selected row
-	int row = projectTable.getSelectedRow();
-	if (row == -1)
-	    return;
-	TableSorter tm = (TableSorter) projectTable.getModel();
-	Integer num = (Integer) tm.getValueAt(row, 0);
-	try {
-	    // force close of the task
-	    TaskModel taskmod_ = TaskModel.getReference();
-	    taskmod_.closeProject(num.intValue());
-	} catch (Warning w) {
-	    Errmsg.notice(w.getMessage());
-	} catch (Exception e) {
-	    Errmsg.errmsg(e);
-	}
-
-    }
-
-    private void deleteActionPerformed(java.awt.event.ActionEvent evt) {
-
-	// delete selected row
-
-	// get task number from column 0 of the selected row
-	int row = projectTable.getSelectedRow();
-	if (row == -1)
-	    return;
-	TableSorter tm = (TableSorter) projectTable.getModel();
-	Integer num = (Integer) tm.getValueAt(row, 0);
-
-	// prompt for ok
-	int ret = JOptionPane.showConfirmDialog(null, Resource
-		.getResourceString("Really_delete_number_")
-		+ num, "", JOptionPane.YES_NO_OPTION);
-	if (ret == JOptionPane.YES_OPTION) {
-	    // delete the task
-	    try {
-		TaskModel taskmod_ = TaskModel.getReference();
-		taskmod_.deleteProject(num.intValue());
-	    } catch (Exception e) {
-		Errmsg.errmsg(e);
-	    }
-	}
-
-    }
-
     private void mouseClick(java.awt.event.MouseEvent evt) {
 
 	// ask controller to bring up task editor on double click
@@ -401,153 +681,28 @@ public class ProjectPanel extends JPanel {
 	showChildren();
     }
 
-    private void changeActionPerformed(java.awt.event.ActionEvent evt) {
-
-	int row = projectTable.getSelectedRow();
-	if (row == -1)
-	    return;
-	TableSorter tm = (TableSorter) projectTable.getModel();
-	Integer num = (Integer) tm.getValueAt(row, 0);
-
-	// ask borg class to bring up a task editor window
-	project_change(num.intValue());
-
-    }
-
-    private void showChildren() {
-
-	int row = projectTable.getSelectedRow();
-	if (row == -1)
-	    return;
-	TableSorter tm = (TableSorter) projectTable.getModel();
-	Integer num = (Integer) tm.getValueAt(row, 0);
-
+    private void project_add() {
 	try {
-	    Project p = TaskModel.getReference().getProject(num.intValue());
-	    showTasksForProject(p);
+	    // display the task editor
+	    ProjectView tskg = new ProjectView(null, ProjectView.T_ADD);
+	    tskg.setVisible(true);
 	} catch (Exception e) {
 	    Errmsg.errmsg(e);
 	}
-
     }
 
-    private void cloneActionPerformed(java.awt.event.ActionEvent evt) {
-
-	// get task number from column 0 of selected row
-	int row = projectTable.getSelectedRow();
-	if (row == -1)
-	    return;
-	TableSorter tm = (TableSorter) projectTable.getModel();
-	Integer num = (Integer) tm.getValueAt(row, 0);
-
-	// ask borg class to bring up a task editor window
-	project_clone(num.intValue());
-
-    }
-
-    private void addActionPerformed(java.awt.event.ActionEvent evt) {
-	// ask controller to bring up new task editor
-
-	project_add();
-
-    }
-
-    // refresh is called to update the table of shown tasks due to model
-    // changes
-    // or if the user
-    // changes the filtering criteria
-    public void refresh() {
-
-	int row = 0;
-
-	// clear all table rows
-
-	deleteAllProjects();
-
-	String pstatfilt = (String) pstatusBox.getSelectedItem();
+    private void project_change(int id) {
 
 	try {
+	    // get the task from the data model
 	    TaskModel taskmod_ = TaskModel.getReference();
+	    Project p = taskmod_.getProject(id);
+	    if (p == null)
+		return;
 
-	    // add projects to project table
-	    Collection projects = taskmod_.getProjects();
-	    Iterator ti = projects.iterator();
-	    while (ti.hasNext()) {
-
-		Project p = (Project) ti.next();
-
-		if (!pstatfilt.equals(Resource.getPlainResourceString("All"))
-			&& !pstatfilt.equals(p.getStatus()))
-		    continue;
-
-		// category
-		String cat = p.getCategory();
-		if (cat == null || cat.equals(""))
-		    cat = CategoryModel.UNCATEGORIZED;
-
-		if (!CategoryModel.getReference().isShown(cat))
-		    continue;
-
-		// if we get here - we are displaying this task as a row
-		// so fill in an array of objects for the row
-		Object[] ro = new Object[10];
-		ro[0] = p.getId();
-		ro[1] = p.getCategory();
-		ro[2] = p.getStatus();
-		ro[3] = p.getStartDate();
-		ro[4] = p.getDueDate();
-		Collection ptasks = TaskModel.getReference().getTasks(
-			p.getId().intValue());
-		ro[5] = new Integer(ptasks.size());
-		int open = 0;
-		Iterator it = ptasks.iterator();
-		while (it.hasNext()) {
-		    Task pt = (Task) it.next();
-		    String stat = pt.getState();
-		    String type = pt.getType();
-		    if (!stat.equals(TaskModel.getReference().getTaskTypes()
-			    .getFinalState(type))) {
-			open++;
-		    }
-		}
-		ro[6] = new Integer(open);
-		;
-		ro[7] = new Integer(0);
-
-		// calculate days left - today - duedate
-		if (ro[4] == null)
-		    // 9999 days left if no due date - this is a (cringe,
-		    // ack,
-		    // thptt) magic value
-		    ro[7] = new Integer(9999);
-		else {
-		    Date dd = (Date) ro[4];
-		    ro[7] = new Integer(TaskModel.daysLeft(dd));
-		}
-
-		// strip newlines from the description
-		String de = p.getDescription();
-		String tmp = "";
-		for (int i = 0; de != null && i < de.length(); i++) {
-		    char c = de.charAt(i);
-		    if (c == '\n' || c == '\r') {
-			tmp += ' ';
-			continue;
-		    }
-
-		    tmp += c;
-		}
-		ro[8] = tmp;
-
-		// add the task row to table
-		addRow(projectTable, ro);
-		row++;
-	    }
-
-	} catch (DBException e) {
-	    if (e.getRetCode() != DBException.RET_NOT_FOUND) {
-		Errmsg.errmsg(e);
-	    }
+	    // display the task editor
+	    ProjectView tskg = new ProjectView(p, ProjectView.T_CHANGE);
+	    tskg.setVisible(true);
 
 	} catch (Exception e) {
 	    Errmsg.errmsg(e);
@@ -572,177 +727,22 @@ public class ProjectPanel extends JPanel {
 	}
 
     }
+    
+    private void showChildren() {
 
-    private void project_change(int id) {
+	int row = projectTable.getSelectedRow();
+	if (row == -1)
+	    return;
+	TableSorter tm = (TableSorter) projectTable.getModel();
+	Integer num = (Integer) tm.getValueAt(row, 0);
 
 	try {
-	    // get the task from the data model
-	    TaskModel taskmod_ = TaskModel.getReference();
-	    Project p = taskmod_.getProject(id);
-	    if (p == null)
-		return;
-
-	    // display the task editor
-	    ProjectView tskg = new ProjectView(p, ProjectView.T_CHANGE);
-	    tskg.setVisible(true);
-
+	    Project p = TaskModel.getReference().getProject(num.intValue());
+	    showTasksForProject(p);
 	} catch (Exception e) {
 	    Errmsg.errmsg(e);
 	}
 
-    }
-
-    private void project_add() {
-	try {
-	    // display the task editor
-	    ProjectView tskg = new ProjectView(null, ProjectView.T_ADD);
-	    tskg.setVisible(true);
-	} catch (Exception e) {
-	    Errmsg.errmsg(e);
-	}
-    }
-
-    private StripedTable projectTable;
-
-    private JComboBox pstatusBox = new JComboBox();
-
-    public void showTasksForProject(Project p) {
-	MultiView.getMainView().showTasksForProject(p);
-    }
-    
-    private JPanel buttonPanel = null;
-
-    private JButton addbutton = null;
-
-    private JButton changebutton1 = null;
-
-    private JButton deletebutton1 = null;
-
-    private JButton closebutton1 = null;
-
-    private JButton clonebutton1 = null;
-    
-    /**
-     * This method initializes buttonPanel	
-     * 	
-     * @return javax.swing.JPanel	
-     */
-    private JPanel getButtonPanel() {
-        if (buttonPanel == null) {
-    	buttonPanel = new JPanel();
-    	buttonPanel.setLayout(new FlowLayout());
-    	buttonPanel.add(getAddbutton(), null);
-    	buttonPanel.add(getChangebutton1(), null);
-    	buttonPanel.add(getDeletebutton1(), null);
-    	buttonPanel.add(getClosebutton1(), null);
-    	buttonPanel.add(getClonebutton1(), null);
-        }
-        return buttonPanel;
-    }
-
-    /**
-     * This method initializes addbutton	
-     * 	
-     * @return javax.swing.JButton	
-     */
-    private JButton getAddbutton() {
-        if (addbutton == null) {
-    	addbutton = new JButton();
-    	addbutton.setText(Resource.getPlainResourceString("Add"));
-    	addbutton.setIcon(new ImageIcon(getClass().getResource("/resource/Add16.gif")));
-    	addbutton.addActionListener(new java.awt.event.ActionListener() {
-    	    public void actionPerformed(java.awt.event.ActionEvent e) {
-    		addActionPerformed(e);
-    	    }
-    	});
-        }
-        return addbutton;
-    }
-
-    /**
-     * This method initializes changebutton1	
-     * 	
-     * @return javax.swing.JButton	
-     */
-    private JButton getChangebutton1() {
-        if (changebutton1 == null) {
-    	changebutton1 = new JButton();
-    	changebutton1.setIcon(new ImageIcon(getClass().getResource("/resource/Edit16.gif")));
-    	changebutton1.setText(Resource.getPlainResourceString("Change"));
-    	changebutton1.addActionListener(new java.awt.event.ActionListener() {
-    	    public void actionPerformed(java.awt.event.ActionEvent e) {
-    		changeActionPerformed(e);
-    	    }
-    	});
-        }
-        return changebutton1;
-    }
-
-    /**
-     * This method initializes deletebutton1	
-     * 	
-     * @return javax.swing.JButton	
-     */
-    private JButton getDeletebutton1() {
-        if (deletebutton1 == null) {
-    	deletebutton1 = new JButton();
-    	deletebutton1.setIcon(new ImageIcon(getClass().getResource("/resource/Delete16.gif")));
-    	deletebutton1.setText(Resource.getPlainResourceString("Delete"));
-    	deletebutton1.addActionListener(new java.awt.event.ActionListener() {
-    	    public void actionPerformed(java.awt.event.ActionEvent e) {
-    		deleteActionPerformed(e);
-    	    }
-    	});
-        }
-        return deletebutton1;
-    }
-
-    /**
-     * This method initializes closebutton1	
-     * 	
-     * @return javax.swing.JButton	
-     */
-    private JButton getClosebutton1() {
-        if (closebutton1 == null) {
-    	closebutton1 = new JButton();
-    	closebutton1.setIcon(new ImageIcon(getClass().getResource("/resource/greenlight.gif")));
-    	closebutton1.setText(Resource.getPlainResourceString("Close"));
-    	closebutton1.addActionListener(new java.awt.event.ActionListener() {
-    	    public void actionPerformed(java.awt.event.ActionEvent e) {
-    		closeActionPerformed(e);
-    	    }
-    	});
-        }
-        return closebutton1;
-    }
-
-    /**
-     * This method initializes clonebutton1	
-     * 	
-     * @return javax.swing.JButton	
-     */
-    private JButton getClonebutton1() {
-        if (clonebutton1 == null) {
-    	clonebutton1 = new JButton();
-    	clonebutton1.setIcon(new ImageIcon(getClass().getResource("/resource/Copy16.gif")));
-    	clonebutton1.setText(Resource.getPlainResourceString("Clone"));
-    	clonebutton1.addActionListener(new java.awt.event.ActionListener() {
-    	    public void actionPerformed(java.awt.event.ActionEvent e) {
-    		cloneActionPerformed(e);
-    	    }
-    	});
-        }
-        return clonebutton1;
-    }
-    
-    public void print() {
-
-	// print the current table of tasks
-	try {
-	    TablePrinter.printTable(projectTable);
-	} catch (Exception e) {
-	    Errmsg.errmsg(e);
-	}
     }
 
 }  //  @jve:decl-index=0:visual-constraint="-18,21"
