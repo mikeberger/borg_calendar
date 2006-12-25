@@ -382,6 +382,10 @@ public class MultiView extends View implements Navigator {
 	getTabs().setSelectedComponent(taskPanel);
 
     }
+    
+    public void showTasks() {
+	getTabs().setSelectedComponent(taskPanel);
+    }
 
     private void exit() {
 	if (!Borg.getReference().hasTrayIcon() && this == mainView) {
