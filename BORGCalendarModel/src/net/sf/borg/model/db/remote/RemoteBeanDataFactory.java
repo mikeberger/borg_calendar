@@ -103,6 +103,9 @@ public class RemoteBeanDataFactory implements IBeanDataFactory
 	}
 
 	public MemoDB createMemoDB(String url, String username) throws Exception {
+	    // memo db not yet supported for remote HTTP server
+	    if( url.indexOf("http:") != -1)
+		return null;
 	    return new RemoteMemoDB(url,username);
 	}
 }

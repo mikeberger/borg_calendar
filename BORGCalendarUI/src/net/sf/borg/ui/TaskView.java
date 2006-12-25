@@ -849,7 +849,11 @@ class TaskView extends View {
 		gridBagConstraints91.weightx = 1.0;
 		gridBagConstraints91.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints91.insets = new java.awt.Insets(4, 4, 4, 4);
+		
 		jPanel3.add(projBox, gridBagConstraints91);
+		
+		if( !TaskModel.getReference().hasSubTasks() )
+		    projBox.setEnabled(false);
 
 	}// GEN-END:initComponents
 

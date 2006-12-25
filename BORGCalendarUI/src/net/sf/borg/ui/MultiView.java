@@ -42,7 +42,6 @@ import javax.swing.event.ChangeListener;
 
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
-import net.sf.borg.common.util.Prefs;
 import net.sf.borg.common.util.PrintHelper;
 import net.sf.borg.common.util.Resource;
 import net.sf.borg.control.Borg;

@@ -62,49 +62,7 @@ public class Errmsg
         }
         
         ScrolledDialog.showError(e);
-        /*
-        Object options[] = new Object[1];
-        options[0] = Resource.getResourceString("OK");
-        
-        String showstack = Prefs.getPref(PrefName.STACKTRACE);
-        if( showstack.equals("true"))
-        {
-            // pop up a window showing the exception and an option
-            // to see a stack trace
-            options = new Object[2];
-            options[0] = Resource.getResourceString("OK");
-            options[1] = Resource.getResourceString("Show_Stack_Trace");
-        
-        }
-        
-        // get rid of NESTED exceptions for SQL exceptions - they make the error window too large
-        String es = e.toString();
-        int i1 = es.indexOf("** BEGIN NESTED");
-        int i2 = es.indexOf("** END NESTED");
-        
-        if( i1 != -1 && i2 != -1 )
-        {
-        	int i3 = es.indexOf('\n', i1);
-        	String newstring = es.substring(0,i3) + "\n-- removed --\n" + es.substring(i2);
-            es = newstring;
-        }
-        
-        
-        int option = JOptionPane.showOptionDialog(null, es, Resource.getResourceString("Error"),
-        JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE,
-        null, options, options[0]);
-        
-        if( option == 1 )
-        {
-            // show the stack trace
-            java.io.ByteArrayOutputStream bao = new java.io.ByteArrayOutputStream();
-            java.io.PrintStream ps = new java.io.PrintStream(bao);
-            e.printStackTrace(ps);
-            JOptionPane.showMessageDialog(null, bao.toString(), Resource.getResourceString("Stack_Trace"),
-            JOptionPane.ERROR_MESSAGE);
-            // dump to console too for cut & paste
-            System.out.println(bao.toString());
-        }*/
+       
     }
     
     // output an informational notice
