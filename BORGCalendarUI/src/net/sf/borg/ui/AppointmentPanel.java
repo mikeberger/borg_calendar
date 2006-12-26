@@ -56,6 +56,7 @@ import net.sf.borg.model.ReminderTimes;
 import net.sf.borg.model.Repeat;
 
 import com.toedter.calendar.JDateChooser;
+import java.awt.Dimension;
 
 class AppointmentPanel extends JPanel {
 
@@ -315,6 +316,8 @@ class AppointmentPanel extends JPanel {
 	    alarmcb.setEnabled(false);
 	}
 	setCustRemTimes(null);
+	
+	apptTitleField.requestFocus();
     }
 
     public String getText() {
@@ -450,6 +453,7 @@ class AppointmentPanel extends JPanel {
 
 	    setCustRemTimes(null);
 	    setPopupTimesString();
+	    
 
 	} else {
 
@@ -660,7 +664,7 @@ class AppointmentPanel extends JPanel {
 	}
 
 	timesEnable();
-
+	apptTitleField.requestFocus();
     }
 
     private void add_appt() {
@@ -1074,10 +1078,12 @@ class AppointmentPanel extends JPanel {
 
 	jPanel1.setBorder(new javax.swing.border.TitledBorder(Resource
 		.getResourceString("appttext")));
-	jScrollPane1.setPreferredSize(new java.awt.Dimension(320, 140));
+	jScrollPane1.setPreferredSize(new Dimension(200, 140));
 	appttextarea.setColumns(40);
+	appttextarea.setSize(new Dimension(300, 84));
+	appttextarea.setPreferredSize(new Dimension(300, 84));
 	appttextarea.setLineWrap(true);
-	appttextarea.setRows(8);
+	appttextarea.setRows(5);
 	appttextarea.setWrapStyleWord(true);
 	appttextarea.setBorder(new javax.swing.border.BevelBorder(
 		javax.swing.border.BevelBorder.LOWERED));
@@ -1086,10 +1092,12 @@ class AppointmentPanel extends JPanel {
 
 	GridBagConstraints gridBagConstraints1 = new java.awt.GridBagConstraints();
 	gridBagConstraints1.fill = java.awt.GridBagConstraints.BOTH;
-	gridBagConstraints1.weightx = 1.0;
+	gridBagConstraints1.weightx = 0.5D;
 	gridBagConstraints1.gridy = 2;
-	gridBagConstraints1.gridwidth = 2;
-	gridBagConstraints1.weighty = 1.0;
+	gridBagConstraints1.gridwidth = 1;
+	gridBagConstraints1.gridx = 1;
+	gridBagConstraints1.insets = new Insets(4, 4, 4, 4);
+	gridBagConstraints1.weighty = 0.5D;
 	jPanel1.add(jScrollPane1, gridBagConstraints1);
 	jPanel1.add(jLabel, gridBagConstraints);
 	jPanel1.add(getApptTitleField(), gridBagConstraints10);
