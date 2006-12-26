@@ -33,6 +33,9 @@
 	<!-- PATH to IzPack dir to create the installer -->
 	<property name="iz.dir" value="c:/Program Files/IzPack" />
 	<property name="iz.compile" value="compile.bat" />
+	
+	<taskdef name="izpack" classpath="${basedir}/lib/standalone-compiler.jar"
+	         classname="com.izforge.izpack.ant.IzPackTask"/>
 
 	<!-- Path References -->
 	<path id="build.classpath">
@@ -285,6 +288,12 @@ build.number=${build.number}
 			<fileset dir="${prj.conduit.dir}/dist" includes="*" />
 			<fileset dir="${prj.conduit.dir}" includes="License.BORGConduits" />
 		</copy>
+		<izpack input="${build.dir}/installer/install.xml"
+		        output="${build.dir}/installer/BORG_installer.jar"
+		        installerType="standard"
+		        basedir="${build.dir}/installer"
+		        izPackDir="${iz.dir}/"/>
+		<!--
 		<exec executable="${iz.compile}" dir="${iz.dir}/bin" resolveExecutable="true">
 			<arg value="${build.dir}/installer/install.xml" />
 			<arg value="-b" />
@@ -292,6 +301,7 @@ build.number=${build.number}
 			<arg value="-o" />
 			<arg value="${build.dir}/installer/BORG_installer.jar" />
 		</exec>
+		-->
 
 		<copy todir="${dist.dir}" file="${build.dir}/installer/BORG_installer.jar" />
 

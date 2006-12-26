@@ -23,7 +23,16 @@
         The gui preferences indication.
         Sets the installer window to 640x480. It will not be able to change the size.
     -->
-    <guiprefs width="640" height="480" resizable="yes"/>
+    <guiprefs width="640" height="480" resizable="yes">
+    	<modifier key="useHeadingPanel" value="yes"/>
+    	 <modifier key="labelGap" value="2"/>    
+  		<modifier key="layoutAnchor" value="NORTHWEST"/>    
+    	<modifier key="headingLineCount" value="1"/>
+  		<modifier key="headingFontSize" value="1.5"/>
+  		<modifier key="headingBackgroundColor" value="0x00ffffff"/>
+  		<modifier key="headingPanelCounter" value="text"/>
+  		<modifier key="headingPanelCounterPos" value="inHeading"/>
+    </guiprefs>
     
     <!-- 
         The locale section.
