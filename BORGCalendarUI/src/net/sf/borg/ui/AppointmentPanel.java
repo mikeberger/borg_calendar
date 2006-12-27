@@ -664,6 +664,7 @@ class AppointmentPanel extends JPanel {
 	}
 
 	timesEnable();
+	apptTitleField.setBackground(new Color(255,255,255));
 	apptTitleField.requestFocus();
     }
 
@@ -1521,6 +1522,8 @@ class AppointmentPanel extends JPanel {
 
 	// appointment text of some sort is required
 	if (apptTitleField.getText().equals("") && validate) {
+	    apptTitleField.requestFocus();
+	    apptTitleField.setBackground(new Color(255,255,204));
 	    throw new Warning(Resource
 		    .getResourceString("Please_enter_some_appointment_text"));
 	}
