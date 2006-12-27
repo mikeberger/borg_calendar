@@ -11,31 +11,64 @@ The project home page is http://borg-calendar.sourceforge.net
 DATABASE CHANGES
 ----------------
 
-There are significant database changes in BORG 1.6. Scripts to upgrade from 1.5.2 are not
-available. Upgrade must be through Export/Import.
+IMPORTANT: if you are running BORG 1.5.2.1 or earlier, export your database to XML files BEFORE installing 1.6.
+There are significant database changes in BORG 1.6. Scripts to upgrade from 1.5.2 are not available. 
+Upgrade must be through XML Export/Import.
 
-Upgrade for MySQL and HSQLDB users
+In general, the upgrade procedure is: 
+
+1. Use BORG 1.5.x to export your DB to XML
+2. Install BORG 1.6. You might want to not overwrite BORG 1.5.2 to keep both version around
+until you know that your db is upgraded properly.
+3. Create a new, empty  1.6 database.
+4. Import your db XML into BORG 1.6.
+
+Details Follow:
+
+Upgrade for HSQLDB users
+----------------------------------
+
+1. Backup your database files
+2. From BORG 1.5.x, Export your database to XML files via the Import/Export menu option
+3. Install BORG 1.6
+4. Run BORG 1.6 and change BORG to use a new folder for its database. Restart BORG to create a
+   new 1.6 database in this new folder.
+5. From BORG 1.6, Import your database data from the XML files (borg.xml, mrdb.xml, addr.xml).
+
+Upgrade for MySQL users
 ----------------------------------
 
 1. Backup your database
-2. Export your database to XML files via the Import/Export menu option
-3. MySQL users - Create a new database using the borg_mysql.sql SQL and set BORG to use this
-   empty 1.6 database. Restart BORG.
-   HSQLDB users - change BORG to use a new folder for its database. Restart BORG to create a
-   new 1.6 database in this new folder.
-4. Import your database data from the XML files (borg.xml, mrdb.xml, addr.xml).
+2. From BORG 1.5.x, Export your database to XML files via the Import/Export menu option
+3. Create a new database using the borg_mysql.sql SQL.
+4. Run BORG 1.6 and set it to use the new, empty 1.6 database
+4. From BORG 1.6, Import your database data from the XML files (borg.xml, mrdb.xml, addr.xml).
 
-Conversion to HSQLDB for Local Files Users
+Upgrade for Local Files Users
 -----------------------------
 It is recommended that all Local Files users switch to HSQLDB. The Local Files will still work in BORG
 1.6, but the new task tracker features (projects, subtasks) and the new memos features will not
 work with Local Files.
 
+1. Backup your database files
+2. From BORG 1.5.x, Export your database to XML files via the Import/Export menu option
+3. Install BORG 1.6
+4. Run BORG 1.6 and change BORG to use an HSQLDB database in a new folder. Restart BORG to create a
+   new 1.6 HSQLDB database in this new folder.
+5. From BORG 1.6, Import your database data from the XML files (borg.xml, mrdb.xml, addr.xml).
+
+Upgrade for Remote Server Users
+-------------------------------
+The remote server code has not yet been updated with support for the new 1.6 task and memo features.
+Remote Server users might want to remain on release 1.5.2.1 unless there is some other change in 1.6
+that they are interested in.
+
 1. Backup your database
-2. Export your database to XML files via the Import/Export menu option
-3. change BORG to use HSQLDB as its database and select a new folder for the database. 
-   Restart BORG to create a new 1.6 HSQLDB database in this new folder.
-4. Import your database data from the XML files (borg.xml, mrdb.xml, addr.xml).
+2. From BORG 1.5.x, Export your database to XML files via the Import/Export menu option
+3. Create a new database using the borg_mysql.sql SQL.
+4. Run BORG 1.6 and set it to use the new, empty 1.6 database. This means installing and configuring the remote
+server web application to point to the new DB. Both the web application and java client need to be upgraded.
+5. From BORG 1.6, Import your database data from the XML files (borg.xml, mrdb.xml, addr.xml).
 
 
 KNOWN ISSUES:
