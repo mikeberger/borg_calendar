@@ -6,7 +6,7 @@
 
 <mapID target="search" url="search.html"/>
 
-<mapID target="index" url="index.html"/>
+<mapID target="main" url="main.html"/>
 
 <mapID target="todo" url="todo.html"/>
 
