@@ -199,6 +199,12 @@ build.number=${build.number}
 		<antcall target="zz_copyresources">
 			<param name="res.dir" value="${prj.ui.dir}/res/resource" />
 		</antcall>
+		
+		<copy todir="${build.dir}/resource">
+					<fileset dir="${prj.common.dir}/installer">
+						<include name="RELEASE_NOTES.txt" />
+					</fileset>
+				</copy>
 
 		<jar jarfile="${dist.dir}/borg.jar" manifest="${build.dir}/${pkg}/MANIFEST.MF">
 			<fileset dir="${build.dir}">

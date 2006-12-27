@@ -1,10 +1,23 @@
 Version 1.6
 -----------
-Redesign Subtasks in Task Tracker
-Add Projects to group Tasks
-Add Task Log
-Add Simple Plain-Text memos, compatible with Palm-Desktop
-Add Palm Hot-Sync conduit for the new memos
+Feature [1109652] - Redesign Subtasks in Task Tracker to allow unlimited subtasks per task, each with its own due date
+Feature [1109652] - Add Projects. A Project contains a collection of related Tasks.
+Feature [1593551] - Add a Task Log to record Task status changes
+Feature [1617531] - Add Simple Plain-Text memos, compatible with Palm-Desktop
+Feature [1617531] - Add Palm Hot-Sync conduit for the new memos
+Feature [1618416] - Move the Task Tracker into the main window as 2 new tabs - Projects and Tasks
+Feature [1622984] - Make HSQLDB the default and deprecate Local Files
+Feature [1358885] - Separate the appointment title and description in the editor
+Feature [1616972] - Update the date chooser widget (which will also fix some bugs caused by the prior one)
+Feature [1592065] - Support Skipped Repeats on the Palm
+Feature [1590836] - Store all BORG appt fields on the Palm to prevent editing appts on the Palm from clearing certain fields
+Bug Fix [1619741] - fix up the default colors, which were ugly and hard to see at times.
+Bug Fix [1619498] - fix up the behaviour of tables and add row striping
+Bug Fix [1600804] - sort elapsed time numerically
+Bug Fix [1590982] - prevent changes to a repeating appt or todo from resetting the list of skipped days and done occurrences when possible
+Bug Fix [1590834] - Palm sync should not lose the appt color
+
+*** Deprecated the Local Files Database. HSQLDB is now the default ***
 
 Version 1.5.2
 -------------

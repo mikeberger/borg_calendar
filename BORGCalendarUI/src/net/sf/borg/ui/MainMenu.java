@@ -112,6 +112,8 @@ public class MainMenu {
     private JMenuItem licsend = new javax.swing.JMenuItem();
 
     private JMenuItem chglog = new javax.swing.JMenuItem();
+    
+    private JMenuItem rlsnotes = new javax.swing.JMenuItem();
 
     private JMenuItem AboutMI = new javax.swing.JMenuItem();
 
@@ -606,6 +608,15 @@ public class MainMenu {
 	});
 
 	helpmenu.add(chglog);
+	
+	ResourceHelper.setText(rlsnotes, "rlsnotes");
+	rlsnotes.addActionListener(new java.awt.event.ActionListener() {
+	    public void actionPerformed(java.awt.event.ActionEvent evt) {
+		new HelpScreen("/resource/RELEASE_NOTES.txt").setVisible(true);
+	    }
+	});
+
+	helpmenu.add(rlsnotes);
 
 	ResourceHelper.setText(dbMI, "DatabaseInformation");
 	dbMI.addActionListener(new java.awt.event.ActionListener() {

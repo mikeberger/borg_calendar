@@ -25,7 +25,7 @@ Upgrade for MySQL and HSQLDB users
    new 1.6 database in this new folder.
 4. Import your database data from the XML files (borg.xml, mrdb.xml, addr.xml).
 
-Upgrade for Local Files Users
+Conversion to HSQLDB for Local Files Users
 -----------------------------
 It is recommended that all Local Files users switch to HSQLDB. The Local Files will still work in BORG
 1.6, but the new task tracker features (projects, subtasks) and the new memos features will not
@@ -41,7 +41,7 @@ work with Local Files.
 KNOWN ISSUES:
 -------------
 
-1. There WILL be many new text strings that have not been translated. 
+1. There are many new text strings that have not been translated. 
 Feel free to mail any translations to i_flem@users.sourceforge.net.
 There is nobody on the project actively updating the translations. Any
 received translations will be posted as patches.
