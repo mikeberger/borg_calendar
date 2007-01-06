@@ -1275,7 +1275,7 @@ class TaskView extends View {
 			// do not close task if subtasks are open
 			if (task.getState().equals(
 					TaskModel.getReference().getTaskTypes().getFinalState(
-							task.getState()))) {
+							task.getType()))) {
 				for (int r = 0; r < stable.getRowCount(); r++) {
 					Boolean closed = (Boolean) ts.getValueAt(r, 0);
 					Integer id = (Integer) ts.getValueAt(r, 1);

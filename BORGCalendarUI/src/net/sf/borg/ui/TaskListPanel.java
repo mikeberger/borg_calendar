@@ -55,6 +55,7 @@ import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.Resource;
 import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.Project;
+import net.sf.borg.model.Subtask;
 import net.sf.borg.model.Task;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.TaskTypes;
@@ -485,9 +486,21 @@ public class TaskListPanel extends JPanel {
 	TableSorter tm = (TableSorter) taskTable.getModel();
 	Integer num = (Integer) tm.getValueAt(row, 0);
 	try {
-	    // force close of the task
-	    TaskModel taskmod_ = TaskModel.getReference();
-	    taskmod_.close(num.intValue());
+	    
+	    Collection sts = TaskModel.getReference().getSubTasks(num.intValue());
+	    Iterator it = sts.iterator();
+	    while( it.hasNext())
+	    {
+		Subtask st = (Subtask) it.next();
+		if( st.getCloseDate() == null )
+		{
+		    Errmsg.notice(Resource
+			    .getResourceString("open_subtasks"));
+		    return;
+		}
+	    }
+
+	    TaskModel.getReference().close(num.intValue());
 	} catch (Exception e) {
 	    Errmsg.errmsg(e);
 	}
