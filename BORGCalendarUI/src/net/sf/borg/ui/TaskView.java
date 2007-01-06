@@ -1313,7 +1313,7 @@ class TaskView extends View {
 						task.getDueDate());
 				String oldd = null;
 				if( orig != null )
-				    DateFormat.getDateInstance().format(orig.getDueDate());
+				    oldd = DateFormat.getDateInstance().format(orig.getDueDate());
 				if (orig != null && !newd.equals(oldd)) {
 
 					TaskModel.getReference().addLog(
