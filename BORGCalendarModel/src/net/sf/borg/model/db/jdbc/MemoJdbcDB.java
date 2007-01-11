@@ -76,7 +76,7 @@ class MemoJdbcDB extends JdbcDB implements MemoDB {
     public Collection getNames() throws Exception {
 	ArrayList keys = new ArrayList();
 	PreparedStatement stmt = connection_
-		.prepareStatement("SELECT memoname FROM memos WHERE username = ? and deleted = false ORDER BY memoname");
+		.prepareStatement("SELECT memoname FROM memos WHERE username = ? and deleted = 0 ORDER BY memoname");
 	stmt.setString(1, username_);
 	ResultSet rs = stmt.executeQuery();
 
