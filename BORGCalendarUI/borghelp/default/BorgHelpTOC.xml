@@ -33,8 +33,6 @@
 
  <tocitem text="Printing" target="printing"/>
 
- <tocitem text="Command Line options:" target="cmdline"/>
-
  <tocitem text="Import/Export to XML" target="xml"/>
 
  <tocitem text="ICalendar Import/Export" target="ical"/>

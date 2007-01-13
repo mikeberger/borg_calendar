@@ -23,8 +23,6 @@
 
 <mapID target="xml" url="xml.html"/>
 
-<mapID target="cmdline" url="cmdline.html"/>
-
 <mapID target="popups" url="popups.html"/>
 
 <mapID target="multiuser" url="multiuser.html"/>
