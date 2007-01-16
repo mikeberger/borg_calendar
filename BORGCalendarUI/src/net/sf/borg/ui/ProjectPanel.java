@@ -514,6 +514,7 @@ public class ProjectPanel extends JPanel {
 	pstatusBox.addItem(Resource.getPlainResourceString("All"));
 	pstatusBox.addItem(Resource.getPlainResourceString("OPEN"));
 	pstatusBox.addItem(Resource.getPlainResourceString("CLOSED"));
+	pstatusBox.setSelectedItem(Resource.getPlainResourceString("OPEN"));
 	pstatusBox.addActionListener(new java.awt.event.ActionListener() {
 	    public void actionPerformed(java.awt.event.ActionEvent evt) {
 		refresh();
@@ -521,6 +522,7 @@ public class ProjectPanel extends JPanel {
 	});
 
 	pnl.add(pstatusBox, null);
+	
 
 	GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
 	gridBagConstraints1.gridx = 0;
