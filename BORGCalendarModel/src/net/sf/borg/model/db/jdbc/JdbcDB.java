@@ -94,8 +94,13 @@ abstract public class JdbcDB implements /*BeanDB,*/ Transactional {
 		Properties props = new Properties();
 		props.setProperty("user", "sa");
 		props.setProperty("password", "");
-		props.setProperty("shutdown", "true");
-		props.setProperty("ifexists", "true");
+		
+		// only want to apply these properties to an embedded stand-alone db
+		if( url.startsWith("jdbc:hsqldb:file"))
+		{
+			props.setProperty("shutdown", "true");
+			props.setProperty("ifexists", "true");
+		}
 		try {
 		    globalConnection_ = DriverManager.getConnection(url, props);
 		} catch (SQLException se) {
@@ -145,7 +150,7 @@ abstract public class JdbcDB implements /*BeanDB,*/ Transactional {
     private final void cleanup() {
 	try {
 	    if (globalConnection_ != null && !globalConnection_.isClosed()
-		    && url_.startsWith("jdbc:hsqldb")) {
+		    && url_.startsWith("jdbc:hsqldb:file")) {
 
 		execSQL("SHUTDOWN");
 

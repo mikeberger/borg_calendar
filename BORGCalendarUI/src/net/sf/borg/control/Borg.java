@@ -559,7 +559,7 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 	    int syncmins = Prefs.getIntPref(PrefName.SYNCMINS);
 	    String dbtype = Prefs.getPref(PrefName.DBTYPE);
 	    if ((shared || dbtype.equals("remote") || dbtype
-		    .equals("mysql"))
+		    .equals("mysql") || dbtype.equals("jdbc"))
 		    && syncmins != 0) {
 		syncTimer_ = new java.util.Timer();
 		syncTimer_.schedule(new TimerTask() {

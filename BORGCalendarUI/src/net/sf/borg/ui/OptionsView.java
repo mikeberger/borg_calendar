@@ -134,10 +134,6 @@ public class OptionsView extends View {
 		return (singleton);
 	}
 
-	static public void setRestartListener(RestartListener rl) {
-		rl_ = rl;
-	}
-
 	static private void setBooleanPref(JCheckBox box, PrefName pn) {
 		if (box.isSelected())
 			Prefs.putPref(pn, "true");
@@ -151,6 +147,10 @@ public class OptionsView extends View {
 			box.setSelected(true);
 		else
 			box.setSelected(false);
+	}
+
+	static public void setRestartListener(RestartListener rl) {
+		rl_ = rl;
 	}
 
 	private javax.swing.JButton applyButton;
@@ -261,13 +261,25 @@ public class OptionsView extends View {
 
 	private JRadioButton hsqldbButton;
 
+	JTextField hsqldbdir = new JTextField();
+
 	private JPanel hsqldbPanel;
 
 	private javax.swing.JCheckBox icaltodobox;
 
+	JCheckBox indEmailBox = new JCheckBox();
+
+	JSpinner indEmailTime = null;
+
 	private javax.swing.JCheckBox iso8601Box = new JCheckBox();
 
 	private javax.swing.JButton jButton5;
+
+	private JRadioButton jdbcButton = null;
+
+	private JPanel jdbcPanel = null;
+
+	private JTextField jdbcText = null;
 
 	private JLabel jLabel = null;
 
@@ -307,6 +319,8 @@ public class OptionsView extends View {
 
 	private javax.swing.JTabbedPane jTabbedPane1;
 
+	// End of variables declaration//GEN-END:variables
+
 	private javax.swing.JComboBox lnfBox;
 
 	private javax.swing.JComboBox localebox;
@@ -318,8 +332,6 @@ public class OptionsView extends View {
 	private javax.swing.JCheckBox logobox;
 
 	private javax.swing.JButton logobrowse;
-
-	// End of variables declaration//GEN-END:variables
 
 	private javax.swing.JTextField logofile;
 
@@ -346,10 +358,12 @@ public class OptionsView extends View {
 	private javax.swing.JCheckBox privbox;
 
 	private javax.swing.JCheckBox pubbox;
-
+	
 	private JRadioButton remoteButton = null;
 
 	private JPanel remoteServerPanel = null;
+
+	// (added by bsv 2004-12-20)
 
 	private JTextField remoteURLText = null;
 
@@ -358,12 +372,14 @@ public class OptionsView extends View {
 	private ReminderTimePanel remTimePanel = new ReminderTimePanel();
 
 	private javax.swing.JCheckBox revDayEditbox;
-	
+
 	private javax.swing.JCheckBox sharedFileCheckBox;
+
+	JPasswordField smpw = new JPasswordField();
 
 	private javax.swing.JTextField smtptext;
 
-	// (added by bsv 2004-12-20)
+	JTextField socketPort = new JTextField();
 
 	private javax.swing.JCheckBox soundbox;
 
@@ -388,6 +404,10 @@ public class OptionsView extends View {
 
 	private JCheckBox useBeep = null;
 
+	JTextField usertext = new JTextField();
+
+	JCheckBox useSysTray = new JCheckBox();
+
 	private javax.swing.JButton versioncheck;
 
 	private javax.swing.JButton weekFontButton = new JButton();
@@ -397,20 +417,6 @@ public class OptionsView extends View {
 	private javax.swing.JComboBox wkstarthr;
 
 	private javax.swing.JCheckBox wrapbox;
-
-	JTextField hsqldbdir = new JTextField();
-
-	JCheckBox indEmailBox = new JCheckBox();
-
-	JSpinner indEmailTime = null;
-
-	JPasswordField smpw = new JPasswordField();
-
-	JTextField socketPort = new JTextField();
-
-	JTextField usertext = new JTextField();
-
-	JCheckBox useSysTray = new JCheckBox();
 
 	// dbonly will only allow db changes
 	private OptionsView(boolean dbonly) {
@@ -422,6 +428,7 @@ public class OptionsView extends View {
 		dbTypeGroup.add(MySQLButton);
 		dbTypeGroup.add(remoteButton);
 		dbTypeGroup.add(localFileButton);
+		dbTypeGroup.add(jdbcButton);
 
 		if (!dbonly) {
 			addModel(AppointmentModel.getReference());
@@ -454,33 +461,19 @@ public class OptionsView extends View {
 		// database
 		//
 		String dbtype = Prefs.getPref(PrefName.DBTYPE);
-		if (dbtype.equals("local")) {
-			localFileButton.setSelected(true);
-			localFilePanel.setVisible(true);
-			mysqlPanel.setVisible(false);
-			remoteServerPanel.setVisible(false);
-			hsqldbPanel.setVisible(false);
-
+		if (dbtype.equals("mysql")) {
+			MySQLButton.setSelected(true);
 		} else if (dbtype.equals("remote")) {
 			remoteButton.setSelected(true);
-			mysqlPanel.setVisible(false);
-			localFilePanel.setVisible(false);
-			remoteServerPanel.setVisible(true);
-			hsqldbPanel.setVisible(false);
 		} else if (dbtype.equals("hsqldb")) {
 			hsqldbButton.setSelected(true);
-			mysqlPanel.setVisible(false);
-			localFilePanel.setVisible(false);
-			remoteServerPanel.setVisible(false);
-			hsqldbPanel.setVisible(true);
+		} else if (dbtype.equals("jdbc")) {
+			jdbcButton.setSelected(true);
 		} else {
-			MySQLButton.setSelected(true);
-			mysqlPanel.setVisible(true);
-			localFilePanel.setVisible(false);
-			remoteServerPanel.setVisible(false);
-			hsqldbPanel.setVisible(false);
+			localFileButton.setSelected(true);
 		}
-
+		dbTypeChange(dbtype);
+		
 		dbDirText.setText(Prefs.getPref(PrefName.DBDIR));
 		dbNameText.setText(Prefs.getPref(PrefName.DBNAME));
 		dbPortText.setText(Prefs.getPref(PrefName.DBPORT));
@@ -488,6 +481,7 @@ public class OptionsView extends View {
 		dbUserText.setText(Prefs.getPref(PrefName.DBUSER));
 		jPasswordField1.setText(Prefs.getPref(PrefName.DBPASS));
 		remoteURLText.setText(Prefs.getPref(PrefName.DBURL));
+		jdbcText.setText(Prefs.getPref(PrefName.JDBCURL));
 		hsqldbdir.setText(Prefs.getPref(PrefName.HSQLDBDIR));
 
 		if (dbonly) {
@@ -701,13 +695,6 @@ public class OptionsView extends View {
 		manageMySize(PrefName.OPTVIEWSIZE);
 	}
 
-	public void destroy() {
-		this.dispose();
-	}
-
-	public void refresh() {
-	}
-
 	private void apply(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_apply
 		applyChanges();
 	}// GEN-LAST:event_apply
@@ -908,6 +895,8 @@ public class OptionsView extends View {
 				Prefs.putPref(PrefName.DBTYPE, "remote");
 			} else if (hsqldbButton.isSelected()) {
 				Prefs.putPref(PrefName.DBTYPE, "hsqldb");
+			} else if (jdbcButton.isSelected()) {
+				Prefs.putPref(PrefName.DBTYPE, "jdbc");
 			} else {
 				Prefs.putPref(PrefName.DBTYPE, "local");
 			}
@@ -919,6 +908,7 @@ public class OptionsView extends View {
 			Prefs.putPref(PrefName.DBPASS, new String(jPasswordField1
 					.getPassword()));
 			Prefs.putPref(PrefName.DBURL, remoteURLText.getText());
+			Prefs.putPref(PrefName.JDBCURL, jdbcText.getText());
 
 			if (rl_ != null)
 				rl_.restart();
@@ -927,30 +917,48 @@ public class OptionsView extends View {
 		}
 	}// GEN-LAST:event_chgdbActionPerformed
 
-	private void dbTypeAction(java.awt.event.ActionEvent evt)// GEN-FIRST:event_dbTypeAction
-	{// GEN-HEADEREND:event_dbTypeAction
-		if (evt.getActionCommand().equals("mysql")) {
+	private void dbTypeChange(String type)
+	{
+		if (type.equals("mysql")) {
 			mysqlPanel.setVisible(true);
 			localFilePanel.setVisible(false);
 			remoteServerPanel.setVisible(false);
 			hsqldbPanel.setVisible(false);
-		} else if (evt.getActionCommand().equals("remote")) {
+			jdbcPanel.setVisible(false);
+		} else if (type.equals("remote")) {
 			mysqlPanel.setVisible(false);
 			localFilePanel.setVisible(false);
 			remoteServerPanel.setVisible(true);
 			hsqldbPanel.setVisible(false);
-		} else if (evt.getActionCommand().equals("hsqldb")) {
+			jdbcPanel.setVisible(false);
+		} else if (type.equals("hsqldb")) {
 			mysqlPanel.setVisible(false);
 			localFilePanel.setVisible(false);
 			remoteServerPanel.setVisible(false);
 			hsqldbPanel.setVisible(true);
+			jdbcPanel.setVisible(false);
+		} else if (type.equals("jdbc")) {
+			mysqlPanel.setVisible(false);
+			localFilePanel.setVisible(false);
+			remoteServerPanel.setVisible(false);
+			hsqldbPanel.setVisible(false);
+			jdbcPanel.setVisible(true);
 		} else {
 			localFilePanel.setVisible(true);
 			mysqlPanel.setVisible(false);
 			remoteServerPanel.setVisible(false);
 			hsqldbPanel.setVisible(false);
+			jdbcPanel.setVisible(false);
 		}
+	}
+	private void dbTypeAction(java.awt.event.ActionEvent evt)// GEN-FIRST:event_dbTypeAction
+	{// GEN-HEADEREND:event_dbTypeAction
+		dbTypeChange(evt.getActionCommand());
 	}// GEN-LAST:event_dbTypeAction
+
+	public void destroy() {
+		this.dispose();
+	}
 
 	private void exitForm(java.awt.event.WindowEvent evt) {// GEN-FIRST:event_exitForm
 		this.dispose();
@@ -1236,7 +1244,7 @@ public class OptionsView extends View {
 		GridBagConstraints gridBagConstraints5 = new java.awt.GridBagConstraints();
 		gridBagConstraints5.insets = new java.awt.Insets(4, 4, 4, 4);
 		gridBagConstraints5.gridx = 0; // Generated
-		gridBagConstraints5.gridy = 5;
+		gridBagConstraints5.gridy = 6;
 		dbPanel.add(chgdb, gridBagConstraints5); // Generated
 		chgdb.setForeground(new java.awt.Color(255, 0, 51));
 		chgdb.setIcon(new javax.swing.ImageIcon(getClass().getResource(
@@ -1265,6 +1273,16 @@ public class OptionsView extends View {
 		gridBagConstraints6h.insets = new java.awt.Insets(4, 4, 4, 4);
 		gridBagConstraints6h.fill = java.awt.GridBagConstraints.HORIZONTAL;
 		dbPanel.add(getHSQLDBPanel(), gridBagConstraints6h); // Generated
+		
+		GridBagConstraints gridBagConstraints7h = new java.awt.GridBagConstraints();
+		gridBagConstraints7h.gridx = 0;
+		gridBagConstraints7h.gridy = 5;
+		gridBagConstraints7h.weightx = 1.0;
+		gridBagConstraints7h.weighty = 1.0;
+		gridBagConstraints7h.insets = new java.awt.Insets(4, 4, 4, 4);
+		gridBagConstraints7h.fill = java.awt.GridBagConstraints.HORIZONTAL;
+		dbPanel.add(getJdbcPanel(), gridBagConstraints7h); // Generated
+
 
 		return dbPanel;
 	}
@@ -1280,6 +1298,7 @@ public class OptionsView extends View {
 			dbTypePanel.add(getMySQLButton(), null); // Generated
 			dbTypePanel.add(getRemoteButton(), null); // Generated
 			dbTypePanel.add(getLocalFileButton(), null); // Generated
+			dbTypePanel.add(getJdbcButton(), null); // Generated
 			
 		}
 		return dbTypePanel;
@@ -1449,7 +1468,7 @@ public class OptionsView extends View {
 		}
 		return extraDayBox;
 	}
-
+	
 	private JPanel getFontPanel() {
 		JPanel fontPanel = new JPanel();
 		fontPanel.setLayout(new FlowLayout());
@@ -1530,7 +1549,6 @@ public class OptionsView extends View {
 
 		return fontPanel;
 	}
-
 	private JRadioButton getHSQLDBFileButton() {
 		if (hsqldbButton == null) {
 			hsqldbButton = new JRadioButton();
@@ -1594,6 +1612,66 @@ public class OptionsView extends View {
 			indEmailTime = new JSpinner(new SpinnerNumberModel());
 		}
 		return indEmailTime;
+	}
+
+	private JRadioButton getJdbcButton() {
+		if (jdbcButton == null) {
+			jdbcButton = new JRadioButton();
+			jdbcButton.setActionCommand("jdbc");
+			ResourceHelper.setText(jdbcButton, "jdbc");
+			jdbcButton.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					dbTypeAction(e);
+				}
+			});
+		}
+		return jdbcButton;
+	}
+
+	private JPanel getJdbcPanel() {
+		if (jdbcPanel == null) {
+			GridBagConstraints gridBagConstraints54 = new GridBagConstraints();
+			gridBagConstraints54.fill = java.awt.GridBagConstraints.HORIZONTAL; // Generated
+			gridBagConstraints54.gridy = 1; // Generated
+			gridBagConstraints54.ipadx = 0; // Generated
+			gridBagConstraints54.weightx = 1.0; // Generated
+			gridBagConstraints54.insets = new java.awt.Insets(4, 4, 4, 4); // Generated
+			gridBagConstraints54.gridx = 0; // Generated
+			GridBagConstraints gridBagConstraints = new GridBagConstraints();
+			gridBagConstraints.gridx = 0; // Generated
+			gridBagConstraints.ipadx = 0; // Generated
+			gridBagConstraints.ipady = 5; // Generated
+			gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4); // Generated
+			gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST; // Generated
+			gridBagConstraints.gridy = 0; // Generated
+
+			JLabel jLabel = new JLabel();
+			ResourceHelper.setText(jLabel, "enturl");
+			jLabel.setLabelFor(getJdbcText());
+			jLabel.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT); // Generated
+			jLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT); // Generated
+			jdbcPanel = new JPanel();
+			jdbcPanel.setLayout(new GridBagLayout()); // Generated
+			jdbcPanel
+					.setBorder(javax.swing.BorderFactory
+							.createTitledBorder(
+									null,
+									Resource
+											.getResourceString("jdbc"),
+									javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
+									javax.swing.border.TitledBorder.DEFAULT_POSITION,
+									null, null)); // Generated
+			jdbcPanel.add(jLabel, gridBagConstraints); // Generated
+			jdbcPanel.add(getJdbcText(), gridBagConstraints54); // Generated
+		}
+		return jdbcPanel;
+	}
+
+	private JTextField getJdbcText() {
+		if (jdbcText == null) {
+			jdbcText = new JTextField();
+		}
+		return jdbcText;
 	}
 
 	private JPanel getJPanelUCS() {
@@ -2071,7 +2149,7 @@ public class OptionsView extends View {
 		}
 		return palmcb;
 	}
-
+	
 	private JPanel getPrintPanel() {
 		JPanel printPanel = new JPanel();
 		printPanel.setLayout(new java.awt.GridBagLayout());
@@ -2114,7 +2192,6 @@ public class OptionsView extends View {
 		printPanel.add(logobrowse, gridBagConstraints42);
 		return printPanel;
 	}
-
 	private JPanel getReminderPanel() {
 
 		JPanel reminderPanel = new JPanel();
@@ -2263,14 +2340,12 @@ public class OptionsView extends View {
 		}
 		return remoteURLText;
 	}
-
 	private JSpinner getSyncMins() {
 		if (syncmins == null) {
 			syncmins = new JSpinner();
 		}
 		return syncmins;
 	}
-
 	private JPanel getTopPanel() {
 		if (topPanel == null) {
 			GridBagConstraints gridBagConstraints510 = new GridBagConstraints();
@@ -2479,6 +2554,9 @@ public class OptionsView extends View {
 		// only on restart
 		logofile.setText(logo);
 	}// GEN-LAST:event_logobrowseActionPerformed
+
+	public void refresh() {
+	}
 
 	private void versioncheckActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_versioncheckActionPerformed
 	{// GEN-HEADEREND:event_versioncheckActionPerformed

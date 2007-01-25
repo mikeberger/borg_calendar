@@ -75,6 +75,8 @@ public class BeanDataFactoryFactory {
 		return hdir;
 	    dbdir = "jdbc:hsqldb:file:" + Prefs.getPref(PrefName.HSQLDBDIR)
 		    + "/borg_";
+	} else if( dbtype.equals("jdbc")) {
+		dbdir = Prefs.getPref(PrefName.JDBCURL);
 	} else {
 	    // build a mysql URL
 	    dbdir = "jdbc:mysql://" + Prefs.getPref(PrefName.DBHOST) + ":"

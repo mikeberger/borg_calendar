@@ -58,6 +58,7 @@ public class PrefName {
 		static public PrefName DBUSER = new PrefName( "dbuser", "borg");
 		static public PrefName DBPASS = new PrefName( "dbpass", "borg");
 		static public PrefName DBURL = new PrefName( "dburl", "");
+		static public PrefName JDBCURL = new PrefName( "jdbcurl", "");
 		static public PrefName SHARED = new PrefName( "shared", "false");
 		static public PrefName SYNCMINS = new PrefName( "sync_mins", new Integer(0));
 		static public PrefName HSQLDBDIR = new PrefName( "hsqldbdir", "not-set");
