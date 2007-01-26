@@ -60,7 +60,13 @@ public class Prefs {
 	return (((Integer) Prefs.getPrefObject(pn)).intValue());
     }
 
-    
+    public static boolean getBoolPref(PrefName pn)
+    {
+	String s = getPref(pn);
+	if( s != null && s.equals("true"))
+	    return true;
+	return false;
+    }
 
     public static final String getPref(String name, String def) {
 	try {

@@ -1203,7 +1203,7 @@ public class CalendarPanel extends JPanel implements Prefs.Listener, Navigator {
 			for (int i = 0; i < tks.size(); i++) {
 				ts.add(tks.elementAt(i));
 			}
-
+			String show_abb = Prefs.getPref(PrefName.TASK_SHOW_ABBREV);
 			Iterator it = ts.iterator();
 			while (it.hasNext()) {
 				try {
@@ -1218,7 +1218,11 @@ public class CalendarPanel extends JPanel implements Prefs.Listener, Navigator {
 					} else {
 						tx = xx;
 					}
-					addString(taskPreview, "BT" + r.getTaskNumber() + ":" + tx
+					String abb = "";
+			        	
+			        	if( show_abb.equals("true"))
+			        	    abb =  "BT" + r.getTaskNumber().toString() + ":";
+					addString(taskPreview, abb + tx
 							+ "\n", "black");
 
 				} catch (Exception e) {

@@ -187,5 +187,10 @@ public class PrefName {
 		
 		// synchronization
 		static public PrefName PALM_SYNC = new PrefName("palm_sync", "false");
+		
+		// tasks
+		static public PrefName TASK_SHOW_ABBREV = new PrefName("task_show_abbrev", "false");
+		static public PrefName CAL_SHOW_TASKS = new PrefName("cal_show_tasks", "true");
+		static public PrefName CAL_SHOW_SUBTASKS = new PrefName("cal_show_subtasks", "true");
 
 }
