@@ -332,6 +332,8 @@ class TaskView extends View {
 	private ArrayList tbd_ = new ArrayList();
 
 	private javax.swing.JComboBox typebox;
+	
+	private Integer init_proj = null;
 
 	/**
 	 * This method is called from within the constructor to initialize the form.
@@ -347,10 +349,10 @@ class TaskView extends View {
 	 */
 	JPanel stpanel = new JPanel();
 
-	public TaskView(Task task, int function) throws Exception {
+	public TaskView(Task task, int function, Integer projectid) throws Exception {
 		super();
 		addModel(TaskModel.getReference());
-
+		init_proj = projectid;
 		initComponents(); // init the GUI widgets
 
 		initSubtaskTable();
@@ -1461,6 +1463,7 @@ class TaskView extends View {
 			{
 				Project p = TaskModel.getReference().getProject(pid.intValue());
 				projBox.setSelectedItem(getProjectString(p));
+				
 			}
 
 		} else // initialize new task
@@ -1486,6 +1489,26 @@ class TaskView extends View {
 			}
 			//duedatechooser.setCalendar(new GregorianCalendar());
 			//startdatechooser.setCalendar(new GregorianCalendar());
+			if( init_proj != null )
+			{
+			    Project p = TaskModel.getReference().getProject(init_proj.intValue());
+			    projBox.setSelectedItem(getProjectString(p));
+			    
+			    String cat = p.getCategory();
+			    if (cat != null && !cat.equals("")) {
+				catbox.setSelectedItem(cat);
+			    } else {
+				catbox.setSelectedIndex(0);
+			    }
+
+			    GregorianCalendar gc = new GregorianCalendar();
+			    Date dd = p.getDueDate();
+			    if (dd != null)
+				gc.setTime(dd);
+
+			    duedatechooser.setCalendar(gc);
+
+			}
 
 		}
 

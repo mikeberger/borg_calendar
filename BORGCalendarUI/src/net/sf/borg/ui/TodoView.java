@@ -1114,7 +1114,7 @@ public class TodoView extends View implements Prefs.Listener {
 	else if( o instanceof Task )
 	{
 	    try{
-		TaskView tskg = new TaskView((Task)o, TaskView.T_CHANGE);
+		TaskView tskg = new TaskView((Task)o, TaskView.T_CHANGE, null);
 		tskg.setVisible(true);
 	    }
 	    catch(Exception e)
@@ -1129,7 +1129,7 @@ public class TodoView extends View implements Prefs.Listener {
 	    Task t;
 	    try {
 		t = TaskModel.getReference().getMR(taskid);
-		TaskView tskg = new TaskView(t, TaskView.T_CHANGE);
+		TaskView tskg = new TaskView(t, TaskView.T_CHANGE, null);
 		tskg.setVisible(true);
 	    } catch (Exception e) {
 		Errmsg.errmsg(e);

@@ -89,14 +89,14 @@ public class TaskListPanel extends JPanel {
 		Object obj, boolean isSelected, boolean hasFocus, int row,
 		int column) {
 
-	    
-	    
 	    JLabel l = (JLabel) defrend_.getTableCellRendererComponent(table,
 		    obj, isSelected, hasFocus, row, column);
-	    
-	    if( obj == null ) return l;
-	    if( isSelected ) return l;
-	    if( column != 4 && column != 8 )
+
+	    if (obj == null)
+		return l;
+	    if (isSelected)
+		return l;
+	    if (column != 4 && column != 8)
 		return l;
 
 	    this.setText(l.getText());
@@ -108,7 +108,7 @@ public class TaskListPanel extends JPanel {
 
 	    // priority
 	    if (column == 4) {
-		
+
 		if (i == 1) {
 		    this.setBackground(new Color(255, 120, 120));
 		} else if (i == 2) {
@@ -122,7 +122,6 @@ public class TaskListPanel extends JPanel {
 		}
 		return this;
 	    }
-	    
 
 	    // add color to the days-left column as the task due date
 	    // approaches
@@ -189,9 +188,8 @@ public class TaskListPanel extends JPanel {
 
     private StripedTable taskTable;
 
-    
     JComboBox projectBox = null;
-    
+
     /** Creates new form btgui */
     public TaskListPanel() {
 	super();
@@ -427,12 +425,12 @@ public class TaskListPanel extends JPanel {
     }
 
     public void showTasksForProject(Project p) {
-	
-          statusBox.setSelectedIndex(0); 
-          String ps = TaskView.getProjectString(p); 
-          projectBox.setSelectedItem(ps);
-          refresh(); 
-         
+
+	statusBox.setSelectedIndex(0);
+	String ps = TaskView.getProjectString(p);
+	projectBox.setSelectedItem(ps);
+	refresh();
+
     }
 
     private void addActionPerformed(java.awt.event.ActionEvent evt) {
@@ -541,22 +539,23 @@ public class TaskListPanel extends JPanel {
     }
 
     /**
-     * This method initializes addbutton	
-     * 	
-     * @return javax.swing.JButton	
-     */
+         * This method initializes addbutton
+         * 
+         * @return javax.swing.JButton
+         */
     private JButton getAddbutton() {
-        if (addbutton == null) {
-    	addbutton = new JButton();
-    	addbutton.setText(Resource.getPlainResourceString("Add"));
-    	addbutton.setIcon(new ImageIcon(getClass().getResource("/resource/Add16.gif")));
-    	addbutton.addActionListener(new java.awt.event.ActionListener() {
-    	    public void actionPerformed(java.awt.event.ActionEvent e) {
-    		task_add();
-    	    }
-    	});
-        }
-        return addbutton;
+	if (addbutton == null) {
+	    addbutton = new JButton();
+	    addbutton.setText(Resource.getPlainResourceString("Add"));
+	    addbutton.setIcon(new ImageIcon(getClass().getResource(
+		    "/resource/Add16.gif")));
+	    addbutton.addActionListener(new java.awt.event.ActionListener() {
+		public void actionPerformed(java.awt.event.ActionEvent e) {
+		    task_add();
+		}
+	    });
+	}
+	return addbutton;
     }
 
     private ActionListener getAL(JMenuItem mnuitm) {
@@ -564,21 +563,21 @@ public class TaskListPanel extends JPanel {
     }
 
     /**
-     * This method initializes buttonPanel	
-     * 	
-     * @return javax.swing.JPanel	
-     */
+         * This method initializes buttonPanel
+         * 
+         * @return javax.swing.JPanel
+         */
     private JPanel getButtonPanel() {
-        if (buttonPanel == null) {
-    	buttonPanel = new JPanel();
-    	buttonPanel.setLayout(new FlowLayout());
-    	buttonPanel.add(getAddbutton(), null);
-    	buttonPanel.add(getChangebutton1(), null);
-    	buttonPanel.add(getDeletebutton1(), null);
-    	buttonPanel.add(getClosebutton1(), null);
-    	buttonPanel.add(getClonebutton1(), null);
-        }
-        return buttonPanel;
+	if (buttonPanel == null) {
+	    buttonPanel = new JPanel();
+	    buttonPanel.setLayout(new FlowLayout());
+	    buttonPanel.add(getAddbutton(), null);
+	    buttonPanel.add(getChangebutton1(), null);
+	    buttonPanel.add(getDeletebutton1(), null);
+	    buttonPanel.add(getClosebutton1(), null);
+	    buttonPanel.add(getClonebutton1(), null);
+	}
+	return buttonPanel;
     }
 
     /**
@@ -595,79 +594,85 @@ public class TaskListPanel extends JPanel {
     }
 
     /**
-     * This method initializes changebutton1	
-     * 	
-     * @return javax.swing.JButton	
-     */
+         * This method initializes changebutton1
+         * 
+         * @return javax.swing.JButton
+         */
     private JButton getChangebutton1() {
-        if (changebutton1 == null) {
-    	changebutton1 = new JButton();
-    	changebutton1.setIcon(new ImageIcon(getClass().getResource("/resource/Edit16.gif")));
-    	changebutton1.setText(Resource.getPlainResourceString("Change"));
-    	changebutton1.addActionListener(new java.awt.event.ActionListener() {
-    	    public void actionPerformed(java.awt.event.ActionEvent e) {
-    		changeActionPerformed(e);
-    	    }
-    	});
-        }
-        return changebutton1;
+	if (changebutton1 == null) {
+	    changebutton1 = new JButton();
+	    changebutton1.setIcon(new ImageIcon(getClass().getResource(
+		    "/resource/Edit16.gif")));
+	    changebutton1.setText(Resource.getPlainResourceString("Change"));
+	    changebutton1
+		    .addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent e) {
+			    changeActionPerformed(e);
+			}
+		    });
+	}
+	return changebutton1;
     }
 
     /**
-     * This method initializes clonebutton1	
-     * 	
-     * @return javax.swing.JButton	
-     */
+         * This method initializes clonebutton1
+         * 
+         * @return javax.swing.JButton
+         */
     private JButton getClonebutton1() {
-        if (clonebutton1 == null) {
-    	clonebutton1 = new JButton();
-    	clonebutton1.setIcon(new ImageIcon(getClass().getResource("/resource/Copy16.gif")));
-    	clonebutton1.setText(Resource.getPlainResourceString("Clone"));
-    	clonebutton1.addActionListener(new java.awt.event.ActionListener() {
-    	    public void actionPerformed(java.awt.event.ActionEvent e) {
-    		cloneActionPerformed(e);
-    	    }
-    	});
-        }
-        return clonebutton1;
+	if (clonebutton1 == null) {
+	    clonebutton1 = new JButton();
+	    clonebutton1.setIcon(new ImageIcon(getClass().getResource(
+		    "/resource/Copy16.gif")));
+	    clonebutton1.setText(Resource.getPlainResourceString("Clone"));
+	    clonebutton1.addActionListener(new java.awt.event.ActionListener() {
+		public void actionPerformed(java.awt.event.ActionEvent e) {
+		    cloneActionPerformed(e);
+		}
+	    });
+	}
+	return clonebutton1;
     }
 
     /**
-     * This method initializes closebutton1	
-     * 	
-     * @return javax.swing.JButton	
-     */
+         * This method initializes closebutton1
+         * 
+         * @return javax.swing.JButton
+         */
     private JButton getClosebutton1() {
-        if (closebutton1 == null) {
-    	closebutton1 = new JButton();
-    	closebutton1.setIcon(new ImageIcon(getClass().getResource("/resource/greenlight.gif")));
-    	closebutton1.setText(Resource.getPlainResourceString("Close"));
-    	closebutton1.addActionListener(new java.awt.event.ActionListener() {
-    	    public void actionPerformed(java.awt.event.ActionEvent e) {
-    		closeActionPerformed(e);
-    	    }
-    	});
-        }
-        return closebutton1;
+	if (closebutton1 == null) {
+	    closebutton1 = new JButton();
+	    closebutton1.setIcon(new ImageIcon(getClass().getResource(
+		    "/resource/greenlight.gif")));
+	    closebutton1.setText(Resource.getPlainResourceString("Close"));
+	    closebutton1.addActionListener(new java.awt.event.ActionListener() {
+		public void actionPerformed(java.awt.event.ActionEvent e) {
+		    closeActionPerformed(e);
+		}
+	    });
+	}
+	return closebutton1;
     }
 
     /**
-     * This method initializes deletebutton1	
-     * 	
-     * @return javax.swing.JButton	
-     */
+         * This method initializes deletebutton1
+         * 
+         * @return javax.swing.JButton
+         */
     private JButton getDeletebutton1() {
-        if (deletebutton1 == null) {
-    	deletebutton1 = new JButton();
-    	deletebutton1.setIcon(new ImageIcon(getClass().getResource("/resource/Delete16.gif")));
-    	deletebutton1.setText(Resource.getPlainResourceString("Delete"));
-    	deletebutton1.addActionListener(new java.awt.event.ActionListener() {
-    	    public void actionPerformed(java.awt.event.ActionEvent e) {
-    		deleteActionPerformed(e);
-    	    }
-    	});
-        }
-        return deletebutton1;
+	if (deletebutton1 == null) {
+	    deletebutton1 = new JButton();
+	    deletebutton1.setIcon(new ImageIcon(getClass().getResource(
+		    "/resource/Delete16.gif")));
+	    deletebutton1.setText(Resource.getPlainResourceString("Delete"));
+	    deletebutton1
+		    .addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent e) {
+			    deleteActionPerformed(e);
+			}
+		    });
+	}
+	return deletebutton1;
     }
 
     private JPanel getJPanel2() throws Exception {
@@ -729,7 +734,6 @@ public class TaskListPanel extends JPanel {
          * form. WARNING: Do NOT modify this code. The content of this method is
          * always regenerated by the FormEditor.
          */
-   
 
     private void initComponents() throws Exception {
 
@@ -740,8 +744,11 @@ public class TaskListPanel extends JPanel {
 	gridBagConstraints.fill = GridBagConstraints.BOTH;
 	gridBagConstraints.gridwidth = 5;
 	gridBagConstraints.gridy = 4;
-	change.setIcon(new ImageIcon(getClass().getResource("/resource/Edit16.gif")));
-	add.setIcon(new ImageIcon(getClass().getResource("/resource/Add16.gif")));
+	change.setIcon(new ImageIcon(getClass().getResource(
+		"/resource/Edit16.gif")));
+	add
+		.setIcon(new ImageIcon(getClass().getResource(
+			"/resource/Add16.gif")));
 	JScrollPane jScrollPane1 = new JScrollPane();
 	taskTable = new StripedTable();
 	JButton jButton21 = new JButton();
@@ -836,7 +843,7 @@ public class TaskListPanel extends JPanel {
 	taskTable.setBorder(new javax.swing.border.LineBorder(
 		new java.awt.Color(0, 0, 0)));
 	taskTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
-	//taskTable.setGridColor(java.awt.Color.blue);
+	// taskTable.setGridColor(java.awt.Color.blue);
 	taskTable.setPreferredSize(new java.awt.Dimension(700, 500));
 	taskTable.addMouseListener(new java.awt.event.MouseAdapter() {
 	    public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -849,8 +856,7 @@ public class TaskListPanel extends JPanel {
 		new PopupMenuHelper.Entry(getAL(change), "Change"),
 		new PopupMenuHelper.Entry(getAL(clone), "Clone"),
 		new PopupMenuHelper.Entry(getAL(delete), "Delete"),
-		new PopupMenuHelper.Entry(getAL(close), "Close")
-		 });
+		new PopupMenuHelper.Entry(getAL(close), "Close") });
 
 	// set column widths
 	taskTable.getColumnModel().getColumn(0).setPreferredWidth(80);
@@ -924,8 +930,6 @@ public class TaskListPanel extends JPanel {
 
 	editMenu.add(close);
 
-	
-
     }
 
     private void jButton21ActionPerformed(java.awt.event.ActionEvent evt) {
@@ -934,19 +938,19 @@ public class TaskListPanel extends JPanel {
     }
 
     private void loadProjectBox() throws Exception {
-    	projectBox.removeAllItems();
-    	projectBox.addItem(Resource.getPlainResourceString("All"));
-    	try{
-    		Collection projects = TaskModel.getReference().getProjects();
-    		Iterator pi = projects.iterator();
-    		while (pi.hasNext()) {
-    			Project p = (Project) pi.next();
-    			projectBox.addItem(TaskView.getProjectString(p));
-    		}
-    	}
-    	// ignore exception if projects not supported
-    	catch( Exception e)
-    	{}
+	projectBox.removeAllItems();
+	projectBox.addItem(Resource.getPlainResourceString("All"));
+	try {
+	    Collection projects = TaskModel.getReference().getProjects();
+	    Iterator pi = projects.iterator();
+	    while (pi.hasNext()) {
+		Project p = (Project) pi.next();
+		projectBox.addItem(TaskView.getProjectString(p));
+	    }
+	}
+	// ignore exception if projects not supported
+	catch (Exception e) {
+	}
     }
 
     private void mouseClick(java.awt.event.MouseEvent evt) {
@@ -1006,7 +1010,17 @@ public class TaskListPanel extends JPanel {
     private void task_add() {
 	try {
 	    // display the task editor
-	    TaskView tskg = new TaskView(null, TaskView.T_ADD);
+	    String projfilt = (String) projectBox.getSelectedItem();
+	    Integer projfiltid = null;
+	    if (!projfilt.equals(Resource.getPlainResourceString("All"))) {
+		try {
+		    projfiltid = TaskView.getProjectId(projfilt);
+		} catch (Exception e) {
+		    Errmsg.errmsg(e);
+		    return;
+		}
+	    }
+	    TaskView tskg = new TaskView(null, TaskView.T_ADD, projfiltid);
 	    tskg.setVisible(true);
 	} catch (Exception e) {
 	    Errmsg.errmsg(e);
@@ -1024,7 +1038,7 @@ public class TaskListPanel extends JPanel {
 		return;
 
 	    // display the task editor
-	    TaskView tskg = new TaskView(task, TaskView.T_CHANGE);
+	    TaskView tskg = new TaskView(task, TaskView.T_CHANGE, null);
 	    tskg.setVisible(true);
 
 	} catch (Exception e) {
@@ -1043,7 +1057,7 @@ public class TaskListPanel extends JPanel {
 		return;
 
 	    // display the task editor
-	    TaskView tskg = new TaskView(task, TaskView.T_CLONE);
+	    TaskView tskg = new TaskView(task, TaskView.T_CLONE, null);
 	    tskg.setVisible(true);
 	} catch (Exception e) {
 	    Errmsg.errmsg(e);
