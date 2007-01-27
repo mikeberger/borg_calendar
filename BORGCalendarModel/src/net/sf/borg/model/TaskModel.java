@@ -55,7 +55,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
     private Vector allmap_;
 
     private HashMap stmap_;
-    
+
     private HashMap pmap_;
 
     private TaskTypes taskTypes_ = new TaskTypes();
@@ -67,7 +67,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
     public LinkedList get_subtasks(int daykey) {
 	return ((LinkedList) stmap_.get(new Integer(daykey)));
     }
-    
+
     public LinkedList get_projects(int daykey) {
 	return ((LinkedList) pmap_.get(new Integer(daykey)));
     }
@@ -210,14 +210,15 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 	    }
 
 	    if (db_ instanceof TaskDB) {
-		
+
 		Collection projects = getProjects();
 		ti = projects.iterator();
 		while (ti.hasNext()) {
 		    Project pj = (Project) ti.next();
 
-		    if(pj.getStatus().equals(Resource.getPlainResourceString("CLOSED")))
-			    continue;
+		    if (pj.getStatus().equals(
+			    Resource.getPlainResourceString("CLOSED")))
+			continue;
 		    String cat = pj.getCategory();
 		    if (cat == null || cat.equals(""))
 			cat = CategoryModel.UNCATEGORIZED;
@@ -241,8 +242,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 		    LinkedList l = (LinkedList) o;
 		    l.add(pj);
 		}
-		
-		
+
 		Collection subtasks = getSubTasks();
 		ti = subtasks.iterator();
 		while (ti.hasNext()) {
@@ -432,7 +432,16 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
     }
 
     // force a task to be updated to CLOSED state and saved
-    public void close(int num) throws Exception {
+    public void close(int num) throws Exception, Warning {
+
+	Collection sts = TaskModel.getReference().getSubTasks(num);
+	Iterator it = sts.iterator();
+	while (it.hasNext()) {
+	    Subtask st = (Subtask) it.next();
+	    if (st.getCloseDate() == null) {
+		throw new Warning(Resource.getResourceString("open_subtasks"));
+	    }
+	}
 
 	Task task = getMR(num);
 	task.setState(TaskModel.getReference().getTaskTypes().getFinalState(
@@ -444,7 +453,6 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 
 	Project p = getProject(num);
 	p.setStatus(Resource.getPlainResourceString("CLOSED"));
-
 	saveProject(p);
     }
 
