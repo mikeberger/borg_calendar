@@ -69,6 +69,7 @@ import net.sf.borg.common.util.Warning;
 import net.sf.borg.model.Appointment;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.CategoryModel;
+import net.sf.borg.model.Project;
 import net.sf.borg.model.Repeat;
 import net.sf.borg.model.Subtask;
 import net.sf.borg.model.Task;
@@ -83,7 +84,7 @@ import com.toedter.calendar.JDateChooser;
 
 // the tdgui displays a list of the current todo items and allows the
 // suer to mark them as done
-public class TodoView extends View {
+public class TodoView extends View implements Prefs.Listener{
 
     private Vector tds_; // list of rows currently displayed in todo list
 
@@ -98,6 +99,7 @@ public class TodoView extends View {
     private TodoView() {
 
 	super();
+	Prefs.addListener(this);
 	addModel(AppointmentModel.getReference());
 	addModel(TaskModel.getReference());
 
@@ -324,6 +326,45 @@ public class TodoView extends View {
 	// add open tasks with due dates are considered as todos
 	String show_abb = Prefs.getPref(PrefName.TASK_SHOW_ABBREV);
 	if (Prefs.getBoolPref(PrefName.CAL_SHOW_TASKS)) {
+	    
+	    try {
+		Collection pjs = TaskModel.getReference().getProjects();
+		Iterator it = pjs.iterator();
+		while (it.hasNext()) {
+
+		    Project pj = (Project) it.next();
+		    if(pj.getStatus().equals(Resource.getPlainResourceString("CLOSED")))
+			    continue;
+		    String cat = pj.getCategory();
+		    if (cat == null || cat.equals(""))
+			cat = CategoryModel.UNCATEGORIZED;
+
+		    if (!CategoryModel.getReference().isShown(cat))
+			continue;
+
+		    // build a string for the table - BT<task number> +
+                        // description
+		    String abb = "";
+
+		    if (show_abb.equals("true"))
+			abb = "PR" + pj.getId().toString() + " ";
+		    String btstring = abb + pj.getDescription();
+
+		    Object[] ro = new Object[5];
+		    ro[0] = pj.getDueDate();
+		    ro[1] = btstring;
+		    ro[2] = "";
+		    ro[3] = "navy";
+		    ro[4] = null;
+
+		    tm.addRow(ro);
+		    tm.tableChanged(new TableModelEvent(tm));
+		}
+	    } catch (Exception e) {
+		Errmsg.errmsg(e);
+		return;
+	    }
+	    
 	    for (int i = 0; i < mrs.size(); i++) {
 
 		Task mr = (Task) mrs.elementAt(i);
@@ -1075,5 +1116,10 @@ public class TodoView extends View {
 	    });
 	}
 	return catmenuitem;
+    }
+
+    public void prefsChanged() {
+	refresh();
+	
     }
 } // @jve:decl-index=0:visual-constraint="39,18"
