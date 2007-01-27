@@ -55,6 +55,8 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
     private Vector allmap_;
 
     private HashMap stmap_;
+    
+    private HashMap pmap_;
 
     private TaskTypes taskTypes_ = new TaskTypes();
 
@@ -65,6 +67,10 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
     public LinkedList get_subtasks(int daykey) {
 	return ((LinkedList) stmap_.get(new Integer(daykey)));
     }
+    
+    public LinkedList get_projects(int daykey) {
+	return ((LinkedList) pmap_.get(new Integer(daykey)));
+    }
 
     public Vector get_tasks() {
 	return (allmap_);
@@ -73,6 +79,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
     private TaskModel() {
 	btmap_ = new HashMap();
 	stmap_ = new HashMap();
+	pmap_ = new HashMap();
 	allmap_ = new Vector();
     }
 
@@ -156,6 +163,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 	btmap_.clear();
 	allmap_.clear();
 	stmap_.clear();
+	pmap_.clear();
 	TaskTypes tt = TaskModel.getReference().getTaskTypes();
 
 	try {
@@ -202,6 +210,39 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 	    }
 
 	    if (db_ instanceof TaskDB) {
+		
+		Collection projects = getProjects();
+		ti = projects.iterator();
+		while (ti.hasNext()) {
+		    Project pj = (Project) ti.next();
+
+		    if(pj.getStatus().equals(Resource.getPlainResourceString("CLOSED")))
+			    continue;
+		    String cat = pj.getCategory();
+		    if (cat == null || cat.equals(""))
+			cat = CategoryModel.UNCATEGORIZED;
+
+		    if (!CategoryModel.getReference().isShown(cat))
+			continue;
+
+		    // use task due date to build a day key
+		    Date due = pj.getDueDate();
+		    GregorianCalendar g = new GregorianCalendar();
+		    g.setTime(due);
+		    int key = AppointmentModel.dkey(g);
+
+		    // add the string to the btmap_
+		    Object o = pmap_.get(new Integer(key));
+		    if (o == null) {
+			o = new LinkedList();
+			pmap_.put(new Integer(key), o);
+		    }
+
+		    LinkedList l = (LinkedList) o;
+		    l.add(pj);
+		}
+		
+		
 		Collection subtasks = getSubTasks();
 		ti = subtasks.iterator();
 		while (ti.hasNext()) {

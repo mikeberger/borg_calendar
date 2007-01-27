@@ -67,6 +67,9 @@ import net.sf.borg.common.util.PrefName;
 import net.sf.borg.common.util.Prefs;
 import net.sf.borg.common.util.Resource;
 import net.sf.borg.model.AppointmentModel;
+import java.awt.Dimension;
+import java.awt.Insets;
+import javax.swing.SwingConstants;
 
 // propgui displays the edit preferences window
 public class OptionsView extends View {
@@ -2034,7 +2037,7 @@ public class OptionsView extends View {
 	return miscPanel;
     }
 
-    private JPanel taskOptionPanel = null;
+    private JPanel taskOptionPanel = null;  //  @jve:decl-index=0:visual-constraint="12,2528"
 
     private JCheckBox taskAbbrevBox = new JCheckBox();
 
@@ -2044,21 +2047,40 @@ public class OptionsView extends View {
 
     private JPanel getTaskOptionPanel() {
 	if (taskOptionPanel == null) {
+	    GridBagConstraints gridBagConstraints20 = new GridBagConstraints();
+	    gridBagConstraints20.insets = new Insets(4, 4, 4, 4);
+	    gridBagConstraints20.gridy = 2;
+	    gridBagConstraints20.ipady = 0;
+	    gridBagConstraints20.fill = GridBagConstraints.NONE;
+	    gridBagConstraints20.anchor = GridBagConstraints.WEST;
+	    gridBagConstraints20.gridx = 0;
+	    GridBagConstraints gridBagConstraints19 = new GridBagConstraints();
+	    gridBagConstraints19.insets = new Insets(4, 4, 4, 4);
+	    gridBagConstraints19.gridy = 1;
+	    gridBagConstraints19.ipady = 0;
+	    gridBagConstraints19.fill = GridBagConstraints.NONE;
+	    gridBagConstraints19.anchor = GridBagConstraints.WEST;
+	    gridBagConstraints19.gridx = 0;
+	    GridBagConstraints gridBagConstraints17 = new GridBagConstraints();
+	    gridBagConstraints17.gridx = 0;
+	    gridBagConstraints17.ipadx = 0;
+	    gridBagConstraints17.insets = new Insets(4, 4, 4, 4);
+	    gridBagConstraints17.fill = GridBagConstraints.NONE;
+	    gridBagConstraints17.anchor = GridBagConstraints.WEST;
+	    gridBagConstraints17.gridy = 0;
 	    taskOptionPanel = new JPanel();
 
-	    taskOptionPanel.setLayout(new java.awt.GridLayout(0,1));
-
+	    taskOptionPanel.setLayout(new GridBagLayout());
+	    taskOptionPanel.setSize(new Dimension(168, 159));
+	    taskOptionPanel.add(taskAbbrevBox, gridBagConstraints17);
+	    taskOptionPanel.add(calShowTaskBox, gridBagConstraints19);
+	    taskOptionPanel.add(calShowSubtaskBox, gridBagConstraints20);
 	    taskAbbrevBox.setText(Resource
 		    .getPlainResourceString("task_abbrev"));
-	    taskOptionPanel.add(taskAbbrevBox);
-
 	    calShowTaskBox.setText(Resource
 		    .getPlainResourceString("calShowTask"));
-	    taskOptionPanel.add(calShowTaskBox);
-
 	    calShowSubtaskBox.setText(Resource
 		    .getPlainResourceString("calShowSubtask"));
-	    taskOptionPanel.add(calShowSubtaskBox);
 	}
 	return taskOptionPanel;
     }
@@ -2478,6 +2500,12 @@ public class OptionsView extends View {
 
     private void initComponents() {
 
+	calShowSubtaskBox.setName("calShowSubtaskBox");
+	calShowSubtaskBox.setHorizontalAlignment(SwingConstants.LEFT);
+	calShowTaskBox.setName("calShowTaskBox");
+	calShowTaskBox.setHorizontalAlignment(SwingConstants.LEFT);
+	taskAbbrevBox.setName("taskAbbrevBox");
+	taskAbbrevBox.setHorizontalAlignment(SwingConstants.LEFT);
 	remtimelabel = new JLabel();
 	jTabbedPane1 = new javax.swing.JTabbedPane();
 	privbox = new javax.swing.JCheckBox();

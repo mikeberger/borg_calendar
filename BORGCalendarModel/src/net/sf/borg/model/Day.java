@@ -472,6 +472,36 @@ public class Day {
 
 	// load any tasks
 	if (Prefs.getBoolPref(PrefName.CAL_SHOW_TASKS)) {
+	    
+	    l = TaskModel.getReference().get_projects(key);
+	    if (l != null) {
+
+		Iterator it = l.iterator();
+
+		while (it.hasNext()) {
+
+		    Project pj = (Project) it.next();
+		    String abb = "";
+		    if (show_abb.equals("true"))
+			abb = "PR" + pj.getId().toString() + " ";
+		    String de = abb + pj.getDescription();
+		    String tx = de.replace('\n', ' ');
+
+		    Appointment info = new Appointment();
+		    info
+			    .setDate(new GregorianCalendar(year, month, day,
+				    00, 00).getTime());
+		    String color = info.getColor();
+
+		
+		    if (color == null)
+			info.setColor("navy");
+
+		    info.setText(tx);
+		    ret.addAppt(info);
+		}
+	    }
+	    
 	    l = TaskModel.getReference().get_tasks(key);
 	    if (l != null) {
 
@@ -492,11 +522,10 @@ public class Day {
 				    00, 00).getTime());
 		    String color = info.getColor();
 
-		    // bsv 2004-12-21
+		  
 		    if (color == null)
 			info.setColor("navy");
-		    // if( color == null ) info.setColor("black");
-
+		    
 		    info.setText(tx);
 		    ret.addAppt(info);
 		}
@@ -525,10 +554,9 @@ public class Day {
 				    00, 00).getTime());
 		    String color = info.getColor();
 
-		    // bsv 2004-12-21
+		   
 		    if (color == null)
 			info.setColor("navy");
-		    // if( color == null ) info.setColor("black");
 
 		    info.setText(tx);
 		    ret.addAppt(info);
