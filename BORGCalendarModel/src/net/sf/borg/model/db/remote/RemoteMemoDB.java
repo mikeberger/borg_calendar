@@ -27,9 +27,7 @@ import net.sf.borg.model.Memo;
 import net.sf.borg.model.db.DBException;
 import net.sf.borg.model.db.MemoDB;
 
-/**
- * @author Mohan Embar
- */
+
 class RemoteMemoDB implements MemoDB {
     // BeanDB overrides
     public final synchronized Collection getNames() throws DBException,

@@ -33,8 +33,14 @@ import net.sf.borg.model.AppointmentXMLAdapter;
 import net.sf.borg.model.BorgOption;
 import net.sf.borg.model.Memo;
 import net.sf.borg.model.MemoXMLAdapter;
+import net.sf.borg.model.Project;
+import net.sf.borg.model.ProjectXMLAdapter;
+import net.sf.borg.model.Subtask;
+import net.sf.borg.model.SubtaskXMLAdapter;
 import net.sf.borg.model.Task;
 import net.sf.borg.model.TaskXMLAdapter;
+import net.sf.borg.model.Tasklog;
+import net.sf.borg.model.TasklogXMLAdapter;
 import net.sf.borg.model.db.BeanXMLAdapter;
 import net.sf.borg.model.db.DBException;
 import net.sf.borg.model.db.KeyedBean;
@@ -80,11 +86,14 @@ public class XmlObjectHelper {
 		    new AddressXMLAdapter()),
 	    new BeanXmlObjectHelper(Appointment.class, "Appointment",
 		    new AppointmentXMLAdapter()),
-	    new BeanXmlObjectHelper(Task.class, "Task",
-		    new TaskXMLAdapter()),
-    	    new BeanXmlObjectHelper(Memo.class, "Memo",
-    		    new MemoXMLAdapter()), };
-
+	    new BeanXmlObjectHelper(Task.class, "Task", new TaskXMLAdapter()),
+	    new BeanXmlObjectHelper(Memo.class, "Memo", new MemoXMLAdapter()),
+	    new BeanXmlObjectHelper(Project.class, "Project",
+		    new ProjectXMLAdapter()),
+	    new BeanXmlObjectHelper(Tasklog.class, "Tasklog",
+		    new TasklogXMLAdapter()),
+	    new BeanXmlObjectHelper(Subtask.class, "Subtask",
+		    new SubtaskXMLAdapter()) };
 
     private static void addPrimitive(XTree xml, String name, String val) {
 	xml.appendChild(name, val);

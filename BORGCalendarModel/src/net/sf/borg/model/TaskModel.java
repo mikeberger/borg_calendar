@@ -719,8 +719,11 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 		}
 	    } else if (ch.name().equals("Project")) {
 		Project p = (Project) pa.fromXml(ch);
+		Integer id = p.getId();
 		try {
 		    p.setId(null);
+		    saveProject(p);
+		    p.setId(id);
 		    saveProject(p);
 		} catch (Exception e) {
 		    Errmsg.errmsg(e);
@@ -903,7 +906,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 	    throw new NotSupportedWarning(Resource
 		    .getPlainResourceString("SubtaskNotSupported"));
 
-	if (p.getStatus().equals(Resource.getPlainResourceString("CLOSED"))) {
+	if (p.getId() != null && p.getStatus().equals(Resource.getPlainResourceString("CLOSED"))) {
 	    // make sure that all tasks are closed
 	    Collection ptasks = TaskModel.getReference().getTasks(
 		    p.getId().intValue());

@@ -26,6 +26,9 @@ import java.util.Map;
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.XTree;
 import net.sf.borg.model.BorgOption;
+import net.sf.borg.model.Project;
+import net.sf.borg.model.Subtask;
+import net.sf.borg.model.Tasklog;
 import net.sf.borg.model.db.AppointmentDB;
 import net.sf.borg.model.db.BeanDB;
 import net.sf.borg.model.db.BeanDataFactoryFactory;
@@ -33,6 +36,7 @@ import net.sf.borg.model.db.DBException;
 import net.sf.borg.model.db.IBeanDataFactory;
 import net.sf.borg.model.db.KeyedBean;
 import net.sf.borg.model.db.MultiUserDB;
+import net.sf.borg.model.db.TaskDB;
 import net.sf.borg.model.db.remote.IRemoteProxy;
 import net.sf.borg.model.db.remote.XmlObjectHelper;
 
@@ -64,6 +68,9 @@ public class BorgHandler {
 	    BeanDB beanDB = getBeanDB(parms, uid);
 	    String cmd = parms.getCommand();
 
+	// 
+	// Remote DB
+	//
 	    if (cmd.equals("readAll")) {
 		result = beanDB.readAll();
 	    } else if (cmd.equals("readObj")) {
@@ -78,10 +85,6 @@ public class BorgHandler {
 		result = beanDB.getOption(key);
 	    } else if (cmd.equals("getOptions")) {
 		result = beanDB.getOptions();
-	    } else if (cmd.equals("getTodoKeys")) {
-		result = ((AppointmentDB) beanDB).getTodoKeys();
-	    } else if (cmd.equals("getRepeatKeys")) {
-		result = ((AppointmentDB) beanDB).getRepeatKeys();
 	    } else if (cmd.equals("nextkey")) {
 		result = new Integer(beanDB.nextkey());
 	    } else if (cmd.equals("isDirty")) {
@@ -102,9 +105,63 @@ public class BorgHandler {
 		    beanDB.updateObj(bean, crypt);
 
 		touch(sessionId);
+	//
+	// Appointment DB specific
+	//
+	    } else if (cmd.equals("getTodoKeys")) {
+		result = ((AppointmentDB) beanDB).getTodoKeys();
+	    } else if (cmd.equals("getRepeatKeys")) {
+		result = ((AppointmentDB) beanDB).getRepeatKeys();
 	    } else if (cmd.equals("getAllUsers")
 		    && beanDB instanceof MultiUserDB) {
 		result = ((MultiUserDB) beanDB).getAllUsers();
+        //
+        // Task DB Specific
+	//
+	    } else if (cmd.equals("addLog")) {
+		IRemoteProxy.ComposedObject agg = (IRemoteProxy.ComposedObject) parms.getArgs();
+		Integer id = (Integer) agg.getO1();
+		((TaskDB) beanDB).addLog(id.intValue(),(String)agg.getO2());
+		touch(sessionId);
+	    } else if (cmd.equals("addProject")) {
+		((TaskDB) beanDB).addProject((Project)parms.getArgs());
+		touch(sessionId);
+	    } else if (cmd.equals("addSubTask")) {
+		((TaskDB) beanDB).addSubTask((Subtask)parms.getArgs());
+		touch(sessionId);
+	    } else if (cmd.equals("deleteProject")) {
+		((TaskDB) beanDB).deleteProject(((Integer)parms.getArgs()).intValue());
+		touch(sessionId);
+	    } else if (cmd.equals("deleteSubTask")) {
+		((TaskDB) beanDB).deleteSubTask(((Integer)parms.getArgs()).intValue());
+		touch(sessionId);
+	    } else if (cmd.equals("getLogs")) {
+		result = ((TaskDB) beanDB).getLogs();
+	    } else if (cmd.equals("getLogsI")) {
+		result = ((TaskDB) beanDB).getLogs(((Integer)parms.getArgs()).intValue());
+	    } else if (cmd.equals("getProject")) {
+		result = ((TaskDB) beanDB).getProject(((Integer)parms.getArgs()).intValue());
+	    } else if (cmd.equals("getProjects")) {
+		result = ((TaskDB) beanDB).getProjects();
+	    } else if (cmd.equals("getSubTasksI")) {
+		result = ((TaskDB) beanDB).getSubTasks(((Integer)parms.getArgs()).intValue());
+	    } else if (cmd.equals("getSubTasks")) {
+		result = ((TaskDB) beanDB).getSubTasks();
+	    } else if (cmd.equals("getTasks")) {
+		result = ((TaskDB) beanDB).getTasks(((Integer)parms.getArgs()).intValue());
+	    } else if (cmd.equals("nextProjectKey")) {
+		result = new Integer(((TaskDB) beanDB).nextProjectKey());
+	    } else if (cmd.equals("nextSubTaskKey")) {
+		result = new Integer(((TaskDB) beanDB).nextSubTaskKey());
+	    } else if (cmd.equals("saveLog")) {
+		((TaskDB) beanDB).saveLog((Tasklog)parms.getArgs());
+		touch(sessionId);
+	    } else if (cmd.equals("updateProject")) {
+		((TaskDB) beanDB).updateProject((Project)parms.getArgs());
+		touch(sessionId);
+	    } else if (cmd.equals("updateSubTask")) {
+		((TaskDB) beanDB).updateSubTask((Subtask)parms.getArgs());
+		touch(sessionId);
 	    } else
 		throw new UnsupportedOperationException(cmd);
 	} catch (Exception e) {

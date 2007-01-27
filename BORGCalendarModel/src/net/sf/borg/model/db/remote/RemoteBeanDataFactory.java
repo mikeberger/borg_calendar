@@ -81,6 +81,8 @@ public class RemoteBeanDataFactory implements IBeanDataFactory
 		if (cls == Appointment.class)
 			db = new ApptCachingBeanDB(new ApptRemoteBeanDB(clsstr, file,
 					readonly, username));
+		else if (cls == Task.class)
+			db = new TaskRemoteBeanDB(cls, clsstr, file, readonly, username);
 		else
 			db = new CachingBeanDB(new RemoteBeanDB(cls, clsstr, file,
 					readonly, username));
