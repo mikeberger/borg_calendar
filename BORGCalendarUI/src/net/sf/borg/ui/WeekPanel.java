@@ -225,13 +225,6 @@ class WeekPanel extends ApptBoxPanel implements Navigator, Prefs.Listener,
 	int smfontHeight = g2.getFontMetrics().getHeight();
 	// int smfontDesent=g2.getFontMetrics().getDescent();
 
-	// array of colors for appt boxes - each appt gets a different color
-	Color acolor[] = new Color[4];
-	acolor[3] = new Color(214, 255, 214);
-	acolor[1] = new Color(214, 214, 255);
-	acolor[2] = new Color(255, 214, 214);
-	acolor[0] = new Color(255, 255, 214);
-
 	boolean wrap = false;
 	sp = Prefs.getPref(PrefName.WRAP);
 	if (sp.equals("true"))
@@ -296,13 +289,13 @@ class WeekPanel extends ApptBoxPanel implements Navigator, Prefs.Listener,
 			if (box.isOutsideGrid()) {
 
 			    addBox(box, colleft + 2, notey, colwidth - 4,
-				    smfontHeight, acolor[apptnum % acolor.length]);
+				    smfontHeight, apptnum);
 			    // increment Y coord for next note text
 			    notey += smfontHeight;
 			} else {
 
 			    addBox(box, colleft + 4, aptop, colwidth - 8,
-				    calbot - aptop, acolor[apptnum % acolor.length]);
+				    calbot - aptop, apptnum);
 			    apptnum++;
 			}
 

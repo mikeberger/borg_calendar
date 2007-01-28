@@ -330,7 +330,7 @@ public class ApptBoxPanel extends JPanel
 
         public BoxModel model;
 
-        public Color color;
+        public int boxnum;
 
         public int type = APPTBOX;
 
@@ -448,7 +448,7 @@ public class ApptBoxPanel extends JPanel
         draggedAnchor = -1;
     }
 
-    public void addBox(BoxModel bm, double x, double y, double w, double h, Color c)
+    public void addBox(BoxModel bm, double x, double y, double w, double h, int boxnum)
     {
         UIBoxInfo b = new UIBoxInfo();
         b.type = UIBoxInfo.APPTBOX;
@@ -468,7 +468,7 @@ public class ApptBoxPanel extends JPanel
             b.w = (int) ((bm.getRightAdjustment() - bm.getLeftAdjustment()) * w);
         }
         b.model = bm;
-        b.color = c;
+        b.boxnum = boxnum;
 
         boxes.add(b);
     }
@@ -547,29 +547,19 @@ public class ApptBoxPanel extends JPanel
             {
 
                 // fill the box with color
-                g2.setColor(b.color);
+                g2.setColor(getBoxColor(b.boxnum));
                 //g2.fill3DRect(b.x, b.y, b.w, b.h, true);
                 g2.fillRoundRect(b.x+(int)hlthickness, b.y+(int)hlthickness, b.w-(int)hlthickness, b.h-(int)hlthickness, radius*radius, radius*radius);
-                g2.setColor(b.color.darker());
+                g2.setColor(getBorderColor(b.boxnum));
                 g2.setStroke(highlight);
                 if( b.model.isSelected())
                 {
-                    g2.setColor(Color.BLUE);
+                    g2.setColor(Color.CYAN);
                 }
                 g2.drawRoundRect(b.x+(int)hlthickness, b.y+(int)hlthickness, b.w-(int)hlthickness, b.h-(int)hlthickness, radius*radius, radius*radius);
                 g2.setStroke(stroke);
 
-                // draw box outline
-/*
-                if (b.model.isSelected())
-                {
-                    g2.setStroke(highlight);
-                    g2.setColor(Color.BLUE);
-                    g2.drawRect(b.x, b.y, b.w, b.h);
-                    g2.setStroke(stroke);
-
-                }
-*/
+               
                 // draw the appt text
                 g2.setColor(Color.BLACK);
                 g2.clipRect(b.x, b.y, b.w, b.h);
@@ -726,5 +716,36 @@ public class ApptBoxPanel extends JPanel
         return ret;
 
     }
+    
+    private Color boxcolor[] = null;
+    private Color getBoxColor(int i)
+    {
+	if( boxcolor == null )
+	{
+	    boxcolor = new Color[4];
+	    boxcolor[0] = new Color(255,235,235);
+	    boxcolor[1] = new Color(235,235,255);
+	    boxcolor[3] = new Color(255,255,235);
+	    boxcolor[2] = new Color(235,255,235);
+	}
+	
+	return boxcolor[i % boxcolor.length];
+    }
+    
+    private Color bordercolor[] = null;
+    private Color getBorderColor(int i)
+    {
+	if( bordercolor == null )
+	{
+	    bordercolor = new Color[4];
+	    bordercolor[0] = new Color(255,100,100);
+	    bordercolor[1] = new Color(100,100,255);
+	    bordercolor[3] = new Color(255,255,100);
+	    bordercolor[2] = new Color(100,255,100);
+	}
+	
+	return bordercolor[i % bordercolor.length];
+    }
+    
 
 }

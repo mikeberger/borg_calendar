@@ -165,14 +165,6 @@ class DayPanel extends ApptBoxPanel implements Navigator, Prefs.Listener, Printa
 		g2.setFont(sm_font);
 		int smfontHeight = g2.getFontMetrics().getHeight();
 
-		// array of colors for appt boxes - each appt gets a different color
-		Color acolor[] = new Color[4];
-		acolor[3] = new Color(214, 255, 214);
-		acolor[1] = new Color(214, 214, 255);
-		acolor[2] = new Color(255, 214, 214);
-		acolor[0] = new Color(255, 255, 214);
-
-
 		int colleft = (int) (timecolwidth);
 		
         
@@ -221,12 +213,12 @@ class DayPanel extends ApptBoxPanel implements Navigator, Prefs.Listener, Printa
 					// note on top
 					if (box.isOutsideGrid()) {
 						
-						addBox( box, colleft+2, notey, colwidth - 4, smfontHeight, acolor[apptnum % acolor.length]);
+						addBox( box, colleft+2, notey, colwidth - 4, smfontHeight, apptnum);
 						// increment Y coord for next note text
 						notey += smfontHeight;
 					} else {
 
-						addBox( box, colleft+4, aptop, colwidth - 8, calbot -aptop, acolor[apptnum % acolor.length]);
+						addBox( box, colleft+4, aptop, colwidth - 8, calbot -aptop, apptnum);
 						apptnum++;
 					}
 
