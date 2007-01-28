@@ -25,9 +25,11 @@ import net.sf.borg.common.util.Resource;
 public class ApptBoxPanel extends JPanel
 {
 
-    final static private BasicStroke highlight = new BasicStroke(2.0f);
+    final static private float hlthickness = 3.0f;
+    final static private BasicStroke highlight = new BasicStroke(hlthickness);
     //final static private BasicStroke regular = new BasicStroke(1.0f);
     final static private BasicStroke thicker = new BasicStroke(4.0f);
+    final static private int radius = 5;
 
     final static private int translation = -10; // to adjust, since since Graphics2D is translated 
 
@@ -546,10 +548,19 @@ public class ApptBoxPanel extends JPanel
 
                 // fill the box with color
                 g2.setColor(b.color);
-                g2.fill3DRect(b.x, b.y, b.w, b.h, true);
+                //g2.fill3DRect(b.x, b.y, b.w, b.h, true);
+                g2.fillRoundRect(b.x+(int)hlthickness, b.y+(int)hlthickness, b.w-(int)hlthickness, b.h-(int)hlthickness, radius*radius, radius*radius);
+                g2.setColor(b.color.darker());
+                g2.setStroke(highlight);
+                if( b.model.isSelected())
+                {
+                    g2.setColor(Color.BLUE);
+                }
+                g2.drawRoundRect(b.x+(int)hlthickness, b.y+(int)hlthickness, b.w-(int)hlthickness, b.h-(int)hlthickness, radius*radius, radius*radius);
+                g2.setStroke(stroke);
 
                 // draw box outline
-
+/*
                 if (b.model.isSelected())
                 {
                     g2.setStroke(highlight);
@@ -558,7 +569,7 @@ public class ApptBoxPanel extends JPanel
                     g2.setStroke(stroke);
 
                 }
-
+*/
                 // draw the appt text
                 g2.setColor(Color.BLACK);
                 g2.clipRect(b.x, b.y, b.w, b.h);
@@ -575,7 +586,7 @@ public class ApptBoxPanel extends JPanel
                 else if (b.model.getTextColor().equals("blue"))
                     g2.setColor(new Color(102,0,204));
 
-                drawWrappedString(g2, b.model.getText(), b.x, b.y, b.w);
+                drawWrappedString(g2, b.model.getText(), b.x+radius, b.y+radius, b.w-radius);
 
             }
             g2.setClip(s);
@@ -586,7 +597,8 @@ public class ApptBoxPanel extends JPanel
         {
             g2.setStroke(highlight);
             g2.setColor(Color.RED);
-            g2.drawRect(resizeBox.x, resizeBox.y, resizeBox.width, resizeBox.height);
+            //g2.drawRect(resizeBox.x, resizeBox.y, resizeBox.width, resizeBox.height);
+            g2.drawRoundRect(resizeBox.x, resizeBox.y, resizeBox.width, resizeBox.height, radius*radius, radius*radius);
             g2.setStroke(stroke);
             double top = (resizeBox.y - resizeMin) / (resizeMax - resizeMin);
             double bot = (resizeBox.y - resizeMin + resizeBox.height) / (resizeMax - resizeMin);
@@ -603,7 +615,8 @@ public class ApptBoxPanel extends JPanel
         {
             g2.setStroke(thicker);
             g2.setColor(Color.GREEN);
-            g2.drawRect(dragNewBox.x, dragNewBox.y, dragNewBox.width, dragNewBox.height);
+            //g2.drawRect(dragNewBox.x, dragNewBox.y, dragNewBox.width, dragNewBox.height);
+            g2.drawRoundRect(dragNewBox.x, dragNewBox.y, dragNewBox.width, dragNewBox.height,radius*radius, radius*radius);
             g2.setStroke(stroke);
             double top = (dragNewBox.y - resizeMin) / (resizeMax - resizeMin);
             double bot = (dragNewBox.y - resizeMin + dragNewBox.height) / (resizeMax - resizeMin);
