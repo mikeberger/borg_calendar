@@ -1,6 +1,6 @@
-============================
-RELEASE NOTES for BORG 1.6
-============================
+=================================
+RELEASE NOTES for BORG 1.6 beta 2
+=================================
 
 The project home page is http://borg-calendar.sourceforge.net
 
@@ -59,9 +59,7 @@ work with Local Files.
 
 Upgrade for Remote Server Users
 -------------------------------
-The remote server code has not yet been updated with support for the new 1.6 task and memo features.
-Remote Server users might want to remain on release 1.5.2.1 unless there is some other change in 1.6
-that they are interested in.
+As of Release 1.6 beta 2, the remote server supports all of the new task tracking features
 
 1. Backup your database
 2. From BORG 1.5.x, Export your database to XML files via the Import/Export menu option
