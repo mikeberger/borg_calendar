@@ -1,5 +1,20 @@
-Version 1.6
------------
+Version 1.6 beta 2
+------------------
+Feature [1646015] enhance remote db to support tasks
+Feature [1645758] use project values to initialize new task
+Feature [1645750] allow task navigation and close from todo list
+Feature [1645720] add projects to calendar
+Feature [1644941] display subtasks on todo list
+Feature [1651552] improve look of week/day view
+Feature [1644928] add option to turn off task numbers in cal & todo list
+Bug Fix [1646013] project import fails
+Bug Fix [1633184] Error with MySQL 4.0
+Bug Fix [1629517] can close task with open subtasks
+Bug Fix [1629514] save task incorrectly detects date change
+
+
+Version 1.6 beta 1
+------------------
 Feature [1109652] - Redesign Subtasks in Task Tracker to allow unlimited subtasks per task, each with its own due date
 Feature [1109652] - Add Projects. A Project contains a collection of related Tasks.
 Feature [1593551] - Add a Task Log to record Task status changes
