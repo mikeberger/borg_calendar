@@ -616,6 +616,11 @@ public class OptionsView extends View {
 	    lnfs.add("com.incors.plaf.kunststoff.KunststoffLookAndFeel");
 	} catch (Exception e) {
 	}
+	try {
+	    Class.forName("de.javasoft.plaf.synthetica.SyntheticaStandardLookAndFeel");
+	    lnfs.add("de.javasoft.plaf.synthetica.SyntheticaStandardLookAndFeel");
+	} catch (Exception e) {
+	}
 
 	lnfs.add(curlnf);
 
