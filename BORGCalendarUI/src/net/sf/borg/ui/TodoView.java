@@ -488,7 +488,7 @@ public class TodoView extends View implements Prefs.Listener {
 		    tm.tableChanged(new TableModelEvent(tm));
 		}
 	    } catch (Exception e) {
-		Errmsg.errmsg(e);
+		//Errmsg.errmsg(e);
 		return;
 	    }
 	}

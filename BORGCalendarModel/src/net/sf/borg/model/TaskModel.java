@@ -20,6 +20,7 @@
 package net.sf.borg.model;
 
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -557,7 +558,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 
     public Collection getProjects() throws Exception {
 	if (db_ instanceof TaskDB == false)
-	    return null;
+	    return new ArrayList();
 	TaskDB sdb = (TaskDB) db_;
 	return sdb.getProjects();
     }
