@@ -102,34 +102,9 @@
             <file src="RELEASE_NOTES.txt" targetdir="$INSTALL_PATH"/>
             <file src="COPYING" targetdir="$INSTALL_PATH"/>
             <file src="borg.jar" targetdir="$INSTALL_PATH"/>
-	    	<file src="lib/jh.jar" targetdir="$INSTALL_PATH/lib"/>
-	    	<file src="lib/borghelp.jar" targetdir="$INSTALL_PATH/lib"/>
-	    	<file src="lib/hsqldb.jar" targetdir="$INSTALL_PATH/lib"/>
-	    	<file src="lib/jcalendar.jar" targetdir="$INSTALL_PATH/lib"/>
-	    	<file src="lib/jcalendar-license.txt" targetdir="$INSTALL_PATH/lib"/>
-	    	<file src="lib/commons-logging.jar" targetdir="$INSTALL_PATH/lib"/>
-	    	<file src="lib/commons-codec-1.3.jar" targetdir="$INSTALL_PATH/lib"/>
-	    	<file src="lib/commons-httpclient-3.0-rc3.jar" targetdir="$INSTALL_PATH/lib"/> 
-	    	<file src="lib/ical4j.jar" targetdir="$INSTALL_PATH/lib"/> 
-	    	<file src="lib/mail.jar" targetdir="$INSTALL_PATH/lib"/> 
-	    	<file src="lib/activation.jar" targetdir="$INSTALL_PATH/lib"/> 
-	    	<file src="lib/LICENSE.iCal4j" targetdir="$INSTALL_PATH/lib"/> 
-	    	<file src="lib/LICENSE.commons-logging" targetdir="$INSTALL_PATH/lib"/> 
-	    	<file src="lib/LICENSE.commons-codec" targetdir="$INSTALL_PATH/lib"/> 
-	    	<file src="lib/LICENSE.commons-httpclient" targetdir="$INSTALL_PATH/lib"/> 
-	    	<file src="borg_mysql.sql" targetdir="$INSTALL_PATH"/>
-	    	<file src="borg_hsqldb.sql" targetdir="$INSTALL_PATH"/>
-            <file src="db.html" targetdir="$INSTALL_PATH"/>
-            <file src="lib/looks.jar" targetdir="$INSTALL_PATH/lib"/> 
-	        <file src="lib/LICENSE.looks" targetdir="$INSTALL_PATH/lib"/> 
-	        <file src="conduits" targetdir="$INSTALL_PATH"/>
-            <file src="lib/jdic.dll" os="windows" targetdir="$INSTALL_PATH/lib"/>
-            <file src="lib/libjdic.so" os="unix" targetdir="$INSTALL_PATH/lib"/>
-            <file src="lib/tray.dll" os="windows" targetdir="$INSTALL_PATH/lib"/>
-            <file src="lib/libtray.so" os="unix" targetdir="$INSTALL_PATH/lib"/>
-            <file src="lib/LICENSE_JDIC.txt" targetdir="$INSTALL_PATH/lib"/>
+            <fileset dir="lib" targetdir="$INSTALL_PATH/lib"/>	    	
+	        <file src="conduits" targetdir="$INSTALL_PATH"/>           
 	    	<singlefile src="lib/jdic-linux.jar" os="unix" target="$INSTALL_PATH/lib/jdic.jar"/> 
-	    	<file src="lib/jdic.jar" os="windows" targetdir="$INSTALL_PATH/lib"/>
             <file src="borg_servlet.war" targetdir="$INSTALL_PATH"/> 
         </pack>
 

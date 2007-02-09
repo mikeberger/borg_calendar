@@ -41,6 +41,7 @@
 	<path id="build.classpath">
 		<pathelement location="${trayicon.jar}" />
 		<pathelement location="${prj.ui.dir}/lib/jh.jar" />
+		<pathelement location="${prj.ui.dir}/lib/jasperreports-1.2.8.jar" />
 		<fileset dir="${prj.common.dir}/lib">
 			<include name="*.jar" />
 		</fileset>
@@ -187,7 +188,7 @@ build.number=${build.number}
 		<manifest file="${build.dir}/${pkg}/MANIFEST.MF">
 			<attribute name="Built-By" value="${user.name}" />
 			<attribute name="Main-Class" value="${pkg}/control/Borg" />
-			<attribute name="Class-Path" value="lib/hsqldb.jar lib/jdic.jar lib/jh.jar lib/borghelp.jar lib/ical4j.jar lib/commons-logging.jar lib/looks.jar lib/jcalendar.jar lib/commons-httpclient-3.0-rc3.jar lib/commons-codec-1.3.jar lib/mail.jar lib/activation.jar" />
+			<attribute name="Class-Path" value="lib/hsqldb.jar lib/jdic.jar lib/jh.jar lib/borghelp.jar lib/ical4j.jar lib/commons-logging.jar lib/looks.jar lib/jcalendar.jar lib/commons-httpclient-3.0-rc3.jar lib/commons-codec-1.3.jar lib/mail.jar lib/activation.jar lib/commons-collections-2.1.jar lib/itext-1.3.1.jar lib/poi.jar lib/jasperreports-1.2.8.jar" />
 		</manifest>
 
 		<antcall target="zz_copyresources">
@@ -200,6 +201,10 @@ build.number=${build.number}
 			<param name="res.dir" value="${prj.ui.dir}/res/resource" />
 		</antcall>
 		
+		<copy todir="${build.dir}/reports">
+					<fileset dir="${prj.ui.dir}/res/reports"/>
+				</copy>
+		
 		<copy todir="${build.dir}/resource">
 					<fileset dir="${prj.common.dir}/installer">
 						<include name="RELEASE_NOTES.txt" />
@@ -210,6 +215,7 @@ build.number=${build.number}
 			<fileset dir="${build.dir}">
 				<include name="properties" />
 				<include name="resource/*" />
+				<include name="reports/*" />
 				<include name="**/*.class" />
 			</fileset>
 

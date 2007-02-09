@@ -214,7 +214,10 @@ abstract public class JdbcDB implements /*BeanDB,*/ Transactional {
 	return stmt.getResultSet();
     }
 
-
+    static public Connection getConnection()
+    {
+	return globalConnection_;
+    }
 
     public final void close() throws Exception {
 	cleanup();

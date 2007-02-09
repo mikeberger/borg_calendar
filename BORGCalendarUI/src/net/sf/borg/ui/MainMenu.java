@@ -19,6 +19,8 @@
  */
 package net.sf.borg.ui;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -410,7 +412,9 @@ public class MainMenu {
 	    public void actionPerformed(java.awt.event.ActionEvent evt) {
 		// GOTO a particular month
 		DateDialog dlg = new DateDialog(null);
-		dlg.setCalendar(new GregorianCalendar());
+		Calendar cal = new GregorianCalendar();
+		cal.setFirstDayOfWeek(Prefs.getIntPref(PrefName.FIRSTDOW));
+		dlg.setCalendar(cal);
 		dlg.setVisible(true);
 		Calendar dlgcal = dlg.getCalendar();
 		if (dlgcal == null)
@@ -575,7 +579,7 @@ public class MainMenu {
 	userMenu.add(userChooserMI);
 	userMenu.add(publicMI);
 	menuBar.add(userMenu);
-
+	menuBar.add(getReportMenu());
 	menuBar.add(Box.createHorizontalGlue());
 
 	String dbtype = Prefs.getPref(PrefName.DBTYPE);
@@ -1287,6 +1291,23 @@ public class MainMenu {
 	    });
 	}
 	return expvcal;
+    }
+    
+    private JMenu getReportMenu()
+    {
+	JMenu m = new JMenu();
+	m.setText(Resource.getPlainResourceString("reports"));
+	JMenuItem otr = new JMenuItem();
+	otr.setText(Resource.getPlainResourceString("open_tasks"));
+	otr.addActionListener(new ActionListener(){
+
+	    public void actionPerformed(ActionEvent arg0) {
+		RunReport.runReport("open_tasks", null);
+	    }
+	    
+	});
+	m.add(otr);
+	return m;
     }
 
 }
