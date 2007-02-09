@@ -514,6 +514,7 @@ public class OptionsView extends View {
 	    jTabbedPane1.setSelectedIndex(2);
 	    dismissButton.setEnabled(false);
 	    applyButton.setEnabled(false);
+	    
 	    return;
 
 	}
@@ -1280,6 +1281,7 @@ public class OptionsView extends View {
 
 	GridBagConstraints gridBagConstraints4 = new java.awt.GridBagConstraints();
 	gridBagConstraints4.fill = java.awt.GridBagConstraints.HORIZONTAL;
+	gridBagConstraints4.gridwidth = java.awt.GridBagConstraints.REMAINDER;
 	gridBagConstraints4.gridy = 0;
 	gridBagConstraints4.gridx = 0;
 	dbPanel.add(getDbTypePanel(), gridBagConstraints4);
@@ -1288,6 +1290,8 @@ public class OptionsView extends View {
 	gridBagConstraints5.insets = new java.awt.Insets(4, 4, 4, 4);
 	gridBagConstraints5.gridx = 0; // Generated
 	gridBagConstraints5.gridy = 6;
+	gridBagConstraints5.weightx = 1.0;
+	gridBagConstraints5.anchor = GridBagConstraints.CENTER;
 	dbPanel.add(chgdb, gridBagConstraints5); // Generated
 	chgdb.setForeground(new java.awt.Color(255, 0, 51));
 	chgdb.setIcon(new javax.swing.ImageIcon(getClass().getResource(
@@ -1298,12 +1302,37 @@ public class OptionsView extends View {
 		chgdbActionPerformed(evt);
 	    }
 	});
+	
+	JButton help = new JButton();
+	GridBagConstraints gridBagConstraintsh = new java.awt.GridBagConstraints();
+	gridBagConstraintsh.insets = new java.awt.Insets(4, 4, 4, 4);
+	gridBagConstraintsh.gridx = 1; // Generated
+	gridBagConstraintsh.gridy = 6;
+	gridBagConstraintsh.weightx = 1.0;
+	gridBagConstraintsh.anchor = GridBagConstraints.CENTER;
+	//gridBagConstraintsh.fill = java.awt.GridBagConstraints.HORIZONTAL;
+	dbPanel.add(help, gridBagConstraintsh); // Generated
+	help.setForeground(new java.awt.Color(255, 0, 51));
+	help.setIcon(new javax.swing.ImageIcon(getClass().getResource(
+		"/resource/Help16.gif")));
+	ResourceHelper.setText(help, "Help");
+	
+	help.addActionListener(new java.awt.event.ActionListener() {
+	    public void actionPerformed(java.awt.event.ActionEvent evt) {
+		try {
+		    HelpProxy.launchHelp();
+		} catch (Exception e) {
+		    Errmsg.errmsg(e);
+		}
+	    }
+	});
 
 	GridBagConstraints gridBagConstraints6 = new java.awt.GridBagConstraints();
 	gridBagConstraints6.gridx = 0;
 	gridBagConstraints6.gridy = 3;
 	gridBagConstraints6.weightx = 1.0;
 	gridBagConstraints6.weighty = 1.0;
+	gridBagConstraints6.gridwidth = java.awt.GridBagConstraints.REMAINDER;
 	gridBagConstraints6.insets = new java.awt.Insets(4, 4, 4, 4);
 	gridBagConstraints6.fill = java.awt.GridBagConstraints.HORIZONTAL;
 	dbPanel.add(getRemoteServerPanel(), gridBagConstraints6); // Generated
@@ -1315,6 +1344,7 @@ public class OptionsView extends View {
 	gridBagConstraints6h.weighty = 1.0;
 	gridBagConstraints6h.insets = new java.awt.Insets(4, 4, 4, 4);
 	gridBagConstraints6h.fill = java.awt.GridBagConstraints.HORIZONTAL;
+	gridBagConstraints6h.gridwidth = java.awt.GridBagConstraints.REMAINDER;
 	dbPanel.add(getHSQLDBPanel(), gridBagConstraints6h); // Generated
 
 	GridBagConstraints gridBagConstraints7h = new java.awt.GridBagConstraints();
@@ -1322,6 +1352,7 @@ public class OptionsView extends View {
 	gridBagConstraints7h.gridy = 5;
 	gridBagConstraints7h.weightx = 1.0;
 	gridBagConstraints7h.weighty = 1.0;
+	gridBagConstraints7h.gridwidth = java.awt.GridBagConstraints.REMAINDER;
 	gridBagConstraints7h.insets = new java.awt.Insets(4, 4, 4, 4);
 	gridBagConstraints7h.fill = java.awt.GridBagConstraints.HORIZONTAL;
 	dbPanel.add(getJdbcPanel(), gridBagConstraints7h); // Generated
