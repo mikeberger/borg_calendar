@@ -355,8 +355,9 @@ public class TaskTypes {
 		while( it.hasNext() )
 		{
 			String type = (String) it.next();
+			String init = getInitialState(type);
 			Collection states = getStates(type);
-			if( !states.contains("OPEN"))
+			if( init.equals("OPEN") && !states.contains("OPEN"))
 				throw new Exception( Resource.getPlainResourceString("NoOpenState") + type);
 		}
 	}
