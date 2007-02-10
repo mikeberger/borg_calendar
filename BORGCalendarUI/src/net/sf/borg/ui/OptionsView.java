@@ -886,6 +886,9 @@ public class OptionsView extends View {
 	String newlnf = (String) lnfBox.getSelectedItem();
 	String oldlnf = Prefs.getPref(PrefName.LNF);
 	if (!newlnf.equals(oldlnf)) {
+	    Errmsg.notice(Resource.getPlainResourceString("lfrestart"));
+	    Prefs.putPref(PrefName.LNF, newlnf);
+	    /*
 	    try {
 		UIManager.getLookAndFeelDefaults().put("ClassLoader",
 			getClass().getClassLoader());
@@ -904,7 +907,7 @@ public class OptionsView extends View {
 		// " + newlnf );
 		Errmsg.notice(e.toString());
 		return;
-	    }
+	    }*/
 	}
 
 	Date d = (Date) emailtimebox.getValue();
