@@ -800,6 +800,8 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 
 	TaskDB sdb = (TaskDB) db_;
 	sdb.deleteSubTask(id);
+	load_map();
+	refreshListeners();
     }
 
     public void saveSubTask(Subtask s) throws Exception {
@@ -816,6 +818,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 	}
 
 	load_map();
+	refreshListeners();
     }
 
     public void addLog(int taskid, String desc) throws Exception {
