@@ -341,7 +341,7 @@ build.number=${build.number}
 	</target>
 
 	<target name="clean-build" depends="clean,borg-jar,borg-servlet-war,help-jar" />
-	<target name="main" depends="clean-build" />
+	<target name="main" depends="regen-help,fulldist,conduits,installer" />
 	<target name="fulldist" depends="borg_prog,borg_src" />
 
 	<!-- "Private" targets -->

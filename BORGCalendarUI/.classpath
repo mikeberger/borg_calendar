@@ -13,6 +13,5 @@
 	<classpathentry kind="lib" path="res"/>
 	<classpathentry kind="lib" path="/BORGCalendarCommon/lib/jcalendar.jar"/>
 	<classpathentry kind="lib" path="/BORGCalendarCommon/lib/looks.jar"/>
-	<classpathentry kind="lib" path="lib/jasperreports-1.2.8.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
