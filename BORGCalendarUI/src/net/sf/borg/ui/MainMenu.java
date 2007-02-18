@@ -1307,6 +1307,24 @@ public class MainMenu {
 	    
 	});
 	m.add(otr);
+	
+	JMenuItem customrpt = new JMenuItem();
+	customrpt.setText(Resource.getPlainResourceString("select_rpt"));
+	customrpt.addActionListener(new ActionListener(){
+
+	    public void actionPerformed(ActionEvent arg0) {
+		try {
+		    InputStream is = IOHelper.fileOpen(".", Resource.getPlainResourceString("select_rpt"));
+		    if( is == null ) return;
+		    RunReport.runReport(is, null);
+		} catch (Exception e) {
+		    Errmsg.errmsg(e);
+		}
+		//RunReport.runReport("open_tasks", null);
+	    }
+	    
+	});
+	m.add(customrpt);
 	return m;
     }
 

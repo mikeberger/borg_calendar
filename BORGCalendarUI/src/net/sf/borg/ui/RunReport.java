@@ -21,7 +21,14 @@ public class RunReport {
 
     }
 
-    public static void runReport(String name, Map parms) {
+    public static void runReport(String name, Map parms) {	
+	    String resourcePath = "/reports/" + name + ".jasper";
+	    InputStream is = RunReport.class.getResourceAsStream(resourcePath);
+	    runReport(is,parms);	
+    }
+
+    
+    public static void runReport(InputStream is, Map parms) {
 
 	if (parms == null)
 	    parms = new HashMap();
@@ -30,14 +37,13 @@ public class RunReport {
 	    Class jprintclass = cl.loadClass("net.sf.jasperreports.engine.JasperPrint");
 	    Class jfillclass = cl.loadClass("net.sf.jasperreports.engine.JasperFillManager");
 	    Class jviewerclass = cl.loadClass("net.sf.jasperreports.view.JasperViewer");
-	    String resourcePath = "/reports/" + name + ".jasper";
-	    // Class.forName( "com.mysql.jdbc.Driver" );
+	    
 	    Connection conn = JdbcDB.getConnection();
 	    if (conn == null) {
 		Errmsg.notice(Resource.getPlainResourceString("no_reports"));
 		return;
 	    }
-	    InputStream is = RunReport.class.getResourceAsStream(resourcePath);
+	    
 	    Method fr = jfillclass.getMethod("fillReport", new Class[] {
 		    InputStream.class, Map.class, Connection.class });
 	    Object jasperprint = fr.invoke(null,
