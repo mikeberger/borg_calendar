@@ -381,7 +381,7 @@ class AppointmentPanel extends JPanel {
     }
 
     // set the view to a single appt (or a new blank)
-    public void showapp(int key) {
+    public void showapp(int key, Appointment defaultAppt) {
 	key_ = key;
 	String mt = Prefs.getPref(PrefName.MILTIME);
 
@@ -404,9 +404,8 @@ class AppointmentPanel extends JPanel {
 	dl7.setSelected(false);
 
 	// get default appt values, if any
-	Appointment defaultAppt = null;
 	String defApptXml = Prefs.getPref(PrefName.DEFAULT_APPT);
-	if (!defApptXml.equals("")) {
+	if (defaultAppt == null && !defApptXml.equals("")) {
 	    try {
 		XTree xt = XTree.readFromBuffer(defApptXml);
 		AppointmentXMLAdapter axa = new AppointmentXMLAdapter();
@@ -690,7 +689,7 @@ class AppointmentPanel extends JPanel {
 
 	calmod_.saveAppt(r, true);
 
-	showapp(-1);
+	showapp(-1,null);
     }
 
     private void chg_appt() {
@@ -754,7 +753,7 @@ class AppointmentPanel extends JPanel {
 
 	}
 
-	showapp(-1);
+	showapp(-1,null);
     }
 
     private void chgdateActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_chgdateActionPerformed

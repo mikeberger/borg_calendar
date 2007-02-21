@@ -52,6 +52,7 @@ import net.sf.borg.common.ui.StripedTable;
 import net.sf.borg.common.ui.TableSorter;
 import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.PrefName;
+import net.sf.borg.common.util.Prefs;
 import net.sf.borg.common.util.Resource;
 import net.sf.borg.control.EmailReminder;
 import net.sf.borg.model.Appointment;
@@ -323,7 +324,7 @@ public class AppointmentListView extends View implements ListSelectionListener {
 				apptTable.getSelectionModel().setSelectionInterval(i,i);
 			}
 		}
-		apanel_.showapp(key);
+		apanel_.showapp(key, null);
 	}
 
 	public void valueChanged(ListSelectionEvent e) {
@@ -333,7 +334,7 @@ public class AppointmentListView extends View implements ListSelectionListener {
 
 		ListSelectionModel lsm = (ListSelectionModel) e.getSource();
 		if (lsm.isSelectionEmpty()) {
-			apanel_.showapp(-1);
+			apanel_.showapp(-1, null);
 			return;
 		}
 		int row = lsm.getMinSelectionIndex();
@@ -344,13 +345,13 @@ public class AppointmentListView extends View implements ListSelectionListener {
 		int i = tm.getMappedIndex(row);
 
 		Integer apptkey = (Integer) alist_.get(i);
-		apanel_.showapp(apptkey.intValue());
+		apanel_.showapp(apptkey.intValue(), null);
 
 	}
 
 	private void addActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_addActionPerformed
 		apptTable.clearSelection();
-		apanel_.showapp(-1);
+		apanel_.showapp(-1, null);
 	}// GEN-LAST:event_addActionPerformed
 
 	// add a row to the sorted table
@@ -488,6 +489,22 @@ public class AppointmentListView extends View implements ListSelectionListener {
 		return mtgMailButton;
 	}
 
+	private JButton copyButton = null;
+	private JButton getCopyButton() {
+		if (copyButton == null) {
+		    copyButton = new JButton();
+			ResourceHelper.setText(copyButton, "copy_appt");
+			copyButton.setIcon(new ImageIcon(getClass().getResource("/resource/Copy16.gif")));  
+			copyButton.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					copyAppt();
+				}
+			});
+		}
+		return copyButton;
+	}
+	
+	
 	/**
 	 * This method initializes reminderButton
 	 * 
@@ -616,6 +633,8 @@ public class AppointmentListView extends View implements ListSelectionListener {
 		});
 
 		jPanel1.add(add);
+		
+		jPanel1.add(getCopyButton(), null);
 
 		del.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 				"/resource/Delete16.gif")));
@@ -739,6 +758,39 @@ public class AppointmentListView extends View implements ListSelectionListener {
 		
 	}
 	
+	private void copyAppt()
+	{
+	    	int[] keys = getSelectedKeys();
+	    	if( keys.length != 1)
+	    	{
+	    	    Errmsg.notice(Resource.getPlainResourceString("select_one"));
+	    	    return;
+	    	}
+	    	
+	    	// get date for new appt
+	    	DateDialog dlg = new DateDialog(null);
+		Calendar cal = new GregorianCalendar();
+		cal.setFirstDayOfWeek(Prefs.getIntPref(PrefName.FIRSTDOW));
+		dlg.setCalendar(cal);
+		dlg.setVisible(true);
+		Calendar dlgcal = dlg.getCalendar();
+		if (dlgcal == null)
+		    return;
+	    	
+		showDate(dlgcal.get(Calendar.YEAR), dlgcal.get(Calendar.MONTH), dlgcal.get(Calendar.DATE));
+	    	Appointment appt;
+		try {
+		    appt = AppointmentModel.getReference().getAppt(keys[0]);
+		} catch (Exception e) {
+		    Errmsg.errmsg(e);
+		    return;
+		}
+		apanel_.showapp(-1, appt);
+		refresh();
+		
+	    
+	}
+	
 	private void showDate(int year, int month, int day) {
 		cal_ = new GregorianCalendar(year, month, day);
 		getDateCB().setCalendar(cal_);
@@ -750,7 +802,7 @@ public class AppointmentListView extends View implements ListSelectionListener {
 		// clear all rows
 		deleteAll();
 		apanel_.setDate(year, month, day);
-		apanel_.showapp(-1);
+		apanel_.showapp(-1, null);
 
 		refresh();
 	}
