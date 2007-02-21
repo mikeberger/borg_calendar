@@ -97,7 +97,7 @@ class DayPanel extends ApptBoxPanel implements Navigator, Prefs.Listener, Printa
 				59);
 		Date dt = cal.getTime();
 		// SimpleDateFormat sd = new SimpleDateFormat("MMM dd, yyyy");
-		DateFormat df = DateFormat.getDateInstance(DateFormat.LONG);
+		DateFormat df = DateFormat.getDateInstance(DateFormat.FULL);
 		String title = df.format(dt);
 
 		// determine placement of title at correct height and centered
