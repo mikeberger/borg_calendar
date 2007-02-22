@@ -1308,6 +1308,17 @@ public class MainMenu {
 	});
 	m.add(otr);
 	
+	JMenuItem otpr = new JMenuItem();
+	otpr.setText(Resource.getPlainResourceString("open_tasks_proj"));
+	otpr.addActionListener(new ActionListener(){
+
+	    public void actionPerformed(ActionEvent arg0) {
+		RunReport.runReport("opentasksproj", null);
+	    }
+	    
+	});
+	m.add(otpr);
+	
 	JMenuItem customrpt = new JMenuItem();
 	customrpt.setText(Resource.getPlainResourceString("select_rpt"));
 	customrpt.addActionListener(new ActionListener(){
