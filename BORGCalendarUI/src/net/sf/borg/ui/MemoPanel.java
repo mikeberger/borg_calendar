@@ -7,6 +7,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.ByteArrayInputStream;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -21,6 +22,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import net.sf.borg.common.io.IOHelper;
 import net.sf.borg.common.ui.StripedTable;
 import net.sf.borg.common.ui.TableSorter;
 import net.sf.borg.common.util.Errmsg;
@@ -49,6 +51,8 @@ public class MemoPanel extends JPanel implements ListSelectionListener {
     private JScrollPane jScrollPane1 = null;
 
     private JSplitPane jSplitPane = null;
+
+	private JButton exportButton = null;
 
     /**
          * This is the default constructor
@@ -146,6 +150,8 @@ public class MemoPanel extends JPanel implements ListSelectionListener {
 	    buttonPanel.add(getNewButton(), null);
 	    buttonPanel.add(getSaveButton(), null);
 	    buttonPanel.add(getDelButton(), null);
+	    buttonPanel.add(getExportButton(), null);
+	    
 	}
 	return buttonPanel;
     }
@@ -352,4 +358,41 @@ public class MemoPanel extends JPanel implements ListSelectionListener {
         }
         return jSplitPane;
     }
+
+	/**
+	 * This method initializes exportButton	
+	 * 	
+	 * @return javax.swing.JButton	
+	 */
+	private JButton getExportButton() {
+		if (exportButton == null) {
+			exportButton = new JButton();
+			exportButton.setText(Resource.getPlainResourceString("export"));
+			exportButton.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					 StringBuffer sb = new StringBuffer();
+					 String s = memoText.getText();
+					 for( int i = 0; i < s.length(); i++)
+					 {
+						 if( s.charAt(i) == '\n')
+						 {
+							 sb.append('\r');
+						 }
+						 sb.append(s.charAt(i));
+						 
+					 }
+					 byte[] buf2 = sb.toString().getBytes();
+					 ByteArrayInputStream istr = new ByteArrayInputStream(buf2);
+					try {
+						IOHelper.fileSave(".", istr, "");
+					} catch (Exception e1) {
+						Errmsg.errmsg(e1);
+					}
+				}
+			});
+		}
+		return exportButton;
+	}
+
+	
 }
