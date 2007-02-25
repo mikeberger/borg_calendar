@@ -6,6 +6,7 @@ import java.util.Date;
 
 import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.border.EmptyBorder;
 import javax.swing.table.TableCellRenderer;
 
 public class StripedTable extends JTable {
@@ -74,6 +75,7 @@ public class StripedTable extends JTable {
 		this.setHorizontalAlignment(l.getHorizontalAlignment());
 	    }
 
+	    this.setBorder(new EmptyBorder(4, 2, 4, 2));
 	    return this;
 	}
     }
