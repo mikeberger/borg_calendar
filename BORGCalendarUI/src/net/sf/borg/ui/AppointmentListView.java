@@ -763,7 +763,7 @@ public class AppointmentListView extends View implements ListSelectionListener {
 	    	int[] keys = getSelectedKeys();
 	    	if( keys.length != 1)
 	    	{
-	    	    Errmsg.notice(Resource.getPlainResourceString("select_one"));
+	    	    Errmsg.notice(Resource.getPlainResourceString("select_appt"));
 	    	    return;
 	    	}
 	    	
