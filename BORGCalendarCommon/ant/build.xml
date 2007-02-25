@@ -254,6 +254,13 @@ build.number=${build.number}
 			</fileset>
 		</jar>
 	</target>
+	
+	<target name="rpt_zip" depends="clean-build">
+			<zip destfile="${dist.dir}/borg_rpt_libs.zip">
+				<zipfileset dir="${prj.ui.dir}/rptlib" prefix="lib">
+				</zipfileset>
+			</zip>
+		</target>
 
 	<target name="borg_src" depends="clean-build">
 		<zip destfile="${dist.dir}/borg_src.zip">
@@ -343,7 +350,7 @@ build.number=${build.number}
 
 	<target name="clean-build" depends="clean,borg-jar,borg-servlet-war,help-jar" />
 	<target name="main" depends="regen-help,fulldist,conduits,installer" />
-	<target name="fulldist" depends="borg_prog,borg_src" />
+	<target name="fulldist" depends="borg_prog,borg_src,rpt_zip" />
 
 	<!-- "Private" targets -->
 	<target name="zz_delclassfiles">
