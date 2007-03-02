@@ -19,6 +19,8 @@ import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -53,6 +55,7 @@ public class MemoPanel extends JPanel implements ListSelectionListener {
     private JSplitPane jSplitPane = null;
 
 	private JButton exportButton = null;
+    private boolean isMemoEdited = false;
 
     /**
          * This is the default constructor
@@ -67,6 +70,7 @@ public class MemoPanel extends JPanel implements ListSelectionListener {
 	ListSelectionModel rowSM = memoListTable.getSelectionModel();
 	rowSM.addListSelectionListener(this);
 	memoText.setEditable(false);
+	getSaveButton().setEnabled(false);
 	refresh();
     }
 
@@ -123,17 +127,29 @@ public class MemoPanel extends JPanel implements ListSelectionListener {
 	return memoListTable;
     }
 
-    /**
-         * This method initializes memoText
-         * 
-         * @return javax.swing.JTextField
-         */
+    
     private JTextArea getMemoText() {
 	if (memoText == null) {
 	    memoText = new JTextArea();
 	    memoText.setLineWrap(true);
-
 	    memoText.setWrapStyleWord(true);
+	    memoText.getDocument().addDocumentListener(new DocumentListener(){
+
+		public void changedUpdate(DocumentEvent arg0) {
+		    isMemoEdited = true;
+		    getSaveButton().setEnabled(true);
+		}
+
+		public void insertUpdate(DocumentEvent arg0) {
+		    isMemoEdited = true;
+		    getSaveButton().setEnabled(true);
+		}
+
+		public void removeUpdate(DocumentEvent arg0) {
+		    isMemoEdited = true;
+		    getSaveButton().setEnabled(true);
+		}
+	    });
 	}
 	return memoText;
     }
@@ -191,9 +207,15 @@ public class MemoPanel extends JPanel implements ListSelectionListener {
 	}
 	return saveButton;
     }
+    
 
+    // internal refresh from memo activity should call loadTable() instead of refresh()
+    // refresh() is for external callers
     public void refresh() {
 
+	// if the user is editing a row, don't process the refresh
+	if( isMemoEdited )
+	    return;
 	try {
 	    loadTable();
 	} catch (Exception e) {
@@ -223,6 +245,8 @@ public class MemoPanel extends JPanel implements ListSelectionListener {
 	if (memoName == null) {
 	    memoText.setText("");
 	    memoText.setEditable(false);
+	    isMemoEdited = false;
+	    getSaveButton().setEnabled(false);
 	    return;
 	}
 
@@ -231,10 +255,15 @@ public class MemoPanel extends JPanel implements ListSelectionListener {
 	    text = MemoModel.getReference().getMemo(memoName).getMemoText();
 	} catch (Exception e1) {
 	    Errmsg.errmsg(e1);
+	    isMemoEdited = false;
+	    getSaveButton().setEnabled(false);
 	    return;
 	}
+	
 	memoText.setEditable(true);
 	memoText.setText(text);
+	isMemoEdited = false;
+	 getSaveButton().setEnabled(false);
 
     }
 
@@ -261,11 +290,12 @@ public class MemoPanel extends JPanel implements ListSelectionListener {
 	    Memo m = MemoModel.getReference().getMemo(name);
 	    m.setMemoText(memoText.getText());
 	    MemoModel.getReference().saveMemo(m);
+	    loadTable();
 	} catch (Exception e) {
 	    Errmsg.errmsg(e);
 	}
 
-	refresh();
+	
     }
 
     private void newMemo() {
@@ -288,10 +318,11 @@ public class MemoPanel extends JPanel implements ListSelectionListener {
 	m.setMemoName(name);
 	try {
 	    MemoModel.getReference().saveMemo(m);
+	    loadTable();
 	} catch (Exception e) {
 	    Errmsg.errmsg(e);
 	}
-	refresh();
+	
 
     }
 
@@ -305,11 +336,12 @@ public class MemoPanel extends JPanel implements ListSelectionListener {
 	}
 	try {
 	    MemoModel.getReference().delete(name, true);
+	    loadTable();
 	} catch (Exception e) {
 	    Errmsg.errmsg(e);
 	}
 
-	refresh();
+	
     }
     
     /**
