@@ -96,8 +96,12 @@ public class TaskListPanel extends JPanel {
 		return l;
 	    if (isSelected)
 		return l;
-	    if (column != 4 && column != 8)
+	    
+	    String nm = table.getColumnName(column);
+	    if( !nm.equals(Resource.getPlainResourceString("Pri")) && !nm.equals(Resource.getPlainResourceString("Days_Left")))
 		return l;
+	    //if (column != 4 && column != 8)
+		//return l;
 
 	    this.setText(l.getText());
 	    this.setHorizontalAlignment(CENTER);
@@ -107,7 +111,7 @@ public class TaskListPanel extends JPanel {
 	    int i = ((Integer) obj).intValue();
 
 	    // priority
-	    if (column == 4) {
+	    if (nm.equals(Resource.getPlainResourceString("Pri"))) {
 
 		if (i == 1) {
 		    this.setBackground(new Color(255, 120, 120));

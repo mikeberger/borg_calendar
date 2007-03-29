@@ -83,7 +83,8 @@ public class ProjectPanel extends JPanel {
 	    JLabel l = (JLabel)defrend_.getTableCellRendererComponent(table, obj,
 			isSelected, hasFocus, row, column);
 
-	    if( isSelected || obj == null || column != 7)
+	    String nm = table.getColumnName(column);
+	    if( isSelected || obj == null || !nm.equals(Resource.getPlainResourceString("Days_Left")))
 		return l;
 	    
 	    int i = ((Integer) obj).intValue();

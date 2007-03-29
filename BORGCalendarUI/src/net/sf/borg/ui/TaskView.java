@@ -126,7 +126,8 @@ class TaskView extends View {
 				this.setHorizontalAlignment(CENTER);
 			}
 
-			if (closed.booleanValue() == true || column != 4 || obj == null)
+			String nm = table.getColumnName(column);
+			if (closed.booleanValue() == true || !nm.equals(Resource.getPlainResourceString("Due_Date")) || obj == null)
 				return this;
 
 			int days = TaskModel.daysLeft(dd);
