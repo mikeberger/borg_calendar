@@ -310,6 +310,8 @@ public class Repeat
 	    	if( c.after(current))
 	    		return(0);
 	        c = r.next();
+	        if( c == null )
+	            return(0);
 	    }
 	    
 	}

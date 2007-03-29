@@ -1234,6 +1234,13 @@ class TaskView extends View {
 			cal = duedatechooser.getCalendar();
 			if( cal == null ) cal = new GregorianCalendar();
 			task.setDueDate(cal.getTime()); // due date
+			
+			if( isAfter(task.getStartDate(), task.getDueDate()) )
+			{
+				throw new Warning(Resource
+					.getPlainResourceString("sd_dd_warn"));
+			}
+			
 			Integer pri = (Integer) pritext.getSelectedItem();
 			task.setPriority(pri); // priority
 			task.setPersonAssigned(patext.getText()); // person assigned

@@ -443,6 +443,11 @@ class ProjectView extends View {
 			if( cal == null) cal = new GregorianCalendar();
 			p.setDueDate(cal.getTime()); // due date
 
+			if( isAfter(p.getStartDate(), p.getDueDate()) )
+			{
+				throw new Warning(Resource
+					.getPlainResourceString("sd_dd_warn"));
+			}
 			p.setDescription(description.getText()); // description
 
 			p.setStatus( (String)statebox.getSelectedItem());
