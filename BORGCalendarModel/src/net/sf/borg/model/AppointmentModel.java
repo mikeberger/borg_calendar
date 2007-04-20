@@ -451,28 +451,29 @@ public class AppointmentModel extends Model implements Model.Listener {
 	    ncal.setTime(d);
 
 	    Repeat repeat = new Repeat(ncal, appt.getFrequency());
-	    boolean stop = false;
 	    for (int i = 1; i < tm; i++) {
-		// System.out.println("i="+i);
-		// if we've found a suitable ToDo then stop.
-		if (ncal != null && stop) {
-		    newtodo = ncal.getTime();
-		    break;
-		}
+		//System.out.println("i="+i);
+		//System.out.println("ncal=" + ncal.getTime());
 
 		// if we have gotten to the current todo,
 		// signal that we're ready to break out of
 		// the loop as soon as we find a suitable ToDo date.
-		if (ncal != null && /* ccal.equals(ncal) */
-		ncal.get(Calendar.YEAR) == ccal.get(Calendar.YEAR)
+		if (ncal != null
+			&& ncal.get(Calendar.YEAR) == ccal.get(Calendar.YEAR)
 			&& ncal.get(Calendar.MONTH) == ccal.get(Calendar.MONTH)
 			&& ncal.get(Calendar.DATE) == ccal.get(Calendar.DATE))
-		    stop = true;
-		// System.out.println("ncal=" + ncal.getTime() + " stop=" +
-		// stop);
+		{
+		    ncal = repeat.next();
+		    if( ncal != null )
+		    {
+			newtodo = ncal.getTime();
+		    }
+		    System.out.println("newtodo=" + newtodo.getTime());
+		    break;
+		}
+		    
 		ncal = repeat.next();
 
-		// System.out.println("ncal2=" + ncal.getTime());
 	    }
 	}
 
