@@ -257,7 +257,8 @@ build.number=${build.number}
 	
 	<target name="rpt_zip" depends="clean-build">
 			<zip destfile="${dist.dir}/borg_rpt_libs.zip">
-				<zipfileset dir="${prj.ui.dir}/rptlib" prefix="lib">
+				<!--<zipfileset dir="${prj.ui.dir}/rptlib" prefix="lib">-->
+				<zipfileset dir="${prj.ui.dir}/rptlib">
 				</zipfileset>
 			</zip>
 		</target>

@@ -1,3 +1,21 @@
+Version 1.6
+-----------
+Add Portuguese (Brazilian) translation
+Feature [1664278] Add "copy to date" option in Appointment Editor
+Feature [1663823] Add day-of-week name to header of "Day" view
+Feature [1656975] Options for "ToDo" icon?
+Feature [1651947] Tasklist to OpenOffice Calc Export
+Feature [1628049] memo to txt combined with txt2tags
+Bug Fix[1704593] repeating todo bug 
+Bug Fix[1690078] conditional formating is lost on columns 
+Bug Fix[1690074] project creation dates do not check overlaps
+Bug Fix[1668450] Partial character crop in name display of Address Book
+Bug Fix[1666260] Remote Mysql server connection problem
+Bug Fix[1657333] Todo View does not refresh when subtask closed
+Bug Fix[1656972] No "Project" or "Tasks" display w/ some "Look/Feel" options 
+Bug Fix[1655548] java.lang.Exception: Error: No initial state found for task
+Bug Fix[1654751] NullPointerException from TodoView.java
+
 Version 1.6 beta 2
 ------------------
 Feature [1646015] enhance remote db to support tasks

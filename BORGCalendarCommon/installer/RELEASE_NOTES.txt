@@ -1,11 +1,12 @@
 =================================
-RELEASE NOTES for BORG 1.6 beta 2
+RELEASE NOTES for BORG 1.6
 =================================
 
 The project home page is http://borg-calendar.sourceforge.net
 
 ***************************************************************
-*** ALL Users - database changes are required - See below   ***
+*** ALL Users - database changes are required when upgrading from 1.5.2.1 or earlier 
+ See below   ***
 *************************************************************** 
 
 DATABASE CHANGES
@@ -18,7 +19,7 @@ Upgrade must be through XML Export/Import.
 In general, the upgrade procedure is: 
 
 1. Use BORG 1.5.x to export your DB to XML
-2. Install BORG 1.6. You might want to not overwrite BORG 1.5.2 to keep both version around
+2. Install BORG 1.6. You might want to not overwrite BORG 1.5.2 to keep both versions around
 until you know that your db is upgraded properly.
 3. Create a new, empty  1.6 database.
 4. Import your db XML into BORG 1.6.
@@ -46,9 +47,9 @@ Upgrade for MySQL users
 
 Upgrade for Local Files Users
 -----------------------------
-It is recommended that all Local Files users switch to HSQLDB. The Local Files will still work in BORG
+It is recommended, but not required that all Local Files users switch to HSQLDB. The Local Files will still work in BORG
 1.6, but the new task tracker features (projects, subtasks) and the new memos features will not
-work with Local Files.
+work with Local Files. Local Files Users not upgrading to HSQLDB do not have any special upgrade procedures.
 
 1. Backup your database files
 2. From BORG 1.5.x, Export your database to XML files via the Import/Export menu option
@@ -59,7 +60,7 @@ work with Local Files.
 
 Upgrade for Remote Server Users
 -------------------------------
-As of Release 1.6 beta 2, the remote server supports all of the new task tracking features
+As of Release 1.6, the remote server supports all of the new task tracking features
 
 1. Backup your database
 2. From BORG 1.5.x, Export your database to XML files via the Import/Export menu option
@@ -67,6 +68,13 @@ As of Release 1.6 beta 2, the remote server supports all of the new task trackin
 4. Run BORG 1.6 and set it to use the new, empty 1.6 database. This means installing and configuring the remote
 server web application to point to the new DB. Both the web application and java client need to be upgraded.
 5. From BORG 1.6, Import your database data from the XML files (borg.xml, mrdb.xml, addr.xml).
+
+REPORTS
+-------
+In order to get reporting functionality, the reports libraries must be downloaded separately.
+This is a separate download since the report libraries would make the installer over 3MB larger.
+The limited amount of reporting available in version 1.6 does not justify adding the extra
+3MB to the installer at this time.
 
 
 KNOWN ISSUES:
