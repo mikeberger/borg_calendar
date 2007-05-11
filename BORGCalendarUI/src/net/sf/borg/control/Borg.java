@@ -731,8 +731,8 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 		Errmsg.errmsg(new Exception(ncf));
 		trayIcon = false;
 	    } catch (Exception e) {
-		Errmsg.errmsg(e);
-		System.exit(0);
+		Errmsg.errmsg(new Exception(e));
+		trayIcon = false;
 	    }
 	}
 
