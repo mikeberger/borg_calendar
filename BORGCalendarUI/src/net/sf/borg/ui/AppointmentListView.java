@@ -47,6 +47,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 
 import net.sf.borg.common.ui.StripedTable;
 import net.sf.borg.common.ui.TableSorter;
@@ -165,7 +167,7 @@ public class AppointmentListView extends View implements ListSelectionListener {
 	// Variables declaration - do not modify//GEN-BEGIN:variables
 	private javax.swing.JButton add;
 
-	private List alist_ = null;
+	//private List alist_ = null;
 
 	private AppointmentPanel apanel_ = null;
 
@@ -173,11 +175,6 @@ public class AppointmentListView extends View implements ListSelectionListener {
 
 	private GregorianCalendar cal_ = null;
 
-	/**
-	 * This method initializes jPanel4
-	 * 
-	 * @return javax.swing.JPanel
-	 */
 	private JDateChooser cb_ = null;
 
 	private TableCellRenderer defrend = null;
@@ -226,8 +223,9 @@ public class AppointmentListView extends View implements ListSelectionListener {
 		// use a sorted table model
 		apptTable.setModel(new TableSorter(new String[] {
 				Resource.getResourceString("Text"),
-				Resource.getResourceString("Time") }, new Class[] {
-				java.lang.String.class, java.util.Date.class, }));
+				Resource.getResourceString("Time"),
+				"Key"}, new Class[] {
+				java.lang.String.class, java.util.Date.class, Integer.class}));
 
 		// set renderer to the custom one for time
 		defrend = apptTable.getDefaultRenderer(Date.class);
@@ -246,6 +244,10 @@ public class AppointmentListView extends View implements ListSelectionListener {
 
 		ListSelectionModel rowSM = apptTable.getSelectionModel();
 		rowSM.addListSelectionListener(this);
+		
+		TableColumnModel tcm = apptTable.getColumnModel();
+		TableColumn column = tcm.getColumn( 2 );
+		tcm.removeColumn( column );
 
 		apanel_ = new AppointmentPanel(year, month, day);
 
@@ -276,18 +278,24 @@ public class AppointmentListView extends View implements ListSelectionListener {
 
 		// clear all table rows
 		deleteAll();
+		
+		String priv = Prefs.getPref(PrefName.SHOWPRIVATE);
+		String pub = Prefs.getPref(PrefName.SHOWPUBLIC);
 
 		try {
 
-			alist_ = AppointmentModel.getReference().getAppts(key_);
+			List alist_ = AppointmentModel.getReference().getAppts(key_);
 			if (alist_ != null) {
 				Iterator it = alist_.iterator();
 				while (it.hasNext()) {
 					Integer key = (Integer) it.next();
 					Appointment ap = AppointmentModel.getReference().getAppt(
 							key.intValue());
+					
+					if( ap.getPrivate() && !priv.equals("true") ) continue;
+					if( !ap.getPrivate() && !pub.equals("true") ) continue;
 
-					Object[] ro = new Object[2];
+					Object[] ro = new Object[3];
 					ro[0] = ap.getText();
 
 					// just get time
@@ -296,6 +304,7 @@ public class AppointmentListView extends View implements ListSelectionListener {
 					cal.setTime(d);
 					cal.set(2000, 1, 1);
 					ro[1] = cal.getTime();
+					ro[2] = key;
 
 					addRow(ro);
 				}
@@ -317,8 +326,7 @@ public class AppointmentListView extends View implements ListSelectionListener {
 		TableSorter tm = (TableSorter) apptTable.getModel();
 		int rows = tm.getRowCount();
 		for (int i = 0; i < rows; ++i) {
-			int j = tm.getMappedIndex(i);
-			Integer k = (Integer)alist_.get(j);
+			Integer k = (Integer)tm.getValueAt(i, 2);
 			if( key == k.intValue())
 			{
 				apptTable.getSelectionModel().setSelectionInterval(i,i);
@@ -342,9 +350,9 @@ public class AppointmentListView extends View implements ListSelectionListener {
 		if (row == -1)
 			return;
 		TableSorter tm = (TableSorter) apptTable.getModel();
-		int i = tm.getMappedIndex(row);
-
-		Integer apptkey = (Integer) alist_.get(i);
+		Integer apptkey = (Integer)tm.getValueAt(row, 2);
+		
+		//Integer apptkey = (Integer) alist_.get(i);
 		apanel_.showapp(apptkey.intValue(), null);
 
 	}
@@ -557,9 +565,7 @@ public class AppointmentListView extends View implements ListSelectionListener {
 		for (int i = 0; i < rows.length; ++i) {
 			int row = rows[i];
 			TableSorter tm = (TableSorter) apptTable.getModel();
-			int j = tm.getMappedIndex(row);
-
-			keyList.add(alist_.get(j));
+			keyList.add(tm.getValueAt(row, 2));
 		}
 
 		int[] keys = new int[keyList.size()];
@@ -746,9 +752,7 @@ public class AppointmentListView extends View implements ListSelectionListener {
 			return;
 		int k = rows[0];		
 		TableSorter tm = (TableSorter) apptTable.getModel();
-		int key = tm.getMappedIndex(k);
-
-		Integer apptkey = (Integer) alist_.get(key);
+		Integer apptkey = (Integer) tm.getValueAt(k, 2);
 		try {
 			Appointment mtg = AppointmentModel.getReference().getAppt(apptkey.intValue());
 			EmailReminder.emailMeeting(mtg);
