@@ -216,6 +216,8 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 		ti = projects.iterator();
 		while (ti.hasNext()) {
 		    Project pj = (Project) ti.next();
+		    if( pj.getDueDate() == null )
+			continue;
 
 		    if (pj.getStatus().equals(
 			    Resource.getPlainResourceString("CLOSED")))

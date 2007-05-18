@@ -94,14 +94,16 @@ public class TaskListPanel extends JPanel {
 
 	    if (obj == null)
 		return l;
-	    if (isSelected)
-		return l;
+	    
 	    
 	    String nm = table.getColumnName(column);
 	    if( !nm.equals(Resource.getPlainResourceString("Pri")) && !nm.equals(Resource.getPlainResourceString("Days_Left")))
 		return l;
 	    //if (column != 4 && column != 8)
 		//return l;
+	    
+	    if (isSelected && !nm.equals(Resource.getPlainResourceString("Days_Left")))
+		return l;
 
 	    this.setText(l.getText());
 	    this.setHorizontalAlignment(CENTER);
@@ -109,6 +111,8 @@ public class TaskListPanel extends JPanel {
 	    this.setForeground(l.getForeground());
 
 	    int i = ((Integer) obj).intValue();
+	    if (i == 9999)
+		this.setText("******");
 
 	    // priority
 	    if (nm.equals(Resource.getPlainResourceString("Pri"))) {
@@ -127,14 +131,9 @@ public class TaskListPanel extends JPanel {
 		return this;
 	    }
 
-	    // add color to the days-left column as the task due date
-	    // approaches
-
-	    // 9999 is used if no due date
-	    // so show stars - but don't alter the color
-	    if (i == 9999)
-		this.setText("******");
-
+	    if( isSelected )
+		return this;
+	    
 	    // yellow alert -- <10 days left
 	    if (i < 10)
 		this.setBackground(new Color(255, 255, 175));

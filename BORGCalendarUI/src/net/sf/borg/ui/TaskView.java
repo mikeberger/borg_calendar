@@ -1147,7 +1147,7 @@ class TaskView extends View {
 			s.setDueDate(dd);
 
 			// validate dd - make sure only date and not time is compared
-			if (dd != null) {
+			if (dd != null && task.getDueDate() != null) {
 			        if( isAfter( dd, task.getDueDate()))
 			        {
 					String msg = Resource
@@ -1233,10 +1233,11 @@ class TaskView extends View {
 			//startdatechooser.setCalendar(new GregorianCalendar());
 			task.setStartDate(cal.getTime()); // start date
 			cal = duedatechooser.getCalendar();
-			if( cal == null ) cal = new GregorianCalendar();
-			task.setDueDate(cal.getTime()); // due date
+			//if( cal == null ) cal = new GregorianCalendar();
+			if( cal != null )
+			    task.setDueDate(cal.getTime()); // due date
 			
-			if( isAfter(task.getStartDate(), task.getDueDate()) )
+			if( task.getDueDate() != null && isAfter(task.getStartDate(), task.getDueDate()) )
 			{
 				throw new Warning(Resource
 					.getPlainResourceString("sd_dd_warn"));
@@ -1269,7 +1270,7 @@ class TaskView extends View {
 			if( task.getProject() != null )
 			{
 			    Project p = TaskModel.getReference().getProject(task.getProject().intValue());
-			    if( p != null && isAfter(task.getDueDate(),p.getDueDate()))
+			    if( p != null && task.getDueDate() != null && isAfter(task.getDueDate(),p.getDueDate()))
 			    {
 				throw new Warning(Resource
 					.getPlainResourceString("taskdd_warning"));
@@ -1319,10 +1320,15 @@ class TaskView extends View {
 									+ ": " + orig.getState() + " --> "
 									+ task.getState());
 				}
-				String newd = DateFormat.getDateInstance().format(
+				String newd = "null";
+				if( task.getDueDate() != null )
+				{
+				    newd = DateFormat.getDateInstance().format(
 						task.getDueDate());
-				String oldd = null;
-				if( orig != null )
+				}
+				
+				String oldd = "null";
+				if( orig != null && orig.getDueDate() != null )
 				    oldd = DateFormat.getDateInstance().format(orig.getDueDate());
 				if (orig != null && !newd.equals(oldd)) {
 
@@ -1397,9 +1403,10 @@ class TaskView extends View {
 			GregorianCalendar gc = new GregorianCalendar();
 			Date dd = task.getDueDate();
 			if (dd != null)
+			{
 				gc.setTime(dd);
-
-			duedatechooser.setCalendar(gc);
+				duedatechooser.setCalendar(gc);
+			}
 
 			GregorianCalendar gc2 = new GregorianCalendar();
 			dd = task.getStartDate();
@@ -1512,9 +1519,10 @@ class TaskView extends View {
 			    GregorianCalendar gc = new GregorianCalendar();
 			    Date dd = p.getDueDate();
 			    if (dd != null)
+			    {
 				gc.setTime(dd);
-
-			    duedatechooser.setCalendar(gc);
+				duedatechooser.setCalendar(gc);
+			    }
 
 			}
 

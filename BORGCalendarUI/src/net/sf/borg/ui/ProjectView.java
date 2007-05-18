@@ -440,13 +440,16 @@ class ProjectView extends View {
 			if( cal == null) cal = new GregorianCalendar();
 			p.setStartDate(cal.getTime()); // start date
 			cal = duedatechooser.getCalendar();
-			if( cal == null) cal = new GregorianCalendar();
-			p.setDueDate(cal.getTime()); // due date
-
-			if( isAfter(p.getStartDate(), p.getDueDate()) )
+			//if( cal == null) cal = new GregorianCalendar();
+			if( cal != null )
 			{
+			    p.setDueDate(cal.getTime()); // due date
+
+			    if( isAfter(p.getStartDate(), p.getDueDate()) )
+			    {
 				throw new Warning(Resource
 					.getPlainResourceString("sd_dd_warn"));
+			    }
 			}
 			p.setDescription(description.getText()); // description
 
@@ -465,7 +468,7 @@ class ProjectView extends View {
 			    while( it.hasNext())
 			    {
 				Task t = (Task) it.next();
-				if( isAfter( t.getDueDate(), p.getDueDate()))
+				if( p.getDueDate() != null && isAfter( t.getDueDate(), p.getDueDate()))
 				{
 				    throw new Warning(Resource.getPlainResourceString("projdd_warning")+":"+t.getTaskNumber());
 				}
@@ -506,10 +509,10 @@ class ProjectView extends View {
 			// due date
 			GregorianCalendar gc = new GregorianCalendar();
 			Date dd = p.getDueDate();
-			if (dd != null)
+			if (dd != null){
 				gc.setTime(dd);
-
-			duedatechooser.setCalendar(gc);
+				duedatechooser.setCalendar(gc);
+			}
 
 			GregorianCalendar gc2 = new GregorianCalendar();
 			dd = p.getStartDate();

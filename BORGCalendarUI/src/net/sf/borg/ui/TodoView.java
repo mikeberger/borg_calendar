@@ -389,6 +389,7 @@ public class TodoView extends View implements Prefs.Listener {
 		while (it.hasNext()) {
 
 		    Project pj = (Project) it.next();
+		    if( pj.getDueDate() == null ) continue;
 		    if (pj.getStatus().equals(
 			    Resource.getPlainResourceString("CLOSED")))
 			continue;
@@ -427,6 +428,8 @@ public class TodoView extends View implements Prefs.Listener {
 	    for (int i = 0; i < mrs.size(); i++) {
 
 		Task mr = (Task) mrs.elementAt(i);
+		if( mr.getDueDate() == null )
+		    continue;
 
 		try {
 
