@@ -468,7 +468,7 @@ public class AppointmentModel extends Model implements Model.Listener {
 		    {
 			newtodo = ncal.getTime();
 		    }
-		    System.out.println("newtodo=" + newtodo.getTime());
+		    //System.out.println("newtodo=" + newtodo.getTime());
 		    break;
 		}
 		    
