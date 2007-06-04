@@ -36,4 +36,11 @@
 		<longName>Deleted</longName>
 		<desc>Deleted Flag for Synchronization</desc>	
 	</field>
+	<field>
+		<name>PRV</name>
+		<type>boolean</type>
+        <flagNumber>4</flagNumber>
+		<longName>Private</longName>
+		<desc>Private Flag</desc>	
+	</field>
 </schema>

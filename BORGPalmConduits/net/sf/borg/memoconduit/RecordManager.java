@@ -298,6 +298,7 @@ public class RecordManager {
 	rec.setIsNew(m.getNew());
 	rec.setIsDeleted(m.getDeleted());
 	rec.setIsModified(m.getModified());
+	rec.setIsPrivate(m.getPrivate());
 	return rec;
     }
 
@@ -321,6 +322,8 @@ public class RecordManager {
 	m.setNew(hh.isNew());
 	m.setDeleted(hh.isDeleted());
 	m.setModified(hh.isModified());
+	
+	m.setPrivate(hh.isPrivate());
 
 	return m;
     }

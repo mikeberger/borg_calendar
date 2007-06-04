@@ -45,8 +45,8 @@ class MemoJdbcDB extends JdbcDB implements MemoDB {
 
     public void addMemo(Memo m) throws DBException, Exception {
 	PreparedStatement stmt = connection_
-		.prepareStatement("INSERT INTO memos ( memoname, username, memotext, new, modified, deleted, palmid) "
-			+ " VALUES " + "( ?, ?, ?, ?, ?, ?, ?)");
+		.prepareStatement("INSERT INTO memos ( memoname, username, memotext, new, modified, deleted, palmid, private) "
+			+ " VALUES " + "( ?, ?, ?, ?, ?, ?, ?, ?)");
 
 	stmt.setString(1, m.getMemoName());
 	stmt.setString(2, username_);
@@ -59,6 +59,7 @@ class MemoJdbcDB extends JdbcDB implements MemoDB {
 	    stmt.setInt(7, m.getPalmId().intValue());
 	else
 	    stmt.setNull(7, java.sql.Types.INTEGER);
+	stmt.setInt(8, toInt(m.getPrivate()));
 
 	stmt.executeUpdate();
 
@@ -136,6 +137,7 @@ class MemoJdbcDB extends JdbcDB implements MemoDB {
 	int palmid = r.getInt("palmid");
 	if( !r.wasNull())
 	    m.setPalmId(new Integer(palmid));
+	m.setPrivate(r.getInt("private") != 0);
 	
 
 	return m;
@@ -186,7 +188,7 @@ class MemoJdbcDB extends JdbcDB implements MemoDB {
 
 	PreparedStatement stmt = connection_
 		.prepareStatement("UPDATE memos SET "
-			+ "memotext = ?, new = ?, modified = ?, deleted = ?, palmid = ? "
+			+ "memotext = ?, new = ?, modified = ?, deleted = ?, palmid = ?, private = ? "
 			+ " WHERE memoname = ? AND username = ?");
 
 	stmt.setString(1, m.getMemoText());
@@ -198,9 +200,9 @@ class MemoJdbcDB extends JdbcDB implements MemoDB {
 	    stmt.setInt(5, m.getPalmId().intValue());
 	else
 	    stmt.setNull(5, java.sql.Types.INTEGER);
-
-	stmt.setString(6, m.getMemoName());
-	stmt.setString(7, username_);
+	stmt.setInt(6, toInt(m.getPrivate()));
+	stmt.setString(7, m.getMemoName());
+	stmt.setString(8, username_);
 
 	stmt.executeUpdate();
 

@@ -31,6 +31,8 @@ import net.sf.borg.common.util.Errmsg;
 import net.sf.borg.common.util.Resource;
 import net.sf.borg.model.Memo;
 import net.sf.borg.model.MemoModel;
+import javax.swing.JCheckBox;
+import javax.swing.SwingConstants;
 
 public class MemoPanel extends JPanel implements ListSelectionListener {
 
@@ -57,6 +59,10 @@ public class MemoPanel extends JPanel implements ListSelectionListener {
 	private JButton exportButton = null;
     private boolean isMemoEdited = false;
 
+    private JPanel jPanel = null;
+
+    private JCheckBox privateBox = null;
+
     /**
          * This is the default constructor
          */
@@ -80,6 +86,11 @@ public class MemoPanel extends JPanel implements ListSelectionListener {
          * @return void
          */
     private void initialize() {
+	GridBagConstraints gridBagConstraints = new GridBagConstraints();
+	gridBagConstraints.gridx = 0;
+	gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+	gridBagConstraints.anchor = GridBagConstraints.EAST;
+	gridBagConstraints.gridy = 1;
 	GridBagConstraints gridBagConstraints21 = new GridBagConstraints();
 	gridBagConstraints21.fill = GridBagConstraints.BOTH;
 	gridBagConstraints21.weighty = 1.0;
@@ -91,10 +102,12 @@ public class MemoPanel extends JPanel implements ListSelectionListener {
 	gridBagConstraints2.gridwidth = 1;
 	gridBagConstraints2.fill = GridBagConstraints.BOTH;
 	gridBagConstraints2.insets = new Insets(4, 4, 4, 4);
-	gridBagConstraints2.gridy = 1;
+	gridBagConstraints2.gridy = 2;
 	this.setLayout(new GridBagLayout());
+	this.setSize(new Dimension(648, 525));
 	this.add(getButtonPanel(), gridBagConstraints2);
 	this.add(getJSplitPane(), gridBagConstraints21);
+	this.add(getJPanel(), gridBagConstraints);
     }
 
     /**
@@ -245,14 +258,18 @@ public class MemoPanel extends JPanel implements ListSelectionListener {
 	if (memoName == null) {
 	    memoText.setText("");
 	    memoText.setEditable(false);
+	    privateBox.setSelected(false);
 	    isMemoEdited = false;
 	    getSaveButton().setEnabled(false);
 	    return;
 	}
 
 	String text;
+	boolean priv = false;
 	try {
-	    text = MemoModel.getReference().getMemo(memoName).getMemoText();
+	    Memo m = MemoModel.getReference().getMemo(memoName);
+	    text = m.getMemoText();
+	    priv = m.getPrivate();
 	} catch (Exception e1) {
 	    Errmsg.errmsg(e1);
 	    isMemoEdited = false;
@@ -262,8 +279,9 @@ public class MemoPanel extends JPanel implements ListSelectionListener {
 	
 	memoText.setEditable(true);
 	memoText.setText(text);
+	privateBox.setSelected(priv);
 	isMemoEdited = false;
-	 getSaveButton().setEnabled(false);
+	getSaveButton().setEnabled(false);
 
     }
 
@@ -289,6 +307,7 @@ public class MemoPanel extends JPanel implements ListSelectionListener {
 	try {
 	    Memo m = MemoModel.getReference().getMemo(name);
 	    m.setMemoText(memoText.getText());
+	    m.setPrivate(privateBox.isSelected());
 	    MemoModel.getReference().saveMemo(m);
 	    loadTable();
 	} catch (Exception e) {
@@ -316,6 +335,7 @@ public class MemoPanel extends JPanel implements ListSelectionListener {
 
 	Memo m = new Memo();
 	m.setMemoName(name);
+	m.setPrivate(false);
 	try {
 	    MemoModel.getReference().saveMemo(m);
 	    loadTable();
@@ -426,5 +446,52 @@ public class MemoPanel extends JPanel implements ListSelectionListener {
 		return exportButton;
 	}
 
+	/**
+	 * This method initializes jPanel	
+	 * 	
+	 * @return javax.swing.JPanel	
+	 */
+	private JPanel getJPanel() {
+	    if (jPanel == null) {
+		GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
+		gridBagConstraints1.anchor = GridBagConstraints.EAST;
+		gridBagConstraints1.fill = GridBagConstraints.HORIZONTAL;
+		gridBagConstraints1.gridx = 0;
+		gridBagConstraints1.gridy = 0;
+		gridBagConstraints1.weightx = 1.0D;
+		gridBagConstraints1.insets = new Insets(4, 4, 4, 4);
+		jPanel = new JPanel();
+		jPanel.setLayout(new GridBagLayout());
+		jPanel.add(getPrivateBox(), gridBagConstraints1);
+	    }
+	    return jPanel;
+	}
+
+	/**
+	 * This method initializes privateBox	
+	 * 	
+	 * @return javax.swing.JCheckBox	
+	 */
+	private JCheckBox getPrivateBox() {
+	    if (privateBox == null) {
+		privateBox = new JCheckBox();
+		privateBox.setText(Resource.getPlainResourceString("Private"));
+		privateBox.setHorizontalAlignment(SwingConstants.RIGHT);
+		privateBox.setHorizontalTextPosition(SwingConstants.RIGHT);
+		privateBox.addItemListener(new java.awt.event.ItemListener() {
+		    public void itemStateChanged(java.awt.event.ItemEvent e) {
+			String name = getSelectedMemoName();
+			if( name != null )
+			{
+			    isMemoEdited = true;
+			    getSaveButton().setEnabled(true); 
+			}
+		    }
+		});
+		
+	    }
+	    return privateBox;
+	}
+
 	
-}
+}  //  @jve:decl-index=0:visual-constraint="10,10"

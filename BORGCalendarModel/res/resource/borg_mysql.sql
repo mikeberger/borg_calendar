@@ -138,6 +138,7 @@ CREATE TABLE memos (
   new int(11) NOT NULL default '0' ,
   modified int(11) NOT NULL default '0' ,
   deleted int(11)  NOT NULL default '0' ,
+  private int(11)  NOT NULL default '0' ,
   PRIMARY KEY  (memoname,username),
   KEY `username` (`username`)
 );

@@ -157,6 +157,7 @@ CREATE CACHED TABLE memos (
   new integer default '0' NOT NULL,
   modified integer default '0' NOT NULL,
   deleted integer default '0' NOT NULL,
+  private integer default '0' NOT NULL,
   PRIMARY KEY  (memoname,username)
 );
 CREATE INDEX memo_user ON memos (username);
