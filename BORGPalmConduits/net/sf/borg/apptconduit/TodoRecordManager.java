@@ -65,6 +65,7 @@ public class TodoRecordManager {
 
             rec.setId(0);
             rec.setDescription(r.getText());
+            rec.setIsPrivate(r.getPrivate());
 
             // date is the next todo field if present, otherwise
             // the due date
@@ -116,70 +117,7 @@ public class TodoRecordManager {
             
         }
         
-        /*
-        Collection tasks = TaskModel.getReference().getTasks();
-        it = tasks.iterator();
-        while( it.hasNext() ) {
-            
-            Task r = (Task) it.next();
-            
-            String status = r.getState();
-            if( status.equals("CLOSED") || status.equals("PR"))
-                continue;
-            
-            // !!!!! only show first line of task text !!!!!!
-            
-            String tx = r.getDescription();
-            
-            TodoRecord rec = new TodoRecord();
-
-            rec.setId(0);
-            rec.setDescription(tx);
-
-            // date is the next todo field if present, otherwise
-            // the due date
-            Date nt = r.getDueDate();
-            rec.setDueDate(nt);
-            rec.setNote("TASK," + r.getKey());
-            
-            String s = r.getCategory();
-            if( s == null)
-            {
-                rec.setCategoryIndex(0);
-            }
-            else
-            {
-                // check if new cat or one already in list
-                Category c = cm.matchName(s,hhCats);
-                if( c != null )
-                {
-                    rec.setCategoryIndex(c.getIndex());
-                }
-                else
-                {
-                    // add new
-                    int i = cm.getNextIndex(hhCats);
-                    if( i == -1 )
-                    {
-                        rec.setCategoryIndex(0);
-                        Log.err("cannot add category: " + s);
-                        
-                    }
-                    else
-                    {
-                        c = (Category) hhCats.elementAt(i);
-                        c.setId(i);
-                        c.setIndex(i);
-                        c.setName(s);
-                        rec.setCategoryIndex(i);
-                        
-                    }
-                       
-                }
-            }
-            SyncManager.writeRec(db, rec);
-            
-        }*/
+        
         
         cm.writeHHCategories(hhCats);
 
@@ -227,19 +165,7 @@ public class TodoRecordManager {
 
     }
     
-    public void synchronizeHHRecord(TodoRecord hhRecord) throws Exception {
-    	if( isTask(hhRecord))
-    	{
-    		//syncTask(hhRecord);
-    	}
-    	else
-    	{
-    		syncAppt(hhRecord);
-    	}
-    }
-
-    
-    public void syncAppt(TodoRecord hhRecord) throws Exception {
+    private void synchronizeHHRecord(TodoRecord hhRecord) throws Exception {
 
         Appointment appt = null;
         Log.out("Todo Sync HH: " + hhRecord.toFormattedString());
@@ -303,6 +229,7 @@ public class TodoRecordManager {
                 // only modify text and date because a BORG todo is really an appt
                 // with many other non-todo fields
                 appt.setText(hhRecord.getDescription());
+                appt.setPrivate(hhRecord.isPrivate());
                 
                 Date nt = appt.getNextTodo();
                 if (nt == null) {
@@ -352,79 +279,13 @@ public class TodoRecordManager {
 
     }
     
-    /*
-    public void syncTask(TodoRecord hhRecord) throws Exception {
-
-        Task task = null;
-        
-        // any record without a BORG id is considered new
-        int id = getTaskKey(hhRecord);
-        if (id != -1) {
-            try {
-                task = getTaskById(id);
-            }
-            catch (Exception e) {
-            }
-        }
-
-        // if todo points to a deleted BORG record - skip it
-        // do not add a new one
-        if (task == null && id != -1)
-            return;
-
-        if (task == null) {
-            // add a new task to BORG
-        	task = TaskModel.getReference().newMR();
-        	task.setTaskNumber(new Integer(-1));
-        	task.setState("OPEN");
-        	task.setType("TASK");
-        	task.setPriority(new Integer(3));
-        	task.setStartDate( new Date());
-        	task.setDueDate(hhRecord.getDueDate());
-        	task.setDescription(hhRecord.getDescription());
-            String cat = cm.matchId(hhRecord.getCategoryIndex(), hhCats).getName();
-            if( !cat.equals("Unfiled"))
-            {
-                task.setCategory(cat);
-            }
-            TaskModel.getReference().savetask(task);
-
-        }
-        else {
-            if (hhRecord.isCompleted()) {
-                // close task
-                try {
-                    
-                    TaskModel.getReference().close(task.getKey());
-                }
-                catch (Exception e) {
-                }
-            }
-            else if( hhRecord.isModified())
-            {
-            	task.setDueDate(hhRecord.getDueDate());
-            	task.setDescription(hhRecord.getDescription());
-                String cat = cm.matchId(hhRecord.getCategoryIndex(), hhCats).getName();
-                if( !cat.equals("Unfiled"))
-                {
-                    task.setCategory(cat);
-                }
-                TaskModel.getReference().savetask(task);
-
-            }
-        }
-
-    }*/
-
+   
     private Appointment getRecordById(int id) throws Exception {
         return (AppointmentModel.getReference().getAppt(id));
     }
-    /*
-    private Task getTaskById(int id) throws Exception {
-        return (TaskModel.getReference().getMR(id));
-    }*/
+    
 
-    static int getApptKey(TodoRecord hh) {
+    private static int getApptKey(TodoRecord hh) {
 
         String notes = hh.getNote();
         if (notes != null) {
@@ -432,8 +293,7 @@ public class TodoRecordManager {
             int idx = notes.indexOf(",");
             if (idx != -1) {
                 String id = notes.substring(0, idx);
-                if( id.equals("TASK"))
-                	return -1;
+                
                 try {
                     int i = Integer.parseInt(id);
                     return (i);
@@ -448,47 +308,8 @@ public class TodoRecordManager {
 
     }
     
-    static boolean isTask(TodoRecord hh)
-    {
-        String notes = hh.getNote();
-        if (notes != null) {
-            int idx = notes.indexOf(",");
-            if (idx != -1) {
-                String id = notes.substring(0, idx);
-                if( id.equals("TASK"))
-                	return true;
-            }
-        }
-        
-        return false;
-    }
-    
-    static int getTaskKey(TodoRecord hh) {
 
-        String notes = hh.getNote();
-        if (notes != null) {
-
-            int idx = notes.indexOf(",");
-            if (idx != -1) {
-                String id = notes.substring(0, idx);
-                if( !id.equals("TASK"))
-                	return -1;
-                try {
-                	String key = notes.substring(idx+1);
-                    int i = Integer.parseInt(key);
-                    return (i);
-                }
-                catch (Exception e) {
-                }
-
-            }
-        }
-
-        return (-1);
-
-    }
-
-    static String getNT(TodoRecord hh)
+    private static String getNT(TodoRecord hh)
     {
         String note = hh.getNote();
         if( note != null )
@@ -502,12 +323,13 @@ public class TodoRecordManager {
         return( "" );
     }
     
-    public Appointment palmToBorg(TodoRecord hh) {
+    private Appointment palmToBorg(TodoRecord hh) {
         Appointment appt = AppointmentModel.getReference().newAppt();
         appt.setKey(-1);
         appt.setDate(hh.getDueDate());
         appt.setTodo(true);
         appt.setText(hh.getDescription());
+        appt.setPrivate(hh.isPrivate());
         String cat = cm.matchId(hh.getCategoryIndex(), hhCats).getName();
         if( !cat.equals("Unfiled"))
         {
