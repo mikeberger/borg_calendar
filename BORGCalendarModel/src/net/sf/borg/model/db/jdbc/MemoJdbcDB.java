@@ -37,6 +37,7 @@ class MemoJdbcDB extends JdbcDB implements MemoDB {
 
     MemoJdbcDB(String url, String username) throws Exception {
 	super(url, username);
+	new JdbcDBUpgrader("select private from memos;", "alter table memos add private integer default '0' NOT NULL;").upgrade();
     }
 
     MemoJdbcDB(Connection conn) {
