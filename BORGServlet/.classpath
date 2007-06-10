@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="var" path="TOMCAT_HOME/common/lib/jasper-runtime.jar"/>
 	<classpathentry excluding=".svn" kind="src" path="WEB-INF/src"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/BORGCalendarCommon"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/BORGCalendarModel"/>
