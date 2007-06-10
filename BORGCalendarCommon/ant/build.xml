@@ -34,7 +34,7 @@
 	<property name="iz.dir" value="c:/Program Files/IzPack" />
 	<property name="iz.compile" value="compile.bat" />
 	
-	<taskdef name="izpack" classpath="${basedir}/lib/standalone-compiler.jar"
+	<taskdef name="izpack" classpath="${iz.dir}/lib/standalone-compiler.jar"
 	         classname="com.izforge.izpack.ant.IzPackTask"/>
 
 	<!-- Path References -->
