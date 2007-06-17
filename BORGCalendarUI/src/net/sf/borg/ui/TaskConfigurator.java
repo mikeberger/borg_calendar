@@ -429,8 +429,12 @@ public class TaskConfigurator extends View {
 	         boolean cellHasFocus)
 	     {
 	         setText(value.toString());
-	         
-	         String init = taskTypes_.getInitialState(typelist.getSelectedValue().toString());
+	         String init = "";
+	         if( typelist.getSelectedValue() != null )
+	         {
+	             init = taskTypes_.getInitialState(typelist.getSelectedValue().toString());
+	         }
+	        
 	         if( value.toString().equals(init))
 	         {	
 	        	 setBackground(isSelected ? Color.red : Color.white);
