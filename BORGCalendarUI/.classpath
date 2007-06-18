@@ -3,11 +3,11 @@
 	<classpathentry excluding=".svn" kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/jh.jar"/>
+	<classpathentry kind="lib" path="lib/jdic.jar"/>
 	<classpathentry kind="src" path="/BORGCalendarModel"/>
 	<classpathentry kind="src" path="/BORGCalendarCommon"/>
 	<classpathentry kind="lib" path="/BORGCalendarCommon/lib/commons-logging.jar"/>
 	<classpathentry kind="lib" path="/BORGCalendarCommon/lib/ical4j.jar"/>
-	<classpathentry kind="lib" path="lib/jdic.jar"/>
 	<classpathentry kind="lib" path="/BORGCalendarCommon/lib/jcalendar.jar"/>
 	<classpathentry kind="lib" path="/BORGCalendarCommon/lib/looks.jar"/>
 	<classpathentry kind="output" path="classes"/>

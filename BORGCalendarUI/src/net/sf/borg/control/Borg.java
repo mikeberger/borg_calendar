@@ -725,13 +725,13 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 		JDICTrayIconProxy tip = JDICTrayIconProxy.getReference();
 		tip.init(trayname);
 	    } catch (UnsatisfiedLinkError le) {
-		Errmsg.errmsg(new Exception(le));
+		le.printStackTrace();
 		trayIcon = false;
 	    } catch (NoClassDefFoundError ncf) {
-		Errmsg.errmsg(new Exception(ncf));
+		ncf.printStackTrace();
 		trayIcon = false;
 	    } catch (Exception e) {
-		Errmsg.errmsg(new Exception(e));
+		e.printStackTrace();
 		trayIcon = false;
 	    }
 	}
