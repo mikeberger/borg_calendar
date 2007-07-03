@@ -468,7 +468,7 @@ class ProjectView extends View {
 			    while( it.hasNext())
 			    {
 				Task t = (Task) it.next();
-				if( p.getDueDate() != null && isAfter( t.getDueDate(), p.getDueDate()))
+				if( p.getDueDate() != null && t.getDueDate() != null && isAfter( t.getDueDate(), p.getDueDate()))
 				{
 				    throw new Warning(Resource.getPlainResourceString("projdd_warning")+":"+t.getTaskNumber());
 				}
