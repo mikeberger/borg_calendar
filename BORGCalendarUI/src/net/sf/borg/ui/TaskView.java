@@ -1270,7 +1270,7 @@ class TaskView extends View {
 			if( task.getProject() != null )
 			{
 			    Project p = TaskModel.getReference().getProject(task.getProject().intValue());
-			    if( p != null && task.getDueDate() != null && isAfter(task.getDueDate(),p.getDueDate()))
+			    if( p != null && task.getDueDate() != null && p.getDueDate() != null && isAfter(task.getDueDate(),p.getDueDate()))
 			    {
 				throw new Warning(Resource
 					.getPlainResourceString("taskdd_warning"));
