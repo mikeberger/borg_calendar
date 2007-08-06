@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-import net.sf.borg.model.Memo;
 import net.sf.borg.model.MemoModel;
+import net.sf.borg.model.beans.Memo;
 import palm.conduit.MemoRecord;
 import palm.conduit.Record;
 import palm.conduit.SyncException;

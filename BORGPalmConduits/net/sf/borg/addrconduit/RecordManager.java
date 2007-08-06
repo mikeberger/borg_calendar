@@ -7,8 +7,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 
-import net.sf.borg.model.Address;
 import net.sf.borg.model.AddressModel;
+import net.sf.borg.model.beans.Address;
 import palm.conduit.AddressRecord;
 import palm.conduit.Record;
 import palm.conduit.SyncException;

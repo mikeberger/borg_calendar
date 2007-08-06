@@ -13,9 +13,9 @@ import java.util.Iterator;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
-import net.sf.borg.model.Appointment;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Repeat;
+import net.sf.borg.model.beans.Appointment;
 import palm.conduit.DateRecord;
 import palm.conduit.Log;
 import palm.conduit.Record;

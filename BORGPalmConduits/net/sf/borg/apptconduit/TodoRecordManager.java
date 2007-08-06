@@ -9,9 +9,8 @@ import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.Vector;
 
-import net.sf.borg.model.Appointment;
 import net.sf.borg.model.AppointmentModel;
-
+import net.sf.borg.model.beans.Appointment;
 import palm.conduit.Category;
 import palm.conduit.Log;
 import palm.conduit.SyncManager;

@@ -4,11 +4,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-import net.sf.borg.common.util.Errmsg;
-import net.sf.borg.common.util.J13Helper;
-import net.sf.borg.common.util.SocketClient;
+import net.sf.borg.common.Errmsg;
+import net.sf.borg.common.J13Helper;
+import net.sf.borg.common.SocketClient;
 import net.sf.borg.model.AppointmentModel;
-
 import net.sf.borg.model.db.remote.IRemoteProxy;
 import net.sf.borg.model.db.remote.IRemoteProxyProvider;
 import net.sf.borg.model.db.remote.RemoteProxyHome;

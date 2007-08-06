@@ -2,8 +2,7 @@
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry excluding=".svn" kind="src" path="WEB-INF/src"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/BORGCalendarCommon"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/BORGCalendarModel"/>
-	<classpathentry kind="lib" path="/BORGCalendarCommon/lib/servlet.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/BORGCalendar"/>
+	<classpathentry kind="lib" path="/BORGCalendar/lib/servlet.jar"/>
 	<classpathentry kind="output" path="WEB-INF/classes"/>
 </classpath>
