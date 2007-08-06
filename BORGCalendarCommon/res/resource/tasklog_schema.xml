@@ -1,0 +1,23 @@
+<schema>
+	<name>Tasklog</name>
+	<field>
+		<type>Integer</type>
+		<longName>Id</longName>
+		<desc>Tasklog ID</desc>
+	</field>
+	<field>
+		<type>Date</type>
+		<longName>logTime</longName>
+		<desc>Log Time</desc>
+	</field>
+	<field>
+		<type>String</type>
+		<longName>Description</longName>
+		<desc>Description</desc>
+	</field>
+	<field>
+		<type>Integer</type>
+		<longName>Task</longName>
+		<desc>Parent Task ID</desc>
+	</field>
+</schema>
