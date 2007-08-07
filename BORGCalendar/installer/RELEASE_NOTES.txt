@@ -1,5 +1,5 @@
 =================================
-RELEASE NOTES for BORG 1.6
+RELEASE NOTES for BORG 1.6.1
 =================================
 
 The project home page is http://borg-calendar.sourceforge.net
