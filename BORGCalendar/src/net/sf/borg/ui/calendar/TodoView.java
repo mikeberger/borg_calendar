@@ -229,8 +229,6 @@ public class TodoView extends View implements Prefs.Listener {
 
     private javax.swing.JLabel jLabel2;
 
-    private javax.swing.JLabel jLabel3;
-
     private javax.swing.JMenuItem jMenuItem1;
 
     private javax.swing.JMenuItem jMenuItem2;
@@ -789,7 +787,7 @@ public class TodoView extends View implements Prefs.Listener {
 	GridBagConstraints gridBagConstraints14 = new GridBagConstraints();
 	jLabel1 = new javax.swing.JLabel();
 	jLabel2 = new javax.swing.JLabel();
-	jLabel3 = new javax.swing.JLabel();
+	
 	menuBar = new javax.swing.JMenuBar();
 	fileMenu = new javax.swing.JMenu();
 	jMenuItem1 = new javax.swing.JMenuItem();
@@ -867,9 +865,6 @@ public class TodoView extends View implements Prefs.Listener {
 	jLabel1.setLabelFor(todotext);
 	ResourceHelper.setText(jLabel2, "Date");
 	jLabel2.setLabelFor(tododate_cb);
-
-	jLabel3.setFont(new java.awt.Font("MS Sans Serif", 2, 10));
-	ResourceHelper.setText(jLabel3, "quicktodonotice");
 
 	ResourceHelper.setText(fileMenu, "Action");
 	ResourceHelper.setText(jMenuItem1, "Done_(No_Delete)");
