@@ -268,14 +268,11 @@ public class TaskListPanel extends JPanel {
 
 		// get the task state
 		String st = task.getState();
-		String type = task.getType();
+		
 
 		if (statfilt
 			.equals(Resource.getPlainResourceString("All_Open"))) {
-		    // System.out.println(type + " " +
-		    // TaskModel.getReference().getTaskTypes().getFinalState(type));
-		    if (st.equals(TaskModel.getReference().getTaskTypes()
-			    .getFinalState(type))) {
+		    if (TaskModel.isClosed(task)) {
 			continue;
 		    }
 		} else if (!statfilt.equals(Resource

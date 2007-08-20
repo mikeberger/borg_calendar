@@ -47,6 +47,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.table.TableCellRenderer;
 
+import net.sf.borg.common.DateUtil;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.NotSupportedWarning;
 import net.sf.borg.common.PrefName;
@@ -234,26 +235,6 @@ public class TaskView extends View {
 		return p.getId().toString() + ":" + p.getDescription();
 	}
 
-	static private boolean isAfter(Date d1, Date d2){
-
-	    GregorianCalendar tcal = new GregorianCalendar();
-	    tcal.setTime(d1);
-	    tcal.set(Calendar.HOUR_OF_DAY, 0);
-	    tcal.set(Calendar.MINUTE, 0);
-	    tcal.set(Calendar.SECOND, 0);
-	    GregorianCalendar dcal = new GregorianCalendar();
-	    dcal.setTime(d2);
-	    dcal.set(Calendar.HOUR_OF_DAY, 0);
-	    dcal.set(Calendar.MINUTE, 10);
-	    dcal.set(Calendar.SECOND, 0);
-	    //System.out.println( DateFormat.getDateTimeInstance().format(tcal.getTime()) + " " + 
-		    //DateFormat.getDateTimeInstance().format(dcal.getTime()) );
-	    if (tcal.getTime().after(dcal.getTime())) {
-		return true;
-	    }
-	    
-	    return false;
-	}
 
 	private JComboBox catbox = null;
 
@@ -1151,8 +1132,8 @@ public class TaskView extends View {
 			s.setDueDate(dd);
 
 			// validate dd - make sure only date and not time is compared
-			if (dd != null && task.getDueDate() != null) {
-			        if( isAfter( dd, task.getDueDate()))
+			if (closed.booleanValue() != true && dd != null && task.getDueDate() != null) {
+			        if( DateUtil.isAfter( dd, task.getDueDate()))
 			        {
 					String msg = Resource
 							.getPlainResourceString("stdd_warning")
@@ -1241,7 +1222,7 @@ public class TaskView extends View {
 			if( cal != null )
 			    task.setDueDate(cal.getTime()); // due date
 			
-			if( task.getDueDate() != null && isAfter(task.getStartDate(), task.getDueDate()) )
+			if( task.getDueDate() != null && DateUtil.isAfter(task.getStartDate(), task.getDueDate()) )
 			{
 				throw new Warning(Resource
 					.getPlainResourceString("sd_dd_warn"));
@@ -1270,16 +1251,6 @@ public class TaskView extends View {
 			} catch (Exception e) {
 				// no project selected
 			}
-
-			if( task.getProject() != null )
-			{
-			    Project p = TaskModel.getReference().getProject(task.getProject().intValue());
-			    if( p != null && task.getDueDate() != null && p.getDueDate() != null && isAfter(task.getDueDate(),p.getDueDate()))
-			    {
-				throw new Warning(Resource
-					.getPlainResourceString("taskdd_warning"));
-			    }
-			}
 			
 			if (cat.equals("") || cat.equals(CategoryModel.UNCATEGORIZED)) {
 				task.setCategory(null);
@@ -1288,9 +1259,7 @@ public class TaskView extends View {
 			}
 
 			// do not close task if subtasks are open
-			if (task.getState().equals(
-					TaskModel.getReference().getTaskTypes().getFinalState(
-							task.getType()))) {
+			if (TaskModel.isClosed(task)) {
 				for (int r = 0; r < stable.getRowCount(); r++) {
 					Boolean closed = (Boolean) ts.getValueAt(r, 0);
 					Integer id = (Integer) ts.getValueAt(r, 1);

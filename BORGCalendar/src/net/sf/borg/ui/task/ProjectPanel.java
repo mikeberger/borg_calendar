@@ -224,10 +224,7 @@ public class ProjectPanel extends JPanel {
 		Iterator it = ptasks.iterator();
 		while (it.hasNext()) {
 		    Task pt = (Task) it.next();
-		    String stat = pt.getState();
-		    String type = pt.getType();
-		    if (!stat.equals(TaskModel.getReference().getTaskTypes()
-			    .getFinalState(type))) {
+		    if (!TaskModel.isClosed(pt)) {
 			open++;
 		    }
 		}

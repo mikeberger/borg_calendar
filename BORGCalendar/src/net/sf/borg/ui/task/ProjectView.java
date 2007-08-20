@@ -34,6 +34,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import net.sf.borg.common.DateUtil;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Resource;
@@ -82,27 +83,6 @@ class ProjectView extends View {
 		this.dispose();
 	}
 	
-	static private boolean isAfter(Date d1, Date d2){
-
-	    GregorianCalendar tcal = new GregorianCalendar();
-	    tcal.setTime(d1);
-	    tcal.set(Calendar.HOUR_OF_DAY, 0);
-	    tcal.set(Calendar.MINUTE, 0);
-	    tcal.set(Calendar.SECOND, 0);
-	    GregorianCalendar dcal = new GregorianCalendar();
-	    dcal.setTime(d2);
-	    dcal.set(Calendar.HOUR_OF_DAY, 0);
-	    dcal.set(Calendar.MINUTE, 10);
-	    dcal.set(Calendar.SECOND, 0);
-	    //System.out.println( DateFormat.getDateTimeInstance().format(tcal.getTime()) + " " + 
-		    //DateFormat.getDateTimeInstance().format(dcal.getTime()) );
-	    if (tcal.getTime().after(dcal.getTime())) {
-		return true;
-	    }
-	    
-	    return false;
-	}
-
 	// the different function values for calls to show task
 	static int T_CLONE = 1;
 
@@ -442,12 +422,12 @@ class ProjectView extends View {
 			if( cal == null) cal = new GregorianCalendar();
 			p.setStartDate(cal.getTime()); // start date
 			cal = duedatechooser.getCalendar();
-			//if( cal == null) cal = new GregorianCalendar();
+			
 			if( cal != null )
 			{
 			    p.setDueDate(cal.getTime()); // due date
 
-			    if( isAfter(p.getStartDate(), p.getDueDate()) )
+			    if( DateUtil.isAfter(p.getStartDate(), p.getDueDate()) )
 			    {
 				throw new Warning(Resource
 					.getPlainResourceString("sd_dd_warn"));
@@ -462,21 +442,7 @@ class ProjectView extends View {
 			} else {
 				p.setCategory(cat);
 			}
-
-			if( p.getId().intValue() != -1)
-			{
-			    Collection tasks = TaskModel.getReference().getTasks(p.getId().intValue());
-			    Iterator it = tasks.iterator();
-			    while( it.hasNext())
-			    {
-				Task t = (Task) it.next();
-				if( p.getDueDate() != null && t.getDueDate() != null && isAfter( t.getDueDate(), p.getDueDate()))
-				{
-				    throw new Warning(Resource.getPlainResourceString("projdd_warning")+":"+t.getTaskNumber());
-				}
-			    }
-			}
-			
+	
 			taskmod_.saveProject(p);
 
 			// System.out.println(task.getTaskNumber());
@@ -545,11 +511,8 @@ class ProjectView extends View {
 			int open = 0;
 			Iterator it = ptasks.iterator();
 			while (it.hasNext()) {
-			    Task pt = (Task) it.next();
-			    String stat = pt.getState();
-			    String type = pt.getType();
-			    if (!stat.equals(TaskModel.getReference().getTaskTypes()
-				    .getFinalState(type))) {
+			    Task pt = (Task) it.next();		
+			    if (!TaskModel.isClosed(pt)) {
 				open++;
 			    }
 			}

@@ -31,6 +31,7 @@ import java.util.LinkedList;
 import java.util.TreeSet;
 import java.util.Vector;
 
+import net.sf.borg.common.DateUtil;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.NotSupportedWarning;
 import net.sf.borg.common.Resource;
@@ -173,7 +174,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 	allmap_.clear();
 	stmap_.clear();
 	pmap_.clear();
-	TaskTypes tt = TaskModel.getReference().getTaskTypes();
+	
 
 	try {
 
@@ -184,10 +185,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 		Task mr = (Task) ti.next();
 
 		// for each task, get state and skip CLOSED or PR tasks
-		String status = mr.getState();
-		if (status.equals(tt.getFinalState(mr.getType()))
-			|| status.equals("PR"))
-		    continue;
+		if( isClosed(mr)) continue;
 
 		String cat = mr.getCategory();
 		if (cat == null || cat.equals(""))
@@ -391,6 +389,18 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
     // save a task from a filled in task Row
     public void savetask(Task task) throws Exception {
 
+	// validations
+	if( task.getProject() != null )
+	{
+	    Project p = TaskModel.getReference().getProject(task.getProject().intValue());
+	    if( p != null && task.getDueDate() != null && p.getDueDate() != null && DateUtil.isAfter(task.getDueDate(),p.getDueDate()))
+	    {
+		throw new Warning(Resource
+			.getPlainResourceString("taskdd_warning"));
+	    }
+	}
+	
+	
 	// add task to DB
 	Integer num = task.getTaskNumber();
 
@@ -410,9 +420,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 	    try {
 		// update close date
 		if (task.getState() != null
-			&& task.getState().equals(
-				TaskModel.getReference().getTaskTypes()
-					.getFinalState(task.getType())))
+			&& isClosed(task))
 		    task.setCD(new Date());
 		int key = task.getTaskNumber().intValue();
 		task.setKey(key);
@@ -619,9 +627,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 
 		    if (TaskModel.getReference().hasSubTasks()) {
 			// migrate from old subtask mechanism
-			if (!task.getState().equals(
-				TaskModel.getReference().getTaskTypes()
-					.getFinalState(task.getType()))
+			if (!isClosed(task)
 				&& task.getTodoList() != null
 				&& task.getUserTask1() != null) {
 			    // add system subtasks
@@ -919,6 +925,21 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 	if (db_ instanceof TaskDB == false)
 	    throw new NotSupportedWarning(Resource
 		    .getPlainResourceString("SubtaskNotSupported"));
+	
+	// validation that task due dates are before project due date
+	if( p.getId() != null && p.getId().intValue() != -1)
+	{
+	    Collection tasks = TaskModel.getReference().getTasks(p.getId().intValue());
+	    Iterator it = tasks.iterator();
+	    while( it.hasNext())
+	    {
+		Task t = (Task) it.next();
+		if( p.getDueDate() != null && t.getDueDate() != null && !TaskModel.isClosed(t) && DateUtil.isAfter( t.getDueDate(), p.getDueDate()))
+		{
+		    throw new Warning(Resource.getPlainResourceString("projdd_warning")+": "+t.getTaskNumber());
+		}
+	    }
+	}
 
 	if (p.getId() != null && p.getStatus().equals(Resource.getPlainResourceString("CLOSED"))) {
 	    // make sure that all tasks are closed
@@ -928,10 +949,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 	    Iterator it = ptasks.iterator();
 	    while (it.hasNext()) {
 		Task pt = (Task) it.next();
-		String stat = pt.getState();
-		String type = pt.getType();
-		if (!stat.equals(TaskModel.getReference().getTaskTypes()
-			.getFinalState(type))) {
+		if (!isClosed(pt)) {
 		    throw new Warning(Resource
 			    .getPlainResourceString("close_proj_warn"));
 		}
@@ -948,5 +966,12 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 
 	load_map();
 	refreshListeners();
+    }
+    
+    static public boolean isClosed(Task t)
+    {
+	String stat = t.getState();
+	String type = t.getType();
+	return stat.equals(TaskModel.getReference().getTaskTypes().getFinalState(type));
     }
 }
