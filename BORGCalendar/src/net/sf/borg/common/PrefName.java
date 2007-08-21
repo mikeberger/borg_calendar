@@ -148,6 +148,7 @@ public class PrefName {
 		static public PrefName WEEKVIEWSIZE = new PrefName("weekviewsize","-1,-1,-1,-1,N");
 		static public PrefName HELPVIEWSIZE = new PrefName("helpviewsize","-1,-1,-1,-1,N");
 		static public PrefName PROJVIEWSIZE = new PrefName("projviewsize","-1,-1,-1,-1,N");
+		static public PrefName GANTTSIZE = new PrefName("ganttsize","-1,-1,-1,-1,N");
 		
 		// user color scheme
 		static public PrefName UCS_ON = new PrefName("ucs_on","false");

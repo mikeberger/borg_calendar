@@ -337,6 +337,32 @@ public class ProjectPanel extends JPanel {
 	}
 
     }
+    
+    private void ganttActionPerformed(java.awt.event.ActionEvent evt) {
+
+	// get the task number from column 0 of the selected row
+	int row = projectTable.getSelectedRow();
+	if (row == -1)
+	    return;
+	TableSorter tm = (TableSorter) projectTable.getModel();
+	Integer num = (Integer) tm.getValueAt(row, 0);
+	try {
+	    // force close of the task
+	    TaskModel taskmod_ = TaskModel.getReference();
+	    Project p = taskmod_.getProject(num.intValue());
+	    GanttFrame.showChart(p);
+	} catch (ClassNotFoundException cnf)
+	{
+	    Errmsg.notice(Resource.getPlainResourceString("borg_jasp"));   
+	} catch (NoClassDefFoundError r) {
+	    Errmsg.notice(Resource.getPlainResourceString("borg_jasp"));
+	} catch (Warning w) {
+	    Errmsg.notice(w.getMessage());
+	} catch (Exception e) {
+	    Errmsg.errmsg(e);
+	}
+
+    }
 
     private void deleteActionPerformed(java.awt.event.ActionEvent evt) {
 
@@ -390,6 +416,21 @@ public class ProjectPanel extends JPanel {
         return addbutton;
     }
     
+    private JButton ganttbutton;
+    private JButton getGanttbutton() {
+        if (ganttbutton == null) {
+            ganttbutton = new JButton();
+            ganttbutton.setText(Resource.getPlainResourceString("GANTT"));
+            //ganttbutton.setIcon(new ImageIcon(getClass().getResource("/resource/Add16.gif")));
+            ganttbutton.addActionListener(new java.awt.event.ActionListener() {
+    	    public void actionPerformed(java.awt.event.ActionEvent e) {
+    		ganttActionPerformed(e);
+    	    }
+    	});
+        }
+        return ganttbutton;
+    }
+    
     private ActionListener getAL(JMenuItem mnuitm) {
 	return mnuitm.getActionListeners()[0];
     }
@@ -408,6 +449,7 @@ public class ProjectPanel extends JPanel {
     	buttonPanel.add(getDeletebutton1(), null);
     	buttonPanel.add(getClosebutton1(), null);
     	buttonPanel.add(getClonebutton1(), null);
+    	buttonPanel.add(getGanttbutton(), null);
         }
         return buttonPanel;
     }
@@ -576,7 +618,8 @@ public class ProjectPanel extends JPanel {
 		new PopupMenuHelper.Entry(getAL(change), "Change"),
 		new PopupMenuHelper.Entry(getAL(clone), "Clone"),
 		new PopupMenuHelper.Entry(getAL(delete), "Delete"),
-		new PopupMenuHelper.Entry(getAL(close), "Close") });
+		new PopupMenuHelper.Entry(getAL(close), "Close"),
+		new PopupMenuHelper.Entry(getAL(ganttmi), "GANTT")});
 
 	projectTable.getColumnModel().getColumn(0).setPreferredWidth(80);
 	projectTable.getColumnModel().getColumn(1).setPreferredWidth(80);
@@ -667,11 +710,21 @@ public class ProjectPanel extends JPanel {
 	});
 
 	editMenu.add(close);
+	
+	
+	ResourceHelper.setText(ganttmi, "GANTT");
+	ganttmi.addActionListener(new java.awt.event.ActionListener() {
+	    public void actionPerformed(java.awt.event.ActionEvent evt) {
+		ganttActionPerformed(evt);
+	    }
+	});
+
+	editMenu.add(ganttmi);
 
 	menuBar.add(editMenu);
 
     }
-
+    private JMenuItem ganttmi = new JMenuItem();
     private void mouseClick(java.awt.event.MouseEvent evt) {
 
 	// ask controller to bring up task editor on double click
