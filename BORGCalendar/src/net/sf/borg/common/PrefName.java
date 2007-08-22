@@ -193,5 +193,6 @@ public class PrefName {
 		static public PrefName TASK_SHOW_ABBREV = new PrefName("task_show_abbrev", "false");
 		static public PrefName CAL_SHOW_TASKS = new PrefName("cal_show_tasks", "true");
 		static public PrefName CAL_SHOW_SUBTASKS = new PrefName("cal_show_subtasks", "true");
-
+		static public PrefName GANTT_SHOW_SUBTASKS = new PrefName("gantt_show_subtasks", "true");
+		
 }

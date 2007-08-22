@@ -550,6 +550,7 @@ public class OptionsView extends View {
 	setCheckBox(taskAbbrevBox, PrefName.TASK_SHOW_ABBREV);
 	setCheckBox(calShowTaskBox, PrefName.CAL_SHOW_TASKS);
 	setCheckBox(calShowSubtaskBox, PrefName.CAL_SHOW_SUBTASKS);
+	setCheckBox(ganttShowSubtaskBox, PrefName.GANTT_SHOW_SUBTASKS);
 
 	int socket = Prefs.getIntPref(PrefName.SOCKETPORT);
 	socketPort.setText(Integer.toString(socket));
@@ -767,6 +768,7 @@ public class OptionsView extends View {
 	setBooleanPref(taskAbbrevBox, PrefName.TASK_SHOW_ABBREV);
 	setBooleanPref(calShowTaskBox, PrefName.CAL_SHOW_TASKS);
 	setBooleanPref(calShowSubtaskBox, PrefName.CAL_SHOW_SUBTASKS);
+	setBooleanPref(ganttShowSubtaskBox, PrefName.GANTT_SHOW_SUBTASKS);
 
 	try {
 	    int socket = Integer.parseInt(socketPort.getText());
@@ -2084,6 +2086,8 @@ public class OptionsView extends View {
     private JCheckBox calShowTaskBox = new JCheckBox();
 
     private JCheckBox calShowSubtaskBox = new JCheckBox();
+    
+    private JCheckBox ganttShowSubtaskBox = new JCheckBox();
 
     private JPanel getTaskOptionPanel() {
 	if (taskOptionPanel == null) {
@@ -2094,6 +2098,13 @@ public class OptionsView extends View {
 	    gridBagConstraints20.fill = GridBagConstraints.NONE;
 	    gridBagConstraints20.anchor = GridBagConstraints.WEST;
 	    gridBagConstraints20.gridx = 0;
+	    GridBagConstraints gridBagConstraints21 = new GridBagConstraints();
+	    gridBagConstraints21.insets = new Insets(4, 4, 4, 4);
+	    gridBagConstraints21.gridy = 3;
+	    gridBagConstraints21.ipady = 0;
+	    gridBagConstraints21.fill = GridBagConstraints.NONE;
+	    gridBagConstraints21.anchor = GridBagConstraints.WEST;
+	    gridBagConstraints21.gridx = 0;
 	    GridBagConstraints gridBagConstraints19 = new GridBagConstraints();
 	    gridBagConstraints19.insets = new Insets(4, 4, 4, 4);
 	    gridBagConstraints19.gridy = 1;
@@ -2115,12 +2126,15 @@ public class OptionsView extends View {
 	    taskOptionPanel.add(taskAbbrevBox, gridBagConstraints17);
 	    taskOptionPanel.add(calShowTaskBox, gridBagConstraints19);
 	    taskOptionPanel.add(calShowSubtaskBox, gridBagConstraints20);
+	    taskOptionPanel.add(ganttShowSubtaskBox, gridBagConstraints21);
 	    taskAbbrevBox.setText(Resource
 		    .getPlainResourceString("task_abbrev"));
 	    calShowTaskBox.setText(Resource
 		    .getPlainResourceString("calShowTask"));
 	    calShowSubtaskBox.setText(Resource
 		    .getPlainResourceString("calShowSubtask"));
+	    ganttShowSubtaskBox.setText(Resource
+		    .getPlainResourceString("ganttShowSubtask"));
 	}
 	return taskOptionPanel;
     }
@@ -2542,6 +2556,8 @@ public class OptionsView extends View {
 
 	calShowSubtaskBox.setName("calShowSubtaskBox");
 	calShowSubtaskBox.setHorizontalAlignment(SwingConstants.LEFT);
+	ganttShowSubtaskBox.setName("calShowSubtaskBox");
+	ganttShowSubtaskBox.setHorizontalAlignment(SwingConstants.LEFT);
 	calShowTaskBox.setName("calShowTaskBox");
 	calShowTaskBox.setHorizontalAlignment(SwingConstants.LEFT);
 	taskAbbrevBox.setName("taskAbbrevBox");

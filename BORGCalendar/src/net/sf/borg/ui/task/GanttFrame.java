@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.Iterator;
 
 import net.sf.borg.common.PrefName;
+import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.common.Warning;
 import net.sf.borg.model.TaskModel;
@@ -63,24 +64,30 @@ public class GanttFrame extends View {
 
 	    if (dd == null)
 		dd = p.getDueDate();
-	    addChartItem(sched, t.getDescription(), t.getStartDate(), dd);
+	    String tlabel = Integer.toString(t.getTaskNumber().intValue()) + "-" + t.getDescription();
+	    addChartItem(sched, tlabel, t.getStartDate(), dd);
 	    if (TaskModel.isClosed(t))
-		addChartItem(actual, t.getDescription(), t.getStartDate(), t
+		addChartItem(actual, tlabel, t.getStartDate(), t
 			.getCD());
-	    Collection sts = TaskModel.getReference().getSubTasks(
-		    t.getTaskNumber().intValue());
-	    Iterator it2 = sts.iterator();
-	    while (it2.hasNext()) {
-		Subtask st = (Subtask) it2.next();
-		dd = st.getDueDate();
-		if (dd == null)
-		    dd = t.getDueDate();
-		if (dd == null)
-		    dd = p.getDueDate();
-		addChartItem(sched, st.getDescription(), t.getStartDate(), dd);
-		if (st.getCloseDate() != null) {
-		    addChartItem(actual, st.getDescription(), t.getStartDate(),
-			    st.getCloseDate());
+	    
+	    String show_st = Prefs.getPref(PrefName.GANTT_SHOW_SUBTASKS);
+	    if( show_st.equals("true"))
+	    {
+		Collection sts = TaskModel.getReference().getSubTasks(
+			t.getTaskNumber().intValue());
+		Iterator it2 = sts.iterator();
+		while (it2.hasNext()) {
+		    Subtask st = (Subtask) it2.next();
+		    dd = st.getDueDate();
+		    if (dd == null)
+			dd = t.getDueDate();
+		    if (dd == null)
+			dd = p.getDueDate();
+		    addChartItem(sched, st.getDescription(), t.getStartDate(), dd);
+		    if (st.getCloseDate() != null) {
+			addChartItem(actual, st.getDescription(), t.getStartDate(),
+				st.getCloseDate());
+		    }
 		}
 	    }
 	}
