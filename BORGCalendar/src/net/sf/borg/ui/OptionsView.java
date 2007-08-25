@@ -64,6 +64,7 @@ import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.AppointmentModel;
+import net.sf.borg.ui.popup.ReminderTimePanel;
 import net.sf.borg.ui.util.JButtonKnowsBgColor;
 import net.sf.borg.ui.util.NwFontChooserS;
 import net.sf.borg.ui.util.StripedTable;

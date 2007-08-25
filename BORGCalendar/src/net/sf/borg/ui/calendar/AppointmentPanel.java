@@ -55,8 +55,8 @@ import net.sf.borg.model.ReminderTimes;
 import net.sf.borg.model.Repeat;
 import net.sf.borg.model.beans.Appointment;
 import net.sf.borg.model.beans.AppointmentXMLAdapter;
-import net.sf.borg.ui.PopupOptionsView;
 import net.sf.borg.ui.ResourceHelper;
+import net.sf.borg.ui.popup.PopupOptionsView;
 
 import com.toedter.calendar.JDateChooser;
 

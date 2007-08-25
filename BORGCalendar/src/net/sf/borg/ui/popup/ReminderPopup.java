@@ -19,7 +19,7 @@
   Copyright 2003 by Mike Berger
 */
 
-package net.sf.borg.ui.calendar;
+package net.sf.borg.ui.popup;
 
 
 import java.awt.GridBagConstraints;

@@ -1,4 +1,4 @@
-package net.sf.borg.ui;
+package net.sf.borg.ui.popup;
 
 import java.awt.GridLayout;
 

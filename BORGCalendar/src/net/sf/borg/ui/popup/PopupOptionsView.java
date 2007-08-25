@@ -17,7 +17,7 @@
  * Copyright 2003 by Mike Berger
  */
 
-package net.sf.borg.ui;
+package net.sf.borg.ui.popup;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -37,6 +37,7 @@ import javax.swing.KeyStroke;
 
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.ReminderTimes;
+import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.calendar.AppointmentPanel;
 
 
