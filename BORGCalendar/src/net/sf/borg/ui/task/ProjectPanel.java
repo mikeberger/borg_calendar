@@ -40,6 +40,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.TableCellRenderer;
 
@@ -154,6 +155,7 @@ public class ProjectPanel extends JPanel {
 
 	try {
 	    initComponents();
+	    projectTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 	    refresh();
 	} catch (Exception e) {
 	    // TODO Auto-generated catch block
