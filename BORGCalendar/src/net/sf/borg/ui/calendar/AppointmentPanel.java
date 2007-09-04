@@ -731,13 +731,11 @@ public class AppointmentPanel extends JPanel {
 		newCal.set(Calendar.DATE, cal.get(Calendar.DATE));
 		r.setDate(newCal.getTime());
 
-		//AppointmentXMLAdapter aa = new AppointmentXMLAdapter();
-
-		//System.out.println(aa.toXml(r));
-		//System.out.println(aa.toXml(ap));
+		
 		// determine if we can keep certain fields related to repeating
                 // and todos
 		if (r.getTimes().intValue() == ap.getTimes().intValue()
+			&& r.getFrequency() != null && ap.getFrequency() != null 
 			&& Repeat.getFreq(r.getFrequency()).equals(Repeat.getFreq(ap.getFrequency()))
 			&& r.getTodo() == ap.getTodo()
 			&& r.getRepeatFlag() == ap.getRepeatFlag()) {
@@ -745,8 +743,16 @@ public class AppointmentPanel extends JPanel {
 		    r.setSkipList(ap.getSkipList());
 		    r.setNextTodo(ap.getNextTodo());
 		}
-	    } catch (Exception e) {
+		
+		// should carry forward sync flags
+		r.setNew(ap.getNew());
+		r.setModified(ap.getModified());
+		//AppointmentXMLAdapter aa = new AppointmentXMLAdapter();
 
+		//System.out.println(aa.toXml(r));
+		//System.out.println(aa.toXml(ap));
+	    } catch (Exception e) {
+		//Errmsg.errmsg(e);
 	    }
 	    calmod_.saveAppt(r, false);
 	} else {

@@ -142,7 +142,7 @@ public class ApptRecordManager {
 	DateRecord hhRecord;
 
 	ApptCond.log("Sync BORG Record with Palm: " + appt.getKey() + " "
-		+ appt.getText());
+		+ appt.getText() + "(" + appt.getNew() + "," + appt.getModified() + "," + appt.getDeleted() + ")");
 
 	if (!appt.getNew()) {
 
@@ -323,11 +323,12 @@ public class ApptRecordManager {
 
 	Integer hhkey = (Integer) hhmap.get(new Integer(key));
 	if (hhkey != null) {
+	    ApptCond.log("Found key in cache: " + key);
 	    DateRecord hhRecord = new DateRecord();
 	    hhRecord.setIndex(hhkey.intValue());
 	    SyncManager.readRecordByIndex(db, hhRecord);
 	    if (key == getApptKey(hhRecord)) {
-		ApptCond.log("Found key in cache: " + key);
+		ApptCond.log("Found matching HH Record in cache: " + key);
 		return (hhRecord);
 	    }
 	}
@@ -345,6 +346,7 @@ public class ApptRecordManager {
 
 	    if (key == getApptKey(hhRecord)) {
 		hhmap.put(new Integer(key), new Integer(ri));
+		ApptCond.log("Found matching HH Record in cache: " + key);
 		return (hhRecord);
 	    }
 	}
