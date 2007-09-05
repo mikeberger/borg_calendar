@@ -199,7 +199,8 @@ public class ApptRecordManager {
 	if (appt == null) { // if there is no pc rec with the matching RecID
 
 	    if (hhRecord.isArchived() || hhRecord.isDeleted()) {
-		deleteHHRecord(hhRecord);
+		// not needed - purge will catch this
+		//deleteHHRecord(hhRecord);
 	    } else { // default
 
 		// reset the attribute flags for the record
@@ -302,7 +303,7 @@ public class ApptRecordManager {
 	} else {
 	    // Marked as already deleted from the HH and needs
 	    // to be deleted from the PC
-	    deleteHHRecord(hhRecord);
+	   //deleteHHRecord(hhRecord); - not needed - will purge
 	    deletePCRecord(addr);
 	}
     }
@@ -315,8 +316,11 @@ public class ApptRecordManager {
 	SyncManager.writeRec(db, record);
     }
 
-    private void deleteHHRecord(Record record) throws SyncException {
-	SyncManager.deleteRecord(db, record);
+    private void deleteHHRecord(Record record) throws SyncException, IOException {
+	// just mark as deleted
+	record.setIsDeleted(true);
+	writeHHRecord(record);
+	//SyncManager.deleteRecord(db, record);
     }
 
     private DateRecord retrieveHHRecordByBorgId(int key) throws IOException {
@@ -331,6 +335,7 @@ public class ApptRecordManager {
 		ApptCond.log("Found matching HH Record in cache: " + key);
 		return (hhRecord);
 	    }
+	    ApptCond.log(hhRecord.toFormattedString());
 	}
 
 	ApptCond.log("Did not find key in cache: " + key);
@@ -346,7 +351,7 @@ public class ApptRecordManager {
 
 	    if (key == getApptKey(hhRecord)) {
 		hhmap.put(new Integer(key), new Integer(ri));
-		ApptCond.log("Found matching HH Record in cache: " + key);
+		ApptCond.log("Found matching HH Record on device: " + key);
 		return (hhRecord);
 	    }
 	}
