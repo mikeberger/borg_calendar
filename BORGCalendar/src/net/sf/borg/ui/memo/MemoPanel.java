@@ -59,6 +59,7 @@ public class MemoPanel extends JPanel implements ListSelectionListener {
 
 	private JButton exportButton = null;
     private boolean isMemoEdited = false;
+    private int editedMemoIndex = -1;
 
     private JPanel jPanel = null;
 
@@ -151,16 +152,19 @@ public class MemoPanel extends JPanel implements ListSelectionListener {
 
 		public void changedUpdate(DocumentEvent arg0) {
 		    isMemoEdited = true;
+		    editedMemoIndex= memoListTable.getSelectedRow();
 		    getSaveButton().setEnabled(true);
 		}
 
 		public void insertUpdate(DocumentEvent arg0) {
 		    isMemoEdited = true;
+		    editedMemoIndex= memoListTable.getSelectedRow();
 		    getSaveButton().setEnabled(true);
 		}
 
 		public void removeUpdate(DocumentEvent arg0) {
 		    isMemoEdited = true;
+		    editedMemoIndex= memoListTable.getSelectedRow();
 		    getSaveButton().setEnabled(true);
 		}
 	    });
@@ -254,33 +258,57 @@ public class MemoPanel extends JPanel implements ListSelectionListener {
 	// Ignore extra messages.
 	if (e.getValueIsAdjusting())
 	    return;
+	
+	// if the user has edited a memo and is changing the memo selection...
+	if( isMemoEdited ){
+	    
+	    // if the selection is remaining (or returning) to the edited memo
+	    // then do nothing - may be returning to the edited memo due to the setSelectionInterval line
+	    // below that resets the selection
+	    if( editedMemoIndex == memoListTable.getSelectedRow() )
+		return;
+	    
+	    // selection is moving to a new memo - prompt about discarding changes
+	    int ret = JOptionPane.showConfirmDialog(null, Resource
+		    .getResourceString("Edited_Memo"), Resource
+		    .getPlainResourceString("Discard_Text?"), JOptionPane.OK_CANCEL_OPTION,
+		    JOptionPane.QUESTION_MESSAGE);
+	    
+	    // if user does not want to lose changes, we need to set the selection back to the edited memo
+	    if (ret != JOptionPane.OK_OPTION)
+	    {
+		memoListTable.getSelectionModel().setSelectionInterval(editedMemoIndex, editedMemoIndex)
+;		return;
+	    }
+	}
+
+	
 
 	String memoName = getSelectedMemoName();
 	if (memoName == null) {
 	    memoText.setText("");
 	    memoText.setEditable(false);
-	    privateBox.setSelected(false);
-	    isMemoEdited = false;
-	    getSaveButton().setEnabled(false);
-	    return;
+	    privateBox.setSelected(false);	    	    
 	}
+	else
+	{
 
-	String text;
-	boolean priv = false;
-	try {
-	    Memo m = MemoModel.getReference().getMemo(memoName);
-	    text = m.getMemoText();
-	    priv = m.getPrivate();
-	} catch (Exception e1) {
-	    Errmsg.errmsg(e1);
-	    isMemoEdited = false;
-	    getSaveButton().setEnabled(false);
-	    return;
+	    String text;
+	    boolean priv = false;
+	    try {
+		Memo m = MemoModel.getReference().getMemo(memoName);
+		text = m.getMemoText();
+		priv = m.getPrivate();
+	    } catch (Exception e1) {
+		Errmsg.errmsg(e1);
+		return;
+	    }
+
+	    memoText.setEditable(true);
+	    memoText.setText(text);
+	    privateBox.setSelected(priv);
 	}
 	
-	memoText.setEditable(true);
-	memoText.setText(text);
-	privateBox.setSelected(priv);
 	isMemoEdited = false;
 	getSaveButton().setEnabled(false);
 
@@ -310,6 +338,7 @@ public class MemoPanel extends JPanel implements ListSelectionListener {
 	    m.setMemoText(memoText.getText());
 	    m.setPrivate(privateBox.isSelected());
 	    MemoModel.getReference().saveMemo(m);
+	    isMemoEdited = false;
 	    loadTable();
 	} catch (Exception e) {
 	    Errmsg.errmsg(e);
@@ -319,6 +348,16 @@ public class MemoPanel extends JPanel implements ListSelectionListener {
     }
 
     private void newMemo() {
+	
+	if( this.isMemoEdited ){
+	    int ret = JOptionPane.showConfirmDialog(null, Resource
+		    .getResourceString("Edited_Memo"), Resource
+		    .getPlainResourceString("Discard_Text?"), JOptionPane.OK_CANCEL_OPTION,
+		    JOptionPane.QUESTION_MESSAGE);
+	    if (ret != JOptionPane.OK_OPTION)
+		return;
+	}
+
 	String name = JOptionPane.showInputDialog(Resource
 		.getPlainResourceString("Enter_Memo_Name"));
 	if (name == null)
@@ -339,6 +378,7 @@ public class MemoPanel extends JPanel implements ListSelectionListener {
 	m.setPrivate(false);
 	try {
 	    MemoModel.getReference().saveMemo(m);
+	    isMemoEdited = false;
 	    loadTable();
 	} catch (Exception e) {
 	    Errmsg.errmsg(e);
@@ -357,6 +397,7 @@ public class MemoPanel extends JPanel implements ListSelectionListener {
 	}
 	try {
 	    MemoModel.getReference().delete(name, true);
+	    isMemoEdited = false;
 	    loadTable();
 	} catch (Exception e) {
 	    Errmsg.errmsg(e);
