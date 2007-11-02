@@ -43,6 +43,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
@@ -537,10 +538,22 @@ public class AppointmentListView extends View implements ListSelectionListener {
 							        cal = c;
 							    }
 							    public void run() {
-							    	EmailReminder.sendDailyEmailReminder(cal);
+
+								try{
+								    EmailReminder.sendDailyEmailReminder(cal);
+								}
+								catch( Exception e)
+								{
+								    final Exception fe = e;
+								    SwingUtilities.invokeLater(new Runnable() {
+									public void run() {
+									    Errmsg.errmsg(fe);
+									}
+								    });
+								}
 							    }
-							}
-						    
+							 }
+
 							 new MailThread(cal_).start();
 							
 						}

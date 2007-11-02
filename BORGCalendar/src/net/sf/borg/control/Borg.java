@@ -539,8 +539,18 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 	    int mailtime = emailmins - curmins;
 	    if (mailtime < 0) {
 		// we are past mailtime - send it now
-		EmailReminder.sendDailyEmailReminder(null);
-
+		try{
+		    EmailReminder.sendDailyEmailReminder(null);
+		}
+		catch( Exception e)
+		{
+		    final Exception fe = e;
+		    SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+			    Errmsg.errmsg(fe);
+			}
+		    });
+		}
 		// set timer for next mailtime
 		mailtime += 24 * 60; // 24 hours from now
 	    }
@@ -549,7 +559,18 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 	    mailTimer_ = new java.util.Timer();
 	    mailTimer_.schedule(new TimerTask() {
 		public void run() {
-		    EmailReminder.sendDailyEmailReminder(null);
+		    try{
+			EmailReminder.sendDailyEmailReminder(null);
+		    }
+		    catch( Exception e)
+		    {
+			final Exception fe = e;
+			SwingUtilities.invokeLater(new Runnable() {
+			    public void run() {
+				Errmsg.errmsg(fe);
+			    }
+			});
+		    }
 		}
 	    }, mailtime * 60 * 1000, 24 * 60 * 60 * 1000);
 

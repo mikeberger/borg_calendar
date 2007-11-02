@@ -166,7 +166,7 @@ public class EmailReminder {
 	// send an email of the next day's appointments if the user has requested
 	// this and
 	// such an email has not been sent today yet.
-	static public void sendDailyEmailReminder(Calendar emailday) {
+	static public void sendDailyEmailReminder(Calendar emailday) throws Exception{
 	
 		// check if the email feature has been enabled
 		String email = Prefs.getPref(PrefName.EMAILENABLED);
@@ -268,26 +268,24 @@ public class EmailReminder {
 				tx += "\n";
 			}
 		}
-	
+
 		// send the email using SMTP
-		try {
-			StringTokenizer stk = new StringTokenizer(addr, ",;");
-			while (stk.hasMoreTokens()) {
-				String a = stk.nextToken();
-				if (!a.equals("")) {
-					SendJavaMail.sendMail(host, tx, a.trim(), a.trim(), Prefs
-							.getPref(PrefName.EMAILUSER), Prefs
-							.getPref(PrefName.EMAILPASS));
-					// String ed = Prefs.getPref(PrefName.EMAILDEBUG);
-					// if (ed.equals("1"))
-					// Errmsg.notice(s);
-				}
-			}
-	
-		} catch (Exception e) {
-			Errmsg.errmsg(e);
+
+		StringTokenizer stk = new StringTokenizer(addr, ",;");
+		while (stk.hasMoreTokens()) {
+		    String a = stk.nextToken();
+		    if (!a.equals("")) {
+			SendJavaMail.sendMail(host, tx, a.trim(), a.trim(), Prefs
+				.getPref(PrefName.EMAILUSER), Prefs
+				.getPref(PrefName.EMAILPASS));
+			// String ed = Prefs.getPref(PrefName.EMAILDEBUG);
+			// if (ed.equals("1"))
+			// Errmsg.notice(s);
+		    }
 		}
-	
+
+
+
 		// record that we sent email today
 		if (doy != -1)
 			Prefs.putPref(PrefName.EMAILLAST, new Integer(doy));

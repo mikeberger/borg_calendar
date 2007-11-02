@@ -48,11 +48,7 @@ import javax.mail.internet.MimeMultipart;
 
 public class SendJavaMail {
 
-    public static void main(String[] args) {
-	sendMail("biff", "test msg", "mbb@e", "quiet@patmedia.net", "mbb",
-		"xxx");
-    }
-
+    
     private static class MyAuthenticator extends Authenticator {
 	private String username;
 
@@ -69,7 +65,7 @@ public class SendJavaMail {
     }
 
     public static void sendMail(String host, String msgText, String from,
-	    String to, String user, String pass) {
+	    String to, String user, String pass) throws Exception{
 
 	// create some properties and get the default Session
 	Properties props = new Properties();
@@ -100,51 +96,13 @@ public class SendJavaMail {
 
 	    Transport.send(msg);
 	} catch (MessagingException mex) {
-	    System.out.println("\n--Exception handling in BORG.SendJavaMail");
-
-	    mex.printStackTrace();
-	    System.out.println();
-	    Exception ex = mex;
-	    do {
-		if (ex instanceof SendFailedException) {
-		    SendFailedException sfex = (SendFailedException) ex;
-		    Address[] invalid = sfex.getInvalidAddresses();
-		    if (invalid != null) {
-			System.out.println("    ** Invalid Addresses");
-
-			for (int i = 0; i < invalid.length; i++)
-			    System.out.println("         " + invalid[i]);
-
-		    }
-		    Address[] validUnsent = sfex.getValidUnsentAddresses();
-		    if (validUnsent != null) {
-			System.out.println("    ** ValidUnsent Addresses");
-			if (validUnsent != null) {
-			    for (int i = 0; i < validUnsent.length; i++)
-				System.out
-					.println("         " + validUnsent[i]);
-			}
-		    }
-		    Address[] validSent = sfex.getValidSentAddresses();
-		    if (validSent != null) {
-			System.out.println("    ** ValidSent Addresses");
-			if (validSent != null) {
-			    for (int i = 0; i < validSent.length; i++)
-				System.out.println("         " + validSent[i]);
-			}
-		    }
-		}
-		System.out.println();
-		if (ex instanceof MessagingException)
-		    ex = ((MessagingException) ex).getNextException();
-		else
-		    ex = null;
-	    } while (ex != null);
+	    processMessagingException(mex);
+	    throw mex;
 	}
     }
 
     public static void sendCalMail(String host, String msgText, String from,
-	    String to, String user, String pass, String cal, String vcal) {
+	    String to, String user, String pass, String cal, String vcal) throws Exception{
 
 	// create some properties and get the default Session
 	Properties props = new Properties();
@@ -213,7 +171,14 @@ public class SendJavaMail {
 
 	    Transport.send(msg);
 	} catch (MessagingException mex) {
-	    System.out.println("\n--Exception handling in BORG.SendJavaMail");
+	    processMessagingException(mex);
+	    throw mex;
+	}
+    }
+    
+    static void processMessagingException(MessagingException mex)
+    {
+	System.out.println("\n--Exception handling in BORG.SendJavaMail");
 
 	    mex.printStackTrace();
 	    System.out.println();
@@ -253,7 +218,6 @@ public class SendJavaMail {
 		else
 		    ex = null;
 	    } while (ex != null);
-	}
     }
 
 }
