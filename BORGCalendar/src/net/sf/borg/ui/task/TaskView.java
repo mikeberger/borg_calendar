@@ -37,6 +37,9 @@ import java.util.Vector;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -61,7 +64,7 @@ import net.sf.borg.model.beans.Subtask;
 import net.sf.borg.model.beans.Task;
 import net.sf.borg.model.beans.Tasklog;
 import net.sf.borg.ui.ResourceHelper;
-import net.sf.borg.ui.View;
+import net.sf.borg.ui.DockableView;
 import net.sf.borg.ui.util.DateDialog;
 import net.sf.borg.ui.util.PopupMenuHelper;
 import net.sf.borg.ui.util.StripedTable;
@@ -77,31 +80,31 @@ import com.toedter.calendar.JDateChooserCellEditor;
  */
 
 // taskgui is a View that allows the user to edit a single task
-public class TaskView extends View {
+public class TaskView extends DockableView {
+    
+    private class LongDateRenderer extends JLabel implements TableCellRenderer {
 
-	private class LongDateRenderer extends JLabel implements TableCellRenderer {
+    	public LongDateRenderer() {
+    		super();
+    		setOpaque(true); // MUST do this for background to show up.
+    	}
 
-		public LongDateRenderer() {
-			super();
-			setOpaque(true); // MUST do this for background to show up.
-		}
+    	public Component getTableCellRendererComponent(JTable table,
+    			Object obj, boolean isSelected, boolean hasFocus, int row,
+    			int column) {
 
-		public Component getTableCellRendererComponent(JTable table,
-				Object obj, boolean isSelected, boolean hasFocus, int row,
-				int column) {
+    		Date d = (Date) obj;
+    		JLabel l = (JLabel) defDateRend_.getTableCellRendererComponent(
+    				table, obj, isSelected, hasFocus, row, column);
 
-			Date d = (Date) obj;
-			JLabel l = (JLabel) defDateRend_.getTableCellRendererComponent(
-					table, obj, isSelected, hasFocus, row, column);
+    		this.setBackground(l.getBackground());
+    		this.setForeground(l.getForeground());
+    		this.setText(DateFormat.getDateTimeInstance(DateFormat.MEDIUM,
+    				DateFormat.MEDIUM).format(d));
+    		return this;
 
-			this.setBackground(l.getBackground());
-			this.setForeground(l.getForeground());
-			this.setText(DateFormat.getDateTimeInstance(DateFormat.MEDIUM,
-					DateFormat.MEDIUM).format(d));
-			return this;
-
-		}
-	}
+    	}
+    }
 
 	private class STDDRenderer extends JLabel implements TableCellRenderer {
 
@@ -217,10 +220,10 @@ public class TaskView extends View {
 	public static int T_ADD = 2;
 
 	public static int T_CHANGE = 3;
-	
+
 	// the different function values for calls to show task
 	public static int T_CLONE = 1;
-
+	
 	static public Integer getProjectId(String s) throws Exception {
 		int i = s.indexOf(":");
 		if( i == -1 ) throw new Exception("Cannot parse project label");
@@ -235,8 +238,8 @@ public class TaskView extends View {
 		return p.getId().toString() + ":" + p.getDescription();
 	}
 
-
 	private JComboBox catbox = null;
+
 
 	// Variables declaration - do not modify//GEN-BEGIN:variables
 	private javax.swing.JLabel catlabel;
@@ -257,22 +260,17 @@ public class TaskView extends View {
 
 	private JDateChooser duedatechooser;
 
+	private Integer init_proj = null;
+
 	private javax.swing.JTextField itemtext;
 
 	private javax.swing.JButton jButton2;
 
-	private javax.swing.JButton jButton3;
-
-	private javax.swing.JMenu jMenu1;
-
-	private javax.swing.JMenuBar jMenuBar1;
-
-	private javax.swing.JMenuItem jMenuItem1;
-
-	private javax.swing.JMenuItem jMenuItem2;
-
 	private JPanel jPanel = null;
 
+	
+
+	
 	private javax.swing.JPanel jPanel3;
 
 	private javax.swing.JPanel jPanel4;
@@ -317,9 +315,9 @@ public class TaskView extends View {
 
 	private ArrayList tbd_ = new ArrayList();
 
-	private javax.swing.JComboBox typebox;
+	private String title_ = "";
 	
-	private Integer init_proj = null;
+	private javax.swing.JComboBox typebox;
 
 	/**
 	 * This method is called from within the constructor to initialize the form.
@@ -359,14 +357,42 @@ public class TaskView extends View {
 			Errmsg.errmsg(e);
 		}
 
-		pack();
 		showtask(function, task);
 
-		manageMySize(PrefName.TASKVIEWSIZE);
 	}
 
-	public void destroy() {
-		this.dispose();
+	
+
+	public PrefName getFrameSizePref() {
+	    return PrefName.TASKVIEWSIZE;
+	}
+
+	
+
+	public String getFrameTitle() {
+	    return title_;
+	}
+
+	// End of variables declaration//GEN-END:variables
+
+	public JMenuBar getMenuForFrame() {
+	    JMenuBar jMenuBar1 = new javax.swing.JMenuBar();
+		JMenu jMenu1 = new javax.swing.JMenu();
+		JMenuItem jMenuItem1 = new javax.swing.JMenuItem();
+		
+		ResourceHelper.setText(jMenu1, "Menu");
+		ResourceHelper.setText(jMenuItem1, "Save");
+		jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				savetask(evt);
+			}
+		});
+
+		jMenu1.add(jMenuItem1);
+
+		jMenuBar1.add(jMenu1);
+
+	    return jMenuBar1;
 	}
 
 	// the task editor currently does not refresh itself when the task data
@@ -374,10 +400,6 @@ public class TaskView extends View {
 	// - although it should not be changing while the task editor is open
 	public void refresh() {
 	}
-
-	private void disact(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_disact
-		this.dispose();
-	}// GEN-LAST:event_disact
 
 	/**
 	 * This method initializes catbox
@@ -390,8 +412,6 @@ public class TaskView extends View {
 		}
 		return catbox;
 	}
-
-	// End of variables declaration//GEN-END:variables
 
 	/**
 	 * This method initializes closeDate
@@ -444,7 +464,7 @@ public class TaskView extends View {
 			gridBagConstraints21.gridx = 0;
 			gridBagConstraints21.gridy = 0;
 			gridBagConstraints21.fill = java.awt.GridBagConstraints.BOTH;
-			gridBagConstraints21.weightx = 1.0D;
+			gridBagConstraints21.weightx = 1.0;
 
 			gridBagConstraints25.gridx = 0;
 			gridBagConstraints25.gridy = 2;
@@ -506,10 +526,9 @@ public class TaskView extends View {
 
 		return ret;
 	}
-
 	private void initComponents()// GEN-BEGIN:initComponents
 	{
-		java.awt.GridBagConstraints gridBagConstraints;
+		
 
 		GridBagConstraints gridBagConstraints22 = new GridBagConstraints();
 		gridBagConstraints22.gridx = 2;
@@ -572,17 +591,17 @@ public class TaskView extends View {
 		GridBagConstraints gridBagConstraints33 = new GridBagConstraints();
 		GridBagConstraints gridBagConstraints34 = new GridBagConstraints();
 		GridBagConstraints gridBagConstraints35 = new GridBagConstraints();
+		GridBagConstraints gridBagConstraints37 = new GridBagConstraints();
+		GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
+		GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
+		GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
+		GridBagConstraints gridBagConstraints38 = new GridBagConstraints();
 		jPanel4 = new javax.swing.JPanel();
 		jButton2 = new javax.swing.JButton();
-		jButton3 = new javax.swing.JButton();
-		jMenuBar1 = new javax.swing.JMenuBar();
-		jMenu1 = new javax.swing.JMenu();
-		jMenuItem1 = new javax.swing.JMenuItem();
-		jMenuItem2 = new javax.swing.JMenuItem();
-
-		getContentPane().setLayout(new java.awt.GridBagLayout());
-
-		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+		
+		setLayout(new java.awt.GridBagLayout());
+		
+		
 		jTextArea1.setLineWrap(true);
 		jTextArea1.setName("Description");
 		jScrollPane1.setViewportView(jTextArea1);
@@ -604,20 +623,6 @@ public class TaskView extends View {
 			jTabbedPane1.setEnabledAt(jTabbedPane1.indexOfComponent(logPane),
 					false);
 		}
-
-		gridBagConstraints = new java.awt.GridBagConstraints();
-		GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
-		GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
-		GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
-		GridBagConstraints gridBagConstraints37 = new GridBagConstraints();
-		GridBagConstraints gridBagConstraints38 = new GridBagConstraints();
-		gridBagConstraints.gridx = 1;
-		gridBagConstraints.gridy = 6;
-		gridBagConstraints.gridwidth = 1;
-		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-		gridBagConstraints.weightx = 1.0;
-		gridBagConstraints.weighty = 0.0D;
-		getContentPane().add(jTabbedPane1, gridBagConstraints);
 
 		jPanel3.setLayout(new java.awt.GridBagLayout());
 
@@ -647,20 +652,10 @@ public class TaskView extends View {
 		ResourceHelper.setText(lblType, "Type");
 		lblType.setLabelFor(typebox);
 
-		// typebox.addActionListener(new java.awt.event.ActionListener() {
-		// public void actionPerformed(java.awt.event.ActionEvent evt) {
-		// typeboxActionPerformed(evt);
-		// }
-		// });
 
 		ResourceHelper.setText(catlabel, "Category");
 		catlabel.setLabelFor(getCatbox());
 
-		gridBagConstraints = new java.awt.GridBagConstraints();
-		gridBagConstraints.gridx = 0;
-		gridBagConstraints.gridy = 0;
-		gridBagConstraints.insets = new java.awt.Insets(3, 3, 3, 3);
-		getContentPane().add(jPanel3, gridBagConstraints);
 
 		jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 				"/resource/Save16.gif")));
@@ -672,18 +667,8 @@ public class TaskView extends View {
 		});
 
 		jPanel4.add(jButton2, jButton2.getName());
-
-		jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/Stop16.gif")));
-		ResourceHelper.setText(jButton3, "Dismiss");
-		jButton3.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jButton3ActionPerformed(evt);
-			}
-		});
-		setDismissButton(jButton3);
-		jPanel4.add(jButton3);
-
+		
+		
 		JButton addst = new JButton();
 		addst.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 				"/resource/Add16.gif")));
@@ -702,38 +687,8 @@ public class TaskView extends View {
 		}
 		jPanel4.add(addst);
 
-		gridBagConstraints = new java.awt.GridBagConstraints();
-		gridBagConstraints.gridx = 0;
-		gridBagConstraints.gridy = 2;
-		gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-		getContentPane().add(jPanel4, gridBagConstraints);
-
-		ResourceHelper.setText(jMenu1, "Menu");
-		ResourceHelper.setText(jMenuItem1, "Save");
-		jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				savetask(evt);
-			}
-		});
-
-		jMenu1.add(jMenuItem1);
-
-		ResourceHelper.setText(jMenuItem2, "Dismiss");
-		jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				disact(evt);
-			}
-		});
-
-		jMenu1.add(jMenuItem2);
-
-		jMenuBar1.add(jMenu1);
-
-		setJMenuBar(jMenuBar1);
-
-		this.setSize(560, 517);
-		this.setContentPane(getJPanel());
+		
+		
 
 		gridBagConstraints26.gridx = 1;
 		gridBagConstraints26.gridy = 1;
@@ -853,6 +808,16 @@ public class TaskView extends View {
 		
 		if( !TaskModel.getReference().hasSubTasks() )
 		    projBox.setEnabled(false);
+		
+		GridBagConstraints gridBagConstraintsm = new GridBagConstraints();
+		gridBagConstraintsm.gridx = 0;
+		gridBagConstraintsm.gridy = 0;
+		gridBagConstraintsm.weightx = 1.0;
+		gridBagConstraintsm.weighty = 1.0;
+		gridBagConstraintsm.fill = java.awt.GridBagConstraints.BOTH;
+		gridBagConstraintsm.insets = new java.awt.Insets(4, 4, 4, 4);
+		add( getJPanel(),gridBagConstraintsm);
+		//this.setSize(560, 517);
 
 	}// GEN-END:initComponents
 
@@ -900,6 +865,7 @@ public class TaskView extends View {
 						}, "Add_Log"), });
 
 	}
+
 
 	private void initSubtaskTable() {
 
@@ -1048,6 +1014,7 @@ public class TaskView extends View {
 				}, "Delete"), });
 
 	}
+
 	private void insertSubtask() {
 		Object o[] = { new Boolean(false), null, null, null, null, null, null };
 		TableSorter ts = (TableSorter) stable.getModel();
@@ -1059,11 +1026,6 @@ public class TaskView extends View {
 	{// GEN-HEADEREND:event_jButton2ActionPerformed
 		savetask(evt);
 	}// GEN-LAST:event_jButton2ActionPerformed
-
-	private void jButton3ActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_jButton3ActionPerformed
-	{// GEN-HEADEREND:event_jButton3ActionPerformed
-		this.dispose();
-	}// GEN-LAST:event_jButton3ActionPerformed
 
 	private void loadLog(int taskid) throws Exception {
 		TableSorter tslog = (TableSorter) logtable.getModel();
@@ -1369,8 +1331,8 @@ public class TaskView extends View {
 			itemtext.setEditable(false);
 
 			// window title - "Item N"
-			setTitle(Resource.getResourceString("Item_")
-					+ task.getTaskNumber().toString());
+			title_ = Resource.getResourceString("Item_")
+					+ task.getTaskNumber().toString();
 
 			// due date
 			GregorianCalendar gc = new GregorianCalendar();
@@ -1462,7 +1424,7 @@ public class TaskView extends View {
 			itemtext.setEditable(false);
 
 			// title
-			ResourceHelper.setTitle(this, "NEW_Item");
+			title_ = Resource.getPlainResourceString("NEW_Item");
 
 			pritext.setSelectedItem(new Integer(3)); // priority default to 3
 			patext.setText(""); // person assigned

@@ -134,9 +134,8 @@ public class JDICTrayIconProxy {
     static private class AddrListener implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
-            AddrListView ab = AddrListView.getReference();
-            ab.refresh();
-            ab.setVisible(true);
+            MultiView.getMainView().addView(new AddrListView());
+           
         }
     }
 

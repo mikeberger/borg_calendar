@@ -57,6 +57,7 @@ import net.sf.borg.model.TaskTypes;
 import net.sf.borg.model.beans.Project;
 import net.sf.borg.model.beans.Task;
 import net.sf.borg.model.db.DBException;
+import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.util.PopupMenuHelper;
 import net.sf.borg.ui.util.StripedTable;
@@ -1024,8 +1025,8 @@ public class TaskListPanel extends JPanel {
 		    return;
 		}
 	    }
-	    TaskView tskg = new TaskView(null, TaskView.T_ADD, projfiltid);
-	    tskg.setVisible(true);
+	    MultiView.getMainView().addView(new TaskView(null, TaskView.T_ADD, projfiltid));
+	    
 	} catch (Exception e) {
 	    Errmsg.errmsg(e);
 	}
@@ -1042,8 +1043,7 @@ public class TaskListPanel extends JPanel {
 		return;
 
 	    // display the task editor
-	    TaskView tskg = new TaskView(task, TaskView.T_CHANGE, null);
-	    tskg.setVisible(true);
+	    MultiView.getMainView().addView(new TaskView(task, TaskView.T_CHANGE, null));
 
 	} catch (Exception e) {
 	    Errmsg.errmsg(e);
@@ -1061,8 +1061,8 @@ public class TaskListPanel extends JPanel {
 		return;
 
 	    // display the task editor
-	    TaskView tskg = new TaskView(task, TaskView.T_CLONE, null);
-	    tskg.setVisible(true);
+	    MultiView.getMainView().addView(new TaskView(task, TaskView.T_CLONE, null));
+
 	} catch (Exception e) {
 	    Errmsg.errmsg(e);
 	}

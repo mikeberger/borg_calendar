@@ -435,6 +435,8 @@ public class OptionsView extends View {
     JTextField usertext = new JTextField();
 
     JCheckBox useSysTray = new JCheckBox();
+    
+    JCheckBox dock = new JCheckBox();
 
     // dbonly will only allow db changes
     private OptionsView(boolean dbonly) {
@@ -552,6 +554,7 @@ public class OptionsView extends View {
 	setCheckBox(calShowTaskBox, PrefName.CAL_SHOW_TASKS);
 	setCheckBox(calShowSubtaskBox, PrefName.CAL_SHOW_SUBTASKS);
 	setCheckBox(ganttShowSubtaskBox, PrefName.GANTT_SHOW_SUBTASKS);
+	setCheckBox(dock, PrefName.DOCKPANELS);
 
 	int socket = Prefs.getIntPref(PrefName.SOCKETPORT);
 	socketPort.setText(Integer.toString(socket));
@@ -770,6 +773,7 @@ public class OptionsView extends View {
 	setBooleanPref(calShowTaskBox, PrefName.CAL_SHOW_TASKS);
 	setBooleanPref(calShowSubtaskBox, PrefName.CAL_SHOW_SUBTASKS);
 	setBooleanPref(ganttShowSubtaskBox, PrefName.GANTT_SHOW_SUBTASKS);
+	setBooleanPref(dock, PrefName.DOCKPANELS);
 
 	try {
 	    int socket = Integer.parseInt(socketPort.getText());
@@ -1187,6 +1191,16 @@ public class OptionsView extends View {
 	gridBagConstraints97.insets = new java.awt.Insets(4, 4, 4, 4);
 	ResourceHelper.setText(iso8601Box, "ISO_week_number");
 	appearancePanel.add(iso8601Box, gridBagConstraints97);
+	
+	GridBagConstraints gridBagConstraintsdk = new java.awt.GridBagConstraints();
+	gridBagConstraintsdk.gridx = 0;
+	gridBagConstraintsdk.gridy = 8;
+	gridBagConstraintsdk.fill = java.awt.GridBagConstraints.VERTICAL;
+	gridBagConstraintsdk.anchor = java.awt.GridBagConstraints.WEST;
+	gridBagConstraintsdk.weightx = 1.0;
+	gridBagConstraintsdk.insets = new java.awt.Insets(4, 4, 4, 4);
+	ResourceHelper.setText(dock, "dock_option");
+	appearancePanel.add(dock, gridBagConstraintsdk);
 
 	GridBagConstraints gridBagConstraints18 = new java.awt.GridBagConstraints();
 	gridBagConstraints18.gridx = 0;

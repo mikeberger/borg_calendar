@@ -20,7 +20,6 @@ Copyright 2003 by Mike Berger
 
 package net.sf.borg.ui.address;
 
-import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -34,9 +33,10 @@ import java.util.Iterator;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.TableModelEvent;
 
@@ -49,521 +49,417 @@ import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.AddressVcardAdapter;
 import net.sf.borg.model.beans.Address;
 import net.sf.borg.ui.ResourceHelper;
-import net.sf.borg.ui.View;
+import net.sf.borg.ui.DockableView;
 import net.sf.borg.ui.util.PopupMenuHelper;
 import net.sf.borg.ui.util.StripedTable;
 import net.sf.borg.ui.util.TablePrinter;
 import net.sf.borg.ui.util.TableSorter;
-/**
- *
- * @author  MBERGER
- */
+
+
 
 // the AddrListView displays a list of the current todo items and allows the
 // suer to mark them as done
-public class AddrListView extends View
-{
+public class AddrListView extends DockableView {
 
+    private Collection addrs_; // list of rows currently displayed
 
-    private Collection addrs_;   // list of rows currently displayed
+ 
+    public AddrListView() {
 
-    private static AddrListView singleton = null;
-	public static AddrListView getReference()
-    {
-        if( singleton == null || !singleton.isShowing())
-            singleton = new AddrListView();
-        return( singleton );
-    }
+	super();
+	addModel(AddressModel.getReference());
 
-    private AddrListView()
-    {
+	this.setLayout(new GridBagLayout());
+	// init the gui components
+	initComponents();
 
-        super();
-        addModel( AddressModel.getReference() );
+	// the todos will be displayed in a sorted table with 2 columns -
+	// data and todo text
+	jTable1.setModel(new TableSorter(new String[] { Resource.getPlainResourceString("First"),
+		Resource.getPlainResourceString("Last"), Resource.getPlainResourceString("Email"),
+		Resource.getPlainResourceString("Screen_Name"), Resource.getPlainResourceString("Home_Phone"),
+		Resource.getPlainResourceString("Work_Phone"), Resource.getPlainResourceString("Birthday") }, new Class[] {
+		java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class,
+		java.lang.String.class, java.lang.String.class, java.util.Date.class }));
 
-        // init the gui components
-        initComponents();
+	refresh();
 
-        // the todos will be displayed in a sorted table with 2 columns -
-        // data and todo text
-        jTable1.setModel(new TableSorter(
-        new String []
-        { Resource.getPlainResourceString("First"), Resource.getPlainResourceString("Last"), Resource.getPlainResourceString("Email"), Resource.getPlainResourceString("Screen_Name"), Resource.getPlainResourceString("Home_Phone"), Resource.getPlainResourceString("Work_Phone"),
-               Resource.getPlainResourceString("Birthday") },
-        new Class []
-        {
-            java.lang.String.class,java.lang.String.class,java.lang.String.class,java.lang.String.class,java.lang.String.class,
-            java.lang.String.class, java.util.Date.class
-        }));
-
-        refresh();
-
-        manageMySize(PrefName.ADDRLISTVIEWSIZE);
 
     }
 
-    public void destroy()
-    {
-        this.dispose();
-    }
 
-    public void refresh()
-    {
-        AddressModel addrmod_ = AddressModel.getReference();
+    public void refresh() {
+	AddressModel addrmod_ = AddressModel.getReference();
 
-        try
-        {
-            addrs_ = addrmod_.getAddresses();
-        }
-        catch( Exception e )
-        {
-            Errmsg.errmsg(e);
-            return;
-        }
+	try {
+	    addrs_ = addrmod_.getAddresses();
+	} catch (Exception e) {
+	    Errmsg.errmsg(e);
+	    return;
+	}
 
+	// init the table to empty
+	TableSorter tm = (TableSorter) jTable1.getModel();
+	tm.addMouseListenerToHeaderInTable(jTable1);
+	tm.setRowCount(0);
 
-        // init the table to empty
-        TableSorter tm = (TableSorter) jTable1.getModel();
-        tm.addMouseListenerToHeaderInTable(jTable1);
-        tm.setRowCount(0);
+	Iterator it = addrs_.iterator();
+	while (it.hasNext()) {
+	    Address r = (Address) it.next();
 
-        Iterator it = addrs_.iterator();
-        while( it.hasNext() )
-        {
-            Address r = (Address) it.next();
+	    try {
 
-            try
-            {
+		// add the table row
+		Object[] ro = new Object[7];
+		ro[0] = r.getFirstName();
+		ro[1] = r.getLastName();
+		ro[2] = r.getEmail();
+		ro[3] = r.getScreenName();
+		ro[4] = r.getHomePhone();
+		ro[5] = r.getWorkPhone();
+		ro[6] = r.getBirthday();
+		tm.addRow(ro);
+		tm.tableChanged(new TableModelEvent(tm));
+	    } catch (Exception e) {
+		Errmsg.errmsg(e);
+		return;
+	    }
 
-                // add the table row
-                Object [] ro = new Object[7];
-                ro[0] = r.getFirstName();
-                ro[1] = r.getLastName();
-                ro[2] = r.getEmail();
-                ro[3] = r.getScreenName();
-                ro[4] = r.getHomePhone();
-                ro[5] = r.getWorkPhone();
-                ro[6] = r.getBirthday();
-                tm.addRow(ro);
-                tm.tableChanged(new TableModelEvent(tm));
-            }
-            catch( Exception e )
-            {
-                Errmsg.errmsg(e);
-                return;
-            }
+	}
 
-        }
-
-        // sort the table by last name
-        tm.sortByColumn(1);
+	// sort the table by last name
+	tm.sortByColumn(1);
 
     }
 
-    private void editRow()
-    {
-        // figure out which row is selected.
-        int index =  jTable1.getSelectedRow();
-        if( index == -1 ) return;
-        jTable1.getSelectionModel().setSelectionInterval(index,index);
-        	// ensure only one row is selected.
+    private void editRow() {
+	// figure out which row is selected.
+	int index = jTable1.getSelectedRow();
+	if (index == -1)
+	    return;
+	jTable1.getSelectionModel().setSelectionInterval(index, index);
+	// ensure only one row is selected.
 
-        try
-        {
-            // need to ask the table for the original (befor sorting) index of the selected row
-            TableSorter tm = (TableSorter) jTable1.getModel();
-            int k = tm.getMappedIndex(index);  // get original index - not current sorted position in tbl
-            Object[] oa = addrs_.toArray();
-            Address addr = (Address) oa[k];
-            new AddressView( addr ).setVisible(true);
-        }
-        catch( Exception e )
-        {
-            Errmsg.errmsg(e);
-        }
+	try {
+	    // need to ask the table for the original (befor sorting) index of
+	    // the selected row
+	    TableSorter tm = (TableSorter) jTable1.getModel();
+	    int k = tm.getMappedIndex(index); // get original index - not
+						// current sorted position in
+						// tbl
+	    Object[] oa = addrs_.toArray();
+	    Address addr = (Address) oa[k];
+	    new AddressView(addr).setVisible(true);
+	} catch (Exception e) {
+	    Errmsg.errmsg(e);
+	}
     }
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
      */
-    private void initComponents()//GEN-BEGIN:initComponents
+    private ActionListener alAddNew, alEdit, alDelete;
+    private void initComponents()// GEN-BEGIN:initComponents
     {
-        java.awt.GridBagConstraints gridBagConstraints;
+	java.awt.GridBagConstraints gridBagConstraints;
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new StripedTable();
-        jPanel1 = new javax.swing.JPanel();
-        newbutton = new javax.swing.JButton();
-        editbutton = new javax.swing.JButton();
-        delbutton = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
-        menuBar = new javax.swing.JMenuBar();
-        fileMenu = new javax.swing.JMenu();
-        printList = new javax.swing.JMenuItem();
-        exitMenuItem = new javax.swing.JMenuItem();
+	jScrollPane1 = new javax.swing.JScrollPane();
+	jTable1 = new StripedTable();
+	jPanel1 = new javax.swing.JPanel();
+	newbutton = new javax.swing.JButton();
+	editbutton = new javax.swing.JButton();
+	delbutton = new javax.swing.JButton();
+	
+	
 
-        this.setContentPane(getJPanel());
-        //getContentPane().setLayout(new java.awt.GridBagLayout());
+	jScrollPane1.setPreferredSize(new java.awt.Dimension(554, 404));
+	jTable1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0)));
+	// jTable1.setGridColor(java.awt.Color.blue);
+	DefaultListSelectionModel mylsmodel = new DefaultListSelectionModel();
+	mylsmodel.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+	jTable1.setSelectionModel(mylsmodel);
+	jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+	    public void mouseClicked(java.awt.event.MouseEvent evt) {
+		jTable1MouseClicked(evt);
+	    }
+	});
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        ResourceHelper.setTitle(this, "Address_Book");
-        addWindowListener(new java.awt.event.WindowAdapter()
-        {
-            public void windowClosing(java.awt.event.WindowEvent evt)
-            {
-                exitForm(evt);
-            }
-        });
+	jScrollPane1.setViewportView(jTable1);
 
-        jScrollPane1.setPreferredSize(new java.awt.Dimension(554, 404));
-        jTable1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0)));
-        //jTable1.setGridColor(java.awt.Color.blue);
-        DefaultListSelectionModel mylsmodel = new DefaultListSelectionModel();
-        mylsmodel.setSelectionMode( ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        jTable1.setSelectionModel(mylsmodel
-        );
-        jTable1.addMouseListener(new java.awt.event.MouseAdapter()
-        {
-            public void mouseClicked(java.awt.event.MouseEvent evt)
-            {
-                jTable1MouseClicked(evt);
-            }
-        });
+	gridBagConstraints = new java.awt.GridBagConstraints();
+	gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+	gridBagConstraints.weightx = 1.0;
+	gridBagConstraints.weighty = 1.0;
+	add(jScrollPane1, gridBagConstraints);
 
-        jScrollPane1.setViewportView(jTable1);
+	newbutton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Add16.gif")));
+	ResourceHelper.setText(newbutton, "Add_New");
+	newbutton.addActionListener(alAddNew = new java.awt.event.ActionListener() {
+	    public void actionPerformed(java.awt.event.ActionEvent evt) {
+		newbuttonActionPerformed(evt);
+	    }
+	});
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        getContentPane().add(jScrollPane1, gridBagConstraints);
-        
-        ActionListener alAddNew, alEdit, alDelete;
+	jPanel1.add(newbutton);
 
-        newbutton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Add16.gif")));
-        ResourceHelper.setText(newbutton, "Add_New");
-        newbutton.addActionListener(alAddNew = new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                newbuttonActionPerformed(evt);
-            }
-        });
+	editbutton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Edit16.gif")));
+	ResourceHelper.setText(editbutton, "Edit");
+	editbutton.addActionListener(alEdit = new java.awt.event.ActionListener() {
+	    public void actionPerformed(java.awt.event.ActionEvent evt) {
+		editbuttonActionPerformed(evt);
+	    }
+	});
 
-        jPanel1.add(newbutton);
+	jPanel1.add(editbutton);
 
-        editbutton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Edit16.gif")));
-        ResourceHelper.setText(editbutton, "Edit");
-        editbutton.addActionListener(alEdit = new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                editbuttonActionPerformed(evt);
-            }
-        });
+	delbutton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Delete16.gif")));
+	ResourceHelper.setText(delbutton, "Delete");
+	delbutton.addActionListener(alDelete = new java.awt.event.ActionListener() {
+	    public void actionPerformed(java.awt.event.ActionEvent evt) {
+		delbuttonActionPerformed(evt);
+	    }
+	});
 
-        jPanel1.add(editbutton);
+	jPanel1.add(delbutton);
 
-        delbutton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Delete16.gif")));
-        ResourceHelper.setText(delbutton, "Delete");
-        delbutton.addActionListener(alDelete = new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                delbuttonActionPerformed(evt);
-            }
-        });
 
-        jPanel1.add(delbutton);
+	gridBagConstraints = new java.awt.GridBagConstraints();
+	gridBagConstraints.gridx = 0;
+	gridBagConstraints.gridy = 1;
+	gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+	add(jPanel1, gridBagConstraints);
 
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Stop16.gif")));
-        ResourceHelper.setText(jButton1, "Dismiss");
-        jButton1.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                jButton1ActionPerformed(evt);
-            }
-        });
-        setDismissButton(jButton1);
+	new PopupMenuHelper(jTable1, new PopupMenuHelper.Entry[] { new PopupMenuHelper.Entry(alAddNew, "Add_New"),
+		new PopupMenuHelper.Entry(alEdit, "Edit"), new PopupMenuHelper.Entry(alDelete, "Delete"), });
 
-        jPanel1.add(jButton1);
+	
+    }// GEN-END:initComponents
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        getContentPane().add(jPanel1, gridBagConstraints);
+  
 
-        ResourceHelper.setText(fileMenu, "Action");
-        
-        JMenuItem mnuitm = new JMenuItem();
-        ResourceHelper.setText(mnuitm, "Add_New");
-        mnuitm.setIcon(newbutton.getIcon());
-        mnuitm.addActionListener(alAddNew);
-        fileMenu.add(mnuitm);
-        
-        mnuitm = new JMenuItem();
-        ResourceHelper.setText(mnuitm, "Edit");
-        mnuitm.setIcon(editbutton.getIcon());
-        mnuitm.addActionListener(alEdit);
-        fileMenu.add(mnuitm);
-        
-        mnuitm = new JMenuItem();
-        ResourceHelper.setText(mnuitm, "Delete");
-        mnuitm.setIcon(delbutton.getIcon());
-        mnuitm.addActionListener(alDelete);
-        fileMenu.add(mnuitm);
-        
-        ResourceHelper.setText(printList, "Print_List");
-        printList.setIcon(new ImageIcon(getClass().getResource("/resource/Print16.gif")));
-        printList.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                printListActionPerformed(evt);
-            }
-        });
+    private void delbuttonActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_delbuttonActionPerformed
+    {// GEN-HEADEREND:event_delbuttonActionPerformed
+	// figure out which row is selected to be marked as done
+	int[] indices = jTable1.getSelectedRows();
+	if (indices.length == 0)
+	    return;
 
-        fileMenu.add(printList);
+	int ret = JOptionPane.showConfirmDialog(null, Resource.getResourceString("Delete_Addresses"), Resource
+		.getPlainResourceString("Delete"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+	if (ret != JOptionPane.OK_OPTION)
+	    return;
 
-        ResourceHelper.setText(exitMenuItem, "Exit");
-        exitMenuItem.setIcon(new ImageIcon(getClass().getResource("/resource/Stop16.gif")));
-        exitMenuItem.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                exitMenuItemActionPerformed(evt);
-            }
-        });
+	AddressModel amod = AddressModel.getReference();
+	for (int i = 0; i < indices.length; ++i) {
+	    int index = indices[i];
+	    try {
+		// need to ask the table for the original (befor sorting) index
+		// of the selected row
+		TableSorter tm = (TableSorter) jTable1.getModel();
+		int k = tm.getMappedIndex(index); // get original index - not
+						    // current sorted position
+						    // in tbl
+		Object[] oa = addrs_.toArray();
+		Address addr = (Address) oa[k];
+		amod.delete(addr, false);
+	    } catch (Exception e) {
+		Errmsg.errmsg(e);
+	    }
+	}
 
-        menuBar.add(fileMenu);
+	amod.refresh();
+    }// GEN-LAST:event_delbuttonActionPerformed
 
-        setJMenuBar(menuBar);
+    private void jTable1MouseClicked(java.awt.event.MouseEvent evt)// GEN-FIRST:event_jTable1MouseClicked
+    {// GEN-HEADEREND:event_jTable1MouseClicked
+	if (evt.getClickCount() < 2)
+	    return;
+	editRow();
+    }// GEN-LAST:event_jTable1MouseClicked
 
-        fileMenu.add(getImpvcard());
-        fileMenu.add(getHtmlitem());
-        fileMenu.add(exitMenuItem);
+    private void editbuttonActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_editbuttonActionPerformed
+    {// GEN-HEADEREND:event_editbuttonActionPerformed
+	editRow();
+    }// GEN-LAST:event_editbuttonActionPerformed
 
-        new PopupMenuHelper
-        (
-        	jTable1,
-        	new PopupMenuHelper.Entry[]
-        	{
-        		new PopupMenuHelper.Entry(alAddNew, "Add_New"),
-        		new PopupMenuHelper.Entry(alEdit, "Edit"),
-        		new PopupMenuHelper.Entry(alDelete, "Delete"),
-        	}
-        );
-        
-        pack();
-    }//GEN-END:initComponents
+    private void newbuttonActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_newbuttonActionPerformed
+    {// GEN-HEADEREND:event_newbuttonActionPerformed
+	Address addr = AddressModel.getReference().newAddress();
+	addr.setKey(-1);
+	new AddressView(addr).setVisible(true);
+    }// GEN-LAST:event_newbuttonActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton1ActionPerformed
-    {//GEN-HEADEREND:event_jButton1ActionPerformed
-        this.dispose();
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void printListActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_printListActionPerformed
 
-    private void delbuttonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_delbuttonActionPerformed
-    {//GEN-HEADEREND:event_delbuttonActionPerformed
-        // figure out which row is selected to be marked as done
-        int[] indices =  jTable1.getSelectedRows();
-        if (indices.length == 0) return;
-        
-		int ret = JOptionPane.showConfirmDialog(null, Resource
-				.getResourceString("Delete_Addresses"), Resource
-				.getPlainResourceString("Delete"), JOptionPane.OK_CANCEL_OPTION,
-				JOptionPane.QUESTION_MESSAGE);
-		if (ret != JOptionPane.OK_OPTION)
-			return;
-        
-        AddressModel amod = AddressModel.getReference();
-        for (int i=0; i<indices.length; ++i)
-        {
-        	int index = indices[i];
-	        try
-	        {
-	            // need to ask the table for the original (befor sorting) index of the selected row
-	            TableSorter tm = (TableSorter) jTable1.getModel();
-	            int k = tm.getMappedIndex(index);  // get original index - not current sorted position in tbl
-	            Object[] oa = addrs_.toArray();
-	            Address addr = (Address) oa[k];
-	            amod.delete(addr, false);
-	        }
-	        catch( Exception e )
-	        {
-	            Errmsg.errmsg(e);
-	        }
-        }
-        
-        amod.refresh();
-    }//GEN-LAST:event_delbuttonActionPerformed
+	// user has requested a print of the table
+	try {
+	    TablePrinter.printTable(jTable1);
+	} catch (Exception e) {
+	    Errmsg.errmsg(e);
+	}
+    }// GEN-LAST:event_printListActionPerformed
 
-    private void jTable1MouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_jTable1MouseClicked
-    {//GEN-HEADEREND:event_jTable1MouseClicked
-        if( evt.getClickCount() < 2 ) return;
-        editRow();
-    }//GEN-LAST:event_jTable1MouseClicked
-
-    private void editbuttonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_editbuttonActionPerformed
-    {//GEN-HEADEREND:event_editbuttonActionPerformed
-        editRow();
-    }//GEN-LAST:event_editbuttonActionPerformed
-
-    private void newbuttonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_newbuttonActionPerformed
-    {//GEN-HEADEREND:event_newbuttonActionPerformed
-        Address addr = AddressModel.getReference().newAddress();
-        addr.setKey(-1);
-        new AddressView(addr).setVisible(true);
-    }//GEN-LAST:event_newbuttonActionPerformed
-
-    private void printListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printListActionPerformed
-
-        // user has requested a print of the table
-        try
-        { TablePrinter.printTable(jTable1); }
-        catch( Exception e )
-        { Errmsg.errmsg(e); }
-    }//GEN-LAST:event_printListActionPerformed
-
-    private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
-        this.dispose();
-    }//GEN-LAST:event_exitMenuItemActionPerformed
-
-    private void exitForm(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_exitForm
-        this.dispose();
-    }//GEN-LAST:event_exitForm
+    private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_exitMenuItemActionPerformed
+	this.fr_.dispose();
+    }// GEN-LAST:event_exitMenuItemActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton delbutton;
+
     private javax.swing.JButton editbutton;
-    private javax.swing.JMenuItem exitMenuItem;
-    private javax.swing.JMenu fileMenu;
-    private javax.swing.JButton jButton1;
+
+
     private javax.swing.JPanel jPanel1;
+
     private javax.swing.JScrollPane jScrollPane1;
+
     private StripedTable jTable1;
-    private javax.swing.JMenuBar menuBar;
+
     private javax.swing.JButton newbutton;
-    private javax.swing.JMenuItem printList;
-	private JPanel jPanel = null;
-	private JMenuItem htmlitem = null;
-	/**
-	 * This method initializes jPanel
-	 *
-	 * @return javax.swing.JPanel
-	 */
-	private JPanel getJPanel() {
-		if (jPanel == null) {
-			GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
-			GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
-			jPanel = new JPanel();
-			jPanel.setLayout(new GridBagLayout());
-			gridBagConstraints1.gridx = 0;
-			gridBagConstraints1.gridy = 0;
-			gridBagConstraints1.weightx = 1.0;
-			gridBagConstraints1.weighty = 1.0;
-			gridBagConstraints1.fill = java.awt.GridBagConstraints.BOTH;
-			gridBagConstraints1.insets = new java.awt.Insets(4,4,4,4);
-			gridBagConstraints2.gridx = 0;
-			gridBagConstraints2.gridy = 1;
-			gridBagConstraints2.insets = new java.awt.Insets(4,4,4,4);
-			gridBagConstraints2.fill = java.awt.GridBagConstraints.BOTH;
-			jPanel.add(jScrollPane1, gridBagConstraints1);
-			jPanel.add(jPanel1, gridBagConstraints2);
+
+
+ 
+    private JMenuItem impvcard = null;
+
+    private JMenuItem getImpvcard() {
+	if (impvcard == null) {
+	    impvcard = new JMenuItem();
+	    ResourceHelper.setText(impvcard, "imp_vcard");
+	    impvcard.setIcon(new ImageIcon(getClass().getResource("/resource/Import16.gif")));
+	    impvcard.addActionListener(new java.awt.event.ActionListener() {
+		public void actionPerformed(java.awt.event.ActionEvent e) {
+		    File file;
+		    while (true) {
+			// prompt for a file
+			JFileChooser chooser = new JFileChooser();
+
+			chooser.setCurrentDirectory(new File("."));
+			chooser.setDialogTitle(Resource.getResourceString("choose_file"));
+			chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+
+			int returnVal = chooser.showOpenDialog(null);
+			if (returnVal != JFileChooser.APPROVE_OPTION)
+			    return;
+
+			String s = chooser.getSelectedFile().getAbsolutePath();
+			file = new File(s);
+
+			break;
+
+		    }
+
+		    try {
+			FileReader r = new FileReader(file);
+			AddressVcardAdapter.importVcard(r);
+			r.close();
+		    } catch (Exception ex) {
+			Errmsg.errmsg(ex);
+		    }
+
 		}
-		return jPanel;
+	    });
 	}
-	/**
-	 * This method initializes htmlitem
-	 *
-	 * @return javax.swing.JMenuItem
-	 */
-	private JMenuItem getHtmlitem() {
-		if (htmlitem == null) {
-			htmlitem = new JMenuItem();
-			ResourceHelper.setText(htmlitem, "SaveHTML");
-			htmlitem.setIcon(new ImageIcon(getClass().getResource("/resource/WebComponent16.gif")));
-			htmlitem.addActionListener(new java.awt.event.ActionListener() {
-			    public void actionPerformed(java.awt.event.ActionEvent e) {
-			        try{
+	return impvcard;
+    }
 
-			            JFileChooser chooser = new JFileChooser();
+    public PrefName getFrameSizePref() {
+	return PrefName.ADDRLISTVIEWSIZE;
+    }
 
-			            chooser.setCurrentDirectory( new File(".") );
-			            chooser.setDialogTitle(Resource.getResourceString("choose_file"));
-			            chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+    public String getFrameTitle() {
+	return Resource.getPlainResourceString("Address_Book");
+    }
 
-			            int returnVal = chooser.showOpenDialog(null);
-			            if(returnVal != JFileChooser.APPROVE_OPTION)
-			                return;
+    public JMenuBar getMenuForFrame() {
+	
+	JMenuBar menuBar = new javax.swing.JMenuBar();
+	JMenu fileMenu = new javax.swing.JMenu();
+	JMenuItem printList = new javax.swing.JMenuItem();
+	JMenuItem exitMenuItem = new javax.swing.JMenuItem();
+	JMenuItem htmlitem = new JMenuItem();
+	ResourceHelper.setText(fileMenu, "Action");
 
-			            String s = chooser.getSelectedFile().getAbsolutePath();
+	JMenuItem mnuitm = new JMenuItem();
+	ResourceHelper.setText(mnuitm, "Add_New");
+	mnuitm.setIcon(newbutton.getIcon());
+	mnuitm.addActionListener(alAddNew);
+	fileMenu.add(mnuitm);
 
-			            OutputStream ostr = IOHelper.createOutputStream(s);
-			            OutputStreamWriter fw = new OutputStreamWriter(ostr, "UTF8");
+	mnuitm = new JMenuItem();
+	ResourceHelper.setText(mnuitm, "Edit");
+	mnuitm.setIcon(editbutton.getIcon());
+	mnuitm.addActionListener(alEdit);
+	fileMenu.add(mnuitm);
 
-						StringWriter sw = new StringWriter();
-			            AddressModel.getReference().export(sw);
-			            String sorted = XSLTransform.transform( sw.toString(), "/resource/addrsort.xsl");
-			            String output = XSLTransform.transform( sorted, "/resource/addr.xsl");
-			            fw.write(output);
-			            fw.close();
+	mnuitm = new JMenuItem();
+	ResourceHelper.setText(mnuitm, "Delete");
+	mnuitm.setIcon(delbutton.getIcon());
+	mnuitm.addActionListener(alDelete);
+	fileMenu.add(mnuitm);
 
-			        }
-			        catch( Exception ex) {
-			            Errmsg.errmsg(ex);
-			        }
+	ResourceHelper.setText(printList, "Print_List");
+	printList.setIcon(new ImageIcon(getClass().getResource("/resource/Print16.gif")));
+	printList.addActionListener(new java.awt.event.ActionListener() {
+	    public void actionPerformed(java.awt.event.ActionEvent evt) {
+		printListActionPerformed(evt);
+	    }
+	});
 
-			    }
-			});
+	fileMenu.add(printList);
+
+	ResourceHelper.setText(exitMenuItem, "Exit");
+	exitMenuItem.setIcon(new ImageIcon(getClass().getResource("/resource/Stop16.gif")));
+	exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
+	    public void actionPerformed(java.awt.event.ActionEvent evt) {
+		exitMenuItemActionPerformed(evt);
+	    }
+	});
+
+	menuBar.add(fileMenu);
+
+	fileMenu.add(getImpvcard());
+	
+	htmlitem = new JMenuItem();
+	    ResourceHelper.setText(htmlitem, "SaveHTML");
+	    htmlitem.setIcon(new ImageIcon(getClass().getResource("/resource/WebComponent16.gif")));
+	    htmlitem.addActionListener(new java.awt.event.ActionListener() {
+		public void actionPerformed(java.awt.event.ActionEvent e) {
+		    try {
+
+			JFileChooser chooser = new JFileChooser();
+
+			chooser.setCurrentDirectory(new File("."));
+			chooser.setDialogTitle(Resource.getResourceString("choose_file"));
+			chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+
+			int returnVal = chooser.showOpenDialog(null);
+			if (returnVal != JFileChooser.APPROVE_OPTION)
+			    return;
+
+			String s = chooser.getSelectedFile().getAbsolutePath();
+
+			OutputStream ostr = IOHelper.createOutputStream(s);
+			OutputStreamWriter fw = new OutputStreamWriter(ostr, "UTF8");
+
+			StringWriter sw = new StringWriter();
+			AddressModel.getReference().export(sw);
+			String sorted = XSLTransform.transform(sw.toString(), "/resource/addrsort.xsl");
+			String output = XSLTransform.transform(sorted, "/resource/addr.xsl");
+			fw.write(output);
+			fw.close();
+
+		    } catch (Exception ex) {
+			Errmsg.errmsg(ex);
+		    }
+
 		}
-		return htmlitem;
-	}
+	    });
+	fileMenu.add(htmlitem);
+	fileMenu.add(exitMenuItem);
+	
+	return menuBar;
 
-	private JMenuItem impvcard = null;
-	private JMenuItem getImpvcard() {
-		if (impvcard == null) {
-			impvcard = new JMenuItem();
-			ResourceHelper.setText(impvcard, "imp_vcard");
-			impvcard.setIcon(new ImageIcon(getClass().getResource("/resource/Import16.gif")));
-			impvcard.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent e) {
-			        File file;
-			        while( true ) {
-			            // prompt for a file
-			            JFileChooser chooser = new JFileChooser();
-
-			            chooser.setCurrentDirectory( new File(".") );
-			            chooser.setDialogTitle(Resource.getResourceString("choose_file"));
-			            chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-
-			            int returnVal = chooser.showOpenDialog(null);
-			            if(returnVal != JFileChooser.APPROVE_OPTION)
-			        	return;
-
-			            String s = chooser.getSelectedFile().getAbsolutePath();
-			            file = new File(s);
-
-			            break;
-
-
-			        }
-
-			        try {
-			    		FileReader r = new FileReader(file);
-						AddressVcardAdapter.importVcard(r);
-						r.close();
-					}
-			    	catch (Exception ex) {
-						Errmsg.errmsg(ex);
-					}
-
-
-				}
-			});
-		}
-		return impvcard;
-	}
-  }
+    }
+}

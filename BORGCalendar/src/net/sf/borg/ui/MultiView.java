@@ -42,6 +42,7 @@ import javax.swing.event.ChangeListener;
 
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
+import net.sf.borg.common.Prefs;
 import net.sf.borg.common.PrintHelper;
 import net.sf.borg.common.Resource;
 import net.sf.borg.control.Borg;
@@ -57,6 +58,7 @@ import net.sf.borg.ui.memo.MemoPanel;
 import net.sf.borg.ui.task.ProjectPanel;
 import net.sf.borg.ui.task.TaskListPanel;
 import net.sf.borg.ui.util.DateDialog;
+import net.sf.borg.ui.util.JTabbedPaneWithCloseIcons;
 
 // weekView handles the printing of a single week
 public class MultiView extends View implements Navigator {
@@ -65,7 +67,7 @@ public class MultiView extends View implements Navigator {
 
     private Calendar cal_ = new GregorianCalendar();
 
-    private JTabbedPane tabs_ = null;
+    private JTabbedPaneWithCloseIcons tabs_ = null;
 
     private DayPanel dayPanel = null;
 
@@ -182,7 +184,7 @@ public class MultiView extends View implements Navigator {
 	if (tabs_ == null) {
 		
 		
-	    tabs_ = new JTabbedPane();
+	    tabs_ = new JTabbedPaneWithCloseIcons();
 
 	    calPanel = new CalendarPanel(this, cal_.get(Calendar.MONTH), cal_
 		    .get(Calendar.YEAR));
@@ -400,5 +402,18 @@ public class MultiView extends View implements Navigator {
 	} else {
 	    this.dispose();
 	}
+    }
+    
+    public void addView(DockableView dp)
+    {
+	String dock = Prefs.getPref(PrefName.DOCKPANELS);
+	if( dock.equals("true"))
+	{
+	   // tabs_.addTab(dp.getFrameTitle(), dp, new ImageIcon(getClass().getResource("/resource/Delete16.gif")));
+	    tabs_.addTab(dp.getFrameTitle(), dp);
+	    tabs_.setSelectedIndex(tabs_.getTabCount()-1);
+	}
+	else
+	    dp.openInFrame();
     }
 }

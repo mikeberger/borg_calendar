@@ -841,9 +841,7 @@ public class MainMenu {
 
     private void AddressMIActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_AddressMIActionPerformed
     {// GEN-HEADEREND:event_AddressMIActionPerformed
-	AddrListView ab = AddrListView.getReference();
-	ab.refresh();
-	ab.setVisible(true);
+	new AddrListView().openInFrame();
     }// GEN-LAST:event_AddressMIActionPerformed
 
     private void impCommon(XTree xt) throws Exception {
