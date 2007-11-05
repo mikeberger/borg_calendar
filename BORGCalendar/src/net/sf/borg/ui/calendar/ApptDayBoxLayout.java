@@ -19,7 +19,14 @@
 package net.sf.borg.ui.calendar;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Iterator;
+import java.util.TreeSet;
 
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
@@ -28,6 +35,7 @@ import net.sf.borg.common.XTree;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.beans.Appointment;
 import net.sf.borg.model.beans.AppointmentXMLAdapter;
+import net.sf.borg.ui.MultiView;
 
 // This class determines the logical layout of appointment boxes within a
 // day given that appointments can overlap
@@ -252,8 +260,11 @@ public class ApptDayBoxLayout
             cal.setTime(appt.getDate());
             AppointmentListView ag = new AppointmentListView(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal
                     .get(Calendar.DATE));
+            MultiView.getMainView().addView(ag);
+            //AppointmentListView ag = new AppointmentListView(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal
+                    //.get(Calendar.DATE));
             ag.showApp(appt.getKey());
-            ag.setVisible(true);
+            
         }
 
         public void create(double top, double bottom, String text)
@@ -337,7 +348,8 @@ public class ApptDayBoxLayout
             cal.setTime(date);
             AppointmentListView ag = new AppointmentListView(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal
                     .get(Calendar.DATE));
-            ag.setVisible(true);
+            MultiView.getMainView().addView(ag);
+          
         }
 
         public double getBottomAdjustment()

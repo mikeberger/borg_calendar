@@ -736,11 +736,12 @@ public class SearchView extends View {
 		AppointmentListView ag = new AppointmentListView(
 				cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal
 						.get(Calendar.DATE));
-		ag.setVisible(true);
+		
+	            MultiView.getMainView().addView(ag);
 
-		MultiView cv = MultiView.getMainView();
-		if (cv != null)
-			cv.goTo(cal);
+		//MultiView cv = MultiView.getMainView();
+		//if (cv != null)
+			//cv.goTo(cal);
 
 	}
 

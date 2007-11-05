@@ -841,7 +841,7 @@ public class MainMenu {
 
     private void AddressMIActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_AddressMIActionPerformed
     {// GEN-HEADEREND:event_AddressMIActionPerformed
-	new AddrListView().openInFrame();
+	MultiView.getMainView().addView(AddrListView.getReference());
     }// GEN-LAST:event_AddressMIActionPerformed
 
     private void impCommon(XTree xt) throws Exception {
@@ -1093,7 +1093,8 @@ public class MainMenu {
     private void ToDoMenuActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_ToDoMenuActionPerformed
 	// ask borg class to bring up the todo window
 	try {
-	    TodoView.getReference().setVisible(true);
+	    TodoView tg = TodoView.getReference();
+	    MultiView.getMainView().addView(tg);    
 	} catch (Exception e) {
 	    Errmsg.errmsg(e);
 	}

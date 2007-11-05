@@ -729,7 +729,7 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 	try {
 	    // bring up todo window
 	    TodoView tg = TodoView.getReference();
-	    tg.setVisible(true);
+	    MultiView.getMainView().addView(tg);    
 	} catch (Exception e) {
 	    Errmsg.errmsg(e);
 	}

@@ -48,8 +48,8 @@ import net.sf.borg.common.XSLTransform;
 import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.AddressVcardAdapter;
 import net.sf.borg.model.beans.Address;
-import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.DockableView;
+import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.util.PopupMenuHelper;
 import net.sf.borg.ui.util.StripedTable;
 import net.sf.borg.ui.util.TablePrinter;
@@ -64,7 +64,7 @@ public class AddrListView extends DockableView {
     private Collection addrs_; // list of rows currently displayed
 
  
-    public AddrListView() {
+    private AddrListView() {
 
 	super();
 	addModel(AddressModel.getReference());
@@ -462,4 +462,13 @@ public class AddrListView extends DockableView {
 	return menuBar;
 
     }
+
+    private static AddrListView singleton = null;
+
+    public static AddrListView getReference() {
+	if (singleton == null || !singleton.isDisplayable())
+	    singleton = new AddrListView();
+	return (singleton);
+    }
+    
 }

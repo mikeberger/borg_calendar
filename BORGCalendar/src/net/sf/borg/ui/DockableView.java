@@ -32,15 +32,19 @@ import java.awt.event.KeyEvent;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
+import net.sf.borg.common.Resource;
 import net.sf.borg.model.Model;
 
-// a JPanel that shows a View and can be optionally placed into a stand-alone JFrame
+// a JPanel that shows a View and can be optionally placed into a stand-alone
+// JFrame
 public abstract class DockableView extends JPanel implements Model.Listener {
     static Image image = Toolkit.getDefaultToolkit().getImage(DockableView.class.getResource("/resource/borg32x32.jpg"));
 
@@ -56,51 +60,69 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 	Prefs.putPref(pn, vs.toString());
 
     }
+    
+
     private PrefName prefName_ = null;
-    
+
     protected JFrame fr_ = null;
-    public DockableView() {
-	
-    }
+
     public abstract PrefName getFrameSizePref();
-    
+
     public abstract String getFrameTitle();
 
     public abstract JMenuBar getMenuForFrame();
 
-    public JFrame openInFrame()
-    {
+    private void dock() {
+	MultiView.getMainView().dock(this);
+	if( fr_ != null )
+	    fr_.dispose();
+    }
+
+    public JFrame openInFrame() {
 	fr_ = new JFrame();
 	manageMySize(getFrameSizePref());
 	fr_.setContentPane(this);
-	fr_.setJMenuBar(getMenuForFrame());       
-        fr_.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        fr_.setTitle(getFrameTitle());
-        
-        fr_.addWindowListener(new java.awt.event.WindowAdapter()
-        {
-            public void windowClosing(java.awt.event.WindowEvent evt)
-            {
-                fr_.dispose();
-            }
-        });
-        refresh();
-        fr_.setIconImage(image);
-        fr_.getLayeredPane().registerKeyboardAction(new ActionListener() {
+	JMenuBar bar = getMenuForFrame();
+	if (bar != null) {
+	    JMenu jm = bar.getMenu(0);
+	    JMenuItem jmi = jm.add(Resource.getPlainResourceString("dock"));
+	    jmi.addActionListener(new ActionListener() {
+
+		public void actionPerformed(ActionEvent e) {
+		    dock();
+		}
+
+	    });
+	    fr_.setJMenuBar(bar);
+
+	}
+
+	fr_.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+	fr_.setTitle(getFrameTitle());
+
+	fr_.addWindowListener(new java.awt.event.WindowAdapter() {
+	    public void windowClosing(java.awt.event.WindowEvent evt) {
+		fr_.dispose();
+	    }
+	});
+	
+	fr_.setIconImage(image);
+	fr_.getLayeredPane().registerKeyboardAction(new ActionListener() {
 	    public final void actionPerformed(ActionEvent e) {
 		fr_.dispose();
 	    }
 	}, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
 	fr_.setVisible(true);
-	
-        return fr_;
+
+	return fr_;
     }
 
     public abstract void refresh();
 
     public void remove() {
-	if( fr_ != null )
-	fr_.dispose();
+	if (fr_ != null)
+	    fr_.dispose();
+	fr_ = null;
     }
 
     // called from the subclass to cause the View to use preferences to
@@ -121,17 +143,17 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 	}
 
 	fr_.validate();
-	
+
 	final PrefName pn = pname;
 
 	// add listeners to record any changes
 	fr_.addComponentListener(new java.awt.event.ComponentAdapter() {
 	    public void componentMoved(java.awt.event.ComponentEvent e) {
-		recordSize(e.getComponent(),pn);
+		recordSize(e.getComponent(), pn);
 	    }
 
 	    public void componentResized(java.awt.event.ComponentEvent e) {
-		recordSize(e.getComponent(),pn);
+		recordSize(e.getComponent(), pn);
 	    }
 	});
     }
@@ -141,5 +163,4 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 	m.addListener(this);
     }
 
-  
 }

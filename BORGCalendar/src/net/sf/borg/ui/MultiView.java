@@ -404,14 +404,20 @@ public class MultiView extends View implements Navigator {
 	}
     }
     
+    public void dock(DockableView dp)
+    {
+	tabs_.addTab(dp.getFrameTitle(), dp);
+	tabs_.setSelectedIndex(tabs_.getTabCount()-1);
+	dp.remove();
+	    
+    }
+
     public void addView(DockableView dp)
     {
 	String dock = Prefs.getPref(PrefName.DOCKPANELS);
 	if( dock.equals("true"))
 	{
-	   // tabs_.addTab(dp.getFrameTitle(), dp, new ImageIcon(getClass().getResource("/resource/Delete16.gif")));
-	    tabs_.addTab(dp.getFrameTitle(), dp);
-	    tabs_.setSelectedIndex(tabs_.getTabCount()-1);
+	   dock(dp);
 	}
 	else
 	    dp.openInFrame();

@@ -377,20 +377,20 @@ public class TaskView extends DockableView {
 
 	public JMenuBar getMenuForFrame() {
 	    JMenuBar jMenuBar1 = new javax.swing.JMenuBar();
-		JMenu jMenu1 = new javax.swing.JMenu();
-		JMenuItem jMenuItem1 = new javax.swing.JMenuItem();
-		
-		ResourceHelper.setText(jMenu1, "Menu");
-		ResourceHelper.setText(jMenuItem1, "Save");
-		jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				savetask(evt);
-			}
-		});
+	    JMenu jMenu1 = new javax.swing.JMenu();
+	    JMenuItem jMenuItem1 = new javax.swing.JMenuItem();
 
-		jMenu1.add(jMenuItem1);
+	    ResourceHelper.setText(jMenu1, "Menu");
+	    ResourceHelper.setText(jMenuItem1, "Save");
+	    jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+		public void actionPerformed(java.awt.event.ActionEvent evt) {
+		    savetask(evt);
+		}
+	    });
 
-		jMenuBar1.add(jMenu1);
+	    jMenu1.add(jMenuItem1);
+
+	    jMenuBar1.add(jMenu1);
 
 	    return jMenuBar1;
 	}

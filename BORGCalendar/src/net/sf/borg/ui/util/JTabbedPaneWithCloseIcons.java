@@ -6,11 +6,18 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import javax.swing.Icon;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import javax.swing.JTabbedPane;
+
+import net.sf.borg.common.Resource;
+import net.sf.borg.ui.DockableView;
 
 /**
  * A JTabbedPane which has a close ('X') icon on each tab.
@@ -22,11 +29,33 @@ import javax.swing.JTabbedPane;
  * closes the tab.
  */
 public class JTabbedPaneWithCloseIcons extends JTabbedPane implements MouseListener {
+   
+    private JPopupMenu menu = new JPopupMenu();
+    
     public JTabbedPaneWithCloseIcons() {
 	super();
 	addMouseListener(this);
+	JMenuItem jm = menu.add(Resource.getPlainResourceString("undock"));
+	jm.addActionListener(new ActionListener(){
+
+	    public void actionPerformed(ActionEvent e) {
+		undock();
+	    }
+	    
+	});
     }
 
+    public void undock()
+    {
+	Component c = getSelectedComponent();
+	if( c != null && c instanceof DockableView)
+	{
+	    DockableView dv = (DockableView) c;
+	    dv.openInFrame();
+	    //removeTabAt(getSelectedIndex());
+	}
+    }
+    
     public void addTab(String title, Component component) {
 	this.addTab(title, component, null);
     }
@@ -39,6 +68,15 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements MouseListe
 	int tabNumber = getUI().tabForCoordinate(this, e.getX(), e.getY());
 	if (tabNumber < 0)
 	    return;
+	
+	Component c = getSelectedComponent();
+	
+	if( e.getButton() != MouseEvent.BUTTON1 && c instanceof DockableView)
+	{
+	    // right click - popup menu
+	    menu.show(this, e.getX(), e.getY());
+	    return;
+	}
 	Icon icon = getIconAt(tabNumber);
 	if (icon == null)
 	    return;

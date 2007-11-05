@@ -106,8 +106,8 @@ public class CalendarPanel extends JPanel implements Prefs.Listener, Navigator {
 		}
 	    } else {
 		AppointmentListView ag = new AppointmentListView(year, month,
-			date);
-		ag.setVisible(true);
+			date);	
+		MultiView.getMainView().addView(ag);
 
 	    }
 
@@ -762,7 +762,8 @@ public class CalendarPanel extends JPanel implements Prefs.Listener, Navigator {
 	};
 	todoPreview.addMouseListener(new MouseListener() {
 	    public void mouseClicked(MouseEvent evt) {
-		TodoView.getReference().setVisible(true);
+		 TodoView tg = TodoView.getReference();
+		    MultiView.getMainView().addView(tg); 
 	    }
 
 	    public void mouseEntered(MouseEvent arg0) {

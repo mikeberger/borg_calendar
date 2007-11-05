@@ -134,7 +134,7 @@ public class JDICTrayIconProxy {
     static private class AddrListener implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
-            MultiView.getMainView().addView(new AddrListView());
+            MultiView.getMainView().addView(AddrListView.getReference());
            
         }
     }
@@ -142,7 +142,8 @@ public class JDICTrayIconProxy {
     static private class TodoListener implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
-            TodoView.getReference().setVisible(true);
+            TodoView tg = TodoView.getReference();
+	    MultiView.getMainView().addView(tg);    
         }
     }
     
