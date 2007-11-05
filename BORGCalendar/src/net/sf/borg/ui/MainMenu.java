@@ -240,6 +240,28 @@ public class MainMenu {
 
 	ActionMenu.add(AddressMI);
 
+	JMenuItem MemoMI = new JMenuItem();
+	MemoMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Edit16.gif")));
+	ResourceHelper.setText(MemoMI, "Memos");
+	MemoMI.addActionListener(new java.awt.event.ActionListener() {
+	    public void actionPerformed(java.awt.event.ActionEvent evt) {
+		MultiView.getMainView().showMemos();
+	    }
+	});
+
+	ActionMenu.add(MemoMI);
+	
+	JMenuItem TaskMI = new JMenuItem();
+	TaskMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Preferences16.gif")));
+	ResourceHelper.setText(TaskMI, "tasks");
+	TaskMI.addActionListener(new java.awt.event.ActionListener() {
+	    public void actionPerformed(java.awt.event.ActionEvent evt) {
+		MultiView.getMainView().showTasks();
+	    }
+	});
+
+	ActionMenu.add(TaskMI);
+	
 	SearchMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Find16.gif")));
 	ResourceHelper.setText(SearchMI, "srch");
 	SearchMI.addActionListener(new java.awt.event.ActionListener() {

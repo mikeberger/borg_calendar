@@ -106,8 +106,7 @@ public class MultiView extends View implements Navigator {
 		if (Borg.getReference().hasTrayIcon())
 		    exit();
 	    }
-	}, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
-		JComponent.WHEN_IN_FOCUSED_WINDOW);
+	}, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
 
 	addWindowListener(new java.awt.event.WindowAdapter() {
 	    public void windowClosing(java.awt.event.WindowEvent evt) {
@@ -159,12 +158,42 @@ public class MultiView extends View implements Navigator {
 
     public void setView(int type) {
 	if (type == DAY) {
+	    if (!dayPanel.isDisplayable()) {
+		tabs_.addTab(Resource.getPlainResourceString("Day_View"), dayPanel);
+	    }
 	    getTabs().setSelectedComponent(dayPanel);
 	} else if (type == WEEK) {
+	    if (!dayPanel.isDisplayable()) {
+		tabs_.addTab(Resource.getPlainResourceString("Week_View"), wkPanel);
+	    }
 	    getTabs().setSelectedComponent(wkPanel);
 	} else if (type == MONTH) {
 	    getTabs().setSelectedComponent(calPanel);
 	}
+    }
+
+    public void showMemos()
+    {
+	if (memoPanel != null && !memoPanel.isDisplayable()) {
+	    tabs_.addTab(Resource.getPlainResourceString("Memos"), memoPanel);
+	}
+	if (memoPanel != null)
+	    getTabs().setSelectedComponent(memoPanel);
+    }
+    
+    public void showTasks()
+    {
+	if (projPanel != null && !projPanel.isDisplayable()) {
+	    tabs_.addTab(Resource.getPlainResourceString("projects"), projPanel);
+	}
+	if (projPanel != null)
+	    getTabs().setSelectedComponent(projPanel);
+	
+	if (taskPanel != null && !taskPanel.isDisplayable()) {
+	    tabs_.addTab(Resource.getPlainResourceString("tasks"), taskPanel);
+	}
+	if (taskPanel != null)
+	    getTabs().setSelectedComponent(taskPanel);
     }
 
     private void tabChanged() {
@@ -182,59 +211,42 @@ public class MultiView extends View implements Navigator {
 
     private JTabbedPane getTabs() {
 	if (tabs_ == null) {
-		
-		
+
 	    tabs_ = new JTabbedPaneWithCloseIcons();
 
-	    calPanel = new CalendarPanel(this, cal_.get(Calendar.MONTH), cal_
-		    .get(Calendar.YEAR));
-	    dayPanel = new DayPanel(cal_.get(Calendar.MONTH), cal_
-		    .get(Calendar.YEAR), cal_.get(Calendar.DATE));
-	    wkPanel = new WeekPanel(cal_.get(Calendar.MONTH), cal_
-		    .get(Calendar.YEAR), cal_.get(Calendar.DATE));
-	    
-	    if( MemoModel.getReference().hasMemos())
-	    	memoPanel = new MemoPanel();
-	    
-	    
-	    taskPanel = new TaskListPanel();
-	    
-	    if( TaskModel.getReference().hasSubTasks())
-	    	projPanel = new ProjectPanel();
-	    
-	    tabs_.addTab(Resource.getPlainResourceString("Month_View"), null,
-		    calPanel);
-	    tabs_.addTab(Resource.getPlainResourceString("Week_View"), null,
-		    wkPanel);
-	    tabs_.addTab(Resource.getPlainResourceString("Day_View"), null,
-		    dayPanel);
+	    calPanel = new CalendarPanel(this, cal_.get(Calendar.MONTH), cal_.get(Calendar.YEAR));
+	    dayPanel = new DayPanel(cal_.get(Calendar.MONTH), cal_.get(Calendar.YEAR), cal_.get(Calendar.DATE));
+	    wkPanel = new WeekPanel(cal_.get(Calendar.MONTH), cal_.get(Calendar.YEAR), cal_.get(Calendar.DATE));
 
-	    if( !TaskModel.getReference().hasSubTasks())
-	    {
-	    	JTextArea ta = new JTextArea();
-	    	ta.setText(Resource.getPlainResourceString("ProjectsNotSupported"));
-	    	ta.setEditable(false);
-	    	tabs_.addTab(Resource.getPlainResourceString("projects"), null,
-	    			ta);
-	    }
-	    else
-	    	tabs_.addTab(Resource.getPlainResourceString("projects"), null,
-	    			projPanel);
-	    
-	    tabs_.addTab(Resource.getPlainResourceString("tasks"), null,
-		    taskPanel);
-	    
-	    if( !MemoModel.getReference().hasMemos())
-	    {
-	    	JTextArea ta = new JTextArea();
-	    	ta.setText(Resource.getPlainResourceString("MemosNotSupported"));
-	    	ta.setEditable(false);
-	    	tabs_.addTab(Resource.getPlainResourceString("Memos"), null,
-	    			ta);
-	    }
-	    else
-	    	tabs_.addTab(Resource.getPlainResourceString("Memos"), null,
-	    			memoPanel);
+	    if (MemoModel.getReference().hasMemos())
+		memoPanel = new MemoPanel();
+
+	    taskPanel = new TaskListPanel();
+
+	    if (TaskModel.getReference().hasSubTasks())
+		projPanel = new ProjectPanel();
+
+	    tabs_.addTab(Resource.getPlainResourceString("Month_View"), null, calPanel);
+	    tabs_.addTab(Resource.getPlainResourceString("Week_View"), wkPanel);
+	    tabs_.addTab(Resource.getPlainResourceString("Day_View"), dayPanel);
+
+	    if (!TaskModel.getReference().hasSubTasks()) {
+		JTextArea ta = new JTextArea();
+		ta.setText(Resource.getPlainResourceString("ProjectsNotSupported"));
+		ta.setEditable(false);
+		tabs_.addTab(Resource.getPlainResourceString("projects"),  ta);
+	    } else
+		tabs_.addTab(Resource.getPlainResourceString("projects"), projPanel);
+
+	    tabs_.addTab(Resource.getPlainResourceString("tasks"), taskPanel);
+
+	    if (!MemoModel.getReference().hasMemos()) {
+		JTextArea ta = new JTextArea();
+		ta.setText(Resource.getPlainResourceString("MemosNotSupported"));
+		ta.setEditable(false);
+		tabs_.addTab(Resource.getPlainResourceString("Memos"), ta);
+	    } else
+		tabs_.addTab(Resource.getPlainResourceString("Memos"), memoPanel);
 	    tabs_.addChangeListener(new ChangeListener() {
 		public void stateChanged(ChangeEvent e) {
 		    tabChanged();
@@ -255,11 +267,11 @@ public class MultiView extends View implements Navigator {
 	dayPanel.clearData();
 	dayPanel.repaint();
 	calPanel.refresh();
-	if( memoPanel != null )
-		memoPanel.refresh();
+	if (memoPanel != null)
+	    memoPanel.refresh();
 	taskPanel.refresh();
-	if( projPanel != null )
-		projPanel.refresh();
+	if (projPanel != null)
+	    projPanel.refresh();
     }
 
     public void next() {
@@ -314,8 +326,7 @@ public class MultiView extends View implements Navigator {
 	    navPanel.setLayout(gridLayout62);
 	    gridLayout62.setRows(1);
 	    JButton Prev = new JButton();
-	    Prev.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-		    "/resource/Back16.gif")));
+	    Prev.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Back16.gif")));
 	    ResourceHelper.setText(Prev, "<<__Prev");
 	    Prev.addActionListener(new java.awt.event.ActionListener() {
 		public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -324,8 +335,7 @@ public class MultiView extends View implements Navigator {
 	    });
 
 	    JButton Next = new JButton();
-	    Next.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-		    "/resource/Forward16.gif")));
+	    Next.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Forward16.gif")));
 	    ResourceHelper.setText(Next, "Next__>>");
 	    Next.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
 	    Next.addActionListener(new java.awt.event.ActionListener() {
@@ -335,8 +345,7 @@ public class MultiView extends View implements Navigator {
 	    });
 
 	    JButton Today = new JButton();
-	    Today.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-		    "/resource/Home16.gif")));
+	    Today.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Home16.gif")));
 	    ResourceHelper.setText(Today, "Today");
 	    Today.addActionListener(new java.awt.event.ActionListener() {
 		public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -345,8 +354,7 @@ public class MultiView extends View implements Navigator {
 	    });
 
 	    JButton Goto = new JButton();
-	    Goto.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-		    "/resource/Undo16.gif")));
+	    Goto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Undo16.gif")));
 	    ResourceHelper.setText(Goto, "Go_To");
 	    Goto.addActionListener(new java.awt.event.ActionListener() {
 		public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -388,12 +396,8 @@ public class MultiView extends View implements Navigator {
     public void showTasksForProject(Project p) {
 
 	taskPanel.showTasksForProject(p);
-	getTabs().setSelectedComponent(taskPanel);
+	showTasks();
 
-    }
-    
-    public void showTasks() {
-	getTabs().setSelectedComponent(taskPanel);
     }
 
     private void exit() {
@@ -403,23 +407,19 @@ public class MultiView extends View implements Navigator {
 	    this.dispose();
 	}
     }
-    
-    public void dock(DockableView dp)
-    {
+
+    public void dock(DockableView dp) {
 	tabs_.addTab(dp.getFrameTitle(), dp);
-	tabs_.setSelectedIndex(tabs_.getTabCount()-1);
+	tabs_.setSelectedIndex(tabs_.getTabCount() - 1);
 	dp.remove();
-	    
+
     }
 
-    public void addView(DockableView dp)
-    {
+    public void addView(DockableView dp) {
 	String dock = Prefs.getPref(PrefName.DOCKPANELS);
-	if( dock.equals("true"))
-	{
-	   dock(dp);
-	}
-	else
+	if (dock.equals("true")) {
+	    dock(dp);
+	} else
 	    dp.openInFrame();
     }
 }
