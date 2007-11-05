@@ -63,6 +63,18 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements MouseListe
     public void addTab(String title, Component component, Icon extraIcon) {
 	super.addTab(title, new CloseTabIcon(extraIcon), component);
     }
+    
+    public void closeClosableTabs() {
+	for (int i = this.getTabCount() - 1; i >= 0; i--) {
+	    Icon icon = getIconAt(i);
+	    if (icon == null)
+		return;
+
+	    this.removeTabAt(i);
+
+	}
+
+    }
 
     public void mouseClicked(MouseEvent e) {
 	int tabNumber = getUI().tabForCoordinate(this, e.getX(), e.getY());

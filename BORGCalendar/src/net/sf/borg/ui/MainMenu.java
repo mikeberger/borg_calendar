@@ -312,7 +312,18 @@ public class MainMenu {
 	});
 
 	ActionMenu.add(sqlMI);
+	
+	JMenuItem closeTabMI = new JMenuItem();
+	closeTabMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Delete16.gif")));
+	ResourceHelper.setText(closeTabMI, "close_tabs");
+	closeTabMI.addActionListener(new java.awt.event.ActionListener() {
+	    public void actionPerformed(java.awt.event.ActionEvent evt) {
+		MultiView.getMainView().closeTabs();
+	    }
+	});
 
+	ActionMenu.add(closeTabMI);
+/*
 	JMenuItem newWindowMI = new JMenuItem();
 	ResourceHelper.setText(newWindowMI, "New_Window");
 	newWindowMI.addActionListener(new java.awt.event.ActionListener() {
@@ -322,7 +333,7 @@ public class MainMenu {
 	});
 
 	ActionMenu.add(newWindowMI);
-
+*/
 	exitMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Stop16.gif")));
 	ResourceHelper.setText(exitMenuItem, "Exit");
 	exitMenuItem.addActionListener(new java.awt.event.ActionListener() {

@@ -422,4 +422,9 @@ public class MultiView extends View implements Navigator {
 	} else
 	    dp.openInFrame();
     }
+    
+    public void closeTabs()
+    {
+	tabs_.closeClosableTabs();
+    }
 }
