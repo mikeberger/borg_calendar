@@ -515,6 +515,7 @@ public class OptionsView extends View {
 	    jTabbedPane1.setEnabledAt(6, false);
 	    jTabbedPane1.setEnabledAt(7, false);
 	    jTabbedPane1.setEnabledAt(8, false);
+	    jTabbedPane1.setEnabledAt(9, false);
 	    jTabbedPane1.setSelectedIndex(2);
 	    dismissButton.setEnabled(false);
 	    applyButton.setEnabled(false);
