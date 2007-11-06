@@ -2,26 +2,34 @@ package net.sf.borg.ui.task;
 
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.Collection;
 import java.util.Iterator;
 
 import javax.swing.ImageIcon;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Resource;
+import net.sf.borg.model.Model;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.beans.Project;
 import net.sf.borg.model.beans.Task;
 
-public class ProjectTreePanel extends JPanel implements TreeSelectionListener {
+public class ProjectTreePanel extends JPanel implements TreeSelectionListener, MouseListener, Model.Listener {
     private class Node {
 	private String name;
 
@@ -66,44 +74,35 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener {
 	}
     }
 
-    private JTree tree;
+    private JPopupMenu projmenu = new JPopupMenu();
+
+    private JPopupMenu taskmenu = new JPopupMenu();
 
     private JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-    
+
+    private JScrollPane treeView = null;
+
+    private JTree tree = null;
+
     private JScrollPane view_scroll = new JScrollPane(new JPanel());
-    
+
     public ProjectTreePanel() {
 	super(new GridLayout(0, 1));
-
+	TaskModel.getReference().addListener(this);
 	// Create the nodes.
 	DefaultMutableTreeNode top = new DefaultMutableTreeNode(Resource.getPlainResourceString("projects"));
 	createNodes(top);
-
 	// Create a tree that allows one selection at a time.
 	tree = new JTree(top);
 	tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-
-	// Set the icon for leaf nodes.
-	/*
-	ImageIcon leafIcon = createImageIcon("images/middle.gif");
-	if (leafIcon != null) {
-	    DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
-	    renderer.setLeafIcon(leafIcon);
-	    tree.setCellRenderer(renderer);
-	} else {
-	    System.err.println("Leaf icon missing; using default.");
-	}*/
 
 	// Listen for when the selection changes.
 	tree.addTreeSelectionListener(this);
 
 	// Create the scroll pane and add the tree to it.
-	JScrollPane treeView = new JScrollPane(tree);
-
-	
+	treeView = new JScrollPane(tree);
 
 	// Add the scroll panes to a split pane.
-
 	splitPane.setTopComponent(treeView);
 	splitPane.setBottomComponent(view_scroll);
 
@@ -112,22 +111,111 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener {
 	treeView.setMinimumSize(minimumSize);
 	splitPane.setDividerLocation(200);
 	add(splitPane);
+	tree.addMouseListener(this);
+	JMenuItem jm = projmenu.add(Resource.getPlainResourceString("Add") + " " + Resource.getPlainResourceString("project"));
+	jm.addActionListener(new ActionListener() {
+
+	    public void actionPerformed(ActionEvent e) {
+		add_project();
+	    }
+
+	});
+	JMenuItem jm2 = taskmenu.add(Resource.getPlainResourceString("Add") + " " + Resource.getPlainResourceString("task"));
+	jm2.addActionListener(new ActionListener() {
+
+	    public void actionPerformed(ActionEvent e) {
+		add_task();
+	    }
+
+	});
     }
 
-    /** Required by TreeSelectionListener interface. */
-    public void valueChanged(TreeSelectionEvent e) {
-	DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+    private void add_project() {
+	ProjectView pv;
+	try {
+	    pv = new ProjectView(null, ProjectView.T_ADD);
+	    view_scroll.setViewportView(pv);
+	} catch (Exception e) {
+	    Errmsg.errmsg(e);
+	}
 
-	if (node == null)
+    }
+
+    private void add_task() {
+	Object o = getSelectedObject();
+	if (o == null)
 	    return;
+	if (o instanceof Project) {
+	    Project p = (Project) o;
+	    try {
+		TaskView pv = new TaskView(null, TaskView.T_ADD, p.getId());
+		view_scroll.setViewportView(pv);
+	    } catch (Exception e1) {
+		Errmsg.errmsg(e1);
+		return;
+	    }
+	}
+
+    }
+    
+    private Object getSelectedObject()
+    {
+	DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+	if (node == null)
+	    return null;
 
 	Object nodeobj = node.getUserObject();
 	if (!(nodeobj instanceof Node))
-	    return;
+	    return null;
 
 	Node mynode = (Node) node.getUserObject();
 
 	Object o = mynode.getObj();
+	
+	return o;
+    }
+
+    public void mouseClicked(MouseEvent e) {
+	if (e.getButton() == MouseEvent.BUTTON1)
+	    return;
+
+	TreePath selPath = tree.getPathForLocation(e.getX(), e.getY());
+	DefaultMutableTreeNode node = (DefaultMutableTreeNode) selPath.getLastPathComponent();
+	if (node == null)
+	    return;
+
+	tree.setSelectionPath(selPath);
+	Object nodeobj = node.getUserObject();
+	if (!(nodeobj instanceof Node)) {
+	    projmenu.show(this, e.getX(), e.getY());
+	    return;
+	}
+
+	Node mynode = (Node) node.getUserObject();
+
+	Object o = mynode.getObj();
+	if (o == null)
+	    return;
+	if (o instanceof Project)
+	    taskmenu.show(this, e.getX(), e.getY());
+
+    }
+
+    public void mouseEntered(MouseEvent arg0) {
+    }
+
+    public void mouseExited(MouseEvent arg0) {
+    }
+
+    public void mousePressed(MouseEvent e) {
+    }
+
+    public void mouseReleased(MouseEvent arg0) {
+    }
+
+    /** Required by TreeSelectionListener interface. */
+    public void valueChanged(TreeSelectionEvent e) {
+	Object o = getSelectedObject();
 	if (o == null)
 	    return;
 	if (o instanceof Task) {
@@ -143,7 +231,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener {
 	    Project p = (Project) o;
 	    try {
 		ProjectView pv = new ProjectView(p, ProjectView.T_CHANGE);
-		//splitPane.setBottomComponent(pv);
+		// splitPane.setBottomComponent(pv);
 		view_scroll.setViewportView(pv);
 	    } catch (Exception e1) {
 		Errmsg.errmsg(e1);
@@ -153,8 +241,21 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener {
 
     }
 
+    public void refresh() {
+	DefaultMutableTreeNode top = new DefaultMutableTreeNode(Resource.getPlainResourceString("projects"));
+	createNodes(top);
+	// Create a tree that allows one selection at a time.
+	tree = new JTree(top);
+	tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+
+	// Listen for when the selection changes.
+	tree.addTreeSelectionListener(this);
+	treeView.setViewportView(tree);
+	tree.addMouseListener(this);
+    }
+
     private void createNodes(DefaultMutableTreeNode top) {
-	
+
 	Collection projects;
 	try {
 	    projects = TaskModel.getReference().getProjects();
@@ -171,10 +272,21 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener {
 		}
 	    }
 	} catch (Exception e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
+	    Errmsg.errmsg(e);
 	}
 
     }
+
+    public void remove() {
+
+    }
+
+    // Set the icon for leaf nodes.
+    /*
+     * ImageIcon leafIcon = createImageIcon("images/middle.gif"); if (leafIcon !=
+     * null) { DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
+     * renderer.setLeafIcon(leafIcon); tree.setCellRenderer(renderer); } else {
+     * System.err.println("Leaf icon missing; using default."); }
+     */
 
 }
