@@ -539,7 +539,7 @@ public class MultiView extends View implements Navigator {
 	srchbut.setToolTipText(Resource.getPlainResourceString("srch"));
 	srchbut.addActionListener(new java.awt.event.ActionListener() {
 	    public void actionPerformed(java.awt.event.ActionEvent evt) {
-		new SearchView().setVisible(true);
+		MultiView.getMainView().addView(new SearchView());
 	    }
 	});
 	bar.add(srchbut);

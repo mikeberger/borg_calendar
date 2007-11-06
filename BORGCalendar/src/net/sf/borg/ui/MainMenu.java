@@ -1112,7 +1112,7 @@ public class MainMenu {
 	// user wants to do a search, so prompt for search string and request
 	// search results
 
-	new SearchView().setVisible(true);
+	MultiView.getMainView().addView(new SearchView());
 
     }// GEN-LAST:event_SearchMIActionPerformed
 
