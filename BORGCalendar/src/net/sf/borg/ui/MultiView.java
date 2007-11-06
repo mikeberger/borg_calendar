@@ -29,12 +29,14 @@ import java.awt.event.KeyEvent;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
+import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.border.BevelBorder;
 import javax.swing.event.ChangeEvent;
@@ -51,8 +53,10 @@ import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.MemoModel;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.beans.Project;
+import net.sf.borg.ui.address.AddrListView;
 import net.sf.borg.ui.calendar.CalendarPanel;
 import net.sf.borg.ui.calendar.DayPanel;
+import net.sf.borg.ui.calendar.TodoView;
 import net.sf.borg.ui.calendar.WeekPanel;
 import net.sf.borg.ui.memo.MemoPanel;
 import net.sf.borg.ui.task.ProjectPanel;
@@ -126,6 +130,15 @@ public class MultiView extends View implements Navigator {
 	GridBagConstraints cons = new java.awt.GridBagConstraints();
 	cons.gridx = 0;
 	cons.gridy = 0;
+	cons.fill = java.awt.GridBagConstraints.HORIZONTAL;
+	cons.weightx = 0.0;
+	cons.weighty = 0.0;
+
+	getContentPane().add(getToolBar(), cons);
+	
+	cons = new java.awt.GridBagConstraints();
+	cons.gridx = 0;
+	cons.gridy = 1;
 	cons.fill = java.awt.GridBagConstraints.BOTH;
 	cons.weightx = 1.0;
 	cons.weighty = 1.0;
@@ -134,7 +147,7 @@ public class MultiView extends View implements Navigator {
 
 	cons = new java.awt.GridBagConstraints();
 	cons.gridx = 0;
-	cons.gridy = 1;
+	cons.gridy = 2;
 	cons.fill = java.awt.GridBagConstraints.BOTH;
 	cons.weightx = 0.0;
 	cons.weighty = 0.0;
@@ -169,6 +182,9 @@ public class MultiView extends View implements Navigator {
 	    }
 	    getTabs().setSelectedComponent(wkPanel);
 	} else if (type == MONTH) {
+	    if (!calPanel.isDisplayable()) {
+		tabs_.addTab(Resource.getPlainResourceString("Month_View"), calPanel);
+	    }
 	    getTabs().setSelectedComponent(calPanel);
 	}
     }
@@ -237,10 +253,11 @@ public class MultiView extends View implements Navigator {
 		ptPanel = new ProjectTreePanel();
 	    }
 
-	    tabs_.addTab(Resource.getPlainResourceString("Month_View"), null, calPanel);
-	    tabs_.addTab(Resource.getPlainResourceString("Week_View"), wkPanel);
-	    tabs_.addTab(Resource.getPlainResourceString("Day_View"), dayPanel);
+	    tabs_.addTab(Resource.getPlainResourceString("Month_View"), calPanel);
+	    //tabs_.addTab(Resource.getPlainResourceString("Week_View"), wkPanel);
+	    //tabs_.addTab(Resource.getPlainResourceString("Day_View"), dayPanel);
 
+	    /*
 	    if (!TaskModel.getReference().hasSubTasks()) {
 		JTextArea ta = new JTextArea();
 		ta.setText(Resource.getPlainResourceString("ProjectsNotSupported"));
@@ -261,6 +278,7 @@ public class MultiView extends View implements Navigator {
 		tabs_.addTab(Resource.getPlainResourceString("Memos"), ta);
 	    } else
 		tabs_.addTab(Resource.getPlainResourceString("Memos"), memoPanel);
+		*/
 	    tabs_.addChangeListener(new ChangeListener() {
 		public void stateChanged(ChangeEvent e) {
 		    tabChanged();
@@ -440,5 +458,91 @@ public class MultiView extends View implements Navigator {
     public void closeTabs()
     {
 	tabs_.closeClosableTabs();
+    }
+    
+
+    private JToolBar getToolBar()
+    {
+	JToolBar bar = new JToolBar();
+	bar.setFloatable(false);
+	
+	JButton monbut = new JButton(new ImageIcon(getClass().getResource("/resource/month.jpg")));
+	monbut.setToolTipText(Resource.getPlainResourceString("Month_View"));
+	monbut.addActionListener(new java.awt.event.ActionListener() {
+	    public void actionPerformed(java.awt.event.ActionEvent evt) {
+		setView(MONTH);
+	    }
+	});
+	bar.add(monbut);
+	
+	JButton weekbut = new JButton(new ImageIcon(getClass().getResource("/resource/week.jpg")));
+	weekbut.setToolTipText(Resource.getPlainResourceString("Week_View"));
+	weekbut.addActionListener(new java.awt.event.ActionListener() {
+	    public void actionPerformed(java.awt.event.ActionEvent evt) {
+		setView(WEEK);
+	    }
+	});
+	bar.add(weekbut);
+	
+	JButton daybut = new JButton(new ImageIcon(getClass().getResource("/resource/day.jpg")));
+	daybut.setToolTipText(Resource.getPlainResourceString("Day_View"));
+	daybut.addActionListener(new java.awt.event.ActionListener() {
+	    public void actionPerformed(java.awt.event.ActionEvent evt) {
+		setView(DAY);
+	    }
+	});
+	bar.add(daybut);
+	
+	JButton addrbut = new JButton(new ImageIcon(getClass().getResource("/resource/addr16.jpg")));
+	addrbut.setToolTipText(Resource.getPlainResourceString("Address_Book"));
+	addrbut.addActionListener(new java.awt.event.ActionListener() {
+	    public void actionPerformed(java.awt.event.ActionEvent evt) {
+		MultiView.getMainView().addView(AddrListView.getReference());
+	    }
+	});
+	bar.add(addrbut);
+	
+	JButton todobut = new JButton(new ImageIcon(getClass().getResource("/resource/Properties16.gif")));
+	todobut.setToolTipText(Resource.getPlainResourceString("To_Do"));
+	todobut.addActionListener(new java.awt.event.ActionListener() {
+	    public void actionPerformed(java.awt.event.ActionEvent evt) {
+		try {
+		    TodoView tg = TodoView.getReference();
+		    MultiView.getMainView().addView(tg);    
+		} catch (Exception e) {
+		    Errmsg.errmsg(e);
+		}
+	    }
+	});
+	bar.add(todobut);
+	
+	JButton taskbut = new JButton(new ImageIcon(getClass().getResource("/resource/Preferences16.gif")));
+	taskbut.setToolTipText(Resource.getPlainResourceString("tasks"));
+	taskbut.addActionListener(new java.awt.event.ActionListener() {
+	    public void actionPerformed(java.awt.event.ActionEvent evt) {
+		MultiView.getMainView().showTasks();
+	    }
+	});
+	bar.add(taskbut);
+	
+	JButton memobut = new JButton(new ImageIcon(getClass().getResource("/resource/Edit16.gif")));
+	memobut.setToolTipText(Resource.getPlainResourceString("Memos"));
+	memobut.addActionListener(new java.awt.event.ActionListener() {
+	    public void actionPerformed(java.awt.event.ActionEvent evt) {
+		MultiView.getMainView().showMemos();
+	    }
+	});
+	bar.add(memobut);
+	
+	JButton srchbut = new JButton(new ImageIcon(getClass().getResource("/resource/Find16.gif")));
+	srchbut.setToolTipText(Resource.getPlainResourceString("srch"));
+	srchbut.addActionListener(new java.awt.event.ActionListener() {
+	    public void actionPerformed(java.awt.event.ActionEvent evt) {
+		new SearchView().setVisible(true);
+	    }
+	});
+	bar.add(srchbut);
+	
+	return bar;
     }
 }

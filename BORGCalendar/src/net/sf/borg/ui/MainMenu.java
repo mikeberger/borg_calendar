@@ -230,7 +230,7 @@ public class MainMenu {
 
 	ActionMenu.add(ToDoMenu);
 
-	AddressMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/WebComponent16.gif")));
+	AddressMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/addr16.jpg")));
 	ResourceHelper.setText(AddressMI, "Address_Book");
 	AddressMI.addActionListener(new java.awt.event.ActionListener() {
 	    public void actionPerformed(java.awt.event.ActionEvent evt) {

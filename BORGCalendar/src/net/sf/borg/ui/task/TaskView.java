@@ -1412,6 +1412,10 @@ public class TaskView extends DockableView {
 			if( pid != null )
 			{
 				Project p = TaskModel.getReference().getProject(pid.intValue());
+				if( TaskModel.isClosed(p))
+				{
+				    projBox.addItem(getProjectString(p));
+				}
 				projBox.setSelectedItem(getProjectString(p));
 				
 			}

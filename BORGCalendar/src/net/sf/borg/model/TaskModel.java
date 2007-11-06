@@ -974,4 +974,10 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 	String type = t.getType();
 	return stat.equals(TaskModel.getReference().getTaskTypes().getFinalState(type));
     }
+    
+    static public boolean isClosed(Project p)
+    {
+	String stat = p.getStatus();
+	return stat.equals(Resource.getPlainResourceString("CLOSED"));
+    }
 }
