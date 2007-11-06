@@ -35,7 +35,6 @@ import javax.swing.JComponent;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.border.BevelBorder;
@@ -418,7 +417,9 @@ public class MultiView extends View implements Navigator {
 	    } else if (getTabs().getSelectedComponent() == taskPanel) {
 		taskPanel.print();
 	    } else if (getTabs().getSelectedComponent() == projPanel) {
-		projPanel.print();
+		projPanel.print();	   
+	    } else if (getTabs().getSelectedComponent() instanceof TodoView) {
+		TodoView.getReference().print();
 	    }
 	} catch (Exception e) {
 	    Errmsg.errmsg(e);
@@ -542,6 +543,15 @@ public class MultiView extends View implements Navigator {
 	    }
 	});
 	bar.add(srchbut);
+	
+	JButton printbut = new JButton(new ImageIcon(getClass().getResource("/resource/Print16.gif")));
+	printbut.setToolTipText(Resource.getPlainResourceString("Print"));
+	printbut.addActionListener(new java.awt.event.ActionListener() {
+	    public void actionPerformed(java.awt.event.ActionEvent evt) {
+		print();
+	    }
+	});
+	bar.add(printbut);
 	
 	return bar;
     }

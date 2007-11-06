@@ -1032,6 +1032,11 @@ public class TodoView extends DockableView implements Prefs.Listener {
 
 	}
     }
+    
+    public void print() throws Exception
+    {
+	TablePrinter.printTable(todoTable);
+    }
     private void printListActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_printListActionPerformed
 
 	// user has requested a print of the table
