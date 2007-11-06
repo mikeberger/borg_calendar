@@ -1,9 +1,13 @@
 Version 1.6.1
 -------------
 Feature [1778929] GANTT Charts
+Feature [1825699] make some of the windows dockable 
+Feature [1826487] add a tree based project browser   
 Feature [1730886] add automatic db update for hsqldb 
 Feature [1730718] support private memos
+Feature [1799708] memo: warn on unsaved changes  
 Feature [1716211] allow undated tasks
+Feature [1824596] send email errors to a window  
 Bug Fix [1777793] do not validate dates of closed tasks/subtasks
 Bug Fix [1746887] null pointer error when chging task due date
 Bug Fix [1738531] task state editor hangs

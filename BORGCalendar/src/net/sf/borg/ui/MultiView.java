@@ -56,6 +56,7 @@ import net.sf.borg.ui.calendar.DayPanel;
 import net.sf.borg.ui.calendar.WeekPanel;
 import net.sf.borg.ui.memo.MemoPanel;
 import net.sf.borg.ui.task.ProjectPanel;
+import net.sf.borg.ui.task.ProjectTreePanel;
 import net.sf.borg.ui.task.TaskListPanel;
 import net.sf.borg.ui.util.DateDialog;
 import net.sf.borg.ui.util.JTabbedPaneWithCloseIcons;
@@ -163,7 +164,7 @@ public class MultiView extends View implements Navigator {
 	    }
 	    getTabs().setSelectedComponent(dayPanel);
 	} else if (type == WEEK) {
-	    if (!dayPanel.isDisplayable()) {
+	    if (!wkPanel.isDisplayable()) {
 		tabs_.addTab(Resource.getPlainResourceString("Week_View"), wkPanel);
 	    }
 	    getTabs().setSelectedComponent(wkPanel);
@@ -183,6 +184,9 @@ public class MultiView extends View implements Navigator {
     
     public void showTasks()
     {
+	if (ptPanel != null && !ptPanel.isDisplayable()) 
+	    tabs_.addTab(Resource.getPlainResourceString("project_tree"), ptPanel);
+	
 	if (projPanel != null && !projPanel.isDisplayable()) {
 	    tabs_.addTab(Resource.getPlainResourceString("projects"), projPanel);
 	}
@@ -194,6 +198,8 @@ public class MultiView extends View implements Navigator {
 	}
 	if (taskPanel != null)
 	    getTabs().setSelectedComponent(taskPanel);
+	
+	
     }
 
     private void tabChanged() {
@@ -208,6 +214,8 @@ public class MultiView extends View implements Navigator {
     private TaskListPanel taskPanel = null;
 
     private ProjectPanel projPanel = null;
+    
+    private ProjectTreePanel ptPanel = null;
 
     private JTabbedPane getTabs() {
 	if (tabs_ == null) {
@@ -224,7 +232,10 @@ public class MultiView extends View implements Navigator {
 	    taskPanel = new TaskListPanel();
 
 	    if (TaskModel.getReference().hasSubTasks())
+	    {
 		projPanel = new ProjectPanel();
+		ptPanel = new ProjectTreePanel();
+	    }
 
 	    tabs_.addTab(Resource.getPlainResourceString("Month_View"), null, calPanel);
 	    tabs_.addTab(Resource.getPlainResourceString("Week_View"), wkPanel);
@@ -236,7 +247,10 @@ public class MultiView extends View implements Navigator {
 		ta.setEditable(false);
 		tabs_.addTab(Resource.getPlainResourceString("projects"),  ta);
 	    } else
+	    {
+		tabs_.addTab(Resource.getPlainResourceString("project_tree"), ptPanel);
 		tabs_.addTab(Resource.getPlainResourceString("projects"), projPanel);
+	    }
 
 	    tabs_.addTab(Resource.getPlainResourceString("tasks"), taskPanel);
 

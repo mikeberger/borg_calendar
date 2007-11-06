@@ -740,8 +740,7 @@ public class ProjectPanel extends JPanel {
     private void project_add() {
 	try {
 	    // display the task editor
-	    ProjectView tskg = new ProjectView(null, ProjectView.T_ADD);
-	    tskg.setVisible(true);
+	    MultiView.getMainView().addView(new ProjectView(null, ProjectView.T_ADD));
 	} catch (Exception e) {
 	    Errmsg.errmsg(e);
 	}
@@ -757,8 +756,7 @@ public class ProjectPanel extends JPanel {
 		return;
 
 	    // display the task editor
-	    ProjectView tskg = new ProjectView(p, ProjectView.T_CHANGE);
-	    tskg.setVisible(true);
+	    MultiView.getMainView().addView(new ProjectView(p, ProjectView.T_CHANGE));
 
 	} catch (Exception e) {
 	    Errmsg.errmsg(e);
@@ -776,8 +774,7 @@ public class ProjectPanel extends JPanel {
 		return;
 
 	    // display the task editor
-	    ProjectView tskg = new ProjectView(p, ProjectView.T_CLONE);
-	    tskg.setVisible(true);
+	    MultiView.getMainView().addView(new ProjectView(p, ProjectView.T_CLONE));
 	} catch (Exception e) {
 	    Errmsg.errmsg(e);
 	}
