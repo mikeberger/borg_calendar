@@ -553,6 +553,18 @@ public class MultiView extends View implements Navigator {
 	});
 	bar.add(printbut);
 	
+	bar.addSeparator();
+	
+	JButton clearbut = new JButton(new ImageIcon(getClass().getResource("/resource/Delete16.gif")));
+	clearbut.setToolTipText(Resource.getPlainResourceString("close_tabs"));
+	clearbut.addActionListener(new java.awt.event.ActionListener() {
+	    public void actionPerformed(java.awt.event.ActionEvent evt) {
+		closeTabs();
+	    }
+	});
+	bar.add(clearbut);
+	
+	
 	return bar;
     }
 }
