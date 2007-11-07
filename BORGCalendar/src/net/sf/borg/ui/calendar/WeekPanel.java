@@ -66,6 +66,9 @@ public class WeekPanel extends ApptBoxPanel implements Navigator, Prefs.Listener
 		pageFormat.getImageableY(), sm_font));
     }
 
+    private double timecolwidth = 0;
+    private double colwidth = 0;
+    private Date beg = null;
     private int drawIt(Graphics g, double width, double height,
 	    double pageWidth, double pageHeight, double pagex, double pagey,
 	    Font sm_font) {
@@ -115,7 +118,7 @@ public class WeekPanel extends ApptBoxPanel implements Navigator, Prefs.Listener
 	cal.add(Calendar.DATE, -1 * offset);
 
 	// save begin/end date and build title
-	Date beg = cal.getTime();
+	beg = cal.getTime();
 	cal.add(Calendar.DATE, 6);
 	Date end = cal.getTime();
 	DateFormat df = DateFormat.getDateInstance(DateFormat.LONG);
@@ -141,14 +144,14 @@ public class WeekPanel extends ApptBoxPanel implements Navigator, Prefs.Listener
 	double rowheight = pageHeight - daytop;
 
 	// width of column with time scale (Y axis)
-	double timecolwidth = pageWidth / 21;
+	timecolwidth = pageWidth / 21;
 
 	// top of schedules appts. non-schedules appts appear above this
 	// and get 1/6 of the day box
 	double aptop = daytop + rowheight / 6;
 
 	// width of each day column - related to timecolwidth
-	double colwidth = (pageWidth - timecolwidth) / 7;
+	colwidth = (pageWidth - timecolwidth) / 7;
 
 	// calculate the bottom and right edge of the grid
 	int calbot = (int) rowheight + daytop;
@@ -432,6 +435,16 @@ public class WeekPanel extends ApptBoxPanel implements Navigator, Prefs.Listener
 	clearData();
 	repaint();
 
+    }
+
+    public Date getDateForX(double x) {
+	
+	double col = (x - timecolwidth)/colwidth;
+	if( col > 6) col = 6;
+	Calendar cal = new GregorianCalendar();
+	cal.setTime(beg);
+	cal.add(Calendar.DATE, (int)col);
+	return cal.getTime();
     }
 
 }

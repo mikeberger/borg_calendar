@@ -210,7 +210,7 @@ public class ApptDayBoxLayout
             }
         }
 
-        public void move(double y_fraction) throws Exception
+        public void move(double y_fraction, Date d) throws Exception
         {
             // calculate new start hour or duration and update appt
             int realtime = realMins(y_fraction, startmin, endmin);
@@ -219,16 +219,26 @@ public class ApptDayBoxLayout
 
             // get appt from DB - one cached here has time prepended to text by Day.getDayInfo()
             Appointment ap = AppointmentModel.getReference().getAppt(appt.getKey());
-            Date oldTime = ap.getDate();
+            //Date oldTime = ap.getDate();
+            int oldkey = ap.getKey();
+            
             GregorianCalendar newCal = new GregorianCalendar();
-            newCal.setTime(oldTime);
+            //System.out.println(d);
+            newCal.setTime(d);
             newCal.set(Calendar.HOUR_OF_DAY, hour);
             int roundMin = (min / 5) * 5;
             newCal.set(Calendar.MINUTE, roundMin);
+            int newkey = AppointmentModel.dkey(newCal);
             Date newTime = newCal.getTime();
             ap.setDate(newTime);
-            AppointmentModel.getReference().saveAppt(ap, false);
-
+            if( oldkey != newkey ) { // date chg
+        	AppointmentModel.getReference().delAppt(ap.getKey());
+        	AppointmentModel.getReference().saveAppt(ap, true);
+            }
+            else
+            {
+        	AppointmentModel.getReference().saveAppt(ap, false);
+            }
         }
 
         public void setText(String s)
@@ -324,7 +334,7 @@ public class ApptDayBoxLayout
         {
         }
 
-        public void move(double d)
+        public void move(double d, Date d2)
         {
         }
 

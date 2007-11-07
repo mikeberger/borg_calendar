@@ -351,5 +351,11 @@ public class DayPanel extends ApptBoxPanel implements Navigator, Prefs.Listener,
        repaint();
         
     }
+
+     Date getDateForX(double x) {
+	GregorianCalendar cal = new GregorianCalendar(year_, month_, date_, 23,
+		59);
+	return cal.getTime();
+    }
 	
 }

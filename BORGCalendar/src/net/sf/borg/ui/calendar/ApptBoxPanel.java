@@ -22,7 +22,7 @@ import javax.swing.JPopupMenu;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Resource;
 
-public class ApptBoxPanel extends JPanel
+public abstract class ApptBoxPanel extends JPanel
 {
 
     final static private float hlthickness = 3.0f;
@@ -44,6 +44,8 @@ public class ApptBoxPanel extends JPanel
 
     private double resizeMin = 0;
     private double resizeMax = 0;
+    
+    abstract Date getDateForX(double x);
 
     public void setResizeBounds(int min, int max)
     {
@@ -174,9 +176,12 @@ public class ApptBoxPanel extends JPanel
                 double y = resizeBox.y;
                 y = Math.max(y, resizeMin);
                 y = Math.min(y, resizeMax);
+                
+                double centerx = evt.getX() + draggedBox.w/2;
+                Date d = getDateForX(centerx);
                 try
                 {
-                    draggedBox.model.move((y - resizeMin) / (resizeMax - resizeMin));
+                    draggedBox.model.move((y - resizeMin) / (resizeMax - resizeMin),d);
                 }
                 catch (Exception e)
                 {
@@ -214,7 +219,9 @@ public class ApptBoxPanel extends JPanel
                     int top = evt.getY()-(draggedBox.h/2);
                     if( top < resizeMin ) top = (int)resizeMin;
                     if( top + draggedBox.h > resizeMax) top = (int)resizeMax - draggedBox.h;
-                    setResizeBox(draggedBox.x, top, draggedBox.w, draggedBox.h);
+                    
+                    setResizeBox(evt.getX(), top, draggedBox.w, draggedBox.h);
+                    //setResizeBox(draggedBox.x, top, draggedBox.w, draggedBox.h);
                 }
                 else if (resizeTop == true)
                 {
@@ -284,7 +291,7 @@ public class ApptBoxPanel extends JPanel
     {
         public void resize(boolean isTop, double y_fraction) throws Exception;
         
-        public void move(double y_fraction) throws Exception;
+        public void move(double y_fraction, Date d) throws Exception;
 
         public void create(double top, double bottom, String text);
 
