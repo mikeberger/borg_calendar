@@ -48,6 +48,7 @@ import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Resource;
 import net.sf.borg.common.Warning;
 import net.sf.borg.model.CategoryModel;
+import net.sf.borg.model.Model;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.beans.Project;
 import net.sf.borg.model.beans.Task;
@@ -71,7 +72,7 @@ import net.sf.borg.ui.util.TableSorter;
 // for a whole task traking application separate from the calendar
 // application. In prior non-java versions of BORG, the task tracker
 // and calendar apps were completely separate apps.
-public class ProjectPanel extends JPanel {
+public class ProjectPanel extends JPanel implements Model.Listener {
 
     private class ProjIntRenderer extends JLabel implements TableCellRenderer {
 
@@ -152,7 +153,7 @@ public class ProjectPanel extends JPanel {
     /** Creates new form btgui */
     public ProjectPanel() {
 	super();
-
+	TaskModel.getReference().addListener(this);
 	try {
 	    initComponents();
 	    projectTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -796,6 +797,11 @@ public class ProjectPanel extends JPanel {
 	    Errmsg.errmsg(e);
 	}
 
+    }
+
+    public void remove() {
+	// TODO Auto-generated method stub
+	
     }
 
 }  //  @jve:decl-index=0:visual-constraint="-18,21"

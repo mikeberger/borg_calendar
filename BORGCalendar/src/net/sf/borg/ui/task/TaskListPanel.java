@@ -52,6 +52,7 @@ import javax.swing.table.TableCellRenderer;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.CategoryModel;
+import net.sf.borg.model.Model;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.TaskTypes;
 import net.sf.borg.model.beans.Project;
@@ -76,7 +77,7 @@ import net.sf.borg.ui.util.TableSorter;
 // for a whole task traking application separate from the calendar
 // application. In prior non-java versions of BORG, the task tracker
 // and calendar apps were completely separate apps.
-public class TaskListPanel extends JPanel {
+public class TaskListPanel extends JPanel implements Model.Listener {
 
     // override class for the default table cell renderer that will change
     // the
@@ -200,7 +201,7 @@ public class TaskListPanel extends JPanel {
     /** Creates new form btgui */
     public TaskListPanel() {
 	super();
-
+	TaskModel.getReference().addListener(this);
 	try {
 	    initComponents();
 	    taskTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -1067,5 +1068,10 @@ public class TaskListPanel extends JPanel {
 	    Errmsg.errmsg(e);
 	}
 
+    }
+
+    public void remove() {
+	// TODO Auto-generated method stub
+	
     }
 }

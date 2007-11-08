@@ -7,5 +7,6 @@ public interface Navigator {
 	public void next();
 	public void prev();
 	public void today();
+	public String getNavLabel();
 	public void goTo(Calendar cal);
 }

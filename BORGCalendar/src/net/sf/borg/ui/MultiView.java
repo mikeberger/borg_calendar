@@ -19,10 +19,8 @@
  */
 package net.sf.borg.ui;
 
-import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -33,13 +31,10 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JMenuBar;
-import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.border.BevelBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
@@ -61,11 +56,10 @@ import net.sf.borg.ui.memo.MemoPanel;
 import net.sf.borg.ui.task.ProjectPanel;
 import net.sf.borg.ui.task.ProjectTreePanel;
 import net.sf.borg.ui.task.TaskListPanel;
-import net.sf.borg.ui.util.DateDialog;
 import net.sf.borg.ui.util.JTabbedPaneWithCloseIcons;
 
 // weekView handles the printing of a single week
-public class MultiView extends View implements Navigator {
+public class MultiView extends View  {
 
     static private MultiView mainView = null;
 
@@ -120,7 +114,7 @@ public class MultiView extends View implements Navigator {
 
 	// for the preview, create a JFrame with the preview panel and print
 	// menubar
-	JMenuBar menubar = new MainMenu(this).getMenuBar();
+	JMenuBar menubar = new MainMenu().getMenuBar();
 
 	menubar.setBorder(new BevelBorder(BevelBorder.RAISED));
 
@@ -143,15 +137,6 @@ public class MultiView extends View implements Navigator {
 	cons.weighty = 1.0;
 
 	getContentPane().add(getTabs(), cons);
-
-	cons = new java.awt.GridBagConstraints();
-	cons.gridx = 0;
-	cons.gridy = 2;
-	cons.fill = java.awt.GridBagConstraints.BOTH;
-	cons.weightx = 0.0;
-	cons.weighty = 0.0;
-
-	getContentPane().add(getNavPanel(), cons);
 
 	setTitle("BORG");
 	setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -217,15 +202,6 @@ public class MultiView extends View implements Navigator {
 	
     }
 
-    private void tabChanged() {
-	Component c = tabs_.getSelectedComponent();
-	if (c instanceof Navigator)
-	    navPanel.setVisible(true);
-	else
-	    navPanel.setVisible(false);
-
-    }
-
     private TaskListPanel taskPanel = null;
 
     private ProjectPanel projPanel = null;
@@ -253,36 +229,7 @@ public class MultiView extends View implements Navigator {
 	    }
 
 	    tabs_.addTab(Resource.getPlainResourceString("Month_View"), calPanel);
-	    //tabs_.addTab(Resource.getPlainResourceString("Week_View"), wkPanel);
-	    //tabs_.addTab(Resource.getPlainResourceString("Day_View"), dayPanel);
-
-	    /*
-	    if (!TaskModel.getReference().hasSubTasks()) {
-		JTextArea ta = new JTextArea();
-		ta.setText(Resource.getPlainResourceString("ProjectsNotSupported"));
-		ta.setEditable(false);
-		tabs_.addTab(Resource.getPlainResourceString("projects"),  ta);
-	    } else
-	    {
-		tabs_.addTab(Resource.getPlainResourceString("project_tree"), ptPanel);
-		tabs_.addTab(Resource.getPlainResourceString("projects"), projPanel);
-	    }
-
-	    tabs_.addTab(Resource.getPlainResourceString("tasks"), taskPanel);
-
-	    if (!MemoModel.getReference().hasMemos()) {
-		JTextArea ta = new JTextArea();
-		ta.setText(Resource.getPlainResourceString("MemosNotSupported"));
-		ta.setEditable(false);
-		tabs_.addTab(Resource.getPlainResourceString("Memos"), ta);
-	    } else
-		tabs_.addTab(Resource.getPlainResourceString("Memos"), memoPanel);
-		*/
-	    tabs_.addChangeListener(new ChangeListener() {
-		public void stateChanged(ChangeEvent e) {
-		    tabChanged();
-		}
-	    });
+	    
 	}
 	return tabs_;
     }
@@ -290,120 +237,6 @@ public class MultiView extends View implements Navigator {
     public void destroy() {
 	this.dispose();
 	mainView = null;
-    }
-
-    public void refresh() {
-	wkPanel.clearData();
-	wkPanel.repaint();
-	dayPanel.clearData();
-	dayPanel.repaint();
-	calPanel.refresh();
-	if (memoPanel != null)
-	    memoPanel.refresh();
-	taskPanel.refresh();
-	if (projPanel != null)
-	    projPanel.refresh();
-    }
-
-    public void next() {
-	if (getTabs().getSelectedComponent() == wkPanel) {
-	    cal_.add(Calendar.DATE, 7);
-	} else if (getTabs().getSelectedComponent() == dayPanel) {
-	    cal_.add(Calendar.DATE, 1);
-	} else if (getTabs().getSelectedComponent() == calPanel) {
-	    cal_.add(Calendar.MONTH, 1);
-	}
-	wkPanel.goTo(cal_);
-	dayPanel.goTo(cal_);
-	calPanel.goTo(cal_);
-
-    }
-
-    public void prev() {
-	if (getTabs().getSelectedComponent() == wkPanel) {
-	    cal_.add(Calendar.DATE, -7);
-	} else if (getTabs().getSelectedComponent() == dayPanel) {
-	    cal_.add(Calendar.DATE, -1);
-	} else if (getTabs().getSelectedComponent() == calPanel) {
-	    cal_.add(Calendar.MONTH, -1);
-	}
-	wkPanel.goTo(cal_);
-	dayPanel.goTo(cal_);
-	calPanel.goTo(cal_);
-    }
-
-    public void today() {
-	cal_ = new GregorianCalendar();
-	wkPanel.today();
-	dayPanel.today();
-	calPanel.today();
-
-    }
-
-    public void goTo(Calendar cal) {
-	cal_ = cal;
-	wkPanel.goTo(cal);
-	dayPanel.goTo(cal);
-	calPanel.goTo(cal);
-
-    }
-
-    private JPanel navPanel = null;
-
-    private JPanel getNavPanel() {
-	if (navPanel == null) {
-	    GridLayout gridLayout62 = new GridLayout();
-	    navPanel = new JPanel();
-	    navPanel.setLayout(gridLayout62);
-	    gridLayout62.setRows(1);
-	    JButton Prev = new JButton();
-	    Prev.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Back16.gif")));
-	    ResourceHelper.setText(Prev, "<<__Prev");
-	    Prev.addActionListener(new java.awt.event.ActionListener() {
-		public void actionPerformed(java.awt.event.ActionEvent evt) {
-		    prev();
-		}
-	    });
-
-	    JButton Next = new JButton();
-	    Next.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Forward16.gif")));
-	    ResourceHelper.setText(Next, "Next__>>");
-	    Next.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-	    Next.addActionListener(new java.awt.event.ActionListener() {
-		public void actionPerformed(java.awt.event.ActionEvent evt) {
-		    next();
-		}
-	    });
-
-	    JButton Today = new JButton();
-	    Today.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Home16.gif")));
-	    ResourceHelper.setText(Today, "Today");
-	    Today.addActionListener(new java.awt.event.ActionListener() {
-		public void actionPerformed(java.awt.event.ActionEvent evt) {
-		    today();
-		}
-	    });
-
-	    JButton Goto = new JButton();
-	    Goto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Undo16.gif")));
-	    ResourceHelper.setText(Goto, "Go_To");
-	    Goto.addActionListener(new java.awt.event.ActionListener() {
-		public void actionPerformed(java.awt.event.ActionEvent evt) {
-		    DateDialog dlg = new DateDialog(null);
-		    dlg.setCalendar(new GregorianCalendar());
-		    dlg.setVisible(true);
-		    Calendar dlgcal = dlg.getCalendar();
-		    if (dlgcal == null)
-			return;
-		    goTo(dlgcal);
-		}
-	    });
-	    navPanel.add(Prev, null);
-	    navPanel.add(Today, null);
-	    navPanel.add(Goto, null);
-	    navPanel.add(Next, null);
-	}
-	return navPanel;
     }
 
     public void print() {
@@ -566,5 +399,17 @@ public class MultiView extends View implements Navigator {
 	
 	
 	return bar;
+    }
+
+    public void refresh() {
+	// TODO Auto-generated method stub
+	
+    }
+    
+    public void goTo(GregorianCalendar cal)
+    {
+	dayPanel.goTo(cal);
+	calPanel.goTo(cal);
+	wkPanel.goTo(cal);
     }
 }

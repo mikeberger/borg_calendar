@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -19,6 +20,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
@@ -28,14 +30,12 @@ import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.IOHelper;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.MemoModel;
+import net.sf.borg.model.Model;
 import net.sf.borg.model.beans.Memo;
 import net.sf.borg.ui.util.StripedTable;
 import net.sf.borg.ui.util.TableSorter;
 
-import javax.swing.JCheckBox;
-import javax.swing.SwingConstants;
-
-public class MemoPanel extends JPanel implements ListSelectionListener {
+public class MemoPanel extends JPanel implements ListSelectionListener, Model.Listener {
 
     private static final long serialVersionUID = 1L;
 
@@ -80,6 +80,9 @@ public class MemoPanel extends JPanel implements ListSelectionListener {
 	memoText.setEditable(false);
 	getSaveButton().setEnabled(false);
 	refresh();
+	MemoModel.getReference().addListener(this);
+
+
     }
 
     /**
@@ -533,6 +536,11 @@ public class MemoPanel extends JPanel implements ListSelectionListener {
 		
 	    }
 	    return privateBox;
+	}
+
+	public void remove() {
+	    // TODO Auto-generated method stub
+	    
 	}
 
 	

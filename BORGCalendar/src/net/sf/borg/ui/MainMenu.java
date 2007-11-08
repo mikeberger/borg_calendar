@@ -30,9 +30,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.net.URL;
-import java.util.Calendar;
 import java.util.Collection;
-import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.Properties;
 
@@ -68,7 +66,6 @@ import net.sf.borg.ui.address.AddrListView;
 import net.sf.borg.ui.calendar.MonthPreView;
 import net.sf.borg.ui.calendar.TodoView;
 import net.sf.borg.ui.task.TaskConfigurator;
-import net.sf.borg.ui.util.DateDialog;
 import net.sf.borg.ui.util.OverwriteConfirm;
 import net.sf.borg.ui.util.ScrolledDialog;
 
@@ -94,16 +91,6 @@ public class MainMenu {
     private JMenu OptionMenu = new javax.swing.JMenu();
 
     private JMenuItem jMenuItem1 = new javax.swing.JMenuItem();
-
-    private JMenu navmenu = new javax.swing.JMenu();
-
-    private JMenuItem nextmi = new javax.swing.JMenuItem();
-
-    private JMenuItem prevmi = new javax.swing.JMenuItem();
-
-    private JMenuItem todaymi = new javax.swing.JMenuItem();
-
-    private JMenuItem gotomi = new javax.swing.JMenuItem();
 
     private JMenu catmenu = new javax.swing.JMenu();
 
@@ -148,8 +135,6 @@ public class MainMenu {
     private JMenuBar menuBar = new JMenuBar();
 
     JMenuItem sqlMI = new JMenuItem();
-
-    Navigator nav_ = null;
 
     private void edittypesActionPerformed(java.awt.event.ActionEvent evt) {
 	try {
@@ -214,8 +199,8 @@ public class MainMenu {
 	}
     }
 
-    public MainMenu(Navigator nav) {
-	nav_ = nav;
+    public MainMenu() {
+	
 	menuBar.setBorder(new javax.swing.border.BevelBorder(javax.swing.border.BevelBorder.RAISED));
 	ActionMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Application16.gif")));
 	ResourceHelper.setText(ActionMenu, "Action");
@@ -400,54 +385,6 @@ public class MainMenu {
 	OptionMenu.add(tsm);
 	menuBar.add(OptionMenu);
 
-	navmenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Refresh16.gif")));
-	ResourceHelper.setText(navmenu, "navmenu");
-	ResourceHelper.setText(nextmi, "Next");
-	nextmi.addActionListener(new java.awt.event.ActionListener() {
-	    public void actionPerformed(java.awt.event.ActionEvent evt) {
-		nav_.next();
-	    }
-	});
-
-	navmenu.add(nextmi);
-
-	ResourceHelper.setText(prevmi, "Previous");
-	prevmi.addActionListener(new java.awt.event.ActionListener() {
-	    public void actionPerformed(java.awt.event.ActionEvent evt) {
-		PrevActionPerformed(evt);
-	    }
-	});
-
-	navmenu.add(prevmi);
-
-	ResourceHelper.setText(todaymi, "Today");
-	todaymi.addActionListener(new java.awt.event.ActionListener() {
-	    public void actionPerformed(java.awt.event.ActionEvent evt) {
-		nav_.today();
-	    }
-	});
-
-	navmenu.add(todaymi);
-
-	ResourceHelper.setText(gotomi, "Goto");
-	gotomi.addActionListener(new java.awt.event.ActionListener() {
-	    public void actionPerformed(java.awt.event.ActionEvent evt) {
-		// GOTO a particular month
-		DateDialog dlg = new DateDialog(null);
-		Calendar cal = new GregorianCalendar();
-		cal.setFirstDayOfWeek(Prefs.getIntPref(PrefName.FIRSTDOW));
-		dlg.setCalendar(cal);
-		dlg.setVisible(true);
-		Calendar dlgcal = dlg.getCalendar();
-		if (dlgcal == null)
-		    return;
-		nav_.goTo(dlgcal);
-	    }
-	});
-
-	navmenu.add(gotomi);
-
-	menuBar.add(navmenu);
 
 	catmenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Preferences16.gif")));
 	ResourceHelper.setText(catmenu, "Categories");
@@ -1093,25 +1030,19 @@ public class MainMenu {
 
     }// GEN-LAST:event_licsendActionPerformed
 
-    private void PrevActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_PrevActionPerformed
-	nav_.prev();
-    }// GEN-LAST:event_PrevActionPerformed
 
     private void PrintMonthMIActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_PrintMonthMIActionPerformed
-	if (nav_ instanceof MultiView) {
-	    MultiView cv = (MultiView) nav_;
-	    cv.print();
-	}
 
-    }// GEN-LAST:event_PrintMonthMIActionPerformed
+	    MultiView.getMainView().print();
+
+    }
 
     private void printprevActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_printprevActionPerformed
-    {// GEN-HEADEREND:event_printprevActionPerformed
-	if (nav_ instanceof MultiView) {
-	    MultiView cv = (MultiView) nav_;
-	    new MonthPreView(cv.getMonth(), cv.getYear());
-	}
-    }// GEN-LAST:event_printprevActionPerformed
+    {
+	
+	    new MonthPreView(MultiView.getMainView().getMonth(), MultiView.getMainView().getYear());
+	
+    }
 
     private void SearchMIActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_SearchMIActionPerformed
 	// user wants to do a search, so prompt for search string and request
@@ -1119,14 +1050,7 @@ public class MainMenu {
 
 	MultiView.getMainView().addView(new SearchView());
 
-    }// GEN-LAST:event_SearchMIActionPerformed
-
-    /*
-         * private void TaskTrackMIActionPerformed(java.awt.event.ActionEvent
-         * evt) {// GEN-FIRST:event_TaskTrackMIActionPerformed TaskListView bt_ =
-         * TaskListView.getReference(); bt_.refresh(); bt_.setVisible(true); }//
-         * GEN-LAST:event_TaskTrackMIActionPerformed
-         */
+    }
 
     private void ToDoMenuActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_ToDoMenuActionPerformed
 	// ask borg class to bring up the todo window
