@@ -652,7 +652,7 @@ public class MainMenu {
 	ResourceHelper.setText(rlsnotes, "rlsnotes");
 	rlsnotes.addActionListener(new java.awt.event.ActionListener() {
 	    public void actionPerformed(java.awt.event.ActionEvent evt) {
-		new HelpScreen("/resource/RELEASE_NOTES.txt").setVisible(true);
+		MultiView.getMainView().addView(new HelpScreen("/resource/RELEASE_NOTES.txt",Resource.getPlainResourceString("rlsnotes")));
 	    }
 	});
 
@@ -846,7 +846,8 @@ public class MainMenu {
 
     private void chglogActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_chglogActionPerformed
     {// GEN-HEADEREND:event_chglogActionPerformed
-	new HelpScreen("/resource/CHANGES.txt").setVisible(true);
+	MultiView.getMainView().addView(new HelpScreen("/resource/CHANGES.txt",Resource.getPlainResourceString("viewchglog")));
+
     }// GEN-LAST:event_chglogActionPerformed
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem3ActionPerformed
@@ -1088,7 +1089,8 @@ public class MainMenu {
 
     private void licsendActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_licsendActionPerformed
 	// show the open source license
-	new HelpScreen("/resource/license.htm").setVisible(true);
+	MultiView.getMainView().addView(new HelpScreen("/resource/license.htm",Resource.getPlainResourceString("License")));
+
     }// GEN-LAST:event_licsendActionPerformed
 
     private void PrevActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_PrevActionPerformed
