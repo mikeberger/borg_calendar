@@ -714,7 +714,10 @@ public class MainMenu {
 		    + "\n";
 	    info += Resource.getPlainResourceString("addresses") + ": " + AddressModel.getReference().getAddresses().size() + "\n";
 	    info += Resource.getPlainResourceString("tasks") + ": " + TaskModel.getReference().getTasks().size() + "\n";
-
+	    info += Resource.getPlainResourceString("projects") + ": " + TaskModel.getReference().getProjects().size() + "\n";
+	    info += Resource.getPlainResourceString("Memos") + ": " + MemoModel.getReference().getMemos().size() + "\n";
+	    
+	    
 	} catch (Exception e) {
 	    Errmsg.errmsg(e);
 	    return;

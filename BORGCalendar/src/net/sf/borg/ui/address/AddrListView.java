@@ -49,6 +49,7 @@ import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.AddressVcardAdapter;
 import net.sf.borg.model.beans.Address;
 import net.sf.borg.ui.DockableView;
+import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.util.PopupMenuHelper;
 import net.sf.borg.ui.util.StripedTable;
@@ -149,7 +150,8 @@ public class AddrListView extends DockableView {
 						// tbl
 	    Object[] oa = addrs_.toArray();
 	    Address addr = (Address) oa[k];
-	    new AddressView(addr).setVisible(true);
+	    
+	    MultiView.getMainView().addView(new AddressView(addr));
 	} catch (Exception e) {
 	    Errmsg.errmsg(e);
 	}
@@ -288,7 +290,7 @@ public class AddrListView extends DockableView {
     {// GEN-HEADEREND:event_newbuttonActionPerformed
 	Address addr = AddressModel.getReference().newAddress();
 	addr.setKey(-1);
-	new AddressView(addr).setVisible(true);
+	MultiView.getMainView().addView(new AddressView(addr));
     }// GEN-LAST:event_newbuttonActionPerformed
 
     private void printListActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_printListActionPerformed
