@@ -1,6 +1,8 @@
 package net.sf.borg.ui.task;
 
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,6 +12,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import javax.swing.ImageIcon;
+import javax.swing.JCheckBox;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -86,6 +89,8 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener, M
 
     private JScrollPane view_scroll = new JScrollPane(new JPanel());
 
+    private JCheckBox showClosed = new JCheckBox(Resource.getPlainResourceString("show_closed"));
+    
     public ProjectTreePanel() {
 	super(new GridLayout(0, 1));
 	TaskModel.getReference().addListener(this);
@@ -101,9 +106,27 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener, M
 
 	// Create the scroll pane and add the tree to it.
 	treeView = new JScrollPane(tree);
+	
+	JPanel leftPane = new JPanel();
+	leftPane.setLayout(new GridBagLayout());
+	GridBagConstraints cons1 = new GridBagConstraints();
+	cons1.fill = GridBagConstraints.BOTH;
+	cons1.gridx = 0;
+	cons1.gridy = 0;
+	cons1.weightx = 1.0;
+	cons1.weighty = 1.0;
+	leftPane.add(treeView, cons1);
+	GridBagConstraints cons2 = new GridBagConstraints();
+	cons2.fill = GridBagConstraints.BOTH;
+	cons2.gridx = 0;
+	cons2.gridy = 1;
+	cons2.weightx = 0;
+	cons2.weighty = 0;
+	
+	leftPane.add(showClosed,cons2);
 
 	// Add the scroll panes to a split pane.
-	splitPane.setTopComponent(treeView);
+	splitPane.setTopComponent(leftPane);
 	splitPane.setBottomComponent(view_scroll);
 
 	Dimension minimumSize = new Dimension(200, 50);
@@ -127,6 +150,13 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener, M
 		add_task();
 	    }
 
+	});
+	
+	
+	showClosed.addActionListener(new ActionListener(){
+	    public void actionPerformed(ActionEvent e) {
+		refresh();
+	    } 
 	});
     }
 
@@ -262,6 +292,8 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener, M
 	    Iterator it = projects.iterator();
 	    while (it.hasNext()) {
 		Project p = (Project) it.next();
+		if( !showClosed.isSelected() && TaskModel.isClosed(p))
+		    continue;
 		DefaultMutableTreeNode pnode = new DefaultMutableTreeNode(new Node(p.getDescription(), p));
 		top.add(pnode);
 		Collection tasks = TaskModel.getReference().getTasks(p.getId().intValue());
