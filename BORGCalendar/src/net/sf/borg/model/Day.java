@@ -501,7 +501,7 @@ public class Day {
 		
 		    if (color == null)
 			info.setColor("navy");
-
+		    info.setTodo(true);
 		    info.setText(tx);
 		    ret.addAppt(info);
 		}
@@ -530,7 +530,7 @@ public class Day {
 		  
 		    if (color == null)
 			info.setColor("navy");
-		    
+		    info.setTodo(true);
 		    info.setText(tx);
 		    ret.addAppt(info);
 		}
@@ -562,7 +562,7 @@ public class Day {
 		   
 		    if (color == null)
 			info.setColor("navy");
-
+		    info.setTodo(true);
 		    info.setText(tx);
 		    ret.addAppt(info);
 		}
