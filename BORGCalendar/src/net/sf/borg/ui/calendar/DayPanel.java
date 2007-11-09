@@ -44,7 +44,10 @@ import javax.swing.JPanel;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
+import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Day;
+import net.sf.borg.model.Model;
+import net.sf.borg.model.TaskModel;
 import net.sf.borg.ui.NavPanel;
 import net.sf.borg.ui.Navigator;
 import net.sf.borg.ui.calendar.ApptDayBoxLayout.ApptDayBox;
@@ -52,19 +55,82 @@ import net.sf.borg.ui.calendar.ApptDayBoxLayout.DateZone;
 
 // weekPanel handles the printing of a single week
 public class DayPanel extends JPanel implements Printable {
-    private class DaySubPanel extends ApptBoxPanel implements Navigator, Prefs.Listener, Printable {
-
-	private int year_;
-
-	private int month_;
-
-	private int date_;
+    private class DaySubPanel extends ApptBoxPanel implements Navigator, Prefs.Listener, Printable, Model.Listener {
 
 	// set up dash line stroke
 	private float dash1[] = { 1.0f, 3.0f };
 
 	private BasicStroke dashed = new BasicStroke(0.02f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 3.0f, dash1,
 		0.0f);
+
+	private int date_;
+
+	private ApptDayBoxLayout layout;
+
+	private int month_;
+
+	private int year_;
+
+	
+
+	boolean needLoad = true;
+	public DaySubPanel(int month, int year, int date) {
+	    year_ = year;
+	    month_ = month;
+	    date_ = date;
+	    clearData();
+	    Prefs.addListener(this);
+	    AppointmentModel.getReference().addListener(this);
+	    TaskModel.getReference().addListener(this);
+
+	}
+
+	public void clearData() {
+	    layout = null;
+	    needLoad = true;
+	    setToolTipText(null);
+	}
+
+	public String getNavLabel() {
+	    GregorianCalendar cal = new GregorianCalendar(year_, month_, date_, 23, 59);
+	    Date dt = cal.getTime();
+	    DateFormat df = DateFormat.getDateInstance(DateFormat.FULL);
+	    return df.format(dt);
+	}
+
+	public void goTo(Calendar cal) {
+	    year_ = cal.get(Calendar.YEAR);
+	    month_ = cal.get(Calendar.MONTH);
+	    date_ = cal.get(Calendar.DATE);
+	    clearData();
+	    repaint();
+	}
+
+	public void next() {
+	    GregorianCalendar cal = new GregorianCalendar(year_, month_, date_, 23, 59);
+	    cal.add(Calendar.DATE, 1);
+	    year_ = cal.get(Calendar.YEAR);
+	    month_ = cal.get(Calendar.MONTH);
+	    date_ = cal.get(Calendar.DATE);
+	    clearData();
+	    repaint();
+	}
+
+	public void prefsChanged() {
+	    clearData();
+	    repaint();
+
+	}
+
+	public void prev() {
+	    GregorianCalendar cal = new GregorianCalendar(year_, month_, date_, 23, 59);
+	    cal.add(Calendar.DATE, -1);
+	    year_ = cal.get(Calendar.YEAR);
+	    month_ = cal.get(Calendar.MONTH);
+	    date_ = cal.get(Calendar.DATE);
+	    clearData();
+	    repaint();
+	}
 
 	// print does the actual formatting of the printout
 	public int print(Graphics g, PageFormat pageFormat, int pageIndex) throws PrinterException {
@@ -74,6 +140,25 @@ public class DayPanel extends JPanel implements Printable {
 	    Font sm_font = Font.decode(Prefs.getPref(PrefName.DAYVIEWFONT));
 	    return (drawIt(g, pageFormat.getWidth(), pageFormat.getHeight(), pageFormat.getImageableWidth(), pageFormat
 		    .getImageableHeight(), pageFormat.getImageableX(), pageFormat.getImageableY(), sm_font));
+	}
+
+	public void refresh() {
+	    clearData();
+	    repaint();
+	}
+
+	public void remove() {
+	    // TODO Auto-generated method stub
+
+	}
+
+	public void today() {
+	    GregorianCalendar cal = new GregorianCalendar();
+	    year_ = cal.get(Calendar.YEAR);
+	    month_ = cal.get(Calendar.MONTH);
+	    date_ = cal.get(Calendar.DATE);
+	    clearData();
+	    repaint();
 	}
 
 	private int drawIt(Graphics g, double width, double height, double pageWidth, double pageHeight, double pagex,
@@ -282,83 +367,15 @@ public class DayPanel extends JPanel implements Printable {
 	    }
 	}
 
-	public DaySubPanel(int month, int year, int date) {
-	    year_ = year;
-	    month_ = month;
-	    date_ = date;
-	    clearData();
-	    Prefs.addListener(this);
-	}
-
-	private ApptDayBoxLayout layout;
-
-	boolean needLoad = true;
-
-	public void clearData() {
-	    layout = null;
-	    needLoad = true;
-	    setToolTipText(null);
-	}
-
-	public void next() {
-	    GregorianCalendar cal = new GregorianCalendar(year_, month_, date_, 23, 59);
-	    cal.add(Calendar.DATE, 1);
-	    year_ = cal.get(Calendar.YEAR);
-	    month_ = cal.get(Calendar.MONTH);
-	    date_ = cal.get(Calendar.DATE);
-	    clearData();
-	    repaint();
-	}
-
-	public void prev() {
-	    GregorianCalendar cal = new GregorianCalendar(year_, month_, date_, 23, 59);
-	    cal.add(Calendar.DATE, -1);
-	    year_ = cal.get(Calendar.YEAR);
-	    month_ = cal.get(Calendar.MONTH);
-	    date_ = cal.get(Calendar.DATE);
-	    clearData();
-	    repaint();
-	}
-
-	public void today() {
-	    GregorianCalendar cal = new GregorianCalendar();
-	    year_ = cal.get(Calendar.YEAR);
-	    month_ = cal.get(Calendar.MONTH);
-	    date_ = cal.get(Calendar.DATE);
-	    clearData();
-	    repaint();
-	}
-
-	public void goTo(Calendar cal) {
-	    year_ = cal.get(Calendar.YEAR);
-	    month_ = cal.get(Calendar.MONTH);
-	    date_ = cal.get(Calendar.DATE);
-	    clearData();
-	    repaint();
-	}
-
-	public void prefsChanged() {
-	    clearData();
-	    repaint();
-
-	}
-
 	Date getDateForX(double x) {
 	    GregorianCalendar cal = new GregorianCalendar(year_, month_, date_, 23, 59);
 	    return cal.getTime();
 	}
 
-	public String getNavLabel() {
-	    GregorianCalendar cal = new GregorianCalendar(year_, month_, date_, 23, 59);
-	    Date dt = cal.getTime();
-	    DateFormat df = DateFormat.getDateInstance(DateFormat.FULL);
-	    return df.format(dt);
-	}
-
     }
     
-    private NavPanel nav = null;
     private DaySubPanel dp_ = null;
+    private NavPanel nav = null;
     public DayPanel(int month, int year, int date) {
 	   
 	    dp_ = new DaySubPanel(month, year, date);
