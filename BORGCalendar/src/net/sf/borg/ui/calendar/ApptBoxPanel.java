@@ -1,6 +1,13 @@
 package net.sf.borg.ui.calendar;
 
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
+import java.awt.Shape;
+import java.awt.Stroke;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -12,14 +19,22 @@ import java.awt.font.TextLayout;
 import java.awt.geom.Rectangle2D;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
+import javax.swing.ImageIcon;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 
 import net.sf.borg.common.Errmsg;
+import net.sf.borg.common.PrefName;
+import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 
 public abstract class ApptBoxPanel extends JPanel
@@ -320,6 +335,8 @@ public abstract class ApptBoxPanel extends JPanel
         public void setSelected(boolean b);
         
         public String getTimeString(double y_fraction);
+        
+        public boolean isTodo();
     }
 
     static private class UIBoxInfo
@@ -504,6 +521,13 @@ public abstract class ApptBoxPanel extends JPanel
 
         Stroke stroke = g2.getStroke();
         Iterator it = boxes.iterator();
+        ImageIcon todoIcon = null;
+        String iconname = Prefs.getPref(PrefName.UCS_MARKER);
+        String use_marker = Prefs.getPref(PrefName.UCS_MARKTODO);
+        if(use_marker.equals("true") && (iconname.endsWith(".gif") || iconname.endsWith(".jpg")))
+        {
+            todoIcon = new javax.swing.ImageIcon(getClass().getResource("/resource/" + iconname));         
+        }
         while (it.hasNext())
         {
             UIBoxInfo b = (UIBoxInfo) it.next();
@@ -537,7 +561,15 @@ public abstract class ApptBoxPanel extends JPanel
                     else if (b.model.getTextColor().equals("blue"))
                         g2.setColor(new Color(102,0,204));
                     // g2.setFont(sm_font);
-                    g2.drawString(b.model.getText(), b.x + 2, b.y + smfontHeight);
+                    if( b.model.isTodo() && todoIcon != null )
+                    {
+                	todoIcon.paintIcon(this, g2, b.x, b.y + 8);
+                	g2.drawString(b.model.getText(), b.x + todoIcon.getIconWidth(), b.y + smfontHeight);
+                    }
+                    else
+                    {
+                	g2.drawString(b.model.getText(), b.x + 2, b.y + smfontHeight);
+                    }
                     g2.setColor(Color.black);
                 }
 
@@ -582,8 +614,16 @@ public abstract class ApptBoxPanel extends JPanel
                     g2.setColor(new Color(0,153,0));
                 else if (b.model.getTextColor().equals("blue"))
                     g2.setColor(new Color(102,0,204));
-
-                drawWrappedString(g2, b.model.getText(), b.x+radius, b.y+radius, b.w-radius);
+                if( b.model.isTodo() && todoIcon != null )
+                {
+                    todoIcon.paintIcon(this, g2, b.x+radius, b.y+radius+8);
+                    drawWrappedString(g2, b.model.getText(), b.x+radius + todoIcon.getIconWidth(), b.y+radius, b.w-radius);
+                }
+                else
+                {
+                    drawWrappedString(g2, b.model.getText(), b.x+radius, b.y+radius, b.w-radius);
+                }
+                
 
             }
             g2.setClip(s);

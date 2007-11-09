@@ -291,6 +291,10 @@ public class ApptDayBoxLayout
         {
             return ApptDayBoxLayout.getTimeString(y_fraction, startmin, endmin);
         }
+
+	public boolean isTodo() {
+	    return getAppt().getTodo();
+	}
     }
     
     private static int realMins( double y_fraction, double startmin, double endmin )
@@ -452,6 +456,10 @@ public class ApptDayBoxLayout
         {
             return ApptDayBoxLayout.getTimeString(y_fraction, startmin, endmin);
         }
+
+	public boolean isTodo() {
+	    return false;
+	}
 
     }
 

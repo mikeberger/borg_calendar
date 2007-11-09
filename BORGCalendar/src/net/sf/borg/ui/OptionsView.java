@@ -828,9 +828,9 @@ public class OptionsView extends View {
 	setBooleanPref(cb_ucs_ontodo, PrefName.UCS_ONTODO);
 	setBooleanPref(cb_ucs_marktodo, PrefName.UCS_MARKTODO);
 
-	if (cb_ucs_marktodo.isSelected()) {
-	    Prefs.putPref(PrefName.UCS_MARKER, tf_ucs_marker.getText());
-	}
+	
+	Prefs.putPref(PrefName.UCS_MARKER, tf_ucs_marker.getText());
+	
 
 	Integer ucsi = new Integer((btn_ucs_red.getColorProperty()).getRGB());
 	Prefs.putPref(PrefName.UCS_RED, ucsi.toString());
