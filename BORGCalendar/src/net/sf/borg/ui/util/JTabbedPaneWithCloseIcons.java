@@ -88,19 +88,10 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements MouseListe
 	}
     }
 
-    private JPopupMenu menu = new JPopupMenu();
-
     public JTabbedPaneWithCloseIcons() {
 	super();
 	addMouseListener(this);
-	JMenuItem jm = menu.add(Resource.getPlainResourceString("undock"));
-	jm.addActionListener(new ActionListener() {
-
-	    public void actionPerformed(ActionEvent e) {
-		undock();
-	    }
-
-	});
+	
     }
 
     public void addTab(String title, Component component) {
@@ -131,13 +122,6 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements MouseListe
 	if (tabNumber < 0)
 	    return;
 
-	Component c = getSelectedComponent();
-
-	if (e.getButton() != MouseEvent.BUTTON1 && c instanceof DockableView) {
-	    // right click - popup menu
-	    menu.show(this, e.getX(), e.getY());
-	    return;
-	}
 	CloseTabIcon icon = (CloseTabIcon) getIconAt(tabNumber);
 	if (icon == null)
 	    return;
