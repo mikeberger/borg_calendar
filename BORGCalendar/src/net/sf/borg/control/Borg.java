@@ -414,7 +414,7 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 
 	    AppointmentModel calmod = AppointmentModel.create();
 	    register(calmod);
-	    calmod.open_db(dbdir, uid, false, shared);
+	    calmod.open_db(dbdir, uid, shared);
 
 	    emailReminder_ = new EmailReminder();
 
@@ -428,14 +428,14 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 			.getResourceString("Loading_Task_Database"));
 	    TaskModel taskmod = TaskModel.create();
 	    register(taskmod);
-	    taskmod.open_db(dbdir, uid, false, shared);
+	    taskmod.open_db(dbdir, uid,shared);
 
 	    if (splash)
 		ban_.setText(Resource
 			.getResourceString("Opening_Address_Database"));
 	    AddressModel addrmod = AddressModel.create();
 	    register(addrmod);
-	    addrmod.open_db(dbdir, uid, false, shared);
+	    addrmod.open_db(dbdir, uid,shared);
 	    
 	    if (splash)
 		ban_.setText(Resource
@@ -443,7 +443,7 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 	    MemoModel memomod = MemoModel.create();
 	    try{
 		
-		    memomod.open_db(dbdir, uid, false, shared);
+		    memomod.open_db(dbdir, uid, shared);
 		    register(memomod);
 	    }
 	    catch( Warning w)

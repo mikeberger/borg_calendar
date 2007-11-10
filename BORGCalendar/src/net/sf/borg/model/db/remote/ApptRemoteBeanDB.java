@@ -34,10 +34,9 @@ class ApptRemoteBeanDB extends RemoteBeanDB implements AppointmentDB, MultiUserD
 	ApptRemoteBeanDB(
 		String clsstr,
 		String impl,
-		boolean readonly,
 		String user)
 	{
-		super(Appointment.class, clsstr, impl, readonly, user);
+		super(Appointment.class, clsstr, impl, user);
 	}
 
 	public Collection getTodoKeys() throws Exception

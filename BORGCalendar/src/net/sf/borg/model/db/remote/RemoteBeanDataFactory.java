@@ -45,13 +45,7 @@ public class RemoteBeanDataFactory implements IBeanDataFactory
 		return instance;
 	}
 
-	// IBeanDataFactory overrides
-	/**
-	 * Creates a <code>BeanDB</code> using the url string of the format
-	 * format <code>isReadOnly::remoteHttp</code>.<br>
-	 * Example: <code>false::http://www.myserver.org/borg/app</code><br>
-	 * @see net.sf.borg.model.db.IBeanDataFactory#create(java.lang.Class, java.lang.String, int)
-	 */
+
 	public final BeanDB create(Class cls, String url, String username)
 			throws Exception
 	{
@@ -73,26 +67,20 @@ public class RemoteBeanDataFactory implements IBeanDataFactory
 		if (nColon == -1)
 			throw new DBException("Malformed remote connection string: "+url);
 		
-		boolean readonly = Boolean.valueOf(url.substring(0,nColon)).booleanValue();
 		String file = url.substring(nColon+2);
 		
 		BeanDB db = null;
 		
 		if (cls == Appointment.class)
 			db = new ApptCachingBeanDB(new ApptRemoteBeanDB(clsstr, file,
-					readonly, username));
+					username));
 		else if (cls == Task.class)
-			db = new TaskRemoteBeanDB(cls, clsstr, file, readonly, username);
+			db = new TaskRemoteBeanDB(cls, clsstr, file, username);
 		else
 			db = new CachingBeanDB(new RemoteBeanDB(cls, clsstr, file,
-					readonly, username));
+					username));
 		
-		/*
-		if (cls == Appointment.class)
-			db = new ApptRemoteBeanDB(clsstr, file, readonly, username);
-		else
-			db = new RemoteBeanDB(cls, clsstr, file, readonly, username);
-		*/
+
 		
 		return db;
 	}

@@ -55,7 +55,6 @@ class RemoteBeanDB implements BeanDB {
 
 	public final synchronized void addObj(KeyedBean bean, boolean crypt)
 			throws DBException, Exception {
-		checkReadOnly();
 		call(
 				"addObj",
 				new IRemoteProxy.ComposedObject(bean, new Boolean(crypt) /* Boolean.valueOf(crypt) */));
@@ -63,13 +62,11 @@ class RemoteBeanDB implements BeanDB {
 
 	public final synchronized void updateObj(KeyedBean bean, boolean crypt)
 			throws DBException, Exception {
-		checkReadOnly();
 		call("updateObj", new IRemoteProxy.ComposedObject(bean, new Boolean(
 				crypt) /* Boolean.valueOf(crypt) */));
 	}
 
 	public final synchronized void delete(int key) throws Exception {
-		checkReadOnly();
 		call("delete", new Integer(key));
 	}
 
@@ -79,7 +76,6 @@ class RemoteBeanDB implements BeanDB {
 
 	public final synchronized void setOption(BorgOption option)
 			throws Exception {
-		checkReadOnly();
 		call("setOption", option);
 	}
 
@@ -124,19 +120,12 @@ class RemoteBeanDB implements BeanDB {
 		return retval;
 	}
 
-	protected void checkReadOnly() throws DBException {
-		if (readonly)
-			throw new DBException("Database is read-only",
-					DBException.RET_READ_ONLY);
-	}
-
 	// package //
-	RemoteBeanDB(Class cls, String clsstr, String impl, boolean readonly,
+	RemoteBeanDB(Class cls, String clsstr, String impl, 
 			String user) {
 		this.cls = cls;
 		this.clsstr = clsstr;
-		this.impl = impl;
-		this.readonly = readonly;
+		this.impl = impl;		
 		this.user = user;
 	}
 
@@ -146,8 +135,6 @@ class RemoteBeanDB implements BeanDB {
 	private String clsstr;
 
 	private String impl;
-
-	private boolean readonly;
 
 	private String user;
 }

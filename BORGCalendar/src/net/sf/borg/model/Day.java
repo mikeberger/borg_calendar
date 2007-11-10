@@ -316,7 +316,7 @@ public class Day {
 		if (otherModel == null) {
 		    String dbdir = BeanDataFactoryFactory.buildDbDir();
 		    otherModel = AppointmentModel.create(user);
-		    otherModel.open_db(dbdir, user, true, false);
+		    otherModel.open_db(dbdir, user, false);
 		}
 		l = (LinkedList) otherModel.getAppts(key);
 		addToDay(ret, l, otherModel, year, month, day, pub, priv,

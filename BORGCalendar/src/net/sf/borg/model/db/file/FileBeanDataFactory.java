@@ -42,26 +42,19 @@ public class FileBeanDataFactory implements IBeanDataFactory
 	}
 
 	// IBeanDataFactory overrides
-	/**
-	 * Replacing the old signature, this new one should receive the url String
-	 * using the format <code>filename::isReadonly::isShared</code>.<br>
-	 * Example: <code>/home/user/borg/files::false::true</code><br>
-	 * @see net.sf.borg.model.db.IBeanDataFactory#create(java.lang.Class, java.lang.String, int)
-	 */
 	public final BeanDB create(
 			Class cls,
 			String url,
 			String username)
 			throws Exception
 		{
-			boolean readonly = false;
+			
 			boolean shared = false;
 			String file = url;
 			try{
 				String[] fileArray = url.split("::");
 				file = fileArray[0];
-				readonly = Boolean.valueOf(fileArray[1]).booleanValue();
-				shared = Boolean.valueOf(fileArray[2]).booleanValue();
+				shared = Boolean.valueOf(fileArray[1]).booleanValue();
 			}
 			catch( java.lang.NoSuchMethodError e )
 			{
@@ -81,7 +74,7 @@ public class FileBeanDataFactory implements IBeanDataFactory
 			else
 				throw new IllegalArgumentException(cls.getName());
 				
-			creator.init(file,readonly,shared);
+			creator.init(file,shared);
 			return creator;
 		}
 

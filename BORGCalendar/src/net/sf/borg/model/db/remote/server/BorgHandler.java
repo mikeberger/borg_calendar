@@ -204,7 +204,7 @@ public class BorgHandler {
 	    String db = url;
 	    StringBuffer tmp = new StringBuffer(db);
 	    IBeanDataFactory factory = BeanDataFactoryFactory.getInstance()
-		    .getFactory(tmp, false, true);
+		    .getFactory(tmp, true);
 	    db = tmp.toString();
 	    // allow the factory to tweak the URL
 

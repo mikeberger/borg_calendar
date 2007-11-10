@@ -31,69 +31,56 @@ import net.sf.borg.model.db.file.mdb.MDB;
 import net.sf.borg.model.db.file.mdb.SMDB;
 import net.sf.borg.model.db.file.mdb.Schema;
 
+class TaskFileDB extends FileDBCreator {
+    TaskFileDB() {
+    }
 
+    final void init(String file, boolean shared) throws Exception {
+	file = file + "/mrdb.jdb";
 
+	TaskAdapter ta = new TaskAdapter();
+	// set the schema for the task DB
+	Schema schema = new Schema();
+	URL schurl = getClass().getResource("/resource/task_schema.xml");
+	XTree sch_xml = XTree.readFromURL(schurl);
+	schema.setFromXML(sch_xml);
 
-class TaskFileDB extends FileDBCreator
-{
-	TaskFileDB()
-	{}
-	
-	final void init(String file, boolean readonly, boolean shared)
-		throws Exception
-	{
-		file = file + "/mrdb.jdb";
-
-		TaskAdapter ta = new TaskAdapter();
-		// set the schema for the task DB
-		Schema schema = new Schema();
-		URL schurl = getClass().getResource("/resource/task_schema.xml");
-		XTree sch_xml = XTree.readFromURL(schurl);
-		schema.setFromXML( sch_xml );
-            
-		// create the database if it does not exisit
-		File fp = new File(file);
-		boolean newdb = false;
-		if( !fp.exists() && !readonly) {
-			//System.out.println( "Task DB does not exist...creating DB " );
-			Errmsg.notice(Resource.getResourceString("Creating_DB_file:_") + file );
-			SMDB.create( Resource.getResourceString("BorgTrac_Database"), file, 100 , schema );
-			newdb = true;
-		}
-            
-		// open the DB with the proper mode
-		if( readonly ) // not sure if readonly is used anymore
-			db_ = new FileBeanDB(file, MDB.READ_DIRTY,ta, shared );
-		else {
-			try {
-				db_ = new FileBeanDB(file, MDB.READ_WRITE,ta, shared );
-			}
-			catch( DBException e ) {
-				// if there is no schema (DB damaged?) add one
-				if( e.getRetCode() == SMDB.RET_NO_SCHEMA ) {
-					SMDB.update_schema(file, schema, shared );
-					db_ = new FileBeanDB(file, MDB.READ_WRITE,ta, shared  );
-				}
-				else {
-					throw e;
-				}
-			}
-		}
-            
-            
-		// check schema for update - transition
-		FileBeanDB fdb = (FileBeanDB) db_;
-		if( newdb ) {
-			fdb.setNormalize(true);
-		}
-		Schema oldsch = fdb.getSchema();
-		try {
-			oldsch.getType("UT1");
-			oldsch.getType("CAT");
-		}
-		catch( Exception e ) {
-			// DB does not have new fields - update the schema
-			fdb.setSchema(schema);
-		}
+	// create the database if it does not exisit
+	File fp = new File(file);
+	boolean newdb = false;
+	if (!fp.exists()) {
+	    // System.out.println( "Task DB does not exist...creating DB " );
+	    Errmsg.notice(Resource.getResourceString("Creating_DB_file:_") + file);
+	    SMDB.create(Resource.getResourceString("BorgTrac_Database"), file, 100, schema);
+	    newdb = true;
 	}
+
+	// open the DB with the proper mode
+
+	try {
+	    db_ = new FileBeanDB(file, MDB.READ_WRITE, ta, shared);
+	} catch (DBException e) {
+	    // if there is no schema (DB damaged?) add one
+	    if (e.getRetCode() == SMDB.RET_NO_SCHEMA) {
+		SMDB.update_schema(file, schema, shared);
+		db_ = new FileBeanDB(file, MDB.READ_WRITE, ta, shared);
+	    } else {
+		throw e;
+	    }
+	}
+
+	// check schema for update - transition
+	FileBeanDB fdb = (FileBeanDB) db_;
+	if (newdb) {
+	    fdb.setNormalize(true);
+	}
+	Schema oldsch = fdb.getSchema();
+	try {
+	    oldsch.getType("UT1");
+	    oldsch.getType("CAT");
+	} catch (Exception e) {
+	    // DB does not have new fields - update the schema
+	    fdb.setSchema(schema);
+	}
+    }
 }

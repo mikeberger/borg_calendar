@@ -32,7 +32,7 @@ import net.sf.borg.model.db.DBException;
  */
 abstract class FileDBCreator implements BeanDB
 {
-	abstract void init(String file, boolean readonly, boolean shared)
+	abstract void init(String file, boolean shared)
 		throws Exception;
 
 	// BeanDB delegate methods

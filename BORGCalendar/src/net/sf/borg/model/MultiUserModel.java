@@ -82,7 +82,7 @@ public class MultiUserModel extends Model {
 				if (am == null) {
 					String dbdir = BeanDataFactoryFactory.buildDbDir();
 					am = AppointmentModel.create(user);
-					am.open_db(dbdir, user, true, false);
+					am.open_db(dbdir, user, false);
 				}
     			//System.out.println(user + " " + am.isPublic());
     			if( am.isPublic())

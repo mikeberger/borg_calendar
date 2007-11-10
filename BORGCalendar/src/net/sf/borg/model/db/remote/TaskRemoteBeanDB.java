@@ -9,8 +9,8 @@ import net.sf.borg.model.db.TaskDB;
 
 public class TaskRemoteBeanDB extends RemoteBeanDB implements TaskDB {
 
-    TaskRemoteBeanDB(Class cls, String clsstr, String impl, boolean readonly, String user) {
-	super(cls, clsstr, impl, readonly, user);
+    TaskRemoteBeanDB(Class cls, String clsstr, String impl, String user) {
+	super(cls, clsstr, impl, user);
     }
 
     public final synchronized void addLog(int taskid, String desc) throws Exception {

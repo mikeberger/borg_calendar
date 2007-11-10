@@ -562,12 +562,12 @@ public class AppointmentModel extends Model implements Model.Listener {
     }
 
     // open the SMDB database
-    public void open_db(String url, String username, boolean readonly,
+    public void open_db(String url, String username, 
 	    boolean shared) throws Exception {
 
 	StringBuffer tmp = new StringBuffer(url);
 	IBeanDataFactory factory = BeanDataFactoryFactory.getInstance()
-		.getFactory(tmp, readonly, shared);
+		.getFactory(tmp, shared);
 	url = tmp.toString();
 	// let the factory tweak dbdir
 
