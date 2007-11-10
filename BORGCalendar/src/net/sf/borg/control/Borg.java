@@ -31,7 +31,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.Locale;
@@ -59,7 +58,6 @@ import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.MemoModel;
 import net.sf.borg.model.MultiUserModel;
 import net.sf.borg.model.TaskModel;
-import net.sf.borg.model.beans.Appointment;
 import net.sf.borg.model.db.BeanDataFactoryFactory;
 import net.sf.borg.model.db.remote.IRemoteProxy;
 import net.sf.borg.model.db.remote.IRemoteProxyProvider;
@@ -300,16 +298,6 @@ public class Borg extends Controller implements OptionsView.RestartListener,
     // main month view
     private void init(String args[]) {
 
-	// prevent subsequent tampering with our environment
-
-	boolean readonly = false; // open DBs readonly
-	boolean aplist = false; // do not start GUI, only generate a list of
-	// appointments
-	// this option is not really used anymore
-	boolean autostart = false; // autostart feature - only bring up the
-                                        // GUI
-	// if an appointment is approaching
-
 	OptionsView.setRestartListener(this);
 
 	// override for testing a different db
@@ -325,16 +313,7 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 
 	// process command line args
 	for (int i = 0; i < args.length; i++) {
-	    if (args[i].equals("-r")) {
-		readonly = true;
-	    } else if (args[i].equals("-aplist")) {
-		readonly = true;
-		aplist = true;
-
-		// set Errmsg class to log all errors to stdout, not using popup
-		// windows
-		Errmsg.console(true);
-	    } else if (args[i].equals("-trayname")) {
+	    if (args[i].equals("-trayname")) {
 		i++;
 		if (i >= args.length) {
 		    System.out.println("Error: missing trayname argument");
@@ -349,15 +328,7 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 		    System.exit(1);
 		}
 		testdb = args[i];
-	    } else if (args[i].equals("-autostart")) {
-		autostart = true;
-		System.out.println(Resource
-			.getResourceString("Autostart_mode_on"));
-		// set Errmsg class to log all errors to stdout, not using popup
-		// windows
-		Errmsg.console(true);
-
-	    } else if (args[i].equals("-username")) {
+	    }  else if (args[i].equals("-username")) {
 		i++;
 		if (i >= args.length) {
 		    System.out.println("Error: missing username");
@@ -400,7 +371,7 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 	    Errmsg.notice(Resource.getResourceString("betawarning"));
 
 	// do not show the startup banner if autostart or aplist features are on
-	if (!aplist && !autostart && splash) {
+	if ( splash) {
 	    ban_ = new Banner();
 	    ban_.setText(Resource.getResourceString("Initializing"));
 	    ban_.setVisible(true);
@@ -418,17 +389,7 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 
 	    if (dbdir.equals("not-set")) {
 
-		// cannot run in autostart mode if no db set. user might not be
-		// there
-		// to respond to dialog. autostart probably run from cron
-		// job/scheduled task
-		if (autostart) {
-		    System.out
-		    .println(Resource
-			    .getResourceString("Cannot_run_autostart_mode_-_database_directory_has_not_been_set."));
-		    System.exit(0);
-		}
-
+		
 		JOptionPane.showMessageDialog(null, Resource
 			.getResourceString("selectdb"), Resource
 			.getResourceString("Notice"),
@@ -447,57 +408,42 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 	    }
 
 	    // skip banner stuff if autostart or aplist on
-	    if (!aplist && !autostart && splash)
+	    if ( splash)
 		ban_.setText(Resource
 			.getResourceString("Loading_Appt_Database"));
 
 	    AppointmentModel calmod = AppointmentModel.create();
 	    register(calmod);
-	    calmod.open_db(dbdir, uid, readonly, shared);
-
-	    // aplist only needs calendar data - so just print list of
-	    // appointments
-	    // and exit. not used anymore
-	    if (aplist) {
-		EmailReminder.sendDailyEmailReminder(null);
-		System.exit(0);
-		return;
-	    }
+	    calmod.open_db(dbdir, uid, false, shared);
 
 	    emailReminder_ = new EmailReminder();
-
-	    if (autostart) {
-		// check if auto start conditions are true
-		if (!should_auto_start())
-		    System.exit(0);
-	    }
 
 	    // we are past autostart check so we must be ready to start GUI.
 	    // now all errors can go to popup windows
 	    Errmsg.console(false); // send errors to screen
 
 	    // init task model & load database
-	    if (!autostart && splash)
+	    if (splash)
 		ban_.setText(Resource
 			.getResourceString("Loading_Task_Database"));
 	    TaskModel taskmod = TaskModel.create();
 	    register(taskmod);
-	    taskmod.open_db(dbdir, uid, readonly, shared);
+	    taskmod.open_db(dbdir, uid, false, shared);
 
-	    if (!autostart && splash)
+	    if (splash)
 		ban_.setText(Resource
 			.getResourceString("Opening_Address_Database"));
 	    AddressModel addrmod = AddressModel.create();
 	    register(addrmod);
-	    addrmod.open_db(dbdir, uid, readonly, shared);
+	    addrmod.open_db(dbdir, uid, false, shared);
 	    
-	    if (!autostart && splash)
+	    if (splash)
 		ban_.setText(Resource
 			.getResourceString("Opening_Memo_Database"));
 	    MemoModel memomod = MemoModel.create();
 	    try{
 		
-		    memomod.open_db(dbdir, uid, readonly, shared);
+		    memomod.open_db(dbdir, uid, false, shared);
 		    register(memomod);
 	    }
 	    catch( Warning w)
@@ -507,7 +453,7 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 	    
 
 
-	    if (!autostart && splash)
+	    if (splash)
 		ban_.setText(Resource.getResourceString("Opening_Main_Window"));
 
 	    final String traynm = trayname;
@@ -517,7 +463,7 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 		}
 	    });
 
-	    if (!autostart && splash)
+	    if (splash)
 		ban_.dispose();
 	    ban_ = null;
 
@@ -649,79 +595,6 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 
     }
 
-    // check if we should auto_start
-    // this function checks if an appointment is coming close
-    // it does not check if BORG is already running or if the user is not
-        // logged
-    // on - that will fall out elsewhere
-    private boolean should_auto_start() {
-
-	System.out.println(Resource
-		.getResourceString("Commencing_auto-start_checks"));
-
-	GregorianCalendar now = new GregorianCalendar();
-
-	// get the base day key for today
-	int key = AppointmentModel.dkey(now.get(Calendar.YEAR), now
-		.get(Calendar.MONTH), now.get(Calendar.DATE));
-
-	// get the list of appts for today
-	AppointmentModel am = AppointmentModel.getReference();
-	Collection l = am.getAppts(key);
-	if (l != null) {
-
-	    Iterator it = l.iterator();
-	    Appointment appt;
-
-	    // iterate through the day's appts
-	    while (it.hasNext()) {
-
-		Integer ik = (Integer) it.next();
-
-		// read the appt
-		try {
-		    appt = am.getAppt(ik.intValue());
-
-		    // an untimed appt (note) cannot force an auto start
-		    if (AppointmentModel.isNote(appt))
-			continue;
-
-		    Date d = appt.getDate();
-
-		    // set acal to the appointments due time and calculate
-                        // how
-		    // many minutes
-		    // there are before the appointment time
-		    GregorianCalendar acal = new GregorianCalendar();
-		    acal.setTime(d);
-		    long mins_to_go = (acal.getTimeInMillis() - now
-			    .getTimeInMillis())
-			    / (1000 * 60);
-
-		    // if the appointment is less than 30 minutes away or
-                        // within
-		    // the past 5 minutes,
-		    // we can autostart borg. otherwise, look for the next
-                        // appt
-		    if (mins_to_go > 30 || mins_to_go < -5)
-			continue;
-
-		    System.out.println("Found an appointment with time "
-			    + mins_to_go + " minutes from now, starting BORG");
-
-		    return (true);
-		} catch (Exception e) {
-		    System.out.println(e.toString());
-		    return (false);
-		}
-	    }
-
-	}
-
-	System.out.println("No appointments coming due, canceling BORG start");
-	return (false);
-
-    }
 
     // show the todo list view
     private void startTodoView() {
