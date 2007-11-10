@@ -120,7 +120,7 @@ public class AddrCond implements Conduit {
 				log("dbdir=" + dbdir);
 				log("user=" + user);
 				addressModel = AddressModel.create();
-				addressModel.open_db(dbdir, user, false, false);
+				addressModel.open_db(dbdir, user, false);
 
 				// Create an instance of the RecordManager for synchronizing the
 				// records

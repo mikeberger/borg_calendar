@@ -120,7 +120,7 @@ public class MemoCond implements Conduit {
 				log("dbdir=" + dbdir);
 				log("user=" + user);
 				memoModel = MemoModel.create();
-				memoModel.open_db(dbdir, user, false, false);
+				memoModel.open_db(dbdir, user, false);
 
 				// Create an instance of the RecordManager for synchronizing the
 				// records

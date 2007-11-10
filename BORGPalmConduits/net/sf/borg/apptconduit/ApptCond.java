@@ -119,7 +119,7 @@ public class ApptCond implements Conduit {
 				log("dbdir=" + dbdir);
 				log("user=" + user);
 				apptModel = AppointmentModel.create();
-				apptModel.open_db(dbdir, user, false, false);
+				apptModel.open_db(dbdir, user, false);
 /*
 				taskModel = TaskModel.create();
 				try{
