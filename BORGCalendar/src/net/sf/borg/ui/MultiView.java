@@ -142,7 +142,7 @@ public class MultiView extends View  {
 	setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 	pack();
 	setVisible(true);
-
+	setView(MONTH);
 	manageMySize(PrefName.DAYVIEWSIZE);
     }
 
@@ -156,16 +156,26 @@ public class MultiView extends View  {
 
     public void setView(int type) {
 	if (type == DAY) {
+	    
+	    if( dayPanel == null )
+		 dayPanel = new DayPanel(cal_.get(Calendar.MONTH), cal_.get(Calendar.YEAR), cal_.get(Calendar.DATE));
+		    
 	    if (!dayPanel.isDisplayable()) {
 		tabs_.addTab(Resource.getPlainResourceString("Day_View"), dayPanel);
 	    }
 	    getTabs().setSelectedComponent(dayPanel);
 	} else if (type == WEEK) {
+	    if( wkPanel == null )
+		wkPanel = new WeekPanel(cal_.get(Calendar.MONTH), cal_.get(Calendar.YEAR), cal_.get(Calendar.DATE));
+
 	    if (!wkPanel.isDisplayable()) {
 		tabs_.addTab(Resource.getPlainResourceString("Week_View"), wkPanel);
 	    }
 	    getTabs().setSelectedComponent(wkPanel);
 	} else if (type == MONTH) {
+	    if( calPanel == null )
+		calPanel = new CalendarPanel(this, cal_.get(Calendar.MONTH), cal_.get(Calendar.YEAR));
+		   
 	    if (!calPanel.isDisplayable()) {
 		tabs_.addTab(Resource.getPlainResourceString("Month_View"), calPanel);
 	    }
@@ -175,6 +185,9 @@ public class MultiView extends View  {
 
     public void showMemos()
     {
+	if (MemoModel.getReference().hasMemos() && memoPanel == null)
+	    memoPanel = new MemoPanel();
+
 	if (memoPanel != null && !memoPanel.isDisplayable()) {
 	    tabs_.addTab(Resource.getPlainResourceString("Memos"), memoPanel);
 	}
@@ -184,14 +197,25 @@ public class MultiView extends View  {
     
     public void showTasks()
     {
+	if( taskPanel == null )
+	    taskPanel = new TaskListPanel();
+
+	if (TaskModel.getReference().hasSubTasks() && projPanel == null )
+	{
+	    projPanel = new ProjectPanel();
+	}
+	
+	if (TaskModel.getReference().hasSubTasks() && ptPanel == null )
+	{
+	    ptPanel = new ProjectTreePanel();
+	}
+	
 	if (ptPanel != null && !ptPanel.isDisplayable()) 
 	    tabs_.addTab(Resource.getPlainResourceString("project_tree"), ptPanel);
-	
+
 	if (projPanel != null && !projPanel.isDisplayable()) {
 	    tabs_.addTab(Resource.getPlainResourceString("projects"), projPanel);
 	}
-	if (projPanel != null)
-	    getTabs().setSelectedComponent(projPanel);
 	
 	if (taskPanel != null && !taskPanel.isDisplayable()) {
 	    tabs_.addTab(Resource.getPlainResourceString("tasks"), taskPanel);
@@ -210,26 +234,7 @@ public class MultiView extends View  {
 
     private JTabbedPane getTabs() {
 	if (tabs_ == null) {
-
 	    tabs_ = new JTabbedPaneWithCloseIcons();
-
-	    calPanel = new CalendarPanel(this, cal_.get(Calendar.MONTH), cal_.get(Calendar.YEAR));
-	    dayPanel = new DayPanel(cal_.get(Calendar.MONTH), cal_.get(Calendar.YEAR), cal_.get(Calendar.DATE));
-	    wkPanel = new WeekPanel(cal_.get(Calendar.MONTH), cal_.get(Calendar.YEAR), cal_.get(Calendar.DATE));
-
-	    if (MemoModel.getReference().hasMemos())
-		memoPanel = new MemoPanel();
-
-	    taskPanel = new TaskListPanel();
-
-	    if (TaskModel.getReference().hasSubTasks())
-	    {
-		projPanel = new ProjectPanel();
-		ptPanel = new ProjectTreePanel();
-	    }
-
-	    tabs_.addTab(Resource.getPlainResourceString("Month_View"), calPanel);
-	    
 	}
 	return tabs_;
     }
