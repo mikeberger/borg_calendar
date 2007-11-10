@@ -26,7 +26,6 @@ import net.sf.borg.model.beans.Task;
 import net.sf.borg.model.db.ApptCachingBeanDB;
 import net.sf.borg.model.db.BeanDB;
 import net.sf.borg.model.db.CachingBeanDB;
-import net.sf.borg.model.db.DBException;
 import net.sf.borg.model.db.IBeanDataFactory;
 import net.sf.borg.model.db.MemoDB;
 
@@ -61,13 +60,7 @@ public class RemoteBeanDataFactory implements IBeanDataFactory
 			
 		// Hack off the leading "remote:" to get the implementation.
 		int nColon = url.indexOf(':');
-		url = url.substring(nColon+1);
-		
-		nColon = url.indexOf("::");
-		if (nColon == -1)
-			throw new DBException("Malformed remote connection string: "+url);
-		
-		String file = url.substring(nColon+2);
+		String file = url.substring(nColon+1);
 		
 		BeanDB db = null;
 		
