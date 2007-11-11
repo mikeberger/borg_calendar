@@ -33,6 +33,7 @@ import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.XTree;
 import net.sf.borg.model.AppointmentModel;
+import net.sf.borg.model.Day;
 import net.sf.borg.model.beans.Appointment;
 import net.sf.borg.model.beans.AppointmentXMLAdapter;
 import net.sf.borg.ui.MultiView;
@@ -481,14 +482,18 @@ public class ApptDayBoxLayout
         }
 
     }
+    
+    private Day day_ = null;
 
     // create an ApptDatBoxLayout and layout the appts
-    public ApptDayBoxLayout(Date displayDate, Collection appts, int starthr, int endhr)
+    public ApptDayBoxLayout(Date displayDate, Day di, int starthr, int endhr)
     {
 
+	day_ = di;
         double startmin = starthr * 60;
         double endmin = endhr * 60;
 
+        Collection appts = di.getAppts();
         ArrayList list = new ArrayList();
         // initialize the boxes
         Iterator it = appts.iterator();
@@ -674,5 +679,10 @@ public class ApptDayBoxLayout
     {
         return (boxes);
     }
+
+    public Day getDay() {
+        return day_;
+    }
+
 
 }
