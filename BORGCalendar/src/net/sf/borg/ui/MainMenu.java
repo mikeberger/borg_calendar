@@ -63,7 +63,6 @@ import net.sf.borg.model.beans.Appointment;
 import net.sf.borg.model.beans.Task;
 import net.sf.borg.model.db.BeanDataFactoryFactory;
 import net.sf.borg.ui.address.AddrListView;
-import net.sf.borg.ui.calendar.MonthPreView;
 import net.sf.borg.ui.calendar.TodoView;
 import net.sf.borg.ui.task.TaskConfigurator;
 import net.sf.borg.ui.util.OverwriteConfirm;
@@ -80,9 +79,7 @@ public class MainMenu {
 
     private JMenuItem SearchMI = new javax.swing.JMenuItem();
 
-    private JMenuItem PrintMonthMI = new javax.swing.JMenuItem();
-
-    private JMenuItem printprev = new javax.swing.JMenuItem();
+    private JMenuItem PrintMI = new javax.swing.JMenuItem();
 
     private JMenuItem syncMI = new javax.swing.JMenuItem();
 
@@ -257,27 +254,18 @@ public class MainMenu {
 
 	ActionMenu.add(SearchMI);
 
-	PrintMonthMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Print16.gif")));
+	PrintMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Print16.gif")));
 
-	ResourceHelper.setText(PrintMonthMI, "Print");
-	PrintMonthMI.addActionListener(new java.awt.event.ActionListener() {
+	ResourceHelper.setText(PrintMI, "Print");
+	PrintMI.addActionListener(new java.awt.event.ActionListener() {
 	    public void actionPerformed(java.awt.event.ActionEvent evt) {
-		PrintMonthMIActionPerformed(evt);
+		PrintMIActionPerformed(evt);
 	    }
 	});
 
-	ActionMenu.add(PrintMonthMI);
+	ActionMenu.add(PrintMI);
 
-	printprev.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/PrintPreview16.gif")));
-	printprev.setText(Resource.getPlainResourceString("Month") + " " + Resource.getPlainResourceString("pprev"));
-	printprev.addActionListener(new java.awt.event.ActionListener() {
-	    public void actionPerformed(java.awt.event.ActionEvent evt) {
-		printprevActionPerformed(evt);
-	    }
-	});
-
-	ActionMenu.add(printprev);
-
+	
 	syncMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Refresh16.gif")));
 	ResourceHelper.setText(syncMI, "Synchronize");
 	syncMI.addActionListener(new java.awt.event.ActionListener() {
@@ -1031,18 +1019,18 @@ public class MainMenu {
     }// GEN-LAST:event_licsendActionPerformed
 
 
-    private void PrintMonthMIActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_PrintMonthMIActionPerformed
+    private void PrintMIActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_PrintMonthMIActionPerformed
 
 	    MultiView.getMainView().print();
 
     }
 
-    private void printprevActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_printprevActionPerformed
+    /*private void printprevActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_printprevActionPerformed
     {
 	
 	    new MonthPreView(MultiView.getMainView().getMonth(), MultiView.getMainView().getYear());
 	
-    }
+    }*/
 
     private void SearchMIActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_SearchMIActionPerformed
 	// user wants to do a search, so prompt for search string and request
