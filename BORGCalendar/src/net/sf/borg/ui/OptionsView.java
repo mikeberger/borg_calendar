@@ -95,7 +95,7 @@ public class OptionsView extends View {
     // restart
 
     static {
-	int rgb = Integer.parseInt(Prefs.getPref(PrefName.UCS_STRIPE));
+	int rgb = Prefs.getIntPref(PrefName.UCS_STRIPE);
 	StripedTable.setStripeColor(new Color(rgb));
     }
 
