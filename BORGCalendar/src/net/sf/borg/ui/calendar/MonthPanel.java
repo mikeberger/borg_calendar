@@ -23,19 +23,13 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.MediaTracker;
+import java.awt.GridBagConstraints;
+import java.awt.Rectangle;
 import java.awt.Shape;
-import java.awt.Toolkit;
-import java.awt.font.FontRenderContext;
-import java.awt.font.LineBreakMeasurer;
 import java.awt.font.TextAttribute;
-import java.awt.font.TextLayout;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
-import java.text.AttributedCharacterIterator;
-import java.text.AttributedString;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collection;
@@ -48,413 +42,375 @@ import java.util.Map;
 
 import javax.swing.JPanel;
 
-import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
+import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Day;
-import net.sf.borg.model.beans.Appointment;
+import net.sf.borg.model.Model;
+import net.sf.borg.model.TaskModel;
+import net.sf.borg.ui.NavPanel;
+import net.sf.borg.ui.Navigator;
+import net.sf.borg.ui.calendar.ApptDayBoxLayout.ApptDayBox;
+import net.sf.borg.ui.calendar.ApptDayBoxLayout.DateZone;
 
+public class MonthPanel extends JPanel implements Printable {
 
+    // monthPanel handles the printing of a single month
+    private class MonthViewSubPanel extends ApptBoxPanel implements Printable, Navigator, Model.Listener, Prefs.Listener {
 
+	private int month_;
 
-// monthPanel handles the printing of a single month
-class MonthPanel extends JPanel implements Printable
-{
+	private int year_;
 
-    
-    private int year_;
-    private int month_;
-    private int pages_ = 1;
-    
-    public void setPages(int p )
-    {
-        pages_ = p;
-    }
-    
-	// print does the actual formatting of the printout
-	public int print(Graphics g, PageFormat pageFormat, int pageIndex)
-			throws PrinterException {
-		
-        if( pageIndex > pages_ - 1 ) return Printable.NO_SUCH_PAGE;
-		
-		return( drawIt(g,pageFormat.getWidth(), pageFormat.getHeight(), 
-				pageFormat.getImageableWidth(), pageFormat.getImageableHeight(),
-				pageFormat.getImageableX(), pageFormat.getImageableY(), pageIndex));
+	private ApptDayBoxLayout layout[];
+
+	boolean needLoad = true;
+
+	public MonthViewSubPanel(int month, int year) {
+	    year_ = year;
+	    month_ = month;
+	    clearData();
+	    Prefs.addListener(this);
+	    AppointmentModel.getReference().addListener(this);
+	    TaskModel.getReference().addListener(this);
+
 	}
-	
-	private int drawIt(Graphics g, double width, double height, double pageWidth, 
-			double pageHeight, double pagex, double pagey, int pageIndex )
-	{
-      
-        
-        int year;
-        int month;
-        boolean showpub = false;
-        boolean showpriv = false;
-        String sp = Prefs.getPref(PrefName.SHOWPUBLIC);
-        if( sp.equals("true") )
-            showpub = true;
-        sp = Prefs.getPref(PrefName.SHOWPRIVATE);
-        if( sp.equals("true") )
-            showpriv = true;
-        
-        boolean wrap = false;
-        sp = Prefs.getPref(PrefName.WRAP);
-        if( sp.equals("true") )
-            wrap = true;
-        
-        // see if color printout option set
-        String cp = "false";
-        try
-        {
-            cp = Prefs.getPref(PrefName.COLORPRINT);
-        }
-        catch( Exception e )
-        {}
-        
 
-        
-        // set up default and small fonts
-        Graphics2D  g2 = (Graphics2D) g;
-        
-        Font def_font = g2.getFont();
-        //Font sm_font = def_font.deriveFont(6f);
-        Font sm_font = Font.decode(Prefs.getPref(PrefName.MONTHVIEWFONT));
-        Map stmap = new HashMap();
-        stmap.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
-        stmap.put( TextAttribute.FONT, sm_font);
-        //Font strike_font = sm_font.deriveFont(stmap);
-        
-        
-        g2.setColor(Color.white);
-        g2.fillRect( 0, 0, (int)width, (int)height );
-        
-        // set color to black
-        g2.setColor(Color.black);
-        
-        // get font sizes
-        int fontHeight=g2.getFontMetrics().getHeight();
-        int fontDesent=g2.getFontMetrics().getDescent();
-        
-        
-        // translate coordinates based on the amount of the page that
-        // is going to be printable on - in other words, set upper right
-        // to upper right of printable area - not upper right corner of
-        // paper
-        g2.translate(pagex,pagey);
-        Shape s = g2.getClip();
-        
-        // determine month title
-        GregorianCalendar cal = new GregorianCalendar( year_, month_, 1 );
-        cal.add(Calendar.MONTH, pageIndex);
-        year = cal.get(Calendar.YEAR);
-        month = cal.get(Calendar.MONTH);
-        cal.setFirstDayOfWeek(Prefs.getIntPref(PrefName.FIRSTDOW));
-        
-        Date then = cal.getTime();
-        SimpleDateFormat sd = new SimpleDateFormat("MMMM yyyy");
-        String title = sd.format(then);
-        
-        // determine placement of title at correct height and centered horizontally on page
-        int titlewidth = g2.getFontMetrics().stringWidth(title);
-        int caltop = fontHeight + fontDesent;
-        int daytop = caltop + fontHeight + fontDesent;
-        g2.drawString( title, ((int)pageWidth-titlewidth)/2, fontHeight );
-        
-        // calculate width and height of day boxes (6x7 grid)
-        int rowheight = ((int) pageHeight - daytop)/6;
-        int colwidth = (int) pageWidth/7;
-        
-        // calculate the bottom and right edge of the grid
-        int calbot = 6 * rowheight + daytop;
-        int calright = 7 * colwidth;
-        
-        // draw the day names centered in each column - no boxes drawn yet
-        SimpleDateFormat dfw = new SimpleDateFormat("EEE");
-        cal.add( Calendar.DAY_OF_WEEK, cal.getFirstDayOfWeek() - cal.get(Calendar.DAY_OF_WEEK) );
-        for( int col = 0; col < 7; col++ )
-        {
-            
-            int colleft = (col * colwidth);
-            String dayofweek = dfw.format(cal.getTime());
-            int swidth = g2.getFontMetrics().stringWidth(dayofweek);
-            g2.drawString( dayofweek, colleft + (colwidth-swidth)/2, caltop+fontHeight );
-            cal.add( Calendar.DAY_OF_WEEK, 1 );
-        }
-        
-        // reset calendar
-        cal.set(year, month, 1);
-        int fdow = cal.get(Calendar.DAY_OF_WEEK) - cal.getFirstDayOfWeek();
+	public void clearData() {
+	    layout = new ApptDayBoxLayout[42];
+	    for (int i = 0; i < 42; i++)
+		layout[i] = null;
+	    needLoad = true;
+	    setToolTipText(null);
+	}
 
-        Hashtable atmap = null;
-        if( wrap )
-        {
-            atmap = new Hashtable();
-            atmap.put( TextAttribute.FONT, sm_font );
-        }
-        
-        // print the days - either grayed out or containing a number and appts
-        for( int box = 0; box < 42; box++ )
-        {
-            
-            // month length
-            int mlen = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-            
-            int boxcol = box % 7;
-            int boxrow = box / 7;
-            int rowtop = (boxrow * rowheight) + daytop;
-            int colleft = boxcol * colwidth;
-            int dow = cal.getFirstDayOfWeek() + boxcol;
-            if( dow == 8 ) dow = 1;
-            
-            // if box in grid is before first day or after last, just draw a gray box
-            if( box < fdow || box > fdow + mlen - 1)
-            {
-                // gray
-                if( cp.equals("false") )
-                {
-                    g2.setColor( new Color( 235, 235, 235 ));
-                    g2.fillRect( colleft, rowtop, colwidth, rowheight );
-                    g2.setColor(Color.black);
-                }
-            }
-            else
-            {
-                int date = box - fdow + 1;
-                
-                
-                // set small font for appt text
-                g2.setFont(sm_font);
-                int smfontHeight=g2.getFontMetrics().getHeight();
-                //int smfontDesent=g2.getFontMetrics().getDescent();
-                
-                // set clip to the day box to truncate long appointment text
-                g2.clipRect(colleft, rowtop, colwidth, rowheight );
-                try
-                {
-                    
-                    // get the appointment info for the given day
-                    GregorianCalendar gc = new GregorianCalendar(year_,month_,date,23,59);
-                    Day di = Day.getDay( year, month, date, showpub, showpriv, true );
-                    if( di != null )
-                    {
-                        if( cp.equals("true") )
-                        {
-                            if( di.getVacation() != 0 )
-                            {
-                                g2.setColor(new Color(225,255,225));
-                            }
-                            else if( di.getHoliday() == 1 )
-                            {
-                                g2.setColor(new Color(255,225,195));
-                            }
-                            else if( dow == Calendar.SUNDAY || dow == Calendar.SATURDAY )
-                            {
-                                g2.setColor(new Color(255,225,195));
-                            }
-                            else
-                            {
-                                g2.setColor(new Color(255,245,225));
-                            }
-                            
-                            g2.fillRect( colleft, rowtop, colwidth, rowheight );
-                            g2.setColor(Color.black);
-                        }
-                        Collection appts = di.getAppts();
-                        if( appts != null )
-                        {
-                            
-                            Iterator it = appts.iterator();
-                            
-                            // determine X,Y coords of first appt text
-                            int apptx = colleft + 2 * fontDesent;
-                            int appty = rowtop+fontHeight+smfontHeight;
-                            
-                            while( it.hasNext() )
-                            {
-                                Appointment ai = (Appointment) it.next();
-                                
-                                // change color for a single appointment based on
-                                // its color - only if color print option set
-                                if( cp.equals("false"))
-                                    g2.setColor( Color.black );
-                                else if( ai.getColor().equals("red") )
-                                    g2.setColor( Color.red );
-                                else if( ai.getColor().equals("green") )
-                                    g2.setColor( Color.green );
-                                else if( ai.getColor().equals("blue") )
-                                    g2.setColor( Color.blue );
-                                
-                                // add a single appt text
-                                if( wrap )
-                                {
-                                    String tx = ai.getText();                                    
-                                    AttributedString as = new AttributedString( tx, atmap );
-                                    AttributedCharacterIterator para = as.getIterator();
-                                    int start = para.getBeginIndex();
-                                    int end = para.getEndIndex();
-                                    LineBreakMeasurer lbm = new LineBreakMeasurer(para,
-                                                    new FontRenderContext( null, false, false ));
-                                    lbm.setPosition(start);
-                                    while( lbm.getPosition() < end )
-                                    {
-                                        TextLayout layout = lbm.nextLayout( colwidth - (2*fontDesent) );
-                                        appty += layout.getAscent();
-                                        layout.draw( g2, apptx, appty );
-                                        appty += layout.getDescent() + layout.getLeading();
-                                    }
-                                }
-                                else
-                                {
-                                    if( (ai.getColor() != null && ai.getColor().equals("strike")) ||
-                                            (ai.getTodo() && !(ai.getNextTodo() == null || !ai.getNextTodo().after(gc.getTime()))) )
-                                    {
-                                        //g2.setFont(strike_font);
-                                        //System.out.println(ai.getText());
-                                        // need to use AttributedString to work around a bug
-                                        AttributedString as = new AttributedString(ai.getText(),stmap);
-                                        g2.drawString( as.getIterator(), apptx, appty);
-                                    }
-                                    else
-                                    {
-                                        //g2.setFont(sm_font);
-                                        g2.drawString( ai.getText(), apptx, appty );
-                                    }
-                                   
-                                    
-                                    // increment the Y coord
-                                    appty += smfontHeight;
-                                }
-                                
-                                cal.setFirstDayOfWeek(Prefs.getIntPref(PrefName.FIRSTDOW ));
-                                
-                                // reset to black
-                                g2.setColor(Color.black);
-                            }
-                        }
-                    }
-                    
-                    g2.setClip(s);
-                    
-                }
-                catch( Exception e )
-                {
-                    Errmsg.errmsg(e);
-                }
-                
-                // draw date
-                g2.setFont(def_font);
-                g2.drawString( Integer.toString(date), colleft+fontDesent, rowtop+fontHeight );
-                
-            }
-            
-            
-        }
-        
-        // draw the lines last
-        
-        // top of calendar - above day names
-        g2.drawLine( 0, caltop, calright, caltop );
-        for( int row = 0; row < 7; row++ )
-        {
-            int rowtop = (row * rowheight) + daytop;
-            
-            // horizontal lines from below day names to bottom
-            g2.drawLine( 0, rowtop, calright, rowtop );
-        }
-        
-        
-        String logo = Prefs.getPref(PrefName.LOGO);
-        
-        for( int col = 0; col < 8; col++ )
-        {
-            int colleft = (col * colwidth);
-            if( !logo.equals("") && col == 6 )
-            {
-                g2.drawLine( colleft, caltop, colleft,calbot-rowheight );
-            }
-            else
-            {
-                // vertical lines
-                g2.drawLine( colleft, caltop, colleft,calbot );
-            }
-        }
-        
-        
-        // process logo
-        if( !logo.equals("") )
-        {
-            
-            int logotop = 5 * rowheight + daytop;
-            int logoleft = 5 * colwidth;
-            Toolkit tk = Toolkit.getDefaultToolkit();
-            
-            Image img = tk.getImage(logo);
-            if( img != null )
-            {
-                try
-                {
-                    MediaTracker mt = new MediaTracker(this);
-                    mt.addImage(img,1);
-                    mt.waitForID(1);
-                    
-                    // scale if needed to fit
-                    if( img.getHeight(null) > rowheight )
-                    {
-                        
-                        Image scaledimg = img.getScaledInstance(-1, rowheight, Image.SCALE_DEFAULT );
-                        mt.addImage(scaledimg,2);
-                        mt.waitForID(2);
-                        img = scaledimg;
-                    }
-                    
-                    if( img.getWidth(null) > 2 * colwidth )
-                    {
-                        Image scaledimg = img.getScaledInstance(2*colwidth, -1, Image.SCALE_DEFAULT );
-                        mt.addImage(scaledimg,3);
-                        mt.waitForID(3);
-                        img = scaledimg;
-                        
-                    }
-                    
-                }
-                catch( Exception e )
-                { Errmsg.errmsg(e); }
-                
-                g2.drawImage( img, logoleft + ((2*colwidth)-img.getWidth(null))/2,
-                logotop + (rowheight - img.getHeight(null))/2, Color.WHITE, null );
-            }
-            
-        }
-        return Printable.PAGE_EXISTS;
+	public String getNavLabel() {
+	    SimpleDateFormat df = new SimpleDateFormat("MMMM yyyy");
+	    Calendar cal = new GregorianCalendar(year_, month_, 1);
+	    return df.format(cal.getTime());
+	}
+
+	public void goTo(Calendar cal) {
+	    year_ = cal.get(Calendar.YEAR);
+	    month_ = cal.get(Calendar.MONTH);
+	    clearData();
+	    repaint();
+	}
+
+	public void next() {
+	    GregorianCalendar cal = new GregorianCalendar(year_, month_, 1, 23, 59);
+	    cal.add(Calendar.MONTH, 1);
+	    year_ = cal.get(Calendar.YEAR);
+	    month_ = cal.get(Calendar.MONTH);
+	    clearData();
+	    repaint();
+	}
+
+	public void prev() {
+	    GregorianCalendar cal = new GregorianCalendar(year_, month_, 1, 23, 59);
+	    cal.add(Calendar.MONTH, -1);
+	    year_ = cal.get(Calendar.YEAR);
+	    month_ = cal.get(Calendar.MONTH);
+	    clearData();
+	    repaint();
+	}
+
+	// print does the actual formatting of the printout
+	public int print(Graphics g, PageFormat pageFormat, int pageIndex) throws PrinterException {
+
+	    if (pageIndex > 1)
+		return Printable.NO_SUCH_PAGE;
+
+	    return (drawIt(g, pageFormat.getWidth(), pageFormat.getHeight(), pageFormat.getImageableWidth(), pageFormat
+		    .getImageableHeight(), pageFormat.getImageableX(), pageFormat.getImageableY(), pageIndex));
+	}
+
+	public void today() {
+	    GregorianCalendar cal = new GregorianCalendar();
+	    year_ = cal.get(Calendar.YEAR);
+	    month_ = cal.get(Calendar.MONTH);
+	    clearData();
+	    repaint();
+	}
+
+	private int drawIt(Graphics g, double width, double height, double pageWidth, double pageHeight, double pagex,
+		double pagey, int pageIndex) {
+
+	    boolean showpub = false;
+	    boolean showpriv = false;
+	    String sp = Prefs.getPref(PrefName.SHOWPUBLIC);
+	    if (sp.equals("true"))
+		showpub = true;
+	    sp = Prefs.getPref(PrefName.SHOWPRIVATE);
+	    if (sp.equals("true"))
+		showpriv = true;
+
+	    boolean wrap = false;
+	    sp = Prefs.getPref(PrefName.WRAP);
+	    if (sp.equals("true"))
+		wrap = true;
+
+	    // set up default and small fonts
+	    Graphics2D g2 = (Graphics2D) g;
+
+	    clearBoxes();
+
+	    Font def_font = g2.getFont();
+	    // Font sm_font = def_font.deriveFont(6f);
+	    Font sm_font = Font.decode(Prefs.getPref(PrefName.WEEKVIEWFONT));
+	    Map stmap = new HashMap();
+	    stmap.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
+	    stmap.put(TextAttribute.FONT, sm_font);
+	    // Font strike_font = sm_font.deriveFont(stmap);
+
+	    g2.setColor(Color.white);
+	    g2.fillRect(0, 0, (int) width, (int) height);
+
+	    // set color to black
+	    g2.setColor(Color.black);
+
+	    // get font sizes
+	    int fontHeight = g2.getFontMetrics().getHeight();
+	    int fontDesent = g2.getFontMetrics().getDescent();
+
+	    // translate coordinates based on the amount of the page that
+	    // is going to be printable on - in other words, set upper right
+	    // to upper right of printable area - not upper right corner of
+	    // paper
+	    g2.translate(pagex, pagey);
+	    Shape s = g2.getClip();
+
+	    GregorianCalendar now = new GregorianCalendar();
+	    int tmon = now.get(Calendar.MONTH);
+	    int tyear = now.get(Calendar.YEAR);
+	    int tdate = now.get(Calendar.DATE);
+	    GregorianCalendar cal = new GregorianCalendar(year_, month_, 1);
+	    cal.setFirstDayOfWeek(Prefs.getIntPref(PrefName.FIRSTDOW));
+
+	    int caltop = fontHeight + fontDesent;
+	    int daytop = caltop + fontHeight + fontDesent;
+
+	    // calculate width and height of day boxes (6x7 grid)
+	    int rowheight = ((int) pageHeight - daytop) / 6;
+	    int colwidth = (int) pageWidth / 7;
+
+	    // calculate the bottom and right edge of the grid
+	    int calbot = 6 * rowheight + daytop;
+	    int calright = 7 * colwidth;
+
+	    // draw the day names centered in each column - no boxes drawn yet
+	    SimpleDateFormat dfw = new SimpleDateFormat("EEE");
+	    cal.add(Calendar.DAY_OF_WEEK, cal.getFirstDayOfWeek() - cal.get(Calendar.DAY_OF_WEEK));
+	    for (int col = 0; col < 7; col++) {
+
+		int colleft = (col * colwidth);
+		String dayofweek = dfw.format(cal.getTime());
+		int swidth = g2.getFontMetrics().stringWidth(dayofweek);
+		g2.drawString(dayofweek, colleft + (colwidth - swidth) / 2, caltop + fontHeight);
+		cal.add(Calendar.DAY_OF_WEEK, 1);
+	    }
+
+	    // reset calendar
+	    cal.set(year_, month_, 1);
+	    int fdow = cal.get(Calendar.DAY_OF_WEEK) - cal.getFirstDayOfWeek();
+	    cal.add(Calendar.DATE, -1 * fdow);
+	    Hashtable atmap = null;
+	    if (wrap) {
+		atmap = new Hashtable();
+		atmap.put(TextAttribute.FONT, sm_font);
+	    }
+
+	    // print the days - either grayed out or containing a number and
+	    // appts
+	    for (int box = 0; box < 42; box++) {
+
+		int boxcol = box % 7;
+		int boxrow = box / 7;
+		int rowtop = (boxrow * rowheight) + daytop;
+		int colleft = boxcol * colwidth;
+		int dow = cal.getFirstDayOfWeek() + boxcol;
+		if (dow == 8)
+		    dow = 1;
+
+		// set small font for appt text
+		g2.setFont(sm_font);
+		int smfontHeight = g2.getFontMetrics().getHeight();
+		
+		// set clip to the day box to truncate long appointment text
+		g2.clipRect(colleft, rowtop, colwidth, rowheight);
+		try {
+
+		    addDateZone(new DateZone(cal.getTime(), 0 * 60, 23 * 60), colleft, rowtop, colwidth, rowheight);
+
+		    if (layout[box] == null && needLoad == true) {
+			// get the appointment info for the given day
+			Day di = Day.getDay(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE), showpub,
+				showpriv, true);
+
+			if (di != null) {
+			    Collection appts = di.getAppts();
+			    if (appts != null) {
+				layout[box] = new ApptDayBoxLayout(cal.getTime(), di, 0, 0);
+			    }
+			}
+		    }
+
+		    if (layout[box] != null) {
+
+			Day di = layout[box].getDay();
+			g2.setColor(new Color(Prefs.getIntPref(PrefName.UCS_DEFAULT)));
+
+			if (di != null) {
+			    if (tmon == month_ && tyear == year_ && tdate == cal.get(Calendar.DATE)) {
+				g2.setColor(new Color(Prefs.getIntPref(PrefName.UCS_TODAY)));
+			    } else if (di.getHoliday() != 0) {
+				g2.setColor(new Color(Prefs.getIntPref(PrefName.UCS_HOLIDAY)));
+			    } else if (di.getVacation() == 1) {
+				g2.setColor(new Color(Prefs.getIntPref(PrefName.UCS_VACATION)));
+			    } else if (dow == Calendar.SUNDAY || dow == Calendar.SATURDAY) {
+				g2.setColor(new Color(Prefs.getIntPref(PrefName.UCS_WEEKEND)));
+			    } else {
+				g2.setColor(new Color(Prefs.getIntPref(PrefName.UCS_WEEKDAY)));
+			    }
+			}
+
+			if (cal.get(Calendar.MONTH) != month_)
+			    g2.setColor(this.getBackground());
+
+			g2.fillRect(colleft, rowtop, colwidth, rowheight);
+			
+			g2.setColor(Color.black);
+
+			// Iterator it = appts.iterator();
+			Iterator it = layout[box].getBoxes().iterator();
+
+			int notey = rowtop + smfontHeight;
+
+			// loop through appts
+			while (it.hasNext()) {
+			    ApptDayBox dbox = (ApptDayBox) it.next();
+			    // Appointment ai = box.getAppt();
+
+			    
+			    addBox(dbox, colleft + 2, notey, colwidth - 4, smfontHeight,
+				    new Rectangle(colleft,rowtop, colwidth, rowheight));
+			    // increment Y coord for next note text
+			    notey += smfontHeight;
+
+			    // reset to black
+			    g2.setColor(Color.black);
+
+			}
+
+			
+		    }
+		    
+		 // reset the clip or bad things happen
+			g2.setClip(s);
+
+
+		    // draw date
+		    g2.setFont(def_font);
+		    g2.drawString(Integer.toString(cal.get(Calendar.DATE)), colleft + fontDesent, rowtop + fontHeight);
+		    g2.setFont(sm_font);
+		    // increment the day
+		    cal.add(Calendar.DATE, 1);
+
+		} catch (Exception e) {
+		    e.printStackTrace();
+		}
+
+	    }
+
+	    drawBoxes(g2);
+
+	    // draw the lines last
+	    // top of calendar - above day names
+	    g2.drawLine(0, caltop, calright, caltop);
+	    for (int row = 0; row < 7; row++) {
+		int rowtop = (row * rowheight) + daytop;
+
+		// horizontal lines from below day names to bottom
+		g2.drawLine(0, rowtop, calright, rowtop);
+	    }
+
+	    for (int col = 0; col < 8; col++) {
+		int colleft = (col * colwidth);
+
+		// vertical lines
+		g2.drawLine(colleft, caltop, colleft, calbot);
+
+	    }
+
+	    return Printable.PAGE_EXISTS;
+	}
+
+	protected void paintComponent(Graphics g) {
+	    super.paintComponent(g);
+	    try {
+
+		drawIt(g, getWidth(), getHeight(), getWidth() - 20, getHeight() - 20, 10, 10, 0);
+
+	    } catch (Exception e) {
+		// Errmsg.errmsg(e);
+		e.printStackTrace();
+	    }
+	}
+
+	Date getDateForX(double x) {
+	    // TODO Auto-generated method stub
+	    return null;
+	}
+
+	public void refresh() {
+	    clearData();
+	    repaint();
+	}
+
+	public void remove() {
+	    // TODO Auto-generated method stub
+	    
+	}
+
+	public void prefsChanged() {
+	    clearData();
+	    repaint();
+	    
+	}
+
     }
-    
-    
-    static private final double prev_scale = 1.5;
-    
-    
-    protected void paintComponent( Graphics g )
-    {
-        super.paintComponent(g);
-        try
-        {
-            Graphics2D g2 = (Graphics2D) g;
-            g2.scale( prev_scale, prev_scale );
-			drawIt(g,getWidth()/prev_scale, getHeight()/prev_scale, 
-					getWidth()/prev_scale-20, getHeight()/prev_scale-20,
-					10, 10, 0);
-            
-        }
-        catch( Exception e )
-        {
-            Errmsg.errmsg(e);
-        }
+
+    private NavPanel nav = null;
+
+    private MonthViewSubPanel wp_ = null;
+
+    public MonthPanel(int month, int year) {
+
+	wp_ = new MonthViewSubPanel(month, year);
+	nav = new NavPanel(wp_);
+
+	setLayout(new java.awt.GridBagLayout());
+
+	GridBagConstraints cons = new GridBagConstraints();
+
+	cons.gridx = 0;
+	cons.gridy = 0;
+	cons.fill = java.awt.GridBagConstraints.BOTH;
+	add(nav, cons);
+
+	cons.gridy = 1;
+	cons.weightx = 1.0;
+	cons.weighty = 1.0;
+	add(wp_, cons);
+
     }
-    MonthPanel(int month, int year)
-    {
-        year_ = year;
-        month_ = month;
-        
+
+    public void goTo(Calendar cal) {
+	wp_.goTo(cal);
+	nav.setLabel(wp_.getNavLabel());
+    }
+
+    public int print(Graphics arg0, PageFormat arg1, int arg2) throws PrinterException {
+	return wp_.print(arg0, arg1, arg2);
     }
 }
-
