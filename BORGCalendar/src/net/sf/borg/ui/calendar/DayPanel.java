@@ -24,6 +24,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
+import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.font.TextAttribute;
@@ -70,8 +71,6 @@ public class DayPanel extends JPanel implements Printable {
 	private int month_;
 
 	private int year_;
-
-	
 
 	boolean needLoad = true;
 	public DaySubPanel(int month, int year, int date) {
@@ -231,12 +230,12 @@ public class DayPanel extends JPanel implements Printable {
 	    int numhalfhours = (endhr - starthr) * 2;
 	    double tickheight = (calbot - aptop) / numhalfhours;
 
-	    g2.setColor(new Color(234, 234, 255));
+	    g2.setColor(this.getBackground());
 	    g2.fillRect(0, caltop, (int) timecolwidth, calbot - caltop);
 	    g2.setColor(Color.BLACK);
 
 	    // draw background for appt area
-	    g2.setColor(new Color(255, 250, 245));
+	    g2.setColor(new Color(Prefs.getIntPref(PrefName.UCS_DEFAULT)));
 	    g2.fillRect((int) timecolwidth, caltop, (int) (pageWidth - timecolwidth), (int) pageHeight - caltop);
 	    g2.setColor(Color.BLACK);
 
@@ -268,7 +267,7 @@ public class DayPanel extends JPanel implements Printable {
 
 			Collection appts = di.getAppts();
 			if (appts != null) {
-			    layout = new ApptDayBoxLayout(cal.getTime(), appts, starthr, endhr);
+			    layout = new ApptDayBoxLayout(cal.getTime(), di, starthr, endhr);
 			}
 		    }
 		}
@@ -285,9 +284,6 @@ public class DayPanel extends JPanel implements Printable {
 		    // they will be above the timed appt area
 		    int notey = caltop;// + smfontHeight;
 
-		    // count of appts used to vary color
-		    int apptnum = 0;
-
 		    // loop through appts
 		    while (it.hasNext()) {
 			ApptDayBox box = (ApptDayBox) it.next();
@@ -298,13 +294,14 @@ public class DayPanel extends JPanel implements Printable {
 			// note on top
 			if (box.isOutsideGrid()) {
 
-			    addBox(box, colleft + 2, notey, colwidth - 4, smfontHeight, apptnum);
+			    Rectangle clip = new Rectangle(colleft, caltop, (int)colwidth, (int)(aptop - caltop));
+			    addBox(box, colleft + 2, notey, colwidth - 4, smfontHeight, clip);
 			    // increment Y coord for next note text
 			    notey += smfontHeight;
 			} else {
+			    Rectangle clip = new Rectangle(colleft, (int)aptop, (int)colwidth, (int)(calbot - aptop));
+			    addBox(box, colleft + 4, aptop, colwidth - 8, calbot - aptop, clip);
 
-			    addBox(box, colleft + 4, aptop, colwidth - 8, calbot - aptop, apptnum);
-			    apptnum++;
 			}
 
 			// reset to black

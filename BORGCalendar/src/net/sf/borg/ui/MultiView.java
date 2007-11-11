@@ -19,11 +19,13 @@
  */
 package net.sf.borg.ui;
 
+import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.print.Printable;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -143,6 +145,7 @@ public class MultiView extends View  {
 	pack();
 	setVisible(true);
 	setView(MONTH);
+	//tabs_.addTab("nmv", new MonthPanel(cal_.get(Calendar.MONTH),cal_.get(Calendar.YEAR)));
 	manageMySize(PrefName.DAYVIEWSIZE);
     }
 
@@ -246,10 +249,10 @@ public class MultiView extends View  {
 
     public void print() {
 	try {
-	    if (getTabs().getSelectedComponent() == wkPanel) {
-		PrintHelper.printPrintable(wkPanel);
-	    } else if (getTabs().getSelectedComponent() == dayPanel) {
-		PrintHelper.printPrintable(dayPanel);
+	    Component c = getTabs().getSelectedComponent();
+	    if( c instanceof Printable  )
+	    {
+		PrintHelper.printPrintable((Printable) c);
 	    } else if (getTabs().getSelectedComponent() == calPanel) {
 		calPanel.print();
 	    } else if (getTabs().getSelectedComponent() == taskPanel) {

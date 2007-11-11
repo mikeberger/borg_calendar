@@ -171,20 +171,20 @@ public class PrefName {
 		static public PrefName UCS_BRICK = new PrefName("ucs_brick","10027008");
 		// Calendar view day background colors
 		
-		static public PrefName UCS_DEFAULT = new PrefName("ucs_default","16777164");
+		static public PrefName UCS_DEFAULT = new PrefName("ucs_default",new Integer(16777164));
 		// original color is Color(225,150,150)
-		static public PrefName UCS_TODAY = new PrefName("ucs_today","16751001");
+		static public PrefName UCS_TODAY = new PrefName("ucs_today",new Integer(16751001));
 		// original color is Color(245,203,162)
-		static public PrefName UCS_HOLIDAY = new PrefName("ucs_holiday","16764108");
+		static public PrefName UCS_HOLIDAY = new PrefName("ucs_holiday",new Integer(16764108));
 		// original color is Color(155,255,153)
-		static public PrefName UCS_VACATION = new PrefName("ucs_vacation","13434828");
+		static public PrefName UCS_VACATION = new PrefName("ucs_vacation",new Integer(13434828));
 		// original color is Color(200,255,200)
-		static public PrefName UCS_HALFDAY = new PrefName("ucs_halfday","13421823");
+		static public PrefName UCS_HALFDAY = new PrefName("ucs_halfday",new Integer(13421823));
 		// original color is Color(245,203,162)
-		static public PrefName UCS_WEEKEND = new PrefName("ucs_weekend","16764057");
+		static public PrefName UCS_WEEKEND = new PrefName("ucs_weekend",new Integer(16764057));
 		// original color is Color(255,233,192)
-		static public PrefName UCS_WEEKDAY = new PrefName("ucs_weekday","16777164");
-		static public PrefName UCS_STRIPE = new PrefName("ucs_stripe","15792890");
+		static public PrefName UCS_WEEKDAY = new PrefName("ucs_weekday",new Integer(16777164));
+		static public PrefName UCS_STRIPE = new PrefName("ucs_stripe",new Integer(15792890));
 		
 		
 		// synchronization
