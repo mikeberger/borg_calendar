@@ -583,8 +583,7 @@ public class Day {
 		// bsv 2004-12-21
 		if (color == null)
 		    info.setColor("brick");
-		// if( color == null ) info.setColor("black");
-
+		
 		Date bd = addr.getBirthday();
 		GregorianCalendar g = new GregorianCalendar();
 		g.setTime(bd);
@@ -597,6 +596,9 @@ public class Day {
 			+ addr.getFirstName() + " " + addr.getLastName() + "("
 			+ yrs + ")";
 		info.setText(tx);
+		info
+		    .setDate(new GregorianCalendar(year, month, day,
+			    00, 00).getTime());
 		ret.addAppt(info);
 	    }
 
