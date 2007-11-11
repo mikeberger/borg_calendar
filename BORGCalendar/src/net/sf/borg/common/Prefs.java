@@ -53,6 +53,9 @@ public class Prefs {
 
     public static String getPref( PrefName pn )
     {
+	Object o = getPrefObject(pn);
+	if( o instanceof Integer )
+	    return Integer.toString(((Integer) o).intValue());
 	return (String) getPrefObject(pn);
     }
     
@@ -132,7 +135,14 @@ public class Prefs {
 
 	Preferences prefs = Preferences.userNodeForPackage(Prefs.class);
 	if (pn.getDefault() instanceof Integer) {
-	    prefs.putInt(pn.getName(), ((Integer) val).intValue());
+	    if( val instanceof Integer)
+	    {
+		prefs.putInt(pn.getName(), ((Integer) val).intValue());
+	    }
+	    else
+	    {
+		prefs.putInt(pn.getName(), Integer.parseInt((String)val));
+	    }
 	} else {
 	    prefs.put(pn.getName(), (String) val);
 	}
