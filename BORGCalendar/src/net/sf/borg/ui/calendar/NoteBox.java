@@ -113,6 +113,7 @@ public class NoteBox {
     }
 
     public void edit() {
+	if( appt.getDate() == null ) return;
 	GregorianCalendar cal = new GregorianCalendar();
 	cal.setTime(appt.getDate());
 	AppointmentListView ag = new AppointmentListView(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE));

@@ -8,6 +8,8 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Stroke;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -305,13 +307,38 @@ public abstract class ApptBoxPanel extends JPanel {
     private Object popupBox;
 
     private Collection zones = new ArrayList();
+    
+    private class MyComponentListener implements ComponentListener
+    {
+
+	public void componentHidden(ComponentEvent arg0) {
+	    // TODO Auto-generated method stub
+	    
+	}
+
+	public void componentMoved(ComponentEvent e) {
+	    // TODO Auto-generated method stub
+	    
+	}
+
+	public void componentResized(ComponentEvent e) {
+	    ApptBoxPanel p = (ApptBoxPanel) e.getComponent();
+	    p.refresh();
+	}
+
+	public void componentShown(ComponentEvent e) {
+	    // TODO Auto-generated method stub
+	    
+	}
+	
+    }
 
     public ApptBoxPanel() {
 	final JPanel t = this;
 	MyMouseListener myOneListener = new MyMouseListener();
 	addMouseListener(myOneListener);
 	addMouseMotionListener(myOneListener);
-
+	addComponentListener(new MyComponentListener());
 	JMenuItem mnuitm = null;
 	addmenu = new JPopupMenu();
 	addmenu.add(mnuitm = new JMenuItem(Resource.getPlainResourceString("Add_New")));
@@ -394,6 +421,8 @@ public abstract class ApptBoxPanel extends JPanel {
 	zones.add(b);
     }
 
+    public abstract void refresh();
+    
     public void clearBoxes() {
 	boxes.clear();
 	notes.clear();

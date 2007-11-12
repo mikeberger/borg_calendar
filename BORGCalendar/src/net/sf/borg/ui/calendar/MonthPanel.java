@@ -41,6 +41,7 @@ import java.util.Map;
 
 import javax.swing.JPanel;
 
+import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.model.AppointmentModel;
@@ -129,6 +130,8 @@ public class MonthPanel extends JPanel implements Printable {
 	    clearData();
 	    repaint();
 	}
+
+	
 
 	private int drawIt(Graphics g, double width, double height, double pageWidth, double pageHeight, double pagex,
 		double pagey, int pageIndex) {
@@ -389,6 +392,15 @@ public class MonthPanel extends JPanel implements Printable {
     public void goTo(Calendar cal) {
 	wp_.goTo(cal);
 	nav.setLabel(wp_.getNavLabel());
+    }
+
+    public void printMonths()
+    {
+	try {
+	    MonthPrintPanel.printMonths(wp_.month_, wp_.year_);
+	} catch (Exception e) {
+	    Errmsg.errmsg(e);
+	}
     }
 
     public int print(Graphics arg0, PageFormat arg1, int arg2) throws PrinterException {

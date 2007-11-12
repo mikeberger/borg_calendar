@@ -101,8 +101,9 @@ public class CalendarPanel extends JPanel implements Prefs.Listener, Navigator, 
 	    boolean reverse = reverseActions.equals("true");
 	    if ((isDateButton_ && !reverse) || (!isDateButton_ && reverse)) {
 		if (mv_ != null) {
-		    mv_.goTo(new GregorianCalendar(year, month, date));
 		    mv_.setView(MultiView.DAY);
+		    mv_.goTo(new GregorianCalendar(year, month, date));
+		    
 		}
 	    } else {
 		AppointmentListView ag = new AppointmentListView(year, month, date);
@@ -1082,40 +1083,45 @@ public class CalendarPanel extends JPanel implements Prefs.Listener, Navigator, 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_jButton1ActionPerformed
     {// GEN-HEADEREND:event_jButton1ActionPerformed
 	if (parent_ != null) {
-	    parent_.goTo(new GregorianCalendar(year_, month_, 1));
 	    parent_.setView(MultiView.WEEK);
+	    parent_.goTo(new GregorianCalendar(year_, month_, 1));
+	    
 	}
     }// GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_jButton2ActionPerformed
     {// GEN-HEADEREND:event_jButton2ActionPerformed
 	if (parent_ != null) {
-	    parent_.goTo(new GregorianCalendar(year_, month_, 8));
 	    parent_.setView(MultiView.WEEK);
+	    parent_.goTo(new GregorianCalendar(year_, month_, 8));
+	   
 	}
     }// GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_jButton3ActionPerformed
     {// GEN-HEADEREND:event_jButton3ActionPerformed
 	if (parent_ != null) {
-	    parent_.goTo(new GregorianCalendar(year_, month_, 15));
 	    parent_.setView(MultiView.WEEK);
+	    parent_.goTo(new GregorianCalendar(year_, month_, 15));
+	    
 	}
     }// GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_jButton4ActionPerformed
     {// GEN-HEADEREND:event_jButton4ActionPerformed
 	if (parent_ != null) {
-	    parent_.goTo(new GregorianCalendar(year_, month_, 22));
 	    parent_.setView(MultiView.WEEK);
+	    parent_.goTo(new GregorianCalendar(year_, month_, 22));
+	   
 	}
     }// GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_jButton5ActionPerformed
     {// GEN-HEADEREND:event_jButton5ActionPerformed
 	if (parent_ != null) {
-	    parent_.goTo(new GregorianCalendar(year_, month_, 29));
 	    parent_.setView(MultiView.WEEK);
+	    parent_.goTo(new GregorianCalendar(year_, month_, 29));
+	    
 	}
     }// GEN-LAST:event_jButton5ActionPerformed
 

@@ -137,7 +137,8 @@ public class AppointmentModel extends Model implements Model.Listener {
     public void delAppt(int key) {
 	try {
 	    Appointment appt = getAppt(key);
-	    delAppt(appt);
+	    if( appt != null )
+		delAppt(appt);
 	} catch (Exception e) {
 	    Errmsg.errmsg(e);
 	}

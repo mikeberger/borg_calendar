@@ -52,6 +52,7 @@ import net.sf.borg.model.beans.Project;
 import net.sf.borg.ui.address.AddrListView;
 import net.sf.borg.ui.calendar.CalendarPanel;
 import net.sf.borg.ui.calendar.DayPanel;
+import net.sf.borg.ui.calendar.MonthPanel;
 import net.sf.borg.ui.calendar.TodoView;
 import net.sf.borg.ui.calendar.WeekPanel;
 import net.sf.borg.ui.memo.MemoPanel;
@@ -72,6 +73,8 @@ public class MultiView extends View  {
     private DayPanel dayPanel = null;
 
     private WeekPanel wkPanel = null;
+    
+    private MonthPanel monthPanel = null;
 
     private CalendarPanel calPanel = null;
 
@@ -176,13 +179,28 @@ public class MultiView extends View  {
 	    }
 	    getTabs().setSelectedComponent(wkPanel);
 	} else if (type == MONTH) {
-	    if( calPanel == null )
-		calPanel = new CalendarPanel(this, cal_.get(Calendar.MONTH), cal_.get(Calendar.YEAR));
-		   
-	    if (!calPanel.isDisplayable()) {
-		tabs_.addTab(Resource.getPlainResourceString("Month_View"), calPanel);
+
+	    String nmv = Prefs.getPref(PrefName.NEWMONTHVIEW);
+	    if( nmv.equals("true"))
+	    {
+		if( monthPanel == null )
+		    monthPanel = new MonthPanel(cal_.get(Calendar.MONTH), cal_.get(Calendar.YEAR));
+		if (!monthPanel.isDisplayable()) {
+		    tabs_.addTab(Resource.getPlainResourceString("Month_View")+"*", monthPanel);
+		}
+		getTabs().setSelectedComponent(monthPanel);
 	    }
-	    getTabs().setSelectedComponent(calPanel);
+	    else
+	    {
+
+		if( calPanel == null )
+		    calPanel = new CalendarPanel(this, cal_.get(Calendar.MONTH), cal_.get(Calendar.YEAR));
+
+		if (!calPanel.isDisplayable()) {
+		    tabs_.addTab(Resource.getPlainResourceString("Month_View"), calPanel);
+		}
+		getTabs().setSelectedComponent(calPanel);
+	    }
 	}
     }
 
@@ -250,18 +268,21 @@ public class MultiView extends View  {
     public void print() {
 	try {
 	    Component c = getTabs().getSelectedComponent();
-	    if( c instanceof Printable  )
+	    if (c instanceof MonthPanel) {
+		((MonthPanel)c).printMonths();
+	    }
+	    else if( c instanceof Printable  )
 	    {
 		PrintHelper.printPrintable((Printable) c);
-	    } else if (getTabs().getSelectedComponent() == calPanel) {
+	    } else if (c == calPanel) {
 		calPanel.print();
-	    } else if (getTabs().getSelectedComponent() == taskPanel) {
+	    } else if (c == taskPanel) {
 		taskPanel.print();
-	    } else if (getTabs().getSelectedComponent() == projPanel) {
+	    } else if (c == projPanel) {
 		projPanel.print();	   
-	    } else if (getTabs().getSelectedComponent() instanceof TodoView) {
+	    } else if (c instanceof TodoView) {
 		TodoView.getReference().print();
-	    }
+	    } 
 	} catch (Exception e) {
 	    Errmsg.errmsg(e);
 	}
@@ -416,8 +437,8 @@ public class MultiView extends View  {
     
     public void goTo(GregorianCalendar cal)
     {
-	dayPanel.goTo(cal);
-	calPanel.goTo(cal);
-	wkPanel.goTo(cal);
+	if( dayPanel != null ) dayPanel.goTo(cal);
+	if( calPanel != null ) calPanel.goTo(cal);
+	if( wkPanel != null ) wkPanel.goTo(cal);
     }
 }
