@@ -52,9 +52,9 @@ public class ApptBox {
 
     }
     
-    final static private float hlthickness = 2.0f;
-
     final static private BasicStroke highlight = new BasicStroke(2.0f);
+
+    final static private float hlthickness = 2.0f;
 
     final static private int radius = 5;
 
@@ -277,7 +277,7 @@ public class ApptBox {
 	AppointmentModel.getReference().delAppt(appt.getKey());
     }
 
-    public void draw(Graphics2D g2) {
+    public void draw(Graphics2D g2,Component comp) {
 	Stroke stroke = g2.getStroke();
 	Shape s = g2.getClip();
 	if (clip != null)
@@ -325,7 +325,7 @@ public class ApptBox {
 	else if (getTextColor().equals("blue"))
 	    g2.setColor(new Color(102, 0, 204));
 	if (isTodo() && todoIcon != null) {
-	    todoIcon.paintIcon(null, g2, bounds.x + radius, bounds.y + radius + 8);
+	    todoIcon.paintIcon(comp, g2, bounds.x + radius, bounds.y + radius + 8);
 	    drawWrappedString(g2, getText(), bounds.x + radius + todoIcon.getIconWidth(), bounds.y + radius, bounds.width - radius);
 	} else {
 	    drawWrappedString(g2, getText(), bounds.x + radius, bounds.y + radius, bounds.width - radius);
@@ -344,67 +344,17 @@ public class ApptBox {
 
     }
 
-    public Appointment getAppt() {
-	return appt;
-    }
-
-    public double getBottomAdjustment() {
-	return bottom;
-    }
-
     public Rectangle getBounds() {
         return bounds;
     }
-    public int getBoxnum() {
-        return boxnum;
-    }
 
-    
     public Date getDate() {
         return date;
     }
-
-    public double getLeftAdjustment() {
-	return left;
-    }
-
-    public int getMaxAcrossAtOneTime() {
-	return maxAcrossAtOneTime;
-    }
-
-    public double getRightAdjustment() {
-	return right;
-    }
-
+    
+ 
     public String getText() {
 	return appt.getText();
-    }
-
-    public String getTextColor() {
-	if (appt == null)
-	    return null;
-
-	if ((appt.getColor() != null && appt.getColor().equals("strike"))
-		|| (appt.getTodo() && !(appt.getNextTodo() == null || !appt.getNextTodo().after(date)))) {
-	    return ("strike");
-	}
-	return appt.getColor();
-    }
-
-    public double getTopAdjustment() {
-	return top;
-    }
-
-    public boolean isPlaced() {
-	return isPlaced;
-    }
-
-    public boolean isSelected() {
-	return isSelected;
-    }
-
-    public boolean isTodo() {
-	return getAppt().getTodo();
     }
 
     public void move(double y_fraction, Date d) throws Exception {
@@ -484,55 +434,13 @@ public class ApptBox {
 	}
     }
 
-    public void setAppt(Appointment appt) {
-	this.appt = appt;
-    }
-
-    public void setBottomAdjustment(double bottom) {
-	this.bottom = bottom;
-    }
-
-    public void setBounds(Rectangle bounds) {
-        this.bounds = bounds;
-    }
-
     public void setBoxnum(int boxnum) {
         this.boxnum = boxnum;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
-    public void setLeftAdjustment(double left) {
-	this.left = left;
-    }
-
-    public void setMaxAcrossAtOneTime(int maxAcrossAtOneTime) {
-	this.maxAcrossAtOneTime = maxAcrossAtOneTime;
-    }
-
-    public void setPlaced(boolean isPlaced) {
-	this.isPlaced = isPlaced;
-    }
-
-    public void setRightAdjustment(double right) {
-	this.right = right;
     }
 
     public void setSelected(boolean isSelected) {
 	this.isSelected = isSelected;
     }
-
-    public void setTopAdjustment(double top) {
-	this.top = top;
-    }
-
-    public void showMenu(Component c, int x, int y) {
-	// TODO Auto-generated method stub
-
-    }
-    
 
     private void drawWrappedString(Graphics2D g2, String tx, int x, int y, int w) {
 	int fontDesent = g2.getFontMetrics().getDescent();
@@ -552,6 +460,7 @@ public class ApptBox {
 	    tt += tlayout.getDescent() + tlayout.getLeading();
 	}
     }
+
     private Color getBorderColor(int i) {
 	if (bordercolor == null) {
 	    bordercolor = new Color[4];
@@ -564,6 +473,10 @@ public class ApptBox {
 	return bordercolor[i % bordercolor.length];
     }
 
+    private double getBottomAdjustment() {
+	return bottom;
+    }
+
     private Color getBoxColor(int i) {
 	if (boxcolor == null) {
 	    boxcolor = new Color[4];
@@ -574,6 +487,72 @@ public class ApptBox {
 	}
 
 	return boxcolor[i % boxcolor.length];
+    }
+
+    private double getLeftAdjustment() {
+	return left;
+    }
+
+    private int getMaxAcrossAtOneTime() {
+	return maxAcrossAtOneTime;
+    }
+
+    private double getRightAdjustment() {
+	return right;
+    }
+
+    private String getTextColor() {
+	if (appt == null)
+	    return null;
+
+	if ((appt.getColor() != null && appt.getColor().equals("strike"))
+		|| (appt.getTodo() && !(appt.getNextTodo() == null || !appt.getNextTodo().after(date)))) {
+	    return ("strike");
+	}
+	return appt.getColor();
+    }
+
+    private double getTopAdjustment() {
+	return top;
+    }
+
+    private boolean isPlaced() {
+	return isPlaced;
+    }
+
+    private boolean isSelected() {
+	return isSelected;
+    }
+
+    private boolean isTodo() {
+	return appt.getTodo();
+    }
+
+    private void setBottomAdjustment(double bottom) {
+	this.bottom = bottom;
+    }
+
+    private void setBounds(Rectangle bounds) {
+        this.bounds = bounds;
+    }
+
+    private void setLeftAdjustment(double left) {
+	this.left = left;
+    }
+
+    private void setMaxAcrossAtOneTime(int maxAcrossAtOneTime) {
+	this.maxAcrossAtOneTime = maxAcrossAtOneTime;
+    }
+
+    private void setPlaced(boolean isPlaced) {
+	this.isPlaced = isPlaced;
+    }
+    private void setRightAdjustment(double right) {
+	this.right = right;
+    }
+
+    private void setTopAdjustment(double top) {
+	this.top = top;
     }
 
 }

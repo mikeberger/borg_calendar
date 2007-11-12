@@ -96,7 +96,8 @@ public abstract class ApptBoxPanel extends JPanel {
 	  
 	    if (b == null ) return;
 	    if( b.abox != null ) b.abox.edit();
-	    if( b.nbox != null ) b.nbox.edit();
+	    else if( b.nbox != null ) b.nbox.edit();
+	    else if( b.zone != null ) b.zone.edit();
 
 	}
 
@@ -412,13 +413,13 @@ public abstract class ApptBoxPanel extends JPanel {
 	Iterator it = boxes.iterator();
 	while (it.hasNext()) {
 	    ApptBox b = (ApptBox) it.next();
-	    b.draw(g2);
+	    b.draw(g2,this);
 	}
 	
 	it = notes.iterator();
 	while (it.hasNext()) {
 	    NoteBox b = (NoteBox) it.next();
-	    b.draw(g2);
+	    b.draw(g2,this);
 	}
 
 	int radius = 5;

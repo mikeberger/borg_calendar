@@ -28,17 +28,18 @@ import net.sf.borg.ui.MultiView;
 // how an appointment box should be drawn in a day grid
 public class NoteBox {
     
-   
     final static private float hlthickness = 2.0f;
+   
     final static private BasicStroke highlight = new BasicStroke(hlthickness);
-
-    private Date date; // date being displayed - not necessarily date of
+   
 
     private Appointment appt = null;
 
-    private boolean isSelected = false;
-
     private Rectangle bounds, clip;
+
+    private Date date; // date being displayed - not necessarily date of
+
+    private boolean isSelected = false;
 
     public NoteBox(Date d, Appointment ap, Rectangle bounds, Rectangle clip) {
 	appt = ap;
@@ -47,55 +48,11 @@ public class NoteBox {
 	this.clip = clip;
     }
 
-    public Appointment getAppt() {
-	return appt;
-    }
-
-    public void setAppt(Appointment appt) {
-	this.appt = appt;
-    }
-
-    public void setSelected(boolean isSelected) {
-	this.isSelected = isSelected;
-    }
-
-    public String getText() {
-	return appt.getText();
-    }
-
-    public String getTextColor() {
-	if (appt == null)
-	    return null;
-
-	if ((appt.getColor() != null && appt.getColor().equals("strike"))
-		|| (appt.getTodo() && !(appt.getNextTodo() == null || !appt.getNextTodo().after(date)))) {
-	    return ("strike");
-	}
-	return appt.getColor();
-    }
-
-    public void edit() {
-	GregorianCalendar cal = new GregorianCalendar();
-	cal.setTime(appt.getDate());
-	AppointmentListView ag = new AppointmentListView(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE));
-	MultiView.getMainView().addView(ag);
-	// AppointmentListView ag = new
-	// AppointmentListView(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH),
-	// cal
-	// .get(Calendar.DATE));
-	ag.showApp(appt.getKey());
-
-    }
-
     public void delete() {
 	AppointmentModel.getReference().delAppt(appt.getKey());
     }
 
-    public boolean isTodo() {
-	return getAppt().getTodo();
-    }
-
-    public void draw(Graphics2D g2) {
+    public void draw(Graphics2D g2, Component comp) {
 	
 	Stroke stroke = g2.getStroke();
 	Shape s = g2.getClip();
@@ -135,7 +92,7 @@ public class NoteBox {
 		g2.setColor(new Color(102, 0, 204));
 	    // g2.setFont(sm_font);
 	    if (isTodo() && todoIcon != null) {
-		todoIcon.paintIcon(null, g2, bounds.x, bounds.y + 8);
+		todoIcon.paintIcon(comp, g2, bounds.x, bounds.y + 8);
 		g2.drawString(getText(), bounds.x + todoIcon.getIconWidth(), bounds.y + smfontHeight);
 	    } else {
 		g2.drawString(getText(), bounds.x + 2, bounds.y + smfontHeight);
@@ -155,9 +112,12 @@ public class NoteBox {
 	g2.setColor(Color.black);
     }
 
-
-    public void showMenu(Component c, int x, int y) {
-	// TODO Auto-generated method stub
+    public void edit() {
+	GregorianCalendar cal = new GregorianCalendar();
+	cal.setTime(appt.getDate());
+	AppointmentListView ag = new AppointmentListView(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE));
+	MultiView.getMainView().addView(ag);
+	ag.showApp(appt.getKey());
 
     }
 
@@ -165,8 +125,37 @@ public class NoteBox {
         return bounds;
     }
 
+    public String getText() {
+	return appt.getText();
+    }
+
     public void setBounds(Rectangle bounds) {
         this.bounds = bounds;
+    }
+
+    public void setSelected(boolean isSelected) {
+	this.isSelected = isSelected;
+    }
+
+
+    public void showMenu(Component c, int x, int y) {
+	// TODO Auto-generated method stub
+
+    }
+
+    private String getTextColor() {
+	if (appt == null)
+	    return null;
+
+	if ((appt.getColor() != null && appt.getColor().equals("strike"))
+		|| (appt.getTodo() && !(appt.getNextTodo() == null || !appt.getNextTodo().after(date)))) {
+	    return ("strike");
+	}
+	return appt.getColor();
+    }
+
+    private boolean isTodo() {
+	return appt.getTodo();
     }
  
 
