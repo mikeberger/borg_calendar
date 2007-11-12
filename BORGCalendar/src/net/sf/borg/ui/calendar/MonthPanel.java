@@ -32,7 +32,6 @@ import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -48,10 +47,9 @@ import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Day;
 import net.sf.borg.model.Model;
 import net.sf.borg.model.TaskModel;
+import net.sf.borg.model.beans.Appointment;
 import net.sf.borg.ui.NavPanel;
 import net.sf.borg.ui.Navigator;
-import net.sf.borg.ui.calendar.ApptDayBoxLayout.ApptDayBox;
-import net.sf.borg.ui.calendar.ApptDayBoxLayout.DateZone;
 
 public class MonthPanel extends JPanel implements Printable {
 
@@ -61,8 +59,9 @@ public class MonthPanel extends JPanel implements Printable {
 	private int month_;
 
 	private int year_;
-
-	private ApptDayBoxLayout layout[];
+	
+	final private int numBoxes = 42;
+	Color colors[] = new Color[numBoxes];
 
 	boolean needLoad = true;
 
@@ -77,9 +76,7 @@ public class MonthPanel extends JPanel implements Printable {
 	}
 
 	public void clearData() {
-	    layout = new ApptDayBoxLayout[42];
-	    for (int i = 0; i < 42; i++)
-		layout[i] = null;
+	    clearBoxes();
 	    needLoad = true;
 	    setToolTipText(null);
 	}
@@ -153,8 +150,6 @@ public class MonthPanel extends JPanel implements Printable {
 	    // set up default and small fonts
 	    Graphics2D g2 = (Graphics2D) g;
 
-	    clearBoxes();
-
 	    Font def_font = g2.getFont();
 	    // Font sm_font = def_font.deriveFont(6f);
 	    Font sm_font = Font.decode(Prefs.getPref(PrefName.WEEKVIEWFONT));
@@ -222,7 +217,7 @@ public class MonthPanel extends JPanel implements Printable {
 
 	    // print the days - either grayed out or containing a number and
 	    // appts
-	    for (int box = 0; box < 42; box++) {
+	    for (int box = 0; box < numBoxes; box++) {
 
 		int boxcol = box % 7;
 		int boxrow = box / 7;
@@ -235,94 +230,80 @@ public class MonthPanel extends JPanel implements Printable {
 		// set small font for appt text
 		g2.setFont(sm_font);
 		int smfontHeight = g2.getFontMetrics().getHeight();
-		
+
 		// set clip to the day box to truncate long appointment text
 		g2.clipRect(colleft, rowtop, colwidth, rowheight);
-		try {
+		if (needLoad) {
+		    try {
 
-		    addDateZone(new DateZone(cal.getTime(), 0 * 60, 23 * 60), colleft, rowtop, colwidth, rowheight);
+			addDateZone(cal.getTime(), 0 * 60, 23 * 60, new Rectangle(colleft, rowtop, colwidth, rowheight));
 
-		    if (layout[box] == null && needLoad == true) {
 			// get the appointment info for the given day
 			Day di = Day.getDay(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE), showpub,
 				showpriv, true);
 
-			if (di != null) {
-			    Collection appts = di.getAppts();
-			    if (appts != null) {
-				layout[box] = new ApptDayBoxLayout(cal.getTime(), di, 0, 0);
-			    }
-			}
-		    }
-
-		    if (layout[box] != null) {
-
-			Day di = layout[box].getDay();
-			g2.setColor(new Color(Prefs.getIntPref(PrefName.UCS_DEFAULT)));
-
+			Color c = new Color(Prefs.getIntPref(PrefName.UCS_DEFAULT));
+			
 			if (di != null) {
 			    if (tmon == month_ && tyear == year_ && tdate == cal.get(Calendar.DATE)) {
-				g2.setColor(new Color(Prefs.getIntPref(PrefName.UCS_TODAY)));
+				c = new Color(Prefs.getIntPref(PrefName.UCS_TODAY));
 			    } else if (di.getHoliday() != 0) {
-				g2.setColor(new Color(Prefs.getIntPref(PrefName.UCS_HOLIDAY)));
+				c = new Color(Prefs.getIntPref(PrefName.UCS_HOLIDAY));
 			    } else if (di.getVacation() == 1) {
-				g2.setColor(new Color(Prefs.getIntPref(PrefName.UCS_VACATION)));
+				c = new Color(Prefs.getIntPref(PrefName.UCS_VACATION));
 			    } else if (dow == Calendar.SUNDAY || dow == Calendar.SATURDAY) {
-				g2.setColor(new Color(Prefs.getIntPref(PrefName.UCS_WEEKEND)));
+				c = new Color(Prefs.getIntPref(PrefName.UCS_WEEKEND));
 			    } else {
-				g2.setColor(new Color(Prefs.getIntPref(PrefName.UCS_WEEKDAY)));
+				c = new Color(Prefs.getIntPref(PrefName.UCS_WEEKDAY));
 			    }
 			}
 
 			if (cal.get(Calendar.MONTH) != month_)
-			    g2.setColor(this.getBackground());
-
-			g2.fillRect(colleft, rowtop, colwidth, rowheight);
+			    c = this.getBackground();
 			
-			g2.setColor(Color.black);
+			colors[box] = c;
 
 			// Iterator it = appts.iterator();
-			Iterator it = layout[box].getBoxes().iterator();
+			Iterator it = di.getAppts().iterator();
 
 			int notey = rowtop + smfontHeight;
 
 			// loop through appts
 			while (it.hasNext()) {
-			    ApptDayBox dbox = (ApptDayBox) it.next();
-			    // Appointment ai = box.getAppt();
 
-			    
-			    addBox(dbox, colleft + 2, notey, colwidth - 4, smfontHeight,
-				    new Rectangle(colleft,rowtop, colwidth, rowheight));
+			    addNoteBox(cal.getTime(), (Appointment) it.next(), new Rectangle(colleft + 2, notey, colwidth - 4,
+				    smfontHeight), new Rectangle(colleft, rowtop, colwidth, rowheight));
 			    // increment Y coord for next note text
-			    notey += smfontHeight;
-
-			    // reset to black
-			    g2.setColor(Color.black);
+			    notey += smfontHeight;		  
 
 			}
 
 			
+
+		    } catch (Exception e) {
+			e.printStackTrace();
 		    }
-		    
-		 // reset the clip or bad things happen
-			g2.setClip(s);
-
-
-		    // draw date
-		    g2.setFont(def_font);
-		    g2.drawString(Integer.toString(cal.get(Calendar.DATE)), colleft + fontDesent, rowtop + fontHeight);
-		    g2.setFont(sm_font);
-		    // increment the day
-		    cal.add(Calendar.DATE, 1);
-
-		} catch (Exception e) {
-		    e.printStackTrace();
 		}
-
+		
+		// reset the clip or bad things happen
+		g2.setClip(s);
+		
+		// fill box
+		g2.setColor(colors[box]);
+		g2.fillRect(colleft, rowtop, colwidth, rowheight);
+		
+		// draw date
+		g2.setColor(Color.black);
+		g2.setFont(def_font);
+		g2.drawString(Integer.toString(cal.get(Calendar.DATE)), colleft + fontDesent, rowtop + fontHeight);
+		g2.setFont(sm_font);
+		
+		// increment the day	
+		cal.add(Calendar.DATE, 1);
 	    }
-
+	    needLoad = false;
 	    drawBoxes(g2);
+	    g2.setClip(s);
 
 	    // draw the lines last
 	    // top of calendar - above day names
@@ -369,13 +350,13 @@ public class MonthPanel extends JPanel implements Printable {
 
 	public void remove() {
 	    // TODO Auto-generated method stub
-	    
+
 	}
 
 	public void prefsChanged() {
 	    clearData();
 	    repaint();
-	    
+
 	}
 
     }

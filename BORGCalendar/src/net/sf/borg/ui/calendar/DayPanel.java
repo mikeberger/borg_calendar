@@ -33,7 +33,6 @@ import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.text.DateFormat;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -49,10 +48,9 @@ import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Day;
 import net.sf.borg.model.Model;
 import net.sf.borg.model.TaskModel;
+import net.sf.borg.model.beans.Appointment;
 import net.sf.borg.ui.NavPanel;
 import net.sf.borg.ui.Navigator;
-import net.sf.borg.ui.calendar.ApptDayBoxLayout.ApptDayBox;
-import net.sf.borg.ui.calendar.ApptDayBoxLayout.DateZone;
 
 // weekPanel handles the printing of a single week
 public class DayPanel extends JPanel implements Printable {
@@ -61,18 +59,16 @@ public class DayPanel extends JPanel implements Printable {
 	// set up dash line stroke
 	private float dash1[] = { 1.0f, 3.0f };
 
-	private BasicStroke dashed = new BasicStroke(0.02f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 3.0f, dash1,
-		0.0f);
+	private BasicStroke dashed = new BasicStroke(0.02f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 3.0f, dash1, 0.0f);
 
 	private int date_;
-
-	private ApptDayBoxLayout layout;
 
 	private int month_;
 
 	private int year_;
 
 	boolean needLoad = true;
+
 	public DaySubPanel(int month, int year, int date) {
 	    year_ = year;
 	    month_ = month;
@@ -85,7 +81,7 @@ public class DayPanel extends JPanel implements Printable {
 	}
 
 	public void clearData() {
-	    layout = null;
+	    clearBoxes();
 	    needLoad = true;
 	    setToolTipText(null);
 	}
@@ -163,7 +159,7 @@ public class DayPanel extends JPanel implements Printable {
 	private int drawIt(Graphics g, double width, double height, double pageWidth, double pageHeight, double pagex,
 		double pagey, Font sm_font) {
 
-	    clearBoxes();
+	   
 	    boolean showpub = false;
 	    boolean showpriv = false;
 	    String sp = Prefs.getPref(PrefName.SHOWPUBLIC);
@@ -254,31 +250,17 @@ public class DayPanel extends JPanel implements Printable {
 
 	    int colleft = (int) (timecolwidth);
 
-	    addDateZone(new DateZone(cal.getTime(), starthr * 60, endhr * 60), colleft, 0, colwidth, calbot);
+	    if (needLoad) {
+		
+		addDateZone(cal.getTime(), starthr * 60, endhr * 60, new Rectangle(colleft, 0, (int) colwidth, calbot));
 
-	    try {
-
-		if (needLoad) {
-		    // get the appointment info for the given day
+		try {
+		    int startmin = starthr * 60;
+		    int endmin = endhr * 60;
 		    Day di = Day.getDay(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE), showpub, showpriv,
 			    true);
 
-		    if (di != null) {
-
-			Collection appts = di.getAppts();
-			if (appts != null) {
-			    layout = new ApptDayBoxLayout(cal.getTime(), di, starthr, endhr);
-			}
-		    }
-		}
-
-		if (layout != null) {
-
-		    // Iterator it = appts.iterator();
-		    Iterator it = layout.getBoxes().iterator();
-
-		    // determine x coord for all appt text
-		    // int apptx = colleft + 2 * fontDesent;
+		    Iterator it = di.getAppts().iterator();
 
 		    // determine Y coord for non-scheduled appts (notes)
 		    // they will be above the timed appt area
@@ -286,42 +268,51 @@ public class DayPanel extends JPanel implements Printable {
 
 		    // loop through appts
 		    while (it.hasNext()) {
-			ApptDayBox box = (ApptDayBox) it.next();
-			// Appointment ai = box.getAppt();
+			Appointment appt = (Appointment) it.next();
 
-			// add a single appt text
-			// if the appt falls outside the grid - leave it as a
-			// note on top
-			if (box.isOutsideGrid()) {
+			Date d = appt.getDate();
+			if (d == null)
+			    continue;
 
-			    Rectangle clip = new Rectangle(colleft, caltop, (int)colwidth, (int)(aptop - caltop));
-			    addBox(box, colleft + 2, notey, colwidth - 4, smfontHeight, clip);
+			// determine appt start and end minutes
+			GregorianCalendar acal = new GregorianCalendar();
+			acal.setTime(d);
+			double apstartmin = 60 * acal.get(Calendar.HOUR_OF_DAY) + acal.get(Calendar.MINUTE);
+			int dur = 0;
+			Integer duri = appt.getDuration();
+			if (duri != null) {
+			    dur = duri.intValue();
+			}
+			double apendmin = apstartmin + dur;
+
+			if (AppointmentModel.isNote(appt) || apendmin < startmin || apstartmin >= endmin - 4
+				|| appt.getDuration() == null || appt.getDuration().intValue() == 0) {
+
+			    addNoteBox(cal.getTime(), appt, new Rectangle(colleft + 2, notey, (int) (colwidth - 4), smfontHeight),
+				    new Rectangle(colleft, caltop, (int) colwidth, (int) (aptop - caltop)));
 			    // increment Y coord for next note text
 			    notey += smfontHeight;
 			} else {
-			    Rectangle clip = new Rectangle(colleft, (int)aptop, (int)colwidth, (int)(calbot - aptop));
-			    addBox(box, colleft + 4, aptop, colwidth - 8, calbot - aptop, clip);
 
+			    addApptBox(cal.getTime(), appt, startmin, endmin, new Rectangle(colleft + 4, (int) aptop,
+				    (int) colwidth - 8, (int) (calbot - aptop)), new Rectangle(colleft, (int) aptop,
+				    (int) colwidth, (int) (calbot - aptop)));
 			}
 
-			// reset to black
-			g2.setColor(Color.black);
-
-			// reset the clip
-			g2.setClip(s);
-
+			
 		    }
+
+		} catch (Exception e) {
+		    Errmsg.errmsg(e);
 		}
 
-		drawBoxes(g2);
+		ApptBox.layoutBoxes(boxes, starthr, endhr);
 
-		// reset the clip or bad things happen
-		g2.setClip(s);
-
-	    } catch (Exception e) {
-		Errmsg.errmsg(e);
 	    }
-
+	    g2.setClip(s);
+	    drawBoxes(g2);
+	    
+	    
 	    // draw the box lines last so they show on top of other stuff
 	    // first - the horizontal lines
 	    g2.drawLine(0, caltop, (int) pageWidth, caltop);
@@ -370,36 +361,38 @@ public class DayPanel extends JPanel implements Printable {
 	}
 
     }
-    
+
     private DaySubPanel dp_ = null;
+
     private NavPanel nav = null;
+
     public DayPanel(int month, int year, int date) {
-	   
-	    dp_ = new DaySubPanel(month, year, date);
-	    nav = new NavPanel(dp_);
 
-	    setLayout(new java.awt.GridBagLayout());
+	dp_ = new DaySubPanel(month, year, date);
+	nav = new NavPanel(dp_);
 
-	    GridBagConstraints cons = new GridBagConstraints();
+	setLayout(new java.awt.GridBagLayout());
 
-	    cons.gridx = 0;
-	    cons.gridy = 0;
-	    cons.fill = java.awt.GridBagConstraints.BOTH;
-	    add(nav, cons);
+	GridBagConstraints cons = new GridBagConstraints();
 
-	    cons.gridy = 1;
-	    cons.weightx = 1.0;
-	    cons.weighty = 1.0;
-	    add(dp_, cons);
-	
+	cons.gridx = 0;
+	cons.gridy = 0;
+	cons.fill = java.awt.GridBagConstraints.BOTH;
+	add(nav, cons);
+
+	cons.gridy = 1;
+	cons.weightx = 1.0;
+	cons.weighty = 1.0;
+	add(dp_, cons);
+
     }
-    
+
     public void goTo(Calendar cal) {
-	   dp_.goTo(cal);
-	   nav.setLabel(dp_.getNavLabel());
-	}
+	dp_.goTo(cal);
+	nav.setLabel(dp_.getNavLabel());
+    }
 
     public int print(Graphics arg0, PageFormat arg1, int arg2) throws PrinterException {
-	return dp_.print(arg0,arg1, arg2);
+	return dp_.print(arg0, arg1, arg2);
     }
 }

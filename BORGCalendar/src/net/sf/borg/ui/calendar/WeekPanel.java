@@ -34,6 +34,7 @@ import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -53,10 +54,9 @@ import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Day;
 import net.sf.borg.model.Model;
 import net.sf.borg.model.TaskModel;
+import net.sf.borg.model.beans.Appointment;
 import net.sf.borg.ui.NavPanel;
 import net.sf.borg.ui.Navigator;
-import net.sf.borg.ui.calendar.ApptDayBoxLayout.ApptDayBox;
-import net.sf.borg.ui.calendar.ApptDayBoxLayout.DateZone;
 
 public class WeekPanel extends JPanel implements Printable {
 
@@ -73,8 +73,6 @@ public class WeekPanel extends JPanel implements Printable {
 	private BasicStroke dashed = new BasicStroke(0.02f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 3.0f, dash1, 0.0f);
 
 	private int date_;
-
-	private ApptDayBoxLayout layout[];
 
 	private int month_;
 
@@ -96,9 +94,7 @@ public class WeekPanel extends JPanel implements Printable {
 	}
 
 	public void clearData() {
-	    layout = new ApptDayBoxLayout[7];
-	    for (int i = 0; i < 7; i++)
-		layout[i] = null;
+	    clearBoxes();
 	    needLoad = true;
 	    setToolTipText(null);
 	}
@@ -203,8 +199,6 @@ public class WeekPanel extends JPanel implements Printable {
 	private int drawIt(Graphics g, double width, double height, double pageWidth, double pageHeight, double pagex,
 		double pagey, Font sm_font) {
 
-	    clearBoxes();
-
 	    boolean showpub = false;
 	    boolean showpriv = false;
 	    String sp = Prefs.getPref(PrefName.SHOWPUBLIC);
@@ -298,11 +292,6 @@ public class WeekPanel extends JPanel implements Printable {
 	    g2.fillRect(0, caltop, (int) timecolwidth, calbot - caltop);
 	    g2.setColor(Color.BLACK);
 
-	    Calendar today = new GregorianCalendar();
-	    int tmon = today.get(Calendar.MONTH);
-	    int tyear = today.get(Calendar.YEAR);
-	    int tdate = today.get(Calendar.DATE);
-
 	    // draw background for appt area
 	    g2.setColor(new Color(Prefs.getIntPref(PrefName.UCS_DEFAULT)));
 	    g2.fillRect((int) timecolwidth, daytop, (int) (pageWidth - timecolwidth), (int) pageHeight - daytop);
@@ -342,58 +331,17 @@ public class WeekPanel extends JPanel implements Printable {
 
 		int colleft = (int) (timecolwidth + col * colwidth);
 
-		// add a zone for each day to allow new appts to be edited
-		addDateZone(new DateZone(cal.getTime(), starthr * 60, endhr * 60), colleft, 0, colwidth, calbot);
+		if (needLoad) {
+		    // add a zone for each day to allow new appts to be edited
+		    addDateZone(cal.getTime(), starthr * 60, endhr * 60, new Rectangle(colleft, 0, (int) colwidth, calbot));
 
-		try {
-
-		    if (layout[col] == null && needLoad == true) {
-			// get the appointment info for the given day
+		    try {
+			int startmin = starthr * 60;
+			int endmin = endhr * 60;
 			Day di = Day.getDay(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE), showpub,
 				showpriv, true);
 
-			if (di != null) {
-			    Collection appts = di.getAppts();
-			    if (appts != null) {
-				layout[col] = new ApptDayBoxLayout(cal.getTime(), di, starthr, endhr);
-			    }
-			}
-		    }
-
-		    if (layout[col] != null) {
-
-			// Iterator it = appts.iterator();
-			Iterator it = layout[col].getBoxes().iterator();
-
-			Day di = layout[col].getDay();
-			g2.setColor(new Color(Prefs.getIntPref(PrefName.UCS_DEFAULT)));
-
-			if (di != null) {
-			    if (tmon == month_ && tyear == year_ && tdate == cal.get(Calendar.DATE)) {
-				g2.setColor(new Color(Prefs.getIntPref(PrefName.UCS_TODAY)));
-			    } else if (di.getHoliday() != 0) {
-				g2.setColor(new Color(Prefs.getIntPref(PrefName.UCS_HOLIDAY)));
-			    } else if (di.getVacation() == 1) {
-				g2.setColor(new Color(Prefs.getIntPref(PrefName.UCS_VACATION)));
-			    } else if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY
-				    || cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) {
-				g2.setColor(new Color(Prefs.getIntPref(PrefName.UCS_WEEKEND)));
-			    } else {
-				g2.setColor(new Color(Prefs.getIntPref(PrefName.UCS_WEEKDAY)));
-			    }
-			}
-
-			if (cal.get(Calendar.MONTH) != month_)
-			    g2.setColor(this.getBackground());
-
-			g2.fillRect(colleft, caltop, (int) (colwidth), daytop - caltop);
-
-			// g2.fillRect(colleft, daytop, (int)colwidth,
-			// (int)rowheight);
-			g2.setColor(Color.black);
-
-			// determine x coord for all appt text
-			// int apptx = colleft + 2 * fontDesent;
+			Iterator it = di.getAppts().iterator();
 
 			// determine Y coord for non-scheduled appts (notes)
 			// they will be above the timed appt area
@@ -401,22 +349,35 @@ public class WeekPanel extends JPanel implements Printable {
 
 			// loop through appts
 			while (it.hasNext()) {
-			    ApptDayBox box = (ApptDayBox) it.next();
-			    // Appointment ai = box.getAppt();
+			    Appointment appt = (Appointment) it.next();
 
-			    // add a single appt text
-			    // if the appt falls outside the grid - leave it as
-			    // a note on top
-			    if (box.isOutsideGrid()) {
+			    Date d = appt.getDate();
+			    if (d == null)
+				continue;
 
-				addBox(box, colleft + 2, notey, colwidth - 4, smfontHeight,
-					new Rectangle(colleft, caltop, (int)colwidth, (int)(aptop - caltop)));
+			    // determine appt start and end minutes
+			    GregorianCalendar acal = new GregorianCalendar();
+			    acal.setTime(d);
+			    double apstartmin = 60 * acal.get(Calendar.HOUR_OF_DAY) + acal.get(Calendar.MINUTE);
+			    int dur = 0;
+			    Integer duri = appt.getDuration();
+			    if (duri != null) {
+				dur = duri.intValue();
+			    }
+			    double apendmin = apstartmin + dur;
+
+			    if (AppointmentModel.isNote(appt) || apendmin < startmin || apstartmin >= endmin - 4
+				    || appt.getDuration() == null || appt.getDuration().intValue() == 0) {
+
+				addNoteBox(cal.getTime(), appt, new Rectangle(colleft + 2, notey, (int) (colwidth - 4),
+					smfontHeight), new Rectangle(colleft, caltop, (int) colwidth, (int) (aptop - caltop)));
 				// increment Y coord for next note text
 				notey += smfontHeight;
 			    } else {
 
-				addBox(box, colleft + 4, aptop, colwidth - 8, calbot - aptop,
-					new Rectangle(colleft, (int)aptop, (int)colwidth, (int)(calbot - aptop)));
+				addApptBox(cal.getTime(),appt, startmin, endmin, new Rectangle(colleft + 4, (int) aptop, (int) colwidth - 8,
+					(int) (calbot - aptop)), new Rectangle(colleft, (int) aptop, (int) colwidth,
+					(int) (calbot - aptop)));
 			    }
 
 			    // reset to black
@@ -426,19 +387,38 @@ public class WeekPanel extends JPanel implements Printable {
 			    g2.setClip(s);
 
 			}
+
+		    } catch (Exception e) {
+			Errmsg.errmsg(e);
 		    }
-
-		    // reset the clip or bad things happen
-		    g2.setClip(s);
-
-		    // increment the day
-		    cal.add(Calendar.DATE, 1);
-
-		} catch (Exception e) {
-		    Errmsg.errmsg(e);
+		    
+		    Collection layoutlist = new ArrayList();
+		    Iterator bit = boxes.iterator();
+		    while( bit.hasNext())
+		    {
+			ApptBox b = (ApptBox)bit.next();
+			Calendar c = new GregorianCalendar();
+			c.setTime(b.getDate());
+			if( c.get(Calendar.DAY_OF_YEAR) == cal.get(Calendar.DAY_OF_YEAR))
+				layoutlist.add(b);
+		    }
+		    ApptBox.layoutBoxes(layoutlist,starthr, endhr);
+		    
 		}
 
+		// reset the clip or bad things happen
+		g2.setClip(s);
+		g2.setColor(new Color(Prefs.getIntPref(PrefName.UCS_DEFAULT)));
+		g2.fillRect(colleft, caltop, (int) (colwidth), daytop - caltop);
+		g2.setColor(Color.black);
+
+		// increment the day
+		cal.add(Calendar.DATE, 1);
+
 	    }
+	    
+	    needLoad = false;
+	   
 	    drawBoxes(g2);
 
 	    // add day labels
