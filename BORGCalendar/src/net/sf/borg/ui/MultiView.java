@@ -148,7 +148,6 @@ public class MultiView extends View  {
 	pack();
 	setVisible(true);
 	setView(MONTH);
-	//tabs_.addTab("nmv", new MonthPanel(cal_.get(Calendar.MONTH),cal_.get(Calendar.YEAR)));
 	manageMySize(PrefName.DAYVIEWSIZE);
     }
 
@@ -186,7 +185,7 @@ public class MultiView extends View  {
 		if( monthPanel == null )
 		    monthPanel = new MonthPanel(cal_.get(Calendar.MONTH), cal_.get(Calendar.YEAR));
 		if (!monthPanel.isDisplayable()) {
-		    tabs_.addTab(Resource.getPlainResourceString("Month_View")+"*", monthPanel);
+		    tabs_.addTab(Resource.getPlainResourceString("Month_View"), monthPanel);
 		}
 		getTabs().setSelectedComponent(monthPanel);
 	    }

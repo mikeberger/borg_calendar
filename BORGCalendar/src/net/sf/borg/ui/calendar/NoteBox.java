@@ -84,7 +84,15 @@ public class NoteBox implements Box {
 	if (use_marker.equals("true") && (iconname.endsWith(".gif") || iconname.endsWith(".jpg"))) {
 	    todoIcon = new javax.swing.ImageIcon(getClass().getResource("/resource/" + iconname));
 	}
-	
+	if (isSelected == true) {
+	    g2.setStroke(highlight);
+	    g2.setColor(Color.BLUE);
+	    //g2.drawRect(bounds.x, bounds.y + 2, bounds.width, bounds.height);
+	    g2.setColor(Color.WHITE);
+	    g2.fillRect(bounds.x, bounds.y + 2, bounds.width, bounds.height);
+	    g2.setStroke(stroke);
+	}
+	g2.setColor(Color.BLACK);
 	
 	if (getTextColor().equals("strike")) {
 
@@ -110,13 +118,7 @@ public class NoteBox implements Box {
 	    g2.setColor(Color.black);
 	}
 
-	if (isSelected == true) {
-	    g2.setStroke(highlight);
-	    g2.setColor(Color.BLUE);
-	    g2.drawRect(bounds.x, bounds.y + 2, bounds.width, bounds.height);
-	    g2.setStroke(stroke);
-	}
-	g2.setColor(Color.BLACK);
+	
 
 	g2.setClip(s);
 	g2.setColor(Color.black);
@@ -126,9 +128,8 @@ public class NoteBox implements Box {
      * @see net.sf.borg.ui.calendar.Box#edit()
      */
     public void edit() {
-	if( appt.getDate() == null ) return;
 	GregorianCalendar cal = new GregorianCalendar();
-	cal.setTime(appt.getDate());
+	cal.setTime(date);
 	AppointmentListView ag = new AppointmentListView(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE));
 	MultiView.getMainView().addView(ag);
 	ag.showApp(appt.getKey());

@@ -341,7 +341,7 @@ public class ApptBox implements Box{
 
     public void edit() {
 	GregorianCalendar cal = new GregorianCalendar();
-	cal.setTime(appt.getDate());
+	cal.setTime(date);
 	AppointmentListView ag = new AppointmentListView(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE));
 	MultiView.getMainView().addView(ag);
 	ag.showApp(appt.getKey());
