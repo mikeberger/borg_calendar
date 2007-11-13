@@ -32,7 +32,9 @@ import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -305,8 +307,17 @@ public class DayPanel extends JPanel implements Printable {
 		} catch (Exception e) {
 		    Errmsg.errmsg(e);
 		}
+		
+		Collection layoutlist = new ArrayList();
+		Iterator bit = boxes.iterator();
+		while( bit.hasNext())
+		{
+		    Box b = (Box)bit.next();
+		    if( !(b instanceof ApptBox)) continue;
+		    layoutlist.add(b);
+		}
+		ApptBox.layoutBoxes(layoutlist,starthr, endhr);
 
-		ApptBox.layoutBoxes(boxes, starthr, endhr);
 
 	    }
 	    g2.setClip(s);
@@ -351,7 +362,7 @@ public class DayPanel extends JPanel implements Printable {
 		drawIt(g, getWidth(), getHeight(), getWidth() - 20, getHeight() - 20, 10, 10, sm_font);
 
 	    } catch (Exception e) {
-		Errmsg.errmsg(e);
+		e.printStackTrace();
 	    }
 	}
 

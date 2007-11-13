@@ -1,13 +1,18 @@
 package net.sf.borg.ui.calendar;
 
 import java.awt.Rectangle;
+import java.awt.event.ActionListener;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
+import net.sf.borg.common.Resource;
 import net.sf.borg.common.XTree;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.beans.Appointment;
@@ -96,6 +101,21 @@ public class DateZone
         this.bounds = bounds;
     }
 
-	
+    private JPopupMenu popmenu = null;
+    public JPopupMenu getMenu() {
+	JMenuItem mnuitm;
+	if( popmenu == null )
+	{
+	    popmenu = new JPopupMenu();
+	    popmenu.add(mnuitm = new JMenuItem(Resource.getPlainResourceString("Add_New")));
+	    mnuitm.addActionListener(new ActionListener() {
+		public void actionPerformed(java.awt.event.ActionEvent evt) {	    
+		    edit();	   
+		}
+	    });
+	   
+	}
+	return popmenu;
+    }
 }
 

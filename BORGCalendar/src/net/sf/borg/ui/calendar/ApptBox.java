@@ -8,6 +8,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Stroke;
+import java.awt.event.ActionListener;
 import java.awt.font.FontRenderContext;
 import java.awt.font.LineBreakMeasurer;
 import java.awt.font.TextAttribute;
@@ -26,16 +27,19 @@ import java.util.Map;
 import java.util.TreeSet;
 
 import javax.swing.ImageIcon;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
+import net.sf.borg.common.Resource;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.beans.Appointment;
 import net.sf.borg.ui.MultiView;
 
 // ApptDayBox holds the logical information needs to determine
 // how an appointment box should be drawn in a day grid
-public class ApptBox {
+public class ApptBox implements Box{
 
     // compare boxes by number of overlaps
     private static class boxcompare implements Comparator {
@@ -532,7 +536,7 @@ public class ApptBox {
 	this.bottom = bottom;
     }
 
-    private void setBounds(Rectangle bounds) {
+    public void setBounds(Rectangle bounds) {
         this.bounds = bounds;
     }
 
@@ -553,6 +557,28 @@ public class ApptBox {
 
     private void setTopAdjustment(double top) {
 	this.top = top;
+    }
+
+    private JPopupMenu popmenu = null;
+    public JPopupMenu getMenu() {
+	JMenuItem mnuitm;
+	if( popmenu == null )
+	{
+	    popmenu = new JPopupMenu();
+	    popmenu.add(mnuitm = new JMenuItem(Resource.getPlainResourceString("Edit")));
+	    mnuitm.addActionListener(new ActionListener() {
+		public void actionPerformed(java.awt.event.ActionEvent evt) {	    
+		    edit();	   
+		}
+	    });
+	    popmenu.add(mnuitm = new JMenuItem(Resource.getPlainResourceString("Delete")));
+	    mnuitm.addActionListener(new ActionListener() {
+		public void actionPerformed(java.awt.event.ActionEvent evt) {
+		    delete();
+		}
+	    });
+	}
+	return popmenu;
     }
 
 }

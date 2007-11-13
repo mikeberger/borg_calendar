@@ -435,7 +435,7 @@ public class MultiView extends View  {
 	
     }
     
-    public void goTo(GregorianCalendar cal)
+    public void goTo(Calendar cal)
     {
 	if( dayPanel != null ) dayPanel.goTo(cal);
 	if( calPanel != null ) calPanel.goTo(cal);

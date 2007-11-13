@@ -396,11 +396,13 @@ public class WeekPanel extends JPanel implements Printable {
 		    Iterator bit = boxes.iterator();
 		    while( bit.hasNext())
 		    {
-			ApptBox b = (ApptBox)bit.next();
+			Box b = (Box)bit.next();
+			if( !(b instanceof ApptBox)) continue;
+			ApptBox ab = (ApptBox)b;
 			Calendar c = new GregorianCalendar();
-			c.setTime(b.getDate());
+			c.setTime(ab.getDate());
 			if( c.get(Calendar.DAY_OF_YEAR) == cal.get(Calendar.DAY_OF_YEAR))
-				layoutlist.add(b);
+				layoutlist.add(ab);
 		    }
 		    ApptBox.layoutBoxes(layoutlist,starthr, endhr);
 		    
@@ -476,7 +478,7 @@ public class WeekPanel extends JPanel implements Printable {
 		drawIt(g, getWidth(), getHeight(), getWidth() - 20, getHeight() - 20, 10, 10, sm_font);
 
 	    } catch (Exception e) {
-		Errmsg.errmsg(e);
+		e.printStackTrace();
 	    }
 	}
     }

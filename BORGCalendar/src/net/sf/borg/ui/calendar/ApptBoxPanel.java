@@ -39,8 +39,7 @@ import net.sf.borg.model.beans.Appointment;
 public abstract class ApptBoxPanel extends JPanel {
 
     private class ClickedBoxInfo {
-	public ApptBox abox;
-	public NoteBox nbox;
+	public Box box;
 
 	public boolean inDragNewBox;
 
@@ -72,17 +71,12 @@ public abstract class ApptBoxPanel extends JPanel {
 		
 		if (b.zone != null && b.inDragNewBox ) {
 		    addmenu.show(evt.getComponent(), evt.getX(), evt.getY());
-		    popupBox = b.zone;
-		
-		} else if(b.abox != null ){
-		    editmenu.show(evt.getComponent(), evt.getX(), evt.getY());
-		    popupBox = b.abox;
-		} else if(b.nbox != null ){
-		    editmenu.show(evt.getComponent(), evt.getX(), evt.getY());
-		    popupBox = b.nbox;
+		} else if(b.box != null ){
+		    if( b.box.getMenu() != null ){
+			b.box.getMenu().show(evt.getComponent(), evt.getX(), evt.getY());
+		    }
 		}else if (b.zone != null ) {
-		    addmenu.show(evt.getComponent(), evt.getX(), evt.getY());
-		    popupBox = b.zone;
+		    b.zone.getMenu().show(evt.getComponent(), evt.getX(), evt.getY());
 		}
 		
 		return;
@@ -97,8 +91,7 @@ public abstract class ApptBoxPanel extends JPanel {
 
 	  
 	    if (b == null ) return;
-	    if( b.abox != null ) b.abox.edit();
-	    else if( b.nbox != null ) b.nbox.edit();
+	    else if( b.box != null ) b.box.edit();
 	    else if( b.zone != null ) b.zone.edit();
 
 	}
@@ -163,19 +156,15 @@ public abstract class ApptBoxPanel extends JPanel {
 
 	    ClickedBoxInfo b = getClickedBoxInfo(evt);
 	    if (b != null && !b.inDragNewBox) {
-		if( b.abox != null )
+		if( b.box != null )
 		{
-		    panel.setToolTipText(b.abox.getText());
-		}
-		else if( b.nbox != null )
-		{
-		    panel.setToolTipText(b.nbox.getText());
+		    panel.setToolTipText(b.box.getText());
 		}
 	    }
 
 	    if (b != null && (b.onTopBorder || b.onBottomBorder) && !b.inDragNewBox ) {
 		panel.setCursor(new Cursor(Cursor.N_RESIZE_CURSOR));
-	    } else if (b != null && b.abox != null && !b.inDragNewBox ) {
+	    } else if (b != null && b.box != null && !b.inDragNewBox && b.box instanceof ApptBox ) {
 		panel.setCursor(new Cursor(Cursor.MOVE_CURSOR));
 	    } else {
 		panel.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -196,8 +185,8 @@ public abstract class ApptBoxPanel extends JPanel {
 	    dragStarted = false;
 	    ClickedBoxInfo b = getClickedBoxInfo(evt);
 	    if (b != null &&  (b.onTopBorder || b.onBottomBorder)) {
-		draggedBox = b.abox;
-		setResizeBox(b.abox.getBounds().x, b.abox.getBounds().y, b.abox.getBounds().width, b.abox.getBounds().height);
+		draggedBox = (ApptBox) b.box;
+		setResizeBox(b.box.getBounds().x, b.box.getBounds().y, b.box.getBounds().width, b.box.getBounds().height);
 		if (b.onBottomBorder) {
 		    resizeTop = false;
 		} else {
@@ -205,10 +194,10 @@ public abstract class ApptBoxPanel extends JPanel {
 		}
 		isMove = false;
 		evt.getComponent().repaint();
-	    } else if (b != null && b.abox != null) {
+	    } else if (b != null && b.box != null && b.box instanceof ApptBox) {
 		isMove = true;
-		draggedBox = b.abox;
-		setResizeBox(b.abox.getBounds().x, b.abox.getBounds().y, b.abox.getBounds().width, b.abox.getBounds().height);
+		draggedBox = (ApptBox) b.box;
+		setResizeBox(b.box.getBounds().x, b.box.getBounds().y, b.box.getBounds().width, b.box.getBounds().height);
 		evt.getComponent().repaint();
 	    } else if (b != null && b.zone != null && evt.getY() > resizeMin && evt.getY() < resizeMax) {
 		// b is a date zone
@@ -282,8 +271,6 @@ public abstract class ApptBoxPanel extends JPanel {
  
     protected Collection boxes = new ArrayList();
     
-    private Collection notes = new ArrayList();
-
     private int boxnum = 0;
 
     private int draggedAnchor = -1;
@@ -296,16 +283,12 @@ public abstract class ApptBoxPanel extends JPanel {
 
     private boolean dragStarted = false;
 
-    private JPopupMenu editmenu = null;
-
     private Rectangle resizeBox = null;
 
     private double resizeMax = 0;;
 
     private double resizeMin = 0;
     
-    private Object popupBox;
-
     private Collection zones = new ArrayList();
     
     private class MyComponentListener implements ComponentListener
@@ -344,7 +327,7 @@ public abstract class ApptBoxPanel extends JPanel {
 	addmenu.add(mnuitm = new JMenuItem(Resource.getPlainResourceString("Add_New")));
 	mnuitm.addActionListener(new ActionListener() {
 	    public void actionPerformed(java.awt.event.ActionEvent evt) {
-		if (dragNewBox != null) {
+		
 		    String text = JOptionPane.showInputDialog(t, Resource
 			    .getPlainResourceString("Please_enter_some_appointment_text"));
 		    if (text == null)
@@ -355,48 +338,9 @@ public abstract class ApptBoxPanel extends JPanel {
 		    draggedZone = null;
 		    removeDragNewBox();
 		    repaint();
-		} else {
-		    if( popupBox != null && popupBox instanceof DateZone)
-		    ((DateZone)popupBox).edit();
-		}
 	    }
 	});
-	editmenu = new JPopupMenu();
-	editmenu.add(mnuitm = new JMenuItem(Resource.getPlainResourceString("Edit")));
-	mnuitm.addActionListener(new ActionListener() {
-	    public void actionPerformed(java.awt.event.ActionEvent evt) {
-		if (popupBox == null)
-		    return;
 
-		if( popupBox instanceof ApptBox )
-		{
-		    ((ApptBox) popupBox).edit();
-		}
-		else if( popupBox instanceof NoteBox )
-		{
-		    ((NoteBox) popupBox).edit();
-		}
-		
-		repaint();
-
-	    }
-	});
-	editmenu.add(mnuitm = new JMenuItem(Resource.getPlainResourceString("Delete")));
-	mnuitm.addActionListener(new ActionListener() {
-	    public void actionPerformed(java.awt.event.ActionEvent evt) {
-		if (popupBox == null)
-		    return;
-		if( popupBox instanceof ApptBox )
-		{
-		    ((ApptBox) popupBox).delete();
-		}
-		else if( popupBox instanceof NoteBox )
-		{
-		    ((NoteBox) popupBox).delete();
-		}
-		repaint();
-	    }
-	});
 
     }
 
@@ -412,9 +356,10 @@ public abstract class ApptBoxPanel extends JPanel {
     }
     
     public void addNoteBox(Date d,Appointment ap, Rectangle bounds, Rectangle clip) {
-	NoteBox b = new NoteBox(d,ap,bounds,clip);
-	notes.add(b);
+	Box b = new NoteBox(d,ap,bounds,clip);
+	boxes.add(b);
     }
+    
 
     public void addDateZone(Date d, double sm, double em, Rectangle bounds) {
 	DateZone b = new DateZone(d, sm, em, bounds);
@@ -425,7 +370,6 @@ public abstract class ApptBoxPanel extends JPanel {
     
     public void clearBoxes() {
 	boxes.clear();
-	notes.clear();
 	zones.clear();
 	boxnum = 0;
     }
@@ -441,15 +385,10 @@ public abstract class ApptBoxPanel extends JPanel {
 	
 	Iterator it = boxes.iterator();
 	while (it.hasNext()) {
-	    ApptBox b = (ApptBox) it.next();
+	    Box b = (Box) it.next();
 	    b.draw(g2,this);
 	}
 	
-	it = notes.iterator();
-	while (it.hasNext()) {
-	    NoteBox b = (NoteBox) it.next();
-	    b.draw(g2,this);
-	}
 
 	int radius = 5;
 	if (resizeBox != null) {
@@ -537,32 +476,20 @@ public abstract class ApptBoxPanel extends JPanel {
 	Iterator it = boxes.iterator();
 	while (it.hasNext()) {
 
-	    ApptBox b = (ApptBox) it.next();
+	    Box b = (Box) it.next();
 	    if (evt.getX() > b.getBounds().x && evt.getX() < (b.getBounds().x + b.getBounds().width)
 		    && evt.getY() > b.getBounds().y && evt.getY() < (b.getBounds().y + b.getBounds().height)) {
 
 		b.setSelected(true);
-		ret.abox = b;
-		if (Math.abs(evt.getY() - b.getBounds().y) < 4) {
-		    onTopBorder = true;
-		} else if (Math.abs(evt.getY() - (b.getBounds().y + b.getBounds().height)) < 4) {
-		    onBottomBorder = true;
+		ret.box = b;
+		if( b instanceof ApptBox)
+		{
+		    if (Math.abs(evt.getY() - b.getBounds().y) < 4) {
+			onTopBorder = true;
+		    } else if (Math.abs(evt.getY() - (b.getBounds().y + b.getBounds().height)) < 4) {
+			onBottomBorder = true;
+		    }
 		}
-	    } else {
-		b.setSelected(false);
-	    }
-	}
-	
-	it = notes.iterator();
-	while (it.hasNext()) {
-
-	    NoteBox b = (NoteBox) it.next();
-	    if (evt.getX() > b.getBounds().x && evt.getX() < (b.getBounds().x + b.getBounds().width)
-		    && evt.getY() > b.getBounds().y && evt.getY() < (b.getBounds().y + b.getBounds().height)) {
-
-		b.setSelected(true);
-		ret.nbox = b;
-		
 	    } else {
 		b.setSelected(false);
 	    }

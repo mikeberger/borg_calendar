@@ -49,6 +49,7 @@ import net.sf.borg.model.Day;
 import net.sf.borg.model.Model;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.beans.Appointment;
+import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.NavPanel;
 import net.sf.borg.ui.Navigator;
 
@@ -153,9 +154,9 @@ public class MonthPanel extends JPanel implements Printable {
 	    // set up default and small fonts
 	    Graphics2D g2 = (Graphics2D) g;
 
-	    Font def_font = g2.getFont();
+	   
 	    // Font sm_font = def_font.deriveFont(6f);
-	    Font sm_font = Font.decode(Prefs.getPref(PrefName.WEEKVIEWFONT));
+	    Font sm_font = Font.decode(Prefs.getPref(PrefName.APPTFONT));
 	    Map stmap = new HashMap();
 	    stmap.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
 	    stmap.put(TextAttribute.FONT, sm_font);
@@ -240,7 +241,20 @@ public class MonthPanel extends JPanel implements Printable {
 		    try {
 
 			addDateZone(cal.getTime(), 0 * 60, 23 * 60, new Rectangle(colleft, rowtop, colwidth, rowheight));
-
+			String datetext = Integer.toString(cal.get(Calendar.DATE));
+			if( Prefs.getPref(PrefName.DAYOFYEAR).equals("true"))
+			    datetext += "   [" + cal.get(Calendar.DAY_OF_YEAR) + "]";
+			boxes.add(new ButtonBox(cal.getTime(),datetext,
+				new Rectangle(colleft + 2, rowtop, colwidth - 4, smfontHeight), 
+				new Rectangle(colleft, rowtop, colwidth, rowheight)){
+			    public void edit(){
+				MultiView.getMainView().setView(MultiView.DAY);
+				GregorianCalendar gc = new GregorianCalendar();
+				gc.setTime(getDate());
+				MultiView.getMainView().goTo(gc);
+			    }
+			});
+			
 			// get the appointment info for the given day
 			Day di = Day.getDay(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE), showpub,
 				showpriv, true);
@@ -294,12 +308,6 @@ public class MonthPanel extends JPanel implements Printable {
 		// fill box
 		g2.setColor(colors[box]);
 		g2.fillRect(colleft, rowtop, colwidth, rowheight);
-		
-		// draw date
-		g2.setColor(Color.black);
-		g2.setFont(def_font);
-		g2.drawString(Integer.toString(cal.get(Calendar.DATE)), colleft + fontDesent, rowtop + fontHeight);
-		g2.setFont(sm_font);
 		
 		// increment the day	
 		cal.add(Calendar.DATE, 1);

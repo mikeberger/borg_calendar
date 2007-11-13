@@ -8,6 +8,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Stroke;
+import java.awt.event.ActionListener;
 import java.awt.font.TextAttribute;
 import java.text.AttributedString;
 import java.util.Calendar;
@@ -17,16 +18,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.ImageIcon;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
+import net.sf.borg.common.Resource;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.beans.Appointment;
 import net.sf.borg.ui.MultiView;
 
 // ApptDayBox holds the logical information needs to determine
 // how an appointment box should be drawn in a day grid
-public class NoteBox {
+public class NoteBox implements Box {
     
     final static private float hlthickness = 2.0f;
    
@@ -48,10 +52,16 @@ public class NoteBox {
 	this.clip = clip;
     }
 
+    /* (non-Javadoc)
+     * @see net.sf.borg.ui.calendar.Box#delete()
+     */
     public void delete() {
 	AppointmentModel.getReference().delAppt(appt.getKey());
     }
 
+    /* (non-Javadoc)
+     * @see net.sf.borg.ui.calendar.Box#draw(java.awt.Graphics2D, java.awt.Component)
+     */
     public void draw(Graphics2D g2, Component comp) {
 	
 	Stroke stroke = g2.getStroke();
@@ -112,6 +122,9 @@ public class NoteBox {
 	g2.setColor(Color.black);
     }
 
+    /* (non-Javadoc)
+     * @see net.sf.borg.ui.calendar.Box#edit()
+     */
     public void edit() {
 	if( appt.getDate() == null ) return;
 	GregorianCalendar cal = new GregorianCalendar();
@@ -122,26 +135,32 @@ public class NoteBox {
 
     }
 
+    /* (non-Javadoc)
+     * @see net.sf.borg.ui.calendar.Box#getBounds()
+     */
     public Rectangle getBounds() {
         return bounds;
     }
 
+    /* (non-Javadoc)
+     * @see net.sf.borg.ui.calendar.Box#getText()
+     */
     public String getText() {
 	return appt.getText();
     }
 
+    /* (non-Javadoc)
+     * @see net.sf.borg.ui.calendar.Box#setBounds(java.awt.Rectangle)
+     */
     public void setBounds(Rectangle bounds) {
         this.bounds = bounds;
     }
 
+    /* (non-Javadoc)
+     * @see net.sf.borg.ui.calendar.Box#setSelected(boolean)
+     */
     public void setSelected(boolean isSelected) {
 	this.isSelected = isSelected;
-    }
-
-
-    public void showMenu(Component c, int x, int y) {
-	// TODO Auto-generated method stub
-
     }
 
     private String getTextColor() {
@@ -159,5 +178,25 @@ public class NoteBox {
 	return appt.getTodo();
     }
  
-
+    private JPopupMenu popmenu = null;
+    public JPopupMenu getMenu() {
+	JMenuItem mnuitm;
+	if( popmenu == null )
+	{
+	    popmenu = new JPopupMenu();
+	    popmenu.add(mnuitm = new JMenuItem(Resource.getPlainResourceString("Edit")));
+	    mnuitm.addActionListener(new ActionListener() {
+		public void actionPerformed(java.awt.event.ActionEvent evt) {	    
+		    edit();	   
+		}
+	    });
+	    popmenu.add(mnuitm = new JMenuItem(Resource.getPlainResourceString("Delete")));
+	    mnuitm.addActionListener(new ActionListener() {
+		public void actionPerformed(java.awt.event.ActionEvent evt) {
+		    delete();
+		}
+	    });
+	}
+	return popmenu;
+    }
 }
