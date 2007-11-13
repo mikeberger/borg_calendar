@@ -103,7 +103,7 @@ public class PrefName {
 		static public PrefName ISOWKNUMBER = new PrefName("isowknumber", "true");
 		static public PrefName SHOWEXTRADAYS = new PrefName("show_extra_days", "true");
 		static public PrefName DOCKPANELS = new PrefName("dock_panels", "true");
-		static public PrefName NEWMONTHVIEW = new PrefName("new_month_view", "false");
+		static public PrefName NEWMONTHVIEW = new PrefName("new_month_view", "true");
 		
 		// reminders/popups
 		static public PrefName REMINDERS = new PrefName( "reminders", "true");
