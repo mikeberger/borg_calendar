@@ -35,10 +35,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 import net.sf.borg.common.Errmsg;
@@ -61,8 +62,9 @@ public class MonthPanel extends JPanel implements Printable {
 	private int month_;
 
 	private int year_;
-	
+
 	final private int numBoxes = 42;
+
 	Color colors[] = new Color[numBoxes];
 
 	boolean needLoad = true;
@@ -132,8 +134,6 @@ public class MonthPanel extends JPanel implements Printable {
 	    repaint();
 	}
 
-	
-
 	private int drawIt(Graphics g, double width, double height, double pageWidth, double pageHeight, double pagex,
 		double pagey, int pageIndex) {
 
@@ -146,15 +146,9 @@ public class MonthPanel extends JPanel implements Printable {
 	    if (sp.equals("true"))
 		showpriv = true;
 
-	    boolean wrap = false;
-	    sp = Prefs.getPref(PrefName.WRAP);
-	    if (sp.equals("true"))
-		wrap = true;
-
 	    // set up default and small fonts
 	    Graphics2D g2 = (Graphics2D) g;
 
-	   
 	    // Font sm_font = def_font.deriveFont(6f);
 	    Font sm_font = Font.decode(Prefs.getPref(PrefName.APPTFONT));
 	    Map stmap = new HashMap();
@@ -188,10 +182,11 @@ public class MonthPanel extends JPanel implements Printable {
 
 	    int caltop = fontHeight + fontDesent;
 	    int daytop = caltop + fontHeight + fontDesent;
+	    int weekbutwidth = fontHeight + fontDesent;
 
 	    // calculate width and height of day boxes (6x7 grid)
 	    int rowheight = ((int) pageHeight - daytop) / 6;
-	    int colwidth = (int) pageWidth / 7;
+	    int colwidth = (int) (pageWidth-weekbutwidth) / 7;
 
 	    // calculate the bottom and right edge of the grid
 	    int calbot = 6 * rowheight + daytop;
@@ -213,11 +208,6 @@ public class MonthPanel extends JPanel implements Printable {
 	    cal.set(year_, month_, 1);
 	    int fdow = cal.get(Calendar.DAY_OF_WEEK) - cal.getFirstDayOfWeek();
 	    cal.add(Calendar.DATE, -1 * fdow);
-	    Hashtable atmap = null;
-	    if (wrap) {
-		atmap = new Hashtable();
-		atmap.put(TextAttribute.FONT, sm_font);
-	    }
 
 	    // print the days - either grayed out or containing a number and
 	    // appts
@@ -241,26 +231,14 @@ public class MonthPanel extends JPanel implements Printable {
 		    try {
 
 			addDateZone(cal.getTime(), 0 * 60, 23 * 60, new Rectangle(colleft, rowtop, colwidth, rowheight));
-			String datetext = Integer.toString(cal.get(Calendar.DATE));
-			if( Prefs.getPref(PrefName.DAYOFYEAR).equals("true"))
-			    datetext += "   [" + cal.get(Calendar.DAY_OF_YEAR) + "]";
-			boxes.add(new ButtonBox(cal.getTime(),datetext,
-				new Rectangle(colleft + 2, rowtop, colwidth - 4, smfontHeight), 
-				new Rectangle(colleft, rowtop, colwidth, rowheight)){
-			    public void edit(){
-				MultiView.getMainView().setView(MultiView.DAY);
-				GregorianCalendar gc = new GregorianCalendar();
-				gc.setTime(getDate());
-				MultiView.getMainView().goTo(gc);
-			    }
-			});
 			
+
 			// get the appointment info for the given day
 			Day di = Day.getDay(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE), showpub,
 				showpriv, true);
 
 			Color c = new Color(Prefs.getIntPref(PrefName.UCS_DEFAULT));
-			
+
 			if (di != null) {
 			    if (tmon == month_ && tyear == year_ && tdate == cal.get(Calendar.DATE)) {
 				c = new Color(Prefs.getIntPref(PrefName.UCS_TODAY));
@@ -277,7 +255,7 @@ public class MonthPanel extends JPanel implements Printable {
 
 			if (cal.get(Calendar.MONTH) != month_)
 			    c = this.getBackground();
-			
+
 			colors[box] = c;
 
 			// Iterator it = appts.iterator();
@@ -288,33 +266,75 @@ public class MonthPanel extends JPanel implements Printable {
 			// loop through appts
 			while (it.hasNext()) {
 
-			    addNoteBox(cal.getTime(), (Appointment) it.next(), new Rectangle(colleft + 2, notey, colwidth - 4,
-				    smfontHeight), new Rectangle(colleft, rowtop, colwidth, rowheight));
+			    addNoteBox(cal.getTime(), (Appointment) it.next(), 
+				    new Rectangle(colleft + 2, notey, colwidth - 4, smfontHeight), 
+				    new Rectangle(colleft, rowtop, colwidth, rowheight));
 			    // increment Y coord for next note text
-			    notey += smfontHeight;		  
+			    notey += smfontHeight;
 
 			}
 
-			
+			// check if we clipped some appts
+			Icon clipIcon = null;
+			if( notey > rowtop + rowheight )
+			{
+			    // draw clipping indication icon
+			    clipIcon = new ImageIcon(getClass().getResource("/resource/Import16.gif"));
+			}
 
+			String datetext = Integer.toString(cal.get(Calendar.DATE));
+			if (Prefs.getPref(PrefName.DAYOFYEAR).equals("true"))
+			    datetext += "   [" + cal.get(Calendar.DAY_OF_YEAR) + "]";
+			boxes.add(new ButtonBox(cal.getTime(), datetext, clipIcon, new Rectangle(colleft + 2, rowtop, colwidth - 4,
+				smfontHeight), new Rectangle(colleft, rowtop, colwidth, rowheight)) {
+			    public void edit() {
+				MultiView.getMainView().setView(MultiView.DAY);
+				GregorianCalendar gc = new GregorianCalendar();
+				gc.setTime(getDate());
+				MultiView.getMainView().goTo(gc);
+			    }
+			});
 		    } catch (Exception e) {
 			e.printStackTrace();
 		    }
 		}
-		
+
 		// reset the clip or bad things happen
 		g2.setClip(s);
-		
+
 		// fill box
 		g2.setColor(colors[box]);
 		g2.fillRect(colleft, rowtop, colwidth, rowheight);
-		
-		// increment the day	
+
+		// increment the day
 		cal.add(Calendar.DATE, 1);
 	    }
 	    needLoad = false;
 	    drawBoxes(g2);
 	    g2.setClip(s);
+	    
+	 // week buttons
+	    if (Prefs.getPref(PrefName.ISOWKNUMBER).equals("true"))
+		cal.setMinimalDaysInFirstWeek(4);
+	    else
+		cal.setMinimalDaysInFirstWeek(1);
+	    for (int row = 0; row < 6; row++) {
+
+		cal.set(year_, month_, 1+7*row);
+		int wk = cal.get(Calendar.WEEK_OF_YEAR);
+		int rowtop = (row * rowheight) + daytop;
+		boxes.add(new ButtonBox(cal.getTime(), Integer.toString(wk), null, 
+			new Rectangle((int)pageWidth - weekbutwidth , rowtop, weekbutwidth, rowheight), 
+			new Rectangle((int)pageWidth - weekbutwidth , rowtop, weekbutwidth, rowheight) 
+			) {
+		    public void edit() {
+			MultiView.getMainView().setView(MultiView.WEEK);
+			GregorianCalendar gc = new GregorianCalendar();
+			gc.setTime(getDate());
+			MultiView.getMainView().goTo(gc);
+		    }
+		});
+	    }
 
 	    // draw the lines last
 	    // top of calendar - above day names
@@ -402,8 +422,7 @@ public class MonthPanel extends JPanel implements Printable {
 	nav.setLabel(wp_.getNavLabel());
     }
 
-    public void printMonths()
-    {
+    public void printMonths() {
 	try {
 	    MonthPrintPanel.printMonths(wp_.month_, wp_.year_);
 	} catch (Exception e) {

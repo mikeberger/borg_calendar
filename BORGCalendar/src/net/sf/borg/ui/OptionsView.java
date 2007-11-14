@@ -267,7 +267,7 @@ public class OptionsView extends View {
 
     private JCheckBox exputcbox = null;
 
-    private JCheckBox extraDayBox;
+    //private JCheckBox extraDayBox;
 
     private javax.swing.JCheckBox holiday1;
 
@@ -381,9 +381,7 @@ public class OptionsView extends View {
 
     private ReminderTimePanel remTimePanel = new ReminderTimePanel();
 
-    // (added by bsv 2004-12-20)
-
-    private javax.swing.JCheckBox revDayEditbox;
+   //private javax.swing.JCheckBox revDayEditbox;
 
     private javax.swing.JCheckBox sharedFileCheckBox;
 
@@ -540,7 +538,7 @@ public class OptionsView extends View {
 	setCheckBox(splashbox, PrefName.SPLASH);
 	setCheckBox(stackbox, PrefName.STACKTRACE);
 	setCheckBox(wrapbox, PrefName.WRAP);
-	setCheckBox(revDayEditbox, PrefName.REVERSEDAYEDIT);
+	//setCheckBox(revDayEditbox, PrefName.REVERSEDAYEDIT);
 	setCheckBox(popenablebox, PrefName.REMINDERS);
 	setCheckBox(soundbox, PrefName.BEEPINGREMINDERS);
 	setCheckBox(palmcb, PrefName.PALM_SYNC);
@@ -549,7 +547,7 @@ public class OptionsView extends View {
 	setCheckBox(icaltodobox, PrefName.ICALTODOEV);
 	setCheckBox(truncbox, PrefName.TRUNCAPPT);
 	setCheckBox(iso8601Box, PrefName.ISOWKNUMBER);
-	setCheckBox(extraDayBox, PrefName.SHOWEXTRADAYS);
+	//setCheckBox(extraDayBox, PrefName.SHOWEXTRADAYS);
 	setCheckBox(useSysTray, PrefName.USESYSTRAY);
 	setCheckBox(taskAbbrevBox, PrefName.TASK_SHOW_ABBREV);
 	setCheckBox(calShowTaskBox, PrefName.CAL_SHOW_TASKS);
@@ -759,7 +757,7 @@ public class OptionsView extends View {
 	setBooleanPref(splashbox, PrefName.SPLASH);
 	setBooleanPref(stackbox, PrefName.STACKTRACE);
 	setBooleanPref(wrapbox, PrefName.WRAP);
-	setBooleanPref(revDayEditbox, PrefName.REVERSEDAYEDIT);
+	//setBooleanPref(revDayEditbox, PrefName.REVERSEDAYEDIT);
 	setBooleanPref(popenablebox, PrefName.REMINDERS);
 	setBooleanPref(soundbox, PrefName.BEEPINGREMINDERS);
 	setBooleanPref(palmcb, PrefName.PALM_SYNC);
@@ -768,7 +766,7 @@ public class OptionsView extends View {
 	setBooleanPref(icaltodobox, PrefName.ICALTODOEV);
 	setBooleanPref(truncbox, PrefName.TRUNCAPPT);
 	setBooleanPref(iso8601Box, PrefName.ISOWKNUMBER);
-	setBooleanPref(extraDayBox, PrefName.SHOWEXTRADAYS);
+	//setBooleanPref(extraDayBox, PrefName.SHOWEXTRADAYS);
 	setBooleanPref(useSysTray, PrefName.USESYSTRAY);
 	setBooleanPref(taskAbbrevBox, PrefName.TASK_SHOW_ABBREV);
 	setBooleanPref(calShowTaskBox, PrefName.CAL_SHOW_TASKS);
@@ -1557,7 +1555,7 @@ public class OptionsView extends View {
 	}
 	return exputcbox;
     }
-
+/*
     private JCheckBox getExtraDayBox() {
 	if (extraDayBox == null) {
 	    extraDayBox = new JCheckBox();
@@ -1565,6 +1563,7 @@ public class OptionsView extends View {
 	}
 	return extraDayBox;
     }
+    */
 
     private JPanel getFontPanel() {
 	JPanel fontPanel = new JPanel();
@@ -2042,12 +2041,12 @@ public class OptionsView extends View {
 	gridBagConstraints50.fill = java.awt.GridBagConstraints.BOTH;
 	miscPanel.add(icaltodobox, gridBagConstraints50);
 
-	ResourceHelper.setText(revDayEditbox, "revdayedit");
-	GridBagConstraints gridBagConstraints51 = new java.awt.GridBagConstraints();
-	gridBagConstraints51.gridx = 0;
-	gridBagConstraints51.gridy = 7;
-	gridBagConstraints51.fill = java.awt.GridBagConstraints.BOTH;
-	miscPanel.add(revDayEditbox, gridBagConstraints51);
+	//ResourceHelper.setText(revDayEditbox, "revdayedit");
+	//GridBagConstraints gridBagConstraints51 = new java.awt.GridBagConstraints();
+	//gridBagConstraints51.gridx = 0;
+	//gridBagConstraints51.gridy = 7;
+	//gridBagConstraints51.fill = java.awt.GridBagConstraints.BOTH;
+	//miscPanel.add(revDayEditbox, gridBagConstraints51);
 
 	GridBagConstraints gridBagConstraints111 = new GridBagConstraints();
 	gridBagConstraints111.gridx = 0;
@@ -2079,11 +2078,11 @@ public class OptionsView extends View {
 	gridBagConstraints312.anchor = java.awt.GridBagConstraints.EAST;
 	miscPanel.add(socketPort, gridBagConstraints312);
 
-	GridBagConstraints gridBagConstraints313 = new GridBagConstraints();
-	gridBagConstraints313.gridx = 0;
-	gridBagConstraints313.gridy = 10;
-	gridBagConstraints313.fill = java.awt.GridBagConstraints.HORIZONTAL;
-	miscPanel.add(getExtraDayBox(), gridBagConstraints313);
+	//GridBagConstraints gridBagConstraints313 = new GridBagConstraints();
+	//gridBagConstraints313.gridx = 0;
+	//gridBagConstraints313.gridy = 10;
+	//gridBagConstraints313.fill = java.awt.GridBagConstraints.HORIZONTAL;
+	//miscPanel.add(getExtraDayBox(), gridBagConstraints313);
 
 	GridBagConstraints gridBagConstraintsUST = new GridBagConstraints();
 	gridBagConstraintsUST.gridx = 0;
@@ -2628,7 +2627,7 @@ public class OptionsView extends View {
 	backgbox = new javax.swing.JCheckBox();
 	stackbox = new javax.swing.JCheckBox();
 	icaltodobox = new javax.swing.JCheckBox();
-	revDayEditbox = new javax.swing.JCheckBox();
+	//revDayEditbox = new javax.swing.JCheckBox();
 	popenablebox = new javax.swing.JCheckBox();
 	soundbox = new javax.swing.JCheckBox();
 	jLabel15 = new javax.swing.JLabel();

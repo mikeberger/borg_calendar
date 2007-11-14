@@ -79,7 +79,7 @@ public class PrefName {
 		
 		// have to explain this one - reverse the way that the appt editor and day view
 		// windows are summoned for people who can't adjust
-		static public PrefName REVERSEDAYEDIT = new PrefName("reverseDayEdit", "false");
+		//static public PrefName REVERSEDAYEDIT = new PrefName("reverseDayEdit", "false");
 					
 		// printing
 		static public PrefName LOGO = new PrefName( "logo", "");
@@ -101,7 +101,7 @@ public class PrefName {
 		static public PrefName LINESPACING = new PrefName("line_spacing", "0.0");
 		static public PrefName TRUNCAPPT = new PrefName("truncate_appt", "true");
 		static public PrefName ISOWKNUMBER = new PrefName("isowknumber", "true");
-		static public PrefName SHOWEXTRADAYS = new PrefName("show_extra_days", "true");
+		//static public PrefName SHOWEXTRADAYS = new PrefName("show_extra_days", "true");
 		static public PrefName DOCKPANELS = new PrefName("dock_panels", "true");
 		static public PrefName NEWMONTHVIEW = new PrefName("new_month_view", "true");
 		

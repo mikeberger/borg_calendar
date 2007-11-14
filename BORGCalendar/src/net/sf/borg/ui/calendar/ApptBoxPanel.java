@@ -86,8 +86,8 @@ public abstract class ApptBoxPanel extends JPanel {
 	   
 	    // needed
 
-	    if (evt.getClickCount() < 2)
-		return;
+	    //if (evt.getClickCount() < 2)
+		//return;
 
 	  
 	    if (b == null ) return;

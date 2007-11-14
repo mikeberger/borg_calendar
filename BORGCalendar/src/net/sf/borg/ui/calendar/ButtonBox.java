@@ -7,6 +7,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.util.Date;
 
+import javax.swing.Icon;
 import javax.swing.JPopupMenu;
 
 // ApptDayBox holds the logical information needs to determine
@@ -20,12 +21,15 @@ public abstract class ButtonBox implements Box {
     private String text;
 
     private boolean isSelected = false;
+    
+    private Icon icon_ = null;
 
-    public ButtonBox(Date d, String text, Rectangle bounds, Rectangle clip) {
+    public ButtonBox(Date d, String text, Icon icon, Rectangle bounds, Rectangle clip) {
 	date = d;
 	this.text = text;
 	this.bounds = bounds;
 	this.clip = clip;
+	this.icon_ = icon;
     }
 
     public void delete() {
@@ -51,6 +55,8 @@ public abstract class ButtonBox implements Box {
 
 	g2.setColor(Color.black);
 	g2.drawString(text, bounds.x + 2, bounds.y + smfontHeight);
+	if( icon_ != null )
+	    icon_.paintIcon(null, g2, bounds.x + bounds.width - 16, bounds.y );
 
 	g2.setClip(s);
 

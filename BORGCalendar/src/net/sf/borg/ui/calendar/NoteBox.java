@@ -69,10 +69,6 @@ public class NoteBox implements Box {
 	if (clip != null)
 	    g2.setClip(clip);
 
-	// appt is note or is outside timespan shown
-	g2.clipRect(bounds.x, 0, bounds.width + 1, 1000);
-
-	
 	Font sm_font = g2.getFont();
 	int smfontHeight = g2.getFontMetrics().getHeight();
 	Map stmap = new HashMap();

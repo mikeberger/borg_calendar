@@ -97,13 +97,14 @@ public class CalendarPanel extends JPanel implements Prefs.Listener, Navigator, 
 	}
 
 	public void mouseClicked(MouseEvent evt) {
-	    String reverseActions = Prefs.getPref(PrefName.REVERSEDAYEDIT);
-	    boolean reverse = reverseActions.equals("true");
-	    if ((isDateButton_ && !reverse) || (!isDateButton_ && reverse)) {
+	    //String reverseActions = Prefs.getPref(PrefName.REVERSEDAYEDIT);
+	    //boolean reverse = reverseActions.equals("true");
+	    //if ((isDateButton_ && !reverse) || (!isDateButton_ && reverse)) {
+	    if( isDateButton_ ) {
 		if (mv_ != null) {
 		    mv_.setView(MultiView.DAY);
 		    mv_.goTo(new GregorianCalendar(year, month, date));
-		    
+
 		}
 	    } else {
 		AppointmentListView ag = new AppointmentListView(year, month, date);
@@ -244,7 +245,7 @@ public class CalendarPanel extends JPanel implements Prefs.Listener, Navigator, 
     }
 
     public void print() {
-	
+
 	try {
 	    MonthPrintPanel.printMonths(month_, year_);
 	} catch (Exception e) {
@@ -258,8 +259,7 @@ public class CalendarPanel extends JPanel implements Prefs.Listener, Navigator, 
 	    // determine first day and last day of the month
 	    GregorianCalendar cal = new GregorianCalendar();
 	    int today = -1;
-	    if (month_ == cal.get(Calendar.MONTH)
-		    && year_ == cal.get(Calendar.YEAR)) {
+	    if (month_ == cal.get(Calendar.MONTH) && year_ == cal.get(Calendar.YEAR)) {
 		today = cal.get(Calendar.DAY_OF_MONTH);
 		// Today.setEnabled(false);
 	    } else {
@@ -323,16 +323,17 @@ public class CalendarPanel extends JPanel implements Prefs.Listener, Navigator, 
 
 		// if the day box is not needed for the current month, make it
 		// invisible
+		/*
 		String show_extra = Prefs.getPref(PrefName.SHOWEXTRADAYS);
 		if (!show_extra.equals("true")
 			&& (daynumber <= 0 || daynumber > ld)) {
 		    // the following line fixes a bug (in Java) where any
 		    // daytext not
 		    // visible in the first month would show its first line
-                        // of
+		        // of
 		    // text
 		    // in the wrong Style when it became visible in a
-                        // different
+		        // different
 		    // month -
 		    // using a Style not even set by this program.
 		    // once this happened, resizing the window would fix the
@@ -340,238 +341,211 @@ public class CalendarPanel extends JPanel implements Prefs.Listener, Navigator, 
 		    // so it probably is a swing bug
 		    addString(daytext[i], "bug fix", "black");
 		    days[i].setVisible(false);
-		} else {
+		} else {*/
 
-		    int month = month_;
-		    int year = year_;
-		    int date = daynumber;
+		int month = month_;
+		int year = year_;
+		int date = daynumber;
 
-		    if (daynumber <= 0) {
-			Calendar adjust = new GregorianCalendar(year, month, 1);
-			adjust.add(Calendar.DATE, date - 1);
-			month = adjust.get(Calendar.MONTH);
-			date = adjust.get(Calendar.DATE);
-			year = adjust.get(Calendar.YEAR);
-		    } else if (daynumber > ld) {
-			Calendar adjust = new GregorianCalendar(year, month, ld);
-			adjust.add(Calendar.DATE, date - ld);
-			month = adjust.get(Calendar.MONTH);
-			date = adjust.get(Calendar.DATE);
-			year = adjust.get(Calendar.YEAR);
-		    }
-
-		    // set value of date button
-		    daynum[i].setText(Integer.toString(date));
-		    daynum[i].addMouseListener(new DayMouseListener(parent_,
-			    year, month, date, true));
-		    daytext[i].addMouseListener(new DayMouseListener(parent_,
-			    year, month, date, false));
-		    days[i].addMouseListener(new DayMouseListener(parent_,
-			    year, month, date, false));
-
-		    GregorianCalendar gc = new GregorianCalendar(year, month,
-			    date, 23, 59);
-		    if (showDayOfYear) {
-			dayOfYear[i].setText(Integer.toString(gc
-				.get(Calendar.DAY_OF_YEAR)));
-		    } else {
-			dayOfYear[i].setText("");
-		    }
-		    // get appointment info for the day's appointments from
-                        // the
-		    // data model
-		    Day di = Day.getDay(year, month, date, showpub, showpriv,
-			    true);
-		    Collection appts = di.getAppts();
-
-		    daytext[i].setParagraphAttributes(daytext[i]
-			    .getStyle("black"), true);
-		    if (appts != null) {
-			Iterator it = appts.iterator();
-
-			StringBuffer html = new StringBuffer();
-
-			// iterate through the day's appts
-			while (it.hasNext()) {
-
-			    Appointment info = (Appointment) it.next();
-
-			    // bsv 2004-12-23
-			    boolean bullet = false;
-			    Date nt = info.getNextTodo();
-			    if (Prefs.getPref(PrefName.UCS_MARKTODO).equals(
-				    "true")) {
-				if (info.getTodo()
-					&& (nt == null || !nt.after(gc
-						.getTime()))) {
-				    bullet = true;
-				    if (Prefs.getPref(PrefName.UCS_MARKER)
-					    .endsWith(".gif")) {
-					// daytext[i].insertIcon(new
-					// javax.swing.ImageIcon(getClass().getResource("/resource/"
-					// +
-					// Prefs.getPref(PrefName.UCS_MARKER))));
-					addString(daytext[i], Prefs
-						.getPref(PrefName.UCS_MARKER),
-						"icon");
-				    } else {
-					addString(daytext[i], Prefs
-						.getPref(PrefName.UCS_MARKER),
-						info.getColor());
-				    }
-				}
-			    }
-
-			    String color = info.getColor();
-			    // strike-through done todos
-			    if (info.getTodo()
-				    && !(nt == null || !nt.after(gc.getTime()))) {
-				color = "strike";
-			    }
-			    boolean strike = color.equals("strike");
-
-			    // add the day's text in the right color. If the
-			    // appt is the last
-			    // one - don't add a trailing newline - it will
-                                // make
-			    // the text pane
-			    // have one extra line - forcing an unecessary
-			    // scrollbar at times
-			    String text = info.getText();
-
-			    if (it.hasNext())
-				text += "\n"; // we're doing this to a String
-
-			    addString(daytext[i], text, color);
-
-			    // Compute the tooltip text.
-			    if (bullet)
-				html.append("<b>");
-			    if (strike)
-				html.append("<strike>");
-			    else
-				html.append("<font color=\"" + color + "\">");
-			    String apptText = di.getUntruncatedAppointmentFor(
-				    info).getText();
-			    if (apptText.indexOf('\n') != -1) {
-				StringBuffer temp = new StringBuffer();
-				for (int j = 0; j < apptText.length(); ++j) {
-				    char ch = apptText.charAt(j);
-				    if (ch == '\n')
-					temp.append("<br>");
-				    else
-					temp.append(ch);
-				}
-				apptText = temp.toString();
-			    }
-			    html.append(apptText);
-			    if (bullet)
-				html.append("</b>");
-			    if (strike)
-				html.append("</strike>");
-			    else
-				html.append("</font>");
-			    if (it.hasNext())
-				html.append("<br>");
-			}
-			if (html.length() != 0) {
-			    daytext[i].setToolTipText("<html>" + html
-				    + "</html>");
-			    // System.out.println(i+": "+html);
-			}
-		    }
-
-		    // reset the text pane to show the top left of the appt
-                        // text
-		    // if the text
-		    // scrolls up or right
-		    daytext[i].setCaretPosition(0);
-
-		    int xcoord = i % 7;
-		    int dow = cal.getFirstDayOfWeek() + xcoord;
-		    if (dow == 8)
-			dow = 1;
-
-		    // set the day color based on if the day is today, or if
-                        // any
-		    // of the
-		    // appts for the day are holidays, vacation days,
-                        // half-days,
-		    // or weekends
-		    boolean bUseUCS = ((Prefs.getPref(PrefName.UCS_ON))
-			    .equals("true")) ? true : false;
-		    if (daynumber <= 0 || daynumber > ld) {
-			daytext[i].setBackground(jPanel1.getBackground());
-			days[i].setBackground(jPanel1.getBackground());
-		    } else if (bUseUCS == false) {
-			if (today == daynumber) {
-			    // today color is pink
-			    daytext[i].setBackground(new Color(255, 153, 153));
-			    days[i].setBackground(new Color(255, 153, 153));
-			} else if (di.getHoliday() == 1) {
-			    // holiday color
-			    daytext[i].setBackground(new Color(255, 204, 204));
-			    days[i].setBackground(new Color(255, 204, 204));
-			} else if (di.getVacation() == 2) {
-			    // vacation color
-			    daytext[i].setBackground(new Color(204, 204, 255));
-			    days[i].setBackground(new Color(204, 204, 255));
-			} else if (di.getVacation() == 1) {
-			    // half day color
-			    daytext[i].setBackground(new Color(204, 255, 204));
-			    days[i].setBackground(new Color(204, 255, 204));
-			} else if (dow != Calendar.SUNDAY
-				&& dow != Calendar.SATURDAY) {
-			    // weekday color
-			    days[i].setBackground(new Color(255, 255, 204));
-			    daytext[i].setBackground(new Color(255, 255, 204));
-			} else {
-			    // weekend color
-			    daytext[i].setBackground(new Color(255, 204, 153));
-			    days[i].setBackground(new Color(255, 204, 153));
-			}
-		    } else {
-			Color ctemp = new Color(Prefs.getIntPref(PrefName.UCS_DEFAULT));
-			if (today == daynumber) {
-			    ctemp = new Color(Prefs
-				    .getIntPref(PrefName.UCS_TODAY));
-			    daytext[i].setBackground(ctemp);
-			    days[i].setBackground(ctemp);
-			} else if (di.getHoliday() == 1) {
-			    ctemp = new Color(Prefs
-				    .getIntPref(PrefName.UCS_HOLIDAY));
-			    daytext[i].setBackground(ctemp);
-			    days[i].setBackground(ctemp);
-			} else if (di.getVacation() == 1) {
-			    ctemp = new Color(Prefs
-				    .getIntPref(PrefName.UCS_VACATION));
-			    daytext[i].setBackground(ctemp);
-			    days[i].setBackground(ctemp);
-			} else if (di.getVacation() == 2) {
-			    // half day color
-			    ctemp = new Color(Prefs
-				    .getIntPref(PrefName.UCS_HALFDAY));
-			    daytext[i].setBackground(ctemp);
-			    days[i].setBackground(ctemp);
-			} else if (dow != Calendar.SUNDAY
-				&& dow != Calendar.SATURDAY) {
-			    // weekday color
-			    ctemp = new Color(Prefs
-				    .getIntPref(PrefName.UCS_WEEKDAY));
-			    daytext[i].setBackground(ctemp);
-			    days[i].setBackground(ctemp);
-			} else {
-			    // weekend color
-			    ctemp = new Color(Prefs
-				    .getIntPref(PrefName.UCS_WEEKEND));
-			    daytext[i].setBackground(ctemp);
-			    days[i].setBackground(ctemp);
-			}
-		    }
-
-		    days[i].setVisible(true);
-
+		if (daynumber <= 0) {
+		    Calendar adjust = new GregorianCalendar(year, month, 1);
+		    adjust.add(Calendar.DATE, date - 1);
+		    month = adjust.get(Calendar.MONTH);
+		    date = adjust.get(Calendar.DATE);
+		    year = adjust.get(Calendar.YEAR);
+		} else if (daynumber > ld) {
+		    Calendar adjust = new GregorianCalendar(year, month, ld);
+		    adjust.add(Calendar.DATE, date - ld);
+		    month = adjust.get(Calendar.MONTH);
+		    date = adjust.get(Calendar.DATE);
+		    year = adjust.get(Calendar.YEAR);
 		}
+
+		// set value of date button
+		daynum[i].setText(Integer.toString(date));
+		daynum[i].addMouseListener(new DayMouseListener(parent_, year, month, date, true));
+		daytext[i].addMouseListener(new DayMouseListener(parent_, year, month, date, false));
+		days[i].addMouseListener(new DayMouseListener(parent_, year, month, date, false));
+
+		GregorianCalendar gc = new GregorianCalendar(year, month, date, 23, 59);
+		if (showDayOfYear) {
+		    dayOfYear[i].setText(Integer.toString(gc.get(Calendar.DAY_OF_YEAR)));
+		} else {
+		    dayOfYear[i].setText("");
+		}
+		// get appointment info for the day's appointments from
+		// the
+		// data model
+		Day di = Day.getDay(year, month, date, showpub, showpriv, true);
+		Collection appts = di.getAppts();
+
+		daytext[i].setParagraphAttributes(daytext[i].getStyle("black"), true);
+		if (appts != null) {
+		    Iterator it = appts.iterator();
+
+		    StringBuffer html = new StringBuffer();
+
+		    // iterate through the day's appts
+		    while (it.hasNext()) {
+
+			Appointment info = (Appointment) it.next();
+
+			// bsv 2004-12-23
+			boolean bullet = false;
+			Date nt = info.getNextTodo();
+			if (Prefs.getPref(PrefName.UCS_MARKTODO).equals("true")) {
+			    if (info.getTodo() && (nt == null || !nt.after(gc.getTime()))) {
+				bullet = true;
+				if (Prefs.getPref(PrefName.UCS_MARKER).endsWith(".gif")) {
+				    // daytext[i].insertIcon(new
+				    // javax.swing.ImageIcon(getClass().getResource("/resource/"
+				    // +
+				    // Prefs.getPref(PrefName.UCS_MARKER))));
+				    addString(daytext[i], Prefs.getPref(PrefName.UCS_MARKER), "icon");
+				} else {
+				    addString(daytext[i], Prefs.getPref(PrefName.UCS_MARKER), info.getColor());
+				}
+			    }
+			}
+
+			String color = info.getColor();
+			// strike-through done todos
+			if (info.getTodo() && !(nt == null || !nt.after(gc.getTime()))) {
+			    color = "strike";
+			}
+			boolean strike = color.equals("strike");
+
+			// add the day's text in the right color. If the
+			// appt is the last
+			// one - don't add a trailing newline - it will
+			// make
+			// the text pane
+			// have one extra line - forcing an unecessary
+			// scrollbar at times
+			String text = info.getText();
+
+			if (it.hasNext())
+			    text += "\n"; // we're doing this to a String
+
+			addString(daytext[i], text, color);
+
+			// Compute the tooltip text.
+			if (bullet)
+			    html.append("<b>");
+			if (strike)
+			    html.append("<strike>");
+			else
+			    html.append("<font color=\"" + color + "\">");
+			String apptText = di.getUntruncatedAppointmentFor(info).getText();
+			if (apptText.indexOf('\n') != -1) {
+			    StringBuffer temp = new StringBuffer();
+			    for (int j = 0; j < apptText.length(); ++j) {
+				char ch = apptText.charAt(j);
+				if (ch == '\n')
+				    temp.append("<br>");
+				else
+				    temp.append(ch);
+			    }
+			    apptText = temp.toString();
+			}
+			html.append(apptText);
+			if (bullet)
+			    html.append("</b>");
+			if (strike)
+			    html.append("</strike>");
+			else
+			    html.append("</font>");
+			if (it.hasNext())
+			    html.append("<br>");
+		    }
+		    if (html.length() != 0) {
+			daytext[i].setToolTipText("<html>" + html + "</html>");
+			// System.out.println(i+": "+html);
+		    }
+		}
+
+		// reset the text pane to show the top left of the appt
+		// text
+		// if the text
+		// scrolls up or right
+		daytext[i].setCaretPosition(0);
+
+		int xcoord = i % 7;
+		int dow = cal.getFirstDayOfWeek() + xcoord;
+		if (dow == 8)
+		    dow = 1;
+
+		// set the day color based on if the day is today, or if
+		// any
+		// of the
+		// appts for the day are holidays, vacation days,
+		// half-days,
+		// or weekends
+		boolean bUseUCS = ((Prefs.getPref(PrefName.UCS_ON)).equals("true")) ? true : false;
+		if (daynumber <= 0 || daynumber > ld) {
+		    daytext[i].setBackground(jPanel1.getBackground());
+		    days[i].setBackground(jPanel1.getBackground());
+		} else if (bUseUCS == false) {
+		    if (today == daynumber) {
+			// today color is pink
+			daytext[i].setBackground(new Color(255, 153, 153));
+			days[i].setBackground(new Color(255, 153, 153));
+		    } else if (di.getHoliday() == 1) {
+			// holiday color
+			daytext[i].setBackground(new Color(255, 204, 204));
+			days[i].setBackground(new Color(255, 204, 204));
+		    } else if (di.getVacation() == 2) {
+			// vacation color
+			daytext[i].setBackground(new Color(204, 204, 255));
+			days[i].setBackground(new Color(204, 204, 255));
+		    } else if (di.getVacation() == 1) {
+			// half day color
+			daytext[i].setBackground(new Color(204, 255, 204));
+			days[i].setBackground(new Color(204, 255, 204));
+		    } else if (dow != Calendar.SUNDAY && dow != Calendar.SATURDAY) {
+			// weekday color
+			days[i].setBackground(new Color(255, 255, 204));
+			daytext[i].setBackground(new Color(255, 255, 204));
+		    } else {
+			// weekend color
+			daytext[i].setBackground(new Color(255, 204, 153));
+			days[i].setBackground(new Color(255, 204, 153));
+		    }
+		} else {
+		    Color ctemp = new Color(Prefs.getIntPref(PrefName.UCS_DEFAULT));
+		    if (today == daynumber) {
+			ctemp = new Color(Prefs.getIntPref(PrefName.UCS_TODAY));
+			daytext[i].setBackground(ctemp);
+			days[i].setBackground(ctemp);
+		    } else if (di.getHoliday() == 1) {
+			ctemp = new Color(Prefs.getIntPref(PrefName.UCS_HOLIDAY));
+			daytext[i].setBackground(ctemp);
+			days[i].setBackground(ctemp);
+		    } else if (di.getVacation() == 1) {
+			ctemp = new Color(Prefs.getIntPref(PrefName.UCS_VACATION));
+			daytext[i].setBackground(ctemp);
+			days[i].setBackground(ctemp);
+		    } else if (di.getVacation() == 2) {
+			// half day color
+			ctemp = new Color(Prefs.getIntPref(PrefName.UCS_HALFDAY));
+			daytext[i].setBackground(ctemp);
+			days[i].setBackground(ctemp);
+		    } else if (dow != Calendar.SUNDAY && dow != Calendar.SATURDAY) {
+			// weekday color
+			ctemp = new Color(Prefs.getIntPref(PrefName.UCS_WEEKDAY));
+			daytext[i].setBackground(ctemp);
+			days[i].setBackground(ctemp);
+		    } else {
+			// weekend color
+			ctemp = new Color(Prefs.getIntPref(PrefName.UCS_WEEKEND));
+			daytext[i].setBackground(ctemp);
+			days[i].setBackground(ctemp);
+		    }
+		}
+
+		days[i].setVisible(true);
+
+		// }
 
 	    }
 
@@ -604,7 +578,7 @@ public class CalendarPanel extends JPanel implements Prefs.Listener, Navigator, 
 	    Errmsg.errmsg(e);
 	} finally {
 	    // not sure I like this. this window pops in front of the appt
-                // list
+	    // list
 	    // that I was working with
 	    // requestFocus();
 	}
@@ -1085,7 +1059,7 @@ public class CalendarPanel extends JPanel implements Prefs.Listener, Navigator, 
 	if (parent_ != null) {
 	    parent_.setView(MultiView.WEEK);
 	    parent_.goTo(new GregorianCalendar(year_, month_, 1));
-	    
+
 	}
     }// GEN-LAST:event_jButton1ActionPerformed
 
@@ -1094,7 +1068,7 @@ public class CalendarPanel extends JPanel implements Prefs.Listener, Navigator, 
 	if (parent_ != null) {
 	    parent_.setView(MultiView.WEEK);
 	    parent_.goTo(new GregorianCalendar(year_, month_, 8));
-	   
+
 	}
     }// GEN-LAST:event_jButton2ActionPerformed
 
@@ -1103,7 +1077,7 @@ public class CalendarPanel extends JPanel implements Prefs.Listener, Navigator, 
 	if (parent_ != null) {
 	    parent_.setView(MultiView.WEEK);
 	    parent_.goTo(new GregorianCalendar(year_, month_, 15));
-	    
+
 	}
     }// GEN-LAST:event_jButton3ActionPerformed
 
@@ -1112,7 +1086,7 @@ public class CalendarPanel extends JPanel implements Prefs.Listener, Navigator, 
 	if (parent_ != null) {
 	    parent_.setView(MultiView.WEEK);
 	    parent_.goTo(new GregorianCalendar(year_, month_, 22));
-	   
+
 	}
     }// GEN-LAST:event_jButton4ActionPerformed
 
@@ -1121,7 +1095,7 @@ public class CalendarPanel extends JPanel implements Prefs.Listener, Navigator, 
 	if (parent_ != null) {
 	    parent_.setView(MultiView.WEEK);
 	    parent_.goTo(new GregorianCalendar(year_, month_, 29));
-	    
+
 	}
     }// GEN-LAST:event_jButton5ActionPerformed
 

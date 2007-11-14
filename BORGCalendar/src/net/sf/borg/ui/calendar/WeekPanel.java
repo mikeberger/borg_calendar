@@ -40,7 +40,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -313,16 +312,6 @@ public class WeekPanel extends JPanel implements Printable {
 	    g2.setFont(sm_font);
 	    int smfontHeight = g2.getFontMetrics().getHeight();
 	    // int smfontDesent=g2.getFontMetrics().getDescent();
-
-	    boolean wrap = false;
-	    sp = Prefs.getPref(PrefName.WRAP);
-	    if (sp.equals("true"))
-		wrap = true;
-	    Hashtable atmap = null;
-	    if (wrap) {
-		atmap = new Hashtable();
-		atmap.put(TextAttribute.FONT, sm_font);
-	    }
 
 	    // this is the main part of the drawing. The appts are drawn in this
 	    // loop
