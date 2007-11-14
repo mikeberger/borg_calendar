@@ -69,7 +69,7 @@ public class DayPanel extends JPanel implements Printable {
 
 	private int year_;
 
-	boolean needLoad = true;
+	private boolean needLoad = true;
 
 	public DaySubPanel(int month, int year, int date) {
 	    year_ = year;
@@ -161,7 +161,7 @@ public class DayPanel extends JPanel implements Printable {
 	private int drawIt(Graphics g, double width, double height, double pageWidth, double pageHeight, double pagex,
 		double pagey, Font sm_font) {
 
-	   
+	    //System.out.println("day " + new GregorianCalendar().toString());
 	    boolean showpub = false;
 	    boolean showpriv = false;
 	    String sp = Prefs.getPref(PrefName.SHOWPUBLIC);

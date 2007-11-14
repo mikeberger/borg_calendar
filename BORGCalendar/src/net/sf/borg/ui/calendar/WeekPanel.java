@@ -79,7 +79,7 @@ public class WeekPanel extends JPanel implements Printable {
 
 	private int year_;
 
-	boolean needLoad = true;
+	private boolean needLoad = true;
 
 	public WeekSubPanel(int month, int year, int date) {
 	    year_ = year;
@@ -177,6 +177,7 @@ public class WeekPanel extends JPanel implements Printable {
 	}
 
 	public void refresh() {
+	    
 	    clearData();
 	    repaint();
 	}
@@ -198,6 +199,7 @@ public class WeekPanel extends JPanel implements Printable {
 	private int drawIt(Graphics g, double width, double height, double pageWidth, double pageHeight, double pagex,
 		double pagey, Font sm_font) {
 
+	    //System.out.println("week " + new GregorianCalendar().toString());
 	    boolean showpub = false;
 	    boolean showpriv = false;
 	    String sp = Prefs.getPref(PrefName.SHOWPUBLIC);
@@ -208,8 +210,6 @@ public class WeekPanel extends JPanel implements Printable {
 		showpriv = true;
 	    // set up default and small fonts
 	    Graphics2D g2 = (Graphics2D) g;
-	    // Font def_font = g2.getFont();
-	    // Font sm_font = def_font.deriveFont(6f);
 
 	    Map stmap = new HashMap();
 	    stmap.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
@@ -311,16 +311,13 @@ public class WeekPanel extends JPanel implements Printable {
 	    // set small font for appt text
 	    g2.setFont(sm_font);
 	    int smfontHeight = g2.getFontMetrics().getHeight();
-	    // int smfontDesent=g2.getFontMetrics().getDescent();
-
-	    // this is the main part of the drawing. The appts are drawn in this
-	    // loop
-	    // loop through the 7 days
+	    
 	    for (int col = 0; col < 7; col++) {
 
 		int colleft = (int) (timecolwidth + col * colwidth);
 
 		if (needLoad) {
+		   
 		    // add a zone for each day to allow new appts to be edited
 		    addDateZone(cal.getTime(), starthr * 60, endhr * 60, new Rectangle(colleft, 0, (int) colwidth, calbot));
 
@@ -364,64 +361,58 @@ public class WeekPanel extends JPanel implements Printable {
 				notey += smfontHeight;
 			    } else {
 
-				addApptBox(cal.getTime(),appt, startmin, endmin, new Rectangle(colleft + 4, (int) aptop, (int) colwidth - 8,
-					(int) (calbot - aptop)), new Rectangle(colleft, (int) aptop, (int) colwidth,
-					(int) (calbot - aptop)));
+				addApptBox(cal.getTime(), appt, startmin, endmin, new Rectangle(colleft + 4, (int) aptop,
+					(int) colwidth - 8, (int) (calbot - aptop)), new Rectangle(colleft, (int) aptop,
+					(int) colwidth, (int) (calbot - aptop)));
 			    }
 
-			    // reset to black
-			    g2.setColor(Color.black);
-
-			    // reset the clip
-			    g2.setClip(s);
+			   
 
 			}
 
 		    } catch (Exception e) {
 			Errmsg.errmsg(e);
 		    }
-		    
+
 		    Collection layoutlist = new ArrayList();
 		    Iterator bit = boxes.iterator();
-		    while( bit.hasNext())
-		    {
-			Box b = (Box)bit.next();
-			if( !(b instanceof ApptBox)) continue;
-			ApptBox ab = (ApptBox)b;
+		    while (bit.hasNext()) {
+			Box b = (Box) bit.next();
+			if (!(b instanceof ApptBox))
+			    continue;
+			ApptBox ab = (ApptBox) b;
 			Calendar c = new GregorianCalendar();
 			c.setTime(ab.getDate());
-			if( c.get(Calendar.DAY_OF_YEAR) == cal.get(Calendar.DAY_OF_YEAR))
-				layoutlist.add(ab);
+			if (c.get(Calendar.DAY_OF_YEAR) == cal.get(Calendar.DAY_OF_YEAR))
+			    layoutlist.add(ab);
 		    }
-		    ApptBox.layoutBoxes(layoutlist,starthr, endhr);
-		    
+		    ApptBox.layoutBoxes(layoutlist, starthr, endhr);
+
 		}
 
 		// reset the clip or bad things happen
 		g2.setClip(s);
 		g2.setColor(new Color(Prefs.getIntPref(PrefName.UCS_DEFAULT)));
 		g2.fillRect(colleft, caltop, (int) (colwidth), daytop - caltop);
-		
 
 		// highlight current day
 		Calendar today = new GregorianCalendar();
-		if (today.get(Calendar.YEAR) == cal.get(Calendar.YEAR)
-			&& today.get(Calendar.MONTH) == cal.get(Calendar.MONTH)
+		if (today.get(Calendar.YEAR) == cal.get(Calendar.YEAR) && today.get(Calendar.MONTH) == cal.get(Calendar.MONTH)
 			&& today.get(Calendar.DATE) == cal.get(Calendar.DATE)) {
 		    g2.setColor(new Color(Prefs.getIntPref(PrefName.UCS_TODAY)));
 		    g2.fillRect(colleft, caltop, (int) (colwidth), daytop - caltop);
-		   
+
 		}
-		
+
 		g2.setColor(Color.black);
-		
+
 		// increment the day
 		cal.add(Calendar.DATE, 1);
 
 	    }
-	    
+
 	    needLoad = false;
-	   
+
 	    drawBoxes(g2);
 
 	    // add day labels
@@ -468,7 +459,7 @@ public class WeekPanel extends JPanel implements Printable {
 		int colleft = (int) (timecolwidth + (col * colwidth));
 		g2.drawLine(colleft, caltop, colleft, calbot);
 	    }
-	    needLoad = false;
+
 	    return Printable.PAGE_EXISTS;
 	}
 

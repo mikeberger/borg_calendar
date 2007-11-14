@@ -1,13 +1,11 @@
 package net.sf.borg.ui.calendar;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Shape;
-import java.awt.Stroke;
 import java.awt.event.ActionListener;
 import java.awt.font.TextAttribute;
 import java.text.AttributedString;
@@ -17,7 +15,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.swing.ImageIcon;
+import javax.swing.Icon;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
@@ -32,11 +30,9 @@ import net.sf.borg.ui.MultiView;
 // how an appointment box should be drawn in a day grid
 public class NoteBox implements Box {
     
-    final static private float hlthickness = 2.0f;
-   
-    final static private BasicStroke highlight = new BasicStroke(hlthickness);
-   
-
+     
+    private Icon todoIcon = null;
+    
     private Appointment appt = null;
 
     private Rectangle bounds, clip;
@@ -50,6 +46,12 @@ public class NoteBox implements Box {
 	date = d;
 	this.bounds = bounds;
 	this.clip = clip;
+	
+	String iconname = Prefs.getPref(PrefName.UCS_MARKER);
+	String use_marker = Prefs.getPref(PrefName.UCS_MARKTODO);
+	if (use_marker.equals("true") && (iconname.endsWith(".gif") || iconname.endsWith(".jpg"))) {
+	    todoIcon = new javax.swing.ImageIcon(getClass().getResource("/resource/" + iconname));
+	}
     }
 
     /* (non-Javadoc)
@@ -64,7 +66,6 @@ public class NoteBox implements Box {
      */
     public void draw(Graphics2D g2, Component comp) {
 	
-	Stroke stroke = g2.getStroke();
 	Shape s = g2.getClip();
 	if (clip != null)
 	    g2.setClip(clip);
@@ -74,19 +75,10 @@ public class NoteBox implements Box {
 	Map stmap = new HashMap();
 	stmap.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
 	stmap.put(TextAttribute.FONT, sm_font);
-	ImageIcon todoIcon = null;
-	String iconname = Prefs.getPref(PrefName.UCS_MARKER);
-	String use_marker = Prefs.getPref(PrefName.UCS_MARKTODO);
-	if (use_marker.equals("true") && (iconname.endsWith(".gif") || iconname.endsWith(".jpg"))) {
-	    todoIcon = new javax.swing.ImageIcon(getClass().getResource("/resource/" + iconname));
-	}
+	
 	if (isSelected == true) {
-	    g2.setStroke(highlight);
-	    g2.setColor(Color.BLUE);
-	    //g2.drawRect(bounds.x, bounds.y + 2, bounds.width, bounds.height);
 	    g2.setColor(Color.WHITE);
 	    g2.fillRect(bounds.x, bounds.y + 2, bounds.width, bounds.height);
-	    g2.setStroke(stroke);
 	}
 	g2.setColor(Color.BLACK);
 	
@@ -104,7 +96,7 @@ public class NoteBox implements Box {
 		g2.setColor(new Color(0, 153, 0));
 	    else if (getTextColor().equals("blue"))
 		g2.setColor(new Color(102, 0, 204));
-	    // g2.setFont(sm_font);
+	   
 	    if (isTodo() && todoIcon != null) {
 		todoIcon.paintIcon(comp, g2, bounds.x, bounds.y + 8);
 		g2.drawString(getText(), bounds.x + todoIcon.getIconWidth(), bounds.y + smfontHeight);
@@ -113,8 +105,6 @@ public class NoteBox implements Box {
 	    }
 	    g2.setColor(Color.black);
 	}
-
-	
 
 	g2.setClip(s);
 	g2.setColor(Color.black);

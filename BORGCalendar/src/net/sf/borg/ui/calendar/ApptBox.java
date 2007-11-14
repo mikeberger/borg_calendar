@@ -26,7 +26,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeSet;
 
-import javax.swing.ImageIcon;
+import javax.swing.Icon;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
@@ -265,6 +265,8 @@ public class ApptBox implements Box{
 
     // appt
     private double startmin;
+    
+    private Icon todoIcon = null;
 
     private double top; // fraction of the available grid height at which
 
@@ -275,6 +277,12 @@ public class ApptBox implements Box{
 	date = d;
 	this.bounds = bounds;
 	this.clip = clip;
+	todoIcon = null;
+	String iconname = Prefs.getPref(PrefName.UCS_MARKER);
+	String use_marker = Prefs.getPref(PrefName.UCS_MARKTODO);
+	if (use_marker.equals("true") && (iconname.endsWith(".gif") || iconname.endsWith(".jpg"))) {
+	    todoIcon = new javax.swing.ImageIcon(getClass().getResource("/resource/" + iconname));
+	}
     }
 
     public void delete() {
@@ -291,12 +299,7 @@ public class ApptBox implements Box{
 	Map stmap = new HashMap();
 	stmap.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
 	stmap.put(TextAttribute.FONT, sm_font);
-	ImageIcon todoIcon = null;
-	String iconname = Prefs.getPref(PrefName.UCS_MARKER);
-	String use_marker = Prefs.getPref(PrefName.UCS_MARKTODO);
-	if (use_marker.equals("true") && (iconname.endsWith(".gif") || iconname.endsWith(".jpg"))) {
-	    todoIcon = new javax.swing.ImageIcon(getClass().getResource("/resource/" + iconname));
-	}
+	
 
 	// fill the box with color
 	g2.setColor(getBoxColor(boxnum));

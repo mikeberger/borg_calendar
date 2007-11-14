@@ -136,7 +136,7 @@ public class MonthPanel extends JPanel implements Printable {
 
 	private int drawIt(Graphics g, double width, double height, double pageWidth, double pageHeight, double pagex,
 		double pagey, int pageIndex) {
-
+	    //System.out.println("month " + new GregorianCalendar().toString());
 	    boolean showpub = false;
 	    boolean showpriv = false;
 	    String sp = Prefs.getPref(PrefName.SHOWPUBLIC);
@@ -309,32 +309,37 @@ public class MonthPanel extends JPanel implements Printable {
 		// increment the day
 		cal.add(Calendar.DATE, 1);
 	    }
-	    needLoad = false;
+	  
 	    drawBoxes(g2);
 	    g2.setClip(s);
 	    
 	 // week buttons
-	    if (Prefs.getPref(PrefName.ISOWKNUMBER).equals("true"))
-		cal.setMinimalDaysInFirstWeek(4);
-	    else
-		cal.setMinimalDaysInFirstWeek(1);
-	    for (int row = 0; row < 6; row++) {
+	    if( needLoad )
+	    {
+		if (Prefs.getPref(PrefName.ISOWKNUMBER).equals("true"))
+		    cal.setMinimalDaysInFirstWeek(4);
+		else
+		    cal.setMinimalDaysInFirstWeek(1);
+		for (int row = 0; row < 6; row++) {
 
-		cal.set(year_, month_, 1+7*row);
-		int wk = cal.get(Calendar.WEEK_OF_YEAR);
-		int rowtop = (row * rowheight) + daytop;
-		boxes.add(new ButtonBox(cal.getTime(), Integer.toString(wk), null, 
-			new Rectangle((int)pageWidth - weekbutwidth , rowtop, weekbutwidth, rowheight), 
-			new Rectangle((int)pageWidth - weekbutwidth , rowtop, weekbutwidth, rowheight) 
-			) {
-		    public void edit() {
-			MultiView.getMainView().setView(MultiView.WEEK);
-			GregorianCalendar gc = new GregorianCalendar();
-			gc.setTime(getDate());
-			MultiView.getMainView().goTo(gc);
-		    }
-		});
+		    cal.set(year_, month_, 1+7*row);
+		    int wk = cal.get(Calendar.WEEK_OF_YEAR);
+		    int rowtop = (row * rowheight) + daytop;
+		    boxes.add(new ButtonBox(cal.getTime(), Integer.toString(wk), null, 
+			    new Rectangle((int)pageWidth - weekbutwidth , rowtop, weekbutwidth, rowheight), 
+			    new Rectangle((int)pageWidth - weekbutwidth , rowtop, weekbutwidth, rowheight) 
+		    ) {
+			public void edit() {
+			    MultiView.getMainView().setView(MultiView.WEEK);
+			    GregorianCalendar gc = new GregorianCalendar();
+			    gc.setTime(getDate());
+			    MultiView.getMainView().goTo(gc);
+			}
+		    });
+		}
 	    }
+	    
+	    needLoad = false;
 
 	    // draw the lines last
 	    // top of calendar - above day names

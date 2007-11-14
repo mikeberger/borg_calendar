@@ -3,7 +3,6 @@ package net.sf.borg.ui.calendar;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Cursor;
-import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Stroke;
@@ -13,7 +12,6 @@ import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.font.TextAttribute;
 import java.awt.geom.Rectangle2D;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -21,9 +19,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -171,7 +167,6 @@ public abstract class ApptBoxPanel extends JPanel {
 	    }
 
 	    evt.getComponent().repaint();
-
 	}
 
 	public void mousePressed(MouseEvent evt) {
@@ -376,11 +371,6 @@ public abstract class ApptBoxPanel extends JPanel {
 
     public void drawBoxes(Graphics2D g2) {
 	
-	Font sm_font = g2.getFont();
-	Map stmap = new HashMap();
-	stmap.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
-	stmap.put(TextAttribute.FONT, sm_font);
-
 	Stroke stroke = g2.getStroke();
 	
 	Iterator it = boxes.iterator();
