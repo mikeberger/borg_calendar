@@ -115,8 +115,7 @@ public class MonthPrintPanel extends JPanel implements Printable {
 	Map stmap = new HashMap();
 	stmap.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
 	stmap.put(TextAttribute.FONT, sm_font);
-	// Font strike_font = sm_font.deriveFont(stmap);
-
+	
 	g2.setColor(Color.white);
 	g2.fillRect(0, 0, (int) width, (int) height);
 
@@ -218,7 +217,7 @@ public class MonthPrintPanel extends JPanel implements Printable {
 		try {
 
 		    // get the appointment info for the given day
-		    GregorianCalendar gc = new GregorianCalendar(year_, month_, date, 23, 59);
+		    GregorianCalendar gc = new GregorianCalendar(year, month, date, 23, 59);
 		    Day di = Day.getDay(year, month, date, showpub, showpriv, true);
 		    if (di != null) {
 			if (cp.equals("true")) {
@@ -277,14 +276,13 @@ public class MonthPrintPanel extends JPanel implements Printable {
 				} else {
 				    if ((ai.getColor() != null && ai.getColor().equals("strike"))
 					    || (ai.getTodo() && !(ai.getNextTodo() == null || !ai.getNextTodo().after(gc.getTime())))) {
-					// g2.setFont(strike_font);
-					// System.out.println(ai.getText());
+					
 					// need to use AttributedString to work
 					// around a bug
 					AttributedString as = new AttributedString(ai.getText(), stmap);
 					g2.drawString(as.getIterator(), apptx, appty);
 				    } else {
-					// g2.setFont(sm_font);
+					
 					g2.drawString(ai.getText(), apptx, appty);
 				    }
 
