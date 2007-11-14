@@ -412,8 +412,20 @@ public class WeekPanel extends JPanel implements Printable {
 		g2.setClip(s);
 		g2.setColor(new Color(Prefs.getIntPref(PrefName.UCS_DEFAULT)));
 		g2.fillRect(colleft, caltop, (int) (colwidth), daytop - caltop);
-		g2.setColor(Color.black);
+		
 
+		// highlight current day
+		Calendar today = new GregorianCalendar();
+		if (today.get(Calendar.YEAR) == cal.get(Calendar.YEAR)
+			&& today.get(Calendar.MONTH) == cal.get(Calendar.MONTH)
+			&& today.get(Calendar.DATE) == cal.get(Calendar.DATE)) {
+		    g2.setColor(new Color(Prefs.getIntPref(PrefName.UCS_TODAY)));
+		    g2.fillRect(colleft, caltop, (int) (colwidth), daytop - caltop);
+		   
+		}
+		
+		g2.setColor(Color.black);
+		
 		// increment the day
 		cal.add(Calendar.DATE, 1);
 
