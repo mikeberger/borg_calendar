@@ -158,7 +158,7 @@ public class MonthPanel extends JPanel implements Printable {
 
 	    g2.setColor(Color.white);
 	    g2.fillRect(0, 0, (int) width, (int) height);
-
+	   
 	    // set color to black
 	    g2.setColor(Color.black);
 
@@ -180,7 +180,7 @@ public class MonthPanel extends JPanel implements Printable {
 	    GregorianCalendar cal = new GregorianCalendar(year_, month_, 1);
 	    cal.setFirstDayOfWeek(Prefs.getIntPref(PrefName.FIRSTDOW));
 
-	    int caltop = fontHeight + fontDesent;
+	    int caltop = fontHeight;
 	    int daytop = caltop + fontHeight + fontDesent;
 	    int weekbutwidth = fontHeight + fontDesent;
 
@@ -191,7 +191,11 @@ public class MonthPanel extends JPanel implements Printable {
 	    // calculate the bottom and right edge of the grid
 	    int calbot = 6 * rowheight + daytop;
 	    int calright = 7 * colwidth;
-
+	    
+	    g2.setColor(this.getBackground());
+	    g2.fillRect(0, caltop, (int)pageWidth-weekbutwidth, daytop-caltop);
+	    g2.setColor(Color.black);
+	    
 	    // draw the day names centered in each column - no boxes drawn yet
 	    SimpleDateFormat dfw = new SimpleDateFormat("EEE");
 	    cal.add(Calendar.DAY_OF_WEEK, cal.getFirstDayOfWeek() - cal.get(Calendar.DAY_OF_WEEK));
@@ -310,8 +314,7 @@ public class MonthPanel extends JPanel implements Printable {
 		cal.add(Calendar.DATE, 1);
 	    }
 	  
-	    drawBoxes(g2);
-	    g2.setClip(s);
+	
 	    
 	 // week buttons
 	    if( needLoad )
@@ -340,6 +343,9 @@ public class MonthPanel extends JPanel implements Printable {
 	    }
 	    
 	    needLoad = false;
+	    
+	    drawBoxes(g2);
+	    g2.setClip(s);
 
 	    // draw the lines last
 	    // top of calendar - above day names

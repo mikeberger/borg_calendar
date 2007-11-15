@@ -285,8 +285,6 @@ public class WeekPanel extends JPanel implements Printable {
 	    // DateFormat dfs = DateFormat.getDateInstance(DateFormat.SHORT);
 	    SimpleDateFormat dfw = new SimpleDateFormat("EEE dd");
 
-	    g2.setColor(new Color(Prefs.getIntPref(PrefName.UCS_DEFAULT)));
-	    g2.fillRect((int) timecolwidth, caltop, (int) (7 * colwidth), daytop - caltop);
 	    g2.setColor(this.getBackground());
 	    g2.fillRect(0, caltop, (int) timecolwidth, calbot - caltop);
 	    g2.setColor(Color.BLACK);
@@ -392,7 +390,7 @@ public class WeekPanel extends JPanel implements Printable {
 
 		// reset the clip or bad things happen
 		g2.setClip(s);
-		g2.setColor(new Color(Prefs.getIntPref(PrefName.UCS_DEFAULT)));
+		g2.setColor(this.getBackground());
 		g2.fillRect(colleft, caltop, (int) (colwidth), daytop - caltop);
 
 		// highlight current day
