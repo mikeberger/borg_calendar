@@ -1,19 +1,28 @@
 Version 1.6.1
 -------------
+
+Feature [1830421] new month view  
+Feature [1826911] add a toolbar  
 Feature [1778929] GANTT Charts
 Feature [1825699] make some of the windows dockable 
-Feature [1826487] add a tree based project browser   
+Feature [1826487] add a tree based project browser
+Feature [1829289] add todo marker to day and week views 
+Feature [1827264] allow appts to be dragged between days on the week view      
 Feature [1730886] add automatic db update for hsqldb 
 Feature [1730718] support private memos
 Feature [1799708] memo: warn on unsaved changes  
 Feature [1716211] allow undated tasks
 Feature [1824596] send email errors to a window  
+Feature [1829365] obsolete old features 
+Feature [1831526] todos incorrectly marked as done in month print   
+Bug Fix [1781575] reminder popups show for deleted appts  
 Bug Fix [1777793] do not validate dates of closed tasks/subtasks
 Bug Fix [1746887] null pointer error when chging task due date
 Bug Fix [1738531] task state editor hangs
 Bug Fix [1730918] private todo's are not private on the Palm
 Bug Fix [1719016] some files missing from install
 Bug Fix [1714949] system tray errors in Linux
+Bug Fix [1787412] Palm Appt Conduit Performance bug  
 Refactor code into a single Eclipse Project (except for palm and servlet). Reorganize Packages.
 
 Version 1.6
