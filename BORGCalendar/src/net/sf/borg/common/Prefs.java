@@ -73,7 +73,7 @@ public class Prefs {
 
     public static final String getPref(String name, String def) {
 	try {
-	    Preferences prefs = Preferences.userNodeForPackage(Prefs.class);
+	    Preferences prefs = getPrefNode();
 	    String val = prefs.get(name, def);
 	    return (val);
 	} catch (NoClassDefFoundError e) {
@@ -84,7 +84,7 @@ public class Prefs {
 
     public static final void putPref(String name, String val) {
 	try {
-	    Preferences prefs = Preferences.userNodeForPackage(Prefs.class);
+	    Preferences prefs = getPrefNode();
 	    prefs.put(name, val);
 	} catch (NoClassDefFoundError e) {
 	    // must be 1.3
@@ -94,7 +94,7 @@ public class Prefs {
 
     public static final int getPref(String name, int def) {
 	try {
-	    Preferences prefs = Preferences.userNodeForPackage(Prefs.class);
+	    Preferences prefs = getPrefNode();
 	    int val = prefs.getInt(name, def);
 	    return (val);
 	} catch (NoClassDefFoundError e) {
@@ -105,7 +105,7 @@ public class Prefs {
 
     public static final void putPref(String name, int val) {
 	try {
-	    Preferences prefs = Preferences.userNodeForPackage(Prefs.class);
+	    Preferences prefs = getPrefNode();
 	    prefs.putInt(name, val);
 	} catch (NoClassDefFoundError e) {
 	    // must be 1.3
@@ -114,7 +114,7 @@ public class Prefs {
     }
 
     private static Object getPrefObject(PrefName pn) {
-	Preferences prefs = Preferences.userNodeForPackage(Prefs.class);
+	Preferences prefs = getPrefNode();
 	if (pn.getDefault() instanceof Integer) {
 	    int val = prefs.getInt(pn.getName(), ((Integer) pn.getDefault())
 		    .intValue());
@@ -125,15 +125,10 @@ public class Prefs {
 	return (val);
     }
 
-    /*
-         * (non-Javadoc)
-         * 
-         * @see net.sf.borg.common.util.IPrefs#putPref(net.sf.borg.common.util.PrefName,
-         *      java.lang.Object)
-         */
+   
     public static void putPref(PrefName pn, Object val) {
 
-	Preferences prefs = Preferences.userNodeForPackage(Prefs.class);
+	Preferences prefs = getPrefNode();
 	if (pn.getDefault() instanceof Integer) {
 	    if( val instanceof Integer)
 	    {
@@ -148,6 +143,12 @@ public class Prefs {
 	}
     }
 
+    static private Preferences getPrefNode()
+    {
+	// hard code to original prefs location for backward compatiblity
+	Preferences root = Preferences.userRoot();
+	return root.node("net/sf/borg/common/util");
+    }
     private Prefs() {
 
     }

@@ -139,7 +139,7 @@ public class PrefName {
 		static public PrefName ADDRVIEWSIZE = new PrefName("addrviewsize","-1,-1,-1,-1,N");
 		static public PrefName ADDRLISTVIEWSIZE = new PrefName("addrlistviewsize","-1,-1,-1,-1,N");
 		static public PrefName APPTLISTVIEWSIZE = new PrefName("apptlistviewsize","-1,-1,-1,-1,N");
-		static public PrefName DAYVIEWSIZE = new PrefName("dayviewsize","-1,-1,-1,-1,N");
+		static public PrefName DAYVIEWSIZE = new PrefName("dayviewsize","-1,-1,-1,-1,Y");
 		static public PrefName MONTHPREVIEWSIZE = new PrefName("monthpreviewsize","-1,-1,-1,-1,N");
 		static public PrefName OPTVIEWSIZE = new PrefName("optviewsize","-1,-1,-1,-1,N");
 		static public PrefName SRCHVIEWSIZE = new PrefName("srchviewsize","-1,-1,-1,-1,N");
