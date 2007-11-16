@@ -7,7 +7,7 @@ The project home page is http://borg-calendar.sourceforge.net
 ********************************
 Database Change for MySQL users
 ********************************
-MySQL users need to add a field to the memos table via the follwoing SQL:
+MySQL users need to add a field to the memos table via the following SQL:
 	alter table memos add private integer default '0' NOT NULL;
 
 HSQLDB databases will be updated automatically by BORG.
