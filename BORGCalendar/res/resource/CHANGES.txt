@@ -1,5 +1,5 @@
-Version 1.6.1
--------------
+Version 1.6.1 Beta
+------------------
 
 Feature [1830421] new month view  
 Feature [1826911] add a toolbar  
