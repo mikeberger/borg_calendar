@@ -179,8 +179,8 @@ public class MultiView extends View  {
 	    getTabs().setSelectedComponent(wkPanel);
 	} else if (type == MONTH) {
 
-	    String nmv = Prefs.getPref(PrefName.NEWMONTHVIEW);
-	    if( nmv.equals("true"))
+	    String omv = Prefs.getPref(PrefName.OLDMONTHVIEW);
+	    if( omv.equals("false"))
 	    {
 		if( monthPanel == null )
 		    monthPanel = new MonthPanel(cal_.get(Calendar.MONTH), cal_.get(Calendar.YEAR));

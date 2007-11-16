@@ -381,7 +381,7 @@ public class OptionsView extends View {
 
     private ReminderTimePanel remTimePanel = new ReminderTimePanel();
 
-   //private javax.swing.JCheckBox revDayEditbox;
+   private javax.swing.JCheckBox oldmonthbox;
 
     private javax.swing.JCheckBox sharedFileCheckBox;
 
@@ -538,7 +538,7 @@ public class OptionsView extends View {
 	setCheckBox(splashbox, PrefName.SPLASH);
 	setCheckBox(stackbox, PrefName.STACKTRACE);
 	setCheckBox(wrapbox, PrefName.WRAP);
-	//setCheckBox(revDayEditbox, PrefName.REVERSEDAYEDIT);
+	setCheckBox(oldmonthbox, PrefName.OLDMONTHVIEW);
 	setCheckBox(popenablebox, PrefName.REMINDERS);
 	setCheckBox(soundbox, PrefName.BEEPINGREMINDERS);
 	setCheckBox(palmcb, PrefName.PALM_SYNC);
@@ -757,7 +757,7 @@ public class OptionsView extends View {
 	setBooleanPref(splashbox, PrefName.SPLASH);
 	setBooleanPref(stackbox, PrefName.STACKTRACE);
 	setBooleanPref(wrapbox, PrefName.WRAP);
-	//setBooleanPref(revDayEditbox, PrefName.REVERSEDAYEDIT);
+	setBooleanPref(oldmonthbox, PrefName.OLDMONTHVIEW);
 	setBooleanPref(popenablebox, PrefName.REMINDERS);
 	setBooleanPref(soundbox, PrefName.BEEPINGREMINDERS);
 	setBooleanPref(palmcb, PrefName.PALM_SYNC);
@@ -2041,12 +2041,12 @@ public class OptionsView extends View {
 	gridBagConstraints50.fill = java.awt.GridBagConstraints.BOTH;
 	miscPanel.add(icaltodobox, gridBagConstraints50);
 
-	//ResourceHelper.setText(revDayEditbox, "revdayedit");
-	//GridBagConstraints gridBagConstraints51 = new java.awt.GridBagConstraints();
-	//gridBagConstraints51.gridx = 0;
-	//gridBagConstraints51.gridy = 7;
-	//gridBagConstraints51.fill = java.awt.GridBagConstraints.BOTH;
-	//miscPanel.add(revDayEditbox, gridBagConstraints51);
+	ResourceHelper.setText(oldmonthbox, "use_old_monthview");
+	GridBagConstraints gridBagConstraints51 = new java.awt.GridBagConstraints();
+	gridBagConstraints51.gridx = 0;
+	gridBagConstraints51.gridy = 7;
+	gridBagConstraints51.fill = java.awt.GridBagConstraints.BOTH;
+	miscPanel.add(oldmonthbox, gridBagConstraints51);
 
 	GridBagConstraints gridBagConstraints111 = new GridBagConstraints();
 	gridBagConstraints111.gridx = 0;
@@ -2627,7 +2627,7 @@ public class OptionsView extends View {
 	backgbox = new javax.swing.JCheckBox();
 	stackbox = new javax.swing.JCheckBox();
 	icaltodobox = new javax.swing.JCheckBox();
-	//revDayEditbox = new javax.swing.JCheckBox();
+	oldmonthbox = new javax.swing.JCheckBox();
 	popenablebox = new javax.swing.JCheckBox();
 	soundbox = new javax.swing.JCheckBox();
 	jLabel15 = new javax.swing.JLabel();
