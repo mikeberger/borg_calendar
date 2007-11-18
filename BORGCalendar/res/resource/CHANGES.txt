@@ -1,6 +1,11 @@
+Version 1.6.1 TBD
+-----------------
+Feature [1833863] allow dragging of appts in the month view  
+Feature [1833864] allow dragging of appts outside of grid in day/week views
+Bug Fix [1833869] user colors not used in new views
+
 Version 1.6.1 Beta
 ------------------
-
 Feature [1830421] new month view  
 Feature [1826911] add a toolbar  
 Feature [1778929] GANTT Charts
