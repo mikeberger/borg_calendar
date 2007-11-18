@@ -19,6 +19,8 @@
  */
 package net.sf.borg.common;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.prefs.Preferences;
 
@@ -51,22 +53,20 @@ public class Prefs {
 	}
     }
 
-    public static String getPref( PrefName pn )
-    {
+    public static String getPref(PrefName pn) {
 	Object o = getPrefObject(pn);
-	if( o instanceof Integer )
+	if (o instanceof Integer)
 	    return Integer.toString(((Integer) o).intValue());
 	return (String) getPrefObject(pn);
     }
-    
+
     public static int getIntPref(PrefName pn) {
 	return (((Integer) Prefs.getPrefObject(pn)).intValue());
     }
 
-    public static boolean getBoolPref(PrefName pn)
-    {
+    public static boolean getBoolPref(PrefName pn) {
 	String s = getPref(pn);
-	if( s != null && s.equals("true"))
+	if (s != null && s.equals("true"))
 	    return true;
 	return false;
     }
@@ -74,40 +74,57 @@ public class Prefs {
     private static Object getPrefObject(PrefName pn) {
 	Preferences prefs = getPrefNode();
 	if (pn.getDefault() instanceof Integer) {
-	    int val = prefs.getInt(pn.getName(), ((Integer) pn.getDefault())
-		    .intValue());
+	    int val = prefs.getInt(pn.getName(), ((Integer) pn.getDefault()).intValue());
 	    return (new Integer(val));
 	}
 
 	String val = prefs.get(pn.getName(), (String) pn.getDefault());
 	return (val);
     }
-   
+
     public static void putPref(PrefName pn, Object val) {
 
-	//System.out.println("putpref-" + pn.getName() + "-" + val);
+	// System.out.println("putpref-" + pn.getName() + "-" + val);
 	Preferences prefs = getPrefNode();
 	if (pn.getDefault() instanceof Integer) {
-	    if( val instanceof Integer)
-	    {
+	    if (val instanceof Integer) {
 		prefs.putInt(pn.getName(), ((Integer) val).intValue());
-	    }
-	    else
-	    {
-		prefs.putInt(pn.getName(), Integer.parseInt((String)val));
+	    } else {
+		prefs.putInt(pn.getName(), Integer.parseInt((String) val));
 	    }
 	} else {
 	    prefs.put(pn.getName(), (String) val);
 	}
     }
 
-    static private Preferences getPrefNode()
-    {
+    static private Preferences getPrefNode() {
 	// hard code to original prefs location for backward compatiblity
 	Preferences root = Preferences.userRoot();
 	return root.node("net/sf/borg/common/util");
     }
+
     private Prefs() {
 
+    }
+
+    public static void importPrefs(String filename) {
+	try {
+	    InputStream istr = IOHelper.openStream(filename);
+	    Preferences.importPreferences(istr);
+	    istr.close();
+	} catch (Exception e) {
+	    Errmsg.errmsg(e);
+	}
+    }
+
+    public static void export(String filename) {
+	try {
+	    OutputStream oostr = IOHelper.createOutputStream(filename);
+	    Preferences prefs = getPrefNode();
+	    prefs.exportNode(oostr);
+	    oostr.close();
+	} catch (Exception e) {
+	    Errmsg.errmsg(e);
+	}
     }
 }

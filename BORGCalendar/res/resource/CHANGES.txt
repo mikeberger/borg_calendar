@@ -2,6 +2,7 @@ Version 1.6.1 TBD
 -----------------
 Feature [1833863] allow dragging of appts in the month view  
 Feature [1833864] allow dragging of appts outside of grid in day/week views
+Feature [1834235] import/export of preferences  
 Bug Fix [1833869] user colors not used in new views
 
 Version 1.6.1 Beta

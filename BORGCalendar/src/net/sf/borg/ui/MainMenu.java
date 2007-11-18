@@ -87,7 +87,7 @@ public class MainMenu {
 
     private JMenu OptionMenu = new javax.swing.JMenu();
 
-    private JMenuItem jMenuItem1 = new javax.swing.JMenuItem();
+    private JMenuItem editPrefsMenuItem = new javax.swing.JMenuItem();
 
     private JMenu catmenu = new javax.swing.JMenu();
 
@@ -321,14 +321,34 @@ public class MainMenu {
 
 	OptionMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Preferences16.gif")));
 	ResourceHelper.setText(OptionMenu, "Options");
-	ResourceHelper.setText(jMenuItem1, "ep");
-	jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+	
+	ResourceHelper.setText(editPrefsMenuItem, "ep");
+	editPrefsMenuItem.addActionListener(new java.awt.event.ActionListener() {
 	    public void actionPerformed(java.awt.event.ActionEvent evt) {
 		jMenuItem1ActionPerformed(evt);
 	    }
 	});
-
-	OptionMenu.add(jMenuItem1);
+	OptionMenu.add(editPrefsMenuItem);
+	
+	JMenuItem exportPrefsMI = new JMenuItem();
+	exportPrefsMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Export16.gif")));
+	ResourceHelper.setText(exportPrefsMI, "export_prefs");
+	exportPrefsMI.addActionListener(new java.awt.event.ActionListener() {
+	    public void actionPerformed(java.awt.event.ActionEvent evt) {
+		expPrefs(evt);
+	    }
+	});
+	OptionMenu.add(exportPrefsMI);
+	
+	JMenuItem mportPrefsMI = new JMenuItem();
+	mportPrefsMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Import16.gif")));
+	ResourceHelper.setText(mportPrefsMI, "import_prefs");
+	mportPrefsMI.addActionListener(new java.awt.event.ActionListener() {
+	    public void actionPerformed(java.awt.event.ActionEvent evt) {
+		impPrefs(evt);
+	    }
+	});
+	OptionMenu.add(mportPrefsMI);
 
 	JMenu tsm = new JMenu(Resource.getPlainResourceString("task_state_options"));
 	JMenuItem edittypes = new JMenuItem();
@@ -730,6 +750,65 @@ public class MainMenu {
 	}
 
     }// GEN-LAST:event_expicalActionPerformed
+
+    private void expPrefs(java.awt.event.ActionEvent evt) {
+	File file;
+	while (true) {
+	    // prompt for a file
+	    JFileChooser chooser = new JFileChooser();
+
+	    chooser.setCurrentDirectory(new File("."));
+	    chooser.setDialogTitle(Resource.getResourceString("choose_file"));
+	    chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+
+	    int returnVal = chooser.showOpenDialog(null);
+	    if (returnVal != JFileChooser.APPROVE_OPTION)
+		return;
+
+	    String s = chooser.getSelectedFile().getAbsolutePath();
+	    file = new File(s);
+
+	    break;
+
+	}
+
+	try {
+	    Prefs.export(file.getAbsolutePath());
+	} catch (Exception e) {
+	    Errmsg.errmsg(e);
+	}
+
+    }
+    
+    private void impPrefs(java.awt.event.ActionEvent evt) {
+	File file;
+	while (true) {
+	    // prompt for a file
+	    JFileChooser chooser = new JFileChooser();
+
+	    chooser.setCurrentDirectory(new File("."));
+	    chooser.setDialogTitle(Resource.getResourceString("choose_file"));
+	    chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+
+	    int returnVal = chooser.showOpenDialog(null);
+	    if (returnVal != JFileChooser.APPROVE_OPTION)
+		return;
+
+	    String s = chooser.getSelectedFile().getAbsolutePath();
+	    file = new File(s);
+
+	    break;
+
+	}
+
+	try {
+	    Prefs.importPrefs(file.getAbsolutePath());
+	} catch (Exception e) {
+	    Errmsg.errmsg(e);
+	}
+
+    }
+
 
     private void expurlActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_expurlActionPerformed
     {// GEN-HEADEREND:event_expurlActionPerformed

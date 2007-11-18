@@ -161,7 +161,7 @@ public abstract class ApptBoxPanel extends JPanel {
 
 	    if (b != null && (b.onTopBorder || b.onBottomBorder) && !b.inDragNewBox) {
 		panel.setCursor(new Cursor(Cursor.N_RESIZE_CURSOR));
-	    } else if (b != null && b.box != null && !b.inDragNewBox && b.box instanceof ApptBox) {
+	    } else if (b != null && b.box != null && !b.inDragNewBox && b.box instanceof Draggable) {
 		panel.setCursor(new Cursor(Cursor.MOVE_CURSOR));
 	    } else {
 		panel.setCursor(new Cursor(Cursor.HAND_CURSOR));
