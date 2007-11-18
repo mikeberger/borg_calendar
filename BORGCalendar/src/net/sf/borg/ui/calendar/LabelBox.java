@@ -31,7 +31,13 @@ public class LabelBox implements Box{
 
     }
 
-   
+    private String getTextColor() {
+	if (appt == null)
+	    return null;
+
+	return appt.getColor();
+    }
+    
     public void draw(Graphics2D g2, Component comp) {
 
 	Shape s = g2.getClip();
@@ -44,7 +50,25 @@ public class LabelBox implements Box{
 	    g2.setColor(Color.WHITE);
 	    g2.fillRect(bounds.x, bounds.y + 2, bounds.width, bounds.height);
 	}
-	g2.setColor(new Color(Integer.parseInt(Prefs.getPref(PrefName.UCS_PURPLE))));
+	  g2.setColor(Color.black);
+	    
+	    if (getTextColor().equals("red"))
+		g2.setColor(new Color(Integer.parseInt(Prefs.getPref(PrefName.UCS_RED))));
+	    else if (getTextColor().equals("green"))
+		g2.setColor(new Color(Integer.parseInt(Prefs.getPref(PrefName.UCS_GREEN))));
+	    else if (getTextColor().equals("blue"))
+		g2.setColor(new Color(Integer.parseInt(Prefs.getPref(PrefName.UCS_BLUE))));
+	    else if (getTextColor().equals("black"))
+		g2.setColor(new Color(Integer.parseInt(Prefs.getPref(PrefName.UCS_BLACK))));
+	    else if (getTextColor().equals("white"))
+		g2.setColor(new Color(Integer.parseInt(Prefs.getPref(PrefName.UCS_WHITE))));
+	    else if (getTextColor().equals("navy"))
+		g2.setColor(new Color(Integer.parseInt(Prefs.getPref(PrefName.UCS_NAVY))));
+	    else if (getTextColor().equals("purple"))
+		g2.setColor(new Color(Integer.parseInt(Prefs.getPref(PrefName.UCS_PURPLE))));
+	    else if (getTextColor().equals("brick"))
+		g2.setColor(new Color(Integer.parseInt(Prefs.getPref(PrefName.UCS_BRICK))));
+
 	g2.drawString(getText(), bounds.x + 2, bounds.y + smfontHeight);
 	g2.setColor(Color.black);
 

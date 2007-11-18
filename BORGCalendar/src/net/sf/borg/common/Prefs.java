@@ -71,48 +71,6 @@ public class Prefs {
 	return false;
     }
 
-    public static final String getPref(String name, String def) {
-	try {
-	    Preferences prefs = getPrefNode();
-	    String val = prefs.get(name, def);
-	    return (val);
-	} catch (NoClassDefFoundError e) {
-	    // must be 1.3
-	    return (def);
-	}
-    }
-
-    public static final void putPref(String name, String val) {
-	try {
-	    Preferences prefs = getPrefNode();
-	    prefs.put(name, val);
-	} catch (NoClassDefFoundError e) {
-	    // must be 1.3
-	    return;
-	}
-    }
-
-    public static final int getPref(String name, int def) {
-	try {
-	    Preferences prefs = getPrefNode();
-	    int val = prefs.getInt(name, def);
-	    return (val);
-	} catch (NoClassDefFoundError e) {
-	    // must be 1.3
-	    return (def);
-	}
-    }
-
-    public static final void putPref(String name, int val) {
-	try {
-	    Preferences prefs = getPrefNode();
-	    prefs.putInt(name, val);
-	} catch (NoClassDefFoundError e) {
-	    // must be 1.3
-	    return;
-	}
-    }
-
     private static Object getPrefObject(PrefName pn) {
 	Preferences prefs = getPrefNode();
 	if (pn.getDefault() instanceof Integer) {
@@ -124,10 +82,10 @@ public class Prefs {
 	String val = prefs.get(pn.getName(), (String) pn.getDefault());
 	return (val);
     }
-
    
     public static void putPref(PrefName pn, Object val) {
 
+	//System.out.println("putpref-" + pn.getName() + "-" + val);
 	Preferences prefs = getPrefNode();
 	if (pn.getDefault() instanceof Integer) {
 	    if( val instanceof Integer)

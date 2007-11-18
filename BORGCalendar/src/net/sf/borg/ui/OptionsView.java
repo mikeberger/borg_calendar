@@ -219,9 +219,6 @@ public class OptionsView extends View {
 
     private javax.swing.JCheckBox cb_ucs_marktodo;
 
-    // added by bsv 2004-12-20
-    private javax.swing.JCheckBox cb_ucs_on;
-
     private javax.swing.JCheckBox cb_ucs_ontodo;
 
     private javax.swing.JSpinner checkfreq;
@@ -666,9 +663,6 @@ public class OptionsView extends View {
 	mins = Prefs.getIntPref(PrefName.SYNCMINS);
 	syncmins.setValue(new Integer(mins));
 
-	// bsv 2004-12-20
-	// initiate user color scheme variables
-	setCheckBox(cb_ucs_on, PrefName.UCS_ON);
 	setCheckBox(cb_ucs_ontodo, PrefName.UCS_ONTODO);
 	setCheckBox(cb_ucs_marktodo, PrefName.UCS_MARKTODO);
 
@@ -821,8 +815,6 @@ public class OptionsView extends View {
 	    Prefs.putPref(PrefName.VERCHKLAST, new Integer(-1));
 	}
 
-	// bsv 2004-12-20
-	setBooleanPref(cb_ucs_on, PrefName.UCS_ON);
 	setBooleanPref(cb_ucs_ontodo, PrefName.UCS_ONTODO);
 	setBooleanPref(cb_ucs_marktodo, PrefName.UCS_MARKTODO);
 
@@ -1772,8 +1764,7 @@ public class OptionsView extends View {
 	    jPanelUCS = new JPanel();
 	    jPanelUCS.setLayout(new GridLayout(10, 2));
 
-	    cb_ucs_on = new javax.swing.JCheckBox();
-	    ResourceHelper.setText(cb_ucs_on, "ucolortext0");
+
 	    cb_ucs_ontodo = new javax.swing.JCheckBox();
 	    ResourceHelper.setText(cb_ucs_ontodo, "ucolortext1");
 	    cb_ucs_marktodo = new javax.swing.JCheckBox();
@@ -1858,8 +1849,7 @@ public class OptionsView extends View {
 		}
 	    });
 
-	    jPanelUCS.add(cb_ucs_on);
-	    jPanelUCS.add(cb_ucs_ontodo);
+	  
 	    jPanelUCS.add(btn_ucs_red);
 	    jPanelUCS.add(btn_ucs_default);
 	    jPanelUCS.add(btn_ucs_blue);
@@ -1877,6 +1867,7 @@ public class OptionsView extends View {
 	    jPanelUCS.add(btn_ucs_birthdays);
 	    jPanelUCS.add(btn_ucs_stripe);
 	    jPanelUCS.add(btn_ucs_restore);
+	    jPanelUCS.add(cb_ucs_ontodo);
 
 	    JPanel njp = new JPanel();
 	    njp.setLayout(new BorderLayout());

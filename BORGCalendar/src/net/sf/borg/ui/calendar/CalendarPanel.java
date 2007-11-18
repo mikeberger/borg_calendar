@@ -481,7 +481,7 @@ public class CalendarPanel extends JPanel implements Prefs.Listener, Navigator, 
 		// appts for the day are holidays, vacation days,
 		// half-days,
 		// or weekends
-		boolean bUseUCS = ((Prefs.getPref(PrefName.UCS_ON)).equals("true")) ? true : false;
+		boolean bUseUCS = true;
 		if (daynumber <= 0 || daynumber > ld) {
 		    daytext[i].setBackground(jPanel1.getBackground());
 		    days[i].setBackground(jPanel1.getBackground());
@@ -997,7 +997,7 @@ public class CalendarPanel extends JPanel implements Prefs.Listener, Navigator, 
 	float f = Float.parseFloat(ls);
 	StyleConstants.setLineSpacing(bl, f);
 
-	boolean bUseUCS = ((Prefs.getPref(PrefName.UCS_ON)).equals("true")) ? true : false;
+	boolean bUseUCS =  true ;
 	Color ctemp;
 	try {
 	    Style s = textPane.addStyle("blue", bl);

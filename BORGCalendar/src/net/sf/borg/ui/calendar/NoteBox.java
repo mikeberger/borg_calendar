@@ -89,12 +89,23 @@ public class NoteBox implements Draggable {
 	    // change color for a single appointment based on
 	    // its color - only if color print option set
 	    g2.setColor(Color.black);
+	    
 	    if (getTextColor().equals("red"))
-		g2.setColor(new Color(204, 0, 51));
+		g2.setColor(new Color(Integer.parseInt(Prefs.getPref(PrefName.UCS_RED))));
 	    else if (getTextColor().equals("green"))
-		g2.setColor(new Color(0, 153, 0));
+		g2.setColor(new Color(Integer.parseInt(Prefs.getPref(PrefName.UCS_GREEN))));
 	    else if (getTextColor().equals("blue"))
-		g2.setColor(new Color(102, 0, 204));
+		g2.setColor(new Color(Integer.parseInt(Prefs.getPref(PrefName.UCS_BLUE))));
+	    else if (getTextColor().equals("black"))
+		g2.setColor(new Color(Integer.parseInt(Prefs.getPref(PrefName.UCS_BLACK))));
+	    else if (getTextColor().equals("white"))
+		g2.setColor(new Color(Integer.parseInt(Prefs.getPref(PrefName.UCS_WHITE))));
+	    else if (getTextColor().equals("navy"))
+		g2.setColor(new Color(Integer.parseInt(Prefs.getPref(PrefName.UCS_NAVY))));
+	    else if (getTextColor().equals("purple"))
+		g2.setColor(new Color(Integer.parseInt(Prefs.getPref(PrefName.UCS_PURPLE))));
+	    else if (getTextColor().equals("brick"))
+		g2.setColor(new Color(Integer.parseInt(Prefs.getPref(PrefName.UCS_BRICK))));
 
 	    if (isTodo() && todoIcon != null) {
 		todoIcon.paintIcon(comp, g2, bounds.x, bounds.y + 8);
