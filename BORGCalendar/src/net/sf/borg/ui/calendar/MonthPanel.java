@@ -62,6 +62,12 @@ public class MonthPanel extends JPanel implements Printable {
 	private int month_;
 
 	private int year_;
+	
+	private int colwidth;
+	
+	private int rowheight;
+	
+	private int daytop;
 
 	final private int numBoxes = 42;
 
@@ -181,16 +187,19 @@ public class MonthPanel extends JPanel implements Printable {
 	    cal.setFirstDayOfWeek(Prefs.getIntPref(PrefName.FIRSTDOW));
 
 	    int caltop = fontHeight;
-	    int daytop = caltop + fontHeight + fontDesent;
+	    daytop = caltop + fontHeight + fontDesent;
 	    int weekbutwidth = fontHeight + fontDesent;
 
 	    // calculate width and height of day boxes (6x7 grid)
-	    int rowheight = ((int) pageHeight - daytop) / 6;
-	    int colwidth = (int) (pageWidth-weekbutwidth) / 7;
+	    rowheight = ((int) pageHeight - daytop) / 6;
+	    colwidth = (int) (pageWidth-weekbutwidth) / 7;
 
 	    // calculate the bottom and right edge of the grid
 	    int calbot = 6 * rowheight + daytop;
 	    int calright = 7 * colwidth;
+	    
+	    setDragBounds(daytop,calbot,0,(int)pageWidth-weekbutwidth);
+	    setResizeBounds(0,0,0,0);
 	    
 	    g2.setColor(this.getBackground());
 	    g2.fillRect(0, caltop, (int)pageWidth-weekbutwidth, daytop-caltop);
@@ -380,9 +389,16 @@ public class MonthPanel extends JPanel implements Printable {
 	    }
 	}
 
-	Date getDateForX(double x) {
-	    // TODO Auto-generated method stub
-	    return null;
+	public Date getDateForCoord(double x,double y) {
+
+	    int col = (int)x/colwidth;
+	    int row = ((int)y - daytop)/ rowheight;
+	    GregorianCalendar cal = new GregorianCalendar(year_, month_, 1);
+	    cal.setFirstDayOfWeek(Prefs.getIntPref(PrefName.FIRSTDOW));
+	    int fdow = cal.get(Calendar.DAY_OF_WEEK) - cal.getFirstDayOfWeek();
+	    cal.add(Calendar.DATE, -1 * fdow);
+	    cal.add(Calendar.DATE, row*7+col);
+	    return cal.getTime();
 	}
 
 	public void refresh() {

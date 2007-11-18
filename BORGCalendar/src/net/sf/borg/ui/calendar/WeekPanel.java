@@ -98,7 +98,7 @@ public class WeekPanel extends JPanel implements Printable {
 	    setToolTipText(null);
 	}
 
-	public Date getDateForX(double x) {
+	public Date getDateForCoord(double x,double y) {
 
 	    double col = (x - timecolwidth) / colwidth;
 	    if (col > 6)
@@ -263,7 +263,8 @@ public class WeekPanel extends JPanel implements Printable {
 	    // calculate the bottom and right edge of the grid
 	    int calbot = (int) rowheight + daytop;
 
-	    setResizeBounds((int) aptop, calbot);
+	    setResizeBounds((int) aptop, calbot, (int)timecolwidth, (int)(pageWidth));
+	    setDragBounds((int) daytop, calbot, (int)timecolwidth, (int)(pageWidth));
 
 	    // start and end hour = range of Y axis
 	    String shr = Prefs.getPref(PrefName.WKSTARTHOUR);
@@ -320,8 +321,8 @@ public class WeekPanel extends JPanel implements Printable {
 		    addDateZone(cal.getTime(), starthr * 60, endhr * 60, new Rectangle(colleft, 0, (int) colwidth, calbot));
 
 		    try {
-			int startmin = starthr * 60;
-			int endmin = endhr * 60;
+			startmin = starthr * 60;
+			endmin = endhr * 60;
 			Day di = Day.getDay(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE), showpub,
 				showpriv, true);
 
@@ -359,7 +360,7 @@ public class WeekPanel extends JPanel implements Printable {
 				notey += smfontHeight;
 			    } else {
 
-				addApptBox(cal.getTime(), appt, startmin, endmin, new Rectangle(colleft + 4, (int) aptop,
+				addApptBox(cal.getTime(), appt, new Rectangle(colleft + 4, (int) aptop,
 					(int) colwidth - 8, (int) (calbot - aptop)), new Rectangle(colleft, (int) aptop,
 					(int) colwidth, (int) (calbot - aptop)));
 			    }

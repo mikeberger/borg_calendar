@@ -39,7 +39,7 @@ import net.sf.borg.ui.MultiView;
 
 // ApptDayBox holds the logical information needs to determine
 // how an appointment box should be drawn in a day grid
-public class ApptBox implements Box{
+public class ApptBox implements Draggable{
 
     // compare boxes by number of overlaps
     private static class boxcompare implements Comparator {
@@ -249,8 +249,6 @@ public class ApptBox implements Box{
 
     private Date date; // date being displayed - not necessarily date of
 
-    private double endmin;
-
     private boolean isPlaced = false; // whether or not this box has been
 
     private boolean isSelected = false;
@@ -262,17 +260,13 @@ public class ApptBox implements Box{
 
     // should be drawn
     private double right; // fraction of the available grid width at which
-
-    // appt
-    private double startmin;
     
     private Icon todoIcon = null;
 
     private double top; // fraction of the available grid height at which
 
-    public ApptBox(Date d,Appointment ap, double sm, double em, Rectangle bounds, Rectangle clip) {
-	startmin = sm;
-	endmin = em;
+    public ApptBox(Date d,Appointment ap, Rectangle bounds, Rectangle clip) {
+
 	appt = ap;
 	date = d;
 	this.bounds = bounds;
@@ -364,15 +358,21 @@ public class ApptBox implements Box{
 	return appt.getText();
     }
 
-    public void move(double y_fraction, Date d) throws Exception {
-	// calculate new start hour or duration and update appt
-	int realtime = ApptBoxPanel.realMins(y_fraction, startmin, endmin);
+    public void move(int realtime, Date d) throws Exception {
+	
+	Appointment ap = AppointmentModel.getReference().getAppt(appt.getKey());
+	
 	int hour = realtime / 60;
 	int min = realtime % 60;
 
-	// get appt from DB - one cached here has time prepended to text by
-	// Day.getDayInfo()
-	Appointment ap = AppointmentModel.getReference().getAppt(appt.getKey());
+
+	if( hour == 0 && min == 0 )
+	{
+	    // we are moving to be untimed - clear duration
+	    ap.setDuration(null);
+	}
+
+
 	// Date oldTime = ap.getDate();
 	int oldkey = ap.getKey();
 
@@ -393,9 +393,9 @@ public class ApptBox implements Box{
 	}
     }
 
-    public void resize(boolean isTop, double y_fraction) throws Exception {
+    public void resize(boolean isTop, int realtime) throws Exception {
 	// calculate new start hour or duration and update appt
-	int realtime = ApptBoxPanel.realMins(y_fraction, startmin, endmin);
+	
 	int hour = realtime / 60;
 	int min = realtime % 60;
 

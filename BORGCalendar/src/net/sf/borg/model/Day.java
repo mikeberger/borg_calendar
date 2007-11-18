@@ -59,7 +59,7 @@ public class Day {
     private static class apcompare implements Comparator {
 
 	private static int colornum(String color) {
-	    // bsv 2004-12-21
+	    
 	    if (color.equals("red"))
 		return (1);
 	    if (color.equals("blue"))
@@ -77,18 +77,7 @@ public class Day {
 	    if (color.equals("purple"))
 		return (8);
 	    return (9);
-	    // //oldcode
-	    // if( color.equals("red"))
-	    // return(1);
-	    // if( color.equals("blue"))
-	    // return(2);
-	    // if( color.equals("green"))
-	    // return(3);
-	    // if( color.equals("white"))
-	    // return(5);
-	    // return(4);
-	    // //(oldcode)
-	    // (bsv 2004-12-21)
+	    
 	}
 
 	public int compare(java.lang.Object obj, java.lang.Object obj1) {
@@ -357,13 +346,13 @@ public class Day {
 	    // temporary. they do not get added to the DB or even the appt
                 // map_
 	    Appointment hol = new Appointment();
+	    hol.setKey(-1);
 	    hol.setDate(new GregorianCalendar(year, month, day, 00, 00)
 		    .getTime());
 
-	    // bsv 2004-12-21
+	 
 	    hol.setColor("purple");
-	    // hol.setColor("black");
-
+	   
 	    hol.setText(null);
 	    if (month == 9 && day == 31) {
 		hol.setText(Resource.getResourceString("Halloween"));
@@ -425,12 +414,13 @@ public class Day {
 	if (show_can_hols.equals("true")) {
 
 	    Appointment hol = new Appointment();
+	    hol.setKey(-1);
 	    hol.setDate(new GregorianCalendar(year, month, day, 00, 00)
 		    .getTime());
 
-	    // bsv 2004-12-21
+	 
 	    hol.setColor("purple");
-	    // hol.setColor("black");
+	
 
 	    hol.setText(null);
 	    if (month == 0 && day == 1) {
@@ -496,6 +486,7 @@ public class Day {
 		    info
 			    .setDate(new GregorianCalendar(year, month, day,
 				    00, 00).getTime());
+		    info.setKey(-1);
 		    String color = info.getColor();
 
 		
@@ -530,6 +521,7 @@ public class Day {
 		  
 		    if (color == null)
 			info.setColor("navy");
+		    info.setKey(-1);
 		    info.setTodo(true);
 		    info.setText(tx);
 		    ret.addAppt(info);
@@ -563,6 +555,7 @@ public class Day {
 		    if (color == null)
 			info.setColor("navy");
 		    info.setTodo(true);
+		    info.setKey(-1);
 		    info.setText(tx);
 		    ret.addAppt(info);
 		}
@@ -580,7 +573,7 @@ public class Day {
 		Appointment info = new Appointment();
 		String color = info.getColor();
 
-		// bsv 2004-12-21
+		
 		if (color == null)
 		    info.setColor("brick");
 		
@@ -596,6 +589,7 @@ public class Day {
 			+ addr.getFirstName() + " " + addr.getLastName() + "("
 			+ yrs + ")";
 		info.setText(tx);
+		info.setKey(-1);
 		info
 		    .setDate(new GregorianCalendar(year, month, day,
 			    00, 00).getTime());

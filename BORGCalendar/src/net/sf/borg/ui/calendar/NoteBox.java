@@ -28,11 +28,10 @@ import net.sf.borg.ui.MultiView;
 
 // ApptDayBox holds the logical information needs to determine
 // how an appointment box should be drawn in a day grid
-public class NoteBox implements Box {
-    
-     
+public class NoteBox implements Draggable {
+
     private Icon todoIcon = null;
-    
+
     private Appointment appt = null;
 
     private Rectangle bounds, clip;
@@ -46,7 +45,7 @@ public class NoteBox implements Box {
 	date = d;
 	this.bounds = bounds;
 	this.clip = clip;
-	
+
 	String iconname = Prefs.getPref(PrefName.UCS_MARKER);
 	String use_marker = Prefs.getPref(PrefName.UCS_MARKTODO);
 	if (use_marker.equals("true") && (iconname.endsWith(".gif") || iconname.endsWith(".jpg"))) {
@@ -65,7 +64,7 @@ public class NoteBox implements Box {
      * @see net.sf.borg.ui.calendar.Box#draw(java.awt.Graphics2D, java.awt.Component)
      */
     public void draw(Graphics2D g2, Component comp) {
-	
+
 	Shape s = g2.getClip();
 	if (clip != null)
 	    g2.setClip(clip);
@@ -75,13 +74,13 @@ public class NoteBox implements Box {
 	Map stmap = new HashMap();
 	stmap.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
 	stmap.put(TextAttribute.FONT, sm_font);
-	
+
 	if (isSelected == true) {
 	    g2.setColor(Color.WHITE);
 	    g2.fillRect(bounds.x, bounds.y + 2, bounds.width, bounds.height);
 	}
 	g2.setColor(Color.BLACK);
-	
+
 	if (getTextColor().equals("strike")) {
 
 	    AttributedString as = new AttributedString(getText(), stmap);
@@ -96,7 +95,7 @@ public class NoteBox implements Box {
 		g2.setColor(new Color(0, 153, 0));
 	    else if (getTextColor().equals("blue"))
 		g2.setColor(new Color(102, 0, 204));
-	   
+
 	    if (isTodo() && todoIcon != null) {
 		todoIcon.paintIcon(comp, g2, bounds.x, bounds.y + 8);
 		g2.drawString(getText(), bounds.x + todoIcon.getIconWidth(), bounds.y + smfontHeight);
@@ -126,7 +125,7 @@ public class NoteBox implements Box {
      * @see net.sf.borg.ui.calendar.Box#getBounds()
      */
     public Rectangle getBounds() {
-        return bounds;
+	return bounds;
     }
 
     /* (non-Javadoc)
@@ -140,7 +139,7 @@ public class NoteBox implements Box {
      * @see net.sf.borg.ui.calendar.Box#setBounds(java.awt.Rectangle)
      */
     public void setBounds(Rectangle bounds) {
-        this.bounds = bounds;
+	this.bounds = bounds;
     }
 
     /* (non-Javadoc)
@@ -164,17 +163,17 @@ public class NoteBox implements Box {
     private boolean isTodo() {
 	return appt.getTodo();
     }
- 
+
     private JPopupMenu popmenu = null;
+
     public JPopupMenu getMenu() {
 	JMenuItem mnuitm;
-	if( popmenu == null )
-	{
+	if (popmenu == null) {
 	    popmenu = new JPopupMenu();
 	    popmenu.add(mnuitm = new JMenuItem(Resource.getPlainResourceString("Edit")));
 	    mnuitm.addActionListener(new ActionListener() {
-		public void actionPerformed(java.awt.event.ActionEvent evt) {	    
-		    edit();	   
+		public void actionPerformed(java.awt.event.ActionEvent evt) {
+		    edit();
 		}
 	    });
 	    popmenu.add(mnuitm = new JMenuItem(Resource.getPlainResourceString("Delete")));
@@ -185,5 +184,46 @@ public class NoteBox implements Box {
 	    });
 	}
 	return popmenu;
+    }
+
+    public void move(int realtime, Date d) throws Exception {
+	
+	Appointment ap = AppointmentModel.getReference().getAppt(appt.getKey());
+
+	int hour = realtime / 60;
+	int min = realtime % 60;
+
+	// Date oldTime = ap.getDate();
+	int oldkey = ap.getKey();
+
+	GregorianCalendar newCal = new GregorianCalendar();
+	newCal.setTime(d);
+	if( hour != 0 || min != 0){
+	    // we are moving to be timed - set duration
+	    ap.setDuration(new Integer(15));
+	    newCal.set(Calendar.HOUR_OF_DAY, hour);
+	    int roundMin = (min / 5) * 5;
+	    newCal.set(Calendar.MINUTE, roundMin);
+	}
+	else
+	{
+	    // keep time and duration the same 
+	    Calendar oldCal = new GregorianCalendar();
+	    oldCal.setTime(ap.getDate());
+	    newCal.set(Calendar.HOUR_OF_DAY, oldCal.get(Calendar.HOUR_OF_DAY));
+	    newCal.set(Calendar.MINUTE, oldCal.get(Calendar.MINUTE));
+	    newCal.set(Calendar.SECOND, 0);
+	}
+
+
+	int newkey = AppointmentModel.dkey(newCal);
+	Date newTime = newCal.getTime();
+	ap.setDate(newTime);
+	if (oldkey != newkey) { // date chg
+	    AppointmentModel.getReference().delAppt(ap.getKey());
+	    AppointmentModel.getReference().saveAppt(ap, true);
+	} else {
+	    AppointmentModel.getReference().saveAppt(ap, false);
+	}
     }
 }
