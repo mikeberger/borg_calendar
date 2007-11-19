@@ -77,7 +77,6 @@ import net.sf.borg.ui.popup.PopupView;
 import net.sf.borg.ui.util.Banner;
 import net.sf.borg.ui.util.ModalMessage;
 import net.sf.borg.ui.util.NwFontChooserS;
-import net.sf.borg.ui.util.OverwriteConfirm;
 
 /*
  * borg.java
@@ -128,13 +127,18 @@ public class Borg extends Controller implements OptionsView.RestartListener, Soc
     }
 
     static public void shutdown() {
-	
+
 	// backup data
 	String backupdir = Prefs.getPref(PrefName.BACKUPDIR);
 	if (backupdir != null && !backupdir.equals("")) {
 	    try {
 
-		JOptionPane.showMessageDialog(null, Resource.getResourceString("backup_notice") + backupdir);
+		// JOptionPane.showMessageDialog(null,
+		// Resource.getResourceString("backup_notice") + backupdir);
+
+		Banner ban = new Banner();
+		ban.setText(Resource.getResourceString("backup_notice") + backupdir);
+		ban.setVisible(true);
 
 		String fname = backupdir + "/borg.xml";
 
@@ -169,11 +173,20 @@ public class Borg extends Controller implements OptionsView.RestartListener, Soc
 	    } catch (Exception e) {
 		Errmsg.errmsg(e);
 	    }
-	}
-	
-	getReference().removeListeners();
 
-	System.exit(0);
+	    getReference().removeListeners();
+
+	    new Timer().schedule(new TimerTask() {
+		public void run() {
+		    System.exit(0);
+		}
+	    }, 3000);
+
+	} else {
+	    getReference().removeListeners();
+
+	    System.exit(0);
+	}
     }
 
     static public synchronized void syncDBs() throws Exception {
