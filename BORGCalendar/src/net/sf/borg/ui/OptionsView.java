@@ -99,6 +99,39 @@ public class OptionsView extends View {
 	StripedTable.setStripeColor(new Color(rgb));
     }
 
+    public void chooseBackupDir() {
+
+	String s = "";
+	while (true) {
+	    JFileChooser chooser = new JFileChooser();
+
+	    chooser.setCurrentDirectory(new File("."));
+	    chooser.setDialogTitle(Resource.getResourceString("Please_choose_directory_to_place_XML_files"));
+	    chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+	    chooser.setApproveButtonText(Resource.getResourceString("select_export_dir"));
+
+	    int returnVal = chooser.showOpenDialog(null);
+	    if (returnVal != JFileChooser.APPROVE_OPTION)
+		return;
+
+	    s = chooser.getSelectedFile().getAbsolutePath();
+	    File dir = new File(s);
+	    String err = null;
+	    if (!dir.exists()) {
+		err = Resource.getResourceString("Directory_[") + s + Resource.getResourceString("]_does_not_exist");
+	    } else if (!dir.isDirectory()) {
+		err = "[" + s + Resource.getResourceString("]_is_not_a_directory");
+	    }
+
+	    if (err == null)
+		break;
+
+	    Errmsg.notice(err);
+	}
+	
+	backupDir.setText(s);
+    }
+
     // prompt the user to enter a database directory
     public static String chooseDbDir(boolean update) {
 
@@ -107,8 +140,7 @@ public class OptionsView extends View {
 	    JFileChooser chooser = new JFileChooser();
 
 	    chooser.setCurrentDirectory(new File("."));
-	    chooser
-		    .setDialogTitle("Please choose directory for database files");
+	    chooser.setDialogTitle("Please choose directory for database files");
 	    chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
 	    int returnVal = chooser.showOpenDialog(null);
@@ -264,7 +296,7 @@ public class OptionsView extends View {
 
     private JCheckBox exputcbox = null;
 
-    //private JCheckBox extraDayBox;
+    // private JCheckBox extraDayBox;
 
     private javax.swing.JCheckBox holiday1;
 
@@ -378,7 +410,7 @@ public class OptionsView extends View {
 
     private ReminderTimePanel remTimePanel = new ReminderTimePanel();
 
-   private javax.swing.JCheckBox oldmonthbox;
+    private javax.swing.JCheckBox oldmonthbox;
 
     private javax.swing.JCheckBox sharedFileCheckBox;
 
@@ -419,6 +451,8 @@ public class OptionsView extends View {
 
     JTextField hsqldbdir = new JTextField();
 
+    JTextField backupDir = new JTextField();
+
     JCheckBox indEmailBox = new JCheckBox();
 
     JSpinner indEmailTime = null;
@@ -430,7 +464,7 @@ public class OptionsView extends View {
     JTextField usertext = new JTextField();
 
     JCheckBox useSysTray = new JCheckBox();
-    
+
     JCheckBox dock = new JCheckBox();
 
     // dbonly will only allow db changes
@@ -470,8 +504,7 @@ public class OptionsView extends View {
 	cal.add(Calendar.MINUTE, emmins);
 	emailtimebox.setValue(cal.getTime());
 
-	getIndEmailtimebox().setValue(
-		new Integer(Prefs.getIntPref(PrefName.INDIVEMAILMINS)));
+	getIndEmailtimebox().setValue(new Integer(Prefs.getIntPref(PrefName.INDIVEMAILMINS)));
 
 	//
 	// database
@@ -499,6 +532,7 @@ public class OptionsView extends View {
 	remoteURLText.setText(Prefs.getPref(PrefName.DBURL));
 	jdbcText.setText(Prefs.getPref(PrefName.JDBCURL));
 	hsqldbdir.setText(Prefs.getPref(PrefName.HSQLDBDIR));
+	backupDir.setText(Prefs.getPref(PrefName.BACKUPDIR));
 
 	if (dbonly) {
 	    // disable lots of non-db-related stuff
@@ -514,7 +548,7 @@ public class OptionsView extends View {
 	    jTabbedPane1.setSelectedIndex(2);
 	    dismissButton.setEnabled(false);
 	    applyButton.setEnabled(false);
-	    
+
 	    return;
 
 	}
@@ -544,7 +578,7 @@ public class OptionsView extends View {
 	setCheckBox(icaltodobox, PrefName.ICALTODOEV);
 	setCheckBox(truncbox, PrefName.TRUNCAPPT);
 	setCheckBox(iso8601Box, PrefName.ISOWKNUMBER);
-	//setCheckBox(extraDayBox, PrefName.SHOWEXTRADAYS);
+	// setCheckBox(extraDayBox, PrefName.SHOWEXTRADAYS);
 	setCheckBox(useSysTray, PrefName.USESYSTRAY);
 	setCheckBox(taskAbbrevBox, PrefName.TASK_SHOW_ABBREV);
 	setCheckBox(calShowTaskBox, PrefName.CAL_SHOW_TASKS);
@@ -760,13 +794,15 @@ public class OptionsView extends View {
 	setBooleanPref(icaltodobox, PrefName.ICALTODOEV);
 	setBooleanPref(truncbox, PrefName.TRUNCAPPT);
 	setBooleanPref(iso8601Box, PrefName.ISOWKNUMBER);
-	//setBooleanPref(extraDayBox, PrefName.SHOWEXTRADAYS);
+	// setBooleanPref(extraDayBox, PrefName.SHOWEXTRADAYS);
 	setBooleanPref(useSysTray, PrefName.USESYSTRAY);
 	setBooleanPref(taskAbbrevBox, PrefName.TASK_SHOW_ABBREV);
 	setBooleanPref(calShowTaskBox, PrefName.CAL_SHOW_TASKS);
 	setBooleanPref(calShowSubtaskBox, PrefName.CAL_SHOW_SUBTASKS);
 	setBooleanPref(ganttShowSubtaskBox, PrefName.GANTT_SHOW_SUBTASKS);
 	setBooleanPref(dock, PrefName.DOCKPANELS);
+	
+	Prefs.putPref(PrefName.BACKUPDIR, backupDir.getText());
 
 	try {
 	    int socket = Integer.parseInt(socketPort.getText());
@@ -818,9 +854,7 @@ public class OptionsView extends View {
 	setBooleanPref(cb_ucs_ontodo, PrefName.UCS_ONTODO);
 	setBooleanPref(cb_ucs_marktodo, PrefName.UCS_MARKTODO);
 
-	
 	Prefs.putPref(PrefName.UCS_MARKER, tf_ucs_marker.getText());
-	
 
 	Integer ucsi = new Integer((btn_ucs_red.getColorProperty()).getRGB());
 	Prefs.putPref(PrefName.UCS_RED, ucsi.toString());
@@ -889,23 +923,23 @@ public class OptionsView extends View {
 	    Prefs.putPref(PrefName.LNF, newlnf);
 	    /*
 	    try {
-		UIManager.getLookAndFeelDefaults().put("ClassLoader",
-			getClass().getClassLoader());
-		UIManager.setLookAndFeel(newlnf);
-		// don't try to change the main window l&f - is
-		// doesn't work
-		// 100%
-		// SwingUtilities.updateComponentTreeUI(cg_);
-		Prefs.putPref(PrefName.LNF, newlnf);
-		// reset the option window's size since a change
-		// of LNF
-		// may cause the LNF combo box to be hidden
-		Prefs.putPref(PrefName.OPTVIEWSIZE, new ViewSize().toString());
+	    UIManager.getLookAndFeelDefaults().put("ClassLoader",
+	    	getClass().getClassLoader());
+	    UIManager.setLookAndFeel(newlnf);
+	    // don't try to change the main window l&f - is
+	    // doesn't work
+	    // 100%
+	    // SwingUtilities.updateComponentTreeUI(cg_);
+	    Prefs.putPref(PrefName.LNF, newlnf);
+	    // reset the option window's size since a change
+	    // of LNF
+	    // may cause the LNF combo box to be hidden
+	    Prefs.putPref(PrefName.OPTVIEWSIZE, new ViewSize().toString());
 	    } catch (Exception e) {
-		// Errmsg.notice( "Could not find look and feel:
-		// " + newlnf );
-		Errmsg.notice(e.toString());
-		return;
+	    // Errmsg.notice( "Could not find look and feel:
+	    // " + newlnf );
+	    Errmsg.notice(e.toString());
+	    return;
 	    }*/
 	}
 
@@ -927,10 +961,8 @@ public class OptionsView extends View {
 
     private void chgdbActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_chgdbActionPerformed
     {// GEN-HEADEREND:event_chgdbActionPerformed
-	int ret = JOptionPane.showConfirmDialog(null, Resource
-		.getResourceString("Really_change_the_database?"), Resource
-		.getResourceString("Confirm_DB_Change"),
-		JOptionPane.YES_NO_OPTION);
+	int ret = JOptionPane.showConfirmDialog(null, Resource.getResourceString("Really_change_the_database?"), Resource
+		.getResourceString("Confirm_DB_Change"), JOptionPane.YES_NO_OPTION);
 	if (ret == JOptionPane.YES_OPTION) {
 	    String dbdir = dbDirText.getText();
 	    Prefs.putPref(PrefName.DBDIR, dbdir);
@@ -953,8 +985,7 @@ public class OptionsView extends View {
 	    Prefs.putPref(PrefName.DBPORT, dbPortText.getText());
 	    Prefs.putPref(PrefName.DBHOST, dbHostText.getText());
 	    Prefs.putPref(PrefName.DBUSER, dbUserText.getText());
-	    Prefs.putPref(PrefName.DBPASS, new String(jPasswordField1
-		    .getPassword()));
+	    Prefs.putPref(PrefName.DBPASS, new String(jPasswordField1.getPassword()));
 	    Prefs.putPref(PrefName.DBURL, remoteURLText.getText());
 	    Prefs.putPref(PrefName.JDBCURL, jdbcText.getText());
 
@@ -1009,8 +1040,7 @@ public class OptionsView extends View {
 	this.dispose();
     }// GEN-LAST:event_exitForm
 
-    private void fontActionPerformed(java.awt.event.ActionEvent evt,
-	    PrefName fontname) {// GEN-FIRST:event_incfontActionPerformed
+    private void fontActionPerformed(java.awt.event.ActionEvent evt, PrefName fontname) {// GEN-FIRST:event_incfontActionPerformed
 
 	Font pf = Font.decode(Prefs.getPref(fontname));
 	Font f = NwFontChooserS.showDialog(null, null, pf);
@@ -1108,8 +1138,7 @@ public class OptionsView extends View {
 	gridBagConstraints9.gridy = 6;
 	gridBagConstraints9.fill = java.awt.GridBagConstraints.BOTH;
 	gridBagConstraints9.insets = new java.awt.Insets(4, 4, 4, 4);
-	wkstarthr.setModel(new javax.swing.DefaultComboBoxModel(new String[] {
-		"4", "5", "6", "7", "8", "9", "10", "11" }));
+	wkstarthr.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "4", "5", "6", "7", "8", "9", "10", "11" }));
 	appearancePanel.add(jLabel5, gridBagConstraints9);
 
 	GridBagConstraints gridBagConstraints10 = new java.awt.GridBagConstraints();
@@ -1118,9 +1147,8 @@ public class OptionsView extends View {
 	gridBagConstraints10.fill = java.awt.GridBagConstraints.VERTICAL;
 	gridBagConstraints10.anchor = java.awt.GridBagConstraints.WEST;
 	gridBagConstraints10.insets = new java.awt.Insets(4, 4, 4, 4);
-	wkendhr.setModel(new javax.swing.DefaultComboBoxModel(new String[] {
-		"12", "13", "14", "15", "16", "17", "18", "19", "20", "21",
-		"22", "23" }));
+	wkendhr.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "12", "13", "14", "15", "16", "17", "18", "19", "20",
+		"21", "22", "23" }));
 	appearancePanel.add(wkstarthr, gridBagConstraints10);
 
 	GridBagConstraints gridBagConstraints11 = new java.awt.GridBagConstraints();
@@ -1182,7 +1210,7 @@ public class OptionsView extends View {
 	gridBagConstraints97.insets = new java.awt.Insets(4, 4, 4, 4);
 	ResourceHelper.setText(iso8601Box, "ISO_week_number");
 	appearancePanel.add(iso8601Box, gridBagConstraints97);
-	
+
 	GridBagConstraints gridBagConstraintsdk = new java.awt.GridBagConstraints();
 	gridBagConstraintsdk.gridx = 0;
 	gridBagConstraintsdk.gridy = 8;
@@ -1240,8 +1268,7 @@ public class OptionsView extends View {
 	if (applyDismissPanel == null) {
 	    applyDismissPanel = new JPanel();
 
-	    applyButton.setIcon(new javax.swing.ImageIcon(getClass()
-		    .getResource("/resource/Save16.gif")));
+	    applyButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Save16.gif")));
 	    ResourceHelper.setText(applyButton, "apply");
 	    applyButton.addActionListener(new java.awt.event.ActionListener() {
 		public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1250,16 +1277,13 @@ public class OptionsView extends View {
 	    });
 	    applyDismissPanel.add(applyButton, null);
 
-	    dismissButton.setIcon(new javax.swing.ImageIcon(getClass()
-		    .getResource("/resource/Stop16.gif")));
+	    dismissButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Stop16.gif")));
 	    ResourceHelper.setText(dismissButton, "Dismiss");
-	    dismissButton
-		    .addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(
-				java.awt.event.ActionEvent evt) {
-			    jButton2ActionPerformed(evt);
-			}
-		    });
+	    dismissButton.addActionListener(new java.awt.event.ActionListener() {
+		public void actionPerformed(java.awt.event.ActionEvent evt) {
+		    jButton2ActionPerformed(evt);
+		}
+	    });
 	    setDismissButton(dismissButton);
 	    applyDismissPanel.add(dismissButton, null);
 	}
@@ -1306,15 +1330,14 @@ public class OptionsView extends View {
 	gridBagConstraints5.anchor = GridBagConstraints.CENTER;
 	dbPanel.add(chgdb, gridBagConstraints5); // Generated
 	chgdb.setForeground(new java.awt.Color(255, 0, 51));
-	chgdb.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-		"/resource/Refresh16.gif")));
+	chgdb.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Refresh16.gif")));
 	ResourceHelper.setText(chgdb, "Apply_DB_Change");
 	chgdb.addActionListener(new java.awt.event.ActionListener() {
 	    public void actionPerformed(java.awt.event.ActionEvent evt) {
 		chgdbActionPerformed(evt);
 	    }
 	});
-	
+
 	JButton help = new JButton();
 	GridBagConstraints gridBagConstraintsh = new java.awt.GridBagConstraints();
 	gridBagConstraintsh.insets = new java.awt.Insets(4, 4, 4, 4);
@@ -1322,13 +1345,12 @@ public class OptionsView extends View {
 	gridBagConstraintsh.gridy = 6;
 	gridBagConstraintsh.weightx = 1.0;
 	gridBagConstraintsh.anchor = GridBagConstraints.CENTER;
-	//gridBagConstraintsh.fill = java.awt.GridBagConstraints.HORIZONTAL;
+	// gridBagConstraintsh.fill = java.awt.GridBagConstraints.HORIZONTAL;
 	dbPanel.add(help, gridBagConstraintsh); // Generated
 	help.setForeground(new java.awt.Color(255, 0, 51));
-	help.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-		"/resource/Help16.gif")));
+	help.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Help16.gif")));
 	ResourceHelper.setText(help, "Help");
-	
+
 	help.addActionListener(new java.awt.event.ActionListener() {
 	    public void actionPerformed(java.awt.event.ActionEvent evt) {
 		try {
@@ -1531,8 +1553,7 @@ public class OptionsView extends View {
     private JSpinner getEmailtimebox() {
 	if (emailtimebox == null) {
 	    emailtimebox = new JSpinner(new SpinnerDateModel());
-	    JSpinner.DateEditor de = new JSpinner.DateEditor(emailtimebox,
-		    "HH:mm");
+	    JSpinner.DateEditor de = new JSpinner.DateEditor(emailtimebox, "HH:mm");
 	    emailtimebox.setEditor(de);
 	    // emailtimebox.setValue(new Date());
 
@@ -1547,36 +1568,34 @@ public class OptionsView extends View {
 	}
 	return exputcbox;
     }
-/*
-    private JCheckBox getExtraDayBox() {
-	if (extraDayBox == null) {
-	    extraDayBox = new JCheckBox();
-	    ResourceHelper.setText(extraDayBox, "show_extra");
-	}
-	return extraDayBox;
-    }
-    */
+
+    /*
+        private JCheckBox getExtraDayBox() {
+    	if (extraDayBox == null) {
+    	    extraDayBox = new JCheckBox();
+    	    ResourceHelper.setText(extraDayBox, "show_extra");
+    	}
+    	return extraDayBox;
+        }
+        */
 
     private JPanel getFontPanel() {
 	JPanel fontPanel = new JPanel();
 	fontPanel.setLayout(new FlowLayout());
 
 	ResourceHelper.setText(previewFontButton, "set_pre_font");
-	previewFontButton.setBorder(new javax.swing.border.SoftBevelBorder(
-		javax.swing.border.BevelBorder.RAISED));
+	previewFontButton.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 	// previewFontButton.setFont(Font.decode(Prefs.getPref(PrefName.PREVIEWFONT)));
-	previewFontButton
-		.addActionListener(new java.awt.event.ActionListener() {
-		    public void actionPerformed(java.awt.event.ActionEvent evt) {
-			fontActionPerformed(evt, PrefName.PREVIEWFONT);
-			// previewFontButton.setFont(Font.decode(Prefs.getPref(PrefName.PREVIEWFONT)));
-		    }
-		});
+	previewFontButton.addActionListener(new java.awt.event.ActionListener() {
+	    public void actionPerformed(java.awt.event.ActionEvent evt) {
+		fontActionPerformed(evt, PrefName.PREVIEWFONT);
+		// previewFontButton.setFont(Font.decode(Prefs.getPref(PrefName.PREVIEWFONT)));
+	    }
+	});
 	fontPanel.add(previewFontButton);
 
 	ResourceHelper.setText(apptFontButton, "set_appt_font");
-	apptFontButton.setBorder(new javax.swing.border.SoftBevelBorder(
-		javax.swing.border.BevelBorder.RAISED));
+	apptFontButton.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 	// apptFontButton.setFont(Font.decode(Prefs.getPref(PrefName.APPTFONT)));
 	apptFontButton.addActionListener(new java.awt.event.ActionListener() {
 	    public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1587,8 +1606,7 @@ public class OptionsView extends View {
 	fontPanel.add(apptFontButton);
 
 	ResourceHelper.setText(defFontButton, "set_def_font");
-	defFontButton.setBorder(new javax.swing.border.SoftBevelBorder(
-		javax.swing.border.BevelBorder.RAISED));
+	defFontButton.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 	// if( !Prefs.getPref(PrefName.DEFFONT).equals(""))
 	// defFontButton.setFont(Font.decode(Prefs.getPref(PrefName.DEFFONT)));
 	defFontButton.addActionListener(new java.awt.event.ActionListener() {
@@ -1600,8 +1618,7 @@ public class OptionsView extends View {
 	fontPanel.add(defFontButton);
 
 	ResourceHelper.setText(dayFontButton, "dview_font");
-	dayFontButton.setBorder(new javax.swing.border.SoftBevelBorder(
-		javax.swing.border.BevelBorder.RAISED));
+	dayFontButton.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 	// dayFontButton.setFont(Font.decode(Prefs.getPref(PrefName.DAYVIEWFONT)));
 	dayFontButton.addActionListener(new java.awt.event.ActionListener() {
 	    public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1612,8 +1629,7 @@ public class OptionsView extends View {
 	fontPanel.add(dayFontButton);
 
 	ResourceHelper.setText(weekFontButton, "wview_font");
-	weekFontButton.setBorder(new javax.swing.border.SoftBevelBorder(
-		javax.swing.border.BevelBorder.RAISED));
+	weekFontButton.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 	// weekFontButton.setFont(Font.decode(Prefs.getPref(PrefName.WEEKVIEWFONT)));
 	weekFontButton.addActionListener(new java.awt.event.ActionListener() {
 	    public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1624,8 +1640,7 @@ public class OptionsView extends View {
 	fontPanel.add(weekFontButton);
 
 	ResourceHelper.setText(monthFontButton, "mview_font");
-	monthFontButton.setBorder(new javax.swing.border.SoftBevelBorder(
-		javax.swing.border.BevelBorder.RAISED));
+	monthFontButton.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 	// monthFontButton.setFont(Font.decode(Prefs.getPref(PrefName.MONTHVIEWFONT)));
 	monthFontButton.addActionListener(new java.awt.event.ActionListener() {
 	    public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1657,8 +1672,7 @@ public class OptionsView extends View {
 	hsqldbPanel.setLayout(new java.awt.GridBagLayout());
 
 	JLabel hs1 = new JLabel();
-	hsqldbPanel.setBorder(new javax.swing.border.TitledBorder(Resource
-		.getResourceString("hsqldbinfo")));
+	hsqldbPanel.setBorder(new javax.swing.border.TitledBorder(Resource.getResourceString("hsqldbinfo")));
 	ResourceHelper.setText(hs1, "DataBase_Directory");
 	hs1.setLabelFor(dbDirText);
 	GridBagConstraints gridBagConstraints30 = new java.awt.GridBagConstraints();
@@ -1741,10 +1755,8 @@ public class OptionsView extends View {
 	    jLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT); // Generated
 	    jdbcPanel = new JPanel();
 	    jdbcPanel.setLayout(new GridBagLayout()); // Generated
-	    jdbcPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(
-		    null, Resource.getResourceString("jdbc"),
-		    javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
-		    javax.swing.border.TitledBorder.DEFAULT_POSITION, null,
+	    jdbcPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, Resource.getResourceString("jdbc"),
+		    javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null,
 		    null)); // Generated
 	    jdbcPanel.add(jLabel, gridBagConstraints); // Generated
 	    jdbcPanel.add(getJdbcText(), gridBagConstraints54); // Generated
@@ -1764,50 +1776,32 @@ public class OptionsView extends View {
 	    jPanelUCS = new JPanel();
 	    jPanelUCS.setLayout(new GridLayout(10, 2));
 
-
 	    cb_ucs_ontodo = new javax.swing.JCheckBox();
 	    ResourceHelper.setText(cb_ucs_ontodo, "ucolortext1");
 	    cb_ucs_marktodo = new javax.swing.JCheckBox();
 	    ResourceHelper.setText(cb_ucs_marktodo, "ucolortext2");
 	    tf_ucs_marker = new JTextField("! "); //$NON-NLS-1$
-	    btn_ucs_red = new JButtonKnowsBgColor(Resource
-		    .getResourceString("ucolortext4"), Color.WHITE, false); //$NON-NLS-1$
-	    btn_ucs_blue = new JButtonKnowsBgColor(Resource
-		    .getResourceString("ucolortext5"), Color.WHITE, false); //$NON-NLS-1$
-	    btn_ucs_green = new JButtonKnowsBgColor(Resource
-		    .getResourceString("ucolortext6"), Color.WHITE, false); //$NON-NLS-1$
-	    btn_ucs_black = new JButtonKnowsBgColor(Resource
-		    .getResourceString("ucolortext7"), Color.WHITE, false); //$NON-NLS-1$
-	    btn_ucs_white = new JButtonKnowsBgColor(Resource
-		    .getResourceString("ucolortext8"), Color.WHITE, false); //$NON-NLS-1$
-	    btn_ucs_tasks = new JButtonKnowsBgColor(Resource
-		    .getResourceString("ucolortext9"), Color.WHITE, false); //$NON-NLS-1$
-	    btn_ucs_holidays = new JButtonKnowsBgColor(Resource
-		    .getResourceString("ucolortext10"), Color.WHITE, //$NON-NLS-1$
+	    btn_ucs_red = new JButtonKnowsBgColor(Resource.getResourceString("ucolortext4"), Color.WHITE, false); //$NON-NLS-1$
+	    btn_ucs_blue = new JButtonKnowsBgColor(Resource.getResourceString("ucolortext5"), Color.WHITE, false); //$NON-NLS-1$
+	    btn_ucs_green = new JButtonKnowsBgColor(Resource.getResourceString("ucolortext6"), Color.WHITE, false); //$NON-NLS-1$
+	    btn_ucs_black = new JButtonKnowsBgColor(Resource.getResourceString("ucolortext7"), Color.WHITE, false); //$NON-NLS-1$
+	    btn_ucs_white = new JButtonKnowsBgColor(Resource.getResourceString("ucolortext8"), Color.WHITE, false); //$NON-NLS-1$
+	    btn_ucs_tasks = new JButtonKnowsBgColor(Resource.getResourceString("ucolortext9"), Color.WHITE, false); //$NON-NLS-1$
+	    btn_ucs_holidays = new JButtonKnowsBgColor(Resource.getResourceString("ucolortext10"), Color.WHITE, //$NON-NLS-1$
 		    false);
-	    btn_ucs_birthdays = new JButtonKnowsBgColor(Resource
-		    .getResourceString("ucolortext11"), Color.WHITE, //$NON-NLS-1$
+	    btn_ucs_birthdays = new JButtonKnowsBgColor(Resource.getResourceString("ucolortext11"), Color.WHITE, //$NON-NLS-1$
 		    false);
-	    btn_ucs_default = new JButtonKnowsBgColor(Resource
-		    .getResourceString("ucolortext12"), Color.WHITE, true); //$NON-NLS-1$
-	    btn_ucs_holiday = new JButtonKnowsBgColor(Resource
-		    .getResourceString("ucolortext13"), Color.WHITE, true); //$NON-NLS-1$
-	    btn_ucs_halfday = new JButtonKnowsBgColor(Resource
-		    .getResourceString("ucolortext14"), Color.WHITE, true); //$NON-NLS-1$
-	    btn_ucs_vacation = new JButtonKnowsBgColor(Resource
-		    .getResourceString("ucolortext15"), Color.WHITE, //$NON-NLS-1$
+	    btn_ucs_default = new JButtonKnowsBgColor(Resource.getResourceString("ucolortext12"), Color.WHITE, true); //$NON-NLS-1$
+	    btn_ucs_holiday = new JButtonKnowsBgColor(Resource.getResourceString("ucolortext13"), Color.WHITE, true); //$NON-NLS-1$
+	    btn_ucs_halfday = new JButtonKnowsBgColor(Resource.getResourceString("ucolortext14"), Color.WHITE, true); //$NON-NLS-1$
+	    btn_ucs_vacation = new JButtonKnowsBgColor(Resource.getResourceString("ucolortext15"), Color.WHITE, //$NON-NLS-1$
 		    true);
-	    btn_ucs_today = new JButtonKnowsBgColor(Resource
-		    .getResourceString("ucolortext16"), Color.WHITE, true); //$NON-NLS-1$
-	    btn_ucs_weekend = new JButtonKnowsBgColor(Resource
-		    .getResourceString("ucolortext17"), Color.WHITE, true); //$NON-NLS-1$
-	    btn_ucs_weekday = new JButtonKnowsBgColor(Resource
-		    .getResourceString("ucolortext18"), Color.WHITE, true); //$NON-NLS-1$
-	    btn_ucs_stripe = new JButtonKnowsBgColor(Resource
-		    .getResourceString("stripecolor"), Color.WHITE, true);
+	    btn_ucs_today = new JButtonKnowsBgColor(Resource.getResourceString("ucolortext16"), Color.WHITE, true); //$NON-NLS-1$
+	    btn_ucs_weekend = new JButtonKnowsBgColor(Resource.getResourceString("ucolortext17"), Color.WHITE, true); //$NON-NLS-1$
+	    btn_ucs_weekday = new JButtonKnowsBgColor(Resource.getResourceString("ucolortext18"), Color.WHITE, true); //$NON-NLS-1$
+	    btn_ucs_stripe = new JButtonKnowsBgColor(Resource.getResourceString("stripecolor"), Color.WHITE, true);
 
-	    btn_ucs_restore = new JButton(Resource
-		    .getResourceString("restore_defaults")); //$NON-NLS-1$
+	    btn_ucs_restore = new JButton(Resource.getResourceString("restore_defaults")); //$NON-NLS-1$
 
 	    btn_ucs_restore.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
@@ -1849,7 +1843,6 @@ public class OptionsView extends View {
 		}
 	    });
 
-	  
 	    jPanelUCS.add(btn_ucs_red);
 	    jPanelUCS.add(btn_ucs_default);
 	    jPanelUCS.add(btn_ucs_blue);
@@ -1883,12 +1876,11 @@ public class OptionsView extends View {
 	    localFileButton = new JRadioButton();
 	    localFileButton.setActionCommand("local");
 	    ResourceHelper.setText(localFileButton, "localFile");
-	    localFileButton
-		    .addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent e) {
-			    dbTypeAction(e);
-			}
-		    });
+	    localFileButton.addActionListener(new java.awt.event.ActionListener() {
+		public void actionPerformed(java.awt.event.ActionEvent e) {
+		    dbTypeAction(e);
+		}
+	    });
 	}
 	return localFileButton;
     }
@@ -1897,11 +1889,9 @@ public class OptionsView extends View {
 	localFilePanel = new JPanel();
 	localFilePanel.setLayout(new java.awt.GridBagLayout());
 
-	localFilePanel.setBorder(new javax.swing.border.TitledBorder(Resource
-		.getResourceString("localFileInfo")));
+	localFilePanel.setBorder(new javax.swing.border.TitledBorder(Resource.getResourceString("localFileInfo")));
 	JTextArea warning = new JTextArea();
-	warning.setText("**** "
-		+ Resource.getPlainResourceString("mdb_deprecated") + " ****");
+	warning.setText("**** " + Resource.getPlainResourceString("mdb_deprecated") + " ****");
 	GridBagConstraints gridBagConstraintsw = new java.awt.GridBagConstraints();
 	warning.setEditable(false);
 	warning.setWrapStyleWord(true);
@@ -1982,10 +1972,8 @@ public class OptionsView extends View {
 
 	versioncheck.setFont(new java.awt.Font("Dialog", 0, 10));
 	ResourceHelper.setText(versioncheck, "Check_for_updates_now");
-	versioncheck.setToolTipText(Resource
-		.getResourceString("Check_for_the_latest_BORG_version_now"));
-	versioncheck.setBorder(new javax.swing.border.SoftBevelBorder(
-		javax.swing.border.BevelBorder.RAISED));
+	versioncheck.setToolTipText(Resource.getResourceString("Check_for_the_latest_BORG_version_now"));
+	versioncheck.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 	versioncheck.addActionListener(new java.awt.event.ActionListener() {
 	    public void actionPerformed(java.awt.event.ActionEvent evt) {
 		versioncheckActionPerformed(evt);
@@ -2005,11 +1993,8 @@ public class OptionsView extends View {
 	gridBagConstraints47.fill = java.awt.GridBagConstraints.BOTH;
 	miscPanel.add(splashbox, gridBagConstraints47);
 
-	ResourceHelper.setText(backgbox,
-		"Start_in_background_(Windows_only,_TrayIcon_req)");
-	backgbox
-		.setToolTipText(Resource
-			.getResourceString("Do_not_open_todo_and_month_view_on_startup,_start_in_systray"));
+	ResourceHelper.setText(backgbox, "Start_in_background_(Windows_only,_TrayIcon_req)");
+	backgbox.setToolTipText(Resource.getResourceString("Do_not_open_todo_and_month_view_on_startup,_start_in_systray"));
 	GridBagConstraints gridBagConstraints48 = new java.awt.GridBagConstraints();
 	gridBagConstraints48.gridx = 0;
 	gridBagConstraints48.gridy = 1;
@@ -2069,30 +2054,56 @@ public class OptionsView extends View {
 	gridBagConstraints312.anchor = java.awt.GridBagConstraints.EAST;
 	miscPanel.add(socketPort, gridBagConstraints312);
 
-	//GridBagConstraints gridBagConstraints313 = new GridBagConstraints();
-	//gridBagConstraints313.gridx = 0;
-	//gridBagConstraints313.gridy = 10;
-	//gridBagConstraints313.fill = java.awt.GridBagConstraints.HORIZONTAL;
-	//miscPanel.add(getExtraDayBox(), gridBagConstraints313);
-
 	GridBagConstraints gridBagConstraintsUST = new GridBagConstraints();
 	gridBagConstraintsUST.gridx = 0;
-	gridBagConstraintsUST.gridy = 11;
+	gridBagConstraintsUST.gridy = 10;
 	gridBagConstraintsUST.fill = java.awt.GridBagConstraints.HORIZONTAL;
 	useSysTray.setText(Resource.getPlainResourceString("enable_systray"));
 	miscPanel.add(useSysTray, gridBagConstraintsUST);
 
+	
+	JPanel backp = new JPanel();
+	backp.setLayout(new GridBagLayout());
+	
+	gridBagConstraintsUST.gridx = 0;
+	gridBagConstraintsUST.gridy = 0;
+	gridBagConstraintsUST.fill = java.awt.GridBagConstraints.NONE;
+	backp.add(new JLabel(Resource.getPlainResourceString("backup_dir") + ": "), gridBagConstraintsUST);
+
+	gridBagConstraintsUST.gridx = 1;
+	gridBagConstraintsUST.weightx = 1.0;
+	gridBagConstraintsUST.fill = java.awt.GridBagConstraints.HORIZONTAL;
+	backp.add(backupDir, gridBagConstraintsUST);
+	
+	JButton bb = new JButton();
+	ResourceHelper.setText(bb, "Browse");
+	gridBagConstraintsUST.gridx = 2;
+	gridBagConstraintsUST.weightx = 0;
+	gridBagConstraintsUST.fill = java.awt.GridBagConstraints.NONE;
+	bb.addActionListener(new java.awt.event.ActionListener() {
+	    public void actionPerformed(java.awt.event.ActionEvent evt) {
+		backupDirActionPerformed(evt);
+	    }
+	});
+	backp.add(bb, gridBagConstraintsUST);
+
+	gridBagConstraintsUST.gridx = 0;
+	gridBagConstraintsUST.gridy = 11;
+	gridBagConstraintsUST.weightx = 1.0;
+	gridBagConstraintsUST.gridwidth = 2;
+	gridBagConstraintsUST.fill = java.awt.GridBagConstraints.HORIZONTAL;
+	miscPanel.add(backp,gridBagConstraintsUST);
 	return miscPanel;
     }
 
-    private JPanel taskOptionPanel = null;  //  @jve:decl-index=0:visual-constraint="12,2528"
+    private JPanel taskOptionPanel = null; // @jve:decl-index=0:visual-constraint="12,2528"
 
     private JCheckBox taskAbbrevBox = new JCheckBox();
 
     private JCheckBox calShowTaskBox = new JCheckBox();
 
     private JCheckBox calShowSubtaskBox = new JCheckBox();
-    
+
     private JCheckBox ganttShowSubtaskBox = new JCheckBox();
 
     private JPanel getTaskOptionPanel() {
@@ -2133,14 +2144,10 @@ public class OptionsView extends View {
 	    taskOptionPanel.add(calShowTaskBox, gridBagConstraints19);
 	    taskOptionPanel.add(calShowSubtaskBox, gridBagConstraints20);
 	    taskOptionPanel.add(ganttShowSubtaskBox, gridBagConstraints21);
-	    taskAbbrevBox.setText(Resource
-		    .getPlainResourceString("task_abbrev"));
-	    calShowTaskBox.setText(Resource
-		    .getPlainResourceString("calShowTask"));
-	    calShowSubtaskBox.setText(Resource
-		    .getPlainResourceString("calShowSubtask"));
-	    ganttShowSubtaskBox.setText(Resource
-		    .getPlainResourceString("ganttShowSubtask"));
+	    taskAbbrevBox.setText(Resource.getPlainResourceString("task_abbrev"));
+	    calShowTaskBox.setText(Resource.getPlainResourceString("calShowTask"));
+	    calShowSubtaskBox.setText(Resource.getPlainResourceString("calShowSubtask"));
+	    ganttShowSubtaskBox.setText(Resource.getPlainResourceString("ganttShowSubtask"));
 	}
 	return taskOptionPanel;
     }
@@ -2203,8 +2210,7 @@ public class OptionsView extends View {
 	mysqlPanel = new javax.swing.JPanel();
 	mysqlPanel.setLayout(new java.awt.GridBagLayout());
 
-	mysqlPanel.setBorder(new javax.swing.border.TitledBorder(Resource
-		.getResourceString("MySQLInfo")));
+	mysqlPanel.setBorder(new javax.swing.border.TitledBorder(Resource.getResourceString("MySQLInfo")));
 	ResourceHelper.setText(jLabel7, "DatabaseName");
 	jLabel7.setLabelFor(dbNameText);
 	GridBagConstraints gridBagConstraints1 = new java.awt.GridBagConstraints();
@@ -2461,15 +2467,9 @@ public class OptionsView extends View {
 	    jLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT); // Generated
 	    remoteServerPanel = new JPanel();
 	    remoteServerPanel.setLayout(new GridBagLayout()); // Generated
-	    remoteServerPanel
-		    .setBorder(javax.swing.BorderFactory
-			    .createTitledBorder(
-				    null,
-				    Resource
-					    .getResourceString("rem_server_info"),
-				    javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
-				    javax.swing.border.TitledBorder.DEFAULT_POSITION,
-				    null, null)); // Generated
+	    remoteServerPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, Resource
+		    .getResourceString("rem_server_info"), javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
+		    javax.swing.border.TitledBorder.DEFAULT_POSITION, null, null)); // Generated
 	    remoteServerPanel.add(jLabel, gridBagConstraints); // Generated
 	    remoteServerPanel.add(getRemoteURLText(), gridBagConstraints54); // Generated
 	}
@@ -2558,6 +2558,17 @@ public class OptionsView extends View {
 
     }
 
+    private void backupDirActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButton5ActionPerformed
+
+	String dbdir = OptionsView.chooseDbDir(false);
+	if (dbdir == null) {
+	    return;
+	}
+
+	backupDir.setText(dbdir);
+
+    }
+
     private void initComponents() {
 
 	calShowSubtaskBox.setName("calShowSubtaskBox");
@@ -2639,17 +2650,14 @@ public class OptionsView extends View {
 
 	ResourceHelper.addTab(jTabbedPane1, "appearance", getAppearancePanel());
 	ResourceHelper.addTab(jTabbedPane1, "fonts", getFontPanel());
-	ResourceHelper
-		.addTab(jTabbedPane1, "DatabaseInformation", getDBPanel());
+	ResourceHelper.addTab(jTabbedPane1, "DatabaseInformation", getDBPanel());
 	ResourceHelper.addTab(jTabbedPane1, "EmailParameters", getEmailPanel());
-	ResourceHelper.addTab(jTabbedPane1, "popup_reminders",
-		getReminderPanel());
+	ResourceHelper.addTab(jTabbedPane1, "popup_reminders", getReminderPanel());
 	ResourceHelper.addTab(jTabbedPane1, "printing", getPrintPanel());
 	ResourceHelper.addTab(jTabbedPane1, "Multi_User", getMultiUserPanel());
 	ResourceHelper.addTab(jTabbedPane1, "misc", getMiscPanel());
 	ResourceHelper.addTab(jTabbedPane1, "UserColorScheme", getJPanelUCS());
-	ResourceHelper
-		.addTab(jTabbedPane1, "taskOptions", getTaskOptionPanel());
+	ResourceHelper.addTab(jTabbedPane1, "taskOptions", getTaskOptionPanel());
 
 	this.setContentPane(getTopPanel());
 	this.setSize(629, 493);
@@ -2687,9 +2695,7 @@ public class OptionsView extends View {
 	    JFileChooser chooser = new JFileChooser();
 
 	    chooser.setCurrentDirectory(new File("."));
-	    chooser
-		    .setDialogTitle(Resource
-			    .getResourceString("Please_choose_the_logo_file_-_GIF/JPG/PNG_only"));
+	    chooser.setDialogTitle(Resource.getResourceString("Please_choose_the_logo_file_-_GIF/JPG/PNG_only"));
 	    chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
 	    int returnVal = chooser.showOpenDialog(null);
@@ -2701,11 +2707,9 @@ public class OptionsView extends View {
 	    File lf = new File(logo);
 	    String err = null;
 	    if (!lf.exists()) {
-		err = Resource.getResourceString("File_[") + logo
-			+ Resource.getResourceString("]_does_not_exist");
+		err = Resource.getResourceString("File_[") + logo + Resource.getResourceString("]_does_not_exist");
 	    } else if (!lf.canRead()) {
-		err = Resource.getResourceString("Database_Directory_[") + logo
-			+ Resource.getResourceString("]_is_not_writable");
+		err = Resource.getResourceString("Database_Directory_[") + logo + Resource.getResourceString("]_is_not_writable");
 	    }
 
 	    if (err == null) {
@@ -2725,8 +2729,7 @@ public class OptionsView extends View {
     {// GEN-HEADEREND:event_versioncheckActionPerformed
 	try {
 	    // get version and compare
-	    URL webverurl = new URL(
-		    "http://borg-calendar.sourceforge.net/latest_version");
+	    URL webverurl = new URL("http://borg-calendar.sourceforge.net/latest_version");
 	    InputStream is = webverurl.openStream();
 	    int i;
 	    String webver = "";
@@ -2738,15 +2741,10 @@ public class OptionsView extends View {
 		webver += (char) i;
 	    }
 
-	    String info = Resource.getResourceString("Your_BORG_version_=_")
-		    + Resource.getVersion()
-		    + Resource
-			    .getResourceString("Latest_version_at_sourceforge_=_")
-		    + webver;
-	    JOptionPane.showMessageDialog(null, info, Resource
-		    .getResourceString("BORG_Version_Check"),
-		    JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getClass()
-			    .getResource("/resource/borg.jpg")));
+	    String info = Resource.getResourceString("Your_BORG_version_=_") + Resource.getVersion()
+		    + Resource.getResourceString("Latest_version_at_sourceforge_=_") + webver;
+	    JOptionPane.showMessageDialog(null, info, Resource.getResourceString("BORG_Version_Check"),
+		    JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getClass().getResource("/resource/borg.jpg")));
 	} catch (Exception e) {
 	    Errmsg.errmsg(e);
 	}

@@ -27,6 +27,9 @@ import java.awt.Font;
 import java.awt.Frame;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.Calendar;
@@ -46,6 +49,7 @@ import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
 import net.sf.borg.common.Errmsg;
+import net.sf.borg.common.IOHelper;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
@@ -73,6 +77,7 @@ import net.sf.borg.ui.popup.PopupView;
 import net.sf.borg.ui.util.Banner;
 import net.sf.borg.ui.util.ModalMessage;
 import net.sf.borg.ui.util.NwFontChooserS;
+import net.sf.borg.ui.util.OverwriteConfirm;
 
 /*
  * borg.java
@@ -86,8 +91,7 @@ import net.sf.borg.ui.util.NwFontChooserS;
 // display data. Views register with their models to receive notifications of
 // data changes.
 // Views can call other views.
-public class Borg extends Controller implements OptionsView.RestartListener,
-	SocketHandler {
+public class Borg extends Controller implements OptionsView.RestartListener, SocketHandler {
 
     static private Banner ban_ = null; // start up banner
 
@@ -124,7 +128,51 @@ public class Borg extends Controller implements OptionsView.RestartListener,
     }
 
     static public void shutdown() {
+	
+	// backup data
+	String backupdir = Prefs.getPref(PrefName.BACKUPDIR);
+	if (backupdir != null && !backupdir.equals("")) {
+	    try {
+
+		JOptionPane.showMessageDialog(null, Resource.getResourceString("backup_notice") + backupdir);
+
+		String fname = backupdir + "/borg.xml";
+
+		OutputStream ostr = IOHelper.createOutputStream(fname);
+		Writer fw = new OutputStreamWriter(ostr, "UTF8");
+		AppointmentModel.getReference().export(fw);
+		fw.close();
+
+		fname = backupdir + "/mrdb.xml";
+
+		ostr = IOHelper.createOutputStream(fname);
+		fw = new OutputStreamWriter(ostr, "UTF8");
+		TaskModel.getReference().export(fw);
+		fw.close();
+
+		fname = backupdir + "/addr.xml";
+
+		ostr = IOHelper.createOutputStream(fname);
+		fw = new OutputStreamWriter(ostr, "UTF8");
+		AddressModel.getReference().export(fw);
+		fw.close();
+
+		if (MemoModel.getReference().hasMemos()) {
+		    fname = backupdir + "/memo.xml";
+
+		    ostr = IOHelper.createOutputStream(fname);
+		    fw = new OutputStreamWriter(ostr, "UTF8");
+		    MemoModel.getReference().export(fw);
+		    fw.close();
+
+		}
+	    } catch (Exception e) {
+		Errmsg.errmsg(e);
+	    }
+	}
+	
 	getReference().removeListeners();
+
 	System.exit(0);
     }
 
@@ -135,8 +183,7 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 	    Iterator mumit = users.iterator();
 	    while (mumit.hasNext()) {
 		String user = (String) mumit.next();
-		AppointmentModel otherModel = AppointmentModel
-			.getReference(user);
+		AppointmentModel otherModel = AppointmentModel.getReference(user);
 		if (otherModel != null)
 		    otherModel.sync();
 	    }
@@ -174,22 +221,21 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 
     private Borg() {
 	// If we're doing remote stuff, use HTTPRemoteProxy
-	RemoteProxyHome.getInstance().setProxyProvider(
-		new IRemoteProxyProvider() {
-		    // private //
-		    private IRemoteProxy proxy = null;
+	RemoteProxyHome.getInstance().setProxyProvider(new IRemoteProxyProvider() {
+	    // private //
+	    private IRemoteProxy proxy = null;
 
-		    public final IRemoteProxy createProxy(String url) {
-			// No synchronization needed - we're single-threaded.
-			if (proxy == null)
-			    proxy = new HTTPRemoteProxy(url);
-			return proxy;
-		    }
+	    public final IRemoteProxy createProxy(String url) {
+		// No synchronization needed - we're single-threaded.
+		if (proxy == null)
+		    proxy = new HTTPRemoteProxy(url);
+		return proxy;
+	    }
 
-		    public final Credentials getCredentials() {
-			return Borg.this.getCredentials();
-		    }
-		});
+	    public final Credentials getCredentials() {
+		return Borg.this.getCredentials();
+	    }
+	});
     }
 
     public boolean hasTrayIcon() {
@@ -288,12 +334,11 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 	// save the remote username in class Borg so we have a way to know
 	// who we are logged in as
 	MultiUserModel.getReference().setOurUserName(dlg.getUsername());
-	return new IRemoteProxyProvider.Credentials(dlg.getUsername(), dlg
-		.getPassword());
+	return new IRemoteProxyProvider.Credentials(dlg.getUsername(), dlg.getPassword());
     }
 
     // init will process the command line args, open and load the databases,
-        // and
+    // and
     // start up the
     // main month view
     private void init(String args[]) {
@@ -301,7 +346,7 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 	OptionsView.setRestartListener(this);
 
 	// override for testing a different db
-	String testdb =  null;
+	String testdb = null;
 
 	// override for tray icon name
 	String trayname = "BORG";
@@ -323,12 +368,11 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 	    } else if (args[i].equals("-db")) {
 		i++;
 		if (i >= args.length) {
-		    System.out.println(Resource
-			    .getResourceString("-db_argument_is_missing"));
+		    System.out.println(Resource.getResourceString("-db_argument_is_missing"));
 		    System.exit(1);
 		}
 		testdb = args[i];
-	    }  else if (args[i].equals("-username")) {
+	    } else if (args[i].equals("-username")) {
 		i++;
 		if (i >= args.length) {
 		    System.out.println("Error: missing username");
@@ -354,8 +398,7 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 	String lnf = Prefs.getPref(PrefName.LNF);
 	try {
 	    UIManager.setLookAndFeel(lnf);
-	    UIManager.getLookAndFeelDefaults().put("ClassLoader",
-		    getClass().getClassLoader());
+	    UIManager.getLookAndFeelDefaults().put("ClassLoader", getClass().getClassLoader());
 	} catch (Exception e) {
 	    // System.out.println(e.toString());
 	}
@@ -367,11 +410,11 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 	    Locale.setDefault(new Locale(language, country));
 	}
 	String version = Resource.getVersion();
-	if (version.indexOf("beta") != -1 )
+	if (version.indexOf("beta") != -1)
 	    Errmsg.notice(Resource.getResourceString("betawarning"));
 
 	// do not show the startup banner if autostart or aplist features are on
-	if ( splash) {
+	if (splash) {
 	    ban_ = new Banner();
 	    ban_.setText(Resource.getResourceString("Initializing"));
 	    ban_.setVisible(true);
@@ -389,10 +432,7 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 
 	    if (dbdir.equals("not-set")) {
 
-		
-		JOptionPane.showMessageDialog(null, Resource
-			.getResourceString("selectdb"), Resource
-			.getResourceString("Notice"),
+		JOptionPane.showMessageDialog(null, Resource.getResourceString("selectdb"), Resource.getResourceString("Notice"),
 			JOptionPane.INFORMATION_MESSAGE);
 
 		if (ban_ != null)
@@ -408,9 +448,8 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 	    }
 
 	    // skip banner stuff if autostart or aplist on
-	    if ( splash)
-		ban_.setText(Resource
-			.getResourceString("Loading_Appt_Database"));
+	    if (splash)
+		ban_.setText(Resource.getResourceString("Loading_Appt_Database"));
 
 	    AppointmentModel calmod = AppointmentModel.create();
 	    register(calmod);
@@ -424,34 +463,27 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 
 	    // init task model & load database
 	    if (splash)
-		ban_.setText(Resource
-			.getResourceString("Loading_Task_Database"));
+		ban_.setText(Resource.getResourceString("Loading_Task_Database"));
 	    TaskModel taskmod = TaskModel.create();
 	    register(taskmod);
-	    taskmod.open_db(dbdir, uid,shared);
+	    taskmod.open_db(dbdir, uid, shared);
 
 	    if (splash)
-		ban_.setText(Resource
-			.getResourceString("Opening_Address_Database"));
+		ban_.setText(Resource.getResourceString("Opening_Address_Database"));
 	    AddressModel addrmod = AddressModel.create();
 	    register(addrmod);
-	    addrmod.open_db(dbdir, uid,shared);
-	    
-	    if (splash)
-		ban_.setText(Resource
-			.getResourceString("Opening_Memo_Database"));
-	    MemoModel memomod = MemoModel.create();
-	    try{
-		
-		    memomod.open_db(dbdir, uid, shared);
-		    register(memomod);
-	    }
-	    catch( Warning w)
-	    {
-	    	//Errmsg.notice(w.getMessage());
-	    }
-	    
+	    addrmod.open_db(dbdir, uid, shared);
 
+	    if (splash)
+		ban_.setText(Resource.getResourceString("Opening_Memo_Database"));
+	    MemoModel memomod = MemoModel.create();
+	    try {
+
+		memomod.open_db(dbdir, uid, shared);
+		register(memomod);
+	    } catch (Warning w) {
+		// Errmsg.notice(w.getMessage());
+	    }
 
 	    if (splash)
 		ban_.setText(Resource.getResourceString("Opening_Main_Window"));
@@ -467,7 +499,6 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 		ban_.dispose();
 	    ban_ = null;
 
-
 	    // start up version check timer
 	    versionCheckTimer_ = new java.util.Timer();
 	    versionCheckTimer_.schedule(new TimerTask() {
@@ -480,16 +511,13 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 	    // calculate email time in minutes from now
 	    Calendar cal = new GregorianCalendar();
 	    int emailmins = Prefs.getIntPref(PrefName.EMAILTIME);
-	    int curmins = 60 * cal.get(Calendar.HOUR_OF_DAY)
-	    + cal.get(Calendar.MINUTE);
+	    int curmins = 60 * cal.get(Calendar.HOUR_OF_DAY) + cal.get(Calendar.MINUTE);
 	    int mailtime = emailmins - curmins;
 	    if (mailtime < 0) {
 		// we are past mailtime - send it now
-		try{
+		try {
 		    EmailReminder.sendDailyEmailReminder(null);
-		}
-		catch( Exception e)
-		{
+		} catch (Exception e) {
 		    final Exception fe = e;
 		    SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
@@ -505,11 +533,9 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 	    mailTimer_ = new java.util.Timer();
 	    mailTimer_.schedule(new TimerTask() {
 		public void run() {
-		    try{
+		    try {
 			EmailReminder.sendDailyEmailReminder(null);
-		    }
-		    catch( Exception e)
-		    {
+		    } catch (Exception e) {
 			final Exception fe = e;
 			SwingUtilities.invokeLater(new Runnable() {
 			    public void run() {
@@ -525,9 +551,7 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 	    // start autosync timer
 	    int syncmins = Prefs.getIntPref(PrefName.SYNCMINS);
 	    String dbtype = Prefs.getPref(PrefName.DBTYPE);
-	    if ((shared || dbtype.equals("remote") || dbtype
-		    .equals("mysql") || dbtype.equals("jdbc"))
-		    && syncmins != 0) {
+	    if ((shared || dbtype.equals("remote") || dbtype.equals("mysql") || dbtype.equals("jdbc")) && syncmins != 0) {
 		syncTimer_ = new java.util.Timer();
 		syncTimer_.schedule(new TimerTask() {
 		    public void run() {
@@ -549,20 +573,19 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 		socketServer_ = new SocketServer(port, this);
 	    }
 
-
 	} catch (Exception e) {
 	    // if something goes wrong, it might be that the database
-                // directory
+	    // directory
 	    // is bad. Maybe
 	    // it does not exist anymore or something, so give the user a
-                // chance
+	    // chance
 	    // to change it
 	    // if it will fix the problem
 
 	    Errmsg.errmsg(e);
 
 	    // get rid of NESTED exceptions for SQL exceptions - they make
-                // the
+	    // the
 	    // error window too large
 	    String es = e.toString();
 	    int i1 = es.indexOf("** BEGIN NESTED");
@@ -570,18 +593,14 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 
 	    if (i1 != -1 && i2 != -1) {
 		int i3 = es.indexOf('\n', i1);
-		String newstring = es.substring(0, i3) + "\n-- removed --\n"
-		+ es.substring(i2);
+		String newstring = es.substring(0, i3) + "\n-- removed --\n" + es.substring(i2);
 		es = newstring;
 	    }
 	    es += Resource.getResourceString("db_set_to") + dbdir;
 	    es += Resource.getResourceString("bad_db_2");
 
 	    // prompt for ok
-	    int ret = JOptionPane
-	    .showConfirmDialog(null, es, Resource
-		    .getResourceString("BORG_Error"),
-		    JOptionPane.YES_NO_OPTION);
+	    int ret = JOptionPane.showConfirmDialog(null, es, Resource.getResourceString("BORG_Error"), JOptionPane.YES_NO_OPTION);
 	    if (ret == JOptionPane.YES_OPTION) {
 		if (ban_ != null)
 		    ban_.dispose();
@@ -595,14 +614,13 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 
     }
 
-
     // show the todo list view
     private void startTodoView() {
 
 	try {
 	    // bring up todo window
 	    TodoView tg = TodoView.getReference();
-	    MultiView.getMainView().addView(tg);    
+	    MultiView.getMainView().addView(tg);
 	} catch (Exception e) {
 	    Errmsg.errmsg(e);
 	}
@@ -666,8 +684,7 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 		return;
 
 	    // get version and compare
-	    URL webverurl = new URL(
-		    "http://borg-calendar.sourceforge.net/latest_version");
+	    URL webverurl = new URL("http://borg-calendar.sourceforge.net/latest_version");
 	    InputStream is = webverurl.openStream();
 	    int i;
 	    String webver = "";
@@ -687,11 +704,8 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 		if (verToInt(webver) < verToInt(Resource.getVersion())) {
 		    return;
 		}
-		String info = "A new version of BORG is available\nYour version = "
-			+ Resource.getVersion()
-			+ "\nNew version = "
-			+ webver
-			+ "\nCheck the BORG website at http://borg-calendar.sourceforge.net for details"
+		String info = "A new version of BORG is available\nYour version = " + Resource.getVersion() + "\nNew version = "
+			+ webver + "\nCheck the BORG website at http://borg-calendar.sourceforge.net for details"
 			+ "\nuse the Edit Preferences menu to shut off this automatic check";
 
 		// Cannot use JOptionPane here since the dialog will pop up

@@ -111,7 +111,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 		db_.close();
 	} catch (Exception e) {
 	    Errmsg.errmsg(e);
-	    System.exit(0);
+	    return;
 	}
 	db_ = null;
     }
@@ -327,7 +327,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 		// ignore
 	    } catch (Exception e) {
 		Errmsg.errmsg(e);
-		System.exit(1);
+		return;
 	    }
 	} else {
 	    taskTypes_.fromString(sm);

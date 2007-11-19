@@ -124,10 +124,7 @@ abstract public class JdbcDB implements /*BeanDB,*/ Transactional {
 			    execSQL(sb.toString());
 			} catch (Exception e2) {
 			    throw e2;
-			    // Errmsg.errmsg(e2);
-			    // Errmsg.notice("Cannot create
-                                // database...exiting");
-			    // System.exit(1);
+			    
 			}
 		    } else if (se.getMessage().indexOf("locked") != -1) {
 			throw se;

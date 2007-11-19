@@ -58,7 +58,7 @@ public class MemoModel extends Model {
 		db_.close();
 	} catch (Exception e) {
 	    Errmsg.errmsg(e);
-	    System.exit(0);
+	    return;
 	}
 	db_ = null;
     }

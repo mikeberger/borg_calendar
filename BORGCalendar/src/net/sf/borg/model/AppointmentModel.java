@@ -96,7 +96,7 @@ public class AppointmentModel extends Model implements Model.Listener {
 		db_.close();
 	} catch (Exception e) {
 	    Errmsg.errmsg(e);
-	    System.exit(0);
+	    return;
 	}
 	db_ = null;
     }
