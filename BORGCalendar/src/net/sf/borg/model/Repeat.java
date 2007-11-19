@@ -267,7 +267,13 @@ public class Repeat
 		String f = getFreq(frequency_);
 		return f!=null && !f.equals(ONCE);
 	}
-	
+
+	public static boolean isRepeating(Appointment ap)
+	{
+	    String f = getFreq(ap.getFrequency());
+	    return f!=null && !f.equals(ONCE);
+	}
+
 	// our current date
 	final Calendar current()
 	{

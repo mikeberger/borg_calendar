@@ -19,10 +19,12 @@ import javax.swing.Icon;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
+import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.AppointmentModel;
+import net.sf.borg.model.Repeat;
 import net.sf.borg.model.beans.Appointment;
 import net.sf.borg.ui.MultiView;
 
@@ -204,8 +206,7 @@ public class NoteBox implements Draggable {
 	int hour = realtime / 60;
 	int min = realtime % 60;
 
-	// Date oldTime = ap.getDate();
-	int oldkey = ap.getKey();
+	int oldkey = (ap.getKey() / 100) * 100;
 
 	GregorianCalendar newCal = new GregorianCalendar();
 	newCal.setTime(d);
@@ -230,11 +231,20 @@ public class NoteBox implements Draggable {
 	int newkey = AppointmentModel.dkey(newCal);
 	Date newTime = newCal.getTime();
 	ap.setDate(newTime);
+	
+	// only do something if date changed
 	if (oldkey != newkey) { // date chg
+	    if (Repeat.isRepeating(ap)) { // cannot date chg unless it is on the first in a series
+		Calendar cal = new GregorianCalendar();
+		cal.setTime(date);
+		int k2 = AppointmentModel.dkey(cal);
+		if (oldkey != k2) {
+		    Errmsg.notice(Resource.getPlainResourceString("rpt_drag_err"));
+		    return;
+		}
+	    }
 	    AppointmentModel.getReference().delAppt(ap.getKey());
 	    AppointmentModel.getReference().saveAppt(ap, true);
-	} else {
-	    AppointmentModel.getReference().saveAppt(ap, false);
 	}
     }
 }

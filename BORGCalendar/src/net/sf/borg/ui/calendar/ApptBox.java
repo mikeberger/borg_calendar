@@ -30,16 +30,18 @@ import javax.swing.Icon;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
+import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.AppointmentModel;
+import net.sf.borg.model.Repeat;
 import net.sf.borg.model.beans.Appointment;
 import net.sf.borg.ui.MultiView;
 
 // ApptDayBox holds the logical information needs to determine
 // how an appointment box should be drawn in a day grid
-public class ApptBox implements Draggable{
+public class ApptBox implements Draggable {
 
     // compare boxes by number of overlaps
     private static class boxcompare implements Comparator {
@@ -55,15 +57,13 @@ public class ApptBox implements Draggable{
 	}
 
     }
-    
+
     final static private BasicStroke highlight = new BasicStroke(2.0f);
 
     final static private float hlthickness = 2.0f;
 
     final static private int radius = 5;
 
-    
-    
     // create an ApptDatBoxLayout and layout the appts
     static public void layoutBoxes(Collection boxlist, int starthr, int endhr) {
 	TreeSet boxtree = new TreeSet(new boxcompare());
@@ -100,7 +100,7 @@ public class ApptBox implements Draggable{
 	    // to bottom
 	    // do not get detected as overlapping when rounding errors creep
 	    // in
-	    box.setBottomAdjustment(((apendmin - startmin) / (endmin - startmin)) - 1.0 / 10000); 
+	    box.setBottomAdjustment(((apendmin - startmin) / (endmin - startmin)) - 1.0 / 10000);
 
 	}
 
@@ -111,7 +111,7 @@ public class ApptBox implements Draggable{
 	    while (it1.hasNext()) {
 
 		ApptBox curBox = (ApptBox) it1.next();
-		
+
 		Calendar cal = new GregorianCalendar();
 		cal.setTime(curBox.appt.getDate());
 		int amin = cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(Calendar.MINUTE);
@@ -207,12 +207,12 @@ public class ApptBox implements Draggable{
 	    curBox.setRightAdjustment(curBox.getLeftAdjustment() + (1 / (double) curBox.getMaxAcrossAtOneTime()));
 	    curBox.setPlaced(true);
 	}
-	
+
 	it = boxlist.iterator();
 	while (it.hasNext()) {
 	    ApptBox b = (ApptBox) it.next();
 	    Rectangle r = new Rectangle();
-	    
+
 	    r.x = (int) (b.bounds.x + b.bounds.width * b.getLeftAdjustment());
 	    r.y = (int) (b.bounds.y + b.bounds.height * b.getTopAdjustment());
 	    r.height = (int) ((b.getBottomAdjustment() - b.getTopAdjustment()) * b.bounds.height);
@@ -221,9 +221,6 @@ public class ApptBox implements Draggable{
 	}
 
     }
-
-
-    
 
     // the right side of the box
 
@@ -260,12 +257,12 @@ public class ApptBox implements Draggable{
 
     // should be drawn
     private double right; // fraction of the available grid width at which
-    
+
     private Icon todoIcon = null;
 
     private double top; // fraction of the available grid height at which
 
-    public ApptBox(Date d,Appointment ap, Rectangle bounds, Rectangle clip) {
+    public ApptBox(Date d, Appointment ap, Rectangle bounds, Rectangle clip) {
 
 	appt = ap;
 	date = d;
@@ -283,7 +280,7 @@ public class ApptBox implements Draggable{
 	AppointmentModel.getReference().delAppt(appt.getKey());
     }
 
-    public void draw(Graphics2D g2,Component comp) {
+    public void draw(Graphics2D g2, Component comp) {
 	Stroke stroke = g2.getStroke();
 	Shape s = g2.getClip();
 	if (clip != null)
@@ -293,7 +290,6 @@ public class ApptBox implements Draggable{
 	Map stmap = new HashMap();
 	stmap.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
 	stmap.put(TextAttribute.FONT, sm_font);
-	
 
 	// fill the box with color
 	g2.setColor(getBoxColor(boxnum));
@@ -318,24 +314,24 @@ public class ApptBox implements Draggable{
 
 	// change color for a single appointment based on
 	// its color - only if color print option set
-	  g2.setColor(Color.black);
-	    
-	    if (getTextColor().equals("red"))
-		g2.setColor(new Color(Integer.parseInt(Prefs.getPref(PrefName.UCS_RED))));
-	    else if (getTextColor().equals("green"))
-		g2.setColor(new Color(Integer.parseInt(Prefs.getPref(PrefName.UCS_GREEN))));
-	    else if (getTextColor().equals("blue"))
-		g2.setColor(new Color(Integer.parseInt(Prefs.getPref(PrefName.UCS_BLUE))));
-	    else if (getTextColor().equals("black"))
-		g2.setColor(new Color(Integer.parseInt(Prefs.getPref(PrefName.UCS_BLACK))));
-	    else if (getTextColor().equals("white"))
-		g2.setColor(new Color(Integer.parseInt(Prefs.getPref(PrefName.UCS_WHITE))));
-	    else if (getTextColor().equals("navy"))
-		g2.setColor(new Color(Integer.parseInt(Prefs.getPref(PrefName.UCS_NAVY))));
-	    else if (getTextColor().equals("purple"))
-		g2.setColor(new Color(Integer.parseInt(Prefs.getPref(PrefName.UCS_PURPLE))));
-	    else if (getTextColor().equals("brick"))
-		g2.setColor(new Color(Integer.parseInt(Prefs.getPref(PrefName.UCS_BRICK))));
+	g2.setColor(Color.black);
+
+	if (getTextColor().equals("red"))
+	    g2.setColor(new Color(Integer.parseInt(Prefs.getPref(PrefName.UCS_RED))));
+	else if (getTextColor().equals("green"))
+	    g2.setColor(new Color(Integer.parseInt(Prefs.getPref(PrefName.UCS_GREEN))));
+	else if (getTextColor().equals("blue"))
+	    g2.setColor(new Color(Integer.parseInt(Prefs.getPref(PrefName.UCS_BLUE))));
+	else if (getTextColor().equals("black"))
+	    g2.setColor(new Color(Integer.parseInt(Prefs.getPref(PrefName.UCS_BLACK))));
+	else if (getTextColor().equals("white"))
+	    g2.setColor(new Color(Integer.parseInt(Prefs.getPref(PrefName.UCS_WHITE))));
+	else if (getTextColor().equals("navy"))
+	    g2.setColor(new Color(Integer.parseInt(Prefs.getPref(PrefName.UCS_NAVY))));
+	else if (getTextColor().equals("purple"))
+	    g2.setColor(new Color(Integer.parseInt(Prefs.getPref(PrefName.UCS_PURPLE))));
+	else if (getTextColor().equals("brick"))
+	    g2.setColor(new Color(Integer.parseInt(Prefs.getPref(PrefName.UCS_BRICK))));
 
 	if (isTodo() && todoIcon != null) {
 	    todoIcon.paintIcon(comp, g2, bounds.x + radius, bounds.y + radius + 8);
@@ -358,38 +354,31 @@ public class ApptBox implements Draggable{
     }
 
     public Rectangle getBounds() {
-        return bounds;
+	return bounds;
     }
 
     public Date getDate() {
-        return date;
+	return date;
     }
-    
- 
+
     public String getText() {
 	return appt.getText();
     }
 
     public void move(int realtime, Date d) throws Exception {
-	
+
 	Appointment ap = AppointmentModel.getReference().getAppt(appt.getKey());
-	
+	int oldkey = (ap.getKey() / 100) * 100;
+
 	int hour = realtime / 60;
 	int min = realtime % 60;
 
-
-	if( hour == 0 && min == 0 )
-	{
+	if (hour == 0 && min == 0) {
 	    // we are moving to be untimed - clear duration
 	    ap.setDuration(null);
 	}
 
-
-	// Date oldTime = ap.getDate();
-	int oldkey = ap.getKey();
-
 	GregorianCalendar newCal = new GregorianCalendar();
-	// System.out.println(d);
 	newCal.setTime(d);
 	newCal.set(Calendar.HOUR_OF_DAY, hour);
 	int roundMin = (min / 5) * 5;
@@ -398,6 +387,15 @@ public class ApptBox implements Draggable{
 	Date newTime = newCal.getTime();
 	ap.setDate(newTime);
 	if (oldkey != newkey) { // date chg
+	    if (Repeat.isRepeating(ap)) { // cannot date chg unless it is on the first in a series
+		Calendar cal = new GregorianCalendar();
+		cal.setTime(date);
+		int k2 = AppointmentModel.dkey(cal);
+		if (oldkey != k2) {
+		    Errmsg.notice(Resource.getPlainResourceString("rpt_drag_err"));
+		    return;
+		}
+	    }
 	    AppointmentModel.getReference().delAppt(ap.getKey());
 	    AppointmentModel.getReference().saveAppt(ap, true);
 	} else {
@@ -407,7 +405,7 @@ public class ApptBox implements Draggable{
 
     public void resize(boolean isTop, int realtime) throws Exception {
 	// calculate new start hour or duration and update appt
-	
+
 	int hour = realtime / 60;
 	int min = realtime % 60;
 
@@ -454,7 +452,7 @@ public class ApptBox implements Draggable{
     }
 
     public void setBoxnum(int boxnum) {
-        this.boxnum = boxnum;
+	this.boxnum = boxnum;
     }
 
     public void setSelected(boolean isSelected) {
@@ -552,7 +550,7 @@ public class ApptBox implements Draggable{
     }
 
     public void setBounds(Rectangle bounds) {
-        this.bounds = bounds;
+	this.bounds = bounds;
     }
 
     private void setLeftAdjustment(double left) {
@@ -566,6 +564,7 @@ public class ApptBox implements Draggable{
     private void setPlaced(boolean isPlaced) {
 	this.isPlaced = isPlaced;
     }
+
     private void setRightAdjustment(double right) {
 	this.right = right;
     }
@@ -575,15 +574,15 @@ public class ApptBox implements Draggable{
     }
 
     private JPopupMenu popmenu = null;
+
     public JPopupMenu getMenu() {
 	JMenuItem mnuitm;
-	if( popmenu == null )
-	{
+	if (popmenu == null) {
 	    popmenu = new JPopupMenu();
 	    popmenu.add(mnuitm = new JMenuItem(Resource.getPlainResourceString("Edit")));
 	    mnuitm.addActionListener(new ActionListener() {
-		public void actionPerformed(java.awt.event.ActionEvent evt) {	    
-		    edit();	   
+		public void actionPerformed(java.awt.event.ActionEvent evt) {
+		    edit();
 		}
 	    });
 	    popmenu.add(mnuitm = new JMenuItem(Resource.getPlainResourceString("Delete")));
