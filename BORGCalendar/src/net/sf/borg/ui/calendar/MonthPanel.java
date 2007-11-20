@@ -259,6 +259,8 @@ public class MonthPanel extends JPanel implements Printable {
 				c = new Color(Prefs.getIntPref(PrefName.UCS_HOLIDAY));
 			    } else if (di.getVacation() == 1) {
 				c = new Color(Prefs.getIntPref(PrefName.UCS_VACATION));
+			    }else if (di.getVacation() == 2) {
+				c = new Color(Prefs.getIntPref(PrefName.UCS_HALFDAY));
 			    } else if (dow == Calendar.SUNDAY || dow == Calendar.SATURDAY) {
 				c = new Color(Prefs.getIntPref(PrefName.UCS_WEEKEND));
 			    } else {
