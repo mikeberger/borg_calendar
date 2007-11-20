@@ -134,59 +134,50 @@ public class Borg extends Controller implements OptionsView.RestartListener, Soc
 	    try {
 
 		// JOptionPane.showMessageDialog(null,
-		// Resource.getResourceString("backup_notice") + backupdir);
+		// Resource.getResourceString("backup_notice") + backupdir + "?");
+		int ret = JOptionPane.showConfirmDialog(null, Resource.getResourceString("backup_notice") + backupdir + "?", "BORG",
+			JOptionPane.OK_CANCEL_OPTION);
+		if (ret == JOptionPane.YES_OPTION) {
 
-		Banner ban = new Banner();
-		ban.setText(Resource.getResourceString("backup_notice") + backupdir);
-		ban.setVisible(true);
+		    String fname = backupdir + "/borg.xml";
 
-		String fname = backupdir + "/borg.xml";
+		    OutputStream ostr = IOHelper.createOutputStream(fname);
+		    Writer fw = new OutputStreamWriter(ostr, "UTF8");
+		    AppointmentModel.getReference().export(fw);
+		    fw.close();
 
-		OutputStream ostr = IOHelper.createOutputStream(fname);
-		Writer fw = new OutputStreamWriter(ostr, "UTF8");
-		AppointmentModel.getReference().export(fw);
-		fw.close();
-
-		fname = backupdir + "/mrdb.xml";
-
-		ostr = IOHelper.createOutputStream(fname);
-		fw = new OutputStreamWriter(ostr, "UTF8");
-		TaskModel.getReference().export(fw);
-		fw.close();
-
-		fname = backupdir + "/addr.xml";
-
-		ostr = IOHelper.createOutputStream(fname);
-		fw = new OutputStreamWriter(ostr, "UTF8");
-		AddressModel.getReference().export(fw);
-		fw.close();
-
-		if (MemoModel.getReference().hasMemos()) {
-		    fname = backupdir + "/memo.xml";
+		    fname = backupdir + "/mrdb.xml";
 
 		    ostr = IOHelper.createOutputStream(fname);
 		    fw = new OutputStreamWriter(ostr, "UTF8");
-		    MemoModel.getReference().export(fw);
+		    TaskModel.getReference().export(fw);
 		    fw.close();
 
+		    fname = backupdir + "/addr.xml";
+
+		    ostr = IOHelper.createOutputStream(fname);
+		    fw = new OutputStreamWriter(ostr, "UTF8");
+		    AddressModel.getReference().export(fw);
+		    fw.close();
+
+		    if (MemoModel.getReference().hasMemos()) {
+			fname = backupdir + "/memo.xml";
+
+			ostr = IOHelper.createOutputStream(fname);
+			fw = new OutputStreamWriter(ostr, "UTF8");
+			MemoModel.getReference().export(fw);
+			fw.close();
+
+		    }
 		}
 	    } catch (Exception e) {
 		Errmsg.errmsg(e);
 	    }
 
-	    getReference().removeListeners();
-
-	    new Timer().schedule(new TimerTask() {
-		public void run() {
-		    System.exit(0);
-		}
-	    }, 3000);
-
-	} else {
-	    getReference().removeListeners();
-
-	    System.exit(0);
 	}
+	getReference().removeListeners();
+	System.exit(0);
+
     }
 
     static public synchronized void syncDBs() throws Exception {
