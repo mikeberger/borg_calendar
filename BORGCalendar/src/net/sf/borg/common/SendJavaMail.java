@@ -33,6 +33,8 @@ package net.sf.borg.common;
 import java.util.Date;
 import java.util.Properties;
 
+import javax.activation.MailcapCommandMap;
+import javax.activation.MimetypesFileTypeMap;
 import javax.mail.Address;
 import javax.mail.Authenticator;
 import javax.mail.Message;
@@ -122,6 +124,12 @@ public class SendJavaMail {
 	// session.setDebug(debug);
 
 	try {
+	    MimetypesFileTypeMap mimetypes =  (MimetypesFileTypeMap)MimetypesFileTypeMap.getDefaultFileTypeMap();
+	    mimetypes.addMimeTypes("text/calendar ics ICS");
+	    		
+	    MailcapCommandMap mailcap = (MailcapCommandMap)MailcapCommandMap.getDefaultCommandMap();
+	    mailcap.addMailcap("text/calendar;; x-java-content-handler=com.sun.mail.handlers.text_plain");
+
 
 	    MimeMultipart mp = new MimeMultipart();
 	    MimeBodyPart b1 = new MimeBodyPart();
