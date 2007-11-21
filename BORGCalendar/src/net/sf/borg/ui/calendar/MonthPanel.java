@@ -26,6 +26,8 @@ import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.awt.font.TextAttribute;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
@@ -57,7 +59,7 @@ import net.sf.borg.ui.Navigator;
 public class MonthPanel extends JPanel implements Printable {
 
     // monthPanel handles the printing of a single month
-    private class MonthViewSubPanel extends ApptBoxPanel implements Printable, Navigator, Model.Listener, Prefs.Listener {
+    private class MonthViewSubPanel extends ApptBoxPanel implements Printable, Navigator, Model.Listener, Prefs.Listener, MouseWheelListener {
 
 	private int month_;
 
@@ -80,6 +82,7 @@ public class MonthPanel extends JPanel implements Printable {
 	    month_ = month;
 	    clearData();
 	    Prefs.addListener(this);
+	    addMouseWheelListener(this);
 	    AppointmentModel.getReference().addListener(this);
 	    TaskModel.getReference().addListener(this);
 
@@ -409,14 +412,27 @@ public class MonthPanel extends JPanel implements Printable {
 	}
 
 	public void remove() {
-	    // TODO Auto-generated method stub
-
+	    
 	}
 
 	public void prefsChanged() {
 	    clearData();
 	    repaint();
 
+	}
+
+	public void mouseWheelMoved(MouseWheelEvent e) {
+	    if( e.getWheelRotation() > 0)
+	    {
+		next();
+		nav.setLabel(getNavLabel());
+	    }
+	    else if( e.getWheelRotation() < 0 )
+	    {
+		prev();
+		nav.setLabel(getNavLabel());
+	    }
+	    
 	}
 
     }

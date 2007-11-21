@@ -27,6 +27,8 @@ import java.awt.GridBagConstraints;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Stroke;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.awt.font.TextAttribute;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
@@ -56,7 +58,7 @@ import net.sf.borg.ui.Navigator;
 
 // weekPanel handles the printing of a single week
 public class DayPanel extends JPanel implements Printable {
-    private class DaySubPanel extends ApptBoxPanel implements Navigator, Prefs.Listener, Printable, Model.Listener {
+    private class DaySubPanel extends ApptBoxPanel implements Navigator, Prefs.Listener, Printable, Model.Listener, MouseWheelListener {
 
 	// set up dash line stroke
 	private float dash1[] = { 1.0f, 3.0f };
@@ -77,6 +79,7 @@ public class DayPanel extends JPanel implements Printable {
 	    date_ = date;
 	    clearData();
 	    Prefs.addListener(this);
+	    addMouseWheelListener(this);
 	    AppointmentModel.getReference().addListener(this);
 	    TaskModel.getReference().addListener(this);
 
@@ -370,6 +373,20 @@ public class DayPanel extends JPanel implements Printable {
 	public Date getDateForCoord(double x,double y) {
 	    GregorianCalendar cal = new GregorianCalendar(year_, month_, date_, 23, 59);
 	    return cal.getTime();
+	}
+	
+	public void mouseWheelMoved(MouseWheelEvent e) {
+	    if( e.getWheelRotation() > 0)
+	    {
+		next();
+		nav.setLabel(getNavLabel());
+	    }
+	    else if( e.getWheelRotation() < 0 )
+	    {
+		prev();
+		nav.setLabel(getNavLabel());
+	    }
+	    
 	}
 
     }

@@ -28,6 +28,8 @@ import java.awt.GridBagConstraints;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Stroke;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.awt.font.TextAttribute;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
@@ -60,7 +62,7 @@ import net.sf.borg.ui.Navigator;
 public class WeekPanel extends JPanel implements Printable {
 
     // weekPanel handles the printing of a single week
-    private class WeekSubPanel extends ApptBoxPanel implements Navigator, Prefs.Listener, Model.Listener, Printable {
+    private class WeekSubPanel extends ApptBoxPanel implements Navigator, Prefs.Listener, Model.Listener, Printable, MouseWheelListener {
 
 	private Date beg = null;
 
@@ -87,6 +89,7 @@ public class WeekPanel extends JPanel implements Printable {
 	    date_ = date;
 	    clearData();
 	    Prefs.addListener(this);
+	    addMouseWheelListener(this);
 	    AppointmentModel.getReference().addListener(this);
 	    TaskModel.getReference().addListener(this);
 
@@ -471,6 +474,20 @@ public class WeekPanel extends JPanel implements Printable {
 	    } catch (Exception e) {
 		e.printStackTrace();
 	    }
+	}
+	
+	public void mouseWheelMoved(MouseWheelEvent e) {
+	    if( e.getWheelRotation() > 0)
+	    {
+		next();
+		nav.setLabel(getNavLabel());
+	    }
+	    else if( e.getWheelRotation() < 0 )
+	    {
+		prev();
+		nav.setLabel(getNavLabel());
+	    }
+	    
 	}
     }
 
