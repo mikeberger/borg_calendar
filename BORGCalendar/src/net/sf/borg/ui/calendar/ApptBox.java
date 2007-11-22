@@ -591,8 +591,40 @@ public class ApptBox implements Draggable {
 		    delete();
 		}
 	    });
+	    
+	    if (isTodo()) {
+		popmenu.add(mnuitm = new JMenuItem(Resource.getPlainResourceString("Done_(No_Delete)")));
+		mnuitm.addActionListener(new ActionListener() {
+		    public void actionPerformed(java.awt.event.ActionEvent evt) {
+			try {
+			    done_no_delete();
+			} catch (Exception e) {
+			    Errmsg.errmsg(e);
+			}
+		    }
+		});
+
+		popmenu.add(mnuitm = new JMenuItem(Resource.getPlainResourceString("Done_(Delete)")));
+		mnuitm.addActionListener(new ActionListener() {
+		    public void actionPerformed(java.awt.event.ActionEvent evt) {
+			try {
+			    done_delete();
+			} catch (Exception e) {
+			    Errmsg.errmsg(e);
+			}
+		    }
+		});
+	    }
 	}
 	return popmenu;
+    }
+    
+    private void done_delete() throws Exception {
+	AppointmentModel.getReference().do_todo(appt.getKey(), true);
+    }
+    
+    private void done_no_delete() throws Exception {
+	AppointmentModel.getReference().do_todo(appt.getKey(), false);
     }
 
 }

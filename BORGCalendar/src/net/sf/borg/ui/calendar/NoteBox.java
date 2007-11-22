@@ -55,16 +55,20 @@ public class NoteBox implements Draggable {
 	}
     }
 
-    /* (non-Javadoc)
-     * @see net.sf.borg.ui.calendar.Box#delete()
-     */
+   
     public void delete() {
 	AppointmentModel.getReference().delAppt(appt.getKey());
     }
 
-    /* (non-Javadoc)
-     * @see net.sf.borg.ui.calendar.Box#draw(java.awt.Graphics2D, java.awt.Component)
-     */
+    private void done_delete() throws Exception {
+	AppointmentModel.getReference().do_todo(appt.getKey(), true);
+    }
+    
+    private void done_no_delete() throws Exception {
+	AppointmentModel.getReference().do_todo(appt.getKey(), false);
+    }
+    
+    
     public void draw(Graphics2D g2, Component comp) {
 
 	Shape s = g2.getClip();
@@ -91,7 +95,7 @@ public class NoteBox implements Draggable {
 	    // change color for a single appointment based on
 	    // its color - only if color print option set
 	    g2.setColor(Color.black);
-	    
+
 	    if (getTextColor().equals("red"))
 		g2.setColor(new Color(Integer.parseInt(Prefs.getPref(PrefName.UCS_RED))));
 	    else if (getTextColor().equals("green"))
@@ -195,12 +199,36 @@ public class NoteBox implements Draggable {
 		    delete();
 		}
 	    });
+
+	    if (isTodo()) {
+		popmenu.add(mnuitm = new JMenuItem(Resource.getPlainResourceString("Done_(No_Delete)")));
+		mnuitm.addActionListener(new ActionListener() {
+		    public void actionPerformed(java.awt.event.ActionEvent evt) {
+			try {
+			    done_no_delete();
+			} catch (Exception e) {
+			    Errmsg.errmsg(e);
+			}
+		    }
+		});
+
+		popmenu.add(mnuitm = new JMenuItem(Resource.getPlainResourceString("Done_(Delete)")));
+		mnuitm.addActionListener(new ActionListener() {
+		    public void actionPerformed(java.awt.event.ActionEvent evt) {
+			try {
+			    done_delete();
+			} catch (Exception e) {
+			    Errmsg.errmsg(e);
+			}
+		    }
+		});
+	    }
 	}
 	return popmenu;
     }
 
     public void move(int realtime, Date d) throws Exception {
-	
+
 	Appointment ap = AppointmentModel.getReference().getAppt(appt.getKey());
 
 	int hour = realtime / 60;
@@ -210,16 +238,14 @@ public class NoteBox implements Draggable {
 
 	GregorianCalendar newCal = new GregorianCalendar();
 	newCal.setTime(d);
-	if( hour != 0 || min != 0){
+	if (hour != 0 || min != 0) {
 	    // we are moving to be timed - set duration
 	    ap.setDuration(new Integer(15));
 	    newCal.set(Calendar.HOUR_OF_DAY, hour);
 	    int roundMin = (min / 5) * 5;
 	    newCal.set(Calendar.MINUTE, roundMin);
-	}
-	else
-	{
-	    // keep time and duration the same 
+	} else {
+	    // keep time and duration the same
 	    Calendar oldCal = new GregorianCalendar();
 	    oldCal.setTime(ap.getDate());
 	    newCal.set(Calendar.HOUR_OF_DAY, oldCal.get(Calendar.HOUR_OF_DAY));
@@ -227,14 +253,14 @@ public class NoteBox implements Draggable {
 	    newCal.set(Calendar.SECOND, 0);
 	}
 
-
 	int newkey = AppointmentModel.dkey(newCal);
 	Date newTime = newCal.getTime();
 	ap.setDate(newTime);
-	
+
 	// only do something if date changed
 	if (oldkey != newkey) { // date chg
-	    if (Repeat.isRepeating(ap)) { // cannot date chg unless it is on the first in a series
+	    if (Repeat.isRepeating(ap)) { // cannot date chg unless it is on
+					    // the first in a series
 		Calendar cal = new GregorianCalendar();
 		cal.setTime(date);
 		int k2 = AppointmentModel.dkey(cal);
