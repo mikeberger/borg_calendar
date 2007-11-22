@@ -1,10 +1,11 @@
-Version 1.6.1 TBD
------------------
+Version 1.6.1 beta 2
+--------------------
 Feature [1833863] allow dragging of appts in the month view  
 Feature [1833864] allow dragging of appts outside of grid in day/week views
 Feature [1834235] import/export of preferences  
 Feature [1834573] automatic backup
 Bug Fix [1833869] user colors not used in new views
+Bug Fix [1834857] error when emailing meeting notice  
 
 Version 1.6.1 Beta
 ------------------

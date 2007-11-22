@@ -413,9 +413,6 @@ public class Borg extends Controller implements OptionsView.RestartListener, Soc
 	if (!language.equals("")) {
 	    Locale.setDefault(new Locale(language, country));
 	}
-	String version = Resource.getVersion();
-	if (version.indexOf("beta") != -1)
-	    Errmsg.notice(Resource.getResourceString("betawarning"));
 
 	// do not show the startup banner if autostart or aplist features are on
 	if (splash) {
@@ -673,9 +670,7 @@ public class Borg extends Controller implements OptionsView.RestartListener, Soc
 
     private void version_chk() {
 	try {
-	    if (Resource.getVersion().indexOf("beta") != -1)
-		return;
-
+	   
 	    // check if the version check feature has been enabled
 	    int vcl = Prefs.getIntPref(PrefName.VERCHKLAST);
 	    if (vcl == -1)
