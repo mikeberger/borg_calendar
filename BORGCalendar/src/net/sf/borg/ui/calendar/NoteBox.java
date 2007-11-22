@@ -55,20 +55,10 @@ public class NoteBox implements Draggable {
 	}
     }
 
-   
     public void delete() {
 	AppointmentModel.getReference().delAppt(appt.getKey());
     }
 
-    private void done_delete() throws Exception {
-	AppointmentModel.getReference().do_todo(appt.getKey(), true);
-    }
-    
-    private void done_no_delete() throws Exception {
-	AppointmentModel.getReference().do_todo(appt.getKey(), false);
-    }
-    
-    
     public void draw(Graphics2D g2, Component comp) {
 
 	Shape s = g2.getClip();
@@ -205,7 +195,7 @@ public class NoteBox implements Draggable {
 		mnuitm.addActionListener(new ActionListener() {
 		    public void actionPerformed(java.awt.event.ActionEvent evt) {
 			try {
-			    done_no_delete();
+			    AppointmentModel.getReference().do_todo(appt.getKey(), false);
 			} catch (Exception e) {
 			    Errmsg.errmsg(e);
 			}
@@ -216,7 +206,23 @@ public class NoteBox implements Draggable {
 		mnuitm.addActionListener(new ActionListener() {
 		    public void actionPerformed(java.awt.event.ActionEvent evt) {
 			try {
-			    done_delete();
+			    AppointmentModel.getReference().do_todo(appt.getKey(), true);
+			} catch (Exception e) {
+			    Errmsg.errmsg(e);
+			}
+		    }
+		});
+	    }
+
+	    if (Repeat.isRepeating(appt)) {
+		popmenu.add(mnuitm = new JMenuItem(Resource.getPlainResourceString("Delete_One_Only")));
+		mnuitm.addActionListener(new ActionListener() {
+		    public void actionPerformed(java.awt.event.ActionEvent evt) {
+			try {
+			    Calendar cal = new GregorianCalendar();
+			    cal.setTime(date);
+			    int rkey = AppointmentModel.dkey(cal);
+			    AppointmentModel.getReference().delOneOnly(appt.getKey(), rkey);
 			} catch (Exception e) {
 			    Errmsg.errmsg(e);
 			}
@@ -260,7 +266,7 @@ public class NoteBox implements Draggable {
 	// only do something if date changed
 	if (oldkey != newkey) { // date chg
 	    if (Repeat.isRepeating(ap)) { // cannot date chg unless it is on
-					    // the first in a series
+		// the first in a series
 		Calendar cal = new GregorianCalendar();
 		cal.setTime(date);
 		int k2 = AppointmentModel.dkey(cal);

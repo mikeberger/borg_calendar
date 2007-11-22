@@ -597,7 +597,7 @@ public class ApptBox implements Draggable {
 		mnuitm.addActionListener(new ActionListener() {
 		    public void actionPerformed(java.awt.event.ActionEvent evt) {
 			try {
-			    done_no_delete();
+			    AppointmentModel.getReference().do_todo(appt.getKey(), false);
 			} catch (Exception e) {
 			    Errmsg.errmsg(e);
 			}
@@ -608,7 +608,23 @@ public class ApptBox implements Draggable {
 		mnuitm.addActionListener(new ActionListener() {
 		    public void actionPerformed(java.awt.event.ActionEvent evt) {
 			try {
-			    done_delete();
+			    AppointmentModel.getReference().do_todo(appt.getKey(), true);
+			} catch (Exception e) {
+			    Errmsg.errmsg(e);
+			}
+		    }
+		});
+	    }
+
+	    if (Repeat.isRepeating(appt)) {
+		popmenu.add(mnuitm = new JMenuItem(Resource.getPlainResourceString("Delete_One_Only")));
+		mnuitm.addActionListener(new ActionListener() {
+		    public void actionPerformed(java.awt.event.ActionEvent evt) {
+			try {
+			    Calendar cal = new GregorianCalendar();
+			    cal.setTime(date);
+			    int rkey = AppointmentModel.dkey(cal);
+			    AppointmentModel.getReference().delOneOnly(appt.getKey(), rkey);
 			} catch (Exception e) {
 			    Errmsg.errmsg(e);
 			}
@@ -618,13 +634,6 @@ public class ApptBox implements Draggable {
 	}
 	return popmenu;
     }
-    
-    private void done_delete() throws Exception {
-	AppointmentModel.getReference().do_todo(appt.getKey(), true);
-    }
-    
-    private void done_no_delete() throws Exception {
-	AppointmentModel.getReference().do_todo(appt.getKey(), false);
-    }
+   
 
 }
