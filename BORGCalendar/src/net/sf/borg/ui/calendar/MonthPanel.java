@@ -143,6 +143,7 @@ public class MonthPanel extends JPanel implements Printable {
 	    repaint();
 	}
 
+	private int lastDrawDate = -1;
 	private int drawIt(Graphics g, double width, double height, double pageWidth, double pageHeight, double pagex,
 		double pagey, int pageIndex) {
 	    //System.out.println("month " + new GregorianCalendar().toString());
@@ -186,6 +187,15 @@ public class MonthPanel extends JPanel implements Printable {
 	    int tmon = now.get(Calendar.MONTH);
 	    int tyear = now.get(Calendar.YEAR);
 	    int tdate = now.get(Calendar.DATE);
+	    
+	    // force reload if the date has changed since the last draw
+	    if( lastDrawDate != tdate )
+	    {
+		needLoad = true;
+	    }
+	    
+	    lastDrawDate = tdate;
+	    
 	    GregorianCalendar cal = new GregorianCalendar(year_, month_, 1);
 	    cal.setFirstDayOfWeek(Prefs.getIntPref(PrefName.FIRSTDOW));
 
