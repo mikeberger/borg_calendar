@@ -1,13 +1,8 @@
 To build BORG from the source, you need the JAVA SDK 1.4 or later, available from java.sun.com.
 
-As of release 1.6.1 of BORG, the product consists of the following eclipse projects:
+As of release 1.6.1 of BORG, the product consists of a single Eclipse Project - BORGCalendar
 
-- BORGCalendar
-- BORGPalmConduits
-- BORGServlet
-
-
-The ant build file to build the entire thing is in the ant folder in the BORGCalendar sub-project.
+The ant build file to build the entire thing is in the ant folder.
 
 Building
 --------
@@ -20,12 +15,9 @@ borg.zip can be unzipped and borg.jar can be run.
 **** Running this target alone is sufficient to build the program. ****
 Most people will want to use this target.
 
-- ant installer - This will create the IzPack installers for BORG in the Common/dist folder.
-This target builds all 3 projects. 
-The IzPack software is required (http://www.izforge.com/izpack) and the build.xml file must be
-updated with the path to this software. The BORGPalmConduits project requires the Palm JSync package,
-so the installer option is only for those people who really want to download the necessary third-party software
-(JSync, IZPack, JavaHelp) in order to build the whole big mess.
+- ant installer - This will create the IzPack installer for BORG in the dist folder. 
+The IzPack software is required (http://www.izforge.com/izpack) as is JavaHelp (http://java.sun.com/products/javahelp/)
+and the build.xml file must be updated with the path to this software. 
 
 - ant regen-help - this will generate the search database for the online help. You only need to do this
 if you want to generate the search database. Without this step, the help will be readable, but not searchable.
@@ -36,12 +28,8 @@ Eclipse
 -------
 BORG development is done using the Eclipse IDE. 
 
-To use eclipse, each of the top 3 project folders can be imported as projects into eclipse.
-The .project and .classpath files that configure eclipse are part of the source tree and should get the 3 projects
-all set up correctly. To build, you can set up an Ant Build task under the eclipse exteral
-tools. 
-
-Most people will not care about the BORGPalmConduits and BORGServlet projects. You can close these or just not import them if you like.
+To use eclipse, the BORGCalendar project folder can be imported as a project into eclipse.
+To build, you can set up an Ant Build task under the eclipse exteral tools. 
 
 You should be able to use the eclipse debugger to debug the code. You should be able to run the main
 Borg class (Borg Calendar UI/src/net/sf.borg.control.Borg) from within eclipse. 
