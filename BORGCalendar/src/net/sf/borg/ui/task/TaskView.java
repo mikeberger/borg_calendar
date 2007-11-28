@@ -1319,7 +1319,7 @@ public class TaskView extends DockableView {
 			Iterator pi = projects.iterator();
 			while (pi.hasNext()) {
 				Project p = (Project) pi.next();
-				if( p.getStatus().equals("OPEN"))
+				if( p.getStatus().equals(Resource.getPlainResourceString("OPEN")))
 					projBox.addItem(getProjectString(p));
 			}
 		}

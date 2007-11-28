@@ -263,7 +263,7 @@ public class TaskListPanel extends JPanel implements Model.Listener {
 
 	try {
 	    TaskModel taskmod_ = TaskModel.getReference();
-
+	    TaskTypes tasktypes = taskmod_.getTaskTypes();
 	    Collection tasks = taskmod_.getTasks();
 	    Iterator ti = tasks.iterator();
 	    while (ti.hasNext()) {
@@ -337,7 +337,7 @@ public class TaskListPanel extends JPanel implements Model.Listener {
 
 		// calc elapsed time
 		Date end = null;
-		if (task.getState().equals("CLOSED")) {
+		if (task.getState().equals(tasktypes.getFinalState(task.getType()))) {
 		    end = task.getCD();
 		} else {
 		    end = new Date();
