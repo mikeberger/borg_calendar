@@ -104,8 +104,7 @@
             <file src="borg_mysql.sql" targetdir="$INSTALL_PATH"/>
             <file src="db.html" targetdir="$INSTALL_PATH"/>
             <file src="borg.jar" targetdir="$INSTALL_PATH"/>
-            <fileset dir="lib" targetdir="$INSTALL_PATH/lib"/>	    	
-	        <file src="conduits" targetdir="$INSTALL_PATH"/>           
+            <fileset dir="lib" targetdir="$INSTALL_PATH/lib"/>	    	     
 	    	<singlefile src="lib/jdic-linux.jar" os="unix" target="$INSTALL_PATH/lib/jdic.jar" override="true"/> 
             <file src="borg_servlet.war" targetdir="$INSTALL_PATH"/> 
         </pack>

@@ -7,7 +7,6 @@
 
 	<property name="prj.dir" value="${basedir}/BORGCalendar" />
 	<property name="prj.servlet.dir" value="${basedir}/BORGServlet" />
-	<property name="prj.conduit.dir" value="${basedir}/BORGPalmConduits" />
 	<property name="help.dir" value="${prj.dir}/borghelp" />
 
 	<property name="pkg" value="net/sf/borg" />
@@ -51,10 +50,6 @@
 		<tstamp />
 	</target>
 
-	<target name="conduits">
-		<ant dir="${prj.conduit.dir}" antfile="ant/build.xml" target="main" inheritAll="false" />
-	</target>
-
 	<!-- regen help search indexes -->
 	<target name="regen-help">
 		<exec dir="${help.dir}" executable="${jh.bin}/${jhindexer}">
@@ -69,11 +64,11 @@
 		<mkdir dir="${build.dir}" />
 		<mkdir dir="${build.servlet.dir}" />
 
-		<javac srcdir="${prj.dir}/src" classpathref="build.classpath" destdir="${build.dir}" target="1.3" source="1.3" debug="on">
+		<javac srcdir="${prj.dir}/src" classpathref="build.classpath" destdir="${build.dir}" target="1.4" source="1.4">
 		</javac>
 
 		<!-- Servlet -->
-		<javac srcdir="${prj.servlet.dir}/WEB-INF/src" destdir="${build.servlet.dir}" target="1.4" source="1.4" classpathref="build.servlet.classpath" debug="on">
+		<javac srcdir="${prj.servlet.dir}/WEB-INF/src" destdir="${build.servlet.dir}" target="1.4" source="1.4" classpathref="build.servlet.classpath">
 		</javac>
 	</target>
 
@@ -202,11 +197,6 @@ build.number=${build.number}
 		<copy todir="${build.dir}/installer">
 			<fileset dir="${prj.dir}/installer" includes="*" />
 		</copy>
-		<mkdir dir="${build.dir}/installer/conduits" />
-		<copy todir="${build.dir}/installer/conduits">
-			<fileset dir="${prj.conduit.dir}/dist" includes="*" />
-			<fileset dir="${prj.conduit.dir}" includes="License.BORGConduits" />
-		</copy>
 		<izpack input="${build.dir}/installer/install.xml"
 		        output="${build.dir}/installer/BORG_installer.jar"
 		        installerType="standard"
@@ -231,7 +221,7 @@ build.number=${build.number}
 	</target>
 
 	<target name="clean-build" depends="clean,borg-jar,borg-servlet-war,help-jar" />
-	<target name="main" depends="regen-help,fulldist,conduits,installer" />
+	<target name="main" depends="regen-help,fulldist,installer" />
 	<target name="fulldist" depends="borg_prog,borg_src,rpt_zip" />
 
 	<!-- "Private" targets -->
