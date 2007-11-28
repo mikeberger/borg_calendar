@@ -6,7 +6,7 @@
 	<property name="name" value="borg" />
 
 	<property name="prj.dir" value="${basedir}/BORGCalendar" />
-	<property name="prj.servlet.dir" value="${basedir}/BORGServlet" />
+	<property name="prj.servlet.dir" value="${basedir}/BORGCalendar/servlet" />
 	<property name="help.dir" value="${prj.dir}/borghelp" />
 
 	<property name="pkg" value="net/sf/borg" />
