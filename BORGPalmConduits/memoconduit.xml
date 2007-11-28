@@ -7,5 +7,5 @@
   <name>BORG Memo Conduit</name>
   <information>BORG Memo Conduit</information>
   <classname>net.sf.borg.memoconduit.MemoCond</classname>
-  <classpath>..\borg.jar;</classpath>
+  <classpath>.\borg13.jar;</classpath>
 </conduit>

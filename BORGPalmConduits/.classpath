@@ -2,7 +2,7 @@
 <classpath>
 	<classpathentry excluding=".svn|CVS|ant/|build/|classes/|dist/" kind="src" path=""/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="C:/Program Files/Palm, Inc/Palm Conduit Support for Java/JSync/1.3/jsync.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Palm/JSync/1.3/jsync.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/BORGCalendar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
