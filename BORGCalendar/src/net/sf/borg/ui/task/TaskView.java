@@ -171,7 +171,7 @@ public class TaskView extends DockableView {
 
 			JLabel l = (JLabel) defIntRend_.getTableCellRendererComponent(
 					table, obj, isSelected, hasFocus, row, column);
-			this.setHorizontalAlignment(l.getHorizontalAlignment());
+			this.setHorizontalAlignment(CENTER);
 			this.setForeground(l.getForeground());
 			this.setBackground(l.getBackground());
 

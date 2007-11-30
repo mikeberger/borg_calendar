@@ -98,13 +98,13 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 	    int i = ((Integer) obj).intValue();
 
 	    this.setText(l.getText());
-	    this.setHorizontalAlignment(l.getHorizontalAlignment());
+	    this.setHorizontalAlignment(CENTER);
 	    this.setBackground(l.getBackground());
 	    this.setForeground(l.getForeground());
 
 
 	    if (i == 9999)
-		this.setText("******");
+		this.setText("--");
 	    
 	    if( isSelected )
 		return this;
