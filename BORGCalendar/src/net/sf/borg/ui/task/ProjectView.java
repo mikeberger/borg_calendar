@@ -25,7 +25,9 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -45,6 +47,7 @@ import net.sf.borg.model.beans.Project;
 import net.sf.borg.model.beans.Task;
 import net.sf.borg.ui.DockableView;
 import net.sf.borg.ui.ResourceHelper;
+import net.sf.borg.ui.RunReport;
 
 import com.toedter.calendar.JDateChooser;
 
@@ -354,6 +357,15 @@ class ProjectView extends DockableView {
 	jPanel4.add(jButton2, jButton2.getName());
 	jPanel4.add(getGanttbutton());
 
+	JButton projRptButton = new JButton();
+	//projRptButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Save16.gif")));
+	ResourceHelper.setText(projRptButton, "Report");
+	projRptButton.addActionListener(new java.awt.event.ActionListener() {
+	    public void actionPerformed(java.awt.event.ActionEvent evt) {
+		reportButtonActionPerformed(evt);
+	    }
+	});
+	jPanel4.add(projRptButton);
 
 	gridBagConstraints26.gridx = 2;
 	gridBagConstraints26.gridy = 1;
@@ -657,7 +669,6 @@ class ProjectView extends DockableView {
 
 	int pnum = Integer.parseInt(num);
 	try {
-	    // force close of the task
 	    TaskModel taskmod_ = TaskModel.getReference();
 	    Project p = taskmod_.getProject(pnum);
 	    GanttFrame.showChart(p);
@@ -668,6 +679,25 @@ class ProjectView extends DockableView {
 	    Errmsg.notice(Resource.getPlainResourceString("borg_jasp"));
 	} catch (Warning w) {
 	    Errmsg.notice(w.getMessage());
+	} catch (Exception e) {
+	    Errmsg.errmsg(e);
+	}
+
+    }
+    private void reportButtonActionPerformed(java.awt.event.ActionEvent evt) {
+
+	// get the task number from column 0 of the selected row
+	 String num = itemtext.getText();
+	 if( num.equals("NEW"))
+	     return;
+
+	int pnum = Integer.parseInt(num);
+	try {
+	    Map map = new HashMap();
+	    map.put("pid", new Integer(pnum));
+	    RunReport.runReport("proj", map );
+	} catch (NoClassDefFoundError r) {
+	    Errmsg.notice(Resource.getPlainResourceString("borg_jasp"));
 	} catch (Exception e) {
 	    Errmsg.errmsg(e);
 	}

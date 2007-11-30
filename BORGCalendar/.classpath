@@ -12,6 +12,10 @@
 	<classpathentry kind="lib" path="rptlib/jcommon-1.0.10.jar"/>
 	<classpathentry kind="lib" path="rptlib/jfreechart-1.0.6.jar"/>
 	<classpathentry kind="lib" path="lib/servlet.jar"/>
+	<classpathentry kind="lib" path="rptlib/commons-collections-2.1.jar"/>
+	<classpathentry kind="lib" path="rptlib/itext-1.3.1.jar"/>
+	<classpathentry kind="lib" path="rptlib/jasperreports-1.2.8.jar"/>
+	<classpathentry kind="lib" path="rptlib/poi.jar"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

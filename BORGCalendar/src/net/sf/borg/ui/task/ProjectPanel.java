@@ -27,7 +27,9 @@ import java.awt.GridBagConstraints;
 import java.awt.event.ActionListener;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -55,6 +57,7 @@ import net.sf.borg.model.beans.Task;
 import net.sf.borg.model.db.DBException;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.ResourceHelper;
+import net.sf.borg.ui.RunReport;
 import net.sf.borg.ui.util.PopupMenuHelper;
 import net.sf.borg.ui.util.StripedTable;
 import net.sf.borg.ui.util.TablePrinter;
@@ -453,6 +456,15 @@ public class ProjectPanel extends JPanel implements Model.Listener {
     	buttonPanel.add(getClosebutton1(), null);
     	buttonPanel.add(getClonebutton1(), null);
     	buttonPanel.add(getGanttbutton(), null);
+    	
+    	JButton projRptButton = new JButton();
+	ResourceHelper.setText(projRptButton, "Report");
+	projRptButton.addActionListener(new java.awt.event.ActionListener() {
+	    public void actionPerformed(java.awt.event.ActionEvent evt) {
+		reportButtonActionPerformed(evt);
+	    }
+	});
+	buttonPanel.add(projRptButton);
         }
         return buttonPanel;
     }
@@ -793,6 +805,26 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 	try {
 	    Project p = TaskModel.getReference().getProject(num.intValue());
 	    showTasksForProject(p);
+	} catch (Exception e) {
+	    Errmsg.errmsg(e);
+	}
+
+    }
+    
+    private void reportButtonActionPerformed(java.awt.event.ActionEvent evt) {
+
+	// get the task number from column 0 of the selected row
+	int row = projectTable.getSelectedRow();
+	if (row == -1)
+	    return;
+	TableSorter tm = (TableSorter) projectTable.getModel();
+	Integer pnum = (Integer) tm.getValueAt(row, 0);
+	try {
+	    Map map = new HashMap();
+	    map.put("pid", pnum);
+	    RunReport.runReport("proj", map );
+	} catch (NoClassDefFoundError r) {
+	    Errmsg.notice(Resource.getPlainResourceString("borg_jasp"));
 	} catch (Exception e) {
 	    Errmsg.errmsg(e);
 	}
