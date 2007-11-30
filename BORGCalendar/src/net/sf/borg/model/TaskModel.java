@@ -637,7 +637,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 			    for (int sti = 0; sti < cbs.length; sti++) {
 				if (!cbs[sti].equals(TaskTypes.NOCBVALUE)) {
 				    Subtask st = new Subtask();
-				    st.setCreateDate(new Date());
+				    st.setStartDate(new Date());
 				    st.setDescription(cbs[sti]);
 				    st.setTask(task.getTaskNumber());
 				    if (todos.indexOf(Integer.toString(sti)) != -1) {
@@ -648,7 +648,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 			    }
 			    if (task.getUserTask1() != null) {
 				Subtask st = new Subtask();
-				st.setCreateDate(new Date());
+				st.setStartDate(new Date());
 				st.setDescription(task.getUserTask1());
 				st.setTask(task.getTaskNumber());
 				if (todos.indexOf("6") != -1) {
@@ -658,7 +658,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 			    }
 			    if (task.getUserTask2() != null) {
 				Subtask st = new Subtask();
-				st.setCreateDate(new Date());
+				st.setStartDate(new Date());
 				st.setDescription(task.getUserTask2());
 				st.setTask(task.getTaskNumber());
 				if (todos.indexOf("7") != -1) {
@@ -668,7 +668,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 			    }
 			    if (task.getUserTask3() != null) {
 				Subtask st = new Subtask();
-				st.setCreateDate(new Date());
+				st.setStartDate(new Date());
 				st.setDescription(task.getUserTask3());
 				st.setTask(task.getTaskNumber());
 				if (todos.indexOf("8") != -1) {
@@ -678,7 +678,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 			    }
 			    if (task.getUserTask4() != null) {
 				Subtask st = new Subtask();
-				st.setCreateDate(new Date());
+				st.setStartDate(new Date());
 				st.setDescription(task.getUserTask4());
 				st.setTask(task.getTaskNumber());
 				if (todos.indexOf("9") != -1) {
@@ -688,7 +688,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 			    }
 			    if (task.getUserTask5() != null) {
 				Subtask st = new Subtask();
-				st.setCreateDate(new Date());
+				st.setStartDate(new Date());
 				st.setDescription(task.getUserTask5());
 				st.setTask(task.getTaskNumber());
 				if (todos.indexOf("A") != -1) {
@@ -885,6 +885,32 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 		    - today.get(Calendar.DAY_OF_YEAR);
 	} else {
 	    days = new Long((dd.getTime() - today.getTime().getTime())
+		    / (1000 * 60 * 60 * 24)).intValue();
+	}
+
+	// if due date is past, set days left to 0
+	// negative days are silly
+	if (days < 0)
+	    days = 0;
+	return days;
+    }
+    
+    public static int daysBetween(Date start, Date dd) {
+
+	if (dd == null)
+	    return 0;
+	Calendar startcal = new GregorianCalendar();
+	Calendar dcal = new GregorianCalendar();
+	dcal.setTime(dd);
+	startcal.setTime(start);
+
+	// find days left
+	int days = 0;
+	if (dcal.get(Calendar.YEAR) == startcal.get(Calendar.YEAR)) {
+	    days = dcal.get(Calendar.DAY_OF_YEAR)
+		    - startcal.get(Calendar.DAY_OF_YEAR);
+	} else {
+	    days = new Long((dd.getTime() - startcal.getTime().getTime())
 		    / (1000 * 60 * 60 * 24)).intValue();
 	}
 

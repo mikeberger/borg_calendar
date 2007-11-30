@@ -10,8 +10,8 @@ public class Subtask extends KeyedBean implements java.io.Serializable {
 	public void setId( Integer xx ){ Id_ = xx; }
 
 	private java.util.Date CreateDate_;
-	public java.util.Date getCreateDate() { return( CreateDate_ ); }
-	public void setCreateDate( java.util.Date xx ){ CreateDate_ = xx; }
+	public java.util.Date getStartDate() { return( CreateDate_ ); }
+	public void setStartDate( java.util.Date xx ){ CreateDate_ = xx; }
 
 	private java.util.Date CloseDate_;
 	public java.util.Date getCloseDate() { return( CloseDate_ ); }
@@ -33,7 +33,7 @@ public class Subtask extends KeyedBean implements java.io.Serializable {
 		Subtask dst = new Subtask();
 		dst.setKey( getKey());
 		dst.setId( getId() );
-		dst.setCreateDate( getCreateDate() );
+		dst.setStartDate( getStartDate() );
 		dst.setCloseDate( getCloseDate() );
 		dst.setDueDate( getDueDate() );
 		dst.setDescription( getDescription() );

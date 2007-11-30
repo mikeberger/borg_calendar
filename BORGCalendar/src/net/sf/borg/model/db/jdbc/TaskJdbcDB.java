@@ -232,7 +232,7 @@ class TaskJdbcDB extends JdbcBeanDB implements BeanDB,TaskDB {
 			s.setDueDate(new java.util.Date(r.getTimestamp("due_date")
 					.getTime()));
 		if (r.getTimestamp("create_date") != null)
-			s.setCreateDate(new java.util.Date(r.getTimestamp("create_date")
+			s.setStartDate(new java.util.Date(r.getTimestamp("create_date")
 					.getTime()));
 		if (r.getTimestamp("close_date") != null)
 			s.setCloseDate(new java.util.Date(r.getTimestamp("close_date")
@@ -304,7 +304,7 @@ class TaskJdbcDB extends JdbcBeanDB implements BeanDB,TaskDB {
 		stmt.setInt(1, s.getId().intValue());
 		stmt.setString(2, username_);
 
-		java.util.Date sd = s.getCreateDate();
+		java.util.Date sd = s.getStartDate();
 		if (sd != null)
 			stmt.setDate(3, new java.sql.Date(sd.getTime()));
 		else
@@ -336,7 +336,7 @@ class TaskJdbcDB extends JdbcBeanDB implements BeanDB,TaskDB {
 		stmt.setInt(6, s.getId().intValue());
 		stmt.setString(7, username_);
 
-		java.util.Date sd = s.getCreateDate();
+		java.util.Date sd = s.getStartDate();
 		if (sd != null)
 			stmt.setDate(1, new java.sql.Date(sd.getTime()));
 		else

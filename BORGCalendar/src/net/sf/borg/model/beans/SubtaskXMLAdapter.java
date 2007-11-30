@@ -12,8 +12,8 @@ public class SubtaskXMLAdapter extends BeanXMLAdapter {
 		xt.appendChild("KEY", Integer.toString(o.getKey()));
 		if( o.getId() != null )
 			xt.appendChild("Id", BeanXMLAdapter.toString(o.getId()));
-		if( o.getCreateDate() != null )
-			xt.appendChild("CreateDate", BeanXMLAdapter.toString(o.getCreateDate()));
+		if( o.getStartDate() != null )
+			xt.appendChild("CreateDate", BeanXMLAdapter.toString(o.getStartDate()));
 		if( o.getCloseDate() != null )
 			xt.appendChild("CloseDate", BeanXMLAdapter.toString(o.getCloseDate()));
 		if( o.getDueDate() != null )
@@ -34,7 +34,7 @@ public class SubtaskXMLAdapter extends BeanXMLAdapter {
 		val = xt.child("Id").value();
 		ret.setId( BeanXMLAdapter.toInteger(val) );
 		val = xt.child("CreateDate").value();
-		ret.setCreateDate( BeanXMLAdapter.toDate(val) );
+		ret.setStartDate( BeanXMLAdapter.toDate(val) );
 		val = xt.child("CloseDate").value();
 		ret.setCloseDate( BeanXMLAdapter.toDate(val) );
 		val = xt.child("DueDate").value();

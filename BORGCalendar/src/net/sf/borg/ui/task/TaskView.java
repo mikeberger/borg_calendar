@@ -876,13 +876,14 @@ public class TaskView extends DockableView {
 				Resource.getPlainResourceString("Closed"),
 				Resource.getPlainResourceString("subtask_id"),
 				Resource.getPlainResourceString("Description"),
-				Resource.getPlainResourceString("created"),
+				Resource.getPlainResourceString("Start_Date"),
 				Resource.getPlainResourceString("Due_Date"),
+				Resource.getPlainResourceString("duration"),
 				Resource.getPlainResourceString("Days_Left"),
 				Resource.getPlainResourceString("close_date") }, new Class[] {
 				java.lang.Boolean.class, Integer.class, java.lang.String.class,
-				Date.class, Date.class, Integer.class, Date.class },
-				new boolean[] { true, false, true, true, true, false, false }));
+				Date.class, Date.class, Integer.class, Integer.class, Date.class },
+				new boolean[] { true, false, true, true, true, false, false, false }));
 
 		stable.setDefaultRenderer(Integer.class, new STIntRenderer());
 		stable.setDefaultRenderer(Date.class, new STDDRenderer());
@@ -1076,7 +1077,7 @@ public class TaskView extends DockableView {
 			
 			Date crd = (Date) ts.getValueAt(r, 3);
 			if (crd == null)
-				crd = new Date();
+				crd = task.getStartDate();
 			Date dd = (Date) ts.getValueAt(r, 4);
 			Date cd = (Date) ts.getValueAt(r, 6);
 			
@@ -1105,7 +1106,19 @@ public class TaskView extends DockableView {
 
 			}
 
-			s.setCreateDate(crd);
+			s.setStartDate(crd);
+			
+			if (closed.booleanValue() != true && crd != null && task.getStartDate() != null) {
+			        if( DateUtil.isAfter( task.getStartDate(), crd))
+			        {
+					String msg = Resource
+							.getPlainResourceString("stsd_warning")
+							+ ": " + desc;
+					throw new Warning(msg);
+				}
+
+			}
+			
 			s.setTask(new Integer(tasknum));
 			TaskModel.getReference().saveSubTask(s);
 			if (id == null || id.intValue() == 0) {
@@ -1392,8 +1405,10 @@ public class TaskView extends DockableView {
 									: new Boolean(true),
 							s.getId(),
 							s.getDescription(),
-							s.getCreateDate(),
+							s.getStartDate(),
 							s.getDueDate(),
+							s.getDueDate() != null ? new Integer(TaskModel
+								.daysBetween(s.getStartDate(),s.getDueDate())) : null,
 							s.getDueDate() != null ? new Integer(TaskModel
 									.daysLeft(s.getDueDate())) : null,
 							s.getCloseDate() };

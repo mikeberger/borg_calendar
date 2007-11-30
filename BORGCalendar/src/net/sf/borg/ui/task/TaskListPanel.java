@@ -98,14 +98,16 @@ public class TaskListPanel extends JPanel implements Model.Listener {
 		    obj, isSelected, hasFocus, row, column);
 
 	    if (obj == null)
+	    {
+		l.setText("--");
+		l.setHorizontalAlignment(CENTER);
 		return l;
+	    }
 	    
 	    
 	    String nm = table.getColumnName(column);
 	    if( !nm.equals(Resource.getPlainResourceString("Pri")) && !nm.equals(Resource.getPlainResourceString("Days_Left")))
 		return l;
-	    //if (column != 4 && column != 8)
-		//return l;
 	    
 	    if (isSelected && !nm.equals(Resource.getPlainResourceString("Days_Left")))
 		return l;
@@ -116,8 +118,6 @@ public class TaskListPanel extends JPanel implements Model.Listener {
 	    this.setForeground(l.getForeground());
 
 	    int i = ((Integer) obj).intValue();
-	    if (i == 9999)
-		this.setText("******");
 
 	    // priority
 	    if (nm.equals(Resource.getPlainResourceString("Pri"))) {
@@ -326,7 +326,7 @@ public class TaskListPanel extends JPanel implements Model.Listener {
 
 		// if we get here - we are displaying this task as a row
 		// so fill in an array of objects for the row
-		Object[] ro = new Object[11];
+		Object[] ro = new Object[12];
 		ro[0] = task.getTaskNumber(); // task number
 		ro[1] = task.getState(); // task state
 		ro[2] = task.getType(); // task type
@@ -334,7 +334,16 @@ public class TaskListPanel extends JPanel implements Model.Listener {
 		ro[4] = task.getPriority();
 		ro[5] = task.getStartDate(); // task start date
 		ro[6] = task.getDueDate(); // task due date
-
+		
+		if( task.getDueDate() != null )
+		{
+		    ro[7] = new Integer(TaskModel.daysBetween(task.getStartDate(), task.getDueDate()));
+		}
+		else
+		{
+		    ro[7] = null;
+		}
+	
 		// calc elapsed time
 		Date end = null;
 		if (task.getState().equals(tasktypes.getFinalState(task.getType()))) {
@@ -344,35 +353,17 @@ public class TaskListPanel extends JPanel implements Model.Listener {
 		}
 
 		if (end == null) {
-		    ro[7] = "*******";
+		    ro[8] = null;
 		} else {
-		    // curently, the dates do not record h/m/s, so can't get
-		    // too
-		    // accurate
-		    long msecs = end.getTime() - task.getStartDate().getTime();
-		    long hours = msecs / (1000 * 60 * 60);
-		    // long min = msecs / (1000 * 60);
-
-		    int days = (int) (hours / 24);
-		    // int hrs = (int) (hours % 24);
-		    // int mins = (int) (min % 60);
-		    if (days >= 1)
-			ro[7] = new Integer(days); // Integer.toString(days)
-		    // +
-		    // "d";
-		    else
-			ro[7] = new Integer(0); // "<1d";
+		    ro[8] = new Integer(TaskModel.daysBetween(task.getStartDate(), end));
 		}
 
 		// calculate days left - today - duedate
 		if (ro[6] == null)
-		    // 9999 days left if no due date - this is a (cringe,
-		    // ack,
-		    // thptt) magic value
-		    ro[8] = new Integer(9999);
+		    ro[9] = null;
 		else {
 		    Date dd = (Date) ro[6];
-		    ro[8] = new Integer(TaskModel.daysLeft(dd));
+		    ro[9] = new Integer(TaskModel.daysLeft(dd));
 		}
 
 		// strip newlines from the description
@@ -387,7 +378,7 @@ public class TaskListPanel extends JPanel implements Model.Listener {
 
 		    tmp += c;
 		}
-		ro[9] = tmp;
+		ro[10] = tmp;
 
 		String ps = "";
 
@@ -407,7 +398,7 @@ public class TaskListPanel extends JPanel implements Model.Listener {
 		    }
 		}
 
-		ro[10] = ps;
+		ro[11] = ps;
 
 		// add the task row to table
 		addRow(taskTable, ro);
@@ -825,13 +816,14 @@ public class TaskListPanel extends JPanel implements Model.Listener {
 		Resource.getPlainResourceString("Pri"),
 		Resource.getPlainResourceString("Start_Date"),
 		Resource.getPlainResourceString("Due_Date"),
+		Resource.getPlainResourceString("duration"),
 		Resource.getPlainResourceString("elapsed_time"),
 		Resource.getPlainResourceString("Days_Left"),
 		Resource.getPlainResourceString("Description"),
 		Resource.getPlainResourceString("project") }, new Class[] {
 		java.lang.Integer.class, java.lang.String.class,
 		java.lang.String.class, java.lang.String.class,
-		java.lang.Integer.class, Date.class, Date.class,
+		java.lang.Integer.class, Date.class, Date.class, Integer.class,
 		java.lang.Integer.class, java.lang.Integer.class,
 		java.lang.String.class, java.lang.String.class }));
 
@@ -865,17 +857,19 @@ public class TaskListPanel extends JPanel implements Model.Listener {
 		new PopupMenuHelper.Entry(getAL(close), "Close") });
 
 	// set column widths
-	taskTable.getColumnModel().getColumn(0).setPreferredWidth(80);
+	taskTable.getColumnModel().getColumn(0).setPreferredWidth(50);
 	taskTable.getColumnModel().getColumn(1).setPreferredWidth(80);
 	taskTable.getColumnModel().getColumn(2).setPreferredWidth(80);
 	taskTable.getColumnModel().getColumn(3).setPreferredWidth(80);
+	taskTable.getColumnModel().getColumn(4).setPreferredWidth(50);
 	taskTable.getColumnModel().getColumn(5).setPreferredWidth(100);
 	taskTable.getColumnModel().getColumn(6).setPreferredWidth(100);
-	taskTable.getColumnModel().getColumn(7).setPreferredWidth(80);
-	taskTable.getColumnModel().getColumn(8).setPreferredWidth(80);
-	taskTable.getColumnModel().getColumn(9).setPreferredWidth(400);
-	taskTable.getColumnModel().getColumn(10).setPreferredWidth(80);
-	taskTable.setPreferredScrollableViewportSize(new Dimension(900, 400));
+	taskTable.getColumnModel().getColumn(7).setPreferredWidth(60);
+	taskTable.getColumnModel().getColumn(8).setPreferredWidth(60);
+	taskTable.getColumnModel().getColumn(9).setPreferredWidth(60);
+	taskTable.getColumnModel().getColumn(10).setPreferredWidth(400);
+	taskTable.getColumnModel().getColumn(11).setPreferredWidth(80);
+	taskTable.setPreferredScrollableViewportSize(new Dimension(1200, 400));
 
 	refresh();
 

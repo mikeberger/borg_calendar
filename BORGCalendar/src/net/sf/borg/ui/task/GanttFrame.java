@@ -83,9 +83,14 @@ public class GanttFrame extends View {
 			dd = t.getDueDate();
 		    if (dd == null)
 			dd = p.getDueDate();
-		    addChartItem(sched, st.getDescription(), t.getStartDate(), dd);
+		    Date sd = st.getStartDate();
+		    if( sd == null )
+			sd = t.getStartDate();
+		    if( sd == null )
+			sd = p.getStartDate();
+		    addChartItem(sched, st.getDescription(), sd, dd);
 		    if (st.getCloseDate() != null) {
-			addChartItem(actual, st.getDescription(), t.getStartDate(),
+			addChartItem(actual, st.getDescription(), sd,
 				st.getCloseDate());
 		    }
 		}
