@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JMenuBar;
@@ -351,6 +352,7 @@ class ProjectView extends DockableView {
 	});
 
 	jPanel4.add(jButton2, jButton2.getName());
+	jPanel4.add(getGanttbutton());
 
 
 	gridBagConstraints26.gridx = 2;
@@ -627,6 +629,47 @@ class ProjectView extends DockableView {
 	    statebox.setSelectedItem(state);
 	    statebox.setEnabled(true);
 
+	}
+
+    }
+    
+    private JButton ganttbutton;
+    private JButton getGanttbutton() {
+        if (ganttbutton == null) {
+            ganttbutton = new JButton();
+            ganttbutton.setText(Resource.getPlainResourceString("GANTT"));
+            //ganttbutton.setIcon(new ImageIcon(getClass().getResource("/resource/Add16.gif")));
+            ganttbutton.addActionListener(new java.awt.event.ActionListener() {
+    	    public void actionPerformed(java.awt.event.ActionEvent e) {
+    		ganttActionPerformed(e);
+    	    }
+    	});
+        }
+        return ganttbutton;
+    }
+    
+    private void ganttActionPerformed(java.awt.event.ActionEvent evt) {
+
+	// get the task number from column 0 of the selected row
+	 String num = itemtext.getText();
+	 if( num.equals("NEW"))
+	     return;
+
+	int pnum = Integer.parseInt(num);
+	try {
+	    // force close of the task
+	    TaskModel taskmod_ = TaskModel.getReference();
+	    Project p = taskmod_.getProject(pnum);
+	    GanttFrame.showChart(p);
+	} catch (ClassNotFoundException cnf)
+	{
+	    Errmsg.notice(Resource.getPlainResourceString("borg_jasp"));   
+	} catch (NoClassDefFoundError r) {
+	    Errmsg.notice(Resource.getPlainResourceString("borg_jasp"));
+	} catch (Warning w) {
+	    Errmsg.notice(w.getMessage());
+	} catch (Exception e) {
+	    Errmsg.errmsg(e);
 	}
 
     }
