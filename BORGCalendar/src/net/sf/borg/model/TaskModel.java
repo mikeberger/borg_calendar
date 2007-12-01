@@ -740,7 +740,6 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 		}
 	    } else if (ch.name().equals("Project")) {
 		Project p = (Project) pa.fromXml(ch);
-		Integer id = p.getId();
 		try {
 		    TaskDB sdb = (TaskDB) db_;
 		    sdb.addProject(p);

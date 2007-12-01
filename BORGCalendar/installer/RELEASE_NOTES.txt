@@ -7,8 +7,10 @@ The project home page is http://borg-calendar.sourceforge.net
 ********************************
 Database Change for MySQL users
 ********************************
-MySQL users need to add a field to the memos table via the following SQL:
+MySQL users need to change the memos and projects tables via the following SQL:
 	alter table memos add private integer default '0' NOT NULL;
+	alter table projects add parent integer default NULL;
+	alter table projects add FOREIGN KEY (parent, username) REFERENCES projects ( id, username ) ON DELETE CASCADE;
 
 HSQLDB databases will be updated automatically by BORG.
 

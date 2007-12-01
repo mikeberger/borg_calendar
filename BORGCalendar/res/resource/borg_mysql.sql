@@ -76,7 +76,10 @@ CREATE TABLE projects (
   description text NOT NULL,
   category varchar(10) default NULL,
   status varchar(10) NOT NULL default '',
+  parent integer default NULL,
   PRIMARY KEY  (id,username),
+  FOREIGN KEY (parent, username) REFERENCES projects ( id, username )
+     ON DELETE CASCADE,
   KEY `username` (`username`)
 );
 
