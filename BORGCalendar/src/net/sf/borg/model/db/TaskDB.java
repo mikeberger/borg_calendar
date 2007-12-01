@@ -41,5 +41,7 @@ public interface TaskDB {
     public void updateProject(Project p) throws Exception;
     
     public int nextProjectKey() throws Exception;
+    
+    public Collection getSubProjects(int projid) throws Exception;
 
 }

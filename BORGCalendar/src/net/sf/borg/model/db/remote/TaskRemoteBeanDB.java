@@ -87,5 +87,11 @@ public class TaskRemoteBeanDB extends RemoteBeanDB implements TaskDB {
 	call("updateSubTask",s);
 	
     }
+    
+    public final synchronized Collection getSubProjects(int projectid) throws Exception {
+	return (Collection) call("getSubProjects",new Integer(projectid));
+    }
+
+    
 
 }

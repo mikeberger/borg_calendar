@@ -28,6 +28,14 @@ public class Project extends KeyedBean implements java.io.Serializable {
 	private String Status_;
 	public String getStatus() { return( Status_ ); }
 	public void setStatus( String xx ){ Status_ = xx; }
+	
+	private Integer parent_;
+	public Integer getParent() {
+	    return parent_;
+	}
+	public void setParent(Integer parent) {
+	    this.parent_ = parent;
+	}
 
 	protected Object clone() {
 		Project dst = new Project();
@@ -38,6 +46,8 @@ public class Project extends KeyedBean implements java.io.Serializable {
 		dst.setDescription( getDescription() );
 		dst.setCategory( getCategory() );
 		dst.setStatus( getStatus() );
+		dst.setParent(getParent());
 		return(dst);
 	}
+	
 }

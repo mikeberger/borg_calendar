@@ -48,6 +48,9 @@ class TaskJdbcDB extends JdbcBeanDB implements BeanDB,TaskDB {
 	/** Creates a new instance of AppJdbcDB */
 	TaskJdbcDB(String url, String username) throws Exception {
 		super(url, username);
+		new JdbcDBUpgrader("select parent from projects;", 
+			"alter table projects add parent integer default NULL;" + 					
+			"alter table projects add FOREIGN KEY (parent, username) REFERENCES projects ( id, username ) ON DELETE CASCADE;").upgrade();
 	}
 
 	TaskJdbcDB(Connection conn) {
@@ -479,8 +482,8 @@ class TaskJdbcDB extends JdbcBeanDB implements BeanDB,TaskDB {
 	public void addProject(Project p) throws SQLException {
 	    PreparedStatement stmt = connection_
 	    .prepareStatement("INSERT INTO projects ( id, username, start_date, due_date,"
-		    + " description, category, status ) VALUES "
-		    + "( ?, ?, ?, ?, ?, ?, ?)");
+		    + " description, category, status, parent ) VALUES "
+		    + "( ?, ?, ?, ?, ?, ?, ?, ?)");
 
 	    stmt.setInt(1, p.getId().intValue());
 	    stmt.setString(2, username_);
@@ -500,6 +503,10 @@ class TaskJdbcDB extends JdbcBeanDB implements BeanDB,TaskDB {
 	    stmt.setString(5, p.getDescription());
 	    stmt.setString(6, p.getCategory());
 	    stmt.setString(7, p.getStatus());
+	    if( p.getParent() != null )
+		stmt.setInt(8, p.getParent().intValue());
+	    else
+		stmt.setNull(8,java.sql.Types.INTEGER);
 
 	    stmt.executeUpdate();
 
@@ -582,6 +589,30 @@ class TaskJdbcDB extends JdbcBeanDB implements BeanDB,TaskDB {
 	    }
 	    return lst;
 	}
+	
+	public Collection getSubProjects(int projectid) throws SQLException {
+	    PreparedStatement stmt = connection_
+	    .prepareStatement("SELECT * from projects where username = ? and parent = ?");
+	    ResultSet r = null;
+	    List lst = new ArrayList();
+	    try {
+
+		stmt.setString(1, username_);
+		stmt.setInt(2,projectid);
+		r = stmt.executeQuery();
+		while (r.next()) {
+		    Project s = (Project)createProject(r);
+		    lst.add(s);
+		}
+
+	    } finally {
+		if (r != null)
+		    r.close();
+		if (stmt != null)
+		    stmt.close();
+	    }
+	    return lst;
+	}
 
 	public int nextProjectKey() throws Exception {
 	    PreparedStatement stmt = connection_
@@ -597,10 +628,10 @@ class TaskJdbcDB extends JdbcBeanDB implements BeanDB,TaskDB {
 	public void updateProject(Project s) throws SQLException {
 	    PreparedStatement stmt = connection_
 	    .prepareStatement("UPDATE projects SET start_date = ?, due_date = ?,"
-		    + " description = ?, category = ?, status = ?  WHERE id = ? AND username = ? ");
+		    + " description = ?, category = ?, status = ?, parent = ?  WHERE id = ? AND username = ? ");
 
-	    stmt.setInt(6, s.getId().intValue());
-	    stmt.setString(7, username_);
+	    stmt.setInt(7, s.getId().intValue());
+	    stmt.setString(8, username_);
 
 	    java.util.Date sd = s.getStartDate();
 	    if (sd != null)
@@ -617,6 +648,10 @@ class TaskJdbcDB extends JdbcBeanDB implements BeanDB,TaskDB {
 	    stmt.setString(3, s.getDescription());
 	    stmt.setString(4, s.getCategory());
 	    stmt.setString(5, s.getStatus());
+	    if( s.getParent() != null )
+		stmt.setInt(6, s.getParent().intValue());
+	    else
+		stmt.setNull(6,java.sql.Types.INTEGER);
 	    stmt.executeUpdate();
 	    
 	}
@@ -633,7 +668,12 @@ class TaskJdbcDB extends JdbcBeanDB implements BeanDB,TaskDB {
 		s.setDescription(r.getString("description"));
 		s.setCategory(r.getString("category"));
 		s.setStatus(r.getString("status"));
-
+		int parent = r.getInt("parent");
+		if( r.wasNull())
+		    s.setParent(null);
+		else
+		    s.setParent(new Integer(parent));
+		
 		return s;
 	}
 }

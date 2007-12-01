@@ -90,6 +90,9 @@ CREATE CACHED TABLE projects (
   description longvarchar NOT NULL,
   category varchar(10) default NULL,
   status varchar(10) default '' NOT NULL,
+  parent integer default NULL,
+  FOREIGN KEY (parent, username) REFERENCES projects ( id, username )
+     ON DELETE CASCADE,
   PRIMARY KEY  (id,username)
 );
 CREATE INDEX project_user ON projects (username);

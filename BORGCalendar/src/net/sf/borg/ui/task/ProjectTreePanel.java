@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.Iterator;
 
 import javax.swing.ImageIcon;
@@ -22,6 +23,7 @@ import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
@@ -66,6 +68,25 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener, M
 
     }
 
+    static private void expandAll(JTree tree, TreePath parent, boolean expand) {
+        // Traverse children
+        TreeNode node = (TreeNode)parent.getLastPathComponent();
+        if (node.getChildCount() >= 0) {
+            for (Enumeration e=node.children(); e.hasMoreElements(); ) {
+                TreeNode n = (TreeNode)e.nextElement();
+                TreePath path = parent.pathByAddingChild(n);
+                expandAll(tree, path, expand);
+            }
+        }
+    
+        // Expansion or collapse must be done bottom-up
+        if (expand) {
+            tree.expandPath(parent);
+        } else {
+            tree.collapsePath(parent);
+        }
+    }
+
     /** Returns an ImageIcon, or null if the path was invalid. */
     protected static ImageIcon createImageIcon(String path) {
 	java.net.URL imgURL = ProjectTreePanel.class.getResource(path);
@@ -77,19 +98,21 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener, M
 	}
     }
 
+    private boolean expanded_ = true;
+
     private JPopupMenu projmenu = new JPopupMenu();
 
-    private JPopupMenu taskmenu = new JPopupMenu();
+    private JPopupMenu rootmenu = new JPopupMenu();
+
+    private JCheckBox showClosed = new JCheckBox(Resource.getPlainResourceString("show_closed"));
 
     private JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 
+    private JTree tree = null;
+    
     private JScrollPane treeView = null;
 
-    private JTree tree = null;
-
     private JScrollPane view_scroll = new JScrollPane(new JPanel());
-
-    private JCheckBox showClosed = new JCheckBox(Resource.getPlainResourceString("show_closed"));
     
     public ProjectTreePanel() {
 	super(new GridLayout(0, 1));
@@ -135,7 +158,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener, M
 	splitPane.setDividerLocation(200);
 	add(splitPane);
 	tree.addMouseListener(this);
-	JMenuItem jm = projmenu.add(Resource.getPlainResourceString("Add") + " " + Resource.getPlainResourceString("project"));
+	JMenuItem jm = rootmenu.add(Resource.getPlainResourceString("Add") + " " + Resource.getPlainResourceString("project"));
 	jm.addActionListener(new ActionListener() {
 
 	    public void actionPerformed(ActionEvent e) {
@@ -143,11 +166,38 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener, M
 	    }
 
 	});
-	JMenuItem jm2 = taskmenu.add(Resource.getPlainResourceString("Add") + " " + Resource.getPlainResourceString("task"));
+	
+	JMenuItem jmex = rootmenu.add(Resource.getPlainResourceString("expand"));
+	jmex.addActionListener(new ActionListener() {
+
+	    public void actionPerformed(ActionEvent e) {
+		expanded_ = true;
+		expandAll(expanded_);
+	    }
+
+	});
+	JMenuItem jmcol = rootmenu.add(Resource.getPlainResourceString("collapse"));
+	jmcol.addActionListener(new ActionListener() {
+
+	    public void actionPerformed(ActionEvent e) {
+		expanded_ = false;
+		expandAll(expanded_);
+	    }
+
+	});
+	JMenuItem jm2 = projmenu.add(Resource.getPlainResourceString("Add") + " " + Resource.getPlainResourceString("task"));
 	jm2.addActionListener(new ActionListener() {
 
 	    public void actionPerformed(ActionEvent e) {
 		add_task();
+	    }
+
+	});
+	JMenuItem jm3 = projmenu.add(Resource.getPlainResourceString("Add") + " " + Resource.getPlainResourceString("project"));
+	jm3.addActionListener(new ActionListener() {
+
+	    public void actionPerformed(ActionEvent e) {
+		add_subproject();
 	    }
 
 	});
@@ -158,16 +208,134 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener, M
 		refresh();
 	    } 
 	});
+	
+	expandAll(expanded_);
+    }
+
+    public void expandAll(boolean expand) {
+        TreeNode root = (TreeNode)tree.getModel().getRoot();
+    
+        // Traverse tree from root
+        expandAll(tree, new TreePath(root), expand);
+    }
+    
+    public void mouseClicked(MouseEvent e) {
+	if (e.getButton() == MouseEvent.BUTTON1)
+	    return;
+
+	TreePath selPath = tree.getPathForLocation(e.getX(), e.getY());
+	DefaultMutableTreeNode node = (DefaultMutableTreeNode) selPath.getLastPathComponent();
+	if (node == null)
+	    return;
+
+	tree.setSelectionPath(selPath);
+	Object nodeobj = node.getUserObject();
+	if (!(nodeobj instanceof Node)) {
+	    rootmenu.show(this, e.getX(), e.getY());
+	    return;
+	}
+
+	Node mynode = (Node) node.getUserObject();
+
+	Object o = mynode.getObj();
+	if (o == null)
+	    return;
+	if (o instanceof Project)
+	    projmenu.show(this, e.getX(), e.getY());
+
+    }
+
+    public void mouseEntered(MouseEvent arg0) {
+    }
+
+    public void mouseExited(MouseEvent arg0) {
+    }
+
+    public void mousePressed(MouseEvent e) {
+    }
+
+    public void mouseReleased(MouseEvent arg0) {
+    }
+
+    public void refresh() {
+	DefaultMutableTreeNode top = new DefaultMutableTreeNode(Resource.getPlainResourceString("projects"));
+	createNodes(top);
+	// Create a tree that allows one selection at a time.
+	tree = new JTree(top);
+	tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+
+	// Listen for when the selection changes.
+	tree.addTreeSelectionListener(this);
+	treeView.setViewportView(tree);
+	tree.addMouseListener(this);
+	expandAll(expanded_);
+    }
+
+    public void remove() {
+
+    }
+
+    /** Required by TreeSelectionListener interface. */
+    public void valueChanged(TreeSelectionEvent e) {
+	Object o = getSelectedObject();
+	if (o == null)
+	    return;
+	if (o instanceof Task) {
+	    Task t = (Task) o;
+	    try {
+		TaskView tv = new TaskView(t, TaskView.T_CHANGE, t.getProject());
+		view_scroll.setViewportView(tv);
+	    } catch (Exception e1) {
+		Errmsg.errmsg(e1);
+		return;
+	    }
+	} else if (o instanceof Project) {
+	    Project p = (Project) o;
+	    try {
+		ProjectView pv = new ProjectView(p, ProjectView.T_CHANGE, null);
+		// splitPane.setBottomComponent(pv);
+		view_scroll.setViewportView(pv);
+	    } catch (Exception e1) {
+		Errmsg.errmsg(e1);
+		return;
+	    }
+	}
+
     }
 
     private void add_project() {
 	ProjectView pv;
 	try {
-	    pv = new ProjectView(null, ProjectView.T_ADD);
+	    pv = new ProjectView(null, ProjectView.T_ADD, null);
 	    view_scroll.setViewportView(pv);
 	} catch (Exception e) {
 	    Errmsg.errmsg(e);
 	}
+
+    }
+    
+    private void add_subproject() {
+	
+	Object o = getSelectedObject();
+	if (o == null)
+	    return;
+	if (o instanceof Project) {
+	    Project p = (Project) o;
+	    try {
+		ProjectView pv;
+		try {
+		    pv = new ProjectView(null, ProjectView.T_ADD, p.getId());
+		    view_scroll.setViewportView(pv);
+		} catch (Exception e) {
+		    Errmsg.errmsg(e);
+		}
+	    } catch (Exception e1) {
+		Errmsg.errmsg(e1);
+		return;
+	    }
+	}
+	
+	
 
     }
 
@@ -184,6 +352,48 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener, M
 		Errmsg.errmsg(e1);
 		return;
 	    }
+	}
+
+    }
+    
+    private void addProjectChildren(Project p, DefaultMutableTreeNode node) throws Exception
+    {
+	Collection tasks = TaskModel.getReference().getTasks(p.getId().intValue());
+	Iterator it2 = tasks.iterator();
+	while (it2.hasNext()) {
+	    Task t = (Task) it2.next();
+	    node.add(new DefaultMutableTreeNode(new Node("[" + t.getTaskNumber() + "]" + t.getDescription(), t)));
+	}
+	
+	Collection subpcoll = TaskModel.getReference().getSubProjects(p.getId().intValue());
+	it2 = subpcoll.iterator();
+	while (it2.hasNext()) {
+	    Project sp = (Project) it2.next();
+	    DefaultMutableTreeNode subnode = new DefaultMutableTreeNode(new Node(sp.getDescription(), sp));
+	    node.add(subnode);
+	    addProjectChildren(sp, subnode);
+	}
+	
+    }
+    
+    
+    private void createNodes(DefaultMutableTreeNode top) {
+
+	Collection projects;
+	try {
+	    projects = TaskModel.getReference().getProjects();
+	    Iterator it = projects.iterator();
+	    while (it.hasNext()) {
+		Project p = (Project) it.next();
+		if( !showClosed.isSelected() && TaskModel.isClosed(p))
+		    continue;
+		if( p.getParent() != null ) continue;
+		DefaultMutableTreeNode pnode = new DefaultMutableTreeNode(new Node(p.getDescription(), p));
+		top.add(pnode);
+		addProjectChildren(p, pnode);
+	    }
+	} catch (Exception e) {
+	    Errmsg.errmsg(e);
 	}
 
     }
@@ -205,113 +415,6 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener, M
 	return o;
     }
 
-    public void mouseClicked(MouseEvent e) {
-	if (e.getButton() == MouseEvent.BUTTON1)
-	    return;
-
-	TreePath selPath = tree.getPathForLocation(e.getX(), e.getY());
-	DefaultMutableTreeNode node = (DefaultMutableTreeNode) selPath.getLastPathComponent();
-	if (node == null)
-	    return;
-
-	tree.setSelectionPath(selPath);
-	Object nodeobj = node.getUserObject();
-	if (!(nodeobj instanceof Node)) {
-	    projmenu.show(this, e.getX(), e.getY());
-	    return;
-	}
-
-	Node mynode = (Node) node.getUserObject();
-
-	Object o = mynode.getObj();
-	if (o == null)
-	    return;
-	if (o instanceof Project)
-	    taskmenu.show(this, e.getX(), e.getY());
-
-    }
-
-    public void mouseEntered(MouseEvent arg0) {
-    }
-
-    public void mouseExited(MouseEvent arg0) {
-    }
-
-    public void mousePressed(MouseEvent e) {
-    }
-
-    public void mouseReleased(MouseEvent arg0) {
-    }
-
-    /** Required by TreeSelectionListener interface. */
-    public void valueChanged(TreeSelectionEvent e) {
-	Object o = getSelectedObject();
-	if (o == null)
-	    return;
-	if (o instanceof Task) {
-	    Task t = (Task) o;
-	    try {
-		TaskView tv = new TaskView(t, TaskView.T_CHANGE, t.getProject());
-		view_scroll.setViewportView(tv);
-	    } catch (Exception e1) {
-		Errmsg.errmsg(e1);
-		return;
-	    }
-	} else if (o instanceof Project) {
-	    Project p = (Project) o;
-	    try {
-		ProjectView pv = new ProjectView(p, ProjectView.T_CHANGE);
-		// splitPane.setBottomComponent(pv);
-		view_scroll.setViewportView(pv);
-	    } catch (Exception e1) {
-		Errmsg.errmsg(e1);
-		return;
-	    }
-	}
-
-    }
-
-    public void refresh() {
-	DefaultMutableTreeNode top = new DefaultMutableTreeNode(Resource.getPlainResourceString("projects"));
-	createNodes(top);
-	// Create a tree that allows one selection at a time.
-	tree = new JTree(top);
-	tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-
-	// Listen for when the selection changes.
-	tree.addTreeSelectionListener(this);
-	treeView.setViewportView(tree);
-	tree.addMouseListener(this);
-    }
-
-    private void createNodes(DefaultMutableTreeNode top) {
-
-	Collection projects;
-	try {
-	    projects = TaskModel.getReference().getProjects();
-	    Iterator it = projects.iterator();
-	    while (it.hasNext()) {
-		Project p = (Project) it.next();
-		if( !showClosed.isSelected() && TaskModel.isClosed(p))
-		    continue;
-		DefaultMutableTreeNode pnode = new DefaultMutableTreeNode(new Node(p.getDescription(), p));
-		top.add(pnode);
-		Collection tasks = TaskModel.getReference().getTasks(p.getId().intValue());
-		Iterator it2 = tasks.iterator();
-		while (it2.hasNext()) {
-		    Task t = (Task) it2.next();
-		    pnode.add(new DefaultMutableTreeNode(new Node("[" + t.getTaskNumber() + "]" + t.getDescription(), t)));
-		}
-	    }
-	} catch (Exception e) {
-	    Errmsg.errmsg(e);
-	}
-
-    }
-
-    public void remove() {
-
-    }
 
     // Set the icon for leaf nodes.
     /*

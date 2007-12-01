@@ -66,6 +66,21 @@ class ProjectView extends DockableView {
     // the different function values for calls to show task
     static int T_CLONE = 1;
 
+    static public Integer getProjectId(String s) throws Exception {
+	int i = s.indexOf(":");
+	if (i == -1)
+	    throw new Exception("Cannot parse project label");
+	String ss = s.substring(0, i);
+
+	int pid = Integer.parseInt(ss);
+	return new Integer(pid);
+
+    }
+
+    static public String getProjectString(Project p) {
+	return p.getId().toString() + ":" + p.getDescription();
+    }
+
     private JComboBox catbox = null;
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -80,6 +95,9 @@ class ProjectView extends DockableView {
     private javax.swing.JTextField description;
 
     private JDateChooser duedatechooser;
+
+    private JButton ganttbutton;
+
     private javax.swing.JTextField itemtext;
 
     private javax.swing.JButton jButton2;
@@ -108,6 +126,8 @@ class ProjectView extends DockableView {
 
     private JTextField openText = null;
 
+    private JComboBox projBox = new JComboBox();
+
     private JDateChooser startdatechooser;
 
     private javax.swing.JComboBox statebox;
@@ -118,7 +138,7 @@ class ProjectView extends DockableView {
 
     private JTextField totalText = null;
 
-    public ProjectView(Project p, int function) throws Exception {
+    public ProjectView(Project p, int function, Integer parentId) throws Exception {
 	super();
 	addModel(TaskModel.getReference());
 
@@ -135,7 +155,7 @@ class ProjectView extends DockableView {
 	    Errmsg.errmsg(e);
 	}
 
-	showProject(function, p);
+	showProject(function, p, parentId);
 
     }
 
@@ -181,6 +201,30 @@ class ProjectView extends DockableView {
 	this.fr_.dispose();
     }
 
+    private void ganttActionPerformed(java.awt.event.ActionEvent evt) {
+
+	// get the task number from column 0 of the selected row
+	String num = itemtext.getText();
+	if (num.equals("NEW"))
+	    return;
+
+	int pnum = Integer.parseInt(num);
+	try {
+	    TaskModel taskmod_ = TaskModel.getReference();
+	    Project p = taskmod_.getProject(pnum);
+	    GanttFrame.showChart(p);
+	} catch (ClassNotFoundException cnf) {
+	    Errmsg.notice(Resource.getPlainResourceString("borg_jasp"));
+	} catch (NoClassDefFoundError r) {
+	    Errmsg.notice(Resource.getPlainResourceString("borg_jasp"));
+	} catch (Warning w) {
+	    Errmsg.notice(w.getMessage());
+	} catch (Exception e) {
+	    Errmsg.errmsg(e);
+	}
+
+    }
+
     private JComboBox getCatbox() {
 	if (catbox == null) {
 	    catbox = new JComboBox();
@@ -188,7 +232,6 @@ class ProjectView extends DockableView {
 	return catbox;
     }
 
-  
     /**
      * This method initializes daysLeftText
      * 
@@ -200,6 +243,21 @@ class ProjectView extends DockableView {
 	    daysLeftText.setEditable(false);
 	}
 	return daysLeftText;
+    }
+
+    private JButton getGanttbutton() {
+	if (ganttbutton == null) {
+	    ganttbutton = new JButton();
+	    ganttbutton.setText(Resource.getPlainResourceString("GANTT"));
+	    // ganttbutton.setIcon(new
+	    // ImageIcon(getClass().getResource("/resource/Add16.gif")));
+	    ganttbutton.addActionListener(new java.awt.event.ActionListener() {
+		public void actionPerformed(java.awt.event.ActionEvent e) {
+		    ganttActionPerformed(e);
+		}
+	    });
+	}
+	return ganttbutton;
     }
 
     /**
@@ -230,7 +288,6 @@ class ProjectView extends DockableView {
 
     private void initComponents()// GEN-BEGIN:initComponents
     {
-	
 
 	GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
 	gridBagConstraints6.fill = GridBagConstraints.BOTH;
@@ -314,7 +371,7 @@ class ProjectView extends DockableView {
 	GridBagConstraints gridBagConstraints34 = new GridBagConstraints();
 	jPanel4 = new javax.swing.JPanel();
 	jButton2 = new javax.swing.JButton();
-	
+
 	jMenuBar1 = new javax.swing.JMenuBar();
 	jMenu1 = new javax.swing.JMenu();
 	jMenuItem1 = new javax.swing.JMenuItem();
@@ -358,7 +415,8 @@ class ProjectView extends DockableView {
 	jPanel4.add(getGanttbutton());
 
 	JButton projRptButton = new JButton();
-	//projRptButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Save16.gif")));
+	// projRptButton.setIcon(new
+	// javax.swing.ImageIcon(getClass().getResource("/resource/Save16.gif")));
 	ResourceHelper.setText(projRptButton, "Report");
 	projRptButton.addActionListener(new java.awt.event.ActionListener() {
 	    public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -434,10 +492,27 @@ class ProjectView extends DockableView {
 	jPanel3.add(getTotalText(), gridBagConstraints5);
 	jPanel3.add(getOpenText(), gridBagConstraints6);
 
-	
+	GridBagConstraints gridBagConstraints91 = new GridBagConstraints();
+	gridBagConstraints91.gridx = 2;
+	gridBagConstraints91.gridy = 6;
+	gridBagConstraints91.weightx = 1.0;
+	gridBagConstraints91.fill = java.awt.GridBagConstraints.BOTH;
+	gridBagConstraints91.insets = new java.awt.Insets(4, 4, 4, 4);
+
+	jPanel3.add(projBox, gridBagConstraints91);
+
+	if (!TaskModel.getReference().hasSubTasks())
+	    projBox.setEnabled(false);
+
+	JLabel plab = new JLabel(Resource.getPlainResourceString("parent"));
+	gridBagConstraints91.gridx = 1;
+	gridBagConstraints91.gridy = 6;
+	gridBagConstraints91.weightx = 0.0;
+	jPanel3.add(plab, gridBagConstraints91);
+
 	GridBagConstraints gridBagConstraints25 = new GridBagConstraints();
 	GridBagConstraints gridBagConstraints21 = new GridBagConstraints();
-	
+
 	gridBagConstraints21.gridx = 0;
 	gridBagConstraints21.gridy = 0;
 	gridBagConstraints21.fill = java.awt.GridBagConstraints.BOTH;
@@ -457,6 +532,26 @@ class ProjectView extends DockableView {
     {// GEN-HEADEREND:event_jButton2ActionPerformed
 	saveProject(evt);
     }// GEN-LAST:event_jButton2ActionPerformed
+
+    private void reportButtonActionPerformed(java.awt.event.ActionEvent evt) {
+
+	// get the task number from column 0 of the selected row
+	String num = itemtext.getText();
+	if (num.equals("NEW"))
+	    return;
+
+	int pnum = Integer.parseInt(num);
+	try {
+	    Map map = new HashMap();
+	    map.put("pid", new Integer(pnum));
+	    RunReport.runReport("proj", map);
+	} catch (NoClassDefFoundError r) {
+	    Errmsg.notice(Resource.getPlainResourceString("borg_jasp"));
+	} catch (Exception e) {
+	    Errmsg.errmsg(e);
+	}
+
+    }
 
     // save a task
     private void saveProject(java.awt.event.ActionEvent evt) {
@@ -516,6 +611,15 @@ class ProjectView extends DockableView {
 		p.setCategory(cat);
 	    }
 
+	    p.setParent(null);
+	    String proj = (String) projBox.getSelectedItem();
+	    try {
+		p.setParent(getProjectId(proj));
+
+	    } catch (Exception e) {
+		// no project selected
+	    }
+
 	    taskmod_.saveProject(p);
 
 	    // System.out.println(task.getTaskNumber());
@@ -523,7 +627,7 @@ class ProjectView extends DockableView {
 	    // refresh window from DB - will update task number for
 	    // new tasks and will set the list of available next states from
 	    // the task model
-	    showProject(T_CHANGE, p);
+	    showProject(T_CHANGE, p, null);
 	} catch (Warning w) {
 	    Errmsg.notice(w.getMessage());
 	} catch (Exception e) {
@@ -532,7 +636,20 @@ class ProjectView extends DockableView {
 
     }// GEN-LAST:event_savetask
 
-    private void showProject(int function, Project p) throws Exception {
+    private void showProject(int function, Project p, Integer parentId) throws Exception {
+
+	projBox.removeAllItems();
+	projBox.addItem("");
+	Collection projects = TaskModel.getReference().getProjects();
+	if (projects != null) {
+	    Iterator pi = projects.iterator();
+	    while (pi.hasNext()) {
+		Project p2 = (Project) pi.next();
+		if ((p == null || p.getId().intValue() != p2.getId().intValue())
+			&& p2.getStatus().equals(Resource.getPlainResourceString("OPEN")))
+		    projBox.addItem(getProjectString(p2));
+	    }
+	}
 
 	// if we are showing an existing task - fil; in the gui fields form it
 	if (p != null) {
@@ -586,6 +703,16 @@ class ProjectView extends DockableView {
 	    }
 	    openText.setText(Integer.toString(open));
 
+	    Integer pid = p.getParent();
+	    if (pid != null) {
+		Project par = TaskModel.getReference().getProject(pid.intValue());
+		if (TaskModel.isClosed(par)) {
+		    projBox.addItem(getProjectString(par));
+		}
+		projBox.setSelectedItem(getProjectString(par));
+
+	    }
+
 	} else // initialize new task
 	{
 
@@ -594,7 +721,7 @@ class ProjectView extends DockableView {
 	    itemtext.setEditable(false);
 
 	    // title
-	    title_ =  Resource.getPlainResourceString("NEW_Item");
+	    title_ = Resource.getPlainResourceString("NEW_Item");
 	    statebox.addItem(Resource.getPlainResourceString("OPEN"));
 	    statebox.setEnabled(false);
 	    catbox.setSelectedIndex(0);
@@ -603,6 +730,35 @@ class ProjectView extends DockableView {
 	    openText.setText("");
 	    // duedatechooser.setCalendar(new GregorianCalendar());
 	    // startdatechooser.setCalendar(new GregorianCalendar());
+
+	    if (parentId != null) {
+		Project par = TaskModel.getReference().getProject(parentId.intValue());
+		if (TaskModel.isClosed(par)) {
+		    projBox.addItem(getProjectString(par));
+		}
+		projBox.setSelectedItem(getProjectString(par));
+
+		String cat = par.getCategory();
+		if (cat != null && !cat.equals("")) {
+		    catbox.setSelectedItem(cat);
+		} else {
+		    catbox.setSelectedIndex(0);
+		}
+
+		GregorianCalendar gc = new GregorianCalendar();
+		Date dd = par.getDueDate();
+		if (dd != null) {
+		    gc.setTime(dd);
+		    duedatechooser.setCalendar(gc);
+		}
+
+		Date sd = par.getStartDate();
+		if (sd != null) {
+		    gc.setTime(sd);
+		    startdatechooser.setCalendar(gc);
+		}
+
+	    }
 
 	}
 
@@ -641,65 +797,6 @@ class ProjectView extends DockableView {
 	    statebox.setSelectedItem(state);
 	    statebox.setEnabled(true);
 
-	}
-
-    }
-    
-    private JButton ganttbutton;
-    private JButton getGanttbutton() {
-        if (ganttbutton == null) {
-            ganttbutton = new JButton();
-            ganttbutton.setText(Resource.getPlainResourceString("GANTT"));
-            //ganttbutton.setIcon(new ImageIcon(getClass().getResource("/resource/Add16.gif")));
-            ganttbutton.addActionListener(new java.awt.event.ActionListener() {
-    	    public void actionPerformed(java.awt.event.ActionEvent e) {
-    		ganttActionPerformed(e);
-    	    }
-    	});
-        }
-        return ganttbutton;
-    }
-    
-    private void ganttActionPerformed(java.awt.event.ActionEvent evt) {
-
-	// get the task number from column 0 of the selected row
-	 String num = itemtext.getText();
-	 if( num.equals("NEW"))
-	     return;
-
-	int pnum = Integer.parseInt(num);
-	try {
-	    TaskModel taskmod_ = TaskModel.getReference();
-	    Project p = taskmod_.getProject(pnum);
-	    GanttFrame.showChart(p);
-	} catch (ClassNotFoundException cnf)
-	{
-	    Errmsg.notice(Resource.getPlainResourceString("borg_jasp"));   
-	} catch (NoClassDefFoundError r) {
-	    Errmsg.notice(Resource.getPlainResourceString("borg_jasp"));
-	} catch (Warning w) {
-	    Errmsg.notice(w.getMessage());
-	} catch (Exception e) {
-	    Errmsg.errmsg(e);
-	}
-
-    }
-    private void reportButtonActionPerformed(java.awt.event.ActionEvent evt) {
-
-	// get the task number from column 0 of the selected row
-	 String num = itemtext.getText();
-	 if( num.equals("NEW"))
-	     return;
-
-	int pnum = Integer.parseInt(num);
-	try {
-	    Map map = new HashMap();
-	    map.put("pid", new Integer(pnum));
-	    RunReport.runReport("proj", map );
-	} catch (NoClassDefFoundError r) {
-	    Errmsg.notice(Resource.getPlainResourceString("borg_jasp"));
-	} catch (Exception e) {
-	    Errmsg.errmsg(e);
 	}
 
     }

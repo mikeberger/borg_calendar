@@ -808,6 +808,16 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 	return sdb.getTasks(projectid);
 
     }
+    
+    public Collection getSubProjects(int projectid) throws Exception {
+	if (db_ instanceof TaskDB == false)
+	    throw new NotSupportedWarning(Resource
+		    .getPlainResourceString("SubtaskNotSupported"));
+
+	TaskDB sdb = (TaskDB) db_;
+	return sdb.getSubProjects(projectid);
+
+    }
 
     public void deleteSubTask(int id) throws Exception {
 	if (db_ instanceof TaskDB == false)

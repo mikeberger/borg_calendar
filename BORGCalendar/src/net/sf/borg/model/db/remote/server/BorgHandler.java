@@ -149,6 +149,8 @@ public class BorgHandler {
 		result = ((TaskDB) beanDB).getSubTasks();
 	    } else if (cmd.equals("getTasks")) {
 		result = ((TaskDB) beanDB).getTasks(((Integer)parms.getArgs()).intValue());
+	    } else if (cmd.equals("getSubProjects")) {
+		result = ((TaskDB) beanDB).getSubProjects(((Integer)parms.getArgs()).intValue());
 	    } else if (cmd.equals("nextProjectKey")) {
 		result = new Integer(((TaskDB) beanDB).nextProjectKey());
 	    } else if (cmd.equals("nextSubTaskKey")) {

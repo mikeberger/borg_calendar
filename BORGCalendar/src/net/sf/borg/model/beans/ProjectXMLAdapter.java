@@ -22,6 +22,8 @@ public class ProjectXMLAdapter extends BeanXMLAdapter {
 			xt.appendChild("Category", o.getCategory());
 		if( o.getStatus() != null && !o.getStatus().equals(""))
 			xt.appendChild("Status", o.getStatus());
+		if( o.getParent() != null )
+			xt.appendChild("Parent", BeanXMLAdapter.toString(o.getParent()));
 		return( xt );
 	}
 
@@ -46,6 +48,8 @@ public class ProjectXMLAdapter extends BeanXMLAdapter {
 		val = xt.child("Status").value();
 		if( !val.equals("") )
 			ret.setStatus( val );
+		val = xt.child("Parent").value();
+		ret.setParent( BeanXMLAdapter.toInteger(val) );
 		return( ret );
 	}
 }

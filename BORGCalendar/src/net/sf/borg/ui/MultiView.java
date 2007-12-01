@@ -240,7 +240,9 @@ public class MultiView extends View  {
 	if (taskPanel != null && !taskPanel.isDisplayable()) {
 	    tabs_.addTab(Resource.getPlainResourceString("tasks"), taskPanel);
 	}
-	if (taskPanel != null)
+	if (ptPanel != null)
+	    getTabs().setSelectedComponent(ptPanel);
+	else if( taskPanel != null)
 	    getTabs().setSelectedComponent(taskPanel);
 	
 	
