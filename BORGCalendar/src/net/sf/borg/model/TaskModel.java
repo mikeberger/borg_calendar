@@ -50,6 +50,7 @@ import net.sf.borg.model.db.BeanDataFactoryFactory;
 import net.sf.borg.model.db.DBException;
 import net.sf.borg.model.db.IBeanDataFactory;
 import net.sf.borg.model.db.TaskDB;
+import net.sf.borg.model.db.jdbc.JdbcDB;
 
 public class TaskModel extends Model implements Model.Listener, Transactional {
 
@@ -596,6 +597,9 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 	SubtaskXMLAdapter sa = new SubtaskXMLAdapter();
 	TasklogXMLAdapter la = new TasklogXMLAdapter();
 	ProjectXMLAdapter pa = new ProjectXMLAdapter();
+	
+	JdbcDB.execSQL("SET REFERENTIAL_INTEGRITY FALSE;"); 
+
 
 	// for each appt - create an Appointment and store
 	for (int i = 1;; i++) {
@@ -738,16 +742,14 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 		Project p = (Project) pa.fromXml(ch);
 		Integer id = p.getId();
 		try {
-		    p.setId(null);
-		    saveProject(p);
-		    p.setId(id);
-		    saveProject(p);
+		    TaskDB sdb = (TaskDB) db_;
+		    sdb.addProject(p);
 		} catch (Exception e) {
 		    Errmsg.errmsg(e);
 		}
 	    }
 	}
-
+	JdbcDB.execSQL("SET REFERENTIAL_INTEGRITY TRUE;"); 
 	// refresh all views that are displaying appt data from this model
 	load_map();
 	refreshListeners();
