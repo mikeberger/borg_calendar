@@ -385,16 +385,19 @@ public class TaskListPanel extends JPanel implements Model.Listener {
 		if (pid != null) {
 		    Project p = TaskModel.getReference().getProject(
 			    pid.intValue());
-		    String tt = p.getDescription();
+		    if( p != null )
+		    {
+			String tt = p.getDescription();
 
-		    for (int i = 0; tt != null && i < tt.length(); i++) {
-			char c = tt.charAt(i);
-			if (c == '\n' || c == '\r') {
-			    ps += ' ';
-			    continue;
+			for (int i = 0; tt != null && i < tt.length(); i++) {
+			    char c = tt.charAt(i);
+			    if (c == '\n' || c == '\r') {
+				ps += ' ';
+				continue;
+			    }
+
+			    ps += c;
 			}
-
-			ps += c;
 		    }
 		}
 

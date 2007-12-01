@@ -31,35 +31,23 @@ public class GanttFrame extends View {
 	chartFrame.manageMySize(PrefName.GANTTSIZE);
     }
 
-    private static void addChartItem(TaskSeries s, String name, Date start,
-	    Date end) throws Warning {
+    private static void addChartItem(TaskSeries s, String name, Date start, Date end) throws Warning {
 	if (start == null || end == null)
 	    return;
 	try {
 	    s.add(new Task(name, new SimpleTimePeriod(start, end)));
 	} catch (IllegalArgumentException e) {
-	    throw new Warning(Resource
-		    .getPlainResourceString("TimePeriodException")
-		    + name);
+	    throw new Warning(Resource.getPlainResourceString("TimePeriodException") + name);
 	}
     }
 
-    private static IntervalCategoryDataset createDataset(Project p)
-	    throws Exception, Warning {
-
-	final TaskSeries sched = new TaskSeries(Resource
-		.getPlainResourceString("Scheduled"));
-	final TaskSeries actual = new TaskSeries(Resource
-		.getPlainResourceString("Actual"));
-
-	addChartItem(sched, Resource.getPlainResourceString("project") + ": "
-		+ p.getDescription(), p.getStartDate(), p.getDueDate());
-	Collection tasks = TaskModel.getReference().getTasks(
-		p.getId().intValue());
+    private static void addProject(Project p, TaskSeries sched, TaskSeries actual) throws Warning, Exception {
+	addChartItem(sched, Resource.getPlainResourceString("project") + ": " + p.getDescription(), p.getStartDate(), p
+		.getDueDate());
+	Collection tasks = TaskModel.getReference().getTasks(p.getId().intValue());
 	Iterator it = tasks.iterator();
 	while (it.hasNext()) {
-	    net.sf.borg.model.beans.Task t = (net.sf.borg.model.beans.Task) it
-		    .next();
+	    net.sf.borg.model.beans.Task t = (net.sf.borg.model.beans.Task) it.next();
 	    Date dd = t.getDueDate();
 
 	    if (dd == null)
@@ -67,14 +55,11 @@ public class GanttFrame extends View {
 	    String tlabel = Integer.toString(t.getTaskNumber().intValue()) + "-" + t.getDescription();
 	    addChartItem(sched, tlabel, t.getStartDate(), dd);
 	    if (TaskModel.isClosed(t))
-		addChartItem(actual, tlabel, t.getStartDate(), t
-			.getCD());
-	    
+		addChartItem(actual, tlabel, t.getStartDate(), t.getCD());
+
 	    String show_st = Prefs.getPref(PrefName.GANTT_SHOW_SUBTASKS);
-	    if( show_st.equals("true"))
-	    {
-		Collection sts = TaskModel.getReference().getSubTasks(
-			t.getTaskNumber().intValue());
+	    if (show_st.equals("true")) {
+		Collection sts = TaskModel.getReference().getSubTasks(t.getTaskNumber().intValue());
 		Iterator it2 = sts.iterator();
 		while (it2.hasNext()) {
 		    Subtask st = (Subtask) it2.next();
@@ -84,18 +69,34 @@ public class GanttFrame extends View {
 		    if (dd == null)
 			dd = p.getDueDate();
 		    Date sd = st.getStartDate();
-		    if( sd == null )
+		    if (sd == null)
 			sd = t.getStartDate();
-		    if( sd == null )
+		    if (sd == null)
 			sd = p.getStartDate();
 		    addChartItem(sched, st.getDescription(), sd, dd);
 		    if (st.getCloseDate() != null) {
-			addChartItem(actual, st.getDescription(), sd,
-				st.getCloseDate());
+			addChartItem(actual, st.getDescription(), sd, st.getCloseDate());
 		    }
 		}
 	    }
+
 	}
+
+	Collection subprojects = TaskModel.getReference().getSubProjects(p.getId().intValue());
+	Iterator spi = subprojects.iterator();
+	while (spi.hasNext()) {
+	    Project sp = (Project) spi.next();
+	    addProject(sp, sched, actual);
+	}
+
+    }
+
+    private static IntervalCategoryDataset createDataset(Project p) throws Exception, Warning {
+
+	final TaskSeries sched = new TaskSeries(Resource.getPlainResourceString("Scheduled"));
+	final TaskSeries actual = new TaskSeries(Resource.getPlainResourceString("Actual"));
+
+	addProject(p, sched, actual);
 
 	final TaskSeriesCollection collection = new TaskSeriesCollection();
 	collection.add(sched);
@@ -128,11 +129,11 @@ public class GanttFrame extends View {
 
     private JFreeChart createChart(String title, IntervalCategoryDataset dataset) {
 	final JFreeChart chart = ChartFactory.createGanttChart(title, // chart
-                                                                        // title
+		// title
 		"",// Resource.getPlainResourceString("Item"), // domain
-                        // axis label
+		// axis label
 		Resource.getPlainResourceString("Date"), // range axis
-                                                                // label
+		// label
 		dataset, // data
 		true, // include legend
 		true, // tooltips
