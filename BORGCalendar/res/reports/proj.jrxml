@@ -27,13 +27,23 @@
 		<parameterDescription><![CDATA[Project Id]]></parameterDescription>
 		<defaultValueExpression ><![CDATA[null]]></defaultValueExpression>
 	</parameter>
+	<parameter name="pid2" isForPrompting="true" class="java.lang.Integer"/>
+	<parameter name="pid3" isForPrompting="true" class="java.lang.Integer"/>
+	<parameter name="pid4" isForPrompting="false" class="java.lang.Integer"/>
+	<parameter name="pid5" isForPrompting="false" class="java.lang.Integer"/>
+	<parameter name="pid6" isForPrompting="false" class="java.lang.Integer"/>
+	<parameter name="pid7" isForPrompting="false" class="java.lang.Integer"/>
+	<parameter name="pid8" isForPrompting="false" class="java.lang.Integer"/>
+	<parameter name="pid9" isForPrompting="false" class="java.lang.Integer"/>
+	<parameter name="pid10" isForPrompting="false" class="java.lang.Integer"/>
 	<queryString><![CDATA[select p.id as pid, p.description as pdesc, p.status as pstatus, p.start_date as pstart, p.due_date as pdue,
 t.*, s.id as stid, s.due_date as stdue, s.create_date as ststart, s.description as sdesc, s.close_date as sclose
 from projects p, tasks t 
 left outer join subtasks s on s.task = t.tasknum 
 where 
 p.id = t.project and
-p.id = $P{pid}]]></queryString>
+p.id IN ( $P{pid}, $P{pid2}, $P{pid3}, $P{pid4}, $P{pid5}, $P{pid6}, $P{pid7}, $P{pid8}, $P{pid9}, $P{pid10} )
+ORDER BY pstart, pid]]></queryString>
 
 	<field name="PID" class="java.lang.Integer"/>
 	<field name="PDESC" class="java.lang.String"/>

@@ -592,7 +592,7 @@ class TaskJdbcDB extends JdbcBeanDB implements BeanDB,TaskDB {
 	
 	public Collection getSubProjects(int projectid) throws SQLException {
 	    PreparedStatement stmt = connection_
-	    .prepareStatement("SELECT * from projects where username = ? and parent = ?");
+	    .prepareStatement("SELECT * from projects where username = ? and parent = ? ORDER BY start_date");
 	    ResultSet r = null;
 	    List lst = new ArrayList();
 	    try {

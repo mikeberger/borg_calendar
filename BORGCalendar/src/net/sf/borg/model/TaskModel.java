@@ -819,6 +819,33 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 	return sdb.getSubProjects(projectid);
 
     }
+    
+    public Collection getAllSubProjects(int projectid) throws Exception {
+	Collection c = new ArrayList();
+	if (db_ instanceof TaskDB == false)
+	    throw new NotSupportedWarning(Resource
+		    .getPlainResourceString("SubtaskNotSupported"));
+	addSubProjectsToCollection( c, projectid);
+	return c;
+    }
+    
+    private void addSubProjectsToCollection(Collection c, int projectid) throws Exception
+    {
+
+	// add my children
+	Collection children = getSubProjects(projectid);
+	if( children.isEmpty()) return;
+	c.addAll(children);
+	
+	// add my children's children
+	Iterator it = children.iterator();
+	while( it.hasNext())
+	{
+	    Project p = (Project) it.next();
+	    addSubProjectsToCollection( c, p.getId().intValue());
+	}
+
+    }
 
     public void deleteSubTask(int id) throws Exception {
 	if (db_ instanceof TaskDB == false)

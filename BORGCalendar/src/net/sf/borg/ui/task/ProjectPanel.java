@@ -822,7 +822,15 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 	try {
 	    Map map = new HashMap();
 	    map.put("pid", pnum);
-	    RunReport.runReport("proj", map );
+	    Collection allChildren = TaskModel.getReference().getAllSubProjects(pnum.intValue());
+	    Iterator it = allChildren.iterator();
+	    for( int i = 2; i <= 10; i++)
+	    {
+		if( !it.hasNext()) break;
+		Project p = (Project) it.next();
+		map.put("pid" + i, p.getId());
+	    }
+	    RunReport.runReport("proj", map);
 	} catch (NoClassDefFoundError r) {
 	    Errmsg.notice(Resource.getPlainResourceString("borg_jasp"));
 	} catch (Exception e) {

@@ -544,6 +544,14 @@ class ProjectView extends DockableView {
 	try {
 	    Map map = new HashMap();
 	    map.put("pid", new Integer(pnum));
+	    Collection allChildren = TaskModel.getReference().getAllSubProjects(pnum);
+	    Iterator it = allChildren.iterator();
+	    for( int i = 2; i <= 10; i++)
+	    {
+		if( !it.hasNext()) break;
+		Project p = (Project) it.next();
+		map.put("pid" + i, p.getId());
+	    }
 	    RunReport.runReport("proj", map);
 	} catch (NoClassDefFoundError r) {
 	    Errmsg.notice(Resource.getPlainResourceString("borg_jasp"));
