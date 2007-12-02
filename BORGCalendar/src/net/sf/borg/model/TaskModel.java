@@ -1003,7 +1003,32 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 		    throw new Warning(Resource.getPlainResourceString("projdd_warning")+": "+t.getTaskNumber());
 		}
 	    }
+	    
+	    Collection children = TaskModel.getReference().getSubProjects(p.getId().intValue());
+	    Iterator it2 = children.iterator();
+	    while( it2.hasNext())
+	    {
+		Project child = (Project) it2.next();
+		if( p.getDueDate() != null && child.getDueDate() != null && !TaskModel.isClosed(child) && DateUtil.isAfter( child.getDueDate(), p.getDueDate()))
+		{
+		    throw new Warning(Resource.getPlainResourceString("projchild_warning")+": "+ child.getId().intValue());
+		}
+	    }
 	}
+	
+	// validate against parent
+	if( p.getParent() != null )
+	{
+	    Project par = TaskModel.getReference().getProject(p.getParent().intValue());
+	    if( par != null )
+	    {
+		if( p.getDueDate() != null && par.getDueDate() != null && DateUtil.isAfter( p.getDueDate(), par.getDueDate()))
+		{
+		    throw new Warning(Resource.getPlainResourceString("projpar_warning"));
+		}
+	    }
+	}
+	   
 
 	if (p.getId() != null && p.getStatus().equals(Resource.getPlainResourceString("CLOSED"))) {
 	    // make sure that all tasks are closed

@@ -29,6 +29,7 @@ import javax.swing.tree.TreeSelectionModel;
 
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Resource;
+import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.Model;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.beans.Project;
@@ -362,13 +363,17 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener, M
 	Iterator it2 = tasks.iterator();
 	while (it2.hasNext()) {
 	    Task t = (Task) it2.next();
-	    node.add(new DefaultMutableTreeNode(new Node("[" + t.getTaskNumber() + "]" + t.getDescription(), t)));
+	    if( !CategoryModel.getReference().isShown(t.getCategory()))
+		    continue;
+	    node.add(new DefaultMutableTreeNode(new Node("[" + t.getTaskNumber() + "] " + t.getDescription(), t)));
 	}
 	
 	Collection subpcoll = TaskModel.getReference().getSubProjects(p.getId().intValue());
 	it2 = subpcoll.iterator();
 	while (it2.hasNext()) {
 	    Project sp = (Project) it2.next();
+	    if( !CategoryModel.getReference().isShown(sp.getCategory()))
+		    continue;
 	    DefaultMutableTreeNode subnode = new DefaultMutableTreeNode(new Node(sp.getDescription(), sp));
 	    node.add(subnode);
 	    addProjectChildren(sp, subnode);
@@ -386,6 +391,8 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener, M
 	    while (it.hasNext()) {
 		Project p = (Project) it.next();
 		if( !showClosed.isSelected() && TaskModel.isClosed(p))
+		    continue;
+		if( !CategoryModel.getReference().isShown(p.getCategory()))
 		    continue;
 		if( p.getParent() != null ) continue;
 		DefaultMutableTreeNode pnode = new DefaultMutableTreeNode(new Node(p.getDescription(), p));

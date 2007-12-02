@@ -480,7 +480,7 @@ public class TodoView extends DockableView implements Prefs.Listener {
 		    Object[] ro = new Object[5];
 		    ro[0] = pj.getDueDate();
 		    ro[1] = btstring;
-		    ro[2] = "";
+		    ro[2] = pj.getCategory();
 		    ro[3] = "navy";
 		    ro[4] = null;
 
