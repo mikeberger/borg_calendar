@@ -363,7 +363,6 @@ public class AppointmentModel extends Model implements Model.Listener {
     public Vector get_srch(String s, boolean case_sensitive) {
 
 	Vector res = new Vector();
-	String uncat = CategoryModel.UNCATEGORIZED;
 	try {
 
 	    // load all appts into appt list
@@ -373,13 +372,7 @@ public class AppointmentModel extends Model implements Model.Listener {
 		Appointment appt = (Appointment) itr.next();
 
 		// if category set, filter appts
-
-		String cat = appt.getCategory();
-
-		if (cat == null || cat.equals(""))
-		    cat = uncat;
-
-		if (!CategoryModel.getReference().isShown(cat)) {
+		if (!CategoryModel.getReference().isShown(appt.getCategory())) {
 		    continue;
 		}
 
@@ -507,7 +500,6 @@ public class AppointmentModel extends Model implements Model.Listener {
     // get a vector containing all of the todo appts in the DB
     public Vector get_todos() {
 
-	String uncat = CategoryModel.UNCATEGORIZED;
 	Vector av = new Vector();
 	try {
 
@@ -526,11 +518,7 @@ public class AppointmentModel extends Model implements Model.Listener {
 		    continue;
 
 		// if category set, filter appts
-
-		String cat = appt.getCategory();
-		if (cat == null || cat.equals(""))
-		    cat = uncat;
-		if (!CategoryModel.getReference().isShown(cat)) {
+		if (!CategoryModel.getReference().isShown(appt.getCategory())) {
 		    continue;
 		}
 
@@ -611,7 +599,6 @@ public class AppointmentModel extends Model implements Model.Listener {
     private void buildMap() throws Exception {
 	// erase the current map
 	map_.clear();
-	String uncat = CategoryModel.UNCATEGORIZED;
 
 	// get the year for later
 	GregorianCalendar cal = new GregorianCalendar();
@@ -625,10 +612,7 @@ public class AppointmentModel extends Model implements Model.Listener {
 
 	    while (itr.hasNext()) {
 		Appointment appt = (Appointment) itr.next();
-		String cat = appt.getCategory();
-		if (cat == null || cat.equals(""))
-		    cat = uncat;
-		if (!CategoryModel.getReference().isShown(cat)) {
+		if (!CategoryModel.getReference().isShown(appt.getCategory())) {
 		    continue;
 		}
 

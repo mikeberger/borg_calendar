@@ -291,11 +291,7 @@ public class TaskListPanel extends JPanel implements Model.Listener {
 		}
 
 		// category
-		String cat = task.getCategory();
-		if (cat == null || cat.equals(""))
-		    cat = CategoryModel.UNCATEGORIZED;
-
-		if (!CategoryModel.getReference().isShown(cat))
+		if (!CategoryModel.getReference().isShown(task.getCategory()))
 		    continue;
 
 		// filter on user filter string

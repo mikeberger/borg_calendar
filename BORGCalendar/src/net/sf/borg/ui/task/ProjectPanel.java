@@ -208,11 +208,7 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 		    continue;
 
 		// category
-		String cat = p.getCategory();
-		if (cat == null || cat.equals(""))
-		    cat = CategoryModel.UNCATEGORIZED;
-
-		if (!CategoryModel.getReference().isShown(cat))
+		if (!CategoryModel.getReference().isShown(p.getCategory()))
 		    continue;
 
 		// if we get here - we are displaying this task as a row

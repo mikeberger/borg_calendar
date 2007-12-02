@@ -462,11 +462,8 @@ public class TodoView extends DockableView implements Prefs.Listener {
 			continue;
 		    if (pj.getStatus().equals(Resource.getPlainResourceString("CLOSED")))
 			continue;
-		    String cat = pj.getCategory();
-		    if (cat == null || cat.equals(""))
-			cat = CategoryModel.UNCATEGORIZED;
 
-		    if (!CategoryModel.getReference().isShown(cat))
+		    if (!CategoryModel.getReference().isShown(pj.getCategory()))
 			continue;
 
 		    // build a string for the table - BT<task number> +

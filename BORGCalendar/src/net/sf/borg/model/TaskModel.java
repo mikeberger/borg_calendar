@@ -188,11 +188,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 		// for each task, get state and skip CLOSED or PR tasks
 		if( isClosed(mr)) continue;
 
-		String cat = mr.getCategory();
-		if (cat == null || cat.equals(""))
-		    cat = CategoryModel.UNCATEGORIZED;
-
-		if (!CategoryModel.getReference().isShown(cat))
+		if (!CategoryModel.getReference().isShown(mr.getCategory()))
 		    continue;
 
 		// use task due date to build a day key
@@ -229,11 +225,8 @@ public class TaskModel extends Model implements Model.Listener, Transactional {
 		    if (pj.getStatus().equals(
 			    Resource.getPlainResourceString("CLOSED")))
 			continue;
-		    String cat = pj.getCategory();
-		    if (cat == null || cat.equals(""))
-			cat = CategoryModel.UNCATEGORIZED;
 
-		    if (!CategoryModel.getReference().isShown(cat))
+		    if (!CategoryModel.getReference().isShown(pj.getCategory()))
 			continue;
 
 		    // use task due date to build a day key

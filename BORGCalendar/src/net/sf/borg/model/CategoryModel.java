@@ -80,6 +80,8 @@ public class CategoryModel extends Model {
     
     public boolean isShown(String cat )
     {
+	if (cat == null || cat.equals(""))
+	    cat = CategoryModel.UNCATEGORIZED;
         if( shownCategories_.contains(cat))
             return true;
         return false;
