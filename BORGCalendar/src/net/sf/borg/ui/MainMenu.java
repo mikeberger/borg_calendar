@@ -31,7 +31,9 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.net.URL;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.swing.Box;
@@ -60,6 +62,7 @@ import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.MemoModel;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.beans.Appointment;
+import net.sf.borg.model.beans.Project;
 import net.sf.borg.model.beans.Task;
 import net.sf.borg.model.db.BeanDataFactoryFactory;
 import net.sf.borg.ui.address.AddrListView;
@@ -67,6 +70,7 @@ import net.sf.borg.ui.calendar.TodoView;
 import net.sf.borg.ui.task.TaskConfigurator;
 import net.sf.borg.ui.util.OverwriteConfirm;
 import net.sf.borg.ui.util.ScrolledDialog;
+import net.sf.borg.ui.util.TableSorter;
 
 public class MainMenu {
     private JMenu ActionMenu = new javax.swing.JMenu();
@@ -197,7 +201,7 @@ public class MainMenu {
     }
 
     public MainMenu() {
-	
+
 	menuBar.setBorder(new javax.swing.border.BevelBorder(javax.swing.border.BevelBorder.RAISED));
 	ActionMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Application16.gif")));
 	ResourceHelper.setText(ActionMenu, "Action");
@@ -232,7 +236,7 @@ public class MainMenu {
 	});
 
 	ActionMenu.add(MemoMI);
-	
+
 	JMenuItem TaskMI = new JMenuItem();
 	TaskMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Preferences16.gif")));
 	ResourceHelper.setText(TaskMI, "tasks");
@@ -243,7 +247,7 @@ public class MainMenu {
 	});
 
 	ActionMenu.add(TaskMI);
-	
+
 	SearchMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Find16.gif")));
 	ResourceHelper.setText(SearchMI, "srch");
 	SearchMI.addActionListener(new java.awt.event.ActionListener() {
@@ -265,7 +269,6 @@ public class MainMenu {
 
 	ActionMenu.add(PrintMI);
 
-	
 	syncMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Refresh16.gif")));
 	ResourceHelper.setText(syncMI, "Synchronize");
 	syncMI.addActionListener(new java.awt.event.ActionListener() {
@@ -285,7 +288,7 @@ public class MainMenu {
 	});
 
 	ActionMenu.add(sqlMI);
-	
+
 	JMenuItem closeTabMI = new JMenuItem();
 	closeTabMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Delete16.gif")));
 	ResourceHelper.setText(closeTabMI, "close_tabs");
@@ -296,17 +299,17 @@ public class MainMenu {
 	});
 
 	ActionMenu.add(closeTabMI);
-/*
-	JMenuItem newWindowMI = new JMenuItem();
-	ResourceHelper.setText(newWindowMI, "New_Window");
-	newWindowMI.addActionListener(new java.awt.event.ActionListener() {
-	    public void actionPerformed(java.awt.event.ActionEvent evt) {
-		MultiView.openNewView();
-	    }
-	});
+	/*
+		JMenuItem newWindowMI = new JMenuItem();
+		ResourceHelper.setText(newWindowMI, "New_Window");
+		newWindowMI.addActionListener(new java.awt.event.ActionListener() {
+		    public void actionPerformed(java.awt.event.ActionEvent evt) {
+			MultiView.openNewView();
+		    }
+		});
 
-	ActionMenu.add(newWindowMI);
-*/
+		ActionMenu.add(newWindowMI);
+	*/
 	exitMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Stop16.gif")));
 	ResourceHelper.setText(exitMenuItem, "Exit");
 	exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -321,7 +324,7 @@ public class MainMenu {
 
 	OptionMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Preferences16.gif")));
 	ResourceHelper.setText(OptionMenu, "Options");
-	
+
 	ResourceHelper.setText(editPrefsMenuItem, "ep");
 	editPrefsMenuItem.addActionListener(new java.awt.event.ActionListener() {
 	    public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -329,7 +332,7 @@ public class MainMenu {
 	    }
 	});
 	OptionMenu.add(editPrefsMenuItem);
-	
+
 	JMenuItem exportPrefsMI = new JMenuItem();
 	exportPrefsMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Export16.gif")));
 	ResourceHelper.setText(exportPrefsMI, "export_prefs");
@@ -339,7 +342,7 @@ public class MainMenu {
 	    }
 	});
 	OptionMenu.add(exportPrefsMI);
-	
+
 	JMenuItem mportPrefsMI = new JMenuItem();
 	mportPrefsMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Import16.gif")));
 	ResourceHelper.setText(mportPrefsMI, "import_prefs");
@@ -392,7 +395,6 @@ public class MainMenu {
 	tsm.add(resetst);
 	OptionMenu.add(tsm);
 	menuBar.add(OptionMenu);
-
 
 	catmenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Preferences16.gif")));
 	ResourceHelper.setText(catmenu, "Categories");
@@ -543,7 +545,6 @@ public class MainMenu {
 	menuBar.add(getReportMenu());
 	menuBar.add(Box.createHorizontalGlue());
 
-	
 	if (dbtype.equals("local")) {
 	    JMenu warning = new JMenu();
 	    warning.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/redball.gif")));
@@ -597,7 +598,8 @@ public class MainMenu {
 	ResourceHelper.setText(rlsnotes, "rlsnotes");
 	rlsnotes.addActionListener(new java.awt.event.ActionListener() {
 	    public void actionPerformed(java.awt.event.ActionEvent evt) {
-		MultiView.getMainView().addView(new HelpScreen("/resource/RELEASE_NOTES.txt",Resource.getPlainResourceString("rlsnotes")));
+		MultiView.getMainView().addView(
+			new HelpScreen("/resource/RELEASE_NOTES.txt", Resource.getPlainResourceString("rlsnotes")));
 	    }
 	});
 
@@ -661,8 +663,7 @@ public class MainMenu {
 	    info += Resource.getPlainResourceString("tasks") + ": " + TaskModel.getReference().getTasks().size() + "\n";
 	    info += Resource.getPlainResourceString("projects") + ": " + TaskModel.getReference().getProjects().size() + "\n";
 	    info += Resource.getPlainResourceString("Memos") + ": " + MemoModel.getReference().getMemos().size() + "\n";
-	    
-	    
+
 	} catch (Exception e) {
 	    Errmsg.errmsg(e);
 	    return;
@@ -779,7 +780,7 @@ public class MainMenu {
 	}
 
     }
-    
+
     private void impPrefs(java.awt.event.ActionEvent evt) {
 	File file;
 	while (true) {
@@ -808,7 +809,6 @@ public class MainMenu {
 	}
 
     }
-
 
     private void expurlActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_expurlActionPerformed
     {// GEN-HEADEREND:event_expurlActionPerformed
@@ -850,7 +850,7 @@ public class MainMenu {
 
     private void chglogActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_chglogActionPerformed
     {// GEN-HEADEREND:event_chglogActionPerformed
-	MultiView.getMainView().addView(new HelpScreen("/resource/CHANGES.txt",Resource.getPlainResourceString("viewchglog")));
+	MultiView.getMainView().addView(new HelpScreen("/resource/CHANGES.txt", Resource.getPlainResourceString("viewchglog")));
 
     }// GEN-LAST:event_chglogActionPerformed
 
@@ -1068,9 +1068,9 @@ public class MainMenu {
 		+ Resource.getResourceString("translations") + "\n\n" + build_info + "\n" + "Java "
 		+ System.getProperty("java.version");
 	Object opts[] = { Resource.getPlainResourceString("Dismiss") /*
-                                                                         * ,
-                                                                         * Resource.getResourceString("Show_Detailed_Source_Version_Info")
-                                                                         */};
+	                                                                        * ,
+	                                                                        * Resource.getResourceString("Show_Detailed_Source_Version_Info")
+	                                                                        */};
 	JOptionPane.showOptionDialog(null, info, Resource.getResourceString("About_BORG"), JOptionPane.YES_NO_OPTION,
 		JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getClass().getResource("/resource/borg.jpg")), opts, opts[0]);
 
@@ -1093,22 +1093,21 @@ public class MainMenu {
 
     private void licsendActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_licsendActionPerformed
 	// show the open source license
-	MultiView.getMainView().addView(new HelpScreen("/resource/license.htm",Resource.getPlainResourceString("License")));
+	MultiView.getMainView().addView(new HelpScreen("/resource/license.htm", Resource.getPlainResourceString("License")));
 
     }// GEN-LAST:event_licsendActionPerformed
 
-
     private void PrintMIActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_PrintMonthMIActionPerformed
 
-	    MultiView.getMainView().print();
+	MultiView.getMainView().print();
 
     }
 
     /*private void printprevActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_printprevActionPerformed
     {
-	
-	    new MonthPreView(MultiView.getMainView().getMonth(), MultiView.getMainView().getYear());
-	
+    
+        new MonthPreView(MultiView.getMainView().getMonth(), MultiView.getMainView().getYear());
+    
     }*/
 
     private void SearchMIActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_SearchMIActionPerformed
@@ -1123,7 +1122,7 @@ public class MainMenu {
 	// ask borg class to bring up the todo window
 	try {
 	    TodoView tg = TodoView.getReference();
-	    MultiView.getMainView().addView(tg);    
+	    MultiView.getMainView().addView(tg);
 	} catch (Exception e) {
 	    Errmsg.errmsg(e);
 	}
@@ -1264,6 +1263,44 @@ public class MainMenu {
     private JMenu getReportMenu() {
 	JMenu m = new JMenu();
 	m.setText(Resource.getPlainResourceString("reports"));
+
+	JMenuItem prr = new JMenuItem();
+	prr.setText(Resource.getPlainResourceString("project_report"));
+	prr.addActionListener(new ActionListener() {
+
+	    public void actionPerformed(ActionEvent arg0) {
+
+		try {
+		    Collection projects = TaskModel.getReference().getProjects();
+		    Project p = (Project) BeanSelector.selectBean(projects, 
+			    new TableSorter(new String[] {
+				    Resource.getPlainResourceString("Item_#"), Resource.getPlainResourceString("Description")}, 
+					new Class[] { Integer.class, String.class }),
+					 new String[] { "Id", "Description" });
+		    if (p == null)
+			return;
+		    Map map = new HashMap();
+		    map.put("pid", p.getId());
+		    Collection allChildren = TaskModel.getReference().getAllSubProjects(p.getId().intValue());
+		    Iterator it = allChildren.iterator();
+		    for (int i = 2; i <= 10; i++) {
+			if (!it.hasNext())
+			    break;
+			Project sp = (Project) it.next();
+			map.put("pid" + i, sp.getId());
+		    }
+		    RunReport.runReport("proj", map);
+		} catch (NoClassDefFoundError r) {
+		    Errmsg.notice(Resource.getPlainResourceString("borg_jasp"));
+		} catch (Exception e) {
+		    Errmsg.errmsg(e);
+		}
+
+	    }
+
+	});
+	m.add(prr);
+
 	JMenuItem otr = new JMenuItem();
 	otr.setText(Resource.getPlainResourceString("open_tasks"));
 	otr.addActionListener(new ActionListener() {

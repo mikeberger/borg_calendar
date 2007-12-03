@@ -1,11 +1,19 @@
 Version 1.6.1 beta 2
 --------------------
 Feature [1833863] allow dragging of appts in the month view  
+Feature [1842095] add sub projects
 Feature [1833864] allow dragging of appts outside of grid in day/week views
 Feature [1834235] import/export of preferences  
 Feature [1834573] automatic backup
+Feature [1841894] display task and subtask duration column
+Feature [1841893] change subtask creation date to start date  
 Bug Fix [1833869] user colors not used in new views
-Bug Fix [1834857] error when emailing meeting notice  
+Bug Fix [1834857] error when emailing meeting notice 
+Bug Fix [1619520] today marker color doesn't update 
+Bug Fix [1842126] Task import bug
+Bug Fix [1840005] Palm Conduits will not work with Hotsync 6
+Bug Fix [1839373] Project status / localized value  
+  
 
 Version 1.6.1 Beta
 ------------------
