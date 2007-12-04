@@ -8,6 +8,9 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.ActionListener;
 import java.awt.font.TextAttribute;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
+import java.awt.image.BufferedImage;
 import java.text.AttributedString;
 import java.util.Calendar;
 import java.util.Date;
@@ -15,7 +18,9 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
@@ -34,6 +39,8 @@ public class NoteBox implements Draggable {
 
     private Icon todoIcon = null;
 
+    private String todoMarker = null;
+
     private Appointment appt = null;
 
     private Rectangle bounds, clip;
@@ -50,14 +57,20 @@ public class NoteBox implements Draggable {
 
 	String iconname = Prefs.getPref(PrefName.UCS_MARKER);
 	String use_marker = Prefs.getPref(PrefName.UCS_MARKTODO);
-	if (use_marker.equals("true") && (iconname.endsWith(".gif") || iconname.endsWith(".jpg"))) {
-	    todoIcon = new javax.swing.ImageIcon(getClass().getResource("/resource/" + iconname));
+	if (use_marker.equals("true")) {
+	    if (iconname.endsWith(".gif") || iconname.endsWith(".jpg")) {
+		todoIcon = new javax.swing.ImageIcon(getClass().getResource("/resource/" + iconname));
+	    } else {
+		todoMarker = iconname;
+	    }
 	}
     }
 
     public void delete() {
 	AppointmentModel.getReference().delAppt(appt.getKey());
     }
+
+    private int oldFontHeight = -1;
 
     public void draw(Graphics2D g2, Component comp) {
 
@@ -67,6 +80,29 @@ public class NoteBox implements Draggable {
 
 	Font sm_font = g2.getFont();
 	int smfontHeight = g2.getFontMetrics().getHeight();
+
+	// resize todoIcon if needed
+	if (oldFontHeight != smfontHeight) {
+	    if (todoIcon != null) {
+		try {
+		    // get image
+		    BufferedImage image1 = ImageIO.read(getClass().getResource("/resource/" + Prefs.getPref(PrefName.UCS_MARKER)));
+		    double size = image1.getHeight();
+		    
+		    // scale to 1/2 font height
+		    double scale = ((double) smfontHeight) / (2*size);
+		    AffineTransform tx = AffineTransform.getScaleInstance(scale, scale);
+		    AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BICUBIC);
+		    BufferedImage rImage = op.filter(image1, null);
+		    todoIcon = new ImageIcon(rImage);
+
+		} catch (Exception e) {
+		    e.printStackTrace();
+		}
+	    }
+	    oldFontHeight = smfontHeight;
+	}
+
 	Map stmap = new HashMap();
 	stmap.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
 	stmap.put(TextAttribute.FONT, sm_font);
@@ -104,8 +140,10 @@ public class NoteBox implements Draggable {
 		g2.setColor(new Color(Integer.parseInt(Prefs.getPref(PrefName.UCS_BRICK))));
 
 	    if (isTodo() && todoIcon != null) {
-		todoIcon.paintIcon(comp, g2, bounds.x, bounds.y + 8);
+		todoIcon.paintIcon(comp, g2, bounds.x, bounds.y + bounds.height/2);
 		g2.drawString(getText(), bounds.x + todoIcon.getIconWidth(), bounds.y + smfontHeight);
+	    } else if (isTodo() && todoMarker != null) {
+		g2.drawString(todoMarker + " " + getText(), bounds.x + 2, bounds.y + smfontHeight);
 	    } else {
 		g2.drawString(getText(), bounds.x + 2, bounds.y + smfontHeight);
 	    }

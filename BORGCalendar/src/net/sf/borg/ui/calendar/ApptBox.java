@@ -13,6 +13,9 @@ import java.awt.font.FontRenderContext;
 import java.awt.font.LineBreakMeasurer;
 import java.awt.font.TextAttribute;
 import java.awt.font.TextLayout;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
+import java.awt.image.BufferedImage;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 import java.util.ArrayList;
@@ -26,7 +29,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeSet;
 
+import javax.imageio.ImageIO;
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
@@ -259,6 +264,8 @@ public class ApptBox implements Draggable {
     private double right; // fraction of the available grid width at which
 
     private Icon todoIcon = null;
+    
+    private String todoMarker = null;
 
     private double top; // fraction of the available grid height at which
 
@@ -268,17 +275,25 @@ public class ApptBox implements Draggable {
 	date = d;
 	this.bounds = bounds;
 	this.clip = clip;
-	todoIcon = null;
+	
 	String iconname = Prefs.getPref(PrefName.UCS_MARKER);
 	String use_marker = Prefs.getPref(PrefName.UCS_MARKTODO);
-	if (use_marker.equals("true") && (iconname.endsWith(".gif") || iconname.endsWith(".jpg"))) {
-	    todoIcon = new javax.swing.ImageIcon(getClass().getResource("/resource/" + iconname));
+	if (use_marker.equals("true")) {
+	    if (iconname.endsWith(".gif") || iconname.endsWith(".jpg")) {
+		todoIcon = new javax.swing.ImageIcon(getClass().getResource("/resource/" + iconname));
+	    }
+	    else
+	    {
+		todoMarker = iconname;
+	    }
 	}
     }
 
     public void delete() {
 	AppointmentModel.getReference().delAppt(appt.getKey());
     }
+    
+    private int oldFontHeight = -1;
 
     public void draw(Graphics2D g2, Component comp) {
 	Stroke stroke = g2.getStroke();
@@ -287,9 +302,32 @@ public class ApptBox implements Draggable {
 	    g2.setClip(clip);
 
 	Font sm_font = g2.getFont();
+	int smfontHeight = g2.getFontMetrics().getHeight();
 	Map stmap = new HashMap();
 	stmap.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
 	stmap.put(TextAttribute.FONT, sm_font);
+	
+	// resize todoIcon if needed
+	if (oldFontHeight != smfontHeight) {
+	    if (todoIcon != null) {
+		try {
+		    // get image
+		    BufferedImage image1 = ImageIO.read(getClass().getResource("/resource/" + Prefs.getPref(PrefName.UCS_MARKER)));
+		    double size = image1.getHeight();
+		    
+		    // scale to 1/2 font height
+		    double scale = ((double) smfontHeight) / (2*size);
+		    AffineTransform tx = AffineTransform.getScaleInstance(scale, scale);
+		    AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BICUBIC);
+		    BufferedImage rImage = op.filter(image1, null);
+		    todoIcon = new ImageIcon(rImage);
+
+		} catch (Exception e) {
+		    e.printStackTrace();
+		}
+	    }
+	    oldFontHeight = smfontHeight;
+	}
 
 	// fill the box with color
 	g2.setColor(getBoxColor(boxnum));
@@ -334,8 +372,10 @@ public class ApptBox implements Draggable {
 	    g2.setColor(new Color(Integer.parseInt(Prefs.getPref(PrefName.UCS_BRICK))));
 
 	if (isTodo() && todoIcon != null) {
-	    todoIcon.paintIcon(comp, g2, bounds.x + radius, bounds.y + radius + 8);
+	    todoIcon.paintIcon(comp, g2, bounds.x + radius, bounds.y + radius +  smfontHeight/2);
 	    drawWrappedString(g2, getText(), bounds.x + radius + todoIcon.getIconWidth(), bounds.y + radius, bounds.width - radius);
+	} else if( isTodo() && todoMarker != null) {
+	    drawWrappedString(g2, todoMarker + " " + getText(),  bounds.x + radius, bounds.y + radius, bounds.width - radius);
 	} else {
 	    drawWrappedString(g2, getText(), bounds.x + radius, bounds.y + radius, bounds.width - radius);
 	}

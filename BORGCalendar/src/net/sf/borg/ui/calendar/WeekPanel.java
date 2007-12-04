@@ -175,8 +175,11 @@ public class WeekPanel extends JPanel implements Printable {
 	    if (pageIndex > 0)
 		return Printable.NO_SUCH_PAGE;
 	    Font sm_font = Font.decode(Prefs.getPref(PrefName.MONTHVIEWFONT));
-	    return (drawIt(g, pageFormat.getWidth(), pageFormat.getHeight(), pageFormat.getImageableWidth(), pageFormat
-		    .getImageableHeight(), pageFormat.getImageableX(), pageFormat.getImageableY(), sm_font));
+	    clearData();
+	    int ret = drawIt(g, pageFormat.getWidth(), pageFormat.getHeight(), pageFormat.getImageableWidth(), pageFormat
+		    .getImageableHeight(), pageFormat.getImageableX(), pageFormat.getImageableY(), sm_font);
+	    refresh();
+	    return ret;
 	}
 
 	public void refresh() {
