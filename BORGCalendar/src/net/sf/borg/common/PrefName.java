@@ -127,8 +127,8 @@ public class PrefName {
 		static public PrefName DEFFONT = new PrefName( "defaultfont", "");
 		static public PrefName APPTFONT = new PrefName( "apptfont", "SansSerif-10");		
 		static public PrefName PREVIEWFONT = new PrefName( "previewfont", "SansSerif-10");
-		static public PrefName DAYVIEWFONT = new PrefName( "dayviewfont", "SansSerif-8");
-		static public PrefName WEEKVIEWFONT = new PrefName( "weekviewfont", "SansSerif-8");
+		static public PrefName DAYVIEWFONT = new PrefName( "dayviewfont", "SansSerif-10");
+		static public PrefName WEEKVIEWFONT = new PrefName( "weekviewfont", "SansSerif-10");
 		static public PrefName MONTHVIEWFONT = new PrefName( "monthviewfont", "SansSerif-6");
 		static public PrefName LNF = new PrefName( "lnf", "com.jgoodies.looks.plastic.PlasticXPLookAndFeel");
 		static public PrefName NOLOCALE = new PrefName( "nolocale", "0");		
