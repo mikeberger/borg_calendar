@@ -6,7 +6,10 @@ Feature [1833864] allow dragging of appts outside of grid in day/week views
 Feature [1834235] import/export of preferences  
 Feature [1834573] automatic backup
 Feature [1841894] display task and subtask duration column
-Feature [1841893] change subtask creation date to start date  
+Feature [1841893] change subtask creation date to start date
+Bug Fix [1844200] Todo marker icon does not scale
+Bug Fix [1844197] Text todo marker functionality accidentally removed
+Bug Fix [1844194] day and week print is meesed up in 1.6.1 beta  
 Bug Fix [1833869] user colors not used in new views
 Bug Fix [1834857] error when emailing meeting notice 
 Bug Fix [1619520] today marker color doesn't update 
