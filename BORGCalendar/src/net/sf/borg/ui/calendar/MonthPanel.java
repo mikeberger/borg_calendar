@@ -215,7 +215,7 @@ public class MonthPanel extends JPanel implements Printable {
 	    setResizeBounds(0,0,0,0);
 	    
 	    g2.setColor(this.getBackground());
-	    g2.fillRect(0, caltop, (int)pageWidth-weekbutwidth, daytop-caltop);
+	    g2.fillRect(0, caltop, calright, daytop-caltop);
 	    g2.setColor(Color.black);
 	    
 	    // draw the day names centered in each column - no boxes drawn yet
