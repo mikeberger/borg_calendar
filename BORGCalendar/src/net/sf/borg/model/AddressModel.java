@@ -183,6 +183,7 @@ public class AddressModel extends Model {
     public void delete(Address addr, boolean refresh) throws Exception {
         
         try {
+        	LinkModel.getReference().deleteLinks(addr);
             String sync = Prefs.getPref( PrefName.PALM_SYNC);
             if( sync.equals("true"))
             {

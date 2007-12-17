@@ -72,7 +72,7 @@ public class FileBeanDataFactory implements IBeanDataFactory
 			else if (cls == Appointment.class)
 				creator = new ApptFileDB();
 			else
-				throw new IllegalArgumentException(cls.getName());
+				return null;
 				
 			creator.init(file,shared);
 			return creator;

@@ -1032,7 +1032,7 @@ public class TaskListPanel extends JPanel implements Model.Listener {
 	try {
 	    // get the task from the data model
 	    TaskModel taskmod_ = TaskModel.getReference();
-	    Task task = taskmod_.getMR(tasknum);
+	    Task task = taskmod_.getTask(tasknum);
 	    if (task == null)
 		return;
 
@@ -1050,7 +1050,7 @@ public class TaskListPanel extends JPanel implements Model.Listener {
 	try {
 	    // get the task
 	    TaskModel taskmod_ = TaskModel.getReference();
-	    Task task = taskmod_.getMR(tasknum);
+	    Task task = taskmod_.getTask(tasknum);
 	    if (task == null)
 		return;
 

@@ -63,8 +63,9 @@ import net.sf.borg.model.beans.Project;
 import net.sf.borg.model.beans.Subtask;
 import net.sf.borg.model.beans.Task;
 import net.sf.borg.model.beans.Tasklog;
-import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.DockableView;
+import net.sf.borg.ui.ResourceHelper;
+import net.sf.borg.ui.link.LinkPanel;
 import net.sf.borg.ui.util.DateDialog;
 import net.sf.borg.ui.util.PopupMenuHelper;
 import net.sf.borg.ui.util.StripedTable;
@@ -320,6 +321,8 @@ public class TaskView extends DockableView {
 	private javax.swing.JComboBox typebox;
 
 	private JComboBox projBox = new JComboBox();
+	
+	private LinkPanel attPanel;
 
 	/**
 	 * This method initializes jPanel
@@ -478,6 +481,8 @@ public class TaskView extends DockableView {
 					.getResourceString("Subtasks")));
 			stpanel.add(stscroll, gridBagConstraints4);
 			
+			
+			
 		}
 		return jPanel;
 	}
@@ -503,7 +508,7 @@ public class TaskView extends DockableView {
 			jSplitPane.setBottomComponent(ta);
 		}
 		jSplitPane.setPreferredSize(new Dimension(400, 400));
-		jSplitPane.setDividerLocation(100);
+		jSplitPane.setDividerLocation(200);
 		jSplitPane.setTopComponent(jTabbedPane1);
 	    }
 	    return jSplitPane;
@@ -619,6 +624,9 @@ public class TaskView extends DockableView {
 					false);
 		}
 
+		attPanel = new LinkPanel();
+		jTabbedPane1.addTab(Resource.getResourceString("links"), attPanel);
+		
 		jPanel3.setLayout(new java.awt.GridBagLayout());
 
 		jPanel3.setBorder(new javax.swing.border.TitledBorder(Resource
@@ -1244,7 +1252,7 @@ public class TaskView extends DockableView {
 			}
 
 			// save the task to the DB
-			Task orig = TaskModel.getReference().getMR(
+			Task orig = TaskModel.getReference().getTask(
 					task.getTaskNumber().intValue());
 			taskmod_.savetask(task);
 
@@ -1429,10 +1437,14 @@ public class TaskView extends DockableView {
 				projBox.setSelectedItem(getProjectString(p));
 				
 			}
+			
+			attPanel.setOwner(task);
 
 		} else // initialize new task
 		{
 
+			attPanel.setOwner(null);
+			
 			// task number = NEW
 			itemtext.setText("NEW");
 			itemtext.setEditable(false);

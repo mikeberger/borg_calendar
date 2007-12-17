@@ -674,6 +674,8 @@ class TaskJdbcDB extends JdbcBeanDB implements BeanDB,TaskDB {
 		else
 		    s.setParent(new Integer(parent));
 		
+		s.setKey(s.getId().intValue());
+		
 		return s;
 	}
 }

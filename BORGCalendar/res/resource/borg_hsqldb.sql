@@ -164,3 +164,14 @@ CREATE CACHED TABLE memos (
   PRIMARY KEY  (memoname,username)
 );
 CREATE INDEX memo_user ON memos (username);
+
+CREATE CACHED TABLE links (
+  id integer default '0' NOT NULL,
+  username varchar(25) NOT NULL,
+  linktype varchar(15) NOT NULL,
+  ownerkey integer default '0' NOT NULL,
+  ownertype varchar(15),
+  path varchar(250),
+  PRIMARY KEY  (id,username)
+);
+CREATE INDEX link_user ON links (username);

@@ -32,64 +32,64 @@ import net.sf.borg.common.Prefs;
  * @author Mohan Embar
  */
 public class BeanDataFactoryFactory {
-    /**
-         * Singleton.
-         */
-    public static BeanDataFactoryFactory getInstance() {
-	return instance;
-    }
-
-    public final IBeanDataFactory getFactory(StringBuffer dbdir,
-	    boolean shared) throws Exception {
-	String db = dbdir.toString();
-	String factoryClass = null;
-	if (db.startsWith("jdbc:")) {
-	    factoryClass = "net.sf.borg.model.db.jdbc.JdbcBeanDataFactory";
-	} else if (db.startsWith("remote:")) {
-	    factoryClass = "net.sf.borg.model.db.remote.RemoteBeanDataFactory";
-	} else {
-	    // Use default File DB; append parms to url
-	    factoryClass = "net.sf.borg.model.db.file.FileBeanDataFactory";
-	    dbdir.append("::").append(shared);
+	/**
+	 * Singleton.
+	 */
+	public static BeanDataFactoryFactory getInstance() {
+		return instance;
 	}
 
-	Method getInst = Class.forName(factoryClass).getMethod("getInstance",
-		null);
-	return (IBeanDataFactory) getInst.invoke(null, null);
-    }
+	public final IBeanDataFactory getFactory(StringBuffer dbdir, boolean shared)
+			throws Exception {
+		String db = dbdir.toString();
+		String factoryClass = null;
+		if (db.startsWith("jdbc:")) {
+			factoryClass = "net.sf.borg.model.db.jdbc.JdbcBeanDataFactory";
+		} else if (db.startsWith("remote:")) {
+			factoryClass = "net.sf.borg.model.db.remote.RemoteBeanDataFactory";
+		} else {
+			// Use default File DB; append parms to url
+			factoryClass = "net.sf.borg.model.db.file.FileBeanDataFactory";
+			dbdir.append("::").append(shared);
+		}
 
-    public static String buildDbDir() {
-	// get dir for DB
-	String dbdir = "";
-	String dbtype = Prefs.getPref(PrefName.DBTYPE);
-	if (dbtype.equals("local")) {
-	    dbdir = Prefs.getPref(PrefName.DBDIR);
-	} else if (dbtype.equals("remote")) {
-	    dbdir = "remote:" + Prefs.getPref(PrefName.DBURL);
-	} else if (dbtype.equals("hsqldb")) {
-	    String hdir = Prefs.getPref(PrefName.HSQLDBDIR);
-	    if (hdir.equals("not-set"))
-		return hdir;
-	    dbdir = "jdbc:hsqldb:file:" + Prefs.getPref(PrefName.HSQLDBDIR)
-		    + "/borg_";
-	} else if( dbtype.equals("jdbc")) {
-		dbdir = Prefs.getPref(PrefName.JDBCURL);
-	} else {
-	    // build a mysql URL
-	    dbdir = "jdbc:mysql://" + Prefs.getPref(PrefName.DBHOST) + ":"
-		    + Prefs.getPref(PrefName.DBPORT) + "/"
-		    + Prefs.getPref(PrefName.DBNAME) + "?user="
-		    + Prefs.getPref(PrefName.DBUSER) + "&password="
-		    + Prefs.getPref(PrefName.DBPASS) + "&autoReconnect=true";
+		Method getInst = Class.forName(factoryClass).getMethod("getInstance",
+				null);
+		return (IBeanDataFactory) getInst.invoke(null, null);
 	}
 
-	System.out.println("DB URL is: " + dbdir);
-	return (dbdir);
-    }
+	public static String buildDbDir() {
+		// get dir for DB
+		String dbdir = "";
+		String dbtype = Prefs.getPref(PrefName.DBTYPE);
+		if (dbtype.equals("local")) {
+			dbdir = Prefs.getPref(PrefName.DBDIR);
+		} else if (dbtype.equals("remote")) {
+			dbdir = "remote:" + Prefs.getPref(PrefName.DBURL);
+		} else if (dbtype.equals("hsqldb")) {
+			String hdir = Prefs.getPref(PrefName.HSQLDBDIR);
+			if (hdir.equals("not-set"))
+				return hdir;
+			dbdir = "jdbc:hsqldb:file:" + Prefs.getPref(PrefName.HSQLDBDIR)
+					+ "/borg_";
+		} else if (dbtype.equals("jdbc")) {
+			dbdir = Prefs.getPref(PrefName.JDBCURL);
+		} else {
+			// build a mysql URL
+			dbdir = "jdbc:mysql://" + Prefs.getPref(PrefName.DBHOST) + ":"
+					+ Prefs.getPref(PrefName.DBPORT) + "/"
+					+ Prefs.getPref(PrefName.DBNAME) + "?user="
+					+ Prefs.getPref(PrefName.DBUSER) + "&password="
+					+ Prefs.getPref(PrefName.DBPASS) + "&autoReconnect=true";
+		}
 
-    // private //
-    private static final BeanDataFactoryFactory instance = new BeanDataFactoryFactory();
+		System.out.println("DB URL is: " + dbdir);
+		return (dbdir);
+	}
 
-    private BeanDataFactoryFactory() {
-    }
+	// private //
+	private static final BeanDataFactoryFactory instance = new BeanDataFactoryFactory();
+
+	private BeanDataFactoryFactory() {
+	}
 }

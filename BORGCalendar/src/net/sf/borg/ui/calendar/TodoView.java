@@ -1019,7 +1019,7 @@ public class TodoView extends DockableView implements Prefs.Listener {
 	    int taskid = ((Subtask) o).getTask().intValue();
 	    Task t;
 	    try {
-		t = TaskModel.getReference().getMR(taskid);
+		t = TaskModel.getReference().getTask(taskid);
 		TaskView tskg = new TaskView(t, TaskView.T_CHANGE, null);
 		tskg.setVisible(true);
 	    } catch (Exception e) {

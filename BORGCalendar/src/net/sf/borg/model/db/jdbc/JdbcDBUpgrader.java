@@ -3,48 +3,59 @@ package net.sf.borg.model.db.jdbc;
 import java.sql.SQLException;
 
 import net.sf.borg.common.Errmsg;
+import net.sf.borg.common.PrefName;
+import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 
 public class JdbcDBUpgrader {
 
-    private String checkSql;
+	private String checkSql;
 
-    private String updSql;
+	private String updSql[];
 
-    public JdbcDBUpgrader(String checkSql, String usql) {
-	this.updSql = usql;
-	this.checkSql = checkSql;
-    }
-
-    private boolean needsUpgrade() throws Exception {
-	try {
-	    JdbcDB.execSQL(checkSql);
-	} catch (Exception e) {
-	    if (e instanceof SQLException)
-		return true;
+	public JdbcDBUpgrader(String checkSql, String usql) {
+		updSql = new String[1];
+		this.updSql[0] = usql;
+		this.checkSql = checkSql;
+	}
+	
+	public JdbcDBUpgrader(String checkSql, String usql[]) {
+		this.updSql = usql;
+		this.checkSql = checkSql;
 	}
 
-	return false;
-    }
-
-    private void performUpgrade() throws Exception {
-	System.out.println("Running Upgrade SQL:" + updSql);
-	JdbcDB.execSQL(updSql);
-    }
-
-    public void upgrade() {
-	try {
-	    if (needsUpgrade()) {
-		performUpgrade();
-		if (needsUpgrade()) {
-		    Errmsg.notice(Resource
-			    .getPlainResourceString("update_error")
-			    + updSql);
+	private boolean needsUpgrade() throws Exception {
+		try {
+			JdbcDB.execSQL(checkSql);
+		} catch (Exception e) {
+			if (e instanceof SQLException)
+				return true;
 		}
-	    }
-	} catch (Exception e) {
-	    Errmsg.notice(Resource.getPlainResourceString("update_error")
-		    + updSql);
+
+		return false;
 	}
-    }
+
+	private void performUpgrade() throws Exception {
+		String dbtype = Prefs.getPref(PrefName.DBTYPE);
+		for( int i = 0; i < updSql.length; i++ )
+		{
+			
+			if (dbtype.equals("mysql")) {
+			    Errmsg.notice(Resource.getPlainResourceString("update_error") + updSql[i]);
+				continue;
+			} 
+			System.out.println("Running Upgrade SQL:" + updSql[i]);
+			JdbcDB.execSQL(updSql[i]);
+		}
+	}
+
+	public void upgrade() {
+		try {
+			if (needsUpgrade()) {
+				performUpgrade();
+			}
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
+		}
+	}
 }

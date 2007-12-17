@@ -38,219 +38,218 @@ import net.sf.borg.model.db.MemoDB;
 
 public class MemoModel extends Model {
 
-    private MemoDB db_; // the database
+	private MemoDB db_; // the database
 
-    static private MemoModel self_ = null;
+	static private MemoModel self_ = null;
 
-    public static MemoModel getReference() {
-	return (self_);
-    }
-
-    public static MemoModel create() {
-	self_ = new MemoModel();
-	return (self_);
-    }
-
-    public void remove() {
-	removeListeners();
-	try {
-	    if (db_ != null)
-		db_.close();
-	} catch (Exception e) {
-	    Errmsg.errmsg(e);
-	    return;
-	}
-	db_ = null;
-    }
-
-    public MemoDB getDB() {
-	return db_;
-    }
-    
-    public boolean hasMemos()
-    {
-	if( db_ != null )
-	    return true;
-	return false;
-    }
-
-    public Collection getMemos() throws DBException, Exception {
-	Collection memos = db_.readAll();
-	Iterator it = memos.iterator();
-	while (it.hasNext()) {
-	    Memo memo = (Memo) it.next();
-	    if (memo.getDeleted())
-		it.remove();
-	}
-	return memos;
-    }
-
-    public Collection getNames() throws DBException, Exception {
-
-	return db_.getNames();
-    }
-
-    public Collection getDeletedMemos() throws DBException, Exception {
-	Collection memos = db_.readAll();
-	Iterator it = memos.iterator();
-	while (it.hasNext()) {
-	    Memo memo = (Memo) it.next();
-	    if (!memo.getDeleted())
-		it.remove();
-	}
-	return memos;
-    }
-
-    public void open_db(String url, String username, 
-	    boolean shared) throws Exception {
-
-	StringBuffer tmp = new StringBuffer(url);
-	IBeanDataFactory factory = BeanDataFactoryFactory.getInstance()
-		.getFactory(tmp, shared);
-	url = tmp.toString();
-	// let the factory tweak dbdir
-
-	db_ = factory.createMemoDB(url, username);
-	if (db_ == null)
-	    throw new Warning(Resource
-		    .getPlainResourceString("MemosNotSupported"));
-    }
-
-    public void delete(String name, boolean refresh) throws Exception {
-
-	try {
-	    Memo m = db_.readMemo(name);
-	    if (m == null)
-		return;
-	    String sync = Prefs.getPref(PrefName.PALM_SYNC);
-	    if (sync.equals("true")) {
-		m.setDeleted(true);
-		db_.updateMemo(m);
-	    } else {
-		db_.delete(m.getMemoName());
-	    }
-	} catch (Exception e) {
-	    Errmsg.errmsg(e);
+	public static MemoModel getReference() {
+		return (self_);
 	}
 
-	if (refresh)
-	    refresh();
-    }
-
-    public void forceDelete(Memo memo) throws Exception {
-
-	try {
-
-	    db_.delete(memo.getMemoName());
-	} catch (Exception e) {
-	    Errmsg.errmsg(e);
+	public static MemoModel create() {
+		self_ = new MemoModel();
+		return (self_);
 	}
 
-	refresh();
-    }
-
-    public void saveMemo(Memo memo) throws Exception {
-	saveMemo(memo, false);
-    }
-
-    public void saveMemo(Memo memo, boolean sync) throws Exception {
-
-	String name = memo.getMemoName();
-	Memo old = db_.readMemo(name);
-	if (old == null) {
-	    if (!sync) {
-		memo.setNew(true);
-		memo.setDeleted(false);
-		memo.setModified(false);
-	    }
-	    try {
-		db_.addMemo(memo);
-	    } catch (DBException e) {
-		Errmsg.errmsg(e);
-	    }
-	} else {
-	    try {
-		if (!sync) {
-		    memo.setModified(true);
-		    memo.setDeleted(false);
+	public void remove() {
+		removeListeners();
+		try {
+			if (db_ != null)
+				db_.close();
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
+			return;
 		}
-		db_.updateMemo(memo);
-	    } catch (DBException e) {
-		Errmsg.errmsg(e);
-	    }
+		db_ = null;
 	}
 
-	// inform views of data change
-	refresh();
-    }
-
-    public Memo getMemo(String name) throws DBException, Exception {
-	Memo m = db_.readMemo(name);
-	if (m == null)
-	    return null;
-	if (m.getDeleted() == true)
-	    return null;
-	return m;
-    }
-
-    public void export(Writer fw) throws Exception {
-
-	// FileWriter fw = new FileWriter(fname);
-	fw.write("<MEMOS>\n");
-	MemoXMLAdapter ta = new MemoXMLAdapter();
-
-	// export Memoes
-	try {
-
-	    Collection memos = getMemos();
-	    Iterator ti = memos.iterator();
-	    while (ti.hasNext()) {
-		Memo memo = (Memo) ti.next();
-
-		XTree xt = ta.toXml(memo);
-		fw.write(xt.toString());
-	    }
-	} catch (DBException e) {
-	    if (e.getRetCode() != DBException.RET_NOT_FOUND)
-		Errmsg.errmsg(e);
+	public MemoDB getDB() {
+		return db_;
 	}
 
-	fw.write("</MEMOS>");
-
-    }
-
-    public void importXml(XTree xt) throws Exception {
-
-	MemoXMLAdapter aa = new MemoXMLAdapter();
-
-	for (int i = 1;; i++) {
-	    XTree ch = xt.child(i);
-	    if (ch == null)
-		break;
-
-	    if (!ch.name().equals("Memo"))
-		continue;
-	    Memo memo = (Memo) aa.fromXml(ch);
-	    memo.setKey(-1);
-	    saveMemo(memo);
+	public boolean hasMemos() {
+		if (db_ != null)
+			return true;
+		return false;
 	}
 
-	refresh();
-    }
+	public Collection getMemos() throws DBException, Exception {
+		Collection memos = db_.readAll();
+		Iterator it = memos.iterator();
+		while (it.hasNext()) {
+			Memo memo = (Memo) it.next();
+			if (memo.getDeleted())
+				it.remove();
+		}
+		return memos;
+	}
 
-    public void refresh() {
-	refreshListeners();
-    }
+	public Collection getNames() throws DBException, Exception {
 
-    public void sync() {
-	refresh();
-    }
+		return db_.getNames();
+	}
 
-    public void close_db() throws Exception {
-	db_.close();
-    }
+	public Collection getDeletedMemos() throws DBException, Exception {
+		Collection memos = db_.readAll();
+		Iterator it = memos.iterator();
+		while (it.hasNext()) {
+			Memo memo = (Memo) it.next();
+			if (!memo.getDeleted())
+				it.remove();
+		}
+		return memos;
+	}
 
-    public Memo getMemoByPalmId(int id) throws Exception {
-	return db_.getMemoByPalmId(id);
-    }
+	public void open_db(String url, String username, boolean shared)
+			throws Exception {
+
+		StringBuffer tmp = new StringBuffer(url);
+		IBeanDataFactory factory = BeanDataFactoryFactory.getInstance()
+				.getFactory(tmp, shared);
+		url = tmp.toString();
+		// let the factory tweak dbdir
+
+		db_ = factory.createMemoDB(url, username);
+		if (db_ == null)
+			throw new Warning(Resource
+					.getPlainResourceString("MemosNotSupported"));
+	}
+
+	public void delete(String name, boolean refresh) throws Exception {
+
+		try {
+			Memo m = db_.readMemo(name);
+			if (m == null)
+				return;
+			String sync = Prefs.getPref(PrefName.PALM_SYNC);
+			if (sync.equals("true")) {
+				m.setDeleted(true);
+				db_.updateMemo(m);
+			} else {
+				db_.delete(m.getMemoName());
+			}
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
+		}
+
+		if (refresh)
+			refresh();
+	}
+
+	public void forceDelete(Memo memo) throws Exception {
+
+		try {
+
+			db_.delete(memo.getMemoName());
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
+		}
+
+		refresh();
+	}
+
+	public void saveMemo(Memo memo) throws Exception {
+		saveMemo(memo, false);
+	}
+
+	public void saveMemo(Memo memo, boolean sync) throws Exception {
+
+		String name = memo.getMemoName();
+		Memo old = db_.readMemo(name);
+		if (old == null) {
+			if (!sync) {
+				memo.setNew(true);
+				memo.setDeleted(false);
+				memo.setModified(false);
+			}
+			try {
+				db_.addMemo(memo);
+			} catch (DBException e) {
+				Errmsg.errmsg(e);
+			}
+		} else {
+			try {
+				if (!sync) {
+					memo.setModified(true);
+					memo.setDeleted(false);
+				}
+				db_.updateMemo(memo);
+			} catch (DBException e) {
+				Errmsg.errmsg(e);
+			}
+		}
+
+		// inform views of data change
+		refresh();
+	}
+
+	public Memo getMemo(String name) throws DBException, Exception {
+		Memo m = db_.readMemo(name);
+		if (m == null)
+			return null;
+		if (m.getDeleted() == true)
+			return null;
+		return m;
+	}
+
+	public void export(Writer fw) throws Exception {
+
+		// FileWriter fw = new FileWriter(fname);
+		fw.write("<MEMOS>\n");
+		MemoXMLAdapter ta = new MemoXMLAdapter();
+
+		// export Memoes
+		try {
+
+			Collection memos = getMemos();
+			Iterator ti = memos.iterator();
+			while (ti.hasNext()) {
+				Memo memo = (Memo) ti.next();
+
+				XTree xt = ta.toXml(memo);
+				fw.write(xt.toString());
+			}
+		} catch (DBException e) {
+			if (e.getRetCode() != DBException.RET_NOT_FOUND)
+				Errmsg.errmsg(e);
+		}
+
+		fw.write("</MEMOS>");
+
+	}
+
+	public void importXml(XTree xt) throws Exception {
+
+		MemoXMLAdapter aa = new MemoXMLAdapter();
+
+		for (int i = 1;; i++) {
+			XTree ch = xt.child(i);
+			if (ch == null)
+				break;
+
+			if (!ch.name().equals("Memo"))
+				continue;
+			Memo memo = (Memo) aa.fromXml(ch);
+			memo.setKey(-1);
+			saveMemo(memo);
+		}
+
+		refresh();
+	}
+
+	public void refresh() {
+		refreshListeners();
+	}
+
+	public void sync() {
+		refresh();
+	}
+
+	public void close_db() throws Exception {
+		db_.close();
+	}
+
+	public Memo getMemoByPalmId(int id) throws Exception {
+		return db_.getMemoByPalmId(id);
+	}
 }

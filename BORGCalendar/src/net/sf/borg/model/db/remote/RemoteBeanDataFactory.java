@@ -56,7 +56,7 @@ public class RemoteBeanDataFactory implements IBeanDataFactory
 		else if (cls == Appointment.class)
 			clsstr = "Appointment";
 		else
-			throw new IllegalArgumentException(cls.getName());
+			return null;
 			
 		// Hack off the leading "remote:" to get the implementation.
 		int nColon = url.indexOf(':');

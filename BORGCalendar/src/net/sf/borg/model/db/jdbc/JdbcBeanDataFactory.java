@@ -22,6 +22,7 @@ package net.sf.borg.model.db.jdbc;
 
 import net.sf.borg.model.beans.Address;
 import net.sf.borg.model.beans.Appointment;
+import net.sf.borg.model.beans.Link;
 import net.sf.borg.model.beans.Task;
 import net.sf.borg.model.db.BeanDB;
 import net.sf.borg.model.db.IBeanDataFactory;
@@ -54,6 +55,8 @@ public class JdbcBeanDataFactory implements IBeanDataFactory
 				return new TaskJdbcDB( url, username );
 			else if (cls == Appointment.class)
 				return new ApptJdbcDB( url, username );
+			else if (cls == Link.class)
+				return new LinkJdbcDB( url, username );
 
 			throw new IllegalArgumentException(cls.getName());
 		}
