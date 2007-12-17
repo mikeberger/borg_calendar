@@ -1,6 +1,6 @@
-===================================
-RELEASE NOTES for BORG 1.6.1 Beta 2
-===================================
+============================
+RELEASE NOTES for BORG 1.6.1
+============================
 
 The project home page is http://borg-calendar.sourceforge.net
 
@@ -11,14 +11,24 @@ MySQL users need to change the memos and projects tables via the following SQL:
 	alter table memos add private integer default '0' NOT NULL;
 	alter table projects add parent integer default NULL;
 	alter table projects add FOREIGN KEY (parent, username) REFERENCES projects ( id, username ) ON DELETE CASCADE;
-
+	CREATE TABLE links (
+	  id integer default '0' NOT NULL,
+	  username varchar(25) NOT NULL,
+	  linktype varchar(15) NOT NULL,
+	  ownerkey integer default '0' NOT NULL,
+	  ownertype varchar(15),
+	  path varchar(250),
+	  PRIMARY KEY  (id,username),
+		KEY `username` (`username`)
+	);
+	
 HSQLDB databases will be updated automatically by BORG.
 
 REPORTS
 -------
 In order to get reporting functionality, the reports libraries must be downloaded separately.
 This is a separate download since the report libraries would make the installer over 3MB larger.
-The limited amount of reporting available in version 1.6.1 does not justify adding the extra
+The limited amount of reporting available does not justify adding the extra
 3MB to the installer at this time.
 
 

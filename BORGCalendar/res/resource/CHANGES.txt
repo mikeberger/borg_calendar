@@ -1,3 +1,10 @@
+Version 1.6.1
+-------------
+Feature [1851556] add links/attachments
+Feature [1820023] Links and hyperlinks
+Feature [1595707] Add Address Book linking with dates  
+
+
 Version 1.6.1 beta 2
 --------------------
 Feature [1833863] allow dragging of appts in the month view  
