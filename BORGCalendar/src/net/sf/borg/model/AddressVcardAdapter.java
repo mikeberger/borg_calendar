@@ -19,14 +19,49 @@
 package net.sf.borg.model;
 
 import java.io.BufferedReader;
+import java.io.FileWriter;
 import java.io.Reader;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 
 import net.sf.borg.model.beans.Address;
 
 public class AddressVcardAdapter {
 
+    static public void exportVcardFiles(String path) throws Exception {
+	
+	Collection addrs = AddressModel.getReference().getAddresses();
+	Iterator it = addrs.iterator();
+	while( it.hasNext())
+	{
+	    Address a = (Address) it.next();
+	    String name = a.getFirstName() != null ? a.getFirstName() : "";
+	    if( a.getLastName() != null)
+	    {
+		if( !name.equals(""))
+		{
+		    name += " ";
+		}
+		name += a.getLastName();
+	    }
+	    FileWriter fw = new FileWriter(path + "/" + name + ".vcf");
+	    fw.write("BEGIN:VCARD\n");
+	    fw.write("VERSION:2.1\n");
+	    fw.write("N:" + name + "\n");
+	    if( a.getHomePhone() != null )
+		fw.write("TEL;HOME:" + a.getHomePhone() + "\n");
+	    if( a.getWorkPhone() != null )
+		fw.write("TEL;WORK:" + a.getWorkPhone() + "\n");
+	    if( a.getEmail() != null)
+		fw.write("EMAIL;INTERNET:" + a.getEmail() + "\n");
+	    fw.write("END:VCARD\n");
+	    fw.close();
+	    
+	}
+    }
+    
     static public void importVcard(Reader r) throws Exception {
         BufferedReader br = new BufferedReader(r);
         AddressModel am = AddressModel.getReference();
@@ -104,7 +139,7 @@ public class AddressVcardAdapter {
                 else if (prop.startsWith("TEL;HOME") || prop.startsWith("TEL;PREF")) {
                     addr.setHomePhone(value);
                 }
-                else if (prop.startsWith("TEL;WORK")) {
+                else if (prop.startsWith("TEL;WORK") || prop.startsWith("TEL;CELL")) {
                     addr.setWorkPhone(value);
                 }
                 else if (prop.startsWith("TEL;PAGER")) {
