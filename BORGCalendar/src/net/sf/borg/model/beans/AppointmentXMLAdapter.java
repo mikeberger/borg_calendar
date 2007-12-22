@@ -50,6 +50,8 @@ public class AppointmentXMLAdapter extends BeanXMLAdapter {
 			xt.appendChild("Alarm", o.getAlarm());
 		if( o.getReminderTimes() != null && !o.getReminderTimes().equals(""))
 			xt.appendChild("ReminderTimes", o.getReminderTimes());
+		if( o.getUntimed() != null && !o.getUntimed().equals(""))
+			xt.appendChild("Untimed", o.getUntimed());
 		return( xt );
 	}
 
@@ -105,6 +107,9 @@ public class AppointmentXMLAdapter extends BeanXMLAdapter {
 		val = xt.child("ReminderTimes").value();
 		if( !val.equals("") )
 			ret.setReminderTimes( val );
+		val = xt.child("Untimed").value();
+		if( !val.equals("") )
+			ret.setUntimed( val );
 		return( ret );
 	}
 }

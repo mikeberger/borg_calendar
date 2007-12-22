@@ -54,6 +54,7 @@ CREATE TABLE `appointments` (
   `deleted` tinyint(4) NOT NULL default '0',
   `alarm` char(1) default NULL,
   `reminders` text,
+  `untimed` char(1) default NULL,
   PRIMARY KEY  (`appt_num`,`username`),
   KEY `todo` (`todo`,`username`),
   KEY `username` (`username`)

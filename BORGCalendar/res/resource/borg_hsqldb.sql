@@ -64,6 +64,7 @@ CREATE CACHED TABLE appointments (
   deleted integer default '0' NOT NULL,
   alarm char(1) default NULL,
   reminders longvarchar,
+  untimed char(1) default NULL,
   PRIMARY KEY  (appt_num,username)
 );
 

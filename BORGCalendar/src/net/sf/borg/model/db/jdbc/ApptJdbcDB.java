@@ -51,14 +51,18 @@ class ApptJdbcDB extends JdbcBeanDB implements AppointmentDB, BeanDB, MultiUserD
     /** Creates a new instance of AppJdbcDB */
     ApptJdbcDB(String url, String username) throws Exception
     {
-        super( url, username );
+    	super(url, username);
+		new JdbcDBUpgrader("select untimed from appointments;", 
+			"ALTER TABLE appointments ADD untimed char(1) default NULL;" +
+			"UPDATE appointments SET untimed = 'Y' WHERE HOUR(appt_date) = 0 AND MINUTE(appt_date) = 0 AND (duration IS NULL OR duration = 0);").upgrade();
+
     }
     
     public void addObj(KeyedBean bean, boolean crypt) throws DBException, Exception
     {
         PreparedStatement stmt = connection_.prepareStatement( "INSERT INTO appointments (appt_date, appt_num, username, duration, text, skip_list," +
-        " next_todo, vacation, holiday, private, times, frequency, todo, color, rpt, category, new, modified, deleted, alarm, reminders ) VALUES " +
-        "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        " next_todo, vacation, holiday, private, times, frequency, todo, color, rpt, category, new, modified, deleted, alarm, reminders, untimed ) VALUES " +
+        "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         
         Appointment appt = (Appointment) bean;
         
@@ -89,6 +93,7 @@ class ApptJdbcDB extends JdbcBeanDB implements AppointmentDB, BeanDB, MultiUserD
         stmt.setInt( 19, toInt( appt.getDeleted()));
         stmt.setString( 20, appt.getAlarm());
         stmt.setString( 21, appt.getReminderTimes());
+        stmt.setString( 22, appt.getUntimed());
         stmt.executeUpdate();
         
         writeCache( appt );
@@ -202,6 +207,7 @@ class ApptJdbcDB extends JdbcBeanDB implements AppointmentDB, BeanDB, MultiUserD
 		appt.setDeleted( r.getInt("deleted" ) != 0 );
 		appt.setAlarm( r.getString("alarm"));
 		appt.setReminderTimes( r.getString("reminders"));
+		appt.setUntimed( r.getString("untimed"));
 		
 		return appt;
 	}
@@ -211,7 +217,7 @@ class ApptJdbcDB extends JdbcBeanDB implements AppointmentDB, BeanDB, MultiUserD
         PreparedStatement stmt = connection_.prepareStatement( "UPDATE appointments SET  appt_date = ?, " +
         "duration = ?, text = ?, skip_list = ?," +
         " next_todo = ?, vacation = ?, holiday = ?, private = ?, times = ?, frequency = ?, todo = ?, color = ?, rpt = ?, category = ?," +
-		" new = ?, modified = ?, deleted = ?, alarm = ?, reminders = ?" +
+		" new = ?, modified = ?, deleted = ?, alarm = ?, reminders = ?, untimed = ?" +
         " WHERE appt_num = ? AND username = ?");
         
         Appointment appt = (Appointment) bean;
@@ -242,9 +248,10 @@ class ApptJdbcDB extends JdbcBeanDB implements AppointmentDB, BeanDB, MultiUserD
         stmt.setInt( 17, toInt( appt.getDeleted()));
         stmt.setString( 18, appt.getAlarm());
         stmt.setString( 19, appt.getReminderTimes());
+        stmt.setString( 20, appt.getUntimed());
         
-        stmt.setInt( 20, appt.getKey() );
-        stmt.setString( 21, username_ );
+        stmt.setInt( 21, appt.getKey() );
+        stmt.setString( 22, username_ );
 
         stmt.executeUpdate();
         

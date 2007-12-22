@@ -112,7 +112,7 @@ public class SqlRunner extends JDialog {
 			// System.out.println(sb.toString());
 			TaskModel.getReference().beginTransaction();
 			ResultSet r = JdbcDB.execSQL(editor.getText());
-			String res = "";
+			StringBuffer res = new StringBuffer();
 			if( r != null && r.next())
 			{
 				int cols = r.getMetaData().getColumnCount();
@@ -120,14 +120,15 @@ public class SqlRunner extends JDialog {
 				{
 					for( int i = 1; i <= cols; i++)
 					{
-						res += r.getString(i) + " ";
+						res.append(r.getString(i));
+						res.append(' ');
 					}
-					res += "\n";
+					res.append("\n");
 				}
 			}
 			TaskModel.getReference().commitTransaction();
 			if( !res.equals(""))
-				ScrolledDialog.showNotice(res);
+				ScrolledDialog.showNotice(res.toString());
 				//JOptionPane.showMessageDialog(this, res);
 			else
 				ScrolledDialog.showNotice(Resource.getPlainResourceString("noOutput"));

@@ -1178,6 +1178,9 @@ public class AppointmentPanel extends JPanel {
 			if (startap.isSelected())
 				hr += 12;
 		}
+		
+		if( notecb.isSelected())
+			r.setUntimed("Y");
 
 		Date nd = null;
 		int newkey = 0;
@@ -1385,8 +1388,6 @@ public class AppointmentPanel extends JPanel {
 		key_ = key;
 		String mt = Prefs.getPref(PrefName.MILTIME);
 
-		// assume "note" as default
-		boolean note = true;
 		startap.setSelected(false);
 		startmin.setEnabled(false);
 		starthour.setEnabled(false);
@@ -1480,20 +1481,15 @@ public class AppointmentPanel extends JPanel {
 				if (mt.equals("true")) {
 					int hour = g.get(Calendar.HOUR_OF_DAY);
 					if (hour != 0)
-						note = false;
 					starthour.setSelectedIndex(hour);
 				} else {
 					int hour = g.get(Calendar.HOUR);
-					if (hour != 0)
-						note = false;
 					if (hour == 0)
 						hour = 12;
 					starthour.setSelectedIndex(hour - 1);
 				}
 
 				int min = g.get(Calendar.MINUTE);
-				if (min != 0)
-					note = false;
 				startmin.setSelectedIndex(min / 5);
 
 				// duration
@@ -1503,9 +1499,9 @@ public class AppointmentPanel extends JPanel {
 					dur = duration.intValue();
 				durhour.setSelectedIndex(dur / 60);
 				durmin.setSelectedIndex((dur % 60) / 5);
-				if (dur != 0)
-					note = false;
-
+				
+				boolean note = AppointmentModel.isNote(r);
+				
 				// check if we just have a "note" (non-timed appt)
 				if (!note) {
 					notecb.setSelected(false);

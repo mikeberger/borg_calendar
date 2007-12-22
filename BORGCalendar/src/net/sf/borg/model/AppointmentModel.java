@@ -823,7 +823,12 @@ public class AppointmentModel extends Model implements Model.Listener {
 		// this method was used for backward compatibility - as opposed to
 		// adding
 		// a new flag to the DB
+		// 1.6.1 - added new db field to fix bug when time zone changes
+		// for backward compatiblity, keep old check in addition to checking new flag
 		try {
+			
+			if( appt.getUntimed() != null && appt.getUntimed().equals("Y"))
+				return true;
 			Integer duration = appt.getDuration();
 			if (duration != null && duration.intValue() != 0)
 				return (false);

@@ -84,6 +84,10 @@ public class Appointment extends KeyedBean implements java.io.Serializable {
 	private String ReminderTimes_;
 	public String getReminderTimes() { return( ReminderTimes_ ); }
 	public void setReminderTimes( String xx ){ ReminderTimes_ = xx; }
+	
+	private String Untimed_;
+	public String getUntimed() { return( Untimed_ ); }
+	public void setUntimed( String xx ){ Untimed_ = xx; }
 
 	protected Object clone() {
 		Appointment dst = new Appointment();
@@ -108,6 +112,7 @@ public class Appointment extends KeyedBean implements java.io.Serializable {
 		dst.setDeleted( getDeleted() );
 		dst.setAlarm( getAlarm() );
 		dst.setReminderTimes( getReminderTimes() );
+		dst.setUntimed( getUntimed() );
 		return(dst);
 	}
 }

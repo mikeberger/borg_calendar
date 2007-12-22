@@ -7,7 +7,7 @@ The project home page is http://borg-calendar.sourceforge.net
 ********************************
 Database Change for MySQL users
 ********************************
-MySQL users need to change the memos and projects tables via the following SQL:
+MySQL users need to change the database via the following SQL:
 	alter table memos add private integer default '0' NOT NULL;
 	alter table projects add parent integer default NULL;
 	alter table projects add FOREIGN KEY (parent, username) REFERENCES projects ( id, username ) ON DELETE CASCADE;
@@ -21,6 +21,19 @@ MySQL users need to change the memos and projects tables via the following SQL:
 	  PRIMARY KEY  (id,username),
 		KEY `username` (`username`)
 	);
+	CREATE TABLE links (
+  		id integer default '0' NOT NULL,
+  		username varchar(25) NOT NULL,
+  		linktype varchar(15) NOT NULL,
+  		ownerkey integer default '0' NOT NULL,
+  		ownertype varchar(15),
+  		path varchar(250),
+  	PRIMARY KEY  (id,username),
+		KEY `username` (`username`)
+	);
+	ALTER TABLE appointments ADD untimed char(1) default NULL;
+	UPDATE appointments SET untimed = 'Y' WHERE HOUR(appt_date) = 0 AND MINUTE(appt_date) = 0 AND (duration IS NULL OR duration = 0);
+	
 	
 HSQLDB databases will be updated automatically by BORG.
 
