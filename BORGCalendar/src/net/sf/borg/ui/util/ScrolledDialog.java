@@ -154,6 +154,7 @@ public class ScrolledDialog extends JDialog {
 	private JScrollPane getJScrollPane() {
 		if (jScrollPane == null) {
 			jScrollPane = new JScrollPane();
+			jScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 			jScrollPane.setPreferredSize(new java.awt.Dimension(600, 200)); // Generated
 			if (tbl_ != null) {
 				jScrollPane.setViewportView(tbl_);

@@ -119,6 +119,8 @@ public class SqlRunner extends JDialog {
 			if( r != null && r.next())
 			{
 				JTable tbl = new JTable();
+				tbl.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+
 				int cols = r.getMetaData().getColumnCount();
 				String colnames[] = new String[cols];
 				Class classes[] = new Class[cols];
