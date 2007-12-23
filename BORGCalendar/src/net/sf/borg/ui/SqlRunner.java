@@ -8,14 +8,18 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.AppointmentModel;
+import net.sf.borg.model.LinkModel;
+import net.sf.borg.model.MemoModel;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.db.jdbc.JdbcDB;
 import net.sf.borg.ui.util.ScrolledDialog;
+import net.sf.borg.ui.util.TableSorter;
 
 public class SqlRunner extends JDialog {
 	
@@ -24,7 +28,7 @@ public class SqlRunner extends JDialog {
 
 		super();
 		
-		setModal(true);
+		setModal(false);
 		
 		// init the gui components
 		initComponents();
@@ -112,24 +116,31 @@ public class SqlRunner extends JDialog {
 			// System.out.println(sb.toString());
 			TaskModel.getReference().beginTransaction();
 			ResultSet r = JdbcDB.execSQL(editor.getText());
-			StringBuffer res = new StringBuffer();
 			if( r != null && r.next())
 			{
+				JTable tbl = new JTable();
 				int cols = r.getMetaData().getColumnCount();
+				String colnames[] = new String[cols];
+				Class classes[] = new Class[cols];
+				for( int c = 0; c < cols; c++)
+				{
+					colnames[c] = r.getMetaData().getColumnName(c+1);
+					classes[c] = String.class;
+				}
+				TableSorter ts = new TableSorter(colnames, classes);
+				ts.addMouseListenerToHeaderInTable(tbl);
+				tbl.setModel(ts);
+				Object row[] = new Object[cols];
 				for( ;!r.isAfterLast();r.next())
 				{
 					for( int i = 1; i <= cols; i++)
 					{
-						res.append(r.getString(i));
-						res.append(' ');
+						row[i-1] = r.getString(i);
 					}
-					res.append("\n");
+					ts.addRow(row);
 				}
+				ScrolledDialog.showTable(tbl);
 			}
-			TaskModel.getReference().commitTransaction();
-			if( !res.equals(""))
-				ScrolledDialog.showNotice(res.toString());
-				//JOptionPane.showMessageDialog(this, res);
 			else
 				ScrolledDialog.showNotice(Resource.getPlainResourceString("noOutput"));
 				//JOptionPane.showMessageDialog(this, Resource.getPlainResourceString("noOutput"));
@@ -145,6 +156,8 @@ public class SqlRunner extends JDialog {
 		AppointmentModel.getReference().refresh();
 		TaskModel.getReference().refresh();
 		AddressModel.getReference().refresh();
+		MemoModel.getReference().refresh();
+		LinkModel.getReference().refresh();
 		
 		
 	}
