@@ -25,7 +25,6 @@ Copyright 2003 by Mike Berger
 
 package net.sf.borg.ui;
 
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Image;
@@ -74,17 +73,46 @@ public abstract class View extends javax.swing.JFrame implements Model.Listener
         initialize();
     }
 		
-    static private void recordSize( Component c )
-    {
-        ViewSize vs = new ViewSize();
-        vs.setX(c.getBounds().x);
-        vs.setY(c.getBounds().y);
-        vs.setWidth(c.getBounds().width);
-        vs.setHeight(c.getBounds().height);
-        View v = (View) c;
-        vs.setMaximized(v.getExtendedState() == Frame.MAXIMIZED_BOTH);
+    private void recordSize(boolean resize)
+    { 
+    	String s = Prefs.getPref(prefName_);
+        ViewSize vsnew = ViewSize.fromString(s);
         
-        Prefs.putPref(v.prefName_,vs.toString());
+        if( !resize )
+        {
+        	// for a move, ignore the event if the size changes - this is
+        	// part of a maximize or minimize and the resize will follow
+        	if( vsnew.getHeight() != this.getBounds().height ||
+        			vsnew.getWidth() != this.getBounds().width )
+        		return;
+        	
+        	// if x or y < 0, then this is likely the move before a maximize
+        	// so ignore it
+        	if( this.getBounds().x < 0 || this.getBounds().y < 0)
+        		return;
+        	
+        	vsnew.setX(this.getBounds().x);
+        	vsnew.setY(this.getBounds().y);
+        	vsnew.setWidth(this.getBounds().width);
+        	vsnew.setHeight(this.getBounds().height);
+        }
+        else if( this.getExtendedState() == Frame.MAXIMIZED_BOTH )
+        {
+        	vsnew.setMaximized(true);
+        }
+        else
+        {
+        	// only reset bounds if we are not maximized
+        	vsnew.setMaximized(false);
+        	vsnew.setX(this.getBounds().x);
+        	vsnew.setY(this.getBounds().y);
+        	vsnew.setWidth(this.getBounds().width);
+        	vsnew.setHeight(this.getBounds().height);
+        	
+        }
+        
+        System.out.println(vsnew.toString());
+        Prefs.putPref(this.prefName_,vsnew.toString());
         
     }
       
@@ -104,11 +132,8 @@ public abstract class View extends javax.swing.JFrame implements Model.Listener
         String s = Prefs.getPref(prefName_);
         ViewSize vs = ViewSize.fromString(s);
         
-        if( vs.isMaximized())
-        {
-            setExtendedState(Frame.MAXIMIZED_BOTH);
-        }
-        else if( vs.getX() != -1 )
+        
+        if( vs.getX() != -1 )
         {
             setBounds( new Rectangle(vs.getX(),vs.getY(),vs.getWidth(),vs.getHeight()));            
         }
@@ -116,16 +141,21 @@ public abstract class View extends javax.swing.JFrame implements Model.Listener
         {
             setSize(new Dimension(vs.getWidth(),vs.getHeight()));
         }
-           
+        if( vs.isMaximized())
+        {
+            setExtendedState(Frame.MAXIMIZED_BOTH);
+        }
         validate();
         
         // add listeners to record any changes
         this.addComponentListener(new java.awt.event.ComponentAdapter() { 
-        	public void componentResized(java.awt.event.ComponentEvent e) {    
-        		recordSize( e.getComponent());
+        	public void componentResized(java.awt.event.ComponentEvent e) {
+        		System.out.println("resize");
+        		recordSize(true);
         	}
-           	public void componentMoved(java.awt.event.ComponentEvent e) {    
-           	    recordSize( e.getComponent());
+           	public void componentMoved(java.awt.event.ComponentEvent e) { 
+           		System.out.println("move");
+           	    recordSize(false);
         	}
         });
     }
