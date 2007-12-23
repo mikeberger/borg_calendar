@@ -111,7 +111,7 @@ public abstract class View extends javax.swing.JFrame implements Model.Listener
         	
         }
         
-        System.out.println(vsnew.toString());
+        //System.out.println(vsnew.toString());
         Prefs.putPref(this.prefName_,vsnew.toString());
         
     }
@@ -150,11 +150,11 @@ public abstract class View extends javax.swing.JFrame implements Model.Listener
         // add listeners to record any changes
         this.addComponentListener(new java.awt.event.ComponentAdapter() { 
         	public void componentResized(java.awt.event.ComponentEvent e) {
-        		System.out.println("resize");
+        		//System.out.println("resize");
         		recordSize(true);
         	}
            	public void componentMoved(java.awt.event.ComponentEvent e) { 
-           		System.out.println("move");
+           		//System.out.println("move");
            	    recordSize(false);
         	}
         });
