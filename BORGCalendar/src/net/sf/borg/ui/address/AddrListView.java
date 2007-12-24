@@ -26,7 +26,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.StringReader;
 import java.io.StringWriter;
+import java.net.URL;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -39,12 +41,16 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.TableModelEvent;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.IOHelper;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Resource;
-import net.sf.borg.common.XSLTransform;
 import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.AddressVcardAdapter;
 import net.sf.borg.model.beans.Address;
@@ -447,8 +453,8 @@ public class AddrListView extends DockableView {
 
 			StringWriter sw = new StringWriter();
 			AddressModel.getReference().export(sw);
-			String sorted = XSLTransform.transform(sw.toString(), "/resource/addrsort.xsl");
-			String output = XSLTransform.transform(sorted, "/resource/addr.xsl");
+			String sorted = transform(sw.toString(), "/resource/addrsort.xsl");
+			String output = transform(sorted, "/resource/addr.xsl");
 			fw.write(output);
 			fw.close();
 
@@ -465,6 +471,18 @@ public class AddrListView extends DockableView {
 
     }
 
+    static private String transform( String xml, String xsl ) throws Exception
+    {
+        URL inurl = AddressModel.getReference().getClass().getResource(xsl);
+        if( inurl == null )
+            throw new Exception("Transform " + xsl + " not found");
+        Source insrc = new StreamSource(inurl.openStream());
+        Transformer trans = TransformerFactory.newInstance().newTransformer(insrc);
+        StreamResult res = new StreamResult( new StringWriter());
+        trans.transform(new StreamSource(new StringReader(xml)), res );
+        return( res.getWriter().toString());
+    }
+    
     private static AddrListView singleton = null;
 
     public static AddrListView getReference() {

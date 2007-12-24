@@ -2,8 +2,11 @@ Version 1.6.1
 -------------
 Feature [1851556] add links/attachments
 Feature [1820023] Links and hyperlinks
-Feature [1595707] Add Address Book linking with dates  
-
+Feature [1595707] Add Address Book linking with dates
+Feature [1856643] improve SQL output 
+Bug Fix [1856661] Program loses track of window size after maximize
+Bug Fix [1856590] Run SQL runs too slow 
+Bug Fix [1855501] Time Zone Problem
 
 Version 1.6.1 beta 2
 --------------------

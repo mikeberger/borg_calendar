@@ -17,7 +17,7 @@ This file is part of BORG.
 
 Copyright 2003 by Mike Berger
 */
-package net.sf.borg.common;
+package net.sf.borg.model.db.file.mdb;
 
 import java.util.HashMap;
 import java.util.Random;

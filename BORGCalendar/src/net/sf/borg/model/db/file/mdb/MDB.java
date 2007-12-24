@@ -31,7 +31,6 @@ import java.util.Vector;
 
 import javax.swing.filechooser.FileFilter;
 
-import net.sf.borg.common.Crypt;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.XTree;
 import net.sf.borg.model.db.DBException;
