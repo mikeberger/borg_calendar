@@ -377,7 +377,7 @@ public class MultiView extends View {
 	bar.add(daybut);
 
 	JButton yearbut = new JButton(new ImageIcon(getClass().getResource(
-		"/resource/day.jpg")));
+		"/resource/year.jpg")));
 	yearbut.setToolTipText(Resource.getPlainResourceString("Year_View"));
 	yearbut.addActionListener(new java.awt.event.ActionListener() {
 	    public void actionPerformed(java.awt.event.ActionEvent evt) {

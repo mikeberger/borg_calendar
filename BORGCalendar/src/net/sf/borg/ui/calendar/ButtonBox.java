@@ -23,6 +23,8 @@ public abstract class ButtonBox implements Box {
     private boolean isSelected = false;
     
     private Icon icon_ = null;
+    
+    private Color backg = null;
 
     public ButtonBox(Date d, String text, Icon icon, Rectangle bounds, Rectangle clip) {
 	date = d;
@@ -30,6 +32,15 @@ public abstract class ButtonBox implements Box {
 	this.bounds = bounds;
 	this.clip = clip;
 	this.icon_ = icon;
+    }
+    
+    public ButtonBox(Date d, String text, Icon icon, Rectangle bounds, Rectangle clip, Color b) {
+	date = d;
+	this.text = text;
+	this.bounds = bounds;
+	this.clip = clip;
+	this.icon_ = icon;
+	this.backg = b;
     }
 
     public void delete() {
@@ -49,6 +60,11 @@ public abstract class ButtonBox implements Box {
 	g2.clipRect(bounds.x, 0, bounds.width + 1, 1000);
 	if (isSelected == true) {
 	    g2.setColor(Color.RED);
+	    g2.fillRect(bounds.x, bounds.y + 2, bounds.width, bounds.height);
+	}
+	else if( backg != null )
+	{
+	    g2.setColor(backg);
 	    g2.fillRect(bounds.x, bounds.y + 2, bounds.width, bounds.height);
 	}
 	int smfontHeight = g2.getFontMetrics().getHeight();

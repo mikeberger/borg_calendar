@@ -33,6 +33,7 @@ import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
@@ -140,8 +141,7 @@ public class YearPanel extends JPanel implements Printable {
 	    // Font sm_font = def_font.deriveFont(6f);
 	  
 	    g2.setFont(sm_font);
-	    
-
+	   
 	    g2.setColor(Color.white);
 	    g2.fillRect(0, 0, (int) width, (int) height);
 
@@ -262,11 +262,18 @@ public class YearPanel extends JPanel implements Printable {
 					.get(Calendar.MONTH), cal
 					.get(Calendar.DATE), true, true,
 					true);
+				
+				Color bbg = null;
 
 				Color c = new Color(Prefs
 					.getIntPref(PrefName.UCS_DEFAULT));
 
 				if (di != null) {
+				    Collection appts = di.getAppts();
+				    if( appts != null && !appts.isEmpty())
+				    {
+					bbg = Color.pink;
+				    }
 				    if (tmon == cal.get(Calendar.MONTH)
 					    && tyear == year_
 					    && tdate == cal.get(Calendar.DATE)) {
@@ -306,7 +313,7 @@ public class YearPanel extends JPanel implements Printable {
 						colleft + 2, rowtop,
 						colwidth - 4, fontHeight),
 					new Rectangle(colleft, rowtop,
-						colwidth, rowheight)) {
+						colwidth, rowheight), bbg) {
 				    public void edit() {
 					MultiView.getMainView().setView(
 						MultiView.DAY);
@@ -315,6 +322,8 @@ public class YearPanel extends JPanel implements Printable {
 					MultiView.getMainView().goTo(gc);
 				    }
 				});
+				
+				
 			    }
 			} catch (Exception e) {
 			    e.printStackTrace();
