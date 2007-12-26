@@ -28,7 +28,6 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.awt.font.TextAttribute;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
@@ -36,8 +35,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.swing.JPanel;
 
@@ -112,13 +109,16 @@ public class YearPanel extends JPanel implements Printable {
 	public int print(Graphics g, PageFormat pageFormat, int pageIndex)
 		throws PrinterException {
 
-	    if (pageIndex > 1)
+	    if (pageIndex > 0)
 		return Printable.NO_SUCH_PAGE;
-
-	    return (drawIt(g, pageFormat.getWidth(), pageFormat.getHeight(),
+	    Font sm_font = Font.decode(Prefs.getPref(PrefName.MONTHVIEWFONT));
+	    clearData();
+	    int ret = drawIt(g, pageFormat.getWidth(), pageFormat.getHeight(),
 		    pageFormat.getImageableWidth(), pageFormat
 			    .getImageableHeight(), pageFormat.getImageableX(),
-		    pageFormat.getImageableY(), pageIndex));
+		    pageFormat.getImageableY(), pageIndex, sm_font);
+	    refresh();
+	    return ret;
 	}
 
 	public void today() {
@@ -132,22 +132,13 @@ public class YearPanel extends JPanel implements Printable {
 
 	private int drawIt(Graphics g, double width, double height,
 		double pageWidth, double pageHeight, double pagex,
-		double pagey, int pageIndex) {
-
-	    boolean showpub = false;
-	    boolean showpriv = false;
-	    String sp = Prefs.getPref(PrefName.SHOWPUBLIC);
-	    if (sp.equals("true"))
-		showpub = true;
-	    sp = Prefs.getPref(PrefName.SHOWPRIVATE);
-	    if (sp.equals("true"))
-		showpriv = true;
+		double pagey, int pageIndex, Font sm_font) {
 
 	    // set up default and small fonts
 	    Graphics2D g2 = (Graphics2D) g;
 
 	    // Font sm_font = def_font.deriveFont(6f);
-	    Font sm_font = Font.decode(Prefs.getPref(PrefName.APPTFONT));
+	  
 	    g2.setFont(sm_font);
 	    
 
@@ -236,8 +227,6 @@ public class YearPanel extends JPanel implements Printable {
 		    int colleft = monthwidth + (col * colwidth);
 		    int dow = cal.get(Calendar.DAY_OF_WEEK);
 
-		    int smfontHeight = g2.getFontMetrics().getHeight();
-
 		    // set clip to the day box to truncate long appointment text
 		    g2.clipRect(colleft, rowtop, colwidth, rowheight);
 		    if (needLoad) {
@@ -252,7 +241,7 @@ public class YearPanel extends JPanel implements Printable {
 				    boxes.add(new ButtonBox(cal.getTime(),
 					    dfm.format(cal.getTime()), null, new Rectangle(
 						    2, rowtop,
-						    monthwidth - 4, smfontHeight),
+						    monthwidth - 4, fontHeight),
 						    new Rectangle(0, rowtop,
 							    monthwidth, rowheight)) {
 					public void edit() {
@@ -264,14 +253,14 @@ public class YearPanel extends JPanel implements Printable {
 					}
 				    });
 				}
-				addDateZone(cal.getTime(), 0 * 60, 23 * 60,
-					new Rectangle(colleft, rowtop,
-						colwidth, rowheight));
+				//addDateZone(cal.getTime(), 0 * 60, 23 * 60,
+					//new Rectangle(colleft, rowtop,
+						//colwidth, rowheight));
 
 				// get the appointment info for the given day
 				Day di = Day.getDay(cal.get(Calendar.YEAR), cal
 					.get(Calendar.MONTH), cal
-					.get(Calendar.DATE), showpub, showpriv,
+					.get(Calendar.DATE), true, true,
 					true);
 
 				Color c = new Color(Prefs
@@ -315,7 +304,7 @@ public class YearPanel extends JPanel implements Printable {
 				boxes.add(new ButtonBox(cal.getTime(),
 					datetext, null, new Rectangle(
 						colleft + 2, rowtop,
-						colwidth - 4, smfontHeight),
+						colwidth - 4, fontHeight),
 					new Rectangle(colleft, rowtop,
 						colwidth, rowheight)) {
 				    public void edit() {
@@ -372,9 +361,9 @@ public class YearPanel extends JPanel implements Printable {
 	protected void paintComponent(Graphics g) {
 	    super.paintComponent(g);
 	    try {
-
+		Font sm_font = Font.decode(Prefs.getPref(PrefName.WEEKVIEWFONT));
 		drawIt(g, getWidth(), getHeight(), getWidth() - 20,
-			getHeight() - 20, 10, 10, 0);
+			getHeight() - 20, 10, 10, 0, sm_font);
 
 	    } catch (Exception e) {
 		// Errmsg.errmsg(e);
