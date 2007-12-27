@@ -716,16 +716,17 @@ public class MainMenu {
 
 	try {
 	    info += Resource.getPlainResourceString("appointments") + ": "
-		    + AppointmentModel.getReference().getAllAppts().size()
-		    + "\n";
+	    + AppointmentModel.getReference().getAllAppts().size()
+	    + "\n";
 	    info += Resource.getPlainResourceString("addresses") + ": "
-		    + AddressModel.getReference().getAddresses().size() + "\n";
+	    + AddressModel.getReference().getAddresses().size() + "\n";
 	    info += Resource.getPlainResourceString("tasks") + ": "
-		    + TaskModel.getReference().getTasks().size() + "\n";
+	    + TaskModel.getReference().getTasks().size() + "\n";
 	    info += Resource.getPlainResourceString("projects") + ": "
-		    + TaskModel.getReference().getProjects().size() + "\n";
-	    info += Resource.getPlainResourceString("Memos") + ": "
-		    + MemoModel.getReference().getMemos().size() + "\n";
+	    + TaskModel.getReference().getProjects().size() + "\n";
+	    if( MemoModel.getReference().hasMemos())
+		info += Resource.getPlainResourceString("Memos") + ": "
+		+ MemoModel.getReference().getMemos().size() + "\n";
 
 	} catch (Exception e) {
 	    Errmsg.errmsg(e);

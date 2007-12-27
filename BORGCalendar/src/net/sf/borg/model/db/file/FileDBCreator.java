@@ -25,7 +25,6 @@ import java.util.Collection;
 import net.sf.borg.model.BorgOption;
 import net.sf.borg.model.beans.KeyedBean;
 import net.sf.borg.model.db.BeanDB;
-import net.sf.borg.model.db.DBException;
 
 /**
  * Helps create a <code>FileBeanDB</code>.
@@ -37,7 +36,7 @@ abstract class FileDBCreator implements BeanDB
 
 	// BeanDB delegate methods
 	public final void addObj(KeyedBean bean, boolean crypt)
-		throws DBException, Exception
+		throws Exception
 	{
 		db_.addObj(bean, crypt);
 	}
@@ -77,7 +76,7 @@ abstract class FileDBCreator implements BeanDB
 		return db_.readAll();
 	}
 
-	public final KeyedBean readObj(int key) throws DBException, Exception
+	public final KeyedBean readObj(int key) throws Exception
 	{
 		return db_.readObj(key);
 	}
@@ -87,18 +86,18 @@ abstract class FileDBCreator implements BeanDB
 		db_.setOption(option);
 	}
 
-    public final boolean isDirty() throws DBException, Exception
+    public final boolean isDirty() throws Exception
     {
     	return db_.isDirty();
     }
     
-	public final void sync() throws DBException
+	public final void sync()
 	{
 		db_.sync();
 	}
 
 	public final void updateObj(KeyedBean bean, boolean crypt)
-		throws DBException, Exception
+		throws Exception
 	{
 		db_.updateObj(bean, crypt);
 	}

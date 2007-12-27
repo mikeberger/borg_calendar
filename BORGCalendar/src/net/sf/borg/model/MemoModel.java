@@ -34,7 +34,6 @@ import net.sf.borg.common.XTree;
 import net.sf.borg.model.beans.Memo;
 import net.sf.borg.model.beans.MemoXMLAdapter;
 import net.sf.borg.model.db.BeanDataFactoryFactory;
-import net.sf.borg.model.db.DBException;
 import net.sf.borg.model.db.IBeanDataFactory;
 import net.sf.borg.model.db.MemoDB;
 
@@ -77,8 +76,8 @@ public class MemoModel extends Model {
 	    return true;
 	return false;
     }
-    
-    public  Collection getMemos() throws DBException, Exception {
+
+    public Collection getMemos() throws Exception {
 	Collection memos = db_.readAll();
 	Iterator it = memos.iterator();
 	while (it.hasNext()) {
@@ -90,12 +89,12 @@ public class MemoModel extends Model {
 	return memos;
     }
 
-    public Collection getNames() throws DBException, Exception {
+    public Collection getNames() throws Exception {
 
 	return db_.getNames();
     }
 
-    public Collection getDeletedMemos() throws DBException, Exception {
+    public Collection getDeletedMemos() throws Exception {
 	Collection memos = db_.readAll();
 	Iterator it = memos.iterator();
 	while (it.hasNext()) {
@@ -163,10 +162,10 @@ public class MemoModel extends Model {
 
 	// determine dates
 	Date now = new Date();
-	if( memo.getCreated() == null )
+	if (memo.getCreated() == null)
 	    memo.setCreated(now);
 	memo.setUpdated(now);
-	
+
 	addDateString(memo);
 	String name = memo.getMemoName();
 	Memo old = db_.readMemo(name);
@@ -176,21 +175,17 @@ public class MemoModel extends Model {
 		memo.setDeleted(false);
 		memo.setModified(false);
 	    }
-	    try {
-		db_.addMemo(memo);
-	    } catch (DBException e) {
-		Errmsg.errmsg(e);
-	    }
+
+	    db_.addMemo(memo);
+
 	} else {
-	    try {
-		if (!sync) {
-		    memo.setModified(true);
-		    memo.setDeleted(false);
-		}
-		db_.updateMemo(memo);
-	    } catch (DBException e) {
-		Errmsg.errmsg(e);
+
+	    if (!sync) {
+		memo.setModified(true);
+		memo.setDeleted(false);
 	    }
+	    db_.updateMemo(memo);
+
 	}
 
 	// inform views of data change
@@ -200,7 +195,7 @@ public class MemoModel extends Model {
     static private void addDateString(Memo m) {
 	if (m.getCreated() == null || m.getUpdated() == null)
 	    return;
-	if( m.getMemoText() == null)
+	if (m.getMemoText() == null)
 	    m.setMemoText("");
 	m.setMemoText("TS;" + normalDateFormat_.format(m.getCreated()) + ";"
 		+ normalDateFormat_.format(m.getUpdated()) + ";"
@@ -209,10 +204,11 @@ public class MemoModel extends Model {
     }
 
     static private void parseOutDates(Memo m) {
-	
+
 	// separate timestamps if needed TS:created;updated;
 	String text = m.getMemoText();
-	if( text == null ) return;
+	if (text == null)
+	    return;
 	if (text != null && text.startsWith("TS;")) {
 	    int idx1 = 2;
 	    int idx2 = text.indexOf(';', idx1 + 1);
@@ -235,9 +231,9 @@ public class MemoModel extends Model {
 	}
     }
 
-    public Memo getMemo(String name) throws DBException, Exception {
+    public Memo getMemo(String name) throws Exception {
 	Memo m = db_.readMemo(name);
-	
+
 	if (m == null)
 	    return null;
 	if (m.getDeleted() == true)
@@ -254,20 +250,17 @@ public class MemoModel extends Model {
 	MemoXMLAdapter ta = new MemoXMLAdapter();
 
 	// export Memoes
-	try {
 
-	    Collection memos = getMemos();
-	    Iterator ti = memos.iterator();
-	    while (ti.hasNext()) {
-		Memo memo = (Memo) ti.next();
 
-		XTree xt = ta.toXml(memo);
-		fw.write(xt.toString());
-	    }
-	} catch (DBException e) {
-	    if (e.getRetCode() != DBException.RET_NOT_FOUND)
-		Errmsg.errmsg(e);
+	Collection memos = getMemos();
+	Iterator ti = memos.iterator();
+	while (ti.hasNext()) {
+	    Memo memo = (Memo) ti.next();
+
+	    XTree xt = ta.toXml(memo);
+	    fw.write(xt.toString());
 	}
+
 
 	fw.write("</MEMOS>");
 
@@ -306,7 +299,7 @@ public class MemoModel extends Model {
 
     public Memo getMemoByPalmId(int id) throws Exception {
 	Memo m = db_.getMemoByPalmId(id);
-	if( m != null )
+	if (m != null)
 	    parseOutDates(m);
 	return m;
     }

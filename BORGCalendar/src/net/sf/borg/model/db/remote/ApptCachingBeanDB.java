@@ -18,7 +18,7 @@ This file is part of BORG.
 Copyright 2003 by Mike Berger
  */
 
-package net.sf.borg.model.db;
+package net.sf.borg.model.db.remote;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,6 +28,9 @@ import java.util.Map;
 
 import net.sf.borg.model.beans.Appointment;
 import net.sf.borg.model.beans.KeyedBean;
+import net.sf.borg.model.db.AppointmentDB;
+import net.sf.borg.model.db.BeanDB;
+import net.sf.borg.model.db.MultiUserDB;
 
 public class ApptCachingBeanDB extends CachingBeanDB implements AppointmentDB, MultiUserDB
 {
@@ -37,13 +40,13 @@ public class ApptCachingBeanDB extends CachingBeanDB implements AppointmentDB, M
 	}
 	
 // BeanDB overrides
-	public final synchronized void addObj(KeyedBean bean, boolean crypt) throws DBException, Exception
+	public final synchronized void addObj(KeyedBean bean, boolean crypt) throws  Exception
 	{
 		super.addObj(bean,crypt);
 		rebuildKeys();
 	}
 
-	public final synchronized void updateObj(KeyedBean bean, boolean crypt) throws DBException, Exception
+	public final synchronized void updateObj(KeyedBean bean, boolean crypt) throws  Exception
 	{
 		super.updateObj(bean,crypt);
 		rebuildKeys();

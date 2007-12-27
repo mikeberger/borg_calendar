@@ -28,7 +28,6 @@ import java.util.List;
 import net.sf.borg.model.BorgOption;
 import net.sf.borg.model.beans.KeyedBean;
 import net.sf.borg.model.db.BeanDB;
-import net.sf.borg.model.db.DBException;
 import net.sf.borg.model.db.file.mdb.Row;
 import net.sf.borg.model.db.file.mdb.SMDB;
 
@@ -49,7 +48,7 @@ class FileBeanDB extends SMDB implements BeanDB
     private boolean objectCacheOn_;  // is caching on? 
     private HashMap objectCache_;  // the cache
 
-    FileBeanDB(String file, int locktype, FileBeanAdapter a, boolean shared) throws DBException
+    FileBeanDB(String file, int locktype, FileBeanAdapter a, boolean shared) throws Exception
     {
         super(file, locktype, shared); 
         objectCacheOn_ = true;
@@ -65,7 +64,7 @@ class FileBeanDB extends SMDB implements BeanDB
     }
     
 	// read all beans from the DB
-	public Collection readAll() throws DBException, Exception
+	public Collection readAll() throws Exception
 	{
 		List lst = new ArrayList();
 		Iterator itr = getKeys().iterator();
@@ -93,8 +92,9 @@ class FileBeanDB extends SMDB implements BeanDB
             }
         }
         
-        try{
+        
             Row sr = readRow( key );
+            if( sr == null ) return null;
             KeyedBean bean = adapter_.fromRow(sr);
 //          put the bean in the cache
             if( objectCacheOn_ )
@@ -105,15 +105,7 @@ class FileBeanDB extends SMDB implements BeanDB
             // return a copy of the bean - so that changes to the bean
             // do not update the cached bean
             return bean.copy();
-        }
-        catch( DBException db)
-        {
-            if( db.getRetCode() != DBException.RET_NOT_FOUND)
-        	throw db;
-        	
-        }
-        
-        return null;
+     
         
     }
     
@@ -123,13 +115,13 @@ class FileBeanDB extends SMDB implements BeanDB
     }
     
     // add a bean unencrypted
-    public void addObj( KeyedBean bean ) throws DBException, Exception
+    public void addObj( KeyedBean bean ) throws  Exception
     {
         addObj(bean,false);
     }
     
     // add a bean that has been filled in by the caller
-    public void addObj( KeyedBean bean, boolean crypt ) throws DBException, Exception
+    public void addObj( KeyedBean bean, boolean crypt ) throws  Exception
     {
         
         Row sr = adapter_.toRow( schema_, bean, normalize_ );
@@ -144,13 +136,13 @@ class FileBeanDB extends SMDB implements BeanDB
     }
     
     // update unencrypted
-    public void updateObj( KeyedBean bean ) throws DBException, Exception
+    public void updateObj( KeyedBean bean ) throws  Exception
     {
         updateObj(bean,false);
     }
     
     // update a bean
-    public void updateObj( KeyedBean bean, boolean crypt ) throws DBException, Exception
+    public void updateObj( KeyedBean bean, boolean crypt ) throws  Exception
     {
         
         // delete the record first
@@ -173,12 +165,12 @@ class FileBeanDB extends SMDB implements BeanDB
         super.delete(key);
     }
 
-    public final synchronized boolean isDirty() throws DBException
+    public final synchronized boolean isDirty() throws Exception
     {
     	return isMDBDirty();
     }
     
-    public void sync() throws DBException {
+    public void sync()  {
         syncMDB();
         objectCache_ = new HashMap();
     }

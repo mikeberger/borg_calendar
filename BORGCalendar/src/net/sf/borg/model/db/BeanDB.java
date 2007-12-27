@@ -34,17 +34,17 @@ import net.sf.borg.model.beans.KeyedBean;
  */
 public interface BeanDB
 {
-	public Collection readAll() throws DBException, Exception;
-    public KeyedBean readObj( int key ) throws DBException, Exception;
+	public Collection readAll() throws  Exception;
+    public KeyedBean readObj( int key ) throws  Exception;
     public KeyedBean newObj();
-    public void addObj( KeyedBean bean, boolean crypt ) throws DBException, Exception;
-    public void updateObj( KeyedBean bean, boolean crypt ) throws DBException, Exception;
+    public void addObj( KeyedBean bean, boolean crypt ) throws  Exception;
+    public void updateObj( KeyedBean bean, boolean crypt ) throws  Exception;
     public void delete( int key ) throws Exception;
     public String getOption( String oname ) throws Exception;
     public void setOption( BorgOption option ) throws Exception;
     public Collection getOptions() throws Exception;
     public void close() throws Exception;
     public int nextkey() throws Exception;
-    public boolean isDirty() throws DBException, Exception;
-    public void sync() throws DBException;
+    public boolean isDirty() throws  Exception;
+    public void sync();
 }

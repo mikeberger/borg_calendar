@@ -34,7 +34,6 @@ import net.sf.borg.model.beans.Memo;
 import net.sf.borg.model.beans.Task;
 import net.sf.borg.model.db.AppointmentDB;
 import net.sf.borg.model.db.BeanDB;
-import net.sf.borg.model.db.DBException;
 import net.sf.borg.model.db.MemoDB;
 import net.sf.borg.model.db.MultiUserDB;
 import net.sf.borg.model.db.remote.IRemoteProxy;
@@ -131,11 +130,7 @@ public class SingleInstanceHandler {
 	    }
 	} catch (Exception e) {
 	    e.printStackTrace();
-	    if (e instanceof DBException)
-		result = e;
-	    else
-		result = new DBException(e.getClass().getName() + ": "
-			+ e.getLocalizedMessage());
+	 
 	}
 
 	String resultString = XmlObjectHelper.toXml(result).toString();

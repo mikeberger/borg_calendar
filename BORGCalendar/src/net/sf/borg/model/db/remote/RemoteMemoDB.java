@@ -24,40 +24,39 @@ import java.util.Collection;
 
 import net.sf.borg.common.XTree;
 import net.sf.borg.model.beans.Memo;
-import net.sf.borg.model.db.DBException;
 import net.sf.borg.model.db.MemoDB;
 
 
 class RemoteMemoDB implements MemoDB {
     // BeanDB overrides
-    public final synchronized Collection getNames() throws DBException,
+    public final synchronized Collection getNames() throws 
 	    Exception {
 	Collection col = (Collection) call("getNames", null);
 	return col;
     }
 
-    public final synchronized Collection readAll() throws DBException,
+    public final synchronized Collection readAll() throws 
 	    Exception {
 	Collection col = (Collection) call("readAllMemos", null);
 	return col;
     }
 
-    public final synchronized Memo readMemo(String name) throws DBException,
+    public final synchronized Memo readMemo(String name) throws 
 	    Exception {
 	return (Memo) call("readMemo", name);
     }
 
-    public final synchronized Memo getMemoByPalmId(int id) throws DBException,
+    public final synchronized Memo getMemoByPalmId(int id) throws 
 	    Exception {
 	return (Memo) call("getMemoByPalmId", new Integer(id));
     }
 
-    public final synchronized void addMemo(Memo m) throws DBException,
+    public final synchronized void addMemo(Memo m) throws 
 	    Exception {
 	call("addMemo", new IRemoteProxy.ComposedObject(m, null));
     }
 
-    public final synchronized void updateMemo(Memo m) throws DBException,
+    public final synchronized void updateMemo(Memo m) throws 
 	    Exception {
 	call("updateMemo", new IRemoteProxy.ComposedObject(m, null));
     }

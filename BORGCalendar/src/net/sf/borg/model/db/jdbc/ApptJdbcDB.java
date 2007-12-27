@@ -36,7 +36,6 @@ import net.sf.borg.model.beans.Appointment;
 import net.sf.borg.model.beans.KeyedBean;
 import net.sf.borg.model.db.AppointmentDB;
 import net.sf.borg.model.db.BeanDB;
-import net.sf.borg.model.db.DBException;
 import net.sf.borg.model.db.MultiUserDB;
 
 
@@ -58,7 +57,7 @@ class ApptJdbcDB extends JdbcBeanDB implements AppointmentDB, BeanDB, MultiUserD
 
     }
     
-    public void addObj(KeyedBean bean, boolean crypt) throws DBException, Exception
+    public void addObj(KeyedBean bean, boolean crypt) throws Exception
     {
         PreparedStatement stmt = connection_.prepareStatement( "INSERT INTO appointments (appt_date, appt_num, username, duration, text, skip_list," +
         " next_todo, vacation, holiday, private, times, frequency, todo, color, rpt, category, new, modified, deleted, alarm, reminders, untimed ) VALUES " +
@@ -99,7 +98,7 @@ class ApptJdbcDB extends JdbcBeanDB implements AppointmentDB, BeanDB, MultiUserD
         writeCache( appt );
     }
     
-    public void delete(int key) throws DBException, Exception
+    public void delete(int key) throws Exception
     {
         PreparedStatement stmt = connection_.prepareStatement( "DELETE FROM appointments WHERE appt_num = ? AND username = ?" );
         stmt.setInt( 1, key );
@@ -212,7 +211,7 @@ class ApptJdbcDB extends JdbcBeanDB implements AppointmentDB, BeanDB, MultiUserD
 		return appt;
 	}
 	
-    public void updateObj(KeyedBean bean, boolean crypt) throws DBException, Exception
+    public void updateObj(KeyedBean bean, boolean crypt) throws Exception
     {
         PreparedStatement stmt = connection_.prepareStatement( "UPDATE appointments SET  appt_date = ?, " +
         "duration = ?, text = ?, skip_list = ?," +

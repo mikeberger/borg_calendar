@@ -30,7 +30,6 @@ import java.util.Collection;
 import net.sf.borg.model.beans.Address;
 import net.sf.borg.model.beans.KeyedBean;
 import net.sf.borg.model.db.BeanDB;
-import net.sf.borg.model.db.DBException;
 
 
 /**
@@ -51,7 +50,7 @@ class AddrJdbcDB extends JdbcBeanDB implements BeanDB
         super( conn );
     }
     
-    public void addObj(KeyedBean bean, boolean crypt) throws DBException, Exception
+    public void addObj(KeyedBean bean, boolean crypt) throws Exception
     {
         PreparedStatement stmt = connection_.prepareStatement( "INSERT INTO addresses ( address_num, username, " +
         "first_name, last_name, nickname, email, screen_name, work_phone," + 
@@ -101,7 +100,7 @@ class AddrJdbcDB extends JdbcBeanDB implements BeanDB
 
     }
     
-    public void delete(int key) throws DBException, Exception
+    public void delete(int key) throws Exception
     {
         PreparedStatement stmt = connection_.prepareStatement( "DELETE FROM addresses WHERE address_num = ? AND username = ?" );
         stmt.setInt( 1, key );
@@ -192,7 +191,7 @@ class AddrJdbcDB extends JdbcBeanDB implements BeanDB
 		return addr;
 	}
 	
-    public void updateObj(KeyedBean bean, boolean crypt) throws DBException, Exception
+    public void updateObj(KeyedBean bean, boolean crypt) throws Exception
     {
    
         PreparedStatement stmt = connection_.prepareStatement( "UPDATE addresses SET " +

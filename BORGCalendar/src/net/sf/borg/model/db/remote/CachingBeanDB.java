@@ -18,7 +18,7 @@ This file is part of BORG.
 Copyright 2003 by Mike Berger
  */
 
-package net.sf.borg.model.db;
+package net.sf.borg.model.db.remote;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,6 +28,7 @@ import java.util.Map;
 
 import net.sf.borg.model.BorgOption;
 import net.sf.borg.model.beans.KeyedBean;
+import net.sf.borg.model.db.BeanDB;
 
 public class CachingBeanDB implements BeanDB
 {
@@ -37,11 +38,11 @@ public class CachingBeanDB implements BeanDB
 	}
 	
 	// BeanDB overrides
-    public final synchronized Collection readAll() throws DBException, Exception {
+    public final synchronized Collection readAll() throws  Exception {
         return new ArrayList(getObjectMap().values());
     }
 
-	public final synchronized KeyedBean readObj(int key) throws DBException, Exception
+	public final synchronized KeyedBean readObj(int key) throws  Exception
 	{
 		KeyedBean bean = (KeyedBean) getObjectMap().get(new Integer(key));
 		return bean==null ? bean : bean.copy();
@@ -59,13 +60,13 @@ public class CachingBeanDB implements BeanDB
 		}
 	}
 
-	public synchronized void addObj(KeyedBean bean, boolean crypt) throws DBException, Exception
+	public synchronized void addObj(KeyedBean bean, boolean crypt) throws  Exception
 	{
 		delegate.addObj(bean,crypt);
 		getObjectMap().put(new Integer(bean.getKey()), bean);
 	}
 
-	public synchronized void updateObj(KeyedBean bean, boolean crypt) throws DBException, Exception
+	public synchronized void updateObj(KeyedBean bean, boolean crypt) throws  Exception
 	{
 		delegate.updateObj(bean,crypt);
 		getObjectMap().put(new Integer(bean.getKey()), bean);
@@ -126,7 +127,7 @@ public class CachingBeanDB implements BeanDB
 		return delegate.nextkey();
 	}
 
-    public final synchronized boolean isDirty() throws DBException, Exception
+    public final synchronized boolean isDirty() throws  Exception
     {
     	if (data == null) return true;
     		// need to rebuild the world
@@ -147,7 +148,7 @@ public class CachingBeanDB implements BeanDB
     	return isDelegateDirty;
     }
     
-	public final synchronized void sync() throws DBException
+	public final synchronized void sync()
 	{
 		delegate.sync();
 	}

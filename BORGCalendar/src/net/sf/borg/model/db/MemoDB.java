@@ -6,17 +6,17 @@ import net.sf.borg.model.beans.Memo;
 
 public interface MemoDB {
 
-    public void addMemo(Memo m) throws DBException, Exception;
+    public void addMemo(Memo m) throws Exception;
 
-    public void delete(String name) throws DBException, Exception;
+    public void delete(String name) throws Exception;
 
     public Collection getNames() throws Exception;
 
-    public Collection readAll() throws DBException, Exception;
+    public Collection readAll() throws Exception;
 
-    public Memo readMemo(String name) throws DBException, Exception;
+    public Memo readMemo(String name) throws Exception;
 
-    public void updateMemo(Memo m) throws DBException, Exception;
+    public void updateMemo(Memo m) throws Exception;
     
     public void close() throws Exception;
     

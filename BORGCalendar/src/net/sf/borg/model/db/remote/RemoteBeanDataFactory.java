@@ -23,9 +23,7 @@ package net.sf.borg.model.db.remote;
 import net.sf.borg.model.beans.Address;
 import net.sf.borg.model.beans.Appointment;
 import net.sf.borg.model.beans.Task;
-import net.sf.borg.model.db.ApptCachingBeanDB;
 import net.sf.borg.model.db.BeanDB;
-import net.sf.borg.model.db.CachingBeanDB;
 import net.sf.borg.model.db.IBeanDataFactory;
 import net.sf.borg.model.db.MemoDB;
 

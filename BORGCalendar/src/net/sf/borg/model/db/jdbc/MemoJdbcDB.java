@@ -30,7 +30,6 @@ import java.util.List;
 
 import net.sf.borg.model.beans.KeyedBean;
 import net.sf.borg.model.beans.Memo;
-import net.sf.borg.model.db.DBException;
 import net.sf.borg.model.db.MemoDB;
 
 class MemoJdbcDB extends JdbcDB implements MemoDB {
@@ -44,7 +43,7 @@ class MemoJdbcDB extends JdbcDB implements MemoDB {
 	super(conn);
     }
 
-    public void addMemo(Memo m) throws DBException, Exception {
+    public void addMemo(Memo m) throws Exception {
 	PreparedStatement stmt = connection_
 		.prepareStatement("INSERT INTO memos ( memoname, username, memotext, new, modified, deleted, palmid, private) "
 			+ " VALUES " + "( ?, ?, ?, ?, ?, ?, ?, ?)");
@@ -66,7 +65,7 @@ class MemoJdbcDB extends JdbcDB implements MemoDB {
 
     }
 
-    public void delete(String name) throws DBException, Exception {
+    public void delete(String name) throws  Exception {
 	PreparedStatement stmt = connection_
 		.prepareStatement("DELETE FROM memos WHERE memoname = ? AND username = ?");
 	stmt.setString(1, name);
@@ -144,7 +143,7 @@ class MemoJdbcDB extends JdbcDB implements MemoDB {
 	return m;
     }
 
-    public Collection readAll() throws DBException, Exception {
+    public Collection readAll() throws  Exception {
 	PreparedStatement stmt = null;
 	ResultSet r = null;
 	try {
@@ -164,7 +163,7 @@ class MemoJdbcDB extends JdbcDB implements MemoDB {
 	}
     }
 
-    public Memo readMemo(String name) throws DBException, Exception {
+    public Memo readMemo(String name) throws  Exception {
 	
 
 	PreparedStatement stmt = null;
@@ -185,7 +184,7 @@ class MemoJdbcDB extends JdbcDB implements MemoDB {
 	}
     }
 
-    public void updateMemo(Memo m) throws DBException, Exception {
+    public void updateMemo(Memo m) throws  Exception {
 
 	PreparedStatement stmt = connection_
 		.prepareStatement("UPDATE memos SET "

@@ -43,7 +43,6 @@ import net.sf.borg.model.beans.Task;
 import net.sf.borg.model.beans.TaskXMLAdapter;
 import net.sf.borg.model.beans.Tasklog;
 import net.sf.borg.model.beans.TasklogXMLAdapter;
-import net.sf.borg.model.db.DBException;
 
 /**
  * Helps marshal and unmarshal between objects and XML.
@@ -75,7 +74,6 @@ public class XmlObjectHelper {
 
     private static final IXmlObjectHelper[] XML_CLASSES = {
 	    new BorgOptionXmlObjectHelper(),
-	    new DBExceptionXmlObjectHelper(),
 	    new CollectionXmlObjectHelper(),
 	    new PrimitiveXmlObjectHelper(String.class, "String"),
 	    new PrimitiveXmlObjectHelper(Boolean.class, "Boolean"),
@@ -99,9 +97,7 @@ public class XmlObjectHelper {
 	xml.appendChild(name, val);
     }
 
-    private static void addPrimitive(XTree xml, String name, int val) {
-	addPrimitive(xml, name, Integer.toString(val));
-    }
+   
 
     private static String getStringPrimitive(XTree xml, String name) {
 	XTree child = xml.child(name);
@@ -110,10 +106,7 @@ public class XmlObjectHelper {
 	return child.value();
     }
 
-    private static Integer getIntPrimitive(XTree xml, String name) {
-	String val = getStringPrimitive(xml, name);
-	return Integer.valueOf(val);
-    }
+ 
 
     private static XTree createTree(XTree parent, String name) {
 	XTree tree = null;
@@ -193,39 +186,7 @@ public class XmlObjectHelper {
     }
 
     // end nested class BorgOptionXmlObjectHelper
-    // //////////////////////////////////////////////////////////
-
-    // //////////////////////////////////////////////////////////
-    // nested class DBExceptionXmlObjectHelper
-
-    private static class DBExceptionXmlObjectHelper implements IXmlObjectHelper {
-	public final Class getObjectClass() {
-	    return DBException.class;
-	}
-
-	public final String getObjectRootName() {
-	    return "DBException";
-	}
-
-	public final void populate(XTree xtree, Object o) {
-	    DBException val = (DBException) o;
-	    addPrimitive(xtree, "Message", val.getMessage());
-	    addPrimitive(xtree, "RetCode", val.getRetCode());
-	}
-
-	public final Object toObject(XTree xml) throws Exception {
-	    String message = getStringPrimitive(xml, "Message");
-	    int retCode = getIntPrimitive(xml, "RetCode").intValue();
-	    return new DBException(message, retCode);
-	}
-    }
-
-    // end nested class DBExceptionXmlObjectHelper
-    // //////////////////////////////////////////////////////////
-
-    // //////////////////////////////////////////////////////////
-    // nested class PrimitiveXmlObjectHelper
-
+ 
     private static class PrimitiveXmlObjectHelper implements IXmlObjectHelper {
 	public Class getObjectClass() {
 	    return cls;

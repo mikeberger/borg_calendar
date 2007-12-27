@@ -24,7 +24,6 @@ import java.util.Collection;
 import java.util.TreeSet;
 
 import net.sf.borg.common.Resource;
-import net.sf.borg.model.db.DBException;
 
 
 public class CategoryModel extends Model {
@@ -48,7 +47,7 @@ public class CategoryModel extends Model {
         refreshListeners();
     }
     
-    public void syncCategories() throws Exception, DBException
+    public void syncCategories() throws Exception
     {
         categories_.clear();
         categories_.addAll( AppointmentModel.getReference().getDbCategories());

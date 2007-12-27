@@ -26,7 +26,6 @@ import java.net.URL;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Resource;
 import net.sf.borg.common.XTree;
-import net.sf.borg.model.db.DBException;
 import net.sf.borg.model.db.file.mdb.MDB;
 import net.sf.borg.model.db.file.mdb.SMDB;
 import net.sf.borg.model.db.file.mdb.Schema;
@@ -57,17 +56,9 @@ class TaskFileDB extends FileDBCreator {
 
 	// open the DB with the proper mode
 
-	try {
+
 	    db_ = new FileBeanDB(file, MDB.READ_WRITE, ta, shared);
-	} catch (DBException e) {
-	    // if there is no schema (DB damaged?) add one
-	    if (e.getRetCode() == SMDB.RET_NO_SCHEMA) {
-		SMDB.update_schema(file, schema, shared);
-		db_ = new FileBeanDB(file, MDB.READ_WRITE, ta, shared);
-	    } else {
-		throw e;
-	    }
-	}
+	
 
 	// check schema for update - transition
 	FileBeanDB fdb = (FileBeanDB) db_;

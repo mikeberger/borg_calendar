@@ -28,11 +28,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import net.sf.borg.model.beans.Link;
 import net.sf.borg.model.beans.KeyedBean;
-import net.sf.borg.model.db.LinkDB;
+import net.sf.borg.model.beans.Link;
 import net.sf.borg.model.db.BeanDB;
-import net.sf.borg.model.db.DBException;
+import net.sf.borg.model.db.LinkDB;
 
 class LinkJdbcDB extends JdbcBeanDB implements BeanDB, LinkDB {
 
@@ -55,7 +54,7 @@ class LinkJdbcDB extends JdbcBeanDB implements BeanDB, LinkDB {
 		super(conn);
 	}
 
-	public void addObj(KeyedBean bean, boolean crypt) throws DBException,
+	public void addObj(KeyedBean bean, boolean crypt) throws 
 			Exception {
 		PreparedStatement stmt = connection_
 				.prepareStatement("INSERT INTO links ( id, username, linktype, ownerkey, ownertype, path) "
@@ -76,7 +75,7 @@ class LinkJdbcDB extends JdbcBeanDB implements BeanDB, LinkDB {
 
 	}
 
-	public void delete(int key) throws DBException, Exception {
+	public void delete(int key) throws Exception {
 		PreparedStatement stmt = connection_
 				.prepareStatement("DELETE FROM links WHERE id = ? AND username = ?");
 		stmt.setInt(1, key);
@@ -141,7 +140,7 @@ class LinkJdbcDB extends JdbcBeanDB implements BeanDB, LinkDB {
 		return att;
 	}
 
-	public void updateObj(KeyedBean bean, boolean crypt) throws DBException,
+	public void updateObj(KeyedBean bean, boolean crypt) throws 
 			Exception {
 
 		PreparedStatement stmt = connection_

@@ -36,7 +36,6 @@ import net.sf.borg.model.beans.Subtask;
 import net.sf.borg.model.beans.Task;
 import net.sf.borg.model.beans.Tasklog;
 import net.sf.borg.model.db.BeanDB;
-import net.sf.borg.model.db.DBException;
 import net.sf.borg.model.db.TaskDB;
 
 /**
@@ -57,7 +56,7 @@ class TaskJdbcDB extends JdbcBeanDB implements BeanDB,TaskDB {
 		super(conn);
 	}
 
-	public void addObj(KeyedBean bean, boolean crypt) throws DBException,
+	public void addObj(KeyedBean bean, boolean crypt) throws 
 			Exception {
 		PreparedStatement stmt = connection_
 				.prepareStatement("INSERT INTO tasks ( tasknum, username, start_date, due_date, person_assigned,"
@@ -103,7 +102,7 @@ class TaskJdbcDB extends JdbcBeanDB implements BeanDB,TaskDB {
 
 	}
 
-	public void delete(int key) throws DBException, Exception {
+	public void delete(int key) throws  Exception {
 		PreparedStatement stmt = connection_
 				.prepareStatement("DELETE FROM tasks WHERE tasknum = ? AND username = ?");
 		stmt.setInt(1, key);
@@ -180,7 +179,7 @@ class TaskJdbcDB extends JdbcBeanDB implements BeanDB,TaskDB {
 		return task;
 	}
 
-	public void updateObj(KeyedBean bean, boolean crypt) throws DBException,
+	public void updateObj(KeyedBean bean, boolean crypt) throws 
 			Exception {
 		PreparedStatement stmt = connection_
 				.prepareStatement("UPDATE tasks SET  start_date = ?, due_date = ?, person_assigned = ?,"

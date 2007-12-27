@@ -54,7 +54,6 @@ import net.sf.borg.model.Model;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.beans.Project;
 import net.sf.borg.model.beans.Task;
-import net.sf.borg.model.db.DBException;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.RunReport;
@@ -264,11 +263,7 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 				row++;
 			}
 
-		} catch (DBException e) {
-			if (e.getRetCode() != DBException.RET_NOT_FOUND) {
-				Errmsg.errmsg(e);
-			}
-
+		
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
 		}

@@ -33,7 +33,6 @@ import net.sf.borg.model.beans.Tasklog;
 import net.sf.borg.model.db.AppointmentDB;
 import net.sf.borg.model.db.BeanDB;
 import net.sf.borg.model.db.BeanDataFactoryFactory;
-import net.sf.borg.model.db.DBException;
 import net.sf.borg.model.db.IBeanDataFactory;
 import net.sf.borg.model.db.MultiUserDB;
 import net.sf.borg.model.db.TaskDB;
@@ -168,11 +167,6 @@ public class BorgHandler {
 		throw new UnsupportedOperationException(cmd);
 	} catch (Exception e) {
 	    e.printStackTrace();
-	    if (e instanceof DBException)
-		result = e;
-	    else
-		result = new DBException(e.getClass().getName() + ": "
-			+ e.getLocalizedMessage());
 	}
 
 	String resultString = XmlObjectHelper.toXml(result).toString();

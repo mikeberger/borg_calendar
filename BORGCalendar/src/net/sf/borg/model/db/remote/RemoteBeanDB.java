@@ -26,20 +26,19 @@ import net.sf.borg.common.XTree;
 import net.sf.borg.model.BorgOption;
 import net.sf.borg.model.beans.KeyedBean;
 import net.sf.borg.model.db.BeanDB;
-import net.sf.borg.model.db.DBException;
 
 /**
  * @author Mohan Embar
  */
 class RemoteBeanDB implements BeanDB {
 	// BeanDB overrides
-	public final synchronized Collection readAll() throws DBException,
+	public final synchronized Collection readAll() throws 
 			Exception {
 		Collection col = (Collection) call("readAll", null);
 		return col;
 	}
 
-	public final synchronized KeyedBean readObj(int key) throws DBException,
+	public final synchronized KeyedBean readObj(int key) throws 
 			Exception {
 		return (KeyedBean) call("readObj", new Integer(key));
 	}
@@ -54,14 +53,14 @@ class RemoteBeanDB implements BeanDB {
 	}
 
 	public final synchronized void addObj(KeyedBean bean, boolean crypt)
-			throws DBException, Exception {
+			throws  Exception {
 		call(
 				"addObj",
 				new IRemoteProxy.ComposedObject(bean, new Boolean(crypt) /* Boolean.valueOf(crypt) */));
 	}
 
 	public final synchronized void updateObj(KeyedBean bean, boolean crypt)
-			throws DBException, Exception {
+			throws  Exception {
 		call("updateObj", new IRemoteProxy.ComposedObject(bean, new Boolean(
 				crypt) /* Boolean.valueOf(crypt) */));
 	}
@@ -91,13 +90,13 @@ class RemoteBeanDB implements BeanDB {
 		return ((Integer) call("nextkey", null)).intValue();
 	}
 
-	public final synchronized boolean isDirty() throws DBException, Exception {
+	public final synchronized boolean isDirty() throws  Exception {
 		boolean result = ((Boolean) call("isDirty", null)).booleanValue();
 		// System.out.println("isDirty = "+result);
 		return result;
 	}
 
-	public final synchronized void sync() throws DBException {
+	public final synchronized void sync() {
 	}
 
 	// protected //

@@ -56,7 +56,6 @@ import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.TaskTypes;
 import net.sf.borg.model.beans.Project;
 import net.sf.borg.model.beans.Task;
-import net.sf.borg.model.db.DBException;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.util.PopupMenuHelper;
@@ -401,10 +400,7 @@ public class TaskListPanel extends JPanel implements Model.Listener {
 				row++;
 			}
 
-		} catch (DBException e) {
-			if (e.getRetCode() != DBException.RET_NOT_FOUND) {
-				Errmsg.errmsg(e);
-			}
+		
 
 		} catch (Exception e) {
 			Errmsg.errmsg(e);

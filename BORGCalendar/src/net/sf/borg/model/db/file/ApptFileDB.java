@@ -29,7 +29,6 @@ import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Resource;
 import net.sf.borg.common.XTree;
 import net.sf.borg.model.db.AppointmentDB;
-import net.sf.borg.model.db.DBException;
 import net.sf.borg.model.db.file.mdb.MDB;
 import net.sf.borg.model.db.file.mdb.SMDB;
 import net.sf.borg.model.db.file.mdb.Schema;
@@ -70,19 +69,9 @@ class ApptFileDB extends FileDBCreator implements AppointmentDB {
 
 	AppointmentAdapter adapter = new AppointmentAdapter();
 
-	try {
+	
 	    db_ = new FileBeanDB(file, MDB.READ_WRITE, adapter, shared);
-	} catch (DBException e) {
-
-	    // oops - DB has no schema - not sure why
-	    // maybe very old DB - so update the schema
-	    if (e.getRetCode() == SMDB.RET_NO_SCHEMA) {
-		SMDB.update_schema(file, sch, shared);
-		db_ = new FileBeanDB(file, MDB.READ_WRITE, adapter, shared);
-	    } else {
-		throw e;
-	    }
-	}
+	
 
 	FileBeanDB fdb = (FileBeanDB) db_;
 	if (newdb) {
