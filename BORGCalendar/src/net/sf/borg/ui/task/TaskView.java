@@ -920,19 +920,19 @@ public class TaskView extends DockableView {
 				}, "Add_Subtask"),
 				new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						TableSorter ts = (TableSorter) stable.getModel();
+						TableSorter ts2 = (TableSorter) stable.getModel();
 
 						Integer ids[] = getSelectedIds();
 
 						for (int i = 0; i < ids.length; ++i) {
 							if (ids[i] == null)
 								continue;
-							for (int row = 0; row < ts.getRowCount(); row++) {
-								Integer rowid = (Integer) ts.getValueAt(row, 1);
+							for (int row = 0; row < ts2.getRowCount(); row++) {
+								Integer rowid = (Integer) ts2.getValueAt(row, 1);
 								if (rowid != null
 										&& rowid.intValue() == ids[i]
 												.intValue()) {
-									ts.setValueAt(null, row, 4);
+									ts2.setValueAt(null, row, 4);
 									break;
 								}
 							}
@@ -941,7 +941,7 @@ public class TaskView extends DockableView {
 				}, "Clear_DueDate"),
 				new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						TableSorter ts = (TableSorter) stable.getModel();
+						TableSorter ts2 = (TableSorter) stable.getModel();
 
 						int[] indices = stable.getSelectedRows();
 						if (indices.length == 0)
@@ -959,12 +959,12 @@ public class TaskView extends DockableView {
 						for (int i = 0; i < ids.length; ++i) {
 							if (ids[i] == null)
 								continue;
-							for (int row = 0; row < ts.getRowCount(); row++) {
-								Integer rowid = (Integer) ts.getValueAt(row, 1);
+							for (int row = 0; row < ts2.getRowCount(); row++) {
+								Integer rowid = (Integer) ts2.getValueAt(row, 1);
 								if (rowid != null
 										&& rowid.intValue() == ids[i]
 												.intValue()) {
-									ts.setValueAt(dlgcal.getTime(), row, 4);
+									ts2.setValueAt(dlgcal.getTime(), row, 4);
 									break;
 								}
 							}
@@ -973,7 +973,7 @@ public class TaskView extends DockableView {
 				}, "Set_DueDate"),
 				new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						TableSorter ts = (TableSorter) stable.getModel();
+						TableSorter ts2 = (TableSorter) stable.getModel();
 						Integer ids[] = getSelectedIds();
 						if (ids.length == 0)
 							return;
@@ -992,26 +992,26 @@ public class TaskView extends DockableView {
 							if (ids[i] == null)
 								continue;
 							tbd_.add(ids[i]);
-							for (int row = 0; row < ts.getRowCount(); row++) {
-								Integer rowid = (Integer) ts.getValueAt(row, 1);
+							for (int row = 0; row < ts2.getRowCount(); row++) {
+								Integer rowid = (Integer) ts2.getValueAt(row, 1);
 								if (rowid != null
 										&& rowid.intValue() == ids[i]
 												.intValue()) {
 									// clear the row
-									ts.setValueAt(new Boolean(false), row, 0);
-									ts.setValueAt(null, row, 1);
-									ts.setValueAt(null, row, 2);
-									ts.setValueAt(null, row, 3);
-									ts.setValueAt(null, row, 4);
-									ts.setValueAt(null, row, 5);
-									ts.setValueAt(null, row, 6);
+									ts2.setValueAt(new Boolean(false), row, 0);
+									ts2.setValueAt(null, row, 1);
+									ts2.setValueAt(null, row, 2);
+									ts2.setValueAt(null, row, 3);
+									ts2.setValueAt(null, row, 4);
+									ts2.setValueAt(null, row, 5);
+									ts2.setValueAt(null, row, 6);
 									break;
 								}
 							}
 						}
 
 						// if table is now empty - add 1 row back
-						if (ts.getRowCount() == 0) {
+						if (ts2.getRowCount() == 0) {
 							insertSubtask();
 						}
 					}
@@ -1524,7 +1524,7 @@ public class TaskView extends DockableView {
 			
 		}
 		// change existing task
-		else if (function == T_CHANGE) {
+		else if (function == T_CHANGE && task != null) {
 
 			// determine valid next states based on task type and current
 			// state

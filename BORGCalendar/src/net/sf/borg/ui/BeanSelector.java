@@ -108,7 +108,7 @@ public class BeanSelector extends JDialog {
 			String fields[]) {
 		new BeanSelector(records, tm, fields, false).setVisible(true);
 		if (list_.size() != 0) {
-			Object b = (Object) list_.get(0);
+			Object b = list_.get(0);
 			return b;
 		}
 
@@ -165,7 +165,7 @@ public class BeanSelector extends JDialog {
 
 		Iterator it = records_.iterator();
 		while (it.hasNext()) {
-			Object r = (Object) it.next();
+			Object r = it.next();
 
 			try {
 				Class beanClass = r.getClass();
@@ -288,7 +288,7 @@ public class BeanSelector extends JDialog {
 				// current sorted position in
 				// tbl
 				Object[] oa = rows_.toArray();
-				Object b = (Object) oa[k];
+				Object b = oa[k];
 				list_.add(b);
 
 			} catch (Exception e) {

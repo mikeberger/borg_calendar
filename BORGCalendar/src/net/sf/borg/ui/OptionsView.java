@@ -1748,17 +1748,17 @@ public class OptionsView extends View {
 	    gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST; // Generated
 	    gridBagConstraints.gridy = 0; // Generated
 
-	    JLabel jLabel = new JLabel();
-	    ResourceHelper.setText(jLabel, "enturl");
-	    jLabel.setLabelFor(getJdbcText());
-	    jLabel.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT); // Generated
-	    jLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT); // Generated
+	    JLabel enturlLabel = new JLabel();
+	    ResourceHelper.setText(enturlLabel, "enturl");
+	    enturlLabel.setLabelFor(getJdbcText());
+	    enturlLabel.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT); // Generated
+	    enturlLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT); // Generated
 	    jdbcPanel = new JPanel();
 	    jdbcPanel.setLayout(new GridBagLayout()); // Generated
 	    jdbcPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, Resource.getResourceString("jdbc"),
 		    javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null,
 		    null)); // Generated
-	    jdbcPanel.add(jLabel, gridBagConstraints); // Generated
+	    jdbcPanel.add(enturlLabel, gridBagConstraints); // Generated
 	    jdbcPanel.add(getJdbcText(), gridBagConstraints54); // Generated
 	}
 	return jdbcPanel;

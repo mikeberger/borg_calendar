@@ -335,7 +335,7 @@ public class ApptBox implements Draggable {
 					double size = image1.getHeight();
 
 					// scale to 1/2 font height
-					double scale = ((double) smfontHeight) / (2 * size);
+					double scale = smfontHeight / (2 * size);
 					AffineTransform tx = AffineTransform.getScaleInstance(
 							scale, scale);
 					AffineTransformOp op = new AffineTransformOp(tx,

@@ -217,7 +217,7 @@ public class DayPanel extends JPanel implements Printable {
 	    int calbot = (int) rowheight + caltop;
 
 	    setResizeBounds((int) aptop, calbot, (int)timecolwidth, (int)(pageWidth));
-	    setDragBounds((int) caltop, calbot, (int)timecolwidth, (int)(pageWidth));
+	    setDragBounds(caltop, calbot, (int)timecolwidth, (int)(pageWidth));
 	    
 	    // start and end hour = range of Y axis
 	    String shr = Prefs.getPref(PrefName.WKSTARTHOUR);

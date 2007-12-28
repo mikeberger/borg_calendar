@@ -533,7 +533,7 @@ public class AppointmentListView extends DockableView implements
 					"/resource/ComposeMail16.gif")));
 			reminderButton
 					.addActionListener(new java.awt.event.ActionListener() {
-						public void actionPerformed(java.awt.event.ActionEvent e) {
+						public void actionPerformed(java.awt.event.ActionEvent evt) {
 							class MailThread extends Thread {
 								private Calendar cal;
 

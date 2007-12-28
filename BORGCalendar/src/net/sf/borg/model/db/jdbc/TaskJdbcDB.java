@@ -600,7 +600,7 @@ class TaskJdbcDB extends JdbcBeanDB implements BeanDB,TaskDB {
 		stmt.setInt(2,projectid);
 		r = stmt.executeQuery();
 		while (r.next()) {
-		    Project s = (Project)createProject(r);
+		    Project s = createProject(r);
 		    lst.add(s);
 		}
 

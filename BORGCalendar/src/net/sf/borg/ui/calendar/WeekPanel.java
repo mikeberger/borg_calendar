@@ -64,7 +64,7 @@ public class WeekPanel extends JPanel implements Printable {
     // weekPanel handles the printing of a single week
     private class WeekSubPanel extends ApptBoxPanel implements Navigator, Prefs.Listener, Model.Listener, Printable, MouseWheelListener {
 
-	private Date beg = null;
+	private Date beg_ = null;
 
 	private double colwidth = 0;
 
@@ -107,7 +107,7 @@ public class WeekPanel extends JPanel implements Printable {
 	    if (col > 6)
 		col = 6;
 	    Calendar cal = new GregorianCalendar();
-	    cal.setTime(beg);
+	    cal.setTime(beg_);
 	    cal.add(Calendar.DATE, (int) col);
 	    return cal.getTime();
 	}
@@ -246,7 +246,7 @@ public class WeekPanel extends JPanel implements Printable {
 	    cal.add(Calendar.DATE, -1 * offset);
 
 	    // save begin/end date and build title
-	    beg = cal.getTime();
+	    beg_ = cal.getTime();
 
 	    int caltop = fontHeight + fontDesent; // cal starts under title
 	    int daytop = caltop + fontHeight + fontDesent; // day starts under
@@ -270,7 +270,7 @@ public class WeekPanel extends JPanel implements Printable {
 	    int calbot = (int) rowheight + daytop;
 
 	    setResizeBounds((int) aptop, calbot, (int)timecolwidth, (int)(pageWidth));
-	    setDragBounds((int) daytop, calbot, (int)timecolwidth, (int)(pageWidth));
+	    setDragBounds(daytop, calbot, (int)timecolwidth, (int)(pageWidth));
 
 	    // start and end hour = range of Y axis
 	    String shr = Prefs.getPref(PrefName.WKSTARTHOUR);
@@ -311,7 +311,7 @@ public class WeekPanel extends JPanel implements Printable {
 	    g2.setStroke(defstroke);
 
 	    // reset calendar
-	    cal.setTime(beg);
+	    cal.setTime(beg_);
 
 	    // set small font for appt text
 	    g2.setFont(sm_font);
@@ -422,7 +422,7 @@ public class WeekPanel extends JPanel implements Printable {
 
 	    // add day labels
 	    // reset calendar
-	    cal.setTime(beg);
+	    cal.setTime(beg_);
 
 	    for (int col = 0; col < 7; col++) {
 

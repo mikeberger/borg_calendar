@@ -493,8 +493,8 @@ public class MainMenu {
 		    .addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(
 				java.awt.event.ActionEvent evt) {
-			    String dbtype = Prefs.getPref(PrefName.DBTYPE);
-			    if (dbtype.equals("remote"))
+			    String dbtype2 = Prefs.getPref(PrefName.DBTYPE);
+			    if (dbtype2.equals("remote"))
 				UserChooser.getReference().setVisible(true);
 			    else
 				Errmsg
@@ -1187,7 +1187,7 @@ public class MainMenu {
 	    public void actionPerformed(ActionEvent arg0) {
 
 		try {
-		    Project p = (Project) BeanSelector.selectProject();
+		    Project p = BeanSelector.selectProject();
 		    if (p == null)
 			return;
 		    Map map = new HashMap();
