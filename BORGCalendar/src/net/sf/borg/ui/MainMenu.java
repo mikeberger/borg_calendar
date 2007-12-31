@@ -53,6 +53,7 @@ import net.sf.borg.common.IOHelper;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
+import net.sf.borg.common.ScrolledDialog;
 import net.sf.borg.common.XTree;
 import net.sf.borg.control.Borg;
 import net.sf.borg.model.AddressModel;
@@ -72,7 +73,6 @@ import net.sf.borg.ui.address.AddrListView;
 import net.sf.borg.ui.calendar.TodoView;
 import net.sf.borg.ui.task.TaskConfigurator;
 import net.sf.borg.ui.util.OverwriteConfirm;
-import net.sf.borg.ui.util.ScrolledDialog;
 
 public class MainMenu {
     private JMenuItem AboutMI = new javax.swing.JMenuItem();

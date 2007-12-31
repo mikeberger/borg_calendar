@@ -20,7 +20,6 @@ Copyright 2003 by Mike Berger
 
 package net.sf.borg.common;
 
-import net.sf.borg.ui.util.ScrolledDialog;
 
 
 
