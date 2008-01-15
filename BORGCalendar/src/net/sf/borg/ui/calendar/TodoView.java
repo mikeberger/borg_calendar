@@ -271,7 +271,7 @@ public class TodoView extends DockableView implements Prefs.Listener {
 
 	private javax.swing.JMenuItem printList;
 
-	private Vector tds_; // list of rows currently displayed in todo list
+	private Collection tds_; // list of rows currently displayed in todo list
 
 	private JDateChooser tododate_cb;
 
@@ -439,8 +439,9 @@ public class TodoView extends DockableView implements Prefs.Listener {
 		tm.tableChanged(new TableModelEvent(tm));
 
 		// add the todo appointment rows to the table
-		for (int i = 0; i < tds_.size(); i++) {
-			Appointment r = (Appointment) tds_.elementAt(i);
+		Iterator tdit = tds_.iterator();
+		while( tdit.hasNext()){
+			Appointment r = (Appointment) tdit.next();
 
 			try {
 				// get appt text
@@ -772,7 +773,7 @@ public class TodoView extends DockableView implements Prefs.Listener {
 				if (k == 0)
 					continue;
 
-				Object o = tds_.elementAt(k - 1);
+				Object o = tds_.toArray()[k-1];
 				if (!appts_only || o instanceof Appointment)
 					lst.add(o);
 			} catch (Exception e) {
@@ -1032,7 +1033,7 @@ public class TodoView extends DockableView implements Prefs.Listener {
 		if (k == 0)
 			return;
 
-		Object o = tds_.elementAt(k - 1);
+		Object o = tds_.toArray()[k - 1];
 		if (o instanceof Appointment) {
 
 			Date d = (Date) tm.getValueAt(row, 0);
