@@ -1,3 +1,9 @@
+Version 1.6.1 Beta 3 - 02042008 (Bug Fix)
+-----------------------------------------
+Bug Fix [ 1886138 ] ClassCastException when savong changed subtask
+Bug Fix [ 1873225 ] Add New from Day/Week view broken in 1.6.1 b3
+Feature [ 1871712 ] Show past non-timed todo reminders
+
 Version 1.6.1 Beta 3
 --------------------
 Feature [1851556] add links/attachments
