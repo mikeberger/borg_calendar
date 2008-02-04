@@ -64,7 +64,7 @@
 		<mkdir dir="${build.dir}" />
 		<mkdir dir="${build.servlet.dir}" />
 
-		<javac srcdir="${prj.dir}/src" classpathref="build.classpath" destdir="${build.dir}" target="1.4" source="1.4">
+		<javac srcdir="${prj.dir}/src" classpathref="build.classpath" destdir="${build.dir}" target="1.4" source="1.4" debug="true">
 		</javac>
 
 		<!-- Servlet -->

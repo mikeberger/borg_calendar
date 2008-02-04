@@ -899,6 +899,7 @@ public class TaskView extends DockableView {
 		stable.getColumnModel().getColumn(4).setPreferredWidth(30);
 		stable.getColumnModel().getColumn(5).setPreferredWidth(30);
 		stable.getColumnModel().getColumn(6).setPreferredWidth(30);
+		stable.getColumnModel().getColumn(7).setPreferredWidth(30);
 
 		if (!TaskModel.getReference().hasSubTasks()) {
 			stable.getTableHeader().setEnabled(false);
@@ -1005,6 +1006,7 @@ public class TaskView extends DockableView {
 									ts2.setValueAt(null, row, 4);
 									ts2.setValueAt(null, row, 5);
 									ts2.setValueAt(null, row, 6);
+									ts2.setValueAt(null, row, 7);
 									break;
 								}
 							}
@@ -1082,7 +1084,7 @@ public class TaskView extends DockableView {
 			if (crd == null)
 				crd = task.getStartDate();
 			Date dd = (Date) ts.getValueAt(r, 4);
-			Date cd = (Date) ts.getValueAt(r, 6);
+			Date cd = (Date) ts.getValueAt(r, 7);
 			
 			boolean closing = false;
 			if (closed.booleanValue() == true && cd == null) {
