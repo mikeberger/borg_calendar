@@ -40,6 +40,7 @@ import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.AppointmentModel;
+import net.sf.borg.model.LinkModel;
 import net.sf.borg.model.Repeat;
 import net.sf.borg.model.beans.Appointment;
 import net.sf.borg.ui.MultiView;
@@ -287,6 +288,8 @@ public class ApptBox implements Draggable {
 	private String todoMarker = null;
 
 	private double top; // fraction of the available grid height at which
+	
+	private boolean hasLink = false;
 
 	public ApptBox(Date d, Appointment ap, Rectangle bounds, Rectangle clip) {
 
@@ -305,6 +308,17 @@ public class ApptBox implements Draggable {
 				todoMarker = iconname;
 			}
 		}
+		
+		Collection atts;
+		try {
+			atts = LinkModel.getReference().getLinks(appt);
+			if( atts != null && atts.size() > 0)
+				hasLink = true;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 
 	public void delete() {
@@ -403,18 +417,24 @@ public class ApptBox implements Draggable {
 		else if (getTextColor().equals("brick"))
 			g2.setColor(new Color(Integer.parseInt(Prefs
 					.getPref(PrefName.UCS_BRICK))));
+		
+		String text = getText();
+		if( hasLink )
+		{
+			text = "@ " + text;
+		}
 
 		if (isTodo() && todoIcon != null) {
 			todoIcon.paintIcon(comp, g2, bounds.x + radius, bounds.y + radius
 					+ smfontHeight / 2);
-			drawWrappedString(g2, getText(), bounds.x + radius
+			drawWrappedString(g2, text, bounds.x + radius
 					+ todoIcon.getIconWidth(), bounds.y + radius, bounds.width
 					- radius);
 		} else if (isTodo() && todoMarker != null) {
-			drawWrappedString(g2, todoMarker + " " + getText(), bounds.x
+			drawWrappedString(g2, todoMarker + " " + text, bounds.x
 					+ radius, bounds.y + radius, bounds.width - radius);
 		} else {
-			drawWrappedString(g2, getText(), bounds.x + radius, bounds.y
+			drawWrappedString(g2, text, bounds.x + radius, bounds.y
 					+ radius, bounds.width - radius);
 		}
 

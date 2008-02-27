@@ -13,6 +13,7 @@ import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.text.AttributedString;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -29,6 +30,7 @@ import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.AppointmentModel;
+import net.sf.borg.model.LinkModel;
 import net.sf.borg.model.Repeat;
 import net.sf.borg.model.beans.Appointment;
 import net.sf.borg.ui.MultiView;
@@ -38,7 +40,7 @@ import net.sf.borg.ui.MultiView;
 public class NoteBox implements Draggable {
 
 	private Icon todoIcon = null;
-
+	
 	private String todoMarker = null;
 
 	private Appointment appt = null;
@@ -48,6 +50,8 @@ public class NoteBox implements Draggable {
 	private Date date; // date being displayed - not necessarily date of
 
 	private boolean isSelected = false;
+	
+	private boolean hasLink = false;
 
 	public NoteBox(Date d, Appointment ap, Rectangle bounds, Rectangle clip) {
 		appt = ap;
@@ -65,6 +69,18 @@ public class NoteBox implements Draggable {
 				todoMarker = iconname;
 			}
 		}
+		
+		Collection atts;
+		try {
+			atts = LinkModel.getReference().getLinks(appt);
+			if( atts != null && atts.size() > 0)
+				hasLink = true;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
 	}
 
 	public void delete() {
@@ -104,6 +120,7 @@ public class NoteBox implements Draggable {
 					e.printStackTrace();
 				}
 			}
+			
 			oldFontHeight = smfontHeight;
 		}
 
@@ -152,16 +169,24 @@ public class NoteBox implements Draggable {
 				g2.setColor(new Color(Integer.parseInt(Prefs
 						.getPref(PrefName.UCS_BRICK))));
 
+			int offset = 2;
+			String text = getText();
+			if( hasLink )
+			{
+				text = "@ " + text;
+			}
 			if (isTodo() && todoIcon != null) {
-				todoIcon.paintIcon(comp, g2, bounds.x, bounds.y + bounds.height
+				
+				todoIcon.paintIcon(comp, g2, bounds.x + offset, bounds.y + bounds.height
 						/ 2);
-				g2.drawString(getText(), bounds.x + todoIcon.getIconWidth(),
+				offset = todoIcon.getIconWidth();
+				g2.drawString(text, bounds.x + offset,
 						bounds.y + smfontHeight);
 			} else if (isTodo() && todoMarker != null) {
-				g2.drawString(todoMarker + " " + getText(), bounds.x + 2,
+				g2.drawString(todoMarker + " " + text, bounds.x + offset,
 						bounds.y + smfontHeight);
 			} else {
-				g2.drawString(getText(), bounds.x + 2, bounds.y + smfontHeight);
+				g2.drawString(text, bounds.x + offset, bounds.y + smfontHeight);
 			}
 			g2.setColor(Color.black);
 		}
