@@ -1138,7 +1138,7 @@ public class OptionsView extends View {
 	gridBagConstraints9.gridy = 6;
 	gridBagConstraints9.fill = java.awt.GridBagConstraints.BOTH;
 	gridBagConstraints9.insets = new java.awt.Insets(4, 4, 4, 4);
-	wkstarthr.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "4", "5", "6", "7", "8", "9", "10", "11" }));
+	wkstarthr.setModel(new javax.swing.DefaultComboBoxModel(new String[] {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11" }));
 	appearancePanel.add(jLabel5, gridBagConstraints9);
 
 	GridBagConstraints gridBagConstraints10 = new java.awt.GridBagConstraints();
@@ -1148,7 +1148,7 @@ public class OptionsView extends View {
 	gridBagConstraints10.anchor = java.awt.GridBagConstraints.WEST;
 	gridBagConstraints10.insets = new java.awt.Insets(4, 4, 4, 4);
 	wkendhr.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "12", "13", "14", "15", "16", "17", "18", "19", "20",
-		"21", "22", "23" }));
+		"21", "22", "23", "24" }));
 	appearancePanel.add(wkstarthr, gridBagConstraints10);
 
 	GridBagConstraints gridBagConstraints11 = new java.awt.GridBagConstraints();
