@@ -29,7 +29,6 @@ import java.applet.Applet;
 import java.applet.AudioClip;
 import java.awt.EventQueue;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -331,22 +330,15 @@ public class PopupView extends View {
 					// map
 					// along with the appt key
 
-					ReminderPopup jd = new ReminderPopup();
+					ReminderPopup jd = new ReminderPopup(appt);
 
 					pops.put(ik, jd);
 
-					// add text to date
-					String tx = "";
-					if (!AppointmentModel.isNote(appt)) {
-						SimpleDateFormat df = AppointmentModel.getTimeFormat();
-						tx = df.format(appt.getDate());
-					}
-
-					tx += " " + appt.getText();
-					jd.setText(tx);
+					
 					jd.setText2("");
 					jd.setVisible(true);
 					jd.toFront();
+					
 
 				} catch (Exception e) {
 					Errmsg.errmsg(e);
@@ -386,19 +378,10 @@ public class PopupView extends View {
 					// map
 					// along with the appt key
 
-					ReminderPopup jd = new ReminderPopup();
+					ReminderPopup jd = new ReminderPopup(appt);
 
 					pops.put(ik, jd);
 
-					// add text to date
-					String tx = "";
-					if (!AppointmentModel.isNote(appt)) {
-						SimpleDateFormat df = AppointmentModel.getTimeFormat();
-						tx = df.format(appt.getDate());
-					}
-
-					tx += " " + appt.getText();
-					jd.setText(tx);
 					jd.setText2("");
 					jd.setVisible(true);
 					jd.toFront();
