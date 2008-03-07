@@ -244,6 +244,8 @@ public class MonthPanel extends JPanel implements Printable {
 			// reset calendar
 			cal.set(year_, month_, 1);
 			int fdow = cal.get(Calendar.DAY_OF_WEEK) - cal.getFirstDayOfWeek();
+			if (fdow == -1)
+				fdow = 6;
 			cal.add(Calendar.DATE, -1 * fdow);
 
 			// print the days - either grayed out or containing a number and
