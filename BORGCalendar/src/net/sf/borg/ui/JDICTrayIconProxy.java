@@ -31,6 +31,7 @@ import javax.swing.JPopupMenu;
 import net.sf.borg.control.Borg;
 import net.sf.borg.ui.address.AddrListView;
 import net.sf.borg.ui.calendar.TodoView;
+import net.sf.borg.ui.popup.PopupView;
 
 import org.jdesktop.jdic.tray.SystemTray;
 import org.jdesktop.jdic.tray.TrayIcon;
@@ -66,12 +67,7 @@ public class JDICTrayIconProxy {
             item.addActionListener(new OpenListener());
             popup.add(item);
             
-            /*
-            item = new JMenuItem();
-            ResourceHelper.setText(item, "Open_Task_List");
-            item.addActionListener(new TaskListener());
-            popup.add(item);
-            */
+           
             item = new JMenuItem();
             ResourceHelper.setText(item, "Open_Address_Book");
             item.addActionListener(new AddrListener());
@@ -81,6 +77,18 @@ public class JDICTrayIconProxy {
             ResourceHelper.setText(item, "To_Do_List");
             item.addActionListener(new TodoListener());
             popup.add(item);
+            
+            item = new JMenuItem();
+            ResourceHelper.setText(item, "Show_Pops");
+            item.addActionListener(new ActionListener(){
+
+				public void actionPerformed(ActionEvent arg0) {
+					PopupView.getReference().showAll();				
+				}
+            	
+            });
+            popup.add(item);
+            
             
             popup.addSeparator();
             

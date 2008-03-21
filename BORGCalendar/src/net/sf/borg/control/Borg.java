@@ -691,7 +691,7 @@ public class Borg extends Controller implements OptionsView.RestartListener,
 		}
 
 		// create popups view
-		new PopupView();
+		PopupView.getReference();
 
 		// only start to systray (i.e. no month/todo views, if
 		// trayicon is available and option is set

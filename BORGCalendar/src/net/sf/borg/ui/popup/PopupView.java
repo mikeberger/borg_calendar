@@ -55,6 +55,8 @@ import net.sf.borg.ui.View;
  */
 public class PopupView extends View {
 
+	static private PopupView singleton = null;
+	
 	// map that maps appointment keys to the associated popup reminder
 	// windows
 	private HashMap pops = new HashMap();
@@ -66,9 +68,18 @@ public class PopupView extends View {
 			popup_chk();
 		}
 	};
+	
+	public static PopupView getReference()
+	{
+		if( singleton == null )
+		{
+			singleton = new PopupView();
+		}
+		return singleton;
+	}
 
 	/** Creates a new instance of popups */
-	public PopupView() {
+	private PopupView() {
 		addModel(AppointmentModel.getReference());
 		timer = new java.util.Timer();
 		// start popups at next minute on system clock
@@ -503,6 +514,35 @@ public class PopupView extends View {
 			} catch (Exception e) {
 				// ignore errors here
 			}
+		}
+	}
+	
+	public void showAll()
+	{
+		Set s = pops.entrySet();
+		Iterator i = s.iterator();
+		while (i.hasNext()) {
+			// get popup frame
+			Entry me = (Entry) i.next();
+			ReminderPopup fr = (ReminderPopup) me.getValue();
+
+			// if frame is gone (killed already), then skip it
+			if (fr == null)
+				continue;
+			
+
+			// skip if popup not being shown - but still in map
+			if (!fr.isDisplayable()) {
+				// free resources from JFrame and remove from map
+				// map should be last reference to the frame so garbage
+				// collection should now be free to clean it up
+				me.setValue(null);
+				continue;
+			}
+			
+			fr.setVisible(true);
+			fr.toFront();
+			
 		}
 	}
 }
