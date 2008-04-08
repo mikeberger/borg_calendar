@@ -1,12 +1,12 @@
-===================================
-RELEASE NOTES for BORG 1.6.1 Beta 3
-===================================
+============================
+RELEASE NOTES for BORG 1.6.1
+============================
 
 The project home page is http://borg-calendar.sourceforge.net
 
-********************************
-Database Change for MySQL users
-********************************
+************************************************
+Database Change from version 1.6 for MySQL users
+************************************************
 MySQL users need to change the database via the following SQL:
 	alter table memos add private integer default '0' NOT NULL;
 	alter table projects add parent integer default NULL;

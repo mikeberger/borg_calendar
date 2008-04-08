@@ -1,3 +1,13 @@
+Version 1.6.1
+-------------
+Feature [1904725]  mark todos as done from reminder popup
+Feature [1903141]  Add marker on calendar if appt has links  
+Feature [1871712]  Show past non-timed todo reminders  
+Bug Fix [1933587]  deleted repeats show up in todo list and popups
+Bug Fix [1909656]  month and year view missing 1st
+Bug Fix [1886138]  ClassCastException when savong changed subtask
+Bug Fix [1873225]  Add New from Day/Week view broken in 1.6.1 b3
+
 Version 1.6.1 Beta 3 - 02042008 (Bug Fix)
 -----------------------------------------
 Bug Fix [ 1886138 ] ClassCastException when savong changed subtask
