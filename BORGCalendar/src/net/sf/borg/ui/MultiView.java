@@ -110,12 +110,19 @@ public class MultiView extends View {
 	addModel(AddressModel.getReference());
 	addModel(MemoModel.getReference());
 	getLayeredPane().registerKeyboardAction(new ActionListener() {
-	    public final void actionPerformed(ActionEvent e) {
-		if (Borg.getReference().hasTrayIcon())
-		    exit();
-	    }
+		public final void actionPerformed(ActionEvent e) {
+			if (Borg.getReference().hasTrayIcon())
+				exit();
+		}
 	}, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
-		JComponent.WHEN_IN_FOCUSED_WINDOW);
+	JComponent.WHEN_IN_FOCUSED_WINDOW);
+	getLayeredPane().registerKeyboardAction(new ActionListener() {
+		public final void actionPerformed(ActionEvent e) {
+			Component c = getTabs().getSelectedComponent();
+			getTabs().remove(c);
+		}
+	}, KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0),
+	JComponent.WHEN_IN_FOCUSED_WINDOW);
 
 	addWindowListener(new java.awt.event.WindowAdapter() {
 	    public void windowClosing(java.awt.event.WindowEvent evt) {
