@@ -156,7 +156,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener, M
 	Dimension minimumSize = new Dimension(200, 50);
 	view_scroll.setMinimumSize(minimumSize);
 	treeView.setMinimumSize(minimumSize);
-	splitPane.setDividerLocation(200);
+	splitPane.setDividerLocation(250);
 	add(splitPane);
 	tree.addMouseListener(this);
 	JMenuItem jm = rootmenu.add(Resource.getPlainResourceString("Add") + " " + Resource.getPlainResourceString("project"));
@@ -365,7 +365,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener, M
 	    Task t = (Task) it2.next();
 	    if( !CategoryModel.getReference().isShown(t.getCategory()))
 		    continue;
-	    node.add(new DefaultMutableTreeNode(new Node("[" + t.getTaskNumber() + "] " + t.getDescription(), t)));
+	    node.add(new DefaultMutableTreeNode(new Node("[" + t.getTaskNumber() + "-" + t.getState() + "] " + t.getDescription(), t)));
 	}
 	
 	Collection subpcoll = TaskModel.getReference().getSubProjects(p.getId().intValue());
