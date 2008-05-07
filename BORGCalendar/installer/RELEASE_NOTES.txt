@@ -11,16 +11,7 @@ MySQL users need to change the database via the following SQL:
 	alter table memos add private integer default '0' NOT NULL;
 	alter table projects add parent integer default NULL;
 	alter table projects add FOREIGN KEY (parent, username) REFERENCES projects ( id, username ) ON DELETE CASCADE;
-	CREATE TABLE links (
-	  id integer default '0' NOT NULL,
-	  username varchar(25) NOT NULL,
-	  linktype varchar(15) NOT NULL,
-	  ownerkey integer default '0' NOT NULL,
-	  ownertype varchar(15),
-	  path varchar(250),
-	  PRIMARY KEY  (id,username),
-		KEY `username` (`username`)
-	);
+	
 	CREATE TABLE links (
   		id integer default '0' NOT NULL,
   		username varchar(25) NOT NULL,
