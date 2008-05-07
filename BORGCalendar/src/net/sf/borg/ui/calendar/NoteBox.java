@@ -40,7 +40,7 @@ import net.sf.borg.ui.MultiView;
 public class NoteBox implements Draggable {
 
 	private Icon todoIcon = null;
-	
+
 	private String todoMarker = null;
 
 	private Appointment appt = null;
@@ -50,7 +50,7 @@ public class NoteBox implements Draggable {
 	private Date date; // date being displayed - not necessarily date of
 
 	private boolean isSelected = false;
-	
+
 	private boolean hasLink = false;
 
 	public NoteBox(Date d, Appointment ap, Rectangle bounds, Rectangle clip) {
@@ -63,24 +63,22 @@ public class NoteBox implements Draggable {
 		String use_marker = Prefs.getPref(PrefName.UCS_MARKTODO);
 		if (use_marker.equals("true")) {
 			if (iconname.endsWith(".gif") || iconname.endsWith(".jpg")) {
-				todoIcon = new javax.swing.ImageIcon(getClass().getResource(
-						"/resource/" + iconname));
+				todoIcon = new javax.swing.ImageIcon(getClass().getResource("/resource/" + iconname));
 			} else {
 				todoMarker = iconname;
 			}
 		}
-		
+
 		Collection atts;
 		try {
 			atts = LinkModel.getReference().getLinks(appt);
-			if( atts != null && atts.size() > 0)
+			if (atts != null && atts.size() > 0)
 				hasLink = true;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
+
 	}
 
 	public void delete() {
@@ -103,16 +101,13 @@ public class NoteBox implements Draggable {
 			if (todoIcon != null) {
 				try {
 					// get image
-					BufferedImage image1 = ImageIO.read(getClass().getResource(
-							"/resource/" + Prefs.getPref(PrefName.UCS_MARKER)));
+					BufferedImage image1 = ImageIO.read(getClass().getResource("/resource/" + Prefs.getPref(PrefName.UCS_MARKER)));
 					double size = image1.getHeight();
 
 					// scale to 1/2 font height
 					double scale = smfontHeight / (2 * size);
-					AffineTransform tx = AffineTransform.getScaleInstance(
-							scale, scale);
-					AffineTransformOp op = new AffineTransformOp(tx,
-							AffineTransformOp.TYPE_BICUBIC);
+					AffineTransform tx = AffineTransform.getScaleInstance(scale, scale);
+					AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BICUBIC);
 					BufferedImage rImage = op.filter(image1, null);
 					todoIcon = new ImageIcon(rImage);
 
@@ -120,7 +115,7 @@ public class NoteBox implements Draggable {
 					e.printStackTrace();
 				}
 			}
-			
+
 			oldFontHeight = smfontHeight;
 		}
 
@@ -137,54 +132,41 @@ public class NoteBox implements Draggable {
 		if (getTextColor().equals("strike")) {
 
 			AttributedString as = new AttributedString(getText(), stmap);
-			g2.drawString(as.getIterator(), bounds.x + 2, bounds.y
-					+ smfontHeight);
+			g2.drawString(as.getIterator(), bounds.x + 2, bounds.y + smfontHeight);
 		} else {
 			// change color for a single appointment based on
 			// its color - only if color print option set
 			g2.setColor(Color.black);
 
 			if (getTextColor().equals("red"))
-				g2.setColor(new Color(Integer.parseInt(Prefs
-						.getPref(PrefName.UCS_RED))));
+				g2.setColor(new Color(Integer.parseInt(Prefs.getPref(PrefName.UCS_RED))));
 			else if (getTextColor().equals("green"))
-				g2.setColor(new Color(Integer.parseInt(Prefs
-						.getPref(PrefName.UCS_GREEN))));
+				g2.setColor(new Color(Integer.parseInt(Prefs.getPref(PrefName.UCS_GREEN))));
 			else if (getTextColor().equals("blue"))
-				g2.setColor(new Color(Integer.parseInt(Prefs
-						.getPref(PrefName.UCS_BLUE))));
+				g2.setColor(new Color(Integer.parseInt(Prefs.getPref(PrefName.UCS_BLUE))));
 			else if (getTextColor().equals("black"))
-				g2.setColor(new Color(Integer.parseInt(Prefs
-						.getPref(PrefName.UCS_BLACK))));
+				g2.setColor(new Color(Integer.parseInt(Prefs.getPref(PrefName.UCS_BLACK))));
 			else if (getTextColor().equals("white"))
-				g2.setColor(new Color(Integer.parseInt(Prefs
-						.getPref(PrefName.UCS_WHITE))));
+				g2.setColor(new Color(Integer.parseInt(Prefs.getPref(PrefName.UCS_WHITE))));
 			else if (getTextColor().equals("navy"))
-				g2.setColor(new Color(Integer.parseInt(Prefs
-						.getPref(PrefName.UCS_NAVY))));
+				g2.setColor(new Color(Integer.parseInt(Prefs.getPref(PrefName.UCS_NAVY))));
 			else if (getTextColor().equals("purple"))
-				g2.setColor(new Color(Integer.parseInt(Prefs
-						.getPref(PrefName.UCS_PURPLE))));
+				g2.setColor(new Color(Integer.parseInt(Prefs.getPref(PrefName.UCS_PURPLE))));
 			else if (getTextColor().equals("brick"))
-				g2.setColor(new Color(Integer.parseInt(Prefs
-						.getPref(PrefName.UCS_BRICK))));
+				g2.setColor(new Color(Integer.parseInt(Prefs.getPref(PrefName.UCS_BRICK))));
 
 			int offset = 2;
 			String text = getText();
-			if( hasLink )
-			{
+			if (hasLink) {
 				text = "@ " + text;
 			}
 			if (isTodo() && todoIcon != null) {
-				
-				todoIcon.paintIcon(comp, g2, bounds.x + offset, bounds.y + bounds.height
-						/ 2);
+
+				todoIcon.paintIcon(comp, g2, bounds.x + offset, bounds.y + bounds.height / 2);
 				offset = todoIcon.getIconWidth();
-				g2.drawString(text, bounds.x + offset,
-						bounds.y + smfontHeight);
+				g2.drawString(text, bounds.x + offset, bounds.y + smfontHeight);
 			} else if (isTodo() && todoMarker != null) {
-				g2.drawString(todoMarker + " " + text, bounds.x + offset,
-						bounds.y + smfontHeight);
+				g2.drawString(todoMarker + " " + text, bounds.x + offset, bounds.y + smfontHeight);
 			} else {
 				g2.drawString(text, bounds.x + offset, bounds.y + smfontHeight);
 			}
@@ -203,9 +185,7 @@ public class NoteBox implements Draggable {
 	public void edit() {
 		GregorianCalendar cal = new GregorianCalendar();
 		cal.setTime(date);
-		AppointmentListView ag = new AppointmentListView(
-				cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal
-						.get(Calendar.DATE));
+		AppointmentListView ag = new AppointmentListView(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE));
 		MultiView.getMainView().addView(ag);
 		ag.showApp(appt.getKey());
 
@@ -252,8 +232,7 @@ public class NoteBox implements Draggable {
 			return null;
 
 		if ((appt.getColor() != null && appt.getColor().equals("strike"))
-				|| (appt.getTodo() && !(appt.getNextTodo() == null || !appt
-						.getNextTodo().after(date)))) {
+				|| (appt.getTodo() && !(appt.getNextTodo() == null || !appt.getNextTodo().after(date)))) {
 			return ("strike");
 		}
 		return appt.getColor();
@@ -269,15 +248,13 @@ public class NoteBox implements Draggable {
 		JMenuItem mnuitm;
 		if (popmenu == null) {
 			popmenu = new JPopupMenu();
-			popmenu.add(mnuitm = new JMenuItem(Resource
-					.getPlainResourceString("Edit")));
+			popmenu.add(mnuitm = new JMenuItem(Resource.getPlainResourceString("Edit")));
 			mnuitm.addActionListener(new ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
 					edit();
 				}
 			});
-			popmenu.add(mnuitm = new JMenuItem(Resource
-					.getPlainResourceString("Delete")));
+			popmenu.add(mnuitm = new JMenuItem(Resource.getPlainResourceString("Delete")));
 			mnuitm.addActionListener(new ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
 					delete();
@@ -285,26 +262,22 @@ public class NoteBox implements Draggable {
 			});
 
 			if (isTodo()) {
-				popmenu.add(mnuitm = new JMenuItem(Resource
-						.getPlainResourceString("Done_(No_Delete)")));
+				popmenu.add(mnuitm = new JMenuItem(Resource.getPlainResourceString("Done_(No_Delete)")));
 				mnuitm.addActionListener(new ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						try {
-							AppointmentModel.getReference().do_todo(
-									appt.getKey(), false);
+							AppointmentModel.getReference().do_todo(appt.getKey(), false);
 						} catch (Exception e) {
 							Errmsg.errmsg(e);
 						}
 					}
 				});
 
-				popmenu.add(mnuitm = new JMenuItem(Resource
-						.getPlainResourceString("Done_(Delete)")));
+				popmenu.add(mnuitm = new JMenuItem(Resource.getPlainResourceString("Done_(Delete)")));
 				mnuitm.addActionListener(new ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						try {
-							AppointmentModel.getReference().do_todo(
-									appt.getKey(), true);
+							AppointmentModel.getReference().do_todo(appt.getKey(), true);
 						} catch (Exception e) {
 							Errmsg.errmsg(e);
 						}
@@ -313,16 +286,14 @@ public class NoteBox implements Draggable {
 			}
 
 			if (Repeat.isRepeating(appt)) {
-				popmenu.add(mnuitm = new JMenuItem(Resource
-						.getPlainResourceString("Delete_One_Only")));
+				popmenu.add(mnuitm = new JMenuItem(Resource.getPlainResourceString("Delete_One_Only")));
 				mnuitm.addActionListener(new ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						try {
 							Calendar cal = new GregorianCalendar();
 							cal.setTime(date);
 							int rkey = AppointmentModel.dkey(cal);
-							AppointmentModel.getReference().delOneOnly(
-									appt.getKey(), rkey);
+							AppointmentModel.getReference().delOneOnly(appt.getKey(), rkey);
 						} catch (Exception e) {
 							Errmsg.errmsg(e);
 						}
@@ -347,6 +318,7 @@ public class NoteBox implements Draggable {
 		if (hour != 0 || min != 0) {
 			// we are moving to be timed - set duration
 			ap.setDuration(new Integer(15));
+			ap.setUntimed("N");
 			newCal.set(Calendar.HOUR_OF_DAY, hour);
 			int roundMin = (min / 5) * 5;
 			newCal.set(Calendar.MINUTE, roundMin);
@@ -361,6 +333,7 @@ public class NoteBox implements Draggable {
 
 		int newkey = AppointmentModel.dkey(newCal);
 		Date newTime = newCal.getTime();
+		
 		ap.setDate(newTime);
 
 		// only do something if date changed
@@ -371,13 +344,14 @@ public class NoteBox implements Draggable {
 				cal.setTime(date);
 				int k2 = AppointmentModel.dkey(cal);
 				if (oldkey != k2) {
-					Errmsg.notice(Resource
-							.getPlainResourceString("rpt_drag_err"));
+					Errmsg.notice(Resource.getPlainResourceString("rpt_drag_err"));
 					return;
 				}
 			}
 			AppointmentModel.getReference().changeDate(ap);
 
+		} else {
+			AppointmentModel.getReference().saveAppt(ap, false);
 		}
 	}
 }
