@@ -1,8 +1,10 @@
-Version 1.6.1
--------------
+Version 1.6.1 Final
+-------------------
 Feature [1904725]  mark todos as done from reminder popup
 Feature [1903141]  Add marker on calendar if appt has links  
-Feature [1871712]  Show past non-timed todo reminders  
+Feature [1871712]  Show past non-timed todo reminders
+Bug Fix [1959692]  can't drag appt from non-timed to timed  
+Bug Fix [1951636]  cant change save a task after first entered
 Bug Fix [1933587]  deleted repeats show up in todo list and popups
 Bug Fix [1909656]  month and year view missing 1st
 Bug Fix [1886138]  ClassCastException when savong changed subtask
