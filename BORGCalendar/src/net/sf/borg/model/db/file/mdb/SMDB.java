@@ -57,174 +57,172 @@ public class SMDB {
     protected boolean normalize_; // normalize Data
 
     public SMDB(String file, int locktype, boolean shared) throws Exception {
-	db_ = new MDB(file, locktype, shared);
+        db_ = new MDB(file, locktype, shared);
 
-	schema_ = new Schema();
+        schema_ = new Schema();
 
-	// read the schema, which is kept in a system record
-	// keyed using the SCHEMA key
-	String s;
+        // read the schema, which is kept in a system record
+        // keyed using the SCHEMA key
+        String s;
 
-	s = db_.readSys(SCHEMA);
+        s = db_.readSys(SCHEMA);
 
-	
-	    // init the schema object from the schema raw string data
-	    schema_.set(s);
+        // init the schema object from the schema raw string data
+        schema_.set(s);
 
-	    options_ = new VMap();
-	    hasOpts_ = false;
+        options_ = new VMap();
+        hasOpts_ = false;
 
-	    // get any options - which are kept in a system record keyed using
-	    // the OPTIONS key
+        // get any options - which are kept in a system record keyed using
+        // the OPTIONS key
 
-	    s = db_.readSys(OPTIONS);
+        s = db_.readSys(OPTIONS);
 
-	    // activate the options map from the raw options string
-	    options_.activate(s);
-	    hasOpts_ = true;
-
-	    String norm = getOption("NORM");
-	    if (norm != null && norm.equals("Y"))
-		normalize_ = true;
-	    else
-		normalize_ = false;
+        // activate the options map from the raw options string
+        if (s != null) {
+            options_.activate(s);
+            hasOpts_ = true;
+        }
+        String norm = getOption("NORM");
+        if (norm != null && norm.equals("Y"))
+            normalize_ = true;
+        else
+            normalize_ = false;
 
     }
 
     public void setNormalize(boolean b) throws Exception {
-	normalize_ = b;
-	if (b)
-	    setOption("NORM", "Y");
-	else
-	    setOption("NORM", "N");
+        normalize_ = b;
+        if (b)
+            setOption("NORM", "Y");
+        else
+            setOption("NORM", "N");
     }
 
     public boolean getNormalize() {
-	return (normalize_);
+        return (normalize_);
     }
 
     // get the Schema
     public Schema getSchema() {
-	return (schema_);
+        return (schema_);
     }
 
     // set the schema
     public void setSchema(Schema schema) throws Exception {
-	db_.updateSys(SCHEMA, schema.toString());
-	schema_ = schema;
+        db_.updateSys(SCHEMA, schema.toString());
+        schema_ = schema;
     }
 
     // static member to add a schema to a DB file
-    static public void update_schema(String filename, Schema schema,
-	    boolean shared) throws Exception {
-	MDB db = new MDB(filename, MDB.ADMIN, shared);
-	db.addSys(SCHEMA, schema.toString());
-	db.close();
+    static public void update_schema(String filename, Schema schema, boolean shared) throws Exception {
+        MDB db = new MDB(filename, MDB.ADMIN, shared);
+        db.addSys(SCHEMA, schema.toString());
+        db.close();
     }
 
-    static public void create(String dbname, String filename, int blocksize,
-	    Schema schema) throws Exception {
-	// create a regular MDB database
-	MDB.create(dbname, filename, blocksize);
+    static public void create(String dbname, String filename, int blocksize, Schema schema) throws Exception {
+        // create a regular MDB database
+        MDB.create(dbname, filename, blocksize);
 
-	// make it a BeanDB database by adding a schema
-	update_schema(filename, schema, false);
+        // make it a BeanDB database by adding a schema
+        update_schema(filename, schema, false);
     }
 
     // gets the raw Option data - not for the end user
     String optString() { /* package level access */
-	if (!hasOpts_)
-	    return (null);
+        if (!hasOpts_)
+            return (null);
 
-	return (options_.toString());
+        return (options_.toString());
     }
 
     public Collection optionKeys() {
-	return (options_.keySet());
+        return (options_.keySet());
     }
 
     /** get user option */
     public String getOption(String oname) {
-	return ((String) options_.get(oname));
+        return ((String) options_.get(oname));
     }
 
     /** set a user option */
     public void setOption(String oname, String value) throws Exception {
-	options_.put(oname, value);
+        options_.put(oname, value);
 
-	String s = options_.passivate();
+        String s = options_.passivate();
 
-	if (hasOpts_) {
-	    db_.updateSys(OPTIONS, s);
-	} else {
-	    db_.addSys(OPTIONS, s);
-	    hasOpts_ = true;
-	}
+        if (hasOpts_) {
+            db_.updateSys(OPTIONS, s);
+        } else {
+            db_.addSys(OPTIONS, s);
+            hasOpts_ = true;
+        }
 
     }
 
     // read an Row from the DB given the key
     public Row readRow(int key) throws Exception {
 
-	// read the raw String data for the row
-	String s = db_.read(key);
-	if( s == null ) return null;
-	Row sr = new Row(schema_);
-	sr.setKey(key);
+        // read the raw String data for the row
+        String s = db_.read(key);
+        if (s == null)
+            return null;
+        Row sr = new Row(schema_);
+        sr.setKey(key);
 
-	// activate the Row from the String data
-	sr.normalize(normalize_);
-	sr.activate(s);
+        // activate the Row from the String data
+        sr.normalize(normalize_);
+        sr.activate(s);
 
-	// set any flags in the Row - they do not come from the String data
-	sr.setFlags(db_.getFlags(key));
+        // set any flags in the Row - they do not come from the String data
+        sr.setFlags(db_.getFlags(key));
 
-	// return a copy of the Row - so that changes to the Row
-	// do not update the cached Row
-	return sr.copy();
+        // return a copy of the Row - so that changes to the Row
+        // do not update the cached Row
+        return sr.copy();
     }
 
     /** Factory method to allocate a new Row for later storage in the SMDB */
     // what makes this needed is the need to associate the schema from the DB
     // to the Row
     public Row newRow() {
-	return (new Row(schema_));
+        return (new Row(schema_));
     }
 
     // add a Row unencrypted
     public void addRow(int key, Row sr) throws Exception {
-	addRow(key, sr, false);
+        addRow(key, sr, false);
     }
 
     // add a Row that has been filled in by the caller
     public void addRow(int key, Row sr, boolean crypt) throws Exception {
 
-	// make sure the row reflects the key being added
-	sr.setKey(key);
+        // make sure the row reflects the key being added
+        sr.setKey(key);
 
-	// passivate the SMDB Row into a String
-	sr.normalize(normalize_);
-	String s = sr.passivate();
+        // passivate the SMDB Row into a String
+        sr.normalize(normalize_);
+        String s = sr.passivate();
 
-	// add the record using the MDB API
-	db_.add(key, sr.getFlags(), s, crypt);
+        // add the record using the MDB API
+        db_.add(key, sr.getFlags(), s, crypt);
 
     }
 
     // update unencrypted
     public void updateRow(int key, Row sr) throws Exception, Exception {
-	updateRow(key, sr, false);
+        updateRow(key, sr, false);
     }
 
     // update a Row
-    public void updateRow(int key, Row sr, boolean crypt) throws Exception,
-	    Exception {
+    public void updateRow(int key, Row sr, boolean crypt) throws Exception, Exception {
 
-	// delete the record first
-	delete(key);
+        // delete the record first
+        delete(key);
 
-	// call addObj
-	addRow(key, sr, crypt);
+        // call addObj
+        addRow(key, sr, crypt);
     }
 
     // the following methods are currently just invoking the corresponding MDB
@@ -232,31 +230,31 @@ public class SMDB {
     // public int first() throws MException { return( db_.first() ); }
     // public int next() throws MException { return( db_.next() ); }
     public Collection getKeys() {
-	return (db_.keys());
+        return (db_.keys());
     }
 
     public void close() {
-	db_.close();
+        db_.close();
     }
 
     // public int getFlags() throws MException { return( db_.getFlags() ); }
     public int getFlags(int key) throws Exception {
-	return (db_.getFlags(key));
+        return (db_.getFlags(key));
     }
 
     public int nextkey() {
-	return db_.nextkey();
+        return db_.nextkey();
     }
 
     public void delete(int key) throws Exception {
-	db_.delete(key);
+        db_.delete(key);
     }
 
     public boolean isMDBDirty() throws Exception {
-	return db_.isDirty();
+        return db_.isDirty();
     }
 
-    public void syncMDB()  {
-	db_.sync();
+    public void syncMDB() {
+        db_.sync();
     }
 }
