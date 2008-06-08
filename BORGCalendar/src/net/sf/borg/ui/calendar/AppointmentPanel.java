@@ -578,7 +578,6 @@ public class AppointmentPanel extends JPanel {
 			GridBagConstraints gridBagConstraints19 = new GridBagConstraints();
 			GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
 			GridBagConstraints gridBagConstraints28 = new GridBagConstraints();
-			GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
 			GridBagConstraints gridBagConstraints71 = new GridBagConstraints();
 			GridBagConstraints gridBagConstraints61 = new GridBagConstraints();
 			GridBagConstraints gridBagConstraints51 = new GridBagConstraints();
@@ -613,14 +612,13 @@ public class AppointmentPanel extends JPanel {
 			gridBagConstraints71.gridx = 2;
 			gridBagConstraints71.gridy = 1;
 			gridBagConstraints71.fill = java.awt.GridBagConstraints.BOTH;
-			gridBagConstraints13.gridx = 4;
-			gridBagConstraints13.gridy = 0;
 			gridBagConstraints28.gridx = 2;
 			gridBagConstraints28.gridy = 0;
 			gridBagConstraints28.insets = new java.awt.Insets(4, 4, 4, 4);
 			gridBagConstraints28.fill = java.awt.GridBagConstraints.HORIZONTAL;
-			gridBagConstraints19.gridx = 2;
-			gridBagConstraints19.gridy = 0;
+			gridBagConstraints19.gridx = 0;
+			gridBagConstraints19.gridy = 3;
+			gridBagConstraints19.gridwidth = 2;
 			//gridBagConstraints19.insets = new java.awt.Insets(4, 4, 4, 4);
 			gridBagConstraints19.fill = java.awt.GridBagConstraints.BOTH;
 			jPanel.add(lblFrequency, gridBagConstraints31);
