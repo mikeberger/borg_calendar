@@ -1,0 +1,41 @@
+==================================
+RELEASE NOTES for SimpleBORG 1.7
+==================================
+
+The project home page is http://borg-calendar.sourceforge.net
+
+
+REPORTS
+-------
+In order to get reporting functionality, the reports libraries must be downloaded separately.
+This is a separate download since the report libraries would make the installer over 3MB larger.
+The limited amount of reporting available does not justify adding the extra
+3MB to the installer at this time.
+
+
+KNOWN ISSUES:
+-------------
+
+1. There are always new text strings that have not been translated. 
+Feel free to mail any translations to i_flem@users.sourceforge.net.
+There is nobody on the project actively updating the translations. Any
+received translations will be posted as patches.
+
+
+RUNNING
+-------
+For Windows: The installer can create shortcuts in the start menu and 
+desktop (optional)
+   Otherwise, double-click borg.jar from windows explorer.
+   It is found in the install folder that you choose from the installer.
+
+Command Line (any OS): The quickest way to run BORG from a command line 
+is: java -jar borg.jar
+   This will work as long as the java executable from the JRE is in your PATH
+   on whatever OS you are running. 
+
+
+LICENSE
+-------
+BORG is open source under the GPL. A copy of the GPL is included with it.
+Source is available from: http://sourceforge.net/projects/borg-calendar/
