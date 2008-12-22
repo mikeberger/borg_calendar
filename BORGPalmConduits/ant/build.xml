@@ -1,0 +1,98 @@
+<?xml version="1.0"?>
+<!-- $Id: build.xml 845 2007-11-28 04:12:25Z i_flem $ -->
+<project name="borg-conduits" default="main" basedir="..">
+	<!-- Properties -->
+
+	<property name="pkg" value="net/sf/borg" />
+
+	<property name="build.dir" value="${basedir}/build" />
+	<property name="dist.dir" value="${basedir}/dist" />
+	<property name="jsync.jar" value="C:/Program Files/Palm/JSync/1.3/jsync.jar" />
+	<property name="build.compiler" value="modern" />
+
+	<!-- Path References -->
+	<path id="build.classpath">
+		<pathelement location="${jsync.jar}" />
+		<pathelement location="${dist.dir}/borg13.jar" />
+	</path>
+
+
+	<!-- Compile -->
+	<target name="compile_cond">
+		<mkdir dir="${build.dir}/cond" />
+
+		<javac srcdir="${basedir}/cond_src" destdir="${build.dir}/cond" debug="on" classpathref="build.classpath" source="1.3" target="1.3">
+		</javac>
+
+	</target>
+
+	<target name="addr-jar" depends="compile_cond">
+
+		<mkdir dir="${dist.dir}" />
+
+		<copy file="${basedir}/addrconduit.xml" tofile="${build.dir}/cond/conduit.xml" overwrite="true" />
+
+		<jar jarfile="${dist.dir}/addrconduit.jar" >
+			<fileset dir="${build.dir}/cond">
+				<include name="**/addrconduit/*.class" />
+				<include name="conduit.xml" />
+			</fileset>
+		</jar>
+	</target>
+
+	<target name="appt-jar" depends="compile_cond">
+		<mkdir dir="${dist.dir}" />
+
+		<copy file="${basedir}/apptconduit.xml" tofile="${build.dir}/cond/conduit.xml" overwrite="true" />
+
+		<jar jarfile="${dist.dir}/apptconduit.jar" >
+			<fileset dir="${build.dir}/cond">
+				<include name="**/apptconduit/*.class" />
+				<include name="conduit.xml" />
+			</fileset>
+
+		</jar>
+	</target>
+
+
+	<target name="memo-jar" depends="compile_cond">
+
+		<mkdir dir="${dist.dir}" />
+
+		<copy file="${basedir}/memoconduit.xml" tofile="${build.dir}/cond/conduit.xml" overwrite="true" />
+
+		<jar jarfile="${dist.dir}/memoconduit.jar" >
+			<fileset dir="${build.dir}/cond">
+				<include name="**/memoconduit/*.class" />
+				<include name="conduit.xml" />
+			</fileset>
+		</jar>
+	</target>
+
+	<target name="b13-jar">
+
+		<mkdir dir="${dist.dir}" />
+		<mkdir dir="${build.dir}" />
+		<mkdir dir="${build.dir}/borg" />
+		<javac srcdir="${basedir}/borg_src" destdir="${build.dir}/borg" classpathref="build.classpath" debug="on" source="1.3" target="1.3"/>
+		
+		<jar jarfile="${dist.dir}/borg13.jar" >
+			<fileset dir="${build.dir}/borg">
+				<include name="**/*.class" />		
+			</fileset>
+		</jar>
+	</target>
+
+	<!-- Clean everything -->
+	<target name="clean">
+		<delete quiet="true" dir="${build.dir}" />
+		<delete quiet="true" dir="${dist.dir}" />
+	</target>
+
+
+
+	<target name="main" depends="clean,b13-jar,addr-jar,appt-jar,memo-jar" />
+
+
+
+</project>

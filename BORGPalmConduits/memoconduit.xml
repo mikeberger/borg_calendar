@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<conduit xmlns="url:org.palm.conduit:manager.v01">
+  <creator>memo</creator>
+  <directory>borg</directory>
+  <file>file</file>
+  <remote>MemoDB</remote>
+  <name>BORG Memo Conduit</name>
+  <information>BORG Memo Conduit</information>
+  <classname>net.sf.borg.memoconduit.MemoCond</classname>
+  <classpath>.\borg13.jar;</classpath>
+</conduit>
