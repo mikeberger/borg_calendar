@@ -150,7 +150,7 @@ public class MemoModel  {
 		String text = m.getMemoText();
 		if (text == null)
 			return;
-		if (text != null && text.startsWith("TS;")) {
+		if (  text.startsWith("TS;")) {
 			int idx1 = 2;
 			int idx2 = text.indexOf(';', idx1 + 1);
 			int idx3 = text.indexOf(';', idx2 + 1);

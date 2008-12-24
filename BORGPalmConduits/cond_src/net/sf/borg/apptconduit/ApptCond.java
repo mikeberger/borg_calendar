@@ -120,15 +120,8 @@ public class ApptCond implements Conduit {
 				log("user=" + user);
 				apptModel = AppointmentModel.create();
 				apptModel.open_db(dbdir, user, false);
-/*
-				taskModel = TaskModel.create();
-				try{
-				    taskModel.open_db(dbdir, user, false, false);
-				}
-				catch( Exception e)
-				{
-				     //ignore exception for subtasks no supported
-				}*/
+
+				
 				// have to get todo data into BORG, then get appt data, then
 				// sync back
 				// appt data and finally overwrite Todo data.
