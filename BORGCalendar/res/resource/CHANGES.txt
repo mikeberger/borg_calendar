@@ -1,3 +1,13 @@
+BORG 1.7.1
+----------
+Feature [2234537] add quick-todo option to calendar context menus
+Feature [2221223] backup to ZIP file
+Feature [2216922] Rewrite UIs using GridBagConstraints Factory
+Feature [2216864] add task list to project view
+Bug Fix [2465525] RunSQL missing commit
+Bug Fix [1988106] Overlapping widgets on recurrence panel  
+
+
 Simple BORG 1.7
 -----------------
 Feature 2198214  Create Simple BORG 

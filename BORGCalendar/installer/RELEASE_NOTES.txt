@@ -1,5 +1,5 @@
 ==================================
-RELEASE NOTES for SimpleBORG 1.7
+RELEASE NOTES for BORG 1.7.1
 ==================================
 
 The project home page is http://borg-calendar.sourceforge.net
