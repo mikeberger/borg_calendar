@@ -116,6 +116,7 @@ class SqlRunner extends JDialog {
 			// System.out.println(sb.toString());
 			TaskModel.getReference().beginTransaction();
 			ResultSet r = JdbcDB.execSQL(editor.getText());
+			TaskModel.getReference().commitTransaction();
 			if( r != null && r.next())
 			{
 				JTable tbl = new JTable();
