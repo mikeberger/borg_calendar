@@ -279,16 +279,14 @@ import net.sf.borg.model.beans.TasklogXMLAdapter;
 			IRemoteProxy.Parms parms = (IRemoteProxy.Parms) o;
 			addPrimitive(xtree, "Class", parms.getClassString());
 			addPrimitive(xtree, "Command", parms.getCommand());
-			addPrimitive(xtree, "User", parms.getUser());
 			toXml(xtree, parms.getArgs());
 		}
 
 		public Object toObject(XTree xml) throws Exception {
 			String classString = getStringPrimitive(xml, "Class");
 			String command = getStringPrimitive(xml, "Command");
-			String user = getStringPrimitive(xml, "User");
-			Object args = fromXml(xml.child(4));
-			return new IRemoteProxy.Parms(classString, command, args, user);
+			Object args = fromXml(xml.child(3));
+			return new IRemoteProxy.Parms(classString, command, args);
 		}
 	}
 

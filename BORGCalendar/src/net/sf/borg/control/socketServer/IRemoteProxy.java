@@ -38,12 +38,12 @@ interface IRemoteProxy
 
 static class Parms
 {
-	public Parms(String clsstr, String command, Object args, String user)
+	public Parms(String clsstr, String command, Object args)
 	{
 		this.clsstr = clsstr;
 		this.command = command;
 		this.args = args;
-		this.user = user;
+		
 
 		if (clsstr.equals("Address"))
 			cls = Address.class;
@@ -68,7 +68,6 @@ static class Parms
 	public final String getClassString()	{return clsstr;}
 	public final String getCommand()		{return command;}
 	public final Object getArgs()			{return args;}
-	public final String getUser()			{return user;}
 	
 	// private //
 	@SuppressWarnings("unchecked")
@@ -76,7 +75,6 @@ static class Parms
 	private String clsstr;
 	private String command;
 	private Object args;
-	private String user;
 }
 
 // end nested class Parms

@@ -20,8 +20,6 @@
 
 package net.sf.borg.control.socketServer;
 
-import java.util.Vector;
-
 import net.sf.borg.common.XTree;
 import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.AppointmentModel;
@@ -105,8 +103,6 @@ public class SingleInstanceHandler {
 					result = ((AppointmentDB) beanDB).getRepeatKeys();
 				} else if (cmd.equals("nextkey")) {
 					result = new Integer(beanDB.nextkey());
-				} else if (cmd.equals("isDirty")) {
-					result = false;
 				} else if (cmd.equals("setOption")) {
 					BorgOption option = (BorgOption) parms.getArgs();
 					beanDB.setOption(option);
@@ -118,29 +114,7 @@ public class SingleInstanceHandler {
 					if (cmd.equals("addObj"))
 						beanDB.addObj(bean);
 					else
-					{
-						// kludge fix for Palm conduit
-						// conduit is still using VMAP for vector
-						// if conduit sends over a VMAP - then get correct data from
-						// db and use that
-						if( bean instanceof Appointment)
-						{
-							Appointment ap = (Appointment) bean;
-							Vector<String> v = ap.getSkipList();
-							if( v != null )
-							{
-								
-								String s = v.get(0);
-								if( s != null && s.startsWith("VMAP"))
-								{
-									
-									// get real data from db
-									Appointment old = AppointmentModel.getReference().getAppt(ap.getKey());
-									System.out.println(old.getText() + " " + old.getSkipList());									
-									ap.setSkipList(old.getSkipList());
-								}
-							}
-						}
+					{				
 						beanDB.updateObj(bean);
 					}
 
