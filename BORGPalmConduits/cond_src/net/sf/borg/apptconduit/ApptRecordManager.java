@@ -84,7 +84,7 @@ public class ApptRecordManager {
 			resetPCAttributes(appt);
 			
 			long diff = now.getTime() - ad.getTime();
-			Log.out(appt.getKey() + ":" + diff);
+			//Log.out(appt.getKey() + ":" + diff);
 			
 			// only write dates newer than 2 years old
 			if (diff <= span) {

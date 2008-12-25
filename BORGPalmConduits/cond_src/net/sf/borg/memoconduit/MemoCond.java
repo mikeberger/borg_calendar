@@ -8,10 +8,7 @@ import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.J13Helper;
 import net.sf.borg.common.SocketClient;
 import net.sf.borg.model.MemoModel;
-import net.sf.borg.model.db.remote.IRemoteProxy;
-import net.sf.borg.model.db.remote.IRemoteProxyProvider;
-import net.sf.borg.model.db.remote.RemoteProxyHome;
-import net.sf.borg.model.db.remote.socket.SocketProxy;
+import net.sf.borg.model.db.remote.SocketProxy;
 import palm.conduit.Conduit;
 import palm.conduit.ConfigureConduitInfo;
 import palm.conduit.Log;
@@ -26,7 +23,7 @@ public class MemoCond implements Conduit {
 	 * Name of the conduit to be displayed on the dialog
 	 */
 
-	static private int port;
+	static private int port = 2929;
 
 	static final String NAME = "BORG Memo Conduit";
 
@@ -61,9 +58,8 @@ public class MemoCond implements Conduit {
 				// read the pc records on the PC
 				String loc = props.localName;
 				String dbdir = props.pathName;
-				String user = props.userName;
+
 				Log.out("dbdir=" + dbdir);
-				Log.out("user=" + user);
 				Log.out("localName=" + loc);
 
 				if (loc.indexOf(':') != -1) {
@@ -76,51 +72,25 @@ public class MemoCond implements Conduit {
 					FileInputStream is = new FileInputStream(propfile);
 					Properties dbprops = new Properties();
 					dbprops.load(is);
-					dbdir = dbprops.getProperty("dburl");
-					user = dbprops.getProperty("user");
 					port = Integer.parseInt(dbprops.getProperty("port"));
 				} catch (Exception e) {
 					Log.out("Properties exception: " + e.toString());
 				}
 
-				// If we're doing remote stuff, use SocketProxy
-				RemoteProxyHome.getInstance().setProxyProvider(
-						new IRemoteProxyProvider() {
-							public final IRemoteProxy createProxy(String url) {
-								// No synchronization needed - we're
-								// single-threaded.
-								if (proxy == null)
-									proxy = new SocketProxy(url, port);
-								return proxy;
-							}
-
-							public final Credentials getCredentials() {
-								return new Credentials("$default", "$default");
-							}
-
-							// private //
-							private IRemoteProxy proxy = null;
-						});
+				SocketProxy.setPort(port);
 
 				// shutdown the app - unless we are using a remote socket
 				// interface
-				if (!dbdir.startsWith("remote:")) {
-					try {
-						SocketClient.sendMsg("localhost", port, "shutdown");
-					} catch (Exception e) {
-					}
-				} else {
-					try {
-						SocketClient
-								.sendMsg("localhost", port,
-										"lock:Memo HotSync In Progress...Please wait");
-					} catch (Exception e) {
-					}
+
+				try {
+					SocketClient.sendMsg("localhost", port,
+							"lock:Memo HotSync In Progress...Please wait");
+				} catch (Exception e) {
+
 				}
-				log("dbdir=" + dbdir);
-				log("user=" + user);
+
 				memoModel = MemoModel.create();
-				memoModel.open_db(dbdir, user, false);
+				memoModel.open_db();
 
 				// Create an instance of the RecordManager for synchronizing the
 				// records
@@ -131,15 +101,15 @@ public class MemoCond implements Conduit {
 				memoModel.close_db();
 				SyncManager.closeDB(db);
 				log("OK MemoCond Conduit");
-				if (dbdir.startsWith("remote:")) {
-					try {
-						SocketClient.sendMsg("localhost", port, "sync");
-						SocketClient.sendMsg("localhost", port,
-								"lock:Memo HotSync Completed");
-						SocketClient.sendMsg("localhost", port, "unlock");
-					} catch (Exception e) {
-					}
+
+				try {
+					SocketClient.sendMsg("localhost", port, "sync");
+					SocketClient.sendMsg("localhost", port,
+							"lock:Memo HotSync Completed");
+					SocketClient.sendMsg("localhost", port, "unlock");
+				} catch (Exception e) {
 				}
+
 			}
 
 			// Single Log we are successful

@@ -27,7 +27,7 @@ import java.util.Iterator;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.model.beans.Memo;
 import net.sf.borg.model.db.MemoDB;
-import net.sf.borg.model.db.remote.RemoteBeanDataFactory;
+import net.sf.borg.model.db.remote.RemoteMemoDB;
 
 public class MemoModel  {
 
@@ -81,10 +81,10 @@ public class MemoModel  {
 		return memos;
 	}
 
-	public void open_db(String url, String username, boolean shared)
+	public void open_db()
 			throws Exception {
 
-		db_ = RemoteBeanDataFactory.getInstance().createMemoDB(url, username);
+		db_ = new RemoteMemoDB();
 	}
 
 	public void forceDelete(Memo memo) throws Exception {

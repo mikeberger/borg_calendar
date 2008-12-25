@@ -51,10 +51,6 @@ public abstract class KeyedBean implements Serializable
         key_ = k;
     }
     
-    public KeyedBean copy()
-    {
-    	return (KeyedBean) clone();
-    }
     
     protected Object clone(){
         System.out.println("Should not be here!!");

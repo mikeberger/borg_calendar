@@ -8,10 +8,7 @@ import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.J13Helper;
 import net.sf.borg.common.SocketClient;
 import net.sf.borg.model.AppointmentModel;
-import net.sf.borg.model.db.remote.IRemoteProxy;
-import net.sf.borg.model.db.remote.IRemoteProxyProvider;
-import net.sf.borg.model.db.remote.RemoteProxyHome;
-import net.sf.borg.model.db.remote.socket.SocketProxy;
+import net.sf.borg.model.db.remote.SocketProxy;
 import palm.conduit.Conduit;
 import palm.conduit.ConfigureConduitInfo;
 import palm.conduit.Log;
@@ -26,7 +23,7 @@ public class ApptCond implements Conduit {
 	 */
 	static final String NAME = "BORG Appt Conduit";
 
-	static private int port;
+	static private int port = 2929;
 
 	static public void log(String s) {
 		Log.out(s);
@@ -43,7 +40,7 @@ public class ApptCond implements Conduit {
 		ApptRecordManager recordMgr;
 		TodoRecordManager trecordMgr;
 		AppointmentModel apptModel;
-		//TaskModel taskModel;
+		// TaskModel taskModel;
 
 		Errmsg.console(true);
 
@@ -59,9 +56,7 @@ public class ApptCond implements Conduit {
 				// read the pc records on the PC
 				String loc = props.localName;
 				String dbdir = props.pathName;
-				String user = props.userName;
 				Log.out("dbdir=" + dbdir);
-				Log.out("user=" + user);
 				Log.out("localName=" + loc);
 
 				if (loc.indexOf(':') != -1) {
@@ -74,54 +69,22 @@ public class ApptCond implements Conduit {
 					FileInputStream is = new FileInputStream(propfile);
 					Properties dbprops = new Properties();
 					dbprops.load(is);
-					dbdir = dbprops.getProperty("dburl");
-					user = dbprops.getProperty("user");
 					port = Integer.parseInt(dbprops.getProperty("port"));
 				} catch (Exception e) {
 					Log.out("Properties exception: " + e.toString());
 				}
+				SocketProxy.setPort(port);
 
-				// If we're doing remote stuff, use SocketProxy
-				RemoteProxyHome.getInstance().setProxyProvider(
-						new IRemoteProxyProvider() {
-							public final IRemoteProxy createProxy(String url) {
-								// No synchronization needed - we're
-								// single-threaded.
-								if (proxy == null)
-									proxy = new SocketProxy(url, port);
-								return proxy;
-							}
-
-							public final Credentials getCredentials() {
-								return new Credentials("$default", "$default");
-							}
-
-							// private //
-							private IRemoteProxy proxy = null;
-						});
-
-				// shutdown the app - unless we are using a remote socket
-				// interface
-				if (!dbdir.startsWith("remote:")) {
-					try {
-						SocketClient.sendMsg("localhost", port, "shutdown");
-					} catch (Exception e) {
-					}
-				} else {
-					try {
-						SocketClient
-								.sendMsg("localhost", port,
-										"lock:Appointment HotSync In Progress...Please wait");
-					} catch (Exception e) {
-					}
+				try {
+					SocketClient
+							.sendMsg("localhost", port,
+									"lock:Appointment HotSync In Progress...Please wait");
+				} catch (Exception e) {
 				}
 
-				log("dbdir=" + dbdir);
-				log("user=" + user);
 				apptModel = AppointmentModel.create();
-				apptModel.open_db(dbdir, user, false);
+				apptModel.open_db();
 
-				
 				// have to get todo data into BORG, then get appt data, then
 				// sync back
 				// appt data and finally overwrite Todo data.
@@ -150,12 +113,14 @@ public class ApptCond implements Conduit {
 					log("Wipe Palm/Sync Appts");
 					recordMgr.WipeData();
 				} else if (props.syncType == SyncProperties.SYNC_HH_TO_PC) {
+					log("Quick Sync Appts");
 					recordMgr.quickSyncAndWipe();
 				} else {
 					log("Sync Appts");
 					recordMgr.SyncData();
 				}
 
+				log("Close DateBook DB");
 				SyncManager.closeDB(apptdb);
 
 				if (props.syncType != SyncProperties.SYNC_DO_NOTHING) {
@@ -171,19 +136,19 @@ public class ApptCond implements Conduit {
 
 				// Close DB
 				apptModel.close_db();
-				//taskModel.close_db();
+				// taskModel.close_db();
 				// Single Log we are successful
 				log("OK ApptCond Conduit");
 				Log.endSync();
-				if (dbdir.startsWith("remote:")) {
-					try {
-						SocketClient.sendMsg("localhost", port, "sync");
-						SocketClient.sendMsg("localhost", port,
-								"lock:Appointment HotSync Completed");
-						SocketClient.sendMsg("localhost", port, "unlock");
-					} catch (Exception e) {
-					}
+
+				try {
+					SocketClient.sendMsg("localhost", port, "sync");
+					SocketClient.sendMsg("localhost", port,
+							"lock:Appointment HotSync Completed");
+					SocketClient.sendMsg("localhost", port, "unlock");
+				} catch (Exception e) {
 				}
+
 			}
 
 		} catch (Throwable t) {

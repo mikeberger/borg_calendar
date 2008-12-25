@@ -20,57 +20,33 @@ Copyright 2004 by Mohan Embar - http://www.thisiscool.com/
 
 package net.sf.borg.model.db.remote;
 
-import net.sf.borg.model.beans.Address;
-import net.sf.borg.model.beans.Appointment;
-import net.sf.borg.model.beans.Memo;
 
 /**
  * Interface for executing a remote call.
  */
 public interface IRemoteProxy
 {
-/////////////////////////////////////////////////////
-// nested class Parms
 
 public static class Parms
 {
-	public Parms(String clsstr, String command, Object args, String user)
+	public Parms(String clsstr, String command, Object args)
 	{
 		this.clsstr = clsstr;
 		this.command = command;
 		this.args = args;
-		this.user = user;
-
-		if (clsstr.equals("Address"))
-			cls = Address.class;
-		
-		else if (clsstr.equals("Appointment"))
-			cls = Appointment.class;
-		else if (clsstr.equals("Memo"))
-			cls = Memo.class;
-		else
-			throw new IllegalArgumentException(clsstr);
 	}
 	
-	public final Class getMyClass()			{return cls;}
 	public final String getClassString()	{return clsstr;}
 	public final String getCommand()		{return command;}
 	public final Object getArgs()			{return args;}
-	public final String getUser()			{return user;}
 	
-	// private //
-	private Class cls;
+
 	private String clsstr;
 	private String command;
 	private Object args;
-	private String user;
+	
 }
 
-// end nested class Parms
-/////////////////////////////////////////////////////
-	
-/////////////////////////////////////////////////////
-// nested class ComposedObject
 
 public static class ComposedObject
 {
@@ -87,9 +63,8 @@ public static class ComposedObject
 	private Object o1, o2;
 }
 
-// end nested class ComposedObject
-/////////////////////////////////////////////////////
 
-public String execute(String strXml, IRemoteProxyProvider provider)
+
+public String execute(String strXml)
 		throws Exception;
 }

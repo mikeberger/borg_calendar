@@ -8,10 +8,7 @@ import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.J13Helper;
 import net.sf.borg.common.SocketClient;
 import net.sf.borg.model.AddressModel;
-import net.sf.borg.model.db.remote.IRemoteProxy;
-import net.sf.borg.model.db.remote.IRemoteProxyProvider;
-import net.sf.borg.model.db.remote.RemoteProxyHome;
-import net.sf.borg.model.db.remote.socket.SocketProxy;
+import net.sf.borg.model.db.remote.SocketProxy;
 import palm.conduit.Conduit;
 import palm.conduit.ConfigureConduitInfo;
 import palm.conduit.Log;
@@ -26,7 +23,7 @@ public class AddrCond implements Conduit {
 	 * Name of the conduit to be displayed on the dialog
 	 */
 
-	static private int port;
+	static private int port = 2929;
 
 	static final String NAME = "BORG Address Conduit";
 
@@ -60,67 +57,37 @@ public class AddrCond implements Conduit {
 
 				// read the pc records on the PC
 				String loc = props.localName;
-				String dbdir = props.pathName;
-				String user = props.userName;
-				Log.out("dbdir=" + dbdir);
-				Log.out("user=" + user);
+				String dir = props.pathName;
+
+				Log.out("dir=" + dir);
 				Log.out("localName=" + loc);
 
 				if (loc.indexOf(':') != -1) {
-					dbdir = loc;
+					dir = loc;
 				}
 
 				// check for properties file
-				String propfile = dbdir + "/db.properties";
+				String propfile = dir + "/db.properties";
 				try {
 					FileInputStream is = new FileInputStream(propfile);
 					Properties dbprops = new Properties();
 					dbprops.load(is);
-					dbdir = dbprops.getProperty("dburl");
-					user = dbprops.getProperty("user");
+
 					port = Integer.parseInt(dbprops.getProperty("port"));
 				} catch (Exception e) {
 					Log.out("Properties exception: " + e.toString());
 				}
+				SocketProxy.setPort(port);
 
-				// If we're doing remote stuff, use SocketProxy
-				RemoteProxyHome.getInstance().setProxyProvider(
-						new IRemoteProxyProvider() {
-							public final IRemoteProxy createProxy(String url) {
-								// No synchronization needed - we're
-								// single-threaded.
-								if (proxy == null)
-									proxy = new SocketProxy(url, port);
-								return proxy;
-							}
-
-							public final Credentials getCredentials() {
-								return new Credentials("$default", "$default");
-							}
-
-							// private //
-							private IRemoteProxy proxy = null;
-						});
-
-				// shutdown the app - unless we are using a remote socket
-				// interface
-				if (!dbdir.startsWith("remote:")) {
-					try {
-						SocketClient.sendMsg("localhost", port, "shutdown");
-					} catch (Exception e) {
-					}
-				} else {
-					try {
-						SocketClient
-								.sendMsg("localhost", port,
-										"lock:Address HotSync In Progress...Please wait");
-					} catch (Exception e) {
-					}
+				try {
+					SocketClient.sendMsg("localhost", port,
+							"lock:Address HotSync In Progress...Please wait");
+				} catch (Exception e) {
 				}
-				log("dbdir=" + dbdir);
-				log("user=" + user);
+
+				
 				addressModel = AddressModel.create();
-				addressModel.open_db(dbdir, user, false);
+				addressModel.open_db();
 
 				// Create an instance of the RecordManager for synchronizing the
 				// records
@@ -131,15 +98,15 @@ public class AddrCond implements Conduit {
 				addressModel.close_db();
 				SyncManager.closeDB(db);
 				log("OK AddrCond Conduit");
-				if (dbdir.startsWith("remote:")) {
-					try {
-						SocketClient.sendMsg("localhost", port, "sync");
-						SocketClient.sendMsg("localhost", port,
-								"lock:Appointment HotSync Completed");
-						SocketClient.sendMsg("localhost", port, "unlock");
-					} catch (Exception e) {
-					}
+
+				try {
+					SocketClient.sendMsg("localhost", port, "sync");
+					SocketClient.sendMsg("localhost", port,
+							"lock:Appointment HotSync Completed");
+					SocketClient.sendMsg("localhost", port, "unlock");
+				} catch (Exception e) {
 				}
+
 			}
 
 			// Single Log we are successful

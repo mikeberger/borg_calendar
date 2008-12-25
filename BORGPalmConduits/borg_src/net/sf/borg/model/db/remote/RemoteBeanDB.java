@@ -29,7 +29,7 @@ import net.sf.borg.model.db.BeanDB;
 /**
  * @author Mohan Embar
  */
-class RemoteBeanDB implements BeanDB {
+public class RemoteBeanDB implements BeanDB {
 	// BeanDB overrides
 	public final synchronized Collection readAll() throws 
 			Exception {
@@ -82,25 +82,17 @@ class RemoteBeanDB implements BeanDB {
 		return ((Integer) call("nextkey", null)).intValue();
 	}
 
-	public final synchronized boolean isDirty() throws  Exception {
-		boolean result = ((Boolean) call("isDirty", null)).booleanValue();
-		// System.out.println("isDirty = "+result);
-		return result;
-	}
 
-	public final synchronized void sync() {
-	}
 
 	// protected //
 	protected Object call(String command, Object args) throws Exception {
 		IRemoteProxy.Parms parms = new IRemoteProxy.Parms(clsstr, command,
-				args, user);
+				args);
 		XTree xmlParms = XmlObjectHelper.toXml(parms);
 		String xmlstr = xmlParms.toString();
 		// System.out.println(xmlstr);
-		RemoteProxyHome home = RemoteProxyHome.getInstance();
-		String result = home.getProxy(impl).execute(xmlstr,
-				home.getProxyProvider());
+		
+		String result = SocketProxy.execute(xmlstr);
 		//System.out.println("OutTrace - " + result);
 		//System.err.println("ErrTrace - " + result);
 		XTree xmlResult = XTree.readFromBuffer(result);
@@ -112,12 +104,10 @@ class RemoteBeanDB implements BeanDB {
 	}
 
 	// package //
-	RemoteBeanDB(Class cls, String clsstr, String impl, 
-			String user) {
+	public RemoteBeanDB(Class cls, String clsstr) {
 		this.cls = cls;
 		this.clsstr = clsstr;
-		this.impl = impl;		
-		this.user = user;
+		
 	}
 
 	// private //
@@ -125,7 +115,4 @@ class RemoteBeanDB implements BeanDB {
 
 	private String clsstr;
 
-	private String impl;
-
-	private String user;
 }

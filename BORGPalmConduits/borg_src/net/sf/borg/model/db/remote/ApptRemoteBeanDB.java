@@ -28,14 +28,11 @@ import net.sf.borg.model.db.AppointmentDB;
 /**
  * @author Mohan Embar
  */
-class ApptRemoteBeanDB extends RemoteBeanDB implements AppointmentDB
+public class ApptRemoteBeanDB extends RemoteBeanDB implements AppointmentDB
 {
-	ApptRemoteBeanDB(
-		String clsstr,
-		String impl,
-		String user)
+	public ApptRemoteBeanDB()
 	{
-		super(Appointment.class, clsstr, impl, user);
+		super(Appointment.class, "Appointment");
 	}
 
 	public Collection getTodoKeys() throws Exception
@@ -48,8 +45,5 @@ class ApptRemoteBeanDB extends RemoteBeanDB implements AppointmentDB
 		return (Collection) call("getRepeatKeys", null);
 	}
 
-	public Collection getAllUsers() throws Exception {
-		
-		return (Collection) call("getAllUsers", null);
-	}
+	
 }
