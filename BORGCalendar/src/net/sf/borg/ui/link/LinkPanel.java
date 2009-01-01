@@ -475,6 +475,23 @@ public class LinkPanel extends JPanel implements Model.Listener {
 		// TODO Auto-generated method stub
 
 	}
+	
+	public boolean hasLinks()
+	{
+		if( LinkModel.getReference().hasLinks())
+		{
+			try {
+				Collection<Link> atts = LinkModel.getReference().getLinks(owner_);
+				if( !atts.isEmpty() )
+					return true;
+			} catch (Exception e) {
+				Errmsg.errmsg(e);
+			}
+
+		}
+		
+		return false;
+	}
 
 	public void setOwner(KeyedBean<?> owner) {
 		if( !LinkModel.getReference().hasLinks())

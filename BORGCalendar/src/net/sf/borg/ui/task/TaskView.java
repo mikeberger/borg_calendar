@@ -56,6 +56,7 @@ import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Resource;
 import net.sf.borg.common.Warning;
 import net.sf.borg.model.CategoryModel;
+import net.sf.borg.model.LinkModel;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.TaskTypes;
 import net.sf.borg.model.beans.Project;
@@ -238,8 +239,10 @@ public class TaskView extends DockableView {
 		return p.getId().toString() + ":" + p.getDescription();
 	}
 
-	private JComboBox catbox = null;
+	private LinkPanel attPanel;
 
+
+	private JComboBox catbox = null;
 
 	// Variables declaration - do not modify//GEN-BEGIN:variables
 	private javax.swing.JLabel catlabel;
@@ -266,11 +269,11 @@ public class TaskView extends DockableView {
 
 	private javax.swing.JButton jButton2;
 
+	
+
+	
 	private JPanel jPanel = null;
 
-	
-
-	
 	private javax.swing.JPanel jPanel3;
 
 	private javax.swing.JPanel jPanel4;
@@ -307,22 +310,14 @@ public class TaskView extends DockableView {
 
 	private javax.swing.JComboBox pritext;
 
+	private JComboBox projBox = new JComboBox();
+
 	private StripedTable stable = new StripedTable();
 
 	private JDateChooser startdatechooser;
 
 	private javax.swing.JComboBox statebox;
-
-	private ArrayList<Integer> tbd_ = new ArrayList<Integer>();
-
-	private String title_ = "";
 	
-	private javax.swing.JComboBox typebox;
-
-	private JComboBox projBox = new JComboBox();
-	
-	private LinkPanel attPanel;
-
 	/**
 	 * This method initializes jPanel
 	 * 
@@ -330,9 +325,16 @@ public class TaskView extends DockableView {
 	 */
 	JPanel stpanel = new JPanel();
 
+	private ArrayList<Integer> tbd_ = new ArrayList<Integer>();
+	
+	private String title_ = "";
+
+	private javax.swing.JComboBox typebox;
+
 	public TaskView(Task task, int function, Integer projectid) throws Exception {
 		super();
 		addModel(TaskModel.getReference());
+		addModel(LinkModel.getReference()); // to update link tab color
 		init_proj = projectid;
 		initComponents(); // init the GUI widgets
 
@@ -355,48 +357,12 @@ public class TaskView extends DockableView {
 		}
 
 		showtask(function, task);
+		
+		refresh();
 
 	}
 
 	
-
-	public PrefName getFrameSizePref() {
-	    return PrefName.TASKVIEWSIZE;
-	}
-
-	
-
-	public String getFrameTitle() {
-	    return title_;
-	}
-
-	// End of variables declaration//GEN-END:variables
-
-	public JMenuBar getMenuForFrame() {
-	    JMenuBar jMenuBar1 = new javax.swing.JMenuBar();
-	    JMenu jMenu1 = new javax.swing.JMenu();
-	    JMenuItem jMenuItem1 = new javax.swing.JMenuItem();
-
-	    ResourceHelper.setText(jMenu1, "Menu");
-	    ResourceHelper.setText(jMenuItem1, "Save");
-	    jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
-		public void actionPerformed(java.awt.event.ActionEvent evt) {
-		    savetask(evt);
-		}
-	    });
-
-	    jMenu1.add(jMenuItem1);
-
-	    jMenuBar1.add(jMenu1);
-
-	    return jMenuBar1;
-	}
-
-	// the task editor currently does not refresh itself when the task data
-	// model changes
-	// - although it should not be changing while the task editor is open
-	public void refresh() {
-	}
 
 	/**
 	 * This method initializes catbox
@@ -409,6 +375,8 @@ public class TaskView extends DockableView {
 		}
 		return catbox;
 	}
+
+	
 
 	/**
 	 * This method initializes closeDate
@@ -424,6 +392,8 @@ public class TaskView extends DockableView {
 		return closeDate;
 	}
 
+	// End of variables declaration//GEN-END:variables
+
 	/**
 	 * This method initializes daysLeftText
 	 * 
@@ -435,6 +405,14 @@ public class TaskView extends DockableView {
 			daysLeftText.setEditable(false);
 		}
 		return daysLeftText;
+	}
+
+	public PrefName getFrameSizePref() {
+	    return PrefName.TASKVIEWSIZE;
+	}
+
+	public String getFrameTitle() {
+	    return title_;
 	}
 
 	private JPanel getJPanel() {
@@ -513,6 +491,26 @@ public class TaskView extends DockableView {
 	    return jSplitPane;
 	}
 
+	public JMenuBar getMenuForFrame() {
+	    JMenuBar jMenuBar1 = new javax.swing.JMenuBar();
+	    JMenu jMenu1 = new javax.swing.JMenu();
+	    JMenuItem jMenuItem1 = new javax.swing.JMenuItem();
+
+	    ResourceHelper.setText(jMenu1, "Menu");
+	    ResourceHelper.setText(jMenuItem1, "Save");
+	    jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+		public void actionPerformed(java.awt.event.ActionEvent evt) {
+		    savetask(evt);
+		}
+	    });
+
+	    jMenu1.add(jMenuItem1);
+
+	    jMenuBar1.add(jMenu1);
+
+	    return jMenuBar1;
+	}
+
 	private Integer[] getSelectedIds() {
 		TableSorter ts = (TableSorter) stable.getModel();
 		int[] indices = stable.getSelectedRows();
@@ -525,6 +523,7 @@ public class TaskView extends DockableView {
 
 		return ret;
 	}
+
 	private void initComponents()// GEN-BEGIN:initComponents
 	{
 		
@@ -822,7 +821,6 @@ public class TaskView extends DockableView {
 		//this.setSize(560, 517);
 
 	}// GEN-END:initComponents
-
 	private void initLogTable() {
 
 		logtable.setModel(new TableSorter(new String[] {
@@ -867,7 +865,6 @@ public class TaskView extends DockableView {
 						}, "Add_Log"), });
 
 	}
-
 
 	private void initSubtaskTable() {
 
@@ -1020,6 +1017,7 @@ public class TaskView extends DockableView {
 
 	}
 
+
 	private void insertSubtask() {
 		Object o[] = { new Boolean(false), null, null, null, null, null, null };
 		TableSorter ts = (TableSorter) stable.getModel();
@@ -1044,6 +1042,18 @@ public class TaskView extends DockableView {
 
 			tslog.addRow(o);
 		}
+	}
+
+	// the task editor currently does not refresh itself when the task data
+	// model changes
+	// - although it should not be changing while the task editor is open
+	public void refresh() {
+		if( attPanel != null && attPanel.hasLinks())
+		{
+			jTabbedPane1.setForegroundAt(3, Color.red);
+		}
+		else
+			jTabbedPane1.setForegroundAt(3, Color.black);
 	}
 
 	private void saveSubtasks(Task task) throws Warning, Exception {
