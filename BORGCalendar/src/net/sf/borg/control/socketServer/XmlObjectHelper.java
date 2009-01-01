@@ -35,14 +35,6 @@ import net.sf.borg.model.beans.BeanXMLAdapter;
 import net.sf.borg.model.beans.KeyedBean;
 import net.sf.borg.model.beans.Memo;
 import net.sf.borg.model.beans.MemoXMLAdapter;
-import net.sf.borg.model.beans.Project;
-import net.sf.borg.model.beans.ProjectXMLAdapter;
-import net.sf.borg.model.beans.Subtask;
-import net.sf.borg.model.beans.SubtaskXMLAdapter;
-import net.sf.borg.model.beans.Task;
-import net.sf.borg.model.beans.TaskXMLAdapter;
-import net.sf.borg.model.beans.Tasklog;
-import net.sf.borg.model.beans.TasklogXMLAdapter;
 
 /**
  * Helps marshal and unmarshal between objects and XML.
@@ -84,15 +76,8 @@ import net.sf.borg.model.beans.TasklogXMLAdapter;
 					new AddressXMLAdapter()),
 			new BeanXmlObjectHelper(Appointment.class, "Appointment",
 					new AppointmentXMLAdapter()),
-			new BeanXmlObjectHelper(Task.class, "Task", new TaskXMLAdapter()),
-			new BeanXmlObjectHelper(Memo.class, "Memo", new MemoXMLAdapter()),
-			new BeanXmlObjectHelper(Project.class, "Project",
-					new ProjectXMLAdapter()),
-			new BeanXmlObjectHelper(Tasklog.class, "Tasklog",
-					new TasklogXMLAdapter()),
-			new BeanXmlObjectHelper(Subtask.class, "Subtask",
-					new SubtaskXMLAdapter()) };
-
+			new BeanXmlObjectHelper(Memo.class, "Memo", new MemoXMLAdapter())};
+			
 	private static void addPrimitive(XTree xml, String name, String val) {
 		xml.appendChild(name, val);
 	}

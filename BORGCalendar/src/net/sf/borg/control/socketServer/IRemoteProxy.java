@@ -23,10 +23,6 @@ package net.sf.borg.control.socketServer;
 import net.sf.borg.model.beans.Address;
 import net.sf.borg.model.beans.Appointment;
 import net.sf.borg.model.beans.Memo;
-import net.sf.borg.model.beans.Project;
-import net.sf.borg.model.beans.Subtask;
-import net.sf.borg.model.beans.Task;
-import net.sf.borg.model.beans.Tasklog;
 
 /**
  * Interface for executing a remote call.
@@ -47,18 +43,10 @@ static class Parms
 
 		if (clsstr.equals("Address"))
 			cls = Address.class;
-		else if (clsstr.equals("Task"))
-			cls = Task.class;
 		else if (clsstr.equals("Appointment"))
 			cls = Appointment.class;
 		else if (clsstr.equals("Memo"))
 			cls = Memo.class;
-		else if (clsstr.equals("Project"))
-			cls = Project.class;
-		else if (clsstr.equals("Subtask"))
-			cls = Subtask.class;
-		else if (clsstr.equals("Tasklog"))
-			cls = Tasklog.class;
 		else
 			throw new IllegalArgumentException(clsstr);
 	}
@@ -98,9 +86,5 @@ static class ComposedObject
 	private Object o1, o2;
 }
 
-// end nested class ComposedObject
-/////////////////////////////////////////////////////
 
-//public String execute(String strXml, IRemoteProxyProvider provider)
-	//	throws Exception;
 }

@@ -25,12 +25,10 @@ import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.BorgOption;
 import net.sf.borg.model.MemoModel;
-import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.beans.Address;
 import net.sf.borg.model.beans.Appointment;
 import net.sf.borg.model.beans.KeyedBean;
 import net.sf.borg.model.beans.Memo;
-import net.sf.borg.model.beans.Task;
 import net.sf.borg.model.db.AppointmentDB;
 import net.sf.borg.model.db.BeanDB;
 import net.sf.borg.model.db.MemoDB;
@@ -139,8 +137,6 @@ public class SingleInstanceHandler {
 			return AddressModel.getReference().getDB();
 		} else if (parms.getMyClass() == Appointment.class) {
 			return AppointmentModel.getReference().getDB();
-		} else if (parms.getMyClass() == Task.class) {
-			return TaskModel.getReference().getDB();
 		} else
 			throw new Exception("Invalid Class: " + parms.getClassString());
 	}
