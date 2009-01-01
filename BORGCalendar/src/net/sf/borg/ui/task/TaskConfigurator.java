@@ -565,7 +565,7 @@ public class TaskConfigurator extends View {
 						return;
 					}
 					int ret = JOptionPane.showConfirmDialog(null,
-							net.sf.borg.common.Resource.getResourceString("Really_Delete_") + typelist.getSelectedValue(),
+							net.sf.borg.common.Resource.getResourceString("Really_Delete_") + " " + typelist.getSelectedValue(),
 							net.sf.borg.common.Resource.getResourceString("Confirm_Delete"), JOptionPane.OK_CANCEL_OPTION);
 					if (ret != JOptionPane.OK_OPTION)
 						return;
@@ -712,7 +712,7 @@ public class TaskConfigurator extends View {
 						return;
 					}
 					int ret = JOptionPane.showConfirmDialog(null,
-							net.sf.borg.common.Resource.getResourceString("Really_Delete_") + statelist.getSelectedValue(),
+							net.sf.borg.common.Resource.getResourceString("Really_Delete_") + " " + statelist.getSelectedValue(),
 							net.sf.borg.common.Resource.getResourceString("Confirm_Delete"), JOptionPane.OK_CANCEL_OPTION);
 					if (ret != JOptionPane.OK_OPTION)
 						return;
