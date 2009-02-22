@@ -19,14 +19,22 @@
 	<property name="ant.dir" value="${prj.dir}/ant" />
 
 	<!-- PATH to javahelp - must be changed only if you want to regen the help indexes -->
-	<property name="jh.bin" value="c:/jh2.0/javahelp/bin" />
-	<property name="jhindexer" value="jhindexer.bat" />
-	<available file="${jh.bin}" property="have.jh"/>
+	<condition property="jh.bin" value="c:/jh2.0/javahelp/bin" else="/c/jh2.0/javahelp/bin">
+		<os family="windows" />
+	</condition>
+	<condition property="jhindexer" value="jhindexer.bat" else="jhindexer">
+		<os family="windows" />
+	</condition>
+
+	<available file="${jh.bin}" property="have.jh" />
 
 	<!-- PATH to IzPack dir to create the installer -->
-	<property name="iz.dir" value="c:/Program Files/IzPack" />
-	<available file="${iz.dir}" property="have.izpack"/>
-	
+	<condition property="iz.dir" value="c:/Program Files/IzPack" else="/c/Program Files/IzPack">
+		<os family="windows" />
+	</condition>
+
+	<available file="${iz.dir}" property="have.izpack" />
+
 	<!-- Path References -->
 	<path id="build.classpath">
 		<fileset dir="${prj.dir}/lib">
@@ -128,7 +136,7 @@ build.number=${build.number}
 				<exclude name="**/build/**" />
 				<exclude name="**/classes/**" />
 				<exclude name="**/dist/**" />
-				<exclude name="**/gen/**" />		
+				<exclude name="**/gen/**" />
 			</zipfileset>
 			<zipfileset dir="${build.dir}/resource">
 				<include name="COPYING" />
