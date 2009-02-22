@@ -150,7 +150,7 @@ public class MultiView extends View {
 
 		getContentPane().add(getTabs(), cons);
 
-		setTitle("BORG *S*");
+		setTitle("BORG");
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		pack();
 		setVisible(true);
