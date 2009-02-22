@@ -67,6 +67,8 @@ public class SendJavaMail {
 		// create some properties and get the default Session
 		Properties props = new Properties();
 		props.put("mail.smtp.host", host);
+		String port = Prefs.getPref(PrefName.EMAILPORT);
+		props.put("mail.smtp.port", port);
 		String ed = Prefs.getPref(PrefName.EMAILDEBUG);
 		if (ed.equals("1"))
 			props.put("mail.debug", "true");

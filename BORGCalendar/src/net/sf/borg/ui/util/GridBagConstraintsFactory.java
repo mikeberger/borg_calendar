@@ -36,7 +36,7 @@ public class GridBagConstraintsFactory {
 
 	public static GridBagConstraints create(int x, int y, int fill) {
 		GridBagConstraints gbc = create(x, y);
-		gbc.fill = GridBagConstraints.BOTH;
+		gbc.fill = fill;
 		return gbc;
 	}
 

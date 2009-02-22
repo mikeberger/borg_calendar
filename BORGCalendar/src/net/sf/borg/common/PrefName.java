@@ -102,6 +102,7 @@ public class PrefName {
 		static public PrefName EMAILTIME = new PrefName( "email_time", new Integer(0));
 		static public PrefName EMAILUSER = new PrefName( "email_user", "");
 		static public PrefName EMAILPASS = new PrefName( "email_pass", "");
+		static public PrefName EMAILPORT = new PrefName( "email_port", "25");
 		static public PrefName REMMINS = new PrefName( "remmins", "-10,-5,0,1,2,3,4,5,10,15,20,30,45,60,90,120,180,240,300,360");
 // font-LNF-locale
 		static public PrefName DEFFONT = new PrefName( "defaultfont", "");
