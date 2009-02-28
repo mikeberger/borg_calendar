@@ -512,7 +512,7 @@ class MainMenu {
             is.close();
             version = Resource.getVersion();
             build_info = Resource.getResourceString("Build_Number:_") + props.getProperty("build.number")
-                    + Resource.getResourceString("Build_Time:_") + props.getProperty("build.time") + "\n";
+                    + Resource.getResourceString("Build_Time:_") + props.getProperty("build.time");
 
         } catch (Exception e) {
             Errmsg.errmsg(e);
@@ -520,8 +520,8 @@ class MainMenu {
 
         // build and show the version info.
 
-        String info = Resource.getResourceString("Berger-Organizer_v") + version + "\n\n" + Resource.getResourceString("copyright")
-                + " (2003-2008) Michael Berger <i_flem@users.sourceforge.net>\n\nhttp://borg-calendar.sourceforge.net\n\n"
+        String info = Resource.getResourceString("Berger-Organizer_v") + version + "\n" + Resource.getResourceString("copyright")
+                + " (2003-2009) Michael Berger <i_flem@users.sourceforge.net>\nhttp://borg-calendar.sourceforge.net\n\n"
                 + Resource.getResourceString("contributions_by") + "\n" + Resource.getResourceString("contrib") + "\n"
                 + Resource.getResourceString("translations") + "\n\n" + build_info + "\n" + "Java "
                 + System.getProperty("java.version");
