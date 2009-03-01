@@ -5,7 +5,6 @@ import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Panel;
 //import java.awt.Rectangle;
@@ -27,10 +26,6 @@ public class HotSyncChangeDlg extends Dialog
     */
     static final String SYNC_NOTHING = "Do Nothing";
 
-    /** Constant String indicating conduit should synchronize the data
-    */
-	static final String SYNC_SYNC = "Synchronize the files";
-
     /** Constant String indicating HandHeld should overwrite Desktop
     */
     static final String SYNC_HH_TO_PC = "Quick Sync and WIPE";
@@ -50,12 +45,9 @@ public class HotSyncChangeDlg extends Dialog
 	public HotSyncChangeDlg(Frame parent, String sync, String label)
 	{
 		super(parent);
-
-        Image im;
-        ImageCanvas canvas;
         
         Panel buttonPanel = new Panel();
-        Panel optionsPanel = new OptionsPanel();
+        Panel optionsPanel = new Panel();
 		GridBagConstraints gbc = new GridBagConstraints();
         
 		setTitle("Change HotSync Action");
@@ -91,112 +83,28 @@ public class HotSyncChangeDlg extends Dialog
 		buttonPanel.add(chkdef, gbc);
 		
 		optionsPanel.setLayout(new GridBagLayout());
-		// checkbox label
-		checkbox_label.setText(labeltxt + label);
-		gbc.anchor = GridBagConstraints.NORTHWEST;
-		gbc.insets = new Insets(10, 20, 10, 5);
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.weightx = 0;
-		gbc.weighty = 0;
-		gbc.gridwidth = 2;
-		gbc.fill = GridBagConstraints.NONE;
-		optionsPanel.add(checkbox_label, gbc);
-		// sync_sync image
-		im = getToolkit().getImage("Sync0.gif");
-		ImageCanvas.waitForImage(this, im);
-	    canvas = new ImageCanvas(im);
-		gbc.anchor = GridBagConstraints.NORTHWEST;
-		gbc.insets = new Insets(10, 20, 10, 10);
-		gbc.gridx = 0;
-		gbc.gridy = 1;
-		gbc.weightx = 0;
-		gbc.weighty = 0;
-		gbc.gridwidth = 1;
-		gbc.fill = GridBagConstraints.NONE;
-		optionsPanel.add(canvas, gbc);
-    	// sync_sync checkbox
-   		sync_sync.setCheckboxGroup(Group1);
-		sync_sync.setLabel(SYNC_SYNC);
-		gbc.anchor = GridBagConstraints.NORTHWEST;
-		gbc.insets = new Insets(10, 20, 10, 20);
-		gbc.gridx = 1;
-		gbc.gridy = 1;
-    	gbc.weightx = 0;
-		gbc.weighty = 0;
-		gbc.fill = GridBagConstraints.NONE;
-		optionsPanel.add(sync_sync, gbc);
-		// pc2hh image
-		im = getToolkit().getImage("Sync1.gif");
-		ImageCanvas.waitForImage(this, im);
-	    canvas = new ImageCanvas(im);
-		gbc.anchor = GridBagConstraints.NORTHWEST;
-		gbc.insets = new Insets(10, 20, 10, 10);
-		gbc.gridx = 0;
-		gbc.gridy = 2;
-		gbc.weightx = 0;
-		gbc.weighty = 0;
-		gbc.gridwidth = 1;
-		gbc.fill = GridBagConstraints.NONE;
-		optionsPanel.add(canvas, gbc);
+		
+		
 		// pc2hh checkbox
    		pc2hh.setCheckboxGroup(Group1);
 		pc2hh.setLabel("Desktop **WIPES** and Overwrites Handheld");
-		gbc.anchor = GridBagConstraints.NORTHWEST;
-		gbc.insets = new Insets(10, 20, 10, 20);
-		gbc.gridx = 1;
-		gbc.gridy = 2;
-		gbc.weightx = 0;
-		gbc.weighty = 0;
-		gbc.fill = GridBagConstraints.NONE;
-		optionsPanel.add(pc2hh, gbc);
-		// hh2pc image
-		im = getToolkit().getImage("Sync0.gif");
-		ImageCanvas.waitForImage(this, im);
-	    canvas = new ImageCanvas(im);
-		gbc.anchor = GridBagConstraints.NORTHWEST;
-		gbc.insets = new Insets(10, 20, 10, 10);
 		gbc.gridx = 0;
-		gbc.gridy = 3;
-		gbc.weightx = 0;
-		gbc.weighty = 0;
-		gbc.gridwidth = 1;
-		gbc.fill = GridBagConstraints.NONE;
-		optionsPanel.add(canvas, gbc);
+		gbc.gridy = 0;	
+		optionsPanel.add(pc2hh, gbc);
+		
 		// hh2pc checkbox
    		hh2pc.setCheckboxGroup(Group1);
 		hh2pc.setLabel("Quick Sync and WIPE (under development)");
-		gbc.anchor = GridBagConstraints.NORTHWEST;
-		gbc.insets = new Insets(10, 20, 10, 20);
-		gbc.gridx = 1;
-		gbc.gridy = 3;
-		gbc.weightx = 0;
-		gbc.weighty = 0;
-		gbc.fill = GridBagConstraints.NONE;
-		optionsPanel.add(hh2pc, gbc);
-		// do_nothing image
-		im = getToolkit().getImage("Sync3.gif");
-		ImageCanvas.waitForImage(this, im);
-	    canvas = new ImageCanvas(im);
-		gbc.anchor = GridBagConstraints.NORTHWEST;
-		gbc.insets = new Insets(10, 20, 10, 10);
 		gbc.gridx = 0;
-		gbc.gridy = 4;
+		gbc.gridy = 2;
 		gbc.weightx = 0;
-		gbc.weighty = 0;
-		gbc.gridwidth = 1;
-		gbc.fill = GridBagConstraints.NONE;
-		optionsPanel.add(canvas, gbc);
+		optionsPanel.add(hh2pc, gbc);
+		
 		// Do_nothing checkbox
    		do_nothing.setCheckboxGroup(Group1);
     	do_nothing.setLabel(SYNC_NOTHING);
-		gbc.anchor = GridBagConstraints.NORTHWEST;
-		gbc.insets = new Insets(10, 20, 25, 20);
-		gbc.gridx = 1;
-		gbc.gridy = 4;
-		gbc.weightx = 0;
-		gbc.weighty = 0;
-		gbc.fill = GridBagConstraints.NONE;
+		gbc.gridx = 0;
+		gbc.gridy = 3;
 		optionsPanel.add(do_nothing, gbc);
 
 		add(buttonPanel, "East");
@@ -209,12 +117,7 @@ public class HotSyncChangeDlg extends Dialog
 		ok.addMouseListener(aSymMouse);
 		cancel.addMouseListener(aSymMouse);
 
-		checkbox_label.setBounds(12,12,(int)((labeltxt.length() + label.length())*5.2),24);
-		checkbox_label.setText(labeltxt + label);
-
-		if(sync.equals(SYNC_SYNC)) 
-		    sync_sync.setState(true);
-		else if(sync.equals(SYNC_PC_TO_HH)) 
+		if(sync.equals(SYNC_PC_TO_HH)) 
 		    pc2hh.setState(true);
 		else if(sync.equals(SYNC_HH_TO_PC)) 
 		    hh2pc.setState(true);
@@ -248,16 +151,15 @@ public class HotSyncChangeDlg extends Dialog
 	java.awt.Button ok = new java.awt.Button();
 	java.awt.Button cancel = new java.awt.Button();
 	java.awt.Checkbox chkdef = new java.awt.Checkbox();
-	java.awt.Checkbox sync_sync = new java.awt.Checkbox();
 	java.awt.CheckboxGroup Group1 = new java.awt.CheckboxGroup();
 	java.awt.Checkbox pc2hh = new java.awt.Checkbox();
 	java.awt.Checkbox hh2pc = new java.awt.Checkbox();
 	java.awt.Checkbox do_nothing = new java.awt.Checkbox();
-	java.awt.Label checkbox_label = new java.awt.Label();
+	
 	//}}
 
     String labeltxt = " HotSync Action for ";
-    String syncTemporary = SYNC_SYNC;
+    String syncTemporary = SYNC_HH_TO_PC;
     boolean syncChanged = false;
     
 	class SymWindow extends java.awt.event.WindowAdapter
@@ -289,9 +191,7 @@ public class HotSyncChangeDlg extends Dialog
 
 	void ok_MouseClicked(java.awt.event.MouseEvent event)
 	{
-		if ( sync_sync.getState() )
-		   syncTemporary = SYNC_SYNC;
-		else if ( hh2pc.getState() )
+		if ( hh2pc.getState() )
 		    syncTemporary = SYNC_HH_TO_PC;
 		else if ( pc2hh.getState() )
 		    syncTemporary = SYNC_PC_TO_HH;

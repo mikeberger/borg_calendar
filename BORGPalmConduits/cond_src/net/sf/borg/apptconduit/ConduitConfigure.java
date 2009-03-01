@@ -99,9 +99,7 @@ public class ConduitConfigure {
 
         switch(info.syncTemporary)
         {
-            case SyncProperties.SYNC_FAST:
-                condSyncType = HotSyncChangeDlg.SYNC_SYNC;
-                break;
+          
             case SyncProperties.SYNC_PC_TO_HH:
                 condSyncType = HotSyncChangeDlg.SYNC_PC_TO_HH;
                 break;
@@ -134,10 +132,6 @@ public class ConduitConfigure {
    		else if(condSyncType.equals(HotSyncChangeDlg.SYNC_PC_TO_HH)) 
         { 
 		    saveState = SyncProperties.SYNC_PC_TO_HH; 
-        }
-   		else if(condSyncType.equals(HotSyncChangeDlg.SYNC_SYNC)) 
-        { 
-		    saveState = SyncProperties.SYNC_FAST; 
         }
 		else 
 		{ 

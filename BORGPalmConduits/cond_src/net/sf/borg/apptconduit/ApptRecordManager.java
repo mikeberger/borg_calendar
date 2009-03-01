@@ -3,7 +3,6 @@ package net.sf.borg.apptconduit;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -71,10 +70,10 @@ public class ApptRecordManager {
 
 		Date now = new Date();
 
-		// 2 years 
+		// 2 years
 		long span = 60 * 60 * 24 * 365 * 2;
 		span *= 1000;
-		
+
 		while (it.hasNext()) {
 			Appointment appt = (Appointment) it.next();
 
@@ -82,123 +81,20 @@ public class ApptRecordManager {
 			Date ad = appt.getDate();
 
 			resetPCAttributes(appt);
-			
+
 			long diff = now.getTime() - ad.getTime();
-			//Log.out(appt.getKey() + ":" + diff);
-			
+			// Log.out(appt.getKey() + ":" + diff);
+
 			// only write dates newer than 2 years old
 			if (diff <= span) {
-				//Log.out("writing HH rec: " + appt.getKey());
+				// Log.out("writing HH rec: " + appt.getKey());
 				writeHHRecord(borgToPalm(appt));
 			}
 		}
-		appts = amod.getDeletedAppts();
-		it = appts.iterator();
-		while (it.hasNext()) {
-			Appointment appt = (Appointment) it.next();
-			deletePCRecord(appt);
-		}
-	}
-
-	public void SyncData() throws Exception {
-
-		DateRecord hhRecord;
-
-		// get list of hh ids of interest
-		ArrayList hhids = new ArrayList();
-		int recordCount = SyncManager.getDBRecordCount(db);
-		for (int recordIndex = 0; recordIndex < recordCount; recordIndex++) {
-			hhRecord = new DateRecord();
-			hhRecord.setIndex(recordIndex);
-			SyncManager.readRecordByIndex(db, hhRecord);
-			int borgid = getApptKey(hhRecord);
-			if (borgid == -1 || hhRecord.isNew() || hhRecord.isArchived()
-					|| hhRecord.isDeleted() || hhRecord.isModified()) {
-				hhids.add(new Integer(hhRecord.getId()));
-			}
-
-			if (borgid != -1) {
-				hhmap.put(new Integer(borgid), new Integer(recordIndex));
-			}
-		}
-
-		Iterator it = hhids.iterator();
-		while (it.hasNext()) {
-
-			Integer id = (Integer) it.next();
-			hhRecord = new DateRecord();
-			hhRecord.setId(id.intValue());
-			SyncManager.readRecordById(db, hhRecord);
-
-			// Synchronize the record obtained from the handheld
-			synchronizeHHRecord(hhRecord);
-		}
-
-		AppointmentModel amod = AppointmentModel.getReference();
-		Collection appts = amod.getAllAppts();
-		it = appts.iterator();
-		while (it.hasNext()) {
-			Appointment appt = (Appointment) it.next();
-			if (appt.getNew() || appt.getDeleted() || appt.getModified()) {
-				synchronizePCRecord(appt);
-			}
-		}
-
-		appts = amod.getDeletedAppts();
-		it = appts.iterator();
-		while (it.hasNext()) {
-			Appointment appt = (Appointment) it.next();
-			synchronizePCRecord(appt);
-		}
-		SyncManager.purgeDeletedRecs(db); // deletes all hh records marked
-		// as
-		// deleted
-		SyncManager.resetSyncFlags(db); // reset all the sync flags on the hh
-	}
-
-	public void synchronizePCRecord(Appointment appt) throws Exception {
-
-		DateRecord hhRecord;
-
-		ApptCond.log("Sync BORG Record with Palm: " + appt.getKey() + " "
-				+ appt.getText() + "(" + appt.getNew() + ","
-				+ appt.getModified() + "," + appt.getDeleted() + ")");
-
-		if (!appt.getNew()) {
-
-			hhRecord = retrieveHHRecordByBorgId(appt.getKey());
-
-			if (hhRecord == null) {
-				if (appt.getDeleted()) {
-					deletePCRecord(appt);
-				} else {
-					resetPCAttributes(appt);
-					writeHHRecord(borgToPalm(appt));
-				}
-			} else {
-
-				if (appt.getDeleted()) {
-					deletePCRecord(appt);
-					deleteHHRecord(hhRecord);
-				} else if (appt.getModified()) {
-					resetPCAttributes(appt);
-					int hhid = hhRecord.getId();
-					hhRecord = borgToPalm(appt);
-					hhRecord.setId(hhid);
-					writeHHRecord(hhRecord);
-				}
-
-			}
-		} else if (appt.getDeleted()) {
-			deletePCRecord(appt);
-		} else {
-			resetPCAttributes(appt);
-			writeHHRecord(borgToPalm(appt));
-		}
 
 	}
 
-	public void synchronizeHHRecord(DateRecord hhRecord) throws Exception {
+	private void synchronizeHHRecord(DateRecord hhRecord) throws Exception {
 
 		Appointment appt = null;
 		int[] rptOn = hhRecord.getRepeatOn();
@@ -218,40 +114,40 @@ public class ApptRecordManager {
 
 		if (appt == null) { // if there is no pc rec with the matching RecID
 
-			if (hhRecord.isArchived() || hhRecord.isDeleted()) {
-				// not needed - purge will catch this
-				// deleteHHRecord(hhRecord);
-			} else { // default
-
+			if (!hhRecord.isArchived() && !hhRecord.isDeleted()) {
 				// reset the attribute flags for the record
 				resetAttributes(hhRecord);
-
-				// add it to the pc records Vector
-				int hhid = hhRecord.getId();
 				appt = palmToBorg(hhRecord);
-
 				addPCRecord(appt);
-				hhRecord = borgToPalm(appt);
-				hhRecord.setId(hhid);
-				// update hh with key from borg
-				writeHHRecord(hhRecord);
-
 			}
 		} else {
 
 			if (hhRecord.isArchived() || hhRecord.isDeleted()) {
-				handleDeleted(hhRecord, appt);
-			} else if (hhRecord.isModified() || hhRecord.isNew())
+				if (appt.getModified()) {
+					// (HH = Delete and PC = Modified) causes HH record to be
+					// updated
+					// not deleted
+					resetPCAttributes(appt);
+					int hhid = hhRecord.getId();
+					hhRecord = borgToPalm(appt);
+					hhRecord.setId(hhid);
+					writeHHRecord(hhRecord);
+				} else {
+					// Marked as already deleted from the HH and needs
+					// to be deleted from the PC
+					deletePCRecord(appt);
+				}
+			} else if (hhRecord.isModified() || hhRecord.isNew()) {
 				handleModified(hhRecord, appt);
-
+			}
 		}
 	}
 
-	public void handleModified(DateRecord hhRecord, Appointment appt)
+	private void handleModified(DateRecord hhRecord, Appointment appt)
 			throws Exception {
 
 		// Record exists on both HH and PC
-		if (appt.getDeleted() || !appt.getModified()) {
+		if (!appt.getModified()) {
 
 			// check for date change
 			GregorianCalendar cal = new GregorianCalendar();
@@ -260,8 +156,7 @@ public class ApptRecordManager {
 			cal.set(Calendar.MILLISECOND, 0);
 			Date fixdate = cal.getTime();
 
-			if (!appt.getDeleted()
-					&& (appt.getDate().getTime() != fixdate.getTime())) {
+			if (appt.getDate().getTime() != fixdate.getTime()) {
 				ApptCond.log("date chg: " + appt.getText() + " "
 						+ appt.getDate() + "!=" + fixdate);
 				ApptCond.log(appt.getDate().getTime() + "!="
@@ -270,23 +165,19 @@ public class ApptRecordManager {
 				AppointmentModel.getReference().forceDelete(appt);
 				AppointmentModel.getReference().saveAppt(modappt, true);
 
-				deleteHHRecord(hhRecord);
 
 			} else {
 				resetAttributes(hhRecord);
-				writeHHRecord(hhRecord);
 
 				Appointment modaddr = palmToBorg(hhRecord);
 				modaddr.setKey(appt.getKey());
 				modaddr.setModified(false);
-				modaddr.setDeleted(false);
 				modaddr.setNew(false);
 				AppointmentModel.getReference().syncSave(modaddr);
 
 			}
 		} else if (compareRecords(hhRecord, appt)) {
 			// both records have changed identically
-			resetAttributes(hhRecord);
 			resetPCAttributes(appt);
 		} else { // records are different
 			// Change the PC record to a new record so
@@ -296,36 +187,10 @@ public class ApptRecordManager {
 			AppointmentModel.getReference().syncSave(appt);
 
 			resetAttributes(hhRecord);
-
-			// Add the HH record to the PC table
 			appt = palmToBorg(hhRecord);
-			int hhid = hhRecord.getId();
-			addPCRecord(appt);
-			hhRecord = borgToPalm(appt);
-			hhRecord.setId(hhid);
-			writeHHRecord(hhRecord);
+			addPCRecord(appt);	
 		}
 
-	}
-
-	public void handleDeleted(Record hhRecord, Appointment addr)
-			throws Exception {
-
-		if (addr.getModified() && !addr.getDeleted()) {
-			// (HH = Delete and PC = Modified) causes HH record to be
-			// updated
-			// not deleted
-			resetPCAttributes(addr);
-			int hhid = hhRecord.getId();
-			hhRecord = borgToPalm(addr);
-			hhRecord.setId(hhid);
-			writeHHRecord(hhRecord);
-		} else {
-			// Marked as already deleted from the HH and needs
-			// to be deleted from the PC
-			// deleteHHRecord(hhRecord); - not needed - will purge
-			deletePCRecord(addr);
-		}
 	}
 
 	private Appointment getRecordById(int id) throws Exception {
@@ -334,50 +199,6 @@ public class ApptRecordManager {
 
 	private void writeHHRecord(Record record) throws SyncException, IOException {
 		SyncManager.writeRec(db, record);
-	}
-
-	private void deleteHHRecord(Record record) throws SyncException,
-			IOException {
-		// just mark as deleted
-		record.setIsDeleted(true);
-		writeHHRecord(record);
-		// SyncManager.deleteRecord(db, record);
-	}
-
-	private DateRecord retrieveHHRecordByBorgId(int key) throws IOException {
-
-		Integer hhkey = (Integer) hhmap.get(new Integer(key));
-		if (hhkey != null) {
-			ApptCond.log("Found key in cache: " + key);
-			DateRecord hhRecord = new DateRecord();
-			hhRecord.setIndex(hhkey.intValue());
-			SyncManager.readRecordByIndex(db, hhRecord);
-			if (key == getApptKey(hhRecord)) {
-				ApptCond.log("Found matching HH Record in cache: " + key);
-				return (hhRecord);
-			}
-			ApptCond.log(hhRecord.toFormattedString());
-		}
-
-		ApptCond.log("Did not find key in cache: " + key);
-
-		// get record count on the database
-		int rc = SyncManager.getDBRecordCount(db);
-
-		for (int ri = 0; ri < rc; ri++) {
-
-			DateRecord hhRecord = new DateRecord();
-			hhRecord.setIndex(ri);
-			SyncManager.readRecordByIndex(db, hhRecord);
-
-			if (key == getApptKey(hhRecord)) {
-				hhmap.put(new Integer(key), new Integer(ri));
-				ApptCond.log("Found matching HH Record on device: " + key);
-				return (hhRecord);
-			}
-		}
-
-		return null;
 	}
 
 	private int addPCRecord(Appointment appt) throws Exception {
@@ -393,12 +214,10 @@ public class ApptRecordManager {
 	private void resetPCAttributes(Appointment appt) throws Exception {
 
 		// skip write to PC record if already reset
-		if (appt.getModified() == false && appt.getDeleted() == false
-				&& appt.getNew() == false)
+		if (appt.getModified() == false && appt.getNew() == false)
 			return;
 
 		appt.setModified(false);
-		appt.setDeleted(false);
 		appt.setNew(false);
 		AppointmentModel.getReference().syncSave(appt);
 	}
@@ -421,7 +240,7 @@ public class ApptRecordManager {
 			REPEAT_MONTHLY_BY_DATE = 4, REPEAT_YEARLY_BY_DATE = 5,
 			REPEAT_YEARLY_BY_DAY = 6, REPEAT_BAD_BRAND = 7;
 
-	static public DateRecord borgToPalm(Appointment appt) {
+	static private DateRecord borgToPalm(Appointment appt) {
 
 		DateRecord rec = new DateRecord();
 		Date d = appt.getDate();
@@ -612,7 +431,7 @@ public class ApptRecordManager {
 
 	}
 
-	static public Appointment palmToBorg(DateRecord hh) {
+	static private Appointment palmToBorg(DateRecord hh) {
 		Appointment appt = AppointmentModel.getReference().newAppt();
 		appt.setDate(hh.getStartDate());
 		String notes = hh.getNote();
@@ -794,7 +613,6 @@ public class ApptRecordManager {
 			appt.setFrequency(appt.getFrequency() + ",Y");
 
 		appt.setNew(false);
-		appt.setDeleted(false);
 		appt.setModified(false);
 
 		return appt;

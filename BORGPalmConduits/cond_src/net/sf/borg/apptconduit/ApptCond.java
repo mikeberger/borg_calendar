@@ -115,9 +115,6 @@ public class ApptCond implements Conduit {
 				} else if (props.syncType == SyncProperties.SYNC_HH_TO_PC) {
 					log("Quick Sync Appts");
 					recordMgr.quickSyncAndWipe();
-				} else {
-					log("Sync Appts");
-					recordMgr.SyncData();
 				}
 
 				log("Close DateBook DB");

@@ -73,10 +73,6 @@ public class Appointment extends KeyedBean implements java.io.Serializable {
 	public boolean getModified() { return( Modified_ ); }
 	public void setModified( boolean xx ){ Modified_ = xx; }
 
-	private boolean Deleted_;
-	public boolean getDeleted() { return( Deleted_ ); }
-	public void setDeleted( boolean xx ){ Deleted_ = xx; }
-
 	private String Alarm_;
 	public String getAlarm() { return( Alarm_ ); }
 	public void setAlarm( String xx ){ Alarm_ = xx; }
@@ -109,7 +105,6 @@ public class Appointment extends KeyedBean implements java.io.Serializable {
 		dst.setCategory( getCategory() );
 		dst.setNew( getNew() );
 		dst.setModified( getModified() );
-		dst.setDeleted( getDeleted() );
 		dst.setAlarm( getAlarm() );
 		dst.setReminderTimes( getReminderTimes() );
 		dst.setUntimed( getUntimed() );

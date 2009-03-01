@@ -20,13 +20,12 @@ import palm.conduit.SyncProperties;
 public class RecordManager {
 
     SyncProperties props;
-    //Vector hhRecords; 
     int db;
 
     public RecordManager(SyncProperties props, int db){
         this.props = props;
         this.db = db;
-		//hhRecords = new Vector();
+		
     }
 
 

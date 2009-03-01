@@ -176,14 +176,14 @@ public class AppointmentModel {
 				r.setKey(key);
 				if (!sync) {
 					r.setNew(true);
-					r.setDeleted(false);
+					
 				}
 
 				db_.addObj(r, crypt);
 			} else {
 				if (!sync) {
 					r.setModified(true);
-					r.setDeleted(false);
+					
 				}
 				db_.updateObj(r, crypt);
 			}
@@ -313,8 +313,7 @@ public class AppointmentModel {
 
 				// read the full appt from the DB and add to the vector
 				Appointment appt = (Appointment) db_.readObj(key);
-				if (appt.getDeleted())
-					continue;
+				
 
 				av.add(appt);
 			}
@@ -475,23 +474,6 @@ public class AppointmentModel {
 
 	public Collection getAllAppts() throws Exception {
 		Collection appts = db_.readAll();
-		Iterator it = appts.iterator();
-		while (it.hasNext()) {
-			Appointment appt = (Appointment) it.next();
-			if (appt.getDeleted())
-				it.remove();
-		}
-		return appts;
-	}
-
-	public Collection getDeletedAppts() throws Exception {
-		Collection appts = db_.readAll();
-		Iterator it = appts.iterator();
-		while (it.hasNext()) {
-			Appointment appt = (Appointment) it.next();
-			if (!appt.getDeleted())
-				it.remove();
-		}
 		return appts;
 	}
 
