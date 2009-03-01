@@ -26,8 +26,6 @@ import java.util.Date;
 import java.util.Iterator;
 
 import net.sf.borg.common.Errmsg;
-import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.common.Warning;
 import net.sf.borg.common.XTree;
@@ -83,8 +81,6 @@ public class MemoModel extends Model {
 		Iterator<Memo> it = memos.iterator();
 		while (it.hasNext()) {
 			Memo memo = it.next();
-			if (memo.getDeleted())
-				it.remove();
 			parseOutDates(memo);
 		}
 		return memos;
@@ -93,18 +89,6 @@ public class MemoModel extends Model {
 	public Collection<String> getNames() throws Exception {
 
 		return db_.getNames();
-	}
-
-	public Collection<Memo> getDeletedMemos() throws Exception {
-		Collection<Memo> memos = db_.readAll();
-		Iterator<Memo> it = memos.iterator();
-		while (it.hasNext()) {
-			Memo memo = it.next();
-			if (!memo.getDeleted())
-				it.remove();
-			parseOutDates(memo);
-		}
-		return memos;
 	}
 
 	public void open_db(String url) throws Exception {
@@ -119,25 +103,16 @@ public class MemoModel extends Model {
 
 		try {
 			Memo m = getMemo(name);
-			
+
 			if (m == null)
 				return;
 			Memo orig = m.copy();
-			String sync = Prefs.getPref(PrefName.PALM_SYNC);
-			if (sync.equals("true")) {
-				m.setDeleted(true);
-				db_.updateMemo(m);
-				if (!undo) {
-					UndoLog.getReference()
-							.addItem(MemoUndoItem.recordUpdate(orig));
-				}
-			} else {
-				db_.delete(m.getMemoName());
-				if (!undo) {
-					UndoLog.getReference()
-							.addItem(MemoUndoItem.recordDelete(orig));
-				}
+
+			db_.delete(m.getMemoName());
+			if (!undo) {
+				UndoLog.getReference().addItem(MemoUndoItem.recordDelete(orig));
 			}
+
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
 		}
@@ -152,7 +127,7 @@ public class MemoModel extends Model {
 	public void saveMemo(Memo memo, boolean undo) {
 
 		try {
-			
+
 			// determine dates
 			Date now = new Date();
 			if (memo.getCreated() == null)
@@ -178,8 +153,8 @@ public class MemoModel extends Model {
 				memo.setDeleted(false);
 				db_.updateMemo(memo);
 				if (!undo) {
-					UndoLog.getReference()
-							.addItem(MemoUndoItem.recordUpdate(old));
+					UndoLog.getReference().addItem(
+							MemoUndoItem.recordUpdate(old));
 				}
 
 			}

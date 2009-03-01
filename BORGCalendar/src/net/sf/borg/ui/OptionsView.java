@@ -306,8 +306,6 @@ public class OptionsView extends View {
 
 	private javax.swing.JPanel mysqlPanel;
 
-	private JCheckBox palmcb = null;
-
 	private javax.swing.JCheckBox popenablebox;
 
 	private javax.swing.JCheckBox privbox;
@@ -436,7 +434,6 @@ public class OptionsView extends View {
 		setCheckBox(stackbox, PrefName.STACKTRACE);
 		setCheckBox(popenablebox, PrefName.REMINDERS);
 		setCheckBox(soundbox, PrefName.BEEPINGREMINDERS);
-		setCheckBox(palmcb, PrefName.PALM_SYNC);
 		setCheckBox(useBeep, PrefName.USESYSTEMBEEP);
 		setCheckBox(truncbox, PrefName.TRUNCAPPT);
 		setCheckBox(iso8601Box, PrefName.ISOWKNUMBER);
@@ -622,7 +619,6 @@ public class OptionsView extends View {
 		setBooleanPref(stackbox, PrefName.STACKTRACE);
 		setBooleanPref(popenablebox, PrefName.REMINDERS);
 		setBooleanPref(soundbox, PrefName.BEEPINGREMINDERS);
-		setBooleanPref(palmcb, PrefName.PALM_SYNC);
 		setBooleanPref(useBeep, PrefName.USESYSTEMBEEP);
 		setBooleanPref(truncbox, PrefName.TRUNCAPPT);
 		setBooleanPref(iso8601Box, PrefName.ISOWKNUMBER);
@@ -1357,8 +1353,6 @@ public class OptionsView extends View {
 		ResourceHelper.setText(stackbox, "stackonerr");
 		miscPanel.add(stackbox, GridBagConstraintsFactory.create(0, 40, GridBagConstraints.BOTH));
 
-		miscPanel.add(getPalmcb(), GridBagConstraintsFactory.create(0, 80, GridBagConstraints.BOTH));
-
 		JLabel sportlabel = new JLabel();
 		ResourceHelper.setText(sportlabel, "socket_port");
 		miscPanel.add(sportlabel, GridBagConstraintsFactory.create(0, 9, GridBagConstraints.BOTH));
@@ -1512,19 +1506,6 @@ public class OptionsView extends View {
 		mysqlPanel.add(jPasswordField1, GridBagConstraintsFactory.create(1, 4, GridBagConstraints.BOTH));
 
 		return mysqlPanel;
-	}
-
-	/**
-	 * This method initializes palmcb
-	 * 
-	 * @return javax.swing.JCheckBox
-	 */
-	private JCheckBox getPalmcb() {
-		if (palmcb == null) {
-			palmcb = new JCheckBox();
-			ResourceHelper.setText(palmcb, "palmopt");
-		}
-		return palmcb;
 	}
 
 	private JPanel getReminderPanel() {

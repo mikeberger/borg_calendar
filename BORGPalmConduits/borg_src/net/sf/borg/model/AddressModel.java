@@ -48,25 +48,9 @@ public class AddressModel {
 
 	public Collection getAddresses() throws Exception {
 		Collection addrs = db_.readAll();
-		Iterator it = addrs.iterator();
-		while (it.hasNext()) {
-			Address addr = (Address) it.next();
-			if (addr.getDeleted())
-				it.remove();
-		}
 		return addrs;
 	}
 
-	public Collection getDeletedAddresses() throws Exception {
-		Collection addrs = db_.readAll();
-		Iterator it = addrs.iterator();
-		while (it.hasNext()) {
-			Address addr = (Address) it.next();
-			if (!addr.getDeleted())
-				it.remove();
-		}
-		return addrs;
-	}
 
 	// open the SMDB database
 	public void open_db()

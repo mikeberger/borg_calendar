@@ -95,7 +95,7 @@ public class MemoCond implements Conduit {
 				// Create an instance of the RecordManager for synchronizing the
 				// records
 				recordMgr = new RecordManager(props, db);
-				recordMgr.SyncData();
+				recordMgr.quickSyncAndWipe();
 
 				// Close DB
 				memoModel.close_db();

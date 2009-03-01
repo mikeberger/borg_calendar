@@ -105,10 +105,6 @@ public class Address extends KeyedBean implements java.io.Serializable {
 	public boolean getModified() { return( Modified_ ); }
 	public void setModified( boolean xx ){ Modified_ = xx; }
 
-	private boolean Deleted_;
-	public boolean getDeleted() { return( Deleted_ ); }
-	public void setDeleted( boolean xx ){ Deleted_ = xx; }
-
 	protected Object clone() {
 		Address dst = new Address();
 		dst.setKey( getKey());
@@ -137,7 +133,7 @@ public class Address extends KeyedBean implements java.io.Serializable {
 		dst.setBirthday( getBirthday() );
 		dst.setNew( getNew() );
 		dst.setModified( getModified() );
-		dst.setDeleted( getDeleted() );
+	
 		return(dst);
 	}
 }

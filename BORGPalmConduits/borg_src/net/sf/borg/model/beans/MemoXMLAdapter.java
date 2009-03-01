@@ -20,8 +20,6 @@ public class MemoXMLAdapter extends BeanXMLAdapter {
 			xt.appendChild("New" ,  BeanXMLAdapter.toString(o.getNew()));
 		if( o.getModified() == true )
 			xt.appendChild("Modified" ,  BeanXMLAdapter.toString(o.getModified()));
-		if( o.getDeleted() == true )
-			xt.appendChild("Deleted" ,  BeanXMLAdapter.toString(o.getDeleted()));
 		if( o.getPrivate() == true )
 			xt.appendChild("Private" ,  BeanXMLAdapter.toString(o.getPrivate()));
 		if( o.getCreated() != null )
@@ -49,8 +47,6 @@ public class MemoXMLAdapter extends BeanXMLAdapter {
 		ret.setNew( BeanXMLAdapter.toBoolean(val) );
 		val = xt.child("Modified").value();
 		ret.setModified( BeanXMLAdapter.toBoolean(val) );
-		val = xt.child("Deleted").value();
-		ret.setDeleted( BeanXMLAdapter.toBoolean(val) );
 		val = xt.child("Private").value();
 		ret.setPrivate( BeanXMLAdapter.toBoolean(val) );
 		val = xt.child("Created").value();

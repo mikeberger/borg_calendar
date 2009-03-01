@@ -4,28 +4,21 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.beans.Address;
 
-public class AddressUndoItem extends UndoItem {
+public class AddressUndoItem extends UndoItem<Address> {
 
-	private enum actionType {
-		ADD, DELETE, UPDATE
-	}
-	
-	private Address addr;
-	private actionType action;
-	
 	@Override
 	public void executeUndo() {
 		if( action == actionType.DELETE )
 		{
-			AddressModel.getReference().saveAddress(addr, true);
+			AddressModel.getReference().saveAddress(item, true);
 		}
 		else if( action == actionType.UPDATE )
 		{
-			AddressModel.getReference().saveAddress(addr, true);
+			AddressModel.getReference().saveAddress(item, true);
 		}
 		else if( action == actionType.ADD )
 		{
-			AddressModel.getReference().delete(addr, true);
+			AddressModel.getReference().delete(item, true);
 		}
 	}
 	
@@ -41,32 +34,32 @@ public class AddressUndoItem extends UndoItem {
 	
 	public static AddressUndoItem recordUpdate(Address addr)
 	{
-		AddressUndoItem item = new AddressUndoItem();
-		item.addr = addr;
-		item.action = actionType.UPDATE;
-		item.setDescription(Resource.getPlainResourceString("Change") + " " + 
+		AddressUndoItem undoItem = new AddressUndoItem();
+		undoItem.item = addr;
+		undoItem.action = actionType.UPDATE;
+		undoItem.setDescription(Resource.getPlainResourceString("Change") + " " + 
 				Resource.getPlainResourceString("Address") + " " + addrString(addr));
-		return item;
+		return undoItem;
 	}
 	
 	public static AddressUndoItem recordAdd(Address addr)
 	{
-		AddressUndoItem item = new AddressUndoItem();
-		item.addr = addr;
-		item.action = actionType.ADD;
-		item.setDescription(Resource.getPlainResourceString("Add") + " " + 
+		AddressUndoItem undoItem = new AddressUndoItem();
+		undoItem.item = addr;
+		undoItem.action = actionType.ADD;
+		undoItem.setDescription(Resource.getPlainResourceString("Add") + " " + 
 				Resource.getPlainResourceString("Address") + " " + addrString(addr));
-		return item;
+		return undoItem;
 	}
 	
 	public static AddressUndoItem recordDelete(Address addr)
 	{
-		AddressUndoItem item = new AddressUndoItem();
-		item.addr = addr;
-		item.action = actionType.DELETE;
-		item.setDescription(Resource.getPlainResourceString("Delete") + " " +
+		AddressUndoItem undoItem = new AddressUndoItem();
+		undoItem.item = addr;
+		undoItem.action = actionType.DELETE;
+		undoItem.setDescription(Resource.getPlainResourceString("Delete") + " " +
 				Resource.getPlainResourceString("Address") + " " + addrString(addr));
-		return item;
+		return undoItem;
 	}
 
 }

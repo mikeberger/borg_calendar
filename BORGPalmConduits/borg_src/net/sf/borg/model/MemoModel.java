@@ -57,8 +57,6 @@ public class MemoModel  {
 		Iterator it = memos.iterator();
 		while (it.hasNext()) {
 			Memo memo = (Memo) it.next();
-			if (memo.getDeleted())
-				it.remove();
 			parseOutDates(memo);
 		}
 		return memos;
@@ -69,17 +67,6 @@ public class MemoModel  {
 		return db_.getNames();
 	}
 
-	public Collection getDeletedMemos() throws Exception {
-		Collection memos = db_.readAll();
-		Iterator it = memos.iterator();
-		while (it.hasNext()) {
-			Memo memo = (Memo) it.next();
-			if (!memo.getDeleted())
-				it.remove();
-			parseOutDates(memo);
-		}
-		return memos;
-	}
 
 	public void open_db()
 			throws Exception {
@@ -113,7 +100,7 @@ public class MemoModel  {
 		if (old == null) {
 			if (!sync) {
 				memo.setNew(true);
-				memo.setDeleted(false);
+			
 				memo.setModified(false);
 			}
 
@@ -123,7 +110,7 @@ public class MemoModel  {
 
 			if (!sync) {
 				memo.setModified(true);
-				memo.setDeleted(false);
+				
 			}
 			db_.updateMemo(memo);
 
@@ -186,4 +173,5 @@ public class MemoModel  {
 			parseOutDates(m);
 		return m;
 	}
+	
 }

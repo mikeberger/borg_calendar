@@ -68,28 +68,12 @@ public class ApptRecordManager {
 		Collection appts = amod.getAllAppts();
 		Iterator it = appts.iterator();
 
-		Date now = new Date();
-
-		// 2 years
-		long span = 60 * 60 * 24 * 365 * 2;
-		span *= 1000;
-
 		while (it.hasNext()) {
 			Appointment appt = (Appointment) it.next();
 
-			// compare dates
-			Date ad = appt.getDate();
-
 			resetPCAttributes(appt);
+			writeHHRecord(borgToPalm(appt));
 
-			long diff = now.getTime() - ad.getTime();
-			// Log.out(appt.getKey() + ":" + diff);
-
-			// only write dates newer than 2 years old
-			if (diff <= span) {
-				// Log.out("writing HH rec: " + appt.getKey());
-				writeHHRecord(borgToPalm(appt));
-			}
 		}
 
 	}
@@ -123,18 +107,7 @@ public class ApptRecordManager {
 		} else {
 
 			if (hhRecord.isArchived() || hhRecord.isDeleted()) {
-				if (appt.getModified()) {
-					// (HH = Delete and PC = Modified) causes HH record to be
-					// updated
-					// not deleted
-					resetPCAttributes(appt);
-					int hhid = hhRecord.getId();
-					hhRecord = borgToPalm(appt);
-					hhRecord.setId(hhid);
-					writeHHRecord(hhRecord);
-				} else {
-					// Marked as already deleted from the HH and needs
-					// to be deleted from the PC
+				if (!appt.getModified()) {
 					deletePCRecord(appt);
 				}
 			} else if (hhRecord.isModified() || hhRecord.isNew()) {
@@ -165,7 +138,6 @@ public class ApptRecordManager {
 				AppointmentModel.getReference().forceDelete(appt);
 				AppointmentModel.getReference().saveAppt(modappt, true);
 
-
 			} else {
 				resetAttributes(hhRecord);
 
@@ -176,19 +148,12 @@ public class ApptRecordManager {
 				AppointmentModel.getReference().syncSave(modaddr);
 
 			}
-		} else if (compareRecords(hhRecord, appt)) {
-			// both records have changed identically
-			resetPCAttributes(appt);
-		} else { // records are different
-			// Change the PC record to a new record so
-			// that it gets added to the HH on pass thru pc records
-			resetPCAttributes(appt);
-			appt.setNew(true);
-			AppointmentModel.getReference().syncSave(appt);
+		} else if (!compareRecords(hhRecord, appt)) {
+			// records are different
 
 			resetAttributes(hhRecord);
 			appt = palmToBorg(hhRecord);
-			addPCRecord(appt);	
+			addPCRecord(appt);
 		}
 
 	}

@@ -27,10 +27,6 @@ public class Memo extends KeyedBean implements java.io.Serializable {
 	public boolean getModified() { return( Modified_ ); }
 	public void setModified( boolean xx ){ Modified_ = xx; }
 
-	private boolean Deleted_;
-	public boolean getDeleted() { return( Deleted_ ); }
-	public void setDeleted( boolean xx ){ Deleted_ = xx; }
-
 	private boolean Private_;
 	public boolean getPrivate() { return( Private_ ); }
 	public void setPrivate( boolean xx ){ Private_ = xx; }
@@ -59,7 +55,6 @@ public class Memo extends KeyedBean implements java.io.Serializable {
 		dst.setPalmId( getPalmId() );
 		dst.setNew( getNew() );
 		dst.setModified( getModified() );
-		dst.setDeleted( getDeleted() );
 		dst.setPrivate( getPrivate() );
 		dst.setCreated(getCreated());
 		dst.setUpdated(getUpdated());

@@ -110,7 +110,7 @@ public class HotSyncChangeDlg extends Dialog
 		gbc.weightx = 0;
 		gbc.weighty = 0;
 		gbc.fill = GridBagConstraints.NONE;
-		optionsPanel.add(pc2hh, gbc);
+		//optionsPanel.add(pc2hh, gbc);
 		
 		
 		// Do_nothing checkbox

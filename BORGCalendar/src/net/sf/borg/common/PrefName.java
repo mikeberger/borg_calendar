@@ -154,10 +154,6 @@ public class PrefName {
 		static public PrefName UCS_WEEKDAY = new PrefName("ucs_weekday",new Integer(16777164));
 		static public PrefName UCS_STRIPE = new PrefName("ucs_stripe",new Integer(15792890));
 		
-		
-		// synchronization
-		static public PrefName PALM_SYNC = new PrefName("palm_sync", "false");
-		
 		// tasks
 		static public PrefName TASK_SHOW_ABBREV = new PrefName("task_show_abbrev", "false");
 		static public PrefName CAL_SHOW_TASKS = new PrefName("cal_show_tasks", "true");

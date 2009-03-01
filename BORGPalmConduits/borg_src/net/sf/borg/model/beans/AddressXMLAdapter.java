@@ -60,8 +60,7 @@ public class AddressXMLAdapter extends BeanXMLAdapter {
 			xt.appendChild("New" ,  BeanXMLAdapter.toString(o.getNew()));
 		if( o.getModified() == true )
 			xt.appendChild("Modified" ,  BeanXMLAdapter.toString(o.getModified()));
-		if( o.getDeleted() == true )
-			xt.appendChild("Deleted" ,  BeanXMLAdapter.toString(o.getDeleted()));
+		
 		return( xt );
 	}
 
@@ -143,8 +142,7 @@ public class AddressXMLAdapter extends BeanXMLAdapter {
 		ret.setNew( BeanXMLAdapter.toBoolean(val) );
 		val = xt.child("Modified").value();
 		ret.setModified( BeanXMLAdapter.toBoolean(val) );
-		val = xt.child("Deleted").value();
-		ret.setDeleted( BeanXMLAdapter.toBoolean(val) );
+		
 		return( ret );
 	}
 }

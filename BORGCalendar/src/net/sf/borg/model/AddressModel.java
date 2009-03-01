@@ -24,12 +24,9 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 
 import net.sf.borg.common.Errmsg;
-import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
 import net.sf.borg.common.XTree;
 import net.sf.borg.model.beans.Address;
 import net.sf.borg.model.beans.AddressXMLAdapter;
@@ -117,23 +114,6 @@ public class AddressModel extends Model {
 
 	public Collection<Address> getAddresses() throws Exception {
 		Collection<Address> addrs = db_.readAll();
-		Iterator<Address> it = addrs.iterator();
-		while (it.hasNext()) {
-			Address addr = it.next();
-			if (addr.getDeleted())
-				it.remove();
-		}
-		return addrs;
-	}
-
-	public Collection<Address> getDeletedAddresses() throws Exception {
-		Collection<Address> addrs = db_.readAll();
-		Iterator<Address> it = addrs.iterator();
-		while (it.hasNext()) {
-			Address addr = it.next();
-			if (!addr.getDeleted())
-				it.remove();
-		}
 		return addrs;
 	}
 
@@ -155,26 +135,18 @@ public class AddressModel extends Model {
 		delete(addr, false);
 	}
 
-	public void delete(Address addr, boolean undo)  {
+	public void delete(Address addr, boolean undo) {
 
 		try {
 			Address orig_addr = getAddress(addr.getKey());
 			LinkModel.getReference().deleteLinks(addr);
-			String sync = Prefs.getPref(PrefName.PALM_SYNC);
-			if (sync.equals("true")) {
-				addr.setDeleted(true);
-				db_.updateObj(addr);
-				if( !undo )
-				{
-					UndoLog.getReference().addItem(AddressUndoItem.recordUpdate(orig_addr));
-				}
-			} else {
-				db_.delete(addr.getKey());
-				if( !undo )
-				{
-					UndoLog.getReference().addItem(AddressUndoItem.recordDelete(orig_addr));
-				}
+
+			db_.delete(addr.getKey());
+			if (!undo) {
+				UndoLog.getReference().addItem(
+						AddressUndoItem.recordDelete(orig_addr));
 			}
+
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
 		}
@@ -196,16 +168,16 @@ public class AddressModel extends Model {
 				addr.setKey(newkey);
 				addr.setNew(true);
 				db_.addObj(addr);
-				if( !undo )
-				{
-					UndoLog.getReference().addItem(AddressUndoItem.recordAdd(addr));
+				if (!undo) {
+					UndoLog.getReference().addItem(
+							AddressUndoItem.recordAdd(addr));
 				}
 			} else {
 				addr.setModified(true);
 				db_.updateObj(addr);
-				if( !undo )
-				{
-					UndoLog.getReference().addItem(AddressUndoItem.recordUpdate(orig_addr));
+				if (!undo) {
+					UndoLog.getReference().addItem(
+							AddressUndoItem.recordUpdate(orig_addr));
 				}
 			}
 		} catch (Exception e) {

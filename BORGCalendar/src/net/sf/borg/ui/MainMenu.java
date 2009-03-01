@@ -984,11 +984,23 @@ class MainMenu {
 						
 					});
 					menu.add(mi);
+					JMenuItem cmi = new JMenuItem();
+					cmi.setText(Resource.getPlainResourceString("clear_undos"));
+					cmi.addActionListener(new ActionListener(){
+
+						@Override
+						public void actionPerformed(ActionEvent arg0) {
+							UndoLog.getReference().clear();
+						}
+						
+					});
+					menu.add(cmi);
 				}
 				else
 				{
 					menu.add(new JMenuItem(Resource.getPlainResourceString("no_undos")));
 				}
+				
 				
 			}
 			

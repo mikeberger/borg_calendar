@@ -28,7 +28,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -793,25 +792,9 @@ public class AppointmentModel extends Model implements Model.Listener,
 
 	public Collection<Appointment> getAllAppts() throws Exception {
 		Collection<Appointment> appts = db_.readAll();
-		Iterator<Appointment> it = appts.iterator();
-		while (it.hasNext()) {
-			Appointment appt = it.next();
-			if (appt.getDeleted())
-				it.remove();
-		}
 		return appts;
 	}
 
-	public Collection<Appointment> getDeletedAppts() throws Exception {
-		Collection<Appointment> appts = db_.readAll();
-		Iterator<Appointment> it = appts.iterator();
-		while (it.hasNext()) {
-			Appointment appt = it.next();
-			if (!appt.getDeleted())
-				it.remove();
-		}
-		return appts;
-	}
 
 	/*
 	 * (non-Javadoc)

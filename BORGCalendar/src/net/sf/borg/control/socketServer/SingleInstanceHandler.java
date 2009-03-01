@@ -44,7 +44,7 @@ public class SingleInstanceHandler {
 	public static String execute(String msg) {
 		Object result = null;
 
-		System.out.println("[INPUT] "+msg);
+		//System.out.println("[INPUT] "+msg);
 		String strXml = msg.replace("%NEWLINE%", "\n");
 		try {
 			XTree xmlParms = XTree.readFromBuffer(strXml);
