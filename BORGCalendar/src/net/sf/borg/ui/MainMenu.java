@@ -60,6 +60,7 @@ import net.sf.borg.model.beans.Appointment;
 import net.sf.borg.model.beans.Project;
 import net.sf.borg.model.beans.Task;
 import net.sf.borg.model.db.jdbc.JdbcDB;
+import net.sf.borg.model.undo.UndoItem;
 import net.sf.borg.model.undo.UndoLog;
 import net.sf.borg.ui.address.AddrListView;
 import net.sf.borg.ui.calendar.SearchView;
@@ -967,6 +968,7 @@ class MainMenu {
 			public void menuDeselected(MenuEvent arg0) {
 			}
 
+			@SuppressWarnings("unchecked")
 			@Override
 			public void menuSelected(MenuEvent e) {
 				menu.removeAll();
@@ -974,7 +976,7 @@ class MainMenu {
 				String top = UndoLog.getReference().getTopItem();
 				if( top != null )
 				{
-					JMenuItem mi = new JMenuItem(top);
+					JMenuItem mi = new JMenuItem(Resource.getPlainResourceString("undo") + ": " + top);
 					mi.addActionListener(new ActionListener(){
 
 						@Override
@@ -995,6 +997,16 @@ class MainMenu {
 						
 					});
 					menu.add(cmi);
+					
+					JMenu all_mi = new JMenu(Resource.getPlainResourceString("all_undos"));
+					for( String item : UndoLog.getReference().getItems())
+					{
+						JMenuItem item_mi = new JMenuItem(Resource.getPlainResourceString("undo") + ": " + item);
+						all_mi.add(item_mi);
+					}
+					
+					menu.add(all_mi);
+					
 				}
 				else
 				{

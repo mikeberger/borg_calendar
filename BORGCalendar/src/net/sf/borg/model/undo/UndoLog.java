@@ -1,5 +1,8 @@
 package net.sf.borg.model.undo;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Stack;
 
 @SuppressWarnings("unchecked")
@@ -30,6 +33,16 @@ public class UndoLog {
 		if( undoStack.empty())
 			return null;
 		return undoStack.peek().getDescription();
+	}
+	
+	public Collection<String> getItems()
+	{
+		List<String> strings = new ArrayList<String>();
+		for( UndoItem item : undoStack )
+		{
+			strings.add(0, item.getDescription());
+		}
+		return strings;
 	}
 	
 	public void executeUndo()
