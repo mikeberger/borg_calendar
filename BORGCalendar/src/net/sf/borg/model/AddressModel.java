@@ -35,223 +35,241 @@ import net.sf.borg.model.beans.Address;
 import net.sf.borg.model.beans.AddressXMLAdapter;
 import net.sf.borg.model.db.BeanDB;
 import net.sf.borg.model.db.jdbc.AddrJdbcDB;
+import net.sf.borg.model.undo.AddressUndoItem;
+import net.sf.borg.model.undo.UndoLog;
 
 public class AddressModel extends Model {
 
-    private BeanDB<Address> db_; // the database
+	private BeanDB<Address> db_; // the database
 
-    public BeanDB<Address> getDB() {
-        return (db_);
-    }
+	public BeanDB<Address> getDB() {
+		return (db_);
+	}
 
-    private HashMap<Integer, LinkedList<Address>> bdmap_ = new HashMap<Integer, LinkedList<Address>>();
+	private HashMap<Integer, LinkedList<Address>> bdmap_ = new HashMap<Integer, LinkedList<Address>>();
 
-    static private AddressModel self_ = null;
+	static private AddressModel self_ = null;
 
-    private void load_map() {
+	private void load_map() {
 
-        // clear map
-        bdmap_.clear();
+		// clear map
+		bdmap_.clear();
 
-        try {
+		try {
 
-            // iterate through tasks using taskmodel
-            Collection<Address> addrs = getAddresses();
-            for (Address addr : addrs) {
+			// iterate through tasks using taskmodel
+			Collection<Address> addrs = getAddresses();
+			for (Address addr : addrs) {
 
-                if (addr.getDeleted())
-                    continue;
+				if (addr.getDeleted())
+					continue;
 
-                // use birthday to build a day key
-                Date bd = addr.getBirthday();
-                if (bd == null)
-                    continue;
+				// use birthday to build a day key
+				Date bd = addr.getBirthday();
+				if (bd == null)
+					continue;
 
-                GregorianCalendar g = new GregorianCalendar();
-                g.setTime(bd);
+				GregorianCalendar g = new GregorianCalendar();
+				g.setTime(bd);
 
-                int key = AppointmentModel.dkey(g);
-                int bdkey = AppointmentModel.birthdayKey(key);
+				int key = AppointmentModel.dkey(g);
+				int bdkey = AppointmentModel.birthdayKey(key);
 
-                // add the task string to the btmap_
-                // add the task to the mrs_ Vector. This is used by the todo gui
-                LinkedList<Address> o = bdmap_.get(new Integer(bdkey));
-                if (o == null) {
-                    o = new LinkedList<Address>();
-                    bdmap_.put(new Integer(bdkey), o);
-                }
+				// add the task string to the btmap_
+				// add the task to the mrs_ Vector. This is used by the todo gui
+				LinkedList<Address> o = bdmap_.get(new Integer(bdkey));
+				if (o == null) {
+					o = new LinkedList<Address>();
+					bdmap_.put(new Integer(bdkey), o);
+				}
 
-                o.add(addr);
-            }
+				o.add(addr);
+			}
 
-        } catch (Exception e) {
+		} catch (Exception e) {
 
-            Errmsg.errmsg(e);
-            return;
-        }
+			Errmsg.errmsg(e);
+			return;
+		}
 
-    }
+	}
 
-    public static AddressModel getReference() {
-        return (self_);
-    }
+	public static AddressModel getReference() {
+		return (self_);
+	}
 
-    public static AddressModel create() {
-        self_ = new AddressModel();
-        return (self_);
-    }
+	public static AddressModel create() {
+		self_ = new AddressModel();
+		return (self_);
+	}
 
-    public void remove() {
-        removeListeners();
-        try {
-            if (db_ != null)
-                db_.close();
-        } catch (Exception e) {
-            Errmsg.errmsg(e);
-            return;
-        }
-        db_ = null;
-    }
+	public void remove() {
+		removeListeners();
+		try {
+			if (db_ != null)
+				db_.close();
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
+			return;
+		}
+		db_ = null;
+	}
 
-    public Collection<Address> getAddresses() throws Exception {
-        Collection<Address> addrs = db_.readAll();
-        Iterator<Address> it = addrs.iterator();
-        while (it.hasNext()) {
-            Address addr = it.next();
-            if (addr.getDeleted())
-                it.remove();
-        }
-        return addrs;
-    }
+	public Collection<Address> getAddresses() throws Exception {
+		Collection<Address> addrs = db_.readAll();
+		Iterator<Address> it = addrs.iterator();
+		while (it.hasNext()) {
+			Address addr = it.next();
+			if (addr.getDeleted())
+				it.remove();
+		}
+		return addrs;
+	}
 
-    public Collection<Address> getDeletedAddresses() throws Exception {
-        Collection<Address> addrs = db_.readAll();
-        Iterator<Address> it = addrs.iterator();
-        while (it.hasNext()) {
-            Address addr = it.next();
-            if (!addr.getDeleted())
-                it.remove();
-        }
-        return addrs;
-    }
+	public Collection<Address> getDeletedAddresses() throws Exception {
+		Collection<Address> addrs = db_.readAll();
+		Iterator<Address> it = addrs.iterator();
+		while (it.hasNext()) {
+			Address addr = it.next();
+			if (!addr.getDeleted())
+				it.remove();
+		}
+		return addrs;
+	}
 
-    public Collection<Address> getAddresses(int daykey) {
-        // don't consider year for birthdays
-        int bdkey = AppointmentModel.birthdayKey(daykey);
-        // System.out.println("bdkey is " + bdkey);
-        return (bdmap_.get(new Integer(bdkey)));
-    }
+	public Collection<Address> getAddresses(int daykey) {
+		// don't consider year for birthdays
+		int bdkey = AppointmentModel.birthdayKey(daykey);
+		// System.out.println("bdkey is " + bdkey);
+		return (bdmap_.get(new Integer(bdkey)));
+	}
 
-    // open the SMDB database
-    @SuppressWarnings("unchecked")
-    public void open_db(String url) throws Exception {
-        db_ = new AddrJdbcDB(url);
-        load_map();
-    }
+	// open the SMDB database
+	@SuppressWarnings("unchecked")
+	public void open_db(String url) throws Exception {
+		db_ = new AddrJdbcDB(url);
+		load_map();
+	}
 
-    public void delete(Address addr, boolean refresh) throws Exception {
+	public void delete(Address addr) {
+		delete(addr, false);
+	}
 
-        try {
-            LinkModel.getReference().deleteLinks(addr);
-            String sync = Prefs.getPref(PrefName.PALM_SYNC);
-            if (sync.equals("true")) {
-                addr.setDeleted(true);
-                db_.updateObj(addr);
-            } else {
-                db_.delete(addr.getKey());
-            }
-        } catch (Exception e) {
-            Errmsg.errmsg(e);
-        }
+	public void delete(Address addr, boolean undo)  {
 
-        if (refresh)
-            refresh();
-    }
+		try {
+			Address orig_addr = getAddress(addr.getKey());
+			LinkModel.getReference().deleteLinks(addr);
+			String sync = Prefs.getPref(PrefName.PALM_SYNC);
+			if (sync.equals("true")) {
+				addr.setDeleted(true);
+				db_.updateObj(addr);
+				if( !undo )
+				{
+					UndoLog.getReference().addItem(AddressUndoItem.recordUpdate(orig_addr));
+				}
+			} else {
+				db_.delete(addr.getKey());
+				if( !undo )
+				{
+					UndoLog.getReference().addItem(AddressUndoItem.recordDelete(orig_addr));
+				}
+			}
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
+		}
 
-    public void saveAddress(Address addr) throws Exception {
-        saveAddress(addr, false);
-    }
+		refresh();
+	}
 
-    public void saveAddress(Address addr, boolean sync) throws Exception {
+	public void saveAddress(Address addr) {
+		saveAddress(addr, false);
+	}
 
-        int num = addr.getKey();
+	public void saveAddress(Address addr, boolean undo) {
 
-        if (num == -1) {
-            int newkey = db_.nextkey();
-            addr.setKey(newkey);
-            if (!sync) {
-                addr.setNew(true);
-            }
-            db_.addObj(addr);
+		int num = addr.getKey();
+		try {
+			Address orig_addr = getAddress(addr.getKey());
+			if (num == -1) {
+				int newkey = db_.nextkey();
+				addr.setKey(newkey);
+				addr.setNew(true);
+				db_.addObj(addr);
+				if( !undo )
+				{
+					UndoLog.getReference().addItem(AddressUndoItem.recordAdd(addr));
+				}
+			} else {
+				addr.setModified(true);
+				db_.updateObj(addr);
+				if( !undo )
+				{
+					UndoLog.getReference().addItem(AddressUndoItem.recordUpdate(orig_addr));
+				}
+			}
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
+		}
 
-        } else {
+		// inform views of data change
+		refresh();
+	}
 
-            if (!sync) {
-                addr.setModified(true);
-            }
-            db_.updateObj(addr);
+	// allocate a new Row from the DB
+	public Address newAddress() {
+		return (db_.newObj());
+	}
 
-        }
+	public Address getAddress(int num) throws Exception {
+		return (db_.readObj(num));
+	}
 
-        // inform views of data change
-        refresh();
-    }
+	public void export(Writer fw) throws Exception {
 
-    // allocate a new Row from the DB
-    public Address newAddress() {
-        return (db_.newObj());
-    }
+		// FileWriter fw = new FileWriter(fname);
+		fw.write("<ADDRESSES>\n");
+		AddressXMLAdapter ta = new AddressXMLAdapter();
 
-    public Address getAddress(int num) throws Exception {
-        return (db_.readObj(num));
-    }
+		// export addresses
 
-    public void export(Writer fw) throws Exception {
+		Collection<Address> addrs = getAddresses();
+		for (Address addr : addrs) {
 
-        // FileWriter fw = new FileWriter(fname);
-        fw.write("<ADDRESSES>\n");
-        AddressXMLAdapter ta = new AddressXMLAdapter();
+			XTree xt = ta.toXml(addr);
+			fw.write(xt.toString());
+		}
 
+		fw.write("</ADDRESSES>");
 
-        // export addresses
+	}
 
-        Collection<Address> addrs = getAddresses();
-        for( Address addr : addrs ) {
+	public void importXml(XTree xt) throws Exception {
 
-            XTree xt = ta.toXml(addr);
-            fw.write(xt.toString());
-        }
+		AddressXMLAdapter aa = new AddressXMLAdapter();
 
-        fw.write("</ADDRESSES>");
+		for (int i = 1;; i++) {
+			XTree ch = xt.child(i);
+			if (ch == null)
+				break;
 
-    }
+			if (!ch.name().equals("Address"))
+				continue;
+			Address addr = aa.fromXml(ch);
+			addr.setKey(-1);
+			saveAddress(addr);
+		}
 
-    public void importXml(XTree xt) throws Exception {
+		refresh();
+	}
 
-        AddressXMLAdapter aa = new AddressXMLAdapter();
+	public void refresh() {
+		load_map();
+		refreshListeners();
+	}
 
-        for (int i = 1;; i++) {
-            XTree ch = xt.child(i);
-            if (ch == null)
-                break;
-
-            if (!ch.name().equals("Address"))
-                continue;
-            Address addr = aa.fromXml(ch);
-            addr.setKey(-1);
-            saveAddress(addr);
-        }
-
-        refresh();
-    }
-
-    public void refresh() {
-        load_map();
-        refreshListeners();
-    }
-
-    public void sync() {
-        db_.sync();
-        refresh();
-    }
+	public void sync() {
+		db_.sync();
+		refresh();
+	}
 }

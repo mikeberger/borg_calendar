@@ -47,6 +47,8 @@ import net.sf.borg.model.beans.AppointmentXMLAdapter;
 import net.sf.borg.model.db.AppointmentDB;
 import net.sf.borg.model.db.BeanDB;
 import net.sf.borg.model.db.jdbc.ApptJdbcDB;
+import net.sf.borg.model.undo.AppointmentUndoItem;
+import net.sf.borg.model.undo.UndoLog;
 
 public class AppointmentModel extends Model implements Model.Listener,
 		CategorySource {
@@ -148,26 +150,25 @@ public class AppointmentModel extends Model implements Model.Listener,
 		}
 	}
 
-	// delete a row from the database
 	public void delAppt(Appointment appt) {
+		delAppt(appt, false);
+	}
+
+	// delete a row from the database
+	public void delAppt(Appointment appt, boolean undo) {
+
 		try {
+
+			Appointment orig_appt = getAppt(appt.getKey());
+
 			LinkModel.getReference().deleteLinks(appt);
 
-			String sync = Prefs.getPref(PrefName.PALM_SYNC);
-			if (sync.equals("true")) {
-				appt.setDeleted(true);
-				db_.updateObj(appt);
-			} else {
-				db_.delete(appt.getKey());
+			db_.delete(appt.getKey());
+			if (!undo) {
+				UndoLog.getReference().addItem(
+						AppointmentUndoItem.recordDelete(orig_appt));
 			}
-		} catch (java.lang.NoClassDefFoundError ncf) {
-			// cannot find Prefs during sync
-			try {
-				db_.delete(appt.getKey());
-			} catch (Exception e) {
-				Errmsg.errmsg(e);
-			}
-
+		
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
 		}
@@ -230,15 +231,13 @@ public class AppointmentModel extends Model implements Model.Listener,
 	}
 
 	public void saveAppt(Appointment r, boolean add) {
-		saveAppt(r, add, false, false);
+		saveAppt(r, add, false);
 	}
 
-	// save an appt in SMDB
-	// if bulk - don't update listeners
-	public void saveAppt(Appointment r, boolean add, boolean bulk, boolean sync) {
+	public void saveAppt(Appointment r, boolean add, boolean undo) {
 
 		try {
-
+			Appointment orig_appt = getAppt(r.getKey());
 			if (add == true) {
 				// get the next unused key for a given day
 				// to do this, start with the "base" key for a given day.
@@ -263,18 +262,24 @@ public class AppointmentModel extends Model implements Model.Listener,
 
 				// key is now a free key
 				r.setKey(key);
-				if (!sync) {
-					r.setNew(true);
-					r.setDeleted(false);
-				}
+				r.setNew(true);
+				r.setDeleted(false);
 
 				db_.addObj(r);
-			} else {
-				if (!sync) {
-					r.setModified(true);
-					r.setDeleted(false);
+				if (!undo) {
+					UndoLog.getReference().addItem(
+							AppointmentUndoItem.recordAdd(r));
 				}
+			} else {
+
+				r.setModified(true);
+				r.setDeleted(false);
+
 				db_.updateObj(r);
+				if (!undo) {
+					UndoLog.getReference().addItem(
+							AppointmentUndoItem.recordUpdate(orig_appt));
+				}
 			}
 
 			// update category list
@@ -287,20 +292,17 @@ public class AppointmentModel extends Model implements Model.Listener,
 
 		}
 
-		if (!bulk) {
-			try {
-				// recreate the appointment hashmap
-				buildMap();
+		try {
+			// recreate the appointment hashmap
+			buildMap();
 
-				// refresh all views that are displaying appt data from this
-				// model
-				refreshListeners();
-			} catch (Exception e) {
-				Errmsg.errmsg(e);
-				return;
-			}
+			// refresh all views that are displaying appt data from this
+			// model
+			refreshListeners();
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
+			return;
 		}
-
 	}
 
 	// get an appt from the database by key
@@ -571,7 +573,8 @@ public class AppointmentModel extends Model implements Model.Listener,
 				// add day key to vacation map if appt has vacation
 				if (appt.getVacation() != null
 						&& appt.getVacation().intValue() != 0) {
-					vacationMap_.put(new Integer(dkey), appt.getVacation().intValue());
+					vacationMap_.put(new Integer(dkey), appt.getVacation()
+							.intValue());
 				}
 			} else {
 				// appt repeats so we have to add all of the repeats
@@ -624,7 +627,8 @@ public class AppointmentModel extends Model implements Model.Listener,
 						// add day key to vacation map if appt has vacation
 						if (appt.getVacation() != null
 								&& appt.getVacation().intValue() != 0) {
-							vacationMap_.put(new Integer(rkey), appt.getVacation());
+							vacationMap_.put(new Integer(rkey), appt
+									.getVacation());
 						}
 					}
 
@@ -634,35 +638,30 @@ public class AppointmentModel extends Model implements Model.Listener,
 		}
 
 	}
-	
-	// determine the number of vacation days up to and including the given day for the current year
-	public double vacationCount(int dkey)
-	{
-		//System.out.println("dkey=" + dkey);
+
+	// determine the number of vacation days up to and including the given day
+	// for the current year
+	public double vacationCount(int dkey) {
+		// System.out.println("dkey=" + dkey);
 		int yr = (dkey / 1000000) % 1000 + 1900;
 		int yearStartKey = dkey(yr, 1, 1);
 		double count = 0;
-		
+
 		Set<Integer> vkeys = vacationMap_.keySet();
-		for( Integer i : vkeys)
-		{
+		for (Integer i : vkeys) {
 			int vdaykey = i.intValue();
-			if( vdaykey >= yearStartKey && vdaykey <= dkey)
-			{
+			if (vdaykey >= yearStartKey && vdaykey <= dkey) {
 				Integer vnum = vacationMap_.get(i);
-				if( vnum.intValue() == 2)
-				{
+				if (vnum.intValue() == 2) {
 					count += 0.5;
-				}
-				else
-				{
+				} else {
 					count += 1.0;
 				}
 			}
 		}
-		
+
 		return count;
-		
+
 	}
 
 	// export the appt data to a file in XML

@@ -264,7 +264,7 @@ public class AddrListView extends DockableView {
 				// in tbl
 				Object[] oa = addrs_.toArray();
 				Address addr = (Address) oa[k];
-				amod.delete(addr, false);
+				amod.delete(addr);
 			} catch (Exception e) {
 				Errmsg.errmsg(e);
 			}

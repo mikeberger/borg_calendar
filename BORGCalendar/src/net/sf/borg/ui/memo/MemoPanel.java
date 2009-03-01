@@ -415,7 +415,7 @@ public class MemoPanel extends JPanel implements ListSelectionListener, Model.Li
             return;
         }
         try {
-            MemoModel.getReference().delete(name, true);
+            MemoModel.getReference().delete(name, false);
             isMemoEdited = false;
             loadTable();
         } catch (Exception e) {
