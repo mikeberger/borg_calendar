@@ -48,7 +48,7 @@ public class StripedTable extends JTable {
 				} else if (row % 2 == 0) {
 					c.setBackground(STCOLOR);
 				} else {
-					c.setBackground(Color.WHITE);
+					//c.setBackground(Color.WHITE);
 				}
 				return c;
 			} else {
@@ -61,7 +61,7 @@ public class StripedTable extends JTable {
 			} else if (row % 2 == 0) {
 				this.setBackground(STCOLOR);
 			} else {
-				this.setBackground(Color.WHITE);
+				this.setBackground(l.getBackground());
 			}
 
 			if (obj instanceof Integer) {
