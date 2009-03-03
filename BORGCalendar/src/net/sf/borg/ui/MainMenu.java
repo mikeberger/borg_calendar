@@ -60,7 +60,6 @@ import net.sf.borg.model.beans.Appointment;
 import net.sf.borg.model.beans.Project;
 import net.sf.borg.model.beans.Task;
 import net.sf.borg.model.db.jdbc.JdbcDB;
-import net.sf.borg.model.undo.UndoItem;
 import net.sf.borg.model.undo.UndoLog;
 import net.sf.borg.ui.address.AddrListView;
 import net.sf.borg.ui.calendar.SearchView;
@@ -999,7 +998,7 @@ class MainMenu {
 					menu.add(cmi);
 					
 					JMenu all_mi = new JMenu(Resource.getPlainResourceString("all_undos"));
-					for( String item : UndoLog.getReference().getItems())
+					for( String item : UndoLog.getReference().getItemStrings())
 					{
 						JMenuItem item_mi = new JMenuItem(Resource.getPlainResourceString("undo") + ": " + item);
 						all_mi.add(item_mi);

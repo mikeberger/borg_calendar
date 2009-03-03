@@ -35,7 +35,7 @@ public class UndoLog {
 		return undoStack.peek().getDescription();
 	}
 	
-	public Collection<String> getItems()
+	public Collection<String> getItemStrings()
 	{
 		List<String> strings = new ArrayList<String>();
 		for( UndoItem item : undoStack )
@@ -57,5 +57,9 @@ public class UndoLog {
 	public void clear()
 	{
 		undoStack.clear();
+	}
+	
+	Stack<UndoItem> getItems(){
+		return undoStack;
 	}
 }
