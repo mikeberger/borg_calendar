@@ -31,6 +31,8 @@ import java.util.LinkedList;
 import java.util.TreeSet;
 import java.util.Vector;
 
+import javax.swing.JOptionPane;
+
 import net.sf.borg.common.DateUtil;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Resource;
@@ -49,6 +51,7 @@ import net.sf.borg.model.db.BeanDB;
 import net.sf.borg.model.db.TaskDB;
 import net.sf.borg.model.db.jdbc.JdbcDB;
 import net.sf.borg.model.db.jdbc.TaskJdbcDB;
+import net.sf.borg.model.undo.ProjectUndoItem;
 import net.sf.borg.model.undo.SubtaskUndoItem;
 import net.sf.borg.model.undo.TaskUndoItem;
 import net.sf.borg.model.undo.UndoLog;
@@ -347,14 +350,25 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 
 	public void deleteProject(int id) throws Exception {
 
+		int ret = JOptionPane.showConfirmDialog(null, Resource
+				.getResourceString("cannot_undo"), null,
+				JOptionPane.OK_CANCEL_OPTION);
+
+		if (ret != JOptionPane.OK_OPTION)
+			return;
+		
 		try {
 			if (db_ instanceof TaskDB == false)
 				throw new Warning(Resource
 						.getPlainResourceString("SubtaskNotSupported"));
 			TaskDB sdb = (TaskDB) db_;
+			beginTransaction();
 			LinkModel.getReference().deleteLinks(id, Project.class);
+
 			sdb.deleteProject(id);
+			commitTransaction();
 		} catch (Exception e) {
+			rollbackTransaction();
 			Errmsg.errmsg(e);
 		}
 
@@ -818,7 +832,8 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 					.getPlainResourceString("SubtaskNotSupported"));
 
 		TaskDB sdb = (TaskDB) db_;
-		if (s.getId() == null || s.getId().intValue() <= 0 || null == sdb.getSubTask(s.getId())) {
+		if (s.getId() == null || s.getId().intValue() <= 0
+				|| null == sdb.getSubTask(s.getId())) {
 			s.setId(new Integer(sdb.nextSubTaskKey()));
 			sdb.addSubTask(s);
 			if (!undo) {
@@ -948,6 +963,10 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 	}
 
 	public void saveProject(Project p) throws Exception {
+		saveProject(p, false);
+	}
+
+	public void saveProject(Project p, boolean undo) throws Exception {
 		if (db_ instanceof TaskDB == false)
 			throw new Warning(Resource
 					.getPlainResourceString("SubtaskNotSupported"));
@@ -1007,7 +1026,15 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 		if (p.getId() == null || p.getId().intValue() <= 0) {
 			p.setId(new Integer(sdb.nextProjectKey()));
 			sdb.addProject(p);
+			if (!undo) {
+				Project t = getProject(p.getId());
+				UndoLog.getReference().addItem(ProjectUndoItem.recordAdd(t));
+			}
 		} else {
+			if (!undo) {
+				Project t = getProject(p.getId());
+				UndoLog.getReference().addItem(ProjectUndoItem.recordUpdate(t));
+			}
 			sdb.updateProject(p);
 		}
 

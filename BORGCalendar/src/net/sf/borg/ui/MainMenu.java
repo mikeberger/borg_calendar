@@ -1035,7 +1035,7 @@ class MainMenu {
 		String type = xt.name();
 
 		int ret = JOptionPane.showConfirmDialog(null, Resource
-				.getResourceString("Importing_")
+				.getResourceString("Importing_") + " "
 				+ type + ", OK?", Resource.getResourceString("Import_WARNING"),
 				JOptionPane.OK_CANCEL_OPTION);
 
