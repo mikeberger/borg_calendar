@@ -21,6 +21,7 @@ package net.sf.borg.ui.task;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -67,6 +68,7 @@ import net.sf.borg.ui.DockableView;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.link.LinkPanel;
 import net.sf.borg.ui.util.DateDialog;
+import net.sf.borg.ui.util.JTabbedPaneWithCloseIcons;
 import net.sf.borg.ui.util.PopupMenuHelper;
 import net.sf.borg.ui.util.StripedTable;
 import net.sf.borg.ui.util.TableSorter;
@@ -1304,6 +1306,20 @@ public class TaskView extends DockableView {
 
 			saveSubtasks(task);
 			taskmod_.commitTransaction();
+			
+			Container p = this.getParent();
+			//System.out.println(p.getClass().getName());
+			
+			if( p instanceof JTabbedPaneWithCloseIcons )
+			{
+				p.remove(this);
+				return;
+			}
+			else if( fr_ != null )
+			{
+				this.remove();
+				return;
+			}
 
 			// refresh window from DB - will update task number for
 			// new tasks and will set the list of available next states from

@@ -120,6 +120,7 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 		}
 
 		public void paintHighlight(MouseEvent e) {
+			if( c == null ) return;
 			paintHighlight(isDeleteClicked(e), isUndockClicked(e), c
 					.getGraphics());
 		}

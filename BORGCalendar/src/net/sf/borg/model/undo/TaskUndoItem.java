@@ -7,6 +7,7 @@ import java.util.Stack;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.TaskModel;
+import net.sf.borg.model.beans.Project;
 import net.sf.borg.model.beans.Task;
 
 public class TaskUndoItem extends UndoItem<Task> {
@@ -17,6 +18,18 @@ public class TaskUndoItem extends UndoItem<Task> {
 	public void executeUndo() {
 		try {
 			if (action == actionType.DELETE) {
+				// check if parent project exists
+				Integer pid = item.getProject();
+				if( pid != null )
+				{
+					Project p = TaskModel.getReference().getProject(pid);
+					if( p == null )
+					{
+						// project has been deleted
+						item.setProject(null);
+					}
+						
+				}
 				TaskModel.getReference().savetask(item, true);
 				for (SubtaskUndoItem s : subtasks)
 				{

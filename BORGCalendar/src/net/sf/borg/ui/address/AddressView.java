@@ -639,8 +639,7 @@ public class AddressView extends DockableView {
 		jTabbedPane1.addTab(Resource.getResourceString("Notes"), getJPanel6());
 
 		attPanel = new LinkPanel();
-		jTabbedPane1
-				.addTab(Resource.getResourceString("links"), attPanel);
+		jTabbedPane1.addTab(Resource.getResourceString("links"), attPanel);
 		// jTabbedPane1.addTab(null, null, getJPanel6(), null);
 		jPanel3.add(jLabel12, gridBagConstraints36);
 		jPanel3.add(jLabel13, gridBagConstraints37);
@@ -735,6 +734,10 @@ public class AddressView extends DockableView {
 
 		try {
 			AddressModel.getReference().saveAddress(addr_);
+			if (fr_ != null)
+				this.remove();
+			else
+				this.getParent().remove(this);
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
 		}
@@ -766,7 +769,7 @@ public class AddressView extends DockableView {
 
 		Date bd = addr_.getBirthday();
 		bdchooser.setDate(bd);
-		
+
 		attPanel.setOwner(addr_);
 
 	}
