@@ -171,6 +171,19 @@ public class MemoModel extends Model {
 			return;
 		if (m.getMemoText() == null)
 			m.setMemoText("");
+		
+		// if memo already has memo text - remove it
+		String text = m.getMemoText();
+		if (text.startsWith("TS;")) {
+			int idx1 = 2;
+			int idx2 = text.indexOf(';', idx1 + 1);
+			int idx3 = text.indexOf(';', idx2 + 1);
+			if (idx2 != -1 && idx3 != -1) {	
+					m.setMemoText(text.substring(idx3 + 1));
+			}
+		}
+		
+		
 		m.setMemoText("TS;" + normalDateFormat_.format(m.getCreated()) + ";"
 				+ normalDateFormat_.format(m.getUpdated()) + ";"
 				+ m.getMemoText());

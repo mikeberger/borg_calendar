@@ -10,8 +10,10 @@ import net.sf.borg.common.Errmsg;
 import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.LinkModel;
+import net.sf.borg.model.MemoModel;
 import net.sf.borg.model.beans.Address;
 import net.sf.borg.model.beans.Appointment;
+import net.sf.borg.model.beans.Memo;
 import net.sf.borg.model.undo.UndoLog;
 
 import org.junit.AfterClass;
@@ -26,6 +28,7 @@ public class UndoTests {
 		Errmsg.console(true);
 		AppointmentModel.create().open_db("jdbc:hsqldb:mem:whatever");
 		AddressModel.create().open_db("jdbc:hsqldb:mem:whatever");
+		MemoModel.create().open_db("jdbc:hsqldb:mem:whatever");
 		LinkModel.create().open_db("jdbc:hsqldb:mem:whatever");
 	}
 	
@@ -137,7 +140,6 @@ public class UndoTests {
 		assertTrue( "Address DB should contain 1 addr", coll.size() == 1);
 		addr = coll.iterator().next();
 		
-		// known problem - undo fails
 		assertTrue("Address was not undone", "First name".equals(addr.getFirstName()));
 		
 		//undo the add
@@ -147,11 +149,71 @@ public class UndoTests {
 		assertTrue( "Address DB should contain 0 appts after add undone", coll.size() == 0);
 	}
 	
+	@Test
+	public void testMemoUndo() throws Exception
+	{
+		int num_addrs = MemoModel.getReference().getMemos().size();
+		assertTrue( "Address DB should be empty to start", num_addrs == 0);
+		
+		Memo memo = new Memo();
+		memo.setMemoName("memo name");
+		memo.setMemoText("memo text");
+		
+		MemoModel.getReference().saveMemo(memo);
+		
+		Collection<Memo> coll = MemoModel.getReference().getMemos();
+		assertTrue( "Memo DB should contain 1 memo", coll.size() == 1);
+		
+		// update the memo
+		memo = coll.iterator().next();
+		memo.setMemoText("Updated text");
+		MemoModel.getReference().saveMemo(memo);
+		
+		// verify that the memo is updated
+		coll = MemoModel.getReference().getMemos();
+		assertTrue( "Memo DB should contain 1 memo", coll.size() == 1);
+		memo = coll.iterator().next();
+		assertTrue("Memo was not updated", "Updated text".equals(memo.getMemoText()));
+		
+		// delete the memo
+		MemoModel.getReference().delete("memo name", false);
+		coll = MemoModel.getReference().getMemos();
+		assertTrue( "Memo DB should contain 0 appts", coll.size() == 0);
+		
+		// let the undos begin
+		
+		// undo the delete
+		UndoLog.getReference().executeUndo();
+		
+		// verify that the memo is the updated one
+		coll = MemoModel.getReference().getMemos();
+		assertTrue( "Memo DB should contain 1 memo", coll.size() == 1);
+		memo = coll.iterator().next();
+		assertTrue("Memo was not updated", "Updated text".equals(memo.getMemoText()));
+		
+		// undo the update
+		UndoLog.getReference().executeUndo();
+		
+		// verify that the memo is the original one
+		coll = MemoModel.getReference().getMemos();
+		assertTrue( "Memo DB should contain 1 memo", coll.size() == 1);
+		memo = coll.iterator().next();
+		
+		assertTrue("Memo was not undone: " + memo.getMemoText(), "memo text".equals(memo.getMemoText()));
+		
+		//undo the add
+		UndoLog.getReference().executeUndo();
+		
+		coll = MemoModel.getReference().getMemos();
+		assertTrue( "Memo DB should contain 0 appts after add undone", coll.size() == 0);
+	}
+	
 	@AfterClass
 	public static void tearDown()
 	{
 		AppointmentModel.getReference().remove();
 		AddressModel.getReference().remove();
+		MemoModel.getReference().remove();
 		LinkModel.getReference().remove();
 	}
 
