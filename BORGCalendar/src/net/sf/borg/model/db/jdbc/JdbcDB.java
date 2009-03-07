@@ -127,6 +127,29 @@ abstract public class JdbcDB implements /* BeanDB, */Transactional {
 						throw se;
 					}
 				}
+				// if running with a memory only db (for testing) 
+				// always need to run the db creation scripts
+				if( url.startsWith("jdbc:hsqldb:mem"))
+				{
+					// need to create the db
+					try {
+						System.out.println("Creating Database");
+						InputStream is = getClass().getResourceAsStream("/resource/borg_hsqldb.sql");
+						StringBuffer sb = new StringBuffer();
+						InputStreamReader r = new InputStreamReader(is);
+						while (true) {
+							int ch = r.read();
+							if (ch == -1)
+								break;
+							sb.append((char) ch);
+						}
+						props.setProperty("ifexists", "false");
+						globalConnection_ = DriverManager.getConnection(url, props);
+						execSQL(sb.toString());
+					} catch (Exception e2) {
+						throw e2;
+					}
+				}
 			}
 
 		}
