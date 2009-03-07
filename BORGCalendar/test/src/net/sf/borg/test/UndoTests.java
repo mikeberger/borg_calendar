@@ -6,21 +6,26 @@ import static org.junit.Assert.assertTrue;
 import java.util.Collection;
 import java.util.Date;
 
+import net.sf.borg.common.Errmsg;
+import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.LinkModel;
+import net.sf.borg.model.beans.Address;
 import net.sf.borg.model.beans.Appointment;
 import net.sf.borg.model.undo.UndoLog;
 
-import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class UndoTests {
 
-	@Before
-	public void setUp() throws Exception {
-		// open the borg appt db - in memory
+	@BeforeClass
+	public static void setUp() throws Exception {
+		// open the borg addr db - in memory
+		Errmsg.console(true);
 		AppointmentModel.create().open_db("jdbc:hsqldb:mem:whatever");
+		AddressModel.create().open_db("jdbc:hsqldb:mem:whatever");
 		LinkModel.create().open_db("jdbc:hsqldb:mem:whatever");
 	}
 	
@@ -82,10 +87,72 @@ public class UndoTests {
 		assertTrue( "Appointment DB should contain 0 appts after add undone", coll.size() == 0);
 	}
 	
-	@After
-	public void tearDown()
+	@Test
+	public void testAddressUndo() throws Exception
+	{
+		int num_addrs = AddressModel.getReference().getAddresses().size();
+		assertTrue( "Address DB should be empty to start", num_addrs == 0);
+		
+		Address addr = new Address();
+		addr.setLastName("Last name");
+		addr.setFirstName("First name");
+		
+		AddressModel.getReference().saveAddress(addr);
+		
+		Collection<Address> coll = AddressModel.getReference().getAddresses();
+		assertTrue( "Address DB should contain 1 addr", coll.size() == 1);
+		
+		// update the addr
+		addr = coll.iterator().next();
+		addr.setFirstName("Updated name");
+		AddressModel.getReference().saveAddress(addr);
+		
+		// verify that the addr is updated
+		coll = AddressModel.getReference().getAddresses();
+		assertTrue( "Address DB should contain 1 addr", coll.size() == 1);
+		addr = coll.iterator().next();
+		assertTrue("Address was not updated", "Updated name".equals(addr.getFirstName()));
+		
+		// delete the addr
+		AddressModel.getReference().delete(addr);
+		coll = AddressModel.getReference().getAddresses();
+		assertTrue( "Address DB should contain 0 appts", coll.size() == 0);
+		
+		// let the undos begin
+		
+		// undo the delete
+		UndoLog.getReference().executeUndo();
+		
+		// verify that the addr is the updated one
+		coll = AddressModel.getReference().getAddresses();
+		assertTrue( "Address DB should contain 1 addr", coll.size() == 1);
+		addr = coll.iterator().next();
+		assertTrue("Address was not updated", "Updated name".equals(addr.getFirstName()));
+		
+		// undo the update
+		UndoLog.getReference().executeUndo();
+		
+		// verify that the addr is the original one
+		coll = AddressModel.getReference().getAddresses();
+		assertTrue( "Address DB should contain 1 addr", coll.size() == 1);
+		addr = coll.iterator().next();
+		
+		// known problem - undo fails
+		assertTrue("Address was not undone", "First name".equals(addr.getFirstName()));
+		
+		//undo the add
+		UndoLog.getReference().executeUndo();
+		
+		coll = AddressModel.getReference().getAddresses();
+		assertTrue( "Address DB should contain 0 appts after add undone", coll.size() == 0);
+	}
+	
+	@AfterClass
+	public static void tearDown()
 	{
 		AppointmentModel.getReference().remove();
+		AddressModel.getReference().remove();
+		LinkModel.getReference().remove();
 	}
 
 }

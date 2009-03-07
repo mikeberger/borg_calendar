@@ -163,7 +163,7 @@ public class AddressModel extends Model {
 		int num = addr.getKey();
 		try {
 			Address orig_addr = getAddress(addr.getKey());
-			if (num == -1) {
+			if (num == -1 || orig_addr == null) {
 				int newkey = db_.nextkey();
 				addr.setKey(newkey);
 				addr.setNew(true);

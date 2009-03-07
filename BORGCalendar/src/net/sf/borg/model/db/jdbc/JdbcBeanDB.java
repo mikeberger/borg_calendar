@@ -56,12 +56,6 @@ abstract class JdbcBeanDB<T extends KeyedBean<T>> extends JdbcDB {
 
 	private HashMap<Integer,T> objectCache_; // the cache
 
-	// For multiuser operation, we need to reserve key values even before a
-	// record is created in the database. Any value here overrides the
-	// current
-	// maximum key in a particular table.
-	protected int curMaxKey_ = Integer.MIN_VALUE;
-
 	/** Creates a new instance of JdbcDB */
 	JdbcBeanDB(String url) throws Exception {
 		super(url);

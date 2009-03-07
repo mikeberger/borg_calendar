@@ -153,10 +153,7 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
 
     public int nextkey()
     {
-     // Does this need to be implemented?!
-        int maxKey = 0;
-        curMaxKey_ = Math.max(curMaxKey_, maxKey);
-        return ++curMaxKey_;
+       return 0;
     }
     
     public Appointment newObj()

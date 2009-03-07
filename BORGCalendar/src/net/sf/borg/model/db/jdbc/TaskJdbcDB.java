@@ -115,8 +115,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements BeanDB<Task>, TaskDB
         int maxKey = 0;
         if (r.next())
             maxKey = r.getInt(1);
-        curMaxKey_ = Math.max(curMaxKey_, maxKey);
-        return ++curMaxKey_;
+        return ++maxKey;
     }
 
     public Task newObj() {

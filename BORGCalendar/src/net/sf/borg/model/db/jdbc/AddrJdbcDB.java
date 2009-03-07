@@ -120,8 +120,7 @@ public class AddrJdbcDB extends JdbcBeanDB<Address> implements BeanDB<Address>
         int maxKey = 0;
         if( r.next() )
             maxKey = r.getInt(1);
-        curMaxKey_ = Math.max(curMaxKey_, maxKey);
-        return ++curMaxKey_;
+        return ++maxKey;
     }
     
     public Address newObj()

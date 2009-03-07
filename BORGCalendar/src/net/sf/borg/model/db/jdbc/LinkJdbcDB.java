@@ -90,8 +90,7 @@ public class LinkJdbcDB extends JdbcBeanDB<Link> implements BeanDB<Link>, LinkDB
 		int maxKey = 0;
 		if (r.next())
 			maxKey = r.getInt(1);
-		curMaxKey_ = Math.max(curMaxKey_, maxKey);
-		return ++curMaxKey_;
+		return ++maxKey;
 	}
 
 	public Link newObj() {
