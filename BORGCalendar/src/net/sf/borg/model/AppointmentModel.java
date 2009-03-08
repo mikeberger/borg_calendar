@@ -137,6 +137,8 @@ public class AppointmentModel extends Model implements Model.Listener,
 		saveAppt(ap, true); // sets new key
 		LinkModel.getReference().moveLinks(orig, ap);
 		delAppt(orig.getKey()); // removes links
+		
+		UndoLog.getReference().addItem(AppointmentUndoItem.recordMove(orig));
 	}
 
 	public void delAppt(int key) {

@@ -91,4 +91,9 @@ public class UndoLog {
 	Stack<UndoItem> getItems(){
 		return undoStack;
 	}
+	
+	UndoItem pop()
+	{
+		return undoStack.pop();
+	}
 }

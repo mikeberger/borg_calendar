@@ -15,7 +15,7 @@ public abstract class UndoItem<T extends KeyedBean<T>> {
 	
 	// actions that can be applied to an item that need to be undone
 	protected enum actionType {
-		ADD, DELETE, UPDATE
+		ADD, DELETE, UPDATE, MOVE
 	}
 	
 	/**
