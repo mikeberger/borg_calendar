@@ -5,15 +5,19 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.LinkModel;
 import net.sf.borg.model.MemoModel;
+import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.beans.Address;
 import net.sf.borg.model.beans.Appointment;
 import net.sf.borg.model.beans.Memo;
+import net.sf.borg.model.beans.Subtask;
+import net.sf.borg.model.beans.Task;
 import net.sf.borg.model.undo.UndoLog;
 
 import org.junit.AfterClass;
@@ -24,11 +28,12 @@ public class UndoTests {
 
 	@BeforeClass
 	public static void setUp() throws Exception {
-		// open the borg addr db - in memory
+		// open the borg dbs - in memory
 		Errmsg.console(true);
 		AppointmentModel.create().open_db("jdbc:hsqldb:mem:whatever");
 		AddressModel.create().open_db("jdbc:hsqldb:mem:whatever");
 		MemoModel.create().open_db("jdbc:hsqldb:mem:whatever");
+		TaskModel.create().open_db("jdbc:hsqldb:mem:whatever");
 		LinkModel.create().open_db("jdbc:hsqldb:mem:whatever");
 	}
 	
@@ -42,26 +47,36 @@ public class UndoTests {
 		appt.setText("my appointment");
 		appt.setDate(new Date());
 		
+		Appointment appt2 = new Appointment();
+		appt2.setText("my appointment 2");
+		appt2.setDate(new Date());
+		
 		AppointmentModel.getReference().saveAppt(appt, true);
+		AppointmentModel.getReference().saveAppt(appt2, true);
 		
 		Collection<Appointment> coll = AppointmentModel.getReference().getAllAppts();
-		assertTrue( "Appointment DB should contain 1 appt", coll.size() == 1);
+		assertTrue( "Appointment DB should contain 2 appts", coll.size() == 2);
 		
 		// update the appt
-		appt = coll.iterator().next();
+		Iterator<Appointment> iter = coll.iterator();
+		appt = iter.next();
+		int id = appt.getKey(); // save the id
+		
+		System.out.println("Appt key = " + id);
+		
 		appt.setText("my updated appt");
 		AppointmentModel.getReference().saveAppt(appt, false);
 		
 		// verify that the appt is updated
 		coll = AppointmentModel.getReference().getAllAppts();
-		assertTrue( "Appointment DB should contain 1 appt", coll.size() == 1);
-		appt = coll.iterator().next();
+		assertTrue( "Appointment DB should contain 2 appts", coll.size() == 2);
+		appt = AppointmentModel.getReference().getAppt(id);
 		assertTrue("Appointment was not updated", "my updated appt".equals(appt.getText()));
 		
 		// delete the appt
 		AppointmentModel.getReference().delAppt(appt);
 		coll = AppointmentModel.getReference().getAllAppts();
-		assertTrue( "Appointment DB should contain 0 appts", coll.size() == 0);
+		assertTrue( "Appointment DB should contain 1 appts", coll.size() == 1);
 		
 		// let the undos begin
 		
@@ -70,8 +85,8 @@ public class UndoTests {
 		
 		// verify that the appt is the updated one
 		coll = AppointmentModel.getReference().getAllAppts();
-		assertTrue( "Appointment DB should contain 1 appt", coll.size() == 1);
-		appt = coll.iterator().next();
+		assertTrue( "Appointment DB should contain 2 appts", coll.size() == 2);
+		appt = AppointmentModel.getReference().getAppt(id);
 		assertTrue("Appointment was not updated", "my updated appt".equals(appt.getText()));
 		
 		// undo the update
@@ -79,15 +94,15 @@ public class UndoTests {
 		
 		// verify that the appt is the original one
 		coll = AppointmentModel.getReference().getAllAppts();
-		assertTrue( "Appointment DB should contain 1 appt", coll.size() == 1);
-		appt = coll.iterator().next();
-		assertTrue("Appointment was not undone", "my appointment".equals(appt.getText()));
+		assertTrue( "Appointment DB should contain 2 appt", coll.size() == 2);
+		appt = AppointmentModel.getReference().getAppt(id);
+		assertTrue("Appointment was not undone: " + appt.getText(), "my appointment".equals(appt.getText()));
 		
 		//undo the add
 		UndoLog.getReference().executeUndo();
 		
 		coll = AppointmentModel.getReference().getAllAppts();
-		assertTrue( "Appointment DB should contain 0 appts after add undone", coll.size() == 0);
+		assertTrue( "Appointment DB should contain 1 appts after add undone", coll.size() == 1);
 	}
 	
 	@Test
@@ -208,12 +223,97 @@ public class UndoTests {
 		assertTrue( "Memo DB should contain 0 appts after add undone", coll.size() == 0);
 	}
 	
+	@Test
+	public void testTaskUndo() throws Exception
+	{
+		int num = TaskModel.getReference().getTasks().size();
+		assertTrue( "Address DB should be empty to start", num == 0);
+		
+		Task task = new Task();
+		task.setDescription("task 1");
+		task.setStartDate(new Date());
+		task.setState("OPEN");
+		task.setType("CODE");
+		TaskModel.getReference().savetask(task);
+		
+		Collection<Task> coll = TaskModel.getReference().getTasks();
+		assertTrue( "Task DB should contain 1 task", coll.size() == 1);
+		
+		Integer taskid = coll.iterator().next().getTaskNumber();
+		Subtask st1 = new Subtask();
+		st1.setDescription("st1");
+		st1.setStartDate(new Date());
+		st1.setTask(taskid);
+		TaskModel.getReference().saveSubTask(st1);
+		Subtask st2 = new Subtask();
+		st2.setDescription("st2");
+		st2.setStartDate(new Date());
+		st2.setTask(taskid);
+		TaskModel.getReference().saveSubTask(st2);
+		num = TaskModel.getReference().getSubTasks(taskid).size();
+		assertTrue("Task does not have 2 subtasks: " + num, num == 2);
+		
+		// update the task
+		task = coll.iterator().next();
+		task.setDescription("Updated text");
+		TaskModel.getReference().savetask(task);
+		
+		// verify that the task is updated
+		coll = TaskModel.getReference().getTasks();
+		assertTrue( "Task DB should contain 1 task", coll.size() == 1);
+		task = coll.iterator().next();
+		assertTrue("Task was not updated", "Updated text".equals(task.getDescription()));
+		
+		// delete a subtask
+		Collection<Subtask> scoll = TaskModel.getReference().getSubTasks(taskid);
+		TaskModel.getReference().deleteSubTask(scoll.iterator().next().getId());
+		num = TaskModel.getReference().getSubTasks(taskid).size();
+		assertTrue("Task does not have 1 subtask: " + num, num == 1);
+		
+		
+		// delete the task
+		TaskModel.getReference().delete(taskid);
+		coll = TaskModel.getReference().getTasks();
+		assertTrue( "Task DB should contain 0 tasks", coll.size() == 0);
+		
+		// let the undos begin
+		
+		// undo the delete
+		UndoLog.getReference().executeUndo();
+		
+		// verify that the task is the updated one
+		coll = TaskModel.getReference().getTasks();
+		assertTrue( "Task DB should contain 1 task", coll.size() == 1);
+		task = coll.iterator().next();
+		assertTrue("Task was not updated", "Updated text".equals(task.getDescription()));
+		num = TaskModel.getReference().getSubTasks(taskid).size();
+		assertTrue("Task does not have 1 subtask: " + num, num == 1);
+		
+		// undo the update - should add back 1 subtask as well
+		UndoLog.getReference().executeUndo();
+		
+		// verify that the task is the original one
+		coll = TaskModel.getReference().getTasks();
+		assertTrue( "Task DB should contain 1 task", coll.size() == 1);
+		task = coll.iterator().next();
+		assertTrue("Task was not undone: " + task.getDescription(), "task 1".equals(task.getDescription()));
+		num = TaskModel.getReference().getSubTasks(taskid).size();
+		assertTrue("Task does not have 2 subtasks: " + num, num == 2);
+		
+		//undo the add
+		UndoLog.getReference().executeUndo();
+		
+		coll = TaskModel.getReference().getTasks();
+		assertTrue( "Task DB should contain 0 tasks after add undone", coll.size() == 0);
+	}
+	
 	@AfterClass
 	public static void tearDown()
 	{
 		AppointmentModel.getReference().remove();
 		AddressModel.getReference().remove();
 		MemoModel.getReference().remove();
+		TaskModel.getReference().remove();
 		LinkModel.getReference().remove();
 	}
 

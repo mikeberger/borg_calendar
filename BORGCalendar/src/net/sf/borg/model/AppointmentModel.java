@@ -167,7 +167,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 				UndoLog.getReference().addItem(
 						AppointmentUndoItem.recordDelete(orig_appt));
 			}
-		
+
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
 		}
@@ -246,17 +246,21 @@ public class AppointmentModel extends Model implements Model.Listener,
 				gcal.setTime(r.getDate());
 				int key = AppointmentModel.dkey(gcal);
 
-				try {
-					while (true) {
-						Appointment ap = getAppt(key);
-						if (ap == null)
-							break;
-						key++;
-					}
+				// if undo is adding back record - force the key to
+				// be what is in the record
+				if (!undo) {
+					try {
+						while (true) {
+							Appointment ap = getAppt(key);
+							if (ap == null)
+								break;
+							key++;
+						}
 
-				} catch (Exception ee) {
-					Errmsg.errmsg(ee);
-					return;
+					} catch (Exception ee) {
+						Errmsg.errmsg(ee);
+						return;
+					}
 				}
 
 				// key is now a free key
@@ -794,7 +798,6 @@ public class AppointmentModel extends Model implements Model.Listener,
 		Collection<Appointment> appts = db_.readAll();
 		return appts;
 	}
-
 
 	/*
 	 * (non-Javadoc)

@@ -68,7 +68,10 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements BeanDB<Task>, TaskDB
             stmt.setDate(3, null);
 
         stmt.setString(4, task.getPersonAssigned());
-        stmt.setInt(5, task.getPriority().intValue());
+        if( task.getPriority() != null )
+        	stmt.setInt(5, task.getPriority().intValue());
+        else
+        	stmt.setInt(5, 1);
         stmt.setString(6, task.getState());
         stmt.setString(7, task.getType());
         stmt.setString(8, task.getDescription());

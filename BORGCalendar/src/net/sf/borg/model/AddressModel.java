@@ -164,7 +164,12 @@ public class AddressModel extends Model {
 		try {
 			Address orig_addr = getAddress(addr.getKey());
 			if (num == -1 || orig_addr == null) {
+				
 				int newkey = db_.nextkey();
+				if (undo && num != -1 && orig_addr == null)
+				{
+					newkey = num;
+				}
 				addr.setKey(newkey);
 				addr.setNew(true);
 				db_.addObj(addr);

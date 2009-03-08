@@ -356,7 +356,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 
 		if (ret != JOptionPane.OK_OPTION)
 			return;
-		
+
 		try {
 			if (db_ instanceof TaskDB == false)
 				throw new Warning(Resource
@@ -402,15 +402,18 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 
 		// add task to DB
 		Integer num = task.getTaskNumber();
-		Task indb = getTask(num);
+		Task indb = null;
+		if (num != null)
+			indb = getTask(num);
 
 		// if the task number is -1, it is a new task so
 		// get a new task number.
-		if (num.intValue() == -1 || indb == null) {
-			int newkey = db_.nextkey();
-			task.setKey(newkey);
-			task.setTaskNumber(new Integer(newkey));
-
+		if (num == null || num.intValue() == -1 || indb == null) {
+			if (!undo || num == null) {
+				int newkey = db_.nextkey();
+				task.setKey(newkey);
+				task.setTaskNumber(new Integer(newkey));
+			}
 			db_.addObj(task);
 			if (!undo) {
 				Task t = getTask(task.getTaskNumber());
@@ -834,7 +837,8 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 		TaskDB sdb = (TaskDB) db_;
 		if (s.getId() == null || s.getId().intValue() <= 0
 				|| null == sdb.getSubTask(s.getId())) {
-			s.setId(new Integer(sdb.nextSubTaskKey()));
+			if (!undo || s.getId() == null)
+				s.setId(new Integer(sdb.nextSubTaskKey()));
 			sdb.addSubTask(s);
 			if (!undo) {
 				Subtask st = sdb.getSubTask(s.getId());
@@ -1024,7 +1028,8 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 
 		TaskDB sdb = (TaskDB) db_;
 		if (p.getId() == null || p.getId().intValue() <= 0) {
-			p.setId(new Integer(sdb.nextProjectKey()));
+			if (!undo || p.getId() == null)
+				p.setId(new Integer(sdb.nextProjectKey()));
 			sdb.addProject(p);
 			if (!undo) {
 				Project t = getProject(p.getId());
