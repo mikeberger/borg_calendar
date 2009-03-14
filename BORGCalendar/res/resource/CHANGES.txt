@@ -1,8 +1,8 @@
 BORG 1.7.1
 ----------
+Feature [2648806] add an undo feature
 Feature [2234537] add quick-todo option to calendar context menus
 Feature [2221223] backup to ZIP file
-Feature [2216922] Rewrite UIs using GridBagConstraints Factory
 Feature [2216864] add task list to project view
 Feature [2626455] add option to change SMTP port
 Feature [2628166] highlight tab icons on mouse-over
