@@ -88,6 +88,7 @@ public class PrefName {
 		static public PrefName ISOWKNUMBER = new PrefName("isowknumber", "true");
 		static public PrefName DOCKPANELS = new PrefName("dock_panels", "true");
 		static public PrefName HIDESTRIKETHROUGH = new PrefName("hide_strike", "false");
+		static public PrefName SHOW_UNDO_STACK = new PrefName("show_undo_stack", "false");
 		
 		// reminders/popups
 		static public PrefName REMINDERS = new PrefName( "reminders", "true");

@@ -955,9 +955,9 @@ class MainMenu {
 		JMenu m = new JMenu();
 		m.setText(Resource.getPlainResourceString("undo"));
 		m.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-		"/resource/Refresh16.gif")));
+				"/resource/Refresh16.gif")));
 		final JMenu menu = m;
-		m.addMenuListener(new MenuListener(){
+		m.addMenuListener(new MenuListener() {
 
 			@Override
 			public void menuCanceled(MenuEvent arg0) {
@@ -971,52 +971,79 @@ class MainMenu {
 			@Override
 			public void menuSelected(MenuEvent e) {
 				menu.removeAll();
-				
-				String top = UndoLog.getReference().getTopItem();
-				if( top != null )
-				{
-					JMenuItem mi = new JMenuItem(Resource.getPlainResourceString("undo") + ": " + top);
-					mi.addActionListener(new ActionListener(){
+
+				final String top = UndoLog.getReference().getTopItem();
+				if (top != null) {
+					JMenuItem mi = new JMenuItem(Resource
+							.getPlainResourceString("undo")
+							+ ": " + top);
+					mi.addActionListener(new ActionListener() {
 
 						@Override
 						public void actionPerformed(ActionEvent arg0) {
+							int ret = JOptionPane
+									.showConfirmDialog(
+											null,
+											Resource
+											.getPlainResourceString("undo")
+											+ ": " + top
+													+ "\n\n"
+													+ Resource
+															.getResourceString("please_confirm"),
+											"", JOptionPane.OK_CANCEL_OPTION);
+							if (ret != JOptionPane.OK_OPTION)
+								return;
 							UndoLog.getReference().executeUndo();
 						}
-						
+
 					});
 					menu.add(mi);
 					JMenuItem cmi = new JMenuItem();
 					cmi.setText(Resource.getPlainResourceString("clear_undos"));
-					cmi.addActionListener(new ActionListener(){
+					cmi.addActionListener(new ActionListener() {
 
 						@Override
 						public void actionPerformed(ActionEvent arg0) {
+							int ret = JOptionPane
+									.showConfirmDialog(
+											null,
+											Resource
+													.getPlainResourceString("clear_undos")
+													+ "\n\n"
+													+ Resource
+															.getResourceString("please_confirm"),
+											"", JOptionPane.OK_CANCEL_OPTION);
+							if (ret != JOptionPane.OK_OPTION)
+								return;
 							UndoLog.getReference().clear();
 						}
-						
+
 					});
 					menu.add(cmi);
-					
-					JMenu all_mi = new JMenu(Resource.getPlainResourceString("all_undos"));
-					for( String item : UndoLog.getReference().getItemStrings())
-					{
-						JMenuItem item_mi = new JMenuItem(Resource.getPlainResourceString("undo") + ": " + item);
-						all_mi.add(item_mi);
+
+					boolean show_stack = Prefs
+							.getBoolPref(PrefName.SHOW_UNDO_STACK);
+					if (show_stack == true) {
+						JMenu all_mi = new JMenu(Resource
+								.getPlainResourceString("all_undos"));
+						for (String item : UndoLog.getReference()
+								.getItemStrings()) {
+							JMenuItem item_mi = new JMenuItem(Resource
+									.getPlainResourceString("undo")
+									+ ": " + item);
+							all_mi.add(item_mi);
+						}
+
+						menu.add(all_mi);
 					}
-					
-					menu.add(all_mi);
-					
+				} else {
+					menu.add(new JMenuItem(Resource
+							.getPlainResourceString("no_undos")));
 				}
-				else
-				{
-					menu.add(new JMenuItem(Resource.getPlainResourceString("no_undos")));
-				}
-				
-				
+
 			}
-			
+
 		});
-		
 
 		return m;
 	}
@@ -1035,8 +1062,9 @@ class MainMenu {
 		String type = xt.name();
 
 		int ret = JOptionPane.showConfirmDialog(null, Resource
-				.getResourceString("Importing_") + " "
-				+ type + ", OK?", Resource.getResourceString("Import_WARNING"),
+				.getResourceString("Importing_")
+				+ " " + type + ", OK?", Resource
+				.getResourceString("Import_WARNING"),
 				JOptionPane.OK_CANCEL_OPTION);
 
 		if (ret != JOptionPane.OK_OPTION)
