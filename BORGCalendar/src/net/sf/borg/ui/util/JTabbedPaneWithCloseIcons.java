@@ -154,6 +154,11 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 
 	}
 
+	public void closeSelectedTab() {
+		int i = this.getSelectedIndex();
+		this.removeTabAt(i);
+	}
+	
 	public void mouseClicked(MouseEvent e) {
 		int tabNumber = getUI().tabForCoordinate(this, e.getX(), e.getY());
 		if (tabNumber < 0)

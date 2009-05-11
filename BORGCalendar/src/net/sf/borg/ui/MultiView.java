@@ -329,6 +329,10 @@ public class MultiView extends View {
 		tabs_.closeClosableTabs();
 	}
 
+	public void closeSelectedTab() {
+		tabs_.closeSelectedTab();
+	}
+
 	private JToolBar getToolBar() {
 		JToolBar bar = new JToolBar();
 		bar.setFloatable(false);

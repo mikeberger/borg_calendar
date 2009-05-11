@@ -55,6 +55,7 @@ import net.sf.borg.model.ReminderTimes;
 import net.sf.borg.model.Repeat;
 import net.sf.borg.model.beans.Appointment;
 import net.sf.borg.model.beans.AppointmentXMLAdapter;
+import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.link.LinkPanel;
 import net.sf.borg.ui.popup.PopupOptionsView;
@@ -64,7 +65,7 @@ import com.toedter.calendar.JDateChooser;
 public class AppointmentPanel extends JPanel {
 
 	static private class ColorBoxRenderer extends JLabel implements
-	ListCellRenderer {
+			ListCellRenderer {
 
 		public ColorBoxRenderer() {
 			setOpaque(true);
@@ -167,7 +168,7 @@ public class AppointmentPanel extends JPanel {
 	private javax.swing.JComboBox colorbox;
 
 	private String colors[] = { "red", "blue", "green", "black", "white",
-	"strike" };
+			"strike" };
 
 	private char[] custRemTimes;
 
@@ -255,6 +256,8 @@ public class AppointmentPanel extends JPanel {
 
 	private javax.swing.JButton savebutton;
 
+	private javax.swing.JButton saveclosebutton;
+
 	private javax.swing.JButton savedefaultsbutton;
 
 	private javax.swing.JCheckBox startap;
@@ -293,7 +296,8 @@ public class AppointmentPanel extends JPanel {
 		}
 
 		try {
-			Collection<String> cats = CategoryModel.getReference().getCategories();
+			Collection<String> cats = CategoryModel.getReference()
+					.getCategories();
 			Iterator<String> it = cats.iterator();
 			while (it.hasNext()) {
 				catbox.addItem(it.next());
@@ -320,48 +324,30 @@ public class AppointmentPanel extends JPanel {
 		apptTitleField.requestFocus();
 	}
 
-	private void add_appt() {
+	private void add_appt() throws Warning, Exception {
 		// user has requested an add of a new appt
 
 		// get a new appt from the model and set it from the user data
 		AppointmentModel calmod_ = AppointmentModel.getReference();
 		Appointment r = calmod_.newAppt();
-		int ret = 0;
-		try {
-			ret = setAppt(r, true);
-		} catch (Warning w) {
-			Errmsg.notice(w.getMessage());
-			return;
-		} catch (Exception e) {
-			Errmsg.errmsg(e);
-			return;
-		}
+		int ret = setAppt(r, true);
 
 		if (ret < 0)
 			return;
 
 		calmod_.saveAppt(r, true);
 
-		showapp(-1,null);
+		showapp(-1, null);
 	}
 
-	private void chg_appt() {
+	private void chg_appt() throws Warning, Exception {
 		// user had selected appt change
 
 		// get a new empty appt from the model and set it using the data the
 		// user has entered
 		AppointmentModel calmod_ = AppointmentModel.getReference();
 		Appointment r = calmod_.newAppt();
-		int newkey = 0;
-		try {
-			newkey = setAppt(r, true);
-		} catch (Warning w) {
-			Errmsg.notice(w.getMessage());
-			return;
-		} catch (Exception e) {
-			Errmsg.errmsg(e);
-			return;
-		}
+		int newkey = setAppt(r, true);
 
 		if (newkey < 0)
 			return;
@@ -382,12 +368,13 @@ public class AppointmentPanel extends JPanel {
 				newCal.set(Calendar.DATE, cal.get(Calendar.DATE));
 				r.setDate(newCal.getTime());
 
-
 				// determine if we can keep certain fields related to repeating
 				// and todos
 				if (r.getTimes().intValue() == ap.getTimes().intValue()
-						&& r.getFrequency() != null && ap.getFrequency() != null 
-						&& Repeat.getFreq(r.getFrequency()).equals(Repeat.getFreq(ap.getFrequency()))
+						&& r.getFrequency() != null
+						&& ap.getFrequency() != null
+						&& Repeat.getFreq(r.getFrequency()).equals(
+								Repeat.getFreq(ap.getFrequency()))
 						&& r.getTodo() == ap.getTodo()
 						&& r.getRepeatFlag() == ap.getRepeatFlag()) {
 					// we can keep skip list and next todo
@@ -398,12 +385,12 @@ public class AppointmentPanel extends JPanel {
 				// should carry forward sync flags
 				r.setNew(ap.getNew());
 				r.setModified(ap.getModified());
-				//AppointmentXMLAdapter aa = new AppointmentXMLAdapter();
+				// AppointmentXMLAdapter aa = new AppointmentXMLAdapter();
 
-				//System.out.println(aa.toXml(r));
-				//System.out.println(aa.toXml(ap));
+				// System.out.println(aa.toXml(r));
+				// System.out.println(aa.toXml(ap));
 			} catch (Exception e) {
-				//Errmsg.errmsg(e);
+				// Errmsg.errmsg(e);
 			}
 			calmod_.saveAppt(r, false);
 		} else {
@@ -413,15 +400,14 @@ public class AppointmentPanel extends JPanel {
 			} catch (Exception e) {
 				Errmsg.errmsg(e);
 			}
-			
+
 		}
 
-		showapp(-1,null);
+		showapp(-1, null);
 	}
 
 	private void chgdateActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_chgdateActionPerformed
 		newdatefield.setEnabled(chgdate.isSelected());
-
 
 	}// GEN-LAST:event_chgdateActionPerformed
 
@@ -438,9 +424,9 @@ public class AppointmentPanel extends JPanel {
 	}// GEN-LAST:event_foreverboxActionPerformed
 
 	/**
-	 * This method initializes apptTitleField	
-	 * 	
-	 * @return javax.swing.JTextField	
+	 * This method initializes apptTitleField
+	 * 
+	 * @return javax.swing.JTextField
 	 */
 	private JTextField getApptTitleField() {
 		if (apptTitleField == null) {
@@ -616,7 +602,7 @@ public class AppointmentPanel extends JPanel {
 			gridBagConstraints28.fill = java.awt.GridBagConstraints.HORIZONTAL;
 			gridBagConstraints19.gridx = 2;
 			gridBagConstraints19.gridy = 2;
-			//gridBagConstraints19.insets = new java.awt.Insets(4, 4, 4, 4);
+			// gridBagConstraints19.insets = new java.awt.Insets(4, 4, 4, 4);
 			gridBagConstraints19.fill = java.awt.GridBagConstraints.BOTH;
 			jPanel.add(lblFrequency, gridBagConstraints31);
 			jPanel.add(freq, gridBagConstraints41);
@@ -671,9 +657,9 @@ public class AppointmentPanel extends JPanel {
 	 * This method is called from within the constructor to init
 	 * gridBagConstraints28.gridx = 0; gridBagConstraints28.gridy = 4;
 	 * gridBagConstraints28.fill = java.awt.GridBagConstraints.BOTH;
-	 * this.add(getJPanel(), gridBagConstraints28); ialize the form.
-	 * WARNING: Do NOT modify this code. The content of this method is
-	 * always regenerated by the Form Editor.
+	 * this.add(getJPanel(), gridBagConstraints28); ialize the form. WARNING: Do
+	 * NOT modify this code. The content of this method is always regenerated by
+	 * the Form Editor.
 	 */
 	private void initComponents()// GEN-BEGIN:initComponents
 	{
@@ -726,6 +712,7 @@ public class AppointmentPanel extends JPanel {
 		GridBagConstraints gridBagConstraints81 = new GridBagConstraints();
 		GridBagConstraints gridBagConstraints91 = new GridBagConstraints();
 		savebutton = new javax.swing.JButton();
+		saveclosebutton = new javax.swing.JButton();
 		savedefaultsbutton = new javax.swing.JButton();
 		ndays = new JSpinner();
 		ndays.setModel(new SpinnerNumberModel(2, 2, 3000, 1));
@@ -996,7 +983,7 @@ public class AppointmentPanel extends JPanel {
 		gridBagConstraints38.gridwidth = 2;
 		gridBagConstraints38.insets = new java.awt.Insets(5, 5, 5, 5);
 		savebutton.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-		"/resource/Save16.gif")));
+				"/resource/Save16.gif")));
 		ResourceHelper.setText(savebutton, "Save");
 		savebutton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1006,16 +993,27 @@ public class AppointmentPanel extends JPanel {
 
 		jPanel4.add(savebutton);
 
+		saveclosebutton.setIcon(new javax.swing.ImageIcon(getClass()
+				.getResource("/resource/Save16.gif")));
+		ResourceHelper.setText(saveclosebutton, "Save_&_Close");
+		saveclosebutton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				saveclosebuttonActionPerformed(evt);
+			}
+		});
+
+		jPanel4.add(saveclosebutton);
+
 		savedefaultsbutton.setIcon(new javax.swing.ImageIcon(getClass()
 				.getResource("/resource/SaveAs16.gif")));
 		ResourceHelper.setText(savedefaultsbutton, "save_Def");
 		savedefaultsbutton.setToolTipText(Resource.getResourceString("sd_tip"));
 		savedefaultsbutton
-		.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				saveDefaults(evt);
-			}
-		});
+				.addActionListener(new java.awt.event.ActionListener() {
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						saveDefaults(evt);
+					}
+				});
 
 		jPanel4.add(savedefaultsbutton);
 
@@ -1093,8 +1091,7 @@ public class AppointmentPanel extends JPanel {
 		attPanel = new LinkPanel();
 		attPanel.setBorder(new javax.swing.border.TitledBorder(Resource
 				.getResourceString("links")));
-		this.add(attPanel,gridBagConstraints87);
-
+		this.add(attPanel, gridBagConstraints87);
 
 	}// GEN-END:initComponents
 
@@ -1132,13 +1129,39 @@ public class AppointmentPanel extends JPanel {
 	}
 
 	private void savebuttonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_savebuttonActionPerformed
-		if (key_ == -1) {
-			add_appt();
-		} else {
-			chg_appt();
+		try {
+			if (key_ == -1) {
+				add_appt();
+			} else {
+				chg_appt();
+			}
+		} catch (Warning w) {
+			Errmsg.notice(w.getMessage());
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
 		}
 
 	}// GEN-LAST:event_savebuttonActionPerformed
+
+	private void saveclosebuttonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_saveclosebuttonActionPerformed
+		try {
+			if (key_ == -1) {
+				add_appt();
+			} else {
+				chg_appt();
+			}
+		} catch (Warning w) {
+			Errmsg.notice(w.getMessage());
+			return;
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
+			return;
+		}
+
+
+		MultiView.getMainView().closeSelectedTab();
+
+	}// GEN-LAST:event_saveclosebuttonActionPerformed
 
 	private void saveDefaults(java.awt.event.ActionEvent evt)// GEN-FIRST:event_saveDefaults
 	{// GEN-HEADEREND:event_saveDefaults
@@ -1161,7 +1184,7 @@ public class AppointmentPanel extends JPanel {
 	// fill in an appt from the user data
 	// returns changed key if any
 	private int setAppt(Appointment r, boolean validate) throws Warning,
-	Exception {
+			Exception {
 
 		// get the hour and minute
 		int hr = starthour.getSelectedIndex();
@@ -1173,8 +1196,8 @@ public class AppointmentPanel extends JPanel {
 			if (startap.isSelected())
 				hr += 12;
 		}
-		
-		if( notecb.isSelected())
+
+		if (notecb.isSelected())
 			r.setUntimed("Y");
 
 		Date nd = null;
@@ -1200,21 +1223,22 @@ public class AppointmentPanel extends JPanel {
 		r.setDate(g.getTime());
 
 		int du = (durhour.getSelectedIndex() * 60)
-		+ (durmin.getSelectedIndex() * 5);
+				+ (durmin.getSelectedIndex() * 5);
 		if (du != 0)
 			r.setDuration(new Integer(du));
 
 		// appointment text of some sort is required
 		if (apptTitleField.getText().equals("") && validate) {
 			apptTitleField.requestFocus();
-			apptTitleField.setBackground(new Color(255,255,204));
+			apptTitleField.setBackground(new Color(255, 255, 204));
 			throw new Warning(Resource
 					.getResourceString("Please_enter_some_appointment_text"));
 		}
 
 		// set text
 		String t = apptTitleField.getText();
-		if( appttextarea.getText() != null && !appttextarea.getText().equals(""))
+		if (appttextarea.getText() != null
+				&& !appttextarea.getText().equals(""))
 			t += "\n" + appttextarea.getText();
 		r.setText(t);
 
@@ -1449,7 +1473,6 @@ public class AppointmentPanel extends JPanel {
 			setCustRemTimes(null);
 			setPopupTimesString();
 
-
 		} else {
 
 			try {
@@ -1467,8 +1490,6 @@ public class AppointmentPanel extends JPanel {
 					attPanel.setOwner(r);
 				}
 
-				
-				
 				// set hour and minute
 				Date d = r.getDate();
 				GregorianCalendar g = new GregorianCalendar();
@@ -1476,7 +1497,7 @@ public class AppointmentPanel extends JPanel {
 				if (mt.equals("true")) {
 					int hour = g.get(Calendar.HOUR_OF_DAY);
 					if (hour != 0)
-					starthour.setSelectedIndex(hour);
+						starthour.setSelectedIndex(hour);
 				} else {
 					int hour = g.get(Calendar.HOUR);
 					if (hour == 0)
@@ -1494,9 +1515,9 @@ public class AppointmentPanel extends JPanel {
 					dur = duration.intValue();
 				durhour.setSelectedIndex(dur / 60);
 				durmin.setSelectedIndex((dur % 60) / 5);
-				
+
 				boolean note = AppointmentModel.isNote(r);
-				
+
 				// check if we just have a "note" (non-timed appt)
 				if (!note) {
 					notecb.setSelected(false);
@@ -1547,15 +1568,13 @@ public class AppointmentPanel extends JPanel {
 				String t = r.getText();
 				String subj = "";
 				String det = "";
-				if( t == null ) t = "";
+				if (t == null)
+					t = "";
 				int nli = t.indexOf('\n');
-				if (nli != -1)
-				{
-					subj = t.substring(0,nli);
-					det = t.substring(nli+1);
-				}
-				else
-				{
+				if (nli != -1) {
+					subj = t.substring(0, nli);
+					det = t.substring(nli + 1);
+				} else {
 					subj = t;
 				}
 				appttextarea.setText(det);
@@ -1595,7 +1614,8 @@ public class AppointmentPanel extends JPanel {
 				}
 
 				if (rpt != null && rpt.equals(Repeat.DAYLIST)) {
-					Collection<Integer> daylist = Repeat.getDaylist(r.getFrequency());
+					Collection<Integer> daylist = Repeat.getDaylist(r
+							.getFrequency());
 					if (daylist != null) {
 						if (daylist.contains(new Integer(Calendar.SUNDAY)))
 							dl1.setSelected(true);
@@ -1658,10 +1678,9 @@ public class AppointmentPanel extends JPanel {
 		}
 
 		timesEnable();
-		apptTitleField.setBackground(new Color(255,255,255));
+		apptTitleField.setBackground(new Color(255, 255, 255));
 		apptTitleField.requestFocus();
-		
-		
+
 	}
 
 	// set the visibility and enabling of components that depend on the
