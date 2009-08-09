@@ -62,26 +62,11 @@ import net.sf.borg.ui.task.ProjectTreePanel;
 import net.sf.borg.ui.task.TaskFilterPanel;
 import net.sf.borg.ui.util.JTabbedPaneWithCloseIcons;
 
-// weekView handles the printing of a single week
 public class MultiView extends View {
 
-	static private MultiView mainView = null;
-
-	private Calendar cal_ = new GregorianCalendar();
-
-	private JTabbedPaneWithCloseIcons tabs_ = null;
-
-	private DayPanel dayPanel = null;
-
-	private WeekPanel wkPanel = null;
-
-	private MonthPanel monthPanel = null;
-
-	private YearPanel yearPanel = null;
-
-	private MemoPanel memoPanel = null;
-
 	static public final int DAY = 1;
+
+	static private MultiView mainView = null;
 
 	static public final int MONTH = 2;
 
@@ -96,6 +81,28 @@ public class MultiView extends View {
 			mainView.setVisible(true);
 		return (mainView);
 	}
+
+	private Calendar cal_ = new GregorianCalendar();
+
+	private DayPanel dayPanel = null;
+
+	private MemoPanel memoPanel = null;
+
+	private MonthPanel monthPanel = null;
+
+	private ProjectPanel projectListPanel = null;
+
+	private ProjectTreePanel projectTreePanel = null;
+
+	private JTabbedPaneWithCloseIcons tabs_ = null;
+
+	private TaskFilterPanel taskListPanel = null;
+	
+	private JTabbedPane taskTabs = null;
+
+	private WeekPanel wkPanel = null;
+
+	private YearPanel yearPanel = null;
 
 	private MultiView() {
 		super();
@@ -158,117 +165,20 @@ public class MultiView extends View {
 		manageMySize(PrefName.DAYVIEWSIZE);
 	}
 
-	public int getMonth() {
-		return cal_.get(Calendar.MONTH);
+	public void addView(DockableView dp) {
+		String dock = Prefs.getPref(PrefName.DOCKPANELS);
+		if (dock.equals("true")) {
+			dock(dp);
+		} else
+			dp.openInFrame();
 	}
 
-	public int getYear() {
-		return cal_.get(Calendar.YEAR);
+	public void closeSelectedTab() {
+		tabs_.closeSelectedTab();
 	}
 
-	public void setView(int type) {
-		if (type == DAY) {
-
-			if (dayPanel == null)
-				dayPanel = new DayPanel(cal_.get(Calendar.MONTH), cal_
-						.get(Calendar.YEAR), cal_.get(Calendar.DATE));
-
-			if (!dayPanel.isDisplayable()) {
-				tabs_.addTab(Resource.getPlainResourceString("Day_View"),
-						dayPanel);
-			}
-			getTabs().setSelectedComponent(dayPanel);
-		} else if (type == WEEK) {
-			if (wkPanel == null)
-				wkPanel = new WeekPanel(cal_.get(Calendar.MONTH), cal_
-						.get(Calendar.YEAR), cal_.get(Calendar.DATE));
-
-			if (!wkPanel.isDisplayable()) {
-				tabs_.addTab(Resource.getPlainResourceString("Week_View"),
-						wkPanel);
-			}
-			getTabs().setSelectedComponent(wkPanel);
-		} else if (type == MONTH) {
-
-			
-				if (monthPanel == null)
-					monthPanel = new MonthPanel(cal_.get(Calendar.MONTH), cal_
-							.get(Calendar.YEAR));
-				if (!monthPanel.isDisplayable()) {
-					tabs_.addTab(Resource.getPlainResourceString("Month_View"),
-							monthPanel);
-				}
-				getTabs().setSelectedComponent(monthPanel);
-			
-		} else if (type == YEAR) {
-			if (yearPanel == null)
-				yearPanel = new YearPanel(cal_.get(Calendar.YEAR));
-
-			if (!yearPanel.isDisplayable()) {
-				tabs_.addTab(Resource.getPlainResourceString("Year_View"),
-						yearPanel);
-			}
-			getTabs().setSelectedComponent(yearPanel);
-		}
-	}
-
-	public void showMemos(String selectedMemo) {
-		if (MemoModel.getReference().hasMemos() && memoPanel == null)
-			memoPanel = new MemoPanel();
-
-		if (memoPanel != null && !memoPanel.isDisplayable()) {
-			tabs_.addTab(Resource.getPlainResourceString("Memos"), memoPanel);
-		}
-		if (memoPanel != null) {
-			getTabs().setSelectedComponent(memoPanel);
-			if (selectedMemo != null)
-				memoPanel.selectMemo(selectedMemo);
-		}
-	}
-
-	public void showTasks() {
-		if (taskPanel == null)
-			taskPanel = new TaskFilterPanel();
-
-		if (TaskModel.getReference().hasSubTasks() && projPanel == null) {
-			projPanel = new ProjectPanel();
-		}
-
-		if (TaskModel.getReference().hasSubTasks() && ptPanel == null) {
-			ptPanel = new ProjectTreePanel();
-		}
-
-		if (ptPanel != null && !ptPanel.isDisplayable())
-			tabs_.addTab(Resource.getPlainResourceString("project_tree"),
-					ptPanel);
-
-		if (projPanel != null && !projPanel.isDisplayable()) {
-			tabs_
-					.addTab(Resource.getPlainResourceString("projects"),
-							projPanel);
-		}
-
-		if (taskPanel != null && !taskPanel.isDisplayable()) {
-			tabs_.addTab(Resource.getPlainResourceString("tasks"), taskPanel);
-		}
-		if (ptPanel != null)
-			getTabs().setSelectedComponent(ptPanel);
-		else if (taskPanel != null)
-			getTabs().setSelectedComponent(taskPanel);
-
-	}
-
-	private TaskFilterPanel taskPanel = null;
-
-	private ProjectPanel projPanel = null;
-
-	private ProjectTreePanel ptPanel = null;
-
-	private JTabbedPane getTabs() {
-		if (tabs_ == null) {
-			tabs_ = new JTabbedPaneWithCloseIcons();
-		}
-		return tabs_;
+	public void closeTabs() {
+		tabs_.closeClosableTabs();
 	}
 
 	public void destroy() {
@@ -276,29 +186,10 @@ public class MultiView extends View {
 		mainView = null;
 	}
 
-	public void print() {
-		try {
-			Component c = getTabs().getSelectedComponent();
-			if (c instanceof MonthPanel) {
-				((MonthPanel) c).printMonths();
-			} else if (c instanceof Printable) {
-				PrintHelper.printPrintable((Printable) c);
-			} else if (c == taskPanel) {
-				taskPanel.print();
-			} else if (c == projPanel) {
-				projPanel.print();
-			} else if (c instanceof TodoView) {
-				TodoView.getReference().print();
-			}
-		} catch (Exception e) {
-			Errmsg.errmsg(e);
-		}
-	}
-
-	public void showTasksForProject(Project p) {
-		showTasks();
-		taskPanel.showTasksForProject(p);
-	
+	public void dock(DockableView dp) {
+		tabs_.addTab(dp.getFrameTitle(), dp);
+		tabs_.setSelectedIndex(tabs_.getTabCount() - 1);
+		dp.remove();
 
 	}
 
@@ -310,27 +201,15 @@ public class MultiView extends View {
 		}
 	}
 
-	public void dock(DockableView dp) {
-		tabs_.addTab(dp.getFrameTitle(), dp);
-		tabs_.setSelectedIndex(tabs_.getTabCount() - 1);
-		dp.remove();
-
+	public int getMonth() {
+		return cal_.get(Calendar.MONTH);
 	}
 
-	public void addView(DockableView dp) {
-		String dock = Prefs.getPref(PrefName.DOCKPANELS);
-		if (dock.equals("true")) {
-			dock(dp);
-		} else
-			dp.openInFrame();
-	}
-
-	public void closeTabs() {
-		tabs_.closeClosableTabs();
-	}
-
-	public void closeSelectedTab() {
-		tabs_.closeSelectedTab();
+	private JTabbedPane getTabs() {
+		if (tabs_ == null) {
+			tabs_ = new JTabbedPaneWithCloseIcons();
+		}
+		return tabs_;
 	}
 
 	private JToolBar getToolBar() {
@@ -457,9 +336,8 @@ public class MultiView extends View {
 		return bar;
 	}
 
-	public void refresh() {
-		// TODO Auto-generated method stub
-
+	public int getYear() {
+		return cal_.get(Calendar.YEAR);
 	}
 
 	public void goTo(Calendar cal) {
@@ -471,5 +349,135 @@ public class MultiView extends View {
 			monthPanel.goTo(cal);
 		if (yearPanel != null)
 			yearPanel.goTo(cal);
+	}
+
+	public void print() {
+		try {
+			Component c = getTabs().getSelectedComponent();
+			if (c instanceof MonthPanel) {
+				((MonthPanel) c).printMonths();
+			} else if (c instanceof Printable) {
+				PrintHelper.printPrintable((Printable) c);
+			} else if (c == taskListPanel) {
+				taskListPanel.print();
+			} else if (c == projectListPanel) {
+				projectListPanel.print();
+			} else if (c instanceof TodoView) {
+				TodoView.getReference().print();
+			}
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
+		}
+	}
+
+	public void refresh() {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void setView(int type) {
+		if (type == DAY) {
+
+			if (dayPanel == null)
+				dayPanel = new DayPanel(cal_.get(Calendar.MONTH), cal_
+						.get(Calendar.YEAR), cal_.get(Calendar.DATE));
+
+			if (!dayPanel.isDisplayable()) {
+				tabs_.addTab(Resource.getPlainResourceString("Day_View"),
+						dayPanel);
+			}
+			getTabs().setSelectedComponent(dayPanel);
+		} else if (type == WEEK) {
+			if (wkPanel == null)
+				wkPanel = new WeekPanel(cal_.get(Calendar.MONTH), cal_
+						.get(Calendar.YEAR), cal_.get(Calendar.DATE));
+
+			if (!wkPanel.isDisplayable()) {
+				tabs_.addTab(Resource.getPlainResourceString("Week_View"),
+						wkPanel);
+			}
+			getTabs().setSelectedComponent(wkPanel);
+		} else if (type == MONTH) {
+
+			
+				if (monthPanel == null)
+					monthPanel = new MonthPanel(cal_.get(Calendar.MONTH), cal_
+							.get(Calendar.YEAR));
+				if (!monthPanel.isDisplayable()) {
+					tabs_.addTab(Resource.getPlainResourceString("Month_View"),
+							monthPanel);
+				}
+				getTabs().setSelectedComponent(monthPanel);
+			
+		} else if (type == YEAR) {
+			if (yearPanel == null)
+				yearPanel = new YearPanel(cal_.get(Calendar.YEAR));
+
+			if (!yearPanel.isDisplayable()) {
+				tabs_.addTab(Resource.getPlainResourceString("Year_View"),
+						yearPanel);
+			}
+			getTabs().setSelectedComponent(yearPanel);
+		}
+	}
+
+	public void showMemos(String selectedMemo) {
+		if (MemoModel.getReference().hasMemos() && memoPanel == null)
+			memoPanel = new MemoPanel();
+
+		if (memoPanel != null && !memoPanel.isDisplayable()) {
+			tabs_.addTab(Resource.getPlainResourceString("Memos"), memoPanel);
+		}
+		if (memoPanel != null) {
+			getTabs().setSelectedComponent(memoPanel);
+			if (selectedMemo != null)
+				memoPanel.selectMemo(selectedMemo);
+		}
+	}
+
+	public void showTasks() {
+		
+		if( taskTabs == null )
+			taskTabs = new JTabbedPane();
+		
+		if (taskListPanel == null)
+			taskListPanel = new TaskFilterPanel();
+
+		if (TaskModel.getReference().hasSubTasks() && projectListPanel == null) {
+			projectListPanel = new ProjectPanel();
+		}
+
+		if (TaskModel.getReference().hasSubTasks() && projectTreePanel == null) {
+			projectTreePanel = new ProjectTreePanel();
+		}
+		
+		if( !taskTabs.isDisplayable())
+			tabs_.addTab(Resource.getPlainResourceString("tasks"), taskTabs);
+
+		if (projectTreePanel != null && !projectTreePanel.isDisplayable())
+			taskTabs.addTab(Resource.getPlainResourceString("project_tree"),
+					projectTreePanel);
+
+		if (projectListPanel != null && !projectListPanel.isDisplayable()) {
+			taskTabs
+					.addTab(Resource.getPlainResourceString("projects"),
+							projectListPanel);
+		}
+
+		if (taskListPanel != null && !taskListPanel.isDisplayable()) {
+			taskTabs.addTab(Resource.getPlainResourceString("tasks"), taskListPanel);
+		}
+		
+		
+		getTabs().setSelectedComponent(taskTabs);
+
+	}
+
+	public void showTasksForProject(Project p) {
+		showTasks();
+		taskListPanel.showTasksForProject(p);
+		taskTabs.setSelectedComponent(taskListPanel);
+	
+
 	}
 }
