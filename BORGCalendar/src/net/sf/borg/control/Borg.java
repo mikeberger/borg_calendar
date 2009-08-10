@@ -24,6 +24,7 @@ import java.awt.Frame;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.PrintStream;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -280,6 +281,21 @@ public class Borg implements OptionsView.RestartListener, SocketHandler {
 	// main month view
 	private void init(String args[]) {
 
+		try
+        {
+			String home = System.getProperty("user.home", "");
+            FileOutputStream errStr = new FileOutputStream(home+"/.borg.err", false);
+            PrintStream printStream = new PrintStream(errStr);
+            System.setErr(printStream);
+            FileOutputStream outStr = new FileOutputStream(home+"/.borg.out", false);
+            printStream = new PrintStream(outStr);
+            System.setOut(printStream);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+		
 		OptionsView.setRestartListener(this);
 
 		// override for testing a different db
