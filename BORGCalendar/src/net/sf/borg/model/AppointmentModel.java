@@ -502,13 +502,6 @@ public class AppointmentModel extends Model implements Model.Listener,
 		return (false);
 	}
 
-	// open the SMDB database
-	@SuppressWarnings("unchecked")
-	public void open_db() throws Exception {
-
-		
-	}
-
 	public Collection<String> getCategories() {
 
 		TreeSet<String> dbcat = new TreeSet<String>();
