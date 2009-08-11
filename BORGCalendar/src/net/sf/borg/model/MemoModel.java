@@ -26,8 +26,6 @@ import java.util.Date;
 import java.util.Iterator;
 
 import net.sf.borg.common.Errmsg;
-import net.sf.borg.common.Resource;
-import net.sf.borg.common.Warning;
 import net.sf.borg.common.XTree;
 import net.sf.borg.model.beans.Memo;
 import net.sf.borg.model.beans.MemoXMLAdapter;
@@ -46,25 +44,11 @@ public class MemoModel extends Model {
 	static private MemoModel self_ = null;
 
 	public static MemoModel getReference() {
+		if( self_ == null)
+			self_ = new MemoModel();
 		return (self_);
 	}
 
-	public static MemoModel create() {
-		self_ = new MemoModel();
-		return (self_);
-	}
-
-	public void remove() {
-		removeListeners();
-		try {
-			if (db_ != null)
-				db_.close();
-		} catch (Exception e) {
-			Errmsg.errmsg(e);
-			return;
-		}
-		db_ = null;
-	}
 
 	public MemoDB getDB() {
 		return db_;
@@ -91,12 +75,8 @@ public class MemoModel extends Model {
 		return db_.getNames();
 	}
 
-	public void open_db(String url) throws Exception {
-
-		db_ = new MemoJdbcDB(url);
-		if (db_ == null)
-			throw new Warning(Resource
-					.getPlainResourceString("MemosNotSupported"));
+	private MemoModel() {
+		db_ = new MemoJdbcDB();	
 	}
 
 	public void delete(String name, boolean undo) {

@@ -52,16 +52,8 @@ import net.sf.borg.model.undo.UndoLog;
 public class AppointmentModel extends Model implements Model.Listener,
 		CategorySource {
 
-	static private AppointmentModel default_reference_ = null;
+	static private AppointmentModel self_ = null;
 
-	public static AppointmentModel getReference() {
-		return (default_reference_);
-	}
-
-	public static AppointmentModel create() {
-		default_reference_ = new AppointmentModel();
-		return (default_reference_);
-	}
 
 	// return true if an appointment is skipped on a particular date
 	public static boolean isSkipped(Appointment ap, Calendar cal) {
@@ -86,25 +78,34 @@ public class AppointmentModel extends Model implements Model.Listener,
 	 * appt keys for that day.
 	 */
 	private HashMap<Integer, Collection<Integer>> map_;
-
-	private AppointmentModel() {
+	public static AppointmentModel getReference() {
+		if( self_ == null )
+			try {
+				self_ = new AppointmentModel();
+			} catch (Exception e) {
+				Errmsg.errmsg(e);
+				return null;
+			}
+		return (self_);
+	}
+	
+	private AppointmentModel() throws Exception
+	{
 		map_ = new HashMap<Integer, Collection<Integer>>();
 		vacationMap_ = new HashMap<Integer, Integer>();
+		db_ = new ApptJdbcDB();
+
+		// init categories and currentcategories
+		CategoryModel.getReference().addSource(this);
+		CategoryModel.getReference().addListener(this);
+
+		// scan the DB and build the appt map_
+		buildMap();
+
 	}
+	
 
 	private HashMap<Integer, Integer> vacationMap_;
-
-	public void remove() {
-		removeListeners();
-		try {
-			if (db_ != null)
-				db_.close();
-		} catch (Exception e) {
-			Errmsg.errmsg(e);
-			return;
-		}
-		db_ = null;
-	}
 
 	/**
 	 * return a base DB key for a given day
@@ -503,17 +504,9 @@ public class AppointmentModel extends Model implements Model.Listener,
 
 	// open the SMDB database
 	@SuppressWarnings("unchecked")
-	public void open_db(String url) throws Exception {
+	public void open_db() throws Exception {
 
-		db_ = new ApptJdbcDB(url);
-
-		// init categories and currentcategories
-		CategoryModel.getReference().addSource(this);
-		CategoryModel.getReference().addListener(this);
-
-		// scan the DB and build the appt map_
-		buildMap();
-
+		
 	}
 
 	public Collection<String> getCategories() {

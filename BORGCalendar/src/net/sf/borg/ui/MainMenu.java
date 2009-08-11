@@ -596,7 +596,7 @@ class MainMenu {
 		String dbtype = Prefs.getPref(PrefName.DBTYPE);
 		String info = Resource.getPlainResourceString("DatabaseInformation")
 				+ ":\n\n";
-		info += dbtype + " URL: " + JdbcDB.buildDbDir() + "\n\n";
+		info += dbtype + " URL: " + JdbcDB.getUrl() + "\n\n";
 
 		try {
 			info += Resource.getPlainResourceString("appointments") + ": "

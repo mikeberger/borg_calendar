@@ -34,7 +34,6 @@ import java.util.Collection;
 
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Resource;
-import net.sf.borg.common.Warning;
 import net.sf.borg.model.beans.Appointment;
 import net.sf.borg.model.db.AppointmentDB;
 import net.sf.borg.model.db.BeanDB;
@@ -49,9 +48,8 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
 
        
     /** Creates a new instance of AppJdbcDB */
-    public ApptJdbcDB(String url) throws Exception, Warning
+    public ApptJdbcDB() 
     {
-    	super(url);
     	try {
 			JdbcDB.execSQL("select username from appointments");
 			Errmsg.notice(Resource.getResourceString("db_username_check"));

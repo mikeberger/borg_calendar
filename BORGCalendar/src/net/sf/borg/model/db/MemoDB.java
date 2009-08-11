@@ -17,9 +17,7 @@ public interface MemoDB {
     public Memo readMemo(String name) throws Exception;
 
     public void updateMemo(Memo m) throws Exception;
-    
-    public void close() throws Exception;
-    
+        
     public Memo getMemoByPalmId(int id) throws Exception;
 
 }

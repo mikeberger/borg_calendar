@@ -90,11 +90,7 @@ public class LinkModel extends Model {
         typemap.put(Project.class, "project");
     }
 
-    public static LinkModel create() {
-        self_ = new LinkModel();
-        return (self_);
-    }
-
+ 
     public static String attachmentFolder() {
         String dbtype = Prefs.getPref(PrefName.DBTYPE);
         if (dbtype.equals("hsqldb")) {
@@ -112,7 +108,9 @@ public class LinkModel extends Model {
     }
 
     public static LinkModel getReference() {
-        return (self_);
+    	if( self_ == null )
+			self_ = new LinkModel();
+		return (self_);
     }
 
     private BeanDB<Link> db_; // the database
@@ -322,26 +320,13 @@ public class LinkModel extends Model {
         return (db_.newObj());
     }
 
-    // open the SMDB database
-    @SuppressWarnings("unchecked")
-    public void open_db(String url) throws Exception {     
-        db_ = new LinkJdbcDB( url);
+   
+    private LinkModel()  {     
+        db_ = new LinkJdbcDB();
     }
 
     public void refresh() {
         refreshListeners();
-    }
-
-    public void remove() {
-        removeListeners();
-        try {
-            if (db_ != null)
-                db_.close();
-        } catch (Exception e) {
-            Errmsg.errmsg(e);
-            return;
-        }
-        db_ = null;
     }
 
     public void saveLink(Link addr) throws Exception {

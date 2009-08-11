@@ -10,7 +10,6 @@ import java.util.Iterator;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.AppointmentModel;
-import net.sf.borg.model.LinkModel;
 import net.sf.borg.model.MemoModel;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.beans.Address;
@@ -18,6 +17,7 @@ import net.sf.borg.model.beans.Appointment;
 import net.sf.borg.model.beans.Memo;
 import net.sf.borg.model.beans.Subtask;
 import net.sf.borg.model.beans.Task;
+import net.sf.borg.model.db.jdbc.JdbcDB;
 import net.sf.borg.model.undo.UndoLog;
 
 import org.junit.AfterClass;
@@ -30,11 +30,8 @@ public class UndoTests {
 	public static void setUp() throws Exception {
 		// open the borg dbs - in memory
 		Errmsg.console(true);
-		AppointmentModel.create().open_db("jdbc:hsqldb:mem:whatever");
-		AddressModel.create().open_db("jdbc:hsqldb:mem:whatever");
-		MemoModel.create().open_db("jdbc:hsqldb:mem:whatever");
-		TaskModel.create().open_db("jdbc:hsqldb:mem:whatever");
-		LinkModel.create().open_db("jdbc:hsqldb:mem:whatever");
+		JdbcDB.connect("jdbc:hsqldb:mem:whatever");
+		
 	}
 	
 	@Test
@@ -310,11 +307,7 @@ public class UndoTests {
 	@AfterClass
 	public static void tearDown()
 	{
-		AppointmentModel.getReference().remove();
-		AddressModel.getReference().remove();
-		MemoModel.getReference().remove();
-		TaskModel.getReference().remove();
-		LinkModel.getReference().remove();
+		
 	}
 
 }

@@ -49,45 +49,48 @@ import net.sf.borg.model.Transactional;
  * @author mberger
  */
 // JdbcDB is a base class for JDBC based DBs for BORG
-abstract public class JdbcDB implements /* BeanDB, */Transactional {
+abstract public class JdbcDB implements Transactional {
 
 	// common db connection shared by sub-classes. in BORG, all sub-classes
 	// will manage a table in the same DB
-	static protected Connection globalConnection_ = null;
+	static protected Connection connection_ = null;
 
-	protected Connection connection_ = null;
-
-	private String url_;
+	static private String url_;
+	
+	public static String getUrl()
+	{
+		return url_;
+	}
 
 	public void beginTransaction() throws Exception {
-		globalConnection_.setAutoCommit(false);
+		connection_.setAutoCommit(false);
 	}
 
 	public final void commitTransaction() throws Exception {
-		PreparedStatement stmt = globalConnection_.prepareStatement("COMMIT");
+		PreparedStatement stmt = connection_.prepareStatement("COMMIT");
 		stmt.execute();
-		globalConnection_.setAutoCommit(true);
+		connection_.setAutoCommit(true);
 	}
 
 	public final void rollbackTransaction() throws Exception {
-		PreparedStatement stmt = globalConnection_.prepareStatement("ROLLBACK");
+		PreparedStatement stmt = connection_.prepareStatement("ROLLBACK");
 		stmt.execute();
-		globalConnection_.setAutoCommit(true);
+		connection_.setAutoCommit(true);
 	}
 
-	/** Creates a new instance of JdbcDB */
-	JdbcDB(String url) throws Exception {
-	
+	static public void connect(String url) throws Exception {
+		if( url == null )
+			url = buildDbDir();
 		url_ = url;
 		if (url.startsWith("jdbc:mysql")) {
 			Class.forName("com.mysql.jdbc.Driver");
-			if (globalConnection_ == null) {
-				globalConnection_ = DriverManager.getConnection(url);
+			if (connection_ == null) {
+				connection_ = DriverManager.getConnection(url);
 			}
 
 		} else if (url.startsWith("jdbc:hsqldb")) {
 			Class.forName("org.hsqldb.jdbcDriver");
-			if (globalConnection_ == null) {
+			if (connection_ == null) {
 				Properties props = new Properties();
 				props.setProperty("user", "sa");
 				props.setProperty("password", "");
@@ -99,13 +102,14 @@ abstract public class JdbcDB implements /* BeanDB, */Transactional {
 					props.setProperty("ifexists", "true");
 				}
 				try {
-					globalConnection_ = DriverManager.getConnection(url, props);
+					connection_ = DriverManager.getConnection(url, props);
 				} catch (SQLException se) {
 					if (se.getSQLState().equals("08003")) {
 						// need to create the db
 						try {
 							System.out.println("Creating Database");
-							InputStream is = getClass().getResourceAsStream("/resource/borg_hsqldb.sql");
+							InputStream is = JdbcDB.class
+									.getResourceAsStream("/resource/borg_hsqldb.sql");
 							StringBuffer sb = new StringBuffer();
 							InputStreamReader r = new InputStreamReader(is);
 							while (true) {
@@ -115,7 +119,8 @@ abstract public class JdbcDB implements /* BeanDB, */Transactional {
 								sb.append((char) ch);
 							}
 							props.setProperty("ifexists", "false");
-							globalConnection_ = DriverManager.getConnection(url, props);
+							connection_ = DriverManager.getConnection(url,
+									props);
 							execSQL(sb.toString());
 						} catch (Exception e2) {
 							throw e2;
@@ -127,14 +132,14 @@ abstract public class JdbcDB implements /* BeanDB, */Transactional {
 						throw se;
 					}
 				}
-				// if running with a memory only db (for testing) 
+				// if running with a memory only db (for testing)
 				// always need to run the db creation scripts
-				if( url.startsWith("jdbc:hsqldb:mem"))
-				{
+				if (url.startsWith("jdbc:hsqldb:mem")) {
 					// need to create the db
 					try {
 						System.out.println("Creating Database");
-						InputStream is = getClass().getResourceAsStream("/resource/borg_hsqldb.sql");
+						InputStream is = JdbcDB.class
+								.getResourceAsStream("/resource/borg_hsqldb.sql");
 						StringBuffer sb = new StringBuffer();
 						InputStreamReader r = new InputStreamReader(is);
 						while (true) {
@@ -144,7 +149,7 @@ abstract public class JdbcDB implements /* BeanDB, */Transactional {
 							sb.append((char) ch);
 						}
 						props.setProperty("ifexists", "false");
-						globalConnection_ = DriverManager.getConnection(url, props);
+						connection_ = DriverManager.getConnection(url, props);
 						execSQL(sb.toString());
 					} catch (Exception e2) {
 						throw e2;
@@ -154,17 +159,12 @@ abstract public class JdbcDB implements /* BeanDB, */Transactional {
 
 		}
 
-		connection_ = globalConnection_;
 	}
 
-	JdbcDB(Connection conn) {
-
-		connection_ = conn;
-	}
-
-	private final void cleanup() {
+	static private final void cleanup() {
 		try {
-			if (globalConnection_ != null && !globalConnection_.isClosed() && url_.startsWith("jdbc:hsqldb:file")) {
+			if (connection_ != null && !connection_.isClosed()
+					&& url_.startsWith("jdbc:hsqldb:file")) {
 
 				execSQL("SHUTDOWN");
 
@@ -174,7 +174,6 @@ abstract public class JdbcDB implements /* BeanDB, */Transactional {
 		}
 	}
 
-	
 	protected final static String toStr(Vector<String> v) {
 		String val = "";
 		if (v == null)
@@ -217,29 +216,26 @@ abstract public class JdbcDB implements /* BeanDB, */Transactional {
 	}
 
 	static final public ResultSet execSQL(String sql) throws Exception {
-		PreparedStatement stmt = globalConnection_.prepareStatement(sql);
+		PreparedStatement stmt = connection_.prepareStatement(sql);
 		stmt.execute();
 		return stmt.getResultSet();
 	}
 
 	static public Connection getConnection() {
-		return globalConnection_;
+		return connection_;
 	}
 
-	public final void close() throws Exception {
+	public static void close() throws Exception {
 		cleanup();
-		if (connection_ != null && connection_ != globalConnection_)
+		if (connection_ != null)
 			connection_.close();
-		else if (globalConnection_ != null)
-			globalConnection_.close();
-		globalConnection_ = null;
 		connection_ = null;
 	}
 
-
 	public final String getOption(String oname) throws Exception {
 		String ret = null;
-		PreparedStatement stmt = connection_.prepareStatement("SELECT value FROM options WHERE name = ?");
+		PreparedStatement stmt = connection_
+				.prepareStatement("SELECT value FROM options WHERE name = ?");
 		stmt.setString(1, oname);
 		ResultSet rs = stmt.executeQuery();
 		if (rs.next()) {
@@ -248,12 +244,16 @@ abstract public class JdbcDB implements /* BeanDB, */Transactional {
 
 		return (ret);
 	}
+
 	public final Collection<BorgOption> getOptions() throws Exception {
 		ArrayList<BorgOption> keys = new ArrayList<BorgOption>();
-		PreparedStatement stmt = connection_.prepareStatement("SELECT name, value FROM options");
+		PreparedStatement stmt = connection_
+				.prepareStatement("SELECT name, value FROM options");
 		ResultSet rs = stmt.executeQuery();
 		while (rs.next()) {
-			keys.add(new BorgOption(rs.getString("name"), rs.getString("value")));
+			keys
+					.add(new BorgOption(rs.getString("name"), rs
+							.getString("value")));
 		}
 
 		return (keys);
@@ -265,7 +265,8 @@ abstract public class JdbcDB implements /* BeanDB, */Transactional {
 		String value = option.getValue();
 
 		try {
-			PreparedStatement stmt = connection_.prepareStatement("DELETE FROM options WHERE name = ?");
+			PreparedStatement stmt = connection_
+					.prepareStatement("DELETE FROM options WHERE name = ?");
 			stmt.setString(1, oname);
 			stmt.executeUpdate();
 		} catch (Exception e) {
@@ -274,8 +275,9 @@ abstract public class JdbcDB implements /* BeanDB, */Transactional {
 		if (value == null || value.equals(""))
 			return;
 
-		PreparedStatement stmt = connection_.prepareStatement("INSERT INTO options ( name, value ) "
-				+ "VALUES ( ?, ?)");
+		PreparedStatement stmt = connection_
+				.prepareStatement("INSERT INTO options ( name, value ) "
+						+ "VALUES ( ?, ?)");
 
 		stmt.setString(1, oname);
 		stmt.setString(2, value);
@@ -283,29 +285,29 @@ abstract public class JdbcDB implements /* BeanDB, */Transactional {
 		stmt.executeUpdate();
 	}
 
-    public static String buildDbDir() {
-    	// get dir for DB
-    	String dbdir = "";
-    	String dbtype = Prefs.getPref(PrefName.DBTYPE);
-    	if (dbtype.equals("hsqldb")) {
-    		String hdir = Prefs.getPref(PrefName.HSQLDBDIR);
-    		if (hdir.equals("not-set"))
-    			return hdir;
-    		dbdir = "jdbc:hsqldb:file:" + Prefs.getPref(PrefName.HSQLDBDIR)
-    				+ "/borg_";
-    	} else if (dbtype.equals("jdbc")) {
-    		dbdir = Prefs.getPref(PrefName.JDBCURL);
-    	} else {
-    		// build a mysql URL
-    		dbdir = "jdbc:mysql://" + Prefs.getPref(PrefName.DBHOST) + ":"
-    				+ Prefs.getPref(PrefName.DBPORT) + "/"
-    				+ Prefs.getPref(PrefName.DBNAME) + "?user="
-    				+ Prefs.getPref(PrefName.DBUSER) + "&password="
-    				+ Prefs.getPref(PrefName.DBPASS) + "&autoReconnect=true";
-    	}
-    
-    	System.out.println("DB URL is: " + dbdir);
-    	return (dbdir);
-    }
+	public static String buildDbDir() {
+		// get dir for DB
+		String dbdir = "";
+		String dbtype = Prefs.getPref(PrefName.DBTYPE);
+		if (dbtype.equals("hsqldb")) {
+			String hdir = Prefs.getPref(PrefName.HSQLDBDIR);
+			if (hdir.equals("not-set"))
+				return hdir;
+			dbdir = "jdbc:hsqldb:file:" + Prefs.getPref(PrefName.HSQLDBDIR)
+					+ "/borg_";
+		} else if (dbtype.equals("jdbc")) {
+			dbdir = Prefs.getPref(PrefName.JDBCURL);
+		} else {
+			// build a mysql URL
+			dbdir = "jdbc:mysql://" + Prefs.getPref(PrefName.DBHOST) + ":"
+					+ Prefs.getPref(PrefName.DBPORT) + "/"
+					+ Prefs.getPref(PrefName.DBNAME) + "?user="
+					+ Prefs.getPref(PrefName.DBUSER) + "&password="
+					+ Prefs.getPref(PrefName.DBPASS) + "&autoReconnect=true";
+		}
+
+		System.out.println("DB URL is: " + dbdir);
+		return (dbdir);
+	}
 
 }

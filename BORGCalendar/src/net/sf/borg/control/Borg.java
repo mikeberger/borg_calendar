@@ -47,7 +47,6 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.common.SocketClient;
 import net.sf.borg.common.SocketHandler;
 import net.sf.borg.common.SocketServer;
-import net.sf.borg.common.Warning;
 import net.sf.borg.control.socketServer.SingleInstanceHandler;
 import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.AppointmentModel;
@@ -175,7 +174,7 @@ public class Borg implements OptionsView.RestartListener, SocketHandler {
 			Banner ban = new Banner();
 			ban.setText(Resource.getPlainResourceString("shutdown"));
 			ban.setVisible(true);
-			AppointmentModel.getReference().getDB().close();
+			JdbcDB.close();
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -361,7 +360,7 @@ public class Borg implements OptionsView.RestartListener, SocketHandler {
 		}
 
 		// Which database implementation are we using?
-		String dbdir = "";
+		String dbdir = null;
 
 		try {
 			// init cal model & load data from database
@@ -383,15 +382,15 @@ public class Borg implements OptionsView.RestartListener, SocketHandler {
 				OptionsView.dbSelectOnly();
 				return;
 			}
+			
+			JdbcDB.connect(dbdir);
 
 			// skip banner stuff if autostart or aplist on
 			if (splash)
 				ban_.setText(Resource
 						.getResourceString("Loading_Appt_Database"));
 
-			AppointmentModel calmod = AppointmentModel.create();
-
-			calmod.open_db(dbdir);
+			AppointmentModel.getReference();
 
 			// we are past autostart check so we must be ready to start GUI.
 			// now all errors can go to popup windows
@@ -401,35 +400,13 @@ public class Borg implements OptionsView.RestartListener, SocketHandler {
 			if (splash)
 				ban_.setText(Resource
 						.getResourceString("Loading_Task_Database"));
-			TaskModel taskmod = TaskModel.create();
+			TaskModel.getReference();
 
-			taskmod.open_db(dbdir);
 
 			if (splash)
 				ban_.setText(Resource
 						.getResourceString("Opening_Address_Database"));
-			AddressModel addrmod = AddressModel.create();
-
-			addrmod.open_db(dbdir);
-
-			if (splash)
-				ban_.setText(Resource
-						.getResourceString("Opening_Memo_Database"));
-			MemoModel memomod = MemoModel.create();
-			try {
-				memomod.open_db(dbdir);
-
-			} catch (Warning w) {
-				// Errmsg.notice(w.getMessage());
-			}
-
-			LinkModel attmod = LinkModel.create();
-			try {
-				attmod.open_db(dbdir);
-
-			} catch (Warning w) {
-				// Errmsg.notice(w.getMessage());
-			}
+			AddressModel.getReference();
 
 			if (splash)
 				ban_.setText(Resource.getResourceString("Opening_Main_Window"));

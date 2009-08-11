@@ -96,6 +96,8 @@ public abstract class Model
         
     }
     
-    public abstract void remove();
+    public void remove(){
+    	removeListeners();
+    }
     
 }

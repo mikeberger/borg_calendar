@@ -32,9 +32,6 @@ import net.sf.borg.model.db.MemoDB;
 
 public class MemoJdbcDB extends JdbcDB implements MemoDB {
 
-	public MemoJdbcDB(String url) throws Exception {
-		super(url);
-	}
 
 	public void addMemo(Memo m) throws Exception {
 		PreparedStatement stmt = connection_

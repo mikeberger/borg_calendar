@@ -20,7 +20,6 @@ Copyright 2003 by Mike Berger
 
 package net.sf.borg.model.db.jdbc;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -34,13 +33,6 @@ import net.sf.borg.model.db.LinkDB;
 
 public class LinkJdbcDB extends JdbcBeanDB<Link> implements BeanDB<Link>, LinkDB {
 
-	public LinkJdbcDB(String url) throws Exception {
-		super(url);
-	}
-
-	LinkJdbcDB(Connection conn) {
-		super(conn);
-	}
 
 	public void addObj(Link att) throws 
 			Exception {

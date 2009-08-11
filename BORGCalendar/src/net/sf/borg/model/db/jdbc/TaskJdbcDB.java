@@ -42,10 +42,6 @@ import net.sf.borg.model.db.TaskDB;
  */
 public class TaskJdbcDB extends JdbcBeanDB<Task> implements BeanDB<Task>, TaskDB {
 
-    /** Creates a new instance of AppJdbcDB */
-    public TaskJdbcDB(String url) throws Exception {
-        super(url);
-    }
 
     public void addObj(Task task) throws Exception {
         PreparedStatement stmt = connection_

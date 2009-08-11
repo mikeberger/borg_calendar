@@ -92,34 +92,18 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 		return (allmap_);
 	}
 
-	private TaskModel() {
-		btmap_ = new HashMap<Integer, Collection<Task>>();
-		stmap_ = new HashMap<Integer, Collection<Subtask>>();
-		pmap_ = new HashMap<Integer, Collection<Project>>();
-		allmap_ = new Vector<Task>();
-	}
-
 	static private TaskModel self_ = null;
 
-	static public TaskModel getReference() {
+	static public TaskModel getReference()  {
+		if( self_ == null )
+			try {
+				self_ = new TaskModel();
+				self_.load_map();
+			} catch (Exception e) {
+				Errmsg.errmsg(e);
+				return null;
+			}
 		return (self_);
-	}
-
-	public static TaskModel create() {
-		self_ = new TaskModel();
-		return (self_);
-	}
-
-	public void remove() {
-		removeListeners();
-		try {
-			if (db_ != null)
-				db_.close();
-		} catch (Exception e) {
-			Errmsg.errmsg(e);
-			return;
-		}
-		db_ = null;
 	}
 
 	public TaskTypes getTaskTypes() {
@@ -278,11 +262,15 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 
 	}
 
-	// open the database
-	@SuppressWarnings("unchecked")
-	public void open_db(String url) throws Exception {
-
-		db_ = new TaskJdbcDB(url);
+	
+	private TaskModel() throws Exception {
+		
+		btmap_ = new HashMap<Integer, Collection<Task>>();
+		stmap_ = new HashMap<Integer, Collection<Subtask>>();
+		pmap_ = new HashMap<Integer, Collection<Project>>();
+		allmap_ = new Vector<Task>();
+		
+		db_ = new TaskJdbcDB();
 
 		// get XML that models states/transitions
 		// set to default if it does not exist
@@ -309,7 +297,6 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 		CategoryModel.getReference().addSource(this);
 		CategoryModel.getReference().addListener(this);
 
-		load_map();
 
 	}
 

@@ -35,13 +35,7 @@ import net.sf.borg.model.db.BeanDB;
  * this is the JDBC layer for access to the addresses table
  */
 public class AddrJdbcDB extends JdbcBeanDB<Address> implements BeanDB<Address>
-{
-
-             
-    public AddrJdbcDB(String url) throws Exception
-    {
-        super( url );
-    }
+{         
     
     public void addObj(Address addr) throws Exception
     {

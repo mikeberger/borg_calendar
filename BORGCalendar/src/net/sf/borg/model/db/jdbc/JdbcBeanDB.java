@@ -25,7 +25,6 @@
 
 package net.sf.borg.model.db.jdbc;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -57,19 +56,9 @@ abstract class JdbcBeanDB<T extends KeyedBean<T>> extends JdbcDB {
 	private HashMap<Integer,T> objectCache_; // the cache
 
 	/** Creates a new instance of JdbcDB */
-	JdbcBeanDB(String url) throws Exception {
-		super(url);
-
+	JdbcBeanDB()  {
 		objectCacheOn_ = true;
 		objectCache_ = new HashMap<Integer,T>();
-
-	}
-
-	JdbcBeanDB(Connection conn) {
-		super(conn);
-		objectCacheOn_ = true;
-		objectCache_ = new HashMap<Integer,T>();
-
 	}
 
 	public void sync() {

@@ -43,7 +43,6 @@ public interface BeanDB<T extends KeyedBean<T>>
     public String getOption( String oname ) throws Exception;
     public void setOption( BorgOption option ) throws Exception;
     public Collection<BorgOption> getOptions() throws Exception;
-    public void close() throws Exception;
     public int nextkey() throws Exception;
     public void sync();
 }

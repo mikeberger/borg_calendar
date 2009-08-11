@@ -92,24 +92,15 @@ public class AddressModel extends Model {
 	}
 
 	public static AddressModel getReference() {
+		if( self_ == null )
+			self_ = new AddressModel();
 		return (self_);
 	}
-
-	public static AddressModel create() {
-		self_ = new AddressModel();
-		return (self_);
-	}
-
-	public void remove() {
-		removeListeners();
-		try {
-			if (db_ != null)
-				db_.close();
-		} catch (Exception e) {
-			Errmsg.errmsg(e);
-			return;
-		}
-		db_ = null;
+	
+	private AddressModel()
+	{
+		db_ = new AddrJdbcDB();
+		load_map();
 	}
 
 	public Collection<Address> getAddresses() throws Exception {
@@ -124,13 +115,7 @@ public class AddressModel extends Model {
 		return (bdmap_.get(new Integer(bdkey)));
 	}
 
-	// open the SMDB database
-	@SuppressWarnings("unchecked")
-	public void open_db(String url) throws Exception {
-		db_ = new AddrJdbcDB(url);
-		load_map();
-	}
-
+	
 	public void delete(Address addr) {
 		delete(addr, false);
 	}
