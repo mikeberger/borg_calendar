@@ -20,8 +20,15 @@ package net.sf.borg.model.xml;
 
 import net.sf.borg.common.XTree;
 import net.sf.borg.model.entity.Link;
+
+/**
+ * Link XML Adapter.
+ */
 public class LinkXMLAdapter extends EntityXMLAdapter<Link> {
 
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.xml.EntityXMLAdapter#toXml(net.sf.borg.model.entity.KeyedEntity)
+	 */
 	public XTree toXml( Link o )
 	{
 		
@@ -39,6 +46,9 @@ public class LinkXMLAdapter extends EntityXMLAdapter<Link> {
 		return( xt );
 	}
 
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.xml.EntityXMLAdapter#fromXml(net.sf.borg.common.XTree)
+	 */
 	public Link fromXml( XTree xt )
 	{
 		Link ret = new Link();

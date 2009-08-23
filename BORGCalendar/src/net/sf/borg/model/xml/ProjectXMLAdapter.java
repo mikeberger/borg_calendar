@@ -20,8 +20,15 @@ package net.sf.borg.model.xml;
 
 import net.sf.borg.common.XTree;
 import net.sf.borg.model.entity.Project;
+
+/**
+ * Project XML Adapter.
+ */
 public class ProjectXMLAdapter extends EntityXMLAdapter<Project> {
 
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.xml.EntityXMLAdapter#toXml(net.sf.borg.model.entity.KeyedEntity)
+	 */
 	public XTree toXml( Project o )
 	{
 		
@@ -44,6 +51,9 @@ public class ProjectXMLAdapter extends EntityXMLAdapter<Project> {
 		return( xt );
 	}
 
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.xml.EntityXMLAdapter#fromXml(net.sf.borg.common.XTree)
+	 */
 	public Project fromXml( XTree xt )
 	{
 		Project ret = new Project();

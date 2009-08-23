@@ -27,25 +27,65 @@ import net.sf.borg.common.XTree;
 import net.sf.borg.model.entity.KeyedEntity;
 
 
+/**
+ * abstract base class for XML adapters. Contains some code to convert
+ * various types to Strings in a standard way
+ */
 abstract public class EntityXMLAdapter<T extends KeyedEntity<T>> {
 
-	abstract public XTree toXml(T bean);
+	/**
+	 * convert entity To xml.
+	 * 
+	 * @param entity the entity
+	 * 
+	 * @return the xml tree
+	 */
+	abstract public XTree toXml(T entity);
 
+	/**
+	 * convert xml to an entity.
+	 * 
+	 * @param xt the xml tree
+	 * 
+	 * @return the entity
+	 */
 	abstract public T fromXml(XTree xt);
 
+	/** The normalized, standard date format_. */
 	private static SimpleDateFormat normalDateFormat_ = new SimpleDateFormat(
 			"MM/dd/yy hh:mm aa");
 
+	/**
+	 * standard date to string conversion.
+	 * 
+	 * @param d the date
+	 * 
+	 * @return the string
+	 */
 	protected static String toString(Date d) {
 		return (normalDateFormat_.format(d));
 	}
 
+	/**
+	 * standard boolean to string conversion.
+	 * 
+	 * @param b the boolean
+	 * 
+	 * @return the string
+	 */
 	protected static String toString(boolean b) {
 		if (b)
 			return ("true");
 		return ("false");
 	}
 
+	/**
+	 * standard string to date conversion.
+	 * 
+	 * @param s the string
+	 * 
+	 * @return the date
+	 */
 	protected static Date toDate(String s) {
 
 		try {
@@ -56,16 +96,37 @@ abstract public class EntityXMLAdapter<T extends KeyedEntity<T>> {
 		}
 	}
 
+	/**
+	 * standard boolean to string conversion.
+	 * 
+	 * @param s the string
+	 * 
+	 * @return the boolean
+	 */
 	protected static boolean toBoolean(String s) {
 		if (s.equals("true"))
 			return (true);
 		return (false);
 	}
 
+	/**
+	 * integer to string conversion.
+	 * 
+	 * @param i the Integer
+	 * 
+	 * @return the string
+	 */
 	protected static String toString(Integer i) {
 		return (i.toString());
 	}
 
+	/**
+	 * String to Integer conversion.
+	 * 
+	 * @param s the string
+	 * 
+	 * @return the Integer
+	 */
 	protected static Integer toInteger(String s) {
 		Integer i = null;
 		try {
@@ -76,6 +137,13 @@ abstract public class EntityXMLAdapter<T extends KeyedEntity<T>> {
 		return (i);
 	}
 
+	/**
+	 * String to int conversion.
+	 * 
+	 * @param s the string
+	 * 
+	 * @return the int
+	 */
 	protected static int toInt(String s) {
 		int i = 0;
 		try {
@@ -86,35 +154,5 @@ abstract public class EntityXMLAdapter<T extends KeyedEntity<T>> {
 		return (i);
 	}
 
-	// yuck
-	protected static String toString(Vector<String> v) {
-
-		String val = "";
-		if (v == null)
-			return ("");
-		try {
-			while (true) {
-				String s = v.remove(0);
-				val += s;
-				val += ",";
-			}
-		} catch (Exception e) {
-		}
-		return (val);
-
-	}
-
-	protected static Vector<String> toVector(String s) {
-		if (s == null || s.equals(""))
-			return (null);
-
-		StringTokenizer stk = new StringTokenizer(s, ",");
-		Vector<String> vect = new Vector<String>();
-		while (stk.hasMoreTokens()) {
-			String stt = stk.nextToken();
-			if (!stt.equals(""))
-				vect.add(stt);
-		}
-		return (vect);
-	}
+	
 }

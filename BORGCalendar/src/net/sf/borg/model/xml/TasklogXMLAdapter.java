@@ -20,8 +20,15 @@ package net.sf.borg.model.xml;
 
 import net.sf.borg.common.XTree;
 import net.sf.borg.model.entity.Tasklog;
+
+/**
+ * Tasklog XML Adapter.
+ */
 public class TasklogXMLAdapter extends EntityXMLAdapter<Tasklog> {
 
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.xml.EntityXMLAdapter#toXml(net.sf.borg.model.entity.KeyedEntity)
+	 */
 	public XTree toXml( Tasklog o )
 	{
 		
@@ -38,6 +45,9 @@ public class TasklogXMLAdapter extends EntityXMLAdapter<Tasklog> {
 		return( xt );
 	}
 
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.xml.EntityXMLAdapter#fromXml(net.sf.borg.common.XTree)
+	 */
 	public Tasklog fromXml( XTree xt )
 	{
 		Tasklog ret = new Tasklog();

@@ -18,10 +18,20 @@
  */
 package net.sf.borg.model.xml;
 
+import java.util.StringTokenizer;
+import java.util.Vector;
+
 import net.sf.borg.common.XTree;
 import net.sf.borg.model.entity.Appointment;
+
+/**
+ * Appointment XML Adapter.
+ */
 public class AppointmentXMLAdapter extends EntityXMLAdapter<Appointment> {
 
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.xml.EntityXMLAdapter#toXml(net.sf.borg.model.entity.KeyedEntity)
+	 */
 	public XTree toXml( Appointment o )
 	{
 		
@@ -35,7 +45,7 @@ public class AppointmentXMLAdapter extends EntityXMLAdapter<Appointment> {
 		if( o.getText() != null && !o.getText().equals(""))
 			xt.appendChild("Text", o.getText());
 		if( o.getSkipList() != null )
-			xt.appendChild("SkipList", EntityXMLAdapter.toString(o.getSkipList()));
+			xt.appendChild("SkipList", toString(o.getSkipList()));
 		if( o.getNextTodo() != null )
 			xt.appendChild("NextTodo", EntityXMLAdapter.toString(o.getNextTodo()));
 		if( o.getVacation() != null )
@@ -71,6 +81,9 @@ public class AppointmentXMLAdapter extends EntityXMLAdapter<Appointment> {
 		return( xt );
 	}
 
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.xml.EntityXMLAdapter#fromXml(net.sf.borg.common.XTree)
+	 */
 	public Appointment fromXml( XTree xt )
 	{
 		Appointment ret = new Appointment();
@@ -85,7 +98,7 @@ public class AppointmentXMLAdapter extends EntityXMLAdapter<Appointment> {
 		if( !val.equals("") )
 			ret.setText( val );
 		val = xt.child("SkipList").value();
-		ret.setSkipList( EntityXMLAdapter.toVector(val) );
+		ret.setSkipList( toVector(val) );
 		val = xt.child("NextTodo").value();
 		ret.setNextTodo( EntityXMLAdapter.toDate(val) );
 		val = xt.child("Vacation").value();
@@ -125,5 +138,52 @@ public class AppointmentXMLAdapter extends EntityXMLAdapter<Appointment> {
 		if( !val.equals("") )
 			ret.setUntimed( val );
 		return( ret );
+	}
+	
+	/**
+	 * Legacy code - converts a Vector of Strings to a single String. used only for specific
+	 * appointment fields
+	 * 
+	 * @param v the vector of strings
+	 * 
+	 * @return the string
+	 */
+	private static String toString(Vector<String> v) {
+
+		String val = "";
+		if (v == null)
+			return ("");
+		try {
+			while (true) {
+				String s = v.remove(0);
+				val += s;
+				val += ",";
+			}
+		} catch (Exception e) {
+		}
+		return (val);
+
+	}
+
+	/**
+	 * legacy code - converts a string holding a list of items to a vector of strings. used
+	 * only for specfic appointment fields
+	 * 
+	 * @param s the string
+	 * 
+	 * @return the vector
+	 */
+	private static Vector<String> toVector(String s) {
+		if (s == null || s.equals(""))
+			return (null);
+
+		StringTokenizer stk = new StringTokenizer(s, ",");
+		Vector<String> vect = new Vector<String>();
+		while (stk.hasMoreTokens()) {
+			String stt = stk.nextToken();
+			if (!stt.equals(""))
+				vect.add(stt);
+		}
+		return (vect);
 	}
 }

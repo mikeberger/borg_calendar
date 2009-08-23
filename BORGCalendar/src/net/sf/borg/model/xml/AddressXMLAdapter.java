@@ -20,8 +20,15 @@ package net.sf.borg.model.xml;
 
 import net.sf.borg.common.XTree;
 import net.sf.borg.model.entity.Address;
+
+/**
+ * Address XML Adapter.
+ */
 public class AddressXMLAdapter extends EntityXMLAdapter<Address> {
 
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.xml.EntityXMLAdapter#toXml(net.sf.borg.model.entity.KeyedEntity)
+	 */
 	public XTree toXml( Address o )
 	{
 		
@@ -83,6 +90,9 @@ public class AddressXMLAdapter extends EntityXMLAdapter<Address> {
 		return( xt );
 	}
 
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.xml.EntityXMLAdapter#fromXml(net.sf.borg.common.XTree)
+	 */
 	public Address fromXml( XTree xt )
 	{
 		Address ret = new Address();

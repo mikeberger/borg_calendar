@@ -20,8 +20,15 @@ package net.sf.borg.model.xml;
 
 import net.sf.borg.common.XTree;
 import net.sf.borg.model.entity.Task;
+
+/**
+ * Task XML Adapter.
+ */
 public class TaskXMLAdapter extends EntityXMLAdapter<Task> {
 
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.xml.EntityXMLAdapter#toXml(net.sf.borg.model.entity.KeyedEntity)
+	 */
 	public XTree toXml( Task o )
 	{
 		
@@ -54,6 +61,9 @@ public class TaskXMLAdapter extends EntityXMLAdapter<Task> {
 		return( xt );
 	}
 
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.xml.EntityXMLAdapter#fromXml(net.sf.borg.common.XTree)
+	 */
 	public Task fromXml( XTree xt )
 	{
 		Task ret = new Task();

@@ -20,8 +20,15 @@ package net.sf.borg.model.xml;
 
 import net.sf.borg.common.XTree;
 import net.sf.borg.model.entity.Subtask;
+
+/**
+ * Subtask XML Adapter.
+ */
 public class SubtaskXMLAdapter extends EntityXMLAdapter<Subtask> {
 
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.xml.EntityXMLAdapter#toXml(net.sf.borg.model.entity.KeyedEntity)
+	 */
 	public XTree toXml( Subtask o )
 	{
 		
@@ -42,6 +49,9 @@ public class SubtaskXMLAdapter extends EntityXMLAdapter<Subtask> {
 		return( xt );
 	}
 
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.xml.EntityXMLAdapter#fromXml(net.sf.borg.common.XTree)
+	 */
 	public Subtask fromXml( XTree xt )
 	{
 		Subtask ret = new Subtask();
