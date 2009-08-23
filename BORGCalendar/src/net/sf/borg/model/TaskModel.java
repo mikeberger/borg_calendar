@@ -59,7 +59,10 @@ import net.sf.borg.model.xml.TasklogXMLAdapter;
 public class TaskModel extends Model implements Model.Listener, Transactional,
 		CategorySource {
 
-	private EntityDB<Task> db_; // the database
+	//private EntityDB<Task> db_; // the database
+	// hard-code to TaskJdbcDB just to access options logic
+	// need to fix this in the future
+	private TaskJdbcDB db_;
 
 	public EntityDB<Task> getDB() {
 		return (db_);

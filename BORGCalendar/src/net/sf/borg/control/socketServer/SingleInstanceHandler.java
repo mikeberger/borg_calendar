@@ -23,7 +23,6 @@ package net.sf.borg.control.socketServer;
 import net.sf.borg.common.XTree;
 import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.AppointmentModel;
-import net.sf.borg.model.BorgOption;
 import net.sf.borg.model.MemoModel;
 import net.sf.borg.model.db.AppointmentDB;
 import net.sf.borg.model.db.EntityDB;
@@ -91,10 +90,10 @@ public class SingleInstanceHandler {
 					int key = ((Integer) parms.getArgs()).intValue();
 					beanDB.delete(key);
 				} else if (cmd.equals("getOption")) {
-					String key = (String) parms.getArgs();
-					result = beanDB.getOption(key);
+					//String key = (String) parms.getArgs();
+					result = null;//beanDB.getOption(key);
 				} else if (cmd.equals("getOptions")) {
-					result = beanDB.getOptions();
+					result = null;
 				} else if (cmd.equals("getTodoKeys")) {
 					result = ((AppointmentDB) beanDB).getTodoKeys();
 				} else if (cmd.equals("getRepeatKeys")) {
@@ -102,8 +101,8 @@ public class SingleInstanceHandler {
 				} else if (cmd.equals("nextkey")) {
 					result = new Integer(beanDB.nextkey());
 				} else if (cmd.equals("setOption")) {
-					BorgOption option = (BorgOption) parms.getArgs();
-					beanDB.setOption(option);
+					//BorgOption option = (BorgOption) parms.getArgs();
+					//beanDB.setOption(option);
 				} else if (cmd.equals("addObj") || cmd.equals("updateObj")) {
 					IRemoteProxy.ComposedObject agg = (IRemoteProxy.ComposedObject) parms
 							.getArgs();

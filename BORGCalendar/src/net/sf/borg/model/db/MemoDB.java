@@ -22,20 +22,76 @@ import java.util.Collection;
 
 import net.sf.borg.model.entity.Memo;
 
+/**
+ * The Interface for a Memo DB.
+ */
 public interface MemoDB {
 
+    /**
+     * Adds a memo to the database.
+     * 
+     * @param m the Memo
+     * 
+     * @throws Exception
+     */
     public void addMemo(Memo m) throws Exception;
 
+    /**
+     * Delete a memo by name.
+     * 
+     * @param name the name
+     * 
+     * @throws Exception
+     */
     public void delete(String name) throws Exception;
 
+    /**
+     * Gets all memo names form the db
+     * 
+     * @return a collection of memo names
+     * 
+     * @throws Exception
+     */
     public Collection<String> getNames() throws Exception;
 
+    /**
+     * Read all memos from the db
+     * 
+     * @return a collection of all memos
+     * 
+     * @throws Exception
+     */
     public Collection<Memo> readAll() throws Exception;
 
+    /**
+     * Read a memo by name
+     * 
+     * @param name the name
+     * 
+     * @return the memo
+     * 
+     * @throws Exception
+     */
     public Memo readMemo(String name) throws Exception;
 
+    /**
+     * Update a memo in the db.
+     * 
+     * @param m the memo
+     * 
+     * @throws Exception
+     */
     public void updateMemo(Memo m) throws Exception;
         
+    /**
+     * Gets a memo by palm id.
+     * 
+     * @param id the palm id
+     * 
+     * @return the memo
+     * 
+     * @throws Exception
+     */
     public Memo getMemoByPalmId(int id) throws Exception;
 
 }

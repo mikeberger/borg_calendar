@@ -28,6 +28,22 @@ import java.util.Collection;
  */
 public interface AppointmentDB
 {
+
+/**
+ * Gets the keys of all Appointments that are marked as Todo's.
+ * 
+ * @return the todo keys
+ * 
+ * @throws Exception the exception
+ */
 public Collection<Integer> getTodoKeys() throws Exception;
+
+/**
+ * Gets the keys of all Appointments that are marked as repeating
+ * 
+ * @return the repeat keys
+ * 
+ * @throws Exception the exception
+ */
 public Collection<Integer> getRepeatKeys() throws Exception;
 }

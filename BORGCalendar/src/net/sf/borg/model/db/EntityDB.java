@@ -26,23 +26,76 @@ import net.sf.borg.model.entity.KeyedEntity;
 
 
 /**
- *
- * @author  mbb
- */
-/*
- * interface for a database that manages DataBeans, keyed by an integer key 
+ * Interface for a class that provides basic ORM mapping for a KeyedEntity
  */
 public interface EntityDB<T extends KeyedEntity<T>>
 {
+	
+	/**
+	 * Read all KeyedEntities of a particular type from the database.
+	 * 
+	 * @return the collection of KeyedEntities
+	 * 
+	 * @throws Exception
+	 */
 	public Collection<T> readAll() throws  Exception;
+    
+    /**
+     * Read a single KeyedEntity from the database by key
+     * 
+     * @param key the key
+     * 
+     * @return the KeyedEntity
+     * 
+     * @throws Exception 
+     */
     public T readObj( int key ) throws  Exception;
+    
+    /**
+     * Return a new instance of the KeyedEntity
+     * 
+     * @return the new KeyedEntity
+     */
     public T newObj();
-    public void addObj( T bean ) throws  Exception;
-    public void updateObj( T bean ) throws  Exception;
+    
+    /**
+     * Adds a KeyedEntity to the database
+     * 
+     * @param entity the KeyedEntity
+     * 
+     * @throws Exception 
+     */
+    public void addObj( T entity ) throws  Exception;
+    
+    /**
+     * Update a KeyedEntity in the database
+     * 
+     * @param entity the KeyedEntity
+     * 
+     * @throws Exception 
+     */
+    public void updateObj( T entity ) throws  Exception;
+    
+    /**
+     * Delete a KeyedEntity from the database
+     * 
+     * @param key the key of the entity
+     * 
+     * @throws Exception
+     */
     public void delete( int key ) throws Exception;
-    public String getOption( String oname ) throws Exception;
-    public void setOption( BorgOption option ) throws Exception;
-    public Collection<BorgOption> getOptions() throws Exception;
+    
+    /**
+     * get the next available key value for this entity type
+     * 
+     * @return the next available key
+     * 
+     * @throws Exception
+     */
     public int nextkey() throws Exception;
+    
+    /**
+     * Sync with the database (likely to just be a cache flush)
+     */
     public void sync();
 }

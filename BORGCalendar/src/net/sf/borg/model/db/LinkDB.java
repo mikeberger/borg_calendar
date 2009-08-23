@@ -23,8 +23,22 @@ import java.util.Collection;
 
 import net.sf.borg.model.entity.Link;
 
+/**
+ * The Interface for a Link DB.
+ */
 public interface LinkDB
 {
+	
+	/**
+	 * Gets all links for a given Entity.
+	 * 
+	 * @param ownerkey the key of the Entity
+	 * @param ownertype the type of Entity
+	 * 
+	 * @return the collection of links
+	 * 
+	 * @throws Exception
+	 */
 	public Collection<Link> getLinks(int ownerkey, String ownertype) throws Exception;
 
 }
