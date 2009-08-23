@@ -62,7 +62,7 @@ public class TaskUndoItem extends UndoItem<Task> {
 				// add back the subtasks
 				for (SubtaskUndoItem s : subtasks)
 				{
-					s.item.setTask(item.getTaskNumber());
+					s.item.setTask(item.getKey());
 					s.executeUndo();
 				}
 			} else if (action == actionType.UPDATE) {
@@ -79,7 +79,7 @@ public class TaskUndoItem extends UndoItem<Task> {
 				
 				// we don't need to delete the subtasks separately
 				// there is a cascading delete when the task is deleted
-					TaskModel.getReference().delete(item.getTaskNumber(), true);
+					TaskModel.getReference().delete(item.getKey(), true);
 			}
 		} catch (Exception e) {
 			Errmsg.errmsg(e);

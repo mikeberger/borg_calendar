@@ -70,14 +70,14 @@ class GanttFrame extends View {
 
 	    if (dd == null)
 		dd = p.getDueDate();
-	    String tlabel = Integer.toString(t.getTaskNumber().intValue()) + "-" + t.getDescription();
+	    String tlabel = Integer.toString(t.getKey()) + "-" + t.getDescription();
 	    addChartItem(sched, tlabel, t.getStartDate(), dd);
 	    if (TaskModel.isClosed(t))
 		addChartItem(actual, tlabel, t.getStartDate(), t.getCD());
 
 	    String show_st = Prefs.getPref(PrefName.GANTT_SHOW_SUBTASKS);
 	    if (show_st.equals("true")) {
-		Collection<Subtask> sts = TaskModel.getReference().getSubTasks(t.getTaskNumber().intValue());
+		Collection<Subtask> sts = TaskModel.getReference().getSubTasks(t.getKey());
 		Iterator<Subtask> it2 = sts.iterator();
 		while (it2.hasNext()) {
 		    Subtask st = it2.next();

@@ -315,7 +315,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 				UndoLog.getReference().addItem(TaskUndoItem.recordDelete(task));
 				// subtasks are removed by cascading delete, so set undo records
 				// here
-				Collection<Subtask> coll = getSubTasks(task.getTaskNumber());
+				Collection<Subtask> coll = getSubTasks(task.getKey());
 				if (coll != null) {
 					for (Subtask st : coll) {
 						SubtaskUndoItem.recordDelete(st);
@@ -389,7 +389,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 		}
 
 		// add task to DB
-		Integer num = task.getTaskNumber();
+		Integer num = task.getKey();
 		Task indb = null;
 		if (num != null)
 			indb = getTask(num);
@@ -400,11 +400,10 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 			if (!undo || num == null) {
 				int newkey = db_.nextkey();
 				task.setKey(newkey);
-				task.setTaskNumber(new Integer(newkey));
 			}
 			db_.addObj(task);
 			if (!undo) {
-				Task t = getTask(task.getTaskNumber());
+				Task t = getTask(task.getKey());
 				UndoLog.getReference().addItem(TaskUndoItem.recordAdd(t));
 			}
 
@@ -414,10 +413,10 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 			// update close date
 			if (task.getState() != null && isClosed(task))
 				task.setCD(new Date());
-			int key = task.getTaskNumber().intValue();
+			int key = task.getKey();
 			task.setKey(key);
 			if (!undo) {
-				Task t = getTask(task.getTaskNumber());
+				Task t = getTask(task.getKey());
 				UndoLog.getReference().addItem(TaskUndoItem.recordUpdate(t));
 			}
 			db_.updateObj(task);
@@ -586,7 +585,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 								Subtask st = new Subtask();
 								st.setStartDate(new Date());
 								st.setDescription(cbs[sti]);
-								st.setTask(task.getTaskNumber());
+								st.setTask(task.getKey());
 								if (todos.indexOf(Integer.toString(sti)) != -1) {
 									st.setCloseDate(new Date());
 								}
@@ -597,7 +596,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 							Subtask st = new Subtask();
 							st.setStartDate(new Date());
 							st.setDescription(task.getUserTask1());
-							st.setTask(task.getTaskNumber());
+							st.setTask(task.getKey());
 							if (todos.indexOf("6") != -1) {
 								st.setCloseDate(new Date());
 							}
@@ -607,7 +606,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 							Subtask st = new Subtask();
 							st.setStartDate(new Date());
 							st.setDescription(task.getUserTask2());
-							st.setTask(task.getTaskNumber());
+							st.setTask(task.getKey());
 							if (todos.indexOf("7") != -1) {
 								st.setCloseDate(new Date());
 							}
@@ -617,7 +616,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 							Subtask st = new Subtask();
 							st.setStartDate(new Date());
 							st.setDescription(task.getUserTask3());
-							st.setTask(task.getTaskNumber());
+							st.setTask(task.getKey());
 							if (todos.indexOf("8") != -1) {
 								st.setCloseDate(new Date());
 							}
@@ -627,7 +626,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 							Subtask st = new Subtask();
 							st.setStartDate(new Date());
 							st.setDescription(task.getUserTask4());
-							st.setTask(task.getTaskNumber());
+							st.setTask(task.getKey());
 							if (todos.indexOf("9") != -1) {
 								st.setCloseDate(new Date());
 							}
@@ -637,7 +636,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 							Subtask st = new Subtask();
 							st.setStartDate(new Date());
 							st.setDescription(task.getUserTask5());
-							st.setTask(task.getTaskNumber());
+							st.setTask(task.getKey());
 							if (todos.indexOf("A") != -1) {
 								st.setCloseDate(new Date());
 							}
@@ -972,7 +971,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 						&& DateUtil.isAfter(t.getDueDate(), p.getDueDate())) {
 					throw new Warning(Resource
 							.getPlainResourceString("projdd_warning")
-							+ ": " + t.getTaskNumber());
+							+ ": " + t.getKey());
 				}
 			}
 

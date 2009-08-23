@@ -691,7 +691,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 				// if we get here - we are displaying this task as a row
 				// so fill in an array of objects for the row
 				Object[] ro = new Object[12];
-				ro[0] = task.getTaskNumber(); // task number
+				ro[0] = task.getKey(); // task number
 				ro[1] = task.getState(); // task state
 				ro[2] = task.getType(); // task type
 				ro[11] = task.getCategory();

@@ -162,7 +162,6 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements EntityDB<Task>, Task
     Task createFrom(ResultSet r) throws SQLException {
         Task task = new Task();
         task.setKey(r.getInt("tasknum"));
-        task.setTaskNumber(new Integer(r.getInt("tasknum")));
         task.setStartDate(r.getDate("start_date"));
         if (r.getDate("due_date") != null)
             task.setDueDate(new java.util.Date(r.getDate("due_date").getTime()));

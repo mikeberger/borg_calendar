@@ -382,7 +382,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 			if (!CategoryModel.getReference().isShown(t.getCategory()))
 				continue;
 			node.add(new DefaultMutableTreeNode(new Node("["
-					+ t.getTaskNumber() + "-" + t.getState() + "] "
+					+ t.getKey() + "-" + t.getState() + "] "
 					+ t.getDescription(), t)));
 		}
 

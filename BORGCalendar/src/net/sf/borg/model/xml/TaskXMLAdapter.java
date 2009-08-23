@@ -28,8 +28,7 @@ public class TaskXMLAdapter extends EntityXMLAdapter<Task> {
 		XTree xt = new XTree();
 		xt.name("Task");
 		xt.appendChild("KEY", Integer.toString(o.getKey()));
-		if( o.getTaskNumber() != null )
-			xt.appendChild("TaskNumber", EntityXMLAdapter.toString(o.getTaskNumber()));
+		
 		if( o.getStartDate() != null )
 			xt.appendChild("StartDate", EntityXMLAdapter.toString(o.getStartDate()));
 		if( o.getCD() != null )
@@ -75,8 +74,7 @@ public class TaskXMLAdapter extends EntityXMLAdapter<Task> {
 		String ks = xt.child("KEY").value();
 		ret.setKey( EntityXMLAdapter.toInt(ks) );
 		String val = "";
-		val = xt.child("TaskNumber").value();
-		ret.setTaskNumber( EntityXMLAdapter.toInteger(val) );
+	
 		val = xt.child("StartDate").value();
 		ret.setStartDate( EntityXMLAdapter.toDate(val) );
 		val = xt.child("CD").value();

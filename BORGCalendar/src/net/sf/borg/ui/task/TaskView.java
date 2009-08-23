@@ -1060,7 +1060,7 @@ public class TaskView extends DockableView {
 
 	private void saveSubtasks(Task task) throws Warning, Exception {
 
-		int tasknum = task.getTaskNumber().intValue();
+		int tasknum = task.getKey();
 		Iterator<Integer> it = tbd_.iterator();
 		while (it.hasNext()) {
 			Integer id = it.next();
@@ -1180,7 +1180,7 @@ public class TaskView extends DockableView {
 			TableSorter ts = (TableSorter) stable.getModel();
 			if (num.equals("NEW")) {
 
-				task.setTaskNumber(new Integer(-1));
+				task.setKey(new Integer(-1));
 				String cbs[] = TaskModel.getReference().getTaskTypes()
 						.checkBoxes((String) typebox.getSelectedItem());
 				for (int i = 0; i < cbs.length; i++) {
@@ -1193,12 +1193,12 @@ public class TaskView extends DockableView {
 				task.setState(taskmod_.getTaskTypes().getInitialState(
 						(String) typebox.getSelectedItem()));
 			} else if (num.equals("CLONE")) {
-				task.setTaskNumber(new Integer(-1));
+				task.setKey(new Integer(-1));
 				task.setState(taskmod_.getTaskTypes().getInitialState(
 						(String) typebox.getSelectedItem()));
 
 			} else {
-				task.setTaskNumber(new Integer(num));
+				task.setKey(new Integer(num));
 				task.setState((String) statebox.getSelectedItem());
 			}
 
@@ -1266,20 +1266,20 @@ public class TaskView extends DockableView {
 
 			// save the task to the DB
 			Task orig = TaskModel.getReference().getTask(
-					task.getTaskNumber().intValue());
+					task.getKey());
 			taskmod_.savetask(task);
 
-			// System.out.println(task.getTaskNumber());
+			// System.out.println(task.getKey());
 
 			if (num.equals("NEW") || num.equals("CLONE")) {
 				TaskModel.getReference().addLog(
-						task.getTaskNumber().intValue(),
+						task.getKey(),
 						Resource.getPlainResourceString("Task_Created"));
 			} else {
 				if (orig != null && !orig.getState().equals(task.getState())) {
 
 					TaskModel.getReference().addLog(
-							task.getTaskNumber().intValue(),
+							task.getKey(),
 							Resource.getPlainResourceString("State_Change")
 									+ ": " + orig.getState() + " --> "
 									+ task.getState());
@@ -1297,7 +1297,7 @@ public class TaskView extends DockableView {
 				if (orig != null && !newd.equals(oldd)) {
 
 					TaskModel.getReference().addLog(
-							task.getTaskNumber().intValue(),
+							task.getKey(),
 							Resource.getPlainResourceString("DueDate") + " "
 									+ Resource.getPlainResourceString("Change")
 									+ ": " + oldd + " --> " + newd);
@@ -1370,12 +1370,12 @@ public class TaskView extends DockableView {
 		// if we are showing an existing task - fil; in the gui fields form it
 		if (task != null) {
 			// task number
-			itemtext.setText(task.getTaskNumber().toString());
+			itemtext.setText(Integer.toString(task.getKey()));
 			itemtext.setEditable(false);
 
 			// window title - "Item N"
 			title_ = Resource.getResourceString("Item_")
-					+ task.getTaskNumber().toString();
+					+ task.getKey();
 
 			// due date
 			GregorianCalendar gc = new GregorianCalendar();
@@ -1426,7 +1426,7 @@ public class TaskView extends DockableView {
 			// add subtasks
 			if (TaskModel.getReference().hasSubTasks()) {
 				Collection<Subtask> col = TaskModel.getReference().getSubTasks(
-						task.getTaskNumber().intValue());
+						task.getKey());
 				Iterator<Subtask> it = col.iterator();
 				while (it.hasNext()) {
 					Subtask s = it.next();
@@ -1449,7 +1449,7 @@ public class TaskView extends DockableView {
 			}
 
 			try{
-				loadLog(task.getTaskNumber().intValue());
+				loadLog(task.getKey());
 			}
 			catch( Warning w){}
 			

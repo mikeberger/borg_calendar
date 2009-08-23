@@ -236,7 +236,7 @@ public class UndoTests {
 		Collection<Task> coll = TaskModel.getReference().getTasks();
 		assertTrue( "Task DB should contain 1 task", coll.size() == 1);
 		
-		Integer taskid = coll.iterator().next().getTaskNumber();
+		Integer taskid = coll.iterator().next().getKey();
 		Subtask st1 = new Subtask();
 		st1.setDescription("st1");
 		st1.setStartDate(new Date());

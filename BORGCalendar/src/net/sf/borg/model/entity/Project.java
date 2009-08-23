@@ -159,6 +159,8 @@ public class Project extends KeyedEntity<Project> implements CalendarEntity,java
 	 */
 	public String getColor()
 	{
+		// for showing on calendar
+		// legacy color name - maps to a user-defined color
 		return "navy";
 	}
 	
@@ -189,6 +191,7 @@ public class Project extends KeyedEntity<Project> implements CalendarEntity,java
 	 * @see net.sf.borg.model.entity.CalendarEntity#getText()
 	 */
 	public String getText(){
+		// return the text as it should appear on the calendar
 		 String show_abb = Prefs.getPref(PrefName.TASK_SHOW_ABBREV);
 		 String abb = "";
          if (show_abb.equals("true"))
