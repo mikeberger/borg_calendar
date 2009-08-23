@@ -238,7 +238,7 @@ public class TaskView extends DockableView {
 	}
 
 	static public String getProjectString(Project p) {
-		return p.getId().toString() + ":" + p.getDescription();
+		return p.getKey() + ":" + p.getDescription();
 	}
 
 	private LinkPanel attPanel;

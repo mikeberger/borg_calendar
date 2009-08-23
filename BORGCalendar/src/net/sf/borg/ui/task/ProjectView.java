@@ -82,7 +82,7 @@ public class ProjectView extends DockableView {
 	}
 
 	static public String getProjectString(Project p) {
-		return p.getId().toString() + ":" + p.getDescription();
+		return p.getKey() + ":" + p.getDescription();
 	}
 
 	private JComboBox catbox = null;
@@ -461,7 +461,7 @@ public class ProjectView extends DockableView {
 				if (!it.hasNext())
 					break;
 				Project p = it.next();
-				map.put("pid" + i, p.getId());
+				map.put("pid" + i, p.getKey());
 			}
 			RunReport.runReport("proj", map);
 		} catch (NoClassDefFoundError r) {
@@ -495,15 +495,12 @@ public class ProjectView extends DockableView {
 
 			if (num.equals("NEW")) {
 
-				p.setId(new Integer(-1));
 				p.setKey(-1);
 
 			} else if (num.equals("CLONE")) {
-				p.setId(new Integer(-1));
 				p.setKey(-1);
 
 			} else {
-				p.setId(new Integer(num));
 				p.setKey(Integer.parseInt(num));
 
 			}
@@ -544,7 +541,7 @@ public class ProjectView extends DockableView {
 			}
 
 			taskmod_.saveProject(p);
-			p.setKey(p.getId().intValue());
+			p.setKey(p.getKey());
 
 			showProject(T_CHANGE, p, null);
 		} catch (Warning w) {
@@ -567,7 +564,7 @@ public class ProjectView extends DockableView {
 			Iterator<Project> pi = projects.iterator();
 			while (pi.hasNext()) {
 				Project p2 = pi.next();
-				if ((p == null || p.getId().intValue() != p2.getId().intValue())
+				if ((p == null || p.getKey() != p2.getKey())
 						&& p2.getStatus().equals(
 								Resource.getPlainResourceString("OPEN")))
 					projBox.addItem(getProjectString(p2));
@@ -577,11 +574,11 @@ public class ProjectView extends DockableView {
 		// if we are showing an existing task - fil; in the gui fields form it
 		if (p != null) {
 			// task number
-			itemtext.setText(p.getId().toString());
+			itemtext.setText(Integer.toString(p.getKey()));
 			itemtext.setEditable(false);
 
 			// window title - "Item N"
-			title_ = Resource.getResourceString("Item_") + p.getId().toString();
+			title_ = Resource.getResourceString("Item_") + p.getKey();
 
 			// due date
 			GregorianCalendar gc = new GregorianCalendar();
@@ -615,7 +612,7 @@ public class ProjectView extends DockableView {
 			statebox.setEditable(false);
 
 			Collection<Task> ptasks = TaskModel.getReference().getTasks(
-					p.getId().intValue());
+					p.getKey());
 			totalText.setText(Integer.toString(ptasks.size()));
 			int open = 0;
 			Iterator<Task> it = ptasks.iterator();

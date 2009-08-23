@@ -28,8 +28,7 @@ public class ProjectXMLAdapter extends EntityXMLAdapter<Project> {
 		XTree xt = new XTree();
 		xt.name("Project");
 		xt.appendChild("KEY", Integer.toString(o.getKey()));
-		if( o.getId() != null )
-			xt.appendChild("Id", EntityXMLAdapter.toString(o.getId()));
+		
 		if( o.getStartDate() != null )
 			xt.appendChild("StartDate", EntityXMLAdapter.toString(o.getStartDate()));
 		if( o.getDueDate() != null )
@@ -51,8 +50,7 @@ public class ProjectXMLAdapter extends EntityXMLAdapter<Project> {
 		String ks = xt.child("KEY").value();
 		ret.setKey( EntityXMLAdapter.toInt(ks) );
 		String val = "";
-		val = xt.child("Id").value();
-		ret.setId( EntityXMLAdapter.toInteger(val) );
+		
 		val = xt.child("StartDate").value();
 		ret.setStartDate( EntityXMLAdapter.toDate(val) );
 		val = xt.child("DueDate").value();

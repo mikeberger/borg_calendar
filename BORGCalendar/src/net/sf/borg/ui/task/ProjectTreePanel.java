@@ -342,7 +342,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 			try {
 				ProjectView pv;
 				try {
-					pv = new ProjectView(null, ProjectView.T_ADD, p.getId());
+					pv = new ProjectView(null, ProjectView.T_ADD, p.getKey());
 					view_scroll.setViewportView(pv);
 				} catch (Exception e) {
 					Errmsg.errmsg(e);
@@ -362,7 +362,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 		if (o instanceof Project) {
 			Project p = (Project) o;
 			try {
-				TaskView pv = new TaskView(null, TaskView.T_ADD, p.getId());
+				TaskView pv = new TaskView(null, TaskView.T_ADD, p.getKey());
 				view_scroll.setViewportView(pv);
 			} catch (Exception e1) {
 				Errmsg.errmsg(e1);
@@ -375,7 +375,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 	private void addProjectChildren(Project p, DefaultMutableTreeNode node)
 			throws Exception {
 		Collection<?> tasks = TaskModel.getReference().getTasks(
-				p.getId().intValue());
+				p.getKey());
 		Iterator<?> it2 = tasks.iterator();
 		while (it2.hasNext()) {
 			Task t = (Task) it2.next();
@@ -387,7 +387,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 		}
 
 		Collection<?> subpcoll = TaskModel.getReference().getSubProjects(
-				p.getId().intValue());
+				p.getKey());
 		it2 = subpcoll.iterator();
 		while (it2.hasNext()) {
 			Project sp = (Project) it2.next();

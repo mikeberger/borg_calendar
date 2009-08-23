@@ -505,7 +505,7 @@ public class TodoView extends DockableView implements Prefs.Listener {
 					String abb = "";
 
 					if (show_abb.equals("true"))
-						abb = "PR" + pj.getId().toString() + " ";
+						abb = "PR" + pj.getKey() + " ";
 					String btstring = abb + pj.getDescription();
 
 					Object[] ro = new Object[5];
@@ -682,7 +682,7 @@ public class TodoView extends DockableView implements Prefs.Listener {
 					AppointmentModel.getReference().do_todo(key, del);
 				} else if (o instanceof Project) {
 					Project p = (Project) o;
-					TaskModel.getReference().closeProject(p.getId().intValue());
+					TaskModel.getReference().closeProject(p.getKey());
 				} else if (o instanceof Task) {
 					Task t = (Task) o;
 					TaskModel.getReference()

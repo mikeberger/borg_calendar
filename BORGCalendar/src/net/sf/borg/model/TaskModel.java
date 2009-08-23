@@ -789,7 +789,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 		Iterator<Project> it = children.iterator();
 		while (it.hasNext()) {
 			Project p = it.next();
-			addSubProjectsToCollection(c, p.getId().intValue());
+			addSubProjectsToCollection(c, p.getKey());
 		}
 
 	}
@@ -964,9 +964,9 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 					.getPlainResourceString("SubtaskNotSupported"));
 
 		// validation that task due dates are before project due date
-		if (p.getId() != null && p.getId().intValue() != -1) {
+		if (p.getKey() != -1) {
 			for (Task t : TaskModel.getReference().getTasks(
-					p.getId().intValue())) {
+					p.getKey())) {
 				if (p.getDueDate() != null && t.getDueDate() != null
 						&& !TaskModel.isClosed(t)
 						&& DateUtil.isAfter(t.getDueDate(), p.getDueDate())) {
@@ -977,13 +977,13 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 			}
 
 			for (Project child : TaskModel.getReference().getSubProjects(
-					p.getId().intValue())) {
+					p.getKey())) {
 				if (p.getDueDate() != null && child.getDueDate() != null
 						&& !TaskModel.isClosed(child)
 						&& DateUtil.isAfter(child.getDueDate(), p.getDueDate())) {
 					throw new Warning(Resource
 							.getPlainResourceString("projchild_warning")
-							+ ": " + child.getId().intValue());
+							+ ": " + child.getKey());
 				}
 			}
 		}
@@ -1001,12 +1001,11 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 			}
 		}
 
-		if (p.getId() != null
-				&& p.getStatus().equals(
+		if ( p.getStatus().equals(
 						Resource.getPlainResourceString("CLOSED"))) {
 			// make sure that all tasks are closed
 			for (Task pt : TaskModel.getReference().getTasks(
-					p.getId().intValue())) {
+					p.getKey())) {
 				if (!isClosed(pt)) {
 					throw new Warning(Resource
 							.getPlainResourceString("close_proj_warn"));
@@ -1015,17 +1014,17 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 		}
 
 		TaskDB sdb = (TaskDB) db_;
-		if (p.getId() == null || p.getId().intValue() <= 0) {
-			if (!undo || p.getId() == null)
-				p.setId(new Integer(sdb.nextProjectKey()));
+		if ( p.getKey() <= 0) {
+			if (!undo )
+				p.setKey(sdb.nextProjectKey());
 			sdb.addProject(p);
 			if (!undo) {
-				Project t = getProject(p.getId());
+				Project t = getProject(p.getKey());
 				UndoLog.getReference().addItem(ProjectUndoItem.recordAdd(t));
 			}
 		} else {
 			if (!undo) {
-				Project t = getProject(p.getId());
+				Project t = getProject(p.getKey());
 				UndoLog.getReference().addItem(ProjectUndoItem.recordUpdate(t));
 			}
 			sdb.updateProject(p);

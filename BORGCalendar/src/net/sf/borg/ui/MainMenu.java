@@ -885,15 +885,15 @@ class MainMenu {
 					if (p == null)
 						return;
 					Map<String, Integer> map = new HashMap<String, Integer>();
-					map.put("pid", p.getId());
+					map.put("pid", p.getKey());
 					Collection<?> allChildren = TaskModel.getReference()
-							.getAllSubProjects(p.getId().intValue());
+							.getAllSubProjects(p.getKey());
 					Iterator<?> it = allChildren.iterator();
 					for (int i = 2; i <= 10; i++) {
 						if (!it.hasNext())
 							break;
 						Project sp = (Project) it.next();
-						map.put("pid" + i, sp.getId());
+						map.put("pid" + i, sp.getKey());
 					}
 					RunReport.runReport("proj", map);
 				} catch (NoClassDefFoundError r) {
@@ -967,7 +967,6 @@ class MainMenu {
 			public void menuDeselected(MenuEvent arg0) {
 			}
 
-			@SuppressWarnings("unchecked")
 			@Override
 			public void menuSelected(MenuEvent e) {
 				menu.removeAll();

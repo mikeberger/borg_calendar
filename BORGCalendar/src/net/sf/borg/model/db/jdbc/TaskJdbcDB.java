@@ -532,7 +532,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements EntityDB<Task>, Task
         PreparedStatement stmt = connection_.prepareStatement("INSERT INTO projects ( id,start_date, due_date,"
                 + " description, category, status, parent ) VALUES " + "( ?, ?, ?, ?, ?, ?, ?)");
 
-        stmt.setInt(1, p.getId().intValue());
+        stmt.setInt(1, p.getKey());
 
         java.util.Date sd = p.getStartDate();
         if (sd != null)
@@ -685,7 +685,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements EntityDB<Task>, Task
         PreparedStatement stmt = connection_.prepareStatement("UPDATE projects SET start_date = ?, due_date = ?,"
                 + " description = ?, category = ?, status = ?, parent = ?  WHERE id = ?");
 
-        stmt.setInt(7, s.getId().intValue());
+        stmt.setInt(7, s.getKey());
 
         java.util.Date sd = s.getStartDate();
         if (sd != null)
@@ -721,7 +721,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements EntityDB<Task>, Task
      */
     private Project createProject(ResultSet r) throws SQLException {
         Project s = new Project();
-        s.setId(new Integer(r.getInt("id")));
+        s.setKey(r.getInt("id"));
         if (r.getTimestamp("due_date") != null)
             s.setDueDate(new java.util.Date(r.getTimestamp("due_date").getTime()));
         if (r.getTimestamp("start_date") != null)
@@ -734,8 +734,6 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements EntityDB<Task>, Task
             s.setParent(null);
         else
             s.setParent(new Integer(parent));
-
-        s.setKey(s.getId().intValue());
 
         return s;
     }

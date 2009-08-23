@@ -308,7 +308,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 						Project ap = BeanSelector.selectProject();
 						if( ap != null )
 						{
-							LinkModel.getReference().addLink(owner_, ap.getId().toString(), LinkModel.PROJECT);
+							LinkModel.getReference().addLink(owner_, Integer.toString(ap.getKey()), LinkModel.PROJECT);
 						}
 					}
 					else if( selectedValue.equals(Resource.getPlainResourceString("task")))

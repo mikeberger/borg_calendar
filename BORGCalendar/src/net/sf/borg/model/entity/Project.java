@@ -33,23 +33,6 @@ public class Project extends KeyedEntity<Project> implements CalendarEntity,java
 	
 	private static final long serialVersionUID = -3250115693306817331L;
 	
-	/** The Id_. */
-	private Integer Id_;
-	
-	/**
-	 * Gets the id.
-	 * 
-	 * @return the id
-	 */
-	public Integer getId() { return( Id_ ); }
-	
-	/**
-	 * Sets the id.
-	 * 
-	 * @param xx the new id
-	 */
-	public void setId( Integer xx ){ Id_ = xx; }
-
 	/** The Start date_. */
 	private java.util.Date StartDate_;
 	
@@ -162,7 +145,6 @@ public class Project extends KeyedEntity<Project> implements CalendarEntity,java
 	protected Project clone() {
 		Project dst = new Project();
 		dst.setKey( getKey());
-		dst.setId( getId() );
 		dst.setStartDate( getStartDate() );
 		dst.setDueDate( getDueDate() );
 		dst.setDescription( getDescription() );
@@ -210,7 +192,7 @@ public class Project extends KeyedEntity<Project> implements CalendarEntity,java
 		 String show_abb = Prefs.getPref(PrefName.TASK_SHOW_ABBREV);
 		 String abb = "";
          if (show_abb.equals("true"))
-             abb = "PR" + getId().toString() + " ";
+             abb = "PR" + getKey() + " ";
          String de = abb + getDescription();
          String tx = de.replace('\n', ' ');
          return tx;

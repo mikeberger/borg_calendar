@@ -213,13 +213,13 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 				// if we get here - we are displaying this task as a row
 				// so fill in an array of objects for the row
 				Object[] ro = new Object[10];
-				ro[0] = p.getId();
+				ro[0] = p.getKey();
 				ro[1] = p.getCategory();
 				ro[2] = p.getStatus();
 				ro[3] = p.getStartDate();
 				ro[4] = p.getDueDate();
 				Collection<Task> ptasks = TaskModel.getReference().getTasks(
-						p.getId().intValue());
+						p.getKey());
 				ro[5] = new Integer(ptasks.size());
 				int open = 0;
 				Iterator<Task> it = ptasks.iterator();
@@ -823,7 +823,7 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 				if (!it.hasNext())
 					break;
 				Project p = it.next();
-				map.put("pid" + i, p.getId());
+				map.put("pid" + i, p.getKey());
 			}
 			RunReport.runReport("proj", map);
 		} catch (NoClassDefFoundError r) {

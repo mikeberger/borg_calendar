@@ -35,7 +35,7 @@ public class ProjectUndoItem extends UndoItem<Project> {
 			} else if (action == actionType.UPDATE) {
 				TaskModel.getReference().saveProject(item, true);
 			} else if (action == actionType.ADD) {
-					TaskModel.getReference().deleteProject(item.getId());
+					TaskModel.getReference().deleteProject(item.getKey());
 			}
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
