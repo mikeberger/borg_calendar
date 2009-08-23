@@ -31,9 +31,9 @@ import net.sf.borg.common.XTree;
 import net.sf.borg.model.db.EntityDB;
 import net.sf.borg.model.db.jdbc.AddrJdbcDB;
 import net.sf.borg.model.entity.Address;
-import net.sf.borg.model.entity.AddressXMLAdapter;
 import net.sf.borg.model.undo.AddressUndoItem;
 import net.sf.borg.model.undo.UndoLog;
+import net.sf.borg.model.xml.AddressXMLAdapter;
 
 public class AddressModel extends Model {
 

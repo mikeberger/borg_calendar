@@ -45,9 +45,9 @@ import net.sf.borg.model.db.AppointmentDB;
 import net.sf.borg.model.db.EntityDB;
 import net.sf.borg.model.db.jdbc.ApptJdbcDB;
 import net.sf.borg.model.entity.Appointment;
-import net.sf.borg.model.entity.AppointmentXMLAdapter;
 import net.sf.borg.model.undo.AppointmentUndoItem;
 import net.sf.borg.model.undo.UndoLog;
+import net.sf.borg.model.xml.AppointmentXMLAdapter;
 
 public class AppointmentModel extends Model implements Model.Listener,
 		CategorySource {

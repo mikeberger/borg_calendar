@@ -41,10 +41,10 @@ import net.sf.borg.model.entity.Address;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.KeyedEntity;
 import net.sf.borg.model.entity.Link;
-import net.sf.borg.model.entity.LinkXMLAdapter;
 import net.sf.borg.model.entity.Memo;
 import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Task;
+import net.sf.borg.model.xml.LinkXMLAdapter;
 
 public class LinkModel extends Model {
 

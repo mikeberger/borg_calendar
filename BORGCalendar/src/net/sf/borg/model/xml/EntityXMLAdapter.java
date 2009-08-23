@@ -16,7 +16,7 @@
  *
  * Copyright 2003 by Mike Berger
  */
-package net.sf.borg.model.entity;
+package net.sf.borg.model.xml;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -24,14 +24,9 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 
 import net.sf.borg.common.XTree;
+import net.sf.borg.model.entity.KeyedEntity;
 
-/**
- * 
- * @author mbb
- */
-// BeanXMLAdapters are used by EntityDB to convert KeyedBeans to and from Row
-// objects
-// or XML
+
 abstract public class EntityXMLAdapter<T extends KeyedEntity<T>> {
 
 	abstract public XTree toXml(T bean);

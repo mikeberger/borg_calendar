@@ -44,17 +44,17 @@ import net.sf.borg.model.db.TaskDB;
 import net.sf.borg.model.db.jdbc.JdbcDB;
 import net.sf.borg.model.db.jdbc.TaskJdbcDB;
 import net.sf.borg.model.entity.Project;
-import net.sf.borg.model.entity.ProjectXMLAdapter;
 import net.sf.borg.model.entity.Subtask;
-import net.sf.borg.model.entity.SubtaskXMLAdapter;
 import net.sf.borg.model.entity.Task;
-import net.sf.borg.model.entity.TaskXMLAdapter;
 import net.sf.borg.model.entity.Tasklog;
-import net.sf.borg.model.entity.TasklogXMLAdapter;
 import net.sf.borg.model.undo.ProjectUndoItem;
 import net.sf.borg.model.undo.SubtaskUndoItem;
 import net.sf.borg.model.undo.TaskUndoItem;
 import net.sf.borg.model.undo.UndoLog;
+import net.sf.borg.model.xml.ProjectXMLAdapter;
+import net.sf.borg.model.xml.SubtaskXMLAdapter;
+import net.sf.borg.model.xml.TaskXMLAdapter;
+import net.sf.borg.model.xml.TasklogXMLAdapter;
 
 public class TaskModel extends Model implements Model.Listener, Transactional,
 		CategorySource {

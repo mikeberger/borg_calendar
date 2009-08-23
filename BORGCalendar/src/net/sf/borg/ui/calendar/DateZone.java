@@ -35,7 +35,7 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.common.XTree;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.entity.Appointment;
-import net.sf.borg.model.entity.AppointmentXMLAdapter;
+import net.sf.borg.model.xml.AppointmentXMLAdapter;
 import net.sf.borg.ui.MultiView;
 
 class DateZone {

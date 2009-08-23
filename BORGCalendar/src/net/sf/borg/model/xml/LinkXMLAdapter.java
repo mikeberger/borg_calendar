@@ -16,43 +16,43 @@
  *
  * Copyright 2003 by Mike Berger
  */
-package net.sf.borg.model.entity;
+package net.sf.borg.model.xml;
 
 import net.sf.borg.common.XTree;
-public class TasklogXMLAdapter extends EntityXMLAdapter<Tasklog> {
+import net.sf.borg.model.entity.Link;
+public class LinkXMLAdapter extends EntityXMLAdapter<Link> {
 
-	public XTree toXml( Tasklog o )
+	public XTree toXml( Link o )
 	{
 		
 		XTree xt = new XTree();
-		xt.name("Tasklog");
+		xt.name("Link");
 		xt.appendChild("KEY", Integer.toString(o.getKey()));
-		if( o.getId() != null )
-			xt.appendChild("Id", EntityXMLAdapter.toString(o.getId()));
-		if( o.getlogTime() != null )
-			xt.appendChild("logTime", EntityXMLAdapter.toString(o.getlogTime()));
-		if( o.getDescription() != null && !o.getDescription().equals(""))
-			xt.appendChild("Description", o.getDescription());
-		if( o.getTask() != null )
-			xt.appendChild("Task", EntityXMLAdapter.toString(o.getTask()));
+		if( o.getLinkType() != null )
+			xt.appendChild("LinkType", o.getLinkType());
+		if( o.getOwnerKey() != null )
+			xt.appendChild("OwnerKey", EntityXMLAdapter.toString(o.getOwnerKey()));
+		if( o.getOwnerType() != null )
+			xt.appendChild("OwnerType", o.getOwnerType());
+		if( o.getPath() != null )
+			xt.appendChild("Path", o.getPath());
 		return( xt );
 	}
 
-	public Tasklog fromXml( XTree xt )
+	public Link fromXml( XTree xt )
 	{
-		Tasklog ret = new Tasklog();
+		Link ret = new Link();
 		String ks = xt.child("KEY").value();
 		ret.setKey( EntityXMLAdapter.toInt(ks) );
 		String val = "";
-		val = xt.child("Id").value();
-		ret.setId( EntityXMLAdapter.toInteger(val) );
-		val = xt.child("logTime").value();
-		ret.setlogTime( EntityXMLAdapter.toDate(val) );
-		val = xt.child("Description").value();
-		if( !val.equals("") )
-			ret.setDescription( val );
-		val = xt.child("Task").value();
-		ret.setTask( EntityXMLAdapter.toInteger(val) );
+		val = xt.child("LinkType").value();
+		ret.setLinkType( val );
+		val = xt.child("OwnerKey").value();
+		ret.setOwnerKey( EntityXMLAdapter.toInteger(val) );
+		val = xt.child("OwnerType").value();
+		ret.setOwnerType( val );
+		val = xt.child("Path").value();
+		ret.setPath( val );
 		return( ret );
 	}
 }

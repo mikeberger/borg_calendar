@@ -54,7 +54,7 @@ import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.ReminderTimes;
 import net.sf.borg.model.Repeat;
 import net.sf.borg.model.entity.Appointment;
-import net.sf.borg.model.entity.AppointmentXMLAdapter;
+import net.sf.borg.model.xml.AppointmentXMLAdapter;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.link.LinkPanel;

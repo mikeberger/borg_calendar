@@ -16,42 +16,44 @@
  *
  * Copyright 2003 by Mike Berger
  */
-package net.sf.borg.model.entity;
+package net.sf.borg.model.xml;
 
 import net.sf.borg.common.XTree;
-public class LinkXMLAdapter extends EntityXMLAdapter<Link> {
+import net.sf.borg.model.entity.Tasklog;
+public class TasklogXMLAdapter extends EntityXMLAdapter<Tasklog> {
 
-	public XTree toXml( Link o )
+	public XTree toXml( Tasklog o )
 	{
 		
 		XTree xt = new XTree();
-		xt.name("Link");
+		xt.name("Tasklog");
 		xt.appendChild("KEY", Integer.toString(o.getKey()));
-		if( o.getLinkType() != null )
-			xt.appendChild("LinkType", o.getLinkType());
-		if( o.getOwnerKey() != null )
-			xt.appendChild("OwnerKey", EntityXMLAdapter.toString(o.getOwnerKey()));
-		if( o.getOwnerType() != null )
-			xt.appendChild("OwnerType", o.getOwnerType());
-		if( o.getPath() != null )
-			xt.appendChild("Path", o.getPath());
+		if( o.getId() != null )
+			xt.appendChild("Id", EntityXMLAdapter.toString(o.getId()));
+		if( o.getlogTime() != null )
+			xt.appendChild("logTime", EntityXMLAdapter.toString(o.getlogTime()));
+		if( o.getDescription() != null && !o.getDescription().equals(""))
+			xt.appendChild("Description", o.getDescription());
+		if( o.getTask() != null )
+			xt.appendChild("Task", EntityXMLAdapter.toString(o.getTask()));
 		return( xt );
 	}
 
-	public Link fromXml( XTree xt )
+	public Tasklog fromXml( XTree xt )
 	{
-		Link ret = new Link();
+		Tasklog ret = new Tasklog();
 		String ks = xt.child("KEY").value();
 		ret.setKey( EntityXMLAdapter.toInt(ks) );
 		String val = "";
-		val = xt.child("LinkType").value();
-		ret.setLinkType( val );
-		val = xt.child("OwnerKey").value();
-		ret.setOwnerKey( EntityXMLAdapter.toInteger(val) );
-		val = xt.child("OwnerType").value();
-		ret.setOwnerType( val );
-		val = xt.child("Path").value();
-		ret.setPath( val );
+		val = xt.child("Id").value();
+		ret.setId( EntityXMLAdapter.toInteger(val) );
+		val = xt.child("logTime").value();
+		ret.setlogTime( EntityXMLAdapter.toDate(val) );
+		val = xt.child("Description").value();
+		if( !val.equals("") )
+			ret.setDescription( val );
+		val = xt.child("Task").value();
+		ret.setTask( EntityXMLAdapter.toInteger(val) );
 		return( ret );
 	}
 }

@@ -16,9 +16,10 @@
  *
  * Copyright 2003 by Mike Berger
  */
-package net.sf.borg.model.entity;
+package net.sf.borg.model.xml;
 
 import net.sf.borg.common.XTree;
+import net.sf.borg.model.entity.Memo;
 public class MemoXMLAdapter extends EntityXMLAdapter<Memo> {
 
 	public XTree toXml( Memo o )
