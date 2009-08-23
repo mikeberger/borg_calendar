@@ -27,8 +27,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import net.sf.borg.model.beans.Memo;
 import net.sf.borg.model.db.MemoDB;
+import net.sf.borg.model.entity.Memo;
 
 public class MemoJdbcDB extends JdbcDB implements MemoDB {
 

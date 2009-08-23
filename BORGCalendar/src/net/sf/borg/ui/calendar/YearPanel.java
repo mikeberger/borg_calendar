@@ -44,7 +44,7 @@ import net.sf.borg.common.Prefs;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Day;
 import net.sf.borg.model.Model;
-import net.sf.borg.model.beans.CalendarBean;
+import net.sf.borg.model.entity.CalendarEntity;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.NavPanel;
 import net.sf.borg.ui.Navigator;
@@ -255,7 +255,7 @@ public class YearPanel extends JPanel implements Printable {
 								Color c = new Color(Prefs.getIntPref(PrefName.UCS_DEFAULT));
 
 								if (di != null) {
-									Collection<CalendarBean> appts = di.getItems();
+									Collection<CalendarEntity> appts = di.getItems();
 									if (appts != null && !appts.isEmpty()) {
 										bbg = Color.pink;
 									}

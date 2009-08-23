@@ -29,18 +29,18 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import net.sf.borg.model.beans.Project;
-import net.sf.borg.model.beans.Subtask;
-import net.sf.borg.model.beans.Task;
-import net.sf.borg.model.beans.Tasklog;
-import net.sf.borg.model.db.BeanDB;
+import net.sf.borg.model.db.EntityDB;
 import net.sf.borg.model.db.TaskDB;
+import net.sf.borg.model.entity.Project;
+import net.sf.borg.model.entity.Subtask;
+import net.sf.borg.model.entity.Task;
+import net.sf.borg.model.entity.Tasklog;
 
 /**
  * 
  * this is the JDBC layer for access to the task table
  */
-public class TaskJdbcDB extends JdbcBeanDB<Task> implements BeanDB<Task>, TaskDB {
+public class TaskJdbcDB extends JdbcBeanDB<Task> implements EntityDB<Task>, TaskDB {
 
 
     public void addObj(Task task) throws Exception {

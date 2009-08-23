@@ -32,14 +32,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
-import net.sf.borg.model.beans.KeyedBean;
+import net.sf.borg.model.entity.KeyedEntity;
 
 /**
  * 
  * @author mberger
  */
 // JdbcBeanDB extends JdbcDB to add support for KeyedBeans including caching
-abstract class JdbcBeanDB<T extends KeyedBean<T>> extends JdbcDB {
+abstract class JdbcBeanDB<T extends KeyedEntity<T>> extends JdbcDB {
 
 	// BORG needs its own caching. BORG rebuilds the map of DB data often
 	// and going to the DB is too expensive. If BORG is changed to support

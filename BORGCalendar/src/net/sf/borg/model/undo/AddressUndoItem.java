@@ -20,7 +20,7 @@ package net.sf.borg.model.undo;
 
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.AddressModel;
-import net.sf.borg.model.beans.Address;
+import net.sf.borg.model.entity.Address;
 
 public class AddressUndoItem extends UndoItem<Address> {
 

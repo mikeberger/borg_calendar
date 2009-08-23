@@ -23,7 +23,7 @@ import java.util.Stack;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.TaskModel;
-import net.sf.borg.model.beans.Project;
+import net.sf.borg.model.entity.Project;
 
 public class ProjectUndoItem extends UndoItem<Project> {
 

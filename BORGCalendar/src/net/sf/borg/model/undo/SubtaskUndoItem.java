@@ -21,7 +21,7 @@ package net.sf.borg.model.undo;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.TaskModel;
-import net.sf.borg.model.beans.Subtask;
+import net.sf.borg.model.entity.Subtask;
 
 public class SubtaskUndoItem extends UndoItem<Subtask> {
 

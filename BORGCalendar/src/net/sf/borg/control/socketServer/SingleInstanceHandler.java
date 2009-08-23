@@ -25,13 +25,13 @@ import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.BorgOption;
 import net.sf.borg.model.MemoModel;
-import net.sf.borg.model.beans.Address;
-import net.sf.borg.model.beans.Appointment;
-import net.sf.borg.model.beans.KeyedBean;
-import net.sf.borg.model.beans.Memo;
 import net.sf.borg.model.db.AppointmentDB;
-import net.sf.borg.model.db.BeanDB;
+import net.sf.borg.model.db.EntityDB;
 import net.sf.borg.model.db.MemoDB;
+import net.sf.borg.model.entity.Address;
+import net.sf.borg.model.entity.Appointment;
+import net.sf.borg.model.entity.KeyedEntity;
+import net.sf.borg.model.entity.Memo;
 
 /**
  * The server-side component of the BORG remote invocation framework. This is
@@ -80,7 +80,7 @@ public class SingleInstanceHandler {
 				}
 
 			} else {
-				BeanDB beanDB = getBeanDB(parms);
+				EntityDB beanDB = getBeanDB(parms);
 
 				if (cmd.equals("readAll")) {
 					result = beanDB.readAll();
@@ -107,7 +107,7 @@ public class SingleInstanceHandler {
 				} else if (cmd.equals("addObj") || cmd.equals("updateObj")) {
 					IRemoteProxy.ComposedObject agg = (IRemoteProxy.ComposedObject) parms
 							.getArgs();
-					KeyedBean bean = (KeyedBean) agg.getO1();
+					KeyedEntity bean = (KeyedEntity) agg.getO1();
 					
 					if (cmd.equals("addObj"))
 						beanDB.addObj(bean);
@@ -131,7 +131,7 @@ public class SingleInstanceHandler {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static BeanDB getBeanDB(IRemoteProxy.Parms parms) throws Exception {
+	private static EntityDB getBeanDB(IRemoteProxy.Parms parms) throws Exception {
 
 		if (parms.getMyClass() == Address.class) {
 			return AddressModel.getReference().getDB();

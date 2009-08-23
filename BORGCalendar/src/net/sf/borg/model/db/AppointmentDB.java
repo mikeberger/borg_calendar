@@ -23,7 +23,7 @@ import java.util.Collection;
 
 
 /**
- * A {@link BeanDB BeanDB} subclass which allows efficient retrieval of
+ * A {@link EntityDB EntityDB} subclass which allows efficient retrieval of
  * appointment ToDo and Repeat keys.
  */
 public interface AppointmentDB

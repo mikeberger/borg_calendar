@@ -59,7 +59,7 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.control.EmailReminder;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.TaskModel;
-import net.sf.borg.model.beans.Appointment;
+import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.ui.DockableView;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.util.DateDialog;

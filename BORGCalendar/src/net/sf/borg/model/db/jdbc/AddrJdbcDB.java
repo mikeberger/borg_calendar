@@ -26,15 +26,15 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import net.sf.borg.model.beans.Address;
-import net.sf.borg.model.db.BeanDB;
+import net.sf.borg.model.db.EntityDB;
+import net.sf.borg.model.entity.Address;
 
 
 /**
  *
  * this is the JDBC layer for access to the addresses table
  */
-public class AddrJdbcDB extends JdbcBeanDB<Address> implements BeanDB<Address>
+public class AddrJdbcDB extends JdbcBeanDB<Address> implements EntityDB<Address>
 {         
     
     public void addObj(Address addr) throws Exception

@@ -53,8 +53,8 @@ import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Day;
 import net.sf.borg.model.Model;
 import net.sf.borg.model.TaskModel;
-import net.sf.borg.model.beans.Appointment;
-import net.sf.borg.model.beans.CalendarBean;
+import net.sf.borg.model.entity.Appointment;
+import net.sf.borg.model.entity.CalendarEntity;
 import net.sf.borg.ui.NavPanel;
 import net.sf.borg.ui.Navigator;
 
@@ -290,7 +290,7 @@ public class DayPanel extends JPanel implements Printable {
 							.get(Calendar.MONTH), cal.get(Calendar.DATE),
 							showpub, showpriv, true);
 
-					Iterator<CalendarBean> it = di.getItems().iterator();
+					Iterator<CalendarEntity> it = di.getItems().iterator();
 
 					// determine Y coord for non-scheduled appts (notes)
 					// they will be above the timed appt area
@@ -298,7 +298,7 @@ public class DayPanel extends JPanel implements Printable {
 
 					// loop through appts
 					while (it.hasNext()) {
-						CalendarBean appt = it.next();
+						CalendarEntity appt = it.next();
 
 						Date d = appt.getDate();
 						if (d == null)

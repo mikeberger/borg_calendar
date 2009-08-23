@@ -20,7 +20,7 @@ package net.sf.borg.model.undo;
 
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.MemoModel;
-import net.sf.borg.model.beans.Memo;
+import net.sf.borg.model.entity.Memo;
 
 public class MemoUndoItem extends UndoItem<Memo> {
 

@@ -51,7 +51,7 @@ import net.sf.borg.common.IOHelper;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.MemoModel;
 import net.sf.borg.model.Model;
-import net.sf.borg.model.beans.Memo;
+import net.sf.borg.model.entity.Memo;
 import net.sf.borg.ui.util.StripedTable;
 import net.sf.borg.ui.util.TableSorter;
 

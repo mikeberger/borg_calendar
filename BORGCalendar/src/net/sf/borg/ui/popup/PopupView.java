@@ -47,7 +47,7 @@ import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.ReminderTimes;
-import net.sf.borg.model.beans.Appointment;
+import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.ui.View;
 
 /**

@@ -22,7 +22,7 @@ package net.sf.borg.model.db;
 import java.util.Collection;
 
 import net.sf.borg.model.BorgOption;
-import net.sf.borg.model.beans.KeyedBean;
+import net.sf.borg.model.entity.KeyedEntity;
 
 
 /**
@@ -32,7 +32,7 @@ import net.sf.borg.model.beans.KeyedBean;
 /*
  * interface for a database that manages DataBeans, keyed by an integer key 
  */
-public interface BeanDB<T extends KeyedBean<T>>
+public interface EntityDB<T extends KeyedEntity<T>>
 {
 	public Collection<T> readAll() throws  Exception;
     public T readObj( int key ) throws  Exception;

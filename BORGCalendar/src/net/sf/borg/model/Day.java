@@ -38,13 +38,13 @@ import java.util.TreeSet;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
-import net.sf.borg.model.beans.Address;
-import net.sf.borg.model.beans.Appointment;
-import net.sf.borg.model.beans.CalendarBean;
-import net.sf.borg.model.beans.LabelBean;
-import net.sf.borg.model.beans.Project;
-import net.sf.borg.model.beans.Subtask;
-import net.sf.borg.model.beans.Task;
+import net.sf.borg.model.entity.Address;
+import net.sf.borg.model.entity.Appointment;
+import net.sf.borg.model.entity.CalendarEntity;
+import net.sf.borg.model.entity.LabelEntity;
+import net.sf.borg.model.entity.Project;
+import net.sf.borg.model.entity.Subtask;
+import net.sf.borg.model.entity.Task;
 
 /**
  * 
@@ -54,7 +54,7 @@ public class Day {
 
     /** class to compare appointment strings for sorting */
     // this is the sorting used for print output and month display
-    private static class apcompare implements Comparator<CalendarBean> {
+    private static class apcompare implements Comparator<CalendarEntity> {
 
         private static int colornum(String color) {
 
@@ -78,7 +78,7 @@ public class Day {
 
         }
 
-        public int compare(CalendarBean so1, CalendarBean so2) {
+        public int compare(CalendarEntity so1, CalendarEntity so2) {
 
             String s1 = so1.getText();
             String s2 = so2.getText();
@@ -268,7 +268,7 @@ public class Day {
             // so, holidays only exist in the dayinfo objects, which are
             // temporary. they do not get added to the DB or even the appt
             // map_
-        	LabelBean hol = new LabelBean();
+        	LabelEntity hol = new LabelEntity();
 
             hol.setDate(new GregorianCalendar(year, month, day, 00, 00).getTime());
 
@@ -325,7 +325,7 @@ public class Day {
         String show_can_hols = Prefs.getPref(PrefName.SHOWCANHOLIDAYS);
         if (show_can_hols.equals("true")) {
 
-        	LabelBean hol = new LabelBean();
+        	LabelEntity hol = new LabelEntity();
             hol.setDate(new GregorianCalendar(year, month, day, 00, 00).getTime());
 
             hol.setColor("purple");
@@ -398,7 +398,7 @@ public class Day {
         Collection<Address> addrs = AddressModel.getReference().getAddresses(key);
         if (addrs != null) {
             for (Address addr : addrs) {
-                LabelBean info = new LabelBean();
+                LabelEntity info = new LabelEntity();
                 String color = info.getColor();
 
                 if (color == null)
@@ -438,21 +438,21 @@ public class Day {
 
     private int vacation;
     
-    private TreeSet<CalendarBean> items; // list of appts for the day
+    private TreeSet<CalendarEntity> items; // list of appts for the day
 
     private Day() {
 
         holiday = 0;
         vacation = 0;
-        items = new TreeSet<CalendarBean>(new apcompare());
+        items = new TreeSet<CalendarEntity>(new apcompare());
 
     }
 
-    private void addItem(CalendarBean info) {
+    private void addItem(CalendarEntity info) {
         items.add(info);
     }
 
-    public Collection<CalendarBean> getItems() {
+    public Collection<CalendarEntity> getItems() {
         return (items);
     }
 

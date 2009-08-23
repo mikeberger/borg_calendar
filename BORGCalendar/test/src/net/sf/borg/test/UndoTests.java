@@ -12,12 +12,12 @@ import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.MemoModel;
 import net.sf.borg.model.TaskModel;
-import net.sf.borg.model.beans.Address;
-import net.sf.borg.model.beans.Appointment;
-import net.sf.borg.model.beans.Memo;
-import net.sf.borg.model.beans.Subtask;
-import net.sf.borg.model.beans.Task;
 import net.sf.borg.model.db.jdbc.JdbcDB;
+import net.sf.borg.model.entity.Address;
+import net.sf.borg.model.entity.Appointment;
+import net.sf.borg.model.entity.Memo;
+import net.sf.borg.model.entity.Subtask;
+import net.sf.borg.model.entity.Task;
 import net.sf.borg.model.undo.UndoLog;
 
 import org.junit.AfterClass;

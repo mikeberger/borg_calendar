@@ -28,18 +28,18 @@ import java.util.LinkedList;
 
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.XTree;
-import net.sf.borg.model.beans.Address;
-import net.sf.borg.model.beans.AddressXMLAdapter;
-import net.sf.borg.model.db.BeanDB;
+import net.sf.borg.model.db.EntityDB;
 import net.sf.borg.model.db.jdbc.AddrJdbcDB;
+import net.sf.borg.model.entity.Address;
+import net.sf.borg.model.entity.AddressXMLAdapter;
 import net.sf.borg.model.undo.AddressUndoItem;
 import net.sf.borg.model.undo.UndoLog;
 
 public class AddressModel extends Model {
 
-	private BeanDB<Address> db_; // the database
+	private EntityDB<Address> db_; // the database
 
-	public BeanDB<Address> getDB() {
+	public EntityDB<Address> getDB() {
 		return (db_);
 	}
 

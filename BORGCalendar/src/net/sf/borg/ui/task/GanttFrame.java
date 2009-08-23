@@ -27,8 +27,8 @@ import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.common.Warning;
 import net.sf.borg.model.TaskModel;
-import net.sf.borg.model.beans.Project;
-import net.sf.borg.model.beans.Subtask;
+import net.sf.borg.model.entity.Project;
+import net.sf.borg.model.entity.Subtask;
 import net.sf.borg.ui.View;
 
 import org.jfree.chart.ChartFactory;
@@ -62,10 +62,10 @@ class GanttFrame extends View {
     private static void addProject(Project p, TaskSeries sched, TaskSeries actual) throws Warning, Exception {
 	addChartItem(sched, Resource.getPlainResourceString("project") + ": " + p.getDescription(), p.getStartDate(), p
 		.getDueDate());
-	Collection<net.sf.borg.model.beans.Task> tasks = TaskModel.getReference().getTasks(p.getId().intValue());
-	Iterator<net.sf.borg.model.beans.Task> it = tasks.iterator();
+	Collection<net.sf.borg.model.entity.Task> tasks = TaskModel.getReference().getTasks(p.getId().intValue());
+	Iterator<net.sf.borg.model.entity.Task> it = tasks.iterator();
 	while (it.hasNext()) {
-	    net.sf.borg.model.beans.Task t = it.next();
+	    net.sf.borg.model.entity.Task t = it.next();
 	    Date dd = t.getDueDate();
 
 	    if (dd == null)

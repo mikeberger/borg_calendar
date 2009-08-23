@@ -53,8 +53,8 @@ import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.ReminderTimes;
 import net.sf.borg.model.Repeat;
-import net.sf.borg.model.beans.Appointment;
-import net.sf.borg.model.beans.AppointmentXMLAdapter;
+import net.sf.borg.model.entity.Appointment;
+import net.sf.borg.model.entity.AppointmentXMLAdapter;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.link.LinkPanel;
@@ -1299,14 +1299,6 @@ public class AppointmentPanel extends JPanel {
 			try {
 				r.setTimes(tm);
 
-				// set a boolean flag in SMDB if the appt repeats
-				// this is very important for performance. When the model
-				// first indexes the appts, it will only have to read and parse
-				// the textual (non-boolean) data for repeating appointments
-				// to calculate when the repeats fall. For non-repeating appts
-				// the boolean will not be set and the model knows the appt can
-				// be indexed
-				// on a single day - without needing to read the DB text.
 				if (tm.intValue() > 1)
 					r.setRepeatFlag(true);
 				else

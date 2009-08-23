@@ -34,17 +34,17 @@ import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.common.XTree;
-import net.sf.borg.model.beans.Address;
-import net.sf.borg.model.beans.Appointment;
-import net.sf.borg.model.beans.KeyedBean;
-import net.sf.borg.model.beans.Link;
-import net.sf.borg.model.beans.LinkXMLAdapter;
-import net.sf.borg.model.beans.Memo;
-import net.sf.borg.model.beans.Project;
-import net.sf.borg.model.beans.Task;
-import net.sf.borg.model.db.BeanDB;
+import net.sf.borg.model.db.EntityDB;
 import net.sf.borg.model.db.LinkDB;
 import net.sf.borg.model.db.jdbc.LinkJdbcDB;
+import net.sf.borg.model.entity.Address;
+import net.sf.borg.model.entity.Appointment;
+import net.sf.borg.model.entity.KeyedEntity;
+import net.sf.borg.model.entity.Link;
+import net.sf.borg.model.entity.LinkXMLAdapter;
+import net.sf.borg.model.entity.Memo;
+import net.sf.borg.model.entity.Project;
+import net.sf.borg.model.entity.Task;
 
 public class LinkModel extends Model {
 
@@ -79,7 +79,7 @@ public class LinkModel extends Model {
 
     static private LinkModel self_ = null;
 
-    private static HashMap<Class<? extends KeyedBean<?>>,String> typemap = new HashMap<Class<? extends KeyedBean<?>>,String>();
+    private static HashMap<Class<? extends KeyedEntity<?>>,String> typemap = new HashMap<Class<? extends KeyedEntity<?>>,String>();
 
     static {
         // owner types
@@ -113,9 +113,9 @@ public class LinkModel extends Model {
 		return (self_);
     }
 
-    private BeanDB<Link> db_; // the database
+    private EntityDB<Link> db_; // the database
 
-    public void addLink(KeyedBean<?> owner, String path, LinkType linkType) throws Exception {
+    public void addLink(KeyedEntity<?> owner, String path, LinkType linkType) throws Exception {
         if (owner == null) {
             Errmsg.notice(Resource.getPlainResourceString("att_owner_null"));
             return;
@@ -203,7 +203,7 @@ public class LinkModel extends Model {
         refresh();
     }
 
-    public void deleteLinks(int id, Class<? extends KeyedBean<?>> type) throws Exception {
+    public void deleteLinks(int id, Class<? extends KeyedEntity<?>> type) throws Exception {
         if (!hasLinks())
             return;
         Collection<Link> atts = getLinks(id, type);
@@ -214,7 +214,7 @@ public class LinkModel extends Model {
         }
     }
 
-    public void deleteLinks(KeyedBean<?> owner) throws Exception {
+    public void deleteLinks(KeyedEntity<?> owner) throws Exception {
         if (!hasLinks())
             return;
         Collection<Link> atts = getLinks(owner);
@@ -241,7 +241,7 @@ public class LinkModel extends Model {
 
     }
 
-    public BeanDB<Link> getDB() {
+    public EntityDB<Link> getDB() {
         return (db_);
     }
 
@@ -253,7 +253,7 @@ public class LinkModel extends Model {
         return db_.readAll();
     }
 
-    public Collection<Link> getLinks(int id, Class<? extends KeyedBean<?>> type) throws Exception {
+    public Collection<Link> getLinks(int id, Class<? extends KeyedEntity<?>> type) throws Exception {
         LinkDB adb = (LinkDB) db_;
         String o = typemap.get(type);
         if (o == null)
@@ -262,7 +262,7 @@ public class LinkModel extends Model {
 
     }
 
-    public Collection<Link> getLinks(KeyedBean<?> ownerbean) throws Exception {
+    public Collection<Link> getLinks(KeyedEntity<?> ownerbean) throws Exception {
         LinkDB adb = (LinkDB) db_;
         if (ownerbean == null)
             return new ArrayList<Link>();
@@ -299,7 +299,7 @@ public class LinkModel extends Model {
         refresh();
     }
 
-    public void moveLinks(KeyedBean<?> oldOwner, KeyedBean<?> newOwner) throws Exception {
+    public void moveLinks(KeyedEntity<?> oldOwner, KeyedEntity<?> newOwner) throws Exception {
         Collection<Link> atts = getLinks(oldOwner);
         Iterator<Link> it = atts.iterator();
         while (it.hasNext()) {

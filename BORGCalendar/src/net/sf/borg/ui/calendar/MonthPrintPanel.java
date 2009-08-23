@@ -48,7 +48,7 @@ import net.sf.borg.common.Prefs;
 import net.sf.borg.common.PrintHelper;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.Day;
-import net.sf.borg.model.beans.CalendarBean;
+import net.sf.borg.model.entity.CalendarEntity;
 
 // monthPanel handles the printing of a single month
 public class MonthPrintPanel extends JPanel implements Printable {
@@ -225,17 +225,17 @@ public class MonthPrintPanel extends JPanel implements Printable {
 							g2.fillRect(colleft, rowtop, colwidth, rowheight);
 							g2.setColor(Color.black);
 						}
-						Collection<CalendarBean> appts = di.getItems();
+						Collection<CalendarEntity> appts = di.getItems();
 						if (appts != null) {
 
-							Iterator<CalendarBean> it = appts.iterator();
+							Iterator<CalendarEntity> it = appts.iterator();
 
 							// determine X,Y coords of first appt text
 							int apptx = colleft + 2 * fontDesent;
 							int appty = rowtop + fontHeight + smfontHeight;
 
 							while (it.hasNext()) {
-								CalendarBean ai = it.next();
+								CalendarEntity ai = it.next();
 
 								// change color for a single appointment based
 								// on

@@ -39,18 +39,18 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.common.Warning;
 import net.sf.borg.common.XTree;
 import net.sf.borg.model.CategoryModel.CategorySource;
-import net.sf.borg.model.beans.Project;
-import net.sf.borg.model.beans.ProjectXMLAdapter;
-import net.sf.borg.model.beans.Subtask;
-import net.sf.borg.model.beans.SubtaskXMLAdapter;
-import net.sf.borg.model.beans.Task;
-import net.sf.borg.model.beans.TaskXMLAdapter;
-import net.sf.borg.model.beans.Tasklog;
-import net.sf.borg.model.beans.TasklogXMLAdapter;
-import net.sf.borg.model.db.BeanDB;
+import net.sf.borg.model.db.EntityDB;
 import net.sf.borg.model.db.TaskDB;
 import net.sf.borg.model.db.jdbc.JdbcDB;
 import net.sf.borg.model.db.jdbc.TaskJdbcDB;
+import net.sf.borg.model.entity.Project;
+import net.sf.borg.model.entity.ProjectXMLAdapter;
+import net.sf.borg.model.entity.Subtask;
+import net.sf.borg.model.entity.SubtaskXMLAdapter;
+import net.sf.borg.model.entity.Task;
+import net.sf.borg.model.entity.TaskXMLAdapter;
+import net.sf.borg.model.entity.Tasklog;
+import net.sf.borg.model.entity.TasklogXMLAdapter;
 import net.sf.borg.model.undo.ProjectUndoItem;
 import net.sf.borg.model.undo.SubtaskUndoItem;
 import net.sf.borg.model.undo.TaskUndoItem;
@@ -59,9 +59,9 @@ import net.sf.borg.model.undo.UndoLog;
 public class TaskModel extends Model implements Model.Listener, Transactional,
 		CategorySource {
 
-	private BeanDB<Task> db_; // the database
+	private EntityDB<Task> db_; // the database
 
-	public BeanDB<Task> getDB() {
+	public EntityDB<Task> getDB() {
 		return (db_);
 	}
 
@@ -272,9 +272,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 		
 		db_ = new TaskJdbcDB();
 
-		// get XML that models states/transitions
-		// set to default if it does not exist
-		// see SMDB.java for the use of SMDB options
+	
 		String sm = db_.getOption("SMODEL");
 		if (sm == null) {
 			try {

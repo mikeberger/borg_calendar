@@ -49,9 +49,9 @@ import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
-import net.sf.borg.model.beans.Appointment;
-import net.sf.borg.model.beans.CalendarBean;
-import net.sf.borg.model.beans.LabelBean;
+import net.sf.borg.model.entity.Appointment;
+import net.sf.borg.model.entity.CalendarEntity;
+import net.sf.borg.model.entity.LabelEntity;
 
 abstract class ApptBoxPanel extends JPanel {
 
@@ -491,7 +491,7 @@ abstract class ApptBoxPanel extends JPanel {
 		boxes.add(b);
 	}
 
-	public Box addNoteBox(Date d, CalendarBean ap, Rectangle bounds,
+	public Box addNoteBox(Date d, CalendarEntity ap, Rectangle bounds,
 			Rectangle clip) {
 
 		if (Prefs.getBoolPref(PrefName.HIDESTRIKETHROUGH)
@@ -499,7 +499,7 @@ abstract class ApptBoxPanel extends JPanel {
 			return null;
 		
 		Box b;
-		if (ap instanceof LabelBean) {
+		if (ap instanceof LabelEntity) {
 			// phony holiday appt added by Day object
 			b = new LabelBox(ap, bounds, clip);
 		} else {
@@ -711,7 +711,7 @@ abstract class ApptBoxPanel extends JPanel {
 		return sdf.format(newTime);
 	}
 
-	public static boolean isStrike( CalendarBean appt, Date date)
+	public static boolean isStrike( CalendarEntity appt, Date date)
 	{
 		if ((appt.getColor() != null && appt.getColor().equals("strike"))
 				|| (appt.getTodo() && !(appt.getNextTodo() == null || !appt

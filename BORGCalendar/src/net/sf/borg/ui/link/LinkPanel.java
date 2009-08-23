@@ -51,13 +51,13 @@ import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.LinkModel;
 import net.sf.borg.model.Model;
 import net.sf.borg.model.TaskModel;
-import net.sf.borg.model.beans.Address;
-import net.sf.borg.model.beans.Appointment;
-import net.sf.borg.model.beans.KeyedBean;
-import net.sf.borg.model.beans.Link;
-import net.sf.borg.model.beans.Memo;
-import net.sf.borg.model.beans.Project;
-import net.sf.borg.model.beans.Task;
+import net.sf.borg.model.entity.Address;
+import net.sf.borg.model.entity.Appointment;
+import net.sf.borg.model.entity.KeyedEntity;
+import net.sf.borg.model.entity.Link;
+import net.sf.borg.model.entity.Memo;
+import net.sf.borg.model.entity.Project;
+import net.sf.borg.model.entity.Task;
 import net.sf.borg.ui.BeanSelector;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.address.AddressView;
@@ -68,7 +68,7 @@ import net.sf.borg.ui.util.PopupMenuHelper;
 import net.sf.borg.ui.util.TableSorter;
 
 public class LinkPanel extends JPanel implements Model.Listener {
-	private KeyedBean<?> owner_;
+	private KeyedEntity<?> owner_;
 	private JScrollPane scrollPanel = new JScrollPane();
 	private JTable table = new JTable();
 	private JLabel notsupp = new JLabel(Resource.getPlainResourceString("not_supported"));
@@ -493,7 +493,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 		return false;
 	}
 
-	public void setOwner(KeyedBean<?> owner) {
+	public void setOwner(KeyedEntity<?> owner) {
 		if( !LinkModel.getReference().hasLinks())
 		{
 			owner_ = null;

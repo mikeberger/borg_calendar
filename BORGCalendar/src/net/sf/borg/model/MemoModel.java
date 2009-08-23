@@ -27,10 +27,10 @@ import java.util.Iterator;
 
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.XTree;
-import net.sf.borg.model.beans.Memo;
-import net.sf.borg.model.beans.MemoXMLAdapter;
 import net.sf.borg.model.db.MemoDB;
 import net.sf.borg.model.db.jdbc.MemoJdbcDB;
+import net.sf.borg.model.entity.Memo;
+import net.sf.borg.model.entity.MemoXMLAdapter;
 import net.sf.borg.model.undo.MemoUndoItem;
 import net.sf.borg.model.undo.UndoLog;
 

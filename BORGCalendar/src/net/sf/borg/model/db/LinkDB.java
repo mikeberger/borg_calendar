@@ -21,7 +21,7 @@ package net.sf.borg.model.db;
 
 import java.util.Collection;
 
-import net.sf.borg.model.beans.Link;
+import net.sf.borg.model.entity.Link;
 
 public interface LinkDB
 {

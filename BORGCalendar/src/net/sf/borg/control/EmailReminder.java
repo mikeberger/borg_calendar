@@ -38,8 +38,8 @@ import net.sf.borg.common.Prefs;
 import net.sf.borg.common.SendJavaMail;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.TaskModel;
-import net.sf.borg.model.beans.Appointment;
-import net.sf.borg.model.beans.Task;
+import net.sf.borg.model.entity.Appointment;
+import net.sf.borg.model.entity.Task;
 
 /**
  * 

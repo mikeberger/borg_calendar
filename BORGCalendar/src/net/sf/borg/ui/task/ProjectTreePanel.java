@@ -49,8 +49,8 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.Model;
 import net.sf.borg.model.TaskModel;
-import net.sf.borg.model.beans.Project;
-import net.sf.borg.model.beans.Task;
+import net.sf.borg.model.entity.Project;
+import net.sf.borg.model.entity.Task;
 
 public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 		MouseListener, Model.Listener {

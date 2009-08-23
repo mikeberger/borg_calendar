@@ -28,17 +28,17 @@ import javax.swing.JPopupMenu;
 
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
-import net.sf.borg.model.beans.CalendarBean;
+import net.sf.borg.model.entity.CalendarEntity;
 
 class LabelBox implements Box{
 
-    private CalendarBean appt = null;
+    private CalendarEntity appt = null;
 
     private Rectangle bounds, clip;
 
     private boolean isSelected = false;
 
-    public LabelBox(CalendarBean ap, Rectangle bounds, Rectangle clip) {
+    public LabelBox(CalendarEntity ap, Rectangle bounds, Rectangle clip) {
 	appt = ap;
 	this.bounds = bounds;
 	this.clip = clip;

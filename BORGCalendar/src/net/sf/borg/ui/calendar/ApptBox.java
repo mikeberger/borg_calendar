@@ -61,8 +61,8 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.LinkModel;
 import net.sf.borg.model.Repeat;
-import net.sf.borg.model.beans.Appointment;
-import net.sf.borg.model.beans.Link;
+import net.sf.borg.model.entity.Appointment;
+import net.sf.borg.model.entity.Link;
 import net.sf.borg.ui.MultiView;
 
 // ApptDayBox holds the logical information needs to determine

@@ -22,7 +22,7 @@ import java.text.DateFormat;
 
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.AppointmentModel;
-import net.sf.borg.model.beans.Appointment;
+import net.sf.borg.model.entity.Appointment;
 
 public class AppointmentUndoItem extends UndoItem<Appointment> {
 

@@ -41,11 +41,11 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.common.Warning;
 import net.sf.borg.common.XTree;
 import net.sf.borg.model.CategoryModel.CategorySource;
-import net.sf.borg.model.beans.Appointment;
-import net.sf.borg.model.beans.AppointmentXMLAdapter;
 import net.sf.borg.model.db.AppointmentDB;
-import net.sf.borg.model.db.BeanDB;
+import net.sf.borg.model.db.EntityDB;
 import net.sf.borg.model.db.jdbc.ApptJdbcDB;
+import net.sf.borg.model.entity.Appointment;
+import net.sf.borg.model.entity.AppointmentXMLAdapter;
 import net.sf.borg.model.undo.AppointmentUndoItem;
 import net.sf.borg.model.undo.UndoLog;
 
@@ -67,9 +67,9 @@ public class AppointmentModel extends Model implements Model.Listener,
 		return false;
 	}
 
-	private BeanDB<Appointment> db_; // the SMDB database - see mdb.SMDB
+	private EntityDB<Appointment> db_; 
 
-	public BeanDB<Appointment> getDB() {
+	public EntityDB<Appointment> getDB() {
 		return (db_);
 	}
 
@@ -124,8 +124,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 		return ((dkey % 1000000) * 1000000);
 	}
 
-	// get a new row from SMDB. The row will internally contain the Appt
-	// schema
+	
 	public Appointment newAppt() {
 		Appointment appt = db_.newObj();
 		return (appt);
@@ -196,7 +195,6 @@ public class AppointmentModel extends Model implements Model.Listener,
 	public void delOneOnly(int key, int rkey) {
 		try {
 
-			// read the appt row from SMDB
 			Appointment appt = db_.readObj(key);
 
 			// get the number of repeats

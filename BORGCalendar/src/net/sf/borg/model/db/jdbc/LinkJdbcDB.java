@@ -27,11 +27,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import net.sf.borg.model.beans.Link;
-import net.sf.borg.model.db.BeanDB;
+import net.sf.borg.model.db.EntityDB;
 import net.sf.borg.model.db.LinkDB;
+import net.sf.borg.model.entity.Link;
 
-public class LinkJdbcDB extends JdbcBeanDB<Link> implements BeanDB<Link>, LinkDB {
+public class LinkJdbcDB extends JdbcBeanDB<Link> implements EntityDB<Link>, LinkDB {
 
 
 	public void addObj(Link att) throws 

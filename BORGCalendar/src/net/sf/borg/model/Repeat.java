@@ -26,7 +26,7 @@ import java.util.Collection;
 import java.util.GregorianCalendar;
 
 import net.sf.borg.common.Resource;
-import net.sf.borg.model.beans.Appointment;
+import net.sf.borg.model.entity.Appointment;
 
 /**
  * A helper class for calculating repeating appointments.

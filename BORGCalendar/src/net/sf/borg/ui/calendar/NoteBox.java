@@ -54,13 +54,13 @@ import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.LinkModel;
 import net.sf.borg.model.Repeat;
 import net.sf.borg.model.TaskModel;
-import net.sf.borg.model.beans.Appointment;
-import net.sf.borg.model.beans.CalendarBean;
-import net.sf.borg.model.beans.KeyedBean;
-import net.sf.borg.model.beans.Link;
-import net.sf.borg.model.beans.Project;
-import net.sf.borg.model.beans.Subtask;
-import net.sf.borg.model.beans.Task;
+import net.sf.borg.model.entity.Appointment;
+import net.sf.borg.model.entity.CalendarEntity;
+import net.sf.borg.model.entity.KeyedEntity;
+import net.sf.borg.model.entity.Link;
+import net.sf.borg.model.entity.Project;
+import net.sf.borg.model.entity.Subtask;
+import net.sf.borg.model.entity.Task;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.task.TaskView;
 
@@ -72,7 +72,7 @@ public class NoteBox implements Draggable {
 
 	private String todoMarker = null;
 
-	private CalendarBean bean = null;
+	private CalendarEntity bean = null;
 
 	private Rectangle bounds, clip;
 
@@ -83,7 +83,7 @@ public class NoteBox implements Draggable {
 	private boolean hasLink = false;
 
 	@SuppressWarnings("unchecked")
-	public NoteBox(Date d, CalendarBean ap, Rectangle bounds, Rectangle clip) {
+	public NoteBox(Date d, CalendarEntity ap, Rectangle bounds, Rectangle clip) {
 		bean = ap;
 		date = d;
 		this.bounds = bounds;
@@ -102,7 +102,7 @@ public class NoteBox implements Draggable {
 
 		Collection<Link> atts;
 		try {
-			atts = LinkModel.getReference().getLinks((KeyedBean) bean);
+			atts = LinkModel.getReference().getLinks((KeyedEntity) bean);
 			if (atts != null && atts.size() > 0)
 				hasLink = true;
 		} catch (Exception e) {

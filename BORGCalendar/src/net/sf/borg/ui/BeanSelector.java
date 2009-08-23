@@ -56,24 +56,24 @@ import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.MemoModel;
 import net.sf.borg.model.TaskModel;
-import net.sf.borg.model.beans.Address;
-import net.sf.borg.model.beans.Appointment;
-import net.sf.borg.model.beans.KeyedBean;
-import net.sf.borg.model.beans.Memo;
-import net.sf.borg.model.beans.Project;
-import net.sf.borg.model.beans.Task;
+import net.sf.borg.model.entity.Address;
+import net.sf.borg.model.entity.Appointment;
+import net.sf.borg.model.entity.KeyedEntity;
+import net.sf.borg.model.entity.Memo;
+import net.sf.borg.model.entity.Project;
+import net.sf.borg.model.entity.Task;
 import net.sf.borg.ui.util.StripedTable;
 import net.sf.borg.ui.util.TableSorter;
 
 public class BeanSelector extends JDialog {
 
-	private Collection<KeyedBean<?>> rows_ = new ArrayList<KeyedBean<?>>(); // list of rows currently
+	private Collection<KeyedEntity<?>> rows_ = new ArrayList<KeyedEntity<?>>(); // list of rows currently
 
 	// displayed
-	private static ArrayList<KeyedBean<?>> list_ = new ArrayList<KeyedBean<?>>();
+	private static ArrayList<KeyedEntity<?>> list_ = new ArrayList<KeyedEntity<?>>();
 
 	private String fields_[];
-	private Collection<? extends KeyedBean<?>> records_ = null;
+	private Collection<? extends KeyedEntity<?>> records_ = null;
 
 	public static Appointment selectAppointment() throws Exception {
 
@@ -123,7 +123,7 @@ public class BeanSelector extends JDialog {
 				String.class}), new String[] { "MemoName" }));
 	}
 
-	private static Object selectBean(Collection<? extends KeyedBean<?>> records, TableModel tm,
+	private static Object selectBean(Collection<? extends KeyedEntity<?>> records, TableModel tm,
 			String fields[]) {
 		new BeanSelector(records, tm, fields, false).setVisible(true);
 		if (list_.size() != 0) {
@@ -140,7 +140,7 @@ public class BeanSelector extends JDialog {
 		return list_;
 	}
 */
-	private BeanSelector(Collection<? extends KeyedBean<?>> records, TableModel tm, String fields[],
+	private BeanSelector(Collection<? extends KeyedEntity<?>> records, TableModel tm, String fields[],
 			boolean multiple) {
 
 		super();
@@ -183,12 +183,12 @@ public class BeanSelector extends JDialog {
 		tm.addMouseListenerToHeaderInTable(jTable1);
 		tm.setRowCount(0);
 
-		Iterator<? extends KeyedBean<?>> it = records_.iterator();
+		Iterator<? extends KeyedEntity<?>> it = records_.iterator();
 		while (it.hasNext()) {
-			 KeyedBean<?> r = it.next();
+			 KeyedEntity<?> r = it.next();
 
 			try {
-				Class<? extends KeyedBean<?>> beanClass = (Class<? extends KeyedBean<?>>) r.getClass();
+				Class<? extends KeyedEntity<?>> beanClass = (Class<? extends KeyedEntity<?>>) r.getClass();
 				Object[] ro = new Object[fields_.length];
 				for (int i = 0; i < fields_.length; i++) {
 					// find method
@@ -308,7 +308,7 @@ public class BeanSelector extends JDialog {
 				// current sorted position in
 				// tbl
 				Object[] oa = rows_.toArray();
-				KeyedBean<?> b = (KeyedBean<?>) oa[k];
+				KeyedEntity<?> b = (KeyedEntity<?>) oa[k];
 				list_.add(b);
 
 			} catch (Exception e) {

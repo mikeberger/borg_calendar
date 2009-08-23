@@ -48,7 +48,7 @@ import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Day;
 import net.sf.borg.model.Model;
 import net.sf.borg.model.TaskModel;
-import net.sf.borg.model.beans.CalendarBean;
+import net.sf.borg.model.entity.CalendarEntity;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.NavPanel;
 import net.sf.borg.ui.Navigator;
@@ -299,7 +299,7 @@ public class MonthPanel extends JPanel implements Printable {
 						colors[box] = c;
 
 						// Iterator it = appts.iterator();
-						Iterator<CalendarBean> it = di.getItems().iterator();
+						Iterator<CalendarEntity> it = di.getItems().iterator();
 
 						int notey = rowtop + smfontHeight;
 

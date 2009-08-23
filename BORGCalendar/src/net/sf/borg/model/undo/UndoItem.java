@@ -18,17 +18,17 @@
  */
 package net.sf.borg.model.undo;
 
-import net.sf.borg.model.beans.KeyedBean;
+import net.sf.borg.model.entity.KeyedEntity;
 
 /**
  * Abstract base class for holding a single item of work that can be undone
  */
-public abstract class UndoItem<T extends KeyedBean<T>> {
+public abstract class UndoItem<T extends KeyedEntity<T>> {
 
 	private String description;
 	protected actionType action;
 	
-	// the KeyedBean that was updated and that can be rolled back
+	// the KeyedEntity that was updated and that can be rolled back
 	protected T item;
 	
 	// actions that can be applied to an item that need to be undone

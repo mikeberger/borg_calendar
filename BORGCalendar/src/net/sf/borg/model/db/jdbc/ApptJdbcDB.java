@@ -34,16 +34,16 @@ import java.util.Collection;
 
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Resource;
-import net.sf.borg.model.beans.Appointment;
 import net.sf.borg.model.db.AppointmentDB;
-import net.sf.borg.model.db.BeanDB;
+import net.sf.borg.model.db.EntityDB;
+import net.sf.borg.model.entity.Appointment;
 
 
 /**
  *
  * this is the JDBC layer for access to the appointment table
  */
-public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB, BeanDB<Appointment>
+public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB, EntityDB<Appointment>
 {
 
        

@@ -48,7 +48,7 @@ import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.MemoModel;
 import net.sf.borg.model.TaskModel;
-import net.sf.borg.model.beans.Project;
+import net.sf.borg.model.entity.Project;
 import net.sf.borg.ui.address.AddrListView;
 import net.sf.borg.ui.calendar.DayPanel;
 import net.sf.borg.ui.calendar.MonthPanel;

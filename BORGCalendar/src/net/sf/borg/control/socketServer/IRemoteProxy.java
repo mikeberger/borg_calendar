@@ -20,9 +20,9 @@ Copyright 2004 by Mohan Embar - http://www.thisiscool.com/
 
 package net.sf.borg.control.socketServer;
 
-import net.sf.borg.model.beans.Address;
-import net.sf.borg.model.beans.Appointment;
-import net.sf.borg.model.beans.Memo;
+import net.sf.borg.model.entity.Address;
+import net.sf.borg.model.entity.Appointment;
+import net.sf.borg.model.entity.Memo;
 
 /**
  * Interface for executing a remote call.
