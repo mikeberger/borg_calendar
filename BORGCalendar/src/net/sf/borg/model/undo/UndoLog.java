@@ -23,19 +23,21 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Stack;
 
-@SuppressWarnings("unchecked")
 /**
- * This class maintains a stack of items that can be undone.
+ * The UndoLog. This class maintains a stack of items that can be undone.
  */
+@SuppressWarnings("unchecked")
 public class UndoLog {
 
-	// the stack of undo items
+	/** The undo stack. */
 	private Stack<UndoItem> undoStack = new Stack<UndoItem>();
 	
+	/** The singleton. */
 	private static UndoLog singleton = new UndoLog();
 	
 	/**
-	 * get a reference to the undo log singleton
+	 * get a reference to the undo log singleton.
+	 * 
 	 * @return the undo log singletone
 	 */
 	public static UndoLog getReference()
@@ -43,14 +45,18 @@ public class UndoLog {
 		return singleton;
 	}
 	
+	/**
+	 * Instantiates a new undo log.
+	 */
 	private UndoLog()
 	{
 		
 	}
 	
 	/**
-	 * add an undo item to the log
-	 * @param item
+	 * add an undo item to the log.
+	 * 
+	 * @param item the item
 	 */
 	public void addItem(UndoItem item)
 	{
@@ -58,7 +64,8 @@ public class UndoLog {
 	}
 	
 	/**
-	 * get a description of the top item on the stack
+	 * get a description of the top item on the stack.
+	 * 
 	 * @return a description of the top item
 	 */
 	public final String getTopItem()
@@ -69,7 +76,8 @@ public class UndoLog {
 	}
 	
 	/**
-	 * get descriptions for all items in the undo log
+	 * get descriptions for all items in the undo log.
+	 * 
 	 * @return - a collection containing descriptions of all undo items in the order that they would be pulled off the stack
 	 */
 	public Collection<String> getItemStrings()
@@ -83,7 +91,7 @@ public class UndoLog {
 	}
 
 	/**
-	 * execute the top undo item on the stack and remove it from the stack
+	 * execute the top undo item on the stack and remove it from the stack.
 	 */
 	public void executeUndo()
 	{
@@ -95,7 +103,7 @@ public class UndoLog {
 	}
 	
 	/**
-	 * get rid of all undo items
+	 * get rid of all undo items.
 	 */
 	public void clear()
 	{
@@ -104,12 +112,18 @@ public class UndoLog {
 	
 	/**
 	 * get all of the undo items. This method has package visibility. Code outside of the undo package should not be able to get a hold of the undo items themselves
-	 * @return - the undo Stack 
+	 * 
+	 * @return - the undo Stack
 	 */
 	Stack<UndoItem> getItems(){
 		return undoStack;
 	}
 	
+	/**
+	 * Pop an item off of the stack.
+	 * 
+	 * @return the undo item
+	 */
 	UndoItem pop()
 	{
 		return undoStack.pop();

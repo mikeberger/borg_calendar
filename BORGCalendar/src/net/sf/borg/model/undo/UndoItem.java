@@ -21,32 +21,49 @@ package net.sf.borg.model.undo;
 import net.sf.borg.model.entity.KeyedEntity;
 
 /**
- * Abstract base class for holding a single item of work that can be undone
+ * Abstract base class for holding a single item of work that can be undone.
  */
 public abstract class UndoItem<T extends KeyedEntity<T>> {
 
+	/** The description of the event that can be undone. */
 	private String description;
+
+	/** The action that was taken. */
 	protected actionType action;
-	
-	// the KeyedEntity that was updated and that can be rolled back
+
+	/** the KeyedEntity that can be undone */
 	protected T item;
-	
-	// actions that can be applied to an item that need to be undone
+
+	/**
+	 * actions that can be applied to an item that need to be undone
+	 */
 	protected enum actionType {
+
 		ADD, DELETE, UPDATE, MOVE
 	}
-	
+
 	/**
-	 * execute the undo action on the item
+	 * execute the undo action on the item.
 	 */
 	public abstract void executeUndo();
 
+	/**
+	 * Sets the undo item description.
+	 * 
+	 * @param description
+	 *            the new description
+	 */
 	public void setDescription(String description) {
 		this.description = description;
 	}
 
+	/**
+	 * Gets the undo item description.
+	 * 
+	 * @return the description
+	 */
 	public String getDescription() {
 		return description;
 	}
-	
+
 }

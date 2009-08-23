@@ -28,14 +28,21 @@ import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Task;
 
+/**
+ * Task Undo Item.
+ */
 public class TaskUndoItem extends UndoItem<Task> {
 
 	// collection of subtask undo items
 	// subtasks are children of tasks and when a task gets deleted, they are also deleted
 	// the subtask undo items are stored as children inside the task ndo item so that
 	// the user need not see undo items for every subtask. 
+	/** The subtasks. */
 	private Collection<SubtaskUndoItem> subtasks = new ArrayList<SubtaskUndoItem>();
 
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.undo.UndoItem#executeUndo()
+	 */
 	@Override
 	public void executeUndo() {
 		try {
@@ -86,14 +93,31 @@ public class TaskUndoItem extends UndoItem<Task> {
 		}
 	}
 
+	/**
+	 * Instantiates a new task undo item.
+	 */
 	private TaskUndoItem() {
 
 	}
 
+	/**
+	 * human readable string for this item.
+	 * 
+	 * @param st the Task
+	 * 
+	 * @return the string
+	 */
 	static private String itemString(Task st) {
 		return st.getDescription();
 	}
 
+	/**
+	 * Record a Task update.
+	 * 
+	 * @param task the task
+	 * 
+	 * @return the task undo item
+	 */
 	public static TaskUndoItem recordUpdate(Task task) {
 		TaskUndoItem undoItem = new TaskUndoItem();
 		undoItem.item = task;
@@ -104,6 +128,13 @@ public class TaskUndoItem extends UndoItem<Task> {
 		return undoItem;
 	}
 
+	/**
+	 * Record a Task add.
+	 * 
+	 * @param task the task
+	 * 
+	 * @return the task undo item
+	 */
 	public static TaskUndoItem recordAdd(Task task) {
 		TaskUndoItem undoItem = new TaskUndoItem();
 		undoItem.item = task;
@@ -114,6 +145,13 @@ public class TaskUndoItem extends UndoItem<Task> {
 		return undoItem;
 	}
 
+	/**
+	 * Record a Task delete.
+	 * 
+	 * @param task the task
+	 * 
+	 * @return the task undo item
+	 */
 	public static TaskUndoItem recordDelete(Task task) {
 		TaskUndoItem undoItem = new TaskUndoItem();
 		undoItem.item = task;
@@ -124,6 +162,11 @@ public class TaskUndoItem extends UndoItem<Task> {
 		return undoItem;
 	}
 	
+	/**
+	 * Gets the last task item.
+	 * 
+	 * @return the last task item
+	 */
 	@SuppressWarnings("unchecked")
 	/**
 	 * this method gets the last task undo item. It is called when a subtask is changed.
@@ -145,6 +188,11 @@ public class TaskUndoItem extends UndoItem<Task> {
 		return null;
 	}
 	
+	/**
+	 * Adds a subtask undo item to this task undo item.
+	 * 
+	 * @param st the subtask
+	 */
 	void addSubtask(SubtaskUndoItem st)
 	{
 		subtasks.add(st);

@@ -18,15 +18,19 @@
  */
 package net.sf.borg.model.undo;
 
-import java.util.Stack;
-
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.Project;
 
+/**
+ * Project Undo Item.
+ */
 public class ProjectUndoItem extends UndoItem<Project> {
 
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.undo.UndoItem#executeUndo()
+	 */
 	@Override
 	public void executeUndo() {
 		try {
@@ -42,14 +46,31 @@ public class ProjectUndoItem extends UndoItem<Project> {
 		}
 	}
 
+	/**
+	 * Instantiates a new project undo item.
+	 */
 	private ProjectUndoItem() {
 
 	}
 
+	/**
+	 * human readable string for this item.
+	 * 
+	 * @param st the project
+	 * 
+	 * @return the string
+	 */
 	static private String itemString(Project st) {
 		return st.getDescription();
 	}
 
+	/**
+	 * Record a project update.
+	 * 
+	 * @param project the project
+	 * 
+	 * @return the project undo item
+	 */
 	public static ProjectUndoItem recordUpdate(Project project) {
 		ProjectUndoItem undoItem = new ProjectUndoItem();
 		undoItem.item = project;
@@ -60,6 +81,13 @@ public class ProjectUndoItem extends UndoItem<Project> {
 		return undoItem;
 	}
 
+	/**
+	 * Record a project add.
+	 * 
+	 * @param project the project
+	 * 
+	 * @return the project undo item
+	 */
 	public static ProjectUndoItem recordAdd(Project project) {
 		ProjectUndoItem undoItem = new ProjectUndoItem();
 		undoItem.item = project;
@@ -70,30 +98,7 @@ public class ProjectUndoItem extends UndoItem<Project> {
 		return undoItem;
 	}
 
-	/*
-	public static ProjectUndoItem recordDelete(Project project) {
-		ProjectUndoItem undoItem = new ProjectUndoItem();
-		undoItem.item = project;
-		undoItem.action = actionType.DELETE;
-		undoItem.setDescription(Resource.getPlainResourceString("Delete") + " "
-				+ Resource.getPlainResourceString("project") + " "
-				+ itemString(project));
-		return undoItem;
-	}
-	*/
+	/* undo of project delete is not supported */
 	
-	@SuppressWarnings("unchecked")
-	static ProjectUndoItem getLastTaskItem()
-	{
-		Stack<UndoItem> items = UndoLog.getReference().getItems();
-		for( int idx = items.size() - 1; idx >= 0; idx-- )
-		{
-			UndoItem item = items.elementAt(idx);
-			if( item instanceof ProjectUndoItem )
-				return (ProjectUndoItem)item;
-		}
-		
-		return null;
-	}
 	
 }

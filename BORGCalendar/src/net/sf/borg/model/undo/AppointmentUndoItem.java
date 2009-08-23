@@ -24,11 +24,20 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.entity.Appointment;
 
+/**
+ * Appointment Undo Item.
+ */
 public class AppointmentUndoItem extends UndoItem<Appointment> {
 
+	/** the original appointment from a move */
 	private AppointmentUndoItem moveFrom;
+	
+	/** The new appointment from a move */
 	private AppointmentUndoItem moveTo;
 
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.undo.UndoItem#executeUndo()
+	 */
 	@Override
 	public void executeUndo() {
 		if (action == actionType.DELETE) {
@@ -43,10 +52,20 @@ public class AppointmentUndoItem extends UndoItem<Appointment> {
 		}
 	}
 
+	/**
+	 * Instantiates a new appointment undo item.
+	 */
 	private AppointmentUndoItem() {
 
 	}
 
+	/**
+	 * get a human readable appointment string for this undo item.
+	 * 
+	 * @param appt the appt
+	 * 
+	 * @return the string
+	 */
 	static private String apptString(Appointment appt) {
 		String txt = (appt.getText().length() < 20) ? appt.getText() : appt
 				.getText().substring(0, 19);
@@ -55,6 +74,13 @@ public class AppointmentUndoItem extends UndoItem<Appointment> {
 						appt.getDate()) + "] " + txt;
 	}
 
+	/**
+	 * Record an appointment update.
+	 * 
+	 * @param appt the appt
+	 * 
+	 * @return the appointment undo item
+	 */
 	public static AppointmentUndoItem recordUpdate(Appointment appt) {
 		AppointmentUndoItem undoItem = new AppointmentUndoItem();
 		undoItem.item = appt;
@@ -65,6 +91,13 @@ public class AppointmentUndoItem extends UndoItem<Appointment> {
 		return undoItem;
 	}
 
+	/**
+	 * Record an appointment  add.
+	 * 
+	 * @param appt the appt
+	 * 
+	 * @return the appointment undo item
+	 */
 	public static AppointmentUndoItem recordAdd(Appointment appt) {
 		AppointmentUndoItem undoItem = new AppointmentUndoItem();
 		undoItem.item = appt;
@@ -75,6 +108,13 @@ public class AppointmentUndoItem extends UndoItem<Appointment> {
 		return undoItem;
 	}
 
+	/**
+	 * Record  an appointment delete.
+	 * 
+	 * @param appt the appt
+	 * 
+	 * @return the appointment undo item
+	 */
 	public static AppointmentUndoItem recordDelete(Appointment appt) {
 		AppointmentUndoItem undoItem = new AppointmentUndoItem();
 		undoItem.item = appt;
@@ -85,6 +125,14 @@ public class AppointmentUndoItem extends UndoItem<Appointment> {
 		return undoItem;
 	}
 
+	/**
+	 * Record  an appointment move. A move involves deleting the original appt and adding a new one
+	 * since the appointment key is date-based and must change.
+	 * 
+	 * @param appt the appt
+	 * 
+	 * @return the appointment undo item
+	 */
 	@SuppressWarnings("unchecked")
 	public static AppointmentUndoItem recordMove(Appointment appt) {
 		AppointmentUndoItem undoItem = new AppointmentUndoItem();

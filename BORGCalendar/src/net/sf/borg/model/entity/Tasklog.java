@@ -20,23 +20,68 @@ package net.sf.borg.model.entity;
 
 
 
+/**
+ * The Tasklog Entity
+ */
 public class Tasklog extends KeyedEntity<Tasklog> implements java.io.Serializable {
 
 
 	private static final long serialVersionUID = -7296390517941361874L;
 
+	/** The log time_. */
 	private java.util.Date logTime_;
+	
+	/**
+	 * Gets the log time.
+	 * 
+	 * @return the log time
+	 */
 	public java.util.Date getlogTime() { return( logTime_ ); }
+	
+	/**
+	 * Sets the log time.
+	 * 
+	 * @param xx the new log time
+	 */
 	public void setlogTime( java.util.Date xx ){ logTime_ = xx; }
 
+	/** The Description_. */
 	private String Description_;
+	
+	/**
+	 * Gets the description.
+	 * 
+	 * @return the description
+	 */
 	public String getDescription() { return( Description_ ); }
+	
+	/**
+	 * Sets the description.
+	 * 
+	 * @param xx the new description
+	 */
 	public void setDescription( String xx ){ Description_ = xx; }
 
+	/** The Task_. */
 	private Integer Task_;
+	
+	/**
+	 * Gets the task.
+	 * 
+	 * @return the task
+	 */
 	public Integer getTask() { return( Task_ ); }
+	
+	/**
+	 * Sets the task.
+	 * 
+	 * @param xx the new task
+	 */
 	public void setTask( Integer xx ){ Task_ = xx; }
 
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.entity.KeyedEntity#clone()
+	 */
 	protected Tasklog clone() {
 		Tasklog dst = new Tasklog();
 		dst.setKey( getKey());

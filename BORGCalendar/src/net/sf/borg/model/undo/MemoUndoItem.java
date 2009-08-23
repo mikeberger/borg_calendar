@@ -22,8 +22,14 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.model.MemoModel;
 import net.sf.borg.model.entity.Memo;
 
+/**
+ * Memo Undo Item.
+ */
 public class MemoUndoItem extends UndoItem<Memo> {
 
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.undo.UndoItem#executeUndo()
+	 */
 	@Override
 	public void executeUndo() {
 		if( action == actionType.DELETE )
@@ -40,16 +46,33 @@ public class MemoUndoItem extends UndoItem<Memo> {
 		}
 	}
 	
+	/**
+	 * Instantiates a new memo undo item.
+	 */
 	private MemoUndoItem()
 	{
 		
 	}
 	
+	/**
+	 * get a human readable string for this item.
+	 * 
+	 * @param memo the memo
+	 * 
+	 * @return the string
+	 */
 	static private String memoString(Memo memo)
 	{
 		return memo.getMemoName(); 
 	}
 	
+	/**
+	 * Record a memo update.
+	 * 
+	 * @param memo the memo
+	 * 
+	 * @return the memo undo item
+	 */
 	public static MemoUndoItem recordUpdate(Memo memo)
 	{
 		MemoUndoItem undoItem = new MemoUndoItem();
@@ -60,6 +83,13 @@ public class MemoUndoItem extends UndoItem<Memo> {
 		return undoItem;
 	}
 	
+	/**
+	 * Record a memo add.
+	 * 
+	 * @param memo the memo
+	 * 
+	 * @return the memo undo item
+	 */
 	public static MemoUndoItem recordAdd(Memo memo)
 	{
 		MemoUndoItem undoItem = new MemoUndoItem();
@@ -70,6 +100,13 @@ public class MemoUndoItem extends UndoItem<Memo> {
 		return undoItem;
 	}
 	
+	/**
+	 * Record a memo delete.
+	 * 
+	 * @param memo the memo
+	 * 
+	 * @return the memo undo item
+	 */
 	public static MemoUndoItem recordDelete(Memo memo)
 	{
 		MemoUndoItem undoItem = new MemoUndoItem();

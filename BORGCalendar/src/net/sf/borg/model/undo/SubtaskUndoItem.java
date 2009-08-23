@@ -23,8 +23,14 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.Subtask;
 
+/**
+ * Subtask Undo Item.
+ */
 public class SubtaskUndoItem extends UndoItem<Subtask> {
 
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.undo.UndoItem#executeUndo()
+	 */
 	@Override
 	public void executeUndo() {
 		try {
@@ -40,14 +46,31 @@ public class SubtaskUndoItem extends UndoItem<Subtask> {
 		}
 	}
 
+	/**
+	 * Instantiates a new subtask undo item.
+	 */
 	private SubtaskUndoItem() {
 
 	}
 
+	/**
+	 * human readable string for this item.
+	 * 
+	 * @param st the subtask
+	 * 
+	 * @return the string
+	 */
 	static private String itemString(Subtask st) {
 		return st.getDescription();
 	}
 
+	/**
+	 * Record a subtask update.
+	 * 
+	 * @param subtask the subtask
+	 * 
+	 * @return the subtask undo item
+	 */
 	public static SubtaskUndoItem recordUpdate(Subtask subtask) {
 		SubtaskUndoItem undoItem = new SubtaskUndoItem();
 		undoItem.item = subtask;
@@ -62,6 +85,13 @@ public class SubtaskUndoItem extends UndoItem<Subtask> {
 		return undoItem;
 	}
 
+	/**
+	 * Record a subtask add.
+	 * 
+	 * @param subtask the subtask
+	 * 
+	 * @return the subtask undo item
+	 */
 	public static SubtaskUndoItem recordAdd(Subtask subtask) {
 		SubtaskUndoItem undoItem = new SubtaskUndoItem();
 		undoItem.item = subtask;
@@ -75,6 +105,13 @@ public class SubtaskUndoItem extends UndoItem<Subtask> {
 		return undoItem;
 	}
 
+	/**
+	 * Record a subtask delete.
+	 * 
+	 * @param subtask the subtask
+	 * 
+	 * @return the subtask undo item
+	 */
 	public static SubtaskUndoItem recordDelete(Subtask subtask) {
 		SubtaskUndoItem undoItem = new SubtaskUndoItem();
 		undoItem.item = subtask;

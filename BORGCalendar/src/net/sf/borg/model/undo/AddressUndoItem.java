@@ -22,8 +22,14 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.entity.Address;
 
+/**
+ * Address Undo Item.
+ */
 public class AddressUndoItem extends UndoItem<Address> {
 
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.undo.UndoItem#executeUndo()
+	 */
 	@Override
 	public void executeUndo() {
 		if (action == actionType.DELETE) {
@@ -35,14 +41,31 @@ public class AddressUndoItem extends UndoItem<Address> {
 		}
 	}
 
+	/**
+	 * Instantiates a new address undo item.
+	 */
 	private AddressUndoItem() {
 
 	}
 
+	/**
+	 * get an identifier string for an address (human readable).
+	 * 
+	 * @param addr the addr
+	 * 
+	 * @return the string
+	 */
 	static private String addrString(Address addr) {
 		return addr.getFirstName() + " " + addr.getLastName();
 	}
 
+	/**
+	 * Create an Address update.
+	 * 
+	 * @param addr the addr
+	 * 
+	 * @return the address undo item
+	 */
 	public static AddressUndoItem recordUpdate(Address addr) {
 		AddressUndoItem undoItem = new AddressUndoItem();
 		undoItem.item = addr;
@@ -53,6 +76,13 @@ public class AddressUndoItem extends UndoItem<Address> {
 		return undoItem;
 	}
 
+	/**
+	 * Create an Address add.
+	 * 
+	 * @param addr the addr
+	 * 
+	 * @return the address undo item
+	 */
 	public static AddressUndoItem recordAdd(Address addr) {
 		AddressUndoItem undoItem = new AddressUndoItem();
 		undoItem.item = addr;
@@ -63,6 +93,13 @@ public class AddressUndoItem extends UndoItem<Address> {
 		return undoItem;
 	}
 
+	/**
+	 * Create an Address delete.
+	 * 
+	 * @param addr the addr
+	 * 
+	 * @return the address undo item
+	 */
 	public static AddressUndoItem recordDelete(Address addr) {
 		AddressUndoItem undoItem = new AddressUndoItem();
 		undoItem.item = addr;
