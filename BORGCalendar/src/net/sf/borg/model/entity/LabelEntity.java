@@ -22,35 +22,87 @@ import java.util.Date;
 
 
 
+/**
+ * This class is a non-persisted entity that is used when the model needs to package
+ * a transient, calculated entity for the UI, such as a calculated holiday or birthday based on the
+ * address book.
+ */
 public class LabelEntity implements CalendarEntity {
 
+	/** The color. */
 	private String color;
+	
+	/** The date. */
 	private Date date;
+	
+	/** The Text. */
 	private String Text;
+	
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.entity.CalendarEntity#getColor()
+	 */
 	public String getColor() {
 		return color;
 	}
+	
+	/**
+	 * Sets the color.
+	 * 
+	 * @param color the new color
+	 */
 	public void setColor(String color) {
 		this.color = color;
 	}
+	
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.entity.CalendarEntity#getDate()
+	 */
 	public Date getDate() {
 		return date;
 	}
+	
+	/**
+	 * Sets the date.
+	 * 
+	 * @param date the new date
+	 */
 	public void setDate(Date date) {
 		this.date = date;
 	}
+	
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.entity.CalendarEntity#getText()
+	 */
 	public String getText() {
 		return Text;
 	}
+	
+	/**
+	 * Sets the text.
+	 * 
+	 * @param text the new text
+	 */
 	public void setText(String text) {
 		Text = text;
 	}
+	
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.entity.CalendarEntity#getDuration()
+	 */
 	public Integer getDuration() {
 		return new Integer(0);
 	}
+	
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.entity.CalendarEntity#getNextTodo()
+	 */
 	public Date getNextTodo() {	
 		return null;
 	}
+	
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.entity.CalendarEntity#getTodo()
+	 */
 	public boolean getTodo() {
 		return false;
 	}

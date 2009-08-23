@@ -20,15 +20,30 @@ package net.sf.borg.model.entity;
 
 
 
+/**
+ * Link entity. A Link represents an association between an Entity (Appointment, Project, Task, Address) and 
+ * another Entity, a URL, or a File
+ */
 public class Link extends KeyedEntity<Link> implements java.io.Serializable {
 
 	
 	private static final long serialVersionUID = 1476303921088473573L;
+	
+	/** The key of the owning KeyedEntity. */
 	private Integer ownerKey;
+	
+	/** The type of the KeyedEntity - mapped in LinkModel.java  */
 	private String ownerType;
+	
+	/** The identifier of the link target - i.e. an entity id, file path, or url */
 	private String path;
+	
+	/** The link type - see LinkModel.LinkType. */
 	private String linkType;
 	
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.entity.KeyedEntity#clone()
+	 */
 	protected Link clone() {
 		Link dst = new Link();
 		dst.setKey( getKey());
@@ -38,27 +53,75 @@ public class Link extends KeyedEntity<Link> implements java.io.Serializable {
 		dst.setPath( getPath() );
 		return(dst);
 	}
+	
+	/**
+	 * Gets the key of the owning KeyedEntity.
+	 * 
+	 * @return the owner key
+	 */
 	public Integer getOwnerKey() {
 		return ownerKey;
 	}
+	
+	/**
+	 * Sets the key of the owning KeyedEntity.
+	 * 
+	 * @param ownerKey the new owner key
+	 */
 	public void setOwnerKey(Integer ownerKey) {
 		this.ownerKey = ownerKey;
 	}
+	
+	/**
+	 * Gets the type of the KeyedEntity - mapped in LinkModel.java
+	 * 
+	 * @return the owner type
+	 */
 	public String getOwnerType() {
 		return ownerType;
 	}
+	
+	/**
+	 * Sets the type of the KeyedEntity - mapped in LinkModel.java.
+	 * 
+	 * @param ownerType the new owner type
+	 */
 	public void setOwnerType(String ownerType) {
 		this.ownerType = ownerType;
 	}
+	
+	/**
+	 * Gets the identifier of the link target - i.e. an entity id, file path, or url
+	 * 
+	 * @return the path
+	 */
 	public String getPath() {
 		return path;
 	}
+	
+	/**
+	 * Sets the identifier of the link target - i.e. an entity id, file path, or url
+	 * 
+	 * @param path the new path
+	 */
 	public void setPath(String path) {
 		this.path = path;
 	}
+	
+	/**
+	 * Gets the link type  - see LinkModel.LinkType.
+	 * 
+	 * @return the link type
+	 */
 	public String getLinkType() {
 		return linkType;
 	}
+	
+	/**
+	 * Sets the link type - see LinkModel.LinkType.
+	 * 
+	 * @param linkType the new link type
+	 */
 	public void setLinkType(String linkType) {
 		this.linkType = linkType;
 	}

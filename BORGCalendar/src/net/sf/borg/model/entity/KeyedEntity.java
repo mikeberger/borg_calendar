@@ -27,34 +27,56 @@ package net.sf.borg.model.entity;
 import java.io.Serializable;
 
 /**
- *
- * @author  mbb
+ * Abstract base class for all Entities that are keyed by a simple integer key
+ * 
  */
 public abstract class KeyedEntity<T> implements Serializable
 {
+    
+    /** The key_. */
     private int key_;
         
-    /** Creates a new instance of KeyedEntity */
+    /**
+     * Creates a new instance of KeyedEntity.
+     */
     public KeyedEntity()
     {
         key_ = -1;
     }
     
+    /**
+     * Gets the key.
+     * 
+     * @return the key
+     */
     public int getKey()
     {
         return(key_);
     }
     
+    /**
+     * Sets the key.
+     * 
+     * @param k the new key
+     */
     public void setKey(int k)
     {
         key_ = k;
     }
     
+    /**
+     * Copy the entity
+     * 
+     * @return a copy
+     */
     public T copy()
     {
     	return clone();
     }
     
+    /* (non-Javadoc)
+     * @see java.lang.Object#clone()
+     */
     protected T clone(){
         System.out.println("Should not be here!!");
         return( null );

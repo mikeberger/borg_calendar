@@ -20,14 +20,53 @@ package net.sf.borg.model.entity;
 
 import java.util.Date;
 
-// a bean that can be shown on the calendar
+/**
+ * Interface that needs to be implemented by any entity that can appear on the Calendar.
+ * This interface would more properly belong in the UI package - but it would take some extra wrapper
+ * classes that would be a waste.
+ */
 public interface CalendarEntity {
 
+	/**
+	 * Gets the text.
+	 * 
+	 * @return the text
+	 */
 	public String getText();
+	
+	/**
+	 * Gets the color.
+	 * 
+	 * @return the color
+	 */
 	public String getColor();
+	
+	/**
+	 * Gets the date.
+	 * 
+	 * @return the date
+	 */
 	public Date getDate();
+	
+	/**
+	 * Gets the duration.
+	 * 
+	 * @return the duration
+	 */
 	public Integer getDuration();	
+	
+	/**
+	 * Gets the todo flag.
+	 * 
+	 * @return the todo flag
+	 */
 	public boolean getTodo();
+	
+	/**
+	 * Gets the next todo date.
+	 * 
+	 * @return the next todo date
+	 */
 	public Date getNextTodo();
 	
 	

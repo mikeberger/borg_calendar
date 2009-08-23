@@ -38,8 +38,6 @@ public class AppointmentXMLAdapter extends EntityXMLAdapter<Appointment> {
 			xt.appendChild("SkipList", EntityXMLAdapter.toString(o.getSkipList()));
 		if( o.getNextTodo() != null )
 			xt.appendChild("NextTodo", EntityXMLAdapter.toString(o.getNextTodo()));
-		if( o.getSN() != null )
-			xt.appendChild("SN", EntityXMLAdapter.toString(o.getSN()));
 		if( o.getVacation() != null )
 			xt.appendChild("Vacation", EntityXMLAdapter.toString(o.getVacation()));
 		if( o.getHoliday() != null )
@@ -90,8 +88,6 @@ public class AppointmentXMLAdapter extends EntityXMLAdapter<Appointment> {
 		ret.setSkipList( EntityXMLAdapter.toVector(val) );
 		val = xt.child("NextTodo").value();
 		ret.setNextTodo( EntityXMLAdapter.toDate(val) );
-		val = xt.child("SN").value();
-		ret.setSN( EntityXMLAdapter.toInteger(val) );
 		val = xt.child("Vacation").value();
 		ret.setVacation( EntityXMLAdapter.toInteger(val) );
 		val = xt.child("Holiday").value();
