@@ -34,11 +34,11 @@ import java.util.HashMap;
 
 import net.sf.borg.model.entity.KeyedEntity;
 
+
 /**
- * 
- * @author mberger
+ * abstract base class for all classes that manage reading/writing of KeyedEntities
+ * to and from a JDBC database. also provides an object cache.
  */
-// JdbcBeanDB extends JdbcDB to add support for KeyedBeans including caching
 abstract class JdbcBeanDB<T extends KeyedEntity<T>> extends JdbcDB {
 
 	// BORG needs its own caching. BORG rebuilds the map of DB data often
@@ -55,12 +55,17 @@ abstract class JdbcBeanDB<T extends KeyedEntity<T>> extends JdbcDB {
 
 	private HashMap<Integer,T> objectCache_; // the cache
 
-	/** Creates a new instance of JdbcDB */
+	/**
+	 * Creates a new instance of JdbcDB.
+	 */
 	JdbcBeanDB()  {
 		objectCacheOn_ = true;
 		objectCache_ = new HashMap<Integer,T>();
 	}
 
+	/**
+	 * flush the cache
+	 */
 	public void sync() {
 		emptyCache();
 	}
@@ -101,6 +106,13 @@ abstract class JdbcBeanDB<T extends KeyedEntity<T>> extends JdbcDB {
 		return (null);
 	}
 
+	/**
+	 * Read all Entities.
+	 * 
+	 * @return A collection of all Entities in the DB table
+	 * 
+	 * @throws Exception 
+	 */
 	public Collection<T> readAll() throws Exception {
 		PreparedStatement stmt = null;
 		ResultSet r = null;
@@ -122,6 +134,15 @@ abstract class JdbcBeanDB<T extends KeyedEntity<T>> extends JdbcDB {
 		}
 	}
 
+	/**
+	 * Read a single KeyedEntity from the database by key
+	 * 
+	 * @param key the key
+	 * 
+	 * @return the entity
+	 * 
+	 * @throws Exception the exception
+	 */
 	public T readObj(int key) throws Exception {
 		T bean = readCache(key);
 
@@ -146,10 +167,24 @@ abstract class JdbcBeanDB<T extends KeyedEntity<T>> extends JdbcDB {
 		}
 	}
 
-	// package //
+	/**
+	 * @return a PreparedStatement that reads one entity by key
+	 * @throws SQLException
+	 */
 	abstract PreparedStatement getPSOne(int key) throws SQLException;
-
+	
+	/**
+	 * 
+	 * @return a PreparedStatement that reads all entities from a table
+	 * @throws SQLException
+	 */
 	abstract PreparedStatement getPSAll() throws SQLException;
 
+	/**
+	 * Fills in an entity from a result set
+	 * @param rs the result set
+	 * @return the entity
+	 * @throws SQLException
+	 */
 	abstract T createFrom(ResultSet rs) throws SQLException;
 }

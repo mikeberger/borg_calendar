@@ -45,39 +45,60 @@ import net.sf.borg.model.BorgOption;
 import net.sf.borg.model.Transactional;
 
 /**
- * 
- * @author mberger
+ * abstract base class providing basic common JDBC services to all derived JDBC classes
  */
-// JdbcDB is a base class for JDBC based DBs for BORG
 abstract public class JdbcDB implements Transactional {
 
 	// common db connection shared by sub-classes. in BORG, all sub-classes
 	// will manage a table in the same DB
 	static protected Connection connection_ = null;
 
+	// JDBC URL
 	static private String url_;
 	
+	/**
+	 * Gets the JDBC url.
+	 * 
+	 * @return the JDBC url
+	 */
 	public static String getUrl()
 	{
 		return url_;
 	}
 
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.Transactional#beginTransaction()
+	 */
 	public void beginTransaction() throws Exception {
 		connection_.setAutoCommit(false);
 	}
 
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.Transactional#commitTransaction()
+	 */
 	public final void commitTransaction() throws Exception {
 		PreparedStatement stmt = connection_.prepareStatement("COMMIT");
 		stmt.execute();
 		connection_.setAutoCommit(true);
 	}
 
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.Transactional#rollbackTransaction()
+	 */
 	public final void rollbackTransaction() throws Exception {
 		PreparedStatement stmt = connection_.prepareStatement("ROLLBACK");
 		stmt.execute();
 		connection_.setAutoCommit(true);
 	}
 
+	/**
+	 * Connect to the database. The logic varies based on the URL. Supports MYSQL, HSQL
+	 * For HSQL - if the DB doesn't exist, it will be created
+	 * 
+	 * @param url the JDBC url
+	 * 
+	 * @throws Exception the exception
+	 */
 	static public void connect(String url) throws Exception {
 		if( url == null )
 			url = buildDbDir();
@@ -161,6 +182,9 @@ abstract public class JdbcDB implements Transactional {
 
 	}
 
+	/**
+	 * perform a clean HSQL shutdown if we are using HSQL
+	 */
 	static private final void cleanup() {
 		try {
 			if (connection_ != null && !connection_.isClosed()
@@ -174,6 +198,10 @@ abstract public class JdbcDB implements Transactional {
 		}
 	}
 
+	//
+	// various data conversion methods are below to provide a standard
+	// db representation of String Lists, Integer,  and boolean
+	//
 	protected final static String toStr(Vector<String> v) {
 		String val = "";
 		if (v == null)
@@ -215,16 +243,35 @@ abstract public class JdbcDB implements Transactional {
 		return (vect);
 	}
 
+	/**
+	 * Execute arbitrary SQL against the open JDBC connection
+	 * 
+	 * @param sql the sql
+	 * 
+	 * @return the result set
+	 * 
+	 * @throws Exception the exception
+	 */
 	static final public ResultSet execSQL(String sql) throws Exception {
 		PreparedStatement stmt = connection_.prepareStatement(sql);
 		stmt.execute();
 		return stmt.getResultSet();
 	}
 
+	/**
+	 * Gets the connection.
+	 * 
+	 * @return the connection
+	 */
 	static public Connection getConnection() {
 		return connection_;
 	}
 
+	/**
+	 * Close the open connection and shutdown the db (if HSQL)
+	 * 
+	 * @throws Exception the exception
+	 */
 	public static void close() throws Exception {
 		cleanup();
 		if (connection_ != null)
@@ -232,6 +279,15 @@ abstract public class JdbcDB implements Transactional {
 		connection_ = null;
 	}
 
+	/**
+	 * Gets an option value from the options table
+	 * 
+	 * @param oname the option name
+	 * 
+	 * @return the option value
+	 * 
+	 * @throws Exception the exception
+	 */
 	public final String getOption(String oname) throws Exception {
 		String ret = null;
 		PreparedStatement stmt = connection_
@@ -245,6 +301,13 @@ abstract public class JdbcDB implements Transactional {
 		return (ret);
 	}
 
+	/**
+	 * Gets all options from the options table.
+	 * 
+	 * @return a collection of options
+	 * 
+	 * @throws Exception the exception
+	 */
 	public final Collection<BorgOption> getOptions() throws Exception {
 		ArrayList<BorgOption> keys = new ArrayList<BorgOption>();
 		PreparedStatement stmt = connection_
@@ -260,6 +323,13 @@ abstract public class JdbcDB implements Transactional {
 
 	}
 
+	/**
+	 * Sets an option in the options table.
+	 * 
+	 * @param option the option to set
+	 * 
+	 * @throws Exception the exception
+	 */
 	public final void setOption(BorgOption option) throws Exception {
 		String oname = option.getKey();
 		String value = option.getValue();
@@ -285,6 +355,11 @@ abstract public class JdbcDB implements Transactional {
 		stmt.executeUpdate();
 	}
 
+	/**
+	 * Builds the db url from the user's settings. Supports HSQL, MYSQL, generic JDBC
+	 * 
+	 * @return the jdbc url
+	 */
 	public static String buildDbDir() {
 		// get dir for DB
 		String dbdir = "";

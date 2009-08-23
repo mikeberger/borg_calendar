@@ -31,9 +31,15 @@ import net.sf.borg.model.db.EntityDB;
 import net.sf.borg.model.db.LinkDB;
 import net.sf.borg.model.entity.Link;
 
+/**
+ * provides the JDBC layer for reading/writing Links
+ */
 public class LinkJdbcDB extends JdbcBeanDB<Link> implements EntityDB<Link>, LinkDB {
 
 
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.db.EntityDB#addObj(net.sf.borg.model.entity.KeyedEntity)
+	 */
 	public void addObj(Link att) throws 
 			Exception {
 		PreparedStatement stmt = connection_
@@ -53,6 +59,9 @@ public class LinkJdbcDB extends JdbcBeanDB<Link> implements EntityDB<Link>, Link
 
 	}
 
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.db.EntityDB#delete(int)
+	 */
 	public void delete(int key) throws Exception {
 		PreparedStatement stmt = connection_
 				.prepareStatement("DELETE FROM links WHERE id = ?");
@@ -62,6 +71,13 @@ public class LinkJdbcDB extends JdbcBeanDB<Link> implements EntityDB<Link>, Link
 		delCache(key);
 	}
 
+	/**
+	 * Gets the keys.
+	 * 
+	 * @return the keys
+	 * 
+	 * @throws Exception the exception
+	 */
 	public Collection<Integer> getKeys() throws Exception {
 		ArrayList<Integer> keys = new ArrayList<Integer>();
 		PreparedStatement stmt = connection_
@@ -75,6 +91,9 @@ public class LinkJdbcDB extends JdbcBeanDB<Link> implements EntityDB<Link>, Link
 
 	}
 
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.db.EntityDB#nextkey()
+	 */
 	public int nextkey() throws Exception {
 		PreparedStatement stmt = connection_
 				.prepareStatement("SELECT MAX(id) FROM links");
@@ -85,10 +104,16 @@ public class LinkJdbcDB extends JdbcBeanDB<Link> implements EntityDB<Link>, Link
 		return ++maxKey;
 	}
 
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.db.EntityDB#newObj()
+	 */
 	public Link newObj() {
 		return (new Link());
 	}
 
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.db.jdbc.JdbcBeanDB#getPSOne(int)
+	 */
 	PreparedStatement getPSOne(int key) throws SQLException {
 		PreparedStatement stmt = connection_
 				.prepareStatement("SELECT * FROM links WHERE id = ?");
@@ -96,12 +121,18 @@ public class LinkJdbcDB extends JdbcBeanDB<Link> implements EntityDB<Link>, Link
 		return stmt;
 	}
 
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.db.jdbc.JdbcBeanDB#getPSAll()
+	 */
 	PreparedStatement getPSAll() throws SQLException {
 		PreparedStatement stmt = connection_
 				.prepareStatement("SELECT * FROM links");
 		return stmt;
 	}
 
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.db.jdbc.JdbcBeanDB#createFrom(java.sql.ResultSet)
+	 */
 	Link createFrom(ResultSet r) throws SQLException {
 		Link att = new Link();
 		att.setKey(r.getInt("id"));
@@ -112,6 +143,9 @@ public class LinkJdbcDB extends JdbcBeanDB<Link> implements EntityDB<Link>, Link
 		return att;
 	}
 
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.db.EntityDB#updateObj(net.sf.borg.model.entity.KeyedEntity)
+	 */
 	public void updateObj(Link att) throws 
 			Exception {
 
@@ -132,6 +166,9 @@ public class LinkJdbcDB extends JdbcBeanDB<Link> implements EntityDB<Link>, Link
 		writeCache(att);
 	}
 
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.db.LinkDB#getLinks(int, java.lang.String)
+	 */
 	public Collection<Link> getLinks(int ownerkey, String ownertype)
 			throws SQLException {
 		PreparedStatement stmt = connection_

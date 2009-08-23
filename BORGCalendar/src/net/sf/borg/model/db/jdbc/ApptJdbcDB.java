@@ -40,14 +40,15 @@ import net.sf.borg.model.entity.Appointment;
 
 
 /**
- *
- * this is the JDBC layer for access to the appointment table
+ * this is the JDBC layer for access to the appointment table.
  */
 public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB, EntityDB<Appointment>
 {
 
        
-    /** Creates a new instance of AppJdbcDB */
+    /**
+     * Creates a new instance of AppJdbcDB.
+     */
     public ApptJdbcDB() 
     {
     	try {
@@ -59,6 +60,9 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
 		
     }
     
+    /* (non-Javadoc)
+     * @see net.sf.borg.model.db.EntityDB#addObj(net.sf.borg.model.entity.KeyedEntity)
+     */
     public void addObj(Appointment appt) throws Exception
     {
         PreparedStatement stmt = connection_.prepareStatement( "INSERT INTO appointments (appt_date, appt_num, duration, text, skip_list," +
@@ -98,6 +102,9 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
         writeCache( appt );
     }
     
+    /* (non-Javadoc)
+     * @see net.sf.borg.model.db.EntityDB#delete(int)
+     */
     public void delete(int key) throws Exception
     {
         PreparedStatement stmt = connection_.prepareStatement( "DELETE FROM appointments WHERE appt_num = ?" );
@@ -107,6 +114,13 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
         delCache( key );
     }
     
+    /**
+     * Gets the keys.
+     * 
+     * @return the keys
+     * 
+     * @throws Exception the exception
+     */
     public Collection<Integer> getKeys() throws Exception
     {
         ArrayList<Integer> keys = new ArrayList<Integer>();
@@ -121,6 +135,9 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
         
     }
     
+    /* (non-Javadoc)
+     * @see net.sf.borg.model.db.AppointmentDB#getTodoKeys()
+     */
     public Collection<Integer> getTodoKeys() throws Exception
     {
         ArrayList<Integer> keys = new ArrayList<Integer>();
@@ -135,6 +152,9 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
         
     }
     
+    /* (non-Javadoc)
+     * @see net.sf.borg.model.db.AppointmentDB#getRepeatKeys()
+     */
     public Collection<Integer> getRepeatKeys() throws Exception
     {
         ArrayList<Integer> keys = new ArrayList<Integer>();
@@ -149,16 +169,25 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
         
     }
 
+    /* (non-Javadoc)
+     * @see net.sf.borg.model.db.EntityDB#nextkey()
+     */
     public int nextkey()
     {
        return 0;
     }
     
+    /* (non-Javadoc)
+     * @see net.sf.borg.model.db.EntityDB#newObj()
+     */
     public Appointment newObj()
     {
         return( new Appointment() );
     }
     
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.db.jdbc.JdbcBeanDB#getPSOne(int)
+	 */
 	PreparedStatement getPSOne(int key) throws SQLException
 	{
 		PreparedStatement stmt = connection_.prepareStatement("SELECT * FROM appointments WHERE appt_num = ?" );
@@ -166,12 +195,18 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
 		return stmt;
 	}
 	
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.db.jdbc.JdbcBeanDB#getPSAll()
+	 */
 	PreparedStatement getPSAll() throws SQLException
 	{
 		PreparedStatement stmt = connection_.prepareStatement("SELECT * FROM appointments" );
 		return stmt;
 	}
 	
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.db.jdbc.JdbcBeanDB#createFrom(java.sql.ResultSet)
+	 */
 	Appointment createFrom(ResultSet r) throws SQLException
 	{
 		Appointment appt = new Appointment();
@@ -202,6 +237,9 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
 		return appt;
 	}
 	
+    /* (non-Javadoc)
+     * @see net.sf.borg.model.db.EntityDB#updateObj(net.sf.borg.model.entity.KeyedEntity)
+     */
     public void updateObj(Appointment appt) throws Exception
     {
         PreparedStatement stmt = connection_.prepareStatement( "UPDATE appointments SET  appt_date = ?, " +

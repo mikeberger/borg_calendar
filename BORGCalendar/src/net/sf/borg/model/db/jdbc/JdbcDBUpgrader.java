@@ -25,23 +25,50 @@ import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 
+/**
+ * Class JdbcDBUpgrader is used to upgrade HSQL database in-place when the schema changes for a 
+ * release. This class will check an update condition, and if true, execute SQL to upgrade the DB.
+ * It is meant to be called during model initialization - preferably from the constructors
+ * of the JdbcDB classes
+ */
 class JdbcDBUpgrader {
 
+	/** The check sql. */
 	private String checkSql;
 
+	/** The upd sql. */
 	private String updSql[];
 
+	/**
+	 * Instantiates a new jdbc db upgrader.
+	 * 
+	 * @param checkSql the sql that checks if an upgrade is needed
+	 * @param usql the sql to upgrade the db if needed
+	 */
 	public JdbcDBUpgrader(String checkSql, String usql) {
 		updSql = new String[1];
 		this.updSql[0] = usql;
 		this.checkSql = checkSql;
 	}
 	
+	/**
+	 * Instantiates a new jdbc db upgrader.
+	 * 
+	 * @param checkSql the sql that checks if an upgrade is needed
+	 * @param usql an array of SQL statements to execute to perform the upgrade
+	 */
 	public JdbcDBUpgrader(String checkSql, String usql[]) {
 		this.updSql = usql;
 		this.checkSql = checkSql;
 	}
 
+	/**
+	 * check if db Needs upgrade.
+	 * 
+	 * @return true, if upgrade needed
+	 * 
+	 * @throws Exception the exception
+	 */
 	private boolean needsUpgrade() throws Exception {
 		try {
 			JdbcDB.execSQL(checkSql);
@@ -53,6 +80,12 @@ class JdbcDBUpgrader {
 		return false;
 	}
 
+	/**
+	 * Execute the upgrade SQL.
+	 * If MYSQL - just show the SQL to the user - do not upgrade
+	 * 
+	 * @throws Exception the exception
+	 */
 	private void performUpgrade() throws Exception {
 		String dbtype = Prefs.getPref(PrefName.DBTYPE);
 		for( int i = 0; i < updSql.length; i++ )
@@ -67,6 +100,9 @@ class JdbcDBUpgrader {
 		}
 	}
 
+	/**
+	 * run the upgrade check and then upgrade if needed
+	 */
 	public void upgrade() {
 		try {
 			if (needsUpgrade()) {

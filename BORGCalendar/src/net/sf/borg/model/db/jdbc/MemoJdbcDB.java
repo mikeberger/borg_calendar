@@ -30,9 +30,15 @@ import java.util.List;
 import net.sf.borg.model.db.MemoDB;
 import net.sf.borg.model.entity.Memo;
 
+/**
+ * provides the JDBC layer for reading/writing Memos.
+ */
 public class MemoJdbcDB extends JdbcDB implements MemoDB {
 
 
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.db.MemoDB#addMemo(net.sf.borg.model.entity.Memo)
+	 */
 	public void addMemo(Memo m) throws Exception {
 		PreparedStatement stmt = connection_
 				.prepareStatement("INSERT INTO memos ( memoname, memotext, new, modified, deleted, palmid, private) "
@@ -53,6 +59,9 @@ public class MemoJdbcDB extends JdbcDB implements MemoDB {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.db.MemoDB#delete(java.lang.String)
+	 */
 	public void delete(String name) throws Exception {
 		PreparedStatement stmt = connection_.prepareStatement("DELETE FROM memos WHERE memoname = ?");
 		stmt.setString(1, name);
@@ -60,6 +69,9 @@ public class MemoJdbcDB extends JdbcDB implements MemoDB {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.db.MemoDB#getNames()
+	 */
 	public Collection<String> getNames() throws Exception {
 		ArrayList<String> keys = new ArrayList<String>();
 		PreparedStatement stmt = connection_
@@ -74,6 +86,9 @@ public class MemoJdbcDB extends JdbcDB implements MemoDB {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.db.MemoDB#getMemoByPalmId(int)
+	 */
 	public Memo getMemoByPalmId(int id) throws Exception {
 		PreparedStatement stmt = connection_.prepareStatement("SELECT * FROM memos WHERE palmid = ? ");
 		stmt.setInt(1, id);
@@ -93,17 +108,28 @@ public class MemoJdbcDB extends JdbcDB implements MemoDB {
 		}
 	}
 
+	
+	
 	private PreparedStatement getPSOne(String name) throws SQLException {
 		PreparedStatement stmt = connection_.prepareStatement("SELECT * FROM memos WHERE memoname = ?");
 		stmt.setString(1, name);
 		return stmt;
 	}
 
+
+
 	private PreparedStatement getPSAll() throws SQLException {
 		PreparedStatement stmt = connection_.prepareStatement("SELECT * FROM memos");
 		return stmt;
 	}
 
+	
+	/**
+	 * create a Memo from a result set
+	 * @param r the result set
+	 * @return the Memo object
+	 * @throws SQLException
+	 */
 	private Memo createFrom(ResultSet r) throws SQLException {
 		Memo m = new Memo();
 
@@ -121,6 +147,9 @@ public class MemoJdbcDB extends JdbcDB implements MemoDB {
 		return m;
 	}
 
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.db.MemoDB#readAll()
+	 */
 	public Collection<Memo> readAll() throws Exception {
 		PreparedStatement stmt = null;
 		ResultSet r = null;
@@ -141,6 +170,9 @@ public class MemoJdbcDB extends JdbcDB implements MemoDB {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.db.MemoDB#readMemo(java.lang.String)
+	 */
 	public Memo readMemo(String name) throws Exception {
 
 		PreparedStatement stmt = null;
@@ -161,6 +193,9 @@ public class MemoJdbcDB extends JdbcDB implements MemoDB {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.db.MemoDB#updateMemo(net.sf.borg.model.entity.Memo)
+	 */
 	public void updateMemo(Memo m) throws Exception {
 
 		PreparedStatement stmt = connection_.prepareStatement("UPDATE memos SET "

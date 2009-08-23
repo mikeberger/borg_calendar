@@ -31,12 +31,14 @@ import net.sf.borg.model.entity.Address;
 
 
 /**
- *
- * this is the JDBC layer for access to the addresses table
+ * this is the JDBC layer for access to the addresses table.
  */
 public class AddrJdbcDB extends JdbcBeanDB<Address> implements EntityDB<Address>
 {         
     
+    /* (non-Javadoc)
+     * @see net.sf.borg.model.db.EntityDB#addObj(net.sf.borg.model.entity.KeyedEntity)
+     */
     public void addObj(Address addr) throws Exception
     {
         PreparedStatement stmt = connection_.prepareStatement( "INSERT INTO addresses ( address_num, " +
@@ -84,6 +86,9 @@ public class AddrJdbcDB extends JdbcBeanDB<Address> implements EntityDB<Address>
 
     }
     
+    /* (non-Javadoc)
+     * @see net.sf.borg.model.db.EntityDB#delete(int)
+     */
     public void delete(int key) throws Exception
     {
         PreparedStatement stmt = connection_.prepareStatement( "DELETE FROM addresses WHERE address_num = ?" );
@@ -93,6 +98,13 @@ public class AddrJdbcDB extends JdbcBeanDB<Address> implements EntityDB<Address>
         delCache( key );
     }
     
+    /**
+     * Gets the keys.
+     * 
+     * @return the keys
+     * 
+     * @throws Exception the exception
+     */
     public Collection<Integer> getKeys() throws Exception
     {
         ArrayList<Integer> keys = new ArrayList<Integer>();
@@ -107,6 +119,9 @@ public class AddrJdbcDB extends JdbcBeanDB<Address> implements EntityDB<Address>
         
     }
     
+    /* (non-Javadoc)
+     * @see net.sf.borg.model.db.EntityDB#nextkey()
+     */
     public int nextkey() throws Exception
     {
      PreparedStatement stmt = connection_.prepareStatement("SELECT MAX(address_num) FROM addresses" );
@@ -117,11 +132,17 @@ public class AddrJdbcDB extends JdbcBeanDB<Address> implements EntityDB<Address>
         return ++maxKey;
     }
     
+    /* (non-Javadoc)
+     * @see net.sf.borg.model.db.EntityDB#newObj()
+     */
     public Address newObj()
     {
         return( new Address() );
     }
     
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.db.jdbc.JdbcBeanDB#getPSOne(int)
+	 */
 	PreparedStatement getPSOne(int key) throws SQLException
 	{
 		PreparedStatement stmt = connection_.prepareStatement("SELECT * FROM addresses WHERE address_num = ?" );
@@ -129,12 +150,18 @@ public class AddrJdbcDB extends JdbcBeanDB<Address> implements EntityDB<Address>
 		return stmt;
 	}
 	
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.db.jdbc.JdbcBeanDB#getPSAll()
+	 */
 	PreparedStatement getPSAll() throws SQLException
 	{
 		PreparedStatement stmt = connection_.prepareStatement("SELECT * FROM addresses" );
 		return stmt;
 	}
 	
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.db.jdbc.JdbcBeanDB#createFrom(java.sql.ResultSet)
+	 */
 	Address createFrom(ResultSet r) throws SQLException
 	{
 		Address addr = new Address();
@@ -169,6 +196,9 @@ public class AddrJdbcDB extends JdbcBeanDB<Address> implements EntityDB<Address>
 		return addr;
 	}
 	
+    /* (non-Javadoc)
+     * @see net.sf.borg.model.db.EntityDB#updateObj(net.sf.borg.model.entity.KeyedEntity)
+     */
     public void updateObj(Address addr) throws Exception
     {
    
