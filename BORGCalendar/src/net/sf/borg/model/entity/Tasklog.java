@@ -24,9 +24,6 @@ public class Tasklog extends KeyedEntity<Tasklog> implements java.io.Serializabl
 
 
 	private static final long serialVersionUID = -7296390517941361874L;
-	private Integer Id_;
-	public Integer getId() { return( Id_ ); }
-	public void setId( Integer xx ){ Id_ = xx; }
 
 	private java.util.Date logTime_;
 	public java.util.Date getlogTime() { return( logTime_ ); }
@@ -43,7 +40,6 @@ public class Tasklog extends KeyedEntity<Tasklog> implements java.io.Serializabl
 	protected Tasklog clone() {
 		Tasklog dst = new Tasklog();
 		dst.setKey( getKey());
-		dst.setId( getId() );
 		dst.setlogTime( getlogTime() );
 		dst.setDescription( getDescription() );
 		dst.setTask( getTask() );

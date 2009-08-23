@@ -1105,7 +1105,7 @@ public class TaskView extends DockableView {
 				cd = null;
 
 			Subtask s = new Subtask();
-			s.setId(id);
+			s.setKey(id);
 			s.setDescription((String) desc);
 			s.setCloseDate(cd);
 			s.setDueDate(dd);
@@ -1141,7 +1141,7 @@ public class TaskView extends DockableView {
 				TaskModel.getReference().addLog(
 						tasknum,
 						Resource.getPlainResourceString("subtask") + " "
-								+ s.getId().toString() + " "
+								+ s.getKey() + " "
 								+ Resource.getPlainResourceString("created")
 								+ ": " + s.getDescription());
 			}
@@ -1149,7 +1149,7 @@ public class TaskView extends DockableView {
 				TaskModel.getReference().addLog(
 						tasknum,
 						Resource.getPlainResourceString("subtask") + " "
-								+ s.getId().toString() + " "
+								+ s.getKey() + " "
 								+ Resource.getPlainResourceString("Closed")
 								+ ": " + s.getDescription());
 			}
@@ -1433,7 +1433,7 @@ public class TaskView extends DockableView {
 					Object o[] = {
 							s.getCloseDate() == null ? new Boolean(false)
 									: new Boolean(true),
-							s.getId(),
+							s.getKey(),
 							s.getDescription(),
 							s.getStartDate(),
 							s.getDueDate(),

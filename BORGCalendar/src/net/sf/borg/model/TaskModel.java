@@ -658,7 +658,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 			else if (ch.name().equals("Subtask")) {
 				Subtask subtask = sa.fromXml(ch);
 				try {
-					subtask.setId(null);
+					subtask.setKey(-1);
 					saveSubTask(subtask);
 				} catch (Exception e) {
 					Errmsg.errmsg(e);
@@ -668,7 +668,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 			else if (ch.name().equals("Tasklog")) {
 				Tasklog tlog = la.fromXml(ch);
 				try {
-					tlog.setId(null);
+					tlog.setKey(-1);
 					saveLog(tlog);
 				} catch (Exception e) {
 					Errmsg.errmsg(e);
@@ -823,18 +823,18 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 					.getPlainResourceString("SubtaskNotSupported"));
 
 		TaskDB sdb = (TaskDB) db_;
-		if (s.getId() == null || s.getId().intValue() <= 0
-				|| null == sdb.getSubTask(s.getId())) {
-			if (!undo || s.getId() == null)
-				s.setId(new Integer(sdb.nextSubTaskKey()));
+		if (s.getKey() <= 0
+				|| null == sdb.getSubTask(s.getKey())) {
+			if (!undo || s.getKey() == -1)
+				s.setKey(sdb.nextSubTaskKey());
 			sdb.addSubTask(s);
 			if (!undo) {
-				Subtask st = sdb.getSubTask(s.getId());
+				Subtask st = sdb.getSubTask(s.getKey());
 				SubtaskUndoItem.recordAdd(st);
 			}
 		} else {
 			if (!undo) {
-				Subtask st = sdb.getSubTask(s.getId());
+				Subtask st = sdb.getSubTask(s.getKey());
 				SubtaskUndoItem.recordUpdate(st);
 			}
 			sdb.updateSubTask(s);

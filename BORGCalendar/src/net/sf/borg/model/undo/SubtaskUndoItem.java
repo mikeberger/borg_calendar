@@ -33,7 +33,7 @@ public class SubtaskUndoItem extends UndoItem<Subtask> {
 			} else if (action == actionType.UPDATE) {
 				TaskModel.getReference().saveSubTask(item, true);
 			} else if (action == actionType.ADD) {
-				TaskModel.getReference().deleteSubTask(item.getId(),true);
+				TaskModel.getReference().deleteSubTask(item.getKey(),true);
 			}
 		} catch (Exception e) {
 			Errmsg.errmsg(e);

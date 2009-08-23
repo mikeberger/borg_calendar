@@ -28,8 +28,7 @@ public class TasklogXMLAdapter extends EntityXMLAdapter<Tasklog> {
 		XTree xt = new XTree();
 		xt.name("Tasklog");
 		xt.appendChild("KEY", Integer.toString(o.getKey()));
-		if( o.getId() != null )
-			xt.appendChild("Id", EntityXMLAdapter.toString(o.getId()));
+		
 		if( o.getlogTime() != null )
 			xt.appendChild("logTime", EntityXMLAdapter.toString(o.getlogTime()));
 		if( o.getDescription() != null && !o.getDescription().equals(""))
@@ -45,8 +44,7 @@ public class TasklogXMLAdapter extends EntityXMLAdapter<Tasklog> {
 		String ks = xt.child("KEY").value();
 		ret.setKey( EntityXMLAdapter.toInt(ks) );
 		String val = "";
-		val = xt.child("Id").value();
-		ret.setId( EntityXMLAdapter.toInteger(val) );
+	
 		val = xt.child("logTime").value();
 		ret.setlogTime( EntityXMLAdapter.toDate(val) );
 		val = xt.child("Description").value();

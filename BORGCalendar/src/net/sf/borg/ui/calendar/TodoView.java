@@ -576,7 +576,7 @@ public class TodoView extends DockableView implements Prefs.Listener {
 					String abb = "";
 
 					if (show_abb.equals("true"))
-						abb = "ST" + st.getId().toString() + " ";
+						abb = "ST" + st.getKey() + " ";
 					String btstring = abb + st.getDescription();
 
 					Object[] ro = new Object[5];

@@ -465,7 +465,7 @@ public class NoteBox implements Draggable {
 		else if( bean instanceof Subtask )
 		{
 			Subtask task = TaskModel.getReference().getSubTask(
-					((Subtask) bean).getId());	
+					((Subtask) bean).getKey());	
 			task.setDueDate(d);
 			if( task.getDueDate() != null && DateUtil.isAfter(task.getStartDate(), task.getDueDate()) )
 			{

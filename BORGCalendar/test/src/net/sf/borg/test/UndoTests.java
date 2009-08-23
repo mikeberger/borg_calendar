@@ -263,7 +263,7 @@ public class UndoTests {
 		
 		// delete a subtask
 		Collection<Subtask> scoll = TaskModel.getReference().getSubTasks(taskid);
-		TaskModel.getReference().deleteSubTask(scoll.iterator().next().getId());
+		TaskModel.getReference().deleteSubTask(scoll.iterator().next().getKey());
 		num = TaskModel.getReference().getSubTasks(taskid).size();
 		assertTrue("Task does not have 1 subtask: " + num, num == 1);
 		

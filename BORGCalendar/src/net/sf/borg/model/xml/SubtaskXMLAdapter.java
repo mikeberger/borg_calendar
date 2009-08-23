@@ -28,8 +28,7 @@ public class SubtaskXMLAdapter extends EntityXMLAdapter<Subtask> {
 		XTree xt = new XTree();
 		xt.name("Subtask");
 		xt.appendChild("KEY", Integer.toString(o.getKey()));
-		if( o.getId() != null )
-			xt.appendChild("Id", EntityXMLAdapter.toString(o.getId()));
+	
 		if( o.getStartDate() != null )
 			xt.appendChild("CreateDate", EntityXMLAdapter.toString(o.getStartDate()));
 		if( o.getCloseDate() != null )
@@ -49,8 +48,6 @@ public class SubtaskXMLAdapter extends EntityXMLAdapter<Subtask> {
 		String ks = xt.child("KEY").value();
 		ret.setKey( EntityXMLAdapter.toInt(ks) );
 		String val = "";
-		val = xt.child("Id").value();
-		ret.setId( EntityXMLAdapter.toInteger(val) );
 		val = xt.child("CreateDate").value();
 		ret.setStartDate( EntityXMLAdapter.toDate(val) );
 		val = xt.child("CloseDate").value();

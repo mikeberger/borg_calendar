@@ -27,16 +27,7 @@ public class Subtask extends KeyedEntity<Subtask> implements CalendarEntity,
 		java.io.Serializable {
 
 	private static final long serialVersionUID = -5794908342032518360L;
-	private Integer Id_;
-
-	public Integer getId() {
-		return (Id_);
-	}
-
-	public void setId(Integer xx) {
-		Id_ = xx;
-	}
-
+	
 	private java.util.Date CreateDate_;
 
 	public java.util.Date getStartDate() {
@@ -90,7 +81,6 @@ public class Subtask extends KeyedEntity<Subtask> implements CalendarEntity,
 	protected Subtask clone() {
 		Subtask dst = new Subtask();
 		dst.setKey(getKey());
-		dst.setId(getId());
 		dst.setStartDate(getStartDate());
 		dst.setCloseDate(getCloseDate());
 		dst.setDueDate(getDueDate());
@@ -119,7 +109,7 @@ public class Subtask extends KeyedEntity<Subtask> implements CalendarEntity,
 		String show_abb = Prefs.getPref(PrefName.TASK_SHOW_ABBREV);
 		String abb = "";
 		if (show_abb.equals("true"))
-			abb = "BT" + getTask() + "/ST" + getId().toString() + " ";
+			abb = "BT" + getTask() + "/ST" + getKey() + " ";
 		String de = abb + getDescription();
 		String tx = de.replace('\n', ' ');
 		return tx;

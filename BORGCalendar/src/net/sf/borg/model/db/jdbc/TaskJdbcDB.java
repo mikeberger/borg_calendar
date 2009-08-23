@@ -236,7 +236,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements EntityDB<Task>, Task
      */
     private Subtask createSubtask(ResultSet r) throws SQLException {
         Subtask s = new Subtask();
-        s.setId(new Integer(r.getInt("id")));
+        s.setKey(r.getInt("id"));
         s.setTask(new Integer(r.getInt("task")));
         if (r.getTimestamp("due_date") != null)
             s.setDueDate(new java.util.Date(r.getTimestamp("due_date").getTime()));
@@ -334,7 +334,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements EntityDB<Task>, Task
         PreparedStatement stmt = connection_.prepareStatement("INSERT INTO subtasks ( id, create_date, due_date,"
                 + " close_date, description, task ) VALUES " + "( ?, ?, ?, ?, ?, ?)");
 
-        stmt.setInt(1, s.getId().intValue());
+        stmt.setInt(1, s.getKey());
 
         java.util.Date sd = s.getStartDate();
         if (sd != null)
@@ -367,7 +367,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements EntityDB<Task>, Task
         PreparedStatement stmt = connection_.prepareStatement("UPDATE subtasks SET create_date = ?, due_date = ?,"
                 + " close_date = ?, description = ?, task = ?  WHERE id = ?");
 
-        stmt.setInt(6, s.getId().intValue());
+        stmt.setInt(6, s.getKey());
 
         java.util.Date sd = s.getStartDate();
         if (sd != null)
@@ -466,7 +466,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements EntityDB<Task>, Task
      */
     private Tasklog createTasklog(ResultSet r) throws SQLException {
         Tasklog s = new Tasklog();
-        s.setId(new Integer(r.getInt("id")));
+        s.setKey(r.getInt("id"));
         s.setTask(new Integer(r.getInt("task")));
         if (r.getTimestamp("logtime") != null)
             s.setlogTime(new java.util.Date(r.getTimestamp("logtime").getTime()));
