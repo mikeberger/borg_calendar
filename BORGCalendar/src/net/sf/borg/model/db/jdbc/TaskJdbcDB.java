@@ -75,7 +75,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements EntityDB<Task>, Task
         stmt.setString(8, task.getDescription());
         stmt.setString(9, task.getResolution());
         stmt.setString(10, task.getCategory());
-        java.util.Date cd = task.getCD();
+        java.util.Date cd = task.getCompletionDate();
         if (cd != null)
             stmt.setDate(11, new java.sql.Date(cd.getTime()));
         else
@@ -173,7 +173,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements EntityDB<Task>, Task
         task.setResolution(r.getString("resolution"));
         task.setCategory(r.getString("category"));
         if (r.getDate("close_date") != null)
-            task.setCD(new java.util.Date(r.getDate("close_date").getTime()));
+            task.setCompletionDate(new java.util.Date(r.getDate("close_date").getTime()));
         task.setProject((Integer) r.getObject("project"));
         return task;
     }
@@ -207,7 +207,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements EntityDB<Task>, Task
         stmt.setString(7, task.getDescription());
         stmt.setString(8, task.getResolution());
         stmt.setString(9, task.getCategory());
-        java.util.Date cd = task.getCD();
+        java.util.Date cd = task.getCompletionDate();
         if (cd != null)
             stmt.setDate(10, new java.sql.Date(cd.getTime()));
         else

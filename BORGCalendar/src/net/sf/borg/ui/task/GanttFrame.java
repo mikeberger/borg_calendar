@@ -73,7 +73,7 @@ class GanttFrame extends View {
 	    String tlabel = Integer.toString(t.getKey()) + "-" + t.getDescription();
 	    addChartItem(sched, tlabel, t.getStartDate(), dd);
 	    if (TaskModel.isClosed(t))
-		addChartItem(actual, tlabel, t.getStartDate(), t.getCD());
+		addChartItem(actual, tlabel, t.getStartDate(), t.getCompletionDate());
 
 	    String show_st = Prefs.getPref(PrefName.GANTT_SHOW_SUBTASKS);
 	    if (show_st.equals("true")) {

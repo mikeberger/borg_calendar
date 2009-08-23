@@ -31,12 +31,10 @@ public class TaskXMLAdapter extends EntityXMLAdapter<Task> {
 		
 		if( o.getStartDate() != null )
 			xt.appendChild("StartDate", EntityXMLAdapter.toString(o.getStartDate()));
-		if( o.getCD() != null )
-			xt.appendChild("CD", EntityXMLAdapter.toString(o.getCD()));
+		if( o.getCompletionDate() != null )
+			xt.appendChild("CD", EntityXMLAdapter.toString(o.getCompletionDate()));
 		if( o.getDueDate() != null )
 			xt.appendChild("DueDate", EntityXMLAdapter.toString(o.getDueDate()));
-		if( o.getET() != null )
-			xt.appendChild("ET", EntityXMLAdapter.toString(o.getET()));
 		if( o.getPersonAssigned() != null && !o.getPersonAssigned().equals(""))
 			xt.appendChild("PersonAssigned", o.getPersonAssigned());
 		if( o.getPriority() != null )
@@ -49,18 +47,6 @@ public class TaskXMLAdapter extends EntityXMLAdapter<Task> {
 			xt.appendChild("Description", o.getDescription());
 		if( o.getResolution() != null && !o.getResolution().equals(""))
 			xt.appendChild("Resolution", o.getResolution());
-		if( o.getTodoList() != null && !o.getTodoList().equals(""))
-			xt.appendChild("TodoList", o.getTodoList());
-		if( o.getUserTask1() != null && !o.getUserTask1().equals(""))
-			xt.appendChild("UserTask1", o.getUserTask1());
-		if( o.getUserTask2() != null && !o.getUserTask2().equals(""))
-			xt.appendChild("UserTask2", o.getUserTask2());
-		if( o.getUserTask3() != null && !o.getUserTask3().equals(""))
-			xt.appendChild("UserTask3", o.getUserTask3());
-		if( o.getUserTask4() != null && !o.getUserTask4().equals(""))
-			xt.appendChild("UserTask4", o.getUserTask4());
-		if( o.getUserTask5() != null && !o.getUserTask5().equals(""))
-			xt.appendChild("UserTask5", o.getUserTask5());
 		if( o.getCategory() != null && !o.getCategory().equals(""))
 			xt.appendChild("Category", o.getCategory());
 		if( o.getProject() != null )
@@ -78,11 +64,9 @@ public class TaskXMLAdapter extends EntityXMLAdapter<Task> {
 		val = xt.child("StartDate").value();
 		ret.setStartDate( EntityXMLAdapter.toDate(val) );
 		val = xt.child("CD").value();
-		ret.setCD( EntityXMLAdapter.toDate(val) );
+		ret.setCompletionDate( EntityXMLAdapter.toDate(val) );
 		val = xt.child("DueDate").value();
 		ret.setDueDate( EntityXMLAdapter.toDate(val) );
-		val = xt.child("ET").value();
-		ret.setET( EntityXMLAdapter.toDate(val) );
 		val = xt.child("PersonAssigned").value();
 		if( !val.equals("") )
 			ret.setPersonAssigned( val );
@@ -100,24 +84,6 @@ public class TaskXMLAdapter extends EntityXMLAdapter<Task> {
 		val = xt.child("Resolution").value();
 		if( !val.equals("") )
 			ret.setResolution( val );
-		val = xt.child("TodoList").value();
-		if( !val.equals("") )
-			ret.setTodoList( val );
-		val = xt.child("UserTask1").value();
-		if( !val.equals("") )
-			ret.setUserTask1( val );
-		val = xt.child("UserTask2").value();
-		if( !val.equals("") )
-			ret.setUserTask2( val );
-		val = xt.child("UserTask3").value();
-		if( !val.equals("") )
-			ret.setUserTask3( val );
-		val = xt.child("UserTask4").value();
-		if( !val.equals("") )
-			ret.setUserTask4( val );
-		val = xt.child("UserTask5").value();
-		if( !val.equals("") )
-			ret.setUserTask5( val );
 		val = xt.child("Category").value();
 		if( !val.equals("") )
 			ret.setCategory( val );

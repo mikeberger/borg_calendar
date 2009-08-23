@@ -1396,7 +1396,7 @@ public class TaskView extends DockableView {
 			pritext.setSelectedItem(task.getPriority()); // priority
 			patext.setText(task.getPersonAssigned()); // person assigned
 
-			Date cd = task.getCD();
+			Date cd = task.getCompletionDate();
 			if (cd != null)
 				closeDate.setText(DateFormat.getDateInstance(DateFormat.MEDIUM)
 						.format(cd));

@@ -412,7 +412,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 
 			// update close date
 			if (task.getState() != null && isClosed(task))
-				task.setCD(new Date());
+				task.setCompletionDate(new Date());
 			int key = task.getKey();
 			task.setKey(key);
 			if (!undo) {
@@ -571,86 +571,6 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 					task.setPriority(new Integer(3));
 
 				db_.addObj(task);
-
-				if (TaskModel.getReference().hasSubTasks()) {
-					// migrate from old subtask mechanism
-					if (!isClosed(task) && task.getTodoList() != null
-							&& task.getUserTask1() != null) {
-						// add system subtasks
-						String todos = task.getTodoList();
-						String cbs[] = TaskModel.getReference().getTaskTypes()
-								.checkBoxes(task.getType());
-						for (int sti = 0; sti < cbs.length; sti++) {
-							if (!cbs[sti].equals(TaskTypes.NOCBVALUE)) {
-								Subtask st = new Subtask();
-								st.setStartDate(new Date());
-								st.setDescription(cbs[sti]);
-								st.setTask(task.getKey());
-								if (todos.indexOf(Integer.toString(sti)) != -1) {
-									st.setCloseDate(new Date());
-								}
-								saveSubTask(st);
-							}
-						}
-						if (task.getUserTask1() != null) {
-							Subtask st = new Subtask();
-							st.setStartDate(new Date());
-							st.setDescription(task.getUserTask1());
-							st.setTask(task.getKey());
-							if (todos.indexOf("6") != -1) {
-								st.setCloseDate(new Date());
-							}
-							saveSubTask(st);
-						}
-						if (task.getUserTask2() != null) {
-							Subtask st = new Subtask();
-							st.setStartDate(new Date());
-							st.setDescription(task.getUserTask2());
-							st.setTask(task.getKey());
-							if (todos.indexOf("7") != -1) {
-								st.setCloseDate(new Date());
-							}
-							saveSubTask(st);
-						}
-						if (task.getUserTask3() != null) {
-							Subtask st = new Subtask();
-							st.setStartDate(new Date());
-							st.setDescription(task.getUserTask3());
-							st.setTask(task.getKey());
-							if (todos.indexOf("8") != -1) {
-								st.setCloseDate(new Date());
-							}
-							saveSubTask(st);
-						}
-						if (task.getUserTask4() != null) {
-							Subtask st = new Subtask();
-							st.setStartDate(new Date());
-							st.setDescription(task.getUserTask4());
-							st.setTask(task.getKey());
-							if (todos.indexOf("9") != -1) {
-								st.setCloseDate(new Date());
-							}
-							saveSubTask(st);
-						}
-						if (task.getUserTask5() != null) {
-							Subtask st = new Subtask();
-							st.setStartDate(new Date());
-							st.setDescription(task.getUserTask5());
-							st.setTask(task.getKey());
-							if (todos.indexOf("A") != -1) {
-								st.setCloseDate(new Date());
-							}
-							saveSubTask(st);
-						}
-						task.setTodoList(null);
-						task.setUserTask1(null);
-						task.setUserTask2(null);
-						task.setUserTask3(null);
-						task.setUserTask4(null);
-						task.setUserTask5(null);
-						savetask(task);
-					}
-				}
 
 			}
 

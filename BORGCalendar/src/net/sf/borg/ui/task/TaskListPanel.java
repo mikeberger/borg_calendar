@@ -710,7 +710,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 				Date end = null;
 				if (task.getState().equals(
 						tasktypes.getFinalState(task.getType()))) {
-					end = task.getCD();
+					end = task.getCompletionDate();
 				} else {
 					end = new Date();
 				}
