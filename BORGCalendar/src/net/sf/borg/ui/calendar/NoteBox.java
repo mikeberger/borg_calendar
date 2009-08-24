@@ -401,7 +401,7 @@ public class NoteBox implements Draggable {
 			int hour = realtime / 60;
 			int min = realtime % 60;
 
-			int oldkey = (ap.getKey() / 100) * 100;
+			int oldkey = DateUtil.dayOfEpoch(ap.getDate());
 
 			GregorianCalendar newCal = new GregorianCalendar();
 			newCal.setTime(d);
