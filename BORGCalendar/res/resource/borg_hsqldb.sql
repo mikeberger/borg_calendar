@@ -28,9 +28,7 @@ CREATE CACHED TABLE addresses (
   webpage varchar(100) default NULL,
   notes longvarchar,
   birthday date default NULL,
-  new integer default '0' NOT NULL,
   modified integer default '0' NOT NULL,
-  deleted integer default '0' NOT NULL,
   PRIMARY KEY  (address_num)
 );
 
@@ -56,9 +54,7 @@ CREATE CACHED TABLE appointments (
   color varchar(10) default NULL,
   rpt integer default '0' NOT NULL,
   category varchar(15) default NULL,
-  new integer default '0' NOT NULL,
   modified integer default '0' NOT NULL,
-  deleted integer default '0' NOT NULL,
   alarm char(1) default NULL,
   reminders longvarchar,
   untimed char(1) default NULL,
@@ -138,9 +134,7 @@ CREATE CACHED TABLE memos (
   memoname varchar(50) NOT NULL,
   memotext longvarchar,
   palmid integer,
-  new integer default '0' NOT NULL,
   modified integer default '0' NOT NULL,
-  deleted integer default '0' NOT NULL,
   private integer default '0' NOT NULL,
   PRIMARY KEY  (memoname)
 );

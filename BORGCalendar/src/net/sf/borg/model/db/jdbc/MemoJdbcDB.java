@@ -41,19 +41,17 @@ public class MemoJdbcDB extends JdbcDB implements MemoDB {
 	 */
 	public void addMemo(Memo m) throws Exception {
 		PreparedStatement stmt = connection_
-				.prepareStatement("INSERT INTO memos ( memoname, memotext, new, modified, deleted, palmid, private) "
-						+ " VALUES " + "( ?, ?, ?, ?, ?, ?, ?)");
+				.prepareStatement("INSERT INTO memos ( memoname, memotext, modified, palmid, private) "
+						+ " VALUES " + "( ?, ?, ?, ?, ?)");
 
 		stmt.setString(1, m.getMemoName());
 		stmt.setString(2, m.getMemoText());
-		stmt.setInt(3, toInt(m.getNew()));
-		stmt.setInt(4, toInt(m.getModified()));
-		stmt.setInt(5, toInt(m.getDeleted()));
+		stmt.setInt(3, toInt(m.getModified()));
 		if (m.getPalmId() != null)
-			stmt.setInt(6, m.getPalmId().intValue());
+			stmt.setInt(4, m.getPalmId().intValue());
 		else
-			stmt.setNull(6, java.sql.Types.INTEGER);
-		stmt.setInt(7, toInt(m.getPrivate()));
+			stmt.setNull(4, java.sql.Types.INTEGER);
+		stmt.setInt(5, toInt(m.getPrivate()));
 
 		stmt.executeUpdate();
 
@@ -136,9 +134,7 @@ public class MemoJdbcDB extends JdbcDB implements MemoDB {
 		m.setMemoName(r.getString("memoname"));
 		m.setMemoText(r.getString("memotext"));
 
-		m.setNew(r.getInt("new") != 0);
 		m.setModified(r.getInt("modified") != 0);
-		m.setDeleted(r.getInt("deleted") != 0);
 		int palmid = r.getInt("palmid");
 		if (!r.wasNull())
 			m.setPalmId(new Integer(palmid));
@@ -199,20 +195,18 @@ public class MemoJdbcDB extends JdbcDB implements MemoDB {
 	public void updateMemo(Memo m) throws Exception {
 
 		PreparedStatement stmt = connection_.prepareStatement("UPDATE memos SET "
-				+ "memotext = ?, new = ?, modified = ?, deleted = ?, palmid = ?, private = ? "
+				+ "memotext = ?, modified = ?, palmid = ?, private = ? "
 				+ " WHERE memoname = ?");
 
 		stmt.setString(1, m.getMemoText());
 
-		stmt.setInt(2, toInt(m.getNew()));
-		stmt.setInt(3, toInt(m.getModified()));
-		stmt.setInt(4, toInt(m.getDeleted()));
+		stmt.setInt(2, toInt(m.getModified()));
 		if (m.getPalmId() != null)
-			stmt.setInt(5, m.getPalmId().intValue());
+			stmt.setInt(3, m.getPalmId().intValue());
 		else
-			stmt.setNull(5, java.sql.Types.INTEGER);
-		stmt.setInt(6, toInt(m.getPrivate()));
-		stmt.setString(7, m.getMemoName());
+			stmt.setNull(3, java.sql.Types.INTEGER);
+		stmt.setInt(4, toInt(m.getPrivate()));
+		stmt.setString(5, m.getMemoName());
 
 		stmt.executeUpdate();
 

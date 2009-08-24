@@ -44,9 +44,9 @@ public class AddrJdbcDB extends JdbcBeanDB<Address> implements EntityDB<Address>
         PreparedStatement stmt = connection_.prepareStatement( "INSERT INTO addresses ( address_num, " +
         "first_name, last_name, nickname, email, screen_name, work_phone," + 
         "home_phone, fax, pager, street, city, state, zip, country, company," +
-        "work_street, work_city, work_state, work_zip, work_country, webpage, notes, birthday, new, modified, deleted) " +
+        "work_street, work_city, work_state, work_zip, work_country, webpage, notes, birthday, modified) " +
         " VALUES " +
-        "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         
         
         stmt.setInt( 1, addr.getKey() );
@@ -77,9 +77,7 @@ public class AddrJdbcDB extends JdbcBeanDB<Address> implements EntityDB<Address>
             stmt.setDate( 24, new java.sql.Date( bd.getTime()) );
         else
             stmt.setDate(24, null );
-        stmt.setInt( 25, toInt( addr.getNew()));
-        stmt.setInt( 26, toInt( addr.getModified()));
-        stmt.setInt( 27, toInt( addr.getDeleted()));
+        stmt.setInt( 25, toInt( addr.getModified()));
         stmt.executeUpdate();
         
         writeCache( addr );
@@ -188,9 +186,7 @@ public class AddrJdbcDB extends JdbcBeanDB<Address> implements EntityDB<Address>
 		addr.setWorkCountry( r.getString("work_country"));
 		addr.setWebPage( r.getString("webpage"));
 		addr.setNotes( r.getString("notes"));
-		addr.setNew( r.getInt("new" ) != 0 );
 		addr.setModified( r.getInt("modified" ) != 0 );
-		addr.setDeleted( r.getInt("deleted" ) != 0 );
 		if( r.getDate("birthday") != null )
 			addr.setBirthday( new java.util.Date( r.getDate("birthday").getTime()));
 		return addr;
@@ -205,7 +201,7 @@ public class AddrJdbcDB extends JdbcBeanDB<Address> implements EntityDB<Address>
         PreparedStatement stmt = connection_.prepareStatement( "UPDATE addresses SET " +
         "first_name = ?, last_name = ?, nickname = ?, email = ?, screen_name = ?, work_phone = ?," + 
         "home_phone = ?, fax = ?, pager = ?, street = ?, city = ?, state = ?, zip = ?, country = ?, company = ?," +
-        "work_street = ?, work_city = ?, work_state = ?, work_zip = ?, work_country = ?, webpage = ?, notes = ?, birthday = ?, new = ?, modified = ?, deleted = ? " +
+        "work_street = ?, work_city = ?, work_state = ?, work_zip = ?, work_country = ?, webpage = ?, notes = ?, birthday = ?, modified = ? " +
         " WHERE address_num = ?" );
         
  
@@ -236,11 +232,9 @@ public class AddrJdbcDB extends JdbcBeanDB<Address> implements EntityDB<Address>
             stmt.setDate( 23, new java.sql.Date( bd.getTime()) );
         else
             stmt.setDate(23, null );
-        stmt.setInt( 24, toInt( addr.getNew()));
-        stmt.setInt( 25, toInt( addr.getModified()));
-        stmt.setInt( 26, toInt( addr.getDeleted())); 
+        stmt.setInt( 24, toInt( addr.getModified()));
         
-        stmt.setInt( 27, addr.getKey() );
+        stmt.setInt( 25, addr.getKey() );
 
         stmt.executeUpdate();
                

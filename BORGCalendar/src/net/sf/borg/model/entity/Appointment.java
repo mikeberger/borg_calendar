@@ -258,15 +258,9 @@ public class Appointment extends KeyedEntity<Appointment> implements CalendarEnt
 	public void setCategory( String xx ){ Category_ = xx; }
 
 	// palm sync stuff
-	@Deprecated private boolean New_;
-	@Deprecated public boolean getNew() { return( New_ ); }
-	@Deprecated public void setNew( boolean xx ){ New_ = xx; }
 	@Deprecated private boolean Modified_;
 	@Deprecated public boolean getModified() { return( Modified_ ); }
 	@Deprecated public void setModified( boolean xx ){ Modified_ = xx; }
-	@Deprecated private boolean Deleted_;
-	@Deprecated public boolean getDeleted() { return( Deleted_ ); }
-	@Deprecated public void setDeleted( boolean xx ){ Deleted_ = xx; }
 	@Deprecated private String Alarm_;
 	@Deprecated public String getAlarm() { return( Alarm_ ); }
 	@Deprecated public void setAlarm( String xx ){ Alarm_ = xx; }
@@ -333,9 +327,7 @@ public class Appointment extends KeyedEntity<Appointment> implements CalendarEnt
 		dst.setColor( getColor() );
 		dst.setRepeatFlag( getRepeatFlag() );
 		dst.setCategory( getCategory() );
-		dst.setNew( getNew() );
 		dst.setModified( getModified() );
-		dst.setDeleted( getDeleted() );
 		dst.setAlarm( getAlarm() );
 		dst.setReminderTimes( getReminderTimes() );
 		dst.setUntimed( getUntimed() );

@@ -119,9 +119,7 @@ public class MemoModel extends Model {
 			Memo old = db_.readMemo(name);
 			if (old == null) {
 
-				memo.setNew(true);
-				memo.setDeleted(false);
-				memo.setModified(false);
+				memo.setModified(true);
 				db_.addMemo(memo);
 				if (!undo) {
 					UndoLog.getReference()
@@ -130,7 +128,6 @@ public class MemoModel extends Model {
 
 			} else {
 				memo.setModified(true);
-				memo.setDeleted(false);
 				db_.updateMemo(memo);
 				if (!undo) {
 					UndoLog.getReference().addItem(
@@ -202,8 +199,6 @@ public class MemoModel extends Model {
 		Memo m = db_.readMemo(name);
 
 		if (m == null)
-			return null;
-		if (m.getDeleted() == true)
 			return null;
 		parseOutDates(m);
 

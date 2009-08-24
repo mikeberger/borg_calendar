@@ -81,12 +81,8 @@ public class AddressXMLAdapter extends EntityXMLAdapter<Address> {
 			xt.appendChild("Notes", o.getNotes());
 		if( o.getBirthday() != null )
 			xt.appendChild("Birthday", EntityXMLAdapter.toString(o.getBirthday()));
-		if( o.getNew() == true )
-			xt.appendChild("New" ,  EntityXMLAdapter.toString(o.getNew()));
 		if( o.getModified() == true )
 			xt.appendChild("Modified" ,  EntityXMLAdapter.toString(o.getModified()));
-		if( o.getDeleted() == true )
-			xt.appendChild("Deleted" ,  EntityXMLAdapter.toString(o.getDeleted()));
 		return( xt );
 	}
 
@@ -167,12 +163,8 @@ public class AddressXMLAdapter extends EntityXMLAdapter<Address> {
 			ret.setNotes( val );
 		val = xt.child("Birthday").value();
 		ret.setBirthday( EntityXMLAdapter.toDate(val) );
-		val = xt.child("New").value();
-		ret.setNew( EntityXMLAdapter.toBoolean(val) );
 		val = xt.child("Modified").value();
 		ret.setModified( EntityXMLAdapter.toBoolean(val) );
-		val = xt.child("Deleted").value();
-		ret.setDeleted( EntityXMLAdapter.toBoolean(val) );
 		return( ret );
 	}
 }

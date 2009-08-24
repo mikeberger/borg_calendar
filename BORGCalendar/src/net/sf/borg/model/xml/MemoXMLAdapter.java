@@ -41,12 +41,8 @@ public class MemoXMLAdapter extends EntityXMLAdapter<Memo> {
 			xt.appendChild("MemoText", o.getMemoText());
 		if( o.getPalmId() != null )
 			xt.appendChild("PalmId", EntityXMLAdapter.toString(o.getPalmId()));
-		if( o.getNew() == true )
-			xt.appendChild("New" ,  EntityXMLAdapter.toString(o.getNew()));
 		if( o.getModified() == true )
 			xt.appendChild("Modified" ,  EntityXMLAdapter.toString(o.getModified()));
-		if( o.getDeleted() == true )
-			xt.appendChild("Deleted" ,  EntityXMLAdapter.toString(o.getDeleted()));
 		if( o.getPrivate() == true )
 			xt.appendChild("Private" ,  EntityXMLAdapter.toString(o.getPrivate()));
 		if( o.getCreated() != null )
@@ -73,12 +69,8 @@ public class MemoXMLAdapter extends EntityXMLAdapter<Memo> {
 			ret.setMemoText( val );
 		val = xt.child("PalmId").value();
 		ret.setPalmId( EntityXMLAdapter.toInteger(val) );
-		val = xt.child("New").value();
-		ret.setNew( EntityXMLAdapter.toBoolean(val) );
 		val = xt.child("Modified").value();
 		ret.setModified( EntityXMLAdapter.toBoolean(val) );
-		val = xt.child("Deleted").value();
-		ret.setDeleted( EntityXMLAdapter.toBoolean(val) );
 		val = xt.child("Private").value();
 		ret.setPrivate( EntityXMLAdapter.toBoolean(val) );
 		val = xt.child("Created").value();

@@ -232,9 +232,6 @@ public class AddressModel extends Model {
 			Collection<Address> addrs = getAddresses();
 			for (Address addr : addrs) {
 
-				if (addr.getDeleted())
-					continue;
-
 				// use birthday to build a day key
 				Date bd = addr.getBirthday();
 				if (bd == null)
@@ -306,7 +303,7 @@ public class AddressModel extends Model {
 					newkey = num;
 				}
 				addr.setKey(newkey);
-				addr.setNew(true);
+				addr.setModified(true);
 				db_.addObj(addr);
 				if (!undo) {
 					UndoLog.getReference().addItem(

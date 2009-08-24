@@ -380,7 +380,6 @@ public class AppointmentPanel extends JPanel {
 				}
 
 				// should carry forward sync flags
-				r.setNew(ap.getNew());
 				r.setModified(ap.getModified());
 				
 			} catch (Exception e) {

@@ -420,15 +420,9 @@ public class Address extends KeyedEntity<Address> implements java.io.Serializabl
 	public void setBirthday( java.util.Date xx ){ Birthday_ = xx; }
 
 	// palm sync stuff
-	@Deprecated private boolean New_;
-	@Deprecated public boolean getNew() { return( New_ ); }
-	@Deprecated public void setNew( boolean xx ){ New_ = xx; }
 	@Deprecated private boolean Modified_;
 	@Deprecated public boolean getModified() { return( Modified_ ); }
 	@Deprecated public void setModified( boolean xx ){ Modified_ = xx; }
-	@Deprecated private boolean Deleted_;
-	@Deprecated public boolean getDeleted() { return( Deleted_ ); }
-	@Deprecated public void setDeleted( boolean xx ){ Deleted_ = xx; }
 
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.entity.KeyedEntity#clone()
@@ -459,9 +453,7 @@ public class Address extends KeyedEntity<Address> implements java.io.Serializabl
 		dst.setWebPage( getWebPage() );
 		dst.setNotes( getNotes() );
 		dst.setBirthday( getBirthday() );
-		dst.setNew( getNew() );
 		dst.setModified( getModified() );
-		dst.setDeleted( getDeleted() );
 		return(dst);
 	}
 }

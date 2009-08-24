@@ -66,12 +66,8 @@ public class AppointmentXMLAdapter extends EntityXMLAdapter<Appointment> {
 			xt.appendChild("RepeatFlag" ,  EntityXMLAdapter.toString(o.getRepeatFlag()));
 		if( o.getCategory() != null && !o.getCategory().equals(""))
 			xt.appendChild("Category", o.getCategory());
-		if( o.getNew() == true )
-			xt.appendChild("New" ,  EntityXMLAdapter.toString(o.getNew()));
 		if( o.getModified() == true )
 			xt.appendChild("Modified" ,  EntityXMLAdapter.toString(o.getModified()));
-		if( o.getDeleted() == true )
-			xt.appendChild("Deleted" ,  EntityXMLAdapter.toString(o.getDeleted()));
 		if( o.getAlarm() != null && !o.getAlarm().equals(""))
 			xt.appendChild("Alarm", o.getAlarm());
 		if( o.getReminderTimes() != null && !o.getReminderTimes().equals(""))
@@ -122,12 +118,8 @@ public class AppointmentXMLAdapter extends EntityXMLAdapter<Appointment> {
 		val = xt.child("Category").value();
 		if( !val.equals("") )
 			ret.setCategory( val );
-		val = xt.child("New").value();
-		ret.setNew( EntityXMLAdapter.toBoolean(val) );
 		val = xt.child("Modified").value();
 		ret.setModified( EntityXMLAdapter.toBoolean(val) );
-		val = xt.child("Deleted").value();
-		ret.setDeleted( EntityXMLAdapter.toBoolean(val) );
 		val = xt.child("Alarm").value();
 		if( !val.equals("") )
 			ret.setAlarm( val );

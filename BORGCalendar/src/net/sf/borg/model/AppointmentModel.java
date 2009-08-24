@@ -598,8 +598,6 @@ public class AppointmentModel extends Model implements Model.Listener,
 
 				// read the full appt from the DB and add to the vector
 				Appointment appt = db_.readObj(key);
-				if (appt.getDeleted())
-					continue;
 
 				// if category set, filter appts
 				if (!CategoryModel.getReference().isShown(appt.getCategory())) {
@@ -803,8 +801,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 					r.setKey(db_.nextkey());
 				}
 
-				r.setNew(true);
-				r.setDeleted(false);
+				r.setModified(true);
 
 				db_.addObj(r);
 				if (!undo) {
@@ -814,7 +811,6 @@ public class AppointmentModel extends Model implements Model.Listener,
 			} else {
 
 				r.setModified(true);
-				r.setDeleted(false);
 
 				db_.updateObj(r);
 				if (!undo) {

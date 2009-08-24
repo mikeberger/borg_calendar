@@ -231,7 +231,7 @@ public class PopupView extends View {
 
 	private static boolean shouldBeShown(Appointment appt) {
 
-		if (appt == null || appt.getDeleted())
+		if (appt == null )
 			return false;
 
 		// check if we should show it based on public/private

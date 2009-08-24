@@ -66,33 +66,12 @@ public class Memo extends KeyedEntity<Memo> implements java.io.Serializable {
 	public void setMemoText( String xx ){ MemoText_ = xx; }
 	
 	// deprecating the palm stuff - it's almost dead
-
-	/** The Palm id_. */
 	@Deprecated private Integer PalmId_;
-	
-	/**
-	 * Gets the palm id.
-	 * 
-	 * @return the palm id
-	 */
 	@Deprecated public Integer getPalmId() { return( PalmId_ ); }
-	
-	/**
-	 * Sets the palm id.
-	 * 
-	 * @param xx the new palm id
-	 */
 	@Deprecated public void setPalmId( Integer xx ){ PalmId_ = xx; }
-
-	@Deprecated private boolean New_;
-	@Deprecated public boolean getNew() { return( New_ ); }
-	@Deprecated public void setNew( boolean xx ){ New_ = xx; }
 	@Deprecated private boolean Modified_;
 	@Deprecated public boolean getModified() { return( Modified_ ); }
 	@Deprecated public void setModified( boolean xx ){ Modified_ = xx; }
-	@Deprecated private boolean Deleted_;
-	@Deprecated public boolean getDeleted() { return( Deleted_ ); }
-	@Deprecated public void setDeleted( boolean xx ){ Deleted_ = xx; }
 
 	/** The Private flag - used by the palm. */
 	@Deprecated private boolean Private_;
@@ -162,9 +141,7 @@ public class Memo extends KeyedEntity<Memo> implements java.io.Serializable {
 		dst.setMemoName( getMemoName() );
 		dst.setMemoText( getMemoText() );
 		dst.setPalmId( getPalmId() );
-		dst.setNew( getNew() );
 		dst.setModified( getModified() );
-		dst.setDeleted( getDeleted() );
 		dst.setPrivate( getPrivate() );
 		dst.setCreated(getCreated());
 		dst.setUpdated(getUpdated());
