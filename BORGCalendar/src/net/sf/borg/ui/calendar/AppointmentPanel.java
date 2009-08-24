@@ -332,7 +332,7 @@ public class AppointmentPanel extends JPanel {
 		Appointment r = calmod_.newAppt();
 		setAppt(r, true);
 
-		calmod_.saveAppt(r, true);
+		calmod_.saveAppt(r);
 
 		showapp(-1, null);
 	}
@@ -344,13 +344,16 @@ public class AppointmentPanel extends JPanel {
 		// user has entered
 		AppointmentModel calmod_ = AppointmentModel.getReference();
 		Appointment r = calmod_.newAppt();
-		int newkey = setAppt(r, true);
+		boolean dateChg = setAppt(r, true);
+		r.setKey(key_);
 
 		// call the model to change the appt
-		if (newkey == 0) {
-			r.setKey(key_);
+		if (dateChg == false) {
 			// need to preserve data from original appt
 			try {
+				
+				// date of orig might not match appt panel date - so
+				// we must keep the original date
 				Appointment ap = calmod_.getAppt(key_);
 				Calendar cal = new GregorianCalendar();
 				Calendar newCal = new GregorianCalendar();
@@ -383,11 +386,11 @@ public class AppointmentPanel extends JPanel {
 			} catch (Exception e) {
 				// Errmsg.errmsg(e);
 			}
-			calmod_.saveAppt(r, false);
+			calmod_.saveAppt(r);
 		} else {
 			r.setKey(key_);
 			try {
-				calmod_.changeDate(r);
+				calmod_.saveAppt(r);
 			} catch (Exception e) {
 				Errmsg.errmsg(e);
 			}
@@ -1172,9 +1175,8 @@ public class AppointmentPanel extends JPanel {
 
 	}// GEN-LAST:event_saveDefaults
 
-	// fill in an appt from the user data
-	// returns changed key if any
-	private int setAppt(Appointment r, boolean validate) throws Warning,
+	
+	private boolean setAppt(Appointment r, boolean validate) throws Warning,
 			Exception {
 
 		// get the hour and minute
@@ -1192,9 +1194,10 @@ public class AppointmentPanel extends JPanel {
 			r.setUntimed("Y");
 
 		Date nd = null;
-		int newkey = 0;
+		boolean dateChg = false;
 		if (chgdate.isSelected()) {
 			nd = newdatefield.getDate();
+			dateChg = true;
 		}
 
 		int min = startmin.getSelectedIndex() * 5;
@@ -1207,7 +1210,6 @@ public class AppointmentPanel extends JPanel {
 			g.set(Calendar.HOUR_OF_DAY, hr);
 			g.set(Calendar.MINUTE, min);
 			g.set(Calendar.SECOND, 0);
-			newkey = 1;
 		}
 
 		// set the appt date/time
@@ -1313,7 +1315,7 @@ public class AppointmentPanel extends JPanel {
 
 		r.setReminderTimes(new String(custRemTimes));
 
-		return (newkey);
+		return (dateChg);
 	}
 
 	private void setCustRemTimes(Appointment r) {

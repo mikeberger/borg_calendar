@@ -29,11 +29,6 @@ import net.sf.borg.model.entity.Appointment;
  */
 public class AppointmentUndoItem extends UndoItem<Appointment> {
 
-	/** the original appointment from a move */
-	private AppointmentUndoItem moveFrom;
-	
-	/** The new appointment from a move */
-	private AppointmentUndoItem moveTo;
 
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.undo.UndoItem#executeUndo()
@@ -41,15 +36,12 @@ public class AppointmentUndoItem extends UndoItem<Appointment> {
 	@Override
 	public void executeUndo() {
 		if (action == actionType.DELETE) {
-			AppointmentModel.getReference().saveAppt(item, true, true);
+			AppointmentModel.getReference().saveAppt(item, true);
 		} else if (action == actionType.UPDATE) {
-			AppointmentModel.getReference().saveAppt(item, false, true);
+			AppointmentModel.getReference().saveAppt(item, true);
 		} else if (action == actionType.ADD) {
 			AppointmentModel.getReference().delAppt(item, true);
-		} else if (action == actionType.MOVE) {
-			moveTo.executeUndo();
-			moveFrom.executeUndo();
-		}
+		} 
 	}
 
 	/**
@@ -125,37 +117,5 @@ public class AppointmentUndoItem extends UndoItem<Appointment> {
 		return undoItem;
 	}
 
-	/**
-	 * Record  an appointment move. A move involves deleting the original appt and adding a new one
-	 * since the appointment key is date-based and must change.
-	 * 
-	 * @param appt the appt
-	 * 
-	 * @return the appointment undo item
-	 */
-	@SuppressWarnings("unchecked")
-	public static AppointmentUndoItem recordMove(Appointment appt) {
-		AppointmentUndoItem undoItem = new AppointmentUndoItem();
-		undoItem.item = appt;
-		undoItem.action = actionType.MOVE;
-
-		// need to find the add and deletes that make up this move
-		UndoItem u1 = UndoLog.getReference().pop();
-		UndoItem u2 = UndoLog.getReference().pop();
-		if (u1 instanceof AppointmentUndoItem
-				&& u2 instanceof AppointmentUndoItem) {
-			undoItem.moveFrom = (AppointmentUndoItem) u1;
-			undoItem.moveTo = (AppointmentUndoItem) u2;
-		} else {
-			UndoLog.getReference().addItem(u1);
-			UndoLog.getReference().addItem(u2);
-			return null;
-		}
-
-		undoItem.setDescription(Resource.getPlainResourceString("move") + " "
-				+ Resource.getPlainResourceString("appointment") + " "
-				+ apptString(appt));
-		return undoItem;
-	}
-
+	
 }

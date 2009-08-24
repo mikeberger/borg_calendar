@@ -36,8 +36,7 @@ public class DateUtil {
         dcal.set(Calendar.HOUR_OF_DAY, 0);
         dcal.set(Calendar.MINUTE, 10);
         dcal.set(Calendar.SECOND, 0);
-        //System.out.println( DateFormat.getDateTimeInstance().format(tcal.getTime()) + " " + 
-    	    //DateFormat.getDateTimeInstance().format(dcal.getTime()) );
+        
         if (tcal.getTime().after(dcal.getTime())) {
     	return true;
         }
@@ -54,7 +53,11 @@ public class DateUtil {
      */
     static public int dayOfEpoch(Date d)
     {
-    	return (int) d.getTime() / 1000 / 60 / 60 / 24;
+    	// adjust to local time
+    	GregorianCalendar cal = new GregorianCalendar();
+    	cal.setTime(d);
+    	cal.set(Calendar.HOUR_OF_DAY, 1);
+    	return (int) (cal.getTime().getTime() / 1000 / 60 / 60 / 24);
     }
 
 }

@@ -106,7 +106,7 @@ public class AppointmentListView extends DockableView implements
 		
 		appt.setDate(cal.getTime());
 		try {
-			AppointmentModel.getReference().changeDate(appt);
+			AppointmentModel.getReference().saveAppt(appt);
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
 		}

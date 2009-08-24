@@ -74,7 +74,7 @@ class ApptBox implements Draggable {
 	private static class boxcompare implements Comparator<ApptBox> {
 
 		public int compare(ApptBox obj, ApptBox obj1) {
-			
+
 			int diff = obj1.getMaxAcrossAtOneTime()
 					- obj.getMaxAcrossAtOneTime();
 			if (diff != 0)
@@ -92,7 +92,8 @@ class ApptBox implements Draggable {
 	final static private int radius = 5;
 
 	// create an ApptDatBoxLayout and layout the appts
-	static public void layoutBoxes(Collection<ApptBox> boxlist, int starthr, int endhr) {
+	static public void layoutBoxes(Collection<ApptBox> boxlist, int starthr,
+			int endhr) {
 		TreeSet<ApptBox> boxtree = new TreeSet<ApptBox>(new boxcompare());
 		double startmin = starthr * 60;
 		double endmin = endhr * 60;
@@ -308,7 +309,7 @@ class ApptBox implements Draggable {
 	private String todoMarker = null;
 
 	private double top; // fraction of the available grid height at which
-	
+
 	private boolean hasLink = false;
 
 	public ApptBox(Date d, Appointment ap, Rectangle bounds, Rectangle clip) {
@@ -328,17 +329,17 @@ class ApptBox implements Draggable {
 				todoMarker = iconname;
 			}
 		}
-		
+
 		Collection<Link> atts;
 		try {
 			atts = LinkModel.getReference().getLinks(appt);
-			if( atts != null && atts.size() > 0)
+			if (atts != null && atts.size() > 0)
 				hasLink = true;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	public void delete() {
@@ -437,10 +438,9 @@ class ApptBox implements Draggable {
 		else if (getTextColor().equals("brick"))
 			g2.setColor(new Color(Integer.parseInt(Prefs
 					.getPref(PrefName.UCS_BRICK))));
-		
+
 		String text = getText();
-		if( hasLink )
-		{
+		if (hasLink) {
 			text = "@ " + text;
 		}
 
@@ -451,11 +451,11 @@ class ApptBox implements Draggable {
 					+ todoIcon.getIconWidth(), bounds.y + radius, bounds.width
 					- radius);
 		} else if (isTodo() && todoMarker != null) {
-			drawWrappedString(g2, todoMarker + " " + text, bounds.x
-					+ radius, bounds.y + radius, bounds.width - radius);
+			drawWrappedString(g2, todoMarker + " " + text, bounds.x + radius,
+					bounds.y + radius, bounds.width - radius);
 		} else {
-			drawWrappedString(g2, text, bounds.x + radius, bounds.y
-					+ radius, bounds.width - radius);
+			drawWrappedString(g2, text, bounds.x + radius, bounds.y + radius,
+					bounds.width - radius);
 		}
 
 		g2.setClip(s);
@@ -506,21 +506,17 @@ class ApptBox implements Draggable {
 		Date newTime = newCal.getTime();
 		int newkey = DateUtil.dayOfEpoch(newTime);
 		ap.setDate(newTime);
-		if (oldkey != newkey) { // date chg
-			if (Repeat.isRepeating(ap)) { // cannot date chg unless it is on
-											// the first in a series
-				int k2 = DateUtil.dayOfEpoch(date);
-				if (oldkey != k2) {
-					Errmsg.notice(Resource
-							.getPlainResourceString("rpt_drag_err"));
-					return;
-				}
+		if (oldkey != newkey && Repeat.isRepeating(ap)) {
+			// cannot date chg unless it is on
+			// the first in a series
+			int k2 = DateUtil.dayOfEpoch(date);
+			if (oldkey != k2) {
+				Errmsg.notice(Resource.getPlainResourceString("rpt_drag_err"));
+				return;
 			}
-			AppointmentModel.getReference().changeDate(ap);
 
-		} else {
-			AppointmentModel.getReference().saveAppt(ap, false);
 		}
+		AppointmentModel.getReference().saveAppt(ap);
 	}
 
 	public void resize(boolean isTop, int realtime) throws Exception {
@@ -548,7 +544,7 @@ class ApptBox implements Draggable {
 				return;
 			ap.setDate(newTime);
 			ap.setDuration(new Integer(newDur));
-			AppointmentModel.getReference().saveAppt(ap, false);
+			AppointmentModel.getReference().saveAppt(ap);
 		} else {
 			// get appt from DB - one cached here has time prepended to text by
 			// Day.getDayInfo()
@@ -572,7 +568,7 @@ class ApptBox implements Draggable {
 			if (newDur < 5)
 				return;
 			ap.setDuration(new Integer(newDur));
-			AppointmentModel.getReference().saveAppt(ap, false);
+			AppointmentModel.getReference().saveAppt(ap);
 		}
 	}
 

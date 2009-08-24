@@ -379,7 +379,7 @@ public class NoteBox implements Draggable {
 						.getPlainResourceString("Delete_One_Only")));
 				mnuitm.addActionListener(new ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						try {						
+						try {
 							AppointmentModel.getReference().delOneOnly(
 									((Appointment) bean).getKey(), date);
 						} catch (Exception e) {
@@ -428,56 +428,46 @@ public class NoteBox implements Draggable {
 			ap.setDate(newTime);
 
 			// only do something if date changed
-			if (oldkey != newkey) { // date chg
-				if (Repeat.isRepeating(ap)) { // cannot date chg unless it is
-												// on
-					// the first in a series
-					int k2 = DateUtil.dayOfEpoch(date);
-					if (oldkey != k2) {
-						Errmsg.notice(Resource
-								.getPlainResourceString("rpt_drag_err"));
-						return;
-					}
+			if (oldkey != newkey && Repeat.isRepeating(ap)) {
+				// cannot date chg unless it is
+				// on
+				// the first in a series
+				int k2 = DateUtil.dayOfEpoch(date);
+				if (oldkey != k2) {
+					Errmsg.notice(Resource
+							.getPlainResourceString("rpt_drag_err"));
+					return;
 				}
-				AppointmentModel.getReference().changeDate(ap);
-
-			} else {
-				AppointmentModel.getReference().saveAppt(ap, false);
 			}
-		}
-		else if( bean instanceof Task )
-		{
-			Task task = TaskModel.getReference().getTask(
-					((Task) bean).getKey());	
-			task.setDueDate(d);	
-			if( task.getDueDate() != null && DateUtil.isAfter(task.getStartDate(), task.getDueDate()) )
-			{
-				throw new Warning(Resource
-					.getPlainResourceString("sd_dd_warn"));
+
+			AppointmentModel.getReference().saveAppt(ap);
+
+		} else if (bean instanceof Task) {
+			Task task = TaskModel.getReference()
+					.getTask(((Task) bean).getKey());
+			task.setDueDate(d);
+			if (task.getDueDate() != null
+					&& DateUtil.isAfter(task.getStartDate(), task.getDueDate())) {
+				throw new Warning(Resource.getPlainResourceString("sd_dd_warn"));
 			}
 			TaskModel.getReference().savetask(task);
-		}
-		else if( bean instanceof Subtask )
-		{
+		} else if (bean instanceof Subtask) {
 			Subtask task = TaskModel.getReference().getSubTask(
-					((Subtask) bean).getKey());	
+					((Subtask) bean).getKey());
 			task.setDueDate(d);
-			if( task.getDueDate() != null && DateUtil.isAfter(task.getStartDate(), task.getDueDate()) )
-			{
-				throw new Warning(Resource
-					.getPlainResourceString("sd_dd_warn"));
+			if (task.getDueDate() != null
+					&& DateUtil.isAfter(task.getStartDate(), task.getDueDate())) {
+				throw new Warning(Resource.getPlainResourceString("sd_dd_warn"));
 			}
 			TaskModel.getReference().saveSubTask(task);
-		}
-		else if( bean instanceof Project )
-		{
+		} else if (bean instanceof Project) {
 			Project project = TaskModel.getReference().getProject(
-					((Project) bean).getKey());	
-			project.setDueDate(d);	
-			if( project.getDueDate() != null && DateUtil.isAfter(project.getStartDate(), project.getDueDate()) )
-			{
-				throw new Warning(Resource
-					.getPlainResourceString("sd_dd_warn"));
+					((Project) bean).getKey());
+			project.setDueDate(d);
+			if (project.getDueDate() != null
+					&& DateUtil.isAfter(project.getStartDate(), project
+							.getDueDate())) {
+				throw new Warning(Resource.getPlainResourceString("sd_dd_warn"));
 			}
 			TaskModel.getReference().saveProject(project);
 		}

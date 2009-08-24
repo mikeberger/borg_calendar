@@ -172,9 +172,14 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
     /* (non-Javadoc)
      * @see net.sf.borg.model.db.EntityDB#nextkey()
      */
-    public int nextkey()
+    public int nextkey() throws Exception
     {
-       return 0;
+       PreparedStatement stmt = connection_.prepareStatement("SELECT MAX(appt_num) FROM appointments");
+       ResultSet r = stmt.executeQuery();
+       int maxKey = 0;
+       if (r.next())
+           maxKey = r.getInt(1);
+       return ++maxKey;
     }
     
     /* (non-Javadoc)

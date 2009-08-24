@@ -48,8 +48,8 @@ public class UndoTests {
 		appt2.setText("my appointment 2");
 		appt2.setDate(new Date());
 		
-		AppointmentModel.getReference().saveAppt(appt, true);
-		AppointmentModel.getReference().saveAppt(appt2, true);
+		AppointmentModel.getReference().saveAppt(appt);
+		AppointmentModel.getReference().saveAppt(appt2);
 		
 		Collection<Appointment> coll = AppointmentModel.getReference().getAllAppts();
 		assertTrue( "Appointment DB should contain 2 appts", coll.size() == 2);
@@ -62,7 +62,7 @@ public class UndoTests {
 		System.out.println("Appt key = " + id);
 		
 		appt.setText("my updated appt");
-		AppointmentModel.getReference().saveAppt(appt, false);
+		AppointmentModel.getReference().saveAppt(appt);
 		
 		// verify that the appt is updated
 		coll = AppointmentModel.getReference().getAllAppts();

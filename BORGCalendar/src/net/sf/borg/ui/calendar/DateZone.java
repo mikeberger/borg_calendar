@@ -92,7 +92,7 @@ class DateZone {
 			appt.setUntimed(null);
 
 		appt.setText(text);
-		AppointmentModel.getReference().saveAppt(appt, true);
+		AppointmentModel.getReference().saveAppt(appt);
 	}
 
 	void edit() {
@@ -137,7 +137,7 @@ class DateZone {
 		r.setText(tdtext);
 		r.setTodo(true);
 
-		calmod_.saveAppt(r, true);
+		calmod_.saveAppt(r);
 
 	}
 

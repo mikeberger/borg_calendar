@@ -34,6 +34,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.Vector;
 
+import net.sf.borg.common.DateUtil;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
@@ -59,31 +60,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 	/** The singleton */
 	static private AppointmentModel self_ = null;
 
-	/**
-	 * convert a date (Calendar object) into an integer key that encodes year, month, and day
-	 * 
-	 * @param cal the Calendar
-	 * 
-	 * @return the int
-	 */
-	private static int dkey(Calendar cal) {
-		return dkey(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal
-				.get(Calendar.DATE));
-	} 
-
-	/**
-	 * convert separate year, month, and day values into an integer key that encodes year, month, and day.
-	 * 
-	 * @param year the year
-	 * @param month the month
-	 * @param date the date
-	 * 
-	 * @return the int
-	 */
-	private static int dkey(int year, int month, int date) {
-		return ((year - 1900) * 1000000 + (month + 1) * 10000 + date * 100);
-	}
-
+	
 	/**
 	 * Gets the singleton reference.
 	 * 
@@ -171,7 +148,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 	 * @return true, if is skipped
 	 */
 	public static boolean isSkipped(Appointment ap, Calendar cal) {
-		int dk = dkey(cal);
+		int dk = DateUtil.dayOfEpoch(cal.getTime());
 		String sk = Integer.toString(dk);
 		Vector<String> skv = ap.getSkipList();
 		if (skv != null && skv.contains(sk)) {
@@ -239,14 +216,14 @@ public class AppointmentModel extends Model implements Model.Listener,
 			if (!CategoryModel.getReference().isShown(appt.getCategory())) {
 				continue;
 			}
+			
+			int dkey = DateUtil.dayOfEpoch(appt.getDate());
 
 			// if appt does not repeat, we can add its
 			// key to a single day
 			int key = appt.getKey();
 			Integer ki = new Integer(key);
 			if (!rptkeys.contains(ki)) {
-				// strip of appt number
-				int dkey = (key / 100) * 100;
 
 				// get/add entry for the day in the map
 				Collection<Integer> o = map_.get(new Integer(dkey));
@@ -266,12 +243,8 @@ public class AppointmentModel extends Model implements Model.Listener,
 							.intValue());
 				}
 			} else {
-				// appt repeats so we have to add all of the repeats
-				// into the map (well maybe not all)
-				int yr = (key / 1000000) % 1000 + 1900;
-				int mo = (key / 10000) % 100 - 1;
-				int day = (key / 100) % 100;
-				cal.set(yr, mo, day);
+				
+				cal.setTime(appt.getDate());
 
 				Repeat repeat = new Repeat(cal, appt.getFrequency());
 				if (!repeat.isRepeating())
@@ -290,7 +263,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 					}
 
 					// get the day key for the repeat
-					int rkey = dkey(current);
+					int rkey = DateUtil.dayOfEpoch(current.getTime());
 
 					int cyear = current.get(Calendar.YEAR);
 
@@ -326,24 +299,6 @@ public class AppointmentModel extends Model implements Model.Listener,
 			}
 		}
 
-	}
-
-	
-	/**
-	 * save an appointment whose date has been changed and manage the updating of links
-	 * caused by the change in appt primary key.
-	 * 
-	 * @param ap the appointment
-	 * 
-	 * @throws Exception the exception
-	 */
-	public void changeDate(Appointment ap) throws Exception {
-		Appointment orig = ap.copy();
-		saveAppt(ap, true); // sets new key
-		LinkModel.getReference().moveLinks(orig, ap);
-		delAppt(orig.getKey()); // removes links
-		
-		UndoLog.getReference().addItem(AppointmentUndoItem.recordMove(orig));
 	}
 
 	/**
@@ -419,9 +374,8 @@ public class AppointmentModel extends Model implements Model.Listener,
 	 */
 	public void delOneOnly(int key, Date rptDate) {
 		try {
-			Calendar cal = new GregorianCalendar();
-			cal.setTime(rptDate);
-			int rkey = dkey(cal);
+			
+			int rkey = DateUtil.dayOfEpoch(rptDate);
 
 			Appointment appt = db_.readObj(key);
 
@@ -446,9 +400,8 @@ public class AppointmentModel extends Model implements Model.Listener,
 			Date nt = appt.getNextTodo();
 			if (nt == null)
 				nt = appt.getDate();
-			cal = new GregorianCalendar();
-			cal.setTime(nt);
-			if (rkey == dkey(cal)) {
+			;
+			if (rkey == DateUtil.dayOfEpoch(nt)) {
 				do_todo(appt.getKey(), false);
 			}
 
@@ -697,10 +650,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 	 * @return the appts
 	 */
 	public List<Integer> getAppts(Date d) {
-		GregorianCalendar g = new GregorianCalendar();
-		g.setTime(d);
-		int key = dkey(g);
-		return ((List<Integer>) map_.get(new Integer(key)));
+		return ((List<Integer>) map_.get(new Integer(DateUtil.dayOfEpoch(d))));
 	}
 
 	/* (non-Javadoc)
@@ -773,15 +723,6 @@ public class AppointmentModel extends Model implements Model.Listener,
 				continue;
 			Appointment appt = aa.fromXml(ch);
 
-			// create new key if none exists
-			if (appt.getKey() == 0) {
-				Date d = appt.getDate();
-				GregorianCalendar gcal = new GregorianCalendar();
-				gcal.setTime(d);
-				int key = AppointmentModel.dkey(gcal);
-				appt.setKey(key);
-			}
-
 			while (true) {
 				try {
 					db_.addObj(appt);
@@ -838,49 +779,30 @@ public class AppointmentModel extends Model implements Model.Listener,
 	 * @param r the appointment
 	 * @param add true if we should insert a brand new appointment
 	 */
-	public void saveAppt(Appointment r, boolean add) {
-		saveAppt(r, add, false);
+	public void saveAppt(Appointment r) {
+		saveAppt(r, false);
 	}
 
 	/**
 	 * Save an appointment.
 	 * 
 	 * @param r the appointment
-	 * @param add true if we should insert a brand new appointment
 	 * @param undo true if we are executing an undo
 	 */
-	public void saveAppt(Appointment r, boolean add, boolean undo) {
+	public void saveAppt(Appointment r, boolean undo) {
 
 		try {
-			Appointment orig_appt = getAppt(r.getKey());
-			if (add == true) {
-				// get the next unused key for a given day
-				// to do this, start with the "base" key for a given day.
-				// then see if an appt has this key.
-				// keep adding 1 until a key is found that has no appt
-				GregorianCalendar gcal = new GregorianCalendar();
-				gcal.setTime(r.getDate());
-				int key = AppointmentModel.dkey(gcal);
+			Appointment orig_appt = null;
+			if( r.getKey() != -1 )
+				orig_appt = getAppt(r.getKey());
+			if (orig_appt == null) {
 
 				// if undo is adding back record - force the key to
 				// be what is in the record
 				if (!undo) {
-					try {
-						while (true) {
-							Appointment ap = getAppt(key);
-							if (ap == null)
-								break;
-							key++;
-						}
-
-					} catch (Exception ee) {
-						Errmsg.errmsg(ee);
-						return;
-					}
+					r.setKey(db_.nextkey());
 				}
 
-				// key is now a free key
-				r.setKey(key);
 				r.setNew(true);
 				r.setDeleted(false);
 
@@ -954,11 +876,12 @@ public class AppointmentModel extends Model implements Model.Listener,
 
 		Calendar cal = new GregorianCalendar();
 		cal.setTime(d);
-		int dk = dkey(cal);
-		int yr = (dk / 1000000) % 1000 + 1900;
-		int yearStartKey = dkey(yr, 1, 1);
+		cal.set(Calendar.DATE, 1);
+		cal.set(Calendar.MONTH, Calendar.JANUARY);
+		int dk = DateUtil.dayOfEpoch(d);
+		int yearStartKey = DateUtil.dayOfEpoch(cal.getTime());
 		double count = 0;
-
+		
 		Set<Integer> vkeys = vacationMap_.keySet();
 		for (Integer i : vkeys) {
 			int vdaykey = i.intValue();
@@ -975,5 +898,6 @@ public class AppointmentModel extends Model implements Model.Listener,
 		return count;
 
 	}
+	
 
 }

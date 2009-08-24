@@ -39,7 +39,7 @@ public abstract class UndoItem<T extends KeyedEntity<T>> {
 	 */
 	protected enum actionType {
 
-		ADD, DELETE, UPDATE, MOVE
+		ADD, DELETE, UPDATE
 	}
 
 	/**

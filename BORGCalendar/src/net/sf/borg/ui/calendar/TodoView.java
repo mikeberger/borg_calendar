@@ -658,9 +658,8 @@ public class TodoView extends DockableView implements Prefs.Listener {
 		} else {
 			r.setCategory(cat);
 		}
-		// r.setCategory("");
 
-		calmod_.saveAppt(r, true);
+		calmod_.saveAppt(r);
 
 		requestFocus();
 

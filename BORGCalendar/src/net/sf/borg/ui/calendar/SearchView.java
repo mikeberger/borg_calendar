@@ -235,7 +235,7 @@ public class SearchView extends DockableView {
 							Appointment ap = AppointmentModel.getReference()
 									.getAppt(key.intValue());
 							ap.setCategory((String) o);
-							AppointmentModel.getReference().saveAppt(ap, false);
+							AppointmentModel.getReference().saveAppt(ap);
 
 						}
 					} catch (Exception ex) {
