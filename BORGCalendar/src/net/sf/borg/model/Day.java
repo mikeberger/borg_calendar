@@ -212,8 +212,8 @@ public class Day {
                 
                 if( appt.getVacation() != null && appt.getVacation().intValue() != 0)
                 {
-                	int key = AppointmentModel.dkey(year, month, date);
-                	double vacationCount = AppointmentModel.getReference().vacationCount(key);
+                	Calendar cal = new GregorianCalendar(year, month, date, 11, 0);
+                	double vacationCount = AppointmentModel.getReference().vacationCount(cal.getTime());
                 	tx = "[" + vacationCount + "] " + tx;
                 	txFull = "[" + vacationCount + "] " + txFull;
                 }
@@ -254,12 +254,12 @@ public class Day {
     public static Day getDay(int year, int month, int day) throws Exception {
         
         // get the base day key
-        int key = AppointmentModel.dkey(year, month, day);
+    	Calendar cal = new GregorianCalendar(year, month, day);
 
         Day ret = new Day();
 
         // get the list of appt keys from the map_
-        Collection<Integer> l = AppointmentModel.getReference().getAppts(key);
+        Collection<Integer> l = AppointmentModel.getReference().getAppts(cal.getTime());
         addToDay(ret, l, year, month, day);
 
         // daylight savings time
@@ -395,14 +395,14 @@ public class Day {
      
         // load any tasks
         if (Prefs.getBoolPref(PrefName.CAL_SHOW_TASKS)) {
-            Collection<Project> pcol = TaskModel.getReference().get_projects(key);
+            Collection<Project> pcol = TaskModel.getReference().get_projects(cal.getTime());
             if (pcol != null) {
                 for (Project pj : pcol) {                
                     ret.addItem(pj);
 
                 }
             }
-            Collection<Task> tasks = TaskModel.getReference().get_tasks(key);
+            Collection<Task> tasks = TaskModel.getReference().get_tasks(cal.getTime());
             if (tasks != null) {
                 for (Task task : tasks) {                
                     ret.addItem(task);
@@ -412,7 +412,7 @@ public class Day {
         }
         // subtasks
         if (Prefs.getBoolPref(PrefName.CAL_SHOW_SUBTASKS)) {
-            Collection<Subtask> sts = TaskModel.getReference().get_subtasks(key);
+            Collection<Subtask> sts = TaskModel.getReference().get_subtasks(cal.getTime());
             if (sts != null) {
                 for (Subtask st : sts) {                  
                     ret.addItem(st);
@@ -421,7 +421,7 @@ public class Day {
             }
         }
         // add birthdays from address book
-        Collection<Address> addrs = AddressModel.getReference().getAddresses(key);
+        Collection<Address> addrs = AddressModel.getReference().getAddresses(new GregorianCalendar(year, month, day, 00, 00).getTime());
         if (addrs != null) {
             for (Address addr : addrs) {
                 LabelEntity info = new LabelEntity();

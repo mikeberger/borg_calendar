@@ -309,11 +309,8 @@ public class PopupView extends View {
 		if (enable.equals("false"))
 			return;
 
-		// get the key for today in the data model
-		int key = AppointmentModel.dkey(new GregorianCalendar());
-
 		// get the list of the today's appts
-		List<Integer> l = AppointmentModel.getReference().getAppts(key);
+		List<Integer> l = AppointmentModel.getReference().getAppts(new Date());
 		if (l != null) {
 			Iterator<Integer> it = l.iterator();
 			Appointment appt;

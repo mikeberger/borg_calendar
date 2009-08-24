@@ -20,8 +20,6 @@ package net.sf.borg.model.xml;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.StringTokenizer;
-import java.util.Vector;
 
 import net.sf.borg.common.XTree;
 import net.sf.borg.model.entity.KeyedEntity;

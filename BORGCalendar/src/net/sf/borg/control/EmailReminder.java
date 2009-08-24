@@ -87,16 +87,14 @@ public class EmailReminder {
 			cal = emailday;
 		}
 
-		int key = AppointmentModel.dkey(cal.get(Calendar.YEAR), cal
-				.get(Calendar.MONTH), cal.get(Calendar.DATE));
-
+		
 		// tx is the contents of the email
 		String ap_tx = "Appointments for "
 				+ DateFormat.getDateInstance().format(cal.getTime()) + "\n";
 		String tx = "";
 
 		// get the list of appts for tomorrow
-		Collection<Integer> l = AppointmentModel.getReference().getAppts(key);
+		Collection<Integer> l = AppointmentModel.getReference().getAppts(cal.getTime());
 		if (l != null) {
 
 			Appointment appt;
@@ -136,7 +134,7 @@ public class EmailReminder {
 		// load any task tracker items for the email
 		// these items are cached in the calendar model
 		// by date - but the taskmodel is the real owner of them
-		Collection<Task> tasks = TaskModel.getReference().get_tasks(key);
+		Collection<Task> tasks = TaskModel.getReference().get_tasks(cal.getTime());
 		if (l != null && tasks != null) {
 
 			for (Task task : tasks) {

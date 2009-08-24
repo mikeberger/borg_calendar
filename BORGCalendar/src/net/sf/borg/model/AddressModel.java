@@ -20,6 +20,7 @@ Copyright 2003 by Mike Berger
 package net.sf.borg.model;
 
 import java.io.Writer;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -51,6 +52,18 @@ public class AddressModel extends Model {
 		if( self_ == null )
 			self_ = new AddressModel();
 		return (self_);
+	}
+	
+	/**
+	 * compute an integer has key from a date
+	 * @param d the date
+	 * @return the integer key
+	 */
+	private static int birthdayKey(Date d)
+	{
+		GregorianCalendar g = new GregorianCalendar();
+		g.setTime(d);
+		return g.get(Calendar.MONTH) * 100 + g.get(Calendar.DATE);
 	}
 
 	/** map of birthdays to addresses */
@@ -163,9 +176,9 @@ public class AddressModel extends Model {
 	 * 
 	 * @return the addresses
 	 */
-	public Collection<Address> getAddresses(int daykey) {
+	public Collection<Address> getAddresses(Date d) {
 		// don't consider year for birthdays
-		int bdkey = AppointmentModel.birthdayKey(daykey);
+		int bdkey = birthdayKey(d);
 		// System.out.println("bdkey is " + bdkey);
 		return (bdmap_.get(new Integer(bdkey)));
 	}
@@ -227,11 +240,7 @@ public class AddressModel extends Model {
 				if (bd == null)
 					continue;
 
-				GregorianCalendar g = new GregorianCalendar();
-				g.setTime(bd);
-
-				int key = AppointmentModel.dkey(g);
-				int bdkey = AppointmentModel.birthdayKey(key);
+				int bdkey = birthdayKey(bd);
 
 				// add the task string to the btmap_
 				// add the task to the mrs_ Vector. This is used by the todo gui

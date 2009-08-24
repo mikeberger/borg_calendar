@@ -198,7 +198,7 @@ public class AppointmentListView extends DockableView implements
 
 	private javax.swing.JScrollPane jScrollPane1;
 
-	private int key_;
+	private Date date_;
 
 	private JButton reminderButton = null; // @jve:decl-index=0:visual-constraint="702,73"
 
@@ -303,7 +303,7 @@ public class AppointmentListView extends DockableView implements
 
 		try {
 
-			List<Integer> alist_ = AppointmentModel.getReference().getAppts(key_);
+			List<Integer> alist_ = AppointmentModel.getReference().getAppts(date_);
 			if (alist_ != null) {
 				Iterator<Integer> it = alist_.iterator();
 				while (it.hasNext()) {
@@ -450,7 +450,7 @@ public class AppointmentListView extends DockableView implements
 		int[] keys = getSelectedKeys();
 		AppointmentModel model = AppointmentModel.getReference();
 		for (int i = 0; i < keys.length; ++i)
-			model.delOneOnly(keys[i], key_);
+			model.delOneOnly(keys[i], date_);
 		apptTable.clearSelection();
 	}// GEN-LAST:event_deloneActionPerformed
 
@@ -735,7 +735,7 @@ public class AppointmentListView extends DockableView implements
 	private void showDate(int year, int month, int day) {
 		cal_ = new GregorianCalendar(year, month, day);
 		getDateCB().setCalendar(cal_);
-		key_ = AppointmentModel.dkey(year, month, day);
+		date_ = cal_.getTime();
 		Date d = cal_.getTime();
 		title_ = Resource.getResourceString("Appointment_Editor_for_")
 				+ DateFormat.getDateInstance(DateFormat.SHORT).format(d);

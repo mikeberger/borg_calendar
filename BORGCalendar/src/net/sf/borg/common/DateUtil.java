@@ -44,5 +44,17 @@ public class DateUtil {
         
         return false;
     }
+    
+    /**
+     * return the number of the day of the epoch for a given date
+     * this provides a decent Date to int converter that returns the same
+     * value for all Dates on a given day
+     * @param d the date
+     * @return the days from the beginning of the epoch until d
+     */
+    static public int dayOfEpoch(Date d)
+    {
+    	return (int) d.getTime() / 1000 / 60 / 60 / 24;
+    }
 
 }

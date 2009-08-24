@@ -52,27 +52,12 @@ import net.sf.borg.model.xml.AppointmentXMLAdapter;
 /**
  * The Class AppointmentModel.
  * 
- * Note: this class uses the concept of a date key - an appointments date and a counter encoded
- * in a single integer a the appointment primary key and for other API calls. This is all due to legacy
- * concerns. If feasible, it would be good to hide all use of dkey within this class.
  */
 public class AppointmentModel extends Model implements Model.Listener,
 		CategorySource {
 
 	/** The singleton */
 	static private AppointmentModel self_ = null;
-
-
-	/**
-	 * return an integer key for a date that only considers month and date, but not year
-	 * 
-	 * @param dkey the date key - see dkey()
-	 * 
-	 * @return the int
-	 */
-	public static int birthdayKey(int dkey) {
-		return ((dkey % 1000000) * 1000000);
-	}
 
 	/**
 	 * convert a date (Calendar object) into an integer key that encodes year, month, and day
@@ -81,7 +66,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 	 * 
 	 * @return the int
 	 */
-	public static int dkey(Calendar cal) {
+	private static int dkey(Calendar cal) {
 		return dkey(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal
 				.get(Calendar.DATE));
 	} 
@@ -95,7 +80,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 	 * 
 	 * @return the int
 	 */
-	public static int dkey(int year, int month, int date) {
+	private static int dkey(int year, int month, int date) {
 		return ((year - 1900) * 1000000 + (month + 1) * 10000 + date * 100);
 	}
 
@@ -430,10 +415,13 @@ public class AppointmentModel extends Model implements Model.Listener,
 	 * delete one occurrence of a repeating appointment
 	 * 
 	 * @param key the appointment key
-	 * @param rkey the date key (dkey) of the repeat to be deleted
+	 * @param rkey the date of the repeat to be deleted
 	 */
-	public void delOneOnly(int key, int rkey) {
+	public void delOneOnly(int key, Date rptDate) {
 		try {
+			Calendar cal = new GregorianCalendar();
+			cal.setTime(rptDate);
+			int rkey = dkey(cal);
 
 			Appointment appt = db_.readObj(key);
 
@@ -458,7 +446,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 			Date nt = appt.getNextTodo();
 			if (nt == null)
 				nt = appt.getDate();
-			Calendar cal = new GregorianCalendar();
+			cal = new GregorianCalendar();
 			cal.setTime(nt);
 			if (rkey == dkey(cal)) {
 				do_todo(appt.getKey(), false);
@@ -704,11 +692,14 @@ public class AppointmentModel extends Model implements Model.Listener,
 	/**
 	 * Get a list of appointment ids for a given day
 	 * 
-	 * @param key the day key
+	 * @param d the date
 	 * 
 	 * @return the appts
 	 */
-	public List<Integer> getAppts(int key) {
+	public List<Integer> getAppts(Date d) {
+		GregorianCalendar g = new GregorianCalendar();
+		g.setTime(d);
+		int key = dkey(g);
 		return ((List<Integer>) map_.get(new Integer(key)));
 	}
 
@@ -955,20 +946,23 @@ public class AppointmentModel extends Model implements Model.Listener,
 	/**
 	 * determine the number of vacation days up to and including the given day in a particular year
 	 * 
-	 * @param dkey the day key
+	 * @param dkey the Date
 	 * 
 	 * @return the double
 	 */
-	public double vacationCount(int dkey) {
-		// System.out.println("dkey=" + dkey);
-		int yr = (dkey / 1000000) % 1000 + 1900;
+	public double vacationCount(Date d) {
+
+		Calendar cal = new GregorianCalendar();
+		cal.setTime(d);
+		int dk = dkey(cal);
+		int yr = (dk / 1000000) % 1000 + 1900;
 		int yearStartKey = dkey(yr, 1, 1);
 		double count = 0;
 
 		Set<Integer> vkeys = vacationMap_.keySet();
 		for (Integer i : vkeys) {
 			int vdaykey = i.intValue();
-			if (vdaykey >= yearStartKey && vdaykey <= dkey) {
+			if (vdaykey >= yearStartKey && vdaykey <= dk) {
 				Integer vnum = vacationMap_.get(i);
 				if (vnum.intValue() == 2) {
 					count += 0.5;

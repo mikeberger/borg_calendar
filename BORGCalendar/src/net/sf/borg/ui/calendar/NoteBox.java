@@ -379,12 +379,9 @@ public class NoteBox implements Draggable {
 						.getPlainResourceString("Delete_One_Only")));
 				mnuitm.addActionListener(new ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						try {
-							Calendar cal = new GregorianCalendar();
-							cal.setTime(date);
-							int rkey = AppointmentModel.dkey(cal);
+						try {						
 							AppointmentModel.getReference().delOneOnly(
-									((Appointment) bean).getKey(), rkey);
+									((Appointment) bean).getKey(), date);
 						} catch (Exception e) {
 							Errmsg.errmsg(e);
 						}
@@ -425,8 +422,8 @@ public class NoteBox implements Draggable {
 				newCal.set(Calendar.SECOND, 0);
 			}
 
-			int newkey = AppointmentModel.dkey(newCal);
 			Date newTime = newCal.getTime();
+			int newkey = DateUtil.dayOfEpoch(newTime);
 
 			ap.setDate(newTime);
 
@@ -435,9 +432,7 @@ public class NoteBox implements Draggable {
 				if (Repeat.isRepeating(ap)) { // cannot date chg unless it is
 												// on
 					// the first in a series
-					Calendar cal = new GregorianCalendar();
-					cal.setTime(date);
-					int k2 = AppointmentModel.dkey(cal);
+					int k2 = DateUtil.dayOfEpoch(date);
 					if (oldkey != k2) {
 						Errmsg.notice(Resource
 								.getPlainResourceString("rpt_drag_err"));

@@ -21,7 +21,6 @@ Copyright 2003 by Mike Berger
 package net.sf.borg.model.db;
 import java.util.Collection;
 
-import net.sf.borg.model.entity.BorgOption;
 import net.sf.borg.model.entity.KeyedEntity;
 
 

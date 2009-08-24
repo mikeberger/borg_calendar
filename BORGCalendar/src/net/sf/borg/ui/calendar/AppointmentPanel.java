@@ -330,10 +330,7 @@ public class AppointmentPanel extends JPanel {
 		// get a new appt from the model and set it from the user data
 		AppointmentModel calmod_ = AppointmentModel.getReference();
 		Appointment r = calmod_.newAppt();
-		int ret = setAppt(r, true);
-
-		if (ret < 0)
-			return;
+		setAppt(r, true);
 
 		calmod_.saveAppt(r, true);
 
@@ -348,9 +345,6 @@ public class AppointmentPanel extends JPanel {
 		AppointmentModel calmod_ = AppointmentModel.getReference();
 		Appointment r = calmod_.newAppt();
 		int newkey = setAppt(r, true);
-
-		if (newkey < 0)
-			return;
 
 		// call the model to change the appt
 		if (newkey == 0) {
@@ -385,10 +379,7 @@ public class AppointmentPanel extends JPanel {
 				// should carry forward sync flags
 				r.setNew(ap.getNew());
 				r.setModified(ap.getModified());
-				// AppointmentXMLAdapter aa = new AppointmentXMLAdapter();
-
-				// System.out.println(aa.toXml(r));
-				// System.out.println(aa.toXml(ap));
+				
 			} catch (Exception e) {
 				// Errmsg.errmsg(e);
 			}
@@ -1216,7 +1207,7 @@ public class AppointmentPanel extends JPanel {
 			g.set(Calendar.HOUR_OF_DAY, hr);
 			g.set(Calendar.MINUTE, min);
 			g.set(Calendar.SECOND, 0);
-			newkey = AppointmentModel.dkey(g);
+			newkey = 1;
 		}
 
 		// set the appt date/time

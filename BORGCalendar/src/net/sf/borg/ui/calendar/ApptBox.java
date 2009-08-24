@@ -54,6 +54,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
+import net.sf.borg.common.DateUtil;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
@@ -487,7 +488,7 @@ class ApptBox implements Draggable {
 	public void move(int realtime, Date d) throws Exception {
 
 		Appointment ap = AppointmentModel.getReference().getAppt(appt.getKey());
-		int oldkey = (ap.getKey() / 100) * 100;
+		int oldkey = DateUtil.dayOfEpoch(ap.getDate());
 
 		int hour = realtime / 60;
 		int min = realtime % 60;
@@ -502,15 +503,13 @@ class ApptBox implements Draggable {
 		newCal.set(Calendar.HOUR_OF_DAY, hour);
 		int roundMin = (min / 5) * 5;
 		newCal.set(Calendar.MINUTE, roundMin);
-		int newkey = AppointmentModel.dkey(newCal);
 		Date newTime = newCal.getTime();
+		int newkey = DateUtil.dayOfEpoch(newTime);
 		ap.setDate(newTime);
 		if (oldkey != newkey) { // date chg
 			if (Repeat.isRepeating(ap)) { // cannot date chg unless it is on
 											// the first in a series
-				Calendar cal = new GregorianCalendar();
-				cal.setTime(date);
-				int k2 = AppointmentModel.dkey(cal);
+				int k2 = DateUtil.dayOfEpoch(date);
 				if (oldkey != k2) {
 					Errmsg.notice(Resource
 							.getPlainResourceString("rpt_drag_err"));
@@ -754,11 +753,8 @@ class ApptBox implements Draggable {
 				mnuitm.addActionListener(new ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						try {
-							Calendar cal = new GregorianCalendar();
-							cal.setTime(date);
-							int rkey = AppointmentModel.dkey(cal);
 							AppointmentModel.getReference().delOneOnly(
-									appt.getKey(), rkey);
+									appt.getKey(), date);
 						} catch (Exception e) {
 							Errmsg.errmsg(e);
 						}

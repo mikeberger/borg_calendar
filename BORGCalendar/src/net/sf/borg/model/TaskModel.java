@@ -80,16 +80,16 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 
 	private TaskTypes taskTypes_ = new TaskTypes();
 
-	public Collection<Task> get_tasks(int daykey) {
-		return (btmap_.get(new Integer(daykey)));
+	public Collection<Task> get_tasks(Date d) {
+		return (btmap_.get(new Integer(DateUtil.dayOfEpoch(d))));
 	}
 
-	public Collection<Subtask> get_subtasks(int daykey) {
-		return (stmap_.get(new Integer(daykey)));
+	public Collection<Subtask> get_subtasks(Date d) {
+		return (stmap_.get(new Integer(DateUtil.dayOfEpoch(d))));
 	}
 
-	public Collection<Project> get_projects(int daykey) {
-		return (pmap_.get(new Integer(daykey)));
+	public Collection<Project> get_projects(Date d) {
+		return (pmap_.get(new Integer(DateUtil.dayOfEpoch(d))));
 	}
 
 	public Vector<Task> get_tasks() {
@@ -184,9 +184,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 				if (due == null)
 					continue;
 
-				GregorianCalendar g = new GregorianCalendar();
-				g.setTime(due);
-				int key = AppointmentModel.dkey(g);
+				int key = DateUtil.dayOfEpoch(due);
 
 				// add the task string to the btmap_
 				// add the task to the mrs_ Vector. This is used by the todo gui
@@ -215,9 +213,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 
 					// use task due date to build a day key
 					Date due = pj.getDueDate();
-					GregorianCalendar g = new GregorianCalendar();
-					g.setTime(due);
-					int key = AppointmentModel.dkey(g);
+					int key = DateUtil.dayOfEpoch(due);;
 
 					// add the string to the btmap_
 					Collection<Project> o = pmap_.get(new Integer(key));
@@ -243,9 +239,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 
 					// use task due date to build a day key
 					Date due = st.getDueDate();
-					GregorianCalendar g = new GregorianCalendar();
-					g.setTime(due);
-					int key = AppointmentModel.dkey(g);
+					int key = DateUtil.dayOfEpoch(due);;
 
 					// add the string to the btmap_
 					Collection<Subtask> o = stmap_.get(new Integer(key));
