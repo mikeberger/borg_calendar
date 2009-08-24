@@ -131,23 +131,18 @@ public class Day {
     }
 
     /**
-     * Adds the to day.
+     * Adds appointments to the to day.
      * 
      * @param day the day
-     * @param l the l
-     * @param calmod the calmod
+     * @param l list of appointment keys to add
      * @param year the year
      * @param month the month
      * @param date the date
-     * @param pub the pub
-     * @param priv the priv
-     * @param prependTime the prepend time
-     * @param user the user
      * 
      * @throws Exception the exception
      */
-    private static void addToDay(Day day, Collection<Integer> l, int year, int month, int date,
-           String user) throws Exception {
+    private static void addToDay(Day day, Collection<Integer> l, int year, int month, int date
+          ) throws Exception {
     	
     	boolean pub = false;
 		boolean priv = false;
@@ -165,10 +160,6 @@ public class Day {
             // iterate through the day's appts
             while (it.hasNext()) {
                 String tx = "", txFull = "";
-                if (user != null) {
-                    tx = "[" + user + "]";
-                    txFull = "[" + user + "]";
-                }
                 Integer ik = it.next();
 
                 // read the appt from the DB
@@ -256,9 +247,6 @@ public class Day {
      * @param year the year
      * @param month the month
      * @param day the day
-     * @param pub true to include public appts
-     * @param priv true to include private appts
-     * 
      * @return the Day object
      * 
      * @throws Exception the exception
@@ -272,7 +260,7 @@ public class Day {
 
         // get the list of appt keys from the map_
         Collection<Integer> l = AppointmentModel.getReference().getAppts(key);
-        addToDay(ret, l, year, month, day, null);
+        addToDay(ret, l, year, month, day);
 
         // daylight savings time
         GregorianCalendar gc = new GregorianCalendar(year, month, day, 11, 00);
@@ -464,16 +452,15 @@ public class Day {
 
     }
 
-    // compute nth day of month for calculating when certain holidays fall
     /**
-     * Nthdom.
+     * compute nth day of month for calculating when certain holidays fall.
      * 
      * @param year the year
      * @param month the month
-     * @param dayofweek the dayofweek
-     * @param week the week
+     * @param dayofweek the day of the week
+     * @param week the week of the month
      * 
-     * @return the int
+     * @return the date
      */
     private static int nthdom(int year, int month, int dayofweek, int week) {
         GregorianCalendar cal = new GregorianCalendar(year, month, 1);
@@ -482,14 +469,11 @@ public class Day {
         return (cal.get(Calendar.DATE));
     }
 
-    /** The holiday. */
     private int holiday; // set to indicate if any appt in the list is a
 
-    /** The items. */
     private TreeSet<CalendarEntity> items; // list of appts for the day
     
-    /** The vacation. */
-    private int vacation;
+    private int vacation; // vacation value for the day
 
     /**
      * Instantiates a new day.
@@ -503,25 +487,25 @@ public class Day {
     }
 
     /**
-     * Adds the item.
+     * Adds a CalendarEntity item to the Day
      * 
-     * @param info the info
+     * @param info the CalendarEntity
      */
     private void addItem(CalendarEntity info) {
         items.add(info);
     }
 
     /**
-     * Gets the holiday.
+     * Gets the holiday flag.
      * 
-     * @return the holiday
+     * @return the holiday (1 = holiday)
      */
     public int getHoliday() {
         return (holiday);
     }
 
     /**
-     * Gets the items.
+     * Gets all CalendarEntity items for the Day.
      * 
      * @return the items
      */
@@ -529,11 +513,10 @@ public class Day {
         return (items);
     }
 
-    // set to indicate the combined vacation status for all appts in the day
     /**
-     * Gets the vacation.
+     * Gets the vacation value for the Day.
      * 
-     * @return the vacation
+     * @return the vacation value (0 = none, 1 = full day, 2 = half day)
      */
     public int getVacation() {
         return (vacation);
@@ -542,18 +525,18 @@ public class Day {
    
 
     /**
-     * Sets the holiday.
+     * Sets the holiday value
      * 
-     * @param i the new holiday
+     * @param i the new holiday value
      */
     public void setHoliday(int i) {
         holiday = i;
     }
 
     /**
-     * Sets the vacation.
+     * Sets the vacation value
      * 
-     * @param i the new vacation
+     * @param i the new vacation value
      */
     public void setVacation(int i) {
         vacation = i;
