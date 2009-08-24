@@ -247,8 +247,8 @@ public class YearPanel extends JPanel implements Printable {
 								// colwidth, rowheight));
 
 								// get the appointment info for the given day
-								Day di = Day.getDay(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE), true,
-										true, true);
+								Day di = Day.getDay(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE)
+										);
 
 								Color bbg = null;
 

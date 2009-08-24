@@ -218,15 +218,7 @@ public class WeekPanel extends JPanel implements Printable {
 				double pageWidth, double pageHeight, double pagex,
 				double pagey, Font sm_font) {
 
-			// System.out.println("week " + new GregorianCalendar().toString());
-			boolean showpub = false;
-			boolean showpriv = false;
-			String sp = Prefs.getPref(PrefName.SHOWPUBLIC);
-			if (sp.equals("true"))
-				showpub = true;
-			sp = Prefs.getPref(PrefName.SHOWPRIVATE);
-			if (sp.equals("true"))
-				showpriv = true;
+			
 			// set up default and small fonts
 			Graphics2D g2 = (Graphics2D) g;
 
@@ -352,8 +344,7 @@ public class WeekPanel extends JPanel implements Printable {
 						startmin = starthr * 60;
 						endmin = endhr * 60;
 						Day di = Day.getDay(cal.get(Calendar.YEAR), cal
-								.get(Calendar.MONTH), cal.get(Calendar.DATE),
-								showpub, showpriv, true);
+								.get(Calendar.MONTH), cal.get(Calendar.DATE));
 
 						Iterator<CalendarEntity> it = di.getItems().iterator();
 

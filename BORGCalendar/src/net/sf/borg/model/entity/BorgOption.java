@@ -18,19 +18,40 @@ This file is part of BORG.
 Copyright 2003 by Mike Berger
  */
 
-package net.sf.borg.model;
+package net.sf.borg.model.entity;
 
+/**
+ * Each BorgOption instance holds a single row from the options table in the database
+ */
 public class BorgOption
 {
+	
+	/**
+	 * Instantiates a new borg option.
+	 * 
+	 * @param key the key
+	 * @param value the value
+	 */
 	public BorgOption(String key, String value)
 	{
 		this.key = key;
 		this.value = value;
 	}
 	
+	/**
+	 * Gets the key.
+	 * 
+	 * @return the key
+	 */
 	public final String getKey()	{return key;}
+	
+	/**
+	 * Gets the value.
+	 * 
+	 * @return the value
+	 */
 	public final String getValue()	{return value;}
 	
-	// private //
+	/** The value. */
 	private String key, value;
 }

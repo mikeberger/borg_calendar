@@ -82,14 +82,6 @@ public class MonthPrintPanel extends JPanel implements Printable {
 
 		int year;
 		int month;
-		boolean showpub = false;
-		boolean showpriv = false;
-		String sp = Prefs.getPref(PrefName.SHOWPUBLIC);
-		if (sp.equals("true"))
-			showpub = true;
-		sp = Prefs.getPref(PrefName.SHOWPRIVATE);
-		if (sp.equals("true"))
-			showpriv = true;
 
 		// see if color printout option set
 		String cp = "false";
@@ -207,8 +199,8 @@ public class MonthPrintPanel extends JPanel implements Printable {
 					// get the appointment info for the given day
 					GregorianCalendar gc = new GregorianCalendar(year, month,
 							date);
-					Day di = Day.getDay(year, month, date, showpub, showpriv,
-							true);
+					Day di = Day.getDay(year, month, date
+							);
 					if (di != null) {
 						if (cp.equals("true")) {
 							if (di.getVacation() != 0) {

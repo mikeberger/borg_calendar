@@ -25,55 +25,111 @@ import java.util.TreeSet;
 
 import net.sf.borg.common.Resource;
 
+/**
+ * The Class CategoryModel manages Categories. Categories are not entities, they are plain text strings.
+ * Categories do not exist outside of other Entities. This class maintains a cache of category information
+ * in memory but does not persist it. It recreates this information from the category-aware models as needed.
+ */
 public class CategoryModel extends Model {
 
+	/**
+	 * interface implemented by Models whose entities contain categories
+	 */
 	static interface CategorySource {
+		
+		/**
+		 * Gets the list of all categories from all entities in the source model
+		 * 
+		 * @return the categories
+		 */
 		public Collection<String> getCategories();
 	}
 
-	Collection<CategorySource> sources = new ArrayList<CategorySource>();
-
+	/** The singleton */
 	static private CategoryModel self_ = new CategoryModel();
 
+	/** a non-null value to represent the lack of a category */
 	static public final String UNCATEGORIZED = Resource
 			.getResourceString("uncategorized");
 
+	/**
+	 * Gets the singleton reference.
+	 * 
+	 * @return the reference
+	 */
+	public static CategoryModel getReference() {
+		return (self_);
+	}
+
+	/** The collection of all categories_. */
+	private Collection<String> categories_ = new TreeSet<String>();
+
+	/** The categories that are being shown (i.e. that are not being hidden) */
+	private Collection<String> shownCategories_ = new TreeSet<String>();
+
+	/** The set of category source models */
+	Collection<CategorySource> sources = new ArrayList<CategorySource>();
+
+	/**
+	 * Add all categories from a collection to the cache
+	 * 
+	 * @param cats the categories
+	 */
+	private void addAll(Collection<String> cats) {
+		categories_.addAll(cats);
+		shownCategories_.addAll(cats);
+	}
+
+	/**
+	 * Add a category to the cache.
+	 * 
+	 * @param cat the categories
+	 */
+	public void addCategory(String cat) {
+		categories_.add(cat);
+	}
+
+	/**
+	 * Add a category source.
+	 * 
+	 * @param s the source
+	 */
 	public void addSource(CategorySource s) {
 		sources.add(s);
 		addAll(s.getCategories());
 	}
 
-	public static CategoryModel getReference() {
-		return (self_);
-	}
-
-	// categories in DB
-	private Collection<String> categories_ = new TreeSet<String>();
-
-	// categories being displayed
-	private Collection<String> shownCategories_ = new TreeSet<String>();
-
-	public void addAll(Collection<String> cats) {
-		categories_.addAll(cats);
-		shownCategories_.addAll(cats);
-	}
-
-	public void addCategory(String cat) {
-		categories_.add(cat);
-	}
-
+	/**
+	 * Get all categories.
+	 * 
+	 * @return the categories
+	 * 
+	 * @throws Exception the exception
+	 */
 	public Collection<String> getCategories() throws Exception {
 		ArrayList<String> cats = new ArrayList<String>();
 		cats.addAll(categories_);
 		return (cats);
 	}
 
+	/**
+	 * Get the shown categories.
+	 * 
+	 * @return the shown categories
+	 */
 	public Collection<String> getShownCategories() {
 		ArrayList<String> cats = new ArrayList<String>();
 		cats.addAll(shownCategories_);
 		return (cats);
 	}
 
+	/**
+	 * Checks if a category is being shown.
+	 * 
+	 * @param cat the cat
+	 * 
+	 * @return true, if is shown
+	 */
 	public boolean isShown(String cat) {
 		if (cat == null || cat.equals(""))
 			cat = CategoryModel.UNCATEGORIZED;
@@ -91,21 +147,39 @@ public class CategoryModel extends Model {
 
 	}
 
+	/**
+	 * Sets the set of shown categories.
+	 * 
+	 * @param cats the shown categories
+	 */
 	public void setShownCategories(Collection<String> cats) {
 		shownCategories_ = cats;
 		refreshListeners();
 	}
 
+	/**
+	 * Show all categories.
+	 */
 	public void showAll() {
 		shownCategories_.clear();
 		shownCategories_.addAll(categories_);
 		refreshListeners();
 	}
 
+	/**
+	 * Show a particular category.
+	 * 
+	 * @param cat the category to show
+	 */
 	public void showCategory(String cat) {
 		shownCategories_.add(cat);
 	}
 
+	/**
+	 * Sync categories with the sources (clears the cache and re-reads the list of categories).
+	 * 
+	 * @throws Exception the exception
+	 */
 	public void syncCategories() throws Exception {
 		categories_.clear();
 		for( CategorySource s : sources )

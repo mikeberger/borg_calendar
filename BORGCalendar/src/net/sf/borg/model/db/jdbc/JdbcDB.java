@@ -41,8 +41,8 @@ import java.util.Vector;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
-import net.sf.borg.model.BorgOption;
 import net.sf.borg.model.Transactional;
+import net.sf.borg.model.entity.BorgOption;
 
 /**
  * abstract base class providing basic common JDBC services to all derived JDBC classes

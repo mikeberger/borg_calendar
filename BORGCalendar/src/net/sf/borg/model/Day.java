@@ -47,15 +47,21 @@ import net.sf.borg.model.entity.Subtask;
 import net.sf.borg.model.entity.Task;
 
 /**
+ * Class Day pulls together and manages all of the items that make up the CalendarEntities for
+ * a single day. It packages together all of a day's info as needed by a client (i.e. the UI).
  * 
- * @author mbb
  */
 public class Day {
 
-    /** class to compare appointment strings for sorting */
-    // this is the sorting used for print output and month display
+    /**
+     * class to compare appointment strings for sorting.
+     */
     private static class apcompare implements Comparator<CalendarEntity> {
 
+        /**
+         * convert the "logical" colors to a number for sorting by color
+         * the actual color names listed below are no longer the displayed colors.
+         */
         private static int colornum(String color) {
 
             if (color.equals("red"))
@@ -78,6 +84,9 @@ public class Day {
 
         }
 
+        /* (non-Javadoc)
+         * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+         */
         public int compare(CalendarEntity so1, CalendarEntity so2) {
 
             String s1 = so1.getText();
@@ -121,8 +130,34 @@ public class Day {
 
     }
 
-    private static void addToDay(Day day, Collection<Integer> l, AppointmentModel calmod, int year, int month, int date,
-            boolean pub, boolean priv, boolean prependTime, String user) throws Exception {
+    /**
+     * Adds the to day.
+     * 
+     * @param day the day
+     * @param l the l
+     * @param calmod the calmod
+     * @param year the year
+     * @param month the month
+     * @param date the date
+     * @param pub the pub
+     * @param priv the priv
+     * @param prependTime the prepend time
+     * @param user the user
+     * 
+     * @throws Exception the exception
+     */
+    private static void addToDay(Day day, Collection<Integer> l, int year, int month, int date,
+           String user) throws Exception {
+    	
+    	boolean pub = false;
+		boolean priv = false;
+		String sp = Prefs.getPref(PrefName.SHOWPUBLIC);
+		if (sp.equals("true"))
+			pub = true;
+		sp = Prefs.getPref(PrefName.SHOWPRIVATE);
+		if (sp.equals("true"))
+			priv = true;
+		
         if (l != null) {
             Iterator<Integer> it = l.iterator();
             Appointment appt;
@@ -137,7 +172,7 @@ public class Day {
                 Integer ik = it.next();
 
                 // read the appt from the DB
-                appt = calmod.getAppt(ik.intValue());
+                appt = AppointmentModel.getReference().getAppt(ik.intValue());
 
                 // skip based on public/private flags
                 if (appt.getPrivate()) {
@@ -149,7 +184,7 @@ public class Day {
                 }
 
                 // add time in front of the appt text
-                if (!AppointmentModel.isNote(appt) && prependTime) {
+                if (!AppointmentModel.isNote(appt)) {
                     Date d = appt.getDate();
                     SimpleDateFormat sdf = AppointmentModel.getTimeFormat();
                     tx += sdf.format(d) + " ";
@@ -214,27 +249,30 @@ public class Day {
 
     }
 
-    // holiday
-
-    // get Day Class for a given day. indicate if public or private appts
-    // are to
-    // be included
-    // The Day class is used by Views that need to present an entire day at
-    // a
-    // time.
-    // The Day class contains all appointments, tasks, and holidays that
-    // fall on
-    // a given day.
-    public static Day getDay(int year, int month, int day, boolean pub, boolean priv, boolean prependTime) throws Exception {
-        AppointmentModel calmod = AppointmentModel.getReference();
+    
+    /**
+     * Gets the Day information for a given day.
+     * 
+     * @param year the year
+     * @param month the month
+     * @param day the day
+     * @param pub true to include public appts
+     * @param priv true to include private appts
+     * 
+     * @return the Day object
+     * 
+     * @throws Exception the exception
+     */
+    public static Day getDay(int year, int month, int day) throws Exception {
+        
         // get the base day key
         int key = AppointmentModel.dkey(year, month, day);
 
         Day ret = new Day();
 
         // get the list of appt keys from the map_
-        Collection<Integer> l = calmod.getAppts(key);
-        addToDay(ret, l, calmod, year, month, day, pub, priv, prependTime, null);
+        Collection<Integer> l = AppointmentModel.getReference().getAppts(key);
+        addToDay(ret, l, year, month, day, null);
 
         // daylight savings time
         GregorianCalendar gc = new GregorianCalendar(year, month, day, 11, 00);
@@ -427,6 +465,16 @@ public class Day {
     }
 
     // compute nth day of month for calculating when certain holidays fall
+    /**
+     * Nthdom.
+     * 
+     * @param year the year
+     * @param month the month
+     * @param dayofweek the dayofweek
+     * @param week the week
+     * 
+     * @return the int
+     */
     private static int nthdom(int year, int month, int dayofweek, int week) {
         GregorianCalendar cal = new GregorianCalendar(year, month, 1);
         cal.set(Calendar.DAY_OF_WEEK, dayofweek);
@@ -434,12 +482,18 @@ public class Day {
         return (cal.get(Calendar.DATE));
     }
 
+    /** The holiday. */
     private int holiday; // set to indicate if any appt in the list is a
 
-    private int vacation;
-    
+    /** The items. */
     private TreeSet<CalendarEntity> items; // list of appts for the day
+    
+    /** The vacation. */
+    private int vacation;
 
+    /**
+     * Instantiates a new day.
+     */
     private Day() {
 
         holiday = 0;
@@ -448,29 +502,59 @@ public class Day {
 
     }
 
+    /**
+     * Adds the item.
+     * 
+     * @param info the info
+     */
     private void addItem(CalendarEntity info) {
         items.add(info);
     }
 
-    public Collection<CalendarEntity> getItems() {
-        return (items);
-    }
-
+    /**
+     * Gets the holiday.
+     * 
+     * @return the holiday
+     */
     public int getHoliday() {
         return (holiday);
     }
 
+    /**
+     * Gets the items.
+     * 
+     * @return the items
+     */
+    public Collection<CalendarEntity> getItems() {
+        return (items);
+    }
+
     // set to indicate the combined vacation status for all appts in the day
+    /**
+     * Gets the vacation.
+     * 
+     * @return the vacation
+     */
     public int getVacation() {
         return (vacation);
     }
 
    
 
+    /**
+     * Sets the holiday.
+     * 
+     * @param i the new holiday
+     */
     public void setHoliday(int i) {
         holiday = i;
     }
 
+    /**
+     * Sets the vacation.
+     * 
+     * @param i the new vacation
+     */
     public void setVacation(int i) {
         vacation = i;
     }

@@ -35,18 +35,179 @@ import net.sf.borg.model.undo.AddressUndoItem;
 import net.sf.borg.model.undo.UndoLog;
 import net.sf.borg.model.xml.AddressXMLAdapter;
 
+/**
+ * AddressModel provies the model layer APIs for working with Addresses
+ */
 public class AddressModel extends Model {
-
-	private EntityDB<Address> db_; // the database
-
-	public EntityDB<Address> getDB() {
-		return (db_);
-	}
-
-	private HashMap<Integer, LinkedList<Address>> bdmap_ = new HashMap<Integer, LinkedList<Address>>();
 
 	static private AddressModel self_ = null;
 
+	/**
+	 * Gets the reference.
+	 * 
+	 * @return the reference
+	 */
+	public static AddressModel getReference() {
+		if( self_ == null )
+			self_ = new AddressModel();
+		return (self_);
+	}
+
+	/** map of birthdays to addresses */
+	private HashMap<Integer, LinkedList<Address>> bdmap_ = new HashMap<Integer, LinkedList<Address>>();
+
+	/** The db_. */
+	private EntityDB<Address> db_; // the database
+
+	/**
+	 * Instantiates a new address model.
+	 */
+	private AddressModel()
+	{
+		db_ = new AddrJdbcDB();
+		load_map();
+	}
+
+	/**
+	 * Delete an Address
+	 * 
+	 * @param addr the Address
+	 */
+	public void delete(Address addr) {
+		delete(addr, false);
+	}
+	
+	/**
+	 * Delete an Address.
+	 * 
+	 * @param addr the Address
+	 * @param undo true if we are executing an undo
+	 */
+	public void delete(Address addr, boolean undo) {
+
+		try {
+			Address orig_addr = getAddress(addr.getKey());
+			LinkModel.getReference().deleteLinks(addr);
+
+			db_.delete(addr.getKey());
+			
+			// don't store an undo record if we are currently running an undo
+			if (!undo) {
+				UndoLog.getReference().addItem(
+						AddressUndoItem.recordDelete(orig_addr));
+			}
+
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
+		}
+
+		refresh();
+	}
+
+	/**
+	 * Export all Addresses to XML.
+	 * 
+	 * @param fw the Writer to write XML to
+	 * 
+	 * @throws Exception the exception
+	 */
+	public void export(Writer fw) throws Exception {
+
+		// FileWriter fw = new FileWriter(fname);
+		fw.write("<ADDRESSES>\n");
+		AddressXMLAdapter ta = new AddressXMLAdapter();
+
+		// export addresses
+
+		Collection<Address> addrs = getAddresses();
+		for (Address addr : addrs) {
+
+			XTree xt = ta.toXml(addr);
+			fw.write(xt.toString());
+		}
+
+		fw.write("</ADDRESSES>");
+
+	}
+
+	/**
+	 * Get an Address by key
+	 * 
+	 * @param num the key
+	 * 
+	 * @return the address
+	 * 
+	 * @throws Exception the exception
+	 */
+	public Address getAddress(int num) throws Exception {
+		return (db_.readObj(num));
+	}
+
+	
+	/**
+	 * Get all addresses.
+	 * 
+	 * @return the addresses
+	 * 
+	 * @throws Exception the exception
+	 */
+	public Collection<Address> getAddresses() throws Exception {
+		Collection<Address> addrs = db_.readAll();
+		return addrs;
+	}
+
+	/**
+	 * Get all addresses with birthdays on a given day.
+	 * 
+	 * @param daykey the daykey (see AppointmentModel.dkey
+	 * 
+	 * @return the addresses
+	 */
+	public Collection<Address> getAddresses(int daykey) {
+		// don't consider year for birthdays
+		int bdkey = AppointmentModel.birthdayKey(daykey);
+		// System.out.println("bdkey is " + bdkey);
+		return (bdmap_.get(new Integer(bdkey)));
+	}
+
+	/**
+	 * Gets the dB.
+	 * 
+	 * @return the dB
+	 */
+	@Deprecated public EntityDB<Address> getDB() {
+		return (db_);
+	}
+
+	/**
+	 * Import xml.
+	 * 
+	 * @param xt an XML tree containing XML for multiple addresses
+	 * 
+	 * @throws Exception the exception
+	 */
+	public void importXml(XTree xt) throws Exception {
+
+		AddressXMLAdapter aa = new AddressXMLAdapter();
+
+		for (int i = 1;; i++) {
+			XTree ch = xt.child(i);
+			if (ch == null)
+				break;
+
+			if (!ch.name().equals("Address"))
+				continue;
+			Address addr = aa.fromXml(ch);
+			addr.setKey(-1);
+			saveAddress(addr);
+		}
+
+		refresh();
+	}
+
+	/**
+	 * populate the map of birthdays
+	 */
 	private void load_map() {
 
 		// clear map
@@ -91,58 +252,38 @@ public class AddressModel extends Model {
 
 	}
 
-	public static AddressModel getReference() {
-		if( self_ == null )
-			self_ = new AddressModel();
-		return (self_);
+	/**
+	 * get a new address object
+	 * 
+	 * @return the address
+	 */
+	public Address newAddress() {
+		return (db_.newObj());
 	}
-	
-	private AddressModel()
-	{
-		db_ = new AddrJdbcDB();
+
+	/**
+	 * Refresh the birthday map and notify any listeners that the model has changed
+	 */
+	public void refresh() {
 		load_map();
+		refreshListeners();
 	}
 
-	public Collection<Address> getAddresses() throws Exception {
-		Collection<Address> addrs = db_.readAll();
-		return addrs;
-	}
-
-	public Collection<Address> getAddresses(int daykey) {
-		// don't consider year for birthdays
-		int bdkey = AppointmentModel.birthdayKey(daykey);
-		// System.out.println("bdkey is " + bdkey);
-		return (bdmap_.get(new Integer(bdkey)));
-	}
-
-	
-	public void delete(Address addr) {
-		delete(addr, false);
-	}
-
-	public void delete(Address addr, boolean undo) {
-
-		try {
-			Address orig_addr = getAddress(addr.getKey());
-			LinkModel.getReference().deleteLinks(addr);
-
-			db_.delete(addr.getKey());
-			if (!undo) {
-				UndoLog.getReference().addItem(
-						AddressUndoItem.recordDelete(orig_addr));
-			}
-
-		} catch (Exception e) {
-			Errmsg.errmsg(e);
-		}
-
-		refresh();
-	}
-
+	/**
+	 * Save an address.
+	 * 
+	 * @param addr the address
+	 */
 	public void saveAddress(Address addr) {
 		saveAddress(addr, false);
 	}
 
+	/**
+	 * Save an address.
+	 * 
+	 * @param addr the address
+	 * @param undo true if we are executing an undo
+	 */
 	public void saveAddress(Address addr, boolean undo) {
 
 		int num = addr.getKey();
@@ -178,58 +319,9 @@ public class AddressModel extends Model {
 		refresh();
 	}
 
-	// allocate a new Row from the DB
-	public Address newAddress() {
-		return (db_.newObj());
-	}
-
-	public Address getAddress(int num) throws Exception {
-		return (db_.readObj(num));
-	}
-
-	public void export(Writer fw) throws Exception {
-
-		// FileWriter fw = new FileWriter(fname);
-		fw.write("<ADDRESSES>\n");
-		AddressXMLAdapter ta = new AddressXMLAdapter();
-
-		// export addresses
-
-		Collection<Address> addrs = getAddresses();
-		for (Address addr : addrs) {
-
-			XTree xt = ta.toXml(addr);
-			fw.write(xt.toString());
-		}
-
-		fw.write("</ADDRESSES>");
-
-	}
-
-	public void importXml(XTree xt) throws Exception {
-
-		AddressXMLAdapter aa = new AddressXMLAdapter();
-
-		for (int i = 1;; i++) {
-			XTree ch = xt.child(i);
-			if (ch == null)
-				break;
-
-			if (!ch.name().equals("Address"))
-				continue;
-			Address addr = aa.fromXml(ch);
-			addr.setKey(-1);
-			saveAddress(addr);
-		}
-
-		refresh();
-	}
-
-	public void refresh() {
-		load_map();
-		refreshListeners();
-	}
-
+	/**
+	 * Sync with the underlying db
+	 */
 	public void sync() {
 		db_.sync();
 		refresh();

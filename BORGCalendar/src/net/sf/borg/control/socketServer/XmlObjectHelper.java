@@ -26,9 +26,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.sf.borg.common.XTree;
-import net.sf.borg.model.BorgOption;
 import net.sf.borg.model.entity.Address;
 import net.sf.borg.model.entity.Appointment;
+import net.sf.borg.model.entity.BorgOption;
 import net.sf.borg.model.entity.KeyedEntity;
 import net.sf.borg.model.entity.Memo;
 import net.sf.borg.model.xml.AddressXMLAdapter;

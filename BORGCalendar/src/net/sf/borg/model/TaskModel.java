@@ -43,6 +43,7 @@ import net.sf.borg.model.db.EntityDB;
 import net.sf.borg.model.db.TaskDB;
 import net.sf.borg.model.db.jdbc.JdbcDB;
 import net.sf.borg.model.db.jdbc.TaskJdbcDB;
+import net.sf.borg.model.entity.BorgOption;
 import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Subtask;
 import net.sf.borg.model.entity.Task;

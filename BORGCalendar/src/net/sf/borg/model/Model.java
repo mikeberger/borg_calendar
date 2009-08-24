@@ -30,50 +30,64 @@ import java.util.ArrayList;
 
 
 /**
- *
- * @author  MBERGER
+ * base class for data models. A Model provides access to a data store to the outside world.
+ * Clients of the model can register as Listeners to be provided with feedback any time the model changes.
  */
-
-// a model is in charge of the data store and presents the data to the
-// rest of the app
-// each model allows Views to register with it for callbacks when the
-// data changes
 public abstract class Model
 {
 
-    // list of views to notify when the model changes
+    // list of clients to notify when the model changes
     private ArrayList<Listener> listeners;
 
 	/**
-	 * @author mbb
-	 *
-	 * To change the template for this generated type comment go to
-	 * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
+	 * Listener for a Model.
+	 * 
 	 */
 	public interface Listener
 	{
+		
+		/**
+		 * Called to notify Listener when the Model is changed.
+		 */
 		public abstract void refresh();
+		
+		/**
+		 * Called to notify the Listener when the Model is destroyed
+		 */
 		public abstract void remove();
 	}
     
+    /**
+     * Instantiates a new model.
+     */
     public Model()
     {
         listeners = new ArrayList<Listener>();
     }
     
-    // function to call to register a view with the model
+    /**
+     * Adds a listener.
+     * 
+     * @param listener the listener
+     */
     public void addListener(Listener listener)
     {
         listeners.add(listener);
     }
     
-   // function to call to runegister a view from the model
-    public void removeListener(Listener listener) // NO_UCD
+    /**
+    * Removes a listener.
+    * 
+    * @param listener the listener
+    */
+   public void removeListener(Listener listener) 
     {
         listeners.remove(listener);
     }
     
-    // send a refresh to all registered views
+    /**
+     * send a Refresh message to all listeners.
+     */
     protected void refreshListeners()
     {
         for( int i = 0; i < listeners.size(); i++ )
@@ -83,7 +97,9 @@ public abstract class Model
         }
     }
     
-    // notify all views that the model is being destroyed
+    /**
+     * notify all listeners that the model is being destroyed
+     */
     protected void removeListeners()
     {
         for( int i = 0; i < listeners.size(); i++ )
@@ -96,6 +112,9 @@ public abstract class Model
         
     }
     
+    /**
+     * Removes the listeners.
+     */
     public void remove(){
     	removeListeners();
     }

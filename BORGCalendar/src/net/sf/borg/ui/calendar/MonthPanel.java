@@ -153,15 +153,7 @@ public class MonthPanel extends JPanel implements Printable {
 				double pagey, int pageIndex) {
 			// System.out.println("month " + new
 			// GregorianCalendar().toString());
-			boolean showpub = false;
-			boolean showpriv = false;
-			String sp = Prefs.getPref(PrefName.SHOWPUBLIC);
-			if (sp.equals("true"))
-				showpub = true;
-			sp = Prefs.getPref(PrefName.SHOWPRIVATE);
-			if (sp.equals("true"))
-				showpriv = true;
-
+			
 			// set up default and small fonts
 			Graphics2D g2 = (Graphics2D) g;
 
@@ -266,8 +258,8 @@ public class MonthPanel extends JPanel implements Printable {
 
 						// get the appointment info for the given day
 						Day di = Day.getDay(cal.get(Calendar.YEAR), cal
-								.get(Calendar.MONTH), cal.get(Calendar.DATE),
-								showpub, showpriv, true);
+								.get(Calendar.MONTH), cal.get(Calendar.DATE)
+								);
 
 						Color c = new Color(Prefs
 								.getIntPref(PrefName.UCS_DEFAULT));

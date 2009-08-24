@@ -49,35 +49,61 @@ import net.sf.borg.model.undo.AppointmentUndoItem;
 import net.sf.borg.model.undo.UndoLog;
 import net.sf.borg.model.xml.AppointmentXMLAdapter;
 
+/**
+ * The Class AppointmentModel.
+ * 
+ * Note: this class uses the concept of a date key - an appointments date and a counter encoded
+ * in a single integer a the appointment primary key and for other API calls. This is all due to legacy
+ * concerns. If feasible, it would be good to hide all use of dkey within this class.
+ */
 public class AppointmentModel extends Model implements Model.Listener,
 		CategorySource {
 
+	/** The singleton */
 	static private AppointmentModel self_ = null;
 
 
-	// return true if an appointment is skipped on a particular date
-	public static boolean isSkipped(Appointment ap, Calendar cal) {
-		int dk = dkey(cal);
-		String sk = Integer.toString(dk);
-		Vector<String> skv = ap.getSkipList();
-		if (skv != null && skv.contains(sk)) {
-			return true;
-		}
-
-		return false;
-	}
-
-	private EntityDB<Appointment> db_; 
-
-	public EntityDB<Appointment> getDB() {
-		return (db_);
-	}
-
-	/*
-	 * map_ contains each "base" day key that has appts and maps it to a list of
-	 * appt keys for that day.
+	/**
+	 * return an integer key for a date that only considers month and date, but not year
+	 * 
+	 * @param dkey the date key - see dkey()
+	 * 
+	 * @return the int
 	 */
-	private HashMap<Integer, Collection<Integer>> map_;
+	public static int birthdayKey(int dkey) {
+		return ((dkey % 1000000) * 1000000);
+	}
+
+	/**
+	 * convert a date (Calendar object) into an integer key that encodes year, month, and day
+	 * 
+	 * @param cal the Calendar
+	 * 
+	 * @return the int
+	 */
+	public static int dkey(Calendar cal) {
+		return dkey(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal
+				.get(Calendar.DATE));
+	} 
+
+	/**
+	 * convert separate year, month, and day values into an integer key that encodes year, month, and day.
+	 * 
+	 * @param year the year
+	 * @param month the month
+	 * @param date the date
+	 * 
+	 * @return the int
+	 */
+	public static int dkey(int year, int month, int date) {
+		return ((year - 1900) * 1000000 + (month + 1) * 10000 + date * 100);
+	}
+
+	/**
+	 * Gets the singleton reference.
+	 * 
+	 * @return the singleton reference
+	 */
 	public static AppointmentModel getReference() {
 		if( self_ == null )
 			try {
@@ -89,6 +115,105 @@ public class AppointmentModel extends Model implements Model.Listener,
 		return (self_);
 	}
 	
+	/**
+	 * Gets the time format to use for all time processing.
+	 * 
+	 * @return the time format
+	 */
+	public static SimpleDateFormat getTimeFormat() {
+		String mt = Prefs.getPref(PrefName.MILTIME);
+		if (mt.equals("true")) {
+			return (new SimpleDateFormat("HH:mm"));
+		}
+
+		return (new SimpleDateFormat("h:mm a"));
+
+	}
+	
+	/**
+	 * Checks an appointment is a note (not associated with a time of day).
+	 * 
+	 * @param appt the appointment
+	 * 
+	 * @return true, if it is a note
+	 */
+	public static boolean isNote(Appointment appt) {
+		// return true if the appt Appointment represents a "note" or
+		// "non-timed" appt
+		// this is true if the time is midnight and duration is 0.
+		// this method was used for backward compatibility - as opposed to
+		// adding
+		// a new flag to the DB
+		// 1.6.1 - added new db field to fix bug when time zone changes
+		// for backward compatiblity, keep old check in addition to checking new
+		// flag
+		try {
+
+			if (appt.getUntimed() != null && appt.getUntimed().equals("Y"))
+				return true;
+			Integer duration = appt.getDuration();
+			if (duration != null && duration.intValue() != 0)
+				return (false);
+
+			Date d = appt.getDate();
+			if (d == null)
+				return (true);
+
+			GregorianCalendar g = new GregorianCalendar();
+			g.setTime(d);
+			int hour = g.get(Calendar.HOUR_OF_DAY);
+			if (hour != 0)
+				return (false);
+
+			int min = g.get(Calendar.MINUTE);
+			if (min != 0)
+				return (false);
+		} catch (Exception e) {
+			return (true);
+		}
+
+		return (true);
+
+	}
+	
+
+	/**
+	 * Checks if an appointment is skipped on a particular date
+	 * 
+	 * @param ap the Appointment
+	 * @param cal the date
+	 * 
+	 * @return true, if is skipped
+	 */
+	public static boolean isSkipped(Appointment ap, Calendar cal) {
+		int dk = dkey(cal);
+		String sk = Integer.toString(dk);
+		Vector<String> skv = ap.getSkipList();
+		if (skv != null && skv.contains(sk)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/** The underlying database object */
+	private EntityDB<Appointment> db_;
+
+	/**
+	 * map_ contains each "base" day key that has appts and maps it to a list of
+	 * appt keys for that day.
+	 */
+	private HashMap<Integer, Collection<Integer>> map_;
+
+	/** The vacation map - a map of vacation values for each day (i.e. no vacation, half-day, full-day) */
+	private HashMap<Integer, Integer> vacationMap_;
+
+	
+	/**
+	 * Instantiates a new appointment model.
+	 * 
+	 * @throws Exception the exception
+	 */
 	private AppointmentModel() throws Exception
 	{
 		map_ = new HashMap<Integer, Collection<Integer>>();
@@ -103,424 +228,14 @@ public class AppointmentModel extends Model implements Model.Listener,
 		buildMap();
 
 	}
+
 	
-
-	private HashMap<Integer, Integer> vacationMap_;
-
 	/**
-	 * return a base DB key for a given day
+	 * Builds the map (cache) of days to appointments. Also builds the vacation map. This is not purely for caching as
+	 * it also maps multiple days to a single appointment to support repeating appointments
+	 * 
+	 * @throws Exception the exception
 	 */
-	public static int dkey(int year, int month, int date) {
-		return ((year - 1900) * 1000000 + (month + 1) * 10000 + date * 100);
-	}
-
-	public static int dkey(Calendar cal) {
-		return dkey(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal
-				.get(Calendar.DATE));
-	}
-
-	// return a key that only considers month and date
-	public static int birthdayKey(int dkey) {
-		return ((dkey % 1000000) * 1000000);
-	}
-
-	
-	public Appointment newAppt() {
-		Appointment appt = db_.newObj();
-		return (appt);
-	}
-
-	// assumes date has been updated
-	// written to support link processing
-	public void changeDate(Appointment ap) throws Exception {
-		Appointment orig = ap.copy();
-		saveAppt(ap, true); // sets new key
-		LinkModel.getReference().moveLinks(orig, ap);
-		delAppt(orig.getKey()); // removes links
-		
-		UndoLog.getReference().addItem(AppointmentUndoItem.recordMove(orig));
-	}
-
-	public void delAppt(int key) {
-		try {
-			Appointment appt = getAppt(key);
-			if (appt != null)
-				delAppt(appt);
-		} catch (Exception e) {
-			Errmsg.errmsg(e);
-		}
-	}
-
-	public void delAppt(Appointment appt) {
-		delAppt(appt, false);
-	}
-
-	// delete a row from the database
-	public void delAppt(Appointment appt, boolean undo) {
-
-		try {
-
-			Appointment orig_appt = getAppt(appt.getKey());
-
-			LinkModel.getReference().deleteLinks(appt);
-
-			db_.delete(appt.getKey());
-			if (!undo) {
-				UndoLog.getReference().addItem(
-						AppointmentUndoItem.recordDelete(orig_appt));
-			}
-
-		} catch (Exception e) {
-			Errmsg.errmsg(e);
-		}
-
-		// even if delete fails - still refresh cache info
-		// and tell listeners - db failure may have been due to
-		// a sync causing a record already deleted error
-		// this needs to be reflected in the map
-		try {
-			// recreate the appointment hashmap
-			buildMap();
-
-			// refresh all views that are displaying appt data from this
-			// model
-			refreshListeners();
-		} catch (Exception e) {
-			Errmsg.errmsg(e);
-			return;
-		}
-	}
-
-	// delete one occurrence of a repeating appt
-	public void delOneOnly(int key, int rkey) {
-		try {
-
-			Appointment appt = db_.readObj(key);
-
-			// get the number of repeats
-			Integer tms = appt.getTimes();
-			if (tms == null)
-				throw new Warning(Resource
-						.getResourceString("Appointment_does_not_repeat"));
-
-			// get the list of repeats that have been deleted - the SKip
-			// list
-			Vector<String> vect = appt.getSkipList();
-			if (vect == null)
-				vect = new Vector<String>();
-
-			// add the current appt key to the SKip list
-			vect.add(Integer.toString(rkey));
-			appt.setSkipList(vect);
-			saveAppt(appt, false);
-
-			// if we are deleting the next todo then do it
-			Date nt = appt.getNextTodo();
-			if (nt == null)
-				nt = appt.getDate();
-			Calendar cal = new GregorianCalendar();
-			cal.setTime(nt);
-			if (rkey == dkey(cal)) {
-				do_todo(appt.getKey(), false);
-			}
-
-		} catch (Exception e) {
-			Errmsg.errmsg(e);
-			return;
-		}
-	}
-
-	public void saveAppt(Appointment r, boolean add) {
-		saveAppt(r, add, false);
-	}
-
-	public void saveAppt(Appointment r, boolean add, boolean undo) {
-
-		try {
-			Appointment orig_appt = getAppt(r.getKey());
-			if (add == true) {
-				// get the next unused key for a given day
-				// to do this, start with the "base" key for a given day.
-				// then see if an appt has this key.
-				// keep adding 1 until a key is found that has no appt
-				GregorianCalendar gcal = new GregorianCalendar();
-				gcal.setTime(r.getDate());
-				int key = AppointmentModel.dkey(gcal);
-
-				// if undo is adding back record - force the key to
-				// be what is in the record
-				if (!undo) {
-					try {
-						while (true) {
-							Appointment ap = getAppt(key);
-							if (ap == null)
-								break;
-							key++;
-						}
-
-					} catch (Exception ee) {
-						Errmsg.errmsg(ee);
-						return;
-					}
-				}
-
-				// key is now a free key
-				r.setKey(key);
-				r.setNew(true);
-				r.setDeleted(false);
-
-				db_.addObj(r);
-				if (!undo) {
-					UndoLog.getReference().addItem(
-							AppointmentUndoItem.recordAdd(r));
-				}
-			} else {
-
-				r.setModified(true);
-				r.setDeleted(false);
-
-				db_.updateObj(r);
-				if (!undo) {
-					UndoLog.getReference().addItem(
-							AppointmentUndoItem.recordUpdate(orig_appt));
-				}
-			}
-
-			// update category list
-			String cat = r.getCategory();
-			if (cat != null && !cat.equals(""))
-				CategoryModel.getReference().addCategory(cat);
-
-		} catch (Exception e) {
-			Errmsg.errmsg(e);
-
-		}
-
-		try {
-			// recreate the appointment hashmap
-			buildMap();
-
-			// refresh all views that are displaying appt data from this
-			// model
-			refreshListeners();
-		} catch (Exception e) {
-			Errmsg.errmsg(e);
-			return;
-		}
-	}
-
-	// get an appt from the database by key
-	public Appointment getAppt(int key) throws Exception {
-		Appointment appt = db_.readObj(key);
-		return (appt);
-	}
-
-	// search the appt DB using a search string and
-	// create a Vector containing the results
-	public Vector<Appointment> get_srch(String s, boolean case_sensitive) {
-
-		Vector<Appointment> res = new Vector<Appointment>();
-
-		try {
-
-			// load all appts into appt list
-			Collection<Appointment> allappts = getAllAppts();
-
-			for (Appointment appt : allappts) {
-				// read each appt
-
-				// if category set, filter appts
-				if (!CategoryModel.getReference().isShown(appt.getCategory())) {
-					continue;
-				}
-
-				String tx = appt.getText();
-				Date d = appt.getDate();
-				if (d == null || tx == null)
-					continue;
-
-				if (case_sensitive) {
-					// check if appt text contains the search string
-					if (tx.indexOf(s) == -1)
-						continue;
-				} else {
-					// check if appt text contains the search string
-					String ltx = tx.toLowerCase();
-					String ls = s.toLowerCase();
-					if (ltx.indexOf(ls) == -1)
-						continue;
-				}
-
-				// add the appt to the search results
-				res.add(appt);
-
-			}
-
-		} catch (Exception e) {
-			Errmsg.errmsg(e);
-		}
-		return (res);
-
-	}
-
-	// this function is called to mark a to do as done from the todo gui
-	// window
-	// the user can optionally indicate that the todo is to be deleted - but
-	// we must still
-	// make sure it is the last repeat if the todo repeats
-	public void do_todo(int key, boolean del) throws Exception {
-		// read the DB row for the ToDo
-		Appointment appt = db_.readObj(key);
-
-		// curtodo is the date of the todo that is to be "done"
-		Date curtodo = appt.getNextTodo();
-		Date d = appt.getDate();
-		if (curtodo == null) {
-			curtodo = d;
-		}
-
-		// newtodo will be the name of the next todo occurrence (if the todo
-		// repeats and is not done)
-		Date newtodo = null;
-
-		Integer tms = appt.getTimes();
-		String rpt = Repeat.getFreq(appt.getFrequency());
-
-		// find next to do if it repeats by doing calendar math
-		if (tms != null && tms.intValue() > 1 && rpt != null
-				&& !rpt.equals(Repeat.ONCE)) {
-			int tm = tms.intValue();
-
-			Calendar ccal = new GregorianCalendar();
-			Calendar ncal = new GregorianCalendar();
-
-			// ccal is the current todo and ncal is the original appt date
-			// ncal will be incremented until we find the todo after the
-			// one in ccal
-			ccal.setTime(curtodo);
-			ncal.setTime(d);
-
-			Repeat repeat = new Repeat(ncal, appt.getFrequency());
-			for (int i = 1; i < tm; i++) {
-
-				if (ncal != null
-						&& ncal.get(Calendar.YEAR) == ccal.get(Calendar.YEAR)
-						&& ncal.get(Calendar.MONTH) == ccal.get(Calendar.MONTH)
-						&& ncal.get(Calendar.DATE) == ccal.get(Calendar.DATE)) {
-
-					while (true) {
-						ncal = repeat.next();
-						if (ncal == null)
-							break;
-						if (isSkipped(appt, ncal))
-							continue;
-
-						newtodo = ncal.getTime();
-						break;
-
-					}
-					// System.out.println("newtodo=" + newtodo.getTime());
-					break;
-				}
-
-				ncal = repeat.next();
-
-			}
-		}
-
-		if (newtodo != null) {
-			// a next todo was found, set NT to that value
-			// and don't delete the appt
-			appt.setNextTodo(newtodo);
-			saveAppt(appt, false);
-		} else {
-			// there is no next todo - shut off the todo
-			// unless the user wants it deleted. if so, delete it.
-			if (del) {
-				delAppt(appt);
-			} else {
-				appt.setTodo(false);
-				appt.setColor("strike");
-				saveAppt(appt, false);
-			}
-		}
-
-	}
-
-	// get a list of appts for a given day key
-	public List<Integer> getAppts(int key) {
-		return ((List<Integer>) map_.get(new Integer(key)));
-	}
-
-	// get a vector containing all of the todo appts in the DB
-	public Collection<Appointment> get_todos() {
-
-		ArrayList<Appointment> av = new ArrayList<Appointment>();
-		try {
-
-			// iterate through appts in the DB
-			AppointmentDB kf = (AppointmentDB) db_;
-			Collection<Integer> keycol = kf.getTodoKeys();
-			// Collection keycol = AppointmentHelper.getTodoKeys(db_);
-			for (Integer ki : keycol) {
-				int key = ki.intValue();
-
-				// read the full appt from the DB and add to the vector
-				Appointment appt = db_.readObj(key);
-				if (appt.getDeleted())
-					continue;
-
-				// if category set, filter appts
-				if (!CategoryModel.getReference().isShown(appt.getCategory())) {
-					continue;
-				}
-
-				av.add(appt);
-			}
-		} catch (Exception ee) {
-			Errmsg.errmsg(ee);
-		}
-
-		return (av);
-
-	}
-
-	// return true if there are any todos
-	public boolean haveTodos() {
-		try {
-			AppointmentDB kf = (AppointmentDB) db_;
-			Collection<Integer> keycol = kf.getTodoKeys();
-			// Collection keycol = AppointmentHelper.getTodoKeys(db_);
-			if (keycol.size() != 0)
-				return (true);
-		} catch (Exception e) {
-			Errmsg.errmsg(e);
-		}
-
-		return (false);
-	}
-
-	public Collection<String> getCategories() {
-
-		TreeSet<String> dbcat = new TreeSet<String>();
-		dbcat.add(CategoryModel.UNCATEGORIZED);
-		try {
-			for (Appointment ap : getAllAppts()) {
-				String cat = ap.getCategory();
-				if (cat != null && !cat.equals(""))
-					dbcat.add(cat);
-			}
-		} catch (Exception e) {
-			Errmsg.errmsg(e);
-		}
-
-		return (dbcat);
-
-	}
-
-	// the calmodel keeps a hashmap of days to appt keys to avoid hitting
-	// the DB when possible - although the DB is cached too to some extent
-	// buildmap will rebuild the map based on the DB
 	private void buildMap() throws Exception {
 		// erase the current map
 		map_.clear();
@@ -628,32 +343,230 @@ public class AppointmentModel extends Model implements Model.Listener,
 
 	}
 
-	// determine the number of vacation days up to and including the given day
-	// for the current year
-	public double vacationCount(int dkey) {
-		// System.out.println("dkey=" + dkey);
-		int yr = (dkey / 1000000) % 1000 + 1900;
-		int yearStartKey = dkey(yr, 1, 1);
-		double count = 0;
+	
+	/**
+	 * save an appointment whose date has been changed and manage the updating of links
+	 * caused by the change in appt primary key.
+	 * 
+	 * @param ap the appointment
+	 * 
+	 * @throws Exception the exception
+	 */
+	public void changeDate(Appointment ap) throws Exception {
+		Appointment orig = ap.copy();
+		saveAppt(ap, true); // sets new key
+		LinkModel.getReference().moveLinks(orig, ap);
+		delAppt(orig.getKey()); // removes links
+		
+		UndoLog.getReference().addItem(AppointmentUndoItem.recordMove(orig));
+	}
 
-		Set<Integer> vkeys = vacationMap_.keySet();
-		for (Integer i : vkeys) {
-			int vdaykey = i.intValue();
-			if (vdaykey >= yearStartKey && vdaykey <= dkey) {
-				Integer vnum = vacationMap_.get(i);
-				if (vnum.intValue() == 2) {
-					count += 0.5;
-				} else {
-					count += 1.0;
+	/**
+	 * Delete an appt.
+	 * 
+	 * @param appt the appt
+	 */
+	public void delAppt(Appointment appt) {
+		delAppt(appt, false);
+	}
+
+	/**
+	 * Delete an appt.
+	 * 
+	 * @param appt the appt
+	 * @param undo true if we are executing an undo
+	 */
+	public void delAppt(Appointment appt, boolean undo) {
+
+		try {
+
+			Appointment orig_appt = getAppt(appt.getKey());
+
+			LinkModel.getReference().deleteLinks(appt);
+
+			db_.delete(appt.getKey());
+			if (!undo) {
+				UndoLog.getReference().addItem(
+						AppointmentUndoItem.recordDelete(orig_appt));
+			}
+
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
+		}
+
+		// even if delete fails - still refresh cache info
+		// and tell listeners - db failure may have been due to
+		// a sync causing a record already deleted error
+		// this needs to be reflected in the map
+		try {
+			// recreate the appointment hashmap
+			buildMap();
+
+			// refresh all views that are displaying appt data from this
+			// model
+			refreshListeners();
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
+			return;
+		}
+	}
+
+	/**
+	 * Delete an appt by key.
+	 * 
+	 * @param key the key
+	 */
+	public void delAppt(int key) {
+		try {
+			Appointment appt = getAppt(key);
+			if (appt != null)
+				delAppt(appt);
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
+		}
+	}
+
+	/**
+	 * delete one occurrence of a repeating appointment
+	 * 
+	 * @param key the appointment key
+	 * @param rkey the date key (dkey) of the repeat to be deleted
+	 */
+	public void delOneOnly(int key, int rkey) {
+		try {
+
+			Appointment appt = db_.readObj(key);
+
+			// get the number of repeats
+			Integer tms = appt.getTimes();
+			if (tms == null)
+				throw new Warning(Resource
+						.getResourceString("Appointment_does_not_repeat"));
+
+			// get the list of repeats that have been deleted - the SKip
+			// list
+			Vector<String> vect = appt.getSkipList();
+			if (vect == null)
+				vect = new Vector<String>();
+
+			// add the current appt key to the SKip list
+			vect.add(Integer.toString(rkey));
+			appt.setSkipList(vect);
+			saveAppt(appt, false);
+
+			// if we are deleting the next todo then do it
+			Date nt = appt.getNextTodo();
+			if (nt == null)
+				nt = appt.getDate();
+			Calendar cal = new GregorianCalendar();
+			cal.setTime(nt);
+			if (rkey == dkey(cal)) {
+				do_todo(appt.getKey(), false);
+			}
+
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
+			return;
+		}
+	}
+
+	
+	/**
+	 * Mark a todo appointment as done. If the appointment repeats, adjust the next todo value.
+	 * If the todo is all done (including repeats), optionally delete it
+	 * 
+	 * @param key the appointment key
+	 * @param del if true, delete the todo when all done. Otherwise, mark it as no longer being
+	 * a todo.
+	 * 
+	 * @throws Exception the exception
+	 */
+	public void do_todo(int key, boolean del) throws Exception {
+		// read the DB row for the ToDo
+		Appointment appt = db_.readObj(key);
+
+		// curtodo is the date of the todo that is to be "done"
+		Date curtodo = appt.getNextTodo();
+		Date d = appt.getDate();
+		if (curtodo == null) {
+			curtodo = d;
+		}
+
+		// newtodo will be the name of the next todo occurrence (if the todo
+		// repeats and is not done)
+		Date newtodo = null;
+
+		Integer tms = appt.getTimes();
+		String rpt = Repeat.getFreq(appt.getFrequency());
+
+		// find next to do if it repeats by doing calendar math
+		if (tms != null && tms.intValue() > 1 && rpt != null
+				&& !rpt.equals(Repeat.ONCE)) {
+			int tm = tms.intValue();
+
+			Calendar ccal = new GregorianCalendar();
+			Calendar ncal = new GregorianCalendar();
+
+			// ccal is the current todo and ncal is the original appt date
+			// ncal will be incremented until we find the todo after the
+			// one in ccal
+			ccal.setTime(curtodo);
+			ncal.setTime(d);
+
+			Repeat repeat = new Repeat(ncal, appt.getFrequency());
+			for (int i = 1; i < tm; i++) {
+
+				if (ncal != null
+						&& ncal.get(Calendar.YEAR) == ccal.get(Calendar.YEAR)
+						&& ncal.get(Calendar.MONTH) == ccal.get(Calendar.MONTH)
+						&& ncal.get(Calendar.DATE) == ccal.get(Calendar.DATE)) {
+
+					while (true) {
+						ncal = repeat.next();
+						if (ncal == null)
+							break;
+						if (isSkipped(appt, ncal))
+							continue;
+
+						newtodo = ncal.getTime();
+						break;
+
+					}
+					// System.out.println("newtodo=" + newtodo.getTime());
+					break;
 				}
+
+				ncal = repeat.next();
+
 			}
 		}
 
-		return count;
+		if (newtodo != null) {
+			// a next todo was found, set NT to that value
+			// and don't delete the appt
+			appt.setNextTodo(newtodo);
+			saveAppt(appt, false);
+		} else {
+			// there is no next todo - shut off the todo
+			// unless the user wants it deleted. if so, delete it.
+			if (del) {
+				delAppt(appt);
+			} else {
+				appt.setTodo(false);
+				appt.setColor("strike"); // strike the text to indicate a done todo
+				saveAppt(appt, false);
+			}
+		}
 
 	}
 
-	// export the appt data to a file in XML
+	/**
+	 * Export appointments as XML.
+	 * 
+	 * @param fw the Writer to write XML to
+	 * 
+	 * @throws Exception the exception
+	 */
 	public void export(Writer fw) throws Exception {
 
 		// FileWriter fw = new FileWriter(fname);
@@ -670,7 +583,191 @@ public class AppointmentModel extends Model implements Model.Listener,
 
 	}
 
-	// export the appt data to a file in XML
+	
+	/**
+	 * search all appointment texts and return a Vector of matching appointments
+	 * 
+	 * @param s the search string
+	 * @param case_sensitive if true, make the search case sensitive
+	 * 
+	 * @return the _srch
+	 */
+	public Vector<Appointment> get_srch(String s, boolean case_sensitive) {
+
+		Vector<Appointment> res = new Vector<Appointment>();
+
+		try {
+
+			// load all appts into appt list
+			Collection<Appointment> allappts = getAllAppts();
+
+			for (Appointment appt : allappts) {
+				// read each appt
+
+				// if category set, filter appts
+				if (!CategoryModel.getReference().isShown(appt.getCategory())) {
+					continue;
+				}
+
+				String tx = appt.getText();
+				Date d = appt.getDate();
+				if (d == null || tx == null)
+					continue;
+
+				if (case_sensitive) {
+					// check if appt text contains the search string
+					if (tx.indexOf(s) == -1)
+						continue;
+				} else {
+					// check if appt text contains the search string
+					String ltx = tx.toLowerCase();
+					String ls = s.toLowerCase();
+					if (ltx.indexOf(ls) == -1)
+						continue;
+				}
+
+				// add the appt to the search results
+				res.add(appt);
+
+			}
+
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
+		}
+		return (res);
+
+	}
+
+	/**
+	 * Gets all appointments that are marked as todos.
+	 * 
+	 * @return the todos
+	 */
+	public Collection<Appointment> get_todos() {
+
+		ArrayList<Appointment> av = new ArrayList<Appointment>();
+		try {
+
+			// iterate through appts in the DB
+			AppointmentDB kf = (AppointmentDB) db_;
+			Collection<Integer> keycol = kf.getTodoKeys();
+			// Collection keycol = AppointmentHelper.getTodoKeys(db_);
+			for (Integer ki : keycol) {
+				int key = ki.intValue();
+
+				// read the full appt from the DB and add to the vector
+				Appointment appt = db_.readObj(key);
+				if (appt.getDeleted())
+					continue;
+
+				// if category set, filter appts
+				if (!CategoryModel.getReference().isShown(appt.getCategory())) {
+					continue;
+				}
+
+				av.add(appt);
+			}
+		} catch (Exception ee) {
+			Errmsg.errmsg(ee);
+		}
+
+		return (av);
+
+	}
+
+	/**
+	 * Get all appts.
+	 * 
+	 * @return all appts
+	 * 
+	 * @throws Exception the exception
+	 */
+	public Collection<Appointment> getAllAppts() throws Exception {
+		Collection<Appointment> appts = db_.readAll();
+		return appts;
+	}
+
+	/**
+	 * Gets an appt by key.
+	 * 
+	 * @param key the key
+	 * 
+	 * @return the appt
+	 * 
+	 * @throws Exception the exception
+	 */
+	public Appointment getAppt(int key) throws Exception {
+		Appointment appt = db_.readObj(key);
+		return (appt);
+	}
+
+	/**
+	 * Get a list of appointment ids for a given day
+	 * 
+	 * @param key the day key
+	 * 
+	 * @return the appts
+	 */
+	public List<Integer> getAppts(int key) {
+		return ((List<Integer>) map_.get(new Integer(key)));
+	}
+
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.CategoryModel.CategorySource#getCategories()
+	 */
+	public Collection<String> getCategories() {
+
+		TreeSet<String> dbcat = new TreeSet<String>();
+		dbcat.add(CategoryModel.UNCATEGORIZED);
+		try {
+			for (Appointment ap : getAllAppts()) {
+				String cat = ap.getCategory();
+				if (cat != null && !cat.equals(""))
+					dbcat.add(cat);
+			}
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
+		}
+
+		return (dbcat);
+
+	}
+
+	/**
+	 * Gets the underlying dB.
+	 * 
+	 * @return the dB
+	 */
+	@Deprecated public EntityDB<Appointment> getDB() {
+		return (db_);
+	}
+
+	/**
+	 * return true if there are any todos in the entire appointment table
+	 * 
+	 * @return true, if any todos exist
+	 */
+	public boolean haveTodos() {
+		try {
+			AppointmentDB kf = (AppointmentDB) db_;
+			Collection<Integer> keycol = kf.getTodoKeys();
+			// Collection keycol = AppointmentHelper.getTodoKeys(db_);
+			if (keycol.size() != 0)
+				return (true);
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
+		}
+
+		return (false);
+	}
+
+	/**
+	 * Import appointment xml.
+	 * 
+	 * @param xt the xml tree to import from
+	 * 
+	 * @throws Exception the exception
+	 */
 	public void importXml(XTree xt) throws Exception {
 
 		AppointmentXMLAdapter aa = new AppointmentXMLAdapter();
@@ -716,73 +813,14 @@ public class AppointmentModel extends Model implements Model.Listener,
 
 	}
 
-	public static boolean isNote(Appointment appt) {
-		// return true if the appt Appointment represents a "note" or
-		// "non-timed" appt
-		// this is true if the time is midnight and duration is 0.
-		// this method was used for backward compatibility - as opposed to
-		// adding
-		// a new flag to the DB
-		// 1.6.1 - added new db field to fix bug when time zone changes
-		// for backward compatiblity, keep old check in addition to checking new
-		// flag
-		try {
-
-			if (appt.getUntimed() != null && appt.getUntimed().equals("Y"))
-				return true;
-			Integer duration = appt.getDuration();
-			if (duration != null && duration.intValue() != 0)
-				return (false);
-
-			Date d = appt.getDate();
-			if (d == null)
-				return (true);
-
-			GregorianCalendar g = new GregorianCalendar();
-			g.setTime(d);
-			int hour = g.get(Calendar.HOUR_OF_DAY);
-			if (hour != 0)
-				return (false);
-
-			int min = g.get(Calendar.MINUTE);
-			if (min != 0)
-				return (false);
-		} catch (Exception e) {
-			return (true);
-		}
-
-		return (true);
-
-	}
-
-	public static SimpleDateFormat getTimeFormat() {
-		String mt = Prefs.getPref(PrefName.MILTIME);
-		if (mt.equals("true")) {
-			return (new SimpleDateFormat("HH:mm"));
-		}
-
-		return (new SimpleDateFormat("h:mm a"));
-
-	}
-
-	public void sync() {
-		db_.sync();
-		try {
-			// recreate the appointment hashmap
-			buildMap();
-
-			// refresh all views that are displaying appt data from this
-			// model
-			refreshListeners();
-		} catch (Exception e) {
-			Errmsg.errmsg(e);
-			return;
-		}
-	}
-
-	public Collection<Appointment> getAllAppts() throws Exception {
-		Collection<Appointment> appts = db_.readAll();
-		return appts;
+	/**
+	 * create a new appointment.
+	 * 
+	 * @return the appointment
+	 */
+	public Appointment newAppt() {
+		Appointment appt = db_.newObj();
+		return (appt);
 	}
 
 	/*
@@ -800,6 +838,147 @@ public class AppointmentModel extends Model implements Model.Listener,
 
 		// refresh all views that are displaying appt data from this model
 		refreshListeners();
+
+	}
+
+	/**
+	 * Save an appointment.
+	 * 
+	 * @param r the appointment
+	 * @param add true if we should insert a brand new appointment
+	 */
+	public void saveAppt(Appointment r, boolean add) {
+		saveAppt(r, add, false);
+	}
+
+	/**
+	 * Save an appointment.
+	 * 
+	 * @param r the appointment
+	 * @param add true if we should insert a brand new appointment
+	 * @param undo true if we are executing an undo
+	 */
+	public void saveAppt(Appointment r, boolean add, boolean undo) {
+
+		try {
+			Appointment orig_appt = getAppt(r.getKey());
+			if (add == true) {
+				// get the next unused key for a given day
+				// to do this, start with the "base" key for a given day.
+				// then see if an appt has this key.
+				// keep adding 1 until a key is found that has no appt
+				GregorianCalendar gcal = new GregorianCalendar();
+				gcal.setTime(r.getDate());
+				int key = AppointmentModel.dkey(gcal);
+
+				// if undo is adding back record - force the key to
+				// be what is in the record
+				if (!undo) {
+					try {
+						while (true) {
+							Appointment ap = getAppt(key);
+							if (ap == null)
+								break;
+							key++;
+						}
+
+					} catch (Exception ee) {
+						Errmsg.errmsg(ee);
+						return;
+					}
+				}
+
+				// key is now a free key
+				r.setKey(key);
+				r.setNew(true);
+				r.setDeleted(false);
+
+				db_.addObj(r);
+				if (!undo) {
+					UndoLog.getReference().addItem(
+							AppointmentUndoItem.recordAdd(r));
+				}
+			} else {
+
+				r.setModified(true);
+				r.setDeleted(false);
+
+				db_.updateObj(r);
+				if (!undo) {
+					UndoLog.getReference().addItem(
+							AppointmentUndoItem.recordUpdate(orig_appt));
+				}
+			}
+
+			// update category list
+			String cat = r.getCategory();
+			if (cat != null && !cat.equals(""))
+				CategoryModel.getReference().addCategory(cat);
+
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
+
+		}
+
+		try {
+			// recreate the appointment hashmap
+			buildMap();
+
+			// refresh all views that are displaying appt data from this
+			// model
+			refreshListeners();
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
+			return;
+		}
+	}
+
+	/**
+	 * Sync with the db.
+	 */
+	public void sync() {
+		db_.sync();
+		try {
+			// recreate the appointment hashmap
+			buildMap();
+
+			// refresh all views that are displaying appt data from this
+			// model
+			refreshListeners();
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
+			return;
+		}
+	}
+
+	
+	/**
+	 * determine the number of vacation days up to and including the given day in a particular year
+	 * 
+	 * @param dkey the day key
+	 * 
+	 * @return the double
+	 */
+	public double vacationCount(int dkey) {
+		// System.out.println("dkey=" + dkey);
+		int yr = (dkey / 1000000) % 1000 + 1900;
+		int yearStartKey = dkey(yr, 1, 1);
+		double count = 0;
+
+		Set<Integer> vkeys = vacationMap_.keySet();
+		for (Integer i : vkeys) {
+			int vdaykey = i.intValue();
+			if (vdaykey >= yearStartKey && vdaykey <= dkey) {
+				Integer vnum = vacationMap_.get(i);
+				if (vnum.intValue() == 2) {
+					count += 0.5;
+				} else {
+					count += 1.0;
+				}
+			}
+		}
+
+		return count;
 
 	}
 
