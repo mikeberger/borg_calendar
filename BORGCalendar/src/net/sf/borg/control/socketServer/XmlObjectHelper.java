@@ -311,7 +311,6 @@ import net.sf.borg.model.xml.MemoXMLAdapter;
 	// nested class KeyedBeanXmlObjectHelper
 
 	private static class BeanXmlObjectHelper implements IXmlObjectHelper {
-		@SuppressWarnings("unchecked")
 		public Class getObjectClass() {
 			return cls;
 		}
@@ -320,13 +319,11 @@ import net.sf.borg.model.xml.MemoXMLAdapter;
 			return objectRootName;
 		}
 
-		@SuppressWarnings("unchecked")
 		public final void populate(XTree xtree, Object o) {
 			XTree xml = xmlAdapter.toXml((KeyedEntity) o);
 			xtree.adopt(xml);
 		}
 
-		@SuppressWarnings("unchecked")
 		public Object toObject(XTree xml) {
 			KeyedEntity keyedBean = xmlAdapter.fromXml(xml);
 			return keyedBean;
