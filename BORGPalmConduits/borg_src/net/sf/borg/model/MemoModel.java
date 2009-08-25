@@ -25,9 +25,9 @@ import java.util.Date;
 import java.util.Iterator;
 
 import net.sf.borg.common.Errmsg;
-import net.sf.borg.model.beans.Memo;
 import net.sf.borg.model.db.MemoDB;
 import net.sf.borg.model.db.remote.RemoteMemoDB;
+import net.sf.borg.model.entity.Memo;
 
 public class MemoModel  {
 
@@ -98,22 +98,9 @@ public class MemoModel  {
 		String name = memo.getMemoName();
 		Memo old = db_.readMemo(name);
 		if (old == null) {
-			if (!sync) {
-				memo.setNew(true);
-			
-				memo.setModified(false);
-			}
-
 			db_.addMemo(memo);
-
 		} else {
-
-			if (!sync) {
-				memo.setModified(true);
-				
-			}
 			db_.updateMemo(memo);
-
 		}
 
 		// inform views of data change

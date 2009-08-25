@@ -26,14 +26,14 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.sf.borg.common.XTree;
-import net.sf.borg.model.beans.Address;
-import net.sf.borg.model.beans.AddressXMLAdapter;
-import net.sf.borg.model.beans.Appointment;
-import net.sf.borg.model.beans.AppointmentXMLAdapter;
-import net.sf.borg.model.beans.BeanXMLAdapter;
-import net.sf.borg.model.beans.KeyedBean;
-import net.sf.borg.model.beans.Memo;
-import net.sf.borg.model.beans.MemoXMLAdapter;
+import net.sf.borg.model.entity.Address;
+import net.sf.borg.model.entity.Appointment;
+import net.sf.borg.model.entity.KeyedEntity;
+import net.sf.borg.model.entity.Memo;
+import net.sf.borg.model.xml.AddressXMLAdapter;
+import net.sf.borg.model.xml.AppointmentXMLAdapter;
+import net.sf.borg.model.xml.EntityXMLAdapter;
+import net.sf.borg.model.xml.MemoXMLAdapter;
 
 /**
  * Helps marshal and unmarshal between objects and XML.
@@ -283,7 +283,7 @@ public class XmlObjectHelper {
 	// //////////////////////////////////////////////////////////
 
 	// //////////////////////////////////////////////////////////
-	// nested class KeyedBeanXmlObjectHelper
+	// nested class KeyedEntityXmlObjectHelper
 
 	private static class BeanXmlObjectHelper implements IXmlObjectHelper {
 		public Class getObjectClass() {
@@ -295,18 +295,18 @@ public class XmlObjectHelper {
 		}
 
 		public final void populate(XTree xtree, Object o) {
-			XTree xml = xmlAdapter.toXml((KeyedBean) o);
+			XTree xml = xmlAdapter.toXml((KeyedEntity) o);
 			xtree.adopt(xml);
 		}
 
 		public Object toObject(XTree xml) {
-			KeyedBean keyedBean = xmlAdapter.fromXml(xml);
+			KeyedEntity keyedBean = xmlAdapter.fromXml(xml);
 			return keyedBean;
 		}
 
 		// "package"
 		BeanXmlObjectHelper(Class cls, String objectRootName,
-				BeanXMLAdapter xmlAdapter) {
+				EntityXMLAdapter xmlAdapter) {
 			this.cls = cls;
 			this.objectRootName = objectRootName;
 			this.xmlAdapter = xmlAdapter;
@@ -317,9 +317,9 @@ public class XmlObjectHelper {
 
 		private String objectRootName;
 
-		private BeanXMLAdapter xmlAdapter;
+		private EntityXMLAdapter xmlAdapter;
 	}
 
-	// end nested class KeyedBeanXmlObjectHelper
+	// end nested class KeyedEntityXmlObjectHelper
 	// //////////////////////////////////////////////////////////
 }

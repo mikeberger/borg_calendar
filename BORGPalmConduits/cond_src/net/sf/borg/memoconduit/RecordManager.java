@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import net.sf.borg.model.MemoModel;
-import net.sf.borg.model.beans.Memo;
+import net.sf.borg.model.entity.Memo;
 import palm.conduit.Log;
 import palm.conduit.MemoRecord;
 import palm.conduit.Record;
@@ -164,10 +164,9 @@ public class RecordManager {
 	private void resetPCAttributes(Memo addr) throws Exception {
 
 		// skip write to PC record if already reset
-		if (addr.getModified() == false && addr.getNew() == false)
+		if (addr.getModified() == false )
 			return;
 		addr.setModified(false);
-		addr.setNew(false);
 		MemoModel.getReference().saveMemo(addr, true);
 	}
 
@@ -189,7 +188,6 @@ public class RecordManager {
 		MemoRecord rec = new MemoRecord();
 		rec.setId(0);
 		rec.setMemo(m.getMemoName() + "\n" + m.getMemoText());
-		rec.setIsNew(m.getNew());
 		rec.setIsModified(m.getModified());
 		rec.setIsPrivate(m.getPrivate());
 		return rec;
@@ -209,7 +207,6 @@ public class RecordManager {
 
 		m.setPalmId(new Integer(hh.getId()));
 
-		m.setNew(hh.isNew());
 		m.setModified(hh.isModified());
 
 		m.setPrivate(hh.isPrivate());

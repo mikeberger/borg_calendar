@@ -23,8 +23,8 @@ package net.sf.borg.model.db.remote;
 import java.util.Collection;
 
 import net.sf.borg.common.XTree;
-import net.sf.borg.model.beans.Memo;
 import net.sf.borg.model.db.MemoDB;
+import net.sf.borg.model.entity.Memo;
 
 public class RemoteMemoDB implements MemoDB {
 	// BeanDB overrides

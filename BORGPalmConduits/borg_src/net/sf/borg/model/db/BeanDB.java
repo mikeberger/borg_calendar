@@ -21,7 +21,7 @@ Copyright 2003 by Mike Berger
 package net.sf.borg.model.db;
 import java.util.Collection;
 
-import net.sf.borg.model.beans.KeyedBean;
+import net.sf.borg.model.entity.KeyedEntity;
 
 
 /**
@@ -34,10 +34,10 @@ import net.sf.borg.model.beans.KeyedBean;
 public interface BeanDB
 {
 	public Collection readAll() throws  Exception;
-    public KeyedBean readObj( int key ) throws  Exception;
-    public KeyedBean newObj();
-    public void addObj( KeyedBean bean, boolean crypt ) throws  Exception;
-    public void updateObj( KeyedBean bean, boolean crypt ) throws  Exception;
+    public KeyedEntity readObj( int key ) throws  Exception;
+    public KeyedEntity newObj();
+    public void addObj( KeyedEntity bean ) throws  Exception;
+    public void updateObj( KeyedEntity bean ) throws  Exception;
     public void delete( int key ) throws Exception;
 
     public void close() throws Exception;

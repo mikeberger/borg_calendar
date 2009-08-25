@@ -22,8 +22,8 @@ package net.sf.borg.model.db.remote;
 
 import java.util.Collection;
 
-import net.sf.borg.model.beans.Appointment;
 import net.sf.borg.model.db.AppointmentDB;
+import net.sf.borg.model.entity.Appointment;
 
 /**
  * @author Mohan Embar

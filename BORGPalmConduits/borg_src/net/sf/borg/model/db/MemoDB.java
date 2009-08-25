@@ -2,7 +2,7 @@ package net.sf.borg.model.db;
 
 import java.util.Collection;
 
-import net.sf.borg.model.beans.Memo;
+import net.sf.borg.model.entity.Memo;
 
 public interface MemoDB {
 

@@ -14,7 +14,7 @@ import java.util.Vector;
 
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Repeat;
-import net.sf.borg.model.beans.Appointment;
+import net.sf.borg.model.entity.Appointment;
 import palm.conduit.DateRecord;
 import palm.conduit.Log;
 import palm.conduit.Record;
@@ -144,7 +144,6 @@ public class ApptRecordManager {
 				Appointment modaddr = palmToBorg(hhRecord);
 				modaddr.setKey(appt.getKey());
 				modaddr.setModified(false);
-				modaddr.setNew(false);
 				AppointmentModel.getReference().syncSave(modaddr);
 
 			}
@@ -179,11 +178,10 @@ public class ApptRecordManager {
 	private void resetPCAttributes(Appointment appt) throws Exception {
 
 		// skip write to PC record if already reset
-		if (appt.getModified() == false && appt.getNew() == false)
+		if (appt.getModified() == false )
 			return;
 
 		appt.setModified(false);
-		appt.setNew(false);
 		AppointmentModel.getReference().syncSave(appt);
 	}
 
@@ -279,7 +277,8 @@ public class ApptRecordManager {
 			for (int i = 0; i < sl.size(); i++) {
 				String ks = (String) sl.get(i);
 				int key = Integer.parseInt(ks);
-				de.add(AppointmentModel.dateFromKey(key));
+				Date sd = new Date((long)(key*24*60*60*1000));
+				de.add(sd);
 			}
 			rec.setDateExceptions(de);
 		}
@@ -473,8 +472,7 @@ public class ApptRecordManager {
 		Calendar cal = new GregorianCalendar();
 		if (de != null) {
 			for (int i = 0; i < de.size(); i++) {
-				cal.setTime((Date) de.get(i));
-				int dkey = AppointmentModel.dkey(cal);
+				int dkey = dayOfEpoch((Date) de.get(i));
 				sl.add(Integer.toString(dkey));
 			}
 			appt.setSkipList(sl);
@@ -577,9 +575,24 @@ public class ApptRecordManager {
 		if (showRptNum)
 			appt.setFrequency(appt.getFrequency() + ",Y");
 
-		appt.setNew(false);
 		appt.setModified(false);
 
 		return appt;
 	}
+	
+	/**
+     * return the number of the day of the epoch for a given date
+     * this provides a decent Date to int converter that returns the same
+     * value for all Dates on a given day
+     * @param d the date
+     * @return the days from the beginning of the epoch until d
+     */
+    static public int dayOfEpoch(Date d)
+    {
+    	// adjust to local time
+    	GregorianCalendar cal = new GregorianCalendar();
+    	cal.setTime(d);
+    	cal.set(Calendar.HOUR_OF_DAY, 1);
+    	return (int) (cal.getTime().getTime() / 1000 / 60 / 60 / 24);
+    }
 }

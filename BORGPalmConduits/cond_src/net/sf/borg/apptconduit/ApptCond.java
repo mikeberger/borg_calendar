@@ -85,20 +85,6 @@ public class ApptCond implements Conduit {
 				apptModel = AppointmentModel.create();
 				apptModel.open_db();
 
-				// have to get todo data into BORG, then get appt data, then
-				// sync back
-				// appt data and finally overwrite Todo data.
-				if (props.syncType != SyncProperties.SYNC_DO_NOTHING) {
-					log("Sync Todos from Palm to Borg");
-					int tododb = SyncManager.openDB("ToDoDB", 0,
-							SyncManager.OPEN_READ | SyncManager.OPEN_WRITE
-									| SyncManager.OPEN_EXCLUSIVE);
-					trecordMgr = new net.sf.borg.apptconduit.TodoRecordManager(
-							props, tododb);
-					trecordMgr.SyncData();
-					SyncManager.closeDB(tododb);
-				}
-
 				int apptdb = SyncManager.openDB("DatebookDB", 0,
 						SyncManager.OPEN_READ | SyncManager.OPEN_WRITE
 								| SyncManager.OPEN_EXCLUSIVE);

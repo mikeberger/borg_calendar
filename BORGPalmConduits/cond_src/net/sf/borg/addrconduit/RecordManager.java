@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.Iterator;
 
 import net.sf.borg.model.AddressModel;
-import net.sf.borg.model.beans.Address;
+import net.sf.borg.model.entity.Address;
 import palm.conduit.AddressRecord;
 import palm.conduit.Log;
 import palm.conduit.Record;
@@ -152,10 +152,9 @@ public class RecordManager {
 	private void resetPCAttributes(Address addr) throws Exception {
 
 		// skip write to PC record if already reset
-		if (addr.getModified() == false && addr.getNew() == false)
+		if (addr.getModified() == false)
 			return;
 		addr.setModified(false);
-		addr.setNew(false);
 		AddressModel.getReference().saveAddress(addr, true);
 	}
 
@@ -199,7 +198,6 @@ public class RecordManager {
 		rec.setPhone(4, addr.getEmail());
 		rec.setState(addr.getState());
 		rec.setZipCode(addr.getZip());
-		rec.setIsNew(addr.getNew());
 		rec.setIsModified(addr.getModified());
 		return rec;
 	}
@@ -229,7 +227,6 @@ public class RecordManager {
 		addr.setEmail(hh.getPhone(4));
 		addr.setState(hh.getState());
 		addr.setZip(hh.getZipCode());
-		addr.setNew(hh.isNew());
 		addr.setModified(hh.isModified());
 
 		return addr;

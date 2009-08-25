@@ -22,9 +22,9 @@ package net.sf.borg.model;
 import java.util.Collection;
 
 import net.sf.borg.common.Errmsg;
-import net.sf.borg.model.beans.Address;
 import net.sf.borg.model.db.BeanDB;
 import net.sf.borg.model.db.remote.RemoteBeanDB;
+import net.sf.borg.model.entity.Address;
 
 public class AddressModel {
 
@@ -77,19 +77,11 @@ public class AddressModel {
 
 		if (num == -1) {
 			int newkey = db_.nextkey();
-			addr.setKey(newkey);
-			if (!sync) {
-				addr.setNew(true);
-			}
-			db_.addObj(addr, false);
+			addr.setKey(newkey);			
+			db_.addObj(addr);
 
 		} else {
-
-			if (!sync) {
-				addr.setModified(true);
-			}
-			db_.updateObj(addr, false);
-
+			db_.updateObj(addr);
 		}
 
 		// inform views of data change

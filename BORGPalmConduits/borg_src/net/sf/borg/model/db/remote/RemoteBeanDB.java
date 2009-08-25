@@ -23,8 +23,8 @@ package net.sf.borg.model.db.remote;
 import java.util.Collection;
 
 import net.sf.borg.common.XTree;
-import net.sf.borg.model.beans.KeyedBean;
 import net.sf.borg.model.db.BeanDB;
+import net.sf.borg.model.entity.KeyedEntity;
 
 /**
  * @author Mohan Embar
@@ -37,31 +37,31 @@ public class RemoteBeanDB implements BeanDB {
 		return col;
 	}
 
-	public final synchronized KeyedBean readObj(int key) throws 
+	public final synchronized KeyedEntity readObj(int key) throws 
 			Exception {
-		return (KeyedBean) call("readObj", new Integer(key));
+		return (KeyedEntity) call("readObj", new Integer(key));
 	}
 
-	public final synchronized KeyedBean newObj() {
+	public final synchronized KeyedEntity newObj() {
 		try {
-			return (KeyedBean) cls.newInstance();
+			return (KeyedEntity) cls.newInstance();
 		} catch (Exception e) {
 			throw new RuntimeException(e.getClass().getName() + ": "
 					+ e.getMessage());
 		}
 	}
 
-	public final synchronized void addObj(KeyedBean bean, boolean crypt)
+	public final synchronized void addObj(KeyedEntity bean)
 			throws  Exception {
 		call(
 				"addObj",
-				new IRemoteProxy.ComposedObject(bean, new Boolean(crypt) /* Boolean.valueOf(crypt) */));
+				new IRemoteProxy.ComposedObject(bean, new Boolean(false) /* Boolean.valueOf(crypt) */));
 	}
 
-	public final synchronized void updateObj(KeyedBean bean, boolean crypt)
+	public final synchronized void updateObj(KeyedEntity bean)
 			throws  Exception {
 		call("updateObj", new IRemoteProxy.ComposedObject(bean, new Boolean(
-				crypt) /* Boolean.valueOf(crypt) */));
+				false) /* Boolean.valueOf(crypt) */));
 	}
 
 	public final synchronized void delete(int key) throws Exception {
