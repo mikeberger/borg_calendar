@@ -73,7 +73,7 @@ public class MemoJdbcDB extends JdbcDB implements MemoDB {
 	public Collection<String> getNames() throws Exception {
 		ArrayList<String> keys = new ArrayList<String>();
 		PreparedStatement stmt = connection_
-				.prepareStatement("SELECT memoname FROM memos WHERE deleted = 0 ORDER BY memoname");
+				.prepareStatement("SELECT memoname FROM memos ORDER BY memoname");
 		ResultSet rs = stmt.executeQuery();
 
 		while (rs.next()) {

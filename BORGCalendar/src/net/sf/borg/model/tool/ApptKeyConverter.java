@@ -47,8 +47,8 @@ public class ApptKeyConverter {
 	public void convert() throws Exception {
 		
 		// try to remove extra palm columns
-		try{JdbcDB.execSQL("ALTER table appointments drop new");}catch(Exception e){e.printStackTrace();}
-		try{JdbcDB.execSQL("ALTER table appointments drop deleted");}catch(Exception e){e.printStackTrace();}
+		try{JdbcDB.execSQL("ALTER table appointments drop new");}catch(Exception e){}
+		try{JdbcDB.execSQL("ALTER table appointments drop deleted");}catch(Exception e){}
 		try{JdbcDB.execSQL("ALTER table addresses drop new");}catch(Exception e){}
 		try{JdbcDB.execSQL("ALTER table addresses drop deleted");}catch(Exception e){}
 		try{JdbcDB.execSQL("ALTER table memos drop new");}catch(Exception e){}
