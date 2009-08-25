@@ -1105,7 +1105,8 @@ public class TaskView extends DockableView {
 				cd = null;
 
 			Subtask s = new Subtask();
-			s.setKey(id);
+			if( id != null )
+				s.setKey(id);
 			s.setDescription((String) desc);
 			s.setCloseDate(cd);
 			s.setDueDate(dd);
