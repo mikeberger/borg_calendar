@@ -438,7 +438,7 @@ public class Day {
                 if (yrs < 0)
                     continue;
 
-                String tx = Resource.getPlainResourceString("Birthday") + ": " + addr.getFirstName() + " " + addr.getLastName()
+                String tx = Resource.getResourceString("Birthday") + ": " + addr.getFirstName() + " " + addr.getLastName()
                         + "(" + yrs + ")";
                 info.setText(tx);         
                 info.setDate(new GregorianCalendar(year, month, day, 00, 00).getTime());

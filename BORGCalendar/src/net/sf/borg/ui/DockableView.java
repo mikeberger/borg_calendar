@@ -85,7 +85,7 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 		JMenuBar bar = getMenuForFrame();
 		if (bar != null) {
 			JMenu jm = bar.getMenu(0);
-			JMenuItem jmi = jm.add(Resource.getPlainResourceString("dock"));
+			JMenuItem jmi = jm.add(Resource.getResourceString("dock"));
 			jmi.addActionListener(new ActionListener() {
 
 				public void actionPerformed(ActionEvent e) {

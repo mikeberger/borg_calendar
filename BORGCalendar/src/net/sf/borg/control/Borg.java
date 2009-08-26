@@ -178,7 +178,7 @@ public class Borg implements OptionsView.RestartListener, SocketHandler {
 		// close the db
 		try {
 			Banner ban = new Banner();
-			ban.setText(Resource.getPlainResourceString("shutdown"));
+			ban.setText(Resource.getResourceString("shutdown"));
 			ban.setVisible(true);
 			JdbcDB.close();
 

@@ -66,8 +66,8 @@ public class ReminderTimePanel extends JPanel {
 	}
 	
 	private void initialize() {
-		String title = Resource.getPlainResourceString("Popup_Times") + " (" + 
-				Resource.getPlainResourceString("Minutes") + ")";
+		String title = Resource.getResourceString("Popup_Times") + " (" + 
+				Resource.getResourceString("Minutes") + ")";
 		Border b = BorderFactory.createTitledBorder(this.getBorder(), title);
 		setBorder(b);
 		setLayout( new GridLayout(2,0));

@@ -511,7 +511,7 @@ class ApptBox implements Draggable {
 			// the first in a series
 			int k2 = DateUtil.dayOfEpoch(date);
 			if (oldkey != k2) {
-				Errmsg.notice(Resource.getPlainResourceString("rpt_drag_err"));
+				Errmsg.notice(Resource.getResourceString("rpt_drag_err"));
 				return;
 			}
 
@@ -701,14 +701,14 @@ class ApptBox implements Draggable {
 		if (popmenu == null) {
 			popmenu = new JPopupMenu();
 			popmenu.add(mnuitm = new JMenuItem(Resource
-					.getPlainResourceString("Edit")));
+					.getResourceString("Edit")));
 			mnuitm.addActionListener(new ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
 					edit();
 				}
 			});
 			popmenu.add(mnuitm = new JMenuItem(Resource
-					.getPlainResourceString("Delete")));
+					.getResourceString("Delete")));
 			mnuitm.addActionListener(new ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
 					delete();
@@ -717,7 +717,7 @@ class ApptBox implements Draggable {
 
 			if (isTodo()) {
 				popmenu.add(mnuitm = new JMenuItem(Resource
-						.getPlainResourceString("Done_(No_Delete)")));
+						.getResourceString("Done_(No_Delete)")));
 				mnuitm.addActionListener(new ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						try {
@@ -730,7 +730,7 @@ class ApptBox implements Draggable {
 				});
 
 				popmenu.add(mnuitm = new JMenuItem(Resource
-						.getPlainResourceString("Done_(Delete)")));
+						.getResourceString("Done_(Delete)")));
 				mnuitm.addActionListener(new ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						try {
@@ -745,7 +745,7 @@ class ApptBox implements Draggable {
 
 			if (Repeat.isRepeating(appt)) {
 				popmenu.add(mnuitm = new JMenuItem(Resource
-						.getPlainResourceString("Delete_One_Only")));
+						.getResourceString("Delete_One_Only")));
 				mnuitm.addActionListener(new ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						try {

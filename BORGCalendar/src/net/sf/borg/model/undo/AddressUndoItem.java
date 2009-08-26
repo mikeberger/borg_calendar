@@ -1,5 +1,5 @@
 /*
- * This file is part of BORG.
+getResourceString
  *
  * BORG is free software; you can redistribute it and/or modify it under the
  * terms of the GNU General Public License as published by the Free Software
@@ -70,8 +70,8 @@ public class AddressUndoItem extends UndoItem<Address> {
 		AddressUndoItem undoItem = new AddressUndoItem();
 		undoItem.item = addr;
 		undoItem.action = actionType.UPDATE;
-		undoItem.setDescription(Resource.getPlainResourceString("Change") + " "
-				+ Resource.getPlainResourceString("Address") + " "
+		undoItem.setDescription(Resource.getResourceString("Change") + " "
+				+ Resource.getResourceString("Address") + " "
 				+ addrString(addr));
 		return undoItem;
 	}
@@ -87,8 +87,8 @@ public class AddressUndoItem extends UndoItem<Address> {
 		AddressUndoItem undoItem = new AddressUndoItem();
 		undoItem.item = addr;
 		undoItem.action = actionType.ADD;
-		undoItem.setDescription(Resource.getPlainResourceString("Add") + " "
-				+ Resource.getPlainResourceString("Address") + " "
+		undoItem.setDescription(Resource.getResourceString("Add") + " "
+				+ Resource.getResourceString("Address") + " "
 				+ addrString(addr));
 		return undoItem;
 	}
@@ -104,8 +104,8 @@ public class AddressUndoItem extends UndoItem<Address> {
 		AddressUndoItem undoItem = new AddressUndoItem();
 		undoItem.item = addr;
 		undoItem.action = actionType.DELETE;
-		undoItem.setDescription(Resource.getPlainResourceString("Delete") + " "
-				+ Resource.getPlainResourceString("Address") + " "
+		undoItem.setDescription(Resource.getResourceString("Delete") + " "
+				+ Resource.getResourceString("Address") + " "
 				+ addrString(addr));
 		return undoItem;
 	}

@@ -115,8 +115,8 @@ public class SearchView extends DockableView {
 		// show the search results as a 2 column sortable table
 		// showing the appt date and text
 		jTable1.setModel(new TableSorter(new String[] {
-				Resource.getPlainResourceString("Date"),
-				Resource.getPlainResourceString("Item"), "key" }, new Class[] {
+				Resource.getResourceString("Date"),
+				Resource.getResourceString("Item"), "key" }, new Class[] {
 				Date.class, java.lang.String.class, Integer.class }));
 
 		// hide column with the key
@@ -148,7 +148,7 @@ public class SearchView extends DockableView {
 	}
 
 	public String getFrameTitle() {
-		return Resource.getPlainResourceString("srch");
+		return Resource.getResourceString("srch");
 	}
 
 	public JMenuBar getMenuForFrame() {
@@ -545,7 +545,7 @@ public class SearchView extends DockableView {
 			linkgbc.insets = new java.awt.Insets(4, 4, 4, 4);
 			linkgbc.weighty = 1.0D;
 			linkcb = new JCheckBox();
-			linkcb.setText(Resource.getPlainResourceString("haslinks"));
+			linkcb.setText(Resource.getResourceString("haslinks"));
 			jPanel3.add(linkcb, linkgbc);
 		}
 		return jPanel3;

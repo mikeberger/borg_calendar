@@ -124,9 +124,9 @@ public class NwFontChooserS extends JDialog {
             getContentPane().add(SizeList);
         }
         private void addButtons() {
-            JButton ok = new JButton(Resource.getPlainResourceString("OK"));
+            JButton ok = new JButton(Resource.getResourceString("OK"));
             ok.setMargin(new Insets(0, 0, 0, 0));
-            JButton ca = new JButton(Resource.getPlainResourceString("Cancel"));
+            JButton ca = new JButton(Resource.getResourceString("Cancel"));
             ca.setMargin(new Insets(0, 0, 0, 0));
             ok.setBounds(260, 350, 70, 20);
             ok.setFont(new Font(" ", 1, 11));

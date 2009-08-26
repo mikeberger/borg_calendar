@@ -221,7 +221,7 @@ public class MemoPanel extends JPanel implements ListSelectionListener, Model.Li
     private JButton getNewButton() {
         if (newButton == null) {
             newButton = new JButton();
-            newButton.setText(Resource.getPlainResourceString("New_Memo"));
+            newButton.setText(Resource.getResourceString("New_Memo"));
             newButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     newMemo();
@@ -239,7 +239,7 @@ public class MemoPanel extends JPanel implements ListSelectionListener, Model.Li
     private JButton getSaveButton() {
         if (saveButton == null) {
             saveButton = new JButton();
-            saveButton.setText(Resource.getPlainResourceString("Save_Memo"));
+            saveButton.setText(Resource.getResourceString("Save_Memo"));
             saveButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     saveMemo();
@@ -310,7 +310,7 @@ public class MemoPanel extends JPanel implements ListSelectionListener, Model.Li
             // discarding
             // changes
             int ret = JOptionPane.showConfirmDialog(null, Resource.getResourceString("Edited_Memo"), Resource
-                    .getPlainResourceString("Discard_Text?"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+                    .getResourceString("Discard_Text?"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
 
             // if user does not want to lose changes, we need to set
             // the
@@ -335,16 +335,16 @@ public class MemoPanel extends JPanel implements ListSelectionListener, Model.Li
                 Memo m = MemoModel.getReference().getMemo(memoName);
                 text = m.getMemoText();
                 priv = m.getPrivate();
-                String datetext = Resource.getPlainResourceString("created") + ": ";
+                String datetext = Resource.getResourceString("created") + ": ";
                 if (m.getCreated() != null)
                     datetext += normalDateFormat_.format(m.getCreated());
                 else
-                    datetext += Resource.getPlainResourceString("unknown");
-                datetext += "           " + Resource.getPlainResourceString("updated") + ": ";
+                    datetext += Resource.getResourceString("unknown");
+                datetext += "           " + Resource.getResourceString("updated") + ": ";
                 if (m.getUpdated() != null)
                     datetext += normalDateFormat_.format(m.getUpdated());
                 else
-                    datetext += Resource.getPlainResourceString("unknown");
+                    datetext += Resource.getResourceString("unknown");
                 dateLabel.setText(datetext);
             } catch (Exception e1) {
                 Errmsg.errmsg(e1);
@@ -374,7 +374,7 @@ public class MemoPanel extends JPanel implements ListSelectionListener, Model.Li
     private void saveMemo() {
         String name = getSelectedMemoName();
         if (name == null) {
-            Errmsg.notice(Resource.getPlainResourceString("Select_Memo_Warning"));
+            Errmsg.notice(Resource.getResourceString("Select_Memo_Warning"));
             return;
         }
         try {
@@ -394,19 +394,19 @@ public class MemoPanel extends JPanel implements ListSelectionListener, Model.Li
 
         if (this.isMemoEdited) {
             int ret = JOptionPane.showConfirmDialog(null, Resource.getResourceString("Edited_Memo"), Resource
-                    .getPlainResourceString("Discard_Text?"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+                    .getResourceString("Discard_Text?"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
             if (ret != JOptionPane.OK_OPTION)
                 return;
         }
 
-        String name = JOptionPane.showInputDialog(Resource.getPlainResourceString("Enter_Memo_Name"));
+        String name = JOptionPane.showInputDialog(Resource.getResourceString("Enter_Memo_Name"));
         if (name == null)
             return;
 
         try {
             Memo existing = MemoModel.getReference().getMemo(name);
             if (existing != null) {
-                Errmsg.notice(Resource.getPlainResourceString("Existing_Memo"));
+                Errmsg.notice(Resource.getResourceString("Existing_Memo"));
                 return;
             }
         } catch (Exception e1) {
@@ -429,7 +429,7 @@ public class MemoPanel extends JPanel implements ListSelectionListener, Model.Li
     private void deleteMemo() {
         String name = getSelectedMemoName();
         if (name == null) {
-            Errmsg.notice(Resource.getPlainResourceString("Select_Memo_Warning"));
+            Errmsg.notice(Resource.getResourceString("Select_Memo_Warning"));
             return;
         }
         try {
@@ -450,7 +450,7 @@ public class MemoPanel extends JPanel implements ListSelectionListener, Model.Li
     private JButton getDelButton() {
         if (delButton == null) {
             delButton = new JButton();
-            delButton.setText(Resource.getPlainResourceString("Delete_Memo"));
+            delButton.setText(Resource.getResourceString("Delete_Memo"));
             delButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     deleteMemo();
@@ -497,7 +497,7 @@ public class MemoPanel extends JPanel implements ListSelectionListener, Model.Li
     private JButton getExportButton() {
         if (exportButton == null) {
             exportButton = new JButton();
-            exportButton.setText(Resource.getPlainResourceString("export"));
+            exportButton.setText(Resource.getResourceString("export"));
             exportButton.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent e) {
                     StringBuffer sb = new StringBuffer();
@@ -557,7 +557,7 @@ public class MemoPanel extends JPanel implements ListSelectionListener, Model.Li
     private JCheckBox getPrivateBox() {
         if (privateBox == null) {
             privateBox = new JCheckBox();
-            privateBox.setText(Resource.getPlainResourceString("Private"));
+            privateBox.setText(Resource.getResourceString("Private"));
             privateBox.setHorizontalAlignment(SwingConstants.RIGHT);
             privateBox.setHorizontalTextPosition(SwingConstants.RIGHT);
             privateBox.addItemListener(new java.awt.event.ItemListener() {

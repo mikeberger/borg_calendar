@@ -213,7 +213,7 @@ public class AppointmentListView extends DockableView implements
 
 		initComponents();
 
-		title_ = Resource.getPlainResourceString("Appointment_Editor");
+		title_ = Resource.getResourceString("Appointment_Editor");
 
 		// add scroll to the table
 		jScrollPane1.setViewportView(apptTable);
@@ -392,7 +392,7 @@ public class AppointmentListView extends DockableView implements
 	private void copyAppt() {
 		int[] keys = getSelectedKeys();
 		if (keys.length != 1) {
-			Errmsg.notice(Resource.getPlainResourceString("select_appt"));
+			Errmsg.notice(Resource.getResourceString("select_appt"));
 			return;
 		}
 

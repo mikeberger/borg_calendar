@@ -60,7 +60,7 @@ public class RunReport {
 
             Connection conn = JdbcDB.getConnection();
             if (conn == null) {
-                Errmsg.notice(Resource.getPlainResourceString("no_reports"));
+                Errmsg.notice(Resource.getResourceString("no_reports"));
                 return;
             }
 
@@ -74,9 +74,9 @@ public class RunReport {
             // JasperViewer.viewReport(jasperPrint,false);
             // conn.close();
         } catch (ClassNotFoundException cnf) {
-            Errmsg.notice(Resource.getPlainResourceString("borg_jasp"));
+            Errmsg.notice(Resource.getResourceString("borg_jasp"));
         } catch (NoClassDefFoundError r) {
-            Errmsg.notice(Resource.getPlainResourceString("borg_jasp"));
+            Errmsg.notice(Resource.getResourceString("borg_jasp"));
         } catch (Exception e) {
             Errmsg.errmsg(e);
         }

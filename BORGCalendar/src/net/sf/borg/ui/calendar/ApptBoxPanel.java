@@ -341,7 +341,7 @@ abstract class ApptBoxPanel extends JPanel {
 				JMenuItem mnuitm = null;
 				pop = new JPopupMenu();
 				pop.add(mnuitm = new JMenuItem(Resource
-						.getPlainResourceString("Add_New")));
+						.getResourceString("Add_New")));
 				mnuitm.addActionListener(new ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						addAppt();
@@ -356,7 +356,7 @@ abstract class ApptBoxPanel extends JPanel {
 					.showInputDialog(
 							"",
 							Resource
-									.getPlainResourceString("Please_enter_some_appointment_text"));
+									.getResourceString("Please_enter_some_appointment_text"));
 			if (text == null)
 				return;
 			Rectangle r = getBounds();

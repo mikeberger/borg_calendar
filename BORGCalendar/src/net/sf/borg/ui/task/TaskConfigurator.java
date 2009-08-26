@@ -746,7 +746,7 @@ public class TaskConfigurator extends View {
 	private JMenuItem getJMenuItem6() {
 		if (jMenuItem6 == null) {
 			jMenuItem6 = new JMenuItem();
-			jMenuItem6.setText(net.sf.borg.common.Resource.getPlainResourceString("Add"));
+			jMenuItem6.setText(net.sf.borg.common.Resource.getResourceString("Add"));
 			jMenuItem6.addActionListener(new java.awt.event.ActionListener() { 
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					if( statelist.getSelectedIndex() < 0 )
@@ -778,7 +778,7 @@ public class TaskConfigurator extends View {
 	private JMenuItem getJMenuItem7() {
 		if (jMenuItem7 == null) {
 			jMenuItem7 = new JMenuItem();
-			jMenuItem7.setText(net.sf.borg.common.Resource.getPlainResourceString("Delete"));
+			jMenuItem7.setText(net.sf.borg.common.Resource.getResourceString("Delete"));
 			jMenuItem7.addActionListener(new java.awt.event.ActionListener() { 
 				public void actionPerformed(java.awt.event.ActionEvent e) { 
 					if( nextlist.getSelectedIndex() < 0 )

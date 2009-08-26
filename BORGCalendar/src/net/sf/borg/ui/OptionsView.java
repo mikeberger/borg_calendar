@@ -637,7 +637,7 @@ public class OptionsView extends View {
 			int socket = Integer.parseInt(socketPort.getText());
 			Prefs.putPref(PrefName.SOCKETPORT, new Integer(socket));
 		} catch (NumberFormatException e) {
-			Errmsg.notice(Resource.getPlainResourceString("socket_warn"));
+			Errmsg.notice(Resource.getResourceString("socket_warn"));
 			socketPort.setText("-1");
 			Prefs.putPref(PrefName.SOCKETPORT, new Integer(-1));
 			return;
@@ -720,7 +720,7 @@ public class OptionsView extends View {
 		String newlnf = (String) lnfBox.getSelectedItem();
 		String oldlnf = Prefs.getPref(PrefName.LNF);
 		if (!newlnf.equals(oldlnf)) {
-			Errmsg.notice(Resource.getPlainResourceString("lfrestart"));
+			Errmsg.notice(Resource.getResourceString("lfrestart"));
 			Prefs.putPref(PrefName.LNF, newlnf);
 
 		}
@@ -873,7 +873,7 @@ public class OptionsView extends View {
 
 		appearancePanel.add(localebox, GridBagConstraintsFactory.create(1, 11, GridBagConstraints.BOTH));
 
-		hide_strike_box.setText(Resource.getPlainResourceString("hide_strike"));
+		hide_strike_box.setText(Resource.getResourceString("hide_strike"));
 		appearancePanel.add(hide_strike_box, GridBagConstraintsFactory.create(0, 2, GridBagConstraints.BOTH));
 
 		ResourceHelper.setText(iso8601Box, "ISO_week_number");
@@ -1359,13 +1359,13 @@ public class OptionsView extends View {
 
 		miscPanel.add(socketPort, GridBagConstraintsFactory.create(1, 9, GridBagConstraints.BOTH));
 
-		useSysTray.setText(Resource.getPlainResourceString("enable_systray"));
+		useSysTray.setText(Resource.getResourceString("enable_systray"));
 		miscPanel.add(useSysTray, GridBagConstraintsFactory.create(0, 10, GridBagConstraints.BOTH));
 
 		JPanel backp = new JPanel();
 		backp.setLayout(new GridBagLayout());
 
-		backp.add(new JLabel(Resource.getPlainResourceString("backup_dir")
+		backp.add(new JLabel(Resource.getResourceString("backup_dir")
 				+ ": "), GridBagConstraintsFactory.create(0, 0, GridBagConstraints.NONE));
 
 		backp.add(backupDir, GridBagConstraintsFactory.create(1, 0, GridBagConstraints.BOTH, 1.0, 0.0));
@@ -1438,13 +1438,13 @@ public class OptionsView extends View {
 			taskOptionPanel.add(calShowSubtaskBox, gridBagConstraints20);
 			taskOptionPanel.add(ganttShowSubtaskBox, gridBagConstraints21);
 			taskAbbrevBox.setText(Resource
-					.getPlainResourceString("task_abbrev"));
+					.getResourceString("task_abbrev"));
 			calShowTaskBox.setText(Resource
-					.getPlainResourceString("calShowTask"));
+					.getResourceString("calShowTask"));
 			calShowSubtaskBox.setText(Resource
-					.getPlainResourceString("calShowSubtask"));
+					.getResourceString("calShowSubtask"));
 			ganttShowSubtaskBox.setText(Resource
-					.getPlainResourceString("ganttShowSubtask"));
+					.getResourceString("ganttShowSubtask"));
 		}
 		return taskOptionPanel;
 	}

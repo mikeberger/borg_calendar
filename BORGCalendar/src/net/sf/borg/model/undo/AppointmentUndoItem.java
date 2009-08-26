@@ -77,8 +77,8 @@ public class AppointmentUndoItem extends UndoItem<Appointment> {
 		AppointmentUndoItem undoItem = new AppointmentUndoItem();
 		undoItem.item = appt;
 		undoItem.action = actionType.UPDATE;
-		undoItem.setDescription(Resource.getPlainResourceString("Change") + " "
-				+ Resource.getPlainResourceString("appointment") + " "
+		undoItem.setDescription(Resource.getResourceString("Change") + " "
+				+ Resource.getResourceString("appointment") + " "
 				+ apptString(appt));
 		return undoItem;
 	}
@@ -94,8 +94,8 @@ public class AppointmentUndoItem extends UndoItem<Appointment> {
 		AppointmentUndoItem undoItem = new AppointmentUndoItem();
 		undoItem.item = appt;
 		undoItem.action = actionType.ADD;
-		undoItem.setDescription(Resource.getPlainResourceString("Add") + " "
-				+ Resource.getPlainResourceString("appointment") + " "
+		undoItem.setDescription(Resource.getResourceString("Add") + " "
+				+ Resource.getResourceString("appointment") + " "
 				+ apptString(appt));
 		return undoItem;
 	}
@@ -111,8 +111,8 @@ public class AppointmentUndoItem extends UndoItem<Appointment> {
 		AppointmentUndoItem undoItem = new AppointmentUndoItem();
 		undoItem.item = appt;
 		undoItem.action = actionType.DELETE;
-		undoItem.setDescription(Resource.getPlainResourceString("Delete") + " "
-				+ Resource.getPlainResourceString("appointment") + " "
+		undoItem.setDescription(Resource.getResourceString("Delete") + " "
+				+ Resource.getResourceString("appointment") + " "
 				+ apptString(appt));
 		return undoItem;
 	}

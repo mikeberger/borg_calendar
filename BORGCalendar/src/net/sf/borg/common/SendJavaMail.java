@@ -25,10 +25,7 @@
 
 package net.sf.borg.common;
 
-/**
- * 
- * @author mbb
- */
+
 
 import java.util.Date;
 import java.util.Properties;
@@ -44,11 +41,17 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+/**
+ * utility class to send out email via java mail
+ */
 public class SendJavaMail {
 
+	/**
+	 * boilerplate Authenticator.
+	 */
 	private static class MyAuthenticator extends Authenticator {
+		
 		private String username;
-
 		private String password;
 
 		public MyAuthenticator(String user, String pass) {
@@ -61,7 +64,20 @@ public class SendJavaMail {
 		}
 	}
 
-	public static void sendMail(String host, String msgText, String from,
+	/**
+	 * Send an mail.
+	 * 
+	 * @param host the smtp host
+	 * @param msgText the email text
+	 * @param subject the subject
+	 * @param from the from address
+	 * @param to the to address
+	 * @param user the smtp user
+	 * @param pass the smtp password
+	 * 
+	 * @throws Exception the exception
+	 */
+	public static void sendMail(String host, String msgText, String subject, String from,
 			String to, String user, String pass) throws Exception {
 
 		// create some properties and get the default Session
@@ -89,7 +105,8 @@ public class SendJavaMail {
 			msg.setFrom(new InternetAddress(from));
 			InternetAddress[] address = { new InternetAddress(to) };
 			msg.setRecipients(Message.RecipientType.TO, address);
-			msg.setSubject(Resource.getPlainResourceString("Reminder_Notice"));
+			//msg.setSubject(Resource.getResourceString("Reminder_Notice"));
+			msg.setSubject(subject);
 			msg.setSentDate(new Date());
 			msg.setText(msgText);
 
@@ -101,6 +118,11 @@ public class SendJavaMail {
 	}
 
 	
+	/**
+	 * Process a messaging exception - print out something useful to stdout
+	 * 
+	 * @param mex the MessagingException
+	 */
 	static private void processMessagingException(MessagingException mex) {
 		System.out.println("\n--Exception handling in BORG.SendJavaMail");
 

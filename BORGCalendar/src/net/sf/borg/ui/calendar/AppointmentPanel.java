@@ -667,7 +667,7 @@ public class AppointmentPanel extends JPanel {
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 0;
 		jLabel = new JLabel();
-		jLabel.setText(Resource.getPlainResourceString("subject"));
+		jLabel.setText(Resource.getResourceString("subject"));
 		GridBagConstraints gridBagConstraints18 = new GridBagConstraints();
 		jLabel2 = new javax.swing.JLabel();
 		jPanel1 = new javax.swing.JPanel();

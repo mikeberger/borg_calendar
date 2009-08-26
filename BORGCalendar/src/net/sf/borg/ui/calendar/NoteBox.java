@@ -331,14 +331,14 @@ public class NoteBox implements Draggable {
 		if (popmenu == null) {
 			popmenu = new JPopupMenu();
 			popmenu.add(mnuitm = new JMenuItem(Resource
-					.getPlainResourceString("Edit")));
+					.getResourceString("Edit")));
 			mnuitm.addActionListener(new ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
 					edit();
 				}
 			});
 			popmenu.add(mnuitm = new JMenuItem(Resource
-					.getPlainResourceString("Delete")));
+					.getResourceString("Delete")));
 			mnuitm.addActionListener(new ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
 					delete();
@@ -347,7 +347,7 @@ public class NoteBox implements Draggable {
 
 			if (isTodo()) {
 				popmenu.add(mnuitm = new JMenuItem(Resource
-						.getPlainResourceString("Done_(No_Delete)")));
+						.getResourceString("Done_(No_Delete)")));
 				mnuitm.addActionListener(new ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						try {
@@ -360,7 +360,7 @@ public class NoteBox implements Draggable {
 				});
 
 				popmenu.add(mnuitm = new JMenuItem(Resource
-						.getPlainResourceString("Done_(Delete)")));
+						.getResourceString("Done_(Delete)")));
 				mnuitm.addActionListener(new ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						try {
@@ -376,7 +376,7 @@ public class NoteBox implements Draggable {
 			if (bean instanceof Appointment
 					&& Repeat.isRepeating((Appointment) bean)) {
 				popmenu.add(mnuitm = new JMenuItem(Resource
-						.getPlainResourceString("Delete_One_Only")));
+						.getResourceString("Delete_One_Only")));
 				mnuitm.addActionListener(new ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						try {
@@ -435,7 +435,7 @@ public class NoteBox implements Draggable {
 				int k2 = DateUtil.dayOfEpoch(date);
 				if (oldkey != k2) {
 					Errmsg.notice(Resource
-							.getPlainResourceString("rpt_drag_err"));
+							.getResourceString("rpt_drag_err"));
 					return;
 				}
 			}
@@ -448,7 +448,7 @@ public class NoteBox implements Draggable {
 			task.setDueDate(d);
 			if (task.getDueDate() != null
 					&& DateUtil.isAfter(task.getStartDate(), task.getDueDate())) {
-				throw new Warning(Resource.getPlainResourceString("sd_dd_warn"));
+				throw new Warning(Resource.getResourceString("sd_dd_warn"));
 			}
 			TaskModel.getReference().savetask(task);
 		} else if (bean instanceof Subtask) {
@@ -457,7 +457,7 @@ public class NoteBox implements Draggable {
 			task.setDueDate(d);
 			if (task.getDueDate() != null
 					&& DateUtil.isAfter(task.getStartDate(), task.getDueDate())) {
-				throw new Warning(Resource.getPlainResourceString("sd_dd_warn"));
+				throw new Warning(Resource.getResourceString("sd_dd_warn"));
 			}
 			TaskModel.getReference().saveSubTask(task);
 		} else if (bean instanceof Project) {
@@ -467,7 +467,7 @@ public class NoteBox implements Draggable {
 			if (project.getDueDate() != null
 					&& DateUtil.isAfter(project.getStartDate(), project
 							.getDueDate())) {
-				throw new Warning(Resource.getPlainResourceString("sd_dd_warn"));
+				throw new Warning(Resource.getResourceString("sd_dd_warn"));
 			}
 			TaskModel.getReference().saveProject(project);
 		}

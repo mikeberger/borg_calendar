@@ -89,8 +89,8 @@ public class BeanSelector extends JDialog {
 		Collection<Project> projects = TaskModel.getReference().getProjects();
 		return( (Project) BeanSelector.selectBean(
 				projects,new TableSorter(new String[] {
-						Resource.getPlainResourceString("Item_#"),
-						Resource.getPlainResourceString("Description") },
+						Resource.getResourceString("Item_#"),
+						Resource.getResourceString("Description") },
 						new Class[] { Integer.class,String.class }),
 						new String[] { "Key", "Description" }));
 	}
@@ -99,8 +99,8 @@ public class BeanSelector extends JDialog {
 		Collection<Task> tasks = TaskModel.getReference().getTasks();
 		return( (Task) BeanSelector.selectBean(
 				tasks,new TableSorter(new String[] {
-						Resource.getPlainResourceString("Item_#"),
-						Resource.getPlainResourceString("Description") },
+						Resource.getResourceString("Item_#"),
+						Resource.getResourceString("Description") },
 						new Class[] { Integer.class,String.class }),
 						new String[] { "TaskNumber", "Description" }));
 	}
@@ -109,8 +109,8 @@ public class BeanSelector extends JDialog {
 		Collection<Address> addrs = AddressModel.getReference().getAddresses();
 		return( (Address) BeanSelector.selectBean(
 				addrs,new TableSorter(new String[] {
-						Resource.getPlainResourceString("Last"),
-						Resource.getPlainResourceString("First") },
+						Resource.getResourceString("Last"),
+						Resource.getResourceString("First") },
 						new Class[] { String.class,String.class }),
 						new String[] { "LastName", "FirstName" }));
 	}
@@ -156,7 +156,7 @@ public class BeanSelector extends JDialog {
 			jTable1.setModel(tm);
 		}
 
-		this.setTitle(Resource.getPlainResourceString("Select"));
+		this.setTitle(Resource.getResourceString("Select"));
 
 		if (multiple)
 			jTable1
@@ -242,7 +242,7 @@ public class BeanSelector extends JDialog {
 
 		selectButton.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 				"/resource/Add16.gif")));
-		selectButton.setText(Resource.getPlainResourceString("Select"));
+		selectButton.setText(Resource.getResourceString("Select"));
 
 		selectButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -255,7 +255,7 @@ public class BeanSelector extends JDialog {
 		clearButton = new JButton();
 		clearButton.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 				"/resource/Undo16.gif")));
-		clearButton.setText(Resource.getPlainResourceString("Clear"));
+		clearButton.setText(Resource.getResourceString("Clear"));
 		clearButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				clearbuttonActionPerformed(evt);

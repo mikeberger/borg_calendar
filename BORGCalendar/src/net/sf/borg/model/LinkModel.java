@@ -102,7 +102,7 @@ public class LinkModel extends Model {
             File f = new File(path);
             if (!f.exists()) {
                 if (!f.mkdir()) {
-                    Errmsg.notice(Resource.getPlainResourceString("att_folder_err") + path);
+                    Errmsg.notice(Resource.getResourceString("att_folder_err") + path);
                     return null;
                 }
             }
@@ -136,7 +136,7 @@ public class LinkModel extends Model {
      */
     public void addLink(KeyedEntity<?> owner, String path, LinkType linkType) throws Exception {
         if (owner == null) {
-            Errmsg.notice(Resource.getPlainResourceString("att_owner_null"));
+            Errmsg.notice(Resource.getResourceString("att_owner_null"));
             return;
         }
 

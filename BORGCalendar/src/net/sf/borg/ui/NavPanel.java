@@ -65,7 +65,7 @@ public class NavPanel extends JPanel {
 
 	JButton Today = new JButton();
 	Today.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Home16.gif")));
-	Today.setToolTipText(Resource.getPlainResourceString("Today"));
+	Today.setToolTipText(Resource.getResourceString("Today"));
 	// ResourceHelper.setText(Today, "Today");
 	Today.addActionListener(new java.awt.event.ActionListener() {
 	    public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -76,7 +76,7 @@ public class NavPanel extends JPanel {
 
 	JButton Goto = new JButton();
 	Goto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Undo16.gif")));
-	Goto.setToolTipText(Resource.getPlainResourceString("Go_To"));
+	Goto.setToolTipText(Resource.getResourceString("Go_To"));
 	// ResourceHelper.setText(Goto, "Go_To");
 	Goto.addActionListener(new java.awt.event.ActionListener() {
 	    public void actionPerformed(java.awt.event.ActionEvent evt) {

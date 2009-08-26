@@ -64,23 +64,23 @@ public class SunTrayIconProxy {
             PopupMenu popup = new PopupMenu();
             
             MenuItem item = new MenuItem(); 
-            item.setLabel(Resource.getPlainResourceString("Open_Calendar"));
+            item.setLabel(Resource.getResourceString("Open_Calendar"));
             item.addActionListener(new OpenListener());
             popup.add(item);
             
            
             item = new MenuItem();
-            item.setLabel(Resource.getPlainResourceString("Open_Address_Book"));
+            item.setLabel(Resource.getResourceString("Open_Address_Book"));
             item.addActionListener(new AddrListener());
             popup.add(item);
             
             item = new MenuItem();
-            item.setLabel(Resource.getPlainResourceString("To_Do_List"));
+            item.setLabel(Resource.getResourceString("To_Do_List"));
             item.addActionListener(new TodoListener());
             popup.add(item);
             
             item = new MenuItem();
-            item.setLabel(Resource.getPlainResourceString("Show_Pops"));
+            item.setLabel(Resource.getResourceString("Show_Pops"));
             
             item.addActionListener(new ActionListener(){
 
@@ -92,7 +92,7 @@ public class SunTrayIconProxy {
             popup.add(item);
             
             item = new MenuItem();
-            item.setLabel(Resource.getPlainResourceString("Hide_Pops"));
+            item.setLabel(Resource.getResourceString("Hide_Pops"));
             
             item.addActionListener(new ActionListener(){
 
@@ -106,14 +106,14 @@ public class SunTrayIconProxy {
             popup.addSeparator();
             
             item = new MenuItem();
-            item.setLabel(Resource.getPlainResourceString("Options"));
+            item.setLabel(Resource.getResourceString("Options"));
             item.addActionListener(new OptionsListener());
             popup.add(item);
             
             popup.addSeparator();
             
             item = new MenuItem();
-            item.setLabel(Resource.getPlainResourceString("Exit"));
+            item.setLabel(Resource.getResourceString("Exit"));
             item.addActionListener(new ExitListener());
             popup.add(item);
             

@@ -302,7 +302,7 @@ class MainMenu {
 		OptionMenu.add(mportPrefsMI);
 
 		JMenu tsm = new JMenu(Resource
-				.getPlainResourceString("task_state_options"));
+				.getResourceString("task_state_options"));
 		JMenuItem edittypes = new JMenuItem();
 		JMenuItem resetst = new JMenuItem();
 		ResourceHelper.setText(edittypes, "edit_types");
@@ -436,7 +436,7 @@ class MainMenu {
 
 				public void menuSelected(MenuEvent arg0) {
 					Errmsg.notice(Resource
-							.getPlainResourceString("mdb_deprecated"));
+							.getResourceString("mdb_deprecated"));
 				}
 			});
 			menuBar.add(warning);
@@ -480,7 +480,7 @@ class MainMenu {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				MultiView.getMainView().addView(
 						new HelpScreen("/resource/RELEASE_NOTES.txt", Resource
-								.getPlainResourceString("rlsnotes")));
+								.getResourceString("rlsnotes")));
 			}
 		});
 
@@ -557,7 +557,7 @@ class MainMenu {
 				+ Resource.getResourceString("translations") + "\n\n"
 				+ build_info + "\n" + "Java "
 				+ System.getProperty("java.version");
-		Object opts[] = { Resource.getPlainResourceString("Dismiss") /*
+		Object opts[] = { Resource.getResourceString("Dismiss") /*
 																	 * ,
 																	 * Resource.
 																	 * getResourceString
@@ -581,7 +581,7 @@ class MainMenu {
 	{// GEN-HEADEREND:event_chglogActionPerformed
 		MultiView.getMainView().addView(
 				new HelpScreen("/resource/CHANGES.txt", Resource
-						.getPlainResourceString("viewchglog")));
+						.getResourceString("viewchglog")));
 
 	}// GEN-LAST:event_chglogActionPerformed
 
@@ -594,28 +594,28 @@ class MainMenu {
 
 	private void dbMIActionPerformed(java.awt.event.ActionEvent evt) {
 		String dbtype = Prefs.getPref(PrefName.DBTYPE);
-		String info = Resource.getPlainResourceString("DatabaseInformation")
+		String info = Resource.getResourceString("DatabaseInformation")
 				+ ":\n\n";
 		info += dbtype + " URL: " + JdbcDB.getUrl() + "\n\n";
 
 		try {
-			info += Resource.getPlainResourceString("appointments") + ": "
+			info += Resource.getResourceString("appointments") + ": "
 					+ AppointmentModel.getReference().getAllAppts().size()
 					+ "\n";
-			info += Resource.getPlainResourceString("addresses") + ": "
+			info += Resource.getResourceString("addresses") + ": "
 					+ AddressModel.getReference().getAddresses().size() + "\n";
-			info += Resource.getPlainResourceString("tasks") + ": "
+			info += Resource.getResourceString("tasks") + ": "
 					+ TaskModel.getReference().getTasks().size() + "\n";
-			info += Resource.getPlainResourceString("SubTasks") + ": "
+			info += Resource.getResourceString("SubTasks") + ": "
 					+ TaskModel.getReference().getSubTasks().size() + "\n";
-			info += Resource.getPlainResourceString("Logs") + ": "
+			info += Resource.getResourceString("Logs") + ": "
 					+ TaskModel.getReference().getLogs().size() + "\n";
-			info += Resource.getPlainResourceString("projects") + ": "
+			info += Resource.getResourceString("projects") + ": "
 					+ TaskModel.getReference().getProjects().size() + "\n";
 			if (MemoModel.getReference().hasMemos())
-				info += Resource.getPlainResourceString("Memos") + ": "
+				info += Resource.getResourceString("Memos") + ": "
 						+ MemoModel.getReference().getMemos().size() + "\n";
-			info += Resource.getPlainResourceString("links") + ": "
+			info += Resource.getResourceString("links") + ": "
 					+ LinkModel.getReference().getLinks().size() + "\n";
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
@@ -872,10 +872,10 @@ class MainMenu {
 
 	private JMenu getReportMenu() {
 		JMenu m = new JMenu();
-		m.setText(Resource.getPlainResourceString("reports"));
+		m.setText(Resource.getResourceString("reports"));
 
 		JMenuItem prr = new JMenuItem();
-		prr.setText(Resource.getPlainResourceString("project_report"));
+		prr.setText(Resource.getResourceString("project_report"));
 		prr.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent arg0) {
@@ -897,7 +897,7 @@ class MainMenu {
 					}
 					RunReport.runReport("proj", map);
 				} catch (NoClassDefFoundError r) {
-					Errmsg.notice(Resource.getPlainResourceString("borg_jasp"));
+					Errmsg.notice(Resource.getResourceString("borg_jasp"));
 				} catch (Exception e) {
 					Errmsg.errmsg(e);
 				}
@@ -908,7 +908,7 @@ class MainMenu {
 		m.add(prr);
 
 		JMenuItem otr = new JMenuItem();
-		otr.setText(Resource.getPlainResourceString("open_tasks"));
+		otr.setText(Resource.getResourceString("open_tasks"));
 		otr.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent arg0) {
@@ -919,7 +919,7 @@ class MainMenu {
 		m.add(otr);
 
 		JMenuItem otpr = new JMenuItem();
-		otpr.setText(Resource.getPlainResourceString("open_tasks_proj"));
+		otpr.setText(Resource.getResourceString("open_tasks_proj"));
 		otpr.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent arg0) {
@@ -930,13 +930,13 @@ class MainMenu {
 		m.add(otpr);
 
 		JMenuItem customrpt = new JMenuItem();
-		customrpt.setText(Resource.getPlainResourceString("select_rpt"));
+		customrpt.setText(Resource.getResourceString("select_rpt"));
 		customrpt.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent arg0) {
 				try {
 					InputStream is = IOHelper.fileOpen(".", Resource
-							.getPlainResourceString("select_rpt"));
+							.getResourceString("select_rpt"));
 					if (is == null)
 						return;
 					RunReport.runReport(is, null);
@@ -953,7 +953,7 @@ class MainMenu {
 
 	private JMenu getUndoMenu() {
 		JMenu m = new JMenu();
-		m.setText(Resource.getPlainResourceString("undo"));
+		m.setText(Resource.getResourceString("undo"));
 		m.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 				"/resource/Refresh16.gif")));
 		final JMenu menu = m;
@@ -974,7 +974,7 @@ class MainMenu {
 				final String top = UndoLog.getReference().getTopItem();
 				if (top != null) {
 					JMenuItem mi = new JMenuItem(Resource
-							.getPlainResourceString("undo")
+							.getResourceString("undo")
 							+ ": " + top);
 					mi.addActionListener(new ActionListener() {
 
@@ -984,7 +984,7 @@ class MainMenu {
 									.showConfirmDialog(
 											null,
 											Resource
-											.getPlainResourceString("undo")
+											.getResourceString("undo")
 											+ ": " + top
 													+ "\n\n"
 													+ Resource
@@ -998,7 +998,7 @@ class MainMenu {
 					});
 					menu.add(mi);
 					JMenuItem cmi = new JMenuItem();
-					cmi.setText(Resource.getPlainResourceString("clear_undos"));
+					cmi.setText(Resource.getResourceString("clear_undos"));
 					cmi.addActionListener(new ActionListener() {
 
 						@Override
@@ -1007,7 +1007,7 @@ class MainMenu {
 									.showConfirmDialog(
 											null,
 											Resource
-													.getPlainResourceString("clear_undos")
+													.getResourceString("clear_undos")
 													+ "\n\n"
 													+ Resource
 															.getResourceString("please_confirm"),
@@ -1024,11 +1024,11 @@ class MainMenu {
 							.getBoolPref(PrefName.SHOW_UNDO_STACK);
 					if (show_stack == true) {
 						JMenu all_mi = new JMenu(Resource
-								.getPlainResourceString("all_undos"));
+								.getResourceString("all_undos"));
 						for (String item : UndoLog.getReference()
 								.getItemStrings()) {
 							JMenuItem item_mi = new JMenuItem(Resource
-									.getPlainResourceString("undo")
+									.getResourceString("undo")
 									+ ": " + item);
 							all_mi.add(item_mi);
 						}
@@ -1037,7 +1037,7 @@ class MainMenu {
 					}
 				} else {
 					menu.add(new JMenuItem(Resource
-							.getPlainResourceString("no_undos")));
+							.getResourceString("no_undos")));
 				}
 
 			}
@@ -1220,7 +1220,7 @@ class MainMenu {
 		// show the open source license
 		MultiView.getMainView().addView(
 				new HelpScreen("/resource/license.htm", Resource
-						.getPlainResourceString("License")));
+						.getResourceString("License")));
 
 	}// GEN-LAST:event_licsendActionPerformed
 

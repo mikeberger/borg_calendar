@@ -55,12 +55,12 @@ class GanttFrame extends View {
 	try {
 	    s.add(new Task(name, new SimpleTimePeriod(start, end)));
 	} catch (IllegalArgumentException e) {
-	    throw new Warning(Resource.getPlainResourceString("TimePeriodException") + name);
+	    throw new Warning(Resource.getResourceString("TimePeriodException") + name);
 	}
     }
 
     private static void addProject(Project p, TaskSeries sched, TaskSeries actual) throws Warning, Exception {
-	addChartItem(sched, Resource.getPlainResourceString("project") + ": " + p.getDescription(), p.getStartDate(), p
+	addChartItem(sched, Resource.getResourceString("project") + ": " + p.getDescription(), p.getStartDate(), p
 		.getDueDate());
 	Collection<net.sf.borg.model.entity.Task> tasks = TaskModel.getReference().getTasks(p.getKey());
 	Iterator<net.sf.borg.model.entity.Task> it = tasks.iterator();
@@ -111,8 +111,8 @@ class GanttFrame extends View {
 
     private static IntervalCategoryDataset createDataset(Project p) throws Exception, Warning {
 
-	final TaskSeries sched = new TaskSeries(Resource.getPlainResourceString("Scheduled"));
-	final TaskSeries actual = new TaskSeries(Resource.getPlainResourceString("Actual"));
+	final TaskSeries sched = new TaskSeries(Resource.getResourceString("Scheduled"));
+	final TaskSeries actual = new TaskSeries(Resource.getResourceString("Actual"));
 
 	addProject(p, sched, actual);
 
@@ -150,9 +150,9 @@ class GanttFrame extends View {
     private JFreeChart createChart(String title, IntervalCategoryDataset dataset) {
 	final JFreeChart chart = ChartFactory.createGanttChart(title, // chart
 		// title
-		"",// Resource.getPlainResourceString("Item"), // domain
+		"",// Resource.getResourceString("Item"), // domain
 		// axis label
-		Resource.getPlainResourceString("Date"), // range axis
+		Resource.getResourceString("Date"), // range axis
 		// label
 		dataset, // data
 		true, // include legend

@@ -188,7 +188,7 @@ public class AddressView extends DockableView {
 	}
 
 	public String getFrameTitle() {
-		return Resource.getPlainResourceString("Address_Book_Entry");
+		return Resource.getResourceString("Address_Book_Entry");
 	}
 
 	private JPanel getJPanel6() {

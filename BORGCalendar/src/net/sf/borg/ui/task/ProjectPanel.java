@@ -92,7 +92,7 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 
 			String nm = table.getColumnName(column);
 			if (obj == null
-					|| !nm.equals(Resource.getPlainResourceString("Days_Left")))
+					|| !nm.equals(Resource.getResourceString("Days_Left")))
 				return l;
 
 			int i = ((Integer) obj).intValue();
@@ -202,7 +202,7 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 
 				Project p = ti.next();
 
-				if (!pstatfilt.equals(Resource.getPlainResourceString("All"))
+				if (!pstatfilt.equals(Resource.getResourceString("All"))
 						&& !pstatfilt.equals(p.getStatus()))
 					continue;
 
@@ -349,9 +349,9 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 			Project p = taskmod_.getProject(num.intValue());
 			GanttFrame.showChart(p);
 		} catch (ClassNotFoundException cnf) {
-			Errmsg.notice(Resource.getPlainResourceString("borg_jasp"));
+			Errmsg.notice(Resource.getResourceString("borg_jasp"));
 		} catch (NoClassDefFoundError r) {
-			Errmsg.notice(Resource.getPlainResourceString("borg_jasp"));
+			Errmsg.notice(Resource.getResourceString("borg_jasp"));
 		} catch (Warning w) {
 			Errmsg.notice(w.getMessage());
 		} catch (Exception e) {
@@ -401,7 +401,7 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 	private JButton getAddbutton() {
 		if (addbutton == null) {
 			addbutton = new JButton();
-			addbutton.setText(Resource.getPlainResourceString("Add"));
+			addbutton.setText(Resource.getResourceString("Add"));
 			addbutton.setIcon(new ImageIcon(getClass().getResource(
 					"/resource/Add16.gif")));
 			addbutton.addActionListener(new java.awt.event.ActionListener() {
@@ -418,7 +418,7 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 	private JButton getGanttbutton() {
 		if (ganttbutton == null) {
 			ganttbutton = new JButton();
-			ganttbutton.setText(Resource.getPlainResourceString("GANTT"));
+			ganttbutton.setText(Resource.getResourceString("GANTT"));
 			// ganttbutton.setIcon(new
 			// ImageIcon(getClass().getResource("/resource/Add16.gif")));
 			ganttbutton.addActionListener(new java.awt.event.ActionListener() {
@@ -474,7 +474,7 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 			changebutton1 = new JButton();
 			changebutton1.setIcon(new ImageIcon(getClass().getResource(
 					"/resource/Edit16.gif")));
-			changebutton1.setText(Resource.getPlainResourceString("Change"));
+			changebutton1.setText(Resource.getResourceString("Change"));
 			changebutton1
 					.addActionListener(new java.awt.event.ActionListener() {
 						public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -495,7 +495,7 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 			clonebutton1 = new JButton();
 			clonebutton1.setIcon(new ImageIcon(getClass().getResource(
 					"/resource/Copy16.gif")));
-			clonebutton1.setText(Resource.getPlainResourceString("Clone"));
+			clonebutton1.setText(Resource.getResourceString("Clone"));
 			clonebutton1.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					cloneActionPerformed(e);
@@ -515,7 +515,7 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 			closebutton1 = new JButton();
 			closebutton1.setIcon(new ImageIcon(getClass().getResource(
 					"/resource/greenlight.gif")));
-			closebutton1.setText(Resource.getPlainResourceString("Close"));
+			closebutton1.setText(Resource.getResourceString("Close"));
 			closebutton1.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					closeActionPerformed(e);
@@ -535,7 +535,7 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 			deletebutton1 = new JButton();
 			deletebutton1.setIcon(new ImageIcon(getClass().getResource(
 					"/resource/Delete16.gif")));
-			deletebutton1.setText(Resource.getPlainResourceString("Delete"));
+			deletebutton1.setText(Resource.getResourceString("Delete"));
 			deletebutton1
 					.addActionListener(new java.awt.event.ActionListener() {
 						public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -562,16 +562,16 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 		FlowLayout flowLayout = new FlowLayout();
 		flowLayout.setAlignment(java.awt.FlowLayout.LEFT);
 		JLabel statusLabel = new JLabel();
-		statusLabel.setText(Resource.getPlainResourceString("Status") + ":");
+		statusLabel.setText(Resource.getResourceString("Status") + ":");
 		JPanel pnl = new JPanel();
 		pnl.setLayout(flowLayout);
 		pnl.add(statusLabel, null);
 
 		pstatusBox.removeAllItems();
-		pstatusBox.addItem(Resource.getPlainResourceString("All"));
-		pstatusBox.addItem(Resource.getPlainResourceString("OPEN"));
-		pstatusBox.addItem(Resource.getPlainResourceString("CLOSED"));
-		pstatusBox.setSelectedItem(Resource.getPlainResourceString("OPEN"));
+		pstatusBox.addItem(Resource.getResourceString("All"));
+		pstatusBox.addItem(Resource.getResourceString("OPEN"));
+		pstatusBox.addItem(Resource.getResourceString("CLOSED"));
+		pstatusBox.setSelectedItem(Resource.getResourceString("OPEN"));
 		pstatusBox.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				refresh();
@@ -613,15 +613,15 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 
 		// use a sorted table model
 		projectTable.setModel(new TableSorter(new String[] {
-				Resource.getPlainResourceString("Item_#"),
-				Resource.getPlainResourceString("Category"),
-				Resource.getPlainResourceString("Status"),
-				Resource.getPlainResourceString("Start_Date"),
-				Resource.getPlainResourceString("Due_Date"),
-				Resource.getPlainResourceString("total_tasks"),
-				Resource.getPlainResourceString("open_tasks"),
-				Resource.getPlainResourceString("Days_Left"),
-				Resource.getPlainResourceString("Description") }, new Class[] {
+				Resource.getResourceString("Item_#"),
+				Resource.getResourceString("Category"),
+				Resource.getResourceString("Status"),
+				Resource.getResourceString("Start_Date"),
+				Resource.getResourceString("Due_Date"),
+				Resource.getResourceString("total_tasks"),
+				Resource.getResourceString("open_tasks"),
+				Resource.getResourceString("Days_Left"),
+				Resource.getResourceString("Description") }, new Class[] {
 				java.lang.Integer.class, java.lang.String.class, String.class,
 				Date.class, Date.class, java.lang.Integer.class, Integer.class,
 				Integer.class, java.lang.String.class }));
@@ -827,7 +827,7 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 			}
 			RunReport.runReport("proj", map);
 		} catch (NoClassDefFoundError r) {
-			Errmsg.notice(Resource.getPlainResourceString("borg_jasp"));
+			Errmsg.notice(Resource.getResourceString("borg_jasp"));
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
 		}

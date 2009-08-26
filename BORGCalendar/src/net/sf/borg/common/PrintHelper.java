@@ -25,7 +25,16 @@ import java.awt.print.PrinterJob;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+/**
+ * Some common printing related utilities
+ */
 public class PrintHelper {
+	
+	/**
+	 * Initializes the PrinterJob settings and sets a default print service
+	 * 
+	 * @param job the job
+	 */
 	private static void initPrinterJobFields(PrinterJob job) {
 		job.setJobName("BORG Printout");
 		Class<? extends PrinterJob> klass = job.getClass();
@@ -45,6 +54,14 @@ public class PrintHelper {
 
 	}
 
+	/**
+	 * Prints a printable object. Prompts the user for print settings
+	 * using the standard native dialog if available
+	 * 
+	 * @param p the Printable
+	 * 
+	 * @throws Exception the exception
+	 */
 	static public void printPrintable(Printable p) throws Exception {
 
 		PrinterJob printJob = PrinterJob.getPrinterJob();

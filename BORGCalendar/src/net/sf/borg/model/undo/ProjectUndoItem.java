@@ -75,8 +75,8 @@ public class ProjectUndoItem extends UndoItem<Project> {
 		ProjectUndoItem undoItem = new ProjectUndoItem();
 		undoItem.item = project;
 		undoItem.action = actionType.UPDATE;
-		undoItem.setDescription(Resource.getPlainResourceString("Change") + " "
-				+ Resource.getPlainResourceString("project") + " "
+		undoItem.setDescription(Resource.getResourceString("Change") + " "
+				+ Resource.getResourceString("project") + " "
 				+ itemString(project));
 		return undoItem;
 	}
@@ -92,8 +92,8 @@ public class ProjectUndoItem extends UndoItem<Project> {
 		ProjectUndoItem undoItem = new ProjectUndoItem();
 		undoItem.item = project;
 		undoItem.action = actionType.ADD;
-		undoItem.setDescription(Resource.getPlainResourceString("Add") + " "
-				+ Resource.getPlainResourceString("project") + " "
+		undoItem.setDescription(Resource.getResourceString("Add") + " "
+				+ Resource.getResourceString("project") + " "
 				+ itemString(project));
 		return undoItem;
 	}

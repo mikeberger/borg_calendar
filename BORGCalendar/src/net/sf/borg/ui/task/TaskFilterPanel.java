@@ -113,13 +113,13 @@ public class TaskFilterPanel extends JPanel  {
 			flowLayout.setAlignment(java.awt.FlowLayout.LEFT);
 			statusLabel = new JLabel();
 			statusLabel
-					.setText(Resource.getPlainResourceString("Status") + ":");
+					.setText(Resource.getResourceString("Status") + ":");
 			jPanel2 = new JPanel();
 			jPanel2.setLayout(flowLayout);
 			jPanel2.add(statusLabel, null);
 			jPanel2.add(getStatusBox(), null);
 			JLabel plabel = new JLabel(Resource
-					.getPlainResourceString("project")
+					.getResourceString("project")
 					+ ":");
 			JLabel spacer = new JLabel("           ");
 			jPanel2.add(spacer, null);
@@ -248,7 +248,7 @@ public class TaskFilterPanel extends JPanel  {
 
 	private void loadProjectBox() throws Exception {
 		projectBox.removeAllItems();
-		projectBox.addItem(Resource.getPlainResourceString("All"));
+		projectBox.addItem(Resource.getResourceString("All"));
 		try {
 			Collection<Project> projects = TaskModel.getReference().getProjects();
 			Iterator<Project> pi = projects.iterator();
@@ -308,8 +308,8 @@ public class TaskFilterPanel extends JPanel  {
 
 	private void setStatuses(JComboBox s) {
 
-		s.addItem(Resource.getPlainResourceString("All_Open"));
-		s.addItem(Resource.getPlainResourceString("All"));
+		s.addItem(Resource.getResourceString("All_Open"));
+		s.addItem(Resource.getResourceString("All"));
 		TaskTypes t = TaskModel.getReference().getTaskTypes();
 		TreeSet<String> ts = new TreeSet<String>();
 		Vector<String> types = t.getTaskTypes();

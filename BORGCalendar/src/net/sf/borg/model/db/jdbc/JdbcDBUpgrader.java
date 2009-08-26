@@ -92,7 +92,7 @@ class JdbcDBUpgrader {
 		{
 			
 			if (dbtype.equals("mysql")) {
-			    Errmsg.notice(Resource.getPlainResourceString("update_error") + updSql[i]);
+			    Errmsg.notice(Resource.getResourceString("update_error") + updSql[i]);
 				continue;
 			} 
 			System.out.println("Running Upgrade SQL:" + updSql[i]);

@@ -83,12 +83,12 @@ public static void addTab(JTabbedPane tabbedPane, String resourceKey,
 
 public static void setTitle(JFrame frame, String resourceKey)
 {
-	frame.setTitle(Resource.getPlainResourceString(resourceKey));
+	frame.setTitle(Resource.getResourceString(resourceKey));
 }
 
 public static void setTitle(JDialog dlg, String resourceKey)
 {
-	dlg.setTitle(Resource.getPlainResourceString(resourceKey));
+	dlg.setTitle(Resource.getResourceString(resourceKey));
 }
 
 // private //

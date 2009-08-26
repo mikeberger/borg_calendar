@@ -113,7 +113,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 	private JPopupMenu rootmenu = new JPopupMenu();
 
 	private JCheckBox showClosed = new JCheckBox(Resource
-			.getPlainResourceString("show_closed"));
+			.getResourceString("show_closed"));
 
 	private JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 
@@ -128,7 +128,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 		TaskModel.getReference().addListener(this);
 		// Create the nodes.
 		DefaultMutableTreeNode top = new DefaultMutableTreeNode(Resource
-				.getPlainResourceString("projects"));
+				.getResourceString("projects"));
 		createNodes(top);
 		// Create a tree that allows one selection at a time.
 		tree = new JTree(top);
@@ -169,8 +169,8 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 		splitPane.setDividerLocation(250);
 		add(splitPane);
 		tree.addMouseListener(this);
-		JMenuItem jm = rootmenu.add(Resource.getPlainResourceString("Add")
-				+ " " + Resource.getPlainResourceString("project"));
+		JMenuItem jm = rootmenu.add(Resource.getResourceString("Add")
+				+ " " + Resource.getResourceString("project"));
 		jm.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
@@ -180,7 +180,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 		});
 
 		JMenuItem jmex = rootmenu
-				.add(Resource.getPlainResourceString("expand"));
+				.add(Resource.getResourceString("expand"));
 		jmex.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
@@ -190,7 +190,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 
 		});
 		JMenuItem jmcol = rootmenu.add(Resource
-				.getPlainResourceString("collapse"));
+				.getResourceString("collapse"));
 		jmcol.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
@@ -199,8 +199,8 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 			}
 
 		});
-		JMenuItem jm2 = projmenu.add(Resource.getPlainResourceString("Add")
-				+ " " + Resource.getPlainResourceString("task"));
+		JMenuItem jm2 = projmenu.add(Resource.getResourceString("Add")
+				+ " " + Resource.getResourceString("task"));
 		jm2.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
@@ -208,8 +208,8 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 			}
 
 		});
-		JMenuItem jm3 = projmenu.add(Resource.getPlainResourceString("Add")
-				+ " " + Resource.getPlainResourceString("project"));
+		JMenuItem jm3 = projmenu.add(Resource.getResourceString("Add")
+				+ " " + Resource.getResourceString("project"));
 		jm3.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
@@ -275,7 +275,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 
 	public void refresh() {
 		DefaultMutableTreeNode top = new DefaultMutableTreeNode(Resource
-				.getPlainResourceString("projects"));
+				.getResourceString("projects"));
 		createNodes(top);
 		// Create a tree that allows one selection at a time.
 		tree = new JTree(top);

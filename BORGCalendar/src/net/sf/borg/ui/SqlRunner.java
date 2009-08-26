@@ -52,7 +52,7 @@ class SqlRunner extends JDialog {
 		initComponents();
 
 		
-		this.setTitle(Resource.getPlainResourceString("RunSQL"));
+		this.setTitle(Resource.getResourceString("RunSQL"));
 
 		pack();
 
@@ -163,8 +163,8 @@ class SqlRunner extends JDialog {
 				ScrolledDialog.showTable(tbl);
 			}
 			else
-				ScrolledDialog.showNotice(Resource.getPlainResourceString("noOutput"));
-				//JOptionPane.showMessageDialog(this, Resource.getPlainResourceString("noOutput"));
+				ScrolledDialog.showNotice(Resource.getResourceString("noOutput"));
+				//JOptionPane.showMessageDialog(this, Resource.getResourceString("noOutput"));
 		} catch (Exception e) {
 			System.out.println(e.toString());
 			try {

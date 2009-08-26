@@ -218,7 +218,7 @@ public class MultiView extends View {
 
 		JButton monbut = new JButton(new ImageIcon(getClass().getResource(
 				"/resource/month.jpg")));
-		monbut.setToolTipText(Resource.getPlainResourceString("Month_View"));
+		monbut.setToolTipText(Resource.getResourceString("Month_View"));
 		monbut.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				setView(MONTH);
@@ -228,7 +228,7 @@ public class MultiView extends View {
 
 		JButton weekbut = new JButton(new ImageIcon(getClass().getResource(
 				"/resource/week.jpg")));
-		weekbut.setToolTipText(Resource.getPlainResourceString("Week_View"));
+		weekbut.setToolTipText(Resource.getResourceString("Week_View"));
 		weekbut.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				setView(WEEK);
@@ -238,7 +238,7 @@ public class MultiView extends View {
 
 		JButton daybut = new JButton(new ImageIcon(getClass().getResource(
 				"/resource/day.jpg")));
-		daybut.setToolTipText(Resource.getPlainResourceString("Day_View"));
+		daybut.setToolTipText(Resource.getResourceString("Day_View"));
 		daybut.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				setView(DAY);
@@ -248,7 +248,7 @@ public class MultiView extends View {
 
 		JButton yearbut = new JButton(new ImageIcon(getClass().getResource(
 				"/resource/year.jpg")));
-		yearbut.setToolTipText(Resource.getPlainResourceString("Year_View"));
+		yearbut.setToolTipText(Resource.getResourceString("Year_View"));
 		yearbut.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				setView(YEAR);
@@ -258,7 +258,7 @@ public class MultiView extends View {
 
 		JButton addrbut = new JButton(new ImageIcon(getClass().getResource(
 				"/resource/addr16.jpg")));
-		addrbut.setToolTipText(Resource.getPlainResourceString("Address_Book"));
+		addrbut.setToolTipText(Resource.getResourceString("Address_Book"));
 		addrbut.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				MultiView.getMainView().addView(AddrListView.getReference());
@@ -268,7 +268,7 @@ public class MultiView extends View {
 
 		JButton todobut = new JButton(new ImageIcon(getClass().getResource(
 				"/resource/Properties16.gif")));
-		todobut.setToolTipText(Resource.getPlainResourceString("To_Do"));
+		todobut.setToolTipText(Resource.getResourceString("To_Do"));
 		todobut.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				try {
@@ -283,7 +283,7 @@ public class MultiView extends View {
 
 		JButton taskbut = new JButton(new ImageIcon(getClass().getResource(
 				"/resource/Preferences16.gif")));
-		taskbut.setToolTipText(Resource.getPlainResourceString("tasks"));
+		taskbut.setToolTipText(Resource.getResourceString("tasks"));
 		taskbut.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				MultiView.getMainView().showTasks();
@@ -293,7 +293,7 @@ public class MultiView extends View {
 
 		JButton memobut = new JButton(new ImageIcon(getClass().getResource(
 				"/resource/Edit16.gif")));
-		memobut.setToolTipText(Resource.getPlainResourceString("Memos"));
+		memobut.setToolTipText(Resource.getResourceString("Memos"));
 		memobut.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				MultiView.getMainView().showMemos(null);
@@ -303,7 +303,7 @@ public class MultiView extends View {
 
 		JButton srchbut = new JButton(new ImageIcon(getClass().getResource(
 				"/resource/Find16.gif")));
-		srchbut.setToolTipText(Resource.getPlainResourceString("srch"));
+		srchbut.setToolTipText(Resource.getResourceString("srch"));
 		srchbut.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				MultiView.getMainView().addView(new SearchView());
@@ -313,7 +313,7 @@ public class MultiView extends View {
 
 		JButton printbut = new JButton(new ImageIcon(getClass().getResource(
 				"/resource/Print16.gif")));
-		printbut.setToolTipText(Resource.getPlainResourceString("Print"));
+		printbut.setToolTipText(Resource.getResourceString("Print"));
 		printbut.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				print();
@@ -325,7 +325,7 @@ public class MultiView extends View {
 
 		JButton clearbut = new JButton(new ImageIcon(getClass().getResource(
 				"/resource/Delete16.gif")));
-		clearbut.setToolTipText(Resource.getPlainResourceString("close_tabs"));
+		clearbut.setToolTipText(Resource.getResourceString("close_tabs"));
 		clearbut.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				closeTabs();
@@ -383,7 +383,7 @@ public class MultiView extends View {
 						.get(Calendar.YEAR), cal_.get(Calendar.DATE));
 
 			if (!dayPanel.isDisplayable()) {
-				tabs_.addTab(Resource.getPlainResourceString("Day_View"),
+				tabs_.addTab(Resource.getResourceString("Day_View"),
 						dayPanel);
 			}
 			getTabs().setSelectedComponent(dayPanel);
@@ -393,7 +393,7 @@ public class MultiView extends View {
 						.get(Calendar.YEAR), cal_.get(Calendar.DATE));
 
 			if (!wkPanel.isDisplayable()) {
-				tabs_.addTab(Resource.getPlainResourceString("Week_View"),
+				tabs_.addTab(Resource.getResourceString("Week_View"),
 						wkPanel);
 			}
 			getTabs().setSelectedComponent(wkPanel);
@@ -404,7 +404,7 @@ public class MultiView extends View {
 					monthPanel = new MonthPanel(cal_.get(Calendar.MONTH), cal_
 							.get(Calendar.YEAR));
 				if (!monthPanel.isDisplayable()) {
-					tabs_.addTab(Resource.getPlainResourceString("Month_View"),
+					tabs_.addTab(Resource.getResourceString("Month_View"),
 							monthPanel);
 				}
 				getTabs().setSelectedComponent(monthPanel);
@@ -414,7 +414,7 @@ public class MultiView extends View {
 				yearPanel = new YearPanel(cal_.get(Calendar.YEAR));
 
 			if (!yearPanel.isDisplayable()) {
-				tabs_.addTab(Resource.getPlainResourceString("Year_View"),
+				tabs_.addTab(Resource.getResourceString("Year_View"),
 						yearPanel);
 			}
 			getTabs().setSelectedComponent(yearPanel);
@@ -426,7 +426,7 @@ public class MultiView extends View {
 			memoPanel = new MemoPanel();
 
 		if (memoPanel != null && !memoPanel.isDisplayable()) {
-			tabs_.addTab(Resource.getPlainResourceString("Memos"), memoPanel);
+			tabs_.addTab(Resource.getResourceString("Memos"), memoPanel);
 		}
 		if (memoPanel != null) {
 			getTabs().setSelectedComponent(memoPanel);
@@ -452,20 +452,20 @@ public class MultiView extends View {
 		}
 		
 		if( !taskTabs.isDisplayable())
-			tabs_.addTab(Resource.getPlainResourceString("tasks"), taskTabs);
+			tabs_.addTab(Resource.getResourceString("tasks"), taskTabs);
 
 		if (projectTreePanel != null && !projectTreePanel.isDisplayable())
-			taskTabs.addTab(Resource.getPlainResourceString("project_tree"),
+			taskTabs.addTab(Resource.getResourceString("project_tree"),
 					projectTreePanel);
 
 		if (projectListPanel != null && !projectListPanel.isDisplayable()) {
 			taskTabs
-					.addTab(Resource.getPlainResourceString("projects"),
+					.addTab(Resource.getResourceString("projects"),
 							projectListPanel);
 		}
 
 		if (taskListPanel != null && !taskListPanel.isDisplayable()) {
-			taskTabs.addTab(Resource.getPlainResourceString("tasks"), taskListPanel);
+			taskTabs.addTab(Resource.getResourceString("tasks"), taskListPanel);
 		}
 		
 		

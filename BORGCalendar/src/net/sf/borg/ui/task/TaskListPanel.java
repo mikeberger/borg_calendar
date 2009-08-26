@@ -94,12 +94,12 @@ class TaskListPanel extends JPanel implements Model.Listener {
 			}
 
 			String nm = table.getColumnName(column);
-			if (!nm.equals(Resource.getPlainResourceString("Pri"))
-					&& !nm.equals(Resource.getPlainResourceString("Days_Left")))
+			if (!nm.equals(Resource.getResourceString("Pri"))
+					&& !nm.equals(Resource.getResourceString("Days_Left")))
 				return l;
 
 			if (isSelected
-					&& !nm.equals(Resource.getPlainResourceString("Days_Left")))
+					&& !nm.equals(Resource.getResourceString("Days_Left")))
 				return l;
 
 			this.setText(l.getText());
@@ -110,7 +110,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 			int i = ((Integer) obj).intValue();
 
 			// priority
-			if (nm.equals(Resource.getPlainResourceString("Pri"))) {
+			if (nm.equals(Resource.getResourceString("Pri"))) {
 
 				if (i == 1) {
 					this.setBackground(new Color(255, 120, 120));
@@ -172,9 +172,9 @@ class TaskListPanel extends JPanel implements Model.Listener {
 	private boolean filterCaseSensitive = false;
 
 	// filtering criteria
-	private String projectName = Resource.getPlainResourceString("All");
+	private String projectName = Resource.getResourceString("All");
 
-	private String status = Resource.getPlainResourceString("All");
+	private String status = Resource.getResourceString("All");
 
 	private StripedTable taskTable;
 
@@ -326,7 +326,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 	private JButton getAddbutton() {
 		if (addbutton == null) {
 			addbutton = new JButton();
-			addbutton.setText(Resource.getPlainResourceString("Add"));
+			addbutton.setText(Resource.getResourceString("Add"));
 			addbutton.setIcon(new ImageIcon(getClass().getResource(
 					"/resource/Add16.gif")));
 			addbutton.addActionListener(new java.awt.event.ActionListener() {
@@ -370,7 +370,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 			changebutton1 = new JButton();
 			changebutton1.setIcon(new ImageIcon(getClass().getResource(
 					"/resource/Edit16.gif")));
-			changebutton1.setText(Resource.getPlainResourceString("Change"));
+			changebutton1.setText(Resource.getResourceString("Change"));
 			changebutton1
 					.addActionListener(new java.awt.event.ActionListener() {
 						public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -391,7 +391,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 			clonebutton1 = new JButton();
 			clonebutton1.setIcon(new ImageIcon(getClass().getResource(
 					"/resource/Copy16.gif")));
-			clonebutton1.setText(Resource.getPlainResourceString("Clone"));
+			clonebutton1.setText(Resource.getResourceString("Clone"));
 			clonebutton1.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					cloneActionPerformed(e);
@@ -411,7 +411,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 			closebutton1 = new JButton();
 			closebutton1.setIcon(new ImageIcon(getClass().getResource(
 					"/resource/greenlight.gif")));
-			closebutton1.setText(Resource.getPlainResourceString("Close"));
+			closebutton1.setText(Resource.getResourceString("Close"));
 			closebutton1.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					closeActionPerformed(e);
@@ -431,7 +431,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 			deletebutton1 = new JButton();
 			deletebutton1.setIcon(new ImageIcon(getClass().getResource(
 					"/resource/Delete16.gif")));
-			deletebutton1.setText(Resource.getPlainResourceString("Delete"));
+			deletebutton1.setText(Resource.getResourceString("Delete"));
 			deletebutton1
 					.addActionListener(new java.awt.event.ActionListener() {
 						public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -469,18 +469,18 @@ class TaskListPanel extends JPanel implements Model.Listener {
 
 		// use a sorted table model
 		taskTable.setModel(new TableSorter(new String[] {
-				Resource.getPlainResourceString("Item_#"),
-				Resource.getPlainResourceString("Status"),
-				Resource.getPlainResourceString("Type"),
-				Resource.getPlainResourceString("Pri"),
-				Resource.getPlainResourceString("Days_Left"),
-				Resource.getPlainResourceString("Description"),
-				Resource.getPlainResourceString("Start_Date"),
-				Resource.getPlainResourceString("Due_Date"),
-				Resource.getPlainResourceString("duration"),
-				Resource.getPlainResourceString("elapsed_time"),
-				Resource.getPlainResourceString("project"),
-				Resource.getPlainResourceString("Category")}, new Class[] {
+				Resource.getResourceString("Item_#"),
+				Resource.getResourceString("Status"),
+				Resource.getResourceString("Type"),
+				Resource.getResourceString("Pri"),
+				Resource.getResourceString("Days_Left"),
+				Resource.getResourceString("Description"),
+				Resource.getResourceString("Start_Date"),
+				Resource.getResourceString("Due_Date"),
+				Resource.getResourceString("duration"),
+				Resource.getResourceString("elapsed_time"),
+				Resource.getResourceString("project"),
+				Resource.getResourceString("Category")}, new Class[] {
 				Integer.class, 
 				String.class,
 				String.class, 
@@ -622,7 +622,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 		deleteAll();
 
 		Integer projfiltid = null;
-		if (!projectName.equals(Resource.getPlainResourceString("All"))) {
+		if (!projectName.equals(Resource.getResourceString("All"))) {
 			try {
 				projfiltid = TaskView.getProjectId(projectName);
 			} catch (Exception e) {
@@ -643,12 +643,12 @@ class TaskListPanel extends JPanel implements Model.Listener {
 				// get the task state
 				String st = task.getState();
 
-				if (status.equals(Resource.getPlainResourceString("All_Open"))) {
+				if (status.equals(Resource.getResourceString("All_Open"))) {
 					if (TaskModel.isClosed(task)) {
 						continue;
 					}
 				} else if (!status.equals(Resource
-						.getPlainResourceString("All"))
+						.getResourceString("All"))
 						&& !status.equals(st))
 					continue;
 
@@ -803,7 +803,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 		try {
 			// display the task editor
 			Integer projfiltid = null;
-			if (!projectName.equals(Resource.getPlainResourceString("All"))) {
+			if (!projectName.equals(Resource.getResourceString("All"))) {
 				try {
 					projfiltid = TaskView.getProjectId(projectName);
 				} catch (Exception e) {

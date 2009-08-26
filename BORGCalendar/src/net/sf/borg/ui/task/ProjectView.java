@@ -226,9 +226,9 @@ public class ProjectView extends DockableView {
 			Project p = taskmod_.getProject(pnum);
 			GanttFrame.showChart(p);
 		} catch (ClassNotFoundException cnf) {
-			Errmsg.notice(Resource.getPlainResourceString("borg_jasp"));
+			Errmsg.notice(Resource.getResourceString("borg_jasp"));
 		} catch (NoClassDefFoundError r) {
-			Errmsg.notice(Resource.getPlainResourceString("borg_jasp"));
+			Errmsg.notice(Resource.getResourceString("borg_jasp"));
 		} catch (Warning w) {
 			Errmsg.notice(w.getMessage());
 		} catch (Exception e) {
@@ -263,7 +263,7 @@ public class ProjectView extends DockableView {
 	private JButton getGanttbutton() {
 		if (ganttbutton == null) {
 			ganttbutton = new JButton();
-			ganttbutton.setText(Resource.getPlainResourceString("GANTT"));
+			ganttbutton.setText(Resource.getResourceString("GANTT"));
 			// ganttbutton.setIcon(new
 			// ImageIcon(getClass().getResource("/resource/Add16.gif")));
 			ganttbutton.addActionListener(new java.awt.event.ActionListener() {
@@ -306,16 +306,16 @@ public class ProjectView extends DockableView {
 
 	
 		openLabel = new JLabel();
-		openLabel.setText(Resource.getPlainResourceString("open_tasks"));
+		openLabel.setText(Resource.getResourceString("open_tasks"));
 		
 		totalLabel = new JLabel();
-		totalLabel.setText(Resource.getPlainResourceString("total_tasks"));
+		totalLabel.setText(Resource.getResourceString("total_tasks"));
 		
 		descLabel = new JLabel();
-		descLabel.setText(Resource.getPlainResourceString("Description"));
+		descLabel.setText(Resource.getResourceString("Description"));
 
 		daysLeftLabel = new JLabel();
-		daysLeftLabel.setText(Resource.getPlainResourceString("Days_Left"));
+		daysLeftLabel.setText(Resource.getResourceString("Days_Left"));
 		daysLeftLabel.setHorizontalTextPosition(SwingConstants.RIGHT);
 		daysLeftLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		
@@ -350,7 +350,7 @@ public class ProjectView extends DockableView {
 
 		itemtext.setText("itemtext");
 
-		lblItemNum.setText(Resource.getPlainResourceString("Item_#"));
+		lblItemNum.setText(Resource.getResourceString("Item_#"));
 
 		ResourceHelper.setText(lblStatus, "Status");
 		lblStatus.setLabelFor(statebox);
@@ -411,7 +411,7 @@ public class ProjectView extends DockableView {
 		if (!TaskModel.getReference().hasSubTasks())
 			projBox.setEnabled(false);
 
-		JLabel plab = new JLabel(Resource.getPlainResourceString("parent"));
+		JLabel plab = new JLabel(Resource.getResourceString("parent"));
 		jPanel3.add(plab, GridBagConstraintsFactory.create(1,6,GridBagConstraints.BOTH));
 
 		GridBagConstraints gridBagConstraints25 = new GridBagConstraints();
@@ -430,7 +430,7 @@ public class ProjectView extends DockableView {
 		
 		taskBorder = new JPanel();
 		taskBorder.setBorder(new TitledBorder(Resource
-				.getPlainResourceString("tasks")));
+				.getResourceString("tasks")));
 		taskBorder.setLayout(new GridBagLayout());
 		
 		add(taskBorder, GridBagConstraintsFactory.create(0,3,GridBagConstraints.BOTH, 1.0, 1.0));
@@ -465,7 +465,7 @@ public class ProjectView extends DockableView {
 			}
 			RunReport.runReport("proj", map);
 		} catch (NoClassDefFoundError r) {
-			Errmsg.notice(Resource.getPlainResourceString("borg_jasp"));
+			Errmsg.notice(Resource.getResourceString("borg_jasp"));
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
 		}
@@ -518,7 +518,7 @@ public class ProjectView extends DockableView {
 
 				if (DateUtil.isAfter(p.getStartDate(), p.getDueDate())) {
 					throw new Warning(Resource
-							.getPlainResourceString("sd_dd_warn"));
+							.getResourceString("sd_dd_warn"));
 				}
 			}
 			p.setDescription(description.getText()); // description
@@ -566,7 +566,7 @@ public class ProjectView extends DockableView {
 				Project p2 = pi.next();
 				if ((p == null || p.getKey() != p2.getKey())
 						&& p2.getStatus().equals(
-								Resource.getPlainResourceString("OPEN")))
+								Resource.getResourceString("OPEN")))
 					projBox.addItem(getProjectString(p2));
 			}
 		}
@@ -638,7 +638,7 @@ public class ProjectView extends DockableView {
 			// add the task list
 			if (taskPanel == null) {
 				taskPanel = new TaskListPanel(TaskView.getProjectString(p),
-						Resource.getPlainResourceString("All"), "", false);
+						Resource.getResourceString("All"), "", false);
 				GridBagConstraints taskGBC = new GridBagConstraints();
 				taskGBC.gridx = 0;
 				taskGBC.gridy = 0;
@@ -657,8 +657,8 @@ public class ProjectView extends DockableView {
 			itemtext.setEditable(false);
 
 			// title
-			title_ = Resource.getPlainResourceString("NEW_Item");
-			statebox.addItem(Resource.getPlainResourceString("OPEN"));
+			title_ = Resource.getResourceString("NEW_Item");
+			statebox.addItem(Resource.getResourceString("OPEN"));
 			statebox.setEnabled(false);
 			catbox.setSelectedIndex(0);
 			description.setText(""); // desc
@@ -714,7 +714,7 @@ public class ProjectView extends DockableView {
 			itemtext.setEditable(false);
 
 			statebox.removeAllItems();
-			statebox.addItem(Resource.getPlainResourceString("OPEN"));
+			statebox.addItem(Resource.getResourceString("OPEN"));
 			statebox.setEnabled(false);
 
 		}
@@ -729,8 +729,8 @@ public class ProjectView extends DockableView {
 
 			// set next state pulldown
 			statebox.removeAllItems();
-			statebox.addItem(Resource.getPlainResourceString("OPEN"));
-			statebox.addItem(Resource.getPlainResourceString("CLOSED"));
+			statebox.addItem(Resource.getResourceString("OPEN"));
+			statebox.addItem(Resource.getResourceString("CLOSED"));
 			statebox.setSelectedItem(state);
 			statebox.setEnabled(true);
 

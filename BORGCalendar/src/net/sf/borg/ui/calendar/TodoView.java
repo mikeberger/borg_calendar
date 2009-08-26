@@ -297,10 +297,10 @@ public class TodoView extends DockableView implements Prefs.Listener {
 		// the todos will be displayed in a sorted table with 2 columns -
 		// data and todo text
 		todoTable.setModel(new TableSorter(new String[] {
-				Resource.getPlainResourceString("Date"),
-				Resource.getPlainResourceString("To_Do"),
-				Resource.getPlainResourceString("Category"),
-				Resource.getPlainResourceString("Color"), "key" }, new Class[] {
+				Resource.getResourceString("Date"),
+				Resource.getResourceString("To_Do"),
+				Resource.getResourceString("Category"),
+				Resource.getResourceString("Color"), "key" }, new Class[] {
 				Date.class, java.lang.String.class, java.lang.String.class,
 				java.lang.String.class, java.lang.Integer.class }));
 
@@ -328,7 +328,7 @@ public class TodoView extends DockableView implements Prefs.Listener {
 	}
 
 	public String getFrameTitle() {
-		return Resource.getPlainResourceString("To_Do_List");
+		return Resource.getResourceString("To_Do_List");
 	}
 
 	public JMenuBar getMenuForFrame() {
@@ -494,7 +494,7 @@ public class TodoView extends DockableView implements Prefs.Listener {
 					if (pj.getDueDate() == null)
 						continue;
 					if (pj.getStatus().equals(
-							Resource.getPlainResourceString("CLOSED")))
+							Resource.getResourceString("CLOSED")))
 						continue;
 
 					if (!CategoryModel.getReference().isShown(pj.getCategory()))

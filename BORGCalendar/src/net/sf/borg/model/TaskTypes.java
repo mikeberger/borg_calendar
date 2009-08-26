@@ -488,7 +488,7 @@ public class TaskTypes {
 			Collection<String> states = getStates(type);
 			if (init.equals("OPEN") && !states.contains("OPEN"))
 				throw new Exception(Resource
-						.getPlainResourceString("NoOpenState")
+						.getResourceString("NoOpenState")
 						+ type);
 		}
 	}

@@ -38,18 +38,28 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 
 
+/**
+ * Common dialog class with a scrolled text area. It is not in the ui package because
+ * it is one of the few UI related components that is used outside of the main UI. NOTE: this class contains 
+ * generated UI code that has not been cleaned up.
+ */
 public class ScrolledDialog extends JDialog {
 
 	
 	private static final long serialVersionUID = 3348692535328684293L;
-	private static int result_;
-	public final static int OK = 0;
-	public final static int STACK = 1;
 
+	/** JTable - if we are showing one */
 	private JTable tbl_ = null;
 
+	/** exception - if we are showing one */
 	private static Exception e_;
 
+	/**
+	 * Instantiates a new scrolled dialog to show text.
+	 * 
+	 * @param s the text to show
+	 * @param stack if true, show the stack request button
+	 */
 	private ScrolledDialog(String s, boolean stack) {
 		initComponents();
 		jTextArea.setText(s);
@@ -57,6 +67,11 @@ public class ScrolledDialog extends JDialog {
 		setModal(true);
 	}
 
+	/**
+	 * Instantiates a new scrolled dialog to show a table.
+	 * 
+	 * @param tbl the tbl
+	 */
 	private ScrolledDialog(JTable tbl) {
 		tbl_ = tbl;
 		initComponents();
@@ -64,8 +79,14 @@ public class ScrolledDialog extends JDialog {
 		setModal(false);
 	}
 
-	public static int showError(Exception e) {
-		result_ = 0;
+	/**
+	 * Show an error dialog with optional stack trace button.
+	 * 
+	 * @param e the Exception
+	 * 
+	 * @return the int
+	 */
+	public static void showError(Exception e) {
 		e_ = e;
 		boolean ss = false;
 		String showstack = Prefs.getPref(PrefName.STACKTRACE);
@@ -74,19 +95,31 @@ public class ScrolledDialog extends JDialog {
 		}
 
 		new ScrolledDialog(e.toString(), ss).setVisible(true);
-		return result_;
 	}
 
+	/**
+	 * Show a table.
+	 * 
+	 * @param tbl the table
+	 */
 	public static void showTable(JTable tbl) {
 		new ScrolledDialog(tbl).setVisible(true);
 	}
 
-	public static int showNotice(String text) {
-		result_ = 0;
+	/**
+	 * Show a notice.
+	 * 
+	 * @param text the notice text
+	 * 
+	 * @return the int
+	 */
+	public static void showNotice(String text) {
 		new ScrolledDialog(text, false).setVisible(true);
-		return result_;
 	}
 
+	/**
+	 * Inits the swing components.
+	 */
 	private void initComponents()// GEN-BEGIN:initComponents
 	{
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -95,7 +128,7 @@ public class ScrolledDialog extends JDialog {
 		this.setContentPane(getJPanel());
 		addWindowListener(new java.awt.event.WindowAdapter() {
 			public void windowClosing(java.awt.event.WindowEvent evt) {
-				exitForm(evt);
+				windowClose();
 			}
 		});
 
@@ -107,20 +140,34 @@ public class ScrolledDialog extends JDialog {
 				screenSize.height / 2 - (labelSize.height / 2));
 	}
 
-	/** Exit the Application */
-	private void exitForm(java.awt.event.WindowEvent evt) {
+	/**
+	 * dispose of the window
+	 * 
+	 */
+	private void windowClose() {
 		this.dispose();
 	}
 
+	/** The panel. */
 	private JPanel jPanel = null;
+	
+	/** The scroll pane. */
 	private JScrollPane jScrollPane = null;
+	
+	/** The text area. */
 	private JTextArea jTextArea = null;
+	
+	/** The button panel. */
 	private JPanel buttonPanel = null;
+	
+	/** The ok button. */
 	private JButton okButton = null;
+	
+	/** The stack button. */
 	private JButton stackButton = null;
 
 	/**
-	 * This method initializes jPanel
+	 * This method initializes jPanel.
 	 * 
 	 * @return javax.swing.JPanel
 	 */
@@ -146,7 +193,7 @@ public class ScrolledDialog extends JDialog {
 	}
 
 	/**
-	 * This method initializes jScrollPane
+	 * This method initializes jScrollPane.
 	 * 
 	 * @return javax.swing.JScrollPane
 	 */
@@ -166,7 +213,7 @@ public class ScrolledDialog extends JDialog {
 	}
 
 	/**
-	 * This method initializes jTextArea
+	 * This method initializes jTextArea.
 	 * 
 	 * @return javax.swing.JTextArea
 	 */
@@ -180,7 +227,7 @@ public class ScrolledDialog extends JDialog {
 	}
 
 	/**
-	 * This method initializes buttonPanel
+	 * This method initializes buttonPanel.
 	 * 
 	 * @return javax.swing.JPanel
 	 */
@@ -194,7 +241,7 @@ public class ScrolledDialog extends JDialog {
 	}
 
 	/**
-	 * This method initializes okButton
+	 * This method initializes okButton.
 	 * 
 	 * @return javax.swing.JButton
 	 */
@@ -211,13 +258,15 @@ public class ScrolledDialog extends JDialog {
 		return okButton;
 	}
 
+	/**
+	 * do ok action - dispose of the dialog
+	 */
 	private void doOk() {
-		result_ = OK;
 		this.dispose();
 	}
 
 	/**
-	 * This method initializes stackButton
+	 * This method initializes stackButton.
 	 * 
 	 * @return javax.swing.JButton
 	 */
@@ -234,8 +283,10 @@ public class ScrolledDialog extends JDialog {
 		return stackButton;
 	}
 
+	/**
+	 * Do stack actin - show the stack trace in a dialog and write the stack trace to stdout and stderr
+	 */
 	private void doStack() {
-		result_ = STACK;
 		// show the stack trace
 		java.io.ByteArrayOutputStream bao = new java.io.ByteArrayOutputStream();
 		java.io.PrintStream ps = new java.io.PrintStream(bao);
@@ -245,8 +296,5 @@ public class ScrolledDialog extends JDialog {
 		System.out.println(bao.toString());
 	}
 
-	public static void main(String args[]) {
-		int ret = ScrolledDialog.showError(new Exception("duh\nduh\nduh"));
-		System.out.println(ret);
-	}
-} // @jve:decl-index=0:visual-constraint="10,10"
+	
+} 

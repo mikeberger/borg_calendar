@@ -35,6 +35,7 @@ import java.util.StringTokenizer;
 
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
+import net.sf.borg.common.Resource;
 import net.sf.borg.common.SendJavaMail;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.TaskModel;
@@ -155,7 +156,7 @@ public class EmailReminder {
 			while (stk.hasMoreTokens()) {
 				String a = stk.nextToken();
 				if (!a.equals("")) {
-					SendJavaMail.sendMail(host, tx, a.trim(), a.trim(), Prefs
+					SendJavaMail.sendMail(host, tx, Resource.getResourceString("Reminder_Notice"), a.trim(), a.trim(), Prefs
 							.getPref(PrefName.EMAILUSER), Prefs
 							.getPref(PrefName.EMAILPASS));
 					// String ed = Prefs.getPref(PrefName.EMAILDEBUG);

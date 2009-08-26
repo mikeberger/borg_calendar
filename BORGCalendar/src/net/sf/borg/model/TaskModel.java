@@ -279,7 +279,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 						continue;
 
 					if (pj.getStatus().equals(
-							Resource.getPlainResourceString("CLOSED")))
+							Resource.getResourceString("CLOSED")))
 						continue;
 
 					if (!CategoryModel.getReference().isShown(pj.getCategory()))
@@ -447,7 +447,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 		try {
 			if (db_ instanceof TaskDB == false)
 				throw new Warning(Resource
-						.getPlainResourceString("SubtaskNotSupported"));
+						.getResourceString("SubtaskNotSupported"));
 			TaskDB sdb = (TaskDB) db_;
 			beginTransaction();
 			LinkModel.getReference().deleteLinks(id, Project.class);
@@ -499,7 +499,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 					&& p.getDueDate() != null
 					&& DateUtil.isAfter(task.getDueDate(), p.getDueDate())) {
 				throw new Warning(Resource
-						.getPlainResourceString("taskdd_warning"));
+						.getResourceString("taskdd_warning"));
 			}
 		}
 
@@ -608,7 +608,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 	public void closeProject(int num) throws Exception, Warning {
 
 		Project p = getProject(num);
-		p.setStatus(Resource.getPlainResourceString("CLOSED"));
+		p.setStatus(Resource.getResourceString("CLOSED"));
 		saveProject(p);
 	}
 
@@ -703,7 +703,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 	public Project getProject(int id) throws Exception {
 		if (db_ instanceof TaskDB == false)
 			throw new Warning(Resource
-					.getPlainResourceString("SubtaskNotSupported"));
+					.getResourceString("SubtaskNotSupported"));
 		TaskDB sdb = (TaskDB) db_;
 		return sdb.getProject(id);
 	}
@@ -830,7 +830,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 	public Collection<Subtask> getSubTasks(int taskid) throws Exception {
 		if (db_ instanceof TaskDB == false)
 			throw new Warning(Resource
-					.getPlainResourceString("SubtaskNotSupported"));
+					.getResourceString("SubtaskNotSupported"));
 
 		TaskDB sdb = (TaskDB) db_;
 		return sdb.getSubTasks(taskid);
@@ -848,7 +848,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 	public Collection<Subtask> getSubTasks() throws Exception {
 		if (db_ instanceof TaskDB == false)
 			throw new Warning(Resource
-					.getPlainResourceString("SubtaskNotSupported"));
+					.getResourceString("SubtaskNotSupported"));
 
 		TaskDB sdb = (TaskDB) db_;
 		return sdb.getSubTasks();
@@ -869,7 +869,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 	public Subtask getSubTask(int id) throws Exception {
 		if (db_ instanceof TaskDB == false)
 			throw new Warning(Resource
-					.getPlainResourceString("SubtaskNotSupported"));
+					.getResourceString("SubtaskNotSupported"));
 
 		TaskDB sdb = (TaskDB) db_;
 		return sdb.getSubTask(id);
@@ -890,7 +890,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 	public Collection<Task> getTasks(int projectid) throws Exception {
 		if (db_ instanceof TaskDB == false)
 			throw new Warning(Resource
-					.getPlainResourceString("SubtaskNotSupported"));
+					.getResourceString("SubtaskNotSupported"));
 
 		TaskDB sdb = (TaskDB) db_;
 		return sdb.getTasks(projectid);
@@ -911,7 +911,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 	public Collection<Project> getSubProjects(int projectid) throws Exception {
 		if (db_ instanceof TaskDB == false)
 			throw new Warning(Resource
-					.getPlainResourceString("SubtaskNotSupported"));
+					.getResourceString("SubtaskNotSupported"));
 
 		TaskDB sdb = (TaskDB) db_;
 		return sdb.getSubProjects(projectid);
@@ -934,7 +934,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 		Collection<Project> c = new ArrayList<Project>();
 		if (db_ instanceof TaskDB == false)
 			throw new Warning(Resource
-					.getPlainResourceString("SubtaskNotSupported"));
+					.getResourceString("SubtaskNotSupported"));
 		addSubProjectsToCollection(c, projectid);
 		return c;
 	}
@@ -985,7 +985,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 	public void deleteSubTask(int id, boolean undo) throws Exception {
 		if (db_ instanceof TaskDB == false)
 			throw new Warning(Resource
-					.getPlainResourceString("SubtaskNotSupported"));
+					.getResourceString("SubtaskNotSupported"));
 
 		TaskDB sdb = (TaskDB) db_;
 		if (!undo) {
@@ -1024,7 +1024,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 	public void saveSubTask(Subtask s, boolean undo) throws Exception {
 		if (db_ instanceof TaskDB == false)
 			throw new Warning(Resource
-					.getPlainResourceString("SubtaskNotSupported"));
+					.getResourceString("SubtaskNotSupported"));
 
 		TaskDB sdb = (TaskDB) db_;
 		if (s.getKey() <= 0 || null == sdb.getSubTask(s.getKey())) {
@@ -1062,7 +1062,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 		if (db_ instanceof TaskDB == false)
 			return;
 		// throw new Exception(Resource
-		// .getPlainResourceString("SubtaskNotSupported"));
+		// .getResourceString("SubtaskNotSupported"));
 		TaskDB sdb = (TaskDB) db_;
 		sdb.addLog(taskid, desc);
 	}
@@ -1079,7 +1079,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 	private void saveLog(Tasklog tlog) throws Exception {
 		if (db_ instanceof TaskDB == false)
 			throw new Warning(Resource
-					.getPlainResourceString("SubtaskNotSupported"));
+					.getResourceString("SubtaskNotSupported"));
 		TaskDB sdb = (TaskDB) db_;
 		sdb.saveLog(tlog);
 	}
@@ -1098,7 +1098,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 	public Collection<Tasklog> getLogs(int taskid) throws Exception {
 		if (db_ instanceof TaskDB == false)
 			throw new Warning(Resource
-					.getPlainResourceString("SubtaskNotSupported"));
+					.getResourceString("SubtaskNotSupported"));
 		TaskDB sdb = (TaskDB) db_;
 		return sdb.getLogs(taskid);
 	}
@@ -1114,7 +1114,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 	public Collection<Tasklog> getLogs() throws Exception {
 		if (db_ instanceof TaskDB == false)
 			throw new Warning(Resource
-					.getPlainResourceString("SubtaskNotSupported"));
+					.getResourceString("SubtaskNotSupported"));
 		TaskDB sdb = (TaskDB) db_;
 		return sdb.getLogs();
 	}
@@ -1261,7 +1261,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 	public void saveProject(Project p, boolean undo) throws Exception {
 		if (db_ instanceof TaskDB == false)
 			throw new Warning(Resource
-					.getPlainResourceString("SubtaskNotSupported"));
+					.getResourceString("SubtaskNotSupported"));
 
 		// validation that task due dates are before project due date
 		if (p.getKey() != -1) {
@@ -1270,7 +1270,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 						&& !TaskModel.isClosed(t)
 						&& DateUtil.isAfter(t.getDueDate(), p.getDueDate())) {
 					throw new Warning(Resource
-							.getPlainResourceString("projdd_warning")
+							.getResourceString("projdd_warning")
 							+ ": " + t.getKey());
 				}
 			}
@@ -1281,7 +1281,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 						&& !TaskModel.isClosed(child)
 						&& DateUtil.isAfter(child.getDueDate(), p.getDueDate())) {
 					throw new Warning(Resource
-							.getPlainResourceString("projchild_warning")
+							.getResourceString("projchild_warning")
 							+ ": " + child.getKey());
 				}
 			}
@@ -1295,17 +1295,17 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 				if (p.getDueDate() != null && par.getDueDate() != null
 						&& DateUtil.isAfter(p.getDueDate(), par.getDueDate())) {
 					throw new Warning(Resource
-							.getPlainResourceString("projpar_warning"));
+							.getResourceString("projpar_warning"));
 				}
 			}
 		}
 
-		if (p.getStatus().equals(Resource.getPlainResourceString("CLOSED"))) {
+		if (p.getStatus().equals(Resource.getResourceString("CLOSED"))) {
 			// make sure that all tasks are closed
 			for (Task pt : TaskModel.getReference().getTasks(p.getKey())) {
 				if (!isClosed(pt)) {
 					throw new Warning(Resource
-							.getPlainResourceString("close_proj_warn"));
+							.getResourceString("close_proj_warn"));
 				}
 			}
 		}
@@ -1356,6 +1356,6 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 	 */
 	static public boolean isClosed(Project p) {
 		String stat = p.getStatus();
-		return stat.equals(Resource.getPlainResourceString("CLOSED"));
+		return stat.equals(Resource.getResourceString("CLOSED"));
 	}
 }

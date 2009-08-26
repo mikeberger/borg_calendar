@@ -72,7 +72,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 	private KeyedEntity<?> owner_;
 	private JScrollPane scrollPanel = new JScrollPane();
 	private JTable table = new JTable();
-	private JLabel notsupp = new JLabel(Resource.getPlainResourceString("not_supported"));
+	private JLabel notsupp = new JLabel(Resource.getResourceString("not_supported"));
 	
 	public LinkPanel() {
 		initComponents();
@@ -146,7 +146,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 							try {
 								Integer key = (Integer) ts.getValueAt(index, 1);
 								Link l = LinkModel.getReference().getLink(key.intValue());
-								String info = Resource.getPlainResourceString("Type") + ":" + l.getLinkType() +
+								String info = Resource.getResourceString("Type") + ":" + l.getLinkType() +
 								"\n\n[" + l.getPath() + "]";
 								Errmsg.notice(info);
 							} catch (Exception e) {
@@ -171,7 +171,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 		gbc.weighty = 1.0;
 		this.add(scrollPanel, gbc);
 
-		JButton linkfileb = new JButton(Resource.getPlainResourceString("link_file"));
+		JButton linkfileb = new JButton(Resource.getResourceString("link_file"));
 		linkfileb.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 				"/resource/Add16.gif")));
 		linkfileb.addActionListener(new ActionListener() {
@@ -180,7 +180,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 				
 				if (owner_ == null || owner_.getKey() == -1) {
 					Errmsg.notice(Resource
-							.getPlainResourceString("att_owner_null"));
+							.getResourceString("att_owner_null"));
 					return;
 				}
 				File file;
@@ -208,7 +208,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 			}
 		});
 		
-		JButton attfileb = new JButton(Resource.getPlainResourceString("attach_file"));
+		JButton attfileb = new JButton(Resource.getResourceString("attach_file"));
 		attfileb.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 				"/resource/Copy16.gif")));
 		attfileb.addActionListener(new ActionListener() {
@@ -217,7 +217,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 				
 				if (owner_ == null || owner_.getKey() == -1) {
 					Errmsg.notice(Resource
-							.getPlainResourceString("att_owner_null"));
+							.getResourceString("att_owner_null"));
 					return;
 				}
 				File file;
@@ -246,7 +246,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 			}
 		});
 
-		JButton urlb = new JButton(Resource.getPlainResourceString("url"));
+		JButton urlb = new JButton(Resource.getResourceString("url"));
 		urlb.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 				"/resource/WebComponent16.gif")));
 		urlb.addActionListener(new ActionListener() {
@@ -254,12 +254,12 @@ public class LinkPanel extends JPanel implements Model.Listener {
 
 				if (owner_ == null || owner_.getKey() == -1) {
 					Errmsg.notice(Resource
-							.getPlainResourceString("att_owner_null"));
+							.getResourceString("att_owner_null"));
 					return;
 				}
 
 				String url = JOptionPane.showInputDialog(Resource
-						.getPlainResourceString("url")
+						.getResourceString("url")
 						+ "?");
 				if (url == null)
 					return;
@@ -280,23 +280,23 @@ public class LinkPanel extends JPanel implements Model.Listener {
 
 				if (owner_ == null || owner_.getKey() == -1) {
 					Errmsg.notice(Resource
-							.getPlainResourceString("att_owner_null"));
+							.getResourceString("att_owner_null"));
 					return;
 				}
 
 				Object[] possibleValues = { 
-						Resource.getPlainResourceString("appointment"), 
-						Resource.getPlainResourceString("task"),
-						Resource.getPlainResourceString("memo"),
-						Resource.getPlainResourceString("Address"),
-						Resource.getPlainResourceString("project")};
+						Resource.getResourceString("appointment"), 
+						Resource.getResourceString("task"),
+						Resource.getResourceString("memo"),
+						Resource.getResourceString("Address"),
+						Resource.getResourceString("project")};
 				String selectedValue = (String)JOptionPane.showInputDialog(null, 
-						Resource.getPlainResourceString("select_link_type"), "BORG",
+						Resource.getResourceString("select_link_type"), "BORG",
 						JOptionPane.INFORMATION_MESSAGE, null,possibleValues, possibleValues[0]);
 				if (selectedValue == null)
 					return;
 				try{
-					if( selectedValue.equals(Resource.getPlainResourceString("appointment")))
+					if( selectedValue.equals(Resource.getResourceString("appointment")))
 					{
 						Appointment ap = BeanSelector.selectAppointment();
 						if( ap != null )
@@ -304,7 +304,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 							LinkModel.getReference().addLink(owner_, Integer.toString(ap.getKey()), LinkType.APPOINTMENT);
 						}
 					}
-					else if( selectedValue.equals(Resource.getPlainResourceString("project")))
+					else if( selectedValue.equals(Resource.getResourceString("project")))
 					{
 						Project ap = BeanSelector.selectProject();
 						if( ap != null )
@@ -312,7 +312,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 							LinkModel.getReference().addLink(owner_, Integer.toString(ap.getKey()), LinkType.PROJECT);
 						}
 					}
-					else if( selectedValue.equals(Resource.getPlainResourceString("task")))
+					else if( selectedValue.equals(Resource.getResourceString("task")))
 					{
 						Task ap = BeanSelector.selectTask();
 						if( ap != null )
@@ -320,7 +320,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 							LinkModel.getReference().addLink(owner_, Integer.toString(ap.getKey()), LinkType.TASK);
 						}
 					}
-					else if( selectedValue.equals(Resource.getPlainResourceString("Address")))
+					else if( selectedValue.equals(Resource.getResourceString("Address")))
 					{
 						Address ap = BeanSelector.selectAddress();
 						if( ap != null )
@@ -328,7 +328,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 							LinkModel.getReference().addLink(owner_, Integer.toString(ap.getKey()), LinkType.ADDRESS);
 						}
 					}
-					else if( selectedValue.equals(Resource.getPlainResourceString("memo")))
+					else if( selectedValue.equals(Resource.getResourceString("memo")))
 					{
 						Memo ap = BeanSelector.selectMemo();
 						if( ap != null )
@@ -380,7 +380,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 					File file = new File(at.getPath());
 					if (!file.exists()) {
 						Errmsg.notice(Resource
-								.getPlainResourceString("att_not_found"));
+								.getResourceString("att_not_found"));
 						return;
 					}
 					Desktop.getDesktop().open(file);
@@ -389,7 +389,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 					File file = new File(LinkModel.attachmentFolder() + "/" + at.getPath());
 					if (!file.exists()) {
 						Errmsg.notice(Resource
-								.getPlainResourceString("att_not_found"));
+								.getResourceString("att_not_found"));
 						return;
 					}
 					Desktop.getDesktop().open(file);
@@ -401,7 +401,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 					Appointment ap = AppointmentModel.getReference().getAppt(Integer.parseInt(at.getPath()));
 					if (ap == null) {
 						Errmsg.notice(Resource
-								.getPlainResourceString("att_not_found"));
+								.getResourceString("att_not_found"));
 						return;
 					}
 					
@@ -418,7 +418,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 					Project ap = TaskModel.getReference().getProject(Integer.parseInt(at.getPath()));
 					if (ap == null) {
 						Errmsg.notice(Resource
-								.getPlainResourceString("att_not_found"));
+								.getResourceString("att_not_found"));
 						return;
 					}
 					
@@ -428,7 +428,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 					Task ap = TaskModel.getReference().getTask(Integer.parseInt(at.getPath()));
 					if (ap == null) {
 						Errmsg.notice(Resource
-								.getPlainResourceString("att_not_found"));
+								.getResourceString("att_not_found"));
 						return;
 					}
 					
@@ -438,7 +438,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 					Address ap = AddressModel.getReference().getAddress(Integer.parseInt(at.getPath()));
 					if (ap == null) {
 						Errmsg.notice(Resource
-								.getPlainResourceString("att_not_found"));
+								.getResourceString("att_not_found"));
 						return;
 					}
 					
@@ -516,29 +516,29 @@ public class LinkPanel extends JPanel implements Model.Listener {
 	    else if (at.getLinkType().equals(LinkType.APPOINTMENT.toString())) {
 	        Appointment ap = AppointmentModel.getReference().getAppt(Integer.parseInt(at.getPath()));
 	        if (ap != null) {
-	            return (Resource.getPlainResourceString("appointment") + "[" + ap.getText() + "]");
+	            return (Resource.getResourceString("appointment") + "[" + ap.getText() + "]");
 	        }
 	
 	    } else if (at.getLinkType().equals(LinkType.PROJECT.toString())) {
 	        Project ap = TaskModel.getReference().getProject(Integer.parseInt(at.getPath()));
 	        if (ap != null) {
-	            return (Resource.getPlainResourceString("project") + "[" + ap.getDescription() + "]");
+	            return (Resource.getResourceString("project") + "[" + ap.getDescription() + "]");
 	        }
 	
 	    } else if (at.getLinkType().equals(LinkType.TASK.toString())) {
 	        Task ap = TaskModel.getReference().getTask(Integer.parseInt(at.getPath()));
 	        if (ap != null) {
-	            return (Resource.getPlainResourceString("task") + "[" + ap.getDescription() + "]");
+	            return (Resource.getResourceString("task") + "[" + ap.getDescription() + "]");
 	        }
 	
 	    } else if (at.getLinkType().equals(LinkType.ADDRESS.toString())) {
 	        Address ap = AddressModel.getReference().getAddress(Integer.parseInt(at.getPath()));
 	        if (ap != null) {
-	            return (Resource.getPlainResourceString("Address") + "[" + ap.getLastName() + "," + ap.getFirstName() + "]");
+	            return (Resource.getResourceString("Address") + "[" + ap.getLastName() + "," + ap.getFirstName() + "]");
 	        }
 	
 	    } else if (at.getLinkType().equals(LinkType.MEMO.toString())) {
-	        return (Resource.getPlainResourceString("memo") + "[" + at.getPath() + "]");
+	        return (Resource.getResourceString("memo") + "[" + at.getPath() + "]");
 	    } else if (at.getLinkType().equals(LinkType.FILELINK.toString())) {
 	        File f = new File(at.getPath());
 	        return f.getName();

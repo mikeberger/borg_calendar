@@ -108,7 +108,7 @@ class DateZone {
 	private void quick_todo() {
 
 		String tdtext = JOptionPane.showInputDialog("", Resource
-				.getPlainResourceString("Please_enter_some_appointment_text"));
+				.getResourceString("Please_enter_some_appointment_text"));
 		if (tdtext == null)
 			return;
 
@@ -156,14 +156,14 @@ class DateZone {
 		if (popmenu == null) {
 			popmenu = new JPopupMenu();
 			popmenu.add(mnuitm = new JMenuItem(Resource
-					.getPlainResourceString("Add_New")));
+					.getResourceString("Add_New")));
 			mnuitm.addActionListener(new ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
 					edit();
 				}
 			});
 			popmenu.add(mnuitm = new JMenuItem(Resource
-					.getPlainResourceString("todoquickentry")));
+					.getResourceString("todoquickentry")));
 			mnuitm.addActionListener(new ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
 					quick_todo();

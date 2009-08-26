@@ -138,7 +138,7 @@ public class TaskView extends DockableView {
 			}
 
 			String nm = table.getColumnName(column);
-			if (closed.booleanValue() == true || !nm.equals(Resource.getPlainResourceString("Due_Date")) || obj == null)
+			if (closed.booleanValue() == true || !nm.equals(Resource.getResourceString("Due_Date")) || obj == null)
 				return this;
 
 			int days = TaskModel.daysLeft(dd);
@@ -482,7 +482,7 @@ public class TaskView extends DockableView {
 		else
 		{
 			JTextArea ta = new JTextArea();
-			ta.setText(Resource.getPlainResourceString("SubtaskNotSupported"));
+			ta.setText(Resource.getResourceString("SubtaskNotSupported"));
 			ta.setEditable(false);
 			jSplitPane.setBottomComponent(ta);
 		}
@@ -535,7 +535,7 @@ public class TaskView extends DockableView {
 		gridBagConstraints22.insets = new Insets(4, 20, 4, 4);
 		gridBagConstraints22.gridy = 4;
 		daysLeftLabel = new JLabel();
-		daysLeftLabel.setText(Resource.getPlainResourceString("Days_Left"));
+		daysLeftLabel.setText(Resource.getResourceString("Days_Left"));
 		daysLeftLabel.setHorizontalTextPosition(SwingConstants.RIGHT);
 		daysLeftLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
@@ -791,7 +791,7 @@ public class TaskView extends DockableView {
 			pritext.addItem(new Integer(p));
 		}
 
-		JLabel prLabel = new JLabel(Resource.getPlainResourceString("project"));
+		JLabel prLabel = new JLabel(Resource.getResourceString("project"));
 		GridBagConstraints gridBagConstraints90 = new GridBagConstraints();
 		gridBagConstraints90.gridx = 0;
 		gridBagConstraints90.gridy = 5;
@@ -826,8 +826,8 @@ public class TaskView extends DockableView {
 	private void initLogTable() {
 
 		logtable.setModel(new TableSorter(new String[] {
-				Resource.getPlainResourceString("Date"),
-				Resource.getPlainResourceString("Description"), }, new Class[] {
+				Resource.getResourceString("Date"),
+				Resource.getResourceString("Description"), }, new Class[] {
 				Date.class, String.class }, new boolean[] { false, false }));
 
 		logtable.getColumnModel().getColumn(0).setPreferredWidth(5);
@@ -874,14 +874,14 @@ public class TaskView extends DockableView {
 		defDateRend_ = stable.getDefaultRenderer(Date.class);
 		defStringRend_ = stable.getDefaultRenderer(String.class);
 		stable.setModel(new TableSorter(new String[] {
-				Resource.getPlainResourceString("Closed"),
-				Resource.getPlainResourceString("subtask_id"),
-				Resource.getPlainResourceString("Description"),
-				Resource.getPlainResourceString("Start_Date"),
-				Resource.getPlainResourceString("Due_Date"),
-				Resource.getPlainResourceString("duration"),
-				Resource.getPlainResourceString("Days_Left"),
-				Resource.getPlainResourceString("close_date") }, new Class[] {
+				Resource.getResourceString("Closed"),
+				Resource.getResourceString("subtask_id"),
+				Resource.getResourceString("Description"),
+				Resource.getResourceString("Start_Date"),
+				Resource.getResourceString("Due_Date"),
+				Resource.getResourceString("duration"),
+				Resource.getResourceString("Days_Left"),
+				Resource.getResourceString("close_date") }, new Class[] {
 				java.lang.Boolean.class, Integer.class, java.lang.String.class,
 				Date.class, Date.class, Integer.class, Integer.class, Date.class },
 				new boolean[] { true, false, true, true, true, false, false, false }));
@@ -980,7 +980,7 @@ public class TaskView extends DockableView {
 						int ret = JOptionPane.showConfirmDialog(null, Resource
 								.getResourceString("Really_Delete_")
 								+ "?", Resource
-								.getPlainResourceString("Confirm_Delete"),
+								.getResourceString("Confirm_Delete"),
 								JOptionPane.OK_CANCEL_OPTION,
 								JOptionPane.QUESTION_MESSAGE);
 						if (ret != JOptionPane.OK_OPTION)
@@ -1068,9 +1068,9 @@ public class TaskView extends DockableView {
 			TaskModel.getReference().deleteSubTask(id.intValue());
 			TaskModel.getReference().addLog(
 					tasknum,
-					Resource.getPlainResourceString("subtask") + " "
+					Resource.getResourceString("subtask") + " "
 							+ id.toString() + " "
-							+ Resource.getPlainResourceString("deleted"));
+							+ Resource.getResourceString("deleted"));
 		}
 
 		tbd_.clear();
@@ -1116,7 +1116,7 @@ public class TaskView extends DockableView {
 			        if( DateUtil.isAfter( dd, task.getDueDate()))
 			        {
 					String msg = Resource
-							.getPlainResourceString("stdd_warning")
+							.getResourceString("stdd_warning")
 							+ ": " + desc;
 					throw new Warning(msg);
 				}
@@ -1129,7 +1129,7 @@ public class TaskView extends DockableView {
 			        if( DateUtil.isAfter( task.getStartDate(), crd))
 			        {
 					String msg = Resource
-							.getPlainResourceString("stsd_warning")
+							.getResourceString("stsd_warning")
 							+ ": " + desc;
 					throw new Warning(msg);
 				}
@@ -1141,17 +1141,17 @@ public class TaskView extends DockableView {
 			if (id == null || id.intValue() == 0) {
 				TaskModel.getReference().addLog(
 						tasknum,
-						Resource.getPlainResourceString("subtask") + " "
+						Resource.getResourceString("subtask") + " "
 								+ s.getKey() + " "
-								+ Resource.getPlainResourceString("created")
+								+ Resource.getResourceString("created")
 								+ ": " + s.getDescription());
 			}
 			if (closing) {
 				TaskModel.getReference().addLog(
 						tasknum,
-						Resource.getPlainResourceString("subtask") + " "
+						Resource.getResourceString("subtask") + " "
 								+ s.getKey() + " "
-								+ Resource.getPlainResourceString("Closed")
+								+ Resource.getResourceString("Closed")
 								+ ": " + s.getDescription());
 			}
 		}
@@ -1217,7 +1217,7 @@ public class TaskView extends DockableView {
 			if( task.getDueDate() != null && DateUtil.isAfter(task.getStartDate(), task.getDueDate()) )
 			{
 				throw new Warning(Resource
-					.getPlainResourceString("sd_dd_warn"));
+					.getResourceString("sd_dd_warn"));
 			}
 			
 			Integer pri = (Integer) pritext.getSelectedItem();
@@ -1275,13 +1275,13 @@ public class TaskView extends DockableView {
 			if (num.equals("NEW") || num.equals("CLONE")) {
 				TaskModel.getReference().addLog(
 						task.getKey(),
-						Resource.getPlainResourceString("Task_Created"));
+						Resource.getResourceString("Task_Created"));
 			} else {
 				if (orig != null && !orig.getState().equals(task.getState())) {
 
 					TaskModel.getReference().addLog(
 							task.getKey(),
-							Resource.getPlainResourceString("State_Change")
+							Resource.getResourceString("State_Change")
 									+ ": " + orig.getState() + " --> "
 									+ task.getState());
 				}
@@ -1299,8 +1299,8 @@ public class TaskView extends DockableView {
 
 					TaskModel.getReference().addLog(
 							task.getKey(),
-							Resource.getPlainResourceString("DueDate") + " "
-									+ Resource.getPlainResourceString("Change")
+							Resource.getResourceString("DueDate") + " "
+									+ Resource.getResourceString("Change")
 									+ ": " + oldd + " --> " + newd);
 				}
 			}
@@ -1363,7 +1363,7 @@ public class TaskView extends DockableView {
 			Iterator<Project> pi = projects.iterator();
 			while (pi.hasNext()) {
 				Project p = pi.next();
-				if( p.getStatus().equals(Resource.getPlainResourceString("OPEN")))
+				if( p.getStatus().equals(Resource.getResourceString("OPEN")))
 					projBox.addItem(getProjectString(p));
 			}
 		}
@@ -1478,7 +1478,7 @@ public class TaskView extends DockableView {
 			itemtext.setEditable(false);
 
 			// title
-			title_ = Resource.getPlainResourceString("NEW_Item");
+			title_ = Resource.getResourceString("NEW_Item");
 
 			pritext.setSelectedItem(new Integer(3)); // priority default to 3
 			patext.setText(""); // person assigned

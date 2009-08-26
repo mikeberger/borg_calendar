@@ -447,8 +447,8 @@ public class PopupView extends View {
 					if (fr.wasShown() && !(min == 0 || min == 30))
 						continue;
 
-					time_msg = Resource.getPlainResourceString("To_Do") + " "
-							+ Resource.getPlainResourceString("Today");
+					time_msg = Resource.getResourceString("To_Do") + " "
+							+ Resource.getResourceString("Today");
 				} else {
 					Date d = appt.getDate();
 					if (d == null)

@@ -78,8 +78,8 @@ public class MemoUndoItem extends UndoItem<Memo> {
 		MemoUndoItem undoItem = new MemoUndoItem();
 		undoItem.item = memo;
 		undoItem.action = actionType.UPDATE;
-		undoItem.setDescription(Resource.getPlainResourceString("Change") + " " + 
-				Resource.getPlainResourceString("memo") + " " + memoString(memo));
+		undoItem.setDescription(Resource.getResourceString("Change") + " " + 
+				Resource.getResourceString("memo") + " " + memoString(memo));
 		return undoItem;
 	}
 	
@@ -95,8 +95,8 @@ public class MemoUndoItem extends UndoItem<Memo> {
 		MemoUndoItem undoItem = new MemoUndoItem();
 		undoItem.item = memo;
 		undoItem.action = actionType.ADD;
-		undoItem.setDescription(Resource.getPlainResourceString("Add") + " " + 
-				Resource.getPlainResourceString("memo") + " " + memoString(memo));
+		undoItem.setDescription(Resource.getResourceString("Add") + " " + 
+				Resource.getResourceString("memo") + " " + memoString(memo));
 		return undoItem;
 	}
 	
@@ -112,8 +112,8 @@ public class MemoUndoItem extends UndoItem<Memo> {
 		MemoUndoItem undoItem = new MemoUndoItem();
 		undoItem.item = memo;
 		undoItem.action = actionType.DELETE;
-		undoItem.setDescription(Resource.getPlainResourceString("Delete") + " " +
-				Resource.getPlainResourceString("memo") + " " + memoString(memo));
+		undoItem.setDescription(Resource.getResourceString("Delete") + " " +
+				Resource.getResourceString("memo") + " " + memoString(memo));
 		return undoItem;
 	}
 

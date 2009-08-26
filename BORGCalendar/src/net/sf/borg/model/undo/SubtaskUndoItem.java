@@ -75,8 +75,8 @@ public class SubtaskUndoItem extends UndoItem<Subtask> {
 		SubtaskUndoItem undoItem = new SubtaskUndoItem();
 		undoItem.item = subtask;
 		undoItem.action = actionType.UPDATE;
-		undoItem.setDescription(Resource.getPlainResourceString("Change") + " "
-				+ Resource.getPlainResourceString("subtask") + " "
+		undoItem.setDescription(Resource.getResourceString("Change") + " "
+				+ Resource.getResourceString("subtask") + " "
 				+ itemString(subtask));
 		
 		TaskUndoItem ti = TaskUndoItem.getLastTaskItem();
@@ -96,8 +96,8 @@ public class SubtaskUndoItem extends UndoItem<Subtask> {
 		SubtaskUndoItem undoItem = new SubtaskUndoItem();
 		undoItem.item = subtask;
 		undoItem.action = actionType.ADD;
-		undoItem.setDescription(Resource.getPlainResourceString("Add") + " "
-				+ Resource.getPlainResourceString("subtask") + " "
+		undoItem.setDescription(Resource.getResourceString("Add") + " "
+				+ Resource.getResourceString("subtask") + " "
 				+ itemString(subtask));
 		TaskUndoItem ti = TaskUndoItem.getLastTaskItem();
 		if( ti != null )
@@ -116,8 +116,8 @@ public class SubtaskUndoItem extends UndoItem<Subtask> {
 		SubtaskUndoItem undoItem = new SubtaskUndoItem();
 		undoItem.item = subtask;
 		undoItem.action = actionType.DELETE;
-		undoItem.setDescription(Resource.getPlainResourceString("Delete") + " "
-				+ Resource.getPlainResourceString("subtask") + " "
+		undoItem.setDescription(Resource.getResourceString("Delete") + " "
+				+ Resource.getResourceString("subtask") + " "
 				+ itemString(subtask));
 		TaskUndoItem ti = TaskUndoItem.getLastTaskItem();
 		if( ti != null )

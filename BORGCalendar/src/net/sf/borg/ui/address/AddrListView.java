@@ -65,13 +65,13 @@ public class AddrListView extends DockableView {
 		// the todos will be displayed in a sorted table with 2 columns -
 		// data and todo text
 		jTable1.setModel(new TableSorter(new String[] {
-				Resource.getPlainResourceString("First"),
-				Resource.getPlainResourceString("Last"),
-				Resource.getPlainResourceString("Email"),
-				Resource.getPlainResourceString("Screen_Name"),
-				Resource.getPlainResourceString("Home_Phone"),
-				Resource.getPlainResourceString("Work_Phone"),
-				Resource.getPlainResourceString("Birthday") }, new Class[] {
+				Resource.getResourceString("First"),
+				Resource.getResourceString("Last"),
+				Resource.getResourceString("Email"),
+				Resource.getResourceString("Screen_Name"),
+				Resource.getResourceString("Home_Phone"),
+				Resource.getResourceString("Work_Phone"),
+				Resource.getResourceString("Birthday") }, new Class[] {
 				java.lang.String.class, java.lang.String.class,
 				java.lang.String.class, java.lang.String.class,
 				java.lang.String.class, java.lang.String.class,
@@ -262,7 +262,7 @@ public class AddrListView extends DockableView {
 
 		int ret = JOptionPane.showConfirmDialog(null, Resource
 				.getResourceString("Delete_Addresses"), Resource
-				.getPlainResourceString("Delete"),
+				.getResourceString("Delete"),
 				JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
 		if (ret != JOptionPane.OK_OPTION)
 			return;
@@ -294,7 +294,7 @@ public class AddrListView extends DockableView {
 		String searchstring = "";
 		javax.swing.JScrollBar vScrollBar = null;
 		do{
-			searchstring = JOptionPane.showInputDialog(null,Resource.getPlainResourceString("Search_For"),searchstring);
+			searchstring = JOptionPane.showInputDialog(null,Resource.getResourceString("Search_For"),searchstring);
 			if (searchstring != null)
 			{
 				int tablerowcount = jTable1.getRowCount();
@@ -333,14 +333,14 @@ public class AddrListView extends DockableView {
 								int oneCellScrollValue = maxVal/tablerowcount;
 								
 								vScrollBar.setValue(iRow*oneCellScrollValue);
-								searchstring = JOptionPane.showInputDialog(null,Resource.getPlainResourceString("Search_Next"),searchstring);
+								searchstring = JOptionPane.showInputDialog(null,Resource.getResourceString("Search_Next"),searchstring);
 							}
 						}
 					}
 				}
 				if (searchstring != null)
 				{
-					JOptionPane.showMessageDialog(null,Resource.getPlainResourceString("Not_Found_End"));
+					JOptionPane.showMessageDialog(null,Resource.getResourceString("Not_Found_End"));
 				}
 			}
 		}while(searchstring != null);
@@ -403,7 +403,7 @@ public class AddrListView extends DockableView {
 	}
 
 	public String getFrameTitle() {
-		return Resource.getPlainResourceString("Address_Book");
+		return Resource.getResourceString("Address_Book");
 	}
 
 	public JMenuBar getMenuForFrame() {

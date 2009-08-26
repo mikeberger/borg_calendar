@@ -122,8 +122,8 @@ public class TaskUndoItem extends UndoItem<Task> {
 		TaskUndoItem undoItem = new TaskUndoItem();
 		undoItem.item = task;
 		undoItem.action = actionType.UPDATE;
-		undoItem.setDescription(Resource.getPlainResourceString("Change") + " "
-				+ Resource.getPlainResourceString("task") + " "
+		undoItem.setDescription(Resource.getResourceString("Change") + " "
+				+ Resource.getResourceString("task") + " "
 				+ itemString(task));
 		return undoItem;
 	}
@@ -139,8 +139,8 @@ public class TaskUndoItem extends UndoItem<Task> {
 		TaskUndoItem undoItem = new TaskUndoItem();
 		undoItem.item = task;
 		undoItem.action = actionType.ADD;
-		undoItem.setDescription(Resource.getPlainResourceString("Add") + " "
-				+ Resource.getPlainResourceString("task") + " "
+		undoItem.setDescription(Resource.getResourceString("Add") + " "
+				+ Resource.getResourceString("task") + " "
 				+ itemString(task));
 		return undoItem;
 	}
@@ -156,8 +156,8 @@ public class TaskUndoItem extends UndoItem<Task> {
 		TaskUndoItem undoItem = new TaskUndoItem();
 		undoItem.item = task;
 		undoItem.action = actionType.DELETE;
-		undoItem.setDescription(Resource.getPlainResourceString("Delete") + " "
-				+ Resource.getPlainResourceString("task") + " "
+		undoItem.setDescription(Resource.getResourceString("Delete") + " "
+				+ Resource.getResourceString("task") + " "
 				+ itemString(task));
 		return undoItem;
 	}
