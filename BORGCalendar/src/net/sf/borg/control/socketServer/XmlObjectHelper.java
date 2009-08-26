@@ -37,9 +37,10 @@ import net.sf.borg.model.xml.EntityXMLAdapter;
 import net.sf.borg.model.xml.MemoXMLAdapter;
 
 /**
- * Helps marshal and unmarshal between objects and XML.
+ * Helps marshal and unmarshal between objects and XML. Only used for palm-sync now. 
  */
-@SuppressWarnings("unchecked") class XmlObjectHelper {
+@SuppressWarnings("unchecked") 
+@Deprecated class XmlObjectHelper {
 	public static XTree toXml(Object o) {
 		return toXml(null, o);
 	}

@@ -35,9 +35,18 @@ import net.sf.borg.model.entity.Memo;
 /**
  * The server-side component of the BORG remote invocation framework. This is
  * designed to be run out of a running BORG instance - not a web server The
- * databases already open by the application will be used
+ * databases already open by the application will be used.
+ * 
+ * It is used only for Palm Sync - although it used to be for much more.
+ * 
+ * Trivia: Palm's hot-sync support requires Java 1.3. There is no way to have the hot-sync talk directly
+ * to a jdbc database because java 1.3 is too old for jdbc/hsqldb. Therefore, the borg remote db code was
+ * salvaged. A Java 1.3 compatible fragment of BORG is run by the hot-sync. This fragment sends db commands to
+ * a running BORG instance (running java 1.5 or better). The commands are send as XML over sockets.
+ * 
+ * This stuff is deprecated and not worth commenting. It will disappear when my last 2 palms die.
  */
-public class SingleInstanceHandler {
+@Deprecated public class SingleInstanceHandler {
 
 	@SuppressWarnings("unchecked")
 	public static String execute(String msg) {

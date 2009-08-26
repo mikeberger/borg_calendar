@@ -25,9 +25,10 @@ import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.Memo;
 
 /**
- * Interface for executing a remote call.
+ * Interface for executing a remote call. This was part of a massive framework to support remote
+ * databases over sockets at one point.  now, it's only use is to support palm sync
  */
-interface IRemoteProxy
+@Deprecated interface IRemoteProxy
 {
 /////////////////////////////////////////////////////
 // nested class Parms
