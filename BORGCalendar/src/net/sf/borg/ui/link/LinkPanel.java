@@ -51,6 +51,7 @@ import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.LinkModel;
 import net.sf.borg.model.Model;
 import net.sf.borg.model.TaskModel;
+import net.sf.borg.model.LinkModel.LinkType;
 import net.sf.borg.model.entity.Address;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.KeyedEntity;
@@ -200,7 +201,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 
 				try {
 					LinkModel.getReference().addLink(owner_,
-							file.getAbsolutePath(), LinkModel.FILELINK);
+							file.getAbsolutePath(), LinkType.FILELINK);
 				} catch (Exception e) {
 					Errmsg.errmsg(e);
 				}
@@ -238,7 +239,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 				try {
 					
 					LinkModel.getReference().addLink(owner_,
-							file.getAbsolutePath(), LinkModel.ATTACHMENT);
+							file.getAbsolutePath(), LinkType.ATTACHMENT);
 				} catch (Exception e) {
 					Errmsg.errmsg(e);
 				}
@@ -265,7 +266,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 
 				try {
 					LinkModel.getReference()
-							.addLink(owner_, url, LinkModel.URL);
+							.addLink(owner_, url, LinkType.URL);
 				} catch (Exception e) {
 					Errmsg.errmsg(e);
 				}
@@ -300,7 +301,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 						Appointment ap = BeanSelector.selectAppointment();
 						if( ap != null )
 						{
-							LinkModel.getReference().addLink(owner_, Integer.toString(ap.getKey()), LinkModel.APPOINTMENT);
+							LinkModel.getReference().addLink(owner_, Integer.toString(ap.getKey()), LinkType.APPOINTMENT);
 						}
 					}
 					else if( selectedValue.equals(Resource.getPlainResourceString("project")))
@@ -308,7 +309,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 						Project ap = BeanSelector.selectProject();
 						if( ap != null )
 						{
-							LinkModel.getReference().addLink(owner_, Integer.toString(ap.getKey()), LinkModel.PROJECT);
+							LinkModel.getReference().addLink(owner_, Integer.toString(ap.getKey()), LinkType.PROJECT);
 						}
 					}
 					else if( selectedValue.equals(Resource.getPlainResourceString("task")))
@@ -316,7 +317,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 						Task ap = BeanSelector.selectTask();
 						if( ap != null )
 						{
-							LinkModel.getReference().addLink(owner_, Integer.toString(ap.getKey()), LinkModel.TASK);
+							LinkModel.getReference().addLink(owner_, Integer.toString(ap.getKey()), LinkType.TASK);
 						}
 					}
 					else if( selectedValue.equals(Resource.getPlainResourceString("Address")))
@@ -324,7 +325,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 						Address ap = BeanSelector.selectAddress();
 						if( ap != null )
 						{
-							LinkModel.getReference().addLink(owner_, Integer.toString(ap.getKey()), LinkModel.ADDRESS);
+							LinkModel.getReference().addLink(owner_, Integer.toString(ap.getKey()), LinkType.ADDRESS);
 						}
 					}
 					else if( selectedValue.equals(Resource.getPlainResourceString("memo")))
@@ -332,7 +333,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 						Memo ap = BeanSelector.selectMemo();
 						if( ap != null )
 						{
-							LinkModel.getReference().addLink(owner_, ap.getMemoName(), LinkModel.MEMO);
+							LinkModel.getReference().addLink(owner_, ap.getMemoName(), LinkType.MEMO);
 						}
 					}
 				}
@@ -375,7 +376,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 				// String path = (String)
 				// ts.getValueAt(index, 0);
 				Link at = LinkModel.getReference().getLink(key.intValue());
-				if (at.getLinkType().equals(LinkModel.FILELINK.toString())) {
+				if (at.getLinkType().equals(LinkType.FILELINK.toString())) {
 					File file = new File(at.getPath());
 					if (!file.exists()) {
 						Errmsg.notice(Resource
@@ -384,7 +385,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 					}
 					Desktop.getDesktop().open(file);
 				}
-				else if (at.getLinkType().equals(LinkModel.ATTACHMENT.toString())) {
+				else if (at.getLinkType().equals(LinkType.ATTACHMENT.toString())) {
 					File file = new File(LinkModel.attachmentFolder() + "/" + at.getPath());
 					if (!file.exists()) {
 						Errmsg.notice(Resource
@@ -393,10 +394,10 @@ public class LinkPanel extends JPanel implements Model.Listener {
 					}
 					Desktop.getDesktop().open(file);
 				}
-				else if (at.getLinkType().equals(LinkModel.URL.toString())) {
+				else if (at.getLinkType().equals(LinkType.URL.toString())) {
 					Desktop.getDesktop().browse(new URI(at.getPath()));
 				}
-				else if (at.getLinkType().equals(LinkModel.APPOINTMENT.toString())) {
+				else if (at.getLinkType().equals(LinkType.APPOINTMENT.toString())) {
 					Appointment ap = AppointmentModel.getReference().getAppt(Integer.parseInt(at.getPath()));
 					if (ap == null) {
 						Errmsg.notice(Resource
@@ -413,7 +414,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 				    ag.showApp(ap.getKey());
 				    MultiView.getMainView().addView(ag);
 				}
-				else if (at.getLinkType().equals(LinkModel.PROJECT.toString())) {
+				else if (at.getLinkType().equals(LinkType.PROJECT.toString())) {
 					Project ap = TaskModel.getReference().getProject(Integer.parseInt(at.getPath()));
 					if (ap == null) {
 						Errmsg.notice(Resource
@@ -423,7 +424,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 					
 					 MultiView.getMainView().addView(new ProjectView(ap, ProjectView.T_CHANGE, null));
 				}
-				else if (at.getLinkType().equals(LinkModel.TASK.toString())) {
+				else if (at.getLinkType().equals(LinkType.TASK.toString())) {
 					Task ap = TaskModel.getReference().getTask(Integer.parseInt(at.getPath()));
 					if (ap == null) {
 						Errmsg.notice(Resource
@@ -433,7 +434,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 					
 					 MultiView.getMainView().addView(new TaskView(ap, TaskView.T_CHANGE, null));
 				}
-				else if (at.getLinkType().equals(LinkModel.ADDRESS.toString())) {
+				else if (at.getLinkType().equals(LinkType.ADDRESS.toString())) {
 					Address ap = AddressModel.getReference().getAddress(Integer.parseInt(at.getPath()));
 					if (ap == null) {
 						Errmsg.notice(Resource
@@ -443,7 +444,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 					
 					 MultiView.getMainView().addView(new AddressView(ap));
 				}
-				else if (at.getLinkType().equals(LinkModel.MEMO.toString())) {
+				else if (at.getLinkType().equals(LinkType.MEMO.toString())) {
 					
 				    MultiView.getMainView().showMemos(at.getPath());
 				}
@@ -510,38 +511,38 @@ public class LinkPanel extends JPanel implements Model.Listener {
 	}
 
 	public static String getName(Link at) throws Exception {
-	    if (at.getLinkType().equals(LinkModel.URL.toString()))
+	    if (at.getLinkType().equals(LinkType.URL.toString()))
 	        return at.getPath();
-	    else if (at.getLinkType().equals(LinkModel.APPOINTMENT.toString())) {
+	    else if (at.getLinkType().equals(LinkType.APPOINTMENT.toString())) {
 	        Appointment ap = AppointmentModel.getReference().getAppt(Integer.parseInt(at.getPath()));
 	        if (ap != null) {
 	            return (Resource.getPlainResourceString("appointment") + "[" + ap.getText() + "]");
 	        }
 	
-	    } else if (at.getLinkType().equals(LinkModel.PROJECT.toString())) {
+	    } else if (at.getLinkType().equals(LinkType.PROJECT.toString())) {
 	        Project ap = TaskModel.getReference().getProject(Integer.parseInt(at.getPath()));
 	        if (ap != null) {
 	            return (Resource.getPlainResourceString("project") + "[" + ap.getDescription() + "]");
 	        }
 	
-	    } else if (at.getLinkType().equals(LinkModel.TASK.toString())) {
+	    } else if (at.getLinkType().equals(LinkType.TASK.toString())) {
 	        Task ap = TaskModel.getReference().getTask(Integer.parseInt(at.getPath()));
 	        if (ap != null) {
 	            return (Resource.getPlainResourceString("task") + "[" + ap.getDescription() + "]");
 	        }
 	
-	    } else if (at.getLinkType().equals(LinkModel.ADDRESS.toString())) {
+	    } else if (at.getLinkType().equals(LinkType.ADDRESS.toString())) {
 	        Address ap = AddressModel.getReference().getAddress(Integer.parseInt(at.getPath()));
 	        if (ap != null) {
 	            return (Resource.getPlainResourceString("Address") + "[" + ap.getLastName() + "," + ap.getFirstName() + "]");
 	        }
 	
-	    } else if (at.getLinkType().equals(LinkModel.MEMO.toString())) {
+	    } else if (at.getLinkType().equals(LinkType.MEMO.toString())) {
 	        return (Resource.getPlainResourceString("memo") + "[" + at.getPath() + "]");
-	    } else if (at.getLinkType().equals(LinkModel.FILELINK.toString())) {
+	    } else if (at.getLinkType().equals(LinkType.FILELINK.toString())) {
 	        File f = new File(at.getPath());
 	        return f.getName();
-	    } else if (at.getLinkType().equals(LinkModel.ATTACHMENT.toString())) {
+	    } else if (at.getLinkType().equals(LinkType.ATTACHMENT.toString())) {
 	        return at.getPath();
 	    }
 	
