@@ -42,14 +42,18 @@ import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.Task;
 
 /**
- * 
- * @author mberger
+ * this class handles the daily email reminder
  */
 public class EmailReminder {
 
-	// send an email of the next day's appointments if the user has requested
-	// this and
-	// such an email has not been sent today yet.
+	
+	/**
+	 * Send daily email reminder.
+	 * 
+	 * @param emailday the emailday
+	 * 
+	 * @throws Exception the exception
+	 */
 	static public void sendDailyEmailReminder(Calendar emailday)
 			throws Exception {
 
@@ -67,7 +71,7 @@ public class EmailReminder {
 
 		Calendar cal = new GregorianCalendar();
 
-		// if no date passed, the timer has gone off and we need to check if we
+		// if no date passed in, the timer has gone off and we need to check if we
 		// can send
 		// email now
 		int doy = -1;
@@ -83,7 +87,7 @@ public class EmailReminder {
 			// create the calendar model key for tomorrow
 			cal.add(Calendar.DATE, 1);
 		} else {
-			// just send email for the given day
+			// just send email for the requested day
 			cal = emailday;
 		}
 
@@ -93,7 +97,7 @@ public class EmailReminder {
 				+ DateFormat.getDateInstance().format(cal.getTime()) + "\n";
 		String tx = "";
 
-		// get the list of appts for tomorrow
+		// get the list of appts for the requested day
 		Collection<Integer> l = AppointmentModel.getReference().getAppts(cal.getTime());
 		if (l != null) {
 
@@ -132,8 +136,6 @@ public class EmailReminder {
 		}
 
 		// load any task tracker items for the email
-		// these items are cached in the calendar model
-		// by date - but the taskmodel is the real owner of them
 		Collection<Task> tasks = TaskModel.getReference().get_tasks(cal.getTime());
 		if (l != null && tasks != null) {
 

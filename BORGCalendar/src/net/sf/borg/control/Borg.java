@@ -63,31 +63,34 @@ import net.sf.borg.ui.util.Banner;
 import net.sf.borg.ui.util.ModalMessage;
 import net.sf.borg.ui.util.NwFontChooserS;
 
-/*
- * borg.java
- * 
- * Created on August 15, 2001, 9:23 PM
+/**
+ * The Main Class of Borg. It's responsible for starting up the model and spawning various threads,
+ * including the main UI thread and various timer threads. It also handles shutdown.
  */
-
-// the borg class is responsible for starting up the appropriate models and
-// views.
-// The views directly interact with the models to
-// display data. Views register with their models to receive notifications of
-// data changes.
-// Views can call other views.
 public class Borg implements OptionsView.RestartListener, SocketHandler {
 
+	/** splash window */
 	static private Banner ban_ = null; // start up banner
 
+	/** The singleton. */
 	static private Borg singleton = null;
 
+	/**
+	 * Gets the singleton.
+	 * 
+	 * @return the singleton
+	 */
 	static public Borg getReference() {
 		if (singleton == null)
 			singleton = new Borg();
 		return (singleton);
 	}
 
-	// this is the main for the borg application
+	/**
+	 * The main method.
+	 * 
+	 * @param args the arguments
+	 */
 	public static void main(String args[]) {
 
 		// open existing BORG if there is one
@@ -111,6 +114,9 @@ public class Borg implements OptionsView.RestartListener, SocketHandler {
 		b.init(args);
 	}
 
+	/**
+	 * Shutdown.close db connections. backup the database if the auto-backup feature is on.
+	 */
 	static public void shutdown() {
 
 		// backup data
@@ -181,6 +187,7 @@ public class Borg implements OptionsView.RestartListener, SocketHandler {
 			e.printStackTrace();
 		}
 
+		// wait 3 seconds before exiting for the db to settle down - probably being superstitious.
 		Timer shutdownTimer = new java.util.Timer();
 		shutdownTimer.schedule(new TimerTask() {
 			public void run() {
@@ -190,6 +197,11 @@ public class Borg implements OptionsView.RestartListener, SocketHandler {
 
 	}
 
+	/**
+	 * Sync dbs - mainly clears caches. applies to mysql where outside clients can update the db.
+	 * 
+	 * @throws Exception the exception
+	 */
 	static public synchronized void syncDBs() throws Exception {
 
 		AppointmentModel.getReference().sync();
@@ -198,24 +210,42 @@ public class Borg implements OptionsView.RestartListener, SocketHandler {
 
 	}
 
+	/** The timer for sending reminder email. */
 	private Timer mailTimer_ = null;
 
+	/** message popped up if the socket thread has something to tell the user. mainly used to block user activity
+	 * during a palm sync and report sync progress  */
 	private ModalMessage modalMessage = null;
 
+	/** The socket server - listens for incoming requests such as open requests and palm sync requests */
 	private SocketServer socketServer_ = null;
 
+	/** The sync timer - controls auto-sync with db - only needed for mysql - and then not really */
 	private java.util.Timer syncTimer_ = null;
 
+	/** flag indicating if a system tray icon is running. */
 	private boolean trayIcon = true;
 
+	/**
+	 * constructor
+	 */
 	private Borg() {
 
 	}
 
+	/**
+	 * Checks for presence of the tray icon.
+	 * 
+	 * @return true, if the tray icon started up successfully, false otherwise
+	 */
 	public boolean hasTrayIcon() {
 		return trayIcon;
 	}
 
+	/** process a socket message. the only messages commonly used are open: when another borg process is started, which
+	 * just opens this one, lock: when a palm sync requests a lock on user activity and messages starting with "<",which
+	 * are redirected to the remote db server, which is how palm sync talks to the db of the running borg.
+	 */
 	public synchronized String processMessage(String msg) {
 		// System.out.println("Got msg: " + msg);
 		if (msg.equals("sync")) {
@@ -264,6 +294,9 @@ public class Borg implements OptionsView.RestartListener, SocketHandler {
 		return ("Unknown msg: " + msg);
 	}
 
+	/* (non-Javadoc)
+	 * @see net.sf.borg.ui.OptionsView.RestartListener#restart()
+	 */
 	public void restart() {
 
 		if (syncTimer_ != null)
@@ -274,12 +307,15 @@ public class Borg implements OptionsView.RestartListener, SocketHandler {
 		init(new String[0]);
 	}
 
-	// init will process the command line args, open and load the databases,
-	// and
-	// start up the
-	// main month view
+	
+	/**
+	 * Initialize the application
+	 * 
+	 * @param args the args
+	 */
 	private void init(String args[]) {
 
+		// redirect stdout and stderr to files
 		try
         {
 			String home = System.getProperty("user.home", "");
@@ -295,6 +331,8 @@ public class Borg implements OptionsView.RestartListener, SocketHandler {
             e.printStackTrace();
         }
 		
+        // register as a restart listener. on rare occassions the options window can request an
+        // app restart
 		OptionsView.setRestartListener(this);
 
 		// override for testing a different db
@@ -323,12 +361,14 @@ public class Borg implements OptionsView.RestartListener, SocketHandler {
 			}
 		}
 
+		// check if splash window is enabled
 		boolean splash = true;
 		String spl = Prefs.getPref(PrefName.SPLASH);
 		if (spl.equals("false")) {
 			splash = false;
 		}
 
+		// default font
 		String deffont = Prefs.getPref(PrefName.DEFFONT);
 		if (!deffont.equals("")) {
 			Font f = Font.decode(deffont);
@@ -345,30 +385,30 @@ public class Borg implements OptionsView.RestartListener, SocketHandler {
 			// System.out.println(e.toString());
 		}
 
+		// locale
 		String country = Prefs.getPref(PrefName.COUNTRY);
 		String language = Prefs.getPref(PrefName.LANGUAGE);
-
 		if (!language.equals("")) {
 			Locale.setDefault(new Locale(language, country));
 		}
 
-		// do not show the startup banner if autostart or aplist features are on
+		// pop up the splash
 		if (splash) {
 			ban_ = new Banner();
 			ban_.setText(Resource.getResourceString("Initializing"));
 			ban_.setVisible(true);
 		}
 
-		// Which database implementation are we using?
+		// db url
 		String dbdir = null;
 
 		try {
-			// init cal model & load data from database
 			if (testdb != null)
 				dbdir = testdb;
 			else
-				dbdir = JdbcDB.buildDbDir();
+				dbdir = JdbcDB.buildDbDir(); // derive db url from user prefs
 
+			// if no db set - tell user
 			if (dbdir.equals("not-set")) {
 
 				JOptionPane.showMessageDialog(null, Resource
@@ -379,38 +419,45 @@ public class Borg implements OptionsView.RestartListener, SocketHandler {
 				if (ban_ != null)
 					ban_.dispose();
 
+				// if user wants to set db - let them
 				OptionsView.dbSelectOnly();
 				return;
 			}
 			
+			
+			// now all errors can go to popup windows
+			Errmsg.console(false); // send errors to screen
+			
+			// connect to the db - for now it is jdbc only
 			JdbcDB.connect(dbdir);
 
-			// skip banner stuff if autostart or aplist on
 			if (splash)
 				ban_.setText(Resource
 						.getResourceString("Loading_Appt_Database"));
 
+			// initialize the appointment model
 			AppointmentModel.getReference();
-
-			// we are past autostart check so we must be ready to start GUI.
-			// now all errors can go to popup windows
-			Errmsg.console(false); // send errors to screen
 
 			// init task model & load database
 			if (splash)
 				ban_.setText(Resource
 						.getResourceString("Loading_Task_Database"));
+			
+			// init task model
 			TaskModel.getReference();
 
 
 			if (splash)
 				ban_.setText(Resource
 						.getResourceString("Opening_Address_Database"));
+			
+			// init address model
 			AddressModel.getReference();
 
 			if (splash)
 				ban_.setText(Resource.getResourceString("Opening_Main_Window"));
 
+			// start the UI thread
 			final String traynm = trayname;
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
@@ -461,8 +508,6 @@ public class Borg implements OptionsView.RestartListener, SocketHandler {
 				}
 			}, mailtime * 60 * 1000, 24 * 60 * 60 * 1000);
 
-			// individual email reminders
-
 			// start autosync timer
 			int syncmins = Prefs.getIntPref(PrefName.SYNCMINS);
 			String dbtype = Prefs.getPref(PrefName.DBTYPE);
@@ -484,6 +529,7 @@ public class Borg implements OptionsView.RestartListener, SocketHandler {
 				}, syncmins * 60 * 1000, syncmins * 60 * 1000);
 			}
 
+			// start socket listener
 			int port = Prefs.getIntPref(PrefName.SOCKETPORT);
 			if (port != -1 && socketServer_ == null) {
 				socketServer_ = new SocketServer(port, this);
@@ -534,7 +580,9 @@ public class Borg implements OptionsView.RestartListener, SocketHandler {
 
 	}
 
-	// show the todo list view
+	/**
+	 * show the todo view.
+	 */
 	private void startTodoView() {
 
 		try {
@@ -546,10 +594,17 @@ public class Borg implements OptionsView.RestartListener, SocketHandler {
 		}
 	}
 
+	/**
+	 * swing thread logic
+	 * 
+	 * @param trayname the trayname
+	 */
 	private void swingStart(String trayname) {
+		
+		// start the system tray icon - or at least attempt to
+		// it doesn't run on all OSs and all WMs
 		trayIcon = true;
 		String usetray = Prefs.getPref(PrefName.USESYSTRAY);
-
 		if (!usetray.equals("true")) {
 			trayIcon = false;
 		} else {
