@@ -34,15 +34,27 @@ import net.sf.borg.model.undo.MemoUndoItem;
 import net.sf.borg.model.undo.UndoLog;
 import net.sf.borg.model.xml.MemoXMLAdapter;
 
+/**
+ * The Memo Model manages the Memo Entities. Memos are keyed by a name. Memos contain simple text and
+ * have stayed simple to be able to sync with the simple memo functionality of a Palm Pilot.
+ */
 public class MemoModel extends Model {
 
+	/** The normalized date format for timestamps in a memo  */
 	private static SimpleDateFormat normalDateFormat_ = new SimpleDateFormat(
 			"MM/dd/yyyy hh:mm aa");
 
+	/** The db */
 	private MemoDB db_; // the database
 
+	/** The singleton */
 	static private MemoModel self_ = null;
 
+	/**
+	 * Gets the singleton.
+	 * 
+	 * @return the singleton
+	 */
 	public static MemoModel getReference() {
 		if( self_ == null)
 			self_ = new MemoModel();
@@ -50,16 +62,33 @@ public class MemoModel extends Model {
 	}
 
 
+	/**
+	 * Gets the dB.
+	 * 
+	 * @return the dB
+	 */
 	public MemoDB getDB() {
 		return db_;
 	}
 
+	/**
+	 * Checks if memos are supported. Should always be true in 1.7.
+	 * 
+	 * @return true, if memos are supported
+	 */
 	public boolean hasMemos() {
 		if (db_ != null)
 			return true;
 		return false;
 	}
 
+	/**
+	 * Gets all memos.
+	 * 
+	 * @return all memos
+	 * 
+	 * @throws Exception the exception
+	 */
 	public Collection<Memo> getMemos() throws Exception {
 		Collection<Memo> memos = db_.readAll();
 		Iterator<Memo> it = memos.iterator();
@@ -70,15 +99,31 @@ public class MemoModel extends Model {
 		return memos;
 	}
 
+	/**
+	 * Gets all memo names.
+	 * 
+	 * @return the memo names
+	 * 
+	 * @throws Exception the exception
+	 */
 	public Collection<String> getNames() throws Exception {
 
 		return db_.getNames();
 	}
 
+	/**
+	 * Instantiates a new memo model.
+	 */
 	private MemoModel() {
 		db_ = new MemoJdbcDB();	
 	}
 
+	/**
+	 * Delete a memo by name
+	 * 
+	 * @param name the memo name
+	 * @param undo true if we are executing an undo
+	 */
 	public void delete(String name, boolean undo) {
 
 		try {
@@ -100,20 +145,32 @@ public class MemoModel extends Model {
 		refresh();
 	}
 
+	/**
+	 * Save a memo.
+	 * 
+	 * @param memo the memo
+	 */
 	public void saveMemo(Memo memo) {
 		saveMemo(memo, false);
 	}
 
+	/**
+	 * Save a memo.
+	 * 
+	 * @param memo the memo
+	 * @param undo true if we are executing an undo
+	 */
 	public void saveMemo(Memo memo, boolean undo) {
 
 		try {
 
-			// determine dates
+			// determine create an update dates
 			Date now = new Date();
 			if (memo.getCreated() == null)
 				memo.setCreated(now);
 			memo.setUpdated(now);
 
+			// add the timestamp string to the text
 			addDateString(memo);
 			String name = memo.getMemoName();
 			Memo old = db_.readMemo(name);
@@ -143,6 +200,13 @@ public class MemoModel extends Model {
 		refresh();
 	}
 
+	/**
+	 * Adds the timestamp string to a memo. This is just a string to hold creation and
+	 * last update dates. the borg ui shows these dates. The palm pilot knows nothing about them.
+	 * On the palm, they appear as extra memo text - and there is nowhere else to keep them
+	 * 
+	 * @param m the memo
+	 */
 	static private void addDateString(Memo m) {
 		if (m.getCreated() == null || m.getUpdated() == null)
 			return;
@@ -167,6 +231,11 @@ public class MemoModel extends Model {
 
 	}
 
+	/**
+	 * Parses the timestamps.
+	 * 
+	 * @param m the memp
+	 */
 	static private void parseOutDates(Memo m) {
 
 		// separate timestamps if needed TS:created;updated;
@@ -195,6 +264,15 @@ public class MemoModel extends Model {
 		}
 	}
 
+	/**
+	 * Gets a memo by name.
+	 * 
+	 * @param name the memo name
+	 * 
+	 * @return the memo
+	 * 
+	 * @throws Exception the exception
+	 */
 	public Memo getMemo(String name) throws Exception {
 		Memo m = db_.readMemo(name);
 
@@ -205,6 +283,13 @@ public class MemoModel extends Model {
 		return m;
 	}
 
+	/**
+	 * Export to XML
+	 * 
+	 * @param fw the writer to write XML to
+	 * 
+	 * @throws Exception the exception
+	 */
 	public void export(Writer fw) throws Exception {
 
 		// FileWriter fw = new FileWriter(fname);
@@ -221,6 +306,13 @@ public class MemoModel extends Model {
 
 	}
 
+	/**
+	 * Import xml.
+	 * 
+	 * @param xt the XML tree
+	 * 
+	 * @throws Exception the exception
+	 */
 	public void importXml(XTree xt) throws Exception {
 
 		MemoXMLAdapter aa = new MemoXMLAdapter();
@@ -240,6 +332,9 @@ public class MemoModel extends Model {
 		refresh();
 	}
 
+	/**
+	 * Refresh listeners
+	 */
 	public void refresh() {
 		refreshListeners();
 	}

@@ -57,49 +57,97 @@ import net.sf.borg.model.xml.SubtaskXMLAdapter;
 import net.sf.borg.model.xml.TaskXMLAdapter;
 import net.sf.borg.model.xml.TasklogXMLAdapter;
 
+/**
+ * TaksModel manages all of the task related entities - Task, Project, Subtask,
+ * and Tasklog
+ */
 public class TaskModel extends Model implements Model.Listener, Transactional,
 		CategorySource {
 
-	//private EntityDB<Task> db_; // the database
 	// hard-code to TaskJdbcDB just to access options logic
 	// need to fix this in the future
+	/** The db */
 	private TaskJdbcDB db_;
 
+	/**
+	 * Gets the dB.
+	 * 
+	 * @return the dB
+	 */
 	public EntityDB<Task> getDB() {
 		return (db_);
 	}
 
-	// map of tasks keyed by day - for performance
+	/** map of tasks keyed by due date */
 	private HashMap<Integer, Collection<Task>> btmap_;
 
-	private Vector<Task> allmap_;
+	/** cache of all open tasks with a due date */
+	private Vector<Task> openTaskMap;
 
+	/** map of subtasks keyed by due date */
 	private HashMap<Integer, Collection<Subtask>> stmap_;
 
+	/** map of projects keyed by due date */
 	private HashMap<Integer, Collection<Project>> pmap_;
 
+	/** The task types */
 	private TaskTypes taskTypes_ = new TaskTypes();
 
+	/**
+	 * Get all tasks due on a particular date
+	 * 
+	 * @param d
+	 *            the date
+	 * 
+	 * @return the tasks
+	 */
 	public Collection<Task> get_tasks(Date d) {
 		return (btmap_.get(new Integer(DateUtil.dayOfEpoch(d))));
 	}
 
+	/**
+	 * Get all subtasks due on a particular date
+	 * 
+	 * @param d
+	 *            the date
+	 * 
+	 * @return the subtasks
+	 */
 	public Collection<Subtask> get_subtasks(Date d) {
 		return (stmap_.get(new Integer(DateUtil.dayOfEpoch(d))));
 	}
 
+	/**
+	 * Get all projects due on a particular date
+	 * 
+	 * @param d
+	 *            the date
+	 * 
+	 * @return the projects
+	 */
 	public Collection<Project> get_projects(Date d) {
 		return (pmap_.get(new Integer(DateUtil.dayOfEpoch(d))));
 	}
 
+	/**
+	 * Get all open tasks with a due date
+	 * 
+	 * @return the tasks
+	 */
 	public Vector<Task> get_tasks() {
-		return (allmap_);
+		return (openTaskMap);
 	}
 
+	/** The singleton */
 	static private TaskModel self_ = null;
 
-	static public TaskModel getReference()  {
-		if( self_ == null )
+	/**
+	 * Gets the singleton.
+	 * 
+	 * @return the singleton
+	 */
+	static public TaskModel getReference() {
+		if (self_ == null)
 			try {
 				self_ = new TaskModel();
 				self_.load_map();
@@ -110,10 +158,24 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 		return (self_);
 	}
 
+	/**
+	 * Gets the task types.
+	 * 
+	 * @return the task types
+	 */
 	public TaskTypes getTaskTypes() {
 		return (taskTypes_);
 	}
 
+	/**
+	 * save the task types to the db
+	 * 
+	 * @param tt
+	 *            the task types
+	 * 
+	 * @throws Exception
+	 *             the exception
+	 */
 	public void saveTaskTypes(TaskTypes tt) throws Exception {
 		if (tt != null) {
 			tt.validate();
@@ -122,6 +184,11 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 		db_.setOption(new BorgOption("SMODEL", taskTypes_.toString()));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see net.sf.borg.model.CategoryModel.CategorySource#getCategories()
+	 */
 	public Collection<String> getCategories() {
 
 		TreeSet<String> categories = new TreeSet<String>();
@@ -148,23 +215,30 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 
 	}
 
+	/**
+	 * Get all tasks.
+	 * 
+	 * @return the tasks
+	 * 
+	 * @throws Exception
+	 *             the exception
+	 */
 	public Collection<Task> getTasks() throws Exception {
 		return db_.readAll();
 	}
 
-	// load a map of tasks to day keys for performance. this is because the
-	// month views will
-	// repeatedly need to retrieve tasks per day and it would be slow to
-	// repeatedly traverse
-	// the entire task DB looking for them
-	// only tasks that are viewed by day need to be cached here - those that
-	// are not CLOSED and
-	// have a due date - a small fraction of the total
+	/**
+	 * load caches of open tasks for performance. this is because the views will
+	 * repeatedly need to retrieve tasks per day and it would be slow to
+	 * repeatedly traverse the entire task DB looking for them only tasks that
+	 * are viewed by day need to be cached here - those that are not CLOSED and
+	 * have a due date - a small fraction of the total
+	 */
 	private void load_map() {
 
 		// clear map
 		btmap_.clear();
-		allmap_.clear();
+		openTaskMap.clear();
 		stmap_.clear();
 		pmap_.clear();
 
@@ -195,7 +269,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 				}
 
 				o.add(mr);
-				allmap_.add(mr);
+				openTaskMap.add(mr);
 			}
 
 			if (db_ instanceof TaskDB) {
@@ -213,7 +287,8 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 
 					// use task due date to build a day key
 					Date due = pj.getDueDate();
-					int key = DateUtil.dayOfEpoch(due);;
+					int key = DateUtil.dayOfEpoch(due);
+					;
 
 					// add the string to the btmap_
 					Collection<Project> o = pmap_.get(new Integer(key));
@@ -239,7 +314,8 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 
 					// use task due date to build a day key
 					Date due = st.getDueDate();
-					int key = DateUtil.dayOfEpoch(due);;
+					int key = DateUtil.dayOfEpoch(due);
+					;
 
 					// add the string to the btmap_
 					Collection<Subtask> o = stmap_.get(new Integer(key));
@@ -260,17 +336,21 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 
 	}
 
-	
+	/**
+	 * Instantiates a new task model.
+	 * 
+	 * @throws Exception
+	 *             the exception
+	 */
 	private TaskModel() throws Exception {
-		
+
 		btmap_ = new HashMap<Integer, Collection<Task>>();
 		stmap_ = new HashMap<Integer, Collection<Subtask>>();
 		pmap_ = new HashMap<Integer, Collection<Project>>();
-		allmap_ = new Vector<Task>();
-		
+		openTaskMap = new Vector<Task>();
+
 		db_ = new TaskJdbcDB();
 
-	
 		String sm = db_.getOption("SMODEL");
 		if (sm == null) {
 			try {
@@ -293,14 +373,32 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 		CategoryModel.getReference().addSource(this);
 		CategoryModel.getReference().addListener(this);
 
-
 	}
 
+	/**
+	 * Delete a task
+	 * 
+	 * @param tasknum
+	 *            the task id
+	 * 
+	 * @throws Exception
+	 *             the exception
+	 */
 	public void delete(int tasknum) throws Exception {
 		delete(tasknum, false);
 	}
 
-	// delete a given task from the DB
+	/**
+	 * Delete a task
+	 * 
+	 * @param tasknum
+	 *            the task id
+	 * @param undo
+	 *            true if we are executing an undo
+	 * 
+	 * @throws Exception
+	 *             the exception
+	 */
 	public void delete(int tasknum, boolean undo) throws Exception {
 
 		try {
@@ -322,15 +420,21 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 			Errmsg.errmsg(e);
 		}
 
-		// have the borg class reload the calendar app side of things - so this
-		// is one model
-		// notifying the other of a change through the controller
 		load_map();
 
 		refreshListeners();
 
 	}
 
+	/**
+	 * Delete a project.
+	 * 
+	 * @param id
+	 *            the project id
+	 * 
+	 * @throws Exception
+	 *             the exception
+	 */
 	public void deleteProject(int id) throws Exception {
 
 		int ret = JOptionPane.showConfirmDialog(null, Resource
@@ -355,20 +459,36 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 			Errmsg.errmsg(e);
 		}
 
-		// have the borg class reload the calendar app side of things - so this
-		// is one model
-		// notifying the other of a change through the controller
 		load_map();
 
 		refreshListeners();
 
 	}
 
+	/**
+	 * Save a task.
+	 * 
+	 * @param task
+	 *            the task
+	 * 
+	 * @throws Exception
+	 *             the exception
+	 */
 	public void savetask(Task task) throws Exception {
 		savetask(task, false);
 	}
 
-	// save a task from a filled in task Row
+	/**
+	 * Save a task.
+	 * 
+	 * @param task
+	 *            the task
+	 * @param undo
+	 *            true if we are executing an undo
+	 * 
+	 * @throws Exception
+	 *             the exception
+	 */
 	public void savetask(Task task, boolean undo) throws Exception {
 
 		// validations
@@ -418,9 +538,6 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 
 		}
 
-		// have the borg class reload the calendar app side of things - so this
-		// is one model
-		// notifying the other of a change through the controller
 		load_map();
 
 		// inform views of data change
@@ -428,17 +545,41 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 
 	}
 
-	// allocate a new Row from the DB
+	/**
+	 * create a new task
+	 * 
+	 * @return the task
+	 */
 	public Task newMR() {
 		return (db_.newObj());
 	}
 
-	// read a task from the DB by task number
+	/**
+	 * Gets a task by id.
+	 * 
+	 * @param num
+	 *            the id
+	 * 
+	 * @return the task
+	 * 
+	 * @throws Exception
+	 *             the exception
+	 */
 	public Task getTask(int num) throws Exception {
 		return (db_.readObj(num));
 	}
 
-	// force a task to be updated to CLOSED state and saved
+	/**
+	 * close a task
+	 * 
+	 * @param num
+	 *            the task id
+	 * 
+	 * @throws Exception
+	 *             the exception
+	 * @throws Warning
+	 *             the warning
+	 */
 	public void close(int num) throws Exception, Warning {
 
 		for (Subtask st : TaskModel.getReference().getSubTasks(num)) {
@@ -453,6 +594,17 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 		savetask(task);
 	}
 
+	/**
+	 * Close a project.
+	 * 
+	 * @param num
+	 *            the project id
+	 * 
+	 * @throws Exception
+	 *             the exception
+	 * @throws Warning
+	 *             the warning
+	 */
 	public void closeProject(int num) throws Exception, Warning {
 
 		Project p = getProject(num);
@@ -460,7 +612,15 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 		saveProject(p);
 	}
 
-	// export the task data for all tasks to XML
+	/**
+	 * export the task data for all tasks to XML. Also exports the options
+	 * 
+	 * @param fw
+	 *            the writer to send XML to
+	 * 
+	 * @throws Exception
+	 *             the exception
+	 */
 	public void export(Writer fw) throws Exception {
 
 		// FileWriter fw = new FileWriter(fname);
@@ -514,6 +674,14 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 
 	}
 
+	/**
+	 * Get all projects.
+	 * 
+	 * @return the projects
+	 * 
+	 * @throws Exception
+	 *             the exception
+	 */
 	public Collection<Project> getProjects() throws Exception {
 		if (db_ instanceof TaskDB == false)
 			return new ArrayList<Project>();
@@ -521,6 +689,17 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 		return sdb.getProjects();
 	}
 
+	/**
+	 * Get a project by id.
+	 * 
+	 * @param id
+	 *            the id
+	 * 
+	 * @return the project
+	 * 
+	 * @throws Exception
+	 *             the exception
+	 */
 	public Project getProject(int id) throws Exception {
 		if (db_ instanceof TaskDB == false)
 			throw new Warning(Resource
@@ -529,7 +708,15 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 		return sdb.getProject(id);
 	}
 
-	// export the task data to a file in XML
+	/**
+	 * Import all task related entities from xml
+	 * 
+	 * @param xt
+	 *            the XML
+	 * 
+	 * @throws Exception
+	 *             the exception
+	 */
 	public void importXml(XTree xt) throws Exception {
 
 		TaskXMLAdapter aa = new TaskXMLAdapter();
@@ -604,17 +791,16 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 
 	}
 
+	/**
+	 * sync with db
+	 */
 	public void sync() {
 		db_.sync();
 		load_map();
 		refreshListeners();
 	}
 
-	/*
-	 * TODO UCdetector: Remove unused code: public void close_db() throws
-	 * Exception { db_.close(); }
-	 */
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -630,6 +816,17 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 
 	}
 
+	/**
+	 * Get the sub tasks for a task
+	 * 
+	 * @param taskid
+	 *            the task id
+	 * 
+	 * @return the sub tasks
+	 * 
+	 * @throws Exception
+	 *             the exception
+	 */
 	public Collection<Subtask> getSubTasks(int taskid) throws Exception {
 		if (db_ instanceof TaskDB == false)
 			throw new Warning(Resource
@@ -640,6 +837,14 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 
 	}
 
+	/**
+	 * Get all sub tasks.
+	 * 
+	 * @return the sub tasks
+	 * 
+	 * @throws Exception
+	 *             the exception
+	 */
 	public Collection<Subtask> getSubTasks() throws Exception {
 		if (db_ instanceof TaskDB == false)
 			throw new Warning(Resource
@@ -650,6 +855,17 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 
 	}
 
+	/**
+	 * Get a sub task by id.
+	 * 
+	 * @param id
+	 *            the subtask id
+	 * 
+	 * @return the sub task
+	 * 
+	 * @throws Exception
+	 *             the exception
+	 */
 	public Subtask getSubTask(int id) throws Exception {
 		if (db_ instanceof TaskDB == false)
 			throw new Warning(Resource
@@ -660,6 +876,17 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 
 	}
 
+	/**
+	 * Get all tasks for a project.
+	 * 
+	 * @param projectid
+	 *            the projectid
+	 * 
+	 * @return the tasks
+	 * 
+	 * @throws Exception
+	 *             the exception
+	 */
 	public Collection<Task> getTasks(int projectid) throws Exception {
 		if (db_ instanceof TaskDB == false)
 			throw new Warning(Resource
@@ -670,6 +897,17 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 
 	}
 
+	/**
+	 * Get sub projects for a project - direct children only
+	 * 
+	 * @param projectid
+	 *            the project id
+	 * 
+	 * @return the sub projects
+	 * 
+	 * @throws Exception
+	 *             the exception
+	 */
 	public Collection<Project> getSubProjects(int projectid) throws Exception {
 		if (db_ instanceof TaskDB == false)
 			throw new Warning(Resource
@@ -680,6 +918,17 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 
 	}
 
+	/**
+	 * Gets the entire project tree for a project
+	 * 
+	 * @param projectid
+	 *            the root project id
+	 * 
+	 * @return the all sub projects
+	 * 
+	 * @throws Exception
+	 *             the exception
+	 */
 	public Collection<Project> getAllSubProjects(int projectid)
 			throws Exception {
 		Collection<Project> c = new ArrayList<Project>();
@@ -690,6 +939,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 		return c;
 	}
 
+	
 	private void addSubProjectsToCollection(Collection<Project> c, int projectid)
 			throws Exception {
 
@@ -708,10 +958,30 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 
 	}
 
+	/**
+	 * Delete a sub task.
+	 * 
+	 * @param id
+	 *            the subtask id
+	 * 
+	 * @throws Exception
+	 *             the exception
+	 */
 	public void deleteSubTask(int id) throws Exception {
 		deleteSubTask(id, false);
 	}
 
+	/**
+	 * Delete a sub task.
+	 * 
+	 * @param id
+	 *            the subtask id
+	 * @param undo
+	 *            true if we are executing an undo
+	 * 
+	 * @throws Exception
+	 *             the exception
+	 */
 	public void deleteSubTask(int id, boolean undo) throws Exception {
 		if (db_ instanceof TaskDB == false)
 			throw new Warning(Resource
@@ -727,18 +997,37 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 		refreshListeners();
 	}
 
+	/**
+	 * Save a sub task.
+	 * 
+	 * @param s
+	 *            the subtask
+	 * 
+	 * @throws Exception
+	 *             the exception
+	 */
 	public void saveSubTask(Subtask s) throws Exception {
 		saveSubTask(s, false);
 	}
 
+	/**
+	 * Save a sub task.
+	 * 
+	 * @param s
+	 *            the subtask 
+	 * @param undo
+	 *           true if we are executing an undo
+	 * 
+	 * @throws Exception
+	 *             the exception
+	 */
 	public void saveSubTask(Subtask s, boolean undo) throws Exception {
 		if (db_ instanceof TaskDB == false)
 			throw new Warning(Resource
 					.getPlainResourceString("SubtaskNotSupported"));
 
 		TaskDB sdb = (TaskDB) db_;
-		if (s.getKey() <= 0
-				|| null == sdb.getSubTask(s.getKey())) {
+		if (s.getKey() <= 0 || null == sdb.getSubTask(s.getKey())) {
 			if (!undo || s.getKey() == -1)
 				s.setKey(sdb.nextSubTaskKey());
 			sdb.addSubTask(s);
@@ -758,6 +1047,17 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 		refreshListeners();
 	}
 
+	/**
+	 * Add a task log entry.
+	 * 
+	 * @param taskid
+	 *            the task id
+	 * @param desc
+	 *            the log message
+	 * 
+	 * @throws Exception
+	 *             the exception
+	 */
 	public void addLog(int taskid, String desc) throws Exception {
 		if (db_ instanceof TaskDB == false)
 			return;
@@ -767,6 +1067,15 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 		sdb.addLog(taskid, desc);
 	}
 
+	/**
+	 * Save a task log.
+	 * 
+	 * @param tlog
+	 *            the task log
+	 * 
+	 * @throws Exception
+	 *             the exception
+	 */
 	private void saveLog(Tasklog tlog) throws Exception {
 		if (db_ instanceof TaskDB == false)
 			throw new Warning(Resource
@@ -775,6 +1084,17 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 		sdb.saveLog(tlog);
 	}
 
+	/**
+	 * Get all task logs for a task.
+	 * 
+	 * @param taskid
+	 *            the task id
+	 * 
+	 * @return the logs
+	 * 
+	 * @throws Exception
+	 *             the exception
+	 */
 	public Collection<Tasklog> getLogs(int taskid) throws Exception {
 		if (db_ instanceof TaskDB == false)
 			throw new Warning(Resource
@@ -783,6 +1103,14 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 		return sdb.getLogs(taskid);
 	}
 
+	/**
+	 * Get all task logs.
+	 * 
+	 * @return the logs
+	 * 
+	 * @throws Exception
+	 *             the exception
+	 */
 	public Collection<Tasklog> getLogs() throws Exception {
 		if (db_ instanceof TaskDB == false)
 			throw new Warning(Resource
@@ -791,6 +1119,14 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 		return sdb.getLogs();
 	}
 
+	/**
+	 * return the number of days left before a given date.
+	 * 
+	 * @param dd
+	 *            the date
+	 * 
+	 * @return the number of days left
+	 */
 	public static int daysLeft(Date dd) {
 
 		if (dd == null)
@@ -816,6 +1152,16 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 		return days;
 	}
 
+	/**
+	 * determine the number fo days between two dates
+	 * 
+	 * @param start
+	 *            the first date
+	 * @param dd
+	 *            the later date
+	 * 
+	 * @return the int
+	 */
 	public static int daysBetween(Date start, Date dd) {
 
 		if (dd == null)
@@ -842,10 +1188,20 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 		return days;
 	}
 
+	/**
+	 * Checks for sub task support
+	 * 
+	 * @return true, if the db supports subtasks (always true as of version 1.7)
+	 */
 	public boolean hasSubTasks() {
 		return db_ instanceof TaskDB;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see net.sf.borg.model.Transactional#beginTransaction()
+	 */
 	public void beginTransaction() throws Exception {
 		if (db_ instanceof Transactional) {
 			Transactional t = (Transactional) db_;
@@ -854,6 +1210,11 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see net.sf.borg.model.Transactional#commitTransaction()
+	 */
 	public void commitTransaction() throws Exception {
 		if (db_ instanceof Transactional) {
 			Transactional t = (Transactional) db_;
@@ -861,6 +1222,11 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see net.sf.borg.model.Transactional#rollbackTransaction()
+	 */
 	public void rollbackTransaction() throws Exception {
 		if (db_ instanceof Transactional) {
 			Transactional t = (Transactional) db_;
@@ -868,10 +1234,30 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 		}
 	}
 
+	/**
+	 * Save a project.
+	 * 
+	 * @param p
+	 *            the project
+	 * 
+	 * @throws Exception
+	 *             the exception
+	 */
 	public void saveProject(Project p) throws Exception {
 		saveProject(p, false);
 	}
 
+	/**
+	 * Save a project.
+	 * 
+	 * @param p
+	 *            the project
+	 * @param undo
+	 *            true if we are executing an undo
+	 * 
+	 * @throws Exception
+	 *             the exception
+	 */
 	public void saveProject(Project p, boolean undo) throws Exception {
 		if (db_ instanceof TaskDB == false)
 			throw new Warning(Resource
@@ -879,8 +1265,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 
 		// validation that task due dates are before project due date
 		if (p.getKey() != -1) {
-			for (Task t : TaskModel.getReference().getTasks(
-					p.getKey())) {
+			for (Task t : TaskModel.getReference().getTasks(p.getKey())) {
 				if (p.getDueDate() != null && t.getDueDate() != null
 						&& !TaskModel.isClosed(t)
 						&& DateUtil.isAfter(t.getDueDate(), p.getDueDate())) {
@@ -915,11 +1300,9 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 			}
 		}
 
-		if ( p.getStatus().equals(
-						Resource.getPlainResourceString("CLOSED"))) {
+		if (p.getStatus().equals(Resource.getPlainResourceString("CLOSED"))) {
 			// make sure that all tasks are closed
-			for (Task pt : TaskModel.getReference().getTasks(
-					p.getKey())) {
+			for (Task pt : TaskModel.getReference().getTasks(p.getKey())) {
 				if (!isClosed(pt)) {
 					throw new Warning(Resource
 							.getPlainResourceString("close_proj_warn"));
@@ -928,8 +1311,8 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 		}
 
 		TaskDB sdb = (TaskDB) db_;
-		if ( p.getKey() <= 0) {
-			if (!undo )
+		if (p.getKey() <= 0) {
+			if (!undo)
 				p.setKey(sdb.nextProjectKey());
 			sdb.addProject(p);
 			if (!undo) {
@@ -948,6 +1331,14 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 		refreshListeners();
 	}
 
+	/**
+	 * Checks if a task is closed.
+	 * 
+	 * @param t
+	 *            the task
+	 * 
+	 * @return true, if the task is closed
+	 */
 	static public boolean isClosed(Task t) {
 		String stat = t.getState();
 		String type = t.getType();
@@ -955,6 +1346,14 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 				.getFinalState(type));
 	}
 
+	/**
+	 * Checks if a project is closed.
+	 * 
+	 * @param p
+	 *            the project
+	 * 
+	 * @return true, if a project is closed
+	 */
 	static public boolean isClosed(Project p) {
 		String stat = p.getStatus();
 		return stat.equals(Resource.getPlainResourceString("CLOSED"));

@@ -46,39 +46,38 @@ import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Task;
 import net.sf.borg.model.xml.LinkXMLAdapter;
 
+/**
+ * LinkModel manages the Link Entities, which are associations between BORG Entities and other BORG Entities,
+ * files, and URLs.
+ */
 public class LinkModel extends Model {
 
-    // link types
-    public static class LinkType {
-        private String name_;
-
-        public LinkType(String n) {
-            name_ = n;
+    /**
+     * LinkType holds the various link types. The string values are for legacy reasons
+     */
+    public enum LinkType {
+        
+    	FILELINK("file"),
+    	ATTACHMENT("attachment"),
+    	URL("url"),
+    	APPOINTMENT("appointment"),
+    	MEMO("memo"),
+    	PROJECT("project"),
+    	TASK("task"),
+    	ADDRESS("address");
+    	
+        private final String value;
+        private LinkType(String n) {
+            value = n;
         };
+        public String toString(){ return value; }
 
-        public String toString() {
-            return name_;
-        }
     }
 
-    static public final LinkType FILELINK = new LinkType("file");
-
-    static public final LinkType ATTACHMENT = new LinkType("attachment");
-
-    static public final LinkType URL = new LinkType("url");
-
-    static public final LinkType APPOINTMENT = new LinkType("appointment");
-
-    static public final LinkType MEMO = new LinkType("memo");
-
-    static public final LinkType PROJECT = new LinkType("project");
-
-    static public final LinkType TASK = new LinkType("task");
-
-    static public final LinkType ADDRESS = new LinkType("address");
-
+    /** The singleton */
     static private LinkModel self_ = null;
 
+    /** map of entity types to class names */
     private static HashMap<Class<? extends KeyedEntity<?>>,String> typemap = new HashMap<Class<? extends KeyedEntity<?>>,String>();
 
     static {
@@ -91,6 +90,11 @@ public class LinkModel extends Model {
     }
 
  
+    /**
+     * get the folder where attachments are stored
+     * 
+     * @return the attachment folder path
+     */
     public static String attachmentFolder() {
         String dbtype = Prefs.getPref(PrefName.DBTYPE);
         if (dbtype.equals("hsqldb")) {
@@ -107,21 +111,36 @@ public class LinkModel extends Model {
         return null;
     }
 
+    /**
+     * Gets the singleton.
+     * 
+     * @return the singleton
+     */
     public static LinkModel getReference() {
     	if( self_ == null )
 			self_ = new LinkModel();
 		return (self_);
     }
 
+    /** The db */
     private EntityDB<Link> db_; // the database
 
+    /**
+     * Adds a link.
+     * 
+     * @param owner the owning Entity
+     * @param path the path (url, filepath, or entity key)
+     * @param linkType the link type
+     * 
+     * @throws Exception the exception
+     */
     public void addLink(KeyedEntity<?> owner, String path, LinkType linkType) throws Exception {
         if (owner == null) {
             Errmsg.notice(Resource.getPlainResourceString("att_owner_null"));
             return;
         }
 
-        if (linkType == ATTACHMENT) {
+        if (linkType == LinkType.ATTACHMENT) {
 
             String atfolder = attachmentFolder();
             if (atfolder == null)
@@ -160,6 +179,14 @@ public class LinkModel extends Model {
         saveLink(at);
     }
 
+    /**
+     * Copy a file.
+     * 
+     * @param fromFile the from file
+     * @param toFile the to file
+     * 
+     * @throws Exception the exception
+     */
     private static void copyFile(String fromFile, String toFile) throws Exception {
         FileInputStream from = null;
         FileOutputStream to = null;
@@ -188,13 +215,27 @@ public class LinkModel extends Model {
 
     }
 
+    /**
+     * Delete a link
+     * 
+     * @param key the key
+     * 
+     * @throws Exception the exception
+     */
     public void delete(int key) throws Exception {
         Link l = getLink(key);
         delete(l);
     }
 
+    /**
+     * Delete a link
+     * 
+     * @param l the Link
+     * 
+     * @throws Exception the exception
+     */
     public void delete(Link l) throws Exception {
-        if (l.getLinkType().equals(ATTACHMENT.toString())) {
+        if (l.getLinkType().equals(LinkType.ATTACHMENT.toString())) {
             // delete attached file
             File f = new File(attachmentFolder() + "/" + l.getPath());
             f.delete();
@@ -203,6 +244,14 @@ public class LinkModel extends Model {
         refresh();
     }
 
+    /**
+     * Delete all links for a particlar owning Entity given key and type
+     * 
+     * @param id the Entity id
+     * @param type the Entity type
+     * 
+     * @throws Exception the exception
+     */
     public void deleteLinks(int id, Class<? extends KeyedEntity<?>> type) throws Exception {
         if (!hasLinks())
             return;
@@ -214,6 +263,13 @@ public class LinkModel extends Model {
         }
     }
 
+    /**
+     * Delete links for an owning entity
+     * 
+     * @param owner the owning entity object
+     * 
+     * @throws Exception the exception
+     */
     public void deleteLinks(KeyedEntity<?> owner) throws Exception {
         if (!hasLinks())
             return;
@@ -225,6 +281,13 @@ public class LinkModel extends Model {
         }
     }
 
+    /**
+     * Export links to XML
+     * 
+     * @param fw the writer to write XML to
+     * 
+     * @throws Exception the exception
+     */
     public void export(Writer fw) throws Exception {
         if (!hasLinks())
             return;
@@ -241,18 +304,49 @@ public class LinkModel extends Model {
 
     }
 
+    /**
+     * Gets the dB.
+     * 
+     * @return the dB
+     */
     public EntityDB<Link> getDB() {
         return (db_);
     }
 
+    /**
+     * Gets a link.
+     * 
+     * @param key the key
+     * 
+     * @return the link
+     * 
+     * @throws Exception the exception
+     */
     public Link getLink(int key) throws Exception {
         return db_.readObj(key);
     }
 
+    /**
+     * Gets all links.
+     * 
+     * @return all links
+     * 
+     * @throws Exception the exception
+     */
     public Collection<Link> getLinks() throws Exception {
         return db_.readAll();
     }
 
+    /**
+     * Gets the links for an owning entity.
+     * 
+     * @param id the owner id
+     * @param type the owner type
+     * 
+     * @return the links
+     * 
+     * @throws Exception the exception
+     */
     public Collection<Link> getLinks(int id, Class<? extends KeyedEntity<?>> type) throws Exception {
         LinkDB adb = (LinkDB) db_;
         String o = typemap.get(type);
@@ -262,6 +356,15 @@ public class LinkModel extends Model {
 
     }
 
+    /**
+     * Gets the links for an owning entity
+     * 
+     * @param ownerbean the owning entity
+     * 
+     * @return the links
+     * 
+     * @throws Exception the exception
+     */
     public Collection<Link> getLinks(KeyedEntity<?> ownerbean) throws Exception {
         LinkDB adb = (LinkDB) db_;
         if (ownerbean == null)
@@ -273,12 +376,24 @@ public class LinkModel extends Model {
 
     }
 
+    /**
+     * are links enabled
+     * 
+     * @return true, if the database supports links (as of 1.7, should always be true)
+     */
     public boolean hasLinks() {
         if (db_ != null)
             return true;
         return false;
     }
 
+    /**
+     * Import xml
+     * 
+     * @param xt the XML tree
+     * 
+     * @throws Exception the exception
+     */
     public void importXml(XTree xt) throws Exception {
         if (!hasLinks())
             return;
@@ -299,6 +414,14 @@ public class LinkModel extends Model {
         refresh();
     }
 
+    /**
+     * Move links from one object to another
+     * 
+     * @param oldOwner the old owner
+     * @param newOwner the new owner
+     * 
+     * @throws Exception the exception
+     */
     public void moveLinks(KeyedEntity<?> oldOwner, KeyedEntity<?> newOwner) throws Exception {
         Collection<Link> atts = getLinks(oldOwner);
         Iterator<Link> it = atts.iterator();
@@ -315,29 +438,46 @@ public class LinkModel extends Model {
         }
     }
 
-    // allocate a new Row from the DB
+    /**
+     * return a new link object
+     * 
+     * @return the link
+     */
     public Link newLink() {
         return (db_.newObj());
     }
 
    
+    /**
+     * Instantiates a new link model.
+     */
     private LinkModel()  {     
         db_ = new LinkJdbcDB();
     }
 
+    /**
+     * Refresh listeners
+     */
     public void refresh() {
         refreshListeners();
     }
 
-    public void saveLink(Link addr) throws Exception {
-        int num = addr.getKey();
+    /**
+     * Save a link.
+     * 
+     * @param link the link
+     * 
+     * @throws Exception the exception
+     */
+    public void saveLink(Link link) throws Exception {
+        int num = link.getKey();
 
         if (num == -1) {
             int newkey = db_.nextkey();
-            addr.setKey(newkey);
-            db_.addObj(addr);
+            link.setKey(newkey);
+            db_.addObj(link);
         } else {
-            db_.updateObj(addr);
+            db_.updateObj(link);
 
         }
 

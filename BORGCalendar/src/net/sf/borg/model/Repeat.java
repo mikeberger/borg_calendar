@@ -29,58 +29,70 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.model.entity.Appointment;
 
 /**
- * A helper class for calculating repeating appointments.
+ * A helper class for calculating all things about repeating appointments. It is mainly an iterator that
+ * can take repeat parameters for an appointment and iterate through the repeats
  */
 public class Repeat {
+    
+	// the various repeat options. each constant represents a different way that 
+	// an appointment can repeat
     public static final String TTH = "tth";
-
     public static final String MWF = "mwf";
-
     public static final String WEEKENDS = "weekends";
-
     public static final String WEEKDAYS = "weekdays";
-
     public static final String YEARLY = "yearly";
-
     public static final String MONTHLY_DAY = "monthly_day";
-
     public static final String MONTHLY = "monthly";
-
     public static final String BIWEEKLY = "biweekly";
-
     public static final String WEEKLY = "weekly";
-
     public static final String DAILY = "daily";
-
     public static final String NDAYS = "ndays";
-
     public static final String DAYLIST = "dlist";
-
     public static final String ONCE = "once";
 
+    /** the appointment date (ie the first occurrence) */
     private Calendar start_;
 
+    // scratch
     private Calendar cal;
 
+    /** The current repeat occurrence that this object is set to (via iteration) */
     private Calendar current_;
 
-    private String frequency_; // passed in string containing multiple items
+    /** The repeat data from the appt- string that is passed in that encodes frequency, particular repeat days, and a flag to indicate whether to show the repeat number */
+    private String frequency_; 
 
-    private String freq_; // internal freq
+    /** The repeat frequency */
+    private String freq_; 
 
+    /** the calendar field that is incrementing for each repeat */
     private int field;
 
+    /** scratch to hold the day of the week in a month for certain repeat types */
     private int dayOfWeekMonth;
 
+    /** scratch to hold the day of week for certain repeat types */
     private int dayOfWeek;
 
+    /** the number of the repeat we have iterated to currently */
     private int count_;
 
+    /** The amount to increment the calendar field by for each repeat */
     private int incr;
 
+    /** The frequencies string values in an array for mapping (legacy code)*/
     static private String freqs[] = { ONCE, DAILY, WEEKLY, BIWEEKLY, MONTHLY, MONTHLY_DAY, YEARLY, WEEKDAYS, WEEKENDS, MWF, TTH,
             NDAYS, DAYLIST };
 
+    /**
+     * Checks  to see if a particular day is valid for certain strict repeat types
+     * 
+     * @param date the date
+     * @param freq the frequency
+     * @param daylist the daylist (for repeat with a list of days)
+     * 
+     * @return true, if the daye is compatible with the repeat frequency
+     */
     static public boolean isCompatible(Calendar date, String freq, Collection<Integer> daylist) {
         String f = freqToEnglish(freq);
         int day = date.get(Calendar.DAY_OF_WEEK);
@@ -97,18 +109,39 @@ public class Repeat {
         return true;
     }
 
+    /**
+     * get the translated string for a frequency
+     * 
+     * @param i the index of the frequency
+     * 
+     * @return the translation
+     */
     static public String getFreqString(int i) {
         if (i < 0 || i >= freqs.length)
             return null;
         return (Resource.getResourceString(freqs[i]));
     }
 
+    /**
+     * get the translated string for a frequency
+     * 
+     * @param fr the internal frequency string
+     * 
+     * @return the translation
+     */
     static public String getFreqString(String fr) {
         if (fr == null)
             fr = ONCE;
         return (Resource.getResourceString(fr));
     }
 
+    /**
+     * convert the translated frequency string to the internal string
+     * 
+     * @param fr the trnalsated frequency
+     * 
+     * @return the internal frequency string
+     */
     static public String freqToEnglish(String fr) {
         for (int i = 0; i < freqs.length; i++) {
             if (fr.equals(Resource.getResourceString(freqs[i]))) {
@@ -118,8 +151,18 @@ public class Repeat {
         return (ONCE);
     }
 
-    // generate the frequency string stored in the appt record
-    // daylist is a collection of Calendar days (i.e. Calendar.SUNDAY)
+   
+    /**
+     * generate the encoded frequency string that is stored in the appointment - that encodes
+     * frequency, daylist, and repeat number flag
+     * 
+     * @param uistring the translated frequency string from the ui
+     * @param ndays the ndays field from the UI for NDAYS repeating
+     * @param rptnum the "show repeat number" flag
+     * @param daylist the daylist for DAYLIST repeating
+     * 
+     * @return the string
+     */
     static public String freqString(String uistring, Integer ndays, boolean rptnum, Collection<Integer> daylist) {
         String f = freqToEnglish(uistring);
         if (f.equals(NDAYS)) {
@@ -154,6 +197,13 @@ public class Repeat {
 
     }
 
+    /**
+     * Gets the frequency from the encoded appointment string
+     * 
+     * @param f the frequency string from the appointment
+     * 
+     * @return the frequency
+     */
     static public String getFreq(String f) {
         if (f == null)
             return null;
@@ -164,6 +214,13 @@ public class Repeat {
 
     }
 
+    /**
+     * Gets the repeat number flag from the encoded appointment string
+     * 
+     * @param f the frequency string from the appointment
+     * 
+     * @return the repeat number flag
+     */
     static public boolean getRptNum(String f) {
         if (f == null)
             return false;
@@ -172,6 +229,13 @@ public class Repeat {
         return false;
     }
 
+    /**
+     * Gets the daylist from the encoded appointment string
+     * 
+     * @param f the frequency string from the appointment
+     * 
+     * @return the daylist
+     */
     static public Collection<Integer> getDaylist(String f) {
         ArrayList<Integer> daylist = new ArrayList<Integer>();
         if (f == null || !f.startsWith(DAYLIST))
@@ -205,6 +269,13 @@ public class Repeat {
 
     }
 
+    /**
+     * Gets the n days from the encoded appointment string
+     * 
+     * @param f the encoded appointment string
+     * 
+     * @return the n days value
+     */
     static public int getNDays(String f) {
         if (f == null)
             return 0;
@@ -219,6 +290,12 @@ public class Repeat {
 
     }
 
+    /**
+     * Instantiates a new repeat object
+     * 
+     * @param start the start date of the repeat (the appointment date)
+     * @param frequency the frequency string from the appointment
+     */
     Repeat(Calendar start, String frequency) {
         this.start_ = start;
         this.frequency_ = frequency;
@@ -234,6 +311,7 @@ public class Repeat {
         if (!isRepeating())
             return;
 
+        // set up the iteration parameters from the frequency
         freq_ = getFreq(frequency);
         if (freq_.equals(WEEKLY))
             incr = 7;
@@ -258,22 +336,45 @@ public class Repeat {
         }
     }
 
+    /**
+     * 
+     * 
+     * @return true, if this object represents a repeating item
+     */
     final boolean isRepeating() {
         String f = getFreq(frequency_);
         return f != null && !f.equals(ONCE);
     }
 
+    /**
+     * Checks if an appointment repeats
+     * 
+     * @param ap the appointment
+     * 
+     * @return true, if the appointment is repeating
+     */
     public static boolean isRepeating(Appointment ap) {
         String f = getFreq(ap.getFrequency());
         return f != null && !f.equals(ONCE);
     }
 
-    // our current date
+    /**
+     * get the current date of this iterator
+     * 
+     * @return the current date
+     */
     final Calendar current() {
         return current_;
     }
 
-    // calculate the number of the repeat
+    /**
+     * Calculate the number of a repeat given the date and the appointment
+     * 
+     * @param current the date
+     * @param appt the appointment
+     * 
+     * @return the number of the repeat (starting with 1)
+     */
     final static public int calculateRepeatNumber(Calendar current, Appointment appt) {
         Calendar start = new GregorianCalendar();
         Calendar c = start;
@@ -292,7 +393,11 @@ public class Repeat {
 
     }
 
-    // calculate the next date of this repeat
+    /**
+     * iterate to the next repeat date.
+     * 
+     * @return the next repeat date
+     */
     final Calendar next() {
         if (!isRepeating()) {
             current_ = null;
