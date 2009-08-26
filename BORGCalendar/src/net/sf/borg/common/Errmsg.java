@@ -23,24 +23,34 @@ package net.sf.borg.common;
 
 
 
-// Errmsg provides standard handling of errors and notices with an option to
-// output to screen vs. console.
-// output of an error to the screen includes stack trace
+
+/**
+ * standard error handling for Borg
+ */
 public class Errmsg
 {
 
-    private static boolean console_ = false;   // error to stdout only
+	/** output to console only flag */
+	private static boolean console_ = false;   // error to stdout only
     
-    // set flag for output to screen vs. console
-	public static void console( boolean c )
+	/**
+     * set console output only.
+     * 
+     */
+    public static void console( boolean c )
     {
         console_ = c;
     }
 	
-	// output an exception
-    public static void errmsg( Exception e )
+    /**
+	 * Output an exception to the user.
+	 * 
+	 * @param e the e
+	 */
+	public static void errmsg( Exception e )
     {
         
+		// treat a warning differently - just show its text
         if( e instanceof Warning )
         {
             notice(e.getMessage());
@@ -59,7 +69,11 @@ public class Errmsg
        
     }
     
-    // output an informational notice
+    /**
+     * output a notice/warning - just shows text
+     * 
+     * @param s the text to show
+     */
     public static void notice( String s )
     {
         
@@ -70,8 +84,6 @@ public class Errmsg
             return;
         }
         
-        // info popup
-        //JOptionPane.showMessageDialog(null, s, Resource.getResourceString("Notice"), JOptionPane.INFORMATION_MESSAGE);
         ScrolledDialog.showNotice(s);
     }
     

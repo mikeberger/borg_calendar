@@ -33,15 +33,22 @@ import javax.swing.JOptionPane;
 
 
 /**
- * Abstracts the I/O subsystem. Also allows applets to perform I/O using our
- * in-memory scheme.
- * 
- * @author Mohan Embar
+ * standard routines for file I/O with prompting
  */
 public class IOHelper {
 	
 	
 
+	/**
+	 * Prompt the user to choose a file to open
+	 * 
+	 * @param startDirectory the start directory
+	 * @param title the window title
+	 * 
+	 * @return the input stream
+	 * 
+	 * @throws Exception the exception
+	 */
 	public static InputStream fileOpen(String startDirectory, String title)
 		throws Exception
 	{
@@ -59,6 +66,15 @@ public class IOHelper {
 		return new FileInputStream(s);
 	}
 
+	/**
+	 * prompt the user to pick a file for saving and save date to the file
+	 * 
+	 * @param startDirectory the start directory
+	 * @param istr the stream to write out to the file
+	 * @param defaultFilename the default filename
+	 * 
+	 * @throws Exception the exception
+	 */
 	public static void fileSave(
 		String startDirectory,
 		InputStream istr,
@@ -85,17 +101,32 @@ public class IOHelper {
 		istr.close();
 		ostr.close();
 	}
-	
-	public static InputStream openStream(String file) throws Exception {
-		return new FileInputStream(file);
-	}
 
+
+	/**
+	 * Creates an output stream to a URL
+	 * 
+	 * @param url the url
+	 * 
+	 * @return the output stream
+	 * 
+	 * @throws Exception the exception
+	 */
 	public static OutputStream createOutputStream(URL url) throws Exception {
 		URLConnection connection = url.openConnection();
 		connection.setDoOutput(true);
 		return connection.getOutputStream();
 	}
 
+	/**
+	 * create an output stream to a file, creating parent dirs as needed
+	 * 
+	 * @param file the file
+	 * 
+	 * @return the output stream
+	 * 
+	 * @throws Exception the exception
+	 */
 	public static OutputStream createOutputStream(String file) throws Exception {
 		File fil = new File(file);
 		fil.getParentFile().mkdirs();
@@ -105,11 +136,14 @@ public class IOHelper {
 
 	}
 
-	private IOHelper() {
-	}
-
-	// displays an overwrite confirm dialog if the file exists
-	// returns true if it is ok to write the file
+	
+	/**
+	 * displays an overwrite confirm dialog if a file exists
+	 * 
+	 * @param fname the filename
+	 * 
+	 * @return true, if the user says it's ok to overwrite
+	 */
 	static public boolean checkOverwrite(String fname) {
 		
 		File f = new File(fname);

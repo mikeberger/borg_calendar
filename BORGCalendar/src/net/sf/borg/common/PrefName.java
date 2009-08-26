@@ -21,144 +21,376 @@ package net.sf.borg.common;
 
 import java.util.Calendar;
 
-
+/**
+ * PrefName contains all of the Borg preference definitions and default values.
+ * It enforces compile time checking of preference names
+ */
 public class PrefName {
 
-		private String name_;
-		private Object default_;
-		
-		private PrefName( String name, Object def )
-		{
-			setName(name);
-			setDefault(def);
-		}
-		
-		void setName(String name_) {
-			this.name_ = name_;
-		}
+	/** preference name */
+	private String name_;
 
-		String getName() {
-			return name_;
-		}
+	/** default value */
+	private Object default_;
 
-		void setDefault(Object default_) {
-			this.default_ = default_;
-		}
+	/**
+	 * Instantiates a new pref name.
+	 * 
+	 * @param name
+	 *            the name
+	 * @param def
+	 *            the default value
+	 */
+	private PrefName(String name, Object def) {
+		setName(name);
+		setDefault(def);
+	}
 
-		Object getDefault() {
-			return default_;
-		}
-		
-		// database
-		static public PrefName DBTYPE = new PrefName( "dbtype", "hsqldb");
-		static public PrefName DBHOST = new PrefName( "dbhost", "localhost");
-		static public PrefName DBPORT = new PrefName( "dbport", "3306");
-		static public PrefName DBNAME = new PrefName( "dbname", "borg");
-		static public PrefName DBUSER = new PrefName( "dbuser", "borg");
-		static public PrefName DBPASS = new PrefName( "dbpass", "borg");
-		static public PrefName JDBCURL = new PrefName( "jdbcurl", "");
-		static public PrefName SYNCMINS = new PrefName( "sync_mins", new Integer(0));
-		static public PrefName HSQLDBDIR = new PrefName( "hsqldbdir", "not-set");
-		
-		// misc
-		static public PrefName STACKTRACE = new PrefName( "stacktrace", "false");
-		static public PrefName SPLASH = new PrefName( "splash", "true");
-		static public PrefName LASTEXPURL = new PrefName( "lastExpUrl", "");
-		static public PrefName LASTIMPURL = new PrefName( "lastImpUrl", "");
-		static public PrefName SOCKETPORT = new PrefName("socketport", new Integer(2929));
-		static public PrefName USESYSTRAY = new PrefName("useSysTray", "true");
-		static public PrefName BACKUPDIR = new PrefName("backupDir", "");
-		
-		// printing
-		static public PrefName COLORPRINT = new PrefName( "colorprint", "false");
-		
-		// what to show
-		static public PrefName SHOWPUBLIC = new PrefName( "showpublic", "true");
-		static public PrefName SHOWPRIVATE = new PrefName( "showprivate", "false");
-		static public PrefName SHOWUSHOLIDAYS = new PrefName( "show_us_holidays", "true");
-		static public PrefName SHOWCANHOLIDAYS = new PrefName( "show_can_holidays", "false");
-		static public PrefName COLORSORT = new PrefName( "color_sort", "false");
-		static public PrefName FIRSTDOW = new PrefName( "first_dow", new Integer(Calendar.SUNDAY));
-		static public PrefName MILTIME = new PrefName( "miltime", "false");
-		static public PrefName WKSTARTHOUR = new PrefName( "wkStartHour", "7");
-		static public PrefName WKENDHOUR = new PrefName( "wkEndHour", "22");
-		static public PrefName DEFAULT_APPT = new PrefName("defaultAppt", "" );
-		static public PrefName DAYOFYEAR = new PrefName("showDayOfYear", "false");
-		static public PrefName TRUNCAPPT = new PrefName("truncate_appt", "true");
-		static public PrefName ISOWKNUMBER = new PrefName("isowknumber", "true");
-		static public PrefName DOCKPANELS = new PrefName("dock_panels", "true");
-		static public PrefName HIDESTRIKETHROUGH = new PrefName("hide_strike", "false");
-		static public PrefName SHOW_UNDO_STACK = new PrefName("show_undo_stack", "false");
-		
-		// reminders/popups
-		static public PrefName REMINDERS = new PrefName( "reminders", "true");
-		static public PrefName BEEPINGREMINDERS = new PrefName( "beeping_reminders", "true");
-		static public PrefName USESYSTEMBEEP = new PrefName( "system_beep", "true");
-		static public PrefName REMINDERCHECKMINS = new PrefName( "reminder_check_mins", new Integer(1));
-		static public PrefName EMAILENABLED = new PrefName( "email_enabled", "false");
-		static public PrefName EMAILSERVER = new PrefName( "email_server", "");
-		static public PrefName EMAILADDR = new PrefName( "email_addr", "");
-		static public PrefName EMAILLAST = new PrefName( "email_last", new Integer(0));
-		static public PrefName EMAILDEBUG = new PrefName( "email_debug", "0");
-		static public PrefName EMAILTIME = new PrefName( "email_time", new Integer(0));
-		static public PrefName EMAILUSER = new PrefName( "email_user", "");
-		static public PrefName EMAILPASS = new PrefName( "email_pass", "");
-		static public PrefName EMAILPORT = new PrefName( "email_port", "25");
-		static public PrefName REMMINS = new PrefName( "remmins", "-10,-5,0,1,2,3,4,5,10,15,20,30,45,60,90,120,180,240,300,360");
-// font-LNF-locale
-		static public PrefName DEFFONT = new PrefName( "defaultfont", "");
-		static public PrefName APPTFONT = new PrefName( "apptfont", "SansSerif-10");		
-		static public PrefName DAYVIEWFONT = new PrefName( "dayviewfont", "SansSerif-10");
-		static public PrefName WEEKVIEWFONT = new PrefName( "weekviewfont", "SansSerif-10");
-		static public PrefName MONTHVIEWFONT = new PrefName( "monthviewfont", "SansSerif-6");
-		static public PrefName LNF = new PrefName( "lnf", "com.jgoodies.looks.plastic.PlasticXPLookAndFeel");		
-		static public PrefName COUNTRY = new PrefName( "country", "");
-		static public PrefName LANGUAGE = new PrefName( "language", "");
+	/**
+	 * Sets the name.
+	 * 
+	 * @param name_
+	 *            the new name
+	 */
+	void setName(String name_) {
+		this.name_ = name_;
+	}
+
+	/**
+	 * Gets the name.
+	 * 
+	 * @return the name
+	 */
+	String getName() {
+		return name_;
+	}
+
+	/**
+	 * Sets the default value
+	 * 
+	 * @param default_
+	 *            the new default
+	 */
+	void setDefault(Object default_) {
+		this.default_ = default_;
+	}
+
+	/**
+	 * Gets the default value
+	 * 
+	 * @return the default
+	 */
+	Object getDefault() {
+		return default_;
+	}
+
+	// database related prefs
+	/** database type. */
+	static public PrefName DBTYPE = new PrefName("dbtype", "hsqldb");
+
+	/** database host */
+	static public PrefName DBHOST = new PrefName("dbhost", "localhost");
+
+	/** databse port */
+	static public PrefName DBPORT = new PrefName("dbport", "3306");
+
+	/** database name */
+	static public PrefName DBNAME = new PrefName("dbname", "borg");
+
+	/** database user */
+	static public PrefName DBUSER = new PrefName("dbuser", "borg");
+
+	/** database password */
+	static public PrefName DBPASS = new PrefName("dbpass", "borg");
+
+	/** jdbc url - for generic jdbc only, not hsql or mysql */
+	static public PrefName JDBCURL = new PrefName("jdbcurl", "");
+
+	/** interval for db auto-sync in minutes */
+	static public PrefName SYNCMINS = new PrefName("sync_mins", new Integer(0));
+
+	/** hsql database directory */
+	static public PrefName HSQLDBDIR = new PrefName("hsqldbdir", "not-set");
+
+	// misc
+	/** show a stack trace button on error dialogs */
+	static public PrefName STACKTRACE = new PrefName("stacktrace", "false");
+
+	/** show the spash window */
+	static public PrefName SPLASH = new PrefName("splash", "true");
+
+	/** last export url */
+	static public PrefName LASTEXPURL = new PrefName("lastExpUrl", "");
+
+	/** last import url */
+	static public PrefName LASTIMPURL = new PrefName("lastImpUrl", "");
+
+	/** port for the socket listener */
+	static public PrefName SOCKETPORT = new PrefName("socketport", new Integer(
+			2929));
+
+	/** use system tray */
+	static public PrefName USESYSTRAY = new PrefName("useSysTray", "true");
+
+	/** backup directory for auto backup */
+	static public PrefName BACKUPDIR = new PrefName("backupDir", "");
+
+	// printing
+	/** print in color */
+	static public PrefName COLORPRINT = new PrefName("colorprint", "false");
+
+	// what to show
+	/** show public appontments */
+	static public PrefName SHOWPUBLIC = new PrefName("showpublic", "true");
+
+	/** show private appointments */
+	static public PrefName SHOWPRIVATE = new PrefName("showprivate", "false");
+
+	/** show us holidays */
+	static public PrefName SHOWUSHOLIDAYS = new PrefName("show_us_holidays",
+			"true");
+
+	/** show canadian holidays */
+	static public PrefName SHOWCANHOLIDAYS = new PrefName("show_can_holidays",
+			"false");
+
+	/** sort appointments by color for a day */
+	static public PrefName COLORSORT = new PrefName("color_sort", "false");
+
+	/** the first day of the week */
+	static public PrefName FIRSTDOW = new PrefName("first_dow", new Integer(
+			Calendar.SUNDAY));
+
+	/** show military time */
+	static public PrefName MILTIME = new PrefName("miltime", "false");
+
+	/** earliest hour in week grid */
+	static public PrefName WKSTARTHOUR = new PrefName("wkStartHour", "7");
+
+	/** latest hour in week grid */
+	static public PrefName WKENDHOUR = new PrefName("wkEndHour", "22");
+
+	/** contents of the default appointment in XML */
+	static public PrefName DEFAULT_APPT = new PrefName("defaultAppt", "");
+
+	/** show the day of the year */
+	static public PrefName DAYOFYEAR = new PrefName("showDayOfYear", "false");
+
+	/** truncate appointment text after 1 line */
+	static public PrefName TRUNCAPPT = new PrefName("truncate_appt", "true");
+
+	/** use iso week numbering */
+	static public PrefName ISOWKNUMBER = new PrefName("isowknumber", "true");
+
+	/** dock all panels in the main tab window by default (few windows can be undocked) */
+	static public PrefName DOCKPANELS = new PrefName("dock_panels", "true");
+
+	/** do not show strikethrough appointments */
+	static public PrefName HIDESTRIKETHROUGH = new PrefName("hide_strike",
+			"false");
+
+	/** show the entire undo stack (debugging) */
+	static public PrefName SHOW_UNDO_STACK = new PrefName("show_undo_stack",
+			"false");
+
+	// reminders/popups
+	/** The REMINDERS. */
+	static public PrefName REMINDERS = new PrefName("reminders", "true");
+
+	/** The BEEPINGREMINDERS. */
+	static public PrefName BEEPINGREMINDERS = new PrefName("beeping_reminders",
+			"true");
+
+	/** The USESYSTEMBEEP. */
+	static public PrefName USESYSTEMBEEP = new PrefName("system_beep", "true");
+
+	/** The REMINDERCHECKMINS. */
+	static public PrefName REMINDERCHECKMINS = new PrefName(
+			"reminder_check_mins", new Integer(1));
+
+	/** The EMAILENABLED. */
+	static public PrefName EMAILENABLED = new PrefName("email_enabled", "false");
+
+	/** The EMAILSERVER. */
+	static public PrefName EMAILSERVER = new PrefName("email_server", "");
+
+	/** The EMAILADDR. */
+	static public PrefName EMAILADDR = new PrefName("email_addr", "");
+
+	/** The EMAILLAST. */
+	static public PrefName EMAILLAST = new PrefName("email_last",
+			new Integer(0));
+
+	/** The EMAILDEBUG. */
+	static public PrefName EMAILDEBUG = new PrefName("email_debug", "0");
+
+	/** The EMAILTIME. */
+	static public PrefName EMAILTIME = new PrefName("email_time",
+			new Integer(0));
+
+	/** The EMAILUSER. */
+	static public PrefName EMAILUSER = new PrefName("email_user", "");
+
+	/** The EMAILPASS. */
+	static public PrefName EMAILPASS = new PrefName("email_pass", "");
+
+	/** The EMAILPORT. */
+	static public PrefName EMAILPORT = new PrefName("email_port", "25");
+
+	/** The REMMINS. */
+	static public PrefName REMMINS = new PrefName("remmins",
+			"-10,-5,0,1,2,3,4,5,10,15,20,30,45,60,90,120,180,240,300,360");
+	// font-LNF-locale
+	/** The DEFFONT. */
+	static public PrefName DEFFONT = new PrefName("defaultfont", "");
+
+	/** The APPTFONT. */
+	static public PrefName APPTFONT = new PrefName("apptfont", "SansSerif-10");
+
+	/** The DAYVIEWFONT. */
+	static public PrefName DAYVIEWFONT = new PrefName("dayviewfont",
+			"SansSerif-10");
+
+	/** The WEEKVIEWFONT. */
+	static public PrefName WEEKVIEWFONT = new PrefName("weekviewfont",
+			"SansSerif-10");
+
+	/** The MONTHVIEWFONT. */
+	static public PrefName MONTHVIEWFONT = new PrefName("monthviewfont",
+			"SansSerif-6");
+
+	/** The LNF. */
+	static public PrefName LNF = new PrefName("lnf",
+			"com.jgoodies.looks.plastic.PlasticXPLookAndFeel");
+
+	/** The COUNTRY. */
+	static public PrefName COUNTRY = new PrefName("country", "");
+
+	/** The LANGUAGE. */
+	static public PrefName LANGUAGE = new PrefName("language", "");
+
+	/** The ADDRVIEWSIZE. */
+	static public PrefName ADDRVIEWSIZE = new PrefName("addrviewsize",
+			"-1,-1,-1,-1,N");
+
+	/** The ADDRLISTVIEWSIZE. */
+	static public PrefName ADDRLISTVIEWSIZE = new PrefName("addrlistviewsize",
+			"-1,-1,-1,-1,N");
+
+	/** The APPTLISTVIEWSIZE. */
+	static public PrefName APPTLISTVIEWSIZE = new PrefName("apptlistviewsize",
+			"-1,-1,-1,-1,N");
+
+	/** The size of the main borg window. */
+	static public PrefName DAYVIEWSIZE = new PrefName("dayviewsize",
+			"-1,-1,-1,-1,Y");
+
+	/** size of the option window. */
+	static public PrefName OPTVIEWSIZE = new PrefName("optviewsize",
+			"-1,-1,-1,-1,N");
+
+	/** size of the search window. */
+	static public PrefName SRCHVIEWSIZE = new PrefName("srchviewsize",
+			"-1,-1,-1,-1,N");
+
+	/** size of the task config window */
+	static public PrefName TASKCONFVIEWSIZE = new PrefName("taskconfviewsize",
+			"-1,-1,-1,-1,N");
+
+	/** size of the task view window when undocked */
+	static public PrefName TASKVIEWSIZE = new PrefName("taskviewsize",
+			"-1,-1,-1,-1,N");
+
+	/** size of the todo view when undocked */
+	static public PrefName TODOVIEWSIZE = new PrefName("todoviewsize",
+			"-1,-1,-1,-1,N");
+
+	/** size of the help window */
+	static public PrefName HELPVIEWSIZE = new PrefName("helpviewsize",
+			"-1,-1,-1,-1,N");
+
+	/** size of the project view when undocked */
+	static public PrefName PROJVIEWSIZE = new PrefName("projviewsize",
+			"-1,-1,-1,-1,N");
+
+	/** The GANTT chart size. */
+	static public PrefName GANTTSIZE = new PrefName("ganttsize",
+			"-1,-1,-1,-1,N");
+
+	// user color scheme
+	/** use user colors on todo view */
+	static public PrefName UCS_ONTODO = new PrefName("ucs_ontodo", "false");
+
+	/** mark todos on the calendar */
+	static public PrefName UCS_MARKTODO = new PrefName("ucs_marktodo", "true");
+
+	/** characters or image to mark todos with */
+	static public PrefName UCS_MARKER = new PrefName("ucs_marker",
+			"redball.gif");
 	
-		static public PrefName ADDRVIEWSIZE = new PrefName("addrviewsize","-1,-1,-1,-1,N");
-		static public PrefName ADDRLISTVIEWSIZE = new PrefName("addrlistviewsize","-1,-1,-1,-1,N");
-		static public PrefName APPTLISTVIEWSIZE = new PrefName("apptlistviewsize","-1,-1,-1,-1,N");
-		static public PrefName DAYVIEWSIZE = new PrefName("dayviewsize","-1,-1,-1,-1,Y");
-		static public PrefName OPTVIEWSIZE = new PrefName("optviewsize","-1,-1,-1,-1,N");
-		static public PrefName SRCHVIEWSIZE = new PrefName("srchviewsize","-1,-1,-1,-1,N");
-		static public PrefName TASKCONFVIEWSIZE = new PrefName("taskconfviewsize","-1,-1,-1,-1,N");
-		static public PrefName TASKVIEWSIZE = new PrefName("taskviewsize","-1,-1,-1,-1,N");
-		static public PrefName TODOVIEWSIZE = new PrefName("todoviewsize","-1,-1,-1,-1,N");
-		static public PrefName HELPVIEWSIZE = new PrefName("helpviewsize","-1,-1,-1,-1,N");
-		static public PrefName PROJVIEWSIZE = new PrefName("projviewsize","-1,-1,-1,-1,N");
-		static public PrefName GANTTSIZE = new PrefName("ganttsize","-1,-1,-1,-1,N");
-		
-		// user color scheme
-		static public PrefName UCS_ONTODO = new PrefName("ucs_ontodo","false");
-		static public PrefName UCS_MARKTODO = new PrefName("ucs_marktodo","true");
-		static public PrefName UCS_MARKER = new PrefName("ucs_marker","redball.gif");
-		// appts categories
-		static public PrefName UCS_RED = new PrefName("ucs_red",new Integer(13369395));
-		static public PrefName UCS_BLUE = new PrefName("ucs_blue",new Integer(6684876));
-		static public PrefName UCS_GREEN = new PrefName("ucs_green",new Integer(39168));
-		static public PrefName UCS_BLACK = new PrefName("ucs_black",new Integer(13107));
-		static public PrefName UCS_WHITE = new PrefName("ucs_white",new Integer(16250609));
-		// use if for task tracker items
-		static public PrefName UCS_NAVY = new PrefName("ucs_navy",new Integer(13158));
-		// use it for system generated holidays
-		static public PrefName UCS_PURPLE = new PrefName("ucs_purple",new Integer(10027212));
-		// use it for system generated birthdays
-		static public PrefName UCS_BRICK = new PrefName("ucs_brick",new Integer(10027008));
-		// Calendar view day background colors
-		
-		static public PrefName UCS_DEFAULT = new PrefName("ucs_default",new Integer(16777164));
-		static public PrefName UCS_TODAY = new PrefName("ucs_today",new Integer(16751001));
-		static public PrefName UCS_HOLIDAY = new PrefName("ucs_holiday",new Integer(16764108));
-		static public PrefName UCS_VACATION = new PrefName("ucs_vacation",new Integer(13434828));
-		static public PrefName UCS_HALFDAY = new PrefName("ucs_halfday",new Integer(13421823));
-		static public PrefName UCS_WEEKEND = new PrefName("ucs_weekend",new Integer(16764057));
-		static public PrefName UCS_WEEKDAY = new PrefName("ucs_weekday",new Integer(16777164));
-		static public PrefName UCS_STRIPE = new PrefName("ucs_stripe",new Integer(15792890));
-		
-		// tasks
-		static public PrefName TASK_SHOW_ABBREV = new PrefName("task_show_abbrev", "false");
-		static public PrefName CAL_SHOW_TASKS = new PrefName("cal_show_tasks", "true");
-		static public PrefName CAL_SHOW_SUBTASKS = new PrefName("cal_show_subtasks", "true");
-		static public PrefName GANTT_SHOW_SUBTASKS = new PrefName("gantt_show_subtasks", "true");
-		
+	/** default colors - they are tunable and do not have to match the color in the name */
+	static public PrefName UCS_RED = new PrefName("ucs_red", new Integer(
+			13369395));
+	static public PrefName UCS_BLUE = new PrefName("ucs_blue", new Integer(
+			6684876));
+	static public PrefName UCS_GREEN = new PrefName("ucs_green", new Integer(
+			39168));
+	static public PrefName UCS_BLACK = new PrefName("ucs_black", new Integer(
+			13107));
+	static public PrefName UCS_WHITE = new PrefName("ucs_white", new Integer(
+			16250609));
+	static public PrefName UCS_NAVY = new PrefName("ucs_navy", new Integer(
+			13158));
+	static public PrefName UCS_PURPLE = new PrefName("ucs_purple", new Integer(
+			10027212));
+	static public PrefName UCS_BRICK = new PrefName("ucs_brick", new Integer(
+			10027008));
+	static public PrefName UCS_DEFAULT = new PrefName("ucs_default",
+			new Integer(16777164));
+
+	/** color for current day */
+	static public PrefName UCS_TODAY = new PrefName("ucs_today", new Integer(
+			16751001));
+
+	/** color for holidays */
+	static public PrefName UCS_HOLIDAY = new PrefName("ucs_holiday",
+			new Integer(16764108));
+
+	/** color for vacation days */
+	static public PrefName UCS_VACATION = new PrefName("ucs_vacation",
+			new Integer(13434828));
+
+	/** color for half days */
+	static public PrefName UCS_HALFDAY = new PrefName("ucs_halfday",
+			new Integer(13421823));
+
+	/** color for weekends */
+	static public PrefName UCS_WEEKEND = new PrefName("ucs_weekend",
+			new Integer(16764057));
+
+	/** color for weekdays */
+	static public PrefName UCS_WEEKDAY = new PrefName("ucs_weekday",
+			new Integer(16777164));
+
+	/** color for alternating table stripes */
+	static public PrefName UCS_STRIPE = new PrefName("ucs_stripe", new Integer(
+			15792890));
+
+	// tasks
+	/** when showing tasks project and subtasks, prepend a prefix and id number  */
+	static public PrefName TASK_SHOW_ABBREV = new PrefName("task_show_abbrev",
+			"false");
+
+	/** show tasks on calendar */
+	static public PrefName CAL_SHOW_TASKS = new PrefName("cal_show_tasks",
+			"true");
+
+	/** show subtasks on calendar */
+	static public PrefName CAL_SHOW_SUBTASKS = new PrefName(
+			"cal_show_subtasks", "true");
+
+	/** show subtasks on gantt chart */
+	static public PrefName GANTT_SHOW_SUBTASKS = new PrefName(
+			"gantt_show_subtasks", "true");
+
 }

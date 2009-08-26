@@ -22,42 +22,57 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+/**
+ * Some common date utility logic
+ */
 public class DateUtil {
 
-    public static boolean isAfter(Date d1, Date d2){
-    
-        GregorianCalendar tcal = new GregorianCalendar();
-        tcal.setTime(d1);
-        tcal.set(Calendar.HOUR_OF_DAY, 0);
-        tcal.set(Calendar.MINUTE, 0);
-        tcal.set(Calendar.SECOND, 0);
-        GregorianCalendar dcal = new GregorianCalendar();
-        dcal.setTime(d2);
-        dcal.set(Calendar.HOUR_OF_DAY, 0);
-        dcal.set(Calendar.MINUTE, 10);
-        dcal.set(Calendar.SECOND, 0);
-        
-        if (tcal.getTime().after(dcal.getTime())) {
-    	return true;
-        }
-        
-        return false;
-    }
-    
-    /**
-     * return the number of the day of the epoch for a given date
-     * this provides a decent Date to int converter that returns the same
-     * value for all Dates on a given day
-     * @param d the date
-     * @return the days from the beginning of the epoch until d
-     */
-    static public int dayOfEpoch(Date d)
-    {
-    	// adjust to local time
-    	GregorianCalendar cal = new GregorianCalendar();
-    	cal.setTime(d);
-    	cal.set(Calendar.HOUR_OF_DAY, 1);
-    	return (int) (cal.getTime().getTime() / 1000 / 60 / 60 / 24);
-    }
+	/**
+	 * Checks if one date falls on a later calendar day than another.
+	 * 
+	 * @param d1
+	 *            the first date
+	 * @param d2
+	 *            the second date
+	 * 
+	 * @return true, if is after
+	 */
+	public static boolean isAfter(Date d1, Date d2) {
+
+		GregorianCalendar tcal = new GregorianCalendar();
+		tcal.setTime(d1);
+		tcal.set(Calendar.HOUR_OF_DAY, 0);
+		tcal.set(Calendar.MINUTE, 0);
+		tcal.set(Calendar.SECOND, 0);
+		GregorianCalendar dcal = new GregorianCalendar();
+		dcal.setTime(d2);
+		dcal.set(Calendar.HOUR_OF_DAY, 0);
+		dcal.set(Calendar.MINUTE, 10);
+		dcal.set(Calendar.SECOND, 0);
+
+		if (tcal.getTime().after(dcal.getTime())) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * return the number of the day of the epoch for a given date. this provides
+	 * a decent Date to int converter that returns the same value for all Dates
+	 * on a given day.
+	 * 
+	 * @param d
+	 *            the date
+	 * 
+	 * @return the days from the beginning of the epoch until d
+	 */
+	static public int dayOfEpoch(Date d) {
+		// adjust to local time
+		GregorianCalendar cal = new GregorianCalendar();
+		cal.setTime(d);
+		cal.set(Calendar.HOUR_OF_DAY, 1);
+		return (int) (cal.getTime().getTime() / 1000 / 60 / 60 / 24);
+	}
 
 }

@@ -19,6 +19,7 @@
  */
 package net.sf.borg.common;
 
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -105,7 +106,7 @@ public class Prefs {
 
 	public static void importPrefs(String filename) {
 		try {
-			InputStream istr = IOHelper.openStream(filename);
+			InputStream istr = new FileInputStream(filename);
 			Preferences.importPreferences(istr);
 			istr.close();
 		} catch (Exception e) {
