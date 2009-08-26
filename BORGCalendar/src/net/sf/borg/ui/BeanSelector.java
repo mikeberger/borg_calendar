@@ -92,7 +92,7 @@ public class BeanSelector extends JDialog {
 						Resource.getPlainResourceString("Item_#"),
 						Resource.getPlainResourceString("Description") },
 						new Class[] { Integer.class,String.class }),
-						new String[] { "Id", "Description" }));
+						new String[] { "Key", "Description" }));
 	}
 	
 	public static Task selectTask() throws Exception {
@@ -193,7 +193,7 @@ public class BeanSelector extends JDialog {
 				for (int i = 0; i < fields_.length; i++) {
 					// find method
 					String method = "get" + fields_[i];
-					Method m = beanClass.getDeclaredMethod(method, (Class[])null);
+					Method m = beanClass.getMethod(method, (Class[])null);
 					ro[i] = m.invoke(r, (Object[])null);
 				}
 				// add the table row
