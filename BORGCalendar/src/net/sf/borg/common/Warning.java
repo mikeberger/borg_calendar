@@ -26,14 +26,20 @@ Copyright 2004 by Mike Berger
 package net.sf.borg.common;
 
 /**
- *
- * @author  mbb
+ * Warning is something to throw when there is a non fatal condition and the best way to handle it
+ * is to use the throw mechanism. Catchers of this class should treat the message
+ * as warning or informational text and should not show the stack trace to the user
+ * 
  */
 public class Warning extends Exception {
     
 	private static final long serialVersionUID = -1336329298335625745L;
 
-	/** Creates a new instance of Warning */
+	/**
+	 * Creates a new instance of Warning.
+	 * 
+	 * @param msg the msg
+	 */
     public Warning(String msg) {
         super(msg);
     }

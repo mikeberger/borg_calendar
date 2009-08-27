@@ -26,7 +26,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.net.URL;
 
-/*
+/**
  * XTree is a poor mans DOM tree. It parses XML into a tree that can be
  * manipulated and written back to text form.
  * 
@@ -36,28 +36,40 @@ import java.net.URL;
  * ****** XTree is not a full XML parser. It only supports elements with no
  * children and elements with children but no data. CDATA, attributes, PI,
  * comments and prologs are not supported
+ * 
+ * Each xtree instance is a node in the XML tree and an element
  */
-
-// each XTree object is an XML element in the XML tree
 public class XTree {
 
-	// the element's name and optional value
+	/** the element's name and optional value */
 	private String name_, value_;
 
-	// pointers to other nodes in the tree
+	/** pointers to other nodes in the tree */
 	private XTree firstChild_, sibling_, parent_, lastChild_;
 
-	// create a new element as a child of this one with no name or value
+	/**
+	 * create a new element as a child of this one with no name or value
+	 * 
+	 * @return the element
+	 */
 	XTree newChild() { // NO_UCD
 		return (appendChild("", ""));
 	}
 
-	// return the element's name
+	/**
+	 * get the element's name
+	 * 
+	 * @return the element's name
+	 */
 	public String name() {
 		return (name_);
 	}
 
-	// return the element's value
+	/**
+	 * get the element's value
+	 * 
+	 * @return the element's value
+	 */
 	public String value() {
 		return (value_);
 	}
@@ -71,6 +83,11 @@ public class XTree {
 	// is the only know for which exists is false.
 	// chained calls such as the A/B/C one above will wind up returning the null
 	// node as final result if A,B, or C does not exist
+	/**
+	 * check if this node is the "null" node
+	 * 
+	 * @return true, if this is a true node, false if ths is the "null" node
+	 */
 	public boolean exists() {
 		return (this != null_one);
 	}
@@ -78,7 +95,9 @@ public class XTree {
 	// the actual null node
 	private static final XTree null_one = new XTree();
 
-	// initialize a node with name=ROOT
+	/**
+	 * Instantiates a new 1 element tree with name=ROOT
+	 */
 	public XTree() {
 		name_ = "ROOT";
 		sibling_ = null;
@@ -88,7 +107,14 @@ public class XTree {
 		value_ = "";
 	}
 
-	// get the nth parent (ancestor), starting at n=1 for the direct parent
+	/**
+	 * get the nth parent (ancestor), starting at n=1 for the direct parent
+	 * 
+	 * @param n
+	 *            the parent number
+	 * 
+	 * @return the nth parent
+	 */
 	public XTree parent(int n) {
 		XTree ret;
 		for (ret = parent_; ret != null && n > 1; ret = ret.parent_, n--)
@@ -96,8 +122,15 @@ public class XTree {
 		return (ret);
 	}
 
-	// get the nth child with the first being n=1. This
-	// method WILL return null if no child(n) exists
+	/**
+	 * get the nth child with the first being n=1. This method WILL return null
+	 * if no child(n) exists
+	 * 
+	 * @param n
+	 *            the child number
+	 * 
+	 * @return the nth child
+	 */
 	public XTree child(int n) {
 		XTree ret;
 		for (ret = firstChild_; ret != null && n > 1; ret = ret.sibling_, n--)
@@ -105,18 +138,41 @@ public class XTree {
 		return (ret);
 	}
 
-	// get element name
+	/**
+	 * set the element name
+	 * 
+	 * @param newt
+	 *            the new name
+	 * 
+	 * @return the current node
+	 */
 	public XTree name(String newt) {
 		name_ = newt;
 		return (this);
 	}
 
-	// get element value
+	/**
+	 * set the element value
+	 * 
+	 * @param newt
+	 *            the new value
+	 * 
+	 * @return the current node
+	 */
 	public XTree value(String newt) {
 		value_ = newt;
 		return (this);
 	}
 
+	/**
+	 * set the element value to an un-escaped string. removes XML escapes from
+	 * the string before storing
+	 * 
+	 * @param s
+	 *            the string containing escapes
+	 * 
+	 * @return the current element
+	 */
 	public XTree valueUnEscape(String s) {
 		if (s.indexOf('&') != -1) {
 			s = s.replaceAll("&amp;", "&");
@@ -127,7 +183,11 @@ public class XTree {
 		return (this);
 	}
 
-	// remove an element and all children (descendants) under it
+	/**
+	 * remove an element and all children (descendants) under it
+	 * 
+	 * @return the parent or null
+	 */
 	public XTree remove() {
 		XTree par = parent_;
 		if (parent_ != null) {
@@ -157,8 +217,12 @@ public class XTree {
 		return (null);
 	}
 
-	// determine the index of this element among its parents children (its
-	// siblings)
+	/**
+	 * determine the index of this element among its parents children (its
+	 * siblings)
+	 * 
+	 * @return the index of this element
+	 */
 	public int index() { // NO_UCD
 		int i;
 		XTree t;
@@ -171,7 +235,11 @@ public class XTree {
 		return (i);
 	}
 
-	// return the number of children of an element
+	/**
+	 * return the number of children of an element
+	 * 
+	 * @return the number of children
+	 */
 	public int numChildren() {
 		int i;
 		XTree t;
@@ -180,7 +248,14 @@ public class XTree {
 		return (i);
 	}
 
-	// add a child element to the current node with name=t
+	/**
+	 * add a child element to the current node
+	 * 
+	 * @param t
+	 *            the name of the child
+	 * 
+	 * @return the child
+	 */
 	public XTree appendChild(String t) {
 		if (t == null)
 			return null;
@@ -200,7 +275,16 @@ public class XTree {
 		return (n);
 	}
 
-	// add a child to the current element with name=t and value=v
+	/**
+	 * add a child element to the current node
+	 * 
+	 * @param t
+	 *            the name of the child
+	 * @param v
+	 *            the value of the child
+	 * 
+	 * @return the child
+	 */
 	public XTree appendChild(String t, String v) {
 		if (t == null || v == null || v.equals(""))
 			return null;
@@ -220,9 +304,14 @@ public class XTree {
 		return (n);
 	}
 
-	// get the value of an element
-	// if the esc flag is non-zero, then
-	// perform XML escaping on the data (for writing out as XML text)
+	/**
+	 * get the value of an element
+	 * 
+	 * @param esc
+	 *            if true, add XML escapes to the value
+	 * 
+	 * @return the value
+	 */
 	public String value(boolean esc) {
 
 		if (esc) {
@@ -236,8 +325,17 @@ public class XTree {
 		return (value_);
 	}
 
-	// read XML from a file or System.in if filename=""
-	// Only the first XML document in the file is read
+	/**
+	 * Read XML from a file or System.in if filename="".
+	 * 
+	 * @param filename
+	 *            the filename
+	 * 
+	 * @return the xml tree
+	 * 
+	 * @throws Exception
+	 *             the exception
+	 */
 	public static XTree readFromFile(String filename) throws Exception {
 		InputStream fp;
 		if (!filename.equals("")) {
@@ -251,19 +349,43 @@ public class XTree {
 	}
 
 	// read XML from a stream
+	/**
+	 * Read from stream.
+	 * 
+	 * @param istr
+	 *            the istr
+	 * 
+	 * @return the x tree
+	 * 
+	 * @throws Exception
+	 *             the exception
+	 */
 	public static XTree readFromStream(InputStream istr) throws Exception {
 
 		XTree tree = parse_xml(new InputStreamReader(istr, "UTF-8"));
 		return (tree);
 	}
 
-	// read XML from a URL
+	/**
+	 * Read xml from a url.
+	 * 
+	 * @param url
+	 *            the url
+	 * 
+	 * @return the xml tree
+	 * 
+	 * @throws Exception
+	 *             the exception
+	 */
 	public static XTree readFromURL(URL url) throws Exception {
 		return readFromStream(url.openStream());
 	}
 
-	// convert the XML tree starting at the current node
-	// to a String
+	/**
+	 * output the XML subtree starting at this node as an XML string
+	 * 
+	 * @return the XML string
+	 */
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
 		toString(0, buf, this);
@@ -303,7 +425,7 @@ public class XTree {
 	}
 
 	// indent XML output 4 spaces per nesting level
-	static String indent(int lv) {
+	static private String indent(int lv) {
 		int sp = lv * 4;
 		StringBuffer s = new StringBuffer(10);
 		for (int i = 0; i < sp; i++)
@@ -311,19 +433,43 @@ public class XTree {
 		return (s.toString());
 	}
 
-	// read XML from a String
+	/**
+	 * Read xml from a string into an XTree.
+	 * 
+	 * @param buf
+	 *            the string
+	 * 
+	 * @return the XML tree
+	 * 
+	 * @throws Exception
+	 *             the exception
+	 */
 	public static XTree readFromBuffer(String buf) throws Exception {
 		return (parse_xml(new StringReader(buf)));
 	}
 
-	// return the first child named tg
-	// will return the null node if not found - see exists()
+	/**
+	 * return the first child with a given name or the null node
+	 * 
+	 * @param tg
+	 *            the child name
+	 * 
+	 * @return the child or null node
+	 */
 	public XTree child(String tg) {
 		return (child(tg, 1));
 	}
 
-	// return the nth child named tg
-	// will return the null node if not found - see exists()
+	/**
+	 * return the nth child with a given name or the null node
+	 * 
+	 * @param tg
+	 *            the child name
+	 * @param n
+	 *            the child number
+	 * 
+	 * @return the child or null node
+	 */
 	public XTree child(String tg, int n) {
 		XTree ret;
 		for (ret = firstChild_; ret != null; ret = ret.sibling_) {
@@ -338,7 +484,11 @@ public class XTree {
 
 	}
 
-	// delete all children of an element
+	/**
+	 * delete all children of an element
+	 * 
+	 * @return the current element
+	 */
 	public XTree deleteChildren() { // NO_UCD
 		XTree c;
 		for (c = firstChild_; c != null; c = c.sibling_) {
@@ -353,13 +503,9 @@ public class XTree {
 
 	// XML tokens read by the tokenizer
 	static final private int T_OPEN = 1; // <xxx>
-
 	static final private int T_CLOSE = 2; // </xxx>
-
 	static final private int T_EMPTY = 3; // <xxx/>
-
 	static final private int T_STRING = 4; // other string data
-
 	static final private int T_EOF = 5; // end of input
 
 	// the tokenizer (get_token) reads one token at a time from the input
@@ -558,7 +704,12 @@ public class XTree {
 		}
 	}
 
-	// move the children of one element to another
+	/**
+	 * move the children of one element to another
+	 * 
+	 * @param donor
+	 *            the donor
+	 */
 	public void adopt(XTree donor) {
 		XTree c;
 
@@ -579,26 +730,17 @@ public class XTree {
 		donor.lastChild_ = null;
 	}
 
-	public static void main(String argv[]) throws Exception {
-		XTree tvo = XTree.readFromFile("");
-		String s = tvo.toString();
-		System.out.println(s);
-	}
-
-	// /////////////////////////////////////////////////////////
-	// nested class Token
-
+	
 	private static class Token {
+
 		int tokenType;
 
 		boolean open_found;
-
+		
 		Token(int tokenType, boolean open_found) {
 			this.tokenType = tokenType;
 			this.open_found = open_found;
 		}
 	}
 
-	// end nested class Token
-	// /////////////////////////////////////////////////////////
 }

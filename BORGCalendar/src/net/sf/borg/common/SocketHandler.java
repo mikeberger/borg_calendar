@@ -18,18 +18,17 @@
  */
 package net.sf.borg.common;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Interface SocketHandler.
+ * Interface for a class that can process messages from a socket server
  */
 public interface SocketHandler {
 
 	/**
-	 * Process message.
+	 * Process a message.
 	 * 
 	 * @param msg the msg
 	 * 
-	 * @return the string
+	 * @return the response string to be sent back to the socket client
 	 */
 	String processMessage(String msg);
 	

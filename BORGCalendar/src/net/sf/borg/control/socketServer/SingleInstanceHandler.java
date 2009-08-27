@@ -100,9 +100,9 @@ import net.sf.borg.model.entity.Memo;
 					beanDB.delete(key);
 				} else if (cmd.equals("getOption")) {
 					//String key = (String) parms.getArgs();
-					result = null;//beanDB.getOption(key);
+					//result = null;//beanDB.getOption(key);
 				} else if (cmd.equals("getOptions")) {
-					result = null;
+					//result = null;
 				} else if (cmd.equals("getTodoKeys")) {
 					result = ((AppointmentDB) beanDB).getTodoKeys();
 				} else if (cmd.equals("getRepeatKeys")) {

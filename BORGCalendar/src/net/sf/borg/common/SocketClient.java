@@ -1,3 +1,21 @@
+/*
+ * This file is part of BORG.
+ *
+ * BORG is free software; you can redistribute it and/or modify it under the
+ * terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ *
+ * BORG is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * BORG; if not, write to the Free Software Foundation, Inc., 59 Temple Place,
+ * Suite 330, Boston, MA 02111-1307 USA
+ *
+ * Copyright 2003 by Mike Berger
+ */
 package net.sf.borg.common;
 
 // This example is from the book _Java in a Nutshell_ by David Flanagan.
@@ -6,14 +24,24 @@ package net.sf.borg.common;
 import java.io.*;
 import java.net.*;
 
+/**
+ * SocketClient sends text messages over a socket
+ */
 public class SocketClient {
+	
 	public static final int DEFAULT_PORT = 8000;
 
-	public static void usage() {
-		System.out.println("Usage: java Client <hostname> [<port>]");
-		System.exit(0);
-	}
-
+	/**
+	 * Send a msg.
+	 * 
+	 * @param host the host
+	 * @param port the port
+	 * @param msg the msg
+	 * 
+	 * @return the response string
+	 * 
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public static String sendMsg(String host, int port, String msg) throws IOException {
 		Socket s = null;
 		String line = null;
@@ -46,71 +74,5 @@ public class SocketClient {
 		return line;
 	}
 
-	public static void main(String[] args) {
-		int port = DEFAULT_PORT;
-		Socket s = null;
-
-		// Parse the port specification
-		if ((args.length != 1) && (args.length != 2))
-			usage();
-		if (args.length == 1)
-			port = DEFAULT_PORT;
-		else {
-			try {
-				port = Integer.parseInt(args[1]);
-			} catch (NumberFormatException e) {
-				usage();
-			}
-		}
-
-		try {
-			// Create a socket to communicate to the specified host and port
-			s = new Socket(args[0], port);
-			// Create streams for reading and writing lines of text
-			// from and to this socket.
-			BufferedReader sin = new BufferedReader(new InputStreamReader(s
-					.getInputStream()));
-			PrintStream sout = new PrintStream(s.getOutputStream());
-			// Create a stream for reading lines of text from the console
-			BufferedReader in = new BufferedReader(new InputStreamReader(
-					System.in));
-
-			// Tell the user that we've connected
-			System.out.println("Connected to " + s.getInetAddress() + ":"
-					+ s.getPort());
-
-			String line;
-			while (true) {
-				// print a prompt
-				System.out.print("> ");
-				System.out.flush();
-				// read a line from the console; check for EOF
-				line = in.readLine();
-				if (line == null)
-					break;
-				// Send it to the server
-				sout.println(line);
-				// Read a line from the server.
-				line = sin.readLine();
-				// Check if connection is closed (i.e. for EOF)
-				if (line == null) {
-					System.out.println("Connection closed by server.");
-					break;
-				}
-				// And write the line to the console.
-				System.out.println(line);
-			}
-		} catch (IOException e) {
-			System.err.println(e);
-		}
-		// Always be sure to close the socket
-		finally {
-			try {
-				if (s != null)
-					s.close();
-			} catch (IOException e2) {
-				;
-			}
-		}
-	}
+	
 }
