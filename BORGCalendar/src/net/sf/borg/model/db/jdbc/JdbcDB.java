@@ -179,6 +179,12 @@ abstract public class JdbcDB implements Transactional {
 			}
 
 		}
+		else
+		{
+			if (connection_ == null) {
+				connection_ = DriverManager.getConnection(url);
+			}
+		}
 
 	}
 

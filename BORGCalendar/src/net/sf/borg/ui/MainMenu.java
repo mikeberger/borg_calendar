@@ -507,16 +507,12 @@ class MainMenu {
 		menuBar.add(helpmenu);
 		catmenu.add(getDelcatMI());
 
-		if (dbtype.equals("mysql")) {
+		if (dbtype.equals("mysql") || dbtype.equals("jdbc")) {
 			syncMI.setEnabled(true);
 		} else {
 			syncMI.setEnabled(false);
 		}
-
-		if (dbtype.equals("hsqldb") || dbtype.equals("mysql"))
-			sqlMI.setEnabled(true);
-		else
-			sqlMI.setEnabled(false);
+		
 		importMI.setEnabled(true);
 		exportMI.setEnabled(true);
 
