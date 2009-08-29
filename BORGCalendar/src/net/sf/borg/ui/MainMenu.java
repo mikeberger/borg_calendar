@@ -877,7 +877,7 @@ class MainMenu {
 			public void actionPerformed(ActionEvent arg0) {
 
 				try {
-					Project p = BeanSelector.selectProject();
+					Project p = EntitySelector.selectProject();
 					if (p == null)
 						return;
 					Map<String, Integer> map = new HashMap<String, Integer>();

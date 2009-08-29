@@ -52,6 +52,7 @@ import net.sf.borg.model.entity.CalendarEntity;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.NavPanel;
 import net.sf.borg.ui.Navigator;
+import net.sf.borg.ui.MultiView.ViewType;
 
 public class MonthPanel extends JPanel implements Printable {
 
@@ -330,7 +331,7 @@ public class MonthPanel extends JPanel implements Printable {
 								new Rectangle(colleft, rowtop, colwidth,
 										rowheight)) {
 							public void edit() {
-								MultiView.getMainView().setView(MultiView.DAY);
+								MultiView.getMainView().setView(ViewType.DAY);
 								GregorianCalendar gc = new GregorianCalendar();
 								gc.setTime(getDate());
 								MultiView.getMainView().goTo(gc);
@@ -370,7 +371,7 @@ public class MonthPanel extends JPanel implements Printable {
 									(int) pageWidth - weekbutwidth, rowtop,
 									weekbutwidth, rowheight)) {
 						public void edit() {
-							MultiView.getMainView().setView(MultiView.WEEK);
+							MultiView.getMainView().setView(ViewType.WEEK);
 							GregorianCalendar gc = new GregorianCalendar();
 							gc.setTime(getDate());
 							MultiView.getMainView().goTo(gc);

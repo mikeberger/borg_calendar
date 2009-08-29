@@ -59,7 +59,7 @@ import net.sf.borg.model.entity.Link;
 import net.sf.borg.model.entity.Memo;
 import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Task;
-import net.sf.borg.ui.BeanSelector;
+import net.sf.borg.ui.EntitySelector;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.address.AddressView;
 import net.sf.borg.ui.calendar.AppointmentListView;
@@ -298,7 +298,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 				try{
 					if( selectedValue.equals(Resource.getResourceString("appointment")))
 					{
-						Appointment ap = BeanSelector.selectAppointment();
+						Appointment ap = EntitySelector.selectAppointment();
 						if( ap != null )
 						{
 							LinkModel.getReference().addLink(owner_, Integer.toString(ap.getKey()), LinkType.APPOINTMENT);
@@ -306,7 +306,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 					}
 					else if( selectedValue.equals(Resource.getResourceString("project")))
 					{
-						Project ap = BeanSelector.selectProject();
+						Project ap = EntitySelector.selectProject();
 						if( ap != null )
 						{
 							LinkModel.getReference().addLink(owner_, Integer.toString(ap.getKey()), LinkType.PROJECT);
@@ -314,7 +314,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 					}
 					else if( selectedValue.equals(Resource.getResourceString("task")))
 					{
-						Task ap = BeanSelector.selectTask();
+						Task ap = EntitySelector.selectTask();
 						if( ap != null )
 						{
 							LinkModel.getReference().addLink(owner_, Integer.toString(ap.getKey()), LinkType.TASK);
@@ -322,7 +322,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 					}
 					else if( selectedValue.equals(Resource.getResourceString("Address")))
 					{
-						Address ap = BeanSelector.selectAddress();
+						Address ap = EntitySelector.selectAddress();
 						if( ap != null )
 						{
 							LinkModel.getReference().addLink(owner_, Integer.toString(ap.getKey()), LinkType.ADDRESS);
@@ -330,7 +330,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 					}
 					else if( selectedValue.equals(Resource.getResourceString("memo")))
 					{
-						Memo ap = BeanSelector.selectMemo();
+						Memo ap = EntitySelector.selectMemo();
 						if( ap != null )
 						{
 							LinkModel.getReference().addLink(owner_, ap.getMemoName(), LinkType.MEMO);

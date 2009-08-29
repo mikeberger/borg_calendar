@@ -44,8 +44,6 @@ import net.sf.borg.common.Prefs;
 import net.sf.borg.common.PrintHelper;
 import net.sf.borg.common.Resource;
 import net.sf.borg.control.Borg;
-import net.sf.borg.model.AddressModel;
-import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.MemoModel;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.Project;
@@ -62,18 +60,26 @@ import net.sf.borg.ui.task.ProjectTreePanel;
 import net.sf.borg.ui.task.TaskFilterPanel;
 import net.sf.borg.ui.util.JTabbedPaneWithCloseIcons;
 
+/**
+ * This is the main Borg UI class. It provides the the main borg tabbed window.
+ */
 public class MultiView extends View {
 
-	static public final int DAY = 1;
-
+	/** argument values for setView() */
+	public enum ViewType
+	{
+		DAY, MONTH, WEEK, YEAR;
+	}
+	
+	/** The main view singleton */
 	static private MultiView mainView = null;
 
-	static public final int MONTH = 2;
 
-	static public final int WEEK = 3;
-
-	static public final int YEAR = 4;
-
+	/**
+	 * Get the main view singleton. Make it visible if it is not showing.
+	 * 
+	 * @return the main view singleton
+	 */
 	public static MultiView getMainView() {
 		if (mainView == null)
 			mainView = new MultiView();
@@ -82,41 +88,53 @@ public class MultiView extends View {
 		return (mainView);
 	}
 
-	private Calendar cal_ = new GregorianCalendar();
-
+	/** The day panel. */
 	private DayPanel dayPanel = null;
 
+	/** The memo panel. */
 	private MemoPanel memoPanel = null;
 
+	/** The month panel. */
 	private MonthPanel monthPanel = null;
 
+	/** The project list panel. */
 	private ProjectPanel projectListPanel = null;
 
+	/** The project tree panel. */
 	private ProjectTreePanel projectTreePanel = null;
 
+	/** The tabs */
 	private JTabbedPaneWithCloseIcons tabs_ = null;
 
+	/** The task list panel. */
 	private TaskFilterPanel taskListPanel = null;
 	
+	/** The task tabs. */
 	private JTabbedPane taskTabs = null;
 
+	/** The week panel. */
 	private WeekPanel wkPanel = null;
 
+	/** The year panel. */
 	private YearPanel yearPanel = null;
 
+	/**
+	 * Instantiates a new multi view.
+	 */
 	private MultiView() {
 		super();
-		addModel(AppointmentModel.getReference());
-		addModel(TaskModel.getReference());
-		addModel(AddressModel.getReference());
-		addModel(MemoModel.getReference());
+	
+		
+		// escape key closes the window
 		getLayeredPane().registerKeyboardAction(new ActionListener() {
 			public final void actionPerformed(ActionEvent e) {
 				if (Borg.getReference().hasTrayIcon())
-					exit();
+					closeMainwindow();
 			}
 		}, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
 				JComponent.WHEN_IN_FOCUSED_WINDOW);
+
+		// delete key removes tabs
 		getLayeredPane().registerKeyboardAction(new ActionListener() {
 			public final void actionPerformed(ActionEvent e) {
 				Component c = getTabs().getSelectedComponent();
@@ -125,46 +143,50 @@ public class MultiView extends View {
 		}, KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0),
 				JComponent.WHEN_IN_FOCUSED_WINDOW);
 
+		// window close button closes the window
 		addWindowListener(new java.awt.event.WindowAdapter() {
 			public void windowClosing(java.awt.event.WindowEvent evt) {
-				exit();
+				closeMainwindow();
 			}
 		});
 
-		// for the preview, create a JFrame with the preview panel and print
-		// menubar
+		// create the menu bar
 		JMenuBar menubar = new MainMenu().getMenuBar();
-
 		menubar.setBorder(new BevelBorder(BevelBorder.RAISED));
-
 		setJMenuBar(menubar);
 		getContentPane().setLayout(new GridBagLayout());
+
+		// add the tool bar
 		GridBagConstraints cons = new java.awt.GridBagConstraints();
 		cons.gridx = 0;
 		cons.gridy = 0;
 		cons.fill = java.awt.GridBagConstraints.HORIZONTAL;
 		cons.weightx = 0.0;
 		cons.weighty = 0.0;
-
 		getContentPane().add(getToolBar(), cons);
 
+		// add the tabs
 		cons = new java.awt.GridBagConstraints();
 		cons.gridx = 0;
 		cons.gridy = 1;
 		cons.fill = java.awt.GridBagConstraints.BOTH;
 		cons.weightx = 1.0;
 		cons.weighty = 1.0;
-
 		getContentPane().add(getTabs(), cons);
 
 		setTitle("BORG");
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		pack();
 		setVisible(true);
-		setView(MONTH);
+		setView(ViewType.MONTH); // start month view
 		manageMySize(PrefName.DAYVIEWSIZE);
 	}
 
+	/**
+	 * Adds a view as a docked tab or separate window, depending on the user options.
+	 * 
+	 * @param dp the DockableView
+	 */
 	public void addView(DockableView dp) {
 		String dock = Prefs.getPref(PrefName.DOCKPANELS);
 		if (dock.equals("true")) {
@@ -173,19 +195,31 @@ public class MultiView extends View {
 			dp.openInFrame();
 	}
 
+	/**
+	 * Close the currently selected tab.
+	 */
 	public void closeSelectedTab() {
 		tabs_.closeSelectedTab();
 	}
 
+	/**
+	 * Close all tabs.
+	 */
 	public void closeTabs() {
 		tabs_.closeClosableTabs();
 	}
 
+	/** destroy this window */
 	public void destroy() {
 		this.dispose();
 		mainView = null;
 	}
 
+	/**
+	 * Dock a view as a tab
+	 * 
+	 * @param dp the DockableView
+	 */
 	public void dock(DockableView dp) {
 		tabs_.addTab(dp.getFrameTitle(), dp);
 		tabs_.setSelectedIndex(tabs_.getTabCount() - 1);
@@ -193,7 +227,11 @@ public class MultiView extends View {
 
 	}
 
-	private void exit() {
+	/**
+	 * close the main view. If the system tray icon is active, the program stays running.
+	 * If no system tray icon is active, the program shuts down entirely
+	 */
+	private void closeMainwindow() {
 		if (!Borg.getReference().hasTrayIcon() && this == mainView) {
 			Borg.shutdown();
 		} else {
@@ -201,10 +239,11 @@ public class MultiView extends View {
 		}
 	}
 
-	public int getMonth() {
-		return cal_.get(Calendar.MONTH);
-	}
-
+	/**
+	 * Gets the tabs.
+	 * 
+	 * @return the tabs
+	 */
 	private JTabbedPane getTabs() {
 		if (tabs_ == null) {
 			tabs_ = new JTabbedPaneWithCloseIcons();
@@ -212,6 +251,11 @@ public class MultiView extends View {
 		return tabs_;
 	}
 
+	/**
+	 * Gets the tool bar.
+	 * 
+	 * @return the tool bar
+	 */
 	private JToolBar getToolBar() {
 		JToolBar bar = new JToolBar();
 		bar.setFloatable(false);
@@ -221,7 +265,7 @@ public class MultiView extends View {
 		monbut.setToolTipText(Resource.getResourceString("Month_View"));
 		monbut.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				setView(MONTH);
+				setView(ViewType.MONTH);
 			}
 		});
 		bar.add(monbut);
@@ -231,7 +275,7 @@ public class MultiView extends View {
 		weekbut.setToolTipText(Resource.getResourceString("Week_View"));
 		weekbut.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				setView(WEEK);
+				setView(ViewType.WEEK);
 			}
 		});
 		bar.add(weekbut);
@@ -241,7 +285,7 @@ public class MultiView extends View {
 		daybut.setToolTipText(Resource.getResourceString("Day_View"));
 		daybut.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				setView(DAY);
+				setView(ViewType.DAY);
 			}
 		});
 		bar.add(daybut);
@@ -251,7 +295,7 @@ public class MultiView extends View {
 		yearbut.setToolTipText(Resource.getResourceString("Year_View"));
 		yearbut.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				setView(YEAR);
+				setView(ViewType.YEAR);
 			}
 		});
 		bar.add(yearbut);
@@ -336,10 +380,11 @@ public class MultiView extends View {
 		return bar;
 	}
 
-	public int getYear() {
-		return cal_.get(Calendar.YEAR);
-	}
-
+	/**
+	 * have the day week and month panels all show a particular day
+	 * 
+	 * @param cal the day to show
+	 */
 	public void goTo(Calendar cal) {
 		if (dayPanel != null)
 			dayPanel.goTo(cal);
@@ -351,6 +396,9 @@ public class MultiView extends View {
 			yearPanel.goTo(cal);
 	}
 
+	/**
+	 * prints the currently selected tab if pritning is supported for that tab
+	 */
 	public void print() {
 		try {
 			Component c = getTabs().getSelectedComponent();
@@ -370,13 +418,22 @@ public class MultiView extends View {
 		}
 	}
 
+	/**
+	 * refresh the view based on model changes. currently does nothing for this view.
+	 */
 	public void refresh() {
-		// TODO Auto-generated method stub
-
+		// nothing to refresh for this view
 	}
 
-	public void setView(int type) {
-		if (type == DAY) {
+	/**
+	 * Sets the currently selected tab to be a particular view as defined
+	 * in ViewType.
+	 * 
+	 * @param type the new view
+	 */
+	public void setView(ViewType type) {
+		Calendar cal_ = new GregorianCalendar();
+		if (type == ViewType.DAY) {
 
 			if (dayPanel == null)
 				dayPanel = new DayPanel(cal_.get(Calendar.MONTH), cal_
@@ -387,7 +444,7 @@ public class MultiView extends View {
 						dayPanel);
 			}
 			getTabs().setSelectedComponent(dayPanel);
-		} else if (type == WEEK) {
+		} else if (type == ViewType.WEEK) {
 			if (wkPanel == null)
 				wkPanel = new WeekPanel(cal_.get(Calendar.MONTH), cal_
 						.get(Calendar.YEAR), cal_.get(Calendar.DATE));
@@ -397,7 +454,7 @@ public class MultiView extends View {
 						wkPanel);
 			}
 			getTabs().setSelectedComponent(wkPanel);
-		} else if (type == MONTH) {
+		} else if (type == ViewType.MONTH) {
 
 			
 				if (monthPanel == null)
@@ -409,7 +466,7 @@ public class MultiView extends View {
 				}
 				getTabs().setSelectedComponent(monthPanel);
 			
-		} else if (type == YEAR) {
+		} else if (type == ViewType.YEAR) {
 			if (yearPanel == null)
 				yearPanel = new YearPanel(cal_.get(Calendar.YEAR));
 
@@ -421,6 +478,11 @@ public class MultiView extends View {
 		}
 	}
 
+	/**
+	 * Show the memos tab
+	 * 
+	 * @param selectedMemo the selected memo
+	 */
 	public void showMemos(String selectedMemo) {
 		if (MemoModel.getReference().hasMemos() && memoPanel == null)
 			memoPanel = new MemoPanel();
@@ -435,6 +497,9 @@ public class MultiView extends View {
 		}
 	}
 
+	/**
+	 * Show all of the task tabs
+	 */
 	public void showTasks() {
 		
 		if( taskTabs == null )
@@ -473,6 +538,11 @@ public class MultiView extends View {
 
 	}
 
+	/**
+	 * have the task list show all tasks for a specific project
+	 * 
+	 * @param p the project
+	 */
 	public void showTasksForProject(Project p) {
 		showTasks();
 		taskListPanel.showTasksForProject(p);
