@@ -378,7 +378,7 @@ public class AddrListView extends DockableView {
 	}// GEN-LAST:event_printListActionPerformed
 
 	private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_exitMenuItemActionPerformed
-		this.fr_.dispose();
+		this.remove();
 	}// GEN-LAST:event_exitMenuItemActionPerformed
 
 	// Variables declaration - do not modify//GEN-BEGIN:variables

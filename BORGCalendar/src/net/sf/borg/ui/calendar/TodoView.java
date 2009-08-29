@@ -699,7 +699,7 @@ public class TodoView extends DockableView implements Prefs.Listener {
 	}
 
 	private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_exitMenuItemActionPerformed
-		this.fr_.dispose();
+		this.remove();
 	}// GEN-LAST:event_exitMenuItemActionPerformed
 
 	private JPanel getButtonPanel() {

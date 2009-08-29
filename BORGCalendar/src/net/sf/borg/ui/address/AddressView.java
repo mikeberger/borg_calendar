@@ -734,7 +734,7 @@ public class AddressView extends DockableView {
 
 		try {
 			AddressModel.getReference().saveAddress(addr_);
-			if (fr_ != null)
+			if (!isDocked())
 				this.remove();
 			else
 				this.getParent().remove(this);

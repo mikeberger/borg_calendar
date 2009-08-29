@@ -210,7 +210,7 @@ public class ProjectView extends DockableView {
 	}
 
 	private void disact(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_disact
-		this.fr_.dispose();
+		this.remove();
 	}
 
 	private void ganttActionPerformed(java.awt.event.ActionEvent evt) {

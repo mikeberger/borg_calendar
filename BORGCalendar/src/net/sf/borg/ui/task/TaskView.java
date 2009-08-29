@@ -48,6 +48,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JViewport;
 import javax.swing.SwingConstants;
 import javax.swing.table.TableCellRenderer;
 
@@ -68,7 +69,6 @@ import net.sf.borg.ui.DockableView;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.link.LinkPanel;
 import net.sf.borg.ui.util.DateDialog;
-import net.sf.borg.ui.util.JTabbedPaneWithCloseIcons;
 import net.sf.borg.ui.util.PopupMenuHelper;
 import net.sf.borg.ui.util.StripedTable;
 import net.sf.borg.ui.util.TableSorter;
@@ -1308,24 +1308,20 @@ public class TaskView extends DockableView {
 			saveSubtasks(task);
 			taskmod_.commitTransaction();
 			
-			Container p = this.getParent();
-			//System.out.println(p.getClass().getName());
 			
-			if( p instanceof JTabbedPaneWithCloseIcons )
+			Container p = this.getParent();
+			if( p instanceof JViewport )
 			{
-				p.remove(this);
-				return;
+				// special case - if we are docked inside a project tree window, then do not remove
+				// ourself
+				showtask(T_CHANGE, task);
 			}
-			else if( fr_ != null )
-			{
+			else if (!isDocked())
 				this.remove();
-				return;
-			}
-
-			// refresh window from DB - will update task number for
-			// new tasks and will set the list of available next states from
-			// the task model
-			showtask(T_CHANGE, task);
+			else
+				this.getParent().remove(this);
+			
+			
 		} catch (Warning w) {
 			Errmsg.notice(w.getMessage());
 			try {

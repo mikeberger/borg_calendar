@@ -43,12 +43,24 @@ import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.Model;
 
-// a JPanel that shows a View and can be optionally placed into a stand-alone
-// JFrame
+
+/**
+ * The Class DockableView is the base class for panels that can appear as stand-alone windows
+ * or tabs in the main view and can be docked/undocked at runtime.
+ */
 public abstract class DockableView extends JPanel implements Model.Listener {
+	
+	/** The icon for the title bar  */
 	static Image image = Toolkit.getDefaultToolkit().getImage(
 			DockableView.class.getResource("/resource/borg32x32.jpg"));
 
+	/**
+	 * store the window size, position, and maximized status in a preference.
+	 * used to have windows remember their sizes automatically.
+	 * 
+	 * @param c the window component
+	 * @param pn the preference
+	 */
 	static private void recordSize(Component c, PrefName pn) {
 		ViewSize vs = new ViewSize();
 		vs.setX(c.getBounds().x);
@@ -62,27 +74,109 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 
 	}
 
-	private PrefName prefName_ = null;
+	/** The main frame. */
+	private JFrame frame = null;
 
-	protected JFrame fr_ = null;
-
-	public abstract PrefName getFrameSizePref();
-
-	public abstract String getFrameTitle();
-
-	public abstract JMenuBar getMenuForFrame();
-
-	private void dock() {
-		MultiView.getMainView().dock(this);
-		if (fr_ != null)
-			fr_.dispose();
+	/**
+	 * register the view for model change callbacks
+	 * 
+	 * @param m the model
+	 */
+	protected void addModel(Model m) {
+		m.addListener(this);
 	}
 
+	/**
+	 * Dock into the multiview
+	 */
+	private void dock() {
+		MultiView.getMainView().dock(this);
+		if (frame != null)
+			frame.dispose();
+	}
+
+	/**
+	 * Gets the window size preference.
+	 * 
+	 * @return the window size preference
+	 */
+	public abstract PrefName getFrameSizePref();
+
+	/**
+	 * Gets the frame title.
+	 * 
+	 * @return the frame title
+	 */
+	public abstract String getFrameTitle();
+
+	/**
+	 * Gets the menu for the frame.
+	 * 
+	 * @return the menu for the frame
+	 */
+	public abstract JMenuBar getMenuForFrame();
+	
+	/**
+	 * determine if the view is docked
+	 * @return true if docked
+	 */
+	public boolean isDocked()
+	{
+		return frame == null;
+	}
+
+	/**
+	 * Sets the window size and position from the stored preference and then sets up
+	 * listeners to store any updates to the window size and position based on
+	 * user actions
+	 * 
+	 * @param pname the preference name
+	 */
+	private void manageMySize(PrefName pname) {
+
+		// set the initial size
+		String s = Prefs.getPref(pname);
+		ViewSize vs = ViewSize.fromString(s);
+
+		if (vs.isMaximized()) {
+			frame.setExtendedState(Frame.MAXIMIZED_BOTH);
+		} else if (vs.getX() != -1) {
+			frame.setBounds(new Rectangle(vs.getX(), vs.getY(), vs.getWidth(), vs
+					.getHeight()));
+		} else if (vs.getWidth() != -1) {
+			frame.setSize(new Dimension(vs.getWidth(), vs.getHeight()));
+		}
+
+		frame.validate();
+
+		final PrefName pn = pname;
+
+		// add listeners to record any changes
+		frame.addComponentListener(new java.awt.event.ComponentAdapter() {
+			@Override
+			public void componentMoved(java.awt.event.ComponentEvent e) {
+				recordSize(e.getComponent(), pn);
+			}
+
+			@Override
+			public void componentResized(java.awt.event.ComponentEvent e) {
+				recordSize(e.getComponent(), pn);
+			}
+		});
+	}
+
+	/**
+	 * Open the view in a frame.
+	 * 
+	 * @return the  frame
+	 */
 	public JFrame openInFrame() {
-		fr_ = new JFrame();
+		frame = new JFrame();
 		manageMySize(getFrameSizePref());
-		fr_.setContentPane(this);
+		frame.setContentPane(this);
 		JMenuBar bar = getMenuForFrame();
+		
+		// add a dock menu option
 		if (bar != null) {
 			JMenu jm = bar.getMenu(0);
 			JMenuItem jmi = jm.add(Resource.getResourceString("dock"));
@@ -93,77 +187,45 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 				}
 
 			});
-			fr_.setJMenuBar(bar);
+			frame.setJMenuBar(bar);
 
 		}
 
-		fr_
+		frame
 				.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-		fr_.setTitle(getFrameTitle());
+		frame.setTitle(getFrameTitle());
 
-		fr_.addWindowListener(new java.awt.event.WindowAdapter() {
+		frame.addWindowListener(new java.awt.event.WindowAdapter() {
+			@Override
 			public void windowClosing(java.awt.event.WindowEvent evt) {
-				fr_.dispose();
+				frame.dispose();
 			}
 		});
 
-		fr_.setIconImage(image);
-		fr_.getLayeredPane().registerKeyboardAction(new ActionListener() {
+		frame.setIconImage(image);
+		frame.getLayeredPane().registerKeyboardAction(new ActionListener() {
 			public final void actionPerformed(ActionEvent e) {
-				fr_.dispose();
+				frame.dispose();
 			}
 		}, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
 				JComponent.WHEN_IN_FOCUSED_WINDOW);
-		fr_.setVisible(true);
+		frame.setVisible(true);
 
-		return fr_;
+		return frame;
 	}
 
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.Model.Listener#refresh()
+	 */
 	public abstract void refresh();
 
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.Model.Listener#remove()
+	 */
 	public void remove() {
-		if (fr_ != null)
-			fr_.dispose();
-		fr_ = null;
-	}
-
-	// called from the subclass to cause the View to use preferences to
-	// persist a View's size and locaiton if the user resizes it
-	private void manageMySize(PrefName pname) {
-		prefName_ = pname;
-
-		// set the initial size
-		String s = Prefs.getPref(prefName_);
-		ViewSize vs = ViewSize.fromString(s);
-
-		if (vs.isMaximized()) {
-			fr_.setExtendedState(Frame.MAXIMIZED_BOTH);
-		} else if (vs.getX() != -1) {
-			fr_.setBounds(new Rectangle(vs.getX(), vs.getY(), vs.getWidth(), vs
-					.getHeight()));
-		} else if (vs.getWidth() != -1) {
-			fr_.setSize(new Dimension(vs.getWidth(), vs.getHeight()));
-		}
-
-		fr_.validate();
-
-		final PrefName pn = pname;
-
-		// add listeners to record any changes
-		fr_.addComponentListener(new java.awt.event.ComponentAdapter() {
-			public void componentMoved(java.awt.event.ComponentEvent e) {
-				recordSize(e.getComponent(), pn);
-			}
-
-			public void componentResized(java.awt.event.ComponentEvent e) {
-				recordSize(e.getComponent(), pn);
-			}
-		});
-	}
-
-	// function to call to register a view with the model
-	protected void addModel(Model m) {
-		m.addListener(this);
+		if (frame != null)
+			frame.dispose();
+		frame = null;
 	}
 
 }
