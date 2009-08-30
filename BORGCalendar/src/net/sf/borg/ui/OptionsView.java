@@ -962,7 +962,7 @@ public class OptionsView extends View {
 		help.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				try {
-					HelpProxy.launchHelp();
+					HelpLauncher.launchHelp();
 				} catch (Exception e) {
 					Errmsg.errmsg(e);
 				}

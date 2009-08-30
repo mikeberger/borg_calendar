@@ -69,8 +69,6 @@ import net.sf.borg.ui.task.TaskConfigurator;
 class MainMenu {
 	private JMenuItem AboutMI = new javax.swing.JMenuItem();
 
-	// private JMenuItem TaskTrackMI = new javax.swing.JMenuItem();
-
 	private JMenu ActionMenu = new javax.swing.JMenu();
 
 	private JMenuItem AddressMI = new javax.swing.JMenuItem();
@@ -479,7 +477,7 @@ class MainMenu {
 		rlsnotes.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				MultiView.getMainView().addView(
-						new HelpScreen("/resource/RELEASE_NOTES.txt", Resource
+						new InfoView("/resource/RELEASE_NOTES.txt", Resource
 								.getResourceString("rlsnotes")));
 			}
 		});
@@ -576,7 +574,7 @@ class MainMenu {
 	private void chglogActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_chglogActionPerformed
 	{// GEN-HEADEREND:event_chglogActionPerformed
 		MultiView.getMainView().addView(
-				new HelpScreen("/resource/CHANGES.txt", Resource
+				new InfoView("/resource/CHANGES.txt", Resource
 						.getResourceString("viewchglog")));
 
 	}// GEN-LAST:event_chglogActionPerformed
@@ -1047,7 +1045,7 @@ class MainMenu {
 		// show the help page
 		// new HelpScreen("/resource/help.htm").show();
 		try {
-			HelpProxy.launchHelp();
+			HelpLauncher.launchHelp();
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
 		}
@@ -1215,7 +1213,7 @@ class MainMenu {
 	private void licsendActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_licsendActionPerformed
 		// show the open source license
 		MultiView.getMainView().addView(
-				new HelpScreen("/resource/license.htm", Resource
+				new InfoView("/resource/license.htm", Resource
 						.getResourceString("License")));
 
 	}// GEN-LAST:event_licsendActionPerformed
