@@ -59,12 +59,11 @@ import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.CalendarEntity;
 import net.sf.borg.ui.NavPanel;
-import net.sf.borg.ui.Navigator;
 
 public class WeekPanel extends JPanel implements Printable {
 
 	// weekPanel handles the printing of a single week
-	private class WeekSubPanel extends ApptBoxPanel implements Navigator,
+	private class WeekSubPanel extends ApptBoxPanel implements NavPanel.Navigator,
 			Prefs.Listener, Model.Listener, Printable, MouseWheelListener {
 
 		private Date beg_ = null;

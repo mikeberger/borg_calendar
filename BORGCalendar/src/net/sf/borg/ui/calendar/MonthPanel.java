@@ -51,14 +51,13 @@ import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.CalendarEntity;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.NavPanel;
-import net.sf.borg.ui.Navigator;
 import net.sf.borg.ui.MultiView.ViewType;
 
 public class MonthPanel extends JPanel implements Printable {
 
 	// monthPanel handles the printing of a single month
 	private class MonthViewSubPanel extends ApptBoxPanel implements Printable,
-			Navigator, Model.Listener, Prefs.Listener, MouseWheelListener {
+			NavPanel.Navigator, Model.Listener, Prefs.Listener, MouseWheelListener {
 
 		private int month_;
 

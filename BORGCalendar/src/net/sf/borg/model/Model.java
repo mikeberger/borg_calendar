@@ -51,10 +51,6 @@ public abstract class Model
 		 */
 		public abstract void refresh();
 		
-		/**
-		 * Called to notify the Listener when the Model is destroyed
-		 */
-		public abstract void remove();
 	}
     
     /**
@@ -102,14 +98,7 @@ public abstract class Model
      */
     protected void removeListeners()
     {
-        for( int i = 0; i < listeners.size(); i++ )
-        {
-            Listener v = listeners.get(i);
-            v.remove();
-        }
-        
-        listeners = new ArrayList<Listener>();
-        
+        listeners.clear();     
     }
     
     /**

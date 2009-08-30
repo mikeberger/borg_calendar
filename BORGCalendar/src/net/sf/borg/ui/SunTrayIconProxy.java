@@ -34,136 +34,132 @@ import net.sf.borg.ui.address.AddrListView;
 import net.sf.borg.ui.calendar.TodoView;
 import net.sf.borg.ui.popup.PopupView;
 
+/** communicates with the new java built-in system tray APIs */
 public class SunTrayIconProxy {
 
-	
-
-	static private SunTrayIconProxy singleton = null;
-	static public SunTrayIconProxy getReference()
-	{
-		if( singleton == null )
-			singleton = new SunTrayIconProxy();
-		return( singleton );
+	// action that opens the main view
+	private class OpenListener implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			MultiView mv = MultiView.getMainView();
+			mv.toFront();
+			mv.setState(Frame.NORMAL);
+		}
 	}
-	private TrayIcon TIcon = null;
-    
-    public void init(String trayname) throws Exception
-    {
-        if (TIcon == null)
-        {
-        	
-        	if( !SystemTray.isSupported())
-        		throw new Exception("Systray not supported");
-        		
-            Image image = Toolkit.getDefaultToolkit().getImage(
-                    getClass().getResource("/resource/borg16.jpg"));
-            
-			TIcon = new TrayIcon(image);
-			
-            TIcon.setToolTip(trayname);
-            PopupMenu popup = new PopupMenu();
-            
-            MenuItem item = new MenuItem(); 
-            item.setLabel(Resource.getResourceString("Open_Calendar"));
-            item.addActionListener(new OpenListener());
-            popup.add(item);
-            
-           
-            item = new MenuItem();
-            item.setLabel(Resource.getResourceString("Open_Address_Book"));
-            item.addActionListener(new AddrListener());
-            popup.add(item);
-            
-            item = new MenuItem();
-            item.setLabel(Resource.getResourceString("To_Do_List"));
-            item.addActionListener(new TodoListener());
-            popup.add(item);
-            
-            item = new MenuItem();
-            item.setLabel(Resource.getResourceString("Show_Pops"));
-            
-            item.addActionListener(new ActionListener(){
 
-				public void actionPerformed(ActionEvent arg0) {
-					PopupView.getReference().showAll();				
-				}
-            	
-            });
-            popup.add(item);
-            
-            item = new MenuItem();
-            item.setLabel(Resource.getResourceString("Hide_Pops"));
-            
-            item.addActionListener(new ActionListener(){
+	// the singleton
+	static private SunTrayIconProxy singleton = null;
 
-				public void actionPerformed(ActionEvent arg0) {
-					PopupView.getReference().hideAll();				
-				}
-            	
-            });
-            popup.add(item);
-            
-            popup.addSeparator();
-            
-            item = new MenuItem();
-            item.setLabel(Resource.getResourceString("Options"));
-            item.addActionListener(new OptionsListener());
-            popup.add(item);
-            
-            popup.addSeparator();
-            
-            item = new MenuItem();
-            item.setLabel(Resource.getResourceString("Exit"));
-            item.addActionListener(new ExitListener());
-            popup.add(item);
-            
-            TIcon.setPopupMenu(popup);
-            TIcon.addActionListener(new OpenListener());
-            
-            SystemTray tray = SystemTray.getSystemTray();
-            tray.add(TIcon);
-        }
-    }
-    
-    // Called when exit option in systray menu is chosen
-    static private class ExitListener implements ActionListener {
+	/**
+	 * get the singleton
+	 * 
+	 * @return the singleton
+	 */
+	static public SunTrayIconProxy getReference() {
+		if (singleton == null)
+			singleton = new SunTrayIconProxy();
+		return (singleton);
+	}
 
-        public void actionPerformed(ActionEvent e) {
-            //WindowsTrayIcon.cleanUp();
-           Borg.shutdown();
-        }
-    }
+	/**
+	 * initalize the system tray
+	 * @param trayname the tray name (when the user hovers over the tray icon)
+	 * @throws Exception
+	 */
+	public void init(String trayname) throws Exception {
+		TrayIcon TIcon = null;
 
-    // Called when open option is systray menu is chosen
-    private class OpenListener implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-            MultiView mv = MultiView.getMainView();
-            mv.toFront();
-            mv.setState(Frame.NORMAL);
-        }
-    }
+		if (!SystemTray.isSupported())
+			throw new Exception("Systray not supported");
 
-    static private class AddrListener implements ActionListener {
+		Image image = Toolkit.getDefaultToolkit().getImage(
+				getClass().getResource("/resource/borg16.jpg"));
 
-        public void actionPerformed(ActionEvent e) {
-            MultiView.getMainView().addView(AddrListView.getReference());
-           
-        }
-    }
+		TIcon = new TrayIcon(image);
 
-    static private class TodoListener implements ActionListener {
+		TIcon.setToolTip(trayname);
+		PopupMenu popup = new PopupMenu();
 
-        public void actionPerformed(ActionEvent e) {
-            TodoView tg = TodoView.getReference();
-	    MultiView.getMainView().addView(tg);    
-        }
-    }
-    
-    static private class OptionsListener implements ActionListener {
+		MenuItem item = new MenuItem();
+		item.setLabel(Resource.getResourceString("Open_Calendar"));
+		item.addActionListener(new OpenListener());
+		popup.add(item);
 
-        public void actionPerformed(ActionEvent e) {
-            OptionsView.getReference().setVisible(true);
-        }
-    }
- 
+		item = new MenuItem();
+		item.setLabel(Resource.getResourceString("Open_Address_Book"));
+		item.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				MultiView.getMainView().addView(AddrListView.getReference());
+
+			}
+		});
+		popup.add(item);
+
+		item = new MenuItem();
+		item.setLabel(Resource.getResourceString("To_Do_List"));
+		item.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				TodoView tg = TodoView.getReference();
+				MultiView.getMainView().addView(tg);
+			}
+		});
+		popup.add(item);
+
+		item = new MenuItem();
+		item.setLabel(Resource.getResourceString("Show_Pops"));
+
+		item.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent arg0) {
+				PopupView.getReference().showAll();
+			}
+
+		});
+		popup.add(item);
+
+		item = new MenuItem();
+		item.setLabel(Resource.getResourceString("Hide_Pops"));
+
+		item.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent arg0) {
+				PopupView.getReference().hideAll();
+			}
+
+		});
+		popup.add(item);
+
+		popup.addSeparator();
+
+		item = new MenuItem();
+		item.setLabel(Resource.getResourceString("Options"));
+		item.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				OptionsView.getReference().setVisible(true);
+			}
+		});
+		popup.add(item);
+
+		popup.addSeparator();
+
+		item = new MenuItem();
+		item.setLabel(Resource.getResourceString("Exit"));
+		item.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				// WindowsTrayIcon.cleanUp();
+				Borg.shutdown();
+			}
+		});
+		popup.add(item);
+
+		TIcon.setPopupMenu(popup);
+		TIcon.addActionListener(new OpenListener());
+
+		SystemTray tray = SystemTray.getSystemTray();
+		tray.add(TIcon);
+	}
+
 }

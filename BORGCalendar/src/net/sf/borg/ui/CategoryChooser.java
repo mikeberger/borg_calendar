@@ -30,6 +30,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import net.sf.borg.common.Errmsg;
+import net.sf.borg.common.Resource;
 import net.sf.borg.model.CategoryModel;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 
@@ -216,7 +217,7 @@ public class CategoryChooser extends View {
 		getContentPane().setLayout(new java.awt.GridBagLayout());
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-		ResourceHelper.setTitle(this, "catchooser");
+		this.setTitle(Resource.getResourceString("catchooser"));
 		addWindowListener(new java.awt.event.WindowAdapter() {
 			@Override
 			public void windowClosing(java.awt.event.WindowEvent evt) {

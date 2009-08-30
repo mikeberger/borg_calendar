@@ -61,7 +61,7 @@ public class PopupOptionsView extends JDialog {
 
 		initialize();
 
-		ResourceHelper.setTitle(this, "Popup_Times");
+		this.setTitle("Popup_Times");
 		appPanel_ = appPanel;
 		remtimes_ = remtimes;
 

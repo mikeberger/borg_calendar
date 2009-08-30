@@ -28,25 +28,17 @@ import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.db.jdbc.JdbcDB;
 
+/**
+ * RunReport runs jasper reports
+ *
+ */
 public class RunReport {
 
-    /**
-     * @param args
-     */
-    @SuppressWarnings("unchecked")
-    public static void main(String[] args) throws Exception {
-
-        runReport("customer", new HashMap());
-
-    }
-
-    @SuppressWarnings("unchecked")
-    public static void runReport(String name, Map parms) {
-        String resourcePath = "/reports/" + name + ".jasper";
-        InputStream is = RunReport.class.getResourceAsStream(resourcePath);
-        runReport(is, parms);
-    }
-
+	/**
+	 * Run a jasper report
+	 * @param is the report file as an InputStream
+	 * @param parms the input parameter map for the report
+	 */
     @SuppressWarnings("unchecked")
     public static void runReport(InputStream is, Map parms) {
 
@@ -66,13 +58,11 @@ public class RunReport {
 
             Method fr = jfillclass.getMethod("fillReport", new Class[] { InputStream.class, Map.class, Connection.class });
             Object jasperprint = fr.invoke(null, new Object[] { is, parms, conn });
-            // JasperPrint jasperPrint = JasperFillManager.fillReport(is,
-            // parms, conn);
+         
             Method vr = jviewerclass.getMethod("viewReport", new Class[] { jprintclass, boolean.class });
             vr.invoke(null, new Object[] { jasperprint, new Boolean(false) });
 
-            // JasperViewer.viewReport(jasperPrint,false);
-            // conn.close();
+       
         } catch (ClassNotFoundException cnf) {
             Errmsg.notice(Resource.getResourceString("borg_jasp"));
         } catch (NoClassDefFoundError r) {
@@ -80,6 +70,19 @@ public class RunReport {
         } catch (Exception e) {
             Errmsg.errmsg(e);
         }
+    }
+
+    /**
+     * Run a jasper report by name. The report definition file needs to be present in the borg jar
+     * with name = /reports/<name>.jasper
+     * @param name the report name
+     * @param parms the input parameter map
+     */
+    @SuppressWarnings("unchecked")
+    public static void runReport(String name, Map parms) {
+        String resourcePath = "/reports/" + name + ".jasper";
+        InputStream is = RunReport.class.getResourceAsStream(resourcePath);
+        runReport(is, parms);
     }
 
 }

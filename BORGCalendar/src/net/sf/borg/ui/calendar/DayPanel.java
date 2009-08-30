@@ -56,11 +56,10 @@ import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.CalendarEntity;
 import net.sf.borg.ui.NavPanel;
-import net.sf.borg.ui.Navigator;
 
 // weekPanel handles the printing of a single week
 public class DayPanel extends JPanel implements Printable {
-	private class DaySubPanel extends ApptBoxPanel implements Navigator,
+	private class DaySubPanel extends ApptBoxPanel implements NavPanel.Navigator,
 			Prefs.Listener, Printable, Model.Listener, MouseWheelListener {
 
 		// set up dash line stroke
