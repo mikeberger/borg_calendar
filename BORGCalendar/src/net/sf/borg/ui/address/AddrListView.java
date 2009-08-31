@@ -20,6 +20,7 @@ Copyright 2003 by Mike Berger
 
 package net.sf.borg.ui.address;
 
+import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionListener;
 import java.util.Collection;
@@ -27,11 +28,16 @@ import java.util.Iterator;
 
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.border.LineBorder;
 import javax.swing.event.TableModelEvent;
 
 import net.sf.borg.common.Errmsg;
@@ -42,29 +48,63 @@ import net.sf.borg.model.entity.Address;
 import net.sf.borg.ui.DockableView;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.ResourceHelper;
+import net.sf.borg.ui.util.GridBagConstraintsFactory;
 import net.sf.borg.ui.util.PopupMenuHelper;
 import net.sf.borg.ui.util.StripedTable;
 import net.sf.borg.ui.util.TablePrinter;
 import net.sf.borg.ui.util.TableSorter;
 
-// the AddrListView displays a list of the current todo items and allows the
-// suer to mark them as done
+/**
+ * UI that displays the address book in tabular form and allows actions to be taken on addresses
+ *
+ */
 public class AddrListView extends DockableView {
+
+	private static AddrListView singleton = null;
+
+	/**
+	 * get the singleton
+	 * @return the singleton
+	 */
+	public static AddrListView getReference() {
+		if (singleton == null || !singleton.isDisplayable())
+			singleton = new AddrListView();
+		return (singleton);
+	}
 
 	private Collection<Address> addrs_; // list of rows currently displayed
 
+	// action listeners for buttons that are reused in the menu items
+	private ActionListener alAddNew, alEdit, alDelete, alFind;
+
+	// various buttons
+	private JButton delbutton;
+	private JButton editbutton;
+	private JButton findbutton;
+	private JButton newbutton;
+
+	// scroll for table
+	private JScrollPane tableScrollPane;
+
+	// the table
+	private StripedTable addressTable;
+
+	/**
+	 * constructor
+	 */
 	private AddrListView() {
 
 		super();
+		
 		addModel(AddressModel.getReference());
 
 		this.setLayout(new GridBagLayout());
+		
 		// init the gui components
 		initComponents();
 
-		// the todos will be displayed in a sorted table with 2 columns -
-		// data and todo text
-		jTable1.setModel(new TableSorter(new String[] {
+		// set the column headings and types
+		addressTable.setModel(new TableSorter(new String[] {
 				Resource.getResourceString("First"),
 				Resource.getResourceString("Last"),
 				Resource.getResourceString("Email"),
@@ -81,6 +121,311 @@ public class AddrListView extends DockableView {
 
 	}
 
+	/**
+	 * delete action
+	 */
+	private void delbuttonActionPerformed()
+	{
+		// figure out which row is selected to be deleted
+		int[] indices = addressTable.getSelectedRows();
+		if (indices.length == 0)
+			return;
+
+		// confirm delete
+		int ret = JOptionPane.showConfirmDialog(null, Resource
+				.getResourceString("Delete_Addresses"), Resource
+				.getResourceString("Delete"), JOptionPane.OK_CANCEL_OPTION,
+				JOptionPane.QUESTION_MESSAGE);
+		if (ret != JOptionPane.OK_OPTION)
+			return;
+
+		AddressModel amod = AddressModel.getReference();
+		for (int i = 0; i < indices.length; ++i) {
+			int index = indices[i];
+			try {
+				// need to ask the table for the original (befor sorting) index
+				// of the selected row
+				TableSorter tm = (TableSorter) addressTable.getModel();
+				int k = tm.getMappedIndex(index); // get original index - not
+				// current sorted position
+				// in tbl
+				Object[] oa = addrs_.toArray();
+				Address addr = (Address) oa[k];
+				amod.delete(addr);
+			} catch (Exception e) {
+				Errmsg.errmsg(e);
+			}
+		}
+
+	}
+
+	/**
+	 * edit an address
+	 */
+	private void editRow() {
+		// figure out which row is selected.
+		int index = addressTable.getSelectedRow();
+		if (index == -1)
+			return;
+		addressTable.getSelectionModel().setSelectionInterval(index, index);
+		// ensure only one row is selected.
+
+		try {
+			// need to ask the table for the original (befor sorting) index of
+			// the selected row
+			TableSorter tm = (TableSorter) addressTable.getModel();
+			int k = tm.getMappedIndex(index); // get original index - not
+			// current sorted position in
+			// tbl
+			Object[] oa = addrs_.toArray();
+			Address addr = (Address) oa[k];
+
+			// show an address editor for the address
+			MultiView.getMainView().addView(new AddressView(addr));
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
+		}
+	}
+
+	/**
+	 * find action
+	 */
+	private void findbuttonActionPerformed() {
+		
+		// Search for a string
+		String searchstring = "";
+		JScrollBar vScrollBar = null;
+		do {
+			searchstring = JOptionPane.showInputDialog(null, Resource
+					.getResourceString("Search_For"), searchstring);
+			if (searchstring != null) {
+				int tablerowcount = addressTable.getRowCount();
+				int tablecolcount = addressTable.getColumnCount();
+
+				for (int iRow = 0; iRow < tablerowcount; iRow++) {
+					for (int jCol = 0; jCol < tablecolcount; jCol++) {
+						String colvalue = null;
+						java.util.Date colvaluedt = null;
+						try {
+							colvalue = (String) addressTable.getValueAt(iRow, jCol);
+						} catch (ClassCastException ccex) {
+							colvaluedt = (java.util.Date) addressTable.getValueAt(
+									iRow, jCol);
+							colvalue = colvaluedt.toString();
+						}
+						if (searchstring != null) {
+							boolean match = searchstring
+									.equalsIgnoreCase(colvalue);
+							if (!match && colvalue != null) {
+								String colvalue2 = colvalue.toLowerCase();
+								String searchstring2 = searchstring
+										.toLowerCase();
+								int indexint = colvalue2.indexOf(searchstring2,
+										0);
+								match = indexint > -1;
+							}
+							if (match) {
+								addressTable.setRowSelectionInterval(iRow, iRow);
+								vScrollBar = tableScrollPane
+										.getVerticalScrollBar();
+
+								int maxVal = vScrollBar.getMaximum();
+								int oneCellScrollValue = maxVal / tablerowcount;
+
+								vScrollBar.setValue(iRow * oneCellScrollValue);
+								searchstring = JOptionPane
+										.showInputDialog(
+												null,
+												Resource
+														.getResourceString("Search_Next"),
+												searchstring);
+							}
+						}
+					}
+				}
+				if (searchstring != null) {
+					JOptionPane.showMessageDialog(null, Resource
+							.getResourceString("Not_Found_End"));
+				}
+			}
+		} while (searchstring != null);
+
+	}
+
+	@Override
+	public PrefName getFrameSizePref() {
+		return PrefName.ADDRLISTVIEWSIZE;
+	}
+
+	@Override
+	public String getFrameTitle() {
+		return Resource.getResourceString("Address_Book");
+	}
+
+	@Override
+	public JMenuBar getMenuForFrame() {
+
+		JMenuBar menuBar = new JMenuBar();
+		JMenu fileMenu = new JMenu();
+		JMenuItem printList = new JMenuItem();
+		JMenuItem exitMenuItem = new JMenuItem();
+
+		ResourceHelper.setText(fileMenu, "Action");
+
+		JMenuItem mnuitm = new JMenuItem();
+		ResourceHelper.setText(mnuitm, "Add_New");
+		mnuitm.setIcon(newbutton.getIcon());
+		mnuitm.addActionListener(alAddNew);
+		fileMenu.add(mnuitm);
+
+		mnuitm = new JMenuItem();
+		ResourceHelper.setText(mnuitm, "Edit");
+		mnuitm.setIcon(editbutton.getIcon());
+		mnuitm.addActionListener(alEdit);
+		fileMenu.add(mnuitm);
+
+		mnuitm = new JMenuItem();
+		ResourceHelper.setText(mnuitm, "Delete");
+		mnuitm.setIcon(delbutton.getIcon());
+		mnuitm.addActionListener(alDelete);
+		fileMenu.add(mnuitm);
+
+		mnuitm = new JMenuItem();
+		ResourceHelper.setText(mnuitm, "Find");
+		mnuitm.setIcon(findbutton.getIcon());
+		mnuitm.addActionListener(alFind);
+		fileMenu.add(mnuitm);
+
+		ResourceHelper.setText(printList, "Print_List");
+		printList.setIcon(new ImageIcon(getClass().getResource(
+				"/resource/Print16.gif")));
+		printList.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				try {
+					TablePrinter.printTable(addressTable);
+				} catch (Exception e) {
+					Errmsg.errmsg(e);
+				}
+			}
+		});
+
+		fileMenu.add(printList);
+
+		ResourceHelper.setText(exitMenuItem, "Exit");
+		exitMenuItem.setIcon(new ImageIcon(getClass().getResource(
+				"/resource/Stop16.gif")));
+		exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				remove();
+			}
+		});
+
+		menuBar.add(fileMenu);
+
+		fileMenu.add(exitMenuItem);
+
+		return menuBar;
+
+	}
+
+	/**
+	 * init the UI components
+	 */
+	private void initComponents()
+	{
+
+		tableScrollPane = new JScrollPane();
+		addressTable = new StripedTable();
+		JPanel buttonPanel = new JPanel();
+		newbutton = new JButton();
+		editbutton = new JButton();
+		delbutton = new JButton();
+		findbutton = new JButton();
+
+		tableScrollPane.setPreferredSize(new java.awt.Dimension(554, 404));
+		addressTable.setBorder(new LineBorder(new java.awt.Color(
+				0, 0, 0)));
+		// jTable1.setGridColor(java.awt.Color.blue);
+		DefaultListSelectionModel mylsmodel = new DefaultListSelectionModel();
+		mylsmodel
+				.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		addressTable.setSelectionModel(mylsmodel);
+		addressTable.addMouseListener(new java.awt.event.MouseAdapter() {
+			@Override
+			public void mouseClicked(java.awt.event.MouseEvent evt) {
+				if (evt.getClickCount() < 2)
+					return;
+				editRow();
+			}
+		});
+
+		tableScrollPane.setViewportView(addressTable);
+		add(tableScrollPane, GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH, 1.0, 1.0));
+
+		newbutton.setIcon(new ImageIcon(getClass().getResource(
+				"/resource/Add16.gif")));
+		ResourceHelper.setText(newbutton, "Add_New");
+		newbutton
+				.addActionListener(alAddNew = new java.awt.event.ActionListener() {
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						Address addr = AddressModel.getReference().newAddress();
+						addr.setKey(-1);
+						MultiView.getMainView().addView(new AddressView(addr));
+					}
+				});
+
+		buttonPanel.add(newbutton);
+
+		editbutton.setIcon(new ImageIcon(getClass().getResource(
+				"/resource/Edit16.gif")));
+		ResourceHelper.setText(editbutton, "Edit");
+		editbutton
+				.addActionListener(alEdit = new java.awt.event.ActionListener() {
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						editRow();
+
+					}
+				});
+
+		buttonPanel.add(editbutton);
+
+		delbutton.setIcon(new ImageIcon(getClass().getResource(
+				"/resource/Delete16.gif")));
+		ResourceHelper.setText(delbutton, "Delete");
+		delbutton
+				.addActionListener(alDelete = new java.awt.event.ActionListener() {
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						delbuttonActionPerformed();
+					}
+				});
+
+		buttonPanel.add(delbutton);
+
+		// Find Button - Search a text in Address List
+		findbutton.setIcon(new ImageIcon(getClass().getResource(
+				"/resource/Find16.gif")));
+		ResourceHelper.setText(findbutton, "Find");
+		findbutton
+				.addActionListener(alFind = new java.awt.event.ActionListener() {
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						findbuttonActionPerformed();
+					}
+				});
+
+		buttonPanel.add(findbutton);
+
+		add(buttonPanel, GridBagConstraintsFactory.create(0, 1));
+
+		// add context menu actions
+		new PopupMenuHelper(addressTable, new PopupMenuHelper.Entry[] {
+				new PopupMenuHelper.Entry(alAddNew, "Add_New"),
+				new PopupMenuHelper.Entry(alEdit, "Edit"),
+				new PopupMenuHelper.Entry(alDelete, "Delete"),
+				new PopupMenuHelper.Entry(alFind, "Find") });
+
+	}
+
+	@Override
 	public void refresh() {
 		AddressModel addrmod_ = AddressModel.getReference();
 
@@ -92,8 +437,8 @@ public class AddrListView extends DockableView {
 		}
 
 		// init the table to empty
-		TableSorter tm = (TableSorter) jTable1.getModel();
-		tm.addMouseListenerToHeaderInTable(jTable1);
+		TableSorter tm = (TableSorter) addressTable.getModel();
+		tm.addMouseListenerToHeaderInTable(addressTable);
 		tm.setRowCount(0);
 
 		Iterator<Address> it = addrs_.iterator();
@@ -123,359 +468,6 @@ public class AddrListView extends DockableView {
 		// sort the table by last name
 		tm.sortByColumn(1);
 
-	}
-
-	private void editRow() {
-		// figure out which row is selected.
-		int index = jTable1.getSelectedRow();
-		if (index == -1)
-			return;
-		jTable1.getSelectionModel().setSelectionInterval(index, index);
-		// ensure only one row is selected.
-
-		try {
-			// need to ask the table for the original (befor sorting) index of
-			// the selected row
-			TableSorter tm = (TableSorter) jTable1.getModel();
-			int k = tm.getMappedIndex(index); // get original index - not
-			// current sorted position in
-			// tbl
-			Object[] oa = addrs_.toArray();
-			Address addr = (Address) oa[k];
-
-			MultiView.getMainView().addView(new AddressView(addr));
-		} catch (Exception e) {
-			Errmsg.errmsg(e);
-		}
-	}
-
-	/**
-	 * This method is called from within the constructor to initialize the form.
-	 * WARNING: Do NOT modify this code. The content of this method is always
-	 * regenerated by the Form Editor.
-	 */
-	private ActionListener alAddNew, alEdit, alDelete, alFind;
-
-	private void initComponents()// GEN-BEGIN:initComponents
-	{
-		java.awt.GridBagConstraints gridBagConstraints;
-
-		jScrollPane1 = new javax.swing.JScrollPane();
-		jTable1 = new StripedTable();
-		jPanel1 = new javax.swing.JPanel();
-		newbutton = new javax.swing.JButton();
-		editbutton = new javax.swing.JButton();
-		delbutton = new javax.swing.JButton();
-		findbutton = new javax.swing.JButton();
-
-		jScrollPane1.setPreferredSize(new java.awt.Dimension(554, 404));
-		jTable1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(
-				0, 0, 0)));
-		// jTable1.setGridColor(java.awt.Color.blue);
-		DefaultListSelectionModel mylsmodel = new DefaultListSelectionModel();
-		mylsmodel
-				.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-		jTable1.setSelectionModel(mylsmodel);
-		jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
-			public void mouseClicked(java.awt.event.MouseEvent evt) {
-				jTable1MouseClicked(evt);
-			}
-		});
-
-		jScrollPane1.setViewportView(jTable1);
-
-		gridBagConstraints = new java.awt.GridBagConstraints();
-		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-		gridBagConstraints.weightx = 1.0;
-		gridBagConstraints.weighty = 1.0;
-		add(jScrollPane1, gridBagConstraints);
-
-		newbutton.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/Add16.gif")));
-		ResourceHelper.setText(newbutton, "Add_New");
-		newbutton
-				.addActionListener(alAddNew = new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						newbuttonActionPerformed(evt);
-					}
-				});
-
-		jPanel1.add(newbutton);
-
-		editbutton.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/Edit16.gif")));
-		ResourceHelper.setText(editbutton, "Edit");
-		editbutton
-				.addActionListener(alEdit = new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						editbuttonActionPerformed(evt);
-					}
-				});
-
-		jPanel1.add(editbutton);
-
-		delbutton.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/Delete16.gif")));
-		ResourceHelper.setText(delbutton, "Delete");
-		delbutton
-				.addActionListener(alDelete = new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						delbuttonActionPerformed(evt);
-					}
-				});
-
-		jPanel1.add(delbutton);
-
-		//Find Button - Search a text in Address List
-		findbutton.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-			"/resource/Find16.gif")));
-		ResourceHelper.setText(findbutton, "Find");
-		findbutton
-			.addActionListener(alFind = new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					findbuttonActionPerformed(evt);
-				}
-			});
-
-		jPanel1.add(findbutton);
-		
-		gridBagConstraints = new java.awt.GridBagConstraints();
-		gridBagConstraints.gridx = 0;
-		gridBagConstraints.gridy = 1;
-		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-		add(jPanel1, gridBagConstraints);
-
-		new PopupMenuHelper(jTable1, new PopupMenuHelper.Entry[] {
-				new PopupMenuHelper.Entry(alAddNew, "Add_New"),
-				new PopupMenuHelper.Entry(alEdit, "Edit"),
-				new PopupMenuHelper.Entry(alDelete, "Delete"),
-				new PopupMenuHelper.Entry(alFind, "Find") });
-
-	}// GEN-END:initComponents
-
-	private void delbuttonActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_delbuttonActionPerformed
-	{// GEN-HEADEREND:event_delbuttonActionPerformed
-		// figure out which row is selected to be marked as done
-		int[] indices = jTable1.getSelectedRows();
-		if (indices.length == 0)
-			return;
-
-		int ret = JOptionPane.showConfirmDialog(null, Resource
-				.getResourceString("Delete_Addresses"), Resource
-				.getResourceString("Delete"),
-				JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
-		if (ret != JOptionPane.OK_OPTION)
-			return;
-
-		AddressModel amod = AddressModel.getReference();
-		for (int i = 0; i < indices.length; ++i) {
-			int index = indices[i];
-			try {
-				// need to ask the table for the original (befor sorting) index
-				// of the selected row
-				TableSorter tm = (TableSorter) jTable1.getModel();
-				int k = tm.getMappedIndex(index); // get original index - not
-				// current sorted position
-				// in tbl
-				Object[] oa = addrs_.toArray();
-				Address addr = (Address) oa[k];
-				amod.delete(addr);
-			} catch (Exception e) {
-				Errmsg.errmsg(e);
-			}
-		}
-
-		amod.refresh();
-	}// GEN-LAST:event_delbuttonActionPerformed
-
-	private void findbuttonActionPerformed(java.awt.event.ActionEvent evt)
-	{
-		// Search for a string
-		String searchstring = "";
-		javax.swing.JScrollBar vScrollBar = null;
-		do{
-			searchstring = JOptionPane.showInputDialog(null,Resource.getResourceString("Search_For"),searchstring);
-			if (searchstring != null)
-			{
-				int tablerowcount = jTable1.getRowCount();
-				int tablecolcount = jTable1.getColumnCount();
-				
-				for (int iRow=0; iRow<tablerowcount; iRow++)
-				{
-					for (int jCol=0; jCol<tablecolcount; jCol++)
-					{
-						String colvalue = null;
-						java.util.Date colvaluedt = null;
-						try
-						{
-							colvalue = (String) jTable1.getValueAt(iRow,jCol);
-						}catch(ClassCastException ccex)
-						{
-							colvaluedt = (java.util.Date) jTable1.getValueAt(iRow,jCol);
-							colvalue = colvaluedt.toString();
-						}
-						if (searchstring != null)
-						{
-							boolean match = searchstring.equalsIgnoreCase(colvalue);
-							if( !match && colvalue != null)
-							{
-								String colvalue2 = colvalue.toLowerCase();
-								String searchstring2 = searchstring.toLowerCase();
-								int indexint = colvalue2.indexOf(searchstring2,0);
-								match = indexint > -1;
-							}
-							if (match)
-							{
-								jTable1.setRowSelectionInterval(iRow,iRow);
-								vScrollBar = jScrollPane1.getVerticalScrollBar();
-								
-								int maxVal = vScrollBar.getMaximum();
-								int oneCellScrollValue = maxVal/tablerowcount;
-								
-								vScrollBar.setValue(iRow*oneCellScrollValue);
-								searchstring = JOptionPane.showInputDialog(null,Resource.getResourceString("Search_Next"),searchstring);
-							}
-						}
-					}
-				}
-				if (searchstring != null)
-				{
-					JOptionPane.showMessageDialog(null,Resource.getResourceString("Not_Found_End"));
-				}
-			}
-		}while(searchstring != null);
-		
-	}
-	
-	
-	private void jTable1MouseClicked(java.awt.event.MouseEvent evt)// GEN-FIRST:event_jTable1MouseClicked
-	{// GEN-HEADEREND:event_jTable1MouseClicked
-		if (evt.getClickCount() < 2)
-			return;
-		editRow();
-	}// GEN-LAST:event_jTable1MouseClicked
-
-	private void editbuttonActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_editbuttonActionPerformed
-	{// GEN-HEADEREND:event_editbuttonActionPerformed
-		editRow();
-	}// GEN-LAST:event_editbuttonActionPerformed
-
-	private void newbuttonActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_newbuttonActionPerformed
-	{// GEN-HEADEREND:event_newbuttonActionPerformed
-		Address addr = AddressModel.getReference().newAddress();
-		addr.setKey(-1);
-		MultiView.getMainView().addView(new AddressView(addr));
-	}// GEN-LAST:event_newbuttonActionPerformed
-
-	private void printListActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_printListActionPerformed
-
-		// user has requested a print of the table
-		try {
-			TablePrinter.printTable(jTable1);
-		} catch (Exception e) {
-			Errmsg.errmsg(e);
-		}
-	}// GEN-LAST:event_printListActionPerformed
-
-	private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_exitMenuItemActionPerformed
-		this.remove();
-	}// GEN-LAST:event_exitMenuItemActionPerformed
-
-	// Variables declaration - do not modify//GEN-BEGIN:variables
-	private javax.swing.JButton delbutton;
-
-	private javax.swing.JButton findbutton;
-
-	private javax.swing.JButton editbutton;
-
-	private javax.swing.JPanel jPanel1;
-
-	private javax.swing.JScrollPane jScrollPane1;
-
-	private StripedTable jTable1;
-
-	private javax.swing.JButton newbutton;
-
-	
-
-	public PrefName getFrameSizePref() {
-		return PrefName.ADDRLISTVIEWSIZE;
-	}
-
-	public String getFrameTitle() {
-		return Resource.getResourceString("Address_Book");
-	}
-
-	public JMenuBar getMenuForFrame() {
-
-		JMenuBar menuBar = new javax.swing.JMenuBar();
-		JMenu fileMenu = new javax.swing.JMenu();
-		JMenuItem printList = new javax.swing.JMenuItem();
-		JMenuItem exitMenuItem = new javax.swing.JMenuItem();
-		
-		ResourceHelper.setText(fileMenu, "Action");
-
-		JMenuItem mnuitm = new JMenuItem();
-		ResourceHelper.setText(mnuitm, "Add_New");
-		mnuitm.setIcon(newbutton.getIcon());
-		mnuitm.addActionListener(alAddNew);
-		fileMenu.add(mnuitm);
-
-		mnuitm = new JMenuItem();
-		ResourceHelper.setText(mnuitm, "Edit");
-		mnuitm.setIcon(editbutton.getIcon());
-		mnuitm.addActionListener(alEdit);
-		fileMenu.add(mnuitm);
-
-		mnuitm = new JMenuItem();
-		ResourceHelper.setText(mnuitm, "Delete");
-		mnuitm.setIcon(delbutton.getIcon());
-		mnuitm.addActionListener(alDelete);
-		fileMenu.add(mnuitm);
-
-		mnuitm = new JMenuItem();
-		ResourceHelper.setText(mnuitm, "Find");
-		mnuitm.setIcon(findbutton.getIcon());
-		mnuitm.addActionListener(alFind);
-		fileMenu.add(mnuitm);
-		
-		ResourceHelper.setText(printList, "Print_List");
-		printList.setIcon(new ImageIcon(getClass().getResource(
-				"/resource/Print16.gif")));
-		printList.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				printListActionPerformed(evt);
-			}
-		});
-
-		fileMenu.add(printList);
-
-		ResourceHelper.setText(exitMenuItem, "Exit");
-		exitMenuItem.setIcon(new ImageIcon(getClass().getResource(
-				"/resource/Stop16.gif")));
-		exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				exitMenuItemActionPerformed(evt);
-			}
-		});
-
-		menuBar.add(fileMenu);
-
-	
-		fileMenu.add(exitMenuItem);
-
-		return menuBar;
-
-	}
-
-	
-
-	private static AddrListView singleton = null;
-
-	public static AddrListView getReference() {
-		if (singleton == null || !singleton.isDisplayable())
-			singleton = new AddrListView();
-		return (singleton);
 	}
 
 }
