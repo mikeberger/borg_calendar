@@ -496,6 +496,7 @@ class ApptBox implements Draggable {
 		if (hour == 0 && min == 0) {
 			// we are moving to be untimed - clear duration
 			ap.setDuration(null);
+			ap.setUntimed("Y");
 		}
 
 		GregorianCalendar newCal = new GregorianCalendar();
