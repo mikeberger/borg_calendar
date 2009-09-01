@@ -20,7 +20,16 @@ package net.sf.borg.ui.calendar;
 
 import java.util.Date;
 
-interface Draggable extends Box {
+/**
+ * Interface implemented by day/week/month panel Boxes that can be dragged
+ */
+interface Draggable extends Box{
 
+	/**
+	 * called when object has been moved
+	 * @param realtime time of day in minutes to which the object has been dragged
+	 * @param d date that the object was dragged to
+	 * @throws Exception
+	 */
     public abstract void move(int realtime, Date d) throws Exception;
 }

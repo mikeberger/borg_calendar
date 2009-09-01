@@ -24,22 +24,56 @@ import java.awt.Rectangle;
 
 import javax.swing.JPopupMenu;
 
+/**
+ * Interface for objects that appear as boxes on the day/week/month UIs
+ */
 public interface Box {
 
+	/**
+	 * delete the box
+	 */
     public abstract void delete();
 
+    /**
+     * draw the box
+     * @param g2 the Graphics2D to draw in
+     * @param component that contains the Graphics2D
+     */
     public abstract void draw(Graphics2D g2, Component comp);
 
+    /**
+     * edit the box
+     */
     public abstract void edit();
 
+    /**
+     * get the box bounds
+     * @return the box bounds
+     */
     public abstract Rectangle getBounds();
 
+    /**
+     * get the box popup menu
+     * @return the popup menu
+     */
+    public abstract JPopupMenu getMenu();
+
+    /**
+     * get the box text
+     * @return the text
+     */
     public abstract String getText();
 
+    /**
+     * set the box bounds (resize)
+     * @param bounds the new bounds
+     */
     public abstract void setBounds(Rectangle bounds);
-
-    public abstract void setSelected(boolean isSelected);
     
-    public abstract JPopupMenu getMenu();
+    /**
+     * set the boxes selected status
+     * @param isSelected true is selected
+     */
+    public abstract void setSelected(boolean isSelected);
 
 }
