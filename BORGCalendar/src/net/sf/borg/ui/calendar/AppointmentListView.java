@@ -42,9 +42,13 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
+import javax.swing.border.LineBorder;
+import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
@@ -63,36 +67,52 @@ import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.ui.DockableView;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.util.DateDialog;
+import net.sf.borg.ui.util.GridBagConstraintsFactory;
 import net.sf.borg.ui.util.PopupMenuHelper;
 import net.sf.borg.ui.util.StripedTable;
 import net.sf.borg.ui.util.TableSorter;
 
 import com.toedter.calendar.JDateChooser;
 
+/**
+ * AppointmentListView provides a UI for editing the appoitnments for a day. The
+ * UI presents a list of appointments and allows the user to edit the selected
+ * appointment in an appointment editor.
+ */
 public class AppointmentListView extends DockableView implements
 		ListSelectionListener {
 
+	/**
+	 * show the time of an appointment in the appt table - and shopw dashes for
+	 * appointments with no time
+	 */
 	private class TimeRenderer extends JLabel implements TableCellRenderer {
 
+		/**
+		 * constructor
+		 */
 		public TimeRenderer() {
 			super();
 			setOpaque(true); // MUST do this for background to show up.
 		}
 
+		/**
+		 * render the cell
+		 */
 		public Component getTableCellRendererComponent(JTable table,
 				Object obj, boolean isSelected, boolean hasFocus, int row,
 				int column) {
 
 			Component c = defrend.getTableCellRendererComponent(table, obj,
 					isSelected, hasFocus, row, column);
-			// default to white background unless row is selected
 			this.setBackground(c.getBackground());
 			this.setForeground(c.getForeground());
 
 			Date d = (Date) obj;
 			GregorianCalendar cal = new GregorianCalendar();
 			cal.setTime(d);
-			if (cal.get(Calendar.HOUR_OF_DAY) == 0) {
+			// seconds field is set to zero only for untimed appts
+			if (cal.get(Calendar.SECOND) == 0) {
 				this.setText("--------");
 			} else {
 				SimpleDateFormat sdf = AppointmentModel.getTimeFormat();
@@ -102,22 +122,16 @@ public class AppointmentListView extends DockableView implements
 		}
 	}
 
-	static void changeDate(Appointment appt, Calendar cal) {
-		
-		appt.setDate(cal.getTime());
-		try {
-			AppointmentModel.getReference().saveAppt(appt);
-		} catch (Exception e) {
-			Errmsg.errmsg(e);
-		}
-	}
-
-	static void onChangeDate(Component v, List<Appointment> appts) {
-		// Move all selected ToDos to following day
+	/**
+	 * Prompt the user to change the date of a set of appointments
+	 * 
+	 * @param appts
+	 *            the appts
+	 */
+	static void onChangeDate(List<Appointment> appts) {
 		if (appts.size() == 0)
 			return;
 
-		AppointmentModel model = AppointmentModel.getReference();
 		DateDialog dlg = new DateDialog(null);
 		Calendar cal = new GregorianCalendar();
 		cal.setTime(appts.get(0).getDate());
@@ -133,24 +147,25 @@ public class AppointmentListView extends DockableView implements
 		for (int i = 0; i < appts.size(); ++i) {
 			try {
 				Appointment appt = appts.get(i);
-				changeDate(appt, cal);
+				appt.setDate(cal.getTime());
+				AppointmentModel.getReference().saveAppt(appt);
 			} catch (Exception e) {
 				Errmsg.errmsg(e);
 			}
 		}
 
-		model.refresh();
 	}
 
-	// package //
-	// Static helper methods for moving appointments - used by both
-	// TodoView and AppointmentListView
-	static void onMoveToFollowingDay(Component v, List<Appointment> appts) {
-		// Move all selected ToDos to following day
+	/**
+	 * Move a set of appointments to the following day
+	 * 
+	 * @param appts
+	 *            the appts
+	 */
+	static void onMoveToFollowingDay(List<Appointment> appts) {
 		if (appts.size() == 0)
 			return;
 
-		AppointmentModel model = AppointmentModel.getReference();
 		for (int i = 0; i < appts.size(); ++i) {
 			try {
 				Appointment appt = appts.get(i);
@@ -159,65 +174,55 @@ public class AppointmentListView extends DockableView implements
 				GregorianCalendar gcal = new GregorianCalendar();
 				gcal.setTime(appt.getDate());
 				gcal.add(Calendar.DAY_OF_YEAR, 1);
-				changeDate(appt, gcal);
+				appt.setDate(gcal.getTime());
+				AppointmentModel.getReference().saveAppt(appt);
 
 			} catch (Exception e) {
 				Errmsg.errmsg(e);
 			}
 		}
 
-		model.refresh();
 	}
 
-	// Variables declaration - do not modify//GEN-BEGIN:variables
-	private javax.swing.JButton add;
-
-	// private List alist_ = null;
-
-	private AppointmentPanel apanel_ = null;
-
+	private JButton addButton;
+	private AppointmentPanel appointmentPanel = null;
 	private StripedTable apptTable;
-
-	private GregorianCalendar cal_ = null;
-
-	private JDateChooser cb_ = null;
-
+	private GregorianCalendar cal_ = null; // date of the appt list
+	private JDateChooser dateChooser = null;
 	private JButton copyButton = null;
+	private TableCellRenderer defrend = null; // default table cell renderer
+	private JButton deleteButton;
+	private JButton deleteOneOnlyButton;
+	private JPanel buttonPanel;
+	private JPanel appointmentListPanel;
+	private JScrollPane apptTableScrollPane;
+	private JButton reminderButton = null;
+	private String title_ = ""; // tab/window title
 
-	private TableCellRenderer defrend = null;
-
-	private javax.swing.JButton del;
-
-	private javax.swing.JButton delone;
-
-	private javax.swing.JPanel jPanel1;
-
-	private javax.swing.JPanel jPanel2;
-
-	private javax.swing.JPanel jPanel3;
-
-	private javax.swing.JScrollPane jScrollPane1;
-
-	private Date date_;
-
-	private JButton reminderButton = null; // @jve:decl-index=0:visual-constraint="702,73"
-
-	private String title_ = "";
-
-	/** Creates new form btgui */
+	/**
+	 * constructor
+	 * 
+	 * @param year
+	 *            the year
+	 * @param month
+	 *            the month
+	 * @param day
+	 *            the day
+	 */
 	public AppointmentListView(int year, int month, int day) {
 		super();
 
 		addModel(AppointmentModel.getReference());
 		addModel(TaskModel.getReference());
 
+		appointmentPanel = new AppointmentPanel(year, month, day);
+
 		initComponents();
 
 		title_ = Resource.getResourceString("Appointment_Editor");
 
 		// add scroll to the table
-		jScrollPane1.setViewportView(apptTable);
-		// jScrollPane1.getViewport().setBackground(menuBar.getBackground());
+		apptTableScrollPane.setViewportView(apptTable);
 
 		// use a sorted table model
 		apptTable.setModel(new TableSorter(new String[] {
@@ -247,148 +252,13 @@ public class AppointmentListView extends DockableView implements
 		TableColumn column = tcm.getColumn(2);
 		tcm.removeColumn(column);
 
-		apanel_ = new AppointmentPanel(year, month, day);
-
-		GridBagConstraints gridBagConstraints = new GridBagConstraints();
-		gridBagConstraints.gridx = 0;
-		gridBagConstraints.gridy = 0;
-		gridBagConstraints.gridheight = 2;
-		gridBagConstraints.fill = GridBagConstraints.BOTH;
-		gridBagConstraints.weightx = 1.0;
-		gridBagConstraints.weighty = 1.0;
-		jPanel2.add(apanel_, gridBagConstraints);
-
 		showDate(year, month, day);
 
 	}
 
-	public PrefName getFrameSizePref() {
-		return PrefName.APPTLISTVIEWSIZE;
-	}
-
-	public String getFrameTitle() {
-		return title_;
-	}
-
-	public JMenuBar getMenuForFrame() {
-		JMenuBar menuBar = new JMenuBar();
-		JMenu fileMenu = new JMenu();
-		JMenuItem exitMenuItem = new JMenuItem();
-		fileMenu.setBackground(menuBar.getBackground());
-		ResourceHelper.setText(fileMenu, "File");
-		exitMenuItem.setBackground(fileMenu.getBackground());
-		ResourceHelper.setText(exitMenuItem, "Close");
-		exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				exitMenuItemActionPerformed(evt);
-			}
-		});
-
-		fileMenu.add(exitMenuItem);
-
-		menuBar.add(fileMenu);
-		return menuBar;
-	}
-
-	// refresh is called to update the table of shown tasks due to model changes
-	// or if the user
-	// changes the filtering criteria
-	public void refresh() {
-
-		// clear all table rows
-		deleteAll();
-
-		String priv = Prefs.getPref(PrefName.SHOWPRIVATE);
-		String pub = Prefs.getPref(PrefName.SHOWPUBLIC);
-
-		try {
-
-			List<Integer> alist_ = AppointmentModel.getReference().getAppts(date_);
-			if (alist_ != null) {
-				Iterator<Integer> it = alist_.iterator();
-				while (it.hasNext()) {
-					Integer key = it.next();
-					Appointment ap = AppointmentModel.getReference().getAppt(
-							key.intValue());
-
-					if (ap.getPrivate() && !priv.equals("true"))
-						continue;
-					if (!ap.getPrivate() && !pub.equals("true"))
-						continue;
-
-					Object[] ro = new Object[3];
-					ro[0] = ap.getText();
-
-					// just get time
-					Date d = ap.getDate();
-					GregorianCalendar cal = new GregorianCalendar();
-					cal.setTime(d);
-					cal.set(2000, 1, 1);
-					ro[1] = cal.getTime();
-					ro[2] = key;
-
-					addRow(ro);
-				}
-			}
-
-		} catch (Exception e) {
-			Errmsg.errmsg(e);
-		}
-
-		// resize the table based on new row count
-		resize();
-
-		// apply default sort to the table
-		defsort();
-	}
-
-	public void showApp(int key) {
-		apptTable.clearSelection();
-		TableSorter tm = (TableSorter) apptTable.getModel();
-		int rows = tm.getRowCount();
-		for (int i = 0; i < rows; ++i) {
-			Integer k = (Integer) tm.getValueAt(i, 2);
-			if (key == k.intValue()) {
-				apptTable.getSelectionModel().setSelectionInterval(i, i);
-			}
-		}
-		apanel_.showapp(key, null);
-	}
-
-	public void valueChanged(ListSelectionEvent e) {
-		// Ignore extra messages.
-		if (e.getValueIsAdjusting())
-			return;
-
-		ListSelectionModel lsm = (ListSelectionModel) e.getSource();
-		if (lsm.isSelectionEmpty()) {
-			apanel_.showapp(-1, null);
-			return;
-		}
-		int row = lsm.getMinSelectionIndex();
-		// int row = jTable1.getSelectedRow();
-		if (row == -1)
-			return;
-		TableSorter tm = (TableSorter) apptTable.getModel();
-		Integer apptkey = (Integer) tm.getValueAt(row, 2);
-
-		// Integer apptkey = (Integer) alist_.get(i);
-		apanel_.showapp(apptkey.intValue(), null);
-
-	}
-
-	private void addActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_addActionPerformed
-		apptTable.clearSelection();
-		apanel_.showapp(-1, null);
-	}// GEN-LAST:event_addActionPerformed
-
-	// add a row to the sorted table
-	private void addRow(Object[] ro) {
-		TableSorter tm = (TableSorter) apptTable.getModel();
-		tm.addRow(ro);
-		tm.tableChanged(new TableModelEvent(tm));
-	}
-
+	/**
+	 * Edit a copy of the selected appointment
+	 */
 	private void copyAppt() {
 		int[] keys = getSelectedKeys();
 		if (keys.length != 1) {
@@ -415,49 +285,16 @@ public class AppointmentListView extends DockableView implements
 			Errmsg.errmsg(e);
 			return;
 		}
-		apanel_.showapp(-1, appt);
+		appointmentPanel.showapp(-1, appt);
 		refresh();
 
 	}
 
-	// End of variables declaration//GEN-END:variables
-
-	// do the default sort - by text
-	private void defsort() {
-		TableSorter tm = (TableSorter) apptTable.getModel();
-		if (!tm.isSorted())
-			tm.sortByColumn(1);
-		else
-			tm.sort();
-	}
-
-	private void delActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_delActionPerformed
-		int[] keys = getSelectedKeys();
-		AppointmentModel model = AppointmentModel.getReference();
-		for (int i = 0; i < keys.length; ++i)
-			model.delAppt(keys[i]);
-		apptTable.clearSelection();
-	}// GEN-LAST:event_delActionPerformed
-
-	// delete all rows from the sorted table
-	private void deleteAll() {
-		TableSorter tm = (TableSorter) apptTable.getModel();
-		tm.setRowCount(0);
-		tm.tableChanged(new TableModelEvent(tm));
-	}
-
-	private void deloneActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_deloneActionPerformed
-		int[] keys = getSelectedKeys();
-		AppointmentModel model = AppointmentModel.getReference();
-		for (int i = 0; i < keys.length; ++i)
-			model.delOneOnly(keys[i], date_);
-		apptTable.clearSelection();
-	}// GEN-LAST:event_deloneActionPerformed
-
-	private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_exitMenuItemActionPerformed
-		this.remove();
-	}// GEN-LAST:event_exitMenuItemActionPerformed
-
+	/**
+	 * Gets the copy button.
+	 * 
+	 * @return the copy button
+	 */
 	private JButton getCopyButton() {
 		if (copyButton == null) {
 			copyButton = new JButton();
@@ -473,41 +310,70 @@ public class AppointmentListView extends DockableView implements
 		return copyButton;
 	}
 
+	/**
+	 * Gets the date chooser
+	 * 
+	 * @return the date chooser
+	 */
 	private JDateChooser getDateCB() {
-		if (cb_ == null) {
-			cb_ = new JDateChooser();
+		if (dateChooser == null) {
+			dateChooser = new JDateChooser();
 			// cb.setCalendar(cal_);
-			cb_.addPropertyChangeListener("date", new PropertyChangeListener() {
+			dateChooser.addPropertyChangeListener("date",
+					new PropertyChangeListener() {
 
-				public void propertyChange(PropertyChangeEvent arg0) {
-					Calendar cal = cb_.getCalendar();
-					if (cal != null) {
-						showDate(cal.get(Calendar.YEAR), cal
-								.get(Calendar.MONTH), cal.get(Calendar.DATE));
-					} else
-						cb_.setCalendar(cal_);
+						public void propertyChange(PropertyChangeEvent arg0) {
+							Calendar cal = dateChooser.getCalendar();
+							if (cal != null) {
+								showDate(cal.get(Calendar.YEAR), cal
+										.get(Calendar.MONTH), cal
+										.get(Calendar.DATE));
+							} else
+								dateChooser.setCalendar(cal_);
 
-				}
-			});
+						}
+					});
 
-			/*
-			 * cb_.addChangeListener(new javax.swing.event.ChangeListener() {
-			 * public void stateChanged(javax.swing.event.ChangeEvent e) {
-			 * Calendar cal = cb_.getCalendar();
-			 * showDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH),
-			 * cal.get(Calendar.DATE)); } });
-			 */
 		}
 
-		return (cb_);
+		return (dateChooser);
 	}
 
-	
+	@Override
+	public PrefName getFrameSizePref() {
+		return PrefName.APPTLISTVIEWSIZE;
+	}
+
+	@Override
+	public String getFrameTitle() {
+		return title_;
+	}
+
+	@Override
+	public JMenuBar getMenuForFrame() {
+		JMenuBar menuBar = new JMenuBar();
+		JMenu fileMenu = new JMenu();
+		JMenuItem exitMenuItem = new JMenuItem();
+		fileMenu.setBackground(menuBar.getBackground());
+		ResourceHelper.setText(fileMenu, "File");
+		exitMenuItem.setBackground(fileMenu.getBackground());
+		ResourceHelper.setText(exitMenuItem, "Close");
+		exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				remove();
+			}
+		});
+
+		fileMenu.add(exitMenuItem);
+
+		menuBar.add(fileMenu);
+		return menuBar;
+	}
 
 	/**
-	 * This method initializes reminderButton
+	 * get the reminder button
 	 * 
-	 * @return javax.swing.JButton
+	 * @return the reminder button
 	 */
 	private JButton getReminderButton() {
 		if (reminderButton == null) {
@@ -517,7 +383,8 @@ public class AppointmentListView extends DockableView implements
 					"/resource/ComposeMail16.gif")));
 			reminderButton
 					.addActionListener(new java.awt.event.ActionListener() {
-						public void actionPerformed(java.awt.event.ActionEvent evt) {
+						public void actionPerformed(
+								java.awt.event.ActionEvent evt) {
 							class MailThread extends Thread {
 								private Calendar cal;
 
@@ -525,6 +392,7 @@ public class AppointmentListView extends DockableView implements
 									cal = c;
 								}
 
+								@Override
 								public void run() {
 
 									try {
@@ -550,6 +418,11 @@ public class AppointmentListView extends DockableView implements
 		return reminderButton;
 	}
 
+	/**
+	 * Gets the selected appointments.
+	 * 
+	 * @return the selected appointments
+	 */
 	private List<Appointment> getSelectedAppointments() {
 		int[] keys = getSelectedKeys();
 		List<Appointment> appts = new ArrayList<Appointment>(keys.length);
@@ -564,13 +437,18 @@ public class AppointmentListView extends DockableView implements
 		return appts;
 	}
 
+	/**
+	 * Gets the selected appt keys.
+	 * 
+	 * @return the selected appt keys
+	 */
 	private int[] getSelectedKeys() {
 		int[] rows = apptTable.getSelectedRows();
 		List<Integer> keyList = new ArrayList<Integer>();
 		for (int i = 0; i < rows.length; ++i) {
 			int row = rows[i];
 			TableSorter tm = (TableSorter) apptTable.getModel();
-			keyList.add((Integer)tm.getValueAt(row, 2));
+			keyList.add((Integer) tm.getValueAt(row, 2));
 		}
 
 		int[] keys = new int[keyList.size()];
@@ -581,111 +459,91 @@ public class AppointmentListView extends DockableView implements
 	}
 
 	/**
-	 * This method is called from within the constructor to initialize the form.
-	 * WARNING: Do NOT modify this code. The content of this method is always
-	 * regenerated by the FormEditor.
+	 * init the ui components
 	 */
 	private void initComponents()// GEN-BEGIN:initComponents
 	{
 
-		GridBagConstraints gridBagConstraints22 = new GridBagConstraints();
-		jPanel2 = new javax.swing.JPanel();
-		jPanel3 = new javax.swing.JPanel();
-		jScrollPane1 = new javax.swing.JScrollPane();
+		appointmentListPanel = new JPanel();
+		apptTableScrollPane = new JScrollPane();
 		apptTable = new StripedTable();
-		jPanel1 = new javax.swing.JPanel();
-		add = new javax.swing.JButton();
-		del = new javax.swing.JButton();
-		delone = new javax.swing.JButton();
+		buttonPanel = new JPanel();
+		addButton = new JButton();
+		deleteButton = new JButton();
+		deleteOneOnlyButton = new JButton();
 
-		// getContentPane().setLayout(new java.awt.GridBagLayout());
+		appointmentListPanel.setLayout(new java.awt.GridBagLayout());
 
-		jPanel2.setLayout(new java.awt.GridBagLayout());
-		jPanel3.setLayout(new java.awt.GridBagLayout());
-
-		jPanel3.setBorder(new javax.swing.border.TitledBorder(Resource
+		appointmentListPanel.setBorder(new TitledBorder(Resource
 				.getResourceString("apptlist")));
-		jScrollPane1.setBorder(null);
-		jScrollPane1.setViewport(jScrollPane1.getViewport());
-		apptTable.setBorder(new javax.swing.border.LineBorder(
-				new java.awt.Color(0, 0, 0)));
-		apptTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
-		// apptTable.setGridColor(java.awt.Color.blue);
+
+		apptTable.setBorder(new LineBorder(new java.awt.Color(0, 0, 0)));
+		apptTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+		apptTable
+				.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		apptTable.setPreferredSize(new java.awt.Dimension(700, 500));
-		jScrollPane1.setViewportView(apptTable);
 
-		GridBagConstraints gridBagConstraints2 = new java.awt.GridBagConstraints();
-		gridBagConstraints2.gridx = 0;
-		gridBagConstraints2.gridy = 1;
-		gridBagConstraints2.fill = java.awt.GridBagConstraints.BOTH;
-		gridBagConstraints2.weightx = 1.0;
-		gridBagConstraints2.weighty = 10.0;
-		gridBagConstraints2.insets = new java.awt.Insets(2, 2, 2, 2);
-		jPanel1.setLayout(new java.awt.GridLayout(0, 1));
+		apptTableScrollPane.setBorder(null);
+		apptTableScrollPane.setViewport(apptTableScrollPane.getViewport());
+		apptTableScrollPane.setViewportView(apptTable);
 
-		add.setIcon(new javax.swing.ImageIcon(getClass().getResource(
+		buttonPanel.setLayout(new java.awt.GridLayout(0, 1));
+
+		addButton.setIcon(new ImageIcon(getClass().getResource(
 				"/resource/Edit16.gif")));
-		ResourceHelper.setText(add, "EditNew");
-		add.addActionListener(new java.awt.event.ActionListener() {
+		ResourceHelper.setText(addButton, "EditNew");
+		addButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				addActionPerformed(evt);
+				apptTable.clearSelection();
+				appointmentPanel.showapp(-1, null);
 			}
 		});
 
-		jPanel1.add(add);
+		buttonPanel.add(addButton);
+		buttonPanel.add(getCopyButton());
 
-		jPanel1.add(getCopyButton(), null);
-
-		del.setIcon(new javax.swing.ImageIcon(getClass().getResource(
+		deleteButton.setIcon(new ImageIcon(getClass().getResource(
 				"/resource/Delete16.gif")));
-		ResourceHelper.setText(del, "Delete");
-		del.setToolTipText(Resource.getResourceString("del_tip"));
+		ResourceHelper.setText(deleteButton, "Delete");
+		deleteButton.setToolTipText(Resource.getResourceString("del_tip"));
 
 		ActionListener alDel = new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				delActionPerformed(evt);
+				int[] keys = getSelectedKeys();
+				AppointmentModel model = AppointmentModel.getReference();
+				for (int i = 0; i < keys.length; ++i)
+					model.delAppt(keys[i]);
+				apptTable.clearSelection();
 			}
 		};
-		del.addActionListener(alDel);
+		deleteButton.addActionListener(alDel);
+		buttonPanel.add(deleteButton);
 
-		jPanel1.add(del);
-
-		delone.setIcon(new javax.swing.ImageIcon(getClass().getResource(
+		deleteOneOnlyButton.setIcon(new ImageIcon(getClass().getResource(
 				"/resource/Delete16.gif")));
-		ResourceHelper.setText(delone, "Delete_One_Only");
-		delone.setToolTipText(Resource.getResourceString("doo_tip"));
+		ResourceHelper.setText(deleteOneOnlyButton, "Delete_One_Only");
+		deleteOneOnlyButton.setToolTipText(Resource
+				.getResourceString("doo_tip"));
 		ActionListener alDelOne = new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				deloneActionPerformed(evt);
+				int[] keys = getSelectedKeys();
+				AppointmentModel model = AppointmentModel.getReference();
+				for (int i = 0; i < keys.length; ++i)
+					model.delOneOnly(keys[i], cal_.getTime());
+				apptTable.clearSelection();
 			}
 		};
-		delone.addActionListener(alDelOne);
-
-		GridBagConstraints gridBagConstraints3 = new java.awt.GridBagConstraints();
-		gridBagConstraints3.gridx = 0;
-		gridBagConstraints3.gridy = 2;
-		gridBagConstraints3.fill = java.awt.GridBagConstraints.BOTH;
-		gridBagConstraints3.insets = new java.awt.Insets(2, 2, 2, 2);
-
-		gridBagConstraints22.fill = java.awt.GridBagConstraints.BOTH;
-		gridBagConstraints22.gridx = 0;
-		gridBagConstraints22.gridy = 0;
-		gridBagConstraints22.weightx = 1.0;
-		gridBagConstraints22.insets = new java.awt.Insets(2, 2, 2, 2);
-		apptTable
-				.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		deleteOneOnlyButton.addActionListener(alDelOne);
 
 		ActionListener alMoveToFollowingDay = new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				onMoveToFollowingDay(AppointmentListView.this,
-						getSelectedAppointments());
+				onMoveToFollowingDay(getSelectedAppointments());
 			}
 		};
 
 		ActionListener alChangeDate = new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				onChangeDate(AppointmentListView.this,
-						getSelectedAppointments());
+				onChangeDate(getSelectedAppointments());
 			}
 		};
 
@@ -696,55 +554,160 @@ public class AppointmentListView extends DockableView implements
 						"Move_To_Following_Day"),
 				new PopupMenuHelper.Entry(alChangeDate, "changedate"), });
 
-		jPanel3.add(getDateCB(), gridBagConstraints22);
-		jPanel3.add(jScrollPane1, gridBagConstraints2);
-		jPanel1.add(delone, delone.getName());
-		jPanel3.add(jPanel1, gridBagConstraints3);
-		jPanel1.add(getReminderButton(), null);
-		
+		buttonPanel.add(getReminderButton(), null);
+		buttonPanel.add(deleteOneOnlyButton, deleteOneOnlyButton.getName());
 
-		GridBagConstraints gridBagConstraints21 = new GridBagConstraints();
-		GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
+		appointmentListPanel.add(getDateCB(), GridBagConstraintsFactory.create(
+				0, 0, GridBagConstraints.BOTH, 1.0, 0.0));
+		appointmentListPanel.add(apptTableScrollPane, GridBagConstraintsFactory
+				.create(0, 1, GridBagConstraints.BOTH, 1.0, 10.0));
+		appointmentListPanel.add(buttonPanel, GridBagConstraintsFactory.create(
+				0, 2));
+
 		setLayout(new GridBagLayout());
-		gridBagConstraints11.gridx = 0;
-		gridBagConstraints11.gridy = 0;
-		gridBagConstraints11.gridwidth = 1;
-		gridBagConstraints11.gridheight = 1;
-		gridBagConstraints11.weighty = 1.0D;
-		gridBagConstraints11.weightx = 1.0D;
-		gridBagConstraints11.fill = java.awt.GridBagConstraints.BOTH;
-		gridBagConstraints21.gridx = 1;
-		gridBagConstraints21.gridy = 0;
-		gridBagConstraints21.gridheight = 1;
-		gridBagConstraints21.insets = new java.awt.Insets(0, 0, 0, 0);
-		gridBagConstraints21.fill = java.awt.GridBagConstraints.BOTH;
-		add(jPanel2, gridBagConstraints11);
-		add(jPanel3, gridBagConstraints21);
-
-	}// GEN-END:initComponents
-
-	// resize table based on row count
-	private void resize() {
-		int row = apptTable.getRowCount();
-		apptTable.setPreferredSize(new Dimension(150, row * 16));
+		
+		add(appointmentPanel, GridBagConstraintsFactory.create(0, 0,
+				GridBagConstraints.BOTH, 1.0, 1.0));
+		add(appointmentListPanel, GridBagConstraintsFactory.create(1, 0, GridBagConstraints.BOTH));
 
 	}
 
 	
+	@Override
+	/**
+	 * reload the UI from the model
+	 */
+	public void refresh() {
 
+		TableSorter tm = (TableSorter) apptTable.getModel();
+
+		// clear all table rows
+		tm.setRowCount(0);
+		tm.tableChanged(new TableModelEvent(tm));
+
+		String priv = Prefs.getPref(PrefName.SHOWPRIVATE);
+		String pub = Prefs.getPref(PrefName.SHOWPUBLIC);
+
+		try {
+
+			List<Integer> alist_ = AppointmentModel.getReference().getAppts(
+					cal_.getTime());
+			if (alist_ != null) {
+				Iterator<Integer> it = alist_.iterator();
+				while (it.hasNext()) {
+					Integer key = it.next();
+					Appointment ap = AppointmentModel.getReference().getAppt(
+							key.intValue());
+
+					if (ap.getPrivate() && !priv.equals("true"))
+						continue;
+					if (!ap.getPrivate() && !pub.equals("true"))
+						continue;
+
+					Object[] ro = new Object[3];
+					ro[0] = ap.getText();
+
+					// just get time
+					Date d = ap.getDate();
+					GregorianCalendar cal = new GregorianCalendar();
+					cal.setTime(d);
+					cal.set(2000, 1, 1);
+
+					// use second field to tell UI if the appt is untimed
+					if (AppointmentModel.isNote(ap))
+						cal.set(Calendar.SECOND, 0);
+					else
+						cal.set(Calendar.SECOND, 1);
+
+					ro[1] = cal.getTime();
+					ro[2] = key;
+
+					tm.addRow(ro);
+					tm.tableChanged(new TableModelEvent(tm));
+				}
+			}
+
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
+		}
+
+		// resize the table based on new row count
+		int row = apptTable.getRowCount();
+		apptTable.setPreferredSize(new Dimension(150, row * 16));
+
+		// apply default sort to the table
+		if (!tm.isSorted())
+			tm.sortByColumn(1);
+		else
+			tm.sort();
+	}
+
+	/**
+	 * Show an appointment in the list and editor
+	 * 
+	 * @param key
+	 *            the appt key
+	 */
+	public void showApp(int key) {
+		apptTable.clearSelection();
+		TableSorter tm = (TableSorter) apptTable.getModel();
+		int rows = tm.getRowCount();
+		for (int i = 0; i < rows; ++i) {
+			Integer k = (Integer) tm.getValueAt(i, 2);
+			if (key == k.intValue()) {
+				apptTable.getSelectionModel().setSelectionInterval(i, i);
+			}
+		}
+		appointmentPanel.showapp(key, null);
+	}
+
+	/**
+	 * set the UI to show appts for a particular date.
+	 * 
+	 * @param year
+	 *            the year
+	 * @param month
+	 *            the month
+	 * @param day
+	 *            the day
+	 */
 	private void showDate(int year, int month, int day) {
 		cal_ = new GregorianCalendar(year, month, day);
 		getDateCB().setCalendar(cal_);
-		date_ = cal_.getTime();
 		Date d = cal_.getTime();
-		title_ = Resource.getResourceString("Appointment_Editor_for_")
+		title_ = Resource.getResourceString("Appointment_Editor_for_") + " "
 				+ DateFormat.getDateInstance(DateFormat.SHORT).format(d);
 
 		// clear all rows
-		deleteAll();
-		apanel_.setDate(year, month, day);
-		apanel_.showapp(-1, null);
+		TableSorter tm = (TableSorter) apptTable.getModel();
+		tm.setRowCount(0);
+		tm.tableChanged(new TableModelEvent(tm));
+		appointmentPanel.setDate(year, month, day);
+		appointmentPanel.showapp(-1, null);
 
 		refresh();
+	}
+
+	/**
+	 * react to ListSelectionEvents
+	 */
+	public void valueChanged(ListSelectionEvent e) {
+		// Ignore extra messages.
+		if (e.getValueIsAdjusting())
+			return;
+
+		ListSelectionModel lsm = (ListSelectionModel) e.getSource();
+		if (lsm.isSelectionEmpty()) {
+			appointmentPanel.showapp(-1, null);
+			return;
+		}
+		int row = lsm.getMinSelectionIndex();
+		if (row == -1)
+			return;
+		TableSorter tm = (TableSorter) apptTable.getModel();
+		Integer apptkey = (Integer) tm.getValueAt(row, 2);
+
+		appointmentPanel.showapp(apptkey.intValue(), null);
+
 	}
 }

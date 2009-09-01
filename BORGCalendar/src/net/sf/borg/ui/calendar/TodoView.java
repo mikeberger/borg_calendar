@@ -218,8 +218,7 @@ public class TodoView extends DockableView implements Prefs.Listener {
 	private ActionListener alChangeDate = new java.awt.event.ActionListener() {
 		@SuppressWarnings("unchecked")
 		public void actionPerformed(java.awt.event.ActionEvent evt) {
-			AppointmentListView.onChangeDate(TodoView.this,
-					getSelectedItems(true));
+			AppointmentListView.onChangeDate(getSelectedItems(true));
 		}
 	};
 
@@ -238,8 +237,7 @@ public class TodoView extends DockableView implements Prefs.Listener {
 	private ActionListener alMoveToFollowingDay = new java.awt.event.ActionListener() {
 		@SuppressWarnings("unchecked")
 		public void actionPerformed(java.awt.event.ActionEvent evt) {
-			AppointmentListView.onMoveToFollowingDay(TodoView.this,
-					getSelectedItems(true));
+			AppointmentListView.onMoveToFollowingDay(getSelectedItems(true));
 		}
 	};
 
