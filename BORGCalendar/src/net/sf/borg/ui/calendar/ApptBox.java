@@ -68,7 +68,7 @@ import net.sf.borg.ui.MultiView;
 
 // ApptDayBox holds the logical information needs to determine
 // how an appointment box should be drawn in a day grid
-class ApptBox implements Draggable {
+class ApptBox extends Box implements Box.Draggable {
 
 	// compare boxes by number of overlaps
 	private static class boxcompare implements Comparator<ApptBox> {
@@ -280,10 +280,6 @@ class ApptBox implements Draggable {
 
 	private double bottom; // fraction of the available grid height at which
 
-	// the bottom side of the box should be drawn
-
-	private Rectangle bounds, clip;
-
 	// one at a particular time
 
 	private Color boxcolor[] = null;
@@ -293,8 +289,6 @@ class ApptBox implements Draggable {
 	private Date date; // date being displayed - not necessarily date of
 
 	private boolean isPlaced = false; // whether or not this box has been
-
-	private boolean isSelected = false;
 
 	// during the layout process
 	private double left; // fraction of the available grid width at which
@@ -313,11 +307,11 @@ class ApptBox implements Draggable {
 	private boolean hasLink = false;
 
 	public ApptBox(Date d, Appointment ap, Rectangle bounds, Rectangle clip) {
+		
+		super(bounds,clip);
 
 		appt = ap;
 		date = d;
-		this.bounds = bounds;
-		this.clip = clip;
 
 		String iconname = Prefs.getPref(PrefName.UCS_MARKER);
 		String use_marker = Prefs.getPref(PrefName.UCS_MARKTODO);
@@ -395,7 +389,7 @@ class ApptBox implements Draggable {
 						* radius);
 		g2.setColor(getBorderColor(boxnum));
 		g2.setStroke(highlight);
-		if (isSelected()) {
+		if (isSelected) {
 			g2.setColor(Color.CYAN);
 		}
 		g2.drawRoundRect(bounds.x + (int) hlthickness, bounds.y
@@ -462,7 +456,7 @@ class ApptBox implements Draggable {
 		g2.setColor(Color.black);
 	}
 
-	public void edit() {
+	public void onClick() {
 		GregorianCalendar cal = new GregorianCalendar();
 		cal.setTime(date);
 		AppointmentListView ag = new AppointmentListView(
@@ -471,10 +465,6 @@ class ApptBox implements Draggable {
 		MultiView.getMainView().addView(ag);
 		ag.showApp(appt.getKey());
 
-	}
-
-	public Rectangle getBounds() {
-		return bounds;
 	}
 
 	public Date getDate() {
@@ -577,10 +567,6 @@ class ApptBox implements Draggable {
 		this.boxnum = boxnum;
 	}
 
-	public void setSelected(boolean isSelected) {
-		this.isSelected = isSelected;
-	}
-
 	private void drawWrappedString(Graphics2D g2, String tx, int x, int y, int w) {
 		int fontDesent = g2.getFontMetrics().getDescent();
 		HashMap<TextAttribute, Font> hm = new HashMap<TextAttribute, Font>();
@@ -659,20 +645,12 @@ class ApptBox implements Draggable {
 		return isPlaced;
 	}
 
-	private boolean isSelected() {
-		return isSelected;
-	}
-
 	private boolean isTodo() {
 		return appt.getTodo();
 	}
 
 	private void setBottomAdjustment(double bottom) {
 		this.bottom = bottom;
-	}
-
-	public void setBounds(Rectangle bounds) {
-		this.bounds = bounds;
 	}
 
 	private void setLeftAdjustment(double left) {
@@ -705,7 +683,7 @@ class ApptBox implements Draggable {
 					.getResourceString("Edit")));
 			mnuitm.addActionListener(new ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					edit();
+					onClick();
 				}
 			});
 			popmenu.add(mnuitm = new JMenuItem(Resource

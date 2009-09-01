@@ -234,7 +234,7 @@ public class YearPanel extends JPanel implements Printable {
 								if (cal.get(Calendar.DATE) == 1) {
 									boxes.add(new ButtonBox(cal.getTime(), dfm.format(cal.getTime()), null, new Rectangle(2,
 											rowtop, monthwidth - 4, fontHeight), new Rectangle(0, rowtop, monthwidth, rowheight)) {
-										public void edit() {
+										public void onClick() {
 											MultiView.getMainView().setView(ViewType.MONTH);
 											GregorianCalendar gc = new GregorianCalendar();
 											gc.setTime(getDate());
@@ -280,7 +280,7 @@ public class YearPanel extends JPanel implements Printable {
 
 								boxes.add(new ButtonBox(cal.getTime(), datetext, null, new Rectangle(colleft + 2, rowtop,
 										colwidth - 4, fontHeight), new Rectangle(colleft, rowtop, colwidth, rowheight), bbg) {
-									public void edit() {
+									public void onClick() {
 										MultiView.getMainView().setView(ViewType.DAY);
 										GregorianCalendar gc = new GregorianCalendar();
 										gc.setTime(getDate());

@@ -21,59 +21,111 @@ package net.sf.borg.ui.calendar;
 import java.awt.Component;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.util.Date;
 
 import javax.swing.JPopupMenu;
 
 /**
  * Interface for objects that appear as boxes on the day/week/month UIs
  */
-public interface Box {
+abstract public class Box {
+
+	/**
+	 * Interface implemented by Boxes that can be dragged
+	 */
+	interface Draggable {
+
+		/**
+		 * called when object has been moved
+		 * 
+		 * @param realtime
+		 *            time of day in minutes to which the object has been
+		 *            dragged
+		 * @param d
+		 *            date that the object was dragged to
+		 * @throws Exception
+		 */
+		public abstract void move(int realtime, Date d) throws Exception;
+	}
+
+	protected Rectangle bounds, clip;
+
+	protected boolean isSelected = false;
+	
+	protected String text;
+	
+	/**
+	 * constructor.
+	 * 
+	 * @param bounds box bounds
+	 * @param clip box clip
+	 */
+	public Box(Rectangle bounds, Rectangle clip) {
+		this.bounds = bounds;
+		this.clip = clip;
+	}
 
 	/**
 	 * delete the box
 	 */
-    public abstract void delete();
+	public void delete() {
+	}
 
-    /**
-     * draw the box
-     * @param g2 the Graphics2D to draw in
-     * @param component that contains the Graphics2D
-     */
-    public abstract void draw(Graphics2D g2, Component comp);
+	/**
+	 * draw the box
+	 * 
+	 * @param g2
+	 *            the Graphics2D to draw in
+	 * @param component
+	 *            that contains the Graphics2D
+	 */
+	public abstract void draw(Graphics2D g2, Component comp);
 
-    /**
-     * edit the box
-     */
-    public abstract void edit();
+	/**
+	 * action called when the box is clicked
+	 */
+	public abstract void onClick();
 
-    /**
-     * get the box bounds
-     * @return the box bounds
-     */
-    public abstract Rectangle getBounds();
+	/**
+	 * get bounds
+	 * @return bounds
+	 */
+	public Rectangle getBounds() {
+		return bounds;
+	}
 
-    /**
-     * get the box popup menu
-     * @return the popup menu
-     */
-    public abstract JPopupMenu getMenu();
+	/**
+	 * get the box popup menu
+	 * 
+	 * @return the popup menu
+	 */
+	public JPopupMenu getMenu() {
+		return null;
+	}
 
-    /**
-     * get the box text
-     * @return the text
-     */
-    public abstract String getText();
+	/**
+	 * get the box text
+	 * 
+	 * @return the text
+	 */
+	public String getText() {
+		return text;
+	}
 
-    /**
-     * set the box bounds (resize)
-     * @param bounds the new bounds
-     */
-    public abstract void setBounds(Rectangle bounds);
-    
-    /**
-     * set the boxes selected status
-     * @param isSelected true is selected
-     */
-    public abstract void setSelected(boolean isSelected);
+	/**
+	 * set bounds
+	 * @param bounds new bounds
+	 */
+	public void setBounds(Rectangle bounds) {
+		this.bounds = bounds;
+	}
+
+	/**
+	 * set selected
+	 * @param isSelected new selected value
+	 */
+	public void setSelected(boolean isSelected) {
+		this.isSelected = isSelected;
+	}
 
 }

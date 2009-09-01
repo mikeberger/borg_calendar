@@ -329,7 +329,7 @@ public class MonthPanel extends JPanel implements Printable {
 										colwidth - 4, smfontHeight),
 								new Rectangle(colleft, rowtop, colwidth,
 										rowheight)) {
-							public void edit() {
+							public void onClick() {
 								MultiView.getMainView().setView(ViewType.DAY);
 								GregorianCalendar gc = new GregorianCalendar();
 								gc.setTime(getDate());
@@ -369,7 +369,7 @@ public class MonthPanel extends JPanel implements Printable {
 									weekbutwidth, rowheight), new Rectangle(
 									(int) pageWidth - weekbutwidth, rowtop,
 									weekbutwidth, rowheight)) {
-						public void edit() {
+						public void onClick() {
 							MultiView.getMainView().setView(ViewType.WEEK);
 							GregorianCalendar gc = new GregorianCalendar();
 							gc.setTime(getDate());

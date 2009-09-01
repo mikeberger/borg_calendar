@@ -66,7 +66,7 @@ import net.sf.borg.ui.task.TaskView;
 
 // ApptDayBox holds the logical information needs to determine
 // how an appointment box should be drawn in a day grid
-public class NoteBox implements Draggable {
+public class NoteBox extends Box implements Box.Draggable {
 
 	private Icon todoIcon = null;
 
@@ -74,20 +74,15 @@ public class NoteBox implements Draggable {
 
 	private CalendarEntity bean = null;
 
-	private Rectangle bounds, clip;
-
 	private Date date; // date being displayed - not necessarily date of
-
-	private boolean isSelected = false;
 
 	private boolean hasLink = false;
 
 	@SuppressWarnings("unchecked")
 	public NoteBox(Date d, CalendarEntity ap, Rectangle bounds, Rectangle clip) {
+		super(bounds,clip);
 		bean = ap;
 		date = d;
-		this.bounds = bounds;
-		this.clip = clip;
 
 		String iconname = Prefs.getPref(PrefName.UCS_MARKER);
 		String use_marker = Prefs.getPref(PrefName.UCS_MARKTODO);
@@ -229,7 +224,7 @@ public class NoteBox implements Draggable {
 	 * 
 	 * @see net.sf.borg.ui.calendar.Box#edit()
 	 */
-	public void edit() {
+	public void onClick() {
 		if (bean instanceof Appointment) {
 			GregorianCalendar cal = new GregorianCalendar();
 			cal.setTime(date);
@@ -272,37 +267,10 @@ public class NoteBox implements Draggable {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see net.sf.borg.ui.calendar.Box#getBounds()
-	 */
-	public Rectangle getBounds() {
-		return bounds;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see net.sf.borg.ui.calendar.Box#getText()
 	 */
 	public String getText() {
 		return bean.getText();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.sf.borg.ui.calendar.Box#setBounds(java.awt.Rectangle)
-	 */
-	public void setBounds(Rectangle bounds) {
-		this.bounds = bounds;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.sf.borg.ui.calendar.Box#setSelected(boolean)
-	 */
-	public void setSelected(boolean isSelected) {
-		this.isSelected = isSelected;
 	}
 
 	private String getTextColor() {
@@ -334,7 +302,7 @@ public class NoteBox implements Draggable {
 					.getResourceString("Edit")));
 			mnuitm.addActionListener(new ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					edit();
+					onClick();
 				}
 			});
 			popmenu.add(mnuitm = new JMenuItem(Resource

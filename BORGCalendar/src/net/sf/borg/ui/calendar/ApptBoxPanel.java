@@ -62,6 +62,103 @@ abstract class ApptBoxPanel extends JPanel {
 		public DateZone zone = null;
 	}
 
+	private class DragNewBox extends Box {
+
+		private static final int radius = 5;
+
+		JPopupMenu pop = null;
+		public DragNewBox(Rectangle bounds, Rectangle clip) {
+			super(bounds, clip);
+		}
+
+		private void addAppt() {
+			String text = JOptionPane.showInputDialog("", Resource
+					.getResourceString("Please_enter_some_appointment_text"));
+			if (text == null)
+				return;
+			Rectangle r = getBounds();
+			int topmins = realMins((r.y - resizeYMin)
+					/ (resizeYMax - resizeYMin));
+			int botmins = realMins((r.y - resizeYMin + r.height)
+					/ (resizeYMax - resizeYMin));
+			draggedZone.createAppt(topmins, botmins, text);
+			draggedZone = null;
+			removeDragNewBox();
+			repaint();
+		}
+
+		public void draw(Graphics2D g2, Component comp) {
+			Stroke stroke = g2.getStroke();
+			g2.setStroke(thicker);
+			g2.setColor(Color.GREEN);
+			if (isSelected == true) {
+				g2.setColor(Color.CYAN);
+			}
+			Rectangle r = getBounds();
+			g2.drawRoundRect(r.x, r.y, r.width, r.height, radius * radius,
+					radius * radius);
+			g2.setStroke(stroke);
+			double top = (r.y - resizeYMin) / (resizeYMax - resizeYMin);
+			double bot = (r.y - resizeYMin + r.height)
+					/ (resizeYMax - resizeYMin);
+			g2.setColor(new Color(50, 50, 50));
+			Rectangle2D bb = g2.getFont().getStringBounds("00:00",
+					g2.getFontRenderContext());
+			g2.fillRect(r.x + 2, r.y - (int) bb.getHeight(), (int) bb
+					.getWidth(), (int) bb.getHeight());
+			g2.fillRect(r.x + 2, r.y + r.height - (int) bb.getHeight(),
+					(int) bb.getWidth(), (int) bb.getHeight());
+			g2.setColor(Color.WHITE);
+			g2.drawString(getTimeString(top), r.x + 2, r.y - 2);
+			g2.drawString(getTimeString(bot), r.x + 2, r.y + r.height - 2);
+
+		}
+
+		public void onClick() {
+			addAppt();
+		}
+
+		public JPopupMenu getMenu() {
+			if (pop == null) {
+				JMenuItem mnuitm = null;
+				pop = new JPopupMenu();
+				pop.add(mnuitm = new JMenuItem(Resource
+						.getResourceString("Add_New")));
+				mnuitm.addActionListener(new ActionListener() {
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						addAppt();
+					}
+				});
+			}
+			return pop;
+		}
+
+	}
+
+	private class MyComponentListener implements ComponentListener {
+
+		public void componentHidden(ComponentEvent arg0) {
+			// TODO Auto-generated method stub
+
+		}
+
+		public void componentMoved(ComponentEvent e) {
+			// TODO Auto-generated method stub
+
+		}
+
+		public void componentResized(ComponentEvent e) {
+			ApptBoxPanel p = (ApptBoxPanel) e.getComponent();
+			p.refresh();
+		}
+
+		public void componentShown(ComponentEvent e) {
+			// TODO Auto-generated method stub
+
+		}
+
+	}
+
 	private class MyMouseListener implements MouseListener, MouseMotionListener {
 
 		private boolean resizeTop = true;
@@ -97,7 +194,7 @@ abstract class ApptBoxPanel extends JPanel {
 			if (b == null)
 				return;
 			else if (b.box != null)
-				b.box.edit();
+				b.box.onClick();
 			else if (b.zone != null)
 				b.zone.edit();
 
@@ -177,7 +274,7 @@ abstract class ApptBoxPanel extends JPanel {
 
 			if (b != null && (b.onTopBorder || b.onBottomBorder)) {
 				panel.setCursor(new Cursor(Cursor.N_RESIZE_CURSOR));
-			} else if (b != null && b.box != null && b.box instanceof Draggable) {
+			} else if (b != null && b.box != null && b.box instanceof Box.Draggable) {
 				panel.setCursor(new Cursor(Cursor.MOVE_CURSOR));
 			} else {
 				panel.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -219,8 +316,8 @@ abstract class ApptBoxPanel extends JPanel {
 					}
 				}
 				evt.getComponent().repaint();
-			} else if (b != null && b.box != null && b.box instanceof Draggable) {
-				draggedBox = (Draggable) b.box;
+			} else if (b != null && b.box != null && b.box instanceof Box.Draggable) {
+				draggedBox = b.box;
 				setResizeBox(b.box.getBounds().x, b.box.getBounds().y, b.box
 						.getBounds().width, b.box.getBounds().height);
 				evt.getComponent().repaint();
@@ -234,7 +331,7 @@ abstract class ApptBoxPanel extends JPanel {
 			JPanel panel = (JPanel) evt.getComponent();
 			if (b != null && (b.onTopBorder || b.onBottomBorder)) {
 				panel.setCursor(new Cursor(Cursor.N_RESIZE_CURSOR));
-			} else if (b != null && b.box != null && b.box instanceof Draggable) {
+			} else if (b != null && b.box != null && b.box instanceof Box.Draggable) {
 				panel.setCursor(new Cursor(Cursor.MOVE_CURSOR));
 			} else {
 				panel.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -270,10 +367,10 @@ abstract class ApptBoxPanel extends JPanel {
 				try {
 					if (isInsideResizeArea(resizeRectangle.y, resizeRectangle.y
 							+ resizeRectangle.height)) {
-						draggedBox.move(realMins((y - resizeYMin)
+						((Box.Draggable)draggedBox).move(realMins((y - resizeYMin)
 								/ (resizeYMax - resizeYMin)), d);
 					} else {
-						draggedBox.move(0, d);
+						((Box.Draggable)draggedBox).move(0, d);
 					}
 				} catch (Exception e) {
 					Errmsg.errmsg(e);
@@ -288,125 +385,29 @@ abstract class ApptBoxPanel extends JPanel {
 
 		}
 	}
-
-	private class DragNewBox implements Box {
-
-		JPopupMenu pop = null;
-		Rectangle rect = new Rectangle();
-		private static final int radius = 5;
-		private boolean selected = false;
-
-		public void delete() {
-			// TODO Auto-generated method stub
-
-		}
-
-		public void draw(Graphics2D g2, Component comp) {
-			Stroke stroke = g2.getStroke();
-			g2.setStroke(thicker);
-			g2.setColor(Color.GREEN);
-			if (isSelected() == true) {
-				g2.setColor(Color.CYAN);
-			}
-			Rectangle r = getBounds();
-			g2.drawRoundRect(r.x, r.y, r.width, r.height, radius * radius,
-					radius * radius);
-			g2.setStroke(stroke);
-			double top = (r.y - resizeYMin) / (resizeYMax - resizeYMin);
-			double bot = (r.y - resizeYMin + r.height)
-					/ (resizeYMax - resizeYMin);
-			g2.setColor(new Color(50, 50, 50));
-			Rectangle2D bb = g2.getFont().getStringBounds("00:00",
-					g2.getFontRenderContext());
-			g2.fillRect(r.x + 2, r.y - (int) bb.getHeight(), (int) bb
-					.getWidth(), (int) bb.getHeight());
-			g2.fillRect(r.x + 2, r.y + r.height - (int) bb.getHeight(),
-					(int) bb.getWidth(), (int) bb.getHeight());
-			g2.setColor(Color.WHITE);
-			g2.drawString(getTimeString(top), r.x + 2, r.y - 2);
-			g2.drawString(getTimeString(bot), r.x + 2, r.y + r.height - 2);
-
-		}
-
-		public void edit() {
-			addAppt();
-		}
-
-		public Rectangle getBounds() {
-			return rect;
-		}
-
-		public JPopupMenu getMenu() {
-			if (pop == null) {
-				JMenuItem mnuitm = null;
-				pop = new JPopupMenu();
-				pop.add(mnuitm = new JMenuItem(Resource
-						.getResourceString("Add_New")));
-				mnuitm.addActionListener(new ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						addAppt();
-					}
-				});
-			}
-			return pop;
-		}
-
-		private void addAppt() {
-			String text = JOptionPane
-					.showInputDialog(
-							"",
-							Resource
-									.getResourceString("Please_enter_some_appointment_text"));
-			if (text == null)
-				return;
-			Rectangle r = getBounds();
-			int topmins = realMins((r.y - resizeYMin)
-					/ (resizeYMax - resizeYMin));
-			int botmins = realMins((r.y - resizeYMin + r.height)
-					/ (resizeYMax - resizeYMin));
-			draggedZone.createAppt(topmins, botmins, text);
-			draggedZone = null;
-			removeDragNewBox();
-			repaint();
-		}
-
-		public String getText() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		public void setBounds(Rectangle bounds) {
-			rect.setBounds(bounds);
-		}
-
-		public void setSelected(boolean isSelected) {
-			selected = isSelected;
-		}
-
-		public boolean isSelected() {
-			return selected;
-		}
-
-	}
-
+	
 	final static private float hlthickness = 2.0f;
 
 	final static private BasicStroke highlight = new BasicStroke(hlthickness);
 
-	private int realMins(double y_fraction) {
-		double realtime = startmin + (endmin - startmin) * y_fraction;
-		// round it because the double math is causing errors when later
-		// converting to int
-		int min = 5 * (int) Math.round(realtime / 5);
-		return min;
-	}
+
+	private static SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
 
 	// final static private BasicStroke regular = new BasicStroke(1.0f);
 	final static private BasicStroke thicker = new BasicStroke(4.0f);
 
+	// Graphics2D is translated
+
 	final static private int translation = -10; // to adjust, since since
 
-	// Graphics2D is translated
+	public static boolean isStrike(CalendarEntity appt, Date date) {
+		if ((appt.getColor() != null && appt.getColor().equals("strike"))
+				|| (appt.getTodo() && !(appt.getNextTodo() == null || !appt
+						.getNextTodo().after(date)))) {
+			return (true);
+		}
+		return false;
+	}
 
 	protected Collection<Object> boxes = new ArrayList<Object>();
 
@@ -414,9 +415,7 @@ abstract class ApptBoxPanel extends JPanel {
 
 	private int draggedAnchor = -1;
 
-	private Draggable draggedBox = null;
-
-	private ApptBox resizedBox = null;
+	private Box draggedBox = null;
 
 	private DateZone draggedZone = null;
 
@@ -424,49 +423,27 @@ abstract class ApptBoxPanel extends JPanel {
 
 	private boolean dragStarted = false;
 
-	private Rectangle resizeRectangle = null;
+	private double dragXMax = 0;;
 
-	private double resizeYMax = 0;;
-
-	private double resizeYMin = 0;
+	private double dragXMin = 0;
 
 	private double dragYMax = 0;;
 
 	private double dragYMin = 0;
 
-	private double dragXMax = 0;;
+	protected double endmin = 0;;
 
-	private double dragXMin = 0;
+	private ApptBox resizedBox = null;
+
+	private Rectangle resizeRectangle = null;
+
+	private double resizeYMax = 0;
+
+	private double resizeYMin = 0;
 
 	protected double startmin = 0;
 
-	protected double endmin = 0;
-
 	private Collection<Object> zones = new ArrayList<Object>();
-
-	private class MyComponentListener implements ComponentListener {
-
-		public void componentHidden(ComponentEvent arg0) {
-			// TODO Auto-generated method stub
-
-		}
-
-		public void componentMoved(ComponentEvent e) {
-			// TODO Auto-generated method stub
-
-		}
-
-		public void componentResized(ComponentEvent e) {
-			ApptBoxPanel p = (ApptBoxPanel) e.getComponent();
-			p.refresh();
-		}
-
-		public void componentShown(ComponentEvent e) {
-			// TODO Auto-generated method stub
-
-		}
-
-	}
 
 	public ApptBoxPanel() {
 
@@ -491,17 +468,22 @@ abstract class ApptBoxPanel extends JPanel {
 		boxes.add(b);
 	}
 
+	public void addDateZone(Date d, double sm, double em, Rectangle bounds) {
+		DateZone b = new DateZone(d, bounds);
+		zones.add(b);
+	}
+
 	public Box addNoteBox(Date d, CalendarEntity ap, Rectangle bounds,
 			Rectangle clip) {
 
 		if (Prefs.getBoolPref(PrefName.HIDESTRIKETHROUGH)
 				&& ApptBoxPanel.isStrike(ap, d))
 			return null;
-		
+
 		Box b;
 		if (ap instanceof LabelEntity) {
 			// phony holiday appt added by Day object
-			b = new LabelBox(ap, bounds, clip);
+			b = new LabelBox((LabelEntity)ap, bounds, clip);
 		} else {
 			b = new NoteBox(d, ap, bounds, clip);
 		}
@@ -509,13 +491,6 @@ abstract class ApptBoxPanel extends JPanel {
 
 		return b;
 	}
-
-	public void addDateZone(Date d, double sm, double em, Rectangle bounds) {
-		DateZone b = new DateZone(d, bounds);
-		zones.add(b);
-	}
-
-	public abstract void refresh();
 
 	public void clearBoxes() {
 		boxes.clear();
@@ -568,59 +543,6 @@ abstract class ApptBoxPanel extends JPanel {
 			dragNewBox.draw(g2, this);
 		}
 		g2.setColor(Color.black);
-
-	}
-
-	private boolean isInsideResizeArea(int top, int bot) {
-		if (top >= resizeYMin && bot <= resizeYMax)
-			return true;
-		return false;
-
-	}
-
-	public void removeDragNewBox() {
-		dragNewBox = null;
-		draggedAnchor = -1;
-	}
-
-	public void removeResizeBox() {
-		resizeRectangle = null;
-	}
-
-	public void setDragNewBox(double x, double y, double w, double h) {
-
-		if (dragNewBox == null)
-			dragNewBox = new DragNewBox();
-		Rectangle bounds = new Rectangle();
-		bounds.x = (int) x;
-		bounds.y = (int) y;
-		bounds.height = (int) h;
-		bounds.width = (int) w;
-		dragNewBox.setBounds(bounds);
-
-	}
-
-	public void setResizeBounds(int ymin, int ymax, int xmin, int xmax) {
-		resizeYMin = ymin;
-		resizeYMax = ymax;
-		// resizeXMin = xmin;
-		// resizeXMax = xmax;
-	}
-
-	public void setDragBounds(int ymin, int ymax, int xmin, int xmax) {
-		dragYMin = ymin;
-		dragYMax = ymax;
-		dragXMin = xmin;
-		dragXMax = xmax;
-	}
-
-	public void setResizeBox(double x, double y, double w, double h) {
-		if (resizeRectangle == null)
-			resizeRectangle = new Rectangle();
-		resizeRectangle.x = (int) x;
-		resizeRectangle.y = (int) y;
-		resizeRectangle.height = (int) h;
-		resizeRectangle.width = (int) w;
 
 	}
 
@@ -696,8 +618,6 @@ abstract class ApptBoxPanel extends JPanel {
 
 	abstract Date getDateForCoord(double x, double y);
 
-	private static SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
-
 	public String getTimeString(double y_fraction) {
 
 		int realtime = realMins(y_fraction);
@@ -711,14 +631,68 @@ abstract class ApptBoxPanel extends JPanel {
 		return sdf.format(newTime);
 	}
 
-	public static boolean isStrike( CalendarEntity appt, Date date)
-	{
-		if ((appt.getColor() != null && appt.getColor().equals("strike"))
-				|| (appt.getTodo() && !(appt.getNextTodo() == null || !appt
-						.getNextTodo().after(date)))) {
-			return (true);
-		}
+	private boolean isInsideResizeArea(int top, int bot) {
+		if (top >= resizeYMin && bot <= resizeYMax)
+			return true;
 		return false;
+
+	}
+
+	private int realMins(double y_fraction) {
+		double realtime = startmin + (endmin - startmin) * y_fraction;
+		// round it because the double math is causing errors when later
+		// converting to int
+		int min = 5 * (int) Math.round(realtime / 5);
+		return min;
+	}
+
+	public abstract void refresh();
+
+	public void removeDragNewBox() {
+		dragNewBox = null;
+		draggedAnchor = -1;
+	}
+
+	public void removeResizeBox() {
+		resizeRectangle = null;
+	}
+
+	public void setDragBounds(int ymin, int ymax, int xmin, int xmax) {
+		dragYMin = ymin;
+		dragYMax = ymax;
+		dragXMin = xmin;
+		dragXMax = xmax;
+	}
+
+	public void setDragNewBox(double x, double y, double w, double h) {
+
+		Rectangle bounds = new Rectangle();
+		bounds.x = (int) x;
+		bounds.y = (int) y;
+		bounds.height = (int) h;
+		bounds.width = (int) w;
+		if (dragNewBox == null) {		
+			dragNewBox = new DragNewBox(bounds, bounds);
+		}
+		dragNewBox.setBounds(bounds);
+
+	}
+
+	public void setResizeBounds(int ymin, int ymax, int xmin, int xmax) {
+		resizeYMin = ymin;
+		resizeYMax = ymax;
+		// resizeXMin = xmin;
+		// resizeXMax = xmax;
+	}
+
+	public void setResizeBox(double x, double y, double w, double h) {
+		if (resizeRectangle == null)
+			resizeRectangle = new Rectangle();
+		resizeRectangle.x = (int) x;
+		resizeRectangle.y = (int) y;
+		resizeRectangle.height = (int) h;
+		resizeRectangle.width = (int) w;
+
 	}
 
 }
