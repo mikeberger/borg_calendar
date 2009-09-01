@@ -102,39 +102,9 @@ public class AppointmentModel extends Model implements Model.Listener,
 	public static boolean isNote(Appointment appt) {
 		// return true if the appt Appointment represents a "note" or
 		// "non-timed" appt
-		// this is true if the time is midnight and duration is 0.
-		// this method was used for backward compatibility - as opposed to
-		// adding
-		// a new flag to the DB
-		// 1.6.1 - added new db field to fix bug when time zone changes
-		// for backward compatiblity, keep old check in addition to checking new
-		// flag
-		try {
-
-			if (appt.getUntimed() != null && appt.getUntimed().equals("Y"))
-				return true;
-			Integer duration = appt.getDuration();
-			if (duration != null && duration.intValue() != 0)
-				return (false);
-
-			Date d = appt.getDate();
-			if (d == null)
-				return (true);
-
-			GregorianCalendar g = new GregorianCalendar();
-			g.setTime(d);
-			int hour = g.get(Calendar.HOUR_OF_DAY);
-			if (hour != 0)
-				return (false);
-
-			int min = g.get(Calendar.MINUTE);
-			if (min != 0)
-				return (false);
-		} catch (Exception e) {
-			return (true);
-		}
-
-		return (true);
+		if (appt.getUntimed() != null && appt.getUntimed().equals("Y"))
+			return true;
+		return (false);
 
 	}
 	
