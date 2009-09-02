@@ -64,26 +64,41 @@ import net.sf.borg.model.entity.Task;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.task.TaskView;
 
-// ApptDayBox holds the logical information needs to determine
-// how an appointment box should be drawn in a day grid
+/**
+ * 
+ * A Note Box is used to draw an untimed event on the day/week/month panels
+ *
+ */
 public class NoteBox extends Box implements Box.Draggable {
 
-	private Icon todoIcon = null;
+	private CalendarEntity bean = null; // entity associated with this box
 
-	private String todoMarker = null;
+	private Date date; // date being displayed - not necessarily date of the entity in the case of repeats
 
-	private CalendarEntity bean = null;
+	private boolean hasLink = false; // does entity have a link
 
-	private Date date; // date being displayed - not necessarily date of
+	private int oldFontHeight = -1; // involved with reszie of todo icon - see draw()
 
-	private boolean hasLink = false;
+	private JPopupMenu popmenu = null; // popup menu
 
+	private Icon todoIcon = null; // icon to mark todos
+
+	private String todoMarker = null; // textual todo marker
+
+	/**
+	 * constructor
+	 * @param d date that the box is on
+	 * @param ap the calendar entity
+	 * @param bounds bounds
+	 * @param clip clip
+	 */
 	@SuppressWarnings("unchecked")
 	public NoteBox(Date d, CalendarEntity ap, Rectangle bounds, Rectangle clip) {
-		super(bounds,clip);
+		super(bounds, clip);
 		bean = ap;
 		date = d;
 
+		// set the todo marker from the prefs - whether it is an icon or text
 		String iconname = Prefs.getPref(PrefName.UCS_MARKER);
 		String use_marker = Prefs.getPref(PrefName.UCS_MARKTODO);
 		if (use_marker.equals("true")) {
@@ -95,26 +110,29 @@ public class NoteBox extends Box implements Box.Draggable {
 			}
 		}
 
+		// set the link flag
 		Collection<Link> atts;
 		try {
 			atts = LinkModel.getReference().getLinks((KeyedEntity) bean);
 			if (atts != null && atts.size() > 0)
 				hasLink = true;
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 	}
 
+	@Override
 	public void delete() {
 		if (bean instanceof Appointment)
 			AppointmentModel.getReference().delAppt(
 					((Appointment) bean).getKey());
 	}
 
-	private int oldFontHeight = -1;
-
+	/**
+	 * draw the box
+	 */
+	@Override
 	public void draw(Graphics2D g2, Component comp) {
 
 		Shape s = g2.getClip();
@@ -124,7 +142,7 @@ public class NoteBox extends Box implements Box.Draggable {
 		Font sm_font = g2.getFont();
 		int smfontHeight = g2.getFontMetrics().getHeight();
 
-		// resize todoIcon if needed
+		// resize todoIcon if needed to match the text size
 		if (oldFontHeight != smfontHeight) {
 			if (todoIcon != null) {
 				try {
@@ -150,16 +168,21 @@ public class NoteBox extends Box implements Box.Draggable {
 			oldFontHeight = smfontHeight;
 		}
 
+		// create the strike-through text map
 		Map<TextAttribute, Serializable> stmap = new HashMap<TextAttribute, Serializable>();
 		stmap.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
 		stmap.put(TextAttribute.FONT, sm_font);
 
+		// use white background to highlight selected box
 		if (isSelected == true) {
 			g2.setColor(Color.WHITE);
 			g2.fillRect(bounds.x, bounds.y + 2, bounds.width, bounds.height);
 		}
+		
+		// default is black text
 		g2.setColor(Color.BLACK);
 
+		// set alternate text color if needed
 		if (getTextColor().equals("strike")) {
 
 			AttributedString as = new AttributedString(getText(), stmap);
@@ -168,8 +191,11 @@ public class NoteBox extends Box implements Box.Draggable {
 		} else {
 			// change color for a single appointment based on
 			// its color - only if color print option set
-			g2.setColor(Color.black);
 
+			// map "logical" color names to user defined colors
+			// "logical" color names used to be the hard-coded colors. Now they
+			// mean nothing. If it weren't for legacy databases, then red could be color1
+			// UCS_RED might as well be UCS_COLOR1
 			if (getTextColor().equals("red"))
 				g2.setColor(new Color(Integer.parseInt(Prefs
 						.getPref(PrefName.UCS_RED))));
@@ -195,13 +221,15 @@ public class NoteBox extends Box implements Box.Draggable {
 				g2.setColor(new Color(Integer.parseInt(Prefs
 						.getPref(PrefName.UCS_BRICK))));
 
+			// preprend link indicator if needed
 			int offset = 2;
 			String text = getText();
 			if (hasLink) {
 				text = "@ " + text;
 			}
+			
+			// preprend todo marker if needed and draw the box text
 			if (isTodo() && todoIcon != null) {
-
 				todoIcon.paintIcon(comp, g2, bounds.x + offset, bounds.y
 						+ bounds.height / 2);
 				offset = todoIcon.getIconWidth();
@@ -219,79 +247,13 @@ public class NoteBox extends Box implements Box.Draggable {
 		g2.setColor(Color.black);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.sf.borg.ui.calendar.Box#edit()
+	/**
+	 * get the popup menu
 	 */
-	public void onClick() {
-		if (bean instanceof Appointment) {
-			GregorianCalendar cal = new GregorianCalendar();
-			cal.setTime(date);
-			AppointmentListView ag = new AppointmentListView(cal
-					.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal
-					.get(Calendar.DATE));
-			MultiView.getMainView().addView(ag);
-			ag.showApp(((Appointment) bean).getKey());
-
-		} else if (bean instanceof Project) {
-			MultiView cv = MultiView.getMainView();
-			if (cv != null)
-				cv.showTasksForProject((Project) bean);
-		} else if (bean instanceof Task) {
-			try {
-				MultiView.getMainView().showTasks();
-				MultiView.getMainView().addView(
-						new TaskView((Task) bean, TaskView.T_CHANGE, null));
-			} catch (Exception e) {
-				Errmsg.errmsg(e);
-				return;
-			}
-		} else if (bean instanceof Subtask) {
-			MultiView.getMainView().showTasks();
-			int taskid = ((Subtask) bean).getTask().intValue();
-			Task t;
-			try {
-				t = TaskModel.getReference().getTask(taskid);
-				MultiView.getMainView().addView(
-						new TaskView(t, TaskView.T_CHANGE, null));
-			} catch (Exception e) {
-				Errmsg.errmsg(e);
-				return;
-			}
-
-		}
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.sf.borg.ui.calendar.Box#getText()
-	 */
-	public String getText() {
-		return bean.getText();
-	}
-
-	private String getTextColor() {
-		if (bean == null)
-			return null;
-
-		if (ApptBoxPanel.isStrike(bean, date)) {
-			return ("strike");
-		}
-
-		return bean.getColor();
-	}
-
-	private boolean isTodo() {
-		return bean.getTodo();
-	}
-
-	private JPopupMenu popmenu = null;
-
+	@Override
 	public JPopupMenu getMenu() {
 
+		// don't show a popup for non-appointments (i.e. tasks)
 		if (!(bean instanceof Appointment))
 			return null;
 
@@ -360,27 +322,63 @@ public class NoteBox extends Box implements Box.Draggable {
 		return popmenu;
 	}
 
+	@Override
+	public String getText() {
+		return bean.getText();
+	}
+
+	/**
+	 * get the text color
+	 * @return the text color 
+	 */
+	private String getTextColor() {
+		if (bean == null)
+			return null;
+
+		if (ApptBoxPanel.isStrike(bean, date)) {
+			return ("strike");
+		}
+
+		return bean.getColor();
+	}
+
+	/**
+	 * check if is todo
+	 * @return true if this box is for a todo
+	 */
+	private boolean isTodo() {
+		return bean.getTodo();
+	}
+
+	/**
+	 * react to a drag of this box on the UI
+	 */
 	public void move(int realtime, Date d) throws Exception {
 
 		if (bean instanceof Appointment) {
+			// change appointment date based on move		
 			Appointment ap = AppointmentModel.getReference().getAppt(
 					((Appointment) bean).getKey());
 
 			int hour = realtime / 60;
 			int min = realtime % 60;
 
-			int oldkey = DateUtil.dayOfEpoch(ap.getDate());
+			int olddate = DateUtil.dayOfEpoch(ap.getDate());
 
 			GregorianCalendar newCal = new GregorianCalendar();
 			newCal.setTime(d);
+			
 			if (hour != 0 || min != 0) {
+				
 				// we are moving to be timed - set duration
 				ap.setDuration(new Integer(15));
 				ap.setUntimed("N");
 				newCal.set(Calendar.HOUR_OF_DAY, hour);
 				int roundMin = (min / 5) * 5;
 				newCal.set(Calendar.MINUTE, roundMin);
+				
 			} else {
+				
 				// keep time and duration the same
 				Calendar oldCal = new GregorianCalendar();
 				oldCal.setTime(ap.getDate());
@@ -391,19 +389,16 @@ public class NoteBox extends Box implements Box.Draggable {
 			}
 
 			Date newTime = newCal.getTime();
-			int newkey = DateUtil.dayOfEpoch(newTime);
-
+			int newdate = DateUtil.dayOfEpoch(newTime);
 			ap.setDate(newTime);
 
-			// only do something if date changed
-			if (oldkey != newkey && Repeat.isRepeating(ap)) {
+			// check for illegal change of repeating appt
+			if (olddate != newdate && Repeat.isRepeating(ap)) {
 				// cannot date chg unless it is
-				// on
-				// the first in a series
+				// on the first in a series
 				int k2 = DateUtil.dayOfEpoch(date);
-				if (oldkey != k2) {
-					Errmsg.notice(Resource
-							.getResourceString("rpt_drag_err"));
+				if (olddate != k2) {
+					Errmsg.notice(Resource.getResourceString("rpt_drag_err"));
 					return;
 				}
 			}
@@ -411,33 +406,106 @@ public class NoteBox extends Box implements Box.Draggable {
 			AppointmentModel.getReference().saveAppt(ap);
 
 		} else if (bean instanceof Task) {
+			
+			// when a task is dragged, change its due date
+			
 			Task task = TaskModel.getReference()
 					.getTask(((Task) bean).getKey());
 			task.setDueDate(d);
+			
+			// reject change if it was dragged before its start date
 			if (task.getDueDate() != null
 					&& DateUtil.isAfter(task.getStartDate(), task.getDueDate())) {
 				throw new Warning(Resource.getResourceString("sd_dd_warn"));
 			}
+			
 			TaskModel.getReference().savetask(task);
+			
 		} else if (bean instanceof Subtask) {
-			Subtask task = TaskModel.getReference().getSubTask(
+			
+			// when a subtask is dragged, change its due date
+
+			Subtask subtask = TaskModel.getReference().getSubTask(
 					((Subtask) bean).getKey());
-			task.setDueDate(d);
-			if (task.getDueDate() != null
-					&& DateUtil.isAfter(task.getStartDate(), task.getDueDate())) {
+			subtask.setDueDate(d);
+			
+			// reject change if it was dragged before its start date
+			if (subtask.getDueDate() != null
+					&& DateUtil.isAfter(subtask.getStartDate(), subtask.getDueDate())) {
 				throw new Warning(Resource.getResourceString("sd_dd_warn"));
 			}
-			TaskModel.getReference().saveSubTask(task);
+			
+			TaskModel.getReference().saveSubTask(subtask);
+			
 		} else if (bean instanceof Project) {
+			
+			// when a project is dragged, change its due date
+
 			Project project = TaskModel.getReference().getProject(
 					((Project) bean).getKey());
 			project.setDueDate(d);
+			
+			// reject change if it was dragged before its start date
 			if (project.getDueDate() != null
 					&& DateUtil.isAfter(project.getStartDate(), project
 							.getDueDate())) {
 				throw new Warning(Resource.getResourceString("sd_dd_warn"));
 			}
+			
 			TaskModel.getReference().saveProject(project);
 		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see net.sf.borg.ui.calendar.Box#edit()
+	 */
+	@Override
+	public void onClick() {
+		if (bean instanceof Appointment) {
+			// appointment clicked - bring up the appt editor
+			GregorianCalendar cal = new GregorianCalendar();
+			cal.setTime(date);
+			// create new appt list view for the day of the appt
+			AppointmentListView ag = new AppointmentListView(cal
+					.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal
+					.get(Calendar.DATE));
+			// add appt list tab to main view
+			MultiView.getMainView().addView(ag);
+			// set appt list to be editing the clicked appt
+			ag.showApp(((Appointment) bean).getKey());
+
+		} else if (bean instanceof Project) {
+			// project clicked - show its tasks
+			MultiView cv = MultiView.getMainView();
+			if (cv != null)
+				cv.showTasksForProject((Project) bean);
+		} else if (bean instanceof Task) {
+			// task clicked - show it
+			try {
+				MultiView.getMainView().showTasks();
+				MultiView.getMainView().addView(
+						new TaskView((Task) bean, TaskView.T_CHANGE, null));
+			} catch (Exception e) {
+				Errmsg.errmsg(e);
+				return;
+			}
+		} else if (bean instanceof Subtask) {
+			// subtask clicked - show its task
+			MultiView.getMainView().showTasks();
+			int taskid = ((Subtask) bean).getTask().intValue();
+			Task t;
+			try {
+				t = TaskModel.getReference().getTask(taskid);
+				MultiView.getMainView().addView(
+						new TaskView(t, TaskView.T_CHANGE, null));
+			} catch (Exception e) {
+				Errmsg.errmsg(e);
+				return;
+			}
+
+		}
+
 	}
 }
