@@ -50,7 +50,7 @@
 
 		<property name="javadoc.bottom" value="Generated ${TODAY} by ${user.name} using ${ant.version} and Java version ${java.version} from ${java.vendor} on ${os.name} ${os.arch} ${os.version}" />
 
-		<javadoc destdir="${prj.dir}/docs" use="true" Windowtitle="Borg Javadocs" Doctitle="Borg Javadocs" bottom="${javadoc.bottom}" private="false" sourcepath="${prj.dir}/src" classpathref="build.classpath" packagenames="*" excludepackagenames="test" maxmemory="512m" useexternalfile="yes" source="1.5">
+		<javadoc destdir="${prj.dir}/docs" use="true" Windowtitle="Borg Javadocs" Doctitle="Borg Javadocs" bottom="${javadoc.bottom}" package="true" sourcepath="${prj.dir}/src" classpathref="build.classpath" packagenames="*" excludepackagenames="test" maxmemory="512m" useexternalfile="yes" source="1.5">
 			<link href="http://java.sun.com/j2se/1.5.0/docs/api" />
 		</javadoc>
 	</target>
