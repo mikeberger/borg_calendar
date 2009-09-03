@@ -42,7 +42,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -59,168 +58,93 @@ import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.CalendarEntity;
 import net.sf.borg.ui.NavPanel;
+import net.sf.borg.ui.util.GridBagConstraintsFactory;
 
+/**
+ * WeekPanel is the UI for a single week.  It consists of a Navigator attached
+ * to a WeekSubPanel
+ */
 public class WeekPanel extends JPanel implements Printable {
 
-	// weekPanel handles the printing of a single week
-	private class WeekSubPanel extends ApptBoxPanel implements NavPanel.Navigator,
-			Prefs.Listener, Model.Listener, Printable, MouseWheelListener {
+	/**
+	 * WeekSubPanel is the Panel that shows the items for a week with a section
+	 * for untimed items and a time-grid for timed items 
+	 */
+	private class WeekSubPanel extends ApptBoxPanel implements
+			NavPanel.Navigator, Prefs.Listener, Model.Listener, Printable,
+			MouseWheelListener {
 
+		// week start date
 		private Date beg_ = null;
 
+		// width of each day
 		private double colwidth = 0;
 
 		// set up dash line stroke
 		private float dash1[] = { 1.0f, 3.0f };
-
 		private BasicStroke dashed = new BasicStroke(0.02f,
 				BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 3.0f, dash1, 0.0f);
 
+		// date passed in - its week is the week to show
 		private int date_;
-
 		private int month_;
-
-		private double timecolwidth = 0;
-
 		private int year_;
 
+		// flag to indicate if we need to reload from the model. If false, we can just redraw
+		// from cached data
 		private boolean needLoad = true;
 
+		// width of time column (where times are shown for y axis)
+		private double timecolwidth = 0;
+
+		/**
+		 * constructor
+		 * @param month month 
+		 * @param year year
+		 * @param date date
+		 */
 		public WeekSubPanel(int month, int year, int date) {
 			year_ = year;
 			month_ = month;
 			date_ = date;
+			
 			clearData();
+			
+			// react to pref changes
 			Prefs.addListener(this);
+			
+			// react to mouse wheel changes
 			addMouseWheelListener(this);
+			
+			// react to appt or task model changes
 			AppointmentModel.getReference().addListener(this);
 			TaskModel.getReference().addListener(this);
 
 		}
 
+		/** clear data - will cause a reload on new redraw */
 		public void clearData() {
 			clearBoxes();
 			needLoad = true;
 			setToolTipText(null);
 		}
 
-		public Date getDateForCoord(double x, double y) {
-
-			double col = (x - timecolwidth) / colwidth;
-			if (col > 6)
-				col = 6;
-			Calendar cal = new GregorianCalendar();
-			cal.setTime(beg_);
-			cal.add(Calendar.DATE, (int) col);
-			return cal.getTime();
-		}
-
-		public String getNavLabel() {
-
-			// set up calendar and determine first day of week from options
-			GregorianCalendar cal = new GregorianCalendar(year_, month_, date_,
-					23, 59);
-			int fdow = Prefs.getIntPref(PrefName.FIRSTDOW);
-			cal.setFirstDayOfWeek(fdow);
-
-			// move cal back to first dow for the chosen week
-			int offset = cal.get(Calendar.DAY_OF_WEEK) - fdow;
-			if (offset == -1)
-				offset = 6;
-			cal.add(Calendar.DATE, -1 * offset);
-
-			// save begin/end date and build title
-			Date beg = cal.getTime();
-			cal.add(Calendar.DATE, 6);
-			Date end = cal.getTime();
-			DateFormat df = DateFormat.getDateInstance(DateFormat.LONG);
-			// SimpleDateFormat sd = new SimpleDateFormat("MMM dd, yyyy");
-			return df.format(beg) + " "
-					+ Resource.getResourceString("__through__") + " "
-					+ df.format(end);
-
-		}
-
-		public void goTo(Calendar cal) {
-			year_ = cal.get(Calendar.YEAR);
-			month_ = cal.get(Calendar.MONTH);
-			date_ = cal.get(Calendar.DATE);
-			clearData();
-			repaint();
-		}
-
-		public void next() {
-			GregorianCalendar cal = new GregorianCalendar(year_, month_, date_,
-					23, 59);
-			cal.add(Calendar.DATE, 7);
-			year_ = cal.get(Calendar.YEAR);
-			month_ = cal.get(Calendar.MONTH);
-			date_ = cal.get(Calendar.DATE);
-			clearData();
-			repaint();
-		}
-
-		public void prefsChanged() {
-			clearData();
-			repaint();
-
-		}
-
-		public void prev() {
-			GregorianCalendar cal = new GregorianCalendar(year_, month_, date_,
-					23, 59);
-			cal.add(Calendar.DATE, -7);
-			year_ = cal.get(Calendar.YEAR);
-			month_ = cal.get(Calendar.MONTH);
-			date_ = cal.get(Calendar.DATE);
-			clearData();
-			repaint();
-		}
-
-		// print does the actual formatting of the printout
-		public int print(Graphics g, PageFormat pageFormat, int pageIndex)
-				throws PrinterException {
-			// only print 1 page
-			if (pageIndex > 0)
-				return Printable.NO_SUCH_PAGE;
-			Font sm_font = Font.decode(Prefs.getPref(PrefName.MONTHVIEWFONT));
-			clearData();
-			int ret = drawIt(g, pageFormat.getWidth(), pageFormat.getHeight(),
-					pageFormat.getImageableWidth(), pageFormat
-							.getImageableHeight(), pageFormat.getImageableX(),
-					pageFormat.getImageableY(), sm_font);
-			refresh();
-			return ret;
-		}
-
-		public void refresh() {
-
-			clearData();
-			repaint();
-		}
-
-		public void today() {
-			GregorianCalendar cal = new GregorianCalendar();
-			year_ = cal.get(Calendar.YEAR);
-			month_ = cal.get(Calendar.MONTH);
-			date_ = cal.get(Calendar.DATE);
-			clearData();
-			repaint();
-		}
-
+		/**
+		 * draw the week into a Graphics
+		 */
 		private int drawIt(Graphics g, double width, double height,
 				double pageWidth, double pageHeight, double pagex,
 				double pagey, Font sm_font) {
 
-			
-			// set up default and small fonts
 			Graphics2D g2 = (Graphics2D) g;
 
+			// strike-font
 			Map<TextAttribute, Serializable> stmap = new HashMap<TextAttribute, Serializable>();
 			stmap.put(TextAttribute.STRIKETHROUGH,
 					TextAttribute.STRIKETHROUGH_ON);
 			stmap.put(TextAttribute.FONT, sm_font);
 
+			// draw a white background
 			g2.setColor(Color.white);
 			g2.fillRect(0, 0, (int) width, (int) height);
 			g2.setColor(Color.black);
@@ -229,6 +153,7 @@ public class WeekPanel extends JPanel implements Printable {
 			int fontHeight = g2.getFontMetrics().getHeight();
 			int fontDesent = g2.getFontMetrics().getDescent();
 
+			// translate coordinates to page margins
 			g2.translate(pagex, pagey);
 
 			// save original clip
@@ -246,31 +171,35 @@ public class WeekPanel extends JPanel implements Printable {
 				offset = 6;
 			cal.add(Calendar.DATE, -1 * offset);
 
-			// save begin/end date and build title
+			// save begin date
 			beg_ = cal.getTime();
 
-			int caltop = fontHeight + fontDesent; // cal starts under title
-			int daytop = caltop + fontHeight + fontDesent; // day starts under
-			// day
-			// labels
+			// top of drawn week - used to be non-zero to fit a title
+			int caltop = 0;
+			
+			// top of untimed region - under day name
+			int daytop = caltop + fontHeight + fontDesent; 
 
 			// height of box containing day's appts
 			double rowheight = pageHeight - daytop;
 
-			// width of column with time scale (Y axis)
+			// width of column with time labels (Y axis)
 			timecolwidth = pageWidth / 21;
 
-			// top of schedules appts. non-schedules appts appear above this
+			// top of scheduled (timed) appts. untimed appts appear above this
 			// and get 1/6 of the day box
 			double aptop = daytop + rowheight / 6;
 
 			// width of each day column - related to timecolwidth
 			colwidth = (pageWidth - timecolwidth) / 7;
 
-			// calculate the bottom and right edge of the grid
+			// calculate the bottom edge of the grid
 			int calbot = (int) rowheight + daytop;
 
+			// limit resize (and dragging out of new items) to the time-grid (timed appt area)
 			setResizeBounds((int) aptop, calbot);
+			
+			// allow dragging of items across the entire week - including both timed and untimed areas)
 			setDragBounds(daytop, calbot, (int) timecolwidth, (int) (pageWidth));
 
 			// start and end hour = range of Y axis
@@ -290,12 +219,11 @@ public class WeekPanel extends JPanel implements Printable {
 			double tickheight = (calbot - aptop) / numhalfhours;
 
 			// format for day labels
-			// DateFormat dfs = DateFormat.getDateInstance(DateFormat.SHORT);
 			SimpleDateFormat dfw = new SimpleDateFormat("EEE dd");
 
+			// set time label column to default background
 			g2.setColor(this.getBackground());
 			g2.fillRect(0, caltop, (int) timecolwidth, calbot - caltop);
-			g2.setColor(Color.BLACK);
 
 			// draw background for appt area
 			g2.setColor(new Color(Prefs.getIntPref(PrefName.UCS_DEFAULT)));
@@ -316,40 +244,41 @@ public class WeekPanel extends JPanel implements Printable {
 			}
 			g2.setStroke(defstroke);
 
-			// reset calendar
-			cal.setTime(beg_);
-
 			// set small font for appt text
 			g2.setFont(sm_font);
 			int smfontHeight = g2.getFontMetrics().getHeight();
 
+			// loop through the days of the week
 			for (int col = 0; col < 7; col++) {
 
+				// position of the left of the day's column
 				int colleft = (int) (timecolwidth + col * colwidth);
 
+				// load data from model if needed
 				if (needLoad) {
 
-					// add a zone for each day to allow new appts to be edited
-					addDateZone(cal.getTime(), 
-							new Rectangle(colleft, 0, (int) colwidth, calbot));
+					// add a zone for this day
+					addDateZone(cal.getTime(), new Rectangle(colleft, 0,
+							(int) colwidth, calbot));
 
 					try {
 						startmin = starthr * 60;
 						endmin = endhr * 60;
-						Day di = Day.getDay(cal.get(Calendar.YEAR), cal
+						
+						// get the day's items
+						Day dayInfo = Day.getDay(cal.get(Calendar.YEAR), cal
 								.get(Calendar.MONTH), cal.get(Calendar.DATE));
-
-						Iterator<CalendarEntity> it = di.getItems().iterator();
 
 						// determine Y coord for non-scheduled appts (notes)
 						// they will be above the timed appt area
 						int notey = daytop;// + smfontHeight;
 
 						// loop through appts
-						while (it.hasNext()) {
-							CalendarEntity appt = it.next();
+						for( CalendarEntity entity : dayInfo.getItems()) {
 
-							Date d = appt.getDate();
+							Date d = entity.getDate();
+							
+							// sanity check - should not happen
 							if (d == null)
 								continue;
 
@@ -360,21 +289,24 @@ public class WeekPanel extends JPanel implements Printable {
 									* acal.get(Calendar.HOUR_OF_DAY)
 									+ acal.get(Calendar.MINUTE);
 							int dur = 0;
-							Integer duri = appt.getDuration();
+							Integer duri = entity.getDuration();
 							if (duri != null) {
 								dur = duri.intValue();
 							}
 							double apendmin = apstartmin + dur;
 
-							if (!(appt instanceof Appointment)
+							// check if the entity is a note (untime)
+							// an entity can only be timed if it is an appointment
+							// that fits in the time-grid, has a duration, and is timed
+							if (!(entity instanceof Appointment)
 									|| AppointmentModel
-											.isNote((Appointment) appt)
+											.isNote((Appointment) entity)
 									|| apendmin < startmin
 									|| apstartmin >= endmin - 4
-									|| appt.getDuration() == null
-									|| appt.getDuration().intValue() == 0) {
+									|| entity.getDuration() == null
+									|| entity.getDuration().intValue() == 0) {
 
-								if (addNoteBox(cal.getTime(), appt,
+								if (addNoteBox(cal.getTime(), entity,
 										new Rectangle(colleft + 2, notey,
 												(int) (colwidth - 4),
 												smfontHeight), new Rectangle(
@@ -385,8 +317,9 @@ public class WeekPanel extends JPanel implements Printable {
 									notey += smfontHeight;
 								}
 							} else {
-
-								addApptBox(cal.getTime(), (Appointment) appt,
+								// appt box bounds and clip are set to the day's column in the grid.
+								// will be laid out later
+								addApptBox(cal.getTime(), (Appointment) entity,
 										new Rectangle(colleft + 4, (int) aptop,
 												(int) colwidth - 8,
 												(int) (calbot - aptop)),
@@ -401,8 +334,9 @@ public class WeekPanel extends JPanel implements Printable {
 						Errmsg.errmsg(e);
 					}
 
+					// layout the timed items
 					List<ApptBox> layoutlist = new ArrayList<ApptBox>();
-					for( Box b : boxes ) {
+					for (Box b : boxes) {
 						if (!(b instanceof ApptBox))
 							continue;
 						ApptBox ab = (ApptBox) b;
@@ -418,6 +352,8 @@ public class WeekPanel extends JPanel implements Printable {
 
 				// reset the clip or bad things happen
 				g2.setClip(s);
+				
+				// draw column background
 				g2.setColor(this.getBackground());
 				g2.fillRect(colleft, caltop, (int) (colwidth), daytop - caltop);
 
@@ -443,12 +379,13 @@ public class WeekPanel extends JPanel implements Printable {
 
 			needLoad = false;
 
+			// draw all boxes for the week
 			drawBoxes(g2);
 
-			// add day labels
 			// reset calendar
 			cal.setTime(beg_);
 
+			// add the day labels
 			for (int col = 0; col < 7; col++) {
 
 				int colleft = (int) (timecolwidth + (col * colwidth));
@@ -492,9 +429,95 @@ public class WeekPanel extends JPanel implements Printable {
 				g2.drawLine(colleft, caltop, colleft, calbot);
 			}
 
+			// to support printing
 			return Printable.PAGE_EXISTS;
 		}
 
+		/**
+		 * return date for a coordinate
+		 */
+		@Override
+		public Date getDateForCoord(double x, double y) {
+
+			// determine the date based on what column we are in
+			double col = (x - timecolwidth) / colwidth;
+			if (col > 6)
+				col = 6;
+			Calendar cal = new GregorianCalendar();
+			cal.setTime(beg_);
+			cal.add(Calendar.DATE, (int) col);
+			return cal.getTime();
+		}
+
+		/**
+		 * get nav label
+		 */
+		public String getNavLabel() {
+
+			// set up calendar and determine first day of week from options
+			GregorianCalendar cal = new GregorianCalendar(year_, month_, date_,
+					23, 59);
+			int fdow = Prefs.getIntPref(PrefName.FIRSTDOW);
+			cal.setFirstDayOfWeek(fdow);
+
+			// move cal back to first dow for the chosen week
+			int offset = cal.get(Calendar.DAY_OF_WEEK) - fdow;
+			if (offset == -1)
+				offset = 6;
+			cal.add(Calendar.DATE, -1 * offset);
+
+			// save begin/end date and build title
+			Date beg = cal.getTime();
+			cal.add(Calendar.DATE, 6);
+			Date end = cal.getTime();
+			DateFormat df = DateFormat.getDateInstance(DateFormat.LONG);
+			
+			return df.format(beg) + " "
+					+ Resource.getResourceString("__through__") + " "
+					+ df.format(end);
+
+		}
+
+		/**
+		 * go to a particular date
+		 */
+		public void goTo(Calendar cal) {
+			year_ = cal.get(Calendar.YEAR);
+			month_ = cal.get(Calendar.MONTH);
+			date_ = cal.get(Calendar.DATE);
+			clearData();
+			repaint();
+		}
+
+		/**
+		 * navigate forward or back based on mouse wheel action
+		 */
+		public void mouseWheelMoved(MouseWheelEvent e) {
+			if (e.getWheelRotation() > 0) {
+				next();
+				nav.setLabel(getNavLabel());
+			} else if (e.getWheelRotation() < 0) {
+				prev();
+				nav.setLabel(getNavLabel());
+			}
+
+		}
+
+		/**
+		 * navigate forward 1 week
+		 */
+		public void next() {
+			GregorianCalendar cal = new GregorianCalendar(year_, month_, date_,
+					23, 59);
+			cal.add(Calendar.DATE, 7);
+			year_ = cal.get(Calendar.YEAR);
+			month_ = cal.get(Calendar.MONTH);
+			date_ = cal.get(Calendar.DATE);
+			clearData();
+			repaint();
+		}
+
+		@Override
 		protected void paintComponent(Graphics g) {
 			super.paintComponent(g);
 			try {
@@ -508,48 +531,108 @@ public class WeekPanel extends JPanel implements Printable {
 			}
 		}
 
-		public void mouseWheelMoved(MouseWheelEvent e) {
-			if (e.getWheelRotation() > 0) {
-				next();
-				nav.setLabel(getNavLabel());
-			} else if (e.getWheelRotation() < 0) {
-				prev();
-				nav.setLabel(getNavLabel());
-			}
+		/**
+		 * reload and redraw if prefs change
+		 */
+		public void prefsChanged() {
+			clearData();
+			repaint();
 
+		}
+
+		/**
+		 * navigate backwards 1 week
+		 */
+		public void prev() {
+			GregorianCalendar cal = new GregorianCalendar(year_, month_, date_,
+					23, 59);
+			cal.add(Calendar.DATE, -7);
+			year_ = cal.get(Calendar.YEAR);
+			month_ = cal.get(Calendar.MONTH);
+			date_ = cal.get(Calendar.DATE);
+			clearData();
+			repaint();
+		}
+
+		/**
+		 * print to a Graphics for a printout
+		 */
+		public int print(Graphics g, PageFormat pageFormat, int pageIndex)
+				throws PrinterException {
+			// only print 1 page
+			if (pageIndex > 0)
+				return Printable.NO_SUCH_PAGE;
+			Font sm_font = Font.decode(Prefs.getPref(PrefName.MONTHVIEWFONT));
+			clearData();
+			int ret = drawIt(g, pageFormat.getWidth(), pageFormat.getHeight(),
+					pageFormat.getImageableWidth(), pageFormat
+							.getImageableHeight(), pageFormat.getImageableX(),
+					pageFormat.getImageableY(), sm_font);
+			refresh();
+			return ret;
+		}
+
+		/**
+		 * reload and redraw
+		 */
+		@Override
+		public void refresh() {
+
+			clearData();
+			repaint();
+		}
+
+		/**
+		 * navigate to the current week
+		 */
+		public void today() {
+			GregorianCalendar cal = new GregorianCalendar();
+			year_ = cal.get(Calendar.YEAR);
+			month_ = cal.get(Calendar.MONTH);
+			date_ = cal.get(Calendar.DATE);
+			clearData();
+			repaint();
 		}
 	}
 
+	// the navigator panel
 	private NavPanel nav = null;
 
+	// the panel to draw the week
 	private WeekSubPanel wp_ = null;
 
+	/**
+	 * constructor
+	 * @param month month
+	 * @param year year
+	 * @param date date
+	 */
 	public WeekPanel(int month, int year, int date) {
 
+		// create the week container panel
 		wp_ = new WeekSubPanel(month, year, date);
+		
+		// create the navigator
 		nav = new NavPanel(wp_);
 
 		setLayout(new java.awt.GridBagLayout());
-
-		GridBagConstraints cons = new GridBagConstraints();
-
-		cons.gridx = 0;
-		cons.gridy = 0;
-		cons.fill = java.awt.GridBagConstraints.BOTH;
-		add(nav, cons);
-
-		cons.gridy = 1;
-		cons.weightx = 1.0;
-		cons.weighty = 1.0;
-		add(wp_, cons);
+		add(nav, GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH));
+		add(wp_, GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH, 1.0, 1.0));
 
 	}
 
+	/**
+	 * go to a particular week
+	 * @param cal a day in the week
+	 */
 	public void goTo(Calendar cal) {
 		wp_.goTo(cal);
 		nav.setLabel(wp_.getNavLabel());
 	}
 
+	/**
+	 * print the UI
+	 */
 	public int print(Graphics arg0, PageFormat arg1, int arg2)
 			throws PrinterException {
 		return wp_.print(arg0, arg1, arg2);

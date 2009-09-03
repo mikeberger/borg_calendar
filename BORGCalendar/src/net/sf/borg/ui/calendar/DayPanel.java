@@ -40,7 +40,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -56,149 +55,115 @@ import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.CalendarEntity;
 import net.sf.borg.ui.NavPanel;
+import net.sf.borg.ui.util.GridBagConstraintsFactory;
 
-// weekPanel handles the printing of a single week
+
+/**
+ * DayPanel is the UI for a single day.  It consists of a Navigator attached
+ * to a DaySubPanel
+ */
 public class DayPanel extends JPanel implements Printable {
-	private class DaySubPanel extends ApptBoxPanel implements NavPanel.Navigator,
-			Prefs.Listener, Printable, Model.Listener, MouseWheelListener {
+	
+	/**
+	 * DaySubPanel is the Panel that shows the items for a day with a section
+	 * for untimed items and a time-grid for timed items 
+	 */
+	private class DaySubPanel extends ApptBoxPanel implements
+			NavPanel.Navigator, Prefs.Listener, Printable, Model.Listener,
+			MouseWheelListener {
 
-		// set up dash line stroke
+		// set up dash line stroke for time-grid divisions
 		private float dash1[] = { 1.0f, 3.0f };
-
 		private BasicStroke dashed = new BasicStroke(0.02f,
 				BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 3.0f, dash1, 0.0f);
 
+		// date being shown
 		private int date_;
-
 		private int month_;
-
 		private int year_;
 
+		// flag to indicate if we need to reload from the model. If false, we can just redraw
+		// from cached data
 		private boolean needLoad = true;
 
+
+		/**
+		 * Instantiates a new day sub panel.
+		 * 
+		 * @param month the month
+		 * @param year the year
+		 * @param date the date
+		 */
 		public DaySubPanel(int month, int year, int date) {
 			year_ = year;
 			month_ = month;
 			date_ = date;
+			
 			clearData();
+			
+			// refresh if prefs change
 			Prefs.addListener(this);
+			
+			// react to mouse wheel activity
 			addMouseWheelListener(this);
+			
+			// refresh if the appt or task models change
 			AppointmentModel.getReference().addListener(this);
 			TaskModel.getReference().addListener(this);
 
 		}
 
+		/**
+		 * Clear all data. forces next draw to reload from the model
+		 */
 		public void clearData() {
 			clearBoxes();
 			needLoad = true;
 			setToolTipText(null);
 		}
 
-		public String getNavLabel() {
-			GregorianCalendar cal = new GregorianCalendar(year_, month_, date_,
-					23, 59);
-			Date dt = cal.getTime();
-			DateFormat df = DateFormat.getDateInstance(DateFormat.FULL);
-			return df.format(dt);
-		}
-
-		public void goTo(Calendar cal) {
-			year_ = cal.get(Calendar.YEAR);
-			month_ = cal.get(Calendar.MONTH);
-			date_ = cal.get(Calendar.DATE);
-			clearData();
-			repaint();
-		}
-
-		public void next() {
-			GregorianCalendar cal = new GregorianCalendar(year_, month_, date_,
-					23, 59);
-			cal.add(Calendar.DATE, 1);
-			year_ = cal.get(Calendar.YEAR);
-			month_ = cal.get(Calendar.MONTH);
-			date_ = cal.get(Calendar.DATE);
-			clearData();
-			repaint();
-		}
-
-		public void prefsChanged() {
-			clearData();
-			repaint();
-
-		}
-
-		public void prev() {
-			GregorianCalendar cal = new GregorianCalendar(year_, month_, date_,
-					23, 59);
-			cal.add(Calendar.DATE, -1);
-			year_ = cal.get(Calendar.YEAR);
-			month_ = cal.get(Calendar.MONTH);
-			date_ = cal.get(Calendar.DATE);
-			clearData();
-			repaint();
-		}
-
-		// print does the actual formatting of the printout
-		public int print(Graphics g, PageFormat pageFormat, int pageIndex)
-				throws PrinterException {
-			// only print 1 page
-			if (pageIndex > 0)
-				return Printable.NO_SUCH_PAGE;
-			Font sm_font = Font.decode(Prefs.getPref(PrefName.DAYVIEWFONT));
-			clearData();
-			int ret = drawIt(g, pageFormat.getWidth(), pageFormat.getHeight(),
-					pageFormat.getImageableWidth(), pageFormat
-							.getImageableHeight(), pageFormat.getImageableX(),
-					pageFormat.getImageableY(), sm_font);
-			refresh();
-			return ret;
-		}
-
-		public void refresh() {
-			clearData();
-			repaint();
-		}
-
-		public void today() {
-			GregorianCalendar cal = new GregorianCalendar();
-			year_ = cal.get(Calendar.YEAR);
-			month_ = cal.get(Calendar.MONTH);
-			date_ = cal.get(Calendar.DATE);
-			clearData();
-			repaint();
-		}
-
+		/**
+		 * Draw the day
+		 * 
+		 * @param g the Graphics to draw into
+		 * @param width the width
+		 * @param height the height
+		 * @param pageWidth the page width
+		 * @param pageHeight the page height
+		 * @param pagex the pagex
+		 * @param pagey the pagey
+		 * @param sm_font the font for appointment text
+		 * 
+		 * @return the page exists flag for printing
+		 */
 		private int drawIt(Graphics g, double width, double height,
 				double pageWidth, double pageHeight, double pagex,
 				double pagey, Font sm_font) {
 
-			// System.out.println("day " + new GregorianCalendar().toString());
-			
-			// set up default and small fonts
 			Graphics2D g2 = (Graphics2D) g;
+			
+			// set up strike-through fonts
 			Map<TextAttribute, Serializable> stmap = new HashMap<TextAttribute, Serializable>();
 			stmap.put(TextAttribute.STRIKETHROUGH,
 					TextAttribute.STRIKETHROUGH_ON);
 			stmap.put(TextAttribute.FONT, sm_font);
 
+			// draw a white background
 			g2.setColor(Color.white);
 			g2.fillRect(0, 0, (int) width, (int) height);
 			g2.setColor(Color.black);
 
-			// get font sizes
-			int fontHeight = g2.getFontMetrics().getHeight();
-			int fontDesent = g2.getFontMetrics().getDescent();
-
+			// translate coordinates to page margins
 			g2.translate(pagex, pagey);
 
 			// save original clip
 			Shape s = g2.getClip();
 
-			// save begin/end date and build title
 			GregorianCalendar cal = new GregorianCalendar(year_, month_, date_,
 					23, 59);
 
-			int caltop = fontHeight + fontDesent; // cal starts under title
+			// top of drawn day - used to be non-zero to fit a title
+			int caltop = 0;
 
 			// height of box containing day's appts
 			double rowheight = pageHeight - caltop;
@@ -206,7 +171,7 @@ public class DayPanel extends JPanel implements Printable {
 			// width of column with time scale (Y axis)
 			double timecolwidth = pageWidth / 15;
 
-			// top of schedules appts. non-schedules appts appear above this
+			// top of timed appts (the time-grid). untimed appts appear above this
 			// and get 1/6 of the day box
 			double aptop = caltop + rowheight / 6;
 
@@ -216,7 +181,10 @@ public class DayPanel extends JPanel implements Printable {
 			// calculate the bottom and right edge of the grid
 			int calbot = (int) rowheight + caltop;
 
+			// limit resizing to the time-grid
 			setResizeBounds((int) aptop, calbot);
+			
+			// allow dragging around the entire day - across timed and untimed areas
 			setDragBounds(caltop, calbot, (int) timecolwidth, (int) (pageWidth));
 
 			// start and end hour = range of Y axis
@@ -235,11 +203,11 @@ public class DayPanel extends JPanel implements Printable {
 			int numhalfhours = (endhr - starthr) * 2;
 			double tickheight = (calbot - aptop) / numhalfhours;
 
+			// draw background of time column (where the y-axis times are shown) using the default background color
 			g2.setColor(this.getBackground());
 			g2.fillRect(0, caltop, (int) timecolwidth, calbot - caltop);
-			g2.setColor(Color.BLACK);
 
-			// draw background for appt area
+			// draw background for day area with the user color
 			g2.setColor(new Color(Prefs.getIntPref(PrefName.UCS_DEFAULT)));
 			g2
 					.fillRect((int) timecolwidth, caltop,
@@ -264,29 +232,32 @@ public class DayPanel extends JPanel implements Printable {
 
 			int colleft = (int) (timecolwidth);
 
+			// reload from model if needed
 			if (needLoad) {
 
-				addDateZone(cal.getTime(), 
-						new Rectangle(colleft, 0, (int) colwidth, calbot));
+				// add the date zone for the day
+				addDateZone(cal.getTime(), new Rectangle(colleft, 0,
+						(int) colwidth, calbot));
 
 				try {
+					
 					startmin = starthr * 60;
 					endmin = endhr * 60;
+					
+					// get the day's items from the model
 					Day di = Day.getDay(cal.get(Calendar.YEAR), cal
-							.get(Calendar.MONTH), cal.get(Calendar.DATE)
-							);
+							.get(Calendar.MONTH), cal.get(Calendar.DATE));
 
-					Iterator<CalendarEntity> it = di.getItems().iterator();
-
-					// determine Y coord for non-scheduled appts (notes)
+					// determine initial Y coord for non-scheduled appts (notes)
 					// they will be above the timed appt area
-					int notey = caltop;// + smfontHeight;
+					int notey = caltop;
 
-					// loop through appts
-					while (it.hasNext()) {
-						CalendarEntity appt = it.next();
-
-						Date d = appt.getDate();
+					// loop through entities
+					for( CalendarEntity entity : di.getItems()) {
+						
+						Date d = entity.getDate();
+						
+						// sanity check - shouldn't happen
 						if (d == null)
 							continue;
 
@@ -296,30 +267,36 @@ public class DayPanel extends JPanel implements Printable {
 						double apstartmin = 60 * acal.get(Calendar.HOUR_OF_DAY)
 								+ acal.get(Calendar.MINUTE);
 						int dur = 0;
-						Integer duri = appt.getDuration();
+						Integer duri = entity.getDuration();
 						if (duri != null) {
 							dur = duri.intValue();
 						}
 						double apendmin = apstartmin + dur;
 
-						if (!(appt instanceof Appointment)
-								|| AppointmentModel.isNote((Appointment) appt)
+						// check if the entity is a note (untime)
+						// an entity can only be timed if it is an appointment
+						// that fits in the time-grid, has a duration, and is timed
+						if (!(entity instanceof Appointment)
+								|| AppointmentModel.isNote((Appointment) entity)
 								|| apendmin < startmin
 								|| apstartmin >= endmin - 4
-								|| appt.getDuration() == null
-								|| appt.getDuration().intValue() == 0) {
+								|| entity.getDuration() == null
+								|| entity.getDuration().intValue() == 0) {
 
-							if (addNoteBox(cal.getTime(), appt, new Rectangle(
+							if (addNoteBox(cal.getTime(), entity, new Rectangle(
 									colleft + 2, notey, (int) (colwidth - 4),
 									smfontHeight), new Rectangle(colleft,
 									caltop, (int) colwidth,
 									(int) (aptop - caltop))) != null) {
+								
 								// increment Y coord for next note text
 								notey += smfontHeight;
 							}
 						} else {
 
-							addApptBox(cal.getTime(), (Appointment) appt,
+							// appt box bounds and clip are set to the whole grid.
+							// will be laid out later
+							addApptBox(cal.getTime(), (Appointment) entity,
 									new Rectangle(colleft + 4, (int) aptop,
 											(int) colwidth - 8,
 											(int) (calbot - aptop)),
@@ -334,8 +311,9 @@ public class DayPanel extends JPanel implements Printable {
 					Errmsg.errmsg(e);
 				}
 
+				// layout all of the ApptBoxes
 				List<ApptBox> layoutlist = new ArrayList<ApptBox>();
-				for( Box b : boxes ) {
+				for (Box b : boxes) {
 					if (!(b instanceof ApptBox))
 						continue;
 					layoutlist.add((ApptBox) b);
@@ -343,10 +321,12 @@ public class DayPanel extends JPanel implements Printable {
 				ApptBox.layoutBoxes(layoutlist, starthr, endhr);
 
 			}
+			
+			// draw all boxes
 			g2.setClip(s);
 			drawBoxes(g2);
 
-			// draw the box lines last so they show on top of other stuff
+			// draw the day's lines last so they show on top of other stuff
 			// first - the horizontal lines
 			g2.drawLine(0, caltop, (int) pageWidth, caltop);
 			g2.drawLine(0, (int) aptop, (int) pageWidth, (int) aptop);
@@ -370,13 +350,81 @@ public class DayPanel extends JPanel implements Printable {
 				g2.drawString(tmlabel, 2, y + smfontHeight / 2);
 			}
 
+			// vertical lines
 			g2.drawLine(colleft, caltop, colleft, calbot);
 			g2.drawLine((int) pageWidth, caltop, (int) pageWidth, calbot);
 
 			needLoad = false;
+			
+			// for printing - in case we are drawing this for a printer
 			return Printable.PAGE_EXISTS;
 		}
 
+		/**
+		 * return the date for the mouse coord
+		 */
+		@Override
+		public Date getDateForCoord(double x, double y) {
+			// always return the current day as this UI only shows 1 day
+			GregorianCalendar cal = new GregorianCalendar(year_, month_, date_,
+					23, 59);
+			return cal.getTime();
+		}
+
+		/**
+		 * return the navigator label
+		 */
+		public String getNavLabel() {
+			GregorianCalendar cal = new GregorianCalendar(year_, month_, date_,
+					23, 59);
+			Date dt = cal.getTime();
+			DateFormat df = DateFormat.getDateInstance(DateFormat.FULL);
+			return df.format(dt);
+		}
+
+		/**
+		 * show the given date
+		 */
+		public void goTo(Calendar cal) {
+			year_ = cal.get(Calendar.YEAR);
+			month_ = cal.get(Calendar.MONTH);
+			date_ = cal.get(Calendar.DATE);
+			clearData();
+			repaint();
+		}
+
+		/**
+		 * react to a mouse wheel event (navigate forward or back)
+		 */
+		public void mouseWheelMoved(MouseWheelEvent e) {
+			if (e.getWheelRotation() > 0) {
+				next();
+				nav.setLabel(getNavLabel());
+			} else if (e.getWheelRotation() < 0) {
+				prev();
+				nav.setLabel(getNavLabel());
+			}
+
+		}
+
+		/**
+		 * advance 1 day
+		 */
+		public void next() {
+			GregorianCalendar cal = new GregorianCalendar(year_, month_, date_,
+					23, 59);
+			cal.add(Calendar.DATE, 1);
+			year_ = cal.get(Calendar.YEAR);
+			month_ = cal.get(Calendar.MONTH);
+			date_ = cal.get(Calendar.DATE);
+			clearData();
+			repaint();
+		}
+
+		/* (non-Javadoc)
+		 * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
+		 */
+		@Override
 		protected void paintComponent(Graphics g) {
 			super.paintComponent(g);
 			try {
@@ -389,55 +437,109 @@ public class DayPanel extends JPanel implements Printable {
 			}
 		}
 
-		public Date getDateForCoord(double x, double y) {
-			GregorianCalendar cal = new GregorianCalendar(year_, month_, date_,
-					23, 59);
-			return cal.getTime();
+		/**
+		 * reload and redraw if prefs change. some prefs change the grid size and/or
+		 * what items get shown
+		 */
+		public void prefsChanged() {
+			clearData();
+			repaint();
+
 		}
 
-		public void mouseWheelMoved(MouseWheelEvent e) {
-			if (e.getWheelRotation() > 0) {
-				next();
-				nav.setLabel(getNavLabel());
-			} else if (e.getWheelRotation() < 0) {
-				prev();
-				nav.setLabel(getNavLabel());
-			}
+		/**
+		 * navigate backwards 1 day
+		 */
+		public void prev() {
+			GregorianCalendar cal = new GregorianCalendar(year_, month_, date_,
+					23, 59);
+			cal.add(Calendar.DATE, -1);
+			year_ = cal.get(Calendar.YEAR);
+			month_ = cal.get(Calendar.MONTH);
+			date_ = cal.get(Calendar.DATE);
+			clearData();
+			repaint();
+		}
 
+		/**
+		 * draw the UI into a Graphics for printing
+		 */
+		public int print(Graphics g, PageFormat pageFormat, int pageIndex)
+				throws PrinterException {
+			// only print 1 page
+			if (pageIndex > 0)
+				return Printable.NO_SUCH_PAGE;
+			Font sm_font = Font.decode(Prefs.getPref(PrefName.DAYVIEWFONT));
+			clearData();
+			int ret = drawIt(g, pageFormat.getWidth(), pageFormat.getHeight(),
+					pageFormat.getImageableWidth(), pageFormat
+							.getImageableHeight(), pageFormat.getImageableX(),
+					pageFormat.getImageableY(), sm_font);
+			refresh();
+			return ret;
+		}
+
+		/**
+		 * reload data and redraw
+		 */
+		@Override
+		public void refresh() {
+			clearData();
+			repaint();
+		}
+
+		/**
+		 * navigate to the current date
+		 */
+		public void today() {
+			GregorianCalendar cal = new GregorianCalendar();
+			year_ = cal.get(Calendar.YEAR);
+			month_ = cal.get(Calendar.MONTH);
+			date_ = cal.get(Calendar.DATE);
+			clearData();
+			repaint();
 		}
 
 	}
 
+	// container panel for the day boxes
 	private DaySubPanel dp_ = null;
 
+	// navigation panel
 	private NavPanel nav = null;
 
+	/**
+	 * Instantiates a new day panel.
+	 * 
+	 * @param month the month
+	 * @param year the year
+	 * @param date the date
+	 */
 	public DayPanel(int month, int year, int date) {
 
+		// create the day ui and attached navigator
 		dp_ = new DaySubPanel(month, year, date);
 		nav = new NavPanel(dp_);
 
 		setLayout(new java.awt.GridBagLayout());
-
-		GridBagConstraints cons = new GridBagConstraints();
-
-		cons.gridx = 0;
-		cons.gridy = 0;
-		cons.fill = java.awt.GridBagConstraints.BOTH;
-		add(nav, cons);
-
-		cons.gridy = 1;
-		cons.weightx = 1.0;
-		cons.weighty = 1.0;
-		add(dp_, cons);
+		add(nav, GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH));
+		add(dp_, GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH, 1.0, 1.0));
 
 	}
 
+	/**
+	 * Go to a particular date
+	 * 
+	 * @param cal the date
+	 */
 	public void goTo(Calendar cal) {
 		dp_.goTo(cal);
 		nav.setLabel(dp_.getNavLabel());
 	}
 
+	/* (non-Javadoc)
+	 * @see java.awt.print.Printable#print(java.awt.Graphics, java.awt.print.PageFormat, int)
+	 */
 	public int print(Graphics arg0, PageFormat arg1, int arg2)
 			throws PrinterException {
 		return dp_.print(arg0, arg1, arg2);
