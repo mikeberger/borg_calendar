@@ -38,119 +38,58 @@ import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.xml.AppointmentXMLAdapter;
 import net.sf.borg.ui.MultiView;
 
+/**
+ * A DateZone is used to mark a rectagular area on the calendar UIs that corresponds
+ * to a particular date. It provides the popup menu and the on-click action that
+ * occurs when the user clicks on a date, but outside of any other calendar items
+ */
 class DateZone {
 
+	// the bounds of the zone
 	private Rectangle bounds;
 
+	// the date that the zone represents
 	private Date date;
 
+	// the popup menu
+	private JPopupMenu popmenu = null;
+
+
+	/**
+	 * constructor.
+	 * 
+	 * @param d the date that this zone represents
+	 * @param bounds the bounds of this zone
+	 */
 	public DateZone(Date d, Rectangle bounds) {
 		this.date = d;
 		this.bounds = bounds;
 	}
 
-	public void createAppt(int topmins, int botmins, String text) {
-
-		// get default appt values, if any
-		Appointment appt = null;
-		String defApptXml = Prefs.getPref(PrefName.DEFAULT_APPT);
-		if (!defApptXml.equals("")) {
-			try {
-				XTree xt = XTree.readFromBuffer(defApptXml);
-				AppointmentXMLAdapter axa = new AppointmentXMLAdapter();
-				appt = axa.fromXml(xt);
-
-			} catch (Exception e) {
-				Errmsg.errmsg(e);
-			}
-		}
-
-		if (appt == null) {
-			appt = AppointmentModel.getReference().newAppt();
-		}
-
-		// System.out.println(top + " " + bottom);
-		int realtime = topmins;
-		int hour = realtime / 60;
-		int min = realtime % 60;
-		min = (min / 5) * 5;
-		Calendar startCal = new GregorianCalendar();
-		startCal.setTime(date);
-		startCal.set(Calendar.HOUR_OF_DAY, hour);
-		startCal.set(Calendar.MINUTE, min);
-		appt.setDate(startCal.getTime());
-
-		int realend = botmins;
-		int ehour = realend / 60;
-		int emin = realend % 60;
-		emin = (emin / 5) * 5;
-		int dur = 60 * (ehour - hour) + emin - min;
-
-		appt.setDuration(new Integer(dur));
-
-		if (dur > 0)
-			appt.setUntimed(null);
-
-		appt.setText(text);
-		AppointmentModel.getReference().saveAppt(appt);
-	}
-
-	void edit() {
-		GregorianCalendar cal = new GregorianCalendar();
-		cal.setTime(date);
-		AppointmentListView ag = new AppointmentListView(
-				cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal
-						.get(Calendar.DATE));
-		MultiView.getMainView().addView(ag);
-
-	}
-
-	private void quick_todo() {
-
-		String tdtext = JOptionPane.showInputDialog("", Resource
-				.getResourceString("Please_enter_some_appointment_text"));
-		if (tdtext == null)
-			return;
-
-		GregorianCalendar cal = new GregorianCalendar();
-		cal.setTime(date);
-
-		AppointmentModel calmod_ = AppointmentModel.getReference();
-
-		Appointment r = calmod_.newAppt();
-		String defApptXml = Prefs.getPref(PrefName.DEFAULT_APPT);
-		if (!defApptXml.equals("")) {
-			try {
-				XTree xt = XTree.readFromBuffer(defApptXml);
-				AppointmentXMLAdapter axa = new AppointmentXMLAdapter();
-				r = axa.fromXml(xt);
-			} catch (Exception e) {
-				Errmsg.errmsg(e);
-			}
-		}
-
-		cal.set(Calendar.HOUR, 0);
-		cal.set(Calendar.MINUTE, 0);
-		cal.set(Calendar.SECOND, 0);
-		cal.set(Calendar.AM_PM, Calendar.AM);
-		r.setDate(cal.getTime());
-		r.setText(tdtext);
-		r.setTodo(true);
-
-		calmod_.saveAppt(r);
-
-	}
-
+	/**
+	 * Gets the bounds.
+	 * 
+	 * @return the bounds
+	 */
 	public Rectangle getBounds() {
 		return bounds;
 	}
 
-	public void setBounds(Rectangle bounds) {
-		this.bounds = bounds;
+	/**
+	 * Gets the date.
+	 * 
+	 * @return the date
+	 */
+	public Date getDate() {
+		return date;
 	}
 
-	private JPopupMenu popmenu = null;
-
+	
+	/**
+	 * Gets the popup menu.
+	 * 
+	 * @return the popup menu
+	 */
 	public JPopupMenu getMenu() {
 		JMenuItem mnuitm;
 		if (popmenu == null) {
@@ -159,7 +98,7 @@ class DateZone {
 					.getResourceString("Add_New")));
 			mnuitm.addActionListener(new ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					edit();
+					onClick();
 				}
 			});
 			popmenu.add(mnuitm = new JMenuItem(Resource
@@ -172,5 +111,77 @@ class DateZone {
 
 		}
 		return popmenu;
+	}
+
+	/**
+	 * take action on a user mouse click - open an appt editor for a new appt
+	 */
+	void onClick() {
+		GregorianCalendar cal = new GregorianCalendar();
+		cal.setTime(date);
+		AppointmentListView ag = new AppointmentListView(
+				cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal
+						.get(Calendar.DATE));
+		MultiView.getMainView().addView(ag);
+
+	}
+
+	/**
+	 * quick todo menu action - prompt for text and create a todo appt based
+	 * on default values
+	 */
+	private void quick_todo() {
+
+		// prompt for todo text
+		String tdtext = JOptionPane.showInputDialog("", Resource
+				.getResourceString("Please_enter_some_appointment_text"));
+		if (tdtext == null)
+			return;
+
+		// load up a default appt from any saved prefs
+		Appointment r = AppointmentModel.getReference().newAppt();
+		String defApptXml = Prefs.getPref(PrefName.DEFAULT_APPT);
+		if (!defApptXml.equals("")) {
+			try {
+				XTree xt = XTree.readFromBuffer(defApptXml);
+				AppointmentXMLAdapter axa = new AppointmentXMLAdapter();
+				r = axa.fromXml(xt);
+			} catch (Exception e) {
+				Errmsg.errmsg(e);
+			}
+		}
+		
+		// set the appt date. leave the appt untimed
+		GregorianCalendar cal = new GregorianCalendar();
+		cal.setTime(date);
+		cal.set(Calendar.HOUR, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.AM_PM, Calendar.AM);
+		r.setDate(cal.getTime());
+		r.setText(tdtext);
+		r.setTodo(true);
+		r.setUntimed("Y");
+
+		AppointmentModel.getReference().saveAppt(r);
+
+	}
+
+	/**
+	 * Sets the bounds.
+	 * 
+	 * @param bounds the new bounds
+	 */
+	public void setBounds(Rectangle bounds) {
+		this.bounds = bounds;
+	}
+
+	/**
+	 * Sets the date.
+	 * 
+	 * @param date the new date
+	 */
+	public void setDate(Date date) {
+		this.date = date;
 	}
 }

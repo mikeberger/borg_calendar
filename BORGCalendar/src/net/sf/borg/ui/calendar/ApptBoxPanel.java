@@ -49,9 +49,12 @@ import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
+import net.sf.borg.common.XTree;
+import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.CalendarEntity;
 import net.sf.borg.model.entity.LabelEntity;
+import net.sf.borg.model.xml.AppointmentXMLAdapter;
 
 abstract class ApptBoxPanel extends JPanel {
 
@@ -81,11 +84,55 @@ abstract class ApptBoxPanel extends JPanel {
 					/ (resizeYMax - resizeYMin));
 			int botmins = realMins((r.y - resizeYMin + r.height)
 					/ (resizeYMax - resizeYMin));
-			draggedZone.createAppt(topmins, botmins, text);
+			
+			// get default appt values, if any
+			Appointment appt = null;
+			String defApptXml = Prefs.getPref(PrefName.DEFAULT_APPT);
+			if (!defApptXml.equals("")) {
+				try {
+					XTree xt = XTree.readFromBuffer(defApptXml);
+					AppointmentXMLAdapter axa = new AppointmentXMLAdapter();
+					appt = axa.fromXml(xt);
+
+				} catch (Exception e) {
+					Errmsg.errmsg(e);
+				}
+			}
+
+			if (appt == null) {
+				appt = AppointmentModel.getReference().newAppt();
+			}
+
+			// System.out.println(top + " " + bottom);
+			int realtime = topmins;
+			int hour = realtime / 60;
+			int min = realtime % 60;
+			min = (min / 5) * 5;
+			Calendar startCal = new GregorianCalendar();
+			startCal.setTime(draggedZone.getDate());
+			startCal.set(Calendar.HOUR_OF_DAY, hour);
+			startCal.set(Calendar.MINUTE, min);
+			appt.setDate(startCal.getTime());
+
+			int realend = botmins;
+			int ehour = realend / 60;
+			int emin = realend % 60;
+			emin = (emin / 5) * 5;
+			int dur = 60 * (ehour - hour) + emin - min;
+
+			appt.setDuration(new Integer(dur));
+
+			if (dur > 0)
+				appt.setUntimed(null);
+
+			appt.setText(text);
+			AppointmentModel.getReference().saveAppt(appt);
+			
 			draggedZone = null;
 			removeDragNewBox();
 			repaint();
 		}
+		
 
 		public void draw(Graphics2D g2, Component comp) {
 			Stroke stroke = g2.getStroke();
@@ -196,7 +243,7 @@ abstract class ApptBoxPanel extends JPanel {
 			else if (b.box != null)
 				b.box.onClick();
 			else if (b.zone != null)
-				b.zone.edit();
+				b.zone.onClick();
 
 		}
 
