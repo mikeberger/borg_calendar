@@ -64,8 +64,9 @@ import net.sf.borg.ui.util.ModalMessage;
 import net.sf.borg.ui.util.NwFontChooserS;
 
 /**
- * The Main Class of Borg. It's responsible for starting up the model and spawning various threads,
- * including the main UI thread and various timer threads. It also handles shutdown.
+ * The Main Class of Borg. It's responsible for starting up the model and
+ * spawning various threads, including the main UI thread and various timer
+ * threads. It also handles shutdown.
  */
 public class Borg implements OptionsView.RestartListener, SocketHandler {
 
@@ -89,24 +90,10 @@ public class Borg implements OptionsView.RestartListener, SocketHandler {
 	/**
 	 * The main method.
 	 * 
-	 * @param args the arguments
+	 * @param args
+	 *            the arguments
 	 */
 	public static void main(String args[]) {
-
-		// open existing BORG if there is one
-		int port = Prefs.getIntPref(PrefName.SOCKETPORT);
-		if (port != -1) {
-			String resp;
-			try {
-				resp = SocketClient.sendMsg("localhost", port, "open");
-				if (resp != null && resp.equals("ok")) {
-					System.exit(0);
-				}
-			} catch (IOException e) {
-
-			}
-
-		}
 
 		// create a new borg object and call its init routing with the command
 		// line args
@@ -115,7 +102,8 @@ public class Borg implements OptionsView.RestartListener, SocketHandler {
 	}
 
 	/**
-	 * Shutdown.close db connections. backup the database if the auto-backup feature is on.
+	 * Shutdown.close db connections. backup the database if the auto-backup
+	 * feature is on.
 	 */
 	static public void shutdown() {
 
@@ -187,7 +175,8 @@ public class Borg implements OptionsView.RestartListener, SocketHandler {
 			e.printStackTrace();
 		}
 
-		// wait 3 seconds before exiting for the db to settle down - probably being superstitious.
+		// wait 3 seconds before exiting for the db to settle down - probably
+		// being superstitious.
 		Timer shutdownTimer = new java.util.Timer();
 		shutdownTimer.schedule(new TimerTask() {
 			public void run() {
@@ -198,9 +187,11 @@ public class Borg implements OptionsView.RestartListener, SocketHandler {
 	}
 
 	/**
-	 * Sync dbs - mainly clears caches. applies to mysql where outside clients can update the db.
+	 * Sync dbs - mainly clears caches. applies to mysql where outside clients
+	 * can update the db.
 	 * 
-	 * @throws Exception the exception
+	 * @throws Exception
+	 *             the exception
 	 */
 	static public synchronized void syncDBs() throws Exception {
 
@@ -213,14 +204,23 @@ public class Borg implements OptionsView.RestartListener, SocketHandler {
 	/** The timer for sending reminder email. */
 	private Timer mailTimer_ = null;
 
-	/** message popped up if the socket thread has something to tell the user. mainly used to block user activity
-	 * during a palm sync and report sync progress  */
+	/**
+	 * message popped up if the socket thread has something to tell the user.
+	 * mainly used to block user activity during a palm sync and report sync
+	 * progress
+	 */
 	private ModalMessage modalMessage = null;
 
-	/** The socket server - listens for incoming requests such as open requests and palm sync requests */
+	/**
+	 * The socket server - listens for incoming requests such as open requests
+	 * and palm sync requests
+	 */
 	private SocketServer socketServer_ = null;
 
-	/** The sync timer - controls auto-sync with db - only needed for mysql - and then not really */
+	/**
+	 * The sync timer - controls auto-sync with db - only needed for mysql - and
+	 * then not really
+	 */
 	private java.util.Timer syncTimer_ = null;
 
 	/** flag indicating if a system tray icon is running. */
@@ -242,7 +242,7 @@ public class Borg implements OptionsView.RestartListener, SocketHandler {
 		return trayIcon;
 	}
 
-	/** process a socket message. the only messages commonly used are open: when another borg process is started, which
+/** process a socket message. the only messages commonly used are open: when another borg process is started, which
 	 * just opens this one, lock: when a palm sync requests a lock on user activity and messages starting with "<",which
 	 * are redirected to the remote db server, which is how palm sync talks to the db of the running borg.
 	 */
@@ -294,7 +294,9 @@ public class Borg implements OptionsView.RestartListener, SocketHandler {
 		return ("Unknown msg: " + msg);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see net.sf.borg.ui.OptionsView.RestartListener#restart()
 	 */
 	public void restart() {
@@ -307,39 +309,22 @@ public class Borg implements OptionsView.RestartListener, SocketHandler {
 		init(new String[0]);
 	}
 
-	
 	/**
 	 * Initialize the application
 	 * 
-	 * @param args the args
+	 * @param args
+	 *            the args
 	 */
 	private void init(String args[]) {
-
-		// redirect stdout and stderr to files
-		try
-        {
-			String home = System.getProperty("user.home", "");
-            FileOutputStream errStr = new FileOutputStream(home+"/.borg.err", false);
-            PrintStream printStream = new PrintStream(errStr);
-            System.setErr(printStream);
-            FileOutputStream outStr = new FileOutputStream(home+"/.borg.out", false);
-            printStream = new PrintStream(outStr);
-            System.setOut(printStream);
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-        }
-		
-        // register as a restart listener. on rare occassions the options window can request an
-        // app restart
-		OptionsView.setRestartListener(this);
 
 		// override for testing a different db
 		String testdb = null;
 
 		// override for tray icon name
 		String trayname = "BORG";
+
+		// testing flag
+		boolean testing = false;
 
 		// process command line args
 		for (int i = 0; i < args.length; i++) {
@@ -358,8 +343,47 @@ public class Borg implements OptionsView.RestartListener, SocketHandler {
 					System.exit(1);
 				}
 				testdb = args[i];
+			} else if (args[i].equals("-test")) {
+				testing = true;
 			}
 		}
+		
+		// open existing BORG if there is one
+		int port = Prefs.getIntPref(PrefName.SOCKETPORT);
+		if (port != -1 && !testing) {
+			String resp;
+			try {
+				resp = SocketClient.sendMsg("localhost", port, "open");
+				if (resp != null && resp.equals("ok")) {
+					System.exit(0);
+				}
+			} catch (IOException e) {
+
+			}
+
+		}
+
+		// redirect stdout and stderr to files
+		try {
+			if (!testing) {
+				String home = System.getProperty("user.home", "");
+				FileOutputStream errStr = new FileOutputStream(home
+						+ "/.borg.err", false);
+				PrintStream printStream = new PrintStream(errStr);
+				System.setErr(printStream);
+				FileOutputStream outStr = new FileOutputStream(home
+						+ "/.borg.out", false);
+				printStream = new PrintStream(outStr);
+				System.setOut(printStream);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		// register as a restart listener. on rare occassions the options window
+		// can request an
+		// app restart
+		OptionsView.setRestartListener(this);
 
 		// check if splash window is enabled
 		boolean splash = true;
@@ -423,11 +447,10 @@ public class Borg implements OptionsView.RestartListener, SocketHandler {
 				OptionsView.dbSelectOnly();
 				return;
 			}
-			
-			
+
 			// now all errors can go to popup windows
 			Errmsg.console(false); // send errors to screen
-			
+
 			// connect to the db - for now it is jdbc only
 			JdbcDB.connect(dbdir);
 
@@ -442,15 +465,14 @@ public class Borg implements OptionsView.RestartListener, SocketHandler {
 			if (splash)
 				ban_.setText(Resource
 						.getResourceString("Loading_Task_Database"));
-			
+
 			// init task model
 			TaskModel.getReference();
-
 
 			if (splash)
 				ban_.setText(Resource
 						.getResourceString("Opening_Address_Database"));
-			
+
 			// init address model
 			AddressModel.getReference();
 
@@ -530,7 +552,6 @@ public class Borg implements OptionsView.RestartListener, SocketHandler {
 			}
 
 			// start socket listener
-			int port = Prefs.getIntPref(PrefName.SOCKETPORT);
 			if (port != -1 && socketServer_ == null) {
 				socketServer_ = new SocketServer(port, this);
 			}
@@ -597,10 +618,11 @@ public class Borg implements OptionsView.RestartListener, SocketHandler {
 	/**
 	 * swing thread logic
 	 * 
-	 * @param trayname the trayname
+	 * @param trayname
+	 *            the trayname
 	 */
 	private void swingStart(String trayname) {
-		
+
 		// start the system tray icon - or at least attempt to
 		// it doesn't run on all OSs and all WMs
 		trayIcon = true;
