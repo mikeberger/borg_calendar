@@ -38,7 +38,6 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.Iterator;
 
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -56,36 +55,65 @@ import net.sf.borg.model.entity.CalendarEntity;
 import net.sf.borg.model.entity.LabelEntity;
 import net.sf.borg.model.xml.AppointmentXMLAdapter;
 
+/**
+ * ApptBoxPanel is the base class for Panels that act as containers for
+ * Box and DateZone objects. It manages the layout of Boxes and the various operations
+ * that can be done on them - such as dragging, resizing, clicking
+ */
 abstract class ApptBoxPanel extends JPanel {
 
+	/**
+	 * ClickedBoxInfo contains information about where the mouse is and what
+	 * Box and/or DateZone it is within
+	 */
 	private class ClickedBoxInfo {
-		public Box box = null;
-		public boolean onBottomBorder = false;
-		public boolean onTopBorder = false;
-		public DateZone zone = null;
+		public Box box = null; //box that the mouse is in
+		public boolean onBottomBorder = false; //true if mouse is on the bottom border of a box
+		public boolean onTopBorder = false; // true if the mouse is on the top border of a box
+		public DateZone zone = null; // datezone that the mouse is in
 	}
 
+	/**
+	 * DragNewBox is a Box only used by ApptBoxPanel. It is the Box drawn as the
+	 * user drags the mouse to create a new, timed appointment
+	 */
 	private class DragNewBox extends Box {
 
+		// rectangle corner radius
 		private static final int radius = 5;
 
+		// border thickness
+		private BasicStroke thicker = new BasicStroke(4.0f);
+
+		// zone that the box is in
+		DateZone zone;
+
+		// popup menu
 		JPopupMenu pop = null;
-		public DragNewBox(Rectangle bounds, Rectangle clip) {
-			super(bounds, clip);
+
+		/**
+		 * Instantiates a new drag new box.
+		 * 
+		 * @param bounds the bounds
+		 * @param clip the clip
+		 */
+		public DragNewBox(DateZone zone) {
+			super(null, null);
+			this.zone = zone;
 		}
 
+		/**
+		 * Adds an appointment based on the location as size of this Box
+		 */
 		private void addAppt() {
+			
+			// prompt for appt text
 			String text = JOptionPane.showInputDialog("", Resource
 					.getResourceString("Please_enter_some_appointment_text"));
 			if (text == null)
-				return;
-			Rectangle r = getBounds();
-			int topmins = realMins((r.y - resizeYMin)
-					/ (resizeYMax - resizeYMin));
-			int botmins = realMins((r.y - resizeYMin + r.height)
-					/ (resizeYMax - resizeYMin));
-			
-			// get default appt values, if any
+				return;	
+
+			// get default appt values, if any from prefs
 			Appointment appt = null;
 			String defApptXml = Prefs.getPref(PrefName.DEFAULT_APPT);
 			if (!defApptXml.equals("")) {
@@ -99,42 +127,61 @@ abstract class ApptBoxPanel extends JPanel {
 				}
 			}
 
+			// get a new appt if no defaults
 			if (appt == null) {
 				appt = AppointmentModel.getReference().newAppt();
 			}
 
-			// System.out.println(top + " " + bottom);
+			// set text
+			appt.setText(text);
+
+
+			// determine the appt time and duration based on the size of this box
+			Rectangle r = getBounds();
+			int topmins = realMins((r.y - resizeYMin)
+					/ (resizeYMax - resizeYMin));
+			int botmins = realMins((r.y - resizeYMin + r.height)
+					/ (resizeYMax - resizeYMin));
 			int realtime = topmins;
 			int hour = realtime / 60;
 			int min = realtime % 60;
 			min = (min / 5) * 5;
 			Calendar startCal = new GregorianCalendar();
-			startCal.setTime(draggedZone.getDate());
+			startCal.setTime(zone.getDate());
 			startCal.set(Calendar.HOUR_OF_DAY, hour);
 			startCal.set(Calendar.MINUTE, min);
 			appt.setDate(startCal.getTime());
 
+			// duration
 			int realend = botmins;
 			int ehour = realend / 60;
 			int emin = realend % 60;
 			emin = (emin / 5) * 5;
 			int dur = 60 * (ehour - hour) + emin - min;
-
 			appt.setDuration(new Integer(dur));
 
+			// set untimed if no duration
 			if (dur > 0)
-				appt.setUntimed(null);
-
-			appt.setText(text);
-			AppointmentModel.getReference().saveAppt(appt);
+				appt.setUntimed("N");
+			else
+				appt.setUntimed("Y");
 			
-			draggedZone = null;
+			// save appt
+			AppointmentModel.getReference().saveAppt(appt);
+
+			// remove the DragNewBox
 			removeDragNewBox();
 			repaint();
 		}
-		
 
+		/**
+		 * draw the DragNewBox - it is just a rounded rectangle outline with
+		 * start and end time indicators
+		 */
+		@Override
 		public void draw(Graphics2D g2, Component comp) {
+			
+			// border
 			Stroke stroke = g2.getStroke();
 			g2.setStroke(thicker);
 			g2.setColor(Color.GREEN);
@@ -144,6 +191,8 @@ abstract class ApptBoxPanel extends JPanel {
 			Rectangle r = getBounds();
 			g2.drawRoundRect(r.x, r.y, r.width, r.height, radius * radius,
 					radius * radius);
+			
+			// start and end time indicators
 			g2.setStroke(stroke);
 			double top = (r.y - resizeYMin) / (resizeYMax - resizeYMin);
 			double bot = (r.y - resizeYMin + r.height)
@@ -161,10 +210,7 @@ abstract class ApptBoxPanel extends JPanel {
 
 		}
 
-		public void onClick() {
-			addAppt();
-		}
-
+		@Override
 		public JPopupMenu getMenu() {
 			if (pop == null) {
 				JMenuItem mnuitm = null;
@@ -180,18 +226,25 @@ abstract class ApptBoxPanel extends JPanel {
 			return pop;
 		}
 
+		@Override
+		public void onClick() {
+			addAppt();
+		}
+
 	}
 
+	/**
+	 * MyComponentListener just refreshes this object after a resize
+	 */
 	private class MyComponentListener implements ComponentListener {
 
+		/* (non-Javadoc)
+		 * @see java.awt.event.ComponentListener#componentHidden(java.awt.event.ComponentEvent)
+		 */
 		public void componentHidden(ComponentEvent arg0) {
-			// TODO Auto-generated method stub
-
 		}
 
 		public void componentMoved(ComponentEvent e) {
-			// TODO Auto-generated method stub
-
 		}
 
 		public void componentResized(ComponentEvent e) {
@@ -200,34 +253,44 @@ abstract class ApptBoxPanel extends JPanel {
 		}
 
 		public void componentShown(ComponentEvent e) {
-			// TODO Auto-generated method stub
-
 		}
 
 	}
 
+	/**
+	 * MyMouseListener reacts to all mouse events
+	 */
 	private class MyMouseListener implements MouseListener, MouseMotionListener {
 
+		// during a resize, if true indicates that we are dragging the top of a
+		// box, otherwise, the bottom is being dragged
 		private boolean resizeTop = true;
 
-		public MyMouseListener() {
-
-		}
-
+		/**
+		 * mouse clicked - either show a popup menu (right button) or 
+		 * send an onclick message to a box
+		 */
 		public void mouseClicked(MouseEvent evt) {
 
 			evt.translatePoint(translation, translation);
+			
+			// get the box and/or zone clicked
 			ClickedBoxInfo b = getClickedBoxInfo(evt);
+			
+			// right click
 			if (evt.getButton() == MouseEvent.BUTTON3) {
 
+				// if no box or zone - do nothing
 				if (b == null)
 					return;
 
+				// show a box's menu
 				if (b.box != null) {
 					if (b.box.getMenu() != null) {
 						b.box.getMenu().show(evt.getComponent(), evt.getX(),
 								evt.getY());
 					}
+				// show a zone's menu
 				} else if (b.zone != null) {
 					b.zone.getMenu().show(evt.getComponent(), evt.getX(),
 							evt.getY());
@@ -238,6 +301,7 @@ abstract class ApptBoxPanel extends JPanel {
 
 			evt.getComponent().repaint();
 
+			// call onClick() if we clicked on anything
 			if (b == null)
 				return;
 			else if (b.box != null)
@@ -247,14 +311,24 @@ abstract class ApptBoxPanel extends JPanel {
 
 		}
 
+		/**
+		 * mouse dragged - but not yet released
+		 */
 		public void mouseDragged(MouseEvent evt) {
 			evt.translatePoint(translation, translation);
 
+			// ignore right-click drag
 			if (evt.getButton() == MouseEvent.BUTTON3)
 				return;
 
+			// in-a-drag flag
 			dragStarted = true;
+			
+			// if we are resizing a box
 			if (resizedBox != null) {
+				
+				// adjust the size of the displayed resize rectangle due to the
+				// mouse drag
 				if (resizeTop == true) {
 					int top = (int) Math.max(evt.getY(), resizeYMin);
 					setResizeBox(resizedBox.getBounds().x, top, resizedBox
@@ -267,8 +341,11 @@ abstract class ApptBoxPanel extends JPanel {
 							- resizedBox.getBounds().y);
 				}
 				evt.getComponent().repaint();
+			// if we are dragging a box around (a move)
 			} else if (draggedBox != null) {
 
+				// draw a "move" rectangle to show where the box is moving
+				// we just use the resize box for this since that mechanism is already there
 				int top = evt.getY() - (draggedBox.getBounds().height / 2);
 				if (top < dragYMin)
 					top = (int) dragYMin;
@@ -283,14 +360,29 @@ abstract class ApptBoxPanel extends JPanel {
 						draggedBox.getBounds().height);
 
 				evt.getComponent().repaint();
+				
+			// if we are dragging out the outline of a new appointment
 			} else if (draggedAnchor != -1) {
+				
+				ClickedBoxInfo b = getClickedBoxInfo(evt);
+				
+				// create the DragNewBox if it doesn;t yet exist
 				if (dragNewBox == null)
-					setDragNewBox(draggedZone.getBounds().x, evt.getY(),
-							draggedZone.getBounds().width, 5);
+				{	
+					dragNewBox = new DragNewBox(b.zone);
+					setDragNewBox(b.zone.getBounds().x, evt.getY(),
+							b.zone.getBounds().width, 5);
+				}
+				
+				// drag out the DragNewBox - but don't allow a drag beyond
+				// resizeYMin and resizeYMax - the bounds allowed for dragging
 				double y = evt.getY();
 				y = Math.max(y, resizeYMin);
 				y = Math.min(y, resizeYMax);
 				Rectangle r = dragNewBox.getBounds();
+				
+				// draw the DragNewBox above or below the starting (anchor)
+				// point, depending on if we are dragging up or down
 				if (y > draggedAnchor) {
 					setDragNewBox(r.x, r.y, r.width, y - draggedAnchor);
 				} else {
@@ -300,28 +392,37 @@ abstract class ApptBoxPanel extends JPanel {
 			}
 		}
 
+		/** not used */
 		public void mouseEntered(MouseEvent evt) {
 		}
 
+		/** not used */
 		public void mouseExited(MouseEvent evt) {
 		}
 
+		/**
+		 * mouse moved without being pressed - do mouse-over type stuff
+		 */
 		public void mouseMoved(MouseEvent evt) {
 			evt.translatePoint(translation, translation);
 
-			if (evt.getButton() == MouseEvent.BUTTON3)
-				return;
-
+			
 			JPanel panel = (JPanel) evt.getComponent();
 
+			// get box or zone we are within
 			ClickedBoxInfo b = getClickedBoxInfo(evt);
+			
+			// set tool tip text of any Box we are in
 			if (b != null && b.box != null) {
 				panel.setToolTipText(b.box.getText());
 			}
 
+			// set the mouse cursor depending on where we are
+			// in relation to a box - border vs. inside vs outside
 			if (b != null && (b.onTopBorder || b.onBottomBorder)) {
 				panel.setCursor(new Cursor(Cursor.N_RESIZE_CURSOR));
-			} else if (b != null && b.box != null && b.box instanceof Box.Draggable) {
+			} else if (b != null && b.box != null
+					&& b.box instanceof Box.Draggable) {
 				panel.setCursor(new Cursor(Cursor.MOVE_CURSOR));
 			} else {
 				panel.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -330,20 +431,31 @@ abstract class ApptBoxPanel extends JPanel {
 			evt.getComponent().repaint();
 		}
 
+		/**
+		 * react to mouse press and not yet released
+		 */
 		public void mousePressed(MouseEvent evt) {
 
 			evt.translatePoint(translation, translation);
 
+			// ignore right click
 			if (evt.getButton() == MouseEvent.BUTTON3)
 				return;
 
+			// get box or zone we are in
 			ClickedBoxInfo b = getClickedBoxInfo(evt);
+			
+			// if we press in a box other than the DragNewBox - then
+			// get rid of the DragNewBox
 			if (b == null || b.box != dragNewBox)
 				removeDragNewBox();
 
+			// reset drag started (end any current drag)
 			dragStarted = false;
 
+			// if we are on the border of a box - start a resize
 			if (b != null && (b.onTopBorder || b.onBottomBorder)) {
+				// start resize of an appointment box
 				if (b.box instanceof ApptBox) {
 					resizedBox = (ApptBox) b.box;
 					setResizeBox(b.box.getBounds().x, b.box.getBounds().y,
@@ -353,8 +465,8 @@ abstract class ApptBoxPanel extends JPanel {
 					} else {
 						resizeTop = true;
 					}
+				// start resize of the drag new box
 				} else if (b.box == dragNewBox) {
-					draggedZone = b.zone;
 					if (b.onBottomBorder) {
 						draggedAnchor = dragNewBox.getBounds().y;
 					} else {
@@ -363,33 +475,48 @@ abstract class ApptBoxPanel extends JPanel {
 					}
 				}
 				evt.getComponent().repaint();
-			} else if (b != null && b.box != null && b.box instanceof Box.Draggable) {
+			// start drag (move) of a Box
+			} else if (b != null && b.box != null
+					&& b.box instanceof Box.Draggable) {
 				draggedBox = b.box;
 				setResizeBox(b.box.getBounds().x, b.box.getBounds().y, b.box
 						.getBounds().width, b.box.getBounds().height);
 				evt.getComponent().repaint();
+			// if we have pressed inside a zone, this is the start of a 
+			// DragNewBox - so set the anchor point and record the zone.
+			// *** only do this if we are inside the resize bounds
+		    // this is the magic spot where we enforce sweeping out a new item
+			// only in certain spots
 			} else if (b != null && b.zone != null && evt.getY() > resizeYMin
 					&& evt.getY() < resizeYMax) {
-				// b is a date zone
-				draggedZone = b.zone;
 				draggedAnchor = evt.getY();
 			}
 
+			// set the mouse cursor depending on where we are
+			// in relation to a box - border vs. inside vs outside
 			JPanel panel = (JPanel) evt.getComponent();
 			if (b != null && (b.onTopBorder || b.onBottomBorder)) {
 				panel.setCursor(new Cursor(Cursor.N_RESIZE_CURSOR));
-			} else if (b != null && b.box != null && b.box instanceof Box.Draggable) {
+			} else if (b != null && b.box != null
+					&& b.box instanceof Box.Draggable) {
 				panel.setCursor(new Cursor(Cursor.MOVE_CURSOR));
 			} else {
 				panel.setCursor(new Cursor(Cursor.HAND_CURSOR));
 			}
 		}
 
+		/**
+		 * mouse has been released after a press and possible drag
+		 */
 		public void mouseReleased(MouseEvent evt) {
 			evt.translatePoint(translation, translation);
 
+			// ignore release of right button
 			if (evt.getButton() == MouseEvent.BUTTON3)
 				return;
+			
+			// if we have been resizing, then send a resize call to
+			// the resized box so it can deal with the resize
 			if (resizedBox != null && dragStarted) {
 				double y = evt.getY();
 				y = Math.max(y, resizeYMin);
@@ -400,24 +527,28 @@ abstract class ApptBoxPanel extends JPanel {
 				} catch (Exception e) {
 					Errmsg.errmsg(e);
 				}
-
+			// if we have been moving a box, then call its move method
+			// so that it can deal with it
 			} else if (draggedBox != null && dragStarted) {
 				double y = resizeRectangle.y;
 				y = Math.max(y, resizeYMin);
 				y = Math.min(y, resizeYMax);
 
-				double centerx = evt.getX();// + draggedBox.getBounds().width /
-				// 2;
-				double centery = evt.getY();// + draggedBox.getBounds().height /
-				// 2;
+				double centerx = evt.getX();
+				double centery = evt.getY();
 				Date d = getDateForCoord(centerx, centery);
 				try {
+					// if we moved the box inside the resize area, send it the
+					// new start time info
 					if (isInsideResizeArea(resizeRectangle.y, resizeRectangle.y
 							+ resizeRectangle.height)) {
-						((Box.Draggable)draggedBox).move(realMins((y - resizeYMin)
-								/ (resizeYMax - resizeYMin)), d);
+						((Box.Draggable) draggedBox).move(
+								realMins((y - resizeYMin)
+										/ (resizeYMax - resizeYMin)), d);
 					} else {
-						((Box.Draggable)draggedBox).move(0, d);
+						// we moved the box outside of the resize area, so 
+						// send no time info (the resize area == the time grid)
+						((Box.Draggable) draggedBox).move(0, d);
 					}
 				} catch (Exception e) {
 					Errmsg.errmsg(e);
@@ -425,6 +556,7 @@ abstract class ApptBoxPanel extends JPanel {
 
 			}
 
+			// reset resizing and dragging
 			draggedBox = null;
 			resizedBox = null;
 			removeResizeBox();
@@ -433,20 +565,25 @@ abstract class ApptBoxPanel extends JPanel {
 		}
 	}
 	
+	// for painting the border
 	final static private float hlthickness = 2.0f;
-
 	final static private BasicStroke highlight = new BasicStroke(hlthickness);
 
-
+	// format for time markers on resize/drag box
 	private static SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
 
-	// final static private BasicStroke regular = new BasicStroke(1.0f);
-	final static private BasicStroke thicker = new BasicStroke(4.0f);
 
-	// Graphics2D is translated
+	// to adjust, since since Graphics2D is translated
+	final static private int translation = -10; 
 
-	final static private int translation = -10; // to adjust, since since
-
+	/**
+	 * Checks if entity should be shown as strike-through on a certain date.
+	 * 
+	 * @param appt the entity
+	 * @param date the date
+	 * 
+	 * @return true, if is strike
+	 */
 	public static boolean isStrike(CalendarEntity appt, Date date) {
 		if ((appt.getColor() != null && appt.getColor().equals("strike"))
 				|| (appt.getTodo() && !(appt.getNextTodo() == null || !appt
@@ -456,44 +593,53 @@ abstract class ApptBoxPanel extends JPanel {
 		return false;
 	}
 
-	protected Collection<Object> boxes = new ArrayList<Object>();
+	/** the Boxes managed by this container */
+	protected Collection<Box> boxes = new ArrayList<Box>();
 
-	private int boxnum = 0;
-
+	// position of drag start
 	private int draggedAnchor = -1;
 
+	// Box that is currently being dragged around
 	private Box draggedBox = null;
 
-	private DateZone draggedZone = null;
-
+	// Box that shows a brand new timed appt being dragged out
 	private DragNewBox dragNewBox = null;
 
+	// flag to indicate we have started dragging
 	private boolean dragStarted = false;
 
+	// bounds which limit where a box can be dragged
 	private double dragXMax = 0;;
-
 	private double dragXMin = 0;
-
 	private double dragYMax = 0;;
-
 	private double dragYMin = 0;
 
+	// end time of the timed zone
 	protected double endmin = 0;;
 
+	// box that is being resized
 	private ApptBox resizedBox = null;
 
+	// rectangle to show a resize or move in progress
 	private Rectangle resizeRectangle = null;
 
+	// bounds which limit where resizing can occur - also limits
+	// where new appts can be dragged out
 	private double resizeYMax = 0;
-
 	private double resizeYMin = 0;
 
+	// start time of the timed zone
 	protected double startmin = 0;
 
-	private Collection<Object> zones = new ArrayList<Object>();
+	// DateZones managed by this container
+	private Collection<DateZone> zones = new ArrayList<DateZone>();
 
+	/**
+	 * Instantiates a new appt box panel.
+	 */
 	public ApptBoxPanel() {
 
+		// set up event listeners
 		MyMouseListener myOneListener = new MyMouseListener();
 		addMouseListener(myOneListener);
 		addMouseMotionListener(myOneListener);
@@ -501,7 +647,15 @@ abstract class ApptBoxPanel extends JPanel {
 
 	}
 
-	public void addApptBox(Date d, Appointment ap, Rectangle bounds,
+	/**
+	 * Adds an appointment to the container. Creates an ApptBox to contain it
+	 * 
+	 * @param d the date of the box - not aleays the appt date
+	 * @param ap the appointment
+	 * @param bounds the bounds
+	 * @param clip the clip
+	 */
+	protected void addApptBox(Date d, Appointment ap, Rectangle bounds,
 			Rectangle clip) {
 
 		if (Prefs.getBoolPref(PrefName.HIDESTRIKETHROUGH)
@@ -509,20 +663,38 @@ abstract class ApptBoxPanel extends JPanel {
 			return;
 		ApptBox b = new ApptBox(d, ap, bounds, clip);
 
-		b.setBoxnum(boxnum);
-		boxnum++;
+		// assign a unique index which will eventually be used to vary the box colors
+		b.setBoxnum(boxes.size());
 
 		boxes.add(b);
 	}
 
-	public void addDateZone(Date d, double sm, double em, Rectangle bounds) {
+	/**
+	 * Adds a date zone to this container
+	 * 
+	 * @param d the date
+	 * @param bounds the bounds of the zone
+	 */
+	public void addDateZone(Date d, Rectangle bounds) {
 		DateZone b = new DateZone(d, bounds);
 		zones.add(b);
 	}
 
+	/**
+	 * Adds the note box to this container
+	 * 
+	 * @param d the date
+	 * @param ap the calendar entity
+	 * @param bounds the bounds
+	 * @param clip the clip
+	 * 
+	 * @return the box
+	 */
 	public Box addNoteBox(Date d, CalendarEntity ap, Rectangle bounds,
 			Rectangle clip) {
 
+		// ignore the note box if it is strike-through and the option
+		// to hide strike through is set
 		if (Prefs.getBoolPref(PrefName.HIDESTRIKETHROUGH)
 				&& ApptBoxPanel.isStrike(ap, d))
 			return null;
@@ -530,31 +702,39 @@ abstract class ApptBoxPanel extends JPanel {
 		Box b;
 		if (ap instanceof LabelEntity) {
 			// phony holiday appt added by Day object
-			b = new LabelBox((LabelEntity)ap, bounds, clip);
+			b = new LabelBox((LabelEntity) ap, bounds, clip);
 		} else {
 			b = new NoteBox(d, ap, bounds, clip);
 		}
+		
 		boxes.add(b);
 
 		return b;
 	}
 
+	/**
+	 * Clear boxes and zones.
+	 */
 	public void clearBoxes() {
 		boxes.clear();
 		zones.clear();
-		boxnum = 0;
 	}
 
+	/**
+	 * Draw boxes.
+	 * 
+	 * @param g2 the Graphics to draw in
+	 */
 	public void drawBoxes(Graphics2D g2) {
 
 		Stroke stroke = g2.getStroke();
 
-		Iterator<Object> it = boxes.iterator();
-		while (it.hasNext()) {
-			Box b = (Box) it.next();
+		// draw each box
+		for(Box b : boxes) {
 			b.draw(g2, this);
 		}
 
+		// draw the resize rectangle if needed
 		int radius = 5;
 		if (resizeRectangle != null) {
 			g2.setStroke(highlight);
@@ -564,6 +744,7 @@ abstract class ApptBoxPanel extends JPanel {
 							* radius, radius * radius);
 			g2.setStroke(stroke);
 
+			// draw time indicators
 			if (isInsideResizeArea(resizeRectangle.y, resizeRectangle.y
 					+ resizeRectangle.height)) {
 				double top = (resizeRectangle.y - resizeYMin)
@@ -586,6 +767,8 @@ abstract class ApptBoxPanel extends JPanel {
 						resizeRectangle.y + resizeRectangle.height - 2);
 			}
 		}
+		
+		// draw drag new box if needed
 		if (dragNewBox != null) {
 			dragNewBox.draw(g2, this);
 		}
@@ -593,13 +776,21 @@ abstract class ApptBoxPanel extends JPanel {
 
 	}
 
+	/**
+	 * Gets info on which zone and/or box the mouse is in - plus if we are
+	 * on the top or bottom border of the box
+	 * 
+	 * @param evt the MouseEvent
+	 * 
+	 * @return the ClickedBoxInfo
+	 */
 	private ClickedBoxInfo getClickedBoxInfo(MouseEvent evt) {
-		// determine which box is selected, if any
-
+		
 		boolean onTopBorder = false;
 		boolean onBottomBorder = false;
 		ClickedBoxInfo ret = new ClickedBoxInfo();
 
+		// check if we are in the drag new box
 		if (dragNewBox != null) {
 			Rectangle r = dragNewBox.getBounds();
 			if (evt.getX() > r.x && evt.getX() < (r.x + r.width)
@@ -618,11 +809,9 @@ abstract class ApptBoxPanel extends JPanel {
 			}
 		}
 
-		Iterator<Object> it = boxes.iterator();
-		while (it.hasNext()) {
-
-			Box b = (Box) it.next();
-
+		// check if we are in any boxes (drag new box above takes priority)
+		for(Box b : boxes){
+			
 			if (ret.box == null && evt.getX() > b.getBounds().x
 					&& evt.getX() < (b.getBounds().x + b.getBounds().width)
 					&& evt.getY() > b.getBounds().y
@@ -643,10 +832,9 @@ abstract class ApptBoxPanel extends JPanel {
 			}
 		}
 
-		it = zones.iterator();
-		while (it.hasNext()) {
+		// checl if we are in a date zone
+		for( DateZone b : zones ) {
 
-			DateZone b = (DateZone) it.next();
 			if (evt.getX() > b.getBounds().x
 					&& evt.getX() < (b.getBounds().x + b.getBounds().width)
 					&& evt.getY() > b.getBounds().y
@@ -663,8 +851,23 @@ abstract class ApptBoxPanel extends JPanel {
 
 	}
 
+	/**
+	 * Gets the date for a mouse coordinate
+	 * 
+	 * @param x the x coordinate
+	 * @param y the y coordinate
+	 * 
+	 * @return the date for coord
+	 */
 	abstract Date getDateForCoord(double x, double y);
 
+	/**
+	 * Gets the time string for a given y coordinate
+	 * 
+	 * @param y_fraction the y_fraction
+	 * 
+	 * @return the time string
+	 */
 	public String getTimeString(double y_fraction) {
 
 		int realtime = realMins(y_fraction);
@@ -678,6 +881,14 @@ abstract class ApptBoxPanel extends JPanel {
 		return sdf.format(newTime);
 	}
 
+	/**
+	 * Checks if a box is completely inside the resize area.
+	 * 
+	 * @param top the top
+	 * @param bot the bottom
+	 * 
+	 * @return true, if is inside resize area
+	 */
 	private boolean isInsideResizeArea(int top, int bot) {
 		if (top >= resizeYMin && bot <= resizeYMax)
 			return true;
@@ -685,6 +896,14 @@ abstract class ApptBoxPanel extends JPanel {
 
 	}
 
+	/**
+	 * get the time as minutes past midnight for a fraction representing
+	 * how far we are between start and end of the time zone
+	 * 
+	 * @param y_fraction the y_fraction
+	 * 
+	 * @return the time as minutes past midnight
+	 */
 	private int realMins(double y_fraction) {
 		double realtime = startmin + (endmin - startmin) * y_fraction;
 		// round it because the double math is causing errors when later
@@ -693,46 +912,81 @@ abstract class ApptBoxPanel extends JPanel {
 		return min;
 	}
 
+	/**
+	 * Refresh.
+	 */
 	public abstract void refresh();
 
-	public void removeDragNewBox() {
+	/**
+	 * Removes the drag new box.
+	 */
+	protected void removeDragNewBox() {
 		dragNewBox = null;
 		draggedAnchor = -1;
 	}
 
+	/**
+	 * Removes the resize box.
+	 */
 	public void removeResizeBox() {
 		resizeRectangle = null;
 	}
 
-	public void setDragBounds(int ymin, int ymax, int xmin, int xmax) {
+	/**
+	 * Sets the drag bounds to limit where items can be dragged.
+	 * 
+	 * @param ymin the y minimum
+	 * @param ymax the y maximum
+	 * @param xmin the x minimum
+	 * @param xmax the x maximum
+	 */
+	protected void setDragBounds(int ymin, int ymax, int xmin, int xmax) {
 		dragYMin = ymin;
 		dragYMax = ymax;
 		dragXMin = xmin;
 		dragXMax = xmax;
 	}
 
-	public void setDragNewBox(double x, double y, double w, double h) {
+	/**
+	 * Sets the bounds for the drag new box
+	 * 
+	 * @param x the x coord
+	 * @param y the y coord
+	 * @param w the width
+	 * @param h the height
+	 */
+	protected void setDragNewBox(double x, double y, double w, double h) {
 
 		Rectangle bounds = new Rectangle();
 		bounds.x = (int) x;
 		bounds.y = (int) y;
 		bounds.height = (int) h;
 		bounds.width = (int) w;
-		if (dragNewBox == null) {		
-			dragNewBox = new DragNewBox(bounds, bounds);
-		}
 		dragNewBox.setBounds(bounds);
 
 	}
 
-	public void setResizeBounds(int ymin, int ymax, int xmin, int xmax) {
+	/**
+	 * Sets the resize bounds which limit where a resized object border can be dragged and
+	 * where a drag new box can be started
+	 * 
+	 * @param ymin the y minimum
+	 * @param ymax the y maximum
+	 */
+	protected void setResizeBounds(int ymin, int ymax) {
 		resizeYMin = ymin;
 		resizeYMax = ymax;
-		// resizeXMin = xmin;
-		// resizeXMax = xmax;
 	}
 
-	public void setResizeBox(double x, double y, double w, double h) {
+	/**
+	 * Sets the resize box bounds.
+	 * 
+	 * @param x the x coord
+	 * @param y the y coord
+	 * @param w the width
+	 * @param h the height
+	 */
+	protected void setResizeBox(double x, double y, double w, double h) {
 		if (resizeRectangle == null)
 			resizeRectangle = new Rectangle();
 		resizeRectangle.x = (int) x;

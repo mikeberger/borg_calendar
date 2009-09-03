@@ -183,7 +183,7 @@ public class YearPanel extends JPanel implements Printable {
 			int calbot = daytop + 12 * rowheight;
 
 			setDragBounds(0, 0, 0, 0);
-			setResizeBounds(0, 0, 0, 0);
+			setResizeBounds(0, 0);
 
 			g2.setColor(this.getBackground());
 			g2.fillRect(0, caltop, calright, daytop - caltop);
@@ -360,9 +360,6 @@ public class YearPanel extends JPanel implements Printable {
 			repaint();
 		}
 
-		public void remove() {
-
-		}
 
 		public void prefsChanged() {
 			clearData();

@@ -199,11 +199,6 @@ public class WeekPanel extends JPanel implements Printable {
 			repaint();
 		}
 
-		public void remove() {
-			// TODO Auto-generated method stub
-
-		}
-
 		public void today() {
 			GregorianCalendar cal = new GregorianCalendar();
 			year_ = cal.get(Calendar.YEAR);
@@ -275,8 +270,7 @@ public class WeekPanel extends JPanel implements Printable {
 			// calculate the bottom and right edge of the grid
 			int calbot = (int) rowheight + daytop;
 
-			setResizeBounds((int) aptop, calbot, (int) timecolwidth,
-					(int) (pageWidth));
+			setResizeBounds((int) aptop, calbot);
 			setDragBounds(daytop, calbot, (int) timecolwidth, (int) (pageWidth));
 
 			// start and end hour = range of Y axis
@@ -336,7 +330,7 @@ public class WeekPanel extends JPanel implements Printable {
 				if (needLoad) {
 
 					// add a zone for each day to allow new appts to be edited
-					addDateZone(cal.getTime(), starthr * 60, endhr * 60,
+					addDateZone(cal.getTime(), 
 							new Rectangle(colleft, 0, (int) colwidth, calbot));
 
 					try {
@@ -408,9 +402,7 @@ public class WeekPanel extends JPanel implements Printable {
 					}
 
 					List<ApptBox> layoutlist = new ArrayList<ApptBox>();
-					Iterator<Object> bit = boxes.iterator();
-					while (bit.hasNext()) {
-						Box b = (Box) bit.next();
+					for( Box b : boxes ) {
 						if (!(b instanceof ApptBox))
 							continue;
 						ApptBox ab = (ApptBox) b;

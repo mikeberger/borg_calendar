@@ -204,7 +204,7 @@ public class MonthPanel extends JPanel implements Printable {
 			int calright = 7 * colwidth;
 
 			setDragBounds(daytop, calbot, 0, (int) pageWidth - weekbutwidth);
-			setResizeBounds(0, 0, 0, 0);
+			setResizeBounds(0, 0);
 
 			g2.setColor(this.getBackground());
 			g2.fillRect(0, caltop, calright, daytop - caltop);
@@ -252,7 +252,7 @@ public class MonthPanel extends JPanel implements Printable {
 				if (needLoad) {
 					try {
 
-						addDateZone(cal.getTime(), 0 * 60, 23 * 60,
+						addDateZone(cal.getTime(), 
 								new Rectangle(colleft, rowtop, colwidth,
 										rowheight));
 
@@ -433,10 +433,6 @@ public class MonthPanel extends JPanel implements Printable {
 		public void refresh() {
 			clearData();
 			repaint();
-		}
-
-		public void remove() {
-
 		}
 
 		public void prefsChanged() {

@@ -118,6 +118,8 @@ abstract public class Box {
 	 */
 	public void setBounds(Rectangle bounds) {
 		this.bounds = bounds;
+		if( clip == null )
+			clip = bounds;
 	}
 
 	/**
