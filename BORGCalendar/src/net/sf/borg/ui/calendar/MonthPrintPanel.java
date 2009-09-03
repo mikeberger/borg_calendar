@@ -36,7 +36,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import javax.swing.JOptionPane;
@@ -50,35 +49,73 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.model.Day;
 import net.sf.borg.model.entity.CalendarEntity;
 
-// monthPanel handles the printing of a single month
+/**
+ * MonthPrintPanel creates the Borg month printouts
+ */
 public class MonthPrintPanel extends JPanel implements Printable {
 
-	private int year_;
+	// scale factor used when this class draws a month printout on the UI
+	// not currently used
+	static private final double prev_scale = 1.5;
 
+	/**
+	 * prompt the user for a number of months to print (1-12), starting with the currently displayed one,
+	 * and then print the months
+	 * @param month displayed month
+	 * @param year displayed year
+	 * @throws Exception
+	 */
+	public static void printMonths(int month, int year) throws Exception {
+
+		// use the Java print service
+		// this relies on monthPanel.print to fill in a Graphic object and
+		// respond to the Printable API
+		MonthPrintPanel cp = new MonthPrintPanel(month, year);
+		Object options[] = { new Integer(1), new Integer(2), new Integer(3),
+				new Integer(4), new Integer(5), new Integer(6), new Integer(7),
+				new Integer(8), new Integer(9), new Integer(10),
+				new Integer(11), new Integer(12) };
+		Object choice = JOptionPane.showInputDialog(null, Resource
+				.getResourceString("nummonths"), Resource
+				.getResourceString("Print_Chooser"),
+				JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+		if (choice == null)
+			return;
+		
+		// print the months
+		Integer i = (Integer) choice;
+		cp.setPages(i.intValue());
+		PrintHelper.printPrintable(cp);
+
+	}
+
+	// start month
 	private int month_;
 
+	// number of pages to print
 	private int pages_ = 1;
 
-	public void setPages(int p) {
-		pages_ = p;
+	// start year
+	private int year_;
+
+	/**
+	 * constructor
+	 * @param month start month
+	 * @param year start year
+	 */
+	public MonthPrintPanel(int month, int year) {
+		year_ = year;
+		month_ = month;
 	}
 
-	// print does the actual formatting of the printout
-	public int print(Graphics g, PageFormat pageFormat, int pageIndex)
-			throws PrinterException {
-
-		if (pageIndex > pages_ - 1)
-			return Printable.NO_SUCH_PAGE;
-
-		return (drawIt(g, pageFormat.getWidth(), pageFormat.getHeight(),
-				pageFormat.getImageableWidth(),
-				pageFormat.getImageableHeight(), pageFormat.getImageableX(),
-				pageFormat.getImageableY(), pageIndex));
-	}
-
+	/**
+	 * draw the month printout to a Graphics
+	 */
 	private int drawIt(Graphics g, double width, double height,
 			double pageWidth, double pageHeight, double pagex, double pagey,
 			int pageIndex) {
+		
+		Graphics2D g2 = (Graphics2D) g;
 
 		int year;
 		int month;
@@ -90,45 +127,41 @@ public class MonthPrintPanel extends JPanel implements Printable {
 		} catch (Exception e) {
 		}
 
-		// set up default and small fonts
-		Graphics2D g2 = (Graphics2D) g;
-
+		// get fonts
 		Font def_font = g2.getFont();
-		// Font sm_font = def_font.deriveFont(6f);
 		Font sm_font = Font.decode(Prefs.getPref(PrefName.MONTHVIEWFONT));
 		Map<TextAttribute, Serializable> stmap = new HashMap<TextAttribute, Serializable>();
 		stmap.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
 		stmap.put(TextAttribute.FONT, sm_font);
 
+		// draw a white background
 		g2.setColor(Color.white);
 		g2.fillRect(0, 0, (int) width, (int) height);
-
-		// set color to black
 		g2.setColor(Color.black);
 
 		// get font sizes
 		int fontHeight = g2.getFontMetrics().getHeight();
 		int fontDesent = g2.getFontMetrics().getDescent();
 
-		// translate coordinates based on the amount of the page that
-		// is going to be printable on - in other words, set upper right
-		// to upper right of printable area - not upper right corner of
-		// paper
+		// translate coordinates based on the page margins
 		g2.translate(pagex, pagey);
 		Shape s = g2.getClip();
 
-		// determine month title
+		// determine month based on the page we are on (pageIndex)
 		GregorianCalendar cal = new GregorianCalendar(year_, month_, 1);
 		cal.add(Calendar.MONTH, pageIndex);
 		year = cal.get(Calendar.YEAR);
 		month = cal.get(Calendar.MONTH);
+		
+		// set first day of week
 		cal.setFirstDayOfWeek(Prefs.getIntPref(PrefName.FIRSTDOW));
 
+		// month title
 		Date then = cal.getTime();
 		SimpleDateFormat sd = new SimpleDateFormat("MMMM yyyy");
 		String title = sd.format(then);
 
-		// determine placement of title at correct height and centered
+		// draw of title at correct height and centered
 		// horizontally on page
 		int titlewidth = g2.getFontMetrics().stringWidth(title);
 		int caltop = fontHeight + fontDesent;
@@ -143,12 +176,11 @@ public class MonthPrintPanel extends JPanel implements Printable {
 		int calbot = 6 * rowheight + daytop;
 		int calright = 7 * colwidth;
 
-		// draw the day names centered in each column - no boxes drawn yet
+		// draw the day of week names centered in each column - no boxes drawn yet
 		SimpleDateFormat dfw = new SimpleDateFormat("EEE");
 		cal.add(Calendar.DAY_OF_WEEK, cal.getFirstDayOfWeek()
-				- cal.get(Calendar.DAY_OF_WEEK));
+				- cal.get(Calendar.DAY_OF_WEEK));	
 		for (int col = 0; col < 7; col++) {
-
 			int colleft = (col * colwidth);
 			String dayofweek = dfw.format(cal.getTime());
 			int swidth = g2.getFontMetrics().stringWidth(dayofweek);
@@ -157,7 +189,7 @@ public class MonthPrintPanel extends JPanel implements Printable {
 			cal.add(Calendar.DAY_OF_WEEK, 1);
 		}
 
-		// reset calendar
+		// reset date
 		cal.set(year, month, 1);
 		int fdow = cal.get(Calendar.DAY_OF_WEEK) - cal.getFirstDayOfWeek();
 
@@ -167,45 +199,55 @@ public class MonthPrintPanel extends JPanel implements Printable {
 			// month length
 			int mlen = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
 
+			// determine row and column
 			int boxcol = box % 7;
 			int boxrow = box / 7;
+			
+			// determine top left of the current day box
 			int rowtop = (boxrow * rowheight) + daytop;
 			int colleft = boxcol * colwidth;
+			
+			// get day of week
 			int dow = cal.getFirstDayOfWeek() + boxcol;
 			if (dow == 8)
 				dow = 1;
 
-			// if box in grid is before first day or after last, just draw a
+			// if box in grid is before first day or after last of the month, just draw a
 			// gray box
 			if (box < fdow || box > fdow + mlen - 1) {
 				// gray
 				if (cp.equals("false")) {
+					// onyl draw gray box if color print option is not on
 					g2.setColor(new Color(235, 235, 235));
 					g2.fillRect(colleft, rowtop, colwidth, rowheight);
 					g2.setColor(Color.black);
 				}
 			} else {
+				
+				// get date
 				int date = box - fdow + 1;
 
 				// set small font for appt text
 				g2.setFont(sm_font);
 				int smfontHeight = g2.getFontMetrics().getHeight();
-				// int smfontDesent=g2.getFontMetrics().getDescent();
 
 				// set clip to the day box to truncate long appointment text
 				g2.clipRect(colleft, rowtop, colwidth, rowheight);
+				
 				try {
 
 					// get the appointment info for the given day
 					GregorianCalendar gc = new GregorianCalendar(year, month,
 							date);
-					Day di = Day.getDay(year, month, date
-							);
-					if (di != null) {
+					Day dayInfo = Day.getDay(year, month, date);
+					if (dayInfo != null) {
+						
+						// vary the background color for color printing
+						// the user colors are not used. colors that don't waste ink are used
 						if (cp.equals("true")) {
-							if (di.getVacation() != 0) {
+							if (dayInfo.getVacation() != 0) {
 								g2.setColor(new Color(225, 255, 225));
-							} else if (di.getHoliday() == 1) {
+							} else if (dayInfo.getHoliday() == 1) {
 								g2.setColor(new Color(255, 225, 195));
 							} else if (dow == Calendar.SUNDAY
 									|| dow == Calendar.SATURDAY) {
@@ -217,50 +259,51 @@ public class MonthPrintPanel extends JPanel implements Printable {
 							g2.fillRect(colleft, rowtop, colwidth, rowheight);
 							g2.setColor(Color.black);
 						}
-						Collection<CalendarEntity> appts = di.getItems();
+						
+						
+						Collection<CalendarEntity> appts = dayInfo.getItems();
 						if (appts != null) {
-
-							Iterator<CalendarEntity> it = appts.iterator();
 
 							// determine X,Y coords of first appt text
 							int apptx = colleft + 2 * fontDesent;
 							int appty = rowtop + fontHeight + smfontHeight;
 
-							while (it.hasNext()) {
-								CalendarEntity ai = it.next();
+							for( CalendarEntity entity : appts ) {
 
 								// change color for a single appointment based
-								// on
-								// its color - only if color print option set
+								// on its color - only if color print option set
+								// *** this uses the original borg colors - not the user colors
+								// should be changed some time
 								if (cp.equals("false"))
 									g2.setColor(Color.black);
-								else if (ai.getColor().equals("red"))
+								else if (entity.getColor().equals("red"))
 									g2.setColor(Color.red);
-								else if (ai.getColor().equals("green"))
+								else if (entity.getColor().equals("green"))
 									g2.setColor(Color.green);
-								else if (ai.getColor().equals("blue"))
+								else if (entity.getColor().equals("blue"))
 									g2.setColor(Color.blue);
 
-								if (ApptBoxPanel.isStrike(ai, gc.getTime())) {
-
-									if (Prefs.getBoolPref(PrefName.HIDESTRIKETHROUGH))
+								// skip items that are strike-through if the option to skip them is set
+								if (ApptBoxPanel.isStrike(entity, gc.getTime())) {
+									if (Prefs
+											.getBoolPref(PrefName.HIDESTRIKETHROUGH))
 										continue;
-									
+
+									// draw strike-through text
 									// need to use AttributedString to work
 									// around a bug
 									AttributedString as = new AttributedString(
-											ai.getText(), stmap);
+											entity.getText(), stmap);
 									g2.drawString(as.getIterator(), apptx,
 											appty);
 								} else {
-
-									g2.drawString(ai.getText(), apptx, appty);
+									// draw the entity text
+									g2.drawString(entity.getText(), apptx, appty);
 								}
 
 								// increment the Y coord
 								appty += smfontHeight;
 
-								
 								// reset to black
 								g2.setColor(Color.black);
 							}
@@ -284,18 +327,16 @@ public class MonthPrintPanel extends JPanel implements Printable {
 
 		// draw the lines last
 
-		// top of calendar - above day names
+		// top border
 		g2.drawLine(0, caltop, calright, caltop);
 		for (int row = 0; row < 7; row++) {
 			int rowtop = (row * rowheight) + daytop;
-
 			// horizontal lines from below day names to bottom
 			g2.drawLine(0, rowtop, calright, rowtop);
 		}
 
 		for (int col = 0; col < 8; col++) {
 			int colleft = (col * colwidth);
-
 			// vertical lines
 			g2.drawLine(colleft, caltop, colleft, calbot);
 
@@ -304,8 +345,7 @@ public class MonthPrintPanel extends JPanel implements Printable {
 		return Printable.PAGE_EXISTS;
 	}
 
-	static private final double prev_scale = 1.5;
-
+	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		try {
@@ -320,32 +360,28 @@ public class MonthPrintPanel extends JPanel implements Printable {
 		}
 	}
 
-	public static void printMonths(int month, int year) throws Exception {
+	/**
+	 * print is called by the print service to print pages
+	 */
+	public int print(Graphics g, PageFormat pageFormat, int pageIndex)
+			throws PrinterException {
 
-		// use the Java print service
-		// this relies on monthPanel.print to fill in a Graphic object and
-		// respond to the Printable API
-		MonthPrintPanel cp = new MonthPrintPanel(month, year);
-		Object options[] = { new Integer(1), new Integer(2), new Integer(3),
-				new Integer(4), new Integer(5), new Integer(6), new Integer(7),
-				new Integer(8), new Integer(9), new Integer(10),
-				new Integer(11), new Integer(12) };
-		Object choice = JOptionPane.showInputDialog(null, Resource
-				.getResourceString("nummonths"), Resource
-				.getResourceString("Print_Chooser"),
-				JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-		if (choice == null)
-			return;
-		Integer i = (Integer) choice;
-		cp.setPages(i.intValue());
+		// if we have exceeded the requested number of pages - tell the print
+		// service that we are done
+		if (pageIndex > pages_ - 1)
+			return Printable.NO_SUCH_PAGE;
 
-		PrintHelper.printPrintable(cp);
-
+		return (drawIt(g, pageFormat.getWidth(), pageFormat.getHeight(),
+				pageFormat.getImageableWidth(),
+				pageFormat.getImageableHeight(), pageFormat.getImageableX(),
+				pageFormat.getImageableY(), pageIndex));
 	}
 
-	public MonthPrintPanel(int month, int year) {
-		year_ = year;
-		month_ = month;
-
+	/**
+	 * set the number of months (pages) to print
+	 * @param p number of pages
+	 */
+	public void setPages(int p) {
+		pages_ = p;
 	}
 }
