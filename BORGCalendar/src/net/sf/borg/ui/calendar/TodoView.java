@@ -20,18 +20,17 @@
 
 package net.sf.borg.ui.calendar;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Insets;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -42,6 +41,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
+import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.Icon;
@@ -53,10 +53,14 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
+import javax.swing.border.TitledBorder;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableCellRenderer;
 
@@ -70,15 +74,16 @@ import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.Repeat;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.Appointment;
+import net.sf.borg.model.entity.KeyedEntity;
 import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Subtask;
 import net.sf.borg.model.entity.Task;
 import net.sf.borg.model.xml.AppointmentXMLAdapter;
-import net.sf.borg.ui.CategoryChooser;
 import net.sf.borg.ui.DockableView;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.task.TaskView;
+import net.sf.borg.ui.util.GridBagConstraintsFactory;
 import net.sf.borg.ui.util.PopupMenuHelper;
 import net.sf.borg.ui.util.StripedTable;
 import net.sf.borg.ui.util.TablePrinter;
@@ -86,44 +91,21 @@ import net.sf.borg.ui.util.TableSorter;
 
 import com.toedter.calendar.JDateChooser;
 
+// TODO: Auto-generated Javadoc
 /**
- * 
- * @author MBERGER
+ * The Class TodoView.
  */
-
-// the tdgui displays a list of the current todo items and allows the
-// suer to mark them as done
 public class TodoView extends DockableView implements Prefs.Listener {
 
-	static private class ToggleButtonIcon implements Icon {
-		private Color color = Color.BLACK;
-
-		private final int h = 10;
-
-		private final int w = 30;
-
-		public ToggleButtonIcon(Color col) {
-			color = col;
-		}
-
-		public int getIconHeight() {
-			return h;
-		}
-
-		public int getIconWidth() {
-			return w;
-		}
-
-		public void paintIcon(Component c, Graphics g, int x, int y) {
-			Graphics2D g2 = (Graphics2D) g;
-			g2.setColor(Color.BLACK);
-			g2.drawRect(x, y, w, h);
-			g2.setColor(color);
-			g2.fillRect(x, y, w, h);
-		}
-	}
-
-	class TodayRenderer extends DefaultTableCellRenderer {
+	/**
+	 * Adds user colors to the todo table
+	 */
+	class TodoTableCellRenderer extends DefaultTableCellRenderer {
+		
+		/* (non-Javadoc)
+		 * @see javax.swing.table.DefaultTableCellRenderer#getTableCellRendererComponent(javax.swing.JTable, java.lang.Object, boolean, boolean, int, int)
+		 */
+		@Override
 		public Component getTableCellRendererComponent(JTable table,
 				Object value, boolean isSelected, boolean hasFocus, int row,
 				int column) {
@@ -131,161 +113,207 @@ public class TodoView extends DockableView implements Prefs.Listener {
 			super.getTableCellRendererComponent(table, value, isSelected,
 					hasFocus, row, column);
 
-			// it works but not consider current locale
-			// SimpleDateFormat sdf = new SimpleDateFormat( "yyyy-MM-dd" );
 			DateFormat sdf = DateFormat.getDateInstance();
 
-			JLabel jl = new JLabel(getText());
-			jl.setOpaque(true);
+			JLabel theTableCellComponent = new JLabel(getText());
+			theTableCellComponent.setOpaque(true);
 			if (isSelected) {
-				jl.setForeground(Color.BLACK);
-				jl.setBackground(Color.ORANGE);
+				theTableCellComponent.setForeground(Color.BLACK);
+				theTableCellComponent.setBackground(Color.ORANGE);
 			} else {
+				// set text color by looking up the "logical" color in the prefs
+				// logical color is left over legacy thing
 				String color = table.getModel().getValueAt(row, 3).toString();
 				if (color.equals("red")) {
-					jl.setForeground(new Color((new Integer(Prefs
+					theTableCellComponent.setForeground(new Color((new Integer(Prefs
 							.getPref(PrefName.UCS_RED))).intValue()));
 				} else if (color.equals("blue")) {
-					jl.setForeground(new Color((new Integer(Prefs
+					theTableCellComponent.setForeground(new Color((new Integer(Prefs
 							.getPref(PrefName.UCS_BLUE))).intValue()));
 				} else if (color.equals("green")) {
-					jl.setForeground(new Color((new Integer(Prefs
+					theTableCellComponent.setForeground(new Color((new Integer(Prefs
 							.getPref(PrefName.UCS_GREEN))).intValue()));
 				} else if (color.equals("black")) {
-					jl.setForeground(new Color((new Integer(Prefs
+					theTableCellComponent.setForeground(new Color((new Integer(Prefs
 							.getPref(PrefName.UCS_BLACK))).intValue()));
 				} else if (color.equals("white")) {
-					jl.setForeground(new Color((new Integer(Prefs
+					theTableCellComponent.setForeground(new Color((new Integer(Prefs
 							.getPref(PrefName.UCS_WHITE))).intValue()));
 				} else if (color.equals("navy")) {
-					jl.setForeground(new Color((new Integer(Prefs
+					theTableCellComponent.setForeground(new Color((new Integer(Prefs
 							.getPref(PrefName.UCS_NAVY))).intValue()));
 				} else if (color.equals("brick")) {
-					jl.setForeground(new Color((new Integer(Prefs
+					theTableCellComponent.setForeground(new Color((new Integer(Prefs
 							.getPref(PrefName.UCS_BRICK))).intValue()));
 				} else if (color.equals("purple")) {
-					jl.setForeground(new Color((new Integer(Prefs
+					theTableCellComponent.setForeground(new Color((new Integer(Prefs
 							.getPref(PrefName.UCS_PURPLE))).intValue()));
 				} else if (color.equals("pink") && column > 1) {
-					jl.setForeground(new Color((new Integer(Prefs
+					theTableCellComponent.setForeground(new Color((new Integer(Prefs
 							.getPref(PrefName.UCS_TODAY))).intValue()));
 				} else {
-					jl.setForeground(Color.BLACK);
+					theTableCellComponent.setForeground(Color.BLACK);
 				}
-				// jl.setForeground( Color.BLACK );
+
+				// special background color for the "today" divider row
 				if (table.getModel().getValueAt(row, 1).equals(
 						Resource.getResourceString("======_Today_======"))) {
-					// jl.setBackground( new Color(16751001) );
-					jl.setBackground(new Color((new Integer(Prefs
+					theTableCellComponent.setBackground(new Color((new Integer(Prefs
 							.getPref(PrefName.UCS_TODAY))).intValue()));
 				} else {
+					// future
 					if (((Date) (table.getModel().getValueAt(row, 0)))
 							.getTime() > (new Date()).getTime()) {
-						// jl.setBackground( new Color(192,192,192) );
-						jl.setBackground(new Color((new Integer(Prefs
+						theTableCellComponent.setBackground(new Color((new Integer(Prefs
 								.getPref(PrefName.UCS_DEFAULT))).intValue()));
 					} else {
-						// jl.setBackground( new Color(216,216,216) );
-						jl.setBackground(new Color((new Integer(Prefs
+						// past
+						theTableCellComponent.setBackground(new Color((new Integer(Prefs
 								.getPref(PrefName.UCS_WEEKDAY))).intValue()));
 					}
-					// jl.setBackground( new Color(216,216,216) );
 				}
 			}
 			if (column == 0) {
-				jl.setText(sdf.format(value));
-				// jl.setText( value.toString() );
+				// format dates
+				theTableCellComponent.setText(sdf.format(value));
 			} else if (column == 1) {
-				jl.setToolTipText(jl.getText());
+				// set tooltip to todo text
+				theTableCellComponent.setToolTipText(theTableCellComponent.getText());
 			}
-			jl.setBorder(new EmptyBorder(2, 2, 2, 2));
-			return jl;
-			// return this;
+			theTableCellComponent.setBorder(new EmptyBorder(2, 2, 2, 2));
+			return theTableCellComponent;
 		}
 	}
 
+	/**
+	 * Icon to show on toggle buttons - no text is shown, only a color
+	 */
+	static private class ToggleButtonIcon implements Icon {
+		
+		private Color color = Color.BLACK;
+		private final int height = 10;
+		private final int width = 30;
+
+		/**
+		 * Instantiates a new toggle button icon.
+		 * 
+		 * @param col the color
+		 */
+		public ToggleButtonIcon(Color col) {
+			color = col;
+		}
+
+		/* (non-Javadoc)
+		 * @see javax.swing.Icon#getIconHeight()
+		 */
+		public int getIconHeight() {
+			return height;
+		}
+
+		/* (non-Javadoc)
+		 * @see javax.swing.Icon#getIconWidth()
+		 */
+		public int getIconWidth() {
+			return width;
+		}
+
+		/* (non-Javadoc)
+		 * @see javax.swing.Icon#paintIcon(java.awt.Component, java.awt.Graphics, int, int)
+		 */
+		public void paintIcon(Component c, Graphics g, int x, int y) {
+			Graphics2D g2 = (Graphics2D) g;
+			g2.setColor(Color.BLACK);
+			g2.drawRect(x, y, width, height);
+			g2.setColor(color);
+			g2.fillRect(x, y, width, height);
+		}
+	}
+
+	/** The singleton - there's only 1 todo view at a time*/
 	private static TodoView singleton = null;
 
+	/**
+	 * Gets the singleton.
+	 * 
+	 * @return the singleton
+	 */
 	public static TodoView getReference() {
 		if (singleton == null || !singleton.isDisplayable())
 			singleton = new TodoView();
 		return (singleton);
 	}
 
-	// Variables declaration - do not modify//GEN-BEGIN:variables
-	private javax.swing.JButton addtodo;
-
-	private ActionListener alChangeDate = new java.awt.event.ActionListener() {
+	/** The change date action. */
+	private ActionListener changeDateAction = new ActionListener() {
 		@SuppressWarnings("unchecked")
-		public void actionPerformed(java.awt.event.ActionEvent evt) {
+		public void actionPerformed(ActionEvent evt) {
 			AppointmentListView.onChangeDate(getSelectedItems(true));
 		}
 	};
 
-	private ActionListener alDoneDelete = new java.awt.event.ActionListener() {
-		public void actionPerformed(java.awt.event.ActionEvent evt) {
-			onDoneDelete(evt);
+	/** The done delete action. */
+	private ActionListener doneDeleteAction = new ActionListener() {
+		public void actionPerformed(ActionEvent evt) {
+			doTodoAction(true);
 		}
 	};
 
-	private ActionListener alDoneNoDelete = new java.awt.event.ActionListener() {
-		public void actionPerformed(java.awt.event.ActionEvent evt) {
-			onDoneNoDelete(evt);
+	/** The done no delete action. */
+	private ActionListener doneNoDeleteAction = new ActionListener() {
+		public void actionPerformed(ActionEvent evt) {
+			doTodoAction(false);
 		}
 	};
 
-	private ActionListener alMoveToFollowingDay = new java.awt.event.ActionListener() {
+	/** The move to following day action. */
+	private ActionListener moveToFollowingDayAction = new ActionListener() {
 		@SuppressWarnings("unchecked")
-		public void actionPerformed(java.awt.event.ActionEvent evt) {
+		public void actionPerformed(ActionEvent evt) {
 			AppointmentListView.onMoveToFollowingDay(getSelectedItems(true));
 		}
 	};
 
-	private JPanel buttonPanel = null;
+	/** The category combo box. */
+	private JComboBox categoryComboBox;
 
-	private JComboBox cat_cb;
+	/** The black toggle button. */
+	private JToggleButton blackToggleButton;
 
-	private JMenuItem catmenuitem = null;
+	/** The blue toggle button. */
+	private JToggleButton blueToggleButton;
 
-	private JButton doneButton = null;
+	/** The green toggle button. */
+	private JToggleButton greenToggleButton;
 
-	private JButton doneDelButton = null;
+	/** The red toggle button. */
+	private JToggleButton redToggleButton;
 
-	private javax.swing.JLabel jLabel1;
+	/** The white toggle button. */
+	private JToggleButton whiteToggleButton;
 
-	private javax.swing.JLabel jLabel2;
+	/** The todo list. */
+	private Collection<KeyedEntity<?>> theTodoList;
 
-	private javax.swing.JPanel jPanel1;
+	/** The todo date. */
+	private JDateChooser todoDate;
 
-	private javax.swing.JScrollPane jScrollPane1;
-
-	private JToggleButton jtbBlack;
-
-	private JToggleButton jtbBlue;
-
-	private JToggleButton jtbGreen;
-
-	private JToggleButton jtbRed;
-
-	private JToggleButton jtbWhite;
-
-	private javax.swing.JMenuBar menuBar;
-
-	private javax.swing.JMenuItem printList;
-
-	@SuppressWarnings("unchecked")
-	private Collection tds_; // list of rows currently displayed in todo list
-
-	private JDateChooser tododate_cb;
-
+	/** The todo table. */
 	private StripedTable todoTable;
 
-	private javax.swing.JTextField todotext;
+	/** The todo text. */
+	private JTextField todoText;
 
+	/**
+	 * Instantiates a new todo view.
+	 */
 	private TodoView() {
 
 		super();
+		
+		// listen for pref changes
 		Prefs.addListener(this);
+		
+		// listen for appt and task model changes
 		addModel(AppointmentModel.getReference());
 		addModel(TaskModel.getReference());
 
@@ -306,14 +334,14 @@ public class TodoView extends DockableView implements Prefs.Listener {
 		todoTable.getColumnModel().getColumn(1).setPreferredWidth(400);
 		todoTable.getColumnModel().getColumn(2).setPreferredWidth(120);
 
-		todoTable.setPreferredScrollableViewportSize(new Dimension(660, 400));
 
-		// set more pretty renderer
+		// set user color renderer if option set
 		if (Prefs.getPref(PrefName.UCS_ONTODO).equals("true")) {
-			todoTable.setDefaultRenderer(Object.class, new TodayRenderer());
-			todoTable.setDefaultRenderer(Date.class, new TodayRenderer());
+			todoTable.setDefaultRenderer(Object.class, new TodoTableCellRenderer());
+			todoTable.setDefaultRenderer(Date.class, new TodoTableCellRenderer());
 		}
 
+		// remove the hidden columns - color and key
 		todoTable.removeColumn(todoTable.getColumnModel().getColumn(3));
 		todoTable.removeColumn(todoTable.getColumnModel().getColumn(3));
 
@@ -321,296 +349,25 @@ public class TodoView extends DockableView implements Prefs.Listener {
 
 	}
 
-	public PrefName getFrameSizePref() {
-		return PrefName.TODOVIEWSIZE;
-	}
+	/**
+	 * add a todo
+	 * 
+	 */
+	private void addTodoActionPerformed() {
 
-	public String getFrameTitle() {
-		return Resource.getResourceString("To_Do_List");
-	}
+		// get text and date
+		String tdtext = todoText.getText();
+		Calendar c = todoDate.getCalendar();
 
-	public JMenuBar getMenuForFrame() {
-		JMenuItem exitMenuItem;
-		JMenu fileMenu;
-		JMenuItem jMenuItem1;
-		JMenuItem jMenuItem2;
-		JMenuItem jMenuItem3;
-		JMenuItem jMenuItem4;
-
-		menuBar = new JMenuBar();
-		fileMenu = new JMenu();
-		jMenuItem1 = new JMenuItem();
-		jMenuItem2 = new JMenuItem();
-		jMenuItem3 = new JMenuItem();
-		jMenuItem4 = new JMenuItem();
-		printList = new JMenuItem();
-		exitMenuItem = new JMenuItem();
-
-		ResourceHelper.setText(fileMenu, "Action");
-		ResourceHelper.setText(jMenuItem1, "Done_(No_Delete)");
-
-		jMenuItem1.addActionListener(alDoneNoDelete);
-
-		fileMenu.add(jMenuItem1);
-
-		ResourceHelper.setText(jMenuItem2, "Done_(Delete)");
-
-		jMenuItem1.addActionListener(alDoneDelete);
-
-		fileMenu.add(jMenuItem2);
-
-		ResourceHelper.setText(jMenuItem3, "Move_To_Following_Day");
-
-		jMenuItem3.addActionListener(alMoveToFollowingDay);
-
-		fileMenu.add(jMenuItem3);
-
-		ResourceHelper.setText(jMenuItem4, "changedate");
-
-		jMenuItem4.addActionListener(alChangeDate);
-
-		fileMenu.add(jMenuItem4);
-
-		ResourceHelper.setText(printList, "Print_List");
-		printList.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				printListActionPerformed(evt);
-			}
-		});
-
-		fileMenu.add(printList);
-
-		ResourceHelper.setText(exitMenuItem, "Exit");
-		exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				exitMenuItemActionPerformed(evt);
-			}
-		});
-		fileMenu.add(getCatmenuitem());
-		fileMenu.add(exitMenuItem);
-		exitMenuItem.setIcon(new ImageIcon(getClass().getResource(
-				"/resource/Stop16.gif")));
-		printList.setIcon(new ImageIcon(getClass().getResource(
-				"/resource/Print16.gif")));
-		jMenuItem4.setIcon(new ImageIcon(getClass().getResource(
-				"/resource/Edit16.gif")));
-		jMenuItem3.setIcon(new ImageIcon(getClass().getResource(
-				"/resource/Forward16.gif")));
-		jMenuItem2.setIcon(new ImageIcon(getClass().getResource(
-				"/resource/Delete16.gif")));
-		jMenuItem1.setIcon(new ImageIcon(getClass().getResource(
-				"/resource/Properties16.gif")));
-
-		menuBar.add(fileMenu);
-
-		return menuBar;
-	}
-
-	public void prefsChanged() {
-		refresh();
-
-	}
-
-	// refresh the todo list if the data model changes
-	@SuppressWarnings("unchecked")
-	public void refresh() {
-		AppointmentModel calmod_ = AppointmentModel.getReference();
-
-		// get the to list from the data model
-		tds_ = calmod_.get_todos();
-
-		// init the table to empty
-		TableSorter tm = (TableSorter) todoTable.getModel();
-		tm.addMouseListenerToHeaderInTable(todoTable);
-		tm.setRowCount(0);
-
-		// add a tabel row to mark the current date - it will sort
-		// to the right spot by date
-		GregorianCalendar gc = new GregorianCalendar();
-		gc.set(Calendar.HOUR_OF_DAY, 23);
-		gc.set(Calendar.MINUTE, 59);
-
-		Date d = gc.getTime();
-
-		Object[] tod = new Object[5];
-		tod[0] = d;
-		tod[1] = Resource.getResourceString("======_Today_======");
-		tod[2] = "Today is";
-		tod[3] = "pink";
-		tod[4] = null;
-
-		tm.addRow(tod);
-		tm.tableChanged(new TableModelEvent(tm));
-
-		// add the todo appointment rows to the table
-		Iterator tdit = tds_.iterator();
-		while( tdit.hasNext()){
-			Appointment r = (Appointment) tdit.next();
-
-			try {
-				// get appt text
-				String tx = r.getText();
-
-				// date is the next todo field if present, otherwise
-				// the due date
-				Date nt = r.getNextTodo();
-				if (nt == null) {
-					nt = r.getDate();
-				}
-
-				// add the table row
-				Object[] ro = new Object[5];
-				ro[0] = nt;
-				ro[1] = tx;
-				ro[2] = r.getCategory();
-				if (r.getColor() == null)
-					ro[3] = "black";
-				else
-					ro[3] = r.getColor();
-
-				ro[4] = new Integer(r.getKey());
-				tm.addRow(ro);
-				tm.tableChanged(new TableModelEvent(tm));
-			} catch (Exception e) {
-				Errmsg.errmsg(e);
-				return;
-			}
-
-		}
-
-		// add the tasks to the list
-		// add open tasks with due dates are considered as todos
-		String show_abb = Prefs.getPref(PrefName.TASK_SHOW_ABBREV);
-		if (Prefs.getBoolPref(PrefName.CAL_SHOW_TASKS)) {
-
-			try {
-				Collection<Project> pjs = TaskModel.getReference().getProjects();
-				Iterator<Project> it = pjs.iterator();
-				while (it.hasNext()) {
-
-					Project pj = it.next();
-					if (pj.getDueDate() == null)
-						continue;
-					if (pj.getStatus().equals(
-							Resource.getResourceString("CLOSED")))
-						continue;
-
-					if (!CategoryModel.getReference().isShown(pj.getCategory()))
-						continue;
-
-					// build a string for the table - BT<task number> +
-					// description
-					String abb = "";
-
-					if (show_abb.equals("true"))
-						abb = "PR" + pj.getKey() + " ";
-					String btstring = abb + pj.getDescription();
-
-					Object[] ro = new Object[5];
-					ro[0] = pj.getDueDate();
-					ro[1] = btstring;
-					ro[2] = pj.getCategory();
-					ro[3] = "navy";
-					ro[4] = null;
-
-					tm.addRow(ro);
-					tds_.add(pj);
-					tm.tableChanged(new TableModelEvent(tm));
-				}
-			} catch (Exception e) {
-				Errmsg.errmsg(e);
-				return;
-			}
-
-			Vector<Task> mrs = TaskModel.getReference().get_tasks();
-			for (int i = 0; i < mrs.size(); i++) {
-
-				Task mr = mrs.elementAt(i);
-				if (mr.getDueDate() == null)
-					continue;
-
-				try {
-
-					// build a string for the table - BT<task number> +
-					// description
-					String abb = "";
-
-					if (show_abb.equals("true"))
-						abb = "BT" + mr.getKey() + " ";
-					String btstring = abb + mr.getDescription();
-
-					Object[] ro = new Object[5];
-					ro[0] = mr.getDueDate();
-					ro[1] = btstring;
-					ro[2] = mr.getCategory();
-					ro[3] = "navy";
-					ro[4] = null;
-
-					tm.addRow(ro);
-					tds_.add(mr);
-					tm.tableChanged(new TableModelEvent(tm));
-				} catch (Exception e) {
-					Errmsg.errmsg(e);
-					return;
-				}
-
-			}
-		}
-		if (Prefs.getBoolPref(PrefName.CAL_SHOW_SUBTASKS)) {
-			try {
-				Collection<Subtask> sts = TaskModel.getReference().getSubTasks();
-				Iterator<Subtask> it = sts.iterator();
-				while (it.hasNext()) {
-
-					Subtask st = it.next();
-
-					if (st.getDueDate() == null)
-						continue;
-					if (st.getCloseDate() != null)
-						continue;
-
-					// build a string for the table - BT<task number> +
-					// description
-					String abb = "";
-
-					if (show_abb.equals("true"))
-						abb = "ST" + st.getKey() + " ";
-					String btstring = abb + st.getDescription();
-
-					Object[] ro = new Object[5];
-					ro[0] = st.getDueDate();
-					ro[1] = btstring;
-					ro[2] = "";
-					ro[3] = "navy";
-					ro[4] = null;
-
-					tm.addRow(ro);
-					tds_.add(st);
-					tm.tableChanged(new TableModelEvent(tm));
-				}
-			} catch (Exception e) {
-				// Errmsg.errmsg(e);
-				return;
-			}
-		}
-		// sort the table by date
-		tm.sortByColumn(0);
-
-	}
-
-	private void addtodoActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_addtodoActionPerformed
-
-		String tdtext = todotext.getText();
-		Calendar c = tododate_cb.getCalendar();
-
+		// warn the user if text or date is missing
 		if (tdtext.length() == 0 || c == null) {
 			Errmsg.notice(Resource.getResourceString("todomissingdata"));
 			return;
 		}
 
-		AppointmentModel calmod_ = AppointmentModel.getReference();
-		
-		Appointment r = calmod_.newAppt();
+		// start building the todo appointment from the default appt
+		// if it exists
+		Appointment r = AppointmentModel.getReference().newAppt();
 		String defApptXml = Prefs.getPref(PrefName.DEFAULT_APPT);
 		if (!defApptXml.equals("")) {
 			try {
@@ -621,58 +378,68 @@ public class TodoView extends DockableView implements Prefs.Listener {
 				Errmsg.errmsg(e);
 			}
 		}
-		
 
+		// set the date
 		c.set(Calendar.HOUR, 0);
 		c.set(Calendar.MINUTE, 0);
 		c.set(Calendar.SECOND, 0);
 		c.set(Calendar.AM_PM, Calendar.AM);
 		r.setDate(c.getTime());
+		
+		// set text
 		r.setText(tdtext);
+		
+		// todo flag
 		r.setTodo(true);
+		
+		// not private
 		r.setPrivate(false);
 
-		if (jtbRed.isSelected())
+		// set color
+		if (redToggleButton.isSelected())
 			r.setColor("red");
-		else if (jtbBlue.isSelected())
+		else if (blueToggleButton.isSelected())
 			r.setColor("blue");
-		else if (jtbGreen.isSelected())
+		else if (greenToggleButton.isSelected())
 			r.setColor("green");
-		else if (jtbWhite.isSelected())
+		else if (whiteToggleButton.isSelected())
 			r.setColor("white");
 		else
 			r.setColor("black");
-		// r.setColor( "black");
 
+		// no repeating
 		r.setFrequency(Repeat.ONCE);
 		r.setTimes(new Integer(1));
 		r.setRepeatFlag(false);
 
-		// code taken from AppointmentPanel.java
-		String cat = (String) cat_cb.getSelectedItem();
-		// System.out.println( cat+"==" );
+		// set category
+		String cat = (String) categoryComboBox.getSelectedItem();
 		if (cat.equals("") || cat.equals(CategoryModel.UNCATEGORIZED)) {
 			r.setCategory(null);
 		} else {
 			r.setCategory(cat);
 		}
 
-		calmod_.saveAppt(r);
+		AppointmentModel.getReference().saveAppt(r);
 
 		requestFocus();
 
-	}// GEN-LAST:event_addtodoActionPerformed
+	}
 
+	/**
+	 * mark selected items as done. For appointments, mark the todo as done. For task, projects, subtasks, mark
+	 * the item as closed
+	 * 
+	 * @param del if true and it is an appointment, delete the appointment when all occurrences are done
+	 */
 	@SuppressWarnings("unchecked")
-	private void dtcommon(boolean del) {
+	private void doTodoAction(boolean del) {
 
-		// figure out which row is selected to be marked as done
-
+		// get the selected items
 		List items = getSelectedItems(false);
 		for (int i = 0; i < items.size(); ++i) {
-
 			try {
-
+				// take different action depending on the entity type
 				Object o = items.get(i);
 				if (o instanceof Appointment) {
 					int key = ((Appointment) o).getKey();
@@ -682,8 +449,7 @@ public class TodoView extends DockableView implements Prefs.Listener {
 					TaskModel.getReference().closeProject(p.getKey());
 				} else if (o instanceof Task) {
 					Task t = (Task) o;
-					TaskModel.getReference()
-							.close(t.getKey());
+					TaskModel.getReference().close(t.getKey());
 				} else if (o instanceof Subtask) {
 					Subtask s = (Subtask) o;
 					s.setCloseDate(new Date());
@@ -696,82 +462,115 @@ public class TodoView extends DockableView implements Prefs.Listener {
 		}
 	}
 
-	private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_exitMenuItemActionPerformed
-		this.remove();
-	}// GEN-LAST:event_exitMenuItemActionPerformed
-
-	private JPanel getButtonPanel() {
-		if (buttonPanel == null) {
-			buttonPanel = new JPanel();
-			buttonPanel.add(getDoneButton(), null);
-			buttonPanel.add(getDoneDelButton(), null);
-
-		}
-		return buttonPanel;
+	/* (non-Javadoc)
+	 * @see net.sf.borg.ui.DockableView#getFrameSizePref()
+	 */
+	@Override
+	public PrefName getFrameSizePref() {
+		return PrefName.TODOVIEWSIZE;
 	}
 
-	/**
-	 * This method initializes catmenuitem
-	 * 
-	 * @return javax.swing.JMenuItem
+	/* (non-Javadoc)
+	 * @see net.sf.borg.ui.DockableView#getFrameTitle()
 	 */
-	private JMenuItem getCatmenuitem() {
-		if (catmenuitem == null) {
-			catmenuitem = new JMenuItem();
-			catmenuitem.setIcon(new javax.swing.ImageIcon(getClass()
-					.getResource("/resource/Preferences16.gif")));
-			ResourceHelper.setText(catmenuitem, "choosecat");
-			catmenuitem.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent e) {
-					CategoryChooser.getReference().setVisible(true);
-				}
-			});
-		}
-		return catmenuitem;
+	@Override
+	public String getFrameTitle() {
+		return Resource.getResourceString("To_Do_List");
 	}
 
-	/**
-	 * This method initializes doneButton
-	 * 
-	 * @return javax.swing.JButton
+	/* (non-Javadoc)
+	 * @see net.sf.borg.ui.DockableView#getMenuForFrame()
 	 */
-	private JButton getDoneButton() {
-		if (doneButton == null) {
-			doneButton = new JButton();
-			ResourceHelper.setText(doneButton, "Done_(No_Delete)");
-			doneButton.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent e) {
-					dtcommon(false);
-				}
-			});
-			doneButton.setIcon(new ImageIcon(getClass().getResource(
-					"/resource/Properties16.gif")));
-		}
-		return doneButton;
-	}
+	@Override
+	public JMenuBar getMenuForFrame() {
+		JMenuItem exitMenuItem;
+		JMenu fileMenu;
+		JMenuItem doneNoDeleteMenuItem;
+		JMenuItem doneDeleteMenuItem;
+		JMenuItem moveToFollowingDatMenuItem;
+		JMenuItem changeDateMenuItem;
 
-	/**
-	 * This method initializes doneDelButton
-	 * 
-	 * @return javax.swing.JButton
-	 */
-	private JButton getDoneDelButton() {
-		if (doneDelButton == null) {
-			doneDelButton = new JButton();
-			ResourceHelper.setText(doneDelButton, "Done_(Delete)");
-			doneDelButton
-					.addActionListener(new java.awt.event.ActionListener() {
-						public void actionPerformed(java.awt.event.ActionEvent e) {
-							dtcommon(true);
+		JMenuBar menuBar = new JMenuBar();
+		fileMenu = new JMenu();
+		doneNoDeleteMenuItem = new JMenuItem();
+		doneDeleteMenuItem = new JMenuItem();
+		moveToFollowingDatMenuItem = new JMenuItem();
+		changeDateMenuItem = new JMenuItem();
+		JMenuItem printListMenuItem = new JMenuItem();
+		exitMenuItem = new JMenuItem();
+
+		ResourceHelper.setText(fileMenu, "Action");
+		ResourceHelper.setText(doneNoDeleteMenuItem, "Done_(No_Delete)");
+
+		doneNoDeleteMenuItem.addActionListener(doneNoDeleteAction);
+
+		fileMenu.add(doneNoDeleteMenuItem);
+
+		ResourceHelper.setText(doneDeleteMenuItem, "Done_(Delete)");
+
+		doneNoDeleteMenuItem.addActionListener(doneDeleteAction);
+
+		fileMenu.add(doneDeleteMenuItem);
+
+		ResourceHelper.setText(moveToFollowingDatMenuItem,
+				"Move_To_Following_Day");
+
+		moveToFollowingDatMenuItem.addActionListener(moveToFollowingDayAction);
+
+		fileMenu.add(moveToFollowingDatMenuItem);
+
+		ResourceHelper.setText(changeDateMenuItem, "changedate");
+
+		changeDateMenuItem.addActionListener(changeDateAction);
+
+		fileMenu.add(changeDateMenuItem);
+
+		ResourceHelper.setText(printListMenuItem, "Print_List");
+		printListMenuItem
+				.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent evt) {
+						try {
+							TablePrinter.printTable(todoTable);
+						} catch (Exception e) {
+							Errmsg.errmsg(e);
 						}
-					});
-			doneDelButton.setIcon(new ImageIcon(getClass().getResource(
-					"/resource/Delete16.gif")));
-		}
-		return doneDelButton;
+					}
+				});
+
+		fileMenu.add(printListMenuItem);
+
+		ResourceHelper.setText(exitMenuItem, "Exit");
+		exitMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				remove();
+			}
+		});
+		fileMenu.add(exitMenuItem);
+		exitMenuItem.setIcon(new ImageIcon(getClass().getResource(
+				"/resource/Stop16.gif")));
+		printListMenuItem.setIcon(new ImageIcon(getClass().getResource(
+				"/resource/Print16.gif")));
+		changeDateMenuItem.setIcon(new ImageIcon(getClass().getResource(
+				"/resource/Edit16.gif")));
+		moveToFollowingDatMenuItem.setIcon(new ImageIcon(getClass()
+				.getResource("/resource/Forward16.gif")));
+		doneDeleteMenuItem.setIcon(new ImageIcon(getClass().getResource(
+				"/resource/Delete16.gif")));
+		doneNoDeleteMenuItem.setIcon(new ImageIcon(getClass().getResource(
+				"/resource/Properties16.gif")));
+
+		menuBar.add(fileMenu);
+
+		return menuBar;
 	}
 
-	// function to mark a todo as done
+	/**
+	 * Gets the selected items.
+	 * 
+	 * @param appts_only if true, return appointments only
+	 * 
+	 * @return the selected items
+	 */
 	@SuppressWarnings("unchecked")
 	private List getSelectedItems(boolean appts_only) {
 		List<Object> lst = new ArrayList<Object>();
@@ -790,7 +589,7 @@ public class TodoView extends DockableView implements Prefs.Listener {
 				if (k == 0)
 					continue;
 
-				Object o = tds_.toArray()[k-1];
+				Object o = theTodoList.toArray()[k - 1];
 				if (!appts_only || o instanceof Appointment)
 					lst.add(o);
 			} catch (Exception e) {
@@ -802,246 +601,207 @@ public class TodoView extends DockableView implements Prefs.Listener {
 	}
 
 	/**
-	 * This method is called from within the constructor to initialize the form.
-	 * WARNING: Do NOT modify this code. The content of this method is always
-	 * regenerated by the Form Editor.
+	 * Inits the components.
 	 */
-	private void initComponents()// GEN-BEGIN:initComponents
-	{
-		jScrollPane1 = new javax.swing.JScrollPane();
+	private void initComponents() {
+		
+		// create widgets (all bunched up because of code generation - not worth cleanup up
+		JScrollPane tableScroll = new JScrollPane();
 		todoTable = new StripedTable();
-		jPanel1 = new javax.swing.JPanel();
-		todotext = new javax.swing.JTextField();
+		todoText = new JTextField();
+		todoDate = new JDateChooser();
+		JButton addTodoButton = new JButton();
+		JLabel todoLabel = new JLabel();
+		JLabel dateLabel = new JLabel();
+		categoryComboBox = new JComboBox();
 
-		// place jcalendar here
-		tododate_cb = new JDateChooser();
+		// initial toggle button settings
+		redToggleButton = new JToggleButton("", false);
+		blueToggleButton = new JToggleButton("", false);
+		greenToggleButton = new JToggleButton("", false);
+		blackToggleButton = new JToggleButton("", true);
+		whiteToggleButton = new JToggleButton("", false);
 
-		addtodo = new javax.swing.JButton();
-		GridBagConstraints gridBagConstraints8 = new GridBagConstraints();
-		GridBagConstraints gridBagConstraints9 = new GridBagConstraints();
-		GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
-		GridBagConstraints gridBagConstraints12 = new GridBagConstraints();
-		GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
-		GridBagConstraints gridBagConstraints14 = new GridBagConstraints();
-		jLabel1 = new javax.swing.JLabel();
-		jLabel2 = new javax.swing.JLabel();
 
-		jtbRed = new JToggleButton("", false);
-		jtbBlue = new JToggleButton("", false);
-		jtbGreen = new JToggleButton("", false);
-		jtbBlack = new JToggleButton("", true);
-		jtbWhite = new JToggleButton("", false);
-
-		cat_cb = new JComboBox();
-
+		// load categories
 		try {
-
-			Collection<String> acats = CategoryModel.getReference().getCategories();
+			Collection<String> acats = CategoryModel.getReference()
+					.getCategories();
 			Iterator<String> ait = acats.iterator();
 			while (ait.hasNext()) {
-				cat_cb.addItem(ait.next());
+				categoryComboBox.addItem(ait.next());
 			}
-			cat_cb.setSelectedIndex(0);
+			categoryComboBox.setSelectedIndex(0);
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
 		}
 
-		jScrollPane1.setMinimumSize(new java.awt.Dimension(450, 21));
-		todoTable.setBorder(new javax.swing.border.LineBorder(
-				new java.awt.Color(0, 0, 0)));
-		// todoTable.setGridColor(java.awt.Color.blue);
+		// *******************************************************************
+		// main table
+		// *******************************************************************
+		todoTable.setBorder(new LineBorder(new Color(0, 0, 0)));
 		DefaultListSelectionModel mylsmodel = new DefaultListSelectionModel();
 		mylsmodel
 				.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		todoTable.setSelectionModel(mylsmodel);
-		todoTable.addMouseListener(new java.awt.event.MouseAdapter() {
-			public void mouseClicked(java.awt.event.MouseEvent evt) {
-				todoTableMouseClicked(evt);
+		todoTable.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent evt) {
+				if (evt.getClickCount() < 2)
+					return;
+				onEditTodo();
 			}
 		});
 
-		jScrollPane1.setViewportView(todoTable);
+		tableScroll.setViewportView(todoTable);
 
-		jPanel1.setLayout(new java.awt.GridBagLayout());
-
-		jPanel1.setMinimumSize(new java.awt.Dimension(550, 112));
-		// jPanel1.setMinimumSize(new java.awt.Dimension(550, 102));
-
-		jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null,
+		// *******************************************************************
+		// quick entry panel
+		// *******************************************************************
+		JPanel quickEntryPanel = new JPanel();
+		quickEntryPanel.setLayout(new GridBagLayout());
+		quickEntryPanel.setBorder(BorderFactory.createTitledBorder(null,
 				Resource.getResourceString("todoquickentry"),
-				javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
-				javax.swing.border.TitledBorder.DEFAULT_POSITION, null, null));
-		addtodo.setIcon(new javax.swing.ImageIcon(getClass().getResource(
+				TitledBorder.DEFAULT_JUSTIFICATION,
+				TitledBorder.DEFAULT_POSITION, null, null));
+		addTodoButton.setIcon(new ImageIcon(getClass().getResource(
 				"/resource/Save16.gif")));
-		ResourceHelper.setText(addtodo, "Add");
-		addtodo.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				addtodoActionPerformed(evt);
+		ResourceHelper.setText(addTodoButton, "Add");
+		addTodoButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				addTodoActionPerformed();
 			}
 		});
+		
+		JPanel toggleButtonPanel = new JPanel();
+		toggleButtonPanel.setLayout(new FlowLayout());
+		toggleButtonPanel.add(redToggleButton);
+		toggleButtonPanel.add(blueToggleButton);
+		toggleButtonPanel.add(greenToggleButton);
+		toggleButtonPanel.add(blackToggleButton);
+		toggleButtonPanel.add(whiteToggleButton);
+		
+		redToggleButton.setIcon(new ToggleButtonIcon(new Color((new Integer(
+				Prefs.getPref(PrefName.UCS_RED))).intValue())));
 
-		ResourceHelper.setText(jLabel1, "To_Do");
-		jLabel1.setLabelFor(todotext);
-		ResourceHelper.setText(jLabel2, "Date");
-		jLabel2.setLabelFor(tododate_cb);
+		blueToggleButton.setIcon(new ToggleButtonIcon(new Color((new Integer(
+				Prefs.getPref(PrefName.UCS_BLUE))).intValue())));
 
-		// Set up the context menu for the table.
-		ActionListener alEdit = new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
+		greenToggleButton.setIcon(new ToggleButtonIcon(new Color((new Integer(
+				Prefs.getPref(PrefName.UCS_GREEN))).intValue())));
+
+		blackToggleButton.setIcon(new ToggleButtonIcon(new Color((new Integer(
+				Prefs.getPref(PrefName.UCS_BLACK))).intValue())));
+
+		whiteToggleButton.setIcon(new ToggleButtonIcon(new Color((new Integer(
+				Prefs.getPref(PrefName.UCS_WHITE))).intValue())));
+
+		ButtonGroup mutator = new ButtonGroup();
+		mutator.add(redToggleButton);
+		mutator.add(blueToggleButton);
+		mutator.add(greenToggleButton);
+		mutator.add(blackToggleButton);
+		mutator.add(whiteToggleButton);
+
+		JLabel categoryLabel = new JLabel();
+		ResourceHelper.setText(categoryLabel, "Category");
+		categoryLabel.setLabelFor(categoryComboBox);
+
+		toggleButtonPanel.add(categoryLabel);
+		toggleButtonPanel.add(categoryComboBox);
+		
+		ResourceHelper.setText(todoLabel, "To_Do");
+		todoLabel.setLabelFor(todoText);
+		ResourceHelper.setText(dateLabel, "Date");
+		dateLabel.setLabelFor(todoDate);
+		
+		
+		quickEntryPanel.add(todoLabel, GridBagConstraintsFactory.create(0, 0,
+				GridBagConstraints.HORIZONTAL));
+		quickEntryPanel.add(todoText, GridBagConstraintsFactory.create(0, 1,
+				GridBagConstraints.HORIZONTAL, 10.0, 0.0));
+		quickEntryPanel.add(toggleButtonPanel, GridBagConstraintsFactory.create(0, 2,
+				GridBagConstraints.BOTH, 1.0, 0.0));
+		quickEntryPanel.add(dateLabel, GridBagConstraintsFactory.create(1, 0,
+				GridBagConstraints.HORIZONTAL, 1.0, 0.0));
+		quickEntryPanel.add(todoDate, GridBagConstraintsFactory.create(1, 1,
+				GridBagConstraints.HORIZONTAL));
+		quickEntryPanel.add(addTodoButton, GridBagConstraintsFactory.create(2,
+				1));
+
+		
+		// *******************************************************************
+		// popup menu
+		// *******************************************************************
+		ActionListener alEdit = new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
 				onEditTodo();
 			}
 		};
 		new PopupMenuHelper(todoTable, new PopupMenuHelper.Entry[] {
-				new PopupMenuHelper.Entry(alDoneDelete, "Done_(Delete)"),
-				new PopupMenuHelper.Entry(alDoneNoDelete, "Done_(No_Delete)"),
+				new PopupMenuHelper.Entry(doneDeleteAction, "Done_(Delete)"),
+				new PopupMenuHelper.Entry(doneNoDeleteAction,
+						"Done_(No_Delete)"),
 				new PopupMenuHelper.Entry(alEdit, "Edit"),
-				new PopupMenuHelper.Entry(alMoveToFollowingDay,
+				new PopupMenuHelper.Entry(moveToFollowingDayAction,
 						"Move_To_Following_Day"),
-				new PopupMenuHelper.Entry(alChangeDate, "changedate"), });
+				new PopupMenuHelper.Entry(changeDateAction, "changedate"), });
+		
+		// *******************************************************************
+		// button panel
+		// *******************************************************************
+		JPanel buttonPanel = new JPanel();
 
-		gridBagConstraints8.gridx = 2;
-		gridBagConstraints8.gridy = 2;
-		gridBagConstraints8.insets = new java.awt.Insets(4, 4, 4, 4);
-		gridBagConstraints9.gridx = 1;
-		gridBagConstraints9.gridy = 2;
-		gridBagConstraints9.weightx = 0.0D;
-		gridBagConstraints9.fill = java.awt.GridBagConstraints.HORIZONTAL;
-		gridBagConstraints9.insets = new java.awt.Insets(0, 4, 4, 4);
+		JButton doneButton = new JButton();
+		ResourceHelper.setText(doneButton, "Done_(No_Delete)");
+		doneButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				doTodoAction(false);
+			}
+		});
+		doneButton.setIcon(new ImageIcon(getClass().getResource(
+				"/resource/Properties16.gif")));
+		buttonPanel.add(doneButton, null);
 
-		gridBagConstraints11.gridx = 0;
-		gridBagConstraints11.gridy = 3;
-		gridBagConstraints11.insets = new java.awt.Insets(0, 0, 0, 0);
-		gridBagConstraints11.gridwidth = 2;
-		gridBagConstraints11.weightx = 1.0D;
-
-		gridBagConstraints12.gridx = 1;
-		gridBagConstraints12.gridy = 1;
-		gridBagConstraints12.fill = java.awt.GridBagConstraints.BOTH;
-		gridBagConstraints12.weightx = 1.0D;
-		gridBagConstraints12.insets = new java.awt.Insets(0, 4, 0, 0);
-		gridBagConstraints13.gridx = 0;
-		gridBagConstraints13.gridy = 1;
-		gridBagConstraints13.insets = new java.awt.Insets(0, 4, 0, 0);
-		gridBagConstraints13.fill = java.awt.GridBagConstraints.BOTH;
-		gridBagConstraints13.weightx = 1.0D;
-		gridBagConstraints14.gridx = 0;
-		gridBagConstraints14.gridy = 2;
-
-		gridBagConstraints14.weightx = 10.0D;
-		// gridBagConstraints14.weightx = 0.0D;
-
-		gridBagConstraints14.fill = java.awt.GridBagConstraints.HORIZONTAL;
-		gridBagConstraints14.insets = new java.awt.Insets(0, 4, 4, 4);
-		jPanel1.add(addtodo, gridBagConstraints8);
-
-		// set jtb size, set tuned colors
-
-		jtbRed.setIcon(new ToggleButtonIcon(new Color((new Integer(Prefs
-				.getPref(PrefName.UCS_RED))).intValue())));
-		// jtbRed.setBackground( Color.LIGHT_GRAY );
-
-		jtbBlue.setIcon(new ToggleButtonIcon(new Color((new Integer(Prefs
-				.getPref(PrefName.UCS_BLUE))).intValue())));
-		// jtbBlue.setBackground( Color.LIGHT_GRAY );
-
-		jtbGreen.setIcon(new ToggleButtonIcon(new Color((new Integer(Prefs
-				.getPref(PrefName.UCS_GREEN))).intValue())));
-		// jtbGreen.setBackground( Color.LIGHT_GRAY );
-
-		jtbBlack.setIcon(new ToggleButtonIcon(new Color((new Integer(Prefs
-				.getPref(PrefName.UCS_BLACK))).intValue())));
-		// jtbBlack.setBackground( Color.LIGHT_GRAY );
-
-		jtbWhite.setIcon(new ToggleButtonIcon(new Color((new Integer(Prefs
-				.getPref(PrefName.UCS_WHITE))).intValue())));
-		// jtbWhite.setBackground( Color.LIGHT_GRAY );
-
-		jtbRed.setMargin(new Insets(0, 0, 0, 0));
-		jtbBlue.setMargin(new Insets(0, 0, 0, 0));
-		jtbGreen.setMargin(new Insets(0, 0, 0, 0));
-		jtbBlack.setMargin(new Insets(0, 0, 0, 0));
-		jtbWhite.setMargin(new Insets(0, 0, 0, 0));
-		ButtonGroup mutator = new ButtonGroup();
-		mutator.add(jtbRed);
-		mutator.add(jtbBlue);
-		mutator.add(jtbGreen);
-		mutator.add(jtbBlack);
-		mutator.add(jtbWhite);
-		JPanel bjp = new JPanel();
-		JPanel bjp0 = new JPanel();
-		bjp0.setLayout(new BorderLayout());
-		bjp.setLayout(new GridLayout(1, 5));
-		bjp.add(jtbRed);
-		bjp.add(jtbBlue);
-		bjp.add(jtbGreen);
-		bjp.add(jtbBlack);
-		bjp.add(jtbWhite);
-		bjp0.add(bjp, BorderLayout.WEST);
-
-		JLabel lbl = new JLabel();
-		ResourceHelper.setText(lbl, "Category");
-		lbl.setLabelFor(cat_cb);
-
-		JPanel yetAnotherInASeriesOfSeeminglyEndlessPanels = new JPanel();
-		yetAnotherInASeriesOfSeeminglyEndlessPanels.setLayout(new FlowLayout(
-				FlowLayout.CENTER));
-
-		bjp0.add(yetAnotherInASeriesOfSeeminglyEndlessPanels,
-				BorderLayout.CENTER);
-		yetAnotherInASeriesOfSeeminglyEndlessPanels.add(lbl);
-		yetAnotherInASeriesOfSeeminglyEndlessPanels.add(cat_cb);
-
-		jPanel1.add(tododate_cb, gridBagConstraints9);
-		jPanel1.add(bjp0, gridBagConstraints11);
-		jPanel1.add(jLabel2, gridBagConstraints12);
-
-		jPanel1.add(jLabel1, gridBagConstraints13);
-		jPanel1.add(todotext, gridBagConstraints14);
-
-		GridBagConstraints gridBagConstraints15 = new GridBagConstraints();
-		GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
-		GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
+		JButton doneDeleteButton = new JButton();
+		ResourceHelper.setText(doneDeleteButton, "Done_(Delete)");
+		doneDeleteButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				doTodoAction(true);
+			}
+		});
+		doneDeleteButton.setIcon(new ImageIcon(getClass().getResource(
+				"/resource/Delete16.gif")));
+		buttonPanel.add(doneDeleteButton, null);
+		
+		
+		// *******************************************************************
+		// top level panel
+		// *******************************************************************
 		setLayout(new GridBagLayout());
-		gridBagConstraints1.gridx = 0;
-		gridBagConstraints1.gridy = 0;
-		gridBagConstraints1.weightx = 1.0;
-		gridBagConstraints1.weighty = 1.0;
-		gridBagConstraints1.fill = java.awt.GridBagConstraints.BOTH;
-		gridBagConstraints1.insets = new java.awt.Insets(4, 4, 4, 4);
-		gridBagConstraints1.gridwidth = 1;
-		gridBagConstraints2.gridx = 0;
-		gridBagConstraints2.gridy = 2;
-		gridBagConstraints2.insets = new java.awt.Insets(4, 4, 4, 4);
-		gridBagConstraints2.fill = java.awt.GridBagConstraints.HORIZONTAL;
-		gridBagConstraints15.gridx = 0;
-		gridBagConstraints15.gridy = 1;
-		gridBagConstraints15.fill = java.awt.GridBagConstraints.BOTH;
-		add(jScrollPane1, gridBagConstraints1);
-		add(jPanel1, gridBagConstraints2);
-		add(getButtonPanel(), gridBagConstraints15);
+		add(tableScroll, GridBagConstraintsFactory.create(0, 0,
+				GridBagConstraints.BOTH, 1.0, 1.0));
+		add(buttonPanel, GridBagConstraintsFactory.create(0, 1,
+				GridBagConstraints.BOTH));
+		add(quickEntryPanel, GridBagConstraintsFactory.create(0, 2,
+				GridBagConstraints.HORIZONTAL, 1.0, 0.0));
 
-	}// GEN-END:initComponents
+		
 
-	private void onDoneDelete(java.awt.event.ActionEvent evt)// GEN-FIRST:event_jMenuItem2ActionPerformed
-	{// GEN-HEADEREND:event_jMenuItem2ActionPerformed
-		// mark a todo done and delete it
-		dtcommon(true);
-	}// GEN-LAST:event_jMenuItem2ActionPerformed
-
-	private void onDoneNoDelete(java.awt.event.ActionEvent evt)// GEN-FIRST:event_jMenuItem1ActionPerformed
-	{// GEN-HEADEREND:event_jMenuItem1ActionPerformed
-		// make a todo done and do not delete it
-		dtcommon(false);
-	}// GEN-LAST:event_jMenuItem1ActionPerformed
-
+	}
+	
+	/**
+	 * open a todo item for editing
+	 */
 	private void onEditTodo() {
-		// get task number from column 0 of selected row
+		
 		int row = todoTable.getSelectedRow();
 		if (row == -1)
 			return;
 
 		// Ensure only one row is selected.
 		todoTable.getSelectionModel().setSelectionInterval(row, row);
+		
 		TableSorter tm = (TableSorter) todoTable.getModel();
 		int k = tm.getMappedIndex(row);
 
@@ -1050,7 +810,8 @@ public class TodoView extends DockableView implements Prefs.Listener {
 		if (k == 0)
 			return;
 
-		Object o = tds_.toArray()[k - 1];
+		// get the object and edit differently based on type
+		Object o = theTodoList.toArray()[k - 1];
 		if (o instanceof Appointment) {
 
 			Date d = (Date) tm.getValueAt(row, 0);
@@ -1066,9 +827,6 @@ public class TodoView extends DockableView implements Prefs.Listener {
 
 			MultiView.getMainView().addView(ag);
 
-			// MultiView cv = MultiView.getMainView();
-			// if (cv != null)
-			// cv.goTo(cal);
 		} else if (o instanceof Project) {
 			MultiView cv = MultiView.getMainView();
 			if (cv != null)
@@ -1096,24 +854,212 @@ public class TodoView extends DockableView implements Prefs.Listener {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see net.sf.borg.common.Prefs.Listener#prefsChanged()
+	 */
+	public void prefsChanged() {
+		refresh();
+	}
+
+	/**
+	 * Prints the todo table
+	 * 
+	 * @throws Exception the exception
+	 */
 	public void print() throws Exception {
 		TablePrinter.printTable(todoTable);
 	}
 
-	private void printListActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_printListActionPerformed
+	/**
+	 * load todos from the model and show in the UI
+	 */
+	@Override
+	@SuppressWarnings("unchecked")
+	public void refresh() {
 
-		// user has requested a print of the table
-		try {
-			TablePrinter.printTable(todoTable);
-		} catch (Exception e) {
-			Errmsg.errmsg(e);
+		// get the todos from the data model
+		theTodoList = new ArrayList<KeyedEntity<?>>();
+		theTodoList.addAll(AppointmentModel.getReference().get_todos());
+
+		// init the table to empty
+		TableSorter tm = (TableSorter) todoTable.getModel();
+		tm.addMouseListenerToHeaderInTable(todoTable);
+		tm.setRowCount(0);
+
+		// add a table row to mark the current date - it will sort
+		// to the right spot by date
+		GregorianCalendar gc = new GregorianCalendar();
+		gc.set(Calendar.HOUR_OF_DAY, 23);
+		gc.set(Calendar.MINUTE, 59);
+		Date d = gc.getTime();
+		Object[] tod = new Object[5];
+		tod[0] = d;
+		tod[1] = Resource.getResourceString("======_Today_======");
+		tod[2] = "Today is";
+		tod[3] = "pink";
+		tod[4] = null;
+		tm.addRow(tod);
+		tm.tableChanged(new TableModelEvent(tm));
+
+		// add the todo appointment rows to the table
+		Iterator tdit = theTodoList.iterator();
+		while (tdit.hasNext()) {
+			Appointment r = (Appointment) tdit.next();
+
+			try {
+				// get appt text
+				String tx = r.getText();
+
+				// date is the next todo field if present, otherwise
+				// the due date
+				Date nt = r.getNextTodo();
+				if (nt == null) {
+					nt = r.getDate();
+				}
+
+				// add the table row
+				Object[] ro = new Object[5];
+				ro[0] = nt;
+				ro[1] = tx;
+				ro[2] = r.getCategory(); // category
+				
+				// color
+				if (r.getColor() == null)
+					ro[3] = "black";
+				else
+					ro[3] = r.getColor();
+
+				// key
+				ro[4] = new Integer(r.getKey());
+				tm.addRow(ro);
+				
+				tm.tableChanged(new TableModelEvent(tm));
+			} catch (Exception e) {
+				Errmsg.errmsg(e);
+				return;
+			}
+
 		}
-	}// GEN-LAST:event_printListActionPerformed
 
-	private void todoTableMouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_todoTableMouseClicked
-		// ask controller to bring up appt editor on double click
-		if (evt.getClickCount() < 2)
-			return;
-		onEditTodo();
-	}// GEN-LAST:event_todoTableMouseClicked
-} // @jve:decl-index=0:visual-constraint="39,18"
+		// add open projects with a due date to the list
+		String show_abb = Prefs.getPref(PrefName.TASK_SHOW_ABBREV);
+		if (Prefs.getBoolPref(PrefName.CAL_SHOW_TASKS)) {
+
+			try {
+				Collection<Project> pjs = TaskModel.getReference()
+						.getProjects();
+				Iterator<Project> it = pjs.iterator();
+				while (it.hasNext()) {
+
+					Project pj = it.next();
+					if (pj.getDueDate() == null)
+						continue;
+					
+					// skip closed projects
+					if (pj.getStatus().equals(
+							Resource.getResourceString("CLOSED")))
+						continue;
+
+					// filter by category
+					if (!CategoryModel.getReference().isShown(pj.getCategory()))
+						continue;
+
+					// build a string for the table - with prefix if needed
+					String abb = "";
+					if (show_abb.equals("true"))
+						abb = "PR" + pj.getKey() + " ";
+					String todostring = abb + pj.getDescription();
+
+					Object[] ro = new Object[5];
+					ro[0] = pj.getDueDate();
+					ro[1] = todostring;
+					ro[2] = pj.getCategory();
+					ro[3] = "navy"; 
+					ro[4] = null;
+
+					tm.addRow(ro);
+					theTodoList.add(pj);
+					tm.tableChanged(new TableModelEvent(tm));
+				}
+			} catch (Exception e) {
+				Errmsg.errmsg(e);
+				return;
+			}
+
+			// add open tasks with a due date to the list
+			Vector<Task> mrs = TaskModel.getReference().get_tasks();
+			for (int i = 0; i < mrs.size(); i++) {
+
+				Task mr = mrs.elementAt(i);
+				if (mr.getDueDate() == null)
+					continue;
+
+				try {
+
+					// build a string for the table - with prefix if needed
+					String abb = "";
+					if (show_abb.equals("true"))
+						abb = "BT" + mr.getKey() + " ";
+					String btstring = abb + mr.getDescription();
+
+					Object[] ro = new Object[5];
+					ro[0] = mr.getDueDate();
+					ro[1] = btstring;
+					ro[2] = mr.getCategory();
+					ro[3] = "navy";
+					ro[4] = null;
+
+					tm.addRow(ro);
+					theTodoList.add(mr);
+					tm.tableChanged(new TableModelEvent(tm));
+				} catch (Exception e) {
+					Errmsg.errmsg(e);
+					return;
+				}
+
+			}
+		}
+		
+		// add open subtasks with a due date to the list
+		if (Prefs.getBoolPref(PrefName.CAL_SHOW_SUBTASKS)) {
+			try {
+				Collection<Subtask> sts = TaskModel.getReference()
+						.getSubTasks();
+				Iterator<Subtask> it = sts.iterator();
+				while (it.hasNext()) {
+
+					Subtask st = it.next();
+
+					if (st.getDueDate() == null)
+						continue;
+					if (st.getCloseDate() != null)
+						continue;
+
+					// build a string for the table - with prefix if needed
+					String abb = "";
+					if (show_abb.equals("true"))
+						abb = "ST" + st.getKey() + " ";
+					String btstring = abb + st.getDescription();
+
+					Object[] ro = new Object[5];
+					ro[0] = st.getDueDate();
+					ro[1] = btstring;
+					ro[2] = "";
+					ro[3] = "navy";
+					ro[4] = null;
+
+					tm.addRow(ro);
+					theTodoList.add(st);
+					tm.tableChanged(new TableModelEvent(tm));
+				}
+			} catch (Exception e) {
+				// Errmsg.errmsg(e);
+				return;
+			}
+		}
+		// sort the table by date
+		tm.sortByColumn(0);
+
+	}
+
+} 
