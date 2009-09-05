@@ -91,7 +91,6 @@ import net.sf.borg.ui.util.TableSorter;
 
 import com.toedter.calendar.JDateChooser;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class TodoView.
  */

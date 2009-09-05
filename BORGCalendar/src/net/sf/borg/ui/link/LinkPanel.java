@@ -35,7 +35,6 @@ import java.util.Iterator;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -65,63 +64,140 @@ import net.sf.borg.ui.address.AddressView;
 import net.sf.borg.ui.calendar.AppointmentListView;
 import net.sf.borg.ui.task.ProjectView;
 import net.sf.borg.ui.task.TaskView;
+import net.sf.borg.ui.util.GridBagConstraintsFactory;
 import net.sf.borg.ui.util.PopupMenuHelper;
 import net.sf.borg.ui.util.TableSorter;
 
+/**
+ * Panel for managing links. This panel is included in the UIs for entities that have links.
+ */
 public class LinkPanel extends JPanel implements Model.Listener {
-	private KeyedEntity<?> owner_;
-	private JScrollPane scrollPanel = new JScrollPane();
-	private JTable table = new JTable();
-	private JLabel notsupp = new JLabel(Resource.getResourceString("not_supported"));
 	
+	/**
+	 * Provide a human readable name for a link
+	 * @param at the link
+	 * @return the name
+	 * @throws Exception
+	 */
+	public static String getName(Link at) throws Exception {
+	    if (at.getLinkType().equals(LinkType.URL.toString()))
+	        return at.getPath();
+	    else if (at.getLinkType().equals(LinkType.APPOINTMENT.toString())) {
+	        Appointment ap = AppointmentModel.getReference().getAppt(Integer.parseInt(at.getPath()));
+	        if (ap != null) {
+	            return (Resource.getResourceString("appointment") + "[" + ap.getText() + "]");
+	        }
+	    } else if (at.getLinkType().equals(LinkType.PROJECT.toString())) {
+	        Project ap = TaskModel.getReference().getProject(Integer.parseInt(at.getPath()));
+	        if (ap != null) {
+	            return (Resource.getResourceString("project") + "[" + ap.getDescription() + "]");
+	        }
+	    } else if (at.getLinkType().equals(LinkType.TASK.toString())) {
+	        Task ap = TaskModel.getReference().getTask(Integer.parseInt(at.getPath()));
+	        if (ap != null) {
+	            return (Resource.getResourceString("task") + "[" + ap.getDescription() + "]");
+	        }
+	    } else if (at.getLinkType().equals(LinkType.ADDRESS.toString())) {
+	        Address ap = AddressModel.getReference().getAddress(Integer.parseInt(at.getPath()));
+	        if (ap != null) {
+	            return (Resource.getResourceString("Address") + "[" + ap.getLastName() + "," + ap.getFirstName() + "]");
+	        }
+	    } else if (at.getLinkType().equals(LinkType.MEMO.toString())) {
+	        return (Resource.getResourceString("memo") + "[" + at.getPath() + "]");
+	    } else if (at.getLinkType().equals(LinkType.FILELINK.toString())) {
+	        File f = new File(at.getPath());
+	        return f.getName();
+	    } else if (at.getLinkType().equals(LinkType.ATTACHMENT.toString())) {
+	        return at.getPath();
+	    }
+	
+	    return "error";
+	}
+	
+	/** the entity that owns the links */
+	private KeyedEntity<?> owningEntity;
+	
+	/** table to show the links */
+	private JTable linkTable = new JTable();
+
+	/**
+	 * constructor
+	 */
 	public LinkPanel() {
 		initComponents();
+		
+		// listen for link model changes
 		LinkModel.getReference().addListener(this);
 	}
 
+	/**
+	 * indicate if the entity shown by this panel has any links
+	 * @return true if the owning entity has links
+	 */
+	public boolean hasLinks()
+	{
+		if( LinkModel.getReference().hasLinks())
+		{
+			try {
+				Collection<Link> atts = LinkModel.getReference().getLinks(owningEntity);
+				if( !atts.isEmpty() )
+					return true;
+			} catch (Exception e) {
+				Errmsg.errmsg(e);
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * initialize the UI
+	 */
 	public void initComponents() {
 		
 		if( !LinkModel.getReference().hasLinks())
-		{
-			this.add(notsupp);
 			return;
-		}
 		
 		this.setLayout(new GridBagLayout());
 
-		table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-		table.setModel(new TableSorter(new String[] { "", "Key" }, new Class[] {
+		linkTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+
+		// table model will contain link name and key.
+		linkTable.setModel(new TableSorter(new String[] { "", "Key" }, new Class[] {
 				java.lang.String.class, Integer.class }));
+		
 		// set up for sorting when a column header is clicked
-		TableSorter tm = (TableSorter) table.getModel();
-		tm.addMouseListenerToHeaderInTable(table);
+		TableSorter tm = (TableSorter) linkTable.getModel();
+		tm.addMouseListenerToHeaderInTable(linkTable);
 
 		// set column widths
-		table.getColumnModel().getColumn(0).setPreferredWidth(125);
-		table.getColumnModel().getColumn(1).setPreferredWidth(75);
+		linkTable.getColumnModel().getColumn(0).setPreferredWidth(125);
+		linkTable.getColumnModel().getColumn(1).setPreferredWidth(75);
 
-		table.setPreferredScrollableViewportSize(new Dimension(150, 100));
+		linkTable.setPreferredScrollableViewportSize(new Dimension(150, 100));
 
-		table.addMouseListener(new java.awt.event.MouseAdapter() {
+		// on double-click - open the object referenced by the link
+		linkTable.addMouseListener(new java.awt.event.MouseAdapter() {
+			@Override
 			public void mouseClicked(java.awt.event.MouseEvent evt) {
-				tableMouseClicked(evt);
+				if (evt.getClickCount() < 2)
+					return;
+				openSelected();
 			}
 		});
 
-		// ListSelectionModel rowSM = table.getSelectionModel();
-		// rowSM.table(this);
-
-		new PopupMenuHelper(table, new PopupMenuHelper.Entry[] {
+		// add a popup menu to the link table
+		new PopupMenuHelper(linkTable, new PopupMenuHelper.Entry[] {
+				// open menu item
 				new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
-
 						openSelected();
 					}
 				}, "Open"),
+				// delete menu item
 				new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						TableSorter ts = (TableSorter) table.getModel();
-						int[] indices = table.getSelectedRows();
+						TableSorter ts = (TableSorter) linkTable.getModel();
+						int[] indices = linkTable.getSelectedRows();
 
 						for (int i = 0; i < indices.length; ++i) {
 							int index = indices[i];
@@ -136,11 +212,12 @@ public class LinkPanel extends JPanel implements Model.Listener {
 
 					}
 				}, "Delete"),
+				// show link properties menu item
 				new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						TableSorter ts = (TableSorter) table.getModel();
-						int[] indices = table.getSelectedRows();
-
+						TableSorter ts = (TableSorter) linkTable.getModel();
+						int[] indices = linkTable.getSelectedRows();
+						// show link type and path
 						for (int i = 0; i < indices.length; ++i) {
 							int index = indices[i];
 							try {
@@ -157,32 +234,30 @@ public class LinkPanel extends JPanel implements Model.Listener {
 					}
 				}, "Properties")});
 
-		TableColumnModel tcm = table.getColumnModel();
+		// hide the key column from view
+		TableColumnModel tcm = linkTable.getColumnModel();
 		TableColumn column = tcm.getColumn(1);
 		tcm.removeColumn(column);
 
-		scrollPanel.setViewportView(table);
+		// add a scroll to the table
+		JScrollPane scrollPanel = new JScrollPane();
+		scrollPanel.setViewportView(linkTable);
+		this.add(scrollPanel, GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH, 1.0, 1.0));
 
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.fill = GridBagConstraints.BOTH;
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.weightx = 1.0;
-		gbc.weighty = 1.0;
-		this.add(scrollPanel, gbc);
-
-		JButton linkfileb = new JButton(Resource.getResourceString("link_file"));
-		linkfileb.setIcon(new javax.swing.ImageIcon(getClass().getResource(
+		// add the link file button
+		JButton linkFilebutton = new JButton(Resource.getResourceString("link_file"));
+		linkFilebutton.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 				"/resource/Add16.gif")));
-		linkfileb.addActionListener(new ActionListener() {
+		linkFilebutton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 
-				
-				if (owner_ == null || owner_.getKey() == -1) {
+				if (owningEntity == null || owningEntity.getKey() == -1) {
 					Errmsg.notice(Resource
 							.getResourceString("att_owner_null"));
 					return;
 				}
+				
+				// prompt for a file and create a link with the file's absolute path
 				File file;
 				while (true) {
 					// prompt for a file
@@ -200,7 +275,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 				}
 
 				try {
-					LinkModel.getReference().addLink(owner_,
+					LinkModel.getReference().addLink(owningEntity,
 							file.getAbsolutePath(), LinkType.FILELINK);
 				} catch (Exception e) {
 					Errmsg.errmsg(e);
@@ -208,18 +283,20 @@ public class LinkPanel extends JPanel implements Model.Listener {
 			}
 		});
 		
-		JButton attfileb = new JButton(Resource.getResourceString("attach_file"));
-		attfileb.setIcon(new javax.swing.ImageIcon(getClass().getResource(
+		// attach file button
+		JButton attachFileButton = new JButton(Resource.getResourceString("attach_file"));
+		attachFileButton.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 				"/resource/Copy16.gif")));
-		attfileb.addActionListener(new ActionListener() {
+		attachFileButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-
-				
-				if (owner_ == null || owner_.getKey() == -1) {
+				if (owningEntity == null || owningEntity.getKey() == -1) {
 					Errmsg.notice(Resource
 							.getResourceString("att_owner_null"));
 					return;
 				}
+				
+				// prompt or a file and add an attachment link
+				// the model will copy the file to the attachement folder
 				File file;
 				while (true) {
 					// prompt for a file
@@ -238,7 +315,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 
 				try {
 					
-					LinkModel.getReference().addLink(owner_,
+					LinkModel.getReference().addLink(owningEntity,
 							file.getAbsolutePath(), LinkType.ATTACHMENT);
 				} catch (Exception e) {
 					Errmsg.errmsg(e);
@@ -246,18 +323,21 @@ public class LinkPanel extends JPanel implements Model.Listener {
 			}
 		});
 
-		JButton urlb = new JButton(Resource.getResourceString("url"));
-		urlb.setIcon(new javax.swing.ImageIcon(getClass().getResource(
+		// URL link button
+		JButton urlLinkButton = new JButton(Resource.getResourceString("url"));
+		urlLinkButton.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 				"/resource/WebComponent16.gif")));
-		urlb.addActionListener(new ActionListener() {
+		urlLinkButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 
-				if (owner_ == null || owner_.getKey() == -1) {
+				if (owningEntity == null || owningEntity.getKey() == -1) {
 					Errmsg.notice(Resource
 							.getResourceString("att_owner_null"));
 					return;
 				}
 
+				// prompt for a url and save as a link
+				// no validation is done
 				String url = JOptionPane.showInputDialog(Resource
 						.getResourceString("url")
 						+ "?");
@@ -266,24 +346,27 @@ public class LinkPanel extends JPanel implements Model.Listener {
 
 				try {
 					LinkModel.getReference()
-							.addLink(owner_, url, LinkType.URL);
+							.addLink(owningEntity, url, LinkType.URL);
 				} catch (Exception e) {
 					Errmsg.errmsg(e);
 				}
 			}
 		});
-		JButton borgb = new JButton("BORG");
-		borgb.setIcon(new javax.swing.ImageIcon(getClass().getResource(
+		
+		// borg entity link button
+		JButton entityLinkbutton = new JButton("BORG");
+		entityLinkbutton.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 				"/resource/borg16.jpg")));
-		borgb.addActionListener(new ActionListener() {
+		entityLinkbutton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 
-				if (owner_ == null || owner_.getKey() == -1) {
+				if (owningEntity == null || owningEntity.getKey() == -1) {
 					Errmsg.notice(Resource
 							.getResourceString("att_owner_null"));
 					return;
 				}
 
+				// prompt for the entity type
 				Object[] possibleValues = { 
 						Resource.getResourceString("appointment"), 
 						Resource.getResourceString("task"),
@@ -296,12 +379,15 @@ public class LinkPanel extends JPanel implements Model.Listener {
 				if (selectedValue == null)
 					return;
 				try{
+					
+					// for each entity type, bring up a dialog to select the entity instance and 
+					// then add the link
 					if( selectedValue.equals(Resource.getResourceString("appointment")))
 					{
 						Appointment ap = EntitySelector.selectAppointment();
 						if( ap != null )
 						{
-							LinkModel.getReference().addLink(owner_, Integer.toString(ap.getKey()), LinkType.APPOINTMENT);
+							LinkModel.getReference().addLink(owningEntity, Integer.toString(ap.getKey()), LinkType.APPOINTMENT);
 						}
 					}
 					else if( selectedValue.equals(Resource.getResourceString("project")))
@@ -309,7 +395,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 						Project ap = EntitySelector.selectProject();
 						if( ap != null )
 						{
-							LinkModel.getReference().addLink(owner_, Integer.toString(ap.getKey()), LinkType.PROJECT);
+							LinkModel.getReference().addLink(owningEntity, Integer.toString(ap.getKey()), LinkType.PROJECT);
 						}
 					}
 					else if( selectedValue.equals(Resource.getResourceString("task")))
@@ -317,7 +403,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 						Task ap = EntitySelector.selectTask();
 						if( ap != null )
 						{
-							LinkModel.getReference().addLink(owner_, Integer.toString(ap.getKey()), LinkType.TASK);
+							LinkModel.getReference().addLink(owningEntity, Integer.toString(ap.getKey()), LinkType.TASK);
 						}
 					}
 					else if( selectedValue.equals(Resource.getResourceString("Address")))
@@ -325,7 +411,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 						Address ap = EntitySelector.selectAddress();
 						if( ap != null )
 						{
-							LinkModel.getReference().addLink(owner_, Integer.toString(ap.getKey()), LinkType.ADDRESS);
+							LinkModel.getReference().addLink(owningEntity, Integer.toString(ap.getKey()), LinkType.ADDRESS);
 						}
 					}
 					else if( selectedValue.equals(Resource.getResourceString("memo")))
@@ -333,7 +419,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 						Memo ap = EntitySelector.selectMemo();
 						if( ap != null )
 						{
-							LinkModel.getReference().addLink(owner_, ap.getMemoName(), LinkType.MEMO);
+							LinkModel.getReference().addLink(owningEntity, ap.getMemoName(), LinkType.MEMO);
 						}
 					}
 				}
@@ -344,38 +430,40 @@ public class LinkPanel extends JPanel implements Model.Listener {
 			}
 		});
 
-		JPanel butPanel = new JPanel();
-		butPanel.add(linkfileb);
-		butPanel.add(attfileb);
-		butPanel.add(urlb);
-		butPanel.add(borgb);
-		gbc.fill = GridBagConstraints.NONE;
-		gbc.gridy = 1;
-		this.add(butPanel, gbc);
+		// button panel
+		JPanel buttonPanel = new JPanel();
+		buttonPanel.add(linkFilebutton);
+		buttonPanel.add(attachFileButton);
+		buttonPanel.add(urlLinkButton);
+		buttonPanel.add(entityLinkbutton);
+		this.add(buttonPanel, GridBagConstraintsFactory.create(0, 1, GridBagConstraints.NONE, 1.0, 1.0));
 		
+		// if we can't figure out the attachement folder, then disable the attachment button
+		// attachments only work for hsql right now since we have a folder readily available
 		if( LinkModel.attachmentFolder() == null)
 		{
-			attfileb.setEnabled(false);
+			attachFileButton.setEnabled(false);
 		}
 
 	}
 
+	/**
+	 * get the item referenced by the link and open it. The non-entity link types depend on java.awt.Desktop
+	 * to open them in the correct "native" way. If the version of Java does not support desktop, then 
+	 * this method is limited to only opening borg entities
+	 */
 	public void openSelected() {
 		
-		
-		if( Desktop.isDesktopSupported() == false)
-			return;
-		
-		TableSorter ts = (TableSorter) table.getModel();
-		int[] indices = table.getSelectedRows();
+		TableSorter ts = (TableSorter) linkTable.getModel();
+		int[] indices = linkTable.getSelectedRows();
 
 		for (int i = 0; i < indices.length; ++i) {
 			int index = indices[i];
 			try {
 				Integer key = (Integer) ts.getValueAt(index, 1);
-				// String path = (String)
-				// ts.getValueAt(index, 0);
 				Link at = LinkModel.getReference().getLink(key.intValue());
+				
+				// open a linked file
 				if (at.getLinkType().equals(LinkType.FILELINK.toString())) {
 					File file = new File(at.getPath());
 					if (!file.exists()) {
@@ -383,8 +471,11 @@ public class LinkPanel extends JPanel implements Model.Listener {
 								.getResourceString("att_not_found"));
 						return;
 					}
+					if( Desktop.isDesktopSupported() == false)
+						return;
 					Desktop.getDesktop().open(file);
 				}
+				// open an attachment
 				else if (at.getLinkType().equals(LinkType.ATTACHMENT.toString())) {
 					File file = new File(LinkModel.attachmentFolder() + "/" + at.getPath());
 					if (!file.exists()) {
@@ -392,11 +483,17 @@ public class LinkPanel extends JPanel implements Model.Listener {
 								.getResourceString("att_not_found"));
 						return;
 					}
+					if( Desktop.isDesktopSupported() == false)
+						return;
 					Desktop.getDesktop().open(file);
 				}
+				// open a url
 				else if (at.getLinkType().equals(LinkType.URL.toString())) {
+					if( Desktop.isDesktopSupported() == false)
+						return;
 					Desktop.getDesktop().browse(new URI(at.getPath()));
 				}
+				// open an appointment
 				else if (at.getLinkType().equals(LinkType.APPOINTMENT.toString())) {
 					Appointment ap = AppointmentModel.getReference().getAppt(Integer.parseInt(at.getPath()));
 					if (ap == null) {
@@ -414,6 +511,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 				    ag.showApp(ap.getKey());
 				    MultiView.getMainView().addView(ag);
 				}
+				// open a project
 				else if (at.getLinkType().equals(LinkType.PROJECT.toString())) {
 					Project ap = TaskModel.getReference().getProject(Integer.parseInt(at.getPath()));
 					if (ap == null) {
@@ -421,9 +519,9 @@ public class LinkPanel extends JPanel implements Model.Listener {
 								.getResourceString("att_not_found"));
 						return;
 					}
-					
 					 MultiView.getMainView().addView(new ProjectView(ap, ProjectView.T_CHANGE, null));
 				}
+				// open a task
 				else if (at.getLinkType().equals(LinkType.TASK.toString())) {
 					Task ap = TaskModel.getReference().getTask(Integer.parseInt(at.getPath()));
 					if (ap == null) {
@@ -431,9 +529,9 @@ public class LinkPanel extends JPanel implements Model.Listener {
 								.getResourceString("att_not_found"));
 						return;
 					}
-					
 					 MultiView.getMainView().addView(new TaskView(ap, TaskView.T_CHANGE, null));
 				}
+				// open an address
 				else if (at.getLinkType().equals(LinkType.ADDRESS.toString())) {
 					Address ap = AddressModel.getReference().getAddress(Integer.parseInt(at.getPath()));
 					if (ap == null) {
@@ -441,11 +539,10 @@ public class LinkPanel extends JPanel implements Model.Listener {
 								.getResourceString("att_not_found"));
 						return;
 					}
-					
 					 MultiView.getMainView().addView(new AddressView(ap));
 				}
+				// open a memo
 				else if (at.getLinkType().equals(LinkType.MEMO.toString())) {
-					
 				    MultiView.getMainView().showMemos(at.getPath());
 				}
 			} catch (Exception e) {
@@ -453,13 +550,16 @@ public class LinkPanel extends JPanel implements Model.Listener {
 			}
 		}
 	}
-
+	
+	/**
+	 * reload the data from the model and redisplay
+	 */
 	public void refresh() {
 
-		TableSorter tm = (TableSorter) table.getModel();
+		TableSorter tm = (TableSorter) linkTable.getModel();
 		tm.setRowCount(0);
 		try {
-			Collection<Link> atts = LinkModel.getReference().getLinks(owner_);
+			Collection<Link> atts = LinkModel.getReference().getLinks(owningEntity);
 			Iterator<Link> it = atts.iterator();
 			while (it.hasNext()) {
 				Link at = (it.next());
@@ -472,80 +572,19 @@ public class LinkPanel extends JPanel implements Model.Listener {
 
 	}
 
-	public void remove() {
-		// TODO Auto-generated method stub
-
-	}
-	
-	public boolean hasLinks()
-	{
-		if( LinkModel.getReference().hasLinks())
-		{
-			try {
-				Collection<Link> atts = LinkModel.getReference().getLinks(owner_);
-				if( !atts.isEmpty() )
-					return true;
-			} catch (Exception e) {
-				Errmsg.errmsg(e);
-			}
-
-		}
-		
-		return false;
-	}
-
+	/**
+	 * set the owning entity of this panel
+	 * @param owner owning entity
+	 */
 	public void setOwner(KeyedEntity<?> owner) {
 		if( !LinkModel.getReference().hasLinks())
 		{
-			owner_ = null;
+			owningEntity = null;
 			return;
 		}
-		owner_ = owner;
+		owningEntity = owner;
 		refresh();
 	}
 
-	private void tableMouseClicked(java.awt.event.MouseEvent evt) {
-		if (evt.getClickCount() < 2)
-			return;
-		openSelected();
-	}
-
-	public static String getName(Link at) throws Exception {
-	    if (at.getLinkType().equals(LinkType.URL.toString()))
-	        return at.getPath();
-	    else if (at.getLinkType().equals(LinkType.APPOINTMENT.toString())) {
-	        Appointment ap = AppointmentModel.getReference().getAppt(Integer.parseInt(at.getPath()));
-	        if (ap != null) {
-	            return (Resource.getResourceString("appointment") + "[" + ap.getText() + "]");
-	        }
 	
-	    } else if (at.getLinkType().equals(LinkType.PROJECT.toString())) {
-	        Project ap = TaskModel.getReference().getProject(Integer.parseInt(at.getPath()));
-	        if (ap != null) {
-	            return (Resource.getResourceString("project") + "[" + ap.getDescription() + "]");
-	        }
-	
-	    } else if (at.getLinkType().equals(LinkType.TASK.toString())) {
-	        Task ap = TaskModel.getReference().getTask(Integer.parseInt(at.getPath()));
-	        if (ap != null) {
-	            return (Resource.getResourceString("task") + "[" + ap.getDescription() + "]");
-	        }
-	
-	    } else if (at.getLinkType().equals(LinkType.ADDRESS.toString())) {
-	        Address ap = AddressModel.getReference().getAddress(Integer.parseInt(at.getPath()));
-	        if (ap != null) {
-	            return (Resource.getResourceString("Address") + "[" + ap.getLastName() + "," + ap.getFirstName() + "]");
-	        }
-	
-	    } else if (at.getLinkType().equals(LinkType.MEMO.toString())) {
-	        return (Resource.getResourceString("memo") + "[" + at.getPath() + "]");
-	    } else if (at.getLinkType().equals(LinkType.FILELINK.toString())) {
-	        File f = new File(at.getPath());
-	        return f.getName();
-	    } else if (at.getLinkType().equals(LinkType.ATTACHMENT.toString())) {
-	        return at.getPath();
-	    }
-	
-	    return "error";
-	}
 }

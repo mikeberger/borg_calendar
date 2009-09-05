@@ -19,7 +19,6 @@ Copyright 2003 by Mike Berger
  */
 package net.sf.borg.ui;
 
-// TODO: Auto-generated Javadoc
 /**
  * ViewSize contains the data associated with a windows's position, size, and
  * maximization state It also contains the logic to convert this data to and
