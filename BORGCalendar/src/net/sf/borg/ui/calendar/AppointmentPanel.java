@@ -552,26 +552,13 @@ public class AppointmentPanel extends JPanel {
 				GridBagConstraints.BOTH));
 
 		GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
-		gridBagConstraints1.fill = GridBagConstraints.BOTH; // Generated
-		gridBagConstraints1.gridy = 0; // Generated
-		gridBagConstraints1.gridx = 2; // Generated
+		gridBagConstraints1.fill = GridBagConstraints.BOTH; 
+		gridBagConstraints1.gridy = 0; 
+		gridBagConstraints1.gridx = 2; 
 		gridBagConstraints1.gridwidth = 2;
-		theRepeatPanel.add(createDaySelectPanel(), gridBagConstraints1); // Generated
+		theRepeatPanel.add(createDaySelectPanel(), gridBagConstraints1); 
 
 		return theRepeatPanel;
-	}
-
-	/**
-	 * Gets the text of the shown appointment.
-	 * 
-	 * @return the appointment text
-	 */
-	public String getText() {
-		String labelstring = appointmentBodyTextArea.getText();
-		if (labelstring.equals("")) {
-			return Resource.getResourceString("*****_NEW_APPT_*****");
-		}
-		return labelstring;
 	}
 
 	/**
@@ -867,7 +854,11 @@ public class AppointmentPanel extends JPanel {
 		final AppointmentPanel thisPanel = this;
 		popupTimesBtn.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				PopupOptionsView pv = new PopupOptionsView(custRemTimes, thisPanel);
+				String apptTitle = apptTitleField.getText();
+				if (apptTitle.equals("")) {
+					apptTitle = Resource.getResourceString("*****_NEW_APPT_*****");
+				}
+				PopupOptionsView pv = new PopupOptionsView(new String(custRemTimes), apptTitle, thisPanel);
 				pv.setVisible(true);
 			}
 		});
@@ -898,7 +889,7 @@ public class AppointmentPanel extends JPanel {
 
 		GridBagConstraints gridBagConstraints87 = GridBagConstraintsFactory.create(0, 4, GridBagConstraints.BOTH, 9.0, 1.0);
 		gridBagConstraints87.gridwidth = 2;
-		this.add(popupReminderPanel, gridBagConstraints87); // Generated
+		this.add(popupReminderPanel, gridBagConstraints87); 
 
 		linkPanel = new LinkPanel();
 		linkPanel.setBorder(new TitledBorder(Resource
@@ -1145,10 +1136,13 @@ public class AppointmentPanel extends JPanel {
 	/**
 	 * Sets the popup times label to show the user what the popup times are in human readbale form.
 	 */
-	public void setPopupTimesString() {
+	public void setPopupTimesString(String reminderTimes) {
 		
 		StringBuffer line1 = new StringBuffer(ReminderTimes.getNum() * 5 + 15);
 		StringBuffer line2 = new StringBuffer(ReminderTimes.getNum() * 5 + 15);
+		
+		
+		custRemTimes = reminderTimes.toCharArray();
 		
 		// every Y value in custRemTimes is an active reminder time
 		if (custRemTimes != null) {
@@ -1280,7 +1274,7 @@ public class AppointmentPanel extends JPanel {
 			newdatefield.setEnabled(false);
 
 			setCustRemTimes(null);
-			setPopupTimesString();
+			setPopupTimesString(new String(custRemTimes));
 
 		} else {
 
@@ -1479,7 +1473,7 @@ public class AppointmentPanel extends JPanel {
 
 				// set reminder times
 				setCustRemTimes(appt);
-				setPopupTimesString();
+				setPopupTimesString(new String(custRemTimes));
 
 			} catch (Exception e) {
 				Errmsg.errmsg(e);

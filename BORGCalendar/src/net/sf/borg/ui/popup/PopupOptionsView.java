@@ -39,300 +39,230 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.model.ReminderTimes;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.calendar.AppointmentPanel;
+import net.sf.borg.ui.util.GridBagConstraintsFactory;
 
-
+/**
+ * PopupOptionsView displays a dialog that lets the user choose
+ * which reminder times to activate or deactivate
+ */
 public class PopupOptionsView extends JDialog {
 
+	/** The reminder time check boxes. */
+	private JCheckBox[] reminderTimeCheckBoxes;
+	
+	/** The parent appointment panel. */
+	private AppointmentPanel parentAppointmentPanel;
+	
+	/** The reminder times on off array. */
+	private char[] reminderTimesOnOffArray;
 
-	private javax.swing.JLabel jAlarmLabel;
-	private javax.swing.JCheckBox[] alarmBoxes;
-	private char[] remtimes_;
-	private AppointmentPanel appPanel_;
-	private JPanel jPanel = null;
-	private JPanel checkpanel = null;
-	private JPanel buttonPanel = null;
-	private JButton saveButton = null;
-	private JButton dismissButton = null;
-	private JButton clearButton = null;
-	private JButton allButton = null;
-
-	public PopupOptionsView(char[] remtimes, AppointmentPanel appPanel) {
+	/**
+	 * Instantiates a new popup options view.
+	 * 
+	 * @param remtimes the reminder times Y/N (on/off) flags from the appointment
+	 * @param appPanel the appointment panel 
+	 */
+	public PopupOptionsView(String remtimes, String appointmentName, AppointmentPanel appPanel) {
 		super();
+		
+		parentAppointmentPanel = appPanel;
+		reminderTimesOnOffArray = remtimes.toCharArray();
 
-		initialize();
+		initialize(appointmentName);
 
+		// escape key closes window
+		getRootPane().registerKeyboardAction(new ActionListener() {
+			public final void actionPerformed(ActionEvent e) {
+				dispose();
+			}
+		}, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
+				JComponent.WHEN_IN_FOCUSED_WINDOW);
+		
 		this.setTitle("Popup_Times");
-		appPanel_ = appPanel;
-		remtimes_ = remtimes;
-
-		jAlarmLabel = new JLabel();
-		ResourceHelper.setText(jAlarmLabel, "custom_times_header");
-		jAlarmLabel.setText(jAlarmLabel.getText() + " '" + appPanel_.getText() + "'");
-		alarmBoxes = new JCheckBox[ReminderTimes.getNum()];
-		for (int i = 0; i < ReminderTimes.getNum(); ++i) {
-			alarmBoxes[i] = new JCheckBox(minutes_string(i));
-		}
-
-		checkpanel = getCheckpanel();
-		checkpanel.add(jAlarmLabel, new GridBagConstraints(0, 0, 2, 1, 0.0,
-				0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-				new Insets(4, 4, 4, 4), 0, 0));
-
-		int colht = alarmBoxes.length / 2;
-		for (int i = 0; i < colht; ++i) {
-			checkpanel.add(alarmBoxes[i], new GridBagConstraints(0, i + 1, 1,
-					1, 0.0, 0.0, GridBagConstraints.WEST,
-					GridBagConstraints.BOTH, new Insets(4, 4, 4, 4), 0, 0));
-
-			if (remtimes_[i] == 'Y') {
-				alarmBoxes[i].setSelected(true);
-			} else {
-				alarmBoxes[i].setSelected(false);
-			}
-		}
-
-		for (int i = colht; i < alarmBoxes.length; ++i) {
-			checkpanel.add(alarmBoxes[i], new GridBagConstraints(1, i - colht
-					+ 1, 1, 1, 0.0, 0.0, GridBagConstraints.WEST,
-					GridBagConstraints.BOTH, new Insets(4, 4, 4, 4), 0, 0));
-			if (remtimes_[i] == 'Y') {
-				alarmBoxes[i].setSelected(true);
-			} else {
-				alarmBoxes[i].setSelected(false);
-			}
-		}
-
+		
 		pack();
 
-
 		this.setModal(true);
-		//manageMySize(PrefName.POPVIEWSIZE);
 
 	}
 
 	/**
-	 * This method initializes this
-	 *
-	 * @return void
+	 * Creates the button panel.
+	 * 
+	 * @return the button panel
 	 */
-	private void initialize() {
-        this.setContentPane(getJPanel());
-	}
-	private void saveButtonClicked(java.awt.event.ActionEvent evt) {
-		for (int i = 0; i < ReminderTimes.getNum(); ++i) {
-			if (alarmBoxes[i].isSelected()) {
-				remtimes_[i] = 'Y';
-			} else {
-				remtimes_[i] = 'N';
+	private JPanel createButtonPanel() {
+		JPanel buttonPanel = new JPanel();
+
+		JButton saveButton = new JButton();
+		ResourceHelper.setText(saveButton, "Save");
+		saveButton.setIcon(new ImageIcon(getClass().getResource(
+				"/resource/Save16.gif")));
+		saveButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				
+				// set the remidner times array from the check box values
+				for (int i = 0; i < ReminderTimes.getNum(); ++i) {
+					if (reminderTimeCheckBoxes[i].isSelected()) {
+						reminderTimesOnOffArray[i] = 'Y';
+					} else {
+						reminderTimesOnOffArray[i] = 'N';
+					}
+				}
+				
+				// save the changes to the appointment panel
+				parentAppointmentPanel.setPopupTimesString(new String(reminderTimesOnOffArray));
+				dispose();
 			}
+		});
+		buttonPanel.add(saveButton, null);
 
-		}
+		JButton clearAllButton = new JButton();
+		ResourceHelper.setText(clearAllButton, "clear_all");
+		clearAllButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent e) {
+				for (int i = 0; i < ReminderTimes.getNum(); ++i) {
+					reminderTimeCheckBoxes[i].setSelected(false);
+				}
+			}
+		});
+		buttonPanel.add(clearAllButton, null);
+		
+		JButton selectAllButton = new JButton();
+		ResourceHelper.setText(selectAllButton, "select_all");
+		selectAllButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent e) {
+				for (int i = 0; i < ReminderTimes.getNum(); ++i) {
+					reminderTimeCheckBoxes[i].setSelected(true);
+				}
+			}
+		});
+		buttonPanel.add(selectAllButton, null); 
 
-		appPanel_.setPopupTimesString();
-		this.dispose();
-	}
-
-	private void cancelButtonClicked(java.awt.event.ActionEvent evt) {
-		this.dispose();
-	}
-
-	private String minutes_string(int i) {
-		int j = ReminderTimes.getTimes(i);
-		int jj = (j >= 0 ? j : -j);
-		int k = jj / 60;
-		int l = jj % 60;
-		String minStr;
-		String hrStr;
-		String minute = Resource.getResourceString("Minute");
-		String minutes = Resource.getResourceString("Minutes");
-		String hour = Resource.getResourceString("Hour");
-		String hours = Resource.getResourceString("Hours");
-		String before = Resource.getResourceString("Before");
-		String after = Resource.getResourceString("After");
-
-		if (k > 1) {
-			hrStr = k + " " + hours;
-		} else if (k > 0) {
-			hrStr = k + " " + hour;
-		} else {
-			hrStr = "";
-		}
-
-		if (l > 1) {
-			minStr = l + " " + minutes;
-		} else if (l > 0) {
-			minStr = l + " " + minute;
-		} else if (k >= 1) {
-			minStr = "";
-		} else {
-			minStr = l + " " + minutes;
-		}
-
-		if( !hrStr.equals("") && !minStr.equals(""))
-			minStr = " " + minStr;
-
-
-		String bef_aft;
-		if (j > 0) {
-			bef_aft = " " + before;
-		} else if (j == 0) {
-			bef_aft = "";
-		} else {
-			bef_aft = " " + after;
-		}
-
-
-		return hrStr + minStr + bef_aft;
-	}
-
-	/**
-	 * This method initializes jPanel
-	 *
-	 * @return javax.swing.JPanel
-	 */
-	private JPanel getJPanel() {
-		if (jPanel == null) {
-
-			jPanel = new JPanel();
-			jPanel.setLayout(new GridBagLayout());
-			GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
-			GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
-			gridBagConstraints5.gridx = 0;
-			gridBagConstraints5.gridy = 0;
-			gridBagConstraints5.insets = new java.awt.Insets(4, 4, 4, 4);
-			gridBagConstraints5.fill = java.awt.GridBagConstraints.BOTH;
-			gridBagConstraints5.weightx = 1.0D;
-			gridBagConstraints5.weighty = 1.0D;
-			gridBagConstraints6.gridx = 0;
-			gridBagConstraints6.gridy = 1;
-			gridBagConstraints6.weighty = 1.0D;
-			gridBagConstraints6.insets = new java.awt.Insets(4, 4, 4, 4);
-			gridBagConstraints6.fill = java.awt.GridBagConstraints.BOTH;
-			jPanel.add(getCheckpanel(), gridBagConstraints5);
-			jPanel.add(getButtonPanel(), gridBagConstraints6);
-
-		}
-		return jPanel;
-	}
-
-	/**
-	 * This method initializes checkpanel
-	 *
-	 * @return javax.swing.JPanel
-	 */
-	private JPanel getCheckpanel() {
-		if (checkpanel == null) {
-			checkpanel = new JPanel();
-			checkpanel.setLayout(new GridBagLayout());
-		}
-		return checkpanel;
-	}
-
-	/**
-	 * This method initializes jPanel2
-	 *
-	 * @return javax.swing.JPanel
-	 */
-	private JPanel getButtonPanel() {
-		if (buttonPanel == null) {
-			buttonPanel = new JPanel();
-			buttonPanel.add(getSaveButton(), null);
-			buttonPanel.add(getClearButton(), null);  // Generated
-			buttonPanel.add(getAllButton(), null);  // Generated
-			buttonPanel.add(getJButton1(), null);
-		}
+		JButton dismissButton = new JButton();
+		ResourceHelper.setText(dismissButton, "Dismiss");
+		dismissButton.setIcon(new ImageIcon(getClass().getResource(
+				"/resource/Stop16.gif")));
+		dismissButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				dispose();
+			}
+		});
+		
+		buttonPanel.add(dismissButton, null);
 		return buttonPanel;
 	}
 
 	/**
-	 * This method initializes saveButton
-	 *
-	 * @return javax.swing.JButton
+	 * This method initializes the UI.
+	 * 
+	 * @param appointmentName the appointment name (title)
 	 */
-	private JButton getSaveButton() {
-		if (saveButton == null) {
-			saveButton = new JButton();
-			ResourceHelper.setText(saveButton, "Save");
-			saveButton.setIcon(new ImageIcon(getClass().getResource(
-					"/resource/Save16.gif")));
-			saveButton.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					saveButtonClicked(evt);
-				}
-			});
+	private void initialize(String appointmentName) {
+		
+		JPanel topPanel = new JPanel();
+		topPanel.setLayout(new GridBagLayout());
+	
+		JPanel checkBoxPanel = new JPanel();
+		checkBoxPanel.setLayout(new GridBagLayout());
+		
+		JLabel jAlarmLabel = new JLabel();
+		ResourceHelper.setText(jAlarmLabel, "custom_times_header");
+		jAlarmLabel.setText(jAlarmLabel.getText() + " '" + appointmentName
+				+ "'");
+		checkBoxPanel.add(jAlarmLabel, new GridBagConstraints(0, 0, 2, 1, 0.0,
+				0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+				new Insets(4, 4, 4, 4), 0, 0));
+
+		// create reminder time check boxes
+		reminderTimeCheckBoxes = new JCheckBox[ReminderTimes.getNum()];
+		for (int i = 0; i < ReminderTimes.getNum(); ++i) {
+			reminderTimeCheckBoxes[i] = new JCheckBox(minutes_string(i));
 		}
-		return saveButton;
+		
+		// add boxes in 2 columns
+		int boxesPerColumn = reminderTimeCheckBoxes.length / 2;
+		
+		// left column
+		for (int i = 0; i < boxesPerColumn; ++i) {
+			checkBoxPanel.add(reminderTimeCheckBoxes[i], new GridBagConstraints(0, i + 1, 1,
+					1, 0.0, 0.0, GridBagConstraints.WEST,
+					GridBagConstraints.BOTH, new Insets(4, 4, 4, 4), 0, 0));
+
+			if (reminderTimesOnOffArray[i] == 'Y') {
+				reminderTimeCheckBoxes[i].setSelected(true);
+			} else {
+				reminderTimeCheckBoxes[i].setSelected(false);
+			}
+		}
+
+		// right column
+		for (int i = boxesPerColumn; i < reminderTimeCheckBoxes.length; ++i) {
+			checkBoxPanel.add(reminderTimeCheckBoxes[i], new GridBagConstraints(1, i - boxesPerColumn
+					+ 1, 1, 1, 0.0, 0.0, GridBagConstraints.WEST,
+					GridBagConstraints.BOTH, new Insets(4, 4, 4, 4), 0, 0));
+			if (reminderTimesOnOffArray[i] == 'Y') {
+				reminderTimeCheckBoxes[i].setSelected(true);
+			} else {
+				reminderTimeCheckBoxes[i].setSelected(false);
+			}
+		}
+		
+		topPanel.add(checkBoxPanel, GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH, 1.0, 1.0));
+		topPanel.add(createButtonPanel(), GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH, 0.0, 1.0));
+
+		this.setContentPane(topPanel);
 	}
 
 	/**
-	 * This method initializes jButton1
-	 *
-	 * @return javax.swing.JButton
+	 * generate a human readable string for a particular reminder time
+	 * 
+	 * @param i the index of the remidner time
+	 * 
+	 * @return the string
 	 */
-	private JButton getJButton1() {
-		if (dismissButton == null) {
-			dismissButton = new JButton();
-			ResourceHelper.setText(dismissButton, "Dismiss");
-			dismissButton.setIcon(new ImageIcon(getClass().getResource(
-					"/resource/Stop16.gif")));
-			dismissButton.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					cancelButtonClicked(evt);
-				}
-			});
-	    	getRootPane()
-			.registerKeyboardAction
-			(
-				new ActionListener()
-				{
-					public final void actionPerformed(ActionEvent e) {
-						cancelButtonClicked(e);
-					}
-				},
-				KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
-				JComponent.WHEN_IN_FOCUSED_WINDOW
-			);
+	private String minutes_string(int i) {
+		
+		int reminderTimeMinutes = ReminderTimes.getTimes(i);
+		int reminderTimeMinutesAbsoluteValue = (reminderTimeMinutes >= 0 ? reminderTimeMinutes : -reminderTimeMinutes);
+		int reminderTimeHours = reminderTimeMinutesAbsoluteValue / 60;
+		int reminderTimeMinutesPastTheHour = reminderTimeMinutesAbsoluteValue % 60;
+		
+		String minutesString;
+		String hoursString;
+		
+		if (reminderTimeHours > 1) {
+			hoursString = reminderTimeHours + " " + Resource.getResourceString("Hours");
+		} else if (reminderTimeHours > 0) {
+			hoursString = reminderTimeHours + " " + Resource.getResourceString("Hour");
+		} else {
+			hoursString = "";
 		}
-		return dismissButton;
+
+		if (reminderTimeMinutesPastTheHour > 1) {
+			minutesString = reminderTimeMinutesPastTheHour + " " + Resource.getResourceString("Minutes");
+		} else if (reminderTimeMinutesPastTheHour > 0) {
+			minutesString = reminderTimeMinutesPastTheHour + " " + Resource.getResourceString("Minute");
+		} else if (reminderTimeHours >= 1) {
+			minutesString = "";
+		} else {
+			minutesString = reminderTimeMinutesPastTheHour + " " + Resource.getResourceString("Minutes");
+		}
+
+		// space between hours and minutes
+		if (!hoursString.equals("") && !minutesString.equals(""))
+			minutesString = " " + minutesString;
+
+		String beforeOrAfterString;
+		if (reminderTimeMinutes > 0) {
+			beforeOrAfterString = " " + Resource.getResourceString("Before");
+		} else if (reminderTimeMinutes == 0) {
+			beforeOrAfterString = "";
+		} else {
+			beforeOrAfterString = " " + Resource.getResourceString("After");
+		}
+
+		return hoursString + minutesString + beforeOrAfterString;
 	}
 
-	/**
-	 * This method initializes clearButton	
-	 * 	
-	 * @return javax.swing.JButton	
-	 */
-	private JButton getClearButton() {
-		if (clearButton == null) {
-			clearButton = new JButton();
-			ResourceHelper.setText(clearButton, "clear_all");
-			clearButton.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent e) {
-					for (int i = 0; i < ReminderTimes.getNum(); ++i) {
-						alarmBoxes[i].setSelected(false);
-					}
-				}
-			});
-		}
-		return clearButton;
-	}
-
-	/**
-	 * This method initializes allButton	
-	 * 	
-	 * @return javax.swing.JButton	
-	 */
-	private JButton getAllButton() {
-		if (allButton == null) {
-			allButton = new JButton();
-			ResourceHelper.setText(allButton, "select_all");
-			allButton.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent e) {
-					for (int i = 0; i < ReminderTimes.getNum(); ++i) {
-						alarmBoxes[i].setSelected(true);
-					}
-				}
-			});
-		}
-		return allButton;
-	}
-} //  @jve:decl-index=0:visual-constraint="10,10"
+} 
