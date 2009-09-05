@@ -29,54 +29,73 @@ import javax.swing.border.Border;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.ReminderTimes;
 
+/**
+ * Panel used to edit the minutes of each of the user tunable reminder times. This panel is
+ * used in the main options window
+ */
 public class ReminderTimePanel extends JPanel {
 
+	/** The number Of Reminder Times. */
+	private int numberOfReminderTimes = 0;
+
+	/** The spinners for setting the reminder times */
+	private JSpinner spinners[];
+
 	/**
-	 * This is the default constructor
+	 * constructor.
 	 */
 	public ReminderTimePanel() {
 		super();
-		snum = ReminderTimes.getNum();
-		spinners = new JSpinner[snum];
+		
+		numberOfReminderTimes = ReminderTimes.getNum();
 		
 		initialize();
 	}
-	
-	private JSpinner spinners[];
-	private int snum = 0;
-	
-	public void setTimes()
-	{
-		int arr[] = new int[snum];
-		for( int i = 0; i < snum; i++)
-		{
-			Integer ii = (Integer)spinners[i].getValue();
+
+	/**
+	 * Initialize.
+	 */
+	private void initialize() {
+		
+		// border
+		String title = Resource.getResourceString("Popup_Times") + " ("
+				+ Resource.getResourceString("Minutes") + ")";
+		Border b = BorderFactory.createTitledBorder(this.getBorder(), title);
+		setBorder(b);
+		
+		setLayout(new GridLayout(2, 0));
+		
+		// add the spinners
+		spinners = new JSpinner[numberOfReminderTimes];
+		for (int i = 0; i < numberOfReminderTimes; i++) {
+			spinners[i] = new JSpinner(new SpinnerNumberModel());
+			this.add(spinners[i]);
+		}
+		
+		// load the times
+		loadTimes();
+	}
+
+	/**
+	 * Load the spinner valies from stored prefs
+	 */
+	private void loadTimes() {
+		for (int i = 0; i < numberOfReminderTimes; i++) {
+			spinners[i].setValue(new Integer(ReminderTimes.getTimes(i)));
+		}
+	}
+
+	/**
+	 * Stores the reminder times from the UI settings
+	 */
+	public void setTimes() {
+		int arr[] = new int[numberOfReminderTimes];
+		for (int i = 0; i < numberOfReminderTimes; i++) {
+			Integer ii = (Integer) spinners[i].getValue();
 			arr[i] = ii.intValue();
 		}
 		ReminderTimes.setTimes(arr);
 		loadTimes();
-	}
-	
-	private void loadTimes()
-	{
-		for( int i = 0; i < snum; i++)
-		{
-			spinners[i].setValue(new Integer(ReminderTimes.getTimes(i)));
-		}
-	}
-	
-	private void initialize() {
-		String title = Resource.getResourceString("Popup_Times") + " (" + 
-				Resource.getResourceString("Minutes") + ")";
-		Border b = BorderFactory.createTitledBorder(this.getBorder(), title);
-		setBorder(b);
-		setLayout( new GridLayout(2,0));
-		for( int i = 0; i < snum; i++)
-		{
-			spinners[i] = new JSpinner(new SpinnerNumberModel());
-			spinners[i].setValue(new Integer(ReminderTimes.getTimes(i)));
-			this.add(spinners[i]);
-		}
 	}
 
 }
