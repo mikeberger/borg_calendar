@@ -400,7 +400,7 @@ public class ReminderPopupManager implements Model.Listener {
 					ReminderPopup popup = new ReminderPopup(appt);
 					pops.put(apptKey, popup);
 
-					popup.setText2("");
+					popup.timeToGoMessage("");
 					popup.setVisible(true);
 					popup.toFront();
 
@@ -491,7 +491,7 @@ public class ReminderPopupManager implements Model.Listener {
 
 					// *** show untimed todos on the half hour and on startup
 					int min = new GregorianCalendar().get(Calendar.MINUTE);
-					if (popup.wasShown() && !(min == 0 || min == 30))
+					if (popup.wasEverShown() && !(min == 0 || min == 30))
 						continue;
 
 					timeToGoMessage = Resource.getResourceString("To_Do") + " "
@@ -524,7 +524,7 @@ public class ReminderPopupManager implements Model.Listener {
 				}
 
 				// set the time to go message
-				popup.setText2(timeToGoMessage);
+				popup.timeToGoMessage(timeToGoMessage);
 				
 				popup.setVisible(true);
 				popup.toFront();
