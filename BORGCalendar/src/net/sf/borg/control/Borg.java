@@ -58,7 +58,7 @@ import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.OptionsView;
 import net.sf.borg.ui.SunTrayIconProxy;
 import net.sf.borg.ui.calendar.TodoView;
-import net.sf.borg.ui.popup.PopupView;
+import net.sf.borg.ui.popup.ReminderPopupManager;
 import net.sf.borg.ui.util.Banner;
 import net.sf.borg.ui.util.ModalMessage;
 import net.sf.borg.ui.util.NwFontChooserS;
@@ -646,7 +646,7 @@ public class Borg implements OptionsView.RestartListener, SocketHandler {
 		}
 
 		// create popups view
-		PopupView.getReference();
+		ReminderPopupManager.getReference();
 
 		// start main month view
 		// CalendarView.getReference(trayIcon);

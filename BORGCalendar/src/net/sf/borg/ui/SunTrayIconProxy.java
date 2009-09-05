@@ -32,7 +32,7 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.control.Borg;
 import net.sf.borg.ui.address.AddrListView;
 import net.sf.borg.ui.calendar.TodoView;
-import net.sf.borg.ui.popup.PopupView;
+import net.sf.borg.ui.popup.ReminderPopupManager;
 
 /** communicates with the new java built-in system tray APIs */
 public class SunTrayIconProxy {
@@ -112,7 +112,7 @@ public class SunTrayIconProxy {
 		item.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent arg0) {
-				PopupView.getReference().showAll();
+				ReminderPopupManager.getReference().showAll();
 			}
 
 		});
@@ -124,7 +124,7 @@ public class SunTrayIconProxy {
 		item.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent arg0) {
-				PopupView.getReference().hideAll();
+				ReminderPopupManager.getReference().hideAll();
 			}
 
 		});
