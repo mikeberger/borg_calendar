@@ -27,15 +27,23 @@ import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.TableCellRenderer;
 
+import net.sf.borg.common.PrefName;
+import net.sf.borg.common.Prefs;
+
 public class StripedTable extends JTable {
+
+	// initialize table stripe color
+	private static Color STCOLOR = Color.white;
+	static {
+		int rgb = Prefs.getIntPref(PrefName.UCS_STRIPE);
+		setStripeColor(new Color(rgb));
+	}
 
 	private TableCellRenderer defrend_ = null;
 
 	private TableCellRenderer defDaterend_ = null;
 
 	private TableCellRenderer defBoolRend_ = null;
-
-	private static Color STCOLOR = Color.white;
 
 	public static void setStripeColor(Color c) {
 		STCOLOR = c;

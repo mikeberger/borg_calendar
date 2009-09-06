@@ -92,12 +92,6 @@ public class OptionsView extends View {
 
 	private static OptionsView singleton = null;
 
-	// initialize table stripe color
-	static {
-		int rgb = Prefs.getIntPref(PrefName.UCS_STRIPE);
-		StripedTable.setStripeColor(new Color(rgb));
-	}
-
 	/**
 	 * Prompt the user to choose a database folder
 	 * @return the folder path or null
