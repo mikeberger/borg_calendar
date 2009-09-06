@@ -37,7 +37,7 @@ import net.sf.borg.model.undo.UndoLog;
 import net.sf.borg.model.xml.AddressXMLAdapter;
 
 /**
- * AddressModel provies the model layer APIs for working with Addresses
+ * AddressModel provides the model layer APIs for working with Addresses
  */
 public class AddressModel extends Model {
 

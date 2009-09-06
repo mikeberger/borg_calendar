@@ -51,7 +51,7 @@ import net.sf.borg.model.undo.UndoLog;
 import net.sf.borg.model.xml.AppointmentXMLAdapter;
 
 /**
- * The Class AppointmentModel.
+ * the appointment model provides the model layer APIs for working with Appointment Entities
  * 
  */
 public class AppointmentModel extends Model implements Model.Listener,
