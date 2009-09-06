@@ -68,7 +68,7 @@ import net.sf.borg.ui.util.NwFontChooserS;
  * spawning various threads, including the main UI thread and various timer
  * threads. It also handles shutdown.
  */
-public class Borg implements OptionsView.RestartListener, SocketHandler {
+public class Borg implements SocketHandler {
 
 	/** splash window */
 	static private Banner ban_ = null; // start up banner
@@ -379,11 +379,6 @@ public class Borg implements OptionsView.RestartListener, SocketHandler {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
-		// register as a restart listener. on rare occassions the options window
-		// can request an
-		// app restart
-		OptionsView.setRestartListener(this);
 
 		// check if splash window is enabled
 		boolean splash = true;
