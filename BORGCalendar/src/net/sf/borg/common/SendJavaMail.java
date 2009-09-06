@@ -88,6 +88,8 @@ public class SendJavaMail {
 		String ed = Prefs.getPref(PrefName.EMAILDEBUG);
 		if (ed.equals("1"))
 			props.put("mail.debug", "true");
+		if( Prefs.getBoolPref(PrefName.ENABLETLS))
+			props.put("mail.smtp.starttls.enable","true");
 
 		Authenticator auth = null;
 		if (user != null && !user.equals("") && pass != null
@@ -97,7 +99,7 @@ public class SendJavaMail {
 		}
 		Session session = Session.getDefaultInstance(props, auth);
 
-		// session.setDebug(debug);
+		session.setDebug(true);
 
 		try {
 			// create a message

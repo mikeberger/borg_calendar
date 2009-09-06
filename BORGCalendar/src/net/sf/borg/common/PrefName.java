@@ -236,6 +236,9 @@ public class PrefName {
 
 	/** The EMAILPORT. */
 	static public PrefName EMAILPORT = new PrefName("email_port", "25");
+	
+	/** TLS flag */
+	static public PrefName ENABLETLS = new PrefName("enable_tls", "false");
 
 	/** The REMMINS. */
 	static public PrefName REMMINS = new PrefName("remmins",

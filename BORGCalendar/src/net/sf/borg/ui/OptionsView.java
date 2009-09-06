@@ -28,7 +28,6 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -40,21 +39,32 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.TreeSet;
 
+import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JRadioButton;
+import javax.swing.JSeparator;
 import javax.swing.JSpinner;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.SpinnerDateModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.WindowConstants;
 import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.SoftBevelBorder;
+import javax.swing.border.TitledBorder;
 
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
@@ -67,26 +77,22 @@ import net.sf.borg.ui.util.JButtonKnowsBgColor;
 import net.sf.borg.ui.util.NwFontChooserS;
 import net.sf.borg.ui.util.StripedTable;
 
-// propgui displays the edit preferences window
+/**
+ * UI for editing BORG options
+ */
+/*
+ * THIS FILE HAS NOT YET BEEN CLEANED UP
+ */
 public class OptionsView extends View {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 4743111117071445783L;
 
 	// to break a dependency with the contol package
 	public interface RestartListener {
 		public void restart();
 	}
 
-	static private RestartListener rl_ = null; // someone to call to
-
-	// request a
+	static private RestartListener rl_ = null;
 
 	private static OptionsView singleton = null;
-
-	// restart
 
 	static {
 		int rgb = Prefs.getIntPref(PrefName.UCS_STRIPE);
@@ -141,10 +147,6 @@ public class OptionsView extends View {
 		return (singleton);
 	}
 
-	static public void setRestartListener(RestartListener rl) {
-		rl_ = rl;
-	}
-
 	static private void setBooleanPref(JCheckBox box, PrefName pn) {
 		if (box.isSelected()) {
 			Prefs.putPref(pn, "true");
@@ -162,11 +164,15 @@ public class OptionsView extends View {
 		}
 	}
 
-	private javax.swing.JButton applyButton;
+	static public void setRestartListener(RestartListener rl) {
+		rl_ = rl;
+	}
 
-	private JPanel applyDismissPanel = null;
+	private JButton applyButton;
 
-	private javax.swing.JButton apptFontButton;
+	private JButton apptFontButton;
+
+	JTextField backupDir = new JTextField();
 
 	private JButtonKnowsBgColor btn_ucs_birthdays;
 
@@ -202,55 +208,67 @@ public class OptionsView extends View {
 
 	private JButtonKnowsBgColor btn_ucs_white;
 
-	private javax.swing.JCheckBox canadabox;
+	private JCheckBox calShowSubtaskBox = new JCheckBox();
 
-	private javax.swing.JCheckBox cb_ucs_marktodo;
+	private JCheckBox calShowTaskBox = new JCheckBox();
 
-	private javax.swing.JCheckBox cb_ucs_ontodo;
+	private JCheckBox canadabox;
 
-	private javax.swing.JSpinner checkfreq;
+	private JCheckBox cb_ucs_marktodo;
 
-	private javax.swing.JButton chgdb;
+	private JCheckBox cb_ucs_ontodo;
 
-	private javax.swing.JCheckBox colorprint;
+	private JSpinner checkfreq;
 
-	private javax.swing.JCheckBox colorsortbox;
+	private JButton chgdb;
 
-	private javax.swing.JButton dayFontButton = new JButton();
+	private JCheckBox colorprint;
 
-	private javax.swing.JTextField dbDirText;
+	private JCheckBox colorsortbox;
 
-	private javax.swing.JTextField dbHostText;
+	private JButton dayFontButton = new JButton();
 
-	private javax.swing.JTextField dbNameText;
+	private JTextField dbDirText;
 
-	private javax.swing.JTextField dbPortText;
+	private JTextField dbHostText;
 
-	private javax.swing.ButtonGroup dbTypeGroup;
+	private JTextField dbNameText;
+
+	private JTextField dbPortText;
+
+	private ButtonGroup dbTypeGroup;
 
 	private JPanel dbTypePanel = null;
 
-	private javax.swing.JTextField dbUserText;
+	private JTextField dbUserText;
 
-	private javax.swing.JButton defFontButton;
+	private JButton defFontButton;
 
-	private javax.swing.JButton dismissButton;
+	private JButton dismissButton;
+
+	JCheckBox dock = new JCheckBox();
 
 	private JCheckBox doyBox = null;
 
-	private javax.swing.JCheckBox emailbox;
+	private JCheckBox emailbox;
 
-	private javax.swing.JTextField emailtext;
+	private JTextField emailtext;
 
 	private JSpinner emailtimebox = null;
 
-	private javax.swing.JCheckBox holiday1;
+	private JCheckBox ganttShowSubtaskBox = new JCheckBox();
+
+	JCheckBox hide_strike_box = new JCheckBox();
+
+	private JCheckBox holiday1;
 
 	private JRadioButton hsqldbButton;
 
+	JTextField hsqldbdir = new JTextField();
+
 	private JPanel hsqldbPanel;
 
-	private javax.swing.JCheckBox iso8601Box = new JCheckBox();
+	private JCheckBox iso8601Box = new JCheckBox();
 
 	private JRadioButton jdbcButton = null;
 
@@ -258,75 +276,85 @@ public class OptionsView extends View {
 
 	private JTextField jdbcText = null;
 
-	private javax.swing.JLabel jLabel1;
+	private JLabel jLabel1;
 
-	private javax.swing.JLabel jLabel15;
+	private JLabel jLabel15;
 
-	private javax.swing.JLabel jLabel16;
+	private JLabel jLabel16;
 
-	private javax.swing.JLabel jLabel17;
+	private JLabel jLabel17;
 
-	private javax.swing.JLabel jLabel18;
+	private JLabel jLabel18;
 
-	private javax.swing.JLabel jLabel19;
+	private JLabel jLabel19;
 
-	private javax.swing.JLabel jLabel2;
+	private JLabel jLabel2;
 
-	private javax.swing.JLabel jLabel20;
+	private JLabel jLabel20;
 
-	private javax.swing.JLabel jLabel4;
+	private JLabel jLabel4;
 
-	private javax.swing.JLabel jLabel5;
+	private JLabel jLabel5;
 
-	private javax.swing.JLabel jLabel6;
+	private JLabel jLabel6;
 
-	private javax.swing.JLabel jLabel7;
+	private JLabel jLabel7;
 
-	private javax.swing.JLabel jLabel8;
+	private JLabel jLabel8;
 
 	private JPanel jPanelUCS = null;
 
-	private javax.swing.JPasswordField jPasswordField1;
+	private JPasswordField jPasswordField1;
 
-	private javax.swing.JSeparator jSeparator1;
+	private JSeparator jSeparator1;
 
-	private javax.swing.JTabbedPane jTabbedPane1;
+	private JTabbedPane jTabbedPane1;
 
-	private javax.swing.JComboBox lnfBox;
+	private JComboBox lnfBox;
 
-	private javax.swing.JComboBox localebox;
+	private JComboBox localebox;
 
-	private javax.swing.JCheckBox miltime;
+	private JCheckBox miltime;
 
-	private javax.swing.JCheckBox mondaycb;
+	private JCheckBox mondaycb;
 
-	private javax.swing.JButton monthFontButton = new JButton();
+	private JButton monthFontButton = new JButton();
 
 	private JRadioButton MySQLButton = null;
 
-	private javax.swing.JPanel mysqlPanel;
+	private JPanel mysqlPanel;
 
-	private javax.swing.JCheckBox popenablebox;
+	private JCheckBox popenablebox;
 
-	private javax.swing.JCheckBox privbox;
+	private JCheckBox privbox;
 
-	private javax.swing.JCheckBox pubbox;
+	private JCheckBox pubbox;
 
 	private JLabel remtimelabel = null;
 
 	private ReminderTimePanel remTimePanel = new ReminderTimePanel();
 
-	private javax.swing.JTextField smtptext;
-	
+	JPasswordField smpw = new JPasswordField();
+
 	private JTextField smtpport = new JTextField();
 
-	private javax.swing.JCheckBox soundbox;
+	private JTextField smtptext;
 
-	private javax.swing.JCheckBox splashbox;
+	JTextField socketPort = new JTextField();
 
-	private javax.swing.JCheckBox stackbox;
+	private JCheckBox soundbox;
 
-	private javax.swing.JTextField tf_ucs_marker;
+	private JCheckBox splashbox;
+
+	private JCheckBox stackbox;
+
+	private JCheckBox taskAbbrevBox = new JCheckBox();
+
+	private JPanel taskOptionPanel = null; // @jve:decl-index=0:visual-constraint="12,2528"
+
+	private JTextField tf_ucs_marker;
+	
+	private JCheckBox tlsbox;
 
 	private JPanel topPanel = null;
 
@@ -334,34 +362,22 @@ public class OptionsView extends View {
 
 	private JCheckBox useBeep = null;
 
-	private javax.swing.JButton weekFontButton = new JButton();
-
-	private javax.swing.JComboBox wkendhr;
-
-	private javax.swing.JComboBox wkstarthr;
-
-	JTextField hsqldbdir = new JTextField();
-
-	JTextField backupDir = new JTextField();
-
-	JPasswordField smpw = new JPasswordField();
-
-	JTextField socketPort = new JTextField();
-
 	JTextField usertext = new JTextField();
 
 	JCheckBox useSysTray = new JCheckBox();
 
-	JCheckBox dock = new JCheckBox();
+	private JButton weekFontButton = new JButton();
 
-	JCheckBox hide_strike_box = new JCheckBox();
+	private JComboBox wkendhr;
+
+	private JComboBox wkstarthr;
 
 	// dbonly will only allow db changes
 	private OptionsView(boolean dbonly) {
 		super();
 
 		initComponents();
-		dbTypeGroup = new javax.swing.ButtonGroup();
+		dbTypeGroup = new ButtonGroup();
 		dbTypeGroup.add(hsqldbButton);
 		dbTypeGroup.add(MySQLButton);
 		dbTypeGroup.add(jdbcButton);
@@ -369,7 +385,7 @@ public class OptionsView extends View {
 		if (!dbonly) {
 			addModel(AppointmentModel.getReference());
 		} else {
-			setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+			setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		}
 
 		// set the various screen items based on the existing user
@@ -445,6 +461,7 @@ public class OptionsView extends View {
 		setCheckBox(ganttShowSubtaskBox, PrefName.GANTT_SHOW_SUBTASKS);
 		setCheckBox(dock, PrefName.DOCKPANELS);
 		setCheckBox(hide_strike_box, PrefName.HIDESTRIKETHROUGH);
+		setCheckBox(tlsbox, PrefName.ENABLETLS);
 
 		int socket = Prefs.getIntPref(PrefName.SOCKETPORT);
 		socketPort.setText(Integer.toString(socket));
@@ -593,13 +610,6 @@ public class OptionsView extends View {
 		manageMySize(PrefName.OPTVIEWSIZE);
 	}
 
-	public void destroy() {
-		this.dispose();
-	}
-
-	public void refresh() {
-	}
-
 	private void apply(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_apply
 		applyChanges();
 	}// GEN-LAST:event_apply
@@ -622,7 +632,6 @@ public class OptionsView extends View {
 		setBooleanPref(useBeep, PrefName.USESYSTEMBEEP);
 		setBooleanPref(truncbox, PrefName.TRUNCAPPT);
 		setBooleanPref(iso8601Box, PrefName.ISOWKNUMBER);
-		// setBooleanPref(extraDayBox, PrefName.SHOWEXTRADAYS);
 		setBooleanPref(useSysTray, PrefName.USESYSTRAY);
 		setBooleanPref(taskAbbrevBox, PrefName.TASK_SHOW_ABBREV);
 		setBooleanPref(calShowTaskBox, PrefName.CAL_SHOW_TASKS);
@@ -630,6 +639,7 @@ public class OptionsView extends View {
 		setBooleanPref(ganttShowSubtaskBox, PrefName.GANTT_SHOW_SUBTASKS);
 		setBooleanPref(dock, PrefName.DOCKPANELS);
 		setBooleanPref(hide_strike_box, PrefName.HIDESTRIKETHROUGH);
+		setBooleanPref(tlsbox, PrefName.ENABLETLS);
 
 		Prefs.putPref(PrefName.BACKUPDIR, backupDir.getText());
 
@@ -738,7 +748,7 @@ public class OptionsView extends View {
 	}
 
 	private void chgdbActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_chgdbActionPerformed
-	{// GEN-HEADEREND:event_chgdbActionPerformed
+	{
 		int ret = JOptionPane.showConfirmDialog(null, Resource
 				.getResourceString("Really_change_the_database?"), Resource
 				.getResourceString("Confirm_DB_Change"),
@@ -792,9 +802,9 @@ public class OptionsView extends View {
 		}
 	}
 
-	private void exitForm(java.awt.event.WindowEvent evt) {// GEN-FIRST:event_exitForm
+	public void destroy() {
 		this.dispose();
-	}// GEN-LAST:event_exitForm
+	}
 
 	private void fontActionPerformed(java.awt.event.ActionEvent evt,
 			PrefName fontname) {// GEN-FIRST:event_incfontActionPerformed
@@ -822,104 +832,94 @@ public class OptionsView extends View {
 
 		appearancePanel.setName(Resource.getResourceString("appearance"));
 		ResourceHelper.setText(privbox, "Show_Private_Appointments");
-		appearancePanel.add(privbox, GridBagConstraintsFactory.create(1, 1, GridBagConstraints.BOTH));
+		appearancePanel.add(privbox, GridBagConstraintsFactory.create(1, 1,
+				GridBagConstraints.BOTH));
 
 		ResourceHelper.setText(pubbox, "Show_Public_Appointments");
-		appearancePanel.add(pubbox, GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH));
+		appearancePanel.add(pubbox, GridBagConstraintsFactory.create(0, 1,
+				GridBagConstraints.BOTH));
 
 		ResourceHelper.setText(jLabel4, "Look_and_Feel:");
 		jLabel4.setLabelFor(lnfBox);
-		appearancePanel.add(jLabel4, GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH));
+		appearancePanel.add(jLabel4, GridBagConstraintsFactory.create(0, 0,
+				GridBagConstraints.BOTH));
 
 		lnfBox.setEditable(true);
 		lnfBox.setMaximumSize(new java.awt.Dimension(131, 24));
 		lnfBox.setPreferredSize(new java.awt.Dimension(50, 24));
 		lnfBox.setAutoscrolls(true);
-		appearancePanel.add(lnfBox, GridBagConstraintsFactory.create(1, 0, GridBagConstraints.BOTH));
+		appearancePanel.add(lnfBox, GridBagConstraintsFactory.create(1, 0,
+				GridBagConstraints.BOTH));
 
 		ResourceHelper.setText(holiday1, "Show_U.S._Holidays");
-		appearancePanel.add(holiday1, GridBagConstraintsFactory.create(0, 3, GridBagConstraints.BOTH));
+		appearancePanel.add(holiday1, GridBagConstraintsFactory.create(0, 3,
+				GridBagConstraints.BOTH));
 
 		ResourceHelper.setText(mondaycb, "Week_Starts_with_Monday");
-		appearancePanel.add(mondaycb, GridBagConstraintsFactory.create(1, 4, GridBagConstraints.BOTH));
+		appearancePanel.add(mondaycb, GridBagConstraintsFactory.create(1, 4,
+				GridBagConstraints.BOTH));
 
 		ResourceHelper.setText(miltime, "Use_24_hour_time_format");
-		appearancePanel.add(miltime, GridBagConstraintsFactory.create(0, 4, GridBagConstraints.BOTH));
+		appearancePanel.add(miltime, GridBagConstraintsFactory.create(0, 4,
+				GridBagConstraints.BOTH));
 
 		ResourceHelper.setText(jLabel5, "Week_View_Start_Hour:_");
 		jLabel5.setLabelFor(wkstarthr);
-		wkstarthr
-				.setModel(new javax.swing.DefaultComboBoxModel(new String[] {
-						"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
-						"11" }));
-		appearancePanel.add(jLabel5, GridBagConstraintsFactory.create(0, 6, GridBagConstraints.BOTH));
+		wkstarthr.setModel(new DefaultComboBoxModel(new String[] { "0", "1",
+				"2", "3", "4", "5", "6", "7", "8", "9", "10", "11" }));
+		appearancePanel.add(jLabel5, GridBagConstraintsFactory.create(0, 6,
+				GridBagConstraints.BOTH));
 
-		wkendhr.setModel(new javax.swing.DefaultComboBoxModel(new String[] {
-				"12", "13", "14", "15", "16", "17", "18", "19", "20", "21",
-				"22", "23", "24" }));
-		appearancePanel.add(wkstarthr, GridBagConstraintsFactory.create(1, 6, GridBagConstraints.BOTH));
+		wkendhr.setModel(new DefaultComboBoxModel(new String[] { "12", "13",
+				"14", "15", "16", "17", "18", "19", "20", "21", "22", "23",
+				"24" }));
+		appearancePanel.add(wkstarthr, GridBagConstraintsFactory.create(1, 6,
+				GridBagConstraints.BOTH));
 
 		ResourceHelper.setText(jLabel6, "Week_View_End_Hour:_");
 		jLabel6.setLabelFor(wkendhr);
-		appearancePanel.add(wkendhr, GridBagConstraintsFactory.create(1, 7, GridBagConstraints.BOTH));
-		appearancePanel.add(jLabel6, GridBagConstraintsFactory.create(0, 7, GridBagConstraints.BOTH));
+		appearancePanel.add(wkendhr, GridBagConstraintsFactory.create(1, 7,
+				GridBagConstraints.BOTH));
+		appearancePanel.add(jLabel6, GridBagConstraintsFactory.create(0, 7,
+				GridBagConstraints.BOTH));
 
 		ResourceHelper.setText(canadabox, "Show_Canadian_Holidays");
-		appearancePanel.add(canadabox, GridBagConstraintsFactory.create(1, 3, GridBagConstraints.BOTH));
+		appearancePanel.add(canadabox, GridBagConstraintsFactory.create(1, 3,
+				GridBagConstraints.BOTH));
 
 		ResourceHelper.setText(jLabel8, "locale");
 		jLabel8.setLabelFor(localebox);
-		appearancePanel.add(jLabel8, GridBagConstraintsFactory.create(0, 11, GridBagConstraints.BOTH));
+		appearancePanel.add(jLabel8, GridBagConstraintsFactory.create(0, 11,
+				GridBagConstraints.BOTH));
 
-		appearancePanel.add(localebox, GridBagConstraintsFactory.create(1, 11, GridBagConstraints.BOTH));
+		appearancePanel.add(localebox, GridBagConstraintsFactory.create(1, 11,
+				GridBagConstraints.BOTH));
 
 		hide_strike_box.setText(Resource.getResourceString("hide_strike"));
-		appearancePanel.add(hide_strike_box, GridBagConstraintsFactory.create(0, 2, GridBagConstraints.BOTH));
+		appearancePanel.add(hide_strike_box, GridBagConstraintsFactory.create(
+				0, 2, GridBagConstraints.BOTH));
 
 		ResourceHelper.setText(iso8601Box, "ISO_week_number");
-		appearancePanel.add(iso8601Box, GridBagConstraintsFactory.create(1, 8, GridBagConstraints.BOTH,1.0,0.0));
+		appearancePanel.add(iso8601Box, GridBagConstraintsFactory.create(1, 8,
+				GridBagConstraints.BOTH, 1.0, 0.0));
 
 		ResourceHelper.setText(dock, "dock_option");
-		appearancePanel.add(dock, GridBagConstraintsFactory.create(0, 8, GridBagConstraints.BOTH));
+		appearancePanel.add(dock, GridBagConstraintsFactory.create(0, 8,
+				GridBagConstraints.BOTH));
 
 		ResourceHelper.setText(colorsortbox, "colorsort");
-		appearancePanel.add(colorsortbox, GridBagConstraintsFactory.create(0, 5, GridBagConstraints.BOTH));
+		appearancePanel.add(colorsortbox, GridBagConstraintsFactory.create(0,
+				5, GridBagConstraints.BOTH));
 
-		appearancePanel.add(getDoyBox(), GridBagConstraintsFactory.create(1, 5, GridBagConstraints.BOTH));
+		doyBox = new JCheckBox();
+		ResourceHelper.setText(doyBox, "showdoy");
+		appearancePanel.add(doyBox, GridBagConstraintsFactory.create(1, 5,
+				GridBagConstraints.BOTH));
 
-		appearancePanel.add(getTruncbox(), GridBagConstraintsFactory.create(1, 2, GridBagConstraints.BOTH));
+		appearancePanel.add(getTruncbox(), GridBagConstraintsFactory.create(1,
+				2, GridBagConstraints.BOTH));
 
 		return appearancePanel;
-	}
-
-	private JPanel getApplyDismissPanel() {
-		if (applyDismissPanel == null) {
-			applyDismissPanel = new JPanel();
-
-			applyButton.setIcon(new javax.swing.ImageIcon(getClass()
-					.getResource("/resource/Save16.gif")));
-			ResourceHelper.setText(applyButton, "apply");
-			applyButton.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					apply(evt);
-				}
-			});
-			applyDismissPanel.add(applyButton, null);
-
-			dismissButton.setIcon(new javax.swing.ImageIcon(getClass()
-					.getResource("/resource/Stop16.gif")));
-			ResourceHelper.setText(dismissButton, "Dismiss");
-			dismissButton
-					.addActionListener(new java.awt.event.ActionListener() {
-						public void actionPerformed(
-								java.awt.event.ActionEvent evt) {
-							jButton2ActionPerformed(evt);
-						}
-					});
-			setDismissButton(dismissButton);
-			applyDismissPanel.add(dismissButton, null);
-		}
-		return applyDismissPanel;
 	}
 
 	private JPanel getDBPanel() {
@@ -929,18 +929,21 @@ public class OptionsView extends View {
 		dbPanel = new JPanel();
 		dbPanel.setLayout(new GridBagLayout());
 
-		GridBagConstraints gbcm =GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH, 1.0, 1.0);
+		GridBagConstraints gbcm = GridBagConstraintsFactory.create(0, 1,
+				GridBagConstraints.BOTH, 1.0, 1.0);
 		gbcm.gridwidth = java.awt.GridBagConstraints.REMAINDER;
 		dbPanel.add(getMysqlPanel(), gbcm);
-		dbPanel.add(getDbTypePanel(), GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH));
+		dbPanel.add(getDbTypePanel(), GridBagConstraintsFactory.create(0, 0,
+				GridBagConstraints.BOTH));
 
-		GridBagConstraints gridBagConstraints5 = GridBagConstraintsFactory.create(0, 6);
+		GridBagConstraints gridBagConstraints5 = GridBagConstraintsFactory
+				.create(0, 6);
 		gridBagConstraints5.weightx = 1.0;
 		gridBagConstraints5.anchor = GridBagConstraints.CENTER;
-		dbPanel.add(chgdb, gridBagConstraints5); // Generated
-		
+		dbPanel.add(chgdb, gridBagConstraints5);
+
 		chgdb.setForeground(new java.awt.Color(255, 0, 51));
-		chgdb.setIcon(new javax.swing.ImageIcon(getClass().getResource(
+		chgdb.setIcon(new ImageIcon(getClass().getResource(
 				"/resource/Refresh16.gif")));
 		ResourceHelper.setText(chgdb, "Apply_DB_Change");
 		chgdb.addActionListener(new java.awt.event.ActionListener() {
@@ -950,12 +953,13 @@ public class OptionsView extends View {
 		});
 
 		JButton help = new JButton();
-		GridBagConstraints gridBagConstraintsh = GridBagConstraintsFactory.create(1, 6);
+		GridBagConstraints gridBagConstraintsh = GridBagConstraintsFactory
+				.create(1, 6);
 		gridBagConstraintsh.weightx = 1.0;
 		gridBagConstraintsh.anchor = GridBagConstraints.CENTER;
-		dbPanel.add(help, gridBagConstraintsh); // Generated
+		dbPanel.add(help, gridBagConstraintsh);
 		help.setForeground(new java.awt.Color(255, 0, 51));
-		help.setIcon(new javax.swing.ImageIcon(getClass().getResource(
+		help.setIcon(new ImageIcon(getClass().getResource(
 				"/resource/Help16.gif")));
 		ResourceHelper.setText(help, "Help");
 
@@ -969,13 +973,15 @@ public class OptionsView extends View {
 			}
 		});
 
-		GridBagConstraints gridBagConstraints6h =GridBagConstraintsFactory.create(0, 4, GridBagConstraints.BOTH, 1.0, 1.0);
+		GridBagConstraints gridBagConstraints6h = GridBagConstraintsFactory
+				.create(0, 4, GridBagConstraints.BOTH, 1.0, 1.0);
 		gridBagConstraints6h.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-		dbPanel.add(getHSQLDBPanel(), gridBagConstraints6h); 
+		dbPanel.add(getHSQLDBPanel(), gridBagConstraints6h);
 
-		GridBagConstraints gridBagConstraints7h = GridBagConstraintsFactory.create(0, 5, GridBagConstraints.BOTH, 1.0, 1.0);
+		GridBagConstraints gridBagConstraints7h = GridBagConstraintsFactory
+				.create(0, 5, GridBagConstraints.BOTH, 1.0, 1.0);
 		gridBagConstraints7h.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-		dbPanel.add(getJdbcPanel(), gridBagConstraints7h); // Generated
+		dbPanel.add(getJdbcPanel(), gridBagConstraints7h);
 
 		return dbPanel;
 	}
@@ -983,167 +989,11 @@ public class OptionsView extends View {
 	private JPanel getDbTypePanel() {
 		if (dbTypePanel == null) {
 			FlowLayout flowLayout = new FlowLayout();
-			flowLayout.setAlignment(java.awt.FlowLayout.LEFT); // Generated
-			flowLayout.setHgap(40); // Generated
+			flowLayout.setAlignment(java.awt.FlowLayout.LEFT);
+			flowLayout.setHgap(40);
 			dbTypePanel = new JPanel();
-			dbTypePanel.setLayout(flowLayout); // Generated
-			dbTypePanel.add(getHSQLDBFileButton(), null);
-			dbTypePanel.add(getMySQLButton(), null); // Generated
-			dbTypePanel.add(getJdbcButton(), null); // Generated
-
-		}
-		return dbTypePanel;
-	}
-
-	private JCheckBox getDoyBox() {
-		if (doyBox == null) {
-			doyBox = new JCheckBox();
-			ResourceHelper.setText(doyBox, "showdoy");
-		}
-		return doyBox;
-	}
-
-	private JPanel getEmailPanel() {
-		JPanel emailPanel = new JPanel();
-		emailPanel.setLayout(new java.awt.GridBagLayout());
-
-		ResourceHelper.setText(jLabel1, "SMTP_Server");
-		emailPanel.add(jLabel1, GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH));
-		jLabel1.setLabelFor(smtptext);
-		
-		smtptext.setColumns(30);
-		emailPanel.add(smtptext, GridBagConstraintsFactory.create(1, 1, GridBagConstraints.BOTH, 1.0, 0.0));
-		
-		JLabel portLabel = new JLabel();
-		ResourceHelper.setText(portLabel, "SMTP_Port");
-		emailPanel.add(portLabel, GridBagConstraintsFactory.create(0, 2, GridBagConstraints.BOTH));
-		jLabel1.setLabelFor(smtpport);
-		
-		smtpport.setColumns(30);
-		emailPanel.add(smtpport, GridBagConstraintsFactory.create(1, 2, GridBagConstraints.BOTH, 1.0, 0.0));
-
-		JLabel userlabel = new JLabel();
-		ResourceHelper.setText(userlabel, "SMTP_user");
-		emailPanel.add(userlabel, GridBagConstraintsFactory.create(0, 3, GridBagConstraints.BOTH));
-		userlabel.setLabelFor(usertext);
-		
-		emailPanel.add(usertext, GridBagConstraintsFactory.create(1, 3, GridBagConstraints.BOTH));
-
-		JLabel passlabel = new JLabel();
-		ResourceHelper.setText(passlabel, "SMTP_password");
-		emailPanel.add(passlabel, GridBagConstraintsFactory.create(0, 4, GridBagConstraints.BOTH));
-		passlabel.setLabelFor(smpw);
-
-		emailPanel.add(smpw, GridBagConstraintsFactory.create(1, 4, GridBagConstraints.BOTH));
-
-		ResourceHelper.setText(jLabel2, "Your_Email_Address");
-		emailPanel.add(jLabel2, GridBagConstraintsFactory.create(0, 5, GridBagConstraints.BOTH));
-		jLabel2.setLabelFor(emailtext);
-
-		
-		emailtext.setColumns(30);
-		emailPanel.add(emailtext, GridBagConstraintsFactory.create(1, 5, GridBagConstraints.BOTH, 1.0, 0.0));
-
-		ResourceHelper.setText(emailbox, "Enable_Email");
-		emailPanel.add(emailbox, GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH));
-
-		ResourceHelper.setText(remtimelabel, "reminder_time");
-		remtimelabel.setLabelFor(emailtimebox);
-		emailPanel.add(remtimelabel, GridBagConstraintsFactory.create(0, 6, GridBagConstraints.BOTH));
-
-		emailPanel.add(getEmailtimebox(), GridBagConstraintsFactory.create(1, 6, GridBagConstraints.BOTH, 1.0, 0.0));
-
-		return emailPanel;
-	}
-
-	private JSpinner getEmailtimebox() {
-		if (emailtimebox == null) {
-			emailtimebox = new JSpinner(new SpinnerDateModel());
-			JSpinner.DateEditor de = new JSpinner.DateEditor(emailtimebox,
-					"HH:mm");
-			emailtimebox.setEditor(de);
-			// emailtimebox.setValue(new Date());
-
-		}
-		return emailtimebox;
-	}
-
-	/*
-	 * private JCheckBox getExtraDayBox() { if (extraDayBox == null) {
-	 * extraDayBox = new JCheckBox(); ResourceHelper.setText(extraDayBox,
-	 * "show_extra"); } return extraDayBox; }
-	 */
-
-	private JPanel getFontPanel() {
-		JPanel fontPanel = new JPanel();
-		fontPanel.setLayout(new FlowLayout());
-
-		ResourceHelper.setText(apptFontButton, "set_appt_font");
-		apptFontButton.setBorder(new javax.swing.border.SoftBevelBorder(
-				javax.swing.border.BevelBorder.RAISED));
-		// apptFontButton.setFont(Font.decode(Prefs.getPref(PrefName.APPTFONT)));
-		apptFontButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				fontActionPerformed(evt, PrefName.APPTFONT);
-				// apptFontButton.setFont(Font.decode(Prefs.getPref(PrefName.APPTFONT)));
-			}
-		});
-		fontPanel.add(apptFontButton);
-
-		ResourceHelper.setText(defFontButton, "set_def_font");
-		defFontButton.setBorder(new javax.swing.border.SoftBevelBorder(
-				javax.swing.border.BevelBorder.RAISED));
-		// if( !Prefs.getPref(PrefName.DEFFONT).equals(""))
-		// defFontButton.setFont(Font.decode(Prefs.getPref(PrefName.DEFFONT)));
-		defFontButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				fontActionPerformed(evt, PrefName.DEFFONT);
-				// defFontButton.setFont(Font.decode(Prefs.getPref(PrefName.DEFFONT)));
-			}
-		});
-		fontPanel.add(defFontButton);
-
-		ResourceHelper.setText(dayFontButton, "dview_font");
-		dayFontButton.setBorder(new javax.swing.border.SoftBevelBorder(
-				javax.swing.border.BevelBorder.RAISED));
-		// dayFontButton.setFont(Font.decode(Prefs.getPref(PrefName.DAYVIEWFONT)));
-		dayFontButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				fontActionPerformed(evt, PrefName.DAYVIEWFONT);
-				// dayFontButton.setFont(Font.decode(Prefs.getPref(PrefName.DAYVIEWFONT)));
-			}
-		});
-		fontPanel.add(dayFontButton);
-
-		ResourceHelper.setText(weekFontButton, "wview_font");
-		weekFontButton.setBorder(new javax.swing.border.SoftBevelBorder(
-				javax.swing.border.BevelBorder.RAISED));
-		// weekFontButton.setFont(Font.decode(Prefs.getPref(PrefName.WEEKVIEWFONT)));
-		weekFontButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				fontActionPerformed(evt, PrefName.WEEKVIEWFONT);
-				// weekFontButton.setFont(Font.decode(Prefs.getPref(PrefName.WEEKVIEWFONT)));
-			}
-		});
-		fontPanel.add(weekFontButton);
-
-		ResourceHelper.setText(monthFontButton, "mview_font");
-		monthFontButton.setBorder(new javax.swing.border.SoftBevelBorder(
-				javax.swing.border.BevelBorder.RAISED));
-		// monthFontButton.setFont(Font.decode(Prefs.getPref(PrefName.MONTHVIEWFONT)));
-		monthFontButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				fontActionPerformed(evt, PrefName.MONTHVIEWFONT);
-				// monthFontButton.setFont(Font.decode(Prefs.getPref(PrefName.MONTHVIEWFONT)));
-			}
-		});
-		fontPanel.add(monthFontButton);
-
-		return fontPanel;
-	}
-
-	private JRadioButton getHSQLDBFileButton() {
-		if (hsqldbButton == null) {
+			dbTypePanel.setLayout(flowLayout);
+			
 			hsqldbButton = new JRadioButton();
 			hsqldbButton.setActionCommand("hsqldb");
 			ResourceHelper.setText(hsqldbButton, "hsqldb");
@@ -1152,8 +1002,156 @@ public class OptionsView extends View {
 					dbTypeAction(e);
 				}
 			});
+			dbTypePanel.add(hsqldbButton, null);
+			
+			MySQLButton = new JRadioButton();
+			MySQLButton.setActionCommand("mysql");
+			MySQLButton.setText("MySQL");
+			MySQLButton.setMnemonic(KeyEvent.VK_M);
+			MySQLButton.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					dbTypeAction(e);
+				}
+			});
+			dbTypePanel.add(MySQLButton, null);
+			
+			jdbcButton = new JRadioButton();
+			jdbcButton.setActionCommand("jdbc");
+			ResourceHelper.setText(jdbcButton, "jdbc");
+			jdbcButton.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					dbTypeAction(e);
+				}
+			});
+			dbTypePanel.add(jdbcButton, null);
+
 		}
-		return hsqldbButton;
+		return dbTypePanel;
+	}
+
+	private JPanel getEmailPanel() {
+		JPanel emailPanel = new JPanel();
+		emailPanel.setLayout(new java.awt.GridBagLayout());
+
+		ResourceHelper.setText(jLabel1, "SMTP_Server");
+		emailPanel.add(jLabel1, GridBagConstraintsFactory.create(0, 1,
+				GridBagConstraints.BOTH));
+		jLabel1.setLabelFor(smtptext);
+
+		smtptext.setColumns(30);
+		emailPanel.add(smtptext, GridBagConstraintsFactory.create(1, 1,
+				GridBagConstraints.BOTH, 1.0, 0.0));
+
+		JLabel portLabel = new JLabel();
+		ResourceHelper.setText(portLabel, "SMTP_Port");
+		emailPanel.add(portLabel, GridBagConstraintsFactory.create(0, 2,
+				GridBagConstraints.BOTH));
+		jLabel1.setLabelFor(smtpport);
+
+		smtpport.setColumns(30);
+		emailPanel.add(smtpport, GridBagConstraintsFactory.create(1, 2,
+				GridBagConstraints.BOTH, 1.0, 0.0));
+
+		JLabel userlabel = new JLabel();
+		ResourceHelper.setText(userlabel, "SMTP_user");
+		emailPanel.add(userlabel, GridBagConstraintsFactory.create(0, 3,
+				GridBagConstraints.BOTH));
+		userlabel.setLabelFor(usertext);
+
+		emailPanel.add(usertext, GridBagConstraintsFactory.create(1, 3,
+				GridBagConstraints.BOTH));
+
+		JLabel passlabel = new JLabel();
+		ResourceHelper.setText(passlabel, "SMTP_password");
+		emailPanel.add(passlabel, GridBagConstraintsFactory.create(0, 4,
+				GridBagConstraints.BOTH));
+		passlabel.setLabelFor(smpw);
+
+		emailPanel.add(smpw, GridBagConstraintsFactory.create(1, 4,
+				GridBagConstraints.BOTH));
+
+		ResourceHelper.setText(jLabel2, "Your_Email_Address");
+		emailPanel.add(jLabel2, GridBagConstraintsFactory.create(0, 5,
+				GridBagConstraints.BOTH));
+		jLabel2.setLabelFor(emailtext);
+
+		emailtext.setColumns(30);
+		emailPanel.add(emailtext, GridBagConstraintsFactory.create(1, 5,
+				GridBagConstraints.BOTH, 1.0, 0.0));
+
+		ResourceHelper.setText(emailbox, "Enable_Email");
+		emailPanel.add(emailbox, GridBagConstraintsFactory.create(0, 0,
+				GridBagConstraints.BOTH));
+
+		ResourceHelper.setText(remtimelabel, "reminder_time");
+		remtimelabel.setLabelFor(emailtimebox);
+		emailPanel.add(remtimelabel, GridBagConstraintsFactory.create(0, 6,
+				GridBagConstraints.BOTH));
+
+		emailtimebox = new JSpinner(new SpinnerDateModel());
+		JSpinner.DateEditor de = new JSpinner.DateEditor(emailtimebox,
+				"HH:mm");
+		emailtimebox.setEditor(de);
+		emailPanel.add(emailtimebox, GridBagConstraintsFactory.create(1,
+				6, GridBagConstraints.BOTH, 1.0, 0.0));
+		
+		tlsbox.setText(Resource.getResourceString("enable_tls"));
+		emailPanel.add(tlsbox,GridBagConstraintsFactory.create(0,
+				7,  GridBagConstraints.BOTH));
+
+		return emailPanel;
+	}
+
+	private JPanel getFontPanel() {
+		JPanel fontPanel = new JPanel();
+		fontPanel.setLayout(new FlowLayout());
+
+		ResourceHelper.setText(apptFontButton, "set_appt_font");
+		apptFontButton.setBorder(new SoftBevelBorder(BevelBorder.RAISED));
+		apptFontButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				fontActionPerformed(evt, PrefName.APPTFONT);
+			}
+		});
+		fontPanel.add(apptFontButton);
+
+		ResourceHelper.setText(defFontButton, "set_def_font");
+		defFontButton.setBorder(new SoftBevelBorder(BevelBorder.RAISED));
+		defFontButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				fontActionPerformed(evt, PrefName.DEFFONT);
+			}
+		});
+		fontPanel.add(defFontButton);
+
+		ResourceHelper.setText(dayFontButton, "dview_font");
+		dayFontButton.setBorder(new SoftBevelBorder(BevelBorder.RAISED));
+		dayFontButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				fontActionPerformed(evt, PrefName.DAYVIEWFONT);
+			}
+		});
+		fontPanel.add(dayFontButton);
+
+		ResourceHelper.setText(weekFontButton, "wview_font");
+		weekFontButton.setBorder(new SoftBevelBorder(BevelBorder.RAISED));
+		weekFontButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				fontActionPerformed(evt, PrefName.WEEKVIEWFONT);
+			}
+		});
+		fontPanel.add(weekFontButton);
+
+		ResourceHelper.setText(monthFontButton, "mview_font");
+		monthFontButton.setBorder(new SoftBevelBorder(BevelBorder.RAISED));
+		monthFontButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				fontActionPerformed(evt, PrefName.MONTHVIEWFONT);
+			}
+		});
+		fontPanel.add(monthFontButton);
+
+		return fontPanel;
 	}
 
 	private JPanel getHSQLDBPanel() {
@@ -1161,13 +1159,15 @@ public class OptionsView extends View {
 		hsqldbPanel.setLayout(new java.awt.GridBagLayout());
 
 		JLabel hs1 = new JLabel();
-		hsqldbPanel.setBorder(new javax.swing.border.TitledBorder(Resource
+		hsqldbPanel.setBorder(new TitledBorder(Resource
 				.getResourceString("hsqldbinfo")));
 		ResourceHelper.setText(hs1, "DataBase_Directory");
 		hs1.setLabelFor(dbDirText);
-		hsqldbPanel.add(hs1, GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH));
+		hsqldbPanel.add(hs1, GridBagConstraintsFactory.create(0, 0,
+				GridBagConstraints.BOTH));
 
-		hsqldbPanel.add(hsqldbdir, GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH, 0.5, 0.0));
+		hsqldbPanel.add(hsqldbdir, GridBagConstraintsFactory.create(0, 1,
+				GridBagConstraints.BOTH, 0.5, 0.0));
 
 		JButton hsb1 = new JButton();
 		ResourceHelper.setText(hsb1, "Browse");
@@ -1177,23 +1177,10 @@ public class OptionsView extends View {
 			}
 		});
 
-		hsqldbPanel.add(hsb1, GridBagConstraintsFactory.create(1, 1, GridBagConstraints.BOTH));
+		hsqldbPanel.add(hsb1, GridBagConstraintsFactory.create(1, 1,
+				GridBagConstraints.BOTH));
 
 		return hsqldbPanel;
-	}
-
-	private JRadioButton getJdbcButton() {
-		if (jdbcButton == null) {
-			jdbcButton = new JRadioButton();
-			jdbcButton.setActionCommand("jdbc");
-			ResourceHelper.setText(jdbcButton, "jdbc");
-			jdbcButton.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent e) {
-					dbTypeAction(e);
-				}
-			});
-		}
-		return jdbcButton;
 	}
 
 	private JPanel getJdbcPanel() {
@@ -1201,28 +1188,22 @@ public class OptionsView extends View {
 
 			JLabel enturlLabel = new JLabel();
 			ResourceHelper.setText(enturlLabel, "enturl");
-			enturlLabel.setLabelFor(getJdbcText());
-			enturlLabel
-					.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT); // Generated
-			enturlLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT); // Generated
+			jdbcText = new JTextField();
+			enturlLabel.setLabelFor(jdbcText);
+			enturlLabel.setHorizontalTextPosition(SwingConstants.LEFT);
+			enturlLabel.setHorizontalAlignment(SwingConstants.LEFT);
 			jdbcPanel = new JPanel();
-			jdbcPanel.setLayout(new GridBagLayout()); // Generated
-			jdbcPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(
-					null, Resource.getResourceString("jdbc"),
-					javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
-					javax.swing.border.TitledBorder.DEFAULT_POSITION, null,
-					null)); // Generated
-			jdbcPanel.add(enturlLabel, GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH)); // Generated
-			jdbcPanel.add(getJdbcText(), GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH, 1.0, 0.0)); // Generated
+			jdbcPanel.setLayout(new GridBagLayout());
+			jdbcPanel.setBorder(BorderFactory.createTitledBorder(null, Resource
+					.getResourceString("jdbc"),
+					TitledBorder.DEFAULT_JUSTIFICATION,
+					TitledBorder.DEFAULT_POSITION, null, null));
+			jdbcPanel.add(enturlLabel, GridBagConstraintsFactory.create(0, 0,
+					GridBagConstraints.BOTH));
+			jdbcPanel.add(jdbcText, GridBagConstraintsFactory.create(0, 1,
+					GridBagConstraints.BOTH, 1.0, 0.0));
 		}
 		return jdbcPanel;
-	}
-
-	private JTextField getJdbcText() {
-		if (jdbcText == null) {
-			jdbcText = new JTextField();
-		}
-		return jdbcText;
 	}
 
 	private JPanel getJPanelUCS() {
@@ -1230,9 +1211,9 @@ public class OptionsView extends View {
 			jPanelUCS = new JPanel();
 			jPanelUCS.setLayout(new GridLayout(10, 2));
 
-			cb_ucs_ontodo = new javax.swing.JCheckBox();
+			cb_ucs_ontodo = new JCheckBox();
 			ResourceHelper.setText(cb_ucs_ontodo, "ucolortext1");
-			cb_ucs_marktodo = new javax.swing.JCheckBox();
+			cb_ucs_marktodo = new JCheckBox();
 			ResourceHelper.setText(cb_ucs_marktodo, "ucolortext2");
 			tf_ucs_marker = new JTextField("! "); //$NON-NLS-1$
 			btn_ucs_red = new JButtonKnowsBgColor(Resource
@@ -1348,162 +1329,109 @@ public class OptionsView extends View {
 		miscPanel.setLayout(new java.awt.GridBagLayout());
 
 		ResourceHelper.setText(splashbox, "splash");
-		miscPanel.add(splashbox, GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH));
+		miscPanel.add(splashbox, GridBagConstraintsFactory.create(0, 0,
+				GridBagConstraints.BOTH));
 
 		ResourceHelper.setText(stackbox, "stackonerr");
-		miscPanel.add(stackbox, GridBagConstraintsFactory.create(0, 40, GridBagConstraints.BOTH));
+		miscPanel.add(stackbox, GridBagConstraintsFactory.create(0, 40,
+				GridBagConstraints.BOTH));
 
 		JLabel sportlabel = new JLabel();
 		ResourceHelper.setText(sportlabel, "socket_port");
-		miscPanel.add(sportlabel, GridBagConstraintsFactory.create(0, 9, GridBagConstraints.BOTH));
+		miscPanel.add(sportlabel, GridBagConstraintsFactory.create(0, 9,
+				GridBagConstraints.BOTH));
 
-		miscPanel.add(socketPort, GridBagConstraintsFactory.create(1, 9, GridBagConstraints.BOTH));
+		miscPanel.add(socketPort, GridBagConstraintsFactory.create(1, 9,
+				GridBagConstraints.BOTH));
 
 		useSysTray.setText(Resource.getResourceString("enable_systray"));
-		miscPanel.add(useSysTray, GridBagConstraintsFactory.create(0, 10, GridBagConstraints.BOTH));
+		miscPanel.add(useSysTray, GridBagConstraintsFactory.create(0, 10,
+				GridBagConstraints.BOTH));
 
 		JPanel backp = new JPanel();
 		backp.setLayout(new GridBagLayout());
 
-		backp.add(new JLabel(Resource.getResourceString("backup_dir")
-				+ ": "), GridBagConstraintsFactory.create(0, 0, GridBagConstraints.NONE));
+		backp
+				.add(
+						new JLabel(Resource.getResourceString("backup_dir")
+								+ ": "), GridBagConstraintsFactory.create(0, 0,
+								GridBagConstraints.NONE));
 
-		backp.add(backupDir, GridBagConstraintsFactory.create(1, 0, GridBagConstraints.BOTH, 1.0, 0.0));
+		backp.add(backupDir, GridBagConstraintsFactory.create(1, 0,
+				GridBagConstraints.BOTH, 1.0, 0.0));
 
 		JButton bb = new JButton();
 		ResourceHelper.setText(bb, "Browse");
 		bb.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				backupDirActionPerformed(evt);
+				String dbdir = OptionsView.chooseDir(false);
+				if (dbdir == null) {
+					return;
+				}
+
+				backupDir.setText(dbdir);
 			}
 		});
-		backp.add(bb, GridBagConstraintsFactory.create(2, 0, GridBagConstraints.NONE));
+		backp.add(bb, GridBagConstraintsFactory.create(2, 0,
+				GridBagConstraints.NONE));
 
-		GridBagConstraints gbc1 = GridBagConstraintsFactory.create(0, 11, GridBagConstraints.BOTH, 1.0, 0.0);
+		GridBagConstraints gbc1 = GridBagConstraintsFactory.create(0, 11,
+				GridBagConstraints.BOTH, 1.0, 0.0);
 		gbc1.gridwidth = 2;
 		miscPanel.add(backp, gbc1);
 
 		ResourceHelper.setText(colorprint, "Print_In_Color?");
-		miscPanel.add(colorprint, GridBagConstraintsFactory.create(0, 12, GridBagConstraints.BOTH));
+		miscPanel.add(colorprint, GridBagConstraintsFactory.create(0, 12,
+				GridBagConstraints.BOTH));
 
 		return miscPanel;
 	}
 
-	private JPanel taskOptionPanel = null; // @jve:decl-index=0:visual-constraint="12,2528"
-
-	private JCheckBox taskAbbrevBox = new JCheckBox();
-
-	private JCheckBox calShowTaskBox = new JCheckBox();
-
-	private JCheckBox calShowSubtaskBox = new JCheckBox();
-
-	private JCheckBox ganttShowSubtaskBox = new JCheckBox();
-
-	private JPanel getTaskOptionPanel() {
-		if (taskOptionPanel == null) {
-			GridBagConstraints gridBagConstraints20 = new GridBagConstraints();
-			gridBagConstraints20.insets = new Insets(4, 4, 4, 4);
-			gridBagConstraints20.gridy = 2;
-			gridBagConstraints20.ipady = 0;
-			gridBagConstraints20.fill = GridBagConstraints.NONE;
-			gridBagConstraints20.anchor = GridBagConstraints.WEST;
-			gridBagConstraints20.gridx = 0;
-			GridBagConstraints gridBagConstraints21 = new GridBagConstraints();
-			gridBagConstraints21.insets = new Insets(4, 4, 4, 4);
-			gridBagConstraints21.gridy = 3;
-			gridBagConstraints21.ipady = 0;
-			gridBagConstraints21.fill = GridBagConstraints.NONE;
-			gridBagConstraints21.anchor = GridBagConstraints.WEST;
-			gridBagConstraints21.gridx = 0;
-			GridBagConstraints gridBagConstraints19 = new GridBagConstraints();
-			gridBagConstraints19.insets = new Insets(4, 4, 4, 4);
-			gridBagConstraints19.gridy = 1;
-			gridBagConstraints19.ipady = 0;
-			gridBagConstraints19.fill = GridBagConstraints.NONE;
-			gridBagConstraints19.anchor = GridBagConstraints.WEST;
-			gridBagConstraints19.gridx = 0;
-			GridBagConstraints gridBagConstraints17 = new GridBagConstraints();
-			gridBagConstraints17.gridx = 0;
-			gridBagConstraints17.ipadx = 0;
-			gridBagConstraints17.insets = new Insets(4, 4, 4, 4);
-			gridBagConstraints17.fill = GridBagConstraints.NONE;
-			gridBagConstraints17.anchor = GridBagConstraints.WEST;
-			gridBagConstraints17.gridy = 0;
-			taskOptionPanel = new JPanel();
-
-			taskOptionPanel.setLayout(new GridBagLayout());
-			taskOptionPanel.setSize(new Dimension(168, 159));
-			taskOptionPanel.add(taskAbbrevBox, gridBagConstraints17);
-			taskOptionPanel.add(calShowTaskBox, gridBagConstraints19);
-			taskOptionPanel.add(calShowSubtaskBox, gridBagConstraints20);
-			taskOptionPanel.add(ganttShowSubtaskBox, gridBagConstraints21);
-			taskAbbrevBox.setText(Resource
-					.getResourceString("task_abbrev"));
-			calShowTaskBox.setText(Resource
-					.getResourceString("calShowTask"));
-			calShowSubtaskBox.setText(Resource
-					.getResourceString("calShowSubtask"));
-			ganttShowSubtaskBox.setText(Resource
-					.getResourceString("ganttShowSubtask"));
-		}
-		return taskOptionPanel;
-	}
-
-	/**
-	 * This method initializes jRadioButton1
-	 * 
-	 * @return javax.swing.JRadioButton
-	 */
-	private JRadioButton getMySQLButton() {
-		if (MySQLButton == null) {
-			MySQLButton = new JRadioButton();
-			MySQLButton.setActionCommand("mysql");
-			MySQLButton.setText("MySQL");
-			MySQLButton.setMnemonic(KeyEvent.VK_M);
-			MySQLButton.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent e) {
-					dbTypeAction(e);
-				}
-			});
-		}
-		return MySQLButton;
-	}
-
 	private JPanel getMysqlPanel() {
-		mysqlPanel = new javax.swing.JPanel();
+		mysqlPanel = new JPanel();
 		mysqlPanel.setLayout(new java.awt.GridBagLayout());
 
-		mysqlPanel.setBorder(new javax.swing.border.TitledBorder(Resource
+		mysqlPanel.setBorder(new TitledBorder(Resource
 				.getResourceString("MySQLInfo")));
 		ResourceHelper.setText(jLabel7, "DatabaseName");
 		jLabel7.setLabelFor(dbNameText);
-		mysqlPanel.add(jLabel7, GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH));
+		mysqlPanel.add(jLabel7, GridBagConstraintsFactory.create(0, 0,
+				GridBagConstraints.BOTH));
 
-		mysqlPanel.add(dbNameText, GridBagConstraintsFactory.create(1, 0, GridBagConstraints.BOTH));
+		mysqlPanel.add(dbNameText, GridBagConstraintsFactory.create(1, 0,
+				GridBagConstraints.BOTH));
 
 		ResourceHelper.setText(jLabel17, "hostname");
 		jLabel17.setLabelFor(dbHostText);
-		mysqlPanel.add(jLabel17, GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH));
+		mysqlPanel.add(jLabel17, GridBagConstraintsFactory.create(0, 1,
+				GridBagConstraints.BOTH));
 
-		mysqlPanel.add(dbHostText, GridBagConstraintsFactory.create(1, 1, GridBagConstraints.BOTH, 1.0, 0.0));
+		mysqlPanel.add(dbHostText, GridBagConstraintsFactory.create(1, 1,
+				GridBagConstraints.BOTH, 1.0, 0.0));
 
 		ResourceHelper.setText(jLabel18, "port");
 		jLabel18.setLabelFor(dbPortText);
-		mysqlPanel.add(jLabel18, GridBagConstraintsFactory.create(0, 2, GridBagConstraints.BOTH));
+		mysqlPanel.add(jLabel18, GridBagConstraintsFactory.create(0, 2,
+				GridBagConstraints.BOTH));
 
-		mysqlPanel.add(dbPortText, GridBagConstraintsFactory.create(1, 2, GridBagConstraints.BOTH, 1.0, 0.0));
+		mysqlPanel.add(dbPortText, GridBagConstraintsFactory.create(1, 2,
+				GridBagConstraints.BOTH, 1.0, 0.0));
 
 		ResourceHelper.setText(jLabel19, "User");
 		jLabel19.setLabelFor(dbUserText);
-		mysqlPanel.add(jLabel19, GridBagConstraintsFactory.create(0, 3, GridBagConstraints.BOTH));
+		mysqlPanel.add(jLabel19, GridBagConstraintsFactory.create(0, 3,
+				GridBagConstraints.BOTH));
 
-		mysqlPanel.add(dbUserText, GridBagConstraintsFactory.create(1, 3, GridBagConstraints.BOTH, 1.0, 0.0));
+		mysqlPanel.add(dbUserText, GridBagConstraintsFactory.create(1, 3,
+				GridBagConstraints.BOTH, 1.0, 0.0));
 
 		ResourceHelper.setText(jLabel20, "Password");
 		jLabel20.setLabelFor(jPasswordField1);
-		mysqlPanel.add(jLabel20, GridBagConstraintsFactory.create(0, 4, GridBagConstraints.BOTH));
+		mysqlPanel.add(jLabel20, GridBagConstraintsFactory.create(0, 4,
+				GridBagConstraints.BOTH));
 
-		mysqlPanel.add(jPasswordField1, GridBagConstraintsFactory.create(1, 4, GridBagConstraints.BOTH));
+		mysqlPanel.add(jPasswordField1, GridBagConstraintsFactory.create(1, 4,
+				GridBagConstraints.BOTH));
 
 		return mysqlPanel;
 	}
@@ -1514,29 +1442,36 @@ public class OptionsView extends View {
 		reminderPanel.setLayout(new java.awt.GridBagLayout());
 
 		ResourceHelper.setText(popenablebox, "enable_popups");
-		reminderPanel.add(popenablebox, GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH));
+		reminderPanel.add(popenablebox, GridBagConstraintsFactory.create(0, 0,
+				GridBagConstraints.BOTH));
 
 		ResourceHelper.setText(soundbox, "beeps");
-		reminderPanel.add(soundbox, GridBagConstraintsFactory.create(0, 3, GridBagConstraints.BOTH));
+		reminderPanel.add(soundbox, GridBagConstraintsFactory.create(0, 3,
+				GridBagConstraints.BOTH));
 
-		jLabel15.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+		jLabel15.setHorizontalAlignment(SwingConstants.TRAILING);
 		ResourceHelper.setText(jLabel15, "min_between_chks");
-		jLabel15.setLabelFor(getEmailtimebox());
-		reminderPanel.add(jLabel15, GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH));
+		
+		reminderPanel.add(jLabel15, GridBagConstraintsFactory.create(0, 1,
+				GridBagConstraints.BOTH));
 
 		checkfreq.setMinimumSize(new java.awt.Dimension(50, 20));
-		reminderPanel.add(checkfreq, GridBagConstraintsFactory.create(1, 1, GridBagConstraints.BOTH,1.0,0.0));
+		reminderPanel.add(checkfreq, GridBagConstraintsFactory.create(1, 1,
+				GridBagConstraints.BOTH, 1.0, 0.0));
 
-		GridBagConstraints gridBagConstraints65 = GridBagConstraintsFactory.create(0, 2, GridBagConstraints.BOTH);
+		GridBagConstraints gridBagConstraints65 = GridBagConstraintsFactory
+				.create(0, 2, GridBagConstraints.BOTH);
 		gridBagConstraints65.gridwidth = java.awt.GridBagConstraints.REMAINDER;
 		reminderPanel.add(jSeparator1, gridBagConstraints65);
 
 		ResourceHelper.setText(jLabel16, "restart_req");
-		reminderPanel.add(jLabel16, GridBagConstraintsFactory.create(2, 1, GridBagConstraints.BOTH));
+		reminderPanel.add(jLabel16, GridBagConstraintsFactory.create(2, 1,
+				GridBagConstraints.BOTH));
 
 		reminderPanel.add(getUseBeep(), GridBagConstraintsFactory.create(0, 4));
 
-		GridBagConstraints gridBagConstraints113 = GridBagConstraintsFactory.create(0, 5);
+		GridBagConstraints gridBagConstraints113 = GridBagConstraintsFactory
+				.create(0, 5);
 		gridBagConstraints113.gridwidth = java.awt.GridBagConstraints.REMAINDER;
 		gridBagConstraints113.anchor = java.awt.GridBagConstraints.WEST;
 		gridBagConstraints113.insets = new java.awt.Insets(18, 18, 18, 18);
@@ -1545,14 +1480,72 @@ public class OptionsView extends View {
 		return reminderPanel;
 	}
 
+	private JPanel getTaskOptionPanel() {
+		if (taskOptionPanel == null) {
+			GridBagConstraints gridBagConstraints20 = GridBagConstraintsFactory
+					.create(0, 2, GridBagConstraints.NONE);
+			gridBagConstraints20.anchor = GridBagConstraints.WEST;
+			GridBagConstraints gridBagConstraints21 = GridBagConstraintsFactory
+					.create(0, 3, GridBagConstraints.NONE);
+			gridBagConstraints21.anchor = GridBagConstraints.WEST;
+			GridBagConstraints gridBagConstraints19 = GridBagConstraintsFactory
+					.create(0, 1, GridBagConstraints.NONE);
+			gridBagConstraints19.anchor = GridBagConstraints.WEST;
+			GridBagConstraints gridBagConstraints17 = GridBagConstraintsFactory
+					.create(0, 0, GridBagConstraints.NONE);
+			gridBagConstraints17.anchor = GridBagConstraints.WEST;
+
+			taskOptionPanel = new JPanel();
+			taskOptionPanel.setLayout(new GridBagLayout());
+			taskOptionPanel.setSize(new Dimension(168, 159));
+			taskOptionPanel.add(taskAbbrevBox, gridBagConstraints17);
+			taskOptionPanel.add(calShowTaskBox, gridBagConstraints19);
+			taskOptionPanel.add(calShowSubtaskBox, gridBagConstraints20);
+			taskOptionPanel.add(ganttShowSubtaskBox, gridBagConstraints21);
+			taskAbbrevBox.setText(Resource.getResourceString("task_abbrev"));
+			calShowTaskBox.setText(Resource.getResourceString("calShowTask"));
+			calShowSubtaskBox.setText(Resource
+					.getResourceString("calShowSubtask"));
+			ganttShowSubtaskBox.setText(Resource
+					.getResourceString("ganttShowSubtask"));
+		}
+		return taskOptionPanel;
+	}
+
 	private JPanel getTopPanel() {
 		if (topPanel == null) {
-		
+
 			topPanel = new JPanel();
 			topPanel.setLayout(new GridBagLayout());
+
+			topPanel.add(jTabbedPane1, GridBagConstraintsFactory.create(0, 0,
+					GridBagConstraints.BOTH, 1.0, 1.0));
 			
-			topPanel.add(jTabbedPane1, GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH,1.0,1.0));
-			topPanel.add(getApplyDismissPanel(), GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH));
+			JPanel applyDismissPanel = new JPanel();
+
+			applyButton.setIcon(new ImageIcon(getClass().getResource(
+					"/resource/Save16.gif")));
+			ResourceHelper.setText(applyButton, "apply");
+			applyButton.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					apply(evt);
+				}
+			});
+			applyDismissPanel.add(applyButton, null);
+
+			dismissButton.setIcon(new ImageIcon(getClass().getResource(
+					"/resource/Stop16.gif")));
+			ResourceHelper.setText(dismissButton, "Dismiss");
+			dismissButton.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					dispose();
+				}
+			});
+			setDismissButton(dismissButton);
+			applyDismissPanel.add(dismissButton, null);
+
+			topPanel.add(applyDismissPanel, GridBagConstraintsFactory
+					.create(0, 1, GridBagConstraints.BOTH));
 		}
 		return topPanel;
 	}
@@ -1560,7 +1553,7 @@ public class OptionsView extends View {
 	/**
 	 * This method initializes truncbox
 	 * 
-	 * @return javax.swing.JCheckBox
+	 * @return JCheckBox
 	 */
 	private JCheckBox getTruncbox() {
 		if (truncbox == null) {
@@ -1573,7 +1566,7 @@ public class OptionsView extends View {
 	/**
 	 * This method initializes useBeep
 	 * 
-	 * @return javax.swing.JCheckBox
+	 * @return JCheckBox
 	 */
 	private JCheckBox getUseBeep() {
 		if (useBeep == null) {
@@ -1598,17 +1591,6 @@ public class OptionsView extends View {
 
 	}
 
-	private void backupDirActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButton5ActionPerformed
-
-		String dbdir = OptionsView.chooseDir(false);
-		if (dbdir == null) {
-			return;
-		}
-
-		backupDir.setText(dbdir);
-
-	}
-
 	private void initComponents() {
 
 		calShowSubtaskBox.setName("calShowSubtaskBox");
@@ -1620,63 +1602,64 @@ public class OptionsView extends View {
 		taskAbbrevBox.setName("taskAbbrevBox");
 		taskAbbrevBox.setHorizontalAlignment(SwingConstants.LEFT);
 		remtimelabel = new JLabel();
-		jTabbedPane1 = new javax.swing.JTabbedPane();
-		privbox = new javax.swing.JCheckBox();
-		pubbox = new javax.swing.JCheckBox();
-		apptFontButton = new javax.swing.JButton();
-		jLabel4 = new javax.swing.JLabel();
-		lnfBox = new javax.swing.JComboBox();
-		holiday1 = new javax.swing.JCheckBox();
-		mondaycb = new javax.swing.JCheckBox();
-		miltime = new javax.swing.JCheckBox();
-		jLabel5 = new javax.swing.JLabel();
-		wkstarthr = new javax.swing.JComboBox();
-		wkendhr = new javax.swing.JComboBox();
-		jLabel6 = new javax.swing.JLabel();
-		canadabox = new javax.swing.JCheckBox();
-		jLabel8 = new javax.swing.JLabel();
-		localebox = new javax.swing.JComboBox();
-		defFontButton = new javax.swing.JButton();
-		colorsortbox = new javax.swing.JCheckBox();
-		jLabel7 = new javax.swing.JLabel();
-		dbNameText = new javax.swing.JTextField();
-		jLabel17 = new javax.swing.JLabel();
-		dbHostText = new javax.swing.JTextField();
-		jLabel18 = new javax.swing.JLabel();
-		dbPortText = new javax.swing.JTextField();
-		jLabel19 = new javax.swing.JLabel();
-		dbUserText = new javax.swing.JTextField();
-		jLabel20 = new javax.swing.JLabel();
-		jPasswordField1 = new javax.swing.JPasswordField();
+		jTabbedPane1 = new JTabbedPane();
+		privbox = new JCheckBox();
+		pubbox = new JCheckBox();
+		apptFontButton = new JButton();
+		jLabel4 = new JLabel();
+		lnfBox = new JComboBox();
+		holiday1 = new JCheckBox();
+		mondaycb = new JCheckBox();
+		miltime = new JCheckBox();
+		jLabel5 = new JLabel();
+		wkstarthr = new JComboBox();
+		wkendhr = new JComboBox();
+		jLabel6 = new JLabel();
+		canadabox = new JCheckBox();
+		jLabel8 = new JLabel();
+		localebox = new JComboBox();
+		defFontButton = new JButton();
+		colorsortbox = new JCheckBox();
+		jLabel7 = new JLabel();
+		dbNameText = new JTextField();
+		jLabel17 = new JLabel();
+		dbHostText = new JTextField();
+		jLabel18 = new JLabel();
+		dbPortText = new JTextField();
+		jLabel19 = new JLabel();
+		dbUserText = new JTextField();
+		jLabel20 = new JLabel();
+		jPasswordField1 = new JPasswordField();
+		tlsbox = new JCheckBox();
 
-		dbDirText = new javax.swing.JTextField();
+		dbDirText = new JTextField();
 
-		chgdb = new javax.swing.JButton();
-		jLabel1 = new javax.swing.JLabel();
-		jLabel2 = new javax.swing.JLabel();
-		smtptext = new javax.swing.JTextField();
-		emailtext = new javax.swing.JTextField();
-		emailbox = new javax.swing.JCheckBox();
-		colorprint = new javax.swing.JCheckBox();
+		chgdb = new JButton();
+		jLabel1 = new JLabel();
+		jLabel2 = new JLabel();
+		smtptext = new JTextField();
+		emailtext = new JTextField();
+		emailbox = new JCheckBox();
+		colorprint = new JCheckBox();
 
-		splashbox = new javax.swing.JCheckBox();
-		stackbox = new javax.swing.JCheckBox();
+		splashbox = new JCheckBox();
+		stackbox = new JCheckBox();
 
-		popenablebox = new javax.swing.JCheckBox();
-		soundbox = new javax.swing.JCheckBox();
-		jLabel15 = new javax.swing.JLabel();
-		checkfreq = new javax.swing.JSpinner();
-		jSeparator1 = new javax.swing.JSeparator();
-		jLabel16 = new javax.swing.JLabel();
+		popenablebox = new JCheckBox();
+		soundbox = new JCheckBox();
+		jLabel15 = new JLabel();
+		checkfreq = new JSpinner();
+		jSeparator1 = new JSeparator();
+		jLabel16 = new JLabel();
 
-		dismissButton = new javax.swing.JButton();
-		applyButton = new javax.swing.JButton();
+		dismissButton = new JButton();
+		applyButton = new JButton();
 
-		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		this.setTitle(Resource.getResourceString("Options"));
 		addWindowListener(new java.awt.event.WindowAdapter() {
 			public void windowClosing(java.awt.event.WindowEvent evt) {
-				exitForm(evt);
+				dispose();
 			}
 		});
 
@@ -1697,11 +1680,9 @@ public class OptionsView extends View {
 		this.setSize(629, 493);
 
 		pack();
-	}// GEN-END:initComponents
+	}
 
-	private void jButton2ActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_jButton2ActionPerformed
-	{// GEN-HEADEREND:event_jButton2ActionPerformed
-		this.dispose();
-	}// GEN-LAST:event_jButton2ActionPerformed
+	public void refresh() {
+	}
 
 }

@@ -159,9 +159,6 @@ public class EmailReminder {
 					SendJavaMail.sendMail(host, tx, Resource.getResourceString("Reminder_Notice"), a.trim(), a.trim(), Prefs
 							.getPref(PrefName.EMAILUSER), Prefs
 							.getPref(PrefName.EMAILPASS));
-					// String ed = Prefs.getPref(PrefName.EMAILDEBUG);
-					// if (ed.equals("1"))
-					// Errmsg.notice(s);
 				}
 			}
 		}
