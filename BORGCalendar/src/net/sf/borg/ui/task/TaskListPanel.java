@@ -26,17 +26,12 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.ActionListener;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -54,52 +49,58 @@ import net.sf.borg.model.TaskTypes;
 import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Task;
 import net.sf.borg.ui.MultiView;
-import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 import net.sf.borg.ui.util.PopupMenuHelper;
 import net.sf.borg.ui.util.StripedTable;
 import net.sf.borg.ui.util.TablePrinter;
 import net.sf.borg.ui.util.TableSorter;
 
-/**
- * 
- * @author MBERGER
- * @version
- */
 
+/**
+ * Shows a table of tasks action buttons.
+ */
 class TaskListPanel extends JPanel implements Model.Listener {
 
-	// override class for the default table cell renderer that will change
-	// the
-	// colors of table cells
-	// based on days left before due date
+	/**
+	 * renderer for the priority and days left columns in the task table that
+	 * shows them in color.
+	 */
 	private class DLRenderer extends JLabel implements TableCellRenderer {
 
+		/**
+		 * constructor.
+		 */
 		public DLRenderer() {
 			super();
 			setOpaque(true); // MUST do this for background to show up.
 		}
 
+		/* (non-Javadoc)
+		 * @see javax.swing.table.TableCellRenderer#getTableCellRendererComponent(javax.swing.JTable, java.lang.Object, boolean, boolean, int, int)
+		 */
 		public Component getTableCellRendererComponent(JTable table,
 				Object obj, boolean isSelected, boolean hasFocus, int row,
 				int column) {
 
-			JLabel l = (JLabel) defrend_.getTableCellRendererComponent(table,
+			// start with default component that would be rendered
+			JLabel l = (JLabel) defaultTableCellRenderer.getTableCellRendererComponent(table,
 					obj, isSelected, hasFocus, row, column);
 
+			// if null object - show dashes
 			if (obj == null) {
 				l.setText("--");
 				l.setHorizontalAlignment(CENTER);
 				return l;
 			}
 
+			// return the default rendered component if this is not the priority or days left column
 			String nm = table.getColumnName(column);
 			if (!nm.equals(Resource.getResourceString("Pri"))
 					&& !nm.equals(Resource.getResourceString("Days_Left")))
 				return l;
 
-			if (isSelected
-					&& !nm.equals(Resource.getResourceString("Days_Left")))
+			// return the default rendered component if the row is selected
+			if (isSelected)
 				return l;
 
 			this.setText(l.getText());
@@ -109,7 +110,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 
 			int i = ((Integer) obj).intValue();
 
-			// priority
+			// set the priority background color
 			if (nm.equals(Resource.getResourceString("Pri"))) {
 
 				if (i == 1) {
@@ -126,8 +127,6 @@ class TaskListPanel extends JPanel implements Model.Listener {
 				return this;
 			}
 
-			if (isSelected)
-				return this;
 
 			// yellow alert -- <10 days left
 			if (i < 10)
@@ -145,128 +144,85 @@ class TaskListPanel extends JPanel implements Model.Listener {
 		}
 	}
 
-	private JMenuItem add = new JMenuItem();
-	private JButton addbutton = null;
-
+	/** The button panel. */
 	private JPanel buttonPanel = null;
 
-	private JMenuItem change = new JMenuItem();
+	/** The default table cell renderer. */
+	private TableCellRenderer defaultTableCellRenderer;
 
-	private JButton changebutton1 = null;
-
-	private JMenuItem clone = new JMenuItem();
-
-	private JButton clonebutton1 = null;
-
-	private JMenuItem close = new JMenuItem();
-
-	private JButton closebutton1 = null;
-
-	private TableCellRenderer defrend_;
-
-	private JMenuItem delete = new JMenuItem();
-
-	private JButton deletebutton1 = null;
-
-	private String filter = "";
+	/** The filter string. */
+	private String filterString = "";
+	
+	/** The filter case sensitive flag. */
 	private boolean filterCaseSensitive = false;
 
 	// filtering criteria
+	/** The project name. */
 	private String projectName = Resource.getResourceString("All");
 
-	private String status = Resource.getResourceString("All");
+	/** The task status. */
+	private String taskStatus = Resource.getResourceString("All");
 
+	/** The task table. */
 	private StripedTable taskTable;
 
-	/** Creates new form btgui */
+	/**
+	 * constructor
+	 */
 	public TaskListPanel() {
 		super();
 		TaskModel.getReference().addListener(this);
 		try {
 			initComponents();
-			taskTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			Errmsg.errmsg(e);
 			return;
 		}
 
 	}
 
-	public TaskListPanel(String projectName, String status, String filter,
-			boolean caseSensitive) {
+	/**
+	 * Instantiates a new task list panel tied to a particular project
+	 * 
+	 * @param projectName the project name 
+	 */
+	public TaskListPanel(String projectName) {
 		super();
-		setFilterCriteria(projectName, status, filter, caseSensitive);
+		setFilterCriteria(projectName, Resource.getResourceString("All"), "", false);
 		TaskModel.getReference().addListener(this);
 		try {
 			initComponents();
-			taskTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			Errmsg.errmsg(e);
 			return;
 		}
 
 	}
 
-	public void setFilterCriteria(String projectName, String status,
-			String filter, boolean caseSensitive) {
-		this.projectName = projectName;
-		this.status = status;
-		this.filter = filter;
-		this.filterCaseSensitive = caseSensitive;
-
-	}
-
-	private void addActionPerformed(java.awt.event.ActionEvent evt) {
-		// ask controller to bring up new task editor
-
-		task_add();
-	}
-
-	// add a row to the sorted table
-	private void addRow(JTable t, Object[] ro) {
-		TableSorter tm = (TableSorter) t.getModel();
-		tm.addRow(ro);
-		tm.tableChanged(new TableModelEvent(tm));
-	}
-
-	private void changeActionPerformed(java.awt.event.ActionEvent evt) {
-
+	/**
+	 * get the selected task id
+	 * @return the select task id or null
+	 */
+	private Integer getSelectedTaskId()
+	{
 		// get task number from column 0 of selected row
 		int row = taskTable.getSelectedRow();
 		if (row == -1)
-			return;
+			return null;
 		TableSorter tm = (TableSorter) taskTable.getModel();
 		Integer num = (Integer) tm.getValueAt(row, 0);
-
-		// ask borg class to bring up a task editor window
-		task_change(num.intValue());
-
+		return num;
 	}
 
-	private void cloneActionPerformed(java.awt.event.ActionEvent evt) {
 
-		// get task number from column 0 of selected row
-		int row = taskTable.getSelectedRow();
-		if (row == -1)
-			return;
-		TableSorter tm = (TableSorter) taskTable.getModel();
-		Integer num = (Integer) tm.getValueAt(row, 0);
+	/**
+	 * close the selected task
+	 * 
+	 * 	 */
+	private void closeActionPerformed() {
 
-		// ask borg class to bring up a task editor window
-		task_clone(num.intValue());
-
-	}
-
-	private void closeActionPerformed(java.awt.event.ActionEvent evt) {
-
-		// get the task number from column 0 of the selected row
-		int row = taskTable.getSelectedRow();
-		if (row == -1)
-			return;
-		TableSorter tm = (TableSorter) taskTable.getModel();
-		Integer num = (Integer) tm.getValueAt(row, 0);
+		Integer num = getSelectedTaskId();
+		if( num == null ) return;
 		try {
 			TaskModel.getReference().close(num.intValue());
 		} catch (Exception e) {
@@ -275,35 +231,24 @@ class TaskListPanel extends JPanel implements Model.Listener {
 
 	}
 
-	// do the default sort - by days left - column 5
-	private void defsort() {
-		TableSorter tm = (TableSorter) taskTable.getModel();
-		if (!tm.isSorted())
-			tm.sortByColumn(6);
-		else
-			tm.sort();
-	}
+	/**
+	 * delete the selected task
+	 * 
+	 */
+	private void deleteActionPerformed() {
 
-	private void deleteActionPerformed(java.awt.event.ActionEvent evt) {
 
-		// delete selected row
+		Integer num = getSelectedTaskId();
+		if( num == null ) return;
 
-		// get task number from column 0 of the selected row
-		int row = taskTable.getSelectedRow();
-		if (row == -1)
-			return;
-		TableSorter tm = (TableSorter) taskTable.getModel();
-		Integer num = (Integer) tm.getValueAt(row, 0);
-
-		// prompt for ok
+		// confirm delete
 		int ret = JOptionPane.showConfirmDialog(null, Resource
 				.getResourceString("Really_delete_number_")
 				+ num, "", JOptionPane.YES_NO_OPTION);
 		if (ret == JOptionPane.YES_OPTION) {
 			// delete the task
 			try {
-				TaskModel taskmod_ = TaskModel.getReference();
-				taskmod_.delete(num.intValue());
+				TaskModel.getReference().delete(num.intValue());
 			} catch (Exception e) {
 				Errmsg.errmsg(e);
 			}
@@ -311,21 +256,18 @@ class TaskListPanel extends JPanel implements Model.Listener {
 
 	}
 
-	// delete all rows from the sorted table
-	private void deleteAll() {
-		TableSorter tm = (TableSorter) taskTable.getModel();
-		tm.setRowCount(0);
-		tm.tableChanged(new TableModelEvent(tm));
-	}
-
+	
 	/**
-	 * This method initializes addbutton
+	 *create the button panel
 	 * 
-	 * @return javax.swing.JButton
+	 * @return the button panel
 	 */
-	private JButton getAddbutton() {
-		if (addbutton == null) {
-			addbutton = new JButton();
+	private JPanel getButtonPanel() {
+		if (buttonPanel == null) {
+			buttonPanel = new JPanel();
+			buttonPanel.setLayout(new FlowLayout());
+			
+			JButton addbutton = new JButton();
 			addbutton.setText(Resource.getResourceString("Add"));
 			addbutton.setIcon(new ImageIcon(getClass().getResource(
 					"/resource/Add16.gif")));
@@ -334,134 +276,76 @@ class TaskListPanel extends JPanel implements Model.Listener {
 					task_add();
 				}
 			});
-		}
-		return addbutton;
-	}
-
-	private ActionListener getAL(JMenuItem mnuitm) {
-		return mnuitm.getActionListeners()[0];
-	}
-
-	/**
-	 * This method initializes buttonPanel
-	 * 
-	 * @return javax.swing.JPanel
-	 */
-	private JPanel getButtonPanel() {
-		if (buttonPanel == null) {
-			buttonPanel = new JPanel();
-			buttonPanel.setLayout(new FlowLayout());
-			buttonPanel.add(getAddbutton(), null);
-			buttonPanel.add(getChangebutton1(), null);
-			buttonPanel.add(getDeletebutton1(), null);
-			buttonPanel.add(getClosebutton1(), null);
-			buttonPanel.add(getClonebutton1(), null);
-		}
-		return buttonPanel;
-	}
-
-	/**
-	 * This method initializes changebutton1
-	 * 
-	 * @return javax.swing.JButton
-	 */
-	private JButton getChangebutton1() {
-		if (changebutton1 == null) {
-			changebutton1 = new JButton();
+			buttonPanel.add(addbutton, null);
+			
+			JButton changebutton1 = new JButton();
 			changebutton1.setIcon(new ImageIcon(getClass().getResource(
 					"/resource/Edit16.gif")));
 			changebutton1.setText(Resource.getResourceString("Change"));
 			changebutton1
 					.addActionListener(new java.awt.event.ActionListener() {
 						public void actionPerformed(java.awt.event.ActionEvent e) {
-							changeActionPerformed(e);
+							Integer num = getSelectedTaskId();
+							if( num != null )
+								task_change(num.intValue());
 						}
 					});
-		}
-		return changebutton1;
-	}
-
-	/**
-	 * This method initializes clonebutton1
-	 * 
-	 * @return javax.swing.JButton
-	 */
-	private JButton getClonebutton1() {
-		if (clonebutton1 == null) {
-			clonebutton1 = new JButton();
-			clonebutton1.setIcon(new ImageIcon(getClass().getResource(
-					"/resource/Copy16.gif")));
-			clonebutton1.setText(Resource.getResourceString("Clone"));
-			clonebutton1.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent e) {
-					cloneActionPerformed(e);
-				}
-			});
-		}
-		return clonebutton1;
-	}
-
-	/**
-	 * This method initializes closebutton1
-	 * 
-	 * @return javax.swing.JButton
-	 */
-	private JButton getClosebutton1() {
-		if (closebutton1 == null) {
-			closebutton1 = new JButton();
-			closebutton1.setIcon(new ImageIcon(getClass().getResource(
-					"/resource/greenlight.gif")));
-			closebutton1.setText(Resource.getResourceString("Close"));
-			closebutton1.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent e) {
-					closeActionPerformed(e);
-				}
-			});
-		}
-		return closebutton1;
-	}
-
-	/**
-	 * This method initializes deletebutton1
-	 * 
-	 * @return javax.swing.JButton
-	 */
-	private JButton getDeletebutton1() {
-		if (deletebutton1 == null) {
-			deletebutton1 = new JButton();
+			buttonPanel.add(changebutton1, null);
+			
+			JButton deletebutton1 = new JButton();
 			deletebutton1.setIcon(new ImageIcon(getClass().getResource(
 					"/resource/Delete16.gif")));
 			deletebutton1.setText(Resource.getResourceString("Delete"));
 			deletebutton1
 					.addActionListener(new java.awt.event.ActionListener() {
 						public void actionPerformed(java.awt.event.ActionEvent e) {
-							deleteActionPerformed(e);
+							deleteActionPerformed();
 						}
 					});
+			buttonPanel.add(deletebutton1, null);
+			
+			JButton closebutton1 = new JButton();
+			closebutton1.setIcon(new ImageIcon(getClass().getResource(
+					"/resource/greenlight.gif")));
+			closebutton1.setText(Resource.getResourceString("Close"));
+			closebutton1.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					closeActionPerformed();
+				}
+			});
+			buttonPanel.add(closebutton1, null);
+			
+			JButton clonebutton1 = new JButton();
+			clonebutton1.setIcon(new ImageIcon(getClass().getResource(
+					"/resource/Copy16.gif")));
+			clonebutton1.setText(Resource.getResourceString("Clone"));
+			clonebutton1.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					Integer num = getSelectedTaskId();
+					if( num != null )
+						task_clone(num.intValue());
+				}
+			});
+			buttonPanel.add(clonebutton1, null);
 		}
-		return deletebutton1;
+		return buttonPanel;
 	}
 
-	/**
-	 * This method is called from within the constructor to initialize the form.
-	 * WARNING: Do NOT modify this code. The content of this method is always
-	 * regenerated by the FormEditor.
-	 */
 
+	/**
+	 * initalize the UI
+	 * @throws Exception 
+	 */
 	private void initComponents() throws Exception {
 
-		initMenuBar();
 
 		this.setLayout(new GridBagLayout());
-		change.setIcon(new ImageIcon(getClass().getResource(
-				"/resource/Edit16.gif")));
-		add
-				.setIcon(new ImageIcon(getClass().getResource(
-						"/resource/Add16.gif")));
-	
-		taskTable = new StripedTable();
 
-		defrend_ = taskTable.getDefaultRenderer(Integer.class);
+		/*
+		 * task table
+		 */
+		taskTable = new StripedTable();
+		defaultTableCellRenderer = taskTable.getDefaultRenderer(Integer.class);
 
 		// set renderer to the custom one for integers
 		taskTable.setDefaultRenderer(Integer.class,
@@ -480,129 +364,96 @@ class TaskListPanel extends JPanel implements Model.Listener {
 				Resource.getResourceString("duration"),
 				Resource.getResourceString("elapsed_time"),
 				Resource.getResourceString("project"),
-				Resource.getResourceString("Category")}, new Class[] {
-				Integer.class, 
-				String.class,
-				String.class, 
-				Integer.class,
-				Integer.class,
-				String.class,
-				Date.class, 
-				Date.class, 
-				Integer.class,
-				Integer.class, 
-				String.class, 
-				String.class }));
+				Resource.getResourceString("Category") }, new Class[] {
+				Integer.class, String.class, String.class, Integer.class,
+				Integer.class, String.class, Date.class, Date.class,
+				Integer.class, Integer.class, String.class, String.class }));
 
 		// set up for sorting when a column header is clicked
 		TableSorter tm = (TableSorter) taskTable.getModel();
 		tm.addMouseListenerToHeaderInTable(taskTable);
 
 		// clear all rows
-		deleteAll();
-
-		JScrollPane jScrollPane1 = new JScrollPane();
-		jScrollPane1.setViewportView(taskTable);
-		jScrollPane1.setBorder(javax.swing.BorderFactory
+		tm.setRowCount(0);
+		tm.tableChanged(new TableModelEvent(tm));
+		
+		JScrollPane taskScroll = new JScrollPane();
+		taskScroll.setViewportView(taskTable);
+		taskScroll.setBorder(javax.swing.BorderFactory
 				.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
 		taskTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
-
 		taskTable.addMouseListener(new java.awt.event.MouseAdapter() {
+			@Override
 			public void mouseClicked(java.awt.event.MouseEvent evt) {
-				mouseClick(evt);
-			}
+				// on double click - open task for edit
+				if (evt.getClickCount() < 2)
+					return;
+				Integer num = getSelectedTaskId();
+				if( num != null )
+					task_change(num.intValue());			}
 		});
-
-		new PopupMenuHelper(taskTable, new PopupMenuHelper.Entry[] {
-				new PopupMenuHelper.Entry(getAL(add), "Add"),
-				new PopupMenuHelper.Entry(getAL(change), "Change"),
-				new PopupMenuHelper.Entry(getAL(clone), "Clone"),
-				new PopupMenuHelper.Entry(getAL(delete), "Delete"),
-				new PopupMenuHelper.Entry(getAL(close), "Close") });
-
+		taskTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		
 		// set column widths
 		taskTable.getColumnModel().getColumn(7).setPreferredWidth(100);
 		taskTable.getColumnModel().getColumn(6).setPreferredWidth(100);
 		taskTable.getColumnModel().getColumn(5).setPreferredWidth(400);
-		taskTable.setPreferredScrollableViewportSize(new Dimension(800,200));
+		taskTable.setPreferredScrollableViewportSize(new Dimension(800, 200));
 
-		this.add(jScrollPane1, GridBagConstraintsFactory.create(0,0,GridBagConstraints.BOTH,1.0,1.0));
-		this.add(getButtonPanel(), GridBagConstraintsFactory.create(0,1,GridBagConstraints.BOTH));
+		/*
+		 * popup menu for task table
+		 */
+		new PopupMenuHelper(taskTable, new PopupMenuHelper.Entry[] {
+				new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						task_add();
+					}
+				}, "Add"),
+				new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						Integer num = getSelectedTaskId();
+						if( num != null )
+							task_change(num.intValue());
+					}
+				}, "Change"),
+				new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						Integer num = getSelectedTaskId();
+						if( num != null )
+							task_clone(num.intValue());
+					}
+				}, "Clone"),
+				new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						deleteActionPerformed();
+					}
+				}, "Delete"),
+				new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						closeActionPerformed();
+					}
+				}, "Close") });
+
+		
+		this.add(taskScroll, GridBagConstraintsFactory.create(0, 0,
+				GridBagConstraints.BOTH, 1.0, 1.0));
+		
+		/*
+		 * add button panel
+		 */
+		this.add(getButtonPanel(), GridBagConstraintsFactory.create(0, 1,
+				GridBagConstraints.BOTH));
 
 		refresh();
 
 	}
 
-	private void initMenuBar() {
 
-		JMenuBar menuBar = new JMenuBar();
-		JMenu fileMenu = new JMenu();
-
-		JMenu editMenu = new JMenu();
-
-		ResourceHelper.setText(fileMenu, "File");
-
-		menuBar.add(fileMenu);
-
-		menuBar.add(editMenu);
-		ResourceHelper.setText(editMenu, "Action");
-		ResourceHelper.setText(add, "Add");
-		add.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				addActionPerformed(evt);
-			}
-		});
-
-		ResourceHelper.setText(change, "Change");
-		change.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				changeActionPerformed(evt);
-			}
-		});
-
-		ResourceHelper.setText(clone, "Clone");
-		clone.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				cloneActionPerformed(evt);
-			}
-		});
-
-		editMenu.add(clone);
-
-		ResourceHelper.setText(delete, "Delete");
-		delete.setName("delete");
-		delete.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				deleteActionPerformed(evt);
-			}
-		});
-
-		editMenu.add(delete);
-
-		ResourceHelper.setText(close, "Close");
-		close.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				closeActionPerformed(evt);
-			}
-		});
-
-		editMenu.add(close);
-
-	}
-
-	private void mouseClick(java.awt.event.MouseEvent evt) {
-
-		// ask controller to bring up task editor on double click
-		if (evt.getClickCount() < 2)
-			return;
-
-		// changeActionPerformed(null);
-		showChildren();
-	}
-
+	/**
+	 * Prints the task table
+	 */
 	public void print() {
 
-		// print the current table of tasks
 		try {
 			TablePrinter.printTable(taskTable);
 		} catch (Exception e) {
@@ -610,17 +461,19 @@ class TaskListPanel extends JPanel implements Model.Listener {
 		}
 	}
 
-	// refresh is called to update the table of shown tasks due to model
-	// changes
-	// or if the user
-	// changes the filtering criteria
+	/**
+	 * reload from the model and re-apply filter criteria
+	 */
 	public void refresh() {
 
 		int row = 0;
 
 		// clear all table rows
-		deleteAll();
-
+		TableSorter tm = (TableSorter) taskTable.getModel();
+		tm.setRowCount(0);
+		tm.tableChanged(new TableModelEvent(tm));
+		
+		// get project id to filter on
 		Integer projfiltid = null;
 		if (!projectName.equals(Resource.getResourceString("All"))) {
 			try {
@@ -632,38 +485,34 @@ class TaskListPanel extends JPanel implements Model.Listener {
 		}
 
 		try {
-			TaskModel taskmod_ = TaskModel.getReference();
-			TaskTypes tasktypes = taskmod_.getTaskTypes();
-			Collection<Task> tasks = taskmod_.getTasks();
-			Iterator<Task> ti = tasks.iterator();
-			while (ti.hasNext()) {
+			// loop through all tasks
+			TaskTypes tasktypes =  TaskModel.getReference().getTaskTypes();
+			Collection<Task> tasks =  TaskModel.getReference().getTasks();
+			for( Task task : tasks ) {
 
-				Task task = ti.next();
-
-				// get the task state
+				// filter by task state
 				String st = task.getState();
-
-				if (status.equals(Resource.getResourceString("All_Open"))) {
+				if (taskStatus.equals(Resource.getResourceString("All_Open"))) {
 					if (TaskModel.isClosed(task)) {
 						continue;
 					}
-				} else if (!status.equals(Resource
-						.getResourceString("All"))
-						&& !status.equals(st))
+				} else if (!taskStatus.equals(Resource.getResourceString("All"))
+						&& !taskStatus.equals(st))
 					continue;
 
+				// filter by project
 				Integer pid = task.getProject();
 				if (projfiltid != null) {
 					if (pid == null || pid.intValue() != projfiltid.intValue())
 						continue;
 				}
 
-				// category
+				// filter by category
 				if (!CategoryModel.getReference().isShown(task.getCategory()))
 					continue;
 
 				// filter on user filter string
-				if (filter.length() != 0) {
+				if (filterString.length() != 0) {
 
 					// check if string is in description
 					// or resolution
@@ -676,10 +525,10 @@ class TaskListPanel extends JPanel implements Model.Listener {
 						d = "";
 
 					if (filterCaseSensitive) {
-						if (d.indexOf(filter) == -1 && r.indexOf(filter) == -1)
+						if (d.indexOf(filterString) == -1 && r.indexOf(filterString) == -1)
 							continue;
 					} else {
-						String lfilt = filter.toLowerCase();
+						String lfilt = filterString.toLowerCase();
 						String ld = d.toLowerCase();
 						String lr = r.toLowerCase();
 						if (ld.indexOf(lfilt) == -1 && lr.indexOf(lfilt) == -1)
@@ -691,14 +540,15 @@ class TaskListPanel extends JPanel implements Model.Listener {
 				// if we get here - we are displaying this task as a row
 				// so fill in an array of objects for the row
 				Object[] ro = new Object[12];
-				ro[0] = task.getKey(); // task number
-				ro[1] = task.getState(); // task state
-				ro[2] = task.getType(); // task type
+				ro[0] = task.getKey(); 
+				ro[1] = task.getState(); 
+				ro[2] = task.getType(); 
 				ro[11] = task.getCategory();
 				ro[3] = task.getPriority();
-				ro[6] = task.getStartDate(); // task start date
-				ro[7] = task.getDueDate(); // task due date
+				ro[6] = task.getStartDate(); 
+				ro[7] = task.getDueDate(); 
 
+				// duration
 				if (task.getDueDate() != null) {
 					ro[8] = new Integer(TaskModel.daysBetween(task
 							.getStartDate(), task.getDueDate()));
@@ -706,7 +556,6 @@ class TaskListPanel extends JPanel implements Model.Listener {
 					ro[8] = null;
 				}
 
-				
 				Date end = null;
 				if (task.getState().equals(
 						tasktypes.getFinalState(task.getType()))) {
@@ -715,6 +564,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 					end = new Date();
 				}
 
+				// elapsed time
 				if (end == null) {
 					ro[9] = null;
 				} else {
@@ -744,8 +594,8 @@ class TaskListPanel extends JPanel implements Model.Listener {
 				}
 				ro[5] = tmp;
 
+				// project
 				String ps = "";
-
 				if (pid != null) {
 					Project p = TaskModel.getReference().getProject(
 							pid.intValue());
@@ -763,11 +613,11 @@ class TaskListPanel extends JPanel implements Model.Listener {
 						}
 					}
 				}
-
 				ro[10] = ps;
 
 				// add the task row to table
-				addRow(taskTable, ro);
+				tm.addRow(ro);
+				tm.tableChanged(new TableModelEvent(tm));
 				row++;
 			}
 
@@ -775,33 +625,37 @@ class TaskListPanel extends JPanel implements Model.Listener {
 			Errmsg.errmsg(e);
 		}
 
-		// apply default sort to the table
-		defsort();
+		// apply default sort to the table if not sorted by user
+		if (!tm.isSorted())
+			tm.sortByColumn(6); // days left
+		else
+			tm.sort();
 	}
 
-	public void remove() {
-		// TODO Auto-generated method stub
+	/**
+	 * Sets the filter criteria.
+	 * 
+	 * @param projectName the project name
+	 * @param status the status
+	 * @param filter the filter string
+	 * @param caseSensitive the case sensitive match flag
+	 */
+	public void setFilterCriteria(String projectName, String status,
+			String filter, boolean caseSensitive) {
+		this.projectName = projectName;
+		this.taskStatus = status;
+		this.filterString = filter;
+		this.filterCaseSensitive = caseSensitive;
 
 	}
 
-	private void showChildren() {
 
-		// get task number from column 0 of selected row
-		int row = taskTable.getSelectedRow();
-		if (row == -1)
-			return;
-		TableSorter tm = (TableSorter) taskTable.getModel();
-		Integer num = (Integer) tm.getValueAt(row, 0);
-
-		// ask borg class to bring up a task editor window
-		task_change(num.intValue());
-
-	}
-
-	// show task view - to add a new task
+	/**
+	 * open the task editor in add mode.
+	 */
 	private void task_add() {
 		try {
-			// display the task editor
+			// fill in project if we have one
 			Integer projfiltid = null;
 			if (!projectName.equals(Resource.getResourceString("All"))) {
 				try {
@@ -819,13 +673,17 @@ class TaskListPanel extends JPanel implements Model.Listener {
 		}
 	}
 
-	// show the task view - to edit a task
-	private void task_change(int tasknum) {
+
+	/**
+	 * open the task editor to edit a task.
+	 * 
+	 * @param tasknum the tasknum
+	 */
+	static private void task_change(int tasknum) {
 
 		try {
 			// get the task from the data model
-			TaskModel taskmod_ = TaskModel.getReference();
-			Task task = taskmod_.getTask(tasknum);
+			Task task = TaskModel.getReference().getTask(tasknum);
 			if (task == null)
 				return;
 
@@ -839,12 +697,16 @@ class TaskListPanel extends JPanel implements Model.Listener {
 
 	}
 
-	private void task_clone(int tasknum) {
+	/**
+	 * close a task and open the editor on the clone
+	 * 
+	 * @param tasknum the tasknum
+	 */
+	static private void task_clone(int tasknum) {
 
 		try {
 			// get the task
-			TaskModel taskmod_ = TaskModel.getReference();
-			Task task = taskmod_.getTask(tasknum);
+			Task task = TaskModel.getReference().getTask(tasknum);
 			if (task == null)
 				return;
 

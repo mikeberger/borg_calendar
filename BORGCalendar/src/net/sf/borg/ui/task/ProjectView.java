@@ -637,8 +637,7 @@ public class ProjectView extends DockableView {
 
 			// add the task list
 			if (taskPanel == null) {
-				taskPanel = new TaskListPanel(TaskView.getProjectString(p),
-						Resource.getResourceString("All"), "", false);
+				taskPanel = new TaskListPanel(TaskView.getProjectString(p));
 				GridBagConstraints taskGBC = new GridBagConstraints();
 				taskGBC.gridx = 0;
 				taskGBC.gridy = 0;
