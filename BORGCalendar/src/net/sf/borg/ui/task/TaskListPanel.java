@@ -666,7 +666,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 				}
 			}
 			MultiView.getMainView().addView(
-					new TaskView(null, TaskView.T_ADD, projfiltid));
+					new TaskView(null, TaskView.Action.ADD, projfiltid));
 
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
@@ -689,7 +689,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 
 			// display the task editor
 			MultiView.getMainView().addView(
-					new TaskView(task, TaskView.T_CHANGE, null));
+					new TaskView(task, TaskView.Action.CHANGE, null));
 
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
@@ -712,7 +712,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 
 			// display the task editor
 			MultiView.getMainView().addView(
-					new TaskView(task, TaskView.T_CLONE, null));
+					new TaskView(task, TaskView.Action.CLONE, null));
 
 		} catch (Exception e) {
 			Errmsg.errmsg(e);

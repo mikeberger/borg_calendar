@@ -832,7 +832,7 @@ public class TodoView extends DockableView implements Prefs.Listener {
 				cv.showTasksForProject((Project) o);
 		} else if (o instanceof Task) {
 			try {
-				TaskView tskg = new TaskView((Task) o, TaskView.T_CHANGE, null);
+				TaskView tskg = new TaskView((Task) o, TaskView.Action.CHANGE, null);
 				tskg.setVisible(true);
 			} catch (Exception e) {
 				Errmsg.errmsg(e);
@@ -843,7 +843,7 @@ public class TodoView extends DockableView implements Prefs.Listener {
 			Task t;
 			try {
 				t = TaskModel.getReference().getTask(taskid);
-				TaskView tskg = new TaskView(t, TaskView.T_CHANGE, null);
+				TaskView tskg = new TaskView(t, TaskView.Action.CHANGE, null);
 				tskg.setVisible(true);
 			} catch (Exception e) {
 				Errmsg.errmsg(e);

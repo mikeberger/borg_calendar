@@ -486,7 +486,7 @@ public class NoteBox extends Box implements Box.Draggable {
 			try {
 				MultiView.getMainView().showTasks();
 				MultiView.getMainView().addView(
-						new TaskView((Task) bean, TaskView.T_CHANGE, null));
+						new TaskView((Task) bean, TaskView.Action.CHANGE, null));
 			} catch (Exception e) {
 				Errmsg.errmsg(e);
 				return;
@@ -499,7 +499,7 @@ public class NoteBox extends Box implements Box.Draggable {
 			try {
 				t = TaskModel.getReference().getTask(taskid);
 				MultiView.getMainView().addView(
-						new TaskView(t, TaskView.T_CHANGE, null));
+						new TaskView(t, TaskView.Action.CHANGE, null));
 			} catch (Exception e) {
 				Errmsg.errmsg(e);
 				return;

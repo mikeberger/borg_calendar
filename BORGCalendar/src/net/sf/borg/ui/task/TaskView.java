@@ -25,7 +25,8 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -35,6 +36,7 @@ import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.Vector;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -45,11 +47,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JViewport;
-import javax.swing.SwingConstants;
+import javax.swing.border.TitledBorder;
 import javax.swing.table.TableCellRenderer;
 
 import net.sf.borg.common.DateUtil;
@@ -69,6 +72,7 @@ import net.sf.borg.ui.DockableView;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.link.LinkPanel;
 import net.sf.borg.ui.util.DateDialog;
+import net.sf.borg.ui.util.GridBagConstraintsFactory;
 import net.sf.borg.ui.util.PopupMenuHelper;
 import net.sf.borg.ui.util.StripedTable;
 import net.sf.borg.ui.util.TableSorter;
@@ -77,41 +81,45 @@ import com.toedter.calendar.JDateChooser;
 import com.toedter.calendar.JDateChooserCellEditor;
 
 /**
- * 
- * @author MBERGER
- * @version
+ * UI for Viewing and Editing individual Tasks and their Subtasks
  */
-
-// taskgui is a View that allows the user to edit a single task
 public class TaskView extends DockableView {
-    
-    private class LongDateRenderer extends JLabel implements TableCellRenderer {
 
-    	public LongDateRenderer() {
-    		super();
-    		setOpaque(true); // MUST do this for background to show up.
-    	}
+	/**
+	 * Render log table dates in a particular date format
+	 */
+	private class LogTableDateRenderer extends JLabel implements
+			TableCellRenderer {
+		public LogTableDateRenderer() {
+			super();
+			setOpaque(true); // MUST do this for background to show up.
+		}
 
-    	public Component getTableCellRendererComponent(JTable table,
-    			Object obj, boolean isSelected, boolean hasFocus, int row,
-    			int column) {
+		public Component getTableCellRendererComponent(JTable table,
+				Object obj, boolean isSelected, boolean hasFocus, int row,
+				int column) {
 
-    		Date d = (Date) obj;
-    		JLabel l = (JLabel) defDateRend_.getTableCellRendererComponent(
-    				table, obj, isSelected, hasFocus, row, column);
+			Date d = (Date) obj;
+			JLabel l = (JLabel) defaultDateCellRenderer
+					.getTableCellRendererComponent(table, obj, isSelected,
+							hasFocus, row, column);
 
-    		this.setBackground(l.getBackground());
-    		this.setForeground(l.getForeground());
-    		this.setText(DateFormat.getDateTimeInstance(DateFormat.MEDIUM,
-    				DateFormat.MEDIUM).format(d));
-    		return this;
+			this.setBackground(l.getBackground());
+			this.setForeground(l.getForeground());
+			// use MEDIUM format
+			this.setText(DateFormat.getDateTimeInstance(DateFormat.MEDIUM,
+					DateFormat.MEDIUM).format(d));
+			return this;
+		}
+	}
 
-    	}
-    }
-
-	private class STDDRenderer extends JLabel implements TableCellRenderer {
-
-		public STDDRenderer() {
+	/**
+	 * Renders subtask due date in different colors based on proximity to due
+	 * date
+	 */
+	private class SubTaskDueDateRenderer extends JLabel implements
+			TableCellRenderer {
+		public SubTaskDueDateRenderer() {
 			super();
 			setOpaque(true); // MUST do this for background to show up.
 		}
@@ -121,15 +129,17 @@ public class TaskView extends DockableView {
 				int column) {
 
 			Boolean closed = (Boolean) table.getModel().getValueAt(row, 0);
-
 			Date dd = (Date) obj;
 
-			JLabel l = (JLabel) defDateRend_.getTableCellRendererComponent(
-					table, obj, isSelected, hasFocus, row, column);
+			JLabel l = (JLabel) defaultDateCellRenderer
+					.getTableCellRendererComponent(table, obj, isSelected,
+							hasFocus, row, column);
 
 			this.setBackground(l.getBackground());
 			this.setForeground(l.getForeground());
 			this.setHorizontalAlignment(l.getHorizontalAlignment());
+
+			// if no date, then show dashes
 			if (dd != null)
 				this.setText(DateFormat.getDateInstance().format(dd));
 			else {
@@ -137,12 +147,18 @@ public class TaskView extends DockableView {
 				this.setHorizontalAlignment(CENTER);
 			}
 
+			// go no further if the task is closed or this is not the due date
+			// column
 			String nm = table.getColumnName(column);
-			if (closed.booleanValue() == true || !nm.equals(Resource.getResourceString("Due_Date")) || obj == null)
+			if (closed.booleanValue() == true
+					|| !nm.equals(Resource.getResourceString("Due_Date"))
+					|| obj == null)
 				return this;
 
+			/*
+			 * color the due date background based on days left
+			 */
 			int days = TaskModel.daysLeft(dd);
-
 			if (!isSelected) {
 				// yellow alert -- <10 days left
 				if (days < 10)
@@ -161,19 +177,34 @@ public class TaskView extends DockableView {
 		}
 	}
 
-	private class STIntRenderer extends JLabel implements TableCellRenderer {
+	/**
+	 * Renderer for subtask int columns - shows dashes for unsaved subtasks
+	 */
+	private class SubtaskIntRenderer extends JLabel implements
+			TableCellRenderer {
 
-		public STIntRenderer() {
+		/**
+		 * Instantiates a new sT int renderer.
+		 */
+		public SubtaskIntRenderer() {
 			super();
 			setOpaque(true); // MUST do this for background to show up.
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * javax.swing.table.TableCellRenderer#getTableCellRendererComponent
+		 * (javax.swing.JTable, java.lang.Object, boolean, boolean, int, int)
+		 */
 		public Component getTableCellRendererComponent(JTable table,
 				Object obj, boolean isSelected, boolean hasFocus, int row,
 				int column) {
 
-			JLabel l = (JLabel) defIntRend_.getTableCellRendererComponent(
-					table, obj, isSelected, hasFocus, row, column);
+			JLabel l = (JLabel) defaultIntegerCellRenderer
+					.getTableCellRendererComponent(table, obj, isSelected,
+							hasFocus, row, column);
 			this.setHorizontalAlignment(CENTER);
 			this.setForeground(l.getForeground());
 			this.setBackground(l.getBackground());
@@ -192,44 +223,28 @@ public class TaskView extends DockableView {
 		}
 	}
 
-	private class STStringRenderer extends JLabel implements TableCellRenderer {
+	/**
+	 * Actions being taken on a task when starting the editor
+	 */
+	public enum Action {
 
-		public STStringRenderer() {
-			super();
-			setOpaque(true); // MUST do this for background to show up.
-		}
-
-		public Component getTableCellRendererComponent(JTable table,
-				Object obj, boolean isSelected, boolean hasFocus, int row,
-				int column) {
-
-			JLabel l = (JLabel) defStringRend_.getTableCellRendererComponent(
-					table, obj, isSelected, hasFocus, row, column);
-			this.setForeground(l.getForeground());
-			this.setBackground(l.getBackground());
-
-			if (obj == null) {
-				this.setBackground(new Color(220, 220, 255));
-				this.setText("");
-			} else {
-				this.setText((String) obj);
-			}
-
-			return this;
-
-		}
+		ADD, CHANGE, CLONE;
 	}
 
-	public static int T_ADD = 2;
-
-	public static int T_CHANGE = 3;
-
-	// the different function values for calls to show task
-	public static int T_CLONE = 1;
-	
+	/**
+	 * Gets the project id form a project string containing id and name.
+	 * 
+	 * @param s
+	 *            the project string from the project combo box
+	 * 
+	 * @return the project id
+	 * 
+	 * @throws Exception
+	 */
 	static public Integer getProjectId(String s) throws Exception {
 		int i = s.indexOf(":");
-		if( i == -1 ) throw new Exception("Cannot parse project label");
+		if (i == -1)
+			throw new Exception("Cannot parse project label");
 		String ss = s.substring(0, i);
 
 		int pid = Integer.parseInt(ss);
@@ -237,285 +252,185 @@ public class TaskView extends DockableView {
 
 	}
 
+	/**
+	 * Gets the project string for a project to put in the project combo box
+	 * 
+	 * @param p
+	 *            the project
+	 * 
+	 * @return the project string
+	 */
 	static public String getProjectString(Project p) {
 		return p.getKey() + ":" + p.getDescription();
 	}
 
-	private LinkPanel attPanel;
+	/** The link panel. */
+	private LinkPanel linkPanel;
 
+	/** The category combo box. */
+	private JComboBox categoryComboBox = null;
 
-	private JComboBox catbox = null;
-
-	// Variables declaration - do not modify//GEN-BEGIN:variables
-	private javax.swing.JLabel catlabel;
-
+	/** The close date. */
 	private JTextField closeDate = null;
 
-	private JLabel closeLabel = null;
-
-	private JLabel daysLeftLabel = null;
-
+	/** The days left text. */
 	private JTextField daysLeftText = null;
 
-	private TableCellRenderer defDateRend_;
+	/** The default date cell renderer. */
+	private TableCellRenderer defaultDateCellRenderer;
 
-	private TableCellRenderer defIntRend_;
+	/** The default integer cell renderer. */
+	private TableCellRenderer defaultIntegerCellRenderer;
 
-	private TableCellRenderer defStringRend_;
+	/** The due date chooser. */
+	private JDateChooser dueDateChooser;
 
-	private JDateChooser duedatechooser;
+	/** The parent project. */
+	private Integer parentProject = null;
 
-	private Integer init_proj = null;
+	/** The task id text. */
+	private JTextField taskIdText;
 
-	private javax.swing.JTextField itemtext;
+	/** The task tabbed panel. */
+	private JTabbedPane taskTabbedPanel;
 
-	private javax.swing.JButton jButton2;
+	/** The description text. */
+	private JTextArea descriptionText;
 
-	
+	/** The resolution text. */
+	private JTextArea resolutionText;
 
-	
-	private JPanel jPanel = null;
-
-	private javax.swing.JPanel jPanel3;
-
-	private javax.swing.JPanel jPanel4;
-
-	private javax.swing.JScrollPane jScrollPane1;
-
-	private javax.swing.JScrollPane jScrollPane2;
-
-	private JSplitPane jSplitPane = null;
-
-	private javax.swing.JTabbedPane jTabbedPane1;
-
-	private javax.swing.JTextArea jTextArea1;
-
-	private javax.swing.JTextArea jTextArea2;
-
-	private javax.swing.JLabel lblDueDate;
-
-	private javax.swing.JLabel lblItemNum;
-
-	private javax.swing.JLabel lblPA;
-
-	private javax.swing.JLabel lblPri;
-
-	private javax.swing.JLabel lblStartDate;
-
-	private javax.swing.JLabel lblStatus;
-
-	private javax.swing.JLabel lblType;
-
+	/** The log table. */
 	private StripedTable logtable = new StripedTable();
 
-	private javax.swing.JTextField patext;
+	/** The person assigned text. */
+	private JTextField personAssignedText;
 
-	private javax.swing.JComboBox pritext;
+	/** The priority text. */
+	private JComboBox priorityText;
 
-	private JComboBox projBox = new JComboBox();
+	/** The project combo box. */
+	private JComboBox projectComboBox = new JComboBox();
 
-	private StripedTable stable = new StripedTable();
+	/** The sub task table. */
+	private StripedTable subTaskTable = new StripedTable();
 
-	private JDateChooser startdatechooser;
+	/** The start date chooser. */
+	private JDateChooser startDateChooser;
 
-	private javax.swing.JComboBox statebox;
-	
+	/** The status combo box. */
+	private JComboBox statusComboBox;
+
+	/** The sub task ids to be deleted. */
+	private ArrayList<Integer> subTaskIdsToBeDeleted = new ArrayList<Integer>();
+
+	/** The window title. */
+	private String windowTitle = "";
+
+	/** The task type combo box. */
+	private JComboBox taskTypeComboBox;
+
 	/**
-	 * This method initializes jPanel
+	 * constructor
 	 * 
-	 * @return javax.swing.JPanel
+	 * @param task
+	 *            the task
+	 * @param function
+	 *            the action being taken on the task
+	 * @param projectid
+	 *            the projectid or null if no initial project
+	 * 
+	 * @throws Exception
 	 */
-	JPanel stpanel = new JPanel();
-
-	private ArrayList<Integer> tbd_ = new ArrayList<Integer>();
-	
-	private String title_ = "";
-
-	private javax.swing.JComboBox typebox;
-
-	public TaskView(Task task, int function, Integer projectid) throws Exception {
+	public TaskView(Task task, Action function, Integer projectid)
+			throws Exception {
 		super();
-		addModel(TaskModel.getReference());
+		
+		// listen for model changes
 		addModel(LinkModel.getReference()); // to update link tab color
-		init_proj = projectid;
+		
+		parentProject = projectid;
+		
 		initComponents(); // init the GUI widgets
 
 		initSubtaskTable();
 		initLogTable();
 
 		// set size of text area
-		jTextArea1.setRows(15);
-		jTextArea1.setColumns(40);
+		descriptionText.setRows(15);
+		descriptionText.setColumns(40);
 
+		// load categories
 		try {
-			Collection<String> cats = CategoryModel.getReference().getCategories();
+			Collection<String> cats = CategoryModel.getReference()
+					.getCategories();
 			Iterator<String> it = cats.iterator();
 			while (it.hasNext()) {
-				catbox.addItem(it.next());
+				categoryComboBox.addItem(it.next());
 			}
-			catbox.setSelectedIndex(0);
+			categoryComboBox.setSelectedIndex(0);
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
 		}
 
+		// show the task
 		showtask(function, task);
-		
+
 		refresh();
 
 	}
 
-	
-
-	/**
-	 * This method initializes catbox
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @return javax.swing.JComboBox
+	 * @see net.sf.borg.ui.DockableView#getFrameSizePref()
 	 */
-	private JComboBox getCatbox() {
-		if (catbox == null) {
-			catbox = new JComboBox();
-		}
-		return catbox;
-	}
-
-	
-
-	/**
-	 * This method initializes closeDate
-	 * 
-	 * @return javax.swing.JTextField
-	 */
-	private JTextField getCloseDate() {
-		if (closeDate == null) {
-			closeDate = new JTextField();
-
-			closeDate.setEditable(false); // Generated
-		}
-		return closeDate;
-	}
-
-	// End of variables declaration//GEN-END:variables
-
-	/**
-	 * This method initializes daysLeftText
-	 * 
-	 * @return javax.swing.JTextField
-	 */
-	private JTextField getDaysLeftText() {
-		if (daysLeftText == null) {
-			daysLeftText = new JTextField();
-			daysLeftText.setEditable(false);
-		}
-		return daysLeftText;
-	}
-
 	public PrefName getFrameSizePref() {
-	    return PrefName.TASKVIEWSIZE;
+		return PrefName.TASKVIEWSIZE;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see net.sf.borg.ui.DockableView#getFrameTitle()
+	 */
 	public String getFrameTitle() {
-	    return title_;
+		return windowTitle;
 	}
 
-	private JPanel getJPanel() {
-		if (jPanel == null) {
-			
-			GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
-			gridBagConstraints5.fill = GridBagConstraints.BOTH;
-			gridBagConstraints5.weighty = 1.0;
-			gridBagConstraints5.gridx = 0;
-			gridBagConstraints5.gridy = 1;
-			gridBagConstraints5.insets = new Insets(4, 4, 4, 4);
-			gridBagConstraints5.weightx = 1.0;
-			GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
-			gridBagConstraints4.fill = GridBagConstraints.BOTH;
-			gridBagConstraints4.gridx = 0;
-			gridBagConstraints4.gridy = 0;
-			gridBagConstraints4.weightx = 1.0;
-			gridBagConstraints4.weighty = 1.0;
-			gridBagConstraints4.insets = new Insets(4, 4, 4, 4);
-			GridBagConstraints gridBagConstraints25 = new GridBagConstraints();
-			GridBagConstraints gridBagConstraints21 = new GridBagConstraints();
-			jPanel = new JPanel();
-			jPanel.setLayout(new GridBagLayout());
-			gridBagConstraints21.gridx = 0;
-			gridBagConstraints21.gridy = 0;
-			gridBagConstraints21.fill = java.awt.GridBagConstraints.BOTH;
-			gridBagConstraints21.weightx = 1.0;
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see net.sf.borg.ui.DockableView#getMenuForFrame()
+	 */
+	public JMenuBar getMenuForFrame() {
+		JMenuBar theMenuBar = new JMenuBar();
+		JMenu theMenu = new JMenu();
+		JMenuItem saveMenuItem = new JMenuItem();
 
-			gridBagConstraints25.gridx = 0;
-			gridBagConstraints25.gridy = 2;
+		ResourceHelper.setText(theMenu, "Menu");
+		ResourceHelper.setText(saveMenuItem, "Save");
+		saveMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				savetask();
+			}
+		});
 
-			jPanel.add(getJSplitPane(), gridBagConstraints5);
-			jPanel.add(jPanel3, gridBagConstraints21); // Generated
+		theMenu.add(saveMenuItem);
 
-			jPanel.add(jPanel4, gridBagConstraints25);
-			// subtasks
-			JScrollPane stscroll = new JScrollPane();
-			stscroll.setPreferredSize(new Dimension(300, 300));
-			stscroll.setViewportView(stable);
-			
-			stpanel.setLayout(new GridBagLayout());
-			stpanel.setBorder(new javax.swing.border.TitledBorder(Resource
-					.getResourceString("SubTasks")));
-			stpanel.add(stscroll, gridBagConstraints4);
-			
-			
-			
-		}
-		return jPanel;
+		theMenuBar.add(theMenu);
+
+		return theMenuBar;
 	}
 
 	/**
-	 * This method initializes jSplitPane	
-	 * 	
-	 * @return javax.swing.JSplitPane	
+	 * Gets the selected subtask ids.
+	 * 
+	 * @return the selected subtask ids
 	 */
-	private JSplitPane getJSplitPane() {
-	    if (jSplitPane == null) {
-		jSplitPane = new JSplitPane();
-		jSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
-		if( TaskModel.getReference().hasSubTasks())
-		{
-			jSplitPane.setBottomComponent(stpanel);
-		}
-		else
-		{
-			JTextArea ta = new JTextArea();
-			ta.setText(Resource.getResourceString("SubtaskNotSupported"));
-			ta.setEditable(false);
-			jSplitPane.setBottomComponent(ta);
-		}
-		jSplitPane.setPreferredSize(new Dimension(400, 400));
-		jSplitPane.setDividerLocation(200);
-		jSplitPane.setTopComponent(jTabbedPane1);
-	    }
-	    return jSplitPane;
-	}
-
-	public JMenuBar getMenuForFrame() {
-	    JMenuBar jMenuBar1 = new javax.swing.JMenuBar();
-	    JMenu jMenu1 = new javax.swing.JMenu();
-	    JMenuItem jMenuItem1 = new javax.swing.JMenuItem();
-
-	    ResourceHelper.setText(jMenu1, "Menu");
-	    ResourceHelper.setText(jMenuItem1, "Save");
-	    jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
-		public void actionPerformed(java.awt.event.ActionEvent evt) {
-		    savetask(evt);
-		}
-	    });
-
-	    jMenu1.add(jMenuItem1);
-
-	    jMenuBar1.add(jMenu1);
-
-	    return jMenuBar1;
-	}
-
-	private Integer[] getSelectedIds() {
-		TableSorter ts = (TableSorter) stable.getModel();
-		int[] indices = stable.getSelectedRows();
+	private Integer[] getSelectedSubtaskIds() {
+		TableSorter ts = (TableSorter) subTaskTable.getModel();
+		int[] indices = subTaskTable.getSelectedRows();
 		Integer[] ret = new Integer[indices.length];
 
 		for (int i = 0; i < indices.length; ++i) {
@@ -526,303 +441,242 @@ public class TaskView extends DockableView {
 		return ret;
 	}
 
-	private void initComponents()// GEN-BEGIN:initComponents
+	/**
+	 * Initialize the UI
+	 */
+	private void initComponents()
 	{
+		/*
+		 * this was one of the worst code-generated messes in borg. It is mostly cleaned up now, but is not perfect.
+		 */
 		
+		setLayout(new GridBagLayout());
 
-		GridBagConstraints gridBagConstraints22 = new GridBagConstraints();
-		gridBagConstraints22.gridx = 2;
-		gridBagConstraints22.insets = new Insets(4, 20, 4, 4);
-		gridBagConstraints22.gridy = 4;
-		daysLeftLabel = new JLabel();
+		JPanel topPanel = new JPanel();
+		topPanel.setLayout(new GridBagLayout());
+
+		/*
+		 * information panel
+		 */
+
+		JPanel taskInformationPanel = new JPanel();
+		taskInformationPanel.setLayout(new GridBagLayout());
+
+		taskInformationPanel.setBorder(new TitledBorder(Resource
+				.getResourceString("TaskInformation")));
+
+		taskIdText = new JTextField();
+		JLabel lblItemNum = new JLabel();
+		JLabel lblStatus = new JLabel();
+		startDateChooser = new JDateChooser();
+		dueDateChooser = new JDateChooser();
+		priorityText = new JComboBox();
+		for (int p = 1; p <= 5; p++) {
+			priorityText.addItem(new Integer(p));
+		}
+
+		personAssignedText = new JTextField();
+		JLabel lblStartDate = new JLabel();
+		JLabel lblDueDate = new JLabel();
+		JLabel lblPri = new JLabel();
+		JLabel lblPA = new JLabel();
+		JLabel lblType = new JLabel();
+		statusComboBox = new JComboBox();
+		taskTypeComboBox = new JComboBox();
+		JLabel categoryLabel = new JLabel();
+
+		JLabel closeLabel = new JLabel();
+		closeLabel.setText("");
+
+		JLabel daysLeftLabel = new JLabel();
 		daysLeftLabel.setText(Resource.getResourceString("Days_Left"));
-		daysLeftLabel.setHorizontalTextPosition(SwingConstants.RIGHT);
-		daysLeftLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
-		gridBagConstraints13.fill = GridBagConstraints.BOTH;
-		gridBagConstraints13.gridy = 4;
-		gridBagConstraints13.weightx = 1.0;
-		gridBagConstraints13.insets = new Insets(4, 4, 4, 4);
-		gridBagConstraints13.gridx = 3;
-		GridBagConstraints gridBagConstraints210 = new GridBagConstraints();
-		gridBagConstraints210.gridx = 2; // Generated
-		gridBagConstraints210.insets = new Insets(4, 20, 4, 4); // Generated
-		gridBagConstraints210.gridy = 3; // Generated
-		closeLabel = new JLabel();
-		closeLabel.setText(""); // Generated
-		closeLabel.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT); // Generated
-		closeLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT); // Generated
-		GridBagConstraints gridBagConstraints12 = new GridBagConstraints();
-		gridBagConstraints12.fill = java.awt.GridBagConstraints.BOTH; // Generated
-		gridBagConstraints12.gridy = 3; // Generated
-		gridBagConstraints12.weightx = 1.0; // Generated
-		gridBagConstraints12.insets = new java.awt.Insets(4, 4, 4, 4); // Generated
-		gridBagConstraints12.gridx = 3; // Generated
-		GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
-		jTabbedPane1 = new javax.swing.JTabbedPane();
-		jScrollPane1 = new javax.swing.JScrollPane();
-		jTextArea1 = new javax.swing.JTextArea();
-		jScrollPane2 = new javax.swing.JScrollPane();
-		jTextArea2 = new javax.swing.JTextArea();
+		daysLeftText = new JTextField();
+		daysLeftText.setEditable(false);
 
-		jPanel3 = new javax.swing.JPanel();
-		itemtext = new javax.swing.JTextField();
-		lblItemNum = new javax.swing.JLabel();
-		lblStatus = new javax.swing.JLabel();
-		startdatechooser = new JDateChooser();
-		duedatechooser = new JDateChooser();
-		pritext = new javax.swing.JComboBox();
-		patext = new javax.swing.JTextField();
-		lblStartDate = new javax.swing.JLabel();
-		lblDueDate = new javax.swing.JLabel();
-		lblPri = new javax.swing.JLabel();
-		lblPA = new javax.swing.JLabel();
-		lblType = new javax.swing.JLabel();
-		statebox = new javax.swing.JComboBox();
-		typebox = new javax.swing.JComboBox();
-		catlabel = new javax.swing.JLabel();
-		GridBagConstraints gridBagConstraints26 = new GridBagConstraints();
-		GridBagConstraints gridBagConstraints27 = new GridBagConstraints();
-		GridBagConstraints gridBagConstraints28 = new GridBagConstraints();
-		GridBagConstraints gridBagConstraints29 = new GridBagConstraints();
-		GridBagConstraints gridBagConstraints30 = new GridBagConstraints();
-		GridBagConstraints gridBagConstraints31 = new GridBagConstraints();
-		GridBagConstraints gridBagConstraints32 = new GridBagConstraints();
-		GridBagConstraints gridBagConstraints33 = new GridBagConstraints();
-		GridBagConstraints gridBagConstraints34 = new GridBagConstraints();
-		GridBagConstraints gridBagConstraints35 = new GridBagConstraints();
-		GridBagConstraints gridBagConstraints37 = new GridBagConstraints();
-		GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
-		GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
-		GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
-		GridBagConstraints gridBagConstraints38 = new GridBagConstraints();
-		jPanel4 = new javax.swing.JPanel();
-		jButton2 = new javax.swing.JButton();
-		
-		setLayout(new java.awt.GridBagLayout());
-		
-		
-		jTextArea1.setLineWrap(true);
-		jTextArea1.setName("Description");
-		jScrollPane1.setViewportView(jTextArea1);
+		closeDate = new JTextField();
+		closeDate.setEditable(false);
+		ResourceHelper.setText(closeLabel, "close_date");
 
-		jTabbedPane1.addTab(Resource.getResourceString("Description"),
-				jScrollPane1);
+		JLabel prLabel = new JLabel(Resource.getResourceString("project"));
 
-		jTextArea2.setLineWrap(true);
-		jScrollPane2.setViewportView(jTextArea2);
+		taskIdText.setText("taskIdText");
 
-		jTabbedPane1.addTab(Resource.getResourceString("Resolution"),
-				jScrollPane2);
+		ResourceHelper.setText(lblItemNum, "Item_#");
+		lblItemNum.setLabelFor(taskIdText);
+
+		ResourceHelper.setText(lblStatus, "Status");
+		lblStatus.setLabelFor(statusComboBox);
+
+		ResourceHelper.setText(lblStartDate, "Start_Date");
+		lblStartDate.setLabelFor(startDateChooser);
+
+		ResourceHelper.setText(lblDueDate, "Due_Date");
+		lblDueDate.setLabelFor(dueDateChooser);
+
+		ResourceHelper.setText(lblPri, "Pri");
+		lblPri.setLabelFor(priorityText);
+
+		ResourceHelper.setText(lblPA, "PA");
+		lblPA.setLabelFor(personAssignedText);
+
+		ResourceHelper.setText(lblType, "Type");
+		lblType.setLabelFor(taskTypeComboBox);
+
+		ResourceHelper.setText(categoryLabel, "Category");
+		categoryComboBox = new JComboBox();
+		categoryLabel.setLabelFor(categoryComboBox);
+
+		taskInformationPanel.add(lblItemNum, GridBagConstraintsFactory.create(
+				0, 0, GridBagConstraints.BOTH, 0.0, 0.0));
+		taskInformationPanel.add(lblStatus, GridBagConstraintsFactory.create(0,
+				1, GridBagConstraints.BOTH, 0.0, 0.0));
+		taskInformationPanel.add(lblType, GridBagConstraintsFactory.create(0,
+				2, GridBagConstraints.BOTH, 0.0, 0.0));
+		taskInformationPanel.add(lblStartDate, GridBagConstraintsFactory
+				.create(0, 3, GridBagConstraints.BOTH, 0.0, 0.0));
+		taskInformationPanel.add(lblDueDate, GridBagConstraintsFactory.create(
+				0, 4, GridBagConstraints.BOTH, 0.0, 0.0));
+		taskInformationPanel.add(prLabel, GridBagConstraintsFactory.create(0,
+				5, GridBagConstraints.BOTH, 0.0, 0.0));
+
+		taskInformationPanel.add(taskIdText, GridBagConstraintsFactory.create(
+				1, 0, GridBagConstraints.BOTH, 1.0, 0.0));
+		taskInformationPanel.add(statusComboBox, GridBagConstraintsFactory
+				.create(1, 1, GridBagConstraints.BOTH, 1.0, 0.0));
+		taskInformationPanel.add(taskTypeComboBox, GridBagConstraintsFactory
+				.create(1, 2, GridBagConstraints.BOTH, 1.0, 0.0));
+		taskInformationPanel.add(startDateChooser, GridBagConstraintsFactory
+				.create(1, 3, GridBagConstraints.BOTH, 1.0, 0.0));
+		taskInformationPanel.add(dueDateChooser, GridBagConstraintsFactory
+				.create(1, 4, GridBagConstraints.BOTH, 1.0, 0.0));
+		taskInformationPanel.add(projectComboBox, GridBagConstraintsFactory
+				.create(1, 5, GridBagConstraints.BOTH, 1.0, 0.0));
+
+		taskInformationPanel.add(categoryLabel, GridBagConstraintsFactory
+				.create(2, 0, GridBagConstraints.BOTH, 0.0, 0.0));
+		taskInformationPanel.add(lblPri, GridBagConstraintsFactory.create(2, 1,
+				GridBagConstraints.BOTH, 0.0, 0.0));
+		taskInformationPanel.add(lblPA, GridBagConstraintsFactory.create(2, 2,
+				GridBagConstraints.BOTH, 0.0, 0.0));
+		taskInformationPanel.add(closeLabel, GridBagConstraintsFactory.create(
+				2, 3,GridBagConstraints.BOTH, 0.0, 0.0));
+		taskInformationPanel.add(daysLeftLabel, GridBagConstraintsFactory
+				.create(2, 4,GridBagConstraints.BOTH, 0.0, 0.0));
+
+		taskInformationPanel.add(categoryComboBox, GridBagConstraintsFactory
+				.create(3, 0, GridBagConstraints.BOTH, 1.0, 0.0));
+		taskInformationPanel.add(priorityText, GridBagConstraintsFactory
+				.create(3, 1, GridBagConstraints.BOTH, 1.0, 0.0));
+		taskInformationPanel.add(personAssignedText, GridBagConstraintsFactory
+				.create(3, 2, GridBagConstraints.BOTH, 1.0, 0.0));
+		taskInformationPanel.add(closeDate, GridBagConstraintsFactory.create(3,
+				3, GridBagConstraints.BOTH, 1.0, 0.0));
+		taskInformationPanel.add(daysLeftText, GridBagConstraintsFactory
+				.create(3, 4, GridBagConstraints.BOTH, 1.0, 0.0));
+
+		topPanel.add(taskInformationPanel, GridBagConstraintsFactory.create(0,
+				0, GridBagConstraints.BOTH, 1.0, 0.0));
+
+		/*
+		 * task tabbed panel
+		 */
+		taskTabbedPanel = new JTabbedPane();
+
+		JScrollPane descriptionScroll = new JScrollPane();
+		descriptionText = new JTextArea();
+		descriptionText.setLineWrap(true);
+		descriptionText.setName("Description");
+		descriptionScroll.setViewportView(descriptionText);
+		taskTabbedPanel.addTab(Resource.getResourceString("Description"),
+				descriptionScroll);
+
+		JScrollPane resolutionScroll = new JScrollPane();
+		resolutionText = new JTextArea();
+		resolutionText.setLineWrap(true);
+		resolutionScroll.setViewportView(resolutionText);
+		taskTabbedPanel.addTab(Resource.getResourceString("Resolution"),
+				resolutionScroll);
 
 		JScrollPane logPane = new JScrollPane();
 		logPane.setViewportView(logtable);
+		taskTabbedPanel.addTab(Resource.getResourceString("history"), logPane);
 
-		jTabbedPane1.addTab(Resource.getResourceString("history"), logPane);
 		if (!TaskModel.getReference().hasSubTasks()) {
-			jTabbedPane1.setEnabledAt(jTabbedPane1.indexOfComponent(logPane),
-					false);
+			taskTabbedPanel.setEnabledAt(taskTabbedPanel
+					.indexOfComponent(logPane), false);
 		}
 
-		attPanel = new LinkPanel();
-		jTabbedPane1.addTab(Resource.getResourceString("links"), attPanel);
-		
-		jPanel3.setLayout(new java.awt.GridBagLayout());
+		linkPanel = new LinkPanel();
+		taskTabbedPanel.addTab(Resource.getResourceString("links"), linkPanel);
 
-		jPanel3.setBorder(new javax.swing.border.TitledBorder(Resource
-				.getResourceString("TaskInformation")));
+		/*
+		 * sub task panel
+		 */
+		JScrollPane subTaskScroll = new JScrollPane();
+		subTaskScroll.setPreferredSize(new Dimension(300, 300));
+		subTaskScroll.setViewportView(subTaskTable);
 
-		itemtext.setText("itemtext");
+		JPanel subTaskPanel = new JPanel();
+		subTaskPanel.setLayout(new GridBagLayout());
+		subTaskPanel.setBorder(new TitledBorder(Resource
+				.getResourceString("SubTasks")));
+		subTaskPanel.add(subTaskScroll, GridBagConstraintsFactory.create(0, 0,
+				GridBagConstraints.BOTH, 1.0, 1.0));
 
-		ResourceHelper.setText(lblItemNum, "Item_#");
-		lblItemNum.setLabelFor(itemtext);
+		/*
+		 * split pane
+		 */
+		JSplitPane taskSplitPane = new JSplitPane();
+		taskSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
+		taskSplitPane.setBottomComponent(subTaskPanel);
+		taskSplitPane.setPreferredSize(new Dimension(400, 400));
+		taskSplitPane.setDividerLocation(200);
+		taskSplitPane.setTopComponent(taskTabbedPanel);
 
-		ResourceHelper.setText(lblStatus, "Status");
-		lblStatus.setLabelFor(statebox);
+		topPanel.add(taskSplitPane, GridBagConstraintsFactory.create(0, 1,
+				GridBagConstraints.BOTH, 1.0, 1.0));
 
-		ResourceHelper.setText(lblStartDate, "Start_Date");
-		lblStartDate.setLabelFor(startdatechooser);
+		/*
+		 * button panel
+		 */
+		JPanel buttonPanel = new JPanel();
+		JButton savebutton = new JButton();
+		topPanel.add(buttonPanel, GridBagConstraintsFactory.create(0, 2));
 
-		ResourceHelper.setText(lblDueDate, "Due_Date");
-		lblDueDate.setLabelFor(duedatechooser);
-
-		ResourceHelper.setText(lblPri, "Pri");
-		lblPri.setLabelFor(pritext);
-
-		ResourceHelper.setText(lblPA, "PA");
-		lblPA.setLabelFor(patext);
-
-		ResourceHelper.setText(lblType, "Type");
-		lblType.setLabelFor(typebox);
-
-
-		ResourceHelper.setText(catlabel, "Category");
-		catlabel.setLabelFor(getCatbox());
-
-
-		jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource(
+		savebutton.setIcon(new ImageIcon(getClass().getResource(
 				"/resource/Save16.gif")));
-		ResourceHelper.setText(jButton2, "Save");
-		jButton2.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jButton2ActionPerformed(evt);
+		ResourceHelper.setText(savebutton, "Save");
+		savebutton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				savetask();
 			}
 		});
 
-		jPanel4.add(jButton2, jButton2.getName());
-		
-		
+		buttonPanel.add(savebutton, savebutton.getName());
+
 		JButton addst = new JButton();
-		addst.setIcon(new javax.swing.ImageIcon(getClass().getResource(
+		addst.setIcon(new ImageIcon(getClass().getResource(
 				"/resource/Add16.gif")));
 		ResourceHelper.setText(addst, "Add_Subtask");
-		if(TaskModel.getReference().hasSubTasks())
-		{
-		addst.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				insertSubtask();
-			}
-		});
-		}
-		else
-		{
+		if (TaskModel.getReference().hasSubTasks()) {
+			addst.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+					insertSubtask();
+				}
+			});
+		} else {
 			addst.setEnabled(false);
 		}
-		jPanel4.add(addst);
+		buttonPanel.add(addst);
 
-		
-		
+		add(topPanel, GridBagConstraintsFactory.create(0, 0,
+				GridBagConstraints.BOTH, 1.0, 1.0));
 
-		gridBagConstraints26.gridx = 1;
-		gridBagConstraints26.gridy = 1;
-		gridBagConstraints26.weightx = 1.0;
-		gridBagConstraints26.fill = java.awt.GridBagConstraints.HORIZONTAL;
-		gridBagConstraints27.gridx = 0;
-		gridBagConstraints27.gridy = 2;
-		gridBagConstraints27.fill = java.awt.GridBagConstraints.BOTH;
-		gridBagConstraints27.insets = new java.awt.Insets(4, 4, 4, 4);
-		gridBagConstraints28.gridx = 0;
-		gridBagConstraints28.gridy = 3;
-		gridBagConstraints28.fill = java.awt.GridBagConstraints.BOTH;
-		gridBagConstraints28.insets = new java.awt.Insets(4, 4, 4, 4);
-		gridBagConstraints29.gridx = 0;
-		gridBagConstraints29.gridy = 4;
-		gridBagConstraints29.fill = java.awt.GridBagConstraints.BOTH;
-		gridBagConstraints29.insets = new java.awt.Insets(4, 4, 4, 4);
-		gridBagConstraints30.gridx = 2;
-		gridBagConstraints30.gridy = 1;
-		gridBagConstraints30.fill = java.awt.GridBagConstraints.BOTH;
-		gridBagConstraints30.insets = new Insets(4, 20, 4, 4);
-		gridBagConstraints31.gridx = 2;
-		gridBagConstraints31.gridy = 2;
-		gridBagConstraints31.fill = java.awt.GridBagConstraints.BOTH;
-		gridBagConstraints31.insets = new Insets(4, 20, 4, 4);
-		gridBagConstraints32.gridx = 2;
-		gridBagConstraints32.gridy = 0;
-		gridBagConstraints32.fill = java.awt.GridBagConstraints.BOTH;
-		gridBagConstraints32.insets = new Insets(4, 20, 4, 4);
-		gridBagConstraints33.gridx = 1;
-		gridBagConstraints33.gridy = 4;
-		gridBagConstraints33.weightx = 1.0;
-		gridBagConstraints33.fill = java.awt.GridBagConstraints.BOTH;
-		gridBagConstraints33.insets = new java.awt.Insets(4, 4, 4, 4);
-		gridBagConstraints34.gridx = 1;
-		gridBagConstraints34.gridy = 3;
-		gridBagConstraints34.weightx = 1.0;
-		gridBagConstraints34.fill = java.awt.GridBagConstraints.BOTH;
-		gridBagConstraints34.insets = new java.awt.Insets(4, 4, 4, 4);
-		gridBagConstraints35.gridx = 1;
-		gridBagConstraints35.gridy = 2;
-		gridBagConstraints35.weightx = 1.0;
-		gridBagConstraints35.fill = java.awt.GridBagConstraints.BOTH;
-		gridBagConstraints35.insets = new java.awt.Insets(4, 4, 4, 4);
-		gridBagConstraints37.gridx = 0;
-		gridBagConstraints37.gridy = 0;
-		gridBagConstraints37.fill = java.awt.GridBagConstraints.BOTH;
-		gridBagConstraints37.insets = new java.awt.Insets(4, 4, 4, 4);
-		gridBagConstraints38.gridx = 1;
-		gridBagConstraints38.gridy = 0;
-		gridBagConstraints38.weightx = 1.0;
-		gridBagConstraints38.fill = java.awt.GridBagConstraints.BOTH;
-		gridBagConstraints38.insets = new java.awt.Insets(4, 4, 4, 4);
-		gridBagConstraints1.gridx = 0;
-		gridBagConstraints1.gridy = 1;
-		gridBagConstraints1.fill = java.awt.GridBagConstraints.BOTH;
-		gridBagConstraints1.insets = new java.awt.Insets(4, 4, 4, 4);
-		gridBagConstraints2.gridx = 3;
-		gridBagConstraints2.gridy = 2;
-		gridBagConstraints2.weightx = 1.0;
-		gridBagConstraints2.fill = java.awt.GridBagConstraints.BOTH;
-		gridBagConstraints2.insets = new java.awt.Insets(4, 4, 4, 4);
-		gridBagConstraints3.gridx = 3;
-		gridBagConstraints3.gridy = 1;
-		gridBagConstraints3.weightx = 1.0;
-		gridBagConstraints3.fill = java.awt.GridBagConstraints.BOTH;
-		gridBagConstraints3.insets = new java.awt.Insets(4, 4, 4, 4);
-		gridBagConstraints11.gridx = 3;
-		gridBagConstraints11.gridy = 0;
-		gridBagConstraints11.weightx = 1.0;
-		gridBagConstraints11.fill = java.awt.GridBagConstraints.BOTH;
-		gridBagConstraints11.insets = new java.awt.Insets(4, 4, 4, 4);
-		jPanel3.add(lblType, gridBagConstraints27);
-		jPanel3.add(lblStartDate, gridBagConstraints28);
-		jPanel3.add(lblDueDate, gridBagConstraints29);
-		jPanel3.add(lblPri, gridBagConstraints30);
-		jPanel3.add(lblPA, gridBagConstraints31);
-		jPanel3.add(catlabel, gridBagConstraints32);
-		jPanel3.add(duedatechooser, gridBagConstraints33);
-		jPanel3.add(startdatechooser, gridBagConstraints34);
-		jPanel3.add(typebox, gridBagConstraints35);
-		jPanel3.add(lblItemNum, gridBagConstraints37); // Generated
-		gridBagConstraints26.insets = new java.awt.Insets(4, 4, 4, 4);
-		jPanel3.add(itemtext, gridBagConstraints38); // Generated
-		jPanel3.add(lblStatus, gridBagConstraints1); // Generated
-		jPanel3.add(patext, gridBagConstraints2);
-		jPanel3.add(pritext, gridBagConstraints3);
-		jPanel3.add(getCatbox(), gridBagConstraints11);
-		jPanel3.add(statebox, gridBagConstraints26); // Generated
-		jPanel3.add(getCloseDate(), gridBagConstraints12);
-		jPanel3.add(closeLabel, gridBagConstraints210);
-		jPanel3.add(getDaysLeftText(), gridBagConstraints13);
-		jPanel3.add(daysLeftLabel, gridBagConstraints22);
-		ResourceHelper.setText(closeLabel, "close_date");
+	}
 
-		for (int p = 1; p <= 5; p++) {
-			pritext.addItem(new Integer(p));
-		}
-
-		JLabel prLabel = new JLabel(Resource.getResourceString("project"));
-		GridBagConstraints gridBagConstraints90 = new GridBagConstraints();
-		gridBagConstraints90.gridx = 0;
-		gridBagConstraints90.gridy = 5;
-		gridBagConstraints90.weightx = 1.0;
-		gridBagConstraints90.fill = java.awt.GridBagConstraints.BOTH;
-		gridBagConstraints90.insets = new java.awt.Insets(4, 4, 4, 4);
-		jPanel3.add(prLabel, gridBagConstraints90);
-
-		GridBagConstraints gridBagConstraints91 = new GridBagConstraints();
-		gridBagConstraints91.gridx = 1;
-		gridBagConstraints91.gridy = 5;
-		gridBagConstraints91.weightx = 1.0;
-		gridBagConstraints91.fill = java.awt.GridBagConstraints.BOTH;
-		gridBagConstraints91.insets = new java.awt.Insets(4, 4, 4, 4);
-		
-		jPanel3.add(projBox, gridBagConstraints91);
-		
-		if( !TaskModel.getReference().hasSubTasks() )
-		    projBox.setEnabled(false);
-		
-		GridBagConstraints gridBagConstraintsm = new GridBagConstraints();
-		gridBagConstraintsm.gridx = 0;
-		gridBagConstraintsm.gridy = 0;
-		gridBagConstraintsm.weightx = 1.0;
-		gridBagConstraintsm.weighty = 1.0;
-		gridBagConstraintsm.fill = java.awt.GridBagConstraints.BOTH;
-		gridBagConstraintsm.insets = new java.awt.Insets(4, 4, 4, 4);
-		add( getJPanel(),gridBagConstraintsm);
-		//this.setSize(560, 517);
-
-	}// GEN-END:initComponents
+	/**
+	 * Initializes the log table.
+	 */
 	private void initLogTable() {
 
 		logtable.setModel(new TableSorter(new String[] {
@@ -833,19 +687,22 @@ public class TaskView extends DockableView {
 		logtable.getColumnModel().getColumn(0).setPreferredWidth(5);
 		logtable.getColumnModel().getColumn(1).setPreferredWidth(300);
 
-		//logtable.setDefaultEditor(Date.class, new JDateChooserCellEditor());
-		logtable.setDefaultRenderer(Date.class, new LongDateRenderer());
+		// renderer for formatting the date
+		logtable.setDefaultRenderer(Date.class, new LogTableDateRenderer());
+		
 		TableSorter ts = (TableSorter) logtable.getModel();
 
+		// sort by date
 		ts.sortByColumn(0);
 		ts.addMouseListenerToHeaderInTable(logtable);
+		
+		// popup menu
 		new PopupMenuHelper(logtable,
 				new PopupMenuHelper.Entry[] { new PopupMenuHelper.Entry(
-						new java.awt.event.ActionListener() {
-							public void actionPerformed(
-									java.awt.event.ActionEvent evt) {
+						new ActionListener() {
+							public void actionPerformed(ActionEvent evt) {
 
-								String tasknum = itemtext.getText();
+								String tasknum = taskIdText.getText();
 								if (tasknum.equals("CLONE")
 										|| tasknum.equals("NEW"))
 									return;
@@ -868,12 +725,16 @@ public class TaskView extends DockableView {
 
 	}
 
+	/**
+	 * Initialize the subtask table.
+	 */
 	private void initSubtaskTable() {
 
-		defIntRend_ = stable.getDefaultRenderer(Integer.class);
-		defDateRend_ = stable.getDefaultRenderer(Date.class);
-		defStringRend_ = stable.getDefaultRenderer(String.class);
-		stable.setModel(new TableSorter(new String[] {
+		defaultIntegerCellRenderer = subTaskTable
+				.getDefaultRenderer(Integer.class);
+		defaultDateCellRenderer = subTaskTable.getDefaultRenderer(Date.class);
+
+		subTaskTable.setModel(new TableSorter(new String[] {
 				Resource.getResourceString("Closed"),
 				Resource.getResourceString("subtask_id"),
 				Resource.getResourceString("Description"),
@@ -883,51 +744,53 @@ public class TaskView extends DockableView {
 				Resource.getResourceString("Days_Left"),
 				Resource.getResourceString("close_date") }, new Class[] {
 				java.lang.Boolean.class, Integer.class, java.lang.String.class,
-				Date.class, Date.class, Integer.class, Integer.class, Date.class },
-				new boolean[] { true, false, true, true, true, false, false, false }));
+				Date.class, Date.class, Integer.class, Integer.class,
+				Date.class }, new boolean[] { true, false, true, true, true,
+				false, false, false }));
 
-		stable.setDefaultRenderer(Integer.class, new STIntRenderer());
-		stable.setDefaultRenderer(Date.class, new STDDRenderer());
-		stable.setDefaultRenderer(String.class, new STStringRenderer());
+		// renderer for centering ints, dealing with nulls
+		subTaskTable
+				.setDefaultRenderer(Integer.class, new SubtaskIntRenderer());
+		// renderer for colorizing approaching due dates
+		subTaskTable.setDefaultRenderer(Date.class,
+				new SubTaskDueDateRenderer());
 
-		stable.getColumnModel().getColumn(0).setPreferredWidth(5);
-		stable.getColumnModel().getColumn(1).setPreferredWidth(5);
-		stable.getColumnModel().getColumn(2).setPreferredWidth(300);
-		stable.getColumnModel().getColumn(3).setPreferredWidth(30);
-		stable.getColumnModel().getColumn(4).setPreferredWidth(30);
-		stable.getColumnModel().getColumn(5).setPreferredWidth(30);
-		stable.getColumnModel().getColumn(6).setPreferredWidth(30);
-		stable.getColumnModel().getColumn(7).setPreferredWidth(30);
+		subTaskTable.getColumnModel().getColumn(0).setPreferredWidth(5);
+		subTaskTable.getColumnModel().getColumn(1).setPreferredWidth(5);
+		subTaskTable.getColumnModel().getColumn(2).setPreferredWidth(300);
+		subTaskTable.getColumnModel().getColumn(3).setPreferredWidth(30);
+		subTaskTable.getColumnModel().getColumn(4).setPreferredWidth(30);
+		subTaskTable.getColumnModel().getColumn(5).setPreferredWidth(30);
+		subTaskTable.getColumnModel().getColumn(6).setPreferredWidth(30);
+		subTaskTable.getColumnModel().getColumn(7).setPreferredWidth(30);
 
-		if (!TaskModel.getReference().hasSubTasks()) {
-			stable.getTableHeader().setEnabled(false);
-			stable.getTableHeader().setReorderingAllowed(false);
-			stable.getTableHeader().setResizingAllowed(false);
-			return;
-		}
-		stable.setDefaultEditor(Date.class, new JDateChooserCellEditor());
+		// use a date chooser to edit subtask dates in the table
+		subTaskTable.setDefaultEditor(Date.class, new JDateChooserCellEditor());
 
-		TableSorter ts = (TableSorter) stable.getModel();
+		TableSorter ts = (TableSorter) subTaskTable.getModel();
 
+		// sort by due date
 		ts.sortByColumn(4);
-		ts.addMouseListenerToHeaderInTable(stable);
-		new PopupMenuHelper(stable, new PopupMenuHelper.Entry[] {
-				new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
+		ts.addMouseListenerToHeaderInTable(subTaskTable);
+		
+		// popup menu
+		new PopupMenuHelper(subTaskTable, new PopupMenuHelper.Entry[] {
+				new PopupMenuHelper.Entry(new ActionListener() {
+					public void actionPerformed(ActionEvent evt) {
 						insertSubtask();
 					}
 				}, "Add_Subtask"),
-				new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						TableSorter ts2 = (TableSorter) stable.getModel();
-
-						Integer ids[] = getSelectedIds();
-
+				new PopupMenuHelper.Entry(new ActionListener() {
+					public void actionPerformed(ActionEvent evt) {
+	
+						TableSorter ts2 = (TableSorter) subTaskTable.getModel();
+						Integer ids[] = getSelectedSubtaskIds();
 						for (int i = 0; i < ids.length; ++i) {
 							if (ids[i] == null)
 								continue;
 							for (int row = 0; row < ts2.getRowCount(); row++) {
-								Integer rowid = (Integer) ts2.getValueAt(row, 1);
+								Integer rowid = (Integer) ts2
+										.getValueAt(row, 1);
 								if (rowid != null
 										&& rowid.intValue() == ids[i]
 												.intValue()) {
@@ -938,14 +801,16 @@ public class TaskView extends DockableView {
 						}
 					}
 				}, "Clear_DueDate"),
-				new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						TableSorter ts2 = (TableSorter) stable.getModel();
+				new PopupMenuHelper.Entry(new ActionListener() {
+					public void actionPerformed(ActionEvent evt) {
+						
+						TableSorter ts2 = (TableSorter) subTaskTable.getModel();
 
-						int[] indices = stable.getSelectedRows();
+						int[] indices = subTaskTable.getSelectedRows();
 						if (indices.length == 0)
 							return;
 
+						// prompt user for due date
 						DateDialog dlg = new DateDialog(null);
 						dlg.setCalendar(new GregorianCalendar());
 						dlg.setVisible(true);
@@ -953,13 +818,14 @@ public class TaskView extends DockableView {
 						if (dlgcal == null)
 							return;
 
-						Integer ids[] = getSelectedIds();
-
+						// set the due date
+						Integer ids[] = getSelectedSubtaskIds();
 						for (int i = 0; i < ids.length; ++i) {
 							if (ids[i] == null)
 								continue;
 							for (int row = 0; row < ts2.getRowCount(); row++) {
-								Integer rowid = (Integer) ts2.getValueAt(row, 1);
+								Integer rowid = (Integer) ts2
+										.getValueAt(row, 1);
 								if (rowid != null
 										&& rowid.intValue() == ids[i]
 												.intValue()) {
@@ -970,13 +836,15 @@ public class TaskView extends DockableView {
 						}
 					}
 				}, "Set_DueDate"),
-				new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						TableSorter ts2 = (TableSorter) stable.getModel();
-						Integer ids[] = getSelectedIds();
+				new PopupMenuHelper.Entry(new ActionListener() {
+					public void actionPerformed(ActionEvent evt) {
+						
+						TableSorter ts2 = (TableSorter) subTaskTable.getModel();
+						Integer ids[] = getSelectedSubtaskIds();
 						if (ids.length == 0)
 							return;
 
+						// confirm delete
 						int ret = JOptionPane.showConfirmDialog(null, Resource
 								.getResourceString("Really_Delete_")
 								+ "?", Resource
@@ -986,13 +854,18 @@ public class TaskView extends DockableView {
 						if (ret != JOptionPane.OK_OPTION)
 							return;
 
+						// to delete, we have to save the id in a list for deletion and
+						// null out the table rows so it is not added back
 						for (int i = 0; i < ids.length; ++i) {
 							// System.out.println(ids[i]);
 							if (ids[i] == null)
 								continue;
-							tbd_.add(ids[i]);
+							
+							subTaskIdsToBeDeleted.add(ids[i]);
+							
 							for (int row = 0; row < ts2.getRowCount(); row++) {
-								Integer rowid = (Integer) ts2.getValueAt(row, 1);
+								Integer rowid = (Integer) ts2
+										.getValueAt(row, 1);
 								if (rowid != null
 										&& rowid.intValue() == ids[i]
 												.intValue()) {
@@ -1010,7 +883,7 @@ public class TaskView extends DockableView {
 							}
 						}
 
-						// if table is now empty - add 1 row back
+						// if table is now empty - add 1 row back so the user can edit
 						if (ts2.getRowCount() == 0) {
 							insertSubtask();
 						}
@@ -1019,84 +892,97 @@ public class TaskView extends DockableView {
 
 	}
 
-
+	/**
+	 * Insert a blank subtask row in the table
+	 */
 	private void insertSubtask() {
 		Object o[] = { new Boolean(false), null, null, null, null, null, null };
-		TableSorter ts = (TableSorter) stable.getModel();
-
+		TableSorter ts = (TableSorter) subTaskTable.getModel();
 		ts.addRow(o);
 	}
 
-	private void jButton2ActionPerformed(java.awt.event.ActionEvent evt)// GEN-FIRST:event_jButton2ActionPerformed
-	{// GEN-HEADEREND:event_jButton2ActionPerformed
-		savetask(evt);
-	}// GEN-LAST:event_jButton2ActionPerformed
-
+	/**
+	 * Load the tasklog table for a given task
+	 * 
+	 * @param taskid
+	 *            the task id
+	 * 
+	 * @throws Exception
+	 */
 	private void loadLog(int taskid) throws Exception {
+		
 		TableSorter tslog = (TableSorter) logtable.getModel();
+		// clear rows
 		tslog.setRowCount(0);
+		
 		// add log entries
 		Collection<Tasklog> logs = TaskModel.getReference().getLogs(taskid);
-		Iterator<Tasklog> it = logs.iterator();
-		while (it.hasNext()) {
-			Tasklog s = it.next();
-			Object o[] = { s.getlogTime(), s.getDescription() };
-
+		for(Tasklog log : logs ) {
+			Object o[] = { log.getlogTime(), log.getDescription() };
 			tslog.addRow(o);
 		}
 	}
 
-	// the task editor currently does not refresh itself when the task data
-	// model changes
-	// - although it should not be changing while the task editor is open
+	/**
+	 * refresh only updates the link panel tab to indicate links
+	 * it does not refresh task data because the user might be editing
+	 */
 	public void refresh() {
-		if( attPanel != null && attPanel.hasLinks())
-		{
-			jTabbedPane1.setForegroundAt(3, Color.red);
-		}
-		else
-			jTabbedPane1.setForegroundAt(3, Color.black);
+		if (linkPanel != null && linkPanel.hasLinks()) {
+			taskTabbedPanel.setForegroundAt(3, Color.red);
+		} else
+			taskTabbedPanel.setForegroundAt(3, Color.black);
 	}
 
+	/**
+	 * Save subtasks for a task from the UI
+	 * 
+	 * @param task
+	 *            the task
+	 * 
+	 * @throws Warning
+	 * @throws Exception
+	 */
 	private void saveSubtasks(Task task) throws Warning, Exception {
 
 		int tasknum = task.getKey();
-		Iterator<Integer> it = tbd_.iterator();
-		while (it.hasNext()) {
-			Integer id = it.next();
-			// System.out.println("deleting sub task: " + id.intValue());
+		
+		// delete subtasks marked for deletion
+		for(Integer id : subTaskIdsToBeDeleted ) {
 			TaskModel.getReference().deleteSubTask(id.intValue());
 			TaskModel.getReference().addLog(
 					tasknum,
-					Resource.getResourceString("subtask") + " "
-							+ id.toString() + " "
-							+ Resource.getResourceString("deleted"));
+					Resource.getResourceString("subtask") + " " + id.toString()
+							+ " " + Resource.getResourceString("deleted"));
 		}
 
-		tbd_.clear();
-
-		// loop through rows
-		TableSorter ts = (TableSorter) stable.getModel();
+		subTaskIdsToBeDeleted.clear();
 		
 		// stop editing
-		if( stable.isEditing())
-		    stable.getCellEditor().stopCellEditing();
-		for (int r = 0; r < stable.getRowCount(); r++) {
-		        
+		if (subTaskTable.isEditing())
+			subTaskTable.getCellEditor().stopCellEditing();
+
+		// loop through subtask rows
+		TableSorter ts = (TableSorter) subTaskTable.getModel();
+		for (int r = 0; r < subTaskTable.getRowCount(); r++) {
+
+			// if no description - there is no subtask in this row
 			Object desc = ts.getValueAt(r, 2);
 			if (desc == null || desc.equals(""))
 				continue;
 
+			// get subtask fields
 			Integer id = (Integer) ts.getValueAt(r, 1);
 
 			Boolean closed = (Boolean) ts.getValueAt(r, 0);
-			
+
 			Date crd = (Date) ts.getValueAt(r, 3);
 			if (crd == null)
 				crd = task.getStartDate();
 			Date dd = (Date) ts.getValueAt(r, 4);
 			Date cd = (Date) ts.getValueAt(r, 7);
-			
+
+			// check if the subtask is being closed
 			boolean closing = false;
 			if (closed.booleanValue() == true && cd == null) {
 				cd = new Date();
@@ -1105,18 +991,17 @@ public class TaskView extends DockableView {
 				cd = null;
 
 			Subtask s = new Subtask();
-			if( id != null )
+			if (id != null)
 				s.setKey(id);
 			s.setDescription((String) desc);
 			s.setCloseDate(cd);
 			s.setDueDate(dd);
 
 			// validate dd - make sure only date and not time is compared
-			if (closed.booleanValue() != true && dd != null && task.getDueDate() != null) {
-			        if( DateUtil.isAfter( dd, task.getDueDate()))
-			        {
-					String msg = Resource
-							.getResourceString("stdd_warning")
+			if (closed.booleanValue() != true && dd != null
+					&& task.getDueDate() != null) {
+				if (DateUtil.isAfter(dd, task.getDueDate())) {
+					String msg = Resource.getResourceString("stdd_warning")
 							+ ": " + desc;
 					throw new Warning(msg);
 				}
@@ -1124,111 +1009,114 @@ public class TaskView extends DockableView {
 			}
 
 			s.setStartDate(crd);
-			
-			if (closed.booleanValue() != true && crd != null && task.getStartDate() != null) {
-			        if( DateUtil.isAfter( task.getStartDate(), crd))
-			        {
-					String msg = Resource
-							.getResourceString("stsd_warning")
+
+			// validate that subtask does not start before task
+			if (closed.booleanValue() != true && crd != null
+					&& task.getStartDate() != null) {
+				if (DateUtil.isAfter(task.getStartDate(), crd)) {
+					String msg = Resource.getResourceString("stsd_warning")
 							+ ": " + desc;
 					throw new Warning(msg);
 				}
 
 			}
-			
+
 			s.setTask(new Integer(tasknum));
+			
 			TaskModel.getReference().saveSubTask(s);
+			
 			if (id == null || id.intValue() == 0) {
 				TaskModel.getReference().addLog(
 						tasknum,
 						Resource.getResourceString("subtask") + " "
 								+ s.getKey() + " "
-								+ Resource.getResourceString("created")
-								+ ": " + s.getDescription());
+								+ Resource.getResourceString("created") + ": "
+								+ s.getDescription());
 			}
 			if (closing) {
 				TaskModel.getReference().addLog(
 						tasknum,
 						Resource.getResourceString("subtask") + " "
 								+ s.getKey() + " "
-								+ Resource.getResourceString("Closed")
-								+ ": " + s.getDescription());
+								+ Resource.getResourceString("Closed") + ": "
+								+ s.getDescription());
 			}
 		}
 	}
 
-	// save a task
-	private void savetask(java.awt.event.ActionEvent evt)// GEN-FIRST:event_savetask
-	{// GEN-HEADEREND:event_savetask
+	/**
+	 * Save the current task
+	 */
+	private void savetask()
+	{
 
-		// save a task from the data on the screen
-		if (jTextArea1.getText() == null || jTextArea1.getText().equals("")) {
+		// validate description
+		if (descriptionText.getText() == null
+				|| descriptionText.getText().equals("")) {
 			Errmsg.notice(Resource.getResourceString("empty_desc"));
 			return;
 		}
 		try {
 
-			String num = itemtext.getText();
+			String num = taskIdText.getText();
 
-			// allocate a new task object from the task data model
-			TaskModel taskmod_ = TaskModel.getReference();
-			taskmod_.beginTransaction();
-			Task task = taskmod_.newMR();
+			// need to use a transaction as we update a number of tables and may need
+			// to roll them all back together
+			TaskModel.getReference().beginTransaction();
+			
+			Task task = TaskModel.getReference().newMR();
 
-			// set the task number to the current number for updates and
-			// -1 for new tasks. task model will convert -1 to next
-			// available number
-			TableSorter ts = (TableSorter) stable.getModel();
+			TableSorter ts = (TableSorter) subTaskTable.getModel();
 			if (num.equals("NEW")) {
-
-				task.setKey(new Integer(-1));
-				String cbs[] = TaskModel.getReference().getTaskTypes()
-						.checkBoxes((String) typebox.getSelectedItem());
-				for (int i = 0; i < cbs.length; i++) {
-					if (!cbs[i].equals(TaskTypes.NOCBVALUE)) {
-						Object o[] = { new Boolean(false), null, cbs[i],
+				
+				// ah legacy crap - add any pre-defined subtasks when creating the new task
+				// ancient versions of borg allowed something like this
+				String prefDefinedTasks[] = TaskModel
+						.getReference()
+						.getTaskTypes()
+						.checkBoxes((String) taskTypeComboBox.getSelectedItem());
+				for (int i = 0; i < prefDefinedTasks.length; i++) {
+					if (!prefDefinedTasks[i].equals(TaskTypes.NOCBVALUE)) {
+						Object o[] = { new Boolean(false), null, prefDefinedTasks[i],
 								new Date(), null, null };
 						ts.addRow(o);
 					}
 				}
-				task.setState(taskmod_.getTaskTypes().getInitialState(
-						(String) typebox.getSelectedItem()));
+				// set to initial state
+				task.setState(TaskModel.getReference().getTaskTypes().getInitialState(
+						(String) taskTypeComboBox.getSelectedItem()));
 			} else if (num.equals("CLONE")) {
-				task.setKey(new Integer(-1));
-				task.setState(taskmod_.getTaskTypes().getInitialState(
-						(String) typebox.getSelectedItem()));
-
+				// set to initial state
+				task.setState(TaskModel.getReference().getTaskTypes().getInitialState(
+						(String) taskTypeComboBox.getSelectedItem()));
 			} else {
 				task.setKey(new Integer(num));
-				task.setState((String) statebox.getSelectedItem());
+				task.setState((String) statusComboBox.getSelectedItem());
 			}
 
-			// fill in the taks fields from the screen
-			task.setType((String) typebox.getSelectedItem()); // type
-			Calendar cal = startdatechooser.getCalendar();
-			if( cal == null ) cal = new GregorianCalendar();
-			//startdatechooser.setCalendar(new GregorianCalendar());
+			// fill in the task fields from the screen
+			task.setType((String) taskTypeComboBox.getSelectedItem()); // type
+			Calendar cal = startDateChooser.getCalendar();
+			if (cal == null)
+				cal = new GregorianCalendar();
 			task.setStartDate(cal.getTime()); // start date
-			cal = duedatechooser.getCalendar();
-			//if( cal == null ) cal = new GregorianCalendar();
-			if( cal != null )
-			    task.setDueDate(cal.getTime()); // due date
-			
-			if( task.getDueDate() != null && DateUtil.isAfter(task.getStartDate(), task.getDueDate()) )
-			{
-				throw new Warning(Resource
-					.getResourceString("sd_dd_warn"));
+			cal = dueDateChooser.getCalendar();
+			if (cal != null)
+				task.setDueDate(cal.getTime()); // due date
+
+			// validate due date
+			if (task.getDueDate() != null
+					&& DateUtil.isAfter(task.getStartDate(), task.getDueDate())) {
+				throw new Warning(Resource.getResourceString("sd_dd_warn"));
 			}
-			
-			Integer pri = (Integer) pritext.getSelectedItem();
-			task.setPriority(pri); // priority
-			task.setPersonAssigned(patext.getText()); // person assigned
 
-			task.setDescription(jTextArea1.getText()); // description
-			task.setResolution(jTextArea2.getText()); // resolution
+			Integer pri = (Integer) priorityText.getSelectedItem();
+			task.setPriority(pri);
+			task.setPersonAssigned(personAssignedText.getText());
+			task.setDescription(descriptionText.getText());
+			task.setResolution(resolutionText.getText());
 
-			// task.setCategory( cattext.getText());
-			String cat = (String) catbox.getSelectedItem();
+			String cat = (String) categoryComboBox.getSelectedItem();
 			if (cat.equals("") || cat.equals(CategoryModel.UNCATEGORIZED)) {
 				task.setCategory(null);
 			} else {
@@ -1236,14 +1124,13 @@ public class TaskView extends DockableView {
 			}
 
 			task.setProject(null);
-			String proj = (String) projBox.getSelectedItem();
-			try{
+			String proj = (String) projectComboBox.getSelectedItem();
+			try {
 				task.setProject(getProjectId(proj));
-				
 			} catch (Exception e) {
 				// no project selected
 			}
-			
+
 			if (cat.equals("") || cat.equals(CategoryModel.UNCATEGORIZED)) {
 				task.setCategory(null);
 			} else {
@@ -1252,7 +1139,7 @@ public class TaskView extends DockableView {
 
 			// do not close task if subtasks are open
 			if (TaskModel.isClosed(task)) {
-				for (int r = 0; r < stable.getRowCount(); r++) {
+				for (int r = 0; r < subTaskTable.getRowCount(); r++) {
 					Boolean closed = (Boolean) ts.getValueAt(r, 0);
 					Integer id = (Integer) ts.getValueAt(r, 1);
 					if (id == null || id.intValue() == 0)
@@ -1266,37 +1153,34 @@ public class TaskView extends DockableView {
 			}
 
 			// save the task to the DB
-			Task orig = TaskModel.getReference().getTask(
-					task.getKey());
-			taskmod_.savetask(task);
+			Task orig = TaskModel.getReference().getTask(task.getKey());
+			TaskModel.getReference().savetask(task);
 
-			// System.out.println(task.getKey());
 
+			// add various task log records
 			if (num.equals("NEW") || num.equals("CLONE")) {
-				TaskModel.getReference().addLog(
-						task.getKey(),
+				TaskModel.getReference().addLog(task.getKey(),
 						Resource.getResourceString("Task_Created"));
 			} else {
 				if (orig != null && !orig.getState().equals(task.getState())) {
-
 					TaskModel.getReference().addLog(
 							task.getKey(),
-							Resource.getResourceString("State_Change")
-									+ ": " + orig.getState() + " --> "
+							Resource.getResourceString("State_Change") + ": "
+									+ orig.getState() + " --> "
 									+ task.getState());
 				}
-				String newd = "null";
-				if( task.getDueDate() != null )
-				{
-				    newd = DateFormat.getDateInstance().format(
-						task.getDueDate());
-				}
 				
-				String oldd = "null";
-				if( orig != null && orig.getDueDate() != null )
-				    oldd = DateFormat.getDateInstance().format(orig.getDueDate());
-				if (orig != null && !newd.equals(oldd)) {
+				String newd = "null";
+				if (task.getDueDate() != null) {
+					newd = DateFormat.getDateInstance().format(
+							task.getDueDate());
+				}
 
+				String oldd = "null";
+				if (orig != null && orig.getDueDate() != null)
+					oldd = DateFormat.getDateInstance().format(
+							orig.getDueDate());
+				if (orig != null && !newd.equals(oldd)) {
 					TaskModel.getReference().addLog(
 							task.getKey(),
 							Resource.getResourceString("DueDate") + " "
@@ -1305,23 +1189,24 @@ public class TaskView extends DockableView {
 				}
 			}
 
+			// save subtasks
 			saveSubtasks(task);
-			taskmod_.commitTransaction();
 			
-			
+			// can commit now - task, subtasks, tasklogs
+			TaskModel.getReference().commitTransaction();
+
+			// remove this view
 			Container p = this.getParent();
-			if( p instanceof JViewport )
-			{
-				// special case - if we are docked inside a project tree window, then do not remove
+			if (p instanceof JViewport) {
+				// special case - if we are docked inside a project tree window,
+				// then do not remove
 				// ourself
-				showtask(T_CHANGE, task);
-			}
-			else if (!isDocked())
+				showtask(Action.CHANGE, task);
+			} else if (!isDocked())
 				this.remove();
 			else
 				this.getParent().remove(this);
-			
-			
+
 		} catch (Warning w) {
 			Errmsg.notice(w.getMessage());
 			try {
@@ -1340,58 +1225,64 @@ public class TaskView extends DockableView {
 
 		}
 
-	}// GEN-LAST:event_savetask
+	}
 
-	private void showtask(int function, Task task) throws Exception {
-		TaskModel taskmod_ = TaskModel.getReference();
+	/**
+	 * load the UI from a task
+	 * 
+	 * @param function
+	 *            the action being taken on the task
+	 * @param task
+	 *            the task
+	 * 
+	 * @throws Exception
+	 *            
+	 */
+	private void showtask(Action function, Task task) throws Exception {
 
-		// show a task editor for changing, cloning, or add of a task
-		TableSorter ts = (TableSorter) stable.getModel();
+		TableSorter ts = (TableSorter) subTaskTable.getModel();
 		ts.setRowCount(0);
 
-		tbd_.clear();
+		subTaskIdsToBeDeleted.clear();
 
-		projBox.removeAllItems();
-		projBox.addItem("");
-		Collection<Project> projects = taskmod_.getProjects();
-		if( projects != null )
-		{
-			Iterator<Project> pi = projects.iterator();
-			while (pi.hasNext()) {
-				Project p = pi.next();
-				if( p.getStatus().equals(Resource.getResourceString("OPEN")))
-					projBox.addItem(getProjectString(p));
+		projectComboBox.removeAllItems();
+		projectComboBox.addItem("");
+		
+		// populate parent project combo box
+		Collection<Project> projects = TaskModel.getReference().getProjects();
+		if (projects != null) {
+			for( Project p : projects) {
+				if (p.getStatus().equals(Resource.getResourceString("OPEN")))
+					projectComboBox.addItem(getProjectString(p));
 			}
 		}
 
-		// if we are showing an existing task - fil; in the gui fields form it
+		// if we are showing an existing task - fill in the gui fields from it
 		if (task != null) {
+			
 			// task number
-			itemtext.setText(Integer.toString(task.getKey()));
-			itemtext.setEditable(false);
+			taskIdText.setText(Integer.toString(task.getKey()));
+			taskIdText.setEditable(false);
 
 			// window title - "Item N"
-			title_ = Resource.getResourceString("Item_")
-					+ task.getKey();
+			windowTitle = Resource.getResourceString("Item_") + " " + task.getKey();
 
 			// due date
 			GregorianCalendar gc = new GregorianCalendar();
 			Date dd = task.getDueDate();
-			if (dd != null)
-			{
+			if (dd != null) {
 				gc.setTime(dd);
-				duedatechooser.setCalendar(gc);
+				dueDateChooser.setCalendar(gc);
 			}
 
 			GregorianCalendar gc2 = new GregorianCalendar();
 			dd = task.getStartDate();
 			if (dd != null)
 				gc2.setTime(dd);
+			startDateChooser.setCalendar(gc2);
 
-			startdatechooser.setCalendar(gc2);
-
-			pritext.setSelectedItem(task.getPriority()); // priority
-			patext.setText(task.getPersonAssigned()); // person assigned
+			priorityText.setSelectedItem(task.getPriority());
+			personAssignedText.setText(task.getPersonAssigned()); 
 
 			Date cd = task.getCompletionDate();
 			if (cd != null)
@@ -1401,172 +1292,164 @@ public class TaskView extends DockableView {
 			int daysleft = TaskModel.daysLeft(task.getDueDate());
 			daysLeftText.setText(Integer.toString(daysleft));
 
-			// cattext.setText( task.getCategory() );
 			String cat = task.getCategory();
 			if (cat != null && !cat.equals("")) {
-				catbox.setSelectedItem(cat);
+				categoryComboBox.setSelectedItem(cat);
 			} else {
-				catbox.setSelectedIndex(0);
+				categoryComboBox.setSelectedIndex(0);
 			}
 
-			jTextArea1.setText(task.getDescription()); // description
-			jTextArea2.setText(task.getResolution()); // resolution
+			descriptionText.setText(task.getDescription());
+			resolutionText.setText(task.getResolution());
 
-			statebox.addItem(task.getState()); // state
-			statebox.setEditable(false);
+			statusComboBox.addItem(task.getState());
+			statusComboBox.setEditable(false);
 
 			// type
 			String type = task.getType();
-			typebox.addItem(type);
-			typebox.setEnabled(false);
+			taskTypeComboBox.addItem(type);
+			taskTypeComboBox.setEnabled(false);
 
 			// add subtasks
 			if (TaskModel.getReference().hasSubTasks()) {
-				Collection<Subtask> col = TaskModel.getReference().getSubTasks(
+				Collection<Subtask> subtasks = TaskModel.getReference().getSubTasks(
 						task.getKey());
-				Iterator<Subtask> it = col.iterator();
-				while (it.hasNext()) {
-					Subtask s = it.next();
+				for( Subtask subtask : subtasks) {
 					Object o[] = {
-							s.getCloseDate() == null ? new Boolean(false)
+							subtask.getCloseDate() == null ? new Boolean(false)
 									: new Boolean(true),
-							s.getKey(),
-							s.getDescription(),
-							s.getStartDate(),
-							s.getDueDate(),
-							s.getDueDate() != null ? new Integer(TaskModel
-								.daysBetween(s.getStartDate(),s.getDueDate())) : null,
-							s.getDueDate() != null ? new Integer(TaskModel
-									.daysLeft(s.getDueDate())) : null,
-							s.getCloseDate() };
+							subtask.getKey(),
+							subtask.getDescription(),
+							subtask.getStartDate(),
+							subtask.getDueDate(),
+							subtask.getDueDate() != null ? new Integer(TaskModel
+									.daysBetween(subtask.getStartDate(), subtask
+											.getDueDate())) : null,
+							subtask.getDueDate() != null ? new Integer(TaskModel
+									.daysLeft(subtask.getDueDate())) : null,
+							subtask.getCloseDate() };
 
 					ts.addRow(o);
 				}
 
 			}
 
-			try{
+			try {
+				// load tasklogs
 				loadLog(task.getKey());
+			} catch (Warning w) {
 			}
-			catch( Warning w){}
-			
+
 			Integer pid = task.getProject();
-			if( pid != null )
-			{
+			if (pid != null) {
 				Project p = TaskModel.getReference().getProject(pid.intValue());
-				if( TaskModel.isClosed(p))
-				{
-				    projBox.addItem(getProjectString(p));
+				if (TaskModel.isClosed(p)) {
+					projectComboBox.addItem(getProjectString(p));
 				}
-				projBox.setSelectedItem(getProjectString(p));
-				
+				projectComboBox.setSelectedItem(getProjectString(p));
+
 			}
-			
-			attPanel.setOwner(task);
+
+			linkPanel.setOwner(task);
 
 		} else // initialize new task
 		{
 
-			attPanel.setOwner(null);
-			
+			linkPanel.setOwner(null);
+
 			// task number = NEW
-			itemtext.setText("NEW");
-			itemtext.setEditable(false);
+			taskIdText.setText("NEW");
+			taskIdText.setEditable(false);
 
 			// title
-			title_ = Resource.getResourceString("NEW_Item");
+			windowTitle = Resource.getResourceString("NEW_Item");
 
-			pritext.setSelectedItem(new Integer(3)); // priority default to 3
-			patext.setText(""); // person assigned
-			// cattext.setText("");
-			catbox.setSelectedIndex(0);
-			jTextArea1.setText(""); // desc
-			jTextArea2.setText(""); // resolution
+			priorityText.setSelectedItem(new Integer(3)); // priority default to 3
+			personAssignedText.setText("");
+			categoryComboBox.setSelectedIndex(0);
+			descriptionText.setText("");
+			resolutionText.setText("");
 
-			Vector<String> tv = taskmod_.getTaskTypes().getTaskTypes();
+			// add task types to select from - only for new task
+			Vector<String> tv = TaskModel.getReference().getTaskTypes().getTaskTypes();
 			for (int i = 0; i < tv.size(); i++) {
-				typebox.addItem(tv.elementAt(i));
-			}
-			//duedatechooser.setCalendar(new GregorianCalendar());
-			//startdatechooser.setCalendar(new GregorianCalendar());
-			if( init_proj != null )
-			{
-			    Project p = TaskModel.getReference().getProject(init_proj.intValue());
-			    projBox.setSelectedItem(getProjectString(p));
-			    
-			    String cat = p.getCategory();
-			    if (cat != null && !cat.equals("")) {
-				catbox.setSelectedItem(cat);
-			    } else {
-				catbox.setSelectedIndex(0);
-			    }
-
-			    GregorianCalendar gc = new GregorianCalendar();
-			    Date dd = p.getDueDate();
-			    if (dd != null)
-			    {
-				gc.setTime(dd);
-				duedatechooser.setCalendar(gc);
-			    }
-			    
-			    Date sd = p.getStartDate();
-			    if (sd != null)
-			    {
-				gc.setTime(sd);
-				startdatechooser.setCalendar(gc);
-			    }
-
+				taskTypeComboBox.addItem(tv.elementAt(i));
 			}
 
+			// if a parent project already set - then initialize some fields from it
+			if (parentProject != null) {
+				Project p = TaskModel.getReference().getProject(
+						parentProject.intValue());
+				projectComboBox.setSelectedItem(getProjectString(p));
+
+				String cat = p.getCategory();
+				if (cat != null && !cat.equals("")) {
+					categoryComboBox.setSelectedItem(cat);
+				} else {
+					categoryComboBox.setSelectedIndex(0);
+				}
+
+				GregorianCalendar gc = new GregorianCalendar();
+				Date dd = p.getDueDate();
+				if (dd != null) {
+					gc.setTime(dd);
+					dueDateChooser.setCalendar(gc);
+				}
+
+				Date sd = p.getStartDate();
+				if (sd != null) {
+					gc.setTime(sd);
+					startDateChooser.setCalendar(gc);
+				}
+			}
 		}
 
+		// cannot change status on a new task - will always go to initial state
+		// depending on type
 		if (task == null) {
-			// statebox.addItem(taskmod_.getTaskTypes().getInitialState(
-			// typebox.getSelectedItem().toString()));
-			statebox.setEnabled(false);
+			statusComboBox.setEnabled(false);
 		}
 
 		// cloning takes the fields filled in for an existing task and resets
 		// only those
 		// that don't apply to the clone
-		if (function == T_CLONE) {
+		if (function == Action.CLONE) {
 			// need new task number
-			itemtext.setText("CLONE");
-			itemtext.setEditable(false);
+			taskIdText.setText("CLONE");
+			taskIdText.setEditable(false);
 
-			statebox.removeAllItems();
-			statebox.addItem(taskmod_.getTaskTypes().getInitialState(
-					typebox.getSelectedItem().toString()));
-			statebox.setEnabled(false);
+			statusComboBox.removeAllItems();
+			statusComboBox.addItem(TaskModel.getReference().getTaskTypes().getInitialState(
+					taskTypeComboBox.getSelectedItem().toString()));
+			statusComboBox.setEnabled(false);
 
-			// reset all subtask id's
-			for (int row = 0; row < stable.getRowCount(); row++) {
-				stable.setValueAt(null, row, 1);
+			// reset all subtask id's - but keep the subtasks - which will be saved with new ids
+			for (int row = 0; row < subTaskTable.getRowCount(); row++) {
+				subTaskTable.setValueAt(null, row, 1);
 			}
-			
-			
-			
+
 		}
-		// change existing task
-		else if (function == T_CHANGE && task != null) {
+		// edit existing task
+		else if (function == Action.CHANGE && task != null) {
 
 			// determine valid next states based on task type and current
 			// state
 			String stat = task.getState();
 			String type = task.getType();
-			Vector<String> v = taskmod_.getTaskTypes().nextStates(stat, type);
+			Vector<String> v = TaskModel.getReference().getTaskTypes().nextStates(stat, type);
 
 			// set next state pulldown
-			statebox.removeAllItems();
+			statusComboBox.removeAllItems();
 			for (int i = 0; i < v.size(); i++) {
-				statebox.addItem(v.elementAt(i));
+				statusComboBox.addItem(v.elementAt(i));
 			}
-			statebox.setEnabled(true);
+			statusComboBox.setEnabled(true);
 
 		}
 
-		if (TaskModel.getReference().hasSubTasks() && stable.getRowCount() == 0) {
+		if (subTaskTable.getRowCount() == 0) {
+			// always need at least 1 row in subtask table so user can access right click to add more
 			insertSubtask();
 		}
 	}
-} // @jve:decl-index=0:visual-constraint="115,46"
+}

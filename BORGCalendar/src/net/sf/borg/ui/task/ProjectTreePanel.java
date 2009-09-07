@@ -335,7 +335,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 		if (o instanceof Project) {
 			Project p = (Project) o;
 			try {
-				TaskView pv = new TaskView(null, TaskView.T_ADD, p.getKey());
+				TaskView pv = new TaskView(null, TaskView.Action.ADD, p.getKey());
 				entityScrollPane.setViewportView(pv);
 			} catch (Exception e1) {
 				Errmsg.errmsg(e1);
@@ -537,7 +537,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 		if (o instanceof Task) {
 			Task t = (Task) o;
 			try {
-				TaskView tv = new TaskView(t, TaskView.T_CHANGE, t.getProject());
+				TaskView tv = new TaskView(t, TaskView.Action.CHANGE, t.getProject());
 				entityScrollPane.setViewportView(tv);
 			} catch (Exception e1) {
 				Errmsg.errmsg(e1);
