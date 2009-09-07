@@ -22,10 +22,22 @@ package net.sf.borg.ui.util;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 
+/**
+ * A factory for creating GridBagConstraints objects in a standard way. Saves lots
+ * of LOC.
+ */
 public class GridBagConstraintsFactory {
 
 	static private final Insets defaultInsets = new Insets(4, 4, 4, 4);
 
+	/**
+	 * Creates GridBagConstraints
+	 * 
+	 * @param x the x
+	 * @param y the y
+	 * 
+	 * @return the grid bag constraints
+	 */
 	public static GridBagConstraints create(int x, int y) {
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridx = x;
@@ -34,12 +46,32 @@ public class GridBagConstraintsFactory {
 		return gbc;
 	}
 
+	/**
+	 * Creates GridBagConstraints
+	 * 
+	 * @param x the x
+	 * @param y the y
+	 * @param fill the fill
+	 * 
+	 * @return the grid bag constraints
+	 */
 	public static GridBagConstraints create(int x, int y, int fill) {
 		GridBagConstraints gbc = create(x, y);
 		gbc.fill = fill;
 		return gbc;
 	}
 
+	/**
+	 * Creates GridBagConstraints
+	 * 
+	 * @param x the x
+	 * @param y the y
+	 * @param fill the fill
+	 * @param weightx the weightx
+	 * @param weighty the weighty
+	 * 
+	 * @return the grid bag constraints
+	 */
 	public static GridBagConstraints create(int x, int y, int fill,
 			double weightx, double weighty) {
 		GridBagConstraints gbc = create(x, y, fill);
