@@ -30,25 +30,14 @@ import javax.swing.table.TableCellRenderer;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 
+/**
+ * a JTable that renders rows in alternating colors
+ */
 public class StripedTable extends JTable {
 
-	// initialize table stripe color
-	private static Color STCOLOR = Color.white;
-	static {
-		int rgb = Prefs.getIntPref(PrefName.UCS_STRIPE);
-		setStripeColor(new Color(rgb));
-	}
-
-	private TableCellRenderer defrend_ = null;
-
-	private TableCellRenderer defDaterend_ = null;
-
-	private TableCellRenderer defBoolRend_ = null;
-
-	public static void setStripeColor(Color c) {
-		STCOLOR = c;
-	}
-
+	/**
+	 * renderer that alternates colors
+	 */
 	private class StripedRenderer extends JLabel implements TableCellRenderer {
 
 		public StripedRenderer() {
@@ -59,37 +48,36 @@ public class StripedTable extends JTable {
 		public Component getTableCellRendererComponent(JTable table,
 				Object obj, boolean isSelected, boolean hasFocus, int row,
 				int column) {
-
-			JLabel l = null;
-
-			if (obj instanceof Date) {
-				l = (JLabel) defDaterend_.getTableCellRendererComponent(table,
+			
+			if (obj instanceof Boolean) {
+				Component c = defaultBooleanRenderer.getTableCellRendererComponent(table,
 						obj, isSelected, hasFocus, row, column);
-			} else if (obj instanceof Boolean) {
-				Component c = defBoolRend_.getTableCellRendererComponent(table,
-						obj, isSelected, hasFocus, row, column);
-
-				if (isSelected) {
-					return c;
-				} else if (row % 2 == 0) {
-					c.setBackground(STCOLOR);
-				} else {
-					//c.setBackground(Color.WHITE);
+				// stripe non-selected even rows
+				if (!isSelected && row % 2 == 0) {
+					c.setBackground(stripeColor);
 				}
 				return c;
+			}
+
+			JLabel l;
+			
+			if (obj instanceof Date) {
+				l = (JLabel) defaultDateRenderer.getTableCellRendererComponent(table,
+						obj, isSelected, hasFocus, row, column);
 			} else {
-				l = (JLabel) defrend_.getTableCellRendererComponent(table, obj,
+				l = (JLabel) defaultStringRenderer.getTableCellRendererComponent(table, obj,
 						isSelected, hasFocus, row, column);
 			}
 			this.setForeground(l.getForeground());
-			if (isSelected) {
-				this.setBackground(l.getBackground());
-			} else if (row % 2 == 0) {
-				this.setBackground(STCOLOR);
+			
+			// stripe non-selected even rows
+			if (!isSelected && row % 2 == 0) {
+				this.setBackground(stripeColor);
 			} else {
 				this.setBackground(l.getBackground());
 			}
 
+			// center date and int
 			if (obj instanceof Integer) {
 				this.setText(((Integer) obj).toString());
 				this.setHorizontalAlignment(CENTER);
@@ -106,11 +94,39 @@ public class StripedTable extends JTable {
 		}
 	}
 
+	// initialize table stripe color
+	private static Color stripeColor = Color.white;
+
+	static {
+		int rgb = Prefs.getIntPref(PrefName.UCS_STRIPE);
+		setStripeColor(new Color(rgb));
+	}
+
+	/**
+	 * set the striping color
+	 * @param c the striping color
+	 */
+	public static void setStripeColor(Color c) {
+		stripeColor = c;
+	}
+
+	// default renderers
+	private TableCellRenderer defaultBooleanRenderer = null;
+	private TableCellRenderer defaultDateRenderer = null;
+	private TableCellRenderer defaultStringRenderer = null;
+
+	/**
+	 * constructor
+	 */
 	public StripedTable() {
 		super();
-		defrend_ = this.getDefaultRenderer(String.class);
-		defDaterend_ = this.getDefaultRenderer(Date.class);
-		defBoolRend_ = this.getDefaultRenderer(Boolean.class);
+		
+		// save original renderers
+		defaultStringRenderer = this.getDefaultRenderer(String.class);
+		defaultDateRenderer = this.getDefaultRenderer(Date.class);
+		defaultBooleanRenderer = this.getDefaultRenderer(Boolean.class);
+		
+		// register our striping renderer
 		this.setDefaultRenderer(Object.class, new StripedRenderer());
 		this.setDefaultRenderer(Date.class, new StripedRenderer());
 		this.setDefaultRenderer(Integer.class, new StripedRenderer());

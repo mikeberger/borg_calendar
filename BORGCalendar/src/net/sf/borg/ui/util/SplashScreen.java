@@ -29,6 +29,7 @@ package net.sf.borg.ui.util;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.Toolkit;
 
 import javax.swing.ImageIcon;
@@ -90,10 +91,15 @@ public class SplashScreen extends JFrame {
 		JPanel topPanel = new JPanel();
 		topPanel.setLayout(new GridBagLayout());
 		
-		topPanel.add(imageLabel, GridBagConstraintsFactory.create(0, 0,
-				GridBagConstraints.BOTH, 1.0, 1.0));
-		topPanel.add(statusText, GridBagConstraintsFactory.create(0, 1,
-				GridBagConstraints.BOTH, 0.0, 0.0));
+		GridBagConstraints gbc1 = GridBagConstraintsFactory.create(0, 0,
+				GridBagConstraints.BOTH, 1.0, 1.0);
+		gbc1.insets = new Insets(0,0,0,0);
+		topPanel.add(imageLabel,gbc1);
+		
+		GridBagConstraints gbc2 = GridBagConstraintsFactory.create(0, 1,
+				GridBagConstraints.BOTH, 0.0, 0.0);
+		gbc2.insets = new Insets(0,0,0,0);
+		topPanel.add(statusText, gbc2);
 
 		this.setSize(364, 322);
 

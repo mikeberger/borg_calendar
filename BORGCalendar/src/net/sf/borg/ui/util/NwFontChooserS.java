@@ -34,7 +34,10 @@ import net.sf.borg.common.Resource;
 //
 // FontChooser by Noah w.
 //
-
+/**
+ * font chooser dialog
+ */
+// I am not going to clean this up or comment. It is public domain code.
 public class NwFontChooserS extends JDialog {
     String[] styleList = new String[] { "Plain", "Bold", "Italic" };
     String[] sizeList =
