@@ -35,41 +35,75 @@ import javax.swing.JTabbedPane;
 
 import net.sf.borg.ui.DockableView;
 
+/**
+ * A JTabbedPane with Close and Undock icons drawn in the tab.
+ */
 public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 		MouseListener, MouseMotionListener {
 
-	static private final int ICON_WIDTH = 16;
-
+	/**
+	 * this is the icon that actually contains the symbols for
+	 * close and optionally undock.
+	 */
 	private class CloseTabIcon implements Icon {
+		
+		/**
+		 * parent component
+		 */
+		private Component component;
+
+		/**
+		 * is undock icon being shown
+		 */
 		private boolean undock;
 
-		private Component c;
-
+		/** The width. */
 		private int width;
 
+		/** The x_pos. */
 		private int x_pos;
 
+		/** The y_pos. */
 		private int y_pos;
 
+		/**
+		 * constructor.
+		 * 
+		 * @param ud if true, also include the undock image
+		 */
 		public CloseTabIcon(boolean ud) {
 			this.undock = ud;
-			if (ud)
+			
+			// undock doubles the width
+			if (undock)
 				width = 2 * ICON_WIDTH;
 			else
 				width = ICON_WIDTH;
 
 		}
 
+		/* (non-Javadoc)
+		 * @see javax.swing.Icon#getIconHeight()
+		 */
 		public int getIconHeight() {
 			return ICON_WIDTH;
 		}
 
+		/* (non-Javadoc)
+		 * @see javax.swing.Icon#getIconWidth()
+		 */
 		public int getIconWidth() {
 			return width;
 		}
 
-		// hide kludges 2 methods below
-		public boolean isDeleteClicked(MouseEvent e) {
+		/**
+		 * Checks if mouse is on the delete icon
+		 * 
+		 * @param e the mouse event
+		 * 
+		 * @return true, if mouse is on the delete icon
+		 */
+		public boolean isMouseOnDelete(MouseEvent e) {
 
 			Rectangle rect = new Rectangle(x_pos + 2, y_pos + 2,
 					ICON_WIDTH - 4, ICON_WIDTH - 4);
@@ -80,11 +114,20 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 			return false;
 		}
 
-		public boolean isUndockClicked(MouseEvent e) {
-			if (!undock) // delete only
+		/**
+		 * Checks if mouse is on the undock icon
+		 * 
+		 * @param e the mouse event
+		 * 
+		 * @return true, if mouse is on the undock icon
+		 */
+		public boolean isMouseOnUndock(MouseEvent e) {
+			
+			if (!undock)
 			{
 				return false;
 			}
+			
 			Rectangle rect = new Rectangle(x_pos + ICON_WIDTH + 2, y_pos + 2,
 					ICON_WIDTH - 4, ICON_WIDTH - 4);
 			if (rect.contains(e.getX(), e.getY())) {
@@ -94,22 +137,24 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 			return false;
 		}
 
-		public void paintIcon(Component c, Graphics g, int x, int y) {
-			this.x_pos = x;
-			this.y_pos = y;
-			this.c = c;
-			paintHighlight(false, false, g);
-		}
-
-		private void paintHighlight(boolean del, boolean ud, Graphics g) {
+		/**
+		 * Paint the icon with optional red highlight
+		 * 
+		 * @param highlightDelete if true, paint delete highlight
+		 * @param highlightUndock if true, paint undock highlight
+		 * @param g the Graphics to paint in
+		 */
+		private void paintHighlight(boolean highlightDelete, boolean highlightUndock, Graphics g) {
 
 			Graphics2D g2 = (Graphics2D) g;
 
 			g2.setColor(Color.black);
-			
-			if (del) {
+
+			if (highlightDelete) {
 				g2.setColor(Color.red);
 			}
+			
+			// draw the delete picture
 			g2.drawLine(x_pos + 4, y_pos + 5, x_pos + ICON_WIDTH - 5, y_pos
 					+ ICON_WIDTH - 4);
 			g2.drawLine(x_pos + 4, y_pos + 4, x_pos + ICON_WIDTH - 4, y_pos
@@ -124,10 +169,13 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 					+ ICON_WIDTH - 5);
 
 			if (undock) {
+				
 				g2.setColor(Color.black);
-				if (ud) {
+				if (highlightUndock) {
 					g2.setColor(Color.red);
 				}
+				
+				// draw the undock picture
 				g2.drawRect(x_pos + ICON_WIDTH + 4, y_pos + 4, ICON_WIDTH - 8,
 						ICON_WIDTH - 8);
 				g2.drawRect(x_pos + ICON_WIDTH + 5, y_pos + 5, ICON_WIDTH - 10,
@@ -137,13 +185,35 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 
 		}
 
+		/**
+		 * Paint icon with hightlight
+		 * 
+		 * @param e the mosue event
+		 */
 		public void paintHighlight(MouseEvent e) {
-			if( c == null ) return;
-			paintHighlight(isDeleteClicked(e), isUndockClicked(e), c
+			if (component == null)
+				return;
+			paintHighlight(isMouseOnDelete(e), isMouseOnUndock(e), component
 					.getGraphics());
+		}
+
+		/* (non-Javadoc)
+		 * @see javax.swing.Icon#paintIcon(java.awt.Component, java.awt.Graphics, int, int)
+		 */
+		public void paintIcon(Component c, Graphics g, int x, int y) {
+			this.x_pos = x;
+			this.y_pos = y;
+			this.component = c;
+			paintHighlight(false, false, g);
 		}
 	}
 
+	/** icon size. */
+	static private final int ICON_WIDTH = 16;
+
+	/**
+	 * Instantiates a new tabbed pane with close icons.
+	 */
 	public JTabbedPaneWithCloseIcons() {
 		super();
 		addMouseListener(this);
@@ -151,8 +221,12 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 
 	}
 
+	/* (non-Javadoc)
+	 * @see javax.swing.JTabbedPane#addTab(java.lang.String, java.awt.Component)
+	 */
+	@Override
 	public void addTab(String title, Component component) {
-		// super.addTab(title, new CloseTabIcon(extraIcon), component);
+		// add the extra undock icon onyl if the component is undockable
 		if (component instanceof DockableView)
 			super.addTab(title, new CloseTabIcon(true), component);
 		else
@@ -160,6 +234,9 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 		this.repaint();
 	}
 
+	/**
+	 * close all tabs that have close icons.
+	 */
 	public void closeClosableTabs() {
 		for (int i = this.getTabCount() - 1; i >= 0; i--) {
 			Icon icon = getIconAt(i);
@@ -167,62 +244,71 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 				return;
 
 			this.removeTabAt(i);
-
 		}
-
 	}
 
+	/**
+	 * close the currently selected tab.
+	 */
 	public void closeSelectedTab() {
 		int i = this.getSelectedIndex();
 		this.removeTabAt(i);
 	}
-	
+
+	/**
+	 * handle mouse click on a tab icon.
+	 * 
+	 * @param e the e
+	 */
 	public void mouseClicked(MouseEvent e) {
+		// check is mouse is on a tab
 		int tabNumber = getUI().tabForCoordinate(this, e.getX(), e.getY());
 		if (tabNumber < 0)
 			return;
 
+		// get icons
 		CloseTabIcon icon = (CloseTabIcon) getIconAt(tabNumber);
 		if (icon == null)
 			return;
-		if (icon.isDeleteClicked(e))
+		
+		// perform action of the click was on an icon
+		if (icon.isMouseOnDelete(e))
 			this.removeTabAt(tabNumber);
-		else if (icon.isUndockClicked(e))
+		else if (icon.isMouseOnUndock(e))
 			this.undock();
 
 	}
 
+	/* (non-Javadoc)
+	 * @see java.awt.event.MouseMotionListener#mouseDragged(java.awt.event.MouseEvent)
+	 */
+	@Override
+	public void mouseDragged(MouseEvent arg0) {
+	}
+
+	/* (non-Javadoc)
+	 * @see java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
+	 */
 	public void mouseEntered(MouseEvent e) {
 		mouseMoved(e);
 	}
 
+	/* (non-Javadoc)
+	 * @see java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
+	 */
 	public void mouseExited(MouseEvent e) {
 		mouseMoved(e);
 	}
 
-	public void mousePressed(MouseEvent e) {
-	}
-
-	public void mouseReleased(MouseEvent e) {
-	}
-
-	public void undock() {
-		Component c = getSelectedComponent();
-		if (c != null && c instanceof DockableView) {
-			DockableView dv = (DockableView) c;
-			dv.openInFrame();
-			// removeTabAt(getSelectedIndex());
-		}
-	}
-
-	@Override
-	public void mouseDragged(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
+	/* (non-Javadoc)
+	 * @see java.awt.event.MouseMotionListener#mouseMoved(java.awt.event.MouseEvent)
+	 */
 	@Override
 	public void mouseMoved(MouseEvent e) {
+		
+		// if the mouse is on a tab - then highlight it
+		// this does not work for many java look and feels that seem to 
+		// paint over the highlight - not sure why - need to investigate
 		for (int tabNumber = 0; tabNumber < this.getComponentCount(); tabNumber++) {
 			CloseTabIcon icon = (CloseTabIcon) getIconAt(tabNumber);
 			if (icon == null)
@@ -231,5 +317,28 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 			icon.paintHighlight(e);
 		}
 
+	}
+
+	/* (non-Javadoc)
+	 * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
+	 */
+	public void mousePressed(MouseEvent e) {
+	}
+
+	/* (non-Javadoc)
+	 * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
+	 */
+	public void mouseReleased(MouseEvent e) {
+	}
+
+	/**
+	 * undock the currently selected tab.
+	 */
+	public void undock() {
+		Component c = getSelectedComponent();
+		if (c != null && c instanceof DockableView) {
+			DockableView dv = (DockableView) c;
+			dv.openInFrame();
+		}
 	}
 }

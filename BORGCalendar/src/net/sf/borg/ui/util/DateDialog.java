@@ -35,121 +35,116 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
+import net.sf.borg.common.Resource;
 import net.sf.borg.ui.ResourceHelper;
 
 import com.toedter.calendar.JDateChooser;
 
-public class DateDialog extends JDialog
-{
-public DateDialog(Frame frmParent)
-{
-	super
-	(
-		frmParent,
-		"Enter Date",
-		true
-	);
-	initUI();
-}
+/**
+ * A dialog for picking a date that wraps JDateChooser
+ */
+public class DateDialog extends JDialog {
+	
+	/** The date. */
+	private Calendar calendar;
 
-// Accessors
-public final Calendar getCalendar()
-{
-	return calendar;
-}
+	/** The date combo box. */
+	private JDateChooser dateComboBox;
 
-// Modifiers
-public final void setCalendar(Calendar cal)
-{
-	dateComboBox.setCalendar(cal);
-}
+	/**
+	 * constructor
+	 * 
+	 * @param frmParent the parent frame
+	 */
+	public DateDialog(Frame frmParent) {
+		super(frmParent, Resource.getResourceString("Enter_Date"), true);
+		initUI();
+	}
 
-// private //
-private JDateChooser dateComboBox;
-private Calendar calendar;
+	/**
+	 * Gets the calendar.
+	 * 
+	 * @return the calendar
+	 */
+	public final Calendar getCalendar() {
+		return calendar;
+	}
 
-private void initUI()
-{
-	initCtrls();
-	pack();
-	
-	// Make it a little wider
-	Dimension dim = getSize();
-	dim.width += 40;
-	setSize(dim);
-	setLocationRelativeTo(null);
-}
+	/**
+	 * Inits the ui.
+	 */
+	private void initUI() {
+		JPanel pnlMain = new JPanel();
+		getContentPane().add(pnlMain);
+		pnlMain.setLayout(new BorderLayout());
 
-private void initCtrls()
-{
-	JPanel pnlMain = new JPanel();
-	getContentPane().add(pnlMain);
-	pnlMain.setLayout(new BorderLayout());
-	
-	JPanel pnlInputAndIcon = new JPanel();
-	pnlMain.add(pnlInputAndIcon, BorderLayout.CENTER);
-	pnlInputAndIcon.setLayout(new BorderLayout());
-	
-	JPanel pnlInput = new JPanel();
-	pnlInputAndIcon.add(pnlInput, BorderLayout.CENTER);
-	pnlInput.setLayout(new BorderLayout());
-	
-	JPanel pnlIcon = new JPanel();
-	pnlInputAndIcon.add(pnlIcon, BorderLayout.WEST);
-	pnlIcon.setLayout(new BorderLayout());
-//	pnlIcon.add(new JLabel(new ImageIcon(getClass().getResource("/resource/borg.jpg"))));
-	
-	JPanel pnlFields = new JPanel();
-	pnlInput.add(pnlFields, BorderLayout.CENTER);
-	pnlFields.setLayout(new GridLayout(0,1));
-	pnlFields.add(dateComboBox = new JDateChooser());
-	
-	JPanel pnlLabels = new JPanel();
-	pnlInput.add(pnlLabels, BorderLayout.WEST);
-	pnlLabels.setLayout(new GridLayout(0,1));
-	
-	JLabel lblDate;
-	pnlLabels.add(lblDate = new JLabel());
-	
-	ResourceHelper.setText(lblDate, "Date");
-	lblDate.setLabelFor(dateComboBox);
-	lblDate.setText(lblDate.getText()+":");
-	
-	JPanel pnlButtons = new JPanel();
-	pnlButtons.setLayout(new FlowLayout(FlowLayout.CENTER));
-	pnlMain.add(pnlButtons, BorderLayout.SOUTH);
-	JButton bn;
-	pnlButtons.add(bn = new JButton("OK"));
-	getRootPane().setDefaultButton(bn);
-	bn.addActionListener
-	(
-		new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
+		JPanel pnlInputAndIcon = new JPanel();
+		pnlMain.add(pnlInputAndIcon, BorderLayout.CENTER);
+		pnlInputAndIcon.setLayout(new BorderLayout());
+
+		JPanel pnlInput = new JPanel();
+		pnlInputAndIcon.add(pnlInput, BorderLayout.CENTER);
+		pnlInput.setLayout(new BorderLayout());
+
+		JPanel pnlIcon = new JPanel();
+		pnlInputAndIcon.add(pnlIcon, BorderLayout.WEST);
+		pnlIcon.setLayout(new BorderLayout());
+
+		JPanel pnlFields = new JPanel();
+		pnlInput.add(pnlFields, BorderLayout.CENTER);
+		pnlFields.setLayout(new GridLayout(0, 1));
+		pnlFields.add(dateComboBox = new JDateChooser());
+
+		JPanel pnlLabels = new JPanel();
+		pnlInput.add(pnlLabels, BorderLayout.WEST);
+		pnlLabels.setLayout(new GridLayout(0, 1));
+
+		JLabel lblDate;
+		pnlLabels.add(lblDate = new JLabel());
+
+		ResourceHelper.setText(lblDate, Resource.getResourceString("Date"));
+		lblDate.setLabelFor(dateComboBox);
+		lblDate.setText(lblDate.getText() + ":");
+
+		JPanel pnlButtons = new JPanel();
+		pnlButtons.setLayout(new FlowLayout(FlowLayout.CENTER));
+		pnlMain.add(pnlButtons, BorderLayout.SOUTH);
+		JButton bn;
+		pnlButtons.add(bn = new JButton(Resource.getResourceString("OK")));
+		getRootPane().setDefaultButton(bn);
+		
+		bn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				calendar = dateComboBox.getCalendar();
 				setVisible(false);
 			}
-		}
-	);
+		});
 
-	pnlButtons.add(bn = new JButton("Cancel"));
-	ActionListener cancelListener =
-		new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
+		pnlButtons.add(bn = new JButton(Resource.getResourceString("Cancel")));
+		ActionListener cancelListener = new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				calendar = null;
 				setVisible(false);
 			}
 		};
-	bn.addActionListener(cancelListener);
-	getRootPane()
-		.registerKeyboardAction
-		(
-			cancelListener,
-			KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
-			JComponent.WHEN_IN_FOCUSED_WINDOW
-		);
-}
+		bn.addActionListener(cancelListener);
+		getRootPane().registerKeyboardAction(cancelListener,
+				KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
+				JComponent.WHEN_IN_FOCUSED_WINDOW);		pack();
+
+		// Make it a little wider
+		Dimension dim = getSize();
+		dim.width += 40;
+		setSize(dim);
+		setLocationRelativeTo(null);
+	}
+
+	/**
+	 * Sets the calendar.
+	 * 
+	 * @param cal the new calendar
+	 */
+	public final void setCalendar(Calendar cal) {
+		dateComboBox.setCalendar(cal);
+	}
 }
