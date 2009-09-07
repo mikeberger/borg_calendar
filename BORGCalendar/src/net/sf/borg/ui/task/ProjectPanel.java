@@ -178,7 +178,7 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 				return;
 
 			MultiView.getMainView().addView(
-					new ProjectView(p, ProjectView.T_CHANGE, null));
+					new ProjectView(p, ProjectView.Action.CHANGE, null));
 
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
@@ -206,7 +206,7 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 				return;
 
 			MultiView.getMainView().addView(
-					new ProjectView(p, ProjectView.T_CLONE, null));
+					new ProjectView(p, ProjectView.Action.CLONE, null));
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
 		}
@@ -308,7 +308,7 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					try {
 						MultiView.getMainView().addView(
-								new ProjectView(null, ProjectView.T_ADD, null));
+								new ProjectView(null, ProjectView.Action.ADD, null));
 					} catch (Exception ex) {
 						Errmsg.errmsg(ex);
 					}
@@ -452,7 +452,7 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						try {
 							MultiView.getMainView().addView(
-									new ProjectView(null, ProjectView.T_ADD, null));
+									new ProjectView(null, ProjectView.Action.ADD, null));
 						} catch (Exception e) {
 							Errmsg.errmsg(e);
 						}

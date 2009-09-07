@@ -239,7 +239,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 			public void actionPerformed(ActionEvent e) {
 				try {
 					// show a new project editor
-					ProjectView pv = new ProjectView(null, ProjectView.T_ADD, null);
+					ProjectView pv = new ProjectView(null, ProjectView.Action.ADD, null);
 					entityScrollPane.setViewportView(pv);
 				} catch (Exception ex) {
 					Errmsg.errmsg(ex);
@@ -312,7 +312,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 			try {
 				ProjectView pv;
 				try {
-					pv = new ProjectView(null, ProjectView.T_ADD, p.getKey());
+					pv = new ProjectView(null, ProjectView.Action.ADD, p.getKey());
 					entityScrollPane.setViewportView(pv);
 				} catch (Exception e) {
 					Errmsg.errmsg(e);
@@ -546,7 +546,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 		} else if (o instanceof Project) {
 			Project p = (Project) o;
 			try {
-				ProjectView pv = new ProjectView(p, ProjectView.T_CHANGE, null);
+				ProjectView pv = new ProjectView(p, ProjectView.Action.CHANGE, null);
 				entityScrollPane.setViewportView(pv);
 			} catch (Exception e1) {
 				Errmsg.errmsg(e1);

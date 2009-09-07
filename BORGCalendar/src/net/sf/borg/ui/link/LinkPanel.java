@@ -519,7 +519,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 								.getResourceString("att_not_found"));
 						return;
 					}
-					 MultiView.getMainView().addView(new ProjectView(ap, ProjectView.T_CHANGE, null));
+					 MultiView.getMainView().addView(new ProjectView(ap, ProjectView.Action.CHANGE, null));
 				}
 				// open a task
 				else if (at.getLinkType().equals(LinkType.TASK.toString())) {
