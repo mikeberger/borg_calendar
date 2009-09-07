@@ -1074,7 +1074,7 @@ public class TaskView extends DockableView {
 				String prefDefinedTasks[] = TaskModel
 						.getReference()
 						.getTaskTypes()
-						.checkBoxes((String) taskTypeComboBox.getSelectedItem());
+						.getSubTasks((String) taskTypeComboBox.getSelectedItem());
 				for (int i = 0; i < prefDefinedTasks.length; i++) {
 					if (!prefDefinedTasks[i].equals(TaskTypes.NOCBVALUE)) {
 						Object o[] = { new Boolean(false), null, prefDefinedTasks[i],

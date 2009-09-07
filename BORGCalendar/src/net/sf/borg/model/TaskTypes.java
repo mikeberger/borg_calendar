@@ -358,7 +358,7 @@ public class TaskTypes {
 	 * @param value
 	 *            the subtask value
 	 */
-	public void changeCB(String type, int index, String value) {
+	public void changeSubtask(String type, int index, String value) {
 		if (value == null)
 			value = NOCBVALUE;
 		XTree tp = state_model_.child(type);
@@ -387,7 +387,7 @@ public class TaskTypes {
 	 * 
 	 * @return the subtasks
 	 */
-	public String[] checkBoxes(String type) {
+	public String[] getSubTasks(String type) {
 
 		String ar[] = new String[5];
 
