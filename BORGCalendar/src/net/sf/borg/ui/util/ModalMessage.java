@@ -16,7 +16,7 @@ This file is part of BORG.
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 Copyright 2003 by Mike Berger
-*/
+ */
 /*
  * helpscrn.java
  *
@@ -35,173 +35,112 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.SwingUtilities;
 
 import net.sf.borg.common.Resource;
 
-
-
+/**
+ * modal dialog with a scrollable message.
+ * The ok button can start as disabled so that the user must wait until it is enabled
+ * by the program while the program is doing something important
+ */
 public class ModalMessage extends JDialog {
- 
-    public ModalMessage(String s, boolean enabled) {
-        initComponents();    
-        jTextArea.setText(s);
-        okButton.setEnabled(enabled);
-        setModal(true);       
-    }
 
-    public void setEnabled(boolean e)
-    {
-    	okButton.setEnabled(e);
-    }
-    public void setText(String s)
-    {
-    	jTextArea.setText(s);
-    }
-    
-    public void appendText(String s)
-    {
-    	String t = jTextArea.getText();
-    	t += "\n" + s;
-    	jTextArea.setText(t);
-    }
-    
-    private void initComponents()//GEN-BEGIN:initComponents
-    {
-    	//this.setUndecorated(true);
-        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        setTitle("BORG");
-        this.setSize(165, 300);
-        this.setContentPane(getJPanel());
-        
-        pack();
-        
-        Dimension screenSize =
-            Toolkit.getDefaultToolkit().getScreenSize();
-          Dimension labelSize = jScrollPane.getPreferredSize();
-          setLocation(screenSize.width/2 - (labelSize.width/2),
-                      screenSize.height/2 - (labelSize.height/2));
-    }
-    
-    
-    private JPanel jPanel = null;
-	private JScrollPane jScrollPane = null;
-	private JTextArea jTextArea = null;
-	
-	/**
-	 * This method initializes jPanel	
-	 * 	
-	 * @return javax.swing.JPanel	
-	 */
-	private JPanel getJPanel() {
-		if (jPanel == null) {
-			GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
-			gridBagConstraints1.gridx = 0;  // Generated
-			gridBagConstraints1.fill = java.awt.GridBagConstraints.BOTH;  // Generated
-			gridBagConstraints1.gridy = 1;  // Generated
-			GridBagConstraints gridBagConstraints = new GridBagConstraints();
-			gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;  // Generated
-			gridBagConstraints.gridy = 0;  // Generated
-			gridBagConstraints.weightx = 1.0;  // Generated
-			gridBagConstraints.weighty = 1.0;  // Generated
-			gridBagConstraints.insets = new java.awt.Insets(4,4,4,4);  // Generated
-			gridBagConstraints.gridx = 0;  // Generated
-			jPanel = new JPanel();
-			jPanel.setLayout(new GridBagLayout());  // Generated
-			jPanel.add(getJScrollPane(), gridBagConstraints);  // Generated
-			jPanel.add(getButtonPanel(), gridBagConstraints1);
-		}
-		return jPanel;
-	}
+	/** The message scroll. */
+	private JScrollPane messageScroll = null;
 
+	/** The message text. */
+	private JTextArea messageText = null;
 
-
-	/**
-	 * This method initializes jScrollPane	
-	 * 	
-	 * @return javax.swing.JScrollPane	
-	 */
-	private JScrollPane getJScrollPane() {
-		if (jScrollPane == null) {
-			jScrollPane = new JScrollPane();
-			jScrollPane.setPreferredSize(new java.awt.Dimension(600,200));  // Generated
-			jScrollPane.setViewportView(getJTextArea());  // Generated
-		}
-		return jScrollPane;
-	}
-
-
-
-	/**
-	 * This method initializes jTextArea	
-	 * 	
-	 * @return javax.swing.JTextArea	
-	 */
-	private JTextArea getJTextArea() {
-		if (jTextArea == null) {
-			jTextArea = new JTextArea();
-			jTextArea.setEditable(false);  // Generated
-			jTextArea.setLineWrap(true);  // Generated
-		}
-		return jTextArea;
-	}
-
-	/**
-	 * This method initializes buttonPanel	
-	 * 	
-	 * @return javax.swing.JPanel	
-	 */
-	private JPanel buttonPanel = null;
-	private JPanel getButtonPanel() {
-		if (buttonPanel == null) {
-			buttonPanel = new JPanel();
-			buttonPanel.add(getOkButton(), null);  // Generated
-			
-		}
-		return buttonPanel;
-	}
-
-
-
-	/**
-	 * This method initializes okButton	
-	 * 	
-	 * @return javax.swing.JButton	
-	 */
+	/** The ok button. */
 	private JButton okButton = null;
-	private JButton getOkButton() {
-		if (okButton == null) {
-			okButton = new JButton();
-			okButton.setText(Resource.getResourceString("OK"));
-			okButton.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent e) {
-					doOk();
-				}
-			});
-		}
-		return okButton;
+
+	/**
+	 * Instantiates a new modal message.
+	 * 
+	 * @param s the message
+	 * @param enabled if true, enable ok button, otheriwse disable
+	 */
+	public ModalMessage(String s, boolean enabled) {
+		initComponents();
+		messageText.setText(s);
+		okButton.setEnabled(enabled);
+		setModal(true);
 	}
 
-	private void doOk()
-	{
-		this.dispose();
+	/**
+	 * Append text to the message while. Normally used when the program is continuing to produce output
+	 * for the user and the ok button is disabled. Text is appended on a new line.
+	 * 
+	 * @param s the string to append
+	 */
+	public void appendText(String s) {
+		String t = messageText.getText();
+		t += "\n" + s;
+		messageText.setText(t);
 	}
 
+	/**
+	 * Inits the components.
+	 */
+	private void initComponents() {
+		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		setTitle("BORG");
+		this.setSize(165, 300);
 
-	public static void main( String args[])
-    {
-		final ModalMessage mm = new ModalMessage("duh\nduh\nduh", false);
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-		    	mm.setVisible(true);				
+		JPanel topPanel = new JPanel();
+		topPanel.setLayout(new GridBagLayout());
+
+		messageScroll = new JScrollPane();
+		messageScroll.setPreferredSize(new java.awt.Dimension(600, 200));
+
+		messageText = new JTextArea();
+		messageText.setEditable(false);
+		messageText.setLineWrap(true);
+
+		messageScroll.setViewportView(messageText);
+
+		topPanel.add(messageScroll, GridBagConstraintsFactory.create(0, 0,
+				GridBagConstraints.BOTH, 1.0, 1.0));
+
+		JPanel buttonPanel = new JPanel();
+
+		okButton = new JButton();
+		okButton.setText(Resource.getResourceString("OK"));
+		okButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent e) {
+				dispose();
 			}
 		});
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-		    	mm.appendText("another line");
-		    	mm.setEnabled(true);				
-			}
-		});
-    	
-    }
-}  //  @jve:decl-index=0:visual-constraint="10,10"
+
+		buttonPanel.add(okButton, null);
+
+		topPanel.add(buttonPanel, GridBagConstraintsFactory.create(0, 1,
+				GridBagConstraints.BOTH, 0.0, 0.0));
+
+		this.setContentPane(topPanel);
+
+		pack();
+
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		Dimension labelSize = messageScroll.getPreferredSize();
+		setLocation(screenSize.width / 2 - (labelSize.width / 2),
+				screenSize.height / 2 - (labelSize.height / 2));
+	}
+
+	/* (non-Javadoc)
+	 * @see java.awt.Component#setEnabled(boolean)
+	 */
+	@Override
+	public void setEnabled(boolean e) {
+		okButton.setEnabled(e);
+	}
+
+	/**
+	 * Sets the text.
+	 * 
+	 * @param s the new text
+	 */
+	public void setText(String s) {
+		messageText.setText(s);
+	}
+} 
