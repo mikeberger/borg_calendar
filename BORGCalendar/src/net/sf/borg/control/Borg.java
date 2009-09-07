@@ -59,7 +59,7 @@ import net.sf.borg.ui.OptionsView;
 import net.sf.borg.ui.SunTrayIconProxy;
 import net.sf.borg.ui.calendar.TodoView;
 import net.sf.borg.ui.popup.ReminderPopupManager;
-import net.sf.borg.ui.util.Banner;
+import net.sf.borg.ui.util.SplashScreen;
 import net.sf.borg.ui.util.ModalMessage;
 import net.sf.borg.ui.util.NwFontChooserS;
 
@@ -71,7 +71,7 @@ import net.sf.borg.ui.util.NwFontChooserS;
 public class Borg implements SocketHandler {
 
 	/** splash window */
-	static private Banner ban_ = null; // start up banner
+	static private SplashScreen ban_ = null; // start up banner
 
 	/** The singleton. */
 	static private Borg singleton = null;
@@ -165,7 +165,7 @@ public class Borg implements SocketHandler {
 
 		// close the db
 		try {
-			Banner ban = new Banner();
+			SplashScreen ban = new SplashScreen();
 			ban.setText(Resource.getResourceString("shutdown"));
 			ban.setVisible(true);
 			JdbcDB.close();
@@ -413,7 +413,7 @@ public class Borg implements SocketHandler {
 
 		// pop up the splash
 		if (splash) {
-			ban_ = new Banner();
+			ban_ = new SplashScreen();
 			ban_.setText(Resource.getResourceString("Initializing"));
 			ban_.setVisible(true);
 		}
