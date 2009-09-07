@@ -33,6 +33,47 @@ import java.net.Socket;
  */
 public class SocketServer extends Thread {
     
+	// This class is the thread that handles all communication with a client
+	private class Connection extends Thread {
+	    protected Socket client;
+	    protected BufferedReader in;
+	    protected PrintStream out;
+	    private SocketHandler handler_;
+
+	    // Initialize the streams and start the thread
+	    public Connection(Socket client_socket, SocketHandler handler) {
+	        client = client_socket;
+	        handler_ = handler;
+	        try { 
+	            in = new BufferedReader(new InputStreamReader(client.getInputStream()));
+	            out = new PrintStream(client.getOutputStream());
+	        }
+	        catch (IOException e) {
+	            try { client.close(); } catch (IOException e2) { ; }
+	            System.err.println("Exception while getting socket streams: " + e);
+	            return;
+	        }
+	        this.start();
+	    }
+	    
+	    // Provide the service.
+	    // Read a line, reverse it, send it back.  
+	    public void run() {
+	       
+	        try {
+	            for(;;) {
+	                // read in a line
+	                String line = in.readLine();
+	                if (line == null) break;
+	                String output = handler_.processMessage(line);
+	                out.println(output);
+	            }
+	        }
+	        catch (IOException e) { ; }
+	        finally { try {client.close();} catch (IOException e2) {;} }
+	    }
+	}
+	
     protected int port;
     protected ServerSocket listen_socket;
     
@@ -79,43 +120,4 @@ public class SocketServer extends Thread {
     
 }
 
-// This class is the thread that handles all communication with a client
-class Connection extends Thread {
-    protected Socket client;
-    protected BufferedReader in;
-    protected PrintStream out;
-    private SocketHandler handler_;
 
-    // Initialize the streams and start the thread
-    public Connection(Socket client_socket, SocketHandler handler) {
-        client = client_socket;
-        handler_ = handler;
-        try { 
-            in = new BufferedReader(new InputStreamReader(client.getInputStream()));
-            out = new PrintStream(client.getOutputStream());
-        }
-        catch (IOException e) {
-            try { client.close(); } catch (IOException e2) { ; }
-            System.err.println("Exception while getting socket streams: " + e);
-            return;
-        }
-        this.start();
-    }
-    
-    // Provide the service.
-    // Read a line, reverse it, send it back.  
-    public void run() {
-       
-        try {
-            for(;;) {
-                // read in a line
-                String line = in.readLine();
-                if (line == null) break;
-                String output = handler_.processMessage(line);
-                out.println(output);
-            }
-        }
-        catch (IOException e) { ; }
-        finally { try {client.close();} catch (IOException e2) {;} }
-    }
-}
