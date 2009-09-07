@@ -171,7 +171,6 @@ public class Borg implements SocketHandler {
 			JdbcDB.close();
 
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

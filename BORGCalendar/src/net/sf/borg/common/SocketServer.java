@@ -74,7 +74,6 @@ public class SocketServer extends Thread {
 	    }
 	}
 	
-    protected int port;
     protected ServerSocket listen_socket;
     
     /** the socket handler that will be called for each incoming message */
@@ -91,7 +90,6 @@ public class SocketServer extends Thread {
      * @param handler the handler to call back with messages
      */
     public SocketServer(int port, SocketHandler handler) {
-        this.port = port;
         this.handler_ = handler;
         try { listen_socket = new ServerSocket(port); }
         catch (IOException e) { fail(e, "Exception creating server socket"); }

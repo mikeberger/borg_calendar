@@ -28,8 +28,7 @@ import java.net.*;
  * SocketClient sends text messages over a socket
  */
 public class SocketClient {
-	
-	public static final int DEFAULT_PORT = 8000;
+		
 
 	/**
 	 * Send a msg.

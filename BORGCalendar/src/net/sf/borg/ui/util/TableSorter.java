@@ -212,16 +212,6 @@ public class TableSorter extends AbstractTableModel {
         sortingStatusChanged();
     }
 
-/* TODO UCdetector: Remove unused code: 
-    public void setColumnComparator(Class type, Comparator comparator) {
-        if (comparator == null) {
-            columnComparators.remove(type);
-        } else {
-            columnComparators.put(type, comparator);
-        }
-    }
-*/
-
     protected Comparator<Object> getComparator(int column) {
         Class columnType = tableModel.getColumnClass(column);
         Comparator<Object> comparator = columnComparators.get(columnType);

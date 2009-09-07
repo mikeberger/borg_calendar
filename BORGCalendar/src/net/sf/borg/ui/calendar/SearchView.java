@@ -422,7 +422,6 @@ public class SearchView extends DockableView {
 	 */
 	@Override
 	public JMenuBar getMenuForFrame() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
