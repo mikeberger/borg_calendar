@@ -54,14 +54,15 @@ import net.sf.borg.model.LinkModel;
 import net.sf.borg.model.MemoModel;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.db.jdbc.JdbcDB;
+import net.sf.borg.model.tool.ConversionTool;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.OptionsView;
 import net.sf.borg.ui.SunTrayIconProxy;
 import net.sf.borg.ui.calendar.TodoView;
 import net.sf.borg.ui.popup.ReminderPopupManager;
-import net.sf.borg.ui.util.SplashScreen;
 import net.sf.borg.ui.util.ModalMessage;
 import net.sf.borg.ui.util.NwFontChooserS;
+import net.sf.borg.ui.util.SplashScreen;
 
 /**
  * The Main Class of Borg. It's responsible for starting up the model and
@@ -344,9 +345,30 @@ public class Borg implements SocketHandler {
 				testdb = args[i];
 			} else if (args[i].equals("-test")) {
 				testing = true;
+			} else if (args[i].equals("-runtool")) {
+				i++;
+				if (i >= args.length) {
+					System.out.println("tool name is missing");
+					System.exit(1);
+				}
+				String toolName = args[i];
+				try {
+					Class<?> toolClass = Class.forName("net.sf.borg.model.tool." + toolName);
+					Object tool = toolClass.newInstance();
+					if( tool instanceof ConversionTool)
+					{
+						((ConversionTool)tool).convert();
+					}
+					System.exit(0);
+				} catch (Exception e) {
+					e.printStackTrace();
+					System.exit(1);
+				}
+				
 			}
+
 		}
-		
+
 		// open existing BORG if there is one
 		int port = Prefs.getIntPref(PrefName.SOCKETPORT);
 		if (port != -1 && !testing) {

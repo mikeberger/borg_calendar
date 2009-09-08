@@ -20,19 +20,11 @@ import net.sf.borg.model.entity.Appointment;
  * 
  * 
  */
-public class ApptKeyConverter {
+public class ApptKeyConverter implements ConversionTool{
 
 	public static void main(String[] args) {
-		try {
-			// init cal model & load data from database
-			String dbdir = JdbcDB.buildDbDir();
-
-			if (dbdir.equals("not-set")) {
-				return;
-			}
-			JdbcDB.connect(dbdir);
+		try {		
 			new ApptKeyConverter().convert();
-			JdbcDB.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -40,11 +32,19 @@ public class ApptKeyConverter {
 	}
 
 	/**
-	 * run the conversion. this method expects the JDBC connection to already be established
-	 * in JdbcDB
+	 * run the database conversion from 1.7.1 to 1.7.2
 	 * @throws Exception
 	 */
 	public void convert() throws Exception {
+		
+		
+		// init cal model & load data from database
+		String dbdir = JdbcDB.buildDbDir();
+
+		if (dbdir.equals("not-set")) {
+			return;
+		}
+		JdbcDB.connect(dbdir);
 		
 		// try to remove extra palm columns
 		try{JdbcDB.execSQL("ALTER table appointments drop new");}catch(Exception e){}
@@ -136,10 +136,10 @@ public class ApptKeyConverter {
 			db.commitTransaction();
 
 		} catch (Exception e) {
-			e.printStackTrace();
 			db.rollbackTransaction();
+			throw e;
 		} finally {
-
+			JdbcDB.close();
 		}
 	}
 
