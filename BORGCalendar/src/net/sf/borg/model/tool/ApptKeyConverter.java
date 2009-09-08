@@ -87,6 +87,7 @@ public class ApptKeyConverter {
 					Appointment ap = db.readObj(lowestKey);
 					if (ap == null)
 						break;
+					lowestKey++;
 				}
 
 				System.out.println("New Key: " + lowestKey);
