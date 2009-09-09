@@ -90,6 +90,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 		 * 
 		 * @return the name
 		 */
+		@SuppressWarnings("unused")
 		public String getName() {
 			return name;
 		}
@@ -108,6 +109,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 		 * 
 		 * @param name the new name
 		 */
+		@SuppressWarnings("unused")
 		public void setName(String name) {
 			this.name = name;
 		}
@@ -117,6 +119,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 		 * 
 		 * @param entity the new entity
 		 */
+		@SuppressWarnings("unused")
 		public void setEntity(KeyedEntity<?> obj) {
 			this.entity = obj;
 		}

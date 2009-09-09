@@ -45,7 +45,6 @@ import net.sf.borg.common.PrintHelper;
 import net.sf.borg.common.Resource;
 import net.sf.borg.control.Borg;
 import net.sf.borg.model.MemoModel;
-import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.Project;
 import net.sf.borg.ui.address.AddrListView;
 import net.sf.borg.ui.calendar.DayPanel;
@@ -508,11 +507,11 @@ public class MultiView extends View {
 		if (taskListPanel == null)
 			taskListPanel = new TaskFilterPanel();
 
-		if (TaskModel.getReference().hasSubTasks() && projectListPanel == null) {
+		if (projectListPanel == null) {
 			projectListPanel = new ProjectPanel();
 		}
 
-		if (TaskModel.getReference().hasSubTasks() && projectTreePanel == null) {
+		if (projectTreePanel == null) {
 			projectTreePanel = new ProjectTreePanel();
 		}
 		

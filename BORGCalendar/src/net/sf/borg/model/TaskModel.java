@@ -40,7 +40,6 @@ import net.sf.borg.common.Warning;
 import net.sf.borg.common.XTree;
 import net.sf.borg.model.CategoryModel.CategorySource;
 import net.sf.borg.model.db.EntityDB;
-import net.sf.borg.model.db.TaskDB;
 import net.sf.borg.model.db.jdbc.JdbcDB;
 import net.sf.borg.model.db.jdbc.TaskJdbcDB;
 import net.sf.borg.model.entity.BorgOption;
@@ -272,60 +271,56 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 				openTaskMap.add(mr);
 			}
 
-			if (db_ instanceof TaskDB) {
+			for (Project pj : getProjects()) {
+				if (pj.getDueDate() == null)
+					continue;
 
-				for (Project pj : getProjects()) {
-					if (pj.getDueDate() == null)
-						continue;
+				if (pj.getStatus().equals(Resource.getResourceString("CLOSED")))
+					continue;
 
-					if (pj.getStatus().equals(
-							Resource.getResourceString("CLOSED")))
-						continue;
+				if (!CategoryModel.getReference().isShown(pj.getCategory()))
+					continue;
 
-					if (!CategoryModel.getReference().isShown(pj.getCategory()))
-						continue;
+				// use task due date to build a day key
+				Date due = pj.getDueDate();
+				int key = DateUtil.dayOfEpoch(due);
+				;
 
-					// use task due date to build a day key
-					Date due = pj.getDueDate();
-					int key = DateUtil.dayOfEpoch(due);
-					;
-
-					// add the string to the btmap_
-					Collection<Project> o = pmap_.get(new Integer(key));
-					if (o == null) {
-						o = new LinkedList<Project>();
-						pmap_.put(new Integer(key), o);
-					}
-
-					o.add(pj);
+				// add the string to the btmap_
+				Collection<Project> o = pmap_.get(new Integer(key));
+				if (o == null) {
+					o = new LinkedList<Project>();
+					pmap_.put(new Integer(key), o);
 				}
 
-				for (Subtask st : getSubTasks()) {
-					if (st.getCloseDate() != null || st.getDueDate() == null)
-						continue;
+				o.add(pj);
+			}
 
-					Task mr = getTask(st.getTask().intValue());
-					String cat = mr.getCategory();
-					if (cat == null || cat.equals(""))
-						cat = CategoryModel.UNCATEGORIZED;
+			for (Subtask st : getSubTasks()) {
+				if (st.getCloseDate() != null || st.getDueDate() == null)
+					continue;
 
-					if (!CategoryModel.getReference().isShown(cat))
-						continue;
+				Task mr = getTask(st.getTask().intValue());
+				String cat = mr.getCategory();
+				if (cat == null || cat.equals(""))
+					cat = CategoryModel.UNCATEGORIZED;
 
-					// use task due date to build a day key
-					Date due = st.getDueDate();
-					int key = DateUtil.dayOfEpoch(due);
-					;
+				if (!CategoryModel.getReference().isShown(cat))
+					continue;
 
-					// add the string to the btmap_
-					Collection<Subtask> o = stmap_.get(new Integer(key));
-					if (o == null) {
-						o = new LinkedList<Subtask>();
-						stmap_.put(new Integer(key), o);
-					}
+				// use task due date to build a day key
+				Date due = st.getDueDate();
+				int key = DateUtil.dayOfEpoch(due);
+				;
 
-					o.add(st);
+				// add the string to the btmap_
+				Collection<Subtask> o = stmap_.get(new Integer(key));
+				if (o == null) {
+					o = new LinkedList<Subtask>();
+					stmap_.put(new Integer(key), o);
 				}
+
+				o.add(st);
 			}
 
 		} catch (Exception e) {
@@ -445,14 +440,11 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 			return;
 
 		try {
-			if (db_ instanceof TaskDB == false)
-				throw new Warning(Resource
-						.getResourceString("SubtaskNotSupported"));
-			TaskDB sdb = (TaskDB) db_;
+
 			beginTransaction();
 			LinkModel.getReference().deleteLinks(id, Project.class);
 
-			sdb.deleteProject(id);
+			db_.deleteProject(id);
 			commitTransaction();
 		} catch (Exception e) {
 			rollbackTransaction();
@@ -498,8 +490,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 			if (p != null && task.getDueDate() != null
 					&& p.getDueDate() != null
 					&& DateUtil.isAfter(task.getDueDate(), p.getDueDate())) {
-				throw new Warning(Resource
-						.getResourceString("taskdd_warning"));
+				throw new Warning(Resource.getResourceString("taskdd_warning"));
 			}
 		}
 
@@ -638,14 +629,11 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 		ProjectXMLAdapter pa = new ProjectXMLAdapter();
 
 		// export projects
-		if (TaskModel.getReference().hasSubTasks()) {
-
-			for (Project p : getProjects()) {
-				XTree xt = pa.toXml(p);
-				fw.write(xt.toString());
-			}
-
+		for (Project p : getProjects()) {
+			XTree xt = pa.toXml(p);
+			fw.write(xt.toString());
 		}
+
 		// export tasks
 		for (Task task : getTasks()) {
 			XTree xt = ta.toXml(task);
@@ -655,21 +643,19 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 		SubtaskXMLAdapter sta = new SubtaskXMLAdapter();
 
 		// export subtasks
-		if (TaskModel.getReference().hasSubTasks()) {
-			for (Subtask stask : getSubTasks()) {
-				XTree xt = sta.toXml(stask);
-				fw.write(xt.toString());
-			}
-
-			TasklogXMLAdapter tla = new TasklogXMLAdapter();
-
-			// export tasklogs
-			for (Tasklog tlog : getLogs()) {
-				XTree xt = tla.toXml(tlog);
-				fw.write(xt.toString());
-			}
-
+		for (Subtask stask : getSubTasks()) {
+			XTree xt = sta.toXml(stask);
+			fw.write(xt.toString());
 		}
+
+		TasklogXMLAdapter tla = new TasklogXMLAdapter();
+
+		// export tasklogs
+		for (Tasklog tlog : getLogs()) {
+			XTree xt = tla.toXml(tlog);
+			fw.write(xt.toString());
+		}
+
 		fw.write("</TASKS>");
 
 	}
@@ -683,10 +669,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 	 *             the exception
 	 */
 	public Collection<Project> getProjects() throws Exception {
-		if (db_ instanceof TaskDB == false)
-			return new ArrayList<Project>();
-		TaskDB sdb = (TaskDB) db_;
-		return sdb.getProjects();
+		return db_.getProjects();
 	}
 
 	/**
@@ -701,11 +684,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 	 *             the exception
 	 */
 	public Project getProject(int id) throws Exception {
-		if (db_ instanceof TaskDB == false)
-			throw new Warning(Resource
-					.getResourceString("SubtaskNotSupported"));
-		TaskDB sdb = (TaskDB) db_;
-		return sdb.getProject(id);
+		return db_.getProject(id);
 	}
 
 	/**
@@ -777,8 +756,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 			} else if (ch.name().equals("Project")) {
 				Project p = pa.fromXml(ch);
 				try {
-					TaskDB sdb = (TaskDB) db_;
-					sdb.addProject(p);
+					db_.addProject(p);
 				} catch (Exception e) {
 					Errmsg.errmsg(e);
 				}
@@ -800,7 +778,6 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 		refreshListeners();
 	}
 
-	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -828,12 +805,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 	 *             the exception
 	 */
 	public Collection<Subtask> getSubTasks(int taskid) throws Exception {
-		if (db_ instanceof TaskDB == false)
-			throw new Warning(Resource
-					.getResourceString("SubtaskNotSupported"));
-
-		TaskDB sdb = (TaskDB) db_;
-		return sdb.getSubTasks(taskid);
+		return db_.getSubTasks(taskid);
 
 	}
 
@@ -846,13 +818,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 	 *             the exception
 	 */
 	public Collection<Subtask> getSubTasks() throws Exception {
-		if (db_ instanceof TaskDB == false)
-			throw new Warning(Resource
-					.getResourceString("SubtaskNotSupported"));
-
-		TaskDB sdb = (TaskDB) db_;
-		return sdb.getSubTasks();
-
+		return db_.getSubTasks();
 	}
 
 	/**
@@ -867,12 +833,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 	 *             the exception
 	 */
 	public Subtask getSubTask(int id) throws Exception {
-		if (db_ instanceof TaskDB == false)
-			throw new Warning(Resource
-					.getResourceString("SubtaskNotSupported"));
-
-		TaskDB sdb = (TaskDB) db_;
-		return sdb.getSubTask(id);
+		return db_.getSubTask(id);
 
 	}
 
@@ -888,13 +849,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 	 *             the exception
 	 */
 	public Collection<Task> getTasks(int projectid) throws Exception {
-		if (db_ instanceof TaskDB == false)
-			throw new Warning(Resource
-					.getResourceString("SubtaskNotSupported"));
-
-		TaskDB sdb = (TaskDB) db_;
-		return sdb.getTasks(projectid);
-
+		return db_.getTasks(projectid);
 	}
 
 	/**
@@ -909,12 +864,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 	 *             the exception
 	 */
 	public Collection<Project> getSubProjects(int projectid) throws Exception {
-		if (db_ instanceof TaskDB == false)
-			throw new Warning(Resource
-					.getResourceString("SubtaskNotSupported"));
-
-		TaskDB sdb = (TaskDB) db_;
-		return sdb.getSubProjects(projectid);
+		return db_.getSubProjects(projectid);
 
 	}
 
@@ -932,14 +882,10 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 	public Collection<Project> getAllSubProjects(int projectid)
 			throws Exception {
 		Collection<Project> c = new ArrayList<Project>();
-		if (db_ instanceof TaskDB == false)
-			throw new Warning(Resource
-					.getResourceString("SubtaskNotSupported"));
 		addSubProjectsToCollection(c, projectid);
 		return c;
 	}
 
-	
 	private void addSubProjectsToCollection(Collection<Project> c, int projectid)
 			throws Exception {
 
@@ -983,16 +929,11 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 	 *             the exception
 	 */
 	public void deleteSubTask(int id, boolean undo) throws Exception {
-		if (db_ instanceof TaskDB == false)
-			throw new Warning(Resource
-					.getResourceString("SubtaskNotSupported"));
-
-		TaskDB sdb = (TaskDB) db_;
 		if (!undo) {
-			Subtask st = sdb.getSubTask(id);
+			Subtask st = db_.getSubTask(id);
 			SubtaskUndoItem.recordDelete(st);
 		}
-		sdb.deleteSubTask(id);
+		db_.deleteSubTask(id);
 		load_map();
 		refreshListeners();
 	}
@@ -1014,33 +955,29 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 	 * Save a sub task.
 	 * 
 	 * @param s
-	 *            the subtask 
+	 *            the subtask
 	 * @param undo
-	 *           true if we are executing an undo
+	 *            true if we are executing an undo
 	 * 
 	 * @throws Exception
 	 *             the exception
 	 */
 	public void saveSubTask(Subtask s, boolean undo) throws Exception {
-		if (db_ instanceof TaskDB == false)
-			throw new Warning(Resource
-					.getResourceString("SubtaskNotSupported"));
 
-		TaskDB sdb = (TaskDB) db_;
-		if (s.getKey() <= 0 || null == sdb.getSubTask(s.getKey())) {
+		if (s.getKey() <= 0 || null == db_.getSubTask(s.getKey())) {
 			if (!undo || s.getKey() == -1)
-				s.setKey(sdb.nextSubTaskKey());
-			sdb.addSubTask(s);
+				s.setKey(db_.nextSubTaskKey());
+			db_.addSubTask(s);
 			if (!undo) {
-				Subtask st = sdb.getSubTask(s.getKey());
+				Subtask st = db_.getSubTask(s.getKey());
 				SubtaskUndoItem.recordAdd(st);
 			}
 		} else {
 			if (!undo) {
-				Subtask st = sdb.getSubTask(s.getKey());
+				Subtask st = db_.getSubTask(s.getKey());
 				SubtaskUndoItem.recordUpdate(st);
 			}
-			sdb.updateSubTask(s);
+			db_.updateSubTask(s);
 		}
 
 		load_map();
@@ -1059,12 +996,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 	 *             the exception
 	 */
 	public void addLog(int taskid, String desc) throws Exception {
-		if (db_ instanceof TaskDB == false)
-			return;
-		// throw new Exception(Resource
-		// .getResourceString("SubtaskNotSupported"));
-		TaskDB sdb = (TaskDB) db_;
-		sdb.addLog(taskid, desc);
+		db_.addLog(taskid, desc);
 	}
 
 	/**
@@ -1077,11 +1009,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 	 *             the exception
 	 */
 	private void saveLog(Tasklog tlog) throws Exception {
-		if (db_ instanceof TaskDB == false)
-			throw new Warning(Resource
-					.getResourceString("SubtaskNotSupported"));
-		TaskDB sdb = (TaskDB) db_;
-		sdb.saveLog(tlog);
+		db_.saveLog(tlog);
 	}
 
 	/**
@@ -1096,11 +1024,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 	 *             the exception
 	 */
 	public Collection<Tasklog> getLogs(int taskid) throws Exception {
-		if (db_ instanceof TaskDB == false)
-			throw new Warning(Resource
-					.getResourceString("SubtaskNotSupported"));
-		TaskDB sdb = (TaskDB) db_;
-		return sdb.getLogs(taskid);
+		return db_.getLogs(taskid);
 	}
 
 	/**
@@ -1112,11 +1036,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 	 *             the exception
 	 */
 	public Collection<Tasklog> getLogs() throws Exception {
-		if (db_ instanceof TaskDB == false)
-			throw new Warning(Resource
-					.getResourceString("SubtaskNotSupported"));
-		TaskDB sdb = (TaskDB) db_;
-		return sdb.getLogs();
+		return db_.getLogs();
 	}
 
 	/**
@@ -1188,26 +1108,13 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 		return days;
 	}
 
-	/**
-	 * Checks for sub task support
-	 * 
-	 * @return true, if the db supports subtasks (always true as of version 1.7)
-	 */
-	public boolean hasSubTasks() {
-		return db_ instanceof TaskDB;
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see net.sf.borg.model.Transactional#beginTransaction()
 	 */
 	public void beginTransaction() throws Exception {
-		if (db_ instanceof Transactional) {
-			Transactional t = (Transactional) db_;
-			t.beginTransaction();
-		}
-
+		db_.beginTransaction();
 	}
 
 	/*
@@ -1216,10 +1123,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 	 * @see net.sf.borg.model.Transactional#commitTransaction()
 	 */
 	public void commitTransaction() throws Exception {
-		if (db_ instanceof Transactional) {
-			Transactional t = (Transactional) db_;
-			t.commitTransaction();
-		}
+		db_.commitTransaction();
 	}
 
 	/*
@@ -1228,10 +1132,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 	 * @see net.sf.borg.model.Transactional#rollbackTransaction()
 	 */
 	public void rollbackTransaction() throws Exception {
-		if (db_ instanceof Transactional) {
-			Transactional t = (Transactional) db_;
-			t.rollbackTransaction();
-		}
+		db_.rollbackTransaction();
 	}
 
 	/**
@@ -1259,9 +1160,6 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 	 *             the exception
 	 */
 	public void saveProject(Project p, boolean undo) throws Exception {
-		if (db_ instanceof TaskDB == false)
-			throw new Warning(Resource
-					.getResourceString("SubtaskNotSupported"));
 
 		// validation that task due dates are before project due date
 		if (p.getKey() != -1) {
@@ -1310,11 +1208,10 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 			}
 		}
 
-		TaskDB sdb = (TaskDB) db_;
 		if (p.getKey() <= 0) {
 			if (!undo)
-				p.setKey(sdb.nextProjectKey());
-			sdb.addProject(p);
+				p.setKey(db_.nextProjectKey());
+			db_.addProject(p);
 			if (!undo) {
 				Project t = getProject(p.getKey());
 				UndoLog.getReference().addItem(ProjectUndoItem.recordAdd(t));
@@ -1324,7 +1221,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 				Project t = getProject(p.getKey());
 				UndoLog.getReference().addItem(ProjectUndoItem.recordUpdate(t));
 			}
-			sdb.updateProject(p);
+			db_.updateProject(p);
 		}
 
 		load_map();
