@@ -253,8 +253,7 @@ public class LinkModel extends Model {
      * @throws Exception the exception
      */
     public void deleteLinks(int id, Class<? extends KeyedEntity<?>> type) throws Exception {
-        if (!hasLinks())
-            return;
+       
         Collection<Link> atts = getLinks(id, type);
         Iterator<Link> it = atts.iterator();
         while (it.hasNext()) {
@@ -271,8 +270,7 @@ public class LinkModel extends Model {
      * @throws Exception the exception
      */
     public void deleteLinks(KeyedEntity<?> owner) throws Exception {
-        if (!hasLinks())
-            return;
+       
         Collection<Link> atts = getLinks(owner);
         Iterator<Link> it = atts.iterator();
         while (it.hasNext()) {
@@ -289,9 +287,7 @@ public class LinkModel extends Model {
      * @throws Exception the exception
      */
     public void export(Writer fw) throws Exception {
-        if (!hasLinks())
-            return;
-        // FileWriter fw = new FileWriter(fname);
+        
         fw.write("<LINKS>\n");
         LinkXMLAdapter ta = new LinkXMLAdapter();
         for( Link addr : getLinks())
@@ -377,17 +373,6 @@ public class LinkModel extends Model {
     }
 
     /**
-     * are links enabled
-     * 
-     * @return true, if the database supports links (as of 1.7, should always be true)
-     */
-    public boolean hasLinks() {
-        if (db_ != null)
-            return true;
-        return false;
-    }
-
-    /**
      * Import xml
      * 
      * @param xt the XML tree
@@ -395,8 +380,7 @@ public class LinkModel extends Model {
      * @throws Exception the exception
      */
     public void importXml(XTree xt) throws Exception {
-        if (!hasLinks())
-            return;
+       
         LinkXMLAdapter aa = new LinkXMLAdapter();
 
         for (int i = 1;; i++) {

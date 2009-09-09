@@ -72,17 +72,6 @@ public class MemoModel extends Model {
 	}
 
 	/**
-	 * Checks if memos are supported. Should always be true in 1.7.
-	 * 
-	 * @return true, if memos are supported
-	 */
-	public boolean hasMemos() {
-		if (db_ != null)
-			return true;
-		return false;
-	}
-
-	/**
 	 * Gets all memos.
 	 * 
 	 * @return all memos

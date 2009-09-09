@@ -44,7 +44,6 @@ import net.sf.borg.common.Prefs;
 import net.sf.borg.common.PrintHelper;
 import net.sf.borg.common.Resource;
 import net.sf.borg.control.Borg;
-import net.sf.borg.model.MemoModel;
 import net.sf.borg.model.entity.Project;
 import net.sf.borg.ui.address.AddrListView;
 import net.sf.borg.ui.calendar.DayPanel;
@@ -483,7 +482,7 @@ public class MultiView extends View {
 	 * @param selectedMemo the selected memo
 	 */
 	public void showMemos(String selectedMemo) {
-		if (MemoModel.getReference().hasMemos() && memoPanel == null)
+		if (memoPanel == null)
 			memoPanel = new MemoPanel();
 
 		if (memoPanel != null && !memoPanel.isDisplayable()) {

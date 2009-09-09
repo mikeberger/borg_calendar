@@ -561,9 +561,8 @@ class MainMenu {
 					+ TaskModel.getReference().getLogs().size() + "\n";
 			info += Resource.getResourceString("projects") + ": "
 					+ TaskModel.getReference().getProjects().size() + "\n";
-			if (MemoModel.getReference().hasMemos())
-				info += Resource.getResourceString("Memos") + ": "
-						+ MemoModel.getReference().getMemos().size() + "\n";
+			info += Resource.getResourceString("Memos") + ": "
+					+ MemoModel.getReference().getMemos().size() + "\n";
 			info += Resource.getResourceString("links") + ": "
 					+ LinkModel.getReference().getLinks().size() + "\n";
 		} catch (Exception e) {
@@ -642,25 +641,22 @@ class MainMenu {
 				fw.close();
 			}
 
-			if (MemoModel.getReference().hasMemos()) {
-				fname = dir.getAbsolutePath() + "/memo.xml";
-				if (IOHelper.checkOverwrite(fname)) {
-					OutputStream ostr = IOHelper.createOutputStream(fname);
-					Writer fw = new OutputStreamWriter(ostr, "UTF8");
-					MemoModel.getReference().export(fw);
-					fw.close();
-				}
+			fname = dir.getAbsolutePath() + "/memo.xml";
+			if (IOHelper.checkOverwrite(fname)) {
+				OutputStream ostr = IOHelper.createOutputStream(fname);
+				Writer fw = new OutputStreamWriter(ostr, "UTF8");
+				MemoModel.getReference().export(fw);
+				fw.close();
 			}
 
-			if (LinkModel.getReference().hasLinks()) {
-				fname = dir.getAbsolutePath() + "/link.xml";
-				if (IOHelper.checkOverwrite(fname)) {
-					OutputStream ostr = IOHelper.createOutputStream(fname);
-					Writer fw = new OutputStreamWriter(ostr, "UTF8");
-					LinkModel.getReference().export(fw);
-					fw.close();
-				}
+			fname = dir.getAbsolutePath() + "/link.xml";
+			if (IOHelper.checkOverwrite(fname)) {
+				OutputStream ostr = IOHelper.createOutputStream(fname);
+				Writer fw = new OutputStreamWriter(ostr, "UTF8");
+				LinkModel.getReference().export(fw);
+				fw.close();
 			}
+
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
 		}
