@@ -1,5 +1,5 @@
 ==================================
-RELEASE NOTES for BORG 1.7.1
+RELEASE NOTES for BORG 1.7.2
 ==================================
 
 The project home page is http://borg-calendar.sourceforge.net
@@ -21,6 +21,14 @@ Feel free to mail any translations to i_flem@users.sourceforge.net.
 There is nobody on the project actively updating the translations. Any
 received translations will be posted as patches.
 
+2. BORG 1.7.2 is not backward compatible with BORG 1.7.1 for appointments. Once you add
+appointments in 1.7.2, you will not be able revert back to 1.7.1.
+
+3. BORG 1.7.2 Eliminates some database fields and also changes the way appointments
+are keyed in the database. A database conversion tool is available to remove the old fields
+and renumber all appointments. This conversion is optional, and Borg 1.7.2 will run
+with no problem against a 1.7.1 database. Users wanting to convert the data can
+run: java -jar borg.jar -runtool ApptKeyConverter. 
 
 RUNNING
 -------
