@@ -1,3 +1,10 @@
+BORG 1.7.2 - TBD
+----------
+Feature [2769671] Add an address book search  
+Feature [2852664] support TLS for SMTP
+Feature [2846844] Code Cleanup and Javadoc 
+
+  
 BORG 1.7.1
 ----------
 Feature [2648806] add an undo feature
