@@ -254,7 +254,7 @@ public class YearPanel extends JPanel implements Printable {
 								Color bbg = null;
 
 								// default box color
-								Color c = new Color(Prefs.getIntPref(PrefName.UCS_DEFAULT));
+								Color c = new Color(Prefs.getIntPref(PrefName.UCS_WEEKDAY));
 
 								// if there are entities for the day...
 								if (dayInfo != null) {

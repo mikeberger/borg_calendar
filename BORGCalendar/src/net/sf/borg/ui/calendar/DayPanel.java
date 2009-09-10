@@ -86,6 +86,8 @@ public class DayPanel extends JPanel implements Printable {
 		// from cached data
 		private boolean needLoad = true;
 
+		// background color
+		private Color backgroundColor = null;
 
 		/**
 		 * Instantiates a new day sub panel.
@@ -207,25 +209,7 @@ public class DayPanel extends JPanel implements Printable {
 			g2.setColor(this.getBackground());
 			g2.fillRect(0, caltop, (int) timecolwidth, calbot - caltop);
 
-			// draw background for day area with the user color
-			g2.setColor(new Color(Prefs.getIntPref(PrefName.UCS_DEFAULT)));
-			g2
-					.fillRect((int) timecolwidth, caltop,
-							(int) (pageWidth - timecolwidth), (int) pageHeight
-									- caltop);
-			g2.setColor(Color.BLACK);
-
-			// draw dashed lines for 1/2 hour intervals
-			Stroke defstroke = g2.getStroke();
-			g2.setStroke(dashed);
-			for (int row = 0; row < numhalfhours; row++) {
-				int rowtop = (int) ((row * tickheight) + aptop);
-				g2
-						.drawLine((int) timecolwidth, rowtop, (int) pageWidth,
-								rowtop);
-			}
-			g2.setStroke(defstroke);
-
+			
 			// set small font for appt text
 			g2.setFont(sm_font);
 			int smfontHeight = g2.getFontMetrics().getHeight();
@@ -245,15 +229,50 @@ public class DayPanel extends JPanel implements Printable {
 					endmin = endhr * 60;
 					
 					// get the day's items from the model
-					Day di = Day.getDay(cal.get(Calendar.YEAR), cal
+					Day dayInfo = Day.getDay(cal.get(Calendar.YEAR), cal
 							.get(Calendar.MONTH), cal.get(Calendar.DATE));
+					
+					// set a different background color based on various
+					// circumstances
+					backgroundColor = null;
+					int dow = cal.get(Calendar.DAY_OF_WEEK);
+					Calendar today = new GregorianCalendar();
+					if (today.get(Calendar.MONTH) == month_
+							&& today.get(Calendar.YEAR) == year_
+							&& today.get(Calendar.DATE) == cal
+									.get(Calendar.DATE)) {
+						// day is today
+						backgroundColor = new Color(Prefs
+								.getIntPref(PrefName.UCS_TODAY));
+					} else if (dayInfo.getHoliday() != 0) {
+						// holiday
+						backgroundColor = new Color(Prefs
+								.getIntPref(PrefName.UCS_HOLIDAY));
+					} else if (dayInfo.getVacation() == 1) {
+						// full day vacation
+						backgroundColor = new Color(Prefs
+								.getIntPref(PrefName.UCS_VACATION));
+					} else if (dayInfo.getVacation() == 2) {
+						// half-day vacation
+						backgroundColor = new Color(Prefs
+								.getIntPref(PrefName.UCS_HALFDAY));
+					} else if (dow == Calendar.SUNDAY
+							|| dow == Calendar.SATURDAY) {
+						// weekend
+						backgroundColor = new Color(Prefs
+								.getIntPref(PrefName.UCS_WEEKEND));
+					} else {
+						// weekday
+						backgroundColor = new Color(Prefs
+								.getIntPref(PrefName.UCS_WEEKDAY));
+					}
 
 					// determine initial Y coord for non-scheduled appts (notes)
 					// they will be above the timed appt area
 					int notey = caltop;
 
 					// loop through entities
-					for( CalendarEntity entity : di.getItems()) {
+					for( CalendarEntity entity : dayInfo.getItems()) {
 						
 						Date d = entity.getDate();
 						
@@ -321,6 +340,26 @@ public class DayPanel extends JPanel implements Printable {
 				ApptBox.layoutBoxes(layoutlist, starthr, endhr);
 
 			}
+			
+			// draw background for day area with the user color
+			g2.setColor(backgroundColor);
+			g2
+					.fillRect((int) timecolwidth, caltop,
+							(int) (pageWidth - timecolwidth), (int) pageHeight
+									- caltop);
+			g2.setColor(Color.BLACK);
+
+			// draw dashed lines for 1/2 hour intervals
+			Stroke defstroke = g2.getStroke();
+			g2.setStroke(dashed);
+			for (int row = 0; row < numhalfhours; row++) {
+				int rowtop = (int) ((row * tickheight) + aptop);
+				g2
+						.drawLine((int) timecolwidth, rowtop, (int) pageWidth,
+								rowtop);
+			}
+			g2.setStroke(defstroke);
+
 			
 			// draw all boxes
 			g2.setClip(s);

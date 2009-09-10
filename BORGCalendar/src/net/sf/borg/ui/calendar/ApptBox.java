@@ -310,18 +310,8 @@ class ApptBox extends Box implements Box.Draggable {
 	// the appointment associated with this box
 	private Appointment appt = null;
 
-	// border color
-	private Color bordercolor[] = null;
-
 	// fraction of the available grid height at which the bottom should be drawn
 	private double bottom; 
-
-	// color of the box interior
-	private Color boxcolor[] = null;
-
-	// counter passed in from outside indicating the number of this box on the screen
-	// used to choose the colors so that we cycle through various colors
-	private int boxnum;
 
 	private Date date; // date being displayed - not necessarily date of the appt
 	
@@ -413,6 +403,37 @@ class ApptBox extends Box implements Box.Draggable {
 		Map<TextAttribute, Serializable> stmap = new HashMap<TextAttribute, Serializable>();
 		stmap.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
 		stmap.put(TextAttribute.FONT, sm_font);
+		
+		// determine appt text color based on "logical" color
+		// which maps the legacy color names to the new user color prefs
+		// the legacy names have no special meaning
+		Color textColor = Color.BLACK;
+		textColor = Color.BLACK;
+		if (getTextColor().equals("red"))
+			textColor = new Color(Integer.parseInt(Prefs
+					.getPref(PrefName.UCS_RED)));
+		else if (getTextColor().equals("green"))
+			textColor = new Color(Integer.parseInt(Prefs
+					.getPref(PrefName.UCS_GREEN)));
+		else if (getTextColor().equals("blue"))
+			textColor = new Color(Integer.parseInt(Prefs
+					.getPref(PrefName.UCS_BLUE)));
+		else if (getTextColor().equals("black"))
+			textColor = new Color(Integer.parseInt(Prefs
+					.getPref(PrefName.UCS_BLACK)));
+		else if (getTextColor().equals("white"))
+			textColor = new Color(Integer.parseInt(Prefs
+					.getPref(PrefName.UCS_WHITE)));
+		else if (getTextColor().equals("navy"))
+			textColor = new Color(Integer.parseInt(Prefs
+					.getPref(PrefName.UCS_NAVY)));
+		else if (getTextColor().equals("purple"))
+			textColor = new Color(Integer.parseInt(Prefs
+					.getPref(PrefName.UCS_PURPLE)));
+		else if (getTextColor().equals("brick"))
+			textColor = new Color(Integer.parseInt(Prefs
+					.getPref(PrefName.UCS_BRICK)));
+
 
 		// resize todoIcon if needed to match the text size
 		if (oldFontHeight != smfontHeight) {
@@ -440,14 +461,14 @@ class ApptBox extends Box implements Box.Draggable {
 		}
 
 		// draw the box
-		g2.setColor(getBoxColor(boxnum));
+		g2.setColor(getBoxColor());
 		g2.fillRoundRect(bounds.x + (int) hlthickness, bounds.y
 				+ (int) hlthickness, bounds.width - (int) hlthickness,
 				bounds.height - (int) hlthickness, radius * radius, radius
 						* radius);
 		
 		// add a border around the box
-		g2.setColor(getBorderColor(boxnum));
+		g2.setColor(textColor);
 		g2.setStroke(highlight);
 		if (isSelected) {
 			// set the border to a different color if it is selected
@@ -465,35 +486,8 @@ class ApptBox extends Box implements Box.Draggable {
 		// set the clip for the appt text
 		g2.clipRect(bounds.x, bounds.y, bounds.width, bounds.height);
 
-		// determine appt text color based on "logical" color
-		// which maps the legacy color names to the new user color prefs
-		// the legacy names have no special meaning
-		g2.setColor(Color.BLACK);
-		if (getTextColor().equals("red"))
-			g2.setColor(new Color(Integer.parseInt(Prefs
-					.getPref(PrefName.UCS_RED))));
-		else if (getTextColor().equals("green"))
-			g2.setColor(new Color(Integer.parseInt(Prefs
-					.getPref(PrefName.UCS_GREEN))));
-		else if (getTextColor().equals("blue"))
-			g2.setColor(new Color(Integer.parseInt(Prefs
-					.getPref(PrefName.UCS_BLUE))));
-		else if (getTextColor().equals("black"))
-			g2.setColor(new Color(Integer.parseInt(Prefs
-					.getPref(PrefName.UCS_BLACK))));
-		else if (getTextColor().equals("white"))
-			g2.setColor(new Color(Integer.parseInt(Prefs
-					.getPref(PrefName.UCS_WHITE))));
-		else if (getTextColor().equals("navy"))
-			g2.setColor(new Color(Integer.parseInt(Prefs
-					.getPref(PrefName.UCS_NAVY))));
-		else if (getTextColor().equals("purple"))
-			g2.setColor(new Color(Integer.parseInt(Prefs
-					.getPref(PrefName.UCS_PURPLE))));
-		else if (getTextColor().equals("brick"))
-			g2.setColor(new Color(Integer.parseInt(Prefs
-					.getPref(PrefName.UCS_BRICK))));
-
+		g2.setColor(textColor);
+		
 		// appt text
 		String text = getText();
 		
@@ -545,30 +539,6 @@ class ApptBox extends Box implements Box.Draggable {
 	}
 
 	/**
-	 * get the border color.
-	 * 
-	 * @param i index used to vary the color
-	 * 
-	 * @return the border color
-	 */
-	private Color getBorderColor(int i) {
-		if (bordercolor == null) {
-			bordercolor = new Color[8];
-			bordercolor[0] = new Color(255, 100, 100);
-			bordercolor[1] = new Color(100, 100, 255);
-			bordercolor[2] = new Color(100, 255, 100);
-			bordercolor[3] = new Color(255, 255, 100);
-			bordercolor[4] = new Color(100, 255, 255);
-			bordercolor[5] = new Color(255, 100, 255);
-			bordercolor[6] = new Color(100, 100, 100);
-			bordercolor[7] = new Color(255, 255, 255);
-		}
-
-		return bordercolor[i % bordercolor.length];
-	}
-
-
-	/**
 	 * Gets the bottom adjustment.
 	 * 
 	 * @return the bottom adjustment
@@ -578,26 +548,13 @@ class ApptBox extends Box implements Box.Draggable {
 	}
 
 	/**
-	 * Gets the box color.
-	 * 
-	 * @param i the index used to vary the box color
-	 * 
+	 * Gets the box color 
+	 * 	
 	 * @return the box color
 	 */
-	private Color getBoxColor(int i) {
-		if (boxcolor == null) {
-			boxcolor = new Color[8];
-			boxcolor[0] = new Color(255, 235, 235);
-			boxcolor[1] = new Color(235, 235, 255);
-			boxcolor[2] = new Color(235, 255, 235);
-			boxcolor[3] = new Color(255, 255, 235);
-			boxcolor[4] = new Color(235, 255, 255);
-			boxcolor[5] = new Color(255, 235, 255);
-			boxcolor[6] = new Color(235, 235, 235);
-			boxcolor[7] = new Color(255, 255, 255);
-		}
-
-		return boxcolor[i % boxcolor.length];
+	private Color getBoxColor() {
+		return new Color(Prefs
+				.getIntPref(PrefName.UCS_DEFAULT));
 	}
 
 	/**
@@ -903,15 +860,6 @@ class ApptBox extends Box implements Box.Draggable {
 	 */
 	private void setBottomAdjustment(double bottom) {
 		this.bottom = bottom;
-	}
-
-	/**
-	 * Sets the boxnum.
-	 * 
-	 * @param boxnum the new boxnum
-	 */
-	public void setBoxnum(int boxnum) {
-		this.boxnum = boxnum;
 	}
 
 	/**

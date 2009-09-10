@@ -61,14 +61,14 @@ import net.sf.borg.ui.NavPanel;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 
 /**
- * WeekPanel is the UI for a single week.  It consists of a Navigator attached
- * to a WeekSubPanel
+ * WeekPanel is the UI for a single week. It consists of a Navigator attached to
+ * a WeekSubPanel
  */
 public class WeekPanel extends JPanel implements Printable {
 
 	/**
 	 * WeekSubPanel is the Panel that shows the items for a week with a section
-	 * for untimed items and a time-grid for timed items 
+	 * for untimed items and a time-grid for timed items
 	 */
 	private class WeekSubPanel extends ApptBoxPanel implements
 			NavPanel.Navigator, Prefs.Listener, Model.Listener, Printable,
@@ -90,32 +90,40 @@ public class WeekPanel extends JPanel implements Printable {
 		private int month_;
 		private int year_;
 
-		// flag to indicate if we need to reload from the model. If false, we can just redraw
+		// flag to indicate if we need to reload from the model. If false, we
+		// can just redraw
 		// from cached data
 		private boolean needLoad = true;
 
 		// width of time column (where times are shown for y axis)
 		private double timecolwidth = 0;
 
+		// daily background colors
+		private Color backgroundColors[] = new Color[7];
+
 		/**
 		 * constructor
-		 * @param month month 
-		 * @param year year
-		 * @param date date
+		 * 
+		 * @param month
+		 *            month
+		 * @param year
+		 *            year
+		 * @param date
+		 *            date
 		 */
 		public WeekSubPanel(int month, int year, int date) {
 			year_ = year;
 			month_ = month;
 			date_ = date;
-			
+
 			clearData();
-			
+
 			// react to pref changes
 			Prefs.addListener(this);
-			
+
 			// react to mouse wheel changes
 			addMouseWheelListener(this);
-			
+
 			// react to appt or task model changes
 			AppointmentModel.getReference().addListener(this);
 			TaskModel.getReference().addListener(this);
@@ -176,9 +184,9 @@ public class WeekPanel extends JPanel implements Printable {
 
 			// top of drawn week - used to be non-zero to fit a title
 			int caltop = 0;
-			
+
 			// top of untimed region - under day name
-			int daytop = caltop + fontHeight + fontDesent; 
+			int daytop = caltop + fontHeight + fontDesent;
 
 			// height of box containing day's appts
 			double rowheight = pageHeight - daytop;
@@ -196,12 +204,14 @@ public class WeekPanel extends JPanel implements Printable {
 			// calculate the bottom edge of the grid
 			int calbot = (int) rowheight + daytop;
 
-			// limit resize (and dragging out of new items) to the time-grid (timed appt area)
+			// limit resize (and dragging out of new items) to the time-grid
+			// (timed appt area)
 			setResizeBounds((int) aptop, calbot);
-			
-			// allow dragging of items across the entire week - including both timed and untimed areas)
-			setDragBounds(daytop, calbot, (int) timecolwidth, (int) (pageWidth));
 
+			// allow dragging of items across the entire week - including both
+			// timed and untimed areas)
+			setDragBounds(daytop, calbot, (int) timecolwidth, (int) (pageWidth));
+			
 			// start and end hour = range of Y axis
 			String shr = Prefs.getPref(PrefName.WKSTARTHOUR);
 			String ehr = Prefs.getPref(PrefName.WKENDHOUR);
@@ -224,25 +234,7 @@ public class WeekPanel extends JPanel implements Printable {
 			// set time label column to default background
 			g2.setColor(this.getBackground());
 			g2.fillRect(0, caltop, (int) timecolwidth, calbot - caltop);
-
-			// draw background for appt area
-			g2.setColor(new Color(Prefs.getIntPref(PrefName.UCS_DEFAULT)));
-			g2
-					.fillRect((int) timecolwidth, daytop,
-							(int) (pageWidth - timecolwidth), (int) pageHeight
-									- daytop);
 			g2.setColor(Color.BLACK);
-
-			// draw dashed lines for 1/2 hour intervals
-			Stroke defstroke = g2.getStroke();
-			g2.setStroke(dashed);
-			for (int row = 0; row < numhalfhours; row++) {
-				int rowtop = (int) ((row * tickheight) + aptop);
-				g2
-						.drawLine((int) timecolwidth, rowtop, (int) pageWidth,
-								rowtop);
-			}
-			g2.setStroke(defstroke);
 
 			// set small font for appt text
 			g2.setFont(sm_font);
@@ -257,6 +249,8 @@ public class WeekPanel extends JPanel implements Printable {
 				// load data from model if needed
 				if (needLoad) {
 
+					Calendar today = new GregorianCalendar();
+
 					// add a zone for this day
 					addDateZone(cal.getTime(), new Rectangle(colleft, 0,
 							(int) colwidth, calbot));
@@ -264,20 +258,55 @@ public class WeekPanel extends JPanel implements Printable {
 					try {
 						startmin = starthr * 60;
 						endmin = endhr * 60;
-						
+
 						// get the day's items
 						Day dayInfo = Day.getDay(cal.get(Calendar.YEAR), cal
 								.get(Calendar.MONTH), cal.get(Calendar.DATE));
+
+						// set a different background color based on various
+						// circumstances
+						Color backgroundColor = null;
+						int dow = cal.get(Calendar.DAY_OF_WEEK);
+						if (today.get(Calendar.MONTH) == month_
+								&& today.get(Calendar.YEAR) == year_
+								&& today.get(Calendar.DATE) == cal
+										.get(Calendar.DATE)) {
+							// day is today
+							backgroundColor = new Color(Prefs
+									.getIntPref(PrefName.UCS_TODAY));
+						} else if (dayInfo.getHoliday() != 0) {
+							// holiday
+							backgroundColor = new Color(Prefs
+									.getIntPref(PrefName.UCS_HOLIDAY));
+						} else if (dayInfo.getVacation() == 1) {
+							// full day vacation
+							backgroundColor = new Color(Prefs
+									.getIntPref(PrefName.UCS_VACATION));
+						} else if (dayInfo.getVacation() == 2) {
+							// half-day vacation
+							backgroundColor = new Color(Prefs
+									.getIntPref(PrefName.UCS_HALFDAY));
+						} else if (dow == Calendar.SUNDAY
+								|| dow == Calendar.SATURDAY) {
+							// weekend
+							backgroundColor = new Color(Prefs
+									.getIntPref(PrefName.UCS_WEEKEND));
+						} else {
+							// weekday
+							backgroundColor = new Color(Prefs
+									.getIntPref(PrefName.UCS_WEEKDAY));
+						}
+						backgroundColors[col] = backgroundColor;
 
 						// determine Y coord for non-scheduled appts (notes)
 						// they will be above the timed appt area
 						int notey = daytop;// + smfontHeight;
 
 						// loop through appts
-						for( CalendarEntity entity : dayInfo.getItems()) {
+						for (CalendarEntity entity : dayInfo.getItems()) {
 
 							Date d = entity.getDate();
-							
+
 							// sanity check - should not happen
 							if (d == null)
 								continue;
@@ -296,8 +325,10 @@ public class WeekPanel extends JPanel implements Printable {
 							double apendmin = apstartmin + dur;
 
 							// check if the entity is a note (untime)
-							// an entity can only be timed if it is an appointment
-							// that fits in the time-grid, has a duration, and is timed
+							// an entity can only be timed if it is an
+							// appointment
+							// that fits in the time-grid, has a duration, and
+							// is timed
 							if (!(entity instanceof Appointment)
 									|| AppointmentModel
 											.isNote((Appointment) entity)
@@ -317,7 +348,8 @@ public class WeekPanel extends JPanel implements Printable {
 									notey += smfontHeight;
 								}
 							} else {
-								// appt box bounds and clip are set to the day's column in the grid.
+								// appt box bounds and clip are set to the day's
+								// column in the grid.
 								// will be laid out later
 								addApptBox(cal.getTime(), (Appointment) entity,
 										new Rectangle(colleft + 4, (int) aptop,
@@ -352,23 +384,15 @@ public class WeekPanel extends JPanel implements Printable {
 
 				// reset the clip or bad things happen
 				g2.setClip(s);
-				
-				// draw column background
+
+				// adjust for rounding errors
+				int nextColumnLeft = (int) (timecolwidth + (col+1) * colwidth);
+				int fixedWidth = nextColumnLeft - colleft;
 				g2.setColor(this.getBackground());
-				g2.fillRect(colleft, caltop, (int) (colwidth), daytop - caltop);
+				g2.fillRect(colleft, caltop, fixedWidth, daytop - caltop);
 
-				// highlight current day
-				Calendar today = new GregorianCalendar();
-				if (today.get(Calendar.YEAR) == cal.get(Calendar.YEAR)
-						&& today.get(Calendar.MONTH) == cal.get(Calendar.MONTH)
-						&& today.get(Calendar.DATE) == cal.get(Calendar.DATE)) {
-					g2
-							.setColor(new Color(Prefs
-									.getIntPref(PrefName.UCS_TODAY)));
-					g2.fillRect(colleft, caltop, (int) (colwidth), daytop
-							- caltop);
-
-				}
+				g2.setColor(backgroundColors[col]);
+				g2.fillRect(colleft, caltop, fixedWidth, calbot - caltop);
 
 				g2.setColor(Color.black);
 
@@ -378,6 +402,18 @@ public class WeekPanel extends JPanel implements Printable {
 			}
 
 			needLoad = false;
+			
+			// draw dashed lines for 1/2 hour intervals
+			Stroke defstroke = g2.getStroke();
+			g2.setStroke(dashed);
+			for (int row = 0; row < numhalfhours; row++) {
+				int rowtop = (int) ((row * tickheight) + aptop);
+				g2
+						.drawLine((int) timecolwidth, rowtop, (int) pageWidth,
+								rowtop);
+			}
+			g2.setStroke(defstroke);
+
 
 			// draw all boxes for the week
 			drawBoxes(g2);
@@ -471,7 +507,7 @@ public class WeekPanel extends JPanel implements Printable {
 			cal.add(Calendar.DATE, 6);
 			Date end = cal.getTime();
 			DateFormat df = DateFormat.getDateInstance(DateFormat.LONG);
-			
+
 			return df.format(beg) + " "
 					+ Resource.getResourceString("__through__") + " "
 					+ df.format(end);
@@ -603,27 +639,35 @@ public class WeekPanel extends JPanel implements Printable {
 
 	/**
 	 * constructor
-	 * @param month month
-	 * @param year year
-	 * @param date date
+	 * 
+	 * @param month
+	 *            month
+	 * @param year
+	 *            year
+	 * @param date
+	 *            date
 	 */
 	public WeekPanel(int month, int year, int date) {
 
 		// create the week container panel
 		wp_ = new WeekSubPanel(month, year, date);
-		
+
 		// create the navigator
 		nav = new NavPanel(wp_);
 
 		setLayout(new java.awt.GridBagLayout());
-		add(nav, GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH));
-		add(wp_, GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH, 1.0, 1.0));
+		add(nav, GridBagConstraintsFactory
+				.create(0, 0, GridBagConstraints.BOTH));
+		add(wp_, GridBagConstraintsFactory.create(0, 1,
+				GridBagConstraints.BOTH, 1.0, 1.0));
 
 	}
 
 	/**
 	 * go to a particular week
-	 * @param cal a day in the week
+	 * 
+	 * @param cal
+	 *            a day in the week
 	 */
 	public void goTo(Calendar cal) {
 		wp_.goTo(cal);
