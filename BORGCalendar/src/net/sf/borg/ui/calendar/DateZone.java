@@ -105,7 +105,14 @@ class DateZone {
 					.getResourceString("todoquickentry")));
 			mnuitm.addActionListener(new ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					quick_todo();
+					quickAdd(true);
+				}
+			});
+			popmenu.add(mnuitm = new JMenuItem(Resource
+					.getResourceString("Quick_Note")));
+			mnuitm.addActionListener(new ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					quickAdd(false);
 				}
 			});
 
@@ -127,10 +134,11 @@ class DateZone {
 	}
 
 	/**
-	 * quick todo menu action - prompt for text and create a todo appt based
+	 * quick add menu action - prompt for text and create an appt based
 	 * on default values
+	 * @param todo - true if added appt should be a todo
 	 */
-	private void quick_todo() {
+	private void quickAdd(boolean todo) {
 
 		// prompt for todo text
 		String tdtext = JOptionPane.showInputDialog("", Resource
@@ -160,7 +168,7 @@ class DateZone {
 		cal.set(Calendar.AM_PM, Calendar.AM);
 		r.setDate(cal.getTime());
 		r.setText(tdtext);
-		r.setTodo(true);
+		r.setTodo(todo);
 		r.setUntimed("Y");
 
 		AppointmentModel.getReference().saveAppt(r);

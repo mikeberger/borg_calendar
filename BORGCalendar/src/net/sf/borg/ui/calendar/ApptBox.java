@@ -553,11 +553,15 @@ class ApptBox extends Box implements Box.Draggable {
 	 */
 	private Color getBorderColor(int i) {
 		if (bordercolor == null) {
-			bordercolor = new Color[4];
+			bordercolor = new Color[8];
 			bordercolor[0] = new Color(255, 100, 100);
 			bordercolor[1] = new Color(100, 100, 255);
-			bordercolor[3] = new Color(255, 255, 100);
 			bordercolor[2] = new Color(100, 255, 100);
+			bordercolor[3] = new Color(255, 255, 100);
+			bordercolor[4] = new Color(100, 255, 255);
+			bordercolor[5] = new Color(255, 100, 255);
+			bordercolor[6] = new Color(100, 100, 100);
+			bordercolor[7] = new Color(255, 255, 255);
 		}
 
 		return bordercolor[i % bordercolor.length];
@@ -582,11 +586,15 @@ class ApptBox extends Box implements Box.Draggable {
 	 */
 	private Color getBoxColor(int i) {
 		if (boxcolor == null) {
-			boxcolor = new Color[4];
+			boxcolor = new Color[8];
 			boxcolor[0] = new Color(255, 235, 235);
 			boxcolor[1] = new Color(235, 235, 255);
-			boxcolor[3] = new Color(255, 255, 235);
 			boxcolor[2] = new Color(235, 255, 235);
+			boxcolor[3] = new Color(255, 255, 235);
+			boxcolor[4] = new Color(235, 255, 255);
+			boxcolor[5] = new Color(255, 235, 255);
+			boxcolor[6] = new Color(235, 235, 235);
+			boxcolor[7] = new Color(255, 255, 255);
 		}
 
 		return boxcolor[i % boxcolor.length];

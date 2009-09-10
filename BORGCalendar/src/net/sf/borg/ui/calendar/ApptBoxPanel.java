@@ -633,6 +633,9 @@ abstract class ApptBoxPanel extends JPanel {
 
 	// DateZones managed by this container
 	private Collection<DateZone> zones = new ArrayList<DateZone>();
+	
+	// for rotating colors among appt boxes
+	private int numApptBoxes = 0;
 
 	/**
 	 * Instantiates a new appt box panel.
@@ -663,8 +666,8 @@ abstract class ApptBoxPanel extends JPanel {
 			return;
 		ApptBox b = new ApptBox(d, ap, bounds, clip);
 
-		// assign a unique index which will eventually be used to vary the box colors
-		b.setBoxnum(boxes.size());
+		// assign a unique index which will eventually be used to vary the box colors	
+		b.setBoxnum(numApptBoxes++);
 
 		boxes.add(b);
 	}
@@ -716,6 +719,7 @@ abstract class ApptBoxPanel extends JPanel {
 	 * Clear boxes and zones.
 	 */
 	public void clearBoxes() {
+		numApptBoxes = 0;
 		boxes.clear();
 		zones.clear();
 	}
