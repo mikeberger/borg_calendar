@@ -1333,37 +1333,37 @@ public class OptionsView extends View {
 
 			btn_ucs_restore.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					btn_ucs_red.setColorProperty(new Color(13369395));
+					btn_ucs_red.setColorProperty(new Color((Integer)PrefName.UCS_RED.getDefault()));
 					btn_ucs_red.setColorByProperty();
-					btn_ucs_blue.setColorProperty(new Color(6684876));
+					btn_ucs_blue.setColorProperty(new Color((Integer)PrefName.UCS_BLUE.getDefault()));
 					btn_ucs_blue.setColorByProperty();
-					btn_ucs_green.setColorProperty(new Color(39168));
+					btn_ucs_green.setColorProperty(new Color((Integer)PrefName.UCS_GREEN.getDefault()));
 					btn_ucs_green.setColorByProperty();
-					btn_ucs_black.setColorProperty(new Color(13107));
+					btn_ucs_black.setColorProperty(new Color((Integer)PrefName.UCS_BLACK.getDefault()));
 					btn_ucs_black.setColorByProperty();
-					btn_ucs_white.setColorProperty(new Color(16250609));
+					btn_ucs_white.setColorProperty(new Color((Integer)PrefName.UCS_WHITE.getDefault()));
 					btn_ucs_white.setColorByProperty();
-					btn_ucs_tasks.setColorProperty(new Color(13158));
+					btn_ucs_tasks.setColorProperty(new Color((Integer)PrefName.UCS_NAVY.getDefault()));
 					btn_ucs_tasks.setColorByProperty();
-					btn_ucs_holidays.setColorProperty(new Color(10027212));
+					btn_ucs_holidays.setColorProperty(new Color((Integer)PrefName.UCS_PURPLE.getDefault()));
 					btn_ucs_holidays.setColorByProperty();
-					btn_ucs_birthdays.setColorProperty(new Color(10027008));
+					btn_ucs_birthdays.setColorProperty(new Color((Integer)PrefName.UCS_BRICK.getDefault()));
 					btn_ucs_birthdays.setColorByProperty();
-					btn_ucs_default.setColorProperty(new Color(16777164));
+					btn_ucs_default.setColorProperty(new Color((Integer)PrefName.UCS_DEFAULT.getDefault()));
 					btn_ucs_default.setColorByProperty();
-					btn_ucs_today.setColorProperty(new Color(16751001));
+					btn_ucs_today.setColorProperty(new Color((Integer)PrefName.UCS_TODAY.getDefault()));
 					btn_ucs_today.setColorByProperty();
-					btn_ucs_holiday.setColorProperty(new Color(16764108));
+					btn_ucs_holiday.setColorProperty(new Color((Integer)PrefName.UCS_HOLIDAY.getDefault()));
 					btn_ucs_holiday.setColorByProperty();
-					btn_ucs_vacation.setColorProperty(new Color(13434828));
+					btn_ucs_vacation.setColorProperty(new Color((Integer)PrefName.UCS_VACATION.getDefault()));
 					btn_ucs_vacation.setColorByProperty();
-					btn_ucs_halfday.setColorProperty(new Color(13421823));
+					btn_ucs_halfday.setColorProperty(new Color((Integer)PrefName.UCS_HALFDAY.getDefault()));
 					btn_ucs_halfday.setColorByProperty();
-					btn_ucs_weekend.setColorProperty(new Color(16764057));
+					btn_ucs_weekend.setColorProperty(new Color((Integer)PrefName.UCS_WEEKEND.getDefault()));
 					btn_ucs_weekend.setColorByProperty();
-					btn_ucs_weekday.setColorProperty(new Color(16777164));
+					btn_ucs_weekday.setColorProperty(new Color((Integer)PrefName.UCS_WEEKDAY.getDefault()));
 					btn_ucs_weekday.setColorByProperty();
-					btn_ucs_stripe.setColorProperty(new Color(15792890));
+					btn_ucs_stripe.setColorProperty(new Color((Integer)PrefName.UCS_STRIPE.getDefault()));
 					btn_ucs_stripe.setColorByProperty();
 				}
 			});

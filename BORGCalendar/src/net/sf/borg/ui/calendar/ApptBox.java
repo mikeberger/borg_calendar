@@ -18,14 +18,14 @@
  */
 package net.sf.borg.ui.calendar;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
+import java.awt.GradientPaint;
 import java.awt.Graphics2D;
+import java.awt.Paint;
 import java.awt.Rectangle;
 import java.awt.Shape;
-import java.awt.Stroke;
 import java.awt.event.ActionListener;
 import java.awt.font.FontRenderContext;
 import java.awt.font.LineBreakMeasurer;
@@ -71,11 +71,8 @@ import net.sf.borg.ui.MultiView;
  * and week UIs.
  */
 class ApptBox extends Box implements Box.Draggable {
-
-	// for drawing the box border
-	final static private BasicStroke highlight = new BasicStroke(2.0f);
 	
-	final static private float hlthickness = 2.0f;
+	final static private int inset = 2;
 
 	// rounded rectangle radius
 	final static private int radius = 5;
@@ -391,7 +388,6 @@ class ApptBox extends Box implements Box.Draggable {
 	 */
 	@Override
 	public void draw(Graphics2D g2, Component comp) {
-		Stroke stroke = g2.getStroke();
 		Shape s = g2.getClip();
 		if (clip != null)
 			g2.setClip(clip);
@@ -461,27 +457,30 @@ class ApptBox extends Box implements Box.Draggable {
 		}
 
 		// draw the box
-		g2.setColor(getBoxColor());
-		g2.fillRoundRect(bounds.x + (int) hlthickness, bounds.y
-				+ (int) hlthickness, bounds.width - (int) hlthickness,
-				bounds.height - (int) hlthickness, radius * radius, radius
+		Paint paint = g2.getPaint();
+		GradientPaint gp = new GradientPaint(bounds.x, bounds.y + inset + smfontHeight, getBoxColor(),
+				bounds.x, bounds.y + 2*bounds.height, textColor);
+		g2.setPaint(gp);
+		
+		g2.fillRoundRect(bounds.x + inset, bounds.y
+				+ inset, bounds.width - inset,
+				bounds.height - inset, radius * radius, radius
 						* radius);
 		
+		g2.setPaint(paint);
 		// add a border around the box
 		g2.setColor(textColor);
-		g2.setStroke(highlight);
 		if (isSelected) {
 			// set the border to a different color if it is selected
 			g2.setColor(Color.CYAN);
 		}
 		
 		// draw the border
-		g2.drawRoundRect(bounds.x + (int) hlthickness, bounds.y
-				+ (int) hlthickness, bounds.width - (int) hlthickness,
-				bounds.height - (int) hlthickness, radius * radius, radius
+		g2.drawRoundRect(bounds.x + inset, bounds.y
+				+ inset, bounds.width - inset,
+				bounds.height - inset, radius * radius, radius
 						* radius);
 		
-		g2.setStroke(stroke);
 
 		// set the clip for the appt text
 		g2.clipRect(bounds.x, bounds.y, bounds.width, bounds.height);

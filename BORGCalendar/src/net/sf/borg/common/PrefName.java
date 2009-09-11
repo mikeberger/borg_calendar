@@ -80,7 +80,7 @@ public class PrefName {
 	 * 
 	 * @return the default
 	 */
-	Object getDefault() {
+	public Object getDefault() {
 		return default_;
 	}
 
@@ -349,15 +349,15 @@ public class PrefName {
 	static public PrefName UCS_BRICK = new PrefName("ucs_brick", new Integer(
 			10027008));
 	static public PrefName UCS_DEFAULT = new PrefName("ucs_default",
-			new Integer(16777164));
+			new Integer(240*256*256+240*256+240));
 
 	/** color for current day */
 	static public PrefName UCS_TODAY = new PrefName("ucs_today", new Integer(
-			16751001));
+			255*256*256+200*256+200));
 
 	/** color for holidays */
 	static public PrefName UCS_HOLIDAY = new PrefName("ucs_holiday",
-			new Integer(16764108));
+			new Integer(255*256*256+225*256+196));
 
 	/** color for vacation days */
 	static public PrefName UCS_VACATION = new PrefName("ucs_vacation",
@@ -369,7 +369,7 @@ public class PrefName {
 
 	/** color for weekends */
 	static public PrefName UCS_WEEKEND = new PrefName("ucs_weekend",
-			new Integer(16764057));
+			new Integer(255*256*256+225*256+196));
 
 	/** color for weekdays */
 	static public PrefName UCS_WEEKDAY = new PrefName("ucs_weekday",

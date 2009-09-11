@@ -189,7 +189,7 @@ abstract class ApptBoxPanel extends JPanel {
 				g2.setColor(Color.CYAN);
 			}
 			Rectangle r = getBounds();
-			g2.drawRoundRect(r.x, r.y, r.width, r.height, radius * radius,
+			g2.drawRoundRect(r.x+2, r.y, r.width-2, r.height, radius * radius,
 					radius * radius);
 			
 			// start and end time indicators
@@ -565,10 +565,6 @@ abstract class ApptBoxPanel extends JPanel {
 		}
 	}
 	
-	// for painting the border
-	final static private float hlthickness = 2.0f;
-	final static private BasicStroke highlight = new BasicStroke(hlthickness);
-
 	// format for time markers on resize/drag box
 	private static SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
 
@@ -724,8 +720,6 @@ abstract class ApptBoxPanel extends JPanel {
 	 */
 	public void drawBoxes(Graphics2D g2) {
 
-		Stroke stroke = g2.getStroke();
-
 		// draw each box
 		for(Box b : boxes) {
 			b.draw(g2, this);
@@ -734,12 +728,10 @@ abstract class ApptBoxPanel extends JPanel {
 		// draw the resize rectangle if needed
 		int radius = 5;
 		if (resizeRectangle != null) {
-			g2.setStroke(highlight);
 			g2.setColor(Color.RED);
 			g2.drawRoundRect(resizeRectangle.x, resizeRectangle.y,
 					resizeRectangle.width, resizeRectangle.height, radius
 							* radius, radius * radius);
-			g2.setStroke(stroke);
 
 			// draw time indicators
 			if (isInsideResizeArea(resizeRectangle.y, resizeRectangle.y
