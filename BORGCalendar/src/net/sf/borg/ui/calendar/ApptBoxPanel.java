@@ -231,6 +231,16 @@ abstract class ApptBoxPanel extends JPanel {
 			addAppt();
 		}
 
+		@Override
+		public String getText() {
+			return null;
+		}
+
+		@Override
+		public String getToolTipText() {
+			return null;
+		}
+
 	}
 
 	/**
@@ -412,9 +422,13 @@ abstract class ApptBoxPanel extends JPanel {
 			// get box or zone we are within
 			ClickedBoxInfo b = getClickedBoxInfo(evt);
 			
-			// set tool tip text of any Box we are in
-			if (b != null && b.box != null) {
-				panel.setToolTipText(b.box.getText());
+			// set tool tip text
+			if (b != null && b.box != null  ) {
+				panel.setToolTipText(b.box.getToolTipText());
+			}
+			else
+			{
+				panel.setToolTipText(null);
 			}
 
 			// set the mouse cursor depending on where we are

@@ -40,6 +40,8 @@ public abstract class ButtonBox extends Box {
 	private Icon icon_ = null; // optinal icon for the label
 
 	private Color backg = null; // background color
+	
+	private String text = null; // button text
 
 	/**
 	 * constructor 
@@ -110,6 +112,17 @@ public abstract class ButtonBox extends Box {
 
 		g2.setClip(s);
 
+	}
+	
+	@Override
+	public String getText()
+	{
+		return text;
+	}
+
+	@Override
+	public String getToolTipText() {
+		return null;
 	}
 
 }

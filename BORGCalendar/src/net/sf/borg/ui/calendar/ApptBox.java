@@ -906,4 +906,9 @@ class ApptBox extends Box implements Box.Draggable {
 		this.top = top;
 	}
 
+	@Override
+	public String getToolTipText() {
+		return getText();
+	}
+
 }

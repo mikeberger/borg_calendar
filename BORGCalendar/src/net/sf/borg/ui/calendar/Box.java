@@ -51,9 +51,7 @@ abstract public class Box {
 	protected Rectangle bounds, clip;
 
 	protected boolean isSelected = false;
-	
-	protected String text;
-	
+		
 	/**
 	 * constructor.
 	 * 
@@ -108,9 +106,7 @@ abstract public class Box {
 	 * 
 	 * @return the text
 	 */
-	public String getText() {
-		return text;
-	}
+	abstract public String getText();
 
 	/**
 	 * set bounds
@@ -129,5 +125,12 @@ abstract public class Box {
 	public void setSelected(boolean isSelected) {
 		this.isSelected = isSelected;
 	}
+	
+	/**
+	 * gets the tool tip text for this box
+	 * @return the tool tip text
+	 */
+	abstract public String getToolTipText();
+	
 
 }

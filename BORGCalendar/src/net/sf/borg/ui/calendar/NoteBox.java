@@ -508,4 +508,9 @@ public class NoteBox extends Box implements Box.Draggable {
 		}
 
 	}
+
+	@Override
+	public String getToolTipText() {
+		return getText();
+	}
 }
