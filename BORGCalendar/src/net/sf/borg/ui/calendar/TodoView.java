@@ -92,7 +92,8 @@ import net.sf.borg.ui.util.TableSorter;
 import com.toedter.calendar.JDateChooser;
 
 /**
- * The Class TodoView.
+ * Dockable window that shows a sorted list of all todos, allows the user to take action
+ * on the todos, and lets the user quickly enter a new todo
  */
 public class TodoView extends DockableView implements Prefs.Listener {
 

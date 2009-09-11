@@ -56,7 +56,8 @@ import net.sf.borg.ui.util.StripedTable;
 import net.sf.borg.ui.util.TableSorter;
 
 /**
- * The Class MemoPanel.
+ * UI for editing memos. It has a table that shows all memos by name and an editing panel
+ * for editing memo text.
  */
 public class MemoPanel extends JPanel implements ListSelectionListener,
 		Model.Listener {
