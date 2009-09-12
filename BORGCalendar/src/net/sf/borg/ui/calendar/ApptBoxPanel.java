@@ -71,6 +71,7 @@ abstract class ApptBoxPanel extends JPanel {
 		public boolean onBottomBorder = false; //true if mouse is on the bottom border of a box
 		public boolean onTopBorder = false; // true if the mouse is on the top border of a box
 		public DateZone zone = null; // datezone that the mouse is in
+		public boolean boxChanged = false; // true if we've changed boxes since the last check
 	}
 
 	/**
@@ -441,8 +442,10 @@ abstract class ApptBoxPanel extends JPanel {
 			} else {
 				panel.setCursor(new Cursor(Cursor.HAND_CURSOR));
 			}
-
-			evt.getComponent().repaint();
+			
+			// only repaint if we have moved to a different box or zone
+			if( b.boxChanged )
+				evt.getComponent().repaint();
 		}
 
 		/**
@@ -605,6 +608,9 @@ abstract class ApptBoxPanel extends JPanel {
 
 	/** the Boxes managed by this container */
 	protected Collection<Box> boxes = new ArrayList<Box>();
+	
+	/** current box we are in - to limit repaints */
+	private Box currentBox = null;
 
 	// position of drag start
 	private int draggedAnchor = -1;
@@ -849,6 +855,10 @@ abstract class ApptBoxPanel extends JPanel {
 
 		ret.onTopBorder = onTopBorder;
 		ret.onBottomBorder = onBottomBorder;
+		
+		if( ret.box != currentBox )
+			ret.boxChanged = true;
+		currentBox = ret.box;
 
 		return ret;
 
