@@ -65,6 +65,7 @@ import net.sf.borg.ui.address.AddrListView;
 import net.sf.borg.ui.calendar.SearchView;
 import net.sf.borg.ui.calendar.TodoView;
 import net.sf.borg.ui.task.TaskConfigurator;
+import net.sf.borg.ui.util.InputDialog;
 
 // TODO - javadoc not really done
 /**
@@ -322,8 +323,8 @@ class MainMenu {
 		ResourceHelper.setText(addCategoryMI, "addcat");
 		addCategoryMI.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				String inputValue = JOptionPane.showInputDialog(Resource
-						.getResourceString("AddCat"));
+				String inputValue = InputDialog.show(Resource
+						.getResourceString("AddCat"), 15);
 				if (inputValue == null || inputValue.equals(""))
 					return;
 				try {
