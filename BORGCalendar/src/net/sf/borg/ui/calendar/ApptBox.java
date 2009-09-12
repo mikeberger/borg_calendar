@@ -458,14 +458,19 @@ class ApptBox extends Box implements Box.Draggable {
 
 		// draw the box
 		Paint paint = g2.getPaint();
-		GradientPaint gp = new GradientPaint(bounds.x, bounds.y + inset + smfontHeight, getBoxColor(),
-				bounds.x, bounds.y + 2*bounds.height, textColor);
-		g2.setPaint(gp);
-		
+		if( Prefs.getBoolPref(PrefName.GRADIENT_APPTS)){
+			GradientPaint gp = new GradientPaint(bounds.x, bounds.y + inset + smfontHeight, getBoxColor(),
+					bounds.x, bounds.y + 2*bounds.height, textColor);
+			g2.setPaint(gp);
+		}
+		else
+		{
+			g2.setColor(getBoxColor());
+		}
 		g2.fillRoundRect(bounds.x + inset, bounds.y
 				+ inset, bounds.width - inset,
 				bounds.height - inset, radius * radius, radius
-						* radius);
+				* radius);
 		
 		g2.setPaint(paint);
 		// add a border around the box
