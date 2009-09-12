@@ -57,12 +57,103 @@ import net.sf.borg.model.entity.Appointment;
  */
 public class ReminderPopupManager implements Model.Listener {
 
+	/**
+	 * a class for holding a unique instance of an appointment that treats
+	 * repeats of an appointment as different instances from the original
+	 * 
+	 */
+	static private class AppointmentInstance {
+
+		// the appointment
+		private Appointment appt;
+
+		// the instance time - this is the time when this instance occurs. this
+		// will be
+		// different from the appt time if this instance is a repeat of an
+		// appointment
+		private Date instanceTime;
+
+		/**
+		 * constructor
+		 * 
+		 * @param appt
+		 *            the appointment
+		 * @param instancetime
+		 *            the instance time.
+		 */
+		public AppointmentInstance(Appointment appt, Date instanceTime) {
+			this.appt = appt;
+			this.instanceTime = instanceTime;
+		}
+
+		/**
+		 * get appointment
+		 * 
+		 * @return the appointment
+		 */
+		public Appointment getAppt() {
+			return appt;
+		}
+
+		/**
+		 * get the instance time
+		 * 
+		 * @return the instance time
+		 */
+		public Date getInstanceTime() {
+			return instanceTime;
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see java.lang.Object#hashCode()
+		 */
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + ((appt == null) ? 0 : appt.getKey());
+			result = prime * result
+					+ ((instanceTime == null) ? 0 : instanceTime.hashCode());
+			return result;
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see java.lang.Object#equals(java.lang.Object)
+		 */
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			AppointmentInstance other = (AppointmentInstance) obj;
+			if (appt == null) {
+				if (other.appt != null)
+					return false;
+			} else if (appt.getKey() != other.appt.getKey())
+				return false;
+			if (instanceTime == null) {
+				if (other.instanceTime != null)
+					return false;
+			} else if (!instanceTime.equals(other.instanceTime))
+				return false;
+			return true;
+		}
+
+	}
+
 	/** The singleton. */
 	static private ReminderPopupManager singleton = null;
 
 	// map that maps appointment keys to the associated popup reminder
 	// windows
-	private HashMap<Integer, ReminderPopup> pops = new HashMap<Integer, ReminderPopup>();
+	private HashMap<AppointmentInstance, ReminderPopup> pops = new HashMap<AppointmentInstance, ReminderPopup>();
 
 	/**
 	 * The timer that periodically checks to see if we need to popup a new
@@ -112,8 +203,6 @@ public class ReminderPopupManager implements Model.Listener {
 
 	}
 
-	// find any popups that should no longer be displayed based on updates to
-	// the DB and delete them
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -127,15 +216,16 @@ public class ReminderPopupManager implements Model.Listener {
 	public void refresh() {
 
 		// list of keys to appointments that no longer need popups
-		ArrayList<Integer> deletedPopupKeys = new ArrayList<Integer>();
+		ArrayList<AppointmentInstance> deletedPopupKeys = new ArrayList<AppointmentInstance>();
 
 		// set of popup map entries
-		Set<Entry<Integer, ReminderPopup>> entrySet = pops.entrySet();
+		Set<Entry<AppointmentInstance, ReminderPopup>> entrySet = pops
+				.entrySet();
 
 		// loop through the existing popups
-		for (Entry<Integer, ReminderPopup> mapEntry : entrySet) {
+		for (Entry<AppointmentInstance, ReminderPopup> mapEntry : entrySet) {
 
-			Integer apptkey = mapEntry.getKey();
+			AppointmentInstance apptInstance = mapEntry.getKey();
 
 			// get the popup window
 			ReminderPopup popupWindow = mapEntry.getValue();
@@ -154,26 +244,23 @@ public class ReminderPopupManager implements Model.Listener {
 			}
 
 			try {
-				// read the appt and get the date
-				Appointment appt = AppointmentModel.getReference().getAppt(
-						apptkey.intValue());
-				if (!shouldBeShown(appt)) {
+				if (!shouldBeShown(apptInstance)) {
 					// dispose of popup and add to delete list
 					popupWindow.dispose();
-					deletedPopupKeys.add(apptkey);
+					deletedPopupKeys.add(apptInstance);
 				}
 			} catch (Exception e) {
 
 				// appt cannot be read, must have been delete - kill the popup
 				// this is an expected case when appointments are deleted
-				deletedPopupKeys.add(apptkey);
+				deletedPopupKeys.add(apptInstance);
 				popupWindow.dispose();
 			}
 		}
 
 		// delete the popup map entries for popups that we disposed of
-		for (Integer key : deletedPopupKeys) {
-			pops.remove(key);
+		for (AppointmentInstance inst : deletedPopupKeys) {
+			pops.remove(inst);
 		}
 
 	}
@@ -182,8 +269,8 @@ public class ReminderPopupManager implements Model.Listener {
 	 * determine if a popup window is ready to be popped up and return the
 	 * minutes value of the popup if so
 	 * 
-	 * @param appt
-	 *            the appointment
+	 * @param apptInstance
+	 *            the appointment instance
 	 * @param p
 	 *            the popup for the appointment
 	 * 
@@ -192,13 +279,15 @@ public class ReminderPopupManager implements Model.Listener {
 	 * @throws Exception
 	 *             if not due for popup
 	 */
-	private int dueForPopup(Appointment appt, ReminderPopup p) throws Exception {
+	private int dueForPopup(AppointmentInstance apptInstance, ReminderPopup p)
+			throws Exception {
 
 		// get reminder timesd on/off flags for the appointment
 		// default is all off if appt has a null value
 		char[] remTimes = new char[ReminderTimes.getNum()];
 		try {
-			remTimes = (appt.getReminderTimes()).toCharArray();
+			remTimes = (apptInstance.getAppt().getReminderTimes())
+					.toCharArray();
 		} catch (Exception e) {
 			for (int i = 0; i < ReminderTimes.getNum(); ++i) {
 				remTimes[i] = 'N';
@@ -206,18 +295,8 @@ public class ReminderPopupManager implements Model.Listener {
 		}
 
 		// determine how far away the appt is
-		// need to set appt day of year to today in case it is a
-		// repeating appt. if it is a repeat,
-		// the time will be right, but the day will be the day of
-		// the first repeat
-		GregorianCalendar apptTime = new GregorianCalendar();
-		apptTime.setTime(appt.getDate());
-		GregorianCalendar now = new GregorianCalendar();
-		apptTime.set(now.get(Calendar.YEAR), now.get(Calendar.MONTH), now
-				.get(Calendar.DATE));
-
-		long minutesToGo = apptTime.getTimeInMillis() / (1000 * 60)
-				- now.getTimeInMillis() / (1000 * 60);
+		long minutesToGo = apptInstance.getInstanceTime().getTime()
+				/ (1000 * 60) - new Date().getTime() / (1000 * 60);
 
 		// determine which reminder is next
 		int nextFutureReminder = 0;
@@ -247,32 +326,29 @@ public class ReminderPopupManager implements Model.Listener {
 	 * determine if an appointment time is outside of the range of its reminder
 	 * times.
 	 * 
-	 * @param appt
-	 *            the appointment
+	 * @param apptInstance
+	 *            the appointment instance
+	 * @param nonexpiring
+	 *            if true, the reminder never expires, so do not check the
+	 *            latest reminder time
 	 * 
 	 * @return true, if the appointment tome is not in range of its reminder
+	 * 
 	 *         times
 	 */
-	static private boolean isOutsideOfReminderTimes(Appointment appt) {
+	static private boolean isOutsideOfReminderTimes(
+			AppointmentInstance apptInstance, boolean nonExpiring) {
 
 		// determine how far away the appt is
-		// need to set appt day of year to today in case it is a
-		// repeating appt. if it is a repeat,
-		// the time will be right, but the day will be the day of
-		// the first repeat
-		GregorianCalendar apptTime = new GregorianCalendar();
-		apptTime.setTime(appt.getDate());
-		GregorianCalendar now = new GregorianCalendar();
-		apptTime.set(now.get(Calendar.YEAR), now.get(Calendar.MONTH), now
-				.get(Calendar.DATE));
+		long minutesToGo = apptInstance.getInstanceTime().getTime()
+				/ (1000 * 60) - new Date().getTime() / (1000 * 60);
 
-		long minutesToGo = apptTime.getTimeInMillis() / (1000 * 60)
-				- now.getTimeInMillis() / (1000 * 60);
-
-		int earliestReminderTime = -999;
+		int latestReminderTime = 100000;
+		int earliestReminderTime = -100000;
 		char[] remTimes = new char[ReminderTimes.getNum()];
 		try {
-			remTimes = (appt.getReminderTimes()).toCharArray();
+			remTimes = (apptInstance.getAppt().getReminderTimes())
+					.toCharArray();
 
 		} catch (Exception e) {
 			for (int i = 0; i < ReminderTimes.getNum(); ++i) {
@@ -281,38 +357,44 @@ public class ReminderPopupManager implements Model.Listener {
 		}
 
 		for (int i = 0; i < ReminderTimes.getNum(); i++) {
-			if (remTimes[i] == 'Y')
-				earliestReminderTime = ReminderTimes.getTimes(i);
+			if (remTimes[i] == 'Y') {
+				int time = ReminderTimes.getTimes(i);
+				if (time > earliestReminderTime) {
+					earliestReminderTime = ReminderTimes.getTimes(i);
+				}
+				if (time < latestReminderTime) {
+					latestReminderTime = ReminderTimes.getTimes(i);
+				}
+			}
 		}
 
-		if (earliestReminderTime == -999)
+		if (earliestReminderTime == -100000)
 			return true;
 
-		return (minutesToGo > earliestReminderTime || minutesToGo < ReminderTimes
-				.getTimes(0));
+		return (minutesToGo > earliestReminderTime || (!nonExpiring && minutesToGo < latestReminderTime));
 	}
 
 	/**
 	 * determine if an appointment popup should be shown for an appointment that
 	 * doesn't yet have a popup associated with it
 	 * 
-	 * @param appt
-	 *            the appointment
+	 * @param apptInstance
+	 *            the appointment instance
 	 * 
 	 * @return true, if successful
 	 */
-	private static boolean shouldBeShown(Appointment appt) {
+	private static boolean shouldBeShown(AppointmentInstance apptInstance) {
 
-		if (appt == null)
+		if (apptInstance == null)
 			return false;
 
 		// check if we should show it based on public/private
 		// flags
 		boolean showpub = Prefs.getBoolPref(PrefName.SHOWPUBLIC);
-		;
+
 		boolean showpriv = Prefs.getBoolPref(PrefName.SHOWPRIVATE);
-		;
-		if (appt.getPrivate()) {
+
+		if (apptInstance.getAppt().getPrivate()) {
 			if (!showpriv)
 				return false;
 		} else {
@@ -321,35 +403,25 @@ public class ReminderPopupManager implements Model.Listener {
 		}
 
 		// don't popup untimed appointments that are not todos
-		if (AppointmentModel.isNote(appt) && !appt.getTodo())
+		if (AppointmentModel.isNote(apptInstance.getAppt())
+				&& !apptInstance.getAppt().getTodo())
 			return false;
 
-		// untimed todos should get popups as long as they
-		// are not marked as done for the current day
-		// *** we will popup untimed todos if there is at least 1
-		// reminder time set - even though we can't use the actual times
-		if (AppointmentModel.isNote(appt) && appt.getTodo()
-				&& appt.getReminderTimes() != null
-				&& appt.getReminderTimes().indexOf('Y') != -1) {
+		boolean expires = true; // true if the reminder eventually stops at some
+								// point after the appt
 
-			// make sure todo is not done for today
-			GregorianCalendar td = new GregorianCalendar();
-			td.set(Calendar.HOUR_OF_DAY, 23);
-			td.set(Calendar.MINUTE, 59);
-
-			Date nt = appt.getNextTodo();
-			if (nt == null)
-				nt = appt.getDate();
-			if (nt != null && nt.after(td.getTime())) {
-				return false;
-			}
-		} else {
-
-			// a normal timed appt only gets a popup
-			// if it's within its range of reminder times
-			if (isOutsideOfReminderTimes(appt))
-				return false;
+		// untimed todos never expire
+		if (AppointmentModel.isNote(apptInstance.getAppt())
+				&& apptInstance.getAppt().getTodo()
+				&& apptInstance.getAppt().getReminderTimes() != null
+				&& apptInstance.getAppt().getReminderTimes().indexOf('Y') != -1) {
+			expires = false;
 		}
+
+		// a normal timed appt only gets a popup
+		// if it's within its range of reminder times
+		if (isOutsideOfReminderTimes(apptInstance, !expires))
+			return false;
 
 		return true;
 	}
@@ -368,46 +440,83 @@ public class ReminderPopupManager implements Model.Listener {
 		if (enable.equals("false"))
 			return;
 
-		// get the list of the today's appts - popups are only for the current
-		// day
-		List<Integer> apptKeyList = AppointmentModel.getReference().getAppts(
-				new Date());
-		if (apptKeyList != null) {
+		// determine most future day that we have to consider
+		int earliestReminderTime = -100000;
+		for (int i = 0; i < ReminderTimes.getNum(); i++) {
+			int time = ReminderTimes.getTimes(i);
+			if (time > earliestReminderTime) {
+				earliestReminderTime = ReminderTimes.getTimes(i);
+			}
+		}
 
-			Appointment appt;
+		// determine how many days ahead we have to fetch appointments from
+		int daysAhead = earliestReminderTime / (24 * 60) + 1;
+		if (daysAhead < 1)
+			daysAhead = 1;
 
-			// iterate through the day's appts
-			for (Integer apptKey : apptKeyList) {
+		// process the appointments from each day
+		// it does not matter if we find appointments that are a few hours
+		// too far in the future to be considered - they will be filtered later
+		Calendar cal = new GregorianCalendar();
+		for (int dayAhead = 0; dayAhead < daysAhead; dayAhead++) {
+			List<Integer> apptKeyList = AppointmentModel.getReference()
+					.getAppts(cal.getTime());
 
-				try {
-					// read the appt record from the data model
-					appt = AppointmentModel.getReference().getAppt(
-							apptKey.intValue());
+			if (apptKeyList != null) {
 
-					// if the appointment doesn't qualify for a popup
-					// then don't show one
-					if (!shouldBeShown(appt))
-						continue;
+				Appointment appt;
 
-					// skip appt if it is already in the pops list
-					// this means that it is already showing - or was shown
-					// and killed already
-					if (pops.containsKey(apptKey))
-						continue;
+				// iterate through the appts
+				for (Integer apptKey : apptKeyList) {
 
-					// create a new popup and add it to the
-					// popup map along with the appt key
-					ReminderPopup popup = new ReminderPopup(appt);
-					pops.put(apptKey, popup);
+					try {
+						// read the appt record from the data model
+						appt = AppointmentModel.getReference().getAppt(
+								apptKey.intValue());
 
-					popup.timeToGoMessage("");
-					popup.setVisible(true);
-					popup.toFront();
+						// skip untimed todos here - will be collected later on
+						if (AppointmentModel.isNote(appt) && appt.getTodo())
+							continue;
 
-				} catch (Exception e) {
-					Errmsg.errmsg(e);
+						// calculate instance time
+						Calendar instTime = new GregorianCalendar();
+						instTime.setTime(appt.getDate());
+						instTime.set(Calendar.YEAR, cal.get(Calendar.YEAR));
+						instTime.set(Calendar.MONTH, cal.get(Calendar.MONTH));
+						instTime.set(Calendar.DATE, cal.get(Calendar.DATE));
+
+						AppointmentInstance apptInstance = new AppointmentInstance(
+								appt, instTime.getTime());
+
+						// if the appointment doesn't qualify for a popup
+						// then don't show one
+						if (!shouldBeShown(apptInstance))
+							continue;
+
+						// skip appt if it is already in the pops list
+						// this means that it is already showing - or was shown
+						// and killed already
+						if (pops.containsKey(apptInstance))
+							continue;
+
+						// create a new popup and add it to the
+						// popup map along with the appt key
+						ReminderPopup popup = new ReminderPopup(appt,
+								apptInstance.getInstanceTime());
+						pops.put(apptInstance, popup);
+
+						popup.timeToGoMessage("");
+						popup.setVisible(true);
+						popup.toFront();
+
+					} catch (Exception e) {
+						Errmsg.errmsg(e);
+					}
 				}
 			}
+
+			// go to next day
+			cal.add(Calendar.DATE, 1);
 		}
 
 		// get past untimed todos that are not done
@@ -416,7 +525,6 @@ public class ReminderPopupManager implements Model.Listener {
 		if (tds != null) {
 			Iterator<Appointment> it = tds.iterator();
 
-			// iterate through the day's appts
 			while (it.hasNext()) {
 
 				Appointment appt = it.next();
@@ -427,25 +535,32 @@ public class ReminderPopupManager implements Model.Listener {
 					if (!AppointmentModel.isNote(appt))
 						continue;
 
-					if (!shouldBeShown(appt))
+					// instance date is date of next todo
+					Date nt = appt.getNextTodo();
+					if (nt == null)
+						nt = appt.getDate();
+
+					AppointmentInstance apptInstance = new AppointmentInstance(
+							appt, nt);
+
+					if (!shouldBeShown(apptInstance))
 						continue;
 
 					// skip appt if it is already in the pops list
 					// this means that it is already showing - or was shown
 					// and
 					// killed already
-					Integer ik = new Integer(appt.getKey());
-					if (pops.containsKey(ik))
+					if (pops.containsKey(apptInstance))
 						continue;
 
 					// create a new frame for a popup and add it to the
 					// popup
 					// map
 					// along with the appt key
+					ReminderPopup jd = new ReminderPopup(appt, apptInstance
+							.getInstanceTime());
 
-					ReminderPopup jd = new ReminderPopup(appt);
-
-					pops.put(ik, jd);
+					pops.put(apptInstance, jd);
 					jd.setVisible(true);
 					jd.toFront();
 
@@ -458,12 +573,13 @@ public class ReminderPopupManager implements Model.Listener {
 		// if any popups that are already displayed are due for showing - make a
 		// sound and raise the popup
 		boolean enablebeep = Prefs.getBoolPref(PrefName.BEEPINGREMINDERS);
-		
+
 		// iterate through existing popups
-		Set<Entry<Integer, ReminderPopup>> entrySet = pops.entrySet();
-		for(Entry<Integer, ReminderPopup> popupMapEntry : entrySet) {
-			
-			Integer apptkey = popupMapEntry.getKey();
+		Set<Entry<AppointmentInstance, ReminderPopup>> entrySet = pops
+				.entrySet();
+		for (Entry<AppointmentInstance, ReminderPopup> popupMapEntry : entrySet) {
+
+			AppointmentInstance apptInstance = popupMapEntry.getKey();
 			ReminderPopup popup = popupMapEntry.getValue();
 
 			// if popup is gone (killed already), then skip it
@@ -481,8 +597,7 @@ public class ReminderPopupManager implements Model.Listener {
 
 			try {
 				// read the appt and get the date
-				Appointment appt = AppointmentModel.getReference().getAppt(
-						apptkey.intValue());
+				Appointment appt = apptInstance.getAppt();
 
 				String timeToGoMessage;
 
@@ -494,17 +609,16 @@ public class ReminderPopupManager implements Model.Listener {
 					if (popup.wasEverShown() && !(min == 0 || min == 30))
 						continue;
 
-					timeToGoMessage = Resource.getResourceString("To_Do") + " "
-							+ Resource.getResourceString("Today");
+					timeToGoMessage = Resource.getResourceString("To_Do");
 				} else {
 					// timed appt
-					Date d = appt.getDate();
+					Date d = apptInstance.getInstanceTime();
 					if (d == null)
 						continue;
 
 					// if alarm is due to be shown, show it and play sound
 					try {
-						int alarmid = dueForPopup(appt, popup);
+						int alarmid = dueForPopup(apptInstance, popup);
 						// create a message saying how much time to go there is
 						if (alarmid < 0) {
 							timeToGoMessage = -alarmid + " "
@@ -525,7 +639,7 @@ public class ReminderPopupManager implements Model.Listener {
 
 				// set the time to go message
 				popup.timeToGoMessage(timeToGoMessage);
-				
+
 				popup.setVisible(true);
 				popup.toFront();
 				popup.setVisible(true);
@@ -545,7 +659,7 @@ public class ReminderPopupManager implements Model.Listener {
 					}
 				}
 			} catch (Exception e) {
-				
+
 			}
 		}
 	}
@@ -554,9 +668,10 @@ public class ReminderPopupManager implements Model.Listener {
 	 * show all popups in the list
 	 */
 	public void showAll() {
-		Set<Entry<Integer, ReminderPopup>> entrySet = pops.entrySet();
-		for( Entry<Integer, ReminderPopup> popupMapEntry  : entrySet ) {
-			
+		Set<Entry<AppointmentInstance, ReminderPopup>> entrySet = pops
+				.entrySet();
+		for (Entry<AppointmentInstance, ReminderPopup> popupMapEntry : entrySet) {
+
 			ReminderPopup popup = popupMapEntry.getValue();
 
 			// if frame is gone (killed already), then skip it
@@ -583,9 +698,10 @@ public class ReminderPopupManager implements Model.Listener {
 	 * Hide all popup windows
 	 */
 	public void hideAll() {
-		Set<Entry<Integer, ReminderPopup>> entrySet = pops.entrySet();
-		for( Entry<Integer, ReminderPopup> popupMapEntry  : entrySet ) {
-			
+		Set<Entry<AppointmentInstance, ReminderPopup>> entrySet = pops
+				.entrySet();
+		for (Entry<AppointmentInstance, ReminderPopup> popupMapEntry : entrySet) {
+
 			ReminderPopup popup = popupMapEntry.getValue();
 
 			// if frame is gone (killed already), then skip it

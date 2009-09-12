@@ -68,7 +68,7 @@ public class ReminderTimePanel extends JPanel {
 		// add the spinners
 		spinners = new JSpinner[numberOfReminderTimes];
 		for (int i = 0; i < numberOfReminderTimes; i++) {
-			spinners[i] = new JSpinner(new SpinnerNumberModel());
+			spinners[i] = new JSpinner(new SpinnerNumberModel(0,-99999,99999,1));
 			this.add(spinners[i]);
 		}
 		

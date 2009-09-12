@@ -22,7 +22,8 @@ package net.sf.borg.ui.popup;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.text.SimpleDateFormat;
+import java.text.DateFormat;
+import java.util.Date;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -66,8 +67,9 @@ class ReminderPopup extends View {
 	 * Instantiates a new reminder popup for an appointment
 	 * 
 	 * @param ap the appointment
+	 * @param d the time of the reminder
 	 */
-	public ReminderPopup(Appointment ap) {
+	public ReminderPopup(Appointment ap, Date d) {
 		
 		super();
 		
@@ -80,8 +82,13 @@ class ReminderPopup extends View {
 		// set appt info in the reminder
 		String apptinfoText = "";
 		if (!AppointmentModel.isNote(appointment)) {
-			SimpleDateFormat df = AppointmentModel.getTimeFormat();
-			apptinfoText = df.format(appointment.getDate());
+			DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
+			apptinfoText = df.format(d);
+		}
+		else
+		{
+			DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT);
+			apptinfoText = df.format(d);
 		}
 		apptinfoText += " " + appointment.getText();
 		appointmentInformation.setText(apptinfoText);
