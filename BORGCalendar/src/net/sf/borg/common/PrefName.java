@@ -378,6 +378,9 @@ public class PrefName {
 	/** color for alternating table stripes */
 	static public PrefName UCS_STRIPE = new PrefName("ucs_stripe", new Integer(
 			15792890));
+	
+	/** draw gradient color in appointment boxes - can slow down older machines */
+	static public PrefName GRADIENT_APPTS = new PrefName("gradient_appts", "true");
 
 	// tasks
 	/** when showing tasks project and subtasks, prepend a prefix and id number  */

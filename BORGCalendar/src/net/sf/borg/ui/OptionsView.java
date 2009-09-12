@@ -253,6 +253,8 @@ public class OptionsView extends View {
 	private JSpinner emailtimebox = null;
 
 	private JCheckBox ganttShowSubtaskBox = new JCheckBox();
+	
+	private JCheckBox gradientApptBox = new JCheckBox();
 
 	private JCheckBox hide_strike_box = new JCheckBox();
 
@@ -435,6 +437,7 @@ public class OptionsView extends View {
 		setCheckBox(dock, PrefName.DOCKPANELS);
 		setCheckBox(hide_strike_box, PrefName.HIDESTRIKETHROUGH);
 		setCheckBox(tlsbox, PrefName.ENABLETLS);
+		setCheckBox(gradientApptBox, PrefName.GRADIENT_APPTS);
 
 		int socket = Prefs.getIntPref(PrefName.SOCKETPORT);
 		socketPort.setText(Integer.toString(socket));
@@ -623,6 +626,7 @@ public class OptionsView extends View {
 		setBooleanPref(dock, PrefName.DOCKPANELS);
 		setBooleanPref(hide_strike_box, PrefName.HIDESTRIKETHROUGH);
 		setBooleanPref(tlsbox, PrefName.ENABLETLS);
+		setBooleanPref(gradientApptBox, PrefName.GRADIENT_APPTS);
 
 		Prefs.putPref(PrefName.BACKUPDIR, backupDir.getText());
 
@@ -1386,12 +1390,16 @@ public class OptionsView extends View {
 			jPanelUCS.add(btn_ucs_stripe);
 			jPanelUCS.add(btn_ucs_restore);
 			jPanelUCS.add(cb_ucs_ontodo);
+			
 
 			JPanel njp = new JPanel();
 			njp.setLayout(new BorderLayout());
 			njp.add(cb_ucs_marktodo, BorderLayout.WEST);
 			njp.add(tf_ucs_marker, BorderLayout.CENTER);
 			getJPanelUCS().add(njp);
+			
+			gradientApptBox.setText(Resource.getResourceString("gradient_appts"));
+			jPanelUCS.add(gradientApptBox);
 		}
 		return jPanelUCS;
 	}
