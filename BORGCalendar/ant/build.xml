@@ -74,7 +74,7 @@
 	<!-- Compile -->
 	<target name="compile">
 		<mkdir dir="${build.dir}" />
-		<javac srcdir="${prj.dir}/src" classpathref="build.classpath" destdir="${build.dir}" target="1.5" source="1.5" debug="true">
+		<javac srcdir="${prj.dir}/src" classpathref="build.classpath" destdir="${build.dir}" target="1.6" source="1.6" debug="true">
 		</javac>
 	</target>
 

@@ -20,11 +20,22 @@ Copyright 2003 by Mike Berger
 
 package net.sf.borg.model.entity;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * Each BorgOption instance holds a single row from the options table in the database
  */
+@XmlRootElement(name="Option")
+@XmlAccessorType(XmlAccessType.NONE)
 public class BorgOption
 {
+	
+	/** for JAXB */
+	@SuppressWarnings("unused")
+	private BorgOption(){}
 	
 	/**
 	 * Instantiates a new borg option.
@@ -52,6 +63,11 @@ public class BorgOption
 	 */
 	public final String getValue()	{return value;}
 	
+	/** The key. */
+	@XmlElement(name="Key")
+	private String key;
+	
 	/** The value. */
-	private String key, value;
+	@XmlElement(name="Value")
+	private String value;
 }

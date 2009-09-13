@@ -20,27 +20,35 @@ package net.sf.borg.model.entity;
 
 import java.util.Date;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 
 /**
  * Subtask entity
  */
+@XmlRootElement(name="Subtask")
+@XmlAccessorType(XmlAccessType.NONE)
 public class Subtask extends KeyedEntity<Subtask> implements CalendarEntity,
 		java.io.Serializable {
 
 	private static final long serialVersionUID = -5794908342032518360L;
 	
-	/** The Create date_. */
-	private java.util.Date startDate;
+	/** The Create date. */
+	@XmlElement
+	private Date StartDate;
 
 	/**
 	 * Gets the start date.
 	 * 
 	 * @return the start date
 	 */
-	public java.util.Date getStartDate() {
-		return (startDate);
+	public Date getStartDate() {
+		return (StartDate);
 	}
 
 	/**
@@ -48,20 +56,21 @@ public class Subtask extends KeyedEntity<Subtask> implements CalendarEntity,
 	 * 
 	 * @param xx the new start date
 	 */
-	public void setStartDate(java.util.Date xx) {
-		startDate = xx;
+	public void setStartDate(Date xx) {
+		StartDate = xx;
 	}
 
-	/** The Close date_. */
-	private java.util.Date CloseDate_;
+	/** The Close date. */
+	@XmlElement
+	private Date CloseDate;
 
 	/**
 	 * Gets the close date.
 	 * 
 	 * @return the close date
 	 */
-	public java.util.Date getCloseDate() {
-		return (CloseDate_);
+	public Date getCloseDate() {
+		return (CloseDate);
 	}
 
 	/**
@@ -69,20 +78,21 @@ public class Subtask extends KeyedEntity<Subtask> implements CalendarEntity,
 	 * 
 	 * @param xx the new close date
 	 */
-	public void setCloseDate(java.util.Date xx) {
-		CloseDate_ = xx;
+	public void setCloseDate(Date xx) {
+		CloseDate = xx;
 	}
 
-	/** The Due date_. */
-	private java.util.Date DueDate_;
+	/** The Due date. */
+	@XmlElement
+	private Date DueDate;
 
 	/**
 	 * Gets the due date.
 	 * 
 	 * @return the due date
 	 */
-	public java.util.Date getDueDate() {
-		return (DueDate_);
+	public Date getDueDate() {
+		return (DueDate);
 	}
 
 	/**
@@ -90,12 +100,13 @@ public class Subtask extends KeyedEntity<Subtask> implements CalendarEntity,
 	 * 
 	 * @param xx the new due date
 	 */
-	public void setDueDate(java.util.Date xx) {
-		DueDate_ = xx;
+	public void setDueDate(Date xx) {
+		DueDate = xx;
 	}
 
-	/** The Description_. */
-	private String Description_;
+	/** The Description. */
+	@XmlElement
+	private String Description;
 
 	/**
 	 * Gets the description.
@@ -103,7 +114,7 @@ public class Subtask extends KeyedEntity<Subtask> implements CalendarEntity,
 	 * @return the description
 	 */
 	public String getDescription() {
-		return (Description_);
+		return (Description);
 	}
 
 	/**
@@ -112,11 +123,12 @@ public class Subtask extends KeyedEntity<Subtask> implements CalendarEntity,
 	 * @param xx the new description
 	 */
 	public void setDescription(String xx) {
-		Description_ = xx;
+		Description = xx;
 	}
 
-	/** The Task_. */
-	private Integer Task_;
+	/** The Task. */
+	@XmlElement
+	private Integer Task;
 
 	/**
 	 * Gets the parent task.
@@ -124,7 +136,7 @@ public class Subtask extends KeyedEntity<Subtask> implements CalendarEntity,
 	 * @return the parent task id
 	 */
 	public Integer getTask() {
-		return (Task_);
+		return (Task);
 	}
 
 	/**
@@ -133,7 +145,7 @@ public class Subtask extends KeyedEntity<Subtask> implements CalendarEntity,
 	 * @param xx the parent task id
 	 */
 	public void setTask(Integer xx) {
-		Task_ = xx;
+		Task = xx;
 	}
 
 	/* (non-Javadoc)
@@ -184,9 +196,9 @@ public class Subtask extends KeyedEntity<Subtask> implements CalendarEntity,
 	 */
 	public String getText() {
 		// return the text as it should appear on the calendar
-		String show_abb = Prefs.getPref(PrefName.TASK_SHOW_ABBREV);
+		String showabb = Prefs.getPref(PrefName.TASK_SHOW_ABBREV);
 		String abb = "";
-		if (show_abb.equals("true"))
+		if (showabb.equals("true"))
 			abb = "BT" + getTask() + "/ST" + getKey() + " ";
 		String de = abb + getDescription();
 		String tx = de.replace('\n', ' ');

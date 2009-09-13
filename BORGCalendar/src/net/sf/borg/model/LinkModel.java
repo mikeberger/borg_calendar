@@ -29,11 +29,15 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlRootElement;
+
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
-import net.sf.borg.common.XTree;
 import net.sf.borg.model.db.EntityDB;
 import net.sf.borg.model.db.LinkDB;
 import net.sf.borg.model.db.jdbc.LinkJdbcDB;
@@ -44,13 +48,21 @@ import net.sf.borg.model.entity.Link;
 import net.sf.borg.model.entity.Memo;
 import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Task;
-import net.sf.borg.model.xml.LinkXMLAdapter;
 
 /**
  * LinkModel manages the Link Entities, which are associations between BORG Entities and other BORG Entities,
  * files, and URLs.
  */
 public class LinkModel extends Model {
+	
+	/**
+	 * class XmlContainer is solely for JAXB XML export/import
+	 * to keep the same XML structure as before JAXB was used
+	 */
+	@XmlRootElement(name="LINKS")
+	private static class XmlContainer {		
+		public Collection<Link> Link;		
+	}
 
     /**
      * LinkType holds the various link types. The string values are for legacy reasons
@@ -288,15 +300,11 @@ public class LinkModel extends Model {
      */
     public void export(Writer fw) throws Exception {
         
-        fw.write("<LINKS>\n");
-        LinkXMLAdapter ta = new LinkXMLAdapter();
-        for( Link addr : getLinks())
-        {
-            XTree xt = ta.toXml(addr);
-            fw.write(xt.toString());
-        }
-
-        fw.write("</LINKS>");
+    	JAXBContext jc = JAXBContext.newInstance(XmlContainer.class);
+        Marshaller m = jc.createMarshaller();
+        XmlContainer container = new XmlContainer();
+        container.Link = getLinks();
+        m.marshal(container, fw);
 
     }
 
@@ -373,30 +381,29 @@ public class LinkModel extends Model {
     }
 
     /**
-     * Import xml
-     * 
-     * @param xt the XML tree
-     * 
-     * @throws Exception the exception
-     */
-    public void importXml(XTree xt) throws Exception {
-       
-        LinkXMLAdapter aa = new LinkXMLAdapter();
+	 * Import xml.
+	 * 
+	 * @param fileName the file name of the file containing the XML
+	 * 
+	 * @throws Exception the exception
+	 */
+	public void importXml(String fileName) throws Exception {
 
-        for (int i = 1;; i++) {
-            XTree ch = xt.child(i);
-            if (ch == null)
-                break;
+		JAXBContext jc = JAXBContext.newInstance(XmlContainer.class);
+		Unmarshaller u = jc.createUnmarshaller();
+		
+		XmlContainer container =
+			  (XmlContainer)u.unmarshal(
+			    new FileInputStream( fileName ) );
 
-            if (!ch.name().equals("Link"))
-                continue;
-            Link addr = aa.fromXml(ch);
-            addr.setKey(-1);
-            saveLink(addr);
-        }
+		for (Link link : container.Link ) {
+			link.setKey(-1);
+			saveLink(link);
+		}
 
-        refresh();
-    }
+		refresh();
+	}
+
 
     /**
      * Move links from one object to another

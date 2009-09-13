@@ -18,287 +18,313 @@
  */
 package net.sf.borg.model.entity;
 
+import java.util.Date;
 import java.util.Vector;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 
 
 /**
  * The Appointment Entity
  */
+@XmlRootElement(name="Appointment")
+@XmlAccessorType(XmlAccessType.NONE)
 public class Appointment extends KeyedEntity<Appointment> implements CalendarEntity, java.io.Serializable {
 
 	
 	private static final long serialVersionUID = 7225675837209156249L;
 	
-	/** The Date_. */
-	private java.util.Date Date_;
+	/** The Date. */
+	@XmlElement
+	private Date Date;
 	
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.entity.CalendarEntity#getDate()
 	 */
-	public java.util.Date getDate() { return( Date_ ); }
+	public Date getDate() { return( Date ); }
 	
 	/**
 	 * Sets the date.
 	 * 
 	 * @param xx the new date
 	 */
-	public void setDate( java.util.Date xx ){ Date_ = xx; }
+	public void setDate( Date xx ){ Date = xx; }
 
 	/** The Duration in minutes */
-	private Integer Duration_;
+	@XmlElement
+	private Integer Duration;
 	
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.entity.CalendarEntity#getDuration()
 	 */
-	public Integer getDuration() { return( Duration_ ); }
+	public Integer getDuration() { return( Duration ); }
 	
 	/**
 	 * Sets the appointment duration in minutes.
 	 * 
 	 * @param xx the new duration
 	 */
-	public void setDuration( Integer xx ){ Duration_ = xx; }
+	public void setDuration( Integer xx ){ Duration = xx; }
 
-	/** The appointment Text_. */
-	private String Text_;
+	/** The appointment Text. */
+	@XmlElement
+	private String Text;
 	
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.entity.CalendarEntity#getText()
 	 */
-	public String getText() { return( Text_ ); }
+	public String getText() { return( Text ); }
 	
 	/**
 	 * Sets the text.
 	 * 
 	 * @param xx the new text
 	 */
-	public void setText( String xx ){ Text_ = xx; }
+	public void setText( String xx ){ Text = xx; }
 
-	/** The Skip list_. - a list of repeat occurrences that are marked as skipped. */
-	private Vector<String> SkipList_;
+	/** The Skip list. - a list of repeat occurrences that are marked as skipped. */
+	@XmlElement
+	private Vector<String> SkipList;
 	
 	/**
 	 * Gets the skip list - a list of repeat occurrences that are marked as skipped.
 	 * 
 	 * @return the skip list
 	 */
-	public Vector<String> getSkipList() { return( SkipList_ ); }
+	public Vector<String> getSkipList() { return( SkipList ); }
 	
 	/**
 	 * Sets the skip list - a list of repeat occurrences that are marked as skipped..
 	 * 
 	 * @param xx the new skip list
 	 */
-	public void setSkipList( Vector<String> xx ){ SkipList_ = xx; }
+	public void setSkipList( Vector<String> xx ){ SkipList = xx; }
 
-	/** The Next todo_ - the date of the next todo for repeating todos */
-	private java.util.Date NextTodo_;
+	/** The Next todo - the date of the next todo for repeating todos */
+	@XmlElement
+	private Date NextTodo;
 	
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.entity.CalendarEntity#getNextTodo()
 	 */
-	public java.util.Date getNextTodo() { return( NextTodo_ ); }
+	public Date getNextTodo() { return( NextTodo ); }
 	
 	/**
 	 * Sets the next todo  - the date of the next todo for repeating todos 
 	 * 
 	 * @param xx the new next todo
 	 */
-	public void setNextTodo( java.util.Date xx ){ NextTodo_ = xx; }
+	public void setNextTodo( Date xx ){ NextTodo = xx; }
 
 	
 	/** The Vacation flag - 0 = not vacation 1 = vacation day, 2 = half day */
-	private Integer Vacation_;
+	@XmlElement
+	private Integer Vacation;
 	
 	/**
 	 * Gets the vacation - 0 = not vacation 1 = vacation day, 2 = half day
 	 * 
 	 * @return the vacation flag
 	 */
-	public Integer getVacation() { return( Vacation_ ); }
+	public Integer getVacation() { return( Vacation ); }
 	
 	/**
 	 * Sets the vacation - 0 = not vacation 1 = vacation day, 2 = half day
 	 * 
 	 * @param xx the new vacation flag
 	 */
-	public void setVacation( Integer xx ){ Vacation_ = xx; }
+	public void setVacation( Integer xx ){ Vacation = xx; }
 
-	/** The Holiday_ flag (1 = holiday) */
-	private Integer Holiday_;
+	/** The Holiday flag (1 = holiday) */
+	@XmlElement
+	private Integer Holiday;
 	
 	/**
 	 * Gets the holiday flag (1 = holiday).
 	 * 
 	 * @return the holiday flag
 	 */
-	public Integer getHoliday() { return( Holiday_ ); }
+	public Integer getHoliday() { return( Holiday ); }
 	
 	/**
 	 * Sets the holiday flag (1 = holiday).
 	 * 
 	 * @param xx the new holiday flag
 	 */
-	public void setHoliday( Integer xx ){ Holiday_ = xx; }
+	public void setHoliday( Integer xx ){ Holiday = xx; }
 
-	/** The Private_ flag (1 = private) */
-	private boolean Private_;
+	/** The Private flag (1 = private) */
+	@XmlElement
+	private boolean Private;
 	
 	/**
 	 * Gets the private flag (1 = private).
 	 * 
 	 * @return the private flag (1 = private)
 	 */
-	public boolean getPrivate() { return( Private_ ); }
+	public boolean getPrivate() { return( Private ); }
 	
 	/**
 	 * Sets the private flag (1 = private).
 	 * 
 	 * @param xx the new private flag
 	 */
-	public void setPrivate( boolean xx ){ Private_ = xx; }
+	public void setPrivate( boolean xx ){ Private = xx; }
 
-	/** The Times_. */
-	private Integer Times_;
+	/** The number of Repeat Times. */
+	@XmlElement
+	private Integer Times;
 	
 	/**
 	 * Gets the number of repeat times.
 	 * 
 	 * @return the times
 	 */
-	public Integer getTimes() { return( Times_ ); }
+	public Integer getTimes() { return( Times ); }
 	
 	/**
 	 * Sets the number of repeat times.
 	 * 
 	 * @param xx the new times
 	 */
-	public void setTimes( Integer xx ){ Times_ = xx; }
+	public void setTimes( Integer xx ){ Times = xx; }
 
-	/** The repeat Frequency_. */
-	private String Frequency_;
+	/** The repeat Frequency. */
+	@XmlElement
+	private String Frequency;
 	
 	/**
 	 * Gets the repeat frequency. See Repeat.java
 	 * 
 	 * @return the repeat frequency
 	 */
-	public String getFrequency() { return( Frequency_ ); }
+	public String getFrequency() { return( Frequency ); }
 	
 	/**
 	 * Sets the repeat frequency. See Repeat.java
 	 * 
 	 * @param xx the new repeat frequency
 	 */
-	public void setFrequency( String xx ){ Frequency_ = xx; }
+	public void setFrequency( String xx ){ Frequency = xx; }
 
 	/** The Todo flag. */
-	private boolean Todo_;
+	@XmlElement
+	private boolean Todo;
 	
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.entity.CalendarEntity#getTodo()
 	 */
-	public boolean getTodo() { return( Todo_ ); }
+	public boolean getTodo() { return( Todo ); }
 	
 	/**
 	 * Sets the todo flag
 	 * 
 	 * @param xx the new todo
 	 */
-	public void setTodo( boolean xx ){ Todo_ = xx; }
+	public void setTodo( boolean xx ){ Todo = xx; }
 
-	/** The Color_. */
-	private String Color_;
+	/** The Color. */
+	@XmlElement
+	private String Color;
 	
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.entity.CalendarEntity#getColor()
 	 */
-	public String getColor() { return( Color_ ); }
+	public String getColor() { return( Color ); }
 	
 	/**
 	 * Sets the color.
 	 * 
 	 * @param xx the new color
 	 */
-	public void setColor( String xx ){ Color_ = xx; }
+	public void setColor( String xx ){ Color = xx; }
 
-	/** The Repeat flag_. */
-	private boolean RepeatFlag_;
+	/** The Repeat flag. */
+	@XmlElement
+	private boolean RepeatFlag;
 	
 	/**
 	 * Gets the repeat flag.
 	 * 
 	 * @return the repeat flag
 	 */
-	public boolean getRepeatFlag() { return( RepeatFlag_ ); }
+	public boolean getRepeatFlag() { return( RepeatFlag ); }
 	
 	/**
 	 * Sets the repeat flag.
 	 * 
 	 * @param xx the new repeat flag
 	 */
-	public void setRepeatFlag( boolean xx ){ RepeatFlag_ = xx; }
+	public void setRepeatFlag( boolean xx ){ RepeatFlag = xx; }
 
-	/** The Category_. */
-	private String Category_;
+	/** The Category. */
+	@XmlElement
+	private String Category;
 	
 	/**
 	 * Gets the category.
 	 * 
 	 * @return the category
 	 */
-	public String getCategory() { return( Category_ ); }
+	public String getCategory() { return( Category ); }
 	
 	/**
 	 * Sets the category.
 	 * 
 	 * @param xx the new category
 	 */
-	public void setCategory( String xx ){ Category_ = xx; }
+	public void setCategory( String xx ){ Category = xx; }
 
 	// palm sync stuff
-	@Deprecated private boolean Modified_;
-	@Deprecated public boolean getModified() { return( Modified_ ); }
-	@Deprecated public void setModified( boolean xx ){ Modified_ = xx; }
-	@Deprecated private String Alarm_;
-	@Deprecated public String getAlarm() { return( Alarm_ ); }
-	@Deprecated public void setAlarm( String xx ){ Alarm_ = xx; }
+	@XmlElement
+	@Deprecated private boolean Modified;
+	@Deprecated public boolean getModified() { return( Modified ); }
+	@Deprecated public void setModified( boolean xx ){ Modified = xx; }
+	@XmlElement
+	@Deprecated private String Alarm;
+	@Deprecated public String getAlarm() { return( Alarm ); }
+	@Deprecated public void setAlarm( String xx ){ Alarm = xx; }
 
-	/** The Reminder times_.  See ReminderTimes.java*/
-	private String ReminderTimes_;
+	/** The Reminder times.  See ReminderTimes.java*/
+	@XmlElement
+	private String ReminderTimes;
 	
 	/**
 	 * Gets the reminder times. See ReminderTimes.java
 	 * 
 	 * @return the reminder times
 	 */
-	public String getReminderTimes() { return( ReminderTimes_ ); }
+	public String getReminderTimes() { return( ReminderTimes ); }
 	
 	/**
 	 * Sets the reminder times.  See ReminderTimes.java
 	 * 
 	 * @param xx the new reminder times
 	 */
-	public void setReminderTimes( String xx ){ ReminderTimes_ = xx; }
+	public void setReminderTimes( String xx ){ ReminderTimes = xx; }
 	
 	/** The Untimed flag.Y = untimed
 	 * provides a positive indication that an appointment has no specific time of day */
-	private String Untimed_;
+	@XmlElement
+	private String Untimed;
 	
 	/**
 	 * Gets the untimed flag. Y = untimed
 	 * 
 	 * @return the untimed
 	 */
-	public String getUntimed() { return( Untimed_ ); }
+	public String getUntimed() { return( Untimed ); }
 	
 	/**
 	 * Sets the untimed flag. Y = untimed
 	 * 
 	 * @param xx the new untimed
 	 */
-	public void setUntimed( String xx ){ Untimed_ = xx; }
+	public void setUntimed( String xx ){ Untimed = xx; }
 
 	
 	/* (non-Javadoc)

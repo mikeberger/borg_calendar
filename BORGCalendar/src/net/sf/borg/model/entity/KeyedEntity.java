@@ -26,14 +26,20 @@ package net.sf.borg.model.entity;
 
 import java.io.Serializable;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+
 /**
  * Abstract base class for all Entities that are keyed by a simple integer key
  * 
  */
+@XmlAccessorType(XmlAccessType.NONE)
 public abstract class KeyedEntity<T> implements Serializable
 {
     
     /** The key_. */
+	@XmlElement(name="KEY")
     private int key_;
         
     /**

@@ -20,6 +20,11 @@ package net.sf.borg.model.entity;
 
 import java.util.Date;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 
@@ -28,197 +33,210 @@ import net.sf.borg.common.Prefs;
 /**
  * The Task Entity
  */
+@XmlRootElement(name="Task")
+@XmlAccessorType(XmlAccessType.NONE)
 public class Task extends KeyedEntity<Task> implements CalendarEntity, java.io.Serializable {
 
 	
 	private static final long serialVersionUID = -8980203293028263282L;
 	
-	/** The Start date_. */
-	private java.util.Date StartDate_;
+	/** The Start date. */
+	@XmlElement
+	private Date StartDate;
 	
 	/**
 	 * Gets the start date.
 	 * 
 	 * @return the start date
 	 */
-	public java.util.Date getStartDate() { return( StartDate_ ); }
+	public Date getStartDate() { return( StartDate ); }
 	
 	/**
 	 * Sets the start date.
 	 * 
 	 * @param xx the new start date
 	 */
-	public void setStartDate( java.util.Date xx ){ StartDate_ = xx; }
+	public void setStartDate( Date xx ){ StartDate = xx; }
 
 	/** The completion date */
-	private java.util.Date completionDate;
+	@XmlElement
+	private Date CompletionDate;
 	
 	/**
 	 * Gets the completion date.
 	 * 
 	 * @return the completion date
 	 */
-	public java.util.Date getCompletionDate() { return( completionDate ); }
+	public Date getCompletionDate() { return( CompletionDate ); }
 	
 	/**
 	 * Sets the completion date.
 	 * 
 	 * @param xx the new completion date
 	 */
-	public void setCompletionDate( java.util.Date xx ){ completionDate = xx; }
+	public void setCompletionDate( Date xx ){ CompletionDate = xx; }
 
-	/** The Due date_. */
-	private java.util.Date DueDate_;
+	/** The Due date. */
+	@XmlElement
+	private Date DueDate;
 	
 	/**
 	 * Gets the due date.
 	 * 
 	 * @return the due date
 	 */
-	public java.util.Date getDueDate() { return( DueDate_ ); }
+	public Date getDueDate() { return( DueDate ); }
 	
 	/**
 	 * Sets the due date.
 	 * 
 	 * @param xx the new due date
 	 */
-	public void setDueDate( java.util.Date xx ){ DueDate_ = xx; }
+	public void setDueDate( Date xx ){ DueDate = xx; }
 
-	/** The Person assigned_. */
-	private String PersonAssigned_;
+	/** The Person assigned. */
+	@XmlElement
+	private String PersonAssigned;
 	
 	/**
 	 * Gets the person assigned.
 	 * 
 	 * @return the person assigned
 	 */
-	public String getPersonAssigned() { return( PersonAssigned_ ); }
+	public String getPersonAssigned() { return( PersonAssigned ); }
 	
 	/**
 	 * Sets the person assigned.
 	 * 
 	 * @param xx the new person assigned
 	 */
-	public void setPersonAssigned( String xx ){ PersonAssigned_ = xx; }
+	public void setPersonAssigned( String xx ){ PersonAssigned = xx; }
 
-	/** The Priority_. */
-	private Integer Priority_;
+	/** The Priority. */
+	@XmlElement
+	private Integer Priority;
 	
 	/**
 	 * Gets the priority.
 	 * 
 	 * @return the priority
 	 */
-	public Integer getPriority() { return( Priority_ ); }
+	public Integer getPriority() { return( Priority ); }
 	
 	/**
 	 * Sets the priority.
 	 * 
 	 * @param xx the new priority
 	 */
-	public void setPriority( Integer xx ){ Priority_ = xx; }
+	public void setPriority( Integer xx ){ Priority = xx; }
 
-	/** The State_. */
-	private String State_;
+	/** The State. */
+	@XmlElement
+	private String State;
 	
 	/**
 	 * Gets the state.
 	 * 
 	 * @return the state
 	 */
-	public String getState() { return( State_ ); }
+	public String getState() { return( State ); }
 	
 	/**
 	 * Sets the state.
 	 * 
 	 * @param xx the new state
 	 */
-	public void setState( String xx ){ State_ = xx; }
+	public void setState( String xx ){ State = xx; }
 
-	/** The Type_. */
-	private String Type_;
+	/** The Type. */
+	@XmlElement
+	private String Type;
 	
 	/**
 	 * Gets the type.
 	 * 
 	 * @return the type
 	 */
-	public String getType() { return( Type_ ); }
+	public String getType() { return( Type ); }
 	
 	/**
 	 * Sets the type.
 	 * 
 	 * @param xx the new type
 	 */
-	public void setType( String xx ){ Type_ = xx; }
+	public void setType( String xx ){ Type = xx; }
 
-	/** The Description_. */
-	private String Description_;
+	/** The Description. */
+	@XmlElement
+	private String Description;
 	
 	/**
 	 * Gets the description.
 	 * 
 	 * @return the description
 	 */
-	public String getDescription() { return( Description_ ); }
+	public String getDescription() { return( Description ); }
 	
 	/**
 	 * Sets the description.
 	 * 
 	 * @param xx the new description
 	 */
-	public void setDescription( String xx ){ Description_ = xx; }
+	public void setDescription( String xx ){ Description = xx; }
 
-	/** The Resolution_. */
-	private String Resolution_;
+	/** The Resolution. */
+	@XmlElement
+	private String Resolution;
 	
 	/**
 	 * Gets the resolution.
 	 * 
 	 * @return the resolution
 	 */
-	public String getResolution() { return( Resolution_ ); }
+	public String getResolution() { return( Resolution ); }
 	
 	/**
 	 * Sets the resolution.
 	 * 
 	 * @param xx the new resolution
 	 */
-	public void setResolution( String xx ){ Resolution_ = xx; }
+	public void setResolution( String xx ){ Resolution = xx; }
 	
-	/** The Category_. */
-	private String Category_;
+	/** The Category. */
+	@XmlElement
+	private String Category;
 	
 	/**
 	 * Gets the category.
 	 * 
 	 * @return the category
 	 */
-	public String getCategory() { return( Category_ ); }
+	public String getCategory() { return( Category ); }
 	
 	/**
 	 * Sets the category.
 	 * 
 	 * @param xx the new category
 	 */
-	public void setCategory( String xx ){ Category_ = xx; }
+	public void setCategory( String xx ){ Category = xx; }
 
-	/** The Project_. */
-	private Integer Project_;
+	/** The Project. */
+	@XmlElement
+	private Integer Project;
 	
 	/**
 	 * Gets the project.
 	 * 
 	 * @return the project
 	 */
-	public Integer getProject() { return( Project_ ); }
+	public Integer getProject() { return( Project ); }
 	
 	/**
 	 * Sets the project.
 	 * 
 	 * @param xx the new project
 	 */
-	public void setProject( Integer xx ){ Project_ = xx; }
+	public void setProject( Integer xx ){ Project = xx; }
 	
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.entity.CalendarEntity#getColor()
@@ -256,9 +274,9 @@ public class Task extends KeyedEntity<Task> implements CalendarEntity, java.io.S
 	 */
 	public String getText(){
 		// return the text as it should appear on the calendar
-		 String show_abb = Prefs.getPref(PrefName.TASK_SHOW_ABBREV);
+		 String showabb = Prefs.getPref(PrefName.TASK_SHOW_ABBREV);
 		 String abb = "";
-         if (show_abb.equals("true"))
+         if (showabb.equals("true"))
              abb = "BT" + getKey() + " ";
          String de = abb + getDescription();
          String tx = de.replace('\n', ' ');

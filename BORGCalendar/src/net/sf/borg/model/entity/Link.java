@@ -18,27 +18,38 @@
  */
 package net.sf.borg.model.entity;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
 
 
 /**
  * Link entity. A Link represents an association between an Entity (Appointment, Project, Task, Address) and 
  * another Entity, a URL, or a File
  */
+@XmlRootElement(name="Link")
+@XmlAccessorType(XmlAccessType.NONE)
 public class Link extends KeyedEntity<Link> implements java.io.Serializable {
 
 	
 	private static final long serialVersionUID = 1476303921088473573L;
 	
 	/** The key of the owning KeyedEntity. */
+	@XmlElement(name="OwnerKey")
 	private Integer ownerKey;
 	
 	/** The type of the KeyedEntity - mapped in LinkModel.java  */
+	@XmlElement(name="OwnerType")
 	private String ownerType;
 	
 	/** The identifier of the link target - i.e. an entity id, file path, or url */
+	@XmlElement(name="Path")
 	private String path;
 	
 	/** The link type - see LinkModel.LinkType. */
+	@XmlElement(name="LinkType")
 	private String linkType;
 	
 	/* (non-Javadoc)

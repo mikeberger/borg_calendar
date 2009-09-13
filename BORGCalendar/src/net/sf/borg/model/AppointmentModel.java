@@ -20,6 +20,7 @@
 
 package net.sf.borg.model;
 
+import java.io.FileInputStream;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -34,13 +35,17 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.Vector;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlRootElement;
+
 import net.sf.borg.common.DateUtil;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.common.Warning;
-import net.sf.borg.common.XTree;
 import net.sf.borg.model.CategoryModel.CategorySource;
 import net.sf.borg.model.db.AppointmentDB;
 import net.sf.borg.model.db.EntityDB;
@@ -48,7 +53,6 @@ import net.sf.borg.model.db.jdbc.ApptJdbcDB;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.undo.AppointmentUndoItem;
 import net.sf.borg.model.undo.UndoLog;
-import net.sf.borg.model.xml.AppointmentXMLAdapter;
 
 /**
  * the appointment model provides the model layer APIs for working with Appointment Entities
@@ -56,6 +60,15 @@ import net.sf.borg.model.xml.AppointmentXMLAdapter;
  */
 public class AppointmentModel extends Model implements Model.Listener,
 		CategorySource {
+	
+	/**
+	 * class XmlContainer is solely for JAXB XML export/import
+	 * to keep the same XML structure as before JAXB was used
+	 */
+	@XmlRootElement(name="APPTS")
+	private static class XmlContainer {		
+		public Collection<Appointment> Appointment;		
+	}
 
 	/** The singleton */
 	static private AppointmentModel self_ = null;
@@ -480,18 +493,11 @@ public class AppointmentModel extends Model implements Model.Listener,
 	 */
 	public void export(Writer fw) throws Exception {
 
-		// FileWriter fw = new FileWriter(fname);
-		fw.write("<APPTS>\n");
-		AppointmentXMLAdapter aa = new AppointmentXMLAdapter();
-
-		// export appts
-		for (Appointment ap : getAllAppts()) {
-			XTree xt = aa.toXml(ap);
-			fw.write(xt.toString());
-		}
-
-		fw.write("</APPTS>");
-
+		JAXBContext jc = JAXBContext.newInstance(XmlContainer.class);
+        Marshaller m = jc.createMarshaller();
+        XmlContainer container = new XmlContainer();
+        container.Appointment = getAllAppts();
+        m.marshal(container, fw);
 	}
 
 	
@@ -671,38 +677,26 @@ public class AppointmentModel extends Model implements Model.Listener,
 	}
 
 	/**
-	 * Import appointment xml.
+	 * Import xml.
 	 * 
-	 * @param xt the xml tree to import from
+	 * @param fileName the file name of the file containing the XML
 	 * 
 	 * @throws Exception the exception
 	 */
-	public void importXml(XTree xt) throws Exception {
+	public void importXml(String fileName) throws Exception {
 
-		AppointmentXMLAdapter aa = new AppointmentXMLAdapter();
+		JAXBContext jc = JAXBContext.newInstance(XmlContainer.class);
+		Unmarshaller u = jc.createUnmarshaller();
+		
+		XmlContainer container =
+			  (XmlContainer)u.unmarshal(
+			    new FileInputStream( fileName ) );
 
-		// for each appt - create an Appointment and store
-		for (int i = 1;; i++) {
-			XTree ch = xt.child(i);
-			if (ch == null)
-				break;
-
-			if (!ch.name().equals("Appointment"))
-				continue;
-			Appointment appt = aa.fromXml(ch);
-
-			while (true) {
-				try {
-					db_.addObj(appt);
-					break;
-
-				} catch (Exception e) {
-					Errmsg.errmsg(e);
-					break;
-				}
-			}
+		for (Appointment appt : container.Appointment ) {
+			appt.setKey(db_.nextkey());
+			db_.addObj(appt);
 		}
-
+		
 		// rebuild the hashmap
 		buildMap();
 

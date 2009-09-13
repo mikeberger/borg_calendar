@@ -20,12 +20,13 @@ package net.sf.borg.ui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -48,7 +49,6 @@ import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.common.ScrolledDialog;
-import net.sf.borg.common.XTree;
 import net.sf.borg.control.Borg;
 import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.AppointmentModel;
@@ -85,13 +85,11 @@ class MainMenu {
 	private JMenuItem editPrefsMenuItem = new JMenuItem();
 	private JMenuItem exitMenuItem = new JMenuItem();
 	private JMenuItem exportMI = new JMenuItem();
-	private JMenuItem expurl = new JMenuItem();
 	private JMenu expXML = new JMenu();
 	private JMenu helpmenu = new JMenu();
 	private JMenuItem helpMI = new JMenuItem();
 	private JMenu impexpMenu = new JMenu();
 	private JMenuItem importMI = new JMenuItem();
-	private JMenuItem impurl = new JMenuItem();
 	private JMenu impXML = new JMenu();
 	private JMenuItem licsend = new JMenuItem();
 	private JMenuBar menuBar = new JMenuBar();
@@ -370,15 +368,6 @@ class MainMenu {
 
 		impXML.add(importMI);
 
-		ResourceHelper.setText(impurl, "impurl");
-		impurl.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				impurlActionPerformed();
-			}
-		});
-
-		impXML.add(impurl);
-
 		impexpMenu.add(impXML);
 
 		expXML.setIcon(new javax.swing.ImageIcon(getClass().getResource(
@@ -392,15 +381,6 @@ class MainMenu {
 		});
 
 		expXML.add(exportMI);
-
-		ResourceHelper.setText(expurl, "expurl");
-		expurl.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				expurlActionPerformed();
-			}
-		});
-
-		expXML.add(expurl);
 
 		impexpMenu.add(expXML);
 
@@ -693,44 +673,7 @@ class MainMenu {
 
 	}
 
-	/** export to URL */
-	private void expurlActionPerformed() {
-		try {
-			String prevurl = Prefs.getPref(PrefName.LASTEXPURL);
-			String url = JOptionPane.showInputDialog(Resource
-					.getResourceString("enturl"), prevurl);
-			if (url == null || url.equals(""))
-				return;
-			Prefs.putPref(PrefName.LASTEXPURL, url);
-			OutputStream fos = IOHelper.createOutputStream(new URL(url
-					+ "/borg.xml"));
-			Writer fw = new OutputStreamWriter(fos, "UTF8");
-			AppointmentModel.getReference().export(fw);
-			fw.close();
-
-			fos = IOHelper.createOutputStream(new URL(url + "/mrdb.xml"));
-			fw = new OutputStreamWriter(fos, "UTF8");
-			TaskModel.getReference().export(fw);
-			fw.close();
-
-			fos = IOHelper.createOutputStream(new URL(url + "/addr.xml"));
-			fw = new OutputStreamWriter(fos, "UTF8");
-			AddressModel.getReference().export(fw);
-			fw.close();
-
-			fos = IOHelper.createOutputStream(new URL(url + "/memo.xml"));
-			fw = new OutputStreamWriter(fos, "UTF8");
-			MemoModel.getReference().export(fw);
-			fw.close();
-
-			fos = IOHelper.createOutputStream(new URL(url + "/link.xml"));
-			fw = new OutputStreamWriter(fos, "UTF8");
-			LinkModel.getReference().export(fw);
-			fw.close();
-		} catch (Exception e) {
-			Errmsg.errmsg(e);
-		}
-	}
+	
 
 	/**
 	 * delete category menu item
@@ -996,66 +939,86 @@ class MainMenu {
 		return m;
 	}
 
-	/**
-	 * common import logic - imports from xml
-	 * 
-	 * @param xt
-	 *            the xml tree
-	 * @throws Exception
-	 */
-	private void impCommon(XTree xt) throws Exception {
-		String type = xt.name();
-
-		int ret = JOptionPane.showConfirmDialog(null, Resource
-				.getResourceString("Importing_")
-				+ " " + type + ", OK?", Resource
-				.getResourceString("Import_WARNING"),
-				JOptionPane.OK_CANCEL_OPTION);
-
-		if (ret != JOptionPane.OK_OPTION)
-			return;
-
-		if (type.equals("TASKS")) {
-			TaskModel taskmod = TaskModel.getReference();
-			taskmod.importXml(xt);
-		} else if (type.equals("APPTS")) {
-			AppointmentModel calmod = AppointmentModel.getReference();
-			calmod.importXml(xt);
-		} else if (type.equals("MEMOS")) {
-			MemoModel memomod = MemoModel.getReference();
-			memomod.importXml(xt);
-		} else if (type.equals("ADDRESSES")) {
-			AddressModel addrmod = AddressModel.getReference();
-			addrmod.importXml(xt);
-		} else if (type.equals("LINKS")) {
-			LinkModel addrmod = LinkModel.getReference();
-			addrmod.importXml(xt);
-		}
-
-		// show any newly imported categories
-		CategoryModel.getReference().syncCategories();
-		CategoryModel.getReference().showAll();
-	}
-
 	/** import from file */
 	private void importMIActionPerformed() {
 		try {
-
-			InputStream istr = IOHelper.fileOpen(".", Resource
+			
+			JFileChooser chooser = new JFileChooser();
+            
+			chooser.setCurrentDirectory( new File("."));
+			chooser.setDialogTitle(Resource
 					.getResourceString("Please_choose_File_to_Import_From"));
+			chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		            
+			int returnVal = chooser.showOpenDialog(null);
+			if(returnVal != JFileChooser.APPROVE_OPTION)
+				return;
+		            
+			String fileName = chooser.getSelectedFile().getAbsolutePath();
+			BufferedReader in = new BufferedReader(new FileReader(new File(fileName)));
+			
+			String type = "";
+			for( int i = 0; i < 10; i++ )
+			{
+				String line = in.readLine();
+				if( line == null ) break;
+				if( line.contains("<ADDRESSES>"))
+				{
+					type = "ADDRESSES";
+					break;
+				}
+				else if( line.contains("<MEMOS>"))
+				{
+					type = "MEMOS";
+					break;
+				}
+				else if( line.contains("<LINKS>"))
+				{
+					type = "LINKS";
+					break;
+				}
+				else if( line.contains("<TASKS>"))
+				{
+					type = "TASKS";
+					break;
+				}
+				else if( line.contains("<APPTS>"))
+				{
+					type = "APPTS";
+					break;
+				}
+			}
+			
+			in.close();	
 
-			if (istr == null)
+			int ret = JOptionPane.showConfirmDialog(null, Resource
+					.getResourceString("Importing_")
+					+ " " + type + ", OK?", Resource
+					.getResourceString("Import_WARNING"),
+					JOptionPane.OK_CANCEL_OPTION);
+
+			if (ret != JOptionPane.OK_OPTION)
 				return;
 
-			// parse xml file
-			XTree xt = XTree.readFromStream(istr);
-			istr.close();
-			if (xt == null)
-				throw new Exception(Resource
-						.getResourceString("Could_not_parse_")
-						+ "XML");
+			if (type.equals("ADDRESSES")) {
+				AddressModel.getReference().importXml(fileName);
+			}
+			else if (type.equals("LINKS")) {
+				LinkModel.getReference().importXml(fileName);
+			}
+			else if (type.equals("MEMOS")) {
+				MemoModel.getReference().importXml(fileName);
+			}
+			else if (type.equals("TASKS")) {
+				TaskModel.getReference().importXml(fileName);
+			}
+			else if (type.equals("APPTS")) {
+				AppointmentModel.getReference().importXml(fileName);
+			}
 
-			impCommon(xt);
+			// show any newly imported categories
+			CategoryModel.getReference().syncCategories();
+			CategoryModel.getReference().showAll();
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
 		}
@@ -1089,27 +1052,6 @@ class MainMenu {
 			Errmsg.errmsg(e);
 		}
 
-	}
-
-	/** import from a url */
-	private void impurlActionPerformed() {
-		try {
-			String prevurl = Prefs.getPref(PrefName.LASTIMPURL);
-			String urlst = JOptionPane.showInputDialog(Resource
-					.getResourceString("enturl"), prevurl);
-			if (urlst == null || urlst.equals(""))
-				return;
-
-			Prefs.putPref(PrefName.LASTIMPURL, urlst);
-			URL url = new URL(urlst);
-			XTree xt = XTree.readFromStream(url.openStream());
-			if (xt == null)
-				throw new Exception(Resource
-						.getResourceString("Could_not_parse_")
-						+ urlst);
-		} catch (Exception e) {
-			Errmsg.errmsg(e);
-		}
 	}
 
 	/**

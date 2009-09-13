@@ -19,20 +19,24 @@
  */
 package net.sf.borg.model;
 
+import java.io.FileInputStream;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlRootElement;
+
 import net.sf.borg.common.Errmsg;
-import net.sf.borg.common.XTree;
 import net.sf.borg.model.db.MemoDB;
 import net.sf.borg.model.db.jdbc.MemoJdbcDB;
 import net.sf.borg.model.entity.Memo;
 import net.sf.borg.model.undo.MemoUndoItem;
 import net.sf.borg.model.undo.UndoLog;
-import net.sf.borg.model.xml.MemoXMLAdapter;
 
 /**
  * The Memo Model manages the Memo Entities. Memos are keyed by a name. Memos contain simple text and
@@ -44,6 +48,15 @@ public class MemoModel extends Model {
 	private static SimpleDateFormat normalDateFormat_ = new SimpleDateFormat(
 			"MM/dd/yyyy hh:mm aa");
 
+	/**
+	 * class XmlContainer is solely for JAXB XML export/import
+	 * to keep the same XML structure as before JAXB was used
+	 */
+	@XmlRootElement(name="MEMOS")
+	private static class XmlContainer {		
+		public Collection<Memo> Memo;		
+	}
+	
 	/** The db */
 	private MemoDB db_; // the database
 
@@ -281,39 +294,31 @@ public class MemoModel extends Model {
 	 */
 	public void export(Writer fw) throws Exception {
 
-		// FileWriter fw = new FileWriter(fname);
-		fw.write("<MEMOS>\n");
-		MemoXMLAdapter ta = new MemoXMLAdapter();
-
-		// export Memoes
-		for (Memo memo : getMemos()) {
-			XTree xt = ta.toXml(memo);
-			fw.write(xt.toString());
-		}
-
-		fw.write("</MEMOS>");
+		JAXBContext jc = JAXBContext.newInstance(XmlContainer.class);
+        Marshaller m = jc.createMarshaller();
+        XmlContainer container = new XmlContainer();
+        container.Memo = getMemos();
+        m.marshal(container, fw);
 
 	}
 
 	/**
 	 * Import xml.
 	 * 
-	 * @param xt the XML tree
+	 * @param fileName the file name of the file containing the XML
 	 * 
 	 * @throws Exception the exception
 	 */
-	public void importXml(XTree xt) throws Exception {
+	public void importXml(String fileName) throws Exception {
 
-		MemoXMLAdapter aa = new MemoXMLAdapter();
+		JAXBContext jc = JAXBContext.newInstance(XmlContainer.class);
+		Unmarshaller u = jc.createUnmarshaller();
+		
+		XmlContainer container =
+			  (XmlContainer)u.unmarshal(
+			    new FileInputStream( fileName ) );
 
-		for (int i = 1;; i++) {
-			XTree ch = xt.child(i);
-			if (ch == null)
-				break;
-
-			if (!ch.name().equals("Memo"))
-				continue;
-			Memo memo = aa.fromXml(ch);
+		for (Memo memo : container.Memo ) {
 			memo.setKey(-1);
 			saveMemo(memo);
 		}

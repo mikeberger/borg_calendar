@@ -19,6 +19,7 @@
  */
 package net.sf.borg.model;
 
+import java.io.FileInputStream;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -32,12 +33,15 @@ import java.util.TreeSet;
 import java.util.Vector;
 
 import javax.swing.JOptionPane;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import net.sf.borg.common.DateUtil;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Resource;
 import net.sf.borg.common.Warning;
-import net.sf.borg.common.XTree;
 import net.sf.borg.model.CategoryModel.CategorySource;
 import net.sf.borg.model.db.EntityDB;
 import net.sf.borg.model.db.jdbc.JdbcDB;
@@ -51,10 +55,6 @@ import net.sf.borg.model.undo.ProjectUndoItem;
 import net.sf.borg.model.undo.SubtaskUndoItem;
 import net.sf.borg.model.undo.TaskUndoItem;
 import net.sf.borg.model.undo.UndoLog;
-import net.sf.borg.model.xml.ProjectXMLAdapter;
-import net.sf.borg.model.xml.SubtaskXMLAdapter;
-import net.sf.borg.model.xml.TaskXMLAdapter;
-import net.sf.borg.model.xml.TasklogXMLAdapter;
 
 /**
  * TaksModel manages all of the task related entities - Task, Project, Subtask,
@@ -62,6 +62,19 @@ import net.sf.borg.model.xml.TasklogXMLAdapter;
  */
 public class TaskModel extends Model implements Model.Listener, Transactional,
 		CategorySource {
+
+	/**
+	 * class XmlContainer is solely for JAXB XML export/import to keep the same
+	 * XML structure as before JAXB was used
+	 */
+	@XmlRootElement(name = "TASKS")
+	private static class XmlContainer {
+		public Collection<BorgOption> OPTION;
+		public Collection<Project> Project;
+		public Collection<Task> Task;
+		public Collection<Subtask> Subtask;
+		public Collection<Tasklog> Tasklog;
+	}
 
 	// hard-code to TaskJdbcDB just to access options logic
 	// need to fix this in the future
@@ -614,49 +627,15 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 	 */
 	public void export(Writer fw) throws Exception {
 
-		// FileWriter fw = new FileWriter(fname);
-		fw.write("<TASKS>\n");
-		TaskXMLAdapter ta = new TaskXMLAdapter();
-
-		// export options
-		for (BorgOption option : db_.getOptions()) {
-			XTree xt = new XTree();
-			xt.name("OPTION");
-			xt.appendChild(option.getKey(), option.getValue());
-			fw.write(xt.toString());
-		}
-
-		ProjectXMLAdapter pa = new ProjectXMLAdapter();
-
-		// export projects
-		for (Project p : getProjects()) {
-			XTree xt = pa.toXml(p);
-			fw.write(xt.toString());
-		}
-
-		// export tasks
-		for (Task task : getTasks()) {
-			XTree xt = ta.toXml(task);
-			fw.write(xt.toString());
-		}
-
-		SubtaskXMLAdapter sta = new SubtaskXMLAdapter();
-
-		// export subtasks
-		for (Subtask stask : getSubTasks()) {
-			XTree xt = sta.toXml(stask);
-			fw.write(xt.toString());
-		}
-
-		TasklogXMLAdapter tla = new TasklogXMLAdapter();
-
-		// export tasklogs
-		for (Tasklog tlog : getLogs()) {
-			XTree xt = tla.toXml(tlog);
-			fw.write(xt.toString());
-		}
-
-		fw.write("</TASKS>");
+		JAXBContext jc = JAXBContext.newInstance(XmlContainer.class);
+		Marshaller m = jc.createMarshaller();
+		XmlContainer container = new XmlContainer();
+		container.OPTION = db_.getOptions();
+		container.Project = getProjects();
+		container.Task = getTasks();
+		container.Subtask = getSubTasks();
+		container.Tasklog = getLogs();
+		m.marshal(container, fw);
 
 	}
 
@@ -688,82 +667,69 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 	}
 
 	/**
-	 * Import all task related entities from xml
+	 * Import xml.
 	 * 
-	 * @param xt
-	 *            the XML
+	 * @param fileName
+	 *            the file name of the file containing the XML
 	 * 
 	 * @throws Exception
 	 *             the exception
 	 */
-	public void importXml(XTree xt) throws Exception {
+	public void importXml(String fileName) throws Exception {
 
-		TaskXMLAdapter aa = new TaskXMLAdapter();
-		SubtaskXMLAdapter sa = new SubtaskXMLAdapter();
-		TasklogXMLAdapter la = new TasklogXMLAdapter();
-		ProjectXMLAdapter pa = new ProjectXMLAdapter();
+		JAXBContext jc = JAXBContext.newInstance(XmlContainer.class);
+		Unmarshaller u = jc.createUnmarshaller();
+
+		XmlContainer container = (XmlContainer) u
+				.unmarshal(new FileInputStream(fileName));
 
 		JdbcDB.execSQL("SET REFERENTIAL_INTEGRITY FALSE;");
 
-		// for each appt - create an Appointment and store
-		for (int i = 1;; i++) {
-			XTree ch = xt.child(i);
-			if (ch == null)
-				break;
+		for (BorgOption option : container.OPTION) {
+			if (option.getKey().equals("SMODEL")) {
+				taskTypes_.fromString(option.getValue());
+				db_.setOption(new BorgOption("SMODEL", taskTypes_.toString()));
 
-			if (ch.name().equals("OPTION")) {
-				XTree opt = ch.child(1);
-				if (opt == null)
-					continue;
-
-				if (opt.name().equals("SMODEL")) {
-					taskTypes_.fromString(opt.value());
-					db_.setOption(new BorgOption("SMODEL", taskTypes_
-							.toString()));
-
-				} else {
-					db_.setOption(new BorgOption(opt.name(), opt.value()));
-				}
-			}
-
-			else if (ch.name().equals("Task")) {
-				Task task = aa.fromXml(ch);
-				if (task.getPriority() == null)
-					task.setPriority(new Integer(3));
-
-				db_.addObj(task);
-
-			}
-
-			else if (ch.name().equals("Subtask")) {
-				Subtask subtask = sa.fromXml(ch);
-				try {
-					subtask.setKey(-1);
-					saveSubTask(subtask);
-				} catch (Exception e) {
-					Errmsg.errmsg(e);
-				}
-			}
-
-			else if (ch.name().equals("Tasklog")) {
-				Tasklog tlog = la.fromXml(ch);
-				try {
-					tlog.setKey(-1);
-					saveLog(tlog);
-				} catch (Exception e) {
-					Errmsg.errmsg(e);
-				}
-			} else if (ch.name().equals("Project")) {
-				Project p = pa.fromXml(ch);
-				try {
-					db_.addProject(p);
-				} catch (Exception e) {
-					Errmsg.errmsg(e);
-				}
+			} else {
+				db_.setOption(option);
 			}
 		}
+
+		for (Task task : container.Task) {
+			if (task.getPriority() == null)
+				task.setPriority(new Integer(3));
+
+			db_.addObj(task);
+
+		}
+
+		for (Subtask subtask : container.Subtask) {
+			try {
+				subtask.setKey(-1);
+				saveSubTask(subtask);
+			} catch (Exception e) {
+				Errmsg.errmsg(e);
+			}
+		}
+
+		for (Tasklog tlog : container.Tasklog) {
+			try {
+				tlog.setKey(-1);
+				saveLog(tlog);
+			} catch (Exception e) {
+				Errmsg.errmsg(e);
+			}
+		}
+
+		for (Project p : container.Project) {
+			try {
+				db_.addProject(p);
+			} catch (Exception e) {
+				Errmsg.errmsg(e);
+			}
+		}
+
 		JdbcDB.execSQL("SET REFERENTIAL_INTEGRITY TRUE;");
-		// refresh all views that are displaying appt data from this model
 		load_map();
 		refreshListeners();
 

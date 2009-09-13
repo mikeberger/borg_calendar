@@ -20,6 +20,11 @@ package net.sf.borg.model.entity;
 
 import java.util.Date;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 
@@ -28,98 +33,106 @@ import net.sf.borg.common.Prefs;
 /**
  * Project Entity - a project contains tasks and can have child projects
  */
+@XmlRootElement(name="Project")
+@XmlAccessorType(XmlAccessType.NONE)
 public class Project extends KeyedEntity<Project> implements CalendarEntity,java.io.Serializable {
 
 	
 	private static final long serialVersionUID = -3250115693306817331L;
 	
-	/** The Start date_. */
-	private java.util.Date StartDate_;
+	/** The Start date. */
+	@XmlElement
+	private Date StartDate;
 	
 	/**
 	 * Gets the start date.
 	 * 
 	 * @return the start date
 	 */
-	public java.util.Date getStartDate() { return( StartDate_ ); }
+	public Date getStartDate() { return( StartDate ); }
 	
 	/**
 	 * Sets the start date.
 	 * 
 	 * @param xx the new start date
 	 */
-	public void setStartDate( java.util.Date xx ){ StartDate_ = xx; }
+	public void setStartDate( Date xx ){ StartDate = xx; }
 
-	/** The Due date_. */
-	private java.util.Date DueDate_;
+	/** The Due date. */
+	@XmlElement
+	private Date DueDate;
 	
 	/**
 	 * Gets the due date.
 	 * 
 	 * @return the due date
 	 */
-	public java.util.Date getDueDate() { return( DueDate_ ); }
+	public Date getDueDate() { return( DueDate ); }
 	
 	/**
 	 * Sets the due date.
 	 * 
 	 * @param xx the new due date
 	 */
-	public void setDueDate( java.util.Date xx ){ DueDate_ = xx; }
+	public void setDueDate( Date xx ){ DueDate = xx; }
 
-	/** The Description_. */
-	private String Description_;
+	/** The Description. */
+	@XmlElement
+	private String Description;
 	
 	/**
 	 * Gets the description.
 	 * 
 	 * @return the description
 	 */
-	public String getDescription() { return( Description_ ); }
+	public String getDescription() { return( Description ); }
 	
 	/**
 	 * Sets the description.
 	 * 
 	 * @param xx the new description
 	 */
-	public void setDescription( String xx ){ Description_ = xx; }
+	public void setDescription( String xx ){ Description = xx; }
 
-	/** The Category_. */
-	private String Category_;
+	/** The Category. */
+	@XmlElement
+	private String Category;
 	
 	/**
 	 * Gets the category.
 	 * 
 	 * @return the category
 	 */
-	public String getCategory() { return( Category_ ); }
+	public String getCategory() { return( Category ); }
 	
 	/**
 	 * Sets the category.
 	 * 
 	 * @param xx the new category
 	 */
-	public void setCategory( String xx ){ Category_ = xx; }
+	public void setCategory( String xx ){ Category = xx; }
 
-	/** The Status_. */
-	private String Status_;
+	/** The Status. */
+	@XmlElement
+	private String Status;
 	
 	/**
 	 * Gets the status.
 	 * 
 	 * @return the status
 	 */
-	public String getStatus() { return( Status_ ); }
+	public String getStatus() { return( Status ); }
 	
 	/**
 	 * Sets the status.
 	 * 
 	 * @param xx the new status
 	 */
-	public void setStatus( String xx ){ Status_ = xx; }
+	public void setStatus( String xx ){ Status = xx; }
 	
-	/** The parent_. */
-	private Integer parent_;
+	/** The Parent. */
+	@XmlElement
+	private Integer Parent;
 	
 	/**
 	 * Gets the parent.
@@ -127,7 +140,7 @@ public class Project extends KeyedEntity<Project> implements CalendarEntity,java
 	 * @return the parent
 	 */
 	public Integer getParent() {
-	    return parent_;
+	    return Parent;
 	}
 	
 	/**
@@ -136,7 +149,7 @@ public class Project extends KeyedEntity<Project> implements CalendarEntity,java
 	 * @param parent the new parent
 	 */
 	public void setParent(Integer parent) {
-	    this.parent_ = parent;
+	    this.Parent = parent;
 	}
 
 	/* (non-Javadoc)
@@ -192,9 +205,9 @@ public class Project extends KeyedEntity<Project> implements CalendarEntity,java
 	 */
 	public String getText(){
 		// return the text as it should appear on the calendar
-		 String show_abb = Prefs.getPref(PrefName.TASK_SHOW_ABBREV);
+		 String showabb = Prefs.getPref(PrefName.TASK_SHOW_ABBREV);
 		 String abb = "";
-         if (show_abb.equals("true"))
+         if (showabb.equals("true"))
              abb = "PR" + getKey() + " ";
          String de = abb + getDescription();
          String tx = de.replace('\n', ' ');

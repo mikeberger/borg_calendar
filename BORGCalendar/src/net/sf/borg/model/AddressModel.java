@@ -19,6 +19,7 @@ Copyright 2003 by Mike Berger
  */
 package net.sf.borg.model;
 
+import java.io.FileInputStream;
 import java.io.Writer;
 import java.util.Calendar;
 import java.util.Collection;
@@ -27,14 +28,17 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlRootElement;
+
 import net.sf.borg.common.Errmsg;
-import net.sf.borg.common.XTree;
 import net.sf.borg.model.db.EntityDB;
 import net.sf.borg.model.db.jdbc.AddrJdbcDB;
 import net.sf.borg.model.entity.Address;
 import net.sf.borg.model.undo.AddressUndoItem;
 import net.sf.borg.model.undo.UndoLog;
-import net.sf.borg.model.xml.AddressXMLAdapter;
 
 /**
  * AddressModel provides the model layer APIs for working with Addresses
@@ -42,6 +46,15 @@ import net.sf.borg.model.xml.AddressXMLAdapter;
 public class AddressModel extends Model {
 
 	static private AddressModel self_ = null;
+	
+	/**
+	 * class XmlContainer is solely for JAXB XML export/import
+	 * to keep the same XML structure as before JAXB was used
+	 */
+	@XmlRootElement(name="ADDRESSES")
+	private static class XmlContainer {		
+		public Collection<Address> Address;		
+	}
 
 	/**
 	 * Gets the reference.
@@ -116,6 +129,8 @@ public class AddressModel extends Model {
 
 		refresh();
 	}
+	
+	
 
 	/**
 	 * Export all Addresses to XML.
@@ -125,22 +140,13 @@ public class AddressModel extends Model {
 	 * @throws Exception the exception
 	 */
 	public void export(Writer fw) throws Exception {
-
-		// FileWriter fw = new FileWriter(fname);
-		fw.write("<ADDRESSES>\n");
-		AddressXMLAdapter ta = new AddressXMLAdapter();
-
-		// export addresses
-
-		Collection<Address> addrs = getAddresses();
-		for (Address addr : addrs) {
-
-			XTree xt = ta.toXml(addr);
-			fw.write(xt.toString());
-		}
-
-		fw.write("</ADDRESSES>");
-
+	
+		JAXBContext jc = JAXBContext.newInstance(XmlContainer.class);
+        Marshaller m = jc.createMarshaller();
+        XmlContainer container = new XmlContainer();
+        container.Address = getAddresses();
+        m.marshal(container, fw);
+		
 	}
 
 	/**
@@ -195,22 +201,20 @@ public class AddressModel extends Model {
 	/**
 	 * Import xml.
 	 * 
-	 * @param xt an XML tree containing XML for multiple addresses
+	 * @param fileName the file name of the file containing the XML
 	 * 
 	 * @throws Exception the exception
 	 */
-	public void importXml(XTree xt) throws Exception {
+	public void importXml(String fileName) throws Exception {
 
-		AddressXMLAdapter aa = new AddressXMLAdapter();
+		JAXBContext jc = JAXBContext.newInstance(XmlContainer.class);
+		Unmarshaller u = jc.createUnmarshaller();
+		
+		XmlContainer container =
+			  (XmlContainer)u.unmarshal(
+			    new FileInputStream( fileName ) );
 
-		for (int i = 1;; i++) {
-			XTree ch = xt.child(i);
-			if (ch == null)
-				break;
-
-			if (!ch.name().equals("Address"))
-				continue;
-			Address addr = aa.fromXml(ch);
+		for (Address addr : container.Address ) {
 			addr.setKey(-1);
 			saveAddress(addr);
 		}

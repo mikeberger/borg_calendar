@@ -20,81 +20,87 @@ package net.sf.borg.model.entity;
 
 import java.util.Date;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+
 
 
 /**
  * Memo Entity. A Memo is a simple text entry keyed by a memo name. It remains simple
  * since it corresponds to the simple memo objects that can be synced to a palm pilot.
  */
+@XmlRootElement(name="Memo")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Memo extends KeyedEntity<Memo> implements java.io.Serializable {
 
 	
 	private static final long serialVersionUID = -6793670294661709573L;
 	
-	/** The Memo name_. */
-	private String MemoName_;
+	/** The Memo name. */
+	private String MemoName;
 	
 	/**
 	 * Gets the memo name.
 	 * 
 	 * @return the memo name
 	 */
-	public String getMemoName() { return( MemoName_ ); }
+	public String getMemoName() { return( MemoName ); }
 	
 	/**
 	 * Sets the memo name.
 	 * 
 	 * @param xx the new memo name
 	 */
-	public void setMemoName( String xx ){ MemoName_ = xx; }
+	public void setMemoName( String xx ){ MemoName = xx; }
 
-	/** The Memo text_. */
-	private String MemoText_;
+	/** The Memo text. */
+	private String MemoText;
 	
 	/**
 	 * Gets the memo text.
 	 * 
 	 * @return the memo text
 	 */
-	public String getMemoText() { return( MemoText_ ); }
+	public String getMemoText() { return( MemoText ); }
 	
 	/**
 	 * Sets the memo text.
 	 * 
 	 * @param xx the new memo text
 	 */
-	public void setMemoText( String xx ){ MemoText_ = xx; }
+	public void setMemoText( String xx ){ MemoText = xx; }
 	
 	// deprecating the palm stuff - it's almost dead
-	@Deprecated private Integer PalmId_;
-	@Deprecated public Integer getPalmId() { return( PalmId_ ); }
-	@Deprecated public void setPalmId( Integer xx ){ PalmId_ = xx; }
-	@Deprecated private boolean Modified_;
-	@Deprecated public boolean getModified() { return( Modified_ ); }
-	@Deprecated public void setModified( boolean xx ){ Modified_ = xx; }
+	@Deprecated private Integer PalmId;
+	@Deprecated public Integer getPalmId() { return( PalmId ); }
+	@Deprecated public void setPalmId( Integer xx ){ PalmId = xx; }
+	@Deprecated private boolean Modified;
+	@Deprecated public boolean getModified() { return( Modified ); }
+	@Deprecated public void setModified( boolean xx ){ Modified = xx; }
 
 	/** The Private flag - used by the palm. */
-	@Deprecated private boolean Private_;
+	@Deprecated private boolean Private;
 	
 	/**
 	 * Gets the private flag.
 	 * 
 	 * @return the private
 	 */
-	@Deprecated public boolean getPrivate() { return( Private_ ); }
+	@Deprecated public boolean getPrivate() { return( Private ); }
 	
 	/**
 	 * Sets the private flag.
 	 * 
 	 * @param xx the new private
 	 */
-	@Deprecated public void setPrivate( boolean xx ){ Private_ = xx; }
+	@Deprecated public void setPrivate( boolean xx ){ Private = xx; }
 	
 	/** The creation date. */
-	private Date created_;
+	private Date Created;
 	
 	/** The last update date. */
-	private Date updated_;
+	private Date Updated;
 	
 	/**
 	 * Gets the creation date.
@@ -102,16 +108,16 @@ public class Memo extends KeyedEntity<Memo> implements java.io.Serializable {
 	 * @return the creation date
 	 */
 	public Date getCreated() {
-	    return created_;
+	    return Created;
 	}
 	
 	/**
 	 * Sets the creation date.
 	 * 
-	 * @param created_ the creation date
+	 * @param Created the creation date
 	 */
-	public void setCreated(Date created_) {
-	    this.created_ = created_;
+	public void setCreated(Date created) {
+	    this.Created = created;
 	}
 	
 	/**
@@ -120,16 +126,16 @@ public class Memo extends KeyedEntity<Memo> implements java.io.Serializable {
 	 * @return the  last update date
 	 */
 	public Date getUpdated() {
-	    return updated_;
+	    return Updated;
 	}
 	
 	/**
 	 * Sets the  last update date.
 	 * 
-	 * @param updated_ the  last update date
+	 * @param Updated the  last update date
 	 */
-	public void setUpdated(Date updated_) {
-	    this.updated_ = updated_;
+	public void setUpdated(Date updated) {
+	    this.Updated = updated;
 	}
 
 	/* (non-Javadoc)
