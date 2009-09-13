@@ -71,31 +71,6 @@ public class Memo extends KeyedEntity<Memo> implements java.io.Serializable {
 	 */
 	public void setMemoText( String xx ){ MemoText = xx; }
 	
-	// deprecating the palm stuff - it's almost dead
-	@Deprecated private Integer PalmId;
-	@Deprecated public Integer getPalmId() { return( PalmId ); }
-	@Deprecated public void setPalmId( Integer xx ){ PalmId = xx; }
-	@Deprecated private boolean Modified;
-	@Deprecated public boolean getModified() { return( Modified ); }
-	@Deprecated public void setModified( boolean xx ){ Modified = xx; }
-
-	/** The Private flag - used by the palm. */
-	@Deprecated private boolean Private;
-	
-	/**
-	 * Gets the private flag.
-	 * 
-	 * @return the private
-	 */
-	@Deprecated public boolean getPrivate() { return( Private ); }
-	
-	/**
-	 * Sets the private flag.
-	 * 
-	 * @param xx the new private
-	 */
-	@Deprecated public void setPrivate( boolean xx ){ Private = xx; }
-	
 	/** The creation date. */
 	private Date Created;
 	
@@ -146,9 +121,6 @@ public class Memo extends KeyedEntity<Memo> implements java.io.Serializable {
 		dst.setKey( getKey());
 		dst.setMemoName( getMemoName() );
 		dst.setMemoText( getMemoText() );
-		dst.setPalmId( getPalmId() );
-		dst.setModified( getModified() );
-		dst.setPrivate( getPrivate() );
 		dst.setCreated(getCreated());
 		dst.setUpdated(getUpdated());
 		return(dst);

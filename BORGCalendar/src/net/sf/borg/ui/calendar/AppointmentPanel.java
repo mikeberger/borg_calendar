@@ -198,9 +198,6 @@ public class AppointmentPanel extends JPanel {
 			new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
 					"11", "12" });
 
-	// alarm check box
-	private JCheckBox alarmCheckBox = null;
-
 	// appt text area
 	private JTextArea appointmentBodyTextArea;
 
@@ -416,9 +413,6 @@ public class AppointmentPanel extends JPanel {
 					appt.setSkipList(originalAppt.getSkipList());
 					appt.setNextTodo(originalAppt.getNextTodo());
 				}
-
-				// should carry forward palm sync flags
-				appt.setModified(originalAppt.getModified());
 
 			} catch (Exception e) {
 			}
@@ -766,10 +760,7 @@ public class AppointmentPanel extends JPanel {
 		
 		appointmentPropetiesPanel.add(categoryBox, GridBagConstraintsFactory.create(3, 1, GridBagConstraints.BOTH));
 
-		alarmCheckBox = new JCheckBox();
-		ResourceHelper.setText(alarmCheckBox, "Alarm");
-		appointmentPropetiesPanel.add(alarmCheckBox, GridBagConstraintsFactory.create(4, 1));
-
+		
 		// ********************************************************************
 		// button panel
 		// ********************************************************************
@@ -1009,10 +1000,6 @@ public class AppointmentPanel extends JPanel {
 			appt.setVacation(new Integer(2));
 		if (holidayCheckBox.isSelected())
 			appt.setHoliday(new Integer(1));
-		
-		// palm-pilot alarm flag
-		if (alarmCheckBox.isSelected())
-			appt.setAlarm("Y");
 
 		// private
 		appt.setPrivate(privateCheckBox.isSelected());
@@ -1245,7 +1232,6 @@ public class AppointmentPanel extends JPanel {
 			halfDayVacationCheckBox.setSelected(false); // half-day unchecked
 			holidayCheckBox.setSelected(false); // holiday unchecked
 			privateCheckBox.setSelected(false); // private unchecked
-			alarmCheckBox.setSelected(false);
 			appointmentBodyTextArea.setText(""); // clear appt text
 			repeatFrequencyComboBox.setSelectedIndex(0); // freq = once
 			numberOfRepeatsSpinner.setEnabled(true);
@@ -1339,13 +1325,6 @@ public class AppointmentPanel extends JPanel {
 				ii = appt.getHoliday();
 				if (ii != null && ii.intValue() == 1)
 					holidayCheckBox.setSelected(true);
-
-				String alm = appt.getAlarm();
-				if (alm != null && alm.equals("Y")) {
-					alarmCheckBox.setSelected(true);
-				} else {
-					alarmCheckBox.setSelected(false);
-				}
 
 				// private checkbox
 				privateCheckBox.setSelected(appt.getPrivate());

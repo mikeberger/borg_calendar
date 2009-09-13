@@ -177,8 +177,6 @@ public class MemoModel extends Model {
 			String name = memo.getMemoName();
 			Memo old = db_.readMemo(name);
 			if (old == null) {
-
-				memo.setModified(true);
 				db_.addMemo(memo);
 				if (!undo) {
 					UndoLog.getReference()
@@ -186,7 +184,6 @@ public class MemoModel extends Model {
 				}
 
 			} else {
-				memo.setModified(true);
 				db_.updateMemo(memo);
 				if (!undo) {
 					UndoLog.getReference().addItem(

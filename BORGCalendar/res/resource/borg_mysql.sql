@@ -23,7 +23,6 @@ CREATE TABLE `addresses` (
   `webpage` varchar(100) default NULL,
   `notes` text,
   `birthday` date default NULL,
-  `modified` tinyint(4) NOT NULL default '0',
   PRIMARY KEY  (`address_num`)
 );
 
@@ -44,8 +43,6 @@ CREATE TABLE `appointments` (
   `color` varchar(10) default NULL,
    rpt tinyint(4) NOT NULL default '0',
   `category` varchar(15) default NULL,
-  `modified` tinyint(4) NOT NULL default '0',
-  `alarm` char(1) default NULL,
   `reminders` text,
   `untimed` char(1) default NULL,
   PRIMARY KEY  (`appt_num`),
@@ -121,9 +118,6 @@ CREATE TABLE tasklog (
 CREATE TABLE memos (
   memoname varchar(50) NOT NULL,
   memotext text,
-  palmid int(11),
-  modified int(11) NOT NULL default '0' ,
-  private int(11)  NOT NULL default '0' ,
   PRIMARY KEY  (memoname)
 );
 

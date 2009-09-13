@@ -279,16 +279,6 @@ public class Appointment extends KeyedEntity<Appointment> implements CalendarEnt
 	 */
 	public void setCategory( String xx ){ Category = xx; }
 
-	// palm sync stuff
-	@XmlElement
-	@Deprecated private boolean Modified;
-	@Deprecated public boolean getModified() { return( Modified ); }
-	@Deprecated public void setModified( boolean xx ){ Modified = xx; }
-	@XmlElement
-	@Deprecated private String Alarm;
-	@Deprecated public String getAlarm() { return( Alarm ); }
-	@Deprecated public void setAlarm( String xx ){ Alarm = xx; }
-
 	/** The Reminder times.  See ReminderTimes.java*/
 	@XmlElement
 	private String ReminderTimes;
@@ -353,8 +343,6 @@ public class Appointment extends KeyedEntity<Appointment> implements CalendarEnt
 		dst.setColor( getColor() );
 		dst.setRepeatFlag( getRepeatFlag() );
 		dst.setCategory( getCategory() );
-		dst.setModified( getModified() );
-		dst.setAlarm( getAlarm() );
 		dst.setReminderTimes( getReminderTimes() );
 		dst.setUntimed( getUntimed() );
 		return(dst);

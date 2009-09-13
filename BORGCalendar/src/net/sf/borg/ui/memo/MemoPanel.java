@@ -30,7 +30,6 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -39,7 +38,6 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.SwingConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
@@ -80,9 +78,6 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 
 	/** The memo text. */
 	private JTextArea memoText = null;
-
-	/** The private check box. */
-	private JCheckBox privateBox = null;
 
 	/** The save button. */
 	private JButton saveButton = null;
@@ -217,26 +212,6 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 		JPanel dateAndPrivatePanel = new JPanel();
 		dateAndPrivatePanel.setLayout(new GridBagLayout());
 		dateAndPrivatePanel.add(dateLabel, gridBagConstraints1);
-		gridBagConstraints1.gridx = 1;
-		gridBagConstraints1.weightx = 1.0D;
-		gridBagConstraints1.anchor = GridBagConstraints.EAST;
-		
-		privateBox = new JCheckBox();
-		privateBox.setText(Resource.getResourceString("Private"));
-		privateBox.setHorizontalAlignment(SwingConstants.RIGHT);
-		privateBox.setHorizontalTextPosition(SwingConstants.RIGHT);
-		
-		// flag the memo as edited if the user changes the private setting
-		privateBox.addItemListener(new java.awt.event.ItemListener() {
-			public void itemStateChanged(java.awt.event.ItemEvent e) {
-				String name = getSelectedMemoName();
-				if (name != null) {
-					isMemoEdited = true;
-					saveButton.setEnabled(true);
-				}
-			}
-		});
-		dateAndPrivatePanel.add(privateBox, gridBagConstraints1);
 
 		this.add(dateAndPrivatePanel, GridBagConstraintsFactory.create(0, 1,
 				GridBagConstraints.HORIZONTAL));
@@ -356,7 +331,6 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 		// create a new empty memo and save
 		Memo m = new Memo();
 		m.setMemoName(name);
-		m.setPrivate(false);
 		try {
 			MemoModel.getReference().saveMemo(m);
 			isMemoEdited = false;
@@ -396,7 +370,6 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 		try {
 			Memo m = MemoModel.getReference().getMemo(name);
 			m.setMemoText(memoText.getText());
-			m.setPrivate(privateBox.isSelected());
 			MemoModel.getReference().saveMemo(m);
 			isMemoEdited = false;
 			loadMemosFromModel();
@@ -468,17 +441,14 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 		if (memoName == null) {
 			memoText.setText("");
 			memoText.setEditable(false);
-			privateBox.setSelected(false);
 			dateLabel.setText("");
 		} else {
 
 			// show the selected memo
 			String text;
-			boolean priv = false;
 			try {
 				Memo m = MemoModel.getReference().getMemo(memoName);
 				text = m.getMemoText();
-				priv = m.getPrivate();
 				
 				//
 				// create the date label string
@@ -502,7 +472,6 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 
 			memoText.setEditable(true);
 			memoText.setText(text);
-			privateBox.setSelected(priv);
 		}
 		isMemoEdited = false;
 		saveButton.setEnabled(false);

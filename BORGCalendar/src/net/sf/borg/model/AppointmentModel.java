@@ -797,16 +797,12 @@ public class AppointmentModel extends Model implements Model.Listener,
 					r.setKey(db_.nextkey());
 				}
 
-				r.setModified(true);
-
 				db_.addObj(r);
 				if (!undo) {
 					UndoLog.getReference().addItem(
 							AppointmentUndoItem.recordAdd(r));
 				}
 			} else {
-
-				r.setModified(true);
 
 				db_.updateObj(r);
 				if (!undo) {

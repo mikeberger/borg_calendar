@@ -47,7 +47,6 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.common.SocketClient;
 import net.sf.borg.common.SocketHandler;
 import net.sf.borg.common.SocketServer;
-import net.sf.borg.control.socketServer.SingleInstanceHandler;
 import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.LinkModel;
@@ -201,14 +200,11 @@ public class Borg implements SocketHandler {
 
 	/**
 	 * message popped up if the socket thread has something to tell the user.
-	 * mainly used to block user activity during a palm sync and report sync
-	 * progress
 	 */
 	private ModalMessage modalMessage = null;
 
 	/**
 	 * The socket server - listens for incoming requests such as open requests
-	 * and palm sync requests
 	 */
 	private SocketServer socketServer_ = null;
 
@@ -237,9 +233,7 @@ public class Borg implements SocketHandler {
 		return trayIcon;
 	}
 
-/** process a socket message. the only messages commonly used are open: when another borg process is started, which
-	 * just opens this one, lock: when a palm sync requests a lock on user activity and messages starting with "<",which
-	 * are redirected to the remote db server, which is how palm sync talks to the db of the running borg.
+/** process a socket message
 	 */
 	public synchronized String processMessage(String msg) {
 		// System.out.println("Got msg: " + msg);
@@ -283,8 +277,6 @@ public class Borg implements SocketHandler {
 			});
 
 			return ("ok");
-		} else if (msg.startsWith("<")) {
-			return SingleInstanceHandler.execute(msg);
 		}
 		return ("Unknown msg: " + msg);
 	}

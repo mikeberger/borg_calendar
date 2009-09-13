@@ -66,8 +66,8 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
     public void addObj(Appointment appt) throws Exception
     {
         PreparedStatement stmt = connection_.prepareStatement( "INSERT INTO appointments (appt_date, appt_num, duration, text, skip_list," +
-        " next_todo, vacation, holiday, private, times, frequency, todo, color, rpt, category, modified, alarm, reminders, untimed ) VALUES " +
-        "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        " next_todo, vacation, holiday, private, times, frequency, todo, color, rpt, category, reminders, untimed ) VALUES " +
+        "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         
         
         stmt.setTimestamp( 1, new java.sql.Timestamp( appt.getDate().getTime()), Calendar.getInstance() );
@@ -90,11 +90,9 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
         stmt.setString( 13, appt.getColor());
         stmt.setInt( 14, toInt( appt.getRepeatFlag()) );
         stmt.setString( 15, appt.getCategory());
-               
-        stmt.setInt( 16, toInt( appt.getModified()));
-        stmt.setString( 17, appt.getAlarm());
-        stmt.setString( 18, appt.getReminderTimes());
-        stmt.setString( 19, appt.getUntimed());
+      
+        stmt.setString( 16, appt.getReminderTimes());
+        stmt.setString( 17, appt.getUntimed());
         stmt.executeUpdate();
         
         writeCache( appt );
@@ -230,8 +228,6 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
 		appt.setColor( r.getString("color"));
 		appt.setRepeatFlag( r.getInt("rpt" ) != 0 );
 		appt.setCategory( r.getString("category"));
-		appt.setModified( r.getInt("modified" ) != 0 );
-		appt.setAlarm( r.getString("alarm"));
 		appt.setReminderTimes( r.getString("reminders"));
 		appt.setUntimed( r.getString("untimed"));
 		
@@ -246,7 +242,7 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
         PreparedStatement stmt = connection_.prepareStatement( "UPDATE appointments SET  appt_date = ?, " +
         "duration = ?, text = ?, skip_list = ?," +
         " next_todo = ?, vacation = ?, holiday = ?, private = ?, times = ?, frequency = ?, todo = ?, color = ?, rpt = ?, category = ?," +
-		" modified = ?, alarm = ?, reminders = ?, untimed = ?" +
+		" reminders = ?, untimed = ?" +
         " WHERE appt_num = ?");
        
         
@@ -269,14 +265,10 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
         stmt.setString( 12, appt.getColor());
         stmt.setInt( 13, toInt( appt.getRepeatFlag()) );
         stmt.setString( 14, appt.getCategory());
+        stmt.setString( 15, appt.getReminderTimes());
+        stmt.setString( 16, appt.getUntimed());
         
- 
-        stmt.setInt( 15, toInt( appt.getModified()));
-        stmt.setString( 16, appt.getAlarm());
-        stmt.setString( 17, appt.getReminderTimes());
-        stmt.setString( 18, appt.getUntimed());
-        
-        stmt.setInt( 19, appt.getKey() );
+        stmt.setInt( 17, appt.getKey() );
 
         stmt.executeUpdate();
         

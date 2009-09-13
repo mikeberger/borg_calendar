@@ -41,17 +41,11 @@ public class MemoJdbcDB extends JdbcDB implements MemoDB {
 	 */
 	public void addMemo(Memo m) throws Exception {
 		PreparedStatement stmt = connection_
-				.prepareStatement("INSERT INTO memos ( memoname, memotext, modified, palmid, private) "
-						+ " VALUES " + "( ?, ?, ?, ?, ?)");
+				.prepareStatement("INSERT INTO memos ( memoname, memotext ) "
+						+ " VALUES " + "( ?, ? )");
 
 		stmt.setString(1, m.getMemoName());
 		stmt.setString(2, m.getMemoText());
-		stmt.setInt(3, toInt(m.getModified()));
-		if (m.getPalmId() != null)
-			stmt.setInt(4, m.getPalmId().intValue());
-		else
-			stmt.setNull(4, java.sql.Types.INTEGER);
-		stmt.setInt(5, toInt(m.getPrivate()));
 
 		stmt.executeUpdate();
 
@@ -83,30 +77,6 @@ public class MemoJdbcDB extends JdbcDB implements MemoDB {
 		return (keys);
 
 	}
-
-	/* (non-Javadoc)
-	 * @see net.sf.borg.model.db.MemoDB#getMemoByPalmId(int)
-	 */
-	public Memo getMemoByPalmId(int id) throws Exception {
-		PreparedStatement stmt = connection_.prepareStatement("SELECT * FROM memos WHERE palmid = ? ");
-		stmt.setInt(1, id);
-		ResultSet r = null;
-		try {
-			Memo m = null;
-			r = stmt.executeQuery();
-			if (r.next()) {
-				m = createFrom(r);
-			}
-			return m;
-		} finally {
-			if (r != null)
-				r.close();
-			
-				stmt.close();
-		}
-	}
-
-	
 	
 	private PreparedStatement getPSOne(String name) throws SQLException {
 		PreparedStatement stmt = connection_.prepareStatement("SELECT * FROM memos WHERE memoname = ?");
@@ -133,12 +103,6 @@ public class MemoJdbcDB extends JdbcDB implements MemoDB {
 
 		m.setMemoName(r.getString("memoname"));
 		m.setMemoText(r.getString("memotext"));
-
-		m.setModified(r.getInt("modified") != 0);
-		int palmid = r.getInt("palmid");
-		if (!r.wasNull())
-			m.setPalmId(new Integer(palmid));
-		m.setPrivate(r.getInt("private") != 0);
 
 		return m;
 	}
@@ -195,18 +159,11 @@ public class MemoJdbcDB extends JdbcDB implements MemoDB {
 	public void updateMemo(Memo m) throws Exception {
 
 		PreparedStatement stmt = connection_.prepareStatement("UPDATE memos SET "
-				+ "memotext = ?, modified = ?, palmid = ?, private = ? "
+				+ "memotext = ?"
 				+ " WHERE memoname = ?");
 
 		stmt.setString(1, m.getMemoText());
-
-		stmt.setInt(2, toInt(m.getModified()));
-		if (m.getPalmId() != null)
-			stmt.setInt(3, m.getPalmId().intValue());
-		else
-			stmt.setNull(3, java.sql.Types.INTEGER);
-		stmt.setInt(4, toInt(m.getPrivate()));
-		stmt.setString(5, m.getMemoName());
+		stmt.setString(2, m.getMemoName());
 
 		stmt.executeUpdate();
 

@@ -424,10 +424,6 @@ public class Address extends KeyedEntity<Address> implements java.io.Serializabl
 	 */
 	public void setBirthday( java.util.Date xx ){ Birthday = xx; }
 
-	// palm sync stuff
-	@Deprecated private boolean Modified;
-	@Deprecated public boolean getModified() { return( Modified ); }
-	@Deprecated public void setModified( boolean xx ){ Modified = xx; }
 
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.entity.KeyedEntity#clone()
@@ -458,7 +454,6 @@ public class Address extends KeyedEntity<Address> implements java.io.Serializabl
 		dst.setWebPage( getWebPage() );
 		dst.setNotes( getNotes() );
 		dst.setBirthday( getBirthday() );
-		dst.setModified( getModified() );
 		return(dst);
 	}
 	

@@ -83,15 +83,5 @@ public interface MemoDB {
      */
     public void updateMemo(Memo m) throws Exception;
         
-    /**
-     * Gets a memo by palm id.
-     * 
-     * @param id the palm id
-     * 
-     * @return the memo
-     * 
-     * @throws Exception
-     */
-    public Memo getMemoByPalmId(int id) throws Exception;
-
+    
 }

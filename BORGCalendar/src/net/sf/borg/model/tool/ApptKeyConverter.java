@@ -49,10 +49,16 @@ public class ApptKeyConverter implements ConversionTool{
 		// try to remove extra palm columns
 		try{JdbcDB.execSQL("ALTER table appointments drop new");}catch(Exception e){}
 		try{JdbcDB.execSQL("ALTER table appointments drop deleted");}catch(Exception e){}
+		try{JdbcDB.execSQL("ALTER table appointments drop modified");}catch(Exception e){}
+		try{JdbcDB.execSQL("ALTER table appointments drop alarm");}catch(Exception e){}
 		try{JdbcDB.execSQL("ALTER table addresses drop new");}catch(Exception e){}
 		try{JdbcDB.execSQL("ALTER table addresses drop deleted");}catch(Exception e){}
+		try{JdbcDB.execSQL("ALTER table addresses drop modified");}catch(Exception e){}
 		try{JdbcDB.execSQL("ALTER table memos drop new");}catch(Exception e){}
 		try{JdbcDB.execSQL("ALTER table memos drop deleted");}catch(Exception e){}
+		try{JdbcDB.execSQL("ALTER table memos drop modified");}catch(Exception e){}
+		try{JdbcDB.execSQL("ALTER table memos drop palmid");}catch(Exception e){}
+		try{JdbcDB.execSQL("ALTER table memos drop private");}catch(Exception e){}
 
 		// go directly to jdbc. going through the model, which maintains all
 		// kinds

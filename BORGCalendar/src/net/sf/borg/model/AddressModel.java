@@ -307,14 +307,12 @@ public class AddressModel extends Model {
 					newkey = num;
 				}
 				addr.setKey(newkey);
-				addr.setModified(true);
 				db_.addObj(addr);
 				if (!undo) {
 					UndoLog.getReference().addItem(
 							AddressUndoItem.recordAdd(addr));
 				}
 			} else {
-				addr.setModified(true);
 				db_.updateObj(addr);
 				if (!undo) {
 					UndoLog.getReference().addItem(
