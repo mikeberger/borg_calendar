@@ -68,7 +68,6 @@ import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
-import net.sf.borg.common.XTree;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.Repeat;
@@ -78,7 +77,6 @@ import net.sf.borg.model.entity.KeyedEntity;
 import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Subtask;
 import net.sf.borg.model.entity.Task;
-import net.sf.borg.model.xml.AppointmentXMLAdapter;
 import net.sf.borg.ui.DockableView;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.ResourceHelper;
@@ -372,62 +370,53 @@ public class TodoView extends DockableView implements Prefs.Listener {
 			return;
 		}
 
-		// start building the todo appointment from the default appt
-		// if it exists
-		Appointment r = AppointmentModel.getReference().newAppt();
-		String defApptXml = Prefs.getPref(PrefName.DEFAULT_APPT);
-		if (!defApptXml.equals("")) {
-			try {
-				XTree xt = XTree.readFromBuffer(defApptXml);
-				AppointmentXMLAdapter axa = new AppointmentXMLAdapter();
-				r = axa.fromXml(xt);
-			} catch (Exception e) {
-				Errmsg.errmsg(e);
-			}
-		}
+		// load up a default appt from any saved prefs
+		Appointment appt = AppointmentModel.getReference().getDefaultAppointment();
+		if( appt == null )
+			appt = AppointmentModel.getReference().newAppt();
 
 		// set the date
 		c.set(Calendar.HOUR, 0);
 		c.set(Calendar.MINUTE, 0);
 		c.set(Calendar.SECOND, 0);
 		c.set(Calendar.AM_PM, Calendar.AM);
-		r.setDate(c.getTime());
+		appt.setDate(c.getTime());
 
 		// set text
-		r.setText(tdtext);
+		appt.setText(tdtext);
 
 		// todo flag
-		r.setTodo(true);
+		appt.setTodo(true);
 
 		// not private
-		r.setPrivate(false);
+		appt.setPrivate(false);
 
 		// set color
 		if (redToggleButton.isSelected())
-			r.setColor("red");
+			appt.setColor("red");
 		else if (blueToggleButton.isSelected())
-			r.setColor("blue");
+			appt.setColor("blue");
 		else if (greenToggleButton.isSelected())
-			r.setColor("green");
+			appt.setColor("green");
 		else if (whiteToggleButton.isSelected())
-			r.setColor("white");
+			appt.setColor("white");
 		else
-			r.setColor("black");
+			appt.setColor("black");
 
 		// no repeating
-		r.setFrequency(Repeat.ONCE);
-		r.setTimes(new Integer(1));
-		r.setRepeatFlag(false);
+		appt.setFrequency(Repeat.ONCE);
+		appt.setTimes(new Integer(1));
+		appt.setRepeatFlag(false);
 
 		// set category
 		String cat = (String) categoryComboBox.getSelectedItem();
 		if (cat.equals("") || cat.equals(CategoryModel.UNCATEGORIZED)) {
-			r.setCategory(null);
+			appt.setCategory(null);
 		} else {
-			r.setCategory(cat);
+			appt.setCategory(cat);
 		}
 
-		AppointmentModel.getReference().saveAppt(r);
+		AppointmentModel.getReference().saveAppt(appt);
 
 		requestFocus();
 

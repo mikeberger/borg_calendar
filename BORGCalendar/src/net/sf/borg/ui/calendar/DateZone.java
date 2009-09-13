@@ -28,14 +28,9 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 
-import net.sf.borg.common.Errmsg;
-import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
-import net.sf.borg.common.XTree;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.entity.Appointment;
-import net.sf.borg.model.xml.AppointmentXMLAdapter;
 import net.sf.borg.ui.MultiView;
 
 /**
@@ -147,17 +142,10 @@ class DateZone {
 			return;
 
 		// load up a default appt from any saved prefs
-		Appointment r = AppointmentModel.getReference().newAppt();
-		String defApptXml = Prefs.getPref(PrefName.DEFAULT_APPT);
-		if (!defApptXml.equals("")) {
-			try {
-				XTree xt = XTree.readFromBuffer(defApptXml);
-				AppointmentXMLAdapter axa = new AppointmentXMLAdapter();
-				r = axa.fromXml(xt);
-			} catch (Exception e) {
-				Errmsg.errmsg(e);
-			}
-		}
+		Appointment appt = AppointmentModel.getReference().getDefaultAppointment();
+		if( appt == null )
+			appt = AppointmentModel.getReference().newAppt();
+		
 		
 		// set the appt date. leave the appt untimed
 		GregorianCalendar cal = new GregorianCalendar();
@@ -166,12 +154,12 @@ class DateZone {
 		cal.set(Calendar.MINUTE, 0);
 		cal.set(Calendar.SECOND, 0);
 		cal.set(Calendar.AM_PM, Calendar.AM);
-		r.setDate(cal.getTime());
-		r.setText(tdtext);
-		r.setTodo(todo);
-		r.setUntimed("Y");
+		appt.setDate(cal.getTime());
+		appt.setText(tdtext);
+		appt.setTodo(todo);
+		appt.setUntimed("Y");
 
-		AppointmentModel.getReference().saveAppt(r);
+		AppointmentModel.getReference().saveAppt(appt);
 
 	}
 

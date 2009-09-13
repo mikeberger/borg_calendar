@@ -20,27 +20,30 @@
 
 package net.sf.borg.control.socketServer;
 
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+
 import net.sf.borg.common.XTree;
 import net.sf.borg.model.entity.Address;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.BorgOption;
-import net.sf.borg.model.entity.KeyedEntity;
 import net.sf.borg.model.entity.Memo;
-import net.sf.borg.model.xml.AddressXMLAdapter;
-import net.sf.borg.model.xml.AppointmentXMLAdapter;
-import net.sf.borg.model.xml.EntityXMLAdapter;
-import net.sf.borg.model.xml.MemoXMLAdapter;
 
 /**
- * Helps marshal and unmarshal between objects and XML. Only used for palm-sync now. 
+ * Helps marshal and unmarshal between objects and XML. Only used for palm-sync
+ * now.
  */
-@SuppressWarnings("unchecked") 
-@Deprecated class XmlObjectHelper {
+@SuppressWarnings("unchecked")
+@Deprecated
+class XmlObjectHelper {
 	public static XTree toXml(Object o) {
 		return toXml(null, o);
 	}
@@ -66,19 +69,16 @@ import net.sf.borg.model.xml.MemoXMLAdapter;
 			null, "Null");
 
 	private static final IXmlObjectHelper[] XML_CLASSES = {
-			new BorgOptionXmlObjectHelper(),
-			new CollectionXmlObjectHelper(),
+			new BorgOptionXmlObjectHelper(), new CollectionXmlObjectHelper(),
 			new PrimitiveXmlObjectHelper(String.class, "String"),
 			new PrimitiveXmlObjectHelper(Boolean.class, "Boolean"),
 			new PrimitiveXmlObjectHelper(Integer.class, "Integer"),
 			new RemoteParmsXmlObjectHelper(),
 			new ComposedObjectXmlObjectHelper(),
-			new BeanXmlObjectHelper(Address.class, "Address",
-					new AddressXMLAdapter()),
-			new BeanXmlObjectHelper(Appointment.class, "Appointment",
-					new AppointmentXMLAdapter()),
-			new BeanXmlObjectHelper(Memo.class, "Memo", new MemoXMLAdapter())};
-			
+			new BeanXmlObjectHelper(Address.class, "Address"),
+			new BeanXmlObjectHelper(Appointment.class, "Appointment"),
+			new BeanXmlObjectHelper(Memo.class, "Memo") };
+
 	private static void addPrimitive(XTree xml, String name, String val) {
 		xml.appendChild(name, val);
 	}
@@ -126,9 +126,6 @@ import net.sf.borg.model.xml.MemoXMLAdapter;
 		return tree;
 	}
 
-	// //////////////////////////////////////////////////////////
-	// nested interface IXmlObjectHelper
-
 	private static interface IXmlObjectHelper {
 		public Class getObjectClass();
 
@@ -138,12 +135,6 @@ import net.sf.borg.model.xml.MemoXMLAdapter;
 
 		public Object toObject(XTree xml) throws Exception;
 	}
-
-	// end nested class IXmlObjectHelper
-	// //////////////////////////////////////////////////////////
-
-	// //////////////////////////////////////////////////////////
-	// nested class BorgOptionXmlObjectHelper
 
 	private static class BorgOptionXmlObjectHelper implements IXmlObjectHelper {
 		public final Class getObjectClass() {
@@ -207,12 +198,6 @@ import net.sf.borg.model.xml.MemoXMLAdapter;
 		private String name;
 	}
 
-	// end nested class PrimitiveXmlObjectHelper
-	// //////////////////////////////////////////////////////////
-
-	// //////////////////////////////////////////////////////////
-	// nested class CollectionXmlObjectHelper
-
 	private static class CollectionXmlObjectHelper implements IXmlObjectHelper {
 		public Class getObjectClass() {
 			return Collection.class;
@@ -232,9 +217,7 @@ import net.sf.borg.model.xml.MemoXMLAdapter;
 		}
 
 		public Object toObject(XTree xml) throws Exception {
-			// FUTURE: With the current XTree implementation,
-			// this operation requires O(n^2) time to execute, where
-			// n is the number of children.
+
 			List lst = new ArrayList();
 			int numChildren = xml.numChildren();
 			for (int i = 1; i <= numChildren; ++i) {
@@ -245,12 +228,6 @@ import net.sf.borg.model.xml.MemoXMLAdapter;
 			return lst;
 		}
 	}
-
-	// end nested class CollectionXmlObjectHelper
-	// //////////////////////////////////////////////////////////
-
-	// //////////////////////////////////////////////////////////
-	// nested class RemoteParmsXmlObjectHelper
 
 	private static class RemoteParmsXmlObjectHelper implements IXmlObjectHelper {
 		public Class getObjectClass() {
@@ -275,12 +252,6 @@ import net.sf.borg.model.xml.MemoXMLAdapter;
 			return new IRemoteProxy.Parms(classString, command, args);
 		}
 	}
-
-	// end nested class RemoteParmsXmlObjectHelper
-	// //////////////////////////////////////////////////////////
-
-	// //////////////////////////////////////////////////////////
-	// nested class ComposedObjectXmlObjectHelper
 
 	private static class ComposedObjectXmlObjectHelper implements
 			IXmlObjectHelper {
@@ -321,21 +292,38 @@ import net.sf.borg.model.xml.MemoXMLAdapter;
 		}
 
 		public final void populate(XTree xtree, Object o) {
-			XTree xml = xmlAdapter.toXml((KeyedEntity) o);
-			xtree.adopt(xml);
+			try {
+				JAXBContext jc = JAXBContext.newInstance(cls);
+				Marshaller m = jc.createMarshaller();
+				StringWriter sw = new StringWriter();
+				m.marshal(o, sw);
+				XTree xml = XTree.readFromBuffer(sw.toString());
+				xtree.adopt(xml);
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 
 		public Object toObject(XTree xml) {
-			KeyedEntity keyedBean = xmlAdapter.fromXml(xml);
-			return keyedBean;
+
+			try {
+				JAXBContext jc = JAXBContext.newInstance(cls);
+				Unmarshaller u = jc.createUnmarshaller();
+
+				String xmlString = xml.toString();
+
+				return u.unmarshal(new StringReader(xmlString));
+			} catch (Exception e) {
+				e.printStackTrace();
+				return null;
+			}
 		}
 
 		// "package"
-		BeanXmlObjectHelper(Class cls, String objectRootName,
-				EntityXMLAdapter xmlAdapter) {
+		BeanXmlObjectHelper(Class cls, String objectRootName) {
 			this.cls = cls;
 			this.objectRootName = objectRootName;
-			this.xmlAdapter = xmlAdapter;
 		}
 
 		// private //
@@ -343,9 +331,6 @@ import net.sf.borg.model.xml.MemoXMLAdapter;
 
 		private String objectRootName;
 
-		private EntityXMLAdapter xmlAdapter;
 	}
 
-	// end nested class KeyedBeanXmlObjectHelper
-	// //////////////////////////////////////////////////////////
 }

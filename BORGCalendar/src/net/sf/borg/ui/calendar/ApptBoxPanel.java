@@ -48,12 +48,10 @@ import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
-import net.sf.borg.common.XTree;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.CalendarEntity;
 import net.sf.borg.model.entity.LabelEntity;
-import net.sf.borg.model.xml.AppointmentXMLAdapter;
 
 /**
  * ApptBoxPanel is the base class for Panels that act as containers for
@@ -115,18 +113,7 @@ abstract class ApptBoxPanel extends JPanel {
 				return;	
 
 			// get default appt values, if any from prefs
-			Appointment appt = null;
-			String defApptXml = Prefs.getPref(PrefName.DEFAULT_APPT);
-			if (!defApptXml.equals("")) {
-				try {
-					XTree xt = XTree.readFromBuffer(defApptXml);
-					AppointmentXMLAdapter axa = new AppointmentXMLAdapter();
-					appt = axa.fromXml(xt);
-
-				} catch (Exception e) {
-					Errmsg.errmsg(e);
-				}
-			}
+			Appointment appt = AppointmentModel.getReference().getDefaultAppointment();
 
 			// get a new appt if no defaults
 			if (appt == null) {

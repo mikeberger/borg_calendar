@@ -53,13 +53,11 @@ import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.common.Warning;
-import net.sf.borg.common.XTree;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.ReminderTimes;
 import net.sf.borg.model.Repeat;
 import net.sf.borg.model.entity.Appointment;
-import net.sf.borg.model.xml.AppointmentXMLAdapter;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.link.LinkPanel;
@@ -827,19 +825,15 @@ public class AppointmentPanel extends JPanel {
 		savedefaultsbutton
 				.addActionListener(new java.awt.event.ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						Appointment r = new Appointment();
+						Appointment appt = new Appointment();
 						try {
-							setAppt(r, false);
+							setAppt(appt, false);
 						} catch (Exception e) {
 							Errmsg.errmsg(e);
 							return;
 						}
 
-						AppointmentXMLAdapter axa = new AppointmentXMLAdapter();
-						XTree xt = axa.toXml(r);
-						String s = xt.toString();
-						Prefs.putPref(PrefName.DEFAULT_APPT, s);
-
+						AppointmentModel.getReference().saveDefaultAppointment(appt);
 					}
 				});
 		buttonPanel.add(savedefaultsbutton);
@@ -1223,15 +1217,8 @@ public class AppointmentPanel extends JPanel {
 		}
 
 		// get default appt values from XML, if any
-		String defApptXml = Prefs.getPref(PrefName.DEFAULT_APPT);
-		if (defaultAppt == null && !defApptXml.equals("")) {
-			try {
-				XTree xt = XTree.readFromBuffer(defApptXml);
-				AppointmentXMLAdapter axa = new AppointmentXMLAdapter();
-				defaultAppt = axa.fromXml(xt);
-			} catch (Exception e) {
-				Errmsg.errmsg(e);
-			}
+		if (defaultAppt == null ) {
+			defaultAppt = AppointmentModel.getReference().getDefaultAppointment();
 		}
 
 		// a key of -1 means to show a new blank appointment
