@@ -193,7 +193,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 			tt.validate();
 			taskTypes_ = tt.copy();
 		}
-		db_.setOption(new BorgOption("SMODEL", taskTypes_.toString()));
+		db_.setOption(new BorgOption("SMODEL", taskTypes_.toXml()));
 	}
 
 	/*
