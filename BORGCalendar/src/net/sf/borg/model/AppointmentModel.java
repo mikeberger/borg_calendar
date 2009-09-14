@@ -365,7 +365,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 	 * 
 	 * @param key
 	 *            the appointment key
-	 * @param rkey
+	 * @param rptDate
 	 *            the date of the repeat to be deleted
 	 */
 	public void delOneOnly(int key, Date rptDate) {
@@ -768,8 +768,6 @@ public class AppointmentModel extends Model implements Model.Listener,
 	 * 
 	 * @param r
 	 *            the appointment
-	 * @param add
-	 *            true if we should insert a brand new appointment
 	 */
 	public void saveAppt(Appointment r) {
 		saveAppt(r, false);
@@ -856,7 +854,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 	 * determine the number of vacation days up to and including the given day
 	 * in a particular year
 	 * 
-	 * @param dkey
+	 * @param d
 	 *            the Date
 	 * 
 	 * @return the double

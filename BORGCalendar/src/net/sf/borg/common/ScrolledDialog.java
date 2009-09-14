@@ -84,7 +84,6 @@ public class ScrolledDialog extends JDialog {
 	 * 
 	 * @param e the Exception
 	 * 
-	 * @return the int
 	 */
 	public static void showError(Exception e) {
 		e_ = e;
@@ -111,7 +110,6 @@ public class ScrolledDialog extends JDialog {
 	 * 
 	 * @param text the notice text
 	 * 
-	 * @return the int
 	 */
 	public static void showNotice(String text) {
 		new ScrolledDialog(text, false).setVisible(true);

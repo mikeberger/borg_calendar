@@ -89,7 +89,7 @@ public class Memo extends KeyedEntity<Memo> implements java.io.Serializable {
 	/**
 	 * Sets the creation date.
 	 * 
-	 * @param Created the creation date
+	 * @param created the creation date
 	 */
 	public void setCreated(Date created) {
 	    this.Created = created;
@@ -107,7 +107,7 @@ public class Memo extends KeyedEntity<Memo> implements java.io.Serializable {
 	/**
 	 * Sets the  last update date.
 	 * 
-	 * @param Updated the  last update date
+	 * @param updated the  last update date
 	 */
 	public void setUpdated(Date updated) {
 	    this.Updated = updated;

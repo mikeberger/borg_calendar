@@ -74,7 +74,7 @@ abstract public class Box {
 	 * 
 	 * @param g2
 	 *            the Graphics2D to draw in
-	 * @param component
+	 * @param comp
 	 *            that contains the Graphics2D
 	 */
 	public abstract void draw(Graphics2D g2, Component comp);

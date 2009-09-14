@@ -581,17 +581,12 @@ public class TableSorter extends AbstractTableModel {
         
     }
 
-    /**
-     * @param index
-     * @return
-     */
+   
     public int getMappedIndex(int index) {      
         return( modelIndex(index));
     }
 
-    /**
-     * @return
-     */
+   
     public boolean isSorted() {
         
         return isSorting();

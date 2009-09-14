@@ -178,7 +178,7 @@ public class AddressModel extends Model {
 	/**
 	 * Get all addresses with birthdays on a given day.
 	 * 
-	 * @param daykey the daykey (see AppointmentModel.dkey
+	 * @param d the day
 	 * 
 	 * @return the addresses
 	 */
