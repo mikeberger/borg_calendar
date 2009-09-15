@@ -193,7 +193,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 			tt.validate();
 			taskTypes_ = tt.copy();
 		}
-		db_.setOption(new BorgOption("SMODEL", taskTypes_.toXml()));
+		db_.setOption(new BorgOption("TASKTYPES", taskTypes_.toXml()));
 	}
 
 	/*
@@ -359,22 +359,26 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 
 		db_ = new TaskJdbcDB();
 
-		String sm = db_.getOption("SMODEL");
-		if (sm == null) {
-			try {
-				// load XML from a file in the JAR
-				// System.out.println("Loading default task model");
-				taskTypes_.loadDefault();
-				sm = taskTypes_.toString();
-				db_.setOption(new BorgOption("SMODEL", sm));
-			} catch (Exception e) {
-				Errmsg.errmsg(e);
-				return;
+		String tt = db_.getOption("TASKTYPES");
+		if (tt == null) {
+			String sm = db_.getOption("SMODEL");
+			if (sm == null) {
+				try {
+					taskTypes_.loadDefault();
+					sm = taskTypes_.toXml();
+					db_.setOption(new BorgOption("TASKTYPES", sm));
+				} catch (Exception e) {
+					Errmsg.errmsg(e);
+					return;
+				}
+			} else {
+				taskTypes_.fillFromLegacyXml(sm);
 			}
-		} else {
-			taskTypes_.fromString(sm);
 		}
-
+		else
+		{
+			taskTypes_.fromString(tt);
+		}
 		CategoryModel.getReference().addSource(this);
 		CategoryModel.getReference().addListener(this);
 
@@ -683,9 +687,9 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 		JdbcDB.execSQL("SET REFERENTIAL_INTEGRITY FALSE;");
 
 		for (BorgOption option : container.OPTION) {
-			if (option.getKey().equals("SMODEL")) {
+			if (option.getKey().equals("TASKTYPES")) {
 				taskTypes_.fromString(option.getValue());
-				db_.setOption(new BorgOption("SMODEL", taskTypes_.toString()));
+				db_.setOption(new BorgOption("TASKTYPES", taskTypes_.toXml()));
 
 			} else {
 				db_.setOption(option);

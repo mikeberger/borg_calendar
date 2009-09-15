@@ -29,6 +29,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Collection;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -69,10 +70,11 @@ public class TaskConfigurator extends View {
 		public TypeListRenderer() {
 			setOpaque(true);
 		}
+
 		public Component getListCellRendererComponent(JList list, Object value,
 				int index, boolean isSelected, boolean cellHasFocus) {
 			setText(value.toString());
-			
+
 			// get initial state for the selected type
 			String init = "";
 			if (typeList.getSelectedValue() != null) {
@@ -86,8 +88,8 @@ public class TaskConfigurator extends View {
 				setForeground(isSelected ? Color.white : Color.red);
 			} else {
 				// return default component
-				return defaultRenderer.getListCellRendererComponent(list, value,
-						index, isSelected, cellHasFocus);
+				return defaultRenderer.getListCellRendererComponent(list,
+						value, index, isSelected, cellHasFocus);
 			}
 			return this;
 		}
@@ -117,16 +119,16 @@ public class TaskConfigurator extends View {
 
 	/** The next state list. */
 	private JList nextStateList = null;
-	
+
 	/** The next state menu. */
 	private JPopupMenu nextStateMenu = null;
-	
+
 	/** The state list. */
 	private JList stateList = null;
-	
+
 	/** The state menu. */
 	private JPopupMenu stateMenu = null;
-	
+
 	/** The sub task list. */
 	private JList subTaskList = null;
 
@@ -146,7 +148,7 @@ public class TaskConfigurator extends View {
 	 */
 	private TaskConfigurator() throws Exception {
 		super();
-		
+
 		initialize();
 
 		taskTypes = TaskModel.getReference().getTaskTypes().copy();
@@ -173,9 +175,27 @@ public class TaskConfigurator extends View {
 	 * @return the sub task menu
 	 */
 	private JPopupMenu getSubTaskMenu() {
-		
+
 		if (subTaskMenu == null) {
 			subTaskMenu = new JPopupMenu();
+
+			JMenuItem addItem = new JMenuItem();
+			addItem.setText(Resource.getResourceString("Add"));
+			addItem.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					String subtask = JOptionPane
+							.showInputDialog(net.sf.borg.common.Resource
+									.getResourceString("New_Subtask_Value"));
+					if (subtask == null)
+						return;
+		
+					taskTypes.addSubtask((String) typeList.getSelectedValue(),
+							subtask);
+					refresh();
+				}
+			});
+
+			subTaskMenu.add(addItem);
 
 			JMenuItem changeSubtaskItem = new JMenuItem();
 			changeSubtaskItem.setText(net.sf.borg.common.Resource
@@ -189,8 +209,11 @@ public class TaskConfigurator extends View {
 					if (subtask == null)
 						return;
 					// set subtask value
-					taskTypes.changeSubtask((String) typeList.getSelectedValue(),
-							subTaskList.getSelectedIndex(), subtask);
+					taskTypes.deleteSubtask((String) typeList
+							.getSelectedValue(), (String) subTaskList
+							.getSelectedValue());
+					taskTypes.addSubtask((String) typeList.getSelectedValue(),
+							subtask);
 					refresh();
 				}
 			});
@@ -204,8 +227,9 @@ public class TaskConfigurator extends View {
 					if (subTaskList.getSelectedIndex() < 0)
 						return;
 					// set subtask to null
-					taskTypes.changeSubtask((String) typeList.getSelectedValue(),
-							subTaskList.getSelectedIndex(), null);
+					taskTypes.deleteSubtask((String) typeList
+							.getSelectedValue(), (String) subTaskList
+							.getSelectedValue());
 					refresh();
 				}
 			});
@@ -215,8 +239,6 @@ public class TaskConfigurator extends View {
 		return subTaskMenu;
 	}
 
-	
-	
 	/**
 	 * Gets the next state menu.
 	 * 
@@ -239,9 +261,9 @@ public class TaskConfigurator extends View {
 												.getResourceString("Please_select_a_state"));
 						return;
 					}
-					
+
 					// prompt for selection of next state from a list
-					Vector<String> states = taskTypes
+					Collection<String> states = taskTypes
 							.getStates((String) typeList.getSelectedValue());
 					Object sarray[] = states.toArray();
 					String ns = (String) JOptionPane.showInputDialog(null,
@@ -253,7 +275,7 @@ public class TaskConfigurator extends View {
 							sarray[0]);
 					if (ns == null)
 						return;
-					
+
 					// add next state
 					taskTypes.addNextState(
 							(String) typeList.getSelectedValue(),
@@ -277,7 +299,7 @@ public class TaskConfigurator extends View {
 												.getResourceString("Please_select_a_state"));
 						return;
 					}
-					
+
 					// delete next state
 					String ns = (String) nextStateList.getSelectedValue();
 					taskTypes.deleteNextState((String) typeList
@@ -292,7 +314,6 @@ public class TaskConfigurator extends View {
 		return nextStateMenu;
 	}
 
-	
 	/**
 	 * Gets the state menu.
 	 * 
@@ -320,7 +341,7 @@ public class TaskConfigurator extends View {
 									.getResourceString("New_State"));
 					if (newstate == null)
 						return;
-					
+
 					// add a new state
 					taskTypes.addState((String) typeList.getSelectedValue(),
 							newstate);
@@ -348,7 +369,7 @@ public class TaskConfigurator extends View {
 									.getResourceString("New_State"));
 					if (newstate == null)
 						return;
-					
+
 					// rename state
 					taskTypes.changeState((String) typeList.getSelectedValue(),
 							(String) stateList.getSelectedValue(), newstate);
@@ -371,7 +392,7 @@ public class TaskConfigurator extends View {
 												.getResourceString("Please_select_a_state"));
 						return;
 					}
-					
+
 					// confirm delete
 					int ret = JOptionPane.showConfirmDialog(null,
 							net.sf.borg.common.Resource
@@ -394,7 +415,6 @@ public class TaskConfigurator extends View {
 		return stateMenu;
 	}
 
-	
 	/**
 	 * Gets the type menu.
 	 * 
@@ -493,9 +513,9 @@ public class TaskConfigurator extends View {
 												.getResourceString("Please_select_a_type"));
 						return;
 					}
-					
+
 					// prompt for selection of initial state from a list
-					Vector<String> states = taskTypes
+					Collection<String> states = taskTypes
 							.getStates((String) typeList.getSelectedValue());
 					Object sarray[] = states.toArray();
 					String ns = (String) JOptionPane.showInputDialog(null,
@@ -507,7 +527,7 @@ public class TaskConfigurator extends View {
 							sarray[0]);
 					if (ns == null)
 						return;
-					
+
 					// set initial state
 					taskTypes.setInitialState((String) typeList
 							.getSelectedValue(), ns);
@@ -618,9 +638,10 @@ public class TaskConfigurator extends View {
 				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		stateScroll
 				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		
 
 		taskStatesPanel.add(stateScroll, null);
-
+		
 		listContainerPanel.add(taskStatesPanel, null);
 
 		/*
@@ -671,20 +692,23 @@ public class TaskConfigurator extends View {
 		gridLayout7.setRows(1);
 
 		subTaskList = new JList();
-		subTaskList.setVisibleRowCount(5);
 		subTaskList.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				JList list = (JList) e.getSource();
-				if (list.getSelectedIndex() < 0)
-					return;
 				if (e.getButton() == MouseEvent.BUTTON3) {
 					getSubTaskMenu().show(e.getComponent(), e.getX(), e.getY());
 				}
 			}
 		});
+		
+		JScrollPane subTaskScroll = new JScrollPane();
+		subTaskScroll.setViewportView(subTaskList);
+		subTaskScroll
+				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		subTaskScroll
+				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
-		subTaskPanel.add(subTaskList, null);
+		subTaskPanel.add(subTaskScroll, null);
 
 		listContainerPanel.add(subTaskPanel, null);
 
@@ -741,9 +765,8 @@ public class TaskConfigurator extends View {
 	@Override
 	public void refresh() {
 		/*
-		 * reload the task types from the model
-		 * reset the selected type if the user had one selected
-		 * this selection triggers further UI updates
+		 * reload the task types from the model reset the selected type if the
+		 * user had one selected this selection triggers further UI updates
 		 */
 		Object typesel = typeList.getSelectedValue();
 		Vector<String> types = taskTypes.getTaskTypes();
@@ -760,22 +783,23 @@ public class TaskConfigurator extends View {
 		String state = (String) stateList.getSelectedValue();
 		if (state == null)
 			return;
-		Vector<String> states = taskTypes.nextStates(state, type);
+		Collection<String> states = taskTypes.nextStates(type, state);
 		states.remove(state);
-		nextStateList.setListData(states);
+		nextStateList.setListData(states.toArray());
 	}
 
 	/**
-	 * when the user selected a type, display its states, next states, and subtasks
+	 * when the user selected a type, display its states, next states, and
+	 * subtasks
 	 */
 	private void typeSelectHandler() {
 		String type = (String) typeList.getSelectedValue();
 		if (type == null)
 			return;
-		Vector<String> states = taskTypes.getStates(type);
-		stateList.setListData(states);
+		Collection<String> states = taskTypes.getStates(type);
+		stateList.setListData(states.toArray());
 		String cbs[] = taskTypes.getSubTasks(type);
 		subTaskList.setListData(cbs);
 		nextStateList.setListData(new Vector<String>());
 	}
-} 
+}

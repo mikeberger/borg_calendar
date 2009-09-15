@@ -63,7 +63,6 @@ import net.sf.borg.common.Warning;
 import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.LinkModel;
 import net.sf.borg.model.TaskModel;
-import net.sf.borg.model.TaskTypes;
 import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Subtask;
 import net.sf.borg.model.entity.Task;
@@ -1070,11 +1069,9 @@ public class TaskView extends DockableView {
 						.getTaskTypes().getSubTasks(
 								(String) taskTypeComboBox.getSelectedItem());
 				for (int i = 0; i < prefDefinedTasks.length; i++) {
-					if (!prefDefinedTasks[i].equals(TaskTypes.NOCBVALUE)) {
-						Object o[] = { new Boolean(false), null,
-								prefDefinedTasks[i], new Date(), null, null };
-						ts.addRow(o);
-					}
+					Object o[] = { new Boolean(false), null,
+							prefDefinedTasks[i], new Date(), null, null };
+					ts.addRow(o);
 				}
 				// set to initial state
 				task.setState(TaskModel.getReference().getTaskTypes()
@@ -1432,16 +1429,17 @@ public class TaskView extends DockableView {
 
 			// determine valid next states based on task type and current
 			// state
-			String stat = task.getState();
+			String state = task.getState();
 			String type = task.getType();
-			Vector<String> v = TaskModel.getReference().getTaskTypes()
-					.nextStates(stat, type);
+			Collection<String> v = TaskModel.getReference().getTaskTypes()
+					.nextStates(type, state);
 
 			// set next state pulldown
 			statusComboBox.removeAllItems();
-			for (int i = 0; i < v.size(); i++) {
-				statusComboBox.addItem(v.elementAt(i));
+			for (String s : v) {
+				statusComboBox.addItem(s);
 			}
+			statusComboBox.setSelectedItem(state);
 			statusComboBox.setEnabled(true);
 
 		}
