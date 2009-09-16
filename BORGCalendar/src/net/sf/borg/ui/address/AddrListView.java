@@ -23,6 +23,7 @@ package net.sf.borg.ui.address;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -55,8 +56,9 @@ import net.sf.borg.ui.util.TablePrinter;
 import net.sf.borg.ui.util.TableSorter;
 
 /**
- * UI that displays the address book in tabular form and allows actions to be taken on addresses
- *
+ * UI that displays the address book in tabular form and allows actions to be
+ * taken on addresses
+ * 
  */
 public class AddrListView extends DockableView {
 
@@ -64,6 +66,7 @@ public class AddrListView extends DockableView {
 
 	/**
 	 * get the singleton
+	 * 
 	 * @return the singleton
 	 */
 	public static AddrListView getReference() {
@@ -95,11 +98,11 @@ public class AddrListView extends DockableView {
 	private AddrListView() {
 
 		super();
-		
+
 		addModel(AddressModel.getReference());
 
 		this.setLayout(new GridBagLayout());
-		
+
 		// init the gui components
 		initComponents();
 
@@ -124,8 +127,7 @@ public class AddrListView extends DockableView {
 	/**
 	 * delete action
 	 */
-	private void delbuttonActionPerformed()
-	{
+	private void delbuttonActionPerformed() {
 		// figure out which row is selected to be deleted
 		int[] indices = addressTable.getSelectedRows();
 		if (indices.length == 0)
@@ -139,22 +141,26 @@ public class AddrListView extends DockableView {
 		if (ret != JOptionPane.OK_OPTION)
 			return;
 
-		AddressModel amod = AddressModel.getReference();
+		// collect the addresses. cannot delete them in this loop
+		// as that would change the indexes
+		Collection<Address> addresses = new ArrayList<Address>();
 		for (int i = 0; i < indices.length; ++i) {
 			int index = indices[i];
-			try {
-				// need to ask the table for the original (befor sorting) index
-				// of the selected row
-				TableSorter tm = (TableSorter) addressTable.getModel();
-				int k = tm.getMappedIndex(index); // get original index - not
-				// current sorted position
-				// in tbl
-				Object[] oa = addrs_.toArray();
-				Address addr = (Address) oa[k];
-				amod.delete(addr);
-			} catch (Exception e) {
-				Errmsg.errmsg(e);
-			}
+			// need to ask the table for the original (befor sorting) index
+			// of the selected row
+			TableSorter tm = (TableSorter) addressTable.getModel();
+			int k = tm.getMappedIndex(index); // get original index - not
+			// current sorted position
+			// in tbl
+			Object[] oa = addrs_.toArray();
+			Address addr = (Address) oa[k];
+			addresses.add(addr);
+
+		}
+		
+		// delete the addresses
+		for (Address addr : addresses ) {	
+				AddressModel.getReference().delete(addr);
 		}
 
 	}
@@ -191,7 +197,7 @@ public class AddrListView extends DockableView {
 	 * find action
 	 */
 	private void findbuttonActionPerformed() {
-		
+
 		// Search for a string
 		String searchstring = "";
 		JScrollBar vScrollBar = null;
@@ -207,10 +213,11 @@ public class AddrListView extends DockableView {
 						String colvalue = null;
 						java.util.Date colvaluedt = null;
 						try {
-							colvalue = (String) addressTable.getValueAt(iRow, jCol);
+							colvalue = (String) addressTable.getValueAt(iRow,
+									jCol);
 						} catch (ClassCastException ccex) {
-							colvaluedt = (java.util.Date) addressTable.getValueAt(
-									iRow, jCol);
+							colvaluedt = (java.util.Date) addressTable
+									.getValueAt(iRow, jCol);
 							colvalue = colvaluedt.toString();
 						}
 						if (searchstring != null) {
@@ -225,7 +232,8 @@ public class AddrListView extends DockableView {
 								match = indexint > -1;
 							}
 							if (match) {
-								addressTable.setRowSelectionInterval(iRow, iRow);
+								addressTable
+										.setRowSelectionInterval(iRow, iRow);
 								vScrollBar = tableScrollPane
 										.getVerticalScrollBar();
 
@@ -331,8 +339,7 @@ public class AddrListView extends DockableView {
 	/**
 	 * init the UI components
 	 */
-	private void initComponents()
-	{
+	private void initComponents() {
 
 		tableScrollPane = new JScrollPane();
 		addressTable = new StripedTable();
@@ -343,8 +350,7 @@ public class AddrListView extends DockableView {
 		findbutton = new JButton();
 
 		tableScrollPane.setPreferredSize(new java.awt.Dimension(554, 404));
-		addressTable.setBorder(new LineBorder(new java.awt.Color(
-				0, 0, 0)));
+		addressTable.setBorder(new LineBorder(new java.awt.Color(0, 0, 0)));
 		// jTable1.setGridColor(java.awt.Color.blue);
 		DefaultListSelectionModel mylsmodel = new DefaultListSelectionModel();
 		mylsmodel
@@ -360,7 +366,8 @@ public class AddrListView extends DockableView {
 		});
 
 		tableScrollPane.setViewportView(addressTable);
-		add(tableScrollPane, GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH, 1.0, 1.0));
+		add(tableScrollPane, GridBagConstraintsFactory.create(0, 0,
+				GridBagConstraints.BOTH, 1.0, 1.0));
 
 		newbutton.setIcon(new ImageIcon(getClass().getResource(
 				"/resource/Add16.gif")));
