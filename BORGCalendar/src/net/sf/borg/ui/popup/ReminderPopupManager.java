@@ -136,8 +136,10 @@ public class ReminderPopupManager implements Model.Listener {
 			if (appt == null) {
 				if (other.appt != null)
 					return false;
-			} else if (appt.getKey() != other.appt.getKey())
+			} else if (appt.getKey() != other.appt.getKey()) {
 				return false;
+			}
+
 			if (instanceTime == null) {
 				if (other.instanceTime != null)
 					return false;
@@ -244,8 +246,23 @@ public class ReminderPopupManager implements Model.Listener {
 			}
 
 			try {
+				Appointment appt = AppointmentModel.getReference().getAppt(
+						apptInstance.getAppt().getKey());
+				if (appt == null) {
+					popupWindow.dispose();
+					deletedPopupKeys.add(apptInstance);
+					continue;
+				}
+				
 				if (!shouldBeShown(apptInstance)) {
 					// dispose of popup and add to delete list
+					popupWindow.dispose();
+					deletedPopupKeys.add(apptInstance);
+				}
+				
+				// delete it if the text changed - will add back in check for popups
+				if( !appt.getText().equals(apptInstance.getAppt().getText()))
+				{
 					popupWindow.dispose();
 					deletedPopupKeys.add(apptInstance);
 				}
@@ -408,7 +425,7 @@ public class ReminderPopupManager implements Model.Listener {
 			return false;
 
 		boolean expires = true; // true if the reminder eventually stops at some
-								// point after the appt
+		// point after the appt
 
 		// untimed todos never expire
 		if (AppointmentModel.isNote(apptInstance.getAppt())
@@ -481,6 +498,9 @@ public class ReminderPopupManager implements Model.Listener {
 						// calculate instance time
 						Calendar instTime = new GregorianCalendar();
 						instTime.setTime(appt.getDate());
+						instTime.set(Calendar.SECOND, 0);
+						instTime.set(Calendar.MILLISECOND, 0);
+						instTime.set(Calendar.YEAR, cal.get(Calendar.YEAR));
 						instTime.set(Calendar.YEAR, cal.get(Calendar.YEAR));
 						instTime.set(Calendar.MONTH, cal.get(Calendar.MONTH));
 						instTime.set(Calendar.DATE, cal.get(Calendar.DATE));
