@@ -254,6 +254,17 @@ public class ReminderPopupManager implements Model.Listener {
 					continue;
 				}
 				
+				if( !appt.getDate().equals(apptInstance.appt.getDate()))
+				{
+					// date changed - get rid of popup
+					popupWindow.dispose();
+					deletedPopupKeys.add(apptInstance);
+				}
+				
+				// use latest from db in the appt instance so shouldBeShown()
+				// can check any updated values
+				apptInstance.appt = appt;
+				
 				if (!shouldBeShown(apptInstance)) {
 					// dispose of popup and add to delete list
 					popupWindow.dispose();
