@@ -40,6 +40,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import net.sf.borg.common.DateUtil;
 import net.sf.borg.common.Errmsg;
+import net.sf.borg.common.PrefName;
+import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.common.Warning;
 import net.sf.borg.model.CategoryModel.CategorySource;
@@ -374,9 +376,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 			} else {
 				taskTypes_.fillFromLegacyXml(sm);
 			}
-		}
-		else
-		{
+		} else {
 			taskTypes_.fromString(tt);
 		}
 		CategoryModel.getReference().addSource(this);
@@ -684,7 +684,11 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 		XmlContainer container = (XmlContainer) u
 				.unmarshal(new FileInputStream(fileName));
 
-		JdbcDB.execSQL("SET REFERENTIAL_INTEGRITY FALSE;");
+		String dbtype = Prefs.getPref(PrefName.DBTYPE);
+		if (dbtype.equals("mysql"))
+			JdbcDB.execSQL("SET foreign_key_checks = 0;");
+		else
+			JdbcDB.execSQL("SET REFERENTIAL_INTEGRITY FALSE;");
 
 		for (BorgOption option : container.OPTION) {
 			if (option.getKey().equals("TASKTYPES")) {
@@ -730,7 +734,11 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 			}
 		}
 
-		JdbcDB.execSQL("SET REFERENTIAL_INTEGRITY TRUE;");
+		if (dbtype.equals("mysql"))
+			JdbcDB.execSQL("SET foreign_key_checks = 1;");
+		else
+			JdbcDB.execSQL("SET REFERENTIAL_INTEGRITY TRUE;");
+
 		load_map();
 		refreshListeners();
 
