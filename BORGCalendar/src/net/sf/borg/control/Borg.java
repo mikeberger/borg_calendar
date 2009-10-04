@@ -44,7 +44,6 @@ import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
-import net.sf.borg.common.ScrolledDialog;
 import net.sf.borg.common.SocketClient;
 import net.sf.borg.common.SocketHandler;
 import net.sf.borg.common.SocketServer;
@@ -62,6 +61,7 @@ import net.sf.borg.ui.calendar.TodoView;
 import net.sf.borg.ui.popup.ReminderPopupManager;
 import net.sf.borg.ui.util.ModalMessage;
 import net.sf.borg.ui.util.NwFontChooserS;
+import net.sf.borg.ui.util.ScrolledDialog;
 import net.sf.borg.ui.util.SplashScreen;
 
 /**
@@ -234,7 +234,8 @@ public class Borg implements SocketHandler {
 		return trayIcon;
 	}
 
-/** process a socket message
+	/**
+	 * process a socket message
 	 */
 	public synchronized String processMessage(String msg) {
 		// System.out.println("Got msg: " + msg);
@@ -561,19 +562,13 @@ public class Borg implements SocketHandler {
 			}
 
 		} catch (Exception e) {
-			// if something goes wrong, it might be that the database
-			// directory
-			// is bad. Maybe
-			// it does not exist anymore or something, so give the user a
-			// chance
-			// to change it
-			// if it will fix the problem
-
+			/*
+			 * if something goes wrong, it might be that the database directory
+			 * is bad. Maybe it does not exist anymore or something, so give the
+			 * user a chance to change it if it will fix the problem
+			 */
 			Errmsg.errmsg(e);
 
-			// get rid of NESTED exceptions for SQL exceptions - they make
-			// the
-			// error window too large
 			String es = e.toString();
 			es += Resource.getResourceString("db_set_to") + dbdir;
 			es += Resource.getResourceString("bad_db_2");

@@ -48,7 +48,6 @@ import net.sf.borg.common.IOHelper;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
-import net.sf.borg.common.ScrolledDialog;
 import net.sf.borg.control.Borg;
 import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.AppointmentModel;
@@ -66,6 +65,7 @@ import net.sf.borg.ui.calendar.SearchView;
 import net.sf.borg.ui.calendar.TodoView;
 import net.sf.borg.ui.task.TaskConfigurator;
 import net.sf.borg.ui.util.InputDialog;
+import net.sf.borg.ui.util.ScrolledDialog;
 
 // TODO - javadoc not really done
 /**

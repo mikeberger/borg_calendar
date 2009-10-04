@@ -31,7 +31,6 @@ import javax.swing.JTable;
 
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Resource;
-import net.sf.borg.common.ScrolledDialog;
 import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.LinkModel;
@@ -39,6 +38,7 @@ import net.sf.borg.model.MemoModel;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.db.jdbc.JdbcDB;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
+import net.sf.borg.ui.util.ScrolledDialog;
 import net.sf.borg.ui.util.TableSorter;
 
 /**

@@ -23,7 +23,7 @@ Copyright 2003 by Mike Berger
  * Created on October 5, 2003, 8:55 AM
  */
 
-package net.sf.borg.common;
+package net.sf.borg.ui.util;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -37,7 +37,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 
-import net.sf.borg.ui.util.GridBagConstraintsFactory;
+import net.sf.borg.common.PrefName;
+import net.sf.borg.common.Prefs;
+import net.sf.borg.common.Resource;
 
 /**
  * Common dialog class with a scrolled text area.
