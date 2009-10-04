@@ -44,6 +44,7 @@ import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
+import net.sf.borg.common.ScrolledDialog;
 import net.sf.borg.common.SocketClient;
 import net.sf.borg.common.SocketHandler;
 import net.sf.borg.common.SocketServer;
@@ -574,24 +575,12 @@ public class Borg implements SocketHandler {
 			// the
 			// error window too large
 			String es = e.toString();
-			int i1 = es.indexOf("** BEGIN NESTED");
-			int i2 = es.indexOf("** END NESTED");
-
-			if (i1 != -1 && i2 != -1) {
-				int i3 = es.indexOf('\n', i1);
-				String newstring = es.substring(0, i3) + "\n-- removed --\n"
-						+ es.substring(i2);
-				es = newstring;
-			}
 			es += Resource.getResourceString("db_set_to") + dbdir;
 			es += Resource.getResourceString("bad_db_2");
 
 			// prompt for ok
-			int ret = JOptionPane
-					.showConfirmDialog(null, es, Resource
-							.getResourceString("BORG_Error"),
-							JOptionPane.YES_NO_OPTION);
-			if (ret == JOptionPane.YES_OPTION) {
+			int ret = ScrolledDialog.showOptionDialog(es);
+			if (ret == ScrolledDialog.OK) {
 				if (ban_ != null)
 					ban_.dispose();
 				OptionsView.dbSelectOnly();
