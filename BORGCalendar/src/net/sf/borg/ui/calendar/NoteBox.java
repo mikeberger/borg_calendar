@@ -233,13 +233,10 @@ public class NoteBox extends Box implements Box.Draggable {
 				todoIcon.paintIcon(comp, g2, bounds.x + offset, bounds.y
 						+ bounds.height / 2);
 				offset = todoIcon.getIconWidth();
-				g2.drawString(text, bounds.x + offset, bounds.y + smfontHeight);
 			} else if (isTodo() && todoMarker != null) {
-				g2.drawString(todoMarker + " " + text, bounds.x + offset,
-						bounds.y + smfontHeight);
-			} else {
-				g2.drawString(text, bounds.x + offset, bounds.y + smfontHeight);
-			}
+				text = todoMarker + " " + text;
+			} 
+			g2.drawString(text, bounds.x + offset, bounds.y + smfontHeight);
 			g2.setColor(Color.black);
 		}
 

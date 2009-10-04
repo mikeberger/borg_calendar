@@ -69,9 +69,9 @@ class SqlRunner extends JDialog {
 	/**
 	 * initialize the ui - a simple editor with buttons to run the sql or clear the sql
 	 */
-	private void initComponents()// GEN-BEGIN:initComponents
+	private void initComponents()
 	{
-		this.getContentPane().setLayout(new GridBagLayout()); // Generated
+		this.getContentPane().setLayout(new GridBagLayout());
 
 		editor = new JEditorPane();
 		JPanel jPanel1 = new JPanel();
@@ -163,7 +163,7 @@ class SqlRunner extends JDialog {
 			Errmsg.errmsg(e);
 		}
 
-		// since the SQL may affect and of the tables, we need to 
+		// since the SQL may affect any of the tables, we need to 
 		// just tell all models to refresh
 		AppointmentModel.getReference().refresh();
 		TaskModel.getReference().refresh();
