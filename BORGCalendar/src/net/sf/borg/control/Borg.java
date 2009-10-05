@@ -71,9 +71,6 @@ import net.sf.borg.ui.util.SplashScreen;
  */
 public class Borg implements SocketHandler {
 
-	/** splash window */
-	static private SplashScreen ban_ = null; // start up banner
-
 	/** The singleton. */
 	static private Borg singleton = null;
 
@@ -365,6 +362,7 @@ public class Borg implements SocketHandler {
 			try {
 				resp = SocketClient.sendMsg("localhost", port, "open");
 				if (resp != null && resp.equals("ok")) {
+					// if we found a running borg to open, then exit
 					System.exit(0);
 				}
 			} catch (IOException e) {
@@ -388,13 +386,6 @@ public class Borg implements SocketHandler {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
-
-		// check if splash window is enabled
-		boolean splash = true;
-		String spl = Prefs.getPref(PrefName.SPLASH);
-		if (spl.equals("false")) {
-			splash = false;
 		}
 
 		// default font
@@ -422,10 +413,11 @@ public class Borg implements SocketHandler {
 		}
 
 		// pop up the splash
-		if (splash) {
-			ban_ = new SplashScreen();
-			ban_.setText(Resource.getResourceString("Initializing"));
-			ban_.setVisible(true);
+		SplashScreen splashScreen = null;
+		if (Prefs.getBoolPref(PrefName.SPLASH)) {
+			splashScreen = new SplashScreen();
+			splashScreen.setText(Resource.getResourceString("Initializing"));
+			splashScreen.setVisible(true);
 		}
 
 		// db url
@@ -445,8 +437,8 @@ public class Borg implements SocketHandler {
 						.getResourceString("Notice"),
 						JOptionPane.INFORMATION_MESSAGE);
 
-				if (ban_ != null)
-					ban_.dispose();
+				if (splashScreen != null)
+					splashScreen.dispose();
 
 				// if user wants to set db - let them
 				OptionsView.dbSelectOnly();
@@ -459,30 +451,31 @@ public class Borg implements SocketHandler {
 			// connect to the db - for now it is jdbc only
 			JdbcDB.connect(dbdir);
 
-			if (splash)
-				ban_.setText(Resource
+			if (splashScreen != null)
+				splashScreen.setText(Resource
 						.getResourceString("Loading_Appt_Database"));
 
 			// initialize the appointment model
 			AppointmentModel.getReference();
 
 			// init task model & load database
-			if (splash)
-				ban_.setText(Resource
+			if (splashScreen != null)
+				splashScreen.setText(Resource
 						.getResourceString("Loading_Task_Database"));
 
 			// init task model
 			TaskModel.getReference();
 
-			if (splash)
-				ban_.setText(Resource
+			if (splashScreen != null)
+				splashScreen.setText(Resource
 						.getResourceString("Opening_Address_Database"));
 
 			// init address model
 			AddressModel.getReference();
 
-			if (splash)
-				ban_.setText(Resource.getResourceString("Opening_Main_Window"));
+			if (splashScreen != null)
+				splashScreen.setText(Resource
+						.getResourceString("Opening_Main_Window"));
 
 			// start the UI thread
 			final String traynm = trayname;
@@ -492,9 +485,9 @@ public class Borg implements SocketHandler {
 				}
 			});
 
-			if (splash)
-				ban_.dispose();
-			ban_ = null;
+			if (splashScreen != null)
+				splashScreen.dispose();
+			splashScreen = null;
 
 			// calculate email time in minutes from now
 			Calendar cal = new GregorianCalendar();
@@ -576,8 +569,8 @@ public class Borg implements SocketHandler {
 			// prompt for ok
 			int ret = ScrolledDialog.showOptionDialog(es);
 			if (ret == ScrolledDialog.OK) {
-				if (ban_ != null)
-					ban_.dispose();
+				if (splashScreen != null)
+					splashScreen.dispose();
 				OptionsView.dbSelectOnly();
 				return;
 			}
