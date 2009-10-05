@@ -4,6 +4,10 @@ RELEASE NOTES for BORG 1.7.2
 
 The project home page is http://borg-calendar.sourceforge.net
 
+BORG 1.7.2 is primarily a rearchitecture and code cleanup release. It does not contain many new feature.
+The code has been thoroughly cleaned up and documented, including the addition of Javadocs.
+
+Release 1.7.2 will be of most interest to folks dealing with the code.
 
 REPORTS
 -------
@@ -29,6 +33,8 @@ are keyed in the database. A database conversion tool is available to remove the
 and renumber all appointments. This conversion is optional, and Borg 1.7.2 will run
 with no problem against a 1.7.1 database. Users wanting to convert the data can
 run: java -jar borg.jar -runtool ApptKeyConverter. 
+
+4. The XML Export and Import formats have changed in 1.7.2 in order to use JAX for export/import. 
 
 RUNNING
 -------
