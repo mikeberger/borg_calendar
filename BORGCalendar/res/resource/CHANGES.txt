@@ -2,8 +2,10 @@ BORG 1.7.2 - TBD
 ----------
 Feature [2769671] Add an address book search  
 Feature [2852664] support TLS for SMTP
-Feature [2846844] Code Cleanup and Javadoc 
-
+Feature [2846844] Code Cleanup and Javadoc
+Bug Fix [2745960] pop up reminder non-functional at large-minute settings 
+Bug Fix [1728135] No Popups--- Date Doesn't Advance
+Bug Fix [1693757] Category name size not checked
   
 BORG 1.7.1
 ----------
