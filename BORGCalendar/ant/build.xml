@@ -199,7 +199,7 @@ build.number=${build.number}
 
 	<target name="clean-build" depends="clean,borg-jar,help-jar" />
 	<target name="main" depends="regen-help,fulldist,installer" />
-	<target name="fulldist" depends="borg_prog,borg_src,rpt_zip" />
+	<target name="fulldist" depends="borg_prog,javadoc,borg_src,rpt_zip" />
 
 	<!-- "Private" targets -->
 	<target name="zz_delclassfiles">
