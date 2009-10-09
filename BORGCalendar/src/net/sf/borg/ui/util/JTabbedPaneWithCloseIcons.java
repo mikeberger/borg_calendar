@@ -42,11 +42,11 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 		MouseListener, MouseMotionListener {
 
 	/**
-	 * this is the icon that actually contains the symbols for
-	 * close and optionally undock.
+	 * this is the icon that actually contains the symbols for close and
+	 * optionally undock.
 	 */
 	private class CloseTabIcon implements Icon {
-		
+
 		/**
 		 * parent component
 		 */
@@ -69,11 +69,12 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 		/**
 		 * constructor.
 		 * 
-		 * @param ud if true, also include the undock image
+		 * @param ud
+		 *            if true, also include the undock image
 		 */
 		public CloseTabIcon(boolean ud) {
 			this.undock = ud;
-			
+
 			// undock doubles the width
 			if (undock)
 				width = 2 * ICON_WIDTH;
@@ -82,14 +83,18 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see javax.swing.Icon#getIconHeight()
 		 */
 		public int getIconHeight() {
 			return ICON_WIDTH;
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see javax.swing.Icon#getIconWidth()
 		 */
 		public int getIconWidth() {
@@ -99,15 +104,16 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 		/**
 		 * Checks if mouse is on the delete icon
 		 * 
-		 * @param e the mouse event
+		 * @param e
+		 *            the mouse event
 		 * 
 		 * @return true, if mouse is on the delete icon
 		 */
-		public boolean isMouseOnDelete(MouseEvent e) {
+		public boolean isMouseOnDelete(int x, int y) {
 
 			Rectangle rect = new Rectangle(x_pos + 2, y_pos + 2,
 					ICON_WIDTH - 4, ICON_WIDTH - 4);
-			if (rect.contains(e.getX(), e.getY())) {
+			if (rect.contains(x, y)) {
 				return true;
 			}
 
@@ -117,20 +123,20 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 		/**
 		 * Checks if mouse is on the undock icon
 		 * 
-		 * @param e the mouse event
+		 * @param e
+		 *            the mouse event
 		 * 
 		 * @return true, if mouse is on the undock icon
 		 */
-		public boolean isMouseOnUndock(MouseEvent e) {
-			
-			if (!undock)
-			{
+		public boolean isMouseOnUndock(int x, int y) {
+
+			if (!undock) {
 				return false;
 			}
-			
+
 			Rectangle rect = new Rectangle(x_pos + ICON_WIDTH + 2, y_pos + 2,
 					ICON_WIDTH - 4, ICON_WIDTH - 4);
-			if (rect.contains(e.getX(), e.getY())) {
+			if (rect.contains(x, y)) {
 				return true;
 			}
 
@@ -140,11 +146,15 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 		/**
 		 * Paint the icon with optional red highlight
 		 * 
-		 * @param highlightDelete if true, paint delete highlight
-		 * @param highlightUndock if true, paint undock highlight
-		 * @param g the Graphics to paint in
+		 * @param highlightDelete
+		 *            if true, paint delete highlight
+		 * @param highlightUndock
+		 *            if true, paint undock highlight
+		 * @param g
+		 *            the Graphics to paint in
 		 */
-		private void paintHighlight(boolean highlightDelete, boolean highlightUndock, Graphics g) {
+		private void paintHighlight(boolean highlightDelete,
+				boolean highlightUndock, Graphics g) {
 
 			Graphics2D g2 = (Graphics2D) g;
 
@@ -153,7 +163,7 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 			if (highlightDelete) {
 				g2.setColor(Color.red);
 			}
-			
+
 			// draw the delete picture
 			g2.drawLine(x_pos + 4, y_pos + 5, x_pos + ICON_WIDTH - 5, y_pos
 					+ ICON_WIDTH - 4);
@@ -169,12 +179,12 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 					+ ICON_WIDTH - 5);
 
 			if (undock) {
-				
+
 				g2.setColor(Color.black);
 				if (highlightUndock) {
 					g2.setColor(Color.red);
 				}
-				
+
 				// draw the undock picture
 				g2.drawRect(x_pos + ICON_WIDTH + 4, y_pos + 4, ICON_WIDTH - 8,
 						ICON_WIDTH - 8);
@@ -188,28 +198,48 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 		/**
 		 * Paint icon with hightlight
 		 * 
-		 * @param e the mosue event
+		 * @param e
+		 *            the mouse event
 		 */
 		public void paintHighlight(MouseEvent e) {
 			if (component == null)
 				return;
-			paintHighlight(isMouseOnDelete(e), isMouseOnUndock(e), component
-					.getGraphics());
+
+			paintHighlight(isMouseOnDelete(e.getX(), e.getY()),
+					isMouseOnUndock(e.getX(), e.getY()), component
+							.getGraphics());
 		}
 
-		/* (non-Javadoc)
-		 * @see javax.swing.Icon#paintIcon(java.awt.Component, java.awt.Graphics, int, int)
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see javax.swing.Icon#paintIcon(java.awt.Component,
+		 * java.awt.Graphics, int, int)
 		 */
 		public void paintIcon(Component c, Graphics g, int x, int y) {
 			this.x_pos = x;
 			this.y_pos = y;
 			this.component = c;
-			paintHighlight(false, false, g);
+
+			/*
+			 * use the last known mouse position to decide if highlight is needed
+			 */
+			if (lastMouseEvent != null)
+				paintHighlight(isMouseOnDelete(lastMouseEvent.getX(), lastMouseEvent.getY()), 
+						isMouseOnUndock(lastMouseEvent.getX(), lastMouseEvent.getY()), g);
+			else
+				paintHighlight(false, false, g);	
 		}
 	}
 
 	/** icon size. */
 	static private final int ICON_WIDTH = 16;
+
+	/*
+	 * save last mouse event so that we know where we are if the
+	 * icon is asked to repaint without the mouse moving
+	 */
+	private MouseEvent lastMouseEvent;
 
 	/**
 	 * Instantiates a new tabbed pane with close icons.
@@ -221,7 +251,9 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.swing.JTabbedPane#addTab(java.lang.String, java.awt.Component)
 	 */
 	@Override
@@ -258,7 +290,8 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 	/**
 	 * handle mouse click on a tab icon.
 	 * 
-	 * @param e the e
+	 * @param e
+	 *            the e
 	 */
 	public void mouseClicked(MouseEvent e) {
 		// check is mouse is on a tab
@@ -270,45 +303,58 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 		CloseTabIcon icon = (CloseTabIcon) getIconAt(tabNumber);
 		if (icon == null)
 			return;
-		
+
 		// perform action of the click was on an icon
-		if (icon.isMouseOnDelete(e))
+		if (icon.isMouseOnDelete(e.getX(), e.getY()))
 			this.removeTabAt(tabNumber);
-		else if (icon.isMouseOnUndock(e))
+		else if (icon.isMouseOnUndock(e.getX(), e.getY()))
 			this.undock();
+
+		lastMouseEvent = e;
 
 	}
 
-	/* (non-Javadoc)
-	 * @see java.awt.event.MouseMotionListener#mouseDragged(java.awt.event.MouseEvent)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.MouseMotionListener#mouseDragged(java.awt.event.MouseEvent
+	 * )
 	 */
 	@Override
 	public void mouseDragged(MouseEvent arg0) {
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
 	 */
 	public void mouseEntered(MouseEvent e) {
 		mouseMoved(e);
+		lastMouseEvent = e;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
 	 */
 	public void mouseExited(MouseEvent e) {
 		mouseMoved(e);
+		lastMouseEvent = e;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.awt.event.MouseMotionListener#mouseMoved(java.awt.event.MouseEvent)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.MouseMotionListener#mouseMoved(java.awt.event.MouseEvent)
 	 */
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		
+
 		// if the mouse is on a tab - then highlight it
-		// this does not work for many java look and feels that seem to 
-		// paint over the highlight - not sure why - need to investigate
 		for (int tabNumber = 0; tabNumber < this.getComponentCount(); tabNumber++) {
 			CloseTabIcon icon = (CloseTabIcon) getIconAt(tabNumber);
 			if (icon == null)
@@ -316,19 +362,26 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 
 			icon.paintHighlight(e);
 		}
-
+		lastMouseEvent = e;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
 	 */
 	public void mousePressed(MouseEvent e) {
+		lastMouseEvent = e;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
 	 */
 	public void mouseReleased(MouseEvent e) {
+		lastMouseEvent = e;
 	}
 
 	/**
