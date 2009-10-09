@@ -335,6 +335,7 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 			MemoModel.getReference().saveMemo(m);
 			isMemoEdited = false;
 			loadMemosFromModel();
+			selectMemo(name);
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
 		}
@@ -373,6 +374,7 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 			MemoModel.getReference().saveMemo(m);
 			isMemoEdited = false;
 			loadMemosFromModel();
+			selectMemo(name);
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
 		}
