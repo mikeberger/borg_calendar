@@ -1,11 +1,33 @@
-BORG 1.7.2 - TBD
-----------
+BORG 1.7.2 Beta - Developer Release
+-----------------------------------
+Release 1.7.2 is mainly for developers using the source. 
+
+** Feature [2846844] Code Cleanup and Javadoc **
+** The entire code base was cleaned up, refactored, and documented in this release.
+** Thousands of lines of obsolete code have been removed.
+** The UI code was rewritten to remove almost all of the IDE-generated code.
+
 Feature [2769671] Add an address book search  
-Feature [2852664] support TLS for SMTP
-Feature [2846844] Code Cleanup and Javadoc
+Feature [2852664] support TLS for SMTP (for gmail)
+Feature [2876229] rewrite XML import/export to use JAXB
+Feature [2876230] improve week/day view
+Feature [2876231] add quick-note menu option
+Feature [2876232] put the 3 task tabs under a single main tab
+Feature [2876242] Remove Palm sync Support
+Bug Fix [2876233] cleanup the translations - remove unused strings
+Bug Fix [2876234] tab close/undock icons do not highlight
+Bug Fix [2876236] clean up the online help
+Bug Fix [2876237] popups sometimes continue after appts changed or deleted
+Bug Fix [2876238] when deleting multiple addresses - the wrong ones are deleted
+Bug Fix [2876240] fix calendar view tooltip
 Bug Fix [2745960] pop up reminder non-functional at large-minute settings 
 Bug Fix [1728135] No Popups--- Date Doesn't Advance
 Bug Fix [1693757] Category name size not checked
+
+** WARNING **
+** BORG 1.7.2 now requires Java 6.
+** BORG 1.7.2 will work with a 1.7.1 database, not 1.7.1 will not work with a 1.7.2 database.
+** BORG 1.7.2 uses a different XML export format.
   
 BORG 1.7.1
 ----------
