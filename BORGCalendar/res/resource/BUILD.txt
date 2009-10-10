@@ -1,6 +1,6 @@
-To build Simple BORG from the source, you need the JAVA SDK 1.5 or later, available from java.sun.com.
+To build BORG from the source, you need the JAVA SDK 1.6 or later, available from java.sun.com.
 
-As of release 1.6.1 of BORG, the product consists of a single Eclipse Project - BORGCalendar
+BORG consists of a single Eclipse Project - BORGCalendar
 
 The ant build file to build the entire thing is in the ant folder.
 
