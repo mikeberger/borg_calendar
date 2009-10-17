@@ -165,7 +165,7 @@ public class EntitySelector extends JDialog {
 				new String[] { Resource.getResourceString("Item_#"),
 						Resource.getResourceString("Description") },
 				new Class[] { Integer.class, String.class }), new String[] {
-				"TaskNumber", "Description" }));
+				"Key", "Description" }));
 	}
 
 	private JButton clearButton;
