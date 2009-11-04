@@ -62,6 +62,8 @@ import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Subtask;
 import net.sf.borg.model.entity.Task;
 import net.sf.borg.ui.MultiView;
+import net.sf.borg.ui.MultiView.ViewType;
+import net.sf.borg.ui.task.ProjectView;
 import net.sf.borg.ui.task.TaskView;
 
 /**
@@ -474,14 +476,13 @@ public class NoteBox extends Box implements Box.Draggable {
 			ag.showApp(((Appointment) bean).getKey());
 
 		} else if (bean instanceof Project) {
-			// project clicked - show its tasks
-			MultiView cv = MultiView.getMainView();
-			if (cv != null)
-				cv.showTasksForProject((Project) bean);
+			MultiView.getMainView().setView(ViewType.TASK);
+			MultiView.getMainView().addView(
+					new ProjectView((Project) bean, ProjectView.Action.CHANGE, null));
 		} else if (bean instanceof Task) {
 			// task clicked - show it
 			try {
-				MultiView.getMainView().showTasks();
+				MultiView.getMainView().setView(ViewType.TASK);
 				MultiView.getMainView().addView(
 						new TaskView((Task) bean, TaskView.Action.CHANGE, null));
 			} catch (Exception e) {
@@ -490,7 +491,7 @@ public class NoteBox extends Box implements Box.Draggable {
 			}
 		} else if (bean instanceof Subtask) {
 			// subtask clicked - show its task
-			MultiView.getMainView().showTasks();
+			MultiView.getMainView().setView(ViewType.TASK);
 			int taskid = ((Subtask) bean).getTask().intValue();
 			Task t;
 			try {

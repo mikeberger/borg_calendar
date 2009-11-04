@@ -26,6 +26,8 @@ import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.print.PageFormat;
@@ -43,6 +45,7 @@ import javax.swing.JPanel;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
+import net.sf.borg.common.Resource;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Day;
 import net.sf.borg.model.Model;
@@ -54,13 +57,15 @@ import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 
 /**
- * MonthPanel is the UI for a calendar month. It is Printable, but is NOT used for printing
- * a monthly calendar as borg has a more specialized month printing class.
+ * MonthPanel is the UI for a calendar month. It is Printable, but is NOT used
+ * for printing a monthly calendar as borg has a more specialized month printing
+ * class.
  */
-public class MonthPanel extends JPanel implements Printable {
+public class MonthPanel extends JPanel implements Printable, MultiView.Module {
 
 	/**
-	 * MonthViewSubPanel draws a month and provides the UI container for the month items
+	 * MonthViewSubPanel draws a month and provides the UI container for the
+	 * month items
 	 */
 	private class MonthViewSubPanel extends ApptBoxPanel implements Printable,
 			NavPanel.Navigator, Model.Listener, Prefs.Listener,
@@ -78,14 +83,16 @@ public class MonthPanel extends JPanel implements Printable {
 		// top of a day - including the day label
 		private int daytop;
 
-		// records the last date on which a draw took place - for handling the first redraw after midnight
+		// records the last date on which a draw took place - for handling the
+		// first redraw after midnight
 		private int lastDrawDate = -1;
 
 		// the month being displayed
 		private int month_;
 		private int year_;
 
-		// flag to indicate if we need to reload from the model. If false, we can just redraw
+		// flag to indicate if we need to reload from the model. If false, we
+		// can just redraw
 		// from cached data
 		boolean needLoad = true;
 
@@ -94,26 +101,29 @@ public class MonthPanel extends JPanel implements Printable {
 
 		/**
 		 * constructor
-		 * @param month month
-		 * @param year year
+		 * 
+		 * @param month
+		 *            month
+		 * @param year
+		 *            year
 		 */
 		public MonthViewSubPanel(int month, int year) {
 			year_ = year;
 			month_ = month;
 			clearData();
-			
+
 			// react to pref changes
 			Prefs.addListener(this);
-			
+
 			// react to mouse wheel events
 			addMouseWheelListener(this);
-			
+
 			// react to task or appt changes
 			AppointmentModel.getReference().addListener(this);
 			TaskModel.getReference().addListener(this);
 
 		}
-		
+
 		/**
 		 * clear cached data and force reload on next draw
 		 */
@@ -129,7 +139,7 @@ public class MonthPanel extends JPanel implements Printable {
 		private int drawIt(Graphics g, double width, double height,
 				double pageWidth, double pageHeight, double pagex,
 				double pagey, int pageIndex) {
-			
+
 			Graphics2D g2 = (Graphics2D) g;
 
 			// appt text font
@@ -146,7 +156,7 @@ public class MonthPanel extends JPanel implements Printable {
 
 			// translate coordinates based on the page margins
 			g2.translate(pagex, pagey);
-			
+
 			Shape s = g2.getClip();
 
 			// get current time
@@ -161,16 +171,17 @@ public class MonthPanel extends JPanel implements Printable {
 			}
 			lastDrawDate = tdate;
 
-			// get first day of the month and set first day of week based on user pref
+			// get first day of the month and set first day of week based on
+			// user pref
 			GregorianCalendar cal = new GregorianCalendar(year_, month_, 1);
 			cal.setFirstDayOfWeek(Prefs.getIntPref(PrefName.FIRSTDOW));
 
 			// top of drawn month - used to be non-zero to fit a title
 			int caltop = 0;
-			
+
 			// set top of the day - which is under the weekday name
 			daytop = caltop + fontHeight + fontDesent;
-			
+
 			// set width of the week button on the right edge of each week
 			int weekbutwidth = fontHeight + fontDesent;
 
@@ -185,8 +196,9 @@ public class MonthPanel extends JPanel implements Printable {
 			// allow items to be dragged all over the calendar (but not over the
 			// weekday labels or week buttons
 			setDragBounds(daytop, calbot, 0, (int) pageWidth - weekbutwidth);
-			
-			// do not allow any resizing or dragging out of new appointments since
+
+			// do not allow any resizing or dragging out of new appointments
+			// since
 			// the month UI does not have a time-grid
 			setResizeBounds(0, 0);
 
@@ -195,7 +207,8 @@ public class MonthPanel extends JPanel implements Printable {
 			g2.fillRect(0, caltop, calright, daytop - caltop);
 			g2.setColor(Color.black);
 
-			// draw the weekday names centered in each column - no boxes drawn yet
+			// draw the weekday names centered in each column - no boxes drawn
+			// yet
 			SimpleDateFormat dfw = new SimpleDateFormat("EEE");
 			cal.add(Calendar.DAY_OF_WEEK, cal.getFirstDayOfWeek()
 					- cal.get(Calendar.DAY_OF_WEEK));
@@ -224,11 +237,11 @@ public class MonthPanel extends JPanel implements Printable {
 				// calculate column and row
 				int boxcol = box % 7;
 				int boxrow = box / 7;
-				
+
 				// calculate top left of the day area
 				int rowtop = (boxrow * rowheight) + daytop;
 				int colleft = boxcol * colwidth;
-				
+
 				// get day of week
 				int dow = cal.getFirstDayOfWeek() + boxcol;
 				if (dow == 8)
@@ -240,7 +253,7 @@ public class MonthPanel extends JPanel implements Printable {
 
 				// set clip to the day box to truncate long appointment text
 				g2.clipRect(colleft, rowtop, colwidth, rowheight);
-				
+
 				// check if we need to reload form the model
 				if (needLoad) {
 					try {
@@ -253,7 +266,8 @@ public class MonthPanel extends JPanel implements Printable {
 						Day dayInfo = Day.getDay(cal.get(Calendar.YEAR), cal
 								.get(Calendar.MONTH), cal.get(Calendar.DATE));
 
-						// set a different background color based on various circumstances
+						// set a different background color based on various
+						// circumstances
 						Color c = null;
 						if (tmon == month_ && tyear == year_
 								&& tdate == cal.get(Calendar.DATE)) {
@@ -282,7 +296,8 @@ public class MonthPanel extends JPanel implements Printable {
 									.getIntPref(PrefName.UCS_WEEKDAY));
 						}
 
-						// if a day is not in the current month, then always use the default
+						// if a day is not in the current month, then always use
+						// the default
 						// panel background
 						if (cal.get(Calendar.MONTH) != month_)
 							c = this.getBackground();
@@ -294,7 +309,7 @@ public class MonthPanel extends JPanel implements Printable {
 						int notey = rowtop + smfontHeight;
 
 						// loop through entities for the day
-						for(CalendarEntity entity : dayInfo.getItems()) {
+						for (CalendarEntity entity : dayInfo.getItems()) {
 
 							// add the item NoteBox to the container
 							if (addNoteBox(cal.getTime(), entity,
@@ -310,16 +325,19 @@ public class MonthPanel extends JPanel implements Printable {
 
 						}
 
-						// check if we clipped some appts - meaning that they do not all fit vertically
+						// check if we clipped some appts - meaning that they do
+						// not all fit vertically
 						// in the day's box due to lack of room
 						Icon clipIcon = null;
 						if (notey > rowtop + rowheight) {
-							// set clipping indication icon so that we dray it next to the date label
+							// set clipping indication icon so that we dray it
+							// next to the date label
 							clipIcon = new ImageIcon(getClass().getResource(
 									"/resource/Import16.gif"));
 						}
 
-						// add a label for the date. this is actually a button box and the user
+						// add a label for the date. this is actually a button
+						// box and the user
 						// can press it to go to that date's day view
 						String datetext = Integer.toString(cal
 								.get(Calendar.DATE));
@@ -355,7 +373,8 @@ public class MonthPanel extends JPanel implements Printable {
 				cal.add(Calendar.DATE, 1);
 			}
 
-			// add week buttons along the right side. they display the week number
+			// add week buttons along the right side. they display the week
+			// number
 			// and will bring up the week view if pressed
 			if (needLoad) {
 				// use iso week numbering if option set
@@ -392,10 +411,10 @@ public class MonthPanel extends JPanel implements Printable {
 			g2.setClip(s);
 
 			// draw the lines last
-			
+
 			// horizontal line at top of calendar - above day names
 			g2.drawLine(0, caltop, calright, caltop);
-			
+
 			// horizontal lines for each row from below day names to bottom
 			for (int row = 0; row < 7; row++) {
 				int rowtop = (row * rowheight) + daytop;
@@ -412,8 +431,8 @@ public class MonthPanel extends JPanel implements Printable {
 		}
 
 		/**
-		 * return the date corresponding to the box that the 
-		 * given x/y coordinate is in
+		 * return the date corresponding to the box that the given x/y
+		 * coordinate is in
 		 */
 		@Override
 		public Date getDateForCoord(double x, double y) {
@@ -555,20 +574,25 @@ public class MonthPanel extends JPanel implements Printable {
 
 	/**
 	 * constructor
-	 * @param month month
-	 * @param year year
+	 * 
+	 * @param month
+	 *            month
+	 * @param year
+	 *            year
 	 */
 	public MonthPanel(int month, int year) {
 
 		// create the month UI panel
 		monthSubPanel = new MonthViewSubPanel(month, year);
-		
+
 		// create the navigator panel
 		nav = new NavPanel(monthSubPanel);
 
 		setLayout(new java.awt.GridBagLayout());
-		add(nav, GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH));
-		add(monthSubPanel, GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH, 1.0, 1.0));
+		add(nav, GridBagConstraintsFactory
+				.create(0, 0, GridBagConstraints.BOTH));
+		add(monthSubPanel, GridBagConstraintsFactory.create(0, 1,
+				GridBagConstraints.BOTH, 1.0, 1.0));
 
 	}
 
@@ -589,15 +613,44 @@ public class MonthPanel extends JPanel implements Printable {
 	}
 
 	/**
-	 * prints 1 or more months when the user requests a month print. This method currently redirects
-	 * to the MonthPrintPanel object to do the actual drawing as the borg month printout is specialized
-	 * for a paper printout and does not use the MonthPanel view for printing
+	 * prints 1 or more months when the user requests a month print. This method
+	 * currently redirects to the MonthPrintPanel object to do the actual
+	 * drawing as the borg month printout is specialized for a paper printout
+	 * and does not use the MonthPanel view for printing
 	 */
 	public void printMonths() {
 		try {
-			MonthPrintPanel.printMonths(monthSubPanel.month_, monthSubPanel.year_);
+			MonthPrintPanel.printMonths(monthSubPanel.month_,
+					monthSubPanel.year_);
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
 		}
+	}
+
+	@Override
+	public void initialize(MultiView parent) {
+		final MultiView par = parent;
+		parent.addToolBarItem(new ImageIcon(getClass().getResource(
+		"/resource/month.jpg")), getModuleName(), 
+		new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				par.setView(ViewType.MONTH);
+			}
+		});
+	}
+
+	@Override
+	public JPanel getComponent() {
+		return this;
+	}
+
+	@Override
+	public String getModuleName() {
+		return Resource.getResourceString("Month_View");
+	}
+	
+	@Override
+	public void print() {
+		printMonths();
 	}
 }

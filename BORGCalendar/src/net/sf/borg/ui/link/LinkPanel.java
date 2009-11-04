@@ -60,6 +60,7 @@ import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Task;
 import net.sf.borg.ui.EntitySelector;
 import net.sf.borg.ui.MultiView;
+import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.address.AddressView;
 import net.sf.borg.ui.calendar.AppointmentListView;
 import net.sf.borg.ui.task.ProjectView;
@@ -572,7 +573,8 @@ public class LinkPanel extends JPanel implements Model.Listener {
 				}
 				// open a memo
 				else if (at.getLinkType().equals(LinkType.MEMO.toString())) {
-					MultiView.getMainView().showMemos(at.getPath());
+					MultiView.getMainView().setView(ViewType.MEMO);
+					//MultiView.getMainView().showMemos(at.getPath());
 				}
 			} catch (Exception e) {
 				Errmsg.errmsg(e);

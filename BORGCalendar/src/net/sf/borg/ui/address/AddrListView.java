@@ -22,6 +22,7 @@ package net.sf.borg.ui.address;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -49,6 +50,7 @@ import net.sf.borg.model.entity.Address;
 import net.sf.borg.ui.DockableView;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.ResourceHelper;
+import net.sf.borg.ui.MultiView.Module;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 import net.sf.borg.ui.util.PopupMenuHelper;
 import net.sf.borg.ui.util.StripedTable;
@@ -60,7 +62,7 @@ import net.sf.borg.ui.util.TableSorter;
  * taken on addresses
  * 
  */
-public class AddrListView extends DockableView {
+public class AddrListView extends DockableView implements Module {
 
 	private static AddrListView singleton = null;
 
@@ -157,10 +159,10 @@ public class AddrListView extends DockableView {
 			addresses.add(addr);
 
 		}
-		
+
 		// delete the addresses
-		for (Address addr : addresses ) {	
-				AddressModel.getReference().delete(addr);
+		for (Address addr : addresses) {
+			AddressModel.getReference().delete(addr);
 		}
 
 	}
@@ -475,6 +477,38 @@ public class AddrListView extends DockableView {
 		// sort the table by last name
 		tm.sortByColumn(1);
 
+	}
+
+	@Override
+	public String getModuleName() {
+		return Resource.getResourceString("Address_Book");
+	}
+
+	@Override
+	public JPanel getComponent() {
+		return this;
+	}
+
+	@Override
+	public void initialize(MultiView parent) {
+		final MultiView par = parent;
+		final Module m = this;
+		parent.addToolBarItem(new ImageIcon(getClass().getResource(
+				"/resource/addr16.jpg")), getModuleName(),
+				new ActionListener() {
+					public void actionPerformed(ActionEvent evt) {
+						par.setView(m);
+					}
+				});
+	}
+
+	@Override
+	public void print() {
+		try {
+			TablePrinter.printTable(addressTable);
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
+		}
 	}
 
 }

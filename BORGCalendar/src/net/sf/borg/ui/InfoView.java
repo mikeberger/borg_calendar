@@ -27,19 +27,25 @@ package net.sf.borg.ui;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.print.PrinterException;
 
+import javax.swing.JComponent;
 import javax.swing.JEditorPane;
 import javax.swing.JMenuBar;
 import javax.swing.JScrollPane;
 
+import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
+import net.sf.borg.ui.MultiView.Module;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 
 /**
  * dockable view that shows informational text or html to the user in a
  * scrollable pane
  */
-class InfoView extends DockableView {
+class InfoView extends DockableView implements Module {
 
 	private JEditorPane jEditorPane1;
 	private JScrollPane jScrollPane1;
@@ -94,6 +100,38 @@ class InfoView extends DockableView {
 	@Override
 	public void refresh() {
 
+	}
+	
+	@Override
+	public void print()
+	{
+		try {
+			jEditorPane1.print();
+		} catch (PrinterException e) {
+			Errmsg.errmsg(e);
+		}
+	}
+
+	@Override
+	public JComponent getComponent() {
+		return this;
+	}
+
+	@Override
+	public String getModuleName() {
+		return title_;
+	}
+
+	@Override
+	public void initialize(MultiView parent) {
+		final MultiView par = parent;
+		final Module m = this;
+		parent.addHelpMenuItem(null, getModuleName(), new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				par.setView(m);
+			}
+		});
+		
 	}
 
 }

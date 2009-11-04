@@ -24,12 +24,16 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.print.PrinterException;
 import java.io.ByteArrayInputStream;
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Iterator;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -49,6 +53,9 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.model.MemoModel;
 import net.sf.borg.model.Model;
 import net.sf.borg.model.entity.Memo;
+import net.sf.borg.ui.MultiView;
+import net.sf.borg.ui.MultiView.Module;
+import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 import net.sf.borg.ui.util.StripedTable;
 import net.sf.borg.ui.util.TableSorter;
@@ -58,7 +65,7 @@ import net.sf.borg.ui.util.TableSorter;
  * for editing memo text.
  */
 public class MemoPanel extends JPanel implements ListSelectionListener,
-		Model.Listener {
+		Model.Listener, Module {
 
 	/** The memo date format. */
 	private static SimpleDateFormat memoDateFormat = new SimpleDateFormat(
@@ -478,6 +485,40 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 		isMemoEdited = false;
 		saveButton.setEnabled(false);
 
+	}
+
+	@Override
+	public JComponent getComponent() {
+		return this;
+	}
+
+	@Override
+	public String getModuleName() {
+		return Resource.getResourceString("Memos");
+	}
+
+	@Override
+	public void initialize(MultiView parent) {
+		
+		final MultiView par = parent;
+		parent.addToolBarItem(new ImageIcon(getClass().getResource(
+		"/resource/Edit16.gif")), getModuleName(), new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				par.setView(ViewType.MEMO);
+			}
+		});
+		
+	}
+
+	@Override
+	public void print() {
+		try {
+			this.memoText.print(new MessageFormat(getSelectedMemoName()),
+					new MessageFormat("{0}"));
+		} catch (PrinterException e) {
+			Errmsg.errmsg(e);
+		}
+		
 	}
 
 } 

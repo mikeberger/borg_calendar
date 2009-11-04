@@ -25,10 +25,12 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.print.Printable;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -38,13 +40,10 @@ import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.border.BevelBorder;
 
-import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
-import net.sf.borg.common.PrintHelper;
 import net.sf.borg.common.Resource;
 import net.sf.borg.control.Borg;
-import net.sf.borg.model.entity.Project;
 import net.sf.borg.ui.address.AddrListView;
 import net.sf.borg.ui.calendar.DayPanel;
 import net.sf.borg.ui.calendar.MonthPanel;
@@ -53,9 +52,7 @@ import net.sf.borg.ui.calendar.TodoView;
 import net.sf.borg.ui.calendar.WeekPanel;
 import net.sf.borg.ui.calendar.YearPanel;
 import net.sf.borg.ui.memo.MemoPanel;
-import net.sf.borg.ui.task.ProjectPanel;
-import net.sf.borg.ui.task.ProjectTreePanel;
-import net.sf.borg.ui.task.TaskFilterPanel;
+import net.sf.borg.ui.task.TaskModule;
 import net.sf.borg.ui.util.JTabbedPaneWithCloseIcons;
 
 /**
@@ -63,15 +60,49 @@ import net.sf.borg.ui.util.JTabbedPaneWithCloseIcons;
  */
 public class MultiView extends View {
 
-	/** argument values for setView() */
-	public enum ViewType
-	{
-		DAY, MONTH, WEEK, YEAR;
+	/**
+	 * interface implemented by all UI Modules
+	 * 
+	 */
+	public static interface Module {
+
+		/**
+		 * get the module's name
+		 * 
+		 * @return the name
+		 */
+		public String getModuleName();
+
+		/**
+		 * get the Component for this Module
+		 * 
+		 * @return the Component or null if none to show
+		 */
+		public Component getComponent();
+
+		/**
+		 * print the Module
+		 */
+		public void print();
+
+		/**
+		 * called by the parent Multiview to allow the Module to initialize its
+		 * toolbar items, menu items, and anything else that must be initalized
+		 * before its Module methods can be called
+		 * 
+		 * @param parent
+		 *            the parent MultiView
+		 */
+		public void initialize(MultiView parent);
 	}
-	
+
+	/** argument values for setView() */
+	public enum ViewType {
+		DAY, MONTH, WEEK, YEAR, TASK, MEMO, SEARCH;
+	}
+
 	/** The main view singleton */
 	static private MultiView mainView = null;
-
 
 	/**
 	 * Get the main view singleton. Make it visible if it is not showing.
@@ -86,43 +117,30 @@ public class MultiView extends View {
 		return (mainView);
 	}
 
-	/** The day panel. */
-	private DayPanel dayPanel = null;
+	/**
+	 * toolbar
+	 */
+	private JToolBar bar = new JToolBar();
+	
+	/**
+	 * the main menu
+	 */
+	MainMenu mainMenu = new MainMenu();
 
-	/** The memo panel. */
-	private MemoPanel memoPanel = null;
-
-	/** The month panel. */
-	private MonthPanel monthPanel = null;
-
-	/** The project list panel. */
-	private ProjectPanel projectListPanel = null;
-
-	/** The project tree panel. */
-	private ProjectTreePanel projectTreePanel = null;
+	/**
+	 * Set of all modules ordered by the Module ordering number
+	 */
+	private List<Module> moduleSet = new ArrayList<Module>();
 
 	/** The tabs */
 	private JTabbedPaneWithCloseIcons tabs_ = null;
-
-	/** The task list panel. */
-	private TaskFilterPanel taskListPanel = null;
-	
-	/** The task tabs. */
-	private JTabbedPane taskTabs = null;
-
-	/** The week panel. */
-	private WeekPanel wkPanel = null;
-
-	/** The year panel. */
-	private YearPanel yearPanel = null;
 
 	/**
 	 * Instantiates a new multi view.
 	 */
 	private MultiView() {
 		super();
-	
-		
+
 		// escape key closes the window
 		getLayeredPane().registerKeyboardAction(new ActionListener() {
 			public final void actionPerformed(ActionEvent e) {
@@ -149,10 +167,12 @@ public class MultiView extends View {
 		});
 
 		// create the menu bar
-		JMenuBar menubar = new MainMenu().getMenuBar();
+		JMenuBar menubar = mainMenu.getMenuBar();
 		menubar.setBorder(new BevelBorder(BevelBorder.RAISED));
 		setJMenuBar(menubar);
 		getContentPane().setLayout(new GridBagLayout());
+
+		loadModules();
 
 		// add the tool bar
 		GridBagConstraints cons = new java.awt.GridBagConstraints();
@@ -181,9 +201,43 @@ public class MultiView extends View {
 	}
 
 	/**
-	 * Adds a view as a docked tab or separate window, depending on the user options.
+	 * add a toolbar button
 	 * 
-	 * @param dp the DockableView
+	 * @param icon
+	 *            the toolbar icon
+	 * @param tooltip
+	 *            the tooltip for the button
+	 * @param action
+	 *            the action listener for the button
+	 */
+	public void addToolBarItem(Icon icon, String tooltip, ActionListener action) {
+		JButton button = new JButton(icon);
+		button.setToolTipText(tooltip);
+		button.addActionListener(action);
+		bar.add(button);
+		
+		mainMenu.addAction(icon, tooltip, action);
+	}
+	
+	/**
+	 * add a help menu item
+	 * 
+	 * @param icon
+	 *            the menu item icon
+	 * @param tooltip
+	 *            the text for the menu item
+	 * @param action
+	 *            the action listener for the menu item
+	 */
+	public void addHelpMenuItem(Icon icon, String tooltip, ActionListener action) {
+		mainMenu.addHelpMenuItem(icon, tooltip, action);
+	}
+	/**
+	 * Adds a view as a docked tab or separate window, depending on the user
+	 * options.
+	 * 
+	 * @param dp
+	 *            the DockableView
 	 */
 	public void addView(DockableView dp) {
 		String dock = Prefs.getPref(PrefName.DOCKPANELS);
@@ -191,6 +245,19 @@ public class MultiView extends View {
 			dock(dp);
 		} else
 			dp.openInFrame();
+	}
+
+	/**
+	 * close the main view. If the system tray icon is active, the program stays
+	 * running. If no system tray icon is active, the program shuts down
+	 * entirely
+	 */
+	private void closeMainwindow() {
+		if (!Borg.getReference().hasTrayIcon() && this == mainView) {
+			Borg.shutdown();
+		} else {
+			this.dispose();
+		}
 	}
 
 	/**
@@ -216,7 +283,8 @@ public class MultiView extends View {
 	/**
 	 * Dock a view as a tab
 	 * 
-	 * @param dp the DockableView
+	 * @param dp
+	 *            the DockableView
 	 */
 	public void dock(DockableView dp) {
 		tabs_.addTab(dp.getFrameTitle(), dp);
@@ -226,15 +294,25 @@ public class MultiView extends View {
 	}
 
 	/**
-	 * close the main view. If the system tray icon is active, the program stays running.
-	 * If no system tray icon is active, the program shuts down entirely
+	 * get the Module for a given ViewType
+	 * 
+	 * @param type
+	 *            the view type
+	 * @return the Module or null
 	 */
-	private void closeMainwindow() {
-		if (!Borg.getReference().hasTrayIcon() && this == mainView) {
-			Borg.shutdown();
-		} else {
-			this.dispose();
+	private Module getModuleForView(ViewType type) {
+		for (Module m : moduleSet) {
+			if ((type == ViewType.MONTH && m instanceof MonthPanel)
+					|| (type == ViewType.WEEK && m instanceof WeekPanel)
+					|| (type == ViewType.DAY && m instanceof DayPanel)
+					|| (type == ViewType.YEAR && m instanceof YearPanel)
+					|| (type == ViewType.TASK && m instanceof TaskModule)
+					|| (type == ViewType.MEMO && m instanceof MemoPanel)
+					|| (type == ViewType.SEARCH && m instanceof SearchView)) {
+				return m;
+			}
 		}
+		return null;
 	}
 
 	/**
@@ -255,103 +333,7 @@ public class MultiView extends View {
 	 * @return the tool bar
 	 */
 	private JToolBar getToolBar() {
-		JToolBar bar = new JToolBar();
 		bar.setFloatable(false);
-
-		JButton monbut = new JButton(new ImageIcon(getClass().getResource(
-				"/resource/month.jpg")));
-		monbut.setToolTipText(Resource.getResourceString("Month_View"));
-		monbut.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				setView(ViewType.MONTH);
-			}
-		});
-		bar.add(monbut);
-
-		JButton weekbut = new JButton(new ImageIcon(getClass().getResource(
-				"/resource/week.jpg")));
-		weekbut.setToolTipText(Resource.getResourceString("Week_View"));
-		weekbut.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				setView(ViewType.WEEK);
-			}
-		});
-		bar.add(weekbut);
-
-		JButton daybut = new JButton(new ImageIcon(getClass().getResource(
-				"/resource/day.jpg")));
-		daybut.setToolTipText(Resource.getResourceString("Day_View"));
-		daybut.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				setView(ViewType.DAY);
-			}
-		});
-		bar.add(daybut);
-
-		JButton yearbut = new JButton(new ImageIcon(getClass().getResource(
-				"/resource/year.jpg")));
-		yearbut.setToolTipText(Resource.getResourceString("Year_View"));
-		yearbut.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				setView(ViewType.YEAR);
-			}
-		});
-		bar.add(yearbut);
-
-		JButton addrbut = new JButton(new ImageIcon(getClass().getResource(
-				"/resource/addr16.jpg")));
-		addrbut.setToolTipText(Resource.getResourceString("Address_Book"));
-		addrbut.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				MultiView.getMainView().addView(AddrListView.getReference());
-			}
-		});
-		bar.add(addrbut);
-
-		JButton todobut = new JButton(new ImageIcon(getClass().getResource(
-				"/resource/Properties16.gif")));
-		todobut.setToolTipText(Resource.getResourceString("To_Do"));
-		todobut.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				try {
-					TodoView tg = TodoView.getReference();
-					MultiView.getMainView().addView(tg);
-				} catch (Exception e) {
-					Errmsg.errmsg(e);
-				}
-			}
-		});
-		bar.add(todobut);
-
-		JButton taskbut = new JButton(new ImageIcon(getClass().getResource(
-				"/resource/Preferences16.gif")));
-		taskbut.setToolTipText(Resource.getResourceString("tasks"));
-		taskbut.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				MultiView.getMainView().showTasks();
-			}
-		});
-		bar.add(taskbut);
-
-		JButton memobut = new JButton(new ImageIcon(getClass().getResource(
-				"/resource/Edit16.gif")));
-		memobut.setToolTipText(Resource.getResourceString("Memos"));
-		memobut.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				MultiView.getMainView().showMemos(null);
-			}
-		});
-		bar.add(memobut);
-
-		JButton srchbut = new JButton(new ImageIcon(getClass().getResource(
-				"/resource/Find16.gif")));
-		srchbut.setToolTipText(Resource.getResourceString("srch"));
-		srchbut.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				MultiView.getMainView().addView(new SearchView());
-			}
-		});
-		bar.add(srchbut);
 
 		JButton printbut = new JButton(new ImageIcon(getClass().getResource(
 				"/resource/Print16.gif")));
@@ -381,171 +363,122 @@ public class MultiView extends View {
 	/**
 	 * have the day week and month panels all show a particular day
 	 * 
-	 * @param cal the day to show
+	 * @param cal
+	 *            the day to show
 	 */
 	public void goTo(Calendar cal) {
-		if (dayPanel != null)
-			dayPanel.goTo(cal);
-		if (wkPanel != null)
-			wkPanel.goTo(cal);
-		if (monthPanel != null)
-			monthPanel.goTo(cal);
-		if (yearPanel != null)
-			yearPanel.goTo(cal);
+		for (Module m : moduleSet) {
+			// TODO - get rid of this
+			if (m instanceof MonthPanel) {
+				((MonthPanel) m).goTo(cal);
+			} else if (m instanceof DayPanel) {
+				((DayPanel) m).goTo(cal);
+			} else if (m instanceof YearPanel) {
+				((YearPanel) m).goTo(cal);
+			} else if (m instanceof WeekPanel) {
+				((WeekPanel) m).goTo(cal);
+			}
+		}
+	}
+
+	/**
+	 * load all modules
+	 */
+	public void loadModules() {
+		Calendar cal_ = new GregorianCalendar();
+		moduleSet.add(new MonthPanel(cal_.get(Calendar.MONTH), cal_
+				.get(Calendar.YEAR)));
+		moduleSet.add(new WeekPanel(cal_.get(Calendar.MONTH), cal_
+				.get(Calendar.YEAR), cal_.get(Calendar.DATE)));
+		moduleSet.add(new DayPanel(cal_.get(Calendar.MONTH), cal_
+				.get(Calendar.YEAR), cal_.get(Calendar.DATE)));
+		moduleSet.add(new YearPanel(cal_.get(Calendar.YEAR)));
+		moduleSet.add(AddrListView.getReference());
+		moduleSet.add(TodoView.getReference());
+		moduleSet.add(new TaskModule());
+		moduleSet.add(new MemoPanel());
+		moduleSet.add(new SearchView());
+		moduleSet.add(new InfoView("/resource/RELEASE_NOTES.txt", Resource
+				.getResourceString("rlsnotes")));
+		moduleSet.add(new InfoView("/resource/CHANGES.txt", Resource
+				.getResourceString("viewchglog")));
+		moduleSet.add(new InfoView("/resource/license.htm", Resource
+				.getResourceString("License")));
+
+		for (Module m : moduleSet) {
+			m.initialize(this);
+		}
 	}
 
 	/**
 	 * prints the currently selected tab if pritning is supported for that tab
 	 */
 	public void print() {
-		try {
-			Component c = getTabs().getSelectedComponent();
-			if (c instanceof MonthPanel) {
-				((MonthPanel) c).printMonths();
-			} else if (c instanceof Printable) {
-				PrintHelper.printPrintable((Printable) c);
-			} else if (c == taskListPanel) {
-				taskListPanel.print();
-			} else if (c == projectListPanel) {
-				projectListPanel.print();
-			} else if (c instanceof TodoView) {
-				TodoView.getReference().print();
+
+		Component c = getTabs().getSelectedComponent();
+		for (Module m : moduleSet) {
+			if (m.getComponent() == c)
+			{
+				m.print();
+				return;
 			}
-		} catch (Exception e) {
-			Errmsg.errmsg(e);
 		}
+		
+		if( c instanceof InfoView )
+		{
+			((InfoView)c).print();
+		}
+
 	}
 
 	/**
-	 * refresh the view based on model changes. currently does nothing for this view.
+	 * refresh the view based on model changes. currently does nothing for this
+	 * view.
 	 */
 	public void refresh() {
 		// nothing to refresh for this view
 	}
 
 	/**
-	 * Sets the currently selected tab to be a particular view as defined
-	 * in ViewType.
+	 * set the view to show the given module
 	 * 
-	 * @param type the new view
+	 * @param module
+	 *            the module
+	 */
+	public void setView(Module module) {
+		Component component = module.getComponent();
+		if (component != null) {
+			if (!component.isDisplayable()) {
+				if (component instanceof DockableView) {
+					String dock = Prefs.getPref(PrefName.DOCKPANELS);
+					DockableView dp = (DockableView) component;
+					if (dock.equals("true")) {
+						dock(dp);
+					} else {
+						dp.openInFrame();
+						return;
+					}
+				} else {
+					tabs_.addTab(module.getModuleName(), component);
+				}
+			}
+			getTabs().setSelectedComponent(component);
+		}
+	}
+
+	/**
+	 * Sets the currently selected tab to be a particular view as defined in
+	 * ViewType.
+	 * 
+	 * @param type
+	 *            the new view
 	 */
 	public void setView(ViewType type) {
-		Calendar cal_ = new GregorianCalendar();
-		if (type == ViewType.DAY) {
 
-			if (dayPanel == null)
-				dayPanel = new DayPanel(cal_.get(Calendar.MONTH), cal_
-						.get(Calendar.YEAR), cal_.get(Calendar.DATE));
-
-			if (!dayPanel.isDisplayable()) {
-				tabs_.addTab(Resource.getResourceString("Day_View"),
-						dayPanel);
-			}
-			getTabs().setSelectedComponent(dayPanel);
-		} else if (type == ViewType.WEEK) {
-			if (wkPanel == null)
-				wkPanel = new WeekPanel(cal_.get(Calendar.MONTH), cal_
-						.get(Calendar.YEAR), cal_.get(Calendar.DATE));
-
-			if (!wkPanel.isDisplayable()) {
-				tabs_.addTab(Resource.getResourceString("Week_View"),
-						wkPanel);
-			}
-			getTabs().setSelectedComponent(wkPanel);
-		} else if (type == ViewType.MONTH) {
-
-			
-				if (monthPanel == null)
-					monthPanel = new MonthPanel(cal_.get(Calendar.MONTH), cal_
-							.get(Calendar.YEAR));
-				if (!monthPanel.isDisplayable()) {
-					tabs_.addTab(Resource.getResourceString("Month_View"),
-							monthPanel);
-				}
-				getTabs().setSelectedComponent(monthPanel);
-			
-		} else if (type == ViewType.YEAR) {
-			if (yearPanel == null)
-				yearPanel = new YearPanel(cal_.get(Calendar.YEAR));
-
-			if (!yearPanel.isDisplayable()) {
-				tabs_.addTab(Resource.getResourceString("Year_View"),
-						yearPanel);
-			}
-			getTabs().setSelectedComponent(yearPanel);
+		Module m = getModuleForView(type);
+		if (m != null) {
+			setView(m);
 		}
 	}
 
-	/**
-	 * Show the memos tab
-	 * 
-	 * @param selectedMemo the selected memo
-	 */
-	public void showMemos(String selectedMemo) {
-		if (memoPanel == null)
-			memoPanel = new MemoPanel();
-
-		if (memoPanel != null && !memoPanel.isDisplayable()) {
-			tabs_.addTab(Resource.getResourceString("Memos"), memoPanel);
-		}
-		if (memoPanel != null) {
-			getTabs().setSelectedComponent(memoPanel);
-			if (selectedMemo != null)
-				memoPanel.selectMemo(selectedMemo);
-		}
-	}
-
-	/**
-	 * Show all of the task tabs
-	 */
-	public void showTasks() {
-		
-		if( taskTabs == null )
-			taskTabs = new JTabbedPane();
-		
-		if (taskListPanel == null)
-			taskListPanel = new TaskFilterPanel();
-
-		if (projectListPanel == null) {
-			projectListPanel = new ProjectPanel();
-		}
-
-		if (projectTreePanel == null) {
-			projectTreePanel = new ProjectTreePanel();
-		}
-		
-		if( !taskTabs.isDisplayable())
-			tabs_.addTab(Resource.getResourceString("tasks"), taskTabs);
-
-		if (projectTreePanel != null && !projectTreePanel.isDisplayable())
-			taskTabs.addTab(Resource.getResourceString("project_tree"),
-					projectTreePanel);
-
-		if (projectListPanel != null && !projectListPanel.isDisplayable()) {
-			taskTabs
-					.addTab(Resource.getResourceString("projects"),
-							projectListPanel);
-		}
-
-		if (taskListPanel != null && !taskListPanel.isDisplayable()) {
-			taskTabs.addTab(Resource.getResourceString("tasks"), taskListPanel);
-		}
-		
-		
-		getTabs().setSelectedComponent(taskTabs);
-
-	}
-
-	/**
-	 * have the task list show all tasks for a specific project
-	 * 
-	 * @param p the project
-	 */
-	public void showTasksForProject(Project p) {
-		showTasks();
-		taskListPanel.showTasksForProject(p);
-		taskTabs.setSelectedComponent(taskListPanel);
-	
-
-	}
 }

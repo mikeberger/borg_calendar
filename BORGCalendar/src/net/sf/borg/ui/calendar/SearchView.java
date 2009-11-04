@@ -15,6 +15,8 @@ package net.sf.borg.ui.calendar;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -27,6 +29,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
@@ -48,8 +51,11 @@ import net.sf.borg.model.entity.Link;
 import net.sf.borg.ui.DockableView;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.ResourceHelper;
+import net.sf.borg.ui.MultiView.Module;
+import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 import net.sf.borg.ui.util.StripedTable;
+import net.sf.borg.ui.util.TablePrinter;
 import net.sf.borg.ui.util.TableSorter;
 
 import com.toedter.calendar.JDateChooser;
@@ -57,7 +63,7 @@ import com.toedter.calendar.JDateChooser;
 /**
  * UI for searching appointments.
  */
-public class SearchView extends DockableView {
+public class SearchView extends DockableView implements Module {
 
 	
 	/** The matching appointments. */
@@ -603,5 +609,35 @@ public class SearchView extends DockableView {
 
 		// sort the table by date
 		tm.sortByColumn(0);
+	}
+
+	@Override
+	public JComponent getComponent() {
+		return this;
+	}
+
+	@Override
+	public String getModuleName() {
+		return Resource.getResourceString("srch");
+	}
+
+	@Override
+	public void initialize(MultiView parent) {
+		final MultiView par = parent;
+		parent.addToolBarItem(new ImageIcon(getClass().getResource(
+		"/resource/Find16.gif")), getModuleName(), new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				par.setView(ViewType.SEARCH);
+			}
+		});
+	}
+
+	@Override
+	public void print() {
+		try {
+			TablePrinter.printTable(resultsTable);
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
+		}	
 	}
 } 

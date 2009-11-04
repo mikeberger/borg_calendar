@@ -80,6 +80,8 @@ import net.sf.borg.model.entity.Task;
 import net.sf.borg.ui.DockableView;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.ResourceHelper;
+import net.sf.borg.ui.MultiView.Module;
+import net.sf.borg.ui.task.ProjectView;
 import net.sf.borg.ui.task.TaskView;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 import net.sf.borg.ui.util.PopupMenuHelper;
@@ -93,7 +95,7 @@ import com.toedter.calendar.JDateChooser;
  * Dockable window that shows a sorted list of all todos, allows the user to take action
  * on the todos, and lets the user quickly enter a new todo
  */
-public class TodoView extends DockableView implements Prefs.Listener {
+public class TodoView extends DockableView implements Prefs.Listener, Module {
 
 	/**
 	 * Adds user colors to the todo table
@@ -827,9 +829,14 @@ public class TodoView extends DockableView implements Prefs.Listener {
 			MultiView.getMainView().addView(ag);
 
 		} else if (o instanceof Project) {
-			MultiView cv = MultiView.getMainView();
-			if (cv != null)
-				cv.showTasksForProject((Project) o);
+			try {
+				ProjectView tskg = new ProjectView((Project) o, ProjectView.Action.CHANGE,
+						null);
+				tskg.setVisible(true);
+			} catch (Exception e) {
+				Errmsg.errmsg(e);
+				return;
+			}
 		} else if (o instanceof Task) {
 			try {
 				TaskView tskg = new TaskView((Task) o, TaskView.Action.CHANGE,
@@ -869,8 +876,12 @@ public class TodoView extends DockableView implements Prefs.Listener {
 	 * @throws Exception
 	 *             the exception
 	 */
-	public void print() throws Exception {
-		TablePrinter.printTable(todoTable);
+	public void print()  {
+		try {
+			TablePrinter.printTable(todoTable);
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
+		}
 	}
 
 	/**
@@ -1063,6 +1074,29 @@ public class TodoView extends DockableView implements Prefs.Listener {
 		// sort the table by date
 		tm.sortByColumn(0);
 
+	}
+
+	@Override
+	public String getModuleName() {
+		return Resource.getResourceString("To_Do");
+	}
+
+	@Override
+	public JPanel getComponent() {
+		return this;
+	}
+
+	@Override
+	public void initialize(MultiView parent) {
+		final MultiView par = parent;
+		final Module m = this;
+		parent.addToolBarItem(new ImageIcon(getClass().getResource(
+		"/resource/Properties16.gif")), getModuleName(), 
+		new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				par.setView(m);
+			}
+		});
 	}
 
 }

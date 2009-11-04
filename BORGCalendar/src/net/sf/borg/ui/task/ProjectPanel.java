@@ -512,15 +512,6 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 
 		projectTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
 
-		// show tasks when the user double clicks on a project
-		projectTable.addMouseListener(new java.awt.event.MouseAdapter() {
-			@Override
-			public void mouseClicked(java.awt.event.MouseEvent evt) {
-				if (evt.getClickCount() < 2)
-					return;
-				showChildren();
-			}
-		});
 		this.add(tableScroll, GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH, 1.0, 1.0));
 
 		/*
@@ -666,25 +657,6 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 
 	}
 
-	/**
-	 * open the task list to show the tasks of the selected project
-	 */
-	private void showChildren() {
-
-		int row = projectTable.getSelectedRow();
-		if (row == -1)
-			return;
-		
-		TableSorter tm = (TableSorter) projectTable.getModel();
-		Integer projectId = (Integer) tm.getValueAt(row, 0);
-		try {
-			Project p = TaskModel.getReference().getProject(projectId.intValue());
-			MultiView.getMainView().showTasksForProject(p);
-		} catch (Exception e) {
-			Errmsg.errmsg(e);
-		}
-
-	}
 
 
 

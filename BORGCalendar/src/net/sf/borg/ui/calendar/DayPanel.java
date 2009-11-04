@@ -27,6 +27,8 @@ import java.awt.GridBagConstraints;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Stroke;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.font.TextAttribute;
@@ -43,11 +45,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
+import net.sf.borg.common.PrintHelper;
+import net.sf.borg.common.Resource;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Day;
 import net.sf.borg.model.Model;
@@ -55,6 +60,8 @@ import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.CalendarEntity;
 import net.sf.borg.ui.NavPanel;
+import net.sf.borg.ui.MultiView;
+import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 
 
@@ -62,7 +69,7 @@ import net.sf.borg.ui.util.GridBagConstraintsFactory;
  * DayPanel is the UI for a single day.  It consists of a Navigator attached
  * to a DaySubPanel
  */
-public class DayPanel extends JPanel implements Printable {
+public class DayPanel extends JPanel implements Printable, MultiView.Module {
 	
 	/**
 	 * DaySubPanel is the Panel that shows the items for a day with a section
@@ -582,5 +589,36 @@ public class DayPanel extends JPanel implements Printable {
 	public int print(Graphics arg0, PageFormat arg1, int arg2)
 			throws PrinterException {
 		return dp_.print(arg0, arg1, arg2);
+	}
+	
+	@Override
+	public String getModuleName() {
+		return Resource.getResourceString("Day_View");
+	}
+
+	@Override
+	public JPanel getComponent() {
+		return this;
+	}
+
+	@Override
+	public void initialize(MultiView parent) {
+		final MultiView par = parent;
+		parent.addToolBarItem(new ImageIcon(getClass().getResource(
+		"/resource/day.jpg")), getModuleName(), 
+		new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				par.setView(ViewType.DAY);
+			}
+		});
+	}
+
+	@Override
+	public void print() {
+		try {
+			PrintHelper.printPrintable(this);
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
+		}
 	}
 }

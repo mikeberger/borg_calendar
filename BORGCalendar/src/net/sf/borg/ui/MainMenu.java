@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import javax.swing.Box;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
@@ -60,9 +61,6 @@ import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Task;
 import net.sf.borg.model.undo.UndoLog;
-import net.sf.borg.ui.address.AddrListView;
-import net.sf.borg.ui.calendar.SearchView;
-import net.sf.borg.ui.calendar.TodoView;
 import net.sf.borg.ui.task.TaskConfigurator;
 import net.sf.borg.ui.util.InputDialog;
 import net.sf.borg.ui.util.ScrolledDialog;
@@ -76,9 +74,7 @@ class MainMenu {
 	private JMenuItem AboutMI = new JMenuItem();
 	private JMenu ActionMenu = new JMenu();
 	private JMenuItem addCategoryMI = new JMenuItem();
-	private JMenuItem AddressMI = new JMenuItem();
 	private JMenu catmenu = new JMenu();
-	private JMenuItem chglog = new JMenuItem();
 	private JMenuItem chooseCategoriesMI = new JMenuItem();
 	private JMenuItem dbMI = new JMenuItem();
 	private JMenuItem delcatMI;
@@ -91,16 +87,12 @@ class MainMenu {
 	private JMenu impexpMenu = new JMenu();
 	private JMenuItem importMI = new JMenuItem();
 	private JMenu impXML = new JMenu();
-	private JMenuItem licsend = new JMenuItem();
 	private JMenuBar menuBar = new JMenuBar();
 	private JMenu OptionMenu = new JMenu();
 	private JMenuItem PrintMI = new JMenuItem();
 	private JMenuItem removeCategoryMI = new JMenuItem();
-	private JMenuItem rlsnotes = new JMenuItem();
-	private JMenuItem SearchMI = new JMenuItem();
 	private JMenuItem sqlMI = new JMenuItem();
 	private JMenuItem syncMI = new JMenuItem();
-	private JMenuItem ToDoMenu = new JMenuItem();
 
 	/**
 	 * constructor
@@ -113,72 +105,10 @@ class MainMenu {
 				"/resource/Application16.gif")));
 		ResourceHelper.setText(ActionMenu, "Action");
 
-		ToDoMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/Properties16.gif")));
-		ResourceHelper.setText(ToDoMenu, "To_Do");
-		ToDoMenu.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				try {
-					TodoView tg = TodoView.getReference();
-					MultiView.getMainView().addView(tg);
-				} catch (Exception e) {
-					Errmsg.errmsg(e);
-				}
-			}
-		});
-
-		ActionMenu.add(ToDoMenu);
-
-		AddressMI.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/addr16.jpg")));
-		ResourceHelper.setText(AddressMI, "Address_Book");
-		AddressMI.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				MultiView.getMainView().addView(AddrListView.getReference());
-			}
-		});
-
-		ActionMenu.add(AddressMI);
-
-		JMenuItem MemoMI = new JMenuItem();
-		MemoMI.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/Edit16.gif")));
-		ResourceHelper.setText(MemoMI, "Memos");
-		MemoMI.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				MultiView.getMainView().showMemos(null);
-			}
-		});
-
-		ActionMenu.add(MemoMI);
-
-		JMenuItem TaskMI = new JMenuItem();
-		TaskMI.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/Preferences16.gif")));
-		ResourceHelper.setText(TaskMI, "tasks");
-		TaskMI.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				MultiView.getMainView().showTasks();
-			}
-		});
-
-		ActionMenu.add(TaskMI);
-
-		SearchMI.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/Find16.gif")));
-		ResourceHelper.setText(SearchMI, "srch");
-		SearchMI.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				MultiView.getMainView().addView(new SearchView());
-			}
-		});
-
-		ActionMenu.add(SearchMI);
-
 		PrintMI.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 				"/resource/Print16.gif")));
 
-		ResourceHelper.setText(PrintMI, "Print");
+		PrintMI.setText(Resource.getResourceString("Print"));
 		PrintMI.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				MultiView.getMainView().print();
@@ -189,7 +119,7 @@ class MainMenu {
 
 		syncMI.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 				"/resource/Refresh16.gif")));
-		ResourceHelper.setText(syncMI, "Synchronize");
+		syncMI.setText(Resource.getResourceString( "Synchronize"));
 		syncMI.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				try {
@@ -227,7 +157,7 @@ class MainMenu {
 
 		exitMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 				"/resource/Stop16.gif")));
-		ResourceHelper.setText(exitMenuItem, "Exit");
+		exitMenuItem.setText(Resource.getResourceString( "Exit"));
 		exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				Borg.shutdown();
@@ -409,39 +339,6 @@ class MainMenu {
 
 		helpmenu.add(helpMI);
 
-		ResourceHelper.setText(licsend, "License");
-		licsend.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				MultiView.getMainView().addView(
-						new InfoView("/resource/license.htm", Resource
-								.getResourceString("License")));
-			}
-		});
-
-		helpmenu.add(licsend);
-
-		ResourceHelper.setText(chglog, "viewchglog");
-		chglog.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				MultiView.getMainView().addView(
-						new InfoView("/resource/CHANGES.txt", Resource
-								.getResourceString("viewchglog")));
-			}
-		});
-
-		helpmenu.add(chglog);
-
-		ResourceHelper.setText(rlsnotes, "rlsnotes");
-		rlsnotes.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				MultiView.getMainView().addView(
-						new InfoView("/resource/RELEASE_NOTES.txt", Resource
-								.getResourceString("rlsnotes")));
-			}
-		});
-
-		helpmenu.add(rlsnotes);
-
 		ResourceHelper.setText(dbMI, "DatabaseInformation");
 		dbMI.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -473,6 +370,39 @@ class MainMenu {
 		exportMI.setEnabled(true);
 
 	}
+
+	/**
+	 * Add an action to the action menu
+	 * @param icon the icon for the menu item
+	 * @param text the text for the menu item
+	 * @param action the action listener for the menu item
+	 */
+	public void addAction(Icon icon, String text, ActionListener action) {
+		JMenuItem item = new JMenuItem();
+		item.setIcon(icon);
+		item.setText(text);
+		item.addActionListener(action);
+
+		ActionMenu.insert(item, lastActionInsert++);
+	}
+	private int lastActionInsert = 0;
+
+	/**
+	 * add an item to the help menu
+	 * @param icon the icon for the menu item
+	 * @param text the menu item text
+	 * @param action the menu item action 
+	 */
+	public void addHelpMenuItem(Icon icon, String text, ActionListener action)
+	{
+		JMenuItem item = new JMenuItem();
+		item.setIcon(icon);
+		item.setText(text);
+		item.addActionListener(action);
+
+		helpmenu.add(item);
+	}
+	
 
 	/**
 	 * show the about window
@@ -672,8 +602,6 @@ class MainMenu {
 		}
 
 	}
-
-	
 
 	/**
 	 * delete category menu item
@@ -942,54 +870,46 @@ class MainMenu {
 	/** import from file */
 	private void importMIActionPerformed() {
 		try {
-			
+
 			JFileChooser chooser = new JFileChooser();
-            
-			chooser.setCurrentDirectory( new File("."));
+
+			chooser.setCurrentDirectory(new File("."));
 			chooser.setDialogTitle(Resource
 					.getResourceString("Please_choose_File_to_Import_From"));
 			chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		            
+
 			int returnVal = chooser.showOpenDialog(null);
-			if(returnVal != JFileChooser.APPROVE_OPTION)
+			if (returnVal != JFileChooser.APPROVE_OPTION)
 				return;
-		            
+
 			String fileName = chooser.getSelectedFile().getAbsolutePath();
-			BufferedReader in = new BufferedReader(new FileReader(new File(fileName)));
-			
+			BufferedReader in = new BufferedReader(new FileReader(new File(
+					fileName)));
+
 			String type = "";
-			for( int i = 0; i < 10; i++ )
-			{
+			for (int i = 0; i < 10; i++) {
 				String line = in.readLine();
-				if( line == null ) break;
-				if( line.contains("<ADDRESSES>"))
-				{
+				if (line == null)
+					break;
+				if (line.contains("<ADDRESSES>")) {
 					type = "ADDRESSES";
 					break;
-				}
-				else if( line.contains("<MEMOS>"))
-				{
+				} else if (line.contains("<MEMOS>")) {
 					type = "MEMOS";
 					break;
-				}
-				else if( line.contains("<LINKS>"))
-				{
+				} else if (line.contains("<LINKS>")) {
 					type = "LINKS";
 					break;
-				}
-				else if( line.contains("<TASKS>"))
-				{
+				} else if (line.contains("<TASKS>")) {
 					type = "TASKS";
 					break;
-				}
-				else if( line.contains("<APPTS>"))
-				{
+				} else if (line.contains("<APPTS>")) {
 					type = "APPTS";
 					break;
 				}
 			}
-			
-			in.close();	
+
+			in.close();
 
 			int ret = JOptionPane.showConfirmDialog(null, Resource
 					.getResourceString("Importing_")
@@ -1002,17 +922,13 @@ class MainMenu {
 
 			if (type.equals("ADDRESSES")) {
 				AddressModel.getReference().importXml(fileName);
-			}
-			else if (type.equals("LINKS")) {
+			} else if (type.equals("LINKS")) {
 				LinkModel.getReference().importXml(fileName);
-			}
-			else if (type.equals("MEMOS")) {
+			} else if (type.equals("MEMOS")) {
 				MemoModel.getReference().importXml(fileName);
-			}
-			else if (type.equals("TASKS")) {
+			} else if (type.equals("TASKS")) {
 				TaskModel.getReference().importXml(fileName);
-			}
-			else if (type.equals("APPTS")) {
+			} else if (type.equals("APPTS")) {
 				AppointmentModel.getReference().importXml(fileName);
 			}
 

@@ -182,7 +182,7 @@ public class ProjectView extends DockableView {
 	 *             the exception
 	 */
 	public ProjectView(Project p, Action function, Integer parentId)
-			throws Exception {
+			 {
 		super();
 		
 		// listen for task model changes
@@ -199,12 +199,14 @@ public class ProjectView extends DockableView {
 				categoryBox.addItem(it.next());
 			}
 			categoryBox.setSelectedIndex(0);
+			
+			// show the project
+			showProject(function, p, parentId);
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
 		}
 
-		// show the project
-		showProject(function, p, parentId);
+		
 
 	}
 

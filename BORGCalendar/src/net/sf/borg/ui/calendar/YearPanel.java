@@ -26,6 +26,8 @@ import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.print.PageFormat;
@@ -37,16 +39,21 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
+import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
+import net.sf.borg.common.PrintHelper;
+import net.sf.borg.common.Resource;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Day;
 import net.sf.borg.model.Model;
 import net.sf.borg.model.entity.CalendarEntity;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.NavPanel;
+import net.sf.borg.ui.MultiView.Module;
 import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 
@@ -54,7 +61,7 @@ import net.sf.borg.ui.util.GridBagConstraintsFactory;
  * YearPanel is the Year UI. It shows all days of the year and allows navigation to months, days, and weeks.
  * It gives indications of the presence of appointments, but not individual appt details
  */
-public class YearPanel extends JPanel implements Printable {
+public class YearPanel extends JPanel implements Printable, Module {
 
 	/**
 	 * YearViewSubPanel is the panel that draws the year UI
@@ -514,5 +521,36 @@ public class YearPanel extends JPanel implements Printable {
 	 */
 	public int print(Graphics arg0, PageFormat arg1, int arg2) throws PrinterException {
 		return yearPanel.print(arg0, arg1, arg2);
+	}
+	
+	@Override
+	public String getModuleName() {
+		return Resource.getResourceString("Year_View");
+	}
+
+	@Override
+	public JPanel getComponent() {
+		return this;
+	}
+
+	@Override
+	public void initialize(MultiView parent) {
+		final MultiView par = parent;
+		parent.addToolBarItem(new ImageIcon(getClass().getResource(
+		"/resource/year.jpg")), getModuleName(), 
+		new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				par.setView(ViewType.YEAR);
+			}
+		});
+	}
+	
+	@Override
+	public void print() {
+		try {
+			PrintHelper.printPrintable(this);
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
+		}
 	}
 }
