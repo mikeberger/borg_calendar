@@ -18,71 +18,185 @@
  */
 package net.sf.borg.ui;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.sql.Connection;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+
 import net.sf.borg.common.Errmsg;
+import net.sf.borg.common.IOHelper;
 import net.sf.borg.common.Resource;
+import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.db.jdbc.JdbcDB;
+import net.sf.borg.model.entity.Project;
 
 /**
  * RunReport runs jasper reports
- *
+ * 
  */
 public class RunReport {
 
 	/**
-	 * Run a jasper report
-	 * @param is the report file as an InputStream
-	 * @param parms the input parameter map for the report
+	 * create the Report Menu or return null if reports not supported
+	 * @return the Report JMenu or null
 	 */
-    @SuppressWarnings("unchecked")
-    public static void runReport(InputStream is, Map parms) {
+	public static JMenu getReportMenu() {
 
-        if (parms == null)
-            parms = new HashMap();
-        try {
-            ClassLoader cl = ClassLoader.getSystemClassLoader();
-            Class jprintclass = cl.loadClass("net.sf.jasperreports.engine.JasperPrint");
-            Class jfillclass = cl.loadClass("net.sf.jasperreports.engine.JasperFillManager");
-            Class jviewerclass = cl.loadClass("net.sf.jasperreports.view.JasperViewer");
+		try {
+			ClassLoader cl = ClassLoader.getSystemClassLoader();
+			cl.loadClass("net.sf.jasperreports.engine.JasperPrint");
+		} catch (Exception e) {
+			// silently do nothing
+			return null;
+		}
+		
+		JMenu m = new JMenu();
+		m.setText(Resource.getResourceString("reports"));
 
-            Connection conn = JdbcDB.getConnection();
-            if (conn == null) {
-                Errmsg.notice(Resource.getResourceString("no_reports"));
-                return;
-            }
+		JMenuItem prr = new JMenuItem();
+		prr.setText(Resource.getResourceString("project_report"));
+		prr.addActionListener(new ActionListener() {
 
-            Method fr = jfillclass.getMethod("fillReport", new Class[] { InputStream.class, Map.class, Connection.class });
-            Object jasperprint = fr.invoke(null, new Object[] { is, parms, conn });
-         
-            Method vr = jviewerclass.getMethod("viewReport", new Class[] { jprintclass, boolean.class });
-            vr.invoke(null, new Object[] { jasperprint, new Boolean(false) });
+			public void actionPerformed(ActionEvent arg0) {
 
-       
-        } catch (ClassNotFoundException cnf) {
-            Errmsg.notice(Resource.getResourceString("borg_jasp"));
-        } catch (NoClassDefFoundError r) {
-            Errmsg.notice(Resource.getResourceString("borg_jasp"));
-        } catch (Exception e) {
-            Errmsg.errmsg(e);
-        }
-    }
+				try {
+					Project p = EntitySelector.selectProject();
+					if (p == null)
+						return;
+					Map<String, Integer> map = new HashMap<String, Integer>();
+					map.put("pid", p.getKey());
+					Collection<?> allChildren = TaskModel.getReference()
+							.getAllSubProjects(p.getKey());
+					Iterator<?> it = allChildren.iterator();
+					for (int i = 2; i <= 10; i++) {
+						if (!it.hasNext())
+							break;
+						Project sp = (Project) it.next();
+						map.put("pid" + i, sp.getKey());
+					}
+					RunReport.runReport("proj", map);
+				} catch (NoClassDefFoundError r) {
+					Errmsg.notice(Resource.getResourceString("borg_jasp"));
+				} catch (Exception e) {
+					Errmsg.errmsg(e);
+				}
 
-    /**
-     * Run a jasper report by name. The report definition file needs to be present in the borg jar
-     * with name = /reports/<name>.jasper
-     * @param name the report name
-     * @param parms the input parameter map
-     */
-    @SuppressWarnings("unchecked")
-    public static void runReport(String name, Map parms) {
-        String resourcePath = "/reports/" + name + ".jasper";
-        InputStream is = RunReport.class.getResourceAsStream(resourcePath);
-        runReport(is, parms);
-    }
+			}
+
+		});
+		m.add(prr);
+
+		JMenuItem otr = new JMenuItem();
+		otr.setText(Resource.getResourceString("open_tasks"));
+		otr.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent arg0) {
+				RunReport.runReport("open_tasks", null);
+			}
+
+		});
+		m.add(otr);
+
+		JMenuItem otpr = new JMenuItem();
+		otpr.setText(Resource.getResourceString("open_tasks_proj"));
+		otpr.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent arg0) {
+				RunReport.runReport("opentasksproj", null);
+			}
+
+		});
+		m.add(otpr);
+
+		JMenuItem customrpt = new JMenuItem();
+		customrpt.setText(Resource.getResourceString("select_rpt"));
+		customrpt.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					InputStream is = IOHelper.fileOpen(".", Resource
+							.getResourceString("select_rpt"));
+					if (is == null)
+						return;
+					RunReport.runReport(is, null);
+				} catch (Exception e) {
+					Errmsg.errmsg(e);
+				}
+			}
+
+		});
+		m.add(customrpt);
+		return m;
+	}
+
+	/**
+	 * Run a jasper report
+	 * 
+	 * @param is
+	 *            the report file as an InputStream
+	 * @param parms
+	 *            the input parameter map for the report
+	 */
+	@SuppressWarnings("unchecked")
+	public static void runReport(InputStream is, Map parms) {
+
+		if (parms == null)
+			parms = new HashMap();
+		try {
+			ClassLoader cl = ClassLoader.getSystemClassLoader();
+			Class jprintclass = cl
+					.loadClass("net.sf.jasperreports.engine.JasperPrint");
+			Class jfillclass = cl
+					.loadClass("net.sf.jasperreports.engine.JasperFillManager");
+			Class jviewerclass = cl
+					.loadClass("net.sf.jasperreports.view.JasperViewer");
+
+			Connection conn = JdbcDB.getConnection();
+			if (conn == null) {
+				Errmsg.notice(Resource.getResourceString("no_reports"));
+				return;
+			}
+
+			Method fr = jfillclass.getMethod("fillReport", new Class[] {
+					InputStream.class, Map.class, Connection.class });
+			Object jasperprint = fr.invoke(null,
+					new Object[] { is, parms, conn });
+
+			Method vr = jviewerclass.getMethod("viewReport", new Class[] {
+					jprintclass, boolean.class });
+			vr.invoke(null, new Object[] { jasperprint, new Boolean(false) });
+
+		} catch (ClassNotFoundException cnf) {
+			Errmsg.notice(Resource.getResourceString("borg_jasp"));
+		} catch (NoClassDefFoundError r) {
+			Errmsg.notice(Resource.getResourceString("borg_jasp"));
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
+		}
+	}
+
+	/**
+	 * Run a jasper report by name. The report definition file needs to be
+	 * present in the borg jar with name = /reports/<name>.jasper
+	 * 
+	 * @param name
+	 *            the report name
+	 * @param parms
+	 *            the input parameter map
+	 */
+	@SuppressWarnings("unchecked")
+	public static void runReport(String name, Map parms) {
+		String resourcePath = "/reports/" + name + ".jasper";
+		InputStream is = RunReport.class.getResourceAsStream(resourcePath);
+		runReport(is, parms);
+	}
 
 }

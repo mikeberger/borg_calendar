@@ -28,9 +28,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Properties;
 
 import javax.swing.Box;
@@ -58,7 +56,6 @@ import net.sf.borg.model.MemoModel;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.db.jdbc.JdbcDB;
 import net.sf.borg.model.entity.Appointment;
-import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Task;
 import net.sf.borg.model.undo.UndoLog;
 import net.sf.borg.ui.task.TaskConfigurator;
@@ -297,7 +294,9 @@ class MainMenu {
 
 		menuBar.add(getUndoMenu());
 
-		menuBar.add(getReportMenu());
+		JMenu reportMenu = RunReport.getReportMenu();
+		if( reportMenu != null )
+			menuBar.add(reportMenu);
 		menuBar.add(Box.createHorizontalGlue());
 
 		helpmenu.setIcon(new javax.swing.ImageIcon(getClass().getResource(
@@ -667,85 +666,7 @@ class MainMenu {
 	}
 
 	/** report menu */
-	private JMenu getReportMenu() {
-		JMenu m = new JMenu();
-		m.setText(Resource.getResourceString("reports"));
-
-		JMenuItem prr = new JMenuItem();
-		prr.setText(Resource.getResourceString("project_report"));
-		prr.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent arg0) {
-
-				try {
-					Project p = EntitySelector.selectProject();
-					if (p == null)
-						return;
-					Map<String, Integer> map = new HashMap<String, Integer>();
-					map.put("pid", p.getKey());
-					Collection<?> allChildren = TaskModel.getReference()
-							.getAllSubProjects(p.getKey());
-					Iterator<?> it = allChildren.iterator();
-					for (int i = 2; i <= 10; i++) {
-						if (!it.hasNext())
-							break;
-						Project sp = (Project) it.next();
-						map.put("pid" + i, sp.getKey());
-					}
-					RunReport.runReport("proj", map);
-				} catch (NoClassDefFoundError r) {
-					Errmsg.notice(Resource.getResourceString("borg_jasp"));
-				} catch (Exception e) {
-					Errmsg.errmsg(e);
-				}
-
-			}
-
-		});
-		m.add(prr);
-
-		JMenuItem otr = new JMenuItem();
-		otr.setText(Resource.getResourceString("open_tasks"));
-		otr.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent arg0) {
-				RunReport.runReport("open_tasks", null);
-			}
-
-		});
-		m.add(otr);
-
-		JMenuItem otpr = new JMenuItem();
-		otpr.setText(Resource.getResourceString("open_tasks_proj"));
-		otpr.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent arg0) {
-				RunReport.runReport("opentasksproj", null);
-			}
-
-		});
-		m.add(otpr);
-
-		JMenuItem customrpt = new JMenuItem();
-		customrpt.setText(Resource.getResourceString("select_rpt"));
-		customrpt.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent arg0) {
-				try {
-					InputStream is = IOHelper.fileOpen(".", Resource
-							.getResourceString("select_rpt"));
-					if (is == null)
-						return;
-					RunReport.runReport(is, null);
-				} catch (Exception e) {
-					Errmsg.errmsg(e);
-				}
-			}
-
-		});
-		m.add(customrpt);
-		return m;
-	}
+	
 
 	/** undo menu */
 	private JMenu getUndoMenu() {
