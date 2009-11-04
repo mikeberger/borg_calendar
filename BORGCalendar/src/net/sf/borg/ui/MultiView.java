@@ -61,7 +61,10 @@ import net.sf.borg.ui.util.JTabbedPaneWithCloseIcons;
 public class MultiView extends View {
 
 	/**
-	 * interface implemented by all UI Modules
+	 * interface implemented by all UI Modules. The MultiView manages a set of
+	 * UI Modules. Each Module is responsible for providing a component to show
+	 * in a multiview tab, responding to print requests, and requesting its own
+	 * toolbar and manu items
 	 * 
 	 */
 	public static interface Module {
@@ -96,6 +99,20 @@ public class MultiView extends View {
 		public void initialize(MultiView parent);
 	}
 
+	/**
+	 * Interface implemented by Calendar Modules that act as modules but also
+	 * react to requests to change the shown date
+	 * 
+	 */
+	public static interface CalendarModule extends Module {
+		/**
+		 * update the module to show a particular date
+		 * 
+		 * @param cal
+		 */
+		public void goTo(Calendar cal);
+	}
+
 	/** argument values for setView() */
 	public enum ViewType {
 		DAY, MONTH, WEEK, YEAR, TASK, MEMO, SEARCH;
@@ -121,7 +138,7 @@ public class MultiView extends View {
 	 * toolbar
 	 */
 	private JToolBar bar = new JToolBar();
-	
+
 	/**
 	 * the main menu
 	 */
@@ -174,6 +191,22 @@ public class MultiView extends View {
 
 		loadModules();
 
+		mainMenu.addAction(new ImageIcon(getClass().getResource(
+				"/resource/Print16.gif")), Resource.getResourceString("Print"),
+				new ActionListener() {
+					public void actionPerformed(ActionEvent evt) {
+						print();
+					}
+				});
+		
+		mainMenu.addAction(new ImageIcon(getClass().getResource(
+		"/resource/Delete16.gif")), Resource.getResourceString("close_tabs"),
+		new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				closeTabs();
+			}
+		});
+
 		// add the tool bar
 		GridBagConstraints cons = new java.awt.GridBagConstraints();
 		cons.gridx = 0;
@@ -215,10 +248,10 @@ public class MultiView extends View {
 		button.setToolTipText(tooltip);
 		button.addActionListener(action);
 		bar.add(button);
-		
+
 		mainMenu.addAction(icon, tooltip, action);
 	}
-	
+
 	/**
 	 * add a help menu item
 	 * 
@@ -232,6 +265,7 @@ public class MultiView extends View {
 	public void addHelpMenuItem(Icon icon, String tooltip, ActionListener action) {
 		mainMenu.addHelpMenuItem(icon, tooltip, action);
 	}
+
 	/**
 	 * Adds a view as a docked tab or separate window, depending on the user
 	 * options.
@@ -294,7 +328,8 @@ public class MultiView extends View {
 	}
 
 	/**
-	 * get the Module for a given ViewType
+	 * get the Module for a given ViewType. called by ui components other than
+	 * the module in question that want to request a particular view
 	 * 
 	 * @param type
 	 *            the view type
@@ -361,23 +396,15 @@ public class MultiView extends View {
 	}
 
 	/**
-	 * have the day week and month panels all show a particular day
+	 * have the Calendar Modules show a particular day
 	 * 
 	 * @param cal
 	 *            the day to show
 	 */
 	public void goTo(Calendar cal) {
 		for (Module m : moduleSet) {
-			// TODO - get rid of this
-			if (m instanceof MonthPanel) {
-				((MonthPanel) m).goTo(cal);
-			} else if (m instanceof DayPanel) {
-				((DayPanel) m).goTo(cal);
-			} else if (m instanceof YearPanel) {
-				((YearPanel) m).goTo(cal);
-			} else if (m instanceof WeekPanel) {
-				((WeekPanel) m).goTo(cal);
-			}
+			if (m instanceof CalendarModule)
+				((CalendarModule) m).goTo(cal);
 		}
 	}
 
@@ -417,16 +444,10 @@ public class MultiView extends View {
 
 		Component c = getTabs().getSelectedComponent();
 		for (Module m : moduleSet) {
-			if (m.getComponent() == c)
-			{
+			if (m.getComponent() == c) {
 				m.print();
 				return;
 			}
-		}
-		
-		if( c instanceof InfoView )
-		{
-			((InfoView)c).print();
 		}
 
 	}

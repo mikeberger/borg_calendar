@@ -53,6 +53,7 @@ import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.CalendarEntity;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.NavPanel;
+import net.sf.borg.ui.MultiView.CalendarModule;
 import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 
@@ -61,7 +62,7 @@ import net.sf.borg.ui.util.GridBagConstraintsFactory;
  * for printing a monthly calendar as borg has a more specialized month printing
  * class.
  */
-public class MonthPanel extends JPanel implements Printable, MultiView.Module {
+public class MonthPanel extends JPanel implements Printable, CalendarModule {
 
 	/**
 	 * MonthViewSubPanel draws a month and provides the UI container for the

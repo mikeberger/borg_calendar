@@ -89,7 +89,6 @@ class MainMenu {
 	private JMenu impXML = new JMenu();
 	private JMenuBar menuBar = new JMenuBar();
 	private JMenu OptionMenu = new JMenu();
-	private JMenuItem PrintMI = new JMenuItem();
 	private JMenuItem removeCategoryMI = new JMenuItem();
 	private JMenuItem sqlMI = new JMenuItem();
 	private JMenuItem syncMI = new JMenuItem();
@@ -105,17 +104,7 @@ class MainMenu {
 				"/resource/Application16.gif")));
 		ResourceHelper.setText(ActionMenu, "Action");
 
-		PrintMI.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/Print16.gif")));
-
-		PrintMI.setText(Resource.getResourceString("Print"));
-		PrintMI.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				MultiView.getMainView().print();
-			}
-		});
-
-		ActionMenu.add(PrintMI);
+		
 
 		syncMI.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 				"/resource/Refresh16.gif")));
@@ -142,18 +131,6 @@ class MainMenu {
 		});
 
 		ActionMenu.add(sqlMI);
-
-		JMenuItem closeTabMI = new JMenuItem();
-		closeTabMI.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/Delete16.gif")));
-		ResourceHelper.setText(closeTabMI, "close_tabs");
-		closeTabMI.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				MultiView.getMainView().closeTabs();
-			}
-		});
-
-		ActionMenu.add(closeTabMI);
 
 		exitMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 				"/resource/Stop16.gif")));

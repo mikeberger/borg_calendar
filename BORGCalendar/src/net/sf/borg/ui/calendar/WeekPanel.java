@@ -63,6 +63,7 @@ import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.CalendarEntity;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.NavPanel;
+import net.sf.borg.ui.MultiView.CalendarModule;
 import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 
@@ -70,7 +71,7 @@ import net.sf.borg.ui.util.GridBagConstraintsFactory;
  * WeekPanel is the UI for a single week. It consists of a Navigator attached to
  * a WeekSubPanel
  */
-public class WeekPanel extends JPanel implements Printable, MultiView.Module {
+public class WeekPanel extends JPanel implements Printable, CalendarModule {
 
 	/**
 	 * WeekSubPanel is the Panel that shows the items for a week with a section

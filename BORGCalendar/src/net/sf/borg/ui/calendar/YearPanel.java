@@ -53,7 +53,7 @@ import net.sf.borg.model.Model;
 import net.sf.borg.model.entity.CalendarEntity;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.NavPanel;
-import net.sf.borg.ui.MultiView.Module;
+import net.sf.borg.ui.MultiView.CalendarModule;
 import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 
@@ -61,7 +61,7 @@ import net.sf.borg.ui.util.GridBagConstraintsFactory;
  * YearPanel is the Year UI. It shows all days of the year and allows navigation to months, days, and weeks.
  * It gives indications of the presence of appointments, but not individual appt details
  */
-public class YearPanel extends JPanel implements Printable, Module {
+public class YearPanel extends JPanel implements Printable, CalendarModule {
 
 	/**
 	 * YearViewSubPanel is the panel that draws the year UI
