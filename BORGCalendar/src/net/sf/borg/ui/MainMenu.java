@@ -62,33 +62,17 @@ import net.sf.borg.ui.task.TaskConfigurator;
 import net.sf.borg.ui.util.InputDialog;
 import net.sf.borg.ui.util.ScrolledDialog;
 
-// TODO - javadoc not really done
+// TODO - javadoc not really done, still contains way too much logic
 /**
  * The borg main menu bar
  * 
  */
 class MainMenu {
-	private JMenuItem AboutMI = new JMenuItem();
-	private JMenu ActionMenu = new JMenu();
-	private JMenuItem addCategoryMI = new JMenuItem();
-	private JMenu catmenu = new JMenu();
-	private JMenuItem chooseCategoriesMI = new JMenuItem();
-	private JMenuItem dbMI = new JMenuItem();
+	
+	private JMenu actionMenu = new JMenu();
 	private JMenuItem delcatMI;
-	private JMenuItem editPrefsMenuItem = new JMenuItem();
-	private JMenuItem exitMenuItem = new JMenuItem();
-	private JMenuItem exportMI = new JMenuItem();
-	private JMenu expXML = new JMenu();
 	private JMenu helpmenu = new JMenu();
-	private JMenuItem helpMI = new JMenuItem();
-	private JMenu impexpMenu = new JMenu();
-	private JMenuItem importMI = new JMenuItem();
-	private JMenu impXML = new JMenu();
 	private JMenuBar menuBar = new JMenuBar();
-	private JMenu OptionMenu = new JMenu();
-	private JMenuItem removeCategoryMI = new JMenuItem();
-	private JMenuItem sqlMI = new JMenuItem();
-	private JMenuItem syncMI = new JMenuItem();
 
 	/**
 	 * constructor
@@ -97,15 +81,21 @@ class MainMenu {
 
 		menuBar.setBorder(new javax.swing.border.BevelBorder(
 				javax.swing.border.BevelBorder.RAISED));
-		ActionMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource(
+		actionMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 				"/resource/Application16.gif")));
-		ResourceHelper.setText(ActionMenu, "Action");
-
 		
+		/*
+		 * 
+		 * Action Menu - will contain static items below and other actions inserted by UI Modules
+		 * UI Module actions will be inserted above the items below
+		 * 
+		 */
+		ResourceHelper.setText(actionMenu, "Action");
 
+		JMenuItem syncMI = new JMenuItem();
 		syncMI.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 				"/resource/Refresh16.gif")));
-		syncMI.setText(Resource.getResourceString( "Synchronize"));
+		syncMI.setText(Resource.getResourceString("Synchronize"));
 		syncMI.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				try {
@@ -115,9 +105,9 @@ class MainMenu {
 				}
 			}
 		});
+		actionMenu.add(syncMI);
 
-		ActionMenu.add(syncMI);
-
+		JMenuItem sqlMI = new JMenuItem();
 		sqlMI.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 				"/resource/Refresh16.gif")));
 		ResourceHelper.setText(sqlMI, "RunSQL");
@@ -126,26 +116,34 @@ class MainMenu {
 				new SqlRunner().setVisible(true);
 			}
 		});
+		actionMenu.add(sqlMI);
 
-		ActionMenu.add(sqlMI);
-
+		JMenuItem exitMenuItem = new JMenuItem();
 		exitMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 				"/resource/Stop16.gif")));
-		exitMenuItem.setText(Resource.getResourceString( "Exit"));
+		exitMenuItem.setText(Resource.getResourceString("Exit"));
 		exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				Borg.shutdown();
 			}
 		});
+		actionMenu.add(exitMenuItem);
 
-		ActionMenu.add(exitMenuItem);
+		menuBar.add(actionMenu);
 
-		menuBar.add(ActionMenu);
+		/*
+		 * 
+		 * Option Menu
+		 * 
+		 * 
+		 */
+		JMenu OptionMenu = new JMenu();
 
 		OptionMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 				"/resource/Preferences16.gif")));
 		ResourceHelper.setText(OptionMenu, "Options");
 
+		JMenuItem editPrefsMenuItem = new JMenuItem();
 		ResourceHelper.setText(editPrefsMenuItem, "ep");
 		editPrefsMenuItem
 				.addActionListener(new java.awt.event.ActionListener() {
@@ -166,17 +164,20 @@ class MainMenu {
 		});
 		OptionMenu.add(exportPrefsMI);
 
-		JMenuItem mportPrefsMI = new JMenuItem();
-		mportPrefsMI.setIcon(new javax.swing.ImageIcon(getClass().getResource(
+		JMenuItem importPrefsMI = new JMenuItem();
+		importPrefsMI.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 				"/resource/Import16.gif")));
-		ResourceHelper.setText(mportPrefsMI, "import_prefs");
-		mportPrefsMI.addActionListener(new java.awt.event.ActionListener() {
+		ResourceHelper.setText(importPrefsMI, "import_prefs");
+		importPrefsMI.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				impPrefs();
 			}
 		});
-		OptionMenu.add(mportPrefsMI);
+		OptionMenu.add(importPrefsMI);
 
+		/*
+		 * Task State Options Sub Menu
+		 */
 		JMenu tsm = new JMenu(Resource.getResourceString("task_state_options"));
 		JMenuItem edittypes = new JMenuItem();
 		JMenuItem resetst = new JMenuItem();
@@ -204,9 +205,18 @@ class MainMenu {
 		OptionMenu.add(tsm);
 		menuBar.add(OptionMenu);
 
+		/*
+		 * 
+		 * Categories Menu
+		 * 
+		 */
+		JMenu catmenu = new JMenu();
+
 		catmenu.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 				"/resource/Preferences16.gif")));
 		ResourceHelper.setText(catmenu, "Categories");
+
+		JMenuItem chooseCategoriesMI = new JMenuItem();
 		chooseCategoriesMI.setIcon(new javax.swing.ImageIcon(getClass()
 				.getResource("/resource/Preferences16.gif")));
 		ResourceHelper.setText(chooseCategoriesMI, "choosecat");
@@ -217,9 +227,9 @@ class MainMenu {
 						CategoryChooser.getReference().setVisible(true);
 					}
 				});
-
 		catmenu.add(chooseCategoriesMI);
 
+		JMenuItem addCategoryMI = new JMenuItem();
 		addCategoryMI.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 				"/resource/Add16.gif")));
 		ResourceHelper.setText(addCategoryMI, "addcat");
@@ -237,9 +247,9 @@ class MainMenu {
 				}
 			}
 		});
-
 		catmenu.add(addCategoryMI);
 
+		JMenuItem removeCategoryMI = new JMenuItem();
 		removeCategoryMI.setIcon(new javax.swing.ImageIcon(getClass()
 				.getResource("/resource/Delete16.gif")));
 		ResourceHelper.setText(removeCategoryMI, "remcat");
@@ -252,56 +262,82 @@ class MainMenu {
 				}
 			}
 		});
-
 		catmenu.add(removeCategoryMI);
+
+		catmenu.add(getDelcatMI());
 
 		menuBar.add(catmenu);
 
+		/* 
+		 * 
+		 * Import/Export Menu
+		 * 
+		 */
+		JMenu impexpMenu = new JMenu();
 		impexpMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 				"/resource/Export16.gif")));
 		ResourceHelper.setText(impexpMenu, "impexpMenu");
-		impXML.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/Import16.gif")));
-		ResourceHelper.setText(impXML, "impXML");
+
+		JMenuItem importMI = new JMenuItem();
 		ResourceHelper.setText(importMI, "impmenu");
 		importMI.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				importMIActionPerformed();
 			}
 		});
+		importMI.setIcon(new javax.swing.ImageIcon(getClass().getResource(
+				"/resource/Import16.gif")));
+		ResourceHelper.setText(importMI, "impXML");
+		impexpMenu.add(importMI);
 
-		impXML.add(importMI);
-
-		impexpMenu.add(impXML);
-
-		expXML.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/Export16.gif")));
-		ResourceHelper.setText(expXML, "expXML");
+		
+		JMenuItem exportMI = new JMenuItem();
 		ResourceHelper.setText(exportMI, "expmenu");
 		exportMI.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				exportMIActionPerformed();
 			}
 		});
-
-		expXML.add(exportMI);
-
-		impexpMenu.add(expXML);
+		exportMI.setIcon(new javax.swing.ImageIcon(getClass().getResource(
+		"/resource/Export16.gif")));
+		ResourceHelper.setText(exportMI, "expXML");
+		impexpMenu.add(exportMI);
 
 		menuBar.add(impexpMenu);
 
-		String dbtype = Prefs.getPref(PrefName.DBTYPE);
 
+		/*
+		 * 
+		 * Undo Menu
+		 * 
+		 */
 		menuBar.add(getUndoMenu());
 
+		/*
+		 * 
+		 * Reports Menu - optional
+		 * 
+		 */
 		JMenu reportMenu = RunReport.getReportMenu();
-		if( reportMenu != null )
+		if (reportMenu != null)
 			menuBar.add(reportMenu);
+		
+		/*
+		 * spacing
+		 */
 		menuBar.add(Box.createHorizontalGlue());
 
+		/*
+		 * 
+		 * Help Menu
+		 * 
+		 * 
+		 */
 		helpmenu.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 				"/resource/Help16.gif")));
 		ResourceHelper.setText(helpmenu, "Help");
+
+		JMenuItem helpMI = new JMenuItem();
 		ResourceHelper.setText(helpMI, "Help");
 		helpMI.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -312,46 +348,46 @@ class MainMenu {
 				}
 			}
 		});
-
 		helpmenu.add(helpMI);
 
+		JMenuItem dbMI = new JMenuItem();
 		ResourceHelper.setText(dbMI, "DatabaseInformation");
 		dbMI.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				dbMIActionPerformed();
 			}
 		});
-
 		helpmenu.add(dbMI);
 
+		JMenuItem AboutMI = new JMenuItem();
 		ResourceHelper.setText(AboutMI, "About");
 		AboutMI.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				AboutMIActionPerformed();
 			}
 		});
-
 		helpmenu.add(AboutMI);
 
 		menuBar.add(helpmenu);
-		catmenu.add(getDelcatMI());
 
+		String dbtype = Prefs.getPref(PrefName.DBTYPE);
 		if (dbtype.equals("mysql") || dbtype.equals("jdbc")) {
 			syncMI.setEnabled(true);
 		} else {
 			syncMI.setEnabled(false);
 		}
 
-		importMI.setEnabled(true);
-		exportMI.setEnabled(true);
-
 	}
 
 	/**
 	 * Add an action to the action menu
-	 * @param icon the icon for the menu item
-	 * @param text the text for the menu item
-	 * @param action the action listener for the menu item
+	 * 
+	 * @param icon
+	 *            the icon for the menu item
+	 * @param text
+	 *            the text for the menu item
+	 * @param action
+	 *            the action listener for the menu item
 	 */
 	public void addAction(Icon icon, String text, ActionListener action) {
 		JMenuItem item = new JMenuItem();
@@ -359,18 +395,22 @@ class MainMenu {
 		item.setText(text);
 		item.addActionListener(action);
 
-		ActionMenu.insert(item, lastActionInsert++);
+		actionMenu.insert(item, lastActionInsert++);
 	}
+
 	private int lastActionInsert = 0;
 
 	/**
 	 * add an item to the help menu
-	 * @param icon the icon for the menu item
-	 * @param text the menu item text
-	 * @param action the menu item action 
+	 * 
+	 * @param icon
+	 *            the icon for the menu item
+	 * @param text
+	 *            the menu item text
+	 * @param action
+	 *            the menu item action
 	 */
-	public void addHelpMenuItem(Icon icon, String text, ActionListener action)
-	{
+	public void addHelpMenuItem(Icon icon, String text, ActionListener action) {
 		JMenuItem item = new JMenuItem();
 		item.setIcon(icon);
 		item.setText(text);
@@ -378,7 +418,6 @@ class MainMenu {
 
 		helpmenu.add(item);
 	}
-	
 
 	/**
 	 * show the about window
@@ -666,7 +705,6 @@ class MainMenu {
 	}
 
 	/** report menu */
-	
 
 	/** undo menu */
 	private JMenu getUndoMenu() {
