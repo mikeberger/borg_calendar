@@ -36,16 +36,28 @@ import net.sf.borg.model.entity.Memo;
 public class MemoJdbcDB extends JdbcDB implements MemoDB {
 
 
+	public MemoJdbcDB()
+	{
+		super();
+		new JdbcDBUpgrader("select encrypted from memos",
+				"alter table memos add column encrypted char(1) default null").upgrade();
+	}
+	
+	
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.db.MemoDB#addMemo(net.sf.borg.model.entity.Memo)
 	 */
 	public void addMemo(Memo m) throws Exception {
 		PreparedStatement stmt = connection_
-				.prepareStatement("INSERT INTO memos ( memoname, memotext ) "
-						+ " VALUES " + "( ?, ? )");
+				.prepareStatement("INSERT INTO memos ( memoname, memotext, encrypted ) "
+						+ " VALUES " + "( ?, ?, ? )");
 
 		stmt.setString(1, m.getMemoName());
 		stmt.setString(2, m.getMemoText());
+		if( m.isEncrypted())
+			stmt.setString(3, "Y");
+		else
+			stmt.setString(3, "N");
 
 		stmt.executeUpdate();
 
@@ -103,6 +115,9 @@ public class MemoJdbcDB extends JdbcDB implements MemoDB {
 
 		m.setMemoName(r.getString("memoname"));
 		m.setMemoText(r.getString("memotext"));
+		String enc = r.getString("encrypted");
+		if( enc != null && enc.equals("Y"))
+			m.setEncrypted(true);
 
 		return m;
 	}
@@ -159,11 +174,16 @@ public class MemoJdbcDB extends JdbcDB implements MemoDB {
 	public void updateMemo(Memo m) throws Exception {
 
 		PreparedStatement stmt = connection_.prepareStatement("UPDATE memos SET "
-				+ "memotext = ?"
+				+ " memotext = ?,"
+				+ " encrypted = ?"
 				+ " WHERE memoname = ?");
 
 		stmt.setString(1, m.getMemoText());
-		stmt.setString(2, m.getMemoName());
+		if( m.isEncrypted())
+			stmt.setString(2, "Y");
+		else
+			stmt.setString(2,"N");
+		stmt.setString(3, m.getMemoName());
 
 		stmt.executeUpdate();
 

@@ -398,5 +398,12 @@ public class PrefName {
 	/** show subtasks on gantt chart */
 	static public PrefName GANTT_SHOW_SUBTASKS = new PrefName(
 			"gantt_show_subtasks", "true");
+	
+	/** keystore location */
+	static public PrefName KEYSTORE = new PrefName("key_store", "");
+	
+	/** encryption key alias in the keystore */
+	static public PrefName KEYALIAS = new PrefName("key_alias", "borg_key");
+	
 
 }

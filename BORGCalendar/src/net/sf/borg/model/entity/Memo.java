@@ -24,6 +24,10 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import net.sf.borg.common.EncryptionHelper;
+import net.sf.borg.common.PrefName;
+import net.sf.borg.common.Prefs;
+
 
 
 /**
@@ -32,7 +36,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement(name="Memo")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Memo extends KeyedEntity<Memo> implements java.io.Serializable {
+public class Memo extends EncryptableEntity<Memo> implements java.io.Serializable {
 
 	
 	private static final long serialVersionUID = -6793670294661709573L;
@@ -70,6 +74,7 @@ public class Memo extends KeyedEntity<Memo> implements java.io.Serializable {
 	 * @param xx the new memo text
 	 */
 	public void setMemoText( String xx ){ MemoText = xx; }
+	
 	
 	/** The creation date. */
 	private Date Created;
@@ -121,9 +126,35 @@ public class Memo extends KeyedEntity<Memo> implements java.io.Serializable {
 		dst.setKey( getKey());
 		dst.setMemoName( getMemoName() );
 		dst.setMemoText( getMemoText() );
+		dst.setEncrypted(isEncrypted());
 		dst.setCreated(getCreated());
 		dst.setUpdated(getUpdated());
 		return(dst);
+	}
+
+	@Override
+	public void decrypt(String password) throws Exception {
+		if( !isEncrypted() )
+			return;
+		
+		/* decrypt the memo text field */
+		EncryptionHelper helper = new EncryptionHelper(Prefs.getPref(PrefName.KEYSTORE), password);
+		String clearText = helper.decrypt(this.getMemoText(), Prefs.getPref(PrefName.KEYALIAS), password);
+		this.setMemoText(clearText);
+		this.setEncrypted(false);
+	}
+
+	@Override
+	public void encrypt(String password) throws Exception {
+		if( isEncrypted() )
+			return;
+		
+		/* encrypt the memo text field */
+		EncryptionHelper helper = new EncryptionHelper(Prefs.getPref(PrefName.KEYSTORE), password);
+		String cipherText = helper.encrypt(this.getMemoText(), Prefs.getPref(PrefName.KEYALIAS), password);
+		this.setMemoText(cipherText);
+		this.setEncrypted(true);
+		
 	}
 	
 }

@@ -33,10 +33,12 @@ import java.util.Iterator;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
@@ -61,8 +63,8 @@ import net.sf.borg.ui.util.StripedTable;
 import net.sf.borg.ui.util.TableSorter;
 
 /**
- * UI for editing memos. It has a table that shows all memos by name and an editing panel
- * for editing memo text.
+ * UI for editing memos. It has a table that shows all memos by name and an
+ * editing panel for editing memo text.
  */
 public class MemoPanel extends JPanel implements ListSelectionListener,
 		Model.Listener, Module {
@@ -88,21 +90,30 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 
 	/** The save button. */
 	private JButton saveButton = null;
+	
+	/** decrypt button */
+	private JButton decryptButton = null;
+
+	/**
+	 * encryption checkbox
+	 */
+	JCheckBox encryptBox = null;
 
 	/**
 	 * constructor.
 	 */
 	public MemoPanel() {
 		super();
-		
+
 		// initialize UI
 		initialize();
 
 		memoText.setEditable(false);
 		saveButton.setEnabled(false);
-		
+		decryptButton.setEnabled(false);
+
 		refresh();
-		
+
 		// listen for memo model changes
 		MemoModel.getReference().addListener(this);
 
@@ -126,7 +137,7 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 		}
 
 	}
-	
+
 	/**
 	 * Gets the selected memo name.
 	 * 
@@ -145,7 +156,7 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 
 	/**
 	 * This method initializes the UI.
-	 * 	 
+	 * 
 	 * */
 	private void initialize() {
 
@@ -161,12 +172,12 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 		memoListScroll
 				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		memoListScroll.setPreferredSize(new Dimension(100, 423));
-		
+
 		memoListTable = new StripedTable();
 		memoListTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		memoListTable.setShowGrid(true);
 		memoListScroll.setViewportView(memoListTable);
-		
+
 		// table will contain only memo names
 		memoListTable.setModel(new TableSorter(new String[] { Resource
 				.getResourceString("Memo_Name") },
@@ -177,12 +188,13 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 		memoSplitPane.setLeftComponent(memoListScroll);
 		JScrollPane memoTextScroll = new JScrollPane();
 		memoTextScroll.setPreferredSize(new Dimension(400, 400));
-		
+
 		memoText = new JTextArea();
 		memoText.setLineWrap(true);
 		memoText.setWrapStyleWord(true);
-		
-		// if the memo text is edited, then set a change flag and enable the save button
+
+		// if the memo text is edited, then set a change flag and enable the
+		// save button
 		memoText.getDocument().addDocumentListener(new DocumentListener() {
 
 			public void changedUpdate(DocumentEvent arg0) {
@@ -212,7 +224,7 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 		// panel for dates and private check box
 		// *****************************
 		GridBagConstraints gridBagConstraints1 = GridBagConstraintsFactory
-		.create(0, 0, GridBagConstraints.HORIZONTAL);
+				.create(0, 0, GridBagConstraints.HORIZONTAL);
 
 		gridBagConstraints1.anchor = GridBagConstraints.WEST;
 
@@ -280,6 +292,41 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 			}
 		});
 		buttonPanel.add(exportButton, null);
+		
+		decryptButton = new JButton();
+		decryptButton.setText(Resource.getResourceString("decrypt"));
+		decryptButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent e) {
+				try {
+					Memo m = MemoModel.getReference().getMemo(getSelectedMemoName());
+					JLabel label = new JLabel(Resource.getResourceString("EnterPasswordToDecrypt"));
+					JPasswordField jpf = new JPasswordField();
+					int result = JOptionPane
+							.showConfirmDialog(null, new Object[] { label, jpf },
+									Resource.getResourceString("Password"), JOptionPane.OK_CANCEL_OPTION);
+					if (result == JOptionPane.CANCEL_OPTION)
+						return;
+
+					m.decrypt(jpf.getText());
+					
+					memoText.setText(m.getMemoText());
+					memoText.setEditable(true);
+					decryptButton.setEnabled(false);
+					saveButton.setEnabled(false);
+					clearEditFlag();
+					
+				} catch (Exception e1) {
+					Errmsg.errmsg(e1);
+				}
+				
+
+			}
+		});
+		buttonPanel.add(decryptButton, null);
+
+		encryptBox = new JCheckBox();
+		encryptBox.setText(Resource.getResourceString("EncryptOnSave"));
+		buttonPanel.add(encryptBox, null);
 
 		this.add(buttonPanel, GridBagConstraintsFactory.create(0, 2,
 				GridBagConstraints.BOTH));
@@ -289,7 +336,8 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 	/**
 	 * Load memos from the model
 	 * 
-	 * @throws Exception the exception
+	 * @throws Exception
+	 *             the exception
 	 */
 	private void loadMemosFromModel() throws Exception {
 		memoListTable.clearSelection();
@@ -350,8 +398,8 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 	}
 
 	/**
-	 * refresh the UI. This does not do anything if the user is currently in the middle
-	 * of editing a memo. 
+	 * refresh the UI. This does not do anything if the user is currently in the
+	 * middle of editing a memo.
 	 */
 	public void refresh() {
 
@@ -378,6 +426,18 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 		try {
 			Memo m = MemoModel.getReference().getMemo(name);
 			m.setMemoText(memoText.getText());
+			m.setEncrypted(false);
+			if (encryptBox.isSelected()) {
+				JLabel label = new JLabel(Resource.getResourceString("EnterPasswordToDecrypt"));
+				JPasswordField jpf = new JPasswordField();
+				int result = JOptionPane
+						.showConfirmDialog(null, new Object[] { label, jpf },
+								Resource.getResourceString("Password"), JOptionPane.OK_CANCEL_OPTION);
+				if (result == JOptionPane.CANCEL_OPTION)
+					return;
+
+				m.encrypt(jpf.getText());
+			}
 			MemoModel.getReference().saveMemo(m);
 			isMemoEdited = false;
 			loadMemosFromModel();
@@ -391,7 +451,8 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 	/**
 	 * selecte the named memo for editing
 	 * 
-	 * @param memoName the memo name
+	 * @param memoName
+	 *            the memo name
 	 */
 	public void selectMemo(String memoName) {
 		TableSorter tm = (TableSorter) memoListTable.getModel();
@@ -451,6 +512,8 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 			memoText.setText("");
 			memoText.setEditable(false);
 			dateLabel.setText("");
+			encryptBox.setSelected(false);
+			decryptButton.setEnabled(false);
 		} else {
 
 			// show the selected memo
@@ -458,7 +521,7 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 			try {
 				Memo m = MemoModel.getReference().getMemo(memoName);
 				text = m.getMemoText();
-				
+
 				//
 				// create the date label string
 				//
@@ -474,13 +537,23 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 				else
 					datetext += Resource.getResourceString("unknown");
 				dateLabel.setText(datetext);
+
+				encryptBox.setSelected(m.isEncrypted());
+				if (m.isEncrypted()) {
+					memoText.setText(Resource.getResourceString("EncryptedMemo"));
+					memoText.setEditable(false);
+					decryptButton.setEnabled(true);
+				} else {
+					memoText.setEditable(true);
+					memoText.setText(text);
+					decryptButton.setEnabled(false);
+
+				}
 			} catch (Exception e1) {
 				Errmsg.errmsg(e1);
 				return;
 			}
 
-			memoText.setEditable(true);
-			memoText.setText(text);
 		}
 		isMemoEdited = false;
 		saveButton.setEnabled(false);
@@ -499,15 +572,16 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 
 	@Override
 	public void initialize(MultiView parent) {
-		
+
 		final MultiView par = parent;
 		parent.addToolBarItem(new ImageIcon(getClass().getResource(
-		"/resource/Edit16.gif")), getModuleName(), new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				par.setView(ViewType.MEMO);
-			}
-		});
-		
+				"/resource/Edit16.gif")), getModuleName(),
+				new ActionListener() {
+					public void actionPerformed(ActionEvent evt) {
+						par.setView(ViewType.MEMO);
+					}
+				});
+
 	}
 
 	@Override
@@ -518,7 +592,12 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 		} catch (PrinterException e) {
 			Errmsg.errmsg(e);
 		}
-		
+
+	}
+	
+	private void clearEditFlag()
+	{
+		isMemoEdited = false;
 	}
 
-} 
+}

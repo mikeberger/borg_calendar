@@ -118,6 +118,7 @@ CREATE TABLE tasklog (
 CREATE TABLE memos (
   memoname varchar(50) NOT NULL,
   memotext text,
+  encrypted char(1) default NULL,
   PRIMARY KEY  (memoname)
 );
 

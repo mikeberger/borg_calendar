@@ -130,6 +130,7 @@ CREATE CACHED TABLE tasklog (
 CREATE CACHED TABLE memos (
   memoname varchar(50) NOT NULL,
   memotext longvarchar,
+  encrypted char(1) default NULL,
   PRIMARY KEY  (memoname)
 );
 
