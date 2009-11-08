@@ -34,4 +34,6 @@
  <tocitem text="Import/Export to XML" target="xml"/>
 
  <tocitem text="Links and Attachments" target="links"/>
+
+ <tocitem text="Encryption" target="encryption"/>
 </toc>

@@ -1,0 +1,65 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
+	<TITLE></TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice.org 3.1  (Linux)">
+	<META NAME="CREATED" CONTENT="0;0">
+	<META NAME="CHANGEDBY" CONTENT="mike b">
+	<META NAME="CHANGED" CONTENT="20091108;9203900">
+	<META NAME="Originator" CONTENT="Microsoft Word 9">
+	<META NAME="ProgId" CONTENT="Word.Document">
+	<STYLE TYPE="text/css">
+	<!--
+		P { color: #000000 }
+		H2 { color: #000000 }
+	-->
+	</STYLE>
+</HEAD>
+<BODY LANG="en-US" TEXT="#000000" DIR="LTR">
+<H2><FONT FACE="Arial">Encryption</FONT></H2>
+<P><FONT FACE="Arial">Borg supports the optional encryption of Memos.
+Encryption can be chosen on a per-memo basis. When chosen, AES
+symmetric encryption is used to encrypt and decrypt memo text before
+storing in the database. This encryption is meant to be secure enough
+to protect any sensitive information.</FONT></P>
+<P><FONT FACE="Arial">Memos can be encrypted by checking the Encrypt
+on Save check box before saving and then supplying the encryption
+password when prompted. Encrypted memos can only be viewed by
+pressing the decrypt button and supplying the password. The password
+is the same for all memos (see below). </FONT>
+</P>
+<P><FONT FACE="Arial">For maximum security, the password is never
+stored by Borg. It must be re-entered before every encryption or
+decryption operation. Also, memos that have been decrypted for
+viewing will be re-locked as soon as the user saves the memo or
+navigates to another memo.</FONT></P>
+<P><FONT FACE="Arial">Borg uses a single key for all encryption. It
+is kept in a Java JCEKS Key Store file and is protected by a
+user-chosen password. Encryption cannot be used unless this file is
+set in the Borg Encryption Options. To create an initial Key Store,
+go to the Encryption Options tab and browse to create a new file.
+Borg will prompt for a password and then create the Key Store with a
+new random key.</FONT></P>
+<P><FONT FACE="Arial">The Key Store file contains the encryption key
+and is protected by the password that is entered when the file is
+created. Whenever Borg needs to encrypt or decrypt data, it will
+prompt for this password. Do not forget this password. If lost, there
+is no way to recover it and any encrypted data can no longer be
+decrypted.</FONT></P>
+<P><FONT FACE="Arial">Likewise, do not lose the Key Store file and
+keep safe backup copies. If you keep the Borg database on removable
+media, such as a thumb drive, and mount it on different machines, you
+will not be able to decrypt secure data unless the key store file is
+also available to each machine and set in the options. </FONT>
+</P>
+<P><FONT FACE="Arial">For maximum security, the Key Store file should
+be kept separate from the database. A malicious person that gets a
+copy of your Borg database and/or your saved XML exports will not be
+able to decrypt your protected data without the Key Store file. </FONT>
+</P>
+<P><FONT FACE="Arial">Even with the Key Store file, a malicious
+person will still not be able to decrypt Borg data without knowing
+the password that was used to protect the Key Store.</FONT></P>
+</BODY>
+</HTML>

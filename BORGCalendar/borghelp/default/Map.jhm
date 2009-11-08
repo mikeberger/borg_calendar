@@ -36,4 +36,6 @@
 <mapID target="printing" url="printing.html"/>
 
 <mapID target="links" url="links.html"/>
+
+<mapID target="encryption" url="encrypt.html"/>
 </map>
