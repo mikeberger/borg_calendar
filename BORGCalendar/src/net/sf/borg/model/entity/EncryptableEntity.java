@@ -1,6 +1,10 @@
 
 package net.sf.borg.model.entity;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+
 
 /**
  * Abstract base class for entities that can have encrypted fields. It is up to
@@ -9,10 +13,12 @@ package net.sf.borg.model.entity;
  *
  * @param <T> the entity class
  */
+@XmlAccessorType(XmlAccessType.NONE)
 public abstract class EncryptableEntity<T> extends KeyedEntity<T> {
 	
 	/** encryption flag  - indicates if an entity instance is encrypted. It is stored in
 	 * the database */
+	@XmlElement
 	private boolean encrypted = false;
 	
 	

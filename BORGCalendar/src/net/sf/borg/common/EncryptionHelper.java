@@ -1,6 +1,7 @@
 package net.sf.borg.common;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
@@ -70,6 +71,15 @@ public class EncryptionHelper {
 	 */
 	public EncryptionHelper(String keyStoreLocation, String keyStorePassword)
 			throws Exception {
+		
+		if( keyStoreLocation == null || keyStoreLocation.equals(""))
+			throw new Warning(Resource.getResourceString("Key_Store_Not_Set"));
+		
+		File f = new File(keyStoreLocation);
+		if( !f.canRead())
+		{
+			throw new Warning(Resource.getResourceString("No_Key_Store") + keyStoreLocation);
+		}
 		keyStore = KeyStore.getInstance("JCEKS");
 		keyStore.load(new FileInputStream(keyStoreLocation), keyStorePassword
 				.toCharArray());
@@ -112,7 +122,7 @@ public class EncryptionHelper {
 
 	/**
 	 * decrypt a String using a key from the key store
-	 * @param clearText - the string to decrypt
+	 * @param cipherText - the string to decrypt
 	 * @param keyAlias - the decryption key alias
 	 * @param password - the keystore password
 	 * @return the encrypted string
