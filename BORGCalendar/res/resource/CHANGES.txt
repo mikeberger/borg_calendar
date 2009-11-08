@@ -1,3 +1,8 @@
+BORG 1.7.3 - TBD
+----------------
+Feature [2893839] Add database encryption
+
+
 BORG 1.7.2 Beta - Developer Release
 -----------------------------------
 Release 1.7.2 is mainly for developers using the source. 

@@ -2,4 +2,4 @@
 # running from within Eclipse.
 build.time=Eclipse Internal
 build.number=Eclipse Internal
-borg.version=1.7.2
+borg.version=1.7.3
