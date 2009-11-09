@@ -12,6 +12,7 @@ import javax.crypto.Cipher;
 import javax.crypto.CipherOutputStream;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
@@ -153,6 +154,45 @@ public class EncryptionHelper {
 		os.close();
 
 		return baos.toString();
+	}
+	
+	/**
+	 * Export the borg key in text form
+	 * @param keyAlias the key alias
+	 * @param password the keystore password
+	 * @return the exproted key as a string
+	 * @throws Exception
+	 */
+	public String exportKey(String keyAlias, String password) throws Exception
+	{
+		Key key = keyStore.getKey(keyAlias, password.toCharArray());
+		BASE64Encoder b64enc = new BASE64Encoder();
+		return b64enc.encode(key.getEncoded());
+	}
+	
+	/**
+	 * Import a provided key into a KeyStore
+	 * @param location - the keystore location
+	 * @param encodedKey - the encoded key to import
+	 * @param keyAlias - the key alias
+	 * @param password - the key store password
+	 * @throws Exception
+	 */
+	static public void importKey(String location, String encodedKey, String keyAlias, String password) throws Exception
+	{
+		KeyStore store = KeyStore.getInstance("JCEKS");
+		store.load(new FileInputStream(location), password.toCharArray());
+		
+		BASE64Decoder b64dec = new BASE64Decoder();
+		byte[] ba = b64dec.decodeBuffer(encodedKey);
+		SecretKey key = new SecretKeySpec(ba,"AES");
+		KeyStore.SecretKeyEntry skEntry =
+	        new KeyStore.SecretKeyEntry(key);
+		store.setEntry(keyAlias, skEntry, 
+	        new KeyStore.PasswordProtection(password.toCharArray()));
+
+		store.store(new FileOutputStream(location), password.toCharArray());
+
 	}
 
 }
