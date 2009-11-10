@@ -45,7 +45,7 @@ public class TaskModule implements Module {
 				new ProjectPanel());
 
 		taskTabs.addTab(Resource.getResourceString("tasks"),
-				new TaskListPanel());
+				new TaskFilterPanel());
 
 		final MultiView par = parent;
 		parent.addToolBarItem(new ImageIcon(getClass().getResource(
