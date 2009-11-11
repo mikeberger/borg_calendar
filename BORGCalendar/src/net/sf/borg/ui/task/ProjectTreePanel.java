@@ -363,8 +363,13 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 		for( Task task : tasks) {
 			if (!CategoryModel.getReference().isShown(task.getCategory()))
 				continue;
+			String taskdesc = task.getDescription();
+			int newlineIndex = taskdesc.indexOf('\n');
+			if (newlineIndex != -1) 
+				taskdesc = taskdesc.substring(0, newlineIndex);
+				
 			node.add(new DefaultMutableTreeNode(new Node("[" + task.getKey() + "-"
-					+ task.getState() + "] " + task.getDescription(), task)));
+					+ task.getState() + "] " + taskdesc, task)));
 		}
 
 		Collection<Project> subpcoll = TaskModel.getReference().getSubProjects(
