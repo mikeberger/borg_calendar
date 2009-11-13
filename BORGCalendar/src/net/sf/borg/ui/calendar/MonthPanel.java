@@ -443,6 +443,7 @@ public class MonthPanel extends JPanel implements Printable, CalendarModule {
 			GregorianCalendar cal = new GregorianCalendar(year_, month_, 1);
 			cal.setFirstDayOfWeek(Prefs.getIntPref(PrefName.FIRSTDOW));
 			int fdow = cal.get(Calendar.DAY_OF_WEEK) - cal.getFirstDayOfWeek();
+			if( fdow < 0 ) fdow += 7; // adjustment for fdow = MON and month starts on SUN
 			cal.add(Calendar.DATE, -1 * fdow);
 			cal.add(Calendar.DATE, row * 7 + col);
 			return cal.getTime();
