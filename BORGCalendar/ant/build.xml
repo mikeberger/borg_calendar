@@ -19,7 +19,7 @@
 	<property name="ant.dir" value="${prj.dir}/ant" />
 
 	<!-- PATH to javahelp - must be changed only if you want to regen the help indexes -->
-	<condition property="jh.bin" value="c:/jh2.0/javahelp/bin" else="/c/jh2.0/javahelp/bin">
+	<condition property="jh.bin" value="c:/jh2.0/javahelp/bin" else="/apps/jh2.0/javahelp/bin">
 		<os family="windows" />
 	</condition>
 	<condition property="jhindexer" value="jhindexer.bat" else="jhindexer">
@@ -29,7 +29,7 @@
 	<available file="${jh.bin}" property="have.jh" />
 
 	<!-- PATH to IzPack dir to create the installer -->
-	<condition property="iz.dir" value="c:/Program Files/IzPack" else="/c/Program Files/IzPack">
+	<condition property="iz.dir" value="c:/Program Files/IzPack" else="/apps/IzPack">
 		<os family="windows" />
 	</condition>
 
