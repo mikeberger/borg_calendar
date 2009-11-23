@@ -614,10 +614,7 @@ public class AppointmentPanel extends JPanel {
 		appointmentTextPanel.setLayout(new GridBagLayout());
 		appointmentTextPanel.setBorder(new TitledBorder(Resource
 				.getResourceString("appttext")));
-		apptTextScroll.setPreferredSize(new Dimension(200, 140));
 		appointmentBodyTextArea.setColumns(40);
-		appointmentBodyTextArea.setSize(new Dimension(300, 84));
-		appointmentBodyTextArea.setPreferredSize(new Dimension(300, 84));
 		appointmentBodyTextArea.setLineWrap(true);
 		appointmentBodyTextArea.setRows(5);
 		appointmentBodyTextArea.setWrapStyleWord(true);
