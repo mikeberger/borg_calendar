@@ -58,7 +58,7 @@ import net.sf.borg.model.entity.LabelEntity;
  * Box and DateZone objects. It manages the layout of Boxes and the various operations
  * that can be done on them - such as dragging, resizing, clicking
  */
-abstract class ApptBoxPanel extends JPanel {
+abstract class ApptBoxPanel extends JPanel implements ComponentListener {
 
 	/**
 	 * ClickedBoxInfo contains information about where the mouse is and what
@@ -227,30 +227,6 @@ abstract class ApptBoxPanel extends JPanel {
 		@Override
 		public String getToolTipText() {
 			return null;
-		}
-
-	}
-
-	/**
-	 * MyComponentListener just refreshes this object after a resize
-	 */
-	private class MyComponentListener implements ComponentListener {
-
-		/* (non-Javadoc)
-		 * @see java.awt.event.ComponentListener#componentHidden(java.awt.event.ComponentEvent)
-		 */
-		public void componentHidden(ComponentEvent arg0) {
-		}
-
-		public void componentMoved(ComponentEvent e) {
-		}
-
-		public void componentResized(ComponentEvent e) {
-			ApptBoxPanel p = (ApptBoxPanel) e.getComponent();
-			p.refresh();
-		}
-
-		public void componentShown(ComponentEvent e) {
 		}
 
 	}
@@ -646,7 +622,7 @@ abstract class ApptBoxPanel extends JPanel {
 		MyMouseListener myOneListener = new MyMouseListener();
 		addMouseListener(myOneListener);
 		addMouseMotionListener(myOneListener);
-		addComponentListener(new MyComponentListener());
+		addComponentListener(this);
 
 	}
 
@@ -994,6 +970,19 @@ abstract class ApptBoxPanel extends JPanel {
 		resizeRectangle.height = (int) h;
 		resizeRectangle.width = (int) w;
 
+	}
+	
+	public void componentHidden(ComponentEvent arg0) {
+	}
+
+	public void componentMoved(ComponentEvent e) {
+	}
+
+	public void componentResized(ComponentEvent e) {
+		refresh();
+	}
+
+	public void componentShown(ComponentEvent e) {
 	}
 
 }

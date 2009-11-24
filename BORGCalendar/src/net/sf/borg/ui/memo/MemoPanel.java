@@ -599,5 +599,11 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 	{
 		isMemoEdited = false;
 	}
+	
+	@Override
+	public ViewType getViewType() {
+		return ViewType.MEMO;
+	}
+
 
 }

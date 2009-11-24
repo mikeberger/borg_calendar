@@ -81,6 +81,7 @@ import net.sf.borg.ui.DockableView;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.MultiView.Module;
+import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.task.ProjectView;
 import net.sf.borg.ui.task.TaskView;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
@@ -1098,5 +1099,11 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 			}
 		});
 	}
+	
+	@Override
+	public ViewType getViewType() {
+		return ViewType.TODO;
+	}
+
 
 }

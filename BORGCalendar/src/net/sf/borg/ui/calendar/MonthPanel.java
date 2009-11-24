@@ -655,4 +655,10 @@ public class MonthPanel extends JPanel implements Printable, CalendarModule {
 	public void print() {
 		printMonths();
 	}
+	
+	@Override
+	public ViewType getViewType() {
+		return ViewType.MONTH;
+	}
+	
 }

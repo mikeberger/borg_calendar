@@ -20,7 +20,6 @@
 package net.sf.borg.control;
 
 import java.awt.Font;
-import java.awt.Frame;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -54,11 +53,8 @@ import net.sf.borg.model.MemoModel;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.db.jdbc.JdbcDB;
 import net.sf.borg.model.tool.ConversionTool;
-import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.OptionsView;
-import net.sf.borg.ui.SunTrayIconProxy;
-import net.sf.borg.ui.calendar.TodoView;
-import net.sf.borg.ui.popup.ReminderPopupManager;
+import net.sf.borg.ui.UIControl;
 import net.sf.borg.ui.util.ModalMessage;
 import net.sf.borg.ui.util.NwFontChooserS;
 import net.sf.borg.ui.util.ScrolledDialog;
@@ -212,23 +208,11 @@ public class Borg implements SocketHandler {
 	 */
 	private java.util.Timer syncTimer_ = null;
 
-	/** flag indicating if a system tray icon is running. */
-	private boolean trayIcon = true;
-
 	/**
 	 * constructor
 	 */
 	private Borg() {
 
-	}
-
-	/**
-	 * Checks for presence of the tray icon.
-	 * 
-	 * @return true, if the tray icon started up successfully, false otherwise
-	 */
-	public boolean hasTrayIcon() {
-		return trayIcon;
 	}
 
 	/**
@@ -247,8 +231,7 @@ public class Borg implements SocketHandler {
 		} else if (msg.equals("shutdown")) {
 			System.exit(0);
 		} else if (msg.equals("open")) {
-			MultiView.getMainView().toFront();
-			MultiView.getMainView().setState(Frame.NORMAL);
+			UIControl.toFront();
 			return ("ok");
 		} else if (msg.startsWith("lock:")) {
 			final String lockmsg = msg.substring(5);
@@ -481,7 +464,7 @@ public class Borg implements SocketHandler {
 			final String traynm = trayname;
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
-					swingStart(traynm);
+					UIControl.startUI(traynm);
 				}
 			});
 
@@ -577,65 +560,6 @@ public class Borg implements SocketHandler {
 
 			System.exit(1);
 
-		}
-
-	}
-
-	/**
-	 * show the todo view.
-	 */
-	private void startTodoView() {
-
-		try {
-			// bring up todo window
-			TodoView tg = TodoView.getReference();
-			MultiView.getMainView().addView(tg);
-		} catch (Exception e) {
-			Errmsg.errmsg(e);
-		}
-	}
-
-	/**
-	 * swing thread logic
-	 * 
-	 * @param trayname
-	 *            the trayname
-	 */
-	private void swingStart(String trayname) {
-
-		// start the system tray icon - or at least attempt to
-		// it doesn't run on all OSs and all WMs
-		trayIcon = true;
-		String usetray = Prefs.getPref(PrefName.USESYSTRAY);
-		if (!usetray.equals("true")) {
-			trayIcon = false;
-		} else {
-			try {
-				SunTrayIconProxy tip = SunTrayIconProxy.getReference();
-				tip.init(trayname);
-			} catch (UnsatisfiedLinkError le) {
-				le.printStackTrace();
-				trayIcon = false;
-			} catch (NoClassDefFoundError ncf) {
-				ncf.printStackTrace();
-				trayIcon = false;
-			} catch (Exception e) {
-				e.printStackTrace();
-				trayIcon = false;
-			}
-		}
-
-		// create popups view
-		ReminderPopupManager.getReference();
-
-		// start main month view
-		// CalendarView.getReference(trayIcon);
-		MultiView mv = MultiView.getMainView();
-		mv.setVisible(true);
-
-		// start todo view if there are todos
-		if (AppointmentModel.getReference().haveTodos()) {
-			startTodoView();
 		}
 
 	}

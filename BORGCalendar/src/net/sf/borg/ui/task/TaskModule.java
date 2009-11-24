@@ -67,5 +67,9 @@ public class TaskModule implements Module {
 		
 	}
 	
+	@Override
+	public ViewType getViewType() {
+		return ViewType.TASK;
+	}
 	
 }

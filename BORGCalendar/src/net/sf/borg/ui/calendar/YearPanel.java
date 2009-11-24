@@ -553,4 +553,10 @@ public class YearPanel extends JPanel implements Printable, CalendarModule {
 			Errmsg.errmsg(e);
 		}
 	}
+	
+	@Override
+	public ViewType getViewType() {
+		return ViewType.YEAR;
+	}
+
 }

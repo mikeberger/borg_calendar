@@ -27,7 +27,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.swing.Icon;
@@ -44,15 +43,6 @@ import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.control.Borg;
-import net.sf.borg.ui.address.AddrListView;
-import net.sf.borg.ui.calendar.DayPanel;
-import net.sf.borg.ui.calendar.MonthPanel;
-import net.sf.borg.ui.calendar.SearchView;
-import net.sf.borg.ui.calendar.TodoView;
-import net.sf.borg.ui.calendar.WeekPanel;
-import net.sf.borg.ui.calendar.YearPanel;
-import net.sf.borg.ui.memo.MemoPanel;
-import net.sf.borg.ui.task.TaskModule;
 import net.sf.borg.ui.util.JTabbedPaneWithCloseIcons;
 
 /**
@@ -64,7 +54,7 @@ public class MultiView extends View {
 	 * interface implemented by all UI Modules. The MultiView manages a set of
 	 * UI Modules. Each Module is responsible for providing a component to show
 	 * in a multiview tab, responding to print requests, and requesting its own
-	 * toolbar and manu items
+	 * toolbar and menu items
 	 * 
 	 */
 	public static interface Module {
@@ -75,6 +65,12 @@ public class MultiView extends View {
 		 * @return the name
 		 */
 		public String getModuleName();
+		
+		/**
+		 * get the modules ViewType
+		 * @return the ViewType
+		 */
+		public ViewType getViewType();
 
 		/**
 		 * get the Component for this Module
@@ -115,7 +111,7 @@ public class MultiView extends View {
 
 	/** argument values for setView() */
 	public enum ViewType {
-		DAY, MONTH, WEEK, YEAR, TASK, MEMO, SEARCH;
+		DAY, MONTH, WEEK, YEAR, TASK, MEMO, SEARCH, TODO, ADDRESS;
 	}
 
 	/** The main view singleton */
@@ -161,7 +157,7 @@ public class MultiView extends View {
 		// escape key closes the window
 		getLayeredPane().registerKeyboardAction(new ActionListener() {
 			public final void actionPerformed(ActionEvent e) {
-				if (Borg.getReference().hasTrayIcon())
+				if (SunTrayIconProxy.hasTrayIcon())
 					closeMainwindow();
 			}
 		}, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
@@ -189,15 +185,13 @@ public class MultiView extends View {
 		setJMenuBar(menubar);
 		getContentPane().setLayout(new GridBagLayout());
 
-		loadModules();
-
 		mainMenu.addAction(new ImageIcon(getClass().getResource(
 				"/resource/Print16.gif")), Resource.getResourceString("Print"),
 				new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						print();
 					}
-				});
+				},0);
 		
 		mainMenu.addAction(new ImageIcon(getClass().getResource(
 		"/resource/Delete16.gif")), Resource.getResourceString("close_tabs"),
@@ -205,7 +199,7 @@ public class MultiView extends View {
 			public void actionPerformed(ActionEvent evt) {
 				closeTabs();
 			}
-		});
+		},1);
 
 		// add the tool bar
 		GridBagConstraints cons = new java.awt.GridBagConstraints();
@@ -247,10 +241,11 @@ public class MultiView extends View {
 		JButton button = new JButton(icon);
 		button.setToolTipText(tooltip);
 		button.addActionListener(action);
-		bar.add(button);
+		bar.add(button, toolBarInsertIndex);
 
-		mainMenu.addAction(icon, tooltip, action);
+		mainMenu.addAction(icon, tooltip, action, toolBarInsertIndex++);
 	}
+	private int toolBarInsertIndex = 0;
 
 	/**
 	 * add a help menu item
@@ -287,7 +282,7 @@ public class MultiView extends View {
 	 * entirely
 	 */
 	private void closeMainwindow() {
-		if (!Borg.getReference().hasTrayIcon() && this == mainView) {
+		if (!SunTrayIconProxy.hasTrayIcon() && this == mainView) {
 			Borg.shutdown();
 		} else {
 			this.dispose();
@@ -337,15 +332,8 @@ public class MultiView extends View {
 	 */
 	private Module getModuleForView(ViewType type) {
 		for (Module m : moduleSet) {
-			if ((type == ViewType.MONTH && m instanceof MonthPanel)
-					|| (type == ViewType.WEEK && m instanceof WeekPanel)
-					|| (type == ViewType.DAY && m instanceof DayPanel)
-					|| (type == ViewType.YEAR && m instanceof YearPanel)
-					|| (type == ViewType.TASK && m instanceof TaskModule)
-					|| (type == ViewType.MEMO && m instanceof MemoPanel)
-					|| (type == ViewType.SEARCH && m instanceof SearchView)) {
+			if( type == m.getViewType())
 				return m;
-			}
 		}
 		return null;
 	}
@@ -407,34 +395,15 @@ public class MultiView extends View {
 				((CalendarModule) m).goTo(cal);
 		}
 	}
-
+	
 	/**
-	 * load all modules
+	 * add a new module to the multi view
+	 * @param m the module
 	 */
-	public void loadModules() {
-		Calendar cal_ = new GregorianCalendar();
-		moduleSet.add(new MonthPanel(cal_.get(Calendar.MONTH), cal_
-				.get(Calendar.YEAR)));
-		moduleSet.add(new WeekPanel(cal_.get(Calendar.MONTH), cal_
-				.get(Calendar.YEAR), cal_.get(Calendar.DATE)));
-		moduleSet.add(new DayPanel(cal_.get(Calendar.MONTH), cal_
-				.get(Calendar.YEAR), cal_.get(Calendar.DATE)));
-		moduleSet.add(new YearPanel(cal_.get(Calendar.YEAR)));
-		moduleSet.add(AddrListView.getReference());
-		moduleSet.add(TodoView.getReference());
-		moduleSet.add(new TaskModule());
-		moduleSet.add(new MemoPanel());
-		moduleSet.add(new SearchView());
-		moduleSet.add(new InfoView("/resource/RELEASE_NOTES.txt", Resource
-				.getResourceString("rlsnotes")));
-		moduleSet.add(new InfoView("/resource/CHANGES.txt", Resource
-				.getResourceString("viewchglog")));
-		moduleSet.add(new InfoView("/resource/license.htm", Resource
-				.getResourceString("License")));
-
-		for (Module m : moduleSet) {
-			m.initialize(this);
-		}
+	public void addModule(Module m)
+	{
+		moduleSet.add(m);
+		m.initialize(this);
 	}
 
 	/**

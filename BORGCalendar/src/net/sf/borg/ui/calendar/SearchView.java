@@ -640,4 +640,10 @@ public class SearchView extends DockableView implements Module {
 			Errmsg.errmsg(e);
 		}	
 	}
+	
+	@Override
+	public ViewType getViewType() {
+		return ViewType.SEARCH;
+	}
+	
 } 

@@ -388,17 +388,17 @@ class MainMenu {
 	 *            the text for the menu item
 	 * @param action
 	 *            the action listener for the menu item
+	 * @param insertIndex 
+	 * 			   the index to insert the menu item at
 	 */
-	public void addAction(Icon icon, String text, ActionListener action) {
+	public void addAction(Icon icon, String text, ActionListener action, int insertIndex) {
 		JMenuItem item = new JMenuItem();
 		item.setIcon(icon);
 		item.setText(text);
 		item.addActionListener(action);
 
-		actionMenu.insert(item, lastActionInsert++);
+		actionMenu.insert(item, insertIndex);
 	}
-
-	private int lastActionInsert = 0;
 
 	/**
 	 * add an item to the help menu

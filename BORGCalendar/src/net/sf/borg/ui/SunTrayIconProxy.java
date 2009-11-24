@@ -18,7 +18,6 @@
  */
 package net.sf.borg.ui;
 
-import java.awt.Frame;
 import java.awt.Image;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
@@ -28,6 +27,8 @@ import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import net.sf.borg.common.PrefName;
+import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.control.Borg;
 import net.sf.borg.ui.address.AddrListView;
@@ -35,30 +36,48 @@ import net.sf.borg.ui.calendar.TodoView;
 import net.sf.borg.ui.popup.ReminderPopupManager;
 
 /** communicates with the new java built-in system tray APIs */
-public class SunTrayIconProxy {
+class SunTrayIconProxy {
 
 	// action that opens the main view
 	private class OpenListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			MultiView mv = MultiView.getMainView();
-			mv.toFront();
-			mv.setState(Frame.NORMAL);
+			UIControl.toFront();
 		}
 	}
 
 	// the singleton
 	static private SunTrayIconProxy singleton = null;
+	
+	/* flag to indicate is a tray icon was started */
+	private static boolean trayIcon = false;
+	
 
-	/**
-	 * get the singleton
-	 * 
-	 * @return the singleton
-	 */
-	static public SunTrayIconProxy getReference() {
-		if (singleton == null)
-			singleton = new SunTrayIconProxy();
-		return (singleton);
+	static public void startTrayIcon(String trayname)
+	{
+		// start the system tray icon - or at least attempt to
+		// it doesn't run on all OSs and all WMs
+		trayIcon = true;
+		String usetray = Prefs.getPref(PrefName.USESYSTRAY);
+		if (!usetray.equals("true")) {
+			trayIcon = false;
+		} else {
+			try {
+				singleton = new SunTrayIconProxy();
+				singleton.init(trayname);
+			} catch (UnsatisfiedLinkError le) {
+				le.printStackTrace();
+				trayIcon = false;
+			} catch (NoClassDefFoundError ncf) {
+				ncf.printStackTrace();
+				trayIcon = false;
+			} catch (Exception e) {
+				e.printStackTrace();
+				trayIcon = false;
+			}
+		}
+		
 	}
+	
 
 	/**
 	 * initalize the system tray
@@ -160,6 +179,16 @@ public class SunTrayIconProxy {
 
 		SystemTray tray = SystemTray.getSystemTray();
 		tray.add(TIcon);
+	}
+	
+	/**
+	 * Checks for presence of the tray icon.
+	 * 
+	 * @return true, if the tray icon started up successfully, false otherwise
+	 */
+	public static boolean hasTrayIcon()
+	{
+		return trayIcon;
 	}
 
 }
