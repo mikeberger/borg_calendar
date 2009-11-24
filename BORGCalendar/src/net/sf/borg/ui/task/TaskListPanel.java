@@ -48,13 +48,11 @@ import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.TaskTypes;
 import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Task;
-import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 import net.sf.borg.ui.util.PopupMenuHelper;
 import net.sf.borg.ui.util.StripedTable;
 import net.sf.borg.ui.util.TablePrinter;
 import net.sf.borg.ui.util.TableSorter;
-
 
 /**
  * Shows a table of tasks action buttons.
@@ -75,16 +73,21 @@ class TaskListPanel extends JPanel implements Model.Listener {
 			setOpaque(true); // MUST do this for background to show up.
 		}
 
-		/* (non-Javadoc)
-		 * @see javax.swing.table.TableCellRenderer#getTableCellRendererComponent(javax.swing.JTable, java.lang.Object, boolean, boolean, int, int)
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * javax.swing.table.TableCellRenderer#getTableCellRendererComponent
+		 * (javax.swing.JTable, java.lang.Object, boolean, boolean, int, int)
 		 */
 		public Component getTableCellRendererComponent(JTable table,
 				Object obj, boolean isSelected, boolean hasFocus, int row,
 				int column) {
 
 			// start with default component that would be rendered
-			JLabel l = (JLabel) defaultTableCellRenderer.getTableCellRendererComponent(table,
-					obj, isSelected, hasFocus, row, column);
+			JLabel l = (JLabel) defaultTableCellRenderer
+					.getTableCellRendererComponent(table, obj, isSelected,
+							hasFocus, row, column);
 
 			// if null object - show dashes
 			if (obj == null) {
@@ -93,7 +96,8 @@ class TaskListPanel extends JPanel implements Model.Listener {
 				return l;
 			}
 
-			// return the default rendered component if this is not the priority or days left column
+			// return the default rendered component if this is not the priority
+			// or days left column
 			String nm = table.getColumnName(column);
 			if (!nm.equals(Resource.getResourceString("Pri"))
 					&& !nm.equals(Resource.getResourceString("Days_Left")))
@@ -127,7 +131,6 @@ class TaskListPanel extends JPanel implements Model.Listener {
 				return this;
 			}
 
-
 			// yellow alert -- <10 days left
 			if (i < 10)
 				this.setBackground(new Color(255, 255, 175));
@@ -152,7 +155,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 
 	/** The filter string. */
 	private String filterString = "";
-	
+
 	/** The filter case sensitive flag. */
 	private boolean filterCaseSensitive = false;
 
@@ -184,11 +187,13 @@ class TaskListPanel extends JPanel implements Model.Listener {
 	/**
 	 * Instantiates a new task list panel tied to a particular project
 	 * 
-	 * @param projectName the project name 
+	 * @param projectName
+	 *            the project name
 	 */
 	public TaskListPanel(String projectName) {
 		super();
-		setFilterCriteria(projectName, Resource.getResourceString("All"), "", false);
+		setFilterCriteria(projectName, Resource.getResourceString("All"), "",
+				false);
 		TaskModel.getReference().addListener(this);
 		try {
 			initComponents();
@@ -201,10 +206,10 @@ class TaskListPanel extends JPanel implements Model.Listener {
 
 	/**
 	 * get the selected task id
+	 * 
 	 * @return the select task id or null
 	 */
-	private Integer getSelectedTaskId()
-	{
+	private Integer getSelectedTaskId() {
 		// get task number from column 0 of selected row
 		int row = taskTable.getSelectedRow();
 		if (row == -1)
@@ -214,15 +219,15 @@ class TaskListPanel extends JPanel implements Model.Listener {
 		return num;
 	}
 
-
 	/**
 	 * close the selected task
 	 * 
-	 * 	 */
+	 * */
 	private void closeActionPerformed() {
 
 		Integer num = getSelectedTaskId();
-		if( num == null ) return;
+		if (num == null)
+			return;
 		try {
 			TaskModel.getReference().close(num.intValue());
 		} catch (Exception e) {
@@ -237,9 +242,9 @@ class TaskListPanel extends JPanel implements Model.Listener {
 	 */
 	private void deleteActionPerformed() {
 
-
 		Integer num = getSelectedTaskId();
-		if( num == null ) return;
+		if (num == null)
+			return;
 
 		// confirm delete
 		int ret = JOptionPane.showConfirmDialog(null, Resource
@@ -256,7 +261,6 @@ class TaskListPanel extends JPanel implements Model.Listener {
 
 	}
 
-	
 	/**
 	 *create the button panel
 	 * 
@@ -266,7 +270,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 		if (buttonPanel == null) {
 			buttonPanel = new JPanel();
 			buttonPanel.setLayout(new FlowLayout());
-			
+
 			JButton addbutton = new JButton();
 			addbutton.setText(Resource.getResourceString("Add"));
 			addbutton.setIcon(new ImageIcon(getClass().getResource(
@@ -277,7 +281,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 				}
 			});
 			buttonPanel.add(addbutton, null);
-			
+
 			JButton changebutton1 = new JButton();
 			changebutton1.setIcon(new ImageIcon(getClass().getResource(
 					"/resource/Edit16.gif")));
@@ -286,12 +290,12 @@ class TaskListPanel extends JPanel implements Model.Listener {
 					.addActionListener(new java.awt.event.ActionListener() {
 						public void actionPerformed(java.awt.event.ActionEvent e) {
 							Integer num = getSelectedTaskId();
-							if( num != null )
+							if (num != null)
 								task_change(num.intValue());
 						}
 					});
 			buttonPanel.add(changebutton1, null);
-			
+
 			JButton deletebutton1 = new JButton();
 			deletebutton1.setIcon(new ImageIcon(getClass().getResource(
 					"/resource/Delete16.gif")));
@@ -303,7 +307,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 						}
 					});
 			buttonPanel.add(deletebutton1, null);
-			
+
 			JButton closebutton1 = new JButton();
 			closebutton1.setIcon(new ImageIcon(getClass().getResource(
 					"/resource/greenlight.gif")));
@@ -314,7 +318,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 				}
 			});
 			buttonPanel.add(closebutton1, null);
-			
+
 			JButton clonebutton1 = new JButton();
 			clonebutton1.setIcon(new ImageIcon(getClass().getResource(
 					"/resource/Copy16.gif")));
@@ -322,7 +326,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 			clonebutton1.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					Integer num = getSelectedTaskId();
-					if( num != null )
+					if (num != null)
 						task_clone(num.intValue());
 				}
 			});
@@ -331,13 +335,12 @@ class TaskListPanel extends JPanel implements Model.Listener {
 		return buttonPanel;
 	}
 
-
 	/**
 	 * initalize the UI
-	 * @throws Exception 
+	 * 
+	 * @throws Exception
 	 */
 	private void initComponents() throws Exception {
-
 
 		this.setLayout(new GridBagLayout());
 
@@ -376,7 +379,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 		// clear all rows
 		tm.setRowCount(0);
 		tm.tableChanged(new TableModelEvent(tm));
-		
+
 		JScrollPane taskScroll = new JScrollPane();
 		taskScroll.setViewportView(taskTable);
 		taskScroll.setBorder(javax.swing.BorderFactory
@@ -389,11 +392,12 @@ class TaskListPanel extends JPanel implements Model.Listener {
 				if (evt.getClickCount() < 2)
 					return;
 				Integer num = getSelectedTaskId();
-				if( num != null )
-					task_change(num.intValue());			}
+				if (num != null)
+					task_change(num.intValue());
+			}
 		});
 		taskTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		
+
 		// set column widths
 		taskTable.getColumnModel().getColumn(7).setPreferredWidth(100);
 		taskTable.getColumnModel().getColumn(6).setPreferredWidth(100);
@@ -412,14 +416,14 @@ class TaskListPanel extends JPanel implements Model.Listener {
 				new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						Integer num = getSelectedTaskId();
-						if( num != null )
+						if (num != null)
 							task_change(num.intValue());
 					}
 				}, "Change"),
 				new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						Integer num = getSelectedTaskId();
-						if( num != null )
+						if (num != null)
 							task_clone(num.intValue());
 					}
 				}, "Clone"),
@@ -434,10 +438,9 @@ class TaskListPanel extends JPanel implements Model.Listener {
 					}
 				}, "Close") });
 
-		
 		this.add(taskScroll, GridBagConstraintsFactory.create(0, 0,
 				GridBagConstraints.BOTH, 1.0, 1.0));
-		
+
 		/*
 		 * add button panel
 		 */
@@ -447,7 +450,6 @@ class TaskListPanel extends JPanel implements Model.Listener {
 		refresh();
 
 	}
-
 
 	/**
 	 * Prints the task table
@@ -472,7 +474,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 		TableSorter tm = (TableSorter) taskTable.getModel();
 		tm.setRowCount(0);
 		tm.tableChanged(new TableModelEvent(tm));
-		
+
 		// get project id to filter on
 		Integer projfiltid = null;
 		if (!projectName.equals(Resource.getResourceString("All"))) {
@@ -486,9 +488,9 @@ class TaskListPanel extends JPanel implements Model.Listener {
 
 		try {
 			// loop through all tasks
-			TaskTypes tasktypes =  TaskModel.getReference().getTaskTypes();
-			Collection<Task> tasks =  TaskModel.getReference().getTasks();
-			for( Task task : tasks ) {
+			TaskTypes tasktypes = TaskModel.getReference().getTaskTypes();
+			Collection<Task> tasks = TaskModel.getReference().getTasks();
+			for (Task task : tasks) {
 
 				// filter by task state
 				String st = task.getState();
@@ -496,7 +498,8 @@ class TaskListPanel extends JPanel implements Model.Listener {
 					if (TaskModel.isClosed(task)) {
 						continue;
 					}
-				} else if (!taskStatus.equals(Resource.getResourceString("All"))
+				} else if (!taskStatus
+						.equals(Resource.getResourceString("All"))
 						&& !taskStatus.equals(st))
 					continue;
 
@@ -525,7 +528,8 @@ class TaskListPanel extends JPanel implements Model.Listener {
 						d = "";
 
 					if (filterCaseSensitive) {
-						if (d.indexOf(filterString) == -1 && r.indexOf(filterString) == -1)
+						if (d.indexOf(filterString) == -1
+								&& r.indexOf(filterString) == -1)
 							continue;
 					} else {
 						String lfilt = filterString.toLowerCase();
@@ -540,13 +544,13 @@ class TaskListPanel extends JPanel implements Model.Listener {
 				// if we get here - we are displaying this task as a row
 				// so fill in an array of objects for the row
 				Object[] ro = new Object[12];
-				ro[0] = task.getKey(); 
-				ro[1] = task.getState(); 
-				ro[2] = task.getType(); 
+				ro[0] = task.getKey();
+				ro[1] = task.getState();
+				ro[2] = task.getType();
 				ro[11] = task.getCategory();
 				ro[3] = task.getPriority();
-				ro[6] = task.getStartDate(); 
-				ro[7] = task.getDueDate(); 
+				ro[6] = task.getStartDate();
+				ro[7] = task.getDueDate();
 
 				// duration
 				if (task.getDueDate() != null) {
@@ -635,10 +639,14 @@ class TaskListPanel extends JPanel implements Model.Listener {
 	/**
 	 * Sets the filter criteria.
 	 * 
-	 * @param projectName the project name
-	 * @param status the status
-	 * @param filter the filter string
-	 * @param caseSensitive the case sensitive match flag
+	 * @param projectName
+	 *            the project name
+	 * @param status
+	 *            the status
+	 * @param filter
+	 *            the filter string
+	 * @param caseSensitive
+	 *            the case sensitive match flag
 	 */
 	public void setFilterCriteria(String projectName, String status,
 			String filter, boolean caseSensitive) {
@@ -648,7 +656,6 @@ class TaskListPanel extends JPanel implements Model.Listener {
 		this.filterCaseSensitive = caseSensitive;
 
 	}
-
 
 	/**
 	 * open the task editor in add mode.
@@ -665,19 +672,19 @@ class TaskListPanel extends JPanel implements Model.Listener {
 					return;
 				}
 			}
-			MultiView.getMainView().addView(
-					new TaskView(null, TaskView.Action.ADD, projfiltid));
+
+			new TaskView(null, TaskView.Action.ADD, projfiltid).showView();
 
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
 		}
 	}
 
-
 	/**
 	 * open the task editor to edit a task.
 	 * 
-	 * @param tasknum the tasknum
+	 * @param tasknum
+	 *            the tasknum
 	 */
 	static private void task_change(int tasknum) {
 
@@ -688,8 +695,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 				return;
 
 			// display the task editor
-			MultiView.getMainView().addView(
-					new TaskView(task, TaskView.Action.CHANGE, null));
+			new TaskView(task, TaskView.Action.CHANGE, null).showView();
 
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
@@ -700,7 +706,8 @@ class TaskListPanel extends JPanel implements Model.Listener {
 	/**
 	 * close a task and open the editor on the clone
 	 * 
-	 * @param tasknum the tasknum
+	 * @param tasknum
+	 *            the tasknum
 	 */
 	static private void task_clone(int tasknum) {
 
@@ -711,8 +718,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 				return;
 
 			// display the task editor
-			MultiView.getMainView().addView(
-					new TaskView(task, TaskView.Action.CLONE, null));
+			new TaskView(task, TaskView.Action.CLONE, null).showView();
 
 		} catch (Exception e) {
 			Errmsg.errmsg(e);

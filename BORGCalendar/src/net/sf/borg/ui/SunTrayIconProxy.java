@@ -31,8 +31,7 @@ import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.control.Borg;
-import net.sf.borg.ui.address.AddrListView;
-import net.sf.borg.ui.calendar.TodoView;
+import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.popup.ReminderPopupManager;
 
 /** communicates with the new java built-in system tray APIs */
@@ -108,7 +107,7 @@ class SunTrayIconProxy {
 		item.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				MultiView.getMainView().addView(AddrListView.getReference());
+				MultiView.getMainView().setView(ViewType.ADDRESS);
 
 			}
 		});
@@ -119,8 +118,7 @@ class SunTrayIconProxy {
 		item.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				TodoView tg = TodoView.getReference();
-				MultiView.getMainView().addView(tg);
+				MultiView.getMainView().setView(ViewType.TODO);
 			}
 		});
 		popup.add(item);

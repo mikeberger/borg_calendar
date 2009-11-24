@@ -50,7 +50,6 @@ import net.sf.borg.model.Model;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Task;
-import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.RunReport;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
@@ -58,7 +57,6 @@ import net.sf.borg.ui.util.PopupMenuHelper;
 import net.sf.borg.ui.util.StripedTable;
 import net.sf.borg.ui.util.TablePrinter;
 import net.sf.borg.ui.util.TableSorter;
-
 
 /**
  * shows a list of projects in a table
@@ -78,18 +76,24 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 			setOpaque(true); // MUST do this for background to show up.
 		}
 
-		/* (non-Javadoc)
-		 * @see javax.swing.table.TableCellRenderer#getTableCellRendererComponent(javax.swing.JTable, java.lang.Object, boolean, boolean, int, int)
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * javax.swing.table.TableCellRenderer#getTableCellRendererComponent
+		 * (javax.swing.JTable, java.lang.Object, boolean, boolean, int, int)
 		 */
 		public Component getTableCellRendererComponent(JTable table,
 				Object obj, boolean isSelected, boolean hasFocus, int row,
 				int column) {
 
 			// get the default component to start with
-			JLabel l = (JLabel) defaultTableCellRenderer.getTableCellRendererComponent(table,
-					obj, isSelected, hasFocus, row, column);
+			JLabel l = (JLabel) defaultTableCellRenderer
+					.getTableCellRendererComponent(table, obj, isSelected,
+							hasFocus, row, column);
 
-			// if this is not the days left column then return the default component
+			// if this is not the days left column then return the default
+			// component
 			String nm = table.getColumnName(column);
 			if (obj == null
 					|| !nm.equals(Resource.getResourceString("Days_Left")))
@@ -144,10 +148,10 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 	 */
 	public ProjectPanel() {
 		super();
-		
+
 		// listen for task model changes
 		TaskModel.getReference().addListener(this);
-		
+
 		try {
 			initComponents();
 			refresh();
@@ -158,7 +162,6 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 
 	}
 
-
 	/**
 	 * project change requested- bring up the project editor
 	 * 
@@ -168,22 +171,20 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 		int row = projectTable.getSelectedRow();
 		if (row == -1)
 			return;
-		
+
 		TableSorter tm = (TableSorter) projectTable.getModel();
 		Integer projectId = (Integer) tm.getValueAt(row, 0);
 
 		try {
-			Project p =  TaskModel.getReference().getProject(projectId);
+			Project p = TaskModel.getReference().getProject(projectId);
 			if (p == null)
 				return;
 
-			MultiView.getMainView().addView(
-					new ProjectView(p, ProjectView.Action.CHANGE, null));
+			new ProjectView(p, ProjectView.Action.CHANGE, null).showView();
 
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
 		}
-
 
 	}
 
@@ -205,8 +206,7 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 			if (p == null)
 				return;
 
-			MultiView.getMainView().addView(
-					new ProjectView(p, ProjectView.Action.CLONE, null));
+			new ProjectView(p, ProjectView.Action.CLONE, null).showView();
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
 		}
@@ -216,13 +216,13 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 	/**
 	 * Close selected project
 	 * 
-	 * 	 */
+	 * */
 	private void closeSelectedProject() {
 
 		int row = projectTable.getSelectedRow();
 		if (row == -1)
 			return;
-		
+
 		TableSorter tm = (TableSorter) projectTable.getModel();
 		Integer projectId = (Integer) tm.getValueAt(row, 0);
 		try {
@@ -237,14 +237,13 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 
 	/**
 	 * delete selected task
-	 * 	 */
+	 * */
 	private void deleteActionPerformed() {
-
 
 		int row = projectTable.getSelectedRow();
 		if (row == -1)
 			return;
-		
+
 		TableSorter tm = (TableSorter) projectTable.getModel();
 		Integer projectId = (Integer) tm.getValueAt(row, 0);
 
@@ -272,11 +271,12 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 		int row = projectTable.getSelectedRow();
 		if (row == -1)
 			return;
-		
+
 		TableSorter tm = (TableSorter) projectTable.getModel();
 		Integer projectId = (Integer) tm.getValueAt(row, 0);
 		try {
-			Project p = TaskModel.getReference().getProject(projectId.intValue());
+			Project p = TaskModel.getReference().getProject(
+					projectId.intValue());
 			GanttFrame.showChart(p);
 		} catch (ClassNotFoundException cnf) {
 			Errmsg.notice(Resource.getResourceString("borg_jasp"));
@@ -307,8 +307,8 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 			addbutton.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					try {
-						MultiView.getMainView().addView(
-								new ProjectView(null, ProjectView.Action.ADD, null));
+						new ProjectView(null, ProjectView.Action.ADD, null)
+								.showView();
 					} catch (Exception ex) {
 						Errmsg.errmsg(ex);
 					}
@@ -387,6 +387,7 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 
 	/**
 	 * initialize the UI
+	 * 
 	 * @throws Exception
 	 */
 	private void initComponents() throws Exception {
@@ -400,24 +401,27 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 		flowLayout.setAlignment(java.awt.FlowLayout.LEFT);
 		JPanel filterPanel = new JPanel();
 		filterPanel.setLayout(flowLayout);
-		
+
 		JLabel statusLabel = new JLabel();
-		statusLabel.setText(Resource.getResourceString("Status") + ":");	
+		statusLabel.setText(Resource.getResourceString("Status") + ":");
 		filterPanel.add(statusLabel, null);
 
 		projectStatusComboBox.removeAllItems();
 		projectStatusComboBox.addItem(Resource.getResourceString("All"));
 		projectStatusComboBox.addItem(Resource.getResourceString("OPEN"));
 		projectStatusComboBox.addItem(Resource.getResourceString("CLOSED"));
-		projectStatusComboBox.setSelectedItem(Resource.getResourceString("OPEN"));
-		projectStatusComboBox.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				refresh();
-			}
-		});
+		projectStatusComboBox.setSelectedItem(Resource
+				.getResourceString("OPEN"));
+		projectStatusComboBox
+				.addActionListener(new java.awt.event.ActionListener() {
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						refresh();
+					}
+				});
 		filterPanel.add(projectStatusComboBox, null);
 
-		this.add(filterPanel, GridBagConstraintsFactory.create(0, 0, GridBagConstraints.HORIZONTAL));
+		this.add(filterPanel, GridBagConstraintsFactory.create(0, 0,
+				GridBagConstraints.HORIZONTAL));
 
 		/*
 		 * project table
@@ -425,8 +429,9 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 		JScrollPane tableScroll = new JScrollPane();
 		projectTable = new StripedTable();
 
-		defaultTableCellRenderer = projectTable.getDefaultRenderer(Integer.class);
-		
+		defaultTableCellRenderer = projectTable
+				.getDefaultRenderer(Integer.class);
+
 		// set renderer to the custom one for integers
 		projectTable.setDefaultRenderer(Integer.class,
 				new ProjectPanel.ProjIntRenderer());
@@ -451,8 +456,8 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 				new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						try {
-							MultiView.getMainView().addView(
-									new ProjectView(null, ProjectView.Action.ADD, null));
+							new ProjectView(null, ProjectView.Action.ADD, null)
+									.showView();
 						} catch (Exception e) {
 							Errmsg.errmsg(e);
 						}
@@ -462,32 +467,27 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						projectChangeRequested();
 					}
-				},
-						"Change"),
+				}, "Change"),
 				new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						cloneSelectedProject();
 					}
-				},
-						"Clone"),
+				}, "Clone"),
 				new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						deleteActionPerformed();
 					}
-				},
-						"Delete"),
+				}, "Delete"),
 				new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						closeSelectedProject();
 					}
-				},
-						"Close"),
+				}, "Close"),
 				new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						ganttActionPerformed();
 					}
-				},
-						"GANTT") });
+				}, "GANTT") });
 
 		projectTable.getColumnModel().getColumn(0).setPreferredWidth(80);
 		projectTable.getColumnModel().getColumn(1).setPreferredWidth(80);
@@ -497,7 +497,7 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 		projectTable.getColumnModel().getColumn(6).setPreferredWidth(80);
 		projectTable.getColumnModel().getColumn(7).setPreferredWidth(80);
 		projectTable.getColumnModel().getColumn(8).setPreferredWidth(400);
-		
+
 		projectTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 		// set up for sorting when a column header is clicked
@@ -507,19 +507,18 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 		// clear all rows
 		tm.setRowCount(0);
 		tm.tableChanged(new TableModelEvent(tm));
-		
+
 		tableScroll.setViewportView(projectTable);
 
 		projectTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
 
-		this.add(tableScroll, GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH, 1.0, 1.0));
+		this.add(tableScroll, GridBagConstraintsFactory.create(0, 1,
+				GridBagConstraints.BOTH, 1.0, 1.0));
 
 		/*
 		 * button panel
 		 */
 		this.add(getButtonPanel(), GridBagConstraintsFactory.create(0, 2));
-
-		
 
 	}
 
@@ -534,7 +533,6 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 			Errmsg.errmsg(e);
 		}
 	}
-
 
 	/**
 	 * refresh when the task model changes
@@ -553,8 +551,9 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 		try {
 
 			// add projects to project table
-			Collection<Project> projects = TaskModel.getReference().getProjects();
-			for(Project project : projects) {
+			Collection<Project> projects = TaskModel.getReference()
+					.getProjects();
+			for (Project project : projects) {
 
 				// filter by status
 				if (!pstatfilt.equals(Resource.getResourceString("All"))
@@ -562,7 +561,8 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 					continue;
 
 				// filter by category
-				if (!CategoryModel.getReference().isShown(project.getCategory()))
+				if (!CategoryModel.getReference()
+						.isShown(project.getCategory()))
 					continue;
 
 				// if we get here - we are displaying this task as a row
@@ -573,21 +573,21 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 				ro[2] = project.getStatus();
 				ro[3] = project.getStartDate();
 				ro[4] = project.getDueDate();
-				
+
 				// number of tasks
 				Collection<Task> ptasks = TaskModel.getReference().getTasks(
 						project.getKey());
 				ro[5] = new Integer(ptasks.size());
-				
+
 				// open tasks
 				int open = 0;
-				for(Task pt : ptasks) {
+				for (Task pt : ptasks) {
 					if (!TaskModel.isClosed(pt)) {
 						open++;
 					}
 				}
 				ro[6] = new Integer(open);
-				
+
 				// days left
 				ro[7] = new Integer(0);
 				if (ro[4] == null)
@@ -633,7 +633,7 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 		int row = projectTable.getSelectedRow();
 		if (row == -1)
 			return;
-		
+
 		TableSorter tm = (TableSorter) projectTable.getModel();
 		Integer projectId = (Integer) tm.getValueAt(row, 0);
 		try {
@@ -657,7 +657,4 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 
 	}
 
-
-
-
-} 
+}

@@ -190,7 +190,7 @@ public class AddrListView extends DockableView implements Module {
 			Address addr = (Address) oa[k];
 
 			// show an address editor for the address
-			MultiView.getMainView().addView(new AddressView(addr));
+			new AddressView(addr).showView();
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
 		}
@@ -380,7 +380,7 @@ public class AddrListView extends DockableView implements Module {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						Address addr = AddressModel.getReference().newAddress();
 						addr.setKey(-1);
-						MultiView.getMainView().addView(new AddressView(addr));
+						new AddressView(addr).showView();
 					}
 				});
 
@@ -493,12 +493,11 @@ public class AddrListView extends DockableView implements Module {
 	@Override
 	public void initialize(MultiView parent) {
 		final MultiView par = parent;
-		final Module m = this;
 		parent.addToolBarItem(new ImageIcon(getClass().getResource(
 				"/resource/addr16.jpg")), getModuleName(),
 				new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
-						par.setView(m);
+						par.setView(getViewType());
 					}
 				});
 	}

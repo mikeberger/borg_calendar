@@ -85,14 +85,29 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 	protected void addModel(Model m) {
 		m.addListener(this);
 	}
+	
+	/**
+	 * Shows the view as a docked tab or separate window, depending on the user
+	 * options.
+	 * 
+	 * @param dp
+	 *            the DockableView
+	 */
+	public void showView() {
+		String dock = Prefs.getPref(PrefName.DOCKPANELS);
+		if (dock.equals("true")) {
+			this.dock();
+		} else
+			this.openInFrame();
+	}
+
 
 	/**
 	 * Dock into the multiview
 	 */
 	private void dock() {
-		MultiView.getMainView().dock(this);
-		if (frame != null)
-			frame.dispose();
+		MultiView.getMainView().addView(getFrameTitle(),this);
+		remove();
 	}
 
 	/**

@@ -40,7 +40,6 @@ import javax.swing.KeyStroke;
 import javax.swing.border.BevelBorder;
 
 import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.control.Borg;
 import net.sf.borg.ui.util.JTabbedPaneWithCloseIcons;
@@ -108,6 +107,7 @@ public class MultiView extends View {
 		 */
 		public void goTo(Calendar cal);
 	}
+	
 
 	/** argument values for setView() */
 	public enum ViewType {
@@ -261,21 +261,7 @@ public class MultiView extends View {
 		mainMenu.addHelpMenuItem(icon, tooltip, action);
 	}
 
-	/**
-	 * Adds a view as a docked tab or separate window, depending on the user
-	 * options.
-	 * 
-	 * @param dp
-	 *            the DockableView
-	 */
-	public void addView(DockableView dp) {
-		String dock = Prefs.getPref(PrefName.DOCKPANELS);
-		if (dock.equals("true")) {
-			dock(dp);
-		} else
-			dp.openInFrame();
-	}
-
+	
 	/**
 	 * close the main view. If the system tray icon is active, the program stays
 	 * running. If no system tray icon is active, the program shuts down
@@ -310,16 +296,14 @@ public class MultiView extends View {
 	}
 
 	/**
-	 * Dock a view as a tab
+	 * Add a plain component as a tab, and do not treat as a module
 	 * 
-	 * @param dp
-	 *            the DockableView
+	 * @param c
+	 *            the component
 	 */
-	public void dock(DockableView dp) {
-		tabs_.addTab(dp.getFrameTitle(), dp);
+	public void addView(String title, Component c) {
+		tabs_.addTab(title, c);
 		tabs_.setSelectedIndex(tabs_.getTabCount() - 1);
-		dp.remove();
-
 	}
 
 	/**
@@ -429,32 +413,6 @@ public class MultiView extends View {
 		// nothing to refresh for this view
 	}
 
-	/**
-	 * set the view to show the given module
-	 * 
-	 * @param module
-	 *            the module
-	 */
-	public void setView(Module module) {
-		Component component = module.getComponent();
-		if (component != null) {
-			if (!component.isDisplayable()) {
-				if (component instanceof DockableView) {
-					String dock = Prefs.getPref(PrefName.DOCKPANELS);
-					DockableView dp = (DockableView) component;
-					if (dock.equals("true")) {
-						dock(dp);
-					} else {
-						dp.openInFrame();
-						return;
-					}
-				} else {
-					tabs_.addTab(module.getModuleName(), component);
-				}
-			}
-			getTabs().setSelectedComponent(component);
-		}
-	}
 
 	/**
 	 * Sets the currently selected tab to be a particular view as defined in
@@ -467,7 +425,18 @@ public class MultiView extends View {
 
 		Module m = getModuleForView(type);
 		if (m != null) {
-			setView(m);
+			Component component = m.getComponent();
+			if (component != null) {
+				if (!component.isDisplayable()) {
+					if (component instanceof DockableView) {
+						((DockableView)component).showView();
+						return;
+					} else {
+						tabs_.addTab(m.getModuleName(), component);
+					}
+				}
+				getTabs().setSelectedComponent(component);
+			}
 		}
 	}
 

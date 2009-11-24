@@ -64,7 +64,6 @@ import net.sf.borg.model.LinkModel;
 import net.sf.borg.model.Repeat;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.Link;
-import net.sf.borg.ui.MultiView;
 
 /**
  * ApptBox is used to draw timed appointments on the time-grid part of the day
@@ -773,7 +772,7 @@ class ApptBox extends Box implements Box.Draggable {
 		AppointmentListView ag = new AppointmentListView(
 				cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal
 						.get(Calendar.DATE));
-		MultiView.getMainView().addView(ag);
+		ag.showView();
 		ag.showApp(appt.getKey());
 
 	}

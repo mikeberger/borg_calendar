@@ -532,7 +532,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 							.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal
 							.get(Calendar.DATE));
 					ag.showApp(ap.getKey());
-					MultiView.getMainView().addView(ag);
+					ag.showView();
 				}
 				// open a project
 				else if (at.getLinkType().equals(LinkType.PROJECT.toString())) {
@@ -543,10 +543,9 @@ public class LinkPanel extends JPanel implements Model.Listener {
 								.getResourceString("att_not_found"));
 						return;
 					}
-					MultiView.getMainView()
-							.addView(
-									new ProjectView(ap,
-											ProjectView.Action.CHANGE, null));
+
+					new ProjectView(ap, ProjectView.Action.CHANGE, null)
+							.showView();
 				}
 				// open a task
 				else if (at.getLinkType().equals(LinkType.TASK.toString())) {
@@ -557,8 +556,8 @@ public class LinkPanel extends JPanel implements Model.Listener {
 								.getResourceString("att_not_found"));
 						return;
 					}
-					MultiView.getMainView().addView(
-							new TaskView(ap, TaskView.Action.CHANGE, null));
+					
+					new TaskView(ap, TaskView.Action.CHANGE, null).showView();
 				}
 				// open an address
 				else if (at.getLinkType().equals(LinkType.ADDRESS.toString())) {
@@ -569,12 +568,12 @@ public class LinkPanel extends JPanel implements Model.Listener {
 								.getResourceString("att_not_found"));
 						return;
 					}
-					MultiView.getMainView().addView(new AddressView(ap));
+					new AddressView(ap).showView();
 				}
 				// open a memo
 				else if (at.getLinkType().equals(LinkType.MEMO.toString())) {
 					MultiView.getMainView().setView(ViewType.MEMO);
-					//MultiView.getMainView().showMemos(at.getPath());
+					// MultiView.getMainView().showMemos(at.getPath());
 				}
 			} catch (Exception e) {
 				Errmsg.errmsg(e);
@@ -611,7 +610,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 	 *            owning entity
 	 */
 	public void setOwner(KeyedEntity<?> owner) {
-		
+
 		owningEntity = owner;
 		refresh();
 	}

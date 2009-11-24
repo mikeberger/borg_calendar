@@ -31,7 +31,6 @@ import javax.swing.JPopupMenu;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.entity.Appointment;
-import net.sf.borg.ui.MultiView;
 
 /**
  * A DateZone is used to mark a rectagular area on the calendar UIs that corresponds
@@ -124,7 +123,7 @@ class DateZone {
 		AppointmentListView ag = new AppointmentListView(
 				cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal
 						.get(Calendar.DATE));
-		MultiView.getMainView().addView(ag);
+		ag.showView();
 
 	}
 

@@ -93,8 +93,8 @@ import net.sf.borg.ui.util.TableSorter;
 import com.toedter.calendar.JDateChooser;
 
 /**
- * Dockable window that shows a sorted list of all todos, allows the user to take action
- * on the todos, and lets the user quickly enter a new todo
+ * Dockable window that shows a sorted list of all todos, allows the user to
+ * take action on the todos, and lets the user quickly enter a new todo
  */
 public class TodoView extends DockableView implements Prefs.Listener, Module {
 
@@ -374,8 +374,9 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 		}
 
 		// load up a default appt from any saved prefs
-		Appointment appt = AppointmentModel.getReference().getDefaultAppointment();
-		if( appt == null )
+		Appointment appt = AppointmentModel.getReference()
+				.getDefaultAppointment();
+		if (appt == null)
 			appt = AppointmentModel.getReference().newAppt();
 
 		// set the date
@@ -827,12 +828,11 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 			Appointment ap = (Appointment) o;
 			ag.showApp(ap.getKey());
 
-			MultiView.getMainView().addView(ag);
-
+			ag.showView();
 		} else if (o instanceof Project) {
 			try {
-				ProjectView tskg = new ProjectView((Project) o, ProjectView.Action.CHANGE,
-						null);
+				ProjectView tskg = new ProjectView((Project) o,
+						ProjectView.Action.CHANGE, null);
 				tskg.setVisible(true);
 			} catch (Exception e) {
 				Errmsg.errmsg(e);
@@ -877,7 +877,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 	 * @throws Exception
 	 *             the exception
 	 */
-	public void print()  {
+	public void print() {
 		try {
 			TablePrinter.printTable(todoTable);
 		} catch (Exception e) {
@@ -1090,20 +1090,18 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 	@Override
 	public void initialize(MultiView parent) {
 		final MultiView par = parent;
-		final Module m = this;
 		parent.addToolBarItem(new ImageIcon(getClass().getResource(
-		"/resource/Properties16.gif")), getModuleName(), 
-		new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				par.setView(m);
-			}
-		});
+				"/resource/Properties16.gif")), getModuleName(),
+				new ActionListener() {
+					public void actionPerformed(ActionEvent evt) {
+						par.setView(getViewType());
+					}
+				});
 	}
-	
+
 	@Override
 	public ViewType getViewType() {
 		return ViewType.TODO;
 	}
-
 
 }

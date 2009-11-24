@@ -125,11 +125,9 @@ class InfoView extends DockableView implements Module {
 
 	@Override
 	public void initialize(MultiView parent) {
-		final MultiView par = parent;
-		final Module m = this;
 		parent.addHelpMenuItem(null, getModuleName(), new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				par.setView(m);
+				showView();
 			}
 		});
 		
