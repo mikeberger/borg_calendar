@@ -30,7 +30,6 @@ import java.awt.event.ActionListener;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
-import net.sf.borg.control.Borg;
 import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.popup.ReminderPopupManager;
 
@@ -83,7 +82,7 @@ class SunTrayIconProxy {
 	 * @param trayname the tray name (when the user hovers over the tray icon)
 	 * @throws Exception
 	 */
-	public void init(String trayname) throws Exception {
+	private void init(String trayname) throws Exception {
 		TrayIcon TIcon = null;
 
 		if (!SystemTray.isSupported())
@@ -166,8 +165,7 @@ class SunTrayIconProxy {
 		item.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				// WindowsTrayIcon.cleanUp();
-				Borg.shutdown();
+				UIControl.shutDownUI();
 			}
 		});
 		popup.add(item);

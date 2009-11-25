@@ -27,8 +27,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.Properties;
 
 import javax.swing.Box;
@@ -55,11 +53,8 @@ import net.sf.borg.model.LinkModel;
 import net.sf.borg.model.MemoModel;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.db.jdbc.JdbcDB;
-import net.sf.borg.model.entity.Appointment;
-import net.sf.borg.model.entity.Task;
 import net.sf.borg.model.undo.UndoLog;
 import net.sf.borg.ui.task.TaskConfigurator;
-import net.sf.borg.ui.util.InputDialog;
 import net.sf.borg.ui.util.ScrolledDialog;
 
 // TODO - javadoc not really done, still contains way too much logic
@@ -70,7 +65,6 @@ import net.sf.borg.ui.util.ScrolledDialog;
 class MainMenu {
 	
 	private JMenu actionMenu = new JMenu();
-	private JMenuItem delcatMI;
 	private JMenu helpmenu = new JMenu();
 	private JMenuBar menuBar = new JMenuBar();
 
@@ -124,7 +118,7 @@ class MainMenu {
 		exitMenuItem.setText(Resource.getResourceString("Exit"));
 		exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				Borg.shutdown();
+				UIControl.shutDownUI();
 			}
 		});
 		actionMenu.add(exitMenuItem);
@@ -205,68 +199,11 @@ class MainMenu {
 		OptionMenu.add(tsm);
 		menuBar.add(OptionMenu);
 
+
 		/*
-		 * 
-		 * Categories Menu
-		 * 
+		 * category menu
 		 */
-		JMenu catmenu = new JMenu();
-
-		catmenu.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/Preferences16.gif")));
-		ResourceHelper.setText(catmenu, "Categories");
-
-		JMenuItem chooseCategoriesMI = new JMenuItem();
-		chooseCategoriesMI.setIcon(new javax.swing.ImageIcon(getClass()
-				.getResource("/resource/Preferences16.gif")));
-		ResourceHelper.setText(chooseCategoriesMI, "choosecat");
-		chooseCategoriesMI.setActionCommand("Choose Displayed Categories");
-		chooseCategoriesMI
-				.addActionListener(new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						CategoryChooser.getReference().setVisible(true);
-					}
-				});
-		catmenu.add(chooseCategoriesMI);
-
-		JMenuItem addCategoryMI = new JMenuItem();
-		addCategoryMI.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/Add16.gif")));
-		ResourceHelper.setText(addCategoryMI, "addcat");
-		addCategoryMI.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				String inputValue = InputDialog.show(Resource
-						.getResourceString("AddCat"), 15);
-				if (inputValue == null || inputValue.equals(""))
-					return;
-				try {
-					CategoryModel.getReference().addCategory(inputValue);
-					CategoryModel.getReference().showCategory(inputValue);
-				} catch (Exception e) {
-					Errmsg.errmsg(e);
-				}
-			}
-		});
-		catmenu.add(addCategoryMI);
-
-		JMenuItem removeCategoryMI = new JMenuItem();
-		removeCategoryMI.setIcon(new javax.swing.ImageIcon(getClass()
-				.getResource("/resource/Delete16.gif")));
-		ResourceHelper.setText(removeCategoryMI, "remcat");
-		removeCategoryMI.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				try {
-					CategoryModel.getReference().syncCategories();
-				} catch (Exception e) {
-					Errmsg.errmsg(e);
-				}
-			}
-		});
-		catmenu.add(removeCategoryMI);
-
-		catmenu.add(getDelcatMI());
-
-		menuBar.add(catmenu);
+		menuBar.add(CategoryChooser.getReference().getCategoryMenu());
 
 		/* 
 		 * 
@@ -618,81 +555,7 @@ class MainMenu {
 
 	}
 
-	/**
-	 * delete category menu item
-	 */
-	private JMenuItem getDelcatMI() {
-		if (delcatMI == null) {
-			delcatMI = new JMenuItem();
-			ResourceHelper.setText(delcatMI, "delete_cat");
-			delcatMI.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-					"/resource/Delete16.gif")));
-			delcatMI.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent e) {
-
-					try {
-
-						// get category list
-						CategoryModel catmod = CategoryModel.getReference();
-						Collection<String> allcats = catmod.getCategories();
-						allcats.remove(CategoryModel.UNCATEGORIZED);
-						if (allcats.isEmpty())
-							return;
-						Object[] cats = allcats.toArray();
-
-						// ask user to choose a category
-						Object o = JOptionPane.showInputDialog(null, Resource
-								.getResourceString("delete_cat_choose"), "",
-								JOptionPane.QUESTION_MESSAGE, null, cats,
-								cats[0]);
-						if (o == null)
-							return;
-
-						// confirm with user
-						int ret = JOptionPane.showConfirmDialog(null, Resource
-								.getResourceString("delcat_warn")
-								+ " [" + (String) o + "]!", "",
-								JOptionPane.OK_CANCEL_OPTION,
-								JOptionPane.WARNING_MESSAGE);
-						if (ret == JOptionPane.OK_OPTION) {
-
-							// deletes all appts and tasks with that cetegory
-							// !!!!!
-
-							// appts
-							Iterator<?> itr = AppointmentModel.getReference()
-									.getAllAppts().iterator();
-							while (itr.hasNext()) {
-								Appointment ap = (Appointment) itr.next();
-								String cat = ap.getCategory();
-								if (cat != null && cat.equals(o))
-									AppointmentModel.getReference().delAppt(ap);
-							}
-
-							// tasks
-							itr = TaskModel.getReference().getTasks()
-									.iterator();
-							while (itr.hasNext()) {
-								Task t = (Task) itr.next();
-								String cat = t.getCategory();
-								if (cat != null && cat.equals(o))
-									TaskModel.getReference().delete(t.getKey());
-							}
-
-							try {
-								CategoryModel.getReference().syncCategories();
-							} catch (Exception ex) {
-								Errmsg.errmsg(ex);
-							}
-						}
-					} catch (Exception ex) {
-						Errmsg.errmsg(ex);
-					}
-				}
-			});
-		}
-		return delcatMI;
-	}
+	
 
 	/**
 	 * get the menu bar
@@ -907,7 +770,7 @@ class MainMenu {
 	}
 
 	/**
-	 * reset task tate action
+	 * reset task state action
 	 */
 	private void resetstActionPerformed() {
 		try {

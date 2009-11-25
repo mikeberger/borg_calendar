@@ -1,11 +1,31 @@
 package net.sf.borg.ui;
 
+import java.awt.Font;
 import java.awt.Frame;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+
+import net.sf.borg.common.Errmsg;
+import net.sf.borg.common.PrefName;
+import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
+import net.sf.borg.control.Borg;
+import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.AppointmentModel;
+import net.sf.borg.model.LinkModel;
+import net.sf.borg.model.MemoModel;
+import net.sf.borg.model.TaskModel;
 import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.address.AddrListView;
 import net.sf.borg.ui.calendar.DayPanel;
@@ -17,6 +37,8 @@ import net.sf.borg.ui.calendar.YearPanel;
 import net.sf.borg.ui.memo.MemoPanel;
 import net.sf.borg.ui.popup.ReminderPopupManager;
 import net.sf.borg.ui.task.TaskModule;
+import net.sf.borg.ui.util.NwFontChooserS;
+import net.sf.borg.ui.util.SplashScreen;
 
 /**
  * Class UIControl provides access to the UI from non-UI classes. UIControl provides the main UI entry point.
@@ -25,7 +47,11 @@ import net.sf.borg.ui.task.TaskModule;
  */
 public class UIControl {
 	
-	
+	/**
+	 * splash screen
+	 */
+	private static SplashScreen splashScreen = null;
+
 	/**
 	 * Main UI initialization.  
 	 * @param trayname - name for the tray icon
@@ -33,6 +59,64 @@ public class UIControl {
 	public static void startUI(String trayname)
 	{
 		
+		// default font
+		String deffont = Prefs.getPref(PrefName.DEFFONT);
+		if (!deffont.equals("")) {
+			Font f = Font.decode(deffont);
+			NwFontChooserS.setDefaultFont(f);
+		}
+
+		// set the look and feel
+		String lnf = Prefs.getPref(PrefName.LNF);
+		try {
+			UIManager.setLookAndFeel(lnf);
+			UIManager.getLookAndFeelDefaults().put("ClassLoader",
+					UIControl.class.getClassLoader());
+		} catch (Exception e) {
+			// System.out.println(e.toString());
+		}
+		
+		// pop up the splash if the option is set
+		if (Prefs.getBoolPref(PrefName.SPLASH)) {
+			splashScreen = new SplashScreen();
+			splashScreen.setText(Resource.getResourceString("Initializing"));
+			splashScreen.setVisible(true);
+			final String tn = trayname;
+			
+			/*
+			 * in order for the splash to be seen, we will complete initialization
+			 * later (in the swing thread).
+			 */
+			SwingUtilities.invokeLater(new Runnable(){
+
+				@Override
+				public void run() {
+					try {
+						// delay so that the splash can be seen
+						// this is in the swing thread, but is harmless as
+						// only the splash is shown
+						Thread.sleep(2000);
+					} catch (InterruptedException e) {
+						
+					}
+					completeUIInitialization(tn);
+				}
+				
+			});	
+		}
+		else
+			completeUIInitialization(trayname);
+		
+	}
+	
+	/**
+	 * complete the parts of the UI initialization that run after the splash screen
+	 * has shown for a while
+	 * @param trayname name for the tray icon
+	 */
+	private static void completeUIInitialization(String trayname)
+	{
+
 		// tray icon
 		SunTrayIconProxy.startTrayIcon(trayname);
 		
@@ -73,6 +157,13 @@ public class UIControl {
 		if (AppointmentModel.getReference().haveTodos()) {
 			mv.setView(ViewType.TODO);
 		}
+		
+		// destroy the splash screen
+		if( splashScreen != null )
+		{
+			splashScreen.dispose();
+			splashScreen = null;
+		}
 	}
 	
 	/**
@@ -84,7 +175,76 @@ public class UIControl {
 		MultiView.getMainView().setState(Frame.NORMAL);
 	}
 	
-	
+	/**
+	 * shuts down the UI, including db backup
+	 */
+	public static void shutDownUI()
+	{
+		// backup data
+		String backupdir = Prefs.getPref(PrefName.BACKUPDIR);
+		if (backupdir != null && !backupdir.equals("")) {
+			try {
+
+				int ret = JOptionPane.showConfirmDialog(null, Resource
+						.getResourceString("backup_notice")
+						+ " " + backupdir + "?", "BORG",
+						JOptionPane.OK_CANCEL_OPTION);
+				if (ret == JOptionPane.YES_OPTION) {
+					SimpleDateFormat sdf = new SimpleDateFormat(
+							"yyyyMMddHHmmss");
+					String uniq = sdf.format(new Date());
+					ZipOutputStream out = new ZipOutputStream(
+							new FileOutputStream(backupdir + "/borg" + uniq
+									+ ".zip"));
+					Writer fw = new OutputStreamWriter(out, "UTF8");
+
+					out.putNextEntry(new ZipEntry("borg.xml"));
+					AppointmentModel.getReference().export(fw);
+					fw.flush();
+					out.closeEntry();
+
+					out.putNextEntry(new ZipEntry("task.xml"));
+					TaskModel.getReference().export(fw);
+					fw.flush();
+					out.closeEntry();
+
+					out.putNextEntry(new ZipEntry("addr.xml"));
+					AddressModel.getReference().export(fw);
+					fw.flush();
+					out.closeEntry();
+
+					out.putNextEntry(new ZipEntry("memo.xml"));
+					MemoModel.getReference().export(fw);
+					fw.flush();
+					out.closeEntry();
+
+					out.putNextEntry(new ZipEntry("link.xml"));
+					LinkModel.getReference().export(fw);
+					fw.flush();
+					out.closeEntry();
+
+					out.close();
+				}
+			} catch (Exception e) {
+				Errmsg.errmsg(e);
+			}
+
+		}
+
+		// show a splash screen for shutdown
+		try {
+			SplashScreen ban = new SplashScreen();
+			ban.setText(Resource.getResourceString("shutdown"));
+			ban.setVisible(true);	
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		// non-UI shutdown
+		Borg.shutdown();
+
+	}
 	
 
 }

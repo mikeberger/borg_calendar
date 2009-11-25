@@ -41,7 +41,6 @@ import javax.swing.border.BevelBorder;
 
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Resource;
-import net.sf.borg.control.Borg;
 import net.sf.borg.ui.util.JTabbedPaneWithCloseIcons;
 
 /**
@@ -269,7 +268,7 @@ public class MultiView extends View {
 	 */
 	private void closeMainwindow() {
 		if (!SunTrayIconProxy.hasTrayIcon() && this == mainView) {
-			Borg.shutdown();
+			UIControl.shutDownUI();
 		} else {
 			this.dispose();
 		}

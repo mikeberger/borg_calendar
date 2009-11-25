@@ -19,25 +19,17 @@
 
 package net.sf.borg.control;
 
-import java.awt.Font;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.PrintStream;
-import java.io.Writer;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
@@ -48,17 +40,13 @@ import net.sf.borg.common.SocketHandler;
 import net.sf.borg.common.SocketServer;
 import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.AppointmentModel;
-import net.sf.borg.model.LinkModel;
-import net.sf.borg.model.MemoModel;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.db.jdbc.JdbcDB;
 import net.sf.borg.model.tool.ConversionTool;
 import net.sf.borg.ui.OptionsView;
 import net.sf.borg.ui.UIControl;
 import net.sf.borg.ui.util.ModalMessage;
-import net.sf.borg.ui.util.NwFontChooserS;
 import net.sf.borg.ui.util.ScrolledDialog;
-import net.sf.borg.ui.util.SplashScreen;
 
 /**
  * The Main Class of Borg. It's responsible for starting up the model and
@@ -96,69 +84,13 @@ public class Borg implements SocketHandler {
 	}
 
 	/**
-	 * Shutdown.close db connections. backup the database if the auto-backup
-	 * feature is on.
+	 * close db connections and end the program 
 	 */
 	static public void shutdown() {
-
-		// backup data
-		String backupdir = Prefs.getPref(PrefName.BACKUPDIR);
-		if (backupdir != null && !backupdir.equals("")) {
-			try {
-
-				int ret = JOptionPane.showConfirmDialog(null, Resource
-						.getResourceString("backup_notice")
-						+ " " + backupdir + "?", "BORG",
-						JOptionPane.OK_CANCEL_OPTION);
-				if (ret == JOptionPane.YES_OPTION) {
-					SimpleDateFormat sdf = new SimpleDateFormat(
-							"yyyyMMddHHmmss");
-					String uniq = sdf.format(new Date());
-					ZipOutputStream out = new ZipOutputStream(
-							new FileOutputStream(backupdir + "/borg" + uniq
-									+ ".zip"));
-					Writer fw = new OutputStreamWriter(out, "UTF8");
-
-					out.putNextEntry(new ZipEntry("borg.xml"));
-					AppointmentModel.getReference().export(fw);
-					fw.flush();
-					out.closeEntry();
-
-					out.putNextEntry(new ZipEntry("task.xml"));
-					TaskModel.getReference().export(fw);
-					fw.flush();
-					out.closeEntry();
-
-					out.putNextEntry(new ZipEntry("addr.xml"));
-					AddressModel.getReference().export(fw);
-					fw.flush();
-					out.closeEntry();
-
-					out.putNextEntry(new ZipEntry("memo.xml"));
-					MemoModel.getReference().export(fw);
-					fw.flush();
-					out.closeEntry();
-
-					out.putNextEntry(new ZipEntry("link.xml"));
-					LinkModel.getReference().export(fw);
-					fw.flush();
-					out.closeEntry();
-
-					out.close();
-				}
-			} catch (Exception e) {
-				Errmsg.errmsg(e);
-			}
-
-		}
-
-		// close the db
-		try {
-			SplashScreen ban = new SplashScreen();
-			ban.setText(Resource.getResourceString("shutdown"));
-			ban.setVisible(true);
+		
+		try {		
+			// close the db
 			JdbcDB.close();
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -371,23 +303,7 @@ public class Borg implements SocketHandler {
 			e.printStackTrace();
 		}
 
-		// default font
-		String deffont = Prefs.getPref(PrefName.DEFFONT);
-		if (!deffont.equals("")) {
-			Font f = Font.decode(deffont);
-			NwFontChooserS.setDefaultFont(f);
-		}
-
-		// set the look and feel
-		String lnf = Prefs.getPref(PrefName.LNF);
-		try {
-			UIManager.setLookAndFeel(lnf);
-			UIManager.getLookAndFeelDefaults().put("ClassLoader",
-					getClass().getClassLoader());
-		} catch (Exception e) {
-			// System.out.println(e.toString());
-		}
-
+		
 		// locale
 		String country = Prefs.getPref(PrefName.COUNTRY);
 		String language = Prefs.getPref(PrefName.LANGUAGE);
@@ -395,13 +311,7 @@ public class Borg implements SocketHandler {
 			Locale.setDefault(new Locale(language, country));
 		}
 
-		// pop up the splash
-		SplashScreen splashScreen = null;
-		if (Prefs.getBoolPref(PrefName.SPLASH)) {
-			splashScreen = new SplashScreen();
-			splashScreen.setText(Resource.getResourceString("Initializing"));
-			splashScreen.setVisible(true);
-		}
+		
 
 		// db url
 		String dbdir = null;
@@ -420,9 +330,6 @@ public class Borg implements SocketHandler {
 						.getResourceString("Notice"),
 						JOptionPane.INFORMATION_MESSAGE);
 
-				if (splashScreen != null)
-					splashScreen.dispose();
-
 				// if user wants to set db - let them
 				OptionsView.dbSelectOnly();
 				return;
@@ -434,32 +341,6 @@ public class Borg implements SocketHandler {
 			// connect to the db - for now it is jdbc only
 			JdbcDB.connect(dbdir);
 
-			if (splashScreen != null)
-				splashScreen.setText(Resource
-						.getResourceString("Loading_Appt_Database"));
-
-			// initialize the appointment model
-			AppointmentModel.getReference();
-
-			// init task model & load database
-			if (splashScreen != null)
-				splashScreen.setText(Resource
-						.getResourceString("Loading_Task_Database"));
-
-			// init task model
-			TaskModel.getReference();
-
-			if (splashScreen != null)
-				splashScreen.setText(Resource
-						.getResourceString("Opening_Address_Database"));
-
-			// init address model
-			AddressModel.getReference();
-
-			if (splashScreen != null)
-				splashScreen.setText(Resource
-						.getResourceString("Opening_Main_Window"));
-
 			// start the UI thread
 			final String traynm = trayname;
 			SwingUtilities.invokeLater(new Runnable() {
@@ -468,9 +349,6 @@ public class Borg implements SocketHandler {
 				}
 			});
 
-			if (splashScreen != null)
-				splashScreen.dispose();
-			splashScreen = null;
 
 			// calculate email time in minutes from now
 			Calendar cal = new GregorianCalendar();
@@ -552,8 +430,6 @@ public class Borg implements SocketHandler {
 			// prompt for ok
 			int ret = ScrolledDialog.showOptionDialog(es);
 			if (ret == ScrolledDialog.OK) {
-				if (splashScreen != null)
-					splashScreen.dispose();
 				OptionsView.dbSelectOnly();
 				return;
 			}

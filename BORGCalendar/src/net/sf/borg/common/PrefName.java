@@ -119,12 +119,6 @@ public class PrefName {
 	/** show the spash window */
 	static public PrefName SPLASH = new PrefName("splash", "true");
 
-	/** last export url */
-	static public PrefName LASTEXPURL = new PrefName("lastExpUrl", "");
-
-	/** last import url */
-	static public PrefName LASTIMPURL = new PrefName("lastImpUrl", "");
-
 	/** port for the socket listener */
 	static public PrefName SOCKETPORT = new PrefName("socketport", new Integer(
 			2929));

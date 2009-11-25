@@ -441,7 +441,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 
 		// find next to do if it repeats by doing calendar math
 		if (tms != null && tms.intValue() > 1 && rpt != null
-				&& !rpt.equals(Repeat.ONCE)) {
+				&& Repeat.isRepeating(appt)) {
 			int tm = tms.intValue();
 
 			Calendar ccal = new GregorianCalendar();
