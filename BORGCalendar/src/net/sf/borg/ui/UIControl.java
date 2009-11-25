@@ -180,6 +180,9 @@ public class UIControl {
 	 */
 	public static void shutDownUI()
 	{
+		// stop popup timer and destroy popups
+		ReminderPopupManager.getReference().remove();
+		
 		// backup data
 		String backupdir = Prefs.getPref(PrefName.BACKUPDIR);
 		if (backupdir != null && !backupdir.equals("")) {

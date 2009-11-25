@@ -205,6 +205,24 @@ public class ReminderPopupManager implements Model.Listener {
 
 	}
 
+	/**
+	 * stop the timer and remove all popups
+	 */
+	public void remove() {
+		timer.cancel();
+
+		Set<Entry<AppointmentInstance, ReminderPopup>> entrySet = pops
+				.entrySet();
+		for (Entry<AppointmentInstance, ReminderPopup> popupMapEntry : entrySet) {
+
+			ReminderPopup popup = popupMapEntry.getValue();
+			if (popup == null || !popup.isDisplayable())
+				continue;
+			
+			popup.dispose();
+		}
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -253,27 +271,26 @@ public class ReminderPopupManager implements Model.Listener {
 					deletedPopupKeys.add(apptInstance);
 					continue;
 				}
-				
-				if( !appt.getDate().equals(apptInstance.appt.getDate()))
-				{
+
+				if (!appt.getDate().equals(apptInstance.appt.getDate())) {
 					// date changed - get rid of popup
 					popupWindow.dispose();
 					deletedPopupKeys.add(apptInstance);
 				}
-				
+
 				// use latest from db in the appt instance so shouldBeShown()
 				// can check any updated values
 				apptInstance.appt = appt;
-				
+
 				if (!shouldBeShown(apptInstance)) {
 					// dispose of popup and add to delete list
 					popupWindow.dispose();
 					deletedPopupKeys.add(apptInstance);
 				}
-				
-				// delete it if the text changed - will add back in check for popups
-				if( !appt.getText().equals(apptInstance.getAppt().getText()))
-				{
+
+				// delete it if the text changed - will add back in check for
+				// popups
+				if (!appt.getText().equals(apptInstance.getAppt().getText())) {
 					popupWindow.dispose();
 					deletedPopupKeys.add(apptInstance);
 				}

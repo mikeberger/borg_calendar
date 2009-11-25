@@ -88,6 +88,12 @@ public class Borg implements SocketHandler {
 	 */
 	static public void shutdown() {
 		
+		if (getReference().syncTimer_ != null)
+			getReference().syncTimer_.cancel();
+		if (getReference().mailTimer_ != null)
+			getReference().mailTimer_.cancel();
+
+		
 		try {		
 			// close the db
 			JdbcDB.close();
