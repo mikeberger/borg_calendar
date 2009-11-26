@@ -100,6 +100,8 @@ public class SplashScreen extends JFrame {
 				GridBagConstraints.BOTH, 0.0, 0.0);
 		gbc2.insets = new Insets(0,0,0,0);
 		topPanel.add(statusText, gbc2);
+		
+		statusText.setEditable(false);
 
 		this.setSize(364, 322);
 
