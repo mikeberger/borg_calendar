@@ -45,18 +45,26 @@ import net.sf.borg.model.entity.Project;
 public class RunReport {
 
 	/**
+	 * return true if Jasper reports is in the classpath
+	 */
+	public static boolean hasJasper()
+	{
+		try {
+			ClassLoader cl = ClassLoader.getSystemClassLoader();
+			cl.loadClass("net.sf.jasperreports.engine.JasperPrint");
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+	/**
 	 * create the Report Menu or return null if reports not supported
 	 * @return the Report JMenu or null
 	 */
 	public static JMenu getReportMenu() {
 
-		try {
-			ClassLoader cl = ClassLoader.getSystemClassLoader();
-			cl.loadClass("net.sf.jasperreports.engine.JasperPrint");
-		} catch (Exception e) {
-			// silently do nothing
+		if( !hasJasper())
 			return null;
-		}
 		
 		JMenu m = new JMenu();
 		m.setText(Resource.getResourceString("reports"));

@@ -87,7 +87,7 @@ public class ProjectView extends DockableView {
 	 * @return the project id
 	 * 
 	 * @throws Exception
-	 *             
+	 * 
 	 */
 	static private Integer getProjectId(String s) throws Exception {
 		// project id is the number before the colon
@@ -102,8 +102,8 @@ public class ProjectView extends DockableView {
 	}
 
 	/**
-	 * creates a string to show in the parent project combo box
-	 * that contains project id and name
+	 * creates a string to show in the parent project combo box that contains
+	 * project id and name
 	 * 
 	 * @param p
 	 *            the project
@@ -181,10 +181,9 @@ public class ProjectView extends DockableView {
 	 * @throws Exception
 	 *             the exception
 	 */
-	public ProjectView(Project p, Action function, Integer parentId)
-			 {
+	public ProjectView(Project p, Action function, Integer parentId) {
 		super();
-		
+
 		// listen for task model changes
 		addModel(TaskModel.getReference());
 
@@ -199,14 +198,12 @@ public class ProjectView extends DockableView {
 				categoryBox.addItem(it.next());
 			}
 			categoryBox.setSelectedIndex(0);
-			
+
 			// show the project
 			showProject(function, p, parentId);
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
 		}
-
-		
 
 	}
 
@@ -292,15 +289,15 @@ public class ProjectView extends DockableView {
 	 */
 	private void initComponents()// GEN-BEGIN:initComponents
 	{
-		
+
 		setLayout(new GridBagLayout());
-		
+
 		// undocked menu
 		menuBar = new JMenuBar();
 		menu = new JMenu();
 		saveMenuItem = new JMenuItem();
 		dismissMenuItem = new JMenuItem();
-		
+
 		/*
 		 * project info panel
 		 */
@@ -336,8 +333,8 @@ public class ProjectView extends DockableView {
 
 		ResourceHelper.setText(catlabel, "Category");
 		categoryBox = new JComboBox();
-		catlabel.setLabelFor(categoryBox);	
-		
+		catlabel.setLabelFor(categoryBox);
+
 		projectInfoPanel.add(lblStartDate, GridBagConstraintsFactory.create(3,
 				1, GridBagConstraints.BOTH));
 		projectInfoPanel.add(lblDueDate, GridBagConstraintsFactory.create(1, 4,
@@ -358,12 +355,12 @@ public class ProjectView extends DockableView {
 				0, GridBagConstraints.BOTH, 1.0, 0.0));
 		projectInfoPanel.add(statusComboBox, GridBagConstraintsFactory.create(
 				2, 1, GridBagConstraints.BOTH, 1.0, 0.0));
-		
+
 		daysLeftText = new JTextField();
 		daysLeftText.setEditable(false);
 		projectInfoPanel.add(daysLeftText, GridBagConstraintsFactory.create(4,
 				4, GridBagConstraints.BOTH, 1.0, 0.0));
-		
+
 		JLabel daysLeftLabel = new JLabel();
 		daysLeftLabel.setText(Resource.getResourceString("Days_Left"));
 		daysLeftLabel.setHorizontalTextPosition(SwingConstants.RIGHT);
@@ -373,26 +370,26 @@ public class ProjectView extends DockableView {
 				4));
 		projectInfoPanel.add(description, GridBagConstraintsFactory.create(2,
 				5, GridBagConstraints.BOTH, 1.0, 0.0));
-		
+
 		JLabel descLabel = new JLabel();
 		descLabel.setText(Resource.getResourceString("Description"));
 		projectInfoPanel.add(descLabel, GridBagConstraintsFactory.create(1, 5,
 				GridBagConstraints.BOTH));
-		
+
 		JLabel totalLabel = new JLabel();
 		totalLabel.setText(Resource.getResourceString("total_tasks"));
 		projectInfoPanel
 				.add(totalLabel, GridBagConstraintsFactory.create(3, 5));
-		
+
 		JLabel openLabel = new JLabel();
 		openLabel.setText(Resource.getResourceString("open_tasks"));
 		projectInfoPanel.add(openLabel, GridBagConstraintsFactory.create(3, 6));
-		
+
 		totalTaskCount = new JTextField();
 		totalTaskCount.setEditable(false);
 		projectInfoPanel.add(totalTaskCount, GridBagConstraintsFactory.create(
 				4, 5, GridBagConstraints.BOTH, 1.0, 0.0));
-		
+
 		openTaskCount = new JTextField();
 		openTaskCount.setEditable(false);
 		projectInfoPanel.add(openTaskCount, GridBagConstraintsFactory.create(4,
@@ -402,11 +399,11 @@ public class ProjectView extends DockableView {
 				.create(2, 6, GridBagConstraints.BOTH, 1.0, 0.0));
 
 		JLabel parentLabel = new JLabel(Resource.getResourceString("parent"));
-		projectInfoPanel.add(parentLabel, GridBagConstraintsFactory.create(1, 6,
-				GridBagConstraints.BOTH));
+		projectInfoPanel.add(parentLabel, GridBagConstraintsFactory.create(1,
+				6, GridBagConstraints.BOTH));
 
 		add(projectInfoPanel, GridBagConstraintsFactory.create(0, 0,
-				GridBagConstraints.BOTH, 1.0, 0.0)); 
+				GridBagConstraints.BOTH, 1.0, 0.0));
 
 		/*
 		 * button panel
@@ -434,17 +431,20 @@ public class ProjectView extends DockableView {
 		});
 		buttonPanel.add(ganttbutton);
 
-		JButton projRptButton = new JButton();
-		ResourceHelper.setText(projRptButton, "Report");
-		projRptButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				reportButtonActionPerformed();
-			}
-		});
-		buttonPanel.add(projRptButton);
+		if (RunReport.hasJasper()) {
+			JButton projRptButton = new JButton();
+			ResourceHelper.setText(projRptButton, "Report");
+			projRptButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+					reportButtonActionPerformed();
+				}
+			});
+			buttonPanel.add(projRptButton);
+		}
+
 		add(buttonPanel, GridBagConstraintsFactory.create(0, 1,
 				GridBagConstraints.BOTH));
-		
+
 		/*
 		 * link panel
 		 */
@@ -535,7 +535,7 @@ public class ProjectView extends DockableView {
 			if (cal == null)
 				cal = new GregorianCalendar();
 			p.setStartDate(cal.getTime()); // start date
-			
+
 			cal = dueDateChooser.getCalendar();
 			if (cal != null) {
 				p.setDueDate(cal.getTime()); // due date
@@ -545,10 +545,10 @@ public class ProjectView extends DockableView {
 					throw new Warning(Resource.getResourceString("sd_dd_warn"));
 				}
 			}
-			
+
 			p.setDescription(description.getText());
 			p.setStatus((String) statusComboBox.getSelectedItem());
-			
+
 			String cat = (String) categoryBox.getSelectedItem();
 			if (cat.equals("") || cat.equals(CategoryModel.UNCATEGORIZED)) {
 				p.setCategory(null);
@@ -600,7 +600,7 @@ public class ProjectView extends DockableView {
 		parentProjectComboBox.addItem("");
 		Collection<Project> projects = TaskModel.getReference().getProjects();
 		if (projects != null) {
-			for( Project project : projects ) {
+			for (Project project : projects) {
 				// add open projects that are not the current one
 				if ((p == null || p.getKey() != project.getKey())
 						&& project.getStatus().equals(
@@ -616,7 +616,8 @@ public class ProjectView extends DockableView {
 			projectIdText.setEditable(false);
 
 			// window title - "Item N"
-			windowTitle = Resource.getResourceString("Item_") + " " + p.getKey();
+			windowTitle = Resource.getResourceString("Item_") + " "
+					+ p.getKey();
 
 			// due date
 			GregorianCalendar gc = new GregorianCalendar();
@@ -649,9 +650,9 @@ public class ProjectView extends DockableView {
 			Collection<Task> ptasks = TaskModel.getReference().getTasks(
 					p.getKey());
 			totalTaskCount.setText(Integer.toString(ptasks.size()));
-			
+
 			int openTasks = 0;
-			for( Task pt : ptasks) {
+			for (Task pt : ptasks) {
 				if (!TaskModel.isClosed(pt)) {
 					openTasks++;
 				}
@@ -674,14 +675,13 @@ public class ProjectView extends DockableView {
 			// add the task list
 			if (taskPanel == null) {
 				taskPanel = new TaskListPanel(TaskView.getProjectString(p));
-				taskBorder.add(taskPanel, GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH, 1.0, 1.0));
+				taskBorder.add(taskPanel, GridBagConstraintsFactory.create(0,
+						0, GridBagConstraints.BOTH, 1.0, 1.0));
 			}
 
-		} 
-		else 
-		{
-			// set fields for a new project 
-			
+		} else {
+			// set fields for a new project
+
 			projectIdText.setText("NEW");
 			projectIdText.setEditable(false);
 
@@ -752,7 +752,8 @@ public class ProjectView extends DockableView {
 			if (p != null)
 				state = p.getStatus();
 
-			// set next state pulldown - projects only move between open and closed
+			// set next state pulldown - projects only move between open and
+			// closed
 			statusComboBox.removeAllItems();
 			statusComboBox.addItem(Resource.getResourceString("OPEN"));
 			statusComboBox.addItem(Resource.getResourceString("CLOSED"));

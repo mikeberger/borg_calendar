@@ -371,16 +371,18 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 			});
 			buttonPanel.add(ganttbutton, null);
 
-			JButton projRptButton = new JButton();
-			ResourceHelper.setText(projRptButton, "Report");
-			projRptButton
-					.addActionListener(new java.awt.event.ActionListener() {
-						public void actionPerformed(
-								java.awt.event.ActionEvent evt) {
-							reportButtonActionPerformed();
-						}
-					});
-			buttonPanel.add(projRptButton);
+			if (RunReport.hasJasper()) {
+				JButton projRptButton = new JButton();
+				ResourceHelper.setText(projRptButton, "Report");
+				projRptButton
+						.addActionListener(new java.awt.event.ActionListener() {
+							public void actionPerformed(
+									java.awt.event.ActionEvent evt) {
+								reportButtonActionPerformed();
+							}
+						});
+				buttonPanel.add(projRptButton);
+			}
 		}
 		return buttonPanel;
 	}
@@ -482,12 +484,7 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						closeSelectedProject();
 					}
-				}, "Close"),
-				new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						ganttActionPerformed();
-					}
-				}, "GANTT") });
+				}, "Close") });
 
 		projectTable.getColumnModel().getColumn(0).setPreferredWidth(80);
 		projectTable.getColumnModel().getColumn(1).setPreferredWidth(80);
