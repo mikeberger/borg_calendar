@@ -90,8 +90,6 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 	 * Shows the view as a docked tab or separate window, depending on the user
 	 * options.
 	 * 
-	 * @param dp
-	 *            the DockableView
 	 */
 	public void showView() {
 		String dock = Prefs.getPref(PrefName.DOCKPANELS);

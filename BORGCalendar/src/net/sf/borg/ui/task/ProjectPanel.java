@@ -263,34 +263,6 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 	}
 
 	/**
-	 * show gantt chart for selected project
-	 * 
-	 */
-	private void ganttActionPerformed() {
-
-		int row = projectTable.getSelectedRow();
-		if (row == -1)
-			return;
-
-		TableSorter tm = (TableSorter) projectTable.getModel();
-		Integer projectId = (Integer) tm.getValueAt(row, 0);
-		try {
-			Project p = TaskModel.getReference().getProject(
-					projectId.intValue());
-			GanttFrame.showChart(p);
-		} catch (ClassNotFoundException cnf) {
-			Errmsg.notice(Resource.getResourceString("borg_jasp"));
-		} catch (NoClassDefFoundError r) {
-			Errmsg.notice(Resource.getResourceString("borg_jasp"));
-		} catch (Warning w) {
-			Errmsg.notice(w.getMessage());
-		} catch (Exception e) {
-			Errmsg.errmsg(e);
-		}
-
-	}
-
-	/**
 	 * get the button panel
 	 * 
 	 * @return the button panel
@@ -361,15 +333,6 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 				}
 			});
 			buttonPanel.add(clonebutton1, null);
-
-			JButton ganttbutton = new JButton();
-			ganttbutton.setText(Resource.getResourceString("GANTT"));
-			ganttbutton.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent e) {
-					ganttActionPerformed();
-				}
-			});
-			buttonPanel.add(ganttbutton, null);
 
 			if (RunReport.hasJasper()) {
 				JButton projRptButton = new JButton();
@@ -653,5 +616,7 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 		}
 
 	}
+	
+	
 
 }

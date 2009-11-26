@@ -183,6 +183,16 @@ public class UIControl {
 		// stop popup timer and destroy popups
 		ReminderPopupManager.getReference().remove();
 		
+		// show a splash screen for shutdown
+		try {
+			SplashScreen ban = new SplashScreen();
+			ban.setText(Resource.getResourceString("shutdown"));
+			ban.setVisible(true);	
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		// backup data
 		String backupdir = Prefs.getPref(PrefName.BACKUPDIR);
 		if (backupdir != null && !backupdir.equals("")) {
@@ -234,15 +244,7 @@ public class UIControl {
 
 		}
 
-		// show a splash screen for shutdown
-		try {
-			SplashScreen ban = new SplashScreen();
-			ban.setText(Resource.getResourceString("shutdown"));
-			ban.setVisible(true);	
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		
 		
 		// non-UI shutdown
 		Borg.shutdown();

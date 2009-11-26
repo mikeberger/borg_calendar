@@ -23,6 +23,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.lang.reflect.Method;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -112,6 +113,19 @@ public class ProjectView extends DockableView {
 	 */
 	static private String getProjectString(Project p) {
 		return p.getKey() + ":" + p.getDescription();
+	}
+
+	/**
+	 * return true if Gantt Chart module is in the classpath
+	 */
+	private static boolean hasGantt() {
+		try {
+			ClassLoader cl = ClassLoader.getSystemClassLoader();
+			cl.loadClass("org.jfree.chart.JFreeChart");
+			return true;
+		} catch (Throwable e) {
+			return false;
+		}
 	}
 
 	/** The category box. */
@@ -211,6 +225,7 @@ public class ProjectView extends DockableView {
 	 * show a gantt chart for the project
 	 * 
 	 */
+	@SuppressWarnings("unchecked")
 	private void ganttActionPerformed() {
 
 		String num = projectIdText.getText();
@@ -221,7 +236,11 @@ public class ProjectView extends DockableView {
 		int pnum = Integer.parseInt(num);
 		try {
 			Project p = TaskModel.getReference().getProject(pnum);
-			GanttFrame.showChart(p);
+			ClassLoader cl = ClassLoader.getSystemClassLoader();
+			Class ganttClass = cl.loadClass("net.sf.borg.ui.task.GanttFrame");
+			Method m = ganttClass.getMethod("showChart",
+					new Class[] { Project.class });
+			m.invoke(null, p);
 		} catch (ClassNotFoundException cnf) {
 			Errmsg.notice(Resource.getResourceString("borg_jasp"));
 		} catch (NoClassDefFoundError r) {
@@ -422,14 +441,16 @@ public class ProjectView extends DockableView {
 		});
 		buttonPanel.add(savebutton, savebutton.getName());
 
-		JButton ganttbutton = new JButton();
-		ganttbutton.setText(Resource.getResourceString("GANTT"));
-		ganttbutton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				ganttActionPerformed();
-			}
-		});
-		buttonPanel.add(ganttbutton);
+		if (hasGantt()) {
+			JButton ganttbutton = new JButton();
+			ganttbutton.setText(Resource.getResourceString("GANTT"));
+			ganttbutton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					ganttActionPerformed();
+				}
+			});
+			buttonPanel.add(ganttbutton);
+		}
 
 		if (RunReport.hasJasper()) {
 			JButton projRptButton = new JButton();
