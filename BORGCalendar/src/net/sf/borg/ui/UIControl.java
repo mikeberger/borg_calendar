@@ -2,6 +2,8 @@ package net.sf.borg.ui;
 
 import java.awt.Font;
 import java.awt.Frame;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -13,7 +15,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 import javax.swing.UIManager;
 
 import net.sf.borg.common.Errmsg;
@@ -41,24 +43,26 @@ import net.sf.borg.ui.util.NwFontChooserS;
 import net.sf.borg.ui.util.SplashScreen;
 
 /**
- * Class UIControl provides access to the UI from non-UI classes. UIControl provides the main UI entry point.
+ * Class UIControl provides access to the UI from non-UI classes. UIControl
+ * provides the main UI entry point.
  * 
- *
+ * 
  */
 public class UIControl {
-	
+
 	/**
 	 * splash screen
 	 */
 	private static SplashScreen splashScreen = null;
 
 	/**
-	 * Main UI initialization.  
-	 * @param trayname - name for the tray icon
+	 * Main UI initialization.
+	 * 
+	 * @param trayname
+	 *            - name for the tray icon
 	 */
-	public static void startUI(String trayname)
-	{
-		
+	public static void startUI(String trayname) {
+
 		// default font
 		String deffont = Prefs.getPref(PrefName.DEFFONT);
 		if (!deffont.equals("")) {
@@ -75,57 +79,50 @@ public class UIControl {
 		} catch (Exception e) {
 			// System.out.println(e.toString());
 		}
-		
+
 		// pop up the splash if the option is set
 		if (Prefs.getBoolPref(PrefName.SPLASH)) {
 			splashScreen = new SplashScreen();
 			splashScreen.setText(Resource.getResourceString("Initializing"));
 			splashScreen.setVisible(true);
 			final String tn = trayname;
-			
+
 			/*
-			 * in order for the splash to be seen, we will complete initialization
-			 * later (in the swing thread).
+			 * in order for the splash to be seen, we will complete
+			 * initialization later (in the swing thread).
 			 */
-			SwingUtilities.invokeLater(new Runnable(){
+			Timer t = new Timer(3000, new ActionListener() {
 
 				@Override
-				public void run() {
-					try {
-						// delay so that the splash can be seen
-						// this is in the swing thread, but is harmless as
-						// only the splash is shown
-						Thread.sleep(2000);
-					} catch (InterruptedException e) {
-						
-					}
+				public void actionPerformed(ActionEvent arg0) {
 					completeUIInitialization(tn);
 				}
-				
-			});	
-		}
-		else
+			});
+			t.setRepeats(false);
+			t.start();
+		} else
 			completeUIInitialization(trayname);
-		
+
 	}
-	
+
 	/**
-	 * complete the parts of the UI initialization that run after the splash screen
-	 * has shown for a while
-	 * @param trayname name for the tray icon
+	 * complete the parts of the UI initialization that run after the splash
+	 * screen has shown for a while
+	 * 
+	 * @param trayname
+	 *            name for the tray icon
 	 */
-	private static void completeUIInitialization(String trayname)
-	{
+	private static void completeUIInitialization(String trayname) {
 
 		// tray icon
 		SunTrayIconProxy.startTrayIcon(trayname);
-		
+
 		// create popups view
 		ReminderPopupManager.getReference();
 
 		// create the main window
 		MultiView mv = MultiView.getMainView();
-		
+
 		// load the UI modules into the main window
 		Calendar cal_ = new GregorianCalendar();
 		mv.addModule(new MonthPanel(cal_.get(Calendar.MONTH), cal_
@@ -149,7 +146,7 @@ public class UIControl {
 
 		// make the main window visible
 		mv.setVisible(true);
-		
+
 		// show the month view
 		mv.setView(ViewType.MONTH);
 
@@ -157,42 +154,39 @@ public class UIControl {
 		if (AppointmentModel.getReference().haveTodos()) {
 			mv.setView(ViewType.TODO);
 		}
-		
+
 		// destroy the splash screen
-		if( splashScreen != null )
-		{
+		if (splashScreen != null) {
 			splashScreen.dispose();
 			splashScreen = null;
 		}
 	}
-	
+
 	/**
 	 * raise the UI to the front
 	 */
-	public static void toFront()
-	{
+	public static void toFront() {
 		MultiView.getMainView().toFront();
 		MultiView.getMainView().setState(Frame.NORMAL);
 	}
-	
+
 	/**
 	 * shuts down the UI, including db backup
 	 */
-	public static void shutDownUI()
-	{
+	public static void shutDownUI() {
 		// stop popup timer and destroy popups
 		ReminderPopupManager.getReference().remove();
-		
+
 		// show a splash screen for shutdown
 		try {
 			SplashScreen ban = new SplashScreen();
 			ban.setText(Resource.getResourceString("shutdown"));
-			ban.setVisible(true);	
+			ban.setVisible(true);
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		// backup data
 		String backupdir = Prefs.getPref(PrefName.BACKUPDIR);
 		if (backupdir != null && !backupdir.equals("")) {
@@ -244,12 +238,9 @@ public class UIControl {
 
 		}
 
-		
-		
 		// non-UI shutdown
 		Borg.shutdown();
 
 	}
-	
 
 }
