@@ -1,7 +1,18 @@
 BORG 1.7.3 - TBD
 ----------------
-Feature [2893839] Add database encryption
+Feature [2893839] Add database encryption (Memos)
 
+Change - Hide report items if report libs not available
+Change - Hide Gantt buttons if JFreechart not available
+Change - Move UI logic out of Borg class. Move UI logic out of non-Swing thread.
+
+[Bugs-2897010] Appt drag on month view works wrong if week starts with mon- only if first day of month is a sunday
+Bug - Links to Borg Objects not deleted when target is deleted
+Bug - Linked Memos do not open properly
+Bug - Splash screen text is editable
+Bug - NPE if popup timer goes off during shutdown after db is closed
+Bug - Missing scrollbar in Appointment Panel
+Bug - task filter missing on task list screen
 
 BORG 1.7.2 Beta - Developer Release
 -----------------------------------
