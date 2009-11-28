@@ -20,6 +20,7 @@ Copyright 2003 by Mike Berger
 
 package net.sf.borg.ui.link;
 
+import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -63,6 +64,7 @@ import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.address.AddressView;
 import net.sf.borg.ui.calendar.AppointmentListView;
+import net.sf.borg.ui.memo.MemoPanel;
 import net.sf.borg.ui.task.ProjectView;
 import net.sf.borg.ui.task.TaskView;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
@@ -572,8 +574,14 @@ public class LinkPanel extends JPanel implements Model.Listener {
 				}
 				// open a memo
 				else if (at.getLinkType().equals(LinkType.MEMO.toString())) {
-					MultiView.getMainView().setView(ViewType.MEMO);
-					// MultiView.getMainView().showMemos(at.getPath());
+					Component c  = MultiView.getMainView().setView(ViewType.MEMO);
+					
+					// show the actual memo
+					if( c != null && c instanceof MemoPanel)
+					{
+						MemoPanel mp = (MemoPanel)c;
+						mp.selectMemo(at.getPath());
+					}
 				}
 			} catch (Exception e) {
 				Errmsg.errmsg(e);

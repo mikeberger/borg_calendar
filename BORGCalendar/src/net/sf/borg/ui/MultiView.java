@@ -419,8 +419,9 @@ public class MultiView extends View {
 	 * 
 	 * @param type
 	 *            the new view
+	 * @return the Component, if any that is now being displayed
 	 */
-	public void setView(ViewType type) {
+	public Component setView(ViewType type) {
 
 		Module m = getModuleForView(type);
 		if (m != null) {
@@ -429,14 +430,16 @@ public class MultiView extends View {
 				if (!component.isDisplayable()) {
 					if (component instanceof DockableView) {
 						((DockableView)component).showView();
-						return;
+						return component;
 					} else {
 						tabs_.addTab(m.getModuleName(), component);
 					}
 				}
 				getTabs().setSelectedComponent(component);
 			}
+			return component;
 		}
+		return null;
 	}
 
 }
