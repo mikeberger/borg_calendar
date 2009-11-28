@@ -411,7 +411,11 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 	public void delete(int tasknum, boolean undo) throws Exception {
 
 		try {
-			LinkModel.getReference().deleteLinks(tasknum, Task.class);
+			Task tmp = new Task();
+			tmp.setKey(tasknum);
+			LinkModel.getReference().deleteLinksFromEntity(tmp);
+			LinkModel.getReference().deleteLinksToEntity(tmp);
+
 			if (!undo) {
 				Task task = getTask(tasknum);
 				UndoLog.getReference().addItem(TaskUndoItem.recordDelete(task));
@@ -456,7 +460,10 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 		try {
 
 			beginTransaction();
-			LinkModel.getReference().deleteLinks(id, Project.class);
+			Project tmp = new Project();
+			tmp.setKey(id);
+			LinkModel.getReference().deleteLinksFromEntity(tmp);
+			LinkModel.getReference().deleteLinksToEntity(tmp);
 
 			db_.deleteProject(id);
 			commitTransaction();

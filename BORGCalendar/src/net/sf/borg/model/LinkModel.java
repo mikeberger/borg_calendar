@@ -50,353 +50,368 @@ import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Task;
 
 /**
- * LinkModel manages the Link Entities, which are associations between BORG Entities and other BORG Entities,
- * files, and URLs.
+ * LinkModel manages the Link Entities, which are associations between BORG
+ * Entities and other BORG Entities, files, and URLs.
  */
 public class LinkModel extends Model {
-	
+
 	/**
-	 * class XmlContainer is solely for JAXB XML export/import
-	 * to keep the same XML structure as before JAXB was used
+	 * class XmlContainer is solely for JAXB XML export/import to keep the same
+	 * XML structure as before JAXB was used
 	 */
-	@XmlRootElement(name="LINKS")
-	private static class XmlContainer {		
-		public Collection<Link> Link;		
+	@XmlRootElement(name = "LINKS")
+	private static class XmlContainer {
+		public Collection<Link> Link;
 	}
 
-    /**
-     * LinkType holds the various link types. The string values are for legacy reasons
-     */
-    public enum LinkType {
-        
-    	FILELINK("file"),
-    	ATTACHMENT("attachment"),
-    	URL("url"),
-    	APPOINTMENT("appointment"),
-    	MEMO("memo"),
-    	PROJECT("project"),
-    	TASK("task"),
-    	ADDRESS("address");
-    	
-        private final String value;
-        private LinkType(String n) {
-            value = n;
-        };
-        public String toString(){ return value; }
+	/**
+	 * LinkType holds the various link types. The string values are for legacy
+	 * reasons
+	 */
+	public enum LinkType {
 
-    }
+		FILELINK("file"), ATTACHMENT("attachment"), URL("url"), APPOINTMENT(
+				"appointment"), MEMO("memo"), PROJECT("project"), TASK("task"), ADDRESS(
+				"address");
 
-    /** The singleton */
-    static private LinkModel self_ = null;
+		private final String value;
 
-    /** map of entity types to class names */
-    private static HashMap<Class<? extends KeyedEntity<?>>,String> typemap = new HashMap<Class<? extends KeyedEntity<?>>,String>();
+		private LinkType(String n) {
+			value = n;
+		};
 
-    static {
-        // owner types
-        typemap.put(Appointment.class, "appointment");
-        typemap.put(Memo.class, "memo");
-        typemap.put(Task.class, "task");
-        typemap.put(Address.class, "address");
-        typemap.put(Project.class, "project");
-    }
+		public String toString() {
+			return value;
+		}
 
- 
-    /**
-     * get the folder where attachments are stored
-     * 
-     * @return the attachment folder path
-     */
-    public static String attachmentFolder() {
-        String dbtype = Prefs.getPref(PrefName.DBTYPE);
-        if (dbtype.equals("hsqldb")) {
-            String path = Prefs.getPref(PrefName.HSQLDBDIR) + "/attachments";
-            File f = new File(path);
-            if (!f.exists()) {
-                if (!f.mkdir()) {
-                    Errmsg.notice(Resource.getResourceString("att_folder_err") + path);
-                    return null;
-                }
-            }
-            return path;
-        }
-        return null;
-    }
+	}
 
-    /**
-     * Gets the singleton.
-     * 
-     * @return the singleton
-     */
-    public static LinkModel getReference() {
-    	if( self_ == null )
+	/** The singleton */
+	static private LinkModel self_ = null;
+
+	/** map of entity types to class names */
+	private static HashMap<Class<? extends KeyedEntity<?>>, LinkType> typemap = new HashMap<Class<? extends KeyedEntity<?>>, LinkType>();
+
+	static {
+		// owner types
+		typemap.put(Appointment.class, LinkType.APPOINTMENT);
+		typemap.put(Memo.class, LinkType.MEMO);
+		typemap.put(Task.class, LinkType.TASK);
+		typemap.put(Address.class, LinkType.ADDRESS);
+		typemap.put(Project.class, LinkType.PROJECT);
+	}
+
+	/**
+	 * get the folder where attachments are stored
+	 * 
+	 * @return the attachment folder path
+	 */
+	public static String attachmentFolder() {
+		String dbtype = Prefs.getPref(PrefName.DBTYPE);
+		if (dbtype.equals("hsqldb")) {
+			String path = Prefs.getPref(PrefName.HSQLDBDIR) + "/attachments";
+			File f = new File(path);
+			if (!f.exists()) {
+				if (!f.mkdir()) {
+					Errmsg.notice(Resource.getResourceString("att_folder_err")
+							+ path);
+					return null;
+				}
+			}
+			return path;
+		}
+		return null;
+	}
+
+	/**
+	 * Gets the singleton.
+	 * 
+	 * @return the singleton
+	 */
+	public static LinkModel getReference() {
+		if (self_ == null)
 			self_ = new LinkModel();
 		return (self_);
-    }
+	}
 
-    /** The db */
-    private EntityDB<Link> db_; // the database
+	/** The db */
+	private EntityDB<Link> db_; // the database
 
-    /**
-     * Adds a link.
-     * 
-     * @param owner the owning Entity
-     * @param path the path (url, filepath, or entity key)
-     * @param linkType the link type
-     * 
-     * @throws Exception the exception
-     */
-    public void addLink(KeyedEntity<?> owner, String path, LinkType linkType) throws Exception {
-        if (owner == null) {
-            Errmsg.notice(Resource.getResourceString("att_owner_null"));
-            return;
-        }
+	/**
+	 * Adds a link.
+	 * 
+	 * @param owner
+	 *            the owning Entity
+	 * @param path
+	 *            the path (url, filepath, or entity key)
+	 * @param linkType
+	 *            the link type
+	 * 
+	 * @throws Exception
+	 *             the exception
+	 */
+	public void addLink(KeyedEntity<?> owner, String path, LinkType linkType)
+			throws Exception {
+		if (owner == null) {
+			Errmsg.notice(Resource.getResourceString("att_owner_null"));
+			return;
+		}
 
-        if (linkType == LinkType.ATTACHMENT) {
+		if (linkType == LinkType.ATTACHMENT) {
 
-            String atfolder = attachmentFolder();
-            if (atfolder == null)
-                throw new Exception("attachments not supported");
+			String atfolder = attachmentFolder();
+			if (atfolder == null)
+				throw new Exception("attachments not supported");
 
-            // need to copy file and create new path
-            File orig = new File(path);
-            String fname = orig.getName();
-            String newpath = atfolder + "/" + fname;
+			// need to copy file and create new path
+			File orig = new File(path);
+			String fname = orig.getName();
+			String newpath = atfolder + "/" + fname;
 
-            int i = 1;
-            while (true) {
-                File newfile = new File(newpath);
-                if (!newfile.exists())
-                    break;
+			int i = 1;
+			while (true) {
+				File newfile = new File(newpath);
+				if (!newfile.exists())
+					break;
 
-                fname = Integer.toString(i) + orig.getName();
-                newpath = atfolder + "/" + fname;
-                i++;
-            }
+				fname = Integer.toString(i) + orig.getName();
+				newpath = atfolder + "/" + fname;
+				i++;
+			}
 
-            copyFile(path, newpath);
-            path = fname;
+			copyFile(path, newpath);
+			path = fname;
 
-        }
+		}
 
-        Link at = newLink();
-        at.setKey(-1);
-        at.setOwnerKey(new Integer(owner.getKey()));
-        Object o = typemap.get(owner.getClass());
-        if (o == null)
-            throw new Exception("illegal link owner type");
-        at.setOwnerType((String) o);
-        at.setPath(path);
-        at.setLinkType(linkType.toString());
-        saveLink(at);
-    }
+		Link at = newLink();
+		at.setKey(-1);
+		at.setOwnerKey(new Integer(owner.getKey()));
+		LinkType type = typemap.get(owner.getClass());
+		if (type == null)
+			throw new Exception("illegal link owner type");
+		at.setOwnerType(type.toString());
+		at.setPath(path);
+		at.setLinkType(linkType.toString());
+		saveLink(at);
+	}
 
-    /**
-     * Copy a file.
-     * 
-     * @param fromFile the from file
-     * @param toFile the to file
-     * 
-     * @throws Exception the exception
-     */
-    private static void copyFile(String fromFile, String toFile) throws Exception {
-        FileInputStream from = null;
-        FileOutputStream to = null;
-        try {
-            from = new FileInputStream(fromFile);
-            to = new FileOutputStream(toFile);
-            byte[] buffer = new byte[4096];
-            int bytesRead;
+	/**
+	 * Copy a file.
+	 * 
+	 * @param fromFile
+	 *            the from file
+	 * @param toFile
+	 *            the to file
+	 * 
+	 * @throws Exception
+	 *             the exception
+	 */
+	private static void copyFile(String fromFile, String toFile)
+			throws Exception {
+		FileInputStream from = null;
+		FileOutputStream to = null;
+		try {
+			from = new FileInputStream(fromFile);
+			to = new FileOutputStream(toFile);
+			byte[] buffer = new byte[4096];
+			int bytesRead;
 
-            while ((bytesRead = from.read(buffer)) != -1)
-                to.write(buffer, 0, bytesRead); // write
-        } finally {
-            if (from != null)
-                try {
-                    from.close();
-                } catch (IOException e) {
-                    ;
-                }
-            if (to != null)
-                try {
-                    to.close();
-                } catch (IOException e) {
-                    ;
-                }
-        }
+			while ((bytesRead = from.read(buffer)) != -1)
+				to.write(buffer, 0, bytesRead); // write
+		} finally {
+			if (from != null)
+				try {
+					from.close();
+				} catch (IOException e) {
+					;
+				}
+			if (to != null)
+				try {
+					to.close();
+				} catch (IOException e) {
+					;
+				}
+		}
 
-    }
+	}
 
-    /**
-     * Delete a link
-     * 
-     * @param key the key
-     * 
-     * @throws Exception the exception
-     */
-    public void delete(int key) throws Exception {
-        Link l = getLink(key);
-        delete(l);
-    }
+	/**
+	 * Delete a link
+	 * 
+	 * @param key
+	 *            the key
+	 * 
+	 * @throws Exception
+	 *             the exception
+	 */
+	public void delete(int key) throws Exception {
+		Link l = getLink(key);
+		delete(l);
+	}
 
-    /**
-     * Delete a link
-     * 
-     * @param l the Link
-     * 
-     * @throws Exception the exception
-     */
-    public void delete(Link l) throws Exception {
-        if (l.getLinkType().equals(LinkType.ATTACHMENT.toString())) {
-            // delete attached file
-            File f = new File(attachmentFolder() + "/" + l.getPath());
-            f.delete();
-        }
-        db_.delete(l.getKey());
-        refresh();
-    }
+	/**
+	 * Delete a link
+	 * 
+	 * @param l
+	 *            the Link
+	 * 
+	 * @throws Exception
+	 *             the exception
+	 */
+	public void delete(Link l) throws Exception {
+		if (l.getLinkType().equals(LinkType.ATTACHMENT.toString())) {
+			// delete attached file
+			File f = new File(attachmentFolder() + "/" + l.getPath());
+			f.delete();
+		}
+		db_.delete(l.getKey());
+		refresh();
+	}
 
-    /**
-     * Delete all links for a particlar owning Entity given key and type
-     * 
-     * @param id the Entity id
-     * @param type the Entity type
-     * 
-     * @throws Exception the exception
-     */
-    public void deleteLinks(int id, Class<? extends KeyedEntity<?>> type) throws Exception {
-       
-        Collection<Link> atts = getLinks(id, type);
-        Iterator<Link> it = atts.iterator();
-        while (it.hasNext()) {
-            Link at = it.next();
-            delete(at);
-        }
-    }
+	/**
+	 * Delete links for an owning entity
+	 * 
+	 * @param owner
+	 *            the owning entity object
+	 * 
+	 * @throws Exception
+	 *             the exception
+	 */
+	public void deleteLinksFromEntity(KeyedEntity<?> owner) throws Exception {
 
-    /**
-     * Delete links for an owning entity
-     * 
-     * @param owner the owning entity object
-     * 
-     * @throws Exception the exception
-     */
-    public void deleteLinks(KeyedEntity<?> owner) throws Exception {
-       
-        Collection<Link> atts = getLinks(owner);
-        Iterator<Link> it = atts.iterator();
-        while (it.hasNext()) {
-            Link at = it.next();
-            delete(at);
-        }
-    }
+		Collection<Link> atts = getLinks(owner);
+		Iterator<Link> it = atts.iterator();
+		while (it.hasNext()) {
+			Link at = it.next();
+			delete(at);
+		}
+	}
 
-    /**
-     * Export links to XML
-     * 
-     * @param fw the writer to write XML to
-     * 
-     * @throws Exception the exception
-     */
-    public void export(Writer fw) throws Exception {
-        
-    	JAXBContext jc = JAXBContext.newInstance(XmlContainer.class);
-        Marshaller m = jc.createMarshaller();
-        XmlContainer container = new XmlContainer();
-        container.Link = getLinks();
-        m.marshal(container, fw);
+	/**
+	 * Delete links that target a given entity
+	 * 
+	 * @param target
+	 *            the target entity object
+	 * 
+	 * @throws Exception
+	 *             the exception
+	 */
+	public void deleteLinksToEntity(KeyedEntity<?> target) throws Exception {
 
-    }
+		LinkType type = typemap.get(target.getClass());
+		if (type == null)
+			return;
 
-    /**
-     * Gets the dB.
-     * 
-     * @return the dB
-     */
-    public EntityDB<Link> getDB() {
-        return (db_);
-    }
+		Collection<Link> links = getLinks();
+		for (Link link : links) {
+			if (link.getLinkType().equals(type.toString())) {
+				if ((type == LinkType.MEMO && ((Memo) target).getMemoName()
+						.equals(link.getPath()))
+						|| link.getPath().equals(
+								Integer.toString(target.getKey()))) {
+					delete(link);
+				}
+			}
 
-    /**
-     * Gets a link.
-     * 
-     * @param key the key
-     * 
-     * @return the link
-     * 
-     * @throws Exception the exception
-     */
-    public Link getLink(int key) throws Exception {
-        return db_.readObj(key);
-    }
+		}
+	}
 
-    /**
-     * Gets all links.
-     * 
-     * @return all links
-     * 
-     * @throws Exception the exception
-     */
-    public Collection<Link> getLinks() throws Exception {
-        return db_.readAll();
-    }
+	/**
+	 * Export links to XML
+	 * 
+	 * @param fw
+	 *            the writer to write XML to
+	 * 
+	 * @throws Exception
+	 *             the exception
+	 */
+	public void export(Writer fw) throws Exception {
 
-    /**
-     * Gets the links for an owning entity.
-     * 
-     * @param id the owner id
-     * @param type the owner type
-     * 
-     * @return the links
-     * 
-     * @throws Exception the exception
-     */
-    public Collection<Link> getLinks(int id, Class<? extends KeyedEntity<?>> type) throws Exception {
-        LinkDB adb = (LinkDB) db_;
-        String o = typemap.get(type);
-        if (o == null)
-            return new ArrayList<Link>();
-        return adb.getLinks(id, o);
+		JAXBContext jc = JAXBContext.newInstance(XmlContainer.class);
+		Marshaller m = jc.createMarshaller();
+		XmlContainer container = new XmlContainer();
+		container.Link = getLinks();
+		m.marshal(container, fw);
 
-    }
+	}
 
-    /**
-     * Gets the links for an owning entity
-     * 
-     * @param ownerbean the owning entity
-     * 
-     * @return the links
-     * 
-     * @throws Exception the exception
-     */
-    public Collection<Link> getLinks(KeyedEntity<?> ownerbean) throws Exception {
-        LinkDB adb = (LinkDB) db_;
-        if (ownerbean == null)
-            return new ArrayList<Link>();
-        Object o = typemap.get(ownerbean.getClass());
-        if (o == null)
-            return new ArrayList<Link>();
-        return adb.getLinks(ownerbean.getKey(), (String) o);
+	/**
+	 * Gets the dB.
+	 * 
+	 * @return the dB
+	 */
+	public EntityDB<Link> getDB() {
+		return (db_);
+	}
 
-    }
+	/**
+	 * Gets a link.
+	 * 
+	 * @param key
+	 *            the key
+	 * 
+	 * @return the link
+	 * 
+	 * @throws Exception
+	 *             the exception
+	 */
+	public Link getLink(int key) throws Exception {
+		return db_.readObj(key);
+	}
 
-    /**
+	/**
+	 * Gets all links.
+	 * 
+	 * @return all links
+	 * 
+	 * @throws Exception
+	 *             the exception
+	 */
+	public Collection<Link> getLinks() throws Exception {
+		return db_.readAll();
+	}
+
+	/**
+	 * Gets the links for an owning entity
+	 * 
+	 * @param ownerbean
+	 *            the owning entity
+	 * 
+	 * @return the links
+	 * 
+	 * @throws Exception
+	 *             the exception
+	 */
+	public Collection<Link> getLinks(KeyedEntity<?> ownerbean) throws Exception {
+		LinkDB adb = (LinkDB) db_;
+		if (ownerbean == null)
+			return new ArrayList<Link>();
+		LinkType type = typemap.get(ownerbean.getClass());
+		if (type == null)
+			return new ArrayList<Link>();
+		return adb.getLinks(ownerbean.getKey(), type.toString());
+
+	}
+
+	/**
 	 * Import xml.
 	 * 
-	 * @param fileName the file name of the file containing the XML
+	 * @param fileName
+	 *            the file name of the file containing the XML
 	 * 
-	 * @throws Exception the exception
+	 * @throws Exception
+	 *             the exception
 	 */
 	public void importXml(String fileName) throws Exception {
 
 		JAXBContext jc = JAXBContext.newInstance(XmlContainer.class);
 		Unmarshaller u = jc.createUnmarshaller();
-		
-		XmlContainer container =
-			  (XmlContainer)u.unmarshal(
-			    new FileInputStream( fileName ) );
 
-		for (Link link : container.Link ) {
+		XmlContainer container = (XmlContainer) u
+				.unmarshal(new FileInputStream(fileName));
+
+		for (Link link : container.Link) {
 			link.setKey(-1);
 			saveLink(link);
 		}
@@ -404,75 +419,77 @@ public class LinkModel extends Model {
 		refresh();
 	}
 
+	/**
+	 * Move links from one object to another
+	 * 
+	 * @param oldOwner
+	 *            the old owner
+	 * @param newOwner
+	 *            the new owner
+	 * 
+	 * @throws Exception
+	 *             the exception
+	 */
+	public void moveLinks(KeyedEntity<?> oldOwner, KeyedEntity<?> newOwner)
+			throws Exception {
+		Collection<Link> atts = getLinks(oldOwner);
+		Iterator<Link> it = atts.iterator();
+		while (it.hasNext()) {
+			Link at = it.next();
+			at.setOwnerKey(new Integer(newOwner.getKey()));
+			LinkType type = typemap.get(newOwner.getClass());
+			if (type == null)
+				throw new Exception("illegal link owner type");
+			at.setOwnerType(type.toString());
+			db_.updateObj(at);
+		}
+	}
 
-    /**
-     * Move links from one object to another
-     * 
-     * @param oldOwner the old owner
-     * @param newOwner the new owner
-     * 
-     * @throws Exception the exception
-     */
-    public void moveLinks(KeyedEntity<?> oldOwner, KeyedEntity<?> newOwner) throws Exception {
-        Collection<Link> atts = getLinks(oldOwner);
-        Iterator<Link> it = atts.iterator();
-        while (it.hasNext()) {
-            Link at = it.next();
-            at.setOwnerKey(new Integer(newOwner.getKey()));
-            Object o = typemap.get(newOwner.getClass());
-            if (o == null)
-                throw new Exception("illegal link owner type");
-            at.setOwnerType((String) o);
-            db_.updateObj(at);
-            // System.out.println("updlink:" + at.getOwnerKey() + " " +
-            // at.getOwnerType());
-        }
-    }
+	/**
+	 * return a new link object
+	 * 
+	 * @return the link
+	 */
+	public Link newLink() {
+		return (db_.newObj());
+	}
 
-    /**
-     * return a new link object
-     * 
-     * @return the link
-     */
-    public Link newLink() {
-        return (db_.newObj());
-    }
+	/**
+	 * Instantiates a new link model.
+	 */
+	private LinkModel() {
+		db_ = new LinkJdbcDB();
+	}
 
-   
-    /**
-     * Instantiates a new link model.
-     */
-    private LinkModel()  {     
-        db_ = new LinkJdbcDB();
-    }
+	/**
+	 * Refresh listeners
+	 */
+	public void refresh() {
+		refreshListeners();
+	}
 
-    /**
-     * Refresh listeners
-     */
-    public void refresh() {
-        refreshListeners();
-    }
+	/**
+	 * Save a link.
+	 * 
+	 * @param link
+	 *            the link
+	 * 
+	 * @throws Exception
+	 *             the exception
+	 */
+	public void saveLink(Link link) throws Exception {
+		int num = link.getKey();
 
-    /**
-     * Save a link.
-     * 
-     * @param link the link
-     * 
-     * @throws Exception the exception
-     */
-    public void saveLink(Link link) throws Exception {
-        int num = link.getKey();
+		if (num == -1) {
+			int newkey = db_.nextkey();
+			link.setKey(newkey);
+			db_.addObj(link);
+		} else {
+			db_.updateObj(link);
 
-        if (num == -1) {
-            int newkey = db_.nextkey();
-            link.setKey(newkey);
-            db_.addObj(link);
-        } else {
-            db_.updateObj(link);
+		}
 
-        }
-
-        // inform views of data change
-        refresh();
-    }
+		// inform views of data change
+		refresh();
+	}
 }

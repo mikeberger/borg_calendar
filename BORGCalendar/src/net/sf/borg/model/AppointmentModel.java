@@ -315,7 +315,8 @@ public class AppointmentModel extends Model implements Model.Listener,
 
 			Appointment orig_appt = getAppt(appt.getKey());
 
-			LinkModel.getReference().deleteLinks(appt);
+			LinkModel.getReference().deleteLinksFromEntity(appt);
+			LinkModel.getReference().deleteLinksToEntity(appt);
 
 			db_.delete(appt.getKey());
 			if (!undo) {

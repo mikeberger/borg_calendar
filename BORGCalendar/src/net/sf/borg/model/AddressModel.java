@@ -113,7 +113,8 @@ public class AddressModel extends Model {
 
 		try {
 			Address orig_addr = getAddress(addr.getKey());
-			LinkModel.getReference().deleteLinks(addr);
+			LinkModel.getReference().deleteLinksFromEntity(addr);
+			LinkModel.getReference().deleteLinksToEntity(addr);
 
 			db_.delete(addr.getKey());
 			
