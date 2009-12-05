@@ -148,7 +148,7 @@ public class LinkTests {
 	@AfterClass
 	public static void tearDown()
 	{
-		
+		// empty
 	}
 
 }

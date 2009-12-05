@@ -45,6 +45,8 @@ import net.sf.borg.ui.util.GridBagConstraintsFactory;
  */
 class ReminderPopup extends View {
 	
+	private static final long serialVersionUID = 1L;
+
 	/** The appointment. */
 	private Appointment appointment = null;
 	
@@ -204,6 +206,7 @@ class ReminderPopup extends View {
 	 */
 	@Override
 	public void refresh() {
+	  // empty
 	}
 
 	/**

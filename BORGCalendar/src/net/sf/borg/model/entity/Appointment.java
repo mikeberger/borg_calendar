@@ -33,7 +33,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement(name="Appointment")
 @XmlAccessorType(XmlAccessType.NONE)
-public class Appointment extends KeyedEntity<Appointment> implements CalendarEntity, java.io.Serializable {
+public class Appointment extends KeyedEntity<Appointment> implements CalendarEntity {
 
 	
 	private static final long serialVersionUID = 7225675837209156249L;
@@ -320,6 +320,7 @@ public class Appointment extends KeyedEntity<Appointment> implements CalendarEnt
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.entity.KeyedEntity#clone()
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	protected Appointment clone() {
 		Appointment dst = new Appointment();

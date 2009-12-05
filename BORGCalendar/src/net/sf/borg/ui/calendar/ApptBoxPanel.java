@@ -60,6 +60,8 @@ import net.sf.borg.model.entity.LabelEntity;
  */
 abstract class ApptBoxPanel extends JPanel implements ComponentListener {
 
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * ClickedBoxInfo contains information about where the mouse is and what
 	 * Box and/or DateZone it is within
@@ -368,10 +370,12 @@ abstract class ApptBoxPanel extends JPanel implements ComponentListener {
 
 		/** not used */
 		public void mouseEntered(MouseEvent evt) {
+		  // empty
 		}
 
 		/** not used */
 		public void mouseExited(MouseEvent evt) {
+		  // empty
 		}
 
 		/**
@@ -407,7 +411,7 @@ abstract class ApptBoxPanel extends JPanel implements ComponentListener {
 			}
 			
 			// only repaint if we have moved to a different box or zone
-			if( b.boxChanged )
+			if( b != null && b.boxChanged )
 				evt.getComponent().repaint();
 		}
 
@@ -588,13 +592,13 @@ abstract class ApptBoxPanel extends JPanel implements ComponentListener {
 	private boolean dragStarted = false;
 
 	// bounds which limit where a box can be dragged
-	private double dragXMax = 0;;
+	private double dragXMax = 0;
 	private double dragXMin = 0;
-	private double dragYMax = 0;;
+	private double dragYMax = 0;
 	private double dragYMin = 0;
 
 	// end time of the timed zone
-	protected double endmin = 0;;
+	protected double endmin = 0;
 
 	// box that is being resized
 	private ApptBox resizedBox = null;
@@ -973,9 +977,11 @@ abstract class ApptBoxPanel extends JPanel implements ComponentListener {
 	}
 	
 	public void componentHidden(ComponentEvent arg0) {
+	  // empty
 	}
 
 	public void componentMoved(ComponentEvent e) {
+	  // empty
 	}
 
 	public void componentResized(ComponentEvent e) {
@@ -983,6 +989,7 @@ abstract class ApptBoxPanel extends JPanel implements ComponentListener {
 	}
 
 	public void componentShown(ComponentEvent e) {
+	  // empty
 	}
 
 }

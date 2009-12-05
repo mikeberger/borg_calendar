@@ -115,7 +115,9 @@ class LabelBox extends Box {
 	}
 
 	@Override
-	public void onClick(){}
+	public void onClick(){
+	  //empty
+	}
 
 	@Override
 	public String getToolTipText() {

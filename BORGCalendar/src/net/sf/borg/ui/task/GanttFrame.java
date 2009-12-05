@@ -45,6 +45,8 @@ import org.jfree.data.time.SimpleTimePeriod;
  */
 class GanttFrame extends View {
 
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * add an item to the chart
 	 * 
@@ -234,7 +236,7 @@ class GanttFrame extends View {
 
 	@Override
 	public void refresh() {
-
+	  // empty
 	}
 
 }

@@ -51,6 +51,8 @@ import net.sf.borg.model.Model;
  */
 public abstract class View extends JFrame implements Model.Listener {
 	
+	private static final long serialVersionUID = 1L;
+
 	/** The icon image. */
 	static Image image = Toolkit.getDefaultToolkit().getImage(
 			View.class.getResource("/resource/borg32x32.jpg"));

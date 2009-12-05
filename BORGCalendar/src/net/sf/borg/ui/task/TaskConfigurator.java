@@ -63,10 +63,14 @@ import net.sf.borg.ui.util.GridBagConstraintsFactory;
  */
 public class TaskConfigurator extends View {
 
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * Renders the initial task state in a different color
 	 */
 	private class TypeListRenderer extends JLabel implements ListCellRenderer {
+		private static final long serialVersionUID = 1L;
+
 		public TypeListRenderer() {
 			setOpaque(true);
 		}
@@ -743,7 +747,7 @@ public class TaskConfigurator extends View {
 				try {
 					TaskConfigurator.getReference().dispose();
 				} catch (Exception e1) {
-
+				  // empty
 				}
 			}
 		});

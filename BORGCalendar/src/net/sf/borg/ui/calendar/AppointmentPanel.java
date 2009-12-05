@@ -70,11 +70,16 @@ import com.toedter.calendar.JDateChooser;
  */
 public class AppointmentPanel extends JPanel {
 
+	private static final long serialVersionUID = 1L;
+
+
 	/**
 	 * renders the colro selection pull-down with colored boxes as the choices.
 	 */
 	static private class ColorBoxRenderer extends JLabel implements
 			ListCellRenderer {
+
+		private static final long serialVersionUID = 1L;
 
 		/**
 		 * constructor.
@@ -414,6 +419,7 @@ public class AppointmentPanel extends JPanel {
 				}
 
 			} catch (Exception e) {
+			  // empty
 			}
 			calmod_.saveAppt(appt);
 		} else {
@@ -1173,12 +1179,12 @@ public class AppointmentPanel extends JPanel {
 	 * 
 	 * @param key
 	 *            the appointment key or -1 for a new appt
-	 * @param defaultAppt
+	 * @param defaultApptIn
 	 *            the default appt - only passed in if we are copying
 	 *            an existing appt
 	 */
-	public void showapp(int key, Appointment defaultAppt) {
-		
+	public void showapp(int key, Appointment defaultApptIn) {
+		Appointment defaultAppt = defaultApptIn;
 		currentlyShownAppointmentKey = key;
 		
 		// military time option

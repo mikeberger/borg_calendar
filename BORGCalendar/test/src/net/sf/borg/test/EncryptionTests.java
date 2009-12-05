@@ -18,7 +18,7 @@ public class EncryptionTests {
 
 	@BeforeClass
 	static public void setup() throws Exception {
-
+	  // empty
 	}
 
 	@AfterClass

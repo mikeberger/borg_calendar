@@ -36,7 +36,7 @@ import net.sf.borg.common.Prefs;
  */
 @XmlRootElement(name="Memo")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Memo extends EncryptableEntity<Memo> implements java.io.Serializable {
+public class Memo extends EncryptableEntity<Memo> {
 
 	
 	private static final long serialVersionUID = -6793670294661709573L;
@@ -121,6 +121,7 @@ public class Memo extends EncryptableEntity<Memo> implements java.io.Serializabl
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.entity.KeyedEntity#clone()
 	 */
+	@Override
 	protected Memo clone() {
 		Memo dst = new Memo();
 		dst.setKey( getKey());

@@ -92,6 +92,8 @@ import net.sf.borg.ui.util.StripedTable;
  */
 public class OptionsView extends View {
 
+	private static final long serialVersionUID = 1L;
+
 	private static OptionsView singleton = null;
 
 	/**
@@ -487,26 +489,31 @@ public class OptionsView extends View {
 			Class.forName("com.jgoodies.looks.plastic.PlasticLookAndFeel");
 			lnfs.add("com.jgoodies.looks.plastic.PlasticLookAndFeel");
 		} catch (Exception e) {
+		  // empty
 		}
 		try {
 			Class.forName("com.jgoodies.looks.windows.WindowsLookAndFeel");
 			lnfs.add("com.jgoodies.looks.windows.WindowsLookAndFeel");
 		} catch (Exception e) {
+		  // empty
 		}
 		try {
 			Class.forName("com.jgoodies.looks.plastic.PlasticXPLookAndFeel");
 			lnfs.add("com.jgoodies.looks.plastic.PlasticXPLookAndFeel");
 		} catch (Exception e) {
+		  // empty
 		}
 		try {
 			Class.forName("com.jgoodies.looks.plastic.Plastic3DLookAndFeel");
 			lnfs.add("com.jgoodies.looks.plastic.Plastic3DLookAndFeel");
 		} catch (Exception e) {
+		  // empty
 		}
 		try {
 			Class.forName("com.incors.plaf.kunststoff.KunststoffLookAndFeel");
 			lnfs.add("com.incors.plaf.kunststoff.KunststoffLookAndFeel");
 		} catch (Exception e) {
+		  // empty
 		}
 		try {
 			Class
@@ -514,6 +521,7 @@ public class OptionsView extends View {
 			lnfs
 					.add("de.javasoft.plaf.synthetica.SyntheticaStandardLookAndFeel");
 		} catch (Exception e) {
+		  // empty
 		}
 
 		// add the look and feel in the preference store
@@ -824,6 +832,7 @@ public class OptionsView extends View {
 	/**
 	 * destroy this view
 	 */
+	@Override
 	public void destroy() {
 		this.dispose();
 	}
@@ -1359,52 +1368,52 @@ public class OptionsView extends View {
 			btn_ucs_restore.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					btn_ucs_red.setColorProperty(new Color(
-							(Integer) PrefName.UCS_RED.getDefault()));
+							((Integer) PrefName.UCS_RED.getDefault()).intValue()));
 					btn_ucs_red.setColorByProperty();
 					btn_ucs_blue.setColorProperty(new Color(
-							(Integer) PrefName.UCS_BLUE.getDefault()));
+							((Integer) PrefName.UCS_BLUE.getDefault()).intValue()));
 					btn_ucs_blue.setColorByProperty();
 					btn_ucs_green.setColorProperty(new Color(
-							(Integer) PrefName.UCS_GREEN.getDefault()));
+							((Integer) PrefName.UCS_GREEN.getDefault()).intValue()));
 					btn_ucs_green.setColorByProperty();
 					btn_ucs_black.setColorProperty(new Color(
-							(Integer) PrefName.UCS_BLACK.getDefault()));
+							((Integer) PrefName.UCS_BLACK.getDefault()).intValue()));
 					btn_ucs_black.setColorByProperty();
 					btn_ucs_white.setColorProperty(new Color(
-							(Integer) PrefName.UCS_WHITE.getDefault()));
+							((Integer) PrefName.UCS_WHITE.getDefault()).intValue()));
 					btn_ucs_white.setColorByProperty();
 					btn_ucs_tasks.setColorProperty(new Color(
-							(Integer) PrefName.UCS_NAVY.getDefault()));
+							((Integer) PrefName.UCS_NAVY.getDefault()).intValue()));
 					btn_ucs_tasks.setColorByProperty();
 					btn_ucs_holidays.setColorProperty(new Color(
-							(Integer) PrefName.UCS_PURPLE.getDefault()));
+							((Integer) PrefName.UCS_PURPLE.getDefault()).intValue()));
 					btn_ucs_holidays.setColorByProperty();
 					btn_ucs_birthdays.setColorProperty(new Color(
-							(Integer) PrefName.UCS_BRICK.getDefault()));
+							((Integer) PrefName.UCS_BRICK.getDefault()).intValue()));
 					btn_ucs_birthdays.setColorByProperty();
 					btn_ucs_default.setColorProperty(new Color(
-							(Integer) PrefName.UCS_DEFAULT.getDefault()));
+							((Integer) PrefName.UCS_DEFAULT.getDefault()).intValue()));
 					btn_ucs_default.setColorByProperty();
 					btn_ucs_today.setColorProperty(new Color(
-							(Integer) PrefName.UCS_TODAY.getDefault()));
+							((Integer) PrefName.UCS_TODAY.getDefault()).intValue()));
 					btn_ucs_today.setColorByProperty();
 					btn_ucs_holiday.setColorProperty(new Color(
-							(Integer) PrefName.UCS_HOLIDAY.getDefault()));
+							((Integer) PrefName.UCS_HOLIDAY.getDefault()).intValue()));
 					btn_ucs_holiday.setColorByProperty();
 					btn_ucs_vacation.setColorProperty(new Color(
-							(Integer) PrefName.UCS_VACATION.getDefault()));
+							((Integer) PrefName.UCS_VACATION.getDefault()).intValue()));
 					btn_ucs_vacation.setColorByProperty();
 					btn_ucs_halfday.setColorProperty(new Color(
-							(Integer) PrefName.UCS_HALFDAY.getDefault()));
+							((Integer) PrefName.UCS_HALFDAY.getDefault()).intValue()));
 					btn_ucs_halfday.setColorByProperty();
 					btn_ucs_weekend.setColorProperty(new Color(
-							(Integer) PrefName.UCS_WEEKEND.getDefault()));
+							((Integer) PrefName.UCS_WEEKEND.getDefault()).intValue()));
 					btn_ucs_weekend.setColorByProperty();
 					btn_ucs_weekday.setColorProperty(new Color(
-							(Integer) PrefName.UCS_WEEKDAY.getDefault()));
+							((Integer) PrefName.UCS_WEEKDAY.getDefault()).intValue()));
 					btn_ucs_weekday.setColorByProperty();
 					btn_ucs_stripe.setColorProperty(new Color(
-							(Integer) PrefName.UCS_STRIPE.getDefault()));
+							((Integer) PrefName.UCS_STRIPE.getDefault()).intValue()));
 					btn_ucs_stripe.setColorByProperty();
 				}
 			});
@@ -1564,15 +1573,15 @@ public class OptionsView extends View {
 					if (result == JOptionPane.CANCEL_OPTION)
 						return;
 					
-					if( !jpf.getText().equals(jpf2.getText()))
+					if( !new String(jpf.getPassword()).equals(new String(jpf2.getPassword())))
 					{
 						Errmsg.notice("Passwords do not match");
 						return;
 					}
 					
 					try {
-						EncryptionHelper.createStore(file.getAbsolutePath(), jpf.getText());
-						EncryptionHelper.generateKey(file.getAbsolutePath(), jpf.getText(), Prefs.getPref(PrefName.KEYALIAS));
+						EncryptionHelper.createStore(file.getAbsolutePath(), new String(jpf.getPassword()));
+						EncryptionHelper.generateKey(file.getAbsolutePath(), new String(jpf.getPassword()), Prefs.getPref(PrefName.KEYALIAS));
 					} catch (Exception e) {
 						Errmsg.errmsg(e);
 					}				
@@ -1842,6 +1851,7 @@ public class OptionsView extends View {
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		this.setTitle(Resource.getResourceString("Options"));
 		addWindowListener(new java.awt.event.WindowAdapter() {
+			@Override
 			public void windowClosing(java.awt.event.WindowEvent evt) {
 				dispose();
 			}
@@ -1867,7 +1877,9 @@ public class OptionsView extends View {
 		pack();
 	}
 
+	@Override
 	public void refresh() {
+	  // empty
 	}
 
 }

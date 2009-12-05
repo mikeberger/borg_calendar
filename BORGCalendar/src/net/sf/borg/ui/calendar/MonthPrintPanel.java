@@ -54,6 +54,8 @@ import net.sf.borg.model.entity.CalendarEntity;
  */
 public class MonthPrintPanel extends JPanel implements Printable {
 
+	private static final long serialVersionUID = 1L;
+
 	// scale factor used when this class draws a month printout on the UI
 	// not currently used
 	static private final double prev_scale = 1.5;
@@ -125,6 +127,7 @@ public class MonthPrintPanel extends JPanel implements Printable {
 		try {
 			cp = Prefs.getPref(PrefName.COLORPRINT);
 		} catch (Exception e) {
+		  // empty
 		}
 
 		// get fonts

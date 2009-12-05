@@ -157,7 +157,7 @@ public class Prefs {
 	 * constructor
 	 */
 	private Prefs() {
-
+	  // empty
 	}
 
 	/**

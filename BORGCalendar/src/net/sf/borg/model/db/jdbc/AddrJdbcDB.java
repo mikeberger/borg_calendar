@@ -140,6 +140,7 @@ public class AddrJdbcDB extends JdbcBeanDB<Address> implements EntityDB<Address>
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.db.jdbc.JdbcBeanDB#getPSOne(int)
 	 */
+	@Override
 	PreparedStatement getPSOne(int key) throws SQLException
 	{
 		PreparedStatement stmt = connection_.prepareStatement("SELECT * FROM addresses WHERE address_num = ?" );
@@ -150,6 +151,7 @@ public class AddrJdbcDB extends JdbcBeanDB<Address> implements EntityDB<Address>
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.db.jdbc.JdbcBeanDB#getPSAll()
 	 */
+	@Override
 	PreparedStatement getPSAll() throws SQLException
 	{
 		PreparedStatement stmt = connection_.prepareStatement("SELECT * FROM addresses" );
@@ -159,6 +161,7 @@ public class AddrJdbcDB extends JdbcBeanDB<Address> implements EntityDB<Address>
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.db.jdbc.JdbcBeanDB#createFrom(java.sql.ResultSet)
 	 */
+	@Override
 	Address createFrom(ResultSet r) throws SQLException
 	{
 		Address addr = new Address();

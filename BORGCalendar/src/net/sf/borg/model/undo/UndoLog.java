@@ -50,7 +50,7 @@ public class UndoLog {
 	 */
 	private UndoLog()
 	{
-		
+		// empty
 	}
 	
 	/**

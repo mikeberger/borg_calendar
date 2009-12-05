@@ -36,6 +36,8 @@ import net.sf.borg.ui.util.DateDialog;
  */
 public class NavPanel extends JPanel {
 
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * Interface to be implemented by any class that allows the attachment
 	 * of a NavPanel navigator

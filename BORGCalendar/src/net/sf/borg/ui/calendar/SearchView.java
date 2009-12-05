@@ -65,6 +65,8 @@ import com.toedter.calendar.JDateChooser;
  */
 public class SearchView extends DockableView implements Module {
 
+	private static final long serialVersionUID = 1L;
+
 	/** The matching appointments. */
 	private Vector<Appointment> matchingAppointments = null;
 

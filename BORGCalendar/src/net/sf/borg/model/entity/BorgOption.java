@@ -35,7 +35,9 @@ public class BorgOption
 	
 	/** for JAXB */
 	@SuppressWarnings("unused")
-	private BorgOption(){}
+	private BorgOption(){
+	  // empty
+	}
 	
 	/**
 	 * Instantiates a new borg option.

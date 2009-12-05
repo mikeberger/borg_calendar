@@ -114,6 +114,7 @@ public class LinkJdbcDB extends JdbcBeanDB<Link> implements EntityDB<Link>, Link
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.db.jdbc.JdbcBeanDB#getPSOne(int)
 	 */
+	@Override
 	PreparedStatement getPSOne(int key) throws SQLException {
 		PreparedStatement stmt = connection_
 				.prepareStatement("SELECT * FROM links WHERE id = ?");
@@ -124,6 +125,7 @@ public class LinkJdbcDB extends JdbcBeanDB<Link> implements EntityDB<Link>, Link
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.db.jdbc.JdbcBeanDB#getPSAll()
 	 */
+	@Override
 	PreparedStatement getPSAll() throws SQLException {
 		PreparedStatement stmt = connection_
 				.prepareStatement("SELECT * FROM links");
@@ -133,6 +135,7 @@ public class LinkJdbcDB extends JdbcBeanDB<Link> implements EntityDB<Link>, Link
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.db.jdbc.JdbcBeanDB#createFrom(java.sql.ResultSet)
 	 */
+	@Override
 	Link createFrom(ResultSet r) throws SQLException {
 		Link att = new Link();
 		att.setKey(r.getInt("id"));

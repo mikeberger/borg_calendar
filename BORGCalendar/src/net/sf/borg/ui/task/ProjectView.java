@@ -66,6 +66,8 @@ import com.toedter.calendar.JDateChooser;
  */
 public class ProjectView extends DockableView {
 
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * Action that we are invoking this editor for
 	 */
@@ -520,7 +522,7 @@ public class ProjectView extends DockableView {
 				if (!it.hasNext())
 					break;
 				Project p = it.next();
-				map.put("pid" + i, p.getKey());
+				map.put("pid" + i, new Integer(p.getKey()));
 			}
 			RunReport.runReport("proj", map);
 		} catch (NoClassDefFoundError r) {

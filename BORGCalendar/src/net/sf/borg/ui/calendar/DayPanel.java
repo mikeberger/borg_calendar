@@ -72,6 +72,8 @@ import net.sf.borg.ui.util.GridBagConstraintsFactory;
  */
 public class DayPanel extends JPanel implements Printable, CalendarModule {
 	
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * DaySubPanel is the Panel that shows the items for a day with a section
 	 * for untimed items and a time-grid for timed items 
@@ -80,6 +82,7 @@ public class DayPanel extends JPanel implements Printable, CalendarModule {
 			NavPanel.Navigator, Prefs.Listener, Printable, Model.Listener,
 			MouseWheelListener {
 
+		private static final long serialVersionUID = 1L;
 		// set up dash line stroke for time-grid divisions
 		private float dash1[] = { 1.0f, 3.0f };
 		private BasicStroke dashed = new BasicStroke(0.02f,

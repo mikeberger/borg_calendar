@@ -45,6 +45,8 @@ import com.toedter.calendar.JDateChooser;
  */
 public class DateDialog extends JDialog {
 	
+	private static final long serialVersionUID = 1L;
+
 	/** The date. */
 	private Calendar calendar;
 

@@ -63,10 +63,14 @@ import net.sf.borg.ui.util.TableSorter;
  */
 public class ProjectPanel extends JPanel implements Model.Listener {
 
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * renderer to show the days left column in color
 	 */
 	private class ProjIntRenderer extends JLabel implements TableCellRenderer {
+
+		private static final long serialVersionUID = 1L;
 
 		/**
 		 * constructor
@@ -176,7 +180,7 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 		Integer projectId = (Integer) tm.getValueAt(row, 0);
 
 		try {
-			Project p = TaskModel.getReference().getProject(projectId);
+			Project p = TaskModel.getReference().getProject(projectId.intValue());
 			if (p == null)
 				return;
 
@@ -202,7 +206,7 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 		Integer projectId = (Integer) tm.getValueAt(row, 0);
 
 		try {
-			Project p = TaskModel.getReference().getProject(projectId);
+			Project p = TaskModel.getReference().getProject(projectId.intValue());
 			if (p == null)
 				return;
 
@@ -226,7 +230,7 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 		TableSorter tm = (TableSorter) projectTable.getModel();
 		Integer projectId = (Integer) tm.getValueAt(row, 0);
 		try {
-			TaskModel.getReference().closeProject(projectId);
+			TaskModel.getReference().closeProject(projectId.intValue());
 		} catch (Warning w) {
 			Errmsg.notice(w.getMessage());
 		} catch (Exception e) {
@@ -528,7 +532,7 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 				// if we get here - we are displaying this task as a row
 				// so fill in an array of objects for the row
 				Object[] ro = new Object[10];
-				ro[0] = project.getKey();
+				ro[0] = new Integer(project.getKey());
 				ro[1] = project.getCategory();
 				ro[2] = project.getStatus();
 				ro[3] = project.getStartDate();
@@ -606,7 +610,7 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 				if (!it.hasNext())
 					break;
 				Project p = it.next();
-				map.put("pid" + i, p.getKey());
+				map.put("pid" + i, new Integer(p.getKey()));
 			}
 			RunReport.runReport("proj", map);
 		} catch (NoClassDefFoundError r) {

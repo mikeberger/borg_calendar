@@ -45,7 +45,7 @@ public class AddressUndoItem extends UndoItem<Address> {
 	 * Instantiates a new address undo item.
 	 */
 	private AddressUndoItem() {
-
+	  // empty
 	}
 
 	/**

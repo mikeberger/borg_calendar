@@ -55,7 +55,7 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
 			JdbcDB.execSQL("select username from appointments");
 			Errmsg.notice(Resource.getResourceString("db_username_check"));
 		} catch (Exception e) {
-			
+			// empty
 		}
 		
     }
@@ -189,6 +189,7 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.db.jdbc.JdbcBeanDB#getPSOne(int)
 	 */
+	@Override
 	PreparedStatement getPSOne(int key) throws SQLException
 	{
 		PreparedStatement stmt = connection_.prepareStatement("SELECT * FROM appointments WHERE appt_num = ?" );
@@ -199,6 +200,7 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.db.jdbc.JdbcBeanDB#getPSAll()
 	 */
+	@Override
 	PreparedStatement getPSAll() throws SQLException
 	{
 		PreparedStatement stmt = connection_.prepareStatement("SELECT * FROM appointments" );
@@ -208,6 +210,7 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.db.jdbc.JdbcBeanDB#createFrom(java.sql.ResultSet)
 	 */
+	@Override
 	Appointment createFrom(ResultSet r) throws SQLException
 	{
 		Appointment appt = new Appointment();

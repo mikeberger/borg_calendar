@@ -30,7 +30,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement(name="Tasklog")
 @XmlAccessorType(XmlAccessType.NONE)
-public class Tasklog extends KeyedEntity<Tasklog> implements java.io.Serializable {
+public class Tasklog extends KeyedEntity<Tasklog> {
 
 
 	private static final long serialVersionUID = -7296390517941361874L;
@@ -92,6 +92,7 @@ public class Tasklog extends KeyedEntity<Tasklog> implements java.io.Serializabl
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.entity.KeyedEntity#clone()
 	 */
+	@Override
 	protected Tasklog clone() {
 		Tasklog dst = new Tasklog();
 		dst.setKey( getKey());

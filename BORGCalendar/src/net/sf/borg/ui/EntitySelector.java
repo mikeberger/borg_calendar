@@ -55,6 +55,8 @@ import net.sf.borg.ui.util.TableSorter;
  */
 public class EntitySelector extends JDialog {
 
+	private static final long serialVersionUID = 1L;
+
 	/** The used to hold the chosen entities */
 	private static ArrayList<KeyedEntity<?>> list_ = new ArrayList<KeyedEntity<?>>();
 
@@ -222,6 +224,7 @@ public class EntitySelector extends JDialog {
 		else
 			jTable1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+			@Override
 			public void mouseClicked(java.awt.event.MouseEvent evt) {
 				jTable1MouseClicked(evt);
 			}
@@ -262,6 +265,7 @@ public class EntitySelector extends JDialog {
 				.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		jTable1.setSelectionModel(mylsmodel);
 		jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+			@Override
 			public void mouseClicked(java.awt.event.MouseEvent evt) {
 				jTable1MouseClicked(evt);
 			}

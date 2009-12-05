@@ -86,6 +86,8 @@ import javax.swing.table.TableModel;
 
 @SuppressWarnings("unchecked") //$NON-NLS-1$
 public class TableSorter extends AbstractTableModel {
+    private static final long serialVersionUID = 1L;
+
     protected TableModel tableModel;
 
     public static final int DESCENDING = -1;
@@ -117,6 +119,7 @@ public class TableSorter extends AbstractTableModel {
     private List<Directive> sortingColumns = new ArrayList<Directive>();
 
     public TableSorter() {
+      // empty
     }
 
     private void clearSortingState() {
@@ -264,14 +267,17 @@ public class TableSorter extends AbstractTableModel {
         return (tableModel == null) ? 0 : tableModel.getColumnCount();
     }
 
+    @Override
     public String getColumnName(int column) {
         return tableModel.getColumnName(column);
     }
 
+    @Override
     public Class getColumnClass(int column) {
         return tableModel.getColumnClass(column);
     }
 
+    @Override
     public boolean isCellEditable(int row, int column) {
         return tableModel.isCellEditable(modelIndex(row), column);
     }
@@ -280,6 +286,7 @@ public class TableSorter extends AbstractTableModel {
         return tableModel.getValueAt(modelIndex(row), column);
     }
 
+    @Override
     public void setValueAt(Object aValue, int row, int column) {
         tableModel.setValueAt(aValue, modelIndex(row), column);
     }
@@ -378,6 +385,7 @@ public class TableSorter extends AbstractTableModel {
     };
 
     private MouseAdapter mouseListener_ = new MouseAdapter (){
+        @Override
         public void mouseClicked(MouseEvent e) {
             JTableHeader h = (JTableHeader) e.getSource();
             TableColumnModel columnModel = h.getColumnModel();
@@ -408,14 +416,14 @@ public class TableSorter extends AbstractTableModel {
             this.priority = priority;
         }
 
-        public void paintIcon(Component c, Graphics g, int x, int y) {
+        public void paintIcon(Component c, Graphics g, int x, int yIn) {
             Color color = c == null ? Color.GRAY : c.getBackground();             
             // In a compound sort, make each succesive triangle 20% 
             // smaller than the previous one. 
             int dx = (int)(size/2*Math.pow(0.8, priority));
             int dy = descending ? dx : -dx;
             // Align icon (roughly) with font baseline. 
-            y = y + 5*size/6 + (descending ? -dy : 0);
+            int y = yIn +  5*size/6 + (descending ? -dy : 0);
             int shift = descending ? 1 : -1;
             g.translate(x, y);
 
@@ -492,6 +500,7 @@ public class TableSorter extends AbstractTableModel {
     // ===============================================================================
     
     private class NewTableModel extends DefaultTableModel{
+        private static final long serialVersionUID = 1L;
         Class [] classes_;
         boolean [] editable_;
         
@@ -509,10 +518,12 @@ public class TableSorter extends AbstractTableModel {
             }
         }
  
+        @Override
         public Class getColumnClass(int column) {
             return classes_[column];
         }
         
+        @Override
         public boolean isCellEditable(int rowIndex, int columnIndex)
         {
             

@@ -16,6 +16,7 @@ import javax.xml.bind.annotation.XmlElement;
 @XmlAccessorType(XmlAccessType.NONE)
 public abstract class EncryptableEntity<T> extends KeyedEntity<T> {
 	
+	private static final long serialVersionUID = 1L;
 	/** encryption flag  - indicates if an entity instance is encrypted. It is stored in
 	 * the database */
 	@XmlElement

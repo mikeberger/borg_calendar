@@ -44,6 +44,8 @@ import javax.swing.SwingConstants;
  */
 public class SplashScreen extends JFrame {
 
+	private static final long serialVersionUID = 1L;
+
 	/** The image label to show the splash image */
 	private JLabel imageLabel;
 

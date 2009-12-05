@@ -82,11 +82,15 @@ import com.toedter.calendar.JDateChooser;
 public class AppointmentListView extends DockableView implements
 		ListSelectionListener {
 
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * show the time of an appointment in the appt table - and shopw dashes for
 	 * appointments with no time
 	 */
 	private class TimeRenderer extends JLabel implements TableCellRenderer {
+
+		private static final long serialVersionUID = 1L;
 
 		/**
 		 * constructor

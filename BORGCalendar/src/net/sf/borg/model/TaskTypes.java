@@ -96,6 +96,7 @@ public class TaskTypes {
 	 * constructor.
 	 */
 	public TaskTypes() {
+	  // empty
 	}
 
 	/**

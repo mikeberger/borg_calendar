@@ -38,18 +38,18 @@ public class SocketServer extends Thread {
 	    protected Socket client;
 	    protected BufferedReader in;
 	    protected PrintStream out;
-	    private SocketHandler handler_;
+	    private SocketHandler handler_1;
 
 	    // Initialize the streams and start the thread
 	    public Connection(Socket client_socket, SocketHandler handler) {
 	        client = client_socket;
-	        handler_ = handler;
+	        handler_1 = handler;
 	        try { 
 	            in = new BufferedReader(new InputStreamReader(client.getInputStream()));
 	            out = new PrintStream(client.getOutputStream());
 	        }
 	        catch (IOException e) {
-	            try { client.close(); } catch (IOException e2) { ; }
+	            try { client.close(); } catch (IOException e2) {  /* empty */}
 	            System.err.println("Exception while getting socket streams: " + e);
 	            return;
 	        }
@@ -58,6 +58,7 @@ public class SocketServer extends Thread {
 	    
 	    // Provide the service.
 	    // Read a line, reverse it, send it back.  
+	    @Override
 	    public void run() {
 	       
 	        try {
@@ -65,12 +66,12 @@ public class SocketServer extends Thread {
 	                // read in a line
 	                String line = in.readLine();
 	                if (line == null) break;
-	                String output = handler_.processMessage(line);
+	                String output = handler_1.processMessage(line);
 	                out.println(output);
 	            }
 	        }
-	        catch (IOException e) { ; }
-	        finally { try {client.close();} catch (IOException e2) {;} }
+	        catch (IOException e) {  /* empty */ }
+	        finally { try {client.close();} catch (IOException e2) {  /* empty */ } }
 	    }
 	}
 	
@@ -104,6 +105,7 @@ public class SocketServer extends Thread {
     /* (non-Javadoc)
      * @see java.lang.Thread#run()
      */
+    @Override
     public void run() {
         try {
             while(true) {

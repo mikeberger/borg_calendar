@@ -41,6 +41,7 @@ class ViewSize {
 	 * Instantiates a ViewSize
 	 */
 	public ViewSize() {
+	  // empty
 	}
 
 	/**
@@ -159,6 +160,7 @@ class ViewSize {
 	 * get the ViewSize data in a string
 	 * @return the string
 	 */
+	@Override
 	public String toString() {
 		return (Integer.toString(x) + "," + Integer.toString(y) + ","
 				+ Integer.toString(width) + "," + Integer.toString(height)

@@ -31,7 +31,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement(name="Link")
 @XmlAccessorType(XmlAccessType.NONE)
-public class Link extends KeyedEntity<Link> implements java.io.Serializable {
+public class Link extends KeyedEntity<Link> {
 
 	
 	private static final long serialVersionUID = 1476303921088473573L;
@@ -55,6 +55,7 @@ public class Link extends KeyedEntity<Link> implements java.io.Serializable {
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.entity.KeyedEntity#clone()
 	 */
+	@Override
 	protected Link clone() {
 		Link dst = new Link();
 		dst.setKey( getKey());

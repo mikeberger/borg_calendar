@@ -47,6 +47,8 @@ import net.sf.borg.ui.util.InputDialog;
  */
 public class CategoryChooser extends View {
 
+	private static final long serialVersionUID = 1L;
+
 	/** The singleton. */
 	private static CategoryChooser singleton = null;
 
@@ -437,6 +439,7 @@ public class CategoryChooser extends View {
 	}
 	@Override
 	public void refresh() {
+	  // empty
 	}
 	/**
 	 * This method initializes selectAllButton.

@@ -35,6 +35,8 @@ import net.sf.borg.model.ReminderTimes;
  */
 public class ReminderTimePanel extends JPanel {
 
+	private static final long serialVersionUID = 1L;
+
 	/** The number Of Reminder Times. */
 	private int numberOfReminderTimes = 0;
 

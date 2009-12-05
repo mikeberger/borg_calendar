@@ -48,7 +48,7 @@ public class AppointmentUndoItem extends UndoItem<Appointment> {
 	 * Instantiates a new appointment undo item.
 	 */
 	private AppointmentUndoItem() {
-
+	  // empty
 	}
 
 	/**

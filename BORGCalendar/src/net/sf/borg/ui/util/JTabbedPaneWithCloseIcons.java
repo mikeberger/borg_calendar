@@ -41,6 +41,8 @@ import net.sf.borg.ui.DockableView;
 public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 		MouseListener, MouseMotionListener {
 
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * this is the icon that actually contains the symbols for close and
 	 * optionally undock.
@@ -323,6 +325,7 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 	 */
 	@Override
 	public void mouseDragged(MouseEvent arg0) {
+	  // empty
 	}
 
 	/*

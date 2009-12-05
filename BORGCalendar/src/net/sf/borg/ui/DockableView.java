@@ -50,6 +50,7 @@ import net.sf.borg.model.Model;
  */
 public abstract class DockableView extends JPanel implements Model.Listener {
 	
+	private static final long serialVersionUID = 1L;
 	/** The icon for the title bar  */
 	static Image image = Toolkit.getDefaultToolkit().getImage(
 			DockableView.class.getResource("/resource/borg32x32.jpg"));

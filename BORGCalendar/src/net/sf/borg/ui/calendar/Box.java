@@ -67,6 +67,7 @@ abstract public class Box {
 	 * delete the box
 	 */
 	public void delete() {
+	  // empty
 	}
 
 	/**

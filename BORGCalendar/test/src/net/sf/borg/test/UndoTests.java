@@ -236,7 +236,7 @@ public class UndoTests {
 		Collection<Task> coll = TaskModel.getReference().getTasks();
 		assertTrue( "Task DB should contain 1 task", coll.size() == 1);
 		
-		Integer taskid = coll.iterator().next().getKey();
+		Integer taskid = new Integer(coll.iterator().next().getKey());
 		Subtask st1 = new Subtask();
 		st1.setDescription("st1");
 		st1.setStartDate(new Date());
@@ -247,7 +247,7 @@ public class UndoTests {
 		st2.setStartDate(new Date());
 		st2.setTask(taskid);
 		TaskModel.getReference().saveSubTask(st2);
-		num = TaskModel.getReference().getSubTasks(taskid).size();
+		num = TaskModel.getReference().getSubTasks(taskid.intValue()).size();
 		assertTrue("Task does not have 2 subtasks: " + num, num == 2);
 		
 		// update the task
@@ -262,14 +262,14 @@ public class UndoTests {
 		assertTrue("Task was not updated", "Updated text".equals(task.getDescription()));
 		
 		// delete a subtask
-		Collection<Subtask> scoll = TaskModel.getReference().getSubTasks(taskid);
+		Collection<Subtask> scoll = TaskModel.getReference().getSubTasks(taskid.intValue());
 		TaskModel.getReference().deleteSubTask(scoll.iterator().next().getKey());
-		num = TaskModel.getReference().getSubTasks(taskid).size();
+		num = TaskModel.getReference().getSubTasks(taskid.intValue()).size();
 		assertTrue("Task does not have 1 subtask: " + num, num == 1);
 		
 		
 		// delete the task
-		TaskModel.getReference().delete(taskid);
+		TaskModel.getReference().delete(taskid.intValue());
 		coll = TaskModel.getReference().getTasks();
 		assertTrue( "Task DB should contain 0 tasks", coll.size() == 0);
 		
@@ -283,7 +283,7 @@ public class UndoTests {
 		assertTrue( "Task DB should contain 1 task", coll.size() == 1);
 		task = coll.iterator().next();
 		assertTrue("Task was not updated", "Updated text".equals(task.getDescription()));
-		num = TaskModel.getReference().getSubTasks(taskid).size();
+		num = TaskModel.getReference().getSubTasks(taskid.intValue()).size();
 		assertTrue("Task does not have 1 subtask: " + num, num == 1);
 		
 		// undo the update - should add back 1 subtask as well
@@ -294,7 +294,7 @@ public class UndoTests {
 		assertTrue( "Task DB should contain 1 task", coll.size() == 1);
 		task = coll.iterator().next();
 		assertTrue("Task was not undone: " + task.getDescription(), "task 1".equals(task.getDescription()));
-		num = TaskModel.getReference().getSubTasks(taskid).size();
+		num = TaskModel.getReference().getSubTasks(taskid.intValue()).size();
 		assertTrue("Task does not have 2 subtasks: " + num, num == 2);
 		
 		//undo the add
@@ -307,7 +307,7 @@ public class UndoTests {
 	@AfterClass
 	public static void tearDown()
 	{
-		
+		// empty
 	}
 
 }

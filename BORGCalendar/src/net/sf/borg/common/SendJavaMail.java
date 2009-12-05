@@ -59,6 +59,7 @@ public class SendJavaMail {
 			password = pass;
 		}
 
+		@Override
 		public PasswordAuthentication getPasswordAuthentication() {
 			return new PasswordAuthentication(username, password);
 		}

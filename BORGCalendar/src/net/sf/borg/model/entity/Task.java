@@ -35,7 +35,7 @@ import net.sf.borg.common.Prefs;
  */
 @XmlRootElement(name="Task")
 @XmlAccessorType(XmlAccessType.NONE)
-public class Task extends KeyedEntity<Task> implements CalendarEntity, java.io.Serializable {
+public class Task extends KeyedEntity<Task> implements CalendarEntity {
 
 	
 	private static final long serialVersionUID = -8980203293028263282L;
@@ -287,6 +287,7 @@ public class Task extends KeyedEntity<Task> implements CalendarEntity, java.io.S
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.entity.KeyedEntity#clone()
 	 */
+	@Override
 	protected Task clone() {
 		Task dst = new Task();
 		dst.setKey( getKey());

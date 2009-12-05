@@ -80,7 +80,7 @@ public class RunReport {
 					if (p == null)
 						return;
 					Map<String, Integer> map = new HashMap<String, Integer>();
-					map.put("pid", p.getKey());
+					map.put("pid", new Integer(p.getKey()));
 					Collection<?> allChildren = TaskModel.getReference()
 							.getAllSubProjects(p.getKey());
 					Iterator<?> it = allChildren.iterator();
@@ -88,7 +88,7 @@ public class RunReport {
 						if (!it.hasNext())
 							break;
 						Project sp = (Project) it.next();
-						map.put("pid" + i, sp.getKey());
+						map.put("pid" + i, new Integer(sp.getKey()));
 					}
 					RunReport.runReport("proj", map);
 				} catch (NoClassDefFoundError r) {
@@ -150,12 +150,12 @@ public class RunReport {
 	 * 
 	 * @param is
 	 *            the report file as an InputStream
-	 * @param parms
+	 * @param parmsIn
 	 *            the input parameter map for the report
 	 */
 	@SuppressWarnings("unchecked")
-	public static void runReport(InputStream is, Map parms) {
-
+	public static void runReport(InputStream is, Map parmsIn) {
+	  Map parms = parmsIn;
 		if (parms == null)
 			parms = new HashMap();
 		try {

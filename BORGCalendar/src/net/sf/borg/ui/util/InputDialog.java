@@ -46,10 +46,13 @@ import net.sf.borg.common.Resource;
  */
 public class InputDialog extends JDialog {
 
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * document that limits length
 	 */
 	private class LimitDocument extends PlainDocument {
+		private static final long serialVersionUID = 1L;
 		int maxLength; // max characters allowed
 
 		/**

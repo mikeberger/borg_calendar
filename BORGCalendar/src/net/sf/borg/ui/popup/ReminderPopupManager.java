@@ -197,6 +197,7 @@ public class ReminderPopupManager implements Model.Listener {
 		GregorianCalendar cur = new GregorianCalendar();
 		int secs_left = 60 - cur.get(Calendar.SECOND);
 		timer.schedule(new TimerTask() {
+			@Override
 			public void run() {
 				EventQueue.invokeLater(doPopupChk);
 			}
@@ -707,7 +708,7 @@ public class ReminderPopupManager implements Model.Listener {
 					}
 				}
 			} catch (Exception e) {
-
+			  // empty
 			}
 		}
 	}

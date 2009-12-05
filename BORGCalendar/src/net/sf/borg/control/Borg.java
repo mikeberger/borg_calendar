@@ -105,6 +105,7 @@ public class Borg implements SocketHandler {
 		// being superstitious.
 		Timer shutdownTimer = new java.util.Timer();
 		shutdownTimer.schedule(new TimerTask() {
+			@Override
 			public void run() {
 				System.exit(0);
 			}
@@ -150,7 +151,7 @@ public class Borg implements SocketHandler {
 	 * constructor
 	 */
 	private Borg() {
-
+	  // empty
 	}
 
 	/**
@@ -287,7 +288,7 @@ public class Borg implements SocketHandler {
 					System.exit(0);
 				}
 			} catch (IOException e) {
-
+			  // empty
 			}
 
 		}
@@ -381,6 +382,7 @@ public class Borg implements SocketHandler {
 			// start up email check timer - every 24 hours
 			mailTimer_ = new java.util.Timer();
 			mailTimer_.schedule(new TimerTask() {
+				@Override
 				public void run() {
 					try {
 						EmailReminder.sendDailyEmailReminder(null);
@@ -402,6 +404,7 @@ public class Borg implements SocketHandler {
 					&& syncmins != 0) {
 				syncTimer_ = new java.util.Timer();
 				syncTimer_.schedule(new TimerTask() {
+					@Override
 					public void run() {
 						SwingUtilities.invokeLater(new Runnable() {
 							public void run() {

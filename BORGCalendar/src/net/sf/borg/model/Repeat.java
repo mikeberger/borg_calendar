@@ -130,9 +130,7 @@ public class Repeat {
      * @return the translation
      */
     static public String getFreqString(String fr) {
-        if (fr == null)
-            fr = ONCE;
-        return (Resource.getResourceString(fr));
+      return (Resource.getResourceString((fr == null) ? ONCE : fr));
     }
 
     /**

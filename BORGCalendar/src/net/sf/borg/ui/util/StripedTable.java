@@ -35,10 +35,14 @@ import net.sf.borg.common.Prefs;
  */
 public class StripedTable extends JTable {
 
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * renderer that alternates colors
 	 */
 	private class StripedRenderer extends JLabel implements TableCellRenderer {
+
+		private static final long serialVersionUID = 1L;
 
 		public StripedRenderer() {
 			super();

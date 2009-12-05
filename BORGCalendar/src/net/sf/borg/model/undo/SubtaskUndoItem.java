@@ -50,7 +50,7 @@ public class SubtaskUndoItem extends UndoItem<Subtask> {
 	 * Instantiates a new subtask undo item.
 	 */
 	private SubtaskUndoItem() {
-
+	  // empty
 	}
 
 	/**

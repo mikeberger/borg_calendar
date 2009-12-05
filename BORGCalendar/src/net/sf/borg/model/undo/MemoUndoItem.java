@@ -51,7 +51,7 @@ public class MemoUndoItem extends UndoItem<Memo> {
 	 */
 	private MemoUndoItem()
 	{
-		
+		// empty
 	}
 	
 	/**

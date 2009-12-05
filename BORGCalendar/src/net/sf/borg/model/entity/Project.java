@@ -35,7 +35,7 @@ import net.sf.borg.common.Prefs;
  */
 @XmlRootElement(name="Project")
 @XmlAccessorType(XmlAccessType.NONE)
-public class Project extends KeyedEntity<Project> implements CalendarEntity,java.io.Serializable {
+public class Project extends KeyedEntity<Project> implements CalendarEntity {
 
 	
 	private static final long serialVersionUID = -3250115693306817331L;
@@ -155,6 +155,7 @@ public class Project extends KeyedEntity<Project> implements CalendarEntity,java
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.entity.KeyedEntity#clone()
 	 */
+	@Override
 	protected Project clone() {
 		Project dst = new Project();
 		dst.setKey( getKey());

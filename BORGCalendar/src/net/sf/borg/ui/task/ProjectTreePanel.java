@@ -61,6 +61,8 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 		MouseListener, Model.Listener {
 	
 	
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * A Node in the tree that contains the visible node name and
 	 * the related object
@@ -315,7 +317,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 			try {
 				ProjectView pv;
 				try {
-					pv = new ProjectView(null, ProjectView.Action.ADD, p.getKey());
+					pv = new ProjectView(null, ProjectView.Action.ADD, new Integer(p.getKey()));
 					entityScrollPane.setViewportView(pv);
 				} catch (Exception e) {
 					Errmsg.errmsg(e);
@@ -338,7 +340,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 		if (o instanceof Project) {
 			Project p = (Project) o;
 			try {
-				TaskView pv = new TaskView(null, TaskView.Action.ADD, p.getKey());
+				TaskView pv = new TaskView(null, TaskView.Action.ADD, new Integer(p.getKey()));
 				entityScrollPane.setViewportView(pv);
 			} catch (Exception e1) {
 				Errmsg.errmsg(e1);
@@ -492,24 +494,28 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 	 * @see java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
 	 */
 	public void mouseEntered(MouseEvent arg0) {
+	  // empty
 	}
 
 	/* (non-Javadoc)
 	 * @see java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
 	 */
 	public void mouseExited(MouseEvent arg0) {
+    // empty
 	}
 
 	/* (non-Javadoc)
 	 * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
 	 */
 	public void mousePressed(MouseEvent e) {
+    // empty
 	}
 
 	/* (non-Javadoc)
 	 * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
 	 */
 	public void mouseReleased(MouseEvent arg0) {
+    // empty
 	}
 
 	/**

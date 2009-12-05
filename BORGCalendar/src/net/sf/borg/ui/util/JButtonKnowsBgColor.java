@@ -37,6 +37,7 @@ import javax.swing.JFrame;
  * 
  */
 public class JButtonKnowsBgColor extends JButton {
+	private static final long serialVersionUID = 1L;
 	// colorProperty is ONE color, but can be indicated by fore or back color
 	protected Color colorProperty;
 	// bg=true means "choosed color is background color"

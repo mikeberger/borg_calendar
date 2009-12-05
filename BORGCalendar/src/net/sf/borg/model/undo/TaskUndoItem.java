@@ -52,7 +52,7 @@ public class TaskUndoItem extends UndoItem<Task> {
 				Integer pid = item.getProject();
 				if( pid != null )
 				{
-					Project p = TaskModel.getReference().getProject(pid);
+					Project p = TaskModel.getReference().getProject(pid.intValue());
 					if( p == null )
 					{
 						// if the project has been deleted
@@ -69,7 +69,7 @@ public class TaskUndoItem extends UndoItem<Task> {
 				// add back the subtasks
 				for (SubtaskUndoItem s : subtasks)
 				{
-					s.item.setTask(item.getKey());
+					s.item.setTask(new Integer(item.getKey()));
 					s.executeUndo();
 				}
 			} else if (action == actionType.UPDATE) {
@@ -97,7 +97,7 @@ public class TaskUndoItem extends UndoItem<Task> {
 	 * Instantiates a new task undo item.
 	 */
 	private TaskUndoItem() {
-
+	  // empty
 	}
 
 	/**

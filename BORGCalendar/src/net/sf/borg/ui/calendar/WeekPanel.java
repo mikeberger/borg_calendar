@@ -73,6 +73,8 @@ import net.sf.borg.ui.util.GridBagConstraintsFactory;
  */
 public class WeekPanel extends JPanel implements Printable, CalendarModule {
 
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * WeekSubPanel is the Panel that shows the items for a week with a section
 	 * for untimed items and a time-grid for timed items
@@ -80,6 +82,8 @@ public class WeekPanel extends JPanel implements Printable, CalendarModule {
 	private class WeekSubPanel extends ApptBoxPanel implements
 			NavPanel.Navigator, Prefs.Listener, Model.Listener, Printable,
 			MouseWheelListener {
+
+		private static final long serialVersionUID = 1L;
 
 		// week start date
 		private Date beg_ = null;

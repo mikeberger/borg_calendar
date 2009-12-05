@@ -29,7 +29,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement(name="Address")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Address extends KeyedEntity<Address> implements java.io.Serializable {
+public class Address extends KeyedEntity<Address>  {
 
 	
 	private static final long serialVersionUID = 1996612351860988688L;
@@ -428,6 +428,7 @@ public class Address extends KeyedEntity<Address> implements java.io.Serializabl
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.entity.KeyedEntity#clone()
 	 */
+	@Override
 	protected Address clone() {
 		Address dst = new Address();
 		dst.setKey( getKey());

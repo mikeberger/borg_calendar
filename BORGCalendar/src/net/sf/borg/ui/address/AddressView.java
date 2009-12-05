@@ -52,6 +52,8 @@ import com.toedter.calendar.JDateChooser;
  */
 public class AddressView extends DockableView {
 
+	private static final long serialVersionUID = 1L;
+
 	// address being edited
 	private Address addr_;
 
@@ -406,6 +408,7 @@ public class AddressView extends DockableView {
 
 	@Override
 	public void refresh() {
+	  // empty
 	}
 
 	/**

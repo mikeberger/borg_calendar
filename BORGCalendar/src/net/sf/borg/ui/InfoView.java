@@ -48,6 +48,7 @@ import net.sf.borg.ui.util.GridBagConstraintsFactory;
  */
 class InfoView extends DockableView implements Module {
 
+	private static final long serialVersionUID = 1L;
 	private JEditorPane jEditorPane1;
 	private JScrollPane jScrollPane1;
 
@@ -100,7 +101,7 @@ class InfoView extends DockableView implements Module {
 
 	@Override
 	public void refresh() {
-
+	  // empty
 	}
 	
 	@Override

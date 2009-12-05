@@ -69,6 +69,8 @@ import net.sf.borg.ui.util.TableSorter;
 public class MemoPanel extends JPanel implements ListSelectionListener,
 		Model.Listener, Module {
 
+	private static final long serialVersionUID = 1L;
+
 	/** The memo date format. */
 	private static SimpleDateFormat memoDateFormat = new SimpleDateFormat(
 			"MM/dd/yyyy hh:mm aa");
@@ -307,7 +309,7 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 					if (result == JOptionPane.CANCEL_OPTION)
 						return;
 
-					m.decrypt(jpf.getText());
+					m.decrypt(new String(jpf.getPassword()));
 					
 					memoText.setText(m.getMemoText());
 					memoText.setEditable(true);
@@ -436,7 +438,7 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 				if (result == JOptionPane.CANCEL_OPTION)
 					return;
 
-				m.encrypt(jpf.getText());
+				m.encrypt(new String(jpf.getPassword()));
 			}
 			MemoModel.getReference().saveMemo(m);
 			isMemoEdited = false;

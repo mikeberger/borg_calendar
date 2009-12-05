@@ -84,11 +84,15 @@ import com.toedter.calendar.JDateChooserCellEditor;
  */
 public class TaskView extends DockableView {
 
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * Render log table dates in a particular date format
 	 */
 	private class LogTableDateRenderer extends JLabel implements
 			TableCellRenderer {
+		private static final long serialVersionUID = 1L;
+
 		public LogTableDateRenderer() {
 			super();
 			setOpaque(true); // MUST do this for background to show up.
@@ -118,6 +122,8 @@ public class TaskView extends DockableView {
 	 */
 	private class SubTaskDueDateRenderer extends JLabel implements
 			TableCellRenderer {
+		private static final long serialVersionUID = 1L;
+
 		public SubTaskDueDateRenderer() {
 			super();
 			setOpaque(true); // MUST do this for background to show up.
@@ -181,6 +187,8 @@ public class TaskView extends DockableView {
 	 */
 	private class SubtaskIntRenderer extends JLabel implements
 			TableCellRenderer {
+
+		private static final long serialVersionUID = 1L;
 
 		/**
 		 * Instantiates a new sT int renderer.
@@ -384,6 +392,7 @@ public class TaskView extends DockableView {
 	 * 
 	 * @see net.sf.borg.ui.DockableView#getFrameSizePref()
 	 */
+	@Override
 	public PrefName getFrameSizePref() {
 		return PrefName.TASKVIEWSIZE;
 	}
@@ -393,6 +402,7 @@ public class TaskView extends DockableView {
 	 * 
 	 * @see net.sf.borg.ui.DockableView#getFrameTitle()
 	 */
+	@Override
 	public String getFrameTitle() {
 		return windowTitle;
 	}
@@ -402,6 +412,7 @@ public class TaskView extends DockableView {
 	 * 
 	 * @see net.sf.borg.ui.DockableView#getMenuForFrame()
 	 */
+	@Override
 	public JMenuBar getMenuForFrame() {
 		JMenuBar theMenuBar = new JMenuBar();
 		JMenu theMenu = new JMenu();
@@ -920,6 +931,7 @@ public class TaskView extends DockableView {
 	 * refresh only updates the link panel tab to indicate links it does not
 	 * refresh task data because the user might be editing
 	 */
+	@Override
 	public void refresh() {
 		if (linkPanel != null && linkPanel.hasLinks()) {
 			taskTabbedPanel.setForegroundAt(3, Color.red);
@@ -985,7 +997,7 @@ public class TaskView extends DockableView {
 
 			Subtask s = new Subtask();
 			if (id != null)
-				s.setKey(id);
+				s.setKey(id.intValue());
 			s.setDescription((String) desc);
 			s.setCloseDate(cd);
 			s.setDueDate(dd);
@@ -1083,7 +1095,7 @@ public class TaskView extends DockableView {
 						.getInitialState(
 								(String) taskTypeComboBox.getSelectedItem()));
 			} else {
-				task.setKey(new Integer(num));
+				task.setKey(new Integer(num).intValue());
 				task.setState((String) statusComboBox.getSelectedItem());
 			}
 
@@ -1310,7 +1322,7 @@ public class TaskView extends DockableView {
 				Object o[] = {
 						subtask.getCloseDate() == null ? new Boolean(false)
 								: new Boolean(true),
-						subtask.getKey(),
+						new Integer(subtask.getKey()),
 						subtask.getDescription(),
 						subtask.getStartDate(),
 						subtask.getDueDate(),
@@ -1328,6 +1340,7 @@ public class TaskView extends DockableView {
 				// load tasklogs
 				loadLog(task.getKey());
 			} catch (Warning w) {
+			  // empty
 			}
 
 			Integer pid = task.getProject();

@@ -229,8 +229,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 				// add day key to vacation map if appt has vacation
 				if (appt.getVacation() != null
 						&& appt.getVacation().intValue() != 0) {
-					vacationMap_.put(new Integer(dkey), appt.getVacation()
-							.intValue());
+					vacationMap_.put(new Integer(dkey), appt.getVacation());
 				}
 			} else {
 
@@ -397,7 +396,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 			Date nt = appt.getNextTodo();
 			if (nt == null)
 				nt = appt.getDate();
-			;
+			
 			if (rkey == DateUtil.dayOfEpoch(nt)) {
 				do_todo(appt.getKey(), false);
 			}

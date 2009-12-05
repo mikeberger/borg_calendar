@@ -48,6 +48,9 @@ import net.sf.borg.ui.util.JTabbedPaneWithCloseIcons;
  */
 public class MultiView extends View {
 
+	private static final long serialVersionUID = 1L;
+
+
 	/**
 	 * interface implemented by all UI Modules. The MultiView manages a set of
 	 * UI Modules. Each Module is responsible for providing a component to show
@@ -173,6 +176,7 @@ public class MultiView extends View {
 
 		// window close button closes the window
 		addWindowListener(new java.awt.event.WindowAdapter() {
+			@Override
 			public void windowClosing(java.awt.event.WindowEvent evt) {
 				closeMainwindow();
 			}
@@ -289,6 +293,7 @@ public class MultiView extends View {
 	}
 
 	/** destroy this window */
+	@Override
 	public void destroy() {
 		this.dispose();
 		mainView = null;
@@ -408,6 +413,7 @@ public class MultiView extends View {
 	 * refresh the view based on model changes. currently does nothing for this
 	 * view.
 	 */
+	@Override
 	public void refresh() {
 		// nothing to refresh for this view
 	}
@@ -431,9 +437,8 @@ public class MultiView extends View {
 					if (component instanceof DockableView) {
 						((DockableView)component).showView();
 						return component;
-					} else {
-						tabs_.addTab(m.getModuleName(), component);
-					}
+					} 
+					tabs_.addTab(m.getModuleName(), component);		
 				}
 				getTabs().setSelectedComponent(component);
 			}

@@ -78,8 +78,9 @@ public class LinkModel extends Model {
 
 		private LinkType(String n) {
 			value = n;
-		};
+		}
 
+		@Override
 		public String toString() {
 			return value;
 		}
@@ -142,7 +143,7 @@ public class LinkModel extends Model {
 	 * 
 	 * @param owner
 	 *            the owning Entity
-	 * @param path
+	 * @param pathIn
 	 *            the path (url, filepath, or entity key)
 	 * @param linkType
 	 *            the link type
@@ -150,8 +151,9 @@ public class LinkModel extends Model {
 	 * @throws Exception
 	 *             the exception
 	 */
-	public void addLink(KeyedEntity<?> owner, String path, LinkType linkType)
+	public void addLink(KeyedEntity<?> owner, String pathIn, LinkType linkType)
 			throws Exception {
+	  String path = pathIn;
 		if (owner == null) {
 			Errmsg.notice(Resource.getResourceString("att_owner_null"));
 			return;
@@ -224,13 +226,13 @@ public class LinkModel extends Model {
 				try {
 					from.close();
 				} catch (IOException e) {
-					;
+					// empty
 				}
 			if (to != null)
 				try {
 					to.close();
 				} catch (IOException e) {
-					;
+					// empty
 				}
 		}
 

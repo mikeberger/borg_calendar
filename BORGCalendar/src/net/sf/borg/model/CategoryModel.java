@@ -131,11 +131,7 @@ public class CategoryModel extends Model {
 	 * @return true, if is shown
 	 */
 	public boolean isShown(String cat) {
-		if (cat == null || cat.equals(""))
-			cat = CategoryModel.UNCATEGORIZED;
-		if (shownCategories_.contains(cat))
-			return true;
-		return false;
+		return (shownCategories_.contains((cat == null || cat.equals("")) ? CategoryModel.UNCATEGORIZED : cat)) ;
 	}
 
 	/*
@@ -143,8 +139,9 @@ public class CategoryModel extends Model {
 	 * 
 	 * @see net.sf.borg.model.Model#remove()
 	 */
+	@Override
 	public void remove() {
-
+	  // empty
 	}
 
 	/**

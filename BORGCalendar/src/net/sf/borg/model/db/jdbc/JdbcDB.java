@@ -95,11 +95,12 @@ abstract public class JdbcDB implements Transactional {
 	 * Connect to the database. The logic varies based on the URL. Supports MYSQL, HSQL
 	 * For HSQL - if the DB doesn't exist, it will be created
 	 * 
-	 * @param url the JDBC url
+	 * @param urlIn the JDBC url
 	 * 
 	 * @throws Exception the exception
 	 */
-	static public void connect(String url) throws Exception {
+	static public void connect(String urlIn) throws Exception {
+	  String url = urlIn;
 		if( url == null )
 			url = buildDbDir();
 		url_ = url;
@@ -219,6 +220,7 @@ abstract public class JdbcDB implements Transactional {
 				val += ",";
 			}
 		} catch (Exception e) {
+		  // empty
 		}
 		return (val);
 	}
@@ -346,6 +348,7 @@ abstract public class JdbcDB implements Transactional {
 			stmt.setString(1, oname);
 			stmt.executeUpdate();
 		} catch (Exception e) {
+		  // empty
 		}
 
 		if (value == null || value.equals(""))

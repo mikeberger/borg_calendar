@@ -50,7 +50,7 @@ public class ProjectUndoItem extends UndoItem<Project> {
 	 * Instantiates a new project undo item.
 	 */
 	private ProjectUndoItem() {
-
+	  // empty
 	}
 
 	/**

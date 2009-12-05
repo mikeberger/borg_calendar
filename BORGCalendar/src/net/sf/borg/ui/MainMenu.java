@@ -580,10 +580,12 @@ class MainMenu {
 
 			@Override
 			public void menuCanceled(MenuEvent arg0) {
+			  // empty
 			}
 
 			@Override
 			public void menuDeselected(MenuEvent arg0) {
+			  // empty
 			}
 
 			@Override

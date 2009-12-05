@@ -49,6 +49,8 @@ import net.sf.borg.ui.util.GridBagConstraintsFactory;
  */
 public class TaskFilterPanel extends JPanel {
 
+	private static final long serialVersionUID = 1L;
+
 	/** The case sensitive box. */
 	private JCheckBox caseSensitiveBox = null;
 
@@ -181,6 +183,7 @@ public class TaskFilterPanel extends JPanel {
 			}
 		}
 		catch (Exception e) {
+		  // empty
 		}
 	}
 

@@ -47,6 +47,8 @@ import net.sf.borg.ui.util.GridBagConstraintsFactory;
  */
 public class PopupOptionsView extends JDialog {
 
+	private static final long serialVersionUID = 1L;
+
 	/** The reminder time check boxes. */
 	private JCheckBox[] reminderTimeCheckBoxes;
 	

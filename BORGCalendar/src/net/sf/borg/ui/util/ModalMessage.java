@@ -45,6 +45,8 @@ import net.sf.borg.common.Resource;
  */
 public class ModalMessage extends JDialog {
 
+	private static final long serialVersionUID = 1L;
+
 	/** The message scroll. */
 	private JScrollPane messageScroll = null;
 

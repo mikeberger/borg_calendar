@@ -260,7 +260,7 @@ public class MemoModel extends Model {
 						m.setUpdated(update);
 					m.setMemoText(text.substring(idx3 + 1));
 				} catch (Exception e) {
-
+				  // empty
 				}
 			}
 		}

@@ -299,7 +299,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 				// use task due date to build a day key
 				Date due = pj.getDueDate();
 				int key = DateUtil.dayOfEpoch(due);
-				;
+				
 
 				// add the string to the btmap_
 				Collection<Project> o = pmap_.get(new Integer(key));
@@ -326,7 +326,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 				// use task due date to build a day key
 				Date due = st.getDueDate();
 				int key = DateUtil.dayOfEpoch(due);
-				;
+				
 
 				// add the string to the btmap_
 				Collection<Subtask> o = stmap_.get(new Integer(key));
@@ -516,15 +516,13 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 		}
 
 		// add task to DB
-		Integer num = task.getKey();
-		Task indb = null;
-		if (num != null)
-			indb = getTask(num);
+		Integer num = new Integer(task.getKey());
+		Task indb = getTask(num.intValue());
 
 		// if the task number is -1, it is a new task so
 		// get a new task number.
-		if (num == null || num.intValue() == -1 || indb == null) {
-			if (!undo || num == null) {
+		if (num.intValue() == -1 || indb == null) {
+			if (!undo ) {
 				int newkey = db_.nextkey();
 				task.setKey(newkey);
 			}

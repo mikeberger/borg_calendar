@@ -49,6 +49,7 @@ import net.sf.borg.ui.util.TableSorter;
  */
 class SqlRunner extends JDialog {
 
+	private static final long serialVersionUID = 1L;
 	private JEditorPane editor;
 
 	public SqlRunner() {
@@ -159,6 +160,7 @@ class SqlRunner extends JDialog {
 			try {
 				TaskModel.getReference().rollbackTransaction();
 			} catch (Exception e2) {
+			  // empty
 			}
 			Errmsg.errmsg(e);
 		}

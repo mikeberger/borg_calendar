@@ -98,10 +98,14 @@ import com.toedter.calendar.JDateChooser;
  */
 public class TodoView extends DockableView implements Prefs.Listener, Module {
 
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * Adds user colors to the todo table
 	 */
 	class TodoTableCellRenderer extends DefaultTableCellRenderer {
+
+		private static final long serialVersionUID = 1L;
 
 		/*
 		 * (non-Javadoc)

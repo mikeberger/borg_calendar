@@ -39,6 +39,7 @@ import net.sf.borg.common.Resource;
  */
 // I am not going to clean this up or comment. It is public domain code.
 public class NwFontChooserS extends JDialog {
+    private static final long serialVersionUID = 1L;
     String[] styleList = new String[] { "Plain", "Bold", "Italic" };
     String[] sizeList =
     new String[] {
@@ -75,8 +76,9 @@ public class NwFontChooserS extends JDialog {
         static JLabel Sample = new JLabel();
         boolean ob = false;
         
-        private NwFontChooserS(Frame parent, boolean modal, Font font) {
+        private NwFontChooserS(Frame parent, boolean modal, Font fontIn) {
             super(parent, modal);
+            Font font = fontIn;
             initAll();
             setTitle("Font Choosr");
             if (font == null)
@@ -106,6 +108,7 @@ public class NwFontChooserS extends JDialog {
             Sample.setForeground(Color.black);
             getContentPane().add(Sample);
             addWindowListener(new WindowAdapter() {
+                @Override
                 public void windowClosing(WindowEvent e) {
                     setVisible(false);
                 }
@@ -156,6 +159,7 @@ public class NwFontChooserS extends JDialog {
                 g = Integer.parseInt(SizeList.getSelectedValue());
             }
             catch (NumberFormatException nfe) {
+              // empty
             }
             String st = StyleList.getSelectedValue();
             int s = Font.PLAIN;
@@ -168,6 +172,7 @@ public class NwFontChooserS extends JDialog {
         }
         //////////////////////////////////////////////////////////////////////
         private class NwList extends JPanel {
+            private static final long serialVersionUID = 1L;
             JList jl;
             JScrollPane sp;
             JLabel jt;
@@ -201,6 +206,7 @@ public class NwFontChooserS extends JDialog {
             public void setSelectedItem(String s) {
                 jl.setSelectedValue(s, true);
             }
+            @Override
             public void setBounds(int x, int y, int w, int h) {
                 super.setBounds(x, y, w, h);
                 sp.setBounds(0, y + 12, w, h - 23);

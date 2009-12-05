@@ -77,6 +77,8 @@ import net.sf.borg.ui.util.TableSorter;
  */
 public class LinkPanel extends JPanel implements Model.Listener {
 
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * Provide a human readable name for a link
 	 * 

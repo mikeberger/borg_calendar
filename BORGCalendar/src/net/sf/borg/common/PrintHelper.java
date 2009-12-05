@@ -46,9 +46,13 @@ public class PrintHelper {
 					new Class[] { printServiceClass });
 			method.invoke(job, new Object[] { printService });
 		} catch (NoSuchMethodException e) {
+		  // empty
 		} catch (IllegalAccessException e) {
+		  // empty
 		} catch (InvocationTargetException e) {
+		  // empty
 		} catch (ClassNotFoundException e) {
+		  // empty
 		}
 
 

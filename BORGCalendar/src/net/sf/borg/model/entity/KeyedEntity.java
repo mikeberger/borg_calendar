@@ -38,6 +38,7 @@ import javax.xml.bind.annotation.XmlElement;
 public abstract class KeyedEntity<T> implements Serializable
 {
     
+    private static final long serialVersionUID = 1L;
     /** The key_. */
 	@XmlElement(name="KEY")
     private int key_;
@@ -83,9 +84,10 @@ public abstract class KeyedEntity<T> implements Serializable
     /* (non-Javadoc)
      * @see java.lang.Object#clone()
      */
+    @Override
     protected T clone(){
         System.out.println("Should not be here!!");
         return( null );
-    };
+    }
     
 }

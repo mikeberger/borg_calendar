@@ -142,6 +142,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements EntityDB<Task>, Task
     /* (non-Javadoc)
      * @see net.sf.borg.model.db.jdbc.JdbcBeanDB#getPSOne(int)
      */
+    @Override
     PreparedStatement getPSOne(int key) throws SQLException {
         PreparedStatement stmt = connection_.prepareStatement("SELECT * FROM tasks WHERE tasknum = ?");
         stmt.setInt(1, key);
@@ -151,6 +152,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements EntityDB<Task>, Task
     /* (non-Javadoc)
      * @see net.sf.borg.model.db.jdbc.JdbcBeanDB#getPSAll()
      */
+    @Override
     PreparedStatement getPSAll() throws SQLException {
         PreparedStatement stmt = connection_.prepareStatement("SELECT * FROM tasks");
         return stmt;
@@ -159,6 +161,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements EntityDB<Task>, Task
     /* (non-Javadoc)
      * @see net.sf.borg.model.db.jdbc.JdbcBeanDB#createFrom(java.sql.ResultSet)
      */
+    @Override
     Task createFrom(ResultSet r) throws SQLException {
         Task task = new Task();
         task.setKey(r.getInt("tasknum"));

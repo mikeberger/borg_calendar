@@ -64,6 +64,8 @@ import net.sf.borg.ui.util.GridBagConstraintsFactory;
  */
 public class MonthPanel extends JPanel implements Printable, CalendarModule {
 
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * MonthViewSubPanel draws a month and provides the UI container for the
 	 * month items
@@ -71,6 +73,8 @@ public class MonthPanel extends JPanel implements Printable, CalendarModule {
 	private class MonthViewSubPanel extends ApptBoxPanel implements Printable,
 			NavPanel.Navigator, Model.Listener, Prefs.Listener,
 			MouseWheelListener {
+
+		private static final long serialVersionUID = 1L;
 
 		// number of boxes on the calendar - 6 rows of 7 days
 		final private int numBoxes = 42;
@@ -139,7 +143,7 @@ public class MonthPanel extends JPanel implements Printable, CalendarModule {
 		 */
 		private int drawIt(Graphics g, double width, double height,
 				double pageWidth, double pageHeight, double pagex,
-				double pagey, int pageIndex) {
+				double pagey) {
 
 			Graphics2D g2 = (Graphics2D) g;
 
@@ -501,7 +505,7 @@ public class MonthPanel extends JPanel implements Printable, CalendarModule {
 			try {
 
 				drawIt(g, getWidth(), getHeight(), getWidth() - 20,
-						getHeight() - 20, 10, 10, 0);
+						getHeight() - 20, 10, 10);
 
 			} catch (Exception e) {
 				// Errmsg.errmsg(e);
@@ -543,7 +547,7 @@ public class MonthPanel extends JPanel implements Printable, CalendarModule {
 			return (drawIt(g, pageFormat.getWidth(), pageFormat.getHeight(),
 					pageFormat.getImageableWidth(), pageFormat
 							.getImageableHeight(), pageFormat.getImageableX(),
-					pageFormat.getImageableY(), pageIndex));
+					pageFormat.getImageableY()));
 		}
 
 		/**

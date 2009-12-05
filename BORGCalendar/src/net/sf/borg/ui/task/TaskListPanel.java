@@ -59,11 +59,15 @@ import net.sf.borg.ui.util.TableSorter;
  */
 class TaskListPanel extends JPanel implements Model.Listener {
 
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * renderer for the priority and days left columns in the task table that
 	 * shows them in color.
 	 */
 	private class DLRenderer extends JLabel implements TableCellRenderer {
+
+		private static final long serialVersionUID = 1L;
 
 		/**
 		 * constructor.
@@ -544,7 +548,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 				// if we get here - we are displaying this task as a row
 				// so fill in an array of objects for the row
 				Object[] ro = new Object[12];
-				ro[0] = task.getKey();
+				ro[0] = new Integer(task.getKey());
 				ro[1] = task.getState();
 				ro[2] = task.getType();
 				ro[11] = task.getCategory();

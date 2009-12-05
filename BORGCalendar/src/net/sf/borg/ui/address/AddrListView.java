@@ -65,6 +65,8 @@ import net.sf.borg.ui.util.TableSorter;
  */
 public class AddrListView extends DockableView implements Module {
 
+	private static final long serialVersionUID = 1L;
+
 	private static AddrListView singleton = null;
 
 	/**

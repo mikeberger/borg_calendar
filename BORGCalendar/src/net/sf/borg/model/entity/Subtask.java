@@ -33,8 +33,7 @@ import net.sf.borg.common.Prefs;
  */
 @XmlRootElement(name="Subtask")
 @XmlAccessorType(XmlAccessType.NONE)
-public class Subtask extends KeyedEntity<Subtask> implements CalendarEntity,
-		java.io.Serializable {
+public class Subtask extends KeyedEntity<Subtask> implements CalendarEntity {
 
 	private static final long serialVersionUID = -5794908342032518360L;
 	
@@ -151,6 +150,7 @@ public class Subtask extends KeyedEntity<Subtask> implements CalendarEntity,
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.entity.KeyedEntity#clone()
 	 */
+	@Override
 	protected Subtask clone() {
 		Subtask dst = new Subtask();
 		dst.setKey(getKey());

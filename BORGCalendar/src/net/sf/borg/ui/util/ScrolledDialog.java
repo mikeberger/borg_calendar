@@ -36,6 +36,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
 
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
@@ -46,6 +47,7 @@ import net.sf.borg.common.Resource;
  */
 public class ScrolledDialog extends JDialog {
 
+	private static final long serialVersionUID = 1L;
 	public static final int CANCEL = 1;
 	/** exception - if we are showing one */
 	private static Exception e_;
@@ -150,7 +152,7 @@ public class ScrolledDialog extends JDialog {
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane
-				.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scrollPane.setPreferredSize(new java.awt.Dimension(600, 200));
 		
 		/* set scroll context to message or table */
@@ -220,6 +222,7 @@ public class ScrolledDialog extends JDialog {
 		this.setContentPane(mainPanel);
 		
 		addWindowListener(new java.awt.event.WindowAdapter() {
+			@Override
 			public void windowClosing(java.awt.event.WindowEvent evt) {
 				windowClose();
 			}

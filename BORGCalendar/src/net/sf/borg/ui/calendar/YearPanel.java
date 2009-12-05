@@ -63,12 +63,16 @@ import net.sf.borg.ui.util.GridBagConstraintsFactory;
  */
 public class YearPanel extends JPanel implements Printable, CalendarModule {
 
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * YearViewSubPanel is the panel that draws the year UI
 	 */
 	private class YearViewSubPanel extends ApptBoxPanel implements Printable, NavPanel.Navigator, Model.Listener, Prefs.Listener,
 			MouseWheelListener {
 		
+		private static final long serialVersionUID = 1L;
+
 		// number of day boxes - 37 per month. not all are used. 
 		final private int numBoxes = 37 * 12;
 		
@@ -125,7 +129,7 @@ public class YearPanel extends JPanel implements Printable, CalendarModule {
 		 * draw the year UI
 		 */
 		private int drawIt(Graphics g, double width, double height, double pageWidth, double pageHeight, double pagex,
-				double pagey, int pageIndex, Font sm_font) {
+				double pagey, Font sm_font) {
 
 			Graphics2D g2 = (Graphics2D) g;
 
@@ -422,7 +426,7 @@ public class YearPanel extends JPanel implements Printable, CalendarModule {
 				Font sm_font = Font
 						.decode(Prefs.getPref(PrefName.WEEKVIEWFONT));
 				drawIt(g, getWidth(), getHeight(), getWidth() - 20,
-						getHeight() - 20, 10, 10, 0, sm_font);
+						getHeight() - 20, 10, 10, sm_font);
 
 			} catch (Exception e) {
 				// Errmsg.errmsg(e);
@@ -458,7 +462,7 @@ public class YearPanel extends JPanel implements Printable, CalendarModule {
 			Font sm_font = Font.decode(Prefs.getPref(PrefName.MONTHVIEWFONT));
 			clearData();
 			int ret = drawIt(g, pageFormat.getWidth(), pageFormat.getHeight(), pageFormat.getImageableWidth(), pageFormat
-					.getImageableHeight(), pageFormat.getImageableX(), pageFormat.getImageableY(), pageIndex, sm_font);
+					.getImageableHeight(), pageFormat.getImageableX(), pageFormat.getImageableY(),  sm_font);
 			refresh();
 			return ret;
 		}
