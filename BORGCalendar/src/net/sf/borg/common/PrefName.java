@@ -400,6 +400,6 @@ public class PrefName {
 	static public PrefName KEYALIAS = new PrefName("key_alias", "borg_key");
 	
 	/** cached password time to live in seconds */
-	static public PrefName PASSWORD_TTL = new PrefName("pw_ttl", new Integer(20));
+	static public PrefName PASSWORD_TTL = new PrefName("pw_ttl", new Integer(300));
 
 }

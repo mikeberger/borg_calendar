@@ -58,6 +58,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpinnerDateModel;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -307,6 +308,8 @@ public class OptionsView extends View {
 	private JRadioButton MySQLButton = null;
 
 	private JPanel mysqlPanel;
+	
+	private JSpinner passwordTimeSpinner = null;
 
 	private JCheckBox popenablebox;
 
@@ -611,6 +614,8 @@ public class OptionsView extends View {
 		mins = Integer.parseInt(Prefs.getPref(PrefName.UCS_STRIPE));
 		btn_ucs_stripe.setColorProperty(new Color(mins));
 		btn_ucs_stripe.setColorByProperty();
+		
+		passwordTimeSpinner.setValue(new Integer(Prefs.getIntPref(PrefName.PASSWORD_TTL)));
 
 		// automatically maintain the size and position of this view in
 		// a preference
@@ -763,6 +768,8 @@ public class OptionsView extends View {
 		int min = cal.get(Calendar.MINUTE);
 		Prefs.putPref(PrefName.EMAILTIME, new Integer(hour * 60 + min));
 		remTimePanel.setTimes();
+		
+		Prefs.putPref(PrefName.PASSWORD_TTL, passwordTimeSpinner.getValue());
 
 		// notify all parts of borg that have registered to know about
 		// options changes
@@ -1594,10 +1601,17 @@ public class OptionsView extends View {
 		ksPanel.add(bb, GridBagConstraintsFactory.create(2, 0,
 				GridBagConstraints.NONE));
 
-		GridBagConstraints gbc1 = GridBagConstraintsFactory.create(0, 11,
+		GridBagConstraints gbc1 = GridBagConstraintsFactory.create(0, 0,
 				GridBagConstraints.BOTH, 1.0, 0.0);
 		gbc1.gridwidth = 2;
 		encPanel.add(ksPanel, gbc1);
+		
+		encPanel.add(new JLabel(Resource.getResourceString("pw_time")),
+				GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH));
+		
+		passwordTimeSpinner = new JSpinner(new SpinnerNumberModel(0,0,60*60*24*365,1));
+		
+		encPanel.add(passwordTimeSpinner, GridBagConstraintsFactory.create(1, 1, GridBagConstraints.BOTH));
 
 		return encPanel;
 	}

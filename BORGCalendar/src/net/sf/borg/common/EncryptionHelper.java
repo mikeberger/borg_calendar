@@ -162,13 +162,13 @@ public class EncryptionHelper {
 	/**
 	 * Export the borg key in text form
 	 * @param keyAlias the key alias
-	 * @param password the keystore password
+	 * @param keyStorePassword the keystore password
 	 * @return the exproted key as a string
 	 * @throws Exception
 	 */
-	public String exportKey(String keyAlias, String password) throws Exception
+	public String exportKey(String keyAlias, String keyStorePassword) throws Exception
 	{
-		Key key = keyStore.getKey(keyAlias, password.toCharArray());
+		Key key = keyStore.getKey(keyAlias, keyStorePassword.toCharArray());
 		BASE64Encoder b64enc = new BASE64Encoder();
 		return b64enc.encode(key.getEncoded());
 	}

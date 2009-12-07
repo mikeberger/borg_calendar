@@ -42,8 +42,8 @@ public class PasswordHelper {
 	/* the cached password */
 	private String password = null;
 
-	/* the expiration date of the password */
-	private Date expirationDate = new Date();
+	/* the creation date of the password */
+	private Date creationDate = new Date();
 
 	/**
 	 * get a reference to the singleton PasswordHelper
@@ -64,6 +64,10 @@ public class PasswordHelper {
 	 * @throws Exception 
 	 */
 	public String getPassword() throws Exception {
+		// always check current value of password expiration time in prefs in case it has changed
+		int pw_ttl = Prefs.getIntPref(PrefName.PASSWORD_TTL);
+		Date expirationDate = new Date();
+		expirationDate.setTime(creationDate.getTime() + 1000*pw_ttl);
 		if (password == null || expirationDate.before(new Date())) {
 			// prompt for a new password
 			JLabel label = new JLabel(Resource
@@ -82,8 +86,7 @@ public class PasswordHelper {
 					new EncryptionHelper(Prefs.getPref(PrefName.KEYSTORE), password);
 					
 					// set expiration
-					Date now = new Date();
-					expirationDate.setTime(now.getTime() + 1000 * Prefs.getIntPref(PrefName.PASSWORD_TTL));
+					creationDate = new Date();
 				} catch (Exception e) {
 					password = null;
 					throw e;
