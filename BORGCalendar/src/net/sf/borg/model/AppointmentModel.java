@@ -545,6 +545,10 @@ public class AppointmentModel extends Model implements Model.Listener,
 				if (!CategoryModel.getReference().isShown(appt.getCategory())) {
 					continue;
 				}
+				
+				// do not search on encrypted appts
+				if( appt.isEncrypted() )
+					continue;
 
 				String tx = appt.getText();
 				Date d = appt.getDate();

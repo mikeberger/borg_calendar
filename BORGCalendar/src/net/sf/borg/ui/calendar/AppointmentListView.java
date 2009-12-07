@@ -609,7 +609,11 @@ public class AppointmentListView extends DockableView implements
 						continue;
 
 					Object[] ro = new Object[3];
-					ro[0] = ap.getText();
+					
+					if( ap.isEncrypted())
+						ro[0] = Resource.getResourceString("EncryptedItemShort");
+					else
+						ro[0] = ap.getText();
 
 					// just get time
 					Date d = ap.getDate();

@@ -926,8 +926,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 			Appointment r = (Appointment) tdit.next();
 
 			try {
-				// get appt text
-				String tx = r.getText();
+				
 
 				// date is the next todo field if present, otherwise
 				// the due date
@@ -935,6 +934,9 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 				if (nt == null) {
 					nt = r.getDate();
 				}
+				
+				// get appt text
+				String tx = AppointmentTextFormat.format(r, nt);
 
 				// add the table row
 				Object[] ro = new Object[5];

@@ -368,6 +368,9 @@ class ApptBox extends Box implements Box.Draggable {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		// format the appt text
+		appt.setText(AppointmentTextFormat.format(appt, d));
 
 	}
 

@@ -38,7 +38,6 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
@@ -59,6 +58,7 @@ import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.MultiView.Module;
 import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
+import net.sf.borg.ui.util.PasswordHelper;
 import net.sf.borg.ui.util.StripedTable;
 import net.sf.borg.ui.util.TableSorter;
 
@@ -99,7 +99,7 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 	/**
 	 * encryption checkbox
 	 */
-	JCheckBox encryptBox = null;
+	private JCheckBox encryptBox = null;
 
 	/**
 	 * constructor.
@@ -301,15 +301,10 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 			public void actionPerformed(java.awt.event.ActionEvent e) {
 				try {
 					Memo m = MemoModel.getReference().getMemo(getSelectedMemoName());
-					JLabel label = new JLabel(Resource.getResourceString("EnterPasswordToDecrypt"));
-					JPasswordField jpf = new JPasswordField();
-					int result = JOptionPane
-							.showConfirmDialog(null, new Object[] { label, jpf },
-									Resource.getResourceString("Password"), JOptionPane.OK_CANCEL_OPTION);
-					if (result == JOptionPane.CANCEL_OPTION)
+					String pw = PasswordHelper.getReference().getPassword();
+					if( pw == null )
 						return;
-
-					m.decrypt(new String(jpf.getPassword()));
+					m.decrypt(pw);
 					
 					memoText.setText(m.getMemoText());
 					memoText.setEditable(true);
@@ -430,15 +425,10 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 			m.setMemoText(memoText.getText());
 			m.setEncrypted(false);
 			if (encryptBox.isSelected()) {
-				JLabel label = new JLabel(Resource.getResourceString("EnterPasswordToDecrypt"));
-				JPasswordField jpf = new JPasswordField();
-				int result = JOptionPane
-						.showConfirmDialog(null, new Object[] { label, jpf },
-								Resource.getResourceString("Password"), JOptionPane.OK_CANCEL_OPTION);
-				if (result == JOptionPane.CANCEL_OPTION)
+				String pw = PasswordHelper.getReference().getPassword();
+				if( pw == null )
 					return;
-
-				m.encrypt(new String(jpf.getPassword()));
+				m.encrypt(pw);
 			}
 			MemoModel.getReference().saveMemo(m);
 			isMemoEdited = false;
@@ -542,7 +532,7 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 
 				encryptBox.setSelected(m.isEncrypted());
 				if (m.isEncrypted()) {
-					memoText.setText(Resource.getResourceString("EncryptedMemo"));
+					memoText.setText(Resource.getResourceString("EncryptedItem"));
 					memoText.setEditable(false);
 					decryptButton.setEnabled(true);
 				} else {

@@ -140,7 +140,7 @@ public class Memo extends EncryptableEntity<Memo> {
 		
 		/* decrypt the memo text field */
 		EncryptionHelper helper = new EncryptionHelper(Prefs.getPref(PrefName.KEYSTORE), password);
-		String clearText = helper.decrypt(this.getMemoText(), Prefs.getPref(PrefName.KEYALIAS), password);
+		String clearText = helper.decrypt(this.getMemoText(), Prefs.getPref(PrefName.KEYALIAS));
 		this.setMemoText(clearText);
 		this.setEncrypted(false);
 	}
@@ -152,7 +152,7 @@ public class Memo extends EncryptableEntity<Memo> {
 		
 		/* encrypt the memo text field */
 		EncryptionHelper helper = new EncryptionHelper(Prefs.getPref(PrefName.KEYSTORE), password);
-		String cipherText = helper.encrypt(this.getMemoText(), Prefs.getPref(PrefName.KEYALIAS), password);
+		String cipherText = helper.encrypt(this.getMemoText(), Prefs.getPref(PrefName.KEYALIAS));
 		this.setMemoText(cipherText);
 		this.setEncrypted(true);
 		

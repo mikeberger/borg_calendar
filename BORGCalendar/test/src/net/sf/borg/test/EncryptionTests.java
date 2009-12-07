@@ -38,8 +38,8 @@ public class EncryptionTests {
 		// test encrypt/decrypt
 		EncryptionHelper helper = new EncryptionHelper(location, pw);
 		String text = "Hello There 1234329!!!!";
-		String cipherText = helper.encrypt(text, keyname, pw);
-		String clearText = helper.decrypt(cipherText, keyname, pw);
+		String cipherText = helper.encrypt(text, keyname);
+		String clearText = helper.decrypt(cipherText, keyname);
 		assertTrue(text.equals(clearText));
 
 		// export key
@@ -56,7 +56,7 @@ public class EncryptionTests {
 		
 		// verify import
 		helper = new EncryptionHelper(location, pw);
-		clearText = helper.decrypt(cipherText, keyname, pw);
+		clearText = helper.decrypt(cipherText, keyname);
 		assertTrue(text.equals(clearText));
 	}
 	

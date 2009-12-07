@@ -26,6 +26,10 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import net.sf.borg.common.EncryptionHelper;
+import net.sf.borg.common.PrefName;
+import net.sf.borg.common.Prefs;
+
 
 
 /**
@@ -33,7 +37,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement(name="Appointment")
 @XmlAccessorType(XmlAccessType.NONE)
-public class Appointment extends KeyedEntity<Appointment> implements CalendarEntity {
+public class Appointment extends EncryptableEntity<Appointment> implements CalendarEntity {
 
 	
 	private static final long serialVersionUID = 7225675837209156249L;
@@ -346,6 +350,35 @@ public class Appointment extends KeyedEntity<Appointment> implements CalendarEnt
 		dst.setCategory( getCategory() );
 		dst.setReminderTimes( getReminderTimes() );
 		dst.setUntimed( getUntimed() );
+		dst.setEncrypted(isEncrypted());
+
 		return(dst);
 	}
+
+	@Override
+	public void decrypt(String password) throws Exception {
+		if( !isEncrypted() )
+			return;
+		
+		/* decrypt the memo text field */
+		EncryptionHelper helper = new EncryptionHelper(Prefs.getPref(PrefName.KEYSTORE), password);
+		String clearText = helper.decrypt(this.getText(), Prefs.getPref(PrefName.KEYALIAS));
+		this.setText(clearText);
+		this.setEncrypted(false);
+	}
+
+	@Override
+	public void encrypt(String password) throws Exception {
+		if( isEncrypted() )
+			return;
+		
+		/* encrypt the memo text field */
+		EncryptionHelper helper = new EncryptionHelper(Prefs.getPref(PrefName.KEYSTORE), password);
+		String cipherText = helper.encrypt(this.getText(), Prefs.getPref(PrefName.KEYALIAS));
+		this.setText(cipherText);
+		this.setEncrypted(true);
+		
+	}
+
+	
 }

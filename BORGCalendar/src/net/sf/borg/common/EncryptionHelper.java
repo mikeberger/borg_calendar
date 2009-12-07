@@ -25,7 +25,10 @@ public class EncryptionHelper {
 
 	/* the cached keystore object */
 	private KeyStore keyStore;
-
+	
+	/* cached password */
+    private String password;
+    
 	/**
 	 * create a new JCEKS Key Store 
 	 * @param location - location (file) for the key store
@@ -73,6 +76,8 @@ public class EncryptionHelper {
 	public EncryptionHelper(String keyStoreLocation, String keyStorePassword)
 			throws Exception {
 		
+		this.password = keyStorePassword;
+		
 		if( keyStoreLocation == null || keyStoreLocation.equals(""))
 			throw new Warning(Resource.getResourceString("Key_Store_Not_Set"));
 		
@@ -82,7 +87,7 @@ public class EncryptionHelper {
 			throw new Warning(Resource.getResourceString("No_Key_Store") + keyStoreLocation);
 		}
 		keyStore = KeyStore.getInstance("JCEKS");
-		keyStore.load(new FileInputStream(keyStoreLocation), keyStorePassword
+		keyStore.load(new FileInputStream(keyStoreLocation), password
 				.toCharArray());
 	}
 
@@ -90,11 +95,10 @@ public class EncryptionHelper {
 	 * encrypt a String using a key from the key store
 	 * @param clearText - the string to encrypt
 	 * @param keyAlias - the encryption key alias
-	 * @param password - the keystore password
 	 * @return the encrypted string
 	 * @throws Exception
 	 */
-	public String encrypt(String clearText, String keyAlias, String password)
+	public String encrypt(String clearText, String keyAlias)
 			throws Exception {
 
 		/*
@@ -125,11 +129,10 @@ public class EncryptionHelper {
 	 * decrypt a String using a key from the key store
 	 * @param cipherText - the string to decrypt
 	 * @param keyAlias - the decryption key alias
-	 * @param password - the keystore password
 	 * @return the encrypted string
 	 * @throws Exception
 	 */
-	public String decrypt(String cipherText, String keyAlias, String password)
+	public String decrypt(String cipherText, String keyAlias)
 			throws Exception {
 
 		/*

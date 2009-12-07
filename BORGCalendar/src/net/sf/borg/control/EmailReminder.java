@@ -126,7 +126,10 @@ public class EmailReminder {
 					}
 
 					// add the appointment text
-					tx += appt.getText();
+					if( appt.isEncrypted())
+						tx += Resource.getResourceString("EncryptedItemShort");
+					else
+						tx += appt.getText();
 					tx += "\n";
 				} catch (Exception e) {
 					System.out.println(e.toString());

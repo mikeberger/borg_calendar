@@ -62,6 +62,7 @@ import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.link.LinkPanel;
 import net.sf.borg.ui.popup.PopupOptionsView;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
+import net.sf.borg.ui.util.PasswordHelper;
 
 import com.toedter.calendar.JDateChooser;
 
@@ -71,7 +72,6 @@ import com.toedter.calendar.JDateChooser;
 public class AppointmentPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-
 
 	/**
 	 * renders the colro selection pull-down with colored boxes as the choices.
@@ -302,6 +302,20 @@ public class AppointmentPanel extends JPanel {
 	// vacation check box
 	private JCheckBox vacationCheckBox;
 
+	/** decrypt button */
+	private JButton decryptButton = null;
+
+	/**
+	 * encryption checkbox
+	 */
+	private JCheckBox encryptBox = null;
+
+	/*
+	 * save buttons
+	 */
+	private JButton saveCloseButton = null;
+	private JButton saveButton = null;
+
 	/**
 	 * Instantiates a new appointment panel.
 	 * 
@@ -316,7 +330,9 @@ public class AppointmentPanel extends JPanel {
 
 		// init GUI
 		initComponents();
-		
+
+		decryptButton.setEnabled(false);
+
 		// set up hours pulldown
 		String mt = Prefs.getPref(PrefName.MILTIME);
 		if (mt.equals("true")) {
@@ -339,10 +355,23 @@ public class AppointmentPanel extends JPanel {
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
 		}
-		
+
 		setDate(year, month, day);
 		setCustRemTimes(null);
 		apptTitleField.requestFocus();
+	}
+
+	/**
+	 * encrypt the text of a given appointment - and prompt for password too
+	 * 
+	 * @throws Exception
+	 */
+	private void encryptAppt(Appointment appt) throws Exception {
+		String pw = PasswordHelper.getReference().getPassword();
+		if( pw == null )
+			return;
+		appt.encrypt(pw);
+
 	}
 
 	/**
@@ -357,6 +386,11 @@ public class AppointmentPanel extends JPanel {
 		AppointmentModel calmod_ = AppointmentModel.getReference();
 		Appointment r = calmod_.newAppt();
 		setAppt(r, true);
+		
+		// encrypt it
+		if (encryptBox.isSelected()) {
+			encryptAppt(r);
+		}
 
 		// save it
 		calmod_.saveAppt(r);
@@ -382,18 +416,20 @@ public class AppointmentPanel extends JPanel {
 
 		// call the model to change the appt
 		if (dateChg == false) {
-			
+
 			// need to selectively preserve some data from original appt
 			try {
 
 				// date of orig might not match appt panel date - so
 				// we must keep the original date - we may be editing a repeat
-				Appointment originalAppt = calmod_.getAppt(currentlyShownAppointmentKey);
-				
+				Appointment originalAppt = calmod_
+						.getAppt(currentlyShownAppointmentKey);
+
 				Calendar origDate = new GregorianCalendar();
 				origDate.setTime(originalAppt.getDate());
-				
-				// preserve the day, but change the time in case we are editing one of the repeat
+
+				// preserve the day, but change the time in case we are editing
+				// one of the repeat
 				// occurrences and not the first occurrence
 				Calendar newDate = new GregorianCalendar();
 				newDate.setTime(appt.getDate());
@@ -404,22 +440,29 @@ public class AppointmentPanel extends JPanel {
 
 				// determine if we can keep certain fields related to repeating
 				// and todos
-				if (appt.getTimes().intValue() == originalAppt.getTimes().intValue()
+				if (appt.getTimes().intValue() == originalAppt.getTimes()
+						.intValue()
 						&& appt.getFrequency() != null
 						&& originalAppt.getFrequency() != null
 						&& Repeat.getFreq(appt.getFrequency()).equals(
 								Repeat.getFreq(originalAppt.getFrequency()))
 						&& appt.getTodo() == originalAppt.getTodo()
 						&& appt.getRepeatFlag() == originalAppt.getRepeatFlag()) {
-					
-					// we can keep skip list and next todo since the repeat/todo info is not changing
+
+					// we can keep skip list and next todo since the repeat/todo
+					// info is not changing
 					// otherwise, we'd reset these
 					appt.setSkipList(originalAppt.getSkipList());
 					appt.setNextTodo(originalAppt.getNextTodo());
 				}
 
 			} catch (Exception e) {
-			  // empty
+				// empty
+			}
+			
+			// encrypt it
+			if (encryptBox.isSelected()) {
+				encryptAppt(appt);
 			}
 			calmod_.saveAppt(appt);
 		} else {
@@ -427,6 +470,10 @@ public class AppointmentPanel extends JPanel {
 			// the old appt info is tossed out
 			appt.setKey(currentlyShownAppointmentKey);
 			try {
+				// encrypt it
+				if (encryptBox.isSelected()) {
+					encryptAppt(appt);
+				}
 				calmod_.saveAppt(appt);
 			} catch (Exception e) {
 				Errmsg.errmsg(e);
@@ -437,7 +484,6 @@ public class AppointmentPanel extends JPanel {
 		// show a new appt
 		showapp(-1, null);
 	}
-
 
 	/**
 	 * This method initializes the day select toggle button panel
@@ -468,10 +514,9 @@ public class AppointmentPanel extends JPanel {
 	 */
 	private JPanel createRepeatPanel() {
 
-		
 		JPanel theRepeatPanel = new JPanel();
 		theRepeatPanel.setLayout(new GridBagLayout());
-		
+
 		theRepeatPanel.setBorder(new TitledBorder(null, Resource
 				.getResourceString("Recurrence"),
 				TitledBorder.DEFAULT_JUSTIFICATION,
@@ -481,7 +526,8 @@ public class AppointmentPanel extends JPanel {
 		frequencyLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		ResourceHelper.setText(frequencyLabel, "Frequency");
 		frequencyLabel.setLabelFor(repeatFrequencyComboBox);
-		theRepeatPanel.add(frequencyLabel, GridBagConstraintsFactory.create(0, 0));
+		theRepeatPanel.add(frequencyLabel, GridBagConstraintsFactory.create(0,
+				0));
 
 		// load repeat frequency strings
 		repeatFrequencyComboBox = new JComboBox();
@@ -495,14 +541,15 @@ public class AppointmentPanel extends JPanel {
 		repeatFrequencyComboBox
 				.addActionListener(new java.awt.event.ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent e) {
-						// show/hide the various repeat widgets based on the chosen 
+						// show/hide the various repeat widgets based on the
+						// chosen
 						// frequency
 						timesEnable();
 					}
 
 				});
-		theRepeatPanel.add(repeatFrequencyComboBox, GridBagConstraintsFactory.create(1,
-				0, GridBagConstraints.HORIZONTAL));
+		theRepeatPanel.add(repeatFrequencyComboBox, GridBagConstraintsFactory
+				.create(1, 0, GridBagConstraints.HORIZONTAL));
 
 		JLabel timesLabel = new JLabel();
 		timesLabel.setLabelFor(numberOfRepeatsSpinner);
@@ -511,25 +558,25 @@ public class AppointmentPanel extends JPanel {
 		theRepeatPanel.add(timesLabel, GridBagConstraintsFactory.create(0, 1,
 				GridBagConstraints.BOTH));
 
-		
 		numberOfRepeatsSpinner = new JSpinner();
-		theRepeatPanel.add(numberOfRepeatsSpinner, GridBagConstraintsFactory.create(1,
-				1, GridBagConstraints.BOTH));
+		theRepeatPanel.add(numberOfRepeatsSpinner, GridBagConstraintsFactory
+				.create(1, 1, GridBagConstraints.BOTH));
 		SpinnerNumberModel mod = (SpinnerNumberModel) numberOfRepeatsSpinner
 				.getModel();
 		mod.setMinimum(new Integer(1));
 
 		numberOfDaysSpinner = new JSpinner();
 		numberOfDaysSpinner.setModel(new SpinnerNumberModel(2, 2, 3000, 1));
-		theRepeatPanel.add(numberOfDaysSpinner, GridBagConstraintsFactory.create(2, 0,
-				GridBagConstraints.HORIZONTAL));
+		theRepeatPanel.add(numberOfDaysSpinner, GridBagConstraintsFactory
+				.create(2, 0, GridBagConstraints.HORIZONTAL));
 
 		repeatForeverCheckBox = new JCheckBox();
 		ResourceHelper.setText(repeatForeverCheckBox, "forever");
 		repeatForeverCheckBox
 				.addActionListener(new java.awt.event.ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						// selecting repeat forever diables the number of repeats choice
+						// selecting repeat forever diables the number of
+						// repeats choice
 						if (repeatForeverCheckBox.isSelected()) {
 							numberOfRepeatsSpinner.setValue(new Integer(0));
 							numberOfRepeatsSpinner.setEnabled(false);
@@ -540,32 +587,32 @@ public class AppointmentPanel extends JPanel {
 						}
 					}
 				});
-		theRepeatPanel.add(repeatForeverCheckBox, GridBagConstraintsFactory.create(2,
-				1, GridBagConstraints.BOTH));
+		theRepeatPanel.add(repeatForeverCheckBox, GridBagConstraintsFactory
+				.create(2, 1, GridBagConstraints.BOTH));
 
 		showRepeatNumberCheckBox = new JCheckBox();
 		ResourceHelper.setText(showRepeatNumberCheckBox, "show_rpt_num");
-		theRepeatPanel.add(showRepeatNumberCheckBox, GridBagConstraintsFactory.create(2, 2,
-				GridBagConstraints.BOTH));
+		theRepeatPanel.add(showRepeatNumberCheckBox, GridBagConstraintsFactory
+				.create(2, 2, GridBagConstraints.BOTH));
 
 		GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
-		gridBagConstraints1.fill = GridBagConstraints.BOTH; 
-		gridBagConstraints1.gridy = 0; 
-		gridBagConstraints1.gridx = 2; 
+		gridBagConstraints1.fill = GridBagConstraints.BOTH;
+		gridBagConstraints1.gridy = 0;
+		gridBagConstraints1.gridx = 2;
 		gridBagConstraints1.gridwidth = 2;
-		theRepeatPanel.add(createDaySelectPanel(), gridBagConstraints1); 
+		theRepeatPanel.add(createDaySelectPanel(), gridBagConstraints1);
 
 		return theRepeatPanel;
 	}
 
 	/**
-	 * initialize many of the UI components. This started as very very bad generated code.
-	 * It's been cleaned up somewhat
+	 * initialize many of the UI components. This started as very very bad
+	 * generated code. It's been cleaned up somewhat
 	 */
-	private void initComponents()
-	{
+	private void initComponents() {
 
-		// lots of components are created here. This is how the code-gen lumped them.
+		// lots of components are created here. This is how the code-gen lumped
+		// them.
 		// not worth it to move them all where they are used.
 		JLabel subjectLabel = new JLabel();
 		subjectLabel.setText(Resource.getResourceString("subject"));
@@ -595,8 +642,8 @@ public class AppointmentPanel extends JPanel {
 		categoryBox = new JComboBox();
 		JLabel lblCategory = new JLabel();
 		JPanel buttonPanel = new JPanel();
-		JButton savebutton = new JButton();
-		JButton saveclosebutton = new JButton();
+		saveButton = new JButton();
+		saveCloseButton = new JButton();
 		JButton savedefaultsbutton = new JButton();
 		apptTitleField = new JTextField();
 
@@ -609,8 +656,9 @@ public class AppointmentPanel extends JPanel {
 		setLayout(new GridBagLayout());
 
 		newAppointmentIndicatorLabel.setForeground(java.awt.Color.red);
-		
-		add(newAppointmentIndicatorLabel, GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH));
+
+		add(newAppointmentIndicatorLabel, GridBagConstraintsFactory.create(0,
+				0, GridBagConstraints.BOTH));
 
 		// ********************************************************************
 		// appt text panel
@@ -624,14 +672,19 @@ public class AppointmentPanel extends JPanel {
 		appointmentBodyTextArea.setRows(5);
 		appointmentBodyTextArea.setWrapStyleWord(true);
 		appointmentBodyTextArea.setBorder(new BevelBorder(BevelBorder.LOWERED));
-		appointmentBodyTextArea.setMinimumSize(new java.awt.Dimension(284, 140));
+		appointmentBodyTextArea
+				.setMinimumSize(new java.awt.Dimension(284, 140));
 		apptTextScroll.setViewportView(appointmentBodyTextArea);
 
-		appointmentTextPanel.add(subjectLabel, GridBagConstraintsFactory.create(0, 0));
-		appointmentTextPanel.add(apptTitleField, GridBagConstraintsFactory.create(1, 0, GridBagConstraints.BOTH, 1.0, 0.0));
-		appointmentTextPanel.add(apptTextScroll, GridBagConstraintsFactory.create(1, 1, GridBagConstraints.BOTH, 0.5, 0.5));
+		appointmentTextPanel.add(subjectLabel, GridBagConstraintsFactory
+				.create(0, 0));
+		appointmentTextPanel.add(apptTitleField, GridBagConstraintsFactory
+				.create(1, 0, GridBagConstraints.BOTH, 1.0, 0.0));
+		appointmentTextPanel.add(apptTextScroll, GridBagConstraintsFactory
+				.create(1, 1, GridBagConstraints.BOTH, 0.5, 0.5));
 
-		GridBagConstraints gridBagConstraints3 = GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH);
+		GridBagConstraints gridBagConstraints3 = GridBagConstraintsFactory
+				.create(0, 1, GridBagConstraints.BOTH);
 		gridBagConstraints3.gridwidth = java.awt.GridBagConstraints.REMAINDER;
 		gridBagConstraints3.weightx = 1.5;
 		gridBagConstraints3.weighty = 2.0;
@@ -644,66 +697,78 @@ public class AppointmentPanel extends JPanel {
 		appointmentTimePanel.setLayout(new java.awt.GridBagLayout());
 		appointmentTimePanel.setBorder(new TitledBorder(Resource
 				.getResourceString("appttime")));
-		
+
 		ResourceHelper.setText(starttimeLabel, "Start_Time:");
-		appointmentTimePanel.add(starttimeLabel, GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH));
+		appointmentTimePanel.add(starttimeLabel, GridBagConstraintsFactory
+				.create(0, 0, GridBagConstraints.BOTH));
 
 		startHourComboBox.setMaximumRowCount(24);
 		startHourComboBox.setMinimumSize(new java.awt.Dimension(42, 36));
 		startHourComboBox.setOpaque(false);
-		appointmentTimePanel.add(startHourComboBox, GridBagConstraintsFactory.create(1, 0, GridBagConstraints.BOTH));
+		appointmentTimePanel.add(startHourComboBox, GridBagConstraintsFactory
+				.create(1, 0, GridBagConstraints.BOTH));
 
 		startMinuteComboBox.setMaximumRowCount(12);
-		startMinuteComboBox.setModel(new DefaultComboBoxModel(new String[] { "00", "05",
-				"10", "15", "20", "25", "30", "35", "40", "45", "50", "55" }));
+		startMinuteComboBox.setModel(new DefaultComboBoxModel(new String[] {
+				"00", "05", "10", "15", "20", "25", "30", "35", "40", "45",
+				"50", "55" }));
 		startMinuteComboBox.setOpaque(false);
-		appointmentTimePanel.add(startMinuteComboBox, GridBagConstraintsFactory.create(2, 0, GridBagConstraints.VERTICAL));
+		appointmentTimePanel.add(startMinuteComboBox, GridBagConstraintsFactory
+				.create(2, 0, GridBagConstraints.VERTICAL));
 
 		amOrPmComboBox.setText("PM");
 		amOrPmComboBox.setOpaque(false);
-		appointmentTimePanel.add(amOrPmComboBox, GridBagConstraintsFactory.create(3, 0, GridBagConstraints.BOTH));
-		
+		appointmentTimePanel.add(amOrPmComboBox, GridBagConstraintsFactory
+				.create(3, 0, GridBagConstraints.BOTH));
+
 		ResourceHelper.setText(untimedCheckBox, "No_Specific_Time");
 		untimedCheckBox.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				untimedCheckBoxActionPerformed();
 			}
 		});
-		GridBagConstraints gridBagConstraints12 = GridBagConstraintsFactory.create(4, 0, GridBagConstraints.BOTH);
+		GridBagConstraints gridBagConstraints12 = GridBagConstraintsFactory
+				.create(4, 0, GridBagConstraints.BOTH);
 		gridBagConstraints12.insets = new java.awt.Insets(0, 30, 0, 0);
 		appointmentTimePanel.add(untimedCheckBox, gridBagConstraints12);
-		
-		ResourceHelper.setText(durationLabel, "Duration:");	
-		appointmentTimePanel.add(durationLabel, GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH));
 
-		
+		ResourceHelper.setText(durationLabel, "Duration:");
+		appointmentTimePanel.add(durationLabel, GridBagConstraintsFactory
+				.create(0, 1, GridBagConstraints.BOTH));
+
 		durationHourComboBox.setMaximumRowCount(24);
 		durationHourComboBox.setModel(new DefaultComboBoxModel(new String[] {
 				"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11",
 				"12", "13", "14", "15", "16", "17", "18", "19", "20", "21",
 				"22", "23", "24" }));
-		appointmentTimePanel.add(durationHourComboBox, GridBagConstraintsFactory.create(1, 1, GridBagConstraints.BOTH));
+		appointmentTimePanel
+				.add(durationHourComboBox, GridBagConstraintsFactory.create(1,
+						1, GridBagConstraints.BOTH));
 
 		durationMinuteComboBox.setMaximumRowCount(12);
 		durationMinuteComboBox.setModel(new DefaultComboBoxModel(new String[] {
 				"00", "05", "10", "15", "20", "25", "30", "35", "40", "45",
 				"50", "55" }));
 		durationMinuteComboBox.setOpaque(false);
-		appointmentTimePanel.add(durationMinuteComboBox, GridBagConstraintsFactory.create(2, 1, GridBagConstraints.VERTICAL));
+		appointmentTimePanel.add(durationMinuteComboBox,
+				GridBagConstraintsFactory.create(2, 1,
+						GridBagConstraints.VERTICAL));
 
 		ResourceHelper.setText(dateChangeCheckBox, "changedate");
-		dateChangeCheckBox
-				.addActionListener(new ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						newdatefield.setEnabled(dateChangeCheckBox.isSelected());
-					}
-				});
-		appointmentTimePanel.add(dateChangeCheckBox, GridBagConstraintsFactory.create(4, 1, GridBagConstraints.HORIZONTAL));
-		
+		dateChangeCheckBox.addActionListener(new ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				newdatefield.setEnabled(dateChangeCheckBox.isSelected());
+			}
+		});
+		appointmentTimePanel.add(dateChangeCheckBox, GridBagConstraintsFactory
+				.create(4, 1, GridBagConstraints.HORIZONTAL));
+
 		ResourceHelper.setText(newDateLabel, "newDate:");
-		appointmentTimePanel.add(newDateLabel, GridBagConstraintsFactory.create(5, 1, GridBagConstraints.BOTH));
-		
-		appointmentTimePanel.add(newdatefield, GridBagConstraintsFactory.create(6, 1, GridBagConstraints.BOTH));
+		appointmentTimePanel.add(newDateLabel, GridBagConstraintsFactory
+				.create(5, 1, GridBagConstraints.BOTH));
+
+		appointmentTimePanel.add(newdatefield, GridBagConstraintsFactory
+				.create(6, 1, GridBagConstraints.BOTH));
 
 		// ********************************************************************
 		// appt properties panel
@@ -712,43 +777,55 @@ public class AppointmentPanel extends JPanel {
 
 		appointmentPropetiesPanel.setBorder(new TitledBorder(Resource
 				.getResourceString("Properties")));
-		appointmentPropetiesPanel.setMinimumSize(new java.awt.Dimension(539, 128));
-		
+		appointmentPropetiesPanel.setMinimumSize(new java.awt.Dimension(539,
+				128));
+
 		ResourceHelper.setText(todoCheckBox, "To_Do");
 		todoCheckBox.setOpaque(false);
-		
-		appointmentPropetiesPanel.add(todoCheckBox, GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH, 1.0, 0.0));
+
+		appointmentPropetiesPanel.add(todoCheckBox, GridBagConstraintsFactory
+				.create(0, 0, GridBagConstraints.BOTH, 1.0, 0.0));
 
 		vacationCheckBox.setForeground(new java.awt.Color(0, 102, 0));
 		ResourceHelper.setText(vacationCheckBox, "Vacation");
 		vacationCheckBox.setOpaque(false);
-		
-		appointmentPropetiesPanel.add(vacationCheckBox, GridBagConstraintsFactory.create(1, 0, GridBagConstraints.BOTH, 1.0, 0.0));
+
+		appointmentPropetiesPanel.add(vacationCheckBox,
+				GridBagConstraintsFactory.create(1, 0, GridBagConstraints.BOTH,
+						1.0, 0.0));
 
 		halfDayVacationCheckBox.setForeground(new java.awt.Color(0, 102, 102));
 		ResourceHelper.setText(halfDayVacationCheckBox, "Half_Day");
 		halfDayVacationCheckBox.setOpaque(false);
-		
-		appointmentPropetiesPanel.add(halfDayVacationCheckBox, GridBagConstraintsFactory.create(2, 0, GridBagConstraints.BOTH, 1.0, 0.0));
+
+		appointmentPropetiesPanel.add(halfDayVacationCheckBox,
+				GridBagConstraintsFactory.create(2, 0, GridBagConstraints.BOTH,
+						1.0, 0.0));
 
 		ResourceHelper.setText(holidayCheckBox, "Holiday");
 		holidayCheckBox.setOpaque(false);
-		
-		appointmentPropetiesPanel.add(holidayCheckBox, GridBagConstraintsFactory.create(3, 0, GridBagConstraints.BOTH, 1.0, 0.0));
+
+		appointmentPropetiesPanel.add(holidayCheckBox,
+				GridBagConstraintsFactory.create(3, 0, GridBagConstraints.BOTH,
+						1.0, 0.0));
 
 		ResourceHelper.setText(privateCheckBox, "Private");
 		privateCheckBox.setOpaque(false);
-		
-		appointmentPropetiesPanel.add(privateCheckBox, GridBagConstraintsFactory.create(4, 0, GridBagConstraints.BOTH, 1.0, 0.0));
+
+		appointmentPropetiesPanel.add(privateCheckBox,
+				GridBagConstraintsFactory.create(4, 0, GridBagConstraints.BOTH,
+						1.0, 0.0));
 
 		lblColor.setHorizontalAlignment(SwingConstants.RIGHT);
 		ResourceHelper.setText(lblColor, "Color");
-		
-		appointmentPropetiesPanel.add(lblColor, GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH));
+
+		appointmentPropetiesPanel.add(lblColor, GridBagConstraintsFactory
+				.create(0, 1, GridBagConstraints.BOTH));
 
 		colorComboBox.setOpaque(false);
-		
-		appointmentPropetiesPanel.add(colorComboBox, GridBagConstraintsFactory.create(1, 1, GridBagConstraints.BOTH));
+
+		appointmentPropetiesPanel.add(colorComboBox, GridBagConstraintsFactory
+				.create(1, 1, GridBagConstraints.BOTH));
 		ColorBoxRenderer cbr = new ColorBoxRenderer();
 		colorComboBox.setRenderer(cbr);
 		colorComboBox.setEditable(false);
@@ -758,19 +835,20 @@ public class AppointmentPanel extends JPanel {
 
 		lblCategory.setHorizontalAlignment(SwingConstants.RIGHT);
 		ResourceHelper.setText(lblCategory, "Category");
-		appointmentPropetiesPanel.add(lblCategory, GridBagConstraintsFactory.create(2, 1, GridBagConstraints.BOTH));
-		
-		appointmentPropetiesPanel.add(categoryBox, GridBagConstraintsFactory.create(3, 1, GridBagConstraints.BOTH));
+		appointmentPropetiesPanel.add(lblCategory, GridBagConstraintsFactory
+				.create(2, 1, GridBagConstraints.BOTH));
 
-		
+		appointmentPropetiesPanel.add(categoryBox, GridBagConstraintsFactory
+				.create(3, 1, GridBagConstraints.BOTH));
+
 		// ********************************************************************
 		// button panel
 		// ********************************************************************
 
-		savebutton.setIcon(new ImageIcon(getClass().getResource(
+		saveButton.setIcon(new ImageIcon(getClass().getResource(
 				"/resource/Save16.gif")));
-		ResourceHelper.setText(savebutton, "Save");
-		savebutton.addActionListener(new java.awt.event.ActionListener() {
+		ResourceHelper.setText(saveButton, "Save");
+		saveButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				try {
 					if (currentlyShownAppointmentKey == -1) {
@@ -785,12 +863,12 @@ public class AppointmentPanel extends JPanel {
 				}
 			}
 		});
-		buttonPanel.add(savebutton);
+		buttonPanel.add(saveButton);
 
-		saveclosebutton.setIcon(new ImageIcon(getClass().getResource(
+		saveCloseButton.setIcon(new ImageIcon(getClass().getResource(
 				"/resource/Save16.gif")));
-		ResourceHelper.setText(saveclosebutton, "Save_&_Close");
-		saveclosebutton.addActionListener(new java.awt.event.ActionListener() {
+		ResourceHelper.setText(saveCloseButton, "Save_&_Close");
+		saveCloseButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				try {
 					if (currentlyShownAppointmentKey == -1) {
@@ -809,7 +887,57 @@ public class AppointmentPanel extends JPanel {
 				MultiView.getMainView().closeSelectedTab();
 			}
 		});
-		buttonPanel.add(saveclosebutton);
+		buttonPanel.add(saveCloseButton);
+		
+		encryptBox = new JCheckBox();
+		encryptBox.setText(Resource.getResourceString("EncryptOnSave"));
+		buttonPanel.add(encryptBox, null);
+
+		decryptButton = new JButton();
+		decryptButton.setText(Resource.getResourceString("decrypt"));
+		decryptButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent e) {
+				try {
+					Appointment appt = AppointmentModel.getReference().getAppt(
+							currentlyShownAppointmentKey);
+					if (appt == null)
+						return;
+					String pw = PasswordHelper.getReference().getPassword();
+					if( pw == null )
+						return;
+					appt.decrypt(pw);
+
+					// set appt text, split apart title and body
+					String t = appt.getText();
+					String title = "";
+					String body = "";
+					if (t == null)
+						t = "";
+					int newlineIndex = t.indexOf('\n');
+					if (newlineIndex != -1) {
+						title = t.substring(0, newlineIndex);
+						body = t.substring(newlineIndex + 1);
+					} else {
+						title = t;
+					}
+					appointmentBodyTextArea.setText(body);
+					apptTitleField.setText(title);
+
+					appointmentBodyTextArea.setEditable(true);
+					apptTitleField.setEditable(true);
+
+					decryptButton.setEnabled(false);
+
+					saveButton.setEnabled(true);
+					saveCloseButton.setEnabled(true);
+
+				} catch (Exception e1) {
+					Errmsg.errmsg(e1);
+				}
+
+			}
+		});
+		buttonPanel.add(decryptButton, null);
 
 		savedefaultsbutton.setIcon(new ImageIcon(getClass().getResource(
 				"/resource/SaveAs16.gif")));
@@ -826,11 +954,15 @@ public class AppointmentPanel extends JPanel {
 							return;
 						}
 
-						AppointmentModel.getReference().saveDefaultAppointment(appt);
+						AppointmentModel.getReference().saveDefaultAppointment(
+								appt);
 					}
 				});
-		buttonPanel.add(savedefaultsbutton);
 		
+		// add a spacer
+		buttonPanel.add( new JLabel("          "));
+		buttonPanel.add(savedefaultsbutton);
+
 		// ********************************************************************
 		// popup reminders panel
 		// ********************************************************************
@@ -843,9 +975,11 @@ public class AppointmentPanel extends JPanel {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				String apptTitle = apptTitleField.getText();
 				if (apptTitle.equals("")) {
-					apptTitle = Resource.getResourceString("*****_NEW_APPT_*****");
+					apptTitle = Resource
+							.getResourceString("*****_NEW_APPT_*****");
 				}
-				PopupOptionsView pv = new PopupOptionsView(new String(custRemTimes), apptTitle, thisPanel);
+				PopupOptionsView pv = new PopupOptionsView(new String(
+						custRemTimes), apptTitle, thisPanel);
 				pv.setVisible(true);
 			}
 		});
@@ -855,43 +989,47 @@ public class AppointmentPanel extends JPanel {
 				.getResourceString("popup_reminders")));
 		popupReminderPanel.add(popupTimesLabel);
 		popupReminderPanel.add(popupTimesBtn);
-		
+
 		// ********************************************************************
 		// add panels to the top level
 		// ********************************************************************
-		GridBagConstraints gridBagConstraints17 = GridBagConstraintsFactory.create(0, 2, GridBagConstraints.BOTH, 1.0, 1.0);
+		GridBagConstraints gridBagConstraints17 = GridBagConstraintsFactory
+				.create(0, 2, GridBagConstraints.BOTH, 1.0, 1.0);
 		gridBagConstraints17.gridwidth = GridBagConstraints.REMAINDER;
 		this.add(appointmentTimePanel, gridBagConstraints17);
 		this.setSize(648, 590);
-		
-		GridBagConstraints gridBagConstraints38 = GridBagConstraintsFactory.create(0, 3, GridBagConstraints.BOTH);
+
+		GridBagConstraints gridBagConstraints38 = GridBagConstraintsFactory
+				.create(0, 3, GridBagConstraints.BOTH);
 		gridBagConstraints38.gridwidth = 2;
 		this.add(appointmentPropetiesPanel, gridBagConstraints38);
-		
-		this.add(createRepeatPanel(), GridBagConstraintsFactory.create(0, 5, GridBagConstraints.BOTH));
-		
-		GridBagConstraints gridBagConstraints91 = GridBagConstraintsFactory.create(0, 6, GridBagConstraints.BOTH);
+
+		this.add(createRepeatPanel(), GridBagConstraintsFactory.create(0, 5,
+				GridBagConstraints.BOTH));
+
+		GridBagConstraints gridBagConstraints91 = GridBagConstraintsFactory
+				.create(0, 6, GridBagConstraints.BOTH);
 		gridBagConstraints91.gridwidth = 2;
 		this.add(buttonPanel, gridBagConstraints91);
 
-		GridBagConstraints gridBagConstraints87 = GridBagConstraintsFactory.create(0, 4, GridBagConstraints.BOTH, 9.0, 1.0);
+		GridBagConstraints gridBagConstraints87 = GridBagConstraintsFactory
+				.create(0, 4, GridBagConstraints.BOTH, 9.0, 1.0);
 		gridBagConstraints87.gridwidth = 2;
-		this.add(popupReminderPanel, gridBagConstraints87); 
+		this.add(popupReminderPanel, gridBagConstraints87);
 
 		linkPanel = new LinkPanel();
 		linkPanel.setBorder(new TitledBorder(Resource
 				.getResourceString("links")));
-		this.add(linkPanel, GridBagConstraintsFactory.create(1, 5, GridBagConstraints.BOTH));
-		
+		this.add(linkPanel, GridBagConstraintsFactory.create(1, 5,
+				GridBagConstraints.BOTH));
 
 	}
 
 	/**
-	 * enable/disable the time selection components based on the value of the untimed checkbox
-	 * if untimed is selected, the time components are disabled
+	 * enable/disable the time selection components based on the value of the
+	 * untimed checkbox if untimed is selected, the time components are disabled
 	 */
-	private void untimedCheckBoxActionPerformed()
-	{
+	private void untimedCheckBoxActionPerformed() {
 		if (untimedCheckBox.isSelected()) {
 			String mt = Prefs.getPref(PrefName.MILTIME);
 			if (mt.equals("true")) {
@@ -916,7 +1054,6 @@ public class AppointmentPanel extends JPanel {
 			amOrPmComboBox.setEnabled(true);
 		}
 	}
-
 
 	/**
 	 * Set the data in an Appointment from the UI values
@@ -965,8 +1102,7 @@ public class AppointmentPanel extends JPanel {
 			g.set(Calendar.SECOND, 0);
 		}
 		appt.setDate(g.getTime());
-		
-		
+
 		// set untimed
 		if (untimedCheckBox.isSelected())
 			appt.setUntimed("Y");
@@ -1030,9 +1166,10 @@ public class AppointmentPanel extends JPanel {
 					.getSelectedItem(), daylist)) {
 				throw new Warning(Resource.getResourceString("recur_compat"));
 			}
-			appt.setFrequency(Repeat.freqString((String) repeatFrequencyComboBox
-					.getSelectedItem(), (Integer) numberOfDaysSpinner
-					.getValue(), showRepeatNumberCheckBox.isSelected(), daylist));
+			appt.setFrequency(Repeat.freqString(
+					(String) repeatFrequencyComboBox.getSelectedItem(),
+					(Integer) numberOfDaysSpinner.getValue(),
+					showRepeatNumberCheckBox.isSelected(), daylist));
 		}
 
 		// repeat times
@@ -1077,7 +1214,8 @@ public class AppointmentPanel extends JPanel {
 	/**
 	 * Set the reminder times array based on the data in an Appointment
 	 * 
-	 * @param appt the appointment
+	 * @param appt
+	 *            the appointment
 	 */
 	private void setCustRemTimes(Appointment appt) {
 		if (appt == null) {
@@ -1117,20 +1255,20 @@ public class AppointmentPanel extends JPanel {
 	}
 
 	/**
-	 * Sets the popup times label to show the user what the popup times are in human readbale form.
+	 * Sets the popup times label to show the user what the popup times are in
+	 * human readbale form.
 	 */
 	public void setPopupTimesString(String reminderTimes) {
-		
+
 		StringBuffer line1 = new StringBuffer(ReminderTimes.getNum() * 5 + 15);
 		StringBuffer line2 = new StringBuffer(ReminderTimes.getNum() * 5 + 15);
-		
-		
+
 		custRemTimes = reminderTimes.toCharArray();
-		
+
 		// every Y value in custRemTimes is an active reminder time
 		if (custRemTimes != null) {
 			int i = 0;
-			
+
 			// negative times are after the appointment time
 			while (ReminderTimes.getTimes(i) < 0 && i < ReminderTimes.getNum()) {
 				if (custRemTimes[i] == 'Y') {
@@ -1168,7 +1306,7 @@ public class AppointmentPanel extends JPanel {
 			}
 
 		}
-		
+
 		// set the label, which is html for formatting
 		popupTimesLabel.setText("<html><p align=RIGHT>" + line1.toString()
 				+ "<br>" + line2.toString());
@@ -1180,13 +1318,13 @@ public class AppointmentPanel extends JPanel {
 	 * @param key
 	 *            the appointment key or -1 for a new appt
 	 * @param defaultApptIn
-	 *            the default appt - only passed in if we are copying
-	 *            an existing appt
+	 *            the default appt - only passed in if we are copying an
+	 *            existing appt
 	 */
 	public void showapp(int key, Appointment defaultApptIn) {
 		Appointment defaultAppt = defaultApptIn;
 		currentlyShownAppointmentKey = key;
-		
+
 		// military time option
 		String mt = Prefs.getPref(PrefName.MILTIME);
 
@@ -1199,15 +1337,23 @@ public class AppointmentPanel extends JPanel {
 		amOrPmComboBox.setEnabled(false);
 		untimedCheckBox.setSelected(true);
 		dateChangeCheckBox.setSelected(false);
-		
+		encryptBox.setSelected(false);
+		appointmentBodyTextArea.setEditable(true);
+		apptTitleField.setEditable(true);
+		decryptButton.setEnabled(false);
+
+		saveButton.setEnabled(true);
+		saveCloseButton.setEnabled(true);
+
 		// default to unset for toggles
 		for (JToggleButton tog : dayToggles) {
 			tog.setSelected(false);
 		}
 
 		// get default appt values from XML, if any
-		if (defaultAppt == null ) {
-			defaultAppt = AppointmentModel.getReference().getDefaultAppointment();
+		if (defaultAppt == null) {
+			defaultAppt = AppointmentModel.getReference()
+					.getDefaultAppointment();
 		}
 
 		// a key of -1 means to show a new blank appointment
@@ -1244,7 +1390,6 @@ public class AppointmentPanel extends JPanel {
 			ResourceHelper.setText(newAppointmentIndicatorLabel,
 					"*****_NEW_APPT_*****");
 
-
 			dateChangeCheckBox.setEnabled(false);
 			newdatefield.setEnabled(false);
 
@@ -1265,7 +1410,8 @@ public class AppointmentPanel extends JPanel {
 				} else {
 					// get the appt Appointment from the calmodel
 					newAppointmentIndicatorLabel.setText("    ");
-					appt = AppointmentModel.getReference().getAppt(currentlyShownAppointmentKey);
+					appt = AppointmentModel.getReference().getAppt(
+							currentlyShownAppointmentKey);
 					linkPanel.setOwner(appt);
 				}
 
@@ -1294,7 +1440,6 @@ public class AppointmentPanel extends JPanel {
 					dur = duration.intValue();
 				durationHourComboBox.setSelectedIndex(dur / 60);
 				durationMinuteComboBox.setSelectedIndex((dur % 60) / 5);
-
 
 				// check if we just have a "note" (non-timed appt)
 				boolean untimed = AppointmentModel.isNote(appt);
@@ -1337,21 +1482,30 @@ public class AppointmentPanel extends JPanel {
 					pm = false;
 				amOrPmComboBox.setSelected(pm);
 
-				// set appt text, slipt out title and body
-				String t = appt.getText();
-				String title = "";
-				String body = "";
-				if (t == null)
-					t = "";
-				int newlineIndex = t.indexOf('\n');
-				if (newlineIndex != -1) {
-					title = t.substring(0, newlineIndex);
-					body = t.substring(newlineIndex + 1);
+				if (appt.isEncrypted()) {
+					apptTitleField.setText(Resource
+							.getResourceString("EncryptedItem"));
+					apptTitleField.setEditable(false);
+					appointmentBodyTextArea.setText("");
+					appointmentBodyTextArea.setEditable(false);
+					decryptButton.setEnabled(true);
 				} else {
-					title = t;
+					// set appt text, split apart title and body
+					String t = appt.getText();
+					String title = "";
+					String body = "";
+					if (t == null)
+						t = "";
+					int newlineIndex = t.indexOf('\n');
+					if (newlineIndex != -1) {
+						title = t.substring(0, newlineIndex);
+						body = t.substring(newlineIndex + 1);
+					} else {
+						title = t;
+					}
+					appointmentBodyTextArea.setText(body);
+					apptTitleField.setText(title);
 				}
-				appointmentBodyTextArea.setText(body);
-				apptTitleField.setText(title);
 
 				// color
 				String sel = appt.getColor();
@@ -1382,8 +1536,8 @@ public class AppointmentPanel extends JPanel {
 				// repeat frequency - turn on/off widgets as needed
 				String rpt = Repeat.getFreq(appt.getFrequency());
 				if (rpt != null && rpt.equals(Repeat.NDAYS)) {
-					numberOfDaysSpinner.setValue(new Integer(Repeat.getNDays(appt
-							.getFrequency())));
+					numberOfDaysSpinner.setValue(new Integer(Repeat
+							.getNDays(appt.getFrequency())));
 				}
 
 				if (rpt != null && rpt.equals(Repeat.DAYLIST)) {
@@ -1407,7 +1561,8 @@ public class AppointmentPanel extends JPanel {
 					}
 				}
 
-				showRepeatNumberCheckBox.setSelected(Repeat.getRptNum(appt.getFrequency()));
+				showRepeatNumberCheckBox.setSelected(Repeat.getRptNum(appt
+						.getFrequency()));
 
 				repeatFrequencyComboBox.setSelectedItem(Repeat
 						.getFreqString(rpt));
@@ -1443,6 +1598,13 @@ public class AppointmentPanel extends JPanel {
 				setCustRemTimes(appt);
 				setPopupTimesString(new String(custRemTimes));
 
+				// encryption
+				encryptBox.setSelected(appt.isEncrypted());
+				if (appt.isEncrypted()) {
+					saveButton.setEnabled(false);
+					saveCloseButton.setEnabled(false);
+				}
+
 			} catch (Exception e) {
 				Errmsg.errmsg(e);
 				Exception ne = new Exception(Resource
@@ -1454,13 +1616,13 @@ public class AppointmentPanel extends JPanel {
 
 		// set components based on repeat frequency
 		timesEnable();
-		
-		// reset background to white in case we were showing a validation error color
+
+		// reset background to white in case we were showing a validation error
+		// color
 		apptTitleField.setBackground(new Color(255, 255, 255));
 		apptTitleField.requestFocus();
 
 	}
-
 
 	/**
 	 * enable the proper repeat widgets based on repeat frequency
@@ -1491,5 +1653,4 @@ public class AppointmentPanel extends JPanel {
 			numberOfDaysSpinner.setVisible(false);
 		}
 	}
-} 
-
+}

@@ -399,5 +399,7 @@ public class PrefName {
 	/** encryption key alias in the keystore */
 	static public PrefName KEYALIAS = new PrefName("key_alias", "borg_key");
 	
+	/** cached password time to live in seconds */
+	static public PrefName PASSWORD_TTL = new PrefName("pw_ttl", new Integer(20));
 
 }

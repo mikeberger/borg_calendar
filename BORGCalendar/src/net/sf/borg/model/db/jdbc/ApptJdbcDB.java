@@ -58,6 +58,9 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
 			// empty
 		}
 		
+		new JdbcDBUpgrader("select encrypted from appointments",
+		"alter table appointments add column encrypted char(1) default null").upgrade();
+		
     }
     
     /* (non-Javadoc)
@@ -66,8 +69,8 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
     public void addObj(Appointment appt) throws Exception
     {
         PreparedStatement stmt = connection_.prepareStatement( "INSERT INTO appointments (appt_date, appt_num, duration, text, skip_list," +
-        " next_todo, vacation, holiday, private, times, frequency, todo, color, rpt, category, reminders, untimed ) VALUES " +
-        "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        " next_todo, vacation, holiday, private, times, frequency, todo, color, rpt, category, reminders, untimed, encrypted ) VALUES " +
+        "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         
         
         stmt.setTimestamp( 1, new java.sql.Timestamp( appt.getDate().getTime()), Calendar.getInstance() );
@@ -93,6 +96,11 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
       
         stmt.setString( 16, appt.getReminderTimes());
         stmt.setString( 17, appt.getUntimed());
+        if( appt.isEncrypted())
+			stmt.setString(18, "Y");
+		else
+			stmt.setString(18, "N");
+
         stmt.executeUpdate();
         
         writeCache( appt );
@@ -233,6 +241,9 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
 		appt.setCategory( r.getString("category"));
 		appt.setReminderTimes( r.getString("reminders"));
 		appt.setUntimed( r.getString("untimed"));
+		String enc = r.getString("encrypted");
+		if( enc != null && enc.equals("Y"))
+			appt.setEncrypted(true);
 		
 		return appt;
 	}
@@ -245,7 +256,7 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
         PreparedStatement stmt = connection_.prepareStatement( "UPDATE appointments SET  appt_date = ?, " +
         "duration = ?, text = ?, skip_list = ?," +
         " next_todo = ?, vacation = ?, holiday = ?, private = ?, times = ?, frequency = ?, todo = ?, color = ?, rpt = ?, category = ?," +
-		" reminders = ?, untimed = ?" +
+		" reminders = ?, untimed = ?, encrypted = ?" +
         " WHERE appt_num = ?");
        
         
@@ -270,8 +281,12 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
         stmt.setString( 14, appt.getCategory());
         stmt.setString( 15, appt.getReminderTimes());
         stmt.setString( 16, appt.getUntimed());
+        if( appt.isEncrypted())
+			stmt.setString(17, "Y");
+		else
+			stmt.setString(17, "N");
         
-        stmt.setInt( 17, appt.getKey() );
+        stmt.setInt( 18, appt.getKey() );
 
         stmt.executeUpdate();
         

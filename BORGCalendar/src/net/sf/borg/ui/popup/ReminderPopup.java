@@ -92,7 +92,11 @@ class ReminderPopup extends View {
 			DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT);
 			apptinfoText = df.format(d);
 		}
-		apptinfoText += " " + appointment.getText();
+		
+		if( appointment.isEncrypted())
+			apptinfoText += " " + Resource.getResourceString("EncryptedItemShort");
+		else
+			apptinfoText += " " + appointment.getText();
 		appointmentInformation.setText(apptinfoText);
 		
 		this.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);

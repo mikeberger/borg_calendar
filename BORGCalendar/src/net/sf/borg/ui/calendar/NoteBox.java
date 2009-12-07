@@ -88,6 +88,8 @@ public class NoteBox extends Box implements Box.Draggable {
 	private Icon todoIcon = null; // icon to mark todos
 
 	private String todoMarker = null; // textual todo marker
+	
+	private String noteText = null; // the text of this note box
 
 	/**
 	 * constructor
@@ -128,6 +130,12 @@ public class NoteBox extends Box implements Box.Draggable {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		// appointments need a special format
+		if( ap instanceof Appointment )
+			noteText = AppointmentTextFormat.format((Appointment)ap, d);
+		else 
+			noteText = ap.getText();
 
 	}
 
@@ -331,7 +339,7 @@ public class NoteBox extends Box implements Box.Draggable {
 
 	@Override
 	public String getText() {
-		return bean.getText();
+		return noteText;
 	}
 
 	/**

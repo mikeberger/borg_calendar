@@ -55,6 +55,7 @@ CREATE CACHED TABLE appointments (
   category varchar(15) default NULL,
   reminders longvarchar,
   untimed char(1) default NULL,
+  encrypted char(1) default NULL,
   PRIMARY KEY  (appt_num)
 );
 

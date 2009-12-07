@@ -61,6 +61,8 @@ public class AppointmentUndoItem extends UndoItem<Appointment> {
 	static private String apptString(Appointment appt) {
 		String txt = (appt.getText().length() < 20) ? appt.getText() : appt
 				.getText().substring(0, 19);
+		if( appt.isEncrypted())
+			txt = Resource.getResourceString("EncryptedItemShort");
 		return "["
 				+ DateFormat.getDateInstance(DateFormat.SHORT).format(
 						appt.getDate()) + "] " + txt;
