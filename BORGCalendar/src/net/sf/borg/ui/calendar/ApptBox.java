@@ -501,6 +501,7 @@ class ApptBox extends Box implements Box.Draggable {
 		if (hasLink) {
 			text = "@ " + text;
 		}
+		
 
 		// prepend todo marker and draw the string
 		if (isTodo() && todoIcon != null) {
@@ -508,13 +509,13 @@ class ApptBox extends Box implements Box.Draggable {
 					+ smfontHeight / 2);
 			drawWrappedString(g2, text, bounds.x + radius
 					+ todoIcon.getIconWidth(), bounds.y + radius, bounds.width
-					- radius);
+					- radius, getTextColor().equals("strike"));
 		} else if (isTodo() && todoMarker != null) {
 			drawWrappedString(g2, todoMarker + " " + text, bounds.x + radius,
-					bounds.y + radius, bounds.width - radius);
+					bounds.y + radius, bounds.width - radius, getTextColor().equals("strike"));
 		} else {
 			drawWrappedString(g2, text, bounds.x + radius, bounds.y + radius,
-					bounds.width - radius);
+					bounds.width - radius, getTextColor().equals("strike"));
 		}
 
 		g2.setClip(s);
@@ -524,10 +525,12 @@ class ApptBox extends Box implements Box.Draggable {
 	/**
 	 * draw a string with word wrap.
 	 */
-	private void drawWrappedString(Graphics2D g2, String tx, int x, int y, int w) {
+	private void drawWrappedString(Graphics2D g2, String tx, int x, int y, int w, boolean strike) {
 		int fontDesent = g2.getFontMetrics().getDescent();
-		HashMap<TextAttribute, Font> hm = new HashMap<TextAttribute, Font>();
+		HashMap<TextAttribute, Serializable> hm = new HashMap<TextAttribute, Serializable>();
 		hm.put(TextAttribute.FONT, g2.getFont());
+		if( strike )
+			hm.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
 		AttributedString as = new AttributedString(tx, hm);
 		AttributedCharacterIterator para = as.getIterator();
 		int start = para.getBeginIndex();

@@ -47,6 +47,7 @@ import net.sf.borg.common.Prefs;
 import net.sf.borg.common.PrintHelper;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.Day;
+import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.CalendarEntity;
 
 /**
@@ -285,7 +286,13 @@ public class MonthPrintPanel extends JPanel implements Printable {
 									g2.setColor(Color.green);
 								else if (entity.getColor().equals("blue"))
 									g2.setColor(Color.blue);
-
+								
+								String text = entity.getText();
+								if( entity instanceof Appointment)
+								{
+									text = AppointmentTextFormat.format((Appointment)entity, gc.getTime());
+								}
+								
 								// skip items that are strike-through if the option to skip them is set
 								if (ApptBoxPanel.isStrike(entity, gc.getTime())) {
 									if (Prefs
@@ -296,12 +303,12 @@ public class MonthPrintPanel extends JPanel implements Printable {
 									// need to use AttributedString to work
 									// around a bug
 									AttributedString as = new AttributedString(
-											entity.getText(), stmap);
+											text, stmap);
 									g2.drawString(as.getIterator(), apptx,
 											appty);
 								} else {
 									// draw the entity text
-									g2.drawString(entity.getText(), apptx, appty);
+									g2.drawString(text, apptx, appty);
 								}
 
 								// increment the Y coord
