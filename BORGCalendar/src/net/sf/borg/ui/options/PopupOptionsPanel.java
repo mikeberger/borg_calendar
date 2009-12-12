@@ -20,15 +20,22 @@
 package net.sf.borg.ui.options;
 
 import java.awt.GridBagConstraints;
+import java.awt.GridLayout;
 
+import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
+import javax.swing.border.Border;
 
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
+import net.sf.borg.common.Resource;
+import net.sf.borg.model.ReminderTimes;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.options.OptionsView.OptionsPanel;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
@@ -46,15 +53,19 @@ class PopupOptionsPanel extends OptionsPanel {
 	
 	/** The popenablebox. */
 	private JCheckBox popenablebox = new JCheckBox();
-	
-	/** The rem time panel. */
-	private ReminderTimePanel remTimePanel = new ReminderTimePanel();
+
 	
 	/** The soundbox. */
 	private JCheckBox soundbox = new JCheckBox();
 	
 	/** The use beep. */
 	private JCheckBox useBeep = new JCheckBox();
+	
+	/** The number Of Reminder Times. */
+	private int numberOfReminderTimes = 0;
+
+	/** The spinners for setting the reminder times */
+	private JSpinner spinners[];
 
 	/**
 	 * Instantiates a new popup options panel.
@@ -62,7 +73,11 @@ class PopupOptionsPanel extends OptionsPanel {
 	public PopupOptionsPanel() {
 		
 		this.setLayout(new java.awt.GridBagLayout());
-
+		
+		numberOfReminderTimes = ReminderTimes.getNum();
+		
+		
+		
 		ResourceHelper.setText(popenablebox, "enable_popups");
 		this.add(popenablebox, GridBagConstraintsFactory.create(0, 0,
 				GridBagConstraints.BOTH));
@@ -101,6 +116,24 @@ class PopupOptionsPanel extends OptionsPanel {
 		gridBagConstraints113.gridwidth = java.awt.GridBagConstraints.REMAINDER;
 		gridBagConstraints113.anchor = java.awt.GridBagConstraints.WEST;
 		gridBagConstraints113.insets = new java.awt.Insets(18, 18, 18, 18);
+		
+		JPanel remTimePanel = new JPanel();
+		
+		// border
+		String title = Resource.getResourceString("Popup_Times") + " ("
+				+ Resource.getResourceString("Minutes") + ")";
+		Border b = BorderFactory.createTitledBorder(remTimePanel.getBorder(), title);
+		remTimePanel.setBorder(b);
+		
+		remTimePanel.setLayout(new GridLayout(2, 0));
+		
+		// add the spinners
+		spinners = new JSpinner[numberOfReminderTimes];
+		for (int i = 0; i < numberOfReminderTimes; i++) {
+			spinners[i] = new JSpinner(new SpinnerNumberModel(0,-99999,99999,1));
+			remTimePanel.add(spinners[i]);
+		}
+		
 		this.add(remTimePanel, gridBagConstraints113);
 
 	}
@@ -113,15 +146,21 @@ class PopupOptionsPanel extends OptionsPanel {
 		OptionsPanel.setBooleanPref(popenablebox, PrefName.REMINDERS);
 		OptionsPanel.setBooleanPref(soundbox, PrefName.BEEPINGREMINDERS);
 		OptionsPanel.setBooleanPref(useBeep, PrefName.USESYSTEMBEEP);
-		Integer i = (Integer) checkfreq.getValue();
+		Integer checkMins = (Integer) checkfreq.getValue();
 		int cur = Prefs.getIntPref(PrefName.REMINDERCHECKMINS);
-		if (i.intValue() != cur) {
+		if (checkMins.intValue() != cur) {
 			// why does this not save a new pref if the value is the same?
 			// I no longer remeber if this matters - will leave as is
-			Prefs.putPref(PrefName.REMINDERCHECKMINS, i);
+			Prefs.putPref(PrefName.REMINDERCHECKMINS, checkMins);
 		}
 
-		remTimePanel.setTimes();
+		int arr[] = new int[numberOfReminderTimes];
+		for (int i = 0; i < numberOfReminderTimes; i++) {
+			Integer ii = (Integer) spinners[i].getValue();
+			arr[i] = ii.intValue();
+		}
+		ReminderTimes.setTimes(arr);
+		loadTimes();
 	}
 
 	/* (non-Javadoc)
@@ -135,7 +174,20 @@ class PopupOptionsPanel extends OptionsPanel {
 
 		int mins = Prefs.getIntPref(PrefName.REMINDERCHECKMINS);
 		checkfreq.setValue(new Integer(mins));
+		
+		// load the times
+		loadTimes();
 
 	}
+	
+	/**
+	 * Load the spinner valies from stored prefs
+	 */
+	private void loadTimes() {
+		for (int i = 0; i < numberOfReminderTimes; i++) {
+			spinners[i].setValue(new Integer(ReminderTimes.getTimes(i)));
+		}
+	}
+
 
 }
