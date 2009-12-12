@@ -27,7 +27,7 @@ import javax.help.HelpSet;
  * launches the borg java help
  *
  */
-class HelpLauncher {
+public class HelpLauncher {
 
 	/**
 	 * launch the Borg java help

@@ -43,8 +43,8 @@ import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.db.jdbc.JdbcDB;
 import net.sf.borg.model.tool.ConversionTool;
-import net.sf.borg.ui.OptionsView;
 import net.sf.borg.ui.UIControl;
+import net.sf.borg.ui.options.OptionsView;
 import net.sf.borg.ui.util.ModalMessage;
 import net.sf.borg.ui.util.ScrolledDialog;
 

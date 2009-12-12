@@ -54,6 +54,7 @@ import net.sf.borg.model.MemoModel;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.db.jdbc.JdbcDB;
 import net.sf.borg.model.undo.UndoLog;
+import net.sf.borg.ui.options.OptionsView;
 import net.sf.borg.ui.task.TaskConfigurator;
 import net.sf.borg.ui.util.ScrolledDialog;
 

@@ -31,6 +31,7 @@ import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.ui.MultiView.ViewType;
+import net.sf.borg.ui.options.OptionsView;
 import net.sf.borg.ui.popup.ReminderPopupManager;
 
 /** communicates with the new java built-in system tray APIs */

@@ -16,7 +16,7 @@
  *
  * Copyright 2003 by Mike Berger
  */
-package net.sf.borg.ui.popup;
+package net.sf.borg.ui.options;
 
 import java.awt.GridLayout;
 
