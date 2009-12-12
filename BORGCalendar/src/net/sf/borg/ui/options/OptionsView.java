@@ -102,21 +102,21 @@ public class OptionsView extends View {
 		 * @return the folder path or null
 		 */
 		static String chooseDir() {
-		
+
 			String path = null;
 			while (true) {
 				JFileChooser chooser = new JFileChooser();
-		
+
 				chooser.setCurrentDirectory(new File("."));
 				chooser
 						.setDialogTitle("Please choose directory for database files");
 				chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-		
+
 				int returnVal = chooser.showOpenDialog(null);
 				if (returnVal != JFileChooser.APPROVE_OPTION) {
 					return (null);
 				}
-		
+
 				path = chooser.getSelectedFile().getAbsolutePath();
 				File dir = new File(path);
 				String err = null;
@@ -125,14 +125,14 @@ public class OptionsView extends View {
 				} else if (!dir.isDirectory()) {
 					err = "Directory [" + path + "] is not a directory";
 				}
-		
+
 				if (err == null) {
 					break;
 				}
-		
+
 				Errmsg.notice(err);
 			}
-		
+
 			return (path);
 		}
 	}
@@ -163,7 +163,7 @@ public class OptionsView extends View {
 	}
 
 	private AppearanceOptionsPanel appearancePanel;
-	
+
 	private JButton applyButton;
 
 	private ColorOptionsPanel colorPanel;
@@ -197,36 +197,105 @@ public class OptionsView extends View {
 	private OptionsView(boolean dbonly) {
 		super();
 
-		initComponents();
+		jTabbedPane1 = new JTabbedPane();
+
+		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+		this.setTitle(Resource.getResourceString("Options"));
+		addWindowListener(new java.awt.event.WindowAdapter() {
+			@Override
+			public void windowClosing(java.awt.event.WindowEvent evt) {
+				dispose();
+			}
+		});
+
+		topPanel = new JPanel();
+		topPanel.setLayout(new GridBagLayout());
+
+		topPanel.add(jTabbedPane1, GridBagConstraintsFactory.create(0, 0,
+				GridBagConstraints.BOTH, 1.0, 1.0));
 
 		if (dbonly) {
 			setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		} else {
+
+			dismissButton = new JButton();
+			applyButton = new JButton();
+
+			JPanel applyDismissPanel = new JPanel();
+
+			applyButton.setIcon(new ImageIcon(getClass().getResource(
+					"/resource/Save16.gif")));
+			ResourceHelper.setText(applyButton, "apply");
+			applyButton.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					applyChanges();
+				}
+			});
+			applyDismissPanel.add(applyButton, null);
+
+			dismissButton.setIcon(new ImageIcon(getClass().getResource(
+					"/resource/Stop16.gif")));
+			ResourceHelper.setText(dismissButton, "Dismiss");
+			dismissButton
+					.addActionListener(new java.awt.event.ActionListener() {
+						public void actionPerformed(
+								java.awt.event.ActionEvent evt) {
+							dispose();
+						}
+					});
+			setDismissButton(dismissButton);
+			applyDismissPanel.add(dismissButton, null);
+
+			topPanel.add(applyDismissPanel, GridBagConstraintsFactory.create(0,
+					1, GridBagConstraints.BOTH));
+
+			appearancePanel = new AppearanceOptionsPanel();
+			appearancePanel.loadOptions();
+			ResourceHelper.addTab(jTabbedPane1, "appearance", appearancePanel);
+
+			fontPanel = new FontOptionsPanel();
+			fontPanel.loadOptions();
+			ResourceHelper.addTab(jTabbedPane1, "fonts", fontPanel);
+
+			emailPanel = new EmailOptionsPanel();
+			emailPanel.loadOptions();
+			ResourceHelper.addTab(jTabbedPane1, "EmailParameters", emailPanel);
+
+			popupPanel = new PopupOptionsPanel();
+			popupPanel.loadOptions();
+			ResourceHelper.addTab(jTabbedPane1, "popup_reminders", popupPanel);
+
+			miscPanel = new MiscellaneousOptionsPanel();
+			miscPanel.loadOptions();
+			ResourceHelper.addTab(jTabbedPane1, "misc", miscPanel);
+
+			colorPanel = new ColorOptionsPanel();
+			colorPanel.loadOptions();
+			ResourceHelper.addTab(jTabbedPane1, "UserColorScheme", colorPanel);
+
+			taskPanel = new TaskOptionsPanel();
+			taskPanel.loadOptions();
+			ResourceHelper.addTab(jTabbedPane1, "taskOptions", taskPanel);
+
+			encryptionPanel = new EncryptionOptionsPanel();
+			encryptionPanel.loadOptions();
+			ResourceHelper.addTab(jTabbedPane1, "Encryption", encryptionPanel);
+
 		}
 
-		if (dbonly) {
-			// disable lots of non-db-related stuff
-			// this is used only on start up when no db is set
-			// and we need one set. at that time, no other options
-			// really make sense
-			jTabbedPane1.setEnabledAt(0, false);
-			jTabbedPane1.setEnabledAt(1, false);
-			jTabbedPane1.setEnabledAt(3, false);
-			jTabbedPane1.setEnabledAt(4, false);
-			jTabbedPane1.setEnabledAt(5, false);
-			jTabbedPane1.setEnabledAt(6, false);
-			jTabbedPane1.setEnabledAt(7, false);
+		dbPanel = new DatabaseOptionsPanel();
+		dbPanel.loadOptions();
+		ResourceHelper.addTab(jTabbedPane1, "DatabaseInformation", dbPanel);
 
-			jTabbedPane1.setSelectedIndex(2);
-			dismissButton.setEnabled(false);
-			applyButton.setEnabled(false);
+		this.setContentPane(topPanel);
+		this.setSize(629, 493);
 
-			return;
-
-		}
+		pack();
 
 		// automatically maintain the size and position of this view in
 		// a preference
-		manageMySize(PrefName.OPTVIEWSIZE);
+		if( !dbonly )
+			manageMySize(PrefName.OPTVIEWSIZE);
 	}
 
 	/**
@@ -257,109 +326,6 @@ public class OptionsView extends View {
 	@Override
 	public void destroy() {
 		this.dispose();
-	}
-
-	/**
-	 * get the top level panel
-	 * 
-	 * @return the top level panel
-	 */
-	private JPanel getTopPanel() {
-		if (topPanel == null) {
-
-			topPanel = new JPanel();
-			topPanel.setLayout(new GridBagLayout());
-
-			topPanel.add(jTabbedPane1, GridBagConstraintsFactory.create(0, 0,
-					GridBagConstraints.BOTH, 1.0, 1.0));
-
-			JPanel applyDismissPanel = new JPanel();
-
-			applyButton.setIcon(new ImageIcon(getClass().getResource(
-					"/resource/Save16.gif")));
-			ResourceHelper.setText(applyButton, "apply");
-			applyButton.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					applyChanges();
-				}
-			});
-			applyDismissPanel.add(applyButton, null);
-
-			dismissButton.setIcon(new ImageIcon(getClass().getResource(
-					"/resource/Stop16.gif")));
-			ResourceHelper.setText(dismissButton, "Dismiss");
-			dismissButton
-					.addActionListener(new java.awt.event.ActionListener() {
-						public void actionPerformed(
-								java.awt.event.ActionEvent evt) {
-							dispose();
-						}
-					});
-			setDismissButton(dismissButton);
-			applyDismissPanel.add(dismissButton, null);
-
-			topPanel.add(applyDismissPanel, GridBagConstraintsFactory.create(0,
-					1, GridBagConstraints.BOTH));
-		}
-		return topPanel;
-	}
-
-	private void initComponents() {
-
-		jTabbedPane1 = new JTabbedPane();
-
-		dismissButton = new JButton();
-		applyButton = new JButton();
-
-		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		this.setTitle(Resource.getResourceString("Options"));
-		addWindowListener(new java.awt.event.WindowAdapter() {
-			@Override
-			public void windowClosing(java.awt.event.WindowEvent evt) {
-				dispose();
-			}
-		});
-
-		appearancePanel = new AppearanceOptionsPanel();
-		appearancePanel.loadOptions();
-		ResourceHelper.addTab(jTabbedPane1, "appearance", appearancePanel);
-
-		fontPanel = new FontOptionsPanel();
-		fontPanel.loadOptions();
-		ResourceHelper.addTab(jTabbedPane1, "fonts", fontPanel);
-
-		dbPanel = new DatabaseOptionsPanel();
-		dbPanel.loadOptions();
-		ResourceHelper.addTab(jTabbedPane1, "DatabaseInformation", dbPanel);
-
-		emailPanel = new EmailOptionsPanel();
-		emailPanel.loadOptions();
-		ResourceHelper.addTab(jTabbedPane1, "EmailParameters", emailPanel);
-
-		popupPanel = new PopupOptionsPanel();
-		popupPanel.loadOptions();
-		ResourceHelper.addTab(jTabbedPane1, "popup_reminders", popupPanel);
-
-		miscPanel = new MiscellaneousOptionsPanel();
-		miscPanel.loadOptions();
-		ResourceHelper.addTab(jTabbedPane1, "misc", miscPanel);
-
-		colorPanel = new ColorOptionsPanel();
-		colorPanel.loadOptions();
-		ResourceHelper.addTab(jTabbedPane1, "UserColorScheme", colorPanel);
-
-		taskPanel = new TaskOptionsPanel();
-		taskPanel.loadOptions();
-		ResourceHelper.addTab(jTabbedPane1, "taskOptions", taskPanel);
-
-		encryptionPanel = new EncryptionOptionsPanel();
-		encryptionPanel.loadOptions();
-		ResourceHelper.addTab(jTabbedPane1, "Encryption", encryptionPanel);
-
-		this.setContentPane(getTopPanel());
-		this.setSize(629, 493);
-
-		pack();
 	}
 
 	@Override
