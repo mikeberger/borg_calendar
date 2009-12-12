@@ -19,10 +19,12 @@
  */
 package net.sf.borg.ui.options;
 
-import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 
 import javax.swing.JButton;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.SoftBevelBorder;
@@ -31,6 +33,7 @@ import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.options.OptionsView.OptionsPanel;
+import net.sf.borg.ui.util.GridBagConstraintsFactory;
 import net.sf.borg.ui.util.NwFontChooserS;
 
 /**
@@ -39,62 +42,81 @@ import net.sf.borg.ui.util.NwFontChooserS;
 public class FontOptionsPanel extends OptionsPanel {
 
 	private static final long serialVersionUID = -6568983838009839140L;
+	
+	JTextField monthFontText = new JTextField();
+	JTextField dayFontText = new JTextField();
+	JTextField weekFontText = new JTextField();
+	JTextField printFontText = new JTextField();
+	JTextField defaultFontText = new JTextField();
 
 	/**
 	 * Instantiates a new font options panel.
 	 */
 	public FontOptionsPanel() {
-		this.setLayout(new FlowLayout());
-
+		
+		monthFontText.setEditable(false);
+		dayFontText.setEditable(false);
+		weekFontText.setEditable(false);
+		printFontText.setEditable(false);
+		defaultFontText.setEditable(false);
+		
+		this.setLayout(new GridBagLayout());
+		
 		JButton apptFontButton = new JButton();
 		ResourceHelper.setText(apptFontButton, "set_appt_font");
 		apptFontButton.setBorder(new SoftBevelBorder(BevelBorder.RAISED));
 		apptFontButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				fontActionPerformed(PrefName.APPTFONT);
+				fontActionPerformed(monthFontText);
 			}
 		});
-		this.add(apptFontButton);
+		this.add(apptFontButton, GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH));
 
 		JButton defFontButton = new JButton();
 		ResourceHelper.setText(defFontButton, "set_def_font");
 		defFontButton.setBorder(new SoftBevelBorder(BevelBorder.RAISED));
 		defFontButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				fontActionPerformed(PrefName.DEFFONT);
+				fontActionPerformed(defaultFontText);
 			}
 		});
-		this.add(defFontButton);
+		this.add(defFontButton, GridBagConstraintsFactory.create(0,1, GridBagConstraints.BOTH));
 
 		JButton dayFontButton = new JButton();
 		ResourceHelper.setText(dayFontButton, "dview_font");
 		dayFontButton.setBorder(new SoftBevelBorder(BevelBorder.RAISED));
 		dayFontButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				fontActionPerformed(PrefName.DAYVIEWFONT);
+				fontActionPerformed(dayFontText);
 			}
 		});
-		this.add(dayFontButton);
+		this.add(dayFontButton, GridBagConstraintsFactory.create(0, 2, GridBagConstraints.BOTH));
 
 		JButton weekFontButton = new JButton();
 		ResourceHelper.setText(weekFontButton, "wview_font");
 		weekFontButton.setBorder(new SoftBevelBorder(BevelBorder.RAISED));
 		weekFontButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				fontActionPerformed(PrefName.WEEKVIEWFONT);
+				fontActionPerformed(weekFontText);
 			}
 		});
-		this.add(weekFontButton);
+		this.add(weekFontButton, GridBagConstraintsFactory.create(0, 3, GridBagConstraints.BOTH));
 
 		JButton monthFontButton = new JButton();
 		ResourceHelper.setText(monthFontButton, "mview_font");
 		monthFontButton.setBorder(new SoftBevelBorder(BevelBorder.RAISED));
 		monthFontButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				fontActionPerformed(PrefName.MONTHVIEWFONT);
+				fontActionPerformed(printFontText);
 			}
 		});
-		this.add(monthFontButton);
+		this.add(monthFontButton, GridBagConstraintsFactory.create(0, 4, GridBagConstraints.BOTH));
+		
+		this.add(monthFontText, GridBagConstraintsFactory.create(1, 0, GridBagConstraints.BOTH, 1.0, 0.0));
+		this.add(defaultFontText, GridBagConstraintsFactory.create(1, 1, GridBagConstraints.BOTH, 1.0, 0.0));
+		this.add(weekFontText, GridBagConstraintsFactory.create(1, 2, GridBagConstraints.BOTH, 1.0, 0.0));
+		this.add(dayFontText, GridBagConstraintsFactory.create(1, 3, GridBagConstraints.BOTH, 1.0, 0.0));
+		this.add(printFontText, GridBagConstraintsFactory.create(1, 4, GridBagConstraints.BOTH, 1.0, 0.0));
 	}
 
 	/*
@@ -104,33 +126,19 @@ public class FontOptionsPanel extends OptionsPanel {
 	 */
 	@Override
 	public void applyChanges() {
-		// empty
-	}
-
-	/**
-	 * bring up a font chooser UI and let the user change a font
-	 * 
-	 * @param fontname
-	 *            the preference name associated with the font
-	 */
-	private void fontActionPerformed(PrefName fontname) {
-
-		// get font from pref name
-		Font pf = Font.decode(Prefs.getPref(fontname));
-
-		// choose a new font
-		Font f = NwFontChooserS.showDialog(null, null, pf);
-		if (f == null) {
-			return;
-		}
-
-		// get the font name and store
-		String s = NwFontChooserS.fontString(f);
-		Prefs.putPref(fontname, s);
-
+		
+		String origDefaultFont = Prefs.getPref(PrefName.DEFFONT);
+		
+		Prefs.putPref(PrefName.APPTFONT, monthFontText.getText());
+		Prefs.putPref(PrefName.DEFFONT, defaultFontText.getText());
+		Prefs.putPref(PrefName.WEEKVIEWFONT, weekFontText.getText());
+		Prefs.putPref(PrefName.DAYVIEWFONT, dayFontText.getText());
+		Prefs.putPref(PrefName.MONTHVIEWFONT, printFontText.getText());
+		
 		// if the default font is changing then try to update the entire UI
 		// will not likely be pretty
-		if (fontname == PrefName.DEFFONT) {
+		if (!origDefaultFont.equals(defaultFontText.getText())) {
+			Font f = Font.decode(defaultFontText.getText());
 			NwFontChooserS.setDefaultFont(f);
 			SwingUtilities.updateComponentTreeUI(this);
 		}
@@ -141,6 +149,30 @@ public class FontOptionsPanel extends OptionsPanel {
 
 	}
 
+	/**
+	 * bring up a font chooser UI and let the user change a font
+	 * 
+	 * @param fontname
+	 *            the preference name associated with the font
+	 */
+	private void fontActionPerformed(JTextField fontText) {
+
+		// get font from pref name
+		Font pf = Font.decode(fontText.getText());
+
+		// choose a new font
+		Font f = NwFontChooserS.showDialog(null, null, pf);
+		if (f == null) {
+			return;
+		}
+
+		// get the font name and store
+		String s = NwFontChooserS.fontString(f);
+		fontText.setText(s);
+		
+		
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -148,7 +180,11 @@ public class FontOptionsPanel extends OptionsPanel {
 	 */
 	@Override
 	public void loadOptions() {
-		// empty
+		monthFontText.setText(Prefs.getPref(PrefName.APPTFONT));
+		defaultFontText.setText(Prefs.getPref(PrefName.DEFFONT));
+		weekFontText.setText(Prefs.getPref(PrefName.WEEKVIEWFONT));
+		dayFontText.setText(Prefs.getPref(PrefName.DAYVIEWFONT));
+		printFontText.setText(Prefs.getPref(PrefName.MONTHVIEWFONT));
 	}
 
 }
