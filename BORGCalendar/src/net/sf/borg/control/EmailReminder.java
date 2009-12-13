@@ -25,6 +25,8 @@
 
 package net.sf.borg.control;
 
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -32,6 +34,12 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.StringTokenizer;
+
+import javax.crypto.Cipher;
+import javax.crypto.CipherOutputStream;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
@@ -41,6 +49,8 @@ import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.Task;
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
 
 /**
  * this class handles the daily email reminder
@@ -160,8 +170,7 @@ public class EmailReminder {
 				String a = stk.nextToken();
 				if (!a.equals("")) {
 					SendJavaMail.sendMail(host, tx, Resource.getResourceString("Reminder_Notice"), a.trim(), a.trim(), Prefs
-							.getPref(PrefName.EMAILUSER), Prefs
-							.getPref(PrefName.EMAILPASS));
+							.getPref(PrefName.EMAILUSER), gep());
 				}
 			}
 		}
@@ -170,6 +179,69 @@ public class EmailReminder {
 			Prefs.putPref(PrefName.EMAILLAST, new Integer(doy));
 
 		return;
+	}
+	
+	// intentionally undocumented - not foolproof. unrelated to memo and appt encryption, which is fully secure
+	public static String gep() throws Exception
+	{
+		String p1 = Prefs.getPref(PrefName.EMAILPASS2);
+		String p2 = Prefs.getPref(PrefName.EMAILPASS);
+		if( "".equals(p2))
+			return p2;
+		
+		if( "".equals(p1))
+		{
+			sep(p2); // transition case
+			return p2;
+		}
+		
+		BASE64Decoder b64dec = new BASE64Decoder();
+		byte[] ba = b64dec.decodeBuffer(p1);
+		SecretKey key = new SecretKeySpec(ba,"AES");
+		Cipher dec = Cipher.getInstance("AES");
+		dec.init(Cipher.DECRYPT_MODE, key);
+		byte[] decba = b64dec.decodeBuffer(p2);
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		OutputStream os = new CipherOutputStream(baos, dec);
+		os.write(decba);
+		os.close();
+
+		return baos.toString();
+		
+		
+	}
+	
+	// intentionally undocumented - not foolproof. unrelated to memo and appt encryption, which is
+	// fully secure
+	public static void sep(String s) throws Exception
+	{
+		if( "".equals(s))
+		{
+			Prefs.putPref(PrefName.EMAILPASS, s);
+			return;
+		}
+		String p1 = Prefs.getPref(PrefName.EMAILPASS2);
+		if( "".equals(p1))
+		{
+			KeyGenerator keyGen = KeyGenerator.getInstance("AES");
+			SecretKey key = keyGen.generateKey();
+			BASE64Encoder b64enc = new BASE64Encoder();
+			p1 = b64enc.encode(key.getEncoded());
+			Prefs.putPref(PrefName.EMAILPASS2, p1);
+		}
+		
+		BASE64Decoder b64dec = new BASE64Decoder();
+		byte[] ba = b64dec.decodeBuffer(p1);
+		SecretKey key = new SecretKeySpec(ba,"AES");
+		Cipher enc = Cipher.getInstance("AES");
+		enc.init(Cipher.ENCRYPT_MODE, key);
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		OutputStream os = new CipherOutputStream(baos, enc);
+		os.write(s.getBytes());
+		os.close();
+		ba = baos.toByteArray();
+		BASE64Encoder b64enc = new BASE64Encoder();
+		Prefs.putPref(PrefName.EMAILPASS, b64enc.encode(ba));
 	}
 
 }

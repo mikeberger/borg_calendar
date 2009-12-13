@@ -31,9 +31,11 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerDateModel;
 
+import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
+import net.sf.borg.control.EmailReminder;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.options.OptionsView.OptionsPanel;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
@@ -161,7 +163,11 @@ class EmailOptionsPanel extends OptionsPanel {
 			Prefs.putPref(PrefName.EMAILPORT, smtpport.getText());
 			Prefs.putPref(PrefName.EMAILADDR, emailtext.getText());
 			Prefs.putPref(PrefName.EMAILUSER, usertext.getText());
-			Prefs.putPref(PrefName.EMAILPASS, new String(smpw.getPassword()));
+			try {
+				EmailReminder.sep(new String(smpw.getPassword()));
+			} catch (Exception e) {
+				Errmsg.errmsg(e);
+			}
 
 		}
 
@@ -194,7 +200,12 @@ class EmailOptionsPanel extends OptionsPanel {
 		smtpport.setText(Prefs.getPref(PrefName.EMAILPORT));
 		emailtext.setText(Prefs.getPref(PrefName.EMAILADDR));
 		usertext.setText(Prefs.getPref(PrefName.EMAILUSER));
-		smpw.setText(Prefs.getPref(PrefName.EMAILPASS));
+		
+		try {
+			smpw.setText(EmailReminder.gep());
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
+		}
 
 	}
 

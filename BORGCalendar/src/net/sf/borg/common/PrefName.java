@@ -227,6 +227,7 @@ public class PrefName {
 
 	/** The EMAILPASS. */
 	static public PrefName EMAILPASS = new PrefName("email_pass", "");
+	static public PrefName EMAILPASS2 = new PrefName("email_pass2", "");
 
 	/** The EMAILPORT. */
 	static public PrefName EMAILPORT = new PrefName("email_port", "25");
