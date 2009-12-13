@@ -15,7 +15,7 @@
  along with BORG; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
- Copyright 2003 by Mike Berger
+ Copyright 2003-2010 by Mike Berger
  */
 
 package net.sf.borg.model;
@@ -53,6 +53,7 @@ import net.sf.borg.model.db.AppointmentDB;
 import net.sf.borg.model.db.EntityDB;
 import net.sf.borg.model.db.jdbc.ApptJdbcDB;
 import net.sf.borg.model.entity.Appointment;
+import net.sf.borg.model.entity.Link;
 import net.sf.borg.model.undo.AppointmentUndoItem;
 import net.sf.borg.model.undo.UndoLog;
 
@@ -62,7 +63,7 @@ import net.sf.borg.model.undo.UndoLog;
  * 
  */
 public class AppointmentModel extends Model implements Model.Listener,
-		CategorySource {
+		CategorySource, Searchable<Appointment> {
 
 	/**
 	 * class XmlContainer is solely for JAXB XML export/import to keep the same
@@ -519,66 +520,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 		m.marshal(container, fw);
 	}
 
-	/**
-	 * search all appointment texts and return a Vector of matching appointments
-	 * 
-	 * @param s
-	 *            the search string
-	 * @param case_sensitive
-	 *            if true, make the search case sensitive
-	 * 
-	 * @return the _srch
-	 */
-	public Vector<Appointment> get_srch(String s, boolean case_sensitive) {
-
-		Vector<Appointment> res = new Vector<Appointment>();
-
-		try {
-
-			// load all appts into appt list
-			Collection<Appointment> allappts = getAllAppts();
-
-			for (Appointment appt : allappts) {
-				// read each appt
-
-				// if category set, filter appts
-				if (!CategoryModel.getReference().isShown(appt.getCategory())) {
-					continue;
-				}
-				
-				// do not search on encrypted appts
-				if( appt.isEncrypted() )
-					continue;
-
-				String tx = appt.getText();
-				Date d = appt.getDate();
-				if (d == null || tx == null)
-					continue;
-
-				if (case_sensitive) {
-					// check if appt text contains the search string
-					if (tx.indexOf(s) == -1)
-						continue;
-				} else {
-					// check if appt text contains the search string
-					String ltx = tx.toLowerCase();
-					String ls = s.toLowerCase();
-					if (ltx.indexOf(ls) == -1)
-						continue;
-				}
-
-				// add the appt to the search results
-				res.add(appt);
-
-			}
-
-		} catch (Exception e) {
-			Errmsg.errmsg(e);
-		}
-		return (res);
-
-	}
-
+	
 	/**
 	 * Gets all appointments that are marked as todos.
 	 * 
@@ -933,6 +875,113 @@ public class AppointmentModel extends Model implements Model.Listener,
 			}
 		}
 		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.Searchable#search(net.sf.borg.model.SearchCriteria)
+	 */
+	@Override
+	public Collection<Appointment> search(SearchCriteria criteria) {
+		
+		Collection<Appointment> res = new ArrayList<Appointment>(); // result collection
+		try {
+
+			// load all appts into appt list
+			Collection<Appointment> allappts = getAllAppts();
+
+			for (Appointment appt : allappts) {
+				// read each appt
+
+				// if category set, filter appts
+				if (!CategoryModel.getReference().isShown(appt.getCategory())) {
+					continue;
+				}
+				
+				// do not search on encrypted appts
+				if( appt.isEncrypted() )
+					continue;
+
+				String tx = appt.getText();
+				Date d = appt.getDate();
+				if (d == null || tx == null)
+					continue;
+
+				if (criteria.isCaseSensitive()) {
+					// check if appt text contains the search string
+					if (tx.indexOf(criteria.getSearchString()) == -1)
+						continue;
+				} else {
+					// check if appt text contains the search string
+					String ltx = tx.toLowerCase();
+					String ls = criteria.getSearchString().toLowerCase();
+					if (ltx.indexOf(ls) == -1)
+						continue;
+				}
+				
+				// filter by repeat
+				if (criteria.isRepeating() && !appt.getRepeatFlag())
+					continue;
+
+				// filter todos
+				if (criteria.isTodo() && !appt.getTodo())
+					continue;
+
+				// filter by vacation
+				Integer ii = appt.getVacation();
+				if (criteria.isVacation()
+						&& (ii == null || ii.intValue() != 1))
+					continue;
+
+				// filter by holiday
+				ii = appt.getHoliday();
+				if (criteria.isHoliday()
+						&& (ii == null || ii.intValue() != 1))
+					continue;
+
+				// filter by category
+				if (criteria.getCategory().equals(CategoryModel.UNCATEGORIZED)
+						&& appt.getCategory() != null
+						&& !appt.getCategory().equals(CategoryModel.UNCATEGORIZED))
+					continue;
+				else if (!criteria.getCategory().equals("")
+						&& !criteria.getCategory().equals(CategoryModel.UNCATEGORIZED)
+						&& !criteria.getCategory().equals(appt.getCategory()))
+					continue;
+
+				// filter by start date
+				if (criteria.getStartDate() != null) {
+					if (appt.getDate().before(criteria.getStartDate()))
+						continue;
+				}
+
+				// filter by end date
+				if (criteria.getEndDate() != null) {
+					if (appt.getDate().after(criteria.getEndDate()))
+						continue;
+				}
+
+				// filter by links
+				if (criteria.hasLinks()) {
+					LinkModel lm = LinkModel.getReference();
+					try {
+						Collection<Link> lnks = lm.getLinks(appt);
+						if (lnks.isEmpty())
+							continue;
+					} catch (Exception e) {
+						Errmsg.errmsg(e);
+					}
+				}
+
+
+				// add the appt to the search results
+				res.add(appt);
+
+			}
+
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
+		}
+		return (res);
 	}
 
 }

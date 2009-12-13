@@ -23,7 +23,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
-import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -43,16 +42,23 @@ import javax.swing.table.TableColumnModel;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Resource;
+import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.CategoryModel;
-import net.sf.borg.model.LinkModel;
+import net.sf.borg.model.SearchCriteria;
+import net.sf.borg.model.TaskModel;
+import net.sf.borg.model.entity.Address;
 import net.sf.borg.model.entity.Appointment;
-import net.sf.borg.model.entity.Link;
+import net.sf.borg.model.entity.Project;
+import net.sf.borg.model.entity.Task;
 import net.sf.borg.ui.DockableView;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.MultiView.Module;
 import net.sf.borg.ui.MultiView.ViewType;
+import net.sf.borg.ui.address.AddressView;
+import net.sf.borg.ui.task.ProjectView;
+import net.sf.borg.ui.task.TaskView;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 import net.sf.borg.ui.util.StripedTable;
 import net.sf.borg.ui.util.TablePrinter;
@@ -61,14 +67,11 @@ import net.sf.borg.ui.util.TableSorter;
 import com.toedter.calendar.JDateChooser;
 
 /**
- * UI for searching appointments.
+ * UI for searching records.
  */
 public class SearchView extends DockableView implements Module {
 
 	private static final long serialVersionUID = 1L;
-
-	/** The matching appointments. */
-	private Vector<Appointment> matchingAppointments = null;
 
 	/** The case sensitive check box. */
 	private JCheckBox caseSensitiveCheckBox = null;
@@ -122,14 +125,18 @@ public class SearchView extends DockableView implements Module {
 		// showing the appt date and text
 		resultsTable.setModel(new TableSorter(new String[] {
 				Resource.getResourceString("Date"),
-				Resource.getResourceString("Item"), "key" }, new Class[] {
-				Date.class, java.lang.String.class, Integer.class }));
+				Resource.getResourceString("Item"), 
+				Resource.getResourceString("Type"),
+				"key", "class" }, new Class[] {
+				Date.class, String.class, String.class, Integer.class, Class.class }));
 
 		// hide column with the key
 		TableColumnModel colModel = resultsTable.getColumnModel();
-		TableColumn col = colModel.getColumn(2);
+		TableColumn col = colModel.getColumn(3);
 		resultsTable.removeColumn(col);
-
+		col = colModel.getColumn(3);
+		resultsTable.removeColumn(col);
+		
 		// populate the category combo box
 		categoryComboBox.addItem("");
 		try {
@@ -187,7 +194,7 @@ public class SearchView extends DockableView implements Module {
 							ArrayList<Integer> apptKeys = new ArrayList<Integer>();
 							for (int i = 0; i < rows.length; i++) {
 								Integer key = (Integer) tm.getValueAt(rows[i],
-										2);
+										3);
 								apptKeys.add(key);
 							}
 
@@ -243,7 +250,7 @@ public class SearchView extends DockableView implements Module {
 				TableSorter tm = (TableSorter) resultsTable.getModel();
 				ArrayList<Integer> apptKeys = new ArrayList<Integer>();
 				for (int i = 0; i < rows.length; i++) {
-					Integer key = (Integer) tm.getValueAt(rows[i], 2);
+					Integer key = (Integer) tm.getValueAt(rows[i], 3);
 					apptKeys.add(key);
 				}
 
@@ -302,7 +309,11 @@ public class SearchView extends DockableView implements Module {
 			public void mouseClicked(java.awt.event.MouseEvent e) {
 				if (e.getClickCount() < 2)
 					return;
-				showSelectedAppointment();
+				try {
+					showSelectedItem();
+				} catch (Exception e1) {
+					Errmsg.errmsg(e1);
+				}
 			}
 		});
 
@@ -474,9 +485,11 @@ public class SearchView extends DockableView implements Module {
 	}
 
 	/**
-	 * Show the selected appointment in the appointment editor
+	 * Show the selected item
+	 * @throws Exception 
 	 */
-	private void showSelectedAppointment() {
+	@SuppressWarnings("unchecked")
+	private void showSelectedItem() throws Exception {
 
 		// get the selected row
 		int rows[] = resultsTable.getSelectedRows();
@@ -485,17 +498,100 @@ public class SearchView extends DockableView implements Module {
 		int row = rows[0];
 		TableSorter tm = (TableSorter) resultsTable.getModel();
 
-		// get the date of the selected row
-		Date d = (Date) tm.getValueAt(row, 0);
-		GregorianCalendar cal = new GregorianCalendar();
-		cal.setTime(d);
+		int key = ((Integer) tm.getValueAt(row, 3)).intValue();
+		Class cl = (Class) tm.getValueAt(row, 4);
+		if (cl == Appointment.class) {
+			Appointment ap = AppointmentModel.getReference().getAppt(
+					key);
+			if (ap == null) {
+				return;
+			}
 
-		// bring up an appt list window for the selected date
-		AppointmentListView ag = new AppointmentListView(
-				cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal
-						.get(Calendar.DATE));
+			Calendar cal = new GregorianCalendar();
+			cal.setTime(ap.getDate());
 
-		ag.showView();
+			// bring up an appt editor window
+			AppointmentListView ag = new AppointmentListView(cal
+					.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal
+					.get(Calendar.DATE));
+			ag.showApp(ap.getKey());
+			ag.showView();
+		}
+		// open a project
+		else if (cl == Project.class) {
+			Project ap = TaskModel.getReference().getProject(
+					key);
+			if (ap == null) {
+				return;
+			}
+
+			new ProjectView(ap, ProjectView.Action.CHANGE, null)
+					.showView();
+		}
+		// open a task
+		else if (cl == Task.class) {
+			Task ap = TaskModel.getReference().getTask(
+					key);
+			if (ap == null) {
+				return;
+			}
+			
+			new TaskView(ap, TaskView.Action.CHANGE, null).showView();
+		}
+		// open an address
+		else if (cl == Address.class) {
+			Address ap = AddressModel.getReference().getAddress(
+					key);
+			if (ap == null) {
+				return;
+			}
+			new AddressView(ap).showView();
+		}
+//		// open a memo
+//		else if (cl == Memo.class) {
+//			Component c  = MultiView.getMainView().setView(ViewType.MEMO);
+//			
+//			// show the actual memo
+//			if( c != null && c instanceof MemoPanel)
+//			{
+//				MemoPanel mp = (MemoPanel)c;
+//				mp.selectMemo(at.getPath());
+//			}
+//		}
+	}
+
+	/**
+	 * fill in the search criteria from the UI settings
+	 * 
+	 * @return the criteria
+	 */
+	private SearchCriteria getCriteria() {
+		SearchCriteria criteria = new SearchCriteria();
+		criteria.setSearchString(searchText.getText());
+		criteria.setCaseSensitive(caseSensitiveCheckBox.isSelected());
+		criteria.setCategory((String) categoryComboBox.getSelectedItem());
+		Calendar cal = startDateChooser.getCalendar();
+		if (cal != null) {
+			cal.set(Calendar.HOUR_OF_DAY, 0);
+			cal.set(Calendar.MINUTE, 0);
+			cal.set(Calendar.SECOND, 0);
+			cal.add(Calendar.SECOND, -1);
+			criteria.setStartDate(cal.getTime());
+		}
+		cal = endDateChooser.getCalendar();
+		if (cal != null) {
+			cal.set(Calendar.HOUR_OF_DAY, 0);
+			cal.set(Calendar.MINUTE, 0);
+			cal.set(Calendar.SECOND, 0);
+			cal.add(Calendar.SECOND, -1);
+			criteria.setEndDate(cal.getTime());
+		}
+		criteria.setHoliday(holidayCheckBox.isSelected());
+		criteria.setRepeating(repeatCheckBox.isSelected());
+		criteria.setTodo(todoCheckBox.isSelected());
+		criteria.setVacation(vacationCheckBox.isSelected());
+		criteria.setHasLinks(linkCheckBox.isSelected());
+		return criteria;
 	}
 
 	/*
@@ -506,104 +602,30 @@ public class SearchView extends DockableView implements Module {
 	@Override
 	public void refresh() {
 
+		SearchCriteria criteria = getCriteria();
+
 		// call the data model to do a search by appt text
-		matchingAppointments = AppointmentModel.getReference().get_srch(
-				searchText.getText(), caseSensitiveCheckBox.isSelected());
+		Collection<Appointment> appointments = AppointmentModel.getReference().search(criteria);
 
 		// empty the table
 		TableSorter tm = (TableSorter) resultsTable.getModel();
 		tm.addMouseListenerToHeaderInTable(resultsTable);
 		tm.setRowCount(0);
 
-		// set up the filter criteria
-		String selcat = (String) categoryComboBox.getSelectedItem();
-
-		long starttime = 0;
-		Calendar cal = startDateChooser.getCalendar();
-		if (cal != null) {
-			cal.set(Calendar.HOUR_OF_DAY, 0);
-			cal.set(Calendar.MINUTE, 0);
-			cal.set(Calendar.SECOND, 0);
-			cal.add(Calendar.SECOND, -1);
-			starttime = cal.getTime().getTime();
-		}
-
-		long endtime = 0;
-		cal = endDateChooser.getCalendar();
-		if (cal != null) {
-			cal.set(Calendar.HOUR_OF_DAY, 23);
-			cal.set(Calendar.MINUTE, 59);
-			cal.set(Calendar.SECOND, 59);
-			endtime = cal.getTime().getTime();
-		}
-
+		
 		// load the search results into the table, filtering the list by the
 		// search criteria
-		for (int i = 0; i < matchingAppointments.size(); i++) {
-			Object[] ro = new Object[3];
-
-			Appointment appt = matchingAppointments.elementAt(i);
-
-			// filter by repeat
-			if (repeatCheckBox.isSelected() && !appt.getRepeatFlag())
-				continue;
-
-			// filter todos
-			if (todoCheckBox.isSelected() && !appt.getTodo())
-				continue;
-
-			// filter by vacation
-			Integer ii = appt.getVacation();
-			if (vacationCheckBox.isSelected()
-					&& (ii == null || ii.intValue() != 1))
-				continue;
-
-			// filter by holiday
-			ii = appt.getHoliday();
-			if (holidayCheckBox.isSelected()
-					&& (ii == null || ii.intValue() != 1))
-				continue;
-
-			// filter by category
-			if (selcat.equals(CategoryModel.UNCATEGORIZED)
-					&& appt.getCategory() != null
-					&& !appt.getCategory().equals(CategoryModel.UNCATEGORIZED))
-				continue;
-			else if (!selcat.equals("")
-					&& !selcat.equals(CategoryModel.UNCATEGORIZED)
-					&& !selcat.equals(appt.getCategory()))
-				continue;
-
-			// filter by start date
-			if (starttime != 0) {
-				if (appt.getDate().getTime() < starttime)
-					continue;
-			}
-
-			// filter by end date
-			if (endtime != 0) {
-				if (appt.getDate().getTime() > endtime)
-					continue;
-			}
-
-			// filter by links
-			if (linkCheckBox.isSelected()) {
-				LinkModel lm = LinkModel.getReference();
-				try {
-					Collection<Link> lnks = lm.getLinks(appt);
-					if (lnks.isEmpty())
-						continue;
-				} catch (Exception e) {
-					Errmsg.errmsg(e);
-				}
-			}
+		for (Appointment appt : appointments) {
+			Object[] ro = new Object[5];
 
 			// load the appt into the table
 			try {
 				// get the date and text for the table
 				ro[0] = appt.getDate();
 				ro[1] = appt.getText();
-				ro[2] = new Integer(appt.getKey());
+				ro[2] = Resource.getResourceString("appointment");
+				ro[3] = new Integer(appt.getKey());
+				ro[4] = Appointment.class;
 			} catch (Exception e) {
 				Errmsg.errmsg(e);
 				return;
