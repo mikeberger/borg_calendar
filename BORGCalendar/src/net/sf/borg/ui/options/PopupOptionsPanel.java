@@ -41,7 +41,8 @@ import net.sf.borg.ui.options.OptionsView.OptionsPanel;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 
 /**
- * The Class PopupOptionsPanel provies the options tab for editing popup reminder options
+ * The Class PopupOptionsPanel provies the options tab for editing popup
+ * reminder options
  */
 class PopupOptionsPanel extends OptionsPanel {
 
@@ -50,34 +51,31 @@ class PopupOptionsPanel extends OptionsPanel {
 
 	/** The checkfreq. */
 	private JSpinner checkfreq = new JSpinner();
-	
-	/** The popenablebox. */
-	private JCheckBox popenablebox = new JCheckBox();
 
-	
-	/** The soundbox. */
-	private JCheckBox soundbox = new JCheckBox();
-	
-	/** The use beep. */
-	private JCheckBox useBeep = new JCheckBox();
-	
 	/** The number Of Reminder Times. */
 	private int numberOfReminderTimes = 0;
 
+	/** The popenablebox. */
+	private JCheckBox popenablebox = new JCheckBox();
+
+	/** The soundbox. */
+	private JCheckBox soundbox = new JCheckBox();
+
 	/** The spinners for setting the reminder times */
 	private JSpinner spinners[];
+
+	/** The use beep. */
+	private JCheckBox useBeep = new JCheckBox();
 
 	/**
 	 * Instantiates a new popup options panel.
 	 */
 	public PopupOptionsPanel() {
-		
+
 		this.setLayout(new java.awt.GridBagLayout());
-		
+
 		numberOfReminderTimes = ReminderTimes.getNum();
-		
-		
-		
+
 		ResourceHelper.setText(popenablebox, "enable_popups");
 		this.add(popenablebox, GridBagConstraintsFactory.create(0, 0,
 				GridBagConstraints.BOTH));
@@ -116,29 +114,33 @@ class PopupOptionsPanel extends OptionsPanel {
 		gridBagConstraints113.gridwidth = java.awt.GridBagConstraints.REMAINDER;
 		gridBagConstraints113.anchor = java.awt.GridBagConstraints.WEST;
 		gridBagConstraints113.insets = new java.awt.Insets(18, 18, 18, 18);
-		
+
 		JPanel remTimePanel = new JPanel();
-		
+
 		// border
 		String title = Resource.getResourceString("Popup_Times") + " ("
 				+ Resource.getResourceString("Minutes") + ")";
-		Border b = BorderFactory.createTitledBorder(remTimePanel.getBorder(), title);
+		Border b = BorderFactory.createTitledBorder(remTimePanel.getBorder(),
+				title);
 		remTimePanel.setBorder(b);
-		
+
 		remTimePanel.setLayout(new GridLayout(2, 0));
-		
+
 		// add the spinners
 		spinners = new JSpinner[numberOfReminderTimes];
 		for (int i = 0; i < numberOfReminderTimes; i++) {
-			spinners[i] = new JSpinner(new SpinnerNumberModel(0,-99999,99999,1));
+			spinners[i] = new JSpinner(new SpinnerNumberModel(0, -99999, 99999,
+					1));
 			remTimePanel.add(spinners[i]);
 		}
-		
+
 		this.add(remTimePanel, gridBagConstraints113);
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see net.sf.borg.ui.options.OptionsView.OptionsPanel#applyChanges()
 	 */
 	@Override
@@ -163,7 +165,9 @@ class PopupOptionsPanel extends OptionsPanel {
 		loadTimes();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see net.sf.borg.ui.options.OptionsView.OptionsPanel#loadOptions()
 	 */
 	@Override
@@ -174,12 +178,12 @@ class PopupOptionsPanel extends OptionsPanel {
 
 		int mins = Prefs.getIntPref(PrefName.REMINDERCHECKMINS);
 		checkfreq.setValue(new Integer(mins));
-		
+
 		// load the times
 		loadTimes();
 
 	}
-	
+
 	/**
 	 * Load the spinner valies from stored prefs
 	 */
@@ -188,6 +192,5 @@ class PopupOptionsPanel extends OptionsPanel {
 			spinners[i].setValue(new Integer(ReminderTimes.getTimes(i)));
 		}
 	}
-
 
 }
