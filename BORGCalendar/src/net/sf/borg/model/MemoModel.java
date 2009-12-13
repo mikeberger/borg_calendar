@@ -1,27 +1,28 @@
 /*
  This file is part of BORG.
- 
+
  BORG is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation; either version 2 of the License, or
  (at your option) any later version.
- 
+
  BORG is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
- 
+
  You should have received a copy of the GNU General Public License
  along with BORG; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- 
- Copyright 2003 by Mike Berger
+
+ Copyright 2003-2010 by Mike Berger
  */
 package net.sf.borg.model;
 
 import java.io.FileInputStream;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
@@ -42,7 +43,7 @@ import net.sf.borg.model.undo.UndoLog;
  * The Memo Model manages the Memo Entities. Memos are keyed by a name. Memos contain simple text and
  * have stayed simple to be able to sync with the simple memo functionality of a Palm Pilot.
  */
-public class MemoModel extends Model {
+public class MemoModel extends Model implements Searchable<Memo> {
 
 	/** The normalized date format for timestamps in a memo  */
 	private static SimpleDateFormat normalDateFormat_ = new SimpleDateFormat(
@@ -331,5 +332,47 @@ public class MemoModel extends Model {
 	 */
 	public void refresh() {
 		refreshListeners();
+	}
+
+
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.Searchable#search(net.sf.borg.model.SearchCriteria)
+	 */
+	@Override
+	public Collection<Memo> search(SearchCriteria criteria) {
+		Collection<Memo> res = new ArrayList<Memo>(); // result collection
+		try {
+
+			Collection<Memo> memos = getMemos();
+
+			for (Memo memo : memos) {
+				
+				// do not search on encrypted memos
+				if( memo.isEncrypted() )
+					continue;
+
+				String tx = memo.getMemoName() + " " + memo.getMemoText();
+				
+				if (criteria.isCaseSensitive()) {
+					// check if appt text contains the search string
+					if (tx.indexOf(criteria.getSearchString()) == -1)
+						continue;
+				} else {
+					// check if appt text contains the search string
+					String ltx = tx.toLowerCase();
+					String ls = criteria.getSearchString().toLowerCase();
+					if (ltx.indexOf(ls) == -1)
+						continue;
+				}
+
+				// add the appt to the search results
+				res.add(memo);
+
+			}
+
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
+		}
+		return (res);
 	}
 }

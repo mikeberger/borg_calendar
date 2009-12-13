@@ -12,6 +12,7 @@
  */
 package net.sf.borg.ui.calendar;
 
+import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -51,6 +52,7 @@ import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.Address;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.KeyedEntity;
+import net.sf.borg.model.entity.Memo;
 import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Task;
 import net.sf.borg.ui.DockableView;
@@ -59,6 +61,7 @@ import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.MultiView.Module;
 import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.address.AddressView;
+import net.sf.borg.ui.memo.MemoPanel;
 import net.sf.borg.ui.task.ProjectView;
 import net.sf.borg.ui.task.TaskView;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
@@ -75,6 +78,10 @@ public class SearchView extends DockableView implements Module {
 
 	private static final long serialVersionUID = 1L;
 
+	private JCheckBox addressCheckBox = null;
+
+	private JCheckBox apptCheckBox = null;
+
 	/** The case sensitive check box. */
 	private JCheckBox caseSensitiveCheckBox = null;
 
@@ -90,20 +97,26 @@ public class SearchView extends DockableView implements Module {
 	/** The holiday check box. */
 	private JCheckBox holidayCheckBox = null;
 
-	/** The results table. */
-	private StripedTable resultsTable = null;
-
 	/** The link check box. */
 	private JCheckBox linkCheckBox = null;
+	
+	private JCheckBox memoCheckBox = null;
+
+	private JCheckBox projectCheckBox = null;
 
 	/** The repeat check box. */
 	private JCheckBox repeatCheckBox = null;
+
+	/** The results table. */
+	private StripedTable resultsTable = null;
 
 	/** The search text. */
 	private JTextField searchText = null;
 
 	/** The start date chooser. */
 	private JDateChooser startDateChooser = null;
+
+	private JCheckBox taskCheckBox = null;
 
 	/** The todo check box. */
 	private JCheckBox todoCheckBox = null;
@@ -129,18 +142,20 @@ public class SearchView extends DockableView implements Module {
 		// show the search results as a 2 column sortable table
 		// showing the appt date and text
 		resultsTable.setModel(new TableSorter(new String[] {
-				Resource.getResourceString("Date"),
 				Resource.getResourceString("Item"),
-				Resource.getResourceString("Type"), "key", "class" },
-				new Class[] { Date.class, String.class, String.class,
+				Resource.getResourceString("Type"),
+				Resource.getResourceString("Date"), 
+				"key", "class" },
+				new Class[] { String.class, String.class, Date.class, 
 						Integer.class, Class.class }));
 
-		// hide column with the key
+		// hide columns with the key, class
 		TableColumnModel colModel = resultsTable.getColumnModel();
 		TableColumn col = colModel.getColumn(3);
 		resultsTable.removeColumn(col);
 		col = colModel.getColumn(3);
 		resultsTable.removeColumn(col);
+		
 
 		// populate the category combo box
 		categoryComboBox.addItem("");
@@ -224,20 +239,16 @@ public class SearchView extends DockableView implements Module {
 											.saveAppt(ap);
 								}
 								if (ent instanceof Project) {
-									Project ap = TaskModel
-											.getReference().getProject(
-													ent.getKey());
+									Project ap = TaskModel.getReference()
+											.getProject(ent.getKey());
 									ap.setCategory((String) o);
-									TaskModel.getReference()
-											.saveProject(ap);
+									TaskModel.getReference().saveProject(ap);
 								}
 								if (ent instanceof Task) {
-									Task ap = TaskModel
-											.getReference().getTask(
-													ent.getKey());
+									Task ap = TaskModel.getReference().getTask(
+											ent.getKey());
 									ap.setCategory((String) o);
-									TaskModel.getReference()
-											.savetask(ap);
+									TaskModel.getReference().savetask(ap);
 								}
 
 							}
@@ -252,6 +263,68 @@ public class SearchView extends DockableView implements Module {
 				});
 
 		return changeCategoryButton;
+	}
+
+	/**
+	 * creates the check box panel
+	 * 
+	 * @return the check box panel
+	 */
+	private JPanel createCheckBoxPanel() {
+		JPanel checkBoxPanel = new JPanel();
+		checkBoxPanel.setLayout(new GridBagLayout());
+
+		apptCheckBox = new JCheckBox();
+		apptCheckBox.setSelected(true);
+		ResourceHelper.setText(apptCheckBox, "appointment");
+		checkBoxPanel.add(apptCheckBox, GridBagConstraintsFactory.create(0, 0,
+				GridBagConstraints.BOTH, 1.0, 1.0));
+		taskCheckBox = new JCheckBox();
+		taskCheckBox.setSelected(true);
+		ResourceHelper.setText(taskCheckBox, "task");
+		checkBoxPanel.add(taskCheckBox, GridBagConstraintsFactory.create(2, 0,
+				GridBagConstraints.BOTH, 1.0, 1.0));
+		addressCheckBox = new JCheckBox();
+		addressCheckBox.setSelected(true);
+		ResourceHelper.setText(addressCheckBox, "Address");
+		checkBoxPanel.add(addressCheckBox, GridBagConstraintsFactory.create(1,
+				0, GridBagConstraints.BOTH, 1.0, 1.0));
+		projectCheckBox = new JCheckBox();
+		projectCheckBox.setSelected(true);
+		ResourceHelper.setText(projectCheckBox, "project");
+		checkBoxPanel.add(projectCheckBox, GridBagConstraintsFactory.create(3,
+				0, GridBagConstraints.BOTH, 1.0, 1.0));
+		memoCheckBox = new JCheckBox();
+		memoCheckBox.setSelected(true);
+		ResourceHelper.setText(memoCheckBox, "memo");
+		checkBoxPanel.add(memoCheckBox, GridBagConstraintsFactory.create(4,
+				0, GridBagConstraints.BOTH, 1.0, 1.0));
+
+		todoCheckBox = new JCheckBox();
+		ResourceHelper.setText(todoCheckBox, "To_Do");
+		checkBoxPanel.add(todoCheckBox, GridBagConstraintsFactory.create(0, 1,
+				GridBagConstraints.BOTH, 1.0, 1.0));
+
+		repeatCheckBox = new JCheckBox();
+		ResourceHelper.setText(repeatCheckBox, "repeating");
+		checkBoxPanel.add(repeatCheckBox, GridBagConstraintsFactory.create(1,
+				1, GridBagConstraints.BOTH, 1.0, 1.0));
+
+		vacationCheckBox = new JCheckBox();
+		ResourceHelper.setText(vacationCheckBox, "Vacation");
+		checkBoxPanel.add(vacationCheckBox, GridBagConstraintsFactory.create(2,
+				1, GridBagConstraints.BOTH, 1.0, 1.0));
+
+		holidayCheckBox = new JCheckBox();
+		ResourceHelper.setText(holidayCheckBox, "Holiday");
+		checkBoxPanel.add(holidayCheckBox, GridBagConstraintsFactory.create(3,
+				1, GridBagConstraints.BOTH, 1.0, 1.0));
+
+		linkCheckBox = new JCheckBox();
+		linkCheckBox.setText(Resource.getResourceString("haslinks"));
+		checkBoxPanel.add(linkCheckBox, GridBagConstraintsFactory.create(4, 1,
+				GridBagConstraints.BOTH, 1.0, 1.0));
+		return checkBoxPanel;
 	}
 
 	/**
@@ -305,7 +378,6 @@ public class SearchView extends DockableView implements Module {
 						AppointmentModel.getReference().delAppt(ent.getKey());
 					else if (ent instanceof Address)
 						AddressModel.getReference().delete((Address) ent);
-						
 				}
 
 				refresh(); // reload results
@@ -313,26 +385,6 @@ public class SearchView extends DockableView implements Module {
 		});
 
 		return deleteButton;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.sf.borg.ui.DockableView#getFrameSizePref()
-	 */
-	@Override
-	public PrefName getFrameSizePref() {
-		return PrefName.SRCHVIEWSIZE;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.sf.borg.ui.DockableView#getFrameTitle()
-	 */
-	@Override
-	public String getFrameTitle() {
-		return Resource.getResourceString("srch");
 	}
 
 	/**
@@ -452,40 +504,63 @@ public class SearchView extends DockableView implements Module {
 		return searchCriteriaPanel;
 	}
 
+	@Override
+	public JComponent getComponent() {
+		return this;
+	}
+
 	/**
-	 * creates the check box panel
+	 * fill in the search criteria from the UI settings
 	 * 
-	 * @return the check box panel
+	 * @return the criteria
 	 */
-	private JPanel createCheckBoxPanel() {
-		JPanel checkBoxPanel = new JPanel();
-		checkBoxPanel.setLayout(new GridBagLayout());
+	private SearchCriteria getCriteria() {
+		SearchCriteria criteria = new SearchCriteria();
+		criteria.setSearchString(searchText.getText());
+		criteria.setCaseSensitive(caseSensitiveCheckBox.isSelected());
+		criteria.setCategory((String) categoryComboBox.getSelectedItem());
+		Calendar cal = startDateChooser.getCalendar();
+		if (cal != null) {
+			cal.set(Calendar.HOUR_OF_DAY, 0);
+			cal.set(Calendar.MINUTE, 0);
+			cal.set(Calendar.SECOND, 0);
+			cal.add(Calendar.SECOND, -1);
+			criteria.setStartDate(cal.getTime());
+		}
+		cal = endDateChooser.getCalendar();
+		if (cal != null) {
+			cal.set(Calendar.HOUR_OF_DAY, 0);
+			cal.set(Calendar.MINUTE, 0);
+			cal.set(Calendar.SECOND, 0);
+			cal.add(Calendar.SECOND, -1);
+			criteria.setEndDate(cal.getTime());
+		}
+		criteria.setHoliday(holidayCheckBox.isSelected());
+		criteria.setRepeating(repeatCheckBox.isSelected());
+		criteria.setTodo(todoCheckBox.isSelected());
+		criteria.setVacation(vacationCheckBox.isSelected());
+		criteria.setHasLinks(linkCheckBox.isSelected());
+		return criteria;
+	}
 
-		todoCheckBox = new JCheckBox();
-		ResourceHelper.setText(todoCheckBox, "To_Do");
-		checkBoxPanel.add(todoCheckBox, GridBagConstraintsFactory.create(0, 0,
-				GridBagConstraints.BOTH, 1.0, 1.0));
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see net.sf.borg.ui.DockableView#getFrameSizePref()
+	 */
+	@Override
+	public PrefName getFrameSizePref() {
+		return PrefName.SRCHVIEWSIZE;
+	}
 
-		repeatCheckBox = new JCheckBox();
-		ResourceHelper.setText(repeatCheckBox, "repeating");
-		checkBoxPanel.add(repeatCheckBox, GridBagConstraintsFactory.create(1,
-				0, GridBagConstraints.BOTH, 1.0, 1.0));
-
-		vacationCheckBox = new JCheckBox();
-		ResourceHelper.setText(vacationCheckBox, "Vacation");
-		checkBoxPanel.add(vacationCheckBox, GridBagConstraintsFactory.create(0,
-				1, GridBagConstraints.BOTH, 1.0, 1.0));
-
-		holidayCheckBox = new JCheckBox();
-		ResourceHelper.setText(holidayCheckBox, "Holiday");
-		checkBoxPanel.add(holidayCheckBox, GridBagConstraintsFactory.create(1,
-				1, GridBagConstraints.BOTH, 1.0, 1.0));
-
-		linkCheckBox = new JCheckBox();
-		linkCheckBox.setText(Resource.getResourceString("haslinks"));
-		checkBoxPanel.add(linkCheckBox, GridBagConstraintsFactory.create(2, 0,
-				GridBagConstraints.BOTH, 1.0, 1.0));
-		return checkBoxPanel;
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see net.sf.borg.ui.DockableView#getFrameTitle()
+	 */
+	@Override
+	public String getFrameTitle() {
+		return Resource.getResourceString("srch");
 	}
 
 	/*
@@ -496,6 +571,16 @@ public class SearchView extends DockableView implements Module {
 	@Override
 	public JMenuBar getMenuForFrame() {
 		return null;
+	}
+
+	@Override
+	public String getModuleName() {
+		return Resource.getResourceString("srch");
+	}
+
+	@Override
+	public ViewType getViewType() {
+		return ViewType.SEARCH;
 	}
 
 	/**
@@ -531,6 +616,151 @@ public class SearchView extends DockableView implements Module {
 		add(createResultsPanel(), GridBagConstraintsFactory.create(0, 3,
 				GridBagConstraints.BOTH, 1.0, 1.0));
 
+	}
+
+	@Override
+	public void initialize(MultiView parent) {
+		final MultiView par = parent;
+		parent.addToolBarItem(new ImageIcon(getClass().getResource(
+				"/resource/Find16.gif")), getModuleName(),
+				new ActionListener() {
+					public void actionPerformed(ActionEvent evt) {
+						par.setView(ViewType.SEARCH);
+					}
+				});
+	}
+
+	@Override
+	public void print() {
+		try {
+			TablePrinter.printTable(resultsTable);
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see net.sf.borg.ui.View#refresh()
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public void refresh() {
+
+		SearchCriteria criteria = getCriteria();
+
+		// empty the table
+		TableSorter tm = (TableSorter) resultsTable.getModel();
+		tm.addMouseListenerToHeaderInTable(resultsTable);
+		tm.setRowCount(0);
+
+		// load the search results into the table, filtering the list by the
+		// search criteria
+
+		if (apptCheckBox.isSelected()) {
+			Collection<Appointment> appointments = AppointmentModel
+					.getReference().search(criteria);
+			for (Appointment appt : appointments) {
+				Object[] ro = new Object[5];
+
+				try {
+					ro[0] = appt.getText();
+					ro[1] = Resource.getResourceString("appointment");
+					ro[2] = appt.getDate();
+					ro[3] = new Integer(appt.getKey());
+					ro[4] = Appointment.class;
+					tm.addRow(ro);
+					tm.tableChanged(new TableModelEvent(tm));
+				} catch (Exception e) {
+					Errmsg.errmsg(e);
+					return;
+				}
+
+			}
+		}
+
+		if (addressCheckBox.isSelected()) {
+
+			Collection<Address> addresses = AddressModel.getReference().search(
+					criteria);
+			for (Address addr : addresses) {
+				Object[] ro = new Object[5];
+
+				try {
+					ro[0] = ((addr.getFirstName() == null) ? "" : (addr
+							.getFirstName() + " "))
+							+ ((addr.getLastName() == null) ? "" : addr
+									.getLastName());
+					ro[1] = Resource.getResourceString("Address");
+					ro[2] = null;
+					ro[3] = new Integer(addr.getKey());
+					ro[4] = Address.class;
+					tm.addRow(ro);
+					tm.tableChanged(new TableModelEvent(tm));
+				} catch (Exception e) {
+					Errmsg.errmsg(e);
+					return;
+				}
+
+			}
+		}
+
+		Collection<KeyedEntity> taskItems = TaskModel.getReference().search(
+				criteria);
+		for (KeyedEntity item : taskItems) {
+			Object[] ro = new Object[5];
+
+			try {
+				if (item instanceof Project && projectCheckBox.isSelected()) {
+					ro[0] = ((Project) item).getDescription();
+					ro[1] = Resource.getResourceString("project");
+					ro[2] = null;
+					ro[3] = new Integer(item.getKey());
+					ro[4] = Project.class;
+					tm.addRow(ro);
+					tm.tableChanged(new TableModelEvent(tm));
+				} else if (item instanceof Task && taskCheckBox.isSelected()) {
+					ro[0] = ((Task) item).getDescription();
+					ro[1] = Resource.getResourceString("task");
+					ro[2] = null;
+					ro[3] = new Integer(item.getKey());
+					ro[4] = Task.class;
+					tm.addRow(ro);
+					tm.tableChanged(new TableModelEvent(tm));
+				}
+
+			} catch (Exception e) {
+				Errmsg.errmsg(e);
+				return;
+			}
+
+		}
+		
+		if (memoCheckBox.isSelected()) {
+			Collection<Memo> memos = MemoModel
+					.getReference().search(criteria);
+			for (Memo memo : memos) {
+				Object[] ro = new Object[5];
+
+				try {
+					ro[0] = memo.getMemoName();
+					ro[1] = Resource.getResourceString("memo");
+					ro[2] = null;
+					ro[3] = new Integer(0);
+					ro[4] = Memo.class;
+					tm.addRow(ro);
+					tm.tableChanged(new TableModelEvent(tm));
+				} catch (Exception e) {
+					Errmsg.errmsg(e);
+					return;
+				}
+
+			}
+		}
+
+		// sort the table by date
+		tm.sortByColumn(0);
 	}
 
 	/**
@@ -592,183 +822,16 @@ public class SearchView extends DockableView implements Module {
 			}
 			new AddressView(ap).showView();
 		}
-		// // open a memo
-		// else if (cl == Memo.class) {
-		// Component c = MultiView.getMainView().setView(ViewType.MEMO);
-		//			
-		// // show the actual memo
-		// if( c != null && c instanceof MemoPanel)
-		// {
-		// MemoPanel mp = (MemoPanel)c;
-		// mp.selectMemo(at.getPath());
-		// }
-		// }
-	}
+		// open a memo
+		else if (cl == Memo.class) {
+			Component c = MultiView.getMainView().setView(ViewType.MEMO);
 
-	/**
-	 * fill in the search criteria from the UI settings
-	 * 
-	 * @return the criteria
-	 */
-	private SearchCriteria getCriteria() {
-		SearchCriteria criteria = new SearchCriteria();
-		criteria.setSearchString(searchText.getText());
-		criteria.setCaseSensitive(caseSensitiveCheckBox.isSelected());
-		criteria.setCategory((String) categoryComboBox.getSelectedItem());
-		Calendar cal = startDateChooser.getCalendar();
-		if (cal != null) {
-			cal.set(Calendar.HOUR_OF_DAY, 0);
-			cal.set(Calendar.MINUTE, 0);
-			cal.set(Calendar.SECOND, 0);
-			cal.add(Calendar.SECOND, -1);
-			criteria.setStartDate(cal.getTime());
-		}
-		cal = endDateChooser.getCalendar();
-		if (cal != null) {
-			cal.set(Calendar.HOUR_OF_DAY, 0);
-			cal.set(Calendar.MINUTE, 0);
-			cal.set(Calendar.SECOND, 0);
-			cal.add(Calendar.SECOND, -1);
-			criteria.setEndDate(cal.getTime());
-		}
-		criteria.setHoliday(holidayCheckBox.isSelected());
-		criteria.setRepeating(repeatCheckBox.isSelected());
-		criteria.setTodo(todoCheckBox.isSelected());
-		criteria.setVacation(vacationCheckBox.isSelected());
-		criteria.setHasLinks(linkCheckBox.isSelected());
-		return criteria;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.sf.borg.ui.View#refresh()
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public void refresh() {
-
-		SearchCriteria criteria = getCriteria();
-
-		// empty the table
-		TableSorter tm = (TableSorter) resultsTable.getModel();
-		tm.addMouseListenerToHeaderInTable(resultsTable);
-		tm.setRowCount(0);
-
-		// load the search results into the table, filtering the list by the
-		// search criteria
-		Collection<Appointment> appointments = AppointmentModel.getReference()
-				.search(criteria);
-		for (Appointment appt : appointments) {
-			Object[] ro = new Object[5];
-
-			try {
-				ro[0] = appt.getDate();
-				ro[1] = appt.getText();
-				ro[2] = Resource.getResourceString("appointment");
-				ro[3] = new Integer(appt.getKey());
-				ro[4] = Appointment.class;
-				tm.addRow(ro);
-				tm.tableChanged(new TableModelEvent(tm));
-			} catch (Exception e) {
-				Errmsg.errmsg(e);
-				return;
+			// show the actual memo
+			if (c != null && c instanceof MemoPanel) {
+				MemoPanel mp = (MemoPanel) c;
+				mp.selectMemo((String) tm.getValueAt(row, 0));
 			}
-			
 		}
-
-		Collection<Address> addresses = AddressModel.getReference().search(
-				criteria);
-		for (Address addr : addresses) {
-			Object[] ro = new Object[5];
-
-			try {
-				ro[0] = null;
-				ro[1] = ((addr.getFirstName() == null) ? "" : (addr
-						.getFirstName() + " "))
-						+ ((addr.getLastName() == null) ? "" : addr
-								.getLastName());
-				ro[2] = Resource.getResourceString("Address");
-				ro[3] = new Integer(addr.getKey());
-				ro[4] = Address.class;
-				tm.addRow(ro);
-				tm.tableChanged(new TableModelEvent(tm));
-			} catch (Exception e) {
-				Errmsg.errmsg(e);
-				return;
-			}
-			
-		}
-
-		Collection<KeyedEntity> taskItems = TaskModel.getReference().search(
-				criteria);
-		for (KeyedEntity item : taskItems) {
-			Object[] ro = new Object[5];
-
-			try {
-				if (item instanceof Project) {
-					ro[0] = null;
-					ro[1] = ((Project)item).getDescription();
-					ro[2] = Resource.getResourceString("project");
-					ro[3] = new Integer(item.getKey());
-					ro[4] = Project.class;
-					tm.addRow(ro);
-					tm.tableChanged(new TableModelEvent(tm));
-				} else if (item instanceof Task) {
-					ro[0] = null;
-					ro[1] =  ((Task)item).getDescription();
-					ro[2] = Resource.getResourceString("task");
-					ro[3] = new Integer(item.getKey());
-					ro[4] = Task.class;
-					tm.addRow(ro);
-					tm.tableChanged(new TableModelEvent(tm));
-				}
-
-			} catch (Exception e) {
-				Errmsg.errmsg(e);
-				return;
-			}
-			
-		}
-
-		// sort the table by date
-		tm.sortByColumn(0);
-	}
-
-	@Override
-	public JComponent getComponent() {
-		return this;
-	}
-
-	@Override
-	public String getModuleName() {
-		return Resource.getResourceString("srch");
-	}
-
-	@Override
-	public void initialize(MultiView parent) {
-		final MultiView par = parent;
-		parent.addToolBarItem(new ImageIcon(getClass().getResource(
-				"/resource/Find16.gif")), getModuleName(),
-				new ActionListener() {
-					public void actionPerformed(ActionEvent evt) {
-						par.setView(ViewType.SEARCH);
-					}
-				});
-	}
-
-	@Override
-	public void print() {
-		try {
-			TablePrinter.printTable(resultsTable);
-		} catch (Exception e) {
-			Errmsg.errmsg(e);
-		}
-	}
-
-	@Override
-	public ViewType getViewType() {
-		return ViewType.SEARCH;
 	}
 
 }
