@@ -223,8 +223,22 @@ public class SearchView extends DockableView implements Module {
 									AppointmentModel.getReference()
 											.saveAppt(ap);
 								}
-								AppointmentModel.getReference().delAppt(
-										ent.getKey());
+								if (ent instanceof Project) {
+									Project ap = TaskModel
+											.getReference().getProject(
+													ent.getKey());
+									ap.setCategory((String) o);
+									TaskModel.getReference()
+											.saveProject(ap);
+								}
+								if (ent instanceof Task) {
+									Task ap = TaskModel
+											.getReference().getTask(
+													ent.getKey());
+									ap.setCategory((String) o);
+									TaskModel.getReference()
+											.savetask(ap);
+								}
 
 							}
 
@@ -291,6 +305,7 @@ public class SearchView extends DockableView implements Module {
 						AppointmentModel.getReference().delAppt(ent.getKey());
 					else if (ent instanceof Address)
 						AddressModel.getReference().delete((Address) ent);
+						
 				}
 
 				refresh(); // reload results
@@ -629,6 +644,7 @@ public class SearchView extends DockableView implements Module {
 	 * 
 	 * @see net.sf.borg.ui.View#refresh()
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public void refresh() {
 
@@ -652,12 +668,13 @@ public class SearchView extends DockableView implements Module {
 				ro[2] = Resource.getResourceString("appointment");
 				ro[3] = new Integer(appt.getKey());
 				ro[4] = Appointment.class;
+				tm.addRow(ro);
+				tm.tableChanged(new TableModelEvent(tm));
 			} catch (Exception e) {
 				Errmsg.errmsg(e);
 				return;
 			}
-			tm.addRow(ro);
-			tm.tableChanged(new TableModelEvent(tm));
+			
 		}
 
 		Collection<Address> addresses = AddressModel.getReference().search(
@@ -667,17 +684,51 @@ public class SearchView extends DockableView implements Module {
 
 			try {
 				ro[0] = null;
-				ro[1] = ((addr.getFirstName() == null) ? "" : (addr.getFirstName() + " ")) + 
-						((addr.getLastName() == null) ? "" : addr.getLastName());
+				ro[1] = ((addr.getFirstName() == null) ? "" : (addr
+						.getFirstName() + " "))
+						+ ((addr.getLastName() == null) ? "" : addr
+								.getLastName());
 				ro[2] = Resource.getResourceString("Address");
 				ro[3] = new Integer(addr.getKey());
 				ro[4] = Address.class;
+				tm.addRow(ro);
+				tm.tableChanged(new TableModelEvent(tm));
 			} catch (Exception e) {
 				Errmsg.errmsg(e);
 				return;
 			}
-			tm.addRow(ro);
-			tm.tableChanged(new TableModelEvent(tm));
+			
+		}
+
+		Collection<KeyedEntity> taskItems = TaskModel.getReference().search(
+				criteria);
+		for (KeyedEntity item : taskItems) {
+			Object[] ro = new Object[5];
+
+			try {
+				if (item instanceof Project) {
+					ro[0] = null;
+					ro[1] = ((Project)item).getDescription();
+					ro[2] = Resource.getResourceString("project");
+					ro[3] = new Integer(item.getKey());
+					ro[4] = Project.class;
+					tm.addRow(ro);
+					tm.tableChanged(new TableModelEvent(tm));
+				} else if (item instanceof Task) {
+					ro[0] = null;
+					ro[1] =  ((Task)item).getDescription();
+					ro[2] = Resource.getResourceString("task");
+					ro[3] = new Integer(item.getKey());
+					ro[4] = Task.class;
+					tm.addRow(ro);
+					tm.tableChanged(new TableModelEvent(tm));
+				}
+
+			} catch (Exception e) {
+				Errmsg.errmsg(e);
+				return;
+			}
+			
 		}
 
 		// sort the table by date

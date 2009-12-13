@@ -49,6 +49,8 @@ import net.sf.borg.model.db.EntityDB;
 import net.sf.borg.model.db.jdbc.JdbcDB;
 import net.sf.borg.model.db.jdbc.TaskJdbcDB;
 import net.sf.borg.model.entity.BorgOption;
+import net.sf.borg.model.entity.KeyedEntity;
+import net.sf.borg.model.entity.Link;
 import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Subtask;
 import net.sf.borg.model.entity.Task;
@@ -62,8 +64,9 @@ import net.sf.borg.model.undo.UndoLog;
  * TaksModel manages all of the task related entities - Task, Project, Subtask,
  * and Tasklog
  */
+@SuppressWarnings("unchecked")
 public class TaskModel extends Model implements Model.Listener, Transactional,
-		CategorySource {
+		CategorySource, Searchable<KeyedEntity> {
 
 	/**
 	 * class XmlContainer is solely for JAXB XML export/import to keep the same
@@ -1234,5 +1237,108 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 	static public boolean isClosed(Project p) {
 		String stat = p.getStatus();
 		return stat.equals(Resource.getResourceString("CLOSED"));
+	}
+
+	@Override
+	public Collection<KeyedEntity> search(SearchCriteria criteria) {
+		Collection<KeyedEntity> res = new ArrayList<KeyedEntity>(); // result collection
+		try {
+			
+			Collection<Project> projects = this.getProjects();
+			for( Project p : projects )
+			{
+				if (!CategoryModel.getReference().isShown(p.getCategory())) 
+					continue;
+				
+				String tx = p.getDescription();
+				
+				if (criteria.isCaseSensitive()) {
+					if (tx.indexOf(criteria.getSearchString()) == -1)
+						continue;
+				} else {
+					String ltx = tx.toLowerCase();
+					String ls = criteria.getSearchString().toLowerCase();
+					if (ltx.indexOf(ls) == -1)
+						continue;
+				}
+				
+				// filter by category
+				if (criteria.getCategory().equals(CategoryModel.UNCATEGORIZED)
+						&& p.getCategory() != null
+						&& !p.getCategory().equals(CategoryModel.UNCATEGORIZED))
+					continue;
+				else if (!criteria.getCategory().equals("")
+						&& !criteria.getCategory().equals(CategoryModel.UNCATEGORIZED)
+						&& !criteria.getCategory().equals(p.getCategory()))
+					continue;
+
+				// filter by links
+				if (criteria.hasLinks()) {
+					LinkModel lm = LinkModel.getReference();
+					try {
+						Collection<Link> lnks = lm.getLinks(p);
+						if (lnks.isEmpty())
+							continue;
+					} catch (Exception e) {
+						Errmsg.errmsg(e);
+					}
+				}
+
+				res.add(p);
+			}
+
+			Collection<Task> tasks = this.getTasks();
+			for( Task t : tasks )
+			{
+				if (!CategoryModel.getReference().isShown(t.getCategory())) 
+					continue;
+				
+				String tx = t.getDescription() + " " + t.getResolution();
+				Collection<Subtask> subtasks = this.getSubTasks(t.getKey());
+				for( Subtask st : subtasks )
+				{
+					tx += " " + st.getDescription();
+				}									
+				
+				if (criteria.isCaseSensitive()) {
+					if (tx.indexOf(criteria.getSearchString()) == -1)
+						continue;
+				} else {
+					String ltx = tx.toLowerCase();
+					String ls = criteria.getSearchString().toLowerCase();
+					if (ltx.indexOf(ls) == -1)
+						continue;
+				}
+				
+				// filter by category
+				if (criteria.getCategory().equals(CategoryModel.UNCATEGORIZED)
+						&& t.getCategory() != null
+						&& !t.getCategory().equals(CategoryModel.UNCATEGORIZED))
+					continue;
+				else if (!criteria.getCategory().equals("")
+						&& !criteria.getCategory().equals(CategoryModel.UNCATEGORIZED)
+						&& !criteria.getCategory().equals(t.getCategory()))
+					continue;
+
+				// filter by links
+				if (criteria.hasLinks()) {
+					LinkModel lm = LinkModel.getReference();
+					try {
+						Collection<Link> lnks = lm.getLinks(t);
+						if (lnks.isEmpty())
+							continue;
+					} catch (Exception e) {
+						Errmsg.errmsg(e);
+					}
+				}
+
+				res.add(t);
+			}
+			
+
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
+		}
+		return (res);
 	}
 }
