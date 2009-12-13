@@ -45,10 +45,12 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.CategoryModel;
+import net.sf.borg.model.MemoModel;
 import net.sf.borg.model.SearchCriteria;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.Address;
 import net.sf.borg.model.entity.Appointment;
+import net.sf.borg.model.entity.KeyedEntity;
 import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Task;
 import net.sf.borg.ui.DockableView;
@@ -120,15 +122,18 @@ public class SearchView extends DockableView implements Module {
 
 		// listen for appointment model changes
 		addModel(AppointmentModel.getReference());
+		addModel(AddressModel.getReference());
+		addModel(TaskModel.getReference());
+		addModel(MemoModel.getReference());
 
 		// show the search results as a 2 column sortable table
 		// showing the appt date and text
 		resultsTable.setModel(new TableSorter(new String[] {
 				Resource.getResourceString("Date"),
-				Resource.getResourceString("Item"), 
-				Resource.getResourceString("Type"),
-				"key", "class" }, new Class[] {
-				Date.class, String.class, String.class, Integer.class, Class.class }));
+				Resource.getResourceString("Item"),
+				Resource.getResourceString("Type"), "key", "class" },
+				new Class[] { Date.class, String.class, String.class,
+						Integer.class, Class.class }));
 
 		// hide column with the key
 		TableColumnModel colModel = resultsTable.getColumnModel();
@@ -136,7 +141,7 @@ public class SearchView extends DockableView implements Module {
 		resultsTable.removeColumn(col);
 		col = colModel.getColumn(3);
 		resultsTable.removeColumn(col);
-		
+
 		// populate the category combo box
 		categoryComboBox.addItem("");
 		try {
@@ -165,6 +170,7 @@ public class SearchView extends DockableView implements Module {
 				"/resource/Preferences16.gif"))); // Generated
 		changeCategoryButton
 				.addActionListener(new java.awt.event.ActionListener() {
+					@SuppressWarnings("unchecked")
 					public void actionPerformed(java.awt.event.ActionEvent e) {
 
 						// change the category of all selected rows
@@ -190,22 +196,38 @@ public class SearchView extends DockableView implements Module {
 							TableSorter tm = (TableSorter) resultsTable
 									.getModel();
 
-							// get a list of selected appointment keys
-							ArrayList<Integer> apptKeys = new ArrayList<Integer>();
+							// get a list of selected items
+							ArrayList<KeyedEntity> entities = new ArrayList<KeyedEntity>();
 							for (int i = 0; i < rows.length; i++) {
 								Integer key = (Integer) tm.getValueAt(rows[i],
 										3);
-								apptKeys.add(key);
+								Class cl = (Class) tm.getValueAt(rows[i], 4);
+								try {
+									KeyedEntity ent = (KeyedEntity) cl
+											.newInstance();
+									ent.setKey(key.intValue());
+									entities.add(ent);
+								} catch (Exception e1) {
+									Errmsg.errmsg(e1);
+								}
+
 							}
 
 							// change the categories
-							for (Integer key : apptKeys) {
-								Appointment ap = AppointmentModel
-										.getReference().getAppt(key.intValue());
-								ap.setCategory((String) o);
-								AppointmentModel.getReference().saveAppt(ap);
+							for (KeyedEntity ent : entities) {
+								if (ent instanceof Appointment) {
+									Appointment ap = AppointmentModel
+											.getReference().getAppt(
+													ent.getKey());
+									ap.setCategory((String) o);
+									AppointmentModel.getReference()
+											.saveAppt(ap);
+								}
+								AppointmentModel.getReference().delAppt(
+										ent.getKey());
 
 							}
+
 						} catch (Exception ex) {
 							Errmsg.errmsg(ex);
 							return;
@@ -229,6 +251,7 @@ public class SearchView extends DockableView implements Module {
 		deleteButton.setIcon(new ImageIcon(getClass().getResource(
 				"/resource/Stop16.gif")));
 		deleteButton.addActionListener(new java.awt.event.ActionListener() {
+			@SuppressWarnings("unchecked")
 			public void actionPerformed(java.awt.event.ActionEvent e) {
 
 				// delete all selected rows
@@ -246,17 +269,28 @@ public class SearchView extends DockableView implements Module {
 					return;
 				}
 
-				// get selected appt keys
+				// get selected items
 				TableSorter tm = (TableSorter) resultsTable.getModel();
-				ArrayList<Integer> apptKeys = new ArrayList<Integer>();
+				ArrayList<KeyedEntity> entities = new ArrayList<KeyedEntity>();
 				for (int i = 0; i < rows.length; i++) {
 					Integer key = (Integer) tm.getValueAt(rows[i], 3);
-					apptKeys.add(key);
+					Class cl = (Class) tm.getValueAt(rows[i], 4);
+					try {
+						KeyedEntity ent = (KeyedEntity) cl.newInstance();
+						ent.setKey(key.intValue());
+						entities.add(ent);
+					} catch (Exception e1) {
+						Errmsg.errmsg(e1);
+					}
+
 				}
 
-				// delete the appts
-				for (Integer key : apptKeys) {
-					AppointmentModel.getReference().delAppt(key.intValue());
+				// delete the items
+				for (KeyedEntity ent : entities) {
+					if (ent instanceof Appointment)
+						AppointmentModel.getReference().delAppt(ent.getKey());
+					else if (ent instanceof Address)
+						AddressModel.getReference().delete((Address) ent);
 				}
 
 				refresh(); // reload results
@@ -486,7 +520,8 @@ public class SearchView extends DockableView implements Module {
 
 	/**
 	 * Show the selected item
-	 * @throws Exception 
+	 * 
+	 * @throws Exception
 	 */
 	@SuppressWarnings("unchecked")
 	private void showSelectedItem() throws Exception {
@@ -501,8 +536,7 @@ public class SearchView extends DockableView implements Module {
 		int key = ((Integer) tm.getValueAt(row, 3)).intValue();
 		Class cl = (Class) tm.getValueAt(row, 4);
 		if (cl == Appointment.class) {
-			Appointment ap = AppointmentModel.getReference().getAppt(
-					key);
+			Appointment ap = AppointmentModel.getReference().getAppt(key);
 			if (ap == null) {
 				return;
 			}
@@ -519,45 +553,41 @@ public class SearchView extends DockableView implements Module {
 		}
 		// open a project
 		else if (cl == Project.class) {
-			Project ap = TaskModel.getReference().getProject(
-					key);
+			Project ap = TaskModel.getReference().getProject(key);
 			if (ap == null) {
 				return;
 			}
 
-			new ProjectView(ap, ProjectView.Action.CHANGE, null)
-					.showView();
+			new ProjectView(ap, ProjectView.Action.CHANGE, null).showView();
 		}
 		// open a task
 		else if (cl == Task.class) {
-			Task ap = TaskModel.getReference().getTask(
-					key);
+			Task ap = TaskModel.getReference().getTask(key);
 			if (ap == null) {
 				return;
 			}
-			
+
 			new TaskView(ap, TaskView.Action.CHANGE, null).showView();
 		}
 		// open an address
 		else if (cl == Address.class) {
-			Address ap = AddressModel.getReference().getAddress(
-					key);
+			Address ap = AddressModel.getReference().getAddress(key);
 			if (ap == null) {
 				return;
 			}
 			new AddressView(ap).showView();
 		}
-//		// open a memo
-//		else if (cl == Memo.class) {
-//			Component c  = MultiView.getMainView().setView(ViewType.MEMO);
-//			
-//			// show the actual memo
-//			if( c != null && c instanceof MemoPanel)
-//			{
-//				MemoPanel mp = (MemoPanel)c;
-//				mp.selectMemo(at.getPath());
-//			}
-//		}
+		// // open a memo
+		// else if (cl == Memo.class) {
+		// Component c = MultiView.getMainView().setView(ViewType.MEMO);
+		//			
+		// // show the actual memo
+		// if( c != null && c instanceof MemoPanel)
+		// {
+		// MemoPanel mp = (MemoPanel)c;
+		// mp.selectMemo(at.getPath());
+		// }
+		// }
 	}
 
 	/**
@@ -604,28 +634,44 @@ public class SearchView extends DockableView implements Module {
 
 		SearchCriteria criteria = getCriteria();
 
-		// call the data model to do a search by appt text
-		Collection<Appointment> appointments = AppointmentModel.getReference().search(criteria);
-
 		// empty the table
 		TableSorter tm = (TableSorter) resultsTable.getModel();
 		tm.addMouseListenerToHeaderInTable(resultsTable);
 		tm.setRowCount(0);
 
-		
 		// load the search results into the table, filtering the list by the
 		// search criteria
+		Collection<Appointment> appointments = AppointmentModel.getReference()
+				.search(criteria);
 		for (Appointment appt : appointments) {
 			Object[] ro = new Object[5];
 
-			// load the appt into the table
 			try {
-				// get the date and text for the table
 				ro[0] = appt.getDate();
 				ro[1] = appt.getText();
 				ro[2] = Resource.getResourceString("appointment");
 				ro[3] = new Integer(appt.getKey());
 				ro[4] = Appointment.class;
+			} catch (Exception e) {
+				Errmsg.errmsg(e);
+				return;
+			}
+			tm.addRow(ro);
+			tm.tableChanged(new TableModelEvent(tm));
+		}
+
+		Collection<Address> addresses = AddressModel.getReference().search(
+				criteria);
+		for (Address addr : addresses) {
+			Object[] ro = new Object[5];
+
+			try {
+				ro[0] = null;
+				ro[1] = ((addr.getFirstName() == null) ? "" : (addr.getFirstName() + " ")) + 
+						((addr.getLastName() == null) ? "" : addr.getLastName());
+				ro[2] = Resource.getResourceString("Address");
+				ro[3] = new Integer(addr.getKey());
+				ro[4] = Address.class;
 			} catch (Exception e) {
 				Errmsg.errmsg(e);
 				return;

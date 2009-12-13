@@ -1,26 +1,27 @@
 /*
-This file is part of BORG.
- 
-    BORG is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
- 
-    BORG is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
- 
-    You should have received a copy of the GNU General Public License
-    along with BORG; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- 
-Copyright 2003 by Mike Berger
+ This file is part of BORG.
+
+ BORG is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+
+ BORG is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with BORG; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+ Copyright 2003-2010 by Mike Berger
  */
 package net.sf.borg.model;
 
 import java.io.FileInputStream;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -37,13 +38,14 @@ import net.sf.borg.common.Errmsg;
 import net.sf.borg.model.db.EntityDB;
 import net.sf.borg.model.db.jdbc.AddrJdbcDB;
 import net.sf.borg.model.entity.Address;
+import net.sf.borg.model.entity.Link;
 import net.sf.borg.model.undo.AddressUndoItem;
 import net.sf.borg.model.undo.UndoLog;
 
 /**
  * AddressModel provides the model layer APIs for working with Addresses
  */
-public class AddressModel extends Model {
+public class AddressModel extends Model implements Searchable<Address> {
 
 	static private AddressModel self_ = null;
 	
@@ -334,5 +336,69 @@ public class AddressModel extends Model {
 	public void sync() {
 		db_.sync();
 		refresh();
+	}
+
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.Searchable#search(net.sf.borg.model.SearchCriteria)
+	 */
+	@Override
+	public Collection<Address> search(SearchCriteria criteria) {
+		Collection<Address> res = new ArrayList<Address>(); // result collection
+		try {
+
+			// load all addresses into appt list
+			Collection<Address> addresses = getAddresses();
+
+			for (Address addr : addresses) {
+				// read each appt
+
+				String addrString = addr.getFirstName() + " " + 
+				addr.getLastName() + " " + 
+				addr.getStreetAddress() + " " + 
+				addr.getWorkStreetAddress() + " " + 
+				addr.getCompany() + " " + 
+				addr.getCity() + " " + 
+				addr.getCountry() + " " + 
+				addr.getWorkCity() + " " + 
+				addr.getWorkCountry() + " " + 
+				addr.getEmail() + " " + 
+				addr.getState() + " " + 
+				addr.getWorkState() + " " + 
+				addr.getNickname(); 
+
+				if (criteria.isCaseSensitive()) {
+					// check if appt text contains the search string
+					if (addrString.indexOf(criteria.getSearchString()) == -1)
+						continue;
+				} else {
+					// check if appt text contains the search string
+					String ltx = addrString.toLowerCase();
+					String ls = criteria.getSearchString().toLowerCase();
+					if (ltx.indexOf(ls) == -1)
+						continue;
+				}
+
+				// filter by links
+				if (criteria.hasLinks()) {
+					LinkModel lm = LinkModel.getReference();
+					try {
+						Collection<Link> lnks = lm.getLinks(addr);
+						if (lnks.isEmpty())
+							continue;
+					} catch (Exception e) {
+						Errmsg.errmsg(e);
+					}
+				}
+
+
+				// add the appt to the search results
+				res.add(addr);
+
+			}
+
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
+		}
+		return (res);
 	}
 }
