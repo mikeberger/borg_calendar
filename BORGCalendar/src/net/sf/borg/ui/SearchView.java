@@ -10,7 +10,7 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
  * USA Copyright 2005 by Mike Berger
  */
-package net.sf.borg.ui.calendar;
+package net.sf.borg.ui;
 
 import java.awt.Component;
 import java.awt.GridBagConstraints;
@@ -55,12 +55,10 @@ import net.sf.borg.model.entity.KeyedEntity;
 import net.sf.borg.model.entity.Memo;
 import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Task;
-import net.sf.borg.ui.DockableView;
-import net.sf.borg.ui.MultiView;
-import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.MultiView.Module;
 import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.address.AddressView;
+import net.sf.borg.ui.calendar.AppointmentListView;
 import net.sf.borg.ui.memo.MemoPanel;
 import net.sf.borg.ui.task.ProjectView;
 import net.sf.borg.ui.task.TaskView;
