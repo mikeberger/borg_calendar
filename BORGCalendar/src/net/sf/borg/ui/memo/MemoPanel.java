@@ -61,13 +61,14 @@ import net.sf.borg.ui.util.GridBagConstraintsFactory;
 import net.sf.borg.ui.util.PasswordHelper;
 import net.sf.borg.ui.util.StripedTable;
 import net.sf.borg.ui.util.TableSorter;
+import net.sf.borg.ui.util.JTabbedPaneWithCloseIcons.TabCloseListener;
 
 /**
  * UI for editing memos. It has a table that shows all memos by name and an
  * editing panel for editing memo text.
  */
 public class MemoPanel extends JPanel implements ListSelectionListener,
-		Model.Listener, Module {
+		Model.Listener, Module, TabCloseListener {
 
 	private static final long serialVersionUID = 1L;
 
@@ -92,7 +93,7 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 
 	/** The save button. */
 	private JButton saveButton = null;
-	
+
 	/** decrypt button */
 	private JButton decryptButton = null;
 
@@ -294,28 +295,28 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 			}
 		});
 		buttonPanel.add(exportButton, null);
-		
+
 		decryptButton = new JButton();
 		decryptButton.setText(Resource.getResourceString("decrypt"));
 		decryptButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent e) {
 				try {
-					Memo m = MemoModel.getReference().getMemo(getSelectedMemoName());
+					Memo m = MemoModel.getReference().getMemo(
+							getSelectedMemoName());
 					String pw = PasswordHelper.getReference().getPassword();
-					if( pw == null )
+					if (pw == null)
 						return;
 					m.decrypt(pw);
-					
+
 					memoText.setText(m.getMemoText());
 					memoText.setEditable(true);
 					decryptButton.setEnabled(false);
 					saveButton.setEnabled(false);
 					clearEditFlag();
-					
+
 				} catch (Exception e1) {
 					Errmsg.errmsg(e1);
 				}
-				
 
 			}
 		});
@@ -426,7 +427,7 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 			m.setEncrypted(false);
 			if (encryptBox.isSelected()) {
 				String pw = PasswordHelper.getReference().getPassword();
-				if( pw == null )
+				if (pw == null)
 					return;
 				m.encrypt(pw);
 			}
@@ -532,7 +533,8 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 
 				encryptBox.setSelected(m.isEncrypted());
 				if (m.isEncrypted()) {
-					memoText.setText(Resource.getResourceString("EncryptedItem"));
+					memoText.setText(Resource
+							.getResourceString("EncryptedItem"));
 					memoText.setEditable(false);
 					decryptButton.setEnabled(true);
 				} else {
@@ -586,16 +588,43 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 		}
 
 	}
-	
-	private void clearEditFlag()
-	{
+
+	private void clearEditFlag() {
 		isMemoEdited = false;
 	}
-	
+
 	@Override
 	public ViewType getViewType() {
 		return ViewType.MEMO;
 	}
 
+	@Override
+	public boolean canClose() {
+		if (isMemoEdited) {
+			/*
+			 * confirm discard of changes
+			 */
+			int ret = JOptionPane.showConfirmDialog(null, Resource
+					.getResourceString("Edited_Memo"), Resource
+					.getResourceString("Discard_Text?"),
+					JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+			// if user does not want to lose changes, we need to set
+			// the
+			// selection back to the edited memo
+			if (ret != JOptionPane.OK_OPTION) {
+				return false;
+			}
+		}
+
+		try {
+			isMemoEdited = false;
+			this.loadMemosFromModel();
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
+		}
+
+		return true;
+	}
 
 }

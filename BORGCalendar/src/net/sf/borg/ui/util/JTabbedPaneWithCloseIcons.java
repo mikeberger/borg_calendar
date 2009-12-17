@@ -41,8 +41,6 @@ import net.sf.borg.ui.DockableView;
 public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 		MouseListener, MouseMotionListener {
 
-	private static final long serialVersionUID = 1L;
-
 	/**
 	 * this is the icon that actually contains the symbols for close and
 	 * optionally undock.
@@ -233,9 +231,24 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 				paintHighlight(false, false, g);	
 		}
 	}
+	
+	/**
+	 * interface implemented by tab components that need to react to close events
+	 *
+	 */
+	public static interface TabCloseListener {
+		
+		/**
+		 * method called when the component's tab is being closed
+		 * @return true if the tab should be closed, false if not
+		 */
+		public boolean canClose();
+	}
 
 	/** icon size. */
 	static private final int ICON_WIDTH = 16;
+
+	private static final long serialVersionUID = 1L;
 
 	/*
 	 * save last mouse event so that we know where we are if the
@@ -277,15 +290,30 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 			if (icon == null)
 				return;
 
-			this.removeTabAt(i);
+			this.closeTabCommon(i);
 		}
 	}
-
+	
 	/**
 	 * close the currently selected tab.
 	 */
 	public void closeSelectedTab() {
 		int i = this.getSelectedIndex();
+		this.closeTabCommon(i);
+	}
+	
+	/**
+	 * common internal method that checks if a tab can be closed before closing it
+	 * @param i the tab index
+	 */
+	private void closeTabCommon(int i)
+	{
+		Component c = this.getComponentAt(i);
+		if( c instanceof TabCloseListener)
+		{
+			if( ! ((TabCloseListener)c).canClose())
+				return;
+		}
 		this.removeTabAt(i);
 	}
 
@@ -308,7 +336,7 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 
 		// perform action of the click was on an icon
 		if (icon.isMouseOnDelete(e.getX(), e.getY()))
-			this.removeTabAt(tabNumber);
+			this.closeTabCommon(tabNumber);
 		else if (icon.isMouseOnUndock(e.getX(), e.getY()))
 			this.undock();
 
