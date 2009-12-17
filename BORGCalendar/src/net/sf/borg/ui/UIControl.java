@@ -72,6 +72,17 @@ public class UIControl {
 		// set the look and feel
 		String lnf = Prefs.getPref(PrefName.LNF);
 		try {
+			
+			// set default jgoodies theme
+			if( lnf.contains("jgoodies"))
+			{
+				String theme = System.getProperty("Plastic.defaultTheme");
+				if( theme == null )
+				{
+					System.setProperty("Plastic.defaultTheme", "ExperienceBlue");
+				}
+			}
+			
 			UIManager.setLookAndFeel(lnf);
 			UIManager.getLookAndFeelDefaults().put("ClassLoader",
 					UIControl.class.getClassLoader());
