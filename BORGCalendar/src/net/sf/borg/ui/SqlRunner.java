@@ -119,12 +119,11 @@ class SqlRunner extends JDialog {
 	private void runbuttonActionPerformed() {
 		try {
 
-			// taskmodel is used to get at the transaction logic - not so great
-			TaskModel.getReference().beginTransaction();
+			JdbcDB.beginTransaction();
 			
 			// run the sql 
 			ResultSet r = JdbcDB.execSQL(editor.getText());
-			TaskModel.getReference().commitTransaction();
+			JdbcDB.commitTransaction();
 			
 			// display the results in a table
 			if (r != null && r.next()) {
@@ -158,7 +157,7 @@ class SqlRunner extends JDialog {
 		} catch (Exception e) {
 			System.out.println(e.toString());
 			try {
-				TaskModel.getReference().rollbackTransaction();
+				JdbcDB.rollbackTransaction();
 			} catch (Exception e2) {
 			  // empty
 			}

@@ -45,7 +45,7 @@ import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.common.Warning;
 import net.sf.borg.model.CategoryModel.CategorySource;
-import net.sf.borg.model.db.EntityDB;
+import net.sf.borg.model.db.TaskDB;
 import net.sf.borg.model.db.jdbc.JdbcDB;
 import net.sf.borg.model.db.jdbc.TaskJdbcDB;
 import net.sf.borg.model.entity.BorgOption;
@@ -65,7 +65,7 @@ import net.sf.borg.model.undo.UndoLog;
  * and Tasklog
  */
 @SuppressWarnings("unchecked")
-public class TaskModel extends Model implements Model.Listener, Transactional,
+public class TaskModel extends Model implements Model.Listener,
 		CategorySource, Searchable<KeyedEntity> {
 
 	/**
@@ -81,17 +81,15 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 		public Collection<Tasklog> Tasklog;
 	}
 
-	// hard-code to TaskJdbcDB just to access options logic
-	// need to fix this in the future
 	/** The db */
-	private TaskJdbcDB db_;
+	private TaskDB db_;
 
 	/**
 	 * Gets the dB.
 	 * 
 	 * @return the dB
 	 */
-	public EntityDB<Task> getDB() {
+	public TaskDB getDB() {
 		return (db_);
 	}
 
@@ -198,7 +196,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 			tt.validate();
 			taskTypes_ = tt.copy();
 		}
-		db_.setOption(new BorgOption("TASKTYPES", taskTypes_.toXml()));
+		JdbcDB.setOption(new BorgOption("TASKTYPES", taskTypes_.toXml()));
 	}
 
 	/*
@@ -364,14 +362,14 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 
 		db_ = new TaskJdbcDB();
 
-		String tt = db_.getOption("TASKTYPES");
+		String tt = JdbcDB.getOption("TASKTYPES");
 		if (tt == null) {
-			String sm = db_.getOption("SMODEL");
+			String sm = JdbcDB.getOption("SMODEL");
 			if (sm == null) {
 				try {
 					taskTypes_.loadDefault();
 					sm = taskTypes_.toXml();
-					db_.setOption(new BorgOption("TASKTYPES", sm));
+					JdbcDB.setOption(new BorgOption("TASKTYPES", sm));
 				} catch (Exception e) {
 					Errmsg.errmsg(e);
 					return;
@@ -639,7 +637,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 		JAXBContext jc = JAXBContext.newInstance(XmlContainer.class);
 		Marshaller m = jc.createMarshaller();
 		XmlContainer container = new XmlContainer();
-		container.OPTION = db_.getOptions();
+		container.OPTION = JdbcDB.getOptions();
 		container.Project = getProjects();
 		container.Task = getTasks();
 		container.Subtask = getSubTasks();
@@ -701,10 +699,10 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 		for (BorgOption option : container.OPTION) {
 			if (option.getKey().equals("TASKTYPES")) {
 				taskTypes_.fromString(option.getValue());
-				db_.setOption(new BorgOption("TASKTYPES", taskTypes_.toXml()));
+				JdbcDB.setOption(new BorgOption("TASKTYPES", taskTypes_.toXml()));
 
 			} else {
-				db_.setOption(option);
+				JdbcDB.setOption(option);
 			}
 		}
 
@@ -1097,7 +1095,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 	 * @see net.sf.borg.model.Transactional#beginTransaction()
 	 */
 	public void beginTransaction() throws Exception {
-		db_.beginTransaction();
+		JdbcDB.beginTransaction();
 	}
 
 	/*
@@ -1106,7 +1104,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 	 * @see net.sf.borg.model.Transactional#commitTransaction()
 	 */
 	public void commitTransaction() throws Exception {
-		db_.commitTransaction();
+		JdbcDB.commitTransaction();
 	}
 
 	/*
@@ -1115,7 +1113,7 @@ public class TaskModel extends Model implements Model.Listener, Transactional,
 	 * @see net.sf.borg.model.Transactional#rollbackTransaction()
 	 */
 	public void rollbackTransaction() throws Exception {
-		db_.rollbackTransaction();
+		JdbcDB.rollbackTransaction();
 	}
 
 	/**

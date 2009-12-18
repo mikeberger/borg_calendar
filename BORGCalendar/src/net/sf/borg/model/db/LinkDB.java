@@ -26,7 +26,7 @@ import net.sf.borg.model.entity.Link;
 /**
  * The Interface for a Link DB.
  */
-public interface LinkDB
+public interface LinkDB extends EntityDB<Link>
 {
 	
 	/**

@@ -27,14 +27,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import net.sf.borg.model.db.EntityDB;
 import net.sf.borg.model.db.LinkDB;
 import net.sf.borg.model.entity.Link;
 
 /**
  * provides the JDBC layer for reading/writing Links
  */
-public class LinkJdbcDB extends JdbcBeanDB<Link> implements EntityDB<Link>, LinkDB {
+public class LinkJdbcDB extends JdbcBeanDB<Link> implements LinkDB {
 
 
 	/* (non-Javadoc)

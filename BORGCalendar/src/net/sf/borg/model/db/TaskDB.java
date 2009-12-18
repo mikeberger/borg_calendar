@@ -29,7 +29,7 @@ import net.sf.borg.model.entity.Tasklog;
 /**
  * The Interface for a Task database.
  */
-public interface TaskDB {
+public interface TaskDB extends EntityDB<Task>{
 
     /**
      * Gets all sub tasks for a given task.

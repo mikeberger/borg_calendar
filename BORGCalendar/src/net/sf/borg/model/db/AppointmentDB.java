@@ -21,12 +21,14 @@ package net.sf.borg.model.db;
 
 import java.util.Collection;
 
+import net.sf.borg.model.entity.Appointment;
+
 
 /**
  * A {@link EntityDB EntityDB} subclass which allows efficient retrieval of
  * appointment ToDo and Repeat keys.
  */
-public interface AppointmentDB
+public interface AppointmentDB extends EntityDB<Appointment>
 {
 
 /**

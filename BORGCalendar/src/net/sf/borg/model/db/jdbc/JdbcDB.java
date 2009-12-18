@@ -41,13 +41,12 @@ import java.util.Vector;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
-import net.sf.borg.model.Transactional;
 import net.sf.borg.model.entity.BorgOption;
 
 /**
  * abstract base class providing basic common JDBC services to all derived JDBC classes
  */
-abstract public class JdbcDB implements Transactional {
+abstract public class JdbcDB {
 
 	// common db connection shared by sub-classes. in BORG, all sub-classes
 	// will manage a table in the same DB
@@ -66,26 +65,29 @@ abstract public class JdbcDB implements Transactional {
 		return url_;
 	}
 
-	/* (non-Javadoc)
-	 * @see net.sf.borg.model.Transactional#beginTransaction()
+	/**
+	 * begin a JDBC transaction on the shared connection
+	 * @throws Exception
 	 */
-	public void beginTransaction() throws Exception {
+	static public void beginTransaction() throws Exception {
 		connection_.setAutoCommit(false);
 	}
 
-	/* (non-Javadoc)
-	 * @see net.sf.borg.model.Transactional#commitTransaction()
+	/**
+	 * commit a JDBC transaction on the shared connection
+	 * @throws Exception
 	 */
-	public final void commitTransaction() throws Exception {
+	static public final void commitTransaction() throws Exception {
 		PreparedStatement stmt = connection_.prepareStatement("COMMIT");
 		stmt.execute();
 		connection_.setAutoCommit(true);
 	}
 
-	/* (non-Javadoc)
-	 * @see net.sf.borg.model.Transactional#rollbackTransaction()
+	/**
+	 * rollback a JDBC transaction on the shared connection
+	 * @throws Exception
 	 */
-	public final void rollbackTransaction() throws Exception {
+	static public final void rollbackTransaction() throws Exception {
 		PreparedStatement stmt = connection_.prepareStatement("ROLLBACK");
 		stmt.execute();
 		connection_.setAutoCommit(true);
@@ -296,7 +298,7 @@ abstract public class JdbcDB implements Transactional {
 	 * 
 	 * @throws Exception the exception
 	 */
-	public final String getOption(String oname) throws Exception {
+	static public final String getOption(String oname) throws Exception {
 		String ret = null;
 		PreparedStatement stmt = connection_
 				.prepareStatement("SELECT value FROM options WHERE name = ?");
@@ -316,7 +318,7 @@ abstract public class JdbcDB implements Transactional {
 	 * 
 	 * @throws Exception the exception
 	 */
-	public final Collection<BorgOption> getOptions() throws Exception {
+	static public final Collection<BorgOption> getOptions() throws Exception {
 		ArrayList<BorgOption> keys = new ArrayList<BorgOption>();
 		PreparedStatement stmt = connection_
 				.prepareStatement("SELECT name, value FROM options");
@@ -338,7 +340,7 @@ abstract public class JdbcDB implements Transactional {
 	 * 
 	 * @throws Exception the exception
 	 */
-	public final void setOption(BorgOption option) throws Exception {
+	static public final void setOption(BorgOption option) throws Exception {
 		String oname = option.getKey();
 		String value = option.getValue();
 

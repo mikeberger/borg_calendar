@@ -67,7 +67,7 @@ public class ApptKeyConverter implements ConversionTool{
 
 		try {
 
-			db.beginTransaction();
+			JdbcDB.beginTransaction();
 
 			int lowestKey = 1;
 
@@ -139,10 +139,10 @@ public class ApptKeyConverter implements ConversionTool{
 				lowestKey++;
 			}
 
-			db.commitTransaction();
+			JdbcDB.commitTransaction();
 
 		} catch (Exception e) {
-			db.rollbackTransaction();
+			JdbcDB.rollbackTransaction();
 			throw e;
 		} finally {
 			JdbcDB.close();
