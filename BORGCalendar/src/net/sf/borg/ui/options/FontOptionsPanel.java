@@ -114,8 +114,8 @@ public class FontOptionsPanel extends OptionsPanel {
 		
 		this.add(monthFontText, GridBagConstraintsFactory.create(1, 0, GridBagConstraints.BOTH, 1.0, 0.0));
 		this.add(defaultFontText, GridBagConstraintsFactory.create(1, 1, GridBagConstraints.BOTH, 1.0, 0.0));
-		this.add(weekFontText, GridBagConstraintsFactory.create(1, 2, GridBagConstraints.BOTH, 1.0, 0.0));
-		this.add(dayFontText, GridBagConstraintsFactory.create(1, 3, GridBagConstraints.BOTH, 1.0, 0.0));
+		this.add(weekFontText, GridBagConstraintsFactory.create(1, 3, GridBagConstraints.BOTH, 1.0, 0.0));
+		this.add(dayFontText, GridBagConstraintsFactory.create(1, 2, GridBagConstraints.BOTH, 1.0, 0.0));
 		this.add(printFontText, GridBagConstraintsFactory.create(1, 4, GridBagConstraints.BOTH, 1.0, 0.0));
 	}
 
