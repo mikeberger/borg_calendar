@@ -19,6 +19,7 @@
 
 package net.sf.borg.control;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -84,17 +85,16 @@ public class Borg implements SocketHandler {
 	}
 
 	/**
-	 * close db connections and end the program 
+	 * close db connections and end the program
 	 */
 	static public void shutdown() {
-		
+
 		if (getReference().syncTimer_ != null)
 			getReference().syncTimer_.cancel();
 		if (getReference().mailTimer_ != null)
 			getReference().mailTimer_.cancel();
 
-		
-		try {		
+		try {
 			// close the db
 			JdbcDB.close();
 		} catch (Exception e) {
@@ -151,7 +151,7 @@ public class Borg implements SocketHandler {
 	 * constructor
 	 */
 	private Borg() {
-	  // empty
+		// empty
 	}
 
 	/**
@@ -200,21 +200,6 @@ public class Borg implements SocketHandler {
 			return ("ok");
 		}
 		return ("Unknown msg: " + msg);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.sf.borg.ui.OptionsView.RestartListener#restart()
-	 */
-	public void restart() {
-
-		if (syncTimer_ != null)
-			syncTimer_.cancel();
-		if (mailTimer_ != null)
-			mailTimer_.cancel();
-
-		init(new String[0]);
 	}
 
 	/**
@@ -288,7 +273,7 @@ public class Borg implements SocketHandler {
 					System.exit(0);
 				}
 			} catch (IOException e) {
-			  // empty
+				// empty
 			}
 
 		}
@@ -310,15 +295,12 @@ public class Borg implements SocketHandler {
 			e.printStackTrace();
 		}
 
-		
 		// locale
 		String country = Prefs.getPref(PrefName.COUNTRY);
 		String language = Prefs.getPref(PrefName.LANGUAGE);
 		if (!language.equals("")) {
 			Locale.setDefault(new Locale(language, country));
 		}
-
-		
 
 		// db url
 		String dbdir = null;
@@ -332,14 +314,28 @@ public class Borg implements SocketHandler {
 			// if no db set - tell user
 			if (dbdir.equals("not-set")) {
 
-				JOptionPane.showMessageDialog(null, Resource
-						.getResourceString("selectdb"), Resource
-						.getResourceString("Notice"),
-						JOptionPane.INFORMATION_MESSAGE);
+				// try to set a valid default
+				String home = System.getProperty("user.home", "");
+				File borgdir = new File(home + "/.borg_db");
+				if (!borgdir.exists()) {
+					borgdir.mkdir();
+				}
+				if (borgdir.isDirectory() && borgdir.canWrite()) {
+					Prefs
+							.putPref(PrefName.HSQLDBDIR, borgdir
+									.getAbsolutePath());
+					Prefs.putPref(PrefName.DBTYPE, "hsqldb");
+					dbdir = JdbcDB.buildDbDir();
+				} else {
+					JOptionPane.showMessageDialog(null, Resource
+							.getResourceString("selectdb"), Resource
+							.getResourceString("Notice"),
+							JOptionPane.INFORMATION_MESSAGE);
 
-				// if user wants to set db - let them
-				OptionsView.dbSelectOnly();
-				return;
+					// if user wants to set db - let them
+					OptionsView.dbSelectOnly();
+					return;
+				}
 			}
 
 			// now all errors can go to popup windows
@@ -355,7 +351,6 @@ public class Borg implements SocketHandler {
 					UIControl.startUI(traynm);
 				}
 			});
-
 
 			// calculate email time in minutes from now
 			Calendar cal = new GregorianCalendar();

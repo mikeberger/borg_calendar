@@ -146,8 +146,8 @@ public class OptionsView extends View {
 	 * db to be set
 	 */
 	public static void dbSelectOnly() {
-		new OptionsView(true).setVisible(true);
-
+		singleton = new OptionsView(true);
+		singleton.setVisible(true);
 	}
 
 	/**
@@ -215,7 +215,7 @@ public class OptionsView extends View {
 				GridBagConstraints.BOTH, 1.0, 1.0));
 
 		if (dbonly) {
-			setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+			//setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		} else {
 
 			dismissButton = new JButton();

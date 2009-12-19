@@ -41,7 +41,6 @@ import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
-import net.sf.borg.control.Borg;
 import net.sf.borg.ui.HelpLauncher;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.options.OptionsView.OptionsPanel;
@@ -192,10 +191,8 @@ public class DatabaseOptionsPanel extends OptionsPanel {
 					.getPassword()));
 			Prefs.putPref(PrefName.JDBCURL, jdbcText.getText());
 
-			// restart the program
-			Borg.getReference().restart();
-
-			OptionsView.getReference().dispose();
+			Errmsg.notice(Resource.getResourceString("Restart_Warning"));
+			System.exit(0);
 		}
 	}
 
