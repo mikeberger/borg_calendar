@@ -191,12 +191,9 @@ public class PrefName {
 	/** The REMINDERS. */
 	static public PrefName REMINDERS = new PrefName("reminders", "true");
 
-	/** The BEEPINGREMINDERS. */
+	/** The BEEPINGREMINDERS */
 	static public PrefName BEEPINGREMINDERS = new PrefName("beeping_reminders",
 			"true");
-
-	/** The USESYSTEMBEEP. */
-	static public PrefName USESYSTEMBEEP = new PrefName("system_beep", "true");
 
 	/** The REMINDERCHECKMINS. */
 	static public PrefName REMINDERCHECKMINS = new PrefName(

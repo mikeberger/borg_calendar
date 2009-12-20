@@ -29,6 +29,7 @@ import java.applet.Applet;
 import java.applet.AudioClip;
 import java.awt.EventQueue;
 import java.awt.Toolkit;
+import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -219,7 +220,7 @@ public class ReminderPopupManager implements Model.Listener {
 			ReminderPopup popup = popupMapEntry.getValue();
 			if (popup == null || !popup.isDisplayable())
 				continue;
-			
+
 			popup.dispose();
 		}
 	}
@@ -621,7 +622,6 @@ public class ReminderPopupManager implements Model.Listener {
 
 		// if any popups that are already displayed are due for showing - make a
 		// sound and raise the popup
-		boolean enablebeep = Prefs.getBoolPref(PrefName.BEEPINGREMINDERS);
 
 		// iterate through existing popups
 		Set<Entry<AppointmentInstance, ReminderPopup>> entrySet = pops
@@ -695,20 +695,9 @@ public class ReminderPopupManager implements Model.Listener {
 				popup.setShown(true);
 
 				// play a sound
-				if (enablebeep) {
-					if (Prefs.getPref(PrefName.USESYSTEMBEEP).equals("true")) {
-						Toolkit.getDefaultToolkit().beep();
-					} else {
-						URL snd = getClass().getResource("/resource/blip.wav");
-						AudioClip theSound;
-						theSound = Applet.newAudioClip(snd);
-						if (theSound != null) {
-							theSound.play();
-						}
-					}
-				}
+				playReminderSound(Prefs.getPref(PrefName.BEEPINGREMINDERS));
 			} catch (Exception e) {
-			  // empty
+				// empty
 			}
 		}
 	}
@@ -768,6 +757,37 @@ public class ReminderPopupManager implements Model.Listener {
 
 			// hide
 			popup.setVisible(false);
+
+		}
+	}
+	
+	/**
+	 * play the reminder sound indicated by soundOption
+	 * @param soundOption - true (default sound), false (no-sound), system-beep, or a filename
+	 */
+	static public void playReminderSound(String soundOption)
+	{
+		if (soundOption.equals("system-beep")) {
+			Toolkit.getDefaultToolkit().beep();
+		} else if (soundOption.equals("true")) {
+			URL snd = ReminderPopupManager.class.getResource("/resource/blip.wav");
+			AudioClip theSound;
+			theSound = Applet.newAudioClip(snd);
+			if (theSound != null) {
+				theSound.play();
+			}
+		} else if (!soundOption.equals("false")) {
+			try {
+				File f = new File(soundOption);
+				URL snd = f.toURI().toURL();
+				AudioClip theSound;
+				theSound = Applet.newAudioClip(snd);
+				if (theSound != null) {
+					theSound.play();
+				}
+			} catch (Exception e) {
+				// no error
+			}
 
 		}
 	}

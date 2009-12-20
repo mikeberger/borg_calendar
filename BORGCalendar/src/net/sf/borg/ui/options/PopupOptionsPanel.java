@@ -21,15 +21,18 @@ package net.sf.borg.ui.options;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSeparator;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 
 import net.sf.borg.common.PrefName;
@@ -38,6 +41,7 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.model.ReminderTimes;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.options.OptionsView.OptionsPanel;
+import net.sf.borg.ui.popup.ReminderPopupManager;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 
 /**
@@ -59,13 +63,11 @@ class PopupOptionsPanel extends OptionsPanel {
 	private JCheckBox popenablebox = new JCheckBox();
 
 	/** The soundbox. */
-	private JCheckBox soundbox = new JCheckBox();
+	private JComboBox soundbox = new JComboBox();
 
 	/** The spinners for setting the reminder times */
 	private JSpinner spinners[];
 
-	/** The use beep. */
-	private JCheckBox useBeep = new JCheckBox();
 
 	/**
 	 * Instantiates a new popup options panel.
@@ -80,13 +82,9 @@ class PopupOptionsPanel extends OptionsPanel {
 		this.add(popenablebox, GridBagConstraintsFactory.create(0, 0,
 				GridBagConstraints.BOTH));
 
-		ResourceHelper.setText(soundbox, "beeps");
-		this.add(soundbox, GridBagConstraintsFactory.create(0, 3,
-				GridBagConstraints.BOTH));
-
 		JLabel jLabel15 = new JLabel();
-		jLabel15.setHorizontalAlignment(SwingConstants.TRAILING);
-		ResourceHelper.setText(jLabel15, "min_between_chks");
+		jLabel15.setText(Resource.getResourceString("min_between_chks") + " "
+				+ Resource.getResourceString("restart_req"));
 
 		this.add(jLabel15, GridBagConstraintsFactory.create(0, 1,
 				GridBagConstraints.BOTH));
@@ -95,36 +93,47 @@ class PopupOptionsPanel extends OptionsPanel {
 		this.add(checkfreq, GridBagConstraintsFactory.create(1, 1,
 				GridBagConstraints.BOTH, 1.0, 0.0));
 
-		GridBagConstraints gridBagConstraints65 = GridBagConstraintsFactory
-				.create(0, 2, GridBagConstraints.BOTH);
-		gridBagConstraints65.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-		this.add(new JSeparator(), gridBagConstraints65);
+		/*
+		 * sound
+		 */
+		JPanel soundPanel = new JPanel();
+		soundPanel.add(new JLabel(Resource.getResourceString("beep_options")));
 
-		JLabel jLabel16 = new JLabel();
-		ResourceHelper.setText(jLabel16, "restart_req");
-		this.add(jLabel16, GridBagConstraintsFactory.create(2, 1,
-				GridBagConstraints.BOTH));
+		soundbox.addItem(Resource.getResourceString("default"));
+		soundbox.addItem(Resource.getResourceString("no_sound"));
+		soundbox.addItem(Resource.getResourceString("Use_system_beep"));
 
-		useBeep = new JCheckBox();
-		ResourceHelper.setText(useBeep, "Use_system_beep");
-		this.add(useBeep, GridBagConstraintsFactory.create(0, 4));
+		soundPanel.add(soundbox);
+		
+		JButton play = new JButton();
+		play.setIcon(new ImageIcon(getClass().getResource(
+				"/resource/Forward16.gif")));
+		play.addActionListener(new ActionListener(){
 
-		GridBagConstraints gridBagConstraints113 = GridBagConstraintsFactory
-				.create(0, 5);
-		gridBagConstraints113.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-		gridBagConstraints113.anchor = java.awt.GridBagConstraints.WEST;
-		gridBagConstraints113.insets = new java.awt.Insets(18, 18, 18, 18);
+			@Override
+			public void actionPerformed(ActionEvent arg0) {	
+				ReminderPopupManager.playReminderSound(getSoundOption());
+			}
+			
+		});
+		soundPanel.add(play);
+		
+		GridBagConstraints sPanelGBC = GridBagConstraintsFactory.create(0, 2);
+		sPanelGBC.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+		sPanelGBC.anchor = java.awt.GridBagConstraints.WEST;
+
+		this.add(soundPanel,sPanelGBC);
+
 
 		JPanel remTimePanel = new JPanel();
 
 		// border
 		String title = Resource.getResourceString("Popup_Times") + " ("
 				+ Resource.getResourceString("Minutes") + ")";
-		Border b = BorderFactory.createTitledBorder(remTimePanel.getBorder(),
-				title);
+		Border b = BorderFactory.createTitledBorder(remTimePanel.getBorder(), title);
 		remTimePanel.setBorder(b);
 
-		remTimePanel.setLayout(new GridLayout(2, 0));
+		remTimePanel.setLayout(new GridLayout(4, 0));
 
 		// add the spinners
 		spinners = new JSpinner[numberOfReminderTimes];
@@ -134,7 +143,11 @@ class PopupOptionsPanel extends OptionsPanel {
 			remTimePanel.add(spinners[i]);
 		}
 
-		this.add(remTimePanel, gridBagConstraints113);
+		GridBagConstraints remPanelGBC = GridBagConstraintsFactory.create(0, 3);
+		remPanelGBC.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+		remPanelGBC.anchor = java.awt.GridBagConstraints.WEST;
+
+		this.add(remTimePanel, remPanelGBC);
 
 	}
 
@@ -146,8 +159,8 @@ class PopupOptionsPanel extends OptionsPanel {
 	@Override
 	public void applyChanges() {
 		OptionsPanel.setBooleanPref(popenablebox, PrefName.REMINDERS);
-		OptionsPanel.setBooleanPref(soundbox, PrefName.BEEPINGREMINDERS);
-		OptionsPanel.setBooleanPref(useBeep, PrefName.USESYSTEMBEEP);
+		Prefs.putPref(PrefName.BEEPINGREMINDERS, getSoundOption());		
+		
 		Integer checkMins = (Integer) checkfreq.getValue();
 		int cur = Prefs.getIntPref(PrefName.REMINDERCHECKMINS);
 		if (checkMins.intValue() != cur) {
@@ -173,8 +186,24 @@ class PopupOptionsPanel extends OptionsPanel {
 	@Override
 	public void loadOptions() {
 		OptionsPanel.setCheckBox(popenablebox, PrefName.REMINDERS);
-		OptionsPanel.setCheckBox(soundbox, PrefName.BEEPINGREMINDERS);
-		OptionsPanel.setCheckBox(useBeep, PrefName.USESYSTEMBEEP);
+		
+		String beep = Prefs.getPref(PrefName.BEEPINGREMINDERS);
+		if( beep.equals("true"))
+		{
+			soundbox.setSelectedIndex(0);
+		}
+		else if( beep.equals("false"))
+		{
+			soundbox.setSelectedIndex(1);
+		}
+		else if( beep.equals("system-beep"))
+		{
+			soundbox.setSelectedIndex(2);
+		}
+		else
+		{
+			soundbox.setSelectedItem(beep);
+		}
 
 		int mins = Prefs.getIntPref(PrefName.REMINDERCHECKMINS);
 		checkfreq.setValue(new Integer(mins));
@@ -191,6 +220,33 @@ class PopupOptionsPanel extends OptionsPanel {
 		for (int i = 0; i < numberOfReminderTimes; i++) {
 			spinners[i].setValue(new Integer(ReminderTimes.getTimes(i)));
 		}
+	}
+	
+	/**
+	 * get the sound option preference value based on the current sound combo box setting
+	 * @return
+	 */
+	private String getSoundOption()
+	{
+		String option = "";
+		int i = soundbox.getSelectedIndex();
+		if(i == 0)
+		{
+			option = "true";
+		}
+		else if( i == 1 )
+		{
+			option = "false";
+		}
+		else if( i == 2 )
+		{
+			option = "system-beep";
+		}
+		else
+		{
+			option = (String)soundbox.getSelectedItem();
+		}
+		return option;
 	}
 
 }
