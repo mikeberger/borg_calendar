@@ -23,12 +23,14 @@ import java.awt.GridBagConstraints;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
@@ -99,10 +101,32 @@ class PopupOptionsPanel extends OptionsPanel {
 		JPanel soundPanel = new JPanel();
 		soundPanel.add(new JLabel(Resource.getResourceString("beep_options")));
 
+		soundbox.setEditable(true);
 		soundbox.addItem(Resource.getResourceString("default"));
 		soundbox.addItem(Resource.getResourceString("no_sound"));
 		soundbox.addItem(Resource.getResourceString("Use_system_beep"));
+		soundbox.addItem(Resource.getResourceString("Browse")+"...");
+		soundbox.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				if( soundbox.getSelectedIndex() == 3)
+				{
+					JFileChooser chooser = new JFileChooser();
+					chooser.setCurrentDirectory(new File("."));
+					chooser.setDialogTitle(Resource
+							.getResourceString("choose_file"));
+					chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
+					int returnVal = chooser.showOpenDialog(null);
+					if (returnVal != JFileChooser.APPROVE_OPTION)
+						return;
+
+					String fileName = chooser.getSelectedFile().getAbsolutePath();
+					soundbox.setSelectedItem(fileName);
+				}
+			}
+			
+		});
 		soundPanel.add(soundbox);
 		
 		JButton play = new JButton();
