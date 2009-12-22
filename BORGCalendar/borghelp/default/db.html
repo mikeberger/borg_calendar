@@ -5,7 +5,8 @@
 	<TITLE></TITLE>
 	<META NAME="GENERATOR" CONTENT="OpenOffice.org 3.1  (Linux)">
 	<META NAME="CREATED" CONTENT="0;0">
-	<META NAME="CHANGED" CONTENT="20091005;10032700">
+	<META NAME="CHANGEDBY" CONTENT="mike b">
+	<META NAME="CHANGED" CONTENT="20091222;15542200">
 	<META NAME="Originator" CONTENT="Microsoft Word 11">
 	<META NAME="ProgId" CONTENT="Word.Document">
 	<STYLE TYPE="text/css">
@@ -18,14 +19,18 @@
 </HEAD>
 <BODY LANG="en-US" TEXT="#000000" LINK="#0000ff" VLINK="#800080" DIR="LTR">
 <P><FONT FACE="Arial"><FONT SIZE=5><U><B>Databases</B></U></FONT></FONT></P>
-<P><FONT FACE="Arial">When BORG starts for the first time, it prompts
-for the location of the database to use to store it's data.</FONT></P>
-<P><FONT FACE="Arial">The available choices are:</FONT></P>
+<P STYLE="font-weight: normal; text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=3>As
+of release 1.7.3, Borg will create an HSQLDB database in a default
+location when started after the first install. Most users should
+never alter the database settings. Some users may want to alter the
+location of the database, for example to be on a removable drive.</FONT></FONT></P>
+<P><FONT FACE="Arial">For those users that want to change the default
+settings, the available choices are:</FONT></P>
 <P><FONT FACE="Symbol">·</FONT> <FONT FACE="Arial">HSQLDB</FONT></P>
 <P><FONT FACE="Symbol">·</FONT> <FONT FACE="Arial">MySQL</FONT></P>
 <P><FONT FACE="Arial">There is also a Generic JDBC option, which
 takes a jdbc url. This can be used by more advanced users if
-non-standard HSQLDB or MySLQ URL options are needed. It is not
+non-standard HSQLDB or MySQL URL options are needed. It is not
 guaranteed to work in all cases.</FONT></P>
 <P><FONT FACE="Arial"><U><B>HSQLDB</B></U></FONT></P>
 <P><FONT FACE="Arial">BORG supports the storage of data in an
@@ -35,8 +40,7 @@ select the HSQLDB option and point BORG to a folder where you would
 like to keep your data files. </FONT>
 </P>
 <P><FONT FACE="Arial">As of BORG 1.6, HSQLDB is the default DB type
-as it requires no special actions from the user.</FONT></P>
-<P><FONT FACE="Arial">HSQLDB is strongly recommended for BORG. </FONT>
+as it requires no special actions from the user. </FONT>
 </P>
 <P><FONT FACE="Arial"><U><B>MySQL</B></U></FONT></P>
 <P><FONT FACE="Arial">Using MySQL with BORG requires the user to
@@ -65,7 +69,5 @@ download and install this separately. </FONT>
 </P>
 <P><FONT FACE="Arial">6. Run BORG and set the MySQL database
 parameters from the database options screen.</FONT></P>
-<P><BR><BR>
-</P>
 </BODY>
 </HTML>
