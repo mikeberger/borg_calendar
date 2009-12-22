@@ -4,12 +4,61 @@ RELEASE NOTES for BORG 1.7.3
 
 The project home page is http://borg-calendar.sourceforge.net
 
-CHANGES
--------
+**************************************
+** WARNING                          **
+** As of 1.7.2 BORG requires Java 6 **
+**************************************
 
-** WARNING **
-** As of 1.7.2 BORG requires Java 6.
-** BORG 1.7.2+ will work with a 1.7.1 database, not 1.7.1 will not work with a 1.7.2+ database.
+BORG 1.7.2+ will work with a 1.7.1 database. BORG 1.7.1 will not work with a 1.7.2+ database.
+
+CHANGES since 1.7.2
+-------------------
+Feature [2893839] Add optional encryption for Memos and Appointments
+Feature [2913708] extend search to cover all types
+Feature - encrypt stored email password
+Feature - allow user to provide their own reminder sound
+Feature - set a default db on start up for new install. Do not prompt for DB options.
+
+Change - Set default JGoodies theme to Experience Blue
+Change - Hide report items if report libs not available
+Change - Hide Gantt buttons if JFreechart not available
+Change - Move UI logic out of Borg class. Move UI logic out of non-Swing thread.
+Change - improve font options screen
+Change - split up OptionsView class into smaller modules
+
+[Bugs-2897010] Appt drag on month view works wrong if week starts with monday - only if first day of month is a sunday
+Bug - Links to Borg Objects not deleted when target is deleted
+Bug - Linked Memos do not open properly
+Bug - Splash screen text is editable
+Bug - NPE if popup timer goes off during shutdown after db is closed
+Bug - Missing scrollbar in Appointment Panel
+Bug - task filter missing on task list screen
+Bug - appt boxes do not show strike-through text
+
+CHANGES since 1.7.1
+-------------------
+
+** Feature [2846844] Code Cleanup and Javadoc **
+** The entire code base was cleaned up, refactored, and documented in this release.
+** Thousands of lines of obsolete code have been removed.
+** The UI code was rewritten to remove almost all of the IDE-generated code.
+
+Feature [2769671] Add an address book search  
+Feature [2852664] support TLS for SMTP (for gmail)
+Feature [2876229] rewrite XML import/export to use JAXB
+Feature [2876230] improve week/day view
+Feature [2876231] add quick-note menu option
+Feature [2876232] put the 3 task tabs under a single main tab
+Feature [2876242] Remove Palm sync Support
+Bug Fix [2876233] cleanup the translations - remove unused strings
+Bug Fix [2876234] tab close/undock icons do not highlight
+Bug Fix [2876236] clean up the online help
+Bug Fix [2876237] popups sometimes continue after appts changed or deleted
+Bug Fix [2876238] when deleting multiple addresses - the wrong ones are deleted
+Bug Fix [2876240] fix calendar view tooltip
+Bug Fix [2745960] pop up reminder non-functional at large-minute settings 
+Bug Fix [1728135] No Popups--- Date Doesn't Advance
+Bug Fix [1693757] Category name size not checked
 
 KNOWN ISSUES:
 -------------

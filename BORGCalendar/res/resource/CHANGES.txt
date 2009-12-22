@@ -1,16 +1,19 @@
-BORG 1.7.3 - TBD
+BORG 1.7.3
 ----------------
-Feature [2893839] Add database encryption (Memos and Appointments)
+Feature [2893839] Add optional encryption for Memos and Appointments
 Feature [2913708] extend search to cover all types
-Feature encrypt stored email password
+Feature - encrypt stored email password
+Feature - allow user to provide their own reminder sound
+Feature - set a default db on start up for new install. Do not prompt for DB options.
 
+Change - Set default JGoodies theme to Experience Blue
 Change - Hide report items if report libs not available
 Change - Hide Gantt buttons if JFreechart not available
 Change - Move UI logic out of Borg class. Move UI logic out of non-Swing thread.
 Change - improve font options screen
 Change - split up OptionsView class into smaller modules
 
-[Bugs-2897010] Appt drag on month view works wrong if week starts with mon- only if first day of month is a sunday
+[Bugs-2897010] Appt drag on month view works wrong if week starts with monday - only if first day of month is a sunday
 Bug - Links to Borg Objects not deleted when target is deleted
 Bug - Linked Memos do not open properly
 Bug - Splash screen text is editable
@@ -19,10 +22,8 @@ Bug - Missing scrollbar in Appointment Panel
 Bug - task filter missing on task list screen
 Bug - appt boxes do not show strike-through text
 
-BORG 1.7.2 Beta - Developer Release
+BORG 1.7.2 - Developer Release
 -----------------------------------
-Release 1.7.2 is mainly for developers using the source. 
-
 ** Feature [2846844] Code Cleanup and Javadoc **
 ** The entire code base was cleaned up, refactored, and documented in this release.
 ** Thousands of lines of obsolete code have been removed.
@@ -45,10 +46,7 @@ Bug Fix [2745960] pop up reminder non-functional at large-minute settings
 Bug Fix [1728135] No Popups--- Date Doesn't Advance
 Bug Fix [1693757] Category name size not checked
 
-** WARNING **
 ** BORG 1.7.2 now requires Java 6.
-** BORG 1.7.2 will work with a 1.7.1 database, not 1.7.1 will not work with a 1.7.2 database.
-** BORG 1.7.2 uses a different XML export format.
   
 BORG 1.7.1
 ----------
