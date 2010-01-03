@@ -24,6 +24,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.print.PrinterException;
 import java.io.ByteArrayInputStream;
 import java.text.MessageFormat;
@@ -218,6 +220,27 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 				saveButton.setEnabled(true);
 			}
 		});
+
+		memoText.addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				if (arg0.isControlDown() && arg0.getKeyCode() == KeyEvent.VK_F) {
+					doFind();
+				}
+			}
+
+			@Override
+			public void keyReleased(KeyEvent arg0) {
+				// empty
+			}
+
+			@Override
+			public void keyTyped(KeyEvent arg0) {
+				// empty
+			}
+
+		});
 		memoTextScroll.setViewportView(memoText);
 		memoSplitPane.setRightComponent(memoTextScroll);
 		this.add(memoSplitPane, GridBagConstraintsFactory.create(0, 0,
@@ -313,6 +336,7 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 					decryptButton.setEnabled(false);
 					saveButton.setEnabled(false);
 					clearEditFlag();
+					memoText.setCaretPosition(0);
 
 				} catch (Exception e1) {
 					Errmsg.errmsg(e1);
@@ -543,6 +567,7 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 					decryptButton.setEnabled(false);
 
 				}
+				memoText.setCaretPosition(0);
 			} catch (Exception e1) {
 				Errmsg.errmsg(e1);
 				return;
@@ -627,4 +652,34 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 		return true;
 	}
 
+	/**
+	 * find action
+	 */
+	private String searchString = null;
+	private void doFind() {
+
+		// current caret is the root of the search. search is forwards.
+		int caretIndex = memoText.getCaretPosition();
+
+		// prompt for search string - remember last string
+		searchString = JOptionPane.showInputDialog(null, Resource
+				.getResourceString("Search_For"), searchString);
+		if (searchString != null) {
+
+			// search forwards
+			int foundIndex = memoText.getText().indexOf(searchString, caretIndex);
+			if (foundIndex != -1) {
+				// highlight found text - this also moves caret to end of found string as a side-effect,
+				// which is what we want
+				memoText.select(foundIndex, foundIndex + searchString.length());
+			} else {
+				// indicate string not found - put caret back to top so next search will
+				// begin at the top
+				JOptionPane.showMessageDialog(null, Resource
+						.getResourceString("Not_Found_End"));
+				memoText.setCaretPosition(0);
+			}
+		}
+
+	}
 }
