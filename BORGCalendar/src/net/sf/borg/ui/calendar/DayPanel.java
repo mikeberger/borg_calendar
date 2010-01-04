@@ -96,6 +96,10 @@ public class DayPanel extends JPanel implements Printable, CalendarModule {
 		// flag to indicate if we need to reload from the model. If false, we can just redraw
 		// from cached data
 		private boolean needLoad = true;
+		
+		// records the last date on which a draw took place - for handling the
+		// first redraw after midnight
+		private int lastDrawDate = -1;
 
 		// background color
 		private Color backgroundColor = null;
@@ -171,6 +175,16 @@ public class DayPanel extends JPanel implements Printable, CalendarModule {
 
 			// save original clip
 			Shape s = g2.getClip();
+			
+			// get current time
+			GregorianCalendar now = new GregorianCalendar();
+			int tdate = now.get(Calendar.DATE);
+
+			// force reload if the date has changed since the last draw
+			if (lastDrawDate != tdate) {
+				needLoad = true;
+			}
+			lastDrawDate = tdate;
 
 			GregorianCalendar cal = new GregorianCalendar(year_, month_, date_,
 					23, 59);

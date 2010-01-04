@@ -105,6 +105,10 @@ public class WeekPanel extends JPanel implements Printable, CalendarModule {
 		// can just redraw
 		// from cached data
 		private boolean needLoad = true;
+		
+		// records the last date on which a draw took place - for handling the
+		// first redraw after midnight
+		private int lastDrawDate = -1;
 
 		// width of time column (where times are shown for y axis)
 		private double timecolwidth = 0;
@@ -177,6 +181,16 @@ public class WeekPanel extends JPanel implements Printable, CalendarModule {
 
 			// save original clip
 			Shape s = g2.getClip();
+			
+			// get current time
+			GregorianCalendar now = new GregorianCalendar();
+			int tdate = now.get(Calendar.DATE);
+
+			// force reload if the date has changed since the last draw
+			if (lastDrawDate != tdate) {
+				needLoad = true;
+			}
+			lastDrawDate = tdate;
 
 			// set up calendar and determine first day of week from options
 			GregorianCalendar cal = new GregorianCalendar(year_, month_, date_,
