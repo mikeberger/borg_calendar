@@ -62,8 +62,11 @@ public class AppointmentTextFormat {
 		// add time in front of the appt text
 		if (!AppointmentModel.isNote(appt)) {
 			Date d = appt.getDate();
-			SimpleDateFormat sdf = AppointmentModel.getTimeFormat();
-			theFormattedText += sdf.format(d) + " ";
+			if( d != null )
+			{	
+				SimpleDateFormat sdf = AppointmentModel.getTimeFormat();
+				theFormattedText += sdf.format(d) + " ";
+			}
 		}
 
 		if (appt.isEncrypted()) {
