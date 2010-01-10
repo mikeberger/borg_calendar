@@ -246,12 +246,12 @@ public class Day {
 		boolean dstYesterday = TimeZone.getDefault().inDaylightTime(
 				gc.getTime());
 		if (dstNow && !dstYesterday) {
-			Appointment hol = new Appointment();
+			LabelEntity hol = new LabelEntity();
 			hol.setColor("black");
 			hol.setText(Resource.getResourceString("Daylight_Savings_Time"));
 			ret.addItem(hol);
 		} else if (!dstNow && dstYesterday) {
-			Appointment hol = new Appointment();
+			LabelEntity hol = new LabelEntity();
 			hol.setColor("black");
 			hol.setText(Resource.getResourceString("Standard_Time"));
 			ret.addItem(hol);
