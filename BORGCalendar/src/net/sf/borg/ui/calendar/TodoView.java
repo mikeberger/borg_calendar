@@ -1055,6 +1055,12 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 						continue;
 					if (st.getCloseDate() != null)
 						continue;
+					
+					Task task = TaskModel.getReference().getTask(st.getTask().intValue());
+					String cat = task.getCategory();
+
+					if (!CategoryModel.getReference().isShown(cat))
+						continue;
 
 					// build a string for the table - with prefix if needed
 					String abb = "";
@@ -1065,7 +1071,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 					Object[] ro = new Object[5];
 					ro[0] = st.getDueDate();
 					ro[1] = btstring;
-					ro[2] = "";
+					ro[2] = cat;
 					ro[3] = "navy";
 					ro[4] = null;
 
