@@ -61,6 +61,9 @@ import net.sf.borg.model.entity.LabelEntity;
 abstract class ApptBoxPanel extends JPanel implements ComponentListener {
 
 	private static final long serialVersionUID = 1L;
+	
+	// rectangle corner radius
+	private static final int radius = 2;
 
 	/**
 	 * ClickedBoxInfo contains information about where the mouse is and what
@@ -79,10 +82,7 @@ abstract class ApptBoxPanel extends JPanel implements ComponentListener {
 	 * user drags the mouse to create a new, timed appointment
 	 */
 	private class DragNewBox extends Box {
-
-		// rectangle corner radius
-		private static final int radius = 5;
-
+		
 		// border thickness
 		private BasicStroke thicker = new BasicStroke(4.0f);
 
@@ -713,7 +713,6 @@ abstract class ApptBoxPanel extends JPanel implements ComponentListener {
 		}
 
 		// draw the resize rectangle if needed
-		int radius = 5;
 		if (resizeRectangle != null) {
 			g2.setColor(Color.RED);
 			g2.drawRoundRect(resizeRectangle.x, resizeRectangle.y,

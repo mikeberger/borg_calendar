@@ -74,7 +74,7 @@ class ApptBox extends Box implements Box.Draggable {
 	final static private int inset = 2;
 
 	// rounded rectangle radius
-	final static private int radius = 5;
+	final static private int radius = 2;
 
 	/**
 	 * Layout all boxes for a particular day by determining how many overlap and
