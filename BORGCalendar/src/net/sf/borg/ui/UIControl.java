@@ -155,7 +155,8 @@ public class UIControl {
 				.getResourceString("License")));
 
 		// make the main window visible
-		mv.setVisible(true);
+		if( !Prefs.getBoolPref(PrefName.BACKGSTART) || !SunTrayIconProxy.hasTrayIcon())
+			mv.setVisible(true);
 
 		// show the month view
 		mv.setView(ViewType.MONTH);
@@ -176,6 +177,7 @@ public class UIControl {
 	 * raise the UI to the front
 	 */
 	public static void toFront() {
+		MultiView.getMainView().setVisible(true);
 		MultiView.getMainView().toFront();
 		MultiView.getMainView().setState(Frame.NORMAL);
 	}

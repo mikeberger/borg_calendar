@@ -50,7 +50,6 @@ public class MultiView extends View {
 
 	private static final long serialVersionUID = 1L;
 
-
 	/**
 	 * interface implemented by all UI Modules. The MultiView manages a set of
 	 * UI Modules. Each Module is responsible for providing a component to show
@@ -66,9 +65,10 @@ public class MultiView extends View {
 		 * @return the name
 		 */
 		public String getModuleName();
-		
+
 		/**
 		 * get the modules ViewType
+		 * 
 		 * @return the ViewType
 		 */
 		public ViewType getViewType();
@@ -109,7 +109,6 @@ public class MultiView extends View {
 		 */
 		public void goTo(Calendar cal);
 	}
-	
 
 	/** argument values for setView() */
 	public enum ViewType {
@@ -127,8 +126,6 @@ public class MultiView extends View {
 	public static MultiView getMainView() {
 		if (mainView == null)
 			mainView = new MultiView();
-		else if (!mainView.isShowing())
-			mainView.setVisible(true);
 		return (mainView);
 	}
 
@@ -194,15 +191,15 @@ public class MultiView extends View {
 					public void actionPerformed(ActionEvent evt) {
 						print();
 					}
-				},0);
-		
+				}, 0);
+
 		mainMenu.addAction(new ImageIcon(getClass().getResource(
-		"/resource/Delete16.gif")), Resource.getResourceString("close_tabs"),
-		new ActionListener() {
+				"/resource/Delete16.gif")), Resource
+				.getResourceString("close_tabs"), new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				closeTabs();
 			}
-		},1);
+		}, 1);
 
 		// add the tool bar
 		GridBagConstraints cons = new java.awt.GridBagConstraints();
@@ -225,7 +222,6 @@ public class MultiView extends View {
 		setTitle("BORG");
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		pack();
-		setVisible(true);
 		setView(ViewType.MONTH); // start month view
 		manageMySize(PrefName.DAYVIEWSIZE);
 	}
@@ -248,6 +244,7 @@ public class MultiView extends View {
 
 		mainMenu.addAction(icon, tooltip, action, toolBarInsertIndex++);
 	}
+
 	private int toolBarInsertIndex = 0;
 
 	/**
@@ -264,7 +261,6 @@ public class MultiView extends View {
 		mainMenu.addHelpMenuItem(icon, tooltip, action);
 	}
 
-	
 	/**
 	 * close the main view. If the system tray icon is active, the program stays
 	 * running. If no system tray icon is active, the program shuts down
@@ -320,7 +316,7 @@ public class MultiView extends View {
 	 */
 	private Module getModuleForView(ViewType type) {
 		for (Module m : moduleSet) {
-			if( type == m.getViewType())
+			if (type == m.getViewType())
 				return m;
 		}
 		return null;
@@ -383,13 +379,14 @@ public class MultiView extends View {
 				((CalendarModule) m).goTo(cal);
 		}
 	}
-	
+
 	/**
 	 * add a new module to the multi view
-	 * @param m the module
+	 * 
+	 * @param m
+	 *            the module
 	 */
-	public void addModule(Module m)
-	{
+	public void addModule(Module m) {
 		moduleSet.add(m);
 		m.initialize(this);
 	}
@@ -418,7 +415,6 @@ public class MultiView extends View {
 		// nothing to refresh for this view
 	}
 
-
 	/**
 	 * Sets the currently selected tab to be a particular view as defined in
 	 * ViewType.
@@ -435,10 +431,10 @@ public class MultiView extends View {
 			if (component != null) {
 				if (!component.isDisplayable()) {
 					if (component instanceof DockableView) {
-						((DockableView)component).showView();
+						((DockableView) component).showView();
 						return component;
-					} 
-					tabs_.addTab(m.getModuleName(), component);		
+					}
+					tabs_.addTab(m.getModuleName(), component);
 				}
 				getTabs().setSelectedComponent(component);
 			}

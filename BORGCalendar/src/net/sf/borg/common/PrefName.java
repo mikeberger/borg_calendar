@@ -122,6 +122,9 @@ public class PrefName {
 	/** port for the socket listener */
 	static public PrefName SOCKETPORT = new PrefName("socketport", new Integer(
 			2929));
+	
+	/** start as iconified to system tray */
+	static public PrefName BACKGSTART = new PrefName( "backgstart", "false");
 
 	/** use system tray */
 	static public PrefName USESYSTRAY = new PrefName("useSysTray", "true");

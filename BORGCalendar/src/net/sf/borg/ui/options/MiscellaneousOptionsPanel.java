@@ -50,6 +50,7 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 	private JCheckBox stackbox;
 
 	private JCheckBox useSysTray = new JCheckBox();
+	private JCheckBox startToSysTray = new JCheckBox();
 
 	/**
 	 * Instantiates a new miscellaneous options panel.
@@ -82,6 +83,10 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 		useSysTray.setText(Resource.getResourceString("enable_systray"));
 		this.add(useSysTray, GridBagConstraintsFactory.create(0, 10,
 				GridBagConstraints.BOTH));
+		
+		startToSysTray.setText(Resource.getResourceString("StartToSysTray"));
+		this.add(startToSysTray, GridBagConstraintsFactory.create(0, 11,
+				GridBagConstraints.BOTH));
 
 		JPanel backp = new JPanel();
 		backp.setLayout(new GridBagLayout());
@@ -110,13 +115,13 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 		backp.add(bb, GridBagConstraintsFactory.create(2, 0,
 				GridBagConstraints.NONE));
 
-		GridBagConstraints gbc1 = GridBagConstraintsFactory.create(0, 11,
+		GridBagConstraints gbc1 = GridBagConstraintsFactory.create(0, 12,
 				GridBagConstraints.BOTH, 1.0, 0.0);
 		gbc1.gridwidth = 2;
 		this.add(backp, gbc1);
 
 		ResourceHelper.setText(colorprint, "Print_In_Color?");
-		this.add(colorprint, GridBagConstraintsFactory.create(0, 12,
+		this.add(colorprint, GridBagConstraintsFactory.create(0, 13,
 				GridBagConstraints.BOTH));
 	}
 
@@ -133,6 +138,7 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 		OptionsPanel.setBooleanPref(stackbox, PrefName.STACKTRACE);
 
 		OptionsPanel.setBooleanPref(useSysTray, PrefName.USESYSTRAY);
+		OptionsPanel.setBooleanPref(startToSysTray, PrefName.BACKGSTART);
 
 		Prefs.putPref(PrefName.BACKUPDIR, backupDir.getText());
 
@@ -163,6 +169,8 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 		OptionsPanel.setCheckBox(stackbox, PrefName.STACKTRACE);
 
 		OptionsPanel.setCheckBox(useSysTray, PrefName.USESYSTRAY);
+		OptionsPanel.setCheckBox(startToSysTray, PrefName.BACKGSTART);
+
 		int socket = Prefs.getIntPref(PrefName.SOCKETPORT);
 		socketPort.setText(Integer.toString(socket));
 

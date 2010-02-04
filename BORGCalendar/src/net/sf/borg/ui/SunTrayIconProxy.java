@@ -108,7 +108,7 @@ class SunTrayIconProxy {
 
 			public void actionPerformed(ActionEvent e) {
 				MultiView.getMainView().setView(ViewType.ADDRESS);
-
+				MultiView.getMainView().setVisible(true);
 			}
 		});
 		popup.add(item);
@@ -119,6 +119,7 @@ class SunTrayIconProxy {
 
 			public void actionPerformed(ActionEvent e) {
 				MultiView.getMainView().setView(ViewType.TODO);
+				MultiView.getMainView().setVisible(true);
 			}
 		});
 		popup.add(item);
