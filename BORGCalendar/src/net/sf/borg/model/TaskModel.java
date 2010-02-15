@@ -714,13 +714,13 @@ public class TaskModel extends Model implements Model.Listener,
 
 		}
 
+		// use key from import file if importing into empty db
+		int nextSubTaskKey = db_.nextSubTaskKey();
+		boolean use_keys = (nextSubTaskKey == 1) ? true : false;
 		for (Subtask subtask : container.Subtask) {
-			try {
-				subtask.setKey(-1);
-				saveSubTask(subtask);
-			} catch (Exception e) {
-				Errmsg.errmsg(e);
-			}
+			if( !use_keys )
+				subtask.setKey(nextSubTaskKey++);
+			db_.addSubTask(subtask);
 		}
 
 		for (Tasklog tlog : container.Tasklog) {

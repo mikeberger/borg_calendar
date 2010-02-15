@@ -217,9 +217,15 @@ public class AddressModel extends Model implements Searchable<Address> {
 			  (XmlContainer)u.unmarshal(
 			    new FileInputStream( fileName ) );
 
+		
+		
+		// use key from import file if importing into empty db
+		int nextkey = db_.nextkey();
+		boolean use_keys = (nextkey == 1) ? true : false;
 		for (Address addr : container.Address ) {
-			addr.setKey(-1);
-			saveAddress(addr);
+			if( !use_keys )
+				addr.setKey(nextkey++);
+			db_.addObj(addr);
 		}
 
 		refresh();

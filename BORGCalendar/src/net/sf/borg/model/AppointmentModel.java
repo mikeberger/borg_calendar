@@ -666,8 +666,12 @@ public class AppointmentModel extends Model implements Model.Listener,
 		XmlContainer container = (XmlContainer) u
 				.unmarshal(new FileInputStream(fileName));
 
+		// use key from import file if importing into empty db
+		int nextkey = db_.nextkey();
+		boolean use_keys = (nextkey == 1) ? true : false;
 		for (Appointment appt : container.Appointment) {
-			appt.setKey(db_.nextkey());
+			if( !use_keys )
+				appt.setKey(nextkey++);
 			db_.addObj(appt);
 		}
 

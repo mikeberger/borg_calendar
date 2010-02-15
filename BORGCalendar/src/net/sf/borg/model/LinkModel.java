@@ -413,9 +413,13 @@ public class LinkModel extends Model {
 		XmlContainer container = (XmlContainer) u
 				.unmarshal(new FileInputStream(fileName));
 
+		// use key from import file if importing into empty db
+		int nextkey = db_.nextkey();
+		boolean use_keys = (nextkey == 1) ? true : false;
 		for (Link link : container.Link) {
-			link.setKey(-1);
-			saveLink(link);
+			if( !use_keys )
+				link.setKey(nextkey++);
+			db_.addObj(link);
 		}
 
 		refresh();
