@@ -68,7 +68,9 @@ import net.sf.borg.model.entity.Subtask;
 import net.sf.borg.model.entity.Task;
 import net.sf.borg.model.entity.Tasklog;
 import net.sf.borg.ui.DockableView;
+import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.ResourceHelper;
+import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.link.LinkPanel;
 import net.sf.borg.ui.util.DateDialog;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
@@ -1210,6 +1212,9 @@ public class TaskView extends DockableView {
 				this.remove();
 			else
 				this.getParent().remove(this);
+			
+			// go back to task view when saving a task
+			MultiView.getMainView().setView(ViewType.TASK);
 
 		} catch (Warning w) {
 			Errmsg.notice(w.getMessage());
