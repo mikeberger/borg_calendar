@@ -207,7 +207,8 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 		OptionsPanel.setBooleanPref(truncbox, PrefName.TRUNCAPPT);
 		OptionsPanel.setBooleanPref(iso8601Box, PrefName.ISOWKNUMBER);
 		OptionsPanel.setBooleanPref(dock, PrefName.DOCKPANELS);
-		OptionsPanel.setBooleanPref(hide_strike_box, PrefName.HIDESTRIKETHROUGH);
+		OptionsPanel
+				.setBooleanPref(hide_strike_box, PrefName.HIDESTRIKETHROUGH);
 
 		// first day of week - either monday or sunday
 		if (mondaycb.isSelected()) {
@@ -297,45 +298,27 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 			lnfs.add(name);
 		}
 
-		// search for other well know ones and add if they are in the classpath
-		try {
-			Class.forName("com.jgoodies.looks.plastic.PlasticLookAndFeel");
-			lnfs.add("com.jgoodies.looks.plastic.PlasticLookAndFeel");
-		} catch (Exception e) {
-			// empty
+		// search for other well known ones and add if they are in the classpath
+		String[] looks = { "com.jgoodies.looks.plastic.PlasticLookAndFeel",
+				"com.jgoodies.looks.windows.WindowsLookAndFeel",
+				"com.jgoodies.looks.plastic.PlasticXPLookAndFeel",
+				"com.jgoodies.looks.plastic.Plastic3DLookAndFeel",
+				"com.incors.plaf.kunststoff.KunststoffLookAndFeel",
+				"de.javasoft.plaf.synthetica.SyntheticaStandardLookAndFeel",
+				"net.infonode.gui.laf.InfoNodeLookAndFeel",
+				"com.lipstikLF.LipstikLookAndFeel",
+				"org.fife.plaf.Office2003.Office2003LookAndFeel" };
+		
+		for( String look : looks )
+		{
+			try {
+				Class.forName(look);
+				lnfs.add(look);
+			} catch (Exception e) {
+				// empty
+			}
 		}
-		try {
-			Class.forName("com.jgoodies.looks.windows.WindowsLookAndFeel");
-			lnfs.add("com.jgoodies.looks.windows.WindowsLookAndFeel");
-		} catch (Exception e) {
-			// empty
-		}
-		try {
-			Class.forName("com.jgoodies.looks.plastic.PlasticXPLookAndFeel");
-			lnfs.add("com.jgoodies.looks.plastic.PlasticXPLookAndFeel");
-		} catch (Exception e) {
-			// empty
-		}
-		try {
-			Class.forName("com.jgoodies.looks.plastic.Plastic3DLookAndFeel");
-			lnfs.add("com.jgoodies.looks.plastic.Plastic3DLookAndFeel");
-		} catch (Exception e) {
-			// empty
-		}
-		try {
-			Class.forName("com.incors.plaf.kunststoff.KunststoffLookAndFeel");
-			lnfs.add("com.incors.plaf.kunststoff.KunststoffLookAndFeel");
-		} catch (Exception e) {
-			// empty
-		}
-		try {
-			Class
-					.forName("de.javasoft.plaf.synthetica.SyntheticaStandardLookAndFeel");
-			lnfs
-					.add("de.javasoft.plaf.synthetica.SyntheticaStandardLookAndFeel");
-		} catch (Exception e) {
-			// empty
-		}
+
 
 		// add the look and feel in the preference store
 		lnfs.add(curlnf);
