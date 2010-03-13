@@ -64,6 +64,7 @@ import net.sf.borg.ui.util.TableSorter;
 public class ProjectPanel extends JPanel implements Model.Listener {
 
 	private static final long serialVersionUID = 1L;
+	private static final int MAGIC_NO_DUE_DATE = 9999; // magic days left value if no due date
 
 	/**
 	 * renderer to show the days left column in color
@@ -111,8 +112,7 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 			this.setBackground(l.getBackground());
 			this.setForeground(l.getForeground());
 
-			// 9999 is magical for unknown - change it to dashes
-			if (daysLeft == 9999)
+			if (daysLeft == MAGIC_NO_DUE_DATE)
 				this.setText("--");
 
 			// keep selected color as is
@@ -555,8 +555,8 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 				// days left
 				ro[7] = new Integer(0);
 				if (ro[4] == null)
-					// 9999 days left if no due date - this is a magic value
-					ro[7] = new Integer(9999);
+					// if no due date 
+					ro[7] = new Integer(MAGIC_NO_DUE_DATE);
 				else {
 					Date dd = (Date) ro[4];
 					ro[7] = new Integer(TaskModel.daysLeft(dd));

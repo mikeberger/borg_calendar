@@ -72,6 +72,9 @@ import com.toedter.calendar.JDateChooser;
 public class AppointmentPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
+	
+	// magic repeat times value that means repeat forever
+	private final static int MAGIC_RPT_FOREVER_VALUE = 9999;
 
 	/**
 	 * renders the colro selection pull-down with colored boxes as the choices.
@@ -1175,7 +1178,7 @@ public class AppointmentPanel extends JPanel {
 		// repeat times
 		Integer tm = null;
 		if (repeatForeverCheckBox.isSelected()) {
-			tm = new Integer(9999); // forever is 9999
+			tm = new Integer(MAGIC_RPT_FOREVER_VALUE); 
 		} else {
 			tm = (Integer) numberOfRepeatsSpinner.getValue();
 		}
@@ -1570,7 +1573,7 @@ public class AppointmentPanel extends JPanel {
 				// repeat times
 				Integer tm = appt.getTimes();
 				if (tm != null) {
-					if (tm.intValue() == 9999) { // 9999 means forever
+					if (tm.intValue() == MAGIC_RPT_FOREVER_VALUE) { 
 						repeatForeverCheckBox.setSelected(true);
 						numberOfRepeatsSpinner.setValue(new Integer(0));
 						numberOfRepeatsSpinner.setEnabled(false);
