@@ -1633,7 +1633,8 @@ public class AppointmentPanel extends JPanel {
 			repeatForeverCheckBox.setEnabled(false);
 			showRepeatNumberCheckBox.setEnabled(false);
 		} else {
-			numberOfRepeatsSpinner.setEnabled(true);
+			if( !repeatForeverCheckBox.isSelected())
+				numberOfRepeatsSpinner.setEnabled(true);
 			repeatForeverCheckBox.setEnabled(true);
 			showRepeatNumberCheckBox.setEnabled(true);
 		}
