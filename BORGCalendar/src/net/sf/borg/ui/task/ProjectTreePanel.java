@@ -177,7 +177,9 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 	private JCheckBox showClosedCheckBox = new JCheckBox(Resource
 			.getResourceString("show_closed"));
 
-
+	private JCheckBox showClosedTasksCheckBox = new JCheckBox(Resource
+			.getResourceString("show_closed_tasks"));
+	
 	/** The tree. */
 	private JTree tree = null;
 
@@ -218,6 +220,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 		treePane.setLayout(new GridBagLayout());
 		treePane.add(treeScrollPane, GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH, 1.0, 1.0));
 		treePane.add(showClosedCheckBox, GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH));
+		treePane.add(showClosedTasksCheckBox, GridBagConstraintsFactory.create(0, 2, GridBagConstraints.BOTH));
 
 		// Add the scroll panes to a split pane.
 		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
@@ -299,6 +302,13 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 				refresh();
 			}
 		});
+		
+		showClosedTasksCheckBox.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				refresh();
+			}
+		});
+
 
 		expandOrCollapseAll(isExpanded);
 	}
@@ -365,6 +375,11 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 		for( Task task : tasks) {
 			if (!CategoryModel.getReference().isShown(task.getCategory()))
 				continue;
+			
+			// filter out closed projects if needed
+			if (!showClosedTasksCheckBox.isSelected() && TaskModel.isClosed(task))
+				continue;
+			
 			String taskdesc = task.getDescription();
 			int newlineIndex = taskdesc.indexOf('\n');
 			if (newlineIndex != -1) 
