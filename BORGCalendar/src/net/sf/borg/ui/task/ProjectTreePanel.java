@@ -44,6 +44,8 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 import net.sf.borg.common.Errmsg;
+import net.sf.borg.common.PrefName;
+import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.Model;
@@ -54,21 +56,20 @@ import net.sf.borg.model.entity.Task;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 
 /**
- * Presents a split pane showing a tree of projects, subprojects, and tasks on the left
- * and the select item's details on the right.
+ * Presents a split pane showing a tree of projects, subprojects, and tasks on
+ * the left and the select item's details on the right.
  */
 public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
-		MouseListener, Model.Listener {
-	
-	
+		MouseListener, Model.Listener, Prefs.Listener {
+
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * A Node in the tree that contains the visible node name and
-	 * the related object
+	 * A Node in the tree that contains the visible node name and the related
+	 * object
 	 */
 	private class Node {
-		
+
 		/** The entity name. */
 		private String name;
 
@@ -78,8 +79,10 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 		/**
 		 * Instantiates a new node.
 		 * 
-		 * @param name the name
-		 * @param o the entity
+		 * @param name
+		 *            the name
+		 * @param o
+		 *            the entity
 		 */
 		public Node(String name, KeyedEntity<?> o) {
 			super();
@@ -109,7 +112,8 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 		/**
 		 * Sets the name.
 		 * 
-		 * @param name the new name
+		 * @param name
+		 *            the new name
 		 */
 		@SuppressWarnings("unused")
 		public void setName(String name) {
@@ -119,14 +123,17 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 		/**
 		 * Sets the entity.
 		 * 
-		 * @param entity the new entity
+		 * @param entity
+		 *            the new entity
 		 */
 		@SuppressWarnings("unused")
 		public void setEntity(KeyedEntity<?> obj) {
 			this.entity = obj;
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see java.lang.Object#toString()
 		 */
 		@Override
@@ -139,11 +146,15 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 	/**
 	 * Expand or Collapse all nodes in the tree under a given node
 	 * 
-	 * @param tree the tree
-	 * @param parent the start node
-	 * @param expand the expand
+	 * @param tree
+	 *            the tree
+	 * @param parent
+	 *            the start node
+	 * @param expand
+	 *            the expand
 	 */
-	static private void expandOrCollapseSubTree(JTree tree, TreePath parent, boolean expand) {
+	static private void expandOrCollapseSubTree(JTree tree, TreePath parent,
+			boolean expand) {
 
 		// recurse to call this method for every child
 		TreeNode node = (TreeNode) parent.getLastPathComponent();
@@ -155,7 +166,8 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 			}
 		}
 
-		// Expansion or collapse must be done bottom-up, so we do the actual work 
+		// Expansion or collapse must be done bottom-up, so we do the actual
+		// work
 		// after the recursive call
 		if (expand) {
 			tree.expandPath(parent);
@@ -164,7 +176,10 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 		}
 	}
 
-	/** true if the state of the tree is expanded - used to refresh in the same state */
+	/**
+	 * true if the state of the tree is expanded - used to refresh in the same
+	 * state
+	 */
 	private boolean isExpanded = true;
 
 	/** The project popup menu. */
@@ -179,7 +194,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 
 	private JCheckBox showClosedTasksCheckBox = new JCheckBox(Resource
 			.getResourceString("show_closed_tasks"));
-	
+
 	/** The tree. */
 	private JTree tree = null;
 
@@ -193,17 +208,17 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 	 * constructor
 	 */
 	public ProjectTreePanel() {
-		
+
 		super(new GridLayout(0, 1));
-		
+
 		// listen for task model changes
 		TaskModel.getReference().addListener(this);
-		
+
 		// Create the nodes.
 		DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(Resource
 				.getResourceString("projects"));
 		createNodes(rootNode);
-		
+
 		// Create a tree that allows one selection at a time.
 		tree = new JTree(rootNode);
 		tree.getSelectionModel().setSelectionMode(
@@ -218,9 +233,12 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 		// pane containing tree + show closed check box
 		JPanel treePane = new JPanel();
 		treePane.setLayout(new GridBagLayout());
-		treePane.add(treeScrollPane, GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH, 1.0, 1.0));
-		treePane.add(showClosedCheckBox, GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH));
-		treePane.add(showClosedTasksCheckBox, GridBagConstraintsFactory.create(0, 2, GridBagConstraints.BOTH));
+		treePane.add(treeScrollPane, GridBagConstraintsFactory.create(0, 0,
+				GridBagConstraints.BOTH, 1.0, 1.0));
+		treePane.add(showClosedCheckBox, GridBagConstraintsFactory.create(0, 1,
+				GridBagConstraints.BOTH));
+		treePane.add(showClosedTasksCheckBox, GridBagConstraintsFactory.create(
+				0, 2, GridBagConstraints.BOTH));
 
 		// Add the scroll panes to a split pane.
 		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
@@ -231,14 +249,13 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 		entityScrollPane.setMinimumSize(minimumSize);
 		treeScrollPane.setMinimumSize(minimumSize);
 		splitPane.setDividerLocation(250);
-		
+
 		add(splitPane);
-		
+
 		tree.addMouseListener(this);
-		
+
 		/*
 		 * root node popup menu
-		 * 
 		 */
 		JMenuItem jm = rootmenu.add(Resource.getResourceString("Add") + " "
 				+ Resource.getResourceString("project"));
@@ -247,7 +264,8 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 			public void actionPerformed(ActionEvent e) {
 				try {
 					// show a new project editor
-					ProjectView pv = new ProjectView(null, ProjectView.Action.ADD, null);
+					ProjectView pv = new ProjectView(null,
+							ProjectView.Action.ADD, null);
 					entityScrollPane.setViewportView(pv);
 				} catch (Exception ex) {
 					Errmsg.errmsg(ex);
@@ -274,7 +292,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 			}
 
 		});
-		
+
 		/*
 		 * project node popup menu
 		 */
@@ -302,20 +320,21 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 				refresh();
 			}
 		});
-		
+
 		showClosedTasksCheckBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				refresh();
 			}
 		});
 
-
 		expandOrCollapseAll(isExpanded);
+		
+		Prefs.addListener(this);
 	}
 
-	
 	/**
-	 * Add a new sub project as a child of the current project and show an editor for it
+	 * Add a new sub project as a child of the current project and show an
+	 * editor for it
 	 */
 	private void addSubProject() {
 
@@ -327,7 +346,8 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 			try {
 				ProjectView pv;
 				try {
-					pv = new ProjectView(null, ProjectView.Action.ADD, new Integer(p.getKey()));
+					pv = new ProjectView(null, ProjectView.Action.ADD,
+							new Integer(p.getKey()));
 					entityScrollPane.setViewportView(pv);
 				} catch (Exception e) {
 					Errmsg.errmsg(e);
@@ -341,7 +361,8 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 	}
 
 	/**
-	 * Add a new sub task as a child of the current project and show an editor for it
+	 * Add a new sub task as a child of the current project and show an editor
+	 * for it
 	 */
 	private void addTask() {
 		Object o = getSelectedEntity();
@@ -350,7 +371,8 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 		if (o instanceof Project) {
 			Project p = (Project) o;
 			try {
-				TaskView pv = new TaskView(null, TaskView.Action.ADD, new Integer(p.getKey()));
+				TaskView pv = new TaskView(null, TaskView.Action.ADD,
+						new Integer(p.getKey()));
 				entityScrollPane.setViewportView(pv);
 			} catch (Exception e1) {
 				Errmsg.errmsg(e1);
@@ -363,35 +385,44 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 	/**
 	 * Adds the project children to the tree
 	 * 
-	 * @param p the project
-	 * @param node the project node
+	 * @param p
+	 *            the project
+	 * @param node
+	 *            the project node
 	 * 
-	 * @throws Exception the exception
+	 * @throws Exception
+	 *             the exception
 	 */
 	private void addProjectChildren(Project p, DefaultMutableTreeNode node)
 			throws Exception {
-		
+
 		Collection<Task> tasks = TaskModel.getReference().getTasks(p.getKey());
-		for( Task task : tasks) {
+		for (Task task : tasks) {
 			if (!CategoryModel.getReference().isShown(task.getCategory()))
 				continue;
-			
+
 			// filter out closed projects if needed
-			if (!showClosedTasksCheckBox.isSelected() && TaskModel.isClosed(task))
+			if (!showClosedTasksCheckBox.isSelected()
+					&& TaskModel.isClosed(task))
 				continue;
-			
+
 			String taskdesc = task.getDescription();
 			int newlineIndex = taskdesc.indexOf('\n');
-			if (newlineIndex != -1) 
+			if (newlineIndex != -1)
 				taskdesc = taskdesc.substring(0, newlineIndex);
-				
-			node.add(new DefaultMutableTreeNode(new Node("[" + task.getKey() + "-"
-					+ task.getState() + "] " + taskdesc, task)));
+
+			if (Prefs.getBoolPref(PrefName.TASK_TREE_SHOW_STATUS)) {
+				node.add(new DefaultMutableTreeNode(new Node("["
+						+ task.getKey() + "-" + task.getState() + "] "
+						+ taskdesc, task)));
+			} else {
+				node.add(new DefaultMutableTreeNode(new Node(taskdesc, task)));
+			}
 		}
 
 		Collection<Project> subpcoll = TaskModel.getReference().getSubProjects(
 				p.getKey());
-		for(Project project : subpcoll ) {
+		for (Project project : subpcoll) {
 			if (!CategoryModel.getReference().isShown(project.getCategory()))
 				continue;
 			DefaultMutableTreeNode subnode = new DefaultMutableTreeNode(
@@ -405,33 +436,34 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 	/**
 	 * Creates the entire tree by adding all items in the task model
 	 * 
-	 * @param top the root node
+	 * @param top
+	 *            the root node
 	 */
 	private void createNodes(DefaultMutableTreeNode top) {
 
 		Collection<Project> projects;
 		try {
 			projects = TaskModel.getReference().getProjects();
-			for(Project p : projects) {
-				
+			for (Project p : projects) {
+
 				// filter out closed projects if needed
 				if (!showClosedCheckBox.isSelected() && TaskModel.isClosed(p))
 					continue;
-				
+
 				// filter by caegory
 				if (!CategoryModel.getReference().isShown(p.getCategory()))
 					continue;
-				
+
 				// don't add sub-projects - they are added later
 				if (p.getParent() != null)
 					continue;
-				
+
 				DefaultMutableTreeNode pnode = new DefaultMutableTreeNode(
 						new Node(p.getDescription(), p));
-				
+
 				// add the top level project node
 				top.add(pnode);
-				
+
 				// add the project's children
 				addProjectChildren(p, pnode);
 			}
@@ -444,7 +476,8 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 	/**
 	 * Expand or collapse all nodes
 	 * 
-	 * @param expand if true - expand, else collapse
+	 * @param expand
+	 *            if true - expand, else collapse
 	 */
 	public void expandOrCollapseAll(boolean expand) {
 		TreeNode root = (TreeNode) tree.getModel().getRoot();
@@ -482,7 +515,8 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 			return;
 
 		TreePath selPath = tree.getPathForLocation(e.getX(), e.getY());
-		if( selPath == null) return;
+		if (selPath == null)
+			return;
 		DefaultMutableTreeNode node = (DefaultMutableTreeNode) selPath
 				.getLastPathComponent();
 		if (node == null)
@@ -505,32 +539,41 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
 	 */
 	public void mouseEntered(MouseEvent arg0) {
-	  // empty
+		// empty
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
 	 */
 	public void mouseExited(MouseEvent arg0) {
-    // empty
+		// empty
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
 	 */
 	public void mousePressed(MouseEvent e) {
-    // empty
+		// empty
 	}
 
-	/* (non-Javadoc)
-	 * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
 	 */
 	public void mouseReleased(MouseEvent arg0) {
-    // empty
+		// empty
 	}
 
 	/**
@@ -553,20 +596,22 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 	}
 
 	/**
-	 * handle node selection in the tree. show the appropriate editor in
-	 * the right pane
+	 * handle node selection in the tree. show the appropriate editor in the
+	 * right pane
 	 * 
-	 * @param e the selection event
+	 * @param e
+	 *            the selection event
 	 */
 	public void valueChanged(TreeSelectionEvent e) {
 		Object o = getSelectedEntity();
 		if (o == null)
 			return;
-		
+
 		if (o instanceof Task) {
 			Task t = (Task) o;
 			try {
-				TaskView tv = new TaskView(t, TaskView.Action.CHANGE, t.getProject());
+				TaskView tv = new TaskView(t, TaskView.Action.CHANGE, t
+						.getProject());
 				entityScrollPane.setViewportView(tv);
 			} catch (Exception e1) {
 				Errmsg.errmsg(e1);
@@ -575,7 +620,8 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 		} else if (o instanceof Project) {
 			Project p = (Project) o;
 			try {
-				ProjectView pv = new ProjectView(p, ProjectView.Action.CHANGE, null);
+				ProjectView pv = new ProjectView(p, ProjectView.Action.CHANGE,
+						null);
 				entityScrollPane.setViewportView(pv);
 			} catch (Exception e1) {
 				Errmsg.errmsg(e1);
@@ -583,6 +629,14 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 			}
 		}
 
+	}
+
+	@Override
+	/**
+	 * update when prefs change
+	 */
+	public void prefsChanged() {
+		refresh();
 	}
 
 }

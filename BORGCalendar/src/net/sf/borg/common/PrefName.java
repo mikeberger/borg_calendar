@@ -389,6 +389,11 @@ public class PrefName {
 	/** show subtasks on calendar */
 	static public PrefName CAL_SHOW_SUBTASKS = new PrefName(
 			"cal_show_subtasks", "true");
+	
+	/** show task number and status in task tree */
+	static public PrefName TASK_TREE_SHOW_STATUS = new PrefName(
+			"task_tree_show_status", "false");
+
 
 	/** show subtasks on gantt chart */
 	static public PrefName GANTT_SHOW_SUBTASKS = new PrefName(

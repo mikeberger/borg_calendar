@@ -19,7 +19,6 @@
  */
 package net.sf.borg.ui.options;
 
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
@@ -42,6 +41,8 @@ public class TaskOptionsPanel extends OptionsPanel {
 	private JCheckBox calShowTaskBox = new JCheckBox();
 	private JCheckBox ganttShowSubtaskBox = new JCheckBox();
 	private JCheckBox taskAbbrevBox = new JCheckBox();
+	private JCheckBox taskTreeStatusBox = new JCheckBox();
+
 
 	/**
 	 * Instantiates a new task options panel.
@@ -56,31 +57,27 @@ public class TaskOptionsPanel extends OptionsPanel {
 		calShowTaskBox.setHorizontalAlignment(SwingConstants.LEFT);
 		taskAbbrevBox.setName("taskAbbrevBox");
 		taskAbbrevBox.setHorizontalAlignment(SwingConstants.LEFT);
-
-		GridBagConstraints gridBagConstraints20 = GridBagConstraintsFactory
-				.create(0, 2, GridBagConstraints.NONE);
-		gridBagConstraints20.anchor = GridBagConstraints.WEST;
-		GridBagConstraints gridBagConstraints21 = GridBagConstraintsFactory
-				.create(0, 3, GridBagConstraints.NONE);
-		gridBagConstraints21.anchor = GridBagConstraints.WEST;
-		GridBagConstraints gridBagConstraints19 = GridBagConstraintsFactory
-				.create(0, 1, GridBagConstraints.NONE);
-		gridBagConstraints19.anchor = GridBagConstraints.WEST;
-		GridBagConstraints gridBagConstraints17 = GridBagConstraintsFactory
-				.create(0, 0, GridBagConstraints.NONE);
-		gridBagConstraints17.anchor = GridBagConstraints.WEST;
-
+		taskTreeStatusBox.setName("taskTreeStatusBox");
+		taskTreeStatusBox.setHorizontalAlignment(SwingConstants.LEFT);
+		
+		GridBagConstraints gridBagConstraints = GridBagConstraintsFactory
+				.create(0, -1, GridBagConstraints.NONE);
+		gridBagConstraints.anchor = GridBagConstraints.WEST;
+		
 		this.setLayout(new GridBagLayout());
-		this.setSize(new Dimension(168, 159));
-		this.add(taskAbbrevBox, gridBagConstraints17);
-		this.add(calShowTaskBox, gridBagConstraints19);
-		this.add(calShowSubtaskBox, gridBagConstraints20);
-		this.add(ganttShowSubtaskBox, gridBagConstraints21);
+		this.add(taskAbbrevBox, gridBagConstraints);
+		this.add(calShowTaskBox, gridBagConstraints);
+		this.add(calShowSubtaskBox, gridBagConstraints);
+		this.add(ganttShowSubtaskBox, gridBagConstraints);
+		this.add(taskTreeStatusBox, gridBagConstraints);
+
 		taskAbbrevBox.setText(Resource.getResourceString("task_abbrev"));
 		calShowTaskBox.setText(Resource.getResourceString("calShowTask"));
 		calShowSubtaskBox.setText(Resource.getResourceString("calShowSubtask"));
 		ganttShowSubtaskBox.setText(Resource
 				.getResourceString("ganttShowSubtask"));
+		taskTreeStatusBox.setText(Resource.getResourceString("show_task_status_in_tree"));
+
 	}
 
 	/*
@@ -96,6 +93,7 @@ public class TaskOptionsPanel extends OptionsPanel {
 				PrefName.CAL_SHOW_SUBTASKS);
 		OptionsPanel.setBooleanPref(ganttShowSubtaskBox,
 				PrefName.GANTT_SHOW_SUBTASKS);
+		OptionsPanel.setBooleanPref(taskTreeStatusBox, PrefName.TASK_TREE_SHOW_STATUS);
 
 	}
 
@@ -112,6 +110,7 @@ public class TaskOptionsPanel extends OptionsPanel {
 		OptionsPanel.setCheckBox(calShowSubtaskBox, PrefName.CAL_SHOW_SUBTASKS);
 		OptionsPanel.setCheckBox(ganttShowSubtaskBox,
 				PrefName.GANTT_SHOW_SUBTASKS);
+		OptionsPanel.setCheckBox(taskTreeStatusBox, PrefName.TASK_TREE_SHOW_STATUS);
 
 	}
 
