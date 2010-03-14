@@ -63,6 +63,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
 
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
@@ -104,8 +105,15 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 	 * Adds user colors to the todo table
 	 */
 	class TodoTableCellRenderer extends DefaultTableCellRenderer {
+		
+		private TableCellRenderer originalRenderer = null;
 
 		private static final long serialVersionUID = 1L;
+		
+		TodoTableCellRenderer(TableCellRenderer orig)
+		{
+			originalRenderer = orig;
+		}
 
 		/*
 		 * (non-Javadoc)
@@ -117,15 +125,17 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 		@Override
 		public Component getTableCellRendererComponent(JTable table,
 				Object value, boolean isSelected, boolean hasFocus, int row,
-				int column) {
-
-			super.getTableCellRendererComponent(table, value, isSelected,
+				int column) {			
+			
+			Component c = originalRenderer.getTableCellRendererComponent(table, value, isSelected,
 					hasFocus, row, column);
+			
+			if( !user_colors )
+				return c;
 
 			DateFormat sdf = DateFormat.getDateInstance();
 
-			JLabel theTableCellComponent = new JLabel(getText());
-			theTableCellComponent.setOpaque(true);
+			JLabel theTableCellComponent = (JLabel) c;
 			if (isSelected) {
 				theTableCellComponent.setForeground(Color.BLACK);
 				theTableCellComponent.setBackground(Color.ORANGE);
@@ -183,7 +193,6 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 				theTableCellComponent.setToolTipText(theTableCellComponent
 						.getText());
 			}
-			theTableCellComponent.setBorder(new EmptyBorder(2, 2, 2, 2));
 			return theTableCellComponent;
 		}
 	}
@@ -314,6 +323,9 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 	/** The todo text. */
 	private JTextField todoText;
 
+	/** cached copy of user-colors preference */
+	private boolean user_colors = false;
+
 	/**
 	 * Instantiates a new todo view.
 	 */
@@ -345,13 +357,13 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 		todoTable.getColumnModel().getColumn(1).setPreferredWidth(400);
 		todoTable.getColumnModel().getColumn(2).setPreferredWidth(120);
 
-		// set user color renderer if option set
-		if (Prefs.getPref(PrefName.UCS_ONTODO).equals("true")) {
-			todoTable.setDefaultRenderer(Object.class,
-					new TodoTableCellRenderer());
-			todoTable.setDefaultRenderer(Date.class,
-					new TodoTableCellRenderer());
-		}
+		user_colors = Prefs.getBoolPref(PrefName.UCS_ONTODO);
+
+		// set user color renderer
+		TableCellRenderer defaultObjectRenderer = todoTable.getDefaultRenderer(Object.class);
+		todoTable.setDefaultRenderer(Object.class, new TodoTableCellRenderer(defaultObjectRenderer));
+		TableCellRenderer defaultDateRenderer = todoTable.getDefaultRenderer(Date.class);
+		todoTable.setDefaultRenderer(Date.class, new TodoTableCellRenderer(defaultDateRenderer));
 
 		// remove the hidden columns - color and key
 		todoTable.removeColumn(todoTable.getColumnModel().getColumn(3));
@@ -872,6 +884,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 	 * @see net.sf.borg.common.Prefs.Listener#prefsChanged()
 	 */
 	public void prefsChanged() {
+		user_colors = Prefs.getBoolPref(PrefName.UCS_ONTODO);
 		refresh();
 	}
 
@@ -926,7 +939,6 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 			Appointment r = (Appointment) tdit.next();
 
 			try {
-				
 
 				// date is the next todo field if present, otherwise
 				// the due date
@@ -934,7 +946,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 				if (nt == null) {
 					nt = r.getDate();
 				}
-				
+
 				// get appt text
 				String tx = AppointmentTextFormat.format(r, nt);
 
@@ -1055,8 +1067,9 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 						continue;
 					if (st.getCloseDate() != null)
 						continue;
-					
-					Task task = TaskModel.getReference().getTask(st.getTask().intValue());
+
+					Task task = TaskModel.getReference().getTask(
+							st.getTask().intValue());
 					String cat = task.getCategory();
 
 					if (!CategoryModel.getReference().isShown(cat))
