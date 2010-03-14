@@ -128,6 +128,9 @@ public class PrefName {
 
 	/** use system tray */
 	static public PrefName USESYSTRAY = new PrefName("useSysTray", "true");
+	
+	/** show date is system tray */
+	static public PrefName SYSTRAYDATE = new PrefName("sysTrayDate", "true");
 
 	/** backup directory for auto backup */
 	static public PrefName BACKUPDIR = new PrefName("backupDir", "");

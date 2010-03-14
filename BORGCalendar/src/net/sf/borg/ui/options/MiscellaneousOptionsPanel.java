@@ -51,17 +51,18 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 
 	private JCheckBox useSysTray = new JCheckBox();
 	private JCheckBox startToSysTray = new JCheckBox();
+	private JCheckBox dateInSysTray = new JCheckBox();
 
 	/**
 	 * Instantiates a new miscellaneous options panel.
 	 */
 	public MiscellaneousOptionsPanel() {
-		
+
 		colorprint = new JCheckBox();
 
 		splashbox = new JCheckBox();
 		stackbox = new JCheckBox();
-		
+
 		this.setLayout(new java.awt.GridBagLayout());
 
 		ResourceHelper.setText(splashbox, "splash");
@@ -69,23 +70,28 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 				GridBagConstraints.BOTH));
 
 		ResourceHelper.setText(stackbox, "stackonerr");
-		this.add(stackbox, GridBagConstraintsFactory.create(0, 40,
+		this.add(stackbox, GridBagConstraintsFactory.create(0, 1,
 				GridBagConstraints.BOTH));
 
 		JLabel sportlabel = new JLabel();
 		ResourceHelper.setText(sportlabel, "socket_port");
-		this.add(sportlabel, GridBagConstraintsFactory.create(0, 9,
+		this.add(sportlabel, GridBagConstraintsFactory.create(0, 2,
 				GridBagConstraints.BOTH));
 
-		this.add(socketPort, GridBagConstraintsFactory.create(1, 9,
+		this.add(socketPort, GridBagConstraintsFactory.create(1, 2,
 				GridBagConstraints.BOTH));
 
 		useSysTray.setText(Resource.getResourceString("enable_systray"));
-		this.add(useSysTray, GridBagConstraintsFactory.create(0, 10,
+		this.add(useSysTray, GridBagConstraintsFactory.create(0, 3,
 				GridBagConstraints.BOTH));
-		
+
 		startToSysTray.setText(Resource.getResourceString("StartToSysTray"));
-		this.add(startToSysTray, GridBagConstraintsFactory.create(0, 11,
+		this.add(startToSysTray, GridBagConstraintsFactory.create(0, 3,
+				GridBagConstraints.BOTH));
+
+		dateInSysTray.setText(Resource
+				.getResourceString("show_date_in_systray"));
+		this.add(dateInSysTray, GridBagConstraintsFactory.create(0, 4,
 				GridBagConstraints.BOTH));
 
 		JPanel backp = new JPanel();
@@ -115,13 +121,13 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 		backp.add(bb, GridBagConstraintsFactory.create(2, 0,
 				GridBagConstraints.NONE));
 
-		GridBagConstraints gbc1 = GridBagConstraintsFactory.create(0, 12,
+		GridBagConstraints gbc1 = GridBagConstraintsFactory.create(0, 5,
 				GridBagConstraints.BOTH, 1.0, 0.0);
 		gbc1.gridwidth = 2;
 		this.add(backp, gbc1);
 
 		ResourceHelper.setText(colorprint, "Print_In_Color?");
-		this.add(colorprint, GridBagConstraintsFactory.create(0, 13,
+		this.add(colorprint, GridBagConstraintsFactory.create(0, 6,
 				GridBagConstraints.BOTH));
 	}
 
@@ -139,6 +145,7 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 
 		OptionsPanel.setBooleanPref(useSysTray, PrefName.USESYSTRAY);
 		OptionsPanel.setBooleanPref(startToSysTray, PrefName.BACKGSTART);
+		OptionsPanel.setBooleanPref(dateInSysTray, PrefName.SYSTRAYDATE);
 
 		Prefs.putPref(PrefName.BACKUPDIR, backupDir.getText());
 
@@ -170,6 +177,7 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 
 		OptionsPanel.setCheckBox(useSysTray, PrefName.USESYSTRAY);
 		OptionsPanel.setCheckBox(startToSysTray, PrefName.BACKGSTART);
+		OptionsPanel.setCheckBox(dateInSysTray, PrefName.SYSTRAYDATE);
 
 		int socket = Prefs.getIntPref(PrefName.SOCKETPORT);
 		socketPort.setText(Integer.toString(socket));

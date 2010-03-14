@@ -361,7 +361,7 @@ class MainMenu {
 	 * show the about window
 	 * 
 	 */
-	private void AboutMIActionPerformed() {
+	static public void AboutMIActionPerformed() {
 
 		// show the About data
 		String build_info = "";
@@ -370,7 +370,7 @@ class MainMenu {
 			// get the version and build info from a properties file in the
 			// jar
 			// file
-			InputStream is = getClass().getResource("/properties").openStream();
+			InputStream is = MainMenu.class.getResource("/properties").openStream();
 			Properties props = new Properties();
 			props.load(is);
 			is.close();
@@ -399,7 +399,7 @@ class MainMenu {
 		Object opts[] = { Resource.getResourceString("Dismiss") };
 		JOptionPane.showOptionDialog(null, info, Resource
 				.getResourceString("About_BORG"), JOptionPane.YES_NO_OPTION,
-				JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getClass()
+				JOptionPane.INFORMATION_MESSAGE, new ImageIcon(MainMenu.class
 						.getResource("/resource/borg.jpg")), opts, opts[0]);
 
 	}

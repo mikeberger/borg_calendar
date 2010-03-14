@@ -27,7 +27,6 @@ package net.sf.borg.ui.popup;
 
 import java.applet.Applet;
 import java.applet.AudioClip;
-import java.awt.EventQueue;
 import java.awt.Toolkit;
 import java.io.File;
 import java.net.URL;
@@ -43,6 +42,8 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Map.Entry;
+
+import javax.swing.SwingUtilities;
 
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
@@ -200,7 +201,7 @@ public class ReminderPopupManager implements Model.Listener {
 		timer.schedule(new TimerTask() {
 			@Override
 			public void run() {
-				EventQueue.invokeLater(doPopupChk);
+				SwingUtilities.invokeLater(doPopupChk);
 			}
 		}, secs_left * 1000,
 				Prefs.getIntPref(PrefName.REMINDERCHECKMINS) * 60 * 1000);
