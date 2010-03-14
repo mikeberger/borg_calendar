@@ -35,7 +35,7 @@ import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.options.OptionsView.OptionsPanel;
-import net.sf.borg.ui.util.JButtonKnowsBgColor;
+import net.sf.borg.ui.util.ColorChooserButton;
 import net.sf.borg.ui.util.StripedTable;
 
 /**
@@ -48,23 +48,23 @@ public class ColorOptionsPanel extends OptionsPanel {
 	/*
 	 * the user color scheme buttons that let the user set colors
 	 */
-	private JButtonKnowsBgColor btn_ucs_birthdays;
+	private ColorChooserButton btn_ucs_birthdays;
 
-	private JButtonKnowsBgColor btn_ucs_black;
-	private JButtonKnowsBgColor btn_ucs_blue;
-	private JButtonKnowsBgColor btn_ucs_default;
-	private JButtonKnowsBgColor btn_ucs_green;
-	private JButtonKnowsBgColor btn_ucs_halfday;
-	private JButtonKnowsBgColor btn_ucs_holiday;
-	private JButtonKnowsBgColor btn_ucs_holidays;
-	private JButtonKnowsBgColor btn_ucs_red;
-	private JButtonKnowsBgColor btn_ucs_stripe;
-	private JButtonKnowsBgColor btn_ucs_tasks;
-	private JButtonKnowsBgColor btn_ucs_today;
-	private JButtonKnowsBgColor btn_ucs_vacation;
-	private JButtonKnowsBgColor btn_ucs_weekday;
-	private JButtonKnowsBgColor btn_ucs_weekend;
-	private JButtonKnowsBgColor btn_ucs_white;
+	private ColorChooserButton btn_ucs_black;
+	private ColorChooserButton btn_ucs_blue;
+	private ColorChooserButton btn_ucs_default;
+	private ColorChooserButton btn_ucs_green;
+	private ColorChooserButton btn_ucs_halfday;
+	private ColorChooserButton btn_ucs_holiday;
+	private ColorChooserButton btn_ucs_holidays;
+	private ColorChooserButton btn_ucs_red;
+	private ColorChooserButton btn_ucs_stripe;
+	private ColorChooserButton btn_ucs_tasks;
+	private ColorChooserButton btn_ucs_today;
+	private ColorChooserButton btn_ucs_vacation;
+	private ColorChooserButton btn_ucs_weekday;
+	private ColorChooserButton btn_ucs_weekend;
+	private ColorChooserButton btn_ucs_white;
 	private JCheckBox cb_ucs_marktodo;
 
 	private JCheckBox cb_ucs_ontodo;
@@ -82,116 +82,97 @@ public class ColorOptionsPanel extends OptionsPanel {
 		ResourceHelper.setText(cb_ucs_ontodo, "ucolortext1");
 		cb_ucs_marktodo = new JCheckBox();
 		ResourceHelper.setText(cb_ucs_marktodo, "ucolortext2");
-		tf_ucs_marker = new JTextField("! "); //$NON-NLS-1$
-		btn_ucs_red = new JButtonKnowsBgColor(Resource
-				.getResourceString("ucolortext4"), Color.WHITE, false); //$NON-NLS-1$
-		btn_ucs_blue = new JButtonKnowsBgColor(Resource
-				.getResourceString("ucolortext5"), Color.WHITE, false); //$NON-NLS-1$
-		btn_ucs_green = new JButtonKnowsBgColor(Resource
-				.getResourceString("ucolortext6"), Color.WHITE, false); //$NON-NLS-1$
-		btn_ucs_black = new JButtonKnowsBgColor(Resource
-				.getResourceString("ucolortext7"), Color.WHITE, false); //$NON-NLS-1$
-		btn_ucs_white = new JButtonKnowsBgColor(Resource
-				.getResourceString("ucolortext8"), Color.WHITE, false); //$NON-NLS-1$
-		btn_ucs_tasks = new JButtonKnowsBgColor(Resource
-				.getResourceString("ucolortext9"), Color.WHITE, false); //$NON-NLS-1$
-		btn_ucs_holidays = new JButtonKnowsBgColor(Resource
-				.getResourceString("ucolortext10"), Color.WHITE, //$NON-NLS-1$
-				false);
-		btn_ucs_birthdays = new JButtonKnowsBgColor(Resource
-				.getResourceString("ucolortext11"), Color.WHITE, //$NON-NLS-1$
-				false);
-		btn_ucs_default = new JButtonKnowsBgColor(Resource
-				.getResourceString("ucolortext12"), Color.WHITE, true); //$NON-NLS-1$
-		btn_ucs_holiday = new JButtonKnowsBgColor(Resource
-				.getResourceString("ucolortext13"), Color.WHITE, true); //$NON-NLS-1$
-		btn_ucs_halfday = new JButtonKnowsBgColor(Resource
-				.getResourceString("ucolortext14"), Color.WHITE, true); //$NON-NLS-1$
-		btn_ucs_vacation = new JButtonKnowsBgColor(Resource
-				.getResourceString("ucolortext15"), Color.WHITE, //$NON-NLS-1$
-				true);
-		btn_ucs_today = new JButtonKnowsBgColor(Resource
-				.getResourceString("ucolortext16"), Color.WHITE, true); //$NON-NLS-1$
-		btn_ucs_weekend = new JButtonKnowsBgColor(Resource
-				.getResourceString("ucolortext17"), Color.WHITE, true); //$NON-NLS-1$
-		btn_ucs_weekday = new JButtonKnowsBgColor(Resource
-				.getResourceString("ucolortext18"), Color.WHITE, true); //$NON-NLS-1$
-		btn_ucs_stripe = new JButtonKnowsBgColor(Resource
-				.getResourceString("stripecolor"), Color.WHITE, true);
+		tf_ucs_marker = new JTextField("! ");
+		btn_ucs_red = new ColorChooserButton(Resource
+				.getResourceString("ucolortext4"), Color.WHITE);
+		btn_ucs_blue = new ColorChooserButton(Resource
+				.getResourceString("ucolortext5"), Color.WHITE);
+		btn_ucs_green = new ColorChooserButton(Resource
+				.getResourceString("ucolortext6"), Color.WHITE);
+		btn_ucs_black = new ColorChooserButton(Resource
+				.getResourceString("ucolortext7"), Color.WHITE);
+		btn_ucs_white = new ColorChooserButton(Resource
+				.getResourceString("ucolortext8"), Color.WHITE);
+		btn_ucs_tasks = new ColorChooserButton(Resource
+				.getResourceString("ucolortext9"), Color.WHITE);
+		btn_ucs_holidays = new ColorChooserButton(Resource
+				.getResourceString("ucolortext10"), Color.WHITE);
+		btn_ucs_birthdays = new ColorChooserButton(Resource
+				.getResourceString("ucolortext11"), Color.WHITE);
+		btn_ucs_default = new ColorChooserButton(Resource
+				.getResourceString("ucolortext12"), Color.WHITE);
+		btn_ucs_holiday = new ColorChooserButton(Resource
+				.getResourceString("ucolortext13"), Color.WHITE);
+		btn_ucs_halfday = new ColorChooserButton(Resource
+				.getResourceString("ucolortext14"), Color.WHITE);
+		btn_ucs_vacation = new ColorChooserButton(Resource
+				.getResourceString("ucolortext15"), Color.WHITE);
+		btn_ucs_today = new ColorChooserButton(Resource
+				.getResourceString("ucolortext16"), Color.WHITE);
+		btn_ucs_weekend = new ColorChooserButton(Resource
+				.getResourceString("ucolortext17"), Color.WHITE);
+		btn_ucs_weekday = new ColorChooserButton(Resource
+				.getResourceString("ucolortext18"), Color.WHITE);
+		btn_ucs_stripe = new ColorChooserButton(Resource
+				.getResourceString("stripecolor"), Color.WHITE);
 
 		JButton btn_ucs_restore = new JButton(Resource
-				.getResourceString("restore_defaults")); //$NON-NLS-1$
+				.getResourceString("restore_defaults"));
 
 		btn_ucs_restore.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				btn_ucs_red.setColorProperty(new Color(
 						((Integer) PrefName.UCS_RED.getDefault()).intValue()));
-				btn_ucs_red.setColorByProperty();
 				btn_ucs_blue.setColorProperty(new Color(
 						((Integer) PrefName.UCS_BLUE.getDefault()).intValue()));
-				btn_ucs_blue.setColorByProperty();
 				btn_ucs_green
 						.setColorProperty(new Color(
 								((Integer) PrefName.UCS_GREEN.getDefault())
 										.intValue()));
-				btn_ucs_green.setColorByProperty();
 				btn_ucs_black
 						.setColorProperty(new Color(
 								((Integer) PrefName.UCS_BLACK.getDefault())
 										.intValue()));
-				btn_ucs_black.setColorByProperty();
 				btn_ucs_white
 						.setColorProperty(new Color(
 								((Integer) PrefName.UCS_WHITE.getDefault())
 										.intValue()));
-				btn_ucs_white.setColorByProperty();
 				btn_ucs_tasks.setColorProperty(new Color(
 						((Integer) PrefName.UCS_NAVY.getDefault()).intValue()));
-				btn_ucs_tasks.setColorByProperty();
 				btn_ucs_holidays
 						.setColorProperty(new Color(
 								((Integer) PrefName.UCS_PURPLE.getDefault())
 										.intValue()));
-				btn_ucs_holidays.setColorByProperty();
 				btn_ucs_birthdays
 						.setColorProperty(new Color(
 								((Integer) PrefName.UCS_BRICK.getDefault())
 										.intValue()));
-				btn_ucs_birthdays.setColorByProperty();
 				btn_ucs_default.setColorProperty(new Color(
 						((Integer) PrefName.UCS_DEFAULT.getDefault())
 								.intValue()));
-				btn_ucs_default.setColorByProperty();
 				btn_ucs_today
 						.setColorProperty(new Color(
 								((Integer) PrefName.UCS_TODAY.getDefault())
 										.intValue()));
-				btn_ucs_today.setColorByProperty();
 				btn_ucs_holiday.setColorProperty(new Color(
 						((Integer) PrefName.UCS_HOLIDAY.getDefault())
 								.intValue()));
-				btn_ucs_holiday.setColorByProperty();
 				btn_ucs_vacation.setColorProperty(new Color(
 						((Integer) PrefName.UCS_VACATION.getDefault())
 								.intValue()));
-				btn_ucs_vacation.setColorByProperty();
 				btn_ucs_halfday.setColorProperty(new Color(
 						((Integer) PrefName.UCS_HALFDAY.getDefault())
 								.intValue()));
-				btn_ucs_halfday.setColorByProperty();
 				btn_ucs_weekend.setColorProperty(new Color(
 						((Integer) PrefName.UCS_WEEKEND.getDefault())
 								.intValue()));
-				btn_ucs_weekend.setColorByProperty();
 				btn_ucs_weekday.setColorProperty(new Color(
 						((Integer) PrefName.UCS_WEEKDAY.getDefault())
 								.intValue()));
-				btn_ucs_weekday.setColorByProperty();
 				btn_ucs_stripe
 						.setColorProperty(new Color(
 								((Integer) PrefName.UCS_STRIPE.getDefault())
 										.intValue()));
-				btn_ucs_stripe.setColorByProperty();
 			}
 		});
 
@@ -232,7 +213,7 @@ public class ColorOptionsPanel extends OptionsPanel {
 	@Override
 	public void applyChanges() {
 		OptionsPanel.setBooleanPref(gradientApptBox, PrefName.GRADIENT_APPTS);
-		
+
 		OptionsPanel.setBooleanPref(cb_ucs_ontodo, PrefName.UCS_ONTODO);
 		OptionsPanel.setBooleanPref(cb_ucs_marktodo, PrefName.UCS_MARKTODO);
 
@@ -283,7 +264,7 @@ public class ColorOptionsPanel extends OptionsPanel {
 	 */
 	@Override
 	public void loadOptions() {
-		
+
 		OptionsPanel.setCheckBox(gradientApptBox, PrefName.GRADIENT_APPTS);
 
 		OptionsPanel.setCheckBox(cb_ucs_ontodo, PrefName.UCS_ONTODO);
@@ -292,54 +273,38 @@ public class ColorOptionsPanel extends OptionsPanel {
 		tf_ucs_marker.setText(Prefs.getPref(PrefName.UCS_MARKER));
 		int mins = Integer.parseInt(Prefs.getPref(PrefName.UCS_RED));
 		btn_ucs_red.setColorProperty(new Color(mins));
-		btn_ucs_red.setColorByProperty();
 		mins = Integer.parseInt(Prefs.getPref(PrefName.UCS_BLUE));
 		btn_ucs_blue.setColorProperty(new Color(mins));
-		btn_ucs_blue.setColorByProperty();
 		mins = Integer.parseInt(Prefs.getPref(PrefName.UCS_GREEN));
 		btn_ucs_green.setColorProperty(new Color(mins));
-		btn_ucs_green.setColorByProperty();
 		mins = Integer.parseInt(Prefs.getPref(PrefName.UCS_BLACK));
 		btn_ucs_black.setColorProperty(new Color(mins));
-		btn_ucs_black.setColorByProperty();
 		mins = Integer.parseInt(Prefs.getPref(PrefName.UCS_WHITE));
 		btn_ucs_white.setColorProperty(new Color(mins));
-		btn_ucs_white.setColorByProperty();
 
 		mins = Integer.parseInt(Prefs.getPref(PrefName.UCS_NAVY));
 		btn_ucs_tasks.setColorProperty(new Color(mins));
-		btn_ucs_tasks.setColorByProperty();
 		mins = Integer.parseInt(Prefs.getPref(PrefName.UCS_PURPLE));
 		btn_ucs_holidays.setColorProperty(new Color(mins));
-		btn_ucs_holidays.setColorByProperty();
 		mins = Integer.parseInt(Prefs.getPref(PrefName.UCS_BRICK));
 		btn_ucs_birthdays.setColorProperty(new Color(mins));
-		btn_ucs_birthdays.setColorByProperty();
 
 		mins = Integer.parseInt(Prefs.getPref(PrefName.UCS_DEFAULT));
 		btn_ucs_default.setColorProperty(new Color(mins));
-		btn_ucs_default.setColorByProperty();
 		mins = Integer.parseInt(Prefs.getPref(PrefName.UCS_TODAY));
 		btn_ucs_today.setColorProperty(new Color(mins));
-		btn_ucs_today.setColorByProperty();
 		mins = Integer.parseInt(Prefs.getPref(PrefName.UCS_HOLIDAY));
 		btn_ucs_holiday.setColorProperty(new Color(mins));
-		btn_ucs_holiday.setColorByProperty();
 		mins = Integer.parseInt(Prefs.getPref(PrefName.UCS_HALFDAY));
 		btn_ucs_halfday.setColorProperty(new Color(mins));
-		btn_ucs_halfday.setColorByProperty();
 		mins = Integer.parseInt(Prefs.getPref(PrefName.UCS_VACATION));
 		btn_ucs_vacation.setColorProperty(new Color(mins));
-		btn_ucs_vacation.setColorByProperty();
 		mins = Integer.parseInt(Prefs.getPref(PrefName.UCS_WEEKEND));
 		btn_ucs_weekend.setColorProperty(new Color(mins));
-		btn_ucs_weekend.setColorByProperty();
 		mins = Integer.parseInt(Prefs.getPref(PrefName.UCS_WEEKDAY));
 		btn_ucs_weekday.setColorProperty(new Color(mins));
-		btn_ucs_weekday.setColorByProperty();
 		mins = Integer.parseInt(Prefs.getPref(PrefName.UCS_STRIPE));
 		btn_ucs_stripe.setColorProperty(new Color(mins));
-		btn_ucs_stripe.setColorByProperty();
 
 	}
 
