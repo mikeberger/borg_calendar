@@ -26,11 +26,14 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Collection;
 import java.util.Date;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -154,6 +157,9 @@ class TaskListPanel extends JPanel implements Model.Listener {
 	/** The button panel. */
 	private JPanel buttonPanel = null;
 
+	/** checkbox to filter closed tasks */
+	private JCheckBox showClosedTasksCheckBox = null;
+
 	/** The default table cell renderer. */
 	private TableCellRenderer defaultTableCellRenderer;
 
@@ -205,7 +211,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 			Errmsg.errmsg(e);
 			return;
 		}
-
+		
 	}
 
 	/**
@@ -335,8 +341,29 @@ class TaskListPanel extends JPanel implements Model.Listener {
 				}
 			});
 			buttonPanel.add(clonebutton1, null);
+
 		}
 		return buttonPanel;
+	}
+	
+	/**
+	 * add the closed tasks checkbox. would not be called when an external mechanism 
+	 * is filtering by status in some other way
+	 */
+	public void addClosedTaskFilter()
+	{
+		showClosedTasksCheckBox = new JCheckBox();
+		showClosedTasksCheckBox.setText(Resource
+				.getResourceString("show_closed_tasks"));
+		showClosedTasksCheckBox.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				refresh();
+			}
+
+		});
+		buttonPanel.add(showClosedTasksCheckBox);
+		refresh();
 	}
 
 	/**
@@ -506,7 +533,10 @@ class TaskListPanel extends JPanel implements Model.Listener {
 						.equals(Resource.getResourceString("All"))
 						&& !taskStatus.equals(st))
 					continue;
-
+				
+				if( showClosedTasksCheckBox != null && !showClosedTasksCheckBox.isSelected() && TaskModel.isClosed(task))
+						continue;
+				
 				// filter by project
 				Integer pid = task.getProject();
 				if (projfiltid != null) {
