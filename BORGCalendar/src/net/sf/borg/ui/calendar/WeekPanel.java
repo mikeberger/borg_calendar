@@ -100,6 +100,9 @@ public class WeekPanel extends JPanel implements Printable, CalendarModule {
 		private int date_;
 		private int month_;
 		private int year_;
+		
+		// portion of the screen taken up by the non-timed section
+		private double nonTimedPortion = 1.0 / 6.0;
 
 		// flag to indicate if we need to reload from the model. If false, we
 		// can just redraw
@@ -219,9 +222,8 @@ public class WeekPanel extends JPanel implements Printable, CalendarModule {
 			// width of column with time labels (Y axis)
 			timecolwidth = pageWidth / 21;
 
-			// top of scheduled (timed) appts. untimed appts appear above this
-			// and get 1/6 of the day box
-			double aptop = daytop + rowheight / 6;
+			// top of timed appts (the time-grid). untimed appts appear above
+			double aptop = caltop + rowheight * nonTimedPortion;
 
 			// width of each day column - related to timecolwidth
 			colwidth = (pageWidth - timecolwidth) / 7;
@@ -439,6 +441,35 @@ public class WeekPanel extends JPanel implements Printable, CalendarModule {
 			}
 			g2.setStroke(defstroke);
 
+			// add the scroll buttons
+			if (nonTimedPortion < 0.8) {
+				boxes.add(new ButtonBox(cal.getTime(), "", new ImageIcon(
+						getClass().getResource("/resource/Down16.gif")),
+						new Rectangle(0, (int) aptop, (int)timecolwidth, smfontHeight),
+						null) {
+
+					@Override
+					public void onClick() {
+						nonTimedPortion += 1.0 / 6.0;
+						refresh();
+					}
+
+				});
+			}
+			if (nonTimedPortion > 0.2 ) {
+				boxes.add(new ButtonBox(cal.getTime(), "", new ImageIcon(
+						getClass().getResource("/resource/Up16.gif")),
+						new Rectangle(0, (int) aptop - smfontHeight, (int)timecolwidth,
+								smfontHeight), null) {
+
+					@Override
+					public void onClick() {
+						nonTimedPortion -= 1.0 / 6.0;
+						refresh();
+					}
+
+				});
+			}
 
 			// draw all boxes for the week
 			drawBoxes(g2);

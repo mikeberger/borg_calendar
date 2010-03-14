@@ -65,18 +65,17 @@ import net.sf.borg.ui.MultiView.CalendarModule;
 import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 
-
 /**
- * DayPanel is the UI for a single day.  It consists of a Navigator attached
- * to a DaySubPanel
+ * DayPanel is the UI for a single day. It consists of a Navigator attached to a
+ * DaySubPanel
  */
 public class DayPanel extends JPanel implements Printable, CalendarModule {
-	
+
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * DaySubPanel is the Panel that shows the items for a day with a section
-	 * for untimed items and a time-grid for timed items 
+	 * for untimed items and a time-grid for timed items
 	 */
 	private class DaySubPanel extends ApptBoxPanel implements
 			NavPanel.Navigator, Prefs.Listener, Printable, Model.Listener,
@@ -93,10 +92,14 @@ public class DayPanel extends JPanel implements Printable, CalendarModule {
 		private int month_;
 		private int year_;
 
-		// flag to indicate if we need to reload from the model. If false, we can just redraw
+		// portion of the screen taken up by the non-timed section
+		private double nonTimedPortion = 1.0 / 6.0;
+
+		// flag to indicate if we need to reload from the model. If false, we
+		// can just redraw
 		// from cached data
 		private boolean needLoad = true;
-		
+
 		// records the last date on which a draw took place - for handling the
 		// first redraw after midnight
 		private int lastDrawDate = -1;
@@ -107,23 +110,26 @@ public class DayPanel extends JPanel implements Printable, CalendarModule {
 		/**
 		 * Instantiates a new day sub panel.
 		 * 
-		 * @param month the month
-		 * @param year the year
-		 * @param date the date
+		 * @param month
+		 *            the month
+		 * @param year
+		 *            the year
+		 * @param date
+		 *            the date
 		 */
 		public DaySubPanel(int month, int year, int date) {
 			year_ = year;
 			month_ = month;
 			date_ = date;
-			
+
 			clearData();
-			
+
 			// refresh if prefs change
 			Prefs.addListener(this);
-			
+
 			// react to mouse wheel activity
 			addMouseWheelListener(this);
-			
+
 			// refresh if the appt or task models change
 			AppointmentModel.getReference().addListener(this);
 			TaskModel.getReference().addListener(this);
@@ -142,14 +148,22 @@ public class DayPanel extends JPanel implements Printable, CalendarModule {
 		/**
 		 * Draw the day
 		 * 
-		 * @param g the Graphics to draw into
-		 * @param width the width
-		 * @param height the height
-		 * @param pageWidth the page width
-		 * @param pageHeight the page height
-		 * @param pagex the pagex
-		 * @param pagey the pagey
-		 * @param sm_font the font for appointment text
+		 * @param g
+		 *            the Graphics to draw into
+		 * @param width
+		 *            the width
+		 * @param height
+		 *            the height
+		 * @param pageWidth
+		 *            the page width
+		 * @param pageHeight
+		 *            the page height
+		 * @param pagex
+		 *            the pagex
+		 * @param pagey
+		 *            the pagey
+		 * @param sm_font
+		 *            the font for appointment text
 		 * 
 		 * @return the page exists flag for printing
 		 */
@@ -158,7 +172,7 @@ public class DayPanel extends JPanel implements Printable, CalendarModule {
 				double pagey, Font sm_font) {
 
 			Graphics2D g2 = (Graphics2D) g;
-			
+
 			// set up strike-through fonts
 			Map<TextAttribute, Serializable> stmap = new HashMap<TextAttribute, Serializable>();
 			stmap.put(TextAttribute.STRIKETHROUGH,
@@ -175,7 +189,7 @@ public class DayPanel extends JPanel implements Printable, CalendarModule {
 
 			// save original clip
 			Shape s = g2.getClip();
-			
+
 			// get current time
 			GregorianCalendar now = new GregorianCalendar();
 			int tdate = now.get(Calendar.DATE);
@@ -198,9 +212,8 @@ public class DayPanel extends JPanel implements Printable, CalendarModule {
 			// width of column with time scale (Y axis)
 			double timecolwidth = pageWidth / 15;
 
-			// top of timed appts (the time-grid). untimed appts appear above this
-			// and get 1/6 of the day box
-			double aptop = caltop + rowheight / 6;
+			// top of timed appts (the time-grid). untimed appts appear above
+			double aptop = caltop + rowheight * nonTimedPortion;
 
 			// width of each day column - related to timecolwidth
 			double colwidth = (pageWidth - timecolwidth);
@@ -210,8 +223,9 @@ public class DayPanel extends JPanel implements Printable, CalendarModule {
 
 			// limit resizing to the time-grid
 			setResizeBounds((int) aptop, calbot);
-			
-			// allow dragging around the entire day - across timed and untimed areas
+
+			// allow dragging around the entire day - across timed and untimed
+			// areas
 			setDragBounds(caltop, calbot, (int) timecolwidth, (int) (pageWidth));
 
 			// start and end hour = range of Y axis
@@ -230,11 +244,11 @@ public class DayPanel extends JPanel implements Printable, CalendarModule {
 			int numhalfhours = (endhr - starthr) * 2;
 			double tickheight = (calbot - aptop) / numhalfhours;
 
-			// draw background of time column (where the y-axis times are shown) using the default background color
+			// draw background of time column (where the y-axis times are shown)
+			// using the default background color
 			g2.setColor(this.getBackground());
 			g2.fillRect(0, caltop, (int) timecolwidth, calbot - caltop);
 
-			
 			// set small font for appt text
 			g2.setFont(sm_font);
 			int smfontHeight = g2.getFontMetrics().getHeight();
@@ -249,14 +263,14 @@ public class DayPanel extends JPanel implements Printable, CalendarModule {
 						(int) colwidth, calbot));
 
 				try {
-					
+
 					startmin = starthr * 60;
 					endmin = endhr * 60;
-					
+
 					// get the day's items from the model
 					Day dayInfo = Day.getDay(cal.get(Calendar.YEAR), cal
 							.get(Calendar.MONTH), cal.get(Calendar.DATE));
-					
+
 					// set a different background color based on various
 					// circumstances
 					backgroundColor = null;
@@ -297,10 +311,10 @@ public class DayPanel extends JPanel implements Printable, CalendarModule {
 					int notey = caltop;
 
 					// loop through entities
-					for( CalendarEntity entity : dayInfo.getItems()) {
-						
+					for (CalendarEntity entity : dayInfo.getItems()) {
+
 						Date d = entity.getDate();
-						
+
 						// sanity check - shouldn't happen
 						if (d == null)
 							continue;
@@ -319,26 +333,32 @@ public class DayPanel extends JPanel implements Printable, CalendarModule {
 
 						// check if the entity is a note (untime)
 						// an entity can only be timed if it is an appointment
-						// that fits in the time-grid, has a duration, and is timed
+						// that fits in the time-grid, has a duration, and is
+						// timed
 						if (!(entity instanceof Appointment)
-								|| AppointmentModel.isNote((Appointment) entity)
+								|| AppointmentModel
+										.isNote((Appointment) entity)
 								|| apendmin < startmin
 								|| apstartmin >= endmin - 4
 								|| entity.getDuration() == null
 								|| entity.getDuration().intValue() == 0) {
 
-							if (addNoteBox(cal.getTime(), entity, new Rectangle(
-									colleft + 2, notey, (int) (colwidth - 4),
-									smfontHeight), new Rectangle(colleft,
-									caltop, (int) colwidth,
-									(int) (aptop - caltop))) != null) {
-								
+							if (addNoteBox(
+									cal.getTime(),
+									entity,
+									new Rectangle(colleft + 2, notey,
+											(int) (colwidth - 4), smfontHeight),
+									new Rectangle(colleft, caltop,
+											(int) colwidth,
+											(int) (aptop - caltop))) != null) {
+
 								// increment Y coord for next note text
 								notey += smfontHeight;
 							}
 						} else {
 
-							// appt box bounds and clip are set to the whole grid.
+							// appt box bounds and clip are set to the whole
+							// grid.
 							// will be laid out later
 							addApptBox(cal.getTime(), (Appointment) entity,
 									new Rectangle(colleft + 4, (int) aptop,
@@ -365,7 +385,7 @@ public class DayPanel extends JPanel implements Printable, CalendarModule {
 				ApptBox.layoutBoxes(layoutlist, starthr, endhr);
 
 			}
-			
+
 			// draw background for day area with the user color
 			g2.setColor(backgroundColor);
 			g2
@@ -385,7 +405,36 @@ public class DayPanel extends JPanel implements Printable, CalendarModule {
 			}
 			g2.setStroke(defstroke);
 
-			
+			// add the scroll buttons
+			if (nonTimedPortion < 0.8) {
+				boxes.add(new ButtonBox(cal.getTime(), "", new ImageIcon(
+						getClass().getResource("/resource/Down16.gif")),
+						new Rectangle(0, (int) aptop, colleft, smfontHeight),
+						null) {
+
+					@Override
+					public void onClick() {
+						nonTimedPortion += 1.0 / 6.0;
+						refresh();
+					}
+
+				});
+			}
+			if (nonTimedPortion > 0.2 ) {
+				boxes.add(new ButtonBox(cal.getTime(), "", new ImageIcon(
+						getClass().getResource("/resource/Up16.gif")),
+						new Rectangle(0, (int) aptop - smfontHeight, colleft,
+								smfontHeight), null) {
+
+					@Override
+					public void onClick() {
+						nonTimedPortion -= 1.0 / 6.0;
+						refresh();
+					}
+
+				});
+			}
+
 			// draw all boxes
 			g2.setClip(s);
 			drawBoxes(g2);
@@ -419,7 +468,7 @@ public class DayPanel extends JPanel implements Printable, CalendarModule {
 			g2.drawLine((int) pageWidth, caltop, (int) pageWidth, calbot);
 
 			needLoad = false;
-			
+
 			// for printing - in case we are drawing this for a printer
 			return Printable.PAGE_EXISTS;
 		}
@@ -485,7 +534,9 @@ public class DayPanel extends JPanel implements Printable, CalendarModule {
 			repaint();
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
 		 */
 		@Override
@@ -502,8 +553,8 @@ public class DayPanel extends JPanel implements Printable, CalendarModule {
 		}
 
 		/**
-		 * reload and redraw if prefs change. some prefs change the grid size and/or
-		 * what items get shown
+		 * reload and redraw if prefs change. some prefs change the grid size
+		 * and/or what items get shown
 		 */
 		public void prefsChanged() {
 			clearData();
@@ -575,9 +626,12 @@ public class DayPanel extends JPanel implements Printable, CalendarModule {
 	/**
 	 * Instantiates a new day panel.
 	 * 
-	 * @param month the month
-	 * @param year the year
-	 * @param date the date
+	 * @param month
+	 *            the month
+	 * @param year
+	 *            the year
+	 * @param date
+	 *            the date
 	 */
 	public DayPanel(int month, int year, int date) {
 
@@ -586,29 +640,35 @@ public class DayPanel extends JPanel implements Printable, CalendarModule {
 		nav = new NavPanel(dp_);
 
 		setLayout(new java.awt.GridBagLayout());
-		add(nav, GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH));
-		add(dp_, GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH, 1.0, 1.0));
+		add(nav, GridBagConstraintsFactory
+				.create(0, 0, GridBagConstraints.BOTH));
+		add(dp_, GridBagConstraintsFactory.create(0, 1,
+				GridBagConstraints.BOTH, 1.0, 1.0));
 
 	}
 
 	/**
 	 * Go to a particular date
 	 * 
-	 * @param cal the date
+	 * @param cal
+	 *            the date
 	 */
 	public void goTo(Calendar cal) {
 		dp_.goTo(cal);
 		nav.setLabel(dp_.getNavLabel());
 	}
 
-	/* (non-Javadoc)
-	 * @see java.awt.print.Printable#print(java.awt.Graphics, java.awt.print.PageFormat, int)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.awt.print.Printable#print(java.awt.Graphics,
+	 * java.awt.print.PageFormat, int)
 	 */
 	public int print(Graphics arg0, PageFormat arg1, int arg2)
 			throws PrinterException {
 		return dp_.print(arg0, arg1, arg2);
 	}
-	
+
 	@Override
 	public String getModuleName() {
 		return Resource.getResourceString("Day_View");
@@ -623,8 +683,7 @@ public class DayPanel extends JPanel implements Printable, CalendarModule {
 	public void initialize(MultiView parent) {
 		final MultiView par = parent;
 		parent.addToolBarItem(new ImageIcon(getClass().getResource(
-		"/resource/day.jpg")), getModuleName(), 
-		new ActionListener() {
+				"/resource/day.jpg")), getModuleName(), new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				par.setView(ViewType.DAY);
 			}
@@ -644,6 +703,5 @@ public class DayPanel extends JPanel implements Printable, CalendarModule {
 	public ViewType getViewType() {
 		return ViewType.DAY;
 	}
-	
 
 }
