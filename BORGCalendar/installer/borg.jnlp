@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- JNLP File for BORG Calendar -->
+<jnlp
+  spec="6.0+"
+  codebase="http://www.mbcsoft.com/borg/jws"
+  href="borg.jnlp">
+  <information>
+    <title>Berger Organizer (BORG)</title>
+    <vendor>Mike Berger</vendor>
+    <homepage href="http://borg.mbcsoft.com"/>
+    <description>A Java/Swing stand-alone PIM</description>
+    <description kind="short">A Java/Swing stand-alone PIM</description>
+    <icon href="borg.jpg"/>
+    <offline-allowed/> 
+    <shortcut online="false">
+      <desktop/>
+    </shortcut>
+  </information>
+  <security>
+      <all-permissions/>
+  </security>
+  <resources>
+    <j2se version="1.6+"/>
+    <jar href="borg.jar"/>
+    <jar href="borghelp.jar"/>
+    <jar href="hsqldb.jar"/>
+    <jar href="jcalendar.jar"/>
+    <jar href="jh.jar"/>
+    <jar href="looks.jar"/>
+    <jar href="mail.jar"/>
+  </resources>
+  <application-desc main-class="net.sf.borg.control.Borg"/>
+</jnlp> 
