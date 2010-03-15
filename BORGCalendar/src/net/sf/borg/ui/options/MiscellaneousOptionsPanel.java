@@ -86,12 +86,12 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 				GridBagConstraints.BOTH));
 
 		startToSysTray.setText(Resource.getResourceString("StartToSysTray"));
-		this.add(startToSysTray, GridBagConstraintsFactory.create(0, 3,
+		this.add(startToSysTray, GridBagConstraintsFactory.create(0, 4,
 				GridBagConstraints.BOTH));
 
 		dateInSysTray.setText(Resource
 				.getResourceString("show_date_in_systray"));
-		this.add(dateInSysTray, GridBagConstraintsFactory.create(0, 4,
+		this.add(dateInSysTray, GridBagConstraintsFactory.create(0, 5,
 				GridBagConstraints.BOTH));
 
 		JPanel backp = new JPanel();
@@ -121,13 +121,13 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 		backp.add(bb, GridBagConstraintsFactory.create(2, 0,
 				GridBagConstraints.NONE));
 
-		GridBagConstraints gbc1 = GridBagConstraintsFactory.create(0, 5,
+		GridBagConstraints gbc1 = GridBagConstraintsFactory.create(0, 6,
 				GridBagConstraints.BOTH, 1.0, 0.0);
 		gbc1.gridwidth = 2;
 		this.add(backp, gbc1);
 
 		ResourceHelper.setText(colorprint, "Print_In_Color?");
-		this.add(colorprint, GridBagConstraintsFactory.create(0, 6,
+		this.add(colorprint, GridBagConstraintsFactory.create(0, 7,
 				GridBagConstraints.BOTH));
 	}
 
