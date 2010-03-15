@@ -195,7 +195,7 @@ public class ReminderPopupManager implements Model.Listener {
 		// start the popup timer
 		// for consistency - it will start at the beginning of the next minute
 		// the interval between runs is a user preference
-		timer = new Timer();
+		timer = new Timer("PopupTimer");
 		GregorianCalendar cur = new GregorianCalendar();
 		int secs_left = 60 - cur.get(Calendar.SECOND);
 		timer.schedule(new TimerTask() {

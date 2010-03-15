@@ -53,6 +53,7 @@ public class SocketServer extends Thread {
 	            System.err.println("Exception while getting socket streams: " + e);
 	            return;
 	        }
+	        this.setName("Socket Connection");
 	        this.start();
 	    }
 	    
@@ -95,6 +96,7 @@ public class SocketServer extends Thread {
         try { listen_socket = new ServerSocket(port); }
         catch (IOException e) { fail(e, "Exception creating server socket"); }
         System.out.println("Server: listening on port " + port);
+        this.setName("Socket Server");
         this.start();
     }
     

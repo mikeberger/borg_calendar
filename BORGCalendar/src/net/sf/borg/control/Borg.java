@@ -103,7 +103,7 @@ public class Borg implements SocketHandler {
 
 		// wait 3 seconds before exiting for the db to settle down - probably
 		// being superstitious.
-		Timer shutdownTimer = new java.util.Timer();
+		Timer shutdownTimer = new java.util.Timer("ShutdownTimer");
 		shutdownTimer.schedule(new TimerTask() {
 			@Override
 			public void run() {
@@ -375,7 +375,7 @@ public class Borg implements SocketHandler {
 			}
 
 			// start up email check timer - every 24 hours
-			mailTimer_ = new java.util.Timer();
+			mailTimer_ = new java.util.Timer("MailTimer");
 			mailTimer_.schedule(new TimerTask() {
 				@Override
 				public void run() {
@@ -397,7 +397,7 @@ public class Borg implements SocketHandler {
 			String dbtype = Prefs.getPref(PrefName.DBTYPE);
 			if ((dbtype.equals("mysql") || dbtype.equals("jdbc"))
 					&& syncmins != 0) {
-				syncTimer_ = new java.util.Timer();
+				syncTimer_ = new java.util.Timer("SyncTimer");
 				syncTimer_.schedule(new TimerTask() {
 					@Override
 					public void run() {

@@ -253,7 +253,7 @@ class SunTrayIconProxy implements Prefs.Listener {
 				+ cal.get(Calendar.MINUTE);
 		int midnight = 1440 - curmins;
 
-		Timer updatetimer = new Timer();
+		Timer updatetimer = new Timer("SysTrayTimer");
 		updatetimer.schedule(new TimerTask() {
 			@Override
 			public void run() {

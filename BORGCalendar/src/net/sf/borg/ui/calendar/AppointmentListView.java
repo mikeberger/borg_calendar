@@ -394,6 +394,7 @@ public class AppointmentListView extends DockableView implements
 
 								public MailThread(Calendar c) {
 									cal = c;
+									this.setName("Reminder Mail Thread");
 								}
 
 								@Override
