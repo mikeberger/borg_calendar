@@ -20,7 +20,9 @@
 package net.sf.borg.ui.options;
 
 import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -99,7 +101,9 @@ class PopupOptionsPanel extends OptionsPanel {
 		 * sound
 		 */
 		JPanel soundPanel = new JPanel();
-		soundPanel.add(new JLabel(Resource.getResourceString("beep_options")));
+		soundPanel.setLayout(new GridBagLayout());
+		soundPanel.add(new JLabel(Resource.getResourceString("beep_options")), GridBagConstraintsFactory.create(0, 0,
+				GridBagConstraints.BOTH));
 
 		soundbox.setEditable(true);
 		soundbox.addItem(Resource.getResourceString("default"));
@@ -127,7 +131,8 @@ class PopupOptionsPanel extends OptionsPanel {
 			}
 			
 		});
-		soundPanel.add(soundbox);
+		soundPanel.add(soundbox, GridBagConstraintsFactory.create(1, 0,
+				GridBagConstraints.BOTH));
 		
 		JButton play = new JButton();
 		play.setIcon(new ImageIcon(getClass().getResource(
@@ -140,11 +145,13 @@ class PopupOptionsPanel extends OptionsPanel {
 			}
 			
 		});
-		soundPanel.add(play);
+		soundPanel.add(play, GridBagConstraintsFactory.create(2, 0,
+				GridBagConstraints.BOTH));
 		
-		GridBagConstraints sPanelGBC = GridBagConstraintsFactory.create(0, 2);
+		GridBagConstraints sPanelGBC = GridBagConstraintsFactory.create(0, 2, GridBagConstraints.VERTICAL);
 		sPanelGBC.gridwidth = java.awt.GridBagConstraints.REMAINDER;
 		sPanelGBC.anchor = java.awt.GridBagConstraints.WEST;
+		sPanelGBC.insets = new Insets(0,0,0,0);
 
 		this.add(soundPanel,sPanelGBC);
 
@@ -167,7 +174,7 @@ class PopupOptionsPanel extends OptionsPanel {
 			remTimePanel.add(spinners[i]);
 		}
 
-		GridBagConstraints remPanelGBC = GridBagConstraintsFactory.create(0, 3);
+		GridBagConstraints remPanelGBC = GridBagConstraintsFactory.create(0, 3, GridBagConstraints.BOTH);
 		remPanelGBC.gridwidth = java.awt.GridBagConstraints.REMAINDER;
 		remPanelGBC.anchor = java.awt.GridBagConstraints.WEST;
 
