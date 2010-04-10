@@ -390,7 +390,7 @@ class MainMenu {
 				+ version
 				+ "\n"
 				+ Resource.getResourceString("copyright")
-				+ " (2003-2009) Michael Berger <i_flem@users.sourceforge.net>\nhttp://borg-calendar.sourceforge.net\n\n"
+				+ " (2003-2010) Michael Berger <i_flem@users.sourceforge.net>\nhttp://borg-calendar.sourceforge.net\n\n"
 				+ Resource.getResourceString("contributions_by") + "\n"
 				+ Resource.getResourceString("contrib") + "\n"
 				+ Resource.getResourceString("translations") + "\n\n"
