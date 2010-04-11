@@ -161,11 +161,6 @@ public class UIControl {
 		// show the month view
 		mv.setView(ViewType.MONTH);
 
-		// start todo view if there are todos
-		if (AppointmentModel.getReference().haveTodos()) {
-			mv.setView(ViewType.TODO);
-		}
-
 		// destroy the splash screen
 		if (splashScreen != null) {
 			splashScreen.dispose();
