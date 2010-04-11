@@ -43,6 +43,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.SwingUtilities;
 
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
@@ -274,6 +275,13 @@ abstract class ApptBoxPanel extends JPanel implements ComponentListener {
 
 				return;
 			}
+			
+			if( !SwingUtilities.isLeftMouseButton(evt))
+				return;
+			
+			// require double-click to open appt editor
+			if( evt.getClickCount() < 2 )
+				return;
 
 			evt.getComponent().repaint();
 
@@ -294,7 +302,7 @@ abstract class ApptBoxPanel extends JPanel implements ComponentListener {
 			evt.translatePoint(translation, translation);
 
 			// ignore right-click drag
-			if (evt.getButton() == MouseEvent.BUTTON3)
+			if( !SwingUtilities.isLeftMouseButton(evt))
 				return;
 
 			// in-a-drag flag
@@ -423,7 +431,7 @@ abstract class ApptBoxPanel extends JPanel implements ComponentListener {
 			evt.translatePoint(translation, translation);
 
 			// ignore right click
-			if (evt.getButton() == MouseEvent.BUTTON3)
+			if( !SwingUtilities.isLeftMouseButton(evt))
 				return;
 
 			// get box or zone we are in
