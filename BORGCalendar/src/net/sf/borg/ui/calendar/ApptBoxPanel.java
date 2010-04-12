@@ -278,10 +278,6 @@ abstract class ApptBoxPanel extends JPanel implements ComponentListener {
 			
 			if( !SwingUtilities.isLeftMouseButton(evt))
 				return;
-			
-			// require double-click to open appt editor
-			if( evt.getClickCount() < 2 )
-				return;
 
 			evt.getComponent().repaint();
 
@@ -289,8 +285,11 @@ abstract class ApptBoxPanel extends JPanel implements ComponentListener {
 			if (b == null)
 				return;
 			else if (b.box != null)
-				b.box.onClick();
-			else if (b.zone != null)
+			{
+				if( b.box.clicksToActivate() <= evt.getClickCount())
+					b.box.onClick();
+			}
+			else if (b.zone != null && evt.getClickCount() > 1)
 				b.zone.onClick();
 
 		}

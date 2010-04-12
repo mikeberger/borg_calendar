@@ -125,4 +125,9 @@ public abstract class ButtonBox extends Box {
 		return null;
 	}
 
+	@Override
+	public int clicksToActivate() {
+		return 1;
+	}
+
 }

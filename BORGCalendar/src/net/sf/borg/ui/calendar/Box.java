@@ -84,6 +84,15 @@ abstract public class Box {
 	 * action called when the box is clicked
 	 */
 	public abstract void onClick();
+	
+	/**
+	 * how many clicks are required to activate this box - default is double-click
+	 * @return clicks required to activate the box
+	 */
+	public int clicksToActivate()
+	{
+		return 2;
+	}
 
 	/**
 	 * get bounds
