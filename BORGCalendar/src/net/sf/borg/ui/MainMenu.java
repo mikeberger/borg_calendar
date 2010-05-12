@@ -67,6 +67,7 @@ class MainMenu {
 	
 	private JMenu actionMenu = new JMenu();
 	private JMenu helpmenu = new JMenu();
+	private JMenu pluginMenu = null;
 	private JMenuBar menuBar = new JMenuBar();
 
 	/**
@@ -250,15 +251,12 @@ class MainMenu {
 		 * 
 		 */
 		menuBar.add(getUndoMenu());
-
+		
+		
 		/*
-		 * 
-		 * Reports Menu - optional
-		 * 
+		 * plugin menu
 		 */
-		JMenu reportMenu = RunReport.getReportMenu();
-		if (reportMenu != null)
-			menuBar.add(reportMenu);
+		menuBar.add(getPluginMenu());
 		
 		/*
 		 * spacing
@@ -568,7 +566,28 @@ class MainMenu {
 		return menuBar;
 	}
 
-	/** report menu */
+	/** plugin menu */
+	private JMenu getPluginMenu()
+	{
+		if( pluginMenu == null)
+		{
+			pluginMenu = new JMenu();
+			pluginMenu.setText(Resource.getResourceString("Plugins"));
+			pluginMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource(
+			"/resource/Preferences16.gif")));
+		}
+		return pluginMenu;
+	}
+	
+	/**
+	 * add a sub menu to the plugin menu
+	 * 
+	 * @param menu
+	 *            the sub menu
+	 */
+	public void addPluginSubMenu(JMenu menu) {
+		pluginMenu.add(menu);
+	}
 
 	/** undo menu */
 	private JMenu getUndoMenu() {

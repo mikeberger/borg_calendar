@@ -23,14 +23,11 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.lang.reflect.Method;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -55,7 +52,6 @@ import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Task;
 import net.sf.borg.ui.DockableView;
 import net.sf.borg.ui.ResourceHelper;
-import net.sf.borg.ui.RunReport;
 import net.sf.borg.ui.link.LinkPanel;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 
@@ -117,18 +113,6 @@ public class ProjectView extends DockableView {
 		return p.getKey() + ":" + p.getDescription();
 	}
 
-	/**
-	 * return true if Gantt Chart module is in the classpath
-	 */
-	private static boolean hasGantt() {
-		try {
-			ClassLoader cl = ClassLoader.getSystemClassLoader();
-			cl.loadClass("org.jfree.chart.JFreeChart");
-			return true;
-		} catch (Throwable e) {
-			return false;
-		}
-	}
 
 	/** The category box. */
 	private JComboBox categoryBox = null;
@@ -223,37 +207,7 @@ public class ProjectView extends DockableView {
 
 	}
 
-	/**
-	 * show a gantt chart for the project
-	 * 
-	 */
-	@SuppressWarnings("unchecked")
-	private void ganttActionPerformed() {
-
-		String num = projectIdText.getText();
-		// if porject not saved yet - return
-		if (num.equals("NEW"))
-			return;
-
-		int pnum = Integer.parseInt(num);
-		try {
-			Project p = TaskModel.getReference().getProject(pnum);
-			ClassLoader cl = ClassLoader.getSystemClassLoader();
-			Class ganttClass = cl.loadClass("net.sf.borg.ui.task.GanttFrame");
-			Method m = ganttClass.getMethod("showChart",
-					new Class[] { Project.class });
-			m.invoke(null, p);
-		} catch (ClassNotFoundException cnf) {
-			Errmsg.notice(Resource.getResourceString("borg_jasp"));
-		} catch (NoClassDefFoundError r) {
-			Errmsg.notice(Resource.getResourceString("borg_jasp"));
-		} catch (Warning w) {
-			Errmsg.notice(w.getMessage());
-		} catch (Exception e) {
-			Errmsg.errmsg(e);
-		}
-
-	}
+	
 
 	/*
 	 * (non-Javadoc)
@@ -443,27 +397,27 @@ public class ProjectView extends DockableView {
 		});
 		buttonPanel.add(savebutton, savebutton.getName());
 
-		if (hasGantt()) {
-			JButton ganttbutton = new JButton();
-			ganttbutton.setText(Resource.getResourceString("GANTT"));
-			ganttbutton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					ganttActionPerformed();
-				}
-			});
-			buttonPanel.add(ganttbutton);
-		}
-
-		if (RunReport.hasJasper()) {
-			JButton projRptButton = new JButton();
-			ResourceHelper.setText(projRptButton, "Report");
-			projRptButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent evt) {
-					reportButtonActionPerformed();
-				}
-			});
-			buttonPanel.add(projRptButton);
-		}
+//		if (hasGantt()) {
+//			JButton ganttbutton = new JButton();
+//			ganttbutton.setText(Resource.getResourceString("GANTT"));
+//			ganttbutton.addActionListener(new ActionListener() {
+//				public void actionPerformed(ActionEvent e) {
+//					ganttActionPerformed();
+//				}
+//			});
+//			buttonPanel.add(ganttbutton);
+//		}
+//
+//		if (RunReport.hasJasper()) {
+//			JButton projRptButton = new JButton();
+//			ResourceHelper.setText(projRptButton, "Report");
+//			projRptButton.addActionListener(new ActionListener() {
+//				public void actionPerformed(ActionEvent evt) {
+//					reportButtonActionPerformed();
+//				}
+//			});
+//			buttonPanel.add(projRptButton);
+//		}
 
 		add(buttonPanel, GridBagConstraintsFactory.create(0, 1,
 				GridBagConstraints.BOTH));
@@ -499,38 +453,6 @@ public class ProjectView extends DockableView {
 	public void refresh() {
 		// the task editor does not refresh itself when the task data
 		// model changes
-	}
-
-	/**
-	 * produce a project report for the project
-	 * 
-	 */
-	private void reportButtonActionPerformed() {
-
-		String num = projectIdText.getText();
-		if (num.equals("NEW"))
-			return;
-
-		int pnum = Integer.parseInt(num);
-		try {
-			Map<String, Integer> map = new HashMap<String, Integer>();
-			map.put("pid", new Integer(pnum));
-			Collection<Project> allChildren = TaskModel.getReference()
-					.getAllSubProjects(pnum);
-			Iterator<Project> it = allChildren.iterator();
-			for (int i = 2; i <= 10; i++) {
-				if (!it.hasNext())
-					break;
-				Project p = it.next();
-				map.put("pid" + i, new Integer(p.getKey()));
-			}
-			RunReport.runReport("proj", map);
-		} catch (NoClassDefFoundError r) {
-			Errmsg.notice(Resource.getResourceString("borg_jasp"));
-		} catch (Exception e) {
-			Errmsg.errmsg(e);
-		}
-
 	}
 
 	/**

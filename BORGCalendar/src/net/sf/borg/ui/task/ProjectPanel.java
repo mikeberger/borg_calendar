@@ -26,9 +26,6 @@ import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -50,8 +47,6 @@ import net.sf.borg.model.Model;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Task;
-import net.sf.borg.ui.ResourceHelper;
-import net.sf.borg.ui.RunReport;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 import net.sf.borg.ui.util.PopupMenuHelper;
 import net.sf.borg.ui.util.StripedTable;
@@ -338,18 +333,6 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 			});
 			buttonPanel.add(clonebutton1, null);
 
-			if (RunReport.hasJasper()) {
-				JButton projRptButton = new JButton();
-				ResourceHelper.setText(projRptButton, "Report");
-				projRptButton
-						.addActionListener(new java.awt.event.ActionListener() {
-							public void actionPerformed(
-									java.awt.event.ActionEvent evt) {
-								reportButtonActionPerformed();
-							}
-						});
-				buttonPanel.add(projRptButton);
-			}
 		}
 		return buttonPanel;
 	}
@@ -588,39 +571,6 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 
 	}
 
-	/**
-	 * run a project report on the selected project
-	 * 
-	 */
-	private void reportButtonActionPerformed() {
-
-		int row = projectTable.getSelectedRow();
-		if (row == -1)
-			return;
-
-		TableSorter tm = (TableSorter) projectTable.getModel();
-		Integer projectId = (Integer) tm.getValueAt(row, 0);
-		try {
-			Map<String, Integer> map = new HashMap<String, Integer>();
-			map.put("pid", projectId);
-			Collection<Project> allChildren = TaskModel.getReference()
-					.getAllSubProjects(projectId.intValue());
-			Iterator<Project> it = allChildren.iterator();
-			for (int i = 2; i <= 10; i++) {
-				if (!it.hasNext())
-					break;
-				Project p = it.next();
-				map.put("pid" + i, new Integer(p.getKey()));
-			}
-			RunReport.runReport("proj", map);
-		} catch (NoClassDefFoundError r) {
-			Errmsg.notice(Resource.getResourceString("borg_jasp"));
-		} catch (Exception e) {
-			Errmsg.errmsg(e);
-		}
-
-	}
-	
 	
 
 }

@@ -72,17 +72,17 @@ public class UIControl {
 		// set the look and feel
 		String lnf = Prefs.getPref(PrefName.LNF);
 		try {
-			
+
 			// set default jgoodies theme
-			if( lnf.contains("jgoodies"))
-			{
+			if (lnf.contains("jgoodies")) {
 				String theme = System.getProperty("Plastic.defaultTheme");
-				if( theme == null )
-				{
-					System.setProperty("Plastic.defaultTheme", "ExperienceBlue");
+				if (theme == null) {
+					System
+							.setProperty("Plastic.defaultTheme",
+									"ExperienceBlue");
 				}
 			}
-			
+
 			UIManager.setLookAndFeel(lnf);
 			UIManager.getLookAndFeelDefaults().put("ClassLoader",
 					UIControl.class.getClassLoader());
@@ -154,8 +154,12 @@ public class UIControl {
 		mv.addModule(new InfoView("/resource/license.htm", Resource
 				.getResourceString("License")));
 
+		addExternalModule("net.sf.borg.plugin.reports.ReportModule");
+		addExternalModule("net.sf.borg.plugin.ical.IcalModule");
+
 		// make the main window visible
-		if( !Prefs.getBoolPref(PrefName.BACKGSTART) || !SunTrayIconProxy.hasTrayIcon())
+		if (!Prefs.getBoolPref(PrefName.BACKGSTART)
+				|| !SunTrayIconProxy.hasTrayIcon())
 			mv.setVisible(true);
 
 		// show the month view
@@ -248,6 +252,25 @@ public class UIControl {
 		// non-UI shutdown
 		Borg.shutdown();
 
+	}
+
+	/**
+	 * load and add a module that is found on the classpath
+	 * 
+	 * @param className
+	 *            - the name of the module class
+	 */
+	@SuppressWarnings("unchecked")
+	private static void addExternalModule(String className) {
+		try {
+			ClassLoader cl = ClassLoader.getSystemClassLoader();
+			Class clazz = cl.loadClass(className);
+			MultiView.Module module = (MultiView.Module) clazz.newInstance();
+			MultiView.getMainView().addModule(module);
+		} catch (Exception e) {
+			System.out.println(e.toString());
+			e.printStackTrace();
+		}
 	}
 
 }

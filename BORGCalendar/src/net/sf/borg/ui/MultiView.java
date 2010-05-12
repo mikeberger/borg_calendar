@@ -33,6 +33,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
@@ -259,6 +260,15 @@ public class MultiView extends View {
 	 */
 	public void addHelpMenuItem(Icon icon, String tooltip, ActionListener action) {
 		mainMenu.addHelpMenuItem(icon, tooltip, action);
+	}
+	
+	/**
+	 * add a plugin sub menu
+	 * 
+	 * @param menu - the sub menu
+	 */
+	public void addPluginSubMenu(JMenu menu) {
+		mainMenu.addPluginSubMenu(menu);
 	}
 
 	/**
