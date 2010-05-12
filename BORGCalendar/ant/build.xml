@@ -98,10 +98,6 @@ build.number=${build.number}
 			<param name="res.dir" value="${res.dir}" />
 		</antcall>
 
-		<copy todir="${build.dir}/reports">
-			<fileset dir="${prj.dir}/res/reports" />
-		</copy>
-
 		<copy todir="${build.dir}/resource">
 			<fileset dir="${prj.dir}/installer">
 				<include name="RELEASE_NOTES.txt" />
