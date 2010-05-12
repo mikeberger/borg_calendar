@@ -1,0 +1,16 @@
+The BORG Plugins Project contains items that are not supported officially. They provide
+rarely used functionality that pulls in lots of third-party JARS. 
+
+The project will be in SVN on sourceforge, but not put into file releases.
+
+If you want to get the plugins, build this project and copy the jars from the dist and lib folders
+into the borg lib folder. Then run BORG and the Plugins menu should show the plugin 
+menu items.
+
+Current plugins: 
+
+- Reports - Jasper Reports and a GANTT chart for BORG. Rarely used. The Jasper files are way out of date.
+
+- ICal - Imports Ical into BORG. Works for me from Thunderbird/lightning/davmail/exchange. Amazing useful, but it would
+be impossible to debug everyone's particular Ical issues, so it's a plugin. It's also not worth all of the third party jars that
+would need to be released with borg.
