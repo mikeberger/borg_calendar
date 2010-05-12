@@ -575,6 +575,7 @@ class MainMenu {
 			pluginMenu.setText(Resource.getResourceString("Plugins"));
 			pluginMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 			"/resource/Preferences16.gif")));
+			pluginMenu.setVisible(false);
 		}
 		return pluginMenu;
 	}
@@ -587,6 +588,7 @@ class MainMenu {
 	 */
 	public void addPluginSubMenu(JMenu menu) {
 		pluginMenu.add(menu);
+		pluginMenu.setVisible(true);
 	}
 
 	/** undo menu */
