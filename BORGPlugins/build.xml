@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<!-- $Id: build.xml 1190 2009-11-22 20:31:22Z i_flem $ -->
+<project name="borg-calendar" default="main" basedir=".">
+	<!-- Properties -->
+
+	<property name="prj.dir" value="${basedir}" />
+
+	<property name="build.dir" value="${prj.dir}/build" />
+	<property name="dist.dir" value="${prj.dir}/dist" />
+	<property name="res.dir" value="${prj.dir}/res/resource" />
+
+	<property name="build.compiler" value="modern" />
+
+
+	<!-- Path References -->
+	<path id="build.classpath">
+		<fileset dir="${prj.dir}/lib">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+
+
+
+	<!-- Compile -->
+	<target name="compile">
+		<mkdir dir="${build.dir}" />
+		<javac srcdir="${prj.dir}/src" classpathref="build.classpath" destdir="${build.dir}" target="1.6" source="1.6" debug="true">
+		</javac>
+	</target>
+
+	<target name="jars" depends="compile">
+		<mkdir dir="${dist.dir}" />
+
+		<copy todir="${build.dir}/reports">
+			<fileset dir="${prj.dir}/res/reports" />
+		</copy>
+
+		<jar jarfile="${dist.dir}/report-plugin.jar">
+			<fileset dir="${build.dir}">
+				<include name="reports/*" />
+				<include name="**/reports/*.class" />
+			</fileset>
+		</jar>
+
+		<jar jarfile="${dist.dir}/ical-plugin.jar">
+			<fileset dir="${build.dir}">
+				<include name="**/ical/*.class" />
+			</fileset>
+		</jar>
+
+	</target>
+
+
+	<!-- Clean everything -->
+	<target name="clean">
+		<delete quiet="true" dir="${build.dir}" />
+		<delete quiet="true" dir="${dist.dir}" />
+	</target>
+
+	<target name="main" depends="clean,jars" />
+
+</project>
