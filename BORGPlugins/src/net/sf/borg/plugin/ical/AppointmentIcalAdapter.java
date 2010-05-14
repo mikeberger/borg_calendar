@@ -89,6 +89,7 @@ public class AppointmentIcalAdapter {
 				// Get hostname
 				hostname = addr.getHostName();
 			} catch (UnknownHostException e) {
+				// ignore
 			}
 			String uidval = String.valueOf(ap.getKey()) + "@" + hostname;
 			Uid uid = new Uid(uidval);
@@ -235,6 +236,7 @@ public class AppointmentIcalAdapter {
 			// Get hostname
 			hostname = addr.getHostName();
 		} catch (UnknownHostException e) {
+			// ignore
 		}
 		String uidval = String.valueOf(ap.getKey()) + "@" + hostname;
 		Uid uid = new Uid(uidval);
@@ -323,7 +325,7 @@ public class AppointmentIcalAdapter {
 			String rec = "FREQ=";
 			String freq = Repeat.getFreq(ap.getFrequency());
 			if (freq == null) {
-
+				// do nothing
 			} else if (freq.equals("daily")) {
 				rec += "DAILY";
 			} else if (freq.equals("weekly")) {
@@ -398,7 +400,9 @@ public class AppointmentIcalAdapter {
 		while (it.hasNext()) {
 			Component comp = (Component) it.next();
 			if (comp instanceof VEvent || comp instanceof VToDo) {
-				Appointment ap = amodel.newAppt();
+				
+				// start with default appt to pull in default options
+				Appointment ap = amodel.getDefaultAppointment();
 
 				if (category.equals("")
 						|| category.equals(CategoryModel.UNCATEGORIZED)) {
@@ -420,12 +424,14 @@ public class AppointmentIcalAdapter {
 					appttext += "\n" + prop.getValue();
 				}
 
+				ap.setUntimed("Y");
 				ap.setText(appttext);
 				prop = pl.getProperty(Property.DTSTART);
 				if (prop != null) {
 					DtStart dts = (DtStart) prop;
 					Date d = dts.getDate();
 					ap.setDate(d);
+					ap.setUntimed("N");
 					prop = pl.getProperty(Property.DTEND);
 					if( prop != null )
 					{
