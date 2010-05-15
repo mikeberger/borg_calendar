@@ -210,7 +210,7 @@ public class AppointmentIcalAdapter {
 
 		PropertyList pl = new PropertyList();
 		pl.add(new ProdId("BORG Calendar"));
-		pl.add(new Version());
+		pl.add(Version.VERSION_2_0);
 		net.fortuna.ical4j.model.Calendar cal = new net.fortuna.ical4j.model.Calendar(
 				pl, clist);
 

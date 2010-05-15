@@ -59,7 +59,9 @@ public class IcalModule implements Module {
 				String s = chooser.getSelectedFile().getAbsolutePath();
 
 				try {
-					AppointmentIcalAdapter.importIcal(s, "");
+					String warning = AppointmentIcalAdapter.importIcal(s, "");
+					if( warning != null && !warning.isEmpty())
+						Errmsg.notice(warning);
 				} catch (Exception e) {
 					Errmsg.errmsg(e);
 				}
@@ -68,12 +70,44 @@ public class IcalModule implements Module {
 		});
 
 		m.add(imp);
+		
+		JMenuItem exp = new JMenuItem();
+		exp.setText(Resource.getResourceString("export"));
+		exp.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+
+				// prompt for a file
+				JFileChooser chooser = new JFileChooser();
+				chooser.setCurrentDirectory(new File("."));
+				chooser.setDialogTitle(Resource
+						.getResourceString("choose_file"));
+				chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+
+				int returnVal = chooser.showOpenDialog(null);
+				if (returnVal != JFileChooser.APPROVE_OPTION)
+					return;
+
+				String s = chooser.getSelectedFile().getAbsolutePath();
+
+				try {
+					AppointmentIcalAdapter.exportIcal(s);					
+				} catch (Exception e) {
+					Errmsg.errmsg(e);
+				}
+
+			}
+		});
+
+		m.add(exp);
+		
 		parent.addPluginSubMenu(m);
 	}
 
 	@Override
 	public void print() {
-
+		// do nothing
 	}
 
 }
