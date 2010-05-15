@@ -4,7 +4,7 @@ Spanish (Argentina) Translation
 Feature - add search in memo text
 Feature [2945673] - add back start to system tray feature
 Feature - option to filter closed tasks in project/task tree
-Feature - option to fitler closed tasks in project task list
+Feature - option to filter closed tasks in project task list
 Feature [2960249] - option to hide status and task number in task tree display
 Feature - automatically detect a few more Look and Feels
 Feature [2945434] add option to show date in tray icon
@@ -13,10 +13,13 @@ Feature [2985309] Single click activate, double click add appointment
 Bug - Make Daylight Savings Time Change entries non-clickable
 Bug - Fix import bug that messes up links. Also speed up import.
 Bug - make sure repeat times spinner is disabled if repeat forever is set
-Bug - change color chooser buttons so that color is always show. Was lost for some look and feels.
+Bug - change color chooser buttons so that color is always shown. Was lost for some look and feels.
 Bug [2934430] - add buttons to increase/decrease the size of the non-timed area for day and week views.
 Bug - make todo table react to changes in user colors preference
 Bug [2985307] ToDo list always appears at startup
+
+Other - Move reports and GANTT chart out of BORG. Create an unsupported plugins project
+to contain the reports, GANNT, and the old Ical import.
 
 BORG 1.7.3
 ----------------
