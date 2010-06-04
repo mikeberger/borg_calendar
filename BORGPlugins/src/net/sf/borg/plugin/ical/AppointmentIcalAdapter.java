@@ -22,7 +22,6 @@ package net.sf.borg.plugin.ical;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.StringWriter;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -177,23 +176,31 @@ public class AppointmentIcalAdapter {
 				if (freq == null) {
 					continue;
 				}
-				if (freq.equals("daily")) {
+				if (freq.equals(Repeat.DAILY)) {
 					rec += "DAILY";
-				} else if (freq.equals("weekly")) {
+				} else if (freq.equals(Repeat.WEEKLY)) {
 					rec += "WEEKLY";
-				} else if (freq.equals("biweekly")) {
+				} else if (freq.equals(Repeat.BIWEEKLY)) {
 					rec += "WEEKLY;INTERVAL=2";
-				} else if (freq.equals("monthly")) {
+				} else if (freq.equals(Repeat.MONTHLY)) {
 					Date dd = ap.getDate();
 					GregorianCalendar gc = new GregorianCalendar();
 					gc.setTime(dd);
 					rec += "MONTHLY;BYMONTHDAY="
 							+ gc.get(java.util.Calendar.DATE);
-				} else if (freq.equals("yearly")) {
+				} else if (freq.equals(Repeat.MONTHLY_DAY)) {
+					Date dd = ap.getDate();
+					GregorianCalendar gc = new GregorianCalendar();
+					gc.setTime(dd);
+					int dayOfWeek = gc.get(GregorianCalendar.DAY_OF_WEEK);
+		            int dayOfWeekMonth = gc.get(GregorianCalendar.DAY_OF_WEEK_IN_MONTH);
+					String days[] = new String[]{"SU", "MO", "TU", "WE", "TH", "FR", "SA"};
+		            rec += "MONTHLY;BYDAY=" + dayOfWeekMonth + days[dayOfWeek-1];
+				} else if (freq.equals(Repeat.YEARLY)) {
 					rec += "YEARLY";
 				} else {
-					// bad default - need to fix
-					rec += "DAILY";
+					// bad default - skip appt - need to fix
+					continue;
 				}
 
 				if (ap.getTimes().intValue() != 9999) {
@@ -222,152 +229,6 @@ public class AppointmentIcalAdapter {
 		oostr.close();
 	}
 
-	static public String exportIcalToString(Appointment ap) throws Exception {
-
-		ComponentList clist = new ComponentList();
-		CategoryList catlist = new CategoryList();
-		Component ve = new VEvent();
-
-		// unique-id
-		String hostname = "";
-		try {
-			InetAddress addr = InetAddress.getLocalHost();
-
-			// Get hostname
-			hostname = addr.getHostName();
-		} catch (UnknownHostException e) {
-			// ignore
-		}
-		String uidval = String.valueOf(ap.getKey()) + "@" + hostname;
-		Uid uid = new Uid(uidval);
-		ve.getProperties().add(uid);
-
-		// add text
-		String appttext = ap.getText();
-		Summary sum = null;
-		Description desc = null;
-
-		int ii = appttext.indexOf('\n');
-		if (ii != -1) {
-			sum = new Summary(appttext.substring(0, ii));
-			desc = new Description(appttext.substring(ii + 1));
-		} else {
-			sum = new Summary(appttext);
-		}
-
-		ve.getProperties().add(sum);
-		if (desc != null) {
-			ve.getProperties().add(desc);
-		}
-
-		ParameterList pl = new ParameterList();
-		pl.add(Value.DATE_TIME);
-
-		// date
-		if (AppointmentModel.isNote(ap)) {
-
-			DtStart dts = new DtStart(pl,
-					new net.fortuna.ical4j.model.DateTime(ap.getDate()));
-			ve.getProperties().add(dts);
-		} else {
-			DtStart dts = new DtStart(pl,
-					new net.fortuna.ical4j.model.DateTime(ap.getDate()));
-			if (true) {
-				dts.setUtc(true);
-			}
-			ve.getProperties().add(dts);
-		}
-
-		// duration
-		if (ap.getDuration() != null && ap.getDuration().intValue() != 0) {
-			ve.getProperties()
-					.add(
-							new Duration(new Dur(0, 0, ap.getDuration()
-									.intValue(), 0)));
-		}
-
-		// vacation is a category
-		if (ap.getVacation() != null && ap.getVacation().intValue() != 0) {
-			catlist.add("Vacation");
-		}
-
-		// holiday is a category
-		if (ap.getHoliday() != null && ap.getHoliday().intValue() != 0) {
-			catlist.add("Holidays");
-		}
-
-		// private
-		if (ap.getPrivate()) {
-			ve.getProperties().add(Clazz.PRIVATE);
-		}
-
-		// add color as a cetegory
-		if (ap.getColor() != null
-				&& (ap.getColor().equals("black")
-						|| ap.getColor().equals("blue")
-						|| ap.getColor().equals("green")
-						|| ap.getColor().equals("red") || ap.getColor().equals(
-						"white"))) {
-			catlist.add(ap.getColor());
-		}
-
-		if (ap.getCategory() != null && !ap.getCategory().equals("")) {
-			catlist.add(ap.getCategory());
-		}
-
-		if (!catlist.isEmpty()) {
-			ve.getProperties().add(new Categories(catlist));
-		}
-
-		// repeat stuff
-		if (ap.getRepeatFlag()) {
-			// build recur string
-			String rec = "FREQ=";
-			String freq = Repeat.getFreq(ap.getFrequency());
-			if (freq == null) {
-				// do nothing
-			} else if (freq.equals("daily")) {
-				rec += "DAILY";
-			} else if (freq.equals("weekly")) {
-				rec += "WEEKLY";
-			} else if (freq.equals("biweekly")) {
-				rec += "WEEKLY;INTERVAL=2";
-			} else if (freq.equals("monthly")) {
-				Date dd = ap.getDate();
-				GregorianCalendar gc = new GregorianCalendar();
-				gc.setTime(dd);
-				rec += "MONTHLY;BYMONTHDAY=" + gc.get(java.util.Calendar.DATE);
-			} else if (freq.equals("yearly")) {
-				rec += "YEARLY";
-			} else {
-				// bad default - need to fix
-				rec += "DAILY";
-			}
-
-			if (ap.getTimes().intValue() != 9999) {
-				rec += ";COUNT=" + ap.getTimes();
-			}
-			// System.out.println(rec);
-
-			ve.getProperties().add(new RRule(new Recur(rec)));
-
-		}
-		clist.add(ve);
-
-		PropertyList ppl = new PropertyList();
-		ppl.add(new ProdId("BORG Calendar"));
-		ppl.add(new Version());
-		net.fortuna.ical4j.model.Calendar cal = new net.fortuna.ical4j.model.Calendar(
-				ppl, clist);
-
-		cal.validate();
-
-		StringWriter sw = new StringWriter();
-
-		CalendarOutputter op = new CalendarOutputter();
-		op.output(cal, sw);
-		return sw.getBuffer().toString();
-	}
 
 	@SuppressWarnings("unchecked")
 	static public String importIcal(String file, String category)
