@@ -66,30 +66,31 @@ import net.sf.borg.model.Repeat;
 import net.sf.borg.model.entity.Appointment;
 
 public class AppointmentIcalAdapter {
-	static public void exportIcal(String filename) throws Exception {
+	static public void exportIcal(String filename, Date after) throws Exception {
 
 		ComponentList clist = new ComponentList();
 		boolean showpriv = false;
 		if (Prefs.getPref(PrefName.SHOWPRIVATE).equals("true"))
 			showpriv = true;
 
-		Iterator<Appointment> it = AppointmentModel.getReference().getAllAppts().iterator();
-		while (it.hasNext()) {
+		// unique-id
+		String hostname = "";
+		try {
+			InetAddress addr = InetAddress.getLocalHost();
+			hostname = addr.getHostName();
+		} catch (UnknownHostException e) {
+			// ignore
+		}
+		
+		for(Appointment ap : AppointmentModel.getReference().getAllAppts()){
+			
+			// limit by date
+			if( after != null && ap.getDate().before(after))
+				continue;
+			
 			CategoryList catlist = new CategoryList();
-			Appointment ap = it.next();
 			Component ve = new VEvent();
 			
-
-			// unique-id
-			String hostname = "";
-			try {
-				InetAddress addr = InetAddress.getLocalHost();
-
-				// Get hostname
-				hostname = addr.getHostName();
-			} catch (UnknownHostException e) {
-				// ignore
-			}
 			String uidval = String.valueOf(ap.getKey()) + "@" + hostname;
 			Uid uid = new Uid(uidval);
 			ve.getProperties().add(uid);

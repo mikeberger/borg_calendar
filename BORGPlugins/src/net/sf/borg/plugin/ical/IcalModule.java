@@ -4,6 +4,9 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.sql.Date;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
@@ -60,7 +63,7 @@ public class IcalModule implements Module {
 
 				try {
 					String warning = AppointmentIcalAdapter.importIcal(s, "");
-					if( warning != null && !warning.isEmpty())
+					if (warning != null && !warning.isEmpty())
 						Errmsg.notice(warning);
 				} catch (Exception e) {
 					Errmsg.errmsg(e);
@@ -70,44 +73,73 @@ public class IcalModule implements Module {
 		});
 
 		m.add(imp);
-		
+
 		JMenuItem exp = new JMenuItem();
 		exp.setText(Resource.getResourceString("export"));
 		exp.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-
-				// prompt for a file
-				JFileChooser chooser = new JFileChooser();
-				chooser.setCurrentDirectory(new File("."));
-				chooser.setDialogTitle(Resource
-						.getResourceString("choose_file"));
-				chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-
-				int returnVal = chooser.showOpenDialog(null);
-				if (returnVal != JFileChooser.APPROVE_OPTION)
-					return;
-
-				String s = chooser.getSelectedFile().getAbsolutePath();
-
-				try {
-					AppointmentIcalAdapter.exportIcal(s);					
-				} catch (Exception e) {
-					Errmsg.errmsg(e);
-				}
-
+				export(null);
 			}
 		});
 
 		m.add(exp);
 		
+		JMenuItem exp2 = new JMenuItem();
+		exp2.setText(Resource.getResourceString("export") + " 2 yrs");
+		exp2.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				export(new Integer(2));
+			}
+		});
+
+		m.add(exp2);
+
 		parent.addPluginSubMenu(m);
 	}
 
 	@Override
 	public void print() {
 		// do nothing
+	}
+
+	/**
+	 * export appts
+	 * 
+	 * @param years
+	 *            - number of years to export or null
+	 */
+	private void export(Integer years) {
+
+		// prompt for a file
+		JFileChooser chooser = new JFileChooser();
+		chooser.setCurrentDirectory(new File("."));
+		chooser.setDialogTitle(Resource.getResourceString("choose_file"));
+		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+
+		int returnVal = chooser.showOpenDialog(null);
+		if (returnVal != JFileChooser.APPROVE_OPTION)
+			return;
+
+		String s = chooser.getSelectedFile().getAbsolutePath();
+
+		try {
+			if (years != null) {
+				GregorianCalendar cal = new GregorianCalendar();
+				cal.add(Calendar.YEAR, -1*years.intValue());
+				AppointmentIcalAdapter.exportIcal(s, cal.getTime());
+			}
+			else
+			{
+				AppointmentIcalAdapter.exportIcal(s,null);
+			}
+
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
+		}
 	}
 
 }
