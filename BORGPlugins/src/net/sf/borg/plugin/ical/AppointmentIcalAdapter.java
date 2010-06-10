@@ -265,7 +265,8 @@ public class AppointmentIcalAdapter {
 				
 				// start with default appt to pull in default options
 				Appointment ap = amodel.getDefaultAppointment();
-
+				if( ap == null )
+					ap = amodel.newAppt();
 				if (category.equals("")
 						|| category.equals(CategoryModel.UNCATEGORIZED)) {
 					ap.setCategory(null);
