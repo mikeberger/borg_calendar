@@ -65,8 +65,8 @@ import net.sf.borg.model.undo.UndoLog;
  * and Tasklog
  */
 @SuppressWarnings("unchecked")
-public class TaskModel extends Model implements Model.Listener,
-		CategorySource, Searchable<KeyedEntity> {
+public class TaskModel extends Model implements Model.Listener, CategorySource,
+		Searchable<KeyedEntity> {
 
 	/**
 	 * class XmlContainer is solely for JAXB XML export/import to keep the same
@@ -300,7 +300,6 @@ public class TaskModel extends Model implements Model.Listener,
 				// use task due date to build a day key
 				Date due = pj.getDueDate();
 				int key = DateUtil.dayOfEpoch(due);
-				
 
 				// add the string to the btmap_
 				Collection<Project> o = pmap_.get(new Integer(key));
@@ -327,7 +326,6 @@ public class TaskModel extends Model implements Model.Listener,
 				// use task due date to build a day key
 				Date due = st.getDueDate();
 				int key = DateUtil.dayOfEpoch(due);
-				
 
 				// add the string to the btmap_
 				Collection<Subtask> o = stmap_.get(new Integer(key));
@@ -523,7 +521,7 @@ public class TaskModel extends Model implements Model.Listener,
 		// if the task number is -1, it is a new task so
 		// get a new task number.
 		if (num.intValue() == -1 || indb == null) {
-			if (!undo ) {
+			if (!undo) {
 				int newkey = db_.nextkey();
 				task.setKey(newkey);
 			}
@@ -696,50 +694,61 @@ public class TaskModel extends Model implements Model.Listener,
 		else
 			JdbcDB.execSQL("SET REFERENTIAL_INTEGRITY FALSE;");
 
-		for (BorgOption option : container.OPTION) {
-			if (option.getKey().equals("TASKTYPES")) {
-				taskTypes_.fromString(option.getValue());
-				JdbcDB.setOption(new BorgOption("TASKTYPES", taskTypes_.toXml()));
+		if (container.OPTION != null) {
+			for (BorgOption option : container.OPTION) {
+				if (option.getKey().equals("TASKTYPES")) {
+					taskTypes_.fromString(option.getValue());
+					JdbcDB.setOption(new BorgOption("TASKTYPES", taskTypes_
+							.toXml()));
 
-			} else {
-				JdbcDB.setOption(option);
+				} else {
+					JdbcDB.setOption(option);
+				}
 			}
 		}
 
-		for (Task task : container.Task) {
-			if (task.getPriority() == null)
-				task.setPriority(new Integer(3));
+		if (container.Task != null) {
+			for (Task task : container.Task) {
+				if (task.getPriority() == null)
+					task.setPriority(new Integer(3));
 
-			db_.addObj(task);
+				db_.addObj(task);
 
+			}
 		}
 
 		// use key from import file if importing into empty db
 		int nextSubTaskKey = db_.nextSubTaskKey();
 		boolean use_keys = (nextSubTaskKey == 1) ? true : false;
-		for (Subtask subtask : container.Subtask) {
-			if( !use_keys )
-				subtask.setKey(nextSubTaskKey++);
-			db_.addSubTask(subtask);
-		}
 
-		for (Tasklog tlog : container.Tasklog) {
-			try {
-				tlog.setKey(-1);
-				saveLog(tlog);
-			} catch (Exception e) {
-				Errmsg.errmsg(e);
+		if (container.Subtask != null) {
+			for (Subtask subtask : container.Subtask) {
+				if (!use_keys)
+					subtask.setKey(nextSubTaskKey++);
+				db_.addSubTask(subtask);
 			}
 		}
 
-		for (Project p : container.Project) {
-			try {
-				db_.addProject(p);
-			} catch (Exception e) {
-				Errmsg.errmsg(e);
+		if (container.Tasklog != null) {
+			for (Tasklog tlog : container.Tasklog) {
+				try {
+					tlog.setKey(-1);
+					saveLog(tlog);
+				} catch (Exception e) {
+					Errmsg.errmsg(e);
+				}
 			}
 		}
 
+		if (container.Project != null) {
+			for (Project p : container.Project) {
+				try {
+					db_.addProject(p);
+				} catch (Exception e) {
+					Errmsg.errmsg(e);
+				}
+			}
+		}
 		if (dbtype.equals("mysql"))
 			JdbcDB.execSQL("SET foreign_key_checks = 1;");
 		else
@@ -1239,17 +1248,17 @@ public class TaskModel extends Model implements Model.Listener,
 
 	@Override
 	public Collection<KeyedEntity> search(SearchCriteria criteria) {
-		Collection<KeyedEntity> res = new ArrayList<KeyedEntity>(); // result collection
+		Collection<KeyedEntity> res = new ArrayList<KeyedEntity>(); // result
+																	// collection
 		try {
-			
+
 			Collection<Project> projects = this.getProjects();
-			for( Project p : projects )
-			{
-				if (!CategoryModel.getReference().isShown(p.getCategory())) 
+			for (Project p : projects) {
+				if (!CategoryModel.getReference().isShown(p.getCategory()))
 					continue;
-				
+
 				String tx = p.getDescription();
-				
+
 				if (criteria.isCaseSensitive()) {
 					if (tx.indexOf(criteria.getSearchString()) == -1)
 						continue;
@@ -1259,14 +1268,15 @@ public class TaskModel extends Model implements Model.Listener,
 					if (ltx.indexOf(ls) == -1)
 						continue;
 				}
-				
+
 				// filter by category
 				if (criteria.getCategory().equals(CategoryModel.UNCATEGORIZED)
 						&& p.getCategory() != null
 						&& !p.getCategory().equals(CategoryModel.UNCATEGORIZED))
 					continue;
 				else if (!criteria.getCategory().equals("")
-						&& !criteria.getCategory().equals(CategoryModel.UNCATEGORIZED)
+						&& !criteria.getCategory().equals(
+								CategoryModel.UNCATEGORIZED)
 						&& !criteria.getCategory().equals(p.getCategory()))
 					continue;
 
@@ -1286,18 +1296,16 @@ public class TaskModel extends Model implements Model.Listener,
 			}
 
 			Collection<Task> tasks = this.getTasks();
-			for( Task t : tasks )
-			{
-				if (!CategoryModel.getReference().isShown(t.getCategory())) 
+			for (Task t : tasks) {
+				if (!CategoryModel.getReference().isShown(t.getCategory()))
 					continue;
-				
+
 				String tx = t.getDescription() + " " + t.getResolution();
 				Collection<Subtask> subtasks = this.getSubTasks(t.getKey());
-				for( Subtask st : subtasks )
-				{
+				for (Subtask st : subtasks) {
 					tx += " " + st.getDescription();
-				}									
-				
+				}
+
 				if (criteria.isCaseSensitive()) {
 					if (tx.indexOf(criteria.getSearchString()) == -1)
 						continue;
@@ -1307,14 +1315,15 @@ public class TaskModel extends Model implements Model.Listener,
 					if (ltx.indexOf(ls) == -1)
 						continue;
 				}
-				
+
 				// filter by category
 				if (criteria.getCategory().equals(CategoryModel.UNCATEGORIZED)
 						&& t.getCategory() != null
 						&& !t.getCategory().equals(CategoryModel.UNCATEGORIZED))
 					continue;
 				else if (!criteria.getCategory().equals("")
-						&& !criteria.getCategory().equals(CategoryModel.UNCATEGORIZED)
+						&& !criteria.getCategory().equals(
+								CategoryModel.UNCATEGORIZED)
 						&& !criteria.getCategory().equals(t.getCategory()))
 					continue;
 
@@ -1332,7 +1341,6 @@ public class TaskModel extends Model implements Model.Listener,
 
 				res.add(t);
 			}
-			
 
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
