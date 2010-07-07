@@ -711,6 +711,16 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 			for (Task task : container.Task) {
 				if (task.getPriority() == null)
 					task.setPriority(new Integer(3));
+				
+				if( task.getStartDate() == null )
+					task.setStartDate(new Date());
+				
+				if( task.getKey() == -1 )
+					task.setKey(db_.nextkey());
+				
+				if( task.getState() == null )
+					task.setState(TaskModel.getReference().getTaskTypes()
+							.getInitialState(task.getType()));
 
 				db_.addObj(task);
 
