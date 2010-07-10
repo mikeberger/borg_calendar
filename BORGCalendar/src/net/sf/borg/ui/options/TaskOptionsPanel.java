@@ -114,4 +114,8 @@ public class TaskOptionsPanel extends OptionsPanel {
 
 	}
 
+	@Override
+	public String getPanelName() {
+		return Resource.getResourceString("taskOptions");
+	}
 }

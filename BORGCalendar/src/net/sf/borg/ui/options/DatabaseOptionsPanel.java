@@ -434,5 +434,10 @@ public class DatabaseOptionsPanel extends OptionsPanel {
 		hsqldbdir.setText(Prefs.getPref(PrefName.HSQLDBDIR));
 
 	}
+	
+	@Override
+	public String getPanelName() {
+		return Resource.getResourceString("DatabaseInformation");
+	}
 
 }

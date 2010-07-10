@@ -208,5 +208,10 @@ class EmailOptionsPanel extends OptionsPanel {
 		}
 
 	}
+	
+	@Override
+	public String getPanelName() {
+		return Resource.getResourceString("EmailParameters");
+	}
 
 }

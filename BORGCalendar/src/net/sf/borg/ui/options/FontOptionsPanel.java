@@ -31,6 +31,7 @@ import javax.swing.border.SoftBevelBorder;
 
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
+import net.sf.borg.common.Resource;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.options.OptionsView.OptionsPanel;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
@@ -185,6 +186,11 @@ public class FontOptionsPanel extends OptionsPanel {
 		weekFontText.setText(Prefs.getPref(PrefName.WEEKVIEWFONT));
 		dayFontText.setText(Prefs.getPref(PrefName.DAYVIEWFONT));
 		printFontText.setText(Prefs.getPref(PrefName.MONTHVIEWFONT));
+	}
+	
+	@Override
+	public String getPanelName() {
+		return Resource.getResourceString("fonts");
 	}
 
 }

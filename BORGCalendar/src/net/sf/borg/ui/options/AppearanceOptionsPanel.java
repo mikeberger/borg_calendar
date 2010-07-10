@@ -333,4 +333,9 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 
 	}
 
+	@Override
+	public String getPanelName() {
+		return Resource.getResourceString("appearance");
+	}
+
 }

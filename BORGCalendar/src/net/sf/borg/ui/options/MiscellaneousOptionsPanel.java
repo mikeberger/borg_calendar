@@ -184,4 +184,8 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 
 	}
 
+	@Override
+	public String getPanelName() {
+		return Resource.getResourceString("misc");
+	}
 }

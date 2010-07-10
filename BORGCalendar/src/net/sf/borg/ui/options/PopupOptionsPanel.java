@@ -280,4 +280,8 @@ class PopupOptionsPanel extends OptionsPanel {
 		return option;
 	}
 
+	@Override
+	public String getPanelName() {
+		return Resource.getResourceString("popup_reminders");
+	}
 }

@@ -308,4 +308,8 @@ public class ColorOptionsPanel extends OptionsPanel {
 
 	}
 
+	@Override
+	public String getPanelName() {
+		return Resource.getResourceString("UserColorScheme");
+	}
 }

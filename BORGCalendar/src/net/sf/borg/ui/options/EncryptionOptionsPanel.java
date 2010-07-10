@@ -170,5 +170,10 @@ public class EncryptionOptionsPanel extends OptionsPanel {
 				.getIntPref(PrefName.PASSWORD_TTL)));
 
 	}
+	
+	@Override
+	public String getPanelName() {
+		return Resource.getResourceString("Encryption");
+	}
 
 }

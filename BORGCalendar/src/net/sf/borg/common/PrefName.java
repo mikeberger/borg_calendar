@@ -41,7 +41,7 @@ public class PrefName {
 	 * @param def
 	 *            the default value
 	 */
-	private PrefName(String name, Object def) {
+	public PrefName(String name, Object def) {
 		setName(name);
 		setDefault(def);
 	}

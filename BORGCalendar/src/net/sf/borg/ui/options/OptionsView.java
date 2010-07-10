@@ -23,6 +23,8 @@ package net.sf.borg.ui.options;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -52,7 +54,8 @@ public class OptionsView extends View {
 	 */
 	static public abstract class OptionsPanel extends JPanel {
 		private static final long serialVersionUID = -4942616624428977307L;
-
+		
+		
 		/**
 		 * set a boolean preference from a checkbox
 		 * 
@@ -85,6 +88,12 @@ public class OptionsView extends View {
 				box.setSelected(false);
 			}
 		}
+		
+		/**
+		 * return the panel's display name
+		 */
+		public abstract String getPanelName();
+
 
 		/**
 		 * save options from the UI to the preference store
@@ -156,37 +165,21 @@ public class OptionsView extends View {
 	 * @return the singleton
 	 */
 	public static OptionsView getReference() {
-		if (singleton == null || !singleton.isShowing()) {
+		if (singleton == null || !singleton.isDisplayable()) {
 			singleton = new OptionsView(false);
 		}
 		return (singleton);
 	}
 
-	private AppearanceOptionsPanel appearancePanel;
-
 	private JButton applyButton;
-
-	private ColorOptionsPanel colorPanel;
-
-	private DatabaseOptionsPanel dbPanel;
 
 	private JButton dismissButton;
 
-	private EmailOptionsPanel emailPanel;
-
-	private EncryptionOptionsPanel encryptionPanel;
-
-	private FontOptionsPanel fontPanel;
-
 	private JTabbedPane jTabbedPane1;
 
-	private MiscellaneousOptionsPanel miscPanel;
-
-	private PopupOptionsPanel popupPanel;
-
-	private TaskOptionsPanel taskPanel;
-
 	private JPanel topPanel = null;
+	
+	private Collection<OptionsPanel> panels = new ArrayList<OptionsPanel>();
 
 	/**
 	 * constructor
@@ -248,44 +241,19 @@ public class OptionsView extends View {
 
 			topPanel.add(applyDismissPanel, GridBagConstraintsFactory.create(0,
 					1, GridBagConstraints.BOTH));
-
-			appearancePanel = new AppearanceOptionsPanel();
-			appearancePanel.loadOptions();
-			ResourceHelper.addTab(jTabbedPane1, "appearance", appearancePanel);
-
-			fontPanel = new FontOptionsPanel();
-			fontPanel.loadOptions();
-			ResourceHelper.addTab(jTabbedPane1, "fonts", fontPanel);
-
-			emailPanel = new EmailOptionsPanel();
-			emailPanel.loadOptions();
-			ResourceHelper.addTab(jTabbedPane1, "EmailParameters", emailPanel);
-
-			popupPanel = new PopupOptionsPanel();
-			popupPanel.loadOptions();
-			ResourceHelper.addTab(jTabbedPane1, "popup_reminders", popupPanel);
-
-			miscPanel = new MiscellaneousOptionsPanel();
-			miscPanel.loadOptions();
-			ResourceHelper.addTab(jTabbedPane1, "misc", miscPanel);
-
-			colorPanel = new ColorOptionsPanel();
-			colorPanel.loadOptions();
-			ResourceHelper.addTab(jTabbedPane1, "UserColorScheme", colorPanel);
-
-			taskPanel = new TaskOptionsPanel();
-			taskPanel.loadOptions();
-			ResourceHelper.addTab(jTabbedPane1, "taskOptions", taskPanel);
-
-			encryptionPanel = new EncryptionOptionsPanel();
-			encryptionPanel.loadOptions();
-			ResourceHelper.addTab(jTabbedPane1, "Encryption", encryptionPanel);
+			
+			addPanel(new AppearanceOptionsPanel());
+			addPanel(new FontOptionsPanel());
+			addPanel(new EmailOptionsPanel());
+			addPanel(new PopupOptionsPanel());
+			addPanel(new MiscellaneousOptionsPanel());
+			addPanel(new ColorOptionsPanel());
+			addPanel(new TaskOptionsPanel());
+			addPanel(new EncryptionOptionsPanel());
 
 		}
 
-		dbPanel = new DatabaseOptionsPanel();
-		dbPanel.loadOptions();
-		ResourceHelper.addTab(jTabbedPane1, "DatabaseInformation", dbPanel);
+		addPanel(new DatabaseOptionsPanel());
 
 		this.setContentPane(topPanel);
 		this.setSize(629, 493);
@@ -304,15 +272,8 @@ public class OptionsView extends View {
 	 */
 	private void applyChanges() {
 
-		popupPanel.applyChanges();
-		emailPanel.applyChanges();
-		dbPanel.applyChanges();
-		colorPanel.applyChanges();
-		appearancePanel.applyChanges();
-		fontPanel.applyChanges();
-		encryptionPanel.applyChanges();
-		miscPanel.applyChanges();
-		taskPanel.applyChanges();
+		for( OptionsPanel panel : panels )
+			panel.applyChanges();
 
 		// notify all parts of borg that have registered to know about
 		// options changes
@@ -331,6 +292,18 @@ public class OptionsView extends View {
 	@Override
 	public void refresh() {
 		// empty
+	}
+	
+	/**
+	 * add an options panel to the options view
+	 * @param panel - the panel
+	 */
+	public void addPanel(OptionsPanel panel)
+	{
+		panel.loadOptions();
+		jTabbedPane1.addTab(panel.getPanelName(), panel);
+		//jTabbedPane1.add(panel.getPanelName(), panel);
+		panels.add(panel);
 	}
 
 }
