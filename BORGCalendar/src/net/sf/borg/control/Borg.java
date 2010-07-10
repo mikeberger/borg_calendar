@@ -23,6 +23,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
@@ -69,6 +72,24 @@ public class Borg implements SocketHandler {
 			singleton = new Borg();
 		return (singleton);
 	}
+	
+
+	/**
+	 * add a url to the classpath
+	 * @param u - the url
+	 * @throws IOException
+	 */
+	private static void addURL(URL u) throws IOException { 
+        URLClassLoader sysloader = (URLClassLoader)ClassLoader.getSystemClassLoader(); 
+        Class<?> sysclass = URLClassLoader.class; 
+        try { 
+            Method method = sysclass.getDeclaredMethod("addURL",new Class[] {URL.class}); 
+            method.setAccessible(true); 
+            method.invoke(sysloader,new Object[]{ u });  
+        } catch (Throwable t) { 
+            t.printStackTrace(); 
+        }         
+    }
 
 	/**
 	 * The main method.
@@ -77,6 +98,21 @@ public class Borg implements SocketHandler {
 	 *            the arguments
 	 */
 	public static void main(String args[]) {
+		
+		// add the lib folder to the4 classpath
+		File lib = new File("lib");
+		File[] files = lib.listFiles(); 
+		for (File file : files) { 
+		    if (file.getName().endsWith(".jar")) {
+		    	System.out.println("Loading JAR: " + file.getName());
+		    	try {
+					Borg.addURL(file.toURI().toURL());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+		    } 
+		} 
+
 
 		// create a new borg object and call its init routing with the command
 		// line args
