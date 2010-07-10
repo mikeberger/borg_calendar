@@ -156,6 +156,7 @@ public class UIControl {
 
 		addExternalModule("net.sf.borg.plugin.reports.ReportModule");
 		addExternalModule("net.sf.borg.plugin.ical.IcalModule");
+		addExternalModule("net.sf.borg.plugin.sync.SyncModule");
 
 		// make the main window visible
 		if (!Prefs.getBoolPref(PrefName.BACKGSTART)

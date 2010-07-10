@@ -48,6 +48,12 @@
 			</fileset>
 		</jar>
 
+		<jar jarfile="${dist.dir}/sync-plugin.jar">
+			<fileset dir="${build.dir}">
+				<include name="**/sync/*.class" />
+			</fileset>
+		</jar>
+
 	</target>
 
 
