@@ -2,7 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="lib/jfreechart-1.0.6.jar"/>
-	<classpathentry kind="lib" path="lib/borg.jar"/>
 	<classpathentry kind="lib" path="lib/jcommon-1.0.10.jar"/>
 	<classpathentry kind="lib" path="lib/ical4j.jar"/>
 	<classpathentry kind="lib" path="lib/gdata-calendar-2.0.jar"/>
@@ -10,5 +9,6 @@
 	<classpathentry kind="lib" path="lib/google-collect-1.0-rc1.jar"/>
 	<classpathentry kind="lib" path="lib/gdata-client-1.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="/BORGCalendar/dist/borg.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

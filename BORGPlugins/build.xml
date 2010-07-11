@@ -8,6 +8,7 @@
 	<property name="build.dir" value="${prj.dir}/build" />
 	<property name="dist.dir" value="${prj.dir}/dist" />
 	<property name="res.dir" value="${prj.dir}/res/resource" />
+	<property name="borg.proj.dir" value="${basedir}/../BORGCalendar" />
 
 	<property name="build.compiler" value="modern" />
 
@@ -17,6 +18,7 @@
 		<fileset dir="${prj.dir}/lib">
 			<include name="*.jar" />
 		</fileset>
+		<pathelement location="${borg.proj.dir}/dist/borg.jar"/>
 	</path>
 
 
@@ -50,7 +52,7 @@
 
 		<jar jarfile="${dist.dir}/sync-plugin.jar">
 			<fileset dir="${build.dir}">
-				<include name="**/sync/*.class" />
+				<include name="**/sync/**/*.class" />
 			</fileset>
 		</jar>
 

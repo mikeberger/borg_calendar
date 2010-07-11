@@ -165,7 +165,7 @@ public class OptionsView extends View {
 	 * @return the singleton
 	 */
 	public static OptionsView getReference() {
-		if (singleton == null || !singleton.isDisplayable()) {
+		if (singleton == null ) {
 			singleton = new OptionsView(false);
 		}
 		return (singleton);

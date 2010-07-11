@@ -27,8 +27,12 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Calendar;
+import java.util.Enumeration;
 import java.util.GregorianCalendar;
+import java.util.Iterator;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -72,24 +76,27 @@ public class Borg implements SocketHandler {
 			singleton = new Borg();
 		return (singleton);
 	}
-	
 
 	/**
 	 * add a url to the classpath
-	 * @param u - the url
+	 * 
+	 * @param u
+	 *            - the url
 	 * @throws IOException
 	 */
-	private static void addURL(URL u) throws IOException { 
-        URLClassLoader sysloader = (URLClassLoader)ClassLoader.getSystemClassLoader(); 
-        Class<?> sysclass = URLClassLoader.class; 
-        try { 
-            Method method = sysclass.getDeclaredMethod("addURL",new Class[] {URL.class}); 
-            method.setAccessible(true); 
-            method.invoke(sysloader,new Object[]{ u });  
-        } catch (Throwable t) { 
-            t.printStackTrace(); 
-        }         
-    }
+	private static void addURL(URL u) throws IOException {
+		URLClassLoader sysloader = (URLClassLoader) ClassLoader
+				.getSystemClassLoader();
+		Class<?> sysclass = URLClassLoader.class;
+		try {
+			Method method = sysclass.getDeclaredMethod("addURL",
+					new Class[] { URL.class });
+			method.setAccessible(true);
+			method.invoke(sysloader, new Object[] { u });
+		} catch (Throwable t) {
+			t.printStackTrace();
+		}
+	}
 
 	/**
 	 * The main method.
@@ -98,22 +105,9 @@ public class Borg implements SocketHandler {
 	 *            the arguments
 	 */
 	public static void main(String args[]) {
+
 		
-		// add the lib folder to the4 classpath
-		File lib = new File("lib");
-		File[] files = lib.listFiles(); 
-		for (File file : files) { 
-		    if (file.getName().endsWith(".jar")) {
-		    	System.out.println("Loading JAR: " + file.getName());
-		    	try {
-					Borg.addURL(file.toURI().toURL());
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-		    } 
-		} 
-
-
+	
 		// create a new borg object and call its init routing with the command
 		// line args
 		Borg b = getReference();
@@ -330,6 +324,23 @@ public class Borg implements SocketHandler {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		// add the lib folder to the classpath
+		File lib = new File("lib");
+		if (lib.isDirectory()) {
+			File[] files = lib.listFiles();
+			for (File file : files) {
+				if (file.getName().endsWith(".jar")) {
+					System.out.println("Loading JAR: " + file.getName());
+					try {
+						Borg.addURL(file.toURI().toURL());
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+
 
 		// locale
 		String country = Prefs.getPref(PrefName.COUNTRY);
