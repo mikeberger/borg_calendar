@@ -3,6 +3,7 @@ package net.sf.borg.plugin.sync.google;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Repeat;
@@ -11,6 +12,7 @@ import net.sf.borg.plugin.sync.AppointmentAdapter;
 
 import com.google.gdata.data.DateTime;
 import com.google.gdata.data.PlainTextConstruct;
+import com.google.gdata.data.TextContent;
 import com.google.gdata.data.calendar.CalendarEventEntry;
 import com.google.gdata.data.extensions.Recurrence;
 import com.google.gdata.data.extensions.When;
@@ -40,8 +42,9 @@ public class GoogleAppointmentAdapter implements
 		
 		ee.setTitle(new PlainTextConstruct(title));
 		ee.setContent(new PlainTextConstruct(body));
-		
-		
+		ee.setIcalUID(Integer.toString(appt.getKey()) + "@BORGCalendar");
+		ee.setSequence(1);
+		//ee.setSyncEvent(true);
 		
 		if (appt.getRepeatFlag() && appt.getFrequency() != null) {
 			
@@ -142,9 +145,41 @@ public class GoogleAppointmentAdapter implements
 	}
 
 	@Override
+	// does not handle deleting from google
 	public Appointment toBorg(CalendarEventEntry extAppt) {
-		// TODO Auto-generated method stub
-		return null;
+		Appointment appt = null;
+		
+		if( extAppt.getSequence() == 0)
+		{
+			// added to google - not in borg
+			appt = AppointmentModel.getReference().getDefaultAppointment();
+			if( appt == null )
+				appt = AppointmentModel.getReference().newAppt();
+			
+			String body = "";
+			if( extAppt.getContent() != null && extAppt.getContent() instanceof TextContent)
+			{
+				TextContent tc = (TextContent) extAppt.getContent();
+				body = tc.getContent().getPlainText();
+				
+			}
+			appt.setText(extAppt.getTitle().getPlainText() + "\n" + body);
+			List<When> whens = extAppt.getTimes();
+			When when = whens.get(0);
+			DateTime start = when.getStartTime();
+			DateTime end = when.getEndTime();
+			appt.setDate(new Date(start.getValue()));
+			if( start.isDateOnly())
+			{
+				appt.setUntimed("Y");
+			}
+		}
+		else
+		{
+			// borg appt that was changed in google
+		}
+		
+		return appt;
 	}
 
 }
