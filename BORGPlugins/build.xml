@@ -18,7 +18,7 @@
 		<fileset dir="${prj.dir}/lib">
 			<include name="*.jar" />
 		</fileset>
-		<pathelement location="${borg.proj.dir}/dist/borg.jar"/>
+		<pathelement location="${borg.proj.dir}/dist/borg.jar" />
 	</path>
 
 
@@ -28,6 +28,13 @@
 		<mkdir dir="${build.dir}" />
 		<javac srcdir="${prj.dir}/src" classpathref="build.classpath" destdir="${build.dir}" target="1.6" source="1.6" debug="true">
 		</javac>
+	</target>
+
+	<target name="dist" depends="jars">
+		<zip destfile="${dist.dir}/plugins.zip">
+			<fileset dir="${prj.dir}/dist" includes="*.jar" />
+			<fileset dir="${prj.dir}/lib" includes="*" />
+		</zip>
 	</target>
 
 	<target name="jars" depends="compile">
@@ -65,6 +72,6 @@
 		<delete quiet="true" dir="${dist.dir}" />
 	</target>
 
-	<target name="main" depends="clean,jars" />
+	<target name="main" depends="clean,dist" />
 
 </project>
