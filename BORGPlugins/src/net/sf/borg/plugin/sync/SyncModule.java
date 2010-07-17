@@ -56,22 +56,6 @@ public class SyncModule implements Module {
 
 		m.add(googleMI);
 
-		JMenuItem dumpMI = new JMenuItem();
-		dumpMI.setText("Dump");
-		dumpMI.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				try {
-					GoogleSync.dump();
-				} catch (Exception e) {
-					Errmsg.errmsg(e);
-				}
-			}
-		});
-
-		m.add(dumpMI);
-
 		parent.addPluginSubMenu(m);
 
 		OptionsView.getReference().addPanel(new GoogleSyncOptionsPanel());

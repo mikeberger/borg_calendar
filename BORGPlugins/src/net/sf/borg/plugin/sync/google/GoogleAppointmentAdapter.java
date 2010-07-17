@@ -19,14 +19,17 @@ import com.google.gdata.data.extensions.When;
 
 public class GoogleAppointmentAdapter implements
 		AppointmentAdapter<CalendarEventEntry> {
-	
+
 	private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
-	private SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss'Z'");
+	private SimpleDateFormat dateTimeFormat = new SimpleDateFormat(
+			"yyyyMMdd'T'HHmmss'Z'");
 
 	@Override
 	public CalendarEventEntry fromBorg(Appointment appt) {
-		
+
 		CalendarEventEntry ee = new CalendarEventEntry();
+
+		// convert borg text to title and content
 		String t = appt.getText();
 		String title = "";
 		String body = "";
@@ -39,39 +42,51 @@ public class GoogleAppointmentAdapter implements
 		} else {
 			title = t;
 		}
-		
+
 		ee.setTitle(new PlainTextConstruct(title));
 		ee.setContent(new PlainTextConstruct(body));
-		ee.setIcalUID(Integer.toString(appt.getKey()) + "@BORGCalendar" + new Date().getTime());
+
+		// set a unique ical id
+		// google seems to require uniqueness even if the id was used by an
+		// already deleted appt
+		// so add a timestamp
+		// the id has the borg key before the @ to be used for syncing later
+		ee.setIcalUID(Integer.toString(appt.getKey()) + "@BORGCalendar"
+				+ new Date().getTime());
+
+		// we'll use sequence just to distinguish appts that came from borg
 		ee.setSequence(1);
-		//ee.setSyncEvent(true);
-		
+
+		// build the ugly recurrence rules for repeating appts
+		// not everything is supported
 		if (appt.getRepeatFlag() && appt.getFrequency() != null) {
-			
+
 			String rec = "";
-			if( AppointmentModel.isNote(appt))
-			{
-				rec += "DTSTART;VALUE=DATE:" + dateFormat.format(appt.getDate()) + "\n";
-				rec += "DTEND;VALUE=DATE:" + dateFormat.format(appt.getDate()) + "\n";
-			}
-			else
-			{
-				
-				Date adjustedStart = new Date(appt.getDate().getTime() + 4*60*60*1000);
-				rec += "DTSTART;VALUE=DATE-TIME:" + dateTimeFormat.format(adjustedStart) + "\n";
+			if (AppointmentModel.isNote(appt)) {
+				rec += "DTSTART;VALUE=DATE:"
+						+ dateFormat.format(appt.getDate()) + "\n";
+				rec += "DTEND;VALUE=DATE:" + dateFormat.format(appt.getDate())
+						+ "\n";
+			} else {
+
+				Date adjustedStart = new Date(appt.getDate().getTime() + 4 * 60
+						* 60 * 1000);
+				rec += "DTSTART;VALUE=DATE-TIME:"
+						+ dateTimeFormat.format(adjustedStart) + "\n";
 				int duration = 30;
-				if( appt.getDuration() != null )
+				if (appt.getDuration() != null)
 					duration = appt.getDuration().intValue();
-				long endt = adjustedStart.getTime() + duration * 60 * 1000;	
+				long endt = adjustedStart.getTime() + duration * 60 * 1000;
 				Date enddate = new Date(endt);
-				rec += "DTEND;VALUE=DATE-TIME:" + dateTimeFormat.format(enddate) + "\n";
+				rec += "DTEND;VALUE=DATE-TIME:"
+						+ dateTimeFormat.format(enddate) + "\n";
 
 			}
-			
+
 			// build recur string
 			rec += "RRULE:FREQ=";
 			String freq = Repeat.getFreq(appt.getFrequency());
-			
+
 			if (freq.equals(Repeat.DAILY)) {
 				rec += "DAILY";
 			} else if (freq.equals(Repeat.WEEKLY)) {
@@ -82,21 +97,24 @@ public class GoogleAppointmentAdapter implements
 				Date dd = appt.getDate();
 				GregorianCalendar gc = new GregorianCalendar();
 				gc.setTime(dd);
-				rec += "MONTHLY;BYMONTHDAY="
-						+ gc.get(java.util.Calendar.DATE);
+				rec += "MONTHLY;BYMONTHDAY=" + gc.get(java.util.Calendar.DATE);
 			} else if (freq.equals(Repeat.MONTHLY_DAY)) {
 				Date dd = appt.getDate();
 				GregorianCalendar gc = new GregorianCalendar();
 				gc.setTime(dd);
 				int dayOfWeek = gc.get(GregorianCalendar.DAY_OF_WEEK);
-	            int dayOfWeekMonth = gc.get(GregorianCalendar.DAY_OF_WEEK_IN_MONTH);
-				String days[] = new String[]{"SU", "MO", "TU", "WE", "TH", "FR", "SA"};
-	            rec += "MONTHLY;BYDAY=" + dayOfWeekMonth + days[dayOfWeek-1];
+				int dayOfWeekMonth = gc
+						.get(GregorianCalendar.DAY_OF_WEEK_IN_MONTH);
+				String days[] = new String[] { "SU", "MO", "TU", "WE", "TH",
+						"FR", "SA" };
+				rec += "MONTHLY;BYDAY=" + dayOfWeekMonth + days[dayOfWeek - 1];
 			} else if (freq.equals(Repeat.YEARLY)) {
 				rec += "YEARLY";
-			} else if( freq.equals(Repeat.NDAYS)) {
+			} else if (freq.equals(Repeat.NDAYS)) {
 				rec += "DAILY;INTERVAL=" + Repeat.getNDays(appt.getFrequency());
 			} else {
+				System.out.println("Appointment " + appt.getText()
+						+ " has a recurrence that does not sync with google");
 				rec += "DAILY";
 			}
 
@@ -104,35 +122,30 @@ public class GoogleAppointmentAdapter implements
 				rec += ";COUNT=" + appt.getTimes();
 			}
 			rec += "\n";
-			
-			//System.out.println(appt.getText() + "--" + rec);
-			
+
 			Recurrence recurrence = new Recurrence();
 			recurrence.setValue(rec);
 			ee.setRecurrence(recurrence);
-			
+
 		}
-		else
-		{
-			if( !AppointmentModel.isNote(appt))
-			{
+		// handle non-repating appts
+		else {
+			if (!AppointmentModel.isNote(appt)) {
 				DateTime startTime = new DateTime(appt.getDate());
-				startTime.setTzShift(5*60);
+				startTime.setTzShift(5 * 60);
 				int duration = 30;
-				if( appt.getDuration() != null )
+				if (appt.getDuration() != null)
 					duration = appt.getDuration().intValue();
-				long endt = appt.getDate().getTime() + duration * 60 * 1000;		
+				long endt = appt.getDate().getTime() + duration * 60 * 1000;
 				DateTime endTime = new DateTime(endt);
-				endTime.setTzShift(5*60);
+				endTime.setTzShift(5 * 60);
 
 				When eventTimes = new When();
 				eventTimes.setStartTime(startTime);
 				eventTimes.setEndTime(endTime);
 				ee.addTime(eventTimes);
 
-			}
-			else
-			{
+			} else {
 				DateTime startTime = new DateTime(appt.getDate());
 				startTime.setDateOnly(true);
 				When eventTimes = new When();
@@ -145,39 +158,64 @@ public class GoogleAppointmentAdapter implements
 	}
 
 	@Override
-	// does not handle deleting from google
 	public Appointment toBorg(CalendarEventEntry extAppt) {
-		Appointment appt = null;
 		
-		if( extAppt.getSequence() == 0)
-		{
-			// added to google - not in borg
-			appt = AppointmentModel.getReference().getDefaultAppointment();
-			if( appt == null )
-				appt = AppointmentModel.getReference().newAppt();
+		Appointment appt = null;
+
+		// handle appts that came from borg
+		if (extAppt.getSequence() == 1) {
 			
-			String body = "";
-			if( extAppt.getContent() != null && extAppt.getContent() instanceof TextContent)
-			{
-				TextContent tc = (TextContent) extAppt.getContent();
-				body = tc.getContent().getPlainText();
-				
+			// fetch borg appt to update
+			String uid = extAppt.getIcalUID();
+			int idx = uid.indexOf('@');
+			String ks = uid.substring(0, idx);
+			try {
+				int key = Integer.parseInt(ks);
+				appt = AppointmentModel.getReference().getAppt(key);
+			} catch (Exception e) {
 			}
-			appt.setText(extAppt.getTitle().getPlainText() + "\n" + body);
-			List<When> whens = extAppt.getTimes();
-			When when = whens.get(0);
-			DateTime start = when.getStartTime();
-			DateTime end = when.getEndTime();
-			appt.setDate(new Date(start.getValue()));
-			if( start.isDateOnly())
-			{
-				appt.setUntimed("Y");
-			}
+
+		}
+
+		if (appt == null) {
+			// handle event added to google or not in borg for some other reason
+			appt = AppointmentModel.getReference().getDefaultAppointment();
+			if (appt == null)
+				appt = AppointmentModel.getReference().newAppt();
+		}
+
+		// convert body and content to borg appt text
+		String body = "";
+		if (extAppt.getContent() != null
+				&& extAppt.getContent() instanceof TextContent) {
+			TextContent tc = (TextContent) extAppt.getContent();
+			body = tc.getContent().getPlainText();
+
+		}
+		appt.setText(extAppt.getTitle().getPlainText() + "\n" + body);
+		
+		// convert date
+		List<When> whens = extAppt.getTimes();
+		When when = whens.get(0);
+		DateTime start = when.getStartTime();
+		DateTime end = when.getEndTime();
+		appt.setDate(new Date(start.getValue()));
+		if (start.isDateOnly()) {
+			appt.setUntimed("Y");
 		}
 		else
 		{
-			// borg appt that was changed in google
+			appt.setUntimed("N");
+			long mins = (end.getValue() - start.getValue())/1000/60;
+			if( mins > 0)
+			{
+				appt.setDuration((int)mins);
+			}
 		}
+
+		// no recurrence for now
+		
+		// all other google properties are ignored !!!
 		
 		return appt;
 	}
