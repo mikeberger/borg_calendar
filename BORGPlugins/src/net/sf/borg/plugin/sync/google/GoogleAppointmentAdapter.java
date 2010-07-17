@@ -42,7 +42,7 @@ public class GoogleAppointmentAdapter implements
 		
 		ee.setTitle(new PlainTextConstruct(title));
 		ee.setContent(new PlainTextConstruct(body));
-		ee.setIcalUID(Integer.toString(appt.getKey()) + "@BORGCalendar");
+		ee.setIcalUID(Integer.toString(appt.getKey()) + "@BORGCalendar" + new Date().getTime());
 		ee.setSequence(1);
 		//ee.setSyncEvent(true);
 		
@@ -105,7 +105,7 @@ public class GoogleAppointmentAdapter implements
 			}
 			rec += "\n";
 			
-			System.out.println(appt.getText() + "--" + rec);
+			//System.out.println(appt.getText() + "--" + rec);
 			
 			Recurrence recurrence = new Recurrence();
 			recurrence.setValue(rec);

@@ -11,7 +11,9 @@ import net.sf.borg.common.Prefs;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.entity.Appointment;
 
+import com.google.gdata.client.calendar.CalendarQuery;
 import com.google.gdata.client.calendar.CalendarService;
+import com.google.gdata.data.DateTime;
 import com.google.gdata.data.Link;
 import com.google.gdata.data.batch.BatchOperationType;
 import com.google.gdata.data.batch.BatchStatus;
@@ -61,48 +63,65 @@ public class GoogleSync {
 
 		URL eventUrl = new URL("http://www.google.com/calendar/feeds/" + user
 				+ "/private/full");
-		
+
 		CalendarEventFeed batchDeleteRequest = new CalendarEventFeed();
 		int count = 1;
 
 		// get all new & changed appts
-		CalendarEventFeed myFeed = myService.getFeed(eventUrl,
-				CalendarEventFeed.class);
+		CalendarQuery query = new CalendarQuery(eventUrl);
+		query.setMaxResults(10000);
+		CalendarEventFeed myFeed = myService.query(query, CalendarEventFeed.class);
 		List<CalendarEventEntry> entries = myFeed.getEntries();
+		System.out.println("Entries: " + entries.size());
 		for (CalendarEventEntry entry : entries) {
 
-//			if (entry.getSequence() == 0
-//					|| !entry.getPublished().equals(entry.getEdited())) {
-//				Appointment appt = ad.toBorg(entry);
-//				AppointmentModel.getReference().saveAppt(appt);
-//			}
-//			
+			
+			if (entry.getSequence() == 0
+					|| Math.abs(entry.getPublished().getValue() - entry.getEdited().getValue()) > 5*60*1000) {
+				//Appointment appt = ad.toBorg(entry);
+				//AppointmentModel.getReference().saveAppt(appt);
+				System.out.println("Needs Sync: " + entry.getIcalUID() + " " + entry.getSequence()
+					+ " " + entry.getTitle().getPlainText() + " "
+					+ entry.getPublished().toUiString() + " "
+					+ entry.getEdited().toUiString());
+			}
+		
 			BatchUtils.setBatchId(entry, Integer.toString(count));
 			BatchUtils.setBatchOperationType(entry, BatchOperationType.DELETE);
 			batchDeleteRequest.getEntries().add(entry);
 			count++;
+			
 
 		}
+		System.out.println("Batch Count: " + count);
 
-		// delete all events
-		Link batchLink = myFeed.getLink(Link.Rel.FEED_BATCH, Link.Type.ATOM);
-		CalendarEventFeed batchResponse = myService.batch(new URL(batchLink
-				.getHref()), batchDeleteRequest);
 
-		// Ensure that all the operations were successful.
-		boolean isSuccess = true;
-		for (CalendarEventEntry entry : batchResponse.getEntries()) {
-			String batchId = BatchUtils.getBatchId(entry);
-			if (!BatchUtils.isSuccess(entry)) {
-				isSuccess = false;
-				BatchStatus status = BatchUtils.getBatchStatus(entry);
-				System.out.println("\n" + batchId + " failed ("
-						+ status.getReason() + ") " + status.getContent());
+		if (count > 1) {
+			// delete all events
+			myFeed = myService.getFeed(eventUrl, CalendarEventFeed.class);
+			Link batchLink = myFeed
+					.getLink(Link.Rel.FEED_BATCH, Link.Type.ATOM);
+
+			CalendarEventFeed batchResponse = myService.batch(new URL(batchLink
+					.getHref()), batchDeleteRequest);
+
+			// Ensure that all the operations were successful.
+			boolean isSuccess = true;
+			for (CalendarEventEntry entry : batchResponse.getEntries()) {
+				//System.out.println(entry.getIcalUID() + " "
+				//		+ entry.getTitle().getPlainText());
+				String batchId = BatchUtils.getBatchId(entry);
+				if (!BatchUtils.isSuccess(entry)) {
+					isSuccess = false;
+					BatchStatus status = BatchUtils.getBatchStatus(entry);
+					System.out.println("\n" + batchId + " failed ("
+							+ status.getReason() + ") " + status.getContent());
+				}
 			}
-		}
-		if (isSuccess) {
-			System.out
-					.println("Successfully processed all events via batch request.");
+			if (isSuccess) {
+				System.out
+						.println("Successfully processed all events via batch request.");
+			}
 		}
 		
 		// send all borg events to google
@@ -125,14 +144,16 @@ public class GoogleSync {
 			}
 		}
 
-		batchLink = myFeed.getLink(Link.Rel.FEED_BATCH, Link.Type.ATOM);
-		batchResponse = myService.batch(new URL(batchLink
-				.getHref()), batchInsertRequest);
+		Link batchLink = myFeed.getLink(Link.Rel.FEED_BATCH, Link.Type.ATOM);
+		CalendarEventFeed batchResponse = myService.batch(new URL(batchLink.getHref()),
+				batchInsertRequest);
 
 		// Ensure that all the operations were successful.
-		isSuccess = true;
+		boolean isSuccess = true;
 		for (CalendarEventEntry entry : batchResponse.getEntries()) {
 			String batchId = BatchUtils.getBatchId(entry);
+			//System.out.println(entry.getId() + " "
+			//		+ entry.getTitle().getPlainText());
 			if (!BatchUtils.isSuccess(entry)) {
 				isSuccess = false;
 				BatchStatus status = BatchUtils.getBatchStatus(entry);
@@ -147,5 +168,4 @@ public class GoogleSync {
 
 	}
 
-	
 }
