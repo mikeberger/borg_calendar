@@ -425,6 +425,9 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 		for (Project project : subpcoll) {
 			if (!CategoryModel.getReference().isShown(project.getCategory()))
 				continue;
+			if (!showClosedCheckBox.isSelected()
+					&& TaskModel.isClosed(project))
+				continue;
 			DefaultMutableTreeNode subnode = new DefaultMutableTreeNode(
 					new Node(project.getDescription(), project));
 			node.add(subnode);
