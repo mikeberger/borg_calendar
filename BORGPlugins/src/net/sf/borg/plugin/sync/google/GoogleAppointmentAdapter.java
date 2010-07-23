@@ -42,6 +42,9 @@ public class GoogleAppointmentAdapter implements
 		} else {
 			title = t;
 		}
+		
+		if( body == null || body.isEmpty())
+			body = "No Content";
 
 		ee.setTitle(new PlainTextConstruct(title));
 		ee.setContent(new PlainTextConstruct(body));
