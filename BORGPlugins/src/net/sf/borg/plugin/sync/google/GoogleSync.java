@@ -29,12 +29,11 @@ public class GoogleSync {
 	static public PrefName SYNCPW = new PrefName("googlesync-pw", "");
 	static public PrefName SYNCPW2 = new PrefName("googlesync-pw2", "");
 
-	static private class SyncThread extends Thread {
+	static class SyncThread extends Thread {
 
 		private ModalMessage modalMessage = null;
-		
-		private void showMessage(String s, boolean unlock)
-		{
+
+		void showMessage(String s, boolean unlock) {
 			System.out.println(s);
 			final String fs = s;
 			final boolean funlock = unlock;
@@ -42,7 +41,7 @@ public class GoogleSync {
 				public void run() {
 					if (modalMessage.isShowing()) {
 						modalMessage.appendText(fs);
-						if( funlock == true)
+						if (funlock == true)
 							modalMessage.setEnabled(true);
 					}
 				}
@@ -64,7 +63,7 @@ public class GoogleSync {
 					modalMessage.toFront();
 				}
 			});
-			
+
 			try {
 				doSync();
 			} catch (Exception e) {
@@ -76,7 +75,7 @@ public class GoogleSync {
 			this.showMessage("Google Sync Finished", true);
 
 		}
-		
+
 		private void doSync() throws Exception {
 
 			GoogleAppointmentAdapter ad = new GoogleAppointmentAdapter();
@@ -93,8 +92,8 @@ public class GoogleSync {
 			String pw = GoogleSyncOptionsPanel.gep();
 			myService.setUserCredentials(user, pw);
 
-			URL eventUrl = new URL("http://www.google.com/calendar/feeds/" + user
-					+ "/private/full");
+			URL eventUrl = new URL("http://www.google.com/calendar/feeds/"
+					+ user + "/private/full");
 
 			CalendarEventFeed batchDeleteRequest = new CalendarEventFeed();
 			int count = 1;
@@ -104,23 +103,27 @@ public class GoogleSync {
 
 			// it is possible that the data may get large enough to exceed the
 			// amount of
-			// data that google will return in one query. If that ever happens, then
+			// data that google will return in one query. If that ever happens,
+			// then
 			// paging can be done. For now, just up the max limit and hope.
 			query.setMaxResults(10000);
 			CalendarEventFeed myFeed = myService.query(query,
 					CalendarEventFeed.class);
 			List<CalendarEventEntry> entries = myFeed.getEntries();
-			this.showMessage("Current Google Entries: " + entries.size(), false);
+			this
+					.showMessage("Current Google Entries: " + entries.size(),
+							false);
 			for (CalendarEventEntry entry : entries) {
 
 				/*
-				 * borg sets sequence = 1 when sending to google, so anything with
-				 * sequence == 0 was created on google (noticed by trial/error) To
-				 * determine events changed on google, the publish (create) and edit
-				 * (update) dates are compared. Need to check for a difference of a
-				 * fw minutes between the times and the times are not the same for
-				 * newly insert appts (also found by trial/error) so - after sync,
-				 * don't update via google for 5 mins
+				 * borg sets sequence = 1 when sending to google, so anything
+				 * with sequence == 0 was created on google (noticed by
+				 * trial/error) To determine events changed on google, the
+				 * publish (create) and edit (update) dates are compared. Need
+				 * to check for a difference of a fw minutes between the times
+				 * and the times are not the same for newly insert appts (also
+				 * found by trial/error) so - after sync, don't update via
+				 * google for 5 mins
 				 */
 				if (entry.getSequence() == 0
 						|| Math.abs(entry.getPublished().getValue()
@@ -137,7 +140,8 @@ public class GoogleSync {
 				// add every appt to a batch request to delete them all
 				// there is no simple way to empty the primary calendar
 				BatchUtils.setBatchId(entry, Integer.toString(count));
-				BatchUtils.setBatchOperationType(entry, BatchOperationType.DELETE);
+				BatchUtils.setBatchOperationType(entry,
+						BatchOperationType.DELETE);
 				batchDeleteRequest.getEntries().add(entry);
 				count++;
 
@@ -147,11 +151,11 @@ public class GoogleSync {
 			if (count > 1) {
 				// delete all events
 				myFeed = myService.getFeed(eventUrl, CalendarEventFeed.class);
-				Link batchLink = myFeed
-						.getLink(Link.Rel.FEED_BATCH, Link.Type.ATOM);
+				Link batchLink = myFeed.getLink(Link.Rel.FEED_BATCH,
+						Link.Type.ATOM);
 
-				CalendarEventFeed batchResponse = myService.batch(new URL(batchLink
-						.getHref()), batchDeleteRequest);
+				CalendarEventFeed batchResponse = myService.batch(new URL(
+						batchLink.getHref()), batchDeleteRequest);
 
 				// Ensure that all the operations were successful.
 				boolean isSuccess = true;
@@ -162,15 +166,20 @@ public class GoogleSync {
 						isSuccess = false;
 						BatchStatus status = BatchUtils.getBatchStatus(entry);
 						this.showMessage("\n" + batchId + " failed ("
-								+ status.getReason() + ") " + status.getContent(), false);
+								+ status.getReason() + ") "
+								+ status.getContent(), false);
 					}
 				}
 				if (isSuccess) {
-					this.showMessage("Successfully processed all events via batch request.", false);
+					this
+							.showMessage(
+									"Successfully processed all events via batch request.",
+									false);
 				}
 			}
 
-			// now that borg has the latest synced view of all appts, send all borg
+			// now that borg has the latest synced view of all appts, send all
+			// borg
 			// events to google
 			CalendarEventFeed batchInsertRequest = new CalendarEventFeed();
 
@@ -183,15 +192,21 @@ public class GoogleSync {
 			for (Appointment appt : appts) {
 				cal.setTime(appt.getDate());
 				if (cal.get(Calendar.YEAR) >= syncFromYear) {
-					CalendarEventEntry ev = ad.fromBorg(appt);
-					BatchUtils.setBatchId(ev, Integer.toString(count));
-					BatchUtils.setBatchOperationType(ev, BatchOperationType.INSERT);
-					batchInsertRequest.getEntries().add(ev);
-					count++;
+					try {
+						CalendarEventEntry ev = ad.fromBorg(appt);
+						BatchUtils.setBatchId(ev, Integer.toString(count));
+						BatchUtils.setBatchOperationType(ev,
+								BatchOperationType.INSERT);
+						batchInsertRequest.getEntries().add(ev);
+						count++;
+					} catch (Exception e) {
+						this.showMessage(e.getLocalizedMessage(), false);
+					}
 				}
 			}
 
-			Link batchLink = myFeed.getLink(Link.Rel.FEED_BATCH, Link.Type.ATOM);
+			Link batchLink = myFeed
+					.getLink(Link.Rel.FEED_BATCH, Link.Type.ATOM);
 			CalendarEventFeed batchResponse = myService.batch(new URL(batchLink
 					.getHref()), batchInsertRequest);
 
@@ -199,24 +214,25 @@ public class GoogleSync {
 			boolean isSuccess = true;
 			for (CalendarEventEntry entry : batchResponse.getEntries()) {
 				String batchId = BatchUtils.getBatchId(entry);
-				// System.out.println(entry.getId() + " "
-				// + entry.getTitle().getPlainText());
 				if (!BatchUtils.isSuccess(entry)) {
 					isSuccess = false;
 					BatchStatus status = BatchUtils.getBatchStatus(entry);
-					System.out.println("\n" + batchId + " failed ("
-							+ status.getReason() + ") " + status.getContent());
+					this.showMessage(batchId + "-"
+							+ entry.getTitle().getPlainText() + " failed ("
+							+ status.getReason() + ") " + status.getContent(),
+							false);
 				}
 			}
 			if (isSuccess) {
-				this.showMessage("Successfully processed all events via batch request.", false);
+				this.showMessage(
+						"Successfully processed all events via batch request.",
+						false);
 			}
 
 		}
 
 	}
 
-	
 	/**
 	 * do a sync and wipe. Since Googel cannot fully support everything in the
 	 * borg calendar model, just sync google changes to borg and then wipe and

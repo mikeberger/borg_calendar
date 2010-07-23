@@ -25,7 +25,7 @@ public class GoogleAppointmentAdapter implements
 			"yyyyMMdd'T'HHmmss'Z'");
 
 	@Override
-	public CalendarEventEntry fromBorg(Appointment appt) {
+	public CalendarEventEntry fromBorg(Appointment appt) throws Exception {
 
 		CalendarEventEntry ee = new CalendarEventEntry();
 
@@ -116,9 +116,8 @@ public class GoogleAppointmentAdapter implements
 			} else if (freq.equals(Repeat.NDAYS)) {
 				rec += "DAILY;INTERVAL=" + Repeat.getNDays(appt.getFrequency());
 			} else {
-				System.out.println("Appointment " + appt.getText()
+				throw new Exception("Appointment " + appt.getText()
 						+ " has a recurrence that does not sync with google");
-				rec += "DAILY";
 			}
 
 			if (appt.getTimes().intValue() != 9999) {
