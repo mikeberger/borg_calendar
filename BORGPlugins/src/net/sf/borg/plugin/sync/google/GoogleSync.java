@@ -110,9 +110,7 @@ public class GoogleSync {
 			CalendarEventFeed myFeed = myService.query(query,
 					CalendarEventFeed.class);
 			List<CalendarEventEntry> entries = myFeed.getEntries();
-			this
-					.showMessage("Current Google Entries: " + entries.size(),
-							false);
+			this.showMessage("Current Google Entries: " + entries.size(), false);
 			for (CalendarEventEntry entry : entries) {
 
 				/*
@@ -133,8 +131,14 @@ public class GoogleSync {
 							+ entry.getTitle().getPlainText() + " "
 							+ entry.getPublished().toUiString() + " "
 							+ entry.getEdited().toUiString(), false);
-					Appointment appt = ad.toBorg(entry);
-					AppointmentModel.getReference().saveAppt(appt);
+					try {
+						Appointment appt = ad.toBorg(entry);
+						AppointmentModel.getReference().saveAppt(appt);
+					} catch (Exception e) {
+						this.showMessage(e.getMessage(), false);
+						continue;
+					}
+					
 				}
 
 				// add every appt to a batch request to delete them all
@@ -165,16 +169,16 @@ public class GoogleSync {
 					if (!BatchUtils.isSuccess(entry)) {
 						isSuccess = false;
 						BatchStatus status = BatchUtils.getBatchStatus(entry);
-						this.showMessage("\n" + batchId + " failed ("
-								+ status.getReason() + ") "
-								+ status.getContent(), false);
+						this.showMessage(
+								"\n" + batchId + " failed ("
+										+ status.getReason() + ") "
+										+ status.getContent(), false);
 					}
 				}
 				if (isSuccess) {
-					this
-							.showMessage(
-									"Successfully processed all events via batch request.",
-									false);
+					this.showMessage(
+							"Successfully processed all events via batch request.",
+							false);
 				}
 			}
 
@@ -207,8 +211,8 @@ public class GoogleSync {
 
 			Link batchLink = myFeed
 					.getLink(Link.Rel.FEED_BATCH, Link.Type.ATOM);
-			CalendarEventFeed batchResponse = myService.batch(new URL(batchLink
-					.getHref()), batchInsertRequest);
+			CalendarEventFeed batchResponse = myService.batch(
+					new URL(batchLink.getHref()), batchInsertRequest);
 
 			// Ensure that all the operations were successful.
 			boolean isSuccess = true;

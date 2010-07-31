@@ -160,7 +160,7 @@ public class GoogleAppointmentAdapter implements
 	}
 
 	@Override
-	public Appointment toBorg(CalendarEventEntry extAppt) {
+	public Appointment toBorg(CalendarEventEntry extAppt) throws Exception {
 		
 		Appointment appt = null;
 
@@ -198,6 +198,11 @@ public class GoogleAppointmentAdapter implements
 		
 		// convert date
 		List<When> whens = extAppt.getTimes();
+		if( whens == null )
+		{
+			throw new Exception("Appointment " + appt.getText()
+					+ " has no event times (recurs?) cannot sync...");
+		}
 		When when = whens.get(0);
 		DateTime start = when.getStartTime();
 		DateTime end = when.getEndTime();
