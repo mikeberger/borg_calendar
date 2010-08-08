@@ -205,6 +205,9 @@ public class PrefName {
 	/** The REMINDERCHECKMINS. */
 	static public PrefName REMINDERCHECKMINS = new PrefName(
 			"reminder_check_mins", new Integer(1));
+	
+	/** option to consolidate all reminders in a single list window */
+	static public PrefName REMINDERLIST = new PrefName("reminder_list", "false");
 
 	/** The EMAILENABLED. */
 	static public PrefName EMAILENABLED = new PrefName("email_enabled", "false");

@@ -129,8 +129,11 @@ public class UIControl {
 		// tray icon
 		SunTrayIconProxy.startTrayIcon(trayname);
 
-		// create popups view
-		ReminderListManager.getReference();
+		// create reminder manager
+		if( Prefs.getBoolPref(PrefName.REMINDERLIST) )
+			ReminderListManager.getReference();
+		else
+			ReminderPopupManager.getReference();
 
 		// create the main window
 		MultiView mv = MultiView.getMainView();

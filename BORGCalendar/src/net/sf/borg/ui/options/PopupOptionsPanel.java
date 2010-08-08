@@ -65,6 +65,8 @@ class PopupOptionsPanel extends OptionsPanel {
 
 	/** The popenablebox. */
 	private JCheckBox popenablebox = new JCheckBox();
+	
+	private JCheckBox reminderListBox = new JCheckBox();
 
 	/** The soundbox. */
 	private JComboBox soundbox = new JComboBox();
@@ -179,6 +181,10 @@ class PopupOptionsPanel extends OptionsPanel {
 		remPanelGBC.anchor = java.awt.GridBagConstraints.WEST;
 
 		this.add(remTimePanel, remPanelGBC);
+		
+		reminderListBox.setText(Resource.getResourceString("reminder_list"));
+		this.add(reminderListBox, GridBagConstraintsFactory.create(0, 4,
+				GridBagConstraints.BOTH));
 
 	}
 
@@ -190,6 +196,7 @@ class PopupOptionsPanel extends OptionsPanel {
 	@Override
 	public void applyChanges() {
 		OptionsPanel.setBooleanPref(popenablebox, PrefName.REMINDERS);
+		OptionsPanel.setBooleanPref(reminderListBox, PrefName.REMINDERLIST);
 		Prefs.putPref(PrefName.BEEPINGREMINDERS, getSoundOption());		
 		
 		Integer checkMins = (Integer) checkfreq.getValue();
@@ -217,6 +224,7 @@ class PopupOptionsPanel extends OptionsPanel {
 	@Override
 	public void loadOptions() {
 		OptionsPanel.setCheckBox(popenablebox, PrefName.REMINDERS);
+		OptionsPanel.setCheckBox(reminderListBox, PrefName.REMINDERLIST);
 		
 		String beep = Prefs.getPref(PrefName.BEEPINGREMINDERS);
 		if( beep.equals("true"))
