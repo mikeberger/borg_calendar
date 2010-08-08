@@ -26,8 +26,6 @@
 package net.sf.borg.ui.popup;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.Map.Entry;
@@ -115,8 +113,8 @@ public class ReminderPopupManager extends ReminderManager {
 				mapEntry.setValue(null);
 				continue;
 			}
-			
-			if( apptInstance.isHidden())
+
+			if (apptInstance.isHidden())
 				continue;
 
 			try {
@@ -267,7 +265,7 @@ public class ReminderPopupManager extends ReminderManager {
 				popupMapEntry.setValue(null);
 				continue;
 			}
-			if( instance.isHidden())
+			if (instance.isHidden())
 				continue;
 
 			// read the appt and get the date
@@ -276,10 +274,8 @@ public class ReminderPopupManager extends ReminderManager {
 			// untimed todo
 			if (AppointmentModel.isNote(appt) && appt.getTodo()) {
 
-				// *** show untimed todos on the half hour and on startup
-				int min = new GregorianCalendar().get(Calendar.MINUTE);
 				if (popup.getReminderInstance().wasEverShown()
-						&& !(min == 0 || min == 30))
+						&& !shouldShowUntimedTodosNow())
 					continue;
 
 			}
@@ -287,7 +283,6 @@ public class ReminderPopupManager extends ReminderManager {
 			// set the time to go message
 			popup.updateMessage();
 
-			
 		}
 
 	}

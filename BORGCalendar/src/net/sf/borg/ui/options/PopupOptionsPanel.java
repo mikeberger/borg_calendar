@@ -89,8 +89,7 @@ class PopupOptionsPanel extends OptionsPanel {
 				GridBagConstraints.BOTH));
 
 		JLabel jLabel15 = new JLabel();
-		jLabel15.setText(Resource.getResourceString("min_between_chks") + " "
-				+ Resource.getResourceString("restart_req"));
+		jLabel15.setText(Resource.getResourceString("todo_reminder_freq"));
 
 		this.add(jLabel15, GridBagConstraintsFactory.create(0, 1,
 				GridBagConstraints.BOTH));
@@ -200,11 +199,11 @@ class PopupOptionsPanel extends OptionsPanel {
 		Prefs.putPref(PrefName.BEEPINGREMINDERS, getSoundOption());		
 		
 		Integer checkMins = (Integer) checkfreq.getValue();
-		int cur = Prefs.getIntPref(PrefName.REMINDERCHECKMINS);
+		int cur = Prefs.getIntPref(PrefName.TODOREMINDERMINS);
 		if (checkMins.intValue() != cur) {
 			// why does this not save a new pref if the value is the same?
 			// I no longer remeber if this matters - will leave as is
-			Prefs.putPref(PrefName.REMINDERCHECKMINS, checkMins);
+			Prefs.putPref(PrefName.TODOREMINDERMINS, checkMins);
 		}
 
 		int arr[] = new int[numberOfReminderTimes];
@@ -244,7 +243,7 @@ class PopupOptionsPanel extends OptionsPanel {
 			soundbox.setSelectedItem(beep);
 		}
 
-		int mins = Prefs.getIntPref(PrefName.REMINDERCHECKMINS);
+		int mins = Prefs.getIntPref(PrefName.TODOREMINDERMINS);
 		checkfreq.setValue(new Integer(mins));
 
 		// load the times

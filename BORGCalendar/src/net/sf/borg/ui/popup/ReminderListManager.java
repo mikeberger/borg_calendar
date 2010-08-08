@@ -26,8 +26,6 @@
 package net.sf.borg.ui.popup;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import net.sf.borg.model.AppointmentModel;
@@ -117,10 +115,10 @@ public class ReminderListManager extends ReminderManager {
 
 			// untimed todo
 			if (AppointmentModel.isNote(appt) && appt.getTodo()) {
-
-				// *** show untimed todos every half hour and on startup
-				int min = new GregorianCalendar().get(Calendar.MINUTE);
-				if (!reminderInstance.wasEverShown() || (min == 0 || min == 30)) {
+				
+				if (!reminderInstance.wasEverShown() ||
+						shouldShowUntimedTodosNow())
+				{
 					needUpdate = true;
 					break;
 				}
@@ -196,7 +194,7 @@ public class ReminderListManager extends ReminderManager {
 			reminders.remove(inst);
 		}
 
-		if (!deletedReminders.isEmpty())
+		if (!deletedReminders.isEmpty() && reminderList.isShowing())
 			reminderList.refresh();
 
 	}

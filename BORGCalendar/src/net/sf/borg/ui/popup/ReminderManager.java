@@ -92,7 +92,7 @@ public abstract class ReminderManager implements Model.Listener {
 				SwingUtilities.invokeLater(doPopupChk);
 			}
 		}, secs_left * 1000,
-				Prefs.getIntPref(PrefName.REMINDERCHECKMINS) * 60 * 1000);
+				1 * 60 * 1000);
 
 	}
 
@@ -260,5 +260,28 @@ public abstract class ReminderManager implements Model.Listener {
 	 * show all reminders
 	 */
 	public abstract void showAll();
+	
+	/**
+	 * determine if we should show a reminder for untimed todos during this periodic update
+	 * @return true if we should show the reminder
+	 */
+	protected boolean shouldShowUntimedTodosNow()
+	{
+		
+		GregorianCalendar now = new GregorianCalendar();
+		int todoFreq = Prefs.getIntPref(PrefName.TODOREMINDERMINS);
+
+		// *** show untimed todos periodically and on startup
+		// if no todo reminders are wanted, then skip this
+		if( todoFreq == 0 )
+			return false;
+		
+		// determine minutes since midnight
+		int hr = now.get(Calendar.HOUR_OF_DAY);
+		int min = new GregorianCalendar().get(Calendar.MINUTE);
+		int mins_since_midnight = hr*60 + min;		
+		
+		return (mins_since_midnight % todoFreq == 0);
+	}
 
 }

@@ -202,9 +202,9 @@ public class PrefName {
 	static public PrefName BEEPINGREMINDERS = new PrefName("beeping_reminders",
 			"true");
 
-	/** The REMINDERCHECKMINS. */
-	static public PrefName REMINDERCHECKMINS = new PrefName(
-			"reminder_check_mins", new Integer(1));
+	/** how often tp pop up reminders for untimed todos*/
+	static public PrefName TODOREMINDERMINS = new PrefName(
+			"todo_reminder_mins", new Integer(30));
 	
 	/** option to consolidate all reminders in a single list window */
 	static public PrefName REMINDERLIST = new PrefName("reminder_list", "false");
