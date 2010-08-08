@@ -27,6 +27,7 @@ import java.util.Calendar;
  */
 public class PrefName {
 
+
 	/** preference name */
 	private String name_;
 
@@ -317,6 +318,10 @@ public class PrefName {
 	/** The GANTT chart size. */
 	static public PrefName GANTTSIZE = new PrefName("ganttsize",
 			"-1,-1,-1,-1,N");
+	
+	public static final PrefName REMINDERLISTSIZE = new PrefName("reminderlistsize",
+	"-1,-1,-1,-1,N");
+
 
 	// user color scheme
 	/** use user colors on todo view */

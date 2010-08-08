@@ -45,7 +45,7 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.model.ReminderTimes;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.options.OptionsView.OptionsPanel;
-import net.sf.borg.ui.popup.ReminderPopupManager;
+import net.sf.borg.ui.popup.ReminderSound;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 
 /**
@@ -141,7 +141,7 @@ class PopupOptionsPanel extends OptionsPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {	
-				ReminderPopupManager.playReminderSound(getSoundOption());
+				ReminderSound.playReminderSound(getSoundOption());
 			}
 			
 		});

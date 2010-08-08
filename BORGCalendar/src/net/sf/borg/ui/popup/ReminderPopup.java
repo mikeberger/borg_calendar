@@ -32,6 +32,8 @@ import javax.swing.JRadioButton;
 import javax.swing.WindowConstants;
 
 import net.sf.borg.common.Errmsg;
+import net.sf.borg.common.PrefName;
+import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.ReminderTimes;
@@ -41,75 +43,65 @@ import net.sf.borg.ui.View;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 
 /**
- * Popop window for a Reminder
+ * Popop window for a single Reminder
  */
 class ReminderPopup extends View {
-	
+
 	private static final long serialVersionUID = 1L;
 
-	/** The appointment. */
-	private Appointment appointment = null;
-	
+	/** The Reminder Instance being shown. */
+	private ReminderInstance reminderInstance = null;
+
 	/** The appointment information. */
 	private JLabel appointmentInformation = null;
-	
+
 	/** The time to go message. */
 	private JLabel timeToGoMessage = null;
-	
+
 	/** The no more reminders button. */
 	private JRadioButton noMoreRemindersButton = null;
-	
-	/** The reminders shown flags */
-	private char[] remindersShown;
-	
-	/** The was ever shown flag. */
-	private boolean wasEverShown = false;
 
 	/**
 	 * Instantiates a new reminder popup for an appointment
 	 * 
-	 * @param ap the appointment
-	 * @param d the time of the reminder
+	 * @param inst
+	 *            the reminder instance to show
 	 */
-	public ReminderPopup(Appointment ap, Date d) {
-		
+	public ReminderPopup(ReminderInstance inst) {
+
 		super();
-		
-		appointment = ap;
-	
+
+		reminderInstance = inst;
+
 		this.setTitle("Borg " + Resource.getResourceString("Reminder"));
-		
+
 		initialize();
-		
+
 		// set appt info in the reminder
 		String apptinfoText = "";
-		if (!AppointmentModel.isNote(appointment)) {
-			DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
-			apptinfoText = df.format(d);
-		}
-		else
-		{
+		if (!AppointmentModel.isNote(reminderInstance.getAppt())) {
+			DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT,
+					DateFormat.SHORT);
+			apptinfoText = df.format(inst.getInstanceTime());
+		} else {
 			DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT);
-			apptinfoText = df.format(d);
+			apptinfoText = df.format(inst.getInstanceTime());
 		}
-		
-		if( appointment.isEncrypted())
-			apptinfoText += " " + Resource.getResourceString("EncryptedItemShort");
+
+		if (reminderInstance.getAppt().isEncrypted())
+			apptinfoText += " "
+					+ Resource.getResourceString("EncryptedItemShort");
 		else
-			apptinfoText += " " + appointment.getText();
+			apptinfoText += " " + reminderInstance.getAppt().getText();
 		appointmentInformation.setText(apptinfoText);
-		
+
 		this.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
-		
-		// initialize reminders shown flags
-		remindersShown = new char[ReminderTimes.getNum()];
-		for (int i = 0; i < ReminderTimes.getNum(); ++i) {
-			remindersShown[i] = 'N';
-		}
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see net.sf.borg.ui.View#destroy()
 	 */
 	@Override
@@ -117,34 +109,37 @@ class ReminderPopup extends View {
 		this.dispose();
 	}
 
-
 	/**
 	 * This method initializes the UI
 	 * 
 	 */
 	private void initialize() {
-		
-		
+
 		JPanel topPanel = new JPanel();
 		topPanel.setLayout(new GridBagLayout());
-		
+
 		appointmentInformation = new JLabel();
-		appointmentInformation.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-		topPanel.add(appointmentInformation, GridBagConstraintsFactory.create(0, 0, GridBagConstraints.NONE, 1.0, 0.0)); 
+		appointmentInformation
+				.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+		topPanel.add(appointmentInformation, GridBagConstraintsFactory.create(
+				0, 0, GridBagConstraints.NONE, 1.0, 0.0));
 
 		timeToGoMessage = new JLabel();
 		timeToGoMessage.setText("");
-		timeToGoMessage.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-		
-		topPanel.add(timeToGoMessage, GridBagConstraintsFactory.create(0, 1, GridBagConstraints.NONE, 1.0, 0.0)); 	
+		timeToGoMessage
+				.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
+		topPanel.add(timeToGoMessage, GridBagConstraintsFactory.create(0, 1,
+				GridBagConstraints.NONE, 1.0, 0.0));
 		noMoreRemindersButton = new JRadioButton();
 		ResourceHelper.setText(noMoreRemindersButton, "No_more");
 		noMoreRemindersButton
 				.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-		topPanel.add(noMoreRemindersButton, GridBagConstraintsFactory.create(0, 2, GridBagConstraints.NONE, 1.0, 0.0)); 
-		
+		topPanel.add(noMoreRemindersButton, GridBagConstraintsFactory.create(0,
+				2, GridBagConstraints.NONE, 1.0, 0.0));
+
 		//
-		// button panel 
+		// button panel
 		//
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.setLayout(new GridBagLayout());
@@ -155,6 +150,7 @@ class ReminderPopup extends View {
 		dismissButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent e) {
 				if (noMoreRemindersButton.isSelected()) {
+					reminderInstance.setHidden(true);
 					dispose();
 				} else {
 					setVisible(false);
@@ -162,17 +158,16 @@ class ReminderPopup extends View {
 			}
 		});
 		buttonPanel.add(dismissButton, GridBagConstraintsFactory.create(0, 0));
-		
-		
-		if (appointment.getTodo() == true) {
-			
+
+		if (reminderInstance.getAppt().getTodo() == true) {
+
 			JButton doneButton = new JButton();
 			ResourceHelper.setText(doneButton, "Done_(Delete)");
 			doneButton.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					try {
-						AppointmentModel.getReference().do_todo(appointment.getKey(),
-								true);
+						AppointmentModel.getReference().do_todo(
+								reminderInstance.getAppt().getKey(), true);
 					} catch (Exception e1) {
 						Errmsg.errmsg(e1);
 					}
@@ -180,24 +175,27 @@ class ReminderPopup extends View {
 				}
 			});
 			buttonPanel.add(doneButton, GridBagConstraintsFactory.create(1, 0));
-			
+
 			JButton doneNoDeleteButton = new JButton();
 			ResourceHelper.setText(doneNoDeleteButton, "Done_(No_Delete)");
-			doneNoDeleteButton.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent e) {
-					try {
-						AppointmentModel.getReference().do_todo(appointment.getKey(),
-								false);
-					} catch (Exception e1) {
-						Errmsg.errmsg(e1);
-					}
-					destroy();
-				}
-			});
-			buttonPanel.add(doneNoDeleteButton, GridBagConstraintsFactory.create(2, 0));
+			doneNoDeleteButton
+					.addActionListener(new java.awt.event.ActionListener() {
+						public void actionPerformed(java.awt.event.ActionEvent e) {
+							try {
+								AppointmentModel.getReference().do_todo(
+										reminderInstance.getAppt().getKey(),
+										false);
+							} catch (Exception e1) {
+								Errmsg.errmsg(e1);
+							}
+							destroy();
+						}
+					});
+			buttonPanel.add(doneNoDeleteButton, GridBagConstraintsFactory
+					.create(2, 0));
 		}
-		
-		topPanel.add(buttonPanel, GridBagConstraintsFactory.create(0,3));
+
+		topPanel.add(buttonPanel, GridBagConstraintsFactory.create(0, 3));
 
 		this.setContentPane(topPanel);
 		this.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -205,59 +203,72 @@ class ReminderPopup extends View {
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see net.sf.borg.ui.View#refresh()
 	 */
 	@Override
 	public void refresh() {
-	  // empty
+		// empty
+	}
+
+	public ReminderInstance getReminderInstance() {
+		return reminderInstance;
 	}
 
 	/**
-	 * Return Y if Reminder time i has been shown, otherwise N.
-	 * 
-	 * @param i the index of the reminder time.
-	 * 
-	 * @return "Y" is the remidner was shown already
+	 * update the popup's message
 	 */
-	public char reminderShown(int i) {
-		return remindersShown[i];
+	public void updateMessage() {
+		// read the appt and get the date
+		Appointment appt = reminderInstance.getAppt();
+
+		String message;
+
+		// untimed todo
+		if (AppointmentModel.isNote(appt) && appt.getTodo()) {
+			message = Resource.getResourceString("To_Do");
+		} else {
+			// timed appt
+			Date d = reminderInstance.getInstanceTime();
+			if (d == null)
+				return;
+
+			// if alarm is due to be shown, show it and play sound
+
+			int reminderIndex = reminderInstance.dueForPopup();
+			if( reminderIndex == -1 )
+				return;
+			
+			int minutesToGo = ReminderTimes.getTimes(reminderIndex);
+			
+			// create a message saying how much time to go there is
+			if (minutesToGo < 0) {
+				message = -minutesToGo + " "
+						+ Resource.getResourceString("minutes_ago");
+			} else if (minutesToGo == 0) {
+				message = Resource.getResourceString("Now");
+			} else {
+				message = minutesToGo + " "
+						+ Resource.getResourceString("minute_reminder");
+			}
+			
+			getReminderInstance().markAsShown(reminderIndex);
+
+		}
+		
+		timeToGoMessage.setText(message);
+		
+		setVisible(true);
+		toFront();
+		setVisible(true);
+		
+		getReminderInstance().setShown(true);
+		
+		// play a sound
+		ReminderSound.playReminderSound(Prefs
+				.getPref(PrefName.BEEPINGREMINDERS));
 	}
 
-	/**
-	 * set the flag for reminder i to shown.
-	 * 
-	 * @param i the index of the reminder time
-	 */
-	public void setReminderShown(int i) {
-		remindersShown[i] = 'Y';
-	}
-
-	/**
-	 * Sets the shown flag.
-	 * 
-	 * @param s was this popup ever shown
-	 */
-	public void setShown(boolean s) {
-		wasEverShown = s;
-	}
-
-	/**
-	 * set the Time to go message.
-	 * 
-	 * @param str the new time to go message
-	 */
-	public void timeToGoMessage(String str) {
-		timeToGoMessage.setText(str);
-	}
-
-	/**
-	 * get the shown flag.
-	 * 
-	 * @return true if the popup was ever shown
-	 */
-	public boolean wasEverShown() {
-		return wasEverShown;
-	}
-
-} 
+}

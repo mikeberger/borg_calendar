@@ -36,6 +36,8 @@ import net.sf.borg.ui.calendar.TodoView;
 import net.sf.borg.ui.calendar.WeekPanel;
 import net.sf.borg.ui.calendar.YearPanel;
 import net.sf.borg.ui.memo.MemoPanel;
+import net.sf.borg.ui.popup.ReminderListManager;
+import net.sf.borg.ui.popup.ReminderManager;
 import net.sf.borg.ui.popup.ReminderPopupManager;
 import net.sf.borg.ui.task.TaskModule;
 import net.sf.borg.ui.util.NwFontChooserS;
@@ -128,7 +130,7 @@ public class UIControl {
 		SunTrayIconProxy.startTrayIcon(trayname);
 
 		// create popups view
-		ReminderPopupManager.getReference();
+		ReminderListManager.getReference();
 
 		// create the main window
 		MultiView mv = MultiView.getMainView();
@@ -187,7 +189,9 @@ public class UIControl {
 	 */
 	public static void shutDownUI() {
 		// stop popup timer and destroy popups
-		ReminderPopupManager.getReference().remove();
+		ReminderManager rm = ReminderManager.getReminderManager();
+		if( rm != null )
+			rm.remove();
 
 		// show a splash screen for shutdown
 		try {

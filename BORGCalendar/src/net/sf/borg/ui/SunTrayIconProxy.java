@@ -44,6 +44,7 @@ import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.ui.options.OptionsView;
+import net.sf.borg.ui.popup.ReminderManager;
 import net.sf.borg.ui.popup.ReminderPopupManager;
 
 /** communicates with the new java built-in system tray APIs */
@@ -130,7 +131,9 @@ class SunTrayIconProxy implements Prefs.Listener {
 		item.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent arg0) {
-				ReminderPopupManager.getReference().showAll();
+				ReminderManager rm = ReminderManager.getReminderManager();
+				if( rm != null )
+					rm.showAll();
 			}
 
 		});
@@ -142,7 +145,9 @@ class SunTrayIconProxy implements Prefs.Listener {
 		item.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent arg0) {
-				ReminderPopupManager.getReference().hideAll();
+				ReminderManager rm = ReminderManager.getReminderManager();
+				if( rm != null )
+					rm.hideAll();
 			}
 
 		});
