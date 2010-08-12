@@ -26,16 +26,18 @@
 package net.sf.borg.ui.popup;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.entity.Appointment;
 
 /**
- * A Reminder List Manager. This class manages a list of reminder instances and updates that list
- * periodically to hold reminders that are being show or that have been shown and have been hidden
- * by the user. It also reacts to model change events if appointments are deleted.
- * It also manages a ReminderList UI object to show the reminders
+ * A Reminder List Manager. This class manages a list of reminder instances and
+ * updates that list periodically to hold reminders that are being show or that
+ * have been shown and have been hidden by the user. It also reacts to model
+ * change events if appointments are deleted. It also manages a ReminderList UI
+ * object to show the reminders
  */
 public class ReminderListManager extends ReminderManager {
 
@@ -80,6 +82,7 @@ public class ReminderListManager extends ReminderManager {
 
 	/**
 	 * get the list of reminder instances
+	 * 
 	 * @return the reminder instances
 	 */
 	public List<ReminderInstance> getReminders() {
@@ -115,10 +118,9 @@ public class ReminderListManager extends ReminderManager {
 
 			// untimed todo
 			if (AppointmentModel.isNote(appt) && appt.getTodo()) {
-				
-				if (!reminderInstance.wasEverShown() ||
-						shouldShowUntimedTodosNow())
-				{
+
+				if (!reminderInstance.wasEverShown()
+						|| shouldShowUntimedTodosNow()) {
 					needUpdate = true;
 					break;
 				}
@@ -162,7 +164,8 @@ public class ReminderListManager extends ReminderManager {
 
 				if (!appt.getDate()
 						.equals(reminderInstance.getAppt().getDate())) {
-					// date changed - delete. new instance will be added on periodic update
+					// date changed - delete. new instance will be added on
+					// periodic update
 					deletedReminders.add(reminderInstance);
 				}
 
@@ -175,11 +178,23 @@ public class ReminderListManager extends ReminderManager {
 					deletedReminders.add(reminderInstance);
 				}
 
-				// delete it if the text changed - will be added back in periodic check for
+				// delete it if the text changed - will be added back in
+				// periodic check for
 				// popups
 				if (!appt.getText()
 						.equals(reminderInstance.getAppt().getText())) {
 					deletedReminders.add(reminderInstance);
+				}
+
+				if (AppointmentModel.isNote(appt) && appt.getTodo()) {
+					// skip if inst time changed for untimed todos
+					Date nt = appt.getNextTodo();
+					if (nt == null)
+						nt = appt.getDate();
+
+					if (!reminderInstance.getInstanceTime().equals(nt)) {
+						deletedReminders.add(reminderInstance);
+					}
 				}
 			} catch (Exception e) {
 

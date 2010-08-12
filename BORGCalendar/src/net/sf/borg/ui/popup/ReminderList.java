@@ -306,7 +306,7 @@ public class ReminderList extends View {
 				String timeString = "";
 				if (minutesToGo != 0) {
 					int absmin = Math.abs(minutesToGo);
-					int days = absmin / (24 * 60 * absmin);
+					int days = absmin / (24 * 60 );
 					int hours = (absmin % (24 * 60)) / 60;
 					int mins = (absmin % 60);
 
@@ -341,17 +341,10 @@ public class ReminderList extends View {
 			// build a table row
 			Object[] row = new Object[4];
 
-			// date is the next todo field if present, otherwise
-			// the due date
-			Date nt = appt.getNextTodo();
-			if (nt == null) {
-				nt = appt.getDate();
-			}
-
 			// get appt text
-			String tx = DateFormat.getDateInstance(DateFormat.SHORT).format(nt);
+			String tx = DateFormat.getDateInstance(DateFormat.SHORT).format(inst.getInstanceTime());
 
-			tx += " " + AppointmentTextFormat.format(appt, nt);
+			tx += " " + AppointmentTextFormat.format(appt, inst.getInstanceTime());
 
 			row[0] = tx;
 
