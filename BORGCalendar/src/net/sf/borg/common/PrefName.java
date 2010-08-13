@@ -207,7 +207,7 @@ public class PrefName {
 			"todo_reminder_mins", new Integer(30));
 	
 	/** option to consolidate all reminders in a single list window */
-	static public PrefName REMINDERLIST = new PrefName("reminder_list", "false");
+	static public PrefName REMINDERLIST = new PrefName("reminder_list", "true");
 
 	/** The EMAILENABLED. */
 	static public PrefName EMAILENABLED = new PrefName("email_enabled", "false");
