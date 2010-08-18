@@ -171,7 +171,7 @@ public class ReminderList extends View {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				ReminderInstance inst = getSelectedReminder();
 				inst.setHidden(true);
-				refresh();
+				refresh(true);
 			}
 		});
 
@@ -214,7 +214,7 @@ public class ReminderList extends View {
 		JButton resetButton = new JButton();
 		resetButton.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 				"/resource/Undo16.gif")));
-		ResourceHelper.setText(resetButton, "Reset");
+		ResourceHelper.setText(resetButton, "Unhide_All");
 		resetButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				try {
@@ -223,7 +223,7 @@ public class ReminderList extends View {
 					List<ReminderInstance> list = m.getReminders();
 					for (ReminderInstance inst : list)
 						inst.setHidden(false);
-					refresh();
+					refresh(true);
 				} catch (Exception e) {
 					Errmsg.errmsg(e);
 				}
@@ -243,10 +243,15 @@ public class ReminderList extends View {
 	}
 
 	@Override
+	public void refresh()
+	{
+		refresh(false);
+	}
+	
 	/**
 	 * reload the UI from the reminders held by the ReminderListManager
 	 */
-	public void refresh() {
+	public void refresh(boolean silent) {
 
 		// get the list of reminders managed by the ReminderListManager
 		ReminderListManager m = (ReminderListManager) ReminderListManager
@@ -301,12 +306,13 @@ public class ReminderList extends View {
 
 				// map the reminder index to the user-tunable reminder minutes
 				// value
-				minutesToGo = (int) ((inst.getInstanceTime().getTime()/(60*1000) - now.getTime() / (60*1000)));
+				minutesToGo = (int) ((inst.getInstanceTime().getTime()
+						/ (60 * 1000) - now.getTime() / (60 * 1000)));
 
 				String timeString = "";
 				if (minutesToGo != 0) {
 					int absmin = Math.abs(minutesToGo);
-					int days = absmin / (24 * 60 );
+					int days = absmin / (24 * 60);
 					int hours = (absmin % (24 * 60)) / 60;
 					int mins = (absmin % 60);
 
@@ -319,7 +325,6 @@ public class ReminderList extends View {
 					timeString += Integer.toString(mins);
 
 				}
-
 
 				// create a message saying how much time to go there is
 				if (minutesToGo < 0) {
@@ -342,9 +347,12 @@ public class ReminderList extends View {
 			Object[] row = new Object[4];
 
 			// get appt text
-			String tx = DateFormat.getDateInstance(DateFormat.SHORT).format(inst.getInstanceTime());
+			String tx = DateFormat.getDateInstance(DateFormat.SHORT).format(
+					inst.getInstanceTime());
 
-			tx += " " + AppointmentTextFormat.format(appt, inst.getInstanceTime());
+			tx += " "
+					+ AppointmentTextFormat
+							.format(appt, inst.getInstanceTime());
 
 			row[0] = tx;
 
@@ -362,7 +370,8 @@ public class ReminderList extends View {
 		this.setVisible(true);
 		this.toFront();
 
-		ReminderSound.playReminderSound(Prefs
-				.getPref(PrefName.BEEPINGREMINDERS));
+		if (!silent)
+			ReminderSound.playReminderSound(Prefs
+					.getPref(PrefName.BEEPINGREMINDERS));
 	}
 }
