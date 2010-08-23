@@ -243,11 +243,10 @@ public class ReminderList extends View {
 	}
 
 	@Override
-	public void refresh()
-	{
+	public void refresh() {
 		refresh(false);
 	}
-	
+
 	/**
 	 * reload the UI from the reminders held by the ReminderListManager
 	 */
@@ -270,74 +269,19 @@ public class ReminderList extends View {
 		donendButton.setEnabled(false);
 		hideButton.setEnabled(false);
 
-		Date now = new Date();
-
 		// add all reminders
 		for (ReminderInstance inst : list) {
-
-			String message;
-			Appointment appt = inst.getAppt();
-
+			
 			// skip hidden reminders. These have been previously hidden by the
 			// user
 			// and won't come back unless the user resets them
 			if (inst.isHidden())
 				continue;
 
-			int minutesToGo = 9999999; // time to go of the reminder - init to
-										// large value to sort todo's last
-
-			// set the reminder due message
-			if (AppointmentModel.isNote(appt) && appt.getTodo()) {
-				message = Resource.getResourceString("To_Do");
-			} else {
-				// timed appt
-				Date d = inst.getInstanceTime();
-				if (d == null)
-					continue;
-
-				// get the reminder time and also mark the reminder as shown
-				// since w are adding it to the UI
-				// it may already have been marked as shown - no problem
-				int reminderIndex = inst.getCurrentReminder();
-				if (reminderIndex == -1)
-					continue;
-				inst.markAsShown(reminderIndex);
-
-				// map the reminder index to the user-tunable reminder minutes
-				// value
-				minutesToGo = (int) ((inst.getInstanceTime().getTime()
-						/ (60 * 1000) - now.getTime() / (60 * 1000)));
-
-				String timeString = "";
-				if (minutesToGo != 0) {
-					int absmin = Math.abs(minutesToGo);
-					int days = absmin / (24 * 60);
-					int hours = (absmin % (24 * 60)) / 60;
-					int mins = (absmin % 60);
-
-					if (days > 0)
-						timeString += days + " "
-								+ Resource.getResourceString("Days") + " ";
-					if (hours > 0)
-						timeString += hours + " "
-								+ Resource.getResourceString("Hours") + " ";
-					timeString += Integer.toString(mins);
-
-				}
-
-				// create a message saying how much time to go there is
-				if (minutesToGo < 0) {
-					message = timeString + " "
-							+ Resource.getResourceString("minutes_ago");
-				} else if (minutesToGo == 0) {
-					message = Resource.getResourceString("Now");
-				} else {
-					message = timeString + " "
-							+ Resource.getResourceString("Minutes");
-				}
-
-			}
+			Appointment appt = inst.getAppt();
+			String message = calculateToGoMessage(inst);
+			if (message == null)
+				continue;
 
 			// set the shown flag for this reminder - meaning that it was shown
 			// for any of its times
@@ -360,18 +304,121 @@ public class ReminderList extends View {
 
 			row[2] = inst;
 
-			row[3] = new Integer(minutesToGo);
+			if (AppointmentModel.isNote(appt) && appt.getTodo())
+				row[3] = 99999999; // sort todos last
+			else
+				row[3] = new Integer(minutesToGo(inst));
+
 
 			tm.addRow(row);
 			tm.tableChanged(new TableModelEvent(tm));
 
 		}
 
-		this.setVisible(true);
-		this.toFront();
-
-		if (!silent)
+		if (!silent) {
+			this.setVisible(true);
+			this.toFront();
 			ReminderSound.playReminderSound(Prefs
 					.getPref(PrefName.BEEPINGREMINDERS));
+		}
+	}
+
+	/**
+	 * just update the reminder times
+	 */
+	public void updateTimes() {
+		
+		int selected = table.getSelectedRow();
+
+		TableSorter tm = (TableSorter) table.getModel();
+
+		for (int index = 0; index < tm.getRowCount(); index++) {
+			// column 2 holds the reminder instance
+			Object o = tm.getValueAt(index, 2);
+			if (o != null && o instanceof ReminderInstance) {
+
+				ReminderInstance inst = (ReminderInstance) o;
+				String message = calculateToGoMessage(inst);
+				if (message != null) {
+					tm.setValueAt(message, index, 1);
+				}
+			}
+		}
+		
+		if( selected != -1 )
+			table.getSelectionModel().setSelectionInterval(selected, selected);
+
+	}
+
+	/**
+	 * calculate the to go message for a reminder instance
+	 * 
+	 * @param inst
+	 *            the reminder instance
+	 * @return the to go message or null if appt should not be shown
+	 */
+	private String calculateToGoMessage(ReminderInstance inst) {
+
+		Appointment appt = inst.getAppt();
+
+		String message = null;
+
+		// set the reminder due message
+		if (AppointmentModel.isNote(appt) && appt.getTodo()) {
+			message = Resource.getResourceString("To_Do");
+		} else {
+
+			// timed appt
+			Date d = inst.getInstanceTime();
+			if (d == null)
+				return null;
+
+			// get the reminder time and also mark the reminder as shown
+			// since w are adding it to the UI
+			// it may already have been marked as shown - no problem
+			int reminderIndex = inst.getCurrentReminder();
+			if (reminderIndex == -1)
+				return null;
+			inst.markAsShown(reminderIndex);
+
+			int minutesToGo = minutesToGo(inst);
+
+			String timeString = "";
+			if (minutesToGo != 0) {
+				int absmin = Math.abs(minutesToGo);
+				int days = absmin / (24 * 60);
+				int hours = (absmin % (24 * 60)) / 60;
+				int mins = (absmin % 60);
+
+				if (days > 0)
+					timeString += days + " "
+							+ Resource.getResourceString("Days") + " ";
+				if (hours > 0)
+					timeString += hours + " "
+							+ Resource.getResourceString("Hours") + " ";
+				timeString += Integer.toString(mins);
+
+			}
+
+			// create a message saying how much time to go there is
+			if (minutesToGo < 0) {
+				message = timeString + " "
+						+ Resource.getResourceString("minutes_ago");
+			} else if (minutesToGo == 0) {
+				message = Resource.getResourceString("Now");
+			} else {
+				message = timeString + " "
+						+ Resource.getResourceString("Minutes");
+			}
+
+		}
+
+		return message;
+
+	}
+
+	private int minutesToGo(ReminderInstance inst) {
+		return (int) ((inst.getInstanceTime().getTime() / (60 * 1000) - new Date()
+				.getTime() / (60 * 1000)));
 	}
 }

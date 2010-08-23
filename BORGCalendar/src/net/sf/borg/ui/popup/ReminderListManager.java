@@ -134,6 +134,10 @@ public class ReminderListManager extends ReminderManager {
 
 		if (needUpdate)
 			reminderList.refresh();
+		else if( reminderList.isShowing())
+		{
+			reminderList.updateTimes();
+		}
 
 	}
 
