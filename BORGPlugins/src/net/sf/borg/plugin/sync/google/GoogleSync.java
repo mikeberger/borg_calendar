@@ -123,9 +123,18 @@ public class GoogleSync {
 				 * found by trial/error) so - after sync, don't update via
 				 * google for 5 mins
 				 */
-				if (entry.getSequence() == 0
-						|| Math.abs(entry.getPublished().getValue()
-								- entry.getEdited().getValue()) > 5 * 60 * 1000) {
+
+				/*
+				 * for some reason, the google create and update dates do not
+				 * work. looks like the update date changes after some time,
+				 * even when google not touched. for now, only sync appts that
+				 * are new on google.
+				 * 
+				 * if (entry.getSequence() == 0 ||
+				 * Math.abs(entry.getPublished().getValue() -
+				 * entry.getEdited().getValue()) > 5 * 60 * 1000) {
+				 */
+				if (entry.getSequence() == 0) {
 					this.showMessage("Needs Sync: " + entry.getIcalUID() + " "
 							+ entry.getSequence() + " "
 							+ entry.getTitle().getPlainText() + " "
@@ -138,7 +147,7 @@ public class GoogleSync {
 						this.showMessage(e.getMessage(), false);
 						continue;
 					}
-					
+
 				}
 
 				// add every appt to a batch request to delete them all
