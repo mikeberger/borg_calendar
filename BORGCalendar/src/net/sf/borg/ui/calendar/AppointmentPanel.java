@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 
+import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -36,6 +37,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
@@ -251,9 +253,6 @@ public class AppointmentPanel extends JPanel {
 	// minute combo for the duration value
 	private JComboBox durationMinuteComboBox;
 
-	// checkbox for repeat forever
-	private JCheckBox repeatForeverCheckBox;
-
 	// repeat frequency combo box
 	private JComboBox repeatFrequencyComboBox;
 
@@ -312,6 +311,18 @@ public class AppointmentPanel extends JPanel {
 	 * encryption checkbox
 	 */
 	private JCheckBox encryptBox = null;
+	
+	/**
+	 * repeat until date chooser
+	 */
+	private JDateChooser untilDate = null;
+	
+	/**
+	 * radio buttons to choose between repeat forever, times, and until date
+	 */
+	private JRadioButton repeatForeverRadio = null;
+	private JRadioButton repeatTimesRadio = null;
+	private JRadioButton repeatUntilRadio = null;
 
 	/*
 	 * save buttons
@@ -445,6 +456,7 @@ public class AppointmentPanel extends JPanel {
 				// and todos
 				if (appt.getTimes().intValue() == originalAppt.getTimes()
 						.intValue()
+						&& appt.getRepeatUntil() == originalAppt.getRepeatUntil()
 						&& appt.getFrequency() != null
 						&& originalAppt.getFrequency() != null
 						&& Repeat.getFreq(appt.getFrequency()).equals(
@@ -554,12 +566,13 @@ public class AppointmentPanel extends JPanel {
 		theRepeatPanel.add(repeatFrequencyComboBox, GridBagConstraintsFactory
 				.create(1, 0, GridBagConstraints.HORIZONTAL));
 
-		JLabel timesLabel = new JLabel();
-		timesLabel.setLabelFor(numberOfRepeatsSpinner);
-		timesLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		ResourceHelper.setText(timesLabel, "Times");
-		theRepeatPanel.add(timesLabel, GridBagConstraintsFactory.create(0, 1,
+		ButtonGroup buttonGroup = new ButtonGroup();
+
+		repeatTimesRadio = new JRadioButton();
+		ResourceHelper.setText(repeatTimesRadio, "Times");
+		theRepeatPanel.add(repeatTimesRadio, GridBagConstraintsFactory.create(0, 1,
 				GridBagConstraints.BOTH));
+		buttonGroup.add(repeatTimesRadio);
 
 		numberOfRepeatsSpinner = new JSpinner();
 		theRepeatPanel.add(numberOfRepeatsSpinner, GridBagConstraintsFactory
@@ -567,32 +580,31 @@ public class AppointmentPanel extends JPanel {
 		SpinnerNumberModel mod = (SpinnerNumberModel) numberOfRepeatsSpinner
 				.getModel();
 		mod.setMinimum(new Integer(1));
+		
+		repeatUntilRadio = new JRadioButton();
+		ResourceHelper.setText(repeatUntilRadio, "Until");
+		theRepeatPanel.add(repeatUntilRadio, GridBagConstraintsFactory.create(0, 2,
+				GridBagConstraints.BOTH));
+		buttonGroup.add(repeatUntilRadio);
+		
+		untilDate = new JDateChooser();
+		theRepeatPanel.add(untilDate, GridBagConstraintsFactory.create(1, 2,
+				GridBagConstraints.BOTH));
 
 		numberOfDaysSpinner = new JSpinner();
 		numberOfDaysSpinner.setModel(new SpinnerNumberModel(2, 2, 3000, 1));
 		theRepeatPanel.add(numberOfDaysSpinner, GridBagConstraintsFactory
 				.create(2, 0, GridBagConstraints.HORIZONTAL));
 
-		repeatForeverCheckBox = new JCheckBox();
-		ResourceHelper.setText(repeatForeverCheckBox, "forever");
-		repeatForeverCheckBox
-				.addActionListener(new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						// selecting repeat forever diables the number of
-						// repeats choice
-						if (repeatForeverCheckBox.isSelected()) {
-							numberOfRepeatsSpinner.setValue(new Integer(0));
-							numberOfRepeatsSpinner.setEnabled(false);
+		
+		repeatForeverRadio = new JRadioButton();
+		ResourceHelper.setText(repeatForeverRadio, "forever");
 
-						} else {
-							numberOfRepeatsSpinner.setValue(new Integer(1));
-							numberOfRepeatsSpinner.setEnabled(true);
-						}
-					}
-				});
-		theRepeatPanel.add(repeatForeverCheckBox, GridBagConstraintsFactory
+		theRepeatPanel.add(repeatForeverRadio, GridBagConstraintsFactory
 				.create(2, 1, GridBagConstraints.BOTH));
 
+		buttonGroup.add(repeatForeverRadio);
+		
 		showRepeatNumberCheckBox = new JCheckBox();
 		ResourceHelper.setText(showRepeatNumberCheckBox, "show_rpt_num");
 		theRepeatPanel.add(showRepeatNumberCheckBox, GridBagConstraintsFactory
@@ -1177,11 +1189,13 @@ public class AppointmentPanel extends JPanel {
 
 		// repeat times
 		Integer tm = null;
-		if (repeatForeverCheckBox.isSelected()) {
+		if (repeatForeverRadio.isSelected()) {
 			tm = new Integer(MAGIC_RPT_FOREVER_VALUE); 
 		} else {
 			tm = (Integer) numberOfRepeatsSpinner.getValue();
 		}
+		
+		appt.setRepeatFlag(false);
 		if (tm.intValue() > 1
 				&& repeatFrequencyComboBox.getSelectedIndex() != 0) {
 			try {
@@ -1189,8 +1203,7 @@ public class AppointmentPanel extends JPanel {
 
 				if (tm.intValue() > 1)
 					appt.setRepeatFlag(true);
-				else
-					appt.setRepeatFlag(false);
+				
 			} catch (Exception e) {
 				throw new Exception(Resource
 						.getResourceString("Could_not_parse_times:_")
@@ -1199,6 +1212,16 @@ public class AppointmentPanel extends JPanel {
 		} else {
 			appt.setTimes(new Integer(1));
 		}
+		
+		// until
+		if( repeatUntilRadio.isSelected())
+		{
+			Date until = untilDate.getDate();
+			appt.setRepeatUntil(until);
+			appt.setRepeatFlag(true);
+		}
+		else
+			appt.setRepeatUntil(null);
 
 		// category
 		String cat = (String) categoryBox.getSelectedItem();
@@ -1387,7 +1410,9 @@ public class AppointmentPanel extends JPanel {
 			repeatFrequencyComboBox.setSelectedIndex(0); // freq = once
 			numberOfRepeatsSpinner.setEnabled(true);
 			numberOfRepeatsSpinner.setValue(new Integer(1)); // times = 1
-			repeatForeverCheckBox.setSelected(false);
+			repeatForeverRadio.setSelected(false);
+			repeatUntilRadio.setSelected(false);
+			untilDate.setEnabled(false);
 			showRepeatNumberCheckBox.setSelected(false);
 			showRepeatNumberCheckBox.setEnabled(false);
 			ResourceHelper.setText(newAppointmentIndicatorLabel,
@@ -1572,21 +1597,24 @@ public class AppointmentPanel extends JPanel {
 
 				// repeat times
 				Integer tm = appt.getTimes();
-				if (tm != null) {
-					if (tm.intValue() == MAGIC_RPT_FOREVER_VALUE) { 
-						repeatForeverCheckBox.setSelected(true);
-						numberOfRepeatsSpinner.setValue(new Integer(0));
-						numberOfRepeatsSpinner.setEnabled(false);
-					} else {
-						numberOfRepeatsSpinner.setEnabled(true);
-						numberOfRepeatsSpinner.setValue(tm);
-						repeatForeverCheckBox.setSelected(false);
-					}
+				numberOfRepeatsSpinner.setValue(new Integer(1));
+				untilDate.setDate(null);
 
+				// if until date is set, then that takes priority
+				if( appt.getRepeatUntil() != null )
+				{
+					untilDate.setDate(appt.getRepeatUntil());
+					repeatUntilRadio.setSelected(true);
+				}
+				else if (tm != null) {
+					if (tm.intValue() == MAGIC_RPT_FOREVER_VALUE) { 
+						repeatForeverRadio.setSelected(true);
+					} else {
+						numberOfRepeatsSpinner.setValue(tm);
+						repeatTimesRadio.setSelected(true);
+					}
 				} else {
-					numberOfRepeatsSpinner.setEnabled(true);
-					numberOfRepeatsSpinner.setValue(new Integer(1));
-					repeatForeverCheckBox.setSelected(false);
+					repeatTimesRadio.setSelected(true);
 				}
 
 				// set category combo box
@@ -1633,13 +1661,19 @@ public class AppointmentPanel extends JPanel {
 	private void timesEnable() {
 		if (repeatFrequencyComboBox.getSelectedIndex() == 0) {
 			numberOfRepeatsSpinner.setEnabled(false);
-			repeatForeverCheckBox.setEnabled(false);
+			repeatForeverRadio.setEnabled(false);
+			repeatTimesRadio.setEnabled(false);
+			repeatUntilRadio.setEnabled(false);
 			showRepeatNumberCheckBox.setEnabled(false);
+			untilDate.setEnabled(false);
+
 		} else {
-			if( !repeatForeverCheckBox.isSelected())
-				numberOfRepeatsSpinner.setEnabled(true);
-			repeatForeverCheckBox.setEnabled(true);
+			numberOfRepeatsSpinner.setEnabled(true);
+			repeatForeverRadio.setEnabled(true);
+			repeatTimesRadio.setEnabled(true);
+			repeatUntilRadio.setEnabled(true);
 			showRepeatNumberCheckBox.setEnabled(true);
+			untilDate.setEnabled(true);
 		}
 
 		if (Repeat.freqToEnglish(

@@ -319,8 +319,26 @@ public class Appointment extends EncryptableEntity<Appointment> implements Calen
 	 * @param xx the new untimed
 	 */
 	public void setUntimed( String xx ){ Untimed = xx; }
-
 	
+	@XmlElement
+	private Date repeatUntil;
+
+	/**
+	 * get the Repeat Until date recurrence setting
+	 * @return the repeat until date
+	 */
+	public Date getRepeatUntil() {
+		return repeatUntil;
+	}
+
+	/**
+	 * set the repeat until date recurrence setting
+	 * @param repeatUntil the repeat until date
+	 */
+	public void setRepeatUntil(Date repeatUntil) {
+		this.repeatUntil = repeatUntil;
+	}
+
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.entity.KeyedEntity#clone()
 	 */
@@ -351,6 +369,7 @@ public class Appointment extends EncryptableEntity<Appointment> implements Calen
 		dst.setReminderTimes( getReminderTimes() );
 		dst.setUntimed( getUntimed() );
 		dst.setEncrypted(isEncrypted());
+		dst.setRepeatUntil( getRepeatUntil());
 
 		return(dst);
 	}

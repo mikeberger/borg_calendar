@@ -60,7 +60,7 @@ public class Repeat {
     private Calendar current_;
 
     /** The repeat data from the appt- string that is passed in that encodes frequency, particular repeat days, and a flag to indicate whether to show the repeat number */
-    private String frequency_; 
+    private final String frequency_; 
 
     /** The repeat frequency */
     private String freq_; 
@@ -482,5 +482,40 @@ public class Repeat {
         }
 
         return current_;
+    }
+    
+    /**
+     * calculate the repeat times value for an appointment based on the until date or the repeat times
+     * @param appt the appointment
+     * @return repeat times
+     */
+    static public int calculateTimes( Appointment appt )
+    {
+    	if( !Repeat.isRepeating(appt))
+    		return 1;
+    	
+    	if( appt.getRepeatUntil() == null)
+    	{
+    		if( appt.getTimes() != null )
+    			return appt.getTimes().intValue();
+    		return 1;
+    	}
+    	
+    	Calendar cal = new GregorianCalendar();
+    	cal.setTime(appt.getDate());
+    	Repeat repeat = new Repeat( cal, appt.getFrequency() );
+    	Calendar until = new GregorianCalendar();
+    	until.setTime(appt.getRepeatUntil());
+    	until.set(Calendar.HOUR_OF_DAY, 23);
+    	until.set(Calendar.MINUTE, 59);
+    	int times = 0;
+    	for( ; repeat.current() != null; repeat.next())
+    	{
+    		if( repeat.current().after(until))
+    			break;
+    		times++;
+    	}
+    	    	
+    	return times;
     }
 }

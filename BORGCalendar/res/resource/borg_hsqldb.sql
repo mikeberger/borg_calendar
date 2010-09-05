@@ -56,6 +56,7 @@ CREATE CACHED TABLE appointments (
   reminders longvarchar,
   untimed char(1) default NULL,
   encrypted char(1) default NULL,
+  repeat_until date default NULL,
   PRIMARY KEY  (appt_num)
 );
 

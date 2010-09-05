@@ -46,8 +46,6 @@ import net.sf.borg.common.DateUtil;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
-import net.sf.borg.common.Resource;
-import net.sf.borg.common.Warning;
 import net.sf.borg.model.CategoryModel.CategorySource;
 import net.sf.borg.model.db.AppointmentDB;
 import net.sf.borg.model.db.EntityDB;
@@ -239,10 +237,8 @@ public class AppointmentModel extends Model implements Model.Listener,
 				Repeat repeat = new Repeat(cal, appt.getFrequency());
 				if (!repeat.isRepeating())
 					continue;
-				Integer times = appt.getTimes();
-				if (times == null)
-					times = new Integer(1);
-				int tm = times.intValue();
+				
+				int tm = Repeat.calculateTimes(appt);
 
 				// ok, plod through the repeats now
 				for (int i = 0; i < tm; i++) {
@@ -376,12 +372,6 @@ public class AppointmentModel extends Model implements Model.Listener,
 
 			Appointment appt = db_.readObj(key);
 
-			// get the number of repeats
-			Integer tms = appt.getTimes();
-			if (tms == null)
-				throw new Warning(Resource
-						.getResourceString("Appointment_does_not_repeat"));
-
 			// get the list of repeats that have been deleted - the SKip
 			// list
 			Vector<String> vect = appt.getSkipList();
@@ -437,13 +427,12 @@ public class AppointmentModel extends Model implements Model.Listener,
 		// repeats and is not done)
 		Date newtodo = null;
 
-		Integer tms = appt.getTimes();
+		int tm = Repeat.calculateTimes(appt);
 		String rpt = Repeat.getFreq(appt.getFrequency());
 
 		// find next to do if it repeats by doing calendar math
-		if (tms != null && tms.intValue() > 1 && rpt != null
+		if (tm > 1 && rpt != null
 				&& Repeat.isRepeating(appt)) {
-			int tm = tms.intValue();
 
 			Calendar ccal = new GregorianCalendar();
 			Calendar ncal = new GregorianCalendar();
