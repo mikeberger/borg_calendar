@@ -277,7 +277,7 @@ public class UIControl {
 			MultiView.getMainView().addModule(module);
 		} catch (Exception e) {
 			System.out.println(e.toString());
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 	}
 
