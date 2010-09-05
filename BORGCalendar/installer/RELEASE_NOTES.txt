@@ -22,9 +22,11 @@ For Windows: The installer can create shortcuts in the start menu and
 desktop (optional)
    Otherwise, double-click borg.jar from windows explorer.
    It is found in the install folder that you choose from the installer.
+   
+For Unix/Linux: Run the run_borg.sh script in the installation directory
 
 Command Line (any OS): The quickest way to run BORG from a command line 
-is: java -jar borg.jar
+is: java -jar borg.jar from the installation folder
    This will work as long as the java executable from the JRE is in your PATH
    on whatever OS you are running. 
 
