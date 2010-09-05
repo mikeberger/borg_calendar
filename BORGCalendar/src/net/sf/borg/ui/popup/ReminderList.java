@@ -31,6 +31,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
 
 import net.sf.borg.common.Errmsg;
@@ -134,30 +136,31 @@ public class ReminderList extends View {
 		DefaultListSelectionModel mylsmodel = new DefaultListSelectionModel();
 		mylsmodel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		table.setSelectionModel(mylsmodel);
-		table.addMouseListener(new java.awt.event.MouseAdapter() {
-			@Override
-			/**
-			 * on mouse click, enable/disable the buttons based on what is selected - i.e. if it is a todo
-			 */
-			public void mouseClicked(java.awt.event.MouseEvent evt) {
-				ReminderInstance inst = getSelectedReminder();
-				if (inst != null) {
-					if (inst.getAppt().getTodo()) {
-						doneButton.setEnabled(true);
-						donendButton.setEnabled(true);
-						hideButton.setEnabled(true);
-					} else {
-						doneButton.setEnabled(false);
-						donendButton.setEnabled(false);
-						hideButton.setEnabled(true);
+		table.getSelectionModel().addListSelectionListener(
+				new ListSelectionListener() {
+
+					@Override
+					public void valueChanged(ListSelectionEvent arg0) {
+						ReminderInstance inst = getSelectedReminder();
+						if (inst != null) {
+							if (inst.getAppt().getTodo()) {
+								doneButton.setEnabled(true);
+								donendButton.setEnabled(true);
+								hideButton.setEnabled(true);
+							} else {
+								doneButton.setEnabled(false);
+								donendButton.setEnabled(false);
+								hideButton.setEnabled(true);
+							}
+						} else {
+							doneButton.setEnabled(false);
+							donendButton.setEnabled(false);
+							hideButton.setEnabled(false);
+						}
+
 					}
-				} else {
-					doneButton.setEnabled(false);
-					donendButton.setEnabled(false);
-					hideButton.setEnabled(false);
-				}
-			}
-		});
+
+				});
 
 		JScrollPane jScrollPane1 = new JScrollPane();
 		jScrollPane1.setPreferredSize(new java.awt.Dimension(554, 404));
@@ -250,6 +253,7 @@ public class ReminderList extends View {
 	/**
 	 * reload the UI from the reminders held by the ReminderListManager
 	 */
+	@SuppressWarnings("boxing")
 	public void refresh(boolean silent) {
 
 		// get the list of reminders managed by the ReminderListManager
@@ -271,7 +275,7 @@ public class ReminderList extends View {
 
 		// add all reminders
 		for (ReminderInstance inst : list) {
-			
+
 			// skip hidden reminders. These have been previously hidden by the
 			// user
 			// and won't come back unless the user resets them
@@ -309,7 +313,6 @@ public class ReminderList extends View {
 			else
 				row[3] = new Integer(minutesToGo(inst));
 
-
 			tm.addRow(row);
 			tm.tableChanged(new TableModelEvent(tm));
 
@@ -327,7 +330,7 @@ public class ReminderList extends View {
 	 * just update the reminder times
 	 */
 	public void updateTimes() {
-		
+
 		int selected = table.getSelectedRow();
 
 		TableSorter tm = (TableSorter) table.getModel();
@@ -344,8 +347,8 @@ public class ReminderList extends View {
 				}
 			}
 		}
-		
-		if( selected != -1 )
+
+		if (selected != -1)
 			table.getSelectionModel().setSelectionInterval(selected, selected);
 
 	}
@@ -419,6 +422,7 @@ public class ReminderList extends View {
 
 	private int minutesToGo(ReminderInstance inst) {
 		return (int) ((inst.getInstanceTime().getTime() / (60 * 1000) - new Date()
-				.getTime() / (60 * 1000)));
+				.getTime()
+				/ (60 * 1000)));
 	}
 }
