@@ -3,6 +3,7 @@ BORG 1.7.4 (not yet released)
 Spanish (Argentina) Translation
 Feature - add search in memo text
 Feature - [3039608] Single pop-up window for multiple reminders
+Feature - [3059547] Add Repeat Until as a Recurrence option
 Feature [2945673] - add back start to system tray feature
 Feature - option to filter closed tasks in project/task tree
 Feature - option to filter closed tasks in project task list

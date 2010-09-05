@@ -11,6 +11,11 @@ Feel free to mail any translations to i_flem@users.sourceforge.net.
 There is nobody on the project actively updating the translations. Any
 received translations will be posted as patches.
 
+2. BORG 1.7.4 adds a new database field. HSQL users will be updated upon first running
+version 1.7.4. Version 1.7.3 will not work with the updated database, so save your old database
+if you think you will need to go back to release 1.7.3. 
+** MYSQL users will have to manually update the database **
+
 RUNNING
 -------
 For Windows: The installer can create shortcuts in the start menu and 
