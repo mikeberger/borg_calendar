@@ -63,7 +63,7 @@ class ReminderInstance {
 	 * 
 	 * @param appt
 	 *            the appointment
-	 * @param instancetime
+	 * @param instanceTime
 	 *            the instance time.
 	 */
 	public ReminderInstance(Appointment appt, Date instanceTime) {
@@ -294,9 +294,6 @@ class ReminderInstance {
 	/**
 	 * determine if an appointment popup should be shown for an appointment that
 	 * doesn't yet have a popup associated with it
-	 * 
-	 * @param apptInstance
-	 *            the appointment instance
 	 * 
 	 * @return true, if successful
 	 */
