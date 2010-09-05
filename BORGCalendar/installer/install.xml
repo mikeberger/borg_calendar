@@ -105,7 +105,9 @@
             <file src="db.html" targetdir="$INSTALL_PATH"/>
             <file src="borg.jar" targetdir="$INSTALL_PATH"/>
             <fileset dir="lib" targetdir="$INSTALL_PATH/lib"/>	    	     
-	    	
+	    	<file src="run_borg.sh" targetdir="$INSTALL_PATH"/>
+	    	<parsable targetfile="$INSTALL_PATH/run_borg.sh" type="shell"/>
+	    	<executable targetfile="$INSTALL_PATH/run_borg.sh" stage="never"/>
         </pack>
 
     </packs>

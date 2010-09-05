@@ -100,6 +100,7 @@ build.number=${build.number}
 		<copy todir="${build.dir}/resource">
 			<fileset dir="${prj.dir}/installer">
 				<include name="RELEASE_NOTES.txt" />
+				<include name="run_borg.sh" />
 			</fileset>
 		</copy>
 
