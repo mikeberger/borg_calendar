@@ -1,4 +1,4 @@
-BORG 1.7.4 (not yet released)
+BORG 1.7.4
 ----------
 Spanish (Argentina) Translation
 Feature - add search in memo text
@@ -14,7 +14,6 @@ Feature [2985309] Single click activate, double click add appointment
 
 Bug - Make Daylight Savings Time Change entries non-clickable
 Bug - Fix import bug that messes up links. Also speed up import.
-Bug - make sure repeat times spinner is disabled if repeat forever is set
 Bug - change color chooser buttons so that color is always shown. Was lost for some look and feels.
 Bug [2934430] - add buttons to increase/decrease the size of the non-timed area for day and week views.
 Bug - make todo table react to changes in user colors preference
