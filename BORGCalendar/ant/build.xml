@@ -12,8 +12,10 @@
 
 	<property name="build.dir" value="${prj.dir}/build" />
 	<property name="dist.dir" value="${prj.dir}/dist" />
+	<property name="doc.dir" value="${prj.dir}/docs" />
 
 	<property name="res.dir" value="${prj.dir}/res/resource" />
+	<property name="macos.res.dir" value="${prj.dir}/res/MacOS" />
 
 	<property name="build.compiler" value="modern" />
 	<property name="ant.dir" value="${prj.dir}/ant" />
@@ -29,11 +31,21 @@
 	<available file="${jh.bin}" property="have.jh" />
 
 	<!-- PATH to IzPack dir to create the installer -->
+	<condition property="iz.dir" value="/Applications/IzPack">
+		<os family="mac" />
+	</condition>
+
+	<condition property="iz.dir" value="/apps/IzPack">
+		<os family="unix" />
+	</condition>
+
 	<condition property="iz.dir" value="c:/Program Files/IzPack" else="/apps/IzPack">
 		<os family="windows" />
 	</condition>
 
 	<available file="${iz.dir}" property="have.izpack" />
+
+	<available file="${ant.dir}/lib/jarbundler.jar" property="have.jarbundler" />
 
 	<!-- Path References -->
 	<path id="build.classpath">
@@ -57,6 +69,12 @@
 
 	<target name="init">
 		<tstamp />
+
+		<condition property="iz.dir.found" value="IzPack installation found at: ${iz.dir}" else="IzPack installation not found.">
+			<available file="${iz.dir}"/>
+		</condition>
+		<echo message="${iz.dir.found}"/>
+
 	</target>
 
 	<!-- regen help search indexes -->
@@ -88,9 +106,19 @@ build.number=${build.number}
 			<filelist dir="${ant.dir}" files="borg.version" />
 		</concat>
 
+		<pathconvert property="generated.manifest.classpath" pathsep=" ">
+			<path refid="build.classpath" />
+			<chainedmapper>
+				<flattenmapper />
+				<globmapper from="*" to="lib/*" />
+			</chainedmapper>
+		</pathconvert>
+		<echo message="computed classpath: '${generated.manifest.classpath}'" />
+
 		<manifest file="${build.dir}/${pkg}/MANIFEST.MF">
 			<attribute name="Built-By" value="${user.name}" />
 			<attribute name="Main-Class" value="${pkg}/control/Borg" />
+			<attribute name="Class-Path" value="${generated.manifest.classpath}" />
 		</manifest>
 
 		<antcall target="zz_copyresources">
@@ -170,8 +198,53 @@ build.number=${build.number}
 
 	</target>
 
+	<!-- 
+	To create a Mac OS application bundle using "JarBundler", go fetch JarBundler from http://www.informagen.com/JarBundler/
+	and place jarbundler.jar into BORGCalendar/ant/lib (create the lib folder if it does not exist)
+	then run the main task. There will be a Borg-xxx.macos-app.tar.gz in the target folder.
+	-->
+	<target name="installer.jarbundler" 
+	    depends="borg-jar"
+	    if="have.jarbundler"
+	    >
+		<taskdef name="jarbundler" classpath="${ant.dir}/lib/jarbundler.jar" classname="net.sourceforge.jarbundler.JarBundler"/>
+		<property file="${ant.dir}/borg.version" />
+		<mkdir dir="${build.dir}/macos" />
+		<jarbundler
+        dir="${build.dir}/macos"
+        name="Borg"
+        mainclass="net.sf.borg.control.Borg"
+        build="${build.number}"
+        bundleid="net.sf.borg"
+        icon="${macos.res.dir}/borg.icns"
+        infostring="BORG Calendar ${build.number}"
+        jvmversion="1.6+"
+        shortname="Borg"
+        signature="BORG"
+        verbose="true"
+        version="${borg.version}"
+      >
+			<jarfileset dir="${dist.dir}">
+				<include name="borg.jar" />
+			</jarfileset>
+			<javafileset dir="${prj.dir}">
+				<include name="lib/*.jar"/>
+			</javafileset>
+		</jarbundler>
+
+		<tar destfile="${dist.dir}/Borg-${borg.version}.macos-app.tar.gz" compression="gzip">
+			<tarfileset dir="${build.dir}/macos">
+				<include name="**/**" />
+			</tarfileset>
+			<tarfileset dir="${build.dir}/macos" filemode="755">
+				<include name="Borg.app/Contents/MacOS/**" />
+			</tarfileset>
+		</tar>
+
+	</target>
+
 	<!-- Clean everything -->
-	<target name="clean" depends="init">
+	<target name="clean" depends="init" description="Clean everything.">
 		<delete quiet="true" dir="${build.dir}" />
 		<delete quiet="true" dir="${gen.dir}" />
 		<delete quiet="true" dir="${dist.dir}" />
@@ -183,7 +256,7 @@ build.number=${build.number}
 	</target>
 
 	<target name="clean-build" depends="clean,borg-jar,help-jar" />
-	<target name="main" depends="regen-help,fulldist,installer" />
+	<target name="main" depends="regen-help,fulldist,installer,installer.jarbundler" description="does everything."/>
 	<target name="fulldist" depends="borg_prog,javadoc,borg_src" />
 
 	<!-- "Private" targets -->
