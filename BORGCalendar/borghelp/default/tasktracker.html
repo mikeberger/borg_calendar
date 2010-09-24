@@ -3,23 +3,26 @@
 <HEAD>
 	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
 	<TITLE></TITLE>
-	<META NAME="GENERATOR" CONTENT="OpenOffice.org 3.1  (Linux)">
+	<META NAME="GENERATOR" CONTENT="OpenOffice.org 3.2  (Linux)">
 	<META NAME="CREATED" CONTENT="0;0">
-	<META NAME="CHANGED" CONTENT="20091005;10340600">
+	<META NAME="CHANGEDBY" CONTENT="Mike B">
+	<META NAME="CHANGED" CONTENT="20100924;13455600">
 	<META NAME="Originator" CONTENT="Microsoft Word 9">
 	<META NAME="ProgId" CONTENT="Word.Document">
 	<STYLE TYPE="text/css">
 	<!--
 		P { color: #000000 }
 		H2 { color: #000000 }
+		H2.ctl { font-family: "Lohit Hindi" }
 		H3 { color: #000000 }
+		H3.ctl { font-family: "Lohit Hindi" }
 		A:link { color: #0000ff }
 		A:visited { color: #0000ff }
 	-->
 	</STYLE>
 </HEAD>
 <BODY LANG="en-US" TEXT="#000000" LINK="#0000ff" VLINK="#0000ff" DIR="LTR">
-<H2><FONT FACE="Arial, sans-serif">The Task Tracker</FONT></H2>
+<H2 CLASS="western"><FONT FACE="Arial, sans-serif">The Task Tracker</FONT></H2>
 <P><FONT FACE="Arial, sans-serif">The Task Tracker is used to keep
 track of various tasks with defined start and end dates, different
 statuses, descriptions, and resolutions. </FONT>
@@ -36,40 +39,26 @@ check off, that require documentation of a resolution, and/or have
 </P>
 <P><FONT FACE="Arial, sans-serif">There are 3 levels of objects
 managed by the task tracker – Projects, Tasks, and Subtasks.</FONT></P>
-<P><FONT FACE="Arial, sans-serif"><U><B>Projects</B></U></FONT></P>
-<P><FONT FACE="Arial, sans-serif">Projects were added in release 1.6.
-</FONT>
+<P><FONT FACE="Arial, sans-serif"><B><U>Projects</U></B> </FONT>
 </P>
 <P><FONT FACE="Arial, sans-serif">A Project is simply a way to group
-related tasks. Each project can have any number of child projects and
-tasks. All child tasks must have due dates on or before the project
-due date. A project cannot be closed unless all of its child tasks
-are closed.</FONT></P>
+related projects and tasks. A Project can set an overall due date for
+all child projects and tasks.</FONT></P>
+<P><FONT FACE="Arial, sans-serif">Each project can have any number of
+child projects and tasks. All child tasks must have due dates on or
+before the project due date. A project cannot be closed unless all of
+its child tasks are closed.</FONT></P>
 <P><FONT FACE="Arial, sans-serif">You are not required to use
 Projects. Tasks can still be created that are not part of any
 Project.</FONT></P>
 <P><FONT FACE="Arial, sans-serif">From the Projects tab, you can use
 the buttons on the bottom of the screen to Add, Delete, Change,
 Close, or Clone Projects.</FONT></P>
-<P><FONT FACE="Arial, sans-serif">Double-clicking on a project jumps
-to a table of open child tasks for that project.</FONT></P>
 <P><FONT FACE="Arial, sans-serif"><U><B>Tasks</B></U></FONT></P>
 <P><FONT FACE="Arial, sans-serif">Tasks are complex activities that
 have start and end dates, and are created in an initial state
-(default is OPEN) and progress through a user definable tree of
+(default is OPEN) and progress through a user configurable tree of
 states to reach an end state (default is CLOSED).</FONT></P>
-<P><FONT FACE="Arial, sans-serif">The tasks tab shows a scrollable
-list of tasks. The Task Tracker Action menu can be used to add,
-update, and delete tasks. </FONT>
-</P>
-<P><FONT FACE="Arial, sans-serif">Tasks can be filtered by project
-and status. A filter string can be typed in the text entry field.
-When the filter button is pressed, only tasks with descriptions
-containing the filter string will be shown.</FONT></P>
-<P><FONT FACE="Arial, sans-serif">Tasks can also be filtered
-according to their category, using the category pull-down choice box.</FONT></P>
-<P><FONT FACE="Arial, sans-serif">Tasks follow a set of <I>states,
-</I>which are user-configurable in BORG.</FONT></P>
 <P STYLE="margin-bottom: 0.17in"><FONT FACE="Arial, sans-serif">BORG
 comes with a set of default task types and states just as an example
 so that the task tracker can do something useful after a fresh
@@ -85,17 +74,17 @@ editing tasks, much of the functioning of the editor window is
 obvious. However:</FONT></P>
 <P><FONT FACE="Arial, sans-serif">The PA (person assigned) field
 doesn’t really do anything except hold data. Use it as you like.</FONT></P>
-<H3><A NAME="mozTocId783397"></A><FONT FACE="Arial, sans-serif"><U>Subtasks</U></FONT></H3>
-<P CLASS="msonormal"><FONT FACE="Arial, sans-serif">Subtasks are
-single units of work that do not progress through a set of states.
-They are either completed or not-completed.</FONT></P>
-<P><FONT FACE="Arial, sans-serif">As of BORG 1.6, a task can have any
-number of subtasks (even zero). Subtasks are managed from the same
+<H3 CLASS="western"><A NAME="mozTocId783397"></A><FONT FACE="Arial, sans-serif"><U>Subtasks</U></FONT></H3>
+<P><FONT FACE="Arial, sans-serif">Subtasks are single units of work
+that do not progress through a set of states. They are either
+completed or not-completed.</FONT></P>
+<P><FONT FACE="Arial, sans-serif">Subtasks are managed from the same
 window used to edit a single tasks. Each subtask can have an optional
 due date. All subtasks must have due dates on or before the parent
 task’s due date. A task cannot be closed unless all of its subtasks
 are closed.</FONT></P>
-<H3><FONT FACE="Arial, sans-serif"><U>Editing Task Types and States</U></FONT></H3>
+<H3 CLASS="western"><FONT FACE="Arial, sans-serif"><U>Editing Task
+Types and States</U></FONT></H3>
 <P><FONT FACE="Arial, sans-serif">The default task tracker states
 defined above are probably adequate for some people, but not others.
 The user has the capability to edit the list of task types and state
@@ -111,10 +100,10 @@ select a task type on the left, the states list will reflect the
 states for that task type. If you select a state, the next state list
 will show the list of states that you can transition to from the
 selected state. If you select a task type, the subtask list will show
-the <I><B>default</B></I><B> </B>subtasks for that task type. These
-default subtasks are generated for all tasks of that type and are
-added when the task is created. These default subtasks are optional.
-Tasks do not need to have any default subtasks. </FONT>
+the <I><B>default</B></I> subtasks for that task type. These default
+subtasks are generated for all tasks of that type and are added when
+the task is created. These default subtasks are optional. Tasks do
+not need to have any default subtasks. </FONT>
 </P>
 <P><FONT FACE="Arial, sans-serif">To change anything, just select
 what you want to change and right-click on it. For example, to add a
