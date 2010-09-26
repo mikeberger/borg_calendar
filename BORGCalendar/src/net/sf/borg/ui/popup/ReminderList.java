@@ -22,17 +22,14 @@ package net.sf.borg.ui.popup;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.swing.DefaultListSelectionModel;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
 
 import net.sf.borg.common.Errmsg;
@@ -60,13 +57,15 @@ public class ReminderList extends View {
 
 	private JPanel buttonPanel = new JPanel();
 
-	private JButton hideButton = new JButton();
-
-	private JButton doneButton = new JButton();
-
-	private JButton donendButton = new JButton();
-
 	private JTable table = new JTable();
+	
+	// table columns
+	static private final int SELECT_COLUMN = 0;
+	static private final int TEXT_COLUMN = 1;
+	static private final int TOGO_MESSAGE_COLUMN = 2;
+	static private final int REMINDER_INSTANCE_COLUMN = 3;
+	static private final int TOGO_MINUTES_COLUMN = 4;
+	
 
 	public ReminderList() {
 		super();
@@ -78,15 +77,19 @@ public class ReminderList extends View {
 		// inst is the ReminderInstance in a hidden column
 		// mins is the minutes-to-go of the reminder - for sorting. hidden
 		// column.
-		table.setModel(new TableSorter(new String[] {
+		table.setModel(new TableSorter(new String[] { "",
 				Resource.getResourceString("Reminder"),
 				Resource.getResourceString("Due"), "inst", "mins" },
-				new Class[] { String.class, String.class,
-						ReminderInstance.class, Integer.class }));
+				new Class[] { Boolean.class, String.class, String.class,
+						ReminderInstance.class, Integer.class }, 
+						new boolean[]{ true, false, false, false, false}));
 
 		// hide inst and mins columns
-		table.removeColumn(table.getColumnModel().getColumn(2));
-		table.removeColumn(table.getColumnModel().getColumn(2));
+		table.removeColumn(table.getColumnModel().getColumn(3));
+		table.removeColumn(table.getColumnModel().getColumn(3));
+		
+		table.getColumnModel().getColumn(ReminderList.SELECT_COLUMN).setMaxWidth(30);
+		table.getColumnModel().getColumn(ReminderList.SELECT_COLUMN).setMinWidth(20);
 
 		pack();
 
@@ -99,29 +102,28 @@ public class ReminderList extends View {
 	}
 
 	/**
-	 * Gets the selected ReminderInstance.
+	 * Gets the selected ReminderInstances.
 	 * 
-	 * @return the selected reminder instance
+	 * @return a List of selected reminder instances
 	 */
-	private ReminderInstance getSelectedReminder() {
-		int index = table.getSelectedRow();
-		if (index == -1)
-			return null;
-		try {
+	private List<ReminderInstance> getSelectedReminders() {
+	
+		List<ReminderInstance> list = new ArrayList<ReminderInstance>();
+		
+		TableSorter tm = (TableSorter) table.getModel();
 
-			TableSorter tm = (TableSorter) table.getModel();
-
-			// column 2 holds the reminder instance
-			Object o = tm.getValueAt(index, 2);
-			if (o != null && o instanceof ReminderInstance) {
-				return (ReminderInstance) o;
+		for( int row = 0; row < tm.getRowCount(); row++ )
+		{
+			Boolean selected = (Boolean)tm.getValueAt(row, ReminderList.SELECT_COLUMN);
+			if( selected.booleanValue() == true)
+			{
+				list.add((ReminderInstance)tm.getValueAt(row, ReminderList.REMINDER_INSTANCE_COLUMN));
 			}
-
-		} catch (Exception e) {
-			Errmsg.errmsg(e);
+				
 		}
-
-		return null;
+		
+		return list;
+	
 	}
 
 	private void initComponents() {
@@ -132,83 +134,75 @@ public class ReminderList extends View {
 
 		table.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0,
 				0, 0)));
+		
+		table.setRowSelectionAllowed(false);
 
-		DefaultListSelectionModel mylsmodel = new DefaultListSelectionModel();
-		mylsmodel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		table.setSelectionModel(mylsmodel);
-		table.getSelectionModel().addListSelectionListener(
-				new ListSelectionListener() {
-
-					@Override
-					public void valueChanged(ListSelectionEvent arg0) {
-						ReminderInstance inst = getSelectedReminder();
-						if (inst != null) {
-							if (inst.getAppt().getTodo()) {
-								doneButton.setEnabled(true);
-								donendButton.setEnabled(true);
-								hideButton.setEnabled(true);
-							} else {
-								doneButton.setEnabled(false);
-								donendButton.setEnabled(false);
-								hideButton.setEnabled(true);
-							}
-						} else {
-							doneButton.setEnabled(false);
-							donendButton.setEnabled(false);
-							hideButton.setEnabled(false);
-						}
-
-					}
-
-				});
-
+		
 		JScrollPane jScrollPane1 = new JScrollPane();
 		jScrollPane1.setPreferredSize(new java.awt.Dimension(554, 404));
 		jScrollPane1.setViewportView(table);
 
+		JButton hideButton = new JButton();
+		
 		hideButton.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 				"/resource/Delete16.gif")));
 		hideButton.setText(Resource.getResourceString("Hide"));
 
 		hideButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				ReminderInstance inst = getSelectedReminder();
-				inst.setHidden(true);
+				for( ReminderInstance inst : getSelectedReminders())
+				{
+					inst.setHidden(true);
+				}
 				refresh(true);
 			}
 		});
 
 		buttonPanel.add(hideButton);
 
+		JButton doneButton = new JButton();
+
 		doneButton.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 				"/resource/Undo16.gif")));
 		ResourceHelper.setText(doneButton, "Done_(Delete)");
 		doneButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				ReminderInstance inst = getSelectedReminder();
-				try {
-					AppointmentModel.getReference().do_todo(
-							inst.getAppt().getKey(), true);
-				} catch (Exception e) {
-					Errmsg.errmsg(e);
-				}
+				for( ReminderInstance inst : getSelectedReminders())
+				{
+					if( inst.getAppt().getTodo() == true)
+					{
+						try {
+							AppointmentModel.getReference().do_todo(
+									inst.getAppt().getKey(), true);
+						} catch (Exception e) {
+							Errmsg.errmsg(e);
+						}
+					}
+				}			
 			}
 		});
 
 		buttonPanel.add(doneButton);
+
+		JButton donendButton = new JButton();
 
 		donendButton.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 				"/resource/Undo16.gif")));
 		ResourceHelper.setText(donendButton, "Done_(No_Delete)");
 		donendButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				ReminderInstance inst = getSelectedReminder();
-				try {
-					AppointmentModel.getReference().do_todo(
-							inst.getAppt().getKey(), false);
-				} catch (Exception e) {
-					Errmsg.errmsg(e);
-				}
+				for( ReminderInstance inst : getSelectedReminders())
+				{
+					if( inst.getAppt().getTodo() == true)
+					{
+						try {
+							AppointmentModel.getReference().do_todo(
+									inst.getAppt().getKey(), false);
+						} catch (Exception e) {
+							Errmsg.errmsg(e);
+						}
+					}
+				}	
 			}
 		});
 
@@ -264,14 +258,11 @@ public class ReminderList extends View {
 		// table will be sorted by the hidden column - minutes to go
 		// table will not be user sortable
 		TableSorter tm = (TableSorter) table.getModel();
-		tm.sortByColumn(3);
+		tm.sortByColumn(ReminderList.TOGO_MINUTES_COLUMN);
 		tm.setRowCount(0);
 
-		// clear selection and disable all buttons
+		// clear selection
 		table.clearSelection();
-		doneButton.setEnabled(false);
-		donendButton.setEnabled(false);
-		hideButton.setEnabled(false);
 
 		// add all reminders
 		for (ReminderInstance inst : list) {
@@ -292,7 +283,7 @@ public class ReminderList extends View {
 			inst.setShown(true);
 
 			// build a table row
-			Object[] row = new Object[4];
+			Object[] row = new Object[5];
 
 			// get appt text
 			String tx = DateFormat.getDateInstance(DateFormat.SHORT).format(
@@ -302,16 +293,18 @@ public class ReminderList extends View {
 					+ AppointmentTextFormat
 							.format(appt, inst.getInstanceTime());
 
-			row[0] = tx;
+			row[ReminderList.SELECT_COLUMN] = Boolean.FALSE; 
+			
+			row[ReminderList.TEXT_COLUMN] = tx;
 
-			row[1] = message;
+			row[ReminderList.TOGO_MESSAGE_COLUMN] = message;
 
-			row[2] = inst;
+			row[ReminderList.REMINDER_INSTANCE_COLUMN] = inst;
 
 			if (AppointmentModel.isNote(appt) && appt.getTodo())
-				row[3] = 99999999; // sort todos last
+				row[ReminderList.TOGO_MINUTES_COLUMN] = 99999999; // sort todos last
 			else
-				row[3] = new Integer(minutesToGo(inst));
+				row[ReminderList.TOGO_MINUTES_COLUMN] = new Integer(minutesToGo(inst));
 
 			tm.addRow(row);
 			tm.tableChanged(new TableModelEvent(tm));
@@ -336,14 +329,13 @@ public class ReminderList extends View {
 		TableSorter tm = (TableSorter) table.getModel();
 
 		for (int index = 0; index < tm.getRowCount(); index++) {
-			// column 2 holds the reminder instance
-			Object o = tm.getValueAt(index, 2);
+			Object o = tm.getValueAt(index, ReminderList.REMINDER_INSTANCE_COLUMN);
 			if (o != null && o instanceof ReminderInstance) {
 
 				ReminderInstance inst = (ReminderInstance) o;
 				String message = calculateToGoMessage(inst);
 				if (message != null) {
-					tm.setValueAt(message, index, 1);
+					tm.setValueAt(message, index, ReminderList.TOGO_MESSAGE_COLUMN);
 				}
 			}
 		}
