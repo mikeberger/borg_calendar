@@ -397,7 +397,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 			return;
 		}
 	}
-
+	
 	/**
 	 * Mark a todo appointment as done. If the appointment repeats, adjust the
 	 * next todo value. If the todo is all done (including repeats), optionally
@@ -413,6 +413,26 @@ public class AppointmentModel extends Model implements Model.Listener,
 	 *             the exception
 	 */
 	public void do_todo(int key, boolean del) throws Exception {
+		this.do_todo(key, del, null);
+	}
+	
+	/**
+	 * Mark a todo appointment as done. If the appointment repeats, adjust the
+	 * next todo value. If the todo is all done (including repeats), optionally
+	 * delete it
+	 * 
+	 * @param key
+	 *            the appointment key
+	 * @param del
+	 *            if true, delete the todo when all done. Otherwise, mark it as
+	 *            no longer being a todo.
+	 * @param date date of the repeat that is being marked as done. If null, then the next todo is the one.
+	 * If set, then all todos up to and including the date are marked as done.
+	 * 
+	 * @throws Exception
+	 *             the exception
+	 */
+	public void do_todo(int key, boolean del, Date date) throws Exception {
 		// read the DB row for the ToDo
 		Appointment appt = db_.readObj(key);
 
@@ -422,6 +442,9 @@ public class AppointmentModel extends Model implements Model.Listener,
 		if (curtodo == null) {
 			curtodo = d;
 		}
+		
+		if( date != null)
+			curtodo = date;
 
 		// newtodo will be the name of the next todo occurrence (if the todo
 		// repeats and is not done)

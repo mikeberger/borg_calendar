@@ -297,7 +297,7 @@ public class NoteBox extends Box implements Box.Draggable {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						try {
 							AppointmentModel.getReference().do_todo(
-									((Appointment) bean).getKey(), false);
+									((Appointment) bean).getKey(), false, date);
 						} catch (Exception e) {
 							Errmsg.errmsg(e);
 						}
@@ -310,7 +310,7 @@ public class NoteBox extends Box implements Box.Draggable {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						try {
 							AppointmentModel.getReference().do_todo(
-									((Appointment) bean).getKey(), true);
+									((Appointment) bean).getKey(), true, date);
 						} catch (Exception e) {
 							Errmsg.errmsg(e);
 						}

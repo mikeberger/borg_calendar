@@ -623,7 +623,7 @@ class ApptBox extends Box implements Box.Draggable {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						try {
 							AppointmentModel.getReference().do_todo(
-									appt.getKey(), false);
+									appt.getKey(), false, date);
 						} catch (Exception e) {
 							Errmsg.errmsg(e);
 						}
@@ -636,7 +636,7 @@ class ApptBox extends Box implements Box.Draggable {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						try {
 							AppointmentModel.getReference().do_todo(
-									appt.getKey(), true);
+									appt.getKey(), true, date);
 						} catch (Exception e) {
 							Errmsg.errmsg(e);
 						}
