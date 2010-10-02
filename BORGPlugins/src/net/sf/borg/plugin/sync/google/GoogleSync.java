@@ -11,11 +11,13 @@ import javax.swing.SwingUtilities;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.model.AppointmentModel;
+import net.sf.borg.model.Repeat;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.ui.util.ModalMessage;
 
 import com.google.gdata.client.calendar.CalendarQuery;
 import com.google.gdata.client.calendar.CalendarService;
+import com.google.gdata.data.DateTime;
 import com.google.gdata.data.Link;
 import com.google.gdata.data.batch.BatchOperationType;
 import com.google.gdata.data.batch.BatchStatus;
@@ -114,32 +116,16 @@ public class GoogleSync {
 			for (CalendarEventEntry entry : entries) {
 
 				/*
-				 * borg sets sequence = 1 when sending to google, so anything
-				 * with sequence == 0 was created on google (noticed by
-				 * trial/error) To determine events changed on google, the
-				 * publish (create) and edit (update) dates are compared. Need
-				 * to check for a difference of a fw minutes between the times
-				 * and the times are not the same for newly insert appts (also
-				 * found by trial/error) so - after sync, don't update via
-				 * google for 5 mins
-				 */
-
-				/*
-				 * for some reason, the google create and update dates do not
-				 * work. looks like the update date changes after some time,
-				 * even when google not touched. for now, only sync appts that
-				 * are new on google.
-				 * 
-				 * if (entry.getSequence() == 0 ||
-				 * Math.abs(entry.getPublished().getValue() -
-				 * entry.getEdited().getValue()) > 5 * 60 * 1000) {
-				 */
-				if (entry.getSequence() == 0) {
+				 * borg sets sequence = BORG_SEQUENCE when sending to google, so
+				 * anything with sequence != BORG_SEQUENCE was created on google (noticed by
+				 * trial/error) 
+				 */		
+				 
+				if (!GoogleAppointmentAdapter.isFromBORG(entry)) {
 					this.showMessage("Needs Sync: " + entry.getIcalUID() + " "
 							+ entry.getSequence() + " "
 							+ entry.getTitle().getPlainText() + " "
-							+ entry.getPublished().toUiString() + " "
-							+ entry.getEdited().toUiString(), false);
+							+ entry.getUpdated().getValue(), false);
 					try {
 						Appointment appt = ad.toBorg(entry);
 						AppointmentModel.getReference().saveAppt(appt);
@@ -148,6 +134,31 @@ public class GoogleSync {
 						continue;
 					}
 
+				}
+				else
+				{
+					// sync if the appt has changed
+					DateTime updt = entry.getUpdated();
+					if( updt != null )
+					{
+						String uid = entry.getIcalUID();
+						int idx = uid.indexOf('@');
+						String up = uid.substring(idx+"@BORGCalendar".length());
+						try {
+							long uplong = Long.parseLong(up);
+							if( updt.getValue() > uplong )
+							{
+								Appointment appt = ad.toBorg(entry);
+								this.showMessage("Needs Sync: " + entry.getIcalUID() + " "
+										+ entry.getSequence() + " "
+										+ entry.getTitle().getPlainText() + " "
+										+ entry.getUpdated().getValue(), false);
+								AppointmentModel.getReference().saveAppt(appt);
+							}
+						} catch (Exception e) {
+							this.showMessage(e.getMessage(), false);
+						}
+					}
 				}
 
 				// add every appt to a batch request to delete them all
@@ -204,7 +215,8 @@ public class GoogleSync {
 
 			for (Appointment appt : appts) {
 				cal.setTime(appt.getDate());
-				if (cal.get(Calendar.YEAR) >= syncFromYear) {
+				// always sync repeating appts. easier than calculating extent
+				if (Repeat.isRepeating(appt) || cal.get(Calendar.YEAR) >= syncFromYear) {
 					try {
 						CalendarEventEntry ev = ad.fromBorg(appt);
 						BatchUtils.setBatchId(ev, Integer.toString(count));
