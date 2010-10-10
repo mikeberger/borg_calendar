@@ -133,6 +133,17 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 			Errmsg.notice(Resource.getResourceString("Select_Memo_Warning"));
 			return;
 		}
+		
+		// confirm delete
+		int ret = JOptionPane.showConfirmDialog(null, Resource
+				.getResourceString("Really_Delete_")
+				+ "?", Resource
+				.getResourceString("Confirm_Delete"),
+				JOptionPane.OK_CANCEL_OPTION,
+				JOptionPane.QUESTION_MESSAGE);
+		if (ret != JOptionPane.OK_OPTION)
+			return;
+
 		try {
 			MemoModel.getReference().delete(name, false);
 			isMemoEdited = false;
