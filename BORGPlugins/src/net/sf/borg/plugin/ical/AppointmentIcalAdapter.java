@@ -81,16 +81,16 @@ public class AppointmentIcalAdapter {
 		} catch (UnknownHostException e) {
 			// ignore
 		}
-		
-		for(Appointment ap : AppointmentModel.getReference().getAllAppts()){
-			
+
+		for (Appointment ap : AppointmentModel.getReference().getAllAppts()) {
+
 			// limit by date
-			if( after != null && ap.getDate().before(after))
+			if (after != null && ap.getDate().before(after))
 				continue;
-			
+
 			CategoryList catlist = new CategoryList();
 			Component ve = new VEvent();
-			
+
 			String uidval = String.valueOf(ap.getKey()) + "@" + hostname;
 			Uid uid = new Uid(uidval);
 			ve.getProperties().add(uid);
@@ -193,10 +193,13 @@ public class AppointmentIcalAdapter {
 					Date dd = ap.getDate();
 					GregorianCalendar gc = new GregorianCalendar();
 					gc.setTime(dd);
-					int dayOfWeek = gc.get(GregorianCalendar.DAY_OF_WEEK);
-		            int dayOfWeekMonth = gc.get(GregorianCalendar.DAY_OF_WEEK_IN_MONTH);
-					String days[] = new String[]{"SU", "MO", "TU", "WE", "TH", "FR", "SA"};
-		            rec += "MONTHLY;BYDAY=" + dayOfWeekMonth + days[dayOfWeek-1];
+					int dayOfWeek = gc.get(java.util.Calendar.DAY_OF_WEEK);
+					int dayOfWeekMonth = gc
+							.get(java.util.Calendar.DAY_OF_WEEK_IN_MONTH);
+					String days[] = new String[] { "SU", "MO", "TU", "WE",
+							"TH", "FR", "SA" };
+					rec += "MONTHLY;BYDAY=" + dayOfWeekMonth
+							+ days[dayOfWeek - 1];
 				} else if (freq.equals(Repeat.YEARLY)) {
 					rec += "YEARLY";
 				} else {
@@ -230,7 +233,6 @@ public class AppointmentIcalAdapter {
 		oostr.close();
 	}
 
-
 	@SuppressWarnings("unchecked")
 	static public String importIcal(String file, String category)
 			throws Exception {
@@ -262,10 +264,10 @@ public class AppointmentIcalAdapter {
 		while (it.hasNext()) {
 			Component comp = (Component) it.next();
 			if (comp instanceof VEvent || comp instanceof VToDo) {
-				
+
 				// start with default appt to pull in default options
 				Appointment ap = amodel.getDefaultAppointment();
-				if( ap == null )
+				if (ap == null)
 					ap = amodel.newAppt();
 				if (category.equals("")
 						|| category.equals(CategoryModel.UNCATEGORIZED)) {
@@ -296,16 +298,13 @@ public class AppointmentIcalAdapter {
 					ap.setDate(d);
 					ap.setUntimed("N");
 					prop = pl.getProperty(Property.DTEND);
-					if( prop != null )
-					{
-						DtEnd dte = (DtEnd)prop;
+					if (prop != null) {
+						DtEnd dte = (DtEnd) prop;
 						Date de = dte.getDate();
-						long dur = (de.getTime() - d.getTime())/(1000*60);
-						ap.setDuration(new Integer((int)dur));
+						long dur = (de.getTime() - d.getTime()) / (1000 * 60);
+						ap.setDuration(new Integer((int) dur));
 					}
 				}
-				
-				
 
 				if (comp instanceof VToDo) {
 					ap.setTodo(true);
@@ -367,39 +366,6 @@ public class AppointmentIcalAdapter {
 					RRule rr = (RRule) prop;
 					Recur recur = rr.getRecur();
 
-					// if UNTIL present - only add first repeat - can't handle
-					// this yet
-					Date until = recur.getUntil();
-					if (until != null) {
-						warning
-								.append("WARNING: BORG cannot yet handle UNTIL clause for appt ["
-										+ summary
-										+ "], adding first occurrence only\n");
-						aplist.add(ap);
-						continue;
-					}
-
-					/*
-					 * if( recur.getDayList() != null ) {warning.append(
-					 * "WARNING: BORG cannot yet handle multiple day BYDAY clause for appt ["
-					 * + summary + "], adding first occurrence only\n" );
-					 * aplist.add(ap); continue; }
-					 * 
-					 * if( recur.getMonthDayList() != null ) {warning.append(
-					 * "WARNING: BORG cannot yet handle BYMONTHDAY clause for appt ["
-					 * + summary + "], adding first occurrence only\n" );
-					 * aplist.add(ap); continue; }
-					 * 
-					 * if( recur.getYearDayList() != null ) {warning.append(
-					 * "WARNING: BORG cannot yet handle BYYEARDAY clause for appt ["
-					 * + summary + "], adding first occurrence only\n" );
-					 * aplist.add(ap); continue; }
-					 * 
-					 * if( recur.getWeekNoList() != null ) {warning.append(
-					 * "WARNING: BORG cannot yet handle BYWEEKNO clause for appt ["
-					 * + summary + "], adding first occurrence only\n" );
-					 * aplist.add(ap); continue; }
-					 */
 					String freq = recur.getFrequency();
 					int interval = recur.getInterval();
 					if (freq.equals(Recur.DAILY)) {
@@ -422,23 +388,16 @@ public class AppointmentIcalAdapter {
 						continue;
 					}
 
-					/*
-					 * if( recur.getMonthList() != null) { // we can handle a
-					 * month list of 1 month if we are repeating yearly if(
-					 * recur.getMonthList().size() > 1 ||
-					 * !Repeat.getFreq(ap.getFrequency()).equals("yearly")) {
-					 * warning.append(
-					 * "WARNING: BORG cannot yet handle the BYMONTH clause for appt ["
-					 * + summary + "], adding first occurrence only\n" );
-					 * ap.setFrequency(Repeat.ONCE); aplist.add(ap); continue; }
-					 * }
-					 */
+					Date until = recur.getUntil();
+					if (until != null) {
+						ap.setRepeatUntil(until);
+					} else {
+						int times = recur.getCount();
+						if (times < 1)
+							times = 9999;
+						ap.setTimes(new Integer(times));
+					}
 
-					int times = recur.getCount();
-					if (times < 1)
-						times = 9999;
-
-					ap.setTimes(new Integer(times));
 					ap.setRepeatFlag(true);
 
 				}
@@ -447,7 +406,7 @@ public class AppointmentIcalAdapter {
 			}
 		}
 
-		for( Appointment ap : aplist )
+		for (Appointment ap : aplist)
 			amodel.saveAppt(ap);
 
 		if (warning.length() == 0)
