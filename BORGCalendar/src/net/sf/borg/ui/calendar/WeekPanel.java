@@ -654,7 +654,7 @@ public class WeekPanel extends JPanel implements Printable, CalendarModule {
 			// only print 1 page
 			if (pageIndex > 0)
 				return Printable.NO_SUCH_PAGE;
-			Font sm_font = Font.decode(Prefs.getPref(PrefName.MONTHVIEWFONT));
+			Font sm_font = Font.decode(Prefs.getPref(PrefName.PRINTFONT));
 			clearData();
 			int ret = drawIt(g, pageFormat.getWidth(), pageFormat.getHeight(),
 					pageFormat.getImageableWidth(), pageFormat

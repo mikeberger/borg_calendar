@@ -260,8 +260,8 @@ public class PrefName {
 	static public PrefName WEEKVIEWFONT = new PrefName("weekviewfont",
 			"SansSerif-10");
 
-	/** The MONTHVIEWFONT. */
-	static public PrefName MONTHVIEWFONT = new PrefName("monthviewfont",
+	/** The PRINTFONT. */
+	static public PrefName PRINTFONT = new PrefName("monthviewfont",
 			"SansSerif-6");
 
 	/** The LNF. */

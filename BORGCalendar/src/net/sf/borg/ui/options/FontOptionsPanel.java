@@ -63,16 +63,6 @@ public class FontOptionsPanel extends OptionsPanel {
 		
 		this.setLayout(new GridBagLayout());
 		
-		JButton apptFontButton = new JButton();
-		ResourceHelper.setText(apptFontButton, "set_appt_font");
-		apptFontButton.setBorder(new SoftBevelBorder(BevelBorder.RAISED));
-		apptFontButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				fontActionPerformed(monthFontText);
-			}
-		});
-		this.add(apptFontButton, GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH));
-
 		JButton defFontButton = new JButton();
 		ResourceHelper.setText(defFontButton, "set_def_font");
 		defFontButton.setBorder(new SoftBevelBorder(BevelBorder.RAISED));
@@ -81,7 +71,17 @@ public class FontOptionsPanel extends OptionsPanel {
 				fontActionPerformed(defaultFontText);
 			}
 		});
-		this.add(defFontButton, GridBagConstraintsFactory.create(0,1, GridBagConstraints.BOTH));
+		this.add(defFontButton, GridBagConstraintsFactory.create(0,0, GridBagConstraints.BOTH));
+	
+		JButton apptFontButton = new JButton();
+		ResourceHelper.setText(apptFontButton, "set_appt_font");
+		apptFontButton.setBorder(new SoftBevelBorder(BevelBorder.RAISED));
+		apptFontButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				fontActionPerformed(monthFontText);
+			}
+		});
+		this.add(apptFontButton, GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH));
 
 		JButton dayFontButton = new JButton();
 		ResourceHelper.setText(dayFontButton, "dview_font");
@@ -103,18 +103,18 @@ public class FontOptionsPanel extends OptionsPanel {
 		});
 		this.add(weekFontButton, GridBagConstraintsFactory.create(0, 3, GridBagConstraints.BOTH));
 
-		JButton monthFontButton = new JButton();
-		ResourceHelper.setText(monthFontButton, "mview_font");
-		monthFontButton.setBorder(new SoftBevelBorder(BevelBorder.RAISED));
-		monthFontButton.addActionListener(new java.awt.event.ActionListener() {
+		JButton printFontButton = new JButton();
+		ResourceHelper.setText(printFontButton, "mview_font");
+		printFontButton.setBorder(new SoftBevelBorder(BevelBorder.RAISED));
+		printFontButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				fontActionPerformed(printFontText);
 			}
 		});
-		this.add(monthFontButton, GridBagConstraintsFactory.create(0, 4, GridBagConstraints.BOTH));
+		this.add(printFontButton, GridBagConstraintsFactory.create(0, 4, GridBagConstraints.BOTH));
 		
-		this.add(monthFontText, GridBagConstraintsFactory.create(1, 0, GridBagConstraints.BOTH, 1.0, 0.0));
-		this.add(defaultFontText, GridBagConstraintsFactory.create(1, 1, GridBagConstraints.BOTH, 1.0, 0.0));
+		this.add(defaultFontText, GridBagConstraintsFactory.create(1, 0, GridBagConstraints.BOTH, 1.0, 0.0));
+		this.add(monthFontText, GridBagConstraintsFactory.create(1, 1, GridBagConstraints.BOTH, 1.0, 0.0));
 		this.add(weekFontText, GridBagConstraintsFactory.create(1, 3, GridBagConstraints.BOTH, 1.0, 0.0));
 		this.add(dayFontText, GridBagConstraintsFactory.create(1, 2, GridBagConstraints.BOTH, 1.0, 0.0));
 		this.add(printFontText, GridBagConstraintsFactory.create(1, 4, GridBagConstraints.BOTH, 1.0, 0.0));
@@ -134,7 +134,7 @@ public class FontOptionsPanel extends OptionsPanel {
 		Prefs.putPref(PrefName.DEFFONT, defaultFontText.getText());
 		Prefs.putPref(PrefName.WEEKVIEWFONT, weekFontText.getText());
 		Prefs.putPref(PrefName.DAYVIEWFONT, dayFontText.getText());
-		Prefs.putPref(PrefName.MONTHVIEWFONT, printFontText.getText());
+		Prefs.putPref(PrefName.PRINTFONT, printFontText.getText());
 		
 		// if the default font is changing then try to update the entire UI
 		// will not likely be pretty
@@ -185,7 +185,7 @@ public class FontOptionsPanel extends OptionsPanel {
 		defaultFontText.setText(Prefs.getPref(PrefName.DEFFONT));
 		weekFontText.setText(Prefs.getPref(PrefName.WEEKVIEWFONT));
 		dayFontText.setText(Prefs.getPref(PrefName.DAYVIEWFONT));
-		printFontText.setText(Prefs.getPref(PrefName.MONTHVIEWFONT));
+		printFontText.setText(Prefs.getPref(PrefName.PRINTFONT));
 	}
 	
 	@Override

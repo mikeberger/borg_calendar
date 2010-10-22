@@ -133,7 +133,7 @@ public class MonthPrintPanel extends JPanel implements Printable {
 
 		// get fonts
 		Font def_font = g2.getFont();
-		Font sm_font = Font.decode(Prefs.getPref(PrefName.MONTHVIEWFONT));
+		Font sm_font = Font.decode(Prefs.getPref(PrefName.PRINTFONT));
 		Map<TextAttribute, Serializable> stmap = new HashMap<TextAttribute, Serializable>();
 		stmap.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
 		stmap.put(TextAttribute.FONT, sm_font);

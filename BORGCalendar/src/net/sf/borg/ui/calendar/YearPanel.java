@@ -459,7 +459,7 @@ public class YearPanel extends JPanel implements Printable, CalendarModule {
 
 			if (pageIndex > 0)
 				return Printable.NO_SUCH_PAGE;
-			Font sm_font = Font.decode(Prefs.getPref(PrefName.MONTHVIEWFONT));
+			Font sm_font = Font.decode(Prefs.getPref(PrefName.PRINTFONT));
 			clearData();
 			int ret = drawIt(g, pageFormat.getWidth(), pageFormat.getHeight(), pageFormat.getImageableWidth(), pageFormat
 					.getImageableHeight(), pageFormat.getImageableX(), pageFormat.getImageableY(),  sm_font);
