@@ -614,6 +614,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 	 * 
 	 * @see net.sf.borg.model.CategoryModel.CategorySource#getCategories()
 	 */
+	@Override
 	public Collection<String> getCategories() {
 
 		TreeSet<String> dbcat = new TreeSet<String>();
@@ -712,6 +713,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 	 * 
 	 * @see net.sf.borg.model.Model.Listener#refresh()
 	 */
+	@Override
 	public void refresh() {
 
 		try {

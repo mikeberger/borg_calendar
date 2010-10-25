@@ -86,6 +86,7 @@ public class NavPanel extends JPanel {
 		Prev.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 				"/resource/Back16.gif")));
 		Prev.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				nav_.prev();
 				label.setText(nav_.getNavLabel());
@@ -97,6 +98,7 @@ public class NavPanel extends JPanel {
 				"/resource/Forward16.gif")));
 		Next.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
 		Next.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				nav_.next();
 				label.setText(nav_.getNavLabel());
@@ -108,6 +110,7 @@ public class NavPanel extends JPanel {
 				"/resource/Home16.gif")));
 		Today.setToolTipText(Resource.getResourceString("Today"));
 		Today.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				nav_.today();
 				label.setText(nav_.getNavLabel());
@@ -119,6 +122,7 @@ public class NavPanel extends JPanel {
 				"/resource/Undo16.gif")));
 		Goto.setToolTipText(Resource.getResourceString("Go_To"));
 		Goto.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				DateDialog dlg = new DateDialog(null);
 				dlg.setCalendar(new GregorianCalendar());

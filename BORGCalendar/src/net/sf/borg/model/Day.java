@@ -89,6 +89,7 @@ public class Day {
 		 * 
 		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
 		 */
+		@Override
 		public int compare(CalendarEntity so1, CalendarEntity so2) {
 
 			String s1 = so1.getText();

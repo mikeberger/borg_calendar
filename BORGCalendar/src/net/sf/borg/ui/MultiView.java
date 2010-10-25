@@ -156,6 +156,7 @@ public class MultiView extends View {
 
 		// escape key closes the window
 		getLayeredPane().registerKeyboardAction(new ActionListener() {
+			@Override
 			public final void actionPerformed(ActionEvent e) {
 				if (SunTrayIconProxy.hasTrayIcon())
 					closeMainwindow();
@@ -165,6 +166,7 @@ public class MultiView extends View {
 
 		// delete key removes tabs
 		getLayeredPane().registerKeyboardAction(new ActionListener() {
+			@Override
 			public final void actionPerformed(ActionEvent e) {
 				Component c = getTabs().getSelectedComponent();
 				getTabs().remove(c);
@@ -189,6 +191,7 @@ public class MultiView extends View {
 		mainMenu.addAction(new ImageIcon(getClass().getResource(
 				"/resource/Print16.gif")), Resource.getResourceString("Print"),
 				new ActionListener() {
+					@Override
 					public void actionPerformed(ActionEvent evt) {
 						print();
 					}
@@ -197,6 +200,7 @@ public class MultiView extends View {
 		mainMenu.addAction(new ImageIcon(getClass().getResource(
 				"/resource/Delete16.gif")), Resource
 				.getResourceString("close_tabs"), new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent evt) {
 				closeTabs();
 			}
@@ -356,6 +360,7 @@ public class MultiView extends View {
 				"/resource/Print16.gif")));
 		printbut.setToolTipText(Resource.getResourceString("Print"));
 		printbut.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				print();
 			}
@@ -368,6 +373,7 @@ public class MultiView extends View {
 				"/resource/Delete16.gif")));
 		clearbut.setToolTipText(Resource.getResourceString("close_tabs"));
 		clearbut.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				closeTabs();
 			}

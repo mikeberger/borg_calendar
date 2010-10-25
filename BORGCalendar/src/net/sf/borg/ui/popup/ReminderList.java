@@ -149,6 +149,7 @@ public class ReminderList extends View {
 		hideButton.setText(Resource.getResourceString("Hide"));
 
 		hideButton.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				for( ReminderInstance inst : getSelectedReminders())
 				{
@@ -166,6 +167,7 @@ public class ReminderList extends View {
 				"/resource/Undo16.gif")));
 		ResourceHelper.setText(doneButton, "Done_(Delete)");
 		doneButton.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				for( ReminderInstance inst : getSelectedReminders())
 				{
@@ -190,6 +192,7 @@ public class ReminderList extends View {
 				"/resource/Undo16.gif")));
 		ResourceHelper.setText(donendButton, "Done_(No_Delete)");
 		donendButton.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				for( ReminderInstance inst : getSelectedReminders())
 				{
@@ -213,6 +216,7 @@ public class ReminderList extends View {
 				"/resource/Undo16.gif")));
 		ResourceHelper.setText(resetButton, "Unhide_All");
 		resetButton.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				try {
 					ReminderListManager m = (ReminderListManager) ReminderListManager

@@ -64,9 +64,8 @@ import net.sf.borg.model.undo.UndoLog;
  * TaksModel manages all of the task related entities - Task, Project, Subtask,
  * and Tasklog
  */
-@SuppressWarnings("unchecked")
 public class TaskModel extends Model implements Model.Listener, CategorySource,
-		Searchable<KeyedEntity> {
+		Searchable<KeyedEntity<?>> {
 
 	/**
 	 * class XmlContainer is solely for JAXB XML export/import to keep the same
@@ -204,6 +203,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 	 * 
 	 * @see net.sf.borg.model.CategoryModel.CategorySource#getCategories()
 	 */
+	@Override
 	public Collection<String> getCategories() {
 
 		TreeSet<String> categories = new TreeSet<String>();
@@ -783,6 +783,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 	 * 
 	 * @see net.sf.borg.model.Model.Listener#refresh()
 	 */
+	@Override
 	public void refresh() {
 		try {
 			load_map();
@@ -1257,8 +1258,8 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 	}
 
 	@Override
-	public Collection<KeyedEntity> search(SearchCriteria criteria) {
-		Collection<KeyedEntity> res = new ArrayList<KeyedEntity>(); // result
+	public Collection<KeyedEntity<?>> search(SearchCriteria criteria) {
+		Collection<KeyedEntity<?>> res = new ArrayList<KeyedEntity<?>>(); // result
 																	// collection
 		try {
 

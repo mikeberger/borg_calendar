@@ -83,6 +83,7 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 		 * javax.swing.table.TableCellRenderer#getTableCellRendererComponent
 		 * (javax.swing.JTable, java.lang.Object, boolean, boolean, int, int)
 		 */
+		@Override
 		public Component getTableCellRendererComponent(JTable table,
 				Object obj, boolean isSelected, boolean hasFocus, int row,
 				int column) {
@@ -276,6 +277,7 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 			addbutton.setIcon(new ImageIcon(getClass().getResource(
 					"/resource/Add16.gif")));
 			addbutton.addActionListener(new java.awt.event.ActionListener() {
+				@Override
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					try {
 						new ProjectView(null, ProjectView.Action.ADD, null)
@@ -293,6 +295,7 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 			changebutton1.setText(Resource.getResourceString("Change"));
 			changebutton1
 					.addActionListener(new java.awt.event.ActionListener() {
+						@Override
 						public void actionPerformed(java.awt.event.ActionEvent e) {
 							projectChangeRequested();
 						}
@@ -305,6 +308,7 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 			deletebutton1.setText(Resource.getResourceString("Delete"));
 			deletebutton1
 					.addActionListener(new java.awt.event.ActionListener() {
+						@Override
 						public void actionPerformed(java.awt.event.ActionEvent e) {
 							deleteActionPerformed();
 						}
@@ -316,6 +320,7 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 					"/resource/greenlight.gif")));
 			closebutton1.setText(Resource.getResourceString("Close"));
 			closebutton1.addActionListener(new java.awt.event.ActionListener() {
+				@Override
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					closeSelectedProject();
 				}
@@ -327,6 +332,7 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 					"/resource/Copy16.gif")));
 			clonebutton1.setText(Resource.getResourceString("Clone"));
 			clonebutton1.addActionListener(new java.awt.event.ActionListener() {
+				@Override
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					cloneSelectedProject();
 				}
@@ -366,6 +372,7 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 				.getResourceString("OPEN"));
 		projectStatusComboBox
 				.addActionListener(new java.awt.event.ActionListener() {
+					@Override
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						refresh();
 					}
@@ -406,6 +413,7 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 		// popup menu
 		new PopupMenuHelper(projectTable, new PopupMenuHelper.Entry[] {
 				new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
+					@Override
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						try {
 							new ProjectView(null, ProjectView.Action.ADD, null)
@@ -416,21 +424,25 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 					}
 				}, "Add"),
 				new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
+					@Override
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						projectChangeRequested();
 					}
 				}, "Change"),
 				new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
+					@Override
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						cloneSelectedProject();
 					}
 				}, "Clone"),
 				new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
+					@Override
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						deleteActionPerformed();
 					}
 				}, "Delete"),
 				new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
+					@Override
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						closeSelectedProject();
 					}
@@ -484,6 +496,7 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 	/**
 	 * refresh when the task model changes
 	 */
+	@Override
 	public void refresh() {
 
 		int row = 0;

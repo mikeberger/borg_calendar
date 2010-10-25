@@ -91,6 +91,7 @@ class DateZone {
 			popmenu.add(mnuitm = new JMenuItem(Resource
 					.getResourceString("Add_New")));
 			mnuitm.addActionListener(new ActionListener() {
+				@Override
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
 					onClick();
 				}
@@ -98,6 +99,7 @@ class DateZone {
 			popmenu.add(mnuitm = new JMenuItem(Resource
 					.getResourceString("todoquickentry")));
 			mnuitm.addActionListener(new ActionListener() {
+				@Override
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
 					quickAdd(true);
 				}
@@ -105,6 +107,7 @@ class DateZone {
 			popmenu.add(mnuitm = new JMenuItem(Resource
 					.getResourceString("Quick_Note")));
 			mnuitm.addActionListener(new ActionListener() {
+				@Override
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
 					quickAdd(false);
 				}

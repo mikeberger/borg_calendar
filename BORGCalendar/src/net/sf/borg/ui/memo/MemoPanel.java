@@ -213,18 +213,21 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 		// save button
 		memoText.getDocument().addDocumentListener(new DocumentListener() {
 
+			@Override
 			public void changedUpdate(DocumentEvent arg0) {
 				isMemoEdited = true;
 				editedMemoIndex = memoListTable.getSelectedRow();
 				saveButton.setEnabled(true);
 			}
 
+			@Override
 			public void insertUpdate(DocumentEvent arg0) {
 				isMemoEdited = true;
 				editedMemoIndex = memoListTable.getSelectedRow();
 				saveButton.setEnabled(true);
 			}
 
+			@Override
 			public void removeUpdate(DocumentEvent arg0) {
 				isMemoEdited = true;
 				editedMemoIndex = memoListTable.getSelectedRow();
@@ -281,6 +284,7 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 		JButton newButton = new JButton();
 		newButton.setText(Resource.getResourceString("New_Memo"));
 		newButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				newMemo();
 			}
@@ -290,6 +294,7 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 		saveButton = new JButton();
 		saveButton.setText(Resource.getResourceString("Save_Memo"));
 		saveButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				saveMemo();
 			}
@@ -299,6 +304,7 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 		JButton deleteButton = new JButton();
 		deleteButton.setText(Resource.getResourceString("Delete_Memo"));
 		deleteButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				deleteMemo();
 			}
@@ -308,6 +314,7 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 		JButton exportButton = new JButton();
 		exportButton.setText(Resource.getResourceString("export"));
 		exportButton.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent e) {
 				// export a single memo to a file
 				StringBuffer sb = new StringBuffer();
@@ -333,6 +340,7 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 		decryptButton = new JButton();
 		decryptButton.setText(Resource.getResourceString("decrypt"));
 		decryptButton.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent e) {
 				try {
 					Memo m = MemoModel.getReference().getMemo(
@@ -434,6 +442,7 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 	 * refresh the UI. This does not do anything if the user is currently in the
 	 * middle of editing a memo.
 	 */
+	@Override
 	public void refresh() {
 
 		// if the user is editing a row, don't process the refresh
@@ -499,6 +508,7 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 	/**
 	 * react to the user selecting a memo in the memo list. open it for edit
 	 */
+	@Override
 	public void valueChanged(ListSelectionEvent e) {
 		// Ignore extra messages.
 		if (e.getValueIsAdjusting())
@@ -607,6 +617,7 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 		parent.addToolBarItem(new ImageIcon(getClass().getResource(
 				"/resource/Edit16.gif")), getModuleName(),
 				new ActionListener() {
+					@Override
 					public void actionPerformed(ActionEvent evt) {
 						par.setView(ViewType.MEMO);
 					}

@@ -35,7 +35,6 @@ public class LinkTests {
 		
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testObjectLinks() throws Exception
 	{
@@ -96,7 +95,7 @@ public class LinkTests {
 		Collection<Link> links = LinkModel.getReference().getLinks();
 		assertEquals("Wrong number of links", 20, links.size());
 		
-		for( KeyedEntity ent : new KeyedEntity[]{ addr, appt, project, memo, task })
+		for( KeyedEntity<?> ent : new KeyedEntity[]{ addr, appt, project, memo, task })
 		{
 			Collection<Link> objLinks = LinkModel.getReference().getLinks(ent);
 			assertEquals("Wrong number of object links", 4, objLinks.size());
@@ -107,7 +106,7 @@ public class LinkTests {
 		links = LinkModel.getReference().getLinks();
 		assertEquals("Wrong number of links", 12, links.size());
 		
-		for( KeyedEntity ent : new KeyedEntity[]{ addr, project, memo, task })
+		for( KeyedEntity<?> ent : new KeyedEntity[]{ addr, project, memo, task })
 		{
 			Collection<Link> objLinks = LinkModel.getReference().getLinks(ent);
 			assertEquals("Wrong number of object links", 3, objLinks.size());
@@ -118,7 +117,7 @@ public class LinkTests {
 		links = LinkModel.getReference().getLinks();
 		assertEquals("Wrong number of links", 6, links.size());
 		
-		for( KeyedEntity ent : new KeyedEntity[]{ addr, project, memo })
+		for( KeyedEntity<?> ent : new KeyedEntity[]{ addr, project, memo })
 		{
 			Collection<Link> objLinks = LinkModel.getReference().getLinks(ent);
 			assertEquals("Wrong number of object links", 2, objLinks.size());
@@ -129,7 +128,7 @@ public class LinkTests {
 		links = LinkModel.getReference().getLinks();
 		assertEquals("Wrong number of links", 2, links.size());
 		
-		for( KeyedEntity ent : new KeyedEntity[]{ addr, project })
+		for( KeyedEntity<?> ent : new KeyedEntity[]{ addr, project })
 		{
 			Collection<Link> objLinks = LinkModel.getReference().getLinks(ent);
 			assertEquals("Wrong number of object links", 1, objLinks.size());

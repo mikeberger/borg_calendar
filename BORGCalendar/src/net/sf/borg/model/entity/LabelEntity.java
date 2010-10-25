@@ -41,6 +41,7 @@ public class LabelEntity implements CalendarEntity {
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.entity.CalendarEntity#getColor()
 	 */
+	@Override
 	public String getColor() {
 		return color;
 	}
@@ -57,6 +58,7 @@ public class LabelEntity implements CalendarEntity {
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.entity.CalendarEntity#getDate()
 	 */
+	@Override
 	public Date getDate() {
 		return date;
 	}
@@ -73,6 +75,7 @@ public class LabelEntity implements CalendarEntity {
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.entity.CalendarEntity#getText()
 	 */
+	@Override
 	public String getText() {
 		return Text;
 	}
@@ -89,6 +92,7 @@ public class LabelEntity implements CalendarEntity {
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.entity.CalendarEntity#getDuration()
 	 */
+	@Override
 	public Integer getDuration() {
 		return new Integer(0);
 	}
@@ -96,6 +100,7 @@ public class LabelEntity implements CalendarEntity {
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.entity.CalendarEntity#getNextTodo()
 	 */
+	@Override
 	public Date getNextTodo() {	
 		return null;
 	}
@@ -103,6 +108,7 @@ public class LabelEntity implements CalendarEntity {
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.entity.CalendarEntity#getTodo()
 	 */
+	@Override
 	public boolean getTodo() {
 		return false;
 	}

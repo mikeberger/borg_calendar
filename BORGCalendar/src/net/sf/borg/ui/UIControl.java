@@ -268,11 +268,10 @@ public class UIControl {
 	 * @param className
 	 *            - the name of the module class
 	 */
-	@SuppressWarnings("unchecked")
 	private static void addExternalModule(String className) {
 		try {
 			ClassLoader cl = ClassLoader.getSystemClassLoader();
-			Class clazz = cl.loadClass(className);
+			Class<?> clazz = cl.loadClass(className);
 			MultiView.Module module = (MultiView.Module) clazz.newInstance();
 			MultiView.getMainView().addModule(module);
 		} catch (Exception e) {

@@ -239,6 +239,7 @@ public class ProjectView extends DockableView {
 		ResourceHelper.setText(menu, "Menu");
 		ResourceHelper.setText(saveMenuItem, "Save");
 		saveMenuItem.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent evt) {
 				saveProject();
 			}
@@ -248,6 +249,7 @@ public class ProjectView extends DockableView {
 
 		ResourceHelper.setText(dismissMenuItem, "Dismiss");
 		dismissMenuItem.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent evt) {
 				remove();
 			}
@@ -390,6 +392,7 @@ public class ProjectView extends DockableView {
 				"/resource/Save16.gif")));
 		ResourceHelper.setText(savebutton, "Save");
 		savebutton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent evt) {
 				saveProject();
 

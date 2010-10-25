@@ -47,6 +47,7 @@ public class MemoJdbcDB extends JdbcDB implements MemoDB {
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.db.MemoDB#addMemo(net.sf.borg.model.entity.Memo)
 	 */
+	@Override
 	public void addMemo(Memo m) throws Exception {
 		PreparedStatement stmt = connection_
 				.prepareStatement("INSERT INTO memos ( memoname, memotext, encrypted ) "
@@ -66,6 +67,7 @@ public class MemoJdbcDB extends JdbcDB implements MemoDB {
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.db.MemoDB#delete(java.lang.String)
 	 */
+	@Override
 	public void delete(String name) throws Exception {
 		PreparedStatement stmt = connection_.prepareStatement("DELETE FROM memos WHERE memoname = ?");
 		stmt.setString(1, name);
@@ -76,6 +78,7 @@ public class MemoJdbcDB extends JdbcDB implements MemoDB {
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.db.MemoDB#getNames()
 	 */
+	@Override
 	public Collection<String> getNames() throws Exception {
 		ArrayList<String> keys = new ArrayList<String>();
 		PreparedStatement stmt = connection_
@@ -125,6 +128,7 @@ public class MemoJdbcDB extends JdbcDB implements MemoDB {
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.db.MemoDB#readAll()
 	 */
+	@Override
 	public Collection<Memo> readAll() throws Exception {
 		PreparedStatement stmt = null;
 		ResultSet r = null;
@@ -148,6 +152,7 @@ public class MemoJdbcDB extends JdbcDB implements MemoDB {
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.db.MemoDB#readMemo(java.lang.String)
 	 */
+	@Override
 	public Memo readMemo(String name) throws Exception {
 
 		PreparedStatement stmt = null;
@@ -171,6 +176,7 @@ public class MemoJdbcDB extends JdbcDB implements MemoDB {
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.db.MemoDB#updateMemo(net.sf.borg.model.entity.Memo)
 	 */
+	@Override
 	public void updateMemo(Memo m) throws Exception {
 
 		PreparedStatement stmt = connection_.prepareStatement("UPDATE memos SET "

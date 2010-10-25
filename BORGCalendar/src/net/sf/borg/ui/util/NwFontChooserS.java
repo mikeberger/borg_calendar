@@ -141,12 +141,14 @@ public class NwFontChooserS extends JDialog {
             getContentPane().add(ok);
             getContentPane().add(ca);
             ok.addActionListener(new ActionListener() {
+                @Override
                 public void actionPerformed(ActionEvent e) {
                     setVisible(false);
                     ob = true;
                 }
             });
             ca.addActionListener(new ActionListener() {
+                @Override
                 public void actionPerformed(ActionEvent e) {
                     setVisible(false);
                     ob = false;
@@ -191,6 +193,7 @@ public class NwFontChooserS extends JDialog {
                 jl.setBounds(0, 0, 100, 1000);
                 jl.setBackground(Color.white);
                 jl.addListSelectionListener(new ListSelectionListener() {
+                    @Override
                     public void valueChanged(ListSelectionEvent e) {
                         jt.setText((String) jl.getSelectedValue());
                         si = (String) jl.getSelectedValue();

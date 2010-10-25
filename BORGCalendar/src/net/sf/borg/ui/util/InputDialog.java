@@ -127,6 +127,7 @@ public class InputDialog extends JDialog {
 		JButton okButton = new JButton();
 		okButton.setText(Resource.getResourceString("OK"));
 		okButton.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent e) {
 				returnString = inputText.getText();
 				dispose();
@@ -136,6 +137,7 @@ public class InputDialog extends JDialog {
 		JButton cancelButton = new JButton();
 		cancelButton.setText(Resource.getResourceString("Cancel"));
 		cancelButton.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent e) {
 				dispose();
 			}

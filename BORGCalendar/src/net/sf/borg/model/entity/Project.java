@@ -171,6 +171,7 @@ public class Project extends KeyedEntity<Project> implements CalendarEntity {
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.entity.CalendarEntity#getColor()
 	 */
+	@Override
 	public String getColor()
 	{
 		// for showing on calendar
@@ -181,6 +182,7 @@ public class Project extends KeyedEntity<Project> implements CalendarEntity {
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.entity.CalendarEntity#getDuration()
 	 */
+	@Override
 	public Integer getDuration()
 	{
 		return new Integer(0);
@@ -189,21 +191,25 @@ public class Project extends KeyedEntity<Project> implements CalendarEntity {
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.entity.CalendarEntity#getDate()
 	 */
+	@Override
 	public Date getDate(){ return getDueDate(); }
 	
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.entity.CalendarEntity#getTodo()
 	 */
+	@Override
 	public boolean getTodo(){ return true; }
 	
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.entity.CalendarEntity#getNextTodo()
 	 */
+	@Override
 	public Date getNextTodo(){ return null; }
 	
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.entity.CalendarEntity#getText()
 	 */
+	@Override
 	public String getText(){
 		// return the text as it should appear on the calendar
 		 String showabb = Prefs.getPref(PrefName.TASK_SHOW_ABBREV);

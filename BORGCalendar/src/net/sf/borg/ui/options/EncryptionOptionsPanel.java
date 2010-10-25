@@ -75,6 +75,7 @@ public class EncryptionOptionsPanel extends OptionsPanel {
 		JButton bb = new JButton();
 		ResourceHelper.setText(bb, "Browse");
 		bb.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				JFileChooser chooser = new JFileChooser();
 

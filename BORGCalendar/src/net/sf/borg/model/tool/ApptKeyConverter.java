@@ -35,6 +35,7 @@ public class ApptKeyConverter implements ConversionTool{
 	 * run the database conversion from 1.7.1 to 1.7.2
 	 * @throws Exception
 	 */
+	@Override
 	public void convert() throws Exception {
 		
 		

@@ -544,6 +544,7 @@ public class WeekPanel extends JPanel implements Printable, CalendarModule {
 		/**
 		 * get nav label
 		 */
+		@Override
 		public String getNavLabel() {
 
 			// set up calendar and determine first day of week from options
@@ -573,6 +574,7 @@ public class WeekPanel extends JPanel implements Printable, CalendarModule {
 		/**
 		 * go to a particular date
 		 */
+		@Override
 		public void goTo(Calendar cal) {
 			year_ = cal.get(Calendar.YEAR);
 			month_ = cal.get(Calendar.MONTH);
@@ -584,6 +586,7 @@ public class WeekPanel extends JPanel implements Printable, CalendarModule {
 		/**
 		 * navigate forward or back based on mouse wheel action
 		 */
+		@Override
 		public void mouseWheelMoved(MouseWheelEvent e) {
 			if (e.getWheelRotation() > 0) {
 				next();
@@ -598,6 +601,7 @@ public class WeekPanel extends JPanel implements Printable, CalendarModule {
 		/**
 		 * navigate forward 1 week
 		 */
+		@Override
 		public void next() {
 			GregorianCalendar cal = new GregorianCalendar(year_, month_, date_,
 					23, 59);
@@ -626,6 +630,7 @@ public class WeekPanel extends JPanel implements Printable, CalendarModule {
 		/**
 		 * reload and redraw if prefs change
 		 */
+		@Override
 		public void prefsChanged() {
 			clearData();
 			repaint();
@@ -635,6 +640,7 @@ public class WeekPanel extends JPanel implements Printable, CalendarModule {
 		/**
 		 * navigate backwards 1 week
 		 */
+		@Override
 		public void prev() {
 			GregorianCalendar cal = new GregorianCalendar(year_, month_, date_,
 					23, 59);
@@ -649,6 +655,7 @@ public class WeekPanel extends JPanel implements Printable, CalendarModule {
 		/**
 		 * print to a Graphics for a printout
 		 */
+		@Override
 		public int print(Graphics g, PageFormat pageFormat, int pageIndex)
 				throws PrinterException {
 			// only print 1 page
@@ -677,6 +684,7 @@ public class WeekPanel extends JPanel implements Printable, CalendarModule {
 		/**
 		 * navigate to the current week
 		 */
+		@Override
 		public void today() {
 			GregorianCalendar cal = new GregorianCalendar();
 			year_ = cal.get(Calendar.YEAR);
@@ -725,6 +733,7 @@ public class WeekPanel extends JPanel implements Printable, CalendarModule {
 	 * @param cal
 	 *            a day in the week
 	 */
+	@Override
 	public void goTo(Calendar cal) {
 		wp_.goTo(cal);
 		nav.setLabel(wp_.getNavLabel());
@@ -733,6 +742,7 @@ public class WeekPanel extends JPanel implements Printable, CalendarModule {
 	/**
 	 * print the UI
 	 */
+	@Override
 	public int print(Graphics arg0, PageFormat arg1, int arg2)
 			throws PrinterException {
 		return wp_.print(arg0, arg1, arg2);
@@ -754,6 +764,7 @@ public class WeekPanel extends JPanel implements Printable, CalendarModule {
 		parent.addToolBarItem(new ImageIcon(getClass().getResource(
 		"/resource/week.jpg")), getModuleName(), 
 		new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent evt) {
 				par.setView(ViewType.WEEK);
 			}

@@ -109,6 +109,7 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 		JButton bb = new JButton();
 		ResourceHelper.setText(bb, "Browse");
 		bb.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				String dbdir = OptionsPanel.chooseDir();
 				if (dbdir == null) {

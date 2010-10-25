@@ -74,6 +74,7 @@ public class PopupOptionsView extends JDialog {
 
 		// escape key closes window
 		getRootPane().registerKeyboardAction(new ActionListener() {
+			@Override
 			public final void actionPerformed(ActionEvent e) {
 				dispose();
 			}
@@ -101,6 +102,7 @@ public class PopupOptionsView extends JDialog {
 		saveButton.setIcon(new ImageIcon(getClass().getResource(
 				"/resource/Save16.gif")));
 		saveButton.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				
 				// set the remidner times array from the check box values
@@ -122,6 +124,7 @@ public class PopupOptionsView extends JDialog {
 		JButton clearAllButton = new JButton();
 		ResourceHelper.setText(clearAllButton, "clear_all");
 		clearAllButton.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent e) {
 				for (int i = 0; i < ReminderTimes.getNum(); ++i) {
 					reminderTimeCheckBoxes[i].setSelected(false);
@@ -133,6 +136,7 @@ public class PopupOptionsView extends JDialog {
 		JButton selectAllButton = new JButton();
 		ResourceHelper.setText(selectAllButton, "select_all");
 		selectAllButton.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent e) {
 				for (int i = 0; i < ReminderTimes.getNum(); ++i) {
 					reminderTimeCheckBoxes[i].setSelected(true);
@@ -146,6 +150,7 @@ public class PopupOptionsView extends JDialog {
 		dismissButton.setIcon(new ImageIcon(getClass().getResource(
 				"/resource/Stop16.gif")));
 		dismissButton.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				dispose();
 			}

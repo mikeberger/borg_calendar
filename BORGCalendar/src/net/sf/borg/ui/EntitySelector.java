@@ -280,6 +280,7 @@ public class EntitySelector extends JDialog {
 		selectButton.setText(Resource.getResourceString("Select"));
 
 		selectButton.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				selectbuttonActionPerformed(evt);
 			}
@@ -292,6 +293,7 @@ public class EntitySelector extends JDialog {
 				"/resource/Undo16.gif")));
 		clearButton.setText(Resource.getResourceString("Clear"));
 		clearButton.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				clearbuttonActionPerformed(evt);
 			}

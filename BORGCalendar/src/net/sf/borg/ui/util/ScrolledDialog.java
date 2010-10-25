@@ -178,6 +178,7 @@ public class ScrolledDialog extends JDialog {
 		JButton okButton = new JButton();
 		okButton.setText(Resource.getResourceString("OK"));
 		okButton.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent e) {
 				result = OK;
 				dispose();
@@ -190,6 +191,7 @@ public class ScrolledDialog extends JDialog {
 			JButton stackButton = new JButton();
 			stackButton.setText(Resource.getResourceString("Show_Stack_Trace"));
 			stackButton.addActionListener(new java.awt.event.ActionListener() {
+				@Override
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					// show the stack trace
 					java.io.ByteArrayOutputStream bao = new java.io.ByteArrayOutputStream();
@@ -208,6 +210,7 @@ public class ScrolledDialog extends JDialog {
 			JButton cancelButton = new JButton();
 			cancelButton.setText(Resource.getResourceString("Cancel"));
 			cancelButton.addActionListener(new java.awt.event.ActionListener() {
+				@Override
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					result = CANCEL;
 					dispose();

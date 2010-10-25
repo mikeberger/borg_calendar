@@ -183,7 +183,7 @@ public class SearchView extends DockableView implements Module {
 				"/resource/Preferences16.gif"))); // Generated
 		changeCategoryButton
 				.addActionListener(new java.awt.event.ActionListener() {
-					@SuppressWarnings("unchecked")
+					@Override
 					public void actionPerformed(java.awt.event.ActionEvent e) {
 
 						// change the category of all selected rows
@@ -210,13 +210,13 @@ public class SearchView extends DockableView implements Module {
 									.getModel();
 
 							// get a list of selected items
-							ArrayList<KeyedEntity> entities = new ArrayList<KeyedEntity>();
+							ArrayList<KeyedEntity<?>> entities = new ArrayList<KeyedEntity<?>>();
 							for (int i = 0; i < rows.length; i++) {
 								Integer key = (Integer) tm.getValueAt(rows[i],
 										3);
-								Class cl = (Class) tm.getValueAt(rows[i], 4);
+								Class<?> cl = (Class<?>) tm.getValueAt(rows[i], 4);
 								try {
-									KeyedEntity ent = (KeyedEntity) cl
+									KeyedEntity<?> ent = (KeyedEntity<?>) cl
 											.newInstance();
 									ent.setKey(key.intValue());
 									entities.add(ent);
@@ -227,7 +227,7 @@ public class SearchView extends DockableView implements Module {
 							}
 
 							// change the categories
-							for (KeyedEntity ent : entities) {
+							for (KeyedEntity<?> ent : entities) {
 								if (ent instanceof Appointment) {
 									Appointment ap = AppointmentModel
 											.getReference().getAppt(
@@ -336,7 +336,7 @@ public class SearchView extends DockableView implements Module {
 		deleteButton.setIcon(new ImageIcon(getClass().getResource(
 				"/resource/Stop16.gif")));
 		deleteButton.addActionListener(new java.awt.event.ActionListener() {
-			@SuppressWarnings("unchecked")
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent e) {
 
 				// delete all selected rows
@@ -356,12 +356,12 @@ public class SearchView extends DockableView implements Module {
 
 				// get selected items
 				TableSorter tm = (TableSorter) resultsTable.getModel();
-				ArrayList<KeyedEntity> entities = new ArrayList<KeyedEntity>();
+				ArrayList<KeyedEntity<?>> entities = new ArrayList<KeyedEntity<?>>();
 				for (int i = 0; i < rows.length; i++) {
 					Integer key = (Integer) tm.getValueAt(rows[i], 3);
-					Class cl = (Class) tm.getValueAt(rows[i], 4);
+					Class<?> cl = (Class<?>) tm.getValueAt(rows[i], 4);
 					try {
-						KeyedEntity ent = (KeyedEntity) cl.newInstance();
+						KeyedEntity<?> ent = (KeyedEntity<?>) cl.newInstance();
 						ent.setKey(key.intValue());
 						entities.add(ent);
 					} catch (Exception e1) {
@@ -371,7 +371,7 @@ public class SearchView extends DockableView implements Module {
 				}
 
 				// delete the items
-				for (KeyedEntity ent : entities) {
+				for (KeyedEntity<?> ent : entities) {
 					if (ent instanceof Appointment)
 						AppointmentModel.getReference().delAppt(ent.getKey());
 					else if (ent instanceof Address)
@@ -602,6 +602,7 @@ public class SearchView extends DockableView implements Module {
 		searchButton.setIcon(new ImageIcon(getClass().getResource(
 				"/resource/Find16.gif")));
 		searchButton.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent e) {
 				refresh();
 			}
@@ -622,6 +623,7 @@ public class SearchView extends DockableView implements Module {
 		parent.addToolBarItem(new ImageIcon(getClass().getResource(
 				"/resource/Find16.gif")), getModuleName(),
 				new ActionListener() {
+					@Override
 					public void actionPerformed(ActionEvent evt) {
 						par.setView(ViewType.SEARCH);
 					}
@@ -642,7 +644,6 @@ public class SearchView extends DockableView implements Module {
 	 * 
 	 * @see net.sf.borg.ui.View#refresh()
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public void refresh() {
 
@@ -704,9 +705,9 @@ public class SearchView extends DockableView implements Module {
 			}
 		}
 
-		Collection<KeyedEntity> taskItems = TaskModel.getReference().search(
+		Collection<KeyedEntity<?>> taskItems = TaskModel.getReference().search(
 				criteria);
-		for (KeyedEntity item : taskItems) {
+		for (KeyedEntity<?> item : taskItems) {
 			Object[] ro = new Object[5];
 
 			try {
@@ -766,7 +767,6 @@ public class SearchView extends DockableView implements Module {
 	 * 
 	 * @throws Exception
 	 */
-	@SuppressWarnings("unchecked")
 	private void showSelectedItem() throws Exception {
 
 		// get the selected row
@@ -777,7 +777,7 @@ public class SearchView extends DockableView implements Module {
 		TableSorter tm = (TableSorter) resultsTable.getModel();
 
 		int key = ((Integer) tm.getValueAt(row, 3)).intValue();
-		Class cl = (Class) tm.getValueAt(row, 4);
+		Class<?> cl = (Class<?>) tm.getValueAt(row, 4);
 		if (cl == Appointment.class) {
 			Appointment ap = AppointmentModel.getReference().getAppt(key);
 			if (ap == null) {

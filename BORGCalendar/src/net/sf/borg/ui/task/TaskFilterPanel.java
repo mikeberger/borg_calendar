@@ -107,6 +107,7 @@ public class TaskFilterPanel extends JPanel {
 		setStatuses();
 		statusSelector
 				.addActionListener(new java.awt.event.ActionListener() {
+					@Override
 					public void actionPerformed(
 							java.awt.event.ActionEvent evt) {
 						refresh();
@@ -124,6 +125,7 @@ public class TaskFilterPanel extends JPanel {
 		loadProjectBox();
 		projectSelector
 				.addActionListener(new java.awt.event.ActionListener() {
+					@Override
 					public void actionPerformed(
 							java.awt.event.ActionEvent evt) {
 						refresh();
@@ -140,6 +142,7 @@ public class TaskFilterPanel extends JPanel {
 				"/resource/Find16.gif")));
 		ResourceHelper.setText(filterButton, "Filter:");
 		filterButton.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				refresh();
 

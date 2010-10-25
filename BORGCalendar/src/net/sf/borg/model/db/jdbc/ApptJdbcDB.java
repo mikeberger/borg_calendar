@@ -67,6 +67,7 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
     /* (non-Javadoc)
      * @see net.sf.borg.model.db.EntityDB#addObj(net.sf.borg.model.entity.KeyedEntity)
      */
+    @Override
     public void addObj(Appointment appt) throws Exception
     {
         PreparedStatement stmt = connection_.prepareStatement( "INSERT INTO appointments (appt_date, appt_num, duration, text, skip_list," +
@@ -115,6 +116,7 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
     /* (non-Javadoc)
      * @see net.sf.borg.model.db.EntityDB#delete(int)
      */
+    @Override
     public void delete(int key) throws Exception
     {
         PreparedStatement stmt = connection_.prepareStatement( "DELETE FROM appointments WHERE appt_num = ?" );
@@ -148,6 +150,7 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
     /* (non-Javadoc)
      * @see net.sf.borg.model.db.AppointmentDB#getTodoKeys()
      */
+    @Override
     public Collection<Integer> getTodoKeys() throws Exception
     {
         ArrayList<Integer> keys = new ArrayList<Integer>();
@@ -165,6 +168,7 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
     /* (non-Javadoc)
      * @see net.sf.borg.model.db.AppointmentDB#getRepeatKeys()
      */
+    @Override
     public Collection<Integer> getRepeatKeys() throws Exception
     {
         ArrayList<Integer> keys = new ArrayList<Integer>();
@@ -182,6 +186,7 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
     /* (non-Javadoc)
      * @see net.sf.borg.model.db.EntityDB#nextkey()
      */
+    @Override
     public int nextkey() throws Exception
     {
        PreparedStatement stmt = connection_.prepareStatement("SELECT MAX(appt_num) FROM appointments");
@@ -195,6 +200,7 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
     /* (non-Javadoc)
      * @see net.sf.borg.model.db.EntityDB#newObj()
      */
+    @Override
     public Appointment newObj()
     {
         return( new Appointment() );
@@ -259,6 +265,7 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
     /* (non-Javadoc)
      * @see net.sf.borg.model.db.EntityDB#updateObj(net.sf.borg.model.entity.KeyedEntity)
      */
+    @Override
     public void updateObj(Appointment appt) throws Exception
     {
         PreparedStatement stmt = connection_.prepareStatement( "UPDATE appointments SET  appt_date = ?, " +

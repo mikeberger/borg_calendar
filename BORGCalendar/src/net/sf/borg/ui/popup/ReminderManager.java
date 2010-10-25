@@ -61,6 +61,7 @@ public abstract class ReminderManager implements Model.Listener {
 
 	/** runnable task that checks if we need to pop up any popups */
 	final Runnable doPopupChk = new Runnable() {
+		@Override
 		public void run() {
 			checkPopups();
 		}
@@ -247,6 +248,7 @@ public abstract class ReminderManager implements Model.Listener {
 	 * In particular, clean up any popups that should no longer be shown because
 	 * of model changes.
 	 */
+	@Override
 	abstract public void refresh();
 
 	/**

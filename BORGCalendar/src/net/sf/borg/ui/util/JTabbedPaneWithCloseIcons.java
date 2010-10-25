@@ -88,6 +88,7 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 		 * 
 		 * @see javax.swing.Icon#getIconHeight()
 		 */
+		@Override
 		public int getIconHeight() {
 			return ICON_WIDTH;
 		}
@@ -97,6 +98,7 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 		 * 
 		 * @see javax.swing.Icon#getIconWidth()
 		 */
+		@Override
 		public int getIconWidth() {
 			return width;
 		}
@@ -216,6 +218,7 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 		 * @see javax.swing.Icon#paintIcon(java.awt.Component,
 		 * java.awt.Graphics, int, int)
 		 */
+		@Override
 		public void paintIcon(Component c, Graphics g, int x, int y) {
 			this.x_pos = x;
 			this.y_pos = y;
@@ -323,6 +326,7 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 	 * @param e
 	 *            the e
 	 */
+	@Override
 	public void mouseClicked(MouseEvent e) {
 		// check is mouse is on a tab
 		int tabNumber = getUI().tabForCoordinate(this, e.getX(), e.getY());
@@ -361,6 +365,7 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 	 * 
 	 * @see java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
 	 */
+	@Override
 	public void mouseEntered(MouseEvent e) {
 		mouseMoved(e);
 		lastMouseEvent = e;
@@ -371,6 +376,7 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 	 * 
 	 * @see java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
 	 */
+	@Override
 	public void mouseExited(MouseEvent e) {
 		mouseMoved(e);
 		lastMouseEvent = e;
@@ -401,6 +407,7 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 	 * 
 	 * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
 	 */
+	@Override
 	public void mousePressed(MouseEvent e) {
 		lastMouseEvent = e;
 	}
@@ -411,6 +418,7 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 	 * @see
 	 * java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
 	 */
+	@Override
 	public void mouseReleased(MouseEvent e) {
 		lastMouseEvent = e;
 	}

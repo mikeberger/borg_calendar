@@ -103,7 +103,6 @@ public class NoteBox extends Box implements Box.Draggable {
 	 * @param clip
 	 *            clip
 	 */
-	@SuppressWarnings("unchecked")
 	public NoteBox(Date d, CalendarEntity ap, Rectangle bounds, Rectangle clip) {
 		super(bounds, clip);
 		bean = ap;
@@ -124,7 +123,7 @@ public class NoteBox extends Box implements Box.Draggable {
 		// set the link flag
 		Collection<Link> atts;
 		try {
-			atts = LinkModel.getReference().getLinks((KeyedEntity) bean);
+			atts = LinkModel.getReference().getLinks((KeyedEntity<?>) bean);
 			if (atts != null && atts.size() > 0)
 				hasLink = true;
 		} catch (Exception e) {
@@ -278,6 +277,7 @@ public class NoteBox extends Box implements Box.Draggable {
 			popmenu.add(mnuitm = new JMenuItem(Resource
 					.getResourceString("Edit")));
 			mnuitm.addActionListener(new ActionListener() {
+				@Override
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
 					onClick();
 				}
@@ -285,6 +285,7 @@ public class NoteBox extends Box implements Box.Draggable {
 			popmenu.add(mnuitm = new JMenuItem(Resource
 					.getResourceString("Delete")));
 			mnuitm.addActionListener(new ActionListener() {
+				@Override
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
 					delete();
 				}
@@ -294,6 +295,7 @@ public class NoteBox extends Box implements Box.Draggable {
 				popmenu.add(mnuitm = new JMenuItem(Resource
 						.getResourceString("Done_(No_Delete)")));
 				mnuitm.addActionListener(new ActionListener() {
+					@Override
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						try {
 							AppointmentModel.getReference().do_todo(
@@ -307,6 +309,7 @@ public class NoteBox extends Box implements Box.Draggable {
 				popmenu.add(mnuitm = new JMenuItem(Resource
 						.getResourceString("Done_(Delete)")));
 				mnuitm.addActionListener(new ActionListener() {
+					@Override
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						try {
 							AppointmentModel.getReference().do_todo(
@@ -323,6 +326,7 @@ public class NoteBox extends Box implements Box.Draggable {
 				popmenu.add(mnuitm = new JMenuItem(Resource
 						.getResourceString("Delete_One_Only")));
 				mnuitm.addActionListener(new ActionListener() {
+					@Override
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						try {
 							AppointmentModel.getReference().delOneOnly(
@@ -370,6 +374,7 @@ public class NoteBox extends Box implements Box.Draggable {
 	/**
 	 * react to a drag of this box on the UI
 	 */
+	@Override
 	public void move(int realtime, Date d) throws Exception {
 
 		if (bean instanceof Appointment) {

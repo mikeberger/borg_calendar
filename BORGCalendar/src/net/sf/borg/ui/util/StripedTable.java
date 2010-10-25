@@ -49,6 +49,7 @@ public class StripedTable extends JTable {
 			setOpaque(true); // MUST do this for background to show up.
 		}
 
+		@Override
 		public Component getTableCellRendererComponent(JTable table,
 				Object obj, boolean isSelected, boolean hasFocus, int row,
 				int column) {

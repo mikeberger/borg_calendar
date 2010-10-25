@@ -381,6 +381,7 @@ public class YearPanel extends JPanel implements Printable, CalendarModule {
 		/**
 		 * get navigator label
 		 */
+		@Override
 		public String getNavLabel() {
 			SimpleDateFormat df = new SimpleDateFormat("yyyy");
 			Calendar cal = new GregorianCalendar(year_, Calendar.JANUARY, 1);
@@ -390,6 +391,7 @@ public class YearPanel extends JPanel implements Printable, CalendarModule {
 		/**
 		 * goto a particular year
 		 */
+		@Override
 		public void goTo(Calendar cal) {
 			year_ = cal.get(Calendar.YEAR);
 			clearData();
@@ -399,6 +401,7 @@ public class YearPanel extends JPanel implements Printable, CalendarModule {
 		/**
 		 * go forward or back 1 year based on mouse wheel
 		 */
+		@Override
 		public void mouseWheelMoved(MouseWheelEvent e) {
 			if (e.getWheelRotation() > 0) {
 				next();
@@ -413,6 +416,7 @@ public class YearPanel extends JPanel implements Printable, CalendarModule {
 		/**
 		 * navigate forward 1 year
 		 */
+		@Override
 		public void next() {
 			year_++;
 			clearData();
@@ -437,6 +441,7 @@ public class YearPanel extends JPanel implements Printable, CalendarModule {
 		/**
 		 * react to prefs changed - reload and redraw
 		 */
+		@Override
 		public void prefsChanged() {
 			clearData();
 			repaint();
@@ -446,6 +451,7 @@ public class YearPanel extends JPanel implements Printable, CalendarModule {
 		/**
 		 * navigate back 1 year
 		 */
+		@Override
 		public void prev() {
 			year_--;
 			clearData();
@@ -455,6 +461,7 @@ public class YearPanel extends JPanel implements Printable, CalendarModule {
 		/**
 		 * draw the UI for printing
 		 */
+		@Override
 		public int print(Graphics g, PageFormat pageFormat, int pageIndex) throws PrinterException {
 
 			if (pageIndex > 0)
@@ -480,6 +487,7 @@ public class YearPanel extends JPanel implements Printable, CalendarModule {
 		/**
 		 * navigate to the current year
 		 */
+		@Override
 		public void today() {
 			GregorianCalendar cal = new GregorianCalendar();
 			year_ = cal.get(Calendar.YEAR);
@@ -515,6 +523,7 @@ public class YearPanel extends JPanel implements Printable, CalendarModule {
 	/**
 	 * goto a particular year
 	 */
+	@Override
 	public void goTo(Calendar cal) {
 		yearPanel.goTo(cal);
 		nav.setLabel(yearPanel.getNavLabel());
@@ -523,6 +532,7 @@ public class YearPanel extends JPanel implements Printable, CalendarModule {
 	/**
 	 * draw for printing
 	 */
+	@Override
 	public int print(Graphics arg0, PageFormat arg1, int arg2) throws PrinterException {
 		return yearPanel.print(arg0, arg1, arg2);
 	}
@@ -543,6 +553,7 @@ public class YearPanel extends JPanel implements Printable, CalendarModule {
 		parent.addToolBarItem(new ImageIcon(getClass().getResource(
 		"/resource/year.jpg")), getModuleName(), 
 		new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent evt) {
 				par.setView(ViewType.YEAR);
 			}

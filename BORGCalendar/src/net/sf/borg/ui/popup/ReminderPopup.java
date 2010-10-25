@@ -148,6 +148,7 @@ class ReminderPopup extends View {
 		ResourceHelper.setText(dismissButton, "Dismiss");
 		dismissButton.setActionCommand("close_it");
 		dismissButton.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent e) {
 				if (noMoreRemindersButton.isSelected()) {
 					reminderInstance.setHidden(true);
@@ -164,6 +165,7 @@ class ReminderPopup extends View {
 			JButton doneButton = new JButton();
 			ResourceHelper.setText(doneButton, "Done_(Delete)");
 			doneButton.addActionListener(new java.awt.event.ActionListener() {
+				@Override
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					try {
 						AppointmentModel.getReference().do_todo(
@@ -180,6 +182,7 @@ class ReminderPopup extends View {
 			ResourceHelper.setText(doneNoDeleteButton, "Done_(No_Delete)");
 			doneNoDeleteButton
 					.addActionListener(new java.awt.event.ActionListener() {
+						@Override
 						public void actionPerformed(java.awt.event.ActionEvent e) {
 							try {
 								AppointmentModel.getReference().do_todo(

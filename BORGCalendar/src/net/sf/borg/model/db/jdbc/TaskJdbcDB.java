@@ -44,6 +44,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
     /* (non-Javadoc)
      * @see net.sf.borg.model.db.EntityDB#addObj(net.sf.borg.model.entity.KeyedEntity)
      */
+    @Override
     public void addObj(Task task) throws Exception {
         PreparedStatement stmt = connection_
                 .prepareStatement("INSERT INTO tasks ( tasknum, start_date, due_date, person_assigned,"
@@ -92,6 +93,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
     /* (non-Javadoc)
      * @see net.sf.borg.model.db.EntityDB#delete(int)
      */
+    @Override
     public void delete(int key) throws Exception {
         PreparedStatement stmt = connection_.prepareStatement("DELETE FROM tasks WHERE tasknum = ?");
         stmt.setInt(1, key);
@@ -122,6 +124,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
     /* (non-Javadoc)
      * @see net.sf.borg.model.db.EntityDB#nextkey()
      */
+    @Override
     public int nextkey() throws Exception {
         PreparedStatement stmt = connection_.prepareStatement("SELECT MAX(tasknum) FROM tasks");
         ResultSet r = stmt.executeQuery();
@@ -134,6 +137,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
     /* (non-Javadoc)
      * @see net.sf.borg.model.db.EntityDB#newObj()
      */
+    @Override
     public Task newObj() {
         return (new Task());
     }
@@ -183,6 +187,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
     /* (non-Javadoc)
      * @see net.sf.borg.model.db.EntityDB#updateObj(net.sf.borg.model.entity.KeyedEntity)
      */
+    @Override
     public void updateObj(Task task) throws Exception {
         PreparedStatement stmt = connection_
                 .prepareStatement("UPDATE tasks SET  start_date = ?, due_date = ?, person_assigned = ?,"
@@ -253,6 +258,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
     /* (non-Javadoc)
      * @see net.sf.borg.model.db.TaskDB#getSubTasks(int)
      */
+    @Override
     public Collection<Subtask> getSubTasks(int taskid) throws SQLException {
         PreparedStatement stmt = connection_.prepareStatement("SELECT * from subtasks where task = ?");
         ResultSet r = null;
@@ -276,6 +282,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
     /* (non-Javadoc)
      * @see net.sf.borg.model.db.TaskDB#getSubTasks()
      */
+    @Override
     public Collection<Subtask> getSubTasks() throws SQLException {
         PreparedStatement stmt = connection_.prepareStatement("SELECT * from subtasks");
         ResultSet r = null;
@@ -299,6 +306,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
     /* (non-Javadoc)
      * @see net.sf.borg.model.db.TaskDB#getSubTask(int)
      */
+    @Override
     public Subtask getSubTask(int id) throws SQLException {
         PreparedStatement stmt = connection_.prepareStatement("SELECT * from subtasks WHERE id = ?");
         stmt.setInt(1, id);
@@ -321,6 +329,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
     /* (non-Javadoc)
      * @see net.sf.borg.model.db.TaskDB#deleteSubTask(int)
      */
+    @Override
     public void deleteSubTask(int id) throws SQLException {
         PreparedStatement stmt = connection_.prepareStatement("DELETE FROM subtasks WHERE id = ?");
         stmt.setInt(1, id);
@@ -331,6 +340,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
     /* (non-Javadoc)
      * @see net.sf.borg.model.db.TaskDB#addSubTask(net.sf.borg.model.entity.Subtask)
      */
+    @Override
     public void addSubTask(Subtask s) throws SQLException {
         PreparedStatement stmt = connection_.prepareStatement("INSERT INTO subtasks ( id, create_date, due_date,"
                 + " close_date, description, task ) VALUES " + "( ?, ?, ?, ?, ?, ?)");
@@ -364,6 +374,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
     /* (non-Javadoc)
      * @see net.sf.borg.model.db.TaskDB#updateSubTask(net.sf.borg.model.entity.Subtask)
      */
+    @Override
     public void updateSubTask(Subtask s) throws SQLException {
         PreparedStatement stmt = connection_.prepareStatement("UPDATE subtasks SET create_date = ?, due_date = ?,"
                 + " close_date = ?, description = ?, task = ?  WHERE id = ?");
@@ -397,6 +408,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
     /* (non-Javadoc)
      * @see net.sf.borg.model.db.TaskDB#nextSubTaskKey()
      */
+    @Override
     public int nextSubTaskKey() throws Exception {
         PreparedStatement stmt = connection_.prepareStatement("SELECT MAX(id) FROM subtasks");
         ResultSet r = stmt.executeQuery();
@@ -425,6 +437,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
     /* (non-Javadoc)
      * @see net.sf.borg.model.db.TaskDB#addLog(int, java.lang.String)
      */
+    @Override
     public void addLog(int taskid, String desc) throws SQLException {
         PreparedStatement stmt = connection_
                 .prepareStatement("INSERT INTO tasklog ( id, logtime, description, task ) VALUES " + "( ?, ?, ?, ?)");
@@ -442,6 +455,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
     /* (non-Javadoc)
      * @see net.sf.borg.model.db.TaskDB#saveLog(net.sf.borg.model.entity.Tasklog)
      */
+    @Override
     public void saveLog(Tasklog tlog) throws SQLException {
         PreparedStatement stmt = connection_
                 .prepareStatement("INSERT INTO tasklog ( id, logtime, description, task ) VALUES " + "( ?, ?, ?, ?)");
@@ -479,6 +493,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
     /* (non-Javadoc)
      * @see net.sf.borg.model.db.TaskDB#getLogs(int)
      */
+    @Override
     public Collection<Tasklog> getLogs(int taskid) throws SQLException {
         PreparedStatement stmt = connection_.prepareStatement("SELECT * from tasklog where task = ?");
         ResultSet r = null;
@@ -505,6 +520,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
     /* (non-Javadoc)
      * @see net.sf.borg.model.db.TaskDB#getLogs()
      */
+    @Override
     public Collection<Tasklog> getLogs() throws SQLException {
         PreparedStatement stmt = connection_.prepareStatement("SELECT * from tasklog");
         ResultSet r = null;
@@ -529,6 +545,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
     /* (non-Javadoc)
      * @see net.sf.borg.model.db.TaskDB#addProject(net.sf.borg.model.entity.Project)
      */
+    @Override
     public void addProject(Project p) throws SQLException {
         PreparedStatement stmt = connection_.prepareStatement("INSERT INTO projects ( id,start_date, due_date,"
                 + " description, category, status, parent ) VALUES " + "( ?, ?, ?, ?, ?, ?, ?)");
@@ -562,6 +579,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
     /* (non-Javadoc)
      * @see net.sf.borg.model.db.TaskDB#deleteProject(int)
      */
+    @Override
     public void deleteProject(int id) throws SQLException {
         PreparedStatement stmt = connection_.prepareStatement("DELETE FROM projects WHERE id = ?");
         stmt.setInt(1, id);
@@ -572,6 +590,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
     /* (non-Javadoc)
      * @see net.sf.borg.model.db.TaskDB#getProject(int)
      */
+    @Override
     public Project getProject(int projectid) throws SQLException {
         PreparedStatement stmt = connection_.prepareStatement("SELECT * FROM projects WHERE id = ?");
         stmt.setInt(1, projectid);
@@ -595,6 +614,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
     /* (non-Javadoc)
      * @see net.sf.borg.model.db.TaskDB#getProjects()
      */
+    @Override
     public Collection<Project> getProjects() throws SQLException {
         PreparedStatement stmt = connection_.prepareStatement("SELECT * from projects");
         ResultSet r = null;
@@ -619,6 +639,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
     /* (non-Javadoc)
      * @see net.sf.borg.model.db.TaskDB#getTasks(int)
      */
+    @Override
     public Collection<Task> getTasks(int projectid) throws SQLException {
         PreparedStatement stmt = connection_.prepareStatement("SELECT * from tasks where project = ?");
         ResultSet r = null;
@@ -644,6 +665,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
     /* (non-Javadoc)
      * @see net.sf.borg.model.db.TaskDB#getSubProjects(int)
      */
+    @Override
     public Collection<Project> getSubProjects(int projectid) throws SQLException {
         PreparedStatement stmt = connection_
                 .prepareStatement("SELECT * from projects where parent = ? ORDER BY start_date");
@@ -670,6 +692,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
     /* (non-Javadoc)
      * @see net.sf.borg.model.db.TaskDB#nextProjectKey()
      */
+    @Override
     public int nextProjectKey() throws Exception {
         PreparedStatement stmt = connection_.prepareStatement("SELECT MAX(id) FROM projects");
         ResultSet r = stmt.executeQuery();
@@ -682,6 +705,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
     /* (non-Javadoc)
      * @see net.sf.borg.model.db.TaskDB#updateProject(net.sf.borg.model.entity.Project)
      */
+    @Override
     public void updateProject(Project s) throws SQLException {
         PreparedStatement stmt = connection_.prepareStatement("UPDATE projects SET start_date = ?, due_date = ?,"
                 + " description = ?, category = ?, status = ?, parent = ?  WHERE id = ?");

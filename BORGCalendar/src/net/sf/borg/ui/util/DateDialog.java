@@ -116,6 +116,7 @@ public class DateDialog extends JDialog {
 		getRootPane().setDefaultButton(bn);
 		
 		bn.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				calendar = dateComboBox.getCalendar();
 				setVisible(false);
@@ -124,6 +125,7 @@ public class DateDialog extends JDialog {
 
 		pnlButtons.add(bn = new JButton(Resource.getResourceString("Cancel")));
 		ActionListener cancelListener = new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				calendar = null;
 				setVisible(false);

@@ -90,6 +90,7 @@ class SqlRunner extends JDialog {
 
 		runButton.setText("Run");
 		runButton.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				runbuttonActionPerformed();
 			}
@@ -102,6 +103,7 @@ class SqlRunner extends JDialog {
 				"/resource/Undo16.gif")));
 		clearButton.setText("Clear");
 		clearButton.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				editor.setText("");
 			}

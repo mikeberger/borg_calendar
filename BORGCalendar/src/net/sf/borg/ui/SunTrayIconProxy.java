@@ -51,6 +51,7 @@ class SunTrayIconProxy implements Prefs.Listener {
 
 	// action that opens the main view
 	private class OpenListener implements ActionListener {
+		@Override
 		public void actionPerformed(ActionEvent e) {
 			UIControl.toFront();
 		}
@@ -129,6 +130,7 @@ class SunTrayIconProxy implements Prefs.Listener {
 
 		item.addActionListener(new ActionListener() {
 
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				ReminderManager rm = ReminderManager.getReminderManager();
 				if( rm != null )
@@ -143,6 +145,7 @@ class SunTrayIconProxy implements Prefs.Listener {
 
 		item.addActionListener(new ActionListener() {
 
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				ReminderManager rm = ReminderManager.getReminderManager();
 				if( rm != null )
@@ -156,6 +159,7 @@ class SunTrayIconProxy implements Prefs.Listener {
 		item.setLabel(Resource.getResourceString("Options"));
 		item.addActionListener(new ActionListener() {
 
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				OptionsView.getReference().setVisible(true);
 			}
@@ -168,6 +172,7 @@ class SunTrayIconProxy implements Prefs.Listener {
 		item.setLabel(Resource.getResourceString("About"));
 		item.addActionListener(new ActionListener() {
 
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				MainMenu.AboutMIActionPerformed();
 			}
@@ -180,6 +185,7 @@ class SunTrayIconProxy implements Prefs.Listener {
 		item.setLabel(Resource.getResourceString("Exit"));
 		item.addActionListener(new ActionListener() {
 
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				UIControl.shutDownUI();
 			}
@@ -262,6 +268,7 @@ class SunTrayIconProxy implements Prefs.Listener {
 			@Override
 			public void run() {
 				SwingUtilities.invokeLater(new Runnable() {
+					@Override
 					public void run() {
 						updateImage();
 					}

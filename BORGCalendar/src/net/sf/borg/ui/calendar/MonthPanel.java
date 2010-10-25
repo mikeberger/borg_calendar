@@ -456,6 +456,7 @@ public class MonthPanel extends JPanel implements Printable, CalendarModule {
 		/**
 		 * get the navigator label
 		 */
+		@Override
 		public String getNavLabel() {
 			SimpleDateFormat df = new SimpleDateFormat("MMMM yyyy");
 			Calendar cal = new GregorianCalendar(year_, month_, 1);
@@ -465,6 +466,7 @@ public class MonthPanel extends JPanel implements Printable, CalendarModule {
 		/**
 		 * go to a particular month
 		 */
+		@Override
 		public void goTo(Calendar cal) {
 			year_ = cal.get(Calendar.YEAR);
 			month_ = cal.get(Calendar.MONTH);
@@ -475,6 +477,7 @@ public class MonthPanel extends JPanel implements Printable, CalendarModule {
 		/**
 		 * navigate forward or backward 1 month when mouse wheel moved
 		 */
+		@Override
 		public void mouseWheelMoved(MouseWheelEvent e) {
 			if (e.getWheelRotation() > 0) {
 				next();
@@ -489,6 +492,7 @@ public class MonthPanel extends JPanel implements Printable, CalendarModule {
 		/**
 		 * navigate forward 1 month
 		 */
+		@Override
 		public void next() {
 			GregorianCalendar cal = new GregorianCalendar(year_, month_, 1, 23,
 					59);
@@ -516,6 +520,7 @@ public class MonthPanel extends JPanel implements Printable, CalendarModule {
 		/**
 		 * reload and redraw if prefs changed
 		 */
+		@Override
 		public void prefsChanged() {
 			clearData();
 			repaint();
@@ -525,6 +530,7 @@ public class MonthPanel extends JPanel implements Printable, CalendarModule {
 		/**
 		 * navigate backwards 1 month
 		 */
+		@Override
 		public void prev() {
 			GregorianCalendar cal = new GregorianCalendar(year_, month_, 1, 23,
 					59);
@@ -538,6 +544,7 @@ public class MonthPanel extends JPanel implements Printable, CalendarModule {
 		/**
 		 * draw to Graphics for printing
 		 */
+		@Override
 		public int print(Graphics g, PageFormat pageFormat, int pageIndex)
 				throws PrinterException {
 
@@ -562,6 +569,7 @@ public class MonthPanel extends JPanel implements Printable, CalendarModule {
 		/**
 		 * go to current month
 		 */
+		@Override
 		public void today() {
 			GregorianCalendar cal = new GregorianCalendar();
 			year_ = cal.get(Calendar.YEAR);
@@ -605,6 +613,7 @@ public class MonthPanel extends JPanel implements Printable, CalendarModule {
 	/**
 	 * go to a particular month
 	 */
+	@Override
 	public void goTo(Calendar cal) {
 		monthSubPanel.goTo(cal);
 		nav.setLabel(monthSubPanel.getNavLabel());
@@ -613,6 +622,7 @@ public class MonthPanel extends JPanel implements Printable, CalendarModule {
 	/**
 	 * print month to a Graphics
 	 */
+	@Override
 	public int print(Graphics arg0, PageFormat arg1, int arg2)
 			throws PrinterException {
 		return monthSubPanel.print(arg0, arg1, arg2);
@@ -639,6 +649,7 @@ public class MonthPanel extends JPanel implements Printable, CalendarModule {
 		parent.addToolBarItem(new ImageIcon(getClass().getResource(
 		"/resource/month.jpg")), getModuleName(), 
 		new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent evt) {
 				par.setView(ViewType.MONTH);
 			}

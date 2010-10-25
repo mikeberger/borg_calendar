@@ -103,6 +103,7 @@ public class AppointmentListView extends DockableView implements
 		/**
 		 * render the cell
 		 */
+		@Override
 		public Component getTableCellRendererComponent(JTable table,
 				Object obj, boolean isSelected, boolean hasFocus, int row,
 				int column) {
@@ -306,6 +307,7 @@ public class AppointmentListView extends DockableView implements
 			copyButton.setIcon(new ImageIcon(getClass().getResource(
 					"/resource/Copy16.gif")));
 			copyButton.addActionListener(new java.awt.event.ActionListener() {
+				@Override
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					copyAppt();
 				}
@@ -326,6 +328,7 @@ public class AppointmentListView extends DockableView implements
 			dateChooser.addPropertyChangeListener("date",
 					new PropertyChangeListener() {
 
+						@Override
 						public void propertyChange(PropertyChangeEvent arg0) {
 							Calendar cal = dateChooser.getCalendar();
 							if (cal != null) {
@@ -363,6 +366,7 @@ public class AppointmentListView extends DockableView implements
 		exitMenuItem.setBackground(fileMenu.getBackground());
 		ResourceHelper.setText(exitMenuItem, "Close");
 		exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				remove();
 			}
@@ -387,6 +391,7 @@ public class AppointmentListView extends DockableView implements
 					"/resource/ComposeMail16.gif")));
 			reminderButton
 					.addActionListener(new java.awt.event.ActionListener() {
+						@Override
 						public void actionPerformed(
 								java.awt.event.ActionEvent evt) {
 							class MailThread extends Thread {
@@ -407,6 +412,7 @@ public class AppointmentListView extends DockableView implements
 										final Exception fe = e;
 										SwingUtilities
 												.invokeLater(new Runnable() {
+													@Override
 													public void run() {
 														Errmsg.errmsg(fe);
 													}
@@ -498,6 +504,7 @@ public class AppointmentListView extends DockableView implements
 				"/resource/Edit16.gif")));
 		ResourceHelper.setText(addButton, "EditNew");
 		addButton.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				apptTable.clearSelection();
 				appointmentPanel.showapp(-1, null);
@@ -513,6 +520,7 @@ public class AppointmentListView extends DockableView implements
 		deleteButton.setToolTipText(Resource.getResourceString("del_tip"));
 
 		ActionListener alDel = new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				int[] keys = getSelectedKeys();
 				AppointmentModel model = AppointmentModel.getReference();
@@ -530,6 +538,7 @@ public class AppointmentListView extends DockableView implements
 		deleteOneOnlyButton.setToolTipText(Resource
 				.getResourceString("doo_tip"));
 		ActionListener alDelOne = new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				int[] keys = getSelectedKeys();
 				AppointmentModel model = AppointmentModel.getReference();
@@ -541,12 +550,14 @@ public class AppointmentListView extends DockableView implements
 		deleteOneOnlyButton.addActionListener(alDelOne);
 
 		ActionListener alMoveToFollowingDay = new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				onMoveToFollowingDay(getSelectedAppointments());
 			}
 		};
 
 		ActionListener alChangeDate = new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				onChangeDate(getSelectedAppointments());
 			}
@@ -700,6 +711,7 @@ public class AppointmentListView extends DockableView implements
 	/**
 	 * react to ListSelectionEvents
 	 */
+	@Override
 	public void valueChanged(ListSelectionEvent e) {
 		// Ignore extra messages.
 		if (e.getValueIsAdjusting())

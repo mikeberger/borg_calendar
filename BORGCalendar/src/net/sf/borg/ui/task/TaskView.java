@@ -100,6 +100,7 @@ public class TaskView extends DockableView {
 			setOpaque(true); // MUST do this for background to show up.
 		}
 
+		@Override
 		public Component getTableCellRendererComponent(JTable table,
 				Object obj, boolean isSelected, boolean hasFocus, int row,
 				int column) {
@@ -131,6 +132,7 @@ public class TaskView extends DockableView {
 			setOpaque(true); // MUST do this for background to show up.
 		}
 
+		@Override
 		public Component getTableCellRendererComponent(JTable table,
 				Object obj, boolean isSelected, boolean hasFocus, int row,
 				int column) {
@@ -207,6 +209,7 @@ public class TaskView extends DockableView {
 		 * javax.swing.table.TableCellRenderer#getTableCellRendererComponent
 		 * (javax.swing.JTable, java.lang.Object, boolean, boolean, int, int)
 		 */
+		@Override
 		public Component getTableCellRendererComponent(JTable table,
 				Object obj, boolean isSelected, boolean hasFocus, int row,
 				int column) {
@@ -423,6 +426,7 @@ public class TaskView extends DockableView {
 		ResourceHelper.setText(theMenu, "Menu");
 		ResourceHelper.setText(saveMenuItem, "Save");
 		saveMenuItem.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent evt) {
 				savetask();
 			}
@@ -654,6 +658,7 @@ public class TaskView extends DockableView {
 				"/resource/Save16.gif")));
 		ResourceHelper.setText(savebutton, "Save");
 		savebutton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent evt) {
 				savetask();
 			}
@@ -666,6 +671,7 @@ public class TaskView extends DockableView {
 				"/resource/Add16.gif")));
 		ResourceHelper.setText(addst, "Add_Subtask");
 		addst.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent evt) {
 				insertSubtask();
 			}
@@ -704,6 +710,7 @@ public class TaskView extends DockableView {
 		new PopupMenuHelper(logtable,
 				new PopupMenuHelper.Entry[] { new PopupMenuHelper.Entry(
 						new ActionListener() {
+							@Override
 							public void actionPerformed(ActionEvent evt) {
 
 								String tasknum = taskIdText.getText();
@@ -780,11 +787,13 @@ public class TaskView extends DockableView {
 		// popup menu
 		new PopupMenuHelper(subTaskTable, new PopupMenuHelper.Entry[] {
 				new PopupMenuHelper.Entry(new ActionListener() {
+					@Override
 					public void actionPerformed(ActionEvent evt) {
 						insertSubtask();
 					}
 				}, "Add_Subtask"),
 				new PopupMenuHelper.Entry(new ActionListener() {
+					@Override
 					public void actionPerformed(ActionEvent evt) {
 
 						TableSorter ts2 = (TableSorter) subTaskTable.getModel();
@@ -806,6 +815,7 @@ public class TaskView extends DockableView {
 					}
 				}, "Clear_DueDate"),
 				new PopupMenuHelper.Entry(new ActionListener() {
+					@Override
 					public void actionPerformed(ActionEvent evt) {
 
 						TableSorter ts2 = (TableSorter) subTaskTable.getModel();
@@ -841,6 +851,7 @@ public class TaskView extends DockableView {
 					}
 				}, "Set_DueDate"),
 				new PopupMenuHelper.Entry(new ActionListener() {
+					@Override
 					public void actionPerformed(ActionEvent evt) {
 
 						TableSorter ts2 = (TableSorter) subTaskTable.getModel();

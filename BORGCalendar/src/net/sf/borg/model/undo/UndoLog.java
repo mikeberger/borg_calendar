@@ -26,11 +26,10 @@ import java.util.Stack;
 /**
  * The UndoLog. This class maintains a stack of items that can be undone.
  */
-@SuppressWarnings("unchecked")
 public class UndoLog {
 
 	/** The undo stack. */
-	private Stack<UndoItem> undoStack = new Stack<UndoItem>();
+	private Stack<UndoItem<?>> undoStack = new Stack<UndoItem<?>>();
 	
 	/** The singleton. */
 	private static UndoLog singleton = new UndoLog();
@@ -58,7 +57,7 @@ public class UndoLog {
 	 * 
 	 * @param item the item
 	 */
-	public void addItem(UndoItem item)
+	public void addItem(UndoItem<?> item)
 	{
 		undoStack.push(item);
 	}
@@ -83,7 +82,7 @@ public class UndoLog {
 	public Collection<String> getItemStrings()
 	{
 		List<String> strings = new ArrayList<String>();
-		for( UndoItem item : undoStack )
+		for( UndoItem<?> item : undoStack )
 		{
 			strings.add(0, item.getDescription());
 		}
@@ -97,7 +96,7 @@ public class UndoLog {
 	{
 		if( !undoStack.empty())
 		{
-			UndoItem item = undoStack.pop();
+			UndoItem<?> item = undoStack.pop();
 			item.executeUndo();
 		}
 	}
@@ -115,7 +114,7 @@ public class UndoLog {
 	 * 
 	 * @return - the undo Stack
 	 */
-	Stack<UndoItem> getItems(){
+	Stack<UndoItem<?>> getItems(){
 		return undoStack;
 	}
 	
@@ -124,7 +123,7 @@ public class UndoLog {
 	 * 
 	 * @return the undo item
 	 */
-	UndoItem pop()
+	UndoItem<?> pop()
 	{
 		return undoStack.pop();
 	}

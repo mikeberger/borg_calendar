@@ -313,6 +313,7 @@ public class AddrListView extends DockableView implements Module {
 		printList.setIcon(new ImageIcon(getClass().getResource(
 				"/resource/Print16.gif")));
 		printList.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				try {
 					TablePrinter.printTable(addressTable);
@@ -328,6 +329,7 @@ public class AddrListView extends DockableView implements Module {
 		exitMenuItem.setIcon(new ImageIcon(getClass().getResource(
 				"/resource/Stop16.gif")));
 		exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				remove();
 			}
@@ -379,6 +381,7 @@ public class AddrListView extends DockableView implements Module {
 		ResourceHelper.setText(newbutton, "Add_New");
 		newbutton
 				.addActionListener(alAddNew = new java.awt.event.ActionListener() {
+					@Override
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						Address addr = AddressModel.getReference().newAddress();
 						addr.setKey(-1);
@@ -393,6 +396,7 @@ public class AddrListView extends DockableView implements Module {
 		ResourceHelper.setText(editbutton, "Edit");
 		editbutton
 				.addActionListener(alEdit = new java.awt.event.ActionListener() {
+					@Override
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						editRow();
 
@@ -406,6 +410,7 @@ public class AddrListView extends DockableView implements Module {
 		ResourceHelper.setText(delbutton, "Delete");
 		delbutton
 				.addActionListener(alDelete = new java.awt.event.ActionListener() {
+					@Override
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						delbuttonActionPerformed();
 					}
@@ -419,6 +424,7 @@ public class AddrListView extends DockableView implements Module {
 		ResourceHelper.setText(findbutton, "Find");
 		findbutton
 				.addActionListener(alFind = new java.awt.event.ActionListener() {
+					@Override
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						findbuttonActionPerformed();
 					}
@@ -498,6 +504,7 @@ public class AddrListView extends DockableView implements Module {
 		parent.addToolBarItem(new ImageIcon(getClass().getResource(
 				"/resource/addr16.jpg")), getModuleName(),
 				new ActionListener() {
+					@Override
 					public void actionPerformed(ActionEvent evt) {
 						par.setView(getViewType());
 					}

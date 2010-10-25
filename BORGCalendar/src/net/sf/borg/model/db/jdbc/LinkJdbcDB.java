@@ -39,6 +39,7 @@ public class LinkJdbcDB extends JdbcBeanDB<Link> implements LinkDB {
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.db.EntityDB#addObj(net.sf.borg.model.entity.KeyedEntity)
 	 */
+	@Override
 	public void addObj(Link att) throws 
 			Exception {
 		PreparedStatement stmt = connection_
@@ -61,6 +62,7 @@ public class LinkJdbcDB extends JdbcBeanDB<Link> implements LinkDB {
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.db.EntityDB#delete(int)
 	 */
+	@Override
 	public void delete(int key) throws Exception {
 		PreparedStatement stmt = connection_
 				.prepareStatement("DELETE FROM links WHERE id = ?");
@@ -93,6 +95,7 @@ public class LinkJdbcDB extends JdbcBeanDB<Link> implements LinkDB {
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.db.EntityDB#nextkey()
 	 */
+	@Override
 	public int nextkey() throws Exception {
 		PreparedStatement stmt = connection_
 				.prepareStatement("SELECT MAX(id) FROM links");
@@ -106,6 +109,7 @@ public class LinkJdbcDB extends JdbcBeanDB<Link> implements LinkDB {
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.db.EntityDB#newObj()
 	 */
+	@Override
 	public Link newObj() {
 		return (new Link());
 	}
@@ -148,6 +152,7 @@ public class LinkJdbcDB extends JdbcBeanDB<Link> implements LinkDB {
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.db.EntityDB#updateObj(net.sf.borg.model.entity.KeyedEntity)
 	 */
+	@Override
 	public void updateObj(Link att) throws 
 			Exception {
 
@@ -171,6 +176,7 @@ public class LinkJdbcDB extends JdbcBeanDB<Link> implements LinkDB {
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.db.LinkDB#getLinks(int, java.lang.String)
 	 */
+	@Override
 	public Collection<Link> getLinks(int ownerkey, String ownertype)
 			throws SQLException {
 		PreparedStatement stmt = connection_

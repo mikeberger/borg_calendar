@@ -59,6 +59,7 @@ public class ColorChooserButton extends JButton {
 		 * 
 		 * @see javax.swing.Icon#getIconHeight()
 		 */
+		@Override
 		public int getIconHeight() {
 			return height;
 		}
@@ -68,6 +69,7 @@ public class ColorChooserButton extends JButton {
 		 * 
 		 * @see javax.swing.Icon#getIconWidth()
 		 */
+		@Override
 		public int getIconWidth() {
 			return width;
 		}
@@ -78,6 +80,7 @@ public class ColorChooserButton extends JButton {
 		 * @see javax.swing.Icon#paintIcon(java.awt.Component,
 		 * java.awt.Graphics, int, int)
 		 */
+		@Override
 		public void paintIcon(Component c, Graphics g, int x, int y) {
 			Graphics2D g2 = (Graphics2D) g;
 			g2.setColor(Color.BLACK);
@@ -113,6 +116,7 @@ public class ColorChooserButton extends JButton {
 	}
 	
 	private class ModalListener implements ActionListener{
+		@Override
 		public void actionPerformed(ActionEvent event){
 			Color selected = JColorChooser.showDialog(
 				null, 

@@ -167,22 +167,14 @@ public class TaskUndoItem extends UndoItem<Task> {
 	 * 
 	 * @return the last task item
 	 */
-	@SuppressWarnings("unchecked")
-	/**
-	 * this method gets the last task undo item. It is called when a subtask is changed.
-	 * Subtasks are always changed during a task save. The way the task model is written,
-	 * the subtasks are updated after the task - so when the subtask undo items are created,
-	 * they need to find the last task item to be associted with. There is always a task undo item associated
-	 * with a subtask undo
-	 */
 	static TaskUndoItem getLastTaskItem()
 	{
-		Stack<UndoItem> items = UndoLog.getReference().getItems();
+		Stack<UndoItem<?>> items = UndoLog.getReference().getItems();
 		for( int idx = items.size() - 1; idx >= 0; idx-- )
 		{
-			UndoItem item = items.elementAt(idx);
-			if( item instanceof TaskUndoItem )
-				return (TaskUndoItem)item;
+			UndoItem<?> item = items.elementAt(idx);
+			if( TaskUndoItem.class.isInstance(item) )
+				return TaskUndoItem.class.cast(item);
 		}
 		
 		return null;

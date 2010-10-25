@@ -203,12 +203,14 @@ public class LinkPanel extends JPanel implements Model.Listener {
 		new PopupMenuHelper(linkTable, new PopupMenuHelper.Entry[] {
 		// open menu item
 				new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
+					@Override
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						openSelected();
 					}
 				}, "Open"),
 				// delete menu item
 				new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
+					@Override
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						TableSorter ts = (TableSorter) linkTable.getModel();
 						int[] indices = linkTable.getSelectedRows();
@@ -228,6 +230,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 				}, "Delete"),
 				// show link properties menu item
 				new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
+					@Override
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						TableSorter ts = (TableSorter) linkTable.getModel();
 						int[] indices = linkTable.getSelectedRows();
@@ -270,6 +273,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 		linkFilebutton.setIcon(new javax.swing.ImageIcon(getClass()
 				.getResource("/resource/Add16.gif")));
 		linkFilebutton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 
 				if (owningEntity == null || owningEntity.getKey() == -1) {
@@ -310,6 +314,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 		attachFileButton.setIcon(new javax.swing.ImageIcon(getClass()
 				.getResource("/resource/Copy16.gif")));
 		attachFileButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				if (owningEntity == null || owningEntity.getKey() == -1) {
 					Errmsg.notice(Resource.getResourceString("att_owner_null"));
@@ -349,6 +354,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 		urlLinkButton.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 				"/resource/WebComponent16.gif")));
 		urlLinkButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 
 				if (owningEntity == null || owningEntity.getKey() == -1) {
@@ -378,6 +384,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 		entityLinkbutton.setIcon(new javax.swing.ImageIcon(getClass()
 				.getResource("/resource/borg16.jpg")));
 		entityLinkbutton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 
 				if (owningEntity == null || owningEntity.getKey() == -1) {
@@ -594,6 +601,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 	/**
 	 * reload the data from the model and redisplay
 	 */
+	@Override
 	public void refresh() {
 
 		TableSorter tm = (TableSorter) linkTable.getModel();

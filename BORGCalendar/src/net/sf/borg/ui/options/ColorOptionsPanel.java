@@ -120,6 +120,7 @@ public class ColorOptionsPanel extends OptionsPanel {
 				.getResourceString("restore_defaults"));
 
 		btn_ucs_restore.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				btn_ucs_red.setColorProperty(new Color(
 						((Integer) PrefName.UCS_RED.getDefault()).intValue()));

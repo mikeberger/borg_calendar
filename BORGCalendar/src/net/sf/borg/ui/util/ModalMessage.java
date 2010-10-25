@@ -109,6 +109,7 @@ public class ModalMessage extends JDialog {
 		okButton = new JButton();
 		okButton.setText(Resource.getResourceString("OK"));
 		okButton.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent e) {
 				dispose();
 			}

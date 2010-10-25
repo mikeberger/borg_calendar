@@ -127,6 +127,7 @@ class InfoView extends DockableView implements Module {
 	@Override
 	public void initialize(MultiView parent) {
 		parent.addHelpMenuItem(null, getModuleName(), new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent evt) {
 				showView();
 			}

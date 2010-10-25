@@ -261,6 +261,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 				+ Resource.getResourceString("project"));
 		jm.addActionListener(new ActionListener() {
 
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
 					// show a new project editor
@@ -277,6 +278,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 		JMenuItem jmex = rootmenu.add(Resource.getResourceString("expand"));
 		jmex.addActionListener(new ActionListener() {
 
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				isExpanded = true;
 				expandOrCollapseAll(isExpanded);
@@ -286,6 +288,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 		JMenuItem jmcol = rootmenu.add(Resource.getResourceString("collapse"));
 		jmcol.addActionListener(new ActionListener() {
 
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				isExpanded = false;
 				expandOrCollapseAll(isExpanded);
@@ -300,6 +303,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 				+ Resource.getResourceString("task"));
 		jm2.addActionListener(new ActionListener() {
 
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				addTask();
 			}
@@ -309,6 +313,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 				+ Resource.getResourceString("project"));
 		jm3.addActionListener(new ActionListener() {
 
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				addSubProject();
 			}
@@ -316,12 +321,14 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 		});
 
 		showClosedCheckBox.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				refresh();
 			}
 		});
 
 		showClosedTasksCheckBox.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				refresh();
 			}
@@ -513,6 +520,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 	/**
 	 * handle right mouse click events and popup the appropriate menu
 	 */
+	@Override
 	public void mouseClicked(MouseEvent e) {
 		if (e.getButton() == MouseEvent.BUTTON1)
 			return;
@@ -547,6 +555,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 	 * 
 	 * @see java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
 	 */
+	@Override
 	public void mouseEntered(MouseEvent arg0) {
 		// empty
 	}
@@ -556,6 +565,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 	 * 
 	 * @see java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
 	 */
+	@Override
 	public void mouseExited(MouseEvent arg0) {
 		// empty
 	}
@@ -565,6 +575,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 	 * 
 	 * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
 	 */
+	@Override
 	public void mousePressed(MouseEvent e) {
 		// empty
 	}
@@ -575,6 +586,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 	 * @see
 	 * java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
 	 */
+	@Override
 	public void mouseReleased(MouseEvent arg0) {
 		// empty
 	}
@@ -582,6 +594,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 	/**
 	 * refresh the entire tree from the task model
 	 */
+	@Override
 	public void refresh() {
 		DefaultMutableTreeNode top = new DefaultMutableTreeNode(Resource
 				.getResourceString("projects"));
@@ -605,6 +618,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 	 * @param e
 	 *            the selection event
 	 */
+	@Override
 	public void valueChanged(TreeSelectionEvent e) {
 		Object o = getSelectedEntity();
 		if (o == null)

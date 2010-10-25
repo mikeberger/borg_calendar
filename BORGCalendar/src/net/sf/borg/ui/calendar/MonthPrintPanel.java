@@ -373,6 +373,7 @@ public class MonthPrintPanel extends JPanel implements Printable {
 	/**
 	 * print is called by the print service to print pages
 	 */
+	@Override
 	public int print(Graphics g, PageFormat pageFormat, int pageIndex)
 			throws PrinterException {
 

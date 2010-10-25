@@ -391,6 +391,7 @@ public class AddressView extends DockableView {
 				"/resource/Save16.gif")));
 		ResourceHelper.setText(saveButton, "Save");
 		saveButton.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				saveaddr();
 			}

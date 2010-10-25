@@ -487,6 +487,7 @@ public class DayPanel extends JPanel implements Printable, CalendarModule {
 		/**
 		 * return the navigator label
 		 */
+		@Override
 		public String getNavLabel() {
 			GregorianCalendar cal = new GregorianCalendar(year_, month_, date_,
 					23, 59);
@@ -498,6 +499,7 @@ public class DayPanel extends JPanel implements Printable, CalendarModule {
 		/**
 		 * show the given date
 		 */
+		@Override
 		public void goTo(Calendar cal) {
 			year_ = cal.get(Calendar.YEAR);
 			month_ = cal.get(Calendar.MONTH);
@@ -509,6 +511,7 @@ public class DayPanel extends JPanel implements Printable, CalendarModule {
 		/**
 		 * react to a mouse wheel event (navigate forward or back)
 		 */
+		@Override
 		public void mouseWheelMoved(MouseWheelEvent e) {
 			if (e.getWheelRotation() > 0) {
 				next();
@@ -523,6 +526,7 @@ public class DayPanel extends JPanel implements Printable, CalendarModule {
 		/**
 		 * advance 1 day
 		 */
+		@Override
 		public void next() {
 			GregorianCalendar cal = new GregorianCalendar(year_, month_, date_,
 					23, 59);
@@ -556,6 +560,7 @@ public class DayPanel extends JPanel implements Printable, CalendarModule {
 		 * reload and redraw if prefs change. some prefs change the grid size
 		 * and/or what items get shown
 		 */
+		@Override
 		public void prefsChanged() {
 			clearData();
 			repaint();
@@ -565,6 +570,7 @@ public class DayPanel extends JPanel implements Printable, CalendarModule {
 		/**
 		 * navigate backwards 1 day
 		 */
+		@Override
 		public void prev() {
 			GregorianCalendar cal = new GregorianCalendar(year_, month_, date_,
 					23, 59);
@@ -579,6 +585,7 @@ public class DayPanel extends JPanel implements Printable, CalendarModule {
 		/**
 		 * draw the UI into a Graphics for printing
 		 */
+		@Override
 		public int print(Graphics g, PageFormat pageFormat, int pageIndex)
 				throws PrinterException {
 			// only print 1 page
@@ -606,6 +613,7 @@ public class DayPanel extends JPanel implements Printable, CalendarModule {
 		/**
 		 * navigate to the current date
 		 */
+		@Override
 		public void today() {
 			GregorianCalendar cal = new GregorianCalendar();
 			year_ = cal.get(Calendar.YEAR);
@@ -653,6 +661,7 @@ public class DayPanel extends JPanel implements Printable, CalendarModule {
 	 * @param cal
 	 *            the date
 	 */
+	@Override
 	public void goTo(Calendar cal) {
 		dp_.goTo(cal);
 		nav.setLabel(dp_.getNavLabel());
@@ -664,6 +673,7 @@ public class DayPanel extends JPanel implements Printable, CalendarModule {
 	 * @see java.awt.print.Printable#print(java.awt.Graphics,
 	 * java.awt.print.PageFormat, int)
 	 */
+	@Override
 	public int print(Graphics arg0, PageFormat arg1, int arg2)
 			throws PrinterException {
 		return dp_.print(arg0, arg1, arg2);
@@ -684,6 +694,7 @@ public class DayPanel extends JPanel implements Printable, CalendarModule {
 		final MultiView par = parent;
 		parent.addToolBarItem(new ImageIcon(getClass().getResource(
 				"/resource/day.jpg")), getModuleName(), new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent evt) {
 				par.setView(ViewType.DAY);
 			}

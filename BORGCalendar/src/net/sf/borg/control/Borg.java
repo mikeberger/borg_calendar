@@ -183,6 +183,7 @@ public class Borg implements SocketHandler {
 	/**
 	 * process a socket message
 	 */
+	@Override
 	public synchronized String processMessage(String msg) {
 		// System.out.println("Got msg: " + msg);
 		if (msg.equals("sync")) {
@@ -201,6 +202,7 @@ public class Borg implements SocketHandler {
 		} else if (msg.startsWith("lock:")) {
 			final String lockmsg = msg.substring(5);
 			SwingUtilities.invokeLater(new Runnable() {
+				@Override
 				public void run() {
 					if (modalMessage == null || !modalMessage.isShowing()) {
 						modalMessage = new ModalMessage(lockmsg, false);
@@ -216,6 +218,7 @@ public class Borg implements SocketHandler {
 			return ("ok");
 		} else if (msg.equals("unlock")) {
 			SwingUtilities.invokeLater(new Runnable() {
+				@Override
 				public void run() {
 					if (modalMessage.isShowing()) {
 						modalMessage.setEnabled(true);
@@ -390,6 +393,7 @@ public class Borg implements SocketHandler {
 			// start the UI thread
 			final String traynm = trayname;
 			SwingUtilities.invokeLater(new Runnable() {
+				@Override
 				public void run() {
 					UIControl.startUI(traynm);
 				}
@@ -408,6 +412,7 @@ public class Borg implements SocketHandler {
 				} catch (Exception e) {
 					final Exception fe = e;
 					SwingUtilities.invokeLater(new Runnable() {
+						@Override
 						public void run() {
 							Errmsg.errmsg(fe);
 						}
@@ -427,6 +432,7 @@ public class Borg implements SocketHandler {
 					} catch (Exception e) {
 						final Exception fe = e;
 						SwingUtilities.invokeLater(new Runnable() {
+							@Override
 							public void run() {
 								Errmsg.errmsg(fe);
 							}
@@ -445,6 +451,7 @@ public class Borg implements SocketHandler {
 					@Override
 					public void run() {
 						SwingUtilities.invokeLater(new Runnable() {
+							@Override
 							public void run() {
 								try {
 									syncDBs();

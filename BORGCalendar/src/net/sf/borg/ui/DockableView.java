@@ -196,6 +196,7 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 			JMenuItem jmi = jm.add(Resource.getResourceString("dock"));
 			jmi.addActionListener(new ActionListener() {
 
+				@Override
 				public void actionPerformed(ActionEvent e) {
 					dock();
 				}
@@ -218,6 +219,7 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 
 		frame.setIconImage(image);
 		frame.getLayeredPane().registerKeyboardAction(new ActionListener() {
+			@Override
 			public final void actionPerformed(ActionEvent e) {
 				frame.dispose();
 			}
@@ -231,6 +233,7 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.Model.Listener#refresh()
 	 */
+	@Override
 	public abstract void refresh();
 
 	/* (non-Javadoc)

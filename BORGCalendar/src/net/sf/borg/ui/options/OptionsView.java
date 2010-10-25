@@ -220,6 +220,7 @@ public class OptionsView extends View {
 					"/resource/Save16.gif")));
 			ResourceHelper.setText(applyButton, "apply");
 			applyButton.addActionListener(new java.awt.event.ActionListener() {
+				@Override
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
 					applyChanges();
 				}
@@ -231,6 +232,7 @@ public class OptionsView extends View {
 			ResourceHelper.setText(dismissButton, "Dismiss");
 			dismissButton
 					.addActionListener(new java.awt.event.ActionListener() {
+						@Override
 						public void actionPerformed(
 								java.awt.event.ActionEvent evt) {
 							dispose();

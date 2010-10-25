@@ -67,6 +67,7 @@ public class FontOptionsPanel extends OptionsPanel {
 		ResourceHelper.setText(defFontButton, "set_def_font");
 		defFontButton.setBorder(new SoftBevelBorder(BevelBorder.RAISED));
 		defFontButton.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				fontActionPerformed(defaultFontText);
 			}
@@ -77,6 +78,7 @@ public class FontOptionsPanel extends OptionsPanel {
 		ResourceHelper.setText(apptFontButton, "set_appt_font");
 		apptFontButton.setBorder(new SoftBevelBorder(BevelBorder.RAISED));
 		apptFontButton.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				fontActionPerformed(monthFontText);
 			}
@@ -87,6 +89,7 @@ public class FontOptionsPanel extends OptionsPanel {
 		ResourceHelper.setText(dayFontButton, "dview_font");
 		dayFontButton.setBorder(new SoftBevelBorder(BevelBorder.RAISED));
 		dayFontButton.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				fontActionPerformed(dayFontText);
 			}
@@ -97,6 +100,7 @@ public class FontOptionsPanel extends OptionsPanel {
 		ResourceHelper.setText(weekFontButton, "wview_font");
 		weekFontButton.setBorder(new SoftBevelBorder(BevelBorder.RAISED));
 		weekFontButton.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				fontActionPerformed(weekFontText);
 			}
@@ -107,6 +111,7 @@ public class FontOptionsPanel extends OptionsPanel {
 		ResourceHelper.setText(printFontButton, "mview_font");
 		printFontButton.setBorder(new SoftBevelBorder(BevelBorder.RAISED));
 		printFontButton.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				fontActionPerformed(printFontText);
 			}

@@ -220,6 +220,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 		 * 
 		 * @see javax.swing.Icon#getIconHeight()
 		 */
+		@Override
 		public int getIconHeight() {
 			return height;
 		}
@@ -229,6 +230,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 		 * 
 		 * @see javax.swing.Icon#getIconWidth()
 		 */
+		@Override
 		public int getIconWidth() {
 			return width;
 		}
@@ -239,6 +241,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 		 * @see javax.swing.Icon#paintIcon(java.awt.Component,
 		 * java.awt.Graphics, int, int)
 		 */
+		@Override
 		public void paintIcon(Component c, Graphics g, int x, int y) {
 			Graphics2D g2 = (Graphics2D) g;
 			g2.setColor(Color.BLACK);
@@ -264,7 +267,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 
 	/** The change date action. */
 	private ActionListener changeDateAction = new ActionListener() {
-		@SuppressWarnings("unchecked")
+		@Override
 		public void actionPerformed(ActionEvent evt) {
 			AppointmentListView.onChangeDate(getSelectedItems(true));
 		}
@@ -272,6 +275,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 
 	/** The done delete action. */
 	private ActionListener doneDeleteAction = new ActionListener() {
+		@Override
 		public void actionPerformed(ActionEvent evt) {
 			doTodoAction(true);
 		}
@@ -279,6 +283,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 
 	/** The done no delete action. */
 	private ActionListener doneNoDeleteAction = new ActionListener() {
+		@Override
 		public void actionPerformed(ActionEvent evt) {
 			doTodoAction(false);
 		}
@@ -286,7 +291,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 
 	/** The move to following day action. */
 	private ActionListener moveToFollowingDayAction = new ActionListener() {
-		@SuppressWarnings("unchecked")
+		@Override
 		public void actionPerformed(ActionEvent evt) {
 			AppointmentListView.onMoveToFollowingDay(getSelectedItems(true));
 		}
@@ -459,11 +464,10 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 	 *            if true and it is an appointment, delete the appointment when
 	 *            all occurrences are done
 	 */
-	@SuppressWarnings("unchecked")
 	private void doTodoAction(boolean del) {
 
 		// get the selected items
-		List items = getSelectedItems(false);
+		List<Appointment> items = getSelectedItems(false);
 		for (int i = 0; i < items.size(); ++i) {
 			try {
 				// take different action depending on the entity type
@@ -560,6 +564,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 
 		ResourceHelper.setText(printListMenuItem, "Print_List");
 		printListMenuItem.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent evt) {
 				try {
 					TablePrinter.printTable(todoTable);
@@ -573,6 +578,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 
 		ResourceHelper.setText(exitMenuItem, "Exit");
 		exitMenuItem.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent evt) {
 				remove();
 			}
@@ -604,9 +610,8 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 	 * 
 	 * @return the selected items
 	 */
-	@SuppressWarnings("unchecked")
-	private List getSelectedItems(boolean appts_only) {
-		List<Object> lst = new ArrayList<Object>();
+	private List<Appointment> getSelectedItems(boolean appts_only) {
+		List<Appointment> lst = new ArrayList<Appointment>();
 		int[] indices = todoTable.getSelectedRows();
 		for (int i = 0; i < indices.length; ++i) {
 			int index = indices[i];
@@ -623,8 +628,9 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 					continue;
 
 				Object o = theTodoList.toArray()[k - 1];
-				if (!appts_only || o instanceof Appointment)
-					lst.add(o);
+				if (!appts_only || o instanceof Appointment) {
+					lst.add((Appointment)o);
+				}
 			} catch (Exception e) {
 				Errmsg.errmsg(e);
 			}
@@ -705,6 +711,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 				"/resource/Save16.gif")));
 		ResourceHelper.setText(addTodoButton, "Add");
 		addTodoButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent evt) {
 				addTodoActionPerformed();
 			}
@@ -769,6 +776,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 		// popup menu
 		// *******************************************************************
 		ActionListener alEdit = new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent evt) {
 				onEditTodo();
 			}
@@ -790,6 +798,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 		JButton doneButton = new JButton();
 		ResourceHelper.setText(doneButton, "Done_(No_Delete)");
 		doneButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				doTodoAction(false);
 			}
@@ -801,6 +810,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 		JButton doneDeleteButton = new JButton();
 		ResourceHelper.setText(doneDeleteButton, "Done_(Delete)");
 		doneDeleteButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				doTodoAction(true);
 			}
@@ -896,6 +906,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 	 * 
 	 * @see net.sf.borg.common.Prefs.Listener#prefsChanged()
 	 */
+	@Override
 	public void prefsChanged() {
 		user_colors = Prefs.getBoolPref(PrefName.UCS_ONTODO);
 		refresh();
@@ -907,6 +918,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 	 * @throws Exception
 	 *             the exception
 	 */
+	@Override
 	public void print() {
 		try {
 			TablePrinter.printTable(todoTable);
@@ -919,7 +931,6 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 	 * load todos from the model and show in the UI
 	 */
 	@Override
-	@SuppressWarnings("unchecked")
 	public void refresh() {
 
 		// get the todos from the data model
@@ -947,7 +958,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 		tm.tableChanged(new TableModelEvent(tm));
 
 		// add the todo appointment rows to the table
-		Iterator tdit = theTodoList.iterator();
+		Iterator<KeyedEntity<?>> tdit = theTodoList.iterator();
 		while (tdit.hasNext()) {
 			Appointment r = (Appointment) tdit.next();
 
@@ -1131,6 +1142,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 		parent.addToolBarItem(new ImageIcon(getClass().getResource(
 				"/resource/Properties16.gif")), getModuleName(),
 				new ActionListener() {
+					@Override
 					public void actionPerformed(ActionEvent evt) {
 						par.setView(getViewType());
 					}

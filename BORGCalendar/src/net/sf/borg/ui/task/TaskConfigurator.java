@@ -75,6 +75,7 @@ public class TaskConfigurator extends View {
 			setOpaque(true);
 		}
 
+		@Override
 		public Component getListCellRendererComponent(JList list, Object value,
 				int index, boolean isSelected, boolean cellHasFocus) {
 			setText(value.toString());
@@ -186,6 +187,7 @@ public class TaskConfigurator extends View {
 			JMenuItem addItem = new JMenuItem();
 			addItem.setText(Resource.getResourceString("Add"));
 			addItem.addActionListener(new ActionListener() {
+				@Override
 				public void actionPerformed(ActionEvent e) {
 					String subtask = JOptionPane
 							.showInputDialog(net.sf.borg.common.Resource
@@ -205,6 +207,7 @@ public class TaskConfigurator extends View {
 			changeSubtaskItem.setText(net.sf.borg.common.Resource
 					.getResourceString("Change"));
 			changeSubtaskItem.addActionListener(new ActionListener() {
+				@Override
 				public void actionPerformed(ActionEvent e) {
 
 					String subtask = JOptionPane
@@ -227,6 +230,7 @@ public class TaskConfigurator extends View {
 			JMenuItem deleteItem = new JMenuItem();
 			deleteItem.setText(Resource.getResourceString("Delete"));
 			deleteItem.addActionListener(new ActionListener() {
+				@Override
 				public void actionPerformed(ActionEvent e) {
 					if (subTaskList.getSelectedIndex() < 0)
 						return;
@@ -256,6 +260,7 @@ public class TaskConfigurator extends View {
 			addItem.setText(net.sf.borg.common.Resource
 					.getResourceString("Add"));
 			addItem.addActionListener(new ActionListener() {
+				@Override
 				public void actionPerformed(ActionEvent e) {
 					if (stateList.getSelectedIndex() < 0) {
 						JOptionPane
@@ -294,6 +299,7 @@ public class TaskConfigurator extends View {
 			deleteItem.setText(net.sf.borg.common.Resource
 					.getResourceString("Delete"));
 			deleteItem.addActionListener(new ActionListener() {
+				@Override
 				public void actionPerformed(ActionEvent e) {
 					if (nextStateList.getSelectedIndex() < 0) {
 						JOptionPane
@@ -331,6 +337,7 @@ public class TaskConfigurator extends View {
 			addItem.setText(net.sf.borg.common.Resource
 					.getResourceString("Add_State"));
 			addItem.addActionListener(new ActionListener() {
+				@Override
 				public void actionPerformed(ActionEvent e) {
 					if (typeList.getSelectedIndex() < 0) {
 						JOptionPane
@@ -359,6 +366,7 @@ public class TaskConfigurator extends View {
 			renameItem.setText(net.sf.borg.common.Resource
 					.getResourceString("Rename_State"));
 			renameItem.addActionListener(new ActionListener() {
+				@Override
 				public void actionPerformed(ActionEvent e) {
 					if (stateList.getSelectedIndex() < 0) {
 						JOptionPane
@@ -387,6 +395,7 @@ public class TaskConfigurator extends View {
 			deleteItem.setText(net.sf.borg.common.Resource
 					.getResourceString("Delete_State"));
 			deleteItem.addActionListener(new ActionListener() {
+				@Override
 				public void actionPerformed(ActionEvent e) {
 					if (stateList.getSelectedIndex() < 0) {
 						JOptionPane
@@ -432,6 +441,7 @@ public class TaskConfigurator extends View {
 			addItem.setText(net.sf.borg.common.Resource
 					.getResourceString("Add_Type"));
 			addItem.addActionListener(new ActionListener() {
+				@Override
 				public void actionPerformed(ActionEvent e) {
 					String newtype = JOptionPane
 							.showInputDialog(net.sf.borg.common.Resource
@@ -450,6 +460,7 @@ public class TaskConfigurator extends View {
 			renameItem.setText(net.sf.borg.common.Resource
 					.getResourceString("Rename_Type"));
 			renameItem.addActionListener(new ActionListener() {
+				@Override
 				public void actionPerformed(ActionEvent e) {
 					if (typeList.getSelectedIndex() < 0) {
 						JOptionPane
@@ -477,6 +488,7 @@ public class TaskConfigurator extends View {
 			deleteItem.setText(net.sf.borg.common.Resource
 					.getResourceString("Delete_Type"));
 			deleteItem.addActionListener(new ActionListener() {
+				@Override
 				public void actionPerformed(ActionEvent e) {
 					if (typeList.getSelectedIndex() < 0) {
 						JOptionPane
@@ -508,6 +520,7 @@ public class TaskConfigurator extends View {
 			initialStateItem.setText(net.sf.borg.common.Resource
 					.getResourceString("Set_Initial_State"));
 			initialStateItem.addActionListener(new ActionListener() {
+				@Override
 				public void actionPerformed(ActionEvent e) {
 					if (typeList.getSelectedIndex() < 0) {
 						JOptionPane
@@ -592,6 +605,7 @@ public class TaskConfigurator extends View {
 			}
 		});
 		typeList.addListSelectionListener(new ListSelectionListener() {
+			@Override
 			public void valueChanged(ListSelectionEvent e) {
 				typeSelectHandler();
 			}
@@ -631,6 +645,7 @@ public class TaskConfigurator extends View {
 			}
 		});
 		stateList.addListSelectionListener(new ListSelectionListener() {
+			@Override
 			public void valueChanged(ListSelectionEvent e) {
 				stateSelectHandler();
 			}
@@ -728,6 +743,7 @@ public class TaskConfigurator extends View {
 		JButton saveButton = new JButton();
 		ResourceHelper.setText(saveButton, "Save");
 		saveButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
 					TaskModel.getReference().saveTaskTypes(taskTypes);
@@ -743,6 +759,7 @@ public class TaskConfigurator extends View {
 		JButton dismissButton = new JButton();
 		ResourceHelper.setText(dismissButton, "Dismiss");
 		dismissButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
 					TaskConfigurator.getReference().dispose();

@@ -93,6 +93,7 @@ class MainMenu {
 				"/resource/Refresh16.gif")));
 		syncMI.setText(Resource.getResourceString("Synchronize"));
 		syncMI.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				try {
 					Borg.syncDBs();
@@ -108,6 +109,7 @@ class MainMenu {
 				"/resource/Refresh16.gif")));
 		ResourceHelper.setText(sqlMI, "RunSQL");
 		sqlMI.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				new SqlRunner().setVisible(true);
 			}
@@ -119,6 +121,7 @@ class MainMenu {
 				"/resource/Stop16.gif")));
 		exitMenuItem.setText(Resource.getResourceString("Exit"));
 		exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				UIControl.shutDownUI();
 			}
@@ -143,6 +146,7 @@ class MainMenu {
 		ResourceHelper.setText(editPrefsMenuItem, "ep");
 		editPrefsMenuItem
 				.addActionListener(new java.awt.event.ActionListener() {
+					@Override
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						OptionsView.getReference().setVisible(true);
 					}
@@ -154,6 +158,7 @@ class MainMenu {
 				"/resource/Export16.gif")));
 		ResourceHelper.setText(exportPrefsMI, "export_prefs");
 		exportPrefsMI.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				expPrefs();
 			}
@@ -165,6 +170,7 @@ class MainMenu {
 				"/resource/Import16.gif")));
 		ResourceHelper.setText(importPrefsMI, "import_prefs");
 		importPrefsMI.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				impPrefs();
 			}
@@ -179,6 +185,7 @@ class MainMenu {
 		JMenuItem resetst = new JMenuItem();
 		ResourceHelper.setText(edittypes, "edit_types");
 		edittypes.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				try {
 					TaskConfigurator.getReference().setVisible(true);
@@ -192,6 +199,7 @@ class MainMenu {
 
 		ResourceHelper.setText(resetst, "Reset_Task_States_to_Default");
 		resetst.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				resetstActionPerformed();
 			}
@@ -220,6 +228,7 @@ class MainMenu {
 		JMenuItem importMI = new JMenuItem();
 		ResourceHelper.setText(importMI, "impmenu");
 		importMI.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				importMIActionPerformed();
 			}
@@ -233,6 +242,7 @@ class MainMenu {
 		JMenuItem exportMI = new JMenuItem();
 		ResourceHelper.setText(exportMI, "expmenu");
 		exportMI.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				exportMIActionPerformed();
 			}
@@ -276,6 +286,7 @@ class MainMenu {
 		JMenuItem helpMI = new JMenuItem();
 		ResourceHelper.setText(helpMI, "Help");
 		helpMI.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				try {
 					HelpLauncher.launchHelp();
@@ -289,6 +300,7 @@ class MainMenu {
 		JMenuItem dbMI = new JMenuItem();
 		ResourceHelper.setText(dbMI, "DatabaseInformation");
 		dbMI.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				dbMIActionPerformed();
 			}
@@ -298,6 +310,7 @@ class MainMenu {
 		JMenuItem AboutMI = new JMenuItem();
 		ResourceHelper.setText(AboutMI, "About");
 		AboutMI.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				AboutMIActionPerformed();
 			}

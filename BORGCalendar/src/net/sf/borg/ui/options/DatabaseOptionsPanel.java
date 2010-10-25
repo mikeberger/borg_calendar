@@ -115,6 +115,7 @@ public class DatabaseOptionsPanel extends OptionsPanel {
 				"/resource/Refresh16.gif")));
 		ResourceHelper.setText(chgdb, "Apply_DB_Change");
 		chgdb.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				chgdbActionPerformed();
 			}
@@ -132,6 +133,7 @@ public class DatabaseOptionsPanel extends OptionsPanel {
 		ResourceHelper.setText(help, "Help");
 
 		help.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				try {
 					HelpLauncher.launchHelp();
@@ -236,6 +238,7 @@ public class DatabaseOptionsPanel extends OptionsPanel {
 			hsqldbButton.setActionCommand("hsqldb");
 			ResourceHelper.setText(hsqldbButton, "hsqldb");
 			hsqldbButton.addActionListener(new java.awt.event.ActionListener() {
+				@Override
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					dbTypeChange(e.getActionCommand());
 				}
@@ -247,6 +250,7 @@ public class DatabaseOptionsPanel extends OptionsPanel {
 			MySQLButton.setText("MySQL");
 			MySQLButton.setMnemonic(KeyEvent.VK_M);
 			MySQLButton.addActionListener(new java.awt.event.ActionListener() {
+				@Override
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					dbTypeChange(e.getActionCommand());
 				}
@@ -257,6 +261,7 @@ public class DatabaseOptionsPanel extends OptionsPanel {
 			jdbcButton.setActionCommand("jdbc");
 			ResourceHelper.setText(jdbcButton, "jdbc");
 			jdbcButton.addActionListener(new java.awt.event.ActionListener() {
+				@Override
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					dbTypeChange(e.getActionCommand());
 				}
@@ -295,6 +300,7 @@ public class DatabaseOptionsPanel extends OptionsPanel {
 		JButton hsb1 = new JButton();
 		ResourceHelper.setText(hsb1, "Browse");
 		hsb1.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				// browse for new database dir
 				String dbdir = OptionsPanel.chooseDir();

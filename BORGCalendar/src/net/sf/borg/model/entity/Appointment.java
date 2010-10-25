@@ -49,6 +49,7 @@ public class Appointment extends EncryptableEntity<Appointment> implements Calen
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.entity.CalendarEntity#getDate()
 	 */
+	@Override
 	public Date getDate() { return( Date ); }
 	
 	/**
@@ -65,6 +66,7 @@ public class Appointment extends EncryptableEntity<Appointment> implements Calen
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.entity.CalendarEntity#getDuration()
 	 */
+	@Override
 	public Integer getDuration() { return( Duration ); }
 	
 	/**
@@ -81,6 +83,7 @@ public class Appointment extends EncryptableEntity<Appointment> implements Calen
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.entity.CalendarEntity#getText()
 	 */
+	@Override
 	public String getText() { return( Text ); }
 	
 	/**
@@ -115,6 +118,7 @@ public class Appointment extends EncryptableEntity<Appointment> implements Calen
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.entity.CalendarEntity#getNextTodo()
 	 */
+	@Override
 	public Date getNextTodo() { return( NextTodo ); }
 	
 	/**
@@ -222,6 +226,7 @@ public class Appointment extends EncryptableEntity<Appointment> implements Calen
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.entity.CalendarEntity#getTodo()
 	 */
+	@Override
 	public boolean getTodo() { return( Todo ); }
 	
 	/**
@@ -238,6 +243,7 @@ public class Appointment extends EncryptableEntity<Appointment> implements Calen
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.entity.CalendarEntity#getColor()
 	 */
+	@Override
 	public String getColor() { return( Color ); }
 	
 	/**

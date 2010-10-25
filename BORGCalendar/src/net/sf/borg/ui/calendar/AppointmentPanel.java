@@ -98,6 +98,7 @@ public class AppointmentPanel extends JPanel {
 		/**
 		 * get the color choice label for a given color value.
 		 */
+		@Override
 		public Component getListCellRendererComponent(JList list, Object value,
 				int index, boolean isSelected, boolean cellHasFocus) {
 			String sel = (String) value;
@@ -165,6 +166,7 @@ public class AppointmentPanel extends JPanel {
 		 * 
 		 * @see Icon#getIconHeight()
 		 */
+		@Override
 		public int getIconHeight() {
 			return h;
 		}
@@ -174,6 +176,7 @@ public class AppointmentPanel extends JPanel {
 		 * 
 		 * @see Icon#getIconWidth()
 		 */
+		@Override
 		public int getIconWidth() {
 			return w;
 		}
@@ -183,6 +186,7 @@ public class AppointmentPanel extends JPanel {
 		 * 
 		 * @see Icon#paintIcon(java.awt.Component, java.awt.Graphics, int, int)
 		 */
+		@Override
 		public void paintIcon(Component c, Graphics g, int x, int y) {
 			Graphics2D g2 = (Graphics2D) g;
 			g2.setColor(Color.BLACK);
@@ -555,6 +559,7 @@ public class AppointmentPanel extends JPanel {
 		}
 		repeatFrequencyComboBox
 				.addActionListener(new java.awt.event.ActionListener() {
+					@Override
 					public void actionPerformed(java.awt.event.ActionEvent e) {
 						// show/hide the various repeat widgets based on the
 						// chosen
@@ -738,6 +743,7 @@ public class AppointmentPanel extends JPanel {
 
 		ResourceHelper.setText(untimedCheckBox, "No_Specific_Time");
 		untimedCheckBox.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				untimedCheckBoxActionPerformed();
 			}
@@ -771,6 +777,7 @@ public class AppointmentPanel extends JPanel {
 
 		ResourceHelper.setText(dateChangeCheckBox, "changedate");
 		dateChangeCheckBox.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				newdatefield.setEnabled(dateChangeCheckBox.isSelected());
 			}
@@ -864,6 +871,7 @@ public class AppointmentPanel extends JPanel {
 				"/resource/Save16.gif")));
 		ResourceHelper.setText(saveButton, "Save");
 		saveButton.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				try {
 					if (currentlyShownAppointmentKey == -1) {
@@ -884,6 +892,7 @@ public class AppointmentPanel extends JPanel {
 				"/resource/Save16.gif")));
 		ResourceHelper.setText(saveCloseButton, "Save_&_Close");
 		saveCloseButton.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				try {
 					if (currentlyShownAppointmentKey == -1) {
@@ -911,6 +920,7 @@ public class AppointmentPanel extends JPanel {
 		decryptButton = new JButton();
 		decryptButton.setText(Resource.getResourceString("decrypt"));
 		decryptButton.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent e) {
 				try {
 					Appointment appt = AppointmentModel.getReference().getAppt(
@@ -960,6 +970,7 @@ public class AppointmentPanel extends JPanel {
 		savedefaultsbutton.setToolTipText(Resource.getResourceString("sd_tip"));
 		savedefaultsbutton
 				.addActionListener(new java.awt.event.ActionListener() {
+					@Override
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						Appointment appt = new Appointment();
 						try {
@@ -987,6 +998,7 @@ public class AppointmentPanel extends JPanel {
 		ResourceHelper.setText(popupTimesBtn, "Change");
 		final AppointmentPanel thisPanel = this;
 		popupTimesBtn.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				String apptTitle = apptTitleField.getText();
 				if (apptTitle.equals("")) {

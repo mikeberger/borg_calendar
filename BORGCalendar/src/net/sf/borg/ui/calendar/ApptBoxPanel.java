@@ -209,6 +209,7 @@ abstract class ApptBoxPanel extends JPanel implements ComponentListener {
 				pop.add(mnuitm = new JMenuItem(Resource
 						.getResourceString("Add_New")));
 				mnuitm.addActionListener(new ActionListener() {
+					@Override
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						addAppt();
 					}
@@ -247,6 +248,7 @@ abstract class ApptBoxPanel extends JPanel implements ComponentListener {
 		 * mouse clicked - either show a popup menu (right button) or 
 		 * send an onclick message to a box
 		 */
+		@Override
 		public void mouseClicked(MouseEvent evt) {
 
 			evt.translatePoint(translation, translation);
@@ -297,6 +299,7 @@ abstract class ApptBoxPanel extends JPanel implements ComponentListener {
 		/**
 		 * mouse dragged - but not yet released
 		 */
+		@Override
 		public void mouseDragged(MouseEvent evt) {
 			evt.translatePoint(translation, translation);
 
@@ -376,11 +379,13 @@ abstract class ApptBoxPanel extends JPanel implements ComponentListener {
 		}
 
 		/** not used */
+		@Override
 		public void mouseEntered(MouseEvent evt) {
 		  // empty
 		}
 
 		/** not used */
+		@Override
 		public void mouseExited(MouseEvent evt) {
 		  // empty
 		}
@@ -388,6 +393,7 @@ abstract class ApptBoxPanel extends JPanel implements ComponentListener {
 		/**
 		 * mouse moved without being pressed - do mouse-over type stuff
 		 */
+		@Override
 		public void mouseMoved(MouseEvent evt) {
 			evt.translatePoint(translation, translation);
 
@@ -425,6 +431,7 @@ abstract class ApptBoxPanel extends JPanel implements ComponentListener {
 		/**
 		 * react to mouse press and not yet released
 		 */
+		@Override
 		public void mousePressed(MouseEvent evt) {
 
 			evt.translatePoint(translation, translation);
@@ -499,6 +506,7 @@ abstract class ApptBoxPanel extends JPanel implements ComponentListener {
 		/**
 		 * mouse has been released after a press and possible drag
 		 */
+		@Override
 		public void mouseReleased(MouseEvent evt) {
 			evt.translatePoint(translation, translation);
 
@@ -982,18 +990,22 @@ abstract class ApptBoxPanel extends JPanel implements ComponentListener {
 
 	}
 	
+	@Override
 	public void componentHidden(ComponentEvent arg0) {
 	  // empty
 	}
 
+	@Override
 	public void componentMoved(ComponentEvent e) {
 	  // empty
 	}
 
+	@Override
 	public void componentResized(ComponentEvent e) {
 		refresh();
 	}
 
+	@Override
 	public void componentShown(ComponentEvent e) {
 	  // empty
 	}

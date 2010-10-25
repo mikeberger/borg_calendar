@@ -193,6 +193,7 @@ public class CategoryChooser extends View {
 		chooseCategoriesMI.setActionCommand("Choose Displayed Categories");
 		chooseCategoriesMI
 				.addActionListener(new java.awt.event.ActionListener() {
+					@Override
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						CategoryChooser.getReference().setVisible(true);
 					}
@@ -204,6 +205,7 @@ public class CategoryChooser extends View {
 				"/resource/Add16.gif")));
 		ResourceHelper.setText(addCategoryMI, "addcat");
 		addCategoryMI.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				String inputValue = InputDialog.show(Resource
 						.getResourceString("AddCat"), 15);
@@ -224,6 +226,7 @@ public class CategoryChooser extends View {
 				.getResource("/resource/Delete16.gif")));
 		ResourceHelper.setText(removeCategoryMI, "remcat");
 		removeCategoryMI.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				try {
 					CategoryModel.getReference().syncCategories();
@@ -251,6 +254,7 @@ public class CategoryChooser extends View {
 			ResourceHelper.setText(clearAllButton, "clear_all");
 			clearAllButton
 					.addActionListener(new java.awt.event.ActionListener() {
+						@Override
 						public void actionPerformed(java.awt.event.ActionEvent e) {
 							Iterator<JCheckBox> it = cbs.iterator();
 							while (it.hasNext()) {
@@ -274,6 +278,7 @@ public class CategoryChooser extends View {
 			delcatMI.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 					"/resource/Delete16.gif")));
 			delcatMI.addActionListener(new java.awt.event.ActionListener() {
+				@Override
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 
 					try {
@@ -408,6 +413,7 @@ public class CategoryChooser extends View {
 				"/resource/Save16.gif")));
 		ResourceHelper.setText(applyButton, "apply");
 		applyButton.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				applyButtonActionPerformed(evt);
 			}
@@ -417,6 +423,7 @@ public class CategoryChooser extends View {
 				"/resource/Stop16.gif")));
 		ResourceHelper.setText(dismissButton, "Dismiss");
 		dismissButton.addActionListener(new java.awt.event.ActionListener() {
+			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				dismissButtonActionPerformed(evt);
 			}
@@ -452,6 +459,7 @@ public class CategoryChooser extends View {
 			ResourceHelper.setText(selectAllButton, "select_all");
 			selectAllButton
 					.addActionListener(new java.awt.event.ActionListener() {
+						@Override
 						public void actionPerformed(java.awt.event.ActionEvent e) {
 							Iterator<JCheckBox> it = cbs.iterator();
 							while (it.hasNext()) {

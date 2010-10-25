@@ -39,6 +39,7 @@ public class AddrJdbcDB extends JdbcBeanDB<Address> implements EntityDB<Address>
     /* (non-Javadoc)
      * @see net.sf.borg.model.db.EntityDB#addObj(net.sf.borg.model.entity.KeyedEntity)
      */
+    @Override
     public void addObj(Address addr) throws Exception
     {
         PreparedStatement stmt = connection_.prepareStatement( "INSERT INTO addresses ( address_num, " +
@@ -86,6 +87,7 @@ public class AddrJdbcDB extends JdbcBeanDB<Address> implements EntityDB<Address>
     /* (non-Javadoc)
      * @see net.sf.borg.model.db.EntityDB#delete(int)
      */
+    @Override
     public void delete(int key) throws Exception
     {
         PreparedStatement stmt = connection_.prepareStatement( "DELETE FROM addresses WHERE address_num = ?" );
@@ -119,6 +121,7 @@ public class AddrJdbcDB extends JdbcBeanDB<Address> implements EntityDB<Address>
     /* (non-Javadoc)
      * @see net.sf.borg.model.db.EntityDB#nextkey()
      */
+    @Override
     public int nextkey() throws Exception
     {
      PreparedStatement stmt = connection_.prepareStatement("SELECT MAX(address_num) FROM addresses" );
@@ -132,6 +135,7 @@ public class AddrJdbcDB extends JdbcBeanDB<Address> implements EntityDB<Address>
     /* (non-Javadoc)
      * @see net.sf.borg.model.db.EntityDB#newObj()
      */
+    @Override
     public Address newObj()
     {
         return( new Address() );
@@ -196,6 +200,7 @@ public class AddrJdbcDB extends JdbcBeanDB<Address> implements EntityDB<Address>
     /* (non-Javadoc)
      * @see net.sf.borg.model.db.EntityDB#updateObj(net.sf.borg.model.entity.KeyedEntity)
      */
+    @Override
     public void updateObj(Address addr) throws Exception
     {
    

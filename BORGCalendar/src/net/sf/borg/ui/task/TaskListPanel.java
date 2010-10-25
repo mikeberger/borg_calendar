@@ -87,6 +87,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 		 * javax.swing.table.TableCellRenderer#getTableCellRendererComponent
 		 * (javax.swing.JTable, java.lang.Object, boolean, boolean, int, int)
 		 */
+		@Override
 		public Component getTableCellRendererComponent(JTable table,
 				Object obj, boolean isSelected, boolean hasFocus, int row,
 				int column) {
@@ -286,6 +287,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 			addbutton.setIcon(new ImageIcon(getClass().getResource(
 					"/resource/Add16.gif")));
 			addbutton.addActionListener(new java.awt.event.ActionListener() {
+				@Override
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					task_add();
 				}
@@ -298,6 +300,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 			changebutton1.setText(Resource.getResourceString("Change"));
 			changebutton1
 					.addActionListener(new java.awt.event.ActionListener() {
+						@Override
 						public void actionPerformed(java.awt.event.ActionEvent e) {
 							Integer num = getSelectedTaskId();
 							if (num != null)
@@ -312,6 +315,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 			deletebutton1.setText(Resource.getResourceString("Delete"));
 			deletebutton1
 					.addActionListener(new java.awt.event.ActionListener() {
+						@Override
 						public void actionPerformed(java.awt.event.ActionEvent e) {
 							deleteActionPerformed();
 						}
@@ -323,6 +327,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 					"/resource/greenlight.gif")));
 			closebutton1.setText(Resource.getResourceString("Close"));
 			closebutton1.addActionListener(new java.awt.event.ActionListener() {
+				@Override
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					closeActionPerformed();
 				}
@@ -334,6 +339,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 					"/resource/Copy16.gif")));
 			clonebutton1.setText(Resource.getResourceString("Clone"));
 			clonebutton1.addActionListener(new java.awt.event.ActionListener() {
+				@Override
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					Integer num = getSelectedTaskId();
 					if (num != null)
@@ -440,11 +446,13 @@ class TaskListPanel extends JPanel implements Model.Listener {
 		 */
 		new PopupMenuHelper(taskTable, new PopupMenuHelper.Entry[] {
 				new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
+					@Override
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						task_add();
 					}
 				}, "Add"),
 				new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
+					@Override
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						Integer num = getSelectedTaskId();
 						if (num != null)
@@ -452,6 +460,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 					}
 				}, "Change"),
 				new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
+					@Override
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						Integer num = getSelectedTaskId();
 						if (num != null)
@@ -459,11 +468,13 @@ class TaskListPanel extends JPanel implements Model.Listener {
 					}
 				}, "Clone"),
 				new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
+					@Override
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						deleteActionPerformed();
 					}
 				}, "Delete"),
 				new PopupMenuHelper.Entry(new java.awt.event.ActionListener() {
+					@Override
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						closeActionPerformed();
 					}
@@ -497,6 +508,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 	/**
 	 * reload from the model and re-apply filter criteria
 	 */
+	@Override
 	public void refresh() {
 
 		int row = 0;

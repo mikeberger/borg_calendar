@@ -168,6 +168,7 @@ class ApptBox extends Box implements Box.Draggable {
 		// the most
 		// need to be placed on the grid first.
 		Collections.sort(boxlist, new Comparator<ApptBox>() {
+			@Override
 			public int compare(ApptBox obj1, ApptBox obj2) {
 				int diff = obj2.getMaxAcrossAtOneTime()
 						- obj1.getMaxAcrossAtOneTime();
@@ -604,6 +605,7 @@ class ApptBox extends Box implements Box.Draggable {
 			popmenu.add(mnuitm = new JMenuItem(Resource
 					.getResourceString("Edit")));
 			mnuitm.addActionListener(new ActionListener() {
+				@Override
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
 					onClick();
 				}
@@ -611,6 +613,7 @@ class ApptBox extends Box implements Box.Draggable {
 			popmenu.add(mnuitm = new JMenuItem(Resource
 					.getResourceString("Delete")));
 			mnuitm.addActionListener(new ActionListener() {
+				@Override
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
 					delete();
 				}
@@ -620,6 +623,7 @@ class ApptBox extends Box implements Box.Draggable {
 				popmenu.add(mnuitm = new JMenuItem(Resource
 						.getResourceString("Done_(No_Delete)")));
 				mnuitm.addActionListener(new ActionListener() {
+					@Override
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						try {
 							AppointmentModel.getReference().do_todo(
@@ -633,6 +637,7 @@ class ApptBox extends Box implements Box.Draggable {
 				popmenu.add(mnuitm = new JMenuItem(Resource
 						.getResourceString("Done_(Delete)")));
 				mnuitm.addActionListener(new ActionListener() {
+					@Override
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						try {
 							AppointmentModel.getReference().do_todo(
@@ -648,6 +653,7 @@ class ApptBox extends Box implements Box.Draggable {
 				popmenu.add(mnuitm = new JMenuItem(Resource
 						.getResourceString("Delete_One_Only")));
 				mnuitm.addActionListener(new ActionListener() {
+					@Override
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
 						try {
 							AppointmentModel.getReference().delOneOnly(
@@ -724,6 +730,7 @@ class ApptBox extends Box implements Box.Draggable {
 	/**
 	 * move an appointment when the box is dragged
 	 */
+	@Override
 	public void move(int realtime, Date d) throws Exception {
 
 		Appointment ap = AppointmentModel.getReference().getAppt(appt.getKey());

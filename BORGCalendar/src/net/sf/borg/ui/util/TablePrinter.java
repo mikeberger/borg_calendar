@@ -65,6 +65,7 @@ public class TablePrinter implements Printable {
 	/* (non-Javadoc)
 	 * @see java.awt.print.Printable#print(java.awt.Graphics, java.awt.print.PageFormat, int)
 	 */
+	@Override
 	public int print(Graphics g, PageFormat pageFormat, int pageIndex)
 			throws PrinterException {
 		
