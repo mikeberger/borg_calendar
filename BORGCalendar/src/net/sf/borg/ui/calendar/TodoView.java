@@ -437,6 +437,16 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 
 		AppointmentModel.getReference().saveAppt(appt);
 
+ 		// clear the contents of the todo text field  
+ 		// and reset the date to today.
+ 		// if the preference is set.
+ 		if (Prefs.getBoolPref(PrefName.TODO_QUICK_ENTRY_AUTO_CLEAR_TEXT_FIELD)) {
+ 			todoText.setText("");
+ 		}
+ 		if (Prefs.getBoolPref(PrefName.TODO_QUICK_ENTRY_AUTO_SET_DATE_FIELD)) {
+ 			todoDate.setDate(new Date());
+ 		}
+
 		requestFocus();
 
 	}
@@ -634,6 +644,10 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 		todoTable = new StripedTable();
 		todoText = new JTextField();
 		todoDate = new JDateChooser();
+ 		// default the todo date to today's date, if the preference is set
+ 		if (Prefs.getBoolPref(PrefName.TODO_QUICK_ENTRY_AUTO_SET_DATE_FIELD)) {
+ 			todoDate.setDate(new Date());
+ 		}
 		JButton addTodoButton = new JButton();
 		JLabel todoLabel = new JLabel();
 		JLabel dateLabel = new JLabel();

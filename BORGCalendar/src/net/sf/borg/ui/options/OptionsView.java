@@ -249,6 +249,7 @@ public class OptionsView extends View {
 			addPanel(new MiscellaneousOptionsPanel());
 			addPanel(new ColorOptionsPanel());
 			addPanel(new TaskOptionsPanel());
+			addPanel(new TodoOptionsPanel());
 			addPanel(new EncryptionOptionsPanel());
 
 		}

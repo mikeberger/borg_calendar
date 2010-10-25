@@ -419,4 +419,10 @@ public class PrefName {
 	/** cached password time to live in seconds */
 	static public PrefName PASSWORD_TTL = new PrefName("pw_ttl", new Integer(300));
 
+ 	/** todo quick add, clear text after add */
+ 	static public PrefName TODO_QUICK_ENTRY_AUTO_CLEAR_TEXT_FIELD = new PrefName("todo_option_auto_clear_text", "false");
+ 	
+ 	/** todo quick add, default date to today */
+ 	static public PrefName TODO_QUICK_ENTRY_AUTO_SET_DATE_FIELD = new PrefName("todo_option_auto_date_today", "false");
+
 }
