@@ -24,10 +24,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
+import java.util.TimeZone;
 
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.CalendarOutputter;
@@ -114,15 +116,15 @@ public class AppointmentIcalAdapter {
 			}
 
 			ParameterList pl = new ParameterList();
-			pl.add(Value.DATE_TIME);
 
 			// date
 			if (AppointmentModel.isNote(ap)) {
-
+				pl.add(Value.DATE);
 				DtStart dts = new DtStart(pl,
-						new net.fortuna.ical4j.model.DateTime(ap.getDate()));
+						new net.fortuna.ical4j.model.Date(ap.getDate()));
 				ve.getProperties().add(dts);
 			} else {
+				pl.add(Value.DATE_TIME);
 				DtStart dts = new DtStart(pl,
 						new net.fortuna.ical4j.model.DateTime(ap.getDate()));
 				dts.setUtc(true);
@@ -295,15 +297,42 @@ public class AppointmentIcalAdapter {
 				if (prop != null) {
 					DtStart dts = (DtStart) prop;
 					Date d = dts.getDate();
-					ap.setDate(d);
-					ap.setUntimed("N");
-					prop = pl.getProperty(Property.DTEND);
-					if (prop != null) {
-						DtEnd dte = (DtEnd) prop;
-						Date de = dte.getDate();
-						long dur = (de.getTime() - d.getTime()) / (1000 * 60);
-						ap.setDuration(new Integer((int) dur));
+					//System.out.println("utc=" + dts.isUtc());
+					//System.out.println("dt=" + DateFormat.getDateTimeInstance().format(d));
+					//System.out.println("val=" + dts.getValue());
+					
+					Date utc = new Date();
+					utc.setTime(d.getTime());
+					
+					// adjust time zone
+					if( !dts.isUtc() )
+					{
+						//System.out.println( "TZO=" + tzOffset(d.getTime()));
+						long u = d.getTime() - tzOffset(d.getTime());
+						utc.setTime(u);
 					}
+					//System.out.println("utcdt=" + DateFormat.getDateTimeInstance().format(utc));
+
+					ap.setDate(utc);
+
+					// check if DATE only
+					if( !dts.getValue().contains("T"))
+					{
+						// date only
+						ap.setUntimed("Y");
+					}
+					else
+					{
+						ap.setUntimed("N");
+						prop = pl.getProperty(Property.DTEND);
+						if (prop != null) {
+							DtEnd dte = (DtEnd) prop;
+							Date de = dte.getDate();
+							long dur = (de.getTime() - d.getTime()) / (1000 * 60);
+							ap.setDuration(new Integer((int) dur));
+						}
+					}
+					
 				}
 
 				if (comp instanceof VToDo) {
@@ -414,5 +443,10 @@ public class AppointmentIcalAdapter {
 
 		return (warning.toString());
 
+	}
+	
+	static private int tzOffset(long date)
+	{
+		return TimeZone.getDefault().getOffset(date);
 	}
 }
