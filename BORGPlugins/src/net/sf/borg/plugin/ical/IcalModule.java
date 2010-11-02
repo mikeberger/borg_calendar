@@ -14,8 +14,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
 import net.sf.borg.common.Errmsg;
-import net.sf.borg.common.Resource;
 import net.sf.borg.model.CategoryModel;
+import net.sf.borg.plugin.common.Resource;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.MultiView.Module;
 import net.sf.borg.ui.MultiView.ViewType;

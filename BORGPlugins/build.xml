@@ -1,13 +1,11 @@
 <?xml version="1.0"?>
-<!-- $Id: build.xml 1190 2009-11-22 20:31:22Z i_flem $ -->
-<project name="borg-calendar" default="main" basedir=".">
+<project name="borg-calendar-plugins" default="main" basedir=".">
 	<!-- Properties -->
 
 	<property name="prj.dir" value="${basedir}" />
 
 	<property name="build.dir" value="${prj.dir}/build" />
 	<property name="dist.dir" value="${prj.dir}/dist" />
-	<property name="res.dir" value="${prj.dir}/res/resource" />
 	<property name="borg.proj.dir" value="${basedir}/../BORGCalendar" />
 
 	<property name="build.compiler" value="modern" />
@@ -43,6 +41,17 @@
 		<copy todir="${build.dir}/reports">
 			<fileset dir="${prj.dir}/res/reports" />
 		</copy>
+		
+		<copy todir="${build.dir}/resource">
+			<fileset dir="${prj.dir}/res/resource" />
+		</copy>
+
+		<jar jarfile="${dist.dir}/common-plugin.jar">
+			<fileset dir="${build.dir}">
+				<include name="resource/*" />
+				<include name="**/common/*.class" />
+			</fileset>
+		</jar>
 
 		<jar jarfile="${dist.dir}/report-plugin.jar">
 			<fileset dir="${build.dir}">

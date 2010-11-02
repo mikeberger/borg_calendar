@@ -24,11 +24,11 @@ import java.util.Date;
 
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
-import net.sf.borg.common.Resource;
 import net.sf.borg.common.Warning;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Subtask;
+import net.sf.borg.plugin.common.Resource;
 import net.sf.borg.ui.View;
 
 import org.jfree.chart.ChartFactory;
