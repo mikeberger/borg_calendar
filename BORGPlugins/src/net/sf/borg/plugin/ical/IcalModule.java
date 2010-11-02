@@ -5,14 +5,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.GregorianCalendar;
 
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Resource;
+import net.sf.borg.model.CategoryModel;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.MultiView.Module;
 import net.sf.borg.ui.MultiView.ViewType;
@@ -61,7 +64,18 @@ public class IcalModule implements Module {
 				String s = chooser.getSelectedFile().getAbsolutePath();
 
 				try {
-					String warning = AppointmentIcalAdapter.importIcal(s, "");
+
+					CategoryModel catmod = CategoryModel.getReference();
+					Collection<String> allcats = catmod.getCategories();
+					Object[] cats = allcats.toArray();
+
+					Object o = JOptionPane.showInputDialog(null, Resource
+							.getResourceString("import_cat_choose"), "",
+							JOptionPane.QUESTION_MESSAGE, null, cats, cats[0]);
+					if (o == null)
+						return;
+
+					String warning = AppointmentIcalAdapter.importIcal(s, (String) o);
 					if (warning != null && !warning.isEmpty())
 						Errmsg.notice(warning);
 				} catch (Exception e) {
@@ -84,7 +98,7 @@ public class IcalModule implements Module {
 		});
 
 		m.add(exp);
-		
+
 		JMenuItem exp2 = new JMenuItem();
 		exp2.setText(Resource.getResourceString("export") + " 2 yrs");
 		exp2.addActionListener(new ActionListener() {
@@ -128,12 +142,10 @@ public class IcalModule implements Module {
 		try {
 			if (years != null) {
 				GregorianCalendar cal = new GregorianCalendar();
-				cal.add(Calendar.YEAR, -1*years.intValue());
+				cal.add(Calendar.YEAR, -1 * years.intValue());
 				AppointmentIcalAdapter.exportIcal(s, cal.getTime());
-			}
-			else
-			{
-				AppointmentIcalAdapter.exportIcal(s,null);
+			} else {
+				AppointmentIcalAdapter.exportIcal(s, null);
 			}
 
 		} catch (Exception e) {
