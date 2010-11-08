@@ -29,6 +29,9 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.DateFormat;
@@ -79,9 +82,9 @@ import net.sf.borg.model.entity.Subtask;
 import net.sf.borg.model.entity.Task;
 import net.sf.borg.ui.DockableView;
 import net.sf.borg.ui.MultiView;
-import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.MultiView.Module;
 import net.sf.borg.ui.MultiView.ViewType;
+import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.task.ProjectView;
 import net.sf.borg.ui.task.TaskView;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
@@ -387,6 +390,14 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 		String tdtext = todoText.getText();
 		Calendar c = todoDate.getCalendar();
 
+		// auto default blank date to today's date.
+		if (c == null) {
+			if (Prefs.getBoolPref(PrefName.TODO_QUICK_ENTRY_AUTO_SET_DATE_FIELD)) {
+				c = new GregorianCalendar();
+				c.setTime(new Date());
+			}
+		}
+
 		// warn the user if text or date is missing
 		if (tdtext.length() == 0 || c == null) {
 			Errmsg.notice(Resource.getResourceString("todomissingdata"));
@@ -443,13 +454,9 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 		AppointmentModel.getReference().saveAppt(appt);
 
  		// clear the contents of the todo text field  
- 		// and reset the date to today.
  		// if the preference is set.
  		if (Prefs.getBoolPref(PrefName.TODO_QUICK_ENTRY_AUTO_CLEAR_TEXT_FIELD)) {
  			todoText.setText("");
- 		}
- 		if (Prefs.getBoolPref(PrefName.TODO_QUICK_ENTRY_AUTO_SET_DATE_FIELD)) {
- 			todoDate.setDate(new Date());
  		}
 
 		requestFocus();
@@ -649,11 +656,19 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 		JScrollPane tableScroll = new JScrollPane();
 		todoTable = new StripedTable();
 		todoText = new JTextField();
-		todoDate = new JDateChooser();
- 		// default the todo date to today's date, if the preference is set
- 		if (Prefs.getBoolPref(PrefName.TODO_QUICK_ENTRY_AUTO_SET_DATE_FIELD)) {
- 			todoDate.setDate(new Date());
+
+		// add keyboard shortcut to do add TODO item when enter pressed on the text field.
+		todoText.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent event) {
+				if (event.getKeyCode() == KeyEvent.VK_ENTER) {
+					addTodoActionPerformed();
+				}
  		}
+		});
+
+		todoDate = new JDateChooser();
+
 		JButton addTodoButton = new JButton();
 		JLabel todoLabel = new JLabel();
 		JLabel dateLabel = new JLabel();
