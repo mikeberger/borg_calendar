@@ -1,5 +1,6 @@
 package net.sf.borg.plugin.sync.google;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -222,10 +223,20 @@ public class GoogleAppointmentAdapter implements
 		if( Math.abs(start.getValue()-appt.getDate().getTime()) > 1000*60*3)
 			needs_update = true;
 		
-		appt.setDate(new Date(start.getValue()));
+		// not sure why non-timed need this...
+		if( start.isDateOnly())
+		{
+			appt.setDate(new Date(start.getValue() - TimeZone.getDefault().getOffset(start.getValue())));
+		}
+		else
+		{
+			appt.setDate(new Date(start.getValue()));
+		}
 		
 		Integer dur = appt.getDuration();
 		String ut = appt.getUntimed();
+		
+		//System.out.println(appt.getText() + " " + DateFormat.getDateTimeInstance().format(appt.getDate()) + " " + start.getTzShift());
 		
 		if (start.isDateOnly()) {
 			appt.setUntimed("Y");
