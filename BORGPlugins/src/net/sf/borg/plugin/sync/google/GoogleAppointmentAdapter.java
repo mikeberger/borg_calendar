@@ -1,6 +1,5 @@
 package net.sf.borg.plugin.sync.google;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;

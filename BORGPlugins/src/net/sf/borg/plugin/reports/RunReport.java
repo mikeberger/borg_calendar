@@ -174,7 +174,7 @@ public class RunReport {
 	 * @param parmsIn
 	 *            the input parameter map for the report
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static void runReport(InputStream is, Map parmsIn) {
 	  Map parms = parmsIn;
 		if (parms == null)
@@ -221,8 +221,7 @@ public class RunReport {
 	 * @param parms
 	 *            the input parameter map
 	 */
-	@SuppressWarnings("unchecked")
-	public static void runReport(String name, Map parms) {
+	public static void runReport(String name, Map<String,Integer> parms) {
 		String resourcePath = "/reports/" + name + ".jasper";
 		InputStream is = RunReport.class.getResourceAsStream(resourcePath);
 		runReport(is, parms);
