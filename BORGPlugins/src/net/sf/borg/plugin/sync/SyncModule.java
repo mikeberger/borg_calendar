@@ -41,7 +41,7 @@ public class SyncModule implements Module {
 		m.setText(getModuleName());
 
 		JMenuItem googleMI = new JMenuItem();
-		googleMI.setText("Google");
+		googleMI.setText("Google Sync");
 		googleMI.addActionListener(new ActionListener() {
 
 			@Override
@@ -55,6 +55,22 @@ public class SyncModule implements Module {
 		});
 
 		m.add(googleMI);
+		
+		JMenuItem googleMI2 = new JMenuItem();
+		googleMI2.setText("Google Overwrite");
+		googleMI2.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					GoogleSync.overwrite();
+				} catch (Exception e) {
+					Errmsg.errmsg(e);
+				}
+			}
+		});
+
+		m.add(googleMI2);
 
 		parent.addPluginSubMenu(m);
 

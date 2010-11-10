@@ -35,6 +35,7 @@ public class GoogleAppointmentAdapter implements
 
 		ee.setTitle(new PlainTextConstruct(getTitle(appt)));
 		ee.setContent(new PlainTextConstruct(getBody(appt)));
+		ee.setSyncEvent(true);
 
 		// set a unique ical id
 		// google seems to require uniqueness even if the id was used by an
@@ -156,9 +157,10 @@ public class GoogleAppointmentAdapter implements
 	public Appointment toBorg(CalendarEventEntry extAppt) throws Exception {
 		
 		Appointment appt = null;
+		boolean needs_update = false;
 
 		// handle appts that came from borg
-		if (extAppt.getSequence() == BORG_SEQUENCE) {
+		if (extAppt.getSequence() >= BORG_SEQUENCE) {
 			
 			// fetch borg appt to update
 			String uid = extAppt.getIcalUID();
@@ -169,10 +171,18 @@ public class GoogleAppointmentAdapter implements
 				appt = AppointmentModel.getReference().getAppt(key);
 			} catch (Exception e) {
 			}
+			
+			// need to update appt if google incremented the sequence
+			if( extAppt.getSequence() > BORG_SEQUENCE )
+				needs_update = true;
 
 		}
+		else
+		{
+			// sync all google-created appts
+			needs_update = true;
+		}
 		
-		boolean needs_update = false;
 		
 		if (appt == null) {
 			// handle event added to google or not in borg for some other reason
@@ -258,7 +268,7 @@ public class GoogleAppointmentAdapter implements
 	 */
 	static boolean isFromBORG(CalendarEventEntry event)
 	{
-		if( event.getSequence() == BORG_SEQUENCE && event.getIcalUID() != null &&
+		if( event.getSequence() >= BORG_SEQUENCE && event.getIcalUID() != null &&
 				event.getIcalUID().contains("BORGCalendar"))
 			return true;
 		return false;
@@ -300,5 +310,4 @@ public class GoogleAppointmentAdapter implements
 		return title;
 
 	}
-
 }
