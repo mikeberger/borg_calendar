@@ -30,10 +30,11 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import javax.swing.JLabel;
 import javax.swing.JPasswordField;
+import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
 
 import net.sf.borg.common.Errmsg;
-import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.ui.options.OptionsView.OptionsPanel;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
@@ -47,12 +48,9 @@ public class GoogleSyncOptionsPanel extends OptionsPanel {
 
 	private static final long serialVersionUID = 795364188303457966L;
 
-	static public PrefName SYNCUSER = new PrefName("googlesync-user", "");
-	static public PrefName SYNCPW = new PrefName("googlesync-pw", "");
-	static public PrefName SYNCPW2 = new PrefName("googlesync-pw2", "");
-	
 	private JTextField username = new JTextField();
 	private JPasswordField password = new JPasswordField();
+	private JSpinner chunksize = new JSpinner(new SpinnerNumberModel(0,0,10000,1));
 
 	/**
 	 * Instantiates a new sync options panel.
@@ -76,6 +74,12 @@ public class GoogleSyncOptionsPanel extends OptionsPanel {
 
 		this.add(password, GridBagConstraintsFactory.create(1, 2,
 				GridBagConstraints.BOTH));
+		
+		JLabel chunklabel = new JLabel("Batch Chunk Size");
+		this.add(chunklabel, GridBagConstraintsFactory.create(0, 3,
+				GridBagConstraints.BOTH) );
+		this.add(chunksize, GridBagConstraintsFactory.create(1, 3,
+				GridBagConstraints.BOTH));
 
 	}
 
@@ -87,13 +91,14 @@ public class GoogleSyncOptionsPanel extends OptionsPanel {
 	@Override
 	public void applyChanges() {
 
-		Prefs.putPref(SYNCUSER, username.getText());
+		Prefs.putPref(GoogleSync.SYNCUSER, username.getText());
 		try {
 			sep(new String(password.getPassword()));
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
 		}
 
+		Prefs.putPref(GoogleSync.BATCH_CHUNK_SIZE, (Integer)chunksize.getValue());
 	}
 
 	/*
@@ -104,13 +109,16 @@ public class GoogleSyncOptionsPanel extends OptionsPanel {
 	@Override
 	public void loadOptions() {
 
-		username.setText(Prefs.getPref(SYNCUSER));
+		username.setText(Prefs.getPref(GoogleSync.SYNCUSER));
 
 		try {
 			password.setText(gep());
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
 		}
+		
+		int c = Prefs.getIntPref(GoogleSync.BATCH_CHUNK_SIZE);
+		chunksize.setValue(new Integer(c));
 
 	}
 
@@ -121,16 +129,16 @@ public class GoogleSyncOptionsPanel extends OptionsPanel {
 
 	public static void sep(String s) throws Exception {
 		if ("".equals(s)) {
-			Prefs.putPref(SYNCPW, s);
+			Prefs.putPref(GoogleSync.SYNCPW, s);
 			return;
 		}
-		String p1 = Prefs.getPref(SYNCPW2);
+		String p1 = Prefs.getPref(GoogleSync.SYNCPW2);
 		if ("".equals(p1)) {
 			KeyGenerator keyGen = KeyGenerator.getInstance("AES");
 			SecretKey key = keyGen.generateKey();
 			BASE64Encoder b64enc = new BASE64Encoder();
 			p1 = b64enc.encode(key.getEncoded());
-			Prefs.putPref(SYNCPW2, p1);
+			Prefs.putPref(GoogleSync.SYNCPW2, p1);
 		}
 
 		BASE64Decoder b64dec = new BASE64Decoder();
@@ -144,12 +152,12 @@ public class GoogleSyncOptionsPanel extends OptionsPanel {
 		os.close();
 		ba = baos.toByteArray();
 		BASE64Encoder b64enc = new BASE64Encoder();
-		Prefs.putPref(SYNCPW, b64enc.encode(ba));
+		Prefs.putPref(GoogleSync.SYNCPW, b64enc.encode(ba));
 	}
 
 	public static String gep() throws Exception {
-		String p1 = Prefs.getPref(SYNCPW2);
-		String p2 = Prefs.getPref(SYNCPW);
+		String p1 = Prefs.getPref(GoogleSync.SYNCPW2);
+		String p2 = Prefs.getPref(GoogleSync.SYNCPW);
 		if ("".equals(p2))
 			return p2;
 

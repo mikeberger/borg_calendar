@@ -29,6 +29,8 @@ public class GoogleSync {
 	static public PrefName SYNCUSER = new PrefName("googlesync-user", "");
 	static public PrefName SYNCPW = new PrefName("googlesync-pw", "");
 	static public PrefName SYNCPW2 = new PrefName("googlesync-pw2", "");
+	static public PrefName BATCH_CHUNK_SIZE = new PrefName(
+			"googlesync-chunk-size", new Integer(500));
 
 	static private final int years_to_sync = 2;
 
@@ -95,6 +97,13 @@ public class GoogleSync {
 				CalendarService myService, URL eventUrl) throws Exception {
 
 			CalendarEventFeed batchDeleteRequest = new CalendarEventFeed();
+			CalendarEventFeed myFeed = myService.getFeed(eventUrl,
+					CalendarEventFeed.class);
+			Link batchLink = myFeed
+					.getLink(Link.Rel.FEED_BATCH, Link.Type.ATOM);
+
+			int chunk_size = Prefs.getIntPref(BATCH_CHUNK_SIZE);
+
 			int count = 1;
 			for (CalendarEventEntry entry : entries) {
 
@@ -106,49 +115,61 @@ public class GoogleSync {
 				batchDeleteRequest.getEntries().add(entry);
 				count++;
 
+				if (count == chunk_size) {
+					// send a chunk
+					this.showMessage("Sending Delete Batch", false);
+					CalendarEventFeed batchResponse = myService.batch(new URL(
+							batchLink.getHref()), batchDeleteRequest);
+					this.processBatchResponse(batchResponse);
+					this.showMessage("Delete Batch Done", false);
+
+					batchDeleteRequest = new CalendarEventFeed();
+					count = 1;
+				}
+
 			}
 
-			// only delete if there were appts in google
 			if (count > 1) {
-				// delete all events
-				CalendarEventFeed myFeed = myService.getFeed(eventUrl,
-						CalendarEventFeed.class);
-				Link batchLink = myFeed.getLink(Link.Rel.FEED_BATCH,
-						Link.Type.ATOM);
+				this.showMessage("Sending Delete Batch", false);
 
 				CalendarEventFeed batchResponse = myService.batch(new URL(
 						batchLink.getHref()), batchDeleteRequest);
 
-				// Ensure that all the operations were successful.
-				boolean isSuccess = true;
-				for (CalendarEventEntry entry : batchResponse.getEntries()) {
+				this.processBatchResponse(batchResponse);
+				this.showMessage("Delete Batch Done", false);
 
-					String batchId = BatchUtils.getBatchId(entry);
-					if (!BatchUtils.isSuccess(entry)) {
-						isSuccess = false;
-						BatchStatus status = BatchUtils.getBatchStatus(entry);
-						this.showMessage(
-								"\n" + batchId + " failed ("
-										+ status.getReason() + ") "
-										+ status.getContent(), false);
-					}
-				}
-				if (isSuccess) {
-					this.showMessage(
-							"Successfully processed all events via batch request.",
+			}
+		}
+
+		private void processBatchResponse(CalendarEventFeed response) {
+			// Ensure that all the operations were successful.
+			for (CalendarEventEntry entry : response.getEntries()) {
+				String batchId = BatchUtils.getBatchId(entry);
+				if (!BatchUtils.isSuccess(entry)) {
+					BatchStatus status = BatchUtils.getBatchStatus(entry);
+					this.showMessage(batchId + "-"
+							+ entry.getTitle().getPlainText() + " failed ("
+							+ status.getReason() + ") " + status.getContent(),
 							false);
 				}
 			}
+
 		}
 
 		private void insertEvents(List<CalendarEventEntry> entries,
 				CalendarService myService, URL eventUrl) throws Exception {
 
 			CalendarEventFeed batchInsertRequest = new CalendarEventFeed();
+			CalendarEventFeed myFeed = myService.getFeed(eventUrl,
+					CalendarEventFeed.class);
+			Link batchLink = myFeed
+					.getLink(Link.Rel.FEED_BATCH, Link.Type.ATOM);
 
 			GregorianCalendar cal = new GregorianCalendar();
 			Collection<Appointment> appts = AppointmentModel.getReference()
 					.getAllAppts();
+
+			int chunk_size = Prefs.getIntPref(BATCH_CHUNK_SIZE);
 
 			int count = 1;
 
@@ -169,38 +190,34 @@ public class GoogleSync {
 								BatchOperationType.INSERT);
 						batchInsertRequest.getEntries().add(ev);
 						count++;
+
+						if (count == chunk_size) {
+							// send a chunk
+							this.showMessage("Sending Insert Batch", false);
+							CalendarEventFeed batchResponse = myService.batch(
+									new URL(batchLink.getHref()),
+									batchInsertRequest);
+							this.processBatchResponse(batchResponse);
+							this.showMessage("Insert Batch Done", false);
+
+							batchInsertRequest = new CalendarEventFeed();
+							count = 1;
+						}
 					} catch (Exception e) {
 						this.showMessage(e.getLocalizedMessage(), false);
 					}
 				}
 			}
 
-			CalendarEventFeed myFeed = myService.getFeed(eventUrl,
-					CalendarEventFeed.class);
-			Link batchLink = myFeed
-					.getLink(Link.Rel.FEED_BATCH, Link.Type.ATOM);
-			CalendarEventFeed batchResponse = myService.batch(
-					new URL(batchLink.getHref()), batchInsertRequest);
+			if (count > 1) {
+				this.showMessage("Sending Insert Batch", false);
 
-			// Ensure that all the operations were successful.
-			boolean isSuccess = true;
-			for (CalendarEventEntry entry : batchResponse.getEntries()) {
-				String batchId = BatchUtils.getBatchId(entry);
-				if (!BatchUtils.isSuccess(entry)) {
-					isSuccess = false;
-					BatchStatus status = BatchUtils.getBatchStatus(entry);
-					this.showMessage(batchId + "-"
-							+ entry.getTitle().getPlainText() + " failed ("
-							+ status.getReason() + ") " + status.getContent(),
-							false);
-				}
-			}
-			if (isSuccess) {
-				this.showMessage(
-						"Successfully processed all events via batch request.",
-						false);
-			}
+				CalendarEventFeed batchResponse = myService.batch(new URL(
+						batchLink.getHref()), batchInsertRequest);
+				this.processBatchResponse(batchResponse);
+				this.showMessage("Insert Batch Done", false);
 
+			}
 		}
 
 		private List<CalendarEventEntry> getEvents(CalendarService myService,
@@ -240,15 +257,14 @@ public class GoogleSync {
 
 			for (CalendarEventEntry entry : entries) {
 
-					try {
-						Appointment appt = ad.toBorg(entry);
-						AppointmentModel.getReference().saveAppt(appt);
-					} catch (Exception e) {
-						this.showMessage(e.getMessage(), false);
-						continue;
-					}
+				try {
+					Appointment appt = ad.toBorg(entry);
+					AppointmentModel.getReference().saveAppt(appt);
+				} catch (Exception e) {
+					this.showMessage(e.getMessage(), false);
+					continue;
+				}
 
-				
 			}
 
 			// delete events from google
