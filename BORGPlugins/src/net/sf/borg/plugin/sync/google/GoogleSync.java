@@ -1,9 +1,11 @@
 package net.sf.borg.plugin.sync.google;
 
 import java.net.URL;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -11,6 +13,7 @@ import javax.swing.SwingUtilities;
 
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
+import net.sf.borg.common.Warning;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.Repeat;
@@ -20,12 +23,14 @@ import net.sf.borg.ui.util.ModalMessage;
 
 import com.google.gdata.client.calendar.CalendarQuery;
 import com.google.gdata.client.calendar.CalendarService;
+import com.google.gdata.data.DateTime;
 import com.google.gdata.data.Link;
 import com.google.gdata.data.batch.BatchOperationType;
 import com.google.gdata.data.batch.BatchStatus;
 import com.google.gdata.data.batch.BatchUtils;
 import com.google.gdata.data.calendar.CalendarEventEntry;
 import com.google.gdata.data.calendar.CalendarEventFeed;
+import com.google.gdata.data.extensions.When;
 
 public class GoogleSync {
 
@@ -138,7 +143,9 @@ public class GoogleSync {
 								&& (event.getAction() == ChangeEvent.ChangeAction.CHANGE || event
 										.getAction() == ChangeEvent.ChangeAction.DELETE)) {
 							toBeDeleted.add(entry);
-							this.showMessage("DELETE from Google: " + entry.getIcalUID(), false);
+							this.showMessage(
+									"BORG CHANGED/DELETE from Google: " + id
+											+ " " + dumpEntry(entry), false);
 							continue;
 						}
 					}
@@ -148,11 +155,15 @@ public class GoogleSync {
 					// delete all entries that caused a borg update - will be
 					// sent back over
 					toBeDeleted.add(entry);
-					this.showMessage("UPDATE BORG/DELETE from Google: " + entry.getIcalUID(), false);
+					this.showMessage("GOOGLE CHANGED/DELETE from Google: " + id
+							+ " " + dumpEntry(entry), false);
 
 					AppointmentModel.getReference().saveAppt(appt);
+				} catch (Warning w) {
+					continue;
 				} catch (Exception e) {
-					this.showMessage(e.getMessage(), false);
+					this.showMessage("doSync1: " + e.getMessage(), false);
+					e.printStackTrace();
 					continue;
 				}
 
@@ -307,21 +318,22 @@ public class GoogleSync {
 			int count = 1;
 
 			GoogleAppointmentAdapter ad = new GoogleAppointmentAdapter();
-			
+
 			List<ChangeEvent> events = SyncLog.getReference().getAll();
-			for( ChangeEvent event : events )
-			{
-				if( event.getAction() == ChangeEvent.ChangeAction.ADD || event.getAction() == ChangeEvent.ChangeAction.CHANGE)
-				{
-					Integer key = (Integer)event.getObject();
-					Appointment appt = AppointmentModel.getReference().getAppt(key);
+			for (ChangeEvent event : events) {
+				if (event.getAction() == ChangeEvent.ChangeAction.ADD
+						|| event.getAction() == ChangeEvent.ChangeAction.CHANGE) {
+					Integer key = (Integer) event.getObject();
+					Appointment appt = AppointmentModel.getReference().getAppt(
+							key);
 					try {
 						CalendarEventEntry ev = ad.fromBorg(appt);
 						BatchUtils.setBatchId(ev, Integer.toString(count));
 						BatchUtils.setBatchOperationType(ev,
 								BatchOperationType.INSERT);
 						batchInsertRequest.getEntries().add(ev);
-						this.showMessage("UPDATE to Google: " + ev.getIcalUID(), false);
+						this.showMessage("BORG CHANGED/SEND TO GOOGLE: " + key
+								+ " " + dumpEntry(ev), false);
 
 						count++;
 
@@ -338,7 +350,7 @@ public class GoogleSync {
 							count = 1;
 						}
 					} catch (Exception e) {
-						this.showMessage(e.getLocalizedMessage(), false);
+						this.showMessage("insertChangedEvents1: " + e.getLocalizedMessage(), false);
 					}
 				}
 			}
@@ -394,7 +406,7 @@ public class GoogleSync {
 					doSync();
 			} catch (Exception e) {
 				e.printStackTrace();
-				this.showMessage(e.getLocalizedMessage(), true);
+				this.showMessage("run1: " + e.getLocalizedMessage(), true);
 				return;
 			}
 
@@ -422,7 +434,7 @@ public class GoogleSync {
 		}
 
 	}
-	
+
 	static public PrefName BATCH_CHUNK_SIZE = new PrefName(
 			"googlesync-chunk-size", new Integer(500));
 	static public PrefName SYNCPW = new PrefName("googlesync-pw", "");
@@ -437,6 +449,16 @@ public class GoogleSync {
 		SyncThread thread = new SyncThread();
 		thread.setMode(syncmode);
 		thread.start();
+	}
+
+	static private String dumpEntry(CalendarEventEntry entry) {
+		List<When> whens = entry.getTimes();
+		When when = whens.get(0);
+		DateTime start = when.getStartTime();
+		return ("["
+				+ DateFormat.getDateTimeInstance().format(
+						new Date(start.getValue())) + "|"
+				+ entry.getTitle().getPlainText().trim() + "]");
 	}
 
 }

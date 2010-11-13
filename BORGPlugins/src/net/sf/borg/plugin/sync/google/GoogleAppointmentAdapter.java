@@ -6,6 +6,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.TimeZone;
 
+import net.sf.borg.common.Warning;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Repeat;
 import net.sf.borg.model.entity.Appointment;
@@ -169,7 +170,8 @@ public class GoogleAppointmentAdapter implements
 	}
 
 	@Override
-	public Appointment toBorg(CalendarEventEntry extAppt) throws Exception {
+	public Appointment toBorg(CalendarEventEntry extAppt) throws Warning,
+			Exception {
 
 		Appointment appt = null;
 		boolean needs_update = false;
@@ -224,23 +226,29 @@ public class GoogleAppointmentAdapter implements
 
 		// convert date
 		List<When> whens = extAppt.getTimes();
-		if (whens == null) {
-			throw new Exception("Appointment " + appt.getText()
-					+ " has no event times (recurs?) cannot sync...");
+		if (whens == null || whens.isEmpty()) {
+			Recurrence rec = extAppt.getRecurrence();
+			if (rec != null) {
+				// TODO - handle recurrence
+				System.out.println(rec.getValue());
+			}
+			throw new Exception("Appointment " + appt.getText() + " "
+					+ appt.getDate()
+					+ " has no event times cannot sync...");
 		}
 		When when = whens.get(0);
 		DateTime start = when.getStartTime();
 		DateTime end = when.getEndTime();
 
-		if( start.isDateOnly() && !AppointmentModel.isNote(appt))
+		if (start.isDateOnly() && !AppointmentModel.isNote(appt))
 			needs_update = true;
 		else if (!start.isDateOnly() && AppointmentModel.isNote(appt))
 			needs_update = true;
-		else if (!start.isDateOnly() && Math.abs(start.getValue() - appt.getDate().getTime()) > 1000 * 60 * 3)
+		else if (!start.isDateOnly()
+				&& Math.abs(start.getValue() - appt.getDate().getTime()) > 1000 * 60 * 3)
 			needs_update = true;
-		else if( start.isDateOnly())
-		{
-			long offset = this.tzOffset(appt.getDate().getTime())*1000*60;
+		else if (start.isDateOnly()) {
+			long offset = this.tzOffset(appt.getDate().getTime()) * 1000 * 60;
 			if (Math.abs(start.getValue() - appt.getDate().getTime() - offset) > 1000 * 60 * 3)
 				needs_update = true;
 		}
@@ -288,7 +296,7 @@ public class GoogleAppointmentAdapter implements
 		// changing
 		// the dates on all appts for no reason, so need this extra checking
 		if (!needs_update)
-			throw new Exception("No Update needed for " + extAppt.getIcalUID());
+			throw new Warning("No Update needed for " + extAppt.getIcalUID());
 
 		return appt;
 	}
