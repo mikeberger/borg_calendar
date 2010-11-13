@@ -307,9 +307,10 @@ public class AppointmentModel extends Model implements Model.Listener,
 	 */
 	public void delAppt(Appointment appt, boolean undo) {
 
+		Appointment orig_appt = null;
 		try {
 
-			Appointment orig_appt = getAppt(appt.getKey());
+			orig_appt = getAppt(appt.getKey());
 
 			LinkModel.getReference().deleteLinksFromEntity(appt);
 			LinkModel.getReference().deleteLinksToEntity(appt);
@@ -334,7 +335,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 
 			// refresh all views that are displaying appt data from this
 			// model
-			refreshListeners();
+			refreshListeners(new ChangeEvent(new Integer(appt.getKey()), ChangeEvent.ChangeAction.DELETE));
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
 			return;
@@ -714,8 +715,12 @@ public class AppointmentModel extends Model implements Model.Listener,
 	 * @see net.sf.borg.model.Model.Listener#refresh()
 	 */
 	@Override
-	public void refresh() {
-
+	public void update(ChangeEvent event) {
+		refresh();
+	}
+	
+	public void refresh()
+	{
 		try {
 			buildMap();
 		} catch (Exception e) {
@@ -724,7 +729,6 @@ public class AppointmentModel extends Model implements Model.Listener,
 
 		// refresh all views that are displaying appt data from this model
 		refreshListeners();
-
 	}
 
 	/**
@@ -747,6 +751,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 	 */
 	public void saveAppt(Appointment r, boolean undo) {
 
+		ChangeEvent.ChangeAction action = ChangeEvent.ChangeAction.ADD;
 		try {
 			Appointment orig_appt = null;
 			if (r.getKey() != -1)
@@ -766,6 +771,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 				}
 			} else {
 
+				action = ChangeEvent.ChangeAction.CHANGE;
 				db_.updateObj(r);
 				if (!undo) {
 					UndoLog.getReference().addItem(
@@ -789,7 +795,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 
 			// refresh all views that are displaying appt data from this
 			// model
-			refreshListeners();
+			refreshListeners(new ChangeEvent(new Integer(r.getKey()), action));
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
 			return;

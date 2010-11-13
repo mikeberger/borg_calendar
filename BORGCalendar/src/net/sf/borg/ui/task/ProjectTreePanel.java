@@ -50,6 +50,7 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.Model;
 import net.sf.borg.model.TaskModel;
+import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.entity.KeyedEntity;
 import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Task;
@@ -590,11 +591,15 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 	public void mouseReleased(MouseEvent arg0) {
 		// empty
 	}
+	
+	@Override
+	public void update(ChangeEvent event) {
+		refresh();
+	}
 
 	/**
 	 * refresh the entire tree from the task model
 	 */
-	@Override
 	public void refresh() {
 		DefaultMutableTreeNode top = new DefaultMutableTreeNode(Resource
 				.getResourceString("projects"));

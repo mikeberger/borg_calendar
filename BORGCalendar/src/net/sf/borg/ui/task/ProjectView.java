@@ -48,6 +48,7 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.common.Warning;
 import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.TaskModel;
+import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Task;
 import net.sf.borg.ui.DockableView;
@@ -456,6 +457,11 @@ public class ProjectView extends DockableView {
 	public void refresh() {
 		// the task editor does not refresh itself when the task data
 		// model changes
+	}
+	
+	@Override
+	public void update(ChangeEvent event) {
+		refresh();
 	}
 
 	/**

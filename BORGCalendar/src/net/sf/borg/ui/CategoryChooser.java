@@ -37,6 +37,7 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.TaskModel;
+import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.Task;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
@@ -448,6 +449,12 @@ public class CategoryChooser extends View {
 	public void refresh() {
 	  // empty
 	}
+	
+	@Override
+	public void update(ChangeEvent event) {
+		refresh();
+	}
+	
 	/**
 	 * This method initializes selectAllButton.
 	 * 

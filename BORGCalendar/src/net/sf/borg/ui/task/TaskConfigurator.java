@@ -54,6 +54,7 @@ import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.TaskTypes;
+import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.View;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
@@ -794,6 +795,11 @@ public class TaskConfigurator extends View {
 		typeList.setListData(types);
 		if (typesel != null)
 			typeList.setSelectedValue(typesel, true);
+	}
+	
+	@Override
+	public void update(ChangeEvent event) {
+		refresh();
 	}
 
 	/**

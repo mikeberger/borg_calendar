@@ -49,6 +49,7 @@ import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.Model;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.TaskTypes;
+import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Task;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
@@ -492,6 +493,11 @@ class TaskListPanel extends JPanel implements Model.Listener {
 		refresh();
 
 	}
+	
+	@Override
+	public void update(ChangeEvent event) {
+		refresh();
+	}
 
 	/**
 	 * Prints the task table
@@ -508,7 +514,6 @@ class TaskListPanel extends JPanel implements Model.Listener {
 	/**
 	 * reload from the model and re-apply filter criteria
 	 */
-	@Override
 	public void refresh() {
 
 		int row = 0;

@@ -46,6 +46,7 @@ import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.AddressModel;
+import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.entity.Address;
 import net.sf.borg.ui.DockableView;
 import net.sf.borg.ui.MultiView;
@@ -523,6 +524,11 @@ public class AddrListView extends DockableView implements Module {
 	@Override
 	public ViewType getViewType() {
 		return ViewType.ADDRESS;
+	}
+
+	@Override
+	public void update(ChangeEvent event) {
+		refresh();
 	}
 
 

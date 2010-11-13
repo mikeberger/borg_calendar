@@ -45,6 +45,7 @@ import net.sf.borg.common.Warning;
 import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.Model;
 import net.sf.borg.model.TaskModel;
+import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Task;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
@@ -492,11 +493,15 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 			Errmsg.errmsg(e);
 		}
 	}
+	
+	@Override
+	public void update(ChangeEvent event) {
+		refresh();
+	}
 
 	/**
 	 * refresh when the task model changes
 	 */
-	@Override
 	public void refresh() {
 
 		int row = 0;

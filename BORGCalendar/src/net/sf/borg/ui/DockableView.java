@@ -233,7 +233,6 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.Model.Listener#refresh()
 	 */
-	@Override
 	public abstract void refresh();
 
 	/* (non-Javadoc)

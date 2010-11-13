@@ -174,7 +174,6 @@ public abstract class View extends JFrame implements Model.Listener {
 	 * refresh the view. called when one of the registered models changes. can
 	 * be called any time a refresh is needed as well.
 	 */
-	@Override
 	public abstract void refresh();
 
 	/**

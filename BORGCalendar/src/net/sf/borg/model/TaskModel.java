@@ -777,6 +777,16 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 		load_map();
 		refreshListeners();
 	}
+	
+	public void refresh()
+	{
+		try {
+			load_map();
+			refreshListeners();
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
+		}
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -784,14 +794,8 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 	 * @see net.sf.borg.model.Model.Listener#refresh()
 	 */
 	@Override
-	public void refresh() {
-		try {
-			load_map();
-			refreshListeners();
-		} catch (Exception e) {
-			Errmsg.errmsg(e);
-		}
-
+	public void update(ChangeEvent event) {
+		refresh();
 	}
 
 	/**

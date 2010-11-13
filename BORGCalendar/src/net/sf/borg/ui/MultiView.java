@@ -42,6 +42,7 @@ import javax.swing.border.BevelBorder;
 
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Resource;
+import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.ui.util.JTabbedPaneWithCloseIcons;
 
 /**
@@ -429,6 +430,11 @@ public class MultiView extends View {
 	@Override
 	public void refresh() {
 		// nothing to refresh for this view
+	}
+	
+	@Override
+	public void update(ChangeEvent event) {
+		refresh();
 	}
 
 	/**

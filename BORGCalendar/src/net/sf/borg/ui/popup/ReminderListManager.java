@@ -30,6 +30,7 @@ import java.util.Date;
 import java.util.List;
 
 import net.sf.borg.model.AppointmentModel;
+import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.entity.Appointment;
 
 /**
@@ -139,6 +140,11 @@ public class ReminderListManager extends ReminderManager {
 			reminderList.updateTimes();
 		}
 
+	}
+	
+	@Override
+	public void update(ChangeEvent event) {
+		refresh();
 	}
 
 	/*

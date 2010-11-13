@@ -38,6 +38,7 @@ import javax.swing.JScrollPane;
 
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
+import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.ui.MultiView.Module;
 import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
@@ -102,6 +103,11 @@ class InfoView extends DockableView implements Module {
 	@Override
 	public void refresh() {
 	  // empty
+	}
+	
+	@Override
+	public void update(ChangeEvent event) {
+		refresh();
 	}
 	
 	@Override

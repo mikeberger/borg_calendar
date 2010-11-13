@@ -248,7 +248,6 @@ public abstract class ReminderManager implements Model.Listener {
 	 * In particular, clean up any popups that should no longer be shown because
 	 * of model changes.
 	 */
-	@Override
 	abstract public void refresh();
 
 	/**

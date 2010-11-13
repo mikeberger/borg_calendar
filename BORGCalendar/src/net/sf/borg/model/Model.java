@@ -36,9 +36,54 @@ import java.util.ArrayList;
 public abstract class Model
 {
 
-    // list of clients to notify when the model changes
-    private ArrayList<Listener> listeners;
+    /**
+	 * The Class ChangeEvent.
+	 */
+	public static class ChangeEvent {
 
+		/**
+		 * Enum to hold actions that can happen to an object
+		 */
+		public static enum ChangeAction {
+			ADD, CHANGE, DELETE;
+		}
+
+		private ChangeAction action;
+
+		private Object object;
+
+		/**
+		 * Instantiates a new change event.
+		 *
+		 * @param object the changed object
+		 * @param action the action
+		 */
+		public ChangeEvent(Object object, ChangeAction action)
+		{
+			this.object = object;
+			this.action = action;
+		}
+		
+		/**
+		 * Gets the action.
+		 * 
+		 * @return the action
+		 */
+		public ChangeAction getAction() {
+			return action;
+		}
+
+		/**
+		 * Gets the changed Object.
+		 * 
+		 * @return the changed Object
+		 */
+		public Object getObject() {
+			return object;
+		}
+
+	}
+	
 	/**
 	 * Listener for a Model.
 	 * 
@@ -49,9 +94,12 @@ public abstract class Model
 		/**
 		 * Called to notify Listener when the Model is changed.
 		 */
-		public abstract void refresh();
+		public abstract void update(ChangeEvent event);
 		
 	}
+	
+	// list of clients to notify when the model changes
+    private ArrayList<Listener> listeners;
     
     /**
      * Instantiates a new model.
@@ -72,6 +120,33 @@ public abstract class Model
     }
     
     /**
+     * send an update message to all listeners with no change event
+     */
+    protected void refreshListeners()
+    {
+    	refreshListeners(null);
+    }
+    
+    /**
+     * send an update message to all listeners with a change event.
+     */
+    protected void refreshListeners(ChangeEvent event)
+    {
+        for( int i = 0; i < listeners.size(); i++ )
+        {
+            Listener v = listeners.get(i);
+            v.update(event);
+        }
+    }
+    
+    /**
+     * Removes the listeners.
+     */
+    public void remove(){
+    	removeListeners();
+    }
+    
+    /**
     * Removes a listener.
     * 
     * @param listener the listener
@@ -82,30 +157,11 @@ public abstract class Model
     }
     
     /**
-     * send a Refresh message to all listeners.
-     */
-    protected void refreshListeners()
-    {
-        for( int i = 0; i < listeners.size(); i++ )
-        {
-            Listener v = listeners.get(i);
-            v.refresh();
-        }
-    }
-    
-    /**
      * notify all listeners that the model is being destroyed
      */
     protected void removeListeners()
     {
         listeners.clear();     
-    }
-    
-    /**
-     * Removes the listeners.
-     */
-    public void remove(){
-    	removeListeners();
     }
     
 }

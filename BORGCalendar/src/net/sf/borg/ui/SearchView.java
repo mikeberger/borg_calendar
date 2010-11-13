@@ -49,6 +49,7 @@ import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.MemoModel;
 import net.sf.borg.model.SearchCriteria;
 import net.sf.borg.model.TaskModel;
+import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.entity.Address;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.KeyedEntity;
@@ -637,6 +638,11 @@ public class SearchView extends DockableView implements Module {
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
 		}
+	}
+	
+	@Override
+	public void update(ChangeEvent event) {
+		refresh();
 	}
 
 	/*

@@ -52,6 +52,7 @@ import net.sf.borg.model.LinkModel;
 import net.sf.borg.model.Model;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.LinkModel.LinkType;
+import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.entity.Address;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.KeyedEntity;
@@ -597,11 +598,15 @@ public class LinkPanel extends JPanel implements Model.Listener {
 			}
 		}
 	}
+	
+	@Override
+	public void update(ChangeEvent event) {
+		refresh();
+	}
 
 	/**
 	 * reload the data from the model and redisplay
 	 */
-	@Override
 	public void refresh() {
 
 		TableSorter tm = (TableSorter) linkTable.getModel();

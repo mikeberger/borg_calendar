@@ -63,6 +63,7 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.control.EmailReminder;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.TaskModel;
+import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.ui.DockableView;
 import net.sf.borg.ui.ResourceHelper;
@@ -730,5 +731,10 @@ public class AppointmentListView extends DockableView implements
 
 		appointmentPanel.showapp(apptkey.intValue(), null);
 
+	}
+	
+	@Override
+	public void update(ChangeEvent event) {
+		refresh();
 	}
 }

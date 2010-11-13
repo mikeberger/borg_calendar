@@ -37,6 +37,7 @@ import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.AppointmentModel;
+import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.View;
@@ -246,6 +247,11 @@ public class ReminderList extends View {
 	@Override
 	public void refresh() {
 		refresh(false);
+	}
+	
+	@Override
+	public void update(ChangeEvent event) {
+		refresh();
 	}
 
 	/**

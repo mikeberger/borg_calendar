@@ -38,6 +38,7 @@ import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.AddressModel;
+import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.entity.Address;
 import net.sf.borg.ui.DockableView;
 import net.sf.borg.ui.ResourceHelper;
@@ -493,5 +494,10 @@ public class AddressView extends DockableView {
 
 		linkPanel.setOwner(addr_);
 
+	}
+
+	@Override
+	public void update(ChangeEvent event) {
+		// empty
 	}
 }

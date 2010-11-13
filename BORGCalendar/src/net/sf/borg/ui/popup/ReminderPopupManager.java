@@ -31,6 +31,7 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import net.sf.borg.model.AppointmentModel;
+import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.entity.Appointment;
 
 /**
@@ -77,6 +78,11 @@ public class ReminderPopupManager extends ReminderManager {
 
 			popup.dispose();
 		}
+	}
+	
+	@Override
+	public void update(ChangeEvent event) {
+		refresh();
 	}
 
 	/*

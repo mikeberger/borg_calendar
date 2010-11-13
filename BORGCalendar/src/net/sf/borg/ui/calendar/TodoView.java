@@ -74,6 +74,7 @@ import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.Repeat;
 import net.sf.borg.model.TaskModel;
+import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.KeyedEntity;
 import net.sf.borg.model.entity.Project;
@@ -1140,6 +1141,11 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 
 	}
 
+	@Override
+	public void update(ChangeEvent event) {
+		refresh();
+	}
+	
 	@Override
 	public String getModuleName() {
 		return Resource.getResourceString("To_Do");

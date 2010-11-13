@@ -55,6 +55,7 @@ import net.sf.borg.common.IOHelper;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.MemoModel;
 import net.sf.borg.model.Model;
+import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.entity.Memo;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.MultiView.Module;
@@ -442,7 +443,6 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 	 * refresh the UI. This does not do anything if the user is currently in the
 	 * middle of editing a memo.
 	 */
-	@Override
 	public void refresh() {
 
 		// if the user is editing a row, don't process the refresh
@@ -454,6 +454,11 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 			Errmsg.errmsg(e);
 		}
 
+	}
+	
+	@Override
+	public void update(ChangeEvent event) {
+		refresh();
 	}
 
 	/**

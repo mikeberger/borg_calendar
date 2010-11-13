@@ -63,6 +63,7 @@ import net.sf.borg.common.Warning;
 import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.LinkModel;
 import net.sf.borg.model.TaskModel;
+import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Subtask;
 import net.sf.borg.model.entity.Task;
@@ -950,6 +951,11 @@ public class TaskView extends DockableView {
 			taskTabbedPanel.setForegroundAt(3, Color.red);
 		} else
 			taskTabbedPanel.setForegroundAt(3, Color.black);
+	}
+	
+	@Override
+	public void update(ChangeEvent event) {
+		refresh();
 	}
 
 	/**

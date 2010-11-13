@@ -59,6 +59,7 @@ import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Day;
 import net.sf.borg.model.Model;
 import net.sf.borg.model.TaskModel;
+import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.CalendarEntity;
 import net.sf.borg.ui.MultiView;
@@ -681,6 +682,11 @@ public class WeekPanel extends JPanel implements Printable, CalendarModule {
 			repaint();
 		}
 
+		@Override
+		public void update(ChangeEvent event) {
+			refresh();
+		}
+		
 		/**
 		 * navigate to the current week
 		 */

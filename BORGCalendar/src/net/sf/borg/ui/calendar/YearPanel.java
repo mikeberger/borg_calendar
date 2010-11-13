@@ -50,6 +50,7 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Day;
 import net.sf.borg.model.Model;
+import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.entity.CalendarEntity;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.NavPanel;
@@ -482,6 +483,11 @@ public class YearPanel extends JPanel implements Printable, CalendarModule {
 		public void refresh() {
 			clearData();
 			repaint();
+		}
+		
+		@Override
+		public void update(ChangeEvent event) {
+			refresh();
 		}
 
 		/**
