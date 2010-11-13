@@ -54,6 +54,7 @@ public class LinkJdbcDB extends JdbcBeanDB<Link> implements LinkDB {
 		stmt.setString(5, att.getPath());
 
 		stmt.executeUpdate();
+        stmt.close();
 
 		writeCache(att);
 
@@ -68,6 +69,7 @@ public class LinkJdbcDB extends JdbcBeanDB<Link> implements LinkDB {
 				.prepareStatement("DELETE FROM links WHERE id = ?");
 		stmt.setInt(1, key);
 		stmt.executeUpdate();
+        stmt.close();
 
 		delCache(key);
 	}
@@ -87,6 +89,8 @@ public class LinkJdbcDB extends JdbcBeanDB<Link> implements LinkDB {
 		while (rs.next()) {
 			keys.add(new Integer(rs.getInt("id")));
 		}
+		rs.close();
+        stmt.close();
 
 		return (keys);
 
@@ -103,6 +107,9 @@ public class LinkJdbcDB extends JdbcBeanDB<Link> implements LinkDB {
 		int maxKey = 0;
 		if (r.next())
 			maxKey = r.getInt(1);
+		r.close();
+        stmt.close();
+
 		return ++maxKey;
 	}
 
@@ -122,6 +129,7 @@ public class LinkJdbcDB extends JdbcBeanDB<Link> implements LinkDB {
 		PreparedStatement stmt = connection_
 				.prepareStatement("SELECT * FROM links WHERE id = ?");
 		stmt.setInt(1, key);
+		
 		return stmt;
 	}
 
@@ -168,6 +176,7 @@ public class LinkJdbcDB extends JdbcBeanDB<Link> implements LinkDB {
 		stmt.setInt(5, att.getKey());
 
 		stmt.executeUpdate();
+        stmt.close();
 
 		delCache(att.getKey());
 		writeCache(att);

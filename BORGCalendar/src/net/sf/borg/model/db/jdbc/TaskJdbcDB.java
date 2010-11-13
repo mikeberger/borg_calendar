@@ -87,6 +87,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
         stmt.executeUpdate();
 
         writeCache(task);
+        stmt.close();
 
     }
 
@@ -98,6 +99,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
         PreparedStatement stmt = connection_.prepareStatement("DELETE FROM tasks WHERE tasknum = ?");
         stmt.setInt(1, key);
         stmt.executeUpdate();
+        stmt.close();
 
         delCache(key);
     }
@@ -116,6 +118,8 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
         while (rs.next()) {
             keys.add(new Integer(rs.getInt("tasknum")));
         }
+        rs.close();
+        stmt.close();
 
         return (keys);
 
@@ -131,6 +135,9 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
         int maxKey = 0;
         if (r.next())
             maxKey = r.getInt(1);
+        r.close();
+        stmt.close();
+
         return ++maxKey;
     }
 
@@ -229,6 +236,8 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
 
         delCache(task.getKey());
         writeCache(task);
+        stmt.close();
+
     }
 
     /**
@@ -334,6 +343,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
         PreparedStatement stmt = connection_.prepareStatement("DELETE FROM subtasks WHERE id = ?");
         stmt.setInt(1, id);
         stmt.executeUpdate();
+        stmt.close();
 
     }
 
@@ -369,6 +379,8 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
         stmt.setInt(6, s.getTask().intValue());
 
         stmt.executeUpdate();
+        stmt.close();
+
     }
 
     /* (non-Javadoc)
@@ -403,6 +415,8 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
         stmt.setInt(5, s.getTask().intValue());
 
         stmt.executeUpdate();
+        stmt.close();
+
     }
 
     /* (non-Javadoc)
@@ -415,6 +429,9 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
         int maxKey = 0;
         if (r.next())
             maxKey = r.getInt(1);
+        r.close();
+        stmt.close();
+
         return ++maxKey;
     }
 
@@ -431,6 +448,9 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
         int maxKey = 0;
         if (r.next())
             maxKey = r.getInt(1);
+        r.close();
+        stmt.close();
+
         return ++maxKey;
     }
 
@@ -449,6 +469,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
         stmt.setInt(4, taskid);
 
         stmt.executeUpdate();
+        stmt.close();
 
     }
 
@@ -467,6 +488,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
         stmt.setInt(4, tlog.getTask().intValue());
 
         stmt.executeUpdate();
+        stmt.close();
 
     }
 
@@ -573,6 +595,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
             stmt.setNull(7, java.sql.Types.INTEGER);
 
         stmt.executeUpdate();
+        stmt.close();
 
     }
 
@@ -584,6 +607,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
         PreparedStatement stmt = connection_.prepareStatement("DELETE FROM projects WHERE id = ?");
         stmt.setInt(1, id);
         stmt.executeUpdate();
+        stmt.close();
 
     }
 
@@ -699,6 +723,9 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
         int maxKey = 0;
         if (r.next())
             maxKey = r.getInt(1);
+        r.close();
+        stmt.close();
+
         return ++maxKey;
     }
 
@@ -732,6 +759,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
         else
             stmt.setNull(6, java.sql.Types.INTEGER);
         stmt.executeUpdate();
+        stmt.close();
 
     }
 

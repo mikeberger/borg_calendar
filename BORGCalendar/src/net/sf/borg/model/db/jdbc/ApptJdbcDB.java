@@ -111,6 +111,8 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
         stmt.executeUpdate();
         
         writeCache( appt );
+        
+        stmt.close();
     }
     
     /* (non-Javadoc)
@@ -124,6 +126,9 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
         stmt.executeUpdate();
         
         delCache( key );
+        
+        stmt.close();
+
     }
     
     /**
@@ -160,8 +165,12 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
         {
             keys.add( new Integer(rs.getInt("appt_num")) );
         }
-        
+        rs.close();
+        stmt.close();
+
         return( keys );
+        
+        
         
     }
     
@@ -179,6 +188,9 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
             keys.add( new Integer(rs.getInt("appt_num")) );
         }
         
+        rs.close();
+        stmt.close();
+
         return( keys );
         
     }
@@ -194,6 +206,9 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
        int maxKey = 0;
        if (r.next())
            maxKey = r.getInt(1);
+       r.close();
+       stmt.close();
+
        return ++maxKey;
     }
     
@@ -308,7 +323,8 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
         stmt.setInt( 19, appt.getKey() );
 
         stmt.executeUpdate();
-        
+        stmt.close();
+
         delCache( appt.getKey() );
         writeCache( appt );
     }

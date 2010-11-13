@@ -307,6 +307,8 @@ abstract public class JdbcDB {
 		if (rs.next()) {
 			ret = rs.getString("value");
 		}
+		rs.close();
+        stmt.close();
 
 		return (ret);
 	}
@@ -329,6 +331,9 @@ abstract public class JdbcDB {
 							.getString("value")));
 		}
 
+		rs.close();
+        stmt.close();
+
 		return (keys);
 
 	}
@@ -349,6 +354,8 @@ abstract public class JdbcDB {
 					.prepareStatement("DELETE FROM options WHERE name = ?");
 			stmt.setString(1, oname);
 			stmt.executeUpdate();
+	        stmt.close();
+
 		} catch (Exception e) {
 		  // empty
 		}
@@ -364,6 +371,8 @@ abstract public class JdbcDB {
 		stmt.setString(2, value);
 
 		stmt.executeUpdate();
+        stmt.close();
+
 	}
 
 	/**

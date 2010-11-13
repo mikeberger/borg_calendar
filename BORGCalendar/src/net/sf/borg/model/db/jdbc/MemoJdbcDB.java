@@ -61,6 +61,7 @@ public class MemoJdbcDB extends JdbcDB implements MemoDB {
 			stmt.setString(3, "N");
 
 		stmt.executeUpdate();
+        stmt.close();
 
 	}
 
@@ -72,6 +73,7 @@ public class MemoJdbcDB extends JdbcDB implements MemoDB {
 		PreparedStatement stmt = connection_.prepareStatement("DELETE FROM memos WHERE memoname = ?");
 		stmt.setString(1, name);
 		stmt.executeUpdate();
+        stmt.close();
 
 	}
 
@@ -88,6 +90,8 @@ public class MemoJdbcDB extends JdbcDB implements MemoDB {
 		while (rs.next()) {
 			keys.add(rs.getString("memoname"));
 		}
+		rs.close();
+        stmt.close();
 
 		return (keys);
 
@@ -192,6 +196,7 @@ public class MemoJdbcDB extends JdbcDB implements MemoDB {
 		stmt.setString(3, m.getMemoName());
 
 		stmt.executeUpdate();
+        stmt.close();
 
 	}
 

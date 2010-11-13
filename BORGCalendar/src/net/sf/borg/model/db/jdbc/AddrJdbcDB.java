@@ -79,7 +79,8 @@ public class AddrJdbcDB extends JdbcBeanDB<Address> implements EntityDB<Address>
         else
             stmt.setDate(24, null );
         stmt.executeUpdate();
-        
+        stmt.close();
+
         writeCache( addr );
 
     }
@@ -93,7 +94,8 @@ public class AddrJdbcDB extends JdbcBeanDB<Address> implements EntityDB<Address>
         PreparedStatement stmt = connection_.prepareStatement( "DELETE FROM addresses WHERE address_num = ?" );
         stmt.setInt( 1, key );
         stmt.executeUpdate();
-        
+        stmt.close();
+
         delCache( key );
     }
     
@@ -113,7 +115,10 @@ public class AddrJdbcDB extends JdbcBeanDB<Address> implements EntityDB<Address>
         {
             keys.add( new Integer(rs.getInt("address_num")) );
         }
+        rs.close();
         
+        stmt.close();
+
         return( keys );
         
     }
@@ -129,6 +134,9 @@ public class AddrJdbcDB extends JdbcBeanDB<Address> implements EntityDB<Address>
         int maxKey = 0;
         if( r.next() )
             maxKey = r.getInt(1);
+        r.close();
+        stmt.close();
+
         return ++maxKey;
     }
     
@@ -242,7 +250,8 @@ public class AddrJdbcDB extends JdbcBeanDB<Address> implements EntityDB<Address>
         stmt.setInt( 24, addr.getKey() );
 
         stmt.executeUpdate();
-               
+        stmt.close();
+
         delCache( addr.getKey() );
         writeCache( addr );
     }
