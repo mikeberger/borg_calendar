@@ -31,7 +31,7 @@ import net.sf.borg.common.Resource;
  * It is meant to be called during model initialization - preferably from the constructors
  * of the JdbcDB classes
  */
-class JdbcDBUpgrader {
+public class JdbcDBUpgrader {
 
 	/** The check sql. */
 	private String checkSql;
