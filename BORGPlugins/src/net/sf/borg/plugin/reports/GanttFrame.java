@@ -25,6 +25,7 @@ import java.util.Date;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Warning;
+import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Subtask;
@@ -238,6 +239,11 @@ class GanttFrame extends View {
 	@Override
 	public void refresh() {
 	  // empty
+	}
+
+	@Override
+	public void update(ChangeEvent event) {
+		refresh();
 	}
 
 }

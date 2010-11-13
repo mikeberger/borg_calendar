@@ -24,7 +24,7 @@ public class GoogleAppointmentAdapter implements
 	private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
 	private SimpleDateFormat dateTimeFormat = new SimpleDateFormat(
 			"yyyyMMdd'T'HHmmss'Z'");
-	
+
 	// magic sequence to distinguish appts created by BORG
 	private final static int BORG_SEQUENCE = 999;
 
@@ -64,7 +64,7 @@ public class GoogleAppointmentAdapter implements
 				rec += "DTEND;VALUE=DATE:" + dateFormat.format(appt.getDate())
 						+ "\n";
 			} else {
-				
+
 				long offset = this.tzOffset(appt.getDate().getTime());
 				Date adjustedStart = new Date(appt.getDate().getTime() - offset
 						* 60 * 1000);
@@ -153,15 +153,30 @@ public class GoogleAppointmentAdapter implements
 		return ee;
 	}
 
+	public int getBorgId(CalendarEventEntry entry) {
+
+		String uid = entry.getIcalUID();
+		int idx = uid.indexOf('@');
+		String ks = uid.substring(0, idx);
+		try {
+			int key = Integer.parseInt(ks);
+			return key;
+		} catch (Exception e) {
+		}
+
+		return -1;
+
+	}
+
 	@Override
 	public Appointment toBorg(CalendarEventEntry extAppt) throws Exception {
-		
+
 		Appointment appt = null;
 		boolean needs_update = false;
 
 		// handle appts that came from borg
 		if (extAppt.getSequence() >= BORG_SEQUENCE) {
-			
+
 			// fetch borg appt to update
 			String uid = extAppt.getIcalUID();
 			int idx = uid.indexOf('@');
@@ -171,26 +186,23 @@ public class GoogleAppointmentAdapter implements
 				appt = AppointmentModel.getReference().getAppt(key);
 			} catch (Exception e) {
 			}
-			
+
 			// need to update appt if google incremented the sequence
-			if( extAppt.getSequence() > BORG_SEQUENCE )
+			if (extAppt.getSequence() > BORG_SEQUENCE)
 				needs_update = true;
 
-		}
-		else
-		{
+		} else {
 			// sync all google-created appts
 			needs_update = true;
 		}
-		
-		
+
 		if (appt == null) {
 			// handle event added to google or not in borg for some other reason
 			appt = AppointmentModel.getReference().getDefaultAppointment();
 			if (appt == null)
 				appt = AppointmentModel.getReference().newAppt();
 		}
-		
+
 		// convert body and content to borg appt text
 		String body = "";
 		if (extAppt.getContent() != null
@@ -198,94 +210,104 @@ public class GoogleAppointmentAdapter implements
 			TextContent tc = (TextContent) extAppt.getContent();
 			body = tc.getContent().getPlainText();
 		}
-		
-		// google trims body and title, so we need to consider this when checking for differences
-		if( !body.trim().equals(getBody(appt).trim()))
+
+		// google trims body and title, so we need to consider this when
+		// checking for differences
+		if (!body.trim().equals(getBody(appt).trim()))
 			needs_update = true;
 
-		if( !extAppt.getTitle().getPlainText().trim().equals(getTitle(appt).trim()))
+		if (!extAppt.getTitle().getPlainText().trim()
+				.equals(getTitle(appt).trim()))
 			needs_update = true;
 
 		appt.setText(extAppt.getTitle().getPlainText() + "\n" + body);
-		
+
 		// convert date
 		List<When> whens = extAppt.getTimes();
-		if( whens == null )
-		{
+		if (whens == null) {
 			throw new Exception("Appointment " + appt.getText()
 					+ " has no event times (recurs?) cannot sync...");
 		}
 		When when = whens.get(0);
 		DateTime start = when.getStartTime();
 		DateTime end = when.getEndTime();
-		
-		if( Math.abs(start.getValue()-appt.getDate().getTime()) > 1000*60*3)
+
+		if( start.isDateOnly() && !AppointmentModel.isNote(appt))
 			needs_update = true;
-		
-		// not sure why non-timed need this...
-		if( start.isDateOnly())
+		else if (!start.isDateOnly() && AppointmentModel.isNote(appt))
+			needs_update = true;
+		else if (!start.isDateOnly() && Math.abs(start.getValue() - appt.getDate().getTime()) > 1000 * 60 * 3)
+			needs_update = true;
+		else if( start.isDateOnly())
 		{
-			appt.setDate(new Date(start.getValue() - TimeZone.getDefault().getOffset(start.getValue())));
+			long offset = this.tzOffset(appt.getDate().getTime())*1000*60;
+			if (Math.abs(start.getValue() - appt.getDate().getTime() - offset) > 1000 * 60 * 3)
+				needs_update = true;
 		}
-		else
-		{
+
+		// not sure why non-timed need this...
+		if (start.isDateOnly()) {
+			appt.setDate(new Date(start.getValue()
+					- TimeZone.getDefault().getOffset(start.getValue())));
+		} else {
 			appt.setDate(new Date(start.getValue()));
 		}
-		
+
 		Integer dur = appt.getDuration();
 		String ut = appt.getUntimed();
-		
-		//System.out.println(appt.getText() + " " + DateFormat.getDateTimeInstance().format(appt.getDate()) + " " + start.getTzShift());
-		
+
+		// System.out.println(appt.getText() + " " +
+		// DateFormat.getDateTimeInstance().format(appt.getDate()) + " " +
+		// start.getTzShift());
+
 		if (start.isDateOnly()) {
 			appt.setUntimed("Y");
-		}
-		else
-		{
+		} else {
 			appt.setUntimed("N");
-			long mins = (end.getValue() - start.getValue())/1000/60;
-			if( mins > 0)
-			{
-				appt.setDuration((int)mins);
-				if( dur != null && dur.intValue() != mins)
+			long mins = (end.getValue() - start.getValue()) / 1000 / 60;
+			if (mins > 0) {
+				appt.setDuration((int) mins);
+				if (dur != null && dur.intValue() != mins)
 					needs_update = true;
 
 			}
 		}
-		
-		if( ut != null && !ut.equals(appt.getUntimed()))
+
+		Recurrence rec = extAppt.getRecurrence();
+		if (rec != null)
+			System.out.println(appt.getText() + ":" + rec.getValue());
+
+		if (ut != null && !ut.equals(appt.getUntimed()))
 			needs_update = true;
 
 		// no recurrence for now
-		
+
 		// all other google properties are ignored !!!
-		
-		// should always need an update if we are here. Google or Itouch keeps changing
+
+		// should always need an update if we are here. Google or Itouch keeps
+		// changing
 		// the dates on all appts for no reason, so need this extra checking
-		if( !needs_update )
+		if (!needs_update)
 			throw new Exception("No Update needed for " + extAppt.getIcalUID());
-		
+
 		return appt;
 	}
-	
-	private int tzOffset(long date)
-	{
-		return TimeZone.getDefault().getOffset(date)/(60*1000);
+
+	private int tzOffset(long date) {
+		return TimeZone.getDefault().getOffset(date) / (60 * 1000);
 	}
-	
+
 	/**
 	 * return true if the appt was created by BORG based on sequence and UID
 	 */
-	static boolean isFromBORG(CalendarEventEntry event)
-	{
-		if( event.getSequence() >= BORG_SEQUENCE && event.getIcalUID() != null &&
-				event.getIcalUID().contains("BORGCalendar"))
+	static boolean isFromBORG(CalendarEventEntry event) {
+		if (event.getSequence() >= BORG_SEQUENCE && event.getIcalUID() != null
+				&& event.getIcalUID().contains("BORGCalendar"))
 			return true;
 		return false;
 	}
-	
-	private String getBody(Appointment appt)
-	{
+
+	private String getBody(Appointment appt) {
 		// convert borg text to title and content
 		String t = appt.getText();
 		String body = "";
@@ -295,16 +317,15 @@ public class GoogleAppointmentAdapter implements
 		if (newlineIndex != -1) {
 			body = t.substring(newlineIndex + 1);
 		}
-		
-		if( body == null || body.isEmpty())
+
+		if (body == null || body.isEmpty())
 			body = "No Content";
-		
+
 		return body;
 
 	}
-	
-	private String getTitle(Appointment appt)
-	{
+
+	private String getTitle(Appointment appt) {
 		// convert borg text to title and content
 		String t = appt.getText();
 		String title = "";
@@ -316,7 +337,7 @@ public class GoogleAppointmentAdapter implements
 		} else {
 			title = t;
 		}
-		
+
 		return title;
 
 	}

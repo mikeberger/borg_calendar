@@ -9,6 +9,7 @@ import javax.swing.JMenuItem;
 
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.plugin.sync.google.GoogleSync;
+import net.sf.borg.plugin.sync.google.GoogleSync.SyncMode;
 import net.sf.borg.plugin.sync.google.GoogleSyncOptionsPanel;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.MultiView.Module;
@@ -41,13 +42,29 @@ public class SyncModule implements Module {
 		m.setText(getModuleName());
 
 		JMenuItem googleMI = new JMenuItem();
+		googleMI.setText("Google Sync/Overwrite");
+		googleMI.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					GoogleSync.sync(SyncMode.SYNC_OVERWRITE);
+				} catch (Exception e) {
+					Errmsg.errmsg(e);
+				}
+			}
+		});
+
+		m.add(googleMI);
+		
+		googleMI = new JMenuItem();
 		googleMI.setText("Google Sync");
 		googleMI.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					GoogleSync.sync();
+					GoogleSync.sync(SyncMode.SYNC);
 				} catch (Exception e) {
 					Errmsg.errmsg(e);
 				}
@@ -63,7 +80,7 @@ public class SyncModule implements Module {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					GoogleSync.overwrite();
+					GoogleSync.sync(SyncMode.OVERWRITE);
 				} catch (Exception e) {
 					Errmsg.errmsg(e);
 				}
@@ -75,6 +92,8 @@ public class SyncModule implements Module {
 		parent.addPluginSubMenu(m);
 
 		OptionsView.getReference().addPanel(new GoogleSyncOptionsPanel());
+		
+		SyncLog.getReference();
 
 	}
 
