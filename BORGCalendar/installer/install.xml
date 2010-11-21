@@ -68,8 +68,8 @@
 
     </resources>
 
-<native type="izpack" name="ShellLink.dll"/>
-    
+    <native type="izpack" name="ShellLink.dll"/>
+    <native type="izpack" name="ShellLink_x64.dll" />     
     <!-- 
         The panels section.
         We indicate here which panels we want to use. The order will be respected.
