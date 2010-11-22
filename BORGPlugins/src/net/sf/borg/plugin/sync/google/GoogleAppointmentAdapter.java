@@ -230,9 +230,9 @@ public class GoogleAppointmentAdapter implements
 			Recurrence rec = extAppt.getRecurrence();
 			if (rec != null) {
 				// TODO - handle recurrence
-				System.out.println(rec.getValue());
+				//System.err.println(rec.getValue());
 			}
-			throw new Exception("Appointment " + appt.getText() + " "
+			throw new Warning("Appointment " + appt.getText() + " "
 					+ appt.getDate()
 					+ " has no event times cannot sync...");
 		}

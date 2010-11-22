@@ -160,6 +160,7 @@ public class GoogleSync {
 
 					AppointmentModel.getReference().saveAppt(appt);
 				} catch (Warning w) {
+					System.out.println(w.getMessage());
 					continue;
 				} catch (Exception e) {
 					this.showMessage("doSync1: " + e.getMessage(), false);
