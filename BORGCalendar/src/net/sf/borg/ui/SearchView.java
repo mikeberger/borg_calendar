@@ -41,7 +41,6 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
 import net.sf.borg.common.Errmsg;
-import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.AppointmentModel;
@@ -540,16 +539,6 @@ public class SearchView extends DockableView implements Module {
 		criteria.setVacation(vacationCheckBox.isSelected());
 		criteria.setHasLinks(linkCheckBox.isSelected());
 		return criteria;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.sf.borg.ui.DockableView#getFrameSizePref()
-	 */
-	@Override
-	public PrefName getFrameSizePref() {
-		return PrefName.SRCHVIEWSIZE;
 	}
 
 	/*

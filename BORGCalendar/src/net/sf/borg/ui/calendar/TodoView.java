@@ -503,16 +503,6 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see net.sf.borg.ui.DockableView#getFrameSizePref()
-	 */
-	@Override
-	public PrefName getFrameSizePref() {
-		return PrefName.TODOVIEWSIZE;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see net.sf.borg.ui.DockableView#getFrameTitle()
 	 */
 	@Override

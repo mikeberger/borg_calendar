@@ -43,7 +43,6 @@ import javax.swing.border.LineBorder;
 import javax.swing.event.TableModelEvent;
 
 import net.sf.borg.common.Errmsg;
-import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.Model.ChangeEvent;
@@ -264,11 +263,6 @@ public class AddrListView extends DockableView implements Module {
 			}
 		} while (searchstring != null);
 
-	}
-
-	@Override
-	public PrefName getFrameSizePref() {
-		return PrefName.ADDRLISTVIEWSIZE;
 	}
 
 	@Override

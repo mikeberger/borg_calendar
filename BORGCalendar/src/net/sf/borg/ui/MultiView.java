@@ -266,11 +266,12 @@ public class MultiView extends View {
 	public void addHelpMenuItem(Icon icon, String tooltip, ActionListener action) {
 		mainMenu.addHelpMenuItem(icon, tooltip, action);
 	}
-	
+
 	/**
 	 * add a plugin sub menu
 	 * 
-	 * @param menu - the sub menu
+	 * @param menu
+	 *            - the sub menu
 	 */
 	public void addPluginSubMenu(JMenu menu) {
 		mainMenu.addPluginSubMenu(menu);
@@ -431,7 +432,7 @@ public class MultiView extends View {
 	public void refresh() {
 		// nothing to refresh for this view
 	}
-	
+
 	@Override
 	public void update(ChangeEvent event) {
 		refresh();
@@ -451,18 +452,24 @@ public class MultiView extends View {
 		if (m != null) {
 			Component component = m.getComponent();
 			if (component != null) {
+				if (component instanceof DockableView) {
+					
+					((DockableView) component).showView();
+
+					if (((DockableView) component).isDocked())
+						getTabs().setSelectedComponent(component);
+
+					return component;
+				}
+
 				if (!component.isDisplayable()) {
-					if (component instanceof DockableView) {
-						((DockableView) component).showView();
-						return component;
-					}
 					tabs_.addTab(m.getModuleName(), component);
 				}
+
 				getTabs().setSelectedComponent(component);
 			}
 			return component;
 		}
 		return null;
 	}
-
 }

@@ -43,15 +43,15 @@ import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.Model;
 
-
 /**
- * The Class DockableView is the base class for panels that can appear as stand-alone windows
- * or tabs in the main view and can be docked/undocked at runtime.
+ * The Class DockableView is the base class for panels that can appear as
+ * stand-alone windows or tabs in the main view and can be docked/undocked at
+ * runtime.
  */
 public abstract class DockableView extends JPanel implements Model.Listener {
-	
+
 	private static final long serialVersionUID = 1L;
-	/** The icon for the title bar  */
+	/** The icon for the title bar */
 	static Image image = Toolkit.getDefaultToolkit().getImage(
 			DockableView.class.getResource("/resource/borg32x32.jpg"));
 
@@ -59,8 +59,10 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 	 * store the window size, position, and maximized status in a preference.
 	 * used to have windows remember their sizes automatically.
 	 * 
-	 * @param c the window component
-	 * @param pn the preference
+	 * @param c
+	 *            the window component
+	 * @param pn
+	 *            the preference
 	 */
 	static private void recordSize(Component c, PrefName pn) {
 		ViewSize vs = new ViewSize();
@@ -81,31 +83,45 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 	/**
 	 * register the view for model change callbacks
 	 * 
-	 * @param m the model
+	 * @param m
+	 *            the model
 	 */
 	protected void addModel(Model m) {
 		m.addListener(this);
 	}
-	
+
 	/**
 	 * Shows the view as a docked tab or separate window, depending on the user
 	 * options.
 	 * 
 	 */
 	public void showView() {
+
+		// if showing already....
+		if (frame != null && frame.isDisplayable()) {
+			frame.toFront();
+			return;
+		}
+		
+		if( this.isDisplayable())
+		{
+			// already showing
+			return;
+		}
+
 		String dock = Prefs.getPref(PrefName.DOCKPANELS);
 		if (dock.equals("true")) {
 			this.dock();
-		} else
+		} else {
 			this.openInFrame();
+		}
 	}
-
 
 	/**
 	 * Dock into the multiview
 	 */
 	private void dock() {
-		MultiView.getMainView().addView(getFrameTitle(),this);
+		MultiView.getMainView().addView(getFrameTitle(), this);
 		remove();
 	}
 
@@ -114,7 +130,9 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 	 * 
 	 * @return the window size preference
 	 */
-	public abstract PrefName getFrameSizePref();
+	private PrefName getFrameSizePref() {
+		return new PrefName(getFrameTitle() + "_framesize", "-1,-1,800,600,N");
+	}
 
 	/**
 	 * Gets the frame title.
@@ -129,22 +147,23 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 	 * @return the menu for the frame
 	 */
 	public abstract JMenuBar getMenuForFrame();
-	
+
 	/**
 	 * determine if the view is docked
+	 * 
 	 * @return true if docked
 	 */
-	public boolean isDocked()
-	{
+	public boolean isDocked() {
 		return frame == null;
 	}
 
 	/**
-	 * Sets the window size and position from the stored preference and then sets up
-	 * listeners to store any updates to the window size and position based on
-	 * user actions
+	 * Sets the window size and position from the stored preference and then
+	 * sets up listeners to store any updates to the window size and position
+	 * based on user actions
 	 * 
-	 * @param pname the preference name
+	 * @param pname
+	 *            the preference name
 	 */
 	private void manageMySize(PrefName pname) {
 
@@ -155,8 +174,8 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 		if (vs.isMaximized()) {
 			frame.setExtendedState(Frame.MAXIMIZED_BOTH);
 		} else if (vs.getX() != -1) {
-			frame.setBounds(new Rectangle(vs.getX(), vs.getY(), vs.getWidth(), vs
-					.getHeight()));
+			frame.setBounds(new Rectangle(vs.getX(), vs.getY(), vs.getWidth(),
+					vs.getHeight()));
 		} else if (vs.getWidth() != -1) {
 			frame.setSize(new Dimension(vs.getWidth(), vs.getHeight()));
 		}
@@ -182,29 +201,33 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 	/**
 	 * Open the view in a frame.
 	 * 
-	 * @return the  frame
+	 * @return the frame
 	 */
 	public JFrame openInFrame() {
 		frame = new JFrame();
 		manageMySize(getFrameSizePref());
 		frame.setContentPane(this);
 		JMenuBar bar = getMenuForFrame();
-		
-		// add a dock menu option
-		if (bar != null) {
-			JMenu jm = bar.getMenu(0);
-			JMenuItem jmi = jm.add(Resource.getResourceString("dock"));
-			jmi.addActionListener(new ActionListener() {
 
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					dock();
-				}
-
-			});
-			frame.setJMenuBar(bar);
-
+		if (bar == null) {
+			bar = new JMenuBar();
+			JMenu fileMenu = new JMenu();
+			ResourceHelper.setText(fileMenu, "Action");
+			bar.add(fileMenu);
 		}
+
+		// add a dock menu option
+		JMenu jm = bar.getMenu(0);
+		JMenuItem jmi = jm.add(Resource.getResourceString("dock"));
+		jmi.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				dock();
+			}
+
+		});
+		frame.setJMenuBar(bar);
 
 		frame
 				.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -230,12 +253,16 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 		return frame;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see net.sf.borg.model.Model.Listener#refresh()
 	 */
 	public abstract void refresh();
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see net.sf.borg.model.Model.Listener#remove()
 	 */
 	public void remove() {

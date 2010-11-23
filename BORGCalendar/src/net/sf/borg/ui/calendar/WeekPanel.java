@@ -48,6 +48,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.ImageIcon;
+import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 
 import net.sf.borg.common.Errmsg;
@@ -62,6 +63,7 @@ import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.CalendarEntity;
+import net.sf.borg.ui.DockableView;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.NavPanel;
 import net.sf.borg.ui.MultiView.CalendarModule;
@@ -72,7 +74,7 @@ import net.sf.borg.ui.util.GridBagConstraintsFactory;
  * WeekPanel is the UI for a single week. It consists of a Navigator attached to
  * a WeekSubPanel
  */
-public class WeekPanel extends JPanel implements Printable, CalendarModule {
+public class WeekPanel extends DockableView implements Printable, CalendarModule {
 
 	private static final long serialVersionUID = 1L;
 
@@ -790,6 +792,28 @@ public class WeekPanel extends JPanel implements Printable, CalendarModule {
 	public ViewType getViewType() {
 		return ViewType.WEEK;
 	}
+
+	@Override
+	public String getFrameTitle() {
+		return this.getModuleName();
+	}
+
+	@Override
+	public JMenuBar getMenuForFrame() {
+		return null;
+	}
+
+	@Override
+	public void refresh() {
+		// do nothing - children do their own refresh
+		
+	}
+
+	@Override
+	public void update(ChangeEvent event) {
+		// do nothing - children do their own refresh
+	}
+	
 	
 
 }

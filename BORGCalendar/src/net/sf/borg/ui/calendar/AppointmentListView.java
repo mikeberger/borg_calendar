@@ -348,11 +348,6 @@ public class AppointmentListView extends DockableView implements
 	}
 
 	@Override
-	public PrefName getFrameSizePref() {
-		return PrefName.APPTLISTVIEWSIZE;
-	}
-
-	@Override
 	public String getFrameTitle() {
 		return title_;
 	}

@@ -40,6 +40,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import javax.swing.ImageIcon;
+import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 
 import net.sf.borg.common.Errmsg;
@@ -52,6 +53,7 @@ import net.sf.borg.model.Day;
 import net.sf.borg.model.Model;
 import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.entity.CalendarEntity;
+import net.sf.borg.ui.DockableView;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.NavPanel;
 import net.sf.borg.ui.MultiView.CalendarModule;
@@ -62,7 +64,7 @@ import net.sf.borg.ui.util.GridBagConstraintsFactory;
  * YearPanel is the Year UI. It shows all days of the year and allows navigation to months, days, and weeks.
  * It gives indications of the presence of appointments, but not individual appt details
  */
-public class YearPanel extends JPanel implements Printable, CalendarModule {
+public class YearPanel extends DockableView implements Printable, CalendarModule {
 
 	private static final long serialVersionUID = 1L;
 
@@ -580,4 +582,25 @@ public class YearPanel extends JPanel implements Printable, CalendarModule {
 		return ViewType.YEAR;
 	}
 
+	@Override
+	public String getFrameTitle() {
+		return this.getModuleName();
+	}
+
+	@Override
+	public JMenuBar getMenuForFrame() {
+		return null;
+	}
+
+	@Override
+	public void refresh() {
+		// do nothing - children do their own refresh
+		
+	}
+
+	@Override
+	public void update(ChangeEvent event) {
+		// do nothing - children do their own refresh
+	}
+	
 }

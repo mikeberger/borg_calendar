@@ -274,18 +274,6 @@ public class PrefName {
 	/** The LANGUAGE. */
 	static public PrefName LANGUAGE = new PrefName("language", "");
 
-	/** The ADDRVIEWSIZE. */
-	static public PrefName ADDRVIEWSIZE = new PrefName("addrviewsize",
-			"-1,-1,-1,-1,N");
-
-	/** The ADDRLISTVIEWSIZE. */
-	static public PrefName ADDRLISTVIEWSIZE = new PrefName("addrlistviewsize",
-			"-1,-1,-1,-1,N");
-
-	/** The APPTLISTVIEWSIZE. */
-	static public PrefName APPTLISTVIEWSIZE = new PrefName("apptlistviewsize",
-			"-1,-1,-1,-1,N");
-
 	/** The size of the main borg window. */
 	static public PrefName DAYVIEWSIZE = new PrefName("dayviewsize",
 			"-1,-1,-1,-1,Y");
@@ -294,28 +282,8 @@ public class PrefName {
 	static public PrefName OPTVIEWSIZE = new PrefName("optviewsize",
 			"-1,-1,-1,-1,N");
 
-	/** size of the search window. */
-	static public PrefName SRCHVIEWSIZE = new PrefName("srchviewsize",
-			"-1,-1,-1,-1,N");
-
 	/** size of the task config window */
 	static public PrefName TASKCONFVIEWSIZE = new PrefName("taskconfviewsize",
-			"-1,-1,-1,-1,N");
-
-	/** size of the task view window when undocked */
-	static public PrefName TASKVIEWSIZE = new PrefName("taskviewsize",
-			"-1,-1,-1,-1,N");
-
-	/** size of the todo view when undocked */
-	static public PrefName TODOVIEWSIZE = new PrefName("todoviewsize",
-			"-1,-1,-1,-1,N");
-
-	/** size of the help window */
-	static public PrefName HELPVIEWSIZE = new PrefName("helpviewsize",
-			"-1,-1,-1,-1,N");
-
-	/** size of the project view when undocked */
-	static public PrefName PROJVIEWSIZE = new PrefName("projviewsize",
 			"-1,-1,-1,-1,N");
 
 	/** The GANTT chart size. */

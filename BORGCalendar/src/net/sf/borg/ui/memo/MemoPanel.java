@@ -38,6 +38,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -54,9 +55,9 @@ import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.IOHelper;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.MemoModel;
-import net.sf.borg.model.Model;
 import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.entity.Memo;
+import net.sf.borg.ui.DockableView;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.MultiView.Module;
 import net.sf.borg.ui.MultiView.ViewType;
@@ -70,8 +71,8 @@ import net.sf.borg.ui.util.JTabbedPaneWithCloseIcons.TabCloseListener;
  * UI for editing memos. It has a table that shows all memos by name and an
  * editing panel for editing memo text.
  */
-public class MemoPanel extends JPanel implements ListSelectionListener,
-		Model.Listener, Module, TabCloseListener {
+public class MemoPanel extends DockableView implements ListSelectionListener,
+		Module, TabCloseListener {
 
 	private static final long serialVersionUID = 1L;
 
@@ -443,6 +444,7 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 	 * refresh the UI. This does not do anything if the user is currently in the
 	 * middle of editing a memo.
 	 */
+	@Override
 	public void refresh() {
 
 		// if the user is editing a row, don't process the refresh
@@ -709,4 +711,16 @@ public class MemoPanel extends JPanel implements ListSelectionListener,
 		}
 
 	}
+	
+	@Override
+	public String getFrameTitle() {
+		return this.getModuleName();
+	}
+
+	@Override
+	public JMenuBar getMenuForFrame() {
+		return null;
+	}
+
+	
 }

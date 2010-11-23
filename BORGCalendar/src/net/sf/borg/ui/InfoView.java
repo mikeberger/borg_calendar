@@ -37,7 +37,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JScrollPane;
 
 import net.sf.borg.common.Errmsg;
-import net.sf.borg.common.PrefName;
 import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.ui.MultiView.Module;
 import net.sf.borg.ui.MultiView.ViewType;
@@ -70,11 +69,6 @@ class InfoView extends DockableView implements Module {
 			e1.printStackTrace();
 		}
 
-	}
-
-	@Override
-	public PrefName getFrameSizePref() {
-		return PrefName.HELPVIEWSIZE;
 	}
 
 	@Override

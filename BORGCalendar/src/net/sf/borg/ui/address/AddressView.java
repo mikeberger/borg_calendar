@@ -35,7 +35,6 @@ import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 
 import net.sf.borg.common.Errmsg;
-import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.Model.ChangeEvent;
@@ -107,11 +106,6 @@ public class AddressView extends DockableView {
 		// display the window
 		showaddr();
 
-	}
-
-	@Override
-	public PrefName getFrameSizePref() {
-		return PrefName.ADDRVIEWSIZE;
 	}
 
 	@Override

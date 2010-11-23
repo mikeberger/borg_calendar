@@ -43,7 +43,6 @@ import javax.swing.border.TitledBorder;
 
 import net.sf.borg.common.DateUtil;
 import net.sf.borg.common.Errmsg;
-import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Resource;
 import net.sf.borg.common.Warning;
 import net.sf.borg.model.CategoryModel;
@@ -206,18 +205,6 @@ public class ProjectView extends DockableView {
 			Errmsg.errmsg(e);
 		}
 
-	}
-
-	
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.sf.borg.ui.DockableView#getFrameSizePref()
-	 */
-	@Override
-	public PrefName getFrameSizePref() {
-		return PrefName.PROJVIEWSIZE;
 	}
 
 	/*
