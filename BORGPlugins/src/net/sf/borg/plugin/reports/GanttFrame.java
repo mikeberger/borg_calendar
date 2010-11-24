@@ -48,6 +48,10 @@ import org.jfree.data.time.SimpleTimePeriod;
 class GanttFrame extends View {
 
 	private static final long serialVersionUID = 1L;
+	
+	/** The GANTT chart size. */
+	static private PrefName GANTTSIZE = new PrefName("ganttsize",
+			"-1,-1,-1,-1,N");
 
 	/**
 	 * add an item to the chart
@@ -197,7 +201,7 @@ class GanttFrame extends View {
 		final GanttFrame chartFrame = new GanttFrame(p);
 		chartFrame.pack();
 		chartFrame.setVisible(true);
-		chartFrame.manageMySize(PrefName.GANTTSIZE);
+		chartFrame.manageMySize(GANTTSIZE);
 	}
 
 	/**
