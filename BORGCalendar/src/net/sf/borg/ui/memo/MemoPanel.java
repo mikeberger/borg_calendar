@@ -635,7 +635,10 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 	@Override
 	public void print() {
 		try {
-			this.memoText.print(new MessageFormat(getSelectedMemoName()),
+			String selectedMemo = getSelectedMemoName();
+			if( selectedMemo == null ) return;
+			
+			this.memoText.print(new MessageFormat(selectedMemo),
 					new MessageFormat("{0}"));
 		} catch (PrinterException e) {
 			Errmsg.errmsg(e);
