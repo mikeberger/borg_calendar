@@ -30,6 +30,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -42,6 +43,7 @@ import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.Model;
+import net.sf.borg.ui.MultiView.Module;
 
 /**
  * The Class DockableView is the base class for panels that can appear as
@@ -102,9 +104,8 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 			frame.toFront();
 			return;
 		}
-		
-		if( this.isDisplayable())
-		{
+
+		if (this.isDisplayable()) {
 			// already showing
 			return;
 		}
@@ -214,6 +215,21 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 			JMenu fileMenu = new JMenu();
 			ResourceHelper.setText(fileMenu, "Action");
 			bar.add(fileMenu);
+
+			if (this instanceof Module) {
+				final Module mod = (Module) this;
+				JMenuItem printMI = new JMenuItem(Resource
+						.getResourceString("Print"));
+				printMI.setIcon(new ImageIcon(getClass().getResource(
+						"/resource/Print16.gif")));
+				printMI.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent evt) {
+						mod.print();
+					}
+				});
+				fileMenu.add(printMI);
+			}
 		}
 
 		// add a dock menu option
