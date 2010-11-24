@@ -285,10 +285,6 @@ public class PrefName {
 	/** size of the task config window */
 	static public PrefName TASKCONFVIEWSIZE = new PrefName("taskconfviewsize",
 			"-1,-1,-1,-1,N");
-
-	/** The GANTT chart size. */
-	static public PrefName GANTTSIZE = new PrefName("ganttsize",
-			"-1,-1,-1,-1,N");
 	
 	public static final PrefName REMINDERLISTSIZE = new PrefName("reminderlistsize",
 	"-1,-1,-1,-1,N");
