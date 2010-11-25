@@ -24,9 +24,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.util.Properties;
 
 import javax.swing.Box;
@@ -41,15 +38,13 @@ import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
 import net.sf.borg.common.Errmsg;
-import net.sf.borg.common.IOHelper;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.control.Borg;
 import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.AppointmentModel;
-import net.sf.borg.model.CategoryModel;
-import net.sf.borg.model.CheckListModel;
+import net.sf.borg.model.ExportImport;
 import net.sf.borg.model.LinkModel;
 import net.sf.borg.model.MemoModel;
 import net.sf.borg.model.TaskModel;
@@ -65,7 +60,7 @@ import net.sf.borg.ui.util.ScrolledDialog;
  * 
  */
 class MainMenu {
-	
+
 	private JMenu actionMenu = new JMenu();
 	private JMenu helpmenu = new JMenu();
 	private JMenu pluginMenu = null;
@@ -80,12 +75,12 @@ class MainMenu {
 				javax.swing.border.BevelBorder.RAISED));
 		actionMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 				"/resource/Application16.gif")));
-		
+
 		/*
 		 * 
-		 * Action Menu - will contain static items below and other actions inserted by UI Modules
-		 * UI Module actions will be inserted above the items below
-		 * 
+		 * Action Menu - will contain static items below and other actions
+		 * inserted by UI Modules UI Module actions will be inserted above the
+		 * items below
 		 */
 		ResourceHelper.setText(actionMenu, "Action");
 
@@ -134,8 +129,6 @@ class MainMenu {
 		/*
 		 * 
 		 * Option Menu
-		 * 
-		 * 
 		 */
 		JMenu OptionMenu = new JMenu();
 
@@ -210,16 +203,14 @@ class MainMenu {
 		OptionMenu.add(tsm);
 		menuBar.add(OptionMenu);
 
-
 		/*
 		 * category menu
 		 */
 		menuBar.add(CategoryChooser.getReference().getCategoryMenu());
 
-		/* 
+		/*
 		 * 
 		 * Import/Export Menu
-		 * 
 		 */
 		JMenu impexpMenu = new JMenu();
 		impexpMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource(
@@ -239,7 +230,6 @@ class MainMenu {
 		ResourceHelper.setText(importMI, "impXML");
 		impexpMenu.add(importMI);
 
-		
 		JMenuItem exportMI = new JMenuItem();
 		ResourceHelper.setText(exportMI, "expmenu");
 		exportMI.addActionListener(new java.awt.event.ActionListener() {
@@ -249,26 +239,23 @@ class MainMenu {
 			}
 		});
 		exportMI.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-		"/resource/Export16.gif")));
+				"/resource/Export16.gif")));
 		ResourceHelper.setText(exportMI, "expXML");
 		impexpMenu.add(exportMI);
 
 		menuBar.add(impexpMenu);
 
-
 		/*
 		 * 
 		 * Undo Menu
-		 * 
 		 */
 		menuBar.add(getUndoMenu());
-		
-		
+
 		/*
 		 * plugin menu
 		 */
 		menuBar.add(getPluginMenu());
-		
+
 		/*
 		 * spacing
 		 */
@@ -277,8 +264,6 @@ class MainMenu {
 		/*
 		 * 
 		 * Help Menu
-		 * 
-		 * 
 		 */
 		helpmenu.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 				"/resource/Help16.gif")));
@@ -338,10 +323,11 @@ class MainMenu {
 	 *            the text for the menu item
 	 * @param action
 	 *            the action listener for the menu item
-	 * @param insertIndex 
-	 * 			   the index to insert the menu item at
+	 * @param insertIndex
+	 *            the index to insert the menu item at
 	 */
-	public void addAction(Icon icon, String text, ActionListener action, int insertIndex) {
+	public void addAction(Icon icon, String text, ActionListener action,
+			int insertIndex) {
 		JMenuItem item = new JMenuItem();
 		item.setIcon(icon);
 		item.setText(text);
@@ -382,7 +368,8 @@ class MainMenu {
 			// get the version and build info from a properties file in the
 			// jar
 			// file
-			InputStream is = MainMenu.class.getResource("/properties").openStream();
+			InputStream is = MainMenu.class.getResource("/properties")
+					.openStream();
 			Properties props = new Properties();
 			props.load(is);
 			is.close();
@@ -453,7 +440,7 @@ class MainMenu {
 	private void exportMIActionPerformed() {
 
 		// user wants to export the task and calendar DBs to an XML file
-		File dir;
+		String s;
 		while (true) {
 			// prompt for a directory to store the files
 			JFileChooser chooser = new JFileChooser();
@@ -470,8 +457,8 @@ class MainMenu {
 			if (returnVal != JFileChooser.APPROVE_OPTION)
 				return;
 
-			String s = chooser.getSelectedFile().getAbsolutePath();
-			dir = new File(s);
+			s = chooser.getSelectedFile().getAbsolutePath();
+			File dir = new File(s);
 			String err = null;
 			if (!dir.exists()) {
 				err = Resource.getResourceString("Directory_[") + s
@@ -488,59 +475,7 @@ class MainMenu {
 		}
 
 		try {
-
-			JOptionPane.showMessageDialog(null, Resource
-					.getResourceString("export_notice")
-					+ dir.getAbsolutePath());
-
-			String fname = dir.getAbsolutePath() + "/borg.xml";
-			if (IOHelper.checkOverwrite(fname)) {
-				OutputStream ostr = IOHelper.createOutputStream(fname);
-				Writer fw = new OutputStreamWriter(ostr, "UTF8");
-				AppointmentModel.getReference().export(fw);
-				fw.close();
-			}
-
-			fname = dir.getAbsolutePath() + "/mrdb.xml";
-			if (IOHelper.checkOverwrite(fname)) {
-				OutputStream ostr = IOHelper.createOutputStream(fname);
-				Writer fw = new OutputStreamWriter(ostr, "UTF8");
-				TaskModel.getReference().export(fw);
-				fw.close();
-			}
-
-			fname = dir.getAbsolutePath() + "/addr.xml";
-			if (IOHelper.checkOverwrite(fname)) {
-				OutputStream ostr = IOHelper.createOutputStream(fname);
-				Writer fw = new OutputStreamWriter(ostr, "UTF8");
-				AddressModel.getReference().export(fw);
-				fw.close();
-			}
-
-			fname = dir.getAbsolutePath() + "/memo.xml";
-			if (IOHelper.checkOverwrite(fname)) {
-				OutputStream ostr = IOHelper.createOutputStream(fname);
-				Writer fw = new OutputStreamWriter(ostr, "UTF8");
-				MemoModel.getReference().export(fw);
-				fw.close();
-			}
-			
-			fname = dir.getAbsolutePath() + "/checklist.xml";
-			if (IOHelper.checkOverwrite(fname)) {
-				OutputStream ostr = IOHelper.createOutputStream(fname);
-				Writer fw = new OutputStreamWriter(ostr, "UTF8");
-				CheckListModel.getReference().export(fw);
-				fw.close();
-			}
-
-			fname = dir.getAbsolutePath() + "/link.xml";
-			if (IOHelper.checkOverwrite(fname)) {
-				OutputStream ostr = IOHelper.createOutputStream(fname);
-				Writer fw = new OutputStreamWriter(ostr, "UTF8");
-				LinkModel.getReference().export(fw);
-				fw.close();
-			}
-
+			ExportImport.exportToZip(s);
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
 		}
@@ -576,8 +511,6 @@ class MainMenu {
 
 	}
 
-	
-
 	/**
 	 * get the menu bar
 	 * 
@@ -589,19 +522,17 @@ class MainMenu {
 	}
 
 	/** plugin menu */
-	private JMenu getPluginMenu()
-	{
-		if( pluginMenu == null)
-		{
+	private JMenu getPluginMenu() {
+		if (pluginMenu == null) {
 			pluginMenu = new JMenu();
 			pluginMenu.setText(Resource.getResourceString("Plugins"));
-			pluginMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-			"/resource/Preferences16.gif")));
+			pluginMenu.setIcon(new javax.swing.ImageIcon(getClass()
+					.getResource("/resource/Preferences16.gif")));
 			pluginMenu.setVisible(false);
 		}
 		return pluginMenu;
 	}
-	
+
 	/**
 	 * add a sub menu to the plugin menu
 	 * 
@@ -624,12 +555,12 @@ class MainMenu {
 
 			@Override
 			public void menuCanceled(MenuEvent arg0) {
-			  // empty
+				// empty
 			}
 
 			@Override
 			public void menuDeselected(MenuEvent arg0) {
-			  // empty
+				// empty
 			}
 
 			@Override
@@ -768,23 +699,7 @@ class MainMenu {
 			if (ret != JOptionPane.OK_OPTION)
 				return;
 
-			if (type.equals("ADDRESSES")) {
-				AddressModel.getReference().importXml(fileName);
-			} else if (type.equals("LINKS")) {
-				LinkModel.getReference().importXml(fileName);
-			} else if (type.equals("MEMOS")) {
-				MemoModel.getReference().importXml(fileName);
-			} else if (type.equals("CHECKLISTS")) {
-				CheckListModel.getReference().importXml(fileName);
-			} else if (type.equals("TASKS")) {
-				TaskModel.getReference().importXml(fileName);
-			} else if (type.equals("APPTS")) {
-				AppointmentModel.getReference().importXml(fileName);
-			}
-
-			// show any newly imported categories
-			CategoryModel.getReference().syncCategories();
-			CategoryModel.getReference().showAll();
+			ExportImport.importFromXmlFile(type, fileName);
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
 		}

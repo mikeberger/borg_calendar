@@ -4,15 +4,8 @@ import java.awt.Font;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
@@ -23,12 +16,7 @@ import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.control.Borg;
-import net.sf.borg.model.AddressModel;
-import net.sf.borg.model.AppointmentModel;
-import net.sf.borg.model.CheckListModel;
-import net.sf.borg.model.LinkModel;
-import net.sf.borg.model.MemoModel;
-import net.sf.borg.model.TaskModel;
+import net.sf.borg.model.ExportImport;
 import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.address.AddrListView;
 import net.sf.borg.ui.calendar.DayPanel;
@@ -219,45 +207,7 @@ public class UIControl {
 						+ " " + backupdir + "?", "BORG",
 						JOptionPane.OK_CANCEL_OPTION);
 				if (ret == JOptionPane.YES_OPTION) {
-					SimpleDateFormat sdf = new SimpleDateFormat(
-							"yyyyMMddHHmmss");
-					String uniq = sdf.format(new Date());
-					ZipOutputStream out = new ZipOutputStream(
-							new FileOutputStream(backupdir + "/borg" + uniq
-									+ ".zip"));
-					Writer fw = new OutputStreamWriter(out, "UTF8");
-
-					out.putNextEntry(new ZipEntry("borg.xml"));
-					AppointmentModel.getReference().export(fw);
-					fw.flush();
-					out.closeEntry();
-
-					out.putNextEntry(new ZipEntry("task.xml"));
-					TaskModel.getReference().export(fw);
-					fw.flush();
-					out.closeEntry();
-
-					out.putNextEntry(new ZipEntry("addr.xml"));
-					AddressModel.getReference().export(fw);
-					fw.flush();
-					out.closeEntry();
-
-					out.putNextEntry(new ZipEntry("memo.xml"));
-					MemoModel.getReference().export(fw);
-					fw.flush();
-					out.closeEntry();
-
-					out.putNextEntry(new ZipEntry("checklist.xml"));
-					CheckListModel.getReference().export(fw);
-					fw.flush();
-					out.closeEntry();
-					
-					out.putNextEntry(new ZipEntry("link.xml"));
-					LinkModel.getReference().export(fw);
-					fw.flush();
-					out.closeEntry();
-
-					out.close();
+					ExportImport.exportToZip(backupdir);
 				}
 			} catch (Exception e) {
 				Errmsg.errmsg(e);
