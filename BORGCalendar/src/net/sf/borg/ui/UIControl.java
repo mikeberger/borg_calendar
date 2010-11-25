@@ -25,6 +25,7 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.control.Borg;
 import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.AppointmentModel;
+import net.sf.borg.model.CheckListModel;
 import net.sf.borg.model.LinkModel;
 import net.sf.borg.model.MemoModel;
 import net.sf.borg.model.TaskModel;
@@ -35,6 +36,7 @@ import net.sf.borg.ui.calendar.MonthPanel;
 import net.sf.borg.ui.calendar.TodoView;
 import net.sf.borg.ui.calendar.WeekPanel;
 import net.sf.borg.ui.calendar.YearPanel;
+import net.sf.borg.ui.checklist.CheckListPanel;
 import net.sf.borg.ui.memo.MemoPanel;
 import net.sf.borg.ui.popup.ReminderListManager;
 import net.sf.borg.ui.popup.ReminderManager;
@@ -151,6 +153,7 @@ public class UIControl {
 		mv.addModule(TodoView.getReference());
 		mv.addModule(new TaskModule());
 		mv.addModule(new MemoPanel());
+		mv.addModule(new CheckListPanel());
 		mv.addModule(new SearchView());
 		mv.addModule(new InfoView("/resource/RELEASE_NOTES.txt", Resource
 				.getResourceString("rlsnotes")));
@@ -244,6 +247,11 @@ public class UIControl {
 					fw.flush();
 					out.closeEntry();
 
+					out.putNextEntry(new ZipEntry("checklist.xml"));
+					CheckListModel.getReference().export(fw);
+					fw.flush();
+					out.closeEntry();
+					
 					out.putNextEntry(new ZipEntry("link.xml"));
 					LinkModel.getReference().export(fw);
 					fw.flush();

@@ -18,12 +18,11 @@
  */
 package net.sf.borg.model.undo;
 
-import net.sf.borg.model.entity.KeyedEntity;
 
 /**
  * Abstract base class for holding a single item of work that can be undone.
  */
-public abstract class UndoItem<T extends KeyedEntity<T>> {
+public abstract class UndoItem<T> {
 
 	/** The description of the event that can be undone. */
 	private String description;

@@ -49,6 +49,7 @@ import net.sf.borg.control.Borg;
 import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.CategoryModel;
+import net.sf.borg.model.CheckListModel;
 import net.sf.borg.model.LinkModel;
 import net.sf.borg.model.MemoModel;
 import net.sf.borg.model.TaskModel;
@@ -523,6 +524,14 @@ class MainMenu {
 				MemoModel.getReference().export(fw);
 				fw.close();
 			}
+			
+			fname = dir.getAbsolutePath() + "/checklist.xml";
+			if (IOHelper.checkOverwrite(fname)) {
+				OutputStream ostr = IOHelper.createOutputStream(fname);
+				Writer fw = new OutputStreamWriter(ostr, "UTF8");
+				CheckListModel.getReference().export(fw);
+				fw.close();
+			}
 
 			fname = dir.getAbsolutePath() + "/link.xml";
 			if (IOHelper.checkOverwrite(fname)) {
@@ -733,6 +742,9 @@ class MainMenu {
 				} else if (line.contains("<MEMOS>")) {
 					type = "MEMOS";
 					break;
+				} else if (line.contains("<CHECKLISTS>")) {
+					type = "CHECKLISTS";
+					break;
 				} else if (line.contains("<LINKS>")) {
 					type = "LINKS";
 					break;
@@ -762,6 +774,8 @@ class MainMenu {
 				LinkModel.getReference().importXml(fileName);
 			} else if (type.equals("MEMOS")) {
 				MemoModel.getReference().importXml(fileName);
+			} else if (type.equals("CHECKLISTS")) {
+				CheckListModel.getReference().importXml(fileName);
 			} else if (type.equals("TASKS")) {
 				TaskModel.getReference().importXml(fileName);
 			} else if (type.equals("APPTS")) {

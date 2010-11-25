@@ -575,6 +575,12 @@ public class TableSorter extends AbstractTableModel {
         tm.removeRow(row);
         fireTableDataChanged();
     }
+    
+    public void insertRow(int index,Object[] ro) {
+    	 DefaultTableModel tm = (DefaultTableModel) getTableModel();
+         tm.insertRow(index,ro);
+         fireTableDataChanged();
+    }
 
     /**
      * @param event

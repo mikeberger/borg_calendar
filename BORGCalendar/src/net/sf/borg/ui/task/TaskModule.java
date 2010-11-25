@@ -56,7 +56,7 @@ public class TaskModule extends DockableView implements Module {
 
 		final MultiView par = parent;
 		parent.addToolBarItem(new ImageIcon(getClass().getResource(
-		"/resource/Preferences16.gif")), getModuleName(), new ActionListener() {
+		"/resource/Task16.gif")), getModuleName(), new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
 				par.setView(ViewType.TASK);

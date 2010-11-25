@@ -43,6 +43,7 @@ import net.sf.borg.model.db.LinkDB;
 import net.sf.borg.model.db.jdbc.LinkJdbcDB;
 import net.sf.borg.model.entity.Address;
 import net.sf.borg.model.entity.Appointment;
+import net.sf.borg.model.entity.CheckList;
 import net.sf.borg.model.entity.KeyedEntity;
 import net.sf.borg.model.entity.Link;
 import net.sf.borg.model.entity.Memo;
@@ -72,7 +73,7 @@ public class LinkModel extends Model {
 
 		FILELINK("file"), ATTACHMENT("attachment"), URL("url"), APPOINTMENT(
 				"appointment"), MEMO("memo"), PROJECT("project"), TASK("task"), ADDRESS(
-				"address");
+				"address"), CHECKLIST("net.sf.borg.ui.checklist");
 
 		private final String value;
 
@@ -91,7 +92,7 @@ public class LinkModel extends Model {
 	static private LinkModel self_ = null;
 
 	/** map of entity types to class names */
-	private static HashMap<Class<? extends KeyedEntity<?>>, LinkType> typemap = new HashMap<Class<? extends KeyedEntity<?>>, LinkType>();
+	private static HashMap<Class<?>, LinkType> typemap = new HashMap<Class<?>, LinkType>();
 
 	static {
 		// owner types
@@ -100,6 +101,7 @@ public class LinkModel extends Model {
 		typemap.put(Task.class, LinkType.TASK);
 		typemap.put(Address.class, LinkType.ADDRESS);
 		typemap.put(Project.class, LinkType.PROJECT);
+		typemap.put(CheckList.class, LinkType.CHECKLIST);
 	}
 
 	/**
@@ -153,7 +155,7 @@ public class LinkModel extends Model {
 	 */
 	public void addLink(KeyedEntity<?> owner, String pathIn, LinkType linkType)
 			throws Exception {
-	  String path = pathIn;
+		String path = pathIn;
 		if (owner == null) {
 			Errmsg.notice(Resource.getResourceString("att_owner_null"));
 			return;
@@ -299,8 +301,11 @@ public class LinkModel extends Model {
 	 * @throws Exception
 	 *             the exception
 	 */
-	public void deleteLinksToEntity(KeyedEntity<?> target) throws Exception {
+	public void deleteLinksToEntity(Object target) throws Exception {
 
+		if( target == null)
+			return;
+		
 		LinkType type = typemap.get(target.getClass());
 		if (type == null)
 			return;
@@ -310,9 +315,14 @@ public class LinkModel extends Model {
 			if (link.getLinkType().equals(type.toString())) {
 				if ((type == LinkType.MEMO && ((Memo) target).getMemoName()
 						.equals(link.getPath()))
-						|| link.getPath().equals(
-								Integer.toString(target.getKey()))) {
+						|| (type == LinkType.CHECKLIST && ((CheckList) target)
+								.getCheckListName().equals(link.getPath()))) {
 					delete(link);
+				} else if (target instanceof KeyedEntity<?>) {
+					int key = ((KeyedEntity<?>) target).getKey();
+					if (link.getPath().equals(Integer.toString(key))) {
+						delete(link);
+					}
 				}
 			}
 
@@ -417,7 +427,7 @@ public class LinkModel extends Model {
 		int nextkey = db_.nextkey();
 		boolean use_keys = (nextkey == 1) ? true : false;
 		for (Link link : container.Link) {
-			if( !use_keys )
+			if (!use_keys)
 				link.setKey(nextkey++);
 			db_.addObj(link);
 		}

@@ -146,3 +146,8 @@ CREATE CACHED TABLE links (
   PRIMARY KEY  (id)
 );
 
+CREATE CACHED TABLE checklists (
+  name varchar(50) NOT NULL,
+  text longvarchar,
+  PRIMARY KEY  (name)
+);

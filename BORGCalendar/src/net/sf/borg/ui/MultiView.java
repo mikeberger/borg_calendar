@@ -114,7 +114,7 @@ public class MultiView extends View {
 
 	/** argument values for setView() */
 	public enum ViewType {
-		DAY, MONTH, WEEK, YEAR, TASK, MEMO, SEARCH, TODO, ADDRESS;
+		DAY, MONTH, WEEK, YEAR, TASK, MEMO, SEARCH, TODO, ADDRESS, CHECKLIST;
 	}
 
 	/** The main view singleton */

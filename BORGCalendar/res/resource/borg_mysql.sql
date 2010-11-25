@@ -135,4 +135,8 @@ CREATE TABLE links (
   PRIMARY KEY  (id)
 );
 
-
+CREATE TABLE checklists (
+  name varchar(50) NOT NULL,
+  text text,
+  PRIMARY KEY  (name)
+);
