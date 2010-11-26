@@ -386,6 +386,7 @@ public class TableSorter extends AbstractTableModel {
 
             // Something has happened to the data that may have invalidated the row order. 
             clearSortingState();
+            fireTableChanged(e); // MBB
             fireTableDataChanged();
             return;
         }

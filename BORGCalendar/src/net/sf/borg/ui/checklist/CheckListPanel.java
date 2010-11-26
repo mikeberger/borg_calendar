@@ -19,6 +19,7 @@
  */
 package net.sf.borg.ui.checklist;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
@@ -31,17 +32,20 @@ import java.util.Iterator;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.table.TableCellRenderer;
 
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Resource;
@@ -59,7 +63,6 @@ import net.sf.borg.ui.util.TablePrinter;
 import net.sf.borg.ui.util.TableSorter;
 import net.sf.borg.ui.util.JTabbedPaneWithCloseIcons.TabCloseListener;
 
-// TODO: Auto-generated Javadoc
 /**
  * UI for editing checkLists. It has a table that shows all checkLists by name
  * and an editing panel for editing checkList text.
@@ -67,9 +70,54 @@ import net.sf.borg.ui.util.JTabbedPaneWithCloseIcons.TabCloseListener;
 public class CheckListPanel extends DockableView implements
 		ListSelectionListener, Module, TabCloseListener, TableModelListener {
 
+	private TableCellRenderer defaultTextRenderer = null;
+
+	/**
+	 * renders the item text in strike-through if the item is completed *
+	 */
+	private class ItemTextRenderer extends JLabel implements TableCellRenderer {
+
+		private static final long serialVersionUID = 1L;
+
+		public ItemTextRenderer() {
+			super();
+			setOpaque(true); // MUST do this for background to show up.
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * javax.swing.table.TableCellRenderer#getTableCellRendererComponent
+		 * (javax.swing.JTable, java.lang.Object, boolean, boolean, int, int)
+		 */
+		@Override
+		public Component getTableCellRendererComponent(JTable table,
+				Object obj, boolean isSelected, boolean hasFocus, int row,
+				int column) {
+
+			JLabel l = (JLabel) defaultTextRenderer
+					.getTableCellRendererComponent(table, obj, isSelected,
+							hasFocus, row, column);
+			this.setHorizontalAlignment(l.getHorizontalAlignment());
+			this.setForeground(l.getForeground());
+			this.setBackground(l.getBackground());
+
+			String text = l.getText();
+			Boolean complete = (Boolean) table.getModel().getValueAt(row, COMPLETE_COLUMN);
+			if (complete == Boolean.TRUE) {
+				text = "<HTML><STRIKE>" + text + "</STRIKE></HTML>";
+			}
+
+			this.setText(text);
+			return this;
+
+		}
+	}
+
 	// table columns
-	/** The Constant SELECT_COLUMN. */
-	static private final int SELECT_COLUMN = 0;
+	/** The Constant COMPLETE_COLUMN. */
+	static private final int COMPLETE_COLUMN = 0;
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -89,8 +137,6 @@ public class CheckListPanel extends DockableView implements
 	/** The table of checklist items. */
 	private StripedTable itemTable = null;
 
-	/** The save button. */
-	private JButton saveButton = null;
 
 	/**
 	 * constructor.
@@ -100,8 +146,6 @@ public class CheckListPanel extends DockableView implements
 
 		// initialize UI
 		initialize();
-
-		saveButton.setEnabled(false);
 
 		refresh();
 
@@ -329,17 +373,21 @@ public class CheckListPanel extends DockableView implements
 
 		itemTable = new StripedTable();
 
+		defaultTextRenderer = itemTable.getDefaultRenderer(String.class);
+		itemTable.setDefaultRenderer(String.class, new ItemTextRenderer());
+
 		TableSorter ts = new TableSorter(new String[] { "",
 				Resource.getResourceString("Item") }, new Class[] {
 				Boolean.class, String.class }, new boolean[] { true, true });
 		itemTable.setModel(ts);
 
-		itemTable.getColumnModel().getColumn(SELECT_COLUMN).setMaxWidth(30);
-		itemTable.getColumnModel().getColumn(SELECT_COLUMN).setMinWidth(20);
+		itemTable.getColumnModel().getColumn(COMPLETE_COLUMN).setMaxWidth(30);
+		itemTable.getColumnModel().getColumn(COMPLETE_COLUMN).setMinWidth(20);
 
 		itemTable.getModel().addTableModelListener(this);
-		
-		itemTable.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+		itemTable.getSelectionModel().setSelectionMode(
+				ListSelectionModel.SINGLE_SELECTION);
 
 		ts.addMouseListenerToHeaderInTable(itemTable);
 
@@ -351,7 +399,7 @@ public class CheckListPanel extends DockableView implements
 						TableSorter model = (TableSorter) itemTable.getModel();
 						int index = itemTable.getSelectedRow();
 						Object[] row = new Object[2];
-						row[SELECT_COLUMN] = Boolean.FALSE;
+						row[COMPLETE_COLUMN] = Boolean.FALSE;
 						row[TEXT_COLUMN] = "";
 						model.insertRow(index, row);
 					}
@@ -362,7 +410,7 @@ public class CheckListPanel extends DockableView implements
 						TableSorter model = (TableSorter) itemTable.getModel();
 						int index = itemTable.getSelectedRow();
 						Object[] row = new Object[2];
-						row[SELECT_COLUMN] = Boolean.FALSE;
+						row[COMPLETE_COLUMN] = Boolean.FALSE;
 						row[TEXT_COLUMN] = "";
 						model.insertRow(index + 1, row);
 					}
@@ -403,7 +451,7 @@ public class CheckListPanel extends DockableView implements
 		});
 		buttonPanel.add(newButton, null);
 
-		saveButton = new JButton();
+		JButton saveButton = new JButton();
 		saveButton.setText(Resource.getResourceString("Save_CheckList"));
 		saveButton.addActionListener(new ActionListener() {
 			@Override
@@ -525,7 +573,6 @@ public class CheckListPanel extends DockableView implements
 		TableSorter model = (TableSorter) itemTable.getModel();
 		model.setRowCount(0);
 		isCheckListEdited = false;
-		saveButton.setEnabled(false);
 
 	}
 
@@ -542,13 +589,13 @@ public class CheckListPanel extends DockableView implements
 		if (cl != null) {
 			for (CheckList.Item item : cl.getItems()) {
 				Object[] row = new Object[2];
-				row[SELECT_COLUMN] = item.getChecked();
+				row[COMPLETE_COLUMN] = item.getChecked();
 				row[TEXT_COLUMN] = item.getText();
 				model.addRow(row);
 			}
 
 			Object[] addrow = new Object[2];
-			addrow[SELECT_COLUMN] = Boolean.FALSE;
+			addrow[COMPLETE_COLUMN] = Boolean.FALSE;
 			addrow[TEXT_COLUMN] = "";
 			model.addRow(addrow);
 		}
@@ -710,7 +757,7 @@ public class CheckListPanel extends DockableView implements
 
 		for (int i = 0; i < model.getRowCount(); i++) {
 			CheckList.Item item = new CheckList.Item();
-			item.setChecked((Boolean) model.getValueAt(i, SELECT_COLUMN));
+			item.setChecked((Boolean) model.getValueAt(i, COMPLETE_COLUMN));
 			item.setText((String) model.getValueAt(i, TEXT_COLUMN));
 			if (!item.getText().isEmpty())
 				cl.getItems().add(item);
@@ -726,13 +773,13 @@ public class CheckListPanel extends DockableView implements
 	@Override
 	public void tableChanged(TableModelEvent arg0) {
 
+
 		// ignore the table sorters events - we only care about the
 		// underlying table model - which is tablesorter.newtablemodel
 		// tablesorter is crap
 		if (arg0.getSource() instanceof TableSorter)
 			return;
 
-		// System.out.println( arg0.toString() + " " + arg0.getType());
 
 		// ignore insert - this only happens when blank rows are added
 		if (arg0.getType() == TableModelEvent.INSERT)
@@ -740,15 +787,15 @@ public class CheckListPanel extends DockableView implements
 
 		isCheckListEdited = true;
 		editedCheckListIndex = checkListListTable.getSelectedRow();
-		saveButton.setEnabled(true);
 
 		// always maintain a new "add" row as the table is updated (without
 		// being saved)
-		
+
 		// ignore delete events when deciding to add a blank row
 		// problem caused when the table is cleared
 		if (arg0.getType() == TableModelEvent.DELETE)
 			return;
+		
 		TableSorter model = (TableSorter) itemTable.getModel();
 		for (int i = 0; i < model.getRowCount(); i++) {
 			String text = (String) model.getValueAt(i, TEXT_COLUMN);
@@ -758,7 +805,7 @@ public class CheckListPanel extends DockableView implements
 			}
 		}
 		Object[] addrow = new Object[2];
-		addrow[SELECT_COLUMN] = Boolean.FALSE;
+		addrow[COMPLETE_COLUMN] = Boolean.FALSE;
 		addrow[TEXT_COLUMN] = "";
 		model.addRow(addrow);
 	}
@@ -834,7 +881,6 @@ public class CheckListPanel extends DockableView implements
 
 		}
 		isCheckListEdited = false;
-		saveButton.setEnabled(false);
 
 	}
 
@@ -851,7 +897,7 @@ public class CheckListPanel extends DockableView implements
 
 		TableSorter model = (TableSorter) itemTable.getModel();
 		for (int i = 0; i < model.getRowCount(); i++) {
-			model.setValueAt(Boolean.FALSE, i, SELECT_COLUMN);
+			model.setValueAt(Boolean.FALSE, i, COMPLETE_COLUMN);
 		}
 	}
 }
