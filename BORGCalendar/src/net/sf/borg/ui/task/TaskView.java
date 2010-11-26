@@ -656,19 +656,6 @@ public class TaskView extends DockableView {
 
 		buttonPanel.add(savebutton, savebutton.getName());
 
-		JButton addst = new JButton();
-		addst.setIcon(new ImageIcon(getClass().getResource(
-				"/resource/Add16.gif")));
-		ResourceHelper.setText(addst, "Add_Subtask");
-		addst.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent evt) {
-				insertSubtask();
-			}
-		});
-
-		buttonPanel.add(addst);
-
 		add(topPanel, GridBagConstraintsFactory.create(0, 0,
 				GridBagConstraints.BOTH, 1.0, 1.0));
 
@@ -771,17 +758,12 @@ public class TaskView extends DockableView {
 		TableSorter ts = (TableSorter) subTaskTable.getModel();
 
 		// sort by due date
-		ts.sortByColumn(4);
+		//ts.sortByColumn(4);
 		ts.addMouseListenerToHeaderInTable(subTaskTable);
 
 		// popup menu
 		new PopupMenuHelper(subTaskTable, new PopupMenuHelper.Entry[] {
-				new PopupMenuHelper.Entry(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent evt) {
-						insertSubtask();
-					}
-				}, "Add_Subtask"),
+				
 				new PopupMenuHelper.Entry(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent evt) {
@@ -941,7 +923,7 @@ public class TaskView extends DockableView {
 		} else
 			taskTabbedPanel.setForegroundAt(3, Color.black);
 	}
-	
+
 	@Override
 	public void update(ChangeEvent event) {
 		refresh();
@@ -1218,7 +1200,7 @@ public class TaskView extends DockableView {
 				this.remove();
 			else
 				this.getParent().remove(this);
-			
+
 			// go back to task view when saving a task
 			MultiView.getMainView().setView(ViewType.TASK);
 
@@ -1351,7 +1333,7 @@ public class TaskView extends DockableView {
 				// load tasklogs
 				loadLog(task.getKey());
 			} catch (Warning w) {
-			  // empty
+				// empty
 			}
 
 			Integer pid = task.getProject();
@@ -1468,10 +1450,7 @@ public class TaskView extends DockableView {
 
 		}
 
-		if (subTaskTable.getRowCount() == 0) {
-			// always need at least 1 row in subtask table so user can access
-			// right click to add more
-			insertSubtask();
-		}
+		// always add an empty row for quick editing
+		insertSubtask();
 	}
 }
