@@ -184,7 +184,7 @@ public class CheckListPanel extends DockableView implements
 					.getResourceString("Select_CheckList_Warning"));
 			return;
 		}
-		
+
 		// if the user is currently editing another checkList, confirm that we
 		// should discard changes
 		if (this.isCheckListEdited) {
@@ -195,7 +195,7 @@ public class CheckListPanel extends DockableView implements
 			if (ret != JOptionPane.OK_OPTION)
 				return;
 		}
-		
+
 		String newname = JOptionPane.showInputDialog(Resource
 				.getResourceString("Enter_CheckList_Name"));
 		if (newname == null)
@@ -212,7 +212,6 @@ public class CheckListPanel extends DockableView implements
 		} catch (Exception e1) {
 			Errmsg.errmsg(e1);
 		}
-
 
 		try {
 			CheckList orig = CheckListModel.getReference().getCheckList(name);
@@ -339,6 +338,8 @@ public class CheckListPanel extends DockableView implements
 		itemTable.getColumnModel().getColumn(SELECT_COLUMN).setMinWidth(20);
 
 		itemTable.getModel().addTableModelListener(this);
+		
+		itemTable.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 		ts.addMouseListenerToHeaderInTable(itemTable);
 
@@ -421,7 +422,7 @@ public class CheckListPanel extends DockableView implements
 			}
 		});
 		buttonPanel.add(deleteButton, null);
-		
+
 		JButton copyButton = new JButton();
 		copyButton.setText(Resource.getResourceString("Copy_CheckList"));
 		copyButton.addActionListener(new ActionListener() {
@@ -724,10 +725,42 @@ public class CheckListPanel extends DockableView implements
 	 */
 	@Override
 	public void tableChanged(TableModelEvent arg0) {
+
+		// ignore the table sorters events - we only care about the
+		// underlying table model - which is tablesorter.newtablemodel
+		// tablesorter is crap
+		if (arg0.getSource() instanceof TableSorter)
+			return;
+
+		// System.out.println( arg0.toString() + " " + arg0.getType());
+
+		// ignore insert - this only happens when blank rows are added
+		if (arg0.getType() == TableModelEvent.INSERT)
+			return;
+
 		isCheckListEdited = true;
 		editedCheckListIndex = checkListListTable.getSelectedRow();
 		saveButton.setEnabled(true);
 
+		// always maintain a new "add" row as the table is updated (without
+		// being saved)
+		
+		// ignore delete events when deciding to add a blank row
+		// problem caused when the table is cleared
+		if (arg0.getType() == TableModelEvent.DELETE)
+			return;
+		TableSorter model = (TableSorter) itemTable.getModel();
+		for (int i = 0; i < model.getRowCount(); i++) {
+			String text = (String) model.getValueAt(i, TEXT_COLUMN);
+			if (text.isEmpty()) {
+				// already has a blank row - so don't add one
+				return;
+			}
+		}
+		Object[] addrow = new Object[2];
+		addrow[SELECT_COLUMN] = Boolean.FALSE;
+		addrow[TEXT_COLUMN] = "";
+		model.addRow(addrow);
 	}
 
 	/*
