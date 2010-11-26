@@ -1,20 +1,21 @@
 /*
- * This file is part of BORG.
- *
- * BORG is free software; you can redistribute it and/or modify it under the
- * terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- *
- * BORG is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along with
- * BORG; if not, write to the Free Software Foundation, Inc., 59 Temple Place,
- * Suite 330, Boston, MA 02111-1307 USA
- *
- * Copyright 2003 by Mike Berger
+ This file is part of BORG.
+
+ BORG is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+
+ BORG is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with BORG; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+ Copyright 2003-2010 by Mike Berger
  */
 package net.sf.borg.ui.checklist;
 
@@ -58,6 +59,7 @@ import net.sf.borg.ui.util.TablePrinter;
 import net.sf.borg.ui.util.TableSorter;
 import net.sf.borg.ui.util.JTabbedPaneWithCloseIcons.TabCloseListener;
 
+// TODO: Auto-generated Javadoc
 /**
  * UI for editing checkLists. It has a table that shows all checkLists by name
  * and an editing panel for editing checkList text.
@@ -66,9 +68,13 @@ public class CheckListPanel extends DockableView implements
 		ListSelectionListener, Module, TabCloseListener, TableModelListener {
 
 	// table columns
+	/** The Constant SELECT_COLUMN. */
 	static private final int SELECT_COLUMN = 0;
 
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
+	
+	/** The Constant TEXT_COLUMN. */
 	static private final int TEXT_COLUMN = 1;
 
 	/** The checkList list table. */
@@ -77,10 +83,10 @@ public class CheckListPanel extends DockableView implements
 	/** The edited checkList index. */
 	private int editedCheckListIndex = -1;
 
-	/** is checkList changed flag */
+	/** is checkList changed flag. */
 	private boolean isCheckListEdited = false;
 
-	/** The table of checklist items */
+	/** The table of checklist items. */
 	private StripedTable itemTable = null;
 
 	/** The save button. */
@@ -104,6 +110,9 @@ public class CheckListPanel extends DockableView implements
 
 	}
 
+	/* (non-Javadoc)
+	 * @see net.sf.borg.ui.util.JTabbedPaneWithCloseIcons.TabCloseListener#canClose()
+	 */
 	@Override
 	public boolean canClose() {
 		if (isCheckListEdited) {
@@ -162,21 +171,33 @@ public class CheckListPanel extends DockableView implements
 
 	}
 
+	/* (non-Javadoc)
+	 * @see net.sf.borg.ui.MultiView.Module#getComponent()
+	 */
 	@Override
 	public JComponent getComponent() {
 		return this;
 	}
 
+	/* (non-Javadoc)
+	 * @see net.sf.borg.ui.DockableView#getFrameTitle()
+	 */
 	@Override
 	public String getFrameTitle() {
 		return this.getModuleName();
 	}
 
+	/* (non-Javadoc)
+	 * @see net.sf.borg.ui.DockableView#getMenuForFrame()
+	 */
 	@Override
 	public JMenuBar getMenuForFrame() {
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see net.sf.borg.ui.MultiView.Module#getModuleName()
+	 */
 	@Override
 	public String getModuleName() {
 		return Resource.getResourceString("CheckLists");
@@ -198,6 +219,9 @@ public class CheckListPanel extends DockableView implements
 		return checkListName;
 	}
 
+	/* (non-Javadoc)
+	 * @see net.sf.borg.ui.MultiView.Module#getViewType()
+	 */
 	@Override
 	public ViewType getViewType() {
 		return ViewType.CHECKLIST;
@@ -241,14 +265,17 @@ public class CheckListPanel extends DockableView implements
 
 		itemTable = new StripedTable();
 
-		itemTable.setModel(new TableSorter(new String[] { "",
+		TableSorter ts = new TableSorter(new String[] { "",
 				Resource.getResourceString("Item") }, new Class[] {
-				Boolean.class, String.class }, new boolean[] { true, true }));
+				Boolean.class, String.class }, new boolean[] { true, true });
+		itemTable.setModel(ts);
 
 		itemTable.getColumnModel().getColumn(SELECT_COLUMN).setMaxWidth(30);
 		itemTable.getColumnModel().getColumn(SELECT_COLUMN).setMinWidth(20);
 
 		itemTable.getModel().addTableModelListener(this);
+
+		ts.addMouseListenerToHeaderInTable(itemTable);
 
 		// popup menu
 		new PopupMenuHelper(itemTable, new PopupMenuHelper.Entry[] {
@@ -314,11 +341,52 @@ public class CheckListPanel extends DockableView implements
 		});
 		buttonPanel.add(deleteButton, null);
 
-		this.add(buttonPanel, GridBagConstraintsFactory.create(0, 2,
+		this.add(buttonPanel, GridBagConstraintsFactory.create(0, 1,
 				GridBagConstraints.BOTH));
 
+		JPanel sidePanel = new JPanel();
+		sidePanel.setLayout(new GridBagLayout());
+		JButton upButton = new JButton();
+		upButton.setIcon(new javax.swing.ImageIcon(getClass().getResource(
+				"/resource/Up16.gif")));
+		sidePanel.add(upButton, GridBagConstraintsFactory.create(0, 0));
+		upButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				TableSorter model = (TableSorter) itemTable.getModel();
+				int index = itemTable.getSelectedRow();
+				if (index > 0) {
+					model.moveRow(index, index - 1);
+					itemTable.getSelectionModel().setSelectionInterval(
+							index - 1, index - 1);
+				}
+			}
+		});
+
+		JButton downButton = new JButton();
+		downButton.setIcon(new javax.swing.ImageIcon(getClass().getResource(
+				"/resource/Down16.gif")));
+		downButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				TableSorter model = (TableSorter) itemTable.getModel();
+				int index = itemTable.getSelectedRow();
+				if (index < model.getRowCount() - 1) {
+					model.moveRow(index, index + 1);
+					itemTable.getSelectionModel().setSelectionInterval(
+							index + 1, index + 1);
+				}
+			}
+		});
+		sidePanel.add(downButton, GridBagConstraintsFactory.create(0, 1));
+
+		this.add(sidePanel, GridBagConstraintsFactory.create(1, 0,
+				GridBagConstraints.BOTH));
 	}
 
+	/* (non-Javadoc)
+	 * @see net.sf.borg.ui.MultiView.Module#initialize(net.sf.borg.ui.MultiView)
+	 */
 	@Override
 	public void initialize(MultiView parent) {
 
@@ -334,6 +402,9 @@ public class CheckListPanel extends DockableView implements
 
 	}
 
+	/**
+	 * Insert an empty row above the selected row.
+	 */
 	private void insertRowAbove() {
 		TableSorter model = (TableSorter) itemTable.getModel();
 		int index = itemTable.getSelectedRow();
@@ -344,10 +415,9 @@ public class CheckListPanel extends DockableView implements
 	}
 
 	/**
-	 * Load checkLists from the model
-	 * 
-	 * @throws Exception
-	 *             the exception
+	 * Load all checkLists from the model.
+	 *
+	 * @throws Exception the exception
 	 */
 	private void loadCheckListsFromModel() throws Exception {
 		checkListListTable.clearSelection();
@@ -366,6 +436,11 @@ public class CheckListPanel extends DockableView implements
 
 	}
 
+	/**
+	 * Load items from a checklist into the item table.
+	 *
+	 * @param cl the checklist
+	 */
 	private void loadItems(CheckList cl) {
 		TableSorter model = (TableSorter) itemTable.getModel();
 		model.setRowCount(0);
@@ -387,7 +462,7 @@ public class CheckListPanel extends DockableView implements
 	}
 
 	/**
-	 * create a new checkList
+	 * create a new checkList.
 	 */
 	private void newCheckList() {
 
@@ -434,6 +509,9 @@ public class CheckListPanel extends DockableView implements
 
 	}
 
+	/* (non-Javadoc)
+	 * @see net.sf.borg.ui.MultiView.Module#print()
+	 */
 	@Override
 	public void print() {
 		try {
@@ -466,6 +544,9 @@ public class CheckListPanel extends DockableView implements
 
 	}
 
+	/**
+	 * Removes the selected row.
+	 */
 	private void removeRow() {
 		TableSorter model = (TableSorter) itemTable.getModel();
 		int index = itemTable.getSelectedRow();
@@ -473,7 +554,7 @@ public class CheckListPanel extends DockableView implements
 	}
 
 	/**
-	 * Save the selected checkList to the model
+	 * Save the selected checkList to the model.
 	 */
 	private void saveCheckList() {
 		String name = getSelectedCheckListName();
@@ -497,10 +578,9 @@ public class CheckListPanel extends DockableView implements
 	}
 
 	/**
-	 * selecte the named checkList for editing
-	 * 
-	 * @param checkListName
-	 *            the checkList name
+	 * select the named checkList for editing.
+	 *
+	 * @param checkListName the checkList name
 	 */
 	public void selectCheckList(String checkListName) {
 		TableSorter tm = (TableSorter) checkListListTable.getModel();
@@ -517,6 +597,11 @@ public class CheckListPanel extends DockableView implements
 		}
 	}
 
+	/**
+	 * Sets the items in the checklist object from the item table contents.
+	 *
+	 * @param cl the new items
+	 */
 	private void setItems(CheckList cl) {
 		if (itemTable.isEditing())
 			itemTable.getCellEditor().stopCellEditing();
@@ -534,13 +619,20 @@ public class CheckListPanel extends DockableView implements
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see javax.swing.event.TableModelListener#tableChanged(javax.swing.event.TableModelEvent)
+	 */
 	@Override
 	public void tableChanged(TableModelEvent arg0) {
 		isCheckListEdited = true;
 		editedCheckListIndex = checkListListTable.getSelectedRow();
 		saveButton.setEnabled(true);
+
 	}
 
+	/* (non-Javadoc)
+	 * @see net.sf.borg.model.Model.Listener#update(net.sf.borg.model.Model.ChangeEvent)
+	 */
 	@Override
 	public void update(ChangeEvent event) {
 		refresh();
@@ -549,6 +641,7 @@ public class CheckListPanel extends DockableView implements
 	/**
 	 * react to the user selecting a checkList in the checkList list. open it
 	 * for edit
+	 *
 	 */
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
