@@ -73,7 +73,7 @@ public class CheckListPanel extends DockableView implements
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
-	
+
 	/** The Constant TEXT_COLUMN. */
 	static private final int TEXT_COLUMN = 1;
 
@@ -110,8 +110,11 @@ public class CheckListPanel extends DockableView implements
 
 	}
 
-	/* (non-Javadoc)
-	 * @see net.sf.borg.ui.util.JTabbedPaneWithCloseIcons.TabCloseListener#canClose()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * net.sf.borg.ui.util.JTabbedPaneWithCloseIcons.TabCloseListener#canClose()
 	 */
 	@Override
 	public boolean canClose() {
@@ -171,7 +174,61 @@ public class CheckListPanel extends DockableView implements
 
 	}
 
-	/* (non-Javadoc)
+	/**
+	 * Copy the selected checkList
+	 */
+	private void copyCheckList() {
+		String name = getSelectedCheckListName();
+		if (name == null) {
+			Errmsg.notice(Resource
+					.getResourceString("Select_CheckList_Warning"));
+			return;
+		}
+		
+		// if the user is currently editing another checkList, confirm that we
+		// should discard changes
+		if (this.isCheckListEdited) {
+			int ret = JOptionPane.showConfirmDialog(null, Resource
+					.getResourceString("Edited_CheckList"), Resource
+					.getResourceString("Discard_Text?"),
+					JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+			if (ret != JOptionPane.OK_OPTION)
+				return;
+		}
+		
+		String newname = JOptionPane.showInputDialog(Resource
+				.getResourceString("Enter_CheckList_Name"));
+		if (newname == null)
+			return;
+
+		try {
+			CheckList existing = CheckListModel.getReference().getCheckList(
+					newname);
+			if (existing != null) {
+				// checkList name already used
+				Errmsg.notice(Resource.getResourceString("Existing_CheckList"));
+				return;
+			}
+		} catch (Exception e1) {
+			Errmsg.errmsg(e1);
+		}
+
+
+		try {
+			CheckList orig = CheckListModel.getReference().getCheckList(name);
+			CheckList copy = orig.clone();
+			copy.setCheckListName(newname);
+			CheckListModel.getReference().saveCheckList(copy);
+			loadCheckListsFromModel();
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
+		}
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see net.sf.borg.ui.MultiView.Module#getComponent()
 	 */
 	@Override
@@ -179,7 +236,9 @@ public class CheckListPanel extends DockableView implements
 		return this;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see net.sf.borg.ui.DockableView#getFrameTitle()
 	 */
 	@Override
@@ -187,7 +246,9 @@ public class CheckListPanel extends DockableView implements
 		return this.getModuleName();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see net.sf.borg.ui.DockableView#getMenuForFrame()
 	 */
 	@Override
@@ -195,7 +256,9 @@ public class CheckListPanel extends DockableView implements
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see net.sf.borg.ui.MultiView.Module#getModuleName()
 	 */
 	@Override
@@ -219,7 +282,9 @@ public class CheckListPanel extends DockableView implements
 		return checkListName;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see net.sf.borg.ui.MultiView.Module#getViewType()
 	 */
 	@Override
@@ -282,9 +347,25 @@ public class CheckListPanel extends DockableView implements
 				new PopupMenuHelper.Entry(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent evt) {
-						insertRowAbove();
+						TableSorter model = (TableSorter) itemTable.getModel();
+						int index = itemTable.getSelectedRow();
+						Object[] row = new Object[2];
+						row[SELECT_COLUMN] = Boolean.FALSE;
+						row[TEXT_COLUMN] = "";
+						model.insertRow(index, row);
 					}
 				}, "Insert_Above"),
+				new PopupMenuHelper.Entry(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent evt) {
+						TableSorter model = (TableSorter) itemTable.getModel();
+						int index = itemTable.getSelectedRow();
+						Object[] row = new Object[2];
+						row[SELECT_COLUMN] = Boolean.FALSE;
+						row[TEXT_COLUMN] = "";
+						model.insertRow(index + 1, row);
+					}
+				}, "Insert_Below"),
 				new PopupMenuHelper.Entry(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent evt) {
@@ -340,6 +421,26 @@ public class CheckListPanel extends DockableView implements
 			}
 		});
 		buttonPanel.add(deleteButton, null);
+		
+		JButton copyButton = new JButton();
+		copyButton.setText(Resource.getResourceString("Copy_CheckList"));
+		copyButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				copyCheckList();
+			}
+		});
+		buttonPanel.add(copyButton, null);
+
+		JButton uncheckButton = new JButton();
+		uncheckButton.setText(Resource.getResourceString("Uncheck_All"));
+		uncheckButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				uncheckAll();
+			}
+		});
+		buttonPanel.add(uncheckButton, null);
 
 		this.add(buttonPanel, GridBagConstraintsFactory.create(0, 1,
 				GridBagConstraints.BOTH));
@@ -384,7 +485,9 @@ public class CheckListPanel extends DockableView implements
 				GridBagConstraints.BOTH));
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see net.sf.borg.ui.MultiView.Module#initialize(net.sf.borg.ui.MultiView)
 	 */
 	@Override
@@ -403,21 +506,10 @@ public class CheckListPanel extends DockableView implements
 	}
 
 	/**
-	 * Insert an empty row above the selected row.
-	 */
-	private void insertRowAbove() {
-		TableSorter model = (TableSorter) itemTable.getModel();
-		int index = itemTable.getSelectedRow();
-		Object[] row = new Object[2];
-		row[SELECT_COLUMN] = Boolean.FALSE;
-		row[TEXT_COLUMN] = "";
-		model.insertRow(index, row);
-	}
-
-	/**
 	 * Load all checkLists from the model.
-	 *
-	 * @throws Exception the exception
+	 * 
+	 * @throws Exception
+	 *             the exception
 	 */
 	private void loadCheckListsFromModel() throws Exception {
 		checkListListTable.clearSelection();
@@ -438,8 +530,9 @@ public class CheckListPanel extends DockableView implements
 
 	/**
 	 * Load items from a checklist into the item table.
-	 *
-	 * @param cl the checklist
+	 * 
+	 * @param cl
+	 *            the checklist
 	 */
 	private void loadItems(CheckList cl) {
 		TableSorter model = (TableSorter) itemTable.getModel();
@@ -509,7 +602,9 @@ public class CheckListPanel extends DockableView implements
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see net.sf.borg.ui.MultiView.Module#print()
 	 */
 	@Override
@@ -579,8 +674,9 @@ public class CheckListPanel extends DockableView implements
 
 	/**
 	 * select the named checkList for editing.
-	 *
-	 * @param checkListName the checkList name
+	 * 
+	 * @param checkListName
+	 *            the checkList name
 	 */
 	public void selectCheckList(String checkListName) {
 		TableSorter tm = (TableSorter) checkListListTable.getModel();
@@ -599,8 +695,9 @@ public class CheckListPanel extends DockableView implements
 
 	/**
 	 * Sets the items in the checklist object from the item table contents.
-	 *
-	 * @param cl the new items
+	 * 
+	 * @param cl
+	 *            the new items
 	 */
 	private void setItems(CheckList cl) {
 		if (itemTable.isEditing())
@@ -619,8 +716,11 @@ public class CheckListPanel extends DockableView implements
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see javax.swing.event.TableModelListener#tableChanged(javax.swing.event.TableModelEvent)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seejavax.swing.event.TableModelListener#tableChanged(javax.swing.event.
+	 * TableModelEvent)
 	 */
 	@Override
 	public void tableChanged(TableModelEvent arg0) {
@@ -630,8 +730,12 @@ public class CheckListPanel extends DockableView implements
 
 	}
 
-	/* (non-Javadoc)
-	 * @see net.sf.borg.model.Model.Listener#update(net.sf.borg.model.Model.ChangeEvent)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * net.sf.borg.model.Model.Listener#update(net.sf.borg.model.Model.ChangeEvent
+	 * )
 	 */
 	@Override
 	public void update(ChangeEvent event) {
@@ -641,7 +745,7 @@ public class CheckListPanel extends DockableView implements
 	/**
 	 * react to the user selecting a checkList in the checkList list. open it
 	 * for edit
-	 *
+	 * 
 	 */
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
@@ -701,4 +805,20 @@ public class CheckListPanel extends DockableView implements
 
 	}
 
+	private void uncheckAll() {
+
+		int ret = JOptionPane.showConfirmDialog(null, Resource
+				.getResourceString("Uncheck_All")
+				+ "?", Resource.getResourceString("Uncheck_All"),
+				JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+		if (ret != JOptionPane.OK_OPTION) {
+			return;
+		}
+
+		TableSorter model = (TableSorter) itemTable.getModel();
+		for (int i = 0; i < model.getRowCount(); i++) {
+			model.setValueAt(Boolean.FALSE, i, SELECT_COLUMN);
+		}
+	}
 }
