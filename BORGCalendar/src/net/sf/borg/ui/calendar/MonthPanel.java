@@ -109,16 +109,8 @@ public class MonthPanel extends DockableView implements Printable, CalendarModul
 
 		/**
 		 * constructor
-		 * 
-		 * @param month
-		 *            month
-		 * @param year
-		 *            year
 		 */
-		public MonthViewSubPanel(int month, int year) {
-			year_ = year;
-			month_ = month;
-			clearData();
+		public MonthViewSubPanel() {
 
 			// react to pref changes
 			Prefs.addListener(this);
@@ -129,6 +121,8 @@ public class MonthPanel extends DockableView implements Printable, CalendarModul
 			// react to task or appt changes
 			AppointmentModel.getReference().addListener(this);
 			TaskModel.getReference().addListener(this);
+			
+			goTo(new GregorianCalendar());
 
 		}
 
@@ -596,16 +590,11 @@ public class MonthPanel extends DockableView implements Printable, CalendarModul
 
 	/**
 	 * constructor
-	 * 
-	 * @param month
-	 *            month
-	 * @param year
-	 *            year
 	 */
-	public MonthPanel(int month, int year) {
+	public MonthPanel() {
 
 		// create the month UI panel
-		monthSubPanel = new MonthViewSubPanel(month, year);
+		monthSubPanel = new MonthViewSubPanel();
 
 		// create the navigator panel
 		nav = new NavPanel(monthSubPanel);

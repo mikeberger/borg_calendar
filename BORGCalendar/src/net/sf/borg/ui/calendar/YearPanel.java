@@ -103,11 +103,8 @@ public class YearPanel extends DockableView implements Printable, CalendarModule
 
 		/**
 		 * constructor
-		 * @param year year
 		 */
-		public YearViewSubPanel(int year) {
-			year_ = year;
-			clearData();
+		public YearViewSubPanel() {
 			
 			// react to pref changes
 			Prefs.addListener(this);
@@ -117,6 +114,8 @@ public class YearPanel extends DockableView implements Printable, CalendarModule
 			
 			// react to appointment mode changes
 			AppointmentModel.getReference().addListener(this);
+			
+			goTo(new GregorianCalendar());
 		}
 
 		/**
@@ -513,12 +512,11 @@ public class YearPanel extends DockableView implements Printable, CalendarModule
 
 	/**
 	 * constructor
-	 * @param year year
 	 */
-	public YearPanel(int year) {
+	public YearPanel() {
 
 		// create the year ui
-		yearPanel = new YearViewSubPanel(year);
+		yearPanel = new YearViewSubPanel();
 		// create the nav panel
 		nav = new NavPanel(yearPanel);
 

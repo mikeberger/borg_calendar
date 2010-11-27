@@ -129,14 +129,10 @@ public class UIControl {
 		MultiView mv = MultiView.getMainView();
 
 		// load the UI modules into the main window
-		Calendar cal_ = new GregorianCalendar();
-		mv.addModule(new MonthPanel(cal_.get(Calendar.MONTH), cal_
-				.get(Calendar.YEAR)));
-		mv.addModule(new WeekPanel(cal_.get(Calendar.MONTH), cal_
-				.get(Calendar.YEAR), cal_.get(Calendar.DATE)));
-		mv.addModule(new DayPanel(cal_.get(Calendar.MONTH), cal_
-				.get(Calendar.YEAR), cal_.get(Calendar.DATE)));
-		mv.addModule(new YearPanel(cal_.get(Calendar.YEAR)));
+		mv.addModule(new MonthPanel());
+		mv.addModule(new WeekPanel());
+		mv.addModule(new DayPanel());
+		mv.addModule(new YearPanel());
 		mv.addModule(new AddrListView());
 		mv.addModule(new TodoView());
 		mv.addModule(new TaskModule());

@@ -113,20 +113,9 @@ public class DayPanel extends DockableView implements Printable, CalendarModule 
 		/**
 		 * Instantiates a new day sub panel.
 		 * 
-		 * @param month
-		 *            the month
-		 * @param year
-		 *            the year
-		 * @param date
-		 *            the date
 		 */
-		public DaySubPanel(int month, int year, int date) {
-			year_ = year;
-			month_ = month;
-			date_ = date;
-
-			clearData();
-
+		public DaySubPanel() {
+			
 			// refresh if prefs change
 			Prefs.addListener(this);
 
@@ -136,6 +125,8 @@ public class DayPanel extends DockableView implements Printable, CalendarModule 
 			// refresh if the appt or task models change
 			AppointmentModel.getReference().addListener(this);
 			TaskModel.getReference().addListener(this);
+			
+			goTo(new GregorianCalendar());
 
 		}
 
@@ -642,17 +633,11 @@ public class DayPanel extends DockableView implements Printable, CalendarModule 
 	/**
 	 * Instantiates a new day panel.
 	 * 
-	 * @param month
-	 *            the month
-	 * @param year
-	 *            the year
-	 * @param date
-	 *            the date
 	 */
-	public DayPanel(int month, int year, int date) {
+	public DayPanel() {
 
 		// create the day ui and attached navigator
-		dp_ = new DaySubPanel(month, year, date);
+		dp_ = new DaySubPanel();
 		nav = new NavPanel(dp_);
 
 		setLayout(new java.awt.GridBagLayout());

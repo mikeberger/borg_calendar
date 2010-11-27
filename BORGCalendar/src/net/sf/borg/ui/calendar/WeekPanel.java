@@ -125,19 +125,8 @@ public class WeekPanel extends DockableView implements Printable, CalendarModule
 		/**
 		 * constructor
 		 * 
-		 * @param month
-		 *            month
-		 * @param year
-		 *            year
-		 * @param date
-		 *            date
 		 */
-		public WeekSubPanel(int month, int year, int date) {
-			year_ = year;
-			month_ = month;
-			date_ = date;
-
-			clearData();
+		public WeekSubPanel() {
 
 			// react to pref changes
 			Prefs.addListener(this);
@@ -148,6 +137,8 @@ public class WeekPanel extends DockableView implements Printable, CalendarModule
 			// react to appt or task model changes
 			AppointmentModel.getReference().addListener(this);
 			TaskModel.getReference().addListener(this);
+			
+			goTo(new GregorianCalendar());
 
 		}
 
@@ -712,17 +703,11 @@ public class WeekPanel extends DockableView implements Printable, CalendarModule
 	/**
 	 * constructor
 	 * 
-	 * @param month
-	 *            month
-	 * @param year
-	 *            year
-	 * @param date
-	 *            date
 	 */
-	public WeekPanel(int month, int year, int date) {
+	public WeekPanel() {
 
 		// create the week container panel
-		wp_ = new WeekSubPanel(month, year, date);
+		wp_ = new WeekSubPanel();
 
 		// create the navigator
 		nav = new NavPanel(wp_);
