@@ -47,6 +47,11 @@ import net.sf.borg.ui.util.GridBagConstraintsFactory;
  * UI for editing BORG options
  */
 public class OptionsView extends View {
+	
+	/** size of the option window. */
+	static private PrefName OPTVIEWSIZE = new PrefName("optviewsize",
+			"-1,-1,-1,-1,N");
+
 
 	/**
 	 * 
@@ -267,7 +272,7 @@ public class OptionsView extends View {
 		// automatically maintain the size and position of this view in
 		// a preference
 		if( !dbonly )
-			manageMySize(PrefName.OPTVIEWSIZE);
+			manageMySize(OPTVIEWSIZE);
 	}
 
 	/**

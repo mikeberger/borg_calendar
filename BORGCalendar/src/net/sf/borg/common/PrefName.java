@@ -274,22 +274,6 @@ public class PrefName {
 	/** The LANGUAGE. */
 	static public PrefName LANGUAGE = new PrefName("language", "");
 
-	/** The size of the main borg window. */
-	static public PrefName DAYVIEWSIZE = new PrefName("dayviewsize",
-			"-1,-1,-1,-1,Y");
-
-	/** size of the option window. */
-	static public PrefName OPTVIEWSIZE = new PrefName("optviewsize",
-			"-1,-1,-1,-1,N");
-
-	/** size of the task config window */
-	static public PrefName TASKCONFVIEWSIZE = new PrefName("taskconfviewsize",
-			"-1,-1,-1,-1,N");
-	
-	public static final PrefName REMINDERLISTSIZE = new PrefName("reminderlistsize",
-	"-1,-1,-1,-1,N");
-
-
 	// user color scheme
 	/** use user colors on todo view */
 	static public PrefName UCS_ONTODO = new PrefName("ucs_ontodo", "false");

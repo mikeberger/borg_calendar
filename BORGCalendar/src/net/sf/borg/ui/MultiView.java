@@ -51,6 +51,10 @@ import net.sf.borg.ui.util.JTabbedPaneWithCloseIcons;
 public class MultiView extends View {
 
 	private static final long serialVersionUID = 1L;
+	
+	/** The size of the main borg window. */
+	static private PrefName MULTIVIEWSIZE = new PrefName("dayviewsize",
+			"-1,-1,-1,-1,Y");
 
 	/**
 	 * interface implemented by all UI Modules. The MultiView manages a set of
@@ -229,7 +233,7 @@ public class MultiView extends View {
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		pack();
 		setView(ViewType.MONTH); // start month view
-		manageMySize(PrefName.DAYVIEWSIZE);
+		manageMySize(MULTIVIEWSIZE);
 	}
 
 	/**

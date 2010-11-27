@@ -56,6 +56,10 @@ public class ReminderList extends View {
 
 	private static final long serialVersionUID = 1L;
 
+	private static final PrefName REMINDERLISTSIZE = new PrefName("reminderlistsize",
+	"-1,-1,-1,-1,N");
+
+
 	private JPanel buttonPanel = new JPanel();
 
 	private JTable table = new JTable();
@@ -94,7 +98,7 @@ public class ReminderList extends View {
 
 		pack();
 
-		manageMySize(PrefName.REMINDERLISTSIZE);
+		manageMySize(REMINDERLISTSIZE);
 	}
 
 	@Override

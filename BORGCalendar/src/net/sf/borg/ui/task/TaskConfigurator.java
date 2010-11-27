@@ -65,7 +65,11 @@ import net.sf.borg.ui.util.GridBagConstraintsFactory;
 public class TaskConfigurator extends View {
 
 	private static final long serialVersionUID = 1L;
-
+	
+	/** size of the task config window */
+	static private PrefName TASKCONFVIEWSIZE = new PrefName("taskconfviewsize",
+			"-1,-1,-1,-1,N");
+	
 	/**
 	 * Renders the initial task state in a different color
 	 */
@@ -161,7 +165,7 @@ public class TaskConfigurator extends View {
 
 		refresh();
 
-		manageMySize(PrefName.TASKCONFVIEWSIZE);
+		manageMySize(TASKCONFVIEWSIZE);
 	}
 
 	/*
