@@ -67,19 +67,6 @@ public class AddrListView extends DockableView implements Module {
 
 	private static final long serialVersionUID = 1L;
 
-	private static AddrListView singleton = null;
-
-	/**
-	 * get the singleton
-	 * 
-	 * @return the singleton
-	 */
-	public static AddrListView getReference() {
-		if (singleton == null || !singleton.isDisplayable())
-			singleton = new AddrListView();
-		return (singleton);
-	}
-
 	private Collection<Address> addrs_; // list of rows currently displayed
 
 	// action listeners for buttons that are reused in the menu items
@@ -100,7 +87,7 @@ public class AddrListView extends DockableView implements Module {
 	/**
 	 * constructor
 	 */
-	private AddrListView() {
+	public AddrListView() {
 
 		super();
 

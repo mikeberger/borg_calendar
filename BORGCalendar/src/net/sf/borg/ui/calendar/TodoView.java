@@ -254,20 +254,6 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 		}
 	}
 
-	/** The singleton - there's only 1 todo view at a time */
-	private static TodoView singleton = null;
-
-	/**
-	 * Gets the singleton.
-	 * 
-	 * @return the singleton
-	 */
-	public static TodoView getReference() {
-		if (singleton == null || !singleton.isDisplayable())
-			singleton = new TodoView();
-		return (singleton);
-	}
-
 	/** The change date action. */
 	private ActionListener changeDateAction = new ActionListener() {
 		@Override
@@ -336,7 +322,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 	/**
 	 * Instantiates a new todo view.
 	 */
-	private TodoView() {
+	public TodoView() {
 
 		super();
 

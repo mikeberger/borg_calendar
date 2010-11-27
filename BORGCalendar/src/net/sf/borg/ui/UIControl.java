@@ -137,8 +137,8 @@ public class UIControl {
 		mv.addModule(new DayPanel(cal_.get(Calendar.MONTH), cal_
 				.get(Calendar.YEAR), cal_.get(Calendar.DATE)));
 		mv.addModule(new YearPanel(cal_.get(Calendar.YEAR)));
-		mv.addModule(AddrListView.getReference());
-		mv.addModule(TodoView.getReference());
+		mv.addModule(new AddrListView());
+		mv.addModule(new TodoView());
 		mv.addModule(new TaskModule());
 		mv.addModule(new MemoPanel());
 		mv.addModule(new CheckListPanel());
