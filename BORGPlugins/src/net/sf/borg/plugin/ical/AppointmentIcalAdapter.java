@@ -234,6 +234,7 @@ public class AppointmentIcalAdapter {
 		oostr.close();
 	}
 
+	@SuppressWarnings("unchecked")
 	static public String importIcal(String file, String category)
 			throws Exception {
 		CompatibilityHints.setHintEnabled(
@@ -260,10 +261,9 @@ public class AppointmentIcalAdapter {
 
 		AppointmentModel amodel = AppointmentModel.getReference();
 		ComponentList clist = cal.getComponents();
-		@SuppressWarnings("rawtypes")
-		Iterator it = clist.iterator();
+		Iterator<Component> it = clist.iterator();
 		while (it.hasNext()) {
-			Component comp = (Component) it.next();
+			Component comp = it.next();
 			if (comp instanceof VEvent || comp instanceof VToDo) {
 
 				// start with default appt to pull in default options
@@ -362,10 +362,9 @@ public class AppointmentIcalAdapter {
 				if (prop != null) {
 					Categories cats = (Categories) prop;
 					CategoryList catlist = cats.getCategories();
-					@SuppressWarnings("rawtypes")
-					Iterator cit = catlist.iterator();
+					Iterator<String> cit = catlist.iterator();
 					while (cit.hasNext()) {
-						String cat = (String) cit.next();
+						String cat = cit.next();
 						if (cat.equals("Holidays")) {
 							ap.setHoliday(new Integer(1));
 						} else if (cat.equals("Vacation")) {

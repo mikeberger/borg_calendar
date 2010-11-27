@@ -44,7 +44,7 @@ public class SyncLog implements Model.Listener {
 		try {
 
 			Integer newKey = (Integer) newEvent.getObject();
-			ChangeEvent existingEvent = get(newKey);
+			ChangeEvent existingEvent = get(newKey.intValue());
 
 			// any condition not listed is either a no-op or cannot occur
 			if (existingEvent == null) {
@@ -54,18 +54,18 @@ public class SyncLog implements Model.Listener {
 
 				if (existingEvent.getAction() == ChangeEvent.ChangeAction.ADD
 						&& newEvent.getAction() == ChangeEvent.ChangeAction.DELETE) {
-					this.delete(existingKey);
+					this.delete(existingKey.intValue());
 				} else if (existingEvent.getAction() == ChangeEvent.ChangeAction.CHANGE
 						&& newEvent.getAction() == ChangeEvent.ChangeAction.DELETE) {
 					ChangeEvent event = new ChangeEvent(newKey,
 							ChangeEvent.ChangeAction.DELETE);
-					this.delete(existingKey);
+					this.delete(existingKey.intValue());
 					this.insert(event);
 				} else if (existingEvent.getAction() == ChangeEvent.ChangeAction.DELETE
 						&& newEvent.getAction() == ChangeEvent.ChangeAction.ADD) {
 					ChangeEvent event = new ChangeEvent(newKey,
 							ChangeEvent.ChangeAction.CHANGE);
-					this.delete(existingKey);
+					this.delete(existingKey.intValue());
 					this.insert(event);
 				}
 
@@ -80,7 +80,7 @@ public class SyncLog implements Model.Listener {
 		int id = r.getInt("id");
 		ChangeEvent.ChangeAction action = ChangeEvent.ChangeAction.valueOf(r
 				.getString("action"));
-		ChangeEvent event = new ChangeEvent(id, action);
+		ChangeEvent event = new ChangeEvent(new Integer(id), action);
 		return event;
 	}
 
@@ -102,8 +102,7 @@ public class SyncLog implements Model.Listener {
 		} finally {
 			if (r != null)
 				r.close();
-			if (stmt != null)
-				stmt.close();
+			stmt.close();
 		}
 	}
 

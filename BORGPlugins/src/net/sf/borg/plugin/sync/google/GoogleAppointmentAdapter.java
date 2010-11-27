@@ -1,6 +1,7 @@
 package net.sf.borg.plugin.sync.google;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -48,7 +49,7 @@ public class GoogleAppointmentAdapter implements
 				+ updated);
 		DateTime updt = new DateTime();
 		updt.setValue(updated);
-		updt.setTzShift(this.tzOffset(updated));
+		updt.setTzShift(new Integer(this.tzOffset(updated)));
 		ee.setUpdated(updt);
 
 		// we'll use sequence just to distinguish appts that came from borg
@@ -100,9 +101,9 @@ public class GoogleAppointmentAdapter implements
 				Date dd = appt.getDate();
 				GregorianCalendar gc = new GregorianCalendar();
 				gc.setTime(dd);
-				int dayOfWeek = gc.get(GregorianCalendar.DAY_OF_WEEK);
+				int dayOfWeek = gc.get(Calendar.DAY_OF_WEEK);
 				int dayOfWeekMonth = gc
-						.get(GregorianCalendar.DAY_OF_WEEK_IN_MONTH);
+						.get(Calendar.DAY_OF_WEEK_IN_MONTH);
 				String days[] = new String[] { "SU", "MO", "TU", "WE", "TH",
 						"FR", "SA" };
 				rec += "MONTHLY;BYDAY=" + dayOfWeekMonth + days[dayOfWeek - 1];
@@ -129,13 +130,13 @@ public class GoogleAppointmentAdapter implements
 		else {
 			if (!AppointmentModel.isNote(appt)) {
 				DateTime startTime = new DateTime(appt.getDate());
-				startTime.setTzShift(this.tzOffset(appt.getDate().getTime()));
+				startTime.setTzShift(new Integer(this.tzOffset(appt.getDate().getTime())));
 				int duration = 30;
 				if (appt.getDuration() != null)
 					duration = appt.getDuration().intValue();
 				long endt = appt.getDate().getTime() + duration * 60 * 1000;
 				DateTime endTime = new DateTime(endt);
-				endTime.setTzShift(this.tzOffset(endt));
+				endTime.setTzShift(new Integer(this.tzOffset(endt)));
 
 				When eventTimes = new When();
 				eventTimes.setStartTime(startTime);
@@ -163,6 +164,7 @@ public class GoogleAppointmentAdapter implements
 			int key = Integer.parseInt(ks);
 			return key;
 		} catch (Exception e) {
+			// ignore
 		}
 
 		return -1;
@@ -187,6 +189,7 @@ public class GoogleAppointmentAdapter implements
 				int key = Integer.parseInt(ks);
 				appt = AppointmentModel.getReference().getAppt(key);
 			} catch (Exception e) {
+				// ignore
 			}
 
 			// need to update appt if google incremented the sequence
@@ -274,7 +277,7 @@ public class GoogleAppointmentAdapter implements
 			appt.setUntimed("N");
 			long mins = (end.getValue() - start.getValue()) / 1000 / 60;
 			if (mins > 0) {
-				appt.setDuration((int) mins);
+				appt.setDuration(new Integer((int)mins));
 				if (dur != null && dur.intValue() != mins)
 					needs_update = true;
 

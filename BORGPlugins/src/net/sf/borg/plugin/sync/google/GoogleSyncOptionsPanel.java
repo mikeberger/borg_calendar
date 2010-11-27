@@ -98,7 +98,7 @@ public class GoogleSyncOptionsPanel extends OptionsPanel {
 			Errmsg.errmsg(e);
 		}
 
-		Prefs.putPref(GoogleSync.BATCH_CHUNK_SIZE, (Integer)chunksize.getValue());
+		Prefs.putPref(GoogleSync.BATCH_CHUNK_SIZE, chunksize.getValue());
 	}
 
 	/*

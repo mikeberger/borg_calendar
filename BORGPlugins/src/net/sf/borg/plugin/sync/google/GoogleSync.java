@@ -326,7 +326,7 @@ public class GoogleSync {
 						|| event.getAction() == ChangeEvent.ChangeAction.CHANGE) {
 					Integer key = (Integer) event.getObject();
 					Appointment appt = AppointmentModel.getReference().getAppt(
-							key);
+							key.intValue());
 					try {
 						CalendarEventEntry ev = ad.fromBorg(appt);
 						BatchUtils.setBatchId(ev, Integer.toString(count));

@@ -174,7 +174,7 @@ public class RunReport {
 	 * @param parmsIn
 	 *            the input parameter map for the report
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({ "unchecked" })
 	public static void runReport(InputStream is, Map parmsIn) {
 	  Map parms = parmsIn;
 		if (parms == null)
