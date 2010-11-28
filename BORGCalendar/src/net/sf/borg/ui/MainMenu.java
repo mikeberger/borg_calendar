@@ -20,9 +20,7 @@ package net.sf.borg.ui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.InputStream;
 import java.util.Properties;
 
@@ -44,6 +42,7 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.control.Borg;
 import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.AppointmentModel;
+import net.sf.borg.model.CheckListModel;
 import net.sf.borg.model.ExportImport;
 import net.sf.borg.model.LinkModel;
 import net.sf.borg.model.MemoModel;
@@ -426,6 +425,9 @@ class MainMenu {
 					+ TaskModel.getReference().getProjects().size() + "\n";
 			info += Resource.getResourceString("Memos") + ": "
 					+ MemoModel.getReference().getMemos().size() + "\n";
+			info += Resource.getResourceString("CheckLists") + ": "
+					+ CheckListModel.getReference().getCheckLists().size()
+					+ "\n";
 			info += Resource.getResourceString("links") + ": "
 					+ LinkModel.getReference().getLinks().size() + "\n";
 		} catch (Exception e) {
@@ -659,37 +661,9 @@ class MainMenu {
 				return;
 
 			String fileName = chooser.getSelectedFile().getAbsolutePath();
-			BufferedReader in = new BufferedReader(new FileReader(new File(
-					fileName)));
 
-			String type = "";
-			for (int i = 0; i < 10; i++) {
-				String line = in.readLine();
-				if (line == null)
-					break;
-				if (line.contains("<ADDRESSES>")) {
-					type = "ADDRESSES";
-					break;
-				} else if (line.contains("<MEMOS>")) {
-					type = "MEMOS";
-					break;
-				} else if (line.contains("<CHECKLISTS>")) {
-					type = "CHECKLISTS";
-					break;
-				} else if (line.contains("<LINKS>")) {
-					type = "LINKS";
-					break;
-				} else if (line.contains("<TASKS>")) {
-					type = "TASKS";
-					break;
-				} else if (line.contains("<APPTS>")) {
-					type = "APPTS";
-					break;
-				}
-			}
-
-			in.close();
-
+			String type = ExportImport.getImportObjectType(fileName);
+			
 			int ret = JOptionPane.showConfirmDialog(null, Resource
 					.getResourceString("Importing_")
 					+ " " + type + ", OK?", Resource

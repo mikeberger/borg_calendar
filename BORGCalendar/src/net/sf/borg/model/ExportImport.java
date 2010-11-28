@@ -19,7 +19,11 @@
  */
 package net.sf.borg.model;
 
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
@@ -29,21 +33,22 @@ import java.util.zip.ZipOutputStream;
 
 /**
  * contains common import/export utilities
- *
+ * 
  */
 public class ExportImport {
 
 	/**
 	 * Export all models to XML files inside a time-stamped zipfile.
-	 *
-	 * @param dir the directory to create the zip file in
-	 * @throws Exception 
+	 * 
+	 * @param dir
+	 *            the directory to create the zip file in
+	 * @throws Exception
 	 */
 	public static void exportToZip(String dir) throws Exception {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 		String uniq = sdf.format(new Date());
-		ZipOutputStream out = new ZipOutputStream(new FileOutputStream(
-				dir + "/borg" + uniq + ".zip"));
+		ZipOutputStream out = new ZipOutputStream(new FileOutputStream(dir
+				+ "/borg" + uniq + ".zip"));
 		Writer fw = new OutputStreamWriter(out, "UTF8");
 
 		out.putNextEntry(new ZipEntry("borg.xml"));
@@ -78,16 +83,18 @@ public class ExportImport {
 
 		out.close();
 	}
-	
+
 	/**
 	 * Import from a single xml file.
-	 *
-	 * @param type the object type
-	 * @param fileName the file name
+	 * 
+	 * @param type
+	 *            the object type
+	 * @param fileName
+	 *            the file name
 	 * @throws Exception
 	 */
-	public static void importFromXmlFile(String type, String fileName) throws Exception
-	{
+	public static void importFromXmlFile(String type, String fileName)
+			throws Exception {
 		if (type.equals("ADDRESSES")) {
 			AddressModel.getReference().importXml(fileName);
 		} else if (type.equals("LINKS")) {
@@ -105,5 +112,48 @@ public class ExportImport {
 		// show any newly imported categories
 		CategoryModel.getReference().syncCategories();
 		CategoryModel.getReference().showAll();
+	}
+
+	/**
+	 * get the type of object from an import file XML
+	 * @param fileName the filename
+	 * @return the object type
+	 * @throws IOException
+	 */
+	public static String getImportObjectType(String fileName) throws IOException {
+		
+		BufferedReader in = new BufferedReader(new FileReader(
+				new File(fileName)));
+
+		String type = "";
+		for (int i = 0; i < 10; i++) {
+			String line = in.readLine();
+			if (line == null)
+				break;
+			if (line.contains("<ADDRESSES>")) {
+				type = "ADDRESSES";
+				break;
+			} else if (line.contains("<MEMOS>")) {
+				type = "MEMOS";
+				break;
+			} else if (line.contains("<CHECKLISTS>")) {
+				type = "CHECKLISTS";
+				break;
+			} else if (line.contains("<LINKS>")) {
+				type = "LINKS";
+				break;
+			} else if (line.contains("<TASKS>")) {
+				type = "TASKS";
+				break;
+			} else if (line.contains("<APPTS>")) {
+				type = "APPTS";
+				break;
+			}
+		}
+
+		in.close();
+		
+		return type;
+
 	}
 }
