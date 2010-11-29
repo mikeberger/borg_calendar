@@ -203,7 +203,7 @@ public class OptionsView extends View {
 		addWindowListener(new java.awt.event.WindowAdapter() {
 			@Override
 			public void windowClosing(java.awt.event.WindowEvent evt) {
-				dispose();
+				destroy();
 			}
 		});
 
@@ -241,7 +241,7 @@ public class OptionsView extends View {
 						@Override
 						public void actionPerformed(
 								java.awt.event.ActionEvent evt) {
-							dispose();
+							destroy();
 						}
 					});
 			setDismissButton(dismissButton);
@@ -296,6 +296,7 @@ public class OptionsView extends View {
 	@Override
 	public void destroy() {
 		this.dispose();
+		singleton = null;
 	}
 
 	@Override
