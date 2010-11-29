@@ -101,10 +101,7 @@ public class Borg implements SocketHandler {
 	 *            the arguments
 	 */
 	public static void main(String args[]) {
-
-		
-	
-		// create a new borg object and call its init routing with the command
+		// create a new borg object and call its init routine with the command
 		// line args
 		Borg b = getReference();
 		b.init(args);
@@ -323,7 +320,7 @@ public class Borg implements SocketHandler {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		// add the lib folder to the classpath
 		File lib = new File("lib");
 		if (lib.isDirectory()) {
@@ -339,7 +336,6 @@ public class Borg implements SocketHandler {
 				}
 			}
 		}
-
 
 		// locale
 		String country = Prefs.getPref(PrefName.COUNTRY);
@@ -357,7 +353,6 @@ public class Borg implements SocketHandler {
 			else
 				dbdir = JdbcDB.buildDbDir(); // derive db url from user prefs
 
-			// if no db set - tell user
 			if (dbdir.equals("not-set")) {
 
 				// try to set a valid default
@@ -387,7 +382,7 @@ public class Borg implements SocketHandler {
 			// now all errors can go to popup windows
 			Errmsg.console(false); // send errors to screen
 
-			// connect to the db - for now it is jdbc only
+			// connect to the db - for now, it is jdbc only
 			JdbcDB.connect(dbdir);
 
 			// start the UI thread
