@@ -503,7 +503,6 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 	 */
 	@Override
 	public JMenuBar getMenuForFrame() {
-		JMenuItem exitMenuItem;
 		JMenu fileMenu;
 		JMenuItem doneNoDeleteMenuItem;
 		JMenuItem doneDeleteMenuItem;
@@ -517,7 +516,6 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 		moveToFollowingDatMenuItem = new JMenuItem();
 		changeDateMenuItem = new JMenuItem();
 		JMenuItem printListMenuItem = new JMenuItem();
-		exitMenuItem = new JMenuItem();
 
 		ResourceHelper.setText(fileMenu, "Action");
 		ResourceHelper.setText(doneNoDeleteMenuItem, "Done_(No_Delete)");
@@ -559,16 +557,6 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 
 		fileMenu.add(printListMenuItem);
 
-		ResourceHelper.setText(exitMenuItem, "Exit");
-		exitMenuItem.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent evt) {
-				remove();
-			}
-		});
-		fileMenu.add(exitMenuItem);
-		exitMenuItem.setIcon(new ImageIcon(getClass().getResource(
-				"/resource/Stop16.gif")));
 		printListMenuItem.setIcon(new ImageIcon(getClass().getResource(
 				"/resource/Print16.gif")));
 		changeDateMenuItem.setIcon(new ImageIcon(getClass().getResource(

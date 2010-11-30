@@ -61,14 +61,13 @@ import net.sf.borg.ui.util.PopupMenuHelper;
 import net.sf.borg.ui.util.StripedTable;
 import net.sf.borg.ui.util.TablePrinter;
 import net.sf.borg.ui.util.TableSorter;
-import net.sf.borg.ui.util.JTabbedPaneWithCloseIcons.TabCloseListener;
 
 /**
  * UI for editing checkLists. It has a table that shows all checkLists by name
  * and an editing panel for editing checkList text.
  */
 public class CheckListPanel extends DockableView implements
-		ListSelectionListener, Module, TabCloseListener, TableModelListener {
+		ListSelectionListener, Module, TableModelListener {
 
 	private TableCellRenderer defaultTextRenderer = null;
 
@@ -899,5 +898,11 @@ public class CheckListPanel extends DockableView implements
 		for (int i = 0; i < model.getRowCount(); i++) {
 			model.setValueAt(Boolean.FALSE, i, COMPLETE_COLUMN);
 		}
+	}
+
+	@Override
+	public void cleanUp() {
+		// on close - unselect checklist
+		checkListListTable.clearSelection();
 	}
 }

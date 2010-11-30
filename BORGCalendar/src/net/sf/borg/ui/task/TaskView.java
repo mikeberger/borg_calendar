@@ -1196,10 +1196,8 @@ public class TaskView extends DockableView {
 				// then do not remove
 				// ourself
 				showtask(Action.CHANGE, task);
-			} else if (!isDocked())
-				this.remove();
-			else
-				this.getParent().remove(this);
+			} else
+				this.close();
 
 			// go back to task view when saving a task
 			MultiView.getMainView().setView(ViewType.TASK);

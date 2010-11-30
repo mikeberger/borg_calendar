@@ -39,9 +39,7 @@ import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -350,28 +348,6 @@ public class AppointmentListView extends DockableView implements
 	@Override
 	public String getFrameTitle() {
 		return title_;
-	}
-
-	@Override
-	public JMenuBar getMenuForFrame() {
-		JMenuBar menuBar = new JMenuBar();
-		JMenu fileMenu = new JMenu();
-		JMenuItem exitMenuItem = new JMenuItem();
-		fileMenu.setBackground(menuBar.getBackground());
-		ResourceHelper.setText(fileMenu, "File");
-		exitMenuItem.setBackground(fileMenu.getBackground());
-		ResourceHelper.setText(exitMenuItem, "Close");
-		exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
-			@Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				remove();
-			}
-		});
-
-		fileMenu.add(exitMenuItem);
-
-		menuBar.add(fileMenu);
-		return menuBar;
 	}
 
 	/**
@@ -731,5 +707,10 @@ public class AppointmentListView extends DockableView implements
 	@Override
 	public void update(ChangeEvent event) {
 		refresh();
+	}
+
+	@Override
+	public JMenuBar getMenuForFrame() {
+		return null;
 	}
 }

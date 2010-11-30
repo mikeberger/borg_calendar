@@ -65,14 +65,13 @@ import net.sf.borg.ui.util.GridBagConstraintsFactory;
 import net.sf.borg.ui.util.PasswordHelper;
 import net.sf.borg.ui.util.StripedTable;
 import net.sf.borg.ui.util.TableSorter;
-import net.sf.borg.ui.util.JTabbedPaneWithCloseIcons.TabCloseListener;
 
 /**
  * UI for editing memos. It has a table that shows all memos by name and an
  * editing panel for editing memo text.
  */
 public class MemoPanel extends DockableView implements ListSelectionListener,
-		Module, TabCloseListener {
+		Module {
 
 	private static final long serialVersionUID = 1L;
 
@@ -723,6 +722,12 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 	@Override
 	public JMenuBar getMenuForFrame() {
 		return null;
+	}
+
+	@Override
+	public void cleanUp() {
+		// on close - unselect memo
+		memoListTable.clearSelection();
 	}
 
 	

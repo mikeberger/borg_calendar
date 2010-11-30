@@ -216,19 +216,7 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 				paintHighlight(false, false, g);	
 		}
 	}
-	
-	/**
-	 * interface implemented by tab components that need to react to close events
-	 *
-	 */
-	public static interface TabCloseListener {
-		
-		/**
-		 * method called when the component's tab is being closed
-		 * @return true if the tab should be closed, false if not
-		 */
-		public boolean canClose();
-	}
+
 
 	/** icon size. */
 	static private final int ICON_WIDTH = 16;
@@ -294,12 +282,11 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 	private void closeTabCommon(int i)
 	{
 		Component c = this.getComponentAt(i);
-		if( c instanceof TabCloseListener)
+		if( c instanceof DockableView)
 		{
-			if( ! ((TabCloseListener)c).canClose())
-				return;
-		}
-		this.removeTabAt(i);
+			((DockableView)c).close();
+		} else
+			this.removeTabAt(i);
 	}
 
 	/**

@@ -446,11 +446,8 @@ public class AddressView extends DockableView {
 		try {
 			AddressModel.getReference().saveAddress(addr_);
 
-			// close this view
-			if (!isDocked())
-				this.remove();
-			else
-				this.getParent().remove(this);
+			this.close();
+			
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
 		}

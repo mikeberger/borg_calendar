@@ -263,7 +263,6 @@ public class AddrListView extends DockableView implements Module {
 		JMenuBar menuBar = new JMenuBar();
 		JMenu fileMenu = new JMenu();
 		JMenuItem printList = new JMenuItem();
-		JMenuItem exitMenuItem = new JMenuItem();
 
 		ResourceHelper.setText(fileMenu, "Action");
 
@@ -307,19 +306,7 @@ public class AddrListView extends DockableView implements Module {
 
 		fileMenu.add(printList);
 
-		ResourceHelper.setText(exitMenuItem, "Exit");
-		exitMenuItem.setIcon(new ImageIcon(getClass().getResource(
-				"/resource/Stop16.gif")));
-		exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
-			@Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				remove();
-			}
-		});
-
 		menuBar.add(fileMenu);
-
-		fileMenu.add(exitMenuItem);
 
 		return menuBar;
 

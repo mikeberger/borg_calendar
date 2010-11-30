@@ -138,9 +138,6 @@ public class ProjectView extends DockableView {
 	/** The save menu item. */
 	private JMenuItem saveMenuItem;
 
-	/** The dismiss menu item. */
-	private JMenuItem dismissMenuItem;
-
 	/** The link panel. */
 	private LinkPanel linkPanel = new LinkPanel();
 
@@ -235,16 +232,6 @@ public class ProjectView extends DockableView {
 
 		menu.add(saveMenuItem);
 
-		ResourceHelper.setText(dismissMenuItem, "Dismiss");
-		dismissMenuItem.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent evt) {
-				remove();
-			}
-		});
-
-		menu.add(dismissMenuItem);
-
 		menuBar.add(menu);
 		return menuBar;
 	}
@@ -261,7 +248,6 @@ public class ProjectView extends DockableView {
 		menuBar = new JMenuBar();
 		menu = new JMenu();
 		saveMenuItem = new JMenuItem();
-		dismissMenuItem = new JMenuItem();
 
 		/*
 		 * project info panel

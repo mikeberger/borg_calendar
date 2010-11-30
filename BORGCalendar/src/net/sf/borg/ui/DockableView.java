@@ -117,13 +117,53 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 			this.openInFrame();
 		}
 	}
+	
+	/**
+	 * method called to check if the view can be closed
+	 * @return true if the view can be closed, false if not
+	 */
+	protected boolean canClose()
+	{
+		// default is to always allow close
+		return true;
+	}
+	
+	/**
+	 * method called when view is being closed to allow the view to do clean up or resets
+	 */
+	protected void cleanUp()
+	{
+		// no default cleanup
+	}
+	
+	
+	/**
+	 * close the view if allowed
+	 */
+	public void close(){
+		
+		if( !canClose())
+			return;
+		
+		cleanUp();
+		
+		if( isDocked())
+			this.getParent().remove(this);
+		else
+		{
+			frame.dispose();
+			frame = null;
+		}
+	}
 
 	/**
 	 * Dock into the multiview
 	 */
 	private void dock() {
 		MultiView.getMainView().addView(getFrameTitle(), this);
-		remove();
+		if (frame != null)
+			frame.dispose();
+		frame = null;
 	}
 
 	/**
@@ -246,13 +286,14 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 		frame.setJMenuBar(bar);
 
 		frame
-				.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+				.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
 		frame.setTitle(getFrameTitle());
 
+		final DockableView dv = this;
 		frame.addWindowListener(new java.awt.event.WindowAdapter() {
 			@Override
 			public void windowClosing(java.awt.event.WindowEvent evt) {
-				frame.dispose();
+				dv.close();
 			}
 		});
 
@@ -260,7 +301,7 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 		frame.getLayeredPane().registerKeyboardAction(new ActionListener() {
 			@Override
 			public final void actionPerformed(ActionEvent e) {
-				frame.dispose();
+				dv.close();
 			}
 		}, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
 				JComponent.WHEN_IN_FOCUSED_WINDOW);
@@ -275,16 +316,5 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 	 * @see net.sf.borg.model.Model.Listener#refresh()
 	 */
 	public abstract void refresh();
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.sf.borg.model.Model.Listener#remove()
-	 */
-	public void remove() {
-		if (frame != null)
-			frame.dispose();
-		frame = null;
-	}
 
 }
