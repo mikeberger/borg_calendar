@@ -52,6 +52,11 @@ class GanttFrame extends View {
 	/** The GANTT chart size. */
 	static private PrefName GANTTSIZE = new PrefName("ganttsize",
 			"-1,-1,-1,-1,N");
+	
+	/** show subtasks on gantt chart */
+	static public PrefName GANTT_SHOW_SUBTASKS = new PrefName(
+			"gantt_show_subtasks", "true");
+	
 
 	/**
 	 * add an item to the chart
@@ -118,7 +123,7 @@ class GanttFrame extends View {
 						.getCompletionDate());
 
 			// check if option to show subtasks is set
-			String show_st = Prefs.getPref(PrefName.GANTT_SHOW_SUBTASKS);
+			String show_st = Prefs.getPref(GANTT_SHOW_SUBTASKS);
 			if (show_st.equals("true")) {
 
 				// add subtasks
