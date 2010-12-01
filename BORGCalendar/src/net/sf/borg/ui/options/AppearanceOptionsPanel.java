@@ -49,7 +49,7 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 
 	private JCheckBox canadabox;
 
-	private JCheckBox colorsortbox;
+	private JCheckBox prioritySortBox;
 
 	private JCheckBox dock = new JCheckBox();
 
@@ -88,7 +88,7 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 		wkendhr = new JComboBox();
 		canadabox = new JCheckBox();
 		localebox = new JComboBox();
-		colorsortbox = new JCheckBox();
+		prioritySortBox = new JCheckBox();
 
 		this.setLayout(new java.awt.GridBagLayout());
 
@@ -173,8 +173,8 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 		this.add(dock, GridBagConstraintsFactory.create(0, 8,
 				GridBagConstraints.BOTH));
 
-		ResourceHelper.setText(colorsortbox, "colorsort");
-		this.add(colorsortbox, GridBagConstraintsFactory.create(0, 5,
+		ResourceHelper.setText(prioritySortBox, "sort_by_priority");
+		this.add(prioritySortBox, GridBagConstraintsFactory.create(0, 5,
 				GridBagConstraints.BOTH));
 
 		doyBox = new JCheckBox();
@@ -202,7 +202,7 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 		OptionsPanel.setBooleanPref(holiday1, PrefName.SHOWUSHOLIDAYS);
 		OptionsPanel.setBooleanPref(canadabox, PrefName.SHOWCANHOLIDAYS);
 		OptionsPanel.setBooleanPref(doyBox, PrefName.DAYOFYEAR);
-		OptionsPanel.setBooleanPref(colorsortbox, PrefName.COLORSORT);
+		OptionsPanel.setBooleanPref(prioritySortBox, PrefName.PRIORITY_SORT);
 		OptionsPanel.setBooleanPref(miltime, PrefName.MILTIME);
 		OptionsPanel.setBooleanPref(truncbox, PrefName.TRUNCAPPT);
 		OptionsPanel.setBooleanPref(iso8601Box, PrefName.ISOWKNUMBER);
@@ -254,7 +254,7 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 		OptionsPanel.setCheckBox(holiday1, PrefName.SHOWUSHOLIDAYS);
 		OptionsPanel.setCheckBox(canadabox, PrefName.SHOWCANHOLIDAYS);
 		OptionsPanel.setCheckBox(doyBox, PrefName.DAYOFYEAR);
-		OptionsPanel.setCheckBox(colorsortbox, PrefName.COLORSORT);
+		OptionsPanel.setCheckBox(prioritySortBox, PrefName.PRIORITY_SORT);
 		OptionsPanel.setCheckBox(miltime, PrefName.MILTIME);
 
 		OptionsPanel.setCheckBox(truncbox, PrefName.TRUNCAPPT);

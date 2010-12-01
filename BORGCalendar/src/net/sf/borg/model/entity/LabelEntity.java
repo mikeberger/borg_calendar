@@ -112,6 +112,11 @@ public class LabelEntity implements CalendarEntity {
 	public boolean getTodo() {
 		return false;
 	}
+
+	@Override
+	public Integer getPriority() {
+		return null;
+	}
 	
 	
 }

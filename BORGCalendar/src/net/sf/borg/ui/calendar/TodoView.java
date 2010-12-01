@@ -1074,7 +1074,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 					ro[2] = mr.getCategory();
 					ro[3] = "navy";
 					ro[4] = null;
-					ro[5] = null;
+					ro[5] = mr.getPriority();
 
 					tm.addRow(ro);
 					theTodoList.add(mr);

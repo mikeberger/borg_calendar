@@ -58,32 +58,6 @@ public class Day {
 	 */
 	private static class apcompare implements Comparator<CalendarEntity> {
 
-		/**
-		 * convert the "logical" colors to a number for sorting by color the
-		 * actual color names listed below are no longer the displayed colors.
-		 */
-		private static int colornum(String color) {
-
-			if (color.equals("red"))
-				return (1);
-			if (color.equals("blue"))
-				return (2);
-			if (color.equals("green"))
-				return (3);
-			if (color.equals("black"))
-				return (4);
-			if (color.equals("white"))
-				return (5);
-			if (color.equals("brick"))
-				return (6);
-			if (color.equals("navy"))
-				return (7);
-			if (color.equals("purple"))
-				return (8);
-			return (9);
-
-		}
-
 		/*
 		 * (non-Javadoc)
 		 * 
@@ -95,16 +69,20 @@ public class Day {
 			String s1 = so1.getText();
 			String s2 = so2.getText();
 
-			String csort = Prefs.getPref(PrefName.COLORSORT);
-			if (csort.equals("true")) {
-				// color has first priority in the sort
-				String c1 = so1.getColor();
-				String c2 = so2.getColor();
-				if (!c1.equals(c2)) {
-					if (colornum(c1) > colornum(c2))
-						return (1);
-					return (-1);
+			String psort = Prefs.getPref(PrefName.PRIORITY_SORT);
+			if (psort.equals("true")) {
+				Integer p1 = so1.getPriority();
+				Integer p2 = so2.getPriority();
+				
+				if( p1 != null && p2 != null )
+				{
+					if( p1.intValue() != p2.intValue())
+						return (p1.intValue() > p2.intValue() ? 1 : -1);
 				}
+				else if (p1 != null)
+					return -1;
+				else if (p2 != null)
+					return 1;
 			}
 
 			// use appt time of day (not date - due to repeats) to sort next

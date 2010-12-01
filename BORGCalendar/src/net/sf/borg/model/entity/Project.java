@@ -221,4 +221,9 @@ public class Project extends KeyedEntity<Project> implements CalendarEntity {
          return tx;
 	}
 
+	@Override
+	public Integer getPriority() {
+		return null;
+	}
+
 }

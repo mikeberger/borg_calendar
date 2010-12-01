@@ -217,4 +217,9 @@ public class Subtask extends KeyedEntity<Subtask> implements CalendarEntity {
 	public boolean getTodo() {
 		return true;
 	}
+
+	@Override
+	public Integer getPriority() {
+		return null;
+	}
 }

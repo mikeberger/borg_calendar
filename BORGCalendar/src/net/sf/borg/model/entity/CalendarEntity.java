@@ -69,5 +69,11 @@ public interface CalendarEntity {
 	 */
 	public Date getNextTodo();
 	
+	/**
+	 * Gets the priority
+	 * @return the priority
+	 */
+	public Integer getPriority();
+	
 	
 }

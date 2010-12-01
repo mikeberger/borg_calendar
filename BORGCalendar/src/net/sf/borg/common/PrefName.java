@@ -155,8 +155,8 @@ public class PrefName {
 	static public PrefName SHOWCANHOLIDAYS = new PrefName("show_can_holidays",
 			"false");
 
-	/** sort appointments by color for a day */
-	static public PrefName COLORSORT = new PrefName("color_sort", "false");
+	/** sort appointments by priority for a day */
+	static public PrefName PRIORITY_SORT = new PrefName("priority_sort", "false");
 
 	/** the first day of the week */
 	static public PrefName FIRSTDOW = new PrefName("first_dow", new Integer(
