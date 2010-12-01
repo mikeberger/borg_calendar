@@ -354,10 +354,6 @@ public class PrefName {
 			"task_tree_show_status", "false");
 
 
-	/** show subtasks on gantt chart */
-	static public PrefName GANTT_SHOW_SUBTASKS = new PrefName(
-			"gantt_show_subtasks", "true");
-	
 	/** keystore location */
 	static public PrefName KEYSTORE = new PrefName("key_store", "");
 	

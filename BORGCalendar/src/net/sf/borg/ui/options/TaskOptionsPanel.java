@@ -39,7 +39,6 @@ public class TaskOptionsPanel extends OptionsPanel {
 	private JCheckBox calShowSubtaskBox = new JCheckBox();
 
 	private JCheckBox calShowTaskBox = new JCheckBox();
-	private JCheckBox ganttShowSubtaskBox = new JCheckBox();
 	private JCheckBox taskAbbrevBox = new JCheckBox();
 	private JCheckBox taskTreeStatusBox = new JCheckBox();
 
@@ -51,8 +50,6 @@ public class TaskOptionsPanel extends OptionsPanel {
 
 		calShowSubtaskBox.setName("calShowSubtaskBox");
 		calShowSubtaskBox.setHorizontalAlignment(SwingConstants.LEFT);
-		ganttShowSubtaskBox.setName("calShowSubtaskBox");
-		ganttShowSubtaskBox.setHorizontalAlignment(SwingConstants.LEFT);
 		calShowTaskBox.setName("calShowTaskBox");
 		calShowTaskBox.setHorizontalAlignment(SwingConstants.LEFT);
 		taskAbbrevBox.setName("taskAbbrevBox");
@@ -68,14 +65,11 @@ public class TaskOptionsPanel extends OptionsPanel {
 		this.add(taskAbbrevBox, gridBagConstraints);
 		this.add(calShowTaskBox, gridBagConstraints);
 		this.add(calShowSubtaskBox, gridBagConstraints);
-		this.add(ganttShowSubtaskBox, gridBagConstraints);
 		this.add(taskTreeStatusBox, gridBagConstraints);
 
 		taskAbbrevBox.setText(Resource.getResourceString("task_abbrev"));
 		calShowTaskBox.setText(Resource.getResourceString("calShowTask"));
 		calShowSubtaskBox.setText(Resource.getResourceString("calShowSubtask"));
-		ganttShowSubtaskBox.setText(Resource
-				.getResourceString("ganttShowSubtask"));
 		taskTreeStatusBox.setText(Resource.getResourceString("show_task_status_in_tree"));
 
 	}
@@ -91,8 +85,6 @@ public class TaskOptionsPanel extends OptionsPanel {
 		OptionsPanel.setBooleanPref(calShowTaskBox, PrefName.CAL_SHOW_TASKS);
 		OptionsPanel.setBooleanPref(calShowSubtaskBox,
 				PrefName.CAL_SHOW_SUBTASKS);
-		OptionsPanel.setBooleanPref(ganttShowSubtaskBox,
-				PrefName.GANTT_SHOW_SUBTASKS);
 		OptionsPanel.setBooleanPref(taskTreeStatusBox, PrefName.TASK_TREE_SHOW_STATUS);
 
 	}
@@ -108,8 +100,6 @@ public class TaskOptionsPanel extends OptionsPanel {
 		OptionsPanel.setCheckBox(taskAbbrevBox, PrefName.TASK_SHOW_ABBREV);
 		OptionsPanel.setCheckBox(calShowTaskBox, PrefName.CAL_SHOW_TASKS);
 		OptionsPanel.setCheckBox(calShowSubtaskBox, PrefName.CAL_SHOW_SUBTASKS);
-		OptionsPanel.setCheckBox(ganttShowSubtaskBox,
-				PrefName.GANTT_SHOW_SUBTASKS);
 		OptionsPanel.setCheckBox(taskTreeStatusBox, PrefName.TASK_TREE_SHOW_STATUS);
 
 	}
