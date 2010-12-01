@@ -47,7 +47,7 @@ public class CheckListJdbcDB extends JdbcDB implements CheckListDB {
 		super();
 		new JdbcDBUpgrader(
 				"select name from checkLists",
-				"CREATE CACHED TABLE checklists (name varchar(50) NOT NULL,text longvarchar,PRIMARY KEY (name));")
+				"CREATE CACHED TABLE checkLists (name varchar(50) NOT NULL,text longvarchar,PRIMARY KEY (name));")
 				.upgrade();
 	}
 

@@ -57,6 +57,7 @@ CREATE CACHED TABLE appointments (
   untimed char(1) default NULL,
   encrypted char(1) default NULL,
   repeat_until date default NULL,
+  priority integer default '5' NOT NULL,
   PRIMARY KEY  (appt_num)
 );
 

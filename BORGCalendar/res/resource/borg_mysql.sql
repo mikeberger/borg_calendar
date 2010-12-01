@@ -47,6 +47,7 @@ CREATE TABLE `appointments` (
   `untimed` char(1) default NULL,
   `encrypted` char(1) default NULL,
    repeat_until date default NULL,
+  `priority` int(11) NOT NULL default '5',
 
 
   PRIMARY KEY  (`appt_num`),
@@ -135,7 +136,7 @@ CREATE TABLE links (
   PRIMARY KEY  (id)
 );
 
-CREATE TABLE checklists (
+CREATE TABLE checkLists (
   name varchar(50) NOT NULL,
   text text,
   PRIMARY KEY  (name)

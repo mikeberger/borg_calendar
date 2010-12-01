@@ -61,6 +61,8 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
 		"alter table appointments add column encrypted char(1) default null").upgrade();
 		new JdbcDBUpgrader("select repeat_until from appointments",
 		"alter table appointments add column repeat_until date default null").upgrade();
+		new JdbcDBUpgrader("select priority from appointments",
+		"alter table appointments add column priority integer default '5' NOT NULL").upgrade();
 		
     }
     
@@ -71,8 +73,8 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
     public void addObj(Appointment appt) throws Exception
     {
         PreparedStatement stmt = connection_.prepareStatement( "INSERT INTO appointments (appt_date, appt_num, duration, text, skip_list," +
-        " next_todo, vacation, holiday, private, times, frequency, todo, color, rpt, category, reminders, untimed, encrypted, repeat_until ) VALUES " +
-        "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        " next_todo, vacation, holiday, private, times, frequency, todo, color, rpt, category, reminders, untimed, encrypted, repeat_until, priority ) VALUES " +
+        "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         
         
         stmt.setTimestamp( 1, new java.sql.Timestamp( appt.getDate().getTime()), Calendar.getInstance() );
@@ -107,7 +109,10 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
             stmt.setDate( 19, new java.sql.Date( until.getTime()) );
         else
             stmt.setDate(19, null );
-
+        if( appt.getPriority() != null )
+        	stmt.setInt(20, appt.getPriority().intValue());
+        else
+        	stmt.setInt(20, 5);
         stmt.executeUpdate();
         
         writeCache( appt );
@@ -273,6 +278,7 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
 			appt.setEncrypted(true);
 		if( r.getDate("repeat_until") != null )
 			appt.setRepeatUntil( new java.util.Date(r.getDate("repeat_until").getTime()));
+		appt.setPriority(new Integer(r.getInt("priority")));
 		
 		return appt;
 	}
@@ -286,7 +292,7 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
         PreparedStatement stmt = connection_.prepareStatement( "UPDATE appointments SET  appt_date = ?, " +
         "duration = ?, text = ?, skip_list = ?," +
         " next_todo = ?, vacation = ?, holiday = ?, private = ?, times = ?, frequency = ?, todo = ?, color = ?, rpt = ?, category = ?," +
-		" reminders = ?, untimed = ?, encrypted = ?, repeat_until = ?" +
+		" reminders = ?, untimed = ?, encrypted = ?, repeat_until = ?, priority = ?" +
         " WHERE appt_num = ?");
        
         
@@ -320,7 +326,11 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
             stmt.setDate( 18, new java.sql.Date( until.getTime()) );
         else
             stmt.setDate(18, null );
-        stmt.setInt( 19, appt.getKey() );
+        if( appt.getPriority() != null )
+        	stmt.setInt(19, appt.getPriority().intValue());
+        else
+        	stmt.setInt(19, 5);
+        stmt.setInt(20, appt.getKey());
 
         stmt.executeUpdate();
         stmt.close();

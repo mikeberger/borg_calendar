@@ -211,6 +211,8 @@ public class AppointmentPanel extends JPanel {
 			new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
 					"11", "12" });
 
+	static private SpinnerNumberModel prioritySpinnerModel = new SpinnerNumberModel(5, 1, 10, 1);
+	
 	// appt text area
 	private JTextArea appointmentBodyTextArea;
 
@@ -222,6 +224,9 @@ public class AppointmentPanel extends JPanel {
 
 	// category combo box
 	private JComboBox categoryBox;
+	
+	// priority chooser
+	private JSpinner prioritySpinner;
 
 	// date change checkbox
 	private JCheckBox dateChangeCheckBox;
@@ -361,6 +366,10 @@ public class AppointmentPanel extends JPanel {
 			amOrPmComboBox.setVisible(true);
 		}
 
+		// set up priority pull down
+		prioritySpinner.setModel(prioritySpinnerModel);
+		prioritySpinner.setVisible(true);
+		
 		// load categories
 		try {
 			Collection<String> cats = CategoryModel.getReference()
@@ -641,6 +650,7 @@ public class AppointmentPanel extends JPanel {
 		appointmentBodyTextArea = new JTextArea();
 		startHourComboBox = new JComboBox();
 		startMinuteComboBox = new JComboBox();
+		prioritySpinner = new JSpinner();
 		amOrPmComboBox = new JCheckBox();
 		durationHourComboBox = new JComboBox();
 		durationMinuteComboBox = new JComboBox();
@@ -661,6 +671,7 @@ public class AppointmentPanel extends JPanel {
 		colorComboBox = new JComboBox();
 		categoryBox = new JComboBox();
 		JLabel lblCategory = new JLabel();
+		JLabel lblPriority = new JLabel();
 		JPanel buttonPanel = new JPanel();
 		saveButton = new JButton();
 		saveCloseButton = new JButton();
@@ -837,17 +848,24 @@ public class AppointmentPanel extends JPanel {
 		appointmentPropetiesPanel.add(privateCheckBox,
 				GridBagConstraintsFactory.create(4, 0, GridBagConstraints.BOTH,
 						1.0, 0.0));
+		
+		JPanel subPanel = new JPanel();
+		subPanel.setLayout(new GridBagLayout());
+		
+		subPanel.add(new JLabel(), GridBagConstraintsFactory
+				.create(GridBagConstraints.RELATIVE, 0, GridBagConstraints.BOTH, 1.0, 0.0)); //spacer
 
 		lblColor.setHorizontalAlignment(SwingConstants.RIGHT);
 		ResourceHelper.setText(lblColor, "Color");
 
-		appointmentPropetiesPanel.add(lblColor, GridBagConstraintsFactory
-				.create(0, 1, GridBagConstraints.BOTH));
+		subPanel.add(lblColor, GridBagConstraintsFactory
+				.create(GridBagConstraints.RELATIVE, 0, GridBagConstraints.BOTH));
+		
 
 		colorComboBox.setOpaque(false);
 
-		appointmentPropetiesPanel.add(colorComboBox, GridBagConstraintsFactory
-				.create(1, 1, GridBagConstraints.BOTH));
+		subPanel.add(colorComboBox, GridBagConstraintsFactory
+				.create(GridBagConstraints.RELATIVE, 0, GridBagConstraints.BOTH));
 		ColorBoxRenderer cbr = new ColorBoxRenderer();
 		colorComboBox.setRenderer(cbr);
 		colorComboBox.setEditable(false);
@@ -857,12 +875,29 @@ public class AppointmentPanel extends JPanel {
 
 		lblCategory.setHorizontalAlignment(SwingConstants.RIGHT);
 		ResourceHelper.setText(lblCategory, "Category");
-		appointmentPropetiesPanel.add(lblCategory, GridBagConstraintsFactory
-				.create(2, 1, GridBagConstraints.BOTH));
+		subPanel.add(lblCategory, GridBagConstraintsFactory
+				.create(GridBagConstraints.RELATIVE, 0, GridBagConstraints.BOTH, 1.0, 0.0));
 
-		appointmentPropetiesPanel.add(categoryBox, GridBagConstraintsFactory
-				.create(3, 1, GridBagConstraints.BOTH));
-
+		subPanel.add(categoryBox, GridBagConstraintsFactory
+				.create(GridBagConstraints.RELATIVE, 0, GridBagConstraints.BOTH));
+		
+		lblPriority.setHorizontalAlignment(SwingConstants.RIGHT);
+		ResourceHelper.setText(lblPriority, "Priority");
+		subPanel.add(lblPriority, GridBagConstraintsFactory
+				.create(GridBagConstraints.RELATIVE, 0, GridBagConstraints.BOTH, 1.0, 0.0));
+		subPanel.add(prioritySpinner, GridBagConstraintsFactory
+				.create(GridBagConstraints.RELATIVE, 0, GridBagConstraints.BOTH));
+		
+		subPanel.add(new JLabel(), GridBagConstraintsFactory
+				.create(GridBagConstraints.RELATIVE, 0, GridBagConstraints.BOTH, 1.0, 0.0)); //spacer
+		
+		GridBagConstraints subPanelConstraints = GridBagConstraintsFactory
+		.create(0, 1, GridBagConstraints.BOTH, 1.0, 0.0);
+		subPanelConstraints.gridwidth = 5;
+		appointmentPropetiesPanel.add(subPanel, subPanelConstraints);
+		
+		
+		
 		// ********************************************************************
 		// button panel
 		// ********************************************************************
@@ -1246,6 +1281,7 @@ public class AppointmentPanel extends JPanel {
 		// reminder times
 		appt.setReminderTimes(new String(custRemTimes));
 
+		appt.setPriority((Integer)prioritySpinner.getValue());
 		return (dateChg);
 	}
 
@@ -1647,6 +1683,13 @@ public class AppointmentPanel extends JPanel {
 					saveButton.setEnabled(false);
 					saveCloseButton.setEnabled(false);
 				}
+				
+				// set priority
+				Integer p = new Integer(5);
+				Integer priority = appt.getPriority();
+				if (priority != null)
+					p = priority;
+				prioritySpinner.setValue(p);
 
 			} catch (Exception e) {
 				Errmsg.errmsg(e);

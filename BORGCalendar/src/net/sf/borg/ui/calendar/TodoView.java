@@ -56,10 +56,12 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.ListSelectionModel;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.TableModelEvent;
@@ -315,6 +317,9 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 
 	/** The todo text. */
 	private JTextField todoText;
+	
+	/** Spinner for todo priority. */
+	private JSpinner todoPrioritySpinner;
 
 	/** cached copy of user-colors preference */
 	private boolean user_colors = false;
@@ -342,13 +347,15 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 				Resource.getResourceString("Date"),
 				Resource.getResourceString("To_Do"),
 				Resource.getResourceString("Category"),
-				Resource.getResourceString("Color"), "key" }, new Class[] {
+				Resource.getResourceString("Color"), "key",
+				Resource.getResourceString("Priority")}, new Class[] {
 				Date.class, java.lang.String.class, java.lang.String.class,
-				java.lang.String.class, java.lang.Integer.class }));
+				java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class }));
 
 		todoTable.getColumnModel().getColumn(0).setPreferredWidth(140);
 		todoTable.getColumnModel().getColumn(1).setPreferredWidth(400);
 		todoTable.getColumnModel().getColumn(2).setPreferredWidth(120);
+		todoTable.getColumnModel().getColumn(5).setPreferredWidth(50);
 
 		user_colors = Prefs.getBoolPref(PrefName.UCS_ONTODO);
 
@@ -357,6 +364,8 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 		todoTable.setDefaultRenderer(Object.class, new TodoTableCellRenderer(defaultObjectRenderer));
 		TableCellRenderer defaultDateRenderer = todoTable.getDefaultRenderer(Date.class);
 		todoTable.setDefaultRenderer(Date.class, new TodoTableCellRenderer(defaultDateRenderer));
+		TableCellRenderer defaultIntegerRenderer = todoTable.getDefaultRenderer(Integer.class);
+		todoTable.setDefaultRenderer(Integer.class, new TodoTableCellRenderer(defaultIntegerRenderer));
 
 		// remove the hidden columns - color and key
 		todoTable.removeColumn(todoTable.getColumnModel().getColumn(3));
@@ -423,6 +432,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 			appt.setColor("white");
 		else
 			appt.setColor("black");
+		
 
 		// no repeating
 		appt.setFrequency(Repeat.ONCE);
@@ -437,6 +447,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 			appt.setCategory(cat);
 		}
 
+		appt.setPriority((Integer)todoPrioritySpinner.getValue());
 		AppointmentModel.getReference().saveAppt(appt);
 
  		// clear the contents of the todo text field  
@@ -644,6 +655,13 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 		greenToggleButton = new JToggleButton("", false);
 		blackToggleButton = new JToggleButton("", true);
 		whiteToggleButton = new JToggleButton("", false);
+		
+		// initial priority spinner settings
+		int val = 5;
+		int min = 1;
+		int max = 10;
+		int step = 1;
+		todoPrioritySpinner = new JSpinner(new SpinnerNumberModel(val, min, max, step));
 
 		// load categories
 		try {
@@ -732,6 +750,13 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 
 		toggleButtonPanel.add(categoryLabel);
 		toggleButtonPanel.add(categoryComboBox);
+		
+		JLabel priorityLabel = new JLabel();
+		ResourceHelper.setText(priorityLabel, "Priority");
+		priorityLabel.setLabelFor(todoPrioritySpinner);
+		
+		toggleButtonPanel.add(priorityLabel);
+		toggleButtonPanel.add(todoPrioritySpinner);
 
 		ResourceHelper.setText(todoLabel, "To_Do");
 		todoLabel.setLabelFor(todoText);
@@ -927,7 +952,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 		gc.set(Calendar.HOUR_OF_DAY, 23);
 		gc.set(Calendar.MINUTE, 59);
 		Date d = gc.getTime();
-		Object[] tod = new Object[5];
+		Object[] tod = new Object[6];
 		tod[0] = d;
 		tod[1] = Resource.getResourceString("======_Today_======");
 		tod[2] = "Today is";
@@ -954,11 +979,11 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 				String tx = AppointmentTextFormat.format(r, nt);
 
 				// add the table row
-				Object[] ro = new Object[5];
+				Object[] ro = new Object[6];
 				ro[0] = nt;
 				ro[1] = tx;
 				ro[2] = r.getCategory(); // category
-
+				
 				// color
 				if (r.getColor() == null)
 					ro[3] = "black";
@@ -967,8 +992,12 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 
 				// key
 				ro[4] = new Integer(r.getKey());
+				
+				// priority
+				ro[5] = r.getPriority();
+				
 				tm.addRow(ro);
-
+				
 				tm.tableChanged(new TableModelEvent(tm));
 			} catch (Exception e) {
 				Errmsg.errmsg(e);
@@ -1006,12 +1035,13 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 						abb = "PR" + pj.getKey() + " ";
 					String todostring = abb + pj.getDescription();
 
-					Object[] ro = new Object[5];
+					Object[] ro = new Object[6];
 					ro[0] = pj.getDueDate();
 					ro[1] = todostring;
 					ro[2] = pj.getCategory();
 					ro[3] = "navy";
 					ro[4] = null;
+					ro[5] = null;
 
 					tm.addRow(ro);
 					theTodoList.add(pj);
@@ -1038,12 +1068,13 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 						abb = "BT" + mr.getKey() + " ";
 					String btstring = abb + mr.getDescription();
 
-					Object[] ro = new Object[5];
+					Object[] ro = new Object[6];
 					ro[0] = mr.getDueDate();
 					ro[1] = btstring;
 					ro[2] = mr.getCategory();
 					ro[3] = "navy";
 					ro[4] = null;
+					ro[5] = null;
 
 					tm.addRow(ro);
 					theTodoList.add(mr);
@@ -1084,12 +1115,13 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 						abb = "ST" + st.getKey() + " ";
 					String btstring = abb + st.getDescription();
 
-					Object[] ro = new Object[5];
+					Object[] ro = new Object[6];
 					ro[0] = st.getDueDate();
 					ro[1] = btstring;
 					ro[2] = cat;
 					ro[3] = "navy";
 					ro[4] = null;
+					ro[5] = null;
 
 					tm.addRow(ro);
 					theTodoList.add(st);

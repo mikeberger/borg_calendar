@@ -344,6 +344,21 @@ public class Appointment extends EncryptableEntity<Appointment> implements Calen
 	public void setRepeatUntil(Date repeatUntil) {
 		this.repeatUntil = repeatUntil;
 	}
+	
+	@XmlElement
+	private Integer priority;
+	
+	/**
+	 * get the priority value
+	 * @return the priority value
+	 */
+	public Integer getPriority() { return priority; }
+	
+	/**
+	 * set the priority value
+	 * @param priority the priority value
+	 */
+	public void setPriority(Integer priority) { this.priority = priority; }
 
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.entity.KeyedEntity#clone()
@@ -376,6 +391,7 @@ public class Appointment extends EncryptableEntity<Appointment> implements Calen
 		dst.setUntimed( getUntimed() );
 		dst.setEncrypted(isEncrypted());
 		dst.setRepeatUntil( getRepeatUntil());
+		dst.setPriority( getPriority() );
 
 		return(dst);
 	}
