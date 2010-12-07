@@ -454,6 +454,11 @@ public class GoogleSync {
 
 	static private String dumpEntry(CalendarEventEntry entry) {
 		List<When> whens = entry.getTimes();
+		if( whens == null || whens.isEmpty())
+		{
+			return ("[No Times (recurs?)|"
+					+ entry.getTitle().getPlainText().trim() + "]");
+		}
 		When when = whens.get(0);
 		DateTime start = when.getStartTime();
 		return ("["

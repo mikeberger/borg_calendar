@@ -159,8 +159,8 @@ public class GoogleAppointmentAdapter implements
 
 		String uid = entry.getIcalUID();
 		int idx = uid.indexOf('@');
-		String ks = uid.substring(0, idx);
 		try {
+			String ks = uid.substring(0, idx);
 			int key = Integer.parseInt(ks);
 			return key;
 		} catch (Exception e) {
