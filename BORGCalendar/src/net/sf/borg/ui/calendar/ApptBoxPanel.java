@@ -547,7 +547,7 @@ abstract class ApptBoxPanel extends JPanel implements ComponentListener {
 					} else {
 						// we moved the box outside of the resize area, so 
 						// send no time info (the resize area == the time grid)
-						((Box.Draggable) draggedBox).move(0, d);
+						((Box.Draggable) draggedBox).move(-1, d);
 					}
 				} catch (Exception e) {
 					Errmsg.errmsg(e);

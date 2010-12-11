@@ -739,10 +739,12 @@ class ApptBox extends Box implements Box.Draggable {
 		int hour = realtime / 60;
 		int min = realtime % 60;
 
-		if (hour == 0 && min == 0) {
+		if (realtime == -1) {
 			// we are moving to be untimed - clear the duration
 			ap.setDuration(null);
 			ap.setUntimed("Y");
+			hour = 0;
+			min = 0;
 		}
 
 		// set the new time

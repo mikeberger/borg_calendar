@@ -40,7 +40,7 @@ abstract public class Box {
 		 * 
 		 * @param realtime
 		 *            time of day in minutes to which the object has been
-		 *            dragged
+		 *            dragged. -1 indicates object dragged off of the time grid
 		 * @param d
 		 *            date that the object was dragged to
 		 * @throws Exception
