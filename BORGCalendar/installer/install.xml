@@ -64,6 +64,7 @@
         <res id="LicencePanel.licence" src="COPYING"/>
         <res id="InfoPanel.info" src="RELEASE_NOTES.txt"/>
 	<res src="ShortcutSpec.xml" id="shortcutSpec.xml"/>
+	<res src="Unix_ShortcutSpec.xml" id="Unix_shortcutSpec.xml"/>
 	<res id="installer.langsel.img" src="borg.jpg" />
 
     </resources>
