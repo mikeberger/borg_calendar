@@ -30,9 +30,16 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.StringTokenizer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+
+import net.sf.borg.common.PrefName;
+import net.sf.borg.common.Prefs;
+import net.sf.borg.common.Resource;
+import net.sf.borg.common.SendJavaMail;
+import net.sf.borg.control.EmailReminder;
 
 /**
  * contains common import/export utilities
@@ -45,13 +52,17 @@ public class ExportImport {
 	 * 
 	 * @param dir
 	 *            the directory to create the zip file in
+	 * @param backup_email
+	 *            - send email containing the backup
 	 * @throws Exception
 	 */
-	public static void exportToZip(String dir) throws Exception {
+	public static void exportToZip(String dir, boolean backup_email)
+			throws Exception {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 		String uniq = sdf.format(new Date());
-		ZipOutputStream out = new ZipOutputStream(new FileOutputStream(dir
-				+ "/borg" + uniq + ".zip"));
+
+		String backupFilename = dir + "/borg" + uniq + ".zip";
+		ZipOutputStream out = new ZipOutputStream(new FileOutputStream(backupFilename));
 		Writer fw = new OutputStreamWriter(out, "UTF8");
 
 		out.putNextEntry(new ZipEntry("borg.xml"));
@@ -86,6 +97,18 @@ public class ExportImport {
 		out.closeEntry();
 
 		out.close();
+
+		if (backup_email) {
+			// get the SMTP host and address
+			String host = Prefs.getPref(PrefName.EMAILSERVER);
+			String addr = Prefs.getPref(PrefName.EMAILADDR);
+			StringTokenizer stk = new StringTokenizer(addr, ",;");
+			if( stk.hasMoreTokens())
+				addr = stk.nextToken();
+			SendJavaMail.sendMailWithAttachments(host, Resource.getResourceString("borg_backup"), Resource.getResourceString("borg_backup"), addr, addr, Prefs
+					.getPref(PrefName.EMAILUSER), EmailReminder.gep(), new String[]{backupFilename});
+
+		}
 	}
 
 	/**
@@ -120,12 +143,15 @@ public class ExportImport {
 
 	/**
 	 * get the type of object from an import file XML
-	 * @param fileName the filename
+	 * 
+	 * @param fileName
+	 *            the filename
 	 * @return the object type
 	 * @throws IOException
 	 */
-	public static String getImportObjectType(String fileName) throws IOException {
-		
+	public static String getImportObjectType(String fileName)
+			throws IOException {
+
 		BufferedReader in = new BufferedReader(new FileReader(
 				new File(fileName)));
 
@@ -156,65 +182,67 @@ public class ExportImport {
 		}
 
 		in.close();
-		
+
 		return type;
 
 	}
-	
+
 	/**
-	 * OMG - the JAXB unmarshaller keeps closing the entire Zip Input Stream after unmarshalling a single
-	 * entry. Need to define this horrible class to prevent this. Actually it is pretty elegant
-	 * compared to other options - like using temp files or reading entire entries into memory
-	 * to clone streams
-	 *
+	 * OMG - the JAXB unmarshaller keeps closing the entire Zip Input Stream
+	 * after unmarshalling a single entry. Need to define this horrible class to
+	 * prevent this. Actually it is pretty elegant compared to other options -
+	 * like using temp files or reading entire entries into memory to clone
+	 * streams
+	 * 
 	 */
 	private static class UncloseableZipInputStream extends ZipInputStream {
 
 		public UncloseableZipInputStream(InputStream in) {
 			super(in);
 		}
-		
-		public void close()
-		{
+
+		public void close() {
 			// do nothing - prevent the stream from being closed
 		}
-		
-		public void myClose() throws IOException
-		{
+
+		public void myClose() throws IOException {
 			super.close();
 		}
-		
+
 	}
-	
+
 	/**
 	 * Import an entire backup Zip file
-	 * @param zipFileName the backup file name
+	 * 
+	 * @param zipFileName
+	 *            the backup file name
 	 * @throws Exception
 	 */
-	static public void importFromZip(String zipFileName) throws Exception
-	{
-		UncloseableZipInputStream in = new UncloseableZipInputStream(new FileInputStream(zipFileName));
-		
+	static public void importFromZip(String zipFileName) throws Exception {
+		UncloseableZipInputStream in = new UncloseableZipInputStream(
+				new FileInputStream(zipFileName));
+
 		// assumes that links are last entry
-		for( ZipEntry entry = in.getNextEntry(); entry != null; entry = in.getNextEntry())
-		{
-			if( entry.getName().contains("borg"))
+		for (ZipEntry entry = in.getNextEntry(); entry != null; entry = in
+				.getNextEntry()) {
+			if (entry.getName().contains("borg"))
 				importFromXmlFile("APPTS", in);
-			else if( entry.getName().contains("task"))
+			else if (entry.getName().contains("task"))
 				importFromXmlFile("TASKS", in);
-			else if( entry.getName().contains("addr"))
+			else if (entry.getName().contains("addr"))
 				importFromXmlFile("ADDRESSES", in);
-			else if( entry.getName().contains("memo"))
+			else if (entry.getName().contains("memo"))
 				importFromXmlFile("MEMOS", in);
-			else if( entry.getName().contains("checklist"))
+			else if (entry.getName().contains("checklist"))
 				importFromXmlFile("CHECKLISTS", in);
-			else if( entry.getName().contains("link"))
+			else if (entry.getName().contains("link"))
 				importFromXmlFile("LINKS", in);
 			else
-				throw new Exception("Unknown file in ZIP - " + entry.getName() + " ...skipping");
+				throw new Exception("Unknown file in ZIP - " + entry.getName()
+						+ " ...skipping");
 
 		}
-		
+
 		// really close the zip file
 		in.myClose();
 	}

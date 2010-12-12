@@ -5,7 +5,9 @@ import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JOptionPane;
+import javax.swing.JRadioButton;
 import javax.swing.Timer;
 import javax.swing.UIManager;
 
@@ -67,9 +69,7 @@ public class UIControl {
 			if (lnf.contains("jgoodies")) {
 				String theme = System.getProperty("Plastic.defaultTheme");
 				if (theme == null) {
-					System
-							.setProperty("Plastic.defaultTheme",
-									"ExperienceBlue");
+					System.setProperty("Plastic.defaultTheme", "ExperienceBlue");
 				}
 			}
 
@@ -118,7 +118,7 @@ public class UIControl {
 		SunTrayIconProxy.startTrayIcon(trayname);
 
 		// create reminder manager
-		if( Prefs.getBoolPref(PrefName.REMINDERLIST) )
+		if (Prefs.getBoolPref(PrefName.REMINDERLIST))
 			ReminderListManager.getReference();
 		else
 			ReminderPopupManager.getReference();
@@ -176,9 +176,52 @@ public class UIControl {
 	 * shuts down the UI, including db backup
 	 */
 	public static void shutDownUI() {
+
+		// prompt for shutdown and backup options
+		boolean do_backup = false;
+		boolean backup_email = false;
+		String backupdir = Prefs.getPref(PrefName.BACKUPDIR);
+		if (backupdir != null && !backupdir.equals("")) {
+
+			JRadioButton b1 = new JRadioButton(
+					Resource.getResourceString("backup_notice") + " "
+							+ backupdir);
+			JRadioButton b2 = new JRadioButton(
+					Resource.getResourceString("exit_no_backup"));
+			JRadioButton b3 = new JRadioButton(
+					Resource.getResourceString("dont_exit"));
+			JRadioButton b4 = new JRadioButton(
+					Resource.getResourceString("backup_with_email"));
+
+			b1.setSelected(true);
+
+			ButtonGroup group = new ButtonGroup();
+			group.add(b1);
+			group.add(b2);
+			group.add(b3);
+			group.add(b4);
+
+			Object[] array = { b1, b4, b2, b3, };
+
+			int res = JOptionPane.showConfirmDialog(null, array,
+					Resource.getResourceString("shutdown_options"),
+					JOptionPane.OK_CANCEL_OPTION);
+
+			if (res != JOptionPane.YES_OPTION) {
+				return;
+			}
+
+			if( b3.isSelected())
+				return;
+			if (b1.isSelected() || b4.isSelected())
+				do_backup = true;
+			if (b4.isSelected())
+				backup_email = true;
+		}
+
 		// stop popup timer and destroy popups
 		ReminderManager rm = ReminderManager.getReminderManager();
-		if( rm != null )
+		if (rm != null)
 			rm.remove();
 
 		// show a splash screen for shutdown
@@ -192,17 +235,9 @@ public class UIControl {
 		}
 
 		// backup data
-		String backupdir = Prefs.getPref(PrefName.BACKUPDIR);
-		if (backupdir != null && !backupdir.equals("")) {
+		if (do_backup == true) {
 			try {
-
-				int ret = JOptionPane.showConfirmDialog(null, Resource
-						.getResourceString("backup_notice")
-						+ " " + backupdir + "?", "BORG",
-						JOptionPane.OK_CANCEL_OPTION);
-				if (ret == JOptionPane.YES_OPTION) {
-					ExportImport.exportToZip(backupdir);
-				}
+				ExportImport.exportToZip(backupdir, backup_email);
 			} catch (Exception e) {
 				Errmsg.errmsg(e);
 			}
@@ -228,7 +263,7 @@ public class UIControl {
 			MultiView.getMainView().addModule(module);
 		} catch (Exception e) {
 			System.out.println(e.toString());
-			//e.printStackTrace();
+			// e.printStackTrace();
 		}
 	}
 

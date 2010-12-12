@@ -513,7 +513,7 @@ class MainMenu {
 		}
 
 		try {
-			ExportImport.exportToZip(s);
+			ExportImport.exportToZip(s, false);
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
 		}
