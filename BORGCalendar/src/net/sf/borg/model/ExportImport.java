@@ -21,14 +21,17 @@ package net.sf.borg.model;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 /**
@@ -76,6 +79,7 @@ public class ExportImport {
 		fw.flush();
 		out.closeEntry();
 
+		// links must be last for import to work
 		out.putNextEntry(new ZipEntry("link.xml"));
 		LinkModel.getReference().export(fw);
 		fw.flush();
@@ -85,28 +89,28 @@ public class ExportImport {
 	}
 
 	/**
-	 * Import from a single xml file.
+	 * Import from a single xml input stream.
 	 * 
 	 * @param type
 	 *            the object type
-	 * @param fileName
-	 *            the file name
+	 * @param is
+	 *            the input stream
 	 * @throws Exception
 	 */
-	public static void importFromXmlFile(String type, String fileName)
+	public static void importFromXmlFile(String type, InputStream is)
 			throws Exception {
 		if (type.equals("ADDRESSES")) {
-			AddressModel.getReference().importXml(fileName);
+			AddressModel.getReference().importXml(is);
 		} else if (type.equals("LINKS")) {
-			LinkModel.getReference().importXml(fileName);
+			LinkModel.getReference().importXml(is);
 		} else if (type.equals("MEMOS")) {
-			MemoModel.getReference().importXml(fileName);
+			MemoModel.getReference().importXml(is);
 		} else if (type.equals("CHECKLISTS")) {
-			CheckListModel.getReference().importXml(fileName);
+			CheckListModel.getReference().importXml(is);
 		} else if (type.equals("TASKS")) {
-			TaskModel.getReference().importXml(fileName);
+			TaskModel.getReference().importXml(is);
 		} else if (type.equals("APPTS")) {
-			AppointmentModel.getReference().importXml(fileName);
+			AppointmentModel.getReference().importXml(is);
 		}
 
 		// show any newly imported categories
@@ -155,5 +159,63 @@ public class ExportImport {
 		
 		return type;
 
+	}
+	
+	/**
+	 * OMG - the JAXB unmarshaller keeps closing the entire Zip Input Stream after unmarshalling a single
+	 * entry. Need to define this horrible class to prevent this. Actually it is pretty elegant
+	 * compared to other options - like using temp files or reading entire entries into memory
+	 * to clone streams
+	 *
+	 */
+	private static class UncloseableZipInputStream extends ZipInputStream {
+
+		public UncloseableZipInputStream(InputStream in) {
+			super(in);
+		}
+		
+		public void close()
+		{
+			// do nothing - prevent the stream from being closed
+		}
+		
+		public void myClose() throws IOException
+		{
+			super.close();
+		}
+		
+	}
+	
+	/**
+	 * Import an entire backup Zip file
+	 * @param zipFileName the backup file name
+	 * @throws Exception
+	 */
+	static public void importFromZip(String zipFileName) throws Exception
+	{
+		UncloseableZipInputStream in = new UncloseableZipInputStream(new FileInputStream(zipFileName));
+		
+		// assumes that links are last entry
+		for( ZipEntry entry = in.getNextEntry(); entry != null; entry = in.getNextEntry())
+		{
+			if( entry.getName().contains("borg"))
+				importFromXmlFile("APPTS", in);
+			else if( entry.getName().contains("task"))
+				importFromXmlFile("TASKS", in);
+			else if( entry.getName().contains("addr"))
+				importFromXmlFile("ADDRESSES", in);
+			else if( entry.getName().contains("memo"))
+				importFromXmlFile("MEMOS", in);
+			else if( entry.getName().contains("checklist"))
+				importFromXmlFile("CHECKLISTS", in);
+			else if( entry.getName().contains("link"))
+				importFromXmlFile("LINKS", in);
+			else
+				throw new Exception("Unknown file in ZIP - " + entry.getName() + " ...skipping");
+
+		}
+		
+		// really close the zip file
+		in.myClose();
 	}
 }

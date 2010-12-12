@@ -19,7 +19,7 @@
  */
 package net.sf.borg.model;
 
-import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -306,18 +306,18 @@ public class MemoModel extends Model implements Searchable<Memo> {
 	/**
 	 * Import xml.
 	 * 
-	 * @param fileName the file name of the file containing the XML
+	 * @param is the input stream containing the XML
 	 * 
 	 * @throws Exception the exception
 	 */
-	public void importXml(String fileName) throws Exception {
+	public void importXml(InputStream is) throws Exception {
 
 		JAXBContext jc = JAXBContext.newInstance(XmlContainer.class);
 		Unmarshaller u = jc.createUnmarshaller();
 		
 		XmlContainer container =
 			  (XmlContainer)u.unmarshal(
-			    new FileInputStream( fileName ) );
+			    is );
 
 		for (Memo memo : container.Memo ) {
 			memo.setKey(-1);

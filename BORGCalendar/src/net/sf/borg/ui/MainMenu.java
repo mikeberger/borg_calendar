@@ -21,6 +21,7 @@ package net.sf.borg.ui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Properties;
 
@@ -34,6 +35,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
@@ -217,7 +219,6 @@ class MainMenu {
 		ResourceHelper.setText(impexpMenu, "impexpMenu");
 
 		JMenuItem importMI = new JMenuItem();
-		ResourceHelper.setText(importMI, "impmenu");
 		importMI.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -229,8 +230,19 @@ class MainMenu {
 		ResourceHelper.setText(importMI, "impXML");
 		impexpMenu.add(importMI);
 
+		JMenuItem importZipMI = new JMenuItem();
+		ResourceHelper.setText(importZipMI, "import_zip");
+		importZipMI.addActionListener(new java.awt.event.ActionListener() {
+			@Override
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				importZipMIActionPerformed();
+			}
+		});
+		importZipMI.setIcon(new javax.swing.ImageIcon(getClass().getResource(
+				"/resource/Import16.gif")));
+		impexpMenu.add(importZipMI);
+		
 		JMenuItem exportMI = new JMenuItem();
-		ResourceHelper.setText(exportMI, "expmenu");
 		exportMI.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -311,6 +323,30 @@ class MainMenu {
 			syncMI.setEnabled(false);
 		}
 
+	}
+
+	private void importZipMIActionPerformed() {
+		
+		JFileChooser chooser = new JFileChooser();
+		FileNameExtensionFilter filter = new FileNameExtensionFilter(
+		        "*.zip,*.ZIP", "zip", "ZIP");
+		    chooser.setFileFilter(filter);
+		chooser.setCurrentDirectory(new File("."));
+		chooser.setDialogTitle(Resource
+				.getResourceString("Please_choose_File_to_Import_From"));
+		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+
+		int returnVal = chooser.showOpenDialog(null);
+		if (returnVal != JFileChooser.APPROVE_OPTION)
+			return;
+
+		String fileName = chooser.getSelectedFile().getAbsolutePath();
+
+		try {
+			ExportImport.importFromZip(fileName);
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
+		}
 	}
 
 	/**
@@ -673,7 +709,7 @@ class MainMenu {
 			if (ret != JOptionPane.OK_OPTION)
 				return;
 
-			ExportImport.importFromXmlFile(type, fileName);
+			ExportImport.importFromXmlFile(type, new FileInputStream(fileName));
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
 		}

@@ -19,7 +19,7 @@
  */
 package net.sf.borg.model;
 
-import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -674,19 +674,19 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 	/**
 	 * Import xml.
 	 * 
-	 * @param fileName
-	 *            the file name of the file containing the XML
+	 * @param is
+	 *            the input stream containing the XML
 	 * 
 	 * @throws Exception
 	 *             the exception
 	 */
-	public void importXml(String fileName) throws Exception {
+	public void importXml(InputStream is) throws Exception {
 
 		JAXBContext jc = JAXBContext.newInstance(XmlContainer.class);
 		Unmarshaller u = jc.createUnmarshaller();
 
 		XmlContainer container = (XmlContainer) u
-				.unmarshal(new FileInputStream(fileName));
+				.unmarshal(is);
 
 		String dbtype = Prefs.getPref(PrefName.DBTYPE);
 		if (dbtype.equals("mysql"))
