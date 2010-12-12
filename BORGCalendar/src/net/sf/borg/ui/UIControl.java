@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import javax.swing.ButtonGroup;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.UIManager;
 
@@ -180,7 +181,7 @@ public class UIControl {
 		// prompt for shutdown and backup options
 		boolean do_backup = false;
 		boolean backup_email = false;
-		String backupdir = Prefs.getPref(PrefName.BACKUPDIR);
+		final String backupdir = Prefs.getPref(PrefName.BACKUPDIR);
 		if (backupdir != null && !backupdir.equals("")) {
 
 			JRadioButton b1 = new JRadioButton(
@@ -211,7 +212,7 @@ public class UIControl {
 				return;
 			}
 
-			if( b3.isSelected())
+			if (b3.isSelected())
 				return;
 			if (b1.isSelected() || b4.isSelected())
 				do_backup = true;
@@ -236,16 +237,29 @@ public class UIControl {
 
 		// backup data
 		if (do_backup == true) {
-			try {
-				ExportImport.exportToZip(backupdir, backup_email);
-			} catch (Exception e) {
-				Errmsg.errmsg(e);
-			}
+			final boolean em = backup_email;
 
+			new Thread() {
+				@Override
+				public void run() {
+					try {
+						ExportImport.exportToZip(backupdir, em);
+						Borg.shutdown();
+					} catch (Exception e) {
+						final Exception fe = e;
+						SwingUtilities.invokeLater(new Thread(){
+							public void run(){
+								Errmsg.errmsg(fe);
+							}
+						});
+					}
+				}
+			}.start();
+
+		} else {
+			// non-UI shutdown
+			Borg.shutdown();
 		}
-
-		// non-UI shutdown
-		Borg.shutdown();
 
 	}
 
