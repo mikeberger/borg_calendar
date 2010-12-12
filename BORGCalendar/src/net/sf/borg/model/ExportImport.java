@@ -99,6 +99,10 @@ public class ExportImport {
 		out.close();
 
 		if (backup_email) {
+			
+			if( Prefs.getBoolPref(PrefName.EMAILENABLED) == false)
+				return;
+			
 			// get the SMTP host and address
 			String host = Prefs.getPref(PrefName.EMAILSERVER);
 			String addr = Prefs.getPref(PrefName.EMAILADDR);
