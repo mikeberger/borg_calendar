@@ -381,6 +381,9 @@ public class NoteBox extends Box implements Box.Draggable {
 			// change appointment date based on move
 			Appointment ap = AppointmentModel.getReference().getAppt(
 					((Appointment) bean).getKey());
+			
+			// if staying untimed then keep start at 12AM
+			if( realtime == -1) realtime = 0;
 
 			int hour = realtime / 60;
 			int min = realtime % 60;
