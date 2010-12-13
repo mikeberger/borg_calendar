@@ -44,7 +44,8 @@ import net.sf.borg.common.Prefs;
 import net.sf.borg.model.entity.BorgOption;
 
 /**
- * abstract base class providing basic common JDBC services to all derived JDBC classes
+ * abstract base class providing basic common JDBC services to all derived JDBC
+ * classes
  */
 abstract public class JdbcDB {
 
@@ -54,19 +55,19 @@ abstract public class JdbcDB {
 
 	// JDBC URL
 	static private String url_;
-	
+
 	/**
 	 * Gets the JDBC url.
 	 * 
 	 * @return the JDBC url
 	 */
-	public static String getUrl()
-	{
+	public static String getUrl() {
 		return url_;
 	}
 
 	/**
 	 * begin a JDBC transaction on the shared connection
+	 * 
 	 * @throws Exception
 	 */
 	static public void beginTransaction() throws Exception {
@@ -75,6 +76,7 @@ abstract public class JdbcDB {
 
 	/**
 	 * commit a JDBC transaction on the shared connection
+	 * 
 	 * @throws Exception
 	 */
 	static public final void commitTransaction() throws Exception {
@@ -85,6 +87,7 @@ abstract public class JdbcDB {
 
 	/**
 	 * rollback a JDBC transaction on the shared connection
+	 * 
 	 * @throws Exception
 	 */
 	static public final void rollbackTransaction() throws Exception {
@@ -94,16 +97,18 @@ abstract public class JdbcDB {
 	}
 
 	/**
-	 * Connect to the database. The logic varies based on the URL. Supports MYSQL, HSQL
-	 * For HSQL - if the DB doesn't exist, it will be created
+	 * Connect to the database. The logic varies based on the URL. Supports
+	 * MYSQL, HSQL For HSQL - if the DB doesn't exist, it will be created
 	 * 
-	 * @param urlIn the JDBC url
+	 * @param urlIn
+	 *            the JDBC url
 	 * 
-	 * @throws Exception the exception
+	 * @throws Exception
+	 *             the exception
 	 */
 	static public void connect(String urlIn) throws Exception {
-	  String url = urlIn;
-		if( url == null )
+		String url = urlIn;
+		if (url == null)
 			url = buildDbDir();
 		url_ = url;
 		if (url.startsWith("jdbc:mysql")) {
@@ -180,10 +185,49 @@ abstract public class JdbcDB {
 					}
 				}
 			}
-
 		}
-		else
-		{
+		else if (url.startsWith("jdbc:h2")) {
+			if (connection_ == null) {
+				Properties props = new Properties();
+				props.setProperty("user", "sa");
+				props.setProperty("password", "");
+				props.setProperty("shutdown", "true");
+				props.setProperty("ifexists", "true");
+
+				try {
+					connection_ = DriverManager.getConnection(url, props);
+				} catch (SQLException se) {
+					if (se.getSQLState().equals("90013")) {
+						// need to create the db
+						try {
+							System.out.println("Creating Database");
+							InputStream is = JdbcDB.class
+									.getResourceAsStream("/resource/borg_hsqldb.sql");
+							StringBuffer sb = new StringBuffer();
+							InputStreamReader r = new InputStreamReader(is);
+							while (true) {
+								int ch = r.read();
+								if (ch == -1)
+									break;
+								sb.append((char) ch);
+							}
+							props.setProperty("ifexists", "false");
+							connection_ = DriverManager.getConnection(url,
+									props);
+							execSQL(sb.toString());
+						} catch (Exception e2) {
+							throw e2;
+
+						}
+					} else if (se.getMessage().indexOf("locked") != -1) {
+						throw se;
+					} else {
+						throw se;
+					}
+				}
+			}
+
+		} else {
 			if (connection_ == null) {
 				connection_ = DriverManager.getConnection(url);
 			}
@@ -209,7 +253,7 @@ abstract public class JdbcDB {
 
 	//
 	// various data conversion methods are below to provide a standard
-	// db representation of String Lists, Integer,  and boolean
+	// db representation of String Lists, Integer, and boolean
 	//
 	protected final static String toStr(Vector<String> v) {
 		String val = "";
@@ -222,7 +266,7 @@ abstract public class JdbcDB {
 				val += ",";
 			}
 		} catch (Exception e) {
-		  // empty
+			// empty
 		}
 		return (val);
 	}
@@ -256,11 +300,13 @@ abstract public class JdbcDB {
 	/**
 	 * Execute arbitrary SQL against the open JDBC connection
 	 * 
-	 * @param sql the sql
+	 * @param sql
+	 *            the sql
 	 * 
 	 * @return the result set
 	 * 
-	 * @throws Exception the exception
+	 * @throws Exception
+	 *             the exception
 	 */
 	static final public ResultSet execSQL(String sql) throws Exception {
 		PreparedStatement stmt = connection_.prepareStatement(sql);
@@ -280,7 +326,8 @@ abstract public class JdbcDB {
 	/**
 	 * Close the open connection and shutdown the db (if HSQL)
 	 * 
-	 * @throws Exception the exception
+	 * @throws Exception
+	 *             the exception
 	 */
 	public static void close() throws Exception {
 		cleanup();
@@ -292,11 +339,13 @@ abstract public class JdbcDB {
 	/**
 	 * Gets an option value from the options table
 	 * 
-	 * @param oname the option name
+	 * @param oname
+	 *            the option name
 	 * 
 	 * @return the option value
 	 * 
-	 * @throws Exception the exception
+	 * @throws Exception
+	 *             the exception
 	 */
 	static public final String getOption(String oname) throws Exception {
 		String ret = null;
@@ -308,7 +357,7 @@ abstract public class JdbcDB {
 			ret = rs.getString("value");
 		}
 		rs.close();
-        stmt.close();
+		stmt.close();
 
 		return (ret);
 	}
@@ -318,7 +367,8 @@ abstract public class JdbcDB {
 	 * 
 	 * @return a collection of options
 	 * 
-	 * @throws Exception the exception
+	 * @throws Exception
+	 *             the exception
 	 */
 	static public final Collection<BorgOption> getOptions() throws Exception {
 		ArrayList<BorgOption> keys = new ArrayList<BorgOption>();
@@ -326,13 +376,11 @@ abstract public class JdbcDB {
 				.prepareStatement("SELECT name, value FROM options");
 		ResultSet rs = stmt.executeQuery();
 		while (rs.next()) {
-			keys
-					.add(new BorgOption(rs.getString("name"), rs
-							.getString("value")));
+			keys.add(new BorgOption(rs.getString("name"), rs.getString("value")));
 		}
 
 		rs.close();
-        stmt.close();
+		stmt.close();
 
 		return (keys);
 
@@ -341,9 +389,11 @@ abstract public class JdbcDB {
 	/**
 	 * Sets an option in the options table.
 	 * 
-	 * @param option the option to set
+	 * @param option
+	 *            the option to set
 	 * 
-	 * @throws Exception the exception
+	 * @throws Exception
+	 *             the exception
 	 */
 	static public final void setOption(BorgOption option) throws Exception {
 		String oname = option.getKey();
@@ -354,10 +404,10 @@ abstract public class JdbcDB {
 					.prepareStatement("DELETE FROM options WHERE name = ?");
 			stmt.setString(1, oname);
 			stmt.executeUpdate();
-	        stmt.close();
+			stmt.close();
 
 		} catch (Exception e) {
-		  // empty
+			// empty
 		}
 
 		if (value == null || value.equals(""))
@@ -371,12 +421,13 @@ abstract public class JdbcDB {
 		stmt.setString(2, value);
 
 		stmt.executeUpdate();
-        stmt.close();
+		stmt.close();
 
 	}
 
 	/**
-	 * Builds the db url from the user's settings. Supports HSQL, MYSQL, generic JDBC
+	 * Builds the db url from the user's settings. Supports HSQL, MYSQL, generic
+	 * JDBC
 	 * 
 	 * @return the jdbc url
 	 */

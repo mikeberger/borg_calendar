@@ -1,3 +1,21 @@
+BORG 1.7.5
+----------
+Feature 3118440 - Checklists
+Feature 1416675 - To Do Priorities
+Feature 3136779 - Ability to Import Backup Zip all at once
+Feature 3116794	- Make all tabs dockable
+Feature 3084552	- Ask for confirmation when memo is going to be deleted
+Feature 3075832	- Enable multiple selection in pop-up reminders
+Feature (Patch) 3094537	- "todo quick add" field enhancements
+Feature - option to email the backup ZIP when it is created
+Feature - Export XML changed to create a single ZIP file instead of separate XML files
+Feature - Option to Sort by priority on calendar
+Feature - Support H2 Database
+
+Bug 3076434	- Backdated ToDos-Birthdays pop up for each year until present
+Bug - memo view does not clear currently shown memo when the tab is closed.
+Bug - options do not reset to stored values if the option view is closed and reopened.
+
 BORG 1.7.4
 ----------
 Spanish (Argentina) Translation
