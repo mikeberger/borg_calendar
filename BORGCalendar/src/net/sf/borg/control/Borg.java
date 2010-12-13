@@ -322,21 +322,22 @@ public class Borg implements SocketHandler {
 		}
 
 		// add the lib folder to the classpath
-		File lib = new File("lib");
-		if (lib.isDirectory()) {
-			File[] files = lib.listFiles();
-			for (File file : files) {
-				if (file.getName().endsWith(".jar")) {
-					System.out.println("Loading JAR: " + file.getName());
-					try {
-						Borg.addURL(file.toURI().toURL());
-					} catch (Exception e) {
-						e.printStackTrace();
+		if (Prefs.getBoolPref(PrefName.DYNAMIC_LOADING) == true) {
+			File lib = new File("lib");
+			if (lib.isDirectory()) {
+				File[] files = lib.listFiles();
+				for (File file : files) {
+					if (file.getName().endsWith(".jar")) {
+						System.out.println("Loading JAR: " + file.getName());
+						try {
+							Borg.addURL(file.toURI().toURL());
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
 					}
 				}
 			}
 		}
-
 		// locale
 		String country = Prefs.getPref(PrefName.COUNTRY);
 		String language = Prefs.getPref(PrefName.LANGUAGE);
@@ -362,15 +363,13 @@ public class Borg implements SocketHandler {
 					borgdir.mkdir();
 				}
 				if (borgdir.isDirectory() && borgdir.canWrite()) {
-					Prefs
-							.putPref(PrefName.HSQLDBDIR, borgdir
-									.getAbsolutePath());
+					Prefs.putPref(PrefName.HSQLDBDIR, borgdir.getAbsolutePath());
 					Prefs.putPref(PrefName.DBTYPE, "hsqldb");
 					dbdir = JdbcDB.buildDbDir();
 				} else {
-					JOptionPane.showMessageDialog(null, Resource
-							.getResourceString("selectdb"), Resource
-							.getResourceString("Notice"),
+					JOptionPane.showMessageDialog(null,
+							Resource.getResourceString("selectdb"),
+							Resource.getResourceString("Notice"),
 							JOptionPane.INFORMATION_MESSAGE);
 
 					// if user wants to set db - let them

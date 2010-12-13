@@ -369,4 +369,6 @@ public class PrefName {
  	/** todo quick add, default date to today */
  	static public PrefName TODO_QUICK_ENTRY_AUTO_SET_DATE_FIELD = new PrefName("todo_option_auto_date_today", "false");
 
+ 	/** allow dynamically loaded plugins */
+ 	static public PrefName DYNAMIC_LOADING = new PrefName("dynamic_loading", "false");
 }

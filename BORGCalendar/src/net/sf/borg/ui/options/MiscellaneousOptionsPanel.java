@@ -52,6 +52,9 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 	private JCheckBox useSysTray = new JCheckBox();
 	private JCheckBox startToSysTray = new JCheckBox();
 	private JCheckBox dateInSysTray = new JCheckBox();
+	
+	private JCheckBox dynamicLoading = new JCheckBox();
+
 
 	/**
 	 * Instantiates a new miscellaneous options panel.
@@ -62,6 +65,7 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 
 		splashbox = new JCheckBox();
 		stackbox = new JCheckBox();
+		dynamicLoading = new JCheckBox();
 
 		this.setLayout(new java.awt.GridBagLayout());
 
@@ -130,6 +134,12 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 		ResourceHelper.setText(colorprint, "Print_In_Color?");
 		this.add(colorprint, GridBagConstraintsFactory.create(0, 7,
 				GridBagConstraints.BOTH));
+		
+		dynamicLoading.setText(Resource.getResourceString("enable_plugins"));
+		gbc1 = GridBagConstraintsFactory.create(0,8,
+				GridBagConstraints.BOTH);
+		gbc1.gridwidth = 2;
+		this.add(dynamicLoading, gbc1);
 	}
 
 	/*
@@ -147,6 +157,7 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 		OptionsPanel.setBooleanPref(useSysTray, PrefName.USESYSTRAY);
 		OptionsPanel.setBooleanPref(startToSysTray, PrefName.BACKGSTART);
 		OptionsPanel.setBooleanPref(dateInSysTray, PrefName.SYSTRAYDATE);
+		OptionsPanel.setBooleanPref(dynamicLoading, PrefName.DYNAMIC_LOADING);
 
 		Prefs.putPref(PrefName.BACKUPDIR, backupDir.getText());
 
@@ -179,6 +190,7 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 		OptionsPanel.setCheckBox(useSysTray, PrefName.USESYSTRAY);
 		OptionsPanel.setCheckBox(startToSysTray, PrefName.BACKGSTART);
 		OptionsPanel.setCheckBox(dateInSysTray, PrefName.SYSTRAYDATE);
+		OptionsPanel.setCheckBox(dynamicLoading, PrefName.DYNAMIC_LOADING);
 
 		int socket = Prefs.getIntPref(PrefName.SOCKETPORT);
 		socketPort.setText(Integer.toString(socket));

@@ -145,9 +145,11 @@ public class UIControl {
 		mv.addModule(new InfoView("/resource/license.htm", Resource
 				.getResourceString("License")));
 
-		addExternalModule("net.sf.borg.plugin.reports.ReportModule");
-		addExternalModule("net.sf.borg.plugin.ical.IcalModule");
-		addExternalModule("net.sf.borg.plugin.sync.SyncModule");
+		if (Prefs.getBoolPref(PrefName.DYNAMIC_LOADING) == true) {
+			addExternalModule("net.sf.borg.plugin.reports.ReportModule");
+			addExternalModule("net.sf.borg.plugin.ical.IcalModule");
+			addExternalModule("net.sf.borg.plugin.sync.SyncModule");
+		}
 
 		// make the main window visible
 		if (!Prefs.getBoolPref(PrefName.BACKGSTART)
@@ -247,8 +249,8 @@ public class UIControl {
 						Borg.shutdown();
 					} catch (Exception e) {
 						final Exception fe = e;
-						SwingUtilities.invokeLater(new Thread(){
-							public void run(){
+						SwingUtilities.invokeLater(new Thread() {
+							public void run() {
 								Errmsg.errmsg(fe);
 							}
 						});
