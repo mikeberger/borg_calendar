@@ -304,7 +304,7 @@ public class AppointmentIcalAdapter {
 					utc.setTime(d.getTime());
 					
 					// adjust time zone
-					if( !dts.isUtc() )
+					if( !dts.isUtc() && !dts.getValue().contains("T"))
 					{
 						//System.out.println( "TZO=" + tzOffset(d.getTime()));
 						long u = d.getTime() - tzOffset(d.getTime());
