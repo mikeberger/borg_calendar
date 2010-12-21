@@ -285,6 +285,11 @@ public class AppointmentIcalAdapter {
 					appttext += prop.getValue();
 				}
 
+				prop = pl.getProperty(Property.LOCATION);
+				if (prop != null) {
+					appttext += "\nLocation: " + prop.getValue();
+				}
+				
 				prop = pl.getProperty(Property.DESCRIPTION);
 				if (prop != null) {
 					appttext += "\n" + prop.getValue();
