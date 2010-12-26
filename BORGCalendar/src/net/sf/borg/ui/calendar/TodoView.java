@@ -20,6 +20,7 @@
 
 package net.sf.borg.ui.calendar;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
@@ -74,9 +75,9 @@ import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.CategoryModel;
+import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.Repeat;
 import net.sf.borg.model.TaskModel;
-import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.KeyedEntity;
 import net.sf.borg.model.entity.Project;
@@ -323,6 +324,14 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 
 	/** cached copy of user-colors preference */
 	private boolean user_colors = false;
+
+	private JLabel totalLabel;
+	private JLabel getTotalLabel() {
+		if (totalLabel == null) {
+			totalLabel = new JLabel();
+		}
+		return totalLabel;
+	}
 
 	/**
 	 * Instantiates a new todo view.
@@ -799,6 +808,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 		// *******************************************************************
 		JPanel buttonPanel = new JPanel();
 
+
 		JButton doneButton = new JButton();
 		ResourceHelper.setText(doneButton, "Done_(No_Delete)");
 		doneButton.addActionListener(new ActionListener() {
@@ -829,7 +839,13 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 		setLayout(new GridBagLayout());
 		add(tableScroll, GridBagConstraintsFactory.create(0, 0,
 				GridBagConstraints.BOTH, 1.0, 1.0));
-		add(buttonPanel, GridBagConstraintsFactory.create(0, 1,
+
+		JPanel medPanel = new JPanel(new BorderLayout());
+
+		medPanel.add(getTotalLabel(), BorderLayout.WEST);
+		medPanel.add(buttonPanel, BorderLayout.CENTER);
+
+		add(medPanel, GridBagConstraintsFactory.create(0, 1,
 				GridBagConstraints.BOTH));
 		add(quickEntryPanel, GridBagConstraintsFactory.create(0, 2,
 				GridBagConstraints.HORIZONTAL, 1.0, 0.0));
@@ -963,6 +979,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 
 		// add the todo appointment rows to the table
 		Iterator<KeyedEntity<?>> tdit = theTodoList.iterator();
+		int totalCount = 0;
 		while (tdit.hasNext()) {
 			Appointment r = (Appointment) tdit.next();
 
@@ -997,13 +1014,14 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 				ro[5] = r.getPriority();
 				
 				tm.addRow(ro);
-				
+				totalCount ++;
 				tm.tableChanged(new TableModelEvent(tm));
 			} catch (Exception e) {
 				Errmsg.errmsg(e);
 				return;
 			}
 
+			getTotalLabel().setText(totalCount + " items");
 		}
 
 		// add open projects with a due date to the list
