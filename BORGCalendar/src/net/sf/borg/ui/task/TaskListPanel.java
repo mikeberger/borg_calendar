@@ -20,6 +20,7 @@
 
 package net.sf.borg.ui.task;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -47,9 +48,9 @@ import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.Model;
+import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.TaskTypes;
-import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Task;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
@@ -161,6 +162,14 @@ class TaskListPanel extends JPanel implements Model.Listener {
 
 	/** checkbox to filter closed tasks */
 	private JCheckBox showClosedTasksCheckBox = null;
+
+	private JLabel totalLabel;
+	private JLabel getTotalLabel() {
+		if (totalLabel == null) {
+			totalLabel = new JLabel();
+		}
+		return totalLabel;
+	}
 
 	/** The default table cell renderer. */
 	private TableCellRenderer defaultTableCellRenderer;
@@ -487,7 +496,10 @@ class TaskListPanel extends JPanel implements Model.Listener {
 		/*
 		 * add button panel
 		 */
-		this.add(getButtonPanel(), GridBagConstraintsFactory.create(0, 1,
+		JPanel midPanel = new JPanel(new BorderLayout());
+		midPanel.add(getTotalLabel(), BorderLayout.WEST);
+		midPanel.add(getButtonPanel(), BorderLayout.CENTER);
+		this.add(midPanel, GridBagConstraintsFactory.create(0, 1,
 				GridBagConstraints.BOTH));
 
 		refresh();
@@ -538,6 +550,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 			// loop through all tasks
 			TaskTypes tasktypes = TaskModel.getReference().getTaskTypes();
 			Collection<Task> tasks = TaskModel.getReference().getTasks();
+			int totalItems = 0;
 			for (Task task : tasks) {
 
 				// filter by task state
@@ -672,10 +685,12 @@ class TaskListPanel extends JPanel implements Model.Listener {
 
 				// add the task row to table
 				tm.addRow(ro);
+
+				totalItems ++;
 				tm.tableChanged(new TableModelEvent(tm));
 				row++;
 			}
-
+			getTotalLabel().setText(totalItems + " items");
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
 		}
