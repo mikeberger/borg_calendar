@@ -24,8 +24,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.security.CodeSource;
+import java.security.ProtectionDomain;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
@@ -323,7 +326,35 @@ public class Borg implements SocketHandler {
 
 		// add the lib folder to the classpath
 		if (Prefs.getBoolPref(PrefName.DYNAMIC_LOADING) == true) {
-			File lib = new File("lib");
+			// compute lib folder relative to the borg.jar file location
+			File parentDir = null;
+			try {
+				URL jarURL = getJarURL();
+				String jarPath = jarURL.toURI().getPath();
+				if (jarPath != null) {
+					parentDir = new File(jarPath).getParentFile();
+				}
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+
+			File lib = null;
+
+			if (parentDir != null) {
+				lib = new File(parentDir, "lib");
+				
+				// fall back to relative directory if lib folder not child of
+				// same folder where borg.jar is
+				if (!lib.exists() || !lib.isDirectory()) {
+					lib = null;
+				}
+			}
+
+			if (lib == null) {
+				lib = new File("lib");
+			}
+
+			System.out.println("using lib dir=" + lib);
 			if (lib.isDirectory()) {
 				File[] files = lib.listFiles();
 				for (File file : files) {
@@ -360,10 +391,11 @@ public class Borg implements SocketHandler {
 				String home = System.getProperty("user.home", "");
 				File borgdir = null;
 
-				// on MAC OS, store borg database into $HOME/Library/BorgCalendar
+				// on MAC OS, store borg database into
+				// $HOME/Library/BorgCalendar
 				String os = System.getProperty("os.name").toLowerCase();
 				if (os.indexOf("mac") != -1) {
-					borgdir = new File(home,"Library/BorgCalendar");
+					borgdir = new File(home, "Library/BorgCalendar");
 				}
 				// Default:, store as hidden folder inside $HOME
 				else {
@@ -498,4 +530,18 @@ public class Borg implements SocketHandler {
 
 	}
 
+	/**
+	 * Constructs a URL expression for the location to this current class, where
+	 * it lives in the jar file.
+	 * 
+	 * @return
+	 * @throws MalformedURLException
+	 */
+	protected URL getJarURL() throws MalformedURLException {
+		Class<?> cls = this.getClass();
+		ProtectionDomain domain = cls.getProtectionDomain();
+		CodeSource codeSource = domain.getCodeSource();
+		URL sourceLocation = codeSource.getLocation();
+		return new URL(sourceLocation.toString());
+	}
 }
