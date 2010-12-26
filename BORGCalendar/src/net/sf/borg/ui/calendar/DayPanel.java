@@ -25,6 +25,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.event.ActionEvent;
@@ -166,6 +167,8 @@ public class DayPanel extends DockableView implements Printable, CalendarModule 
 				double pagey, Font sm_font) {
 
 			Graphics2D g2 = (Graphics2D) g;
+			g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,  
+	                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);  
 
 			// set up strike-through fonts
 			Map<TextAttribute, Serializable> stmap = new HashMap<TextAttribute, Serializable>();

@@ -537,7 +537,7 @@ class ApptBox extends Box implements Box.Draggable {
 		int start = para.getBeginIndex();
 		int endi = para.getEndIndex();
 		LineBreakMeasurer lbm = new LineBreakMeasurer(para,
-				new FontRenderContext(null, false, false));
+				new FontRenderContext(null, true, false));
 		lbm.setPosition(start);
 		int tt = y + 2;
 		while (lbm.getPosition() < endi) {

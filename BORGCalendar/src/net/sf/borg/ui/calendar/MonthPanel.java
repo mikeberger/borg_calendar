@@ -25,6 +25,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -50,14 +51,14 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Day;
 import net.sf.borg.model.Model;
-import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.Model.ChangeEvent;
+import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.CalendarEntity;
 import net.sf.borg.ui.DockableView;
 import net.sf.borg.ui.MultiView;
-import net.sf.borg.ui.NavPanel;
 import net.sf.borg.ui.MultiView.CalendarModule;
 import net.sf.borg.ui.MultiView.ViewType;
+import net.sf.borg.ui.NavPanel;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 
 /**
@@ -143,6 +144,8 @@ public class MonthPanel extends DockableView implements Printable, CalendarModul
 				double pagey) {
 
 			Graphics2D g2 = (Graphics2D) g;
+			g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,  
+	                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);  
 
 			// appt text font
 			Font sm_font = Font.decode(Prefs.getPref(PrefName.APPTFONT));
