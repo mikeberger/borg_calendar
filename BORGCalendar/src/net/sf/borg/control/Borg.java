@@ -358,7 +358,17 @@ public class Borg implements SocketHandler {
 
 				// try to set a valid default
 				String home = System.getProperty("user.home", "");
-				File borgdir = new File(home + "/.borg_db");
+				File borgdir = null;
+
+				// on MAC OS, store borg database into $HOME/Library/BorgCalendar
+				String os = System.getProperty("os.name").toLowerCase();
+				if (os.indexOf("mac") != -1) {
+					borgdir = new File(home,"Library/BorgCalendar");
+				}
+				// Default:, store as hidden folder inside $HOME
+				else {
+					borgdir = new File(home + "/.borg_db");
+				}
 				if (!borgdir.exists()) {
 					borgdir.mkdir();
 				}
