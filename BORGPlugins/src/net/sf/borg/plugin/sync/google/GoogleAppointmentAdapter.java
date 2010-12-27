@@ -102,8 +102,7 @@ public class GoogleAppointmentAdapter implements
 				GregorianCalendar gc = new GregorianCalendar();
 				gc.setTime(dd);
 				int dayOfWeek = gc.get(Calendar.DAY_OF_WEEK);
-				int dayOfWeekMonth = gc
-						.get(Calendar.DAY_OF_WEEK_IN_MONTH);
+				int dayOfWeekMonth = gc.get(Calendar.DAY_OF_WEEK_IN_MONTH);
 				String days[] = new String[] { "SU", "MO", "TU", "WE", "TH",
 						"FR", "SA" };
 				rec += "MONTHLY;BYDAY=" + dayOfWeekMonth + days[dayOfWeek - 1];
@@ -130,7 +129,8 @@ public class GoogleAppointmentAdapter implements
 		else {
 			if (!AppointmentModel.isNote(appt)) {
 				DateTime startTime = new DateTime(appt.getDate());
-				startTime.setTzShift(new Integer(this.tzOffset(appt.getDate().getTime())));
+				startTime.setTzShift(new Integer(this.tzOffset(appt.getDate()
+						.getTime())));
 				int duration = 30;
 				if (appt.getDuration() != null)
 					duration = appt.getDuration().intValue();
@@ -230,68 +230,92 @@ public class GoogleAppointmentAdapter implements
 		// convert date
 		List<When> whens = extAppt.getTimes();
 		if (whens == null || whens.isEmpty()) {
+			/*
 			Recurrence rec = extAppt.getRecurrence();
 			if (rec != null) {
 				// TODO - handle recurrence
-				//System.err.println(rec.getValue());
-			}
-			throw new Warning("Appointment " + appt.getText() + " "
-					+ appt.getDate()
-					+ " has no event times cannot sync...");
-		}
-		When when = whens.get(0);
-		DateTime start = when.getStartTime();
-		DateTime end = when.getEndTime();
+				String rrules = getPropertyString("RRULE", rec.getValue());
+				String dtstarts = getPropertyString("DTSTART", rec.getValue());
+				String dtsends = getPropertyString("DTEND", rec.getValue());
 
-		if (start.isDateOnly() && !AppointmentModel.isNote(appt))
-			needs_update = true;
-		else if (!start.isDateOnly() && AppointmentModel.isNote(appt))
-			needs_update = true;
-		else if (!start.isDateOnly()
-				&& Math.abs(start.getValue() - appt.getDate().getTime()) > 1000 * 60 * 3)
-			needs_update = true;
-		else if (start.isDateOnly()) {
-			long offset = this.tzOffset(appt.getDate().getTime()) * 1000 * 60;
-			if (Math.abs(start.getValue() - appt.getDate().getTime() - offset) > 1000 * 60 * 3)
+				DtStart dtstart = new DtStart(dtstarts);
+				appt.setDate(dtstart.getDate());
+				
+				DtStart dtend = new DtStart(dtsends);
+
+				// RRULE
+				RRule rrule = new RRule(rrules);
+				Recur recur = rrule.getRecur();
+				
+				if( appt.getRepeatUntil().getTime() != recur.getUntil().getTime())
+					needs_update = true;
+				appt.setRepeatUntil(recur.getUntil());
+				String freq = Repeat.ONCE;
+				if (recur.getFrequency().equals(Recur.DAILY))
+					freq = Repeat.DAILY;
+				else if (recur.getFrequency().equals(Recur.WEEKLY))
+					freq = Repeat.WEEKLY;
+				else if (recur.getFrequency().equals(Recur.MONTHLY))
+					freq = Repeat.MONTHLY;
+				else if (recur.getFrequency().equals(Recur.YEARLY))
+					freq = Repeat.YEARLY;
+				
+				if( !freq.equals(appt.getFrequency()))
+					needs_update = true;
+				appt.setFrequency(freq);
+
+				System.err.println("***" + rrules + "***");
+				System.err.println(rec.getValue());
+			}
+			*/
+			throw new Warning("Appointment " + appt.getText() + " "
+					+ appt.getDate() + " recurs cannot sync...");
+		} else {
+			When when = whens.get(0);
+			DateTime start = when.getStartTime();
+			DateTime end = when.getEndTime();
+
+			if (start.isDateOnly() && !AppointmentModel.isNote(appt))
+				needs_update = true;
+			else if (!start.isDateOnly() && AppointmentModel.isNote(appt))
+				needs_update = true;
+			else if (!start.isDateOnly()
+					&& Math.abs(start.getValue() - appt.getDate().getTime()) > 1000 * 60 * 3)
+				needs_update = true;
+			else if (start.isDateOnly()) {
+				long offset = this.tzOffset(appt.getDate().getTime()) * 1000 * 60;
+				if (Math.abs(start.getValue() - appt.getDate().getTime()
+						- offset) > 1000 * 60 * 3)
+					needs_update = true;
+			}
+
+			// not sure why non-timed need this...
+			if (start.isDateOnly()) {
+				appt.setDate(new Date(start.getValue()
+						- TimeZone.getDefault().getOffset(start.getValue())));
+			} else {
+				appt.setDate(new Date(start.getValue()));
+			}
+
+			Integer dur = appt.getDuration();
+			String ut = appt.getUntimed();
+
+			if (start.isDateOnly()) {
+				appt.setUntimed("Y");
+			} else {
+				appt.setUntimed("N");
+				long mins = (end.getValue() - start.getValue()) / 1000 / 60;
+				if (mins > 0) {
+					appt.setDuration(new Integer((int) mins));
+					if (dur != null && dur.intValue() != mins)
+						needs_update = true;
+
+				}
+			}
+
+			if (ut != null && !ut.equals(appt.getUntimed()))
 				needs_update = true;
 		}
-
-		// not sure why non-timed need this...
-		if (start.isDateOnly()) {
-			appt.setDate(new Date(start.getValue()
-					- TimeZone.getDefault().getOffset(start.getValue())));
-		} else {
-			appt.setDate(new Date(start.getValue()));
-		}
-
-		Integer dur = appt.getDuration();
-		String ut = appt.getUntimed();
-
-		// System.out.println(appt.getText() + " " +
-		// DateFormat.getDateTimeInstance().format(appt.getDate()) + " " +
-		// start.getTzShift());
-
-		if (start.isDateOnly()) {
-			appt.setUntimed("Y");
-		} else {
-			appt.setUntimed("N");
-			long mins = (end.getValue() - start.getValue()) / 1000 / 60;
-			if (mins > 0) {
-				appt.setDuration(new Integer((int)mins));
-				if (dur != null && dur.intValue() != mins)
-					needs_update = true;
-
-			}
-		}
-
-		Recurrence rec = extAppt.getRecurrence();
-		if (rec != null)
-			System.out.println(appt.getText() + ":" + rec.getValue());
-
-		if (ut != null && !ut.equals(appt.getUntimed()))
-			needs_update = true;
-
-		// no recurrence for now
 
 		// all other google properties are ignored !!!
 
@@ -352,4 +376,10 @@ public class GoogleAppointmentAdapter implements
 		return title;
 
 	}
+
+//	private String getPropertyString(String property, String blob) {
+//		int rrs = blob.indexOf(property);
+//		int rre = blob.indexOf("\n", rrs);
+//		return blob.substring(rrs, rre);
+//	}
 }
