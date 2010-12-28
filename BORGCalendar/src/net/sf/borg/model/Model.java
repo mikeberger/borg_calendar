@@ -213,5 +213,10 @@ public abstract class Model
 	 */
 	public abstract String getExportName();
 
+	/**
+	 * return user readable information about the model
+	 * @return user readable information String
+	 */
+	public abstract String getInfo() throws Exception;
     
 }

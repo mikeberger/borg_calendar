@@ -29,6 +29,7 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import net.sf.borg.common.Errmsg;
+import net.sf.borg.common.Resource;
 import net.sf.borg.model.db.CheckListDB;
 import net.sf.borg.model.db.jdbc.CheckListJdbcDB;
 import net.sf.borg.model.entity.CheckList;
@@ -246,6 +247,13 @@ public class CheckListModel extends Model  {
 	@Override
 	public String getExportName() {
 		return "CHECKLISTS";
+	}
+
+
+	@Override
+	public String getInfo() throws Exception {
+		return Resource.getResourceString("CheckLists") + ": "
+		+ getCheckLists().size();
 	}
 
 }

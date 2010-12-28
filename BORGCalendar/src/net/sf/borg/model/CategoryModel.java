@@ -201,4 +201,9 @@ public class CategoryModel extends Model {
 		return null;
 	}
 
+	@Override
+	public String getInfo() throws Exception {
+		return Resource.getResourceString("Categories") + ":" + getCategories().size();
+	}
+
 }

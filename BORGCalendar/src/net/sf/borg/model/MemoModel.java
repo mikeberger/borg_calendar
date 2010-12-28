@@ -33,6 +33,7 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import net.sf.borg.common.Errmsg;
+import net.sf.borg.common.Resource;
 import net.sf.borg.model.db.MemoDB;
 import net.sf.borg.model.db.jdbc.MemoJdbcDB;
 import net.sf.borg.model.entity.Memo;
@@ -381,5 +382,12 @@ public class MemoModel extends Model implements Searchable<Memo> {
 	@Override
 	public String getExportName() {
 		return "MEMOS";
+	}
+
+
+	@Override
+	public String getInfo() throws Exception {
+		return Resource.getResourceString("Memos") + ": "
+		+ getMemos().size();
 	}
 }

@@ -516,4 +516,10 @@ public class LinkModel extends Model {
 	public String getExportName() {
 		return "LINKS";
 	}
+
+	@Override
+	public String getInfo() throws Exception {
+		return Resource.getResourceString("links") + ": "
+		+ getLinks().size();
+	}
 }

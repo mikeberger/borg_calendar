@@ -46,6 +46,7 @@ import net.sf.borg.common.DateUtil;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
+import net.sf.borg.common.Resource;
 import net.sf.borg.model.CategoryModel.CategorySource;
 import net.sf.borg.model.db.AppointmentDB;
 import net.sf.borg.model.db.EntityDB;
@@ -1013,6 +1014,12 @@ public class AppointmentModel extends Model implements Model.Listener,
 	@Override
 	public String getExportName() {
 		return "APPTS";
+	}
+
+	@Override
+	public String getInfo() throws Exception {
+		return Resource.getResourceString("appointments") + ": "
+		+ getAllAppts().size();
 	}
 
 }

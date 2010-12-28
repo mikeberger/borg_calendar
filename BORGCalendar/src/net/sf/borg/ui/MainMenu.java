@@ -44,12 +44,7 @@ import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.control.Borg;
-import net.sf.borg.model.AddressModel;
-import net.sf.borg.model.AppointmentModel;
-import net.sf.borg.model.CheckListModel;
 import net.sf.borg.model.ExportImport;
-import net.sf.borg.model.LinkModel;
-import net.sf.borg.model.MemoModel;
 import net.sf.borg.model.Model;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.db.jdbc.JdbcDB;
@@ -449,26 +444,10 @@ class MainMenu {
 		info += dbtype + " URL: " + JdbcDB.getUrl() + "\n\n";
 
 		try {
-			info += Resource.getResourceString("appointments") + ": "
-					+ AppointmentModel.getReference().getAllAppts().size()
-					+ "\n";
-			info += Resource.getResourceString("addresses") + ": "
-					+ AddressModel.getReference().getAddresses().size() + "\n";
-			info += Resource.getResourceString("tasks") + ": "
-					+ TaskModel.getReference().getTasks().size() + "\n";
-			info += Resource.getResourceString("SubTasks") + ": "
-					+ TaskModel.getReference().getSubTasks().size() + "\n";
-			info += Resource.getResourceString("Logs") + ": "
-					+ TaskModel.getReference().getLogs().size() + "\n";
-			info += Resource.getResourceString("projects") + ": "
-					+ TaskModel.getReference().getProjects().size() + "\n";
-			info += Resource.getResourceString("Memos") + ": "
-					+ MemoModel.getReference().getMemos().size() + "\n";
-			info += Resource.getResourceString("CheckLists") + ": "
-					+ CheckListModel.getReference().getCheckLists().size()
-					+ "\n";
-			info += Resource.getResourceString("links") + ": "
-					+ LinkModel.getReference().getLinks().size() + "\n";
+			for( Model model : Model.getExistingModels())
+			{
+				info += model.getInfo() + "\n";
+			}
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
 			return;

@@ -199,4 +199,9 @@ public class SyncLog extends Model implements Model.Listener {
 		return "SYNCMAP";
 	}
 
+	@Override
+	public String getInfo() throws Exception {
+		return "Synclogs: " + getAll().size();
+	}
+
 }

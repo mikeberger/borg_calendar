@@ -449,8 +449,8 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 	 */
 	public void deleteProject(int id) throws Exception {
 
-		int ret = JOptionPane.showConfirmDialog(null, Resource
-				.getResourceString("cannot_undo"), null,
+		int ret = JOptionPane.showConfirmDialog(null,
+				Resource.getResourceString("cannot_undo"), null,
 				JOptionPane.OK_CANCEL_OPTION);
 
 		if (ret != JOptionPane.OK_OPTION)
@@ -598,8 +598,8 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 		}
 
 		Task task = getTask(num);
-		task.setState(TaskModel.getReference().getTaskTypes().getFinalState(
-				task.getType()));
+		task.setState(TaskModel.getReference().getTaskTypes()
+				.getFinalState(task.getType()));
 		savetask(task);
 	}
 
@@ -685,8 +685,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 		JAXBContext jc = JAXBContext.newInstance(XmlContainer.class);
 		Unmarshaller u = jc.createUnmarshaller();
 
-		XmlContainer container = (XmlContainer) u
-				.unmarshal(is);
+		XmlContainer container = (XmlContainer) u.unmarshal(is);
 
 		String dbtype = Prefs.getPref(PrefName.DBTYPE);
 		if (dbtype.equals("mysql"))
@@ -711,14 +710,14 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 			for (Task task : container.Task) {
 				if (task.getPriority() == null)
 					task.setPriority(new Integer(3));
-				
-				if( task.getStartDate() == null )
+
+				if (task.getStartDate() == null)
 					task.setStartDate(new Date());
-				
-				if( task.getKey() == -1 )
+
+				if (task.getKey() == -1)
 					task.setKey(db_.nextkey());
-				
-				if( task.getState() == null )
+
+				if (task.getState() == null)
 					task.setState(TaskModel.getReference().getTaskTypes()
 							.getInitialState(task.getType()));
 
@@ -777,9 +776,8 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 		load_map();
 		refreshListeners();
 	}
-	
-	public void refresh()
-	{
+
+	public void refresh() {
 		try {
 			load_map();
 			refreshListeners();
@@ -1172,9 +1170,9 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 				if (p.getDueDate() != null && t.getDueDate() != null
 						&& !TaskModel.isClosed(t)
 						&& DateUtil.isAfter(t.getDueDate(), p.getDueDate())) {
-					throw new Warning(Resource
-							.getResourceString("projdd_warning")
-							+ ": " + t.getKey());
+					throw new Warning(
+							Resource.getResourceString("projdd_warning") + ": "
+									+ t.getKey());
 				}
 			}
 
@@ -1183,9 +1181,9 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 				if (p.getDueDate() != null && child.getDueDate() != null
 						&& !TaskModel.isClosed(child)
 						&& DateUtil.isAfter(child.getDueDate(), p.getDueDate())) {
-					throw new Warning(Resource
-							.getResourceString("projchild_warning")
-							+ ": " + child.getKey());
+					throw new Warning(
+							Resource.getResourceString("projchild_warning")
+									+ ": " + child.getKey());
 				}
 			}
 		}
@@ -1197,8 +1195,8 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 			if (par != null) {
 				if (p.getDueDate() != null && par.getDueDate() != null
 						&& DateUtil.isAfter(p.getDueDate(), par.getDueDate())) {
-					throw new Warning(Resource
-							.getResourceString("projpar_warning"));
+					throw new Warning(
+							Resource.getResourceString("projpar_warning"));
 				}
 			}
 		}
@@ -1207,8 +1205,8 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 			// make sure that all tasks are closed
 			for (Task pt : TaskModel.getReference().getTasks(p.getKey())) {
 				if (!isClosed(pt)) {
-					throw new Warning(Resource
-							.getResourceString("close_proj_warn"));
+					throw new Warning(
+							Resource.getResourceString("close_proj_warn"));
 				}
 			}
 		}
@@ -1264,7 +1262,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 	@Override
 	public Collection<KeyedEntity<?>> search(SearchCriteria criteria) {
 		Collection<KeyedEntity<?>> res = new ArrayList<KeyedEntity<?>>(); // result
-																	// collection
+		// collection
 		try {
 
 			Collection<Project> projects = this.getProjects();
@@ -1362,9 +1360,19 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 		}
 		return (res);
 	}
-	
+
 	@Override
 	public String getExportName() {
 		return "TASKS";
+	}
+
+	@Override
+	public String getInfo() throws Exception {
+		return Resource.getResourceString("tasks") + ": " + getTasks().size()
+				+ "\n" + Resource.getResourceString("SubTasks") + ": "
+				+ getSubTasks().size() + "\n"
+				+ Resource.getResourceString("Logs") + ": " + getLogs().size()
+				+ "\n" + Resource.getResourceString("projects") + ": "
+				+ getReference().getProjects().size();
 	}
 }

@@ -35,6 +35,7 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import net.sf.borg.common.Errmsg;
+import net.sf.borg.common.Resource;
 import net.sf.borg.model.db.EntityDB;
 import net.sf.borg.model.db.jdbc.AddrJdbcDB;
 import net.sf.borg.model.entity.Address;
@@ -411,5 +412,11 @@ public class AddressModel extends Model implements Searchable<Address> {
 	@Override
 	public String getExportName() {
 		return "ADDRESSES";
+	}
+
+	@Override
+	public String getInfo() throws Exception {
+			return Resource.getResourceString("addresses") + ": "
+			+ getAddresses().size();
 	}
 }
