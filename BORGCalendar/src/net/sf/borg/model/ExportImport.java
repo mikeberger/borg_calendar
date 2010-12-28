@@ -20,16 +20,16 @@
 package net.sf.borg.model;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -62,36 +62,29 @@ public class ExportImport {
 		String uniq = sdf.format(new Date());
 
 		String backupFilename = dir + "/borg" + uniq + ".zip";
-		ZipOutputStream out = new ZipOutputStream(new FileOutputStream(backupFilename));
+		ZipOutputStream out = new ZipOutputStream(new FileOutputStream(
+				backupFilename));
 		Writer fw = new OutputStreamWriter(out, "UTF8");
 
-		out.putNextEntry(new ZipEntry("borg.xml"));
-		AppointmentModel.getReference().export(fw);
-		fw.flush();
-		out.closeEntry();
+		for (Model model : Model.getExistingModels()) {
+			// links must be last
+			if (model instanceof LinkModel) {
+				continue;
+			}
 
-		out.putNextEntry(new ZipEntry("task.xml"));
-		TaskModel.getReference().export(fw);
-		fw.flush();
-		out.closeEntry();
+			if (model.getExportName() == null)
+				continue;
 
-		out.putNextEntry(new ZipEntry("addr.xml"));
-		AddressModel.getReference().export(fw);
-		fw.flush();
-		out.closeEntry();
+			out.putNextEntry(new ZipEntry(model.getExportName() + ".xml"));
+			model.export(fw);
+			fw.flush();
+			out.closeEntry();
 
-		out.putNextEntry(new ZipEntry("memo.xml"));
-		MemoModel.getReference().export(fw);
-		fw.flush();
-		out.closeEntry();
-
-		out.putNextEntry(new ZipEntry("checklist.xml"));
-		CheckListModel.getReference().export(fw);
-		fw.flush();
-		out.closeEntry();
+		}
 
 		// links must be last for import to work
-		out.putNextEntry(new ZipEntry("link.xml"));
+		out.putNextEntry(new ZipEntry(LinkModel.getReference().getExportName()
+				+ ".xml"));
 		LinkModel.getReference().export(fw);
 		fw.flush();
 		out.closeEntry();
@@ -99,18 +92,21 @@ public class ExportImport {
 		out.close();
 
 		if (backup_email) {
-			
-			if( Prefs.getBoolPref(PrefName.EMAILENABLED) == false)
+
+			if (Prefs.getBoolPref(PrefName.EMAILENABLED) == false)
 				return;
-			
+
 			// get the SMTP host and address
 			String host = Prefs.getPref(PrefName.EMAILSERVER);
 			String addr = Prefs.getPref(PrefName.EMAILADDR);
 			StringTokenizer stk = new StringTokenizer(addr, ",;");
-			if( stk.hasMoreTokens())
+			if (stk.hasMoreTokens())
 				addr = stk.nextToken();
-			SendJavaMail.sendMailWithAttachments(host, Resource.getResourceString("borg_backup"), Resource.getResourceString("borg_backup"), addr, addr, Prefs
-					.getPref(PrefName.EMAILUSER), EmailReminder.gep(), new String[]{backupFilename});
+			SendJavaMail.sendMailWithAttachments(host,
+					Resource.getResourceString("borg_backup"),
+					Resource.getResourceString("borg_backup"), addr, addr,
+					Prefs.getPref(PrefName.EMAILUSER), EmailReminder.gep(),
+					new String[] { backupFilename });
 
 		}
 	}
@@ -118,27 +114,16 @@ public class ExportImport {
 	/**
 	 * Import from a single xml input stream.
 	 * 
-	 * @param type
-	 *            the object type
+	 * @param model
+	 *            the Model to use for the import
 	 * @param is
 	 *            the input stream
 	 * @throws Exception
 	 */
-	public static void importFromXmlFile(String type, InputStream is)
+	public static void importFromXmlFile(Model model, InputStream is)
 			throws Exception {
-		if (type.equals("ADDRESSES")) {
-			AddressModel.getReference().importXml(is);
-		} else if (type.equals("LINKS")) {
-			LinkModel.getReference().importXml(is);
-		} else if (type.equals("MEMOS")) {
-			MemoModel.getReference().importXml(is);
-		} else if (type.equals("CHECKLISTS")) {
-			CheckListModel.getReference().importXml(is);
-		} else if (type.equals("TASKS")) {
-			TaskModel.getReference().importXml(is);
-		} else if (type.equals("APPTS")) {
-			AppointmentModel.getReference().importXml(is);
-		}
+
+		model.importXml(is);
 
 		// show any newly imported categories
 		CategoryModel.getReference().syncCategories();
@@ -146,48 +131,33 @@ public class ExportImport {
 	}
 
 	/**
-	 * get the type of object from an import file XML
+	 * get the model that can import the given XML
 	 * 
-	 * @param fileName
-	 *            the filename
-	 * @return the object type
+	 * @param in
+	 *            - BufferedReader for the XML
+	 * @return the Model
 	 * @throws IOException
 	 */
-	public static String getImportObjectType(String fileName)
+	public static Model getImportModelForXML(BufferedReader in)
 			throws IOException {
 
-		BufferedReader in = new BufferedReader(new FileReader(
-				new File(fileName)));
-
-		String type = "";
 		for (int i = 0; i < 10; i++) {
 			String line = in.readLine();
-			if (line == null)
-				break;
-			if (line.contains("<ADDRESSES>")) {
-				type = "ADDRESSES";
-				break;
-			} else if (line.contains("<MEMOS>")) {
-				type = "MEMOS";
-				break;
-			} else if (line.contains("<CHECKLISTS>")) {
-				type = "CHECKLISTS";
-				break;
-			} else if (line.contains("<LINKS>")) {
-				type = "LINKS";
-				break;
-			} else if (line.contains("<TASKS>")) {
-				type = "TASKS";
-				break;
-			} else if (line.contains("<APPTS>")) {
-				type = "APPTS";
-				break;
+			if (line != null)
+			{
+				for (Model model : Model.getExistingModels()) {
+					
+					if (model.getExportName() != null && line.contains(model.getExportName())) {
+						in.close();
+						return model;
+					}
+				}
 			}
 		}
 
 		in.close();
 
-		return type;
+		return null;
 
 	}
 
@@ -216,6 +186,19 @@ public class ExportImport {
 	}
 
 	/**
+	 * map legacy import file names to new ones
+	 */
+	static private final Map<String, String> legacyFileMap = new HashMap<String, String>();
+	static {
+		legacyFileMap.put("borg.xml", "APPTS.xml");
+		legacyFileMap.put("task.xml", "TASKS.xml");
+		legacyFileMap.put("addr.xml", "ADDRESSES.xml");
+		legacyFileMap.put("memo.xml", "MEMOS.xml");
+		legacyFileMap.put("link.xml", "LINKS.xml");
+		legacyFileMap.put("checklist.xml", "CHECKLISTS.xml");
+	}
+
+	/**
 	 * Import an entire backup Zip file
 	 * 
 	 * @param zipFileName
@@ -226,24 +209,31 @@ public class ExportImport {
 		UncloseableZipInputStream in = new UncloseableZipInputStream(
 				new FileInputStream(zipFileName));
 
+		// force loading of LinkModel in case the UI hasn't had reason to load
+		// it
+		LinkModel.getReference();
+
 		// assumes that links are last entry
 		for (ZipEntry entry = in.getNextEntry(); entry != null; entry = in
 				.getNextEntry()) {
-			if (entry.getName().contains("borg"))
-				importFromXmlFile("APPTS", in);
-			else if (entry.getName().contains("task"))
-				importFromXmlFile("TASKS", in);
-			else if (entry.getName().contains("addr"))
-				importFromXmlFile("ADDRESSES", in);
-			else if (entry.getName().contains("memo"))
-				importFromXmlFile("MEMOS", in);
-			else if (entry.getName().contains("checklist"))
-				importFromXmlFile("CHECKLISTS", in);
-			else if (entry.getName().contains("link"))
-				importFromXmlFile("LINKS", in);
-			else
+
+			String legacyFileName = legacyFileMap.get(entry.getName());
+
+			boolean import_done = false;
+			for (Model model : Model.getExistingModels()) {
+				if (entry.getName().equals(model.getExportName() + ".xml")
+						|| (legacyFileName != null && legacyFileName
+								.equals(model.getExportName() + ".xml"))) {
+					importFromXmlFile(model, in);
+					import_done = true;
+					break;
+				}
+			}
+
+			if (import_done == false) {
 				throw new Exception("Unknown file in ZIP - " + entry.getName()
 						+ " ...skipping");
+			}
 
 		}
 

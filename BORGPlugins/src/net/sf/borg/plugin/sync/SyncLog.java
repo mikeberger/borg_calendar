@@ -1,15 +1,22 @@
 package net.sf.borg.plugin.sync;
 
+import java.io.InputStream;
+import java.io.Writer;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Model;
-import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.db.jdbc.JdbcDB;
 import net.sf.borg.model.db.jdbc.JdbcDBUpgrader;
 
@@ -17,7 +24,7 @@ import net.sf.borg.model.db.jdbc.JdbcDBUpgrader;
  * class to track all appointment model changes since the last sync it will
  * persist this information to a file
  */
-public class SyncLog implements Model.Listener {
+public class SyncLog extends Model implements Model.Listener {
 
 	static private SyncLog singleton = null;
 
@@ -157,6 +164,39 @@ public class SyncLog implements Model.Listener {
 		stmt.executeUpdate();
 		stmt.close();
 
+	}
+	
+	@XmlRootElement(name = "SYNCMAP")
+	private static class XmlContainer {
+		public Collection<ChangeEvent> ChangeEvents;
+	}
+
+	@Override
+	public void export(Writer fw) throws Exception {
+		JAXBContext jc = JAXBContext.newInstance(XmlContainer.class);
+		Marshaller m = jc.createMarshaller();
+		XmlContainer container = new XmlContainer();
+		container.ChangeEvents = getAll();
+		m.marshal(container, fw);
+	}
+
+	@Override
+	public void importXml(InputStream is) throws Exception {
+		JAXBContext jc = JAXBContext.newInstance(XmlContainer.class);
+		Unmarshaller u = jc.createUnmarshaller();
+
+		XmlContainer container = (XmlContainer) u
+				.unmarshal(is);
+
+		for (ChangeEvent evt : container.ChangeEvents) {
+			insert(evt);
+		}
+
+	}
+
+	@Override
+	public String getExportName() {
+		return "SYNCMAP";
 	}
 
 }

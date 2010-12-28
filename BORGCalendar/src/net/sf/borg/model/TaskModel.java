@@ -1362,4 +1362,9 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 		}
 		return (res);
 	}
+	
+	@Override
+	public String getExportName() {
+		return "TASKS";
+	}
 }

@@ -318,6 +318,8 @@ public class MemoModel extends Model implements Searchable<Memo> {
 		XmlContainer container =
 			  (XmlContainer)u.unmarshal(
 			    is );
+		
+		if( container.Memo == null ) return;
 
 		for (Memo memo : container.Memo ) {
 			memo.setKey(-1);
@@ -374,5 +376,10 @@ public class MemoModel extends Model implements Searchable<Memo> {
 			Errmsg.errmsg(e);
 		}
 		return (res);
+	}
+	
+	@Override
+	public String getExportName() {
+		return "MEMOS";
 	}
 }

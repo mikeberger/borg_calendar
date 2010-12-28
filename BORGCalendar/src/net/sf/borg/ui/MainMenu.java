@@ -20,8 +20,10 @@ package net.sf.borg.ui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.InputStream;
 import java.util.Properties;
 
@@ -48,6 +50,7 @@ import net.sf.borg.model.CheckListModel;
 import net.sf.borg.model.ExportImport;
 import net.sf.borg.model.LinkModel;
 import net.sf.borg.model.MemoModel;
+import net.sf.borg.model.Model;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.db.jdbc.JdbcDB;
 import net.sf.borg.model.undo.UndoLog;
@@ -698,18 +701,20 @@ class MainMenu {
 
 			String fileName = chooser.getSelectedFile().getAbsolutePath();
 
-			String type = ExportImport.getImportObjectType(fileName);
-			
+			BufferedReader in = new BufferedReader(new FileReader(
+					new File(fileName)));
+			Model model = ExportImport.getImportModelForXML(in);
+
 			int ret = JOptionPane.showConfirmDialog(null, Resource
 					.getResourceString("Importing_")
-					+ " " + type + ", OK?", Resource
+					+ " " + model.getExportName() + ", OK?", Resource
 					.getResourceString("Import_WARNING"),
 					JOptionPane.OK_CANCEL_OPTION);
 
 			if (ret != JOptionPane.OK_OPTION)
 				return;
 
-			ExportImport.importFromXmlFile(type, new FileInputStream(fileName));
+			ExportImport.importFromXmlFile(model, new FileInputStream(fileName));
 		} catch (Exception e) {
 			Errmsg.errmsg(e);
 		}

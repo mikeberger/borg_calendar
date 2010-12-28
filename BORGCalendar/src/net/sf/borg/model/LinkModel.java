@@ -423,6 +423,8 @@ public class LinkModel extends Model {
 
 		XmlContainer container = (XmlContainer) u
 				.unmarshal(is);
+		
+		if( container.Link == null ) return;
 
 		// use key from import file if importing into empty db
 		int nextkey = db_.nextkey();
@@ -508,5 +510,10 @@ public class LinkModel extends Model {
 
 		// inform views of data change
 		refresh();
+	}
+	
+	@Override
+	public String getExportName() {
+		return "LINKS";
 	}
 }

@@ -679,6 +679,8 @@ public class AppointmentModel extends Model implements Model.Listener,
 
 		XmlContainer container = (XmlContainer) u
 				.unmarshal(is);
+		
+		if( container.Appointment == null ) return;
 
 		// use key from import file if importing into empty db
 		int nextkey = db_.nextkey();
@@ -1006,6 +1008,11 @@ public class AppointmentModel extends Model implements Model.Listener,
 			Errmsg.errmsg(e);
 		}
 		return (res);
+	}
+	
+	@Override
+	public String getExportName() {
+		return "APPTS";
 	}
 
 }

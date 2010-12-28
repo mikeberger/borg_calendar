@@ -217,7 +217,7 @@ public class AddressModel extends Model implements Searchable<Address> {
 			  (XmlContainer)u.unmarshal(
 			    is );
 
-		
+		if( container.Address == null ) return;
 		
 		// use key from import file if importing into empty db
 		int nextkey = db_.nextkey();
@@ -406,5 +406,10 @@ public class AddressModel extends Model implements Searchable<Address> {
 			Errmsg.errmsg(e);
 		}
 		return (res);
+	}
+
+	@Override
+	public String getExportName() {
+		return "ADDRESSES";
 	}
 }

@@ -226,6 +226,8 @@ public class CheckListModel extends Model  {
 		XmlContainer container =
 			  (XmlContainer)u.unmarshal(
 			    is );
+		
+		if( container.CheckList == null ) return;
 
 		for (CheckList checkList : container.CheckList ) {
 			saveCheckList(checkList);
@@ -241,6 +243,9 @@ public class CheckListModel extends Model  {
 		refreshListeners();
 	}
 
-
+	@Override
+	public String getExportName() {
+		return "CHECKLISTS";
+	}
 
 }

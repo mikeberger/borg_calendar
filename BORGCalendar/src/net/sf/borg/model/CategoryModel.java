@@ -19,6 +19,8 @@ Copyright 2003 by Mike Berger
  */
 package net.sf.borg.model;
 
+import java.io.InputStream;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.TreeSet;
@@ -182,6 +184,21 @@ public class CategoryModel extends Model {
 		for( CategorySource s : sources )
 			categories_.addAll(s.getCategories());
 		
+	}
+
+	@Override
+	public void export(Writer fw) throws Exception {
+		// nothing to export
+	}
+
+	@Override
+	public void importXml(InputStream is) throws Exception {
+		// nothing to import
+	}
+	
+	@Override
+	public String getExportName() {
+		return null;
 	}
 
 }

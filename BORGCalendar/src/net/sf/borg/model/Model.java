@@ -25,7 +25,14 @@ Copyright 2003 by Mike Berger
  */
 
 package net.sf.borg.model;
+import java.io.InputStream;
+import java.io.Writer;
 import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 
 
@@ -39,6 +46,8 @@ public abstract class Model
     /**
 	 * The Class ChangeEvent.
 	 */
+	@XmlRootElement(name="ChangeEvent")
+	@XmlAccessorType(XmlAccessType.FIELD)
 	public static class ChangeEvent {
 
 		/**
@@ -64,6 +73,11 @@ public abstract class Model
 			this.action = action;
 		}
 		
+		public ChangeEvent()
+		{
+			// for JAXB
+		}
+		
 		/**
 		 * Gets the action.
 		 * 
@@ -82,6 +96,20 @@ public abstract class Model
 			return object;
 		}
 
+	}
+	
+	/**
+	 * list of all instatiated models
+	 */
+	private static List<Model> modelList = new ArrayList<Model>();
+	
+	/**
+	 * get a list of all instantiated models
+	 * @return list of models
+	 */
+	public static List<Model> getExistingModels()
+	{
+		return modelList;
 	}
 	
 	/**
@@ -106,6 +134,7 @@ public abstract class Model
      */
     public Model()
     {
+    	modelList.add(this);
         listeners = new ArrayList<Listener>();
     }
     
@@ -163,5 +192,26 @@ public abstract class Model
     {
         listeners.clear();     
     }
+    
+    /**
+     * Export the models data to XML
+     * @param fw - writer to write the XML to
+     * @throws Exception
+     */
+	public abstract void export(Writer fw) throws Exception;
+	
+	/**
+	 * Import model data from XML
+	 * @param is input stream containing XML
+	 * @throws Exception
+	 */
+	public abstract void importXml(InputStream is) throws Exception;
+
+	/**
+	 * get the root XML element name for this model's XML representation 
+	 * @return the XML root element name
+	 */
+	public abstract String getExportName();
+
     
 }
