@@ -407,10 +407,9 @@ class MainMenu {
 			props.load(is);
 			is.close();
 			version = Resource.getVersion();
-			build_info = Resource.getResourceString("Build_Number:_")
-					+ props.getProperty("build.number")
-					+ Resource.getResourceString("Build_Time:_")
-					+ props.getProperty("build.time");
+			build_info = 
+				Resource.getResourceString("Build_Time:_")
+				+ props.getProperty("build.time");
 
 		} catch (Exception e) {
 			Errmsg.errmsg(e);

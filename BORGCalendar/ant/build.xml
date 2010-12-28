@@ -95,12 +95,10 @@
 
 	<target name="borg-jar" depends="compile">
 		<mkdir dir="${dist.dir}" />
-		<buildnumber file="${ant.dir}/build.number" />
 		<tstamp>
 			<format property="build.time" pattern="MM/dd/yyyy hh:mm aa" />
 		</tstamp>
 		<echo file="${build.dir}/properties" append="false">build.time=${build.time}
-build.number=${build.number}
 </echo>
 		<concat destfile="${build.dir}/properties" append="true">
 			<filelist dir="${ant.dir}" files="borg.version" />
@@ -214,10 +212,9 @@ build.number=${build.number}
         dir="${build.dir}/macos"
         name="Borg"
         mainclass="net.sf.borg.control.Borg"
-        build="${build.number}"
         bundleid="net.sf.borg"
         icon="${macos.res.dir}/borg.icns"
-        infostring="BORG Calendar ${build.number}"
+        infostring="BORG Calendar"
         jvmversion="1.6+"
         shortname="Borg"
         signature="BORG"
