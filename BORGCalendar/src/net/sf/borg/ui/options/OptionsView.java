@@ -47,11 +47,10 @@ import net.sf.borg.ui.util.GridBagConstraintsFactory;
  * UI for editing BORG options
  */
 public class OptionsView extends View {
-	
+
 	/** size of the option window. */
 	static private PrefName OPTVIEWSIZE = new PrefName("optviewsize",
 			"-1,-1,-1,-1,N");
-
 
 	/**
 	 * 
@@ -60,8 +59,7 @@ public class OptionsView extends View {
 	 */
 	static public abstract class OptionsPanel extends JPanel {
 		private static final long serialVersionUID = -4942616624428977307L;
-		
-		
+
 		/**
 		 * set a boolean preference from a checkbox
 		 * 
@@ -94,12 +92,11 @@ public class OptionsView extends View {
 				box.setSelected(false);
 			}
 		}
-		
+
 		/**
 		 * return the panel's display name
 		 */
 		public abstract String getPanelName();
-
 
 		/**
 		 * save options from the UI to the preference store
@@ -123,8 +120,7 @@ public class OptionsView extends View {
 				JFileChooser chooser = new JFileChooser();
 
 				chooser.setCurrentDirectory(new File("."));
-				chooser
-						.setDialogTitle("Please choose directory for database files");
+				chooser.setDialogTitle("Please choose directory for database files");
 				chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
 				int returnVal = chooser.showOpenDialog(null);
@@ -171,9 +167,16 @@ public class OptionsView extends View {
 	 * @return the singleton
 	 */
 	public static OptionsView getReference() {
-		if (singleton == null ) {
+		if (singleton == null) {
 			singleton = new OptionsView(false);
+		} else if (!singleton.isShowing()) {
+			// reload options to reset the tabs
+			for (int t = 0; t < singleton.jTabbedPane1.getTabCount(); t++) {
+				OptionsPanel panel = (OptionsPanel)singleton.jTabbedPane1.getComponentAt(t);
+				panel.loadOptions();
+			}
 		}
+
 		return (singleton);
 	}
 
@@ -184,7 +187,7 @@ public class OptionsView extends View {
 	private JTabbedPane jTabbedPane1;
 
 	private JPanel topPanel = null;
-	
+
 	private Collection<OptionsPanel> panels = new ArrayList<OptionsPanel>();
 
 	/**
@@ -214,7 +217,7 @@ public class OptionsView extends View {
 				GridBagConstraints.BOTH, 1.0, 1.0));
 
 		if (dbonly) {
-			//setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+			// setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		} else {
 
 			dismissButton = new JButton();
@@ -249,7 +252,7 @@ public class OptionsView extends View {
 
 			topPanel.add(applyDismissPanel, GridBagConstraintsFactory.create(0,
 					1, GridBagConstraints.BOTH));
-			
+
 			addPanel(new AppearanceOptionsPanel());
 			addPanel(new FontOptionsPanel());
 			addPanel(new EmailOptionsPanel());
@@ -271,7 +274,7 @@ public class OptionsView extends View {
 
 		// automatically maintain the size and position of this view in
 		// a preference
-		if( !dbonly )
+		if (!dbonly)
 			manageMySize(OPTVIEWSIZE);
 	}
 
@@ -281,7 +284,7 @@ public class OptionsView extends View {
 	 */
 	private void applyChanges() {
 
-		for( OptionsPanel panel : panels )
+		for (OptionsPanel panel : panels)
 			panel.applyChanges();
 
 		// notify all parts of borg that have registered to know about
@@ -296,28 +299,28 @@ public class OptionsView extends View {
 	@Override
 	public void destroy() {
 		this.dispose();
-		singleton = null;
 	}
 
 	@Override
 	public void refresh() {
 		// empty
 	}
-	
+
 	@Override
 	public void update(ChangeEvent event) {
 		refresh();
 	}
-	
+
 	/**
 	 * add an options panel to the options view
-	 * @param panel - the panel
+	 * 
+	 * @param panel
+	 *            - the panel
 	 */
-	public void addPanel(OptionsPanel panel)
-	{
+	public void addPanel(OptionsPanel panel) {
 		panel.loadOptions();
 		jTabbedPane1.addTab(panel.getPanelName(), panel);
-		//jTabbedPane1.add(panel.getPanelName(), panel);
+		// jTabbedPane1.add(panel.getPanelName(), panel);
 		panels.add(panel);
 	}
 
