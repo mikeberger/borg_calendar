@@ -51,6 +51,7 @@ public class GoogleSyncOptionsPanel extends OptionsPanel {
 	private JTextField username = new JTextField();
 	private JPasswordField password = new JPasswordField();
 	private JSpinner chunksize = new JSpinner(new SpinnerNumberModel(0,0,10000,1));
+	private JSpinner syncyears = new JSpinner(new SpinnerNumberModel(0,0,100,1));
 
 	/**
 	 * Instantiates a new sync options panel.
@@ -80,6 +81,12 @@ public class GoogleSyncOptionsPanel extends OptionsPanel {
 				GridBagConstraints.BOTH) );
 		this.add(chunksize, GridBagConstraintsFactory.create(1, 3,
 				GridBagConstraints.BOTH));
+		
+		JLabel synclabel = new JLabel("Years to Sync");
+		this.add(synclabel, GridBagConstraintsFactory.create(0, 4,
+				GridBagConstraints.BOTH) );
+		this.add(syncyears, GridBagConstraintsFactory.create(1, 4,
+				GridBagConstraints.BOTH));
 
 	}
 
@@ -99,6 +106,7 @@ public class GoogleSyncOptionsPanel extends OptionsPanel {
 		}
 
 		Prefs.putPref(GoogleSync.BATCH_CHUNK_SIZE, chunksize.getValue());
+		Prefs.putPref(GoogleSync.SYNCYEARS, syncyears.getValue());
 	}
 
 	/*
@@ -119,6 +127,9 @@ public class GoogleSyncOptionsPanel extends OptionsPanel {
 		
 		int c = Prefs.getIntPref(GoogleSync.BATCH_CHUNK_SIZE);
 		chunksize.setValue(new Integer(c));
+		
+		c = Prefs.getIntPref(GoogleSync.SYNCYEARS);
+		syncyears.setValue(new Integer(c));
 
 	}
 

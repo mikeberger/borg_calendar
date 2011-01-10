@@ -259,6 +259,8 @@ public class GoogleSync {
 			int count = 1;
 
 			GoogleAppointmentAdapter ad = new GoogleAppointmentAdapter();
+			
+			int years_to_sync = Prefs.getIntPref(SYNCYEARS);
 
 			int syncFromYear = new GregorianCalendar().get(Calendar.YEAR)
 					- years_to_sync;
@@ -443,8 +445,9 @@ public class GoogleSync {
 	static public PrefName SYNCPW2 = new PrefName("googlesync-pw2", "");
 
 	static public PrefName SYNCUSER = new PrefName("googlesync-user", "");
-
-	static private final int years_to_sync = 2;
+	
+	static public PrefName SYNCYEARS = new PrefName(
+			"sync-years", new Integer(10));
 
 	static public void sync(SyncMode syncmode) throws Exception {
 		SyncThread thread = new SyncThread();
