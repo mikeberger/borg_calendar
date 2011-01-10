@@ -8,7 +8,6 @@ import java.awt.event.ActionListener;
 import javax.swing.ButtonGroup;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
-import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.UIManager;
 
@@ -239,29 +238,16 @@ public class UIControl {
 
 		// backup data
 		if (do_backup == true) {
-			final boolean em = backup_email;
-
-			new Thread() {
-				@Override
-				public void run() {
-					try {
-						ExportImport.exportToZip(backupdir, em);
-						Borg.shutdown();
-					} catch (Exception e) {
-						final Exception fe = e;
-						SwingUtilities.invokeLater(new Thread() {
-							public void run() {
-								Errmsg.errmsg(fe);
-							}
-						});
-					}
-				}
-			}.start();
-
-		} else {
-			// non-UI shutdown
-			Borg.shutdown();
+			try {
+				ExportImport.exportToZip(backupdir, backup_email);
+			} catch (Exception e) {
+				Errmsg.errmsg(e);
+				return;
+			}	
 		}
+		
+		// non-UI shutdown
+		Borg.shutdown();
 
 	}
 
