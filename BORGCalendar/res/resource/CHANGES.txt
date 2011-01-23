@@ -11,6 +11,8 @@ Feature - option to email the backup ZIP when it is created
 Feature - Export XML changed to create a single ZIP file instead of separate XML files
 Feature - Option to Sort by priority on calendar
 Feature - Support H2 Database
+Feature - anti-alias text
+Feature (Patch) - total number of items for TODO and Task lists
 
 Bug 3076434	- Backdated ToDos-Birthdays pop up for each year until present
 Bug - memo view does not clear currently shown memo when the tab is closed.
