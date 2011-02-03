@@ -205,6 +205,10 @@ public class SearchView extends DockableView implements Module {
 									cats, cats[0]);
 							if (o == null)
 								return;
+							
+							String cat = (String) o;
+							if( cat.isEmpty() || CategoryModel.UNCATEGORIZED.equals(cat))
+								cat = null;
 
 							TableSorter tm = (TableSorter) resultsTable
 									.getModel();
@@ -232,20 +236,20 @@ public class SearchView extends DockableView implements Module {
 									Appointment ap = AppointmentModel
 											.getReference().getAppt(
 													ent.getKey());
-									ap.setCategory((String) o);
+									ap.setCategory(cat);
 									AppointmentModel.getReference()
 											.saveAppt(ap);
 								}
 								if (ent instanceof Project) {
 									Project ap = TaskModel.getReference()
 											.getProject(ent.getKey());
-									ap.setCategory((String) o);
+									ap.setCategory(cat);
 									TaskModel.getReference().saveProject(ap);
 								}
 								if (ent instanceof Task) {
 									Task ap = TaskModel.getReference().getTask(
 											ent.getKey());
-									ap.setCategory((String) o);
+									ap.setCategory(cat);
 									TaskModel.getReference().savetask(ap);
 								}
 
