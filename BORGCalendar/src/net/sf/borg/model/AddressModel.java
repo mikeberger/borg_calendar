@@ -352,6 +352,11 @@ public class AddressModel extends Model implements Searchable<Address> {
 	public Collection<Address> search(SearchCriteria criteria) {
 		Collection<Address> res = new ArrayList<Address>(); // result collection
 		try {
+			
+			// do not match if a search category is set
+			if (!criteria.getCategory().equals("")
+					&& !criteria.getCategory().equals(CategoryModel.UNCATEGORIZED))
+				return res;
 
 			// load all addresses into appt list
 			Collection<Address> addresses = getAddresses();

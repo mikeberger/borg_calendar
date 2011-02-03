@@ -345,6 +345,11 @@ public class MemoModel extends Model implements Searchable<Memo> {
 	public Collection<Memo> search(SearchCriteria criteria) {
 		Collection<Memo> res = new ArrayList<Memo>(); // result collection
 		try {
+			
+			// do not match if a search category is set
+			if (!criteria.getCategory().equals("")
+					&& !criteria.getCategory().equals(CategoryModel.UNCATEGORIZED))
+				return res;
 
 			Collection<Memo> memos = getMemos();
 
