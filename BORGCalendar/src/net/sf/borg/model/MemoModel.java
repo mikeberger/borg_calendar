@@ -361,18 +361,9 @@ public class MemoModel extends Model implements Searchable<Memo> {
 
 				String tx = memo.getMemoName() + " " + memo.getMemoText();
 				
-				if (criteria.isCaseSensitive()) {
-					// check if appt text contains the search string
-					if (tx.indexOf(criteria.getSearchString()) == -1)
-						continue;
-				} else {
-					// check if appt text contains the search string
-					String ltx = tx.toLowerCase();
-					String ls = criteria.getSearchString().toLowerCase();
-					if (ltx.indexOf(ls) == -1)
-						continue;
-				}
-
+				if( !criteria.search(tx))
+					continue;
+				
 				// add the appt to the search results
 				res.add(memo);
 

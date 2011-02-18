@@ -118,6 +118,9 @@ public class SearchView extends DockableView implements Module {
 
 	/** The todo check box. */
 	private JCheckBox todoCheckBox = null;
+	
+	// whole word search option
+	private JCheckBox wholeWordBox = null;
 
 	/** The vacation check box. */
 	private JCheckBox vacationCheckBox = null;
@@ -503,6 +506,13 @@ public class SearchView extends DockableView implements Module {
 		searchCriteriaPanel
 				.add(caseSensitiveCheckBox, GridBagConstraintsFactory.create(2,
 						0, GridBagConstraints.BOTH));
+		
+		wholeWordBox = new JCheckBox();
+		wholeWordBox.setText(Resource
+				.getResourceString("WholeWord"));
+		searchCriteriaPanel
+				.add(wholeWordBox, GridBagConstraintsFactory.create(2,
+						1, GridBagConstraints.BOTH));
 		return searchCriteriaPanel;
 	}
 
@@ -521,6 +531,7 @@ public class SearchView extends DockableView implements Module {
 		criteria.setSearchString(searchText.getText());
 		criteria.setCaseSensitive(caseSensitiveCheckBox.isSelected());
 		criteria.setCategory((String) categoryComboBox.getSelectedItem());
+		criteria.setWholeWord(wholeWordBox.isSelected());
 		Calendar cal = startDateChooser.getCalendar();
 		if (cal != null) {
 			cal.set(Calendar.HOUR_OF_DAY, 0);

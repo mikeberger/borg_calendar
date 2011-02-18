@@ -1272,15 +1272,8 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 
 				String tx = p.getDescription();
 
-				if (criteria.isCaseSensitive()) {
-					if (tx.indexOf(criteria.getSearchString()) == -1)
-						continue;
-				} else {
-					String ltx = tx.toLowerCase();
-					String ls = criteria.getSearchString().toLowerCase();
-					if (ltx.indexOf(ls) == -1)
-						continue;
-				}
+				if( !criteria.search(tx))
+					continue;
 
 				// filter by category
 				if (criteria.getCategory().equals(CategoryModel.UNCATEGORIZED)
@@ -1319,15 +1312,8 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 					tx += " " + st.getDescription();
 				}
 
-				if (criteria.isCaseSensitive()) {
-					if (tx.indexOf(criteria.getSearchString()) == -1)
-						continue;
-				} else {
-					String ltx = tx.toLowerCase();
-					String ls = criteria.getSearchString().toLowerCase();
-					if (ltx.indexOf(ls) == -1)
-						continue;
-				}
+				if( !criteria.search(tx))
+					continue;
 
 				// filter by category
 				if (criteria.getCategory().equals(CategoryModel.UNCATEGORIZED)

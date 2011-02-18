@@ -13,6 +13,7 @@ Feature - Option to Sort by priority on calendar
 Feature - Support H2 Database
 Feature - anti-alias text
 Feature (Patch) - total number of items for TODO and Task lists
+Feature - Whole Word Search
 
 Bug 3076434	- Backdated ToDos-Birthdays pop up for each year until present
 Bug - memo view does not clear currently shown memo when the tab is closed.

@@ -378,18 +378,9 @@ public class AddressModel extends Model implements Searchable<Address> {
 				addr.getWorkState() + " " + 
 				addr.getNickname(); 
 
-				if (criteria.isCaseSensitive()) {
-					// check if appt text contains the search string
-					if (addrString.indexOf(criteria.getSearchString()) == -1)
-						continue;
-				} else {
-					// check if appt text contains the search string
-					String ltx = addrString.toLowerCase();
-					String ls = criteria.getSearchString().toLowerCase();
-					if (ltx.indexOf(ls) == -1)
-						continue;
-				}
-
+				if( !criteria.search(addrString))
+					continue;
+				
 				// filter by links
 				if (criteria.hasLinks()) {
 					LinkModel lm = LinkModel.getReference();
