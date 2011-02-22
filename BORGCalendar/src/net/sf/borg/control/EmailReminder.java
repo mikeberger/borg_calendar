@@ -57,13 +57,14 @@ import sun.misc.BASE64Encoder;
  */
 public class EmailReminder {
 
-	
 	/**
 	 * Send daily email reminder.
 	 * 
-	 * @param emailday the emailday
+	 * @param emailday
+	 *            the emailday
 	 * 
-	 * @throws Exception the exception
+	 * @throws Exception
+	 *             the exception
 	 */
 	static public void sendDailyEmailReminder(Calendar emailday)
 			throws Exception {
@@ -82,7 +83,8 @@ public class EmailReminder {
 
 		Calendar cal = new GregorianCalendar();
 
-		// if no date passed in, the timer has gone off and we need to check if we
+		// if no date passed in, the timer has gone off and we need to check if
+		// we
 		// can send
 		// email now
 		int doy = -1;
@@ -102,14 +104,14 @@ public class EmailReminder {
 			cal = emailday;
 		}
 
-		
 		// tx is the contents of the email
 		String ap_tx = "Appointments for "
 				+ DateFormat.getDateInstance().format(cal.getTime()) + "\n";
 		String tx = "";
 
 		// get the list of appts for the requested day
-		Collection<Integer> l = AppointmentModel.getReference().getAppts(cal.getTime());
+		Collection<Integer> l = AppointmentModel.getReference().getAppts(
+				cal.getTime());
 		if (l != null) {
 
 			Appointment appt;
@@ -136,10 +138,18 @@ public class EmailReminder {
 					}
 
 					// add the appointment text
-					if( appt.isEncrypted())
+					if (appt.isEncrypted())
 						tx += Resource.getResourceString("EncryptedItemShort");
-					else
-						tx += appt.getText();
+					else {
+						// only show first line of appointment text
+						String s = appt.getText();
+						int ii = s.indexOf('\n');
+						if (ii != -1) {
+							tx += s.substring(0, ii);
+						} else {
+							tx += s;
+						}
+					}
 					tx += "\n";
 				} catch (Exception e) {
 					System.out.println(e.toString());
@@ -150,7 +160,8 @@ public class EmailReminder {
 		}
 
 		// load any task tracker items for the email
-		Collection<Task> tasks = TaskModel.getReference().get_tasks(cal.getTime());
+		Collection<Task> tasks = TaskModel.getReference().get_tasks(
+				cal.getTime());
 		if (l != null && tasks != null) {
 
 			for (Task task : tasks) {
@@ -169,8 +180,10 @@ public class EmailReminder {
 			while (stk.hasMoreTokens()) {
 				String a = stk.nextToken();
 				if (!a.equals("")) {
-					SendJavaMail.sendMail(host, tx, Resource.getResourceString("Reminder_Notice"), a.trim(), a.trim(), Prefs
-							.getPref(PrefName.EMAILUSER), gep());
+					SendJavaMail.sendMail(host, tx,
+							Resource.getResourceString("Reminder_Notice"),
+							a.trim(), a.trim(),
+							Prefs.getPref(PrefName.EMAILUSER), gep());
 				}
 			}
 		}
@@ -180,24 +193,23 @@ public class EmailReminder {
 
 		return;
 	}
-	
-	// intentionally undocumented - not foolproof. unrelated to memo and appt encryption, which is fully secure
-	public static String gep() throws Exception
-	{
+
+	// intentionally undocumented - not foolproof. unrelated to memo and appt
+	// encryption, which is fully secure
+	public static String gep() throws Exception {
 		String p1 = Prefs.getPref(PrefName.EMAILPASS2);
 		String p2 = Prefs.getPref(PrefName.EMAILPASS);
-		if( "".equals(p2))
+		if ("".equals(p2))
 			return p2;
-		
-		if( "".equals(p1))
-		{
+
+		if ("".equals(p1)) {
 			sep(p2); // transition case
 			return p2;
 		}
-		
+
 		BASE64Decoder b64dec = new BASE64Decoder();
 		byte[] ba = b64dec.decodeBuffer(p1);
-		SecretKey key = new SecretKeySpec(ba,"AES");
+		SecretKey key = new SecretKeySpec(ba, "AES");
 		Cipher dec = Cipher.getInstance("AES");
 		dec.init(Cipher.DECRYPT_MODE, key);
 		byte[] decba = b64dec.decodeBuffer(p2);
@@ -207,32 +219,29 @@ public class EmailReminder {
 		os.close();
 
 		return baos.toString();
-		
-		
+
 	}
-	
-	// intentionally undocumented - not foolproof. unrelated to memo and appt encryption, which is
+
+	// intentionally undocumented - not foolproof. unrelated to memo and appt
+	// encryption, which is
 	// fully secure
-	public static void sep(String s) throws Exception
-	{
-		if( "".equals(s))
-		{
+	public static void sep(String s) throws Exception {
+		if ("".equals(s)) {
 			Prefs.putPref(PrefName.EMAILPASS, s);
 			return;
 		}
 		String p1 = Prefs.getPref(PrefName.EMAILPASS2);
-		if( "".equals(p1))
-		{
+		if ("".equals(p1)) {
 			KeyGenerator keyGen = KeyGenerator.getInstance("AES");
 			SecretKey key = keyGen.generateKey();
 			BASE64Encoder b64enc = new BASE64Encoder();
 			p1 = b64enc.encode(key.getEncoded());
 			Prefs.putPref(PrefName.EMAILPASS2, p1);
 		}
-		
+
 		BASE64Decoder b64dec = new BASE64Decoder();
 		byte[] ba = b64dec.decodeBuffer(p1);
-		SecretKey key = new SecretKeySpec(ba,"AES");
+		SecretKey key = new SecretKeySpec(ba, "AES");
 		Cipher enc = Cipher.getInstance("AES");
 		enc.init(Cipher.ENCRYPT_MODE, key);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
