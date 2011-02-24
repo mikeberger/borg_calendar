@@ -18,6 +18,7 @@
  */
 package net.sf.borg.ui.task;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -39,6 +40,7 @@ import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
@@ -49,8 +51,8 @@ import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.Model;
-import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.Model.ChangeEvent;
+import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.KeyedEntity;
 import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Task;
@@ -64,6 +66,47 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 		MouseListener, Model.Listener, Prefs.Listener {
 
 	private static final long serialVersionUID = 1L;
+	
+	/** Custom Tree Cell Renderer that shows empty projects as closed folders instead of leaf icons. */
+	private class ProjectTreeCellRenderer extends DefaultTreeCellRenderer
+	{
+
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public Component getTreeCellRendererComponent(JTree tree, Object value,
+				boolean sel, boolean expanded, boolean leaf, int row,
+				boolean hasFocus) {
+			
+			
+			super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf,
+					row, hasFocus);
+			
+			// get the tree model node
+			if( value instanceof DefaultMutableTreeNode )
+			{
+				DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) value;
+				
+				// get the Borg Node object, if any
+				if( treeNode.getUserObject() != null && treeNode.getUserObject() instanceof Node )
+				{
+					Node node = (Node)treeNode.getUserObject();
+					
+					// if the Borg Entity is a Project and the node is a leaf in the tree, then show
+					// the closed folder icon
+					if( leaf && node.getEntity() instanceof Project)
+					{
+						this.setIcon(closedIcon);
+					}	
+				}
+				
+			}
+			return this;
+		}
+
+
+		
+	}
 
 	/**
 	 * A Node in the tree that contains the visible node name and the related
@@ -224,6 +267,8 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 		tree = new JTree(rootNode);
 		tree.getSelectionModel().setSelectionMode(
 				TreeSelectionModel.SINGLE_TREE_SELECTION);
+		
+		tree.setCellRenderer(new ProjectTreeCellRenderer());
 
 		// Listen for when the selection changes.
 		tree.addTreeSelectionListener(this);
@@ -606,6 +651,8 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 		createNodes(top);
 		// Create a tree that allows one selection at a time.
 		tree = new JTree(top);
+		tree.setCellRenderer(new ProjectTreeCellRenderer());
+
 		tree.getSelectionModel().setSelectionMode(
 				TreeSelectionModel.SINGLE_TREE_SELECTION);
 
