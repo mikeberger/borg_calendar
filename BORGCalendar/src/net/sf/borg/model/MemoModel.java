@@ -324,7 +324,7 @@ public class MemoModel extends Model implements Searchable<Memo> {
 
 		for (Memo memo : container.Memo ) {
 			memo.setKey(-1);
-			saveMemo(memo);
+			saveMemo(memo, true);
 		}
 
 		refresh();

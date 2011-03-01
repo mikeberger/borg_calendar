@@ -231,7 +231,7 @@ public class CheckListModel extends Model  {
 		if( container.CheckList == null ) return;
 
 		for (CheckList checkList : container.CheckList ) {
-			saveCheckList(checkList);
+			saveCheckList(checkList,true);
 		}
 
 		refresh();
