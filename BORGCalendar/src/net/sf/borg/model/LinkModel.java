@@ -124,6 +124,18 @@ public class LinkModel extends Model {
 			}
 			return path;
 		}
+		if (dbtype.equals("h2")) {
+			String path = Prefs.getPref(PrefName.H2DIR) + "/attachments";
+			File f = new File(path);
+			if (!f.exists()) {
+				if (!f.mkdir()) {
+					Errmsg.notice(Resource.getResourceString("att_folder_err")
+							+ path);
+					return null;
+				}
+			}
+			return path;
+		}
 		return null;
 	}
 

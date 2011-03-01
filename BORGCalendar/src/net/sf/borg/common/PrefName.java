@@ -112,6 +112,9 @@ public class PrefName {
 
 	/** hsql database directory */
 	static public PrefName HSQLDBDIR = new PrefName("hsqldbdir", "not-set");
+	
+	/** h2 database directory */
+	static public PrefName H2DIR = new PrefName("h2dir", "not-set");
 
 	// misc
 	/** show a stack trace button on error dialogs */

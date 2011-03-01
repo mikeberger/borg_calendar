@@ -441,7 +441,14 @@ abstract public class JdbcDB {
 				return hdir;
 			dbdir = "jdbc:hsqldb:file:" + Prefs.getPref(PrefName.HSQLDBDIR)
 					+ "/borg_";
-		} else if (dbtype.equals("jdbc")) {
+		}
+		else if (dbtype.equals("h2")) {
+			String hdir = Prefs.getPref(PrefName.H2DIR);
+			if (hdir.equals("not-set"))
+				return hdir;
+			dbdir = "jdbc:h2:file:" + Prefs.getPref(PrefName.H2DIR)
+					+ "/borgdb;USER=sa";
+		}else if (dbtype.equals("jdbc")) {
 			dbdir = Prefs.getPref(PrefName.JDBCURL);
 		} else {
 			// build a mysql URL

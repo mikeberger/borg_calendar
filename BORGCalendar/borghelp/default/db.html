@@ -5,10 +5,12 @@
 	<TITLE></TITLE>
 	<META NAME="GENERATOR" CONTENT="OpenOffice.org 3.2  (Linux)">
 	<META NAME="CREATED" CONTENT="0;0">
-	<META NAME="CHANGEDBY" CONTENT="Mike B">
-	<META NAME="CHANGED" CONTENT="20100924;9402000">
+	<META NAME="CHANGEDBY" CONTENT="Mike ">
+	<META NAME="CHANGED" CONTENT="20110228;21193900">
 	<META NAME="Originator" CONTENT="Microsoft Word 11">
 	<META NAME="ProgId" CONTENT="Word.Document">
+	<META NAME="CHANGEDBY" CONTENT="Mike ">
+	<META NAME="CHANGEDBY" CONTENT="Mike B">
 	<META NAME="CHANGEDBY" CONTENT="mike b">
 	<STYLE TYPE="text/css">
 	<!--
@@ -27,8 +29,11 @@ settings. Some users may want to alter the location of the database,
 for example to be on a removable drive.</FONT></FONT></P>
 <P><FONT FACE="Arial">For those users that want to change the default
 settings, the available choices are:</FONT></P>
-<P><FONT FACE="Symbol">·</FONT> <FONT FACE="Arial">HSQLDB</FONT></P>
-<P><FONT FACE="Symbol">·</FONT> <FONT FACE="Arial">MySQL</FONT></P>
+<UL>
+	<LI><P><FONT FACE="Arial">HSQLDB</FONT></P>
+	<LI><P><FONT FACE="Arial">H2</FONT></P>
+	<LI><P><FONT FACE="Arial">MySQL</FONT></P>
+</UL>
 <P><FONT FACE="Arial">There is also a Generic JDBC option, which
 takes a jdbc url. This can be used by more advanced users if
 non-standard HSQLDB or MySQL URL options are needed. It is not
@@ -43,6 +48,14 @@ like to keep your data files. </FONT>
 <P><FONT FACE="Arial">As of BORG 1.6, HSQLDB is the default DB type
 as it requires no special actions from the user. </FONT>
 </P>
+<P><FONT FACE="Arial"><U><B>H2</B></U></FONT></P>
+<P STYLE="font-weight: normal; text-decoration: none"><FONT FACE="Arial">Support
+for H2 is new in release 1.7.5. To use H2, you must download the H2
+driver and put it into the CLASSPATH. Since BORG loads all JARs from
+the lib folder where it is installed, the H2 JAR can be placed in the
+BORG lib folder. Note: the loading of JARs from the lib folder is a
+BORG miscellaneous option that must be enabled. It is disabled by
+default.</FONT></P>
 <P><FONT FACE="Arial"><U><B>MySQL</B></U></FONT></P>
 <P><FONT FACE="Arial">Using MySQL with BORG requires the user to
 download at setup the MySQL software. In addition, the user must also

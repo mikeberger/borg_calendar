@@ -67,10 +67,13 @@ public class DatabaseOptionsPanel extends OptionsPanel {
 
 	private JTextField dbUserText;
 	private JRadioButton hsqldbButton;
+	private JRadioButton h2Button;
 
 	private JTextField hsqldbdir = new JTextField();
+	private JTextField h2dir = new JTextField();
 
 	private JPanel hsqldbPanel;
+	private JPanel h2Panel;
 	private JRadioButton jdbcButton = null;
 
 	private JPanel jdbcPanel = null;
@@ -101,11 +104,11 @@ public class DatabaseOptionsPanel extends OptionsPanel {
 				GridBagConstraints.BOTH, 1.0, 1.0);
 		gbcm.gridwidth = java.awt.GridBagConstraints.REMAINDER;
 		this.add(getMysqlPanel(), gbcm);
-		this.add(getDbTypePanel(), GridBagConstraintsFactory.create(0, 0,
-				GridBagConstraints.BOTH));
+		this.add(getDbTypePanel(),
+				GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH));
 
 		GridBagConstraints gridBagConstraints5 = GridBagConstraintsFactory
-				.create(0, 6);
+				.create(0, 7);
 		gridBagConstraints5.weightx = 1.0;
 		gridBagConstraints5.anchor = GridBagConstraints.CENTER;
 		JButton chgdb = new JButton();
@@ -123,7 +126,7 @@ public class DatabaseOptionsPanel extends OptionsPanel {
 
 		JButton help = new JButton();
 		GridBagConstraints gridBagConstraintsh = GridBagConstraintsFactory
-				.create(1, 6);
+				.create(1, 7);
 		gridBagConstraintsh.weightx = 1.0;
 		gridBagConstraintsh.anchor = GridBagConstraints.CENTER;
 		this.add(help, gridBagConstraintsh);
@@ -152,6 +155,11 @@ public class DatabaseOptionsPanel extends OptionsPanel {
 				.create(0, 5, GridBagConstraints.BOTH, 1.0, 1.0);
 		gridBagConstraints7h.gridwidth = java.awt.GridBagConstraints.REMAINDER;
 		this.add(getJdbcPanel(), gridBagConstraints7h);
+
+		GridBagConstraints gridBagConstraints8h = GridBagConstraintsFactory
+				.create(0, 6, GridBagConstraints.BOTH, 1.0, 1.0);
+		gridBagConstraints8h.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+		this.add(getH2Panel(), gridBagConstraints8h);
 	}
 
 	/*
@@ -161,7 +169,7 @@ public class DatabaseOptionsPanel extends OptionsPanel {
 	 */
 	@Override
 	public void applyChanges() {
-		//empty - db options only applied when chg db button pressed
+		// empty - db options only applied when chg db button pressed
 	}
 
 	/**
@@ -169,19 +177,24 @@ public class DatabaseOptionsPanel extends OptionsPanel {
 	 * the program
 	 */
 	private void chgdbActionPerformed() {
-		int ret = JOptionPane.showConfirmDialog(null, Resource
-				.getResourceString("Really_change_the_database?"), Resource
-				.getResourceString("Confirm_DB_Change"),
+		int ret = JOptionPane.showConfirmDialog(null,
+				Resource.getResourceString("Really_change_the_database?"),
+				Resource.getResourceString("Confirm_DB_Change"),
 				JOptionPane.YES_NO_OPTION);
 		if (ret == JOptionPane.YES_OPTION) {
 
 			String hh = hsqldbdir.getText();
 			Prefs.putPref(PrefName.HSQLDBDIR, hh);
 
+			String h2 = h2dir.getText();
+			Prefs.putPref(PrefName.H2DIR, h2);
+
 			if (MySQLButton.isSelected()) {
 				Prefs.putPref(PrefName.DBTYPE, "mysql");
 			} else if (hsqldbButton.isSelected()) {
 				Prefs.putPref(PrefName.DBTYPE, "hsqldb");
+			} else if (h2Button.isSelected()) {
+				Prefs.putPref(PrefName.DBTYPE, "h2");
 			} else {
 				Prefs.putPref(PrefName.DBTYPE, "jdbc");
 			}
@@ -189,8 +202,8 @@ public class DatabaseOptionsPanel extends OptionsPanel {
 			Prefs.putPref(PrefName.DBPORT, dbPortText.getText());
 			Prefs.putPref(PrefName.DBHOST, dbHostText.getText());
 			Prefs.putPref(PrefName.DBUSER, dbUserText.getText());
-			Prefs.putPref(PrefName.DBPASS, new String(jPasswordField1
-					.getPassword()));
+			Prefs.putPref(PrefName.DBPASS,
+					new String(jPasswordField1.getPassword()));
 			Prefs.putPref(PrefName.JDBCURL, jdbcText.getText());
 
 			Errmsg.notice(Resource.getResourceString("Restart_Warning"));
@@ -210,14 +223,22 @@ public class DatabaseOptionsPanel extends OptionsPanel {
 			mysqlPanel.setVisible(true);
 			hsqldbPanel.setVisible(false);
 			jdbcPanel.setVisible(false);
+			h2Panel.setVisible(false);
 		} else if (type.equals("hsqldb")) {
 			mysqlPanel.setVisible(false);
 			hsqldbPanel.setVisible(true);
 			jdbcPanel.setVisible(false);
+			h2Panel.setVisible(false);
+		} else if (type.equals("h2")) {
+			mysqlPanel.setVisible(false);
+			hsqldbPanel.setVisible(false);
+			jdbcPanel.setVisible(false);
+			h2Panel.setVisible(true);
 		} else {
 			mysqlPanel.setVisible(false);
 			hsqldbPanel.setVisible(false);
 			jdbcPanel.setVisible(true);
+			h2Panel.setVisible(false);
 		}
 	}
 
@@ -244,6 +265,17 @@ public class DatabaseOptionsPanel extends OptionsPanel {
 				}
 			});
 			dbTypePanel.add(hsqldbButton, null);
+			
+			h2Button = new JRadioButton();
+			h2Button.setActionCommand("h2");
+			h2Button.setText("H2");
+			h2Button.addActionListener(new java.awt.event.ActionListener() {
+				@Override
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					dbTypeChange(e.getActionCommand());
+				}
+			});
+			dbTypePanel.add(h2Button, null);
 
 			MySQLButton = new JRadioButton();
 			MySQLButton.setActionCommand("mysql");
@@ -270,6 +302,7 @@ public class DatabaseOptionsPanel extends OptionsPanel {
 
 			dbTypeGroup = new ButtonGroup();
 			dbTypeGroup.add(hsqldbButton);
+			dbTypeGroup.add(h2Button);
 			dbTypeGroup.add(MySQLButton);
 			dbTypeGroup.add(jdbcButton);
 
@@ -291,8 +324,9 @@ public class DatabaseOptionsPanel extends OptionsPanel {
 				.getResourceString("hsqldbinfo")));
 		ResourceHelper.setText(hs1, "DataBase_Directory");
 		hs1.setLabelFor(dbDirText);
-		hsqldbPanel.add(hs1, GridBagConstraintsFactory.create(0, 0,
-				GridBagConstraints.BOTH));
+		hsqldbPanel
+				.add(hs1, GridBagConstraintsFactory.create(0, 0,
+						GridBagConstraints.BOTH));
 
 		hsqldbPanel.add(hsqldbdir, GridBagConstraintsFactory.create(0, 1,
 				GridBagConstraints.BOTH, 0.5, 0.0));
@@ -315,10 +349,54 @@ public class DatabaseOptionsPanel extends OptionsPanel {
 			}
 		});
 
-		hsqldbPanel.add(hsb1, GridBagConstraintsFactory.create(1, 1,
-				GridBagConstraints.BOTH));
+		hsqldbPanel
+				.add(hsb1, GridBagConstraintsFactory.create(1, 1,
+						GridBagConstraints.BOTH));
 
 		return hsqldbPanel;
+	}
+
+	/**
+	 * get the h2 options panel
+	 * 
+	 * @return the h2 options panel
+	 */
+	private JPanel getH2Panel() {
+		h2Panel = new JPanel();
+		h2Panel.setLayout(new java.awt.GridBagLayout());
+
+		JLabel hs1 = new JLabel();
+		h2Panel.setBorder(new TitledBorder(Resource.getResourceString("h2info")));
+		ResourceHelper.setText(hs1, "DataBase_Directory");
+		hs1.setLabelFor(dbDirText);
+		h2Panel.add(hs1,
+				GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH));
+
+		h2Panel.add(h2dir, GridBagConstraintsFactory.create(0, 1,
+				GridBagConstraints.BOTH, 0.5, 0.0));
+
+		JButton hsb1 = new JButton();
+		ResourceHelper.setText(hsb1, "Browse");
+		hsb1.addActionListener(new java.awt.event.ActionListener() {
+			@Override
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				// browse for new database dir
+				String dbdir = OptionsPanel.chooseDir();
+				if (dbdir == null) {
+					return;
+				}
+
+				// update text field - nothing else changes. DB change will take
+				// effect
+				// only on restart
+				h2dir.setText(dbdir);
+			}
+		});
+
+		h2Panel.add(hsb1,
+				GridBagConstraintsFactory.create(1, 1, GridBagConstraints.BOTH));
+
+		return h2Panel;
 	}
 
 	/**
@@ -337,8 +415,8 @@ public class DatabaseOptionsPanel extends OptionsPanel {
 			enturlLabel.setHorizontalAlignment(SwingConstants.LEFT);
 			jdbcPanel = new JPanel();
 			jdbcPanel.setLayout(new GridBagLayout());
-			jdbcPanel.setBorder(BorderFactory.createTitledBorder(null, Resource
-					.getResourceString("jdbc"),
+			jdbcPanel.setBorder(BorderFactory.createTitledBorder(null,
+					Resource.getResourceString("jdbc"),
 					TitledBorder.DEFAULT_JUSTIFICATION,
 					TitledBorder.DEFAULT_POSITION, null, null));
 			jdbcPanel.add(enturlLabel, GridBagConstraintsFactory.create(0, 0,
@@ -364,17 +442,20 @@ public class DatabaseOptionsPanel extends OptionsPanel {
 		JLabel jLabel7 = new JLabel();
 		ResourceHelper.setText(jLabel7, "DatabaseName");
 		jLabel7.setLabelFor(dbNameText);
-		mysqlPanel.add(jLabel7, GridBagConstraintsFactory.create(0, 0,
-				GridBagConstraints.BOTH));
+		mysqlPanel
+				.add(jLabel7, GridBagConstraintsFactory.create(0, 0,
+						GridBagConstraints.BOTH));
 
-		mysqlPanel.add(dbNameText, GridBagConstraintsFactory.create(1, 0,
-				GridBagConstraints.BOTH));
+		mysqlPanel
+				.add(dbNameText, GridBagConstraintsFactory.create(1, 0,
+						GridBagConstraints.BOTH));
 
 		JLabel jLabel17 = new JLabel();
 		ResourceHelper.setText(jLabel17, "hostname");
 		jLabel17.setLabelFor(dbHostText);
-		mysqlPanel.add(jLabel17, GridBagConstraintsFactory.create(0, 1,
-				GridBagConstraints.BOTH));
+		mysqlPanel
+				.add(jLabel17, GridBagConstraintsFactory.create(0, 1,
+						GridBagConstraints.BOTH));
 
 		mysqlPanel.add(dbHostText, GridBagConstraintsFactory.create(1, 1,
 				GridBagConstraints.BOTH, 1.0, 0.0));
@@ -382,8 +463,9 @@ public class DatabaseOptionsPanel extends OptionsPanel {
 		JLabel jLabel18 = new JLabel();
 		ResourceHelper.setText(jLabel18, "port");
 		jLabel18.setLabelFor(dbPortText);
-		mysqlPanel.add(jLabel18, GridBagConstraintsFactory.create(0, 2,
-				GridBagConstraints.BOTH));
+		mysqlPanel
+				.add(jLabel18, GridBagConstraintsFactory.create(0, 2,
+						GridBagConstraints.BOTH));
 
 		mysqlPanel.add(dbPortText, GridBagConstraintsFactory.create(1, 2,
 				GridBagConstraints.BOTH, 1.0, 0.0));
@@ -391,8 +473,9 @@ public class DatabaseOptionsPanel extends OptionsPanel {
 		JLabel jLabel19 = new JLabel();
 		ResourceHelper.setText(jLabel19, "User");
 		jLabel19.setLabelFor(dbUserText);
-		mysqlPanel.add(jLabel19, GridBagConstraintsFactory.create(0, 3,
-				GridBagConstraints.BOTH));
+		mysqlPanel
+				.add(jLabel19, GridBagConstraintsFactory.create(0, 3,
+						GridBagConstraints.BOTH));
 
 		mysqlPanel.add(dbUserText, GridBagConstraintsFactory.create(1, 3,
 				GridBagConstraints.BOTH, 1.0, 0.0));
@@ -400,11 +483,13 @@ public class DatabaseOptionsPanel extends OptionsPanel {
 		JLabel jLabel20 = new JLabel();
 		ResourceHelper.setText(jLabel20, "Password");
 		jLabel20.setLabelFor(jPasswordField1);
-		mysqlPanel.add(jLabel20, GridBagConstraintsFactory.create(0, 4,
-				GridBagConstraints.BOTH));
+		mysqlPanel
+				.add(jLabel20, GridBagConstraintsFactory.create(0, 4,
+						GridBagConstraints.BOTH));
 
-		mysqlPanel.add(jPasswordField1, GridBagConstraintsFactory.create(1, 4,
-				GridBagConstraints.BOTH));
+		mysqlPanel
+				.add(jPasswordField1, GridBagConstraintsFactory.create(1, 4,
+						GridBagConstraints.BOTH));
 
 		return mysqlPanel;
 	}
@@ -423,7 +508,9 @@ public class DatabaseOptionsPanel extends OptionsPanel {
 		if (dbtype.equals("mysql")) {
 			MySQLButton.setSelected(true);
 		} else if (dbtype.equals("hsqldb")) {
-			hsqldbButton.setSelected(true);
+			hsqldbButton.setSelected(true);} 
+		else if (dbtype.equals("h2")) {
+				h2Button.setSelected(true);
 		} else {
 			jdbcButton.setSelected(true);
 		}
@@ -438,9 +525,10 @@ public class DatabaseOptionsPanel extends OptionsPanel {
 		jPasswordField1.setText(Prefs.getPref(PrefName.DBPASS));
 		jdbcText.setText(Prefs.getPref(PrefName.JDBCURL));
 		hsqldbdir.setText(Prefs.getPref(PrefName.HSQLDBDIR));
+		h2dir.setText(Prefs.getPref(PrefName.H2DIR));
 
 	}
-	
+
 	@Override
 	public String getPanelName() {
 		return Resource.getResourceString("DatabaseInformation");
