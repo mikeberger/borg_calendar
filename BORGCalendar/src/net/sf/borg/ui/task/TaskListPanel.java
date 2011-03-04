@@ -52,6 +52,7 @@ import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.TaskTypes;
 import net.sf.borg.model.entity.Project;
+import net.sf.borg.model.entity.Subtask;
 import net.sf.borg.model.entity.Task;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 import net.sf.borg.ui.util.PopupMenuHelper;
@@ -162,6 +163,9 @@ class TaskListPanel extends JPanel implements Model.Listener {
 
 	/** checkbox to filter closed tasks */
 	private JCheckBox showClosedTasksCheckBox = null;
+	
+	/** checkbox to show subtasks */
+	private JCheckBox showSubTasksBox = null;
 
 	private JLabel totalLabel;
 	private JLabel getTotalLabel() {
@@ -357,6 +361,8 @@ class TaskListPanel extends JPanel implements Model.Listener {
 				}
 			});
 			buttonPanel.add(clonebutton1, null);
+			
+			addSubTaskFilter();
 
 		}
 		return buttonPanel;
@@ -379,6 +385,22 @@ class TaskListPanel extends JPanel implements Model.Listener {
 
 		});
 		buttonPanel.add(showClosedTasksCheckBox);
+		refresh();
+	}
+	
+	private void addSubTaskFilter()
+	{
+		showSubTasksBox = new JCheckBox();
+		showSubTasksBox.setText(Resource
+				.getResourceString("show_subtasks"));
+		showSubTasksBox.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				refresh();
+			}
+
+		});
+		buttonPanel.add(showSubTasksBox);
 		refresh();
 	}
 
@@ -528,7 +550,6 @@ class TaskListPanel extends JPanel implements Model.Listener {
 	 */
 	public void refresh() {
 
-		int row = 0;
 
 		// clear all table rows
 		TableSorter tm = (TableSorter) taskTable.getModel();
@@ -687,8 +708,61 @@ class TaskListPanel extends JPanel implements Model.Listener {
 				tm.addRow(ro);
 
 				totalItems ++;
+				
+				// add subtasks if requested
+				if( showSubTasksBox.isSelected())
+				{
+					Collection<Subtask> subtasks = TaskModel.getReference().getSubTasks(task.getKey());
+					for( Subtask subtask : subtasks )
+					{
+						ro = new Object[12];
+						ro[0] = null;
+						ro[1] = (subtask.getCloseDate() == null) ? Resource.getResourceString("OPEN"): Resource.getResourceString("CLOSED");
+						ro[2] = task.getType();
+						ro[11] = task.getCategory();
+						ro[3] = task.getPriority();
+						ro[6] = subtask.getStartDate();
+						ro[7] = subtask.getDueDate();
+						
+						if (subtask.getDueDate() != null) {
+							ro[8] = new Integer(TaskModel.daysBetween(subtask
+									.getStartDate(), subtask.getDueDate()));
+						} else {
+							ro[8] = null;
+						}
+
+						end = null;
+						if (subtask.getCloseDate() != null){
+							end = subtask.getCloseDate();
+						} else {
+							end = new Date();
+						}
+
+						// elapsed time
+						if (end == null) {
+							ro[9] = null;
+						} else {
+							ro[9] = new Integer(TaskModel.daysBetween(subtask
+									.getStartDate(), end));
+						}
+
+						// calculate days left - today - duedate
+						if (ro[7] == null)
+							ro[4] = null;
+						else {
+							Date dd = (Date) ro[7];
+							ro[4] = new Integer(TaskModel.daysLeft(dd));
+						}
+
+						ro[5] = subtask.getDescription();
+						
+						ro[10] = ps;
+						
+						tm.addRow(ro);
+
+					}
+				}
 				tm.tableChanged(new TableModelEvent(tm));
-				row++;
 			}
 			getTotalLabel().setText(totalItems + " items");
 		} catch (Exception e) {
