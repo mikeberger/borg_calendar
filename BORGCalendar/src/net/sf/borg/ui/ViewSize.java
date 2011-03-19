@@ -26,114 +26,6 @@ package net.sf.borg.ui;
  */
 class ViewSize {
 
-	// position
-	private int x = -1;
-	private int y = -1;
-	
-	// size
-	private int width = -1;
-	private int height = -1;
-	
-	// maximization flag
-	private boolean maximized = false;
-
-	/**
-	 * Instantiates a ViewSize
-	 */
-	public ViewSize() {
-	  // empty
-	}
-
-	/**
-	 * Gets the height.
-	 * 
-	 * @return the height
-	 */
-	public int getHeight() {
-		return height;
-	}
-
-	/**
-	 * Sets the height.
-	 * 
-	 * @param height the new height
-	 */
-	public void setHeight(int height) {
-		this.height = height;
-	}
-
-	/**
-	 * Checks if is maximized.
-	 * 
-	 * @return true, if is maximized
-	 */
-	public boolean isMaximized() {
-		return maximized;
-	}
-
-	/**
-	 * Sets the maximized flag.
-	 * 
-	 * @param maximized the new maximized value
-	 */
-	public void setMaximized(boolean maximized) {
-		this.maximized = maximized;
-	}
-
-	/**
-	 * Gets the width.
-	 * 
-	 * @return the width
-	 */
-	public int getWidth() {
-		return width;
-	}
-
-	/**
-	 * Sets the width.
-	 * 
-	 * @param width the new width
-	 */
-	public void setWidth(int width) {
-		this.width = width;
-	}
-
-	/**
-	 * Gets the x.
-	 * 
-	 * @return the x
-	 */
-	public int getX() {
-		return x;
-	}
-
-	/**
-	 * Sets the x position.
-	 * 
-	 * @param x the new x position
-	 */
-	public void setX(int x) {
-		this.x = x;
-	}
-
-	/**
-	 * Gets the y position.
-	 * 
-	 * @return the y position
-	 */
-	public int getY() {
-		return y;
-	}
-
-	/**
-	 * Sets the y.
-	 * 
-	 * @param y the new y
-	 */
-	public void setY(int y) {
-		this.y = y;
-	}
-
 	/**
 	 * creates a ViewSize instance From a string.
 	 * 
@@ -152,8 +44,163 @@ class ViewSize {
 			vs.maximized = true;
 		else
 			vs.maximized = false;
+		if( toks.length > 5)
+		{
+			if( toks[5].equals("U"))
+				vs.alwaysUndock = true;
+			else if( toks[5].equals("D"))
+				vs.alwaysDock = true;
+		}
 
 		return (vs);
+	}
+	// docking preference overrides
+	private boolean alwaysDock = false;
+	
+	private boolean alwaysUndock = false;
+	private int height = -1;
+	
+	// maximization flag
+	private boolean maximized = false;
+	
+	// size
+	private int width = -1;
+	// position
+	private int x = -1;
+
+	private int y = -1;
+
+	/**
+	 * Instantiates a ViewSize
+	 */
+	public ViewSize() {
+	  // empty
+	}
+
+	/**
+	 * Gets the height.
+	 * 
+	 * @return the height
+	 */
+	public int getHeight() {
+		return height;
+	}
+
+	/**
+	 * Gets the width.
+	 * 
+	 * @return the width
+	 */
+	public int getWidth() {
+		return width;
+	}
+
+	/**
+	 * Gets the x.
+	 * 
+	 * @return the x
+	 */
+	public int getX() {
+		return x;
+	}
+
+	/**
+	 * Gets the y position.
+	 * 
+	 * @return the y position
+	 */
+	public int getY() {
+		return y;
+	}
+
+	/**
+	 * Checks if is always dock.
+	 *
+	 * @return true, if is always dock
+	 */
+	public boolean isAlwaysDock() {
+		return alwaysDock;
+	}
+
+	/**
+	 * Checks if is always undock.
+	 *
+	 * @return true, if is always undock
+	 */
+	public boolean isAlwaysUndock() {
+		return alwaysUndock;
+	}
+
+	/**
+	 * Checks if is maximized.
+	 * 
+	 * @return true, if is maximized
+	 */
+	public boolean isMaximized() {
+		return maximized;
+	}
+
+	/**
+	 * Sets the always dock.
+	 *
+	 * @param alwaysDock the new always dock
+	 */
+	public void setAlwaysDock(boolean alwaysDock) {
+		this.alwaysDock = alwaysDock;
+	}
+
+	/**
+	 * Sets the always undock.
+	 *
+	 * @param alwaysUndock the new always undock
+	 */
+	public void setAlwaysUndock(boolean alwaysUndock) {
+		this.alwaysUndock = alwaysUndock;
+	}
+
+	/**
+	 * Sets the height.
+	 * 
+	 * @param height the new height
+	 */
+	public void setHeight(int height) {
+		this.height = height;
+	}
+
+	/**
+	 * Sets the maximized flag.
+	 * 
+	 * @param maximized the new maximized value
+	 */
+	public void setMaximized(boolean maximized) {
+		this.maximized = maximized;
+	}
+
+	/**
+	 * Sets the width.
+	 * 
+	 * @param width the new width
+	 */
+	public void setWidth(int width) {
+		this.width = width;
+	}
+
+	/**
+	 * Sets the x position.
+	 * 
+	 * @param x the new x position
+	 */
+	public void setX(int x) {
+		this.x = x;
+	}
+
+	/**
+	 * Sets the y.
+	 * 
+	 * @param y the new y
+	 */
+	public void setY(int y) {
+		this.y = y;
 	}
 
 	/**
@@ -162,8 +209,13 @@ class ViewSize {
 	 */
 	@Override
 	public String toString() {
+		String dock = "X";
+		if( alwaysUndock == true)
+			dock = "U";
+		else if( alwaysDock == true )
+			dock = "D";
 		return (Integer.toString(x) + "," + Integer.toString(y) + ","
 				+ Integer.toString(width) + "," + Integer.toString(height)
-				+ "," + ((maximized == true) ? "Y" : "N"));
+				+ "," + ((maximized == true) ? "Y" : "N") + "," + dock);
 	}
 }
