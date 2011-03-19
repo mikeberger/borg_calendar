@@ -6,6 +6,8 @@ Feature 3136779 - Ability to Import Backup Zip all at once
 Feature 3116794	- Make all tabs dockable
 Feature 3084552	- Ask for confirmation when memo is going to be deleted
 Feature 3075832	- Enable multiple selection in pop-up reminders
+Feature 3227225 - Ability to override the dock/undock defaults per window
+Feature 3217074 - Enhanced set of shutdown/backup options
 Feature (Patch) 3094537	- "todo quick add" field enhancements
 Feature - option to email the backup ZIP when it is created
 Feature - Export XML changed to create a single ZIP file instead of separate XML files
@@ -14,10 +16,16 @@ Feature - Support H2 Database
 Feature - anti-alias text
 Feature (Patch) - total number of items for TODO and Task lists
 Feature - Whole Word Search
+Feature - updates to the Italian Translation
+Feature - option to show subtasks in task lists
+Feature - in project tree, show empty projects as folders, not leaves
 
 Bug 3076434	- Backdated ToDos-Birthdays pop up for each year until present
 Bug - memo view does not clear currently shown memo when the tab is closed.
 Bug - options do not reset to stored values if the option view is closed and reopened.
+Bug 3217092 - BORG does not remember dock state after closing
+Bug - do not create undo records when importing
+Bug - only show first line of appt text in email reminders
 
 BORG 1.7.4
 ----------
