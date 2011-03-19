@@ -374,4 +374,7 @@ public class PrefName {
 
  	/** allow dynamically loaded plugins */
  	static public PrefName DYNAMIC_LOADING = new PrefName("dynamic_loading", "false");
+ 	
+ 	/** shutdown action */
+ 	static public PrefName SHUTDOWN_ACTION = new PrefName("shutdown_action", "");
 }

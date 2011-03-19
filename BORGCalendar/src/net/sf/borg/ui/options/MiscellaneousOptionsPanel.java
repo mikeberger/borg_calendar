@@ -24,6 +24,7 @@ import java.awt.GridBagLayout;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -41,6 +42,10 @@ import net.sf.borg.ui.util.GridBagConstraintsFactory;
  */
 public class MiscellaneousOptionsPanel extends OptionsPanel {
 
+	public enum SHUTDOWN_ACTION {
+		PROMPT, BACKUP, EMAIL, NONE
+	}
+
 	private static final long serialVersionUID = 2246952528811147049L;
 	private JTextField backupDir = new JTextField();
 	private JCheckBox colorprint;
@@ -52,9 +57,10 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 	private JCheckBox useSysTray = new JCheckBox();
 	private JCheckBox startToSysTray = new JCheckBox();
 	private JCheckBox dateInSysTray = new JCheckBox();
-	
+
 	private JCheckBox dynamicLoading = new JCheckBox();
 
+	private JComboBox shutdownAction = new JComboBox();
 
 	/**
 	 * Instantiates a new miscellaneous options panel.
@@ -70,42 +76,39 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 		this.setLayout(new java.awt.GridBagLayout());
 
 		ResourceHelper.setText(splashbox, "splash");
-		this.add(splashbox, GridBagConstraintsFactory.create(0, 0,
-				GridBagConstraints.BOTH));
+		this.add(splashbox,
+				GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH));
 
 		ResourceHelper.setText(stackbox, "stackonerr");
-		this.add(stackbox, GridBagConstraintsFactory.create(0, 1,
-				GridBagConstraints.BOTH));
+		this.add(stackbox,
+				GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH));
 
 		JLabel sportlabel = new JLabel();
 		ResourceHelper.setText(sportlabel, "socket_port");
-		this.add(sportlabel, GridBagConstraintsFactory.create(0, 2,
-				GridBagConstraints.BOTH));
+		this.add(sportlabel,
+				GridBagConstraintsFactory.create(0, 2, GridBagConstraints.BOTH));
 
-		this.add(socketPort, GridBagConstraintsFactory.create(1, 2,
-				GridBagConstraints.BOTH));
+		this.add(socketPort,
+				GridBagConstraintsFactory.create(1, 2, GridBagConstraints.BOTH));
 
 		useSysTray.setText(Resource.getResourceString("enable_systray"));
-		this.add(useSysTray, GridBagConstraintsFactory.create(0, 3,
-				GridBagConstraints.BOTH));
+		this.add(useSysTray,
+				GridBagConstraintsFactory.create(0, 3, GridBagConstraints.BOTH));
 
 		startToSysTray.setText(Resource.getResourceString("StartToSysTray"));
-		this.add(startToSysTray, GridBagConstraintsFactory.create(0, 4,
-				GridBagConstraints.BOTH));
+		this.add(startToSysTray,
+				GridBagConstraintsFactory.create(0, 4, GridBagConstraints.BOTH));
 
 		dateInSysTray.setText(Resource
 				.getResourceString("show_date_in_systray"));
-		this.add(dateInSysTray, GridBagConstraintsFactory.create(0, 5,
-				GridBagConstraints.BOTH));
+		this.add(dateInSysTray,
+				GridBagConstraintsFactory.create(0, 5, GridBagConstraints.BOTH));
 
 		JPanel backp = new JPanel();
 		backp.setLayout(new GridBagLayout());
 
-		backp
-				.add(
-						new JLabel(Resource.getResourceString("backup_dir")
-								+ ": "), GridBagConstraintsFactory.create(0, 0,
-								GridBagConstraints.NONE));
+		backp.add(new JLabel(Resource.getResourceString("backup_dir") + ": "),
+				GridBagConstraintsFactory.create(0, 0, GridBagConstraints.NONE));
 
 		backp.add(backupDir, GridBagConstraintsFactory.create(1, 0,
 				GridBagConstraints.BOTH, 1.0, 0.0));
@@ -123,21 +126,32 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 				backupDir.setText(dbdir);
 			}
 		});
-		backp.add(bb, GridBagConstraintsFactory.create(2, 0,
-				GridBagConstraints.NONE));
+		backp.add(bb,
+				GridBagConstraintsFactory.create(2, 0, GridBagConstraints.NONE));
+
+		backp.add(new JLabel(Resource.getResourceString("on_shutdown")),
+				GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH));
+
+		shutdownAction.addItem(Resource.getResourceString("prompt_for_backup"));
+		shutdownAction.addItem(Resource.getResourceString("exit_no_backup"));
+		shutdownAction.addItem(Resource.getResourceString("write_backup_file"));
+		shutdownAction.addItem(Resource.getResourceString("backup_with_email"));
+
+		backp.add(shutdownAction, GridBagConstraintsFactory.create(1, 1,
+				GridBagConstraints.BOTH, 1.0, 0.0));
 
 		GridBagConstraints gbc1 = GridBagConstraintsFactory.create(0, 6,
 				GridBagConstraints.BOTH, 1.0, 0.0);
 		gbc1.gridwidth = 2;
 		this.add(backp, gbc1);
 
-		ResourceHelper.setText(colorprint, "Print_In_Color?");
-		this.add(colorprint, GridBagConstraintsFactory.create(0, 7,
-				GridBagConstraints.BOTH));
 		
+		ResourceHelper.setText(colorprint, "Print_In_Color?");
+		this.add(colorprint,
+				GridBagConstraintsFactory.create(0, 8, GridBagConstraints.BOTH));
+
 		dynamicLoading.setText(Resource.getResourceString("enable_plugins"));
-		gbc1 = GridBagConstraintsFactory.create(0,8,
-				GridBagConstraints.BOTH);
+		gbc1 = GridBagConstraintsFactory.create(0, 9, GridBagConstraints.BOTH);
 		gbc1.gridwidth = 2;
 		this.add(dynamicLoading, gbc1);
 	}
@@ -160,6 +174,15 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 		OptionsPanel.setBooleanPref(dynamicLoading, PrefName.DYNAMIC_LOADING);
 
 		Prefs.putPref(PrefName.BACKUPDIR, backupDir.getText());
+
+		if (shutdownAction.getSelectedIndex() == 0)
+			Prefs.putPref(PrefName.SHUTDOWN_ACTION, SHUTDOWN_ACTION.PROMPT.toString());
+		else if (shutdownAction.getSelectedIndex() == 1)
+			Prefs.putPref(PrefName.SHUTDOWN_ACTION, SHUTDOWN_ACTION.NONE.toString());
+		else if (shutdownAction.getSelectedIndex() == 2)
+			Prefs.putPref(PrefName.SHUTDOWN_ACTION, SHUTDOWN_ACTION.BACKUP.toString());
+		else if (shutdownAction.getSelectedIndex() == 3)
+			Prefs.putPref(PrefName.SHUTDOWN_ACTION, SHUTDOWN_ACTION.EMAIL.toString());
 
 		// validate that socket is a number
 		try {
@@ -191,6 +214,17 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 		OptionsPanel.setCheckBox(startToSysTray, PrefName.BACKGSTART);
 		OptionsPanel.setCheckBox(dateInSysTray, PrefName.SYSTRAYDATE);
 		OptionsPanel.setCheckBox(dynamicLoading, PrefName.DYNAMIC_LOADING);
+
+		String shutdown_action = Prefs.getPref(PrefName.SHUTDOWN_ACTION);
+		if (shutdown_action.isEmpty()
+				|| SHUTDOWN_ACTION.PROMPT.toString().equals(shutdown_action))
+			shutdownAction.setSelectedIndex(0);
+		else if (SHUTDOWN_ACTION.NONE.toString().equals(shutdown_action))
+			shutdownAction.setSelectedIndex(1);
+		else if (SHUTDOWN_ACTION.BACKUP.toString().equals(shutdown_action))
+			shutdownAction.setSelectedIndex(2);
+		else if (SHUTDOWN_ACTION.EMAIL.toString().equals(shutdown_action))
+			shutdownAction.setSelectedIndex(3);
 
 		int socket = Prefs.getIntPref(PrefName.SOCKETPORT);
 		socketPort.setText(Integer.toString(socket));

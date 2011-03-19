@@ -26,6 +26,7 @@ import net.sf.borg.ui.calendar.WeekPanel;
 import net.sf.borg.ui.calendar.YearPanel;
 import net.sf.borg.ui.checklist.CheckListPanel;
 import net.sf.borg.ui.memo.MemoPanel;
+import net.sf.borg.ui.options.MiscellaneousOptionsPanel.SHUTDOWN_ACTION;
 import net.sf.borg.ui.popup.ReminderListManager;
 import net.sf.borg.ui.popup.ReminderManager;
 import net.sf.borg.ui.popup.ReminderPopupManager;
@@ -156,7 +157,7 @@ public class UIControl {
 			mv.setVisible(true);
 
 		// show the month view
-		if( Prefs.getBoolPref(PrefName.DOCKPANELS))
+		if (Prefs.getBoolPref(PrefName.DOCKPANELS))
 			mv.setView(ViewType.MONTH);
 
 		// destroy the splash screen
@@ -184,42 +185,55 @@ public class UIControl {
 		boolean do_backup = false;
 		boolean backup_email = false;
 		final String backupdir = Prefs.getPref(PrefName.BACKUPDIR);
+
 		if (backupdir != null && !backupdir.equals("")) {
 
-			JRadioButton b1 = new JRadioButton(
-					Resource.getResourceString("backup_notice") + " "
-							+ backupdir);
-			JRadioButton b2 = new JRadioButton(
-					Resource.getResourceString("exit_no_backup"));
-			JRadioButton b3 = new JRadioButton(
-					Resource.getResourceString("dont_exit"));
-			JRadioButton b4 = new JRadioButton(
-					Resource.getResourceString("backup_with_email"));
+			String shutdown_action = Prefs.getPref(PrefName.SHUTDOWN_ACTION);
+			if (shutdown_action.isEmpty()
+					|| SHUTDOWN_ACTION.PROMPT.toString()
+							.equals(shutdown_action)) {
+				JRadioButton b1 = new JRadioButton(
+						Resource.getResourceString("backup_notice") + " "
+								+ backupdir);
+				JRadioButton b2 = new JRadioButton(
+						Resource.getResourceString("exit_no_backup"));
+				JRadioButton b3 = new JRadioButton(
+						Resource.getResourceString("dont_exit"));
+				JRadioButton b4 = new JRadioButton(
+						Resource.getResourceString("backup_with_email"));
 
-			b1.setSelected(true);
+				b1.setSelected(true);
 
-			ButtonGroup group = new ButtonGroup();
-			group.add(b1);
-			group.add(b2);
-			group.add(b3);
-			group.add(b4);
+				ButtonGroup group = new ButtonGroup();
+				group.add(b1);
+				group.add(b2);
+				group.add(b3);
+				group.add(b4);
 
-			Object[] array = { b1, b4, b2, b3, };
+				Object[] array = { b1, b4, b2, b3, };
 
-			int res = JOptionPane.showConfirmDialog(null, array,
-					Resource.getResourceString("shutdown_options"),
-					JOptionPane.OK_CANCEL_OPTION);
+				int res = JOptionPane.showConfirmDialog(null, array,
+						Resource.getResourceString("shutdown_options"),
+						JOptionPane.OK_CANCEL_OPTION);
 
-			if (res != JOptionPane.YES_OPTION) {
-				return;
+				if (res != JOptionPane.YES_OPTION) {
+					return;
+				}
+
+				if (b3.isSelected())
+					return;
+				if (b1.isSelected() || b4.isSelected())
+					do_backup = true;
+				if (b4.isSelected())
+					backup_email = true;
+			} else if (SHUTDOWN_ACTION.BACKUP.toString()
+					.equals(shutdown_action)) {
+				do_backup = true;
+			} else if (SHUTDOWN_ACTION.EMAIL.toString().equals(shutdown_action)) {
+				do_backup = true;
+				backup_email = true;
 			}
 
-			if (b3.isSelected())
-				return;
-			if (b1.isSelected() || b4.isSelected())
-				do_backup = true;
-			if (b4.isSelected())
-				backup_email = true;
 		}
 
 		// stop popup timer and destroy popups
@@ -244,9 +258,9 @@ public class UIControl {
 			} catch (Exception e) {
 				Errmsg.errmsg(e);
 				return;
-			}	
+			}
 		}
-		
+
 		// non-UI shutdown
 		Borg.shutdown();
 
