@@ -63,7 +63,7 @@ public class MemoModel extends Model implements Searchable<Memo> {
 	private MemoDB db_; // the database
 
 	/** The singleton */
-	static private MemoModel self_ = null;
+	static private MemoModel self_ = new MemoModel();
 
 	/**
 	 * Gets the singleton.
@@ -71,8 +71,6 @@ public class MemoModel extends Model implements Searchable<Memo> {
 	 * @return the singleton
 	 */
 	public static MemoModel getReference() {
-		if( self_ == null)
-			self_ = new MemoModel();
 		return (self_);
 	}
 

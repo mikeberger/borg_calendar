@@ -48,7 +48,7 @@ import net.sf.borg.model.undo.UndoLog;
  */
 public class AddressModel extends Model implements Searchable<Address> {
 
-	static private AddressModel self_ = null;
+	static private AddressModel self_ = new AddressModel();
 	
 	/**
 	 * class XmlContainer is solely for JAXB XML export/import
@@ -65,8 +65,6 @@ public class AddressModel extends Model implements Searchable<Address> {
 	 * @return the reference
 	 */
 	public static AddressModel getReference() {
-		if( self_ == null )
-			self_ = new AddressModel();
 		return (self_);
 	}
 	

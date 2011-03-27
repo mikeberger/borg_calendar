@@ -74,7 +74,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 	}
 
 	/** The singleton */
-	static private AppointmentModel self_ = null;
+	static private AppointmentModel self_ = new AppointmentModel();
 
 	/**
 	 * Gets the singleton reference.
@@ -82,13 +82,6 @@ public class AppointmentModel extends Model implements Model.Listener,
 	 * @return the singleton reference
 	 */
 	public static AppointmentModel getReference() {
-		if (self_ == null)
-			try {
-				self_ = new AppointmentModel();
-			} catch (Exception e) {
-				Errmsg.errmsg(e);
-				return null;
-			}
 		return (self_);
 	}
 
@@ -163,10 +156,8 @@ public class AppointmentModel extends Model implements Model.Listener,
 	/**
 	 * Instantiates a new appointment model.
 	 * 
-	 * @throws Exception
-	 *             the exception
 	 */
-	private AppointmentModel() throws Exception {
+	private AppointmentModel()  {
 		map_ = new HashMap<Integer, Collection<Integer>>();
 		vacationMap_ = new HashMap<Integer, Integer>();
 		db_ = new ApptJdbcDB();
@@ -176,7 +167,11 @@ public class AppointmentModel extends Model implements Model.Listener,
 		CategoryModel.getReference().addListener(this);
 
 		// scan the DB and build the appt map_
-		buildMap();
+		try {
+			buildMap();
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
+		}
 
 	}
 

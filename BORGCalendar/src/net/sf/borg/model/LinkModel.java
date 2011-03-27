@@ -90,7 +90,7 @@ public class LinkModel extends Model {
 	}
 
 	/** The singleton */
-	static private LinkModel self_ = null;
+	static private LinkModel self_ = new LinkModel();
 
 	/** map of entity types to class names */
 	private static HashMap<Class<?>, LinkType> typemap = new HashMap<Class<?>, LinkType>();
@@ -145,8 +145,6 @@ public class LinkModel extends Model {
 	 * @return the singleton
 	 */
 	public static LinkModel getReference() {
-		if (self_ == null)
-			self_ = new LinkModel();
 		return (self_);
 	}
 

@@ -55,7 +55,7 @@ public class CheckListModel extends Model  {
 	private CheckListDB db_; // the database
 
 	/** The singleton */
-	static private CheckListModel self_ = null;
+	static private CheckListModel self_ = new CheckListModel();
 
 	/**
 	 * Gets the singleton.
@@ -63,8 +63,6 @@ public class CheckListModel extends Model  {
 	 * @return the singleton
 	 */
 	public static CheckListModel getReference() {
-		if( self_ == null)
-			self_ = new CheckListModel();
 		return (self_);
 	}
 

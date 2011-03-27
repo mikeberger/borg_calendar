@@ -153,7 +153,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 	}
 
 	/** The singleton */
-	static private TaskModel self_ = null;
+	static private TaskModel self_ = new TaskModel();
 
 	/**
 	 * Gets the singleton.
@@ -161,14 +161,6 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 	 * @return the singleton
 	 */
 	static public TaskModel getReference() {
-		if (self_ == null)
-			try {
-				self_ = new TaskModel();
-				self_.load_map();
-			} catch (Exception e) {
-				Errmsg.errmsg(e);
-				return null;
-			}
 		return (self_);
 	}
 
@@ -262,7 +254,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 			// iterate through tasks using taskmodel
 			for (Task mr : getTasks()) {
 				// for each task, get state and skip CLOSED or PR tasks
-				if (isClosed(mr))
+				if (mr.getState().equals(this.getTaskTypes().getFinalState(mr.getType())))
 					continue;
 
 				if (!CategoryModel.getReference().isShown(mr.getCategory()))
@@ -348,10 +340,8 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 	/**
 	 * Instantiates a new task model.
 	 * 
-	 * @throws Exception
-	 *             the exception
 	 */
-	private TaskModel() throws Exception {
+	private TaskModel() {
 
 		btmap_ = new HashMap<Integer, Collection<Task>>();
 		stmap_ = new HashMap<Integer, Collection<Subtask>>();
@@ -360,26 +350,34 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 
 		db_ = new TaskJdbcDB();
 
-		String tt = JdbcDB.getOption("TASKTYPES");
-		if (tt == null) {
-			String sm = JdbcDB.getOption("SMODEL");
-			if (sm == null) {
-				try {
-					taskTypes_.loadDefault();
-					sm = taskTypes_.toXml();
-					JdbcDB.setOption(new BorgOption("TASKTYPES", sm));
-				} catch (Exception e) {
-					Errmsg.errmsg(e);
-					return;
+		try {
+			String tt = JdbcDB.getOption("TASKTYPES");
+			if (tt == null) {
+				String sm = JdbcDB.getOption("SMODEL");
+				if (sm == null) {
+					try {
+						taskTypes_.loadDefault();
+						sm = taskTypes_.toXml();
+						JdbcDB.setOption(new BorgOption("TASKTYPES", sm));
+					} catch (Exception e) {
+						Errmsg.errmsg(e);
+						return;
+					}
+				} else {
+					taskTypes_.fillFromLegacyXml(sm);
 				}
 			} else {
-				taskTypes_.fillFromLegacyXml(sm);
+				taskTypes_.fromString(tt);
 			}
-		} else {
-			taskTypes_.fromString(tt);
+		} catch (Exception e) {
+			Errmsg.errmsg(e);
+			return;
 		}
+		
 		CategoryModel.getReference().addSource(this);
 		CategoryModel.getReference().addListener(this);
+
+		this.load_map();
 
 	}
 
@@ -1272,7 +1270,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 
 				String tx = p.getDescription();
 
-				if( !criteria.search(tx))
+				if (!criteria.search(tx))
 					continue;
 
 				// filter by category
@@ -1312,7 +1310,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 					tx += " " + st.getDescription();
 				}
 
-				if( !criteria.search(tx))
+				if (!criteria.search(tx))
 					continue;
 
 				// filter by category
