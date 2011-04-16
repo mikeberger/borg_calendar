@@ -632,6 +632,7 @@ public class TaskView extends DockableView {
 		taskSplitPane.setBottomComponent(subTaskPanel);
 		taskSplitPane.setPreferredSize(new Dimension(400, 400));
 		taskSplitPane.setDividerLocation(200);
+		taskSplitPane.setOneTouchExpandable(true);
 		taskSplitPane.setTopComponent(taskTabbedPanel);
 
 		topPanel.add(taskSplitPane, GridBagConstraintsFactory.create(0, 1,
