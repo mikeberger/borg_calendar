@@ -110,7 +110,7 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 		lnfBox.setPreferredSize(new java.awt.Dimension(50, 24));
 		lnfBox.setAutoscrolls(true);
 		this.add(lnfBox, GridBagConstraintsFactory.create(1, 0,
-				GridBagConstraints.BOTH));
+				GridBagConstraints.BOTH, 1.0, 0.0));
 
 		ResourceHelper.setText(holiday1, "Show_U.S._Holidays");
 		this.add(holiday1, GridBagConstraintsFactory.create(0, 3,
@@ -164,8 +164,8 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 				GridBagConstraints.BOTH));
 
 		ResourceHelper.setText(iso8601Box, "ISO_week_number");
-		this.add(iso8601Box, GridBagConstraintsFactory.create(1, 8,
-				GridBagConstraints.BOTH, 1.0, 0.0));
+		this.add(iso8601Box, GridBagConstraintsFactory.create(0, 8,
+				GridBagConstraints.BOTH, 0.0, 0.0));
 
 		ResourceHelper.setText(prioritySortBox, "sort_by_priority");
 		this.add(prioritySortBox, GridBagConstraintsFactory.create(0, 5,
