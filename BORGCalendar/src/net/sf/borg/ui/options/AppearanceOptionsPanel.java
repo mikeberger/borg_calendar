@@ -51,8 +51,6 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 
 	private JCheckBox prioritySortBox;
 
-	private JCheckBox dock = new JCheckBox();
-
 	private JCheckBox doyBox = null;
 	private JCheckBox hide_strike_box = new JCheckBox();
 
@@ -169,10 +167,6 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 		this.add(iso8601Box, GridBagConstraintsFactory.create(1, 8,
 				GridBagConstraints.BOTH, 1.0, 0.0));
 
-		ResourceHelper.setText(dock, "dock_option");
-		this.add(dock, GridBagConstraintsFactory.create(0, 8,
-				GridBagConstraints.BOTH));
-
 		ResourceHelper.setText(prioritySortBox, "sort_by_priority");
 		this.add(prioritySortBox, GridBagConstraintsFactory.create(0, 5,
 				GridBagConstraints.BOTH));
@@ -206,7 +200,6 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 		OptionsPanel.setBooleanPref(miltime, PrefName.MILTIME);
 		OptionsPanel.setBooleanPref(truncbox, PrefName.TRUNCAPPT);
 		OptionsPanel.setBooleanPref(iso8601Box, PrefName.ISOWKNUMBER);
-		OptionsPanel.setBooleanPref(dock, PrefName.DOCKPANELS);
 		OptionsPanel
 				.setBooleanPref(hide_strike_box, PrefName.HIDESTRIKETHROUGH);
 
@@ -259,7 +252,6 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 
 		OptionsPanel.setCheckBox(truncbox, PrefName.TRUNCAPPT);
 		OptionsPanel.setCheckBox(iso8601Box, PrefName.ISOWKNUMBER);
-		OptionsPanel.setCheckBox(dock, PrefName.DOCKPANELS);
 		OptionsPanel.setCheckBox(hide_strike_box, PrefName.HIDESTRIKETHROUGH);
 
 		// monday first day of week option

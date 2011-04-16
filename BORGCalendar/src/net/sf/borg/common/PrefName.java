@@ -186,9 +186,6 @@ public class PrefName {
 	/** use iso week numbering */
 	static public PrefName ISOWKNUMBER = new PrefName("isowknumber", "true");
 
-	/** dock all panels in the main tab window by default (few windows can be undocked) */
-	static public PrefName DOCKPANELS = new PrefName("dock_panels", "true");
-
 	/** do not show strikethrough appointments */
 	static public PrefName HIDESTRIKETHROUGH = new PrefName("hide_strike",
 			"false");

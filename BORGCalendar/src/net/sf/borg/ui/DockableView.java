@@ -30,7 +30,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
-import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -38,7 +37,6 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JRadioButtonMenuItem;
 import javax.swing.KeyStroke;
 
 import net.sf.borg.common.PrefName;
@@ -46,8 +44,8 @@ import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.Model;
 import net.sf.borg.ui.MultiView.Module;
+import net.sf.borg.ui.ViewSize.DockType;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class DockableView is the base class for panels that can appear as
  * stand-alone windows or tabs in the main view and can be docked/undocked at
@@ -58,73 +56,48 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 	/** The icon for the title bar. */
 	static Image image = Toolkit.getDefaultToolkit().getImage(
 			DockableView.class.getResource("/resource/borg32x32.jpg"));
-	
+
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * store the window size, position, and maximized status in a preference.
 	 * used to have windows remember their sizes automatically.
-	 *
-	 * @param view the view
-	 * @param c the window component
-	 * @param pn the preference
+	 * 
+	 * @param c
+	 *            the window component
+	 * @param pn
+	 *            the preference
 	 */
-	static private void recordSize(DockableView view, Component c, PrefName pn) {
-		ViewSize vs = new ViewSize();
+	static private void recordSize( Component c, PrefName pn) {
+		String s = Prefs.getPref(pn);
+		ViewSize vs = ViewSize.fromString(s);
 		vs.setX(c.getBounds().x);
 		vs.setY(c.getBounds().y);
 		vs.setWidth(c.getBounds().width);
 		vs.setHeight(c.getBounds().height);
 		JFrame v = (JFrame) c;
 		vs.setMaximized(v.getExtendedState() == Frame.MAXIMIZED_BOTH);
-
-		if (view.alwaysDockSelected())
-			vs.setAlwaysDock(true);
-		else if (view.alwaysUnDockSelected())
-			vs.setAlwaysUndock(true);
-
 		Prefs.putPref(pn, vs.toString());
 
 	}
 
-	/** The always dock menu item. */
-	JRadioButtonMenuItem alwaysDock = new JRadioButtonMenuItem();
-
-	/** The always undock menu item */
-	JRadioButtonMenuItem alwaysUndock = new JRadioButtonMenuItem();
-	
 	/** The main frame. */
 	private JFrame frame = null;
 
 	/**
 	 * register the view for model change callbacks.
-	 *
-	 * @param m the model
+	 * 
+	 * @param m
+	 *            the model
 	 */
 	protected void addModel(Model m) {
 		m.addListener(this);
 	}
 
 	/**
-	 * return true if always dock menu item is selected
-	 *	 
-	 **/
-	private boolean alwaysDockSelected() {
-		return alwaysDock.isSelected();
-	}
-
-	/**
-	 * return true if always undock menu item is selected
-	 *
-	 */
-	private boolean alwaysUnDockSelected() {
-		return alwaysUndock.isSelected();
-	}
-
-	/**
 	 * method called to check if the view can be closed.
-	 *
+	 * 
 	 * @return true if the view can be closed, false if not
 	 */
 	protected boolean canClose() {
@@ -166,6 +139,10 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 		if (frame != null)
 			frame.dispose();
 		frame = null;
+		String s = Prefs.getPref(getFrameSizePref());
+		ViewSize vs = ViewSize.fromString(s);
+		vs.setDock(DockType.DOCK);
+		Prefs.putPref(getFrameSizePref(), vs.toString());
 	}
 
 	/**
@@ -193,7 +170,7 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 
 	/**
 	 * determine if the view is docked.
-	 *
+	 * 
 	 * @return true if docked
 	 */
 	public boolean isDocked() {
@@ -204,8 +181,9 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 	 * Sets the window size and position from the stored preference and then
 	 * sets up listeners to store any updates to the window size and position
 	 * based on user actions.
-	 *
-	 * @param pname the preference name
+	 * 
+	 * @param pname
+	 *            the preference name
 	 * @return the ViewSize object, which may be of use to the caller
 	 */
 	private ViewSize manageMySize(PrefName pname) {
@@ -213,6 +191,8 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 		// set the initial size
 		String s = Prefs.getPref(pname);
 		ViewSize vs = ViewSize.fromString(s);
+		vs.setDock(DockType.UNDOCK);
+		Prefs.putPref(pname, vs.toString());
 
 		if (vs.isMaximized()) {
 			frame.setExtendedState(Frame.MAXIMIZED_BOTH);
@@ -226,21 +206,20 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 		frame.validate();
 
 		final PrefName pn = pname;
-		final DockableView dview = this;
 
 		// add listeners to record any changes
 		frame.addComponentListener(new java.awt.event.ComponentAdapter() {
 			@Override
 			public void componentMoved(java.awt.event.ComponentEvent e) {
-				recordSize(dview, e.getComponent(), pn);
+				recordSize( e.getComponent(), pn);
 			}
 
 			@Override
 			public void componentResized(java.awt.event.ComponentEvent e) {
-				recordSize(dview, e.getComponent(), pn);
+				recordSize( e.getComponent(), pn);
 			}
 		});
-		
+
 		return vs;
 	}
 
@@ -251,7 +230,7 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 	 */
 	public JFrame openInFrame() {
 		frame = new JFrame();
-		ViewSize vs = manageMySize(getFrameSizePref());
+		manageMySize(getFrameSizePref());
 		frame.setContentPane(this);
 		JMenuBar bar = getMenuForFrame();
 
@@ -288,45 +267,7 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 			}
 
 		});
-		
-		final DockableView dview = this;
-		final PrefName pn = this.getFrameSizePref();
-		final JFrame c = frame;
 
-		// add dock/undock override menu items
-		alwaysUndock.setText(Resource.getResourceString("always_undock"));
-		jm.add(alwaysUndock);
-		alwaysDock.setText(Resource.getResourceString("always_dock"));
-		jm.add(alwaysDock);
-		ButtonGroup bg = new ButtonGroup();
-		bg.add(alwaysDock);
-		bg.add(alwaysUndock);
-		
-		// set the dock/undock menu items based on the stored ViewSize pref
-		if( vs.isAlwaysDock())
-			alwaysDock.setSelected(true);
-		else if( vs.isAlwaysUndock())
-			alwaysUndock.setSelected(true);
-
-		// add listeners to update the stored ViewSize pref if the dock/undock override is
-		// changed
-		alwaysUndock.addActionListener(new ActionListener(){
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				recordSize(dview, c, pn);
-			}
-			
-		});		
-		alwaysDock.addActionListener(new ActionListener(){
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				recordSize(dview, c, pn);
-			}
-			
-		});
-		
 		frame.setJMenuBar(bar);
 
 		frame.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -385,17 +326,10 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 		// if so, use the override instead of the system preference
 		PrefName p = getFrameSizePref();
 		ViewSize vs = ViewSize.fromString(Prefs.getPref(p));
-		if (vs.isAlwaysDock()) {
+		if (vs.getDock() == DockType.DOCK) {
 			this.dock();
-		} else if (vs.isAlwaysUndock()) {
-			this.openInFrame();
 		} else {
-			String dock = Prefs.getPref(PrefName.DOCKPANELS);
-			if (dock.equals("true")) {
-				this.dock();
-			} else {
-				this.openInFrame();
-			}
+			this.openInFrame();
 		}
 	}
 

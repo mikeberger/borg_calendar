@@ -157,8 +157,7 @@ public class UIControl {
 			mv.setVisible(true);
 
 		// show the month view
-		if (Prefs.getBoolPref(PrefName.DOCKPANELS))
-			mv.setView(ViewType.MONTH);
+	    mv.setView(ViewType.MONTH);
 
 		// destroy the splash screen
 		if (splashScreen != null) {
