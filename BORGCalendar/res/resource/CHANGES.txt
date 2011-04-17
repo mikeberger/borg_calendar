@@ -26,6 +26,7 @@ Bug - options do not reset to stored values if the option view is closed and reo
 Bug 3217092 - BORG does not remember dock state after closing
 Bug - do not create undo records when importing
 Bug - only show first line of appt text in email reminders
+Bug 3285186 - fix exe installer for windows-7
 
 BORG 1.7.4
 ----------
