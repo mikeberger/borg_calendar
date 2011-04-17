@@ -41,7 +41,6 @@ import java.util.GregorianCalendar;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 
 import net.sf.borg.common.Errmsg;
@@ -54,7 +53,6 @@ import net.sf.borg.model.Model;
 import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.CalendarEntity;
-import net.sf.borg.ui.DockableView;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.MultiView.CalendarModule;
 import net.sf.borg.ui.MultiView.ViewType;
@@ -66,7 +64,7 @@ import net.sf.borg.ui.util.GridBagConstraintsFactory;
  * for printing a monthly calendar as borg has a more specialized month printing
  * class.
  */
-public class MonthPanel extends DockableView implements Printable, CalendarModule {
+public class MonthPanel extends JPanel implements Printable, CalendarModule {
 
 	private static final long serialVersionUID = 1L;
 
@@ -676,25 +674,5 @@ public class MonthPanel extends DockableView implements Printable, CalendarModul
 		return ViewType.MONTH;
 	}
 
-	@Override
-	public String getFrameTitle() {
-		return this.getModuleName();
-	}
-
-	@Override
-	public JMenuBar getMenuForFrame() {
-		return null;
-	}
-
-	@Override
-	public void refresh() {
-		// do nothing - children do their own refresh
-		
-	}
-
-	@Override
-	public void update(ChangeEvent event) {
-		// do nothing - children do their own refresh
-	}
 	
 }
