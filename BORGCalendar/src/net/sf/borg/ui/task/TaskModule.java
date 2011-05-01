@@ -74,6 +74,8 @@ public class TaskModule extends DockableView implements Module {
 			((ProjectPanel)c).print();
 		else if( c instanceof TaskListPanel )
 			((TaskListPanel)c).print();
+		else if( c instanceof TaskFilterPanel )
+			((TaskFilterPanel)c).print();
 		
 	}
 	
