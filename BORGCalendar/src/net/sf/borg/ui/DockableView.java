@@ -33,9 +33,6 @@ import java.awt.event.KeyEvent;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
@@ -60,6 +57,9 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
+	/** main menu bar */
+	private MainMenu mainMenu = null;
+
 	/**
 	 * store the window size, position, and maximized status in a preference.
 	 * used to have windows remember their sizes automatically.
@@ -69,7 +69,7 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 	 * @param pn
 	 *            the preference
 	 */
-	static private void recordSize( Component c, PrefName pn) {
+	static private void recordSize(Component c, PrefName pn) {
 		String s = Prefs.getPref(pn);
 		ViewSize vs = ViewSize.fromString(s);
 		vs.setX(c.getBounds().x);
@@ -161,12 +161,6 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 	 */
 	public abstract String getFrameTitle();
 
-	/**
-	 * Gets the menu for the frame.
-	 * 
-	 * @return the menu for the frame
-	 */
-	public abstract JMenuBar getMenuForFrame();
 
 	/**
 	 * determine if the view is docked.
@@ -211,12 +205,12 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 		frame.addComponentListener(new java.awt.event.ComponentAdapter() {
 			@Override
 			public void componentMoved(java.awt.event.ComponentEvent e) {
-				recordSize( e.getComponent(), pn);
+				recordSize(e.getComponent(), pn);
 			}
 
 			@Override
 			public void componentResized(java.awt.event.ComponentEvent e) {
-				recordSize( e.getComponent(), pn);
+				recordSize(e.getComponent(), pn);
 			}
 		});
 
@@ -232,43 +226,36 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 		frame = new JFrame();
 		manageMySize(getFrameSizePref());
 		frame.setContentPane(this);
-		JMenuBar bar = getMenuForFrame();
 
-		if (bar == null) {
-			bar = new JMenuBar();
-			JMenu fileMenu = new JMenu();
-			ResourceHelper.setText(fileMenu, "Action");
-			bar.add(fileMenu);
-
+		if (mainMenu == null) {
+			mainMenu = new MainMenu();
+			
+			/* add a print option if available */
 			if (this instanceof Module) {
 				final Module mod = (Module) this;
-				JMenuItem printMI = new JMenuItem(
-						Resource.getResourceString("Print"));
-				printMI.setIcon(new ImageIcon(getClass().getResource(
-						"/resource/Print16.gif")));
-				printMI.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent evt) {
-						mod.print();
-					}
-				});
-				fileMenu.add(printMI);
+				mainMenu.addAction(
+						new ImageIcon(getClass().getResource(
+								"/resource/Print16.gif")),
+						Resource.getResourceString("Print"),
+						new ActionListener() {
+							@Override
+							public void actionPerformed(ActionEvent evt) {
+								mod.print();
+							}
+						}, 0);
 			}
+
+			// add a dock menu option
+			mainMenu.addAction(null, Resource.getResourceString("dock"),
+					new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent evt) {
+							dock();
+						}
+					}, 0);
 		}
 
-		// add a dock menu option
-		JMenu jm = bar.getMenu(0);
-		JMenuItem jmi = jm.add(Resource.getResourceString("dock"));
-		jmi.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				dock();
-			}
-
-		});
-
-		frame.setJMenuBar(bar);
+		frame.setJMenuBar(mainMenu.getMenuBar());
 
 		frame.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
 		frame.setTitle(getFrameTitle());

@@ -31,7 +31,6 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -46,9 +45,9 @@ import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.MemoModel;
+import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.SearchCriteria;
 import net.sf.borg.model.TaskModel;
-import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.entity.Address;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.KeyedEntity;
@@ -564,16 +563,6 @@ public class SearchView extends DockableView implements Module {
 	@Override
 	public String getFrameTitle() {
 		return Resource.getResourceString("srch");
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.sf.borg.ui.DockableView#getMenuForFrame()
-	 */
-	@Override
-	public JMenuBar getMenuForFrame() {
-		return null;
 	}
 
 	@Override

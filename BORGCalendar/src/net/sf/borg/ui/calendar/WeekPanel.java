@@ -49,7 +49,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.ImageIcon;
-import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 
 import net.sf.borg.common.Errmsg;
@@ -60,15 +59,15 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Day;
 import net.sf.borg.model.Model;
-import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.Model.ChangeEvent;
+import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.CalendarEntity;
 import net.sf.borg.ui.DockableView;
 import net.sf.borg.ui.MultiView;
-import net.sf.borg.ui.NavPanel;
 import net.sf.borg.ui.MultiView.CalendarModule;
 import net.sf.borg.ui.MultiView.ViewType;
+import net.sf.borg.ui.NavPanel;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 
 /**
@@ -784,11 +783,6 @@ public class WeekPanel extends DockableView implements Printable, CalendarModule
 	@Override
 	public String getFrameTitle() {
 		return this.getModuleName();
-	}
-
-	@Override
-	public JMenuBar getMenuForFrame() {
-		return null;
 	}
 
 	@Override

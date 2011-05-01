@@ -52,9 +52,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
@@ -516,82 +513,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 		return Resource.getResourceString("To_Do_List");
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.sf.borg.ui.DockableView#getMenuForFrame()
-	 */
-	@Override
-	public JMenuBar getMenuForFrame() {
-		JMenu fileMenu;
-		JMenuItem doneNoDeleteMenuItem;
-		JMenuItem doneDeleteMenuItem;
-		JMenuItem moveToFollowingDatMenuItem;
-		JMenuItem changeDateMenuItem;
-
-		JMenuBar menuBar = new JMenuBar();
-		fileMenu = new JMenu();
-		doneNoDeleteMenuItem = new JMenuItem();
-		doneDeleteMenuItem = new JMenuItem();
-		moveToFollowingDatMenuItem = new JMenuItem();
-		changeDateMenuItem = new JMenuItem();
-		JMenuItem printListMenuItem = new JMenuItem();
-
-		ResourceHelper.setText(fileMenu, "Action");
-		ResourceHelper.setText(doneNoDeleteMenuItem, "Done_(No_Delete)");
-
-		doneNoDeleteMenuItem.addActionListener(doneNoDeleteAction);
-
-		fileMenu.add(doneNoDeleteMenuItem);
-
-		ResourceHelper.setText(doneDeleteMenuItem, "Done_(Delete)");
-
-		doneNoDeleteMenuItem.addActionListener(doneDeleteAction);
-
-		fileMenu.add(doneDeleteMenuItem);
-
-		ResourceHelper.setText(moveToFollowingDatMenuItem,
-				"Move_To_Following_Day");
-
-		moveToFollowingDatMenuItem.addActionListener(moveToFollowingDayAction);
-
-		fileMenu.add(moveToFollowingDatMenuItem);
-
-		ResourceHelper.setText(changeDateMenuItem, "changedate");
-
-		changeDateMenuItem.addActionListener(changeDateAction);
-
-		fileMenu.add(changeDateMenuItem);
-
-		ResourceHelper.setText(printListMenuItem, "Print_List");
-		printListMenuItem.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent evt) {
-				try {
-					TablePrinter.printTable(todoTable);
-				} catch (Exception e) {
-					Errmsg.errmsg(e);
-				}
-			}
-		});
-
-		fileMenu.add(printListMenuItem);
-
-		printListMenuItem.setIcon(new ImageIcon(getClass().getResource(
-				"/resource/Print16.gif")));
-		changeDateMenuItem.setIcon(new ImageIcon(getClass().getResource(
-				"/resource/Edit16.gif")));
-		moveToFollowingDatMenuItem.setIcon(new ImageIcon(getClass()
-				.getResource("/resource/Forward16.gif")));
-		doneDeleteMenuItem.setIcon(new ImageIcon(getClass().getResource(
-				"/resource/Delete16.gif")));
-		doneNoDeleteMenuItem.setIcon(new ImageIcon(getClass().getResource(
-				"/resource/Properties16.gif")));
-
-		menuBar.add(fileMenu);
-
-		return menuBar;
-	}
+	
 
 	/**
 	 * Gets the selected items.

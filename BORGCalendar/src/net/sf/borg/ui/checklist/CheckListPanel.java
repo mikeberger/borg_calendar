@@ -33,7 +33,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -288,15 +287,6 @@ public class CheckListPanel extends DockableView implements
 		return this.getModuleName();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.sf.borg.ui.DockableView#getMenuForFrame()
-	 */
-	@Override
-	public JMenuBar getMenuForFrame() {
-		return null;
-	}
 
 	/*
 	 * (non-Javadoc)

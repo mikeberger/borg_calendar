@@ -33,9 +33,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -46,8 +43,8 @@ import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Resource;
 import net.sf.borg.common.Warning;
 import net.sf.borg.model.CategoryModel;
-import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.Model.ChangeEvent;
+import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Task;
 import net.sf.borg.ui.DockableView;
@@ -129,15 +126,6 @@ public class ProjectView extends DockableView {
 	/** The project id text. */
 	private JTextField projectIdText;
 
-	/** The menu. */
-	private JMenu menu;
-
-	/** The menu bar. */
-	private JMenuBar menuBar;
-
-	/** The save menu item. */
-	private JMenuItem saveMenuItem;
-
 	/** The link panel. */
 	private LinkPanel linkPanel = new LinkPanel();
 
@@ -214,27 +202,6 @@ public class ProjectView extends DockableView {
 		return windowTitle;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.sf.borg.ui.DockableView#getMenuForFrame()
-	 */
-	@Override
-	public JMenuBar getMenuForFrame() {
-		ResourceHelper.setText(menu, "Menu");
-		ResourceHelper.setText(saveMenuItem, "Save");
-		saveMenuItem.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent evt) {
-				saveProject();
-			}
-		});
-
-		menu.add(saveMenuItem);
-
-		menuBar.add(menu);
-		return menuBar;
-	}
 
 	/**
 	 * Initialize the UI.
@@ -243,11 +210,6 @@ public class ProjectView extends DockableView {
 	{
 
 		setLayout(new GridBagLayout());
-
-		// undocked menu
-		menuBar = new JMenuBar();
-		menu = new JMenu();
-		saveMenuItem = new JMenuItem();
 
 		/*
 		 * project info panel

@@ -26,7 +26,6 @@ import java.util.Date;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
@@ -111,11 +110,6 @@ public class AddressView extends DockableView {
 	@Override
 	public String getFrameTitle() {
 		return Resource.getResourceString("Address_Book_Entry");
-	}
-
-	@Override
-	public JMenuBar getMenuForFrame() {
-		return null;
 	}
 
 	/**

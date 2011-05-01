@@ -33,7 +33,6 @@ import java.awt.print.PrinterException;
 
 import javax.swing.JComponent;
 import javax.swing.JEditorPane;
-import javax.swing.JMenuBar;
 import javax.swing.JScrollPane;
 
 import net.sf.borg.common.Errmsg;
@@ -74,11 +73,6 @@ class InfoView extends DockableView implements Module {
 	@Override
 	public String getFrameTitle() {
 		return title_;
-	}
-
-	@Override
-	public JMenuBar getMenuForFrame() {
-		return null; // no menu
 	}
 
 	/**

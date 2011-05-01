@@ -40,9 +40,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -61,16 +58,16 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.common.Warning;
 import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.LinkModel;
-import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.Model.ChangeEvent;
+import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Subtask;
 import net.sf.borg.model.entity.Task;
 import net.sf.borg.model.entity.Tasklog;
 import net.sf.borg.ui.DockableView;
 import net.sf.borg.ui.MultiView;
-import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.MultiView.ViewType;
+import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.link.LinkPanel;
 import net.sf.borg.ui.util.DateDialog;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
@@ -402,32 +399,6 @@ public class TaskView extends DockableView {
 		return windowTitle;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.sf.borg.ui.DockableView#getMenuForFrame()
-	 */
-	@Override
-	public JMenuBar getMenuForFrame() {
-		JMenuBar theMenuBar = new JMenuBar();
-		JMenu theMenu = new JMenu();
-		JMenuItem saveMenuItem = new JMenuItem();
-
-		ResourceHelper.setText(theMenu, "Menu");
-		ResourceHelper.setText(saveMenuItem, "Save");
-		saveMenuItem.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent evt) {
-				savetask();
-			}
-		});
-
-		theMenu.add(saveMenuItem);
-
-		theMenuBar.add(theMenu);
-
-		return theMenuBar;
-	}
 
 	/**
 	 * Gets the selected subtask ids.

@@ -38,7 +38,6 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -719,10 +718,6 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 		return this.getModuleName();
 	}
 
-	@Override
-	public JMenuBar getMenuForFrame() {
-		return null;
-	}
 
 	@Override
 	public void cleanUp() {

@@ -31,9 +31,6 @@ import java.util.Iterator;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
@@ -49,9 +46,9 @@ import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.entity.Address;
 import net.sf.borg.ui.DockableView;
 import net.sf.borg.ui.MultiView;
-import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.MultiView.Module;
 import net.sf.borg.ui.MultiView.ViewType;
+import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 import net.sf.borg.ui.util.PopupMenuHelper;
 import net.sf.borg.ui.util.StripedTable;
@@ -257,60 +254,6 @@ public class AddrListView extends DockableView implements Module {
 		return Resource.getResourceString("Address_Book");
 	}
 
-	@Override
-	public JMenuBar getMenuForFrame() {
-
-		JMenuBar menuBar = new JMenuBar();
-		JMenu fileMenu = new JMenu();
-		JMenuItem printList = new JMenuItem();
-
-		ResourceHelper.setText(fileMenu, "Action");
-
-		JMenuItem mnuitm = new JMenuItem();
-		ResourceHelper.setText(mnuitm, "Add_New");
-		mnuitm.setIcon(newbutton.getIcon());
-		mnuitm.addActionListener(alAddNew);
-		fileMenu.add(mnuitm);
-
-		mnuitm = new JMenuItem();
-		ResourceHelper.setText(mnuitm, "Edit");
-		mnuitm.setIcon(editbutton.getIcon());
-		mnuitm.addActionListener(alEdit);
-		fileMenu.add(mnuitm);
-
-		mnuitm = new JMenuItem();
-		ResourceHelper.setText(mnuitm, "Delete");
-		mnuitm.setIcon(delbutton.getIcon());
-		mnuitm.addActionListener(alDelete);
-		fileMenu.add(mnuitm);
-
-		mnuitm = new JMenuItem();
-		ResourceHelper.setText(mnuitm, "Find");
-		mnuitm.setIcon(findbutton.getIcon());
-		mnuitm.addActionListener(alFind);
-		fileMenu.add(mnuitm);
-
-		ResourceHelper.setText(printList, "Print_List");
-		printList.setIcon(new ImageIcon(getClass().getResource(
-				"/resource/Print16.gif")));
-		printList.addActionListener(new java.awt.event.ActionListener() {
-			@Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				try {
-					TablePrinter.printTable(addressTable);
-				} catch (Exception e) {
-					Errmsg.errmsg(e);
-				}
-			}
-		});
-
-		fileMenu.add(printList);
-
-		menuBar.add(fileMenu);
-
-		return menuBar;
-
-	}
 
 	/**
 	 * init the UI components

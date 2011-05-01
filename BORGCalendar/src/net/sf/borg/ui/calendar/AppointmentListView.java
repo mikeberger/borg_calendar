@@ -39,7 +39,6 @@ import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -60,8 +59,8 @@ import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.control.EmailReminder;
 import net.sf.borg.model.AppointmentModel;
-import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.Model.ChangeEvent;
+import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.ui.DockableView;
 import net.sf.borg.ui.ResourceHelper;
@@ -709,8 +708,5 @@ public class AppointmentListView extends DockableView implements
 		refresh();
 	}
 
-	@Override
-	public JMenuBar getMenuForFrame() {
-		return null;
-	}
+
 }

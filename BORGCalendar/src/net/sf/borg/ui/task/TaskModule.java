@@ -7,7 +7,6 @@ import java.awt.event.ActionListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
-import javax.swing.JMenuBar;
 import javax.swing.JTabbedPane;
 
 import net.sf.borg.common.Resource;
@@ -88,10 +87,6 @@ public class TaskModule extends DockableView implements Module {
 		return this.getModuleName();
 	}
 
-	@Override
-	public JMenuBar getMenuForFrame() {
-		return null;
-	}
 
 	@Override
 	public void refresh() {
