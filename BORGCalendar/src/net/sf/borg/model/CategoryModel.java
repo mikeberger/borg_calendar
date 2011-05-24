@@ -180,9 +180,25 @@ public class CategoryModel extends Model {
 	 * @throws Exception the exception
 	 */
 	public void syncCategories() throws Exception {
+		
+		Collection<String> oldCategories = new TreeSet<String>();
+		oldCategories.addAll(categories_);
 		categories_.clear();
 		for( CategorySource s : sources )
-			categories_.addAll(s.getCategories());
+		{
+			categories_.addAll(s.getCategories());	
+		}
+		
+		// show any newly discovered categories
+		for( String s : categories_)
+		{
+			if( !oldCategories.contains(s))
+			{
+				this.showCategory(s);
+			}
+		}
+		
+		this.refreshListeners();
 		
 	}
 

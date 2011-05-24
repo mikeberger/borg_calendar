@@ -47,6 +47,7 @@ import net.sf.borg.common.SocketHandler;
 import net.sf.borg.common.SocketServer;
 import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.AppointmentModel;
+import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.db.jdbc.JdbcDB;
 import net.sf.borg.model.tool.ConversionTool;
@@ -151,6 +152,7 @@ public class Borg implements SocketHandler {
 		AppointmentModel.getReference().sync();
 		AddressModel.getReference().sync();
 		TaskModel.getReference().sync();
+		CategoryModel.getReference().syncCategories();
 
 	}
 
