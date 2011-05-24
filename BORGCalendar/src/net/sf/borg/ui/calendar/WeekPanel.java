@@ -21,6 +21,7 @@ package net.sf.borg.ui.calendar;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -29,6 +30,7 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.Stroke;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseWheelEvent;
@@ -50,6 +52,7 @@ import java.util.Map;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
@@ -121,6 +124,10 @@ public class WeekPanel extends DockableView implements Printable, CalendarModule
 
 		// daily background colors
 		private Color backgroundColors[] = new Color[7];
+		
+		// zoom factor
+		private int zoom = 0;
+
 
 		/**
 		 * constructor
@@ -436,6 +443,35 @@ public class WeekPanel extends DockableView implements Printable, CalendarModule
 								rowtop);
 			}
 			g2.setStroke(defstroke);
+			
+			// add the zoom buttons
+			if (zoom < 4)
+				boxes.add(new ButtonBox(cal.getTime(), "", new ImageIcon(
+						getClass().getResource("/resource/ZoomIn16.gif")),
+						new Rectangle(0, caltop, 20, smfontHeight), null) {
+
+					@Override
+					public void onClick() {
+						zoom++;
+						refresh();
+					}
+
+				});
+
+			if (zoom > 0)
+				boxes.add(new ButtonBox(cal.getTime(), "", new ImageIcon(
+						getClass().getResource("/resource/ZoomOut16.gif")),
+						new Rectangle((int)timecolwidth - 20, caltop, 20, smfontHeight),
+						null) {
+
+					@Override
+					public void onClick() {
+						zoom--;
+						refresh();
+					}
+
+				});
+
 
 			// add the scroll buttons
 			if (nonTimedPortion < 0.8) {
@@ -672,9 +708,15 @@ public class WeekPanel extends DockableView implements Printable, CalendarModule
 		 */
 		@Override
 		public void refresh() {
-
+			Toolkit toolkit =  Toolkit.getDefaultToolkit ();
+			Dimension dim = toolkit.getScreenSize();
+			int h = ((zoom+2) * (int)dim.getHeight())/2;
+			if( zoom == 0)
+				h = 0;
+			this.setPreferredSize(new Dimension(0,h));
 			clearData();
 			repaint();
+			this.getParent().doLayout();
 		}
 
 		@Override
@@ -714,10 +756,13 @@ public class WeekPanel extends DockableView implements Printable, CalendarModule
 		// create the navigator
 		nav = new NavPanel(wp_);
 
+		JScrollPane sp = new JScrollPane();
+		sp.setViewportView(wp_);
+		
 		setLayout(new java.awt.GridBagLayout());
 		add(nav, GridBagConstraintsFactory
 				.create(0, 0, GridBagConstraints.BOTH));
-		add(wp_, GridBagConstraintsFactory.create(0, 1,
+		add(sp, GridBagConstraintsFactory.create(0, 1,
 				GridBagConstraints.BOTH, 1.0, 1.0));
 
 	}

@@ -20,6 +20,7 @@ package net.sf.borg.ui.calendar;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -28,6 +29,7 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.Stroke;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseWheelEvent;
@@ -48,6 +50,7 @@ import java.util.Map;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
@@ -110,12 +113,15 @@ public class DayPanel extends DockableView implements Printable, CalendarModule 
 		// background color
 		private Color backgroundColor = null;
 
+		// zoom factor
+		private int zoom = 0;
+
 		/**
 		 * Instantiates a new day sub panel.
 		 * 
 		 */
 		public DaySubPanel() {
-			
+
 			// refresh if prefs change
 			Prefs.addListener(this);
 
@@ -125,7 +131,7 @@ public class DayPanel extends DockableView implements Printable, CalendarModule 
 			// refresh if the appt or task models change
 			AppointmentModel.getReference().addListener(this);
 			TaskModel.getReference().addListener(this);
-			
+
 			goTo(new GregorianCalendar());
 
 		}
@@ -166,8 +172,8 @@ public class DayPanel extends DockableView implements Printable, CalendarModule 
 				double pagey, Font sm_font) {
 
 			Graphics2D g2 = (Graphics2D) g;
-			g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,  
-	                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);  
+			g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+					RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
 			// set up strike-through fonts
 			Map<TextAttribute, Serializable> stmap = new HashMap<TextAttribute, Serializable>();
@@ -264,8 +270,8 @@ public class DayPanel extends DockableView implements Printable, CalendarModule 
 					endmin = endhr * 60;
 
 					// get the day's items from the model
-					Day dayInfo = Day.getDay(cal.get(Calendar.YEAR), cal
-							.get(Calendar.MONTH), cal.get(Calendar.DATE));
+					Day dayInfo = Day.getDay(cal.get(Calendar.YEAR),
+							cal.get(Calendar.MONTH), cal.get(Calendar.DATE));
 
 					// set a different background color based on various
 					// circumstances
@@ -277,29 +283,29 @@ public class DayPanel extends DockableView implements Printable, CalendarModule 
 							&& today.get(Calendar.DATE) == cal
 									.get(Calendar.DATE)) {
 						// day is today
-						backgroundColor = new Color(Prefs
-								.getIntPref(PrefName.UCS_TODAY));
+						backgroundColor = new Color(
+								Prefs.getIntPref(PrefName.UCS_TODAY));
 					} else if (dayInfo.getHoliday() != 0) {
 						// holiday
-						backgroundColor = new Color(Prefs
-								.getIntPref(PrefName.UCS_HOLIDAY));
+						backgroundColor = new Color(
+								Prefs.getIntPref(PrefName.UCS_HOLIDAY));
 					} else if (dayInfo.getVacation() == 1) {
 						// full day vacation
-						backgroundColor = new Color(Prefs
-								.getIntPref(PrefName.UCS_VACATION));
+						backgroundColor = new Color(
+								Prefs.getIntPref(PrefName.UCS_VACATION));
 					} else if (dayInfo.getVacation() == 2) {
 						// half-day vacation
-						backgroundColor = new Color(Prefs
-								.getIntPref(PrefName.UCS_HALFDAY));
+						backgroundColor = new Color(
+								Prefs.getIntPref(PrefName.UCS_HALFDAY));
 					} else if (dow == Calendar.SUNDAY
 							|| dow == Calendar.SATURDAY) {
 						// weekend
-						backgroundColor = new Color(Prefs
-								.getIntPref(PrefName.UCS_WEEKEND));
+						backgroundColor = new Color(
+								Prefs.getIntPref(PrefName.UCS_WEEKEND));
 					} else {
 						// weekday
-						backgroundColor = new Color(Prefs
-								.getIntPref(PrefName.UCS_WEEKDAY));
+						backgroundColor = new Color(
+								Prefs.getIntPref(PrefName.UCS_WEEKDAY));
 					}
 
 					// determine initial Y coord for non-scheduled appts (notes)
@@ -384,10 +390,8 @@ public class DayPanel extends DockableView implements Printable, CalendarModule 
 
 			// draw background for day area with the user color
 			g2.setColor(backgroundColor);
-			g2
-					.fillRect((int) timecolwidth, caltop,
-							(int) (pageWidth - timecolwidth), (int) pageHeight
-									- caltop);
+			g2.fillRect((int) timecolwidth, caltop,
+					(int) (pageWidth - timecolwidth), (int) pageHeight - caltop);
 			g2.setColor(Color.BLACK);
 
 			// draw dashed lines for 1/2 hour intervals
@@ -395,11 +399,37 @@ public class DayPanel extends DockableView implements Printable, CalendarModule 
 			g2.setStroke(dashed);
 			for (int row = 0; row < numhalfhours; row++) {
 				int rowtop = (int) ((row * tickheight) + aptop);
-				g2
-						.drawLine((int) timecolwidth, rowtop, (int) pageWidth,
-								rowtop);
+				g2.drawLine((int) timecolwidth, rowtop, (int) pageWidth, rowtop);
 			}
 			g2.setStroke(defstroke);
+
+			// add the zoom buttons
+			if (zoom < 4)
+				boxes.add(new ButtonBox(cal.getTime(), "", new ImageIcon(
+						getClass().getResource("/resource/ZoomIn16.gif")),
+						new Rectangle(0, caltop, 20, smfontHeight), null) {
+
+					@Override
+					public void onClick() {
+						zoom++;
+						refresh();
+					}
+
+				});
+
+			if (zoom > 0)
+				boxes.add(new ButtonBox(cal.getTime(), "", new ImageIcon(
+						getClass().getResource("/resource/ZoomOut16.gif")),
+						new Rectangle(colleft - 20, caltop, 20, smfontHeight),
+						null) {
+
+					@Override
+					public void onClick() {
+						zoom--;
+						refresh();
+					}
+
+				});
 
 			// add the scroll buttons
 			if (nonTimedPortion < 0.8) {
@@ -416,7 +446,7 @@ public class DayPanel extends DockableView implements Printable, CalendarModule 
 
 				});
 			}
-			if (nonTimedPortion > 0.2 ) {
+			if (nonTimedPortion > 0.2) {
 				boxes.add(new ButtonBox(cal.getTime(), "", new ImageIcon(
 						getClass().getResource("/resource/Up16.gif")),
 						new Rectangle(0, (int) aptop - smfontHeight, colleft,
@@ -590,9 +620,10 @@ public class DayPanel extends DockableView implements Printable, CalendarModule 
 			Font sm_font = Font.decode(Prefs.getPref(PrefName.PRINTFONT));
 			clearData();
 			int ret = drawIt(g, pageFormat.getWidth(), pageFormat.getHeight(),
-					pageFormat.getImageableWidth(), pageFormat
-							.getImageableHeight(), pageFormat.getImageableX(),
-					pageFormat.getImageableY(), sm_font);
+					pageFormat.getImageableWidth(),
+					pageFormat.getImageableHeight(),
+					pageFormat.getImageableX(), pageFormat.getImageableY(),
+					sm_font);
 			refresh();
 			return ret;
 		}
@@ -602,10 +633,17 @@ public class DayPanel extends DockableView implements Printable, CalendarModule 
 		 */
 		@Override
 		public void refresh() {
+			Toolkit toolkit =  Toolkit.getDefaultToolkit ();
+			Dimension dim = toolkit.getScreenSize();
+			int h = ((zoom+2) * (int)dim.getHeight())/2;
+			if( zoom == 0)
+				h = 0;
+			this.setPreferredSize(new Dimension(0,h));
 			clearData();
 			repaint();
+			this.getParent().doLayout();
 		}
-		
+
 		@Override
 		public void update(ChangeEvent event) {
 			refresh();
@@ -642,11 +680,14 @@ public class DayPanel extends DockableView implements Printable, CalendarModule 
 		dp_ = new DaySubPanel();
 		nav = new NavPanel(dp_);
 
+		JScrollPane sp = new JScrollPane();
+		sp.setViewportView(dp_);
+
 		setLayout(new java.awt.GridBagLayout());
-		add(nav, GridBagConstraintsFactory
-				.create(0, 0, GridBagConstraints.BOTH));
-		add(dp_, GridBagConstraintsFactory.create(0, 1,
-				GridBagConstraints.BOTH, 1.0, 1.0));
+		add(nav,
+				GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH));
+		add(sp, GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH,
+				1.0, 1.0));
 
 	}
 
@@ -687,13 +728,14 @@ public class DayPanel extends DockableView implements Printable, CalendarModule 
 	@Override
 	public void initialize(MultiView parent) {
 		final MultiView par = parent;
-		parent.addToolBarItem(new ImageIcon(getClass().getResource(
-				"/resource/day.jpg")), getModuleName(), new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent evt) {
-				par.setView(ViewType.DAY);
-			}
-		});
+		parent.addToolBarItem(
+				new ImageIcon(getClass().getResource("/resource/day.jpg")),
+				getModuleName(), new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent evt) {
+						par.setView(ViewType.DAY);
+					}
+				});
 	}
 
 	@Override
@@ -709,23 +751,21 @@ public class DayPanel extends DockableView implements Printable, CalendarModule 
 	public ViewType getViewType() {
 		return ViewType.DAY;
 	}
-	
+
 	@Override
 	public String getFrameTitle() {
 		return this.getModuleName();
 	}
 
-
 	@Override
 	public void refresh() {
 		// do nothing - children do their own refresh
-		
+
 	}
 
 	@Override
 	public void update(ChangeEvent event) {
 		// do nothing - children do their own refresh
 	}
-	
 
 }
