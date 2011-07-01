@@ -121,7 +121,7 @@
 		<manifest file="${build.dir}/${pkg}/MANIFEST.MF">
 			<attribute name="Built-By" value="${user.name}" />
 			<attribute name="Main-Class" value="${pkg}/control/Borg" />
-			<attribute name="Class-Path" value="${generated.manifest.classpath}" />
+			<attribute name="Class-Path" value="${generated.manifest.classpath} lib/borghelp.jar" />
 		</manifest>
 
 		<antcall target="zz_copyresources">
