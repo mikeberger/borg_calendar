@@ -76,7 +76,7 @@ public class PasswordHelper {
 			int result = JOptionPane.showConfirmDialog(null, new Object[] {
 					label, jpf }, Resource.getResourceString("Password"),
 					JOptionPane.OK_CANCEL_OPTION);
-			if (result == JOptionPane.CANCEL_OPTION) {
+			if (result == JOptionPane.CANCEL_OPTION || result == JOptionPane.CLOSED_OPTION) {
 				password = null;
 			} else {
 				password = new String(jpf.getPassword());
