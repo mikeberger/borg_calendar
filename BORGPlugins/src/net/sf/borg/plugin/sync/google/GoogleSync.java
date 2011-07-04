@@ -154,6 +154,7 @@ public class GoogleSync {
 
 					// delete all entries that caused a borg update - will be
 					// sent back over
+					
 					toBeDeleted.add(entry);
 					this.showMessage("GOOGLE CHANGED/DELETE from Google: " + id
 							+ " " + dumpEntry(entry), false);
@@ -448,8 +449,11 @@ public class GoogleSync {
 	
 	static public PrefName SYNCYEARS = new PrefName(
 			"sync-years", new Integer(10));
+	
+	static public PrefName NEW_ONLY = new PrefName("googlesync-oneway", "true");
 
 	static public void sync(SyncMode syncmode) throws Exception {
+		
 		SyncThread thread = new SyncThread();
 		thread.setMode(syncmode);
 		thread.start();

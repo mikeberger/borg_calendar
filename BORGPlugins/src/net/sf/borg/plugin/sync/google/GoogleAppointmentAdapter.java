@@ -7,6 +7,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.TimeZone;
 
+import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Warning;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Repeat;
@@ -175,10 +176,12 @@ public class GoogleAppointmentAdapter implements
 	public Appointment toBorg(CalendarEventEntry extAppt) throws Warning,
 			Exception {
 
+		boolean newonly = Prefs.getBoolPref(GoogleSync.NEW_ONLY);
+
 		Appointment appt = null;
 		boolean needs_update = false;
 
-		// handle appts that came from borg
+		// handle appts that came from borg unless NEW_ONLY pref is set
 		if (extAppt.getSequence() >= BORG_SEQUENCE) {
 
 			// fetch borg appt to update
@@ -193,6 +196,10 @@ public class GoogleAppointmentAdapter implements
 			}
 
 			// need to update appt if google incremented the sequence
+			// This check seems faulty. google seems to update this for
+			// appts that did not change. NEW_ONLY pref created to stop this -
+			// but can't
+			// edit google appts now. Must delete and add back.
 			if (extAppt.getSequence() > BORG_SEQUENCE)
 				needs_update = true;
 
@@ -206,6 +213,9 @@ public class GoogleAppointmentAdapter implements
 			appt = AppointmentModel.getReference().getDefaultAppointment();
 			if (appt == null)
 				appt = AppointmentModel.getReference().newAppt();
+		} else if (newonly) {
+			throw new Warning("Skipping due to NEWONLY option "
+					+ extAppt.getIcalUID());
 		}
 
 		// convert body and content to borg appt text
@@ -231,43 +241,36 @@ public class GoogleAppointmentAdapter implements
 		List<When> whens = extAppt.getTimes();
 		if (whens == null || whens.isEmpty()) {
 			/*
-			Recurrence rec = extAppt.getRecurrence();
-			if (rec != null) {
-				// TODO - handle recurrence
-				String rrules = getPropertyString("RRULE", rec.getValue());
-				String dtstarts = getPropertyString("DTSTART", rec.getValue());
-				String dtsends = getPropertyString("DTEND", rec.getValue());
-
-				DtStart dtstart = new DtStart(dtstarts);
-				appt.setDate(dtstart.getDate());
-				
-				DtStart dtend = new DtStart(dtsends);
-
-				// RRULE
-				RRule rrule = new RRule(rrules);
-				Recur recur = rrule.getRecur();
-				
-				if( appt.getRepeatUntil().getTime() != recur.getUntil().getTime())
-					needs_update = true;
-				appt.setRepeatUntil(recur.getUntil());
-				String freq = Repeat.ONCE;
-				if (recur.getFrequency().equals(Recur.DAILY))
-					freq = Repeat.DAILY;
-				else if (recur.getFrequency().equals(Recur.WEEKLY))
-					freq = Repeat.WEEKLY;
-				else if (recur.getFrequency().equals(Recur.MONTHLY))
-					freq = Repeat.MONTHLY;
-				else if (recur.getFrequency().equals(Recur.YEARLY))
-					freq = Repeat.YEARLY;
-				
-				if( !freq.equals(appt.getFrequency()))
-					needs_update = true;
-				appt.setFrequency(freq);
-
-				System.err.println("***" + rrules + "***");
-				System.err.println(rec.getValue());
-			}
-			*/
+			 * Recurrence rec = extAppt.getRecurrence(); if (rec != null) { //
+			 * TODO - handle recurrence String rrules =
+			 * getPropertyString("RRULE", rec.getValue()); String dtstarts =
+			 * getPropertyString("DTSTART", rec.getValue()); String dtsends =
+			 * getPropertyString("DTEND", rec.getValue());
+			 * 
+			 * DtStart dtstart = new DtStart(dtstarts);
+			 * appt.setDate(dtstart.getDate());
+			 * 
+			 * DtStart dtend = new DtStart(dtsends);
+			 * 
+			 * // RRULE RRule rrule = new RRule(rrules); Recur recur =
+			 * rrule.getRecur();
+			 * 
+			 * if( appt.getRepeatUntil().getTime() !=
+			 * recur.getUntil().getTime()) needs_update = true;
+			 * appt.setRepeatUntil(recur.getUntil()); String freq = Repeat.ONCE;
+			 * if (recur.getFrequency().equals(Recur.DAILY)) freq =
+			 * Repeat.DAILY; else if (recur.getFrequency().equals(Recur.WEEKLY))
+			 * freq = Repeat.WEEKLY; else if
+			 * (recur.getFrequency().equals(Recur.MONTHLY)) freq =
+			 * Repeat.MONTHLY; else if
+			 * (recur.getFrequency().equals(Recur.YEARLY)) freq = Repeat.YEARLY;
+			 * 
+			 * if( !freq.equals(appt.getFrequency())) needs_update = true;
+			 * appt.setFrequency(freq);
+			 * 
+			 * System.err.println("***" + rrules + "***");
+			 * System.err.println(rec.getValue()); }
+			 */
 			throw new Warning("Appointment " + appt.getText() + " "
 					+ appt.getDate() + " recurs cannot sync...");
 		} else {
@@ -377,9 +380,9 @@ public class GoogleAppointmentAdapter implements
 
 	}
 
-//	private String getPropertyString(String property, String blob) {
-//		int rrs = blob.indexOf(property);
-//		int rre = blob.indexOf("\n", rrs);
-//		return blob.substring(rrs, rre);
-//	}
+	// private String getPropertyString(String property, String blob) {
+	// int rrs = blob.indexOf(property);
+	// int rre = blob.indexOf("\n", rrs);
+	// return blob.substring(rrs, rre);
+	// }
 }

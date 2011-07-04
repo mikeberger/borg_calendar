@@ -28,6 +28,7 @@ import javax.crypto.CipherOutputStream;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 import javax.swing.JSpinner;
@@ -52,6 +53,7 @@ public class GoogleSyncOptionsPanel extends OptionsPanel {
 	private JPasswordField password = new JPasswordField();
 	private JSpinner chunksize = new JSpinner(new SpinnerNumberModel(0,0,10000,1));
 	private JSpinner syncyears = new JSpinner(new SpinnerNumberModel(0,0,100,1));
+	private JCheckBox newonly = new JCheckBox();
 
 	/**
 	 * Instantiates a new sync options panel.
@@ -87,6 +89,10 @@ public class GoogleSyncOptionsPanel extends OptionsPanel {
 				GridBagConstraints.BOTH) );
 		this.add(syncyears, GridBagConstraintsFactory.create(1, 4,
 				GridBagConstraints.BOTH));
+		
+		newonly.setText("Only sync new google appointments to Borg");
+		this.add(newonly, GridBagConstraintsFactory.create(0, 5,
+				GridBagConstraints.BOTH));
 
 	}
 
@@ -107,6 +113,7 @@ public class GoogleSyncOptionsPanel extends OptionsPanel {
 
 		Prefs.putPref(GoogleSync.BATCH_CHUNK_SIZE, chunksize.getValue());
 		Prefs.putPref(GoogleSync.SYNCYEARS, syncyears.getValue());
+		Prefs.putPref(GoogleSync.NEW_ONLY, newonly.isSelected());
 	}
 
 	/*
@@ -130,6 +137,8 @@ public class GoogleSyncOptionsPanel extends OptionsPanel {
 		
 		c = Prefs.getIntPref(GoogleSync.SYNCYEARS);
 		syncyears.setValue(new Integer(c));
+		
+		newonly.setSelected(Prefs.getBoolPref(GoogleSync.NEW_ONLY));
 
 	}
 
