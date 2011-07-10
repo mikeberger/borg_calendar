@@ -177,6 +177,10 @@ public class GoogleAppointmentAdapter implements
 			Exception {
 
 		boolean newonly = Prefs.getBoolPref(GoogleSync.NEW_ONLY);
+		
+		if( newonly && extAppt.getSequence() >= BORG_SEQUENCE)
+			throw new Warning("Skipping due to NEWONLY option "
+					+ extAppt.getIcalUID());
 
 		Appointment appt = null;
 		boolean needs_update = false;
@@ -213,11 +217,8 @@ public class GoogleAppointmentAdapter implements
 			appt = AppointmentModel.getReference().getDefaultAppointment();
 			if (appt == null)
 				appt = AppointmentModel.getReference().newAppt();
-		} else if (newonly) {
-			throw new Warning("Skipping due to NEWONLY option "
-					+ extAppt.getIcalUID());
-		}
-
+		} 
+		
 		// convert body and content to borg appt text
 		String body = "";
 		if (extAppt.getContent() != null

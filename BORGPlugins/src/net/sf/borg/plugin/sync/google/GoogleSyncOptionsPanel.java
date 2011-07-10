@@ -113,7 +113,7 @@ public class GoogleSyncOptionsPanel extends OptionsPanel {
 
 		Prefs.putPref(GoogleSync.BATCH_CHUNK_SIZE, chunksize.getValue());
 		Prefs.putPref(GoogleSync.SYNCYEARS, syncyears.getValue());
-		Prefs.putPref(GoogleSync.NEW_ONLY, newonly.isSelected());
+		OptionsPanel.setBooleanPref(newonly, GoogleSync.NEW_ONLY);
 	}
 
 	/*
