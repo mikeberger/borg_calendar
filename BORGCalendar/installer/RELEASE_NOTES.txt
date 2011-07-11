@@ -1,24 +1,9 @@
 ==================================
-RELEASE NOTES for BORG 1.7.5
+RELEASE NOTES for BORG 1.7.6
 ==================================
 
 The project home page is http://borg-calendar.sourceforge.net
 
-Noticeable Changes:
--------------------
-The global option to dock/undock windows has been removed in 1.7.5. Now, almost
-all windows can be docked or undocked and their docking state will be remembered when
-the program restarts. The main Month view will not be undockable and will always be tied 
-to the main program window.
-
-The options for controlling shutdown/backup behavior have been enhanced. Please see the Shutdown 
-option on the Miscellaneous Options tab for more info.
-
-A properly working .exe installer is available for Windows-7.
-
-Added better support for importing/export full ZIP backups.
-
-Added H2 Database Support
 
 Known Issues:
 -------------

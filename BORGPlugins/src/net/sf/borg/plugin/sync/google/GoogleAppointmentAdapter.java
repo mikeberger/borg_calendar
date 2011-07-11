@@ -110,7 +110,13 @@ public class GoogleAppointmentAdapter implements
 			} else if (freq.equals(Repeat.YEARLY)) {
 				rec += "YEARLY";
 			} else if (freq.equals(Repeat.NDAYS)) {
-				rec += "DAILY;INTERVAL=" + Repeat.getNDays(appt.getFrequency());
+				rec += "DAILY;INTERVAL=" + Repeat.getNValue(appt.getFrequency());
+			} else if (freq.equals(Repeat.NWEEKS)) {
+				rec += "WEEKLY;INTERVAL=" + Repeat.getNValue(appt.getFrequency());
+			} else if (freq.equals(Repeat.NMONTHS)) {
+				rec += "MONTHLY;INTERVAL=" + Repeat.getNValue(appt.getFrequency());
+			} else if (freq.equals(Repeat.NYEARS)) {
+				rec += "YEARLY;INTERVAL=" + Repeat.getNValue(appt.getFrequency());
 			} else {
 				throw new Exception("Appointment " + appt.getText()
 						+ " has a recurrence that does not sync with google");

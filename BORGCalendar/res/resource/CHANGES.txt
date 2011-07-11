@@ -1,3 +1,13 @@
+BORG 1.7.6
+----------
+Feature 3362107 repeat pattern (By N weeks, months, years)
+Feature 3295770 Standard Menu Bar for all Windows
+Feature 3306514 Daily view scale setting - add zoom buttons on day and week view. does not affect printing.
+
+Bug 3306512 category not consistant across borg clients
+Bug 3295776 Can't print Task List
+Bug 3349214 borg help not loaded in 1.7.5
+
 BORG 1.7.5
 ----------
 Feature 3118440 - Checklists
