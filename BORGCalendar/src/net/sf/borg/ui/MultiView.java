@@ -20,6 +20,7 @@
 package net.sf.borg.ui;
 
 import java.awt.Component;
+import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -461,7 +462,15 @@ public class MultiView extends View {
 					((DockableView) component).showView();
 
 					if (((DockableView) component).isDocked())
+					{
 						getTabs().setSelectedComponent(component);
+						if( !this.isShowing() || this.getState() == Frame.ICONIFIED)
+						{
+							MultiView.getMainView().setVisible(true);
+							MultiView.getMainView().toFront();
+							MultiView.getMainView().setState(Frame.NORMAL);
+						}
+					}
 
 					return component;
 				}
@@ -471,6 +480,12 @@ public class MultiView extends View {
 				}
 
 				getTabs().setSelectedComponent(component);
+				if( !this.isShowing() || this.getState() == Frame.ICONIFIED)
+				{
+					MultiView.getMainView().setVisible(true);
+					MultiView.getMainView().toFront();
+					MultiView.getMainView().setState(Frame.NORMAL);
+				}
 			}
 			return component;
 		}

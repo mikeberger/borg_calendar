@@ -622,6 +622,13 @@ public class SearchView extends DockableView implements Module {
 						par.setView(ViewType.SEARCH);
 					}
 				});
+		SunTrayIconProxy.addAction(getModuleName(),
+				new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent evt) {
+						par.setView(ViewType.SEARCH);
+					}
+				});
 	}
 
 	@Override

@@ -71,6 +71,7 @@ import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.MultiView.CalendarModule;
 import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.NavPanel;
+import net.sf.borg.ui.SunTrayIconProxy;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 
 /**
@@ -803,6 +804,13 @@ public class WeekPanel extends DockableView implements Printable, CalendarModule
 		final MultiView par = parent;
 		parent.addToolBarItem(new ImageIcon(getClass().getResource(
 		"/resource/week.jpg")), getModuleName(), 
+		new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent evt) {
+				par.setView(ViewType.WEEK);
+			}
+		});
+		SunTrayIconProxy.addAction(getModuleName(), 
 		new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent evt) {

@@ -23,6 +23,7 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Menu;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
 import java.awt.SystemTray;
@@ -47,7 +48,7 @@ import net.sf.borg.ui.options.OptionsView;
 import net.sf.borg.ui.popup.ReminderManager;
 
 /** communicates with the new java built-in system tray APIs */
-class SunTrayIconProxy implements Prefs.Listener {
+public class SunTrayIconProxy implements Prefs.Listener {
 
 	// action that opens the main view
 	private class OpenListener implements ActionListener {
@@ -64,6 +65,9 @@ class SunTrayIconProxy implements Prefs.Listener {
 
 	/* flag to indicate is a tray icon was started */
 	private static boolean trayIconStarted = false;
+	
+	static private Menu actionMenu = new Menu();
+
 
 	/**
 	 * Checks for presence of the tray icon.
@@ -118,6 +122,9 @@ class SunTrayIconProxy implements Prefs.Listener {
 				getClass().getResource("/resource/borg16.jpg")));
 
 		trayIcon.setToolTip(trayname);
+		
+		actionMenu.setLabel(Resource.getResourceString("Open"));
+		
 		PopupMenu popup = new PopupMenu();
 
 		MenuItem item = new MenuItem();
@@ -154,6 +161,8 @@ class SunTrayIconProxy implements Prefs.Listener {
 
 		});
 		popup.add(item);
+		
+		popup.add(actionMenu);
 
 		item = new MenuItem();
 		item.setLabel(Resource.getResourceString("Options"));
@@ -276,6 +285,22 @@ class SunTrayIconProxy implements Prefs.Listener {
 			}
 		}, midnight * 60 * 1000, 24 * 60 * 60 * 1000);
 
+	}
+	
+	/**
+	 * Add an action to the action menu
+	 * 
+	 * @param text
+	 *            the text for the menu item
+	 * @param action
+	 *            the action listener for the menu item
+	 */
+	static public void addAction(String text, ActionListener action) {
+		MenuItem item = new MenuItem();
+		item.setLabel(text);
+		item.addActionListener(action);
+
+		actionMenu.add(item);
 	}
 
 }

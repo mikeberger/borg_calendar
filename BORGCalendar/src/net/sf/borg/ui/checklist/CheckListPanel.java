@@ -53,6 +53,7 @@ import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.entity.CheckList;
 import net.sf.borg.ui.DockableView;
 import net.sf.borg.ui.MultiView;
+import net.sf.borg.ui.SunTrayIconProxy;
 import net.sf.borg.ui.MultiView.Module;
 import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
@@ -534,6 +535,13 @@ public class CheckListPanel extends DockableView implements
 		final MultiView par = parent;
 		parent.addToolBarItem(new ImageIcon(getClass().getResource(
 				"/resource/Preferences16.gif")), getModuleName(),
+				new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent evt) {
+						par.setView(ViewType.CHECKLIST);
+					}
+				});
+		SunTrayIconProxy.addAction(getModuleName(),
 				new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent evt) {

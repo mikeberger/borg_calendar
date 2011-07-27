@@ -49,6 +49,7 @@ import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.MultiView.Module;
 import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.ResourceHelper;
+import net.sf.borg.ui.SunTrayIconProxy;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 import net.sf.borg.ui.util.PopupMenuHelper;
 import net.sf.borg.ui.util.StripedTable;
@@ -415,6 +416,13 @@ public class AddrListView extends DockableView implements Module {
 		final MultiView par = parent;
 		parent.addToolBarItem(new ImageIcon(getClass().getResource(
 				"/resource/addr16.jpg")), getModuleName(),
+				new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent evt) {
+						par.setView(getViewType());
+					}
+				});
+		SunTrayIconProxy.addAction(getModuleName(),
 				new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent evt) {

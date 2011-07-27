@@ -60,6 +60,7 @@ import net.sf.borg.ui.DockableView;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.MultiView.Module;
 import net.sf.borg.ui.MultiView.ViewType;
+import net.sf.borg.ui.SunTrayIconProxy;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 import net.sf.borg.ui.util.PasswordHelper;
 import net.sf.borg.ui.util.StripedTable;
@@ -627,7 +628,13 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 						par.setView(ViewType.MEMO);
 					}
 				});
-
+		SunTrayIconProxy.addAction(getModuleName(),
+				new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent evt) {
+						par.setView(ViewType.MEMO);
+					}
+				});
 	}
 
 	@Override

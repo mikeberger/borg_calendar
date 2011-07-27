@@ -15,6 +15,7 @@ import net.sf.borg.ui.DockableView;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.MultiView.Module;
 import net.sf.borg.ui.MultiView.ViewType;
+import net.sf.borg.ui.SunTrayIconProxy;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 
 /**
@@ -61,7 +62,12 @@ public class TaskModule extends DockableView implements Module {
 				par.setView(ViewType.TASK);
 			}
 		});
-
+		SunTrayIconProxy.addAction(getModuleName(), new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent evt) {
+				par.setView(ViewType.TASK);
+			}
+		});
 		setLayout(new java.awt.GridBagLayout());
 		add(taskTabs, GridBagConstraintsFactory
 				.create(0, 0, GridBagConstraints.BOTH, 1.0, 1.0));

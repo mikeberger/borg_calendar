@@ -85,6 +85,7 @@ import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.MultiView.Module;
 import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.ResourceHelper;
+import net.sf.borg.ui.SunTrayIconProxy;
 import net.sf.borg.ui.task.ProjectView;
 import net.sf.borg.ui.task.TaskView;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
@@ -1097,6 +1098,13 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 		final MultiView par = parent;
 		parent.addToolBarItem(new ImageIcon(getClass().getResource(
 				"/resource/Properties16.gif")), getModuleName(),
+				new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent evt) {
+						par.setView(getViewType());
+					}
+				});
+		SunTrayIconProxy.addAction(getModuleName(),
 				new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent evt) {
