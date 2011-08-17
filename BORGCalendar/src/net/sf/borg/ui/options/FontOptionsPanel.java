@@ -47,6 +47,7 @@ public class FontOptionsPanel extends OptionsPanel {
 	JTextField monthFontText = new JTextField();
 	JTextField dayFontText = new JTextField();
 	JTextField weekFontText = new JTextField();
+	JTextField yearFontText = new JTextField();
 	JTextField printFontText = new JTextField();
 	JTextField defaultFontText = new JTextField();
 
@@ -58,6 +59,7 @@ public class FontOptionsPanel extends OptionsPanel {
 		monthFontText.setEditable(false);
 		dayFontText.setEditable(false);
 		weekFontText.setEditable(false);
+		yearFontText.setEditable(false);
 		printFontText.setEditable(false);
 		defaultFontText.setEditable(false);
 		
@@ -72,7 +74,6 @@ public class FontOptionsPanel extends OptionsPanel {
 				fontActionPerformed(defaultFontText);
 			}
 		});
-		this.add(defFontButton, GridBagConstraintsFactory.create(0,0, GridBagConstraints.BOTH));
 	
 		JButton apptFontButton = new JButton();
 		ResourceHelper.setText(apptFontButton, "set_appt_font");
@@ -83,7 +84,6 @@ public class FontOptionsPanel extends OptionsPanel {
 				fontActionPerformed(monthFontText);
 			}
 		});
-		this.add(apptFontButton, GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH));
 
 		JButton dayFontButton = new JButton();
 		ResourceHelper.setText(dayFontButton, "dview_font");
@@ -94,7 +94,6 @@ public class FontOptionsPanel extends OptionsPanel {
 				fontActionPerformed(dayFontText);
 			}
 		});
-		this.add(dayFontButton, GridBagConstraintsFactory.create(0, 2, GridBagConstraints.BOTH));
 
 		JButton weekFontButton = new JButton();
 		ResourceHelper.setText(weekFontButton, "wview_font");
@@ -105,7 +104,6 @@ public class FontOptionsPanel extends OptionsPanel {
 				fontActionPerformed(weekFontText);
 			}
 		});
-		this.add(weekFontButton, GridBagConstraintsFactory.create(0, 3, GridBagConstraints.BOTH));
 
 		JButton printFontButton = new JButton();
 		ResourceHelper.setText(printFontButton, "mview_font");
@@ -116,13 +114,30 @@ public class FontOptionsPanel extends OptionsPanel {
 				fontActionPerformed(printFontText);
 			}
 		});
-		this.add(printFontButton, GridBagConstraintsFactory.create(0, 4, GridBagConstraints.BOTH));
+		
+		JButton yearFontButton = new JButton();
+		ResourceHelper.setText(yearFontButton, "yview_font");
+		yearFontButton.setBorder(new SoftBevelBorder(BevelBorder.RAISED));
+		yearFontButton.addActionListener(new java.awt.event.ActionListener() {
+			@Override
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				fontActionPerformed(yearFontText);
+			}
+		});
+		
+		this.add(defFontButton, GridBagConstraintsFactory.create(0,0, GridBagConstraints.BOTH));
+		this.add(apptFontButton, GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH));
+		this.add(dayFontButton, GridBagConstraintsFactory.create(0, 2, GridBagConstraints.BOTH));
+		this.add(weekFontButton, GridBagConstraintsFactory.create(0, 3, GridBagConstraints.BOTH));
+		this.add(yearFontButton, GridBagConstraintsFactory.create(0, 4, GridBagConstraints.BOTH));
+		this.add(printFontButton, GridBagConstraintsFactory.create(0, 5, GridBagConstraints.BOTH));
 		
 		this.add(defaultFontText, GridBagConstraintsFactory.create(1, 0, GridBagConstraints.BOTH, 1.0, 0.0));
 		this.add(monthFontText, GridBagConstraintsFactory.create(1, 1, GridBagConstraints.BOTH, 1.0, 0.0));
 		this.add(weekFontText, GridBagConstraintsFactory.create(1, 3, GridBagConstraints.BOTH, 1.0, 0.0));
 		this.add(dayFontText, GridBagConstraintsFactory.create(1, 2, GridBagConstraints.BOTH, 1.0, 0.0));
-		this.add(printFontText, GridBagConstraintsFactory.create(1, 4, GridBagConstraints.BOTH, 1.0, 0.0));
+		this.add(yearFontText, GridBagConstraintsFactory.create(1, 4, GridBagConstraints.BOTH, 1.0, 0.0));
+		this.add(printFontText, GridBagConstraintsFactory.create(1, 5, GridBagConstraints.BOTH, 1.0, 0.0));
 	}
 
 	/*
@@ -138,6 +153,7 @@ public class FontOptionsPanel extends OptionsPanel {
 		Prefs.putPref(PrefName.APPTFONT, monthFontText.getText());
 		Prefs.putPref(PrefName.DEFFONT, defaultFontText.getText());
 		Prefs.putPref(PrefName.WEEKVIEWFONT, weekFontText.getText());
+		Prefs.putPref(PrefName.YEARVIEWFONT, yearFontText.getText());
 		Prefs.putPref(PrefName.DAYVIEWFONT, dayFontText.getText());
 		Prefs.putPref(PrefName.PRINTFONT, printFontText.getText());
 		
@@ -189,6 +205,7 @@ public class FontOptionsPanel extends OptionsPanel {
 		monthFontText.setText(Prefs.getPref(PrefName.APPTFONT));
 		defaultFontText.setText(Prefs.getPref(PrefName.DEFFONT));
 		weekFontText.setText(Prefs.getPref(PrefName.WEEKVIEWFONT));
+		yearFontText.setText(Prefs.getPref(PrefName.YEARVIEWFONT));
 		dayFontText.setText(Prefs.getPref(PrefName.DAYVIEWFONT));
 		printFontText.setText(Prefs.getPref(PrefName.PRINTFONT));
 	}

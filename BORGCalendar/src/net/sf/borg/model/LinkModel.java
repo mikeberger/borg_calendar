@@ -209,6 +209,21 @@ public class LinkModel extends Model {
 		at.setPath(path);
 		at.setLinkType(linkType.toString());
 		saveLink(at);
+
+		// * modification for backtrace/2way link
+
+		if (linkType == LinkType.ADDRESS || linkType == LinkType.APPOINTMENT
+				|| linkType == LinkType.PROJECT || linkType == LinkType.TASK) {
+			Link at2way = newLink();
+			at2way.setKey(-1);
+			at2way.setOwnerKey(new Integer(at.getPath()));
+			at2way.setOwnerType(at.getLinkType());
+			at2way.setPath(at.getOwnerKey().toString());
+			at2way.setLinkType(at.getOwnerType());
+			saveLink(at2way);
+		}
+		// end of modification
+
 	}
 
 	/**
@@ -314,9 +329,9 @@ public class LinkModel extends Model {
 	 */
 	public void deleteLinksToEntity(Object target) throws Exception {
 
-		if( target == null)
+		if (target == null)
 			return;
-		
+
 		LinkType type = typemap.get(target.getClass());
 		if (type == null)
 			return;
@@ -431,10 +446,10 @@ public class LinkModel extends Model {
 		JAXBContext jc = JAXBContext.newInstance(XmlContainer.class);
 		Unmarshaller u = jc.createUnmarshaller();
 
-		XmlContainer container = (XmlContainer) u
-				.unmarshal(is);
-		
-		if( container.Link == null ) return;
+		XmlContainer container = (XmlContainer) u.unmarshal(is);
+
+		if (container.Link == null)
+			return;
 
 		// use key from import file if importing into empty db
 		int nextkey = db_.nextkey();
@@ -521,7 +536,7 @@ public class LinkModel extends Model {
 		// inform views of data change
 		refresh();
 	}
-	
+
 	@Override
 	public String getExportName() {
 		return "LINKS";
@@ -529,7 +544,6 @@ public class LinkModel extends Model {
 
 	@Override
 	public String getInfo() throws Exception {
-		return Resource.getResourceString("links") + ": "
-		+ getLinks().size();
+		return Resource.getResourceString("links") + ": " + getLinks().size();
 	}
 }

@@ -264,6 +264,9 @@ public class PrefName {
 	static public PrefName PRINTFONT = new PrefName("monthviewfont",
 			"SansSerif-6");
 
+	static public PrefName YEARVIEWFONT = new PrefName("yearviewfont",
+	"SansSerif-7");
+
 	/** The LNF. */
 	static public PrefName LNF = new PrefName("lnf",
 			"com.jgoodies.looks.plastic.PlasticXPLookAndFeel");

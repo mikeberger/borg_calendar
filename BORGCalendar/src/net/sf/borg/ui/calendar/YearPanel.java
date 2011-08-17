@@ -53,33 +53,37 @@ import net.sf.borg.model.Day;
 import net.sf.borg.model.Model;
 import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.entity.CalendarEntity;
+import net.sf.borg.model.entity.LabelEntity;
 import net.sf.borg.ui.DockableView;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.MultiView.CalendarModule;
 import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.NavPanel;
-import net.sf.borg.ui.SunTrayIconProxy;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 
 /**
- * YearPanel is the Year UI. It shows all days of the year and allows navigation to months, days, and weeks.
- * It gives indications of the presence of appointments, but not individual appt details
+ * YearPanel is the Year UI. It shows all days of the year and allows navigation
+ * to months, days, and weeks. It gives indications of the presence of
+ * appointments, but not individual appt details
  */
-public class YearPanel extends DockableView implements Printable, CalendarModule {
+
+public class YearPanel extends DockableView implements Printable,
+		CalendarModule {
 
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * YearViewSubPanel is the panel that draws the year UI
 	 */
-	private class YearViewSubPanel extends ApptBoxPanel implements Printable, NavPanel.Navigator, Model.Listener, Prefs.Listener,
+	private class YearViewSubPanel extends ApptBoxPanel implements Printable,
+			NavPanel.Navigator, Model.Listener, Prefs.Listener,
 			MouseWheelListener {
-		
+
 		private static final long serialVersionUID = 1L;
 
-		// number of day boxes - 37 per month. not all are used. 
+		// number of day boxes - 37 per month. not all are used.
 		final private int numBoxes = 37 * 12;
-		
+
 		// cached day box colors
 		Color colors[] = new Color[numBoxes];
 
@@ -89,10 +93,12 @@ public class YearPanel extends DockableView implements Printable, CalendarModule
 		// top of year UI - under the day of week labels
 		private int gridtop;
 
-		// records the last date on which a draw took place - for handling the first redraw after midnight
+		// records the last date on which a draw took place - for handling the
+		// first redraw after midnight
 		private int lastDrawDate = -1;
 
-		// flag to indicate if we need to reload from the model. If false, we can just redraw
+		// flag to indicate if we need to reload from the model. If false, we
+		// can just redraw
 		// from cached data
 		boolean needLoad = true;
 
@@ -106,16 +112,16 @@ public class YearPanel extends DockableView implements Printable, CalendarModule
 		 * constructor
 		 */
 		public YearViewSubPanel() {
-			
+
 			// react to pref changes
 			Prefs.addListener(this);
-			
+
 			// react to mouse wheel actions
 			addMouseWheelListener(this);
-			
+
 			// react to appointment mode changes
 			AppointmentModel.getReference().addListener(this);
-			
+
 			goTo(new GregorianCalendar());
 		}
 
@@ -131,14 +137,15 @@ public class YearPanel extends DockableView implements Printable, CalendarModule
 		/**
 		 * draw the year UI
 		 */
-		private int drawIt(Graphics g, double width, double height, double pageWidth, double pageHeight, double pagex,
+		private int drawIt(Graphics g, double width, double height,
+				double pageWidth, double pageHeight, double pagex,
 				double pagey, Font sm_font) {
 
 			Graphics2D g2 = (Graphics2D) g;
-			g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,  
-	                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);  
+			g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+					RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 			g2.setFont(sm_font);
-			
+
 			// draw a white background
 			g2.setColor(Color.white);
 			g2.fillRect(0, 0, (int) width, (int) height);
@@ -150,7 +157,7 @@ public class YearPanel extends DockableView implements Printable, CalendarModule
 
 			// translate coordinates based on page margins
 			g2.translate(pagex, pagey);
-			
+
 			Shape s = g2.getClip();
 
 			// set current date
@@ -165,20 +172,23 @@ public class YearPanel extends DockableView implements Printable, CalendarModule
 			}
 			lastDrawDate = tdate;
 
-			// set date to first day of year and set first day of week according to prefs
-			GregorianCalendar cal = new GregorianCalendar(year_, Calendar.JANUARY, 1);
+			// set date to first day of year and set first day of week according
+			// to prefs
+			GregorianCalendar cal = new GregorianCalendar(year_,
+					Calendar.JANUARY, 1);
 			cal.setFirstDayOfWeek(Prefs.getIntPref(PrefName.FIRSTDOW));
 
 			// top of drawn year - used to be non-zero to fit a title
 			int caltop = 0;
-			
+
 			// grid starts under the day of week labels
 			gridtop = caltop + fontHeight + fontDesent;
-			
-			// width of month column
-			int monthwidth = (int) pageWidth / 10;
 
-			// calculate width and height of day boxes 
+			// width of month column
+			int monthwidth = (int) g2.getFontMetrics().stringWidth(
+					"12345678901"); 
+
+			// calculate width and height of day boxes
 			rowheight = ((int) pageHeight - gridtop) / 12;
 			colwidth = (int) (pageWidth - monthwidth) / 37;
 
@@ -188,7 +198,7 @@ public class YearPanel extends DockableView implements Printable, CalendarModule
 
 			// do not allow anything to be dragged
 			setDragBounds(0, 0, 0, 0);
-			
+
 			// do not allow anything to be resized
 			setResizeBounds(0, 0);
 
@@ -200,27 +210,31 @@ public class YearPanel extends DockableView implements Printable, CalendarModule
 			// month name format
 			SimpleDateFormat dfm = new SimpleDateFormat("MMMM");
 
-			// draw the day of week names centered in each column - no boxes drawn yet
+			// draw the day of week names centered in each column - no boxes
+			// drawn yet
 			SimpleDateFormat dfw = new SimpleDateFormat("E");
-			cal.add(Calendar.DAY_OF_WEEK, cal.getFirstDayOfWeek() - cal.get(Calendar.DAY_OF_WEEK));
+			cal.add(Calendar.DAY_OF_WEEK,
+					cal.getFirstDayOfWeek() - cal.get(Calendar.DAY_OF_WEEK));
 			for (int col = 0; col < 37; col++) {
 				int colleft = monthwidth + (col * colwidth);
 				String dayofweek = dfw.format(cal.getTime());
 				dayofweek = dayofweek.substring(0, 1);
 				int swidth = g2.getFontMetrics().stringWidth(dayofweek);
-				g2.drawString(dayofweek, colleft + (colwidth - swidth) / 2, caltop + fontHeight);
+				g2.drawString(dayofweek, colleft + (colwidth - swidth) / 2,
+						caltop + fontHeight);
 				cal.add(Calendar.DAY_OF_WEEK, 1);
 			}
 
 			// draw the days of the year. loop by month
 			int mon = Calendar.JANUARY;
 			for (int row = 0; row < 12; row++) {
-				
+
 				// start with first of month
 				cal.set(year_, mon, 1);
 
 				// back up calendar to first day of week
-				int fdow = cal.get(Calendar.DAY_OF_WEEK) - cal.getFirstDayOfWeek();
+				int fdow = cal.get(Calendar.DAY_OF_WEEK)
+						- cal.getFirstDayOfWeek();
 				if (fdow == -1)
 					fdow = 6;
 				cal.add(Calendar.DATE, -1 * fdow);
@@ -228,7 +242,6 @@ public class YearPanel extends DockableView implements Printable, CalendarModule
 				// print the days
 				for (int col = 0; col < 37; col++) {
 
-					
 					int numbox = row * 37 + col;
 					int rowtop = (row * rowheight) + gridtop;
 					int colleft = monthwidth + (col * colwidth);
@@ -236,80 +249,147 @@ public class YearPanel extends DockableView implements Printable, CalendarModule
 
 					// set clip to the day box to truncate long appointment text
 					g2.clipRect(colleft, rowtop, colwidth, rowheight);
-					
+
 					// load from model if needed
 					if (needLoad) {
 						try {
 
-							// if day is not in the month for this row - then use the default background
-							// and don't add any ui components - will be an empty box
+							// if day is not in the month for this row - then
+							// use the default background
+							// and don't add any ui components - will be an
+							// empty box
 							if (cal.get(Calendar.MONTH) != mon) {
 								colors[numbox] = this.getBackground();
 							} else {
 
-								// add the month button with the month name. pressing it will navigate to the month view
+								// add the month button with the month name.
+								// pressing it will navigate to the month view
 								if (cal.get(Calendar.DATE) == 1) {
-									boxes.add(new ButtonBox(cal.getTime(), dfm.format(cal.getTime()), null, new Rectangle(2,
-											rowtop, monthwidth - 4, fontHeight), new Rectangle(0, rowtop, monthwidth, rowheight)) {
+									boxes.add(new ButtonBox(
+											cal.getTime(),
+											dfm.format(cal.getTime()),
+											null,
+											new Rectangle(2, rowtop,
+													monthwidth - 4, fontHeight),
+											new Rectangle(0, rowtop,
+													monthwidth, rowheight)) {
 										@Override
 										public void onClick() {
-											MultiView.getMainView().setView(ViewType.MONTH);
+											MultiView.getMainView().setView(
+													ViewType.MONTH);
 											GregorianCalendar gc = new GregorianCalendar();
 											gc.setTime(getDate());
 											MultiView.getMainView().goTo(gc);
 										}
 									});
 								}
-								
+
 								// get the appointment info for the given day
-								Day dayInfo = Day.getDay(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE)
-										);
+								Day dayInfo = Day.getDay(
+										cal.get(Calendar.YEAR),
+										cal.get(Calendar.MONTH),
+										cal.get(Calendar.DATE));
 
 								// default background for day button - none
 								Color bbg = null;
 
 								// default box color
-								Color c = new Color(Prefs.getIntPref(PrefName.UCS_WEEKDAY));
+								Color c = new Color(
+										Prefs.getIntPref(PrefName.UCS_WEEKDAY));
 
 								// if there are entities for the day...
 								if (dayInfo != null) {
-									
-									Collection<CalendarEntity> appts = dayInfo.getItems();
-									
-									// set the day button background to some different color to indicate the presence
+
+									Collection<CalendarEntity> appts = dayInfo
+											.getItems();
+
+									// set the day button background to some
+									// different color to indicate the presence
 									// of items on this day
 									if (appts != null && !appts.isEmpty()) {
 										bbg = Color.pink;
 									}
-									
-									// set the day box background color based on various items
-									if (tmon == cal.get(Calendar.MONTH) && tyear == year_ && tdate == cal.get(Calendar.DATE)) {
-										c = new Color(Prefs.getIntPref(PrefName.UCS_TODAY));
+
+									// set the day box background color based on
+									// various items
+									if (tmon == cal.get(Calendar.MONTH)
+											&& tyear == year_
+											&& tdate == cal.get(Calendar.DATE)) {
+										c = new Color(
+												Prefs.getIntPref(PrefName.UCS_TODAY));
 									} else if (dayInfo.getHoliday() != 0) {
-										c = new Color(Prefs.getIntPref(PrefName.UCS_HOLIDAY));
+										c = new Color(
+												Prefs.getIntPref(PrefName.UCS_HOLIDAY));
 									} else if (dayInfo.getVacation() == 1) {
-										c = new Color(Prefs.getIntPref(PrefName.UCS_VACATION));
+										c = new Color(
+												Prefs.getIntPref(PrefName.UCS_VACATION));
 									} else if (dayInfo.getVacation() == 2) {
-										c = new Color(Prefs.getIntPref(PrefName.UCS_HALFDAY));
-									} else if (dow == Calendar.SUNDAY || dow == Calendar.SATURDAY) {
-										c = new Color(Prefs.getIntPref(PrefName.UCS_WEEKEND));
+										c = new Color(
+												Prefs.getIntPref(PrefName.UCS_HALFDAY));
+									} else if (dow == Calendar.SUNDAY
+											|| dow == Calendar.SATURDAY) {
+										c = new Color(
+												Prefs.getIntPref(PrefName.UCS_WEEKEND));
 									} else {
-										c = new Color(Prefs.getIntPref(PrefName.UCS_WEEKDAY));
+										c = new Color(
+												Prefs.getIntPref(PrefName.UCS_WEEKDAY));
 									}
 								}
 
 								// save the box color
 								colors[numbox] = c;
 
-								// get the date String
-								String datetext = Integer.toString(cal.get(Calendar.DATE));
+								// set small font for appt text
+								g2.setFont(sm_font);
+								int smfontHeight = g2.getFontMetrics()
+										.getHeight();
 
-								// add the date button - clicking it goes to the day view
-								boxes.add(new ButtonBox(cal.getTime(), datetext, null, new Rectangle(colleft + 2, rowtop,
-										colwidth - 4, fontHeight), new Rectangle(colleft, rowtop, colwidth, rowheight), bbg) {
+								// zajistuje vykresleni udalosti do mesicniho
+								// nahledu
+								// set initial Y coord for item text
+								int notey = rowtop + smfontHeight;
+
+								// loop through entities for the day
+								for (CalendarEntity entity : dayInfo.getItems()) {
+									
+									// convert appt to label so the user can drag/drop or edit - it's just too small
+									LabelEntity l = new LabelEntity();
+									l.setColor(entity.getColor());
+									l.setDate(entity.getDate());
+									l.setText(entity.getText());
+									
+									// add the item NoteBox to the container
+									if (addNoteBox(
+											cal.getTime(),
+											l,
+											new Rectangle(colleft + 2, notey,
+													colwidth - 4, smfontHeight),
+											new Rectangle(colleft, rowtop,
+													colwidth, rowheight)) != null)
+
+									{
+										// increment Y coord for next note text
+										notey += smfontHeight;
+									}
+
+								}
+
+								// get the date String
+								String datetext = Integer.toString(cal
+										.get(Calendar.DATE));
+
+								// add the date button - clicking it goes to the
+								// day view
+								boxes.add(new ButtonBox(cal.getTime(),
+										datetext, null, new Rectangle(
+												colleft + 2, rowtop,
+												colwidth - 4, fontHeight),
+										new Rectangle(colleft, rowtop,
+												colwidth, rowheight), bbg) {
 									@Override
 									public void onClick() {
-										MultiView.getMainView().setView(ViewType.DAY);
+										MultiView.getMainView().setView(
+												ViewType.DAY);
 										GregorianCalendar gc = new GregorianCalendar();
 										gc.setTime(getDate());
 										MultiView.getMainView().goTo(gc);
@@ -337,7 +417,7 @@ public class YearPanel extends DockableView implements Printable, CalendarModule
 				mon++;
 
 			}
-			
+
 			needLoad = false;
 
 			// draw all of the box items (i.e. buttons)
@@ -350,7 +430,7 @@ public class YearPanel extends DockableView implements Printable, CalendarModule
 
 			// left border
 			g2.drawLine(0, caltop, 0, calbot);
-			
+
 			// horizontal
 			for (int row = 0; row <= 12; row++) {
 				int rowtop = (row * rowheight) + gridtop;
@@ -432,7 +512,7 @@ public class YearPanel extends DockableView implements Printable, CalendarModule
 			super.paintComponent(g);
 			try {
 				Font sm_font = Font
-						.decode(Prefs.getPref(PrefName.WEEKVIEWFONT));
+						.decode(Prefs.getPref(PrefName.YEARVIEWFONT));
 				drawIt(g, getWidth(), getHeight(), getWidth() - 20,
 						getHeight() - 20, 10, 10, sm_font);
 
@@ -466,18 +546,21 @@ public class YearPanel extends DockableView implements Printable, CalendarModule
 		 * draw the UI for printing
 		 */
 		@Override
-		public int print(Graphics g, PageFormat pageFormat, int pageIndex) throws PrinterException {
+		public int print(Graphics g, PageFormat pageFormat, int pageIndex)
+				throws PrinterException {
 
 			if (pageIndex > 0)
 				return Printable.NO_SUCH_PAGE;
 			Font sm_font = Font.decode(Prefs.getPref(PrefName.PRINTFONT));
 			clearData();
-			int ret = drawIt(g, pageFormat.getWidth(), pageFormat.getHeight(), pageFormat.getImageableWidth(), pageFormat
-					.getImageableHeight(), pageFormat.getImageableX(), pageFormat.getImageableY(),  sm_font);
+			int ret = drawIt(g, pageFormat.getWidth(), pageFormat.getHeight(),
+					pageFormat.getImageableWidth(),
+					pageFormat.getImageableHeight(),
+					pageFormat.getImageableX(), pageFormat.getImageableY(),
+					sm_font);
 			refresh();
 			return ret;
 		}
-
 
 		/**
 		 * reload and redraw
@@ -487,7 +570,7 @@ public class YearPanel extends DockableView implements Printable, CalendarModule
 			clearData();
 			repaint();
 		}
-		
+
 		@Override
 		public void update(ChangeEvent event) {
 			refresh();
@@ -523,8 +606,10 @@ public class YearPanel extends DockableView implements Printable, CalendarModule
 		nav = new NavPanel(yearPanel);
 
 		setLayout(new java.awt.GridBagLayout());
-		add(nav, GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH));
-		add(yearPanel, GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH, 1.0, 1.0));
+		add(nav,
+				GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH));
+		add(yearPanel, GridBagConstraintsFactory.create(0, 1,
+				GridBagConstraints.BOTH, 1.0, 1.0));
 
 	}
 
@@ -541,10 +626,11 @@ public class YearPanel extends DockableView implements Printable, CalendarModule
 	 * draw for printing
 	 */
 	@Override
-	public int print(Graphics arg0, PageFormat arg1, int arg2) throws PrinterException {
+	public int print(Graphics arg0, PageFormat arg1, int arg2)
+			throws PrinterException {
 		return yearPanel.print(arg0, arg1, arg2);
 	}
-	
+
 	@Override
 	public String getModuleName() {
 		return Resource.getResourceString("Year_View");
@@ -558,23 +644,16 @@ public class YearPanel extends DockableView implements Printable, CalendarModule
 	@Override
 	public void initialize(MultiView parent) {
 		final MultiView par = parent;
-		parent.addToolBarItem(new ImageIcon(getClass().getResource(
-		"/resource/year.jpg")), getModuleName(), 
-		new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent evt) {
-				par.setView(ViewType.YEAR);
-			}
-		});
-		SunTrayIconProxy.addAction(getModuleName(), 
-		new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent evt) {
-				par.setView(ViewType.YEAR);
-			}
-		});
+		parent.addToolBarItem(
+				new ImageIcon(getClass().getResource("/resource/year.jpg")),
+				getModuleName(), new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent evt) {
+						par.setView(ViewType.YEAR);
+					}
+				});
 	}
-	
+
 	@Override
 	public void print() {
 		try {
@@ -583,7 +662,7 @@ public class YearPanel extends DockableView implements Printable, CalendarModule
 			Errmsg.errmsg(e);
 		}
 	}
-	
+
 	@Override
 	public ViewType getViewType() {
 		return ViewType.YEAR;
@@ -597,12 +676,12 @@ public class YearPanel extends DockableView implements Printable, CalendarModule
 	@Override
 	public void refresh() {
 		// do nothing - children do their own refresh
-		
+
 	}
 
 	@Override
 	public void update(ChangeEvent event) {
 		// do nothing - children do their own refresh
 	}
-	
+
 }
