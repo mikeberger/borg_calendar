@@ -388,6 +388,7 @@ public class GoogleSync {
 		@Override
 		public void run() {
 			SwingUtilities.invokeLater(new Runnable() {
+				@Override
 				public void run() {
 					if (modalMessage == null || !modalMessage.isShowing()) {
 						modalMessage = new ModalMessage("Google Sync Started",
@@ -427,6 +428,7 @@ public class GoogleSync {
 			final String fs = s;
 			final boolean funlock = unlock;
 			SwingUtilities.invokeLater(new Runnable() {
+				@Override
 				public void run() {
 					if (modalMessage.isShowing()) {
 						modalMessage.appendText(fs);

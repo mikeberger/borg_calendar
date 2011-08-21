@@ -280,52 +280,51 @@ public class GoogleAppointmentAdapter implements
 			 */
 			throw new Warning("Appointment " + appt.getText() + " "
 					+ appt.getDate() + " recurs cannot sync...");
-		} else {
-			When when = whens.get(0);
-			DateTime start = when.getStartTime();
-			DateTime end = when.getEndTime();
+		}
+		When when = whens.get(0);
+		DateTime start = when.getStartTime();
+		DateTime end = when.getEndTime();
 
-			if (start.isDateOnly() && !AppointmentModel.isNote(appt))
-				needs_update = true;
-			else if (!start.isDateOnly() && AppointmentModel.isNote(appt))
-				needs_update = true;
-			else if (!start.isDateOnly()
-					&& Math.abs(start.getValue() - appt.getDate().getTime()) > 1000 * 60 * 3)
-				needs_update = true;
-			else if (start.isDateOnly()) {
-				long offset = this.tzOffset(appt.getDate().getTime()) * 1000 * 60;
-				if (Math.abs(start.getValue() - appt.getDate().getTime()
-						- offset) > 1000 * 60 * 3)
-					needs_update = true;
-			}
-
-			// not sure why non-timed need this...
-			if (start.isDateOnly()) {
-				appt.setDate(new Date(start.getValue()
-						- TimeZone.getDefault().getOffset(start.getValue())));
-			} else {
-				appt.setDate(new Date(start.getValue()));
-			}
-
-			Integer dur = appt.getDuration();
-			String ut = appt.getUntimed();
-
-			if (start.isDateOnly()) {
-				appt.setUntimed("Y");
-			} else {
-				appt.setUntimed("N");
-				long mins = (end.getValue() - start.getValue()) / 1000 / 60;
-				if (mins > 0) {
-					appt.setDuration(new Integer((int) mins));
-					if (dur != null && dur.intValue() != mins)
-						needs_update = true;
-
-				}
-			}
-
-			if (ut != null && !ut.equals(appt.getUntimed()))
+		if (start.isDateOnly() && !AppointmentModel.isNote(appt))
+			needs_update = true;
+		else if (!start.isDateOnly() && AppointmentModel.isNote(appt))
+			needs_update = true;
+		else if (!start.isDateOnly()
+				&& Math.abs(start.getValue() - appt.getDate().getTime()) > 1000 * 60 * 3)
+			needs_update = true;
+		else if (start.isDateOnly()) {
+			long offset = this.tzOffset(appt.getDate().getTime()) * 1000 * 60;
+			if (Math.abs(start.getValue() - appt.getDate().getTime()
+					- offset) > 1000 * 60 * 3)
 				needs_update = true;
 		}
+
+		// not sure why non-timed need this...
+		if (start.isDateOnly()) {
+			appt.setDate(new Date(start.getValue()
+					- TimeZone.getDefault().getOffset(start.getValue())));
+		} else {
+			appt.setDate(new Date(start.getValue()));
+		}
+
+		Integer dur = appt.getDuration();
+		String ut = appt.getUntimed();
+
+		if (start.isDateOnly()) {
+			appt.setUntimed("Y");
+		} else {
+			appt.setUntimed("N");
+			long mins = (end.getValue() - start.getValue()) / 1000 / 60;
+			if (mins > 0) {
+				appt.setDuration(new Integer((int) mins));
+				if (dur != null && dur.intValue() != mins)
+					needs_update = true;
+
+			}
+		}
+
+		if (ut != null && !ut.equals(appt.getUntimed()))
+			needs_update = true;
 
 		// all other google properties are ignored !!!
 
