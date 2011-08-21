@@ -185,8 +185,7 @@ public class YearPanel extends DockableView implements Printable,
 			gridtop = caltop + fontHeight + fontDesent;
 
 			// width of month column
-			int monthwidth = (int) g2.getFontMetrics().stringWidth(
-					"12345678901"); 
+			int monthwidth = g2.getFontMetrics().stringWidth("12345678901");
 
 			// calculate width and height of day boxes
 			rowheight = ((int) pageHeight - gridtop) / 12;
@@ -350,28 +349,33 @@ public class YearPanel extends DockableView implements Printable,
 								int notey = rowtop + smfontHeight;
 
 								// loop through entities for the day
-								for (CalendarEntity entity : dayInfo.getItems()) {
-									
-									// convert appt to label so the user can drag/drop or edit - it's just too small
-									LabelEntity l = new LabelEntity();
-									l.setColor(entity.getColor());
-									l.setDate(entity.getDate());
-									l.setText(entity.getText());
-									
-									// add the item NoteBox to the container
-									if (addNoteBox(
-											cal.getTime(),
-											l,
-											new Rectangle(colleft + 2, notey,
-													colwidth - 4, smfontHeight),
-											new Rectangle(colleft, rowtop,
-													colwidth, rowheight)) != null)
+								if (dayInfo != null) {
+									for (CalendarEntity entity : dayInfo
+											.getItems()) {
 
-									{
-										// increment Y coord for next note text
-										notey += smfontHeight;
+										// convert appt to label so the user can
+										// drag/drop or edit - it's just too
+										// small
+										LabelEntity l = new LabelEntity();
+										l.setColor(entity.getColor());
+										l.setDate(entity.getDate());
+										l.setText(entity.getText());
+
+										// add the item NoteBox to the container
+										if (addNoteBox(cal.getTime(), l,
+												new Rectangle(colleft + 2,
+														notey, colwidth - 4,
+														smfontHeight),
+												new Rectangle(colleft, rowtop,
+														colwidth, rowheight)) != null)
+
+										{
+											// increment Y coord for next note
+											// text
+											notey += smfontHeight;
+										}
+
 									}
-
 								}
 
 								// get the date String

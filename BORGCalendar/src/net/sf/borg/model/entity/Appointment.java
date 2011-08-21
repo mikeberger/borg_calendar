@@ -352,6 +352,7 @@ public class Appointment extends EncryptableEntity<Appointment> implements Calen
 	 * get the priority value
 	 * @return the priority value
 	 */
+	@Override
 	public Integer getPriority() { return priority; }
 	
 	/**

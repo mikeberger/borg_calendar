@@ -121,6 +121,7 @@ public class Task extends KeyedEntity<Task> implements CalendarEntity {
 	 * 
 	 * @return the priority
 	 */
+	@Override
 	public Integer getPriority() { return( Priority ); }
 	
 	/**

@@ -520,6 +520,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 	 * @throws Exception
 	 *             the exception
 	 */
+	@Override
 	public void export(Writer fw) throws Exception {
 
 		JAXBContext jc = JAXBContext.newInstance(XmlContainer.class);
@@ -668,6 +669,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 	 * @throws Exception
 	 *             the exception
 	 */
+	@Override
 	public void importXml(InputStream is) throws Exception {
 
 		JAXBContext jc = JAXBContext.newInstance(XmlContainer.class);
