@@ -19,6 +19,7 @@
  */
 package net.sf.borg.ui.popup;
 
+import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.text.DateFormat;
@@ -26,11 +27,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.swing.Icon;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
+import javax.swing.table.DefaultTableCellRenderer;
 
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
@@ -71,6 +75,56 @@ public class ReminderList extends View {
 	static private final int REMINDER_INSTANCE_COLUMN = 3;
 	static private final int TOGO_MINUTES_COLUMN = 4;
 	
+	/**
+	 * renderer to add the todo marker to the reminder text in the table
+	 *
+	 */
+	private class MyTableCellRenderer extends DefaultTableCellRenderer {
+
+		private static final long serialVersionUID = 1L;
+
+		public Component getTableCellRendererComponent(JTable table, Object value,
+	    		boolean isSelected, boolean hasFocus, int row, int column) {
+
+	    	JLabel label = (JLabel)super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+			label.setIcon(null);
+
+	    	if(column == TEXT_COLUMN){
+	    			    		
+	    		ReminderInstance inst = (ReminderInstance)value;
+	    		
+	    		// get appt text
+				String tx = DateFormat.getDateInstance(DateFormat.SHORT).format(
+						inst.getInstanceTime());
+
+				tx += " "
+						+ AppointmentTextFormat
+								.format(inst.getAppt(), inst.getInstanceTime());
+				
+				label.setText(tx);
+
+	    		// add todo icon if needed
+				if( inst.getAppt().getTodo())
+				{
+					String iconname = Prefs.getPref(PrefName.UCS_MARKER);
+					String use_marker = Prefs.getPref(PrefName.UCS_MARKTODO);
+					if (use_marker.equals("true")) {
+						if (iconname.endsWith(".gif") || iconname.endsWith(".jpg")) {
+							Icon todoIcon = new javax.swing.ImageIcon(getClass().getResource(
+									"/resource/" + iconname));
+							label.setIcon(todoIcon);
+							
+						} else {
+							label.setText(iconname + " " + tx);
+						}
+					}
+				}
+				
+	    	}
+	    	return label;
+	    }
+	}
 
 	public ReminderList() {
 		super();
@@ -95,6 +149,8 @@ public class ReminderList extends View {
 		
 		table.getColumnModel().getColumn(ReminderList.SELECT_COLUMN).setMaxWidth(30);
 		table.getColumnModel().getColumn(ReminderList.SELECT_COLUMN).setMinWidth(20);
+		
+		table.setDefaultRenderer(String.class, new MyTableCellRenderer());
 
 		pack();
 
@@ -299,17 +355,10 @@ public class ReminderList extends View {
 			// build a table row
 			Object[] row = new Object[5];
 
-			// get appt text
-			String tx = DateFormat.getDateInstance(DateFormat.SHORT).format(
-					inst.getInstanceTime());
-
-			tx += " "
-					+ AppointmentTextFormat
-							.format(appt, inst.getInstanceTime());
-
+			
 			row[ReminderList.SELECT_COLUMN] = Boolean.FALSE; 
 			
-			row[ReminderList.TEXT_COLUMN] = tx;
+			row[ReminderList.TEXT_COLUMN] = inst;
 
 			row[ReminderList.TOGO_MESSAGE_COLUMN] = message;
 
@@ -319,6 +368,8 @@ public class ReminderList extends View {
 				row[ReminderList.TOGO_MINUTES_COLUMN] = 99999999; // sort todos last
 			else
 				row[ReminderList.TOGO_MINUTES_COLUMN] = new Integer(minutesToGo(inst));
+			
+			
 
 			tm.addRow(row);
 			tm.tableChanged(new TableModelEvent(tm));
