@@ -67,6 +67,8 @@ class PopupOptionsPanel extends OptionsPanel {
 	private JCheckBox popenablebox = new JCheckBox();
 	
 	private JCheckBox reminderListBox = new JCheckBox();
+	
+	private JCheckBox taskReminderBox = new JCheckBox();
 
 	/** The soundbox. */
 	private JComboBox soundbox = new JComboBox();
@@ -184,6 +186,10 @@ class PopupOptionsPanel extends OptionsPanel {
 		reminderListBox.setText(Resource.getResourceString("reminder_list"));
 		this.add(reminderListBox, GridBagConstraintsFactory.create(0, 4,
 				GridBagConstraints.BOTH));
+		
+		taskReminderBox.setText(Resource.getResourceString("show_task_reminders"));
+		this.add(taskReminderBox, GridBagConstraintsFactory.create(0, 5,
+				GridBagConstraints.BOTH));
 
 	}
 
@@ -196,6 +202,7 @@ class PopupOptionsPanel extends OptionsPanel {
 	public void applyChanges() {
 		OptionsPanel.setBooleanPref(popenablebox, PrefName.REMINDERS);
 		OptionsPanel.setBooleanPref(reminderListBox, PrefName.REMINDERLIST);
+		OptionsPanel.setBooleanPref(taskReminderBox, PrefName.TASKREMINDERS);
 		Prefs.putPref(PrefName.BEEPINGREMINDERS, getSoundOption());		
 		
 		Integer checkMins = (Integer) checkfreq.getValue();
@@ -224,6 +231,7 @@ class PopupOptionsPanel extends OptionsPanel {
 	public void loadOptions() {
 		OptionsPanel.setCheckBox(popenablebox, PrefName.REMINDERS);
 		OptionsPanel.setCheckBox(reminderListBox, PrefName.REMINDERLIST);
+		OptionsPanel.setCheckBox(taskReminderBox, PrefName.TASKREMINDERS);
 		
 		String beep = Prefs.getPref(PrefName.BEEPINGREMINDERS);
 		if( beep.equals("true"))

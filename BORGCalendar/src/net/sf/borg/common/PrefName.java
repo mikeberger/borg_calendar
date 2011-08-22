@@ -208,6 +208,9 @@ public class PrefName {
 	
 	/** option to consolidate all reminders in a single list window */
 	static public PrefName REMINDERLIST = new PrefName("reminder_list", "true");
+	
+	/** show reminders for tasks */
+	static public PrefName TASKREMINDERS = new PrefName("task_reminders", "true");
 
 	/** The EMAILENABLED. */
 	static public PrefName EMAILENABLED = new PrefName("email_enabled", "false");

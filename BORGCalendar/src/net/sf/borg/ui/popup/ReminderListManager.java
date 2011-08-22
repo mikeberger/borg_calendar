@@ -26,12 +26,9 @@
 package net.sf.borg.ui.popup;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Model.ChangeEvent;
-import net.sf.borg.model.entity.Appointment;
 
 /**
  * A Reminder List Manager. This class manages a list of reminder instances and
@@ -114,11 +111,8 @@ public class ReminderListManager extends ReminderManager {
 			if (reminderInstance.isHidden())
 				continue;
 
-			// read the appt and get the date
-			Appointment appt = reminderInstance.getAppt();
-
 			// untimed todo
-			if (AppointmentModel.isNote(appt) && appt.getTodo()) {
+			if (reminderInstance.isNote() && reminderInstance.isTodo()) {
 
 				if (!reminderInstance.wasEverShown()
 						|| shouldShowUntimedTodosNow()) {
@@ -135,13 +129,12 @@ public class ReminderListManager extends ReminderManager {
 
 		if (needUpdate)
 			reminderList.refresh();
-		else if( reminderList.isShowing())
-		{
+		else if (reminderList.isShowing()) {
 			reminderList.updateTimes();
 		}
 
 	}
-	
+
 	@Override
 	public void update(ChangeEvent event) {
 		refresh();
@@ -164,54 +157,15 @@ public class ReminderListManager extends ReminderManager {
 			if (reminderInstance.isHidden())
 				continue;
 
-			try {
-				Appointment appt = AppointmentModel.getReference().getAppt(
-						reminderInstance.getAppt().getKey());
-				if (appt == null) {
-					deletedReminders.add(reminderInstance);
-					continue;
-				}
+			// check if db has changed
+			if (reminderInstance.reloadAndCheckForChanges())
+				deletedReminders.add(reminderInstance);
 
-				if (!appt.getDate()
-						.equals(reminderInstance.getAppt().getDate())) {
-					// date changed - delete. new instance will be added on
-					// periodic update
-					deletedReminders.add(reminderInstance);
-				}
-
-				// use latest from db in the appt instance so shouldBeShown()
-				// can check any updated values
-				reminderInstance.setAppt(appt);
-
-				if (!reminderInstance.shouldBeShown()) {
-					// dispose of popup and add to delete list
-					deletedReminders.add(reminderInstance);
-				}
-
-				// delete it if the text changed - will be added back in
-				// periodic check for
-				// popups
-				if (!appt.getText()
-						.equals(reminderInstance.getAppt().getText())) {
-					deletedReminders.add(reminderInstance);
-				}
-
-				if (AppointmentModel.isNote(appt) && appt.getTodo()) {
-					// skip if inst time changed for untimed todos
-					Date nt = appt.getNextTodo();
-					if (nt == null)
-						nt = appt.getDate();
-
-					if (!reminderInstance.getInstanceTime().equals(nt)) {
-						deletedReminders.add(reminderInstance);
-					}
-				}
-			} catch (Exception e) {
-
-				// appt cannot be read, must have been deleted
-				// this is an expected case when appointments are deleted
+			if (!reminderInstance.shouldBeShown()) {
+				// dispose of popup and add to delete list
 				deletedReminders.add(reminderInstance);
 			}
+
 		}
 
 		// delete the popup map entries for reminders that we disposed of

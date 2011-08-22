@@ -33,24 +33,31 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.Vector;
 
 import javax.swing.SwingUtilities;
 
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
+import net.sf.borg.common.Resource;
 import net.sf.borg.model.AppointmentModel;
+import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.Model;
 import net.sf.borg.model.ReminderTimes;
+import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.Appointment;
+import net.sf.borg.model.entity.Project;
+import net.sf.borg.model.entity.Subtask;
+import net.sf.borg.model.entity.Task;
 
 /**
  * Abstract Base class for managing reminders. A reminder manager controls the
- * UI that shows reminder instances. It also manages a list of reminders (a model for the UI) and 
- * must check and update the model as time
- * passes. It must also react to appointment model changes.
+ * UI that shows reminder instances. It also manages a list of reminders (a
+ * model for the UI) and must check and update the model as time passes. It must
+ * also react to appointment model changes.
  */
-public abstract class ReminderManager implements Model.Listener {
+public abstract class ReminderManager implements Model.Listener, Prefs.Listener {
 
 	/** The singleton. */
 	static protected ReminderManager singleton = null;
@@ -80,6 +87,8 @@ public abstract class ReminderManager implements Model.Listener {
 
 		// listen for appointment model changes
 		AppointmentModel.getReference().addListener(this);
+		TaskModel.getReference().addListener(this);
+		Prefs.addListener(this);
 
 		// start the popup timer
 		// for consistency - it will start at the beginning of the next minute
@@ -92,9 +101,13 @@ public abstract class ReminderManager implements Model.Listener {
 			public void run() {
 				SwingUtilities.invokeLater(doPopupChk);
 			}
-		}, secs_left * 1000,
-				1 * 60 * 1000);
+		}, secs_left * 1000, 1 * 60 * 1000);
 
+	}
+
+	@Override
+	public void prefsChanged() {
+		refresh();
 	}
 
 	/**
@@ -109,7 +122,7 @@ public abstract class ReminderManager implements Model.Listener {
 	 * check if any new reminder messages needed and show them. Also update any
 	 * messages that are already being shown
 	 */
-	private void checkPopups() {
+	public void checkPopups() {
 
 		// do nothing if the reminder feature is off
 		// this check is inside the timer logic so that
@@ -163,11 +176,10 @@ public abstract class ReminderManager implements Model.Listener {
 						instTime.set(Calendar.SECOND, 0);
 						instTime.set(Calendar.MILLISECOND, 0);
 						instTime.set(Calendar.YEAR, cal.get(Calendar.YEAR));
-						instTime.set(Calendar.YEAR, cal.get(Calendar.YEAR));
 						instTime.set(Calendar.MONTH, cal.get(Calendar.MONTH));
 						instTime.set(Calendar.DATE, cal.get(Calendar.DATE));
 
-						ReminderInstance apptInstance = new ReminderInstance(
+						ReminderInstance apptInstance = new ApptReminderInstance(
 								appt, instTime.getTime());
 
 						// if the appointment doesn't qualify for a popup
@@ -208,8 +220,8 @@ public abstract class ReminderManager implements Model.Listener {
 					if (nt == null)
 						nt = appt.getDate();
 
-					ReminderInstance apptInstance = new ReminderInstance(appt,
-							nt);
+					ReminderInstance apptInstance = new ApptReminderInstance(
+							appt, nt);
 
 					if (!apptInstance.shouldBeShown())
 						continue;
@@ -222,7 +234,86 @@ public abstract class ReminderManager implements Model.Listener {
 			}
 		}
 
-		// update the existing reminders in the model and UI as needed due to passage of time
+		if (Prefs.getBoolPref(PrefName.TASKREMINDERS)) {
+
+			try {
+				Collection<Project> pjs = TaskModel.getReference()
+						.getProjects();
+				for (Project pj : pjs) {
+					if (pj.getDueDate() == null)
+						continue;
+
+					// skip closed projects
+					if (pj.getStatus().equals(
+							Resource.getResourceString("CLOSED")))
+						continue;
+
+					// filter by category
+					if (!CategoryModel.getReference().isShown(pj.getCategory()))
+						continue;
+
+					ReminderInstance inst = new ProjectReminderInstance(pj);
+
+					if (!inst.shouldBeShown())
+						continue;
+
+					addToUI(inst);
+
+				}
+			} catch (Exception e) {
+				Errmsg.errmsg(e);
+				return;
+			}
+
+			// get all tasks
+			Vector<Task> mrs = TaskModel.getReference().get_tasks();
+			for (int i = 0; i < mrs.size(); i++) {
+
+				Task mr = mrs.elementAt(i);
+				if (mr.getDueDate() == null)
+					continue;
+
+				ReminderInstance inst = new TaskReminderInstance(mr);
+
+				if (!inst.shouldBeShown())
+					continue;
+
+				addToUI(inst);
+
+			}
+
+			try {
+				Collection<Subtask> sts = TaskModel.getReference()
+						.getSubTasks();
+				for (Subtask st : sts) {
+					if (st.getDueDate() == null)
+						continue;
+					if (st.getCloseDate() != null)
+						continue;
+
+					Task task = TaskModel.getReference().getTask(
+							st.getTask().intValue());
+					String cat = task.getCategory();
+
+					if (!CategoryModel.getReference().isShown(cat))
+						continue;
+
+					ReminderInstance inst = new SubtaskReminderInstance(st);
+
+					if (!inst.shouldBeShown())
+						continue;
+
+					addToUI(inst);
+
+				}
+			} catch (Exception e) {
+				// Errmsg.errmsg(e);
+				return;
+			}
+		}
+
+		// update the existing reminders in the model and UI as needed due to
+		// passage of time
 		periodicUpdate();
 
 	}
@@ -261,27 +352,28 @@ public abstract class ReminderManager implements Model.Listener {
 	 * show all reminders
 	 */
 	public abstract void showAll();
-	
+
 	/**
-	 * determine if we should show a reminder for untimed todos during this periodic update
+	 * determine if we should show a reminder for untimed todos during this
+	 * periodic update
+	 * 
 	 * @return true if we should show the reminder
 	 */
-	protected boolean shouldShowUntimedTodosNow()
-	{
-		
+	protected boolean shouldShowUntimedTodosNow() {
+
 		GregorianCalendar now = new GregorianCalendar();
 		int todoFreq = Prefs.getIntPref(PrefName.TODOREMINDERMINS);
 
 		// *** show untimed todos periodically and on startup
 		// if no todo reminders are wanted, then skip this
-		if( todoFreq == 0 )
+		if (todoFreq == 0)
 			return false;
-		
+
 		// determine minutes since midnight
 		int hr = now.get(Calendar.HOUR_OF_DAY);
 		int min = new GregorianCalendar().get(Calendar.MINUTE);
-		int mins_since_midnight = hr*60 + min;		
-		
+		int mins_since_midnight = hr * 60 + min;
+
 		return (mins_since_midnight % todoFreq == 0);
 	}
 

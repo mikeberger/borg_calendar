@@ -31,14 +31,11 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.WindowConstants;
 
-import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
-import net.sf.borg.model.AppointmentModel;
-import net.sf.borg.model.ReminderTimes;
 import net.sf.borg.model.Model.ChangeEvent;
-import net.sf.borg.model.entity.Appointment;
+import net.sf.borg.model.ReminderTimes;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.View;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
@@ -80,7 +77,7 @@ class ReminderPopup extends View {
 
 		// set appt info in the reminder
 		String apptinfoText = "";
-		if (!AppointmentModel.isNote(reminderInstance.getAppt())) {
+		if (inst.isNote()) {
 			DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT,
 					DateFormat.SHORT);
 			apptinfoText = df.format(inst.getInstanceTime());
@@ -89,11 +86,8 @@ class ReminderPopup extends View {
 			apptinfoText = df.format(inst.getInstanceTime());
 		}
 
-		if (reminderInstance.getAppt().isEncrypted())
-			apptinfoText += " "
-					+ Resource.getResourceString("EncryptedItemShort");
-		else
-			apptinfoText += " " + reminderInstance.getAppt().getText();
+		
+		apptinfoText += " " + reminderInstance.getText();
 		appointmentInformation.setText(apptinfoText);
 
 		this.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
@@ -161,19 +155,14 @@ class ReminderPopup extends View {
 		});
 		buttonPanel.add(dismissButton, GridBagConstraintsFactory.create(0, 0));
 
-		if (reminderInstance.getAppt().getTodo() == true) {
+		if (reminderInstance.isTodo() ) {
 
 			JButton doneButton = new JButton();
 			ResourceHelper.setText(doneButton, "Done_(Delete)");
 			doneButton.addActionListener(new java.awt.event.ActionListener() {
 				@Override
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					try {
-						AppointmentModel.getReference().do_todo(
-								reminderInstance.getAppt().getKey(), true);
-					} catch (Exception e1) {
-						Errmsg.errmsg(e1);
-					}
+					reminderInstance.do_todo(true);
 					destroy();
 				}
 			});
@@ -185,13 +174,7 @@ class ReminderPopup extends View {
 					.addActionListener(new java.awt.event.ActionListener() {
 						@Override
 						public void actionPerformed(java.awt.event.ActionEvent e) {
-							try {
-								AppointmentModel.getReference().do_todo(
-										reminderInstance.getAppt().getKey(),
-										false);
-							} catch (Exception e1) {
-								Errmsg.errmsg(e1);
-							}
+							reminderInstance.do_todo(false);
 							destroy();
 						}
 					});
@@ -231,13 +214,12 @@ class ReminderPopup extends View {
 	 */
 	public void updateMessage() {
 		// read the appt and get the date
-		Appointment appt = reminderInstance.getAppt();
 
 		String message;
 
 		// untimed todo
-		if (AppointmentModel.isNote(appt) && appt.getTodo()) {
-			message = Resource.getResourceString("To_Do");
+		if (reminderInstance.isNote() && reminderInstance.isTodo()) {
+			message = reminderInstance.calculateToGoMessage();
 		} else {
 			// timed appt
 			Date d = reminderInstance.getInstanceTime();

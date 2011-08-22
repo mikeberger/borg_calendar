@@ -21,21 +21,15 @@ package net.sf.borg.ui.popup;
 
 import java.util.Date;
 
-import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
-import net.sf.borg.model.AppointmentModel;
+import net.sf.borg.common.Resource;
 import net.sf.borg.model.ReminderTimes;
-import net.sf.borg.model.entity.Appointment;
 
 /**
  * holds an instance of a reminder message. Keeps track of which reminder times
  * have been shown for this reminder message. Is not aware of the actual UI used
- * to dislay the reminder.
+ * to display the reminder.
  */
-class ReminderInstance {
-
-	// the appointment
-	private Appointment appt;
+abstract public class ReminderInstance {
 
 	/**
 	 * was the reminder hidden by the user
@@ -44,7 +38,7 @@ class ReminderInstance {
 
 	// the instance time - this is the time when this instance occurs. this
 	// will be
-	// different from the appt time if this instance is a repeat of an
+	// different from the entity time if this instance is a repeat of an
 	// appointment
 	private Date instanceTime;
 
@@ -58,26 +52,21 @@ class ReminderInstance {
 	 */
 	private boolean wasEverShown = false;
 
-	/**
-	 * constructor
-	 * 
-	 * @param appt
-	 *            the appointment
-	 * @param instanceTime
-	 *            the instance time.
-	 */
-	public ReminderInstance(Appointment appt, Date instanceTime) {
-		this.appt = appt;
-		this.instanceTime = instanceTime;
+	public ReminderInstance() {
 
 		// initialize reminders shown flags
-		remindersShown = new char[ReminderTimes.getNum()];
+		setRemindersShown(new char[ReminderTimes.getNum()]);
 		for (int i = 0; i < ReminderTimes.getNum(); ++i) {
-			remindersShown[i] = 'N';
+			getRemindersShown()[i] = 'N';
 		}
 
 	}
-
+	
+	/**
+	 * if the reminder instance is a todo, then mark it as done/complete
+	 */
+	abstract public void do_todo(boolean delete);
+	
 	/**
 	 * determine if a reminder is ready to be popped up and return the number of
 	 * the reminder that is ready
@@ -85,7 +74,7 @@ class ReminderInstance {
 	 * @return the reminder number or -1 if not ready for a new popup
 	 * 
 	 */
-	public int dueForPopup() {
+	final public int dueForPopup() {
 
 		int index = getCurrentReminder();
 
@@ -93,102 +82,44 @@ class ReminderInstance {
 		// trigger a new
 		// popup - it is either already showing or has been hidden
 
-		if (remindersShown[index] == 'N') {
+		if (getRemindersShown()[index] == 'N') {
 			return index;
 		}
 
 		// not due for popup
 		return -1;
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		ReminderInstance other = (ReminderInstance) obj;
-		if (appt == null) {
-			if (other.appt != null)
-				return false;
-		} else if (appt.getKey() != other.appt.getKey()) {
-			return false;
-		}
-
-		if (instanceTime == null) {
-			if (other.instanceTime != null)
-				return false;
-		} else if (!instanceTime.equals(other.instanceTime))
-			return false;
-		return true;
-	}
-
-	/**
-	 * get appointment
-	 * 
-	 * @return the appointment
-	 */
-	public Appointment getAppt() {
-		return appt;
-	}
-
+	abstract public boolean equals(Object obj);
+	
+	
 	/**
 	 * get the index of the active reminder for this instance - i.e. latest one
 	 * passed
 	 * 
 	 * @return index of reminder or -1 if none
 	 */
-	public int getCurrentReminder() {
-
-		// get reminder timesd on/off flags for the appointment
-		// default is all off if appt has a null value
-		char[] remTimes = new char[ReminderTimes.getNum()];
-		try {
-			remTimes = (getAppt().getReminderTimes()).toCharArray();
-		} catch (Exception e) {
-			for (int i = 0; i < ReminderTimes.getNum(); ++i) {
-				remTimes[i] = 'N';
-			}
-		}
-
-		// determine how far away the appt is
-		long minutesToGo = getInstanceTime().getTime() / (1000 * 60)
-				- new Date().getTime() / (1000 * 60);
-
-		// determine which reminder is next
-		int nextFutureReminder = 0;
-		while (ReminderTimes.getTimes(nextFutureReminder) < minutesToGo) {
-			++nextFutureReminder;
-		}
-
-		// shouldn't happen
-		if (nextFutureReminder >= ReminderTimes.getNum()) {
-			return -1;
-		}
-
-		if (remTimes[nextFutureReminder] == 'Y') {
-			return nextFutureReminder;
-		}
-
-		// none found
-		return -1;
-	}
-
+	abstract public int getCurrentReminder();
 	/**
 	 * get the instance time
 	 * 
 	 * @return the instance time
 	 */
-	public Date getInstanceTime() {
+	final public Date getInstanceTime() {
 		return instanceTime;
 	}
+
+	/**
+	 * get the text for the reminder
+	 * @return the reminder text
+	 */
+	abstract public String getText();
 
 	/*
 	 * (non-Javadoc)
@@ -196,69 +127,27 @@ class ReminderInstance {
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((appt == null) ? 0 : appt.getKey());
-		result = prime * result
-				+ ((instanceTime == null) ? 0 : instanceTime.hashCode());
-		return result;
-	}
+	abstract public int hashCode();
 
 	/**
 	 * @return true if this instance has been marked as hidden (dismissed by
 	 *         user)
 	 */
-	public boolean isHidden() {
+	final public boolean isHidden() {
 		return hidden;
 	}
 
 	/**
-	 * determine if an appointment time is outside of the range of its reminder
-	 * times.
-	 * 
-	 * @param nonexpiring
-	 *            if true, the reminder never expires, so do not check the
-	 *            latest reminder time
-	 * 
-	 * @return true, if the appointment tome is not in range of its reminder
-	 *         times
+	 * return true if the reminder is a note (is untimed)
 	 */
-	private boolean isOutsideOfReminderTimes(boolean nonExpiring) {
+	abstract public boolean isNote();
 
-		// determine how far away the appt is
-		long minutesToGo = getInstanceTime().getTime() / (1000 * 60)
-				- new Date().getTime() / (1000 * 60);
-
-		int latestReminderTime = 100000;
-		int earliestReminderTime = -100000;
-		char[] remTimes = new char[ReminderTimes.getNum()];
-		try {
-			remTimes = (getAppt().getReminderTimes()).toCharArray();
-
-		} catch (Exception e) {
-			for (int i = 0; i < ReminderTimes.getNum(); ++i) {
-				remTimes[i] = 'N';
-			}
-		}
-
-		for (int i = 0; i < ReminderTimes.getNum(); i++) {
-			if (remTimes[i] == 'Y') {
-				int time = ReminderTimes.getTimes(i);
-				if (time > earliestReminderTime) {
-					earliestReminderTime = ReminderTimes.getTimes(i);
-				}
-				if (time < latestReminderTime) {
-					latestReminderTime = ReminderTimes.getTimes(i);
-				}
-			}
-		}
-
-		if (earliestReminderTime == -100000)
-			return true;
-
-		return (minutesToGo > earliestReminderTime || (!nonExpiring && minutesToGo < latestReminderTime));
-	}
+	
+	/**
+	 * return true if the reminder is a todo - either an appointment todo or another type of todo, such as a task
+	 */
+	abstract public boolean isTodo();
+	
 
 	/**
 	 * mark a reminder time as shown
@@ -266,18 +155,20 @@ class ReminderInstance {
 	 * @param reminderNumber
 	 *            the reminder time index
 	 */
-	public void markAsShown(int reminderNumber) {
-		remindersShown[reminderNumber] = 'Y';
-	}
-
-	public void setAppt(Appointment appt) {
-		this.appt = appt;
+	final public void markAsShown(int reminderNumber) {
+		getRemindersShown()[reminderNumber] = 'Y';
 	}
 
 	/**
+	 * reload the model entity from the db and check if it has changed.
+	 * @return true if the entity has changed in a way that affects reminders
+	 */
+	abstract public boolean reloadAndCheckForChanges();
+	
+	/**
 	 * set the hidden flag
 	 */
-	public void setHidden(boolean hidden) {
+	final public void setHidden(boolean hidden) {
 		this.hidden = hidden;
 	}
 
@@ -287,7 +178,7 @@ class ReminderInstance {
 	 * @param s
 	 *            was this popup ever shown
 	 */
-	public void setShown(boolean s) {
+	final public void setShown(boolean s) {
 		wasEverShown = s;
 	}
 
@@ -297,51 +188,98 @@ class ReminderInstance {
 	 * 
 	 * @return true, if successful
 	 */
-	public boolean shouldBeShown() {
-
-		// check if we should show it based on public/private
-		// flags
-		boolean showpub = Prefs.getBoolPref(PrefName.SHOWPUBLIC);
-
-		boolean showpriv = Prefs.getBoolPref(PrefName.SHOWPRIVATE);
-
-		if (getAppt().getPrivate()) {
-			if (!showpriv)
-				return false;
-		} else {
-			if (!showpub)
-				return false;
-		}
-
-		// don't popup untimed appointments that are not todos
-		if (AppointmentModel.isNote(getAppt()) && !getAppt().getTodo())
-			return false;
-
-		boolean expires = true; // true if the reminder eventually stops at some
-		// point after the appt
-
-		// untimed todos never expire
-		if (AppointmentModel.isNote(getAppt()) && getAppt().getTodo()
-				&& getAppt().getReminderTimes() != null
-				&& getAppt().getReminderTimes().indexOf('Y') != -1) {
-			expires = false;
-		}
-
-		// a normal timed appt only gets a popup
-		// if it's within its range of reminder times
-		if (isOutsideOfReminderTimes(!expires))
-			return false;
-
-		return true;
-	}
-
+	abstract public boolean shouldBeShown();
+	
 	/**
 	 * get the shown flag.
 	 * 
 	 * @return true if the popup was ever shown
 	 */
-	public boolean wasEverShown() {
+	final public boolean wasEverShown() {
 		return wasEverShown;
+	}
+
+	final public void setInstanceTime(Date instanceTime) {
+		this.instanceTime = instanceTime;
+	}
+
+	final public void setRemindersShown(char[] remindersShown) {
+		this.remindersShown = remindersShown;
+	}
+
+	final public char[] getRemindersShown() {
+		return remindersShown;
+	}
+	
+	/**
+	 * calculate the to go message for a reminder instance
+	 * 
+	 * @return the to go message or null if should not be shown
+	 */
+	public String calculateToGoMessage() {
+
+
+		String message = null;
+
+		// set the reminder due message
+		if (isNote() && isTodo()) {
+			message = Resource.getResourceString("To_Do");
+		} else {
+
+			// timed appt
+			Date d = getInstanceTime();
+			if (d == null)
+				return null;
+
+			// get the reminder time and also mark the reminder as shown
+			// since w are adding it to the UI
+			// it may already have been marked as shown - no problem
+			int reminderIndex = getCurrentReminder();
+			if (reminderIndex == -1)
+				return null;
+			markAsShown(reminderIndex);
+
+			int minutesToGo = minutesToGo();
+
+			String timeString = "";
+			if (minutesToGo != 0) {
+				int absmin = Math.abs(minutesToGo);
+				int days = absmin / (24 * 60);
+				int hours = (absmin % (24 * 60)) / 60;
+				int mins = (absmin % 60);
+
+				if (days > 0)
+					timeString += days + " "
+							+ Resource.getResourceString("Days") + " ";
+				if (hours > 0)
+					timeString += hours + " "
+							+ Resource.getResourceString("Hours") + " ";
+				timeString += Integer.toString(mins);
+
+			}
+
+			// create a message saying how much time to go there is
+			if (minutesToGo < 0) {
+				message = timeString + " "
+						+ Resource.getResourceString("minutes_ago");
+			} else if (minutesToGo == 0) {
+				message = Resource.getResourceString("Now");
+			} else {
+				message = timeString + " "
+						+ Resource.getResourceString("Minutes");
+			}
+
+		}
+
+		return message;
+
+	}
+
+
+	public int minutesToGo() {
+		return (int) ((getInstanceTime().getTime() / (60 * 1000) - new Date()
+				.getTime()
+				/ (60 * 1000)));
 	}
 
 }

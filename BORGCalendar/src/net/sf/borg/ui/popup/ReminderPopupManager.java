@@ -27,12 +27,10 @@ package net.sf.borg.ui.popup;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
-import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Model.ChangeEvent;
-import net.sf.borg.model.entity.Appointment;
 
 /**
  * Manages the lifecycle of Reminder Popup windows.
@@ -79,7 +77,7 @@ public class ReminderPopupManager extends ReminderManager {
 			popup.dispose();
 		}
 	}
-	
+
 	@Override
 	public void update(ChangeEvent event) {
 		refresh();
@@ -123,44 +121,17 @@ public class ReminderPopupManager extends ReminderManager {
 			if (apptInstance.isHidden())
 				continue;
 
-			try {
-				Appointment appt = AppointmentModel.getReference().getAppt(
-						apptInstance.getAppt().getKey());
-				if (appt == null) {
-					popupWindow.dispose();
-					deletedPopupKeys.add(apptInstance);
-					continue;
-				}
-
-				if (!appt.getDate().equals(apptInstance.getAppt().getDate())) {
-					// date changed - get rid of popup
-					popupWindow.dispose();
-					deletedPopupKeys.add(apptInstance);
-				}
-
-				// use latest from db in the appt instance so shouldBeShown()
-				// can check any updated values
-				apptInstance.setAppt(appt);
-
-				if (!apptInstance.shouldBeShown()) {
-					// dispose of popup and add to delete list
-					popupWindow.dispose();
-					deletedPopupKeys.add(apptInstance);
-				}
-
-				// delete it if the text changed - will add back in check for
-				// popups
-				if (!appt.getText().equals(apptInstance.getAppt().getText())) {
-					popupWindow.dispose();
-					deletedPopupKeys.add(apptInstance);
-				}
-			} catch (Exception e) {
-
-				// appt cannot be read, must have been delete - kill the popup
-				// this is an expected case when appointments are deleted
-				deletedPopupKeys.add(apptInstance);
+			if (apptInstance.reloadAndCheckForChanges()) {
 				popupWindow.dispose();
+				deletedPopupKeys.add(apptInstance);
 			}
+
+			if (!apptInstance.shouldBeShown()) {
+				// dispose of popup and add to delete list
+				popupWindow.dispose();
+				deletedPopupKeys.add(apptInstance);
+			}
+
 		}
 
 		// delete the popup map entries for popups that we disposed of
@@ -274,11 +245,8 @@ public class ReminderPopupManager extends ReminderManager {
 			if (instance.isHidden())
 				continue;
 
-			// read the appt and get the date
-			Appointment appt = instance.getAppt();
-
 			// untimed todo
-			if (AppointmentModel.isNote(appt) && appt.getTodo()) {
+			if (instance.isNote() && instance.isTodo()) {
 
 				if (popup.getReminderInstance().wasEverShown()
 						&& !shouldShowUntimedTodosNow())
