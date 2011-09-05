@@ -211,6 +211,9 @@ public class PrefName {
 	
 	/** show reminders for tasks */
 	static public PrefName TASKREMINDERS = new PrefName("task_reminders", "true");
+	
+	/** days before a birthday to show birthday reminders */
+	static public PrefName BIRTHDAYREMINDERDAYS = new PrefName("bd_reminder_days", new Integer(7));
 
 	/** The EMAILENABLED. */
 	static public PrefName EMAILENABLED = new PrefName("email_enabled", "false");

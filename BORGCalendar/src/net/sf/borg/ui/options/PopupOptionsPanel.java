@@ -75,6 +75,8 @@ class PopupOptionsPanel extends OptionsPanel {
 
 	/** The spinners for setting the reminder times */
 	private JSpinner spinners[];
+	
+	private JSpinner birthdayDays = new JSpinner();
 
 
 	/**
@@ -190,6 +192,14 @@ class PopupOptionsPanel extends OptionsPanel {
 		taskReminderBox.setText(Resource.getResourceString("show_task_reminders"));
 		this.add(taskReminderBox, GridBagConstraintsFactory.create(0, 5,
 				GridBagConstraints.BOTH));
+		
+
+		this.add(new JLabel(Resource.getResourceString("bd_rem_days")), GridBagConstraintsFactory.create(0, 6,
+				GridBagConstraints.BOTH));
+
+		birthdayDays.setMinimumSize(new java.awt.Dimension(50, 20));
+		this.add(birthdayDays, GridBagConstraintsFactory.create(1, 6,
+				GridBagConstraints.BOTH, 1.0, 0.0));
 
 	}
 
@@ -212,6 +222,9 @@ class PopupOptionsPanel extends OptionsPanel {
 			// I no longer remeber if this matters - will leave as is
 			Prefs.putPref(PrefName.TODOREMINDERMINS, checkMins);
 		}
+		
+		Integer bddays = (Integer) birthdayDays.getValue();
+		Prefs.putPref(PrefName.BIRTHDAYREMINDERDAYS, bddays);
 
 		int arr[] = new int[numberOfReminderTimes];
 		for (int i = 0; i < numberOfReminderTimes; i++) {
@@ -253,6 +266,9 @@ class PopupOptionsPanel extends OptionsPanel {
 
 		int mins = Prefs.getIntPref(PrefName.TODOREMINDERMINS);
 		checkfreq.setValue(new Integer(mins));
+
+		int bddays = Prefs.getIntPref(PrefName.BIRTHDAYREMINDERDAYS);
+		birthdayDays.setValue(new Integer(bddays));
 
 		// load the times
 		loadTimes();
