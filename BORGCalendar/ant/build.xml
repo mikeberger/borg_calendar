@@ -161,6 +161,7 @@
 				<exclude name="**/classes/**" />
 				<exclude name="**/dist/**" />
 				<exclude name="**/gen/**" />
+				<exclude name="**/requirements/**" />
 			</zipfileset>
 			<zipfileset dir="${build.dir}/resource">
 				<include name="COPYING" />
