@@ -75,6 +75,7 @@ import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.Repeat;
 import net.sf.borg.model.TaskModel;
+import net.sf.borg.model.Theme;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.KeyedEntity;
 import net.sf.borg.model.entity.Project;
@@ -145,34 +146,26 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 			} else {
 				// set text color by looking up the "logical" color in the prefs
 				// logical color is left over legacy thing
+				Theme t = Theme.getCurrentTheme();
 				String color = table.getModel().getValueAt(row, 3).toString();
 				if (color.equals("red")) {
-					theTableCellComponent.setForeground(new Color((new Integer(
-							Prefs.getPref(PrefName.UCS_RED))).intValue()));
+					theTableCellComponent.setForeground(new Color(t.getTextColor1()));
 				} else if (color.equals("blue")) {
-					theTableCellComponent.setForeground(new Color((new Integer(
-							Prefs.getPref(PrefName.UCS_BLUE))).intValue()));
+					theTableCellComponent.setForeground(new Color(t.getTextColor2()));
 				} else if (color.equals("green")) {
-					theTableCellComponent.setForeground(new Color((new Integer(
-							Prefs.getPref(PrefName.UCS_GREEN))).intValue()));
+					theTableCellComponent.setForeground(new Color(t.getTextColor3()));
 				} else if (color.equals("black")) {
-					theTableCellComponent.setForeground(new Color((new Integer(
-							Prefs.getPref(PrefName.UCS_BLACK))).intValue()));
+					theTableCellComponent.setForeground(new Color(t.getTextColor4()));
 				} else if (color.equals("white")) {
-					theTableCellComponent.setForeground(new Color((new Integer(
-							Prefs.getPref(PrefName.UCS_WHITE))).intValue()));
+					theTableCellComponent.setForeground(new Color(t.getTextColor5()));
 				} else if (color.equals("navy")) {
-					theTableCellComponent.setForeground(new Color((new Integer(
-							Prefs.getPref(PrefName.UCS_NAVY))).intValue()));
+					theTableCellComponent.setForeground(new Color(t.getTaskTextColor()));
 				} else if (color.equals("brick")) {
-					theTableCellComponent.setForeground(new Color((new Integer(
-							Prefs.getPref(PrefName.UCS_BRICK))).intValue()));
+					theTableCellComponent.setForeground(new Color(t.getBirthdayTextColor()));
 				} else if (color.equals("purple")) {
-					theTableCellComponent.setForeground(new Color((new Integer(
-							Prefs.getPref(PrefName.UCS_PURPLE))).intValue()));
+					theTableCellComponent.setForeground(new Color(t.getHolidayTextColor()));
 				} else if (color.equals("pink") && column > 1) {
-					theTableCellComponent.setForeground(new Color((new Integer(
-							Prefs.getPref(PrefName.UCS_TODAY))).intValue()));
+					theTableCellComponent.setForeground(new Color(t.getTodayBg()));
 				} else {
 					theTableCellComponent.setForeground(Color.BLACK);
 				}
@@ -180,11 +173,9 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 				// special background color for the "today" divider row
 				if (table.getModel().getValueAt(row, 1).equals(
 						Resource.getResourceString("======_Today_======"))) {
-					theTableCellComponent.setBackground(new Color((new Integer(
-							Prefs.getPref(PrefName.UCS_TODAY))).intValue()));
+					theTableCellComponent.setBackground(new Color(t.getTodayBg()));
 				} else {
-					theTableCellComponent.setBackground(new Color((new Integer(
-							Prefs.getPref(PrefName.UCS_WEEKDAY))).intValue()));
+					theTableCellComponent.setBackground(new Color(t.getWeekdayBg()));
 
 				}
 			}
@@ -654,20 +645,16 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 		toggleButtonPanel.add(blackToggleButton);
 		toggleButtonPanel.add(whiteToggleButton);
 
-		redToggleButton.setIcon(new ToggleButtonIcon(new Color((new Integer(
-				Prefs.getPref(PrefName.UCS_RED))).intValue())));
+		Theme t = Theme.getCurrentTheme();
+		redToggleButton.setIcon(new ToggleButtonIcon(new Color(t.getTextColor1())));
 
-		blueToggleButton.setIcon(new ToggleButtonIcon(new Color((new Integer(
-				Prefs.getPref(PrefName.UCS_BLUE))).intValue())));
+		blueToggleButton.setIcon(new ToggleButtonIcon(new Color(t.getTextColor2())));
 
-		greenToggleButton.setIcon(new ToggleButtonIcon(new Color((new Integer(
-				Prefs.getPref(PrefName.UCS_GREEN))).intValue())));
+		greenToggleButton.setIcon(new ToggleButtonIcon(new Color(t.getTextColor3())));
 
-		blackToggleButton.setIcon(new ToggleButtonIcon(new Color((new Integer(
-				Prefs.getPref(PrefName.UCS_BLACK))).intValue())));
+		blackToggleButton.setIcon(new ToggleButtonIcon(new Color(t.getTextColor4())));
 
-		whiteToggleButton.setIcon(new ToggleButtonIcon(new Color((new Integer(
-				Prefs.getPref(PrefName.UCS_WHITE))).intValue())));
+		whiteToggleButton.setIcon(new ToggleButtonIcon(new Color(t.getTextColor5())));
 
 		ButtonGroup mutator = new ButtonGroup();
 		mutator.add(redToggleButton);

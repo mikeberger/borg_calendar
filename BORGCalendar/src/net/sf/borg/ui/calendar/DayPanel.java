@@ -62,6 +62,7 @@ import net.sf.borg.model.Day;
 import net.sf.borg.model.Model;
 import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.TaskModel;
+import net.sf.borg.model.Theme;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.CalendarEntity;
 import net.sf.borg.ui.DockableView;
@@ -276,6 +277,7 @@ public class DayPanel extends DockableView implements Printable, CalendarModule 
 
 					// set a different background color based on various
 					// circumstances
+					Theme t = Theme.getCurrentTheme();
 					backgroundColor = null;
 					int dow = cal.get(Calendar.DAY_OF_WEEK);
 					Calendar today = new GregorianCalendar();
@@ -284,29 +286,24 @@ public class DayPanel extends DockableView implements Printable, CalendarModule 
 							&& today.get(Calendar.DATE) == cal
 									.get(Calendar.DATE)) {
 						// day is today
-						backgroundColor = new Color(
-								Prefs.getIntPref(PrefName.UCS_TODAY));
+						backgroundColor = new Color(t.getTodayBg());
 					} else if (dayInfo.getHoliday() != 0) {
 						// holiday
-						backgroundColor = new Color(
-								Prefs.getIntPref(PrefName.UCS_HOLIDAY));
+						backgroundColor = new Color(t.getHolidayBg());
 					} else if (dayInfo.getVacation() == 1) {
 						// full day vacation
-						backgroundColor = new Color(
-								Prefs.getIntPref(PrefName.UCS_VACATION));
+						backgroundColor = new Color(Theme.getCurrentTheme()
+								.getVacationBg());
 					} else if (dayInfo.getVacation() == 2) {
 						// half-day vacation
-						backgroundColor = new Color(
-								Prefs.getIntPref(PrefName.UCS_HALFDAY));
+						backgroundColor = new Color(t.getHalfdayBg());
 					} else if (dow == Calendar.SUNDAY
 							|| dow == Calendar.SATURDAY) {
 						// weekend
-						backgroundColor = new Color(
-								Prefs.getIntPref(PrefName.UCS_WEEKEND));
+						backgroundColor = new Color(t.getWeekendBg());
 					} else {
 						// weekday
-						backgroundColor = new Color(
-								Prefs.getIntPref(PrefName.UCS_WEEKDAY));
+						backgroundColor = new Color(t.getWeekdayBg());
 					}
 
 					// determine initial Y coord for non-scheduled appts (notes)
@@ -634,12 +631,12 @@ public class DayPanel extends DockableView implements Printable, CalendarModule 
 		 */
 		@Override
 		public void refresh() {
-			Toolkit toolkit =  Toolkit.getDefaultToolkit ();
+			Toolkit toolkit = Toolkit.getDefaultToolkit();
 			Dimension dim = toolkit.getScreenSize();
-			int h = ((zoom+2) * (int)dim.getHeight())/2;
-			if( zoom == 0)
+			int h = ((zoom + 2) * (int) dim.getHeight()) / 2;
+			if (zoom == 0)
 				h = 0;
-			this.setPreferredSize(new Dimension(0,h));
+			this.setPreferredSize(new Dimension(0, h));
 			clearData();
 			repaint();
 			this.getParent().doLayout();
@@ -738,11 +735,11 @@ public class DayPanel extends DockableView implements Printable, CalendarModule 
 					}
 				});
 		SunTrayIconProxy.addAction(getModuleName(), new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent evt) {
-						par.setView(ViewType.DAY);
-					}
-				});
+			@Override
+			public void actionPerformed(ActionEvent evt) {
+				par.setView(ViewType.DAY);
+			}
+		});
 	}
 
 	@Override

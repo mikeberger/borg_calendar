@@ -58,6 +58,7 @@ import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.ReminderTimes;
 import net.sf.borg.model.Repeat;
+import net.sf.borg.model.Theme;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.ResourceHelper;
@@ -114,21 +115,17 @@ public class AppointmentPanel extends JPanel {
 
 			// set the icon based on the user defined colors
 			// map the "logical" color names to the user defined color
+			Theme t = Theme.getCurrentTheme();
 			if (sel.equals("black")) {
-				setIcon(new SolidComboBoxIcon(new Color(Integer.parseInt(Prefs
-						.getPref(PrefName.UCS_BLACK)))));
+				setIcon(new SolidComboBoxIcon(new Color(t.getTextColor4())));
 			} else if (sel.equals("red")) {
-				setIcon(new SolidComboBoxIcon(new Color(Integer.parseInt(Prefs
-						.getPref(PrefName.UCS_RED)))));
+				setIcon(new SolidComboBoxIcon(new Color(t.getTextColor1())));
 			} else if (sel.equals("blue")) {
-				setIcon(new SolidComboBoxIcon(new Color(Integer.parseInt(Prefs
-						.getPref(PrefName.UCS_BLUE)))));
+				setIcon(new SolidComboBoxIcon(new Color(t.getTextColor2())));
 			} else if (sel.equals("green")) {
-				setIcon(new SolidComboBoxIcon(new Color(Integer.parseInt(Prefs
-						.getPref(PrefName.UCS_GREEN)))));
+				setIcon(new SolidComboBoxIcon(new Color(t.getTextColor3())));
 			} else if (sel.equals("white")) {
-				setIcon(new SolidComboBoxIcon(new Color(Integer.parseInt(Prefs
-						.getPref(PrefName.UCS_WHITE)))));
+				setIcon(new SolidComboBoxIcon(new Color(t.getTextColor5())));
 			} else {
 				// just for strike-through, we use text
 				setForeground(Color.BLACK);

@@ -52,6 +52,7 @@ import net.sf.borg.model.Day;
 import net.sf.borg.model.Model;
 import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.TaskModel;
+import net.sf.borg.model.Theme;
 import net.sf.borg.model.entity.CalendarEntity;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.MultiView.CalendarModule;
@@ -272,32 +273,28 @@ public class MonthPanel extends JPanel implements Printable, CalendarModule {
 
 						// set a different background color based on various
 						// circumstances
+						Theme t = Theme.getCurrentTheme();
 						Color c = null;
 						if (tmon == month_ && tyear == year_
 								&& tdate == cal.get(Calendar.DATE)) {
 							// day is today
-							c = new Color(Prefs.getIntPref(PrefName.UCS_TODAY));
+							c = new Color(t.getTodayBg());
 						} else if (dayInfo.getHoliday() != 0) {
 							// holiday
-							c = new Color(Prefs
-									.getIntPref(PrefName.UCS_HOLIDAY));
+							c = new Color(t.getHolidayBg());
 						} else if (dayInfo.getVacation() == 1) {
 							// full day vacation
-							c = new Color(Prefs
-									.getIntPref(PrefName.UCS_VACATION));
+							c = new Color(Theme.getCurrentTheme().getVacationBg());
 						} else if (dayInfo.getVacation() == 2) {
 							// half-day vacation
-							c = new Color(Prefs
-									.getIntPref(PrefName.UCS_HALFDAY));
+							c = new Color(t.getHalfdayBg());
 						} else if (dow == Calendar.SUNDAY
 								|| dow == Calendar.SATURDAY) {
 							// weekend
-							c = new Color(Prefs
-									.getIntPref(PrefName.UCS_WEEKEND));
+							c = new Color(t.getWeekendBg());
 						} else {
 							// weekday
-							c = new Color(Prefs
-									.getIntPref(PrefName.UCS_WEEKDAY));
+							c = new Color(t.getWeekdayBg());
 						}
 
 						// if a day is not in the current month, then always use

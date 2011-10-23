@@ -62,6 +62,7 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Day;
 import net.sf.borg.model.Model;
+import net.sf.borg.model.Theme;
 import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.Appointment;
@@ -296,6 +297,7 @@ public class WeekPanel extends DockableView implements Printable, CalendarModule
 
 						// set a different background color based on various
 						// circumstances
+						Theme t = Theme.getCurrentTheme();
 						Color backgroundColor = null;
 						int dow = cal.get(Calendar.DAY_OF_WEEK);
 						if (today.get(Calendar.MONTH) == month_
@@ -303,29 +305,23 @@ public class WeekPanel extends DockableView implements Printable, CalendarModule
 								&& today.get(Calendar.DATE) == cal
 										.get(Calendar.DATE)) {
 							// day is today
-							backgroundColor = new Color(Prefs
-									.getIntPref(PrefName.UCS_TODAY));
+							backgroundColor = new Color(t.getTodayBg());
 						} else if (dayInfo.getHoliday() != 0) {
 							// holiday
-							backgroundColor = new Color(Prefs
-									.getIntPref(PrefName.UCS_HOLIDAY));
+							backgroundColor = new Color(t.getHolidayBg());
 						} else if (dayInfo.getVacation() == 1) {
 							// full day vacation
-							backgroundColor = new Color(Prefs
-									.getIntPref(PrefName.UCS_VACATION));
+							backgroundColor = new Color(Theme.getCurrentTheme().getVacationBg());
 						} else if (dayInfo.getVacation() == 2) {
 							// half-day vacation
-							backgroundColor = new Color(Prefs
-									.getIntPref(PrefName.UCS_HALFDAY));
+							backgroundColor = new Color(t.getHalfdayBg());
 						} else if (dow == Calendar.SUNDAY
 								|| dow == Calendar.SATURDAY) {
 							// weekend
-							backgroundColor = new Color(Prefs
-									.getIntPref(PrefName.UCS_WEEKEND));
+							backgroundColor = new Color(t.getWeekendBg());
 						} else {
 							// weekday
-							backgroundColor = new Color(Prefs
-									.getIntPref(PrefName.UCS_WEEKDAY));
+							backgroundColor = new Color(t.getWeekdayBg());
 						}
 						backgroundColors[col] = backgroundColor;
 

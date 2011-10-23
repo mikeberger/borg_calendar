@@ -54,6 +54,7 @@ import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.LinkModel;
 import net.sf.borg.model.Repeat;
 import net.sf.borg.model.TaskModel;
+import net.sf.borg.model.Theme;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.CalendarEntity;
 import net.sf.borg.model.entity.KeyedEntity;
@@ -212,31 +213,23 @@ public class NoteBox extends Box implements Box.Draggable {
 			// "logical" color names used to be the hard-coded colors. Now they
 			// mean nothing. If it weren't for legacy databases, then red could
 			// be color1
-			// UCS_RED might as well be UCS_COLOR1
+			Theme t = Theme.getCurrentTheme();
 			if (getTextColor().equals("red"))
-				g2.setColor(new Color(Integer.parseInt(Prefs
-						.getPref(PrefName.UCS_RED))));
+				g2.setColor(new Color(t.getTextColor1()));
 			else if (getTextColor().equals("green"))
-				g2.setColor(new Color(Integer.parseInt(Prefs
-						.getPref(PrefName.UCS_GREEN))));
+				g2.setColor(new Color(t.getTextColor3()));
 			else if (getTextColor().equals("blue"))
-				g2.setColor(new Color(Integer.parseInt(Prefs
-						.getPref(PrefName.UCS_BLUE))));
+				g2.setColor(new Color(t.getTextColor2()));
 			else if (getTextColor().equals("black"))
-				g2.setColor(new Color(Integer.parseInt(Prefs
-						.getPref(PrefName.UCS_BLACK))));
+				g2.setColor(new Color(t.getTextColor4()));
 			else if (getTextColor().equals("white"))
-				g2.setColor(new Color(Integer.parseInt(Prefs
-						.getPref(PrefName.UCS_WHITE))));
+				g2.setColor(new Color(t.getTextColor5()));
 			else if (getTextColor().equals("navy"))
-				g2.setColor(new Color(Integer.parseInt(Prefs
-						.getPref(PrefName.UCS_NAVY))));
+				g2.setColor(new Color(t.getTaskTextColor()));
 			else if (getTextColor().equals("purple"))
-				g2.setColor(new Color(Integer.parseInt(Prefs
-						.getPref(PrefName.UCS_PURPLE))));
+				g2.setColor(new Color(t.getHolidayTextColor()));
 			else if (getTextColor().equals("brick"))
-				g2.setColor(new Color(Integer.parseInt(Prefs
-						.getPref(PrefName.UCS_BRICK))));
+				g2.setColor(new Color(t.getBirthdayTextColor()));
 
 			// preprend link indicator if needed
 			int offset = 2;

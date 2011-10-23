@@ -62,6 +62,7 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.LinkModel;
 import net.sf.borg.model.Repeat;
+import net.sf.borg.model.Theme;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.Link;
 
@@ -408,30 +409,23 @@ class ApptBox extends Box implements Box.Draggable {
 		// the legacy names have no special meaning
 		Color textColor = Color.BLACK;
 		textColor = Color.BLACK;
+		Theme t = Theme.getCurrentTheme();
 		if (getTextColor().equals("red"))
-			textColor = new Color(Integer.parseInt(Prefs
-					.getPref(PrefName.UCS_RED)));
+			textColor = new Color(t.getTextColor1());
 		else if (getTextColor().equals("green"))
-			textColor = new Color(Integer.parseInt(Prefs
-					.getPref(PrefName.UCS_GREEN)));
+			textColor = new Color(t.getTextColor3());
 		else if (getTextColor().equals("blue"))
-			textColor = new Color(Integer.parseInt(Prefs
-					.getPref(PrefName.UCS_BLUE)));
+			textColor = new Color(t.getTextColor2());
 		else if (getTextColor().equals("black"))
-			textColor = new Color(Integer.parseInt(Prefs
-					.getPref(PrefName.UCS_BLACK)));
+			textColor = new Color(t.getTextColor4());
 		else if (getTextColor().equals("white"))
-			textColor = new Color(Integer.parseInt(Prefs
-					.getPref(PrefName.UCS_WHITE)));
+			textColor = new Color(t.getTextColor5());
 		else if (getTextColor().equals("navy"))
-			textColor = new Color(Integer.parseInt(Prefs
-					.getPref(PrefName.UCS_NAVY)));
+			textColor = new Color(t.getTaskTextColor());
 		else if (getTextColor().equals("purple"))
-			textColor = new Color(Integer.parseInt(Prefs
-					.getPref(PrefName.UCS_PURPLE)));
+			textColor = new Color(t.getHolidayTextColor());
 		else if (getTextColor().equals("brick"))
-			textColor = new Color(Integer.parseInt(Prefs
-					.getPref(PrefName.UCS_BRICK)));
+			textColor = new Color(t.getBirthdayTextColor());
 
 
 		// resize todoIcon if needed to match the text size
@@ -563,8 +557,7 @@ class ApptBox extends Box implements Box.Draggable {
 	 * @return the box color
 	 */
 	private Color getBoxColor() {
-		return new Color(Prefs
-				.getIntPref(PrefName.UCS_DEFAULT));
+		return new Color(Theme.getCurrentTheme().getDefaultBg());
 	}
 
 	/**

@@ -294,53 +294,6 @@ public class PrefName {
 	static public PrefName UCS_MARKER = new PrefName("ucs_marker",
 			"redball.gif");
 	
-	/** default colors - they are tunable and do not have to match the color in the name */
-	static public PrefName UCS_RED = new PrefName("ucs_red", new Integer(
-			13369395));
-	static public PrefName UCS_BLUE = new PrefName("ucs_blue", new Integer(
-			6684876));
-	static public PrefName UCS_GREEN = new PrefName("ucs_green", new Integer(
-			39168));
-	static public PrefName UCS_BLACK = new PrefName("ucs_black", new Integer(
-			13107));
-	static public PrefName UCS_WHITE = new PrefName("ucs_white", new Integer(
-			16250609));
-	static public PrefName UCS_NAVY = new PrefName("ucs_navy", new Integer(
-			13158));
-	static public PrefName UCS_PURPLE = new PrefName("ucs_purple", new Integer(
-			10027212));
-	static public PrefName UCS_BRICK = new PrefName("ucs_brick", new Integer(
-			10027008));
-	static public PrefName UCS_DEFAULT = new PrefName("ucs_default",
-			new Integer(240*256*256+240*256+240));
-
-	/** color for current day */
-	static public PrefName UCS_TODAY = new PrefName("ucs_today", new Integer(
-			255*256*256+200*256+200));
-
-	/** color for holidays */
-	static public PrefName UCS_HOLIDAY = new PrefName("ucs_holiday",
-			new Integer(255*256*256+225*256+196));
-
-	/** color for vacation days */
-	static public PrefName UCS_VACATION = new PrefName("ucs_vacation",
-			new Integer(13434828));
-
-	/** color for half days */
-	static public PrefName UCS_HALFDAY = new PrefName("ucs_halfday",
-			new Integer(13421823));
-
-	/** color for weekends */
-	static public PrefName UCS_WEEKEND = new PrefName("ucs_weekend",
-			new Integer(255*256*256+225*256+196));
-
-	/** color for weekdays */
-	static public PrefName UCS_WEEKDAY = new PrefName("ucs_weekday",
-			new Integer(16777164));
-
-	/** color for alternating table stripes */
-	static public PrefName UCS_STRIPE = new PrefName("ucs_stripe", new Integer(
-			15792890));
 	
 	/** draw gradient color in appointment boxes - can slow down older machines */
 	static public PrefName GRADIENT_APPTS = new PrefName("gradient_appts", "true");
@@ -383,4 +336,6 @@ public class PrefName {
  	
  	/** shutdown action */
  	static public PrefName SHUTDOWN_ACTION = new PrefName("shutdown_action", "");
+ 	
+
 }

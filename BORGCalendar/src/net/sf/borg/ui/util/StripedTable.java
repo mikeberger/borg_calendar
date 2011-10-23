@@ -27,8 +27,7 @@ import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.TableCellRenderer;
 
-import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
+import net.sf.borg.model.Theme;
 
 /**
  * a JTable that renders rows in alternating colors
@@ -103,8 +102,7 @@ public class StripedTable extends JTable {
 	private static Color stripeColor = Color.white;
 
 	static {
-		int rgb = Prefs.getIntPref(PrefName.UCS_STRIPE);
-		setStripeColor(new Color(rgb));
+		setStripeColor(new Color(Theme.getCurrentTheme().getStripeBg()));
 	}
 
 	/**

@@ -51,6 +51,7 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Day;
 import net.sf.borg.model.Model;
+import net.sf.borg.model.Theme;
 import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.entity.CalendarEntity;
 import net.sf.borg.model.entity.LabelEntity;
@@ -289,12 +290,13 @@ public class YearPanel extends DockableView implements Printable,
 										cal.get(Calendar.MONTH),
 										cal.get(Calendar.DATE));
 
+								Theme t = Theme.getCurrentTheme();
+
 								// default background for day button - none
 								Color bbg = null;
 
 								// default box color
-								Color c = new Color(
-										Prefs.getIntPref(PrefName.UCS_WEEKDAY));
+								Color c = new Color(t.getWeekdayBg());
 
 								// if there are entities for the day...
 								if (dayInfo != null) {
@@ -314,24 +316,19 @@ public class YearPanel extends DockableView implements Printable,
 									if (tmon == cal.get(Calendar.MONTH)
 											&& tyear == year_
 											&& tdate == cal.get(Calendar.DATE)) {
-										c = new Color(
-												Prefs.getIntPref(PrefName.UCS_TODAY));
+										c = new Color(t.getTodayBg());
 									} else if (dayInfo.getHoliday() != 0) {
-										c = new Color(
-												Prefs.getIntPref(PrefName.UCS_HOLIDAY));
+										c = new Color(t.getHolidayBg());
 									} else if (dayInfo.getVacation() == 1) {
-										c = new Color(
-												Prefs.getIntPref(PrefName.UCS_VACATION));
+										c = new Color(Theme.getCurrentTheme()
+												.getVacationBg());
 									} else if (dayInfo.getVacation() == 2) {
-										c = new Color(
-												Prefs.getIntPref(PrefName.UCS_HALFDAY));
+										c = new Color(t.getHalfdayBg());
 									} else if (dow == Calendar.SUNDAY
 											|| dow == Calendar.SATURDAY) {
-										c = new Color(
-												Prefs.getIntPref(PrefName.UCS_WEEKEND));
+										c = new Color(t.getWeekendBg());
 									} else {
-										c = new Color(
-												Prefs.getIntPref(PrefName.UCS_WEEKDAY));
+										c = new Color(t.getWeekdayBg());
 									}
 								}
 

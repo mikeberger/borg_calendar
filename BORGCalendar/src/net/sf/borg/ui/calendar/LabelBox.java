@@ -24,8 +24,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Shape;
 
-import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
+import net.sf.borg.model.Theme;
 import net.sf.borg.model.entity.LabelEntity;
 
 /**
@@ -65,30 +64,23 @@ class LabelBox extends Box {
 		}
 		g2.setColor(Color.black);
 
+		Theme t = Theme.getCurrentTheme();
 		if (getTextColor().equals("red"))
-			g2.setColor(new Color(Integer.parseInt(Prefs
-					.getPref(PrefName.UCS_RED))));
+			g2.setColor(new Color(t.getTextColor1()));
 		else if (getTextColor().equals("green"))
-			g2.setColor(new Color(Integer.parseInt(Prefs
-					.getPref(PrefName.UCS_GREEN))));
+			g2.setColor(new Color(t.getTextColor3()));
 		else if (getTextColor().equals("blue"))
-			g2.setColor(new Color(Integer.parseInt(Prefs
-					.getPref(PrefName.UCS_BLUE))));
+			g2.setColor(new Color(t.getTextColor2()));
 		else if (getTextColor().equals("black"))
-			g2.setColor(new Color(Integer.parseInt(Prefs
-					.getPref(PrefName.UCS_BLACK))));
+			g2.setColor(new Color(t.getTextColor4()));
 		else if (getTextColor().equals("white"))
-			g2.setColor(new Color(Integer.parseInt(Prefs
-					.getPref(PrefName.UCS_WHITE))));
+			g2.setColor(new Color(t.getTextColor5()));
 		else if (getTextColor().equals("navy"))
-			g2.setColor(new Color(Integer.parseInt(Prefs
-					.getPref(PrefName.UCS_NAVY))));
+			g2.setColor(new Color(t.getTaskTextColor()));
 		else if (getTextColor().equals("purple"))
-			g2.setColor(new Color(Integer.parseInt(Prefs
-					.getPref(PrefName.UCS_PURPLE))));
+			g2.setColor(new Color(t.getHolidayTextColor()));
 		else if (getTextColor().equals("brick"))
-			g2.setColor(new Color(Integer.parseInt(Prefs
-					.getPref(PrefName.UCS_BRICK))));
+			g2.setColor(new Color(t.getBirthdayTextColor()));
 
 		g2.drawString(getText(), bounds.x + 2, bounds.y + smfontHeight);
 		g2.setColor(Color.black);
