@@ -321,7 +321,7 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 		}
 
 		lnfBox.setSelectedItem(curlnf);
-		lnfBox.setEditable(false);
+		lnfBox.setEditable(true);
 
 	}
 
