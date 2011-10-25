@@ -128,7 +128,6 @@ public class AppointmentPanel extends JPanel {
 				setIcon(new SolidComboBoxIcon(new Color(t.getTextColor5())));
 			} else {
 				// just for strike-through, we use text
-				setForeground(Color.BLACK);
 				setText(Resource.getResourceString("strike"));
 				setIcon(null);
 			}
@@ -1189,7 +1188,6 @@ public class AppointmentPanel extends JPanel {
 		// appointment text of some sort is required if we are validating
 		if (apptTitleField.getText().equals("") && validate) {
 			apptTitleField.requestFocus();
-			apptTitleField.setBackground(new Color(255, 255, 204));
 			throw new Warning(
 					Resource.getResourceString("Please_enter_some_appointment_text"));
 		}
@@ -1716,9 +1714,6 @@ public class AppointmentPanel extends JPanel {
 		// set components based on repeat frequency
 		timesEnable();
 
-		// reset background to white in case we were showing a validation error
-		// color
-		apptTitleField.setBackground(new Color(255, 255, 255));
 		apptTitleField.requestFocus();
 
 	}

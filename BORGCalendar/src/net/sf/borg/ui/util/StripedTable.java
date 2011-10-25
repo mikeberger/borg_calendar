@@ -99,17 +99,13 @@ public class StripedTable extends JTable {
 	}
 
 	// initialize table stripe color
-	private static Color stripeColor = Color.white;
-
-	static {
-		setStripeColor(new Color(Theme.getCurrentTheme().getStripeBg()));
-	}
+	private Color stripeColor = Color.white;
 
 	/**
 	 * set the striping color
 	 * @param c the striping color
 	 */
-	public static void setStripeColor(Color c) {
+	public void setStripeColor(Color c) {
 		stripeColor = c;
 	}
 
@@ -124,6 +120,8 @@ public class StripedTable extends JTable {
 	public StripedTable() {
 		super();
 		
+		setStripeColor(new Color(Theme.getCurrentTheme().getStripeBg()));
+
 		// save original renderers
 		defaultStringRenderer = this.getDefaultRenderer(String.class);
 		defaultDateRenderer = this.getDefaultRenderer(Date.class);
