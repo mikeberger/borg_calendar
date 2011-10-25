@@ -36,7 +36,6 @@ import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
@@ -51,8 +50,8 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Day;
 import net.sf.borg.model.Model;
-import net.sf.borg.model.Theme;
 import net.sf.borg.model.Model.ChangeEvent;
+import net.sf.borg.model.Theme;
 import net.sf.borg.model.entity.CalendarEntity;
 import net.sf.borg.model.entity.LabelEntity;
 import net.sf.borg.ui.DockableView;
@@ -297,9 +296,7 @@ public class YearPanel extends DockableView implements Printable,
 								// if there are entities for the day...
 								if (dayInfo != null) {
 
-									Collection<CalendarEntity> appts = dayInfo
-											.getItems();
-
+									
 									// set the day box background color based on
 									// various items
 									if (tmon == cal.get(Calendar.MONTH)

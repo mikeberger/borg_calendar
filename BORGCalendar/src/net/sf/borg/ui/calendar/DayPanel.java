@@ -279,7 +279,7 @@ public class DayPanel extends DockableView implements Printable, CalendarModule 
 
 					// set a different background color based on various
 					// circumstances
-					backgroundColor = null;
+					backgroundColor = new Color(t.getDefaultBg());
 					int dow = cal.get(Calendar.DAY_OF_WEEK);
 					Calendar today = new GregorianCalendar();
 					if (today.get(Calendar.MONTH) == month_
@@ -388,7 +388,7 @@ public class DayPanel extends DockableView implements Printable, CalendarModule 
 			}
 
 			// draw background for day area with the user color
-			g2.setColor(new Color(t.getDefaultBg()));
+			g2.setColor(backgroundColor);
 			g2.fillRect((int) timecolwidth, caltop,
 					(int) (pageWidth - timecolwidth), (int) pageHeight - caltop);
 			g2.setColor(new Color(t.getDefaultFg()));
