@@ -27,11 +27,13 @@ import java.util.Date;
 
 import javax.swing.Icon;
 
+import net.sf.borg.model.Theme;
+
 /**
  * base class for a box that represents a clickable label on the calendar ui
- * sub-classes must implement the onClick method. used for items such as the date
- * and week buttons that let the user navigate to other views
- *
+ * sub-classes must implement the onClick method. used for items such as the
+ * date and week buttons that let the user navigate to other views
+ * 
  */
 public abstract class ButtonBox extends Box {
 
@@ -40,37 +42,50 @@ public abstract class ButtonBox extends Box {
 	private Icon icon_ = null; // optinal icon for the label
 
 	private Color backg = null; // background color
-	
+
 	private String text = null; // button text
 
 	/**
-	 * constructor 
-	 * @param d date
-	 * @param text label text
-	 * @param icon icon or null
-	 * @param bounds bounds
-	 * @param clip clip
+	 * constructor
+	 * 
+	 * @param d
+	 *            date
+	 * @param text
+	 *            label text
+	 * @param icon
+	 *            icon or null
+	 * @param bounds
+	 *            bounds
+	 * @param clip
+	 *            clip
 	 */
 	public ButtonBox(Date d, String text, Icon icon, Rectangle bounds,
 			Rectangle clip) {
-		super( bounds, clip );
+		super(bounds, clip);
 		date = d;
 		this.text = text;
 		this.icon_ = icon;
 	}
 
 	/**
-	 * constructor 
-	 * @param d date
-	 * @param text label text
-	 * @param icon icon or null
-	 * @param bounds bounds
-	 * @param clip clip
-	 * @param b background color
+	 * constructor
+	 * 
+	 * @param d
+	 *            date
+	 * @param text
+	 *            label text
+	 * @param icon
+	 *            icon or null
+	 * @param bounds
+	 *            bounds
+	 * @param clip
+	 *            clip
+	 * @param b
+	 *            background color
 	 */
 	public ButtonBox(Date d, String text, Icon icon, Rectangle bounds,
 			Rectangle clip, Color b) {
-		super( bounds, clip );
+		super(bounds, clip);
 		date = d;
 		this.text = text;
 		this.icon_ = icon;
@@ -79,6 +94,7 @@ public abstract class ButtonBox extends Box {
 
 	/**
 	 * get the date
+	 * 
 	 * @return the date
 	 */
 	public Date getDate() {
@@ -91,21 +107,27 @@ public abstract class ButtonBox extends Box {
 	@Override
 	public void draw(Graphics2D g2, Component comp) {
 
+		Theme t = Theme.getCurrentTheme();
+
 		Shape s = g2.getClip();
 		if (clip != null)
 			g2.setClip(clip);
 
-		g2.clipRect(bounds.x, 0, bounds.width + 1, 1000);
 		if (isSelected == true) {
-			g2.setColor(Color.RED);
+			g2.setColor(new Color(t.getDefaultFg()));
 			g2.fillRect(bounds.x, bounds.y + 2, bounds.width, bounds.height);
+			g2.setColor(new Color(t.getDefaultBg()));
 		} else if (backg != null) {
 			g2.setColor(backg);
 			g2.fillRect(bounds.x, bounds.y + 2, bounds.width, bounds.height);
+			g2.setColor(new Color(t.getDefaultFg()));
+		} else {
+			g2.setColor(new Color(t.getDefaultBg()));
+			g2.fillRect(bounds.x, bounds.y + 2, bounds.width, bounds.height);
+			g2.setColor(new Color(t.getDefaultFg()));
 		}
 		int smfontHeight = g2.getFontMetrics().getHeight();
 
-		g2.setColor(Color.black);
 		g2.drawString(text, bounds.x + 2, bounds.y + smfontHeight);
 		if (icon_ != null)
 			icon_.paintIcon(null, g2, bounds.x + bounds.width - 16, bounds.y);
@@ -113,10 +135,9 @@ public abstract class ButtonBox extends Box {
 		g2.setClip(s);
 
 	}
-	
+
 	@Override
-	public String getText()
-	{
+	public String getText() {
 		return text;
 	}
 

@@ -210,6 +210,7 @@ public class Theme {
 	// the Theme colors and default values
 	private int birthdayTextColor = 10027008;
 	private int defaultBg = 240*256*256+240*256+240;
+	private int defaultFg = 0;
 	private int halfdayBg = 13421823;
 	private int holidayBg = 255*256*256+225*256+196;
 	private int holidayTextColor = 10027212;
@@ -386,5 +387,13 @@ public class Theme {
 
 	public void setWeekendBg(int weekendBg) {
 		this.weekendBg = weekendBg;
+	}
+
+	public int getDefaultFg() {
+		return defaultFg;
+	}
+
+	public void setDefaultFg(int defaultFg) {
+		this.defaultFg = defaultFg;
 	}
 }

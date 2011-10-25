@@ -61,7 +61,8 @@ public class ColorOptionsPanel extends OptionsPanel {
 	private ColorChooserButton btn_ucs_birthdays;
 	private ColorChooserButton btn_ucs_black;
 	private ColorChooserButton btn_ucs_blue;
-	private ColorChooserButton btn_ucs_default;
+	private ColorChooserButton btn_ucs_defaultBg;
+	private ColorChooserButton btn_ucs_defaultFg;
 	private ColorChooserButton btn_ucs_green;
 	private ColorChooserButton btn_ucs_halfday;
 	private ColorChooserButton btn_ucs_holiday;
@@ -74,7 +75,7 @@ public class ColorOptionsPanel extends OptionsPanel {
 	private ColorChooserButton btn_ucs_weekday;
 	private ColorChooserButton btn_ucs_weekend;
 	private ColorChooserButton btn_ucs_white;
-	
+
 	private JCheckBox cb_ucs_marktodo;
 	private JCheckBox cb_ucs_ontodo;
 	private JCheckBox gradientApptBox = new JCheckBox();
@@ -102,7 +103,8 @@ public class ColorOptionsPanel extends OptionsPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// switch the displayed theme, but not the active (current) theme
+				// switch the displayed theme, but not the active (current)
+				// theme
 				String name = (String) themeChooser.getSelectedItem();
 				if (name == null)
 					return;
@@ -127,7 +129,8 @@ public class ColorOptionsPanel extends OptionsPanel {
 					return;
 
 				Theme newTheme = new Theme();
-				setTheme(newTheme); // set the new theme from based on the currently displayed theme
+				setTheme(newTheme); // set the new theme from based on the
+									// currently displayed theme
 				newTheme.setName(name);
 				try {
 					// save the theme
@@ -171,7 +174,7 @@ public class ColorOptionsPanel extends OptionsPanel {
 				GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH));
 
 		JPanel colorPanel = new JPanel();
-		colorPanel.setLayout(new GridLayout(10, 2));
+		colorPanel.setLayout(new GridLayout(11, 2));
 
 		cb_ucs_ontodo = new JCheckBox();
 		ResourceHelper.setText(cb_ucs_ontodo, "ucolortext1");
@@ -194,8 +197,10 @@ public class ColorOptionsPanel extends OptionsPanel {
 				Resource.getResourceString("ucolortext10"), Color.WHITE);
 		btn_ucs_birthdays = new ColorChooserButton(
 				Resource.getResourceString("ucolortext11"), Color.WHITE);
-		btn_ucs_default = new ColorChooserButton(
+		btn_ucs_defaultBg = new ColorChooserButton(
 				Resource.getResourceString("ucolortext12"), Color.WHITE);
+		btn_ucs_defaultFg = new ColorChooserButton(
+				Resource.getResourceString("defaultfg"), Color.WHITE);
 		btn_ucs_holiday = new ColorChooserButton(
 				Resource.getResourceString("ucolortext13"), Color.WHITE);
 		btn_ucs_halfday = new ColorChooserButton(
@@ -229,7 +234,8 @@ public class ColorOptionsPanel extends OptionsPanel {
 						.getHolidayTextColor()));
 				btn_ucs_birthdays.setColorProperty(new Color(t
 						.getBirthdayTextColor()));
-				btn_ucs_default.setColorProperty(new Color(t.getDefaultBg()));
+				btn_ucs_defaultBg.setColorProperty(new Color(t.getDefaultBg()));
+				btn_ucs_defaultFg.setColorProperty(new Color(t.getDefaultFg()));
 				btn_ucs_today.setColorProperty(new Color(t.getTodayBg()));
 				btn_ucs_holiday.setColorProperty(new Color(t.getHolidayBg()));
 				btn_ucs_vacation.setColorProperty(new Color(t.getVacationBg()));
@@ -241,7 +247,8 @@ public class ColorOptionsPanel extends OptionsPanel {
 		});
 
 		colorPanel.add(btn_ucs_red);
-		colorPanel.add(btn_ucs_default);
+		colorPanel.add(btn_ucs_defaultBg);
+		colorPanel.add(btn_ucs_defaultFg);
 		colorPanel.add(btn_ucs_blue);
 		colorPanel.add(btn_ucs_today);
 		colorPanel.add(btn_ucs_green);
@@ -289,8 +296,8 @@ public class ColorOptionsPanel extends OptionsPanel {
 		Prefs.putPref(PrefName.UCS_MARKER, tf_ucs_marker.getText());
 
 		/*
-		 * When changes are applied, save the current theme and make the currently
-		 * shown theme active
+		 * When changes are applied, save the current theme and make the
+		 * currently shown theme active
 		 */
 		Theme t = new Theme();
 		setTheme(t);
@@ -332,8 +339,8 @@ public class ColorOptionsPanel extends OptionsPanel {
 	}
 
 	/**
-	 * clear the theme chooser and load all themes as chooser options.
-	 * show the active theme
+	 * clear the theme chooser and load all themes as chooser options. show the
+	 * active theme
 	 */
 	private void loadThemes() {
 		themeChooser.removeAllItems();
@@ -352,7 +359,9 @@ public class ColorOptionsPanel extends OptionsPanel {
 
 	/**
 	 * set the data items in a theme object from the values shown on the UI
-	 * @param t - the Theme to be set
+	 * 
+	 * @param t
+	 *            - the Theme to be set
 	 */
 	private void setTheme(Theme t) {
 		t.setName((String) themeChooser.getSelectedItem());
@@ -367,7 +376,8 @@ public class ColorOptionsPanel extends OptionsPanel {
 		t.setHolidayTextColor(btn_ucs_holidays.getColorProperty().getRGB());
 		t.setBirthdayTextColor(btn_ucs_birthdays.getColorProperty().getRGB());
 
-		t.setDefaultBg(btn_ucs_default.getColorProperty().getRGB());
+		t.setDefaultBg(btn_ucs_defaultBg.getColorProperty().getRGB());
+		t.setDefaultFg(btn_ucs_defaultFg.getColorProperty().getRGB());
 		t.setHolidayBg(btn_ucs_holiday.getColorProperty().getRGB());
 		t.setHalfdayBg(btn_ucs_halfday.getColorProperty().getRGB());
 		t.setVacationBg(btn_ucs_vacation.getColorProperty().getRGB());
@@ -380,8 +390,10 @@ public class ColorOptionsPanel extends OptionsPanel {
 	}
 
 	/**
-	 * set the UI from the values in a Theme 
-	 * @param t - the Theme to show on the UI
+	 * set the UI from the values in a Theme
+	 * 
+	 * @param t
+	 *            - the Theme to show on the UI
 	 */
 	private void showTheme(Theme t) {
 		btn_ucs_red.setColorProperty(new Color(t.getTextColor1()));
@@ -394,7 +406,8 @@ public class ColorOptionsPanel extends OptionsPanel {
 		btn_ucs_holidays.setColorProperty(new Color(t.getHolidayTextColor()));
 		btn_ucs_birthdays.setColorProperty(new Color(t.getBirthdayTextColor()));
 
-		btn_ucs_default.setColorProperty(new Color(t.getDefaultBg()));
+		btn_ucs_defaultBg.setColorProperty(new Color(t.getDefaultBg()));
+		btn_ucs_defaultFg.setColorProperty(new Color(t.getDefaultFg()));
 		btn_ucs_today.setColorProperty(new Color(t.getTodayBg()));
 		btn_ucs_holiday.setColorProperty(new Color(t.getHolidayBg()));
 		btn_ucs_halfday.setColorProperty(new Color(t.getHalfdayBg()));

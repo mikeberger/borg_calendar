@@ -143,6 +143,8 @@ public class MonthPanel extends JPanel implements Printable, CalendarModule {
 				double pageWidth, double pageHeight, double pagex,
 				double pagey) {
 
+			Theme t = Theme.getCurrentTheme();
+
 			Graphics2D g2 = (Graphics2D) g;
 			g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,  
 	                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);  
@@ -150,10 +152,9 @@ public class MonthPanel extends JPanel implements Printable, CalendarModule {
 			// appt text font
 			Font sm_font = Font.decode(Prefs.getPref(PrefName.APPTFONT));
 
-			// draw a white background
-			g2.setColor(Color.white);
+			g2.setColor(new Color(t.getDefaultBg()));
 			g2.fillRect(0, 0, (int) width, (int) height);
-			g2.setColor(Color.black);
+			g2.setColor(new Color(t.getDefaultFg()));
 
 			// get font sizes
 			int fontHeight = g2.getFontMetrics().getHeight();
@@ -208,9 +209,9 @@ public class MonthPanel extends JPanel implements Printable, CalendarModule {
 			setResizeBounds(0, 0);
 
 			// draw background for weekday labels default color
-			g2.setColor(this.getBackground());
+			g2.setColor(new Color(t.getDefaultBg()));
 			g2.fillRect(0, caltop, calright, daytop - caltop);
-			g2.setColor(Color.black);
+			g2.setColor(new Color(t.getDefaultFg()));
 
 			// draw the weekday names centered in each column - no boxes drawn
 			// yet
@@ -273,7 +274,6 @@ public class MonthPanel extends JPanel implements Printable, CalendarModule {
 
 						// set a different background color based on various
 						// circumstances
-						Theme t = Theme.getCurrentTheme();
 						Color c = null;
 						if (tmon == month_ && tyear == year_
 								&& tdate == cal.get(Calendar.DATE)) {
@@ -298,10 +298,9 @@ public class MonthPanel extends JPanel implements Printable, CalendarModule {
 						}
 
 						// if a day is not in the current month, then always use
-						// the default
-						// panel background
+						// the default background
 						if (cal.get(Calendar.MONTH) != month_)
-							c = this.getBackground();
+							c = new Color(t.getDefaultBg());
 
 						// remember the color for when we redraw from cache
 						colors[box] = c;
@@ -349,7 +348,7 @@ public class MonthPanel extends JPanel implements Printable, CalendarModule {
 								clipIcon, new Rectangle(colleft + 2, rowtop,
 										colwidth - 4, smfontHeight),
 								new Rectangle(colleft, rowtop, colwidth,
-										rowheight)) {
+										smfontHeight + 2), c) {
 							@Override
 							public void onClick() {
 								MultiView.getMainView().setView(ViewType.DAY);
@@ -393,7 +392,7 @@ public class MonthPanel extends JPanel implements Printable, CalendarModule {
 									(int) pageWidth - weekbutwidth, rowtop,
 									weekbutwidth, rowheight), new Rectangle(
 									(int) pageWidth - weekbutwidth, rowtop,
-									weekbutwidth, rowheight)) {
+									weekbutwidth+1, rowheight+1)) {
 						@Override
 						public void onClick() {
 							MultiView.getMainView().setView(ViewType.WEEK);
@@ -406,12 +405,14 @@ public class MonthPanel extends JPanel implements Printable, CalendarModule {
 			}
 
 			needLoad = false;
+			
 
 			// draw all items
 			drawBoxes(g2);
 			g2.setClip(s);
 
 			// draw the lines last
+			g2.setColor(new Color(t.getDefaultFg()));
 
 			// horizontal line at top of calendar - above day names
 			g2.drawLine(0, caltop, calright, caltop);

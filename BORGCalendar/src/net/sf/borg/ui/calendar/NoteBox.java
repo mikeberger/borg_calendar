@@ -190,9 +190,11 @@ public class NoteBox extends Box implements Box.Draggable {
 		stmap.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
 		stmap.put(TextAttribute.FONT, sm_font);
 
+		Theme t = Theme.getCurrentTheme();
+
 		// use white background to highlight selected box
 		if (isSelected == true) {
-			g2.setColor(Color.WHITE);
+			g2.setColor(new Color(t.getDefaultFg()));
 			g2.fillRect(bounds.x, bounds.y + 2, bounds.width, bounds.height);
 		}
 
@@ -213,8 +215,9 @@ public class NoteBox extends Box implements Box.Draggable {
 			// "logical" color names used to be the hard-coded colors. Now they
 			// mean nothing. If it weren't for legacy databases, then red could
 			// be color1
-			Theme t = Theme.getCurrentTheme();
-			if (getTextColor().equals("red"))
+			if (isSelected == true) 
+				g2.setColor(new Color(t.getDefaultBg()));
+			else if (getTextColor().equals("red"))
 				g2.setColor(new Color(t.getTextColor1()));
 			else if (getTextColor().equals("green"))
 				g2.setColor(new Color(t.getTextColor3()));

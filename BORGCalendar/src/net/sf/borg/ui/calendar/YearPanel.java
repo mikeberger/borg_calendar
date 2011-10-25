@@ -142,15 +142,16 @@ public class YearPanel extends DockableView implements Printable,
 				double pageWidth, double pageHeight, double pagex,
 				double pagey, Font sm_font) {
 
+			Theme t = Theme.getCurrentTheme();
 			Graphics2D g2 = (Graphics2D) g;
 			g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
 					RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 			g2.setFont(sm_font);
 
 			// draw a white background
-			g2.setColor(Color.white);
+			g2.setColor(new Color(t.getDefaultBg()));
 			g2.fillRect(0, 0, (int) width, (int) height);
-			g2.setColor(Color.black);
+			g2.setColor(new Color(t.getDefaultFg()));
 
 			// get font sizes
 			int fontHeight = g2.getFontMetrics().getHeight();
@@ -203,9 +204,9 @@ public class YearPanel extends DockableView implements Printable,
 			setResizeBounds(0, 0);
 
 			// background for day of week labels
-			g2.setColor(this.getBackground());
+			g2.setColor(new Color(t.getDefaultBg()));
 			g2.fillRect(0, caltop, calright, gridtop - caltop);
-			g2.setColor(Color.black);
+			g2.setColor(new Color(t.getDefaultFg()));
 
 			// month name format
 			SimpleDateFormat dfm = new SimpleDateFormat("MMMM");
@@ -259,7 +260,7 @@ public class YearPanel extends DockableView implements Printable,
 							// and don't add any ui components - will be an
 							// empty box
 							if (cal.get(Calendar.MONTH) != mon) {
-								colors[numbox] = this.getBackground();
+								colors[numbox] = new Color(t.getDefaultBg());
 							} else {
 
 								// add the month button with the month name.
@@ -290,11 +291,6 @@ public class YearPanel extends DockableView implements Printable,
 										cal.get(Calendar.MONTH),
 										cal.get(Calendar.DATE));
 
-								Theme t = Theme.getCurrentTheme();
-
-								// default background for day button - none
-								Color bbg = null;
-
 								// default box color
 								Color c = new Color(t.getWeekdayBg());
 
@@ -303,13 +299,6 @@ public class YearPanel extends DockableView implements Printable,
 
 									Collection<CalendarEntity> appts = dayInfo
 											.getItems();
-
-									// set the day button background to some
-									// different color to indicate the presence
-									// of items on this day
-									if (appts != null && !appts.isEmpty()) {
-										bbg = Color.pink;
-									}
 
 									// set the day box background color based on
 									// various items
@@ -386,7 +375,7 @@ public class YearPanel extends DockableView implements Printable,
 												colleft + 2, rowtop,
 												colwidth - 4, fontHeight),
 										new Rectangle(colleft, rowtop,
-												colwidth, rowheight), bbg) {
+												colwidth, rowheight), c) {
 									@Override
 									public void onClick() {
 										MultiView.getMainView().setView(
@@ -424,6 +413,7 @@ public class YearPanel extends DockableView implements Printable,
 			// draw all of the box items (i.e. buttons)
 			drawBoxes(g2);
 			g2.setClip(s);
+			g2.setColor(new Color(t.getDefaultFg()));
 
 			// draw the lines last
 			// top of calendar - above day names

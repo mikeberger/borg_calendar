@@ -79,7 +79,8 @@ import net.sf.borg.ui.util.GridBagConstraintsFactory;
  * WeekPanel is the UI for a single week. It consists of a Navigator attached to
  * a WeekSubPanel
  */
-public class WeekPanel extends DockableView implements Printable, CalendarModule {
+public class WeekPanel extends DockableView implements Printable,
+		CalendarModule {
 
 	private static final long serialVersionUID = 1L;
 
@@ -108,7 +109,7 @@ public class WeekPanel extends DockableView implements Printable, CalendarModule
 		private int date_;
 		private int month_;
 		private int year_;
-		
+
 		// portion of the screen taken up by the non-timed section
 		private double nonTimedPortion = 1.0 / 6.0;
 
@@ -116,7 +117,7 @@ public class WeekPanel extends DockableView implements Printable, CalendarModule
 		// can just redraw
 		// from cached data
 		private boolean needLoad = true;
-		
+
 		// records the last date on which a draw took place - for handling the
 		// first redraw after midnight
 		private int lastDrawDate = -1;
@@ -126,10 +127,9 @@ public class WeekPanel extends DockableView implements Printable, CalendarModule
 
 		// daily background colors
 		private Color backgroundColors[] = new Color[7];
-		
+
 		// zoom factor
 		private int zoom = 0;
-
 
 		/**
 		 * constructor
@@ -146,7 +146,7 @@ public class WeekPanel extends DockableView implements Printable, CalendarModule
 			// react to appt or task model changes
 			AppointmentModel.getReference().addListener(this);
 			TaskModel.getReference().addListener(this);
-			
+
 			goTo(new GregorianCalendar());
 
 		}
@@ -165,20 +165,21 @@ public class WeekPanel extends DockableView implements Printable, CalendarModule
 				double pageWidth, double pageHeight, double pagex,
 				double pagey, Font sm_font) {
 
+			Theme t = Theme.getCurrentTheme();
+
 			Graphics2D g2 = (Graphics2D) g;
-			g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,  
-	                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);  
-			
+			g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+					RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+
 			// strike-font
 			Map<TextAttribute, Serializable> stmap = new HashMap<TextAttribute, Serializable>();
 			stmap.put(TextAttribute.STRIKETHROUGH,
 					TextAttribute.STRIKETHROUGH_ON);
 			stmap.put(TextAttribute.FONT, sm_font);
 
-			// draw a white background
-			g2.setColor(Color.white);
+			g2.setColor(new Color(t.getDefaultBg()));
 			g2.fillRect(0, 0, (int) width, (int) height);
-			g2.setColor(Color.black);
+			g2.setColor(new Color(t.getDefaultFg()));
 
 			// get font sizes
 			int fontHeight = g2.getFontMetrics().getHeight();
@@ -189,7 +190,7 @@ public class WeekPanel extends DockableView implements Printable, CalendarModule
 
 			// save original clip
 			Shape s = g2.getClip();
-			
+
 			// get current time
 			GregorianCalendar now = new GregorianCalendar();
 			int tdate = now.get(Calendar.DATE);
@@ -243,7 +244,7 @@ public class WeekPanel extends DockableView implements Printable, CalendarModule
 			// allow dragging of items across the entire week - including both
 			// timed and untimed areas)
 			setDragBounds(daytop, calbot, (int) timecolwidth, (int) (pageWidth));
-			
+
 			// start and end hour = range of Y axis
 			String shr = Prefs.getPref(PrefName.WKSTARTHOUR);
 			String ehr = Prefs.getPref(PrefName.WKENDHOUR);
@@ -264,9 +265,9 @@ public class WeekPanel extends DockableView implements Printable, CalendarModule
 			SimpleDateFormat dfw = new SimpleDateFormat("EEE dd");
 
 			// set time label column to default background
-			g2.setColor(this.getBackground());
+			g2.setColor(new Color(t.getDefaultBg()));
 			g2.fillRect(0, caltop, (int) timecolwidth, calbot - caltop);
-			g2.setColor(Color.BLACK);
+			g2.setColor(new Color(t.getDefaultFg()));
 
 			// set small font for appt text
 			g2.setFont(sm_font);
@@ -292,12 +293,13 @@ public class WeekPanel extends DockableView implements Printable, CalendarModule
 						endmin = endhr * 60;
 
 						// get the day's items
-						Day dayInfo = Day.getDay(cal.get(Calendar.YEAR), cal
-								.get(Calendar.MONTH), cal.get(Calendar.DATE));
+						Day dayInfo = Day
+								.getDay(cal.get(Calendar.YEAR),
+										cal.get(Calendar.MONTH),
+										cal.get(Calendar.DATE));
 
 						// set a different background color based on various
 						// circumstances
-						Theme t = Theme.getCurrentTheme();
 						Color backgroundColor = null;
 						int dow = cal.get(Calendar.DAY_OF_WEEK);
 						if (today.get(Calendar.MONTH) == month_
@@ -311,7 +313,8 @@ public class WeekPanel extends DockableView implements Printable, CalendarModule
 							backgroundColor = new Color(t.getHolidayBg());
 						} else if (dayInfo.getVacation() == 1) {
 							// full day vacation
-							backgroundColor = new Color(Theme.getCurrentTheme().getVacationBg());
+							backgroundColor = new Color(Theme.getCurrentTheme()
+									.getVacationBg());
 						} else if (dayInfo.getVacation() == 2) {
 							// half-day vacation
 							backgroundColor = new Color(t.getHalfdayBg());
@@ -413,7 +416,7 @@ public class WeekPanel extends DockableView implements Printable, CalendarModule
 				g2.setClip(s);
 
 				// adjust for rounding errors
-				int nextColumnLeft = (int) (timecolwidth + (col+1) * colwidth);
+				int nextColumnLeft = (int) (timecolwidth + (col + 1) * colwidth);
 				int fixedWidth = nextColumnLeft - colleft;
 				g2.setColor(this.getBackground());
 				g2.fillRect(colleft, caltop, fixedWidth, daytop - caltop);
@@ -421,7 +424,7 @@ public class WeekPanel extends DockableView implements Printable, CalendarModule
 				g2.setColor(backgroundColors[col]);
 				g2.fillRect(colleft, caltop, fixedWidth, calbot - caltop);
 
-				g2.setColor(Color.black);
+				g2.setColor(new Color(t.getDefaultFg()));
 
 				// increment the day
 				cal.add(Calendar.DATE, 1);
@@ -429,18 +432,16 @@ public class WeekPanel extends DockableView implements Printable, CalendarModule
 			}
 
 			needLoad = false;
-			
+
 			// draw dashed lines for 1/2 hour intervals
 			Stroke defstroke = g2.getStroke();
 			g2.setStroke(dashed);
 			for (int row = 0; row < numhalfhours; row++) {
 				int rowtop = (int) ((row * tickheight) + aptop);
-				g2
-						.drawLine((int) timecolwidth, rowtop, (int) pageWidth,
-								rowtop);
+				g2.drawLine((int) timecolwidth, rowtop, (int) pageWidth, rowtop);
 			}
 			g2.setStroke(defstroke);
-			
+
 			// add the zoom buttons
 			if (zoom < 4)
 				boxes.add(new ButtonBox(cal.getTime(), "", new ImageIcon(
@@ -458,8 +459,8 @@ public class WeekPanel extends DockableView implements Printable, CalendarModule
 			if (zoom > 0)
 				boxes.add(new ButtonBox(cal.getTime(), "", new ImageIcon(
 						getClass().getResource("/resource/ZoomOut16.gif")),
-						new Rectangle((int)timecolwidth - 20, caltop, 20, smfontHeight),
-						null) {
+						new Rectangle((int) timecolwidth - 20, caltop, 20,
+								smfontHeight), null) {
 
 					@Override
 					public void onClick() {
@@ -469,13 +470,12 @@ public class WeekPanel extends DockableView implements Printable, CalendarModule
 
 				});
 
-
 			// add the scroll buttons
 			if (nonTimedPortion < 0.8) {
 				boxes.add(new ButtonBox(cal.getTime(), "", new ImageIcon(
 						getClass().getResource("/resource/Down16.gif")),
-						new Rectangle(0, (int) aptop, (int)timecolwidth, smfontHeight),
-						null) {
+						new Rectangle(0, (int) aptop, (int) timecolwidth,
+								smfontHeight), null) {
 
 					@Override
 					public void onClick() {
@@ -485,11 +485,11 @@ public class WeekPanel extends DockableView implements Printable, CalendarModule
 
 				});
 			}
-			if (nonTimedPortion > 0.2 ) {
+			if (nonTimedPortion > 0.2) {
 				boxes.add(new ButtonBox(cal.getTime(), "", new ImageIcon(
 						getClass().getResource("/resource/Up16.gif")),
-						new Rectangle(0, (int) aptop - smfontHeight, (int)timecolwidth,
-								smfontHeight), null) {
+						new Rectangle(0, (int) aptop - smfontHeight,
+								(int) timecolwidth, smfontHeight), null) {
 
 					@Override
 					public void onClick() {
@@ -502,6 +502,8 @@ public class WeekPanel extends DockableView implements Printable, CalendarModule
 
 			// draw all boxes for the week
 			drawBoxes(g2);
+			
+			g2.setColor(new Color(t.getDefaultFg()));
 
 			// reset calendar
 			cal.setTime(beg_);
@@ -693,9 +695,10 @@ public class WeekPanel extends DockableView implements Printable, CalendarModule
 			Font sm_font = Font.decode(Prefs.getPref(PrefName.PRINTFONT));
 			clearData();
 			int ret = drawIt(g, pageFormat.getWidth(), pageFormat.getHeight(),
-					pageFormat.getImageableWidth(), pageFormat
-							.getImageableHeight(), pageFormat.getImageableX(),
-					pageFormat.getImageableY(), sm_font);
+					pageFormat.getImageableWidth(),
+					pageFormat.getImageableHeight(),
+					pageFormat.getImageableX(), pageFormat.getImageableY(),
+					sm_font);
 			refresh();
 			return ret;
 		}
@@ -705,12 +708,12 @@ public class WeekPanel extends DockableView implements Printable, CalendarModule
 		 */
 		@Override
 		public void refresh() {
-			Toolkit toolkit =  Toolkit.getDefaultToolkit ();
+			Toolkit toolkit = Toolkit.getDefaultToolkit();
 			Dimension dim = toolkit.getScreenSize();
-			int h = ((zoom+2) * (int)dim.getHeight())/2;
-			if( zoom == 0)
+			int h = ((zoom + 2) * (int) dim.getHeight()) / 2;
+			if (zoom == 0)
 				h = 0;
-			this.setPreferredSize(new Dimension(0,h));
+			this.setPreferredSize(new Dimension(0, h));
 			clearData();
 			repaint();
 			this.getParent().doLayout();
@@ -720,7 +723,7 @@ public class WeekPanel extends DockableView implements Printable, CalendarModule
 		public void update(ChangeEvent event) {
 			refresh();
 		}
-		
+
 		/**
 		 * navigate to the current week
 		 */
@@ -755,12 +758,12 @@ public class WeekPanel extends DockableView implements Printable, CalendarModule
 
 		JScrollPane sp = new JScrollPane();
 		sp.setViewportView(wp_);
-		
+
 		setLayout(new java.awt.GridBagLayout());
-		add(nav, GridBagConstraintsFactory
-				.create(0, 0, GridBagConstraints.BOTH));
-		add(sp, GridBagConstraintsFactory.create(0, 1,
-				GridBagConstraints.BOTH, 1.0, 1.0));
+		add(nav,
+				GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH));
+		add(sp, GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH,
+				1.0, 1.0));
 
 	}
 
@@ -798,23 +801,22 @@ public class WeekPanel extends DockableView implements Printable, CalendarModule
 	@Override
 	public void initialize(MultiView parent) {
 		final MultiView par = parent;
-		parent.addToolBarItem(new ImageIcon(getClass().getResource(
-		"/resource/week.jpg")), getModuleName(), 
-		new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent evt) {
-				par.setView(ViewType.WEEK);
-			}
-		});
-		SunTrayIconProxy.addAction(getModuleName(), 
-		new ActionListener() {
+		parent.addToolBarItem(
+				new ImageIcon(getClass().getResource("/resource/week.jpg")),
+				getModuleName(), new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent evt) {
+						par.setView(ViewType.WEEK);
+					}
+				});
+		SunTrayIconProxy.addAction(getModuleName(), new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
 				par.setView(ViewType.WEEK);
 			}
 		});
 	}
-	
+
 	@Override
 	public void print() {
 		try {
@@ -823,7 +825,7 @@ public class WeekPanel extends DockableView implements Printable, CalendarModule
 			Errmsg.errmsg(e);
 		}
 	}
-	
+
 	@Override
 	public ViewType getViewType() {
 		return ViewType.WEEK;
@@ -837,14 +839,12 @@ public class WeekPanel extends DockableView implements Printable, CalendarModule
 	@Override
 	public void refresh() {
 		// do nothing - children do their own refresh
-		
+
 	}
 
 	@Override
 	public void update(ChangeEvent event) {
 		// do nothing - children do their own refresh
 	}
-	
-	
 
 }

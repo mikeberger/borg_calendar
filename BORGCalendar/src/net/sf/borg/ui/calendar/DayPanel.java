@@ -173,6 +173,8 @@ public class DayPanel extends DockableView implements Printable, CalendarModule 
 				double pageWidth, double pageHeight, double pagex,
 				double pagey, Font sm_font) {
 
+			Theme t = Theme.getCurrentTheme();
+
 			Graphics2D g2 = (Graphics2D) g;
 			g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
 					RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
@@ -184,9 +186,9 @@ public class DayPanel extends DockableView implements Printable, CalendarModule 
 			stmap.put(TextAttribute.FONT, sm_font);
 
 			// draw a white background
-			g2.setColor(Color.white);
+			g2.setColor(new Color(t.getDefaultBg()));
 			g2.fillRect(0, 0, (int) width, (int) height);
-			g2.setColor(Color.black);
+			g2.setColor(new Color(t.getDefaultFg()));
 
 			// translate coordinates to page margins
 			g2.translate(pagex, pagey);
@@ -250,7 +252,7 @@ public class DayPanel extends DockableView implements Printable, CalendarModule 
 
 			// draw background of time column (where the y-axis times are shown)
 			// using the default background color
-			g2.setColor(this.getBackground());
+			g2.setColor(new Color(t.getDefaultBg()));
 			g2.fillRect(0, caltop, (int) timecolwidth, calbot - caltop);
 
 			// set small font for appt text
@@ -277,7 +279,6 @@ public class DayPanel extends DockableView implements Printable, CalendarModule 
 
 					// set a different background color based on various
 					// circumstances
-					Theme t = Theme.getCurrentTheme();
 					backgroundColor = null;
 					int dow = cal.get(Calendar.DAY_OF_WEEK);
 					Calendar today = new GregorianCalendar();
@@ -387,10 +388,10 @@ public class DayPanel extends DockableView implements Printable, CalendarModule 
 			}
 
 			// draw background for day area with the user color
-			g2.setColor(backgroundColor);
+			g2.setColor(new Color(t.getDefaultBg()));
 			g2.fillRect((int) timecolwidth, caltop,
 					(int) (pageWidth - timecolwidth), (int) pageHeight - caltop);
-			g2.setColor(Color.BLACK);
+			g2.setColor(new Color(t.getDefaultFg()));
 
 			// draw dashed lines for 1/2 hour intervals
 			Stroke defstroke = g2.getStroke();
@@ -462,6 +463,7 @@ public class DayPanel extends DockableView implements Printable, CalendarModule 
 			// draw all boxes
 			g2.setClip(s);
 			drawBoxes(g2);
+			g2.setColor(new Color(t.getDefaultFg()));
 
 			// draw the day's lines last so they show on top of other stuff
 			// first - the horizontal lines
