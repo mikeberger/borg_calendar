@@ -4,6 +4,10 @@ Feature 3362107 repeat pattern (By N weeks, months, years)
 Feature 3295770 Standard Menu Bar for all Windows
 Feature 3306514 Daily view scale setting - add zoom buttons on day and week view. does not affect printing.
 Feature - Ability to open any view from the system tray icon menu
+Feature #6: add reminders for tasks
+Feature #12: Show popup reminder for birthdays
+Feature $15: Color Schemes and support for dark themes
+Feature #16: Allow user to type in look and feel name
 
 Bug 3306512 category not consistant across borg clients
 Bug 3295776 Can't print Task List
