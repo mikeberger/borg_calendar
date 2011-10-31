@@ -504,8 +504,6 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 	 */
 	public void refresh() {
 
-		int row = 0;
-
 		// clear all table rows
 		TableSorter tm = (TableSorter) projectTable.getModel();
 		tm.setRowCount(0);
@@ -580,7 +578,6 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 				// add the task row to table
 				tm.addRow(ro);
 				tm.tableChanged(new TableModelEvent(tm));
-				row++;
 			}
 
 		} catch (Exception e) {

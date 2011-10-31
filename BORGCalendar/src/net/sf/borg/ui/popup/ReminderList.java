@@ -62,7 +62,7 @@ public class ReminderList extends View {
 
 	private JPanel buttonPanel = new JPanel();
 
-	private JTable table = new JTable();
+	private JTable reminderTable = new JTable();
 	
 	// table columns
 	static private final int SELECT_COLUMN = 0;
@@ -131,7 +131,7 @@ public class ReminderList extends View {
 		// inst is the ReminderInstance in a hidden column
 		// mins is the minutes-to-go of the reminder - for sorting. hidden
 		// column.
-		table.setModel(new TableSorter(new String[] { "",
+		reminderTable.setModel(new TableSorter(new String[] { "",
 				Resource.getResourceString("Reminder"),
 				Resource.getResourceString("Due"), "inst", "mins" },
 				new Class[] { Boolean.class, String.class, String.class,
@@ -139,13 +139,13 @@ public class ReminderList extends View {
 						new boolean[]{ true, false, false, false, false}));
 
 		// hide inst and mins columns
-		table.removeColumn(table.getColumnModel().getColumn(3));
-		table.removeColumn(table.getColumnModel().getColumn(3));
+		reminderTable.removeColumn(reminderTable.getColumnModel().getColumn(3));
+		reminderTable.removeColumn(reminderTable.getColumnModel().getColumn(3));
 		
-		table.getColumnModel().getColumn(ReminderList.SELECT_COLUMN).setMaxWidth(30);
-		table.getColumnModel().getColumn(ReminderList.SELECT_COLUMN).setMinWidth(20);
+		reminderTable.getColumnModel().getColumn(ReminderList.SELECT_COLUMN).setMaxWidth(30);
+		reminderTable.getColumnModel().getColumn(ReminderList.SELECT_COLUMN).setMinWidth(20);
 		
-		table.setDefaultRenderer(String.class, new MyTableCellRenderer());
+		reminderTable.setDefaultRenderer(String.class, new MyTableCellRenderer());
 
 		pack();
 
@@ -166,7 +166,7 @@ public class ReminderList extends View {
 	
 		List<ReminderInstance> list = new ArrayList<ReminderInstance>();
 		
-		TableSorter tm = (TableSorter) table.getModel();
+		TableSorter tm = (TableSorter) reminderTable.getModel();
 
 		for( int row = 0; row < tm.getRowCount(); row++ )
 		{
@@ -185,18 +185,18 @@ public class ReminderList extends View {
 	private void initComponents() {
 
 		this.getContentPane().setLayout(new GridBagLayout());
-		table = new JTable();
+		reminderTable = new JTable();
 		buttonPanel = new JPanel();
 
-		table.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0,
+		reminderTable.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0,
 				0, 0)));
 		
-		table.setRowSelectionAllowed(false);
+		reminderTable.setRowSelectionAllowed(false);
 
 		
 		JScrollPane jScrollPane1 = new JScrollPane();
 		jScrollPane1.setPreferredSize(new java.awt.Dimension(554, 404));
-		jScrollPane1.setViewportView(table);
+		jScrollPane1.setViewportView(reminderTable);
 
 		JButton hideButton = new JButton();
 		
@@ -312,12 +312,12 @@ public class ReminderList extends View {
 
 		// table will be sorted by the hidden column - minutes to go
 		// table will not be user sortable
-		TableSorter tm = (TableSorter) table.getModel();
+		TableSorter tm = (TableSorter) reminderTable.getModel();
 		tm.sortByColumn(ReminderList.TOGO_MINUTES_COLUMN);
 		tm.setRowCount(0);
 
 		// clear selection
-		table.clearSelection();
+		reminderTable.clearSelection();
 
 		// add all reminders
 		for (ReminderInstance inst : list) {
@@ -373,9 +373,9 @@ public class ReminderList extends View {
 	 */
 	public void updateTimes() {
 
-		int selected = table.getSelectedRow();
+		int selected = reminderTable.getSelectedRow();
 
-		TableSorter tm = (TableSorter) table.getModel();
+		TableSorter tm = (TableSorter) reminderTable.getModel();
 
 		for (int index = 0; index < tm.getRowCount(); index++) {
 			Object o = tm.getValueAt(index, ReminderList.REMINDER_INSTANCE_COLUMN);
@@ -390,7 +390,7 @@ public class ReminderList extends View {
 		}
 
 		if (selected != -1)
-			table.getSelectionModel().setSelectionInterval(selected, selected);
+			reminderTable.getSelectionModel().setSelectionInterval(selected, selected);
 
 	}
 

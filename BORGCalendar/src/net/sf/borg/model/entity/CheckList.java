@@ -93,9 +93,6 @@ public class CheckList {
 		}
 	}
 	
-	/** The Constant serialVersionUID. */
-	private static final long serialVersionUID = -1L;
-	
 	/** The CheckList name. */
 	private String CheckListName;
 	

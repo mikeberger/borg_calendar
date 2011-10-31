@@ -76,11 +76,11 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 		@Override
 		public Component getTreeCellRendererComponent(JTree tree, Object value,
 				boolean sel, boolean expanded, boolean leaf, int row,
-				boolean hasFocus) {
+				boolean has_focus) {
 			
 			
 			super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf,
-					row, hasFocus);
+					row, has_focus);
 			
 			// get the tree model node
 			if( value instanceof DefaultMutableTreeNode )
@@ -240,7 +240,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 			.getResourceString("show_closed_tasks"));
 
 	/** The tree. */
-	private JTree tree = null;
+	private JTree projectTree = null;
 
 	/** The tree scroll pane. */
 	private JScrollPane treeScrollPane = null;
@@ -264,17 +264,17 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 		createNodes(rootNode);
 
 		// Create a tree that allows one selection at a time.
-		tree = new JTree(rootNode);
-		tree.getSelectionModel().setSelectionMode(
+		projectTree = new JTree(rootNode);
+		projectTree.getSelectionModel().setSelectionMode(
 				TreeSelectionModel.SINGLE_TREE_SELECTION);
 		
-		tree.setCellRenderer(new ProjectTreeCellRenderer());
+		projectTree.setCellRenderer(new ProjectTreeCellRenderer());
 
 		// Listen for when the selection changes.
-		tree.addTreeSelectionListener(this);
+		projectTree.addTreeSelectionListener(this);
 
 		// Create the scroll pane and add the tree to it.
-		treeScrollPane = new JScrollPane(tree);
+		treeScrollPane = new JScrollPane(projectTree);
 
 		// pane containing tree + show closed check box
 		JPanel treePane = new JPanel();
@@ -298,7 +298,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 
 		add(splitPane);
 
-		tree.addMouseListener(this);
+		projectTree.addMouseListener(this);
 
 		/*
 		 * root node popup menu
@@ -536,10 +536,10 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 	 *            if true - expand, else collapse
 	 */
 	public void expandOrCollapseAll(boolean expand) {
-		TreeNode root = (TreeNode) tree.getModel().getRoot();
+		TreeNode root = (TreeNode) projectTree.getModel().getRoot();
 
 		// Traverse tree from root
-		expandOrCollapseSubTree(tree, new TreePath(root), expand);
+		expandOrCollapseSubTree(projectTree, new TreePath(root), expand);
 	}
 
 	/**
@@ -548,7 +548,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 	 * @return the selected entity
 	 */
 	private KeyedEntity<?> getSelectedEntity() {
-		DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree
+		DefaultMutableTreeNode node = (DefaultMutableTreeNode) projectTree
 				.getLastSelectedPathComponent();
 		if (node == null)
 			return null;
@@ -571,7 +571,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 		if (e.getButton() == MouseEvent.BUTTON1)
 			return;
 
-		TreePath selPath = tree.getPathForLocation(e.getX(), e.getY());
+		TreePath selPath = projectTree.getPathForLocation(e.getX(), e.getY());
 		if (selPath == null)
 			return;
 		DefaultMutableTreeNode node = (DefaultMutableTreeNode) selPath
@@ -579,7 +579,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 		if (node == null)
 			return;
 
-		tree.setSelectionPath(selPath);
+		projectTree.setSelectionPath(selPath);
 		Object nodeobj = node.getUserObject();
 		if (!(nodeobj instanceof Node)) {
 			rootmenu.show(this, e.getX(), e.getY());
@@ -650,16 +650,16 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 				.getResourceString("projects"));
 		createNodes(top);
 		// Create a tree that allows one selection at a time.
-		tree = new JTree(top);
-		tree.setCellRenderer(new ProjectTreeCellRenderer());
+		projectTree = new JTree(top);
+		projectTree.setCellRenderer(new ProjectTreeCellRenderer());
 
-		tree.getSelectionModel().setSelectionMode(
+		projectTree.getSelectionModel().setSelectionMode(
 				TreeSelectionModel.SINGLE_TREE_SELECTION);
 
 		// Listen for when the selection changes.
-		tree.addTreeSelectionListener(this);
-		treeScrollPane.setViewportView(tree);
-		tree.addMouseListener(this);
+		projectTree.addTreeSelectionListener(this);
+		treeScrollPane.setViewportView(projectTree);
+		projectTree.addMouseListener(this);
 		expandOrCollapseAll(isExpanded);
 	}
 

@@ -275,15 +275,15 @@ public class SearchCriteria {
 	 */
 	public boolean search(String s) {
 		
-		String searchString = this.isCaseSensitive() ? this.getSearchString() : this.getSearchString().toLowerCase();
+		String searchStr = this.isCaseSensitive() ? this.getSearchString() : this.getSearchString().toLowerCase();
 		String source = this.isCaseSensitive() ? s : s.toLowerCase();
 
 		if (this.isWholeWord())
 		{
-			return source.matches(".*?\\b" + searchString + "\\b.*?");
+			return source.matches(".*?\\b" + searchStr + "\\b.*?");
 		}
 		
-		return source.contains(searchString);
+		return source.contains(searchStr);
 
 
 	}
