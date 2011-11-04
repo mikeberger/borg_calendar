@@ -543,8 +543,9 @@ public class LinkPanel extends JPanel implements Model.Listener {
 					AppointmentListView ag = new AppointmentListView(cal
 							.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal
 							.get(Calendar.DATE));
-					ag.showApp(ap.getKey());
 					ag.showView();
+					ag.showApp(ap.getKey());
+
 				}
 				// open a project
 				else if (at.getLinkType().equals(LinkType.PROJECT.toString())) {

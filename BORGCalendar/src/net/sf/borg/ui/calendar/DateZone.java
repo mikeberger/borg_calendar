@@ -127,6 +127,8 @@ class DateZone {
 				cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal
 						.get(Calendar.DATE));
 		ag.showView();
+		ag.showApp(-1);
+
 
 	}
 

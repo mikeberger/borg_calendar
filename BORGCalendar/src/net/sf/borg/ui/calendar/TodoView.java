@@ -795,9 +795,10 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 					.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal
 					.get(Calendar.DATE));
 			Appointment ap = (Appointment) o;
+			ag.showView();
+
 			ag.showApp(ap.getKey());
 
-			ag.showView();
 		} else if (o instanceof Project) {
 			try {
 				ProjectView tskg = new ProjectView((Project) o,

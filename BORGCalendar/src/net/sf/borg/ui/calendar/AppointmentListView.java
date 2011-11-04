@@ -25,6 +25,7 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.DateFormat;
@@ -313,6 +314,17 @@ public class AppointmentListView extends DockableView implements
 		}
 		return copyButton;
 	}
+	
+	private static class JDateChooserNoMnemonic extends JDateChooser {
+		
+		private static final long serialVersionUID = 120268996535847635L;
+
+		public JDateChooserNoMnemonic()
+		{
+			super();
+			calendarButton.setMnemonic(KeyEvent.VK_F24); // set to harmless key
+		}
+	}
 
 	/**
 	 * Gets the date chooser
@@ -321,7 +333,7 @@ public class AppointmentListView extends DockableView implements
 	 */
 	private JDateChooser getDateCB() {
 		if (dateChooser == null) {
-			dateChooser = new JDateChooser();
+			dateChooser = new JDateChooserNoMnemonic();
 			// cb.setCalendar(cal_);
 			dateChooser.addPropertyChangeListener("date",
 					new PropertyChangeListener() {
