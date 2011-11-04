@@ -153,11 +153,12 @@ public class UIControl {
 
 		// make the main window visible
 		if (!Prefs.getBoolPref(PrefName.BACKGSTART)
-				|| !SunTrayIconProxy.hasTrayIcon())
+				|| !SunTrayIconProxy.hasTrayIcon()) {
 			mv.setVisible(true);
 
-		// show the month view
-	    mv.setView(ViewType.MONTH);
+			// show the month view
+			mv.setView(ViewType.MONTH);
+		}
 
 		// destroy the splash screen
 		if (splashScreen != null) {
