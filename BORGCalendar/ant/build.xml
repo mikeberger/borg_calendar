@@ -1,10 +1,7 @@
 <?xml version="1.0"?>
 <!-- $Id$ -->
 <project name="borg-calendar" default="main" basedir="../..">
-	<!-- Properties -->
-	<property name="Name" value="Borg" />
-	<property name="name" value="borg" />
-
+	
 	<property name="prj.dir" value="${basedir}/BORGCalendar" />
 	<property name="help.dir" value="${prj.dir}/borghelp" />
 
@@ -58,25 +55,18 @@
 
 	<target name="javadoc">
 		<tstamp />
-
 		<property name="javadoc.bottom" value="Generated ${TODAY} by ${user.name} using ${ant.version} and Java version ${java.version} from ${java.vendor} on ${os.name} ${os.arch} ${os.version}" />
-
 		<javadoc destdir="${prj.dir}/docs" use="true" Windowtitle="Borg Javadocs" Doctitle="Borg Javadocs" bottom="${javadoc.bottom}" package="true" sourcepath="${prj.dir}/src" classpathref="build.classpath" packagenames="*" excludepackagenames="test" maxmemory="512m" useexternalfile="yes" source="1.5">
 			<link href="http://java.sun.com/j2se/1.5.0/docs/api" />
 		</javadoc>
 	</target>
 
-
-
-
 	<target name="init">
 		<tstamp />
-
 		<condition property="iz.dir.found" value="IzPack installation found at: ${iz.dir}" else="IzPack installation not found.">
 			<available file="${iz.dir}" />
 		</condition>
 		<echo message="${iz.dir.found}" />
-
 	</target>
 
 	<!-- regen help search indexes -->
@@ -86,9 +76,6 @@
 		</exec>
 	</target>
 
-
-
-	<!-- Compile -->
 	<target name="compile">
 		<mkdir dir="${build.dir}" />
 		<javac srcdir="${prj.dir}/src" classpathref="build.classpath" destdir="${build.dir}" target="1.6" source="1.6" debug="true">
@@ -121,9 +108,9 @@
 			<attribute name="Class-Path" value="${generated.manifest.classpath} lib/borghelp.jar" />
 		</manifest>
 
-		<antcall target="zz_copyresources">
-			<param name="res.dir" value="${res.dir}" />
-		</antcall>
+		<copy todir="${build.dir}/resource">
+			<fileset dir="${res.dir}" includes="*" />
+		</copy>
 
 		<copy todir="${build.dir}/resource">
 			<fileset dir="${prj.dir}/installer">
@@ -139,7 +126,6 @@
 				<include name="reports/*" />
 				<include name="**/*.class" />
 			</fileset>
-
 		</jar>
 	</target>
 
@@ -160,7 +146,6 @@
 				<exclude name="**/build/**" />
 				<exclude name="**/classes/**" />
 				<exclude name="**/dist/**" />
-				<exclude name="**/gen/**" />
 				<exclude name="**/requirements/**" />
 			</zipfileset>
 			<zipfileset dir="${build.dir}/resource">
@@ -249,43 +234,14 @@
 	<!-- Clean everything -->
 	<target name="clean" depends="init" description="Clean everything.">
 		<delete quiet="true" dir="${build.dir}" />
-		<delete quiet="true" dir="${gen.dir}" />
 		<delete quiet="true" dir="${dist.dir}" />
 		<delete quiet="true" dir="${doc.dir}" />
 		<delete quiet="true" dir="${borg.prog.dir}" />
-		<antcall target="zz_delclassfiles">
-			<param name="src.dir" value="${prj.ui.dir}" />
-		</antcall>
 	</target>
 
 	<target name="clean-build" depends="clean,borg-jar,help-jar" />
 	<target name="main" depends="regen-help,fulldist,installer,installer.jarbundler" description="does everything." />
 	<target name="fulldist" depends="borg_prog,borg_src" />
 
-	<!-- "Private" targets -->
-	<target name="zz_delclassfiles">
-		<delete quiet="true">
-			<!-- clean any class files from netbeans -->
-			<fileset dir="${src.dir}/net">
-				<include name="**/*.class" />
-			</fileset>
-		</delete>
-	</target>
 
-	<target name="zz_copyresources">
-		<copy todir="${build.dir}/resource">
-			<fileset dir="${res.dir}">
-				<include name="*.jpg" />
-				<include name="*.htm" />
-				<include name="*.wav" />
-				<include name="*.xml" />
-				<include name="*.properties" />
-				<include name="COPYING" />
-				<include name="*.txt" />
-				<include name="*.gif" />
-				<include name="*.xsl" />
-				<include name="*.sql" />
-			</fileset>
-		</copy>
-	</target>
 </project>
