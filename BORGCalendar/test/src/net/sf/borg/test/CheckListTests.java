@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 import java.util.Collection;
 import java.util.List;
 
-import net.sf.borg.common.Errmsg;
 import net.sf.borg.model.CheckListModel;
 import net.sf.borg.model.db.jdbc.JdbcDB;
 import net.sf.borg.model.entity.CheckList;
@@ -19,7 +18,6 @@ public class CheckListTests {
 	@BeforeClass
 	public static void setUp() throws Exception {
 		// open the borg dbs - in memory
-		Errmsg.console(true);
 		JdbcDB.connect("jdbc:hsqldb:mem:whatever");
 		
 	}

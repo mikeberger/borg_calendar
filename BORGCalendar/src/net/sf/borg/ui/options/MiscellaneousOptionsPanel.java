@@ -189,7 +189,7 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 			int socket = Integer.parseInt(socketPort.getText());
 			Prefs.putPref(PrefName.SOCKETPORT, new Integer(socket));
 		} catch (NumberFormatException e) {
-			Errmsg.notice(Resource.getResourceString("socket_warn"));
+			Errmsg.getErrorHandler().notice(Resource.getResourceString("socket_warn"));
 			socketPort.setText("-1");
 			Prefs.putPref(PrefName.SOCKETPORT, new Integer(-1));
 			return;

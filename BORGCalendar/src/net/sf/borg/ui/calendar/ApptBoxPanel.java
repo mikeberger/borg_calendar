@@ -524,7 +524,7 @@ abstract class ApptBoxPanel extends JPanel implements ComponentListener {
 					resizedBox.resize(resizeTop, realMins((y - resizeYMin)
 							/ (resizeYMax - resizeYMin)));
 				} catch (Exception e) {
-					Errmsg.errmsg(e);
+					Errmsg.getErrorHandler().errmsg(e);
 				}
 			// if we have been moving a box, then call its move method
 			// so that it can deal with it
@@ -550,7 +550,7 @@ abstract class ApptBoxPanel extends JPanel implements ComponentListener {
 						((Box.Draggable) draggedBox).move(-1, d);
 					}
 				} catch (Exception e) {
-					Errmsg.errmsg(e);
+					Errmsg.getErrorHandler().errmsg(e);
 				}
 
 			}

@@ -273,7 +273,7 @@ public class ReminderList extends View {
 					refresh(true);
 					ReminderManager.getReminderManager().checkPopups();
 				} catch (Exception e) {
-					Errmsg.errmsg(e);
+					Errmsg.getErrorHandler().errmsg(e);
 				}
 			}
 		});

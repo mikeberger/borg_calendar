@@ -117,7 +117,7 @@ public class LinkModel extends Model {
 			File f = new File(path);
 			if (!f.exists()) {
 				if (!f.mkdir()) {
-					Errmsg.notice(Resource.getResourceString("att_folder_err")
+					Errmsg.getErrorHandler().notice(Resource.getResourceString("att_folder_err")
 							+ path);
 					return null;
 				}
@@ -129,7 +129,7 @@ public class LinkModel extends Model {
 			File f = new File(path);
 			if (!f.exists()) {
 				if (!f.mkdir()) {
-					Errmsg.notice(Resource.getResourceString("att_folder_err")
+					Errmsg.getErrorHandler().notice(Resource.getResourceString("att_folder_err")
 							+ path);
 					return null;
 				}
@@ -168,7 +168,7 @@ public class LinkModel extends Model {
 			throws Exception {
 		String path = pathIn;
 		if (owner == null) {
-			Errmsg.notice(Resource.getResourceString("att_owner_null"));
+			Errmsg.getErrorHandler().notice(Resource.getResourceString("att_owner_null"));
 			return;
 		}
 

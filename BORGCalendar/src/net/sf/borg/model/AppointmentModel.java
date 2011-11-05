@@ -170,7 +170,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 		try {
 			buildMap();
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 
 	}
@@ -318,7 +318,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 			}
 
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 
 		// even if delete fails - still refresh cache info
@@ -333,7 +333,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 			// model
 			refreshListeners(new ChangeEvent(new Integer(appt.getKey()), ChangeEvent.ChangeAction.DELETE));
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 			return;
 		}
 	}
@@ -350,7 +350,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 			if (appt != null)
 				delAppt(appt);
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 	}
 
@@ -390,7 +390,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 			}
 
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 			return;
 		}
 	}
@@ -559,7 +559,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 				av.add(appt);
 			}
 		} catch (Exception ee) {
-			Errmsg.errmsg(ee);
+			Errmsg.getErrorHandler().errmsg(ee);
 		}
 
 		return (av);
@@ -624,7 +624,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 					dbcat.add(cat);
 			}
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 
 		return (dbcat);
@@ -654,7 +654,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 			if (keycol.size() != 0)
 				return (true);
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 
 		return (false);
@@ -692,7 +692,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 		// rebuild the hashmap
 		buildMap();
 
-		CategoryModel.getReference().syncCategories();
+		CategoryModel.getReference().sync();
 
 		// refresh all views that are displaying appt data from this model
 		refreshListeners();
@@ -724,7 +724,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 		try {
 			buildMap();
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 
 		// refresh all views that are displaying appt data from this model
@@ -785,7 +785,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 				CategoryModel.getReference().addCategory(cat);
 
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 
 		}
 
@@ -797,7 +797,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 			// model
 			refreshListeners(new ChangeEvent(new Integer(r.getKey()), action));
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 			return;
 		}
 	}
@@ -805,6 +805,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 	/**
 	 * Sync with the db.
 	 */
+	@Override
 	public void sync() {
 		db_.sync();
 		try {
@@ -815,7 +816,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 			// model
 			refreshListeners();
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 			return;
 		}
 	}
@@ -871,7 +872,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 			m.marshal(appt, sw);
 			Prefs.putPref(PrefName.DEFAULT_APPT, sw.toString());
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 	}
 
@@ -895,7 +896,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 					return null;
 				return ap;
 			} catch (Exception e) {
-				Errmsg.errmsg(e);
+				Errmsg.getErrorHandler().errmsg(e);
 			}
 		}
 		return null;
@@ -983,7 +984,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 						if (lnks.isEmpty())
 							continue;
 					} catch (Exception e) {
-						Errmsg.errmsg(e);
+						Errmsg.getErrorHandler().errmsg(e);
 					}
 				}
 
@@ -994,7 +995,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 			}
 
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 		return (res);
 	}

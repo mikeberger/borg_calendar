@@ -104,7 +104,7 @@ class InfoView extends DockableView implements Module {
 		try {
 			jEditorPane1.print();
 		} catch (PrinterException e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 	}
 

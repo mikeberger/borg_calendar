@@ -179,7 +179,8 @@ public class CategoryModel extends Model {
 	 * 
 	 * @throws Exception the exception
 	 */
-	public void syncCategories() throws Exception {
+	@Override
+	public void sync() {
 		
 		Collection<String> oldCategories = new TreeSet<String>();
 		oldCategories.addAll(categories_);

@@ -89,7 +89,7 @@ public class TaskUndoItem extends UndoItem<Task> {
 					TaskModel.getReference().delete(item.getKey(), true);
 			}
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 	}
 

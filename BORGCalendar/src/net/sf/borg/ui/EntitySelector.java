@@ -347,7 +347,7 @@ public class EntitySelector extends JDialog {
 				tm.addRow(ro);
 				tm.tableChanged(new TableModelEvent(tm));
 			} catch (Exception e) {
-				Errmsg.errmsg(e);
+				Errmsg.getErrorHandler().errmsg(e);
 				return;
 			}
 
@@ -382,7 +382,7 @@ public class EntitySelector extends JDialog {
 				list_.add(b);
 
 			} catch (Exception e) {
-				Errmsg.errmsg(e);
+				Errmsg.getErrorHandler().errmsg(e);
 			}
 		}
 		this.dispose();

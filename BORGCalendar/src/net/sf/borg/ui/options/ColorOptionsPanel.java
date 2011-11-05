@@ -138,10 +138,10 @@ public class ColorOptionsPanel extends OptionsPanel {
 					themeChooser.addItem(name);
 					themeChooser.setSelectedItem(name);
 				} catch (Warning e1) {
-					Errmsg.notice(e1.getLocalizedMessage());
+					Errmsg.getErrorHandler().notice(e1.getLocalizedMessage());
 					return;
 				} catch (Exception e1) {
-					Errmsg.errmsg(e1);
+					Errmsg.getErrorHandler().errmsg(e1);
 					return;
 				}
 			}
@@ -162,7 +162,7 @@ public class ColorOptionsPanel extends OptionsPanel {
 					Theme.delete((String) themeChooser.getSelectedItem());
 					loadThemes();
 				} catch (Exception e1) {
-					Errmsg.errmsg(e1);
+					Errmsg.getErrorHandler().errmsg(e1);
 					return;
 				}
 			}
@@ -307,10 +307,10 @@ public class ColorOptionsPanel extends OptionsPanel {
 			Theme.setCurrentTheme(t);
 			loadThemes();
 		} catch (Warning e1) {
-			Errmsg.notice(e1.getLocalizedMessage());
+			Errmsg.getErrorHandler().notice(e1.getLocalizedMessage());
 			return;
 		} catch (Exception e1) {
-			Errmsg.errmsg(e1);
+			Errmsg.getErrorHandler().errmsg(e1);
 			return;
 		}
 

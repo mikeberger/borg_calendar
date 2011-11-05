@@ -254,7 +254,7 @@ public class WeekPanel extends DockableView implements Printable,
 				starthr = Integer.parseInt(shr);
 				endhr = Integer.parseInt(ehr);
 			} catch (Exception e) {
-				Errmsg.errmsg(e);
+				Errmsg.getErrorHandler().errmsg(e);
 			}
 
 			// calculate size of Y-axis ticks (each half-hour)
@@ -393,7 +393,7 @@ public class WeekPanel extends DockableView implements Printable,
 						}
 
 					} catch (Exception e) {
-						Errmsg.errmsg(e);
+						Errmsg.getErrorHandler().errmsg(e);
 					}
 
 					// layout the timed items
@@ -822,7 +822,7 @@ public class WeekPanel extends DockableView implements Printable,
 		try {
 			PrintHelper.printPrintable(this);
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 	}
 

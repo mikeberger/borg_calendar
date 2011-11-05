@@ -43,7 +43,6 @@ import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
-import net.sf.borg.control.Borg;
 import net.sf.borg.model.ExportImport;
 import net.sf.borg.model.Model;
 import net.sf.borg.model.TaskModel;
@@ -91,9 +90,9 @@ class MainMenu {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				try {
-					Borg.syncDBs();
+					Model.syncModels();
 				} catch (Exception e) {
-					Errmsg.errmsg(e);
+					Errmsg.getErrorHandler().errmsg(e);
 				}
 			}
 		});
@@ -183,7 +182,7 @@ class MainMenu {
 				try {
 					TaskConfigurator.getReference().setVisible(true);
 				} catch (Exception e) {
-					Errmsg.errmsg(e);
+					Errmsg.getErrorHandler().errmsg(e);
 				}
 			}
 		});
@@ -286,7 +285,7 @@ class MainMenu {
 				try {
 					HelpLauncher.launchHelp();
 				} catch (Exception e) {
-					Errmsg.errmsg(e);
+					Errmsg.getErrorHandler().errmsg(e);
 				}
 			}
 		});
@@ -343,7 +342,7 @@ class MainMenu {
 		try {
 			ExportImport.importFromZip(fileName);
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 	}
 
@@ -412,7 +411,7 @@ class MainMenu {
 				+ props.getProperty("build.time");
 
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 
 		// build and show the version info.
@@ -448,7 +447,7 @@ class MainMenu {
 				info += model.getInfo() + "\n";
 			}
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 			return;
 		}
 
@@ -490,13 +489,13 @@ class MainMenu {
 			if (err == null)
 				break;
 
-			Errmsg.notice(err);
+			Errmsg.getErrorHandler().notice(err);
 		}
 
 		try {
 			ExportImport.exportToZip(s, false);
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 	}
 
@@ -525,7 +524,7 @@ class MainMenu {
 		try {
 			Prefs.export(file.getAbsolutePath());
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 
 	}
@@ -694,7 +693,7 @@ class MainMenu {
 
 			ExportImport.importFromXmlFile(model, new FileInputStream(fileName));
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 	}
 
@@ -723,7 +722,7 @@ class MainMenu {
 		try {
 			Prefs.importPrefs(file.getAbsolutePath());
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 
 	}
@@ -743,7 +742,7 @@ class MainMenu {
 			TaskModel taskmod_ = TaskModel.getReference();
 			taskmod_.getTaskTypes().loadDefault();
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 	}
 

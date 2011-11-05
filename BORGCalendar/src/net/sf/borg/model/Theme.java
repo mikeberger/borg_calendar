@@ -159,7 +159,7 @@ public class Theme {
 				}
 			}
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 		
 		// if no themes exist in the database, then create the default one and persist it
@@ -171,7 +171,7 @@ public class Theme {
 			try {
 				t.save();
 			} catch (Exception e) {
-				Errmsg.errmsg(e);
+				Errmsg.getErrorHandler().errmsg(e);
 			}
 			Prefs.putPref(CURRENT_THEME, DEFAULT_THEME_NAME);
 		}

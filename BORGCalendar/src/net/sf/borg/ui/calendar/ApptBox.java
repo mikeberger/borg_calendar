@@ -622,7 +622,7 @@ class ApptBox extends Box implements Box.Draggable {
 							AppointmentModel.getReference().do_todo(
 									appt.getKey(), false, date);
 						} catch (Exception e) {
-							Errmsg.errmsg(e);
+							Errmsg.getErrorHandler().errmsg(e);
 						}
 					}
 				});
@@ -636,7 +636,7 @@ class ApptBox extends Box implements Box.Draggable {
 							AppointmentModel.getReference().do_todo(
 									appt.getKey(), true, date);
 						} catch (Exception e) {
-							Errmsg.errmsg(e);
+							Errmsg.getErrorHandler().errmsg(e);
 						}
 					}
 				});
@@ -652,7 +652,7 @@ class ApptBox extends Box implements Box.Draggable {
 							AppointmentModel.getReference().delOneOnly(
 									appt.getKey(), date);
 						} catch (Exception e) {
-							Errmsg.errmsg(e);
+							Errmsg.getErrorHandler().errmsg(e);
 						}
 					}
 				});
@@ -758,7 +758,7 @@ class ApptBox extends Box implements Box.Draggable {
 			// the first in a series
 			int k2 = DateUtil.dayOfEpoch(date);
 			if (oldday != k2) {
-				Errmsg.notice(Resource.getResourceString("rpt_drag_err"));
+				Errmsg.getErrorHandler().notice(Resource.getResourceString("rpt_drag_err"));
 				return;
 			}
 

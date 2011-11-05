@@ -42,7 +42,7 @@ public class ProjectUndoItem extends UndoItem<Project> {
 					TaskModel.getReference().deleteProject(item.getKey());
 			}
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 	}
 

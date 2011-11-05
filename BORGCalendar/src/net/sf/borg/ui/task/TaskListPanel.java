@@ -203,7 +203,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 		try {
 			initComponents();
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 			return;
 		}
 
@@ -223,7 +223,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 		try {
 			initComponents();
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 			return;
 		}
 		
@@ -256,7 +256,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 		try {
 			TaskModel.getReference().close(num.intValue());
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 
 	}
@@ -280,7 +280,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 			try {
 				TaskModel.getReference().delete(num.intValue());
 			} catch (Exception e) {
-				Errmsg.errmsg(e);
+				Errmsg.getErrorHandler().errmsg(e);
 			}
 		}
 
@@ -541,7 +541,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 		try {
 			TablePrinter.printTable(taskTable);
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 	}
 
@@ -562,7 +562,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 			try {
 				projfiltid = TaskView.getProjectId(projectName);
 			} catch (Exception e) {
-				Errmsg.errmsg(e);
+				Errmsg.getErrorHandler().errmsg(e);
 				return;
 			}
 		}
@@ -766,7 +766,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 			}
 			getTotalLabel().setText(totalItems + " items");
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 
 		// apply default sort to the table if not sorted by user
@@ -808,7 +808,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 				try {
 					projfiltid = TaskView.getProjectId(projectName);
 				} catch (Exception e) {
-					Errmsg.errmsg(e);
+					Errmsg.getErrorHandler().errmsg(e);
 					return;
 				}
 			}
@@ -816,7 +816,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 			new TaskView(null, TaskView.Action.ADD, projfiltid).showView();
 
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 	}
 
@@ -838,7 +838,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 			new TaskView(task, TaskView.Action.CHANGE, null).showView();
 
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 
 	}
@@ -861,7 +861,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 			new TaskView(task, TaskView.Action.CLONE, null).showView();
 
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 
 	}

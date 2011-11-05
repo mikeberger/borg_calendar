@@ -193,7 +193,7 @@ public abstract class ReminderManager implements Model.Listener, Prefs.Listener 
 						addToUI(apptInstance);
 
 					} catch (Exception e) {
-						Errmsg.errmsg(e);
+						Errmsg.getErrorHandler().errmsg(e);
 					}
 				}
 			}
@@ -232,7 +232,7 @@ public abstract class ReminderManager implements Model.Listener, Prefs.Listener 
 					addToUI(apptInstance);
 
 				} catch (Exception e) {
-					Errmsg.errmsg(e);
+					Errmsg.getErrorHandler().errmsg(e);
 				}
 			}
 		}
@@ -281,7 +281,7 @@ public abstract class ReminderManager implements Model.Listener, Prefs.Listener 
 					}
 				}
 			} catch (Exception e1) {
-				Errmsg.errmsg(e1);
+				Errmsg.getErrorHandler().errmsg(e1);
 			}
 		}
 
@@ -312,7 +312,7 @@ public abstract class ReminderManager implements Model.Listener, Prefs.Listener 
 
 				}
 			} catch (Exception e) {
-				Errmsg.errmsg(e);
+				Errmsg.getErrorHandler().errmsg(e);
 				return;
 			}
 
@@ -358,7 +358,7 @@ public abstract class ReminderManager implements Model.Listener, Prefs.Listener 
 
 				}
 			} catch (Exception e) {
-				// Errmsg.errmsg(e);
+				// Errmsg.getErrorHandler().errmsg(e);
 				return;
 			}
 		}

@@ -103,7 +103,7 @@ public class Resource {
 				is.close();
 				version_ = props.getProperty("borg.version");
 			} catch (Exception e) {
-				Errmsg.errmsg(e);
+				Errmsg.getErrorHandler().errmsg(e);
 			}
 		}
 

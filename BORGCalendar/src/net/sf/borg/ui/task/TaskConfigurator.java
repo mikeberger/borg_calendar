@@ -754,7 +754,7 @@ public class TaskConfigurator extends View {
 					TaskModel.getReference().saveTaskTypes(taskTypes);
 					TaskConfigurator.getReference().dispose();
 				} catch (Exception ex) {
-					Errmsg.errmsg(ex);
+					Errmsg.getErrorHandler().errmsg(ex);
 				}
 			}
 		});

@@ -315,7 +315,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 							ProjectView.Action.ADD, null);
 					entityScrollPane.setViewportView(pv);
 				} catch (Exception ex) {
-					Errmsg.errmsg(ex);
+					Errmsg.getErrorHandler().errmsg(ex);
 				}
 			}
 
@@ -403,10 +403,10 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 							new Integer(p.getKey()));
 					entityScrollPane.setViewportView(pv);
 				} catch (Exception e) {
-					Errmsg.errmsg(e);
+					Errmsg.getErrorHandler().errmsg(e);
 				}
 			} catch (Exception e1) {
-				Errmsg.errmsg(e1);
+				Errmsg.getErrorHandler().errmsg(e1);
 				return;
 			}
 		}
@@ -428,7 +428,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 						new Integer(p.getKey()));
 				entityScrollPane.setViewportView(pv);
 			} catch (Exception e1) {
-				Errmsg.errmsg(e1);
+				Errmsg.getErrorHandler().errmsg(e1);
 				return;
 			}
 		}
@@ -524,7 +524,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 				addProjectChildren(p, pnode);
 			}
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 
 	}
@@ -683,7 +683,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 						.getProject());
 				entityScrollPane.setViewportView(tv);
 			} catch (Exception e1) {
-				Errmsg.errmsg(e1);
+				Errmsg.getErrorHandler().errmsg(e1);
 				return;
 			}
 		} else if (o instanceof Project) {
@@ -693,7 +693,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 						null);
 				entityScrollPane.setViewportView(pv);
 			} catch (Exception e1) {
-				Errmsg.errmsg(e1);
+				Errmsg.getErrorHandler().errmsg(e1);
 				return;
 			}
 		}

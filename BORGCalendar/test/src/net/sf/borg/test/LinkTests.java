@@ -5,13 +5,12 @@ import static org.junit.Assert.assertEquals;
 import java.util.Collection;
 import java.util.Date;
 
-import net.sf.borg.common.Errmsg;
 import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.LinkModel;
+import net.sf.borg.model.LinkModel.LinkType;
 import net.sf.borg.model.MemoModel;
 import net.sf.borg.model.TaskModel;
-import net.sf.borg.model.LinkModel.LinkType;
 import net.sf.borg.model.db.jdbc.JdbcDB;
 import net.sf.borg.model.entity.Address;
 import net.sf.borg.model.entity.Appointment;
@@ -30,7 +29,6 @@ public class LinkTests {
 	@BeforeClass
 	public static void setUp() throws Exception {
 		// open the borg dbs - in memory
-		Errmsg.console(true);
 		JdbcDB.connect("jdbc:hsqldb:mem:whatever");
 		
 	}
@@ -69,23 +67,12 @@ public class LinkTests {
 		
 		LinkModel.getReference().addLink(appt, Integer.toString(task.getKey()), LinkType.TASK);
 		LinkModel.getReference().addLink(addr, Integer.toString(task.getKey()), LinkType.TASK);
-		LinkModel.getReference().addLink(memo, Integer.toString(task.getKey()), LinkType.TASK);
 		LinkModel.getReference().addLink(project, Integer.toString(task.getKey()), LinkType.TASK);
 
-		LinkModel.getReference().addLink(task, Integer.toString(appt.getKey()), LinkType.APPOINTMENT);
 		LinkModel.getReference().addLink(addr, Integer.toString(appt.getKey()), LinkType.APPOINTMENT);
-		LinkModel.getReference().addLink(memo, Integer.toString(appt.getKey()), LinkType.APPOINTMENT);
 		LinkModel.getReference().addLink(project, Integer.toString(appt.getKey()), LinkType.APPOINTMENT);
 
-		LinkModel.getReference().addLink(task, Integer.toString(addr.getKey()), LinkType.ADDRESS);
-		LinkModel.getReference().addLink(appt, Integer.toString(addr.getKey()), LinkType.ADDRESS);
-		LinkModel.getReference().addLink(memo, Integer.toString(addr.getKey()), LinkType.ADDRESS);
 		LinkModel.getReference().addLink(project, Integer.toString(addr.getKey()), LinkType.ADDRESS);
-
-		LinkModel.getReference().addLink(task, Integer.toString(project.getKey()), LinkType.PROJECT);
-		LinkModel.getReference().addLink(addr, Integer.toString(project.getKey()), LinkType.PROJECT);
-		LinkModel.getReference().addLink(appt, Integer.toString(project.getKey()), LinkType.PROJECT);
-		LinkModel.getReference().addLink(memo, Integer.toString(project.getKey()), LinkType.PROJECT);
 
 		LinkModel.getReference().addLink(task, memo.getMemoName(), LinkType.MEMO);
 		LinkModel.getReference().addLink(addr, memo.getMemoName(), LinkType.MEMO);
@@ -93,20 +80,22 @@ public class LinkTests {
 		LinkModel.getReference().addLink(project, memo.getMemoName(), LinkType.MEMO);
 		
 		Collection<Link> links = LinkModel.getReference().getLinks();
-		assertEquals("Wrong number of links", 20, links.size());
 		
-		for( KeyedEntity<?> ent : new KeyedEntity[]{ addr, appt, project, memo, task })
+		// number of links = 10 regular plus 6 added back links
+		assertEquals("Wrong number of links", 16, links.size());
+		
+		for( KeyedEntity<?> ent : new KeyedEntity[]{ addr, appt, project, task })
 		{
 			Collection<Link> objLinks = LinkModel.getReference().getLinks(ent);
-			assertEquals("Wrong number of object links", 4, objLinks.size());
+				assertEquals("Wrong number of object links", 4, objLinks.size());
 		}
 		
 		AppointmentModel.getReference().delAppt(appt);
 		
 		links = LinkModel.getReference().getLinks();
-		assertEquals("Wrong number of links", 12, links.size());
+		assertEquals("Wrong number of links", 9, links.size());
 		
-		for( KeyedEntity<?> ent : new KeyedEntity[]{ addr, project, memo, task })
+		for( KeyedEntity<?> ent : new KeyedEntity[]{ addr, project, task })
 		{
 			Collection<Link> objLinks = LinkModel.getReference().getLinks(ent);
 			assertEquals("Wrong number of object links", 3, objLinks.size());
@@ -115,9 +104,9 @@ public class LinkTests {
 		TaskModel.getReference().delete(task.getKey());
 		
 		links = LinkModel.getReference().getLinks();
-		assertEquals("Wrong number of links", 6, links.size());
+		assertEquals("Wrong number of links", 4, links.size());
 		
-		for( KeyedEntity<?> ent : new KeyedEntity[]{ addr, project, memo })
+		for( KeyedEntity<?> ent : new KeyedEntity[]{ addr, project })
 		{
 			Collection<Link> objLinks = LinkModel.getReference().getLinks(ent);
 			assertEquals("Wrong number of object links", 2, objLinks.size());

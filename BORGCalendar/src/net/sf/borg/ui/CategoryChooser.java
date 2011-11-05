@@ -118,7 +118,7 @@ public class CategoryChooser extends View {
 				checkBoxPanel.add(cb);
 			}
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 
 		pack();
@@ -216,7 +216,7 @@ public class CategoryChooser extends View {
 					CategoryModel.getReference().addCategory(inputValue);
 					CategoryModel.getReference().showCategory(inputValue);
 				} catch (Exception e) {
-					Errmsg.errmsg(e);
+					Errmsg.getErrorHandler().errmsg(e);
 				}
 			}
 		});
@@ -230,9 +230,9 @@ public class CategoryChooser extends View {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				try {
-					CategoryModel.getReference().syncCategories();
+					CategoryModel.getReference().sync();
 				} catch (Exception e) {
-					Errmsg.errmsg(e);
+					Errmsg.getErrorHandler().errmsg(e);
 				}
 			}
 		});
@@ -332,13 +332,13 @@ public class CategoryChooser extends View {
 							}
 
 							try {
-								CategoryModel.getReference().syncCategories();
+								CategoryModel.getReference().sync();
 							} catch (Exception ex) {
-								Errmsg.errmsg(ex);
+								Errmsg.getErrorHandler().errmsg(ex);
 							}
 						}
 					} catch (Exception ex) {
-						Errmsg.errmsg(ex);
+						Errmsg.getErrorHandler().errmsg(ex);
 					}
 				}
 			});

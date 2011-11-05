@@ -144,7 +144,7 @@ public class MemoModel extends Model implements Searchable<Memo> {
 			}
 
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 
 		refresh();
@@ -195,7 +195,7 @@ public class MemoModel extends Model implements Searchable<Memo> {
 
 			}
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 
 		// inform views of data change
@@ -370,7 +370,7 @@ public class MemoModel extends Model implements Searchable<Memo> {
 			}
 
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 		return (res);
 	}

@@ -4,6 +4,7 @@ import java.awt.Font;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Observer;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JOptionPane;
@@ -15,7 +16,6 @@ import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
-import net.sf.borg.control.Borg;
 import net.sf.borg.model.ExportImport;
 import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.address.AddrListView;
@@ -33,6 +33,7 @@ import net.sf.borg.ui.popup.ReminderPopupManager;
 import net.sf.borg.ui.task.TaskModule;
 import net.sf.borg.ui.util.NwFontChooserS;
 import net.sf.borg.ui.util.SplashScreen;
+import net.sf.borg.ui.util.UIErrorHandler;
 
 /**
  * Class UIControl provides access to the UI from non-UI classes. UIControl
@@ -41,6 +42,21 @@ import net.sf.borg.ui.util.SplashScreen;
  * 
  */
 public class UIControl {
+	
+	private static Observer shutdownListener = null;
+
+	
+	public static Observer getShutdownListener() {
+		return shutdownListener;
+	}
+
+	/**
+	 * set a shutdown listener to be called back when the UI shuts down
+	 * @param shutdownListener
+	 */
+	public static void setShutdownListener(Observer shutdownListener) {
+		UIControl.shutdownListener = shutdownListener;
+	}
 
 	/**
 	 * splash screen
@@ -54,6 +70,8 @@ public class UIControl {
 	 *            - name for the tray icon
 	 */
 	public static void startUI(String trayname) {
+		
+		Errmsg.setErrorHandler(new UIErrorHandler());
 
 		// default font
 		String deffont = Prefs.getPref(PrefName.DEFFONT);
@@ -256,13 +274,14 @@ public class UIControl {
 			try {
 				ExportImport.exportToZip(backupdir, backup_email);
 			} catch (Exception e) {
-				Errmsg.errmsg(e);
+				Errmsg.getErrorHandler().errmsg(e);
 				return;
 			}
 		}
 
 		// non-UI shutdown
-		Borg.shutdown();
+		if( shutdownListener != null)
+			shutdownListener.update(null, null);
 
 	}
 

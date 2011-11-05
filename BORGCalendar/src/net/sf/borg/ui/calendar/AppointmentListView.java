@@ -58,8 +58,8 @@ import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
-import net.sf.borg.control.EmailReminder;
 import net.sf.borg.model.AppointmentModel;
+import net.sf.borg.model.EmailReminder;
 import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.Appointment;
@@ -154,7 +154,7 @@ public class AppointmentListView extends DockableView implements
 				appt.setDate(cal.getTime());
 				AppointmentModel.getReference().saveAppt(appt);
 			} catch (Exception e) {
-				Errmsg.errmsg(e);
+				Errmsg.getErrorHandler().errmsg(e);
 			}
 		}
 
@@ -182,7 +182,7 @@ public class AppointmentListView extends DockableView implements
 				AppointmentModel.getReference().saveAppt(appt);
 
 			} catch (Exception e) {
-				Errmsg.errmsg(e);
+				Errmsg.getErrorHandler().errmsg(e);
 			}
 		}
 
@@ -266,7 +266,7 @@ public class AppointmentListView extends DockableView implements
 	private void copyAppt() {
 		int[] keys = getSelectedKeys();
 		if (keys.length != 1) {
-			Errmsg.notice(Resource.getResourceString("select_appt"));
+			Errmsg.getErrorHandler().notice(Resource.getResourceString("select_appt"));
 			return;
 		}
 
@@ -286,7 +286,7 @@ public class AppointmentListView extends DockableView implements
 		try {
 			appt = AppointmentModel.getReference().getAppt(keys[0]);
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 			return;
 		}
 		appointmentPanel.showapp(-1, appt);
@@ -397,7 +397,7 @@ public class AppointmentListView extends DockableView implements
 												.invokeLater(new Runnable() {
 													@Override
 													public void run() {
-														Errmsg.errmsg(fe);
+														Errmsg.getErrorHandler().errmsg(fe);
 													}
 												});
 									}
@@ -425,7 +425,7 @@ public class AppointmentListView extends DockableView implements
 			try {
 				appts.add(model.getAppt(keys[i]));
 			} catch (Exception e) {
-				Errmsg.errmsg(e);
+				Errmsg.getErrorHandler().errmsg(e);
 			}
 		}
 		return appts;
@@ -631,7 +631,7 @@ public class AppointmentListView extends DockableView implements
 			}
 
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 
 		// resize the table based on new row count

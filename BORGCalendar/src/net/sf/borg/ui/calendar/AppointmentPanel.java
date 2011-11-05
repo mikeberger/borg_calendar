@@ -377,7 +377,7 @@ public class AppointmentPanel extends JPanel {
 			}
 			categoryBox.setSelectedIndex(0);
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 
 		setDate(year, month, day);
@@ -502,7 +502,7 @@ public class AppointmentPanel extends JPanel {
 				}
 				calmod_.saveAppt(appt);
 			} catch (Exception e) {
-				Errmsg.errmsg(e);
+				Errmsg.getErrorHandler().errmsg(e);
 			}
 
 		}
@@ -925,9 +925,9 @@ public class AppointmentPanel extends JPanel {
 						chg_appt();
 					}
 				} catch (Warning w) {
-					Errmsg.notice(w.getMessage());
+					Errmsg.getErrorHandler().notice(w.getMessage());
 				} catch (Exception e) {
-					Errmsg.errmsg(e);
+					Errmsg.getErrorHandler().errmsg(e);
 				}
 			}
 		});
@@ -946,10 +946,10 @@ public class AppointmentPanel extends JPanel {
 						chg_appt();
 					}
 				} catch (Warning w) {
-					Errmsg.notice(w.getMessage());
+					Errmsg.getErrorHandler().notice(w.getMessage());
 					return;
 				} catch (Exception e) {
-					Errmsg.errmsg(e);
+					Errmsg.getErrorHandler().errmsg(e);
 					return;
 				}
 
@@ -1002,7 +1002,7 @@ public class AppointmentPanel extends JPanel {
 					saveCloseButton.setEnabled(true);
 
 				} catch (Exception e1) {
-					Errmsg.errmsg(e1);
+					Errmsg.getErrorHandler().errmsg(e1);
 				}
 
 			}
@@ -1021,7 +1021,7 @@ public class AppointmentPanel extends JPanel {
 						try {
 							setAppt(appt, false);
 						} catch (Exception e) {
-							Errmsg.errmsg(e);
+							Errmsg.getErrorHandler().errmsg(e);
 							return;
 						}
 
@@ -1703,10 +1703,10 @@ public class AppointmentPanel extends JPanel {
 				prioritySpinner.setValue(p);
 
 			} catch (Exception e) {
-				Errmsg.errmsg(e);
+				Errmsg.getErrorHandler().errmsg(e);
 				Exception ne = new Exception(
 						Resource.getResourceString("appt_error"));
-				Errmsg.errmsg(ne);
+				Errmsg.getErrorHandler().errmsg(ne);
 
 			}
 		}

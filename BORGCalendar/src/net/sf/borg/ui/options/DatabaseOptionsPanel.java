@@ -141,7 +141,7 @@ public class DatabaseOptionsPanel extends OptionsPanel {
 				try {
 					HelpLauncher.launchHelp();
 				} catch (Exception e) {
-					Errmsg.errmsg(e);
+					Errmsg.getErrorHandler().errmsg(e);
 				}
 			}
 		});
@@ -206,7 +206,7 @@ public class DatabaseOptionsPanel extends OptionsPanel {
 					new String(jPasswordField1.getPassword()));
 			Prefs.putPref(PrefName.JDBCURL, jdbcText.getText());
 
-			Errmsg.notice(Resource.getResourceString("Restart_Warning"));
+			Errmsg.getErrorHandler().notice(Resource.getResourceString("Restart_Warning"));
 			System.exit(0);
 		}
 	}

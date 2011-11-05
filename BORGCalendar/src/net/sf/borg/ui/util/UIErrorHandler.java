@@ -18,52 +18,45 @@ This file is part of BORG.
 Copyright 2003 by Mike Berger
  */
 
-package net.sf.borg.common;
+package net.sf.borg.ui.util;
 
+import net.sf.borg.common.ErrorHandler;
+import net.sf.borg.common.Warning;
 
 /**
- * standard error handling for Borg
+ * UI error handling for Borg
  */
-public class Errmsg {
+public class UIErrorHandler implements ErrorHandler {
 
 	/**
-	 * console error handler
-	 *
+	 * Output an exception to the user.
+	 * 
+	 * @param e
+	 *            the e
 	 */
-	private static class DefaultErrorHandler implements ErrorHandler {
-		
-		@Override
-		public void errmsg(Exception e) {
+	@Override
+	public void errmsg(Exception e) {
 
-			// treat a warning differently - just show its text
-			if (e instanceof Warning) {
-				notice(e.getMessage());
-				return;
-			}
-
-			System.out.println(e.toString());
-			e.printStackTrace();
-
-		}
-
-		@Override
-		public void notice(String s) {
-
-			System.out.println(s);
+		// treat a warning differently - just show its text
+		if (e instanceof Warning) {
+			notice(e.getMessage());
 			return;
-
 		}
+
+		ScrolledDialog.showError(e);
+
 	}
 
-	// initialize to only send errors to the console
-	private static ErrorHandler errorHandler = new DefaultErrorHandler();
+	/**
+	 * output a notice/warning - just shows text
+	 * 
+	 * @param s
+	 *            the text to show
+	 */
+	@Override
+	public void notice(String s) {
 
-	public static ErrorHandler getErrorHandler() {
-		return errorHandler;
-	}
-
-	public static void setErrorHandler(ErrorHandler errorHandler) {
-		Errmsg.errorHandler = errorHandler;
+		ScrolledDialog.showNotice(s);
 	}
 
 }

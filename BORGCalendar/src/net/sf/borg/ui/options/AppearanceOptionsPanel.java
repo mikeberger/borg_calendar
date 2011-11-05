@@ -229,7 +229,7 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 		String newlnf = (String) lnfBox.getSelectedItem();
 		String oldlnf = Prefs.getPref(PrefName.LNF);
 		if (!newlnf.equals(oldlnf)) {
-			Errmsg.notice(Resource.getResourceString("lfrestart"));
+			Errmsg.getErrorHandler().notice(Resource.getResourceString("lfrestart"));
 			Prefs.putPref(PrefName.LNF, newlnf);
 		}
 

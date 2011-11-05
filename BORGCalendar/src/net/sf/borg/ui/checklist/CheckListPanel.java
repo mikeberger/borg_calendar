@@ -182,7 +182,7 @@ public class CheckListPanel extends DockableView implements
 			isCheckListEdited = false;
 			this.loadCheckListsFromModel();
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 
 		return true;
@@ -194,7 +194,7 @@ public class CheckListPanel extends DockableView implements
 	private void deleteCheckList() {
 		String name = getSelectedCheckListName();
 		if (name == null) {
-			Errmsg.notice(Resource
+			Errmsg.getErrorHandler().notice(Resource
 					.getResourceString("Select_CheckList_Warning"));
 			return;
 		}
@@ -212,7 +212,7 @@ public class CheckListPanel extends DockableView implements
 			isCheckListEdited = false;
 			loadCheckListsFromModel();
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 
 	}
@@ -223,7 +223,7 @@ public class CheckListPanel extends DockableView implements
 	private void copyCheckList() {
 		String name = getSelectedCheckListName();
 		if (name == null) {
-			Errmsg.notice(Resource
+			Errmsg.getErrorHandler().notice(Resource
 					.getResourceString("Select_CheckList_Warning"));
 			return;
 		}
@@ -249,11 +249,11 @@ public class CheckListPanel extends DockableView implements
 					newname);
 			if (existing != null) {
 				// checkList name already used
-				Errmsg.notice(Resource.getResourceString("Existing_CheckList"));
+				Errmsg.getErrorHandler().notice(Resource.getResourceString("Existing_CheckList"));
 				return;
 			}
 		} catch (Exception e1) {
-			Errmsg.errmsg(e1);
+			Errmsg.getErrorHandler().errmsg(e1);
 		}
 
 		try {
@@ -263,7 +263,7 @@ public class CheckListPanel extends DockableView implements
 			CheckListModel.getReference().saveCheckList(copy);
 			loadCheckListsFromModel();
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 
 	}
@@ -626,11 +626,11 @@ public class CheckListPanel extends DockableView implements
 					name);
 			if (existing != null) {
 				// checkList name already used
-				Errmsg.notice(Resource.getResourceString("Existing_CheckList"));
+				Errmsg.getErrorHandler().notice(Resource.getResourceString("Existing_CheckList"));
 				return;
 			}
 		} catch (Exception e1) {
-			Errmsg.errmsg(e1);
+			Errmsg.getErrorHandler().errmsg(e1);
 		}
 
 		// create a new empty checkList and save
@@ -642,7 +642,7 @@ public class CheckListPanel extends DockableView implements
 			loadCheckListsFromModel();
 			selectCheckList(name);
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 
 	}
@@ -661,7 +661,7 @@ public class CheckListPanel extends DockableView implements
 			TablePrinter.printTable(itemTable);
 
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 
 	}
@@ -679,7 +679,7 @@ public class CheckListPanel extends DockableView implements
 		try {
 			loadCheckListsFromModel();
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 
 	}
@@ -699,7 +699,7 @@ public class CheckListPanel extends DockableView implements
 	private void saveCheckList() {
 		String name = getSelectedCheckListName();
 		if (name == null) {
-			Errmsg.notice(Resource
+			Errmsg.getErrorHandler().notice(Resource
 					.getResourceString("Select_CheckList_Warning"));
 			return;
 		}
@@ -712,7 +712,7 @@ public class CheckListPanel extends DockableView implements
 			loadCheckListsFromModel();
 			selectCheckList(name);
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 
 	}
@@ -872,7 +872,7 @@ public class CheckListPanel extends DockableView implements
 						checkListName);
 				this.loadItems(m);
 			} catch (Exception e1) {
-				Errmsg.errmsg(e1);
+				Errmsg.getErrorHandler().errmsg(e1);
 				return;
 			}
 

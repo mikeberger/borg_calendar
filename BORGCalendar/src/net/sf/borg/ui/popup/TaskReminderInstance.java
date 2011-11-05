@@ -42,7 +42,7 @@ public class TaskReminderInstance extends ReminderInstance {
 		try {
 			TaskModel.getReference().close(task.getKey());
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 	}
 

@@ -379,7 +379,7 @@ public class TaskView extends DockableView {
 			}
 			categoryComboBox.setSelectedIndex(0);
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 
 		// show the task
@@ -678,7 +678,7 @@ public class TaskView extends DockableView {
 													logentry);
 									loadLog(Integer.parseInt(tasknum));
 								} catch (Exception e) {
-									Errmsg.errmsg(e);
+									Errmsg.getErrorHandler().errmsg(e);
 								}
 							}
 						}, "Add_Log"), });
@@ -1019,7 +1019,7 @@ public class TaskView extends DockableView {
 		// validate description
 		if (descriptionText.getText() == null
 				|| descriptionText.getText().equals("")) {
-			Errmsg.notice(Resource.getResourceString("empty_desc"));
+			Errmsg.getErrorHandler().notice(Resource.getResourceString("empty_desc"));
 			return;
 		}
 		try {
@@ -1112,7 +1112,7 @@ public class TaskView extends DockableView {
 					if (id == null || id.intValue() == 0)
 						continue;
 					if (closed.booleanValue() != true) {
-						Errmsg.notice(Resource
+						Errmsg.getErrorHandler().notice(Resource
 								.getResourceString("open_subtasks"));
 						return;
 					}
@@ -1175,19 +1175,19 @@ public class TaskView extends DockableView {
 			MultiView.getMainView().setView(ViewType.TASK);
 
 		} catch (Warning w) {
-			Errmsg.notice(w.getMessage());
+			Errmsg.getErrorHandler().notice(w.getMessage());
 			try {
 				TaskModel.getReference().rollbackTransaction();
 			} catch (Exception e) {
-				Errmsg.errmsg(e);
+				Errmsg.getErrorHandler().errmsg(e);
 			}
 
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 			try {
 				TaskModel.getReference().rollbackTransaction();
 			} catch (Exception e1) {
-				Errmsg.errmsg(e1);
+				Errmsg.getErrorHandler().errmsg(e1);
 			}
 
 		}

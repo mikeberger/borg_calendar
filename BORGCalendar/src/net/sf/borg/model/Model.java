@@ -113,6 +113,22 @@ public abstract class Model
 	}
 	
 	/**
+	 * sync all models
+	 */
+	public static void syncModels()
+	{
+		for(Model m : modelList)
+			m.sync();
+	}
+	
+	/**
+	 * sync the model with the underlying DB for DBs that can be changed without going through Borg (i.e. MySQL)
+	 */
+	protected void sync() {
+		// do nothing by default
+	}
+
+	/**
 	 * Listener for a Model.
 	 * 
 	 */

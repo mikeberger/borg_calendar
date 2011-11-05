@@ -32,6 +32,8 @@ import java.security.ProtectionDomain;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -45,10 +47,8 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.common.SocketClient;
 import net.sf.borg.common.SocketHandler;
 import net.sf.borg.common.SocketServer;
-import net.sf.borg.model.AddressModel;
-import net.sf.borg.model.AppointmentModel;
-import net.sf.borg.model.CategoryModel;
-import net.sf.borg.model.TaskModel;
+import net.sf.borg.model.EmailReminder;
+import net.sf.borg.model.Model;
 import net.sf.borg.model.db.jdbc.JdbcDB;
 import net.sf.borg.model.tool.ConversionTool;
 import net.sf.borg.ui.UIControl;
@@ -61,7 +61,7 @@ import net.sf.borg.ui.util.ScrolledDialog;
  * spawning various threads, including the main UI thread and various timer
  * threads. It also handles shutdown.
  */
-public class Borg implements SocketHandler {
+public class Borg implements SocketHandler, Observer {
 
 	/** The singleton. */
 	static private Borg singleton = null;
@@ -140,21 +140,6 @@ public class Borg implements SocketHandler {
 
 	}
 
-	/**
-	 * Sync dbs - mainly clears caches. applies to mysql where outside clients
-	 * can update the db.
-	 * 
-	 * @throws Exception
-	 *             the exception
-	 */
-	static public synchronized void syncDBs() throws Exception {
-
-		AppointmentModel.getReference().sync();
-		AddressModel.getReference().sync();
-		TaskModel.getReference().sync();
-		CategoryModel.getReference().syncCategories();
-
-	}
 
 	/** The timer for sending reminder email. */
 	private Timer mailTimer_ = null;
@@ -190,7 +175,7 @@ public class Borg implements SocketHandler {
 		// System.out.println("Got msg: " + msg);
 		if (msg.equals("sync")) {
 			try {
-				syncDBs();
+				Model.syncModels();
 				return ("sync success");
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -422,11 +407,10 @@ public class Borg implements SocketHandler {
 				}
 			}
 
-			// now all errors can go to popup windows
-			Errmsg.console(false); // send errors to screen
-
 			// connect to the db - for now, it is jdbc only
 			JdbcDB.connect(dbdir);
+			
+			UIControl.setShutdownListener(this);
 
 			// start the UI thread
 			final String traynm = trayname;
@@ -452,7 +436,7 @@ public class Borg implements SocketHandler {
 					SwingUtilities.invokeLater(new Runnable() {
 						@Override
 						public void run() {
-							Errmsg.errmsg(fe);
+							Errmsg.getErrorHandler().errmsg(fe);
 						}
 					});
 				}
@@ -472,7 +456,7 @@ public class Borg implements SocketHandler {
 						SwingUtilities.invokeLater(new Runnable() {
 							@Override
 							public void run() {
-								Errmsg.errmsg(fe);
+								Errmsg.getErrorHandler().errmsg(fe);
 							}
 						});
 					}
@@ -492,9 +476,9 @@ public class Borg implements SocketHandler {
 							@Override
 							public void run() {
 								try {
-									syncDBs();
+									Model.syncModels();
 								} catch (Exception e) {
-									Errmsg.errmsg(e);
+									Errmsg.getErrorHandler().errmsg(e);
 								}
 							}
 						});
@@ -513,7 +497,7 @@ public class Borg implements SocketHandler {
 			 * is bad. Maybe it does not exist anymore or something, so give the
 			 * user a chance to change it if it will fix the problem
 			 */
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 
 			String es = e.toString();
 			es += Resource.getResourceString("db_set_to") + dbdir;
@@ -545,5 +529,10 @@ public class Borg implements SocketHandler {
 		CodeSource codeSource = domain.getCodeSource();
 		URL sourceLocation = codeSource.getLocation();
 		return new URL(sourceLocation.toString());
+	}
+
+	@Override
+	public void update(Observable o, Object arg) {
+		Borg.shutdown();
 	}
 }

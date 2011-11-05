@@ -171,7 +171,7 @@ public class Prefs {
 			Preferences.importPreferences(istr);
 			istr.close();
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 	}
 
@@ -187,7 +187,7 @@ public class Prefs {
 			prefs.exportNode(oostr);
 			oostr.close();
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 	}
 }

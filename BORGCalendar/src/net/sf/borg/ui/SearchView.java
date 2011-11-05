@@ -168,7 +168,7 @@ public class SearchView extends DockableView implements Module {
 			}
 			categoryComboBox.setSelectedIndex(0);
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 
 	}
@@ -227,7 +227,7 @@ public class SearchView extends DockableView implements Module {
 									ent.setKey(key.intValue());
 									entities.add(ent);
 								} catch (Exception e1) {
-									Errmsg.errmsg(e1);
+									Errmsg.getErrorHandler().errmsg(e1);
 								}
 
 							}
@@ -258,7 +258,7 @@ public class SearchView extends DockableView implements Module {
 							}
 
 						} catch (Exception ex) {
-							Errmsg.errmsg(ex);
+							Errmsg.getErrorHandler().errmsg(ex);
 							return;
 						}
 
@@ -371,7 +371,7 @@ public class SearchView extends DockableView implements Module {
 						ent.setKey(key.intValue());
 						entities.add(ent);
 					} catch (Exception e1) {
-						Errmsg.errmsg(e1);
+						Errmsg.getErrorHandler().errmsg(e1);
 					}
 
 				}
@@ -417,7 +417,7 @@ public class SearchView extends DockableView implements Module {
 				try {
 					showSelectedItem();
 				} catch (Exception e1) {
-					Errmsg.errmsg(e1);
+					Errmsg.getErrorHandler().errmsg(e1);
 				}
 			}
 		});
@@ -636,7 +636,7 @@ public class SearchView extends DockableView implements Module {
 		try {
 			TablePrinter.printTable(resultsTable);
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 	}
 	
@@ -678,7 +678,7 @@ public class SearchView extends DockableView implements Module {
 					tm.addRow(ro);
 					tm.tableChanged(new TableModelEvent(tm));
 				} catch (Exception e) {
-					Errmsg.errmsg(e);
+					Errmsg.getErrorHandler().errmsg(e);
 					return;
 				}
 
@@ -704,7 +704,7 @@ public class SearchView extends DockableView implements Module {
 					tm.addRow(ro);
 					tm.tableChanged(new TableModelEvent(tm));
 				} catch (Exception e) {
-					Errmsg.errmsg(e);
+					Errmsg.getErrorHandler().errmsg(e);
 					return;
 				}
 
@@ -736,7 +736,7 @@ public class SearchView extends DockableView implements Module {
 				}
 
 			} catch (Exception e) {
-				Errmsg.errmsg(e);
+				Errmsg.getErrorHandler().errmsg(e);
 				return;
 			}
 
@@ -757,7 +757,7 @@ public class SearchView extends DockableView implements Module {
 					tm.addRow(ro);
 					tm.tableChanged(new TableModelEvent(tm));
 				} catch (Exception e) {
-					Errmsg.errmsg(e);
+					Errmsg.getErrorHandler().errmsg(e);
 					return;
 				}
 

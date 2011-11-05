@@ -20,50 +20,26 @@ Copyright 2003 by Mike Berger
 
 package net.sf.borg.common;
 
-
 /**
- * standard error handling for Borg
+ * error handler interface
  */
-public class Errmsg {
+public interface ErrorHandler {
+
 
 	/**
-	 * console error handler
-	 *
+	 * Output an exception to the user.
+	 * 
+	 * @param e
+	 *            the e
 	 */
-	private static class DefaultErrorHandler implements ErrorHandler {
-		
-		@Override
-		public void errmsg(Exception e) {
-
-			// treat a warning differently - just show its text
-			if (e instanceof Warning) {
-				notice(e.getMessage());
-				return;
-			}
-
-			System.out.println(e.toString());
-			e.printStackTrace();
-
-		}
-
-		@Override
-		public void notice(String s) {
-
-			System.out.println(s);
-			return;
-
-		}
-	}
-
-	// initialize to only send errors to the console
-	private static ErrorHandler errorHandler = new DefaultErrorHandler();
-
-	public static ErrorHandler getErrorHandler() {
-		return errorHandler;
-	}
-
-	public static void setErrorHandler(ErrorHandler errorHandler) {
-		Errmsg.errorHandler = errorHandler;
-	}
-
+	public void errmsg( Exception e );
+    
+	/**
+	 * output a notice/warning - just shows text
+	 * 
+	 * @param s
+	 *            the text to show
+	 */
+	public void notice( String s );
+   
 }

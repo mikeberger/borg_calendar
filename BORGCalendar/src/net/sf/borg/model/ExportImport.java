@@ -39,7 +39,6 @@ import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.common.SendJavaMail;
-import net.sf.borg.control.EmailReminder;
 
 /**
  * contains common import/export utilities
@@ -126,7 +125,7 @@ public class ExportImport {
 		model.importXml(is);
 
 		// show any newly imported categories
-		CategoryModel.getReference().syncCategories();
+		CategoryModel.getReference().sync();
 		CategoryModel.getReference().showAll();
 	}
 

@@ -42,7 +42,7 @@ public class SubtaskUndoItem extends UndoItem<Subtask> {
 				TaskModel.getReference().deleteSubTask(item.getKey(),true);
 			}
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 	}
 

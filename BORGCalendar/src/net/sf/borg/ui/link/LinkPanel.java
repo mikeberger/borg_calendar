@@ -160,7 +160,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 			if (!atts.isEmpty())
 				return true;
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 
 		return false;
@@ -223,7 +223,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 								LinkModel.getReference().delete(key.intValue());
 
 							} catch (Exception e) {
-								Errmsg.errmsg(e);
+								Errmsg.getErrorHandler().errmsg(e);
 							}
 						}
 
@@ -248,9 +248,9 @@ public class LinkPanel extends JPanel implements Model.Listener {
 										+ l.getLinkType()
 										+ "\n\n["
 										+ l.getPath() + "]";
-								Errmsg.notice(info);
+								Errmsg.getErrorHandler().notice(info);
 							} catch (Exception e) {
-								Errmsg.errmsg(e);
+								Errmsg.getErrorHandler().errmsg(e);
 							}
 						}
 
@@ -278,7 +278,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 			public void actionPerformed(ActionEvent arg0) {
 
 				if (owningEntity == null || owningEntity.getKey() == -1) {
-					Errmsg.notice(Resource.getResourceString("att_owner_null"));
+					Errmsg.getErrorHandler().notice(Resource.getResourceString("att_owner_null"));
 					return;
 				}
 
@@ -304,7 +304,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 					LinkModel.getReference().addLink(owningEntity,
 							file.getAbsolutePath(), LinkType.FILELINK);
 				} catch (Exception e) {
-					Errmsg.errmsg(e);
+					Errmsg.getErrorHandler().errmsg(e);
 				}
 			}
 		});
@@ -318,7 +318,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				if (owningEntity == null || owningEntity.getKey() == -1) {
-					Errmsg.notice(Resource.getResourceString("att_owner_null"));
+					Errmsg.getErrorHandler().notice(Resource.getResourceString("att_owner_null"));
 					return;
 				}
 
@@ -345,7 +345,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 					LinkModel.getReference().addLink(owningEntity,
 							file.getAbsolutePath(), LinkType.ATTACHMENT);
 				} catch (Exception e) {
-					Errmsg.errmsg(e);
+					Errmsg.getErrorHandler().errmsg(e);
 				}
 			}
 		});
@@ -359,7 +359,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 			public void actionPerformed(ActionEvent arg0) {
 
 				if (owningEntity == null || owningEntity.getKey() == -1) {
-					Errmsg.notice(Resource.getResourceString("att_owner_null"));
+					Errmsg.getErrorHandler().notice(Resource.getResourceString("att_owner_null"));
 					return;
 				}
 
@@ -375,7 +375,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 					LinkModel.getReference().addLink(owningEntity, url,
 							LinkType.URL);
 				} catch (Exception e) {
-					Errmsg.errmsg(e);
+					Errmsg.getErrorHandler().errmsg(e);
 				}
 			}
 		});
@@ -389,7 +389,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 			public void actionPerformed(ActionEvent arg0) {
 
 				if (owningEntity == null || owningEntity.getKey() == -1) {
-					Errmsg.notice(Resource.getResourceString("att_owner_null"));
+					Errmsg.getErrorHandler().notice(Resource.getResourceString("att_owner_null"));
 					return;
 				}
 
@@ -452,7 +452,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 						}
 					}
 				} catch (Exception e) {
-					Errmsg.errmsg(e);
+					Errmsg.getErrorHandler().errmsg(e);
 				}
 			}
 		});
@@ -497,7 +497,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 				if (at.getLinkType().equals(LinkType.FILELINK.toString())) {
 					File file = new File(at.getPath());
 					if (!file.exists()) {
-						Errmsg.notice(Resource
+						Errmsg.getErrorHandler().notice(Resource
 								.getResourceString("att_not_found"));
 						return;
 					}
@@ -511,7 +511,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 					File file = new File(LinkModel.attachmentFolder() + "/"
 							+ at.getPath());
 					if (!file.exists()) {
-						Errmsg.notice(Resource
+						Errmsg.getErrorHandler().notice(Resource
 								.getResourceString("att_not_found"));
 						return;
 					}
@@ -531,7 +531,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 					Appointment ap = AppointmentModel.getReference().getAppt(
 							Integer.parseInt(at.getPath()));
 					if (ap == null) {
-						Errmsg.notice(Resource
+						Errmsg.getErrorHandler().notice(Resource
 								.getResourceString("att_not_found"));
 						return;
 					}
@@ -552,7 +552,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 					Project ap = TaskModel.getReference().getProject(
 							Integer.parseInt(at.getPath()));
 					if (ap == null) {
-						Errmsg.notice(Resource
+						Errmsg.getErrorHandler().notice(Resource
 								.getResourceString("att_not_found"));
 						return;
 					}
@@ -565,7 +565,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 					Task ap = TaskModel.getReference().getTask(
 							Integer.parseInt(at.getPath()));
 					if (ap == null) {
-						Errmsg.notice(Resource
+						Errmsg.getErrorHandler().notice(Resource
 								.getResourceString("att_not_found"));
 						return;
 					}
@@ -577,7 +577,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 					Address ap = AddressModel.getReference().getAddress(
 							Integer.parseInt(at.getPath()));
 					if (ap == null) {
-						Errmsg.notice(Resource
+						Errmsg.getErrorHandler().notice(Resource
 								.getResourceString("att_not_found"));
 						return;
 					}
@@ -595,7 +595,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 					}
 				}
 			} catch (Exception e) {
-				Errmsg.errmsg(e);
+				Errmsg.getErrorHandler().errmsg(e);
 			}
 		}
 	}
@@ -622,7 +622,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 						new Integer(at.getKey()) });
 			}
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 
 	}

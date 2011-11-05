@@ -157,7 +157,7 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 			initComponents();
 			refresh();
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 			return;
 		}
 
@@ -184,7 +184,7 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 			new ProjectView(p, ProjectView.Action.CHANGE, null).showView();
 
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 
 	}
@@ -209,7 +209,7 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 
 			new ProjectView(p, ProjectView.Action.CLONE, null).showView();
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 
 	}
@@ -229,9 +229,9 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 		try {
 			TaskModel.getReference().closeProject(projectId.intValue());
 		} catch (Warning w) {
-			Errmsg.notice(w.getMessage());
+			Errmsg.getErrorHandler().notice(w.getMessage());
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 
 	}
@@ -257,7 +257,7 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 			try {
 				TaskModel.getReference().deleteProject(projectId.intValue());
 			} catch (Exception e) {
-				Errmsg.errmsg(e);
+				Errmsg.getErrorHandler().errmsg(e);
 			}
 		}
 
@@ -284,7 +284,7 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 						new ProjectView(null, ProjectView.Action.ADD, null)
 								.showView();
 					} catch (Exception ex) {
-						Errmsg.errmsg(ex);
+						Errmsg.getErrorHandler().errmsg(ex);
 					}
 				}
 			});
@@ -420,7 +420,7 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 							new ProjectView(null, ProjectView.Action.ADD, null)
 									.showView();
 						} catch (Exception e) {
-							Errmsg.errmsg(e);
+							Errmsg.getErrorHandler().errmsg(e);
 						}
 					}
 				}, "Add"),
@@ -490,7 +490,7 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 		try {
 			TablePrinter.printTable(projectTable);
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 	}
 	
@@ -581,7 +581,7 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 			}
 
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 
 	}

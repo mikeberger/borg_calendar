@@ -141,7 +141,7 @@ public class OptionsView extends View {
 					break;
 				}
 
-				Errmsg.notice(err);
+				Errmsg.getErrorHandler().notice(err);
 			}
 
 			return (path);

@@ -187,7 +187,7 @@ public class ProjectView extends DockableView {
 			// show the project
 			showProject(function, p, parentId);
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 
 	}
@@ -406,7 +406,7 @@ public class ProjectView extends DockableView {
 
 		// validate that description is present
 		if (description.getText() == null || description.getText().equals("")) {
-			Errmsg.notice(Resource.getResourceString("empty_desc"));
+			Errmsg.getErrorHandler().notice(Resource.getResourceString("empty_desc"));
 			return;
 		}
 		try {
@@ -459,9 +459,9 @@ public class ProjectView extends DockableView {
 
 			showProject(Action.CHANGE, p, null);
 		} catch (Warning w) {
-			Errmsg.notice(w.getMessage());
+			Errmsg.getErrorHandler().notice(w.getMessage());
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 
 	}

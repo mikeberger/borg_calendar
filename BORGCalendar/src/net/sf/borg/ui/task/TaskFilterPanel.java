@@ -76,7 +76,7 @@ public class TaskFilterPanel extends JPanel {
 			initComponents();
 
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 			return;
 		}
 		
@@ -199,7 +199,7 @@ public class TaskFilterPanel extends JPanel {
 		try {
 			taskList.print();
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 	}
 
@@ -214,7 +214,7 @@ public class TaskFilterPanel extends JPanel {
 		try {
 			loadProjectBox();
 		} catch (Exception e1) {
-			Errmsg.errmsg(e1);
+			Errmsg.getErrorHandler().errmsg(e1);
 			return;
 		}
 		if (o != null)

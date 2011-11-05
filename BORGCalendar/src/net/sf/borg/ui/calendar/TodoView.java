@@ -393,7 +393,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 
 		// warn the user if text or date is missing
 		if (tdtext.length() == 0 || c == null) {
-			Errmsg.notice(Resource.getResourceString("todomissingdata"));
+			Errmsg.getErrorHandler().notice(Resource.getResourceString("todomissingdata"));
 			return;
 		}
 
@@ -490,7 +490,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 				}
 
 			} catch (Exception e) {
-				Errmsg.errmsg(e);
+				Errmsg.getErrorHandler().errmsg(e);
 			}
 		}
 	}
@@ -537,7 +537,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 					lst.add((Appointment)o);
 				}
 			} catch (Exception e) {
-				Errmsg.errmsg(e);
+				Errmsg.getErrorHandler().errmsg(e);
 			}
 		}
 
@@ -596,7 +596,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 			}
 			categoryComboBox.setSelectedIndex(0);
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 
 		// *******************************************************************
@@ -805,7 +805,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 						ProjectView.Action.CHANGE, null);
 				tskg.setVisible(true);
 			} catch (Exception e) {
-				Errmsg.errmsg(e);
+				Errmsg.getErrorHandler().errmsg(e);
 				return;
 			}
 		} else if (o instanceof Task) {
@@ -814,7 +814,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 						null);
 				tskg.setVisible(true);
 			} catch (Exception e) {
-				Errmsg.errmsg(e);
+				Errmsg.getErrorHandler().errmsg(e);
 				return;
 			}
 		} else if (o instanceof Subtask) {
@@ -825,7 +825,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 				TaskView tskg = new TaskView(t, TaskView.Action.CHANGE, null);
 				tskg.setVisible(true);
 			} catch (Exception e) {
-				Errmsg.errmsg(e);
+				Errmsg.getErrorHandler().errmsg(e);
 				return;
 			}
 
@@ -854,7 +854,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 		try {
 			TablePrinter.printTable(todoTable);
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 	}
 
@@ -928,7 +928,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 				totalCount ++;
 				tm.tableChanged(new TableModelEvent(tm));
 			} catch (Exception e) {
-				Errmsg.errmsg(e);
+				Errmsg.getErrorHandler().errmsg(e);
 				return;
 			}
 
@@ -977,7 +977,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 					tm.tableChanged(new TableModelEvent(tm));
 				}
 			} catch (Exception e) {
-				Errmsg.errmsg(e);
+				Errmsg.getErrorHandler().errmsg(e);
 				return;
 			}
 
@@ -1009,7 +1009,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 					theTodoList.add(mr);
 					tm.tableChanged(new TableModelEvent(tm));
 				} catch (Exception e) {
-					Errmsg.errmsg(e);
+					Errmsg.getErrorHandler().errmsg(e);
 					return;
 				}
 
@@ -1057,7 +1057,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 					tm.tableChanged(new TableModelEvent(tm));
 				}
 			} catch (Exception e) {
-				// Errmsg.errmsg(e);
+				// Errmsg.getErrorHandler().errmsg(e);
 				return;
 			}
 		}

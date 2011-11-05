@@ -163,7 +163,7 @@ class SqlRunner extends JDialog {
 			} catch (Exception e2) {
 			  // empty
 			}
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 
 		// since the SQL may affect any of the tables, we need to 

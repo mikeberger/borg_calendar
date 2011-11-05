@@ -323,7 +323,7 @@ public class MonthPrintPanel extends JPanel implements Printable {
 					g2.setClip(s);
 
 				} catch (Exception e) {
-					Errmsg.errmsg(e);
+					Errmsg.getErrorHandler().errmsg(e);
 				}
 
 				// draw date
@@ -366,7 +366,7 @@ public class MonthPrintPanel extends JPanel implements Printable {
 					getHeight() / prev_scale - 20, 10, 10, 0);
 
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 	}
 

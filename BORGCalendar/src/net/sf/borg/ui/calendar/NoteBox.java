@@ -297,7 +297,7 @@ public class NoteBox extends Box implements Box.Draggable {
 							AppointmentModel.getReference().do_todo(
 									((Appointment) bean).getKey(), false, date);
 						} catch (Exception e) {
-							Errmsg.errmsg(e);
+							Errmsg.getErrorHandler().errmsg(e);
 						}
 					}
 				});
@@ -311,7 +311,7 @@ public class NoteBox extends Box implements Box.Draggable {
 							AppointmentModel.getReference().do_todo(
 									((Appointment) bean).getKey(), true, date);
 						} catch (Exception e) {
-							Errmsg.errmsg(e);
+							Errmsg.getErrorHandler().errmsg(e);
 						}
 					}
 				});
@@ -328,7 +328,7 @@ public class NoteBox extends Box implements Box.Draggable {
 							AppointmentModel.getReference().delOneOnly(
 									((Appointment) bean).getKey(), date);
 						} catch (Exception e) {
-							Errmsg.errmsg(e);
+							Errmsg.getErrorHandler().errmsg(e);
 						}
 					}
 				});
@@ -419,7 +419,7 @@ public class NoteBox extends Box implements Box.Draggable {
 				// on the first in a series
 				int k2 = DateUtil.dayOfEpoch(date);
 				if (olddate != k2) {
-					Errmsg.notice(Resource.getResourceString("rpt_drag_err"));
+					Errmsg.getErrorHandler().notice(Resource.getResourceString("rpt_drag_err"));
 					return;
 				}
 			}
@@ -509,7 +509,7 @@ public class NoteBox extends Box implements Box.Draggable {
 				new TaskView((Task) bean, TaskView.Action.CHANGE, null)
 						.showView();
 			} catch (Exception e) {
-				Errmsg.errmsg(e);
+				Errmsg.getErrorHandler().errmsg(e);
 				return;
 			}
 		} else if (bean instanceof Subtask) {
@@ -521,7 +521,7 @@ public class NoteBox extends Box implements Box.Draggable {
 				t = TaskModel.getReference().getTask(taskid);
 				new TaskView(t, TaskView.Action.CHANGE, null).showView();
 			} catch (Exception e) {
-				Errmsg.errmsg(e);
+				Errmsg.getErrorHandler().errmsg(e);
 				return;
 			}
 

@@ -505,7 +505,7 @@ public class YearPanel extends DockableView implements Printable,
 						getHeight() - 20, 10, 10, sm_font);
 
 			} catch (Exception e) {
-				// Errmsg.errmsg(e);
+				// Errmsg.getErrorHandler().errmsg(e);
 				e.printStackTrace();
 			}
 		}
@@ -647,7 +647,7 @@ public class YearPanel extends DockableView implements Printable,
 		try {
 			PrintHelper.printPrintable(this);
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 	}
 

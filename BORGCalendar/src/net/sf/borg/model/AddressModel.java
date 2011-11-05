@@ -126,7 +126,7 @@ public class AddressModel extends Model implements Searchable<Address> {
 			}
 
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 
 		refresh();
@@ -266,7 +266,7 @@ public class AddressModel extends Model implements Searchable<Address> {
 
 		} catch (Exception e) {
 
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 			return;
 		}
 
@@ -330,7 +330,7 @@ public class AddressModel extends Model implements Searchable<Address> {
 				}
 			}
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 
 		// inform views of data change
@@ -340,6 +340,7 @@ public class AddressModel extends Model implements Searchable<Address> {
 	/**
 	 * Sync with the underlying db
 	 */
+	@Override
 	public void sync() {
 		db_.sync();
 		refresh();
@@ -389,7 +390,7 @@ public class AddressModel extends Model implements Searchable<Address> {
 						if (lnks.isEmpty())
 							continue;
 					} catch (Exception e) {
-						Errmsg.errmsg(e);
+						Errmsg.getErrorHandler().errmsg(e);
 					}
 				}
 
@@ -400,7 +401,7 @@ public class AddressModel extends Model implements Searchable<Address> {
 			}
 
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 		return (res);
 	}

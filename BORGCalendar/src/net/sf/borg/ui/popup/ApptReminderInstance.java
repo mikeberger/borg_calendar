@@ -64,7 +64,7 @@ public class ApptReminderInstance extends ReminderInstance {
 				AppointmentModel.getReference().do_todo(
 						appt.getKey(), delete);
 			} catch (Exception e) {
-				Errmsg.errmsg(e);
+				Errmsg.getErrorHandler().errmsg(e);
 			}
 	}
 	

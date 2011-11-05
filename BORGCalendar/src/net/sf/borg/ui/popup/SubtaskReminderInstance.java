@@ -44,7 +44,7 @@ public class SubtaskReminderInstance extends ReminderInstance {
 			subtask.setCloseDate(new Date());
 			TaskModel.getReference().saveSubTask(subtask);
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 	}
 

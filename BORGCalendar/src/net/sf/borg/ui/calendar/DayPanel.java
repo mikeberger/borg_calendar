@@ -243,7 +243,7 @@ public class DayPanel extends DockableView implements Printable, CalendarModule 
 				starthr = Integer.parseInt(shr);
 				endhr = Integer.parseInt(ehr);
 			} catch (Exception e) {
-				Errmsg.errmsg(e);
+				Errmsg.getErrorHandler().errmsg(e);
 			}
 
 			// calculate size of Y-axis ticks (each half-hour)
@@ -373,7 +373,7 @@ public class DayPanel extends DockableView implements Printable, CalendarModule 
 					}
 
 				} catch (Exception e) {
-					Errmsg.errmsg(e);
+					Errmsg.getErrorHandler().errmsg(e);
 				}
 
 				// layout all of the ApptBoxes
@@ -749,7 +749,7 @@ public class DayPanel extends DockableView implements Printable, CalendarModule 
 		try {
 			PrintHelper.printPrintable(this);
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 	}
 

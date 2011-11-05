@@ -179,7 +179,7 @@ public class AddrListView extends DockableView implements Module {
 			// show an address editor for the address
 			new AddressView(addr).showView();
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 	}
 
@@ -363,7 +363,7 @@ public class AddrListView extends DockableView implements Module {
 		try {
 			addrs_ = addrmod_.getAddresses();
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 			return;
 		}
 
@@ -390,7 +390,7 @@ public class AddrListView extends DockableView implements Module {
 				tm.addRow(ro);
 				tm.tableChanged(new TableModelEvent(tm));
 			} catch (Exception e) {
-				Errmsg.errmsg(e);
+				Errmsg.getErrorHandler().errmsg(e);
 				return;
 			}
 
@@ -436,7 +436,7 @@ public class AddrListView extends DockableView implements Module {
 		try {
 			TablePrinter.printTable(addressTable);
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 	}
 	

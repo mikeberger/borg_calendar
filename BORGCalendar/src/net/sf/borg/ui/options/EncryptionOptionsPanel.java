@@ -108,7 +108,7 @@ public class EncryptionOptionsPanel extends OptionsPanel {
 
 					if (!new String(jpf.getPassword()).equals(new String(jpf2
 							.getPassword()))) {
-						Errmsg.notice("Passwords do not match");
+						Errmsg.getErrorHandler().notice("Passwords do not match");
 						return;
 					}
 
@@ -119,7 +119,7 @@ public class EncryptionOptionsPanel extends OptionsPanel {
 								new String(jpf.getPassword()), Prefs
 										.getPref(PrefName.KEYALIAS));
 					} catch (Exception e) {
-						Errmsg.errmsg(e);
+						Errmsg.getErrorHandler().errmsg(e);
 					}
 
 				}

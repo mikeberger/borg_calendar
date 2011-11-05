@@ -52,7 +52,7 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
     {
     	try {
 			JdbcDB.execSQL("select username from appointments");
-			Errmsg.notice(Resource.getResourceString("db_username_check"));
+			Errmsg.getErrorHandler().notice(Resource.getResourceString("db_username_check"));
 		} catch (Exception e) {
 			// empty
 		}

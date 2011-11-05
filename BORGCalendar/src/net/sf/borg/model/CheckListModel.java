@@ -129,7 +129,7 @@ public class CheckListModel extends Model  {
 			}
 
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 
 		refresh();
@@ -172,7 +172,7 @@ public class CheckListModel extends Model  {
 
 			}
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 
 		// inform views of data change

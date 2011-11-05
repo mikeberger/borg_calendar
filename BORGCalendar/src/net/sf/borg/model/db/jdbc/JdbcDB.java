@@ -247,7 +247,7 @@ abstract public class JdbcDB {
 
 			}
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 	}
 

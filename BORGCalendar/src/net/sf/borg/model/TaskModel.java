@@ -206,7 +206,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 					categories.add(cat);
 			}
 		} catch (Exception e1) {
-			Errmsg.errmsg(e1);
+			Errmsg.getErrorHandler().errmsg(e1);
 		}
 
 		try {
@@ -331,7 +331,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 
 		} catch (Exception e) {
 
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 			return;
 		}
 
@@ -360,7 +360,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 						sm = taskTypes_.toXml();
 						JdbcDB.setOption(new BorgOption("TASKTYPES", sm));
 					} catch (Exception e) {
-						Errmsg.errmsg(e);
+						Errmsg.getErrorHandler().errmsg(e);
 						return;
 					}
 				} else {
@@ -370,7 +370,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 				taskTypes_.fromString(tt);
 			}
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 			return;
 		}
 		
@@ -427,7 +427,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 			}
 			db_.delete(tasknum);
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 
 		load_map();
@@ -466,7 +466,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 			commitTransaction();
 		} catch (Exception e) {
 			rollbackTransaction();
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 
 		load_map();
@@ -744,7 +744,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 					tlog.setKey(-1);
 					saveLog(tlog);
 				} catch (Exception e) {
-					Errmsg.errmsg(e);
+					Errmsg.getErrorHandler().errmsg(e);
 				}
 			}
 		}
@@ -754,7 +754,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 				try {
 					db_.addProject(p);
 				} catch (Exception e) {
-					Errmsg.errmsg(e);
+					Errmsg.getErrorHandler().errmsg(e);
 				}
 			}
 		}
@@ -771,6 +771,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 	/**
 	 * sync with db
 	 */
+	@Override
 	public void sync() {
 		db_.sync();
 		load_map();
@@ -782,7 +783,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 			load_map();
 			refreshListeners();
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 	}
 
@@ -1294,7 +1295,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 						if (lnks.isEmpty())
 							continue;
 					} catch (Exception e) {
-						Errmsg.errmsg(e);
+						Errmsg.getErrorHandler().errmsg(e);
 					}
 				}
 
@@ -1334,7 +1335,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 						if (lnks.isEmpty())
 							continue;
 					} catch (Exception e) {
-						Errmsg.errmsg(e);
+						Errmsg.getErrorHandler().errmsg(e);
 					}
 				}
 
@@ -1342,7 +1343,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 			}
 
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 		return (res);
 	}

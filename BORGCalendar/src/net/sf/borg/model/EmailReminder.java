@@ -23,7 +23,7 @@
  * Created on January 16, 2004, 3:08 PM
  */
 
-package net.sf.borg.control;
+package net.sf.borg.model;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
@@ -45,8 +45,6 @@ import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.common.SendJavaMail;
-import net.sf.borg.model.AppointmentModel;
-import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.Task;
 import sun.misc.BASE64Decoder;

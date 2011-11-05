@@ -35,7 +35,7 @@ import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
-import net.sf.borg.control.EmailReminder;
+import net.sf.borg.model.EmailReminder;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.options.OptionsView.OptionsPanel;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
@@ -166,7 +166,7 @@ class EmailOptionsPanel extends OptionsPanel {
 			try {
 				EmailReminder.sep(new String(smpw.getPassword()));
 			} catch (Exception e) {
-				Errmsg.errmsg(e);
+				Errmsg.getErrorHandler().errmsg(e);
 			}
 
 		}
@@ -204,7 +204,7 @@ class EmailOptionsPanel extends OptionsPanel {
 		try {
 			smpw.setText(EmailReminder.gep());
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 
 	}

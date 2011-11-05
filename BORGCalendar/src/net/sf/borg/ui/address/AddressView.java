@@ -408,7 +408,7 @@ public class AddressView extends DockableView {
 
 		if (firstNameText.getText().equals("")
 				|| lastNameText.getText().equals("")) {
-			Errmsg.notice(Resource
+			Errmsg.getErrorHandler().notice(Resource
 					.getResourceString("First_and_Last_name_are_Required"));
 			return;
 		}
@@ -443,7 +443,7 @@ public class AddressView extends DockableView {
 			this.close();
 			
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 	}
 

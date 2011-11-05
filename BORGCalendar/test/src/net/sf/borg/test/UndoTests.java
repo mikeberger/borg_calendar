@@ -7,7 +7,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 
-import net.sf.borg.common.Errmsg;
 import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.MemoModel;
@@ -29,7 +28,6 @@ public class UndoTests {
 	@BeforeClass
 	public static void setUp() throws Exception {
 		// open the borg dbs - in memory
-		Errmsg.console(true);
 		JdbcDB.connect("jdbc:hsqldb:mem:whatever");
 		
 	}

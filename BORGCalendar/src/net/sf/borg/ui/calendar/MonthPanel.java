@@ -509,7 +509,7 @@ public class MonthPanel extends JPanel implements Printable, CalendarModule {
 						getHeight() - 20, 10, 10);
 
 			} catch (Exception e) {
-				// Errmsg.errmsg(e);
+				// Errmsg.getErrorHandler().errmsg(e);
 				e.printStackTrace();
 			}
 		}
@@ -636,7 +636,7 @@ public class MonthPanel extends JPanel implements Printable, CalendarModule {
 			MonthPrintPanel.printMonths(monthSubPanel.month_,
 					monthSubPanel.year_);
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 	}
 

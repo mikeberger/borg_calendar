@@ -131,7 +131,7 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 	private void deleteMemo() {
 		String name = getSelectedMemoName();
 		if (name == null) {
-			Errmsg.notice(Resource.getResourceString("Select_Memo_Warning"));
+			Errmsg.getErrorHandler().notice(Resource.getResourceString("Select_Memo_Warning"));
 			return;
 		}
 		
@@ -150,7 +150,7 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 			isMemoEdited = false;
 			loadMemosFromModel();
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 
 	}
@@ -332,7 +332,7 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 				try {
 					IOHelper.fileSave(".", istr, "");
 				} catch (Exception e1) {
-					Errmsg.errmsg(e1);
+					Errmsg.getErrorHandler().errmsg(e1);
 				}
 			}
 		});
@@ -359,7 +359,7 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 					memoText.setCaretPosition(0);
 
 				} catch (Exception e1) {
-					Errmsg.errmsg(e1);
+					Errmsg.getErrorHandler().errmsg(e1);
 				}
 
 			}
@@ -418,11 +418,11 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 			Memo existing = MemoModel.getReference().getMemo(name);
 			if (existing != null) {
 				// memo name already used
-				Errmsg.notice(Resource.getResourceString("Existing_Memo"));
+				Errmsg.getErrorHandler().notice(Resource.getResourceString("Existing_Memo"));
 				return;
 			}
 		} catch (Exception e1) {
-			Errmsg.errmsg(e1);
+			Errmsg.getErrorHandler().errmsg(e1);
 		}
 
 		// create a new empty memo and save
@@ -434,7 +434,7 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 			loadMemosFromModel();
 			selectMemo(name);
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 
 	}
@@ -452,7 +452,7 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 		try {
 			loadMemosFromModel();
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 
 	}
@@ -468,7 +468,7 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 	private void saveMemo() {
 		String name = getSelectedMemoName();
 		if (name == null) {
-			Errmsg.notice(Resource.getResourceString("Select_Memo_Warning"));
+			Errmsg.getErrorHandler().notice(Resource.getResourceString("Select_Memo_Warning"));
 			return;
 		}
 		try {
@@ -486,7 +486,7 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 			loadMemosFromModel();
 			selectMemo(name);
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 
 	}
@@ -596,7 +596,7 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 				}
 				memoText.setCaretPosition(0);
 			} catch (Exception e1) {
-				Errmsg.errmsg(e1);
+				Errmsg.getErrorHandler().errmsg(e1);
 				return;
 			}
 
@@ -646,7 +646,7 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 			this.memoText.print(new MessageFormat(selectedMemo),
 					new MessageFormat("{0}"));
 		} catch (PrinterException e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 
 	}
@@ -683,7 +683,7 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 			isMemoEdited = false;
 			this.loadMemosFromModel();
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 
 		return true;
