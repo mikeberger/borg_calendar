@@ -50,7 +50,7 @@ public class SyncModule implements Module {
 				try {
 					GoogleSync.sync(SyncMode.SYNC_OVERWRITE);
 				} catch (Exception e) {
-					Errmsg.errmsg(e);
+					Errmsg.getErrorHandler().errmsg(e);
 				}
 			}
 		});
@@ -66,7 +66,7 @@ public class SyncModule implements Module {
 				try {
 					GoogleSync.sync(SyncMode.SYNC);
 				} catch (Exception e) {
-					Errmsg.errmsg(e);
+					Errmsg.getErrorHandler().errmsg(e);
 				}
 			}
 		});
@@ -82,7 +82,7 @@ public class SyncModule implements Module {
 				try {
 					GoogleSync.sync(SyncMode.OVERWRITE);
 				} catch (Exception e) {
-					Errmsg.errmsg(e);
+					Errmsg.getErrorHandler().errmsg(e);
 				}
 			}
 		});

@@ -78,7 +78,7 @@ public class SyncLog extends Model implements Model.Listener {
 
 			}
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 
 	}

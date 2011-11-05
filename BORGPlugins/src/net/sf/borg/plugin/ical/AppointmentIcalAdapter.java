@@ -252,7 +252,7 @@ public class AppointmentIcalAdapter {
 		try {
 			cal.validate();
 		} catch (ValidationException e) {
-			Errmsg
+			Errmsg.getErrorHandler()
 					.notice("Ical4j validation error: "
 							+ e.getLocalizedMessage());
 		}

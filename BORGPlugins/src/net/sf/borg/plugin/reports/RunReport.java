@@ -94,9 +94,9 @@ public class RunReport {
 					}
 					RunReport.runReport("proj", map);
 				} catch (NoClassDefFoundError r) {
-					Errmsg.notice(Resource.getResourceString("borg_jasp"));
+					Errmsg.getErrorHandler().notice(Resource.getResourceString("borg_jasp"));
 				} catch (Exception e) {
-					Errmsg.errmsg(e);
+					Errmsg.getErrorHandler().errmsg(e);
 				}
 
 			}
@@ -117,7 +117,7 @@ public class RunReport {
 						return;
 					GanttFrame.showChart(p);
 				} catch (Exception e) {
-					Errmsg.errmsg(e);
+					Errmsg.getErrorHandler().errmsg(e);
 				}
 
 			}
@@ -162,7 +162,7 @@ public class RunReport {
 						return;
 					RunReport.runReport(is, null);
 				} catch (Exception e) {
-					Errmsg.errmsg(e);
+					Errmsg.getErrorHandler().errmsg(e);
 				}
 			}
 
@@ -195,7 +195,7 @@ public class RunReport {
 
 			Connection conn = JdbcDB.getConnection();
 			if (conn == null) {
-				Errmsg.notice(Resource.getResourceString("no_reports"));
+				Errmsg.getErrorHandler().notice(Resource.getResourceString("no_reports"));
 				return;
 			}
 
@@ -209,11 +209,11 @@ public class RunReport {
 			vr.invoke(null, new Object[] { jasperprint, new Boolean(false) });
 
 		} catch (ClassNotFoundException cnf) {
-			Errmsg.notice(Resource.getResourceString("borg_jasp"));
+			Errmsg.getErrorHandler().notice(Resource.getResourceString("borg_jasp"));
 		} catch (NoClassDefFoundError r) {
-			Errmsg.notice(Resource.getResourceString("borg_jasp"));
+			Errmsg.getErrorHandler().notice(Resource.getResourceString("borg_jasp"));
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 	}
 

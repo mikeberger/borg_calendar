@@ -77,9 +77,9 @@ public class IcalModule implements Module {
 
 					String warning = AppointmentIcalAdapter.importIcal(s, (String) o);
 					if (warning != null && !warning.isEmpty())
-						Errmsg.notice(warning);
+						Errmsg.getErrorHandler().notice(warning);
 				} catch (Exception e) {
-					Errmsg.errmsg(e);
+					Errmsg.getErrorHandler().errmsg(e);
 				}
 
 			}
@@ -149,7 +149,7 @@ public class IcalModule implements Module {
 			}
 
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 	}
 

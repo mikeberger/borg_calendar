@@ -108,7 +108,7 @@ public class GoogleSyncOptionsPanel extends OptionsPanel {
 		try {
 			sep(new String(password.getPassword()));
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 
 		Prefs.putPref(GoogleSync.BATCH_CHUNK_SIZE, chunksize.getValue());
@@ -129,7 +129,7 @@ public class GoogleSyncOptionsPanel extends OptionsPanel {
 		try {
 			password.setText(gep());
 		} catch (Exception e) {
-			Errmsg.errmsg(e);
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 		
 		int c = Prefs.getIntPref(GoogleSync.BATCH_CHUNK_SIZE);
