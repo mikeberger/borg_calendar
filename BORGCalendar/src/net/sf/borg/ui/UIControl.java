@@ -173,10 +173,10 @@ public class UIControl {
 		if (!Prefs.getBoolPref(PrefName.BACKGSTART)
 				|| !SunTrayIconProxy.hasTrayIcon()) {
 			mv.setVisible(true);
-
-			// show the month view
-			mv.setView(ViewType.MONTH);
 		}
+		
+		// show the month view
+		mv.setView(ViewType.MONTH, false);
 
 		// destroy the splash screen
 		if (splashScreen != null) {

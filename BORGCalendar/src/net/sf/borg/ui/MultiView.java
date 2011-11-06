@@ -452,6 +452,19 @@ public class MultiView extends View {
 	 * @return the Component, if any that is now being displayed
 	 */
 	public Component setView(ViewType type) {
+		return setView(type, true);
+	}
+	
+	/**
+	 * Sets the currently selected tab to be a particular view as defined in
+	 * ViewType.
+	 * 
+	 * @param type
+	 *            the new view
+	 * @param show - show the multiview if it is iconified or not showing
+	 * @return the Component, if any that is now being displayed
+	 */
+	public Component setView(ViewType type, boolean show) {
 
 		Module m = getModuleForView(type);
 		if (m != null) {
@@ -464,7 +477,7 @@ public class MultiView extends View {
 					if (((DockableView) component).isDocked())
 					{
 						getTabs().setSelectedComponent(component);
-						if( !this.isShowing() || this.getState() == Frame.ICONIFIED)
+						if( show && !this.isShowing() || this.getState() == Frame.ICONIFIED)
 						{
 							MultiView.getMainView().setVisible(true);
 							MultiView.getMainView().toFront();
@@ -480,7 +493,7 @@ public class MultiView extends View {
 				}
 
 				getTabs().setSelectedComponent(component);
-				if( !this.isShowing() || this.getState() == Frame.ICONIFIED)
+				if( show && !this.isShowing() || this.getState() == Frame.ICONIFIED)
 				{
 					MultiView.getMainView().setVisible(true);
 					MultiView.getMainView().toFront();
