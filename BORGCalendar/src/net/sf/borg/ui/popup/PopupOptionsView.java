@@ -38,7 +38,6 @@ import javax.swing.KeyStroke;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.ReminderTimes;
 import net.sf.borg.ui.ResourceHelper;
-import net.sf.borg.ui.calendar.AppointmentPanel;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 
 /**
@@ -46,14 +45,22 @@ import net.sf.borg.ui.util.GridBagConstraintsFactory;
  * which reminder times to activate or deactivate
  */
 public class PopupOptionsView extends JDialog {
+	
+	/**
+	 * interface implemented by the component that is waiting for the
+	 * resulting popup times string
+	 */
+	public static interface PopupOptionsListener {
+		public void setPopupTimesString(String popupTimesString);
+	}
 
 	private static final long serialVersionUID = 1L;
 
 	/** The reminder time check boxes. */
 	private JCheckBox[] reminderTimeCheckBoxes;
 	
-	/** The parent appointment panel. */
-	private AppointmentPanel parentAppointmentPanel;
+	/** The parent component */
+	private PopupOptionsListener popupOptionsListener;
 	
 	/** The reminder times on off array. */
 	private char[] reminderTimesOnOffArray;
@@ -64,10 +71,10 @@ public class PopupOptionsView extends JDialog {
 	 * @param remtimes the reminder times Y/N (on/off) flags from the appointment
 	 * @param appPanel the appointment panel 
 	 */
-	public PopupOptionsView(String remtimes, String appointmentName, AppointmentPanel appPanel) {
+	public PopupOptionsView(String remtimes, String appointmentName, PopupOptionsListener popupOptionsListener) {
 		super();
 		
-		parentAppointmentPanel = appPanel;
+		this.popupOptionsListener = popupOptionsListener;
 		reminderTimesOnOffArray = remtimes.toCharArray();
 
 		initialize(appointmentName);
@@ -115,7 +122,7 @@ public class PopupOptionsView extends JDialog {
 				}
 				
 				// save the changes to the appointment panel
-				parentAppointmentPanel.setPopupTimesString(new String(reminderTimesOnOffArray));
+				popupOptionsListener.setPopupTimesString(new String(reminderTimesOnOffArray));
 				dispose();
 			}
 		});

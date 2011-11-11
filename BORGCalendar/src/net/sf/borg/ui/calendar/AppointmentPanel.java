@@ -64,6 +64,7 @@ import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.link.LinkPanel;
 import net.sf.borg.ui.popup.PopupOptionsView;
+import net.sf.borg.ui.popup.PopupOptionsView.PopupOptionsListener;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 import net.sf.borg.ui.util.PasswordHelper;
 
@@ -72,7 +73,7 @@ import com.toedter.calendar.JDateChooser;
 /**
  * AppointmentPanel is the UI for editing an Appointment.
  */
-public class AppointmentPanel extends JPanel {
+public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 
 	private static final long serialVersionUID = 1L;
 
@@ -1341,6 +1342,7 @@ public class AppointmentPanel extends JPanel {
 	 * Sets the popup times label to show the user what the popup times are in
 	 * human readbale form.
 	 */
+	@Override
 	public void setPopupTimesString(String reminderTimes) {
 
 		StringBuffer line1 = new StringBuffer(ReminderTimes.getNum() * 5 + 15);
