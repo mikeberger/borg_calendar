@@ -276,7 +276,9 @@ public class PrefName {
 	/** The LNF. */
 	static public PrefName LNF = new PrefName("lnf",
 			"com.jgoodies.looks.plastic.PlasticXPLookAndFeel");
-
+	static public PrefName GOODIESTHEME = new PrefName("goodies_theme",
+			"ExperienceBlue");
+	
 	/** The COUNTRY. */
 	static public PrefName COUNTRY = new PrefName("country", "");
 

@@ -20,6 +20,8 @@
 package net.sf.borg.ui.options;
 
 import java.awt.GridBagConstraints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Locale;
@@ -58,6 +60,7 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 	private JCheckBox iso8601Box = new JCheckBox();
 
 	private JComboBox lnfBox;
+	private JComboBox themeBox;
 	private JComboBox localebox;
 
 	private JCheckBox miltime;
@@ -79,6 +82,7 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 		privbox = new JCheckBox();
 		pubbox = new JCheckBox();
 		lnfBox = new JComboBox();
+		themeBox = new JComboBox();
 		holiday1 = new JCheckBox();
 		mondaycb = new JCheckBox();
 		miltime = new JCheckBox();
@@ -92,18 +96,18 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 
 		this.setName(Resource.getResourceString("appearance"));
 		ResourceHelper.setText(privbox, "Show_Private_Appointments");
-		this.add(privbox, GridBagConstraintsFactory.create(1, 1,
-				GridBagConstraints.BOTH));
+		this.add(privbox,
+				GridBagConstraintsFactory.create(1, 2, GridBagConstraints.BOTH));
 
 		ResourceHelper.setText(pubbox, "Show_Public_Appointments");
-		this.add(pubbox, GridBagConstraintsFactory.create(0, 1,
-				GridBagConstraints.BOTH));
+		this.add(pubbox,
+				GridBagConstraintsFactory.create(0, 2, GridBagConstraints.BOTH));
 
 		JLabel jLabel4 = new JLabel();
 		ResourceHelper.setText(jLabel4, "Look_and_Feel:");
 		jLabel4.setLabelFor(lnfBox);
-		this.add(jLabel4, GridBagConstraintsFactory.create(0, 0,
-				GridBagConstraints.BOTH));
+		this.add(jLabel4,
+				GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH));
 
 		lnfBox.setEditable(true);
 		lnfBox.setMaximumSize(new java.awt.Dimension(131, 24));
@@ -112,74 +116,107 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 		this.add(lnfBox, GridBagConstraintsFactory.create(1, 0,
 				GridBagConstraints.BOTH, 1.0, 0.0));
 
+		JLabel themeLabel = new JLabel();
+		ResourceHelper.setText(themeLabel, "JGoodies_Theme");
+		jLabel4.setLabelFor(themeBox);
+		this.add(themeLabel,
+				GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH));
+
+		themeBox.setEditable(true);
+		themeBox.setMaximumSize(new java.awt.Dimension(131, 24));
+		themeBox.setPreferredSize(new java.awt.Dimension(50, 24));
+		themeBox.setAutoscrolls(true);
+		this.add(themeBox, GridBagConstraintsFactory.create(1, 1,
+				GridBagConstraints.BOTH, 1.0, 0.0));
+
+		String[] themes = { "BrownSugar", "DarkStar", "DesertBlue",
+				"DesertBluer", "DesertGreen", "DesertRed", "DesertYellow",
+				"ExperienceBlue", "ExperienceGreen", "ExperienceRoyale",
+				"LightGray", "Silver", "SkyBlue", "SkyBluer", "SkyGreen",
+				"SkyKrupp", "SkyPink", "SkyRed", "SkyYellow" };
+
+		// add to the combo box
+		for (String theme : themes) {
+			themeBox.addItem(theme);
+		}
+
 		ResourceHelper.setText(holiday1, "Show_U.S._Holidays");
-		this.add(holiday1, GridBagConstraintsFactory.create(0, 3,
-				GridBagConstraints.BOTH));
+		this.add(holiday1,
+				GridBagConstraintsFactory.create(0, 4, GridBagConstraints.BOTH));
 
 		ResourceHelper.setText(mondaycb, "Week_Starts_with_Monday");
-		this.add(mondaycb, GridBagConstraintsFactory.create(1, 4,
-				GridBagConstraints.BOTH));
+		this.add(mondaycb,
+				GridBagConstraintsFactory.create(1, 5, GridBagConstraints.BOTH));
 
 		ResourceHelper.setText(miltime, "Use_24_hour_time_format");
-		this.add(miltime, GridBagConstraintsFactory.create(0, 4,
-				GridBagConstraints.BOTH));
+		this.add(miltime,
+				GridBagConstraintsFactory.create(0, 5, GridBagConstraints.BOTH));
 
 		JLabel jLabel5 = new JLabel();
 		ResourceHelper.setText(jLabel5, "Week_View_Start_Hour:_");
 		jLabel5.setLabelFor(wkstarthr);
 		wkstarthr.setModel(new DefaultComboBoxModel(new String[] { "0", "1",
 				"2", "3", "4", "5", "6", "7", "8", "9", "10", "11" }));
-		this.add(jLabel5, GridBagConstraintsFactory.create(0, 6,
-				GridBagConstraints.BOTH));
+		this.add(jLabel5,
+				GridBagConstraintsFactory.create(0, 7, GridBagConstraints.BOTH));
 
 		wkendhr.setModel(new DefaultComboBoxModel(new String[] { "12", "13",
 				"14", "15", "16", "17", "18", "19", "20", "21", "22", "23",
 				"24" }));
-		this.add(wkstarthr, GridBagConstraintsFactory.create(1, 6,
-				GridBagConstraints.BOTH));
+		this.add(wkstarthr,
+				GridBagConstraintsFactory.create(1, 7, GridBagConstraints.BOTH));
 
 		JLabel jLabel6 = new JLabel();
 		ResourceHelper.setText(jLabel6, "Week_View_End_Hour:_");
 		jLabel6.setLabelFor(wkendhr);
-		this.add(wkendhr, GridBagConstraintsFactory.create(1, 7,
-				GridBagConstraints.BOTH));
-		this.add(jLabel6, GridBagConstraintsFactory.create(0, 7,
-				GridBagConstraints.BOTH));
+		this.add(wkendhr,
+				GridBagConstraintsFactory.create(1, 8, GridBagConstraints.BOTH));
+		this.add(jLabel6,
+				GridBagConstraintsFactory.create(0, 8, GridBagConstraints.BOTH));
 
 		ResourceHelper.setText(canadabox, "Show_Canadian_Holidays");
-		this.add(canadabox, GridBagConstraintsFactory.create(1, 3,
-				GridBagConstraints.BOTH));
+		this.add(canadabox,
+				GridBagConstraintsFactory.create(1, 4, GridBagConstraints.BOTH));
 
 		JLabel jLabel8 = new JLabel();
 		ResourceHelper.setText(jLabel8, "locale");
 		jLabel8.setLabelFor(localebox);
-		this.add(jLabel8, GridBagConstraintsFactory.create(0, 11,
+		this.add(jLabel8, GridBagConstraintsFactory.create(0, 12,
 				GridBagConstraints.BOTH));
 
-		this.add(localebox, GridBagConstraintsFactory.create(1, 11,
+		this.add(localebox, GridBagConstraintsFactory.create(1, 12,
 				GridBagConstraints.BOTH));
 
 		hide_strike_box.setText(Resource.getResourceString("hide_strike"));
-		this.add(hide_strike_box, GridBagConstraintsFactory.create(0, 2,
-				GridBagConstraints.BOTH));
+		this.add(hide_strike_box,
+				GridBagConstraintsFactory.create(0, 3, GridBagConstraints.BOTH));
 
 		ResourceHelper.setText(iso8601Box, "ISO_week_number");
-		this.add(iso8601Box, GridBagConstraintsFactory.create(0, 8,
+		this.add(iso8601Box, GridBagConstraintsFactory.create(0, 9,
 				GridBagConstraints.BOTH, 0.0, 0.0));
 
 		ResourceHelper.setText(prioritySortBox, "sort_by_priority");
-		this.add(prioritySortBox, GridBagConstraintsFactory.create(0, 5,
-				GridBagConstraints.BOTH));
+		this.add(prioritySortBox,
+				GridBagConstraintsFactory.create(0, 6, GridBagConstraints.BOTH));
 
 		doyBox = new JCheckBox();
 		ResourceHelper.setText(doyBox, "showdoy");
-		this.add(doyBox, GridBagConstraintsFactory.create(1, 5,
-				GridBagConstraints.BOTH));
+		this.add(doyBox,
+				GridBagConstraintsFactory.create(1, 6, GridBagConstraints.BOTH));
 
 		truncbox = new JCheckBox();
 		ResourceHelper.setText(truncbox, "truncate_appts");
-		this.add(truncbox, GridBagConstraintsFactory.create(1, 2,
-				GridBagConstraints.BOTH));
+		this.add(truncbox,
+				GridBagConstraintsFactory.create(1, 3, GridBagConstraints.BOTH));
+
+		lnfBox.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				lnfChanged();
+			}
+
+		});
 
 	}
 
@@ -226,12 +263,24 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 		// look and feel
 		// we no longer restart automatically or attempt to update the lnf
 		// while running
+		boolean lnfChange = false;
 		String newlnf = (String) lnfBox.getSelectedItem();
 		String oldlnf = Prefs.getPref(PrefName.LNF);
 		if (!newlnf.equals(oldlnf)) {
-			Errmsg.getErrorHandler().notice(Resource.getResourceString("lfrestart"));
+			lnfChange = true;
 			Prefs.putPref(PrefName.LNF, newlnf);
 		}
+
+		String newtheme = (String) themeBox.getSelectedItem();
+		String oldtheme = Prefs.getPref(PrefName.GOODIESTHEME);
+		if (!newtheme.equals(oldtheme)) {
+			lnfChange = true;
+			Prefs.putPref(PrefName.GOODIESTHEME, newtheme);
+		}
+
+		if (lnfChange)
+			Errmsg.getErrorHandler().notice(
+					Resource.getResourceString("lfrestart"));
 
 	}
 
@@ -300,9 +349,8 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 				"net.infonode.gui.laf.InfoNodeLookAndFeel",
 				"com.lipstikLF.LipstikLookAndFeel",
 				"org.fife.plaf.Office2003.Office2003LookAndFeel" };
-		
-		for( String look : looks )
-		{
+
+		for (String look : looks) {
 			try {
 				Class.forName(look);
 				lnfs.add(look);
@@ -310,7 +358,6 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 				// empty
 			}
 		}
-
 
 		// add the look and feel in the preference store
 		lnfs.add(curlnf);
@@ -323,11 +370,26 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 		lnfBox.setSelectedItem(curlnf);
 		lnfBox.setEditable(true);
 
+		String curtheme = Prefs.getPref(PrefName.GOODIESTHEME);
+		themeBox.setSelectedItem(curtheme);
+		themeBox.setEditable(false);
+
 	}
 
 	@Override
 	public String getPanelName() {
 		return Resource.getResourceString("appearance");
+	}
+
+	private void lnfChanged() {
+		String lnf = (String) lnfBox.getSelectedItem();
+		if (lnf == null)
+			return;
+
+		if (lnf.contains("goodies"))
+			themeBox.setEnabled(true);
+		else
+			themeBox.setEnabled(false);
 	}
 
 }

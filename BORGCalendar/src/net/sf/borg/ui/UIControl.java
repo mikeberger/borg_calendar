@@ -88,7 +88,7 @@ public class UIControl {
 			if (lnf.contains("jgoodies")) {
 				String theme = System.getProperty("Plastic.defaultTheme");
 				if (theme == null) {
-					System.setProperty("Plastic.defaultTheme", "ExperienceBlue");
+					System.setProperty("Plastic.defaultTheme", Prefs.getPref(PrefName.GOODIESTHEME));
 				}
 			}
 
