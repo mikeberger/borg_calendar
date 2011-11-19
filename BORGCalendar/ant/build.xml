@@ -17,6 +17,8 @@
 	<property name="build.compiler" value="modern" />
 	<property name="ant.dir" value="${prj.dir}/ant" />
 
+	<property file="${ant.dir}/borg.version" />
+
 	<!-- PATH to javahelp - must be changed only if you want to regen the help indexes -->
 	<condition property="jh.bin" value="c:/jh2.0/javahelp/bin" else="/apps/jh2.0/javahelp/bin">
 		<os family="windows" />
@@ -178,25 +180,25 @@
 		<copy todir="${build.dir}/installer">
 			<fileset dir="${prj.dir}/installer" includes="*" />
 		</copy>
-		<izpack input="${build.dir}/installer/install.xml" output="${build.dir}/installer/BORG_installer.jar" installerType="standard" basedir="${build.dir}/installer" izPackDir="${iz.dir}/" />
+		<izpack input="${build.dir}/installer/install.xml" inheritAll="true" output="${build.dir}/installer/BORG_installer-${borg.version}.jar" installerType="standard" basedir="${build.dir}/installer" izPackDir="${iz.dir}/" />
 
-		<copy todir="${dist.dir}" file="${build.dir}/installer/BORG_installer.jar" />
+		<copy todir="${dist.dir}" file="${build.dir}/installer/BORG_installer-${borg.version}.jar" />
 
 		<copy todir="${dist.dir}" file="${iz.dir}/utils/wrappers/izpack2exe/7zS.sfx" />
 
 		<exec osfamily="windows" dir="${dist.dir}" executable="c:/Python32/python">
 			<arg value="${iz.dir}/utils/wrappers/izpack2exe/izpack2exe.py" />
 			<arg value="--with-7z=${iz.dir}/utils/wrappers/izpack2exe/7za.exe" />
-			<arg value="--file=${dist.dir}/BORG_installer.jar" />
-			<arg value="--output=${dist.dir}/BORG_installer.exe" />
+			<arg value="--file=${dist.dir}/BORG_installer-${borg.version}.jar" />
+			<arg value="--output=${dist.dir}/BORG_installer-${borg.version}.exe" />
 			<arg value="--no-upx" />
 		</exec>
 
 		<exec osfamily="unix" dir="${dist.dir}" executable="python">
 			<arg value="${iz.dir}/utils/wrappers/izpack2exe/izpack2exe.py" />
 			<arg value="--with-7z=7z" />
-			<arg value="--file=${dist.dir}/BORG_installer.jar" />
-			<arg value="--output=${dist.dir}/BORG_installer.exe" />
+			<arg value="--file=${dist.dir}/BORG_installer-${borg.version}.jar" />
+			<arg value="--output=${dist.dir}/BORG_installer-${borg.version}.exe" />
 			<arg value="--no-upx" />
 		</exec>
 
@@ -209,7 +211,6 @@
 	-->
 	<target name="installer.jarbundler" depends="borg-jar" if="have.jarbundler">
 		<taskdef name="jarbundler" classpath="${ant.dir}/lib/jarbundler.jar" classname="net.sourceforge.jarbundler.JarBundler" />
-		<property file="${ant.dir}/borg.version" />
 		<mkdir dir="${build.dir}/macos" />
 		<jarbundler dir="${build.dir}/macos" name="Borg" mainclass="net.sf.borg.control.Borg" bundleid="net.sf.borg" icon="${macos.res.dir}/borg.icns" infostring="BORG Calendar" jvmversion="1.6+" shortname="Borg" signature="BORG" verbose="true" version="${borg.version}">
 			<jarfileset dir="${dist.dir}">
