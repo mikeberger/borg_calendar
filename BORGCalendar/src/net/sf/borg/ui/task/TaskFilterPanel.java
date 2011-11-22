@@ -263,17 +263,4 @@ public class TaskFilterPanel extends JPanel {
 		}
 	}
 
-	/**
-	 * Set the project filter and show the tasks for a particular project
-	 * 
-	 * @param p the project
-	 */
-	public void showTasksForProject(Project p) {
-
-		statusSelector.setSelectedIndex(0);
-		String ps = TaskView.getProjectString(p);
-		projectSelector.setSelectedItem(ps);
-		refresh();
-
-	}
 }

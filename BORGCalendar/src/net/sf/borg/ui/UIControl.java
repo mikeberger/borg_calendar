@@ -45,10 +45,6 @@ public class UIControl {
 	
 	private static Observer shutdownListener = null;
 
-	
-	public static Observer getShutdownListener() {
-		return shutdownListener;
-	}
 
 	/**
 	 * set a shutdown listener to be called back when the UI shuts down

@@ -642,25 +642,6 @@ public class AppointmentModel extends Model implements Model.Listener,
 	}
 
 	/**
-	 * return true if there are any todos in the entire appointment table
-	 * 
-	 * @return true, if any todos exist
-	 */
-	public boolean haveTodos() {
-		try {
-			AppointmentDB kf = (AppointmentDB) db_;
-			Collection<Integer> keycol = kf.getTodoKeys();
-			// Collection keycol = AppointmentHelper.getTodoKeys(db_);
-			if (keycol.size() != 0)
-				return (true);
-		} catch (Exception e) {
-			Errmsg.getErrorHandler().errmsg(e);
-		}
-
-		return (false);
-	}
-
-	/**
 	 * Import xml.
 	 * 
 	 * @param is

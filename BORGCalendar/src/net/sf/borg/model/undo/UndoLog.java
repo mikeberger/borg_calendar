@@ -118,13 +118,4 @@ public class UndoLog {
 		return undoStack;
 	}
 	
-	/**
-	 * Pop an item off of the stack.
-	 * 
-	 * @return the undo item
-	 */
-	UndoItem<?> pop()
-	{
-		return undoStack.pop();
-	}
 }
