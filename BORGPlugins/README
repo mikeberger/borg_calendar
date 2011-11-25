@@ -11,6 +11,10 @@ Current plugins:
 
 - Reports - Jasper Reports and a GANTT chart for BORG. Rarely used. The Jasper files are way out of date.
 
-- ICal - Imports Ical into BORG. Works for me from Thunderbird/lightning/davmail/exchange. Amazing useful, but it would
+- ICal - Imports Ical files into BORG. Works for me from Thunderbird/lightning/davmail/exchange. Amazing useful, but it would
 be impossible to debug everyone's particular Ical issues, so it's a plugin. It's also not worth all of the third party jars that
 would need to be released with borg.
+
+- Google - syncs BORG with google calendar. Due to the incompatibility between the calendars, some appointments do not sync or sync
+incorrectly. Some BORG features (like Color) do not get sent over to google. The google APIs are not well documented, so I just
+don't have the patience to get everything working 100% by trial and error.
