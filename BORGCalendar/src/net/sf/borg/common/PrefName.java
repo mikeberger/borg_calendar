@@ -28,6 +28,7 @@ import java.util.Calendar;
 public class PrefName {
 
 
+
 	/** preference name */
 	private String name_;
 
@@ -62,7 +63,7 @@ public class PrefName {
 	 * 
 	 * @return the name
 	 */
-	String getName() {
+	public String getName() {
 		return name_;
 	}
 
@@ -339,5 +340,6 @@ public class PrefName {
  	/** shutdown action */
  	static public PrefName SHUTDOWN_ACTION = new PrefName("shutdown_action", "");
  	
+	public static final PrefName SHUTDOWNTIME = new PrefName("shuttime", "0");
 
 }

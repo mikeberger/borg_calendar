@@ -32,8 +32,10 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -41,6 +43,8 @@ import java.util.Vector;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
+import net.sf.borg.common.Resource;
+import net.sf.borg.common.Warning;
 import net.sf.borg.model.entity.BorgOption;
 
 /**
@@ -330,12 +334,47 @@ abstract public class JdbcDB {
 	 *             the exception
 	 */
 	public static void close() throws Exception {
+		writeTimestamp();
 		cleanup();
 		if (connection_ != null)
 			connection_.close();
 		connection_ = null;
 	}
 
+	/**
+	 * write a timestamp to the DB and prefs to detect shutdown problem on next start
+	 * @throws Exception 
+	 */
+	private static void writeTimestamp() throws Exception
+	{
+		Date now = new Date();
+		Prefs.putPref(PrefName.SHUTDOWNTIME, Long.toString(now.getTime()));
+		BorgOption option = new BorgOption(PrefName.SHUTDOWNTIME.getName(), Long.toString(now.getTime()));
+		JdbcDB.setOption(option);
+	}
+	
+	public static void checkTimestamp() throws Exception
+	{
+		String option = JdbcDB.getOption(PrefName.SHUTDOWNTIME.getName());
+		if( option != null && !option.equals(PrefName.SHUTDOWNTIME.getDefault()))
+		{
+			String preftime = Prefs.getPref(PrefName.SHUTDOWNTIME);
+			if( !preftime.equals(PrefName.SHUTDOWNTIME.getDefault())){
+				
+				// only error if prefs have later time than DB
+				long preflong = Long.parseLong(preftime);
+				long dblong = Long.parseLong(option);
+				if( preflong > dblong)
+				{
+					Date pdate = new Date(preflong);
+					Date dbdate = new Date(dblong);
+					throw new Warning(Resource.getResourceString("db_time_error") + "\n\n[" + DateFormat.getDateTimeInstance().format(pdate) +
+							" > " + DateFormat.getDateTimeInstance().format(dbdate) + "]");
+				}
+			}
+		}
+	}
+	
 	/**
 	 * Gets an option value from the options table
 	 * 

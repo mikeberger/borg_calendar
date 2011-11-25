@@ -16,7 +16,9 @@ import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
+import net.sf.borg.common.Warning;
 import net.sf.borg.model.ExportImport;
+import net.sf.borg.model.db.jdbc.JdbcDB;
 import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.address.AddrListView;
 import net.sf.borg.ui.calendar.DayPanel;
@@ -42,12 +44,12 @@ import net.sf.borg.ui.util.UIErrorHandler;
  * 
  */
 public class UIControl {
-	
-	private static Observer shutdownListener = null;
 
+	private static Observer shutdownListener = null;
 
 	/**
 	 * set a shutdown listener to be called back when the UI shuts down
+	 * 
 	 * @param shutdownListener
 	 */
 	public static void setShutdownListener(Observer shutdownListener) {
@@ -66,8 +68,17 @@ public class UIControl {
 	 *            - name for the tray icon
 	 */
 	public static void startUI(String trayname) {
-		
+
 		Errmsg.setErrorHandler(new UIErrorHandler());
+
+		// check database timestamp
+		try {
+			JdbcDB.checkTimestamp();
+		} catch (Warning e1) {
+			Errmsg.getErrorHandler().notice(e1.getMessage());
+		} catch (Exception e) {
+			Errmsg.getErrorHandler().errmsg(e);
+		}
 
 		// default font
 		String deffont = Prefs.getPref(PrefName.DEFFONT);
@@ -84,7 +95,8 @@ public class UIControl {
 			if (lnf.contains("jgoodies")) {
 				String theme = System.getProperty("Plastic.defaultTheme");
 				if (theme == null) {
-					System.setProperty("Plastic.defaultTheme", Prefs.getPref(PrefName.GOODIESTHEME));
+					System.setProperty("Plastic.defaultTheme",
+							Prefs.getPref(PrefName.GOODIESTHEME));
 				}
 			}
 
@@ -170,7 +182,7 @@ public class UIControl {
 				|| !SunTrayIconProxy.hasTrayIcon()) {
 			mv.setVisible(true);
 		}
-		
+
 		// show the month view
 		mv.setView(ViewType.MONTH, false);
 
@@ -276,7 +288,7 @@ public class UIControl {
 		}
 
 		// non-UI shutdown
-		if( shutdownListener != null)
+		if (shutdownListener != null)
 			shutdownListener.update(null, null);
 
 	}
