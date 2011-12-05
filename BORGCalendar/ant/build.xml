@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!-- $Id$ -->
 <project name="borg-calendar" default="main" basedir="../..">
-	
+
 	<property name="prj.dir" value="${basedir}/BORGCalendar" />
 	<property name="help.dir" value="${prj.dir}/borghelp" />
 
@@ -78,10 +78,15 @@
 		</exec>
 	</target>
 
+	<!-- do a staged, package by package compile to restrict dependencies across packages
+	     this is a quick way accomplish this without resorting to multiple eclipse projects -->
 	<target name="compile">
 		<mkdir dir="${build.dir}" />
-		<javac srcdir="${prj.dir}/src" classpathref="build.classpath" destdir="${build.dir}" target="1.6" source="1.6" debug="true">
-		</javac>
+		<javac includeantruntime="no" sourcepath="" srcdir="${prj.dir}/src" includes="${pkg}/common/**" excludes="${pkg}/model/**,${pkg}/ui/**,${pkg}/control/**" destdir="${build.dir}" classpathref="build.classpath" target="1.6" source="1.6" debug="on" />
+		<javac includeantruntime="no" sourcepath="" srcdir="${prj.dir}/src" includes="${pkg}/model/**" excludes="${pkg}/ui/**,${pkg}/control/**" destdir="${build.dir}" classpathref="build.classpath" target="1.6" source="1.6" debug="on" />
+		<javac includeantruntime="no" sourcepath="" srcdir="${prj.dir}/src" includes="${pkg}/ui/**" excludes="${pkg}/control/**" destdir="${build.dir}" classpathref="build.classpath" target="1.6" source="1.6" debug="on" />
+		<javac includeantruntime="no" srcdir="${prj.dir}/src" includes="${pkg}/control/**" excludes="${pkg}/common/**,${pkg}/model/**,${pkg}/ui/**" destdir="${build.dir}" classpathref="build.classpath" target="1.6" source="1.6" debug="on" />
+
 	</target>
 
 	<target name="borg-jar" depends="compile">
