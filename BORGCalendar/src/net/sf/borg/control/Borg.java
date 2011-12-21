@@ -325,25 +325,25 @@ public class Borg implements SocketHandler, Observer {
 				e1.printStackTrace();
 			}
 
-			File lib = null;
+			File ext = null;
 
 			if (parentDir != null) {
-				lib = new File(parentDir, "lib");
+				ext = new File(parentDir, "lib/ext");
 				
-				// fall back to relative directory if lib folder not child of
+				// fall back to relative directory if folder not child of
 				// same folder where borg.jar is
-				if (!lib.exists() || !lib.isDirectory()) {
-					lib = null;
+				if (!ext.exists() || !ext.isDirectory()) {
+					ext = null;
 				}
 			}
 
-			if (lib == null) {
-				lib = new File("lib");
+			if (ext == null) {
+				ext = new File("lib/ext");
 			}
 
-			System.out.println("using lib dir=" + lib);
-			if (lib.isDirectory()) {
-				File[] files = lib.listFiles();
+			System.out.println("using ext lib dir=" + ext);
+			if (ext.exists() && ext.isDirectory()) {
+				File[] files = ext.listFiles();
 				for (File file : files) {
 					if (file.getName().endsWith(".jar")) {
 						System.out.println("Loading JAR: " + file.getName());

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!-- $Id$ -->
-<project name="borg-calendar" default="main" basedir="../..">
+<project name="borg-calendar" xmlns:ivy="antlib:org.apache.ivy.ant" default="main" basedir="../..">
 
 	<property name="prj.dir" value="${basedir}/BORGCalendar" />
 	<property name="help.dir" value="${prj.dir}/borghelp" />
@@ -54,6 +54,12 @@
 			<include name="*.jar" />
 		</fileset>
 	</path>
+
+	<target name="resolve" description="--> retrieve dependencies with ivy">
+		<property name="ivy.dep.file" value="${prj.dir}/ant/ivy.xml" />
+		<property name="ivy.lib.dir" value="${prj.dir}/lib" />
+		<ivy:retrieve type="jar"/>
+	</target>
 
 	<target name="javadoc">
 		<tstamp />
@@ -171,6 +177,7 @@
 			<fileset dir="${res.dir}" includes="borg_mysql.sql" />
 			<fileset dir="${res.dir}" includes="borg_hsqldb.sql" />
 			<fileset dir="${prj.dir}" includes="lib/*" />
+			<fileset dir="${prj.dir}" includes="lib/ext/*" />
 			<fileset dir="${help.dir}/default" includes="db.html" />
 		</zip>
 	</target>
