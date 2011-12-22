@@ -148,7 +148,7 @@ public class AppointmentIcalAdapter {
 			}
 
 			// private
-			if (ap.getPrivate() && !showpriv) {
+			if (ap.isPrivate() && !showpriv) {
 				ve.getProperties().add(Clazz.PRIVATE);
 			}
 
@@ -171,7 +171,7 @@ public class AppointmentIcalAdapter {
 			}
 
 			// repeat stuff
-			if (ap.getRepeatFlag()) {
+			if (ap.isRepeatFlag()) {
 				// build recur string
 				String rec = "FREQ=";
 				String freq = Repeat.getFreq(ap.getFrequency());
