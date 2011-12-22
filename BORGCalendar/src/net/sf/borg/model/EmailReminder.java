@@ -124,7 +124,7 @@ public class EmailReminder {
 
 					// get the appt flags to see if the appointment is private
 					// if so, don't include it in the email
-					if (appt.getPrivate())
+					if (appt.isPrivate())
 						continue;
 
 					if (!AppointmentModel.isNote(appt)) {

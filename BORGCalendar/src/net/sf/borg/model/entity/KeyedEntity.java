@@ -30,46 +30,22 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 
+import lombok.Data;
+
 /**
  * Abstract base class for all Entities that are keyed by a simple integer key
  * 
  */
 @XmlAccessorType(XmlAccessType.NONE)
+@Data
 public abstract class KeyedEntity<T> implements Serializable
 {
     
     private static final long serialVersionUID = 1L;
-    /** The key_. */
+    
 	@XmlElement(name="KEY")
-    private int key_;
+    private int key = -1;
         
-    /**
-     * Creates a new instance of KeyedEntity.
-     */
-    public KeyedEntity()
-    {
-        key_ = -1;
-    }
-    
-    /**
-     * Gets the key.
-     * 
-     * @return the key
-     */
-    public int getKey()
-    {
-        return(key_);
-    }
-    
-    /**
-     * Sets the key.
-     * 
-     * @param k the new key
-     */
-    public void setKey(int k)
-    {
-        key_ = k;
-    }
     
     /**
      * Copy the entity

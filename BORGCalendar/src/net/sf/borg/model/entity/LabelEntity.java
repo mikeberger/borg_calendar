@@ -20,6 +20,8 @@ package net.sf.borg.model.entity;
 
 import java.util.Date;
 
+import lombok.Data;
+
 
 
 /**
@@ -27,67 +29,13 @@ import java.util.Date;
  * a transient, calculated entity for the UI, such as a calculated holiday or birthday based on the
  * address book.
  */
+@Data
 public class LabelEntity implements CalendarEntity {
 
-	/** The color. */
 	private String color;
-	
-	/** The date. */
 	private Date date;
-	
-	/** The Text. */
 	private String Text;
-	
-	/* (non-Javadoc)
-	 * @see net.sf.borg.model.entity.CalendarEntity#getColor()
-	 */
-	@Override
-	public String getColor() {
-		return color;
-	}
-	
-	/**
-	 * Sets the color.
-	 * 
-	 * @param color the new color
-	 */
-	public void setColor(String color) {
-		this.color = color;
-	}
-	
-	/* (non-Javadoc)
-	 * @see net.sf.borg.model.entity.CalendarEntity#getDate()
-	 */
-	@Override
-	public Date getDate() {
-		return date;
-	}
-	
-	/**
-	 * Sets the date.
-	 * 
-	 * @param date the new date
-	 */
-	public void setDate(Date date) {
-		this.date = date;
-	}
-	
-	/* (non-Javadoc)
-	 * @see net.sf.borg.model.entity.CalendarEntity#getText()
-	 */
-	@Override
-	public String getText() {
-		return Text;
-	}
-	
-	/**
-	 * Sets the text.
-	 * 
-	 * @param text the new text
-	 */
-	public void setText(String text) {
-		Text = text;
-	}
+
 	
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.entity.CalendarEntity#getDuration()
@@ -109,7 +57,7 @@ public class LabelEntity implements CalendarEntity {
 	 * @see net.sf.borg.model.entity.CalendarEntity#getTodo()
 	 */
 	@Override
-	public boolean getTodo() {
+	public boolean isTodo() {
 		return false;
 	}
 

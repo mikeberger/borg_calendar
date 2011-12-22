@@ -5,6 +5,9 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 
 /**
  * Abstract base class for entities that can have encrypted fields. It is up to
@@ -14,6 +17,8 @@ import javax.xml.bind.annotation.XmlElement;
  * @param <T> the entity class
  */
 @XmlAccessorType(XmlAccessType.NONE)
+@Data
+@EqualsAndHashCode(callSuper=true)
 public abstract class EncryptableEntity<T> extends KeyedEntity<T> {
 	
 	private static final long serialVersionUID = 1L;
@@ -22,21 +27,6 @@ public abstract class EncryptableEntity<T> extends KeyedEntity<T> {
 	@XmlElement
 	private boolean encrypted = false;
 	
-	
-	/**
-	 * @return true if the entity is encrypted
-	 */
-	public boolean isEncrypted() {
-		return encrypted;
-	}
-
-	/**
-	 * set the encrypted flag
-	 * @param encrypted the encrypted to set
-	 */
-	public void setEncrypted(boolean encrypted) {
-		this.encrypted = encrypted;
-	}
 	
 	/**
 	 * decrypt the entity. This will use the password to get the borg encryption

@@ -473,8 +473,8 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 						&& originalAppt.getFrequency() != null
 						&& Repeat.getFreq(appt.getFrequency()).equals(
 								Repeat.getFreq(originalAppt.getFrequency()))
-						&& appt.getTodo() == originalAppt.getTodo()
-						&& appt.getRepeatFlag() == originalAppt.getRepeatFlag()) {
+						&& appt.isTodo() == originalAppt.isTodo()
+						&& appt.isRepeatFlag() == originalAppt.isRepeatFlag()) {
 
 					// we can keep skip list and next todo since the repeat/todo
 					// info is not changing
@@ -1541,7 +1541,7 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 				}
 
 				// set ToDo checkbox
-				todoCheckBox.setSelected(appt.getTodo());
+				todoCheckBox.setSelected(appt.isTodo());
 
 				// set vacation checkbox
 				vacationCheckBox.setSelected(false);
@@ -1561,7 +1561,7 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 					holidayCheckBox.setSelected(true);
 
 				// private checkbox
-				privateCheckBox.setSelected(appt.getPrivate());
+				privateCheckBox.setSelected(appt.isPrivate());
 
 				// PM checkbox
 				boolean pm = true;

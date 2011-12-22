@@ -24,6 +24,9 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import net.sf.borg.common.EncryptionHelper;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
@@ -36,88 +39,19 @@ import net.sf.borg.common.Prefs;
  */
 @XmlRootElement(name="Memo")
 @XmlAccessorType(XmlAccessType.FIELD)
+@Data
+@EqualsAndHashCode(callSuper=true)
 public class Memo extends EncryptableEntity<Memo> {
 
 	
 	private static final long serialVersionUID = -6793670294661709573L;
 	
-	/** The Memo name. */
 	private String MemoName;
-	
-	/**
-	 * Gets the memo name.
-	 * 
-	 * @return the memo name
-	 */
-	public String getMemoName() { return( MemoName ); }
-	
-	/**
-	 * Sets the memo name.
-	 * 
-	 * @param xx the new memo name
-	 */
-	public void setMemoName( String xx ){ MemoName = xx; }
-
-	/** The Memo text. */
 	private String MemoText;
-	
-	/**
-	 * Gets the memo text.
-	 * 
-	 * @return the memo text
-	 */
-	public String getMemoText() { return( MemoText ); }
-	
-	/**
-	 * Sets the memo text.
-	 * 
-	 * @param xx the new memo text
-	 */
-	public void setMemoText( String xx ){ MemoText = xx; }
-	
-	
-	/** The creation date. */
 	private Date Created;
-	
-	/** The last update date. */
 	private Date Updated;
 	
-	/**
-	 * Gets the creation date.
-	 * 
-	 * @return the creation date
-	 */
-	public Date getCreated() {
-	    return Created;
-	}
 	
-	/**
-	 * Sets the creation date.
-	 * 
-	 * @param created the creation date
-	 */
-	public void setCreated(Date created) {
-	    this.Created = created;
-	}
-	
-	/**
-	 * Gets the  last update date.
-	 * 
-	 * @return the  last update date
-	 */
-	public Date getUpdated() {
-	    return Updated;
-	}
-	
-	/**
-	 * Sets the  last update date.
-	 * 
-	 * @param updated the  last update date
-	 */
-	public void setUpdated(Date updated) {
-	    this.Updated = updated;
-	}
-
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.entity.KeyedEntity#clone()
 	 */

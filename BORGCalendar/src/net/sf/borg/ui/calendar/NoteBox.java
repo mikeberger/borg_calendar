@@ -364,7 +364,7 @@ public class NoteBox extends Box implements Box.Draggable {
 	 * @return true if this box is for a todo
 	 */
 	private boolean isTodo() {
-		return bean.getTodo();
+		return bean.isTodo();
 	}
 
 	/**

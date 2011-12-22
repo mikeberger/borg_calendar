@@ -60,7 +60,7 @@ public interface CalendarEntity {
 	 * 
 	 * @return the todo flag
 	 */
-	public boolean getTodo();
+	public boolean isTodo();
 	
 	/**
 	 * Gets the next todo date.

@@ -26,6 +26,8 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import lombok.Data;
+
 
 
 /**
@@ -33,6 +35,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement(name="CheckList")
 @XmlAccessorType(XmlAccessType.FIELD)
+@Data
 public class CheckList {
 
 	/**
@@ -40,50 +43,12 @@ public class CheckList {
 	 */
 	@XmlRootElement(name="Item")
 	@XmlAccessorType(XmlAccessType.FIELD)
+	@Data
 	public static class Item {
 		
-		/** The checked flag - true if checked. */
 		private Boolean checked;
-		
-		/** The text. */
 		private String text;
 		
-		/**
-		 * Gets the checked flag.
-		 *
-		 * @return the checked flag
-		 */
-		public Boolean getChecked() {
-			return checked;
-		}
-		
-		/**
-		 * Gets the text.
-		 *
-		 * @return the text
-		 */
-		public String getText() {
-			return text;
-		}
-		
-		/**
-		 * Sets the checked flag.
-		 *
-		 * @param checked the new checked flag
-		 */
-		public void setChecked(Boolean checked) {
-			this.checked = checked;
-		}
-		
-		/**
-		 * Sets the text.
-		 *
-		 * @param text the new text
-		 */
-		public void setText(String text) {
-			this.text = text;
-		}
-
 		@Override
 		protected Object clone() throws CloneNotSupportedException {
 			Item copy = new Item();
@@ -93,10 +58,7 @@ public class CheckList {
 		}
 	}
 	
-	/** The CheckList name. */
 	private String CheckListName;
-	
-	/** The items. */
 	private List<Item> items = new ArrayList<Item>();
 	
 	/* (non-Javadoc)
@@ -110,37 +72,5 @@ public class CheckList {
 		return(dst);
 	}
 
-	
-	/**
-	 * Gets the checkList name.
-	 * 
-	 * @return the checkList name
-	 */
-	public String getCheckListName() { return( CheckListName ); }
-	
-	/**
-	 * Gets the items.
-	 *
-	 * @return the items
-	 */
-	public List<Item> getItems() {
-		return items;
-	}
-
-	/**
-	 * Sets the checkList name.
-	 * 
-	 * @param xx the new checkList name
-	 */
-	public void setCheckListName( String xx ){ CheckListName = xx; }
-
-	/**
-	 * Sets the items.
-	 *
-	 * @param items the new items
-	 */
-	public void setItems(List<Item> items) {
-		this.items = items;
-	}
 	
 }

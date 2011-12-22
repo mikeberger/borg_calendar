@@ -598,9 +598,9 @@ public class AppointmentListView extends DockableView implements
 					Appointment ap = AppointmentModel.getReference().getAppt(
 							key.intValue());
 
-					if (ap.getPrivate() && !priv.equals("true"))
+					if (ap.isPrivate() && !priv.equals("true"))
 						continue;
-					if (!ap.getPrivate() && !pub.equals("true"))
+					if (!ap.isPrivate() && !pub.equals("true"))
 						continue;
 
 					Object[] ro = new Object[3];

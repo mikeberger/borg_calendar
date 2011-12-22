@@ -22,9 +22,10 @@ import java.util.Date;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 
@@ -34,124 +35,21 @@ import net.sf.borg.common.Prefs;
  * Project Entity - a project contains tasks and can have child projects
  */
 @XmlRootElement(name="Project")
-@XmlAccessorType(XmlAccessType.NONE)
+@XmlAccessorType(XmlAccessType.FIELD)
+@Data
+@EqualsAndHashCode(callSuper=true)
 public class Project extends KeyedEntity<Project> implements CalendarEntity {
 
 	
 	private static final long serialVersionUID = -3250115693306817331L;
 	
-	/** The Start date. */
-	@XmlElement
 	private Date StartDate;
-	
-	/**
-	 * Gets the start date.
-	 * 
-	 * @return the start date
-	 */
-	public Date getStartDate() { return( StartDate ); }
-	
-	/**
-	 * Sets the start date.
-	 * 
-	 * @param xx the new start date
-	 */
-	public void setStartDate( Date xx ){ StartDate = xx; }
-
-	/** The Due date. */
-	@XmlElement
 	private Date DueDate;
-	
-	/**
-	 * Gets the due date.
-	 * 
-	 * @return the due date
-	 */
-	public Date getDueDate() { return( DueDate ); }
-	
-	/**
-	 * Sets the due date.
-	 * 
-	 * @param xx the new due date
-	 */
-	public void setDueDate( Date xx ){ DueDate = xx; }
-
-	/** The Description. */
-	@XmlElement
 	private String Description;
-	
-	/**
-	 * Gets the description.
-	 * 
-	 * @return the description
-	 */
-	public String getDescription() { return( Description ); }
-	
-	/**
-	 * Sets the description.
-	 * 
-	 * @param xx the new description
-	 */
-	public void setDescription( String xx ){ Description = xx; }
-
-	/** The Category. */
-	@XmlElement
 	private String Category;
-	
-	/**
-	 * Gets the category.
-	 * 
-	 * @return the category
-	 */
-	public String getCategory() { return( Category ); }
-	
-	/**
-	 * Sets the category.
-	 * 
-	 * @param xx the new category
-	 */
-	public void setCategory( String xx ){ Category = xx; }
-
-	/** The Status. */
-	@XmlElement
 	private String Status;
-	
-	/**
-	 * Gets the status.
-	 * 
-	 * @return the status
-	 */
-	public String getStatus() { return( Status ); }
-	
-	/**
-	 * Sets the status.
-	 * 
-	 * @param xx the new status
-	 */
-	public void setStatus( String xx ){ Status = xx; }
-	
-	/** The Parent. */
-	@XmlElement
 	private Integer Parent;
 	
-	/**
-	 * Gets the parent.
-	 * 
-	 * @return the parent
-	 */
-	public Integer getParent() {
-	    return Parent;
-	}
-	
-	/**
-	 * Sets the parent.
-	 * 
-	 * @param parent the new parent
-	 */
-	public void setParent(Integer parent) {
-	    this.Parent = parent;
-	}
-
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.entity.KeyedEntity#clone()
 	 */
@@ -198,7 +96,7 @@ public class Project extends KeyedEntity<Project> implements CalendarEntity {
 	 * @see net.sf.borg.model.entity.CalendarEntity#getTodo()
 	 */
 	@Override
-	public boolean getTodo(){ return true; }
+	public boolean isTodo(){ return true; }
 	
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.entity.CalendarEntity#getNextTodo()

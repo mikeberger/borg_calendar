@@ -58,14 +58,17 @@
 	<target name="resolve" description="--> retrieve dependencies with ivy">
 		<property name="ivy.dep.file" value="${prj.dir}/ant/ivy.xml" />
 		<property name="ivy.lib.dir" value="${prj.dir}/lib" />
-		<ivy:retrieve type="jar"/>
+		<ivy:retrieve type="jar" />
 	</target>
 
 	<target name="javadoc">
 		<tstamp />
+		<taskdef classname="lombok.delombok.ant.DelombokTask" classpath="${prj.dir}/lib/lombok-0.10.6.jar" name="delombok" />
+		<mkdir dir="build/src-delomboked" />
+		<delombok verbose="true" encoding="UTF-8" to="${prj.dir}/build/src-delomboked" from="${prj.dir}/src" />
 		<property name="javadoc.bottom" value="Generated ${TODAY} by ${user.name} using ${ant.version} and Java version ${java.version} from ${java.vendor} on ${os.name} ${os.arch} ${os.version}" />
-		<javadoc destdir="${prj.dir}/docs" use="true" Windowtitle="Borg Javadocs" Doctitle="Borg Javadocs" bottom="${javadoc.bottom}" package="true" sourcepath="${prj.dir}/src" classpathref="build.classpath" packagenames="*" excludepackagenames="test" maxmemory="512m" useexternalfile="yes" source="1.5">
-			<link href="http://java.sun.com/j2se/1.5.0/docs/api" />
+		<javadoc destdir="${prj.dir}/docs" use="true" Windowtitle="Borg Javadocs" Doctitle="Borg Javadocs" bottom="${javadoc.bottom}" package="true" sourcepath="${prj.dir}/build/src-delomboked" classpathref="build.classpath" packagenames="*" excludepackagenames="test" maxmemory="512m" useexternalfile="yes" source="1.6">
+			<link href="http://docs.oracle.com/javase/6/docs/api/" />
 		</javadoc>
 	</target>
 
@@ -176,7 +179,7 @@
 			<fileset dir="${build.dir}" includes="lib/borghelp.jar" />
 			<fileset dir="${res.dir}" includes="borg_mysql.sql" />
 			<fileset dir="${res.dir}" includes="borg_hsqldb.sql" />
-			<fileset dir="${prj.dir}" includes="lib/*" />
+			<fileset dir="${prj.dir}" includes="lib/*" excludes="lib/lombok*"/>
 			<fileset dir="${prj.dir}" includes="lib/ext/*" />
 			<fileset dir="${help.dir}/default" includes="db.html" />
 		</zip>

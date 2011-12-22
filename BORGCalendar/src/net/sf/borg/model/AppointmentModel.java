@@ -916,11 +916,11 @@ public class AppointmentModel extends Model implements Model.Listener,
 					continue;
 				
 				// filter by repeat
-				if (criteria.isRepeating() && !appt.getRepeatFlag())
+				if (criteria.isRepeating() && !appt.isRepeatFlag())
 					continue;
 
 				// filter todos
-				if (criteria.isTodo() && !appt.getTodo())
+				if (criteria.isTodo() && !appt.isTodo())
 					continue;
 
 				// filter by vacation

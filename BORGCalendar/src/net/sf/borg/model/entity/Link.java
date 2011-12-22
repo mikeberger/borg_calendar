@@ -23,6 +23,9 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 
 
 /**
@@ -31,6 +34,8 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement(name="Link")
 @XmlAccessorType(XmlAccessType.NONE)
+@Data
+@EqualsAndHashCode(callSuper=true)
 public class Link extends KeyedEntity<Link> {
 
 	
@@ -66,76 +71,5 @@ public class Link extends KeyedEntity<Link> {
 		return(dst);
 	}
 	
-	/**
-	 * Gets the key of the owning KeyedEntity.
-	 * 
-	 * @return the owner key
-	 */
-	public Integer getOwnerKey() {
-		return ownerKey;
-	}
-	
-	/**
-	 * Sets the key of the owning KeyedEntity.
-	 * 
-	 * @param ownerKey the new owner key
-	 */
-	public void setOwnerKey(Integer ownerKey) {
-		this.ownerKey = ownerKey;
-	}
-	
-	/**
-	 * Gets the type of the KeyedEntity - mapped in LinkModel.java
-	 * 
-	 * @return the owner type
-	 */
-	public String getOwnerType() {
-		return ownerType;
-	}
-	
-	/**
-	 * Sets the type of the KeyedEntity - mapped in LinkModel.java.
-	 * 
-	 * @param ownerType the new owner type
-	 */
-	public void setOwnerType(String ownerType) {
-		this.ownerType = ownerType;
-	}
-	
-	/**
-	 * Gets the identifier of the link target - i.e. an entity id, file path, or url
-	 * 
-	 * @return the path
-	 */
-	public String getPath() {
-		return path;
-	}
-	
-	/**
-	 * Sets the identifier of the link target - i.e. an entity id, file path, or url
-	 * 
-	 * @param path the new path
-	 */
-	public void setPath(String path) {
-		this.path = path;
-	}
-	
-	/**
-	 * Gets the link type  - see LinkModel.LinkType.
-	 * 
-	 * @return the link type
-	 */
-	public String getLinkType() {
-		return linkType;
-	}
-	
-	/**
-	 * Sets the link type - see LinkModel.LinkType.
-	 * 
-	 * @param linkType the new link type
-	 */
-	public void setLinkType(String linkType) {
-		this.linkType = linkType;
-	}
 	
 }

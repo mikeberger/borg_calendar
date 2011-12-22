@@ -170,7 +170,7 @@ public abstract class ReminderManager implements Model.Listener, Prefs.Listener 
 								apptKey.intValue());
 
 						// skip untimed todos here - will be collected later on
-						if (AppointmentModel.isNote(appt) && appt.getTodo())
+						if (AppointmentModel.isNote(appt) && appt.isTodo())
 							continue;
 
 						// calculate instance time

@@ -163,7 +163,7 @@ public class Day {
 				appt = AppointmentModel.getReference().getAppt(ik.intValue());
 
 				// skip based on public/private flags
-				if (appt.getPrivate()) {
+				if (appt.isPrivate()) {
 					if (!priv)
 						continue;
 				} else {

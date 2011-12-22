@@ -30,6 +30,7 @@
 		<dependency name="javahelp" org="javax.help" rev="+"/>
 		<dependency name="mail" org="javax.mail" rev="+"/>
 		<dependency name="jcalendar" org="com.toedter" rev="+"/>
+		<dependency name="lombok" org="org.projectlombok" rev="+"/>
 	
 	</dependencies>
 </ivy-module>

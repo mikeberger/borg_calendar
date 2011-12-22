@@ -581,7 +581,7 @@ abstract class ApptBoxPanel extends JPanel implements ComponentListener {
 	 */
 	public static boolean isStrike(CalendarEntity appt, Date date) {
 		if ((appt.getColor() != null && appt.getColor().equals("strike"))
-				|| (appt.getTodo() && !(appt.getNextTodo() == null || !appt
+				|| (appt.isTodo() && !(appt.getNextTodo() == null || !appt
 						.getNextTodo().after(date)))) {
 			return (true);
 		}

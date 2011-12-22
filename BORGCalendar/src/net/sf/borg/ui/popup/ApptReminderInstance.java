@@ -235,7 +235,7 @@ public class ApptReminderInstance extends ReminderInstance {
 	public boolean isTodo()
 	{
 		if( appt != null )
-			return appt.getTodo();
+			return appt.isTodo();
 		return false;
 	}
 
@@ -310,7 +310,7 @@ public class ApptReminderInstance extends ReminderInstance {
 
 		boolean showpriv = Prefs.getBoolPref(PrefName.SHOWPRIVATE);
 
-		if (appt.getPrivate()) {
+		if (appt.isPrivate()) {
 			if (!showpriv)
 				return false;
 		} else {

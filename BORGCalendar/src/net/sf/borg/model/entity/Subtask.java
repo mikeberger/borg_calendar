@@ -22,9 +22,10 @@ import java.util.Date;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 
@@ -32,120 +33,18 @@ import net.sf.borg.common.Prefs;
  * Subtask entity
  */
 @XmlRootElement(name="Subtask")
-@XmlAccessorType(XmlAccessType.NONE)
+@XmlAccessorType(XmlAccessType.FIELD)
+@Data
+@EqualsAndHashCode(callSuper=true)
 public class Subtask extends KeyedEntity<Subtask> implements CalendarEntity {
 
 	private static final long serialVersionUID = -5794908342032518360L;
 	
-	/** The Create date. */
-	@XmlElement
 	private Date StartDate;
-
-	/**
-	 * Gets the start date.
-	 * 
-	 * @return the start date
-	 */
-	public Date getStartDate() {
-		return (StartDate);
-	}
-
-	/**
-	 * Sets the start date.
-	 * 
-	 * @param xx the new start date
-	 */
-	public void setStartDate(Date xx) {
-		StartDate = xx;
-	}
-
-	/** The Close date. */
-	@XmlElement
 	private Date CloseDate;
-
-	/**
-	 * Gets the close date.
-	 * 
-	 * @return the close date
-	 */
-	public Date getCloseDate() {
-		return (CloseDate);
-	}
-
-	/**
-	 * Sets the close date.
-	 * 
-	 * @param xx the new close date
-	 */
-	public void setCloseDate(Date xx) {
-		CloseDate = xx;
-	}
-
-	/** The Due date. */
-	@XmlElement
 	private Date DueDate;
-
-	/**
-	 * Gets the due date.
-	 * 
-	 * @return the due date
-	 */
-	public Date getDueDate() {
-		return (DueDate);
-	}
-
-	/**
-	 * Sets the due date.
-	 * 
-	 * @param xx the new due date
-	 */
-	public void setDueDate(Date xx) {
-		DueDate = xx;
-	}
-
-	/** The Description. */
-	@XmlElement
 	private String Description;
-
-	/**
-	 * Gets the description.
-	 * 
-	 * @return the description
-	 */
-	public String getDescription() {
-		return (Description);
-	}
-
-	/**
-	 * Sets the description.
-	 * 
-	 * @param xx the new description
-	 */
-	public void setDescription(String xx) {
-		Description = xx;
-	}
-
-	/** The Task. */
-	@XmlElement
 	private Integer Task;
-
-	/**
-	 * Gets the parent task.
-	 * 
-	 * @return the parent task id
-	 */
-	public Integer getTask() {
-		return (Task);
-	}
-
-	/**
-	 * Sets the parent task.
-	 * 
-	 * @param xx the parent task id
-	 */
-	public void setTask(Integer xx) {
-		Task = xx;
-	}
 
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.entity.KeyedEntity#clone()
@@ -214,7 +113,7 @@ public class Subtask extends KeyedEntity<Subtask> implements CalendarEntity {
 	 * @see net.sf.borg.model.entity.CalendarEntity#getTodo()
 	 */
 	@Override
-	public boolean getTodo() {
+	public boolean isTodo() {
 		return true;
 	}
 

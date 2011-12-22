@@ -90,12 +90,12 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
             stmt.setDate(6, null );
         stmt.setInt( 7, toInt( appt.getVacation() ));
         stmt.setInt( 8, toInt( appt.getHoliday() ));
-        stmt.setInt( 9, toInt( appt.getPrivate()) );
+        stmt.setInt( 9, toInt( appt.isPrivate()) );
         stmt.setInt( 10, toInt( appt.getTimes() ));
         stmt.setString( 11, appt.getFrequency());
-        stmt.setInt( 12, toInt( appt.getTodo()) );
+        stmt.setInt( 12, toInt( appt.isTodo()) );
         stmt.setString( 13, appt.getColor());
-        stmt.setInt( 14, toInt( appt.getRepeatFlag()) );
+        stmt.setInt( 14, toInt( appt.isRepeatFlag()) );
         stmt.setString( 15, appt.getCategory());
       
         stmt.setString( 16, appt.getReminderTimes());
@@ -308,12 +308,12 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
             stmt.setDate( 5, null );
         stmt.setInt( 6, toInt( appt.getVacation() ));
         stmt.setInt( 7, toInt( appt.getHoliday() ));
-        stmt.setInt( 8, toInt( appt.getPrivate()) );
+        stmt.setInt( 8, toInt( appt.isPrivate()) );
         stmt.setInt( 9, toInt( appt.getTimes() ));
         stmt.setString( 10, appt.getFrequency());
-        stmt.setInt( 11, toInt( appt.getTodo()) );
+        stmt.setInt( 11, toInt( appt.isTodo()) );
         stmt.setString( 12, appt.getColor());
-        stmt.setInt( 13, toInt( appt.getRepeatFlag()) );
+        stmt.setInt( 13, toInt( appt.isRepeatFlag()) );
         stmt.setString( 14, appt.getCategory());
         stmt.setString( 15, appt.getReminderTimes());
         stmt.setString( 16, appt.getUntimed());

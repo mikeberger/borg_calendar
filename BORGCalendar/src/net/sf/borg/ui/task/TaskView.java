@@ -879,7 +879,7 @@ public class TaskView extends DockableView {
 		// add log entries
 		Collection<Tasklog> logs = TaskModel.getReference().getLogs(taskid);
 		for (Tasklog log : logs) {
-			Object o[] = { log.getlogTime(), log.getDescription() };
+			Object o[] = { log.getLogTime(), log.getDescription() };
 			tslog.addRow(o);
 		}
 	}

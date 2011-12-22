@@ -482,7 +482,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
                 .prepareStatement("INSERT INTO tasklog ( id, logtime, description, task ) VALUES " + "( ?, ?, ?, ?)");
 
         stmt.setInt(1, nextLogKey());
-        Date d = tlog.getlogTime();
+        Date d = tlog.getLogTime();
         stmt.setTimestamp(2, new java.sql.Timestamp(d.getTime()), Calendar.getInstance());
         stmt.setString(3, tlog.getDescription());
         stmt.setInt(4, tlog.getTask().intValue());
@@ -506,7 +506,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
         s.setKey(r.getInt("id"));
         s.setTask(new Integer(r.getInt("task")));
         if (r.getTimestamp("logtime") != null)
-            s.setlogTime(new java.util.Date(r.getTimestamp("logtime").getTime()));
+            s.setLogTime(new java.util.Date(r.getTimestamp("logtime").getTime()));
         s.setDescription(r.getString("description"));
 
         return s;

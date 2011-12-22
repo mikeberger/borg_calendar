@@ -25,11 +25,14 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import lombok.Data;
+
 /**
  * Each BorgOption instance holds a single row from the options table in the database
  */
 @XmlRootElement(name="Option")
 @XmlAccessorType(XmlAccessType.NONE)
+@Data
 public class BorgOption
 {
 	
@@ -51,19 +54,6 @@ public class BorgOption
 		this.value = value;
 	}
 	
-	/**
-	 * Gets the key.
-	 * 
-	 * @return the key
-	 */
-	public final String getKey()	{return key;}
-	
-	/**
-	 * Gets the value.
-	 * 
-	 * @return the value
-	 */
-	public final String getValue()	{return value;}
 	
 	/** The key. */
 	@XmlElement(name="Key")

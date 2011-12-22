@@ -717,7 +717,7 @@ class ApptBox extends Box implements Box.Draggable {
 	 * @return true, if is todo
 	 */
 	private boolean isTodo() {
-		return appt.getTodo();
+		return appt.isTodo();
 	}
 
 	/**
