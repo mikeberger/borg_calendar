@@ -14,8 +14,8 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
+import biz.source_code.base64Coder.Base64Coder;
+
 
 /**
  * class containing encryption and decryption methods for borg
@@ -120,8 +120,7 @@ public class EncryptionHelper {
 		 * get the encrypted bytes and encode to a string
 		 */
 		byte[] ba = baos.toByteArray();
-		BASE64Encoder b64enc = new BASE64Encoder();
-		return b64enc.encode(ba);
+		return new String(Base64Coder.encode(ba));
 
 	}
 
@@ -145,8 +144,7 @@ public class EncryptionHelper {
 		/*
 		 * decode the cipher text from base64 back to a byte array
 		 */
-		BASE64Decoder b64dec = new BASE64Decoder();
-		byte[] decba = b64dec.decodeBuffer(cipherText);
+		byte[] decba = Base64Coder.decodeLines(cipherText);
 
 		/*
 		 * decrpyt the bytes
@@ -169,8 +167,7 @@ public class EncryptionHelper {
 	public String exportKey(String keyAlias, String keyStorePassword) throws Exception
 	{
 		Key key = keyStore.getKey(keyAlias, keyStorePassword.toCharArray());
-		BASE64Encoder b64enc = new BASE64Encoder();
-		return b64enc.encode(key.getEncoded());
+		return new String(Base64Coder.encode(key.getEncoded()));
 	}
 	
 	/**
@@ -186,8 +183,7 @@ public class EncryptionHelper {
 		KeyStore store = KeyStore.getInstance("JCEKS");
 		store.load(new FileInputStream(location), password.toCharArray());
 		
-		BASE64Decoder b64dec = new BASE64Decoder();
-		byte[] ba = b64dec.decodeBuffer(encodedKey);
+		byte[] ba = Base64Coder.decode(encodedKey);
 		SecretKey key = new SecretKeySpec(ba,"AES");
 		KeyStore.SecretKeyEntry skEntry =
 	        new KeyStore.SecretKeyEntry(key);

@@ -47,8 +47,7 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.common.SendJavaMail;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.Task;
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
+import biz.source_code.base64Coder.Base64Coder;
 
 /**
  * this class handles the daily email reminder
@@ -205,12 +204,11 @@ public class EmailReminder {
 			return p2;
 		}
 
-		BASE64Decoder b64dec = new BASE64Decoder();
-		byte[] ba = b64dec.decodeBuffer(p1);
+		byte[] ba = Base64Coder.decode(p1);
 		SecretKey key = new SecretKeySpec(ba, "AES");
 		Cipher dec = Cipher.getInstance("AES");
 		dec.init(Cipher.DECRYPT_MODE, key);
-		byte[] decba = b64dec.decodeBuffer(p2);
+		byte[] decba = Base64Coder.decode(p2);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		OutputStream os = new CipherOutputStream(baos, dec);
 		os.write(decba);
@@ -232,13 +230,11 @@ public class EmailReminder {
 		if ("".equals(p1)) {
 			KeyGenerator keyGen = KeyGenerator.getInstance("AES");
 			SecretKey key = keyGen.generateKey();
-			BASE64Encoder b64enc = new BASE64Encoder();
-			p1 = b64enc.encode(key.getEncoded());
+			p1 = new String(Base64Coder.encode(key.getEncoded()));
 			Prefs.putPref(PrefName.EMAILPASS2, p1);
 		}
 
-		BASE64Decoder b64dec = new BASE64Decoder();
-		byte[] ba = b64dec.decodeBuffer(p1);
+		byte[] ba = Base64Coder.decode(p1);
 		SecretKey key = new SecretKeySpec(ba, "AES");
 		Cipher enc = Cipher.getInstance("AES");
 		enc.init(Cipher.ENCRYPT_MODE, key);
@@ -247,8 +243,7 @@ public class EmailReminder {
 		os.write(s.getBytes());
 		os.close();
 		ba = baos.toByteArray();
-		BASE64Encoder b64enc = new BASE64Encoder();
-		Prefs.putPref(PrefName.EMAILPASS, b64enc.encode(ba));
+		Prefs.putPref(PrefName.EMAILPASS, new String(Base64Coder.encode(ba)));
 	}
 
 }

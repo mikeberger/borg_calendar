@@ -39,8 +39,7 @@ import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.ui.options.OptionsView.OptionsPanel;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
+import biz.source_code.base64Coder.Base64Coder;
 
 /**
  * provides the UI for Email Options.
@@ -156,13 +155,11 @@ public class GoogleSyncOptionsPanel extends OptionsPanel {
 		if ("".equals(p1)) {
 			KeyGenerator keyGen = KeyGenerator.getInstance("AES");
 			SecretKey key = keyGen.generateKey();
-			BASE64Encoder b64enc = new BASE64Encoder();
-			p1 = b64enc.encode(key.getEncoded());
+			p1 = new String(Base64Coder.encode(key.getEncoded()));
 			Prefs.putPref(GoogleSync.SYNCPW2, p1);
 		}
 
-		BASE64Decoder b64dec = new BASE64Decoder();
-		byte[] ba = b64dec.decodeBuffer(p1);
+		byte[] ba = Base64Coder.decode(p1);
 		SecretKey key = new SecretKeySpec(ba, "AES");
 		Cipher enc = Cipher.getInstance("AES");
 		enc.init(Cipher.ENCRYPT_MODE, key);
@@ -171,8 +168,7 @@ public class GoogleSyncOptionsPanel extends OptionsPanel {
 		os.write(s.getBytes());
 		os.close();
 		ba = baos.toByteArray();
-		BASE64Encoder b64enc = new BASE64Encoder();
-		Prefs.putPref(GoogleSync.SYNCPW, b64enc.encode(ba));
+		Prefs.putPref(GoogleSync.SYNCPW, new String(Base64Coder.encode(ba)));
 	}
 
 	public static String gep() throws Exception {
@@ -186,12 +182,11 @@ public class GoogleSyncOptionsPanel extends OptionsPanel {
 			return p2;
 		}
 
-		BASE64Decoder b64dec = new BASE64Decoder();
-		byte[] ba = b64dec.decodeBuffer(p1);
+		byte[] ba = Base64Coder.decode(p1);
 		SecretKey key = new SecretKeySpec(ba, "AES");
 		Cipher dec = Cipher.getInstance("AES");
 		dec.init(Cipher.DECRYPT_MODE, key);
-		byte[] decba = b64dec.decodeBuffer(p2);
+		byte[] decba = Base64Coder.decode(p2);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		OutputStream os = new CipherOutputStream(baos, dec);
 		os.write(decba);

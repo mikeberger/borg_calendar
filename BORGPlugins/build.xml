@@ -17,6 +17,9 @@
 			<include name="*.jar" />
 		</fileset>
 		<pathelement location="${borg.proj.dir}/dist/borg.jar" />
+		<fileset dir="${borg.proj.dir}/lib">
+			<include name="base64*.jar" />
+		</fileset>
 	</path>
 
 
@@ -41,7 +44,7 @@
 		<copy todir="${build.dir}/reports">
 			<fileset dir="${prj.dir}/res/reports" />
 		</copy>
-		
+
 		<copy todir="${build.dir}/resource">
 			<fileset dir="${prj.dir}/res/resource" />
 		</copy>
