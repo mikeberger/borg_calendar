@@ -44,6 +44,7 @@ import javax.swing.SwingUtilities;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
+import net.sf.borg.model.Theme;
 import net.sf.borg.ui.options.OptionsView;
 import net.sf.borg.ui.popup.ReminderManager;
 
@@ -58,10 +59,14 @@ public class SunTrayIconProxy implements Prefs.Listener {
 		}
 	}
 
-	private static final int iconSize = 16;
+	private static int iconSize = 16;
 
 	// the singleton
 	static private SunTrayIconProxy singleton = null;
+
+	public static SunTrayIconProxy getReference() {
+		return singleton;
+	}
 
 	/* flag to indicate is a tray icon was started */
 	private static boolean trayIconStarted = false;
@@ -117,6 +122,8 @@ public class SunTrayIconProxy implements Prefs.Listener {
 
 		if (!SystemTray.isSupported())
 			throw new Exception("Systray not supported");
+		
+		iconSize = SystemTray.getSystemTray().getTrayIconSize().height;
 
 		trayIcon = new TrayIcon(Toolkit.getDefaultToolkit().getImage(
 				getClass().getResource("/resource/borg16.jpg")));
@@ -237,21 +244,22 @@ public class SunTrayIconProxy implements Prefs.Listener {
 			Graphics2D g = bimage.createGraphics();
 
 			// draw icon background
-			g.setColor(Color.white);
+			Theme t = Theme.getCurrentTheme();
+			g.setColor(new Color(t.getTrayIconBg()));
 			g.fillRect(0, 0, iconSize, iconSize);
 
 			// draw date centered
-			Font font = new Font("Monospaced", Font.BOLD, 12);
+			Font font = new Font("Monospaced", Font.BOLD, iconSize-4);
 			g.setFont(font);
 			FontMetrics metrics = g.getFontMetrics();
-			g.setColor(new Color(0, 0, 153));
+			g.setColor(new Color(t.getTrayIconFg()));
 			g.drawString(text, (iconSize - metrics.stringWidth(text)) / 2,
 					(iconSize + metrics.getAscent()) / 2);
 			g.dispose();
 
 			image = bimage;
 
-			trayIcon.setToolTip(DateFormat.getDateInstance(DateFormat.MEDIUM)
+			trayIcon.setToolTip("BORG - " + DateFormat.getDateInstance(DateFormat.MEDIUM)
 					.format(new Date()));
 
 		} else {

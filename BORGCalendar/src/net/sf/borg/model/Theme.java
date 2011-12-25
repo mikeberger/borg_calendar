@@ -32,6 +32,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import lombok.Data;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
@@ -46,6 +47,7 @@ import net.sf.borg.model.entity.BorgOption;
  * The Theme class also manages the persistence of Themes in the database and keeps a cache of Theme objects
  * Themes are persisted as options in the OPTIONS table
  */
+@Data
 public class Theme {
 
 	// the preference which holds the name of the current (active) theme
@@ -178,15 +180,6 @@ public class Theme {
 		
 	}
 
-//	public static void main(String args[]) throws Exception
-//	{
-//		Theme t = new Theme();
-//		t.setName("test");
-//		JdbcDB.connect("jdbc:hsqldb:mem:xx");
-//		t.save();
-//		String s = JdbcDB.getOption(Theme.getKey(t.getName()));
-//		System.out.println(s);
-//	}
 
 	/**
 	 * Set a theme to be the active theme
@@ -226,75 +219,10 @@ public class Theme {
 	private int vacationBg = 13434828;
 	private int weekdayBg = 16777164;
 	private int weekendBg = 255*256*256+225*256+196;
+	private int trayIconBg = 255*256*256+255*256+255;
+	private int trayIconFg = 153;
 
-	public int getBirthdayTextColor() {
-		return birthdayTextColor;
-	}
 	
-	public int getDefaultBg() {
-		return defaultBg;
-	}
-	
-	public int getHalfdayBg() {
-		return halfdayBg;
-	}
-
-	public int getHolidayBg() {
-		return holidayBg;
-	}
-
-	public int getHolidayTextColor() {
-		return holidayTextColor;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public int getStripeBg() {
-		return stripeBg;
-	}
-
-	public int getTaskTextColor() {
-		return taskTextColor;
-	}
-
-	public int getTextColor1() {
-		return textColor1;
-	}
-
-	public int getTextColor2() {
-		return textColor2;
-	}
-
-	public int getTextColor3() {
-		return textColor3;
-	}
-
-	public int getTextColor4() {
-		return textColor4;
-	}
-
-	public int getTextColor5() {
-		return textColor5;
-	}
-
-	public int getTodayBg() {
-		return todayBg;
-	}
-
-	public int getVacationBg() {
-		return vacationBg;
-	}
-
-	public int getWeekdayBg() {
-		return weekdayBg;
-	}
-
-	public int getWeekendBg() {
-		return weekendBg;
-	}
-
 	/**
 	 * save the current theme in the database
 	 * 
@@ -321,79 +249,5 @@ public class Theme {
 		JdbcDB.setOption(option);
 	}
 
-	public void setBirthdayTextColor(int birthdayTextColor) {
-		this.birthdayTextColor = birthdayTextColor;
-	}
-
-	public void setDefaultBg(int defaultBg) {
-		this.defaultBg = defaultBg;
-	}
-
-	public void setHalfdayBg(int halfdayBg) {
-		this.halfdayBg = halfdayBg;
-	}
-
-	public void setHolidayBg(int holidayBg) {
-		this.holidayBg = holidayBg;
-	}
-
-	public void setHolidayTextColor(int holidayTextColor) {
-		this.holidayTextColor = holidayTextColor;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public void setStripeBg(int stripeBg) {
-		this.stripeBg = stripeBg;
-	}
-
-	public void setTaskTextColor(int taskTextColor) {
-		this.taskTextColor = taskTextColor;
-	}
-
-	public void setTextColor1(int textColor1) {
-		this.textColor1 = textColor1;
-	}
-
-	public void setTextColor2(int textColor2) {
-		this.textColor2 = textColor2;
-	}
-
-	public void setTextColor3(int textColor3) {
-		this.textColor3 = textColor3;
-	}
-
-	public void setTextColor4(int textColor4) {
-		this.textColor4 = textColor4;
-	}
-
-	public void setTextColor5(int textColor5) {
-		this.textColor5 = textColor5;
-	}
-
-	public void setTodayBg(int todayBg) {
-		this.todayBg = todayBg;
-	}
-
-	public void setVacationBg(int vacationBg) {
-		this.vacationBg = vacationBg;
-	}
-
-	public void setWeekdayBg(int weekdayBg) {
-		this.weekdayBg = weekdayBg;
-	}
-
-	public void setWeekendBg(int weekendBg) {
-		this.weekendBg = weekendBg;
-	}
-
-	public int getDefaultFg() {
-		return defaultFg;
-	}
-
-	public void setDefaultFg(int defaultFg) {
-		this.defaultFg = defaultFg;
-	}
+	
 }

@@ -44,6 +44,7 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.common.Warning;
 import net.sf.borg.model.Theme;
 import net.sf.borg.ui.ResourceHelper;
+import net.sf.borg.ui.SunTrayIconProxy;
 import net.sf.borg.ui.options.OptionsView.OptionsPanel;
 import net.sf.borg.ui.util.ColorChooserButton;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
@@ -75,6 +76,8 @@ public class ColorOptionsPanel extends OptionsPanel {
 	private ColorChooserButton btn_ucs_weekday;
 	private ColorChooserButton btn_ucs_weekend;
 	private ColorChooserButton btn_ucs_white;
+	private ColorChooserButton btn_tray_fg;
+	private ColorChooserButton btn_tray_bg;
 
 	private JCheckBox cb_ucs_marktodo;
 	private JCheckBox cb_ucs_ontodo;
@@ -174,7 +177,7 @@ public class ColorOptionsPanel extends OptionsPanel {
 				GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH));
 
 		JPanel colorPanel = new JPanel();
-		colorPanel.setLayout(new GridLayout(11, 2));
+		colorPanel.setLayout(new GridLayout(12, 2));
 
 		cb_ucs_ontodo = new JCheckBox();
 		ResourceHelper.setText(cb_ucs_ontodo, "ucolortext1");
@@ -215,7 +218,10 @@ public class ColorOptionsPanel extends OptionsPanel {
 				Resource.getResourceString("ucolortext18"), Color.WHITE);
 		btn_ucs_stripe = new ColorChooserButton(
 				Resource.getResourceString("stripecolor"), Color.WHITE);
-
+		btn_tray_fg = new ColorChooserButton(
+				Resource.getResourceString("tray_fg"), Color.WHITE);
+		btn_tray_bg = new ColorChooserButton(
+				Resource.getResourceString("tray_bg"), Color.WHITE);
 		JButton btn_ucs_restore = new JButton(
 				Resource.getResourceString("restore_defaults"));
 
@@ -242,7 +248,8 @@ public class ColorOptionsPanel extends OptionsPanel {
 				btn_ucs_halfday.setColorProperty(new Color(t.getHalfdayBg()));
 				btn_ucs_weekend.setColorProperty(new Color(t.getWeekendBg()));
 				btn_ucs_weekday.setColorProperty(new Color(t.getWeekdayBg()));
-				btn_ucs_stripe.setColorProperty(new Color(t.getStripeBg()));
+				btn_tray_fg.setColorProperty(new Color(t.getTrayIconFg()));
+				btn_tray_bg.setColorProperty(new Color(t.getTrayIconBg()));
 			}
 		});
 
@@ -263,6 +270,8 @@ public class ColorOptionsPanel extends OptionsPanel {
 		colorPanel.add(btn_ucs_weekday);
 		colorPanel.add(btn_ucs_birthdays);
 		colorPanel.add(btn_ucs_stripe);
+		colorPanel.add(btn_tray_fg);
+		colorPanel.add(btn_tray_bg);
 		colorPanel.add(btn_ucs_restore);
 		colorPanel.add(cb_ucs_ontodo);
 
@@ -314,6 +323,8 @@ public class ColorOptionsPanel extends OptionsPanel {
 			return;
 		}
 
+		if (SunTrayIconProxy.hasTrayIcon())
+			SunTrayIconProxy.getReference().updateImage();
 	}
 
 	@Override
@@ -386,6 +397,8 @@ public class ColorOptionsPanel extends OptionsPanel {
 		t.setWeekendBg(btn_ucs_weekend.getColorProperty().getRGB());
 		t.setWeekdayBg(btn_ucs_weekday.getColorProperty().getRGB());
 		t.setStripeBg(btn_ucs_stripe.getColorProperty().getRGB());
+		t.setTrayIconFg(btn_tray_fg.getColorProperty().getRGB());
+		t.setTrayIconBg(btn_tray_bg.getColorProperty().getRGB());
 
 	}
 
@@ -415,6 +428,7 @@ public class ColorOptionsPanel extends OptionsPanel {
 		btn_ucs_weekend.setColorProperty(new Color(t.getWeekendBg()));
 		btn_ucs_weekday.setColorProperty(new Color(t.getWeekdayBg()));
 		btn_ucs_stripe.setColorProperty(new Color(t.getStripeBg()));
-
+		btn_tray_fg.setColorProperty(new Color(t.getTrayIconFg()));
+		btn_tray_bg.setColorProperty(new Color(t.getTrayIconBg()));
 	}
 }
