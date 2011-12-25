@@ -134,6 +134,13 @@ public class SunTrayIconProxy implements Prefs.Listener {
 
 		PopupMenu popup = new PopupMenu();
 
+		String fontName = Prefs.getPref(PrefName.DEFFONT);
+		if( !fontName.isEmpty())
+		{
+			Font f = Font.decode(fontName);
+			popup.setFont(f);
+		}
+
 		MenuItem item = new MenuItem();
 		item.setLabel(Resource.getResourceString("Open_Calendar"));
 		item.addActionListener(new OpenListener());
