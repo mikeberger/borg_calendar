@@ -273,6 +273,9 @@ public class PrefName {
 
 	static public PrefName YEARVIEWFONT = new PrefName("yearviewfont",
 	"SansSerif-7");
+	
+	static public PrefName TRAYFONT = new PrefName("trayfont", "SansSerif-BOLD-12");
+
 
 	/** The LNF. */
 	static public PrefName LNF = new PrefName("lnf",

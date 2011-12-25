@@ -44,7 +44,6 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.common.Warning;
 import net.sf.borg.model.Theme;
 import net.sf.borg.ui.ResourceHelper;
-import net.sf.borg.ui.SunTrayIconProxy;
 import net.sf.borg.ui.options.OptionsView.OptionsPanel;
 import net.sf.borg.ui.util.ColorChooserButton;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
@@ -323,8 +322,7 @@ public class ColorOptionsPanel extends OptionsPanel {
 			return;
 		}
 
-		if (SunTrayIconProxy.hasTrayIcon())
-			SunTrayIconProxy.getReference().updateImage();
+		
 	}
 
 	@Override

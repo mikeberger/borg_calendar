@@ -50,6 +50,7 @@ public class FontOptionsPanel extends OptionsPanel {
 	JTextField yearFontText = new JTextField();
 	JTextField printFontText = new JTextField();
 	JTextField defaultFontText = new JTextField();
+	JTextField trayFontText = new JTextField();
 
 	/**
 	 * Instantiates a new font options panel.
@@ -62,6 +63,7 @@ public class FontOptionsPanel extends OptionsPanel {
 		yearFontText.setEditable(false);
 		printFontText.setEditable(false);
 		defaultFontText.setEditable(false);
+		trayFontText.setEditable(false);
 		
 		this.setLayout(new GridBagLayout());
 		
@@ -125,12 +127,23 @@ public class FontOptionsPanel extends OptionsPanel {
 			}
 		});
 		
+		JButton trayFontButton = new JButton();
+		ResourceHelper.setText(trayFontButton, "tray_font");
+		trayFontButton.setBorder(new SoftBevelBorder(BevelBorder.RAISED));
+		trayFontButton.addActionListener(new java.awt.event.ActionListener() {
+			@Override
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				fontActionPerformed(trayFontText);
+			}
+		});
+		
 		this.add(defFontButton, GridBagConstraintsFactory.create(0,0, GridBagConstraints.BOTH));
 		this.add(apptFontButton, GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH));
 		this.add(dayFontButton, GridBagConstraintsFactory.create(0, 2, GridBagConstraints.BOTH));
 		this.add(weekFontButton, GridBagConstraintsFactory.create(0, 3, GridBagConstraints.BOTH));
 		this.add(yearFontButton, GridBagConstraintsFactory.create(0, 4, GridBagConstraints.BOTH));
 		this.add(printFontButton, GridBagConstraintsFactory.create(0, 5, GridBagConstraints.BOTH));
+		this.add(trayFontButton, GridBagConstraintsFactory.create(0, 6, GridBagConstraints.BOTH));
 		
 		this.add(defaultFontText, GridBagConstraintsFactory.create(1, 0, GridBagConstraints.BOTH, 1.0, 0.0));
 		this.add(monthFontText, GridBagConstraintsFactory.create(1, 1, GridBagConstraints.BOTH, 1.0, 0.0));
@@ -138,6 +151,7 @@ public class FontOptionsPanel extends OptionsPanel {
 		this.add(dayFontText, GridBagConstraintsFactory.create(1, 2, GridBagConstraints.BOTH, 1.0, 0.0));
 		this.add(yearFontText, GridBagConstraintsFactory.create(1, 4, GridBagConstraints.BOTH, 1.0, 0.0));
 		this.add(printFontText, GridBagConstraintsFactory.create(1, 5, GridBagConstraints.BOTH, 1.0, 0.0));
+		this.add(trayFontText, GridBagConstraintsFactory.create(1, 6, GridBagConstraints.BOTH, 1.0, 0.0));
 	}
 
 	/*
@@ -156,6 +170,7 @@ public class FontOptionsPanel extends OptionsPanel {
 		Prefs.putPref(PrefName.YEARVIEWFONT, yearFontText.getText());
 		Prefs.putPref(PrefName.DAYVIEWFONT, dayFontText.getText());
 		Prefs.putPref(PrefName.PRINTFONT, printFontText.getText());
+		Prefs.putPref(PrefName.TRAYFONT, trayFontText.getText());
 		
 		// if the default font is changing then try to update the entire UI
 		// will not likely be pretty
@@ -164,10 +179,6 @@ public class FontOptionsPanel extends OptionsPanel {
 			NwFontChooserS.setDefaultFont(f);
 			SwingUtilities.updateComponentTreeUI(this);
 		}
-
-		// notify listeners - the font change takes place immediately
-		// the apply button is not involved
-		Prefs.notifyListeners();
 
 	}
 
@@ -208,6 +219,7 @@ public class FontOptionsPanel extends OptionsPanel {
 		yearFontText.setText(Prefs.getPref(PrefName.YEARVIEWFONT));
 		dayFontText.setText(Prefs.getPref(PrefName.DAYVIEWFONT));
 		printFontText.setText(Prefs.getPref(PrefName.PRINTFONT));
+		trayFontText.setText(Prefs.getPref(PrefName.TRAYFONT));
 	}
 	
 	@Override

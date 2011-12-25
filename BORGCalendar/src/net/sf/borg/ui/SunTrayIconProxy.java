@@ -26,6 +26,7 @@ import java.awt.Image;
 import java.awt.Menu;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
+import java.awt.RenderingHints;
 import java.awt.SystemTray;
 import java.awt.Toolkit;
 import java.awt.TrayIcon;
@@ -70,9 +71,8 @@ public class SunTrayIconProxy implements Prefs.Listener {
 
 	/* flag to indicate is a tray icon was started */
 	private static boolean trayIconStarted = false;
-	
-	static private Menu actionMenu = new Menu();
 
+	static private Menu actionMenu = new Menu();
 
 	/**
 	 * Checks for presence of the tray icon.
@@ -122,16 +122,16 @@ public class SunTrayIconProxy implements Prefs.Listener {
 
 		if (!SystemTray.isSupported())
 			throw new Exception("Systray not supported");
-		
+
 		iconSize = SystemTray.getSystemTray().getTrayIconSize().height;
 
 		trayIcon = new TrayIcon(Toolkit.getDefaultToolkit().getImage(
 				getClass().getResource("/resource/borg16.jpg")));
 
 		trayIcon.setToolTip(trayname);
-		
+
 		actionMenu.setLabel(Resource.getResourceString("Open"));
-		
+
 		PopupMenu popup = new PopupMenu();
 
 		MenuItem item = new MenuItem();
@@ -147,7 +147,7 @@ public class SunTrayIconProxy implements Prefs.Listener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				ReminderManager rm = ReminderManager.getReminderManager();
-				if( rm != null )
+				if (rm != null)
 					rm.showAll();
 			}
 
@@ -162,13 +162,13 @@ public class SunTrayIconProxy implements Prefs.Listener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				ReminderManager rm = ReminderManager.getReminderManager();
-				if( rm != null )
+				if (rm != null)
 					rm.hideAll();
 			}
 
 		});
 		popup.add(item);
-		
+
 		popup.add(actionMenu);
 
 		item = new MenuItem();
@@ -181,9 +181,9 @@ public class SunTrayIconProxy implements Prefs.Listener {
 			}
 		});
 		popup.add(item);
-		
+
 		popup.addSeparator();
-		
+
 		item = new MenuItem();
 		item.setLabel(Resource.getResourceString("About"));
 		item.addActionListener(new ActionListener() {
@@ -217,7 +217,7 @@ public class SunTrayIconProxy implements Prefs.Listener {
 		updateImage();
 
 		Prefs.addListener(this);
-		
+
 		startRefreshTimer();
 	}
 
@@ -242,14 +242,16 @@ public class SunTrayIconProxy implements Prefs.Listener {
 			BufferedImage bimage = new BufferedImage(iconSize, iconSize,
 					BufferedImage.TYPE_INT_RGB);
 			Graphics2D g = bimage.createGraphics();
-
+			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,  
+	                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);  
+			
 			// draw icon background
 			Theme t = Theme.getCurrentTheme();
 			g.setColor(new Color(t.getTrayIconBg()));
 			g.fillRect(0, 0, iconSize, iconSize);
 
 			// draw date centered
-			Font font = new Font("Monospaced", Font.BOLD, iconSize-4);
+			Font font = Font.decode(Prefs.getPref(PrefName.TRAYFONT));
 			g.setFont(font);
 			FontMetrics metrics = g.getFontMetrics();
 			g.setColor(new Color(t.getTrayIconFg()));
@@ -259,8 +261,9 @@ public class SunTrayIconProxy implements Prefs.Listener {
 
 			image = bimage;
 
-			trayIcon.setToolTip("BORG - " + DateFormat.getDateInstance(DateFormat.MEDIUM)
-					.format(new Date()));
+			trayIcon.setToolTip("BORG - "
+					+ DateFormat.getDateInstance(DateFormat.MEDIUM).format(
+							new Date()));
 
 		} else {
 			image = Toolkit.getDefaultToolkit().getImage(
@@ -274,7 +277,7 @@ public class SunTrayIconProxy implements Prefs.Listener {
 
 	/** start a timer that updates the date icon each day */
 	private void startRefreshTimer() {
-		
+
 		Calendar cal = new GregorianCalendar();
 		int curmins = 60 * cal.get(Calendar.HOUR_OF_DAY)
 				+ cal.get(Calendar.MINUTE);
@@ -294,7 +297,7 @@ public class SunTrayIconProxy implements Prefs.Listener {
 		}, midnight * 60 * 1000, 24 * 60 * 60 * 1000);
 
 	}
-	
+
 	/**
 	 * Add an action to the action menu
 	 * 

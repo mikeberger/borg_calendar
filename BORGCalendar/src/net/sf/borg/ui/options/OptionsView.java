@@ -40,6 +40,7 @@ import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.ui.ResourceHelper;
+import net.sf.borg.ui.SunTrayIconProxy;
 import net.sf.borg.ui.View;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 
@@ -290,6 +291,9 @@ public class OptionsView extends View {
 		// notify all parts of borg that have registered to know about
 		// options changes
 		Prefs.notifyListeners();
+		
+		if (SunTrayIconProxy.hasTrayIcon())
+			SunTrayIconProxy.getReference().updateImage();
 
 	}
 
