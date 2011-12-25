@@ -1,17 +1,32 @@
 BORG 1.7.6
 ----------
-Feature 3362107 repeat pattern (By N weeks, months, years)
-Feature 3295770 Standard Menu Bar for all Windows
-Feature 3306514 Daily view scale setting - add zoom buttons on day and week view. does not affect printing.
-Feature - Ability to open any view from the system tray icon menu
+Bug and Feature numbers now come from Trac
+
+Feature #7 repeat pattern (By N weeks, months, years)
+Feature #10 Standard Menu Bar for all Windows
+Feature #9 Daily view scale setting - add zoom buttons on day and week view. does not affect printing.
 Feature #6: add reminders for tasks
 Feature #12: Show popup reminder for birthdays
-Feature $15: Color Schemes and support for dark themes
-Feature #16: Allow user to type in look and feel name
+Feature #15: Color Schemes and support for dark themes
+Feature #16: Allow user to type in a look and feel name
+Feature #19: Allow user to change system tray appearance. Fix System Tray sizing.
+Feature #20: Add a database modification timestamp to detect linux remount errors
+Feature: add option to select a particular looks color theme when using a looks look and feel.
+Feature (contributed code): Add text to days in year view
+Feature: add ability to open any view from the tray icon menu
 
-Bug 3306512 category not consistant across borg clients
-Bug 3295776 Can't print Task List
-Bug 3349214 borg help not loaded in 1.7.5
+Bug #3 category not consistant across borg clients
+Bug #2 Can't print Task List
+Bug #4 borg help not loaded in 1.7.5
+Bug #1 Linux desktop shortcuts not always created
+Bug #17 Fix the initial focus and save&close mnemonic on the appt editor screen
+Bug Fix start-to-tray to properly create the month view tab
+
+Other: Clean up the build script. Compile by Package to enforce package dependencies.
+Other: Add an optional IVY task to download the latest third-party lib versions
+Other: create separate "ext" folder to contain dynamically loaded libs (plugins, added l&f's)
+Code Refactoring: eliminate used of restricted APIs. Use lombok to clean up Bean classes. Remove dead code.
+
 
 BORG 1.7.5
 ----------

@@ -2,14 +2,26 @@
 RELEASE NOTES for BORG 1.7.6
 ==================================
 
-The project home page is http://borg-calendar.sourceforge.net
+**** PLEASE READ: Release 1.7.6 has a few changes that may impact some users ****
+
+Default Installation Folder
+---------------------------
+BORG's default installation folder will now be BORGCalendar (without a space between BORG and Calendar).
+This change was needed as part of the fix to get Linux desktop shortcuts to properly work.
+This fix will affect all platforms. Most users will not notice. Those few users that have custom start
+scripts or have copied extra JARs under the "BORG Calendar" folder, will need to be aware that the name
+has changed and that the installer will not just overwrite the existing "BORG Calendar" folder unless
+you explicitly tell it to.
 
 Dynamic Loading
 ---------------
 Dynamic loading of JARs is now done for JARs in the lib/ext folder. Users that have put
 JARs in the lib folder need to move them to the lib/ext folder for them to be loaded.
+This change will keep the shipped JARs separate from any added JARs.
 
-Known Issues:
+Most users are unaffected by this. Dynamically loaded JARs are only used to add additional look and feels,
+extra database drives (such as H2 or MySQL), and for adding the experimental BORG plugins.
+
 -------------
 There are always new text strings that have not been translated. 
 Feel free to mail any translations to i_flem@users.sourceforge.net.
