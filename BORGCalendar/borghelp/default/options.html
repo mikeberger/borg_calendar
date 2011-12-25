@@ -3,10 +3,9 @@
 <HEAD>
 	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
 	<TITLE></TITLE>
-	<META NAME="GENERATOR" CONTENT="OpenOffice.org 3.2  (Linux)">
+	<META NAME="GENERATOR" CONTENT="LibreOffice 3.4  (Linux)">
 	<META NAME="CREATED" CONTENT="0;0">
-	<META NAME="CHANGEDBY" CONTENT="Mike B">
-	<META NAME="CHANGED" CONTENT="20100924;9571900">
+	<META NAME="CHANGED" CONTENT="20111225;16292400">
 	<META NAME="Originator" CONTENT="Microsoft Word 11">
 	<META NAME="ProgId" CONTENT="Word.Document">
 	<STYLE TYPE="text/css">
@@ -29,9 +28,25 @@ options screens are self-explanatory - except:</FONT></P>
 	The PlasticXP look and feel is distributed with BORG to make sure
 	you have at least one good looking one. If you change the look and
 	feel, restart BORG to have it take effect.</FONT></P>
+	<LI><P><FONT FACE="Arial, sans-serif">As of release 1.7.6, you can
+	edit the look and feel name to indicate any look and feel that you
+	like. To add a look and feel that is not in the list, you need to
+	place the JAR for the look and feel in BORG's lib/ext folder, turn
+	on dynamic loading so that BORG will load the JAR, type the correct
+	look and feel name in the look and feel combo box, hit apply, and
+	restart.</FONT></P>
+	<LI><P><FONT FACE="Arial, sans-serif">JGoodies Theme: as of 1.7.6,
+	BORG lets you select a particular JGoodies theme if you are using a
+	JGoodies look and feel. </FONT>
+	</P>
 	<LI><P><FONT FACE="Arial, sans-serif">Week View Start and End Hour –
 	the range of times shown on both the Week and Day View grids. </FONT>
 	</P>
+	<LI><P><FONT FACE="Arial, sans-serif">Hide strike-through items - To
+	do items are marked with a strike-through when they are done and not
+	removed from the calendar. Some people like to see their done items
+	crossed out on the calendar. This option is for those people that
+	would rather hide these items to reduce clutter.</FONT></P>
 	<LI><P><FONT FACE="Arial, sans-serif">Holidays - Most US and
 	Canadian holidays can be shown (optionally). Except for Christmas,
 	religious/ethnic holidays are not included - mainly because they are
@@ -39,11 +54,37 @@ options screens are self-explanatory - except:</FONT></P>
 	aren't usually a day off from work. These can be added manually
 	through the appointment editor. </FONT>
 	</P>
+	<LI><P><FONT FACE="Arial, sans-serif">Day start and end hour -
+	controls the part of the day shown in the time grid of the week and
+	day views.</FONT></P>
 	<LI><P><FONT FACE="Arial, sans-serif">Truncate Appointments in Month
 	View – this is set by default and causes only the first line of
 	appointment text to show in the month view. If you want all lines of
 	multi-line appointments to show in the month view, shut this feature
 	off. </FONT>
+	</P>
+</UL>
+<P><FONT FACE="Arial, sans-serif"><B>Popup Reminders</B></FONT></P>
+<UL>
+	<LI><P STYLE="font-weight: normal"><FONT FACE="Arial, sans-serif">Minutes
+	between reminders for untimed todos: Timed appointments popup up
+	according to the Popup Times selected for each appointment. Untimed
+	reminders have no start time, but still need to pop up every so
+	often to bug the user. This option sets how often these untimed
+	todos get a reminder.</FONT></P>
+	<LI><P STYLE="font-weight: normal"><FONT FACE="Arial, sans-serif">Show
+	all reminders in a single window: You can have separate windows for
+	each popup reminder (like sticky notes) or just as single reminder
+	window with a list of items.</FONT></P>
+	<LI><P STYLE="font-weight: normal"><FONT FACE="Arial, sans-serif">Show
+	reminders for Tasks, Projects, Subtasks: if set, and the
+	corresponding item has a due date, it will get periodic reminders
+	like an untimed todo.</FONT></P>
+	<LI><P STYLE="font-weight: normal"><FONT FACE="Arial, sans-serif">Birthday
+	reminder days: how many days before a birthday to start showing
+	reminders about it. The birthdays are taken from the Address Book.</FONT></P>
+	<LI><P STYLE="font-weight: normal"><FONT FACE="Arial, sans-serif">Popup
+	Times: see the popup reminders help </FONT>
 	</P>
 </UL>
 <P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Database
@@ -74,6 +115,40 @@ an SMTP server and email address to send to. </FONT>
 	when one is already running, and the socket port is set, the second
 	copy will just open the running copy and exit. </FONT>
 	</P>
+	<LI><P><FONT FACE="Arial, sans-serif">Backup Options: Various
+	options to have BORG automatically backup your database to a ZIP
+	file in a form that can be imported if you loose you data. For most
+	people, this is a critical option to set. Stuff happens and disks
+	die. It's important to do automatic backups, unless you are using
+	some other means for backup. Backups should be done to a different
+	hard disk form the one where the database is located.</FONT></P>
+	<LI><P><FONT FACE="Arial, sans-serif">Dynamic loading of plugins and
+	JARs - enabling this option tells BORG to load all JARs from the
+	lib/ext folder on startup. This lets the user add new look and
+	feels, new database drivers, and the experimental BORG plugins. This
+	feature should not be turned on unless the user has copied a JAR to
+	the lib/ext folder to be loaded. Most users will not use this.</FONT></P>
+</UL>
+<P><FONT FACE="Arial, sans-serif"><B>User Color Scheme</B></FONT></P>
+<P STYLE="font-weight: normal"><FONT FACE="Arial, sans-serif">The
+Theme pulldown is used to select themes. There are buttons to add and
+delete themes.</FONT></P>
+<P STYLE="font-weight: normal"><FONT FACE="Arial, sans-serif">When
+Apply is pressed, the currently set theme is saved with the color
+settings selected and the color settings are applied.</FONT></P>
+<UL>
+	<LI><P STYLE="font-weight: normal"><FONT FACE="Arial, sans-serif">Mark
+	todo in month view: the characters in the text box will be prepended
+	to todo's in the calendar views to make them stand out. The &quot;magic&quot;
+	value &quot;redball.gif&quot; will cause a red ball icon to be used
+	instead of text.</FONT></P>
+	<LI><P STYLE="font-weight: normal"> <FONT FACE="Arial, sans-serif">Draw
+	Gradient in appt boxes: used to shade the color of the appt boxes in
+	the dya and week views. This should normally be turned on. This
+	option exists to support slower linux boxes that cannot draw the
+	gradients quickly enough. Slowdowns when drawing the gradient seem
+	to be a uniquely linux issue due to poor video drivers in linux for
+	some video chips.</FONT></P>
 </UL>
 </BODY>
 </HTML>
