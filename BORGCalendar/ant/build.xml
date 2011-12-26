@@ -174,8 +174,8 @@
 	<target name="borg_prog" depends="clean-build">
 		<zip destfile="${dist.dir}/borg.zip">
 			<fileset dir="${dist.dir}" includes="*.jar" />
-			<fileset dir="${dist.dir}" includes="*.war" />
 			<fileset dir="${build.dir}/resource" includes="COPYING" />
+			<fileset dir="${build.dir}/resource" includes="license.htm" />
 			<fileset dir="${build.dir}" includes="lib/borghelp.jar" />
 			<fileset dir="${res.dir}" includes="borg_mysql.sql" />
 			<fileset dir="${res.dir}" includes="borg_hsqldb.sql" />

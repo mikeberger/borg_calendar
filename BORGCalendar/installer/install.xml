@@ -95,6 +95,7 @@
         <pack name="Base" required="yes">
             <description>The base program and help files</description>
             <file src="RELEASE_NOTES.txt" targetdir="$INSTALL_PATH"/>
+            <file src="license.htm" targetdir="$INSTALL_PATH"/>
             <file src="COPYING" targetdir="$INSTALL_PATH"/>
             <file src="borg_mysql.sql" targetdir="$INSTALL_PATH"/>
             <file src="db.html" targetdir="$INSTALL_PATH"/>
