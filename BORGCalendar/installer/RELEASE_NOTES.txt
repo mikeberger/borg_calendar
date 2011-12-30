@@ -20,7 +20,7 @@ JARs in the lib folder need to move them to the lib/ext folder for them to be lo
 This change will keep the shipped JARs separate from any added JARs.
 
 Most users are unaffected by this. Dynamically loaded JARs are only used to add additional look and feels,
-extra database drives (such as H2 or MySQL), and for adding the experimental BORG plugins.
+extra database drivers (such as H2 or MySQL), and for adding the experimental BORG plugins.
 
 -------------
 There are always new text strings that have not been translated. 
