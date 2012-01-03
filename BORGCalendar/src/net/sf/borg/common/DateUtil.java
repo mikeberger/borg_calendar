@@ -71,7 +71,7 @@ public class DateUtil {
 		// adjust to local time
 		GregorianCalendar cal = new GregorianCalendar();
 		cal.setTime(d);
-		cal.set(Calendar.HOUR_OF_DAY, 1);
+		cal.set(Calendar.HOUR_OF_DAY, 11);
 		return (int) (cal.getTime().getTime() / 1000 / 60 / 60 / 24);
 	}
 
