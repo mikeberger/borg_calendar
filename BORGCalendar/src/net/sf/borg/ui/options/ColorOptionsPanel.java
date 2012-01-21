@@ -51,7 +51,7 @@ import net.sf.borg.ui.util.GridBagConstraintsFactory;
 /**
  * Provides the UI for editing color options
  */
-public class ColorOptionsPanel extends OptionsPanel {
+public class ColorOptionsPanel extends OptionsPanel implements Prefs.Listener {
 
 	private static final long serialVersionUID = 2184312216077136324L;
 
@@ -428,5 +428,10 @@ public class ColorOptionsPanel extends OptionsPanel {
 		btn_ucs_stripe.setColorProperty(new Color(t.getStripeBg()));
 		btn_tray_fg.setColorProperty(new Color(t.getTrayIconFg()));
 		btn_tray_bg.setColorProperty(new Color(t.getTrayIconBg()));
+	}
+
+	@Override
+	public void prefsChanged() {
+		loadThemes();
 	}
 }

@@ -139,6 +139,17 @@ public class Theme {
 	}
 	
 	/**
+	 * sync with the db. called if the options table is changed by something other than the UI (such as import)
+	 */
+	public static void sync()
+	{
+		loadThemes();
+		
+		// notify listeners that Prefs may have changed
+		Prefs.notifyListeners();
+	}
+	
+	/**
 	 * load all themes from the database into the cache. should only be called to initialized the cache once
 	 */
 	private static void loadThemes()

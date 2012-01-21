@@ -704,6 +704,10 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 					JdbcDB.setOption(option);
 				}
 			}
+			
+			// this needs to be refactored so that the Task model is no longer in charge of
+			// importing options
+			Theme.sync();
 		}
 
 		if (container.Task != null) {
