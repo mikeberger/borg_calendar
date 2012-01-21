@@ -70,7 +70,7 @@ CREATE INDEX app_todo ON appointments (todo);
 -- 
 
 CREATE CACHED TABLE options (
-  name varchar(10) default '' NOT NULL,
+  name varchar(30) default '' NOT NULL,
   value longvarchar NOT NULL,
   PRIMARY KEY  (name)
 );

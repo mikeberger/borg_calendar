@@ -56,7 +56,7 @@ CREATE TABLE `appointments` (
 
 
 CREATE TABLE `options` (
-  `name` varchar(10) NOT NULL default '',
+  `name` varchar(30) NOT NULL default '',
   `value` text NOT NULL,
   PRIMARY KEY  (`name`)
 );
