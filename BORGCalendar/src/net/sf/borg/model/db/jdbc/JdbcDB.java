@@ -31,7 +31,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -189,8 +191,7 @@ abstract public class JdbcDB {
 					}
 				}
 			}
-		}
-		else if (url.startsWith("jdbc:h2")) {
+		} else if (url.startsWith("jdbc:h2")) {
 			if (connection_ == null) {
 				Properties props = new Properties();
 				props.setProperty("user", "sa");
@@ -236,6 +237,8 @@ abstract public class JdbcDB {
 				connection_ = DriverManager.getConnection(url);
 			}
 		}
+		
+		JdbcDB.doDBUpgrades();
 
 	}
 
@@ -342,39 +345,45 @@ abstract public class JdbcDB {
 	}
 
 	/**
-	 * write a timestamp to the DB and prefs to detect shutdown problem on next start
-	 * @throws Exception 
+	 * write a timestamp to the DB and prefs to detect shutdown problem on next
+	 * start
+	 * 
+	 * @throws Exception
 	 */
-	private static void writeTimestamp() throws Exception
-	{
+	private static void writeTimestamp() throws Exception {
 		Date now = new Date();
 		Prefs.putPref(PrefName.SHUTDOWNTIME, Long.toString(now.getTime()));
-		BorgOption option = new BorgOption(PrefName.SHUTDOWNTIME.getName(), Long.toString(now.getTime()));
+		BorgOption option = new BorgOption(PrefName.SHUTDOWNTIME.getName(),
+				Long.toString(now.getTime()));
 		JdbcDB.setOption(option);
 	}
-	
-	public static void checkTimestamp() throws Exception
-	{
+
+	public static void checkTimestamp() throws Exception {
 		String option = JdbcDB.getOption(PrefName.SHUTDOWNTIME.getName());
-		if( option != null && !option.equals(PrefName.SHUTDOWNTIME.getDefault()))
-		{
+		if (option != null
+				&& !option.equals(PrefName.SHUTDOWNTIME.getDefault())) {
 			String preftime = Prefs.getPref(PrefName.SHUTDOWNTIME);
-			if( !preftime.equals(PrefName.SHUTDOWNTIME.getDefault())){
-				
+			if (!preftime.equals(PrefName.SHUTDOWNTIME.getDefault())) {
+
 				// only error if prefs have later time than DB
 				long preflong = Long.parseLong(preftime);
 				long dblong = Long.parseLong(option);
-				if( preflong > dblong)
-				{
+				if (preflong > dblong) {
 					Date pdate = new Date(preflong);
 					Date dbdate = new Date(dblong);
-					throw new Warning(Resource.getResourceString("db_time_error") + "\n\n[" + DateFormat.getDateTimeInstance().format(pdate) +
-							" > " + DateFormat.getDateTimeInstance().format(dbdate) + "]");
+					throw new Warning(
+							Resource.getResourceString("db_time_error")
+									+ "\n\n["
+									+ DateFormat.getDateTimeInstance().format(
+											pdate)
+									+ " > "
+									+ DateFormat.getDateTimeInstance().format(
+											dbdate) + "]");
 				}
 			}
 		}
 	}
-	
+
 	/**
 	 * Gets an option value from the options table
 	 * 
@@ -480,14 +489,13 @@ abstract public class JdbcDB {
 				return hdir;
 			dbdir = "jdbc:hsqldb:file:" + Prefs.getPref(PrefName.HSQLDBDIR)
 					+ "/borg_";
-		}
-		else if (dbtype.equals("h2")) {
+		} else if (dbtype.equals("h2")) {
 			String hdir = Prefs.getPref(PrefName.H2DIR);
 			if (hdir.equals("not-set"))
 				return hdir;
 			dbdir = "jdbc:h2:file:" + Prefs.getPref(PrefName.H2DIR)
 					+ "/borgdb;USER=sa";
-		}else if (dbtype.equals("jdbc")) {
+		} else if (dbtype.equals("jdbc")) {
 			dbdir = Prefs.getPref(PrefName.JDBCURL);
 		} else {
 			// build a mysql URL
@@ -502,4 +510,35 @@ abstract public class JdbcDB {
 		return (dbdir);
 	}
 
+	/**
+	 * do any db upgrades that are too complex for JdbcDBUpgrader or not portable via SQL
+	 */
+	private static void doDBUpgrades() throws Exception {
+		
+		
+		/*
+		 * 
+		 * Upgrade size of options.name from 10 to 30
+		 * 
+		 */
+		Statement st = null;
+		ResultSet rs = null;
+		try {
+			st = connection_.createStatement();
+			rs = st.executeQuery("select * from options");
+			ResultSetMetaData md = rs.getMetaData();
+			if( md.getColumnDisplaySize(1) == 10)
+			{
+				// update size to 30
+				new JdbcDBUpgrader(null, "alter table options alter name varchar(30)").upgrade();
+			}
+		} catch (Exception e) {
+			Errmsg.getErrorHandler().errmsg(e);
+		} finally {
+			if (rs != null)
+				rs.close();
+			if (st != null)
+				st.close();
+		}
+	}
 }

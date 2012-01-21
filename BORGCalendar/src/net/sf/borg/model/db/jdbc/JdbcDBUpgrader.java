@@ -70,6 +70,10 @@ public class JdbcDBUpgrader {
 	 * @throws Exception the exception
 	 */
 	private boolean needsUpgrade() throws Exception {
+		
+		if( checkSql == null )
+			return true;
+		
 		try {
 			JdbcDB.execSQL(checkSql);
 		} catch (Exception e) {
