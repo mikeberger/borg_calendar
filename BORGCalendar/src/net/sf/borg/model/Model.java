@@ -60,6 +60,8 @@ public abstract class Model
 		private ChangeAction action;
 
 		private Object object;
+		
+		private Model model;
 
 		/**
 		 * Instantiates a new change event.
@@ -94,6 +96,10 @@ public abstract class Model
 		 */
 		public Object getObject() {
 			return object;
+		}
+
+		public Model getModel() {
+			return model;
 		}
 
 	}
@@ -169,7 +175,9 @@ public abstract class Model
      */
     protected void refreshListeners()
     {
-    	refreshListeners(null);
+    	ChangeEvent ev = new ChangeEvent();
+    	ev.model = this;
+    	refreshListeners(ev);
     }
     
     /**
@@ -177,6 +185,7 @@ public abstract class Model
      */
     protected void refreshListeners(ChangeEvent event)
     {
+    	event.model = this;
         for( int i = 0; i < listeners.size(); i++ )
         {
             Listener v = listeners.get(i);

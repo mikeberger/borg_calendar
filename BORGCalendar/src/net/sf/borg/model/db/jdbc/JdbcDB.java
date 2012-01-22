@@ -35,8 +35,6 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.Properties;
 import java.util.StringTokenizer;
@@ -47,13 +45,12 @@ import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.common.Warning;
-import net.sf.borg.model.entity.BorgOption;
+import net.sf.borg.model.entity.Option;
 
 /**
- * abstract base class providing basic common JDBC services to all derived JDBC
- * classes
+ * class providing basic common JDBC services 
  */
-abstract public class JdbcDB {
+public final class JdbcDB {
 
 	// common db connection shared by sub-classes. in BORG, all sub-classes
 	// will manage a table in the same DB
@@ -262,7 +259,7 @@ abstract public class JdbcDB {
 	// various data conversion methods are below to provide a standard
 	// db representation of String Lists, Integer, and boolean
 	//
-	protected final static String toStr(Vector<String> v) {
+	public final static String toStr(Vector<String> v) {
 		String val = "";
 		if (v == null)
 			return ("");
@@ -278,19 +275,19 @@ abstract public class JdbcDB {
 		return (val);
 	}
 
-	protected final static int toInt(Integer in) {
+	public final static int toInt(Integer in) {
 		if (in == null)
 			return (0);
 		return (in.intValue());
 	}
 
-	protected final static int toInt(boolean in) {
+	public final static int toInt(boolean in) {
 		if (in == false)
 			return (0);
 		return (1);
 	}
 
-	protected final static Vector<String> toVect(String s) {
+	public final static Vector<String> toVect(String s) {
 		if (s == null || s.equals(""))
 			return (null);
 
@@ -353,13 +350,13 @@ abstract public class JdbcDB {
 	private static void writeTimestamp() throws Exception {
 		Date now = new Date();
 		Prefs.putPref(PrefName.SHUTDOWNTIME, Long.toString(now.getTime()));
-		BorgOption option = new BorgOption(PrefName.SHUTDOWNTIME.getName(),
+		Option option = new Option(PrefName.SHUTDOWNTIME.getName(),
 				Long.toString(now.getTime()));
-		JdbcDB.setOption(option);
+		new OptionJdbcDB().setOption(option);
 	}
 
 	public static void checkTimestamp() throws Exception {
-		String option = JdbcDB.getOption(PrefName.SHUTDOWNTIME.getName());
+		String option = new OptionJdbcDB().getOption(PrefName.SHUTDOWNTIME.getName());
 		if (option != null
 				&& !option.equals(PrefName.SHUTDOWNTIME.getDefault())) {
 			String preftime = Prefs.getPref(PrefName.SHUTDOWNTIME);
@@ -384,95 +381,7 @@ abstract public class JdbcDB {
 		}
 	}
 
-	/**
-	 * Gets an option value from the options table
-	 * 
-	 * @param oname
-	 *            the option name
-	 * 
-	 * @return the option value
-	 * 
-	 * @throws Exception
-	 *             the exception
-	 */
-	static public final String getOption(String oname) throws Exception {
-		String ret = null;
-		PreparedStatement stmt = connection_
-				.prepareStatement("SELECT value FROM options WHERE name = ?");
-		stmt.setString(1, oname);
-		ResultSet rs = stmt.executeQuery();
-		if (rs.next()) {
-			ret = rs.getString("value");
-		}
-		rs.close();
-		stmt.close();
-
-		return (ret);
-	}
-
-	/**
-	 * Gets all options from the options table.
-	 * 
-	 * @return a collection of options
-	 * 
-	 * @throws Exception
-	 *             the exception
-	 */
-	static public final Collection<BorgOption> getOptions() throws Exception {
-		ArrayList<BorgOption> keys = new ArrayList<BorgOption>();
-		PreparedStatement stmt = connection_
-				.prepareStatement("SELECT name, value FROM options");
-		ResultSet rs = stmt.executeQuery();
-		while (rs.next()) {
-			keys.add(new BorgOption(rs.getString("name"), rs.getString("value")));
-		}
-
-		rs.close();
-		stmt.close();
-
-		return (keys);
-
-	}
-
-	/**
-	 * Sets an option in the options table.
-	 * 
-	 * @param option
-	 *            the option to set
-	 * 
-	 * @throws Exception
-	 *             the exception
-	 */
-	static public final void setOption(BorgOption option) throws Exception {
-		String oname = option.getKey();
-		String value = option.getValue();
-
-		try {
-			PreparedStatement stmt = connection_
-					.prepareStatement("DELETE FROM options WHERE name = ?");
-			stmt.setString(1, oname);
-			stmt.executeUpdate();
-			stmt.close();
-
-		} catch (Exception e) {
-			// empty
-		}
-
-		if (value == null || value.equals(""))
-			return;
-
-		PreparedStatement stmt = connection_
-				.prepareStatement("INSERT INTO options ( name, value ) "
-						+ "VALUES ( ?, ?)");
-
-		stmt.setString(1, oname);
-		stmt.setString(2, value);
-
-		stmt.executeUpdate();
-		stmt.close();
-
-	}
-
+	
 	/**
 	 * Builds the db url from the user's settings. Supports HSQL, MYSQL, generic
 	 * JDBC

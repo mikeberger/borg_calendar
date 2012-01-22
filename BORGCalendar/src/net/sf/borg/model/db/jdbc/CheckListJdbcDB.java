@@ -41,10 +41,9 @@ import net.sf.borg.model.entity.CheckList;
 /**
  * provides the JDBC layer for reading/writing CheckLists.
  */
-public class CheckListJdbcDB extends JdbcDB implements CheckListDB {
+public class CheckListJdbcDB implements CheckListDB {
 
 	public CheckListJdbcDB() {
-		super();
 		new JdbcDBUpgrader(
 				"select name from checkLists",
 				"CREATE CACHED TABLE checkLists (name varchar(50) NOT NULL,text longvarchar,PRIMARY KEY (name));")
@@ -60,7 +59,7 @@ public class CheckListJdbcDB extends JdbcDB implements CheckListDB {
 	 */
 	@Override
 	public void addCheckList(CheckList m) throws Exception {
-		PreparedStatement stmt = connection_
+		PreparedStatement stmt = JdbcDB.getConnection()
 				.prepareStatement("INSERT INTO checkLists ( name, text ) "
 						+ " VALUES " + "( ?, ? )");
 
@@ -79,7 +78,7 @@ public class CheckListJdbcDB extends JdbcDB implements CheckListDB {
 	 */
 	@Override
 	public void delete(String name) throws Exception {
-		PreparedStatement stmt = connection_
+		PreparedStatement stmt = JdbcDB.getConnection()
 				.prepareStatement("DELETE FROM checkLists WHERE name = ?");
 		stmt.setString(1, name);
 		stmt.executeUpdate();
@@ -95,7 +94,7 @@ public class CheckListJdbcDB extends JdbcDB implements CheckListDB {
 	@Override
 	public Collection<String> getNames() throws Exception {
 		ArrayList<String> keys = new ArrayList<String>();
-		PreparedStatement stmt = connection_
+		PreparedStatement stmt = JdbcDB.getConnection()
 				.prepareStatement("SELECT name FROM checkLists ORDER BY name");
 		ResultSet rs = stmt.executeQuery();
 
@@ -110,14 +109,14 @@ public class CheckListJdbcDB extends JdbcDB implements CheckListDB {
 	}
 
 	private PreparedStatement getPSOne(String name) throws SQLException {
-		PreparedStatement stmt = connection_
+		PreparedStatement stmt = JdbcDB.getConnection()
 				.prepareStatement("SELECT * FROM checkLists WHERE name = ?");
 		stmt.setString(1, name);
 		return stmt;
 	}
 
 	private PreparedStatement getPSAll() throws SQLException {
-		PreparedStatement stmt = connection_
+		PreparedStatement stmt = JdbcDB.getConnection()
 				.prepareStatement("SELECT * FROM checkLists");
 		return stmt;
 	}
@@ -201,7 +200,7 @@ public class CheckListJdbcDB extends JdbcDB implements CheckListDB {
 	@Override
 	public void updateCheckList(CheckList m) throws Exception {
 
-		PreparedStatement stmt = connection_
+		PreparedStatement stmt = JdbcDB.getConnection()
 				.prepareStatement("UPDATE checkLists SET "
 						+ " text = ? WHERE name = ?");
 

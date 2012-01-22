@@ -33,12 +33,12 @@ import lombok.Data;
 @XmlRootElement(name="Option")
 @XmlAccessorType(XmlAccessType.NONE)
 @Data
-public class BorgOption
+public class Option
 {
 	
 	/** for JAXB */
 	@SuppressWarnings("unused")
-	private BorgOption(){
+	private Option(){
 	  // empty
 	}
 	
@@ -48,7 +48,7 @@ public class BorgOption
 	 * @param key the key
 	 * @param value the value
 	 */
-	public BorgOption(String key, String value)
+	public Option(String key, String value)
 	{
 		this.key = key;
 		this.value = value;

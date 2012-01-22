@@ -33,12 +33,11 @@ import net.sf.borg.model.entity.Memo;
 /**
  * provides the JDBC layer for reading/writing Memos.
  */
-public class MemoJdbcDB extends JdbcDB implements MemoDB {
+public class MemoJdbcDB implements MemoDB {
 
 
 	public MemoJdbcDB()
 	{
-		super();
 		new JdbcDBUpgrader("select encrypted from memos",
 				"alter table memos add column encrypted char(1) default null").upgrade();
 	}
@@ -49,7 +48,7 @@ public class MemoJdbcDB extends JdbcDB implements MemoDB {
 	 */
 	@Override
 	public void addMemo(Memo m) throws Exception {
-		PreparedStatement stmt = connection_
+		PreparedStatement stmt = JdbcDB.getConnection()
 				.prepareStatement("INSERT INTO memos ( memoname, memotext, encrypted ) "
 						+ " VALUES " + "( ?, ?, ? )");
 
@@ -70,7 +69,7 @@ public class MemoJdbcDB extends JdbcDB implements MemoDB {
 	 */
 	@Override
 	public void delete(String name) throws Exception {
-		PreparedStatement stmt = connection_.prepareStatement("DELETE FROM memos WHERE memoname = ?");
+		PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("DELETE FROM memos WHERE memoname = ?");
 		stmt.setString(1, name);
 		stmt.executeUpdate();
         stmt.close();
@@ -83,7 +82,7 @@ public class MemoJdbcDB extends JdbcDB implements MemoDB {
 	@Override
 	public Collection<String> getNames() throws Exception {
 		ArrayList<String> keys = new ArrayList<String>();
-		PreparedStatement stmt = connection_
+		PreparedStatement stmt = JdbcDB.getConnection()
 				.prepareStatement("SELECT memoname FROM memos ORDER BY memoname");
 		ResultSet rs = stmt.executeQuery();
 
@@ -98,7 +97,7 @@ public class MemoJdbcDB extends JdbcDB implements MemoDB {
 	}
 	
 	private PreparedStatement getPSOne(String name) throws SQLException {
-		PreparedStatement stmt = connection_.prepareStatement("SELECT * FROM memos WHERE memoname = ?");
+		PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("SELECT * FROM memos WHERE memoname = ?");
 		stmt.setString(1, name);
 		return stmt;
 	}
@@ -106,7 +105,7 @@ public class MemoJdbcDB extends JdbcDB implements MemoDB {
 
 
 	private PreparedStatement getPSAll() throws SQLException {
-		PreparedStatement stmt = connection_.prepareStatement("SELECT * FROM memos");
+		PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("SELECT * FROM memos");
 		return stmt;
 	}
 
@@ -183,7 +182,7 @@ public class MemoJdbcDB extends JdbcDB implements MemoDB {
 	@Override
 	public void updateMemo(Memo m) throws Exception {
 
-		PreparedStatement stmt = connection_.prepareStatement("UPDATE memos SET "
+		PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("UPDATE memos SET "
 				+ " memotext = ?,"
 				+ " encrypted = ?"
 				+ " WHERE memoname = ?");

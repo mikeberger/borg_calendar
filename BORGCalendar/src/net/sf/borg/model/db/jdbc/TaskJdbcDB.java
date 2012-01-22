@@ -46,7 +46,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
      */
     @Override
     public void addObj(Task task) throws Exception {
-        PreparedStatement stmt = connection_
+        PreparedStatement stmt = JdbcDB.getConnection()
                 .prepareStatement("INSERT INTO tasks ( tasknum, start_date, due_date, person_assigned,"
                         + " priority, state, type, description, resolution, category, close_date, project) VALUES "
                         + "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
@@ -96,7 +96,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
      */
     @Override
     public void delete(int key) throws Exception {
-        PreparedStatement stmt = connection_.prepareStatement("DELETE FROM tasks WHERE tasknum = ?");
+        PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("DELETE FROM tasks WHERE tasknum = ?");
         stmt.setInt(1, key);
         stmt.executeUpdate();
         stmt.close();
@@ -113,7 +113,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
      */
     public Collection<Integer> getKeys() throws Exception {
         ArrayList<Integer> keys = new ArrayList<Integer>();
-        PreparedStatement stmt = connection_.prepareStatement("SELECT tasknum FROM tasks");
+        PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("SELECT tasknum FROM tasks");
         ResultSet rs = stmt.executeQuery();
         while (rs.next()) {
             keys.add(new Integer(rs.getInt("tasknum")));
@@ -130,7 +130,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
      */
     @Override
     public int nextkey() throws Exception {
-        PreparedStatement stmt = connection_.prepareStatement("SELECT MAX(tasknum) FROM tasks");
+        PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("SELECT MAX(tasknum) FROM tasks");
         ResultSet r = stmt.executeQuery();
         int maxKey = 0;
         if (r.next())
@@ -154,7 +154,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
      */
     @Override
     PreparedStatement getPSOne(int key) throws SQLException {
-        PreparedStatement stmt = connection_.prepareStatement("SELECT * FROM tasks WHERE tasknum = ?");
+        PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("SELECT * FROM tasks WHERE tasknum = ?");
         stmt.setInt(1, key);
         return stmt;
     }
@@ -164,7 +164,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
      */
     @Override
     PreparedStatement getPSAll() throws SQLException {
-        PreparedStatement stmt = connection_.prepareStatement("SELECT * FROM tasks");
+        PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("SELECT * FROM tasks");
         return stmt;
     }
 
@@ -196,7 +196,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
      */
     @Override
     public void updateObj(Task task) throws Exception {
-        PreparedStatement stmt = connection_
+        PreparedStatement stmt = JdbcDB.getConnection()
                 .prepareStatement("UPDATE tasks SET  start_date = ?, due_date = ?, person_assigned = ?,"
                         + " priority = ?, state = ?, type = ?, description = ?, resolution = ?,"
                         + " category = ?, close_date = ?, project = ? WHERE tasknum = ?");
@@ -269,7 +269,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
      */
     @Override
     public Collection<Subtask> getSubTasks(int taskid) throws SQLException {
-        PreparedStatement stmt = connection_.prepareStatement("SELECT * from subtasks where task = ?");
+        PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("SELECT * from subtasks where task = ?");
         ResultSet r = null;
         try {
             stmt.setInt(1, taskid);
@@ -293,7 +293,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
      */
     @Override
     public Collection<Subtask> getSubTasks() throws SQLException {
-        PreparedStatement stmt = connection_.prepareStatement("SELECT * from subtasks");
+        PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("SELECT * from subtasks");
         ResultSet r = null;
         try {
 
@@ -317,7 +317,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
      */
     @Override
     public Subtask getSubTask(int id) throws SQLException {
-        PreparedStatement stmt = connection_.prepareStatement("SELECT * from subtasks WHERE id = ?");
+        PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("SELECT * from subtasks WHERE id = ?");
         stmt.setInt(1, id);
         Subtask p = null;
         ResultSet r = null;
@@ -340,7 +340,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
      */
     @Override
     public void deleteSubTask(int id) throws SQLException {
-        PreparedStatement stmt = connection_.prepareStatement("DELETE FROM subtasks WHERE id = ?");
+        PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("DELETE FROM subtasks WHERE id = ?");
         stmt.setInt(1, id);
         stmt.executeUpdate();
         stmt.close();
@@ -352,7 +352,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
      */
     @Override
     public void addSubTask(Subtask s) throws SQLException {
-        PreparedStatement stmt = connection_.prepareStatement("INSERT INTO subtasks ( id, create_date, due_date,"
+        PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("INSERT INTO subtasks ( id, create_date, due_date,"
                 + " close_date, description, task ) VALUES " + "( ?, ?, ?, ?, ?, ?)");
 
         stmt.setInt(1, s.getKey());
@@ -388,7 +388,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
      */
     @Override
     public void updateSubTask(Subtask s) throws SQLException {
-        PreparedStatement stmt = connection_.prepareStatement("UPDATE subtasks SET create_date = ?, due_date = ?,"
+        PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("UPDATE subtasks SET create_date = ?, due_date = ?,"
                 + " close_date = ?, description = ?, task = ?  WHERE id = ?");
 
         stmt.setInt(6, s.getKey());
@@ -424,7 +424,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
      */
     @Override
     public int nextSubTaskKey() throws Exception {
-        PreparedStatement stmt = connection_.prepareStatement("SELECT MAX(id) FROM subtasks");
+        PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("SELECT MAX(id) FROM subtasks");
         ResultSet r = stmt.executeQuery();
         int maxKey = 0;
         if (r.next())
@@ -443,7 +443,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
      * @throws SQLException the SQL exception
      */
     private int nextLogKey() throws SQLException {
-        PreparedStatement stmt = connection_.prepareStatement("SELECT MAX(id) FROM tasklog");
+        PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("SELECT MAX(id) FROM tasklog");
         ResultSet r = stmt.executeQuery();
         int maxKey = 0;
         if (r.next())
@@ -459,7 +459,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
      */
     @Override
     public void addLog(int taskid, String desc) throws SQLException {
-        PreparedStatement stmt = connection_
+        PreparedStatement stmt = JdbcDB.getConnection()
                 .prepareStatement("INSERT INTO tasklog ( id, logtime, description, task ) VALUES " + "( ?, ?, ?, ?)");
 
         stmt.setInt(1, nextLogKey());
@@ -478,7 +478,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
      */
     @Override
     public void saveLog(Tasklog tlog) throws SQLException {
-        PreparedStatement stmt = connection_
+        PreparedStatement stmt = JdbcDB.getConnection()
                 .prepareStatement("INSERT INTO tasklog ( id, logtime, description, task ) VALUES " + "( ?, ?, ?, ?)");
 
         stmt.setInt(1, nextLogKey());
@@ -517,7 +517,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
      */
     @Override
     public Collection<Tasklog> getLogs(int taskid) throws SQLException {
-        PreparedStatement stmt = connection_.prepareStatement("SELECT * from tasklog where task = ?");
+        PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("SELECT * from tasklog where task = ?");
         ResultSet r = null;
         List<Tasklog> lst = new ArrayList<Tasklog>();
         try {
@@ -544,7 +544,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
      */
     @Override
     public Collection<Tasklog> getLogs() throws SQLException {
-        PreparedStatement stmt = connection_.prepareStatement("SELECT * from tasklog");
+        PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("SELECT * from tasklog");
         ResultSet r = null;
         try {
 
@@ -569,7 +569,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
      */
     @Override
     public void addProject(Project p) throws SQLException {
-        PreparedStatement stmt = connection_.prepareStatement("INSERT INTO projects ( id,start_date, due_date,"
+        PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("INSERT INTO projects ( id,start_date, due_date,"
                 + " description, category, status, parent ) VALUES " + "( ?, ?, ?, ?, ?, ?, ?)");
 
         stmt.setInt(1, p.getKey());
@@ -604,7 +604,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
      */
     @Override
     public void deleteProject(int id) throws SQLException {
-        PreparedStatement stmt = connection_.prepareStatement("DELETE FROM projects WHERE id = ?");
+        PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("DELETE FROM projects WHERE id = ?");
         stmt.setInt(1, id);
         stmt.executeUpdate();
         stmt.close();
@@ -616,7 +616,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
      */
     @Override
     public Project getProject(int projectid) throws SQLException {
-        PreparedStatement stmt = connection_.prepareStatement("SELECT * FROM projects WHERE id = ?");
+        PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("SELECT * FROM projects WHERE id = ?");
         stmt.setInt(1, projectid);
         Project p = null;
         ResultSet r = null;
@@ -640,7 +640,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
      */
     @Override
     public Collection<Project> getProjects() throws SQLException {
-        PreparedStatement stmt = connection_.prepareStatement("SELECT * from projects");
+        PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("SELECT * from projects");
         ResultSet r = null;
         List<Project> lst = new ArrayList<Project>();
         try {
@@ -665,7 +665,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
      */
     @Override
     public Collection<Task> getTasks(int projectid) throws SQLException {
-        PreparedStatement stmt = connection_.prepareStatement("SELECT * from tasks where project = ?");
+        PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("SELECT * from tasks where project = ?");
         ResultSet r = null;
         List<Task> lst = new ArrayList<Task>();
         try {
@@ -691,7 +691,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
      */
     @Override
     public Collection<Project> getSubProjects(int projectid) throws SQLException {
-        PreparedStatement stmt = connection_
+        PreparedStatement stmt = JdbcDB.getConnection()
                 .prepareStatement("SELECT * from projects where parent = ? ORDER BY start_date");
         ResultSet r = null;
         List<Project> lst = new ArrayList<Project>();
@@ -718,7 +718,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
      */
     @Override
     public int nextProjectKey() throws Exception {
-        PreparedStatement stmt = connection_.prepareStatement("SELECT MAX(id) FROM projects");
+        PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("SELECT MAX(id) FROM projects");
         ResultSet r = stmt.executeQuery();
         int maxKey = 0;
         if (r.next())
@@ -734,7 +734,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
      */
     @Override
     public void updateProject(Project s) throws SQLException {
-        PreparedStatement stmt = connection_.prepareStatement("UPDATE projects SET start_date = ?, due_date = ?,"
+        PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("UPDATE projects SET start_date = ?, due_date = ?,"
                 + " description = ?, category = ?, status = ?, parent = ?  WHERE id = ?");
 
         stmt.setInt(7, s.getKey());

@@ -42,7 +42,7 @@ public class AddrJdbcDB extends JdbcBeanDB<Address> implements EntityDB<Address>
     @Override
     public void addObj(Address addr) throws Exception
     {
-        PreparedStatement stmt = connection_.prepareStatement( "INSERT INTO addresses ( address_num, " +
+        PreparedStatement stmt = JdbcDB.getConnection().prepareStatement( "INSERT INTO addresses ( address_num, " +
         "first_name, last_name, nickname, email, screen_name, work_phone," + 
         "home_phone, fax, pager, street, city, state, zip, country, company," +
         "work_street, work_city, work_state, work_zip, work_country, webpage, notes, birthday) " +
@@ -91,7 +91,7 @@ public class AddrJdbcDB extends JdbcBeanDB<Address> implements EntityDB<Address>
     @Override
     public void delete(int key) throws Exception
     {
-        PreparedStatement stmt = connection_.prepareStatement( "DELETE FROM addresses WHERE address_num = ?" );
+        PreparedStatement stmt = JdbcDB.getConnection().prepareStatement( "DELETE FROM addresses WHERE address_num = ?" );
         stmt.setInt( 1, key );
         stmt.executeUpdate();
         stmt.close();
@@ -109,7 +109,7 @@ public class AddrJdbcDB extends JdbcBeanDB<Address> implements EntityDB<Address>
     public Collection<Integer> getKeys() throws Exception
     {
         ArrayList<Integer> keys = new ArrayList<Integer>();
-        PreparedStatement stmt = connection_.prepareStatement("SELECT address_num FROM addresses ORDER BY last_name, first_name" );
+        PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("SELECT address_num FROM addresses ORDER BY last_name, first_name" );
         ResultSet rs = stmt.executeQuery();
         while( rs.next() )
         {
@@ -129,7 +129,7 @@ public class AddrJdbcDB extends JdbcBeanDB<Address> implements EntityDB<Address>
     @Override
     public int nextkey() throws Exception
     {
-     PreparedStatement stmt = connection_.prepareStatement("SELECT MAX(address_num) FROM addresses" );
+     PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("SELECT MAX(address_num) FROM addresses" );
         ResultSet r = stmt.executeQuery();
         int maxKey = 0;
         if( r.next() )
@@ -155,7 +155,7 @@ public class AddrJdbcDB extends JdbcBeanDB<Address> implements EntityDB<Address>
 	@Override
 	PreparedStatement getPSOne(int key) throws SQLException
 	{
-		PreparedStatement stmt = connection_.prepareStatement("SELECT * FROM addresses WHERE address_num = ?" );
+		PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("SELECT * FROM addresses WHERE address_num = ?" );
 		stmt.setInt( 1, key );
 		return stmt;
 	}
@@ -166,7 +166,7 @@ public class AddrJdbcDB extends JdbcBeanDB<Address> implements EntityDB<Address>
 	@Override
 	PreparedStatement getPSAll() throws SQLException
 	{
-		PreparedStatement stmt = connection_.prepareStatement("SELECT * FROM addresses" );
+		PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("SELECT * FROM addresses" );
 		return stmt;
 	}
 	
@@ -212,7 +212,7 @@ public class AddrJdbcDB extends JdbcBeanDB<Address> implements EntityDB<Address>
     public void updateObj(Address addr) throws Exception
     {
    
-        PreparedStatement stmt = connection_.prepareStatement( "UPDATE addresses SET " +
+        PreparedStatement stmt = JdbcDB.getConnection().prepareStatement( "UPDATE addresses SET " +
         "first_name = ?, last_name = ?, nickname = ?, email = ?, screen_name = ?, work_phone = ?," + 
         "home_phone = ?, fax = ?, pager = ?, street = ?, city = ?, state = ?, zip = ?, country = ?, company = ?," +
         "work_street = ?, work_city = ?, work_state = ?, work_zip = ?, work_country = ?, webpage = ?, notes = ?, birthday = ? " +

@@ -37,8 +37,8 @@ import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Warning;
-import net.sf.borg.model.db.jdbc.JdbcDB;
-import net.sf.borg.model.entity.BorgOption;
+import net.sf.borg.model.Model.ChangeEvent;
+import net.sf.borg.model.entity.Option;
 
 @XmlRootElement(name = "Theme")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -48,7 +48,7 @@ import net.sf.borg.model.entity.BorgOption;
  * Themes are persisted as options in the OPTIONS table
  */
 @Data
-public class Theme {
+public class Theme  {
 
 	// the preference which holds the name of the current (active) theme
  	static private PrefName CURRENT_THEME = new PrefName("current_theme", "BORG");
@@ -59,6 +59,28 @@ public class Theme {
 	
 	// theme cache
 	private static Map<String,Theme> themes = null;
+	
+	static{
+		new OptionListener();
+	}
+
+	/**
+	 * class that listens for an import of the options and triggers
+	 * a sync of the themes cache
+	 *
+	 */
+	private static class OptionListener implements Model.Listener {
+		
+		public OptionListener(){
+			OptionModel.getReference().addListener(this);
+		}
+
+		@Override
+		public void update(ChangeEvent event) {
+			Theme.sync();
+		}
+		
+	}
 	
 	/**
 	 * delete a theme by name
@@ -80,8 +102,8 @@ public class Theme {
 		themes.remove(name);
 		
 		// delete from db
-		BorgOption option = new BorgOption(getKey(name), null);
-		JdbcDB.setOption(option);
+		Option option = new Option(getKey(name), null);
+		OptionModel.getReference().setOption(option);
 		
 		// if the active theme is deleted, then make the default active
 		if( name.equals(Prefs.getPref(CURRENT_THEME)))
@@ -159,8 +181,8 @@ public class Theme {
 		
 		// find all options that hold themes based on the key
 		try {
-			Collection<BorgOption> options = JdbcDB.getOptions();
-			for( BorgOption option : options )
+			Collection<Option> options = OptionModel.getReference().getOptions();
+			for( Option option : options )
 			{
 				if( option.getKey().startsWith("THEME_"))
 				{
@@ -256,9 +278,10 @@ public class Theme {
         m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,true);
 		StringWriter sw = new StringWriter();
 		m.marshal(this, sw);
-		BorgOption option = new BorgOption(getKey(name), sw.toString());
-		JdbcDB.setOption(option);
+		Option option = new Option(getKey(name), sw.toString());
+		OptionModel.getReference().setOption(option);
 	}
+
 
 	
 }

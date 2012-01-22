@@ -42,14 +42,14 @@ public class LinkJdbcDB extends JdbcBeanDB<Link> implements LinkDB {
 	@Override
 	public void addObj(Link att) throws 
 			Exception {
-		PreparedStatement stmt = connection_
+		PreparedStatement stmt = JdbcDB.getConnection()
 				.prepareStatement("INSERT INTO links ( id, linktype, ownerkey, ownertype, path) "
 						+ " VALUES " + "( ?, ?, ?, ?, ?)");
 
 		
 		stmt.setInt(1, att.getKey());
 		stmt.setString(2, att.getLinkType());
-		stmt.setInt(3, toInt(att.getOwnerKey()));
+		stmt.setInt(3, JdbcDB.toInt(att.getOwnerKey()));
 		stmt.setString(4, att.getOwnerType());
 		stmt.setString(5, att.getPath());
 
@@ -65,7 +65,7 @@ public class LinkJdbcDB extends JdbcBeanDB<Link> implements LinkDB {
 	 */
 	@Override
 	public void delete(int key) throws Exception {
-		PreparedStatement stmt = connection_
+		PreparedStatement stmt = JdbcDB.getConnection()
 				.prepareStatement("DELETE FROM links WHERE id = ?");
 		stmt.setInt(1, key);
 		stmt.executeUpdate();
@@ -83,7 +83,7 @@ public class LinkJdbcDB extends JdbcBeanDB<Link> implements LinkDB {
 	 */
 	public Collection<Integer> getKeys() throws Exception {
 		ArrayList<Integer> keys = new ArrayList<Integer>();
-		PreparedStatement stmt = connection_
+		PreparedStatement stmt = JdbcDB.getConnection()
 				.prepareStatement("SELECT id FROM links");
 		ResultSet rs = stmt.executeQuery();
 		while (rs.next()) {
@@ -101,7 +101,7 @@ public class LinkJdbcDB extends JdbcBeanDB<Link> implements LinkDB {
 	 */
 	@Override
 	public int nextkey() throws Exception {
-		PreparedStatement stmt = connection_
+		PreparedStatement stmt = JdbcDB.getConnection()
 				.prepareStatement("SELECT MAX(id) FROM links");
 		ResultSet r = stmt.executeQuery();
 		int maxKey = 0;
@@ -126,7 +126,7 @@ public class LinkJdbcDB extends JdbcBeanDB<Link> implements LinkDB {
 	 */
 	@Override
 	PreparedStatement getPSOne(int key) throws SQLException {
-		PreparedStatement stmt = connection_
+		PreparedStatement stmt = JdbcDB.getConnection()
 				.prepareStatement("SELECT * FROM links WHERE id = ?");
 		stmt.setInt(1, key);
 		
@@ -138,7 +138,7 @@ public class LinkJdbcDB extends JdbcBeanDB<Link> implements LinkDB {
 	 */
 	@Override
 	PreparedStatement getPSAll() throws SQLException {
-		PreparedStatement stmt = connection_
+		PreparedStatement stmt = JdbcDB.getConnection()
 				.prepareStatement("SELECT * FROM links");
 		return stmt;
 	}
@@ -164,7 +164,7 @@ public class LinkJdbcDB extends JdbcBeanDB<Link> implements LinkDB {
 	public void updateObj(Link att) throws 
 			Exception {
 
-		PreparedStatement stmt = connection_
+		PreparedStatement stmt = JdbcDB.getConnection()
 				.prepareStatement("UPDATE links SET linktype = ?, ownerkey = ?, ownertype = ?, path = ?"
 						+ " WHERE id = ?");
 
@@ -188,7 +188,7 @@ public class LinkJdbcDB extends JdbcBeanDB<Link> implements LinkDB {
 	@Override
 	public Collection<Link> getLinks(int ownerkey, String ownertype)
 			throws SQLException {
-		PreparedStatement stmt = connection_
+		PreparedStatement stmt = JdbcDB.getConnection()
 				.prepareStatement("SELECT * from links where ownerkey = ? and ownertype = ?");
 		ResultSet r = null;
 		List<Link> lst = new ArrayList<Link>();

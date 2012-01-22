@@ -48,7 +48,7 @@ import net.sf.borg.model.CategoryModel.CategorySource;
 import net.sf.borg.model.db.TaskDB;
 import net.sf.borg.model.db.jdbc.JdbcDB;
 import net.sf.borg.model.db.jdbc.TaskJdbcDB;
-import net.sf.borg.model.entity.BorgOption;
+import net.sf.borg.model.entity.Option;
 import net.sf.borg.model.entity.KeyedEntity;
 import net.sf.borg.model.entity.Link;
 import net.sf.borg.model.entity.Project;
@@ -66,6 +66,9 @@ import net.sf.borg.model.undo.UndoLog;
  */
 public class TaskModel extends Model implements Model.Listener, CategorySource,
 		Searchable<KeyedEntity<?>> {
+	
+	static private final String TASKTYPES_OPTION = "TASKTYPES";
+
 
 	/**
 	 * class XmlContainer is solely for JAXB XML export/import to keep the same
@@ -73,7 +76,8 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 	 */
 	@XmlRootElement(name = "TASKS")
 	private static class XmlContainer {
-		public Collection<BorgOption> OPTION;
+		public Collection<Option> OPTION; // OPTION is kept here to handle
+											// import of old-format import files
 		public Collection<Project> Project;
 		public Collection<Task> Task;
 		public Collection<Subtask> Subtask;
@@ -187,7 +191,8 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 			tt.validate();
 			taskTypes_ = tt.copy();
 		}
-		JdbcDB.setOption(new BorgOption("TASKTYPES", taskTypes_.toXml()));
+		OptionModel.getReference().setOption(
+				new Option(TASKTYPES_OPTION, taskTypes_.toXml()));
 	}
 
 	/*
@@ -254,7 +259,8 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 			// iterate through tasks using taskmodel
 			for (Task mr : getTasks()) {
 				// for each task, get state and skip CLOSED or PR tasks
-				if (mr.getState().equals(this.getTaskTypes().getFinalState(mr.getType())))
+				if (mr.getState().equals(
+						this.getTaskTypes().getFinalState(mr.getType())))
 					continue;
 
 				if (!CategoryModel.getReference().isShown(mr.getCategory()))
@@ -351,14 +357,15 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 		db_ = new TaskJdbcDB();
 
 		try {
-			String tt = JdbcDB.getOption("TASKTYPES");
+			String tt = OptionModel.getReference().getOption(TASKTYPES_OPTION);
 			if (tt == null) {
-				String sm = JdbcDB.getOption("SMODEL");
+				String sm = OptionModel.getReference().getOption("SMODEL");
 				if (sm == null) {
 					try {
 						taskTypes_.loadDefault();
 						sm = taskTypes_.toXml();
-						JdbcDB.setOption(new BorgOption("TASKTYPES", sm));
+						OptionModel.getReference().setOption(
+								new Option(TASKTYPES_OPTION, sm));
 					} catch (Exception e) {
 						Errmsg.getErrorHandler().errmsg(e);
 						return;
@@ -373,9 +380,11 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 			Errmsg.getErrorHandler().errmsg(e);
 			return;
 		}
-		
+
 		CategoryModel.getReference().addSource(this);
 		CategoryModel.getReference().addListener(this);
+
+		OptionModel.getReference().addListener(this);
 
 		this.load_map();
 
@@ -634,7 +643,6 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 		JAXBContext jc = JAXBContext.newInstance(XmlContainer.class);
 		Marshaller m = jc.createMarshaller();
 		XmlContainer container = new XmlContainer();
-		container.OPTION = JdbcDB.getOptions();
 		container.Project = getProjects();
 		container.Task = getTasks();
 		container.Subtask = getSubTasks();
@@ -693,21 +701,13 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 		else
 			JdbcDB.execSQL("SET REFERENTIAL_INTEGRITY FALSE;");
 
+		/*
+		 * 
+		 * The option import code is being left in to handle old import files
+		 * where the OPTIONS were included with the Task XML
+		 */
 		if (container.OPTION != null) {
-			for (BorgOption option : container.OPTION) {
-				if (option.getKey().equals("TASKTYPES")) {
-					taskTypes_.fromString(option.getValue());
-					JdbcDB.setOption(new BorgOption("TASKTYPES", taskTypes_
-							.toXml()));
-
-				} else {
-					JdbcDB.setOption(option);
-				}
-			}
-			
-			// this needs to be refactored so that the Task model is no longer in charge of
-			// importing options
-			Theme.sync();
+			OptionModel.getReference().importOptions(container.OPTION);
 		}
 
 		if (container.Task != null) {
@@ -798,7 +798,17 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 	 */
 	@Override
 	public void update(ChangeEvent event) {
-		refresh();
+		if (event.getModel() instanceof OptionModel) {
+			try {
+				String tt = OptionModel.getReference().getOption(TASKTYPES_OPTION);
+				if (tt != null) {
+					taskTypes_.fromString(tt);
+				}
+			} catch (Exception e) {
+				Errmsg.getErrorHandler().errmsg(e);
+			}
+		} else
+			refresh();
 	}
 
 	/**

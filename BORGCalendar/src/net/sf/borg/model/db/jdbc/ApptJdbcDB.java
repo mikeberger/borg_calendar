@@ -72,7 +72,7 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
     @Override
     public void addObj(Appointment appt) throws Exception
     {
-        PreparedStatement stmt = connection_.prepareStatement( "INSERT INTO appointments (appt_date, appt_num, duration, text, skip_list," +
+        PreparedStatement stmt = JdbcDB.getConnection().prepareStatement( "INSERT INTO appointments (appt_date, appt_num, duration, text, skip_list," +
         " next_todo, vacation, holiday, private, times, frequency, todo, color, rpt, category, reminders, untimed, encrypted, repeat_until, priority ) VALUES " +
         "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         
@@ -80,22 +80,22 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
         stmt.setTimestamp( 1, new java.sql.Timestamp( appt.getDate().getTime()), Calendar.getInstance() );
         stmt.setInt( 2, appt.getKey() );
         
-        stmt.setInt( 3, toInt( appt.getDuration() ) );
+        stmt.setInt( 3, JdbcDB.toInt( appt.getDuration() ) );
         stmt.setString( 4, appt.getText() );
-        stmt.setString( 5, toStr( appt.getSkipList() ) );
+        stmt.setString( 5, JdbcDB.toStr( appt.getSkipList() ) );
         java.util.Date nt = appt.getNextTodo();
         if( nt != null )
             stmt.setDate( 6, new java.sql.Date( appt.getNextTodo().getTime()) );
         else
             stmt.setDate(6, null );
-        stmt.setInt( 7, toInt( appt.getVacation() ));
-        stmt.setInt( 8, toInt( appt.getHoliday() ));
-        stmt.setInt( 9, toInt( appt.isPrivate()) );
-        stmt.setInt( 10, toInt( appt.getTimes() ));
+        stmt.setInt( 7, JdbcDB.toInt( appt.getVacation() ));
+        stmt.setInt( 8, JdbcDB.toInt( appt.getHoliday() ));
+        stmt.setInt( 9, JdbcDB.toInt( appt.isPrivate()) );
+        stmt.setInt( 10, JdbcDB.toInt( appt.getTimes() ));
         stmt.setString( 11, appt.getFrequency());
-        stmt.setInt( 12, toInt( appt.isTodo()) );
+        stmt.setInt( 12, JdbcDB.toInt( appt.isTodo()) );
         stmt.setString( 13, appt.getColor());
-        stmt.setInt( 14, toInt( appt.isRepeatFlag()) );
+        stmt.setInt( 14, JdbcDB.toInt( appt.isRepeatFlag()) );
         stmt.setString( 15, appt.getCategory());
       
         stmt.setString( 16, appt.getReminderTimes());
@@ -126,7 +126,7 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
     @Override
     public void delete(int key) throws Exception
     {
-        PreparedStatement stmt = connection_.prepareStatement( "DELETE FROM appointments WHERE appt_num = ?" );
+        PreparedStatement stmt = JdbcDB.getConnection().prepareStatement( "DELETE FROM appointments WHERE appt_num = ?" );
         stmt.setInt( 1, key );
         stmt.executeUpdate();
         
@@ -146,7 +146,7 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
     public Collection<Integer> getKeys() throws Exception
     {
         ArrayList<Integer> keys = new ArrayList<Integer>();
-        PreparedStatement stmt = connection_.prepareStatement("SELECT appt_num FROM appointments" );
+        PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("SELECT appt_num FROM appointments" );
         ResultSet rs = stmt.executeQuery();
         while( rs.next() )
         {
@@ -164,7 +164,7 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
     public Collection<Integer> getTodoKeys() throws Exception
     {
         ArrayList<Integer> keys = new ArrayList<Integer>();
-        PreparedStatement stmt = connection_.prepareStatement("SELECT appt_num FROM appointments WHERE todo = '1'" );
+        PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("SELECT appt_num FROM appointments WHERE todo = '1'" );
         ResultSet rs = stmt.executeQuery();
         while( rs.next() )
         {
@@ -186,7 +186,7 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
     public Collection<Integer> getRepeatKeys() throws Exception
     {
         ArrayList<Integer> keys = new ArrayList<Integer>();
-        PreparedStatement stmt = connection_.prepareStatement("SELECT appt_num FROM appointments WHERE rpt = '1'" );
+        PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("SELECT appt_num FROM appointments WHERE rpt = '1'" );
         ResultSet rs = stmt.executeQuery();
         while( rs.next() )
         {
@@ -206,7 +206,7 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
     @Override
     public int nextkey() throws Exception
     {
-       PreparedStatement stmt = connection_.prepareStatement("SELECT MAX(appt_num) FROM appointments");
+       PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("SELECT MAX(appt_num) FROM appointments");
        ResultSet r = stmt.executeQuery();
        int maxKey = 0;
        if (r.next())
@@ -232,7 +232,7 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
 	@Override
 	PreparedStatement getPSOne(int key) throws SQLException
 	{
-		PreparedStatement stmt = connection_.prepareStatement("SELECT * FROM appointments WHERE appt_num = ?" );
+		PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("SELECT * FROM appointments WHERE appt_num = ?" );
 		stmt.setInt( 1, key );
 		return stmt;
 	}
@@ -243,7 +243,7 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
 	@Override
 	PreparedStatement getPSAll() throws SQLException
 	{
-		PreparedStatement stmt = connection_.prepareStatement("SELECT * FROM appointments" );
+		PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("SELECT * FROM appointments" );
 		return stmt;
 	}
 	
@@ -259,7 +259,7 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
 			appt.setDate( new java.util.Date (r.getTimestamp("appt_date").getTime()));
 		appt.setDuration( new Integer(r.getInt("duration")));
 		appt.setText( r.getString("text"));
-		appt.setSkipList( toVect(r.getString("skip_list")));
+		appt.setSkipList( JdbcDB.toVect(r.getString("skip_list")));
 		if( r.getDate("next_todo") != null )
 			appt.setNextTodo( new java.util.Date(r.getDate("next_todo").getTime()));
 		appt.setVacation( new Integer(r.getInt("vacation")));
@@ -289,7 +289,7 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
     @Override
     public void updateObj(Appointment appt) throws Exception
     {
-        PreparedStatement stmt = connection_.prepareStatement( "UPDATE appointments SET  appt_date = ?, " +
+        PreparedStatement stmt = JdbcDB.getConnection().prepareStatement( "UPDATE appointments SET  appt_date = ?, " +
         "duration = ?, text = ?, skip_list = ?," +
         " next_todo = ?, vacation = ?, holiday = ?, private = ?, times = ?, frequency = ?, todo = ?, color = ?, rpt = ?, category = ?," +
 		" reminders = ?, untimed = ?, encrypted = ?, repeat_until = ?, priority = ?" +
@@ -298,22 +298,22 @@ public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
         
         stmt.setTimestamp( 1, new java.sql.Timestamp( appt.getDate().getTime()), Calendar.getInstance() );
         
-        stmt.setInt( 2, toInt( appt.getDuration() ) );
+        stmt.setInt( 2, JdbcDB.toInt( appt.getDuration() ) );
         stmt.setString( 3, appt.getText() );
-        stmt.setString( 4, toStr( appt.getSkipList() ));
+        stmt.setString( 4, JdbcDB.toStr( appt.getSkipList() ));
         java.util.Date nt = appt.getNextTodo();
         if( nt != null )
             stmt.setDate( 5, new java.sql.Date( appt.getNextTodo().getTime()) );
         else
             stmt.setDate( 5, null );
-        stmt.setInt( 6, toInt( appt.getVacation() ));
-        stmt.setInt( 7, toInt( appt.getHoliday() ));
-        stmt.setInt( 8, toInt( appt.isPrivate()) );
-        stmt.setInt( 9, toInt( appt.getTimes() ));
+        stmt.setInt( 6, JdbcDB.toInt( appt.getVacation() ));
+        stmt.setInt( 7, JdbcDB.toInt( appt.getHoliday() ));
+        stmt.setInt( 8, JdbcDB.toInt( appt.isPrivate()) );
+        stmt.setInt( 9, JdbcDB.toInt( appt.getTimes() ));
         stmt.setString( 10, appt.getFrequency());
-        stmt.setInt( 11, toInt( appt.isTodo()) );
+        stmt.setInt( 11, JdbcDB.toInt( appt.isTodo()) );
         stmt.setString( 12, appt.getColor());
-        stmt.setInt( 13, toInt( appt.isRepeatFlag()) );
+        stmt.setInt( 13, JdbcDB.toInt( appt.isRepeatFlag()) );
         stmt.setString( 14, appt.getCategory());
         stmt.setString( 15, appt.getReminderTimes());
         stmt.setString( 16, appt.getUntimed());

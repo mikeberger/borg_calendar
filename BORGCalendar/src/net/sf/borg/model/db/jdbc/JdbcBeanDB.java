@@ -39,7 +39,7 @@ import net.sf.borg.model.entity.KeyedEntity;
  * abstract base class for all classes that manage reading/writing of KeyedEntities
  * to and from a JDBC database. also provides an object cache.
  */
-abstract class JdbcBeanDB<T extends KeyedEntity<T>> extends JdbcDB {
+abstract class JdbcBeanDB<T extends KeyedEntity<T>> {
 
 	// BORG needs its own caching. BORG rebuilds the map of DB data often
 	// and going to the DB is too expensive. If BORG is changed to support
