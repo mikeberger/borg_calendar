@@ -268,7 +268,6 @@ public class Repeat {
 		if (f == null || !f.startsWith(DAYLIST))
 			return daylist;
 
-		// System.out.println(f + " " + DAYLIST.length());
 		int i2 = f.indexOf(',', DAYLIST.length() + 1);
 		String list = null;
 		if (i2 != -1)
@@ -276,7 +275,6 @@ public class Repeat {
 		else
 			list = f.substring(DAYLIST.length() + 1);
 
-		// System.out.println(list);
 		if (list.indexOf("1") != -1)
 			daylist.add(new Integer(Calendar.SUNDAY));
 		if (list.indexOf("2") != -1)
@@ -504,7 +502,6 @@ public class Repeat {
 			// not enough days in this month
 		} else if (freq_.equals(DAYLIST)) {
 			Collection<Integer> daylist = getDaylist(frequency_);
-			// System.out.println(daylist);
 			if (daylist != null && !daylist.isEmpty()) {
 				// advance to next day of the week in the list
 				while (true) {

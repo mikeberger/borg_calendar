@@ -23,6 +23,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 
 
@@ -30,6 +31,8 @@ import java.util.prefs.Preferences;
  * class for managing Borg preferences.
  */
 public class Prefs {
+
+	static private final Logger log = Logger.getLogger("net.sf.borg");
 
 	/**
 	 * Interface for classes that want to be notified of preference changes
@@ -128,7 +131,7 @@ public class Prefs {
 	 */
 	public static void putPref(PrefName pn, Object val) {
 
-		// System.out.println("putpref-" + pn.getName() + "-" + val);
+		log.fine("putpref-" + pn.getName() + "-" + val);
 		Preferences prefs = getPrefNode();
 		if (pn.getDefault() instanceof Integer) {
 			if (val instanceof Integer) {

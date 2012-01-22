@@ -36,6 +36,11 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -61,10 +66,13 @@ import net.sf.borg.ui.util.ScrolledDialog;
  * spawning various threads, including the main UI thread and various timer
  * threads. It also handles shutdown.
  */
+
 public class Borg implements SocketHandler, Observer {
 
 	/** The singleton. */
 	static private Borg singleton = null;
+
+	static private final Logger log = Logger.getLogger("net.sf.borg");
 
 	/**
 	 * Gets the singleton.
@@ -140,7 +148,6 @@ public class Borg implements SocketHandler, Observer {
 
 	}
 
-
 	/** The timer for sending reminder email. */
 	private Timer mailTimer_ = null;
 
@@ -172,7 +179,7 @@ public class Borg implements SocketHandler, Observer {
 	 */
 	@Override
 	public synchronized String processMessage(String msg) {
-		// System.out.println("Got msg: " + msg);
+		log.fine("Got msg: " + msg);
 		if (msg.equals("sync")) {
 			try {
 				Model.syncModels();
@@ -225,6 +232,20 @@ public class Borg implements SocketHandler, Observer {
 	 *            the args
 	 */
 	private void init(String args[]) {
+
+		// logging
+		ConsoleHandler ch = new ConsoleHandler();
+		ch.setLevel(Level.ALL);
+		log.addHandler(ch);
+		log.setUseParentHandlers(false);
+
+		boolean debug = Prefs.getBoolPref(PrefName.DEBUG);
+		if (debug == true)
+			log.setLevel(Level.ALL);
+		else
+			log.setLevel(Level.INFO);
+
+		log.fine("Debug logging turned on");
 
 		// override for testing a different db
 		String testdb = null;
@@ -299,13 +320,16 @@ public class Borg implements SocketHandler, Observer {
 			if (!testing) {
 				String home = System.getProperty("user.home", "");
 				FileOutputStream errStr = new FileOutputStream(home
-						+ "/.borg.err", false);
+						+ "/.borg.out", false);
 				PrintStream printStream = new PrintStream(errStr);
 				System.setErr(printStream);
-				FileOutputStream outStr = new FileOutputStream(home
-						+ "/.borg.out", false);
-				printStream = new PrintStream(outStr);
 				System.setOut(printStream);
+				
+				FileHandler fh = new FileHandler("%h/.borg.log");
+				fh.setFormatter(new SimpleFormatter());
+				fh.setLevel(ch.getLevel());
+				log.removeHandler(ch);
+				log.addHandler(fh);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -329,7 +353,7 @@ public class Borg implements SocketHandler, Observer {
 
 			if (parentDir != null) {
 				ext = new File(parentDir, "lib/ext");
-				
+
 				// fall back to relative directory if folder not child of
 				// same folder where borg.jar is
 				if (!ext.exists() || !ext.isDirectory()) {
@@ -341,12 +365,12 @@ public class Borg implements SocketHandler, Observer {
 				ext = new File("lib/ext");
 			}
 
-			System.out.println("using ext lib dir=" + ext);
+			log.info("using ext lib dir=" + ext);
 			if (ext.exists() && ext.isDirectory()) {
 				File[] files = ext.listFiles();
 				for (File file : files) {
 					if (file.getName().endsWith(".jar")) {
-						System.out.println("Loading JAR: " + file.getName());
+						log.info("Loading JAR: " + file.getName());
 						try {
 							Borg.addURL(file.toURI().toURL());
 						} catch (Exception e) {
@@ -409,7 +433,7 @@ public class Borg implements SocketHandler, Observer {
 
 			// connect to the db - for now, it is jdbc only
 			JdbcDB.connect(dbdir);
-			
+
 			UIControl.setShutdownListener(this);
 
 			// start the UI thread

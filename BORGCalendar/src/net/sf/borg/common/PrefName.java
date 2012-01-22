@@ -344,5 +344,8 @@ public class PrefName {
  	static public PrefName SHUTDOWN_ACTION = new PrefName("shutdown_action", "");
  	
 	public static final PrefName SHUTDOWNTIME = new PrefName("shuttime", "0");
+	
+	/** debug flag  - trigger debug logging */
+	public static final PrefName DEBUG = new PrefName("debug", "false");
 
 }

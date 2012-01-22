@@ -188,7 +188,6 @@ public class AddressModel extends Model implements Searchable<Address> {
 	public Collection<Address> getAddresses(Date d) {
 		// don't consider year for birthdays
 		int bdkey = birthdayKey(d);
-		// System.out.println("bdkey is " + bdkey);
 		return (bdmap_.get(new Integer(bdkey)));
 	}
 

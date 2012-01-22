@@ -28,6 +28,7 @@ package net.sf.borg.common;
 import java.io.File;
 import java.util.Date;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -49,7 +50,10 @@ import javax.mail.internet.MimeMultipart;
 /**
  * utility class to send out email via java mail
  */
+
 public class SendJavaMail {
+
+	static private final Logger log = Logger.getLogger("net.sf.borg");
 
 	/**
 	 * boilerplate Authenticator.
@@ -225,45 +229,47 @@ public class SendJavaMail {
 	 *            the MessagingException
 	 */
 	static private void processMessagingException(MessagingException mex) {
-		System.out.println("\n--Exception handling in BORG.SendJavaMail");
+		StringBuffer buf = new StringBuffer();
+		buf.append("\n--Exception handling in BORG.SendJavaMail\n");
 
 		mex.printStackTrace();
-		System.out.println();
 		Exception ex = mex;
 		do {
 			if (ex instanceof SendFailedException) {
 				SendFailedException sfex = (SendFailedException) ex;
 				Address[] invalid = sfex.getInvalidAddresses();
 				if (invalid != null) {
-					System.out.println("    ** Invalid Addresses");
+					buf.append("    ** Invalid Addresses\n");
 
 					for (int i = 0; i < invalid.length; i++)
-						System.out.println("         " + invalid[i]);
+						buf.append("         " + invalid[i] + "\n");
 
 				}
 				Address[] validUnsent = sfex.getValidUnsentAddresses();
 				if (validUnsent != null) {
-					System.out.println("    ** ValidUnsent Addresses");
+					buf.append("    ** ValidUnsent Addresses\n");
 
 					for (int i = 0; i < validUnsent.length; i++)
-						System.out.println("         " + validUnsent[i]);
+						buf.append("         " + validUnsent[i] + "\n");
 
 				}
 				Address[] validSent = sfex.getValidSentAddresses();
 				if (validSent != null) {
-					System.out.println("    ** ValidSent Addresses");
+					buf.append("    ** ValidSent Addresses\n");
 
 					for (int i = 0; i < validSent.length; i++)
-						System.out.println("         " + validSent[i]);
+						buf.append("         " + validSent[i] + "\n");
 
 				}
 			}
-			System.out.println();
+			
 			if (ex instanceof MessagingException)
 				ex = ((MessagingException) ex).getNextException();
 			else
 				ex = null;
 		} while (ex != null);
+		
+		log.severe(buf.toString());
 	}
 
 }

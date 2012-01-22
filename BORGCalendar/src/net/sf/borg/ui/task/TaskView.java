@@ -817,7 +817,6 @@ public class TaskView extends DockableView {
 						// deletion and
 						// null out the table rows so it is not added back
 						for (int i = 0; i < ids.length; ++i) {
-							// System.out.println(ids[i]);
 							if (ids[i] == null)
 								continue;
 

@@ -19,8 +19,11 @@
  */
 package net.sf.borg.ui.options;
 
+
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -40,7 +43,11 @@ import net.sf.borg.ui.util.GridBagConstraintsFactory;
 /**
  * Provides the UI for editing Miscellaneous options
  */
+
 public class MiscellaneousOptionsPanel extends OptionsPanel {
+	
+	static private final Logger log = Logger.getLogger("net.sf.borg");
+
 
 	public enum SHUTDOWN_ACTION {
 		PROMPT, BACKUP, EMAIL, NONE
@@ -59,6 +66,7 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 	private JCheckBox dateInSysTray = new JCheckBox();
 
 	private JCheckBox dynamicLoading = new JCheckBox();
+	private JCheckBox verboseLogging = new JCheckBox();
 
 	private JComboBox shutdownAction = new JComboBox();
 
@@ -72,6 +80,7 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 		splashbox = new JCheckBox();
 		stackbox = new JCheckBox();
 		dynamicLoading = new JCheckBox();
+		verboseLogging = new JCheckBox();
 
 		this.setLayout(new java.awt.GridBagLayout());
 
@@ -154,6 +163,11 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 		gbc1 = GridBagConstraintsFactory.create(0, 9, GridBagConstraints.BOTH);
 		gbc1.gridwidth = 2;
 		this.add(dynamicLoading, gbc1);
+		
+		verboseLogging.setText(Resource.getResourceString("verbose_logging"));
+		gbc1 = GridBagConstraintsFactory.create(0, 10, GridBagConstraints.BOTH);
+		gbc1.gridwidth = 2;
+		this.add(verboseLogging, gbc1);
 	}
 
 	/*
@@ -163,6 +177,13 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 	 */
 	@Override
 	public void applyChanges() {
+		
+		if (verboseLogging.isSelected())
+			log.setLevel(Level.ALL);
+		else
+			log.setLevel(Level.INFO);
+
+		
 		OptionsPanel.setBooleanPref(colorprint, PrefName.COLORPRINT);
 
 		OptionsPanel.setBooleanPref(splashbox, PrefName.SPLASH);
@@ -172,7 +193,8 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 		OptionsPanel.setBooleanPref(startToSysTray, PrefName.BACKGSTART);
 		OptionsPanel.setBooleanPref(dateInSysTray, PrefName.SYSTRAYDATE);
 		OptionsPanel.setBooleanPref(dynamicLoading, PrefName.DYNAMIC_LOADING);
-
+		OptionsPanel.setBooleanPref(verboseLogging, PrefName.DEBUG);
+		
 		Prefs.putPref(PrefName.BACKUPDIR, backupDir.getText());
 
 		if (shutdownAction.getSelectedIndex() == 0)
@@ -214,6 +236,7 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 		OptionsPanel.setCheckBox(startToSysTray, PrefName.BACKGSTART);
 		OptionsPanel.setCheckBox(dateInSysTray, PrefName.SYSTRAYDATE);
 		OptionsPanel.setCheckBox(dynamicLoading, PrefName.DYNAMIC_LOADING);
+		OptionsPanel.setCheckBox(verboseLogging, PrefName.DEBUG);
 
 		String shutdown_action = Prefs.getPref(PrefName.SHUTDOWN_ACTION);
 		if (shutdown_action.isEmpty()

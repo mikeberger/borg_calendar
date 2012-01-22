@@ -34,6 +34,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.StringTokenizer;
+import java.util.logging.Logger;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherOutputStream;
@@ -52,7 +53,11 @@ import biz.source_code.base64Coder.Base64Coder;
 /**
  * this class handles the daily email reminder
  */
+
 public class EmailReminder {
+	
+	static private final Logger log = Logger.getLogger("net.sf.borg");
+
 
 	/**
 	 * Send daily email reminder.
@@ -149,7 +154,7 @@ public class EmailReminder {
 					}
 					tx += "\n";
 				} catch (Exception e) {
-					System.out.println(e.toString());
+					log.severe(e.toString());
 					return;
 				}
 			}

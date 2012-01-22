@@ -21,6 +21,7 @@ package net.sf.borg.ui;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.sql.ResultSet;
+import java.util.logging.Logger;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -47,7 +48,10 @@ import net.sf.borg.ui.util.TableSorter;
  * use this.
  *
  */
+
 class SqlRunner extends JDialog {
+
+	static private final Logger log = Logger.getLogger("net.sf.borg");
 
 	private static final long serialVersionUID = 1L;
 	private JEditorPane editor;
@@ -157,7 +161,7 @@ class SqlRunner extends JDialog {
 						.getResourceString("noOutput"));
 			
 		} catch (Exception e) {
-			System.out.println(e.toString());
+			log.severe(e.toString());
 			try {
 				JdbcDB.rollbackTransaction();
 			} catch (Exception e2) {

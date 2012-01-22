@@ -7,13 +7,18 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.logging.Logger;
 
 /**
  * SocketServer is a thread that listens on a socket and starts a thread for
  * each incoming connection. Each connection thread calls back to the SocketHandler
  * to process each incoming message
  */
+
 public class SocketServer extends Thread {
+	
+	static private final Logger log = Logger.getLogger("net.sf.borg");
+
     
 	// This class is the thread that handles all communication with a client
 	private class Connection extends Thread {
@@ -32,7 +37,7 @@ public class SocketServer extends Thread {
 	        }
 	        catch (IOException e) {
 	            try { client.close(); } catch (IOException e2) {  /* empty */}
-	            System.err.println("Exception while getting socket streams: " + e);
+	            log.severe("Exception while getting socket streams: " + e);
 	            return;
 	        }
 	        this.setName("Socket Connection");
@@ -64,7 +69,7 @@ public class SocketServer extends Thread {
     private SocketHandler handler_;
     
     private static void fail(Exception e, String msg) {
-        System.err.println(msg + ": " +  e);
+        log.severe(msg + ": " +  e);
     }
     
     /**
@@ -77,7 +82,7 @@ public class SocketServer extends Thread {
         this.handler_ = handler;
         try { listen_socket = new ServerSocket(port); }
         catch (IOException e) { fail(e, "Exception creating server socket"); }
-        System.out.println("Server: listening on port " + port);
+        log.info("Server: listening on port " + port);
         this.setName("Socket Server");
         this.start();
     }

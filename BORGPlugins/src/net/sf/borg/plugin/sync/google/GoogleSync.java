@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.swing.SwingUtilities;
 
@@ -33,6 +34,8 @@ import com.google.gdata.data.calendar.CalendarEventFeed;
 import com.google.gdata.data.extensions.When;
 
 public class GoogleSync {
+	
+	static private final Logger log = Logger.getLogger("net.sf.borg");
 
 	static public enum SyncMode {
 		OVERWRITE, SYNC, SYNC_OVERWRITE;
@@ -161,11 +164,12 @@ public class GoogleSync {
 
 					AppointmentModel.getReference().saveAppt(appt);
 				} catch (Warning w) {
-					System.out.println(w.getMessage());
+					log.warning(w.getMessage());
 					continue;
 				} catch (Exception e) {
 					this.showMessage("doSync1: " + e.getMessage(), false);
 					e.printStackTrace();
+					log.severe(e.toString());
 					continue;
 				}
 

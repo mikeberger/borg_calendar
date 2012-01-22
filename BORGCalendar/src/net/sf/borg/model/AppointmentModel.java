@@ -482,7 +482,6 @@ public class AppointmentModel extends Model implements Model.Listener,
 						break;
 
 					}
-					// System.out.println("newtodo=" + newtodo.getTime());
 					break;
 				}
 

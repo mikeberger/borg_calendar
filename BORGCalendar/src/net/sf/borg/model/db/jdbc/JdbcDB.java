@@ -39,6 +39,7 @@ import java.util.Date;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import java.util.logging.Logger;
 
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
@@ -51,6 +52,8 @@ import net.sf.borg.model.entity.Option;
  * class providing basic common JDBC services 
  */
 public final class JdbcDB {
+
+	static private final Logger log = Logger.getLogger("net.sf.borg");
 
 	// common db connection shared by sub-classes. in BORG, all sub-classes
 	// will manage a table in the same DB
@@ -139,7 +142,7 @@ public final class JdbcDB {
 					if (se.getSQLState().equals("08003")) {
 						// need to create the db
 						try {
-							System.out.println("Creating Database");
+							log.info("Creating Database");
 							InputStream is = JdbcDB.class
 									.getResourceAsStream("/resource/borg_hsqldb.sql");
 							StringBuffer sb = new StringBuffer();
@@ -169,7 +172,7 @@ public final class JdbcDB {
 				if (url.startsWith("jdbc:hsqldb:mem")) {
 					// need to create the db
 					try {
-						System.out.println("Creating Database");
+						log.info("Creating Database");
 						InputStream is = JdbcDB.class
 								.getResourceAsStream("/resource/borg_hsqldb.sql");
 						StringBuffer sb = new StringBuffer();
@@ -202,7 +205,7 @@ public final class JdbcDB {
 					if (se.getSQLState().equals("90013")) {
 						// need to create the db
 						try {
-							System.out.println("Creating Database");
+							log.info("Creating Database");
 							InputStream is = JdbcDB.class
 									.getResourceAsStream("/resource/borg_hsqldb.sql");
 							StringBuffer sb = new StringBuffer();
@@ -415,7 +418,7 @@ public final class JdbcDB {
 					+ Prefs.getPref(PrefName.DBPASS) + "&autoReconnect=true";
 		}
 
-		System.out.println("DB URL is: " + dbdir);
+		log.info("DB URL is: " + dbdir);
 		return (dbdir);
 	}
 

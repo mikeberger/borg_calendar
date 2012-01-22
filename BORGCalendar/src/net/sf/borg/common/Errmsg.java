@@ -20,11 +20,16 @@ Copyright 2003 by Mike Berger
 
 package net.sf.borg.common;
 
+import java.util.logging.Logger;
+
 
 /**
  * standard error handling for Borg
  */
 public class Errmsg {
+	
+	static private final Logger log = Logger.getLogger("net.sf.borg");
+
 
 	/**
 	 * console error handler
@@ -41,7 +46,7 @@ public class Errmsg {
 				return;
 			}
 
-			System.out.println(e.toString());
+			log.severe(e.toString());
 			e.printStackTrace();
 
 		}
@@ -49,7 +54,7 @@ public class Errmsg {
 		@Override
 		public void notice(String s) {
 
-			System.out.println(s);
+			log.info(s);
 			return;
 
 		}

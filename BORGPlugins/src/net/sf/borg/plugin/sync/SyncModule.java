@@ -3,6 +3,7 @@ package net.sf.borg.plugin.sync;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.logging.Logger;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -17,6 +18,8 @@ import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.options.OptionsView;
 
 public class SyncModule implements Module {
+	
+	static private final Logger log = Logger.getLogger("net.sf.borg");
 
 	@Override
 	public Component getComponent() {
@@ -36,7 +39,7 @@ public class SyncModule implements Module {
 	@Override
 	public void initialize(MultiView parent) {
 
-		System.out.println("Loading Sync Module");
+		log.info("Loading Sync Module");
 
 		JMenu m = new JMenu();
 		m.setText(getModuleName());

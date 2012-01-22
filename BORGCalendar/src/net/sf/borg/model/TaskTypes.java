@@ -546,7 +546,6 @@ public class TaskTypes {
 		Marshaller m = jc.createMarshaller();
 		StringWriter sw = new StringWriter();
 		m.marshal(this, sw);
-		//System.out.println(sw.toString());
 		return sw.toString();
 	}
 

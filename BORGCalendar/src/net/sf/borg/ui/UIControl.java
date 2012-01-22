@@ -5,6 +5,7 @@ import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Observer;
+import java.util.logging.Logger;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JOptionPane;
@@ -43,7 +44,10 @@ import net.sf.borg.ui.util.UIErrorHandler;
  * 
  * 
  */
+
 public class UIControl {
+
+	static private final Logger log = Logger.getLogger("net.sf.borg");
 
 	private static Observer shutdownListener = null;
 
@@ -104,7 +108,7 @@ public class UIControl {
 			UIManager.getLookAndFeelDefaults().put("ClassLoader",
 					UIControl.class.getClassLoader());
 		} catch (Exception e) {
-			// System.out.println(e.toString());
+			log.severe(e.toString());
 		}
 
 		// pop up the splash if the option is set
@@ -306,8 +310,9 @@ public class UIControl {
 			MultiView.Module module = (MultiView.Module) clazz.newInstance();
 			MultiView.getMainView().addModule(module);
 		} catch (Exception e) {
-			System.out.println(e.toString());
-			// e.printStackTrace();
+			
+			log.info(e.toString());
+			
 		}
 	}
 

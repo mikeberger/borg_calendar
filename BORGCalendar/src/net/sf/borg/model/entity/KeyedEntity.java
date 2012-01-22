@@ -62,7 +62,7 @@ public abstract class KeyedEntity<T> implements Serializable
      */
     @Override
     protected T clone(){
-        System.out.println("Should not be here!!");
+    	// should never get here
         return( null );
     }
     

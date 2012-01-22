@@ -117,13 +117,11 @@ public abstract class View extends JFrame implements Model.Listener {
 		this.addComponentListener(new java.awt.event.ComponentAdapter() {
 			@Override
 			public void componentMoved(java.awt.event.ComponentEvent e) {
-				// System.out.println("move");
 				recordSize(false);
 			}
 
 			@Override
 			public void componentResized(java.awt.event.ComponentEvent e) {
-				// System.out.println("resize");
 				recordSize(true);
 			}
 		});

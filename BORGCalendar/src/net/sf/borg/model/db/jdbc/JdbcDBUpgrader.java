@@ -19,6 +19,7 @@
 package net.sf.borg.model.db.jdbc;
 
 import java.sql.SQLException;
+import java.util.logging.Logger;
 
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
@@ -31,7 +32,10 @@ import net.sf.borg.common.Resource;
  * It is meant to be called during model initialization - preferably from the constructors
  * of the JdbcDB classes
  */
+
 public class JdbcDBUpgrader {
+	static private final Logger log = Logger.getLogger("net.sf.borg");
+
 
 	/** The check sql. */
 	private String checkSql;
@@ -99,7 +103,7 @@ public class JdbcDBUpgrader {
 			    Errmsg.getErrorHandler().notice(Resource.getResourceString("update_error") + updSql[i]);
 				continue;
 			} 
-			System.out.println("Running Upgrade SQL:" + updSql[i]);
+			log.info("Running Upgrade SQL:" + updSql[i]);
 			JdbcDB.execSQL(updSql[i]);
 		}
 	}

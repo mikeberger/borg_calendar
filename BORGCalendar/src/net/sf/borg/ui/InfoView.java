@@ -65,7 +65,7 @@ class InfoView extends DockableView implements Module {
 		try {
 			jEditorPane1.setPage(getClass().getResource(file));
 		} catch (java.io.IOException e1) {
-			e1.printStackTrace();
+			Errmsg.getErrorHandler().errmsg(e1);
 		}
 
 	}

@@ -17,18 +17,14 @@ This file is part of BORG.
 
 Copyright 2003 by Mike Berger
  */
-/*
- * helpscrn.java
- *
- * Created on October 5, 2003, 8:55 AM
- */
-
 package net.sf.borg.ui.util;
+
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Toolkit;
+import java.util.logging.Logger;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -45,7 +41,10 @@ import net.sf.borg.common.Resource;
 /**
  * Common dialog class with a scrolled text area.
  */
+
 public class ScrolledDialog extends JDialog {
+
+	static private final Logger log = Logger.getLogger("net.sf.borg");
 
 	private static final long serialVersionUID = 1L;
 	public static final int CANCEL = 1;
@@ -199,7 +198,7 @@ public class ScrolledDialog extends JDialog {
 					e_.printStackTrace(ps);
 					ScrolledDialog.showNotice(bao.toString());
 					// dump to console too for cut & paste
-					System.out.println(bao.toString());
+					log.severe(bao.toString());
 				}
 			});
 			buttonPanel.add(stackButton, null);

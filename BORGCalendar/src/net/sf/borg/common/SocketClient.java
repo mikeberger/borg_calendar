@@ -3,14 +3,21 @@ package net.sf.borg.common;
 // This example is from the book _Java in a Nutshell_ by David Flanagan.
 // modified by Mike Berger. No license appllies to this source file
 
-import java.io.*;
-import java.net.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.net.Socket;
+import java.util.logging.Logger;
 
 /**
  * SocketClient sends text messages over a socket
  */
+
 public class SocketClient {
-		
+	
+	static private final Logger log = Logger.getLogger("net.sf.borg");
+
 
 	/**
 	 * Send a msg.
@@ -35,7 +42,7 @@ public class SocketClient {
 			line = sin.readLine();
 			// Check if connection is closed (i.e. for EOF)
 			if (line == null) {
-				System.out.println("Connection closed by server.");
+				log.info("Connection closed by server.");
 			}
 		} catch (IOException e) {
 			if (s != null)
