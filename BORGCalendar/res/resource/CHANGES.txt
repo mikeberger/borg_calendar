@@ -1,3 +1,14 @@
+BORG 1.7.6.3
+------------
+
+Feature #25: Spanish Translation Updates
+
+Bug #21: Daylight Savings Time
+Bug #22: Color themes do not refresh when importing from XML
+Bug #23: Theme name is too big for H2, MySQL
+
+Other #24: Add logging to Borg with a debug option
+
 BORG 1.7.6
 ----------
 Bug and Feature numbers now come from Trac
