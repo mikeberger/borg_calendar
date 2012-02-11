@@ -26,27 +26,34 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
+import net.sf.borg.model.TaskModel;
 
 /**
  * Subtask entity
  */
-@XmlRootElement(name="Subtask")
+@XmlRootElement(name = "Subtask")
 @XmlAccessorType(XmlAccessType.FIELD)
 @Data
-@EqualsAndHashCode(callSuper=true)
+@EqualsAndHashCode(callSuper = true)
 public class Subtask extends KeyedEntity<Subtask> implements CalendarEntity {
 
 	private static final long serialVersionUID = -5794908342032518360L;
-	
+
 	private Date StartDate;
 	private Date CloseDate;
 	private Date DueDate;
 	private String Description;
 	private Integer Task;
 
-	/* (non-Javadoc)
+	// cached task description
+	private String taskDesc = null;
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see net.sf.borg.model.entity.KeyedEntity#clone()
 	 */
 	@Override
@@ -61,7 +68,9 @@ public class Subtask extends KeyedEntity<Subtask> implements CalendarEntity {
 		return (dst);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see net.sf.borg.model.entity.CalendarEntity#getColor()
 	 */
 	@Override
@@ -70,7 +79,9 @@ public class Subtask extends KeyedEntity<Subtask> implements CalendarEntity {
 		return "navy";
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see net.sf.borg.model.entity.CalendarEntity#getDate()
 	 */
 	@Override
@@ -78,7 +89,9 @@ public class Subtask extends KeyedEntity<Subtask> implements CalendarEntity {
 		return getDueDate();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see net.sf.borg.model.entity.CalendarEntity#getDuration()
 	 */
 	@Override
@@ -86,7 +99,9 @@ public class Subtask extends KeyedEntity<Subtask> implements CalendarEntity {
 		return new Integer(0);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see net.sf.borg.model.entity.CalendarEntity#getNextTodo()
 	 */
 	@Override
@@ -94,7 +109,9 @@ public class Subtask extends KeyedEntity<Subtask> implements CalendarEntity {
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see net.sf.borg.model.entity.CalendarEntity#getText()
 	 */
 	@Override
@@ -104,12 +121,32 @@ public class Subtask extends KeyedEntity<Subtask> implements CalendarEntity {
 		String abb = "";
 		if (showabb.equals("true"))
 			abb = "BT" + getTask() + "/ST" + getKey() + " ";
+		else {
+			if (taskDesc == null) {
+				Task t;
+				try {
+					t = TaskModel.getReference().getTask(Task);
+					if (t != null) {
+						taskDesc = t.getDescription();
+						int newlineIndex = taskDesc.indexOf('\n');
+						if (newlineIndex != -1)
+							taskDesc = taskDesc.substring(0, newlineIndex);
+					}
+				} catch (Exception e) {
+					Errmsg.getErrorHandler().errmsg(e);
+				}
+
+			}
+			abb = "[" + taskDesc + "] ";
+		}
 		String de = abb + getDescription();
 		String tx = de.replace('\n', ' ');
 		return tx;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see net.sf.borg.model.entity.CalendarEntity#getTodo()
 	 */
 	@Override
