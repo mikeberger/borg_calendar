@@ -19,11 +19,14 @@ Copyright 2003 by Mike Berger
  */
 package net.sf.borg.ui;
 
+import lombok.Data;
+
 /**
  * ViewSize contains the data associated with a windows's position, size, and
  * maximization state It also contains the logic to convert this data to and
  * from a String so that it can be stored.
  */
+@Data
 class ViewSize {
 
 	/**
@@ -64,140 +67,18 @@ class ViewSize {
 		return (vs);
 	}
 
-	private int height = -1;
 
-	// maximization flag
+	// size and position
+	private int height = -1;
+	private int width = -1;
+	private int x = -1;
+	private int y = -1;
 	private boolean maximized = false;
 
-	// size
-	private int width = -1;
-	// position
-	private int x = -1;
-
-	private int y = -1;
-
+	// state
 	private DockType dock = DockType.DOCK;
 
-	/**
-	 * get dock/undock flag
-	 * 
-	 * @return
-	 */
-	public DockType getDock() {
-		return dock;
-	}
-
-	/**
-	 * set dock/undock flag
-	 * 
-	 * @param dock
-	 */
-	public void setDock(DockType dock) {
-		this.dock = dock;
-	}
-
-	/**
-	 * Instantiates a ViewSize
-	 */
-	public ViewSize() {
-		// empty
-	}
-
-	/**
-	 * Gets the height.
-	 * 
-	 * @return the height
-	 */
-	public int getHeight() {
-		return height;
-	}
-
-	/**
-	 * Gets the width.
-	 * 
-	 * @return the width
-	 */
-	public int getWidth() {
-		return width;
-	}
-
-	/**
-	 * Gets the x.
-	 * 
-	 * @return the x
-	 */
-	public int getX() {
-		return x;
-	}
-
-	/**
-	 * Gets the y position.
-	 * 
-	 * @return the y position
-	 */
-	public int getY() {
-		return y;
-	}
-
-	/**
-	 * Checks if is maximized.
-	 * 
-	 * @return true, if is maximized
-	 */
-	public boolean isMaximized() {
-		return maximized;
-	}
-
-	/**
-	 * Sets the height.
-	 * 
-	 * @param height
-	 *            the new height
-	 */
-	public void setHeight(int height) {
-		this.height = height;
-	}
-
-	/**
-	 * Sets the maximized flag.
-	 * 
-	 * @param maximized
-	 *            the new maximized value
-	 */
-	public void setMaximized(boolean maximized) {
-		this.maximized = maximized;
-	}
-
-	/**
-	 * Sets the width.
-	 * 
-	 * @param width
-	 *            the new width
-	 */
-	public void setWidth(int width) {
-		this.width = width;
-	}
-
-	/**
-	 * Sets the x position.
-	 * 
-	 * @param x
-	 *            the new x position
-	 */
-	public void setX(int x) {
-		this.x = x;
-	}
-
-	/**
-	 * Sets the y.
-	 * 
-	 * @param y
-	 *            the new y
-	 */
-	public void setY(int y) {
-		this.y = y;
-	}
-
+	
 	/**
 	 * get the ViewSize data in a string
 	 * 
