@@ -336,30 +336,9 @@ public class ProjectView extends DockableView {
 		});
 		buttonPanel.add(savebutton, savebutton.getName());
 
-//		if (hasGantt()) {
-//			JButton ganttbutton = new JButton();
-//			ganttbutton.setText(Resource.getResourceString("GANTT"));
-//			ganttbutton.addActionListener(new ActionListener() {
-//				public void actionPerformed(ActionEvent e) {
-//					ganttActionPerformed();
-//				}
-//			});
-//			buttonPanel.add(ganttbutton);
-//		}
-//
-//		if (RunReport.hasJasper()) {
-//			JButton projRptButton = new JButton();
-//			ResourceHelper.setText(projRptButton, "Report");
-//			projRptButton.addActionListener(new ActionListener() {
-//				public void actionPerformed(ActionEvent evt) {
-//					reportButtonActionPerformed();
-//				}
-//			});
-//			buttonPanel.add(projRptButton);
-//		}
-
-		add(buttonPanel, GridBagConstraintsFactory.create(0, 1,
-				GridBagConstraints.BOTH));
+		GridBagConstraints bc = GridBagConstraintsFactory.create(1, 7, GridBagConstraints.BOTH, 0.0, 0.0);
+		bc.gridwidth = 4;
+		projectInfoPanel.add(buttonPanel, bc);
 
 		/*
 		 * link panel
