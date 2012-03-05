@@ -21,6 +21,7 @@ Copyright 2003 by Mike Berger
 package net.sf.borg.ui.link;
 
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -36,6 +37,7 @@ import java.util.Iterator;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -49,10 +51,10 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.LinkModel;
-import net.sf.borg.model.Model;
-import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.LinkModel.LinkType;
+import net.sf.borg.model.Model;
 import net.sf.borg.model.Model.ChangeEvent;
+import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.Address;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.KeyedEntity;
@@ -136,6 +138,10 @@ public class LinkPanel extends JPanel implements Model.Listener {
 
 	/** table to show the links */
 	private JTable linkTable = new JTable();
+	
+	/* scroll panel to hold the links table */
+	private JScrollPane scrollPanel = new JScrollPane();
+
 
 	/**
 	 * constructor
@@ -263,7 +269,6 @@ public class LinkPanel extends JPanel implements Model.Listener {
 		tcm.removeColumn(column);
 
 		// add a scroll to the table
-		JScrollPane scrollPanel = new JScrollPane();
 		scrollPanel.setViewportView(linkTable);
 		this.add(scrollPanel, GridBagConstraintsFactory.create(0, 0,
 				GridBagConstraints.BOTH, 1.0, 1.0));
@@ -623,6 +628,19 @@ public class LinkPanel extends JPanel implements Model.Listener {
 			}
 		} catch (Exception e) {
 			Errmsg.getErrorHandler().errmsg(e);
+		}
+		
+		if( tm.getRowCount() > 0 )
+			scrollPanel.setVisible(true);
+		else
+			scrollPanel.setVisible(false);
+		
+		for( Container p = this.getParent(); p != null; p = p.getParent())
+		{
+			if( p instanceof JFrame)
+			{
+				((JFrame) p).validate();
+			}
 		}
 
 	}
