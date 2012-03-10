@@ -49,7 +49,10 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JViewport;
+import javax.swing.ListSelectionModel;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.TableCellRenderer;
 
 import net.sf.borg.common.DateUtil;
@@ -728,6 +731,47 @@ public class TaskView extends DockableView {
 		subTaskTable.setDefaultEditor(Date.class, new JDateChooserCellEditor());
 
 		TableSorter ts = (TableSorter) subTaskTable.getModel();
+		subTaskTable.getSelectionModel().setSelectionMode(
+				ListSelectionModel.SINGLE_SELECTION);
+
+		subTaskTable.getModel().addTableModelListener(new TableModelListener(){
+
+			@Override
+			public void tableChanged(TableModelEvent arg0) {
+
+
+				// ignore the table sorters events - we only care about the
+				// underlying table model - which is tablesorter.newtablemodel
+				// tablesorter is crap
+				if (arg0.getSource() instanceof TableSorter)
+					return;
+
+
+				// ignore insert - this only happens when blank rows are added
+				if (arg0.getType() == TableModelEvent.INSERT)
+					return;
+
+				// always maintain a new "add" row as the table is updated (without
+				// being saved)
+
+				// ignore delete events when deciding to add a blank row
+				// problem caused when the table is cleared
+				if (arg0.getType() == TableModelEvent.DELETE)
+					return;
+				
+				TableSorter model = (TableSorter) subTaskTable.getModel();
+				for (int i = 0; i < model.getRowCount(); i++) {
+					String text = (String) model.getValueAt(i, 2);
+					if (text == null || text.isEmpty()) {
+						// already has a blank row - so don't add one
+						return;
+					}
+				}
+				Object o[] = { new Boolean(false), null, null, null, null, null, null };
+				model.addRow(o);
+			}
+			
+		});
 
 		// sort by due date
 		//ts.sortByColumn(4);
