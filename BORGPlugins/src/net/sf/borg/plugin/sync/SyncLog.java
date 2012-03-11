@@ -45,7 +45,7 @@ public class SyncLog extends Model implements Model.Listener {
 	@Override
 	public void update(ChangeEvent newEvent) {
 
-		if (newEvent == null)
+		if (newEvent == null || newEvent.getObject() == null)
 			return;
 
 		try {

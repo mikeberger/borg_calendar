@@ -131,7 +131,7 @@ public class SubtaskReminderInstance extends ReminderInstance {
 				return true;
 
 
-			if (!subtask.getDueDate()
+			if (subtask.getDueDate() == null || !subtask.getDueDate()
 					.equals(orig.getDueDate())) {
 				// date changed - delete. new instance will be added on
 				// periodic update
@@ -151,7 +151,6 @@ public class SubtaskReminderInstance extends ReminderInstance {
 		} catch (Exception e) {
 
 			// task cannot be read, must have been deleted
-			// this is an expected case when appointments are deleted
 			subtask = null;
 			return true;
 		}

@@ -127,6 +127,9 @@ public class TaskReminderInstance extends ReminderInstance {
 			
 			if( TaskModel.isClosed(task))
 				return true;
+			
+			if( task.getDueDate() == null )
+				return true;
 
 			if (!task.getDueDate()
 					.equals(orig.getDueDate())) {
