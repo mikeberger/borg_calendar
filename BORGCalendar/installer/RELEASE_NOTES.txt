@@ -1,17 +1,6 @@
 ==================================
-RELEASE NOTES for BORG 1.7.6
+RELEASE NOTES for BORG 1.7.7
 ==================================
-
-**** PLEASE READ: Release 1.7.6 has a few changes that may impact some users ****
-
-Default Installation Folder
----------------------------
-BORG's default installation folder will now be BORGCalendar (without a space between BORG and Calendar).
-This change was needed as part of the fix to get Linux desktop shortcuts to properly work.
-This fix will affect all platforms. Most users will not notice. Those few users that have custom start
-scripts or have copied extra JARs under the "BORG Calendar" folder, will need to be aware that the name
-has changed and that the installer will not just overwrite the existing "BORG Calendar" folder unless
-you explicitly tell it to.
 
 Dynamic Loading
 ---------------
