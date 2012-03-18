@@ -339,9 +339,9 @@ public class ProjectView extends DockableView {
 		});
 		buttonPanel.add(savebutton, savebutton.getName());
 
-		GridBagConstraints bc = GridBagConstraintsFactory.create(1, 7,
+		GridBagConstraints bc = GridBagConstraintsFactory.create(0, 7,
 				GridBagConstraints.BOTH, 0.0, 0.0);
-		bc.gridwidth = 4;
+		bc.gridwidth = 6;
 		projectInfoPanel.add(buttonPanel, bc);
 
 		/*
