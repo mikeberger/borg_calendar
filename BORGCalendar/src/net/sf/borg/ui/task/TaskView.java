@@ -512,47 +512,56 @@ public class TaskView extends DockableView {
 				1, GridBagConstraints.BOTH, 0.0, 0.0));
 		taskInformationPanel.add(lblType, GridBagConstraintsFactory.create(0,
 				2, GridBagConstraints.BOTH, 0.0, 0.0));
-		taskInformationPanel.add(lblStartDate, GridBagConstraintsFactory
-				.create(0, 3, GridBagConstraints.BOTH, 0.0, 0.0));
-		taskInformationPanel.add(lblDueDate, GridBagConstraintsFactory.create(
-				0, 4, GridBagConstraints.BOTH, 0.0, 0.0));
-		taskInformationPanel.add(prLabel, GridBagConstraintsFactory.create(0,
-				5, GridBagConstraints.BOTH, 0.0, 0.0));
-
+		
 		taskInformationPanel.add(taskIdText, GridBagConstraintsFactory.create(
 				1, 0, GridBagConstraints.BOTH, 1.0, 0.0));
 		taskInformationPanel.add(statusComboBox, GridBagConstraintsFactory
 				.create(1, 1, GridBagConstraints.BOTH, 1.0, 0.0));
 		taskInformationPanel.add(taskTypeComboBox, GridBagConstraintsFactory
 				.create(1, 2, GridBagConstraints.BOTH, 1.0, 0.0));
-		taskInformationPanel.add(startDateChooser, GridBagConstraintsFactory
-				.create(1, 3, GridBagConstraints.BOTH, 1.0, 0.0));
-		taskInformationPanel.add(dueDateChooser, GridBagConstraintsFactory
-				.create(1, 4, GridBagConstraints.BOTH, 1.0, 0.0));
-		taskInformationPanel.add(projectComboBox, GridBagConstraintsFactory
-				.create(1, 5, GridBagConstraints.BOTH, 1.0, 0.0));
-
+		
+	
 		taskInformationPanel.add(categoryLabel, GridBagConstraintsFactory
 				.create(2, 0, GridBagConstraints.BOTH, 0.0, 0.0));
-		taskInformationPanel.add(lblPri, GridBagConstraintsFactory.create(2, 1,
+		taskInformationPanel.add(prLabel, GridBagConstraintsFactory.create(2,
+				1, GridBagConstraints.BOTH, 0.0, 0.0));
+		taskInformationPanel.add(lblPri, GridBagConstraintsFactory.create(2, 2,
 				GridBagConstraints.BOTH, 0.0, 0.0));
-		taskInformationPanel.add(lblPA, GridBagConstraintsFactory.create(2, 2,
-				GridBagConstraints.BOTH, 0.0, 0.0));
-		taskInformationPanel.add(closeLabel, GridBagConstraintsFactory.create(
-				2, 3, GridBagConstraints.BOTH, 0.0, 0.0));
-		taskInformationPanel.add(daysLeftLabel, GridBagConstraintsFactory
-				.create(2, 4, GridBagConstraints.BOTH, 0.0, 0.0));
-
+		
 		taskInformationPanel.add(categoryComboBox, GridBagConstraintsFactory
 				.create(3, 0, GridBagConstraints.BOTH, 1.0, 0.0));
-		taskInformationPanel.add(priorityText, GridBagConstraintsFactory
+		taskInformationPanel.add(projectComboBox, GridBagConstraintsFactory
 				.create(3, 1, GridBagConstraints.BOTH, 1.0, 0.0));
-		taskInformationPanel.add(personAssignedText, GridBagConstraintsFactory
+		taskInformationPanel.add(priorityText, GridBagConstraintsFactory
 				.create(3, 2, GridBagConstraints.BOTH, 1.0, 0.0));
-		taskInformationPanel.add(closeDate, GridBagConstraintsFactory.create(3,
-				3, GridBagConstraints.BOTH, 1.0, 0.0));
+		
+		taskInformationPanel.add(lblStartDate, GridBagConstraintsFactory
+				.create(4, 0, GridBagConstraints.BOTH, 0.0, 0.0));
+		taskInformationPanel.add(lblDueDate, GridBagConstraintsFactory.create(
+				4, 1, GridBagConstraints.BOTH, 0.0, 0.0));
+		taskInformationPanel.add(closeLabel, GridBagConstraintsFactory.create(
+				4, 2, GridBagConstraints.BOTH, 0.0, 0.0));
+		
+		
+		taskInformationPanel.add(startDateChooser, GridBagConstraintsFactory
+				.create(5, 0, GridBagConstraints.BOTH, 1.0, 0.0));
+		taskInformationPanel.add(dueDateChooser, GridBagConstraintsFactory
+				.create(5, 1, GridBagConstraints.BOTH, 1.0, 0.0));
+		taskInformationPanel.add(closeDate, GridBagConstraintsFactory.create(5,
+				2, GridBagConstraints.BOTH, 1.0, 0.0));
+		
+	
+		
+		taskInformationPanel.add(lblPA, GridBagConstraintsFactory.create(6, 0,
+				GridBagConstraints.BOTH, 0.0, 0.0));
+		taskInformationPanel.add(daysLeftLabel, GridBagConstraintsFactory
+				.create(6, 1, GridBagConstraints.BOTH, 0.0, 0.0));
+
+	
+		taskInformationPanel.add(personAssignedText, GridBagConstraintsFactory
+				.create(7, 0, GridBagConstraints.BOTH, 1.0, 0.0));
 		taskInformationPanel.add(daysLeftText, GridBagConstraintsFactory
-				.create(3, 4, GridBagConstraints.BOTH, 1.0, 0.0));
+				.create(7, 1, GridBagConstraints.BOTH, 1.0, 0.0));
 
 		topPanel.add(taskInformationPanel, GridBagConstraintsFactory.create(0,
 				0, GridBagConstraints.BOTH, 1.0, 0.0));

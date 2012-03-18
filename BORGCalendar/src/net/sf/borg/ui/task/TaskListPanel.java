@@ -566,6 +566,8 @@ class TaskListPanel extends JPanel implements Model.Listener {
 				return;
 			}
 		}
+		
+		String subtaskString = Resource.getResourceString("subtask");
 
 		try {
 			// loop through all tasks
@@ -718,7 +720,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 						ro = new Object[12];
 						ro[0] = null;
 						ro[1] = (subtask.getCloseDate() == null) ? Resource.getResourceString("OPEN"): Resource.getResourceString("CLOSED");
-						ro[2] = task.getType();
+						ro[2] = subtaskString;
 						ro[11] = task.getCategory();
 						ro[3] = task.getPriority();
 						ro[6] = subtask.getStartDate();

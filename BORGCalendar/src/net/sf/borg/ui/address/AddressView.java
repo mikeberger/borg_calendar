@@ -27,7 +27,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -84,9 +83,6 @@ public class AddressView extends DockableView {
 	// link panel
 	private LinkPanel linkPanel;
 
-	// the main tabbed pane
-	private JTabbedPane theTabbedPane; // @jve:decl-index=0:visual-constraint="57,1330"
-
 	/**
 	 * constructor
 	 * 
@@ -115,11 +111,11 @@ public class AddressView extends DockableView {
 	/**
 	 * initialize the UI
 	 */
-	// this method is generated code that was cleaned up. It is much better, but still, some stupid label names remain
+	// this method is generated code that was cleaned up. It is much better, but
+	// still, some stupid label names remain
 	private void initComponents()
 	{
 
-		theTabbedPane = new JTabbedPane();
 		JPanel contactPanel = new JPanel();
 		firstNameText = new JTextField();
 		lastNameText = new JTextField();
@@ -133,7 +129,6 @@ public class AddressView extends DockableView {
 		webPageText = new JTextField();
 		companyText = new JTextField();
 		birthdayChooser = new JDateChooser();
-		JPanel addressPanel = new JPanel();
 		JPanel homeAddressPanel = new JPanel();
 		streetAddresText = new JTextField();
 		cityText = new JTextField();
@@ -176,54 +171,91 @@ public class AddressView extends DockableView {
 		JLabel jLabel4 = new JLabel();
 		ResourceHelper.setText(jLabel4, "Screen_Name:");
 		jLabel4.setLabelFor(screenNameText);
-		contactPanel.add(jLabel4, GridBagConstraintsFactory.create(0, 3));
+		contactPanel.add(jLabel4, GridBagConstraintsFactory.create(2, 0));
 
 		JLabel jLabel5 = new JLabel();
 		ResourceHelper.setText(jLabel5, "Home_Phone:");
 		jLabel5.setLabelFor(homePageText);
-		contactPanel.add(jLabel5, GridBagConstraintsFactory.create(0, 4));
+		contactPanel.add(jLabel5, GridBagConstraintsFactory.create(2, 1));
 
 		JLabel jLabel6 = new JLabel();
 		ResourceHelper.setText(jLabel6, "Work_Phone:");
 		jLabel6.setLabelFor(workPhoneText);
-		contactPanel.add(jLabel6, GridBagConstraintsFactory.create(0, 5));
+		contactPanel.add(jLabel6, GridBagConstraintsFactory.create(2, 2));
 
 		JLabel jLabel7 = new JLabel();
 		ResourceHelper.setText(jLabel7, "Pager:");
 		jLabel7.setLabelFor(pagerText);
+		contactPanel.add(jLabel7, GridBagConstraintsFactory.create(4, 0));
 
 		JLabel jLabel8 = new JLabel();
 		ResourceHelper.setText(jLabel8, "Fax:");
 		jLabel8.setLabelFor(faxText);
-		contactPanel.add(jLabel8, GridBagConstraintsFactory.create(0, 7));
+		contactPanel.add(jLabel8, GridBagConstraintsFactory.create(4, 1));
 
 		JLabel jLabel9 = new JLabel();
 		ResourceHelper.setText(jLabel9, "Email:");
 		jLabel9.setLabelFor(emailText);
-		contactPanel.add(jLabel9, GridBagConstraintsFactory.create(0, 8));
+		contactPanel.add(jLabel9, GridBagConstraintsFactory.create(4, 2));
 
 		JLabel jLabel14 = new JLabel();
 		ResourceHelper.setText(jLabel14, "Web_Page:");
 		jLabel14.setLabelFor(webPageText);
-		contactPanel.add(jLabel14, GridBagConstraintsFactory.create(0, 9));
+		contactPanel.add(jLabel14, GridBagConstraintsFactory.create(6, 0));
 
 		JLabel jLabel21 = new JLabel();
 		ResourceHelper.setText(jLabel21, "Company");
 		jLabel21.setLabelFor(companyText);
-		contactPanel.add(jLabel21, GridBagConstraintsFactory.create(0, 10));
+		contactPanel.add(jLabel21, GridBagConstraintsFactory.create(6, 1));
 
 		JLabel jLabel22 = new JLabel();
 		ResourceHelper.setText(jLabel22, "Birthday");
 		jLabel22.setLabelFor(birthdayChooser);
-		contactPanel.add(jLabel22, GridBagConstraintsFactory.create(0, 11));
+		contactPanel.add(jLabel22, GridBagConstraintsFactory.create(6, 2));
 
-		JLabel jLabel10 = new JLabel();
-		ResourceHelper.setText(jLabel10, "Home_Street_Address");
-		jLabel10.setLabelFor(streetAddresText);
+	
+	
 
-		JLabel jLabel11 = new JLabel();
-		ResourceHelper.setText(jLabel11, "Home_City:");
-		jLabel11.setLabelFor(cityText);
+		contactPanel.add(firstNameText, GridBagConstraintsFactory.create(1, 0,
+				GridBagConstraints.BOTH, 1.0, 0.0));
+		contactPanel.add(lastNameText, GridBagConstraintsFactory.create(1, 1,
+				GridBagConstraints.BOTH, 1.0, 0.0));
+		contactPanel.add(nickNameText, GridBagConstraintsFactory.create(1, 2,
+				GridBagConstraints.BOTH, 1.0, 0.0));
+		contactPanel.add(screenNameText, GridBagConstraintsFactory.create(3, 0,
+				GridBagConstraints.BOTH, 1.0, 0.0));
+		contactPanel.add(homePageText, GridBagConstraintsFactory.create(3, 1,
+				GridBagConstraints.BOTH, 1.0, 0.0));
+		contactPanel.add(workPhoneText, GridBagConstraintsFactory.create(3, 2,
+				GridBagConstraints.BOTH, 1.0, 0.0));
+		contactPanel.add(pagerText, GridBagConstraintsFactory.create(5, 0,
+				GridBagConstraints.BOTH, 1.0, 0.0));
+		contactPanel.add(faxText, GridBagConstraintsFactory.create(5, 1,
+				GridBagConstraints.BOTH, 1.0, 0.0));
+		contactPanel.add(emailText, GridBagConstraintsFactory.create(5, 2,
+				GridBagConstraints.BOTH, 1.0, 0.0));
+		contactPanel.add(webPageText, GridBagConstraintsFactory.create(7, 0,
+				GridBagConstraints.BOTH, 1.0, 0.0));
+		contactPanel.add(companyText, GridBagConstraintsFactory.create(7, 1,
+				GridBagConstraints.BOTH, 1.0, 0.0));
+		contactPanel.add(birthdayChooser, GridBagConstraintsFactory.create(7,
+				2, GridBagConstraints.BOTH, 1.0, 0.0));
+
+		contactPanel.setBorder(new TitledBorder(Resource
+				.getResourceString("contact")));
+		
+		GridBagConstraints cgbc = GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH, 1.0, 1.0);
+		cgbc.gridwidth = 2;
+		add(contactPanel, cgbc);
+		
+		//
+		// ADDRESS
+		//	
+		
+		homeAddressPanel.setLayout(new java.awt.GridBagLayout());
+
+		homeAddressPanel.setBorder(new TitledBorder(Resource
+				.getResourceString("HomeAddress")));
 
 		JLabel jLabel12 = new JLabel();
 		ResourceHelper.setText(jLabel12, "Home_State:");
@@ -236,7 +268,7 @@ public class AddressView extends DockableView {
 		JLabel jLabel15 = new JLabel();
 		ResourceHelper.setText(jLabel15, "Home_Zip_Code:");
 		jLabel15.setLabelFor(workZipText);
-
+		
 		JLabel jLabel16 = new JLabel();
 		ResourceHelper.setText(jLabel16, "Work_Street_Address");
 		jLabel16.setLabelFor(workStreetAddressText);
@@ -246,67 +278,10 @@ public class AddressView extends DockableView {
 		JLabel jLabel17 = new JLabel();
 		ResourceHelper.setText(jLabel17, "Work_City:");
 		jLabel17.setLabelFor(workCityText);
-		contactPanel.add(jLabel7, GridBagConstraintsFactory.create(0, 6));
 
 		jLabel17.setHorizontalAlignment(SwingConstants.RIGHT);
 		jLabel17.setHorizontalTextPosition(SwingConstants.RIGHT);
 
-		JLabel jLabel18 = new JLabel();
-		ResourceHelper.setText(jLabel18, "Work_State:");
-		jLabel18.setLabelFor(stateText);
-
-		jLabel18.setHorizontalAlignment(SwingConstants.RIGHT);
-
-		JLabel jLabel19 = new JLabel();
-		ResourceHelper.setText(jLabel19, "Work_Zip_Code:");
-		jLabel19.setLabelFor(zipCodeText);
-
-		jLabel19.setHorizontalAlignment(SwingConstants.RIGHT);
-
-		JLabel jLabel20 = new JLabel();
-		ResourceHelper.setText(jLabel20, "Work_Country:");
-		jLabel20.setLabelFor(countryText);
-
-		jLabel20.setHorizontalAlignment(SwingConstants.RIGHT);
-		workStreetAddressText.setMinimumSize(new java.awt.Dimension(4, 50));
-
-		contactPanel.add(firstNameText, GridBagConstraintsFactory.create(1, 0,
-				GridBagConstraints.BOTH, 1.0, 0.0));
-		contactPanel.add(lastNameText, GridBagConstraintsFactory.create(1, 1,
-				GridBagConstraints.BOTH, 1.0, 0.0));
-		contactPanel.add(nickNameText, GridBagConstraintsFactory.create(1, 2,
-				GridBagConstraints.BOTH, 1.0, 0.0));
-		contactPanel.add(screenNameText, GridBagConstraintsFactory.create(1, 3,
-				GridBagConstraints.BOTH, 1.0, 0.0));
-		contactPanel.add(homePageText, GridBagConstraintsFactory.create(1, 4,
-				GridBagConstraints.BOTH, 1.0, 0.0));
-		contactPanel.add(workPhoneText, GridBagConstraintsFactory.create(1, 5,
-				GridBagConstraints.BOTH, 1.0, 0.0));
-		contactPanel.add(pagerText, GridBagConstraintsFactory.create(1, 6,
-				GridBagConstraints.BOTH, 1.0, 0.0));
-		contactPanel.add(faxText, GridBagConstraintsFactory.create(1, 7,
-				GridBagConstraints.BOTH, 1.0, 0.0));
-		contactPanel.add(emailText, GridBagConstraintsFactory.create(1, 8,
-				GridBagConstraints.BOTH, 1.0, 0.0));
-		contactPanel.add(webPageText, GridBagConstraintsFactory.create(1, 9,
-				GridBagConstraints.BOTH, 1.0, 0.0));
-		contactPanel.add(companyText, GridBagConstraintsFactory.create(1, 10,
-				GridBagConstraints.BOTH, 1.0, 0.0));
-		contactPanel.add(birthdayChooser, GridBagConstraintsFactory.create(1,
-				11, GridBagConstraints.BOTH, 1.0, 0.0));
-
-		theTabbedPane.addTab(Resource.getResourceString("contact"),
-				contactPanel);
-
-		//
-		// ADDRESS
-		//	
-		addressPanel.setLayout(new java.awt.GridBagLayout());
-		
-		homeAddressPanel.setLayout(new java.awt.GridBagLayout());
-
-		homeAddressPanel.setBorder(new TitledBorder(Resource
-				.getResourceString("HomeAddress")));
 
 		homeAddressPanel.add(jLabel16, GridBagConstraintsFactory.create(0, 0));
 		homeAddressPanel.add(jLabel17, GridBagConstraintsFactory.create(0, 1));
@@ -325,15 +300,40 @@ public class AddressView extends DockableView {
 		homeAddressPanel.add(workZipText, GridBagConstraintsFactory.create(1,
 				4, GridBagConstraints.BOTH, 1.0, 0.0));
 
+		add(homeAddressPanel, GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH, 1.0, 1.0));
 
-		addressPanel.add(homeAddressPanel, GridBagConstraintsFactory.create(0,
-				0, GridBagConstraints.BOTH, 1.0, 1.0));
 
 		workAddressPanel.setLayout(new java.awt.GridBagLayout());
 
 		workAddressPanel.setBorder(new TitledBorder(Resource
 				.getResourceString("WorkAddress")));
 
+		JLabel jLabel10 = new JLabel();
+		ResourceHelper.setText(jLabel10, "Home_Street_Address");
+		jLabel10.setLabelFor(streetAddresText);
+
+		JLabel jLabel11 = new JLabel();
+		ResourceHelper.setText(jLabel11, "Home_City:");
+		jLabel11.setLabelFor(cityText);
+	
+		JLabel jLabel18 = new JLabel();
+		ResourceHelper.setText(jLabel18, "Work_State:");
+		jLabel18.setLabelFor(stateText);
+
+		jLabel18.setHorizontalAlignment(SwingConstants.RIGHT);
+
+		JLabel jLabel19 = new JLabel();
+		ResourceHelper.setText(jLabel19, "Work_Zip_Code:");
+		jLabel19.setLabelFor(zipCodeText);
+
+		jLabel19.setHorizontalAlignment(SwingConstants.RIGHT);
+
+		JLabel jLabel20 = new JLabel();
+		ResourceHelper.setText(jLabel20, "Work_Country:");
+		jLabel20.setLabelFor(countryText);
+
+		jLabel20.setHorizontalAlignment(SwingConstants.RIGHT);
+		workStreetAddressText.setMinimumSize(new java.awt.Dimension(4, 50));
 		workAddressPanel.add(jLabel10, GridBagConstraintsFactory.create(0, 0));
 		workAddressPanel.add(jLabel11, GridBagConstraintsFactory.create(0, 1));
 		workAddressPanel.add(jLabel18, GridBagConstraintsFactory.create(0, 2));
@@ -351,12 +351,9 @@ public class AddressView extends DockableView {
 		workAddressPanel.add(zipCodeText, GridBagConstraintsFactory.create(1,
 				4, GridBagConstraints.BOTH, 1.0, 0.0));
 
-		addressPanel.add(workAddressPanel, GridBagConstraintsFactory.create(0,
-				1, GridBagConstraints.BOTH, 1.0, 1.0));
 
+		add(workAddressPanel, GridBagConstraintsFactory.create(1, 1, GridBagConstraints.BOTH, 1.0, 1.0));
 
-		theTabbedPane.addTab(Resource.getResourceString("Address"),
-				addressPanel);
 
 		//
 		// NOTES
@@ -365,13 +362,24 @@ public class AddressView extends DockableView {
 		notesPanel.setLayout(new GridBagLayout());
 		notesPanel.add(notesText, GridBagConstraintsFactory.create(1, 0,
 				GridBagConstraints.BOTH, 1.0, 1.0));
-		theTabbedPane.addTab(Resource.getResourceString("Notes"), notesPanel);
+		notesPanel.setBorder(new TitledBorder(Resource
+				.getResourceString("Notes")));
+		
+		GridBagConstraints ngbc = GridBagConstraintsFactory.create(0, 2, GridBagConstraints.BOTH, 1.0, 1.0);
+		ngbc.gridwidth = 2;
+		add(notesPanel, ngbc);
 
 		//
 		// LINKS
 		//
 		linkPanel = new LinkPanel();
-		theTabbedPane.addTab(Resource.getResourceString("links"), linkPanel);
+		linkPanel.setBorder(new TitledBorder(Resource
+				.getResourceString("links")));
+		
+		GridBagConstraints lgbc = GridBagConstraintsFactory.create(0, 3, GridBagConstraints.BOTH, 1.0, 1.0);
+		lgbc.gridwidth = 2;
+		add(linkPanel, lgbc);
+		
 
 		//
 		// BUTTON
@@ -387,18 +395,16 @@ public class AddressView extends DockableView {
 		});
 
 		buttonPanel.add(saveButton);
-		add(buttonPanel, GridBagConstraintsFactory.create(0, 1));
+		GridBagConstraints bgbc = GridBagConstraintsFactory.create(0,4, GridBagConstraints.BOTH, 1.0, 1.0);
+		bgbc.gridwidth = 2;
+		add(buttonPanel, bgbc);
 
-		// TABS
-		theTabbedPane.setPreferredSize(new java.awt.Dimension(540, 400));
-		add(theTabbedPane, GridBagConstraintsFactory.create(0, 0,
-				GridBagConstraints.BOTH, 1.0, 1.0));
-
+		
 	}
 
 	@Override
 	public void refresh() {
-	  // empty
+		// empty
 	}
 
 	/**
@@ -408,8 +414,9 @@ public class AddressView extends DockableView {
 
 		if (firstNameText.getText().equals("")
 				|| lastNameText.getText().equals("")) {
-			Errmsg.getErrorHandler().notice(Resource
-					.getResourceString("First_and_Last_name_are_Required"));
+			Errmsg.getErrorHandler()
+					.notice(Resource
+							.getResourceString("First_and_Last_name_are_Required"));
 			return;
 		}
 
@@ -441,7 +448,7 @@ public class AddressView extends DockableView {
 			AddressModel.getReference().saveAddress(addr_);
 
 			this.close();
-			
+
 		} catch (Exception e) {
 			Errmsg.getErrorHandler().errmsg(e);
 		}

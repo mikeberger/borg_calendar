@@ -110,7 +110,6 @@ public class ProjectView extends DockableView {
 		return p.getKey() + ":" + p.getDescription();
 	}
 
-
 	/** The category box. */
 	private JComboBox categoryBox = null;
 
@@ -202,7 +201,6 @@ public class ProjectView extends DockableView {
 		return windowTitle;
 	}
 
-
 	/**
 	 * Initialize the UI.
 	 */
@@ -248,72 +246,77 @@ public class ProjectView extends DockableView {
 		categoryBox = new JComboBox();
 		catlabel.setLabelFor(categoryBox);
 
-		projectInfoPanel.add(lblStartDate, GridBagConstraintsFactory.create(3,
-				1, GridBagConstraints.BOTH));
-		projectInfoPanel.add(lblDueDate, GridBagConstraintsFactory.create(1, 4,
-				GridBagConstraints.BOTH));
-		projectInfoPanel.add(catlabel, GridBagConstraintsFactory.create(3, 0,
-				GridBagConstraints.BOTH));
-		projectInfoPanel.add(dueDateChooser, GridBagConstraintsFactory.create(
-				2, 4, GridBagConstraints.BOTH, 1.0, 0.0));
-		projectInfoPanel.add(startDateChooser, GridBagConstraintsFactory
-				.create(4, 1, GridBagConstraints.BOTH, 1.0, 0.0));
-		projectInfoPanel.add(lblItemNum, GridBagConstraintsFactory.create(1, 0,
-				GridBagConstraints.BOTH));
-		projectInfoPanel.add(projectIdText, GridBagConstraintsFactory.create(2,
-				0, GridBagConstraints.BOTH));
-		projectInfoPanel.add(lblStatus, GridBagConstraintsFactory.create(1, 1,
-				GridBagConstraints.BOTH));
-		projectInfoPanel.add(categoryBox, GridBagConstraintsFactory.create(4,
-				0, GridBagConstraints.BOTH, 1.0, 0.0));
-		projectInfoPanel.add(statusComboBox, GridBagConstraintsFactory.create(
-				2, 1, GridBagConstraints.BOTH, 1.0, 0.0));
+		projectInfoPanel
+				.add(lblItemNum, GridBagConstraintsFactory.create(0, 0,
+						GridBagConstraints.BOTH));
+		projectInfoPanel
+				.add(lblStatus, GridBagConstraintsFactory.create(0, 1,
+						GridBagConstraints.BOTH));
+		projectInfoPanel
+				.add(catlabel, GridBagConstraintsFactory.create(0, 2,
+						GridBagConstraints.BOTH));
+		JLabel descLabel = new JLabel();
+		descLabel.setText(Resource.getResourceString("Description"));
+		projectInfoPanel
+				.add(descLabel, GridBagConstraintsFactory.create(0, 3,
+						GridBagConstraints.BOTH));
 
-		daysLeftText = new JTextField();
-		daysLeftText.setEditable(false);
-		projectInfoPanel.add(daysLeftText, GridBagConstraintsFactory.create(4,
-				4, GridBagConstraints.BOTH, 1.0, 0.0));
+		projectInfoPanel
+				.add(projectIdText, GridBagConstraintsFactory.create(1, 0,
+						GridBagConstraints.BOTH));
+		projectInfoPanel.add(statusComboBox, GridBagConstraintsFactory.create(
+				1, 1, GridBagConstraints.BOTH, 1.0, 0.0));
+		projectInfoPanel.add(categoryBox, GridBagConstraintsFactory.create(1,
+				2, GridBagConstraints.BOTH, 1.0, 0.0));
+		GridBagConstraints dgbc = GridBagConstraintsFactory.create(1,
+				3, GridBagConstraints.BOTH, 1.0, 0.0);
+		dgbc.gridwidth = 5;
+		projectInfoPanel.add(description, dgbc);
+
+		JLabel parentLabel = new JLabel(Resource.getResourceString("parent"));
+		projectInfoPanel
+				.add(parentLabel, GridBagConstraintsFactory.create(2, 0,
+						GridBagConstraints.BOTH));
+		projectInfoPanel
+				.add(lblStartDate, GridBagConstraintsFactory.create(2, 1,
+						GridBagConstraints.BOTH));
+		projectInfoPanel
+				.add(lblDueDate, GridBagConstraintsFactory.create(2, 2,
+						GridBagConstraints.BOTH));
+
+		projectInfoPanel.add(parentProjectComboBox, GridBagConstraintsFactory
+				.create(3, 0, GridBagConstraints.BOTH, 1.0, 0.0));
+		projectInfoPanel.add(dueDateChooser, GridBagConstraintsFactory.create(
+				3, 1, GridBagConstraints.BOTH, 1.0, 0.0));
+		projectInfoPanel.add(startDateChooser, GridBagConstraintsFactory
+				.create(3, 2, GridBagConstraints.BOTH, 1.0, 0.0));
 
 		JLabel daysLeftLabel = new JLabel();
 		daysLeftLabel.setText(Resource.getResourceString("Days_Left"));
 		daysLeftLabel.setHorizontalTextPosition(SwingConstants.RIGHT);
 		daysLeftLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-
-		projectInfoPanel.add(daysLeftLabel, GridBagConstraintsFactory.create(3,
-				4));
-		projectInfoPanel.add(description, GridBagConstraintsFactory.create(2,
-				5, GridBagConstraints.BOTH, 1.0, 0.0));
-
-		JLabel descLabel = new JLabel();
-		descLabel.setText(Resource.getResourceString("Description"));
-		projectInfoPanel.add(descLabel, GridBagConstraintsFactory.create(1, 5,
-				GridBagConstraints.BOTH));
-
+		projectInfoPanel.add(daysLeftLabel,
+				GridBagConstraintsFactory.create(4, 0));
 		JLabel totalLabel = new JLabel();
 		totalLabel.setText(Resource.getResourceString("total_tasks"));
 		projectInfoPanel
-				.add(totalLabel, GridBagConstraintsFactory.create(3, 5));
-
+				.add(totalLabel, GridBagConstraintsFactory.create(4, 1));
 		JLabel openLabel = new JLabel();
 		openLabel.setText(Resource.getResourceString("open_tasks"));
-		projectInfoPanel.add(openLabel, GridBagConstraintsFactory.create(3, 6));
+		projectInfoPanel.add(openLabel, GridBagConstraintsFactory.create(4, 2));
 
+		daysLeftText = new JTextField();
+		daysLeftText.setEditable(false);
+		projectInfoPanel.add(daysLeftText, GridBagConstraintsFactory.create(5,
+				0, GridBagConstraints.BOTH, 1.0, 0.0));
 		totalTaskCount = new JTextField();
 		totalTaskCount.setEditable(false);
 		projectInfoPanel.add(totalTaskCount, GridBagConstraintsFactory.create(
-				4, 5, GridBagConstraints.BOTH, 1.0, 0.0));
-
+				5, 1, GridBagConstraints.BOTH, 1.0, 0.0));
 		openTaskCount = new JTextField();
 		openTaskCount.setEditable(false);
-		projectInfoPanel.add(openTaskCount, GridBagConstraintsFactory.create(4,
-				6, GridBagConstraints.BOTH, 1.0, 0.0));
-
-		projectInfoPanel.add(parentProjectComboBox, GridBagConstraintsFactory
-				.create(2, 6, GridBagConstraints.BOTH, 1.0, 0.0));
-
-		JLabel parentLabel = new JLabel(Resource.getResourceString("parent"));
-		projectInfoPanel.add(parentLabel, GridBagConstraintsFactory.create(1,
-				6, GridBagConstraints.BOTH));
+		projectInfoPanel.add(openTaskCount, GridBagConstraintsFactory.create(5,
+				2, GridBagConstraints.BOTH, 1.0, 0.0));
 
 		add(projectInfoPanel, GridBagConstraintsFactory.create(0, 0,
 				GridBagConstraints.BOTH, 1.0, 0.0));
@@ -336,7 +339,8 @@ public class ProjectView extends DockableView {
 		});
 		buttonPanel.add(savebutton, savebutton.getName());
 
-		GridBagConstraints bc = GridBagConstraintsFactory.create(1, 7, GridBagConstraints.BOTH, 0.0, 0.0);
+		GridBagConstraints bc = GridBagConstraintsFactory.create(1, 7,
+				GridBagConstraints.BOTH, 0.0, 0.0);
 		bc.gridwidth = 4;
 		projectInfoPanel.add(buttonPanel, bc);
 
@@ -346,8 +350,8 @@ public class ProjectView extends DockableView {
 
 		linkPanel.setBorder(new TitledBorder(Resource
 				.getResourceString("links")));
-		add(linkPanel, GridBagConstraintsFactory.create(0, 2,
-				GridBagConstraints.BOTH));
+		add(linkPanel,
+				GridBagConstraintsFactory.create(0, 2, GridBagConstraints.BOTH));
 
 		/*
 		 * panel that will contain the project's task list
@@ -372,7 +376,7 @@ public class ProjectView extends DockableView {
 		// the task editor does not refresh itself when the task data
 		// model changes
 	}
-	
+
 	@Override
 	public void update(ChangeEvent event) {
 		refresh();
@@ -385,7 +389,8 @@ public class ProjectView extends DockableView {
 
 		// validate that description is present
 		if (description.getText() == null || description.getText().equals("")) {
-			Errmsg.getErrorHandler().notice(Resource.getResourceString("empty_desc"));
+			Errmsg.getErrorHandler().notice(
+					Resource.getResourceString("empty_desc"));
 			return;
 		}
 		try {
