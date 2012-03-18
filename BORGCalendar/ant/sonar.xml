@@ -1,0 +1,20 @@
+<project name="Borg" >
+  
+  <!-- Define the Sonar task if this hasn't been done in a common script -->
+  <taskdef uri="antlib:org.sonar.ant" resource="org/sonar/ant/antlib.xml">
+    <classpath path="./sonar-ant-task-1.3.jar" />
+  </taskdef>
+  
+   <!-- Add the target -->
+  <target name="sonar">
+    <!-- list of mandatories Sonar properties -->
+    <property name="sonar.sources" value="../src" />
+ 
+    <!-- list of optional Sonar properties -->
+    <property name="sonar.projectName" value="Borg" />
+    <property name="sonar.binaries" value="../classes" />
+    <property name="sonar.libraries" value="../lib" />
+ 
+    <sonar:sonar key="net.sf.borg:borg" version="1.7.6.3" xmlns:sonar="antlib:org.sonar.ant"/>
+  </target>
+</project>
