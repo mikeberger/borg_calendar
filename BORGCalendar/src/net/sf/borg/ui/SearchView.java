@@ -88,9 +88,6 @@ public class SearchView extends DockableView implements Module {
 	/** The end date chooser. */
 	private JDateChooser endDateChooser = null;
 
-	/** The end date label. */
-	private JLabel endDateLabel = null;
-
 	/** The holiday check box. */
 	private JCheckBox holidayCheckBox = null;
 
@@ -464,21 +461,6 @@ public class SearchView extends DockableView implements Module {
 		searchCriteriaPanel.add(categoryLabel, GridBagConstraintsFactory
 				.create(0, 1, GridBagConstraints.HORIZONTAL));
 
-		JLabel startDateLabel = new JLabel();
-		ResourceHelper.setText(startDateLabel, "StartDate");
-		searchCriteriaPanel.add(startDateLabel, GridBagConstraintsFactory
-				.create(0, 2, GridBagConstraints.HORIZONTAL));
-
-		endDateLabel = new JLabel();
-		ResourceHelper.setText(endDateLabel, "EndDate");
-		searchCriteriaPanel.add(endDateLabel, GridBagConstraintsFactory.create(
-				0, 3, GridBagConstraints.HORIZONTAL));
-
-		GridBagConstraints gridBagConstraints25 = GridBagConstraintsFactory
-				.create(0, 4, GridBagConstraints.BOTH, 0.0, 1.0);
-		gridBagConstraints25.gridwidth = 4;
-		searchCriteriaPanel.add(createCheckBoxPanel(), gridBagConstraints25);
-
 		searchText = new JTextField();
 		searchCriteriaPanel.add(searchText, GridBagConstraintsFactory.create(1,
 				0, GridBagConstraints.HORIZONTAL, 1.0, 0.0));
@@ -486,19 +468,7 @@ public class SearchView extends DockableView implements Module {
 		categoryComboBox = new JComboBox();
 		searchCriteriaPanel.add(categoryComboBox, GridBagConstraintsFactory
 				.create(1, 1, GridBagConstraints.HORIZONTAL, 1.0, 0.0));
-
-		startDateChooser = new JDateChooser();
-		GridBagConstraints gbc1 = GridBagConstraintsFactory.create(1, 2,
-				GridBagConstraints.NONE, 1.0, 0.0);
-		gbc1.anchor = GridBagConstraints.WEST;
-		searchCriteriaPanel.add(startDateChooser, gbc1);
-
-		endDateChooser = new JDateChooser();
-		GridBagConstraints gbc2 = GridBagConstraintsFactory.create(1, 3,
-				GridBagConstraints.NONE, 1.0, 0.0);
-		gbc2.anchor = GridBagConstraints.WEST;
-		searchCriteriaPanel.add(endDateChooser, gbc2);
-
+		
 		caseSensitiveCheckBox = new JCheckBox();
 		caseSensitiveCheckBox.setText(Resource
 				.getResourceString("case_sensitive"));
@@ -512,6 +482,38 @@ public class SearchView extends DockableView implements Module {
 		searchCriteriaPanel
 				.add(wholeWordBox, GridBagConstraintsFactory.create(2,
 						1, GridBagConstraints.BOTH));
+
+		JLabel startDateLabel = new JLabel();
+		ResourceHelper.setText(startDateLabel, "StartDate");
+		searchCriteriaPanel.add(startDateLabel, GridBagConstraintsFactory
+				.create(3, 0, GridBagConstraints.HORIZONTAL));
+
+		JLabel endDateLabel = new JLabel();
+		ResourceHelper.setText(endDateLabel, "EndDate");
+		searchCriteriaPanel.add(endDateLabel, GridBagConstraintsFactory.create(
+				3, 1, GridBagConstraints.HORIZONTAL));
+		
+		startDateChooser = new JDateChooser();
+		GridBagConstraints gbc1 = GridBagConstraintsFactory.create(4, 0,
+				GridBagConstraints.NONE, 0.0, 0.0);
+		gbc1.anchor = GridBagConstraints.WEST;
+		searchCriteriaPanel.add(startDateChooser, gbc1);
+
+		endDateChooser = new JDateChooser();
+		GridBagConstraints gbc2 = GridBagConstraintsFactory.create(4, 1,
+				GridBagConstraints.NONE, 0.0, 0.0);
+		gbc2.anchor = GridBagConstraints.WEST;
+		searchCriteriaPanel.add(endDateChooser, gbc2);
+
+
+		GridBagConstraints gridBagConstraints25 = GridBagConstraintsFactory
+				.create(0, 2, GridBagConstraints.BOTH, 0.0, 1.0);
+		gridBagConstraints25.gridwidth = 5;
+		searchCriteriaPanel.add(createCheckBoxPanel(), gridBagConstraints25);
+
+		
+		
+	
 		return searchCriteriaPanel;
 	}
 
