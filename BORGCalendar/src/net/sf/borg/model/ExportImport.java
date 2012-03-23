@@ -98,12 +98,19 @@ public class ExportImport {
 			// get the SMTP host and address
 			String host = Prefs.getPref(PrefName.EMAILSERVER);
 			String addr = Prefs.getPref(PrefName.EMAILADDR);
+			String from = Prefs.getPref(PrefName.EMAILFROM);
+
 			StringTokenizer stk = new StringTokenizer(addr, ",;");
 			if (stk.hasMoreTokens())
 				addr = stk.nextToken();
+			String f;
+			if( from == null || from.isEmpty())
+				f = addr;
+			else 
+				f= from;
 			SendJavaMail.sendMailWithAttachments(host,
 					Resource.getResourceString("borg_backup"),
-					Resource.getResourceString("borg_backup"), addr, addr,
+					Resource.getResourceString("borg_backup"), f, addr,
 					Prefs.getPref(PrefName.EMAILUSER), EmailReminder.gep(),
 					new String[] { backupFilename });
 

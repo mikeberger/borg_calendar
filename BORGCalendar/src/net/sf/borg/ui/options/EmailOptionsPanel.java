@@ -53,6 +53,7 @@ class EmailOptionsPanel extends OptionsPanel {
 
 	/** The emailtext. */
 	private JTextField emailtext = new JTextField();
+	private JTextField emailfrom = new JTextField();
 
 	/** The emailtimebox. */
 	private JSpinner emailtimebox = new JSpinner();
@@ -125,6 +126,13 @@ class EmailOptionsPanel extends OptionsPanel {
 		emailtext.setColumns(30);
 		this.add(emailtext, GridBagConstraintsFactory.create(1, 5,
 				GridBagConstraints.BOTH, 1.0, 0.0));
+		
+		this.add(new JLabel(Resource.getResourceString("EmailFrom")), GridBagConstraintsFactory.create(0, 6,
+				GridBagConstraints.BOTH));
+
+		emailfrom.setColumns(30);
+		this.add(emailfrom, GridBagConstraintsFactory.create(1, 6,
+				GridBagConstraints.BOTH, 1.0, 0.0));
 
 		ResourceHelper.setText(emailbox, "Enable_Email");
 		this.add(emailbox, GridBagConstraintsFactory.create(0, 0,
@@ -133,17 +141,17 @@ class EmailOptionsPanel extends OptionsPanel {
 		JLabel remtimelabel = new JLabel();
 		ResourceHelper.setText(remtimelabel, "reminder_time");
 		remtimelabel.setLabelFor(emailtimebox);
-		this.add(remtimelabel, GridBagConstraintsFactory.create(0, 6,
+		this.add(remtimelabel, GridBagConstraintsFactory.create(0, 7,
 				GridBagConstraints.BOTH));
 
 		emailtimebox = new JSpinner(new SpinnerDateModel());
 		JSpinner.DateEditor de = new JSpinner.DateEditor(emailtimebox, "HH:mm");
 		emailtimebox.setEditor(de);
-		this.add(emailtimebox, GridBagConstraintsFactory.create(1, 6,
+		this.add(emailtimebox, GridBagConstraintsFactory.create(1, 7,
 				GridBagConstraints.BOTH, 1.0, 0.0));
 
 		tlsbox.setText(Resource.getResourceString("enable_tls"));
-		this.add(tlsbox, GridBagConstraintsFactory.create(0, 7,
+		this.add(tlsbox, GridBagConstraintsFactory.create(0, 8,
 				GridBagConstraints.BOTH));
 
 	}
@@ -162,6 +170,7 @@ class EmailOptionsPanel extends OptionsPanel {
 			Prefs.putPref(PrefName.EMAILSERVER, smtptext.getText());
 			Prefs.putPref(PrefName.EMAILPORT, smtpport.getText());
 			Prefs.putPref(PrefName.EMAILADDR, emailtext.getText());
+			Prefs.putPref(PrefName.EMAILFROM, emailfrom.getText());
 			Prefs.putPref(PrefName.EMAILUSER, usertext.getText());
 			try {
 				EmailReminder.sep(new String(smpw.getPassword()));
@@ -199,6 +208,7 @@ class EmailOptionsPanel extends OptionsPanel {
 		smtptext.setText(Prefs.getPref(PrefName.EMAILSERVER));
 		smtpport.setText(Prefs.getPref(PrefName.EMAILPORT));
 		emailtext.setText(Prefs.getPref(PrefName.EMAILADDR));
+		emailfrom.setText(Prefs.getPref(PrefName.EMAILFROM));
 		usertext.setText(Prefs.getPref(PrefName.EMAILUSER));
 		
 		try {

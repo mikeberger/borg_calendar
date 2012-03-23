@@ -79,6 +79,7 @@ public class EmailReminder {
 		// get the SMTP host and address
 		String host = Prefs.getPref(PrefName.EMAILSERVER);
 		String addr = Prefs.getPref(PrefName.EMAILADDR);
+		String from = Prefs.getPref(PrefName.EMAILFROM);
 
 		if (host.equals("") || addr.equals(""))
 			return;
@@ -181,10 +182,16 @@ public class EmailReminder {
 			StringTokenizer stk = new StringTokenizer(addr, ",;");
 			while (stk.hasMoreTokens()) {
 				String a = stk.nextToken();
+				String f;
+				if( from == null || from.isEmpty())
+					f = a.trim();
+				else 
+					f= from;
 				if (!a.equals("")) {
+					
 					SendJavaMail.sendMail(host, tx,
 							Resource.getResourceString("Reminder_Notice"),
-							a.trim(), a.trim(),
+							f, a.trim(),
 							Prefs.getPref(PrefName.EMAILUSER), gep());
 				}
 			}

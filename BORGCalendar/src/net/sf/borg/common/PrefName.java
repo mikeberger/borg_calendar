@@ -224,6 +224,7 @@ public class PrefName {
 
 	/** The EMAILADDR. */
 	static public PrefName EMAILADDR = new PrefName("email_addr", "");
+	static public PrefName EMAILFROM = new PrefName("email_from", "");
 
 	/** The EMAILLAST. */
 	static public PrefName EMAILLAST = new PrefName("email_last",
