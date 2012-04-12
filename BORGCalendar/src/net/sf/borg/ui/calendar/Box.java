@@ -51,12 +51,14 @@ abstract public class Box {
 	protected Rectangle bounds, clip;
 
 	protected boolean isSelected = false;
-		
+
 	/**
 	 * constructor.
 	 * 
-	 * @param bounds box bounds
-	 * @param clip box clip
+	 * @param bounds
+	 *            box bounds
+	 * @param clip
+	 *            box clip
 	 */
 	public Box(Rectangle bounds, Rectangle clip) {
 		this.bounds = bounds;
@@ -67,7 +69,7 @@ abstract public class Box {
 	 * delete the box
 	 */
 	public void delete() {
-	  // empty
+		// empty
 	}
 
 	/**
@@ -84,18 +86,20 @@ abstract public class Box {
 	 * action called when the box is clicked
 	 */
 	public abstract void onClick();
-	
+
 	/**
-	 * how many clicks are required to activate this box - default is double-click
+	 * how many clicks are required to activate this box - default is
+	 * double-click
+	 * 
 	 * @return clicks required to activate the box
 	 */
-	public int clicksToActivate()
-	{
+	public int clicksToActivate() {
 		return 2;
 	}
 
 	/**
 	 * get bounds
+	 * 
 	 * @return bounds
 	 */
 	public Rectangle getBounds() {
@@ -120,27 +124,45 @@ abstract public class Box {
 
 	/**
 	 * set bounds
-	 * @param bounds new bounds
+	 * 
+	 * @param bounds
+	 *            new bounds
 	 */
 	public void setBounds(Rectangle bounds) {
 		this.bounds = bounds;
-		if( clip == null )
+		if (clip == null)
 			clip = bounds;
 	}
 
 	/**
 	 * set selected
-	 * @param isSelected new selected value
+	 * 
+	 * @param isSelected
+	 *            new selected value
 	 */
 	public void setSelected(boolean isSelected) {
 		this.isSelected = isSelected;
 	}
-	
+
 	/**
 	 * gets the tool tip text for this box
+	 * 
 	 * @return the tool tip text
 	 */
 	abstract public String getToolTipText();
-	
+
+	/**
+	 * returns true if the box is clickable
+	 * 
+	 * @return
+	 */
+	public boolean isClickable() {
+
+		// if a box is completely clipped, then it cannot be clicked
+		if (clip != null && bounds != null && !bounds.intersects(clip))
+			return false;
+
+		return true;
+	}
 
 }

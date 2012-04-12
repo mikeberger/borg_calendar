@@ -802,6 +802,9 @@ abstract class ApptBoxPanel extends JPanel implements ComponentListener {
 		// check if we are in any boxes (drag new box above takes priority)
 		for(Box b : boxes){
 			
+			if( !b.isClickable())
+				continue;
+			
 			if (ret.box == null && evt.getX() > b.getBounds().x
 					&& evt.getX() < (b.getBounds().x + b.getBounds().width)
 					&& evt.getY() > b.getBounds().y
