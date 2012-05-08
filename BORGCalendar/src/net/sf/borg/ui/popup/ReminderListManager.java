@@ -161,7 +161,7 @@ public class ReminderListManager extends ReminderManager {
 			if (reminderInstance.reloadAndCheckForChanges())
 				deletedReminders.add(reminderInstance);
 
-			if (!reminderInstance.shouldBeShown()) {
+			else if (!reminderInstance.shouldBeShown()) {
 				// dispose of popup and add to delete list
 				deletedReminders.add(reminderInstance);
 			}
@@ -173,8 +173,9 @@ public class ReminderListManager extends ReminderManager {
 			reminders.remove(inst);
 		}
 
-		if (!deletedReminders.isEmpty() && reminderList.isShowing())
-			reminderList.refresh();
+		// refresh the list, but don't show unless it is already showing
+		if (!deletedReminders.isEmpty())
+			reminderList.refresh(!reminderList.isShowing());
 
 	}
 
