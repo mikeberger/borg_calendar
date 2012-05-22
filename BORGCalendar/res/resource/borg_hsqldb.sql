@@ -38,7 +38,7 @@ CREATE CACHED TABLE addresses (
 -- 
 
 CREATE CACHED TABLE appointments (
-  appt_date datetime default '0000-00-00 00:00:00' NOT NULL,
+  appt_date datetime default '1000-01-01 00:00:00' NOT NULL,
   appt_num integer default '0' NOT NULL,
   duration integer default NULL,
   text longvarchar NOT NULL,
@@ -122,7 +122,7 @@ CREATE CACHED TABLE subtasks (
 
 CREATE CACHED TABLE tasklog (
   id integer default '0' NOT NULL,
-  logtime datetime default '0000-00-00 00:00:00' NOT NULL,
+  logtime datetime default '1000-01-01 00:00:00' NOT NULL,
   description longvarchar NOT NULL,
   task integer default '0' NOT NULL,
   PRIMARY KEY ( id ),
