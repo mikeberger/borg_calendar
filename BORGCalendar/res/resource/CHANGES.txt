@@ -5,9 +5,13 @@ Features:
 Re-layout Task, Project, Address, and Search forms to make better use of space
 Hide links table if there are no links to save space
 Prepend task description to subtask on calendar
+#34 	allow different From and To addresses for email reminders
+#36 	Updated Spanish (Argentina) Translation
 
 Bug Fixes:
-#32 - A new blank subtask is not added to the subtask table automatically
+#37 	Error creating DB with Java 7
+#35 	Wrong item dragged when there are too many untimed events to fit in a calendar box
+#32     A new blank subtask is not added to the subtask table automatically
 
 BORG 1.7.6.3
 ------------
