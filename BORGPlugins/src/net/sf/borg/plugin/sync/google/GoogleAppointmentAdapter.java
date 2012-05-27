@@ -406,7 +406,10 @@ public class GoogleAppointmentAdapter implements
 		// so add a timestamp
 		// the id has the borg key before the @ to be used for syncing later
 		long updated = new Date().getTime();
-		ee.setIcalUID(s.toString() + "@BORGCalendar"
+		String uid = s.getText();
+		if( uid.length() > 25)
+			uid = s.getText().substring(0, 25);
+		ee.setIcalUID(uid + "@BORGCalendar"
 				+ updated);
 		DateTime updt = new DateTime();
 		updt.setValue(updated);
