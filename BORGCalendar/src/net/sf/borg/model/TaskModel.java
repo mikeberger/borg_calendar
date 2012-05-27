@@ -45,6 +45,7 @@ import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.common.Warning;
 import net.sf.borg.model.CategoryModel.CategorySource;
+import net.sf.borg.model.Model.ChangeEvent.ChangeAction;
 import net.sf.borg.model.db.TaskDB;
 import net.sf.borg.model.db.jdbc.JdbcDB;
 import net.sf.borg.model.db.jdbc.TaskJdbcDB;
@@ -66,9 +67,8 @@ import net.sf.borg.model.undo.UndoLog;
  */
 public class TaskModel extends Model implements Model.Listener, CategorySource,
 		Searchable<KeyedEntity<?>> {
-	
-	static private final String TASKTYPES_OPTION = "TASKTYPES";
 
+	static private final String TASKTYPES_OPTION = "TASKTYPES";
 
 	/**
 	 * class XmlContainer is solely for JAXB XML export/import to keep the same
@@ -416,9 +416,10 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 	 */
 	public void delete(int tasknum, boolean undo) throws Exception {
 
+		Task tmp = new Task();
+		tmp.setKey(tasknum);
 		try {
-			Task tmp = new Task();
-			tmp.setKey(tasknum);
+
 			LinkModel.getReference().deleteLinksFromEntity(tmp);
 			LinkModel.getReference().deleteLinksToEntity(tmp);
 
@@ -441,7 +442,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 
 		load_map();
 
-		refreshListeners();
+		refreshListeners(new ChangeEvent(tmp, ChangeAction.DELETE));
 
 	}
 
@@ -463,11 +464,13 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 		if (ret != JOptionPane.OK_OPTION)
 			return;
 
+		Project tmp = new Project();
+		tmp.setKey(id);
+
 		try {
 
 			beginTransaction();
-			Project tmp = new Project();
-			tmp.setKey(id);
+
 			LinkModel.getReference().deleteLinksFromEntity(tmp);
 			LinkModel.getReference().deleteLinksToEntity(tmp);
 
@@ -480,7 +483,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 
 		load_map();
 
-		refreshListeners();
+		refreshListeners(new ChangeEvent(tmp, ChangeAction.DELETE));
 
 	}
 
@@ -525,6 +528,8 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 		Integer num = new Integer(task.getKey());
 		Task indb = getTask(num.intValue());
 
+		ChangeAction action = ChangeAction.ADD;
+
 		// if the task number is -1, it is a new task so
 		// get a new task number.
 		if (num.intValue() == -1 || indb == null) {
@@ -551,13 +556,14 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 				UndoLog.getReference().addItem(TaskUndoItem.recordUpdate(t));
 			}
 			db_.updateObj(task);
+			action = ChangeAction.CHANGE;
 
 		}
 
 		load_map();
 
 		// inform views of data change
-		refreshListeners();
+		refreshListeners(new ChangeEvent(task, action));
 
 	}
 
@@ -800,7 +806,8 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 	public void update(ChangeEvent event) {
 		if (event.getModel() instanceof OptionModel) {
 			try {
-				String tt = OptionModel.getReference().getOption(TASKTYPES_OPTION);
+				String tt = OptionModel.getReference().getOption(
+						TASKTYPES_OPTION);
 				if (tt != null) {
 					taskTypes_.fromString(tt);
 				}
@@ -953,7 +960,10 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 		}
 		db_.deleteSubTask(id);
 		load_map();
-		refreshListeners();
+
+		Subtask tmp = new Subtask();
+		tmp.setKey(id);
+		refreshListeners(new ChangeEvent(tmp, ChangeAction.DELETE));
 	}
 
 	/**
@@ -982,6 +992,8 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 	 */
 	public void saveSubTask(Subtask s, boolean undo) throws Exception {
 
+		ChangeAction action = ChangeAction.ADD;
+
 		if (s.getKey() <= 0 || null == db_.getSubTask(s.getKey())) {
 			if (!undo || s.getKey() == -1)
 				s.setKey(db_.nextSubTaskKey());
@@ -996,10 +1008,12 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 				SubtaskUndoItem.recordUpdate(st);
 			}
 			db_.updateSubTask(s);
+			action = ChangeAction.CHANGE;
+
 		}
 
 		load_map();
-		refreshListeners();
+		refreshListeners(new ChangeEvent(s, action));
 	}
 
 	/**
@@ -1226,6 +1240,8 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 			}
 		}
 
+		ChangeAction action = ChangeAction.ADD;
+
 		if (p.getKey() <= 0) {
 			if (!undo)
 				p.setKey(db_.nextProjectKey());
@@ -1240,10 +1256,11 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 				UndoLog.getReference().addItem(ProjectUndoItem.recordUpdate(t));
 			}
 			db_.updateProject(p);
+			action = ChangeAction.CHANGE;
 		}
 
 		load_map();
-		refreshListeners();
+		refreshListeners(new ChangeEvent(p, action));
 	}
 
 	/**

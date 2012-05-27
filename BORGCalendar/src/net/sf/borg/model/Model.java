@@ -30,9 +30,8 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
+import lombok.Data;
+import net.sf.borg.model.Model.ChangeEvent.ChangeAction;
 
 
 
@@ -46,8 +45,7 @@ public abstract class Model
     /**
 	 * The Class ChangeEvent.
 	 */
-	@XmlRootElement(name="ChangeEvent")
-	@XmlAccessorType(XmlAccessType.FIELD)
+	@Data
 	public static class ChangeEvent {
 
 		/**
@@ -59,7 +57,7 @@ public abstract class Model
 
 		private ChangeAction action;
 
-		private Object object;
+		private final Object object;
 		
 		private Model model;
 
@@ -73,35 +71,8 @@ public abstract class Model
 		{
 			this.object = object;
 			this.action = action;
-		}
+		}		
 		
-		public ChangeEvent()
-		{
-			// for JAXB
-		}
-		
-		/**
-		 * Gets the action.
-		 * 
-		 * @return the action
-		 */
-		public ChangeAction getAction() {
-			return action;
-		}
-
-		/**
-		 * Gets the changed Object.
-		 * 
-		 * @return the changed Object
-		 */
-		public Object getObject() {
-			return object;
-		}
-
-		public Model getModel() {
-			return model;
-		}
-
 	}
 	
 	/**
@@ -175,7 +146,7 @@ public abstract class Model
      */
     protected void refreshListeners()
     {
-    	ChangeEvent ev = new ChangeEvent();
+    	ChangeEvent ev = new ChangeEvent(null,ChangeAction.CHANGE);
     	ev.model = this;
     	refreshListeners(ev);
     }

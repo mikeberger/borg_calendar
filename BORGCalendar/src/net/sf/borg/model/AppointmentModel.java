@@ -331,7 +331,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 
 			// refresh all views that are displaying appt data from this
 			// model
-			refreshListeners(new ChangeEvent(new Integer(appt.getKey()), ChangeEvent.ChangeAction.DELETE));
+			refreshListeners(new ChangeEvent(appt, ChangeEvent.ChangeAction.DELETE));
 		} catch (Exception e) {
 			Errmsg.getErrorHandler().errmsg(e);
 			return;
@@ -775,7 +775,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 
 			// refresh all views that are displaying appt data from this
 			// model
-			refreshListeners(new ChangeEvent(new Integer(r.getKey()), action));
+			refreshListeners(new ChangeEvent(r, action));
 		} catch (Exception e) {
 			Errmsg.getErrorHandler().errmsg(e);
 			return;
