@@ -286,10 +286,10 @@ public class ProjectView extends DockableView {
 
 		projectInfoPanel.add(parentProjectComboBox, GridBagConstraintsFactory
 				.create(3, 0, GridBagConstraints.BOTH, 1.0, 0.0));
-		projectInfoPanel.add(dueDateChooser, GridBagConstraintsFactory.create(
-				3, 1, GridBagConstraints.BOTH, 1.0, 0.0));
 		projectInfoPanel.add(startDateChooser, GridBagConstraintsFactory
-				.create(3, 2, GridBagConstraints.BOTH, 1.0, 0.0));
+				.create(3, 1, GridBagConstraints.BOTH, 1.0, 0.0));
+		projectInfoPanel.add(dueDateChooser, GridBagConstraintsFactory.create(
+				3, 2, GridBagConstraints.BOTH, 1.0, 0.0));
 
 		JLabel daysLeftLabel = new JLabel();
 		daysLeftLabel.setText(Resource.getResourceString("Days_Left"));
