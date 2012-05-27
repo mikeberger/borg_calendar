@@ -18,7 +18,14 @@ import net.sf.borg.common.Warning;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.Repeat;
+import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.Appointment;
+import net.sf.borg.model.entity.CalendarEntity;
+import net.sf.borg.model.entity.Project;
+import net.sf.borg.model.entity.Subtask;
+import net.sf.borg.model.entity.Task;
+import net.sf.borg.plugin.sync.SyncEvent;
+import net.sf.borg.plugin.sync.SyncEvent.ObjectType;
 import net.sf.borg.plugin.sync.SyncLog;
 import net.sf.borg.ui.util.ModalMessage;
 
@@ -34,7 +41,7 @@ import com.google.gdata.data.calendar.CalendarEventFeed;
 import com.google.gdata.data.extensions.When;
 
 public class GoogleSync {
-	
+
 	static private final Logger log = Logger.getLogger("net.sf.borg");
 
 	static public enum SyncMode {
@@ -141,7 +148,8 @@ public class GoogleSync {
 					// delete
 					int id = ad.getBorgId(entry);
 					if (id != -1) {
-						ChangeEvent event = SyncLog.getReference().get(id);
+						SyncEvent event = SyncLog.getReference().get(id,
+								ObjectType.APPOINTMENT);
 						if (event != null
 								&& (event.getAction() == ChangeEvent.ChangeAction.CHANGE || event
 										.getAction() == ChangeEvent.ChangeAction.DELETE)) {
@@ -157,7 +165,7 @@ public class GoogleSync {
 
 					// delete all entries that caused a borg update - will be
 					// sent back over
-					
+
 					toBeDeleted.add(entry);
 					this.showMessage("GOOGLE CHANGED/DELETE from Google: " + id
 							+ " " + dumpEntry(entry), false);
@@ -264,7 +272,7 @@ public class GoogleSync {
 			int count = 1;
 
 			GoogleAppointmentAdapter ad = new GoogleAppointmentAdapter();
-			
+
 			int years_to_sync = Prefs.getIntPref(SYNCYEARS);
 
 			int syncFromYear = new GregorianCalendar().get(Calendar.YEAR)
@@ -277,6 +285,58 @@ public class GoogleSync {
 						|| cal.get(Calendar.YEAR) >= syncFromYear) {
 					try {
 						CalendarEventEntry ev = ad.fromBorg(appt);
+						BatchUtils.setBatchId(ev, Integer.toString(count));
+						BatchUtils.setBatchOperationType(ev,
+								BatchOperationType.INSERT);
+						batchInsertRequest.getEntries().add(ev);
+						count++;
+
+						if (count == chunk_size) {
+							// send a chunk
+							this.showMessage("Sending Insert Batch", false);
+							CalendarEventFeed batchResponse = myService.batch(
+									new URL(batchLink.getHref()),
+									batchInsertRequest);
+							this.processBatchResponse(batchResponse);
+							this.showMessage("Insert Batch Done", false);
+
+							batchInsertRequest = new CalendarEventFeed();
+							count = 1;
+						}
+					} catch (Exception e) {
+						this.showMessage(e.getLocalizedMessage(), false);
+					}
+				}
+			}
+
+			ArrayList<CalendarEntity> ents = new ArrayList<CalendarEntity>();
+
+			Collection<Subtask> sts = TaskModel.getReference().getSubTasks();
+			for (Subtask s : sts) {
+				if (s.getDueDate() != null)
+					ents.add(s);
+			}
+
+			Collection<Task> tasks = TaskModel.getReference().getTasks();
+			for (Task task : tasks) {
+				if (task.getDueDate() != null)
+					ents.add(task);
+			}
+
+			Collection<Project> projects = TaskModel.getReference()
+					.getProjects();
+			for (Project p : projects) {
+				if (p.getDueDate() != null)
+					ents.add(p);
+			}
+
+			for (CalendarEntity ent : ents) {
+
+				cal.setTime(ent.getDate());
+				// always sync repeating appts. easier than calculating extent
+				if (cal.get(Calendar.YEAR) >= syncFromYear) {
+					try {
+						CalendarEventEntry ev = ad.fromBorg(ent);
 						BatchUtils.setBatchId(ev, Integer.toString(count));
 						BatchUtils.setBatchOperationType(ev,
 								BatchOperationType.INSERT);
@@ -327,15 +387,34 @@ public class GoogleSync {
 
 			GoogleAppointmentAdapter ad = new GoogleAppointmentAdapter();
 
-			List<ChangeEvent> events = SyncLog.getReference().getAll();
-			for (ChangeEvent event : events) {
+			List<SyncEvent> events = SyncLog.getReference().getAll();
+			for (SyncEvent event : events) {
 				if (event.getAction() == ChangeEvent.ChangeAction.ADD
 						|| event.getAction() == ChangeEvent.ChangeAction.CHANGE) {
-					Integer key = (Integer) event.getObject();
-					Appointment appt = AppointmentModel.getReference().getAppt(
-							key.intValue());
+					Integer key = event.getId();
+					CalendarEntity ent = null;
+
+					if (event.getObjectType() == ObjectType.APPOINTMENT) {
+						ent = AppointmentModel.getReference().getAppt(
+								key.intValue());
+					}
+					else if(event.getObjectType() == ObjectType.PROJECT)
+					{
+						ent = TaskModel.getReference().getProject(key.intValue());
+					}
+					else if(event.getObjectType() == ObjectType.TASK)
+					{
+						ent = TaskModel.getReference().getTask(key.intValue());
+					}
+					else if(event.getObjectType() == ObjectType.SUBTASK)
+					{
+						ent = TaskModel.getReference().getSubTask(key.intValue());
+					}
+					
+					if( ent == null) continue;
+					
 					try {
-						CalendarEventEntry ev = ad.fromBorg(appt);
+						CalendarEventEntry ev = ad.fromBorg(ent);
 						BatchUtils.setBatchId(ev, Integer.toString(count));
 						BatchUtils.setBatchOperationType(ev,
 								BatchOperationType.INSERT);
@@ -358,7 +437,9 @@ public class GoogleSync {
 							count = 1;
 						}
 					} catch (Exception e) {
-						this.showMessage("insertChangedEvents1: " + e.getLocalizedMessage(), false);
+						this.showMessage(
+								"insertChangedEvents1: "
+										+ e.getLocalizedMessage(), false);
 					}
 				}
 			}
@@ -452,14 +533,14 @@ public class GoogleSync {
 	static public PrefName SYNCPW2 = new PrefName("googlesync-pw2", "");
 
 	static public PrefName SYNCUSER = new PrefName("googlesync-user", "");
-	
-	static public PrefName SYNCYEARS = new PrefName(
-			"sync-years", new Integer(10));
-	
+
+	static public PrefName SYNCYEARS = new PrefName("sync-years", new Integer(
+			10));
+
 	static public PrefName NEW_ONLY = new PrefName("googlesync-oneway", "true");
 
 	static public void sync(SyncMode syncmode) throws Exception {
-		
+
 		SyncThread thread = new SyncThread();
 		thread.setMode(syncmode);
 		thread.start();
@@ -467,8 +548,7 @@ public class GoogleSync {
 
 	static private String dumpEntry(CalendarEventEntry entry) {
 		List<When> whens = entry.getTimes();
-		if( whens == null || whens.isEmpty())
-		{
+		if (whens == null || whens.isEmpty()) {
 			return ("[No Times (recurs?)|"
 					+ entry.getTitle().getPlainText().trim() + "]");
 		}

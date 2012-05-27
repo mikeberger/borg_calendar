@@ -19,6 +19,7 @@
 		<pathelement location="${borg.proj.dir}/dist/borg.jar" />
 		<fileset dir="${borg.proj.dir}/lib">
 			<include name="base64*.jar" />
+			<include name="lombok*.jar" />
 		</fileset>
 	</path>
 

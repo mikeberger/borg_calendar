@@ -12,6 +12,7 @@ import net.sf.borg.common.Warning;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Repeat;
 import net.sf.borg.model.entity.Appointment;
+import net.sf.borg.model.entity.CalendarEntity;
 import net.sf.borg.plugin.sync.AppointmentAdapter;
 
 import com.google.gdata.data.DateTime;
@@ -31,8 +32,7 @@ public class GoogleAppointmentAdapter implements
 	// magic sequence to distinguish appts created by BORG
 	private final static int BORG_SEQUENCE = 999;
 
-	@Override
-	public CalendarEventEntry fromBorg(Appointment appt) throws Exception {
+	private CalendarEventEntry fromBorgAppt(Appointment appt) throws Exception {
 
 		CalendarEventEntry ee = new CalendarEventEntry();
 
@@ -386,6 +386,43 @@ public class GoogleAppointmentAdapter implements
 
 		return title;
 
+	}
+	
+	@Override
+	public CalendarEventEntry fromBorg(CalendarEntity s) throws Exception {
+		
+		if( s instanceof Appointment )
+			return fromBorgAppt((Appointment)s);
+			
+		CalendarEventEntry ee = new CalendarEventEntry();
+
+		ee.setTitle(new PlainTextConstruct("* " + s.getText()));
+		ee.setContent(new PlainTextConstruct("No Content"));
+		ee.setSyncEvent(true);
+
+		// set a unique ical id
+		// google seems to require uniqueness even if the id was used by an
+		// already deleted appt
+		// so add a timestamp
+		// the id has the borg key before the @ to be used for syncing later
+		long updated = new Date().getTime();
+		ee.setIcalUID(s.toString() + "@BORGCalendar"
+				+ updated);
+		DateTime updt = new DateTime();
+		updt.setValue(updated);
+		updt.setTzShift(new Integer(this.tzOffset(updated)));
+		ee.setUpdated(updt);
+
+		// we'll use sequence just to distinguish appts that came from borg
+		ee.setSequence(BORG_SEQUENCE);
+		
+		DateTime startTime = new DateTime(s.getDate());
+		startTime.setDateOnly(true);
+		When eventTimes = new When();
+		eventTimes.setStartTime(startTime);
+		ee.addTime(eventTimes);
+		
+		return ee;
 	}
 
 	// private String getPropertyString(String property, String blob) {

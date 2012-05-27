@@ -17,8 +17,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Model;
+import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.db.jdbc.JdbcDB;
 import net.sf.borg.model.db.jdbc.JdbcDBUpgrader;
+import net.sf.borg.model.entity.Appointment;
+import net.sf.borg.model.entity.Project;
+import net.sf.borg.model.entity.Subtask;
+import net.sf.borg.model.entity.Task;
+import net.sf.borg.plugin.sync.SyncEvent.ObjectType;
 
 /**
  * class to track all appointment model changes since the last sync it will
@@ -37,42 +43,72 @@ public class SyncLog extends Model implements Model.Listener {
 	public SyncLog() {
 		new JdbcDBUpgrader(
 				"select id from syncmap",
-				"CREATE CACHED TABLE syncmap (id integer NOT NULL,action varchar(25) NOT NULL,PRIMARY KEY (id))")
+				"CREATE CACHED TABLE syncmap (id integer NOT NULL,objtype varchar(25) NOT NULL,action varchar(25) NOT NULL,PRIMARY KEY (id,objtype))")
 				.upgrade();
 		AppointmentModel.getReference().addListener(this);
+		TaskModel.getReference().addListener(this);
 	}
+	
+	
 
 	@Override
-	public void update(ChangeEvent newEvent) {
+	public void update(ChangeEvent borgEvent) {
 
-		if (newEvent == null || newEvent.getObject() == null)
+		if (borgEvent == null || borgEvent.getObject() == null || borgEvent.getAction() == null)
 			return;
+		
+	
 
 		try {
 
-			Integer newKey = (Integer) newEvent.getObject();
-			ChangeEvent existingEvent = get(newKey.intValue());
+			Object obj = borgEvent.getObject();
+			SyncEvent newEvent = new SyncEvent();
+			if( obj instanceof Appointment )
+			{
+				newEvent.setId(new Integer(((Appointment)obj).getKey()));
+				newEvent.setObjectType(ObjectType.APPOINTMENT);
+			}
+			else if( obj instanceof Task)
+			{
+				newEvent.setId(new Integer(((Task)obj).getKey()));
+				newEvent.setObjectType(ObjectType.TASK);
+			}
+			else if( obj instanceof Subtask)
+			{
+				newEvent.setId(new Integer(((Subtask)obj).getKey()));
+				newEvent.setObjectType(ObjectType.SUBTASK);
+			}
+			else if( obj instanceof Project)
+			{
+				newEvent.setId(new Integer(((Project)obj).getKey()));
+				newEvent.setObjectType(ObjectType.PROJECT);
+			}
+			
+			newEvent.setAction(borgEvent.getAction());
+			
+			Integer id = newEvent.getId();
+			ObjectType type = newEvent.getObjectType();
+			SyncEvent existingEvent = get(id.intValue(), type);
 
 			// any condition not listed is either a no-op or cannot occur
 			if (existingEvent == null) {
 				this.insert(newEvent);
 			} else {
-				Integer existingKey = (Integer) existingEvent.getObject();
 
 				if (existingEvent.getAction() == ChangeEvent.ChangeAction.ADD
 						&& newEvent.getAction() == ChangeEvent.ChangeAction.DELETE) {
-					this.delete(existingKey.intValue());
+					this.delete(id.intValue(), type);
 				} else if (existingEvent.getAction() == ChangeEvent.ChangeAction.CHANGE
 						&& newEvent.getAction() == ChangeEvent.ChangeAction.DELETE) {
-					ChangeEvent event = new ChangeEvent(newKey,
-							ChangeEvent.ChangeAction.DELETE);
-					this.delete(existingKey.intValue());
+					SyncEvent event = new SyncEvent(id,
+							ChangeEvent.ChangeAction.DELETE, type);
+					this.delete(id.intValue(), type);
 					this.insert(event);
 				} else if (existingEvent.getAction() == ChangeEvent.ChangeAction.DELETE
 						&& newEvent.getAction() == ChangeEvent.ChangeAction.ADD) {
-					ChangeEvent event = new ChangeEvent(newKey,
-							ChangeEvent.ChangeAction.CHANGE);
-					this.delete(existingKey.intValue());
+					SyncEvent event = new SyncEvent(id,
+							ChangeEvent.ChangeAction.CHANGE, type);
+					this.delete(id.intValue(), type);
 					this.insert(event);
 				}
 
@@ -83,21 +119,24 @@ public class SyncLog extends Model implements Model.Listener {
 
 	}
 
-	private ChangeEvent createFrom(ResultSet r) throws SQLException {
+	private SyncEvent createFrom(ResultSet r) throws SQLException {
 		int id = r.getInt("id");
 		ChangeEvent.ChangeAction action = ChangeEvent.ChangeAction.valueOf(r
 				.getString("action"));
-		ChangeEvent event = new ChangeEvent(new Integer(id), action);
+		String type = r.getString("objtype");
+		ObjectType otype = ObjectType.valueOf(type);
+		SyncEvent event = new SyncEvent(new Integer(id), action, otype);
 		return event;
 	}
 
-	public ChangeEvent get(int id) throws Exception {
+	public SyncEvent get(int id, ObjectType type) throws Exception {
 
-		ChangeEvent ret = null;
+		SyncEvent ret = null;
 
 		PreparedStatement stmt = JdbcDB.getConnection().prepareStatement(
-				"SELECT * FROM syncmap WHERE id = ?");
+				"SELECT * FROM syncmap WHERE id = ? and objtype = ?");
 		stmt.setInt(1, id);
+		stmt.setString(2, type.toString());
 
 		ResultSet r = null;
 		try {
@@ -113,9 +152,9 @@ public class SyncLog extends Model implements Model.Listener {
 		}
 	}
 
-	public List<ChangeEvent> getAll() throws Exception {
+	public List<SyncEvent> getAll() throws Exception {
 
-		List<ChangeEvent> ret = new ArrayList<ChangeEvent>();
+		List<SyncEvent> ret = new ArrayList<SyncEvent>();
 
 		PreparedStatement stmt = JdbcDB.getConnection().prepareStatement(
 				"SELECT * FROM syncmap");
@@ -135,23 +174,24 @@ public class SyncLog extends Model implements Model.Listener {
 		}
 	}
 
-	public void insert(ChangeEvent event) throws Exception {
+	public void insert(SyncEvent event) throws Exception {
 		PreparedStatement stmt = JdbcDB.getConnection().prepareStatement(
-				"INSERT INTO syncmap ( id, action) " + " VALUES " + "( ?, ?)");
+				"INSERT INTO syncmap ( id, action, objtype) " + " VALUES " + "( ?, ?, ?)");
 
-		Integer key = (Integer) event.getObject();
-		stmt.setInt(1, key.intValue());
+		stmt.setInt(1, event.getId().intValue());
 		stmt.setString(2, event.getAction().toString());
+		stmt.setString(3, event.getObjectType().toString());
 		stmt.executeUpdate();
 		stmt.close();
 
 	}
 
-	public void delete(int id) throws Exception {
+	public void delete(int id, ObjectType type) throws Exception {
 		PreparedStatement stmt = JdbcDB.getConnection().prepareStatement(
-				"DELETE FROM syncmap WHERE id = ?");
+				"DELETE FROM syncmap WHERE id = ? and objtype = ?");
 
 		stmt.setInt(1, id);
+		stmt.setString(2, type.toString());
 		stmt.executeUpdate();
 		stmt.close();
 
@@ -168,7 +208,7 @@ public class SyncLog extends Model implements Model.Listener {
 	
 	@XmlRootElement(name = "SYNCMAP")
 	private static class XmlContainer {
-		public Collection<ChangeEvent> ChangeEvents;
+		public Collection<SyncEvent> SyncEvents;
 	}
 
 	@Override
@@ -176,7 +216,7 @@ public class SyncLog extends Model implements Model.Listener {
 		JAXBContext jc = JAXBContext.newInstance(XmlContainer.class);
 		Marshaller m = jc.createMarshaller();
 		XmlContainer container = new XmlContainer();
-		container.ChangeEvents = getAll();
+		container.SyncEvents = getAll();
 		m.marshal(container, fw);
 	}
 
@@ -188,7 +228,7 @@ public class SyncLog extends Model implements Model.Listener {
 		XmlContainer container = (XmlContainer) u
 				.unmarshal(is);
 
-		for (ChangeEvent evt : container.ChangeEvents) {
+		for (SyncEvent evt : container.SyncEvents) {
 			insert(evt);
 		}
 
