@@ -962,7 +962,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 					String abb = "";
 					if (show_abb.equals("true"))
 						abb = "PR" + pj.getKey() + " ";
-					String todostring = abb + pj.getDescription();
+					String todostring = abb + pj.getText();
 
 					Object[] ro = new Object[6];
 					ro[0] = pj.getDueDate();
@@ -995,7 +995,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 					String abb = "";
 					if (show_abb.equals("true"))
 						abb = "BT" + mr.getKey() + " ";
-					String btstring = abb + mr.getDescription();
+					String btstring = abb + mr.getText();
 
 					Object[] ro = new Object[6];
 					ro[0] = mr.getDueDate();
@@ -1042,7 +1042,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 					String abb = "";
 					if (show_abb.equals("true"))
 						abb = "ST" + st.getKey() + " ";
-					String btstring = abb + st.getDescription();
+					String btstring = abb + st.getText();
 
 					Object[] ro = new Object[6];
 					ro[0] = st.getDueDate();

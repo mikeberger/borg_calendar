@@ -86,7 +86,7 @@ public class ProjectReminderInstance extends ReminderInstance {
 
 	@Override
 	public String getText() {
-		return project.getDescription();
+		return project.getText();
 	}
 
 	@Override

@@ -88,7 +88,7 @@ public class SubtaskReminderInstance extends ReminderInstance {
 
 	@Override
 	public String getText() {
-		return subtask.getDescription();
+		return subtask.getText();
 	}
 
 	@Override
