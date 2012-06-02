@@ -996,7 +996,10 @@ public class TaskView extends DockableView {
 			Boolean closed = (Boolean) ts.getValueAt(r, 0);
 
 			Date crd = (Date) ts.getValueAt(r, 3);
-			if (crd == null)
+			// default subtask start date to the task start date unless the task started in the past
+			if (crd == null && task.getStartDate().before(new Date()))
+				crd = new Date();
+			else if( crd == null)
 				crd = task.getStartDate();
 			Date dd = (Date) ts.getValueAt(r, 4);
 			Date cd = (Date) ts.getValueAt(r, 7);
@@ -1418,7 +1421,8 @@ public class TaskView extends DockableView {
 				}
 
 				Date sd = p.getStartDate();
-				if (sd != null) {
+				// only use the project start date if it is in the future
+				if (sd != null && sd.after(new Date())) {
 					gc.setTime(sd);
 					startDateChooser.setCalendar(gc);
 				}
