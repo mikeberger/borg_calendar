@@ -57,6 +57,8 @@ import javax.swing.table.TableCellRenderer;
 
 import net.sf.borg.common.DateUtil;
 import net.sf.borg.common.Errmsg;
+import net.sf.borg.common.PrefName;
+import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.common.Warning;
 import net.sf.borg.model.CategoryModel;
@@ -169,15 +171,15 @@ public class TaskView extends DockableView {
 			 */
 			int days = TaskModel.daysLeft(dd);
 			if (!isSelected) {
-				// yellow alert -- <10 days left
-				if (days < 10)
+				// yellow alert 
+				if (days < Prefs.getIntPref(PrefName.YELLOW_DAYS))
 					this.setBackground(new Color(255, 255, 175));
 
-				if (days < 5)
+				if (days < Prefs.getIntPref(PrefName.ORANGE_DAYS))
 					this.setBackground(new Color(255, 200, 120));
 
-				// red alert -- <2 days left
-				if (days < 2) {
+				// red alert 
+				if (days < Prefs.getIntPref(PrefName.RED_DAYS)) {
 					this.setBackground(new Color(255, 120, 120));
 				}
 			}

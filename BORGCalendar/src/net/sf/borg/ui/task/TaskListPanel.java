@@ -45,6 +45,8 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.table.TableCellRenderer;
 
 import net.sf.borg.common.Errmsg;
+import net.sf.borg.common.PrefName;
+import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.Model;
@@ -142,15 +144,15 @@ class TaskListPanel extends JPanel implements Model.Listener {
 				return this;
 			}
 
-			// yellow alert -- <10 days left
-			if (i < 10)
+			// yellow alert 
+			if (i < Prefs.getIntPref(PrefName.YELLOW_DAYS))
 				this.setBackground(new Color(255, 255, 175));
 
-			if (i < 5)
+			if (i < Prefs.getIntPref(PrefName.ORANGE_DAYS))
 				this.setBackground(new Color(255, 200, 120));
 
-			// red alert -- <2 days left
-			if (i < 2) {
+			// red alert 
+			if (i < Prefs.getIntPref(PrefName.RED_DAYS)) {
 				this.setBackground(new Color(255, 120, 120));
 			}
 
@@ -664,7 +666,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 				}
 
 				// calculate days left - today - duedate
-				if (ro[7] == null)
+				if (ro[7] == null || TaskModel.isClosed(task))
 					ro[4] = null;
 				else {
 					Date dd = (Date) ro[7];
@@ -749,7 +751,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 						}
 
 						// calculate days left - today - duedate
-						if (ro[7] == null)
+						if (ro[7] == null || subtask.getCloseDate() != null)
 							ro[4] = null;
 						else {
 							Date dd = (Date) ro[7];

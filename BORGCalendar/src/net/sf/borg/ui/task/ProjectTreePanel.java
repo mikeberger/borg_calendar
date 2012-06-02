@@ -30,6 +30,7 @@ import java.awt.event.MouseListener;
 import java.util.Collection;
 import java.util.Enumeration;
 
+import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -66,46 +67,73 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 		MouseListener, Model.Listener, Prefs.Listener {
 
 	private static final long serialVersionUID = 1L;
-	
-	/** Custom Tree Cell Renderer that shows empty projects as closed folders instead of leaf icons. */
-	private class ProjectTreeCellRenderer extends DefaultTreeCellRenderer
-	{
+
+	/**
+	 * Custom Tree Cell Renderer that shows empty projects as closed folders
+	 * instead of leaf icons.
+	 */
+	private class ProjectTreeCellRenderer extends DefaultTreeCellRenderer {
 
 		private static final long serialVersionUID = 1L;
+		private final ImageIcon redIcon = new ImageIcon(getClass().getResource(
+				"/resource/red.png"));
+		private final ImageIcon orangeIcon = new ImageIcon(getClass()
+				.getResource("/resource/orange.png"));
+		private final ImageIcon yellowIcon = new ImageIcon(getClass()
+				.getResource("/resource/yellow.png"));
+		private final ImageIcon greenIcon = new ImageIcon(getClass()
+				.getResource("/resource/green.png"));
 
 		@Override
 		public Component getTreeCellRendererComponent(JTree tree, Object value,
 				boolean sel, boolean expanded, boolean leaf, int row,
 				boolean has_focus) {
-			
-			
-			super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf,
-					row, has_focus);
-			
+
+			super.getTreeCellRendererComponent(tree, value, sel, expanded,
+					leaf, row, has_focus);
+
 			// get the tree model node
-			if( value instanceof DefaultMutableTreeNode )
-			{
+			if (value instanceof DefaultMutableTreeNode) {
 				DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) value;
-				
+
 				// get the Borg Node object, if any
-				if( treeNode.getUserObject() != null && treeNode.getUserObject() instanceof Node )
-				{
-					Node node = (Node)treeNode.getUserObject();
-					
-					// if the Borg Entity is a Project and the node is a leaf in the tree, then show
+				if (treeNode.getUserObject() != null
+						&& treeNode.getUserObject() instanceof Node) {
+					Node node = (Node) treeNode.getUserObject();
+
+					// determine the icon for a task based on days left until
+					// next due item
+					if (node.getEntity() instanceof Task) {
+						try {
+							int daysLeft = TaskModel.getReference().daysLeft(
+									((Task) node.getEntity()));
+							if (daysLeft < Prefs.getIntPref(PrefName.RED_DAYS))
+								this.setIcon(redIcon);
+							else if (daysLeft < Prefs.getIntPref(PrefName.ORANGE_DAYS))
+								this.setIcon(orangeIcon);
+							else if (daysLeft < Prefs.getIntPref(PrefName.YELLOW_DAYS))
+								this.setIcon(yellowIcon);
+							else
+								this.setIcon(greenIcon);
+						} catch (Exception e) {
+							Errmsg.getErrorHandler().errmsg(e);
+							// don't stop processing
+						}
+					}
+
+					// if the Borg Entity is a Project and the node is a leaf in
+					// the tree, then show
 					// the closed folder icon
-					if( leaf && node.getEntity() instanceof Project)
-					{
+					if (leaf && node.getEntity() instanceof Project) {
 						this.setIcon(closedIcon);
-					}	
+					}
+
 				}
-				
+
 			}
 			return this;
 		}
 
-
-		
 	}
 
 	/**
@@ -233,11 +261,11 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 	private JPopupMenu rootmenu = new JPopupMenu();
 
 	/** The show closed. */
-	private JCheckBox showClosedCheckBox = new JCheckBox(Resource
-			.getResourceString("show_closed"));
+	private JCheckBox showClosedCheckBox = new JCheckBox(
+			Resource.getResourceString("show_closed"));
 
-	private JCheckBox showClosedTasksCheckBox = new JCheckBox(Resource
-			.getResourceString("show_closed_tasks"));
+	private JCheckBox showClosedTasksCheckBox = new JCheckBox(
+			Resource.getResourceString("show_closed_tasks"));
 
 	/** The tree. */
 	private JTree projectTree = null;
@@ -259,15 +287,15 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 		TaskModel.getReference().addListener(this);
 
 		// Create the nodes.
-		DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(Resource
-				.getResourceString("projects"));
+		DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(
+				Resource.getResourceString("projects"));
 		createNodes(rootNode);
 
 		// Create a tree that allows one selection at a time.
 		projectTree = new JTree(rootNode);
 		projectTree.getSelectionModel().setSelectionMode(
 				TreeSelectionModel.SINGLE_TREE_SELECTION);
-		
+
 		projectTree.setCellRenderer(new ProjectTreeCellRenderer());
 
 		// Listen for when the selection changes.
@@ -281,10 +309,10 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 		treePane.setLayout(new GridBagLayout());
 		treePane.add(treeScrollPane, GridBagConstraintsFactory.create(0, 0,
 				GridBagConstraints.BOTH, 1.0, 1.0));
-		treePane.add(showClosedCheckBox, GridBagConstraintsFactory.create(0, 1,
-				GridBagConstraints.BOTH));
-		treePane.add(showClosedTasksCheckBox, GridBagConstraintsFactory.create(
-				0, 2, GridBagConstraints.BOTH));
+		treePane.add(showClosedCheckBox,
+				GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH));
+		treePane.add(showClosedTasksCheckBox,
+				GridBagConstraintsFactory.create(0, 2, GridBagConstraints.BOTH));
 
 		// Add the scroll panes to a split pane.
 		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
@@ -381,7 +409,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 		});
 
 		expandOrCollapseAll(isExpanded);
-		
+
 		Prefs.addListener(this);
 	}
 
@@ -478,8 +506,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 		for (Project project : subpcoll) {
 			if (!CategoryModel.getReference().isShown(project.getCategory()))
 				continue;
-			if (!showClosedCheckBox.isSelected()
-					&& TaskModel.isClosed(project))
+			if (!showClosedCheckBox.isSelected() && TaskModel.isClosed(project))
 				continue;
 			DefaultMutableTreeNode subnode = new DefaultMutableTreeNode(
 					new Node(project.getDescription(), project));
@@ -636,7 +663,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 	public void mouseReleased(MouseEvent arg0) {
 		// empty
 	}
-	
+
 	@Override
 	public void update(ChangeEvent event) {
 		refresh();
@@ -646,8 +673,8 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 	 * refresh the entire tree from the task model
 	 */
 	public void refresh() {
-		DefaultMutableTreeNode top = new DefaultMutableTreeNode(Resource
-				.getResourceString("projects"));
+		DefaultMutableTreeNode top = new DefaultMutableTreeNode(
+				Resource.getResourceString("projects"));
 		createNodes(top);
 		// Create a tree that allows one selection at a time.
 		projectTree = new JTree(top);
@@ -679,8 +706,8 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 		if (o instanceof Task) {
 			Task t = (Task) o;
 			try {
-				TaskView tv = new TaskView(t, TaskView.Action.CHANGE, t
-						.getProject());
+				TaskView tv = new TaskView(t, TaskView.Action.CHANGE,
+						t.getProject());
 				entityScrollPane.setViewportView(tv);
 			} catch (Exception e1) {
 				Errmsg.getErrorHandler().errmsg(e1);

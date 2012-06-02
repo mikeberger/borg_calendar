@@ -321,6 +321,15 @@ public class PrefName {
 	/** show task number and status in task tree */
 	static public PrefName TASK_TREE_SHOW_STATUS = new PrefName(
 			"task_tree_show_status", "false");
+	
+	// days left until due for each color
+	static public PrefName RED_DAYS = new PrefName("red_days",
+			new Integer(2));
+	static public PrefName ORANGE_DAYS = new PrefName("orange_days",
+			new Integer(7));
+	static public PrefName YELLOW_DAYS = new PrefName("yellow_days",
+			new Integer(14));
+	
 
 
 	/** keystore location */

@@ -1103,6 +1103,32 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 			days = 0;
 		return days;
 	}
+	
+	/**
+	 * return the days left to complete the next due item for a task
+	 * @param t - the task
+	 * @return the days left
+	 * @throws Exception 
+	 */
+	public int daysLeft(Task t) throws Exception
+	{
+		int daysLeft = 9999999;
+		if( isClosed(t)) return daysLeft;
+		
+		if( t.getDueDate() != null )
+			daysLeft = daysLeft(t.getDueDate());
+		
+		for( Subtask st : getSubTasks(t.getKey()))
+		{
+			if( st.getCloseDate() != null ) continue;
+			
+			if( st.getDueDate() != null )
+				daysLeft = Math.min(daysLeft(st.getDueDate()), daysLeft);
+
+		}
+		return daysLeft;
+		
+	}
 
 	/**
 	 * determine the number fo days between two dates
