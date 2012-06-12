@@ -21,6 +21,7 @@ package net.sf.borg.ui.popup;
 
 import java.util.Date;
 
+import lombok.Data;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.ReminderTimes;
 
@@ -29,6 +30,7 @@ import net.sf.borg.model.ReminderTimes;
  * have been shown for this reminder message. Is not aware of the actual UI used
  * to display the reminder.
  */
+@Data
 abstract public class ReminderInstance {
 
 	/**
@@ -50,7 +52,7 @@ abstract public class ReminderInstance {
 	 * shown when the program is first starting up,but we are not on a todo
 	 * reminder time
 	 */
-	private boolean wasEverShown = false;
+	private boolean shown = false;
 
 	public ReminderInstance() {
 
@@ -60,155 +62,6 @@ abstract public class ReminderInstance {
 			getRemindersShown()[i] = 'N';
 		}
 
-	}
-	
-	/**
-	 * if the reminder instance is a todo, then mark it as done/complete
-	 */
-	abstract public void do_todo(boolean delete);
-	
-	/**
-	 * determine if a reminder is ready to be popped up and return the number of
-	 * the reminder that is ready
-	 * 
-	 * @return the reminder number or -1 if not ready for a new popup
-	 * 
-	 */
-	final public int dueForPopup() {
-
-		int index = getCurrentReminder();
-
-		// if the current reminder has already been shown, then we should not
-		// trigger a new
-		// popup - it is either already showing or has been hidden
-
-		if (getRemindersShown()[index] == 'N') {
-			return index;
-		}
-
-		// not due for popup
-		return -1;
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	abstract public boolean equals(Object obj);
-	
-	
-	/**
-	 * get the index of the active reminder for this instance - i.e. latest one
-	 * passed
-	 * 
-	 * @return index of reminder or -1 if none
-	 */
-	abstract public int getCurrentReminder();
-	/**
-	 * get the instance time
-	 * 
-	 * @return the instance time
-	 */
-	final public Date getInstanceTime() {
-		return instanceTime;
-	}
-
-	/**
-	 * get the text for the reminder
-	 * @return the reminder text
-	 */
-	abstract public String getText();
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	abstract public int hashCode();
-
-	/**
-	 * @return true if this instance has been marked as hidden (dismissed by
-	 *         user)
-	 */
-	final public boolean isHidden() {
-		return hidden;
-	}
-
-	/**
-	 * return true if the reminder is a note (is untimed)
-	 */
-	abstract public boolean isNote();
-
-	
-	/**
-	 * return true if the reminder is a todo - either an appointment todo or another type of todo, such as a task
-	 */
-	abstract public boolean isTodo();
-	
-
-	/**
-	 * mark a reminder time as shown
-	 * 
-	 * @param reminderNumber
-	 *            the reminder time index
-	 */
-	final public void markAsShown(int reminderNumber) {
-		getRemindersShown()[reminderNumber] = 'Y';
-	}
-
-	/**
-	 * reload the model entity from the db and check if it has changed.
-	 * @return true if the entity has changed in a way that affects reminders
-	 */
-	abstract public boolean reloadAndCheckForChanges();
-	
-	/**
-	 * set the hidden flag
-	 */
-	final public void setHidden(boolean hidden) {
-		this.hidden = hidden;
-	}
-
-	/**
-	 * Sets the shown flag.
-	 * 
-	 * @param s
-	 *            was this popup ever shown
-	 */
-	final public void setShown(boolean s) {
-		wasEverShown = s;
-	}
-
-	/**
-	 * determine if an appointment popup should be shown for an appointment that
-	 * doesn't yet have a popup associated with it
-	 * 
-	 * @return true, if successful
-	 */
-	abstract public boolean shouldBeShown();
-	
-	/**
-	 * get the shown flag.
-	 * 
-	 * @return true if the popup was ever shown
-	 */
-	final public boolean wasEverShown() {
-		return wasEverShown;
-	}
-
-	final public void setInstanceTime(Date instanceTime) {
-		this.instanceTime = instanceTime;
-	}
-
-	final public void setRemindersShown(char[] remindersShown) {
-		this.remindersShown = remindersShown;
-	}
-
-	final public char[] getRemindersShown() {
-		return remindersShown;
 	}
 	
 	/**
@@ -274,12 +127,111 @@ abstract public class ReminderInstance {
 		return message;
 
 	}
+	
+	/**
+	 * if the reminder instance is a todo, then mark it as done/complete
+	 */
+	abstract public void do_todo(boolean delete);
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	/**
+	 * determine if a reminder is ready to be popped up and return the number of
+	 * the reminder that is ready
+	 * 
+	 * @return the reminder number or -1 if not ready for a new popup
+	 * 
+	 */
+	final public int dueForPopup() {
 
+		int index = getCurrentReminder();
+
+		// if the current reminder has already been shown, then we should not
+		// trigger a new
+		// popup - it is either already showing or has been hidden
+
+		if (getRemindersShown()[index] == 'N') {
+			return index;
+		}
+
+		// not due for popup
+		return -1;
+	}
+	
+	
+	@Override
+	abstract public boolean equals(Object obj);
+	
+
+	/**
+	 * get the index of the active reminder for this instance - i.e. latest one
+	 * passed
+	 * 
+	 * @return index of reminder or -1 if none
+	 */
+	abstract public int getCurrentReminder();
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	/**
+	 * get the text for the reminder
+	 * @return the reminder text
+	 */
+	abstract public String getText();
+
+
+	@Override
+	abstract public int hashCode();
+
+	
+	/**
+	 * return true if the reminder is a note (is untimed)
+	 */
+	abstract public boolean isNote();
+	
+
+	/**
+	 * return true if the reminder is a todo - either an appointment todo or another type of todo, such as a task
+	 */
+	abstract public boolean isTodo();
+
+	/**
+	 * mark a reminder time as shown
+	 * 
+	 * @param reminderNumber
+	 *            the reminder time index
+	 */
+	final public void markAsShown(int reminderNumber) {
+		getRemindersShown()[reminderNumber] = 'Y';
+	}
+	
 
 	public int minutesToGo() {
 		return (int) ((getInstanceTime().getTime() / (60 * 1000) - new Date()
 				.getTime()
 				/ (60 * 1000)));
 	}
+	
+	
+	/**
+	 * reload the model entity from the db and check if it has changed.
+	 * @return true if the entity has changed in a way that affects reminders
+	 */
+	abstract public boolean reloadAndCheckForChanges();
+
+
+	/**
+	 * determine if an appointment popup should be shown for an appointment that
+	 * doesn't yet have a popup associated with it
+	 * 
+	 * @return true, if successful
+	 */
+	abstract public boolean shouldBeShown();
 
 }

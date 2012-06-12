@@ -118,8 +118,8 @@ public class ReminderPopupManager extends ReminderManager {
 				continue;
 			}
 
-			if (apptInstance.isHidden())
-				continue;
+			//if (apptInstance.isHidden())
+			//	continue;
 
 			if (apptInstance.reloadAndCheckForChanges()) {
 				popupWindow.dispose();
@@ -248,7 +248,7 @@ public class ReminderPopupManager extends ReminderManager {
 			// untimed todo
 			if (instance.isNote() && instance.isTodo()) {
 
-				if (popup.getReminderInstance().wasEverShown()
+				if (popup.getReminderInstance().isShown()
 						&& !shouldShowUntimedTodosNow())
 					continue;
 

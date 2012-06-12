@@ -114,7 +114,7 @@ public class ReminderListManager extends ReminderManager {
 			// untimed todo
 			if (reminderInstance.isNote() && reminderInstance.isTodo()) {
 
-				if (!reminderInstance.wasEverShown()
+				if (!reminderInstance.isShown()
 						|| shouldShowUntimedTodosNow()) {
 					needUpdate = true;
 					break;
@@ -154,8 +154,9 @@ public class ReminderListManager extends ReminderManager {
 		// loop through the existing reminders
 		for (ReminderInstance reminderInstance : reminders) {
 
-			if (reminderInstance.isHidden())
-				continue;
+			// let the instance decide if a hidden item should be unhidden
+			//if (reminderInstance.isHidden())
+			//	continue;
 
 			// check if db has changed
 			if (reminderInstance.reloadAndCheckForChanges())
