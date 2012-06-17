@@ -83,6 +83,10 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 				.getResource("/resource/yellow.png"));
 		private final ImageIcon greenIcon = new ImageIcon(getClass()
 				.getResource("/resource/green.png"));
+		private final ImageIcon emptyIcon = new ImageIcon(getClass()
+				.getResource("/resource/empty.png"));
+		private final ImageIcon doneIcon = new ImageIcon(getClass()
+				.getResource("/resource/done.png"));
 
 		@Override
 		public Component getTreeCellRendererComponent(JTree tree, Object value,
@@ -104,20 +108,30 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 					// determine the icon for a task based on days left until
 					// next due item
 					if (node.getEntity() instanceof Task) {
-						try {
-							int daysLeft = TaskModel.getReference().daysLeft(
-									((Task) node.getEntity()));
-							if (daysLeft < Prefs.getIntPref(PrefName.RED_DAYS))
-								this.setIcon(redIcon);
-							else if (daysLeft < Prefs.getIntPref(PrefName.ORANGE_DAYS))
-								this.setIcon(orangeIcon);
-							else if (daysLeft < Prefs.getIntPref(PrefName.YELLOW_DAYS))
-								this.setIcon(yellowIcon);
-							else
-								this.setIcon(greenIcon);
-						} catch (Exception e) {
-							Errmsg.getErrorHandler().errmsg(e);
-							// don't stop processing
+
+						if (TaskModel.isClosed(((Task) node.getEntity()))) {
+							this.setIcon(doneIcon);
+						} else {
+							try {
+								int daysLeft = TaskModel.getReference()
+										.daysLeft(((Task) node.getEntity()));
+								if (daysLeft < Prefs
+										.getIntPref(PrefName.RED_DAYS))
+									this.setIcon(redIcon);
+								else if (daysLeft < Prefs
+										.getIntPref(PrefName.ORANGE_DAYS))
+									this.setIcon(orangeIcon);
+								else if (daysLeft < Prefs
+										.getIntPref(PrefName.YELLOW_DAYS))
+									this.setIcon(yellowIcon);
+								else if (daysLeft == TaskModel.NO_DAYS_VALUE)
+									this.setIcon(emptyIcon);
+								else
+									this.setIcon(greenIcon);
+							} catch (Exception e) {
+								Errmsg.getErrorHandler().errmsg(e);
+								// don't stop processing
+							}
 						}
 					}
 
@@ -133,7 +147,6 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 			}
 			return this;
 		}
-
 	}
 
 	/**

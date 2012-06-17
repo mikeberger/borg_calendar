@@ -1104,6 +1104,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 		return days;
 	}
 	
+	public static final int NO_DAYS_VALUE = 9999999;
 	/**
 	 * return the days left to complete the next due item for a task
 	 * @param t - the task
@@ -1112,7 +1113,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 	 */
 	public int daysLeft(Task t) throws Exception
 	{
-		int daysLeft = 9999999;
+		int daysLeft = NO_DAYS_VALUE;
 		if( isClosed(t)) return daysLeft;
 		
 		if( t.getDueDate() != null )
