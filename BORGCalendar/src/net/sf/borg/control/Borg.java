@@ -233,20 +233,6 @@ public class Borg implements SocketHandler, Observer {
 	 */
 	private void init(String args[]) {
 
-		// logging
-		ConsoleHandler ch = new ConsoleHandler();
-		ch.setLevel(Level.ALL);
-		log.addHandler(ch);
-		log.setUseParentHandlers(false);
-
-		boolean debug = Prefs.getBoolPref(PrefName.DEBUG);
-		if (debug == true)
-			log.setLevel(Level.ALL);
-		else
-			log.setLevel(Level.INFO);
-
-		log.fine("Debug logging turned on");
-
 		// override for testing a different db
 		String testdb = null;
 
@@ -298,6 +284,24 @@ public class Borg implements SocketHandler, Observer {
 			}
 
 		}
+		
+		// if testing, use alternate prefs so regular prefs can be left alone
+		if( testing )
+			Prefs.setPrefRootNode("net/sf/borg/test");
+		
+		// logging
+		ConsoleHandler ch = new ConsoleHandler();
+		ch.setLevel(Level.ALL);
+		log.addHandler(ch);
+		log.setUseParentHandlers(false);
+
+		boolean debug = Prefs.getBoolPref(PrefName.DEBUG);
+		if (debug == true)
+			log.setLevel(Level.ALL);
+		else
+			log.setLevel(Level.INFO);
+
+		log.fine("Debug logging turned on");
 
 		// open existing BORG if there is one
 		int port = Prefs.getIntPref(PrefName.SOCKETPORT);
@@ -416,8 +420,8 @@ public class Borg implements SocketHandler, Observer {
 					borgdir.mkdir();
 				}
 				if (borgdir.isDirectory() && borgdir.canWrite()) {
-					Prefs.putPref(PrefName.HSQLDBDIR, borgdir.getAbsolutePath());
-					Prefs.putPref(PrefName.DBTYPE, "hsqldb");
+					Prefs.putPref(PrefName.H2DIR, borgdir.getAbsolutePath());
+					Prefs.putPref(PrefName.DBTYPE, "h2");
 					dbdir = JdbcDB.buildDbDir();
 				} else {
 					JOptionPane.showMessageDialog(null,

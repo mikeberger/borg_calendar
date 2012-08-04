@@ -33,6 +33,7 @@ import java.util.prefs.Preferences;
 public class Prefs {
 
 	static private final Logger log = Logger.getLogger("net.sf.borg");
+	static private String prefRootNode = "net/sf/borg/common/util";
 
 	/**
 	 * Interface for classes that want to be notified of preference changes
@@ -153,7 +154,7 @@ public class Prefs {
 	static private Preferences getPrefNode() {
 		// hard code to original prefs location for backward compatiblity
 		Preferences root = Preferences.userRoot();
-		return root.node("net/sf/borg/common/util");
+		return root.node(prefRootNode);
 	}
 
 	/**
@@ -192,5 +193,13 @@ public class Prefs {
 		} catch (Exception e) {
 			Errmsg.getErrorHandler().errmsg(e);
 		}
+	}
+
+	public static String getPrefRootNode() {
+		return prefRootNode;
+	}
+
+	public static void setPrefRootNode(String prefRootNode) {
+		Prefs.prefRootNode = prefRootNode;
 	}
 }
