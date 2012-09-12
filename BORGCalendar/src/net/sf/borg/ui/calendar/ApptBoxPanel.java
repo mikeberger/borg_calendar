@@ -751,6 +751,34 @@ abstract class ApptBoxPanel extends JPanel implements ComponentListener {
 						+ resizeRectangle.height - (int) bb.getHeight(),
 						(int) bb.getWidth(), (int) bb.getHeight());
 				g2.setColor(Color.WHITE);
+				
+				// if we are dragging or resizing an appt, then force the calculation of the time strings based on the
+				// appt to avoid some rounding errors that occur when calculating times from the pixels on the screen				
+				if( draggedBox != null && draggedBox instanceof ApptBox)
+				{
+					ApptBox draggedApptBox = (ApptBox) draggedBox;
+					if( dragStarted == false )
+					{
+						// we haven't moved yet, so use the appt start and end
+						top = draggedApptBox.getTopAdjustment();
+						bot = draggedApptBox.getBottomAdjustment();
+					}
+					else
+					{
+						// when moving an appt, always make sure that the bottom reflects the appt duration properly
+						bot = top + draggedApptBox.getBottomAdjustment() - draggedApptBox.getTopAdjustment();
+					}
+				}
+				else if( resizedBox != null && resizedBox instanceof ApptBox)
+				{
+					ApptBox resizedApptBox = (ApptBox) resizedBox;
+					if( dragStarted == false )
+					{
+						// we haven't moved yet, so use the appt start and end
+						top = resizedApptBox.getTopAdjustment();
+						bot = resizedApptBox.getBottomAdjustment();
+					}
+				}
 				g2.drawString(getTimeString(top), resizeRectangle.x + 2,
 						resizeRectangle.y - 2);
 				g2.drawString(getTimeString(bot), resizeRectangle.x + 2,
@@ -872,8 +900,7 @@ abstract class ApptBoxPanel extends JPanel implements ComponentListener {
 		int min = realtime % 60;
 		GregorianCalendar newCal = new GregorianCalendar();
 		newCal.set(Calendar.HOUR_OF_DAY, hour);
-		int roundMin = (min / 5) * 5;
-		newCal.set(Calendar.MINUTE, roundMin);
+		newCal.set(Calendar.MINUTE, min);
 		Date newTime = newCal.getTime();
 		return sdf.format(newTime);
 	}

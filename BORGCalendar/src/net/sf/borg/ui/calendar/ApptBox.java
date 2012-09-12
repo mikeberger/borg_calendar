@@ -135,7 +135,7 @@ class ApptBox extends Box implements Box.Draggable {
 			// creep in
 			// in
 			box
-					.setBottomAdjustment(((apendmin - startmin) / (endmin - startmin)) - 1.0 / 10000);
+					.setBottomAdjustment(((apendmin - startmin) / (endmin - startmin)) - 0.000001);
 
 		}
 
@@ -547,7 +547,7 @@ class ApptBox extends Box implements Box.Draggable {
 	 * 
 	 * @return the bottom adjustment
 	 */
-	private double getBottomAdjustment() {
+	public double getBottomAdjustment() {
 		return bottom;
 	}
 
@@ -698,7 +698,7 @@ class ApptBox extends Box implements Box.Draggable {
 	 * 
 	 * @return the top adjustment
 	 */
-	private double getTopAdjustment() {
+	public double getTopAdjustment() {
 		return top;
 	}
 
