@@ -32,11 +32,13 @@ import java.awt.font.LineBreakMeasurer;
 import java.awt.font.TextAttribute;
 import java.awt.font.TextLayout;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.Serializable;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -76,6 +78,9 @@ class ApptBox extends Box implements Box.Draggable {
 
 	// rounded rectangle radius
 	final static private int radius = 2;
+	
+	private static SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
+
 
 	/**
 	 * Layout all boxes for a particular day by determining how many overlap and
@@ -512,10 +517,28 @@ class ApptBox extends Box implements Box.Draggable {
 			drawWrappedString(g2, text, bounds.x + radius, bounds.y + radius,
 					bounds.width - radius, getTextColor().equals("strike"));
 		}
+		
+		if( isSelected)
+		{
+			g2.setColor(new Color(50, 50, 50));
+			Rectangle2D bb = g2.getFont().getStringBounds("00:00",
+					g2.getFontRenderContext());
+			
+			g2.fillRect(bounds.x + 2, bounds.y
+					+ bounds.height - (int) bb.getHeight(),
+					(int) bb.getWidth(), (int) bb.getHeight());
+			g2.setColor(Color.WHITE);
+			
+			Date endtime = new Date(appt.getDate().getTime() + 1000*60*appt.getDuration().intValue());
+			g2.drawString(sdf.format(endtime), bounds.x + 2,
+					bounds.y + bounds.height - 2);
+		}
 
 		g2.setClip(s);
 		g2.setColor(Color.black);
+
 	}
+
 
 	/**
 	 * draw a string with word wrap.
