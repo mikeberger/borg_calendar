@@ -56,6 +56,21 @@ public class DateUtil {
 
 		return false;
 	}
+	
+	/**
+	 * set a date to midnight
+	 * @param d - the date
+	 */
+	static public Date setToMidnight(Date d)
+	{
+		GregorianCalendar cal = new GregorianCalendar();
+		cal.setTime(d);
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+		return cal.getTime();
+	}
 
 	/**
 	 * return the number of the day of the epoch for a given date. this provides

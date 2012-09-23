@@ -18,6 +18,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -28,7 +29,6 @@ import java.util.GregorianCalendar;
 import java.util.Iterator;
 
 import javax.swing.ButtonGroup;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -49,6 +49,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
 
+import net.sf.borg.common.DateUtil;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
@@ -65,6 +66,7 @@ import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.link.LinkPanel;
 import net.sf.borg.ui.popup.PopupOptionsView;
 import net.sf.borg.ui.popup.PopupOptionsView.PopupOptionsListener;
+import net.sf.borg.ui.util.DateTimePanel;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 import net.sf.borg.ui.util.PasswordHelper;
 
@@ -193,21 +195,6 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 		}
 	}
 
-	/**
-	 * combo box choices for setting the hour if we are using 24-hour time
-	 */
-	static private DefaultComboBoxModel milHourModel = new DefaultComboBoxModel(
-			new String[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
-					"10", "11", "12", "13", "14", "15", "16", "17", "18", "19",
-					"20", "21", "22", "23" });
-
-	/**
-	 * combo box choices for setting 12-hr time
-	 */
-	static private DefaultComboBoxModel normHourModel = new DefaultComboBoxModel(
-			new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
-					"11", "12" });
-
 	static private SpinnerNumberModel prioritySpinnerModel = new SpinnerNumberModel(
 			5, 1, 10, 1);
 
@@ -254,12 +241,6 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 	// the panel containing the day toggle buttons
 	private JPanel selectDayButtonPanel = null;
 
-	// hour combo for the duration value
-	private JComboBox durationHourComboBox;
-
-	// minute combo for the duration value
-	private JComboBox durationMinuteComboBox;
-
 	// repeat frequency combo box
 	private JComboBox repeatFrequencyComboBox;
 
@@ -296,14 +277,8 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 	// number fo repeats spinner
 	private JSpinner numberOfRepeatsSpinner;
 
-	// AM/PM indicator
-	private JCheckBox amOrPmComboBox;
-
-	// hour combo
-	private JComboBox startHourComboBox;
-
-	// minute combo
-	private JComboBox startMinuteComboBox;
+	private DateTimePanel startTimePanel = null;
+	private DateTimePanel endTimePanel = null;
 
 	// todo check box
 	private JCheckBox todoCheckBox;
@@ -354,16 +329,6 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 
 		decryptButton.setEnabled(false);
 
-		// set up hours pulldown
-		String mt = Prefs.getPref(PrefName.MILTIME);
-		if (mt.equals("true")) {
-			startHourComboBox.setModel(milHourModel);
-			amOrPmComboBox.setVisible(false);
-		} else {
-			startHourComboBox.setModel(normHourModel);
-			amOrPmComboBox.setVisible(true);
-		}
-
 		// set up priority pull down
 		prioritySpinner.setModel(prioritySpinnerModel);
 		prioritySpinner.setVisible(true);
@@ -384,6 +349,22 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 		setDate(year, month, day);
 		setCustRemTimes(null);
 		apptTitleField.requestFocus();
+		
+		// if the start time is changed, then set the end time to start plus 30 minutes
+		startTimePanel.addTimeListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					Date s = startTimePanel.getTime();
+					endTimePanel.setTime(new Date(s.getTime() + 1000*60*30));
+				} catch (Warning e) {
+					// nothing
+				}
+				
+			}
+			
+		});
 	}
 
 	/**
@@ -652,14 +633,9 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 		newAppointmentIndicatorLabel = new JLabel();
 		JScrollPane apptTextScroll = new JScrollPane();
 		appointmentBodyTextArea = new JTextArea();
-		startHourComboBox = new JComboBox();
-		startMinuteComboBox = new JComboBox();
 		prioritySpinner = new JSpinner();
-		amOrPmComboBox = new JCheckBox();
-		durationHourComboBox = new JComboBox();
-		durationMinuteComboBox = new JComboBox();
 		JLabel starttimeLabel = new JLabel();
-		JLabel durationLabel = new JLabel();
+		JLabel endTimeLabel = new JLabel();
 		untimedCheckBox = new JCheckBox();
 		JLabel newDateLabel = new JLabel();
 		newdatefield = new JDateChooser();
@@ -682,8 +658,6 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 		JButton savedefaultsbutton = new JButton();
 		apptTitleField = new JTextField();
 
-		starttimeLabel.setLabelFor(startHourComboBox);
-		durationLabel.setLabelFor(durationHourComboBox);
 		lblCategory.setLabelFor(categoryBox);
 		lblColor.setLabelFor(colorComboBox);
 		newDateLabel.setLabelFor(newdatefield);
@@ -738,25 +712,10 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 				.add(starttimeLabel, GridBagConstraintsFactory.create(0, 0,
 						GridBagConstraints.BOTH));
 
-		startHourComboBox.setMaximumRowCount(24);
-		startHourComboBox.setMinimumSize(new java.awt.Dimension(42, 36));
-		startHourComboBox.setOpaque(false);
+		startTimePanel = new DateTimePanel(false,
+				Prefs.getBoolPref(PrefName.MILTIME));
 		appointmentTimePanel
-				.add(startHourComboBox, GridBagConstraintsFactory.create(1, 0,
-						GridBagConstraints.BOTH));
-
-		startMinuteComboBox.setMaximumRowCount(12);
-		startMinuteComboBox.setModel(new DefaultComboBoxModel(new String[] {
-				"00", "05", "10", "15", "20", "25", "30", "35", "40", "45",
-				"50", "55" }));
-		startMinuteComboBox.setOpaque(false);
-		appointmentTimePanel.add(startMinuteComboBox, GridBagConstraintsFactory
-				.create(2, 0, GridBagConstraints.VERTICAL));
-
-		amOrPmComboBox.setText("PM");
-		amOrPmComboBox.setOpaque(false);
-		appointmentTimePanel
-				.add(amOrPmComboBox, GridBagConstraintsFactory.create(3, 0,
+				.add(startTimePanel, GridBagConstraintsFactory.create(1, 0,
 						GridBagConstraints.BOTH));
 
 		ResourceHelper.setText(untimedCheckBox, "No_Specific_Time");
@@ -768,31 +727,18 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 		});
 		GridBagConstraints gridBagConstraints12 = GridBagConstraintsFactory
 				.create(4, 0, GridBagConstraints.BOTH);
-		gridBagConstraints12.insets = new java.awt.Insets(0, 30, 0, 0);
 		appointmentTimePanel.add(untimedCheckBox, gridBagConstraints12);
 
-		ResourceHelper.setText(durationLabel, "Duration:");
+		endTimeLabel.setText(Resource.getResourceString("EndTime") + ":");
 		appointmentTimePanel
-				.add(durationLabel, GridBagConstraintsFactory.create(0, 1,
+				.add(endTimeLabel, GridBagConstraintsFactory.create(0, 1,
 						GridBagConstraints.BOTH));
 
-		durationHourComboBox.setMaximumRowCount(24);
-		durationHourComboBox.setModel(new DefaultComboBoxModel(new String[] {
-				"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11",
-				"12", "13", "14", "15", "16", "17", "18", "19", "20", "21",
-				"22", "23", "24" }));
+		endTimePanel = new DateTimePanel(false,
+				Prefs.getBoolPref(PrefName.MILTIME));
 		appointmentTimePanel
-				.add(durationHourComboBox, GridBagConstraintsFactory.create(1,
-						1, GridBagConstraints.BOTH));
-
-		durationMinuteComboBox.setMaximumRowCount(12);
-		durationMinuteComboBox.setModel(new DefaultComboBoxModel(new String[] {
-				"00", "05", "10", "15", "20", "25", "30", "35", "40", "45",
-				"50", "55" }));
-		durationMinuteComboBox.setOpaque(false);
-		appointmentTimePanel.add(durationMinuteComboBox,
-				GridBagConstraintsFactory.create(2, 1,
-						GridBagConstraints.VERTICAL));
+				.add(endTimePanel, GridBagConstraintsFactory.create(1, 1,
+						GridBagConstraints.BOTH));
 
 		ResourceHelper.setText(dateChangeCheckBox, "changedate");
 		dateChangeCheckBox.addActionListener(new ActionListener() {
@@ -1104,27 +1050,23 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 	 */
 	private void untimedCheckBoxActionPerformed() {
 		if (untimedCheckBox.isSelected()) {
-			String mt = Prefs.getPref(PrefName.MILTIME);
-			if (mt.equals("true")) {
-				startHourComboBox.setSelectedIndex(0);
-			} else {
-				startHourComboBox.setSelectedIndex(11); // hour = 12
+			try {
+				startTimePanel.setTime(DateUtil.setToMidnight(startTimePanel
+						.getTime()));
+			} catch (Warning e) {
+				Errmsg.getErrorHandler().notice(e.getMessage());
 			}
-			startMinuteComboBox.setSelectedIndex(0);
-			durationMinuteComboBox.setSelectedIndex(0);
-			durationHourComboBox.setSelectedIndex(0);
-			amOrPmComboBox.setSelected(false);
-			startMinuteComboBox.setEnabled(false);
-			startHourComboBox.setEnabled(false);
-			durationMinuteComboBox.setEnabled(false);
-			durationHourComboBox.setEnabled(false);
-			amOrPmComboBox.setEnabled(false);
+			startTimePanel.setEnabled(false);
+			try {
+				endTimePanel.setTime(DateUtil.setToMidnight(startTimePanel
+						.getTime()));
+			} catch (Warning e) {
+				Errmsg.getErrorHandler().notice(e.getMessage());
+			}
+			endTimePanel.setEnabled(false);
 		} else {
-			startMinuteComboBox.setEnabled(true);
-			startHourComboBox.setEnabled(true);
-			durationMinuteComboBox.setEnabled(true);
-			durationHourComboBox.setEnabled(true);
-			amOrPmComboBox.setEnabled(true);
+			startTimePanel.setEnabled(true);
+			endTimePanel.setEnabled(true);
 		}
 	}
 
@@ -1152,37 +1094,36 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 			dateChg = true;
 		}
 
-		// get the hour and minute
-		int hr = startHourComboBox.getSelectedIndex();
-		String mt = Prefs.getPref(PrefName.MILTIME);
-		if (mt.equals("false")) {
-			hr = hr + 1;
-			if (hr == 12)
-				hr = 0;
-			if (amOrPmComboBox.isSelected())
-				hr += 12;
-		}
-		int min = startMinuteComboBox.getSelectedIndex() * 5;
+		Date d = startTimePanel.getTime();
 
 		// compute new date/time
 		GregorianCalendar g = new GregorianCalendar();
+		g.setTime(d);
 		if (nd == null) {
-			g.set(year_, month_, day_, hr, min, 0);
+			g.set(Calendar.YEAR, year_);
+			g.set(Calendar.MONTH, month_);
+			g.set(Calendar.DATE, day_);
 		} else {
-			g.setTime(nd);
-			g.set(Calendar.HOUR_OF_DAY, hr);
-			g.set(Calendar.MINUTE, min);
-			g.set(Calendar.SECOND, 0);
+			GregorianCalendar g2 = new GregorianCalendar();
+			g2.setTime(nd);
+			g.set(Calendar.HOUR_OF_DAY, g2.get(Calendar.HOUR_OF_DAY));
+			g.set(Calendar.MINUTE, g2.get(Calendar.MINUTE));
 		}
 		appt.setDate(g.getTime());
 
 		// set untimed
 		if (untimedCheckBox.isSelected())
 			appt.setUntimed("Y");
+		
+		// force end time to be within 24 hrs of start
+		// ignore days in calculation 
+		long end = endTimePanel.getTime().getTime() % 86400000L;
+		long beg = startTimePanel.getTime().getTime() % 86400000L;		
+		
+		int du = (int) (end - beg) / (1000 * 60);
+		if (du < 0)
+			du += (24 * 60);
 
-		// duration
-		int du = (durationHourComboBox.getSelectedIndex() * 60)
-				+ (durationMinuteComboBox.getSelectedIndex() * 5);
 		if (du != 0)
 			appt.setDuration(new Integer(du));
 
@@ -1410,16 +1351,10 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 		Appointment defaultAppt = defaultApptIn;
 		currentlyShownAppointmentKey = key;
 
-		// military time option
-		String mt = Prefs.getPref(PrefName.MILTIME);
-
 		// default to untimed - will change later if timed
-		amOrPmComboBox.setSelected(false);
-		startMinuteComboBox.setEnabled(false);
-		startHourComboBox.setEnabled(false);
-		durationMinuteComboBox.setEnabled(false);
-		durationHourComboBox.setEnabled(false);
-		amOrPmComboBox.setEnabled(false);
+		startTimePanel.setEnabled(false);
+		endTimePanel.setEnabled(false);
+
 		untimedCheckBox.setSelected(true);
 		dateChangeCheckBox.setSelected(false);
 		encryptBox.setSelected(false);
@@ -1448,16 +1383,10 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 			// set all of the blank appointment defaults if
 			// there is no default appointment
 			//
-			if (mt.equals("true")) {
-				startHourComboBox.setSelectedIndex(0);
-			} else {
-				startHourComboBox.setSelectedIndex(11); // hour = 12
-			}
+			startTimePanel.setTime(DateUtil.setToMidnight(new Date()));
+			endTimePanel.setTime(DateUtil.setToMidnight(new Date()));
 
 			categoryBox.setSelectedIndex(0);
-			startMinuteComboBox.setSelectedIndex(0);
-			durationMinuteComboBox.setSelectedIndex(0);
-			durationHourComboBox.setSelectedIndex(0);
 
 			todoCheckBox.setSelected(false); // todo unchecked
 			colorComboBox.setSelectedIndex(3); // color = black
@@ -1503,41 +1432,25 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 				}
 
 				// set hour and minute widgets
-				Date d = appt.getDate();
-				GregorianCalendar g = new GregorianCalendar();
-				g.setTime(d);
-				if (mt.equals("true")) {
-					int hour = g.get(Calendar.HOUR_OF_DAY);
-					if (hour != 0)
-						startHourComboBox.setSelectedIndex(hour);
-				} else {
-					int hour = g.get(Calendar.HOUR);
-					if (hour == 0)
-						hour = 12;
-					startHourComboBox.setSelectedIndex(hour - 1);
-				}
-
-				int min = g.get(Calendar.MINUTE);
-				startMinuteComboBox.setSelectedIndex(min / 5);
+				startTimePanel.setTime(appt.getDate());
 
 				// duration
 				Integer duration = appt.getDuration();
 				int dur = 0;
 				if (duration != null)
 					dur = duration.intValue();
-				durationHourComboBox.setSelectedIndex(dur / 60);
-				durationMinuteComboBox.setSelectedIndex((dur % 60) / 5);
+
+				Date end = new Date();
+				end.setTime(appt.getDate().getTime() + (dur * 60 * 1000));
+				endTimePanel.setTime(end);
 
 				// check if we just have a "note" (non-timed appt)
 				boolean untimed = AppointmentModel.isNote(appt);
 				if (!untimed) {
 					// enable time widgets
+					startTimePanel.setEnabled(true);
+					endTimePanel.setEnabled(true);
 					untimedCheckBox.setSelected(false);
-					startMinuteComboBox.setEnabled(true);
-					startHourComboBox.setEnabled(true);
-					durationMinuteComboBox.setEnabled(true);
-					durationHourComboBox.setEnabled(true);
-					amOrPmComboBox.setEnabled(true);
 				}
 
 				// set ToDo checkbox
@@ -1562,12 +1475,6 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 
 				// private checkbox
 				privateCheckBox.setSelected(appt.isPrivate());
-
-				// PM checkbox
-				boolean pm = true;
-				if (g.get(Calendar.AM_PM) == Calendar.AM)
-					pm = false;
-				amOrPmComboBox.setSelected(pm);
 
 				if (appt.isEncrypted()) {
 					apptTitleField.setText(Resource
@@ -1744,7 +1651,8 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 		String english = Repeat.freqToEnglish((String) repeatFrequencyComboBox
 				.getSelectedItem());
 		if (english.equals(Repeat.NDAYS) || english.equals(Repeat.NWEEKS)
-				|| english.equals(Repeat.NMONTHS) || english.equals(Repeat.NYEARS)) {
+				|| english.equals(Repeat.NMONTHS)
+				|| english.equals(Repeat.NYEARS)) {
 			nTimesValue.setVisible(true);
 			selectDayButtonPanel.setVisible(false);
 		} else if (english.equals(Repeat.DAYLIST)) {
