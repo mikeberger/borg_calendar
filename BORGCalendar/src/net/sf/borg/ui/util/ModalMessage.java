@@ -17,11 +17,7 @@ This file is part of BORG.
 
 Copyright 2003 by Mike Berger
  */
-/*
- * helpscrn.java
- *
- * Created on October 5, 2003, 8:55 AM
- */
+
 
 package net.sf.borg.ui.util;
 
