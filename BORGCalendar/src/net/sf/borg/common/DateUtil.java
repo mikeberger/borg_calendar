@@ -89,5 +89,46 @@ public class DateUtil {
 		cal.set(Calendar.HOUR_OF_DAY, 11);
 		return (int) (cal.getTime().getTime() / 1000 / 60 / 60 / 24);
 	}
+	
+	/**
+	 * generate a human readable string for a particular number of minutes
+	 * 
+	 * @param mins - the number of minutes
+	 * 
+	 * @return the string
+	 */
+	public static String minuteString(int mins) {
+		
+		int hours = mins / 60;
+		int minsPast = mins % 60;
+		
+		String minutesString;
+		String hoursString;
+		
+		if (hours > 1) {
+			hoursString = hours + " " + Resource.getResourceString("Hours");
+		} else if (hours > 0) {
+			hoursString = hours + " " + Resource.getResourceString("Hour");
+		} else {
+			hoursString = "";
+		}
+
+		if (minsPast > 1) {
+			minutesString = minsPast + " " + Resource.getResourceString("Minutes");
+		} else if (minsPast > 0) {
+			minutesString = minsPast + " " + Resource.getResourceString("Minute");
+		} else if (hours >= 1) {
+			minutesString = "";
+		} else {
+			minutesString = minsPast + " " + Resource.getResourceString("Minutes");
+		}
+
+		// space between hours and minutes
+		if (!hoursString.equals("") && !minutesString.equals(""))
+			minutesString = " " + minutesString;
+
+		return hoursString + minutesString;
+	}
+
 
 }

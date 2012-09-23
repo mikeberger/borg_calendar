@@ -288,6 +288,8 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 
 	/** decrypt button */
 	private JButton decryptButton = null;
+	
+	private JLabel durationLabel = new JLabel();
 
 	/**
 	 * encryption checkbox
@@ -358,6 +360,22 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 				try {
 					Date s = startTimePanel.getTime();
 					endTimePanel.setTime(new Date(s.getTime() + 1000*60*30));
+					durationLabel.setText(DateUtil.minuteString(30));
+				} catch (Warning e) {
+					// nothing
+				}
+				
+			}
+			
+		});
+		
+		endTimePanel.addTimeListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					int mins = (int) ((endTimePanel.getTime().getTime() - startTimePanel.getTime().getTime())/(60*1000)); 
+					durationLabel.setText(DateUtil.minuteString(mins));
 				} catch (Warning e) {
 					// nothing
 				}
@@ -726,7 +744,8 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 			}
 		});
 		GridBagConstraints gridBagConstraints12 = GridBagConstraintsFactory
-				.create(4, 0, GridBagConstraints.BOTH);
+				.create(2, 0, GridBagConstraints.BOTH);
+		
 		appointmentTimePanel.add(untimedCheckBox, gridBagConstraints12);
 
 		endTimeLabel.setText(Resource.getResourceString("EndTime") + ":");
@@ -739,6 +758,12 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 		appointmentTimePanel
 				.add(endTimePanel, GridBagConstraintsFactory.create(1, 1,
 						GridBagConstraints.BOTH));
+		
+		durationLabel.setText("1/2 hour");
+		
+		appointmentTimePanel
+		.add(durationLabel, GridBagConstraintsFactory.create(2, 1,
+				GridBagConstraints.BOTH));
 
 		ResourceHelper.setText(dateChangeCheckBox, "changedate");
 		dateChangeCheckBox.addActionListener(new ActionListener() {
@@ -747,18 +772,23 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 				newdatefield.setEnabled(dateChangeCheckBox.isSelected());
 			}
 		});
+		
+		appointmentTimePanel.add(new JLabel("       "), GridBagConstraintsFactory
+				.create(3, 0, GridBagConstraints.HORIZONTAL));
+		
 		appointmentTimePanel.add(dateChangeCheckBox, GridBagConstraintsFactory
-				.create(4, 1, GridBagConstraints.HORIZONTAL));
+				.create(4, 0, GridBagConstraints.HORIZONTAL));
 
 		ResourceHelper.setText(newDateLabel, "newDate:");
 		appointmentTimePanel
-				.add(newDateLabel, GridBagConstraintsFactory.create(5, 1,
+				.add(newDateLabel, GridBagConstraintsFactory.create(5, 0,
 						GridBagConstraints.BOTH));
 
 		appointmentTimePanel
-				.add(newdatefield, GridBagConstraintsFactory.create(6, 1,
+				.add(newdatefield, GridBagConstraintsFactory.create(6, 0,
 						GridBagConstraints.BOTH));
 
+		
 		// ********************************************************************
 		// appt properties panel
 		// ********************************************************************
