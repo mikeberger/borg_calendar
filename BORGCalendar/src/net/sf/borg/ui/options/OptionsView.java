@@ -263,6 +263,7 @@ public class OptionsView extends View {
 			addPanel(new TaskOptionsPanel());
 			addPanel(new TodoOptionsPanel());
 			addPanel(new EncryptionOptionsPanel());
+			addPanel(new StartupViewsOptionsPanel());
 
 		}
 

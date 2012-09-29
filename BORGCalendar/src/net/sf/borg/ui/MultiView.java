@@ -44,6 +44,7 @@ import javax.swing.border.BevelBorder;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.Model.ChangeEvent;
+import net.sf.borg.ui.options.StartupViewsOptionsPanel;
 import net.sf.borg.ui.util.JTabbedPaneWithCloseIcons;
 
 /**
@@ -335,7 +336,7 @@ public class MultiView extends View {
 	 *            the view type
 	 * @return the Module or null
 	 */
-	private Module getModuleForView(ViewType type) {
+	public Module getModuleForView(ViewType type) {
 		for (Module m : moduleSet) {
 			if (type == m.getViewType())
 				return m;
@@ -503,5 +504,17 @@ public class MultiView extends View {
 			return component;
 		}
 		return null;
+	}
+
+	/**
+	 * open all views that are set to appear on startup
+	 */
+	public void startupViews() {
+		for( ViewType vt : ViewType.values())
+		{
+			if( StartupViewsOptionsPanel.getStartPref(vt))
+				setView(vt);
+		}
+		
 	}
 }

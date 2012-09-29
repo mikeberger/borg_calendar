@@ -20,7 +20,6 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.common.Warning;
 import net.sf.borg.model.ExportImport;
 import net.sf.borg.model.db.jdbc.JdbcDB;
-import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.address.AddrListView;
 import net.sf.borg.ui.calendar.DayPanel;
 import net.sf.borg.ui.calendar.MonthPanel;
@@ -185,10 +184,10 @@ public class UIControl {
 		if (!Prefs.getBoolPref(PrefName.BACKGSTART)
 				|| !SunTrayIconProxy.hasTrayIcon()) {
 			mv.setVisible(true);
+			
+			// open all views that should be shown at startup
+			mv.startupViews();
 		}
-
-		// show the month view
-		mv.setView(ViewType.MONTH, false);
 
 		// destroy the splash screen
 		if (splashScreen != null) {
