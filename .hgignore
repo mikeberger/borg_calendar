@@ -1,0 +1,7 @@
+
+syntax: regexp
+^BORGCalendar/build$
+syntax: regexp
+^BORGCalendar/dist$
+syntax: regexp
+^BORGCalendar/borghelp/JavaHelpSearch$

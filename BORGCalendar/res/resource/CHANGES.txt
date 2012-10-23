@@ -1,17 +1,24 @@
-BORG 1.7.7 (in development)
+BORG 1.7.7
 ----------
 
 Features:
 Re-layout Task, Project, Address, and Search forms to make better use of space
 Hide links table if there are no links to save space
 Prepend task description to subtask on calendar
-#34 	allow different From and To addresses for email reminders
-#36 	Updated Spanish (Argentina) Translation
+Use H2 as default database instead of HSQL
+#12 Allow 1 minute increments for appointment times
+#11 Edit appointment duration by setting the end time
+#10 Allow setting of the views that open at start up
+#9 Show colors to indicate tasks approaching the due date
+#34 (trac)	allow different From and To addresses for email reminders
+#36 (trac)	Updated Spanish (Argentina) Translation
 
 Bug Fixes:
-#37 	Error creating DB with Java 7
-#35 	Wrong item dragged when there are too many untimed events to fit in a calendar box
-#32     A new blank subtask is not added to the subtask table automatically
+#13 Move Box on Week View shows wrong end time
+#8 Start date and Due date are reversed on the Project View
+#37 (trac)	Error creating DB with Java 7
+#35 (trac)	Wrong item dragged when there are too many untimed events to fit in a calendar box
+#32 (trac)  A new blank subtask is not added to the subtask table automatically
 
 BORG 1.7.6.3
 ------------

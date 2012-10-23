@@ -1,11 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML>
 <HEAD>
-	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=windows-1252">
 	<TITLE></TITLE>
-	<META NAME="GENERATOR" CONTENT="LibreOffice 3.4  (Linux)">
+	<META NAME="GENERATOR" CONTENT="LibreOffice 3.3  (Win32)">
 	<META NAME="CREATED" CONTENT="0;0">
-	<META NAME="CHANGED" CONTENT="20111225;15571600">
+	<META NAME="CHANGED" CONTENT="20121023;8472143">
 	<META NAME="Originator" CONTENT="Microsoft Word 11">
 	<META NAME="ProgId" CONTENT="Word.Document">
 	<STYLE TYPE="text/css">
@@ -19,8 +19,8 @@
 <BODY LANG="en-US" TEXT="#000000" LINK="#0000ff" VLINK="#800080" DIR="LTR">
 <P><FONT FACE="Arial"><FONT SIZE=5><U><B>Databases</B></U></FONT></FONT></P>
 <P STYLE="font-weight: normal; text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=3>Borg
-will create an HSQLDB database in a default location when started
-after the first install. Most users should never alter the database
+will create an H2 database in a default location when started after
+the first install. Most users should never alter the database
 settings. Some users may want to alter the location of the database,
 for example to be on a removable drive.</FONT></FONT></P>
 <P><FONT FACE="Arial">For those users that want to change the default
@@ -32,26 +32,16 @@ settings, the available choices are:</FONT></P>
 </UL>
 <P><FONT FACE="Arial">There is also a Generic JDBC option, which
 takes a jdbc url. This can be used by more advanced users if
-non-standard HSQLDB or MySQL URL options are needed. It is not
-guaranteed to work in all cases.</FONT></P>
-<P><FONT FACE="Arial"><U><B>HSQLDB</B></U></FONT></P>
-<P><FONT FACE="Arial">BORG supports the storage of data in an
-embedded HSQLDB database. BORG will manage the HSQLDB files without
-any actions from the user. No pre-requisite software is needed. Just
-select the HSQLDB option and point BORG to a folder where you would
-like to keep your data files. </FONT>
-</P>
-<P><FONT FACE="Arial">As of BORG 1.6, HSQLDB is the default DB type
-as it requires no special actions from the user. </FONT>
-</P>
+non-standard URL options are needed. It is not guaranteed to work in
+all cases.</FONT></P>
 <P><FONT FACE="Arial"><U><B>H2</B></U></FONT></P>
 <P STYLE="font-weight: normal; text-decoration: none"><FONT FACE="Arial">Support
-for H2 is new in release 1.7.5. To use H2, you must download the H2
-driver and put it into the CLASSPATH. Since BORG loads all JARs from
-the lib/ext folder where it is installed, the H2 JAR can be placed in
-the BORG lib folder. Note: the loading of JARs from the lib/ext
-folder is a BORG miscellaneous option that must be enabled. It is
-disabled by default.</FONT></P>
+for H2 is new in release 1.7.5 and is the default as of 1.7.7. BORG
+will manage the H2 files without any actions from the user. No
+pre-requisite software is needed.</FONT></P>
+<P><FONT FACE="Arial"><U><B>HSQLDB</B></U></FONT></P>
+<P><FONT FACE="Arial">BORG continues to support HSQLDB.  <SPAN STYLE="text-decoration: none"><SPAN STYLE="font-weight: normal">No
+pre-requisite software is needed.</SPAN></SPAN></FONT></P>
 <P><FONT FACE="Arial"><U><B>MySQL</B></U></FONT></P>
 <P><FONT FACE="Arial">Using MySQL with BORG requires the user to
 download at setup the MySQL software. In addition, the user must also

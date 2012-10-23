@@ -18,7 +18,7 @@ To build, you can set up an Ant Build task under the eclipse exteral tools.
 
 You can use the eclipse debugger to debug the code. You should be able to run the main
 Borg class (Borg Calendar UI/src/net/sf.borg.control.Borg) from within eclipse. When doing this,
-you will need to include hsqldb.jar and the res folder in the run configuration classpath.
+you will need to include the res folder in the run configuration classpath.
 
 As of release 1.7.6, BORG uses lombok to simplify certain code. lombok must be installed in Eclipse
 to properly view the code. The lombok JAR included with BORG is executable. Execute this JAR and follow
