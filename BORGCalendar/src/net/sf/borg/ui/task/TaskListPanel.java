@@ -276,7 +276,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 		// confirm delete
 		int ret = JOptionPane.showConfirmDialog(null, Resource
 				.getResourceString("Really_delete_number_")
-				+ num, "", JOptionPane.YES_NO_OPTION);
+				+ " " + num, "", JOptionPane.YES_NO_OPTION);
 		if (ret == JOptionPane.YES_OPTION) {
 			// delete the task
 			try {
@@ -432,7 +432,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 				Resource.getResourceString("Type"),
 				Resource.getResourceString("Pri"),
 				Resource.getResourceString("Days_Left"),
-				Resource.getResourceString("Description"),
+				Resource.getResourceString("summary"),
 				Resource.getResourceString("Start_Date"),
 				Resource.getResourceString("Due_Date"),
 				Resource.getResourceString("duration"),
@@ -608,23 +608,28 @@ class TaskListPanel extends JPanel implements Model.Listener {
 
 					// check if string is in description
 					// or resolution
+					String s = task.getSummary();
 					String d = task.getDescription();
 					String r = task.getResolution();
 
 					if (r == null)
 						r = "";
+					if (s == null)
+						s = "";
 					if (d == null)
 						d = "";
 
 					if (filterCaseSensitive) {
 						if (d.indexOf(filterString) == -1
-								&& r.indexOf(filterString) == -1)
+								&& r.indexOf(filterString) == -1 &&
+								s.indexOf(filterString) == -1)
 							continue;
 					} else {
 						String lfilt = filterString.toLowerCase();
 						String ld = d.toLowerCase();
 						String lr = r.toLowerCase();
-						if (ld.indexOf(lfilt) == -1 && lr.indexOf(lfilt) == -1)
+						String ls = s.toLowerCase();
+						if (ld.indexOf(lfilt) == -1 && lr.indexOf(lfilt) == -1 && ls.indexOf(lfilt) == -1)
 							continue;
 					}
 
@@ -673,19 +678,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 					ro[4] = new Integer(TaskModel.daysLeft(dd));
 				}
 
-				// strip newlines from the description
-				String de = task.getDescription();
-				String tmp = "";
-				for (int i = 0; de != null && i < de.length(); i++) {
-					char c = de.charAt(i);
-					if (c == '\n' || c == '\r') {
-						tmp += ' ';
-						continue;
-					}
-
-					tmp += c;
-				}
-				ro[5] = tmp;
+				ro[5] = task.getSummary();
 
 				// project
 				String ps = "";

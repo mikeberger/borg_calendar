@@ -127,10 +127,7 @@ public class Subtask extends KeyedEntity<Subtask> implements CalendarEntity {
 				try {
 					t = TaskModel.getReference().getTask(Task);
 					if (t != null) {
-						taskDesc = t.getDescription();
-						int newlineIndex = taskDesc.indexOf('\n');
-						if (newlineIndex != -1)
-							taskDesc = taskDesc.substring(0, newlineIndex);
+						taskDesc = t.getSummary();
 					}
 				} catch (Exception e) {
 					Errmsg.getErrorHandler().errmsg(e);

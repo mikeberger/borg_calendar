@@ -54,6 +54,7 @@ public class Task extends KeyedEntity<Task> implements CalendarEntity {
 	private String Resolution;
 	private String Category;
 	private Integer Project;
+	private String summary;
 
 	
 	/* (non-Javadoc)
@@ -102,10 +103,23 @@ public class Task extends KeyedEntity<Task> implements CalendarEntity {
 		 String abb = "";
          if (showabb.equals("true"))
              abb = "BT" + getKey() + " ";
-         String de = abb + getDescription();
-         String tx = de.replace('\n', ' ');
-
-         return tx;
+         return abb + getSummary();
+	}
+	
+	// for backwards compatibility
+	public String getSummary(){
+		if( summary != null && !summary.isEmpty())
+			return summary;
+		
+		if( Description != null && !Description.isEmpty())
+		{
+			String de = Description;
+			if( de.indexOf('\n') != -1)
+				de = de.substring(0,de.indexOf('\n'));
+			return de;
+		}
+		
+		return "";
 	}
 
 	/* (non-Javadoc)
@@ -126,6 +140,7 @@ public class Task extends KeyedEntity<Task> implements CalendarEntity {
 		dst.setResolution( getResolution() );
 		dst.setCategory( getCategory() );
 		dst.setProject( getProject() );
+		dst.setSummary( getSummary() );
 		return(dst);
 	}
 }

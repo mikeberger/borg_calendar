@@ -112,7 +112,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 					Integer.parseInt(at.getPath()));
 			if (ap != null) {
 				return (Resource.getResourceString("task") + "["
-						+ ap.getDescription() + "]");
+						+ ap.getSummary() + "]");
 			}
 		} else if (at.getLinkType().equals(LinkType.ADDRESS.toString())) {
 			Address ap = AddressModel.getReference().getAddress(

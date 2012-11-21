@@ -40,6 +40,10 @@ import net.sf.borg.model.entity.Tasklog;
  */
 public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
 
+	public TaskJdbcDB() {
+		new JdbcDBUpgrader("select summary from tasks",
+				"alter table tasks add column summary longvarchar;alter table tasks modify column description longvarchar").upgrade();
+	}
 
     /* (non-Javadoc)
      * @see net.sf.borg.model.db.EntityDB#addObj(net.sf.borg.model.entity.KeyedEntity)
@@ -48,8 +52,8 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
     public void addObj(Task task) throws Exception {
         PreparedStatement stmt = JdbcDB.getConnection()
                 .prepareStatement("INSERT INTO tasks ( tasknum, start_date, due_date, person_assigned,"
-                        + " priority, state, type, description, resolution, category, close_date, project) VALUES "
-                        + "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                        + " priority, state, type, description, resolution, category, close_date, project, summary) VALUES "
+                        + "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
         stmt.setInt(1, task.getKey());
        
@@ -84,6 +88,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
             stmt.setInt(12, task.getProject().intValue());
         else
             stmt.setNull(12, java.sql.Types.INTEGER);
+        stmt.setString(13, task.getSummary());
         stmt.executeUpdate();
 
         writeCache(task);
@@ -188,6 +193,8 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
         if (r.getDate("close_date") != null)
             task.setCompletionDate(new java.util.Date(r.getDate("close_date").getTime()));
         task.setProject((Integer) r.getObject("project"));
+        task.setSummary(r.getString("summary"));
+
         return task;
     }
 
@@ -199,7 +206,7 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
         PreparedStatement stmt = JdbcDB.getConnection()
                 .prepareStatement("UPDATE tasks SET  start_date = ?, due_date = ?, person_assigned = ?,"
                         + " priority = ?, state = ?, type = ?, description = ?, resolution = ?,"
-                        + " category = ?, close_date = ?, project = ? WHERE tasknum = ?");
+                        + " category = ?, close_date = ?, project = ?, summary = ? WHERE tasknum = ?");
 
         
         java.util.Date sd = task.getStartDate();
@@ -230,7 +237,9 @@ public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
             stmt.setInt(11, task.getProject().intValue());
         else
             stmt.setNull(11, java.sql.Types.INTEGER);
-        stmt.setInt(12, task.getKey());
+        stmt.setString(12, task.getSummary());
+
+        stmt.setInt(13, task.getKey());
 
         stmt.executeUpdate();
 

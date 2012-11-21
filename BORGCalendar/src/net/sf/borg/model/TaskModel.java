@@ -1365,7 +1365,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 				if (!CategoryModel.getReference().isShown(t.getCategory()))
 					continue;
 
-				String tx = t.getDescription() + " " + t.getResolution();
+				String tx = t.getSummary() + " " + t.getDescription() + " " + t.getResolution();
 				Collection<Subtask> subtasks = this.getSubTasks(t.getKey());
 				for (Subtask st : subtasks) {
 					tx += " " + st.getDescription();

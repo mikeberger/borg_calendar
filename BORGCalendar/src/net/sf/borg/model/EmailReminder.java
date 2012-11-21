@@ -170,8 +170,7 @@ public class EmailReminder {
 			for (Task task : tasks) {
 				// add each task to the email - and remove newlines
 				tx += "Task[" + task.getKey() + "] ";
-				String de = task.getDescription();
-				tx += de.replace('\n', ' ');
+				tx += task.getSummary();
 				tx += "\n";
 			}
 		}

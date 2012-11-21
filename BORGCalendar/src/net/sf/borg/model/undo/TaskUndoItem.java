@@ -108,7 +108,7 @@ public class TaskUndoItem extends UndoItem<Task> {
 	 * @return the string
 	 */
 	static private String itemString(Task st) {
-		return st.getDescription();
+		return st.getSummary();
 	}
 
 	/**

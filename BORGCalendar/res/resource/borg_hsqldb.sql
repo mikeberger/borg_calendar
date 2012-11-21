@@ -96,11 +96,12 @@ CREATE CACHED TABLE tasks (
   priority integer default '3' NOT NULL,
   state varchar(10) default '' NOT NULL,
   type varchar(10) default '' NOT NULL,
-  description longvarchar NOT NULL,
+  description longvarchar,
   resolution longvarchar,
   category varchar(10) default NULL,
   close_date date default NULL,
   project integer default NULL,
+  summary longvarchar NOT NULL,
   PRIMARY KEY  (tasknum),
   FOREIGN KEY (project) REFERENCES projects ( id)
      ON DELETE CASCADE

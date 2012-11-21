@@ -142,8 +142,8 @@ public class TaskReminderInstance extends ReminderInstance {
 			// delete it if the text changed - will be added back in
 			// periodic check for
 			// popups
-			if (!task.getDescription()
-					.equals(orig.getDescription())) {
+			if (!task.getSummary()
+					.equals(orig.getSummary())) {
 				return true;
 			}
 

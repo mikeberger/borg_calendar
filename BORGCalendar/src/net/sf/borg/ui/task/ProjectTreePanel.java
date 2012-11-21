@@ -500,11 +500,8 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 					&& TaskModel.isClosed(task))
 				continue;
 
-			String taskdesc = task.getDescription();
-			int newlineIndex = taskdesc.indexOf('\n');
-			if (newlineIndex != -1)
-				taskdesc = taskdesc.substring(0, newlineIndex);
-
+			String taskdesc = task.getSummary();
+			
 			if (Prefs.getBoolPref(PrefName.TASK_TREE_SHOW_STATUS)) {
 				node.add(new DefaultMutableTreeNode(new Node("["
 						+ task.getKey() + "-" + task.getState() + "] "

@@ -171,14 +171,14 @@ public class TaskView extends DockableView {
 			 */
 			int days = TaskModel.daysLeft(dd);
 			if (!isSelected) {
-				// yellow alert 
+				// yellow alert
 				if (days < Prefs.getIntPref(PrefName.YELLOW_DAYS))
 					this.setBackground(new Color(255, 255, 175));
 
 				if (days < Prefs.getIntPref(PrefName.ORANGE_DAYS))
 					this.setBackground(new Color(255, 200, 120));
 
-				// red alert 
+				// red alert
 				if (days < Prefs.getIntPref(PrefName.RED_DAYS)) {
 					this.setBackground(new Color(255, 120, 120));
 				}
@@ -308,6 +308,8 @@ public class TaskView extends DockableView {
 	/** The task tabbed panel. */
 	private JTabbedPane taskTabbedPanel;
 
+	private JTextField summaryText;
+
 	/** The description text. */
 	private JTextArea descriptionText;
 
@@ -403,7 +405,6 @@ public class TaskView extends DockableView {
 	public String getFrameTitle() {
 		return windowTitle;
 	}
-
 
 	/**
 	 * Gets the selected subtask ids.
@@ -507,6 +508,8 @@ public class TaskView extends DockableView {
 		ResourceHelper.setText(categoryLabel, "Category");
 		categoryComboBox = new JComboBox();
 		categoryLabel.setLabelFor(categoryComboBox);
+		
+		summaryText = new JTextField();
 
 		taskInformationPanel.add(lblItemNum, GridBagConstraintsFactory.create(
 				0, 0, GridBagConstraints.BOTH, 0.0, 0.0));
@@ -568,6 +571,16 @@ public class TaskView extends DockableView {
 		topPanel.add(taskInformationPanel, GridBagConstraintsFactory.create(0,
 				0, GridBagConstraints.BOTH, 1.0, 0.0));
 
+		JLabel l = new JLabel();
+		l.setText(Resource.getResourceString("summary"));
+		taskInformationPanel.add(l, GridBagConstraintsFactory.create(0, 3,
+				GridBagConstraints.BOTH));
+		
+		GridBagConstraints gbc = GridBagConstraintsFactory.create(1, 3,
+				GridBagConstraints.BOTH);
+		gbc.gridwidth = GridBagConstraints.REMAINDER;
+		taskInformationPanel.add(summaryText, gbc);
+		
 		/*
 		 * task tabbed panel
 		 */
@@ -745,11 +758,10 @@ public class TaskView extends DockableView {
 		subTaskTable.getSelectionModel().setSelectionMode(
 				ListSelectionModel.SINGLE_SELECTION);
 
-		subTaskTable.getModel().addTableModelListener(new TableModelListener(){
+		subTaskTable.getModel().addTableModelListener(new TableModelListener() {
 
 			@Override
 			public void tableChanged(TableModelEvent arg0) {
-
 
 				// ignore the table sorters events - we only care about the
 				// underlying table model - which is tablesorter.newtablemodel
@@ -757,19 +769,19 @@ public class TaskView extends DockableView {
 				if (arg0.getSource() instanceof TableSorter)
 					return;
 
-
 				// ignore insert - this only happens when blank rows are added
 				if (arg0.getType() == TableModelEvent.INSERT)
 					return;
 
-				// always maintain a new "add" row as the table is updated (without
+				// always maintain a new "add" row as the table is updated
+				// (without
 				// being saved)
 
 				// ignore delete events when deciding to add a blank row
 				// problem caused when the table is cleared
 				if (arg0.getType() == TableModelEvent.DELETE)
 					return;
-				
+
 				TableSorter model = (TableSorter) subTaskTable.getModel();
 				for (int i = 0; i < model.getRowCount(); i++) {
 					String text = (String) model.getValueAt(i, 2);
@@ -778,132 +790,124 @@ public class TaskView extends DockableView {
 						return;
 					}
 				}
-				Object o[] = { new Boolean(false), null, null, null, null, null, null };
+				Object o[] = { new Boolean(false), null, null, null, null,
+						null, null };
 				model.addRow(o);
 			}
-			
+
 		});
 
 		// sort by due date
-		//ts.sortByColumn(4);
+		// ts.sortByColumn(4);
 		ts.addMouseListenerToHeaderInTable(subTaskTable);
 
 		// popup menu
 		new PopupMenuHelper(subTaskTable, new PopupMenuHelper.Entry[] {
-				
-				new PopupMenuHelper.Entry(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent evt) {
 
-						TableSorter ts2 = (TableSorter) subTaskTable.getModel();
-						Integer ids[] = getSelectedSubtaskIds();
-						for (int i = 0; i < ids.length; ++i) {
-							if (ids[i] == null)
-								continue;
-							for (int row = 0; row < ts2.getRowCount(); row++) {
-								Integer rowid = (Integer) ts2
-										.getValueAt(row, 1);
-								if (rowid != null
-										&& rowid.intValue() == ids[i]
-												.intValue()) {
-									ts2.setValueAt(null, row, 4);
-									break;
-								}
-							}
+		new PopupMenuHelper.Entry(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent evt) {
+
+				TableSorter ts2 = (TableSorter) subTaskTable.getModel();
+				Integer ids[] = getSelectedSubtaskIds();
+				for (int i = 0; i < ids.length; ++i) {
+					if (ids[i] == null)
+						continue;
+					for (int row = 0; row < ts2.getRowCount(); row++) {
+						Integer rowid = (Integer) ts2.getValueAt(row, 1);
+						if (rowid != null
+								&& rowid.intValue() == ids[i].intValue()) {
+							ts2.setValueAt(null, row, 4);
+							break;
 						}
 					}
-				}, "Clear_DueDate"),
-				new PopupMenuHelper.Entry(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent evt) {
+				}
+			}
+		}, "Clear_DueDate"), new PopupMenuHelper.Entry(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent evt) {
 
-						TableSorter ts2 = (TableSorter) subTaskTable.getModel();
+				TableSorter ts2 = (TableSorter) subTaskTable.getModel();
 
-						int[] indices = subTaskTable.getSelectedRows();
-						if (indices.length == 0)
-							return;
+				int[] indices = subTaskTable.getSelectedRows();
+				if (indices.length == 0)
+					return;
 
-						// prompt user for due date
-						DateDialog dlg = new DateDialog(null);
-						dlg.setCalendar(new GregorianCalendar());
-						dlg.setVisible(true);
-						Calendar dlgcal = dlg.getCalendar();
-						if (dlgcal == null)
-							return;
+				// prompt user for due date
+				DateDialog dlg = new DateDialog(null);
+				dlg.setCalendar(new GregorianCalendar());
+				dlg.setVisible(true);
+				Calendar dlgcal = dlg.getCalendar();
+				if (dlgcal == null)
+					return;
 
-						// set the due date
-						Integer ids[] = getSelectedSubtaskIds();
-						for (int i = 0; i < ids.length; ++i) {
-							if (ids[i] == null)
-								continue;
-							for (int row = 0; row < ts2.getRowCount(); row++) {
-								Integer rowid = (Integer) ts2
-										.getValueAt(row, 1);
-								if (rowid != null
-										&& rowid.intValue() == ids[i]
-												.intValue()) {
-									ts2.setValueAt(dlgcal.getTime(), row, 4);
-									break;
-								}
-							}
+				// set the due date
+				Integer ids[] = getSelectedSubtaskIds();
+				for (int i = 0; i < ids.length; ++i) {
+					if (ids[i] == null)
+						continue;
+					for (int row = 0; row < ts2.getRowCount(); row++) {
+						Integer rowid = (Integer) ts2.getValueAt(row, 1);
+						if (rowid != null
+								&& rowid.intValue() == ids[i].intValue()) {
+							ts2.setValueAt(dlgcal.getTime(), row, 4);
+							break;
 						}
 					}
-				}, "Set_DueDate"),
-				new PopupMenuHelper.Entry(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent evt) {
+				}
+			}
+		}, "Set_DueDate"), new PopupMenuHelper.Entry(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent evt) {
 
-						TableSorter ts2 = (TableSorter) subTaskTable.getModel();
-						Integer ids[] = getSelectedSubtaskIds();
-						if (ids.length == 0)
-							return;
+				TableSorter ts2 = (TableSorter) subTaskTable.getModel();
+				Integer ids[] = getSelectedSubtaskIds();
+				if (ids.length == 0)
+					return;
 
-						// confirm delete
-						int ret = JOptionPane.showConfirmDialog(null, Resource
-								.getResourceString("Really_Delete_")
-								+ "?", Resource
-								.getResourceString("Confirm_Delete"),
-								JOptionPane.OK_CANCEL_OPTION,
-								JOptionPane.QUESTION_MESSAGE);
-						if (ret != JOptionPane.OK_OPTION)
-							return;
+				// confirm delete
+				int ret = JOptionPane.showConfirmDialog(null,
+						Resource.getResourceString("Really_Delete_") + "?",
+						Resource.getResourceString("Confirm_Delete"),
+						JOptionPane.OK_CANCEL_OPTION,
+						JOptionPane.QUESTION_MESSAGE);
+				if (ret != JOptionPane.OK_OPTION)
+					return;
 
-						// to delete, we have to save the id in a list for
-						// deletion and
-						// null out the table rows so it is not added back
-						for (int i = 0; i < ids.length; ++i) {
-							if (ids[i] == null)
-								continue;
+				// to delete, we have to save the id in a list for
+				// deletion and
+				// null out the table rows so it is not added back
+				for (int i = 0; i < ids.length; ++i) {
+					if (ids[i] == null)
+						continue;
 
-							subTaskIdsToBeDeleted.add(ids[i]);
+					subTaskIdsToBeDeleted.add(ids[i]);
 
-							for (int row = 0; row < ts2.getRowCount(); row++) {
-								Integer rowid = (Integer) ts2
-										.getValueAt(row, 1);
-								if (rowid != null
-										&& rowid.intValue() == ids[i]
-												.intValue()) {
-									// clear the row
-									ts2.setValueAt(new Boolean(false), row, 0);
-									ts2.setValueAt(null, row, 1);
-									ts2.setValueAt(null, row, 2);
-									ts2.setValueAt(null, row, 3);
-									ts2.setValueAt(null, row, 4);
-									ts2.setValueAt(null, row, 5);
-									ts2.setValueAt(null, row, 6);
-									ts2.setValueAt(null, row, 7);
-									break;
-								}
-							}
-						}
-
-						// if table is now empty - add 1 row back so the user
-						// can edit
-						if (ts2.getRowCount() == 0) {
-							insertSubtask();
+					for (int row = 0; row < ts2.getRowCount(); row++) {
+						Integer rowid = (Integer) ts2.getValueAt(row, 1);
+						if (rowid != null
+								&& rowid.intValue() == ids[i].intValue()) {
+							// clear the row
+							ts2.setValueAt(new Boolean(false), row, 0);
+							ts2.setValueAt(null, row, 1);
+							ts2.setValueAt(null, row, 2);
+							ts2.setValueAt(null, row, 3);
+							ts2.setValueAt(null, row, 4);
+							ts2.setValueAt(null, row, 5);
+							ts2.setValueAt(null, row, 6);
+							ts2.setValueAt(null, row, 7);
+							break;
 						}
 					}
-				}, "Delete"), });
+				}
+
+				// if table is now empty - add 1 row back so the user
+				// can edit
+				if (ts2.getRowCount() == 0) {
+					insertSubtask();
+				}
+			}
+		}, "Delete"), });
 
 	}
 
@@ -998,10 +1002,11 @@ public class TaskView extends DockableView {
 			Boolean closed = (Boolean) ts.getValueAt(r, 0);
 
 			Date crd = (Date) ts.getValueAt(r, 3);
-			// default subtask start date to the task start date unless the task started in the past
+			// default subtask start date to the task start date unless the task
+			// started in the past
 			if (crd == null && task.getStartDate().before(new Date()))
 				crd = new Date();
-			else if( crd == null)
+			else if (crd == null)
 				crd = task.getStartDate();
 			Date dd = (Date) ts.getValueAt(r, 4);
 			Date cd = (Date) ts.getValueAt(r, 7);
@@ -1074,9 +1079,10 @@ public class TaskView extends DockableView {
 	private void savetask() {
 
 		// validate description
-		if (descriptionText.getText() == null
-				|| descriptionText.getText().equals("")) {
-			Errmsg.getErrorHandler().notice(Resource.getResourceString("empty_desc"));
+		if (summaryText.getText() == null
+				|| summaryText.getText().equals("")) {
+			Errmsg.getErrorHandler().notice(
+					Resource.getResourceString("empty_summ"));
 			return;
 		}
 		try {
@@ -1096,8 +1102,10 @@ public class TaskView extends DockableView {
 				// ah legacy crap - add any pre-defined subtasks when creating
 				// the new task
 				// ancient versions of borg allowed something like this
-				String prefDefinedTasks[] = TaskModel.getReference()
-						.getTaskTypes().getSubTasks(
+				String prefDefinedTasks[] = TaskModel
+						.getReference()
+						.getTaskTypes()
+						.getSubTasks(
 								(String) taskTypeComboBox.getSelectedItem());
 				for (int i = 0; i < prefDefinedTasks.length; i++) {
 					Object o[] = { new Boolean(false), null,
@@ -1105,12 +1113,16 @@ public class TaskView extends DockableView {
 					ts.addRow(o);
 				}
 				// set to initial state
-				task.setState(TaskModel.getReference().getTaskTypes()
+				task.setState(TaskModel
+						.getReference()
+						.getTaskTypes()
 						.getInitialState(
 								(String) taskTypeComboBox.getSelectedItem()));
 			} else if (num.equals("CLONE")) {
 				// set to initial state
-				task.setState(TaskModel.getReference().getTaskTypes()
+				task.setState(TaskModel
+						.getReference()
+						.getTaskTypes()
 						.getInitialState(
 								(String) taskTypeComboBox.getSelectedItem()));
 			} else {
@@ -1137,6 +1149,7 @@ public class TaskView extends DockableView {
 			Integer pri = (Integer) priorityText.getSelectedItem();
 			task.setPriority(pri);
 			task.setPersonAssigned(personAssignedText.getText());
+			task.setSummary(summaryText.getText());
 			task.setDescription(descriptionText.getText());
 			task.setResolution(resolutionText.getText());
 
@@ -1169,8 +1182,8 @@ public class TaskView extends DockableView {
 					if (id == null || id.intValue() == 0)
 						continue;
 					if (closed.booleanValue() != true) {
-						Errmsg.getErrorHandler().notice(Resource
-								.getResourceString("open_subtasks"));
+						Errmsg.getErrorHandler().notice(
+								Resource.getResourceString("open_subtasks"));
 						return;
 					}
 				}
@@ -1325,6 +1338,7 @@ public class TaskView extends DockableView {
 			}
 
 			descriptionText.setText(task.getDescription());
+			summaryText.setText(task.getSummary());
 			resolutionText.setText(task.getResolution());
 
 			statusComboBox.addItem(task.getState());
@@ -1346,12 +1360,12 @@ public class TaskView extends DockableView {
 						subtask.getDescription(),
 						subtask.getStartDate(),
 						subtask.getDueDate(),
-						subtask.getDueDate() != null ? new Integer(TaskModel
-								.daysBetween(subtask.getStartDate(), subtask
-										.getDueDate())) : null,
-						subtask.getDueDate() != null ? new Integer(TaskModel
-								.daysLeft(subtask.getDueDate())) : null,
-						subtask.getCloseDate() };
+						subtask.getDueDate() != null ? new Integer(
+								TaskModel.daysBetween(subtask.getStartDate(),
+										subtask.getDueDate())) : null,
+						subtask.getDueDate() != null ? new Integer(
+								TaskModel.daysLeft(subtask.getDueDate()))
+								: null, subtask.getCloseDate() };
 
 				ts.addRow(o);
 			}
@@ -1446,7 +1460,9 @@ public class TaskView extends DockableView {
 			taskIdText.setEditable(false);
 
 			statusComboBox.removeAllItems();
-			statusComboBox.addItem(TaskModel.getReference().getTaskTypes()
+			statusComboBox.addItem(TaskModel
+					.getReference()
+					.getTaskTypes()
 					.getInitialState(
 							taskTypeComboBox.getSelectedItem().toString()));
 			statusComboBox.setEnabled(false);

@@ -728,7 +728,7 @@ public class SearchView extends DockableView implements Module {
 					tm.addRow(ro);
 					tm.tableChanged(new TableModelEvent(tm));
 				} else if (item instanceof Task && taskCheckBox.isSelected()) {
-					ro[0] = ((Task) item).getDescription();
+					ro[0] = ((Task) item).getSummary();
 					ro[1] = Resource.getResourceString("task");
 					ro[2] = null;
 					ro[3] = new Integer(item.getKey());

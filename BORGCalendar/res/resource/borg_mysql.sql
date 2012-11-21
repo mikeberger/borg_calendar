@@ -85,11 +85,12 @@ CREATE TABLE `tasks` (
   `priority` tinyint(4) default '3',
   `state` varchar(10) NOT NULL default '',
   `type` varchar(10) NOT NULL default '',
-  `description` text NOT NULL,
+  `description` text,
   `resolution` text,
   `category` varchar(10) default NULL,
   `close_date` date default NULL,
   project integer default NULL,
+   `summary` text NOT NULL,
   PRIMARY KEY  (`tasknum`),
   FOREIGN KEY (project) REFERENCES projects ( id)
      ON DELETE CASCADE
