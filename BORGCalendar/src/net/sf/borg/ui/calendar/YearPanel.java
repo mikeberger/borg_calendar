@@ -326,8 +326,6 @@ public class YearPanel extends DockableView implements Printable,
 								int smfontHeight = g2.getFontMetrics()
 										.getHeight();
 
-								// zajistuje vykresleni udalosti do mesicniho
-								// nahledu
 								// set initial Y coord for item text
 								int notey = rowtop + smfontHeight;
 

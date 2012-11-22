@@ -354,7 +354,7 @@ class MainMenu {
 		item.setText(text);
 		item.addActionListener(action);
 
-		//helpmenu.add(item);
+		//always insert above About item and its separator bar
 		helpmenu.insert(item, helpmenu.getItemCount()-2);
 	}
 	
