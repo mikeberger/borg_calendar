@@ -5,3 +5,11 @@ syntax: regexp
 ^BORGCalendar/dist$
 syntax: regexp
 ^BORGCalendar/borghelp/JavaHelpSearch$
+syntax: regexp
+^BORGCalendar/classes$
+syntax: regexp
+^BORGPlugins/bin$
+syntax: regexp
+^BORGPlugins/build$
+syntax: regexp
+^BORGPlugins/dist$
