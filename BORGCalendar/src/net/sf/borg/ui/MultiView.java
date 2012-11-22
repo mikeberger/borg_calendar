@@ -36,6 +36,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
@@ -255,6 +256,15 @@ public class MultiView extends View {
 		bar.add(button, toolBarInsertIndex);
 
 		mainMenu.addAction(icon, tooltip, action, toolBarInsertIndex++);
+	}
+	
+	/**
+	 * add an item to the options menu
+	 * @param item the item to add
+	 */
+	public void addOptionsMenuItem(JMenuItem item)
+	{
+		mainMenu.addOptionsMenuItem(item);
 	}
 
 	private int toolBarInsertIndex = 0;

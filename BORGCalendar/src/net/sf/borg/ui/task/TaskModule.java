@@ -7,14 +7,19 @@ import java.awt.event.ActionListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 
+import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.Model.ChangeEvent;
+import net.sf.borg.model.TaskModel;
 import net.sf.borg.ui.DockableView;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.MultiView.Module;
 import net.sf.borg.ui.MultiView.ViewType;
+import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.SunTrayIconProxy;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 
@@ -71,6 +76,52 @@ public class TaskModule extends DockableView implements Module {
 		setLayout(new java.awt.GridBagLayout());
 		add(taskTabs, GridBagConstraintsFactory
 				.create(0, 0, GridBagConstraints.BOTH, 1.0, 1.0));
+		
+		JMenuItem edittypes = new JMenuItem();
+		JMenuItem resetst = new JMenuItem();
+		ResourceHelper.setText(edittypes, "edit_types");
+		edittypes.addActionListener(new java.awt.event.ActionListener() {
+			@Override
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				try {
+					TaskConfigurator.getReference().setVisible(true);
+				} catch (Exception e) {
+					Errmsg.getErrorHandler().errmsg(e);
+				}
+			}
+		});
+
+		MultiView.getMainView().addOptionsMenuItem(edittypes);
+
+		ResourceHelper.setText(resetst, "Reset_Task_States_to_Default");
+		resetst.addActionListener(new java.awt.event.ActionListener() {
+			@Override
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				resetstActionPerformed();
+			}
+		});
+
+		MultiView.getMainView().addOptionsMenuItem(resetst);
+		
+	}
+	
+	/**
+	 * reset task state action
+	 */
+	private void resetstActionPerformed() {
+		try {
+			String msg = Resource.getResourceString("reset_state_warning");
+			int ret = JOptionPane.showConfirmDialog(null, msg, Resource
+					.getResourceString("Import_WARNING"),
+					JOptionPane.OK_CANCEL_OPTION);
+
+			if (ret != JOptionPane.OK_OPTION)
+				return;
+			TaskModel taskmod_ = TaskModel.getReference();
+			taskmod_.getTaskTypes().loadDefault();
+		} catch (Exception e) {
+			Errmsg.getErrorHandler().errmsg(e);
+		}
 	}
 
 	@Override

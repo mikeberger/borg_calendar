@@ -45,14 +45,11 @@ import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.ExportImport;
 import net.sf.borg.model.Model;
-import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.db.jdbc.JdbcDB;
 import net.sf.borg.model.undo.UndoLog;
 import net.sf.borg.ui.options.OptionsView;
-import net.sf.borg.ui.task.TaskConfigurator;
 import net.sf.borg.ui.util.ScrolledDialog;
 
-// TODO - javadoc not really done, still contains way too much logic
 /**
  * The borg main menu bar
  * 
@@ -61,6 +58,7 @@ class MainMenu {
 
 	private JMenu actionMenu = new JMenu();
 	private JMenu helpmenu = new JMenu();
+	private JMenu optionsMenu = new JMenu();
 	private JMenu pluginMenu = null;
 	private JMenuBar menuBar = new JMenuBar();
 
@@ -128,11 +126,10 @@ class MainMenu {
 		 * 
 		 * Option Menu
 		 */
-		JMenu OptionMenu = new JMenu();
 
-		OptionMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource(
+		optionsMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 				"/resource/Preferences16.gif")));
-		ResourceHelper.setText(OptionMenu, "Options");
+		ResourceHelper.setText(optionsMenu, "Options");
 
 		JMenuItem editPrefsMenuItem = new JMenuItem();
 		ResourceHelper.setText(editPrefsMenuItem, "ep");
@@ -143,7 +140,7 @@ class MainMenu {
 						OptionsView.getReference().setVisible(true);
 					}
 				});
-		OptionMenu.add(editPrefsMenuItem);
+		optionsMenu.add(editPrefsMenuItem);
 
 		JMenuItem exportPrefsMI = new JMenuItem();
 		exportPrefsMI.setIcon(new javax.swing.ImageIcon(getClass().getResource(
@@ -155,7 +152,7 @@ class MainMenu {
 				expPrefs();
 			}
 		});
-		OptionMenu.add(exportPrefsMI);
+		optionsMenu.add(exportPrefsMI);
 
 		JMenuItem importPrefsMI = new JMenuItem();
 		importPrefsMI.setIcon(new javax.swing.ImageIcon(getClass().getResource(
@@ -167,39 +164,9 @@ class MainMenu {
 				impPrefs();
 			}
 		});
-		OptionMenu.add(importPrefsMI);
+		optionsMenu.add(importPrefsMI);
 
-		/*
-		 * Task State Options Sub Menu
-		 */
-		JMenu tsm = new JMenu(Resource.getResourceString("task_state_options"));
-		JMenuItem edittypes = new JMenuItem();
-		JMenuItem resetst = new JMenuItem();
-		ResourceHelper.setText(edittypes, "edit_types");
-		edittypes.addActionListener(new java.awt.event.ActionListener() {
-			@Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				try {
-					TaskConfigurator.getReference().setVisible(true);
-				} catch (Exception e) {
-					Errmsg.getErrorHandler().errmsg(e);
-				}
-			}
-		});
-
-		tsm.add(edittypes);
-
-		ResourceHelper.setText(resetst, "Reset_Task_States_to_Default");
-		resetst.addActionListener(new java.awt.event.ActionListener() {
-			@Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				resetstActionPerformed();
-			}
-		});
-
-		tsm.add(resetst);
-		OptionMenu.add(tsm);
-		menuBar.add(OptionMenu);
+		menuBar.add(optionsMenu);
 
 		/*
 		 * category menu
@@ -309,7 +276,10 @@ class MainMenu {
 				AboutMIActionPerformed();
 			}
 		});
+		
 		helpmenu.add(AboutMI);
+		helpmenu.insertSeparator(helpmenu.getItemCount()-1);
+
 
 		menuBar.add(helpmenu);
 
@@ -384,7 +354,17 @@ class MainMenu {
 		item.setText(text);
 		item.addActionListener(action);
 
-		helpmenu.add(item);
+		//helpmenu.add(item);
+		helpmenu.insert(item, helpmenu.getItemCount()-2);
+	}
+	
+	/**
+	 * add a menu item to the options menu
+	 * @param item the item
+	 */
+	public void addOptionsMenuItem(JMenuItem item)
+	{
+		optionsMenu.add(item);
 	}
 
 	/**
@@ -727,23 +707,6 @@ class MainMenu {
 
 	}
 
-	/**
-	 * reset task state action
-	 */
-	private void resetstActionPerformed() {
-		try {
-			String msg = Resource.getResourceString("reset_state_warning");
-			int ret = JOptionPane.showConfirmDialog(null, msg, Resource
-					.getResourceString("Import_WARNING"),
-					JOptionPane.OK_CANCEL_OPTION);
-
-			if (ret != JOptionPane.OK_OPTION)
-				return;
-			TaskModel taskmod_ = TaskModel.getReference();
-			taskmod_.getTaskTypes().loadDefault();
-		} catch (Exception e) {
-			Errmsg.getErrorHandler().errmsg(e);
-		}
-	}
+	
 
 }
