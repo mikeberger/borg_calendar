@@ -1125,19 +1125,19 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 		}
 
 		Date d = startTimePanel.getTime();
-
-		// compute new date/time
 		GregorianCalendar g = new GregorianCalendar();
 		g.setTime(d);
+		// compute new date/time
 		if (nd == null) {
 			g.set(Calendar.YEAR, year_);
 			g.set(Calendar.MONTH, month_);
 			g.set(Calendar.DATE, day_);
-		} else {
+		} else {	
 			GregorianCalendar g2 = new GregorianCalendar();
 			g2.setTime(nd);
-			g.set(Calendar.HOUR_OF_DAY, g2.get(Calendar.HOUR_OF_DAY));
-			g.set(Calendar.MINUTE, g2.get(Calendar.MINUTE));
+			g.set(Calendar.YEAR, g2.get(Calendar.YEAR));
+			g.set(Calendar.MONTH, g2.get(Calendar.MONTH));
+			g.set(Calendar.DATE, g2.get(Calendar.DATE));
 		}
 		appt.setDate(g.getTime());
 
