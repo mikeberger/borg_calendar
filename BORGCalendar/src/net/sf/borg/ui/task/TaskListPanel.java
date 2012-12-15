@@ -435,12 +435,13 @@ class TaskListPanel extends JPanel implements Model.Listener {
 				Resource.getResourceString("summary"),
 				Resource.getResourceString("Start_Date"),
 				Resource.getResourceString("Due_Date"),
+				Resource.getResourceString("close_date"),
 				Resource.getResourceString("duration"),
 				Resource.getResourceString("elapsed_time"),
 				Resource.getResourceString("project"),
 				Resource.getResourceString("Category") }, new Class[] {
 				Integer.class, String.class, String.class, Integer.class,
-				Integer.class, String.class, Date.class, Date.class,
+				Integer.class, String.class, Date.class, Date.class, Date.class,
 				Integer.class, Integer.class, String.class, String.class }));
 
 		// set up for sorting when a column header is clicked
@@ -470,6 +471,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 		taskTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 		// set column widths
+		taskTable.getColumnModel().getColumn(8).setPreferredWidth(100);
 		taskTable.getColumnModel().getColumn(7).setPreferredWidth(100);
 		taskTable.getColumnModel().getColumn(6).setPreferredWidth(100);
 		taskTable.getColumnModel().getColumn(5).setPreferredWidth(400);
@@ -637,21 +639,22 @@ class TaskListPanel extends JPanel implements Model.Listener {
 
 				// if we get here - we are displaying this task as a row
 				// so fill in an array of objects for the row
-				Object[] ro = new Object[12];
+				Object[] ro = new Object[13];
 				ro[0] = new Integer(task.getKey());
 				ro[1] = task.getState();
 				ro[2] = task.getType();
-				ro[11] = task.getCategory();
+				ro[12] = task.getCategory();
 				ro[3] = task.getPriority();
 				ro[6] = task.getStartDate();
 				ro[7] = task.getDueDate();
+				ro[8] = task.getCompletionDate();
 
 				// duration
 				if (task.getDueDate() != null) {
-					ro[8] = new Integer(TaskModel.daysBetween(task
+					ro[9] = new Integer(TaskModel.daysBetween(task
 							.getStartDate(), task.getDueDate()));
 				} else {
-					ro[8] = null;
+					ro[9] = null;
 				}
 
 				Date end = null;
@@ -664,9 +667,9 @@ class TaskListPanel extends JPanel implements Model.Listener {
 
 				// elapsed time
 				if (end == null) {
-					ro[9] = null;
+					ro[10] = null;
 				} else {
-					ro[9] = new Integer(TaskModel.daysBetween(task
+					ro[10] = new Integer(TaskModel.daysBetween(task
 							.getStartDate(), end));
 				}
 
@@ -699,7 +702,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 						}
 					}
 				}
-				ro[10] = ps;
+				ro[11] = ps;
 
 				// add the task row to table
 				tm.addRow(ro);
