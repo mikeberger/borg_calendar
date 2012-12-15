@@ -63,6 +63,7 @@ import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.SunTrayIconProxy;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 import net.sf.borg.ui.util.PasswordHelper;
+import net.sf.borg.ui.util.PopupMenuHelper;
 import net.sf.borg.ui.util.StripedTable;
 import net.sf.borg.ui.util.TableSorter;
 
@@ -104,6 +105,39 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 	 * encryption checkbox
 	 */
 	private JCheckBox encryptBox = null;
+	
+	private ActionListener renameAction = new ActionListener(){
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			
+			String name = getSelectedMemoName();
+			if (name == null) {
+				Errmsg.getErrorHandler().notice(Resource.getResourceString("Select_Memo_Warning"));
+				return;
+			}
+			
+			String newname = JOptionPane.showInputDialog(Resource
+					.getResourceString("Enter_Memo_Name"), name);
+			if (newname == null || newname.isEmpty() || newname.equals(name))
+				return;
+			
+			Memo m;
+			try {
+				m = MemoModel.getReference().getMemo(name);
+				m.setMemoName(newname);
+				MemoModel.getReference().saveMemo(m);
+				MemoModel.getReference().delete(name, false);
+				loadMemosFromModel();
+
+			} catch (Exception e1) {
+				Errmsg.getErrorHandler().errmsg(e1);
+			}
+			
+
+		}
+		
+	};
 
 	/**
 	 * constructor.
@@ -117,6 +151,11 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 		memoText.setEditable(false);
 		saveButton.setEnabled(false);
 		decryptButton.setEnabled(false);
+		
+		new PopupMenuHelper(memoListTable, new PopupMenuHelper.Entry[] {
+				new PopupMenuHelper.Entry(renameAction, "Rename")
+		});
+	
 
 		refresh();
 

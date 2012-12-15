@@ -49,8 +49,10 @@ import javax.swing.table.TableCellRenderer;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.CheckListModel;
+import net.sf.borg.model.MemoModel;
 import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.entity.CheckList;
+import net.sf.borg.model.entity.Memo;
 import net.sf.borg.ui.DockableView;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.SunTrayIconProxy;
@@ -136,7 +138,39 @@ public class CheckListPanel extends DockableView implements
 	/** The table of checklist items. */
 	private StripedTable itemTable = null;
 
+	private ActionListener renameAction = new ActionListener(){
 
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			
+			String name = getSelectedCheckListName();
+			if (name == null) {
+				Errmsg.getErrorHandler().notice(Resource.getResourceString("Select_CheckList_Warning"));
+				return;
+			}
+			
+			String newname = JOptionPane.showInputDialog(Resource
+					.getResourceString("Enter_CheckList_Name"), name);
+			if (newname == null || newname.isEmpty() || newname.equals(name))
+				return;
+			
+			CheckList m;
+			try {
+				m = CheckListModel.getReference().getCheckList(name);
+				m.setCheckListName(newname);
+				CheckListModel.getReference().saveCheckList(m);
+				CheckListModel.getReference().delete(name, false);
+				loadCheckListsFromModel();
+
+			} catch (Exception e1) {
+				Errmsg.getErrorHandler().errmsg(e1);
+			}
+			
+
+		}
+		
+	};
+	
 	/**
 	 * constructor.
 	 */
@@ -145,6 +179,11 @@ public class CheckListPanel extends DockableView implements
 
 		// initialize UI
 		initialize();
+		
+		new PopupMenuHelper(checkListListTable, new PopupMenuHelper.Entry[] {
+				new PopupMenuHelper.Entry(renameAction, "Rename")
+		});
+	
 
 		refresh();
 

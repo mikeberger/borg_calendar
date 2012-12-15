@@ -27,9 +27,11 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import javax.swing.JTable;
+import javax.swing.JComponent;
+import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+import javax.swing.JTable;
 
 import net.sf.borg.ui.ResourceHelper;
 
@@ -44,7 +46,7 @@ public class PopupMenuHelper {
 	 * Holds the Listener and ResourceKey for a Popup Menu Item
 	 */
 	public static class Entry {
-		
+
 		/** The listener. */
 		private ActionListener listener;
 
@@ -54,8 +56,10 @@ public class PopupMenuHelper {
 		/**
 		 * Instantiates a new entry.
 		 * 
-		 * @param listener the listener
-		 * @param resourceKey the resource key
+		 * @param listener
+		 *            the listener
+		 * @param resourceKey
+		 *            the resource key
 		 */
 		public Entry(ActionListener listener, String resourceKey) {
 			this.listener = listener;
@@ -81,40 +85,57 @@ public class PopupMenuHelper {
 		}
 	}
 
-
 	/**
-	 * mouse adapter for popping up the popup menu on right click for the selected row
+	 * mouse adapter for popping up the popup menu on right click for the
+	 * selected row
 	 */
 	private class MyPopupListener extends MouseAdapter {
-		
+
 		/**
 		 * show the popup menu if needed
 		 * 
-		 * @param e the mouse event
+		 * @param e
+		 *            the mouse event
 		 */
 		private void maybeShowPopup(MouseEvent e) {
 			if (e.isPopupTrigger()) {
 				// If the row we're right-clicking on isn't selected, select
 				// only that row.
-				int row = table.rowAtPoint(e.getPoint());
-				if (row != -1 && !table.isRowSelected(row)) {
-					table.getSelectionModel().setSelectionInterval(row, row);
+				if (component instanceof JTable) {
+					JTable t = (JTable) component;
+					int row = t.rowAtPoint(e.getPoint());
+					if (row != -1 && !t.isRowSelected(row)) {
+						t.getSelectionModel().setSelectionInterval(row, row);
+					}
+				}
+				if (component instanceof JList) {
+					JList t = (JList) component;
+					int index = t.locationToIndex(e.getPoint());
+					if (index != -1 && !t.isSelectedIndex(index)) {
+						t.setSelectedIndex(index);
+					}
 				}
 				popup.show(e.getComponent(), e.getX(), e.getY());
 			}
 		}
 
 		// MouseAdapter overrides
-		/* (non-Javadoc)
-		 * @see java.awt.event.MouseAdapter#mousePressed(java.awt.event.MouseEvent)
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * java.awt.event.MouseAdapter#mousePressed(java.awt.event.MouseEvent)
 		 */
 		@Override
 		public void mousePressed(MouseEvent e) {
 			maybeShowPopup(e);
 		}
 
-		/* (non-Javadoc)
-		 * @see java.awt.event.MouseAdapter#mouseReleased(java.awt.event.MouseEvent)
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * java.awt.event.MouseAdapter#mouseReleased(java.awt.event.MouseEvent)
 		 */
 		@Override
 		public void mouseReleased(MouseEvent e) {
@@ -129,16 +150,18 @@ public class PopupMenuHelper {
 	private JPopupMenu popup;
 
 	/** The table. */
-	private JTable table;
+	private JComponent component;
 
 	/**
 	 * Instantiates a new popup menu helper.
 	 * 
-	 * @param table the table
-	 * @param entries the entries
+	 * @param table
+	 *            the table
+	 * @param entries
+	 *            the entries
 	 */
-	public PopupMenuHelper(final JTable table, Entry[] entries) {
-		this.table = table;
+	public PopupMenuHelper(final JComponent c, Entry[] entries) {
+		this.component = c;
 
 		JMenuItem mnuitm;
 		menuItems = new JMenuItem[entries.length];
@@ -154,26 +177,38 @@ public class PopupMenuHelper {
 		}
 
 		// listen for mouse events
-		table.addMouseListener(new MyPopupListener());
-		
+		c.addMouseListener(new MyPopupListener());
+
 		// listen for context menu key event
-		table.addKeyListener(new KeyAdapter() {
+		c.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				switch (e.getKeyCode()) {
 				case 0x020D:
 					// this is the KeyEvent.VK_CONTEXT_MENU under JDK 1.5
-					int[] selIndices = table.getSelectedRows();
-					if (selIndices.length == 0)
-						return;
-					int rowIndex = selIndices[0];
-					Rectangle rct = table.getCellRect(rowIndex, 0, false);
-					popup.show(table, rct.x, rct.y + rct.height);
+					if (component instanceof JTable) {
+						JTable table = (JTable) component;
+						int[] selIndices = table.getSelectedRows();
+						if (selIndices.length == 0)
+							return;
+						int rowIndex = selIndices[0];
+						Rectangle rct = table.getCellRect(rowIndex, 0, false);
+						popup.show(c, rct.x, rct.y + rct.height);
+					}
+					else if( component instanceof JList)
+					{
+						JList t = (JList) component;
+						int index = t.getSelectedIndex();
+						if( index == -1 ) return;
+						Rectangle rct = t.getCellBounds(index, index);
+						popup.show(c, rct.x, rct.y + rct.height);
+					}
+
 					break;
+
 				}
 			}
 		});
 	}
-
 
 }
