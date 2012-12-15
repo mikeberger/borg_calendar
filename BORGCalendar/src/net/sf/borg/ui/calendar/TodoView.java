@@ -109,13 +109,12 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 	 * Adds user colors to the todo table
 	 */
 	class TodoTableCellRenderer extends DefaultTableCellRenderer {
-		
+
 		private TableCellRenderer originalRenderer = null;
 
 		private static final long serialVersionUID = 1L;
-		
-		TodoTableCellRenderer(TableCellRenderer orig)
-		{
+
+		TodoTableCellRenderer(TableCellRenderer orig) {
 			originalRenderer = orig;
 		}
 
@@ -129,12 +128,12 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 		@Override
 		public Component getTableCellRendererComponent(JTable table,
 				Object value, boolean isSelected, boolean hasFocus, int row,
-				int column) {			
-			
-			Component c = originalRenderer.getTableCellRendererComponent(table, value, isSelected,
-					hasFocus, row, column);
-			
-			if( !user_colors )
+				int column) {
+
+			Component c = originalRenderer.getTableCellRendererComponent(table,
+					value, isSelected, hasFocus, row, column);
+
+			if (!user_colors)
 				return c;
 
 			DateFormat sdf = DateFormat.getDateInstance();
@@ -149,33 +148,47 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 				Theme t = Theme.getCurrentTheme();
 				String color = table.getModel().getValueAt(row, 3).toString();
 				if (color.equals("red")) {
-					theTableCellComponent.setForeground(new Color(t.getTextColor1()));
+					theTableCellComponent.setForeground(new Color(t
+							.getTextColor1()));
 				} else if (color.equals("blue")) {
-					theTableCellComponent.setForeground(new Color(t.getTextColor2()));
+					theTableCellComponent.setForeground(new Color(t
+							.getTextColor2()));
 				} else if (color.equals("green")) {
-					theTableCellComponent.setForeground(new Color(t.getTextColor3()));
+					theTableCellComponent.setForeground(new Color(t
+							.getTextColor3()));
 				} else if (color.equals("black")) {
-					theTableCellComponent.setForeground(new Color(t.getTextColor4()));
+					theTableCellComponent.setForeground(new Color(t
+							.getTextColor4()));
 				} else if (color.equals("white")) {
-					theTableCellComponent.setForeground(new Color(t.getTextColor5()));
+					theTableCellComponent.setForeground(new Color(t
+							.getTextColor5()));
 				} else if (color.equals("navy")) {
-					theTableCellComponent.setForeground(new Color(t.getTaskTextColor()));
+					theTableCellComponent.setForeground(new Color(t
+							.getTaskTextColor()));
 				} else if (color.equals("brick")) {
-					theTableCellComponent.setForeground(new Color(t.getBirthdayTextColor()));
+					theTableCellComponent.setForeground(new Color(t
+							.getBirthdayTextColor()));
 				} else if (color.equals("purple")) {
-					theTableCellComponent.setForeground(new Color(t.getHolidayTextColor()));
+					theTableCellComponent.setForeground(new Color(t
+							.getHolidayTextColor()));
 				} else if (color.equals("pink") && column > 1) {
-					theTableCellComponent.setForeground(new Color(t.getTodayBg()));
+					theTableCellComponent.setForeground(new Color(t
+							.getTodayBg()));
 				} else {
 					theTableCellComponent.setForeground(Color.BLACK);
 				}
 
 				// special background color for the "today" divider row
-				if (table.getModel().getValueAt(row, 1).equals(
-						Resource.getResourceString("======_Today_======"))) {
-					theTableCellComponent.setBackground(new Color(t.getTodayBg()));
+				if (table
+						.getModel()
+						.getValueAt(row, 1)
+						.equals(Resource
+								.getResourceString("======_Today_======"))) {
+					theTableCellComponent.setBackground(new Color(t
+							.getTodayBg()));
 				} else {
-					theTableCellComponent.setBackground(new Color(t.getWeekdayBg()));
+					theTableCellComponent.setBackground(new Color(t
+							.getWeekdayBg()));
 
 				}
 			}
@@ -307,7 +320,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 
 	/** The todo text. */
 	private JTextField todoText;
-	
+
 	/** Spinner for todo priority. */
 	private JSpinner todoPrioritySpinner;
 
@@ -315,6 +328,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 	private boolean user_colors = false;
 
 	private JLabel totalLabel;
+
 	private JLabel getTotalLabel() {
 		if (totalLabel == null) {
 			totalLabel = new JLabel();
@@ -335,6 +349,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 		// listen for appt and task model changes
 		addModel(AppointmentModel.getReference());
 		addModel(TaskModel.getReference());
+		addModel(CategoryModel.getReference());
 
 		// init the gui components
 		initComponents();
@@ -346,9 +361,10 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 				Resource.getResourceString("To_Do"),
 				Resource.getResourceString("Category"),
 				Resource.getResourceString("Color"), "key",
-				Resource.getResourceString("Priority")}, new Class[] {
+				Resource.getResourceString("Priority") }, new Class[] {
 				Date.class, java.lang.String.class, java.lang.String.class,
-				java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class }));
+				java.lang.String.class, java.lang.Integer.class,
+				java.lang.Integer.class }));
 
 		todoTable.getColumnModel().getColumn(0).setPreferredWidth(140);
 		todoTable.getColumnModel().getColumn(1).setPreferredWidth(400);
@@ -358,12 +374,18 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 		user_colors = Prefs.getBoolPref(PrefName.UCS_ONTODO);
 
 		// set user color renderer
-		TableCellRenderer defaultObjectRenderer = todoTable.getDefaultRenderer(Object.class);
-		todoTable.setDefaultRenderer(Object.class, new TodoTableCellRenderer(defaultObjectRenderer));
-		TableCellRenderer defaultDateRenderer = todoTable.getDefaultRenderer(Date.class);
-		todoTable.setDefaultRenderer(Date.class, new TodoTableCellRenderer(defaultDateRenderer));
-		TableCellRenderer defaultIntegerRenderer = todoTable.getDefaultRenderer(Integer.class);
-		todoTable.setDefaultRenderer(Integer.class, new TodoTableCellRenderer(defaultIntegerRenderer));
+		TableCellRenderer defaultObjectRenderer = todoTable
+				.getDefaultRenderer(Object.class);
+		todoTable.setDefaultRenderer(Object.class, new TodoTableCellRenderer(
+				defaultObjectRenderer));
+		TableCellRenderer defaultDateRenderer = todoTable
+				.getDefaultRenderer(Date.class);
+		todoTable.setDefaultRenderer(Date.class, new TodoTableCellRenderer(
+				defaultDateRenderer));
+		TableCellRenderer defaultIntegerRenderer = todoTable
+				.getDefaultRenderer(Integer.class);
+		todoTable.setDefaultRenderer(Integer.class, new TodoTableCellRenderer(
+				defaultIntegerRenderer));
 
 		// remove the hidden columns - color and key
 		todoTable.removeColumn(todoTable.getColumnModel().getColumn(3));
@@ -385,7 +407,8 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 
 		// auto default blank date to today's date.
 		if (c == null) {
-			if (Prefs.getBoolPref(PrefName.TODO_QUICK_ENTRY_AUTO_SET_DATE_FIELD)) {
+			if (Prefs
+					.getBoolPref(PrefName.TODO_QUICK_ENTRY_AUTO_SET_DATE_FIELD)) {
 				c = new GregorianCalendar();
 				c.setTime(new Date());
 			}
@@ -393,7 +416,8 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 
 		// warn the user if text or date is missing
 		if (tdtext.length() == 0 || c == null) {
-			Errmsg.getErrorHandler().notice(Resource.getResourceString("todomissingdata"));
+			Errmsg.getErrorHandler().notice(
+					Resource.getResourceString("todomissingdata"));
 			return;
 		}
 
@@ -430,7 +454,6 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 			appt.setColor("white");
 		else
 			appt.setColor("black");
-		
 
 		// no repeating
 		appt.setFrequency(Repeat.ONCE);
@@ -445,14 +468,14 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 			appt.setCategory(cat);
 		}
 
-		appt.setPriority((Integer)todoPrioritySpinner.getValue());
+		appt.setPriority((Integer) todoPrioritySpinner.getValue());
 		AppointmentModel.getReference().saveAppt(appt);
 
- 		// clear the contents of the todo text field  
- 		// if the preference is set.
- 		if (Prefs.getBoolPref(PrefName.TODO_QUICK_ENTRY_AUTO_CLEAR_TEXT_FIELD)) {
- 			todoText.setText("");
- 		}
+		// clear the contents of the todo text field
+		// if the preference is set.
+		if (Prefs.getBoolPref(PrefName.TODO_QUICK_ENTRY_AUTO_CLEAR_TEXT_FIELD)) {
+			todoText.setText("");
+		}
 
 		requestFocus();
 
@@ -505,8 +528,6 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 		return Resource.getResourceString("To_Do_List");
 	}
 
-	
-
 	/**
 	 * Gets the selected items.
 	 * 
@@ -534,7 +555,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 
 				Object o = theTodoList.toArray()[k - 1];
 				if (!appts_only || o instanceof Appointment) {
-					lst.add((Appointment)o);
+					lst.add((Appointment) o);
 				}
 			} catch (Exception e) {
 				Errmsg.getErrorHandler().errmsg(e);
@@ -555,14 +576,15 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 		todoTable = new StripedTable();
 		todoText = new JTextField();
 
-		// add keyboard shortcut to do add TODO item when enter pressed on the text field.
+		// add keyboard shortcut to do add TODO item when enter pressed on the
+		// text field.
 		todoText.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent event) {
 				if (event.getKeyCode() == KeyEvent.VK_ENTER) {
 					addTodoActionPerformed();
 				}
- 		}
+			}
 		});
 
 		todoDate = new JDateChooser();
@@ -578,26 +600,16 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 		greenToggleButton = new JToggleButton("", false);
 		blackToggleButton = new JToggleButton("", true);
 		whiteToggleButton = new JToggleButton("", false);
-		
+
 		// initial priority spinner settings
 		int val = 5;
 		int min = 1;
 		int max = 10;
 		int step = 1;
-		todoPrioritySpinner = new JSpinner(new SpinnerNumberModel(val, min, max, step));
+		todoPrioritySpinner = new JSpinner(new SpinnerNumberModel(val, min,
+				max, step));
 
-		// load categories
-		try {
-			Collection<String> acats = CategoryModel.getReference()
-					.getCategories();
-			Iterator<String> ait = acats.iterator();
-			while (ait.hasNext()) {
-				categoryComboBox.addItem(ait.next());
-			}
-			categoryComboBox.setSelectedIndex(0);
-		} catch (Exception e) {
-			Errmsg.getErrorHandler().errmsg(e);
-		}
+		loadCategories();
 
 		// *******************************************************************
 		// main table
@@ -646,15 +658,20 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 		toggleButtonPanel.add(whiteToggleButton);
 
 		Theme t = Theme.getCurrentTheme();
-		redToggleButton.setIcon(new ToggleButtonIcon(new Color(t.getTextColor1())));
+		redToggleButton.setIcon(new ToggleButtonIcon(new Color(t
+				.getTextColor1())));
 
-		blueToggleButton.setIcon(new ToggleButtonIcon(new Color(t.getTextColor2())));
+		blueToggleButton.setIcon(new ToggleButtonIcon(new Color(t
+				.getTextColor2())));
 
-		greenToggleButton.setIcon(new ToggleButtonIcon(new Color(t.getTextColor3())));
+		greenToggleButton.setIcon(new ToggleButtonIcon(new Color(t
+				.getTextColor3())));
 
-		blackToggleButton.setIcon(new ToggleButtonIcon(new Color(t.getTextColor4())));
+		blackToggleButton.setIcon(new ToggleButtonIcon(new Color(t
+				.getTextColor4())));
 
-		whiteToggleButton.setIcon(new ToggleButtonIcon(new Color(t.getTextColor5())));
+		whiteToggleButton.setIcon(new ToggleButtonIcon(new Color(t
+				.getTextColor5())));
 
 		ButtonGroup mutator = new ButtonGroup();
 		mutator.add(redToggleButton);
@@ -669,11 +686,11 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 
 		toggleButtonPanel.add(categoryLabel);
 		toggleButtonPanel.add(categoryComboBox);
-		
+
 		JLabel priorityLabel = new JLabel();
 		ResourceHelper.setText(priorityLabel, "Priority");
 		priorityLabel.setLabelFor(todoPrioritySpinner);
-		
+
 		toggleButtonPanel.add(priorityLabel);
 		toggleButtonPanel.add(todoPrioritySpinner);
 
@@ -692,8 +709,8 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 				GridBagConstraints.HORIZONTAL, 1.0, 0.0));
 		quickEntryPanel.add(todoDate, GridBagConstraintsFactory.create(1, 1,
 				GridBagConstraints.HORIZONTAL));
-		quickEntryPanel.add(addTodoButton, GridBagConstraintsFactory.create(2,
-				1));
+		quickEntryPanel.add(addTodoButton,
+				GridBagConstraintsFactory.create(2, 1));
 
 		// *******************************************************************
 		// popup menu
@@ -717,7 +734,6 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 		// button panel
 		// *******************************************************************
 		JPanel buttonPanel = new JPanel();
-
 
 		JButton doneButton = new JButton();
 		ResourceHelper.setText(doneButton, "Done_(No_Delete)");
@@ -755,8 +771,8 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 		medPanel.add(getTotalLabel(), BorderLayout.WEST);
 		medPanel.add(buttonPanel, BorderLayout.CENTER);
 
-		add(medPanel, GridBagConstraintsFactory.create(0, 1,
-				GridBagConstraints.BOTH));
+		add(medPanel,
+				GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH));
 		add(quickEntryPanel, GridBagConstraintsFactory.create(0, 2,
 				GridBagConstraints.HORIZONTAL, 1.0, 0.0));
 
@@ -791,9 +807,9 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 			cal.setTime(d);
 
 			// bring up an appt editor window
-			AppointmentListView ag = new AppointmentListView(cal
-					.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal
-					.get(Calendar.DATE));
+			AppointmentListView ag = new AppointmentListView(
+					cal.get(Calendar.YEAR), cal.get(Calendar.MONTH),
+					cal.get(Calendar.DATE));
 			Appointment ap = (Appointment) o;
 			ag.showView();
 
@@ -911,7 +927,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 				ro[0] = nt;
 				ro[1] = tx;
 				ro[2] = r.getCategory(); // category
-				
+
 				// color
 				if (r.getColor() == null)
 					ro[3] = "black";
@@ -920,12 +936,12 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 
 				// key
 				ro[4] = new Integer(r.getKey());
-				
+
 				// priority
 				ro[5] = r.getPriority();
-				
+
 				tm.addRow(ro);
-				totalCount ++;
+				totalCount++;
 				tm.tableChanged(new TableModelEvent(tm));
 			} catch (Exception e) {
 				Errmsg.getErrorHandler().errmsg(e);
@@ -1068,9 +1084,15 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 
 	@Override
 	public void update(ChangeEvent event) {
+
+		// handle category change
+		if (event.getModel() instanceof CategoryModel) {
+			loadCategories();
+		}
+
 		refresh();
 	}
-	
+
 	@Override
 	public String getModuleName() {
 		return Resource.getResourceString("To_Do");
@@ -1084,21 +1106,21 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 	@Override
 	public void initialize(MultiView parent) {
 		final MultiView par = parent;
-		parent.addToolBarItem(new ImageIcon(getClass().getResource(
-				"/resource/Properties16.gif")), getModuleName(),
+		parent.addToolBarItem(
+				new ImageIcon(getClass().getResource(
+						"/resource/Properties16.gif")), getModuleName(),
 				new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent evt) {
 						par.setView(getViewType());
 					}
 				});
-		SunTrayIconProxy.addAction(getModuleName(),
-				new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent evt) {
-						par.setView(getViewType());
-					}
-				});
+		SunTrayIconProxy.addAction(getModuleName(), new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent evt) {
+				par.setView(getViewType());
+			}
+		});
 	}
 
 	@Override
@@ -1106,4 +1128,18 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 		return ViewType.TODO;
 	}
 
+	private void loadCategories() {
+		// load categories
+		try {
+			Collection<String> acats = CategoryModel.getReference()
+					.getCategories();
+			Iterator<String> ait = acats.iterator();
+			while (ait.hasNext()) {
+				categoryComboBox.addItem(ait.next());
+			}
+			categoryComboBox.setSelectedIndex(0);
+		} catch (Exception e) {
+			Errmsg.getErrorHandler().errmsg(e);
+		}
+	}
 }

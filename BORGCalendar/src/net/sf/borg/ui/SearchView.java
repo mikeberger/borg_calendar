@@ -93,7 +93,7 @@ public class SearchView extends DockableView implements Module {
 
 	/** The link check box. */
 	private JCheckBox linkCheckBox = null;
-	
+
 	private JCheckBox memoCheckBox = null;
 
 	private JCheckBox projectCheckBox = null;
@@ -114,7 +114,7 @@ public class SearchView extends DockableView implements Module {
 
 	/** The todo check box. */
 	private JCheckBox todoCheckBox = null;
-	
+
 	// whole word search option
 	private JCheckBox wholeWordBox = null;
 
@@ -126,6 +126,8 @@ public class SearchView extends DockableView implements Module {
 	 */
 	public SearchView() {
 		super();
+
+		CategoryModel.getReference().addListener(this);
 
 		// init the UI components
 		initComponents();
@@ -141,9 +143,8 @@ public class SearchView extends DockableView implements Module {
 		resultsTable.setModel(new TableSorter(new String[] {
 				Resource.getResourceString("Item"),
 				Resource.getResourceString("Type"),
-				Resource.getResourceString("Date"), 
-				"key", "class" },
-				new Class[] { String.class, String.class, Date.class, 
+				Resource.getResourceString("Date"), "key", "class" },
+				new Class[] { String.class, String.class, Date.class,
 						Integer.class, Class.class }));
 
 		// hide columns with the key, class
@@ -152,9 +153,14 @@ public class SearchView extends DockableView implements Module {
 		resultsTable.removeColumn(col);
 		col = colModel.getColumn(3);
 		resultsTable.removeColumn(col);
-		
 
+		loadCategories();
+
+	}
+
+	private void loadCategories() {
 		// populate the category combo box
+		categoryComboBox.removeAllItems();
 		categoryComboBox.addItem("");
 		try {
 			Collection<String> cats = CategoryModel.getReference()
@@ -204,9 +210,10 @@ public class SearchView extends DockableView implements Module {
 									cats, cats[0]);
 							if (o == null)
 								return;
-							
+
 							String cat = (String) o;
-							if( cat.isEmpty() || CategoryModel.UNCATEGORIZED.equals(cat))
+							if (cat.isEmpty()
+									|| CategoryModel.UNCATEGORIZED.equals(cat))
 								cat = null;
 
 							TableSorter tm = (TableSorter) resultsTable
@@ -217,7 +224,8 @@ public class SearchView extends DockableView implements Module {
 							for (int i = 0; i < rows.length; i++) {
 								Integer key = (Integer) tm.getValueAt(rows[i],
 										3);
-								Class<?> cl = (Class<?>) tm.getValueAt(rows[i], 4);
+								Class<?> cl = (Class<?>) tm.getValueAt(rows[i],
+										4);
 								try {
 									KeyedEntity<?> ent = (KeyedEntity<?>) cl
 											.newInstance();
@@ -298,8 +306,8 @@ public class SearchView extends DockableView implements Module {
 		memoCheckBox = new JCheckBox();
 		memoCheckBox.setSelected(true);
 		ResourceHelper.setText(memoCheckBox, "memo");
-		checkBoxPanel.add(memoCheckBox, GridBagConstraintsFactory.create(4,
-				0, GridBagConstraints.BOTH, 1.0, 1.0));
+		checkBoxPanel.add(memoCheckBox, GridBagConstraintsFactory.create(4, 0,
+				GridBagConstraints.BOTH, 1.0, 1.0));
 
 		todoCheckBox = new JCheckBox();
 		ResourceHelper.setText(todoCheckBox, "To_Do");
@@ -350,9 +358,9 @@ public class SearchView extends DockableView implements Module {
 				}
 
 				// confirm delete
-				int ret = JOptionPane.showConfirmDialog(null, Resource
-						.getResourceString("delete_selected")
-						+ "?", "", JOptionPane.YES_NO_OPTION);
+				int ret = JOptionPane.showConfirmDialog(null,
+						Resource.getResourceString("delete_selected") + "?",
+						"", JOptionPane.YES_NO_OPTION);
 				if (ret != JOptionPane.YES_OPTION) {
 					return;
 				}
@@ -468,20 +476,19 @@ public class SearchView extends DockableView implements Module {
 		categoryComboBox = new JComboBox();
 		searchCriteriaPanel.add(categoryComboBox, GridBagConstraintsFactory
 				.create(1, 1, GridBagConstraints.HORIZONTAL, 1.0, 0.0));
-		
+
 		caseSensitiveCheckBox = new JCheckBox();
 		caseSensitiveCheckBox.setText(Resource
 				.getResourceString("case_sensitive"));
 		searchCriteriaPanel
 				.add(caseSensitiveCheckBox, GridBagConstraintsFactory.create(2,
 						0, GridBagConstraints.BOTH));
-		
+
 		wholeWordBox = new JCheckBox();
-		wholeWordBox.setText(Resource
-				.getResourceString("WholeWord"));
+		wholeWordBox.setText(Resource.getResourceString("WholeWord"));
 		searchCriteriaPanel
-				.add(wholeWordBox, GridBagConstraintsFactory.create(2,
-						1, GridBagConstraints.BOTH));
+				.add(wholeWordBox, GridBagConstraintsFactory.create(2, 1,
+						GridBagConstraints.BOTH));
 
 		JLabel startDateLabel = new JLabel();
 		ResourceHelper.setText(startDateLabel, "StartDate");
@@ -492,7 +499,7 @@ public class SearchView extends DockableView implements Module {
 		ResourceHelper.setText(endDateLabel, "EndDate");
 		searchCriteriaPanel.add(endDateLabel, GridBagConstraintsFactory.create(
 				3, 1, GridBagConstraints.HORIZONTAL));
-		
+
 		startDateChooser = new JDateChooser();
 		GridBagConstraints gbc1 = GridBagConstraintsFactory.create(4, 0,
 				GridBagConstraints.NONE, 0.0, 0.0);
@@ -505,15 +512,11 @@ public class SearchView extends DockableView implements Module {
 		gbc2.anchor = GridBagConstraints.WEST;
 		searchCriteriaPanel.add(endDateChooser, gbc2);
 
-
 		GridBagConstraints gridBagConstraints25 = GridBagConstraintsFactory
 				.create(0, 2, GridBagConstraints.BOTH, 0.0, 1.0);
 		gridBagConstraints25.gridwidth = 5;
 		searchCriteriaPanel.add(createCheckBoxPanel(), gridBagConstraints25);
 
-		
-		
-	
 		return searchCriteriaPanel;
 	}
 
@@ -605,8 +608,8 @@ public class SearchView extends DockableView implements Module {
 		});
 		searchButtonPanel.add(searchButton, null);
 
-		add(searchButtonPanel, GridBagConstraintsFactory.create(0, 2,
-				GridBagConstraints.NONE));
+		add(searchButtonPanel,
+				GridBagConstraintsFactory.create(0, 2, GridBagConstraints.NONE));
 
 		add(createResultsPanel(), GridBagConstraintsFactory.create(0, 3,
 				GridBagConstraints.BOTH, 1.0, 1.0));
@@ -616,21 +619,20 @@ public class SearchView extends DockableView implements Module {
 	@Override
 	public void initialize(MultiView parent) {
 		final MultiView par = parent;
-		parent.addToolBarItem(new ImageIcon(getClass().getResource(
-				"/resource/Find16.gif")), getModuleName(),
-				new ActionListener() {
+		parent.addToolBarItem(
+				new ImageIcon(getClass().getResource("/resource/Find16.gif")),
+				getModuleName(), new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent evt) {
 						par.setView(ViewType.SEARCH);
 					}
 				});
-		SunTrayIconProxy.addAction(getModuleName(),
-				new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent evt) {
-						par.setView(ViewType.SEARCH);
-					}
-				});
+		SunTrayIconProxy.addAction(getModuleName(), new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent evt) {
+				par.setView(ViewType.SEARCH);
+			}
+		});
 	}
 
 	@Override
@@ -641,9 +643,15 @@ public class SearchView extends DockableView implements Module {
 			Errmsg.getErrorHandler().errmsg(e);
 		}
 	}
-	
+
 	@Override
 	public void update(ChangeEvent event) {
+
+		// handle category change event
+		if (event.getModel() instanceof CategoryModel) {
+			loadCategories();
+			return;
+		}
 		refresh();
 	}
 
@@ -743,10 +751,9 @@ public class SearchView extends DockableView implements Module {
 			}
 
 		}
-		
+
 		if (memoCheckBox.isSelected()) {
-			Collection<Memo> memos = MemoModel
-					.getReference().search(criteria);
+			Collection<Memo> memos = MemoModel.getReference().search(criteria);
 			for (Memo memo : memos) {
 				Object[] ro = new Object[5];
 
@@ -796,9 +803,9 @@ public class SearchView extends DockableView implements Module {
 			cal.setTime(ap.getDate());
 
 			// bring up an appt editor window
-			AppointmentListView ag = new AppointmentListView(cal
-					.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal
-					.get(Calendar.DATE));
+			AppointmentListView ag = new AppointmentListView(
+					cal.get(Calendar.YEAR), cal.get(Calendar.MONTH),
+					cal.get(Calendar.DATE));
 			ag.showApp(ap.getKey());
 			ag.showView();
 		}

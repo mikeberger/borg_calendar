@@ -89,6 +89,7 @@ public class CategoryModel extends Model {
 	 */
 	public void addCategory(String cat) {
 		categories_.add(cat);
+		refreshListeners();
 	}
 
 	/**
