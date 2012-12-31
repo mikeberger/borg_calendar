@@ -29,11 +29,11 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.TimeZone;
+import java.util.logging.Logger;
 
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.CalendarOutputter;
 import net.fortuna.ical4j.model.Calendar;
-import net.fortuna.ical4j.model.CategoryList;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.ComponentList;
 import net.fortuna.ical4j.model.Dur;
@@ -41,6 +41,7 @@ import net.fortuna.ical4j.model.ParameterList;
 import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.Recur;
+import net.fortuna.ical4j.model.TextList;
 import net.fortuna.ical4j.model.ValidationException;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VToDo;
@@ -67,6 +68,9 @@ import net.sf.borg.model.Repeat;
 import net.sf.borg.model.entity.Appointment;
 
 public class AppointmentIcalAdapter {
+	
+	static private final Logger log = Logger.getLogger("net.sf.borg");
+	
 	static public void exportIcal(String filename, Date after) throws Exception {
 
 		ComponentList clist = new ComponentList();
@@ -89,7 +93,7 @@ public class AppointmentIcalAdapter {
 			if (after != null && ap.getDate().before(after))
 				continue;
 
-			CategoryList catlist = new CategoryList();
+			TextList catlist = new TextList();
 			Component ve = new VEvent();
 
 			String uidval = String.valueOf(ap.getKey()) + "@" + hostname;
@@ -203,13 +207,23 @@ public class AppointmentIcalAdapter {
 							+ days[dayOfWeek - 1];
 				} else if (freq.equals(Repeat.YEARLY)) {
 					rec += "YEARLY";
+				} else if (freq.equals(Repeat.NDAYS)) {
+					rec += "DAILY;INTERVAL=" + Repeat.getNValue(ap.getFrequency());
+				} else if (freq.equals(Repeat.NWEEKS)) {
+					rec += "WEEKLY;INTERVAL=" + Repeat.getNValue(ap.getFrequency());
+				} else if (freq.equals(Repeat.NMONTHS)) {
+					rec += "MONTHLY;INTERVAL=" + Repeat.getNValue(ap.getFrequency());
+				} else if (freq.equals(Repeat.NYEARS)) {
+					rec += "YEARLY;INTERVAL=" + Repeat.getNValue(ap.getFrequency());
+				} else if( freq.equals(Repeat.WEEKDAYS)){
+					rec += "WEEKLY;BYDAY=MO,TU,WE,TH,FR";
 				} else {
-					// bad default - skip appt - need to fix
+					log.warning("Could not export appt " + ap.getKey() + ap.getText());
 					continue;
 				}
 
 				if (ap.getTimes().intValue() != 9999) {
-					rec += ";COUNT=" + ap.getTimes();
+					rec += ";COUNT=" + Repeat.calculateTimes(ap);
 				}
 				// System.out.println(rec);
 
@@ -366,7 +380,7 @@ public class AppointmentIcalAdapter {
 				prop = pl.getProperty(Property.CATEGORIES);
 				if (prop != null) {
 					Categories cats = (Categories) prop;
-					CategoryList catlist = cats.getCategories();
+					TextList catlist = cats.getCategories();
 					Iterator<String> cit = catlist.iterator();
 					while (cit.hasNext()) {
 						String cat = cit.next();

@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<ivy-module version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
-    <info
-        organisation=""
-        module="BORGPlugins"
-        status="integration">
+<ivy-module version="2.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
+	<info organisation="" module="BORGPlugins" status="integration">
 	</info>
 	<dependencies>
-		<dependency name="jasperreports" org="jasperreports" rev="+"/>
-		<dependency name="jfreechart" org="jfree" rev="+"/>
-		<dependency name="ical4j" org="org.mnode.ical4j" rev="+"/>
-		<dependency name="com.google.api.client" org="com.google.api.client" rev="+"/>
+		<!-- <dependency name="jasperreports" org="jasperreports" rev="+" />
+		<dependency name="jfreechart" org="jfree" rev="+" /> -->
+		<dependency name="ical4j" org="org.mnode.ical4j" rev="+" />
+		<!-- <dependency name="com.google.api.client" org="com.google.api.client" rev="+" /> -->
+		<dependency name="jetty" org="org.mortbay.jetty" rev="+" />
+		
 	</dependencies>
 </ivy-module>
