@@ -23,6 +23,7 @@ package net.sf.borg.model;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.GregorianCalendar;
 
 import net.sf.borg.common.Resource;
@@ -53,6 +54,9 @@ public class Repeat {
 	public static final String NYEARS = "nyears";
 	public static final String DAYLIST = "dlist";
 	public static final String ONCE = "once";
+	
+	public final static int MAGIC_RPT_FOREVER_VALUE = 9999;
+
 
 	/** the appointment date (ie the first occurrence) */
 	private Calendar start_;
@@ -528,6 +532,37 @@ public class Repeat {
 		}
 
 		return current_;
+	}
+	
+	/**
+	 * Calculate the date of the last repeat of an appt
+	 * @param appt
+	 * @return the date of the last repeat or null if repeats forever
+	 */
+	static public Date calculateLastRepeat(Appointment appt)
+	{
+		if( !isRepeating(appt))
+			return appt.getDate();
+		
+		if( appt.getTimes() == MAGIC_RPT_FOREVER_VALUE)
+			return null;
+		
+		if( appt.getRepeatUntil() != null )
+			return appt.getRepeatUntil();
+		
+		Calendar start = new GregorianCalendar();
+		Calendar c = start;
+		start.setTime(appt.getDate());
+		Repeat r = new Repeat(start, appt.getFrequency());
+		for (int i = 1;i < appt.getTimes(); i++) {
+			c = r.next();
+		}
+		
+		if( c == null )
+			return null;
+		
+		return c.getTime();
+		
 	}
 
 	/**

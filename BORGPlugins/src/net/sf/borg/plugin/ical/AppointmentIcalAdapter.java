@@ -90,8 +90,12 @@ public class AppointmentIcalAdapter {
 		for (Appointment ap : AppointmentModel.getReference().getAllAppts()) {
 
 			// limit by date
-			if (after != null && ap.getDate().before(after))
-				continue;
+			if( after != null )
+			{
+				Date latestInstance = Repeat.calculateLastRepeat(ap);
+				if( latestInstance != null && latestInstance.before(after))
+					continue;
+			}
 
 			TextList catlist = new TextList();
 			Component ve = new VEvent();

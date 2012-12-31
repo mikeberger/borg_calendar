@@ -79,9 +79,6 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 
 	private static final long serialVersionUID = 1L;
 
-	// magic repeat times value that means repeat forever
-	private final static int MAGIC_RPT_FOREVER_VALUE = 9999;
-
 	/**
 	 * renders the colro selection pull-down with colored boxes as the choices.
 	 */
@@ -1220,7 +1217,7 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 		// repeat times
 		Integer tm = null;
 		if (repeatForeverRadio.isSelected()) {
-			tm = new Integer(MAGIC_RPT_FOREVER_VALUE);
+			tm = new Integer(Repeat.MAGIC_RPT_FOREVER_VALUE);
 		} else {
 			tm = (Integer) numberOfRepeatsSpinner.getValue();
 		}
@@ -1605,7 +1602,7 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 					untilDate.setDate(appt.getRepeatUntil());
 					repeatUntilRadio.setSelected(true);
 				} else if (tm != null) {
-					if (tm.intValue() == MAGIC_RPT_FOREVER_VALUE) {
+					if (tm.intValue() == Repeat.MAGIC_RPT_FOREVER_VALUE) {
 						repeatForeverRadio.setSelected(true);
 					} else {
 						numberOfRepeatsSpinner.setValue(tm);
