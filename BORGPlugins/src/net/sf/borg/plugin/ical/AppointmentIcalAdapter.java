@@ -22,6 +22,7 @@ package net.sf.borg.plugin.ical;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.StringWriter;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -71,7 +72,23 @@ public class AppointmentIcalAdapter {
 	
 	static private final Logger log = Logger.getLogger("net.sf.borg");
 	
-	static public void exportIcal(String filename, Date after) throws Exception {
+	static public void exportIcalToFile(String filename, Date after) throws Exception {
+		Calendar cal = exportIcal(after);
+		OutputStream oostr = IOHelper.createOutputStream(filename);
+		CalendarOutputter op = new CalendarOutputter();
+		op.output(cal, oostr);
+		oostr.close();
+	}
+	
+	static public String exportIcalToString(Date after) throws Exception {
+		Calendar cal = exportIcal(after);
+		CalendarOutputter op = new CalendarOutputter();
+		StringWriter sw = new StringWriter();
+		op.output(cal, sw);
+		return sw.toString();
+	}
+
+	static private Calendar exportIcal(Date after) throws Exception {
 
 		ComponentList clist = new ComponentList();
 		boolean showpriv = false;
@@ -246,10 +263,7 @@ public class AppointmentIcalAdapter {
 
 		cal.validate();
 
-		OutputStream oostr = IOHelper.createOutputStream(filename);
-		CalendarOutputter op = new CalendarOutputter();
-		op.output(cal, oostr);
-		oostr.close();
+		return cal;
 	}
 
 	@SuppressWarnings("unchecked")

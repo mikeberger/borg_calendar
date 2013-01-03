@@ -110,6 +110,34 @@ public class IcalModule implements Module {
 		});
 
 		m.add(exp2);
+		
+		JMenuItem exp3 = new JMenuItem();
+		exp3.setText(Resource.getResourceString("start_server"));
+		exp3.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					IcalFileServer.start();
+				} catch (Exception e) {
+					Errmsg.getErrorHandler().errmsg(e);
+				}
+			}
+		});
+
+		m.add(exp3);
+		
+		JMenuItem exp4 = new JMenuItem();
+		exp4.setText(Resource.getResourceString("stop_server"));
+		exp4.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				IcalFileServer.stop();
+			}
+		});
+
+		m.add(exp4);
 
 		parent.addPluginSubMenu(m);
 	}
@@ -143,9 +171,9 @@ public class IcalModule implements Module {
 			if (years != null) {
 				GregorianCalendar cal = new GregorianCalendar();
 				cal.add(Calendar.YEAR, -1 * years.intValue());
-				AppointmentIcalAdapter.exportIcal(s, cal.getTime());
+				AppointmentIcalAdapter.exportIcalToFile(s, cal.getTime());
 			} else {
-				AppointmentIcalAdapter.exportIcal(s, null);
+				AppointmentIcalAdapter.exportIcalToFile(s, null);
 			}
 
 		} catch (Exception e) {
