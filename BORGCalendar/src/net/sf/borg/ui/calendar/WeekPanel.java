@@ -743,6 +743,8 @@ public class WeekPanel extends DockableView implements Printable,
 
 	// the panel to draw the week
 	private WeekSubPanel wp_ = null;
+	
+	private boolean isInitialized = false;
 
 	/**
 	 * constructor
@@ -750,21 +752,7 @@ public class WeekPanel extends DockableView implements Printable,
 	 */
 	public WeekPanel() {
 
-		// create the week container panel
-		wp_ = new WeekSubPanel();
-
-		// create the navigator
-		nav = new NavPanel(wp_);
-
-		JScrollPane sp = new JScrollPane();
-		sp.setViewportView(wp_);
-
-		setLayout(new java.awt.GridBagLayout());
-		add(nav,
-				GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH));
-		add(sp, GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH,
-				1.0, 1.0));
-
+		
 	}
 
 	/**
@@ -795,6 +783,26 @@ public class WeekPanel extends DockableView implements Printable,
 
 	@Override
 	public JPanel getComponent() {
+		
+		if( !isInitialized)
+		{
+			// create the week container panel
+			wp_ = new WeekSubPanel();
+
+			// create the navigator
+			nav = new NavPanel(wp_);
+
+			JScrollPane sp = new JScrollPane();
+			sp.setViewportView(wp_);
+
+			setLayout(new java.awt.GridBagLayout());
+			add(nav,
+					GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH));
+			add(sp, GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH,
+					1.0, 1.0));
+
+			isInitialized = true;
+		}
 		return this;
 	}
 

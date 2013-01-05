@@ -35,6 +35,8 @@ public class TaskModule extends DockableView implements Module {
 	 * the task tabs managed by thsi module - which are all subtabs on the MultiView's task tab
 	 */
 	private JTabbedPane taskTabs;
+	
+	private boolean isInitialized = false;
 
 	@Override
 	public String getModuleName() {
@@ -43,22 +45,33 @@ public class TaskModule extends DockableView implements Module {
 
 	@Override
 	public JComponent getComponent() {
+		
+		if( !isInitialized )
+		{
+			taskTabs = new JTabbedPane();
+
+			taskTabs.addTab(Resource.getResourceString("project_tree"),
+					new ProjectTreePanel());
+
+			taskTabs.addTab(Resource.getResourceString("projects"),
+					new ProjectPanel());
+
+			taskTabs.addTab(Resource.getResourceString("tasks"),
+					new TaskFilterPanel());
+			
+			setLayout(new java.awt.GridBagLayout());
+			add(taskTabs, GridBagConstraintsFactory
+					.create(0, 0, GridBagConstraints.BOTH, 1.0, 1.0));
+			
+
+		}
+		
 		return this;
 	}
 
 	@Override
 	public void initialize(MultiView parent) {
-		taskTabs = new JTabbedPane();
-
-		taskTabs.addTab(Resource.getResourceString("project_tree"),
-				new ProjectTreePanel());
-
-		taskTabs.addTab(Resource.getResourceString("projects"),
-				new ProjectPanel());
-
-		taskTabs.addTab(Resource.getResourceString("tasks"),
-				new TaskFilterPanel());
-
+		
 		final MultiView par = parent;
 		parent.addToolBarItem(new ImageIcon(getClass().getResource(
 		"/resource/Task16.gif")), getModuleName(), new ActionListener() {
@@ -73,9 +86,6 @@ public class TaskModule extends DockableView implements Module {
 				par.setView(ViewType.TASK);
 			}
 		});
-		setLayout(new java.awt.GridBagLayout());
-		add(taskTabs, GridBagConstraintsFactory
-				.create(0, 0, GridBagConstraints.BOTH, 1.0, 1.0));
 		
 		JMenuItem edittypes = new JMenuItem();
 		JMenuItem resetst = new JMenuItem();

@@ -100,6 +100,9 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 
 	/** decrypt button */
 	private JButton decryptButton = null;
+	
+	private boolean isInitialized = false;
+
 
 	/**
 	 * encryption checkbox
@@ -145,22 +148,7 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 	public MemoPanel() {
 		super();
 
-		// initialize UI
-		initialize();
-
-		memoText.setEditable(false);
-		saveButton.setEnabled(false);
-		decryptButton.setEnabled(false);
 		
-		new PopupMenuHelper(memoListTable, new PopupMenuHelper.Entry[] {
-				new PopupMenuHelper.Entry(renameAction, "Rename")
-		});
-	
-
-		refresh();
-
-		// listen for memo model changes
-		MemoModel.getReference().addListener(this);
 
 	}
 
@@ -214,7 +202,7 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 	 * This method initializes the UI.
 	 * 
 	 * */
-	private void initialize() {
+	private void initializeComponents() {
 
 		this.setLayout(new GridBagLayout());
 
@@ -647,6 +635,27 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 
 	@Override
 	public JComponent getComponent() {
+		
+		if( !isInitialized)
+		{
+			// initialize UI
+			initializeComponents();
+
+			memoText.setEditable(false);
+			saveButton.setEnabled(false);
+			decryptButton.setEnabled(false);
+			
+			new PopupMenuHelper(memoListTable, new PopupMenuHelper.Entry[] {
+					new PopupMenuHelper.Entry(renameAction, "Rename")
+			});
+		
+
+			refresh();
+
+			// listen for memo model changes
+			MemoModel.getReference().addListener(this);
+			isInitialized = true;
+		}
 		return this;
 	}
 

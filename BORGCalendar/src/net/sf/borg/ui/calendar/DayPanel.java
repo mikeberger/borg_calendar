@@ -669,6 +669,9 @@ public class DayPanel extends DockableView implements Printable, CalendarModule 
 
 	// navigation panel
 	private NavPanel nav = null;
+	
+	private boolean isInitialized = false;
+
 
 	/**
 	 * Instantiates a new day panel.
@@ -676,19 +679,7 @@ public class DayPanel extends DockableView implements Printable, CalendarModule 
 	 */
 	public DayPanel() {
 
-		// create the day ui and attached navigator
-		dp_ = new DaySubPanel();
-		nav = new NavPanel(dp_);
-
-		JScrollPane sp = new JScrollPane();
-		sp.setViewportView(dp_);
-
-		setLayout(new java.awt.GridBagLayout());
-		add(nav,
-				GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH));
-		add(sp, GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH,
-				1.0, 1.0));
-
+		
 	}
 
 	/**
@@ -722,6 +713,24 @@ public class DayPanel extends DockableView implements Printable, CalendarModule 
 
 	@Override
 	public JPanel getComponent() {
+		
+		if( !isInitialized )
+		{
+			// create the day ui and attached navigator
+			dp_ = new DaySubPanel();
+			nav = new NavPanel(dp_);
+
+			JScrollPane sp = new JScrollPane();
+			sp.setViewportView(dp_);
+
+			setLayout(new java.awt.GridBagLayout());
+			add(nav,
+					GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH));
+			add(sp, GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH,
+					1.0, 1.0));
+			isInitialized = true;
+
+		}
 		return this;
 	}
 

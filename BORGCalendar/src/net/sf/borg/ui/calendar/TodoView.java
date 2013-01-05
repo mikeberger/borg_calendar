@@ -328,6 +328,8 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 	private boolean user_colors = false;
 
 	private JLabel totalLabel;
+	
+	private boolean isInitialized = false;
 
 	private JLabel getTotalLabel() {
 		if (totalLabel == null) {
@@ -343,55 +345,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 
 		super();
 
-		// listen for pref changes
-		Prefs.addListener(this);
-
-		// listen for appt and task model changes
-		addModel(AppointmentModel.getReference());
-		addModel(TaskModel.getReference());
-		addModel(CategoryModel.getReference());
-
-		// init the gui components
-		initComponents();
-
-		// the todos will be displayed in a sorted table with 2 columns -
-		// data and todo text
-		todoTable.setModel(new TableSorter(new String[] {
-				Resource.getResourceString("Date"),
-				Resource.getResourceString("To_Do"),
-				Resource.getResourceString("Category"),
-				Resource.getResourceString("Color"), "key",
-				Resource.getResourceString("Priority") }, new Class[] {
-				Date.class, java.lang.String.class, java.lang.String.class,
-				java.lang.String.class, java.lang.Integer.class,
-				java.lang.Integer.class }));
-
-		todoTable.getColumnModel().getColumn(0).setPreferredWidth(140);
-		todoTable.getColumnModel().getColumn(1).setPreferredWidth(400);
-		todoTable.getColumnModel().getColumn(2).setPreferredWidth(120);
-		todoTable.getColumnModel().getColumn(5).setPreferredWidth(50);
-
-		user_colors = Prefs.getBoolPref(PrefName.UCS_ONTODO);
-
-		// set user color renderer
-		TableCellRenderer defaultObjectRenderer = todoTable
-				.getDefaultRenderer(Object.class);
-		todoTable.setDefaultRenderer(Object.class, new TodoTableCellRenderer(
-				defaultObjectRenderer));
-		TableCellRenderer defaultDateRenderer = todoTable
-				.getDefaultRenderer(Date.class);
-		todoTable.setDefaultRenderer(Date.class, new TodoTableCellRenderer(
-				defaultDateRenderer));
-		TableCellRenderer defaultIntegerRenderer = todoTable
-				.getDefaultRenderer(Integer.class);
-		todoTable.setDefaultRenderer(Integer.class, new TodoTableCellRenderer(
-				defaultIntegerRenderer));
-
-		// remove the hidden columns - color and key
-		todoTable.removeColumn(todoTable.getColumnModel().getColumn(3));
-		todoTable.removeColumn(todoTable.getColumnModel().getColumn(3));
-
-		refresh();
+		
 
 	}
 
@@ -1100,6 +1054,60 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 
 	@Override
 	public JPanel getComponent() {
+		
+		if( !isInitialized)
+		{
+			// listen for pref changes
+			Prefs.addListener(this);
+
+			// listen for appt and task model changes
+			addModel(AppointmentModel.getReference());
+			addModel(TaskModel.getReference());
+			addModel(CategoryModel.getReference());
+
+			// init the gui components
+			initComponents();
+
+			// the todos will be displayed in a sorted table with 2 columns -
+			// data and todo text
+			todoTable.setModel(new TableSorter(new String[] {
+					Resource.getResourceString("Date"),
+					Resource.getResourceString("To_Do"),
+					Resource.getResourceString("Category"),
+					Resource.getResourceString("Color"), "key",
+					Resource.getResourceString("Priority") }, new Class[] {
+					Date.class, java.lang.String.class, java.lang.String.class,
+					java.lang.String.class, java.lang.Integer.class,
+					java.lang.Integer.class }));
+
+			todoTable.getColumnModel().getColumn(0).setPreferredWidth(140);
+			todoTable.getColumnModel().getColumn(1).setPreferredWidth(400);
+			todoTable.getColumnModel().getColumn(2).setPreferredWidth(120);
+			todoTable.getColumnModel().getColumn(5).setPreferredWidth(50);
+
+			user_colors = Prefs.getBoolPref(PrefName.UCS_ONTODO);
+
+			// set user color renderer
+			TableCellRenderer defaultObjectRenderer = todoTable
+					.getDefaultRenderer(Object.class);
+			todoTable.setDefaultRenderer(Object.class, new TodoTableCellRenderer(
+					defaultObjectRenderer));
+			TableCellRenderer defaultDateRenderer = todoTable
+					.getDefaultRenderer(Date.class);
+			todoTable.setDefaultRenderer(Date.class, new TodoTableCellRenderer(
+					defaultDateRenderer));
+			TableCellRenderer defaultIntegerRenderer = todoTable
+					.getDefaultRenderer(Integer.class);
+			todoTable.setDefaultRenderer(Integer.class, new TodoTableCellRenderer(
+					defaultIntegerRenderer));
+
+			// remove the hidden columns - color and key
+			todoTable.removeColumn(todoTable.getColumnModel().getColumn(3));
+			todoTable.removeColumn(todoTable.getColumnModel().getColumn(3));
+
+			refresh();
+			isInitialized = true;
+		}
 		return this;
 	}
 

@@ -120,6 +120,8 @@ public class SearchView extends DockableView implements Module {
 
 	/** The vacation check box. */
 	private JCheckBox vacationCheckBox = null;
+	
+	private boolean isInitialized = false;
 
 	/**
 	 * constructor.
@@ -127,35 +129,7 @@ public class SearchView extends DockableView implements Module {
 	public SearchView() {
 		super();
 
-		CategoryModel.getReference().addListener(this);
-
-		// init the UI components
-		initComponents();
-
-		// listen for appointment model changes
-		addModel(AppointmentModel.getReference());
-		addModel(AddressModel.getReference());
-		addModel(TaskModel.getReference());
-		addModel(MemoModel.getReference());
-
-		// show the search results as a 2 column sortable table
-		// showing the appt date and text
-		resultsTable.setModel(new TableSorter(new String[] {
-				Resource.getResourceString("Item"),
-				Resource.getResourceString("Type"),
-				Resource.getResourceString("Date"), "key", "class" },
-				new Class[] { String.class, String.class, Date.class,
-						Integer.class, Class.class }));
-
-		// hide columns with the key, class
-		TableColumnModel colModel = resultsTable.getColumnModel();
-		TableColumn col = colModel.getColumn(3);
-		resultsTable.removeColumn(col);
-		col = colModel.getColumn(3);
-		resultsTable.removeColumn(col);
-
-		loadCategories();
-
+		
 	}
 
 	private void loadCategories() {
@@ -522,6 +496,39 @@ public class SearchView extends DockableView implements Module {
 
 	@Override
 	public JComponent getComponent() {
+		
+		if( !isInitialized)
+		{
+			CategoryModel.getReference().addListener(this);
+
+			// init the UI components
+			initComponents();
+
+			// listen for appointment model changes
+			addModel(AppointmentModel.getReference());
+			addModel(AddressModel.getReference());
+			addModel(TaskModel.getReference());
+			addModel(MemoModel.getReference());
+
+			// show the search results as a 2 column sortable table
+			// showing the appt date and text
+			resultsTable.setModel(new TableSorter(new String[] {
+					Resource.getResourceString("Item"),
+					Resource.getResourceString("Type"),
+					Resource.getResourceString("Date"), "key", "class" },
+					new Class[] { String.class, String.class, Date.class,
+							Integer.class, Class.class }));
+
+			// hide columns with the key, class
+			TableColumnModel colModel = resultsTable.getColumnModel();
+			TableColumn col = colModel.getColumn(3);
+			resultsTable.removeColumn(col);
+			col = colModel.getColumn(3);
+			resultsTable.removeColumn(col);
+
+			loadCategories();
+			isInitialized = true;
+		}
 		return this;
 	}
 

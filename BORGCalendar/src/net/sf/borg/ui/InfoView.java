@@ -52,7 +52,10 @@ class InfoView extends DockableView implements Module {
 	private JScrollPane jScrollPane1;
 
 	/** window title */
-	private String title_ = "";
+	private String title_;
+	private String file_;
+	
+	private boolean isInitialized = false;
 
 	/**
 	 * constructor
@@ -61,13 +64,23 @@ class InfoView extends DockableView implements Module {
 	 */
 	InfoView(String file, String title) {
 		title_ = title;
-		initComponents();
-		try {
-			jEditorPane1.setPage(getClass().getResource(file));
-		} catch (java.io.IOException e1) {
-			Errmsg.getErrorHandler().errmsg(e1);
+		file_ = file;
+	}
+	
+	public void showView()
+	{
+		if( !isInitialized)
+		{
+			initComponents();
+			try {
+				jEditorPane1.setPage(getClass().getResource(file_));
+			} catch (java.io.IOException e1) {
+				Errmsg.getErrorHandler().errmsg(e1);
+			}
+			isInitialized = true;
 		}
-
+		
+		super.showView();
 	}
 
 	@Override

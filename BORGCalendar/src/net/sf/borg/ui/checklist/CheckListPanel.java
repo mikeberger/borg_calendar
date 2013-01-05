@@ -135,6 +135,8 @@ public class CheckListPanel extends DockableView implements
 
 	/** The table of checklist items. */
 	private StripedTable itemTable = null;
+	
+	private boolean isInitialized = false;
 
 	private ActionListener renameAction = new ActionListener(){
 
@@ -175,18 +177,7 @@ public class CheckListPanel extends DockableView implements
 	public CheckListPanel() {
 		super();
 
-		// initialize UI
-		initialize();
 		
-		new PopupMenuHelper(checkListListTable, new PopupMenuHelper.Entry[] {
-				new PopupMenuHelper.Entry(renameAction, "Rename")
-		});
-	
-
-		refresh();
-
-		// listen for checkList model changes
-		CheckListModel.getReference().addListener(this);
 
 	}
 
@@ -312,6 +303,22 @@ public class CheckListPanel extends DockableView implements
 	 */
 	@Override
 	public JComponent getComponent() {
+		if( !isInitialized)
+		{
+			// initialize UI
+			initializeComponents();
+			
+			new PopupMenuHelper(checkListListTable, new PopupMenuHelper.Entry[] {
+					new PopupMenuHelper.Entry(renameAction, "Rename")
+			});
+		
+
+			refresh();
+
+			// listen for checkList model changes
+			CheckListModel.getReference().addListener(this);
+			isInitialized = true;
+		}
 		return this;
 	}
 
@@ -366,7 +373,7 @@ public class CheckListPanel extends DockableView implements
 	 * This method initializes the UI.
 	 * 
 	 * */
-	private void initialize() {
+	private void initializeComponents() {
 
 		this.setLayout(new GridBagLayout());
 

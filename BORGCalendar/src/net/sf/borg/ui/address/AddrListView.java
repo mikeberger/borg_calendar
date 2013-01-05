@@ -81,6 +81,8 @@ public class AddrListView extends DockableView implements Module {
 
 	// the table
 	private StripedTable addressTable;
+	
+	private boolean isInitialized = false;
 
 	/**
 	 * constructor
@@ -89,28 +91,8 @@ public class AddrListView extends DockableView implements Module {
 
 		super();
 
-		addModel(AddressModel.getReference());
 
-		this.setLayout(new GridBagLayout());
-
-		// init the gui components
-		initComponents();
-
-		// set the column headings and types
-		addressTable.setModel(new TableSorter(new String[] {
-				Resource.getResourceString("First"),
-				Resource.getResourceString("Last"),
-				Resource.getResourceString("Email"),
-				Resource.getResourceString("Screen_Name"),
-				Resource.getResourceString("Home_Phone"),
-				Resource.getResourceString("Work_Phone"),
-				Resource.getResourceString("Birthday") }, new Class[] {
-				java.lang.String.class, java.lang.String.class,
-				java.lang.String.class, java.lang.String.class,
-				java.lang.String.class, java.lang.String.class,
-				java.util.Date.class }));
-
-		refresh();
+		
 
 	}
 
@@ -408,6 +390,33 @@ public class AddrListView extends DockableView implements Module {
 
 	@Override
 	public JPanel getComponent() {
+		
+		if( !isInitialized)
+		{
+			addModel(AddressModel.getReference());
+
+			this.setLayout(new GridBagLayout());
+
+			// init the gui components
+			initComponents();
+
+			// set the column headings and types
+			addressTable.setModel(new TableSorter(new String[] {
+					Resource.getResourceString("First"),
+					Resource.getResourceString("Last"),
+					Resource.getResourceString("Email"),
+					Resource.getResourceString("Screen_Name"),
+					Resource.getResourceString("Home_Phone"),
+					Resource.getResourceString("Work_Phone"),
+					Resource.getResourceString("Birthday") }, new Class[] {
+					java.lang.String.class, java.lang.String.class,
+					java.lang.String.class, java.lang.String.class,
+					java.lang.String.class, java.lang.String.class,
+					java.util.Date.class }));
+
+			refresh();
+			isInitialized = true;
+		}
 		return this;
 	}
 

@@ -581,22 +581,14 @@ public class YearPanel extends DockableView implements Printable,
 	// year UI panel
 	private YearViewSubPanel yearPanel = null;
 
+	private boolean isInitialized = false;
+
 	/**
 	 * constructor
 	 */
 	public YearPanel() {
 
-		// create the year ui
-		yearPanel = new YearViewSubPanel();
-		// create the nav panel
-		nav = new NavPanel(yearPanel);
-
-		setLayout(new java.awt.GridBagLayout());
-		add(nav,
-				GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH));
-		add(yearPanel, GridBagConstraintsFactory.create(0, 1,
-				GridBagConstraints.BOTH, 1.0, 1.0));
-
+		
 	}
 
 	/**
@@ -624,6 +616,21 @@ public class YearPanel extends DockableView implements Printable,
 
 	@Override
 	public JPanel getComponent() {
+		
+		if( !isInitialized )
+		{
+			// create the year ui
+			yearPanel = new YearViewSubPanel();
+			// create the nav panel
+			nav = new NavPanel(yearPanel);
+
+			setLayout(new java.awt.GridBagLayout());
+			add(nav,
+					GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH));
+			add(yearPanel, GridBagConstraintsFactory.create(0, 1,
+					GridBagConstraints.BOTH, 1.0, 1.0));
+			isInitialized = true;
+		}
 		return this;
 	}
 

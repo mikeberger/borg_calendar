@@ -587,24 +587,15 @@ public class MonthPanel extends JPanel implements Printable, CalendarModule {
 
 	// month UI panel
 	private MonthViewSubPanel monthSubPanel = null;
+	
+	private boolean isInitialized = false;
 
 	/**
 	 * constructor
 	 */
 	public MonthPanel() {
 
-		// create the month UI panel
-		monthSubPanel = new MonthViewSubPanel();
-
-		// create the navigator panel
-		nav = new NavPanel(monthSubPanel);
-
-		setLayout(new java.awt.GridBagLayout());
-		add(nav, GridBagConstraintsFactory
-				.create(0, 0, GridBagConstraints.BOTH));
-		add(monthSubPanel, GridBagConstraintsFactory.create(0, 1,
-				GridBagConstraints.BOTH, 1.0, 1.0));
-
+		
 	}
 
 	/**
@@ -662,6 +653,22 @@ public class MonthPanel extends JPanel implements Printable, CalendarModule {
 
 	@Override
 	public JPanel getComponent() {
+		
+		if( !isInitialized)
+		{
+			// create the month UI panel
+			monthSubPanel = new MonthViewSubPanel();
+
+			// create the navigator panel
+			nav = new NavPanel(monthSubPanel);
+
+			setLayout(new java.awt.GridBagLayout());
+			add(nav, GridBagConstraintsFactory
+					.create(0, 0, GridBagConstraints.BOTH));
+			add(monthSubPanel, GridBagConstraintsFactory.create(0, 1,
+					GridBagConstraints.BOTH, 1.0, 1.0));
+			isInitialized = true;
+		}
 		return this;
 	}
 

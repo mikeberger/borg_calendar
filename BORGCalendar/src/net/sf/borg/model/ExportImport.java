@@ -225,6 +225,14 @@ public class ExportImport {
 				.getNextEntry()) {
 
 			String legacyFileName = legacyFileMap.get(entry.getName());
+			
+			// force models to be instantiated
+			AppointmentModel.getReference();
+			MemoModel.getReference();
+			CheckListModel.getReference();
+			AddressModel.getReference();
+			TaskModel.getReference();
+			LinkModel.getReference();
 
 			boolean import_done = false;
 			for (Model model : Model.getExistingModels()) {
