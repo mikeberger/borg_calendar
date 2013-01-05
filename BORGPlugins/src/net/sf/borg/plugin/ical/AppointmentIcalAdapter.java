@@ -26,6 +26,7 @@ import java.io.StringWriter;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
@@ -240,6 +241,26 @@ public class AppointmentIcalAdapter {
 					rec += "YEARLY;INTERVAL=" + Repeat.getNValue(ap.getFrequency());
 				} else if( freq.equals(Repeat.WEEKDAYS)){
 					rec += "WEEKLY;BYDAY=MO,TU,WE,TH,FR";
+				} else if( freq.equals(Repeat.MWF)) {
+					rec += "WEEKLY;BYDAY=MO,WE,FR";} 
+				else if( freq.equals(Repeat.WEEKENDS)) {
+						rec += "WEEKLY;BYDAY=SU,SA";
+				} else if( freq.equals(Repeat.TTH)) {
+					rec += "WEEKLY;BYDAY=TU,TH";
+				} else if( freq.equals(Repeat.DAYLIST)) {
+					String days[] = new String[] { "SU", "MO", "TU", "WE",
+							"TH", "FR", "SA" };
+					rec += "WEEKLY;BYDAY=";
+					Collection<Integer> c =  Repeat.getDaylist(ap.getFrequency());
+					Iterator<Integer> it = c.iterator();
+					while( it.hasNext())
+					{
+						Integer i = it.next();
+						rec += days[i-1];
+						if( it.hasNext())
+							rec += ",";
+					}
+					
 				} else {
 					log.warning("Could not export appt " + ap.getKey() + ap.getText());
 					continue;

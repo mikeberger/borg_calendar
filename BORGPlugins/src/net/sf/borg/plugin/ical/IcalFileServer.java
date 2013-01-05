@@ -7,7 +7,6 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import net.sf.borg.common.Errmsg;
-import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 
 import com.sun.net.httpserver.HttpExchange;
@@ -18,12 +17,11 @@ public class IcalFileServer {
 
 	private static HttpServer server = null;
 	
-	private static PrefName serverPort = new PrefName("ical-server-port", new Integer(8844));
 
 	public static void start() throws Exception {
 		if (server != null)
 			stop();
-		server = HttpServer.create(new InetSocketAddress(Prefs.getIntPref(serverPort)), 0);
+		server = HttpServer.create(new InetSocketAddress(Prefs.getIntPref(IcalModule.PORT)), 0);
 		server.createContext("/icals/borg.ics", new MyHandler());
 		server.setExecutor(null);
 		server.start();
