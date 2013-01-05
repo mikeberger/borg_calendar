@@ -44,6 +44,8 @@ import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.Recur;
 import net.fortuna.ical4j.model.TextList;
 import net.fortuna.ical4j.model.ValidationException;
+import net.fortuna.ical4j.model.WeekDay;
+import net.fortuna.ical4j.model.WeekDayList;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VToDo;
 import net.fortuna.ical4j.model.parameter.Value;
@@ -434,17 +436,32 @@ public class AppointmentIcalAdapter {
 					String freq = recur.getFrequency();
 					int interval = recur.getInterval();
 					if (freq.equals(Recur.DAILY)) {
-						ap.setFrequency("daily");
+						ap.setFrequency(Repeat.DAILY);
 					} else if (freq.equals(Recur.WEEKLY)) {
 						if (interval == 2) {
-							ap.setFrequency("biweekly");
+							ap.setFrequency(Repeat.BIWEEKLY);
 						} else {
-							ap.setFrequency("weekly");
+							ap.setFrequency(Repeat.WEEKLY);
 						}
+						
+						WeekDayList dl = recur.getDayList();
+						if( dl != null && !dl.isEmpty())
+						{
+							String f = Repeat.DAYLIST;
+							f += ",";
+							for( Object o : dl )
+							{
+								WeekDay wd = (WeekDay)o;
+								f += WeekDay.getCalendarDay(wd);
+							}
+							ap.setFrequency(f);
+
+						}
+						
 					} else if (freq.equals(Recur.MONTHLY)) {
-						ap.setFrequency("monthly");
+						ap.setFrequency(Repeat.MONTHLY);
 					} else if (freq.equals(Recur.YEARLY)) {
-						ap.setFrequency("yearly");
+						ap.setFrequency(Repeat.YEARLY);
 					} else {
 						warning.append("WARNING: Cannot handle frequency of ["
 								+ freq + "], for appt [" + summary

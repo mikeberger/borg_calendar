@@ -37,6 +37,11 @@
 			<fileset dir="${prj.dir}/dist" includes="*.jar" />
 			<fileset dir="${prj.dir}/lib" includes="*" />
 		</zip>
+		<zip destfile="${dist.dir}/ical_plugin_only.zip">
+			<fileset dir="${prj.dir}/dist" includes="common-plugin.jar,ical-plugin.jar" />
+			<fileset dir="${prj.dir}/lib" includes="backport*.jar,commons*.jar,ical*.jar,jcommon*.jar" />
+			<fileset dir="${prj.dir}/lib" includes="LICENSE.ical,LICENSE*comm*" />
+		</zip>
 	</target>
 
 	<target name="jars" depends="compile">
@@ -88,9 +93,9 @@
 	<target name="main" depends="clean,dist" />
 
 	<target name="resolve" description="retrieve dependencies with ivy">
-			<property name="ivy.dep.file" value="${prj.dir}/ivy.xml" />
-			<property name="ivy.lib.dir" value="${prj.dir}/lib" />
-			<ivy:retrieve type="jar"/>
-		</target>
-		
+		<property name="ivy.dep.file" value="${prj.dir}/ivy.xml" />
+		<property name="ivy.lib.dir" value="${prj.dir}/lib" />
+		<ivy:retrieve type="jar" />
+	</target>
+
 </project>
