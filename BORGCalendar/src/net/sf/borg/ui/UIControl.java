@@ -173,6 +173,7 @@ public class UIControl {
 				.getResourceString("viewchglog")));
 		mv.addModule(new InfoView("/resource/license.htm", Resource
 				.getResourceString("License")));
+		mv.addModule(new FileView(System.getProperty("user.home", "") + "/.borg.log", Resource.getResourceString("view_log")));
 
 		if (Prefs.getBoolPref(PrefName.DYNAMIC_LOADING) == true) {
 			addExternalModule("net.sf.borg.plugin.reports.ReportModule");
