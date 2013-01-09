@@ -646,7 +646,9 @@ class MainMenu {
 		try {
 
 			JFileChooser chooser = new JFileChooser();
-
+			FileNameExtensionFilter filter = new FileNameExtensionFilter(
+			        Resource.getResourceString("xml_file"), "xml", "XML");
+			    chooser.setFileFilter(filter);
 			chooser.setCurrentDirectory(new File("."));
 			chooser.setDialogTitle(Resource
 					.getResourceString("Please_choose_File_to_Import_From"));
@@ -661,6 +663,12 @@ class MainMenu {
 			BufferedReader in = new BufferedReader(new FileReader(
 					new File(fileName)));
 			Model model = ExportImport.getImportModelForXML(in);
+			
+			if( model == null )
+			{
+				Errmsg.getErrorHandler().notice(Resource.getResourceString("import_format_error"));
+				return;
+			}
 
 			int ret = JOptionPane.showConfirmDialog(null, Resource
 					.getResourceString("Importing_")
