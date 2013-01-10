@@ -62,7 +62,8 @@ public class TaskModule extends DockableView implements Module {
 			setLayout(new java.awt.GridBagLayout());
 			add(taskTabs, GridBagConstraintsFactory
 					.create(0, 0, GridBagConstraints.BOTH, 1.0, 1.0));
-			
+			isInitialized = true;
+
 
 		}
 		
