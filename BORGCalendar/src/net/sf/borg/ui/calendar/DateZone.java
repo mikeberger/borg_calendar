@@ -31,6 +31,7 @@ import javax.swing.JPopupMenu;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.entity.Appointment;
+import net.sf.borg.ui.ClipBoard;
 
 /**
  * A DateZone is used to mark a rectagular area on the calendar UIs that corresponds
@@ -47,6 +48,7 @@ class DateZone {
 
 	// the popup menu
 	private JPopupMenu popmenu = null;
+	private JMenuItem pasteItem = null;
 
 
 	/**
@@ -112,8 +114,19 @@ class DateZone {
 					quickAdd(false);
 				}
 			});
-
+			popmenu.add(pasteItem = new JMenuItem(Resource
+					.getResourceString("Paste")));
+			pasteItem.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					Appointment appt = (Appointment) ClipBoard.getReference().get(Appointment.class);
+					pasteAppt(appt);
+				}
+			});
+			
 		}
+		
+		pasteItem.setEnabled(ClipBoard.getReference().get(Appointment.class) == null ? false : true);
 		return popmenu;
 	}
 
@@ -163,6 +176,23 @@ class DateZone {
 		appt.setTodo(todo);
 		appt.setUntimed("Y");
 
+		AppointmentModel.getReference().saveAppt(appt);
+
+	}
+	
+	private void pasteAppt(Appointment appt)
+	{
+		GregorianCalendar newcal = new GregorianCalendar();
+		newcal.setTime(date);
+		
+		GregorianCalendar cal = new GregorianCalendar();
+		cal.setTime(appt.getDate());
+		cal.set(Calendar.YEAR, newcal.get(Calendar.YEAR));
+		cal.set(Calendar.MONTH, newcal.get(Calendar.MONTH));
+		cal.set(Calendar.DATE, newcal.get(Calendar.DATE));
+		appt.setDate(cal.getTime());
+		
+		appt.setKey(-1);
 		AppointmentModel.getReference().saveAppt(appt);
 
 	}

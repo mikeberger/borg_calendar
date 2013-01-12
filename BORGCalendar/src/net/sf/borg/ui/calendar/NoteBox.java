@@ -62,6 +62,7 @@ import net.sf.borg.model.entity.Link;
 import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Subtask;
 import net.sf.borg.model.entity.Task;
+import net.sf.borg.ui.ClipBoard;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.task.ProjectView;
@@ -89,7 +90,7 @@ public class NoteBox extends Box implements Box.Draggable {
 	private Icon todoIcon = null; // icon to mark todos
 
 	private String todoMarker = null; // textual todo marker
-	
+
 	private String noteText = null; // the text of this note box
 
 	/**
@@ -130,11 +131,11 @@ public class NoteBox extends Box implements Box.Draggable {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		// appointments need a special format
-		if( ap instanceof Appointment )
-			noteText = AppointmentTextFormat.format((Appointment)ap, d);
-		else 
+		if (ap instanceof Appointment)
+			noteText = AppointmentTextFormat.format((Appointment) ap, d);
+		else
 			noteText = ap.getText();
 
 	}
@@ -215,7 +216,7 @@ public class NoteBox extends Box implements Box.Draggable {
 			// "logical" color names used to be the hard-coded colors. Now they
 			// mean nothing. If it weren't for legacy databases, then red could
 			// be color1
-			if (isSelected == true) 
+			if (isSelected == true)
 				g2.setColor(new Color(t.getDefaultBg()));
 			else if (getTextColor().equals("red"))
 				g2.setColor(new Color(t.getTextColor1()));
@@ -286,7 +287,17 @@ public class NoteBox extends Box implements Box.Draggable {
 					delete();
 				}
 			});
-
+			if (bean instanceof Appointment) {
+				popmenu.add(mnuitm = new JMenuItem(Resource
+						.getResourceString("Copy")));
+				mnuitm.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						Appointment appt = (Appointment) bean;
+						ClipBoard.getReference().put(appt.copy());
+					}
+				});
+			}
 			if (isTodo()) {
 				popmenu.add(mnuitm = new JMenuItem(Resource
 						.getResourceString("Done_(No_Delete)")));
@@ -377,9 +388,10 @@ public class NoteBox extends Box implements Box.Draggable {
 			// change appointment date based on move
 			Appointment ap = AppointmentModel.getReference().getAppt(
 					((Appointment) bean).getKey());
-			
+
 			// if staying untimed then keep start at 12AM
-			if( realtime == -1) realtime = 0;
+			if (realtime == -1)
+				realtime = 0;
 
 			int hour = realtime / 60;
 			int min = realtime % 60;
@@ -403,8 +415,8 @@ public class NoteBox extends Box implements Box.Draggable {
 				// keep time and duration the same
 				Calendar oldCal = new GregorianCalendar();
 				oldCal.setTime(ap.getDate());
-				newCal.set(Calendar.HOUR_OF_DAY, oldCal
-						.get(Calendar.HOUR_OF_DAY));
+				newCal.set(Calendar.HOUR_OF_DAY,
+						oldCal.get(Calendar.HOUR_OF_DAY));
 				newCal.set(Calendar.MINUTE, oldCal.get(Calendar.MINUTE));
 				newCal.set(Calendar.SECOND, 0);
 			}
@@ -419,7 +431,8 @@ public class NoteBox extends Box implements Box.Draggable {
 				// on the first in a series
 				int k2 = DateUtil.dayOfEpoch(date);
 				if (olddate != k2) {
-					Errmsg.getErrorHandler().notice(Resource.getResourceString("rpt_drag_err"));
+					Errmsg.getErrorHandler().notice(
+							Resource.getResourceString("rpt_drag_err"));
 					return;
 				}
 			}
@@ -452,8 +465,8 @@ public class NoteBox extends Box implements Box.Draggable {
 
 			// reject change if it was dragged before its start date
 			if (subtask.getDueDate() != null
-					&& DateUtil.isAfter(subtask.getStartDate(), subtask
-							.getDueDate())) {
+					&& DateUtil.isAfter(subtask.getStartDate(),
+							subtask.getDueDate())) {
 				throw new Warning(Resource.getResourceString("sd_dd_warn"));
 			}
 
@@ -469,8 +482,8 @@ public class NoteBox extends Box implements Box.Draggable {
 
 			// reject change if it was dragged before its start date
 			if (project.getDueDate() != null
-					&& DateUtil.isAfter(project.getStartDate(), project
-							.getDueDate())) {
+					&& DateUtil.isAfter(project.getStartDate(),
+							project.getDueDate())) {
 				throw new Warning(Resource.getResourceString("sd_dd_warn"));
 			}
 
@@ -490,9 +503,9 @@ public class NoteBox extends Box implements Box.Draggable {
 			GregorianCalendar cal = new GregorianCalendar();
 			cal.setTime(date);
 			// create new appt list view for the day of the appt
-			AppointmentListView ag = new AppointmentListView(cal
-					.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal
-					.get(Calendar.DATE));
+			AppointmentListView ag = new AppointmentListView(
+					cal.get(Calendar.YEAR), cal.get(Calendar.MONTH),
+					cal.get(Calendar.DATE));
 			// add appt list tab to main view
 			ag.showView();
 			// set appt list to be editing the clicked appt

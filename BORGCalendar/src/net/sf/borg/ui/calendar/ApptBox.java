@@ -67,6 +67,7 @@ import net.sf.borg.model.Repeat;
 import net.sf.borg.model.Theme;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.Link;
+import net.sf.borg.ui.ClipBoard;
 
 /**
  * ApptBox is used to draw timed appointments on the time-grid part of the day
@@ -634,7 +635,14 @@ class ApptBox extends Box implements Box.Draggable {
 					delete();
 				}
 			});
-
+			popmenu.add(mnuitm = new JMenuItem(Resource
+					.getResourceString("Copy")));
+			mnuitm.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					ClipBoard.getReference().put(appt.copy());
+				}
+			});
 			if (isTodo()) {
 				popmenu.add(mnuitm = new JMenuItem(Resource
 						.getResourceString("Done_(No_Delete)")));
