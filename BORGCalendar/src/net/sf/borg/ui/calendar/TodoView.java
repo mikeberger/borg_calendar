@@ -263,7 +263,12 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 	private ActionListener changeDateAction = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent evt) {
-			AppointmentListView.onChangeDate(getSelectedItems(true));
+			List<Appointment> aplist = new ArrayList<Appointment>();
+			for( KeyedEntity<?> ke : getSelectedItems(true))
+			{
+				aplist.add((Appointment)ke);
+			}
+			AppointmentListView.onChangeDate(aplist);
 		}
 	};
 
@@ -287,7 +292,12 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 	private ActionListener moveToFollowingDayAction = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent evt) {
-			AppointmentListView.onMoveToFollowingDay(getSelectedItems(true));
+			List<Appointment> aplist = new ArrayList<Appointment>();
+			for( KeyedEntity<?> ke : getSelectedItems(true))
+			{
+				aplist.add((Appointment)ke);
+			}
+			AppointmentListView.onMoveToFollowingDay(aplist);
 		}
 	};
 
@@ -446,7 +456,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 	private void doTodoAction(boolean del) {
 
 		// get the selected items
-		List<Appointment> items = getSelectedItems(false);
+		List<KeyedEntity<?>> items = getSelectedItems(false);
 		for (int i = 0; i < items.size(); ++i) {
 			try {
 				// take different action depending on the entity type
@@ -490,8 +500,8 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 	 * 
 	 * @return the selected items
 	 */
-	private List<Appointment> getSelectedItems(boolean appts_only) {
-		List<Appointment> lst = new ArrayList<Appointment>();
+	private List<KeyedEntity<?>> getSelectedItems(boolean appts_only) {
+		List<KeyedEntity<?>> lst = new ArrayList<KeyedEntity<?>>();
 		int[] indices = todoTable.getSelectedRows();
 		for (int i = 0; i < indices.length; ++i) {
 			int index = indices[i];
@@ -509,7 +519,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 
 				Object o = theTodoList.toArray()[k - 1];
 				if (!appts_only || o instanceof Appointment) {
-					lst.add((Appointment) o);
+					lst.add((KeyedEntity<?>) o);
 				}
 			} catch (Exception e) {
 				Errmsg.getErrorHandler().errmsg(e);
