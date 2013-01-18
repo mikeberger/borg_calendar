@@ -372,6 +372,10 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
 					int mins = (int) ((endTimePanel.getTime().getTime() - startTimePanel.getTime().getTime())/(60*1000)); 
+					if( mins < 0 )
+						mins += (24*60);
+					else if( mins >= 24*60)
+						mins -= (24*60);
 					durationLabel.setText(DateUtil.minuteString(mins));
 				} catch (Warning e) {
 					// nothing
