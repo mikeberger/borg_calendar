@@ -32,6 +32,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 
+import net.sf.borg.common.DateUtil;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.AddressModel;
@@ -418,6 +419,12 @@ public class AddressView extends DockableView {
 					.notice(Resource
 							.getResourceString("First_and_Last_name_are_Required"));
 			return;
+		}
+		
+		Date bd = birthdayChooser.getDate();
+		if( bd != null && DateUtil.isAfter(bd, new Date()))
+		{
+			Errmsg.getErrorHandler().notice(Resource.getResourceString("future_birthday"));
 		}
 
 		addr_.setFirstName(firstNameText.getText());
