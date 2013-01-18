@@ -412,8 +412,8 @@ public class AddressView extends DockableView {
 	 */
 	private void saveaddr() {
 
-		if (firstNameText.getText().equals("")
-				|| lastNameText.getText().equals("")) {
+		if (firstNameText.getText().equals("") || firstNameText.getText().trim().length() == 0
+				|| lastNameText.getText().equals("") || lastNameText.getText().trim().length() == 0) {
 			Errmsg.getErrorHandler()
 					.notice(Resource
 							.getResourceString("First_and_Last_name_are_Required"));
