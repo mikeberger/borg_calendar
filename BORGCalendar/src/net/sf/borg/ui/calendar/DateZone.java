@@ -155,7 +155,7 @@ class DateZone {
 		// prompt for todo text
 		String tdtext = JOptionPane.showInputDialog("", Resource
 				.getResourceString("Please_enter_some_appointment_text"));
-		if (tdtext == null)
+		if (tdtext == null || tdtext.isEmpty())
 			return;
 
 		// load up a default appt from any saved prefs
