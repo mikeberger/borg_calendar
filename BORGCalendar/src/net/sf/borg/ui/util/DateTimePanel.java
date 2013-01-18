@@ -142,6 +142,9 @@ public class DateTimePanel extends JPanel {
 
 		try {
 			int min = Integer.parseInt((String) minuteBox.getSelectedItem());
+			if( min < 0 || min > 59 )
+				throw new Warning(Resource.getResourceString("InvalidMinute")
+						+ ": " + minuteBox.getSelectedItem());
 			cal.set(Calendar.MINUTE, min);
 		} catch (NumberFormatException n) {
 			throw new Warning(Resource.getResourceString("InvalidMinute")
