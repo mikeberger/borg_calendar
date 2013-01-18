@@ -589,12 +589,13 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 		buttonGroup.add(repeatTimesRadio);
 
 		numberOfRepeatsSpinner = new JSpinner();
-		theRepeatPanel
+		theRepeatPanel 
 				.add(numberOfRepeatsSpinner, GridBagConstraintsFactory.create(
 						1, 1, GridBagConstraints.BOTH));
 		SpinnerNumberModel mod = (SpinnerNumberModel) numberOfRepeatsSpinner
 				.getModel();
 		mod.setMinimum(new Integer(1));
+		mod.setMaximum(new Integer(99999));
 
 		repeatUntilRadio = new JRadioButton();
 		ResourceHelper.setText(repeatUntilRadio, "Until");
