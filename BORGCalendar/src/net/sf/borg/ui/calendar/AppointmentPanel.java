@@ -1419,7 +1419,7 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 			endTimePanel.setTime(DateUtil.setToMidnight(new Date()));
 
 			categoryBox.setSelectedIndex(0);
-
+			apptTitleField.setText("");
 			todoCheckBox.setSelected(false); // todo unchecked
 			colorComboBox.setSelectedIndex(3); // color = black
 			vacationCheckBox.setSelected(false); // vacation unchecked
