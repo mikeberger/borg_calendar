@@ -80,7 +80,7 @@ public class NwFontChooserS extends JDialog {
             super(parent, modal);
             Font font = fontIn;
             initAll();
-            setTitle("Font Choosr");
+            setTitle(Resource.getResourceString("font_chooser"));
             if (font == null)
                 font = Sample.getFont();
             FontList.setSelectedItem(font.getName());
