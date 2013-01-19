@@ -1082,19 +1082,9 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 	 */
 	private void untimedCheckBoxActionPerformed() {
 		if (untimedCheckBox.isSelected()) {
-			try {
-				startTimePanel.setTime(DateUtil.setToMidnight(startTimePanel
-						.getTime()));
-			} catch (Warning e) {
-				Errmsg.getErrorHandler().notice(e.getMessage());
-			}
+			startTimePanel.setTime(DateUtil.setToMidnight(new Date()));
 			startTimePanel.setEnabled(false);
-			try {
-				endTimePanel.setTime(DateUtil.setToMidnight(startTimePanel
-						.getTime()));
-			} catch (Warning e) {
-				Errmsg.getErrorHandler().notice(e.getMessage());
-			}
+			endTimePanel.setTime(DateUtil.setToMidnight(new Date()));
 			endTimePanel.setEnabled(false);
 		} else {
 			startTimePanel.setEnabled(true);
