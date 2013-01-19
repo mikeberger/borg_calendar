@@ -80,7 +80,7 @@ CREATE CACHED TABLE projects (
   start_date date NOT NULL ,
   due_date date default NULL,
   description longvarchar NOT NULL,
-  category varchar(10) default NULL,
+  category varchar(15) default NULL,
   status varchar(10) default '' NOT NULL,
   parent integer default NULL,
   FOREIGN KEY (parent) REFERENCES projects ( id)
@@ -98,7 +98,7 @@ CREATE CACHED TABLE tasks (
   type varchar(10) default '' NOT NULL,
   description longvarchar,
   resolution longvarchar,
-  category varchar(10) default NULL,
+  category varchar(15) default NULL,
   close_date date default NULL,
   project integer default NULL,
   summary longvarchar NOT NULL,
