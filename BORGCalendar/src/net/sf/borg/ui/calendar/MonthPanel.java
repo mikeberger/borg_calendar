@@ -440,7 +440,9 @@ public class MonthPanel extends JPanel implements Printable, CalendarModule {
 		public Date getDateForCoord(double x, double y) {
 
 			int col = (int) x / colwidth;
+			if( col > 6 ) col = 6; // max is 6 cols
 			int row = ((int) y - daytop) / rowheight;
+			if( row > 5) row = 5; // max is 5 rows on month view
 			GregorianCalendar cal = new GregorianCalendar(year_, month_, 1);
 			cal.setFirstDayOfWeek(Prefs.getIntPref(PrefName.FIRSTDOW));
 			int fdow = cal.get(Calendar.DAY_OF_WEEK) - cal.getFirstDayOfWeek();
