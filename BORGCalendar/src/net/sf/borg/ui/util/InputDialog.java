@@ -66,7 +66,7 @@ public class InputDialog extends JDialog {
 		@Override
 		public void insertString(int offs, String str, AttributeSet attr)
 				throws BadLocationException {
-			if (getLength() >= this.maxLength) {
+			if (getLength() + str.length() > this.maxLength) {
 				Toolkit.getDefaultToolkit().beep();
 			} else {
 				super.insertString(offs, str, attr);
