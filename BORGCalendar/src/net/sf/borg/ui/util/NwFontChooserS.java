@@ -92,6 +92,7 @@ public class NwFontChooserS extends JDialog {
             NwFontChooserS fd = new NwFontChooserS(parent, true, font);
             if (s != null)
                 fd.setTitle(s);
+            fd.setResizable(false);
             fd.setVisible(true);
             Font fo = null;
             if (fd.ob)
