@@ -54,6 +54,7 @@ import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 
 import net.sf.borg.common.DateUtil;
@@ -632,6 +633,15 @@ class ApptBox extends Box implements Box.Draggable {
 			mnuitm.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					int ret = JOptionPane.showConfirmDialog(null, Resource
+							.getResourceString("Really_Delete_")
+							+ "?", Resource
+							.getResourceString("Confirm_Delete"),
+							JOptionPane.OK_CANCEL_OPTION,
+							JOptionPane.QUESTION_MESSAGE);
+					if (ret != JOptionPane.OK_OPTION)
+						return;
+
 					delete();
 				}
 			});

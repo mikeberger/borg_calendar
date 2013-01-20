@@ -40,6 +40,7 @@ import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -505,6 +506,16 @@ public class AppointmentListView extends DockableView implements
 		ActionListener alDel = new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				
+				int ret = JOptionPane.showConfirmDialog(null, Resource
+						.getResourceString("Really_Delete_Apps")
+						+ "?", Resource
+						.getResourceString("Confirm_Delete"),
+						JOptionPane.OK_CANCEL_OPTION,
+						JOptionPane.QUESTION_MESSAGE);
+				if (ret != JOptionPane.OK_OPTION)
+					return;
+
 				int[] keys = getSelectedKeys();
 				AppointmentModel model = AppointmentModel.getReference();
 				for (int i = 0; i < keys.length; ++i)
