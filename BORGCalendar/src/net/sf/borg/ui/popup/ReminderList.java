@@ -146,7 +146,7 @@ public class ReminderList extends View {
 		reminderTable.getColumnModel().getColumn(ReminderList.SELECT_COLUMN).setMinWidth(20);
 		
 		reminderTable.setDefaultRenderer(String.class, new MyTableCellRenderer());
-
+		reminderTable.getTableHeader().setReorderingAllowed(false);
 		pack();
 
 		manageMySize(REMINDERLISTSIZE);
