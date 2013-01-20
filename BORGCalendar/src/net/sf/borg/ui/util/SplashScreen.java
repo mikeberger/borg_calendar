@@ -33,7 +33,7 @@ import java.awt.Insets;
 import java.awt.Toolkit;
 
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -42,7 +42,7 @@ import javax.swing.SwingConstants;
 /**
  * Splash Screen with status text
  */
-public class SplashScreen extends JFrame {
+public class SplashScreen extends JDialog {
 
 	private static final long serialVersionUID = 1L;
 
@@ -55,9 +55,10 @@ public class SplashScreen extends JFrame {
 	/**
 	 * constructor
 	 */
-	public SplashScreen() {
+	public SplashScreen(ModalityType modal) {
 		
 		setUndecorated(true);
+		setModalityType(modal);
 		initComponents();
 		pack();
 		

@@ -1,5 +1,6 @@
 package net.sf.borg.ui;
 
+import java.awt.Dialog.ModalityType;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -10,6 +11,7 @@ import java.util.logging.Logger;
 import javax.swing.ButtonGroup;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
+import javax.swing.SwingWorker;
 import javax.swing.Timer;
 import javax.swing.UIManager;
 
@@ -112,7 +114,7 @@ public class UIControl {
 
 		// pop up the splash if the option is set
 		if (Prefs.getBoolPref(PrefName.SPLASH)) {
-			splashScreen = new SplashScreen();
+			splashScreen = new SplashScreen(ModalityType.MODELESS);
 			splashScreen.setText(Resource.getResourceString("Initializing"));
 			splashScreen.setVisible(true);
 			final String tn = trayname;
@@ -173,7 +175,8 @@ public class UIControl {
 				.getResourceString("viewchglog")));
 		mv.addModule(new InfoView("/resource/license.htm", Resource
 				.getResourceString("License")));
-		mv.addModule(new FileView(System.getProperty("user.home", "") + "/.borg.log", Resource.getResourceString("view_log")));
+		mv.addModule(new FileView(System.getProperty("user.home", "")
+				+ "/.borg.log", Resource.getResourceString("view_log")));
 
 		if (Prefs.getBoolPref(PrefName.DYNAMIC_LOADING) == true) {
 			addExternalModule("net.sf.borg.plugin.reports.ReportModule");
@@ -185,7 +188,7 @@ public class UIControl {
 		if (!Prefs.getBoolPref(PrefName.BACKGSTART)
 				|| !SunTrayIconProxy.hasTrayIcon()) {
 			mv.setVisible(true);
-			
+
 			// open all views that should be shown at startup
 			mv.startupViews();
 		}
@@ -271,29 +274,50 @@ public class UIControl {
 		if (rm != null)
 			rm.remove();
 
-		// show a splash screen for shutdown
+		new NonUIShutdown(do_backup, backup_email).execute();
+
+
+		// show a splash screen for shutdown which locks the UI
 		try {
-			SplashScreen ban = new SplashScreen();
+			SplashScreen ban = new SplashScreen(ModalityType.APPLICATION_MODAL);
 			ban.setText(Resource.getResourceString("shutdown"));
 			ban.setVisible(true);
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
 
-		// backup data
-		if (do_backup == true) {
-			try {
-				ExportImport.exportToZip(backupdir, backup_email);
-			} catch (Exception e) {
-				Errmsg.getErrorHandler().errmsg(e);
-				return;
-			}
+		
+	}
+
+	static private class NonUIShutdown extends SwingWorker<Object,Object> {
+
+		private boolean do_backup;
+		private boolean backup_email;
+
+		public NonUIShutdown(boolean b, boolean e) {
+			do_backup = b;
+			backup_email = e;
 		}
 
-		// non-UI shutdown
-		if (shutdownListener != null)
-			shutdownListener.update(null, null);
+		@Override
+		protected Object doInBackground() throws Exception {
+			// backup data
+			if (do_backup == true) {
+				try {
+					final String backupdir = Prefs.getPref(PrefName.BACKUPDIR);
+					ExportImport.exportToZip(backupdir, backup_email);
+				} catch (Exception e) {
+					Errmsg.getErrorHandler().errmsg(e);
+				}
+			}
+
+			// non-UI shutdown
+			if (shutdownListener != null)
+				shutdownListener.update(null, null);
+			return null;
+		}
 
 	}
 
@@ -310,9 +334,9 @@ public class UIControl {
 			MultiView.Module module = (MultiView.Module) clazz.newInstance();
 			MultiView.getMainView().addModule(module);
 		} catch (Exception e) {
-			
+
 			log.info(e.toString());
-			
+
 		}
 	}
 
