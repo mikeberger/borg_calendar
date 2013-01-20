@@ -12,6 +12,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
@@ -58,6 +59,9 @@ public class IcalModule implements Module {
 
 				// prompt for a file
 				JFileChooser chooser = new JFileChooser();
+				FileNameExtensionFilter filter = new FileNameExtensionFilter(
+				        Resource.getResourceString("ical_files"), "ics", "ICS", "ical", "ICAL", "icalendar");
+				chooser.setFileFilter(filter);
 				chooser.setCurrentDirectory(new File("."));
 				chooser.setDialogTitle(Resource
 						.getResourceString("choose_file"));
