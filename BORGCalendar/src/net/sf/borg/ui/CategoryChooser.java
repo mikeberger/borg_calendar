@@ -332,7 +332,8 @@ public class CategoryChooser extends View {
 							}
 
 							try {
-								CategoryModel.getReference().sync();
+								//CategoryModel.getReference().sync();
+								CategoryModel.getReference().deleteCategory((String)o);
 							} catch (Exception ex) {
 								Errmsg.getErrorHandler().errmsg(ex);
 							}

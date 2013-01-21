@@ -146,6 +146,17 @@ public class CategoryModel extends Model {
 	public void remove() {
 	  // empty
 	}
+	
+	/**
+	 * delete a category from the model, but not from the db
+	 * @param cat
+	 */
+	public void deleteCategory(String cat)
+	{
+		categories_.remove(cat);
+		shownCategories_.remove(cat);
+		refreshListeners();
+	}
 
 	/**
 	 * Sets the set of shown categories.
