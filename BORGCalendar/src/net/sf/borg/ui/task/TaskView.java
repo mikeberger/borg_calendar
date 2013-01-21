@@ -76,6 +76,7 @@ import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.link.LinkPanel;
 import net.sf.borg.ui.util.DateDialog;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
+import net.sf.borg.ui.util.LimitDocument;
 import net.sf.borg.ui.util.PopupMenuHelper;
 import net.sf.borg.ui.util.StripedTable;
 import net.sf.borg.ui.util.TableSorter;
@@ -458,7 +459,7 @@ public class TaskView extends DockableView {
 			priorityText.addItem(new Integer(p));
 		}
 
-		personAssignedText = new JTextField();
+		personAssignedText = new JTextField(new LimitDocument(10), null, 10);
 		JLabel lblStartDate = new JLabel();
 		JLabel lblDueDate = new JLabel();
 		JLabel lblPri = new JLabel();
