@@ -996,6 +996,12 @@ public class TaskView extends DockableView {
 			Integer id = (Integer) ts.getValueAt(r, 1);
 
 			Boolean closed = (Boolean) ts.getValueAt(r, 0);
+			
+			// do not allow adding new open subtasks if task is closed
+			if (TaskModel.isClosed(task) && id == null && closed.booleanValue() == false) {
+				continue;
+			}
+
 
 			Date crd = (Date) ts.getValueAt(r, 3);
 			// default subtask start date to the task start date unless the task
@@ -1162,19 +1168,19 @@ public class TaskView extends DockableView {
 			} catch (Exception e) {
 				// no project selected
 			}
-			
+
 			Integer pid = task.getProject();
-			if( pid != null && task.getStartDate() != null)
-			{
+			if (pid != null && task.getStartDate() != null) {
 				Project p = TaskModel.getReference().getProject(pid);
-				if ( p.getStartDate() != null &&
-						DateUtil.isAfter(p.getStartDate(), task.getStartDate())) {
-					throw new Warning(Resource.getResourceString("proj_sd_warning"));
+				if (p.getStartDate() != null
+						&& DateUtil.isAfter(p.getStartDate(),
+								task.getStartDate())) {
+					throw new Warning(
+							Resource.getResourceString("proj_sd_warning"));
 				}
 
 			}
 
-			
 			if (cat.equals("") || cat.equals(CategoryModel.UNCATEGORIZED)) {
 				task.setCategory(null);
 			} else {
