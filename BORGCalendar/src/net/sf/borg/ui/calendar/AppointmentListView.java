@@ -180,6 +180,8 @@ public class AppointmentListView extends DockableView implements
 				gcal.setTime(appt.getDate());
 				gcal.add(Calendar.DAY_OF_YEAR, 1);
 				appt.setDate(gcal.getTime());
+				appt.setSkipList(null);
+				appt.setNextTodo(null);
 				AppointmentModel.getReference().saveAppt(appt);
 
 			} catch (Exception e) {
