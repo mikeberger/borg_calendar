@@ -8,6 +8,7 @@ import java.util.GregorianCalendar;
 
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Prefs;
+import net.sf.borg.plugin.common.Resource;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -25,6 +26,8 @@ public class IcalFileServer {
 		server.createContext("/icals/borg.ics", new MyHandler());
 		server.setExecutor(null);
 		server.start();
+		InetSocketAddress addr = server.getAddress();
+		Errmsg.getErrorHandler().notice(Resource.getResourceString("server_started") + ": http://localhost:" + addr.getPort() + "/icals/borg.ics");
 	}
 
 	public static void stop() {

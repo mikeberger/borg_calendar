@@ -117,7 +117,7 @@ public class IcalModule implements Module {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
 					IcalFileServer.start();
-					Errmsg.getErrorHandler().notice(Resource.getResourceString("server_started"));
+					//Errmsg.getErrorHandler().notice(Resource.getResourceString("server_started"));
 				} catch (Exception e) {
 					Errmsg.getErrorHandler().errmsg(e);
 				}
