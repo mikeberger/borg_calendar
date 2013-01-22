@@ -501,7 +501,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 				continue;
 
 			String taskdesc = task.getSummary();
-			
+
 			if (Prefs.getBoolPref(PrefName.TASK_TREE_SHOW_STATUS)) {
 				node.add(new DefaultMutableTreeNode(new Node("["
 						+ task.getKey() + "-" + task.getState() + "] "
@@ -698,6 +698,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 		treeScrollPane.setViewportView(projectTree);
 		projectTree.addMouseListener(this);
 		expandOrCollapseAll(isExpanded);
+		
 	}
 
 	/**
@@ -710,10 +711,9 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 	@Override
 	public void valueChanged(TreeSelectionEvent e) {
 		Object o = getSelectedEntity();
-		if (o == null)
-			return;
-
-		if (o instanceof Task) {
+		if (o == null) {
+			entityScrollPane.setViewportView(null);
+		} else if (o instanceof Task) {
 			Task t = (Task) o;
 			try {
 				TaskView tv = new TaskView(t, TaskView.Action.CHANGE,
