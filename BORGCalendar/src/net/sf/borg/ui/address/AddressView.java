@@ -27,6 +27,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -360,9 +361,15 @@ public class AddressView extends DockableView {
 		//
 		// NOTES
 		//
+		notesText.setLineWrap(true);
+		notesText.setWrapStyleWord(true);
+		notesText.setColumns(40);
+		notesText.setRows(5);
+		JScrollPane sp = new JScrollPane();
+		sp.setViewportView(notesText);
 		JPanel notesPanel = new JPanel();
 		notesPanel.setLayout(new GridBagLayout());
-		notesPanel.add(notesText, GridBagConstraintsFactory.create(1, 0,
+		notesPanel.add(sp, GridBagConstraintsFactory.create(1, 0,
 				GridBagConstraints.BOTH, 1.0, 1.0));
 		notesPanel.setBorder(new TitledBorder(Resource
 				.getResourceString("Notes")));
