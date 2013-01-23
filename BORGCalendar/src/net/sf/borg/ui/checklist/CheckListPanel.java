@@ -103,7 +103,8 @@ public class CheckListPanel extends DockableView implements
 			this.setBackground(l.getBackground());
 
 			String text = l.getText();
-			Boolean complete = (Boolean) table.getModel().getValueAt(row, COMPLETE_COLUMN);
+			Boolean complete = (Boolean) table.getModel().getValueAt(row,
+					COMPLETE_COLUMN);
 			if (complete == Boolean.TRUE) {
 				text = "<HTML><STRIKE>" + text + "</STRIKE></HTML>";
 			}
@@ -135,25 +136,26 @@ public class CheckListPanel extends DockableView implements
 
 	/** The table of checklist items. */
 	private StripedTable itemTable = null;
-	
+
 	private boolean isInitialized = false;
 
-	private ActionListener renameAction = new ActionListener(){
+	private ActionListener renameAction = new ActionListener() {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			
+
 			String name = getSelectedCheckListName();
 			if (name == null) {
-				Errmsg.getErrorHandler().notice(Resource.getResourceString("Select_CheckList_Warning"));
+				Errmsg.getErrorHandler().notice(
+						Resource.getResourceString("Select_CheckList_Warning"));
 				return;
 			}
-			
-			String newname = JOptionPane.showInputDialog(Resource
-					.getResourceString("Enter_CheckList_Name"), name);
+
+			String newname = JOptionPane.showInputDialog(
+					Resource.getResourceString("Enter_CheckList_Name"), name);
 			if (newname == null || newname.isEmpty() || newname.equals(name))
 				return;
-			
+
 			CheckList m;
 			try {
 				m = CheckListModel.getReference().getCheckList(name);
@@ -165,19 +167,16 @@ public class CheckListPanel extends DockableView implements
 			} catch (Exception e1) {
 				Errmsg.getErrorHandler().errmsg(e1);
 			}
-			
 
 		}
-		
+
 	};
-	
+
 	/**
 	 * constructor.
 	 */
 	public CheckListPanel() {
 		super();
-
-		
 
 	}
 
@@ -193,9 +192,9 @@ public class CheckListPanel extends DockableView implements
 			/*
 			 * confirm discard of changes
 			 */
-			int ret = JOptionPane.showConfirmDialog(null, Resource
-					.getResourceString("Edited_CheckList"), Resource
-					.getResourceString("Discard_Text?"),
+			int ret = JOptionPane.showConfirmDialog(null,
+					Resource.getResourceString("Edited_CheckList"),
+					Resource.getResourceString("Discard_Text?"),
 					JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
 
 			// if user does not want to lose changes, we need to set
@@ -222,15 +221,15 @@ public class CheckListPanel extends DockableView implements
 	private void deleteCheckList() {
 		String name = getSelectedCheckListName();
 		if (name == null) {
-			Errmsg.getErrorHandler().notice(Resource
-					.getResourceString("Select_CheckList_Warning"));
+			Errmsg.getErrorHandler().notice(
+					Resource.getResourceString("Select_CheckList_Warning"));
 			return;
 		}
 
 		// confirm delete
-		int ret = JOptionPane.showConfirmDialog(null, Resource
-				.getResourceString("Really_Delete_")
-				+ "?", Resource.getResourceString("Confirm_Delete"),
+		int ret = JOptionPane.showConfirmDialog(null,
+				Resource.getResourceString("Really_Delete_") + "?",
+				Resource.getResourceString("Confirm_Delete"),
 				JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
 		if (ret != JOptionPane.OK_OPTION)
 			return;
@@ -251,20 +250,23 @@ public class CheckListPanel extends DockableView implements
 	private void copyCheckList() {
 		String name = getSelectedCheckListName();
 		if (name == null) {
-			Errmsg.getErrorHandler().notice(Resource
-					.getResourceString("Select_CheckList_Warning"));
+			Errmsg.getErrorHandler().notice(
+					Resource.getResourceString("Select_CheckList_Warning"));
 			return;
 		}
 
 		// if the user is currently editing another checkList, confirm that we
 		// should discard changes
 		if (this.isCheckListEdited) {
-			int ret = JOptionPane.showConfirmDialog(null, Resource
-					.getResourceString("Edited_CheckList"), Resource
-					.getResourceString("Discard_Text?"),
-					JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
-			if (ret != JOptionPane.OK_OPTION)
-				return;
+			Errmsg.getErrorHandler().notice(
+					Resource.getResourceString("Cannot_Copy"));
+			return;
+//			int ret = JOptionPane.showConfirmDialog(null,
+//					Resource.getResourceString("Edited_CheckList"),
+//					Resource.getResourceString("Discard_Text?"),
+//					JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+//			if (ret != JOptionPane.OK_OPTION)
+//				return;
 		}
 
 		String newname = JOptionPane.showInputDialog(Resource
@@ -277,7 +279,8 @@ public class CheckListPanel extends DockableView implements
 					newname);
 			if (existing != null) {
 				// checkList name already used
-				Errmsg.getErrorHandler().notice(Resource.getResourceString("Existing_CheckList"));
+				Errmsg.getErrorHandler().notice(
+						Resource.getResourceString("Existing_CheckList"));
 				return;
 			}
 		} catch (Exception e1) {
@@ -303,15 +306,13 @@ public class CheckListPanel extends DockableView implements
 	 */
 	@Override
 	public JComponent getComponent() {
-		if( !isInitialized)
-		{
+		if (!isInitialized) {
 			// initialize UI
 			initializeComponents();
-			
-			new PopupMenuHelper(checkListListTable, new PopupMenuHelper.Entry[] {
-					new PopupMenuHelper.Entry(renameAction, "Rename")
-			});
-		
+
+			new PopupMenuHelper(checkListListTable,
+					new PopupMenuHelper.Entry[] { new PopupMenuHelper.Entry(
+							renameAction, "Rename") });
 
 			refresh();
 
@@ -331,7 +332,6 @@ public class CheckListPanel extends DockableView implements
 	public String getFrameTitle() {
 		return this.getModuleName();
 	}
-
 
 	/*
 	 * (non-Javadoc)
@@ -525,8 +525,8 @@ public class CheckListPanel extends DockableView implements
 		});
 		buttonPanel.add(uncheckButton, null);
 
-		this.add(buttonPanel, GridBagConstraintsFactory.create(0, 1,
-				GridBagConstraints.BOTH));
+		this.add(buttonPanel,
+				GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH));
 
 		JPanel sidePanel = new JPanel();
 		sidePanel.setLayout(new GridBagLayout());
@@ -564,8 +564,8 @@ public class CheckListPanel extends DockableView implements
 		});
 		sidePanel.add(downButton, GridBagConstraintsFactory.create(0, 1));
 
-		this.add(sidePanel, GridBagConstraintsFactory.create(1, 0,
-				GridBagConstraints.BOTH));
+		this.add(sidePanel,
+				GridBagConstraintsFactory.create(1, 0, GridBagConstraints.BOTH));
 	}
 
 	/*
@@ -577,21 +577,21 @@ public class CheckListPanel extends DockableView implements
 	public void initialize(MultiView parent) {
 
 		final MultiView par = parent;
-		parent.addToolBarItem(new ImageIcon(getClass().getResource(
-				"/resource/Preferences16.gif")), getModuleName(),
+		parent.addToolBarItem(
+				new ImageIcon(getClass().getResource(
+						"/resource/Preferences16.gif")), getModuleName(),
 				new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent evt) {
 						par.setView(ViewType.CHECKLIST);
 					}
 				});
-		SunTrayIconProxy.addAction(getModuleName(),
-				new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent evt) {
-						par.setView(ViewType.CHECKLIST);
-					}
-				});
+		SunTrayIconProxy.addAction(getModuleName(), new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent evt) {
+				par.setView(ViewType.CHECKLIST);
+			}
+		});
 
 	}
 
@@ -651,9 +651,9 @@ public class CheckListPanel extends DockableView implements
 		// if the user is currently editing another checkList, confirm that we
 		// should discard changes
 		if (this.isCheckListEdited) {
-			int ret = JOptionPane.showConfirmDialog(null, Resource
-					.getResourceString("Edited_CheckList"), Resource
-					.getResourceString("Discard_Text?"),
+			int ret = JOptionPane.showConfirmDialog(null,
+					Resource.getResourceString("Edited_CheckList"),
+					Resource.getResourceString("Discard_Text?"),
 					JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
 			if (ret != JOptionPane.OK_OPTION)
 				return;
@@ -670,7 +670,8 @@ public class CheckListPanel extends DockableView implements
 					name);
 			if (existing != null) {
 				// checkList name already used
-				Errmsg.getErrorHandler().notice(Resource.getResourceString("Existing_CheckList"));
+				Errmsg.getErrorHandler().notice(
+						Resource.getResourceString("Existing_CheckList"));
 				return;
 			}
 		} catch (Exception e1) {
@@ -743,8 +744,8 @@ public class CheckListPanel extends DockableView implements
 	private void saveCheckList() {
 		String name = getSelectedCheckListName();
 		if (name == null) {
-			Errmsg.getErrorHandler().notice(Resource
-					.getResourceString("Select_CheckList_Warning"));
+			Errmsg.getErrorHandler().notice(
+					Resource.getResourceString("Select_CheckList_Warning"));
 			return;
 		}
 		try {
@@ -814,13 +815,11 @@ public class CheckListPanel extends DockableView implements
 	@Override
 	public void tableChanged(TableModelEvent arg0) {
 
-
 		// ignore the table sorters events - we only care about the
 		// underlying table model - which is tablesorter.newtablemodel
 		// tablesorter is crap
 		if (arg0.getSource() instanceof TableSorter)
 			return;
-
 
 		// ignore insert - this only happens when blank rows are added
 		if (arg0.getType() == TableModelEvent.INSERT)
@@ -836,7 +835,7 @@ public class CheckListPanel extends DockableView implements
 		// problem caused when the table is cleared
 		if (arg0.getType() == TableModelEvent.DELETE)
 			return;
-		
+
 		TableSorter model = (TableSorter) itemTable.getModel();
 		for (int i = 0; i < model.getRowCount(); i++) {
 			String text = (String) model.getValueAt(i, TEXT_COLUMN);
@@ -890,9 +889,9 @@ public class CheckListPanel extends DockableView implements
 			// selection is moving to a new checkList - prompt about
 			// discarding
 			// changes
-			int ret = JOptionPane.showConfirmDialog(null, Resource
-					.getResourceString("Edited_CheckList"), Resource
-					.getResourceString("Discard_Text?"),
+			int ret = JOptionPane.showConfirmDialog(null,
+					Resource.getResourceString("Edited_CheckList"),
+					Resource.getResourceString("Discard_Text?"),
 					JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
 
 			// if user does not want to lose changes, we need to set
@@ -927,9 +926,9 @@ public class CheckListPanel extends DockableView implements
 
 	private void uncheckAll() {
 
-		int ret = JOptionPane.showConfirmDialog(null, Resource
-				.getResourceString("Uncheck_All")
-				+ "?", Resource.getResourceString("Uncheck_All"),
+		int ret = JOptionPane.showConfirmDialog(null,
+				Resource.getResourceString("Uncheck_All") + "?",
+				Resource.getResourceString("Uncheck_All"),
 				JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
 
 		if (ret != JOptionPane.OK_OPTION) {
