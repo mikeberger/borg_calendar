@@ -75,7 +75,7 @@ public class InputDialog extends JDialog {
 	 */
 	private InputDialog(String s, int maxLength) {
 		
-		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		//setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		setTitle("BORG");
 		
 		this.setSize(165, 300);
