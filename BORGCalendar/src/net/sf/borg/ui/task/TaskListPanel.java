@@ -402,8 +402,8 @@ class TaskListPanel extends JPanel implements Model.Listener {
 			}
 
 		});
-		buttonPanel.add(showSubTasksBox);
-		refresh();
+		//buttonPanel.add(showSubTasksBox);
+		//refresh();
 	}
 
 	/**
