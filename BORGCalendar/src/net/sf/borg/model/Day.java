@@ -261,12 +261,6 @@ public class Day {
 			hol.setText(null);
 			if (month == 9 && day == 31) {
 				hol.setText(Resource.getResourceString("Halloween"));
-			} else if (month == 0 && day == 1) {
-				hol.setText(Resource.getResourceString("New_Year's_Day"));
-				ret.setHoliday(1);
-			} else if (month == 11 && day == 25) {
-				hol.setText(Resource.getResourceString("Christmas"));
-				ret.setHoliday(1);
 			} else if (month == 6 && day == 4) {
 				hol.setText(Resource.getResourceString("Independence_Day"));
 				ret.setHoliday(1);
@@ -325,13 +319,7 @@ public class Day {
 			hol.setColor("purple");
 
 			hol.setText(null);
-			if (month == 0 && day == 1) {
-				hol.setText(Resource.getResourceString("New_Year's_Day"));
-				ret.setHoliday(1);
-			} else if (month == 11 && day == 25) {
-				hol.setText(Resource.getResourceString("Christmas"));
-				ret.setHoliday(1);
-			} else if (month == 6 && day == 1) {
+			if (month == 6 && day == 1) {
 				hol.setText(Resource.getResourceString("Canada_Day"));
 			} else if (month == 11 && day == 26) {
 				hol.setText(Resource.getResourceString("Boxing_Day"));
@@ -358,6 +346,29 @@ public class Day {
 				if (day == 25 - diff) {
 					hol.setText(Resource.getResourceString("Victoria_Day"));
 				}
+			}
+
+			if (hol.getText() != null)
+				ret.addItem(hol);
+
+		}
+		
+		// common holidays
+		if (show_can_hols.equals("true") || show_us_hols.equals("true")) {
+
+			LabelEntity hol = new LabelEntity();
+			hol.setDate(new GregorianCalendar(year, month, day, 00, 00)
+					.getTime());
+
+			hol.setColor("purple");
+
+			hol.setText(null);
+			if (month == 0 && day == 1) {
+				hol.setText(Resource.getResourceString("New_Year's_Day"));
+				ret.setHoliday(1);
+			} else if (month == 11 && day == 25) {
+				hol.setText(Resource.getResourceString("Christmas"));
+				ret.setHoliday(1);
 			}
 
 			if (hol.getText() != null)
