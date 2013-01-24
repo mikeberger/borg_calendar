@@ -348,6 +348,8 @@ public class SearchView extends DockableView implements Module {
 					try {
 						KeyedEntity<?> ent = (KeyedEntity<?>) cl.newInstance();
 						ent.setKey(key.intValue());
+						if( ent instanceof Memo)
+							((Memo)ent).setMemoName((String)tm.getValueAt(rows[i], 0));
 						entities.add(ent);
 					} catch (Exception e1) {
 						Errmsg.getErrorHandler().errmsg(e1);
@@ -361,6 +363,8 @@ public class SearchView extends DockableView implements Module {
 						AppointmentModel.getReference().delAppt(ent.getKey());
 					else if (ent instanceof Address)
 						AddressModel.getReference().delete((Address) ent);
+					else if( ent instanceof Memo)
+						MemoModel.getReference().delete(((Memo)ent).getMemoName(), false);
 				}
 
 				refresh(); // reload results
