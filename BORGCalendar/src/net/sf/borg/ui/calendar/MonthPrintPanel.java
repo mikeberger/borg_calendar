@@ -196,6 +196,7 @@ public class MonthPrintPanel extends JPanel implements Printable {
 		// reset date
 		cal.set(year, month, 1);
 		int fdow = cal.get(Calendar.DAY_OF_WEEK) - cal.getFirstDayOfWeek();
+		if( fdow < 0 ) fdow = fdow + 7;
 
 		// print the days - either grayed out or containing a number and appts
 		for (int box = 0; box < 42; box++) {
