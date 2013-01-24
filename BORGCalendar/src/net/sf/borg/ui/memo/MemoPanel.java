@@ -345,6 +345,13 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent e) {
 				// export a single memo to a file
+				
+				String name = getSelectedMemoName();
+				if (name == null) {
+					Errmsg.getErrorHandler().notice(Resource.getResourceString("Select_Memo_Warning"));
+					return;
+				}
+				
 				StringBuffer sb = new StringBuffer();
 				String s = memoText.getText();
 				for (int i = 0; i < s.length(); i++) {
