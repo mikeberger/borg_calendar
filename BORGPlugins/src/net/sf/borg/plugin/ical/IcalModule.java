@@ -160,6 +160,9 @@ public class IcalModule implements Module {
 		// prompt for a file
 		JFileChooser chooser = new JFileChooser();
 		chooser.setCurrentDirectory(new File("."));
+		FileNameExtensionFilter filter = new FileNameExtensionFilter(
+		        Resource.getResourceString("ical_files"), "ics", "ICS", "ical", "ICAL", "icalendar");
+		chooser.setFileFilter(filter);
 		chooser.setDialogTitle(Resource.getResourceString("choose_file"));
 		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
@@ -168,7 +171,16 @@ public class IcalModule implements Module {
 			return;
 
 		String s = chooser.getSelectedFile().getAbsolutePath();
-
+		
+		// auto append extension
+		if( chooser.getFileFilter() != chooser.getAcceptAllFileFilter())
+		{
+			if( !s.contains("."))
+			{
+				s += ".ics";
+			}
+		}
+		
 		try {
 			if (years != null) {
 				GregorianCalendar cal = new GregorianCalendar();
