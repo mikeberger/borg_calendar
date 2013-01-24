@@ -438,7 +438,7 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 		// get memo name
 		String name = JOptionPane.showInputDialog(Resource
 				.getResourceString("Enter_Memo_Name"));
-		if (name == null)
+		if (name == null || name.trim().isEmpty())
 			return;
 
 		try {
