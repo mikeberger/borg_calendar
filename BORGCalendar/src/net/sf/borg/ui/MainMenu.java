@@ -710,7 +710,9 @@ class MainMenu {
 		try {
 			Prefs.importPrefs(file.getAbsolutePath());
 		} catch (Exception e) {
-			Errmsg.getErrorHandler().errmsg(e);
+			
+			String err = Resource.getResourceString("import_format_error") + ": " + e.getLocalizedMessage();
+			Errmsg.getErrorHandler().notice(err);
 		}
 
 	}

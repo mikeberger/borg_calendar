@@ -168,15 +168,13 @@ public class Prefs {
 	 * Import preferences from a file
 	 * 
 	 * @param filename the filename
+	 * @throws Exception 
 	 */
-	public static void importPrefs(String filename) {
-		try {
-			InputStream istr = new FileInputStream(filename);
-			Preferences.importPreferences(istr);
-			istr.close();
-		} catch (Exception e) {
-			Errmsg.getErrorHandler().errmsg(e);
-		}
+	public static void importPrefs(String filename) throws Exception {
+
+		InputStream istr = new FileInputStream(filename);
+		Preferences.importPreferences(istr);
+		istr.close();
 	}
 
 	/**
