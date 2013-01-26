@@ -108,7 +108,13 @@ public class EncryptionOptionsPanel extends OptionsPanel {
 
 					if (!new String(jpf.getPassword()).equals(new String(jpf2
 							.getPassword()))) {
-						Errmsg.getErrorHandler().notice("Passwords do not match");
+						Errmsg.getErrorHandler().notice(Resource.getResourceString("PasswordsDoNotMatch"));
+						return;
+					}
+					
+					if( new String(jpf.getPassword()).trim().isEmpty())
+					{
+						Errmsg.getErrorHandler().notice(Resource.getResourceString("PasswordWhitespace"));
 						return;
 					}
 
