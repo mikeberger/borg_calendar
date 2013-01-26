@@ -87,7 +87,7 @@ public class IOHelper {
 		chooser.setDialogTitle(Resource.getResourceString("Save"));
 		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 	            
-		int returnVal = chooser.showOpenDialog(null);
+		int returnVal = chooser.showSaveDialog(null);
 		if(returnVal != JFileChooser.APPROVE_OPTION)
 			return;
 	            

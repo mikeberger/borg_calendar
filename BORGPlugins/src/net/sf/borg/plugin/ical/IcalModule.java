@@ -166,7 +166,7 @@ public class IcalModule implements Module {
 		chooser.setDialogTitle(Resource.getResourceString("choose_file"));
 		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
-		int returnVal = chooser.showOpenDialog(null);
+		int returnVal = chooser.showSaveDialog(null);
 		if (returnVal != JFileChooser.APPROVE_OPTION)
 			return;
 
