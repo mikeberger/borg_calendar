@@ -53,6 +53,7 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.Model;
 import net.sf.borg.model.Model.ChangeEvent;
+import net.sf.borg.model.Model.ChangeEvent.ChangeAction;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.KeyedEntity;
 import net.sf.borg.model.entity.Project;
@@ -677,6 +678,23 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 	@Override
 	public void update(ChangeEvent event) {
 		refresh();
+
+		// check if the object being edited has been deleted
+		Object o = entityScrollPane.getViewport().getView();
+		if (o instanceof ProjectView && event.getObject() instanceof Project) {
+			ProjectView pv = (ProjectView) o;
+			Project p = (Project)event.getObject();
+			if( event.getAction() == ChangeAction.DELETE && p.getKey() == pv.getShownId()){
+				entityScrollPane.setViewportView(null);
+			}
+		}
+		else if (o instanceof TaskView && event.getObject() instanceof Task) {
+			TaskView pv = (TaskView) o;
+			Task p = (Task)event.getObject();
+			if( event.getAction() == ChangeAction.DELETE && p.getKey() == pv.getShownId()){
+				entityScrollPane.setViewportView(null);
+			}
+		}
 	}
 
 	/**
@@ -698,7 +716,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 		treeScrollPane.setViewportView(projectTree);
 		projectTree.addMouseListener(this);
 		expandOrCollapseAll(isExpanded);
-		
+
 	}
 
 	/**

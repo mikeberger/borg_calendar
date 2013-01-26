@@ -807,6 +807,14 @@ class TaskListPanel extends JPanel implements Model.Listener {
 			if (!projectName.equals(Resource.getResourceString("All"))) {
 				try {
 					projfiltid = TaskView.getProjectId(projectName);
+					
+					// check if project exists
+					Project p = TaskModel.getReference().getProject(projfiltid);
+					if( p == null )
+					{
+						Errmsg.getErrorHandler().notice(Resource.getResourceString("project_not_found"));
+						return;
+					}
 				} catch (Exception e) {
 					Errmsg.getErrorHandler().errmsg(e);
 					return;

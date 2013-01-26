@@ -64,6 +64,7 @@ import net.sf.borg.common.Warning;
 import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.LinkModel;
 import net.sf.borg.model.Model.ChangeEvent;
+import net.sf.borg.model.Model.ChangeEvent.ChangeAction;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Subtask;
@@ -365,6 +366,7 @@ public class TaskView extends DockableView {
 
 		// listen for model changes
 		addModel(LinkModel.getReference()); // to update link tab color
+		addModel(TaskModel.getReference()); 
 
 		parentProject = projectid;
 
@@ -584,7 +586,8 @@ public class TaskView extends DockableView {
 		taskTabbedPanel = new JTabbedPane();
 
 		JScrollPane descriptionScroll = new JScrollPane();
-		descriptionText = new JTextArea(new LimitDocument(Prefs.getIntPref(PrefName.MAX_TEXT_SIZE)));
+		descriptionText = new JTextArea(new LimitDocument(
+				Prefs.getIntPref(PrefName.MAX_TEXT_SIZE)));
 		descriptionText.setLineWrap(true);
 		descriptionText.setName("Description");
 		descriptionScroll.setViewportView(descriptionText);
@@ -592,7 +595,8 @@ public class TaskView extends DockableView {
 				descriptionScroll);
 
 		JScrollPane resolutionScroll = new JScrollPane();
-		resolutionText = new JTextArea(new LimitDocument(Prefs.getIntPref(PrefName.MAX_TEXT_SIZE)));
+		resolutionText = new JTextArea(new LimitDocument(
+				Prefs.getIntPref(PrefName.MAX_TEXT_SIZE)));
 		resolutionText.setLineWrap(true);
 		resolutionScroll.setViewportView(resolutionText);
 		taskTabbedPanel.addTab(Resource.getResourceString("Resolution"),
@@ -954,6 +958,16 @@ public class TaskView extends DockableView {
 	@Override
 	public void update(ChangeEvent event) {
 		refresh();
+
+		// check if the item being edited was deleted
+		if (event.getAction() == ChangeAction.DELETE
+				&& event.getObject() instanceof Task
+				&& ((Task) event.getObject()).getKey() == getShownId())
+			try {
+				showtask(Action.ADD, null);
+			} catch (Exception e) {
+				Errmsg.getErrorHandler().errmsg(e);
+			}
 	}
 
 	/**
@@ -997,12 +1011,12 @@ public class TaskView extends DockableView {
 			Integer id = (Integer) ts.getValueAt(r, 1);
 
 			Boolean closed = (Boolean) ts.getValueAt(r, 0);
-			
+
 			// do not allow adding new open subtasks if task is closed
-			if (TaskModel.isClosed(task) && id == null && closed.booleanValue() == false) {
+			if (TaskModel.isClosed(task) && id == null
+					&& closed.booleanValue() == false) {
 				continue;
 			}
-
 
 			Date crd = (Date) ts.getValueAt(r, 3);
 			// default subtask start date to the task start date unless the task
@@ -1434,6 +1448,11 @@ public class TaskView extends DockableView {
 			if (parentProject != null) {
 				Project p = TaskModel.getReference().getProject(
 						parentProject.intValue());
+				if (p == null) {
+					Errmsg.getErrorHandler().notice(
+							Resource.getResourceString("project_not_found"));
+					return;
+				}
 				projectComboBox.setSelectedItem(getProjectString(p));
 
 				String cat = p.getCategory();
@@ -1510,5 +1529,13 @@ public class TaskView extends DockableView {
 
 		// always add an empty row for quick editing
 		insertSubtask();
+	}
+
+	public int getShownId() {
+		String num = taskIdText.getText();
+		if (!num.equals("NEW") && !num.equals("CLONE"))
+			return Integer.parseInt(num);
+
+		return -1;
 	}
 }

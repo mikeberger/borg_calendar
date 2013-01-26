@@ -44,6 +44,7 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.common.Warning;
 import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.Model.ChangeEvent;
+import net.sf.borg.model.Model.ChangeEvent.ChangeAction;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Task;
@@ -380,6 +381,14 @@ public class ProjectView extends DockableView {
 	@Override
 	public void update(ChangeEvent event) {
 		refresh();
+		
+		// check if the item being edited was deleted
+		if( event.getAction() == ChangeAction.DELETE && event.getObject() instanceof Project && ((Project)event.getObject()).getKey() == getShownId())
+			try {
+				showProject(Action.ADD, null, null);
+			} catch (Exception e) {
+				Errmsg.getErrorHandler().errmsg(e);
+			}
 	}
 
 	/**
@@ -401,6 +410,13 @@ public class ProjectView extends DockableView {
 
 			if (!num.equals("NEW") && !num.equals("CLONE")) {
 				p.setKey(Integer.parseInt(num));
+				
+				Project indb = TaskModel.getReference().getProject(p.getKey());
+				if( indb == null )
+				{
+					Errmsg.getErrorHandler().notice(Resource.getResourceString("project_not_found"));
+					return;
+				}
 			}
 
 			// fill in the fields from the screen
@@ -636,5 +652,14 @@ public class ProjectView extends DockableView {
 
 		}
 
+	}
+	
+	public int getShownId()
+	{
+		String num = projectIdText.getText();
+		if (!num.equals("NEW") && !num.equals("CLONE")) 
+			return Integer.parseInt(num);
+			
+		return -1;
 	}
 }
