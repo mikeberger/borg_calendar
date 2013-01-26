@@ -679,7 +679,12 @@ class MainMenu {
 			if (ret != JOptionPane.OK_OPTION)
 				return;
 
-			ExportImport.importFromXmlFile(model, new FileInputStream(fileName));
+			try {
+				ExportImport.importFromXmlFile(model, new FileInputStream(fileName));
+			} catch (Exception e) {
+				Errmsg.logError(e);
+				Errmsg.getErrorHandler().notice(Resource.getResourceString("Import_error"));
+			}
 		} catch (Exception e) {
 			Errmsg.getErrorHandler().errmsg(e);
 		}

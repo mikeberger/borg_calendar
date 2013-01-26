@@ -197,7 +197,7 @@ public class ScrolledDialog extends JDialog {
 					java.io.PrintStream ps = new java.io.PrintStream(bao);
 					e_.printStackTrace(ps);
 					ScrolledDialog.showNotice(bao.toString());
-					// dump to console too for cut & paste
+					// dump to log 
 					log.severe(bao.toString());
 				}
 			});

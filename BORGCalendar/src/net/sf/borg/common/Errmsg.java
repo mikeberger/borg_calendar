@@ -70,5 +70,11 @@ public class Errmsg {
 	public static void setErrorHandler(ErrorHandler errorHandler) {
 		Errmsg.errorHandler = errorHandler;
 	}
+	
+	public static void logError(Exception e)
+	{
+		log.severe(e.toString());
+		e.printStackTrace();
+	}
 
 }

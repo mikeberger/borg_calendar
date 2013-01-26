@@ -20,6 +20,8 @@ Copyright 2003 by Mike Berger
 
 package net.sf.borg.ui.util;
 
+import java.util.logging.Logger;
+
 import net.sf.borg.common.ErrorHandler;
 import net.sf.borg.common.Warning;
 
@@ -27,6 +29,8 @@ import net.sf.borg.common.Warning;
  * UI error handling for Borg
  */
 public class UIErrorHandler implements ErrorHandler {
+	
+	static private final Logger log = Logger.getLogger("net.sf.borg");
 
 	/**
 	 * Output an exception to the user.
@@ -42,7 +46,13 @@ public class UIErrorHandler implements ErrorHandler {
 			notice(e.getMessage());
 			return;
 		}
+		
+		// log the error
+		log.severe(e.toString());
 
+		// dump the stack trace to stderr
+		e.printStackTrace();
+		
 		ScrolledDialog.showError(e);
 
 	}
