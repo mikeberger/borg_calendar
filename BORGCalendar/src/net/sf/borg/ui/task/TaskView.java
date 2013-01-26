@@ -584,7 +584,7 @@ public class TaskView extends DockableView {
 		taskTabbedPanel = new JTabbedPane();
 
 		JScrollPane descriptionScroll = new JScrollPane();
-		descriptionText = new JTextArea();
+		descriptionText = new JTextArea(new LimitDocument(Prefs.getIntPref(PrefName.MAX_TEXT_SIZE)));
 		descriptionText.setLineWrap(true);
 		descriptionText.setName("Description");
 		descriptionScroll.setViewportView(descriptionText);
@@ -592,7 +592,7 @@ public class TaskView extends DockableView {
 				descriptionScroll);
 
 		JScrollPane resolutionScroll = new JScrollPane();
-		resolutionText = new JTextArea();
+		resolutionText = new JTextArea(new LimitDocument(Prefs.getIntPref(PrefName.MAX_TEXT_SIZE)));
 		resolutionText.setLineWrap(true);
 		resolutionScroll.setViewportView(resolutionText);
 		taskTabbedPanel.addTab(Resource.getResourceString("Resolution"),

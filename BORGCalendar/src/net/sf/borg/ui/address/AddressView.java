@@ -35,6 +35,8 @@ import javax.swing.border.TitledBorder;
 
 import net.sf.borg.common.DateUtil;
 import net.sf.borg.common.Errmsg;
+import net.sf.borg.common.PrefName;
+import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.Model.ChangeEvent;
@@ -144,7 +146,7 @@ public class AddressView extends DockableView {
 		workStateText = new JTextField(new LimitDocument(25), null, 25);
 		workCityText = new JTextField(new LimitDocument(25), null, 25);
 		workStreetAddressText = new JTextField(new LimitDocument(25), null, 25);
-		notesText = new JTextArea();
+		notesText = new JTextArea(new LimitDocument(Prefs.getIntPref(PrefName.MAX_TEXT_SIZE)));
 		JPanel buttonPanel = new JPanel();
 		JButton saveButton = new JButton();
 		

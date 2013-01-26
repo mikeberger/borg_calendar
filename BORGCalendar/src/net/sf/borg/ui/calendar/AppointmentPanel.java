@@ -68,6 +68,7 @@ import net.sf.borg.ui.popup.PopupOptionsView;
 import net.sf.borg.ui.popup.PopupOptionsView.PopupOptionsListener;
 import net.sf.borg.ui.util.DateTimePanel;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
+import net.sf.borg.ui.util.LimitDocument;
 import net.sf.borg.ui.util.PasswordHelper;
 
 import com.toedter.calendar.JDateChooser;
@@ -652,7 +653,7 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 		subjectLabel.setText(Resource.getResourceString("subject"));
 		newAppointmentIndicatorLabel = new JLabel();
 		JScrollPane apptTextScroll = new JScrollPane();
-		appointmentBodyTextArea = new JTextArea();
+		appointmentBodyTextArea = new JTextArea(new LimitDocument(Prefs.getIntPref(PrefName.MAX_TEXT_SIZE)));
 		prioritySpinner = new JSpinner();
 		JLabel starttimeLabel = new JLabel();
 		JLabel endTimeLabel = new JLabel();

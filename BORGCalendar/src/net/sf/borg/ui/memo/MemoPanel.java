@@ -52,6 +52,8 @@ import javax.swing.event.ListSelectionListener;
 
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.IOHelper;
+import net.sf.borg.common.PrefName;
+import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.MemoModel;
 import net.sf.borg.model.Model.ChangeEvent;
@@ -62,6 +64,7 @@ import net.sf.borg.ui.MultiView.Module;
 import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.SunTrayIconProxy;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
+import net.sf.borg.ui.util.LimitDocument;
 import net.sf.borg.ui.util.PasswordHelper;
 import net.sf.borg.ui.util.PopupMenuHelper;
 import net.sf.borg.ui.util.StripedTable;
@@ -233,7 +236,7 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 		JScrollPane memoTextScroll = new JScrollPane();
 		memoTextScroll.setPreferredSize(new Dimension(400, 400));
 
-		memoText = new JTextArea();
+		memoText = new JTextArea(new LimitDocument(Prefs.getIntPref(PrefName.MAX_TEXT_SIZE)));
 		memoText.setLineWrap(true);
 		memoText.setWrapStyleWord(true);
 
