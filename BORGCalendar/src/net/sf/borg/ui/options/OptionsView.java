@@ -31,6 +31,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
 
@@ -269,7 +270,9 @@ public class OptionsView extends View {
 
 		addPanel(new DatabaseOptionsPanel());
 
-		this.setContentPane(topPanel);
+		JScrollPane sp = new JScrollPane();
+		sp.setViewportView(topPanel);
+		this.setContentPane(sp);
 		this.setSize(629, 493);
 
 		pack();
