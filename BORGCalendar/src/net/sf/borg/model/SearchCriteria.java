@@ -280,6 +280,8 @@ public class SearchCriteria {
 
 		if (this.isWholeWord())
 		{
+			if( searchStr.trim().isEmpty())
+				return false;
 			return source.matches(".*?\\b" + searchStr + "\\b.*?");
 		}
 		
