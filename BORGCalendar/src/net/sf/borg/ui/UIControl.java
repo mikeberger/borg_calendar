@@ -309,7 +309,7 @@ public class UIControl {
 					final String backupdir = Prefs.getPref(PrefName.BACKUPDIR);
 					ExportImport.exportToZip(backupdir, backup_email);
 				} catch (Exception e) {
-					Errmsg.getErrorHandler().errmsg(e);
+					e.printStackTrace();
 				}
 			}
 

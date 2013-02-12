@@ -65,12 +65,20 @@ public class ExportImport {
 				backupFilename));
 		Writer fw = new OutputStreamWriter(out, "UTF8");
 
+		// force models to be instantiated
+		AppointmentModel.getReference();
+		MemoModel.getReference();
+		CheckListModel.getReference();
+		AddressModel.getReference();
+		TaskModel.getReference();
+		LinkModel.getReference();
+
 		for (Model model : Model.getExistingModels()) {
 			// links must be last
 			if (model instanceof LinkModel) {
 				continue;
 			}
-
+		
 			if (model.getExportName() == null)
 				continue;
 
@@ -104,10 +112,10 @@ public class ExportImport {
 			if (stk.hasMoreTokens())
 				addr = stk.nextToken();
 			String f;
-			if( from == null || from.isEmpty())
+			if (from == null || from.isEmpty())
 				f = addr;
-			else 
-				f= from;
+			else
+				f = from;
 			SendJavaMail.sendMailWithAttachments(host,
 					Resource.getResourceString("borg_backup"),
 					Resource.getResourceString("borg_backup"), f, addr,
@@ -149,11 +157,11 @@ public class ExportImport {
 
 		for (int i = 0; i < 10; i++) {
 			String line = in.readLine();
-			if (line != null)
-			{
+			if (line != null) {
 				for (Model model : Model.getExistingModels()) {
-					
-					if (model.getExportName() != null && line.contains(model.getExportName())) {
+
+					if (model.getExportName() != null
+							&& line.contains(model.getExportName())) {
 						in.close();
 						return model;
 					}
@@ -225,7 +233,7 @@ public class ExportImport {
 				.getNextEntry()) {
 
 			String legacyFileName = legacyFileMap.get(entry.getName());
-			
+
 			// force models to be instantiated
 			AppointmentModel.getReference();
 			MemoModel.getReference();
