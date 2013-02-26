@@ -7,8 +7,8 @@ import java.util.Vector;
 
 import net.sf.borg.common.DateUtil;
 import net.sf.borg.model.LinkModel;
-import net.sf.borg.model.db.jdbc.ApptJdbcDB;
-import net.sf.borg.model.db.jdbc.JdbcDB;
+import net.sf.borg.model.db.AppointmentDB;
+import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.model.entity.Appointment;
 
 /**
@@ -40,35 +40,35 @@ public class ApptKeyConverter implements ConversionTool{
 		
 		
 		// init cal model & load data from database
-		String dbdir = JdbcDB.buildDbDir();
+		String dbdir = DBHelper.getController().buildURL();
 
 		if (dbdir.equals("not-set")) {
 			return;
 		}
-		JdbcDB.connect(dbdir);
+		DBHelper.getController().connect(dbdir);
 		
 		// try to remove extra palm columns
-		try{JdbcDB.execSQL("ALTER table appointments drop new");}catch(Exception e){ /* empty */ }
-		try{JdbcDB.execSQL("ALTER table appointments drop deleted");}catch(Exception e){ /* empty */ }
-		try{JdbcDB.execSQL("ALTER table appointments drop modified");}catch(Exception e){ /* empty */ }
-		try{JdbcDB.execSQL("ALTER table appointments drop alarm");}catch(Exception e){ /* empty */ }
-		try{JdbcDB.execSQL("ALTER table addresses drop new");}catch(Exception e){ /* empty */ }
-		try{JdbcDB.execSQL("ALTER table addresses drop deleted");}catch(Exception e){ /* empty */ }
-		try{JdbcDB.execSQL("ALTER table addresses drop modified");}catch(Exception e){ /* empty */ }
-		try{JdbcDB.execSQL("ALTER table memos drop new");}catch(Exception e){ /* empty */ }
-		try{JdbcDB.execSQL("ALTER table memos drop deleted");}catch(Exception e){ /* empty */ }
-		try{JdbcDB.execSQL("ALTER table memos drop modified");}catch(Exception e){ /* empty */ }
-		try{JdbcDB.execSQL("ALTER table memos drop palmid");}catch(Exception e){ /* empty */ }
-		try{JdbcDB.execSQL("ALTER table memos drop private");}catch(Exception e){ /* empty */ }
+		try{DBHelper.getController().execSQL("ALTER table appointments drop new");}catch(Exception e){ /* empty */ }
+		try{DBHelper.getController().execSQL("ALTER table appointments drop deleted");}catch(Exception e){ /* empty */ }
+		try{DBHelper.getController().execSQL("ALTER table appointments drop modified");}catch(Exception e){ /* empty */ }
+		try{DBHelper.getController().execSQL("ALTER table appointments drop alarm");}catch(Exception e){ /* empty */ }
+		try{DBHelper.getController().execSQL("ALTER table addresses drop new");}catch(Exception e){ /* empty */ }
+		try{DBHelper.getController().execSQL("ALTER table addresses drop deleted");}catch(Exception e){ /* empty */ }
+		try{DBHelper.getController().execSQL("ALTER table addresses drop modified");}catch(Exception e){ /* empty */ }
+		try{DBHelper.getController().execSQL("ALTER table memos drop new");}catch(Exception e){ /* empty */ }
+		try{DBHelper.getController().execSQL("ALTER table memos drop deleted");}catch(Exception e){ /* empty */ }
+		try{DBHelper.getController().execSQL("ALTER table memos drop modified");}catch(Exception e){ /* empty */ }
+		try{DBHelper.getController().execSQL("ALTER table memos drop palmid");}catch(Exception e){ /* empty */ }
+		try{DBHelper.getController().execSQL("ALTER table memos drop private");}catch(Exception e){ /* empty */ }
 
 		// go directly to jdbc. going through the model, which maintains all
 		// kinds
 		// of maps and caches is too slow when doing a bulk update like this.
-		ApptJdbcDB db = new ApptJdbcDB();
+		AppointmentDB db = DBHelper.getFactory().createAppointmentDB();
 
 		try {
 
-			JdbcDB.beginTransaction();
+			DBHelper.getController().beginTransaction();
 
 			int lowestKey = 1;
 
@@ -140,13 +140,13 @@ public class ApptKeyConverter implements ConversionTool{
 				lowestKey++;
 			}
 
-			JdbcDB.commitTransaction();
+			DBHelper.getController().commitTransaction();
 
 		} catch (Exception e) {
-			JdbcDB.rollbackTransaction();
+			DBHelper.getController().rollbackTransaction();
 			throw e;
 		} finally {
-			JdbcDB.close();
+			DBHelper.getController().close();
 		}
 	}
 

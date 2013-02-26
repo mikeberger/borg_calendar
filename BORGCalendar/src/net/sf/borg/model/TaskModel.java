@@ -46,12 +46,11 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.common.Warning;
 import net.sf.borg.model.CategoryModel.CategorySource;
 import net.sf.borg.model.Model.ChangeEvent.ChangeAction;
+import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.model.db.TaskDB;
-import net.sf.borg.model.db.jdbc.JdbcDB;
-import net.sf.borg.model.db.jdbc.TaskJdbcDB;
-import net.sf.borg.model.entity.Option;
 import net.sf.borg.model.entity.KeyedEntity;
 import net.sf.borg.model.entity.Link;
+import net.sf.borg.model.entity.Option;
 import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Subtask;
 import net.sf.borg.model.entity.Task;
@@ -354,7 +353,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 		pmap_ = new HashMap<Integer, Collection<Project>>();
 		openTaskMap = new Vector<Task>();
 
-		db_ = new TaskJdbcDB();
+		db_ = DBHelper.getFactory().createTaskDB();
 
 		try {
 			String tt = OptionModel.getReference().getOption(TASKTYPES_OPTION);
@@ -703,9 +702,9 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 
 		String dbtype = Prefs.getPref(PrefName.DBTYPE);
 		if (dbtype.equals("mysql"))
-			JdbcDB.execSQL("SET foreign_key_checks = 0;");
+			DBHelper.getController().execSQL("SET foreign_key_checks = 0;");
 		else
-			JdbcDB.execSQL("SET REFERENTIAL_INTEGRITY FALSE;");
+			DBHelper.getController().execSQL("SET REFERENTIAL_INTEGRITY FALSE;");
 
 		/*
 		 * 
@@ -769,9 +768,9 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 			}
 		}
 		if (dbtype.equals("mysql"))
-			JdbcDB.execSQL("SET foreign_key_checks = 1;");
+			DBHelper.getController().execSQL("SET foreign_key_checks = 1;");
 		else
-			JdbcDB.execSQL("SET REFERENTIAL_INTEGRITY TRUE;");
+			DBHelper.getController().execSQL("SET REFERENTIAL_INTEGRITY TRUE;");
 
 		load_map();
 		refreshListeners();
@@ -1173,7 +1172,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 	 * @see net.sf.borg.model.Transactional#beginTransaction()
 	 */
 	public void beginTransaction() throws Exception {
-		JdbcDB.beginTransaction();
+		DBHelper.getController().beginTransaction();
 	}
 
 	/*
@@ -1182,7 +1181,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 	 * @see net.sf.borg.model.Transactional#commitTransaction()
 	 */
 	public void commitTransaction() throws Exception {
-		JdbcDB.commitTransaction();
+		DBHelper.getController().commitTransaction();
 	}
 
 	/*
@@ -1191,7 +1190,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 	 * @see net.sf.borg.model.Transactional#rollbackTransaction()
 	 */
 	public void rollbackTransaction() throws Exception {
-		JdbcDB.rollbackTransaction();
+		DBHelper.getController().rollbackTransaction();
 	}
 
 	/**

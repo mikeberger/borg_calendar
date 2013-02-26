@@ -36,8 +36,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Resource;
+import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.model.db.EntityDB;
-import net.sf.borg.model.db.jdbc.AddrJdbcDB;
 import net.sf.borg.model.entity.Address;
 import net.sf.borg.model.entity.Link;
 import net.sf.borg.model.undo.AddressUndoItem;
@@ -91,7 +91,7 @@ public class AddressModel extends Model implements Searchable<Address> {
 	 */
 	private AddressModel()
 	{
-		db_ = new AddrJdbcDB();
+		db_ = DBHelper.getFactory().createAddressDB();
 		load_map();
 	}
 

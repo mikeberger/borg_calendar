@@ -18,7 +18,7 @@ import net.sf.borg.common.Errmsg;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Model;
 import net.sf.borg.model.TaskModel;
-import net.sf.borg.model.db.jdbc.JdbcDB;
+import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.model.db.jdbc.JdbcDBUpgrader;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.Project;
@@ -133,7 +133,7 @@ public class SyncLog extends Model implements Model.Listener {
 
 		SyncEvent ret = null;
 
-		PreparedStatement stmt = JdbcDB.getConnection().prepareStatement(
+		PreparedStatement stmt = DBHelper.getController().getConnection().prepareStatement(
 				"SELECT * FROM syncmap WHERE id = ? and objtype = ?");
 		stmt.setInt(1, id);
 		stmt.setString(2, type.toString());
@@ -156,7 +156,7 @@ public class SyncLog extends Model implements Model.Listener {
 
 		List<SyncEvent> ret = new ArrayList<SyncEvent>();
 
-		PreparedStatement stmt = JdbcDB.getConnection().prepareStatement(
+		PreparedStatement stmt = DBHelper.getController().getConnection().prepareStatement(
 				"SELECT * FROM syncmap");
 
 		ResultSet r = null;
@@ -175,7 +175,7 @@ public class SyncLog extends Model implements Model.Listener {
 	}
 
 	public void insert(SyncEvent event) throws Exception {
-		PreparedStatement stmt = JdbcDB.getConnection().prepareStatement(
+		PreparedStatement stmt = DBHelper.getController().getConnection().prepareStatement(
 				"INSERT INTO syncmap ( id, action, objtype) " + " VALUES " + "( ?, ?, ?)");
 
 		stmt.setInt(1, event.getId().intValue());
@@ -187,7 +187,7 @@ public class SyncLog extends Model implements Model.Listener {
 	}
 
 	public void delete(int id, ObjectType type) throws Exception {
-		PreparedStatement stmt = JdbcDB.getConnection().prepareStatement(
+		PreparedStatement stmt = DBHelper.getController().getConnection().prepareStatement(
 				"DELETE FROM syncmap WHERE id = ? and objtype = ?");
 
 		stmt.setInt(1, id);
@@ -198,7 +198,7 @@ public class SyncLog extends Model implements Model.Listener {
 	}
 
 	public void deleteAll() throws Exception {
-		PreparedStatement stmt = JdbcDB.getConnection().prepareStatement(
+		PreparedStatement stmt = DBHelper.getController().getConnection().prepareStatement(
 				"DELETE FROM syncmap");
 
 		stmt.executeUpdate();

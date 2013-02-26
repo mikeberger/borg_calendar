@@ -54,7 +54,8 @@ import net.sf.borg.common.SocketHandler;
 import net.sf.borg.common.SocketServer;
 import net.sf.borg.model.EmailReminder;
 import net.sf.borg.model.Model;
-import net.sf.borg.model.db.jdbc.JdbcDB;
+import net.sf.borg.model.db.DBHelper;
+import net.sf.borg.model.db.jdbc.JdbcDBHelper;
 import net.sf.borg.model.tool.ConversionTool;
 import net.sf.borg.ui.UIControl;
 import net.sf.borg.ui.options.OptionsView;
@@ -131,7 +132,7 @@ public class Borg implements SocketHandler, Observer {
 
 		try {
 			// close the db
-			JdbcDB.close();
+			DBHelper.getController().close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -390,6 +391,10 @@ public class Borg implements SocketHandler, Observer {
 		if (!language.equals("")) {
 			Locale.setDefault(new Locale(language, country));
 		}
+		
+		// JDBC is only choice for now. In the future, set this based on DBType
+		DBHelper.setFactory(new JdbcDBHelper());
+		DBHelper.setController(new JdbcDBHelper());
 
 		// db url
 		String dbdir = null;
@@ -398,7 +403,7 @@ public class Borg implements SocketHandler, Observer {
 			if (testdb != null)
 				dbdir = testdb;
 			else
-				dbdir = JdbcDB.buildDbDir(); // derive db url from user prefs
+				dbdir = DBHelper.getController().buildURL(); // derive db url from user prefs
 
 			if (dbdir.equals("not-set")) {
 
@@ -422,7 +427,7 @@ public class Borg implements SocketHandler, Observer {
 				if (borgdir.isDirectory() && borgdir.canWrite()) {
 					Prefs.putPref(PrefName.H2DIR, borgdir.getAbsolutePath());
 					Prefs.putPref(PrefName.DBTYPE, "h2");
-					dbdir = JdbcDB.buildDbDir();
+					dbdir = DBHelper.getController().buildURL();
 				} else {
 					JOptionPane.showMessageDialog(null,
 							Resource.getResourceString("selectdb"),
@@ -436,7 +441,7 @@ public class Borg implements SocketHandler, Observer {
 			}
 
 			// connect to the db - for now, it is jdbc only
-			JdbcDB.connect(dbdir);
+			DBHelper.getController().connect(dbdir);
 
 			UIControl.setShutdownListener(this);
 

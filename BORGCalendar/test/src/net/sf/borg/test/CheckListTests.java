@@ -6,7 +6,7 @@ import java.util.Collection;
 import java.util.List;
 
 import net.sf.borg.model.CheckListModel;
-import net.sf.borg.model.db.jdbc.JdbcDB;
+import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.model.entity.CheckList;
 
 import org.junit.AfterClass;
@@ -18,7 +18,7 @@ public class CheckListTests {
 	@BeforeClass
 	public static void setUp() throws Exception {
 		// open the borg dbs - in memory
-		JdbcDB.connect("jdbc:hsqldb:mem:whatever");
+		DBHelper.getController().connect("jdbc:hsqldb:mem:whatever");
 		
 	}
 	

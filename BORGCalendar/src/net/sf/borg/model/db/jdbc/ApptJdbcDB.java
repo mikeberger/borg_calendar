@@ -41,7 +41,7 @@ import net.sf.borg.model.entity.Appointment;
 /**
  * this is the JDBC layer for access to the appointment table.
  */
-public class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
+class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
 {
 
        

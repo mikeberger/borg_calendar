@@ -45,7 +45,7 @@ import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.ExportImport;
 import net.sf.borg.model.Model;
-import net.sf.borg.model.db.jdbc.JdbcDB;
+import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.model.undo.UndoLog;
 import net.sf.borg.ui.options.OptionsView;
 import net.sf.borg.ui.util.ScrolledDialog;
@@ -419,7 +419,7 @@ class MainMenu {
 		String dbtype = Prefs.getPref(PrefName.DBTYPE);
 		String info = Resource.getResourceString("DatabaseInformation")
 				+ ":\n\n";
-		info += dbtype + " URL: " + JdbcDB.getUrl() + "\n\n";
+		info += dbtype + " URL: " + DBHelper.getController().buildURL() + "\n\n";
 
 		try {
 			for( Model model : Model.getExistingModels())

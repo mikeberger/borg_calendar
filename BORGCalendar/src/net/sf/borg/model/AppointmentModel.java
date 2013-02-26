@@ -49,8 +49,8 @@ import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.CategoryModel.CategorySource;
 import net.sf.borg.model.db.AppointmentDB;
+import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.model.db.EntityDB;
-import net.sf.borg.model.db.jdbc.ApptJdbcDB;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.Link;
 import net.sf.borg.model.undo.AppointmentUndoItem;
@@ -160,7 +160,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 	private AppointmentModel()  {
 		map_ = new HashMap<Integer, Collection<Integer>>();
 		vacationMap_ = new HashMap<Integer, Integer>();
-		db_ = new ApptJdbcDB();
+		db_ = DBHelper.getFactory().createAppointmentDB();
 
 		// init categories and currentcategories
 		CategoryModel.getReference().addSource(this);

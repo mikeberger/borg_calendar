@@ -11,7 +11,7 @@ import net.sf.borg.model.LinkModel;
 import net.sf.borg.model.LinkModel.LinkType;
 import net.sf.borg.model.MemoModel;
 import net.sf.borg.model.TaskModel;
-import net.sf.borg.model.db.jdbc.JdbcDB;
+import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.model.entity.Address;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.KeyedEntity;
@@ -29,7 +29,7 @@ public class LinkTests {
 	@BeforeClass
 	public static void setUp() throws Exception {
 		// open the borg dbs - in memory
-		JdbcDB.connect("jdbc:hsqldb:mem:whatever");
+		DBHelper.getController().connect("jdbc:hsqldb:mem:whatever");
 		
 	}
 	

@@ -29,8 +29,8 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import net.sf.borg.common.Resource;
+import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.model.db.OptionDB;
-import net.sf.borg.model.db.jdbc.OptionJdbcDB;
 import net.sf.borg.model.entity.Option;
 
 /**
@@ -78,7 +78,7 @@ public class OptionModel extends Model implements Searchable<Option> {
 	 * Instantiates a new option model.
 	 */
 	private OptionModel() {
-		db_ = new OptionJdbcDB();
+		db_ = DBHelper.getFactory().createOptionDB();
 	}
 
 	

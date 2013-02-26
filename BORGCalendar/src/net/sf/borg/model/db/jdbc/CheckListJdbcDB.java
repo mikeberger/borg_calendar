@@ -41,7 +41,7 @@ import net.sf.borg.model.entity.CheckList;
 /**
  * provides the JDBC layer for reading/writing CheckLists.
  */
-public class CheckListJdbcDB implements CheckListDB {
+class CheckListJdbcDB implements CheckListDB {
 
 	public CheckListJdbcDB() {
 		new JdbcDBUpgrader(

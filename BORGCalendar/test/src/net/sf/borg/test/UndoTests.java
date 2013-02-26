@@ -11,7 +11,7 @@ import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.MemoModel;
 import net.sf.borg.model.TaskModel;
-import net.sf.borg.model.db.jdbc.JdbcDB;
+import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.model.entity.Address;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.Memo;
@@ -28,7 +28,7 @@ public class UndoTests {
 	@BeforeClass
 	public static void setUp() throws Exception {
 		// open the borg dbs - in memory
-		JdbcDB.connect("jdbc:hsqldb:mem:whatever");
+		DBHelper.getController().connect("jdbc:hsqldb:mem:whatever");
 		
 	}
 	

@@ -34,7 +34,6 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.DateFormat;
 import java.util.Date;
 import java.util.Properties;
 import java.util.StringTokenizer;
@@ -44,14 +43,12 @@ import java.util.logging.Logger;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
-import net.sf.borg.common.Resource;
-import net.sf.borg.common.Warning;
 import net.sf.borg.model.entity.Option;
 
 /**
  * class providing basic common JDBC services 
  */
-public final class JdbcDB {
+final class JdbcDB {
 
 	static private final Logger log = Logger.getLogger("net.sf.borg");
 
@@ -358,33 +355,6 @@ public final class JdbcDB {
 		new OptionJdbcDB().setOption(option);
 	}
 
-	public static void checkTimestamp() throws Exception {
-		String option = new OptionJdbcDB().getOption(PrefName.SHUTDOWNTIME.getName());
-		if (option != null
-				&& !option.equals(PrefName.SHUTDOWNTIME.getDefault())) {
-			String preftime = Prefs.getPref(PrefName.SHUTDOWNTIME);
-			if (!preftime.equals(PrefName.SHUTDOWNTIME.getDefault())) {
-
-				// only error if prefs have later time than DB
-				long preflong = Long.parseLong(preftime);
-				long dblong = Long.parseLong(option);
-				if (preflong > dblong) {
-					Date pdate = new Date(preflong);
-					Date dbdate = new Date(dblong);
-					throw new Warning(
-							Resource.getResourceString("db_time_error")
-									+ "\n\n["
-									+ DateFormat.getDateTimeInstance().format(
-											pdate)
-									+ " > "
-									+ DateFormat.getDateTimeInstance().format(
-											dbdate) + "]");
-				}
-			}
-		}
-	}
-
-	
 	/**
 	 * Builds the db url from the user's settings. Supports HSQL, MYSQL, generic
 	 * JDBC

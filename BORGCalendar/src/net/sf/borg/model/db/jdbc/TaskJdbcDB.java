@@ -38,7 +38,7 @@ import net.sf.borg.model.entity.Tasklog;
 /**
  * this is the JDBC layer for access to the task table.
  */
-public class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
+class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
 
 	public TaskJdbcDB() {
 		new JdbcDBUpgrader("select summary from tasks",

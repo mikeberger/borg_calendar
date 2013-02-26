@@ -33,7 +33,7 @@ import net.sf.borg.model.entity.Address;
 /**
  * this is the JDBC layer for access to the addresses table.
  */
-public class AddrJdbcDB extends JdbcBeanDB<Address> implements EntityDB<Address>
+class AddrJdbcDB extends JdbcBeanDB<Address> implements EntityDB<Address>
 {         
     
     /* (non-Javadoc)

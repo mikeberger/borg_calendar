@@ -33,7 +33,7 @@ import net.sf.borg.model.entity.Link;
 /**
  * provides the JDBC layer for reading/writing Links
  */
-public class LinkJdbcDB extends JdbcBeanDB<Link> implements LinkDB {
+class LinkJdbcDB extends JdbcBeanDB<Link> implements LinkDB {
 
 
 	/* (non-Javadoc)

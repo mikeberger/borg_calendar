@@ -31,7 +31,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.db.CheckListDB;
-import net.sf.borg.model.db.jdbc.CheckListJdbcDB;
+import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.model.entity.CheckList;
 import net.sf.borg.model.undo.CheckListUndoItem;
 import net.sf.borg.model.undo.UndoLog;
@@ -103,7 +103,7 @@ public class CheckListModel extends Model  {
 	 * Instantiates a new checkList model.
 	 */
 	private CheckListModel() {
-		db_ = new CheckListJdbcDB();	
+		db_ = DBHelper.getFactory().createCheckListDB();	
 	}
 
 	/**

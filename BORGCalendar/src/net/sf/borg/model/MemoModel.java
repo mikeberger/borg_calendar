@@ -34,8 +34,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Resource;
+import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.model.db.MemoDB;
-import net.sf.borg.model.db.jdbc.MemoJdbcDB;
 import net.sf.borg.model.entity.Memo;
 import net.sf.borg.model.undo.MemoUndoItem;
 import net.sf.borg.model.undo.UndoLog;
@@ -117,7 +117,7 @@ public class MemoModel extends Model implements Searchable<Memo> {
 	 * Instantiates a new memo model.
 	 */
 	private MemoModel() {
-		db_ = new MemoJdbcDB();	
+		db_ = DBHelper.getFactory().createMemoDB();	
 	}
 
 	/**

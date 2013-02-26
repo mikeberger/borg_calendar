@@ -33,7 +33,7 @@ import net.sf.borg.model.entity.Memo;
 /**
  * provides the JDBC layer for reading/writing Memos.
  */
-public class MemoJdbcDB implements MemoDB {
+class MemoJdbcDB implements MemoDB {
 
 
 	public MemoJdbcDB()

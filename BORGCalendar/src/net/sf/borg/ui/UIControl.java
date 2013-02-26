@@ -21,7 +21,7 @@ import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.common.Warning;
 import net.sf.borg.model.ExportImport;
-import net.sf.borg.model.db.jdbc.JdbcDB;
+import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.ui.address.AddrListView;
 import net.sf.borg.ui.calendar.DayPanel;
 import net.sf.borg.ui.calendar.MonthPanel;
@@ -78,7 +78,7 @@ public class UIControl {
 
 		// check database timestamp
 		try {
-			JdbcDB.checkTimestamp();
+			DBHelper.checkTimestamp();
 		} catch (Warning e1) {
 			Errmsg.getErrorHandler().notice(e1.getMessage());
 		} catch (Exception e) {

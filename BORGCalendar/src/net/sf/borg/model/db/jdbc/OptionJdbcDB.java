@@ -8,7 +8,7 @@ import java.util.Collection;
 import net.sf.borg.model.db.OptionDB;
 import net.sf.borg.model.entity.Option;
 
-public class OptionJdbcDB implements OptionDB {
+class OptionJdbcDB implements OptionDB {
 
 	/**
 	 * Gets an option value from the options table

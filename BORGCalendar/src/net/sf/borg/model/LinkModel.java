@@ -39,9 +39,9 @@ import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
+import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.model.db.EntityDB;
 import net.sf.borg.model.db.LinkDB;
-import net.sf.borg.model.db.jdbc.LinkJdbcDB;
 import net.sf.borg.model.entity.Address;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.CheckList;
@@ -504,7 +504,7 @@ public class LinkModel extends Model {
 	 * Instantiates a new link model.
 	 */
 	private LinkModel() {
-		db_ = new LinkJdbcDB();
+		db_ = DBHelper.getFactory().createLinkDB();
 	}
 
 	/**

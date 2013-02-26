@@ -34,7 +34,7 @@ import javax.swing.JMenuItem;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.IOHelper;
 import net.sf.borg.model.TaskModel;
-import net.sf.borg.model.db.jdbc.JdbcDB;
+import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.model.entity.Project;
 import net.sf.borg.plugin.common.Resource;
 import net.sf.borg.ui.EntitySelector;
@@ -193,7 +193,7 @@ public class RunReport {
 			Class jviewerclass = cl
 					.loadClass("net.sf.jasperreports.view.JasperViewer");
 
-			Connection conn = JdbcDB.getConnection();
+			Connection conn = DBHelper.getController().getConnection();
 			if (conn == null) {
 				Errmsg.getErrorHandler().notice(Resource.getResourceString("no_reports"));
 				return;

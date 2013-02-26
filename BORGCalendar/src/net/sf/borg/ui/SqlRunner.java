@@ -37,7 +37,7 @@ import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.LinkModel;
 import net.sf.borg.model.MemoModel;
 import net.sf.borg.model.TaskModel;
-import net.sf.borg.model.db.jdbc.JdbcDB;
+import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 import net.sf.borg.ui.util.ScrolledDialog;
 import net.sf.borg.ui.util.TableSorter;
@@ -125,11 +125,11 @@ class SqlRunner extends JDialog {
 	private void runbuttonActionPerformed() {
 		try {
 
-			JdbcDB.beginTransaction();
+			DBHelper.getController().beginTransaction();
 			
 			// run the sql 
-			ResultSet r = JdbcDB.execSQL(editor.getText());
-			JdbcDB.commitTransaction();
+			ResultSet r = DBHelper.getController().execSQL(editor.getText());
+			DBHelper.getController().commitTransaction();
 			
 			// display the results in a table
 			if (r != null && r.next()) {
@@ -163,7 +163,7 @@ class SqlRunner extends JDialog {
 		} catch (Exception e) {
 			log.severe(e.toString());
 			try {
-				JdbcDB.rollbackTransaction();
+				DBHelper.getController().rollbackTransaction();
 			} catch (Exception e2) {
 			  // empty
 			}
