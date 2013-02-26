@@ -66,6 +66,7 @@ public class AddressView extends DockableView {
 	private JTextField companyText;
 	private JTextField countryText;
 	private JTextField emailText;
+	private JTextField cellPhoneText;
 	private JTextField faxText;
 	private JTextField firstNameText;
 	private JTextField homePageText;
@@ -134,6 +135,7 @@ public class AddressView extends DockableView {
 		webPageText = new JTextField(new LimitDocument(100), null, 100);
 		companyText = new JTextField(new LimitDocument(25), null, 25);
 		birthdayChooser = new JDateChooser();
+		cellPhoneText = new JTextField(new LimitDocument(25),null,25);
 		JPanel homeAddressPanel = new JPanel();
 		streetAddresText = new JTextField(new LimitDocument(25), null, 25);
 		cityText = new JTextField(new LimitDocument(25), null, 25);
@@ -217,6 +219,11 @@ public class AddressView extends DockableView {
 		ResourceHelper.setText(jLabel22, "Birthday");
 		jLabel22.setLabelFor(birthdayChooser);
 		contactPanel.add(jLabel22, GridBagConstraintsFactory.create(6, 2));
+		
+		JLabel jLabel23 = new JLabel();
+		ResourceHelper.setText(jLabel23, "Cell_Phone:");
+		jLabel23.setLabelFor(cellPhoneText);
+		contactPanel.add(jLabel23,GridBagConstraintsFactory.create(0,3));
 
 	
 	
@@ -245,6 +252,8 @@ public class AddressView extends DockableView {
 				GridBagConstraints.BOTH, 1.0, 0.0));
 		contactPanel.add(birthdayChooser, GridBagConstraintsFactory.create(7,
 				2, GridBagConstraints.BOTH, 1.0, 0.0));
+		contactPanel.add(cellPhoneText, GridBagConstraintsFactory.create(1,
+				3, GridBagConstraints.BOTH,1.0,0.0));
 
 		contactPanel.setBorder(new TitledBorder(Resource
 				.getResourceString("contact")));
@@ -460,6 +469,7 @@ public class AddressView extends DockableView {
 		addr_.setWorkZip(workZipText.getText());
 		addr_.setCompany(companyText.getText());
 		addr_.setBirthday(birthdayChooser.getDate());
+		addr_.setCellPhone(cellPhoneText.getText());
 
 		try {
 			AddressModel.getReference().saveAddress(addr_);
@@ -472,7 +482,7 @@ public class AddressView extends DockableView {
 	}
 
 	/**
-	 * load the current addrsss data into the UI
+	 * load the current addresses data into the UI
 	 */
 	private void showaddr() {
 		firstNameText.setText(addr_.getFirstName());
@@ -497,6 +507,7 @@ public class AddressView extends DockableView {
 		workCountryText.setText(addr_.getWorkCountry());
 		workZipText.setText(addr_.getWorkZip());
 		companyText.setText(addr_.getCompany());
+		cellPhoneText.setText(addr_.getCellPhone());
 
 		Date bd = addr_.getBirthday();
 		birthdayChooser.setDate(bd);

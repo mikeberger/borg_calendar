@@ -376,7 +376,8 @@ public class AddressModel extends Model implements Searchable<Address> {
 				addr.getEmail() + " " + 
 				addr.getState() + " " + 
 				addr.getWorkState() + " " + 
-				addr.getNickname(); 
+				addr.getNickname() + " " + 
+				addr.getCellPhone(); 
 
 				if( !criteria.search(addrString))
 					continue;

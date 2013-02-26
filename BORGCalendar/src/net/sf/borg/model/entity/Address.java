@@ -46,6 +46,7 @@ public class Address extends KeyedEntity<Address>  {
 	private String ScreenName;
 	private String WorkPhone;
 	private String HomePhone;
+	private String CellPhone;
 	private String Fax;
 	private String Pager;
 	private String StreetAddress;
@@ -77,6 +78,7 @@ public class Address extends KeyedEntity<Address>  {
 		dst.setScreenName( getScreenName() );
 		dst.setWorkPhone( getWorkPhone() );
 		dst.setHomePhone( getHomePhone() );
+		dst.setCellPhone( getCellPhone()  );
 		dst.setFax( getFax() );
 		dst.setPager( getPager() );
 		dst.setStreetAddress( getStreetAddress() );

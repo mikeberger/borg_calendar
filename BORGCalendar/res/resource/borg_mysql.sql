@@ -23,6 +23,7 @@ CREATE TABLE `addresses` (
   `webpage` varchar(100) default NULL,
   `notes` text,
   `birthday` date default NULL,
+  `cell_phone` varchar(25) default NULL,
   PRIMARY KEY  (`address_num`)
 );
 
