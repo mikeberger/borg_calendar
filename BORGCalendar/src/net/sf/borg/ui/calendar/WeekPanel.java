@@ -763,8 +763,10 @@ public class WeekPanel extends DockableView implements Printable,
 	 */
 	@Override
 	public void goTo(Calendar cal) {
-		wp_.goTo(cal);
-		nav.setLabel(wp_.getNavLabel());
+		if( isInitialized ){
+			wp_.goTo(cal);
+			nav.setLabel(wp_.getNavLabel());
+		}
 	}
 
 	/**

@@ -596,8 +596,10 @@ public class YearPanel extends DockableView implements Printable,
 	 */
 	@Override
 	public void goTo(Calendar cal) {
-		yearPanel.goTo(cal);
-		nav.setLabel(yearPanel.getNavLabel());
+		if( isInitialized ){
+			yearPanel.goTo(cal);
+			nav.setLabel(yearPanel.getNavLabel());
+		}
 	}
 
 	/**

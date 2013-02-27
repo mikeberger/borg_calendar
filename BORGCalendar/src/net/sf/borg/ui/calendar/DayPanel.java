@@ -690,8 +690,10 @@ public class DayPanel extends DockableView implements Printable, CalendarModule 
 	 */
 	@Override
 	public void goTo(Calendar cal) {
-		dp_.goTo(cal);
-		nav.setLabel(dp_.getNavLabel());
+		if( isInitialized ){
+			dp_.goTo(cal);
+			nav.setLabel(dp_.getNavLabel());
+		}
 	}
 
 	/*

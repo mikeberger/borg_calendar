@@ -605,8 +605,10 @@ public class MonthPanel extends JPanel implements Printable, CalendarModule {
 	 */
 	@Override
 	public void goTo(Calendar cal) {
-		monthSubPanel.goTo(cal);
-		nav.setLabel(monthSubPanel.getNavLabel());
+		if( isInitialized ){
+			monthSubPanel.goTo(cal);
+			nav.setLabel(monthSubPanel.getNavLabel());
+		}
 	}
 
 	/**
