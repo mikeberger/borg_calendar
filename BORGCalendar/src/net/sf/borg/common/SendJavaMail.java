@@ -115,7 +115,7 @@ public class SendJavaMail {
 			auth = new MyAuthenticator(user, pass);
 			props.put("mail.smtp.auth", "true");
 		}
-		Session session = Session.getDefaultInstance(props, auth);
+		Session session = Session.getInstance(props, auth);
 
 		//session.setDebug(true);
 
@@ -181,7 +181,7 @@ public class SendJavaMail {
 			auth = new MyAuthenticator(user, pass);
 			props.put("mail.smtp.auth", "true");
 		}
-		Session session = Session.getDefaultInstance(props, auth);
+		Session session = Session.getInstance(props, auth);
 
 		//session.setDebug(true);
 
