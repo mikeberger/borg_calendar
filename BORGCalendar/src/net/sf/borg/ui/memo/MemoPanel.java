@@ -42,7 +42,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.JTextArea;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.event.DocumentEvent;
@@ -64,7 +63,8 @@ import net.sf.borg.ui.MultiView.Module;
 import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.SunTrayIconProxy;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
-import net.sf.borg.ui.util.LimitDocument;
+import net.sf.borg.ui.util.HTMLLimitDocument;
+import net.sf.borg.ui.util.HTMLTextPane;
 import net.sf.borg.ui.util.PasswordHelper;
 import net.sf.borg.ui.util.PopupMenuHelper;
 import net.sf.borg.ui.util.StripedTable;
@@ -96,7 +96,7 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 	private StripedTable memoListTable = null;
 
 	/** The memo text. */
-	private JTextArea memoText = null;
+	private HTMLTextPane memoText = null;
 
 	/** The save button. */
 	private JButton saveButton = null;
@@ -235,10 +235,11 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 		memoSplitPane.setLeftComponent(memoListScroll);
 		JScrollPane memoTextScroll = new JScrollPane();
 		memoTextScroll.setPreferredSize(new Dimension(400, 400));
+		
+		HTMLLimitDocument newLimitDocument = new HTMLLimitDocument();
+		newLimitDocument.setMaxLength(Prefs.getIntPref(PrefName.MAX_TEXT_SIZE));
 
-		memoText = new JTextArea(new LimitDocument(Prefs.getIntPref(PrefName.MAX_TEXT_SIZE)));
-		memoText.setLineWrap(true);
-		memoText.setWrapStyleWord(true);
+		memoText = new HTMLTextPane(newLimitDocument);
 
 		// if the memo text is edited, then set a change flag and enable the
 		// save button
@@ -356,7 +357,7 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 				}
 				
 				StringBuffer sb = new StringBuffer();
-				String s = memoText.getText();
+				String s = memoText.getPlainText();
 				for (int i = 0; i < s.length(); i++) {
 					if (s.charAt(i) == '\n') {
 						sb.append('\r');
@@ -510,7 +511,7 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 		}
 		try {
 			Memo m = MemoModel.getReference().getMemo(name);
-			m.setMemoText(memoText.getText());
+			m.setMemoText(memoText.getPlainText());
 			m.setEncrypted(false);
 			if (encryptBox.isSelected()) {
 				String pw = PasswordHelper.getReference().getPassword();
@@ -762,7 +763,7 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 		if (searchString != null) {
 
 			// search forwards
-			int foundIndex = memoText.getText().indexOf(searchString, caretIndex);
+			int foundIndex = memoText.getPlainText().indexOf(searchString, caretIndex);
 			if (foundIndex != -1) {
 				// highlight found text - this also moves caret to end of found string as a side-effect,
 				// which is what we want
