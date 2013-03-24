@@ -1,6 +1,8 @@
 BORG 1.7.8
 ----------
 
+Features:
+=========
 6	Allow active HTML links in memos
 14	Add summary field for tasks - separate from description
 20	Appointment Copy/​Paste on calendars
@@ -14,6 +16,8 @@ Updated Polish Translation
 Add close date to task list
 Add rename option for memos and checklists
 
+Bug Fixes:
+==========
 15	Change Date on appt editor is broken
 16	Fails to Update User When Calender Cannot Be Imported
 17	Filter Unsupported File Extensions From XML Import
