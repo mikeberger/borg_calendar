@@ -1,3 +1,75 @@
+BORG 1.7.8
+----------
+
+6	Allow active HTML links in memos
+14	Add summary field for tasks - separate from description
+20	Appointment Copy/​Paste on calendars
+28	Allow delete of Memos from search window
+71	Show User The Path To Exposed iCal File (plugin change)
+74	Hide duplicate holidays when showing both American and Canadian holidays
+79	Filter Unsupported File Extensions From iCal Export (plugin change)
+111	Add a Cell Phone Field to the Address Book
+Add log viewer
+Updated Polish Translation
+Add close date to task list
+Add rename option for memos and checklists
+
+15	Change Date on appt editor is broken
+16	Fails to Update User When Calender Cannot Be Imported
+17	Filter Unsupported File Extensions From XML Import
+19	Error when trying to close a task from the todo list
+22	Appointment start time can be after end time (negative duration)
+23	Appointment with empty subject
+26	Address books accepts names of only blank characters
+27	Appointment editor can accept invalid minutes input for appointment time
+29	Times of recurrence in appointment editor truncates large input without give error /​ warning.
+30	Futuristic birthday dates are allowed in address book
+31	Category can not be changed when create new to do in the To Do view
+32	subtask under a project can start early than its parent project
+34	Category names greater than 10 characters not accepted in Projects
+35	Invalid time in appointment editor leads to invalid value message to be displayed twice
+37	Setted appointment dispare when change from every n days to once
+40	Dragging and dropping a Todo to the edge causes it to go to the wrong spot
+42	Font chooser dialog doesn't resize and the title has a typo
+43	Behavior of inputting new category name is inconsistent.
+44	The ‘Save’ button in appointments should clear subject field
+49	Address Book throws uncaught SQL Exception
+52	Cannot select other created category in Search window
+55	Undoing a deletion of an appointment does not restore links
+56	Filter Unsupported File Extensions From iCal Import
+57	Dragging of headings displays blank data in the reminder pop up window
+58	'Person Assigned' field in 'Task Information' throws uncaught SQLException
+59	A Task with an open Sub-Task can be closed
+64	Memo deleted even when Done(No Delete) was choosen
+68	All unused categories are also deleted after deleting one of selected category.
+69	Uncaught java.lang.NullPointerException
+70	Importing 'Entire Backup Zip File' or 'XML file' generates org.h2.jdbc.JdbcSQLException
+72	Unable to delete subtasks from the 'Tasks' view
+73	Deleting multiple 'File Links' from a Project throws an Exception
+75	The "note" text box does not warp around to the next line
+76	Unable to see all options after changing 'Look and Feel' to certain profiles
+77	Close" button does not work in the add category panel 
+78	To-Do List Copying Error: Repeating discard message
+80	Using 'print' command only shows from '2nd day' of the month for months that begin on a sunday
+81	Being able to "Export" with no memo selected
+84	Able to create a Checklist item with white space as title
+85	User can create a Memo with an empty name
+86	Program freezes if an extremely large Memo is created
+87	Uncaught parsing error while importing preferences
+88	Uncaught "SQL Exception" on long address when adding a contact
+89	Duplicate hot-keys in "address book entry" panel
+91	Contradictory to specification  KEYSTORE can be created with an empty password
+93	Export option shows "open" instead of "save" in the save window
+95	Contradictory to the specification  the "WHOLE WORD" option of the search menu still considers 'empty strings' and 'whitespaces' as whole words.
+96	Uncaught java.lang.NullPointerException
+99	Space being considered as case sensitive and a whole word in the search function
+112	Day/​Week buttons don't work on the month view
+prevent "java.lang.SecurityException: Access to default session denied " when sending email	
+clear editor when clicking on root of project tree	
+fix some threading issues with the shutdown splash screen	
+update quick-todo and search view category menus when categories are added	
+
+
 BORG 1.7.7
 ----------
 
