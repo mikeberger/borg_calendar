@@ -557,8 +557,8 @@ public class SearchView extends DockableView implements Module {
 		}
 		cal = endDateChooser.getCalendar();
 		if (cal != null) {
-			cal.set(Calendar.HOUR_OF_DAY, 0);
-			cal.set(Calendar.MINUTE, 0);
+			cal.set(Calendar.HOUR_OF_DAY, 23);
+			cal.set(Calendar.MINUTE, 59);
 			cal.set(Calendar.SECOND, 0);
 			cal.add(Calendar.SECOND, -1);
 			criteria.setEndDate(cal.getTime());
