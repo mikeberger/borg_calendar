@@ -735,6 +735,8 @@ public class CheckListPanel extends DockableView implements
 	private void removeRow() {
 		TableSorter model = (TableSorter) itemTable.getModel();
 		int index = itemTable.getSelectedRow();
+		String s = (String)model.getValueAt(index, TEXT_COLUMN);
+		if( s == null || s.isEmpty()) return;
 		model.removeRow(index);
 	}
 
