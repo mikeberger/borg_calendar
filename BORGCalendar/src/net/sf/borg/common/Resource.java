@@ -20,6 +20,7 @@ Copyright 2003 by Mike Berger
 package net.sf.borg.common;
 
 import java.io.InputStream;
+import java.text.MessageFormat;
 import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -70,6 +71,21 @@ public class Resource {
 		} catch (MissingResourceException m) {
 			return ("??" + key + "??");
 		}
+	}
+	
+	/**
+	 * Get a resource string from the borg resource bundle. Translates escaped newlines
+	 * to real newlines. Substitute variables
+	 * 
+	 * @param resourceKey
+	 *            the resource key
+	 * @param params substitutable parameters
+	 * 
+	 * @return the resource string
+	 */
+	public static String getResourceString(String resourceKey, Object[] params) {
+		ComponentParms parms = parseParms(resourceKey);
+		return MessageFormat.format(parms.getText(), params);
 	}
 
 	/**

@@ -128,6 +128,14 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 			if (newname == null || newname.isEmpty() || newname.equals(name))
 				return;
 			
+			if (newname.length() > 50) {
+				Errmsg.getErrorHandler().notice(
+						Resource.getResourceString("max_length", new String[] {
+								Resource.getResourceString("Memo_Name"),
+								"50" }));
+				return;
+			}
+			
 			Memo m;
 			try {
 				m = MemoModel.getReference().getMemo(name);

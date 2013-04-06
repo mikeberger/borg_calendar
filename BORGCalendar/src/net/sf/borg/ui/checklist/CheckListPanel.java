@@ -156,6 +156,14 @@ public class CheckListPanel extends DockableView implements
 			if (newname == null || newname.isEmpty() || newname.equals(name))
 				return;
 
+			if (newname.length() > 50) {
+				Errmsg.getErrorHandler().notice(
+						Resource.getResourceString("max_length", new String[] {
+								Resource.getResourceString("CheckList_Name"),
+								"50" }));
+				return;
+			}
+
 			CheckList m;
 			try {
 				m = CheckListModel.getReference().getCheckList(name);
@@ -261,12 +269,12 @@ public class CheckListPanel extends DockableView implements
 			Errmsg.getErrorHandler().notice(
 					Resource.getResourceString("Cannot_Copy"));
 			return;
-//			int ret = JOptionPane.showConfirmDialog(null,
-//					Resource.getResourceString("Edited_CheckList"),
-//					Resource.getResourceString("Discard_Text?"),
-//					JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
-//			if (ret != JOptionPane.OK_OPTION)
-//				return;
+			// int ret = JOptionPane.showConfirmDialog(null,
+			// Resource.getResourceString("Edited_CheckList"),
+			// Resource.getResourceString("Discard_Text?"),
+			// JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+			// if (ret != JOptionPane.OK_OPTION)
+			// return;
 		}
 
 		String newname = JOptionPane.showInputDialog(Resource
@@ -735,8 +743,9 @@ public class CheckListPanel extends DockableView implements
 	private void removeRow() {
 		TableSorter model = (TableSorter) itemTable.getModel();
 		int index = itemTable.getSelectedRow();
-		String s = (String)model.getValueAt(index, TEXT_COLUMN);
-		if( s == null || s.isEmpty()) return;
+		String s = (String) model.getValueAt(index, TEXT_COLUMN);
+		if (s == null || s.isEmpty())
+			return;
 		model.removeRow(index);
 	}
 
