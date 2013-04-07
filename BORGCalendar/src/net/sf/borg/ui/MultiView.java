@@ -42,6 +42,7 @@ import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.border.BevelBorder;
 
+import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.Model.ChangeEvent;
@@ -437,6 +438,8 @@ public class MultiView extends View {
 				return;
 			}
 		}
+		
+		Errmsg.getErrorHandler().notice(Resource.getResourceString("No_Print"));
 
 	}
 
