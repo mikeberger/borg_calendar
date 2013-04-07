@@ -120,7 +120,7 @@ public class SearchView extends DockableView implements Module {
 
 	/** The vacation check box. */
 	private JCheckBox vacationCheckBox = null;
-	
+
 	private boolean isInitialized = false;
 
 	/**
@@ -129,7 +129,6 @@ public class SearchView extends DockableView implements Module {
 	public SearchView() {
 		super();
 
-		
 	}
 
 	private void loadCategories() {
@@ -348,8 +347,9 @@ public class SearchView extends DockableView implements Module {
 					try {
 						KeyedEntity<?> ent = (KeyedEntity<?>) cl.newInstance();
 						ent.setKey(key.intValue());
-						if( ent instanceof Memo)
-							((Memo)ent).setMemoName((String)tm.getValueAt(rows[i], 0));
+						if (ent instanceof Memo)
+							((Memo) ent).setMemoName((String) tm.getValueAt(
+									rows[i], 0));
 						entities.add(ent);
 					} catch (Exception e1) {
 						Errmsg.getErrorHandler().errmsg(e1);
@@ -363,8 +363,9 @@ public class SearchView extends DockableView implements Module {
 						AppointmentModel.getReference().delAppt(ent.getKey());
 					else if (ent instanceof Address)
 						AddressModel.getReference().delete((Address) ent);
-					else if( ent instanceof Memo)
-						MemoModel.getReference().delete(((Memo)ent).getMemoName(), false);
+					else if (ent instanceof Memo)
+						MemoModel.getReference().delete(
+								((Memo) ent).getMemoName(), false);
 				}
 
 				refresh(); // reload results
@@ -500,9 +501,8 @@ public class SearchView extends DockableView implements Module {
 
 	@Override
 	public JComponent getComponent() {
-		
-		if( !isInitialized)
-		{
+
+		if (!isInitialized) {
 			CategoryModel.getReference().addListener(this);
 
 			// init the UI components
@@ -614,8 +614,17 @@ public class SearchView extends DockableView implements Module {
 		searchButton.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent e) {
+				SearchCriteria criteria = getCriteria();
+
+				if (criteria.getStartDate() != null
+						&& criteria.getEndDate() != null
+						&& criteria.getStartDate().after(criteria.getEndDate())) {
+					Errmsg.getErrorHandler().notice(Resource.getResourceString("Start_After_End"));
+					return;
+				}
 				refresh();
 			}
+
 		});
 		searchButtonPanel.add(searchButton, null);
 
