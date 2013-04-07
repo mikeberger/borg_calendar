@@ -1151,7 +1151,7 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 			appt.setDuration(new Integer(du));
 
 		// appointment text of some sort is required if we are validating
-		if (apptTitleField.getText().equals("") && validate) {
+		if (apptTitleField.getText().trim().isEmpty() && validate) {
 			apptTitleField.requestFocus();
 			throw new Warning(
 					Resource.getResourceString("Please_enter_some_appointment_text"));
