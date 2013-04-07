@@ -289,7 +289,10 @@ public class CategoryChooser extends View {
 						Collection<String> allcats = catmod.getCategories();
 						allcats.remove(CategoryModel.UNCATEGORIZED);
 						if (allcats.isEmpty())
+						{
+							Errmsg.getErrorHandler().notice(Resource.getResourceString("No_Categories"));
 							return;
+						}
 						Object[] cats = allcats.toArray();
 
 						// ask user to choose a category
