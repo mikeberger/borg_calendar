@@ -92,7 +92,7 @@ public class EntitySelector extends JDialog {
 		return ((Appointment) selectBean(apps, new TableSorter(new String[] {
 				Resource.getResourceString("Text"),
 				Resource.getResourceString("Time") }, new Class[] {
-				String.class, Date.class }), new String[] { "Text", "Date" }));
+				String.class, Date.class }), new String[] { "ClearText", "Date" }));
 
 	}
 

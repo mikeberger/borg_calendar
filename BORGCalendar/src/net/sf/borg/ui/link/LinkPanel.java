@@ -100,7 +100,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 					Integer.parseInt(at.getPath()));
 			if (ap != null) {
 				return (Resource.getResourceString("appointment") + "["
-						+ ap.getText() + "]");
+						+ ap.getClearText() + "]");
 			}
 		} else if (at.getLinkType().equals(LinkType.PROJECT.toString())) {
 			Project ap = TaskModel.getReference().getProject(

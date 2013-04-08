@@ -30,6 +30,7 @@ import lombok.EqualsAndHashCode;
 import net.sf.borg.common.EncryptionHelper;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
+import net.sf.borg.common.Resource;
 
 
 
@@ -129,6 +130,18 @@ public class Appointment extends EncryptableEntity<Appointment> implements Calen
 		this.setText(cipherText);
 		this.setEncrypted(true);
 		
+	}
+	
+	/**
+	 * get the appointment text or a generic message if encrypted
+	 * @return
+	 */
+	public String getClearText()
+	{
+		if( isEncrypted())
+			return (Resource.getResourceString("EncryptedItemShort"));
+		else
+			return getText();
 	}
 
 	
