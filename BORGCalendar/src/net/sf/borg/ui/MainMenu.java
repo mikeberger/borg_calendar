@@ -40,6 +40,7 @@ import javax.swing.event.MenuListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import net.sf.borg.common.Errmsg;
+import net.sf.borg.common.IOHelper;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
@@ -205,7 +206,7 @@ class MainMenu {
 		importZipMI.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 				"/resource/Import16.gif")));
 		impexpMenu.add(importZipMI);
-		
+
 		JMenuItem exportMI = new JMenuItem();
 		exportMI.addActionListener(new java.awt.event.ActionListener() {
 			@Override
@@ -276,10 +277,9 @@ class MainMenu {
 				AboutMIActionPerformed();
 			}
 		});
-		
-		helpmenu.add(AboutMI);
-		helpmenu.insertSeparator(helpmenu.getItemCount()-1);
 
+		helpmenu.add(AboutMI);
+		helpmenu.insertSeparator(helpmenu.getItemCount() - 1);
 
 		menuBar.add(helpmenu);
 
@@ -293,11 +293,11 @@ class MainMenu {
 	}
 
 	private void importZipMIActionPerformed() {
-		
+
 		JFileChooser chooser = new JFileChooser();
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
-		        "*.zip,*.ZIP", "zip", "ZIP");
-		    chooser.setFileFilter(filter);
+				"*.zip,*.ZIP", "zip", "ZIP");
+		chooser.setFileFilter(filter);
 		chooser.setCurrentDirectory(new File("."));
 		chooser.setDialogTitle(Resource
 				.getResourceString("Please_choose_File_to_Import_From"));
@@ -354,16 +354,17 @@ class MainMenu {
 		item.setText(text);
 		item.addActionListener(action);
 
-		//always insert above About item and its separator bar
-		helpmenu.insert(item, helpmenu.getItemCount()-2);
+		// always insert above About item and its separator bar
+		helpmenu.insert(item, helpmenu.getItemCount() - 2);
 	}
-	
+
 	/**
 	 * add a menu item to the options menu
-	 * @param item the item
+	 * 
+	 * @param item
+	 *            the item
 	 */
-	public void addOptionsMenuItem(JMenuItem item)
-	{
+	public void addOptionsMenuItem(JMenuItem item) {
 		optionsMenu.add(item);
 	}
 
@@ -386,9 +387,8 @@ class MainMenu {
 			props.load(is);
 			is.close();
 			version = Resource.getVersion();
-			build_info = 
-				Resource.getResourceString("Build_Time:_")
-				+ props.getProperty("build.time");
+			build_info = Resource.getResourceString("Build_Time:_")
+					+ props.getProperty("build.time");
 
 		} catch (Exception e) {
 			Errmsg.getErrorHandler().errmsg(e);
@@ -407,10 +407,16 @@ class MainMenu {
 				+ build_info + "\n" + "Java "
 				+ System.getProperty("java.version");
 		Object opts[] = { Resource.getResourceString("Dismiss") };
-		JOptionPane.showOptionDialog(null, info, Resource
-				.getResourceString("About_BORG"), JOptionPane.YES_NO_OPTION,
-				JOptionPane.INFORMATION_MESSAGE, new ImageIcon(MainMenu.class
-						.getResource("/resource/borg.jpg")), opts, opts[0]);
+		JOptionPane
+				.showOptionDialog(
+						null,
+						info,
+						Resource.getResourceString("About_BORG"),
+						JOptionPane.YES_NO_OPTION,
+						JOptionPane.INFORMATION_MESSAGE,
+						new ImageIcon(MainMenu.class
+								.getResource("/resource/borg.jpg")), opts,
+						opts[0]);
 
 	}
 
@@ -419,11 +425,11 @@ class MainMenu {
 		String dbtype = Prefs.getPref(PrefName.DBTYPE);
 		String info = Resource.getResourceString("DatabaseInformation")
 				+ ":\n\n";
-		info += dbtype + " URL: " + DBHelper.getController().buildURL() + "\n\n";
+		info += dbtype + " URL: " + DBHelper.getController().buildURL()
+				+ "\n\n";
 
 		try {
-			for( Model model : Model.getExistingModels())
-			{
+			for (Model model : Model.getExistingModels()) {
 				info += model.getInfo() + "\n";
 			}
 		} catch (Exception e) {
@@ -444,9 +450,8 @@ class MainMenu {
 			JFileChooser chooser = new JFileChooser();
 
 			chooser.setCurrentDirectory(new File("."));
-			chooser
-					.setDialogTitle(Resource
-							.getResourceString("Please_choose_directory_to_place_XML_files"));
+			chooser.setDialogTitle(Resource
+					.getResourceString("Please_choose_directory_to_place_XML_files"));
 			chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 			chooser.setApproveButtonText(Resource
 					.getResourceString("select_export_dir"));
@@ -502,7 +507,8 @@ class MainMenu {
 		}
 
 		try {
-			Prefs.export(file.getAbsolutePath());
+			if (IOHelper.checkOverwrite(file.getAbsolutePath()) == true)
+				Prefs.export(file.getAbsolutePath());
 		} catch (Exception e) {
 			Errmsg.getErrorHandler().errmsg(e);
 		}
@@ -568,22 +574,20 @@ class MainMenu {
 				final String top = UndoLog.getReference().getTopItem();
 				if (top != null) {
 					JMenuItem mi = new JMenuItem(Resource
-							.getResourceString("undo")
-							+ ": " + top);
+							.getResourceString("undo") + ": " + top);
 					mi.addActionListener(new ActionListener() {
 
 						@Override
 						public void actionPerformed(ActionEvent arg0) {
-							int ret = JOptionPane
-									.showConfirmDialog(
-											null,
-											Resource.getResourceString("undo")
-													+ ": "
-													+ top
-													+ "\n\n"
-													+ Resource
-															.getResourceString("please_confirm"),
-											"", JOptionPane.OK_CANCEL_OPTION);
+							int ret = JOptionPane.showConfirmDialog(
+									null,
+									Resource.getResourceString("undo")
+											+ ": "
+											+ top
+											+ "\n\n"
+											+ Resource
+													.getResourceString("please_confirm"),
+									"", JOptionPane.OK_CANCEL_OPTION);
 							if (ret != JOptionPane.OK_OPTION)
 								return;
 							UndoLog.getReference().executeUndo();
@@ -597,15 +601,13 @@ class MainMenu {
 
 						@Override
 						public void actionPerformed(ActionEvent arg0) {
-							int ret = JOptionPane
-									.showConfirmDialog(
-											null,
-											Resource
-													.getResourceString("clear_undos")
-													+ "\n\n"
-													+ Resource
-															.getResourceString("please_confirm"),
-											"", JOptionPane.OK_CANCEL_OPTION);
+							int ret = JOptionPane.showConfirmDialog(
+									null,
+									Resource.getResourceString("clear_undos")
+											+ "\n\n"
+											+ Resource
+													.getResourceString("please_confirm"),
+									"", JOptionPane.OK_CANCEL_OPTION);
 							if (ret != JOptionPane.OK_OPTION)
 								return;
 							UndoLog.getReference().clear();
@@ -622,8 +624,7 @@ class MainMenu {
 						for (String item : UndoLog.getReference()
 								.getItemStrings()) {
 							JMenuItem item_mi = new JMenuItem(Resource
-									.getResourceString("undo")
-									+ ": " + item);
+									.getResourceString("undo") + ": " + item);
 							all_mi.add(item_mi);
 						}
 
@@ -647,8 +648,8 @@ class MainMenu {
 
 			JFileChooser chooser = new JFileChooser();
 			FileNameExtensionFilter filter = new FileNameExtensionFilter(
-			        Resource.getResourceString("xml_file"), "xml", "XML");
-			    chooser.setFileFilter(filter);
+					Resource.getResourceString("xml_file"), "xml", "XML");
+			chooser.setFileFilter(filter);
 			chooser.setCurrentDirectory(new File("."));
 			chooser.setDialogTitle(Resource
 					.getResourceString("Please_choose_File_to_Import_From"));
@@ -660,30 +661,33 @@ class MainMenu {
 
 			String fileName = chooser.getSelectedFile().getAbsolutePath();
 
-			BufferedReader in = new BufferedReader(new FileReader(
-					new File(fileName)));
+			BufferedReader in = new BufferedReader(new FileReader(new File(
+					fileName)));
 			Model model = ExportImport.getImportModelForXML(in);
-			
-			if( model == null )
-			{
-				Errmsg.getErrorHandler().notice(Resource.getResourceString("import_format_error"));
+
+			if (model == null) {
+				Errmsg.getErrorHandler().notice(
+						Resource.getResourceString("import_format_error"));
 				return;
 			}
 
-			int ret = JOptionPane.showConfirmDialog(null, Resource
-					.getResourceString("Importing_")
-					+ " " + model.getExportName() + ", OK?", Resource
-					.getResourceString("Import_WARNING"),
+			int ret = JOptionPane.showConfirmDialog(
+					null,
+					Resource.getResourceString("Importing_") + " "
+							+ model.getExportName() + ", OK?",
+					Resource.getResourceString("Import_WARNING"),
 					JOptionPane.OK_CANCEL_OPTION);
 
 			if (ret != JOptionPane.OK_OPTION)
 				return;
 
 			try {
-				ExportImport.importFromXmlFile(model, new FileInputStream(fileName));
+				ExportImport.importFromXmlFile(model, new FileInputStream(
+						fileName));
 			} catch (Exception e) {
 				Errmsg.logError(e);
-				Errmsg.getErrorHandler().notice(Resource.getResourceString("Import_error"));
+				Errmsg.getErrorHandler().notice(
+						Resource.getResourceString("Import_error"));
 			}
 		} catch (Exception e) {
 			Errmsg.getErrorHandler().errmsg(e);
@@ -715,13 +719,12 @@ class MainMenu {
 		try {
 			Prefs.importPrefs(file.getAbsolutePath());
 		} catch (Exception e) {
-			
-			String err = Resource.getResourceString("import_format_error") + ": " + e.getLocalizedMessage();
+
+			String err = Resource.getResourceString("import_format_error")
+					+ ": " + e.getLocalizedMessage();
 			Errmsg.getErrorHandler().notice(err);
 		}
 
 	}
-
-	
 
 }
