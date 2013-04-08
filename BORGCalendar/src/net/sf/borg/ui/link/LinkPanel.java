@@ -380,7 +380,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 				// no validation is done
 				String url = JOptionPane.showInputDialog(Resource
 						.getResourceString("url") + "?");
-				if (url == null)
+				if (url == null || url.trim().isEmpty())
 					return;
 
 				try {
