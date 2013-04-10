@@ -364,6 +364,12 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 					return;
 				}
 				
+				if( decryptButton.isEnabled())
+				{
+					Errmsg.getErrorHandler().notice(Resource.getResourceString("Export_Memo_Decrypt"));
+					return;
+				}
+				
 				StringBuffer sb = new StringBuffer();
 				String s = memoText.getPlainText();
 				for (int i = 0; i < s.length(); i++) {
