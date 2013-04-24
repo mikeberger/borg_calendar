@@ -360,5 +360,16 @@ public class PrefName {
 	
 	// limit on the max text size that can be put into a text area to prevent memory issues
 	public static final PrefName MAX_TEXT_SIZE = new PrefName("max_text_size", new Integer(1024*1024));
-
+	
+	//the email regular expression and phone number regular expression
+	//regular expression for validating email addresses
+	static public PrefName EMAIL_VALIDATION = new PrefName("Email_Validation","false");
+	
+//	static public PrefName EMAIL_REGEX = new PrefName ("Email_Regex", 
+//			"^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+//					+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
+//	
+	static public PrefName PHONE_VALIDATION = new PrefName("Phone_Validation", 0);
+	
+	static public PrefName PHONE_REGEX = new PrefName ("Phone_Regex", "");
 }

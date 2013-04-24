@@ -22,7 +22,11 @@ package net.sf.borg.ui.address;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -56,7 +60,7 @@ import com.toedter.calendar.JDateChooser;
 public class AddressView extends DockableView {
 
 	private static final long serialVersionUID = 1L;
-
+	
 	// address being edited
 	private Address addr_;
 
@@ -225,9 +229,6 @@ public class AddressView extends DockableView {
 		jLabel23.setLabelFor(cellPhoneText);
 		contactPanel.add(jLabel23,GridBagConstraintsFactory.create(0,3));
 
-	
-	
-
 		contactPanel.add(firstNameText, GridBagConstraintsFactory.create(1, 0,
 				GridBagConstraints.BOTH, 1.0, 0.0));
 		contactPanel.add(lastNameText, GridBagConstraintsFactory.create(1, 1,
@@ -265,6 +266,7 @@ public class AddressView extends DockableView {
 		//
 		// ADDRESS
 		//	
+		
 		
 		homeAddressPanel.setLayout(new java.awt.GridBagLayout());
 
@@ -439,6 +441,39 @@ public class AddressView extends DockableView {
 							.getResourceString("First_and_Last_name_are_Required"));
 			return;
 		}
+		
+		if (Prefs.getBoolPref(PrefName.EMAIL_VALIDATION)){
+			try {
+				new InternetAddress(emailText.getText()).getAddress();
+			} catch (AddressException e) {
+				Errmsg.getErrorHandler().notice(Resource.getResourceString("Invalid_Email_Address"));
+				return;
+			}
+		}
+		
+		if ((Prefs.getIntPref(PrefName.PHONE_VALIDATION) != 0 ||
+				(!Prefs.getPref(PrefName.PHONE_REGEX).equals(""))))
+		{
+					if (!workPhoneText.getText().equals(""))
+					{
+						Pattern p =  Pattern.compile(Prefs.getPref(PrefName.PHONE_REGEX));
+						Matcher m = p.matcher(workPhoneText.getText());
+						if (!m.find()){
+							Errmsg.getErrorHandler().notice(Resource.getResourceString("Invalid_Work_Phone_Number"));
+						return;
+						}
+					}
+					if (!homePageText.getText().equals(""))
+					{
+						Pattern p1 =  Pattern.compile(Prefs.getPref(PrefName.PHONE_REGEX));
+						Matcher m1 = p1.matcher(homePageText.getText());
+						if (!m1.find()){
+							Errmsg.getErrorHandler().notice(Resource.getResourceString("Invalid_Home_Phone_Nummber"));
+						return;
+						}
+					}
+		}
+
 		
 		Date bd = birthdayChooser.getDate();
 		if( bd != null && DateUtil.isAfter(bd, new Date()))

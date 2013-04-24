@@ -265,7 +265,7 @@ public class OptionsView extends View {
 			addPanel(new TodoOptionsPanel());
 			addPanel(new EncryptionOptionsPanel());
 			addPanel(new StartupViewsOptionsPanel());
-
+			addPanel(new AddressOptionsPanel());
 		}
 
 		addPanel(new DatabaseOptionsPanel());
