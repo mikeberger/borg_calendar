@@ -141,7 +141,7 @@ public class AddressView extends DockableView {
 		birthdayChooser = new JDateChooser();
 		cellPhoneText = new JTextField(new LimitDocument(25),null,25);
 		JPanel homeAddressPanel = new JPanel();
-		streetAddresText = new JTextField(new LimitDocument(25), null, 25);
+		streetAddresText = new JTextField(new LimitDocument(40), null, 25);
 		cityText = new JTextField(new LimitDocument(25), null, 25);
 		stateText = new JTextField(new LimitDocument(25), null, 25);
 		countryText = new JTextField(new LimitDocument(25), null, 25);
@@ -151,7 +151,7 @@ public class AddressView extends DockableView {
 		workCountryText = new JTextField(new LimitDocument(25), null, 25);
 		workStateText = new JTextField(new LimitDocument(25), null, 25);
 		workCityText = new JTextField(new LimitDocument(25), null, 25);
-		workStreetAddressText = new JTextField(new LimitDocument(25), null, 25);
+		workStreetAddressText = new JTextField(new LimitDocument(40), null, 25);
 		notesText = new JTextArea(new LimitDocument(Prefs.getIntPref(PrefName.MAX_TEXT_SIZE)));
 		JPanel buttonPanel = new JPanel();
 		JButton saveButton = new JButton();

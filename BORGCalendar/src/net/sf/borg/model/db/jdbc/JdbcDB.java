@@ -414,6 +414,16 @@ final class JdbcDB {
 				// update size to 30
 				new JdbcDBUpgrader(null, "alter table options alter name varchar(30)").upgrade();
 			}
+			rs = st.executeQuery("select street, work_street from addresses");
+			md = rs.getMetaData();
+			if( md.getColumnDisplaySize(1) < 40) {
+				// update size to 40
+				new JdbcDBUpgrader(null, "alter table addresses alter street varchar(40)").upgrade();
+			}
+			if( md.getColumnDisplaySize(2) < 40) {
+				// update size to 40
+				new JdbcDBUpgrader(null, "alter table addresses alter work_street varchar(40)").upgrade();
+			}
 		} catch (Exception e) {
 			Errmsg.getErrorHandler().errmsg(e);
 		} finally {
