@@ -442,7 +442,7 @@ public class AddressView extends DockableView {
 			return;
 		}
 		
-		if (Prefs.getBoolPref(PrefName.EMAIL_VALIDATION)){
+		if (!emailText.getText().isEmpty() && Prefs.getBoolPref(PrefName.EMAIL_VALIDATION)){
 			try {
 				new InternetAddress(emailText.getText()).getAddress();
 			} catch (AddressException e) {
