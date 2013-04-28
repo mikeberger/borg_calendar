@@ -212,8 +212,8 @@ public class LinkModel extends Model {
 
 		// * modification for backtrace/2way link
 
-		if (linkType == LinkType.ADDRESS || linkType == LinkType.APPOINTMENT
-				|| linkType == LinkType.PROJECT || linkType == LinkType.TASK) {
+		if (linkType == LinkType.APPOINTMENT || linkType == LinkType.PROJECT 
+				|| linkType == LinkType.TASK) {
 			Link at2way = newLink();
 			at2way.setKey(-1);
 			at2way.setOwnerKey(new Integer(at.getPath()));
@@ -221,6 +221,21 @@ public class LinkModel extends Model {
 			at2way.setPath(at.getOwnerKey().toString());
 			at2way.setLinkType(at.getOwnerType());
 			saveLink(at2way);
+		}
+		
+		/** Allows backtrace/2way link modification for address link
+	     if address is not owners */
+		// Fixes bug linking an address to itself results in a double link
+		else if (linkType == LinkType.ADDRESS) {
+			if (!at.getOwnerKey().toString().equals(at.getPath())) {
+				Link at2way = newLink();
+				at2way.setKey(-1);
+				at2way.setOwnerKey(new Integer(at.getPath()));
+				at2way.setOwnerType(at.getLinkType());
+				at2way.setPath(at.getOwnerKey().toString());
+				at2way.setLinkType(at.getOwnerType());
+				saveLink(at2way);
+			}
 		}
 		// end of modification
 
