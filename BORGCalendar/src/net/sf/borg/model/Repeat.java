@@ -359,8 +359,12 @@ public class Repeat {
 			incr = 0;
 			dayOfWeek = start.get(Calendar.DAY_OF_WEEK);
 			dayOfWeekMonth = start.get(Calendar.DAY_OF_WEEK_IN_MONTH);
-		} else if (freq_.equals(YEARLY))
-			field = Calendar.YEAR;
+		} else if (freq_.equals(YEARLY)) {
+            // 12 months fixes the leap year condition (bug #124)
+            // this is probably a bug with the java calendar not realizing next year is a leap year when added
+            field = Calendar.MONTH;
+            incr = 12;
+		}
 		else if (freq_.equals(MWF)) {
 			incr = 0;
 		} else if (freq_.equals(TTH)) {
@@ -373,8 +377,10 @@ public class Repeat {
 			incr = getNValue(frequency_);
 			field = Calendar.MONTH;
 		} else if (freq_.equals(NYEARS)) {
-			incr = getNValue(frequency_);
-			field = Calendar.YEAR;
+            // this fixes that same leap year bug (bug #124)
+            // using months instead of years
+            incr = getNValue(frequency_) * 12;
+            field = Calendar.MONTH;
 		} else if (freq_.equals(DAYLIST)) {
 			incr = 0;
 		}
