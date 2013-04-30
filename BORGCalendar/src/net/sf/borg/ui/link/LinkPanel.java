@@ -380,8 +380,15 @@ public class LinkPanel extends JPanel implements Model.Listener {
 				// no validation is done
 				String url = JOptionPane.showInputDialog(Resource
 						.getResourceString("url") + "?");
-				if (url == null || url.trim().isEmpty())
+
+				if (url == null)
+					return; // cancel case
+				else if (url.trim().isEmpty()) {
+					Errmsg.getErrorHandler().notice(
+							Resource.getResourceString("URL_is_Empty"));
 					return;
+				}
+				
 
 				try {
 					LinkModel.getReference().addLink(owningEntity, url,
