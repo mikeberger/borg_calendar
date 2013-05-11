@@ -10,12 +10,12 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/BORGCalendar"/>
 	<classpathentry kind="lib" path="/BORGCalendar/lib/base64coder-2010-12-19.jar"/>
-	<classpathentry kind="lib" path="/BORGCalendar/lib/lombok-0.10.6.jar"/>
 	<classpathentry kind="lib" path="lib/backport-util-concurrent-3.1.jar"/>
 	<classpathentry kind="lib" path="lib/commons-codec-1.5.jar"/>
 	<classpathentry kind="lib" path="lib/commons-collections-2.1.jar"/>
 	<classpathentry kind="lib" path="lib/commons-lang-2.6.jar"/>
 	<classpathentry kind="lib" path="lib/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/ical4j-1.0.4.jar"/>
+	<classpathentry kind="lib" path="/BORGCalendar/lib/lombok-0.11.8.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
