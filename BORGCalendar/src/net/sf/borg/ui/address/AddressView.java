@@ -475,6 +475,29 @@ public class AddressView extends DockableView {
 		}
 
 		
+		//this block checks for duplicate entries
+		//try catch to prevent a null assignment of address list
+		try {
+			
+			//cycle through all address in the database
+			for(Address addr : AddressModel.getReference().getAddresses() )
+			{
+				//do the names match?
+				if(firstNameText.getText().trim().toUpperCase().equals(addr.getFirstName().trim().toUpperCase()) &&
+                   lastNameText.getText().trim().toUpperCase().equals(addr.getLastName().trim().toUpperCase())){
+					//if someone does have the same name, notify the user and exit the save method
+					Errmsg.getErrorHandler().notice(Resource.getResourceString("Entry_Exists"));
+					return;
+				}
+			}
+			
+		} catch (Exception e) {
+			//notify user of error and return
+			Errmsg.getErrorHandler().errmsg(e);
+			return;
+		}
+        
+		
 		Date bd = birthdayChooser.getDate();
 		if( bd != null && DateUtil.isAfter(bd, new Date()))
 		{
