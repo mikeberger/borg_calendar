@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.LinkedList;
 
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.JButton;
@@ -35,6 +36,8 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.table.TableModel;
 
 import net.sf.borg.common.Errmsg;
+import net.sf.borg.common.PrefName;
+import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.AppointmentModel;
@@ -70,11 +73,13 @@ public class EntitySelector extends JDialog {
 	 */
 	public static Address selectAddress() throws Exception {
 		Collection<Address> addrs = AddressModel.getReference().getAddresses();
-		return ((Address) EntitySelector.selectBean(addrs, new TableSorter(
-				new String[] { Resource.getResourceString("Last"),
+		return ((Address) EntitySelector.selectBean(
+				addrs,
+				new TableSorter(new String[] {
+						Resource.getResourceString("Last"),
 						Resource.getResourceString("First") }, new Class[] {
 						String.class, String.class }), new String[] {
-				"LastName", "FirstName" }));
+						"LastName", "FirstName" }));
 	}
 
 	/**
@@ -89,10 +94,21 @@ public class EntitySelector extends JDialog {
 
 		Collection<Appointment> apps = AppointmentModel.getReference()
 				.getAllAppts();
-		return ((Appointment) selectBean(apps, new TableSorter(new String[] {
-				Resource.getResourceString("Text"),
-				Resource.getResourceString("Time") }, new Class[] {
-				String.class, Date.class }), new String[] { "ClearText", "Date" }));
+		if (Prefs.getPref(PrefName.SHOWPRIVATE).equals("false")) {
+			Collection<Appointment> privAppts = new LinkedList<Appointment>();
+			for (Appointment app : apps) {
+				if (app.isPrivate())
+					privAppts.add(app);
+			}
+			apps.removeAll(privAppts);
+		}
+		return ((Appointment) selectBean(
+				apps,
+				new TableSorter(new String[] {
+						Resource.getResourceString("Text"),
+						Resource.getResourceString("Time") }, new Class[] {
+						String.class, Date.class }), new String[] {
+						"ClearText", "Date" }));
 
 	}
 
@@ -146,11 +162,13 @@ public class EntitySelector extends JDialog {
 	 */
 	public static Project selectProject() throws Exception {
 		Collection<Project> projects = TaskModel.getReference().getProjects();
-		return ((Project) EntitySelector.selectBean(projects, new TableSorter(
-				new String[] { Resource.getResourceString("Item_#"),
+		return ((Project) EntitySelector.selectBean(
+				projects,
+				new TableSorter(new String[] {
+						Resource.getResourceString("Item_#"),
 						Resource.getResourceString("Description") },
-				new Class[] { Integer.class, String.class }), new String[] {
-				"Key", "Description" }));
+						new Class[] { Integer.class, String.class }),
+				new String[] { "Key", "Description" }));
 	}
 
 	/**
@@ -163,11 +181,13 @@ public class EntitySelector extends JDialog {
 	 */
 	public static Task selectTask() throws Exception {
 		Collection<Task> tasks = TaskModel.getReference().getTasks();
-		return ((Task) EntitySelector.selectBean(tasks, new TableSorter(
-				new String[] { Resource.getResourceString("Item_#"),
+		return ((Task) EntitySelector.selectBean(
+				tasks,
+				new TableSorter(new String[] {
+						Resource.getResourceString("Item_#"),
 						Resource.getResourceString("Description") },
-				new Class[] { Integer.class, String.class }), new String[] {
-				"Key", "Description" }));
+						new Class[] { Integer.class, String.class }),
+				new String[] { "Key", "Description" }));
 	}
 
 	private JButton clearButton;
@@ -208,7 +228,7 @@ public class EntitySelector extends JDialog {
 
 		fields_ = fields;
 		list_.clear();
-		
+
 		// init the gui components
 		initComponents();
 
@@ -219,8 +239,7 @@ public class EntitySelector extends JDialog {
 		this.setTitle(Resource.getResourceString("Select"));
 
 		if (multiple)
-			jTable1
-					.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+			jTable1.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		else
 			jTable1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -246,13 +265,13 @@ public class EntitySelector extends JDialog {
 		list_.clear();
 		this.dispose();
 	}
+
 	/**
 	 * Initialize the UI components
 	 */
-	private void initComponents()
-	{
+	private void initComponents() {
 
-		this.getContentPane().setLayout(new GridBagLayout()); 
+		this.getContentPane().setLayout(new GridBagLayout());
 		jTable1 = new StripedTable();
 		jPanel1 = new javax.swing.JPanel();
 		selectButton = new javax.swing.JButton();
@@ -301,11 +320,16 @@ public class EntitySelector extends JDialog {
 
 		jPanel1.add(clearButton);
 
-		this.getContentPane().add(jScrollPane1, GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH, 1.0, 1.0));
+		this.getContentPane().add(
+				jScrollPane1,
+				GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH,
+						1.0, 1.0));
 
-		this.getContentPane().add(jPanel1, GridBagConstraintsFactory.create(0, 2)); 
+		this.getContentPane().add(jPanel1,
+				GridBagConstraintsFactory.create(0, 2));
 
 	}
+
 	/**
 	 * table mouse clicked.
 	 * 
@@ -317,6 +341,7 @@ public class EntitySelector extends JDialog {
 			selectbuttonActionPerformed(null);
 		}
 	}
+
 	/**
 	 * Load the entities from the database into the table.
 	 */
@@ -354,6 +379,7 @@ public class EntitySelector extends JDialog {
 		}
 
 	}
+
 	/**
 	 * Selectbutton action performed.
 	 * 
