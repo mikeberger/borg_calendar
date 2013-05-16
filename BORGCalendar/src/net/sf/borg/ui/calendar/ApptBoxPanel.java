@@ -291,9 +291,26 @@ abstract class ApptBoxPanel extends JPanel implements ComponentListener {
 				if( b.box.clicksToActivate() <= evt.getClickCount())
 					b.box.onClick();
 			}
-			else if (b.zone != null && evt.getClickCount() > 1)
+			
+			//double-click to set appointment time
+			else if (b.zone != null && evt.getClickCount() > 1 && evt.getY() >= resizeYMin)	{
+				// determine the appt time based on the location of the double-click
+				int clickmins = realMins((evt.getY() - resizeYMin) / (resizeYMax - resizeYMin));
+				int realtime = clickmins;
+				int hour = realtime / 60;
+				int min = realtime % 60;
+				min = (min / 5) * 5;
+				GregorianCalendar startCal = new GregorianCalendar();
+				startCal.setTime(b.zone.getDate());
+				//add double-clicked hour and minute
+				startCal.set(Calendar.HOUR_OF_DAY, hour);
+				startCal.set(Calendar.MINUTE, min);
+				b.zone.onClick(startCal);
+			}
+			
+			// double-click outside of valid start time panel
+			else if (b.zone != null && evt.getClickCount() > 1 && evt.getY() < resizeYMin)
 				b.zone.onClick();
-
 		}
 
 		/**
@@ -351,6 +368,8 @@ abstract class ApptBoxPanel extends JPanel implements ComponentListener {
 			} else if (draggedAnchor != -1) {
 				
 				ClickedBoxInfo b = getClickedBoxInfo(evt);
+				if( b == null )
+					return;
 				
 				// create the DragNewBox if it doesn;t yet exist
 				if (dragNewBox == null)

@@ -232,6 +232,10 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 	private int month_;
 	private int year_;
 
+	//start time for double-clicked appointments
+	private int starthour;
+	private int startminute;
+	
 	// the seven toggle buttons for selecting repeat days for a repeat
 	// type of select days
 	private JToggleButton dayToggles[] = new JToggleButton[7];
@@ -1306,7 +1310,27 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 		day_ = day;
 
 	}
-
+	
+	/**
+	 * Sets the start time for a double-clicked new appointment
+	 * @param starthour
+	 *            the appointment start hour
+	 * @param startminute
+	 *            the appointment start minute
+	 */
+	public void setStartTime(int hour, int minute) {
+		starthour = hour;
+		// round double-clicked minute to intervals of 30 for ease of use
+		if (minute - 15 < 0)
+			startminute = 0;
+		else if (minute - 45 < 0)
+			startminute = 30;
+		else	{
+			starthour = hour + 1;
+			startminute = 0;
+		}
+	}
+	
 	/**
 	 * Sets the popup times label to show the user what the popup times are in
 	 * human readbale form.
@@ -1403,10 +1427,55 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 			defaultAppt = AppointmentModel.getReference()
 					.getDefaultAppointment();
 		}
+		//a key of -1 means to show a new blank appointment
+		//case for double-clicked new appt in editor with preset time
+		if (currentlyShownAppointmentKey == -1 && defaultAppt == null && starthour > 0) {
+			// set start and end time to time passed from double-click
+			GregorianCalendar cal = new GregorianCalendar();
+			cal.set(Calendar.HOUR_OF_DAY, starthour);
+			cal.set(Calendar.MINUTE, startminute);
+			cal.set(Calendar.SECOND, 0);
+			cal.set(Calendar.MILLISECOND, 0);
+			startTimePanel.setTime(cal.getTime());
+			// set default duration to 1 hour
+			cal.set(Calendar.HOUR_OF_DAY, starthour+1);
+			endTimePanel.setTime(cal.getTime());
+			
+			//enable time widgets
+			startTimePanel.setEnabled(true);
+			endTimePanel.setEnabled(true);
+			untimedCheckBox.setSelected(false);
+			
+			//initialize new appt values
+			categoryBox.setSelectedIndex(0);
+			apptTitleField.setText("");
+			todoCheckBox.setSelected(false); // todo unchecked
+			colorComboBox.setSelectedIndex(3); // color = black
+			vacationCheckBox.setSelected(false); // vacation unchecked
+			halfDayVacationCheckBox.setSelected(false); // half-day unchecked
+			holidayCheckBox.setSelected(false); // holiday unchecked
+			privateCheckBox.setSelected(false); // private unchecked
+			appointmentBodyTextArea.setText(""); // clear appt text
+			repeatFrequencyComboBox.setSelectedIndex(0); // freq = once
+			numberOfRepeatsSpinner.setEnabled(true);
+			numberOfRepeatsSpinner.setValue(new Integer(1)); // times = 1
+			repeatForeverRadio.setSelected(false);
+			repeatUntilRadio.setSelected(false);
+			untilDate.setEnabled(false);
+			showRepeatNumberCheckBox.setSelected(false);
+			showRepeatNumberCheckBox.setEnabled(false);
+			ResourceHelper.setText(newAppointmentIndicatorLabel,
+					"*****_NEW_APPT_*****");
 
-		// a key of -1 means to show a new blank appointment
-		if (currentlyShownAppointmentKey == -1 && defaultAppt == null) {
+			dateChangeCheckBox.setEnabled(false);
+			newdatefield.setEnabled(false);
 
+			setCustRemTimes(null);
+			setPopupTimesString(new String(custRemTimes));
+		}
+		
+		// case for new appointment without preset start time
+		else if (currentlyShownAppointmentKey == -1 && defaultAppt == null) {
 			//
 			// set all of the blank appointment defaults if
 			// there is no default appointment
