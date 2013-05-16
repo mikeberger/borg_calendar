@@ -131,7 +131,7 @@ class DateZone {
 	}
 
 	/**
-	 * take action on a user mouse click - open an appt editor for a new appt
+	 * take action on a user mouse double-click, opens appt editor for new appt
 	 */
 	void onClick() {
 		GregorianCalendar cal = new GregorianCalendar();
@@ -141,8 +141,20 @@ class DateZone {
 						.get(Calendar.DATE));
 		ag.showView();
 		ag.showApp(-1);
-
-
+	}
+	
+	/**
+	 * take action on a user mouse double-click on time interval
+	 * open an appt editor for a new appt with preset start hour and minute
+	 */
+	void onClick(GregorianCalendar cal) {
+		AppointmentListView ag = new AppointmentListView(
+				cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal
+						.get(Calendar.DATE));
+		//set double-click time
+		ag.setTime(cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE));
+		ag.showView();
+		ag.showApp(-1);
 	}
 
 	/**

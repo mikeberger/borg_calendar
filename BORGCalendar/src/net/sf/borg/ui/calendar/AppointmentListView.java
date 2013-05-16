@@ -705,6 +705,20 @@ public class AppointmentListView extends DockableView implements
 	}
 
 	/**
+	 * set the start time for the new appt in the appt editor.
+	 * 
+	 * @param hour
+	 * 			the start hour of the appointment
+	 * @param minute
+	 * 			the start minute of the appointment
+	 */
+	public void setTime(int hour, int minute) {
+		appointmentPanel.setStartTime(hour, minute);
+		appointmentPanel.showapp(-1, null);
+		refresh();
+	}
+	
+	/**
 	 * react to ListSelectionEvents
 	 */
 	@Override
