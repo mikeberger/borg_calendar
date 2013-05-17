@@ -890,6 +890,9 @@ abstract class ApptBoxPanel extends JPanel implements ComponentListener {
 		if( ret.box != currentBox )
 			ret.boxChanged = true;
 		currentBox = ret.box;
+		
+		if( ret.box == null && ret.zone == null )
+			return null;
 
 		return ret;
 
