@@ -76,16 +76,8 @@ class ReminderPopup extends View {
 		initialize();
 
 		// set appt info in the reminder
-		String apptinfoText = "";
-		if (inst.isNote()) {
-			DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT,
-					DateFormat.SHORT);
-			apptinfoText = df.format(inst.getInstanceTime());
-		} else {
-			DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT);
-			apptinfoText = df.format(inst.getInstanceTime());
-		}
-
+		DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT);
+		String apptinfoText = df.format(inst.getInstanceTime());
 		
 		apptinfoText += " " + reminderInstance.getText();
 		appointmentInformation.setText(apptinfoText);
