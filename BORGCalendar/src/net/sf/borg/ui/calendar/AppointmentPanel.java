@@ -232,10 +232,10 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 	private int month_;
 	private int year_;
 
-	//start time for double-clicked appointments
+	// start time for double-clicked appointments
 	private int starthour;
 	private int startminute;
-	
+
 	// the seven toggle buttons for selecting repeat days for a repeat
 	// type of select days
 	private JToggleButton dayToggles[] = new JToggleButton[7];
@@ -290,7 +290,7 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 
 	/** decrypt button */
 	private JButton decryptButton = null;
-	
+
 	private JLabel durationLabel = new JLabel();
 
 	/**
@@ -353,41 +353,43 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 		setDate(year, month, day);
 		setCustRemTimes(null);
 		apptTitleField.requestFocus();
-		
-		// if the start time is changed, then set the end time to start plus 30 minutes
-		startTimePanel.addTimeListener(new ActionListener(){
+
+		// if the start time is changed, then set the end time to start plus 30
+		// minutes
+		startTimePanel.addTimeListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				try {
 					Date s = startTimePanel.getTime();
-					endTimePanel.setTime(new Date(s.getTime() + 1000*60*30));
+					endTimePanel.setTime(new Date(s.getTime() + 1000 * 60 * 30));
 					durationLabel.setText(DateUtil.minuteString(30));
 				} catch (Warning e) {
 					// nothing
 				}
-				
+
 			}
-			
+
 		});
-		
-		endTimePanel.addTimeListener(new ActionListener(){
+
+		endTimePanel.addTimeListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					int mins = (int) ((endTimePanel.getTime().getTime() - startTimePanel.getTime().getTime())/(60*1000)); 
-					if( mins < 0 )
-						mins += (24*60);
-					else if( mins >= 24*60)
-						mins -= (24*60);
+					int mins = (int) ((endTimePanel.getTime().getTime() - startTimePanel
+							.getTime().getTime()) / (60 * 1000));
+					if (mins < 0)
+						mins += (24 * 60);
+					else if (mins >= 24 * 60)
+						mins -= (24 * 60);
 					durationLabel.setText(DateUtil.minuteString(mins));
 				} catch (Warning e) {
 					// nothing
 				}
-				
+
 			}
-			
+
 		});
 	}
 
@@ -594,7 +596,7 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 		buttonGroup.add(repeatTimesRadio);
 
 		numberOfRepeatsSpinner = new JSpinner();
-		theRepeatPanel 
+		theRepeatPanel
 				.add(numberOfRepeatsSpinner, GridBagConstraintsFactory.create(
 						1, 1, GridBagConstraints.BOTH));
 		SpinnerNumberModel mod = (SpinnerNumberModel) numberOfRepeatsSpinner
@@ -657,7 +659,8 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 		subjectLabel.setText(Resource.getResourceString("subject"));
 		newAppointmentIndicatorLabel = new JLabel();
 		JScrollPane apptTextScroll = new JScrollPane();
-		appointmentBodyTextArea = new JTextArea(new LimitDocument(Prefs.getIntPref(PrefName.MAX_TEXT_SIZE)));
+		appointmentBodyTextArea = new JTextArea(new LimitDocument(
+				Prefs.getIntPref(PrefName.MAX_TEXT_SIZE)));
 		prioritySpinner = new JSpinner();
 		JLabel starttimeLabel = new JLabel();
 		JLabel endTimeLabel = new JLabel();
@@ -752,7 +755,7 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 		});
 		GridBagConstraints gridBagConstraints12 = GridBagConstraintsFactory
 				.create(2, 0, GridBagConstraints.BOTH);
-		
+
 		appointmentTimePanel.add(untimedCheckBox, gridBagConstraints12);
 
 		endTimeLabel.setText(Resource.getResourceString("EndTime") + ":");
@@ -765,12 +768,12 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 		appointmentTimePanel
 				.add(endTimePanel, GridBagConstraintsFactory.create(1, 1,
 						GridBagConstraints.BOTH));
-		
+
 		durationLabel.setText("1/2 hour");
-		
+
 		appointmentTimePanel
-		.add(durationLabel, GridBagConstraintsFactory.create(2, 1,
-				GridBagConstraints.BOTH));
+				.add(durationLabel, GridBagConstraintsFactory.create(2, 1,
+						GridBagConstraints.BOTH));
 
 		ResourceHelper.setText(dateChangeCheckBox, "changedate");
 		dateChangeCheckBox.addActionListener(new ActionListener() {
@@ -779,10 +782,11 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 				newdatefield.setEnabled(dateChangeCheckBox.isSelected());
 			}
 		});
-		
-		appointmentTimePanel.add(new JLabel("       "), GridBagConstraintsFactory
-				.create(3, 0, GridBagConstraints.HORIZONTAL));
-		
+
+		appointmentTimePanel.add(new JLabel("       "),
+				GridBagConstraintsFactory.create(3, 0,
+						GridBagConstraints.HORIZONTAL));
+
 		appointmentTimePanel.add(dateChangeCheckBox, GridBagConstraintsFactory
 				.create(4, 0, GridBagConstraints.HORIZONTAL));
 
@@ -795,7 +799,6 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 				.add(newdatefield, GridBagConstraintsFactory.create(6, 0,
 						GridBagConstraints.BOTH));
 
-		
 		// ********************************************************************
 		// appt properties panel
 		// ********************************************************************
@@ -1129,7 +1132,7 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 			g.set(Calendar.YEAR, year_);
 			g.set(Calendar.MONTH, month_);
 			g.set(Calendar.DATE, day_);
-		} else {	
+		} else {
 			GregorianCalendar g2 = new GregorianCalendar();
 			g2.setTime(nd);
 			g.set(Calendar.YEAR, g2.get(Calendar.YEAR));
@@ -1141,12 +1144,12 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 		// set untimed
 		if (untimedCheckBox.isSelected())
 			appt.setUntimed("Y");
-		
+
 		// force end time to be within 24 hrs of start
-		// ignore days in calculation 
+		// ignore days in calculation
 		long end = endTimePanel.getTime().getTime() % 86400000L;
-		long beg = startTimePanel.getTime().getTime() % 86400000L;		
-		
+		long beg = startTimePanel.getTime().getTime() % 86400000L;
+
 		int du = (int) (end - beg) / (1000 * 60);
 		if (du < 0)
 			du += (24 * 60);
@@ -1241,12 +1244,13 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 		}
 
 		// until
-		if (repeatUntilRadio.isSelected() && repeatFrequencyComboBox.getSelectedIndex() != 0) {
+		if (repeatUntilRadio.isSelected()
+				&& repeatFrequencyComboBox.getSelectedIndex() != 0) {
 			Date until = untilDate.getDate();
-			
-			if( until.before(appt.getDate()))
-			{
-				throw new Exception(Resource.getResourceString("until_date_error"));
+
+			if (until.before(appt.getDate())) {
+				throw new Exception(
+						Resource.getResourceString("until_date_error"));
 			}
 			appt.setRepeatUntil(until);
 			appt.setRepeatFlag(true);
@@ -1310,9 +1314,10 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 		day_ = day;
 
 	}
-	
+
 	/**
 	 * Sets the start time for a double-clicked new appointment
+	 * 
 	 * @param starthour
 	 *            the appointment start hour
 	 * @param startminute
@@ -1325,12 +1330,12 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 			startminute = 0;
 		else if (minute - 45 < 0)
 			startminute = 30;
-		else	{
+		else {
 			starthour = hour + 1;
 			startminute = 0;
 		}
 	}
-	
+
 	/**
 	 * Sets the popup times label to show the user what the popup times are in
 	 * human readbale form.
@@ -1427,62 +1432,32 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 			defaultAppt = AppointmentModel.getReference()
 					.getDefaultAppointment();
 		}
-		//a key of -1 means to show a new blank appointment
-		//case for double-clicked new appt in editor with preset time
-		if (currentlyShownAppointmentKey == -1 && defaultAppt == null && starthour > 0) {
-			// set start and end time to time passed from double-click
-			GregorianCalendar cal = new GregorianCalendar();
-			cal.set(Calendar.HOUR_OF_DAY, starthour);
-			cal.set(Calendar.MINUTE, startminute);
-			cal.set(Calendar.SECOND, 0);
-			cal.set(Calendar.MILLISECOND, 0);
-			startTimePanel.setTime(cal.getTime());
-			// set default duration to 1 hour
-			cal.set(Calendar.HOUR_OF_DAY, starthour+1);
-			endTimePanel.setTime(cal.getTime());
-			
-			//enable time widgets
-			startTimePanel.setEnabled(true);
-			endTimePanel.setEnabled(true);
-			untimedCheckBox.setSelected(false);
-			
-			//initialize new appt values
-			categoryBox.setSelectedIndex(0);
-			apptTitleField.setText("");
-			todoCheckBox.setSelected(false); // todo unchecked
-			colorComboBox.setSelectedIndex(3); // color = black
-			vacationCheckBox.setSelected(false); // vacation unchecked
-			halfDayVacationCheckBox.setSelected(false); // half-day unchecked
-			holidayCheckBox.setSelected(false); // holiday unchecked
-			privateCheckBox.setSelected(false); // private unchecked
-			appointmentBodyTextArea.setText(""); // clear appt text
-			repeatFrequencyComboBox.setSelectedIndex(0); // freq = once
-			numberOfRepeatsSpinner.setEnabled(true);
-			numberOfRepeatsSpinner.setValue(new Integer(1)); // times = 1
-			repeatForeverRadio.setSelected(false);
-			repeatUntilRadio.setSelected(false);
-			untilDate.setEnabled(false);
-			showRepeatNumberCheckBox.setSelected(false);
-			showRepeatNumberCheckBox.setEnabled(false);
-			ResourceHelper.setText(newAppointmentIndicatorLabel,
-					"*****_NEW_APPT_*****");
+		// a key of -1 means to show a new blank appointment
+		if (currentlyShownAppointmentKey == -1 && defaultAppt == null) {
 
-			dateChangeCheckBox.setEnabled(false);
-			newdatefield.setEnabled(false);
+			// case for double-clicked new appt in editor with preset time
+			if (starthour > 0) {
+				// set start and end time to time passed from double-click
+				GregorianCalendar cal = new GregorianCalendar();
+				cal.set(Calendar.HOUR_OF_DAY, starthour);
+				cal.set(Calendar.MINUTE, startminute);
+				cal.set(Calendar.SECOND, 0);
+				cal.set(Calendar.MILLISECOND, 0);
+				startTimePanel.setTime(cal.getTime());
+				// set default duration to 1 hour
+				cal.set(Calendar.HOUR_OF_DAY, starthour + 1);
+				endTimePanel.setTime(cal.getTime());
 
-			setCustRemTimes(null);
-			setPopupTimesString(new String(custRemTimes));
-		}
-		
-		// case for new appointment without preset start time
-		else if (currentlyShownAppointmentKey == -1 && defaultAppt == null) {
-			//
-			// set all of the blank appointment defaults if
-			// there is no default appointment
-			//
-			startTimePanel.setTime(DateUtil.setToMidnight(new Date()));
-			endTimePanel.setTime(DateUtil.setToMidnight(new Date()));
+				// enable time widgets
+				startTimePanel.setEnabled(true);
+				endTimePanel.setEnabled(true);
+				untimedCheckBox.setSelected(false);
+			} else {
+				startTimePanel.setTime(DateUtil.setToMidnight(new Date()));
+				endTimePanel.setTime(DateUtil.setToMidnight(new Date()));
+			}
 
+			// initialize new appt values
 			categoryBox.setSelectedIndex(0);
 			apptTitleField.setText("");
 			todoCheckBox.setSelected(false); // todo unchecked
@@ -1527,29 +1502,54 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 							currentlyShownAppointmentKey);
 					linkPanel.setOwner(appt);
 				}
-
-				// set hour and minute widgets
-				startTimePanel.setTime(appt.getDate());
-
+				
 				// duration
 				Integer duration = appt.getDuration();
 				int dur = 0;
 				if (duration != null)
 					dur = duration.intValue();
+				
+				// if preset time - don't take time from default appt
+				if( currentlyShownAppointmentKey == -1 && starthour > 0)
+				{
+					// set start and end time to time passed from double-click
+					GregorianCalendar cal = new GregorianCalendar();
+					cal.set(Calendar.HOUR_OF_DAY, starthour);
+					cal.set(Calendar.MINUTE, startminute);
+					cal.set(Calendar.SECOND, 0);
+					cal.set(Calendar.MILLISECOND, 0);
+					startTimePanel.setTime(cal.getTime());
+					// set default duration to 1 hour
+					cal.set(Calendar.HOUR_OF_DAY, starthour + 1);
+					endTimePanel.setTime(cal.getTime());
 
-				Date end = new Date();
-				end.setTime(appt.getDate().getTime() + (dur * 60 * 1000));
-				endTimePanel.setTime(end);
-
-				// check if we just have a "note" (non-timed appt)
-				boolean untimed = AppointmentModel.isNote(appt);
-				if (!untimed) {
 					// enable time widgets
 					startTimePanel.setEnabled(true);
 					endTimePanel.setEnabled(true);
 					untimedCheckBox.setSelected(false);
 				}
+				else
+				{
+					// set hour and minute widgets
+					startTimePanel.setTime(appt.getDate());
 
+					Date end = new Date();
+					end.setTime(appt.getDate().getTime() + (dur * 60 * 1000));
+					endTimePanel.setTime(end);
+
+					// check if we just have a "note" (non-timed appt)
+					boolean untimed = AppointmentModel.isNote(appt);
+					if (!untimed) {
+						// enable time widgets
+						startTimePanel.setEnabled(true);
+						endTimePanel.setEnabled(true);
+						untimedCheckBox.setSelected(false);
+					}
+
+				}
+				
+				
+				
 				// set ToDo checkbox
 				todoCheckBox.setSelected(appt.isTodo());
 
