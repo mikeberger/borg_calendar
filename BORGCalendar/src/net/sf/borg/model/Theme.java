@@ -241,6 +241,7 @@ public class Theme  {
 	private int holidayBg = 255*256*256+225*256+196;
 	private int holidayTextColor = 10027212;
 	private String name;
+	private int reminderBg = 0xFFFF99;
 	private int stripeBg = 15792890;
 	private int taskTextColor = 13158;
 	private int textColor1 = 13369395;

@@ -68,6 +68,7 @@ public class ColorOptionsPanel extends OptionsPanel implements Prefs.Listener {
 	private ColorChooserButton btn_ucs_holiday;
 	private ColorChooserButton btn_ucs_holidays;
 	private ColorChooserButton btn_ucs_red;
+	private ColorChooserButton btn_ucs_reminderBg;
 	private ColorChooserButton btn_ucs_stripe;
 	private ColorChooserButton btn_ucs_tasks;
 	private ColorChooserButton btn_ucs_today;
@@ -221,6 +222,8 @@ public class ColorOptionsPanel extends OptionsPanel implements Prefs.Listener {
 				Resource.getResourceString("tray_fg"), Color.WHITE);
 		btn_tray_bg = new ColorChooserButton(
 				Resource.getResourceString("tray_bg"), Color.WHITE);
+		btn_ucs_reminderBg = new ColorChooserButton(
+				Resource.getResourceString("reminder_bg"), Color.WHITE);
 		JButton btn_ucs_restore = new JButton(
 				Resource.getResourceString("restore_defaults"));
 
@@ -249,6 +252,7 @@ public class ColorOptionsPanel extends OptionsPanel implements Prefs.Listener {
 				btn_ucs_weekday.setColorProperty(new Color(t.getWeekdayBg()));
 				btn_tray_fg.setColorProperty(new Color(t.getTrayIconFg()));
 				btn_tray_bg.setColorProperty(new Color(t.getTrayIconBg()));
+				btn_ucs_reminderBg.setColorProperty(new Color(t.getReminderBg()));
 			}
 		});
 
@@ -271,6 +275,7 @@ public class ColorOptionsPanel extends OptionsPanel implements Prefs.Listener {
 		colorPanel.add(btn_ucs_stripe);
 		colorPanel.add(btn_tray_fg);
 		colorPanel.add(btn_tray_bg);
+		colorPanel.add(btn_ucs_reminderBg);
 		colorPanel.add(btn_ucs_restore);
 		colorPanel.add(cb_ucs_ontodo);
 
@@ -397,6 +402,7 @@ public class ColorOptionsPanel extends OptionsPanel implements Prefs.Listener {
 		t.setStripeBg(btn_ucs_stripe.getColorProperty().getRGB());
 		t.setTrayIconFg(btn_tray_fg.getColorProperty().getRGB());
 		t.setTrayIconBg(btn_tray_bg.getColorProperty().getRGB());
+		t.setReminderBg(btn_ucs_reminderBg.getColorProperty().getRGB());
 
 	}
 

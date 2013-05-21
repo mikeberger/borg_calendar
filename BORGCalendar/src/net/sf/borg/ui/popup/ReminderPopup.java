@@ -20,6 +20,7 @@
 
 package net.sf.borg.ui.popup;
 
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.text.DateFormat;
@@ -36,6 +37,7 @@ import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.ReminderTimes;
+import net.sf.borg.model.Theme;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.View;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
@@ -104,6 +106,7 @@ class ReminderPopup extends View {
 
 		JPanel topPanel = new JPanel();
 		topPanel.setLayout(new GridBagLayout());
+		topPanel.setBackground(new Color(Theme.getCurrentTheme().getReminderBg()));
 
 		appointmentInformation = new JLabel();
 		appointmentInformation
@@ -122,6 +125,8 @@ class ReminderPopup extends View {
 		ResourceHelper.setText(noMoreRemindersButton, "No_more");
 		noMoreRemindersButton
 				.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+		noMoreRemindersButton.setBackground(new Color(Theme.getCurrentTheme().getReminderBg()));
+
 		topPanel.add(noMoreRemindersButton, GridBagConstraintsFactory.create(0,
 				2, GridBagConstraints.NONE, 1.0, 0.0));
 
@@ -129,11 +134,15 @@ class ReminderPopup extends View {
 		// button panel
 		//
 		JPanel buttonPanel = new JPanel();
+		buttonPanel.setBackground(new Color(Theme.getCurrentTheme().getReminderBg()));
+
 		buttonPanel.setLayout(new GridBagLayout());
 
 		JButton dismissButton = new JButton();
 		ResourceHelper.setText(dismissButton, "Dismiss");
 		dismissButton.setActionCommand("close_it");
+		dismissButton.setBackground(new Color(Theme.getCurrentTheme().getReminderBg()));
+
 		dismissButton.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -150,6 +159,8 @@ class ReminderPopup extends View {
 		if (reminderInstance.isTodo() ) {
 
 			JButton doneButton = new JButton();
+			doneButton.setBackground(new Color(Theme.getCurrentTheme().getReminderBg()));
+
 			ResourceHelper.setText(doneButton, "Done_(Delete)");
 			doneButton.addActionListener(new java.awt.event.ActionListener() {
 				@Override
@@ -161,6 +172,8 @@ class ReminderPopup extends View {
 			buttonPanel.add(doneButton, GridBagConstraintsFactory.create(1, 0));
 
 			JButton doneNoDeleteButton = new JButton();
+			doneNoDeleteButton.setBackground(new Color(Theme.getCurrentTheme().getReminderBg()));
+
 			ResourceHelper.setText(doneNoDeleteButton, "Done_(No_Delete)");
 			doneNoDeleteButton
 					.addActionListener(new java.awt.event.ActionListener() {
