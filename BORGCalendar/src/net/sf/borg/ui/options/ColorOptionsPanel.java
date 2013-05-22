@@ -434,6 +434,7 @@ public class ColorOptionsPanel extends OptionsPanel implements Prefs.Listener {
 		btn_ucs_stripe.setColorProperty(new Color(t.getStripeBg()));
 		btn_tray_fg.setColorProperty(new Color(t.getTrayIconFg()));
 		btn_tray_bg.setColorProperty(new Color(t.getTrayIconBg()));
+		btn_ucs_reminderBg.setColorProperty(new Color(t.getReminderBg()));
 	}
 
 	@Override
