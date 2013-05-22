@@ -12,8 +12,10 @@ import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import net.iharder.dnd.FileDrop;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
@@ -26,8 +28,10 @@ import net.sf.borg.ui.options.OptionsView;
 
 public class IcalModule implements Module {
 
-	public static PrefName PORT = new PrefName("ical-server-port", new Integer(8844));
-	public static PrefName EXPORTYEARS = new PrefName("ical-export-years", new Integer(2));
+	public static PrefName PORT = new PrefName("ical-server-port", new Integer(
+			8844));
+	public static PrefName EXPORTYEARS = new PrefName("ical-export-years",
+			new Integer(2));
 
 	@Override
 	public Component getComponent() {
@@ -60,7 +64,8 @@ public class IcalModule implements Module {
 				// prompt for a file
 				JFileChooser chooser = new JFileChooser();
 				FileNameExtensionFilter filter = new FileNameExtensionFilter(
-				        Resource.getResourceString("ical_files"), "ics", "ICS", "ical", "ICAL", "icalendar");
+						Resource.getResourceString("ical_files"), "ics", "ICS",
+						"ical", "ICAL", "icalendar");
 				chooser.setFileFilter(filter);
 				chooser.setCurrentDirectory(new File("."));
 				chooser.setDialogTitle(Resource
@@ -79,13 +84,15 @@ public class IcalModule implements Module {
 					Collection<String> allcats = catmod.getCategories();
 					Object[] cats = allcats.toArray();
 
-					Object o = JOptionPane.showInputDialog(null, Resource
-							.getResourceString("import_cat_choose"), "",
-							JOptionPane.QUESTION_MESSAGE, null, cats, cats[0]);
+					Object o = JOptionPane.showInputDialog(null,
+							Resource.getResourceString("import_cat_choose"),
+							"", JOptionPane.QUESTION_MESSAGE, null, cats,
+							cats[0]);
 					if (o == null)
 						return;
 
-					String warning = AppointmentIcalAdapter.importIcal(s, (String) o);
+					String warning = AppointmentIcalAdapter.importIcal(s,
+							(String) o);
 					if (warning != null && !warning.isEmpty())
 						Errmsg.getErrorHandler().notice(warning);
 				} catch (Exception e) {
@@ -117,7 +124,7 @@ public class IcalModule implements Module {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
 					IcalFileServer.start();
-					//Errmsg.getErrorHandler().notice(Resource.getResourceString("server_started"));
+					// Errmsg.getErrorHandler().notice(Resource.getResourceString("server_started"));
 				} catch (Exception e) {
 					Errmsg.getErrorHandler().errmsg(e);
 				}
@@ -125,7 +132,7 @@ public class IcalModule implements Module {
 		});
 
 		m.add(exp3);
-		
+
 		JMenuItem exp4 = new JMenuItem();
 		exp4.setText(Resource.getResourceString("stop_server"));
 		exp4.addActionListener(new ActionListener() {
@@ -133,15 +140,32 @@ public class IcalModule implements Module {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				IcalFileServer.stop();
-				Errmsg.getErrorHandler().notice(Resource.getResourceString("server_stopped"));
+				Errmsg.getErrorHandler().notice(
+						Resource.getResourceString("server_stopped"));
 			}
 		});
 
 		m.add(exp4);
-		
+
 		OptionsView.getReference().addPanel(new IcalOptionsPanel());
 
 		parent.addPluginSubMenu(m);
+
+		new FileDrop(parent, new FileDrop.Listener() {
+			public void filesDropped(java.io.File[] files) {
+				for (File f : files) {
+					String warning;
+					try {
+						warning = AppointmentIcalAdapter.importIcal(f.getAbsolutePath(), "");
+						if (warning != null && !warning.isEmpty())
+							Errmsg.getErrorHandler().notice(warning);
+					} catch (Exception e) {
+						Errmsg.getErrorHandler().errmsg(e);
+					}
+					
+				}
+			}
+		});
 	}
 
 	@Override
@@ -161,7 +185,8 @@ public class IcalModule implements Module {
 		JFileChooser chooser = new JFileChooser();
 		chooser.setCurrentDirectory(new File("."));
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
-		        Resource.getResourceString("ical_files"), "ics", "ICS", "ical", "ICAL", "icalendar");
+				Resource.getResourceString("ical_files"), "ics", "ICS", "ical",
+				"ICAL", "icalendar");
 		chooser.setFileFilter(filter);
 		chooser.setDialogTitle(Resource.getResourceString("choose_file"));
 		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -171,16 +196,14 @@ public class IcalModule implements Module {
 			return;
 
 		String s = chooser.getSelectedFile().getAbsolutePath();
-		
+
 		// auto append extension
-		if( chooser.getFileFilter() != chooser.getAcceptAllFileFilter())
-		{
-			if( !s.contains("."))
-			{
+		if (chooser.getFileFilter() != chooser.getAcceptAllFileFilter()) {
+			if (!s.contains(".")) {
 				s += ".ics";
 			}
 		}
-		
+
 		try {
 			if (years != null) {
 				GregorianCalendar cal = new GregorianCalendar();
