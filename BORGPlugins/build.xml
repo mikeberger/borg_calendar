@@ -39,7 +39,7 @@
 		</zip>
 		<zip destfile="${dist.dir}/ical_plugin_only.zip">
 			<fileset dir="${prj.dir}/dist" includes="common-plugin.jar,ical-plugin.jar" />
-			<fileset dir="${prj.dir}/lib" includes="backport*.jar,commons*.jar,ical*.jar,jcommon*.jar" />
+			<fileset dir="${prj.dir}/lib" includes="filedrop.jar,backport*.jar,commons*.jar,ical*.jar,jcommon*.jar" />
 			<fileset dir="${prj.dir}/lib" includes="LICENSE.ical,LICENSE*comm*" />
 		</zip>
 	</target>
