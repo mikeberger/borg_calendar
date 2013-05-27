@@ -338,6 +338,19 @@ public class MultiView extends View {
 		tabs_.addTab(title, c);
 		tabs_.setSelectedIndex(tabs_.getTabCount() - 1);
 	}
+	
+	/**
+	 * remove a component from tabs
+	 * 
+	 * @param c
+	 */
+	public void removeView(String title){
+		int i = tabs_.indexOfTab(title);
+		while(i >= 0){
+			tabs_.remove(i);
+			i = tabs_.indexOfTab(title);
+		}
+	}
 
 	/**
 	 * get the Module for a given ViewType. called by ui components other than

@@ -280,6 +280,9 @@ class TaskListPanel extends JPanel implements Model.Listener {
 		if (ret == JOptionPane.YES_OPTION) {
 			// delete the task
 			try {
+				//remove all of the tasks instances from the multiView
+				net.sf.borg.ui.MultiView.getMainView().removeView(Resource.getResourceString("Item_") + " " + TaskModel.getReference().getTask(num.intValue()).getKey());
+				//delete task
 				TaskModel.getReference().delete(num.intValue());
 			} catch (Exception e) {
 				Errmsg.getErrorHandler().errmsg(e);
