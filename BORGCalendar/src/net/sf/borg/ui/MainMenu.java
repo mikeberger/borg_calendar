@@ -298,7 +298,7 @@ class MainMenu {
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
 				"*.zip,*.ZIP", "zip", "ZIP");
 		chooser.setFileFilter(filter);
-		chooser.setCurrentDirectory(new File("."));
+		chooser.setCurrentDirectory(IOHelper.getHomeDirectory());
 		chooser.setDialogTitle(Resource
 				.getResourceString("Please_choose_File_to_Import_From"));
 		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -308,6 +308,7 @@ class MainMenu {
 			return;
 
 		String fileName = chooser.getSelectedFile().getAbsolutePath();
+		IOHelper.setHomeDirectory(fileName);
 
 		try {
 			ExportImport.importFromZip(fileName);
@@ -449,7 +450,7 @@ class MainMenu {
 			// prompt for a directory to store the files
 			JFileChooser chooser = new JFileChooser();
 
-			chooser.setCurrentDirectory(new File("."));
+			chooser.setCurrentDirectory(IOHelper.getHomeDirectory());
 			chooser.setDialogTitle(Resource
 					.getResourceString("Please_choose_directory_to_place_XML_files"));
 			chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -461,6 +462,7 @@ class MainMenu {
 				return;
 
 			s = chooser.getSelectedFile().getAbsolutePath();
+			IOHelper.setHomeDirectory(s);
 			File dir = new File(s);
 			String err = null;
 			if (!dir.exists()) {
@@ -486,12 +488,12 @@ class MainMenu {
 
 	/** export preferences to an XML file */
 	private void expPrefs() {
-		File file;
+	    File file;
 		while (true) {
 			// prompt for a file
 			JFileChooser chooser = new JFileChooser();
-
-			chooser.setCurrentDirectory(new File("."));
+			
+			chooser.setCurrentDirectory(IOHelper.getHomeDirectory());
 			chooser.setDialogTitle(Resource.getResourceString("choose_file"));
 			chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
@@ -500,10 +502,11 @@ class MainMenu {
 				return;
 
 			String s = chooser.getSelectedFile().getAbsolutePath();
+			IOHelper.setHomeDirectory(s);
 			file = new File(s);
 
 			break;
-
+			
 		}
 
 		try {
@@ -512,7 +515,7 @@ class MainMenu {
 		} catch (Exception e) {
 			Errmsg.getErrorHandler().errmsg(e);
 		}
-
+    
 	}
 
 	/**
@@ -650,7 +653,7 @@ class MainMenu {
 			FileNameExtensionFilter filter = new FileNameExtensionFilter(
 					Resource.getResourceString("xml_file"), "xml", "XML");
 			chooser.setFileFilter(filter);
-			chooser.setCurrentDirectory(new File("."));
+			chooser.setCurrentDirectory(IOHelper.getHomeDirectory());
 			chooser.setDialogTitle(Resource
 					.getResourceString("Please_choose_File_to_Import_From"));
 			chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -660,6 +663,7 @@ class MainMenu {
 				return;
 
 			String fileName = chooser.getSelectedFile().getAbsolutePath();
+			IOHelper.setHomeDirectory(fileName);
 
 			BufferedReader in = new BufferedReader(new FileReader(new File(
 					fileName)));
@@ -701,7 +705,7 @@ class MainMenu {
 			// prompt for a file
 			JFileChooser chooser = new JFileChooser();
 
-			chooser.setCurrentDirectory(new File("."));
+			chooser.setCurrentDirectory(IOHelper.getHomeDirectory());
 			chooser.setDialogTitle(Resource.getResourceString("choose_file"));
 			chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
@@ -710,6 +714,7 @@ class MainMenu {
 				return;
 
 			String s = chooser.getSelectedFile().getAbsolutePath();
+			IOHelper.setHomeDirectory(s);
 			file = new File(s);
 
 			break;

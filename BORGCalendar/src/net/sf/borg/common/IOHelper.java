@@ -31,13 +31,31 @@ import java.net.URLConnection;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
-
 /**
  * standard routines for file I/O with prompting
  */
 public class IOHelper {
 	
-	
+    /** The home directory; gets updated to ensure it is the last used
+     *  directory, initialized as default
+     */
+    static private File homeDirectory = new File(".");
+    
+    /**
+     * Gets the home directory
+     * 
+     * @return the directory
+     */
+    public static File getHomeDirectory() {
+        return (homeDirectory);
+    }
+    
+    /**
+     * Sets the home directory.
+     */
+    public static void setHomeDirectory(String newHome) {
+        homeDirectory = new File(newHome);
+    }
 
 	/**
 	 * Prompt the user to choose a file to open
