@@ -655,18 +655,22 @@ public class AppointmentModel extends Model implements Model.Listener,
 		JAXBContext jc = JAXBContext.newInstance(XmlContainer.class);
 		Unmarshaller u = jc.createUnmarshaller();
 
-		XmlContainer container = (XmlContainer) u
-				.unmarshal(is);
+		XmlContainer container = (XmlContainer) u.unmarshal(is);
 		
 		if( container.Appointment == null ) return;
 
-		// use key from import file if importing into empty db
-		int nextkey = db_.nextkey();
-		boolean use_keys = (nextkey == 1) ? true : false;
-		for (Appointment appt : container.Appointment) {
-			if( !use_keys )
-				appt.setKey(nextkey++);
+		try {
+			// use key from import file if importing into empty db
+			int nextkey = db_.nextkey();
+			boolean use_keys = (nextkey == 1) ? true : false;
+			for (Appointment appt : container.Appointment) {
+				if( !use_keys )
+					appt.setKey(nextkey++);
 			db_.addObj(appt);
+			}
+		} catch (Exception e) {
+			Errmsg.getErrorHandler().notice(e + "\n" +
+					Resource.getResourceString("Import_XML_error"));
 		}
 
 		// rebuild the hashmap
