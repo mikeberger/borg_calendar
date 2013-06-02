@@ -28,8 +28,11 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 
+import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Resource;
+import net.sf.borg.common.Warning;
 import net.sf.borg.model.AppointmentModel;
+import net.sf.borg.model.Repeat;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.ui.ClipBoard;
 
@@ -202,6 +205,17 @@ class DateZone {
 		cal.set(Calendar.YEAR, newcal.get(Calendar.YEAR));
 		cal.set(Calendar.MONTH, newcal.get(Calendar.MONTH));
 		cal.set(Calendar.DATE, newcal.get(Calendar.DATE));
+
+		String freq = appt.getFrequency();
+		
+		try{
+			if(!Repeat.isCompatible(cal, Repeat.getFreqString(Repeat.getFreq(freq)), Repeat.getDaylist(freq)))
+				throw new Warning(Resource.getResourceString("recur_compat"));
+		}catch(Exception e){
+			Errmsg.getErrorHandler().errmsg(e);
+			return;
+		}
+		
 		appt.setDate(cal.getTime());
 		
 		appt.setKey(-1);
