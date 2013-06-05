@@ -788,23 +788,22 @@ class ApptBox extends Box implements Box.Draggable {
 		int roundMin = (min / 5) * 5;
 		newCal.set(Calendar.MINUTE, roundMin);
 		Date newTime = newCal.getTime();
-		ap.setDate(newTime);
+		
 
 		int newday = DateUtil.dayOfEpoch(newTime);
 		
 		// check if the user is trying to change the date of a repeating appt
-		// and error if so
 		if (oldday != newday && Repeat.isRepeating(ap)) {
-			// cannot date chg unless it is on
-			// the first in a series
+            // if date change is not the first in the sequence, move appointments to that day of the week 
 			int k2 = DateUtil.dayOfEpoch(date);
 			if (oldday != k2) {
-				Errmsg.getErrorHandler().notice(Resource.getResourceString("rpt_drag_err"));
-				return;
+			    int incdate = newday - k2;
+                newCal.setTime(ap.getDate());
+                newCal.add(Calendar.DATE, incdate);
+                newTime = newCal.getTime();
 			}
-
 		}
-		
+		ap.setDate(newTime);
 		AppointmentModel.getReference().saveAppt(ap);
 	}
 

@@ -433,19 +433,20 @@ public class NoteBox extends Box implements Box.Draggable {
 
 			Date newTime = newCal.getTime();
 			int newdate = DateUtil.dayOfEpoch(newTime);
-			ap.setDate(newTime);
+			
 
-			// check for illegal change of repeating appt
+			// check if user is moving a repeating appointment
 			if (olddate != newdate && Repeat.isRepeating(ap)) {
-				// cannot date chg unless it is
-				// on the first in a series
+				// if date change is not the first in the sequence, move appointments to that day of the week 
 				int k2 = DateUtil.dayOfEpoch(date);
 				if (olddate != k2) {
-					Errmsg.getErrorHandler().notice(
-							Resource.getResourceString("rpt_drag_err"));
-					return;
+					int incdate = newdate - k2;
+	                newCal.setTime(ap.getDate());
+					newCal.add(Calendar.DATE, incdate);
+					newTime = newCal.getTime();
 				}
 			}
+			ap.setDate(newTime);
 
 			AppointmentModel.getReference().saveAppt(ap);
 
