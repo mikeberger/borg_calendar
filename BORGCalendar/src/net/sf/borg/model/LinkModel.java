@@ -117,8 +117,9 @@ public class LinkModel extends Model {
 			File f = new File(path);
 			if (!f.exists()) {
 				if (!f.mkdir()) {
-					Errmsg.getErrorHandler().notice(Resource.getResourceString("att_folder_err")
-							+ path);
+					Errmsg.getErrorHandler()
+							.notice(Resource
+									.getResourceString("att_folder_err") + path);
 					return null;
 				}
 			}
@@ -129,8 +130,9 @@ public class LinkModel extends Model {
 			File f = new File(path);
 			if (!f.exists()) {
 				if (!f.mkdir()) {
-					Errmsg.getErrorHandler().notice(Resource.getResourceString("att_folder_err")
-							+ path);
+					Errmsg.getErrorHandler()
+							.notice(Resource
+									.getResourceString("att_folder_err") + path);
 					return null;
 				}
 			}
@@ -168,7 +170,8 @@ public class LinkModel extends Model {
 			throws Exception {
 		String path = pathIn;
 		if (owner == null) {
-			Errmsg.getErrorHandler().notice(Resource.getResourceString("att_owner_null"));
+			Errmsg.getErrorHandler().notice(
+					Resource.getResourceString("att_owner_null"));
 			return;
 		}
 
@@ -212,7 +215,7 @@ public class LinkModel extends Model {
 
 		// * modification for backtrace/2way link
 
-		if (linkType == LinkType.APPOINTMENT || linkType == LinkType.PROJECT 
+		if (linkType == LinkType.APPOINTMENT || linkType == LinkType.PROJECT
 				|| linkType == LinkType.TASK) {
 			Link at2way = newLink();
 			at2way.setKey(-1);
@@ -222,9 +225,11 @@ public class LinkModel extends Model {
 			at2way.setLinkType(at.getOwnerType());
 			saveLink(at2way);
 		}
-		
-		/** Allows backtrace/2way link modification for address link
-	     if address is not owners */
+
+		/**
+		 * Allows backtrace/2way link modification for address link if address
+		 * is not owners
+		 */
 		// Fixes bug linking an address to itself results in a double link
 		else if (linkType == LinkType.ADDRESS) {
 			if (!at.getOwnerKey().toString().equals(at.getPath())) {
@@ -311,6 +316,15 @@ public class LinkModel extends Model {
 			f.delete();
 		}
 		db_.delete(l.getKey());
+
+		// delete any reverse links
+		Collection<Link> links = getLinks();
+		for (Link other : links) {
+			if (other.getLinkType().equals(l.getOwnerType()) &&
+					l.getOwnerKey().toString().equals(other.getPath())) {
+				db_.delete(other.getKey());
+			}
+		}
 		refresh();
 	}
 
