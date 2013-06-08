@@ -86,9 +86,6 @@ public class Repeat {
 	/** scratch to hold the day of week for certain repeat types */
 	private int dayOfWeek;
 
-	/** the number of the repeat we have iterated to currently */
-	private int count_;
-
 	/** The amount to increment the calendar field by for each repeat */
 	private int incr;
 
@@ -338,7 +335,6 @@ public class Repeat {
 		cal = new GregorianCalendar(0, 0, 0);
 		cal.setTime(start.getTime());
 		current_ = cal;
-		count_ = 0;
 		incr = 1;
 		field = Calendar.DATE;
 		dayOfWeek = 0;
@@ -460,7 +456,6 @@ public class Repeat {
 		}
 
 		current_ = cal;
-		++count_;
 
 		// add the required increment
 		if (incr != 0)
@@ -499,16 +494,23 @@ public class Repeat {
 				cal.add(Calendar.DATE, 2);
 			}
 		} else if (freq_.equals(MONTHLY_DAY)) {
+			
 			// Attempt to find a date falling on the
 			// same day of week and week number
 			// within a subsequent month.
-			cal.setTime(start_.getTime());
-			cal.add(Calendar.MONTH, count_);
-			cal.set(Calendar.DAY_OF_WEEK, dayOfWeek);
-			cal.set(Calendar.DAY_OF_WEEK_IN_MONTH, dayOfWeekMonth);
-			int dowm = cal.get(Calendar.DAY_OF_WEEK_IN_MONTH);
-			if (dowm != dayOfWeekMonth)
-				current_ = null;
+			while(true)
+			{
+				cal.add(Calendar.MONTH, 1);
+				cal.set(Calendar.DAY_OF_WEEK, dayOfWeek);
+				cal.set(Calendar.DAY_OF_WEEK_IN_MONTH, dayOfWeekMonth);
+				int dowm = cal.get(Calendar.DAY_OF_WEEK_IN_MONTH);
+				if (dowm == dayOfWeekMonth)
+				{
+					break;
+				}
+				
+			}
+			
 			// not enough days in this month
 		} else if (freq_.equals(DAYLIST)) {
 			Collection<Integer> daylist = getDaylist(frequency_);
