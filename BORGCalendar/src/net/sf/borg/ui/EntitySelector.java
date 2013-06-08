@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.JButton;
@@ -90,10 +91,11 @@ public class EntitySelector extends JDialog {
 	 * @throws Exception
 	 *             the exception
 	 */
-	public static Appointment selectAppointment() throws Exception {
+	public static Appointment selectAppointment(List<Appointment> exclude) throws Exception {
 
 		Collection<Appointment> apps = AppointmentModel.getReference()
 				.getAllAppts();
+		apps.removeAll(exclude);
 		if (Prefs.getPref(PrefName.SHOWPRIVATE).equals("false")) {
 			Collection<Appointment> privAppts = new LinkedList<Appointment>();
 			for (Appointment app : apps) {

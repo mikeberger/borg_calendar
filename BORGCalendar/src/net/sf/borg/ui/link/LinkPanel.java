@@ -433,7 +433,13 @@ public class LinkPanel extends JPanel implements Model.Listener {
 					// then add the link
 					if (selectedValue.equals(Resource
 							.getResourceString("appointment"))) {
-						Appointment ap = EntitySelector.selectAppointment();
+						
+						List<Appointment> exclude = new ArrayList<Appointment>();
+						if( owningEntity instanceof Appointment)
+						{
+							exclude.add((Appointment)owningEntity);
+						}
+						Appointment ap = EntitySelector.selectAppointment(exclude);
 						if (ap != null) {
 							LinkModel.getReference().addLink(owningEntity,
 									Integer.toString(ap.getKey()),
