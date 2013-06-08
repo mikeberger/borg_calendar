@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.Vector;
+import java.util.logging.Logger;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
@@ -63,6 +64,8 @@ import net.sf.borg.model.undo.UndoLog;
  */
 public class AppointmentModel extends Model implements Model.Listener,
 		CategorySource, Searchable<Appointment> {
+
+	static private final Logger log = Logger.getLogger("net.sf.borg");
 
 	/**
 	 * class XmlContainer is solely for JAXB XML export/import to keep the same
@@ -157,7 +160,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 	 * Instantiates a new appointment model.
 	 * 
 	 */
-	private AppointmentModel()  {
+	private AppointmentModel() {
 		map_ = new HashMap<Integer, Collection<Integer>>();
 		vacationMap_ = new HashMap<Integer, Integer>();
 		db_ = DBHelper.getFactory().createAppointmentDB();
@@ -233,7 +236,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 				Repeat repeat = new Repeat(cal, appt.getFrequency());
 				if (!repeat.isRepeating())
 					continue;
-				
+
 				int tm = Repeat.calculateTimes(appt);
 
 				// ok, plod through the repeats now
@@ -271,8 +274,8 @@ public class AppointmentModel extends Model implements Model.Listener,
 						// add day key to vacation map if appt has vacation
 						if (appt.getVacation() != null
 								&& appt.getVacation().intValue() != 0) {
-							vacationMap_.put(new Integer(rkey), appt
-									.getVacation());
+							vacationMap_.put(new Integer(rkey),
+									appt.getVacation());
 						}
 					}
 
@@ -331,7 +334,8 @@ public class AppointmentModel extends Model implements Model.Listener,
 
 			// refresh all views that are displaying appt data from this
 			// model
-			refreshListeners(new ChangeEvent(appt, ChangeEvent.ChangeAction.DELETE));
+			refreshListeners(new ChangeEvent(appt,
+					ChangeEvent.ChangeAction.DELETE));
 		} catch (Exception e) {
 			Errmsg.getErrorHandler().errmsg(e);
 			return;
@@ -384,7 +388,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 			Date nt = appt.getNextTodo();
 			if (nt == null)
 				nt = appt.getDate();
-			
+
 			if (rkey == DateUtil.dayOfEpoch(nt)) {
 				do_todo(appt.getKey(), false);
 			}
@@ -394,7 +398,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 			return;
 		}
 	}
-	
+
 	/**
 	 * Mark a todo appointment as done. If the appointment repeats, adjust the
 	 * next todo value. If the todo is all done (including repeats), optionally
@@ -412,7 +416,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 	public void do_todo(int key, boolean del) throws Exception {
 		this.do_todo(key, del, null);
 	}
-	
+
 	/**
 	 * Mark a todo appointment as done. If the appointment repeats, adjust the
 	 * next todo value. If the todo is all done (including repeats), optionally
@@ -423,8 +427,10 @@ public class AppointmentModel extends Model implements Model.Listener,
 	 * @param del
 	 *            if true, delete the todo when all done. Otherwise, mark it as
 	 *            no longer being a todo.
-	 * @param date date of the repeat that is being marked as done. If null, then the next todo is the one.
-	 * If set, then all todos up to and including the date are marked as done.
+	 * @param date
+	 *            date of the repeat that is being marked as done. If null, then
+	 *            the next todo is the one. If set, then all todos up to and
+	 *            including the date are marked as done.
 	 * 
 	 * @throws Exception
 	 *             the exception
@@ -439,8 +445,8 @@ public class AppointmentModel extends Model implements Model.Listener,
 		if (curtodo == null) {
 			curtodo = d;
 		}
-		
-		if( date != null)
+
+		if (date != null)
 			curtodo = date;
 
 		// newtodo will be the name of the next todo occurrence (if the todo
@@ -451,8 +457,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 		String rpt = Repeat.getFreq(appt.getFrequency());
 
 		// find next to do if it repeats by doing calendar math
-		if (tm > 1 && rpt != null
-				&& Repeat.isRepeating(appt)) {
+		if (tm > 1 && rpt != null && Repeat.isRepeating(appt)) {
 
 			Calendar ccal = new GregorianCalendar();
 			Calendar ncal = new GregorianCalendar();
@@ -529,7 +534,6 @@ public class AppointmentModel extends Model implements Model.Listener,
 		m.marshal(container, fw);
 	}
 
-	
 	/**
 	 * Gets all appointments that are marked as todos.
 	 * 
@@ -656,21 +660,28 @@ public class AppointmentModel extends Model implements Model.Listener,
 		Unmarshaller u = jc.createUnmarshaller();
 
 		XmlContainer container = (XmlContainer) u.unmarshal(is);
-		
-		if( container.Appointment == null ) return;
+
+		if (container.Appointment == null)
+			return;
 
 		try {
 			// use key from import file if importing into empty db
 			int nextkey = db_.nextkey();
 			boolean use_keys = (nextkey == 1) ? true : false;
 			for (Appointment appt : container.Appointment) {
-				if( !use_keys )
+				if (!use_keys)
 					appt.setKey(nextkey++);
-			db_.addObj(appt);
+				// validate priority
+				if (appt.getPriority() != null
+						&& (appt.getPriority() > 10 || appt.getPriority() < 1)) {
+					appt.setPriority(null);
+					log.warning("XML Import: Ignoring invalid priority for appointment: " + appt.getKey() + ":" + appt.getClearText());
+				}
+				db_.addObj(appt);
 			}
 		} catch (Exception e) {
-			Errmsg.getErrorHandler().notice(e + "\n" +
-					Resource.getResourceString("Import_XML_error"));
+			Errmsg.getErrorHandler().notice(
+					e + "\n" + Resource.getResourceString("Import_XML_error"));
 		}
 
 		// rebuild the hashmap
@@ -702,9 +713,8 @@ public class AppointmentModel extends Model implements Model.Listener,
 	public void update(ChangeEvent event) {
 		refresh();
 	}
-	
-	public void refresh()
-	{
+
+	public void refresh() {
 		try {
 			buildMap();
 		} catch (Exception e) {
@@ -873,10 +883,11 @@ public class AppointmentModel extends Model implements Model.Listener,
 				JAXBContext jc = JAXBContext.newInstance(Appointment.class);
 				Unmarshaller u = jc.createUnmarshaller();
 				String xmlString = defApptXml.toString();
-				Appointment ap =  (Appointment) u.unmarshal(new StringReader(xmlString));
-			
+				Appointment ap = (Appointment) u.unmarshal(new StringReader(
+						xmlString));
+
 				// transition from pre-1.7.2
-				if( ap.getDate() == null )
+				if (ap.getDate() == null)
 					return null;
 				return ap;
 			} catch (Exception e) {
@@ -886,13 +897,17 @@ public class AppointmentModel extends Model implements Model.Listener,
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see net.sf.borg.model.Searchable#search(net.sf.borg.model.SearchCriteria)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * net.sf.borg.model.Searchable#search(net.sf.borg.model.SearchCriteria)
 	 */
 	@Override
 	public Collection<Appointment> search(SearchCriteria criteria) {
-		
-		Collection<Appointment> res = new ArrayList<Appointment>(); // result collection
+
+		Collection<Appointment> res = new ArrayList<Appointment>(); // result
+																	// collection
 		try {
 
 			// load all appts into appt list
@@ -905,9 +920,9 @@ public class AppointmentModel extends Model implements Model.Listener,
 				if (!CategoryModel.getReference().isShown(appt.getCategory())) {
 					continue;
 				}
-				
+
 				// do not search on encrypted appts
-				if( appt.isEncrypted() )
+				if (appt.isEncrypted())
 					continue;
 
 				String tx = appt.getText();
@@ -915,9 +930,9 @@ public class AppointmentModel extends Model implements Model.Listener,
 				if (d == null || tx == null)
 					continue;
 
-				if( !criteria.search(tx))
+				if (!criteria.search(tx))
 					continue;
-				
+
 				// filter by repeat
 				if (criteria.isRepeating() && !appt.isRepeatFlag())
 					continue;
@@ -928,23 +943,23 @@ public class AppointmentModel extends Model implements Model.Listener,
 
 				// filter by vacation
 				Integer ii = appt.getVacation();
-				if (criteria.isVacation()
-						&& (ii == null || ii.intValue() != 1))
+				if (criteria.isVacation() && (ii == null || ii.intValue() != 1))
 					continue;
 
 				// filter by holiday
 				ii = appt.getHoliday();
-				if (criteria.isHoliday()
-						&& (ii == null || ii.intValue() != 1))
+				if (criteria.isHoliday() && (ii == null || ii.intValue() != 1))
 					continue;
 
 				// filter by category
 				if (criteria.getCategory().equals(CategoryModel.UNCATEGORIZED)
 						&& appt.getCategory() != null
-						&& !appt.getCategory().equals(CategoryModel.UNCATEGORIZED))
+						&& !appt.getCategory().equals(
+								CategoryModel.UNCATEGORIZED))
 					continue;
 				else if (!criteria.getCategory().equals("")
-						&& !criteria.getCategory().equals(CategoryModel.UNCATEGORIZED)
+						&& !criteria.getCategory().equals(
+								CategoryModel.UNCATEGORIZED)
 						&& !criteria.getCategory().equals(appt.getCategory()))
 					continue;
 
@@ -972,7 +987,6 @@ public class AppointmentModel extends Model implements Model.Listener,
 					}
 				}
 
-
 				// add the appt to the search results
 				res.add(appt);
 
@@ -983,7 +997,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 		}
 		return (res);
 	}
-	
+
 	@Override
 	public String getExportName() {
 		return "APPTS";
@@ -992,7 +1006,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 	@Override
 	public String getInfo() throws Exception {
 		return Resource.getResourceString("appointments") + ": "
-		+ getAllAppts().size();
+				+ getAllAppts().size();
 	}
 
 }
