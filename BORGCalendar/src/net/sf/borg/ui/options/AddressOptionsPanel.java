@@ -13,6 +13,7 @@ import net.sf.borg.ui.util.LimitDocument;
 
 public class AddressOptionsPanel extends OptionsPanel {
 
+	private static final long serialVersionUID = 1L;
 	private JCheckBox emailvalidation;
 	private JTextField phoneRegex;
 	private JComboBox phoneLoc;
