@@ -183,15 +183,18 @@ public class UIControl {
 			addExternalModule("net.sf.borg.plugin.ical.IcalModule");
 			addExternalModule("net.sf.borg.plugin.sync.SyncModule");
 		}
+		
+		// allow start to system tray if option set and there is a system tray
+		boolean bgStart = Prefs.getBoolPref(PrefName.BACKGSTART)
+				&& SunTrayIconProxy.hasTrayIcon();
 
 		// make the main window visible
-		if (!Prefs.getBoolPref(PrefName.BACKGSTART)
-				|| !SunTrayIconProxy.hasTrayIcon()) {
+		if (!bgStart) {
 			mv.setVisible(true);
-
-			// open all views that should be shown at startup
-			mv.startupViews();
 		}
+		
+		// open all views that should be shown at startup
+		mv.startupViews(bgStart);
 
 		// destroy the splash screen
 		if (splashScreen != null) {

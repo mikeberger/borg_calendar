@@ -55,7 +55,7 @@ import net.sf.borg.ui.util.JTabbedPaneWithCloseIcons;
 public class MultiView extends View {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	/** The size of the main borg window. */
 	static private PrefName MULTIVIEWSIZE = new PrefName("dayviewsize",
 			"-1,-1,-1,-1,Y");
@@ -197,23 +197,23 @@ public class MultiView extends View {
 		setJMenuBar(menubar);
 		getContentPane().setLayout(new GridBagLayout());
 
-		mainMenu.addAction(new ImageIcon(getClass().getResource(
-				"/resource/Print16.gif")), Resource.getResourceString("Print"),
-				new ActionListener() {
+		mainMenu.addAction(
+				new ImageIcon(getClass().getResource("/resource/Print16.gif")),
+				Resource.getResourceString("Print"), new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent evt) {
 						print();
 					}
 				}, 0);
 
-		mainMenu.addAction(new ImageIcon(getClass().getResource(
-				"/resource/Delete16.gif")), Resource
-				.getResourceString("close_tabs"), new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent evt) {
-				closeTabs();
-			}
-		}, 1);
+		mainMenu.addAction(
+				new ImageIcon(getClass().getResource("/resource/Delete16.gif")),
+				Resource.getResourceString("close_tabs"), new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent evt) {
+						closeTabs();
+					}
+				}, 1);
 
 		// add the tool bar
 		GridBagConstraints cons = new java.awt.GridBagConstraints();
@@ -258,13 +258,14 @@ public class MultiView extends View {
 
 		mainMenu.addAction(icon, tooltip, action, toolBarInsertIndex++);
 	}
-	
+
 	/**
 	 * add an item to the options menu
-	 * @param item the item to add
+	 * 
+	 * @param item
+	 *            the item to add
 	 */
-	public void addOptionsMenuItem(JMenuItem item)
-	{
+	public void addOptionsMenuItem(JMenuItem item) {
 		mainMenu.addOptionsMenuItem(item);
 	}
 
@@ -338,15 +339,15 @@ public class MultiView extends View {
 		tabs_.addTab(title, c);
 		tabs_.setSelectedIndex(tabs_.getTabCount() - 1);
 	}
-	
+
 	/**
 	 * remove a component from tabs
 	 * 
 	 * @param c
 	 */
-	public void removeView(String title){
+	public void removeView(String title) {
 		int i = tabs_.indexOfTab(title);
-		while(i >= 0){
+		while (i >= 0) {
 			tabs_.remove(i);
 			i = tabs_.indexOfTab(title);
 		}
@@ -451,7 +452,7 @@ public class MultiView extends View {
 				return;
 			}
 		}
-		
+
 		Errmsg.getErrorHandler().notice(Resource.getResourceString("No_Print"));
 
 	}
@@ -479,33 +480,19 @@ public class MultiView extends View {
 	 * @return the Component, if any that is now being displayed
 	 */
 	public Component setView(ViewType type) {
-		return setView(type, true);
-	}
-	
-	/**
-	 * Sets the currently selected tab to be a particular view as defined in
-	 * ViewType.
-	 * 
-	 * @param type
-	 *            the new view
-	 * @param show - show the multiview if it is iconified or not showing
-	 * @return the Component, if any that is now being displayed
-	 */
-	public Component setView(ViewType type, boolean show) {
 
 		Module m = getModuleForView(type);
 		if (m != null) {
 			Component component = m.getComponent();
 			if (component != null) {
 				if (component instanceof DockableView) {
-					
+
 					((DockableView) component).showView();
 
-					if (((DockableView) component).isDocked())
-					{
+					if (((DockableView) component).isDocked()) {
 						getTabs().setSelectedComponent(component);
-						if( show && !this.isShowing() || this.getState() == Frame.ICONIFIED)
-						{
+						if (!this.isShowing()
+								|| this.getState() == Frame.ICONIFIED) {
 							MultiView.getMainView().setVisible(true);
 							MultiView.getMainView().toFront();
 							MultiView.getMainView().setState(Frame.NORMAL);
@@ -520,8 +507,7 @@ public class MultiView extends View {
 				}
 
 				getTabs().setSelectedComponent(component);
-				if( show && !this.isShowing() || this.getState() == Frame.ICONIFIED)
-				{
+				if (!this.isShowing() || this.getState() == Frame.ICONIFIED) {
 					MultiView.getMainView().setVisible(true);
 					MultiView.getMainView().toFront();
 					MultiView.getMainView().setState(Frame.NORMAL);
@@ -535,12 +521,31 @@ public class MultiView extends View {
 	/**
 	 * open all views that are set to appear on startup
 	 */
-	public void startupViews() {
-		for( ViewType vt : ViewType.values())
-		{
-			if( StartupViewsOptionsPanel.getStartPref(vt))
-				setView(vt);
+	public void startupViews(boolean bgStart) {
+		for (ViewType vt : ViewType.values()) {
+			if (StartupViewsOptionsPanel.getStartPref(vt)) {
+				if (bgStart) {
+
+					// starting to tray, so only start docked views, and don't
+					// make the main view visible
+					Module m = getModuleForView(vt);
+					if (m != null) {
+						Component component = m.getComponent();
+						if (component != null) {
+							if (component instanceof DockableView) {
+								((DockableView) component).bgStart();
+							} else {
+								tabs_.addTab(m.getModuleName(), component);
+							}
+						}
+					}
+				} else {
+					// if not starting to tray, then make views visible as
+					// normal
+					setView(vt);
+				}
+			}
 		}
-		
+
 	}
 }

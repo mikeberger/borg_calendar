@@ -319,5 +319,17 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 			this.openInFrame();
 		}
 	}
+	
+	/**
+	 * start this view in the background (dock-only) - when starting to system tray
+	 */
+	public void bgStart()
+	{
+		PrefName p = getFrameSizePref();
+		ViewSize vs = ViewSize.fromString(Prefs.getPref(p));
+		if (vs.getDock() == DockType.DOCK) {
+			this.dock();
+		}
+	}
 
 }
