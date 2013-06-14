@@ -48,6 +48,8 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 		/** The y_pos. */
 		private int y_pos;
 
+		private boolean isHighlighted = false;
+
 		/**
 		 * constructor.
 		 * 
@@ -95,8 +97,26 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 		 */
 		public boolean isMouseOnDelete(int x, int y) {
 
-			Rectangle rect = new Rectangle(x_pos + 2, y_pos + 2,
-					ICON_WIDTH - 4, ICON_WIDTH - 4);
+			Rectangle rect = new Rectangle(x_pos + 2, y_pos + 2, ICON_WIDTH - 4,
+					ICON_WIDTH - 4);
+			if (rect.contains(x, y)) {
+				return true;
+			}
+
+			return false;
+		}
+
+		/**
+		 * check if the mouse is anywhere on the CloseTabIcon
+		 * 
+		 * @param e
+		 *            the mouse event
+		 * 
+		 * @return true, if mouse is on the CloseTabIcon icon
+		 */
+		public boolean contains(int x, int y) {
+			Rectangle rect = new Rectangle(x_pos, y_pos, getIconWidth(),
+					getIconHeight());
 			if (rect.contains(x, y)) {
 				return true;
 			}
@@ -144,8 +164,11 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 
 			g2.setColor(Color.black);
 
+			isHighlighted = false;
+
 			if (highlightDelete) {
 				g2.setColor(Color.red);
+				isHighlighted = true;
 			}
 
 			// draw the delete picture
@@ -167,6 +190,7 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 				g2.setColor(Color.black);
 				if (highlightUndock) {
 					g2.setColor(Color.red);
+					isHighlighted = true;
 				}
 
 				// draw the undock picture
@@ -189,9 +213,20 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 			if (component == null)
 				return;
 
+			// don't paint the icon due to a mouse event if the mouse is not on
+			// it - except if the
+			// icon is currently highlighted and needs to be unhighlighted
+			if (!contains(e.getX(), e.getY())) {
+				if (isHighlighted) {
+					paintHighlight(false, false, component.getGraphics());
+				}
+				return;
+
+			}
+
 			paintHighlight(isMouseOnDelete(e.getX(), e.getY()),
-					isMouseOnUndock(e.getX(), e.getY()), component
-							.getGraphics());
+					isMouseOnUndock(e.getX(), e.getY()),
+					component.getGraphics());
 		}
 
 		/*
@@ -207,16 +242,19 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 			this.component = c;
 
 			/*
-			 * use the last known mouse position to decide if highlight is needed
+			 * use the last known mouse position to decide if highlight is
+			 * needed
 			 */
 			if (lastMouseEvent != null)
-				paintHighlight(isMouseOnDelete(lastMouseEvent.getX(), lastMouseEvent.getY()), 
-						isMouseOnUndock(lastMouseEvent.getX(), lastMouseEvent.getY()), g);
+				paintHighlight(
+						isMouseOnDelete(lastMouseEvent.getX(),
+								lastMouseEvent.getY()),
+						isMouseOnUndock(lastMouseEvent.getX(),
+								lastMouseEvent.getY()), g);
 			else
-				paintHighlight(false, false, g);	
+				paintHighlight(false, false, g);
 		}
 	}
-
 
 	/** icon size. */
 	static private final int ICON_WIDTH = 16;
@@ -224,8 +262,8 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 	private static final long serialVersionUID = 1L;
 
 	/*
-	 * save last mouse event so that we know where we are if the
-	 * icon is asked to repaint without the mouse moving
+	 * save last mouse event so that we know where we are if the icon is asked
+	 * to repaint without the mouse moving
 	 */
 	private MouseEvent lastMouseEvent;
 
@@ -266,7 +304,7 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 			this.closeTabCommon(i);
 		}
 	}
-	
+
 	/**
 	 * close the currently selected tab.
 	 */
@@ -274,17 +312,18 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 		int i = this.getSelectedIndex();
 		this.closeTabCommon(i);
 	}
-	
+
 	/**
-	 * common internal method that checks if a tab can be closed before closing it
-	 * @param i the tab index
+	 * common internal method that checks if a tab can be closed before closing
+	 * it
+	 * 
+	 * @param i
+	 *            the tab index
 	 */
-	private void closeTabCommon(int i)
-	{
+	private void closeTabCommon(int i) {
 		Component c = this.getComponentAt(i);
-		if( c instanceof DockableView)
-		{
-			((DockableView)c).close();
+		if (c instanceof DockableView) {
+			((DockableView) c).close();
 		} else
 			this.removeTabAt(i);
 	}
@@ -326,7 +365,7 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 	 */
 	@Override
 	public void mouseDragged(MouseEvent arg0) {
-	  // empty
+		// empty
 	}
 
 	/*
