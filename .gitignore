@@ -2,3 +2,4 @@ build/
 borghelp/
 dist/
 *.class
+classes/
