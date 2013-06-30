@@ -16,7 +16,7 @@ public class AddressOptionsPanel extends OptionsPanel {
 	private static final long serialVersionUID = 1L;
 	private JCheckBox emailvalidation;
 	private JTextField phoneRegex;
-	private JComboBox phoneLoc;
+	private JComboBox<String> phoneLoc;
 
 	
 	public AddressOptionsPanel(){
@@ -29,7 +29,7 @@ public class AddressOptionsPanel extends OptionsPanel {
                         Resource.getResourceString("United_States"),
                             Resource.getResourceString("Custom")};
 		
-		phoneLoc = new JComboBox(locations);
+		phoneLoc = new JComboBox<String>(locations);
 		
 		this.setLayout(new java.awt.GridBagLayout());
 		this.setName(Resource.getResourceString("Address_Options"));

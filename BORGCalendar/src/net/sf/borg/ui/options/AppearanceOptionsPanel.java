@@ -59,9 +59,9 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 	private JCheckBox holiday1;
 	private JCheckBox iso8601Box = new JCheckBox();
 
-	private JComboBox lnfBox;
-	private JComboBox themeBox;
-	private JComboBox localebox;
+	private JComboBox<String> lnfBox;
+	private JComboBox<String> themeBox;
+	private JComboBox<String> localebox;
 
 	private JCheckBox miltime;
 	private JCheckBox mondaycb;
@@ -70,9 +70,9 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 	private JCheckBox pubbox;
 
 	private JCheckBox truncbox = null;
-	private JComboBox wkendhr;
+	private JComboBox<String> wkendhr;
 
-	private JComboBox wkstarthr;
+	private JComboBox<String> wkstarthr;
 
 	/**
 	 * Instantiates a new appearance options panel.
@@ -81,15 +81,15 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 
 		privbox = new JCheckBox();
 		pubbox = new JCheckBox();
-		lnfBox = new JComboBox();
-		themeBox = new JComboBox();
+		lnfBox = new JComboBox<String>();
+		themeBox = new JComboBox<String>();
 		holiday1 = new JCheckBox();
 		mondaycb = new JCheckBox();
 		miltime = new JCheckBox();
-		wkstarthr = new JComboBox();
-		wkendhr = new JComboBox();
+		wkstarthr = new JComboBox<String>();
+		wkendhr = new JComboBox<String>();
 		canadabox = new JCheckBox();
-		localebox = new JComboBox();
+		localebox = new JComboBox<String>();
 		prioritySortBox = new JCheckBox();
 
 		this.setLayout(new java.awt.GridBagLayout());
@@ -155,12 +155,12 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 		JLabel jLabel5 = new JLabel();
 		ResourceHelper.setText(jLabel5, "Week_View_Start_Hour:_");
 		jLabel5.setLabelFor(wkstarthr);
-		wkstarthr.setModel(new DefaultComboBoxModel(new String[] { "0", "1",
+		wkstarthr.setModel(new DefaultComboBoxModel<String>(new String[] { "0", "1",
 				"2", "3", "4", "5", "6", "7", "8", "9", "10", "11" }));
 		this.add(jLabel5,
 				GridBagConstraintsFactory.create(0, 7, GridBagConstraints.BOTH));
 
-		wkendhr.setModel(new DefaultComboBoxModel(new String[] { "12", "13",
+		wkendhr.setModel(new DefaultComboBoxModel<String>(new String[] { "12", "13",
 				"14", "15", "16", "17", "18", "19", "20", "21", "22", "23",
 				"24" }));
 		this.add(wkstarthr,

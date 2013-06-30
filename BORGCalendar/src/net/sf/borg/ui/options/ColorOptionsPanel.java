@@ -84,7 +84,7 @@ public class ColorOptionsPanel extends OptionsPanel implements Prefs.Listener {
 	private JCheckBox gradientApptBox = new JCheckBox();
 	private JTextField tf_ucs_marker;
 
-	private JComboBox themeChooser = new JComboBox();
+	private JComboBox<String> themeChooser = new JComboBox<String>();
 
 	/**
 	 * Instantiates a new color options panel.

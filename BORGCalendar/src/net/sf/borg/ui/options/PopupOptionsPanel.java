@@ -71,7 +71,7 @@ class PopupOptionsPanel extends OptionsPanel {
 	private JCheckBox taskReminderBox = new JCheckBox();
 
 	/** The soundbox. */
-	private JComboBox soundbox = new JComboBox();
+	private JComboBox<String> soundbox = new JComboBox<String>();
 
 	/** The spinners for setting the reminder times */
 	private JSpinner spinners[];

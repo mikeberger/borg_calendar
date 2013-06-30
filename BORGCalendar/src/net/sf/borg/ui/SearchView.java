@@ -83,7 +83,7 @@ public class SearchView extends DockableView implements Module {
 	private JCheckBox caseSensitiveCheckBox = null;
 
 	/** The category combo box. */
-	private JComboBox categoryComboBox = null;
+	private JComboBox<String> categoryComboBox = null;
 
 	/** The end date chooser. */
 	private JDateChooser endDateChooser = null;
@@ -452,7 +452,7 @@ public class SearchView extends DockableView implements Module {
 		searchCriteriaPanel.add(searchText, GridBagConstraintsFactory.create(1,
 				0, GridBagConstraints.HORIZONTAL, 1.0, 0.0));
 
-		categoryComboBox = new JComboBox();
+		categoryComboBox = new JComboBox<String>();
 		searchCriteriaPanel.add(categoryComboBox, GridBagConstraintsFactory
 				.create(1, 1, GridBagConstraints.HORIZONTAL, 1.0, 0.0));
 

@@ -58,10 +58,10 @@ public class TaskFilterPanel extends JPanel {
 	private JTextField filterString;
 
 	/** The project selector. */
-	private JComboBox projectSelector = null;
+	private JComboBox<String> projectSelector = null;
 
 	/** The status selector. */
-	private JComboBox statusSelector = null;
+	private JComboBox<String> statusSelector = null;
 
 	/** The task list. */
 	private TaskListPanel taskList = null;
@@ -103,7 +103,7 @@ public class TaskFilterPanel extends JPanel {
 		statusLabel.setText(Resource.getResourceString("Status") + ":");
 		comboBoxPanel.add(statusLabel, null);
 
-		statusSelector = new JComboBox();
+		statusSelector = new JComboBox<String>();
 		setStatuses();
 		statusSelector
 				.addActionListener(new java.awt.event.ActionListener() {
@@ -121,7 +121,7 @@ public class TaskFilterPanel extends JPanel {
 		comboBoxPanel.add(spacer, null);
 		comboBoxPanel.add(projectLabel, null);
 		
-		projectSelector = new JComboBox();
+		projectSelector = new JComboBox<String>();
 		loadProjectBox();
 		projectSelector
 				.addActionListener(new java.awt.event.ActionListener() {

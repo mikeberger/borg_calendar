@@ -109,7 +109,7 @@ public class PopupMenuHelper {
 					}
 				}
 				if (component instanceof JList) {
-					JList t = (JList) component;
+					JList<?> t = (JList<?>) component;
 					int index = t.locationToIndex(e.getPoint());
 					if (index != -1 && !t.isSelectedIndex(index)) {
 						t.setSelectedIndex(index);
@@ -197,7 +197,7 @@ public class PopupMenuHelper {
 					}
 					else if( component instanceof JList)
 					{
-						JList t = (JList) component;
+						JList<?> t = (JList<?>) component;
 						int index = t.getSelectedIndex();
 						if( index == -1 ) return;
 						Rectangle rct = t.getCellBounds(index, index);

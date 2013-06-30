@@ -73,7 +73,7 @@ public class TaskConfigurator extends View {
 	/**
 	 * Renders the initial task state in a different color
 	 */
-	private class TypeListRenderer extends JLabel implements ListCellRenderer {
+	private class TypeListRenderer extends JLabel implements ListCellRenderer<Object> {
 		private static final long serialVersionUID = 1L;
 
 		public TypeListRenderer() {
@@ -81,7 +81,7 @@ public class TaskConfigurator extends View {
 		}
 
 		@Override
-		public Component getListCellRendererComponent(JList list, Object value,
+		public Component getListCellRendererComponent(JList<?> list, Object value,
 				int index, boolean isSelected, boolean cellHasFocus) {
 			setText(value.toString());
 
@@ -106,7 +106,7 @@ public class TaskConfigurator extends View {
 	}
 
 	/** The default table cell Renderer */
-	static private ListCellRenderer defaultRenderer = new DefaultListCellRenderer();
+	static private ListCellRenderer<Object> defaultRenderer = new DefaultListCellRenderer();
 
 	/** The singleton */
 	private static TaskConfigurator singleton = null;
@@ -128,25 +128,25 @@ public class TaskConfigurator extends View {
 	private JPopupMenu subTaskMenu = null;
 
 	/** The next state list. */
-	private JList nextStateList = null;
+	private JList<String> nextStateList = null;
 
 	/** The next state menu. */
 	private JPopupMenu nextStateMenu = null;
 
 	/** The state list. */
-	private JList stateList = null;
+	private JList<String> stateList = null;
 
 	/** The state menu. */
 	private JPopupMenu stateMenu = null;
 
 	/** The sub task list. */
-	private JList subTaskList = null;
+	private JList<String> subTaskList = null;
 
 	/** The task types. */
 	private TaskTypes taskTypes;
 
 	/** The type list. */
-	private JList typeList = null;
+	private JList<String> typeList = null;
 
 	/** The typeMenu. */
 	private JPopupMenu typeMenu = null;
@@ -599,7 +599,7 @@ public class TaskConfigurator extends View {
 
 		JScrollPane taskTypeScroll = new JScrollPane();
 
-		typeList = new JList();
+		typeList = new JList<String>();
 		typeList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		typeList.addMouseListener(new MouseAdapter() {
 			@Override
@@ -640,7 +640,7 @@ public class TaskConfigurator extends View {
 
 		JScrollPane stateScroll = new JScrollPane();
 
-		stateList = new JList();
+		stateList = new JList<String>();
 		stateList.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
@@ -682,7 +682,7 @@ public class TaskConfigurator extends View {
 
 		JScrollPane nextStateScroll = new JScrollPane();
 
-		nextStateList = new JList();
+		nextStateList = new JList<String>();
 		nextStateList.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
@@ -715,7 +715,7 @@ public class TaskConfigurator extends View {
 				TitledBorder.DEFAULT_POSITION, null, null));
 		gridLayout7.setRows(1);
 
-		subTaskList = new JList();
+		subTaskList = new JList<String>();
 		subTaskList.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
@@ -816,7 +816,7 @@ public class TaskConfigurator extends View {
 			return;
 		Collection<String> states = taskTypes.nextStates(type, state);
 		states.remove(state);
-		nextStateList.setListData(states.toArray());
+		nextStateList.setListData((String[]) states.toArray());
 	}
 
 	/**
@@ -828,7 +828,7 @@ public class TaskConfigurator extends View {
 		if (type == null)
 			return;
 		Collection<String> states = taskTypes.getStates(type);
-		stateList.setListData(states.toArray());
+		stateList.setListData((String[]) states.toArray());
 		String cbs[] = taskTypes.getSubTasks(type);
 		subTaskList.setListData(cbs);
 		nextStateList.setListData(new Vector<String>());

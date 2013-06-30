@@ -176,14 +176,14 @@ public class NwFontChooserS extends JDialog {
         //////////////////////////////////////////////////////////////////////
         private class NwList extends JPanel {
             private static final long serialVersionUID = 1L;
-            JList jl;
+            JList<String> jl;
             JScrollPane sp;
             JLabel jt;
             String si = " ";
             
             public NwList(String[] values) {
                 setLayout(null);
-                jl = new JList(values);
+                jl = new JList<String>(values);
                 sp = new JScrollPane(jl);
                 jt = new JLabel();
                 jt.setBackground(Color.white);

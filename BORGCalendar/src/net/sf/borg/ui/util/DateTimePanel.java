@@ -65,37 +65,37 @@ public class DateTimePanel extends JPanel {
 	}
 
 	/** The ampm box. */
-	private JComboBox ampmBox = new JComboBox();
+	private JComboBox<String> ampmBox = new JComboBox<String>();
 
-	private DefaultComboBoxModel ampmModel = new DefaultComboBoxModel(
+	private DefaultComboBoxModel<String> ampmModel = new DefaultComboBoxModel<String>(
 			new String[] { "AM", "PM" });
 
 	private JDateChooser dateChooser = new JDateChooser();
 
 	/** The hour box. */
-	private JComboBox hourBox = new JComboBox();
+	private JComboBox<String> hourBox = new JComboBox<String>();
 	
 	/**
 	 * combo box choices for setting the hour if we are using 24-hour time
 	 */
-	private DefaultComboBoxModel milHourModel = new DefaultComboBoxModel(
+	private DefaultComboBoxModel<String> milHourModel = new DefaultComboBoxModel<String>(
 			new String[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
 					"10", "11", "12", "13", "14", "15", "16", "17", "18", "19",
 					"20", "21", "22", "23" });
 
 	private boolean milTime = false;
 
-	private DefaultComboBoxModel minModel = new DefaultComboBoxModel(
+	private DefaultComboBoxModel<String> minModel = new DefaultComboBoxModel<String>(
 			new String[] { "00", "05", "10", "15", "20", "25", "30", "35",
 					"40", "45", "50", "55" });
 
 	/** The minute box. */
-	private JComboBox minuteBox = new JComboBox();
+	private JComboBox<String> minuteBox = new JComboBox<String>();
 
 	/**
 	 * combo box choices for setting 12-hr time
 	 */
-	private DefaultComboBoxModel normHourModel = new DefaultComboBoxModel(
+	private DefaultComboBoxModel<String> normHourModel = new DefaultComboBoxModel<String>(
 			new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
 					"11", "12" });
 

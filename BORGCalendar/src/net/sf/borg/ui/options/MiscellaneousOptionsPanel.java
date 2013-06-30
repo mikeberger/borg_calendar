@@ -68,7 +68,7 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 	private JCheckBox dynamicLoading = new JCheckBox();
 	private JCheckBox verboseLogging = new JCheckBox();
 
-	private JComboBox shutdownAction = new JComboBox();
+	private JComboBox<String> shutdownAction = new JComboBox<String>();
 
 	/**
 	 * Instantiates a new miscellaneous options panel.

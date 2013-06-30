@@ -112,7 +112,7 @@ public class ProjectView extends DockableView {
 	}
 
 	/** The category box. */
-	private JComboBox categoryBox = null;
+	private JComboBox<String> categoryBox = null;
 
 	/** The days left text. */
 	private JTextField daysLeftText = null;
@@ -133,13 +133,13 @@ public class ProjectView extends DockableView {
 	private JTextField openTaskCount = null;
 
 	/** The parent project combo box. */
-	private JComboBox parentProjectComboBox = new JComboBox();
+	private JComboBox<String> parentProjectComboBox = new JComboBox<String>();
 
 	/** The start date chooser. */
 	private JDateChooser startDateChooser;
 
 	/** The status combo box. */
-	private JComboBox statusComboBox;
+	private JComboBox<String> statusComboBox;
 
 	/** The task border. */
 	private JPanel taskBorder = null;
@@ -229,7 +229,7 @@ public class ProjectView extends DockableView {
 		dueDateChooser = new JDateChooser();
 		JLabel lblStartDate = new JLabel();
 		JLabel lblDueDate = new JLabel();
-		statusComboBox = new JComboBox();
+		statusComboBox = new JComboBox<String>();
 		JLabel catlabel = new JLabel();
 
 		JLabel lblStatus = new JLabel();
@@ -244,7 +244,7 @@ public class ProjectView extends DockableView {
 		lblDueDate.setLabelFor(dueDateChooser);
 
 		ResourceHelper.setText(catlabel, "Category");
-		categoryBox = new JComboBox();
+		categoryBox = new JComboBox<String>();
 		catlabel.setLabelFor(categoryBox);
 
 		projectInfoPanel

@@ -142,7 +142,7 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 	private StripedTable projectTable;
 
 	/** The project status combo box. */
-	private JComboBox projectStatusComboBox = new JComboBox();
+	private JComboBox<String> projectStatusComboBox = new JComboBox<String>();
 
 	/**
 	 * constructor

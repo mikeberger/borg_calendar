@@ -84,7 +84,7 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 	 * renders the colro selection pull-down with colored boxes as the choices.
 	 */
 	static private class ColorBoxRenderer extends JLabel implements
-			ListCellRenderer {
+			ListCellRenderer<Object> {
 
 		private static final long serialVersionUID = 1L;
 
@@ -101,7 +101,7 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 		 * get the color choice label for a given color value.
 		 */
 		@Override
-		public Component getListCellRendererComponent(JList list, Object value,
+		public Component getListCellRendererComponent(JList<?> list, Object value,
 				int index, boolean isSelected, boolean cellHasFocus) {
 			String sel = (String) value;
 
@@ -206,7 +206,7 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 	private LinkPanel linkPanel = null;
 
 	// category combo box
-	private JComboBox categoryBox;
+	private JComboBox<String> categoryBox;
 
 	// priority chooser
 	private JSpinner prioritySpinner;
@@ -215,7 +215,7 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 	private JCheckBox dateChangeCheckBox;
 
 	// color select combo box
-	private JComboBox colorComboBox;
+	private JComboBox<String> colorComboBox;
 
 	// names of the borg "logical" colors. the names no longer imply a
 	// particular color
@@ -244,7 +244,7 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 	private JPanel selectDayButtonPanel = null;
 
 	// repeat frequency combo box
-	private JComboBox repeatFrequencyComboBox;
+	private JComboBox<String> repeatFrequencyComboBox;
 
 	// half-day (vacation) check box
 	private JCheckBox halfDayVacationCheckBox;
@@ -564,7 +564,7 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 				GridBagConstraintsFactory.create(0, 0));
 
 		// load repeat frequency strings
-		repeatFrequencyComboBox = new JComboBox();
+		repeatFrequencyComboBox = new JComboBox<String>();
 		repeatFrequencyComboBox.setOpaque(false);
 		for (int i = 0;; i++) {
 			String fs = Repeat.getFreqString(i);
@@ -676,8 +676,8 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 		holidayCheckBox = new JCheckBox();
 		privateCheckBox = new JCheckBox();
 		JLabel lblColor = new JLabel();
-		colorComboBox = new JComboBox();
-		categoryBox = new JComboBox();
+		colorComboBox = new JComboBox<String>();
+		categoryBox = new JComboBox<String>();
 		JLabel lblCategory = new JLabel();
 		JLabel lblPriority = new JLabel();
 		JPanel buttonPanel = new JPanel();

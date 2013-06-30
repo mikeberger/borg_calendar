@@ -284,7 +284,7 @@ public class TaskView extends DockableView {
 	private LinkPanel linkPanel;
 
 	/** The category combo box. */
-	private JComboBox categoryComboBox = null;
+	private JComboBox<String> categoryComboBox = null;
 
 	/** The close date. */
 	private JTextField closeDate = null;
@@ -325,10 +325,10 @@ public class TaskView extends DockableView {
 	private JTextField personAssignedText;
 
 	/** The priority text. */
-	private JComboBox priorityText;
+	private JComboBox<Integer> priorityText;
 
 	/** The project combo box. */
-	private JComboBox projectComboBox = new JComboBox();
+	private JComboBox<String> projectComboBox = new JComboBox<String>();
 
 	/** The sub task table. */
 	private StripedTable subTaskTable = new StripedTable();
@@ -337,7 +337,7 @@ public class TaskView extends DockableView {
 	private JDateChooser startDateChooser;
 
 	/** The status combo box. */
-	private JComboBox statusComboBox;
+	private JComboBox<String> statusComboBox;
 
 	/** The sub task ids to be deleted. */
 	private ArrayList<Integer> subTaskIdsToBeDeleted = new ArrayList<Integer>();
@@ -346,7 +346,7 @@ public class TaskView extends DockableView {
 	private String windowTitle = "";
 
 	/** The task type combo box. */
-	private JComboBox taskTypeComboBox;
+	private JComboBox<String> taskTypeComboBox;
 
 	/**
 	 * constructor
@@ -456,7 +456,7 @@ public class TaskView extends DockableView {
 		JLabel lblStatus = new JLabel();
 		startDateChooser = new JDateChooser();
 		dueDateChooser = new JDateChooser();
-		priorityText = new JComboBox();
+		priorityText = new JComboBox<Integer>();
 		for (int p = 1; p <= 5; p++) {
 			priorityText.addItem(new Integer(p));
 		}
@@ -467,8 +467,8 @@ public class TaskView extends DockableView {
 		JLabel lblPri = new JLabel();
 		JLabel lblPA = new JLabel();
 		JLabel lblType = new JLabel();
-		statusComboBox = new JComboBox();
-		taskTypeComboBox = new JComboBox();
+		statusComboBox = new JComboBox<String>();
+		taskTypeComboBox = new JComboBox<String>();
 		JLabel categoryLabel = new JLabel();
 
 		JLabel closeLabel = new JLabel();
@@ -509,7 +509,7 @@ public class TaskView extends DockableView {
 		lblType.setLabelFor(taskTypeComboBox);
 
 		ResourceHelper.setText(categoryLabel, "Category");
-		categoryComboBox = new JComboBox();
+		categoryComboBox = new JComboBox<String>();
 		categoryLabel.setLabelFor(categoryComboBox);
 
 		summaryText = new JTextField();

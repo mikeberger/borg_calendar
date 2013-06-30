@@ -302,7 +302,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 	};
 
 	/** The category combo box. */
-	private JComboBox categoryComboBox;
+	private JComboBox<String> categoryComboBox;
 
 	/** The black toggle button. */
 	private JToggleButton blackToggleButton;
@@ -556,7 +556,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 		JButton addTodoButton = new JButton();
 		JLabel todoLabel = new JLabel();
 		JLabel dateLabel = new JLabel();
-		categoryComboBox = new JComboBox();
+		categoryComboBox = new JComboBox<String>();
 
 		// initial toggle button settings
 		redToggleButton = new JToggleButton("", false);
