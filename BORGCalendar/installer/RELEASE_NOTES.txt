@@ -1,17 +1,7 @@
 ==================================
-RELEASE NOTES for BORG 1.7.8
+RELEASE NOTES for BORG 1.7.9
 ==================================
 
-Dynamic Loading
----------------
-Dynamic loading of JARs is now done for JARs in the lib/ext folder. Users that have put
-JARs in the lib folder need to move them to the lib/ext folder for them to be loaded.
-This change will keep the shipped JARs separate from any added JARs.
-
-Most users are unaffected by this. Dynamically loaded JARs are only used to add additional look and feels,
-extra database drivers (such as MySQL), and for adding the experimental BORG plugins.
-
--------------
 There are always new text strings that have not been translated. 
 Feel free to mail any translations to i_flem@users.sourceforge.net.
 There is nobody on the project actively updating the translations. Any

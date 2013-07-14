@@ -201,7 +201,7 @@
 
 		<copy todir="${dist.dir}" file="${iz.dir}/utils/wrappers/izpack2exe/7zS.sfx" />
 
-		<exec osfamily="windows" dir="${dist.dir}" executable="c:/Python32/python">
+		<exec osfamily="windows" dir="${dist.dir}" executable="c:/Python33/python">
 			<arg value="${iz.dir}/utils/wrappers/izpack2exe/izpack2exe.py" />
 			<arg value="--with-7z=${iz.dir}/utils/wrappers/izpack2exe/7za.exe" />
 			<arg value="--file=${dist.dir}/BORG_installer-${borg.version}.jar" />
