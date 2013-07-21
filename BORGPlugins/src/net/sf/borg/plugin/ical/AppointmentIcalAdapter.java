@@ -23,8 +23,6 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringWriter;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -72,17 +70,18 @@ import net.sf.borg.model.Repeat;
 import net.sf.borg.model.entity.Appointment;
 
 public class AppointmentIcalAdapter {
-	
+
 	static private final Logger log = Logger.getLogger("net.sf.borg");
-	
-	static public void exportIcalToFile(String filename, Date after) throws Exception {
+
+	static public void exportIcalToFile(String filename, Date after)
+			throws Exception {
 		Calendar cal = exportIcal(after);
 		OutputStream oostr = IOHelper.createOutputStream(filename);
 		CalendarOutputter op = new CalendarOutputter();
 		op.output(cal, oostr);
 		oostr.close();
 	}
-	
+
 	static public String exportIcalToString(Date after) throws Exception {
 		Calendar cal = exportIcal(after);
 		CalendarOutputter op = new CalendarOutputter();
@@ -98,29 +97,26 @@ public class AppointmentIcalAdapter {
 		if (Prefs.getPref(PrefName.SHOWPRIVATE).equals("true"))
 			showpriv = true;
 
-		// unique-id
-		String hostname = "";
-		try {
-			InetAddress addr = InetAddress.getLocalHost();
-			hostname = addr.getHostName();
-		} catch (UnknownHostException e) {
-			// ignore
-		}
-
+		
 		for (Appointment ap : AppointmentModel.getReference().getAllAppts()) {
 
 			// limit by date
-			if( after != null )
-			{
+			if (after != null) {
 				Date latestInstance = Repeat.calculateLastRepeat(ap);
-				if( latestInstance != null && latestInstance.before(after))
+				if (latestInstance != null && latestInstance.before(after))
 					continue;
 			}
 
 			TextList catlist = new TextList();
 			Component ve = new VEvent();
 
-			String uidval = String.valueOf(ap.getKey()) + "@" + hostname;
+			// set a unique ical id
+			// google seems to require uniqueness even if the id was used by an
+			// already deleted appt
+			// so add a timestamp
+			// the id has the borg key before the @ to be used for syncing later
+			long updated = new Date().getTime();
+			String uidval = Integer.toString(ap.getKey()) + "@BORG" + updated;
 			Uid uid = new Uid(uidval);
 			ve.getProperties().add(uid);
 
@@ -232,37 +228,42 @@ public class AppointmentIcalAdapter {
 				} else if (freq.equals(Repeat.YEARLY)) {
 					rec += "YEARLY";
 				} else if (freq.equals(Repeat.NDAYS)) {
-					rec += "DAILY;INTERVAL=" + Repeat.getNValue(ap.getFrequency());
+					rec += "DAILY;INTERVAL="
+							+ Repeat.getNValue(ap.getFrequency());
 				} else if (freq.equals(Repeat.NWEEKS)) {
-					rec += "WEEKLY;INTERVAL=" + Repeat.getNValue(ap.getFrequency());
+					rec += "WEEKLY;INTERVAL="
+							+ Repeat.getNValue(ap.getFrequency());
 				} else if (freq.equals(Repeat.NMONTHS)) {
-					rec += "MONTHLY;INTERVAL=" + Repeat.getNValue(ap.getFrequency());
+					rec += "MONTHLY;INTERVAL="
+							+ Repeat.getNValue(ap.getFrequency());
 				} else if (freq.equals(Repeat.NYEARS)) {
-					rec += "YEARLY;INTERVAL=" + Repeat.getNValue(ap.getFrequency());
-				} else if( freq.equals(Repeat.WEEKDAYS)){
+					rec += "YEARLY;INTERVAL="
+							+ Repeat.getNValue(ap.getFrequency());
+				} else if (freq.equals(Repeat.WEEKDAYS)) {
 					rec += "WEEKLY;BYDAY=MO,TU,WE,TH,FR";
-				} else if( freq.equals(Repeat.MWF)) {
-					rec += "WEEKLY;BYDAY=MO,WE,FR";} 
-				else if( freq.equals(Repeat.WEEKENDS)) {
-						rec += "WEEKLY;BYDAY=SU,SA";
-				} else if( freq.equals(Repeat.TTH)) {
+				} else if (freq.equals(Repeat.MWF)) {
+					rec += "WEEKLY;BYDAY=MO,WE,FR";
+				} else if (freq.equals(Repeat.WEEKENDS)) {
+					rec += "WEEKLY;BYDAY=SU,SA";
+				} else if (freq.equals(Repeat.TTH)) {
 					rec += "WEEKLY;BYDAY=TU,TH";
-				} else if( freq.equals(Repeat.DAYLIST)) {
+				} else if (freq.equals(Repeat.DAYLIST)) {
 					String days[] = new String[] { "SU", "MO", "TU", "WE",
 							"TH", "FR", "SA" };
 					rec += "WEEKLY;BYDAY=";
-					Collection<Integer> c =  Repeat.getDaylist(ap.getFrequency());
+					Collection<Integer> c = Repeat
+							.getDaylist(ap.getFrequency());
 					Iterator<Integer> it = c.iterator();
-					while( it.hasNext())
-					{
+					while (it.hasNext()) {
 						Integer i = it.next();
-						rec += days[i-1];
-						if( it.hasNext())
+						rec += days[i - 1];
+						if (it.hasNext())
 							rec += ",";
 					}
-					
+
 				} else {
-					log.warning("Could not export appt " + ap.getKey() + ap.getText());
+					log.warning("Could not export appt " + ap.getKey()
+							+ ap.getText());
 					continue;
 				}
 
@@ -307,9 +308,8 @@ public class AppointmentIcalAdapter {
 		try {
 			cal.validate();
 		} catch (ValidationException e) {
-			Errmsg.getErrorHandler()
-					.notice("Ical4j validation error: "
-							+ e.getLocalizedMessage());
+			Errmsg.getErrorHandler().notice(
+					"Ical4j validation error: " + e.getLocalizedMessage());
 		}
 
 		ArrayList<Appointment> aplist = new ArrayList<Appointment>();
@@ -344,7 +344,7 @@ public class AppointmentIcalAdapter {
 				if (prop != null) {
 					appttext += "\nLocation: " + prop.getValue();
 				}
-				
+
 				prop = pl.getProperty(Property.DESCRIPTION);
 				if (prop != null) {
 					appttext += "\n" + prop.getValue();
@@ -356,42 +356,41 @@ public class AppointmentIcalAdapter {
 				if (prop != null) {
 					DtStart dts = (DtStart) prop;
 					Date d = dts.getDate();
-					//System.out.println("utc=" + dts.isUtc());
-					//System.out.println("dt=" + DateFormat.getDateTimeInstance().format(d));
-					//System.out.println("val=" + dts.getValue());
-					
+					// System.out.println("utc=" + dts.isUtc());
+					// System.out.println("dt=" +
+					// DateFormat.getDateTimeInstance().format(d));
+					// System.out.println("val=" + dts.getValue());
+
 					Date utc = new Date();
 					utc.setTime(d.getTime());
-					
+
 					// adjust time zone
-					if( !dts.isUtc() && !dts.getValue().contains("T"))
-					{
-						//System.out.println( "TZO=" + tzOffset(d.getTime()));
+					if (!dts.isUtc() && !dts.getValue().contains("T")) {
+						// System.out.println( "TZO=" + tzOffset(d.getTime()));
 						long u = d.getTime() - tzOffset(d.getTime());
 						utc.setTime(u);
 					}
-					//System.out.println("utcdt=" + DateFormat.getDateTimeInstance().format(utc));
+					// System.out.println("utcdt=" +
+					// DateFormat.getDateTimeInstance().format(utc));
 
 					ap.setDate(utc);
 
 					// check if DATE only
-					if( !dts.getValue().contains("T"))
-					{
+					if (!dts.getValue().contains("T")) {
 						// date only
 						ap.setUntimed("Y");
-					}
-					else
-					{
+					} else {
 						ap.setUntimed("N");
 						prop = pl.getProperty(Property.DTEND);
 						if (prop != null) {
 							DtEnd dte = (DtEnd) prop;
 							Date de = dte.getDate();
-							long dur = (de.getTime() - d.getTime()) / (1000 * 60);
+							long dur = (de.getTime() - d.getTime())
+									/ (1000 * 60);
 							ap.setDuration(new Integer((int) dur));
 						}
 					}
-					
+
 				}
 
 				if (comp instanceof VToDo) {
@@ -411,9 +410,8 @@ public class AppointmentIcalAdapter {
 						ap.setDuration(new Integer(dur.getDuration()
 								.getMinutes()));
 					} else {
-						warning
-								.append("WARNING: Cannot handle duration greater than 1 day for appt ["
-										+ summary + "], using 0\n");
+						warning.append("WARNING: Cannot handle duration greater than 1 day for appt ["
+								+ summary + "], using 0\n");
 					}
 
 				}
@@ -464,21 +462,19 @@ public class AppointmentIcalAdapter {
 						} else {
 							ap.setFrequency(Repeat.WEEKLY);
 						}
-						
+
 						WeekDayList dl = recur.getDayList();
-						if( dl != null && !dl.isEmpty())
-						{
+						if (dl != null && !dl.isEmpty()) {
 							String f = Repeat.DAYLIST;
 							f += ",";
-							for( Object o : dl )
-							{
-								WeekDay wd = (WeekDay)o;
+							for (Object o : dl) {
+								WeekDay wd = (WeekDay) o;
 								f += WeekDay.getCalendarDay(wd);
 							}
 							ap.setFrequency(f);
 
 						}
-						
+
 					} else if (freq.equals(Recur.MONTHLY)) {
 						ap.setFrequency(Repeat.MONTHLY);
 					} else if (freq.equals(Recur.YEARLY)) {
@@ -518,9 +514,8 @@ public class AppointmentIcalAdapter {
 		return (warning.toString());
 
 	}
-	
-	static private int tzOffset(long date)
-	{
+
+	static private int tzOffset(long date) {
 		return TimeZone.getDefault().getOffset(date);
 	}
 }
