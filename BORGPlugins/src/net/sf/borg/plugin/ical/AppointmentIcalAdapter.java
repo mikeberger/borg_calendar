@@ -293,6 +293,10 @@ public class AppointmentIcalAdapter {
 	@SuppressWarnings("unchecked")
 	static public String importIcal(String file, String category)
 			throws Exception {
+		
+		boolean skip_borg = Prefs.getBoolPref(IcalModule.SKIP_BORG);
+		int skipped = 0;
+		
 		CompatibilityHints.setHintEnabled(
 				CompatibilityHints.KEY_OUTLOOK_COMPATIBILITY, true);
 		CompatibilityHints.setHintEnabled(
@@ -320,6 +324,17 @@ public class AppointmentIcalAdapter {
 		while (it.hasNext()) {
 			Component comp = it.next();
 			if (comp instanceof VEvent || comp instanceof VToDo) {
+				
+				Property uidProp = comp.getProperty(Property.UID);
+				if( skip_borg && uidProp != null)
+				{
+					String uid = uidProp.getValue();
+					if( uid.contains("@BORG"))
+					{
+						skipped++;
+						continue;
+					}
+				}
 
 				// start with default appt to pull in default options
 				Appointment ap = amodel.getDefaultAppointment();
@@ -507,6 +522,9 @@ public class AppointmentIcalAdapter {
 
 		for (Appointment ap : aplist)
 			amodel.saveAppt(ap);
+		
+		warning.append("Imported " + aplist.size() + " Appointments\n");
+		warning.append("Skipped " + skipped + " Appointments\n");
 
 		if (warning.length() == 0)
 			return (null);

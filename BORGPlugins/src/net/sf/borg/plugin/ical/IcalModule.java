@@ -31,6 +31,12 @@ public class IcalModule implements Module {
 			8844));
 	public static PrefName EXPORTYEARS = new PrefName("ical-export-years",
 			new Integer(2));
+	
+	// option to prevent import of appts that were previously exported from borg
+	// used when the goal is to only import appointments created outside of borg, but
+	// to not import appts that were exported from borg to another calendar and then 
+	// sent back to borg as part of the export from the other calendar
+	public static PrefName SKIP_BORG = new PrefName("ical-skip_borg", "true");
 
 	@Override
 	public Component getComponent() {

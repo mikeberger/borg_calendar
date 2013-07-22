@@ -21,6 +21,7 @@ package net.sf.borg.plugin.ical;
 
 import java.awt.GridBagConstraints;
 
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
@@ -39,6 +40,7 @@ public class IcalOptionsPanel extends OptionsPanel {
 	private JTextField port = new JTextField();
 	private JSpinner exportyears = new JSpinner(new SpinnerNumberModel(2, 1,
 			100, 1));
+	private JCheckBox skipBox = new JCheckBox();
 
 	public IcalOptionsPanel() {
 		this.setLayout(new java.awt.GridBagLayout());
@@ -51,6 +53,10 @@ public class IcalOptionsPanel extends OptionsPanel {
 		this.add(new JLabel(Resource.getResourceString("server_port")),
 				GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH));
 		this.add(port, GridBagConstraintsFactory.create(1, 1,
+				GridBagConstraints.BOTH, 1.0, 0.0));
+		
+		skipBox.setText(Resource.getResourceString("skip_borg_ical"));
+		this.add(skipBox,GridBagConstraintsFactory.create(0, -1,
 				GridBagConstraints.BOTH, 1.0, 0.0));
 
 	}
@@ -74,6 +80,8 @@ public class IcalOptionsPanel extends OptionsPanel {
 		
 		Prefs.putPref(IcalModule.EXPORTYEARS, exportyears.getValue());
 		
+		OptionsPanel.setBooleanPref(skipBox, IcalModule.SKIP_BORG);
+		
 	}
 
 	
@@ -85,7 +93,7 @@ public class IcalOptionsPanel extends OptionsPanel {
 		
 		exportyears.setValue(Prefs.getIntPref(IcalModule.EXPORTYEARS));
 
-
+		skipBox.setSelected(Prefs.getBoolPref(IcalModule.SKIP_BORG));
 	}
 
 	@Override
