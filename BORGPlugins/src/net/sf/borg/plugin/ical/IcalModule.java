@@ -227,7 +227,7 @@ public class IcalModule implements Module {
 				icalString = AppointmentIcalAdapter.exportIcalToString(null);
 			}
 
-			System.out.println(icalString);
+			//System.out.println(icalString);
 			FTPClient client = new FTPClient();
 
 			try {
