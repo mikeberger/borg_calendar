@@ -3,7 +3,9 @@ package net.sf.borg.plugin.ical;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.GregorianCalendar;
@@ -25,18 +27,31 @@ import net.sf.borg.ui.MultiView.Module;
 import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.options.OptionsView;
 
+import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPReply;
+
 public class IcalModule implements Module {
 
 	public static PrefName PORT = new PrefName("ical-server-port", new Integer(
 			8844));
 	public static PrefName EXPORTYEARS = new PrefName("ical-export-years",
 			new Integer(2));
-	
+
 	// option to prevent import of appts that were previously exported from borg
-	// used when the goal is to only import appointments created outside of borg, but
-	// to not import appts that were exported from borg to another calendar and then 
+	// used when the goal is to only import appointments created outside of
+	// borg, but
+	// to not import appts that were exported from borg to another calendar and
+	// then
 	// sent back to borg as part of the export from the other calendar
 	public static PrefName SKIP_BORG = new PrefName("ical-skip_borg", "true");
+
+	// FTP
+	public static PrefName FTPSERVER = new PrefName("ical-ftp-server",
+			"localhost");
+	public static PrefName FTPPATH = new PrefName("ical-ftp-path", "borg.ics");
+	public static PrefName FTPUSER = new PrefName("ical-ftp-user", "");
+	public static PrefName FTPPW = new PrefName("ical-ftp-pw", "");
+	public static PrefName FTPPW2 = new PrefName("ical-ftp-pw2", "");
 
 	@Override
 	public Component getComponent() {
@@ -110,7 +125,7 @@ public class IcalModule implements Module {
 		m.add(imp);
 
 		JMenuItem exp = new JMenuItem();
-		exp.setText(Resource.getResourceString("export"));
+		exp.setText(Resource.getResourceString("exportToFile"));
 		exp.addActionListener(new ActionListener() {
 
 			@Override
@@ -120,6 +135,18 @@ public class IcalModule implements Module {
 		});
 
 		m.add(exp);
+
+		JMenuItem expftp = new JMenuItem();
+		expftp.setText(Resource.getResourceString("exportToFTP"));
+		expftp.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				exportftp(Prefs.getIntPref(EXPORTYEARS));
+			}
+		});
+
+		m.add(expftp);
 
 		JMenuItem exp3 = new JMenuItem();
 		exp3.setText(Resource.getResourceString("start_server"));
@@ -161,13 +188,14 @@ public class IcalModule implements Module {
 				for (File f : files) {
 					String warning;
 					try {
-						warning = AppointmentIcalAdapter.importIcal(f.getAbsolutePath(), "");
+						warning = AppointmentIcalAdapter.importIcal(
+								f.getAbsolutePath(), "");
 						if (warning != null && !warning.isEmpty())
 							Errmsg.getErrorHandler().notice(warning);
 					} catch (Exception e) {
 						Errmsg.getErrorHandler().errmsg(e);
 					}
-					
+
 				}
 			}
 		});
@@ -176,6 +204,57 @@ public class IcalModule implements Module {
 	@Override
 	public void print() {
 		// do nothing
+	}
+
+	private void checkReply(FTPClient c) throws Exception {
+		int reply = c.getReplyCode();
+
+		if (!FTPReply.isPositiveCompletion(reply)) {
+			throw new Exception("FTP Error: " + reply);
+		}
+	}
+
+	private void exportftp(Integer years) {
+
+		try {
+			String icalString = "";
+			if (years != null) {
+				GregorianCalendar cal = new GregorianCalendar();
+				cal.add(Calendar.YEAR, -1 * years.intValue());
+				icalString = AppointmentIcalAdapter.exportIcalToString(cal
+						.getTime());
+			} else {
+				icalString = AppointmentIcalAdapter.exportIcalToString(null);
+			}
+
+			System.out.println(icalString);
+			FTPClient client = new FTPClient();
+
+			try {
+				client.connect(Prefs.getPref(IcalModule.FTPSERVER));
+				checkReply(client);
+
+				client.login(Prefs.getPref(IcalModule.FTPUSER),
+						IcalOptionsPanel.gep());
+				checkReply(client);
+				client.enterLocalPassiveMode();
+				checkReply(client);
+				InputStream is = new ByteArrayInputStream(icalString.getBytes());
+
+				//
+				// Store file to server
+				//
+				client.storeFile(Prefs.getPref(IcalModule.FTPPATH), is);
+				checkReply(client);
+
+				client.logout();
+			} finally {
+				client.disconnect();
+			}
+
+		} catch (Exception e) {
+			Errmsg.getErrorHandler().errmsg(e);
+		}
 	}
 
 	/**

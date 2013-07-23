@@ -8,6 +8,7 @@
 	<classpathentry kind="lib" path="lib/google-collect-1.0-rc1.jar"/>
 	<classpathentry kind="lib" path="lib/gdata-client-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/filedrop.jar"/>
+	<classpathentry kind="lib" path="lib/commons-net-3.3.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/BORGCalendar"/>
 	<classpathentry kind="lib" path="/BORGCalendar/lib/base64coder-2010-12-19.jar"/>
