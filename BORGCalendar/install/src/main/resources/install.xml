@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="yes" ?>
+
+<!-- 
+    To compile it :
+    - go in the bin directory where you installed IzPack
+    - call "compile ../sample/install.xml -b ../sample"
+-->
+
+<installation version="1.0">
+
+    <!-- 
+        The info section.
+        The meaning of the tags should be natural ...
+    -->
+    <info>
+        <appname>BORG Calendar</appname>
+        <appversion>@{borg.version}</appversion>
+        <appsubpath>BORGCalendar</appsubpath>
+        
+         <authors>
+    <author name="Michael Berger" email="i_flem@users.sourceforge.net"/>
+   
+  </authors>
+	<javaversion>1.6</javaversion>
+	<url>http://borg-calendar.sourceforge.net/</url>
+    </info>
+    
+    <!-- 
+        The gui preferences indication.
+        Sets the installer window to 640x480. It will not be able to change the size.
+    -->
+    <guiprefs width="640" height="480" resizable="yes">
+    	<modifier key="useHeadingPanel" value="yes"/>
+    	 <modifier key="labelGap" value="2"/>    
+  		<modifier key="layoutAnchor" value="NORTHWEST"/>    
+    	<modifier key="headingLineCount" value="1"/>
+  		<modifier key="headingFontSize" value="1.5"/>
+  		<modifier key="headingBackgroundColor" value="0x00ffffff"/>
+  		<modifier key="headingPanelCounter" value="text"/>
+  		<modifier key="headingPanelCounterPos" value="inHeading"/>
+    </guiprefs>
+    
+    <!-- 
+        The locale section.
+        Asks here to include the English and French langpacks.
+    -->
+    <locale>
+        <langpack iso3="eng"/>
+        <langpack iso3="fra"/>
+        <langpack iso3="spa"/>
+        <langpack iso3="deu"/>
+        <langpack iso3="ita"/>
+        <langpack iso3="ned"/>
+        <langpack iso3="pol"/>
+        <langpack iso3="por"/>
+        <langpack iso3="rus"/>
+        <langpack iso3="chn"/>
+        <langpack iso3="ukr"/>
+    </locale>
+    
+    <!-- 
+        The resources section.
+        The ids must be these ones if you want to use the LicencePanel and/or the InfoPanel.
+    -->
+    <resources>
+        <res id="LicencePanel.licence" src="COPYING"/>
+        <res id="InfoPanel.info" src="RELEASE_NOTES.txt"/>
+	<res src="ShortcutSpec.xml" id="shortcutSpec.xml"/>
+	<res src="Unix_ShortcutSpec.xml" id="Unix_shortcutSpec.xml"/>
+	<res id="installer.langsel.img" src="borg.jpg" />
+
+    </resources>
+
+    <native type="izpack" name="ShellLink.dll"/>
+    <native type="izpack" name="ShellLink_x64.dll" />     
+    <!-- 
+        The panels section.
+        We indicate here which panels we want to use. The order will be respected.
+    -->
+    <panels>
+        <panel classname="HelloPanel"/>
+        <panel classname="InfoPanel"/>
+        <panel classname="LicencePanel"/>
+        <panel classname="TargetPanel"/>    
+        <panel classname="InstallPanel"/>
+        <panel classname="ShortcutPanel"/>
+        <panel classname="SimpleFinishPanel"/>
+    </panels>
+    
+    <!-- <panel classname="PacksPanel"/>
+        The packs section.
+        We specify here our packs.
+    -->
+    <packs>
+        <pack name="Base" required="yes">
+            <description>The base program and help files</description>
+            <file src="RELEASE_NOTES.txt" targetdir="$INSTALL_PATH"/>
+            <file src="license.htm" targetdir="$INSTALL_PATH"/>
+            <file src="COPYING" targetdir="$INSTALL_PATH"/>
+            <file src="borg_mysql.sql" targetdir="$INSTALL_PATH"/>
+            <file src="db.html" targetdir="$INSTALL_PATH"/>
+            <file src="borg.jar" targetdir="$INSTALL_PATH"/>
+            <fileset dir="lib" targetdir="$INSTALL_PATH/lib"/>	    	     
+	    	<file src="run_borg.sh" targetdir="$INSTALL_PATH"/>
+	    	<parsable targetfile="$INSTALL_PATH/run_borg.sh" type="shell"/>
+	    	<executable targetfile="$INSTALL_PATH/run_borg.sh" stage="never"/>
+        </pack>
+
+    </packs>
+    
+</installation>

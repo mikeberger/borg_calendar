@@ -1,0 +1,14 @@
+<shortcuts>
+	<skipIfNotSupported/>
+	<programGroup defaultName="BORG"/>
+	<shortcut name="BORG" target="java" commandLine="-Xmx128m -XX:MinHeapFreeRatio=10 -XX:MaxHeapFreeRatio=20 -Xms24m -jar borg.jar"
+		workingDirectory="$INSTALL_PATH" description="BORG Calendar"
+		initialState="normal" programGroup="yes" desktop="no" applications="no"
+		startMenu="no" startup="no" encoding="UTF-8" type="Application"/>
+	<shortcut name="Uninstall" target="java" commandLine="-jar $INSTALL_PATH/Uninstaller/uninstaller.jar"
+		workingDirectory="$INSTALL_PATH/Uninstaller" description=""
+		initialState="normal" programGroup="yes" desktop="no" applications="no"
+		startMenu="no" startup="no" encoding="UTF-8" type="Application">
+	</shortcut>
+</shortcuts>
+

@@ -1,0 +1,706 @@
+BORG 1.7.9
+----------
+
+Features:
+=========
+174	File Chooser does not remember previously accessed directory and open up that
+168	Address book "Street Address" field too short
+98	Selecting the time for appointments in the day/?week view
+50	Address Book accepts invalid email and phone formats
+Make popup reminder color tunable (post-it view only)
+Add ability to drop ical file onto borg (ICAL plugin)
+
+Bug Fixes:
+==========
+186	Double-clicking in day view times column results in irreversible graphical glitch
+184	Startup View option not working
+183	Category with empty string as name can be created
+172	Copy and Paste allows us to violate recurrence rules
+171	An encrypted appointment should be labeled in the link dialog
+170	Empty URL behavior in Address Book
+167	Exporting xml prefs overwrites existing file without confirmation
+166	Linking an address to itself results in a double link
+164	The application accept empty or a white space character as URL Link.
+163	For BORG Link, the adding and deleting BORG Link behavior are inconsistent.
+162	If we input an empty string as the URL link, and open this URL from Links section, the application incorrectly opens an OS window let us to select file.
+161	When an appointment "apt2" link itself as the BORG link, the BORG Links Appointment[apt2] are shown twice in the Links section.
+160	A private appointment can be select as "BORG" link, and also can be edit in "BORG" link.
+158	Invalid priority in xml import accepted
+157	Import of an appt with an incorrect date causes null pointer
+156	AddressBook allows duplicate entries
+153	Export should not be enabled for encrypted Memos
+152	No feedback for the "Print" function from task view
+149	Repeating instances are calculated incorrectly for �month(day)� repeat type
+148	Appointment become invisible when start date is after the repeat until date
+147	Deleting an opened Task leaves the opened tab, but removes it from the TaskList
+146	Move repeating appointment by dragging failed after the first occurrence got deleted
+142	Space character (" ") accepted as text for appointments
+141	CheckList should not allow deleting all items in a list
+139	Re-naming an existing Memo to more than 50 characters deletes the Memo
+138	Re-naming an existing Checklist to more than 50 characters deletes the checklist
+134	Search features fails on specific date search (not inclusive)
+131	End Date can be before Start date in Search Feature
+129	Notify User When They Have No Categories To Delete
+124	appointment created on a leapyear (Feb 29) stops recurring on the next leapyear
+61	Menu graphical glitch
+Fix popup text for untimed items (post-it view)
+
+
+BORG 1.7.8
+----------
+
+Features:
+=========
+6	Allow active HTML links in memos
+14	Add summary field for tasks - separate from description
+20	Appointment Copy/​Paste on calendars
+28	Allow delete of Memos from search window
+71	Show User The Path To Exposed iCal File (plugin change)
+74	Hide duplicate holidays when showing both American and Canadian holidays
+79	Filter Unsupported File Extensions From iCal Export (plugin change)
+111	Add a Cell Phone Field to the Address Book
+Add log viewer
+Updated Polish Translation
+Add close date to task list
+Add rename option for memos and checklists
+
+Bug Fixes:
+==========
+15	Change Date on appt editor is broken
+16	Fails to Update User When Calender Cannot Be Imported
+17	Filter Unsupported File Extensions From XML Import
+19	Error when trying to close a task from the todo list
+22	Appointment start time can be after end time (negative duration)
+23	Appointment with empty subject
+26	Address books accepts names of only blank characters
+27	Appointment editor can accept invalid minutes input for appointment time
+29	Times of recurrence in appointment editor truncates large input without give error /​ warning.
+30	Futuristic birthday dates are allowed in address book
+31	Category can not be changed when create new to do in the To Do view
+32	subtask under a project can start early than its parent project
+34	Category names greater than 10 characters not accepted in Projects
+35	Invalid time in appointment editor leads to invalid value message to be displayed twice
+37	Setted appointment dispare when change from every n days to once
+40	Dragging and dropping a Todo to the edge causes it to go to the wrong spot
+42	Font chooser dialog doesn't resize and the title has a typo
+43	Behavior of inputting new category name is inconsistent.
+44	The ‘Save’ button in appointments should clear subject field
+49	Address Book throws uncaught SQL Exception
+52	Cannot select other created category in Search window
+55	Undoing a deletion of an appointment does not restore links
+56	Filter Unsupported File Extensions From iCal Import
+57	Dragging of headings displays blank data in the reminder pop up window
+58	'Person Assigned' field in 'Task Information' throws uncaught SQLException
+59	A Task with an open Sub-Task can be closed
+64	Memo deleted even when Done(No Delete) was choosen
+68	All unused categories are also deleted after deleting one of selected category.
+69	Uncaught java.lang.NullPointerException
+70	Importing 'Entire Backup Zip File' or 'XML file' generates org.h2.jdbc.JdbcSQLException
+72	Unable to delete subtasks from the 'Tasks' view
+73	Deleting multiple 'File Links' from a Project throws an Exception
+75	The "note" text box does not warp around to the next line
+76	Unable to see all options after changing 'Look and Feel' to certain profiles
+77	Close" button does not work in the add category panel 
+78	To-Do List Copying Error: Repeating discard message
+80	Using 'print' command only shows from '2nd day' of the month for months that begin on a sunday
+81	Being able to "Export" with no memo selected
+84	Able to create a Checklist item with white space as title
+85	User can create a Memo with an empty name
+86	Program freezes if an extremely large Memo is created
+87	Uncaught parsing error while importing preferences
+88	Uncaught "SQL Exception" on long address when adding a contact
+89	Duplicate hot-keys in "address book entry" panel
+91	Contradictory to specification  KEYSTORE can be created with an empty password
+93	Export option shows "open" instead of "save" in the save window
+95	Contradictory to the specification  the "WHOLE WORD" option of the search menu still considers 'empty strings' and 'whitespaces' as whole words.
+96	Uncaught java.lang.NullPointerException
+99	Space being considered as case sensitive and a whole word in the search function
+112	Day/Week buttons don't work on the month view
+prevent "java.lang.SecurityException: Access to default session denied " when sending email	
+clear editor when clicking on root of project tree	
+fix some threading issues with the shutdown splash screen	
+update quick-todo and search view category menus when categories are added	
+
+
+BORG 1.7.7
+----------
+
+Features:
+Re-layout Task, Project, Address, and Search forms to make better use of space
+Hide links table if there are no links to save space
+Prepend task description to subtask on calendar
+Use H2 as default database instead of HSQL
+#12 Allow 1 minute increments for appointment times
+#11 Edit appointment duration by setting the end time
+#10 Allow setting of the views that open at start up
+#9 Show colors to indicate tasks approaching the due date
+#34 (trac)	allow different From and To addresses for email reminders
+#36 (trac)	Updated Spanish (Argentina) Translation
+
+Bug Fixes:
+#13 Move Box on Week View shows wrong end time
+#8 Start date and Due date are reversed on the Project View
+#37 (trac)	Error creating DB with Java 7
+#35 (trac)	Wrong item dragged when there are too many untimed events to fit in a calendar box
+#32 (trac)  A new blank subtask is not added to the subtask table automatically
+
+BORG 1.7.6.3
+------------
+
+Feature #25: Spanish Translation Updates
+
+Bug #21: Daylight Savings Time
+Bug #22: Color themes do not refresh when importing from XML
+Bug #23: Theme name is too big for H2, MySQL
+
+Other #24: Add logging to Borg with a debug option
+
+BORG 1.7.6
+----------
+Bug and Feature numbers now come from Trac
+
+Feature #7 repeat pattern (By N weeks, months, years)
+Feature #10 Standard Menu Bar for all Windows
+Feature #9 Daily view scale setting - add zoom buttons on day and week view. does not affect printing.
+Feature #6: add reminders for tasks
+Feature #12: Show popup reminder for birthdays
+Feature #15: Color Schemes and support for dark themes
+Feature #16: Allow user to type in a look and feel name
+Feature #19: Allow user to change system tray appearance. Fix System Tray sizing.
+Feature #20: Add a database modification timestamp to detect linux remount errors
+Feature: add option to select a particular looks color theme when using a looks look and feel.
+Feature (contributed code): Add text to days in year view
+Feature: add ability to open any view from the tray icon menu
+
+Bug #3 category not consistant across borg clients
+Bug #2 Can't print Task List
+Bug #4 borg help not loaded in 1.7.5
+Bug #1 Linux desktop shortcuts not always created
+Bug #17 Fix the initial focus and save&close mnemonic on the appt editor screen
+Bug Fix start-to-tray to properly create the month view tab
+
+Other: Clean up the build script. Compile by Package to enforce package dependencies.
+Other: Add an optional IVY task to download the latest third-party lib versions
+Other: create separate "ext" folder to contain dynamically loaded libs (plugins, added l&f's)
+Code Refactoring: eliminate used of restricted APIs. Use lombok to clean up Bean classes. Remove dead code.
+
+
+BORG 1.7.5
+----------
+Feature 3118440 - Checklists
+Feature 1416675 - To Do Priorities
+Feature 3136779 - Ability to Import Backup Zip all at once
+Feature 3116794	- Make all tabs dockable
+Feature 3084552	- Ask for confirmation when memo is going to be deleted
+Feature 3075832	- Enable multiple selection in pop-up reminders
+Feature 3227225 - Ability to override the dock/undock defaults per window
+Feature 3217074 - Enhanced set of shutdown/backup options
+Feature (Patch) 3094537	- "todo quick add" field enhancements
+Feature - option to email the backup ZIP when it is created
+Feature - Export XML changed to create a single ZIP file instead of separate XML files
+Feature - Option to Sort by priority on calendar
+Feature - Support H2 Database
+Feature - anti-alias text
+Feature (Patch) - total number of items for TODO and Task lists
+Feature - Whole Word Search
+Feature - updates to the Italian Translation
+Feature - option to show subtasks in task lists
+Feature - in project tree, show empty projects as folders, not leaves
+
+Bug 3076434	- Backdated ToDos-Birthdays pop up for each year until present
+Bug - memo view does not clear currently shown memo when the tab is closed.
+Bug - options do not reset to stored values if the option view is closed and reopened.
+Bug 3217092 - BORG does not remember dock state after closing
+Bug - do not create undo records when importing
+Bug - only show first line of appt text in email reminders
+Bug 3285186 - fix exe installer for windows-7
+
+BORG 1.7.4
+----------
+Spanish (Argentina) Translation
+Feature - add search in memo text
+Feature - [3039608] Single pop-up window for multiple reminders
+Feature - [3059547] Add Repeat Until as a Recurrence option
+Feature [2945673] - add back start to system tray feature
+Feature - option to filter closed tasks in project/task tree
+Feature - option to filter closed tasks in project task list
+Feature [2960249] - option to hide status and task number in task tree display
+Feature - automatically detect a few more Look and Feels
+Feature [2945434] add option to show date in tray icon
+Feature [2985309] Single click activate, double click add appointment
+
+Bug - Make Daylight Savings Time Change entries non-clickable
+Bug - Fix import bug that messes up links. Also speed up import.
+Bug - change color chooser buttons so that color is always shown. Was lost for some look and feels.
+Bug [2934430] - add buttons to increase/decrease the size of the non-timed area for day and week views.
+Bug - make todo table react to changes in user colors preference
+Bug [2985307] ToDo list always appears at startup
+
+Other - Move reports and GANTT chart out of BORG. Create an unsupported plugins project
+to contain the reports, GANNT, and the old Ical import.
+
+BORG 1.7.3
+----------------
+Feature [2893839] Add optional encryption for Memos and Appointments
+Feature [2913708] extend search to cover all types
+Feature - encrypt stored email password
+Feature - allow user to provide their own reminder sound
+Feature - set a default db on start up for new install. Do not prompt for DB options.
+
+Change - Set default JGoodies theme to Experience Blue
+Change - Hide report items if report libs not available
+Change - Hide Gantt buttons if JFreechart not available
+Change - Move UI logic out of Borg class. Move UI logic out of non-Swing thread.
+Change - improve font options screen
+Change - split up OptionsView class into smaller modules
+
+[Bugs-2897010] Appt drag on month view works wrong if week starts with monday - only if first day of month is a sunday
+Bug - Links to Borg Objects not deleted when target is deleted
+Bug - Linked Memos do not open properly
+Bug - Splash screen text is editable
+Bug - NPE if popup timer goes off during shutdown after db is closed
+Bug - Missing scrollbar in Appointment Panel
+Bug - task filter missing on task list screen
+Bug - appt boxes do not show strike-through text
+
+BORG 1.7.2 - Developer Release
+-----------------------------------
+** Feature [2846844] Code Cleanup and Javadoc **
+** The entire code base was cleaned up, refactored, and documented in this release.
+** Thousands of lines of obsolete code have been removed.
+** The UI code was rewritten to remove almost all of the IDE-generated code.
+
+Feature [2769671] Add an address book search  
+Feature [2852664] support TLS for SMTP (for gmail)
+Feature [2876229] rewrite XML import/export to use JAXB
+Feature [2876230] improve week/day view
+Feature [2876231] add quick-note menu option
+Feature [2876232] put the 3 task tabs under a single main tab
+Feature [2876242] Remove Palm sync Support
+Bug Fix [2876233] cleanup the translations - remove unused strings
+Bug Fix [2876234] tab close/undock icons do not highlight
+Bug Fix [2876236] clean up the online help
+Bug Fix [2876237] popups sometimes continue after appts changed or deleted
+Bug Fix [2876238] when deleting multiple addresses - the wrong ones are deleted
+Bug Fix [2876240] fix calendar view tooltip
+Bug Fix [2745960] pop up reminder non-functional at large-minute settings 
+Bug Fix [1728135] No Popups--- Date Doesn't Advance
+Bug Fix [1693757] Category name size not checked
+
+** BORG 1.7.2 now requires Java 6.
+  
+BORG 1.7.1
+----------
+Feature [2648806] add an undo feature
+Feature [2234537] add quick-todo option to calendar context menus
+Feature [2221223] backup to ZIP file
+Feature [2216864] add task list to project view
+Feature [2626455] add option to change SMTP port
+Feature [2628166] highlight tab icons on mouse-over
+Feature [2628187] highlight the link tab on tasks if links are present
+Bug Fix [2465525] RunSQL missing commit
+Bug Fix [1988106] Overlapping widgets on recurrence panel
+Bug Fix [2628138] don't send empty reminder email  
+
+
+Simple BORG 1.7
+-----------------
+Feature 2198214  Create Simple BORG 
+Feature 2198199  Add option to hide strike-through items
+Feature 2198196  Add tray icon option to hide all reminders
+Feature 2198193  Make sure quick todos take fields from the default appt
+Feature 2198191  display count of vacation days per year
+Feature 2198189  Enhance New appointment box
+Feature 2198182  Add ability to search for items with links
+Feature 2198179  Makes tasks/projects/subtasks editable from calendar UIs
+Feature 2198173  Convert all code to use Generics
+Feature 2198172  Remove ical/vcal support
+Feature 2198165  Remove multi-user features
+Feature 2198160  Use Java 6 system tray
+Feature 2198157  Upgrade to Java 6  
+
+Remove about 1/3 of the code and lots of non-core features.
+Removed: multi-user, remote server, local files db, ical/vcal, and many rarely-used smaller features
+
+
+Version 1.6.1 Final
+-------------------
+Feature [1904725]  mark todos as done from reminder popup
+Feature [1903141]  Add marker on calendar if appt has links  
+Feature [1871712]  Show past non-timed todo reminders
+Bug Fix [1959692]  can't drag appt from non-timed to timed  
+Bug Fix [1951636]  cant change save a task after first entered
+Bug Fix [1933587]  deleted repeats show up in todo list and popups
+Bug Fix [1909656]  month and year view missing 1st
+Bug Fix [1886138]  ClassCastException when savong changed subtask
+Bug Fix [1873225]  Add New from Day/Week view broken in 1.6.1 b3
+
+Version 1.6.1 Beta 3
+--------------------
+Feature [1851556] add links/attachments
+Feature [1820023] Links and hyperlinks
+Feature [1595707] Add Address Book linking with dates
+Feature [1653120] Add "Year View" tab/display
+Feature [1671535] Date/time-stamp for Memos
+Feature [1856643] improve SQL output 
+Bug Fix [1856661] Program loses track of window size after maximize
+Bug Fix [1856590] Run SQL runs too slow 
+Bug Fix [1855501] Time Zone Problem
+
+Version 1.6.1 beta 2
+--------------------
+Feature [1833863] allow dragging of appts in the month view  
+Feature [1842095] add sub projects
+Feature [1833864] allow dragging of appts outside of grid in day/week views
+Feature [1834235] import/export of preferences  
+Feature [1834573] automatic backup
+Feature [1841894] display task and subtask duration column
+Feature [1841893] change subtask creation date to start date
+Bug Fix [1844200] Todo marker icon does not scale
+Bug Fix [1844197] Text todo marker functionality accidentally removed
+Bug Fix [1844194] day and week print is meesed up in 1.6.1 beta  
+Bug Fix [1833869] user colors not used in new views
+Bug Fix [1834857] error when emailing meeting notice 
+Bug Fix [1619520] today marker color doesn't update 
+Bug Fix [1842126] Task import bug
+Bug Fix [1840005] Palm Conduits will not work with Hotsync 6
+Bug Fix [1839373] Project status / localized value  
+  
+
+Version 1.6.1 Beta
+------------------
+Feature [1830421] new month view  
+Feature [1826911] add a toolbar  
+Feature [1778929] GANTT Charts
+Feature [1825699] make some of the windows dockable 
+Feature [1826487] add a tree based project browser
+Feature [1829289] add todo marker to day and week views 
+Feature [1827264] allow appts to be dragged between days on the week view      
+Feature [1730886] add automatic db update for hsqldb 
+Feature [1730718] support private memos
+Feature [1799708] memo: warn on unsaved changes  
+Feature [1716211] allow undated tasks
+Feature [1824596] send email errors to a window  
+Feature [1829365] obsolete old features 
+Feature [1831526] todos incorrectly marked as done in month print   
+Bug Fix [1781575] reminder popups show for deleted appts  
+Bug Fix [1777793] do not validate dates of closed tasks/subtasks
+Bug Fix [1746887] null pointer error when chging task due date
+Bug Fix [1738531] task state editor hangs
+Bug Fix [1730918] private todo's are not private on the Palm
+Bug Fix [1719016] some files missing from install
+Bug Fix [1714949] system tray errors in Linux
+Bug Fix [1787412] Palm Appt Conduit Performance bug  
+Refactor code into a single Eclipse Project (except for palm and servlet). Reorganize Packages.
+
+Version 1.6
+-----------
+Add Portuguese (Brazilian) translation
+Feature [1664278] Add "copy to date" option in Appointment Editor
+Feature [1663823] Add day-of-week name to header of "Day" view
+Feature [1656975] Options for "ToDo" icon?
+Feature [1651947] Tasklist to OpenOffice Calc Export
+Feature [1628049] memo to txt combined with txt2tags
+Bug Fix [1704593] repeating todo bug 
+Bug Fix [1690078] conditional formating is lost on columns 
+Bug Fix [1690074] project creation dates do not check overlaps
+Bug Fix [1668450] Partial character crop in name display of Address Book
+Bug Fix [1666260] Remote Mysql server connection problem
+Bug Fix [1657333] Todo View does not refresh when subtask closed
+Bug Fix [1656972] No "Project" or "Tasks" display w/ some "Look/Feel" options 
+Bug Fix [1655548] java.lang.Exception: Error: No initial state found for task
+Bug Fix [1654751] NullPointerException from TodoView.java
+
+Version 1.6 beta 2
+------------------
+Feature [1646015] enhance remote db to support tasks
+Feature [1645758] use project values to initialize new task
+Feature [1645750] allow task navigation and close from todo list
+Feature [1645720] add projects to calendar
+Feature [1644941] display subtasks on todo list
+Feature [1651552] improve look of week/day view
+Feature [1644928] add option to turn off task numbers in cal & todo list
+Bug Fix [1646013] project import fails
+Bug Fix [1633184] Error with MySQL 4.0
+Bug Fix [1629517] can close task with open subtasks
+Bug Fix [1629514] save task incorrectly detects date change
+
+
+Version 1.6 beta 1
+------------------
+Feature [1109652] - Redesign Subtasks in Task Tracker to allow unlimited subtasks per task, each with its own due date
+Feature [1109652] - Add Projects. A Project contains a collection of related Tasks.
+Feature [1593551] - Add a Task Log to record Task status changes
+Feature [1617531] - Add Simple Plain-Text memos, compatible with Palm-Desktop
+Feature [1617531] - Add Palm Hot-Sync conduit for the new memos
+Feature [1618416] - Move the Task Tracker into the main window as 2 new tabs - Projects and Tasks
+Feature [1622984] - Make HSQLDB the default and deprecate Local Files
+Feature [1358885] - Separate the appointment title and description in the editor
+Feature [1616972] - Update the date chooser widget (which will also fix some bugs caused by the prior one)
+Feature [1592065] - Support Skipped Repeats on the Palm
+Feature [1590836] - Store all BORG appt fields on the Palm to prevent editing appts on the Palm from clearing certain fields
+Bug Fix [1619741] - fix up the default colors, which were ugly and hard to see at times.
+Bug Fix [1619498] - fix up the behaviour of tables and add row striping
+Bug Fix [1600804] - sort elapsed time numerically
+Bug Fix [1590982] - prevent changes to a repeating appt or todo from resetting the list of skipped days and done occurrences when possible
+Bug Fix [1590834] - Palm sync should not lose the appt color
+
+*** Deprecated the Local Files Database. HSQLDB is now the default ***
+
+Version 1.5.2
+-------------
+HSQLDB Standalone Database Support
+Allow navigation and access to the appt editor from day and week views
+Combine Month/Day/Week views into one tabbed window
+Allow graphical appt editing from the day and week views
+Add full appt text on mouse-over to day and week views
+Add half-hourly reminder popups for the day's untimed todos
+Make fonts in printouts, day, and week view tunable
+Make the popup reminder times tunable
+Add option to shutoff system tray
+Upgrade iCal libraries
+
+Version 1.5.1.2
+---------------
+Show as many days from prior and next month as will fit in the current month view
+Socket Interface - available commands: shutdown, sync, open
+Updated German Translation - (also in 1.5.1.1)
+Track Closed Date for Tasks
+Track Elapsed Time for Tasks
+Timed Individual Reminder Emails for Appointments 
+
+Version 1.5.1
+-------------
+Ability to open multiple shared (public) calendars when using remote server
+Keyboard Shortcuts
+Fulltext tooltips when hovering over days in the month view
+Todo and Appt quick change date and move to next date actions
+Todo and Appt List right click context menus
+Add date chooser for birthdays
+Flemish (Dutch Belgian) Translation by Rudy Defrene < sat2freak@users.sourceforge.net>
+Repeat by user-selected days of the week
+Tomcat-based data server
+Improved Search
+Bulk Delete and Change Category
+Fix some major Palm Sync Bugs
+Add PRI column to Task List View
+Add word-wrap to week view
+Support both case sensitive and insensitive filtering/searching
+Upgrade to JGoodies Looks 1.3.2
+SMTP authentication support
+MYSQL 5.0 compatible
+
+Version 1.5
+-----------
+Import iCal into a particular category (1.5 final only)
+Delete Category including appts and tasks (1.5 final only)
+Palm Synchronization Conduits
+Improved Popup reminders with user tunable popup times per appointment
+Add date chooser to task GUI
+Share categories between appointments and tasks.
+Change to use category pull-down menu on task editor
+Allow GIF images to mark todos in calendar
+Simplified Chinese Translation
+Dutch Translation
+Remove Logging feature
+Switch to JDIC for Windows and Linux Tray Icon Support
+Ability to send reminder email on demand for any day
+Option to show repeat occurrence number
+Multi-user DB auto-sync
+Tunable reminder email time
+Option not to truncate appointment text at one line
+Email to multiple addresses
+Tunable line-spacing in month view
+Bug fixes
+
+Version 1.4.2
+-------------
+Polish Translation from Rafa? Gawro?ski
+User tunable colors for the month view and todo list
+Export to vCalendar 1.0 (.vcs) format (used by Palm Desktop)
+Save Address or Task information as HTML using XSLT
+Improved Todo GUI
+Highlight todo's on the month view
+Show done todo's with strike-through
+Add day navigation from appointment editor
+Other miscellaneous GUI improvements
+Option to export iCal in UTC (for outlook)
+Repeat every N days
+Bug fixes
+
+Version 1.4 patch 1 (1.4.1)
+---------------------------
+A GUI to edit the tracker's task types and states
+Screens will remember the size and position set by the user
+Support large numbers of categories (>100)
+Option to show day of year numbers
+Bug Fixes
+
+Version 1.4 final
+--------------------
+Italian Translation from Piero Trono http://php-multishop.com tropic@users.sourceforge.net
+Add Bulk Delete from Search Results Menu
+Add a new Help System based on JavaHelp
+Ability to save default values in the appt editor
+Repeat by Mon-Wed-Fri and Tues-Thurs
+Improved week view layout that handles overlapping events
+Day View
+Remove trayicon classes from borg.jar and bundle in lib dir instead
+Add Options option to the trayicon
+Add better MySQL support to make it much simpler to use MySQL
+Bug Fixes
+
+Version 1.4 beta
+---------------------
+bundle the jgoodies look and feels with the product
+import/export iCal format
+new type of monthly repeat by week/day of week
+jump from search and todo list to appt editor
+refactoring of the model and database code
+improvements to reduce volume of JDBC activity between client and db
+Ability to run as a demo applet ("sandboxed mode")
+add "apply" button for options - no more immediate apply
+bug fixes
+
+Version 1.3.2
+---------------------
+Use color when sorting appts
+Add -trayname option
+Export/Import to URL
+Allow multiple BORGs to open and share the same database file
+German Translation
+Eliminate remaining US date formats
+Add Week Numbers
+bug fixes
+
+Version 1.3.1 
+----------------------------------
+- ADD categories to Todo List
+- ADD options to view README and CHANGES files
+- redo the appointment editor to have an appointment list showing all of a day's appts.
+  allow the user to select any appt on the list to edit.
+- allow full-blown font selection for the default font, appointment font, and preview font
+- Reorganize the code into packages. Refactor most of the code, except for NetBeans generated code.
+- Support the full Print Option Dialog provided by Java, which includes options for paper size, page orientation, copies, etc...
+- Support printing of 1-12 months at a time. Most printer drivers can then provide 2-sided printing and 2-up printing.
+- Add a birthday field to the address book. Use this field to include birthdays on the calendar, along with age.
+- Support unlimited repeats for appointments with a new checkbox on the appointment editor
+- add 2 more repeat frequencies
+- make the preferences window smaller by using tabs
+- make the popup reminder functionality tunable from the preferences window
+- make the splash screen optional
+- bug fixes: fix some window layout problems where windows would display too narrow.
+             fix bug that sometimes messed up the main window look and feel whenever the options menu was opened.
+             fix character encoding problems - make database and XML files UTF-8
+             fix the first/last name problem in the address book
+             fix appointment editor bug when repeat freq does not match times - bad db record is stored
+
+             
+
+Version 1.3 
+-----------
+- contents of 1.3 beta 1 & 2
+- Spanish Translation
+- ability to change locale from the options screen
+- eliminate lock files/switch to java.nio locking
+
+Version 1.3 beta 2
+--------------------------------
+- appointment categories/virtual calendars
+- resource files for internationalization
+- more tray icon menu options
+- allow XML import without KEYs
+- todo quick-add
+- ability to move appointments from one date to another
+- ability to change the type of a task in progress
+- bug fixes
+
+Version 1.3 beta 1
+--------------------------------
+- Add Jdbc database layer - experimental
+- Add Address Book
+- Add Task Categories
+
+Version 1.2
+--------------------------------
+- Add User-Defined Print Logo to month view
+- Add import from XML and improve export to XML
+- Standardize Date format in the database to make it portable
+  across incompatible locales
+- Add Repair tool to MDB
+- Add support for Windows systray
+- Add Canadian Holidays
+- Add word wrap option for month view and month print
+- Add navigation menu
+- Add task save button
+- Bug fixes
+
+Version 1.1 beta
+--------------------------------
+Week View and Print
+Appointment Durations
+Better support for non-scheduled appts from appt editor
+Major code cleanup. Rewrite of much of the class model.
+  - Redo all classes. Redo Model, View, Controller
+  - Create new BeanDB Database object to use instead of SMDB
+  - BeanDB will use a schema defined in XML
+  - a class generator will also use the schema to generate Bean classes at
+    build time
+  - BeanDB will only export the generated Bean classes to the outside world
+  - the generated classes will be Appointment and Task
+Allow Database dir switch without program restart
+
+Version 1.0
+-----------
+- First Day of Week = Monday
+- 24 hour time format
+- bug fix for missing day contributed by Mark Wrangham (ptigga@users.sourceforge.net)
+- allow change of LookAndFeel to any installed LookAndFeel or any in
+  classpath.
+- allow system subtasks to be tunable
+- fix bug where 0:00 showed up as the time for a non-scheduled appt
+
+Version 0.9.4
+-------------
+- Print Preview
+- Background color added to color print
+- Auto Update check - optional feature to periodically check - BORG website for latest release number so users do not have to check for new releases.
+- Preview of Todos and Tasks on the main window
+- some code cleanup. One or two bug fixes.
+
+Version 0.9.3
+-------------
+added autostart feature
+made task types and states tunable - a sizable new feature
+improved help screen
+added comments, comments, and more comments to the source
+fixed 2 popup bugs - see bug tracker for info
+
+Version 0.9.2
+-------------
+- Add 5 user tunable checkboxes per task to track subtasks
+- Fix bug where beeping popup would continue beeping after the window was closed.
+
+Version 0.9.1
+-------------
+- Auto population of most US holidays
+- XML export and logging
+- Audio notification of imminent appointments
+
+Version 0.9
+-----------
+Initial Release on SourceForge
+Removed all non-GPL code
+
+Ancient History
+---------------
+8/2001 - Initial Java version
+7/1994 - Initial Tcl/Tk/C++ version
+Early 90's - Original X11 Version, C++/Xaw
+
+Original Copyright (no longer valid)
+------------------
+This program is not to be in the possession of anyone except Michael Berger.
+Do not even think of reading the rest of this sentence without explicit 
+permission from Michael Berger, unless you are a good friend of Michael 
+Berger, or someone who has provided free food for Michael B. Berger.

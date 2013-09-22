@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
+	<TITLE></TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice.org 3.1  (Linux)">
+	<META NAME="CREATED" CONTENT="0;0">
+	<META NAME="CHANGEDBY" CONTENT="mike b">
+	<META NAME="CHANGED" CONTENT="20091207;13101100">
+	<META NAME="Originator" CONTENT="Microsoft Word 9">
+	<META NAME="ProgId" CONTENT="Word.Document">
+	<STYLE TYPE="text/css">
+	<!--
+		P { color: #000000 }
+		H2 { color: #000000 }
+	-->
+	</STYLE>
+</HEAD>
+<BODY LANG="en-US" TEXT="#000000" DIR="LTR">
+<H2><FONT FACE="Arial">Encryption</FONT></H2>
+<P><FONT FACE="Arial">Borg supports the optional encryption of Memos
+and Appointments. When chosen, AES symmetric encryption is used to
+encrypt and decrypt text before storing in the database. This
+encryption is meant to be secure enough to protect any sensitive
+information.</FONT></P>
+<P><FONT FACE="Arial">Memos and Appointments can be encrypted by
+checking the Encrypt on Save check box before saving and then
+supplying the encryption password when prompted. Encrypted items can
+only be viewed by pressing the decrypt button and supplying the
+password. The password is the same for all items (see below). </FONT>
+</P>
+<P><FONT FACE="Arial">There is an option on the Encryption options
+tab to define how long Borg will remember an entered password. The
+default is 5 minutes. This means that once a valid password is
+entered, the password will not have to be re-entered for further
+encryption/decryption operations for 5 minutes. This time length can
+be set to any value between 0 seconds and 1 year. A value of 0 would
+cause Borg to prompt for the password for every encryption/decryption
+operation.</FONT></P>
+<P><FONT FACE="Arial">Borg uses a single key for all encryption. It
+is kept in a Java JCEKS Key Store file and is protected by a
+user-chosen password. Encryption cannot be used unless this file is
+set in the Borg Encryption Options. To create an initial Key Store,
+go to the Encryption Options tab and browse to create a new file.
+Borg will prompt for a password and then create the Key Store with a
+new random key.</FONT></P>
+<P><FONT FACE="Arial">The Key Store file contains the encryption key
+and is protected by the password that is entered when the file is
+created. Whenever Borg needs to encrypt or decrypt data, it will
+prompt for this password. Do not forget this password. If lost, there
+is no way to recover it and any encrypted data can no longer be
+decrypted. The key store password is never stored to disk in any
+form. </FONT>
+</P>
+<P><FONT FACE="Arial">Likewise, do not lose the Key Store file and
+keep safe backup copies. If you keep the Borg database on removable
+media, such as a thumb drive, and mount it on different machines, you
+will not be able to decrypt secure data unless the key store file is
+also available to each machine and set in the options. </FONT>
+</P>
+<P><FONT FACE="Arial">For maximum security, the Key Store file should
+be kept separate from the database. A malicious person that gets a
+copy of your Borg database and/or your saved XML exports will not be
+able to decrypt your protected data without the Key Store file. </FONT>
+</P>
+<P><FONT FACE="Arial">Even with the Key Store file, a malicious
+person will still not be able to decrypt Borg data without knowing
+the password that was used to protect the Key Store.</FONT></P>
+</BODY>
+</HTML>

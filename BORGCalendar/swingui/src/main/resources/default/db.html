@@ -1,0 +1,74 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=windows-1252">
+	<TITLE></TITLE>
+	<META NAME="GENERATOR" CONTENT="LibreOffice 3.3  (Win32)">
+	<META NAME="CREATED" CONTENT="0;0">
+	<META NAME="CHANGED" CONTENT="20121023;8472143">
+	<META NAME="Originator" CONTENT="Microsoft Word 11">
+	<META NAME="ProgId" CONTENT="Word.Document">
+	<STYLE TYPE="text/css">
+	<!--
+		P { color: #000000 }
+		A:link { color: #0000ff }
+		A:visited { color: #800080 }
+	-->
+	</STYLE>
+</HEAD>
+<BODY LANG="en-US" TEXT="#000000" LINK="#0000ff" VLINK="#800080" DIR="LTR">
+<P><FONT FACE="Arial"><FONT SIZE=5><U><B>Databases</B></U></FONT></FONT></P>
+<P STYLE="font-weight: normal; text-decoration: none"><FONT FACE="Arial, sans-serif"><FONT SIZE=3>Borg
+will create an H2 database in a default location when started after
+the first install. Most users should never alter the database
+settings. Some users may want to alter the location of the database,
+for example to be on a removable drive.</FONT></FONT></P>
+<P><FONT FACE="Arial">For those users that want to change the default
+settings, the available choices are:</FONT></P>
+<UL>
+	<LI><P><FONT FACE="Arial">HSQLDB</FONT></P>
+	<LI><P><FONT FACE="Arial">H2</FONT></P>
+	<LI><P><FONT FACE="Arial">MySQL</FONT></P>
+</UL>
+<P><FONT FACE="Arial">There is also a Generic JDBC option, which
+takes a jdbc url. This can be used by more advanced users if
+non-standard URL options are needed. It is not guaranteed to work in
+all cases.</FONT></P>
+<P><FONT FACE="Arial"><U><B>H2</B></U></FONT></P>
+<P STYLE="font-weight: normal; text-decoration: none"><FONT FACE="Arial">Support
+for H2 is new in release 1.7.5 and is the default as of 1.7.7. BORG
+will manage the H2 files without any actions from the user. No
+pre-requisite software is needed.</FONT></P>
+<P><FONT FACE="Arial"><U><B>HSQLDB</B></U></FONT></P>
+<P><FONT FACE="Arial">BORG continues to support HSQLDB.  <SPAN STYLE="text-decoration: none"><SPAN STYLE="font-weight: normal">No
+pre-requisite software is needed.</SPAN></SPAN></FONT></P>
+<P><FONT FACE="Arial"><U><B>MySQL</B></U></FONT></P>
+<P><FONT FACE="Arial">Using MySQL with BORG requires the user to
+download at setup the MySQL software. In addition, the user must also
+download and install a JDBC database driver for MySQL.</FONT></P>
+<P><FONT FACE="Arial">Some familiarity with MYSQL is assumed in the
+instructions below.</FONT></P>
+<P><FONT FACE="Arial">To use RDBMS support with MYSQL:</FONT></P>
+<P><FONT FACE="Arial">1.Install MYSQL and make it accessible on your
+machine or network. See </FONT><A HREF="http://www.mysql.com/"><SPAN STYLE="text-decoration: none"><FONT FACE="Arial">www.mysql.com</FONT></SPAN></A>
+<FONT FACE="Arial">for the software (which is free).</FONT></P>
+<P><FONT FACE="Arial">2.</FONT> <FONT FACE="Arial">Create a database
+for BORG data in MYSQL. Name it whatever you like.</FONT></P>
+<P><FONT FACE="Arial">3.</FONT> <FONT FACE="Arial">Create a user with
+at least select/insert/update/delete access to your database </FONT>
+</P>
+<P><FONT FACE="Arial">4.</FONT> <FONT FACE="Arial">Create the BORG
+database tables in your database. This is done by running the SQL
+contained in the borg_mysql.sql file that comes with BORG. From the
+mysql command line you would do this:<BR><BR>mysql&gt;use
+your-database-name<BR>mysql&gt;source borg_mysql.sql &lt;=== you need
+the full path to borg_mysql.sql if it is not in your current folder.</FONT></P>
+<P><FONT FACE="Arial">5.BORG looks for a database driver for MYSQL in
+the CLASSPATH. The driver is ** NOT ** shipped with BORG. You have to
+download and install this separately. As with H2, you can enable the
+dynamic loading option and then put the mysql driver JAR in the BORG
+lib/ext folder. You can also put it elsewhere in the Java CLASSPATH.</FONT></P>
+<P><FONT FACE="Arial">6. Run BORG and set the MySQL database
+parameters from the database options screen.</FONT></P>
+</BODY>
+</HTML>
