@@ -1,3 +1,7 @@
+BORG 1.8
+--------
+Switch to maven
+
 BORG 1.7.9
 ----------
 
@@ -30,7 +34,7 @@ Bug Fixes:
 156	AddressBook allows duplicate entries
 153	Export should not be enabled for encrypted Memos
 152	No feedback for the "Print" function from task view
-149	Repeating instances are calculated incorrectly for “month(day)” repeat type
+149	Repeating instances are calculated incorrectly for ï¿½month(day)ï¿½ repeat type
 148	Appointment become invisible when start date is after the repeat until date
 147	Deleting an opened Task leaves the opened tab, but removes it from the TaskList
 146	Move repeating appointment by dragging failed after the first occurrence got deleted

@@ -14,7 +14,7 @@
     -->
     <info>
         <appname>BORG Calendar</appname>
-        <appversion>@{borg.version}</appversion>
+        <appversion>${project.version}</appversion>
         <appsubpath>BORGCalendar</appsubpath>
         
          <authors>
@@ -97,8 +97,6 @@
             <file src="RELEASE_NOTES.txt" targetdir="$INSTALL_PATH"/>
             <file src="license.htm" targetdir="$INSTALL_PATH"/>
             <file src="COPYING" targetdir="$INSTALL_PATH"/>
-            <file src="borg_mysql.sql" targetdir="$INSTALL_PATH"/>
-            <file src="db.html" targetdir="$INSTALL_PATH"/>
             <file src="borg.jar" targetdir="$INSTALL_PATH"/>
             <fileset dir="lib" targetdir="$INSTALL_PATH/lib"/>	    	     
 	    	<file src="run_borg.sh" targetdir="$INSTALL_PATH"/>
