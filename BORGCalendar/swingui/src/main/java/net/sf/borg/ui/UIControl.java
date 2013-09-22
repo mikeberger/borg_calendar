@@ -29,6 +29,7 @@ import net.sf.borg.ui.calendar.TodoView;
 import net.sf.borg.ui.calendar.WeekPanel;
 import net.sf.borg.ui.calendar.YearPanel;
 import net.sf.borg.ui.checklist.CheckListPanel;
+import net.sf.borg.ui.ical.IcalModule;
 import net.sf.borg.ui.memo.MemoPanel;
 import net.sf.borg.ui.options.MiscellaneousOptionsPanel.SHUTDOWN_ACTION;
 import net.sf.borg.ui.popup.ReminderListManager;
@@ -177,10 +178,10 @@ public class UIControl {
 				.getResourceString("License")));
 		mv.addModule(new FileView(System.getProperty("user.home", "")
 				+ "/.borg.log", Resource.getResourceString("view_log")));
+		mv.addModule(new IcalModule());
 
 		if (Prefs.getBoolPref(PrefName.DYNAMIC_LOADING) == true) {
 			addExternalModule("net.sf.borg.plugin.reports.ReportModule");
-			addExternalModule("net.sf.borg.plugin.ical.IcalModule");
 			addExternalModule("net.sf.borg.plugin.sync.SyncModule");
 		}
 		

@@ -1,6 +1,7 @@
 BORG 1.8
 --------
 Switch to maven
+Merge Ical plugin into base product
 
 BORG 1.7.9
 ----------

@@ -548,4 +548,8 @@ public class MultiView extends View {
 		}
 
 	}
+
+	public void addMenu(JMenu m) {
+		mainMenu.getMenuBar().add(m);
+	}
 }
