@@ -1,5 +1,5 @@
 build/
-borghelp/
-dist/
 *.class
 classes/
+target
+dist/
