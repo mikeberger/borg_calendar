@@ -144,7 +144,11 @@ public class IcalModule implements Module {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				exportftp(Prefs.getIntPref(EXPORTYEARS));
+				try {
+					exportftp(Prefs.getIntPref(EXPORTYEARS));
+				} catch (Exception e) {
+					Errmsg.getErrorHandler().errmsg(e);
+				}
 			}
 		});
 
@@ -221,9 +225,8 @@ public class IcalModule implements Module {
 		}
 	}
 
-	private static void exportftp(Integer years) {
+	public static void exportftp(Integer years) throws Exception {
 
-		try {
 			String icalString = "";
 			if (years != null) {
 				GregorianCalendar cal = new GregorianCalendar();
@@ -259,9 +262,6 @@ public class IcalModule implements Module {
 				client.disconnect();
 			}
 
-		} catch (Exception e) {
-			Errmsg.getErrorHandler().errmsg(e);
-		}
 	}
 
 	/**

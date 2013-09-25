@@ -8,9 +8,8 @@ import java.awt.event.ActionListener;
 import java.util.Observer;
 import java.util.logging.Logger;
 
-import javax.swing.ButtonGroup;
+import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
-import javax.swing.JRadioButton;
 import javax.swing.SwingWorker;
 import javax.swing.Timer;
 import javax.swing.UIManager;
@@ -184,7 +183,7 @@ public class UIControl {
 			addExternalModule("net.sf.borg.plugin.reports.ReportModule");
 			addExternalModule("net.sf.borg.plugin.sync.SyncModule");
 		}
-		
+
 		// allow start to system tray if option set and there is a system tray
 		boolean bgStart = Prefs.getBoolPref(PrefName.BACKGSTART)
 				&& SunTrayIconProxy.hasTrayIcon();
@@ -193,7 +192,7 @@ public class UIControl {
 		if (!bgStart) {
 			mv.setVisible(true);
 		}
-		
+
 		// open all views that should be shown at startup
 		mv.startupViews(bgStart);
 
@@ -221,6 +220,7 @@ public class UIControl {
 		// prompt for shutdown and backup options
 		boolean do_backup = false;
 		boolean backup_email = false;
+		boolean export_ical = false;
 		final String backupdir = Prefs.getPref(PrefName.BACKUPDIR);
 
 		if (backupdir != null && !backupdir.equals("")) {
@@ -229,25 +229,15 @@ public class UIControl {
 			if (shutdown_action.isEmpty()
 					|| SHUTDOWN_ACTION.PROMPT.toString()
 							.equals(shutdown_action)) {
-				JRadioButton b1 = new JRadioButton(
+				JCheckBox b1 = new JCheckBox(
 						Resource.getResourceString("backup_notice") + " "
 								+ backupdir);
-				JRadioButton b2 = new JRadioButton(
-						Resource.getResourceString("exit_no_backup"));
-				JRadioButton b3 = new JRadioButton(
-						Resource.getResourceString("dont_exit"));
-				JRadioButton b4 = new JRadioButton(
+				JCheckBox b4 = new JCheckBox(
 						Resource.getResourceString("backup_with_email"));
+				JCheckBox ic = new JCheckBox("ical: "
+						+ Resource.getResourceString("exportToFTP"));
 
-				b1.setSelected(true);
-
-				ButtonGroup group = new ButtonGroup();
-				group.add(b1);
-				group.add(b2);
-				group.add(b3);
-				group.add(b4);
-
-				Object[] array = { b1, b4, b2, b3, };
+				Object[] array = { b1, b4, ic };
 
 				int res = JOptionPane.showConfirmDialog(null, array,
 						Resource.getResourceString("shutdown_options"),
@@ -257,12 +247,12 @@ public class UIControl {
 					return;
 				}
 
-				if (b3.isSelected())
-					return;
 				if (b1.isSelected() || b4.isSelected())
 					do_backup = true;
 				if (b4.isSelected())
 					backup_email = true;
+				if (ic.isSelected())
+					export_ical = true;
 			} else if (SHUTDOWN_ACTION.BACKUP.toString()
 					.equals(shutdown_action)) {
 				do_backup = true;
@@ -278,8 +268,7 @@ public class UIControl {
 		if (rm != null)
 			rm.remove();
 
-		new NonUIShutdown(do_backup, backup_email).execute();
-
+		new NonUIShutdown(do_backup, backup_email, export_ical).execute();
 
 		// show a splash screen for shutdown which locks the UI
 		try {
@@ -290,19 +279,19 @@ public class UIControl {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
 
-		
 	}
 
-	static private class NonUIShutdown extends SwingWorker<Object,Object> {
+	static private class NonUIShutdown extends SwingWorker<Object, Object> {
 
 		private boolean do_backup;
 		private boolean backup_email;
+		private boolean export_ical;
 
-		public NonUIShutdown(boolean b, boolean e) {
+		public NonUIShutdown(boolean b, boolean e, boolean ic) {
 			do_backup = b;
 			backup_email = e;
+			export_ical = ic;
 		}
 
 		@Override
@@ -312,6 +301,17 @@ public class UIControl {
 				try {
 					final String backupdir = Prefs.getPref(PrefName.BACKUPDIR);
 					ExportImport.exportToZip(backupdir, backup_email);
+					log.info("Export to ZIP Complete");
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+
+			if (export_ical == true) {
+				try {
+					IcalModule.exportftp(Prefs
+							.getIntPref(IcalModule.EXPORTYEARS));
+					log.info("FTP Ical Complete");
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
