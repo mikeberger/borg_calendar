@@ -231,8 +231,8 @@ public class LinkModel extends Model {
 		 * is not owners
 		 */
 		// Fixes bug linking an address to itself results in a double link
-		else if (linkType == LinkType.ADDRESS) {
-			if (!at.getOwnerKey().toString().equals(at.getPath())) {
+		else if (linkType == LinkType.ADDRESS ) {
+			if (!(owner instanceof Address) || !at.getOwnerKey().toString().equals(at.getPath())) {
 				Link at2way = newLink();
 				at2way.setKey(-1);
 				at2way.setOwnerKey(new Integer(at.getPath()));
@@ -317,14 +317,6 @@ public class LinkModel extends Model {
 		}
 		db_.delete(l.getKey());
 
-		// delete any reverse links
-		Collection<Link> links = getLinks();
-		for (Link other : links) {
-			if (other.getLinkType().equals(l.getOwnerType()) &&
-					l.getOwnerKey().toString().equals(other.getPath())) {
-				db_.delete(other.getKey());
-			}
-		}
 		refresh();
 	}
 

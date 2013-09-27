@@ -131,7 +131,6 @@ public class MemoModel extends Model implements Searchable<Memo> {
 		try {
 			Memo m = getMemo(name);
 			
-			LinkModel.getReference().deleteLinksFromEntity(m);
 			LinkModel.getReference().deleteLinksToEntity(m);
 
 			if (m == null)

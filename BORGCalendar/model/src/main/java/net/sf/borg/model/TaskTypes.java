@@ -492,7 +492,7 @@ public class TaskTypes {
 	 *             the exception
 	 */
 	public void loadDefault() throws Exception {
-		URL tsurl = getClass().getResource("/resource/task_states.xml");
+		URL tsurl = getClass().getResource("/task_states.xml");
 		fromXml(tsurl.openStream());
 	}
 

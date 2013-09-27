@@ -10,7 +10,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class EncryptionTests {
+public class EncryptionTest {
 
 	private static String location = "keystore";
 	private static String pw = "1234";

@@ -12,6 +12,7 @@ import net.sf.borg.model.LinkModel.LinkType;
 import net.sf.borg.model.MemoModel;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.db.DBHelper;
+import net.sf.borg.model.db.jdbc.JdbcDBHelper;
 import net.sf.borg.model.entity.Address;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.KeyedEntity;
@@ -24,11 +25,13 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class LinkTests {
+public class LinkTest {
 
 	@BeforeClass
 	public static void setUp() throws Exception {
 		// open the borg dbs - in memory
+		DBHelper.setFactory(new JdbcDBHelper());
+		DBHelper.setController(new JdbcDBHelper());
 		DBHelper.getController().connect("jdbc:hsqldb:mem:whatever");
 		
 	}
@@ -81,6 +84,9 @@ public class LinkTests {
 		
 		Collection<Link> links = LinkModel.getReference().getLinks();
 		
+		for( Link link : links)
+			System.out.println(link.toString());
+		
 		// number of links = 10 regular plus 6 added back links
 		assertEquals("Wrong number of links", 16, links.size());
 		
@@ -104,6 +110,8 @@ public class LinkTests {
 		TaskModel.getReference().delete(task.getKey());
 		
 		links = LinkModel.getReference().getLinks();
+		for( Link link : links)
+			System.out.println("[4] " + link.toString());
 		assertEquals("Wrong number of links", 4, links.size());
 		
 		for( KeyedEntity<?> ent : new KeyedEntity[]{ addr, project })
