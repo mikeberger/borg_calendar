@@ -1,4 +1,4 @@
-package net.sf.borg.ui.ical;
+package net.sf.borg.model.ical;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import net.sf.borg.common.Errmsg;
+import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 
@@ -23,7 +24,7 @@ public class IcalFileServer {
 	public static void start() throws Exception {
 		if (server != null)
 			stop();
-		server = HttpServer.create(new InetSocketAddress(Prefs.getIntPref(IcalModule.PORT)), 0);
+		server = HttpServer.create(new InetSocketAddress(Prefs.getIntPref(PrefName.ICAL_PORT)), 0);
 		server.createContext("/icals/borg.ics", new MyHandler());
 		server.setExecutor(null);
 		server.start();

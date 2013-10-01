@@ -20,14 +20,7 @@
 package net.sf.borg.ui.options;
 
 import java.awt.GridBagConstraints;
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
 
-import javax.crypto.Cipher;
-import javax.crypto.CipherOutputStream;
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPasswordField;
@@ -36,12 +29,12 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 
 import net.sf.borg.common.Errmsg;
+import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
-import net.sf.borg.ui.ical.IcalModule;
+import net.sf.borg.model.ical.IcalFTP;
 import net.sf.borg.ui.options.OptionsView.OptionsPanel;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
-import biz.source_code.base64Coder.Base64Coder;
 
 public class IcalOptionsPanel extends OptionsPanel {
 
@@ -104,47 +97,47 @@ public class IcalOptionsPanel extends OptionsPanel {
 		// validate that port is a number
 		try {
 			int socket = Integer.parseInt(port.getText());
-			Prefs.putPref(IcalModule.PORT, new Integer(socket));
+			Prefs.putPref(PrefName.ICAL_PORT, new Integer(socket));
 		} catch (NumberFormatException e) {
 			Errmsg.getErrorHandler().notice(
 					Resource.getResourceString("port_warning"));
 			;
-			port.setText(((Integer) IcalModule.PORT.getDefault()).toString());
-			Prefs.putPref(IcalModule.PORT, IcalModule.PORT.getDefault());
+			port.setText(((Integer) PrefName.ICAL_PORT.getDefault()).toString());
+			Prefs.putPref(PrefName.ICAL_PORT, PrefName.ICAL_PORT.getDefault());
 			return;
 		}
 
-		Prefs.putPref(IcalModule.FTPUSER, ftpusername.getText());
-		Prefs.putPref(IcalModule.FTPSERVER, ftpserver.getText());
-		Prefs.putPref(IcalModule.FTPPATH, ftppath.getText());
+		Prefs.putPref(PrefName.FTPUSER, ftpusername.getText());
+		Prefs.putPref(PrefName.FTPSERVER, ftpserver.getText());
+		Prefs.putPref(PrefName.FTPPATH, ftppath.getText());
 		try {
-			sep(new String(ftppassword.getPassword()));
+			IcalFTP.sep(new String(ftppassword.getPassword()));
 		} catch (Exception e) {
 			Errmsg.getErrorHandler().errmsg(e);
 		}
 
-		Prefs.putPref(IcalModule.EXPORTYEARS, exportyears.getValue());
+		Prefs.putPref(PrefName.ICAL_EXPORTYEARS, exportyears.getValue());
 
-		OptionsPanel.setBooleanPref(skipBox, IcalModule.SKIP_BORG);
+		OptionsPanel.setBooleanPref(skipBox, PrefName.SKIP_BORG);
 
 	}
 
 	@Override
 	public void loadOptions() {
 
-		int p = Prefs.getIntPref(IcalModule.PORT);
+		int p = Prefs.getIntPref(PrefName.ICAL_PORT);
 		port.setText(Integer.toString(p));
 
-		exportyears.setValue(Prefs.getIntPref(IcalModule.EXPORTYEARS));
+		exportyears.setValue(Prefs.getIntPref(PrefName.ICAL_EXPORTYEARS));
 
-		skipBox.setSelected(Prefs.getBoolPref(IcalModule.SKIP_BORG));
+		skipBox.setSelected(Prefs.getBoolPref(PrefName.SKIP_BORG));
 
-		ftpusername.setText(Prefs.getPref(IcalModule.FTPUSER));
-		ftpserver.setText(Prefs.getPref(IcalModule.FTPSERVER));
-		ftppath.setText(Prefs.getPref(IcalModule.FTPPATH));
+		ftpusername.setText(Prefs.getPref(PrefName.FTPUSER));
+		ftpserver.setText(Prefs.getPref(PrefName.FTPSERVER));
+		ftppath.setText(Prefs.getPref(PrefName.FTPPATH));
 
 		try {
-			ftppassword.setText(gep());
+			ftppassword.setText(IcalFTP.gep());
 		} catch (Exception e) {
 			Errmsg.getErrorHandler().errmsg(e);
 		}
@@ -156,54 +149,5 @@ public class IcalOptionsPanel extends OptionsPanel {
 		return Resource.getResourceString("ical_options");
 	}
 
-	public static void sep(String s) throws Exception {
-		if ("".equals(s)) {
-			Prefs.putPref(IcalModule.FTPPW, s);
-			return;
-		}
-		String p1 = Prefs.getPref(IcalModule.FTPPW2);
-		if ("".equals(p1)) {
-			KeyGenerator keyGen = KeyGenerator.getInstance("AES");
-			SecretKey key = keyGen.generateKey();
-			p1 = new String(Base64Coder.encode(key.getEncoded()));
-			Prefs.putPref(IcalModule.FTPPW2, p1);
-		}
-
-		byte[] ba = Base64Coder.decode(p1);
-		SecretKey key = new SecretKeySpec(ba, "AES");
-		Cipher enc = Cipher.getInstance("AES");
-		enc.init(Cipher.ENCRYPT_MODE, key);
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		OutputStream os = new CipherOutputStream(baos, enc);
-		os.write(s.getBytes());
-		os.close();
-		ba = baos.toByteArray();
-		Prefs.putPref(IcalModule.FTPPW, new String(Base64Coder.encode(ba)));
-	}
-
-	public static String gep() throws Exception {
-		String p1 = Prefs.getPref(IcalModule.FTPPW2);
-		String p2 = Prefs.getPref(IcalModule.FTPPW);
-		if ("".equals(p2))
-			return p2;
-
-		if ("".equals(p1)) {
-			sep(p2); // transition case
-			return p2;
-		}
-
-		byte[] ba = Base64Coder.decode(p1);
-		SecretKey key = new SecretKeySpec(ba, "AES");
-		Cipher dec = Cipher.getInstance("AES");
-		dec.init(Cipher.DECRYPT_MODE, key);
-		byte[] decba = Base64Coder.decode(p2);
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		OutputStream os = new CipherOutputStream(baos, dec);
-		os.write(decba);
-		os.close();
-
-		return baos.toString();
-
-	}
-
+	
 }

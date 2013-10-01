@@ -21,6 +21,7 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.common.Warning;
 import net.sf.borg.model.ExportImport;
 import net.sf.borg.model.db.DBHelper;
+import net.sf.borg.model.ical.IcalFTP;
 import net.sf.borg.ui.address.AddrListView;
 import net.sf.borg.ui.calendar.DayPanel;
 import net.sf.borg.ui.calendar.MonthPanel;
@@ -309,8 +310,8 @@ public class UIControl {
 
 			if (export_ical == true) {
 				try {
-					IcalModule.exportftp(Prefs
-							.getIntPref(IcalModule.EXPORTYEARS));
+					IcalFTP.exportftp(Prefs
+							.getIntPref(PrefName.ICAL_EXPORTYEARS));
 					log.info("FTP Ical Complete");
 				} catch (Exception e) {
 					e.printStackTrace();

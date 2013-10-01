@@ -17,7 +17,7 @@ This file is part of BORG.
  
 Copyright 2003 by Mike Berger
  */
-package net.sf.borg.ui.ical;
+package net.sf.borg.model.ical;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -294,7 +294,7 @@ public class AppointmentIcalAdapter {
 	static public String importIcal(String file, String category)
 			throws Exception {
 		
-		boolean skip_borg = Prefs.getBoolPref(IcalModule.SKIP_BORG);
+		boolean skip_borg = Prefs.getBoolPref(PrefName.SKIP_BORG);
 		int skipped = 0;
 		
 		CompatibilityHints.setHintEnabled(

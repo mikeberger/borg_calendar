@@ -372,4 +372,25 @@ public class PrefName {
 	static public PrefName PHONE_VALIDATION = new PrefName("Phone_Validation", 0);
 	
 	static public PrefName PHONE_REGEX = new PrefName ("Phone_Regex", "");
+	
+	public static PrefName ICAL_PORT = new PrefName("ical-server-port", new Integer(
+			8844));
+	public static PrefName ICAL_EXPORTYEARS = new PrefName("ical-export-years",
+			new Integer(2));
+
+	// option to prevent import of appts that were previously exported from borg
+		// used when the goal is to only import appointments created outside of
+		// borg, but
+		// to not import appts that were exported from borg to another calendar and
+		// then
+		// sent back to borg as part of the export from the other calendar
+		public static PrefName SKIP_BORG = new PrefName("ical-skip_borg", "true");
+
+		// FTP
+		public static PrefName FTPSERVER = new PrefName("ical-ftp-server",
+				"localhost");
+		public static PrefName FTPPATH = new PrefName("ical-ftp-path", "borg.ics");
+		public static PrefName FTPUSER = new PrefName("ical-ftp-user", "");
+		public static PrefName FTPPW = new PrefName("ical-ftp-pw", "");
+		public static PrefName FTPPW2 = new PrefName("ical-ftp-pw2", "");
 }
