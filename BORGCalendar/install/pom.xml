@@ -1,0 +1,119 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>BORGCalendar</groupId>
+		<artifactId>BORGCalendar</artifactId>
+		<version>1.8</version>
+	</parent>
+	<artifactId>install</artifactId>
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.6</version>
+				<executions>
+					<execution>
+						<id>copy-resources</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${basedir}/target/installer</outputDirectory>
+							<resources>
+								<resource>
+									<directory>src/main/resources</directory>
+									<filtering>true</filtering>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.0</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.7</version>
+				<inherited>false</inherited>
+				<executions>
+					<execution>
+						<id>izpack</id>
+						<phase>package</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<property name="version" value="${project.version}" />
+
+								<condition property="iz.dir" value="c:/Program Files/IzPack"
+									else="/apps/IzPack">
+									<os family="windows" />
+								</condition>
+								<taskdef name="izpack" classpath="${iz.dir}/lib/standalone-compiler.jar"
+									classname="com.izforge.izpack.ant.IzPackTask" />
+
+								<mkdir dir="target/installer" />
+								<mkdir dir="target/installer/lib" />
+								<mkdir dir="target/installer/lib/ext" />
+								<copy file="src/main/resources/lib/ext/README.txt" todir="target/installer/lib/ext" />
+								<copy file="../swingui/src/main/resources/resource/RELEASE_NOTES.txt"
+									todir="target/installer" />
+								<copy file="../swingui/src/main/resources/resource/license.htm"
+									todir="target/installer" />
+								<copy file="../swingui/src/main/resources/resource/COPYING"
+									todir="target/installer" />
+								<copy file="../swingui/src/main/resources/resource/borg.jpg"
+									todir="target/installer" />
+								<copy file="${iz.dir}/bin/native/izpack/ShellLink.dll"
+									todir="target/installer" />
+								<!-- <copy todir="target/installer"> <fileset dir="src/main/resources" 
+									includes="*" /> </copy> -->
+								<copy todir="target/installer/lib">
+									<fileset dir="../swingui/target/lib" includes="*" />
+								</copy>
+								<copy file="../swingui/target/swingui-${project.version}.jar"
+									tofile="target/installer/borg.jar" />
+
+
+								<izpack input="install/target/installer/install.xml"
+									inheritAll="true"
+									output="install/target/borg_installer-${project.version}.jar"
+									installerType="standard" basedir="install/target/installer"
+									izPackDir="${iz.dir}/" />
+
+								<copy todir="target" file="${iz.dir}/utils/wrappers/izpack2exe/7zS.sfx" />
+
+								<exec osfamily="windows" dir="target" executable="c:/Python/python">
+									<arg value="${iz.dir}/utils/wrappers/izpack2exe/izpack2exe.py" />
+									<arg value="--with-7z=${iz.dir}/utils/wrappers/izpack2exe/7za.exe" />
+									<arg value="--file=borg_installer-${project.version}.jar" />
+									<arg value="--output=borg_installer-${project.version}.exe" />
+									<arg value="--no-upx" />
+								</exec>
+
+								<exec osfamily="unix" dir="target" executable="python">
+									<arg value="${iz.dir}/utils/wrappers/izpack2exe/izpack2exe.py" />
+									<arg value="--with-7z=7z" />
+									<arg value="--file=borg_installer-${project.version}.jar" />
+									<arg value="--output=borg_installer-${project.version}.exe" />
+									<arg value="--no-upx" />
+								</exec>
+
+							</target>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>
