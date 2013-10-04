@@ -3,3 +3,5 @@ borghelp/
 dist/
 *.class
 classes/
+target/
+bin/
