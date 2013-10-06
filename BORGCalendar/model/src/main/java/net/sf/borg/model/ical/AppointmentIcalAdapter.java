@@ -67,7 +67,11 @@ import net.sf.borg.common.Prefs;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.Repeat;
+import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.Appointment;
+import net.sf.borg.model.entity.Project;
+import net.sf.borg.model.entity.Subtask;
+import net.sf.borg.model.entity.Task;
 
 public class AppointmentIcalAdapter {
 
@@ -93,6 +97,25 @@ public class AppointmentIcalAdapter {
 	static private Calendar exportIcal(Date after) throws Exception {
 
 		ComponentList clist = new ComponentList();
+		
+		exportAppointments(clist, after);
+		exportProjects(clist);
+		exportTasks(clist);
+		exportSubTasks(clist);
+
+		PropertyList pl = new PropertyList();
+		pl.add(new ProdId("BORG Calendar"));
+		pl.add(Version.VERSION_2_0);
+		net.fortuna.ical4j.model.Calendar cal = new net.fortuna.ical4j.model.Calendar(
+				pl, clist);
+
+		cal.validate();
+
+		return cal;
+	}
+	
+	static private void exportAppointments(ComponentList clist, Date after) throws Exception {
+		
 		boolean showpriv = false;
 		if (Prefs.getPref(PrefName.SHOWPRIVATE).equals("true"))
 			showpriv = true;
@@ -279,24 +302,108 @@ public class AppointmentIcalAdapter {
 
 		}
 
-		PropertyList pl = new PropertyList();
-		pl.add(new ProdId("BORG Calendar"));
-		pl.add(Version.VERSION_2_0);
-		net.fortuna.ical4j.model.Calendar cal = new net.fortuna.ical4j.model.Calendar(
-				pl, clist);
 
-		cal.validate();
+	}
+	
+	static private void exportTasks(ComponentList clist) throws Exception {
+		for (Task t : TaskModel.getReference().getTasks()) {
+			if (TaskModel.isClosed(t))
+				continue;
 
-		return cal;
+			Date due = t.getDueDate();
+			if (due == null)
+				continue;
+
+			Component ve = new VEvent();
+
+			long updated = new Date().getTime();
+			String uidval = Integer.toString(t.getKey()) + "@BORGT" + updated;
+			Uid uid = new Uid(uidval);
+			ve.getProperties().add(uid);
+
+			// add text
+			ve.getProperties().add(new Summary("[T]" + t.getSummary()));
+			if (t.getDescription() != null && !t.getDescription().isEmpty())
+				ve.getProperties().add(new Description(t.getDescription()));
+
+			ParameterList pl = new ParameterList();
+			pl.add(Value.DATE);
+			DtStart dts = new DtStart(pl,
+					new net.fortuna.ical4j.model.Date(due));
+			ve.getProperties().add(dts);
+
+			clist.add(ve);
+
+		}
+
+	}
+
+	static private void exportProjects(ComponentList clist) throws Exception {
+		for (Project t : TaskModel.getReference().getProjects()) {
+			if (TaskModel.isClosed(t))
+				continue;
+
+			Date due = t.getDueDate();
+			if (due == null)
+				continue;
+
+			Component ve = new VEvent();
+
+			long updated = new Date().getTime();
+			String uidval = Integer.toString(t.getKey()) + "@BORGP" + updated;
+			Uid uid = new Uid(uidval);
+			ve.getProperties().add(uid);
+
+			// add text
+			ve.getProperties().add(new Summary("[P]" + t.getDescription()));
+
+			ParameterList pl = new ParameterList();
+			pl.add(Value.DATE);
+			DtStart dts = new DtStart(pl,
+					new net.fortuna.ical4j.model.Date(due));
+			ve.getProperties().add(dts);
+
+			clist.add(ve);
+
+		}
+	}
+	static private void exportSubTasks(ComponentList clist) throws Exception {
+		for (Subtask t : TaskModel.getReference().getSubTasks()) {
+			if (t.getCloseDate() != null)
+				continue;
+
+			Date due = t.getDueDate();
+			if (due == null)
+				continue;
+
+			Component ve = new VEvent();
+
+			long updated = new Date().getTime();
+			String uidval = Integer.toString(t.getKey()) + "@BORGS" + updated;
+			Uid uid = new Uid(uidval);
+			ve.getProperties().add(uid);
+
+			// add text
+			ve.getProperties().add(new Summary("[S]" + t.getDescription()));
+
+			ParameterList pl = new ParameterList();
+			pl.add(Value.DATE);
+			DtStart dts = new DtStart(pl,
+					new net.fortuna.ical4j.model.Date(due));
+			ve.getProperties().add(dts);
+
+			clist.add(ve);
+
+		}
 	}
 
 	@SuppressWarnings("unchecked")
 	static public String importIcal(String file, String category)
 			throws Exception {
-		
+
 		boolean skip_borg = Prefs.getBoolPref(PrefName.SKIP_BORG);
 		int skipped = 0;
-		
+
 		CompatibilityHints.setHintEnabled(
 				CompatibilityHints.KEY_OUTLOOK_COMPATIBILITY, true);
 		CompatibilityHints.setHintEnabled(
@@ -324,13 +431,11 @@ public class AppointmentIcalAdapter {
 		while (it.hasNext()) {
 			Component comp = it.next();
 			if (comp instanceof VEvent || comp instanceof VToDo) {
-				
+
 				Property uidProp = comp.getProperty(Property.UID);
-				if( skip_borg && uidProp != null)
-				{
+				if (skip_borg && uidProp != null) {
 					String uid = uidProp.getValue();
-					if( uid.contains("@BORG"))
-					{
+					if (uid.contains("@BORG")) {
 						skipped++;
 						continue;
 					}
@@ -522,7 +627,7 @@ public class AppointmentIcalAdapter {
 
 		for (Appointment ap : aplist)
 			amodel.saveAppt(ap);
-		
+
 		warning.append("Imported " + aplist.size() + " Appointments\n");
 		warning.append("Skipped " + skipped + " Appointments\n");
 

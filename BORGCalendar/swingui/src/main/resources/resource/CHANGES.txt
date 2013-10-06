@@ -1,7 +1,9 @@
 BORG 1.8
 --------
-Switch to maven
+Switch to maven/Reorganize project
 Merge Ical plugin into base product
+Option to FTP an Ical export on shutdown
+Add pending Projects, Tasks, Subtasks with due dates to Ical export
 
 BORG 1.7.9
 ----------
