@@ -1009,4 +1009,9 @@ public class AppointmentModel extends Model implements Model.Listener,
 				+ getAllAppts().size();
 	}
 
+	public List<Appointment> getAppointmentsByText(String text) throws Exception {
+		AppointmentDB apdb = (AppointmentDB) db_;
+		return apdb.getAppointmentsByText(text);
+	}
+
 }

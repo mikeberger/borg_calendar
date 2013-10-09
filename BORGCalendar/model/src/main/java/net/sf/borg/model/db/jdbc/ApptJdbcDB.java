@@ -31,6 +31,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.List;
 
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Resource;
@@ -338,6 +339,28 @@ class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
         delCache( appt.getKey() );
         writeCache( appt );
     }
+
+	@Override
+	public List<Appointment> getAppointmentsByText(String text) throws Exception {
+		
+		PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("SELECT * FROM appointments where text = ?" );
+		stmt.setString(1, text);
+		List<Appointment> lst = new ArrayList<Appointment>();
+		ResultSet r = null;
+		try {
+			r = stmt.executeQuery();
+			while (r.next()) {
+				Appointment bean = createFrom(r);
+				lst.add(bean);
+			}
+			return lst;
+		} finally {
+			if (r != null)
+				r.close();
+			if (stmt != null)
+				stmt.close();
+		}
+	}
 
 	
 	

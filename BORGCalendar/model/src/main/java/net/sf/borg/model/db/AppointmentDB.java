@@ -20,6 +20,7 @@ Copyright 2003 by Mike Berger
 package net.sf.borg.model.db;
 
 import java.util.Collection;
+import java.util.List;
 
 import net.sf.borg.model.entity.Appointment;
 
@@ -48,4 +49,6 @@ public Collection<Integer> getTodoKeys() throws Exception;
  * @throws Exception the exception
  */
 public Collection<Integer> getRepeatKeys() throws Exception;
+
+public List<Appointment> getAppointmentsByText(String text) throws Exception;
 }

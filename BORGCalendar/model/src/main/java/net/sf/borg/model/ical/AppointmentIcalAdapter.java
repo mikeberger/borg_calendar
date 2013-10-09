@@ -29,6 +29,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
+import java.util.List;
 import java.util.TimeZone;
 import java.util.logging.Logger;
 
@@ -440,6 +441,7 @@ public class AppointmentIcalAdapter {
 
 		boolean skip_borg = Prefs.getBoolPref(PrefName.SKIP_BORG);
 		int skipped = 0;
+		StringBuffer dups = new StringBuffer();
 
 		CompatibilityHints.setHintEnabled(
 				CompatibilityHints.KEY_OUTLOOK_COMPATIBILITY, true);
@@ -659,11 +661,20 @@ public class AppointmentIcalAdapter {
 		}
 
 		for (Appointment ap : aplist) {
+			// check for dups
+			List<Appointment> appts = AppointmentModel.getReference().getAppointmentsByText(ap.getText());			
+
+			if( appts.contains(ap))
+			{
+				dups.append("DUP: " + ap.getText() + "\n");
+				continue;
+			}
 			amodel.saveAppt(ap);
 		}
 
 		warning.append("Imported " + aplist.size() + " Appointments\n");
 		warning.append("Skipped " + skipped + " Appointments\n");
+		warning.append(dups.toString());
 
 		if (warning.length() == 0)
 			return (null);

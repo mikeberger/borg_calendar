@@ -4,6 +4,7 @@ Switch to maven/Reorganize project
 Merge Ical plugin into base product
 Option to FTP an Ical export on shutdown
 Add pending Projects, Tasks, Subtasks with due dates to Ical export
+Import Ical from URL
 
 BORG 1.7.9
 ----------

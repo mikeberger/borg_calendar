@@ -40,7 +40,7 @@ import net.sf.borg.common.Resource;
 @XmlRootElement(name="Appointment")
 @XmlAccessorType(XmlAccessType.FIELD)
 @Data
-@EqualsAndHashCode(callSuper=true)
+@EqualsAndHashCode(callSuper=false) // exclude key and encryption field from hashcode
 public class Appointment extends EncryptableEntity<Appointment> implements CalendarEntity {
 
 	
@@ -48,20 +48,20 @@ public class Appointment extends EncryptableEntity<Appointment> implements Calen
 		
 	private Date Date;
 	/** The Duration in minutes */
-	private Integer Duration;
+	private Integer Duration = 0;
 	private String Text;
 	/** The Skip list. - a list of repeat occurrences that are marked as skipped. */
 	private Vector<String> SkipList;
 	/** The Next todo - the date of the next todo for repeating todos */
 	private Date NextTodo;
 	/** The Vacation flag - 0 = not vacation 1 = vacation day, 2 = half day */
-	private Integer Vacation;
+	private Integer Vacation = 0;
 	/** The Holiday flag (1 = holiday) */
-	private Integer Holiday;
+	private Integer Holiday = 0;
 	/** The Private flag (1 = private) */
 	private boolean Private;
 	/** The number of Repeat Times. */
-	private Integer Times;
+	private Integer Times = 0;
 	/** The repeat Frequency. */
 	private String Frequency;
 	/** The Todo flag. */
@@ -75,7 +75,7 @@ public class Appointment extends EncryptableEntity<Appointment> implements Calen
 	 * provides a positive indication that an appointment has no specific time of day */
 	private String Untimed;
 	private Date repeatUntil;
-	private Integer priority;
+	private Integer priority = 5;
 	
 	@Override
 	@SuppressWarnings("unchecked")
