@@ -98,7 +98,7 @@ public class AppointmentIcalAdapter {
 	static private Calendar exportIcal(Date after) throws Exception {
 
 		ComponentList clist = new ComponentList();
-		
+
 		exportAppointments(clist, after);
 		exportProjects(clist);
 		exportTasks(clist);
@@ -114,14 +114,14 @@ public class AppointmentIcalAdapter {
 
 		return cal;
 	}
-	
-	static private void exportAppointments(ComponentList clist, Date after) throws Exception {
-		
+
+	static private void exportAppointments(ComponentList clist, Date after)
+			throws Exception {
+
 		boolean showpriv = false;
 		if (Prefs.getPref(PrefName.SHOWPRIVATE).equals("true"))
 			showpriv = true;
 
-		
 		for (Appointment ap : AppointmentModel.getReference().getAllAppts()) {
 
 			// limit by date
@@ -303,9 +303,8 @@ public class AppointmentIcalAdapter {
 
 		}
 
-
 	}
-	
+
 	static private void exportTasks(ComponentList clist) throws Exception {
 		for (Task t : TaskModel.getReference().getTasks()) {
 			if (TaskModel.isClosed(t))
@@ -368,6 +367,7 @@ public class AppointmentIcalAdapter {
 
 		}
 	}
+
 	static private void exportSubTasks(ComponentList clist) throws Exception {
 		for (Subtask t : TaskModel.getReference().getSubTasks()) {
 			if (t.getCloseDate() != null)
@@ -397,34 +397,43 @@ public class AppointmentIcalAdapter {
 
 		}
 	}
-	
-	static public String importIcalFromUrl(String urlString)
-			throws Exception {
-		
-		System.setProperty("http.proxyHost", "www-proxy.exu.ericsson.se");
-	    System.setProperty("http.proxyPort", "8080");
-	    System.setProperty("https.proxyHost", "www-proxy.exu.ericsson.se");
-	    System.setProperty("https.proxyPort", "8080");
-	    
+
+	static public String importIcalFromUrl(String urlString) throws Exception {
+
+		String host = Prefs.getPref(PrefName.PROXY_HOST);
+		if (host != null && !host.isEmpty()) {
+			System.setProperty("http.proxyHost", host);
+			System.setProperty("https.proxyHost", host);
+
+			int port = Prefs.getIntPref(PrefName.PROXY_PORT);
+			System.setProperty("http.proxyPort", Integer.toString(port));
+			System.setProperty("https.proxyPort", Integer.toString(port));
+		} else {
+			System.setProperty("http.proxyHost", null);
+			System.setProperty("https.proxyHost", null);
+			System.setProperty("http.proxyPort", null);
+			System.setProperty("https.proxyPort", null);
+		}
+
 		CalendarBuilder builder = new CalendarBuilder();
 		URL url = new URL(urlString);
 		InputStream is = url.openStream();
 		Calendar cal = builder.build(is);
 		is.close();
-		
+
 		return importIcal(cal, null);
 	}
-	
+
 	static public String importIcalFromFile(String file, String category)
 			throws Exception {
 		CalendarBuilder builder = new CalendarBuilder();
 		InputStream is = new FileInputStream(file);
 		Calendar cal = builder.build(is);
 		is.close();
-		
+
 		return importIcal(cal, category);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	static private String importIcal(Calendar cal, String category)
 			throws Exception {
@@ -439,7 +448,7 @@ public class AppointmentIcalAdapter {
 		CompatibilityHints.setHintEnabled(
 				CompatibilityHints.KEY_RELAXED_UNFOLDING, true);
 		StringBuffer warning = new StringBuffer();
-		
+
 		try {
 			cal.validate();
 		} catch (ValidationException e) {
@@ -649,8 +658,7 @@ public class AppointmentIcalAdapter {
 			}
 		}
 
-		for (Appointment ap : aplist)
-		{
+		for (Appointment ap : aplist) {
 			amodel.saveAppt(ap);
 		}
 
@@ -667,11 +675,9 @@ public class AppointmentIcalAdapter {
 	static private int tzOffset(long date) {
 		return TimeZone.getDefault().getOffset(date);
 	}
-	
-	static public void main(String args[]) throws Exception
-	{
-		
-		
+
+	static public void main(String args[]) throws Exception {
+
 		importIcalFromUrl("https://www.google.com/calendar/ical/testborg%40gmail.com/private-1cfabbb9dec4c3d764c2f62acf127599/basic.ics");
 	}
 }

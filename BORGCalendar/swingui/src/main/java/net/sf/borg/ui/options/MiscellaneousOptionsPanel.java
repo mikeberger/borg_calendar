@@ -70,6 +70,9 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 
 	private JComboBox<String> shutdownAction = new JComboBox<String>();
 
+	private JTextField proxyHostText = new JTextField();
+	private JTextField proxyPortText = new JTextField();
+
 	/**
 	 * Instantiates a new miscellaneous options panel.
 	 */
@@ -168,6 +171,18 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 		gbc1 = GridBagConstraintsFactory.create(0, 10, GridBagConstraints.BOTH);
 		gbc1.gridwidth = 2;
 		this.add(verboseLogging, gbc1);
+		
+		this.add(new JLabel(Resource.getResourceString("proxy_host")),
+				GridBagConstraintsFactory.create(0, 11, GridBagConstraints.BOTH));
+		this.add(proxyHostText,
+				GridBagConstraintsFactory.create(1, 11, GridBagConstraints.BOTH));
+		
+		this.add(new JLabel(Resource.getResourceString("proxy_port")),
+				GridBagConstraintsFactory.create(0, 12, GridBagConstraints.BOTH));
+		this.add(proxyPortText,
+				GridBagConstraintsFactory.create(1, 12, GridBagConstraints.BOTH));
+
+
 	}
 
 	/*
@@ -214,7 +229,15 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 			Errmsg.getErrorHandler().notice(Resource.getResourceString("socket_warn"));
 			socketPort.setText("-1");
 			Prefs.putPref(PrefName.SOCKETPORT, new Integer(-1));
-			return;
+		}
+		
+		Prefs.putPref(PrefName.PROXY_HOST, proxyHostText.getText());
+
+		try {
+			int port = Integer.parseInt(proxyPortText.getText());
+			Prefs.putPref(PrefName.PROXY_PORT, new Integer(port));
+		} catch (NumberFormatException e) {
+			Errmsg.getErrorHandler().notice(Resource.getResourceString("proxy_warn"));
 		}
 
 	}
@@ -251,6 +274,11 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 
 		int socket = Prefs.getIntPref(PrefName.SOCKETPORT);
 		socketPort.setText(Integer.toString(socket));
+		
+		proxyHostText.setText(Prefs.getPref(PrefName.PROXY_HOST));
+		
+		int port = Prefs.getIntPref(PrefName.PROXY_PORT);
+		proxyPortText.setText(Integer.toString(port));
 
 	}
 

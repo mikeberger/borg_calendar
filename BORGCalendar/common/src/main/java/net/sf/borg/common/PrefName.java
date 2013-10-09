@@ -27,8 +27,6 @@ import java.util.Calendar;
  */
 public class PrefName {
 
-
-
 	/** preference name */
 	private String name_;
 
@@ -113,7 +111,7 @@ public class PrefName {
 
 	/** hsql database directory */
 	static public PrefName HSQLDBDIR = new PrefName("hsqldbdir", "not-set");
-	
+
 	/** h2 database directory */
 	static public PrefName H2DIR = new PrefName("h2dir", "not-set");
 
@@ -127,13 +125,13 @@ public class PrefName {
 	/** port for the socket listener */
 	static public PrefName SOCKETPORT = new PrefName("socketport", new Integer(
 			2929));
-	
+
 	/** start as iconified to system tray */
-	static public PrefName BACKGSTART = new PrefName( "backgstart", "false");
+	static public PrefName BACKGSTART = new PrefName("backgstart", "false");
 
 	/** use system tray */
 	static public PrefName USESYSTRAY = new PrefName("useSysTray", "true");
-	
+
 	/** show date is system tray */
 	static public PrefName SYSTRAYDATE = new PrefName("sysTrayDate", "true");
 
@@ -160,7 +158,8 @@ public class PrefName {
 			"false");
 
 	/** sort appointments by priority for a day */
-	static public PrefName PRIORITY_SORT = new PrefName("priority_sort", "false");
+	static public PrefName PRIORITY_SORT = new PrefName("priority_sort",
+			"false");
 
 	/** the first day of the week */
 	static public PrefName FIRSTDOW = new PrefName("first_dow", new Integer(
@@ -203,18 +202,20 @@ public class PrefName {
 	static public PrefName BEEPINGREMINDERS = new PrefName("beeping_reminders",
 			"true");
 
-	/** how often tp pop up reminders for untimed todos*/
+	/** how often tp pop up reminders for untimed todos */
 	static public PrefName TODOREMINDERMINS = new PrefName(
 			"todo_reminder_mins", new Integer(30));
-	
+
 	/** option to consolidate all reminders in a single list window */
 	static public PrefName REMINDERLIST = new PrefName("reminder_list", "true");
-	
+
 	/** show reminders for tasks */
-	static public PrefName TASKREMINDERS = new PrefName("task_reminders", "true");
-	
+	static public PrefName TASKREMINDERS = new PrefName("task_reminders",
+			"true");
+
 	/** days before a birthday to show birthday reminders */
-	static public PrefName BIRTHDAYREMINDERDAYS = new PrefName("bd_reminder_days", new Integer(7));
+	static public PrefName BIRTHDAYREMINDERDAYS = new PrefName(
+			"bd_reminder_days", new Integer(7));
 
 	/** The EMAILENABLED. */
 	static public PrefName EMAILENABLED = new PrefName("email_enabled", "false");
@@ -246,7 +247,7 @@ public class PrefName {
 
 	/** The EMAILPORT. */
 	static public PrefName EMAILPORT = new PrefName("email_port", "25");
-	
+
 	/** TLS flag */
 	static public PrefName ENABLETLS = new PrefName("enable_tls", "false");
 
@@ -273,17 +274,17 @@ public class PrefName {
 			"SansSerif-6");
 
 	static public PrefName YEARVIEWFONT = new PrefName("yearviewfont",
-	"SansSerif-7");
-	
-	static public PrefName TRAYFONT = new PrefName("trayfont", "SansSerif-BOLD-12");
+			"SansSerif-7");
 
+	static public PrefName TRAYFONT = new PrefName("trayfont",
+			"SansSerif-BOLD-12");
 
 	/** The LNF. */
 	static public PrefName LNF = new PrefName("lnf",
 			"com.jgoodies.looks.plastic.PlasticXPLookAndFeel");
 	static public PrefName GOODIESTHEME = new PrefName("goodies_theme",
 			"ExperienceBlue");
-	
+
 	/** The COUNTRY. */
 	static public PrefName COUNTRY = new PrefName("country", "");
 
@@ -300,13 +301,13 @@ public class PrefName {
 	/** characters or image to mark todos with */
 	static public PrefName UCS_MARKER = new PrefName("ucs_marker",
 			"redball.gif");
-	
-	
+
 	/** draw gradient color in appointment boxes - can slow down older machines */
-	static public PrefName GRADIENT_APPTS = new PrefName("gradient_appts", "true");
+	static public PrefName GRADIENT_APPTS = new PrefName("gradient_appts",
+			"true");
 
 	// tasks
-	/** when showing tasks project and subtasks, prepend a prefix and id number  */
+	/** when showing tasks project and subtasks, prepend a prefix and id number */
 	static public PrefName TASK_SHOW_ABBREV = new PrefName("task_show_abbrev",
 			"false");
 
@@ -317,80 +318,90 @@ public class PrefName {
 	/** show subtasks on calendar */
 	static public PrefName CAL_SHOW_SUBTASKS = new PrefName(
 			"cal_show_subtasks", "true");
-	
+
 	/** show task number and status in task tree */
 	static public PrefName TASK_TREE_SHOW_STATUS = new PrefName(
 			"task_tree_show_status", "false");
-	
+
 	// days left until due for each color
-	static public PrefName RED_DAYS = new PrefName("red_days",
-			new Integer(2));
+	static public PrefName RED_DAYS = new PrefName("red_days", new Integer(2));
 	static public PrefName ORANGE_DAYS = new PrefName("orange_days",
 			new Integer(7));
 	static public PrefName YELLOW_DAYS = new PrefName("yellow_days",
 			new Integer(14));
-	
-
 
 	/** keystore location */
 	static public PrefName KEYSTORE = new PrefName("key_store", "");
-	
+
 	/** encryption key alias in the keystore */
 	static public PrefName KEYALIAS = new PrefName("key_alias", "borg_key");
-	
+
 	/** cached password time to live in seconds */
-	static public PrefName PASSWORD_TTL = new PrefName("pw_ttl", new Integer(300));
+	static public PrefName PASSWORD_TTL = new PrefName("pw_ttl", new Integer(
+			300));
 
- 	/** todo quick add, clear text after add */
- 	static public PrefName TODO_QUICK_ENTRY_AUTO_CLEAR_TEXT_FIELD = new PrefName("todo_option_auto_clear_text", "false");
- 	
- 	/** todo quick add, default date to today */
- 	static public PrefName TODO_QUICK_ENTRY_AUTO_SET_DATE_FIELD = new PrefName("todo_option_auto_date_today", "false");
+	/** todo quick add, clear text after add */
+	static public PrefName TODO_QUICK_ENTRY_AUTO_CLEAR_TEXT_FIELD = new PrefName(
+			"todo_option_auto_clear_text", "false");
 
- 	/** allow dynamically loaded plugins */
- 	static public PrefName DYNAMIC_LOADING = new PrefName("dynamic_loading", "false");
- 	
- 	/** shutdown action */
- 	static public PrefName SHUTDOWN_ACTION = new PrefName("shutdown_action", "");
- 	
+	/** todo quick add, default date to today */
+	static public PrefName TODO_QUICK_ENTRY_AUTO_SET_DATE_FIELD = new PrefName(
+			"todo_option_auto_date_today", "false");
+
+	/** allow dynamically loaded plugins */
+	static public PrefName DYNAMIC_LOADING = new PrefName("dynamic_loading",
+			"false");
+
+	/** shutdown action */
+	static public PrefName SHUTDOWN_ACTION = new PrefName("shutdown_action", "");
+
 	public static final PrefName SHUTDOWNTIME = new PrefName("shuttime", "0");
-	
-	/** debug flag  - trigger debug logging */
+
+	/** debug flag - trigger debug logging */
 	public static final PrefName DEBUG = new PrefName("debug", "false");
-	
-	// limit on the max text size that can be put into a text area to prevent memory issues
-	public static final PrefName MAX_TEXT_SIZE = new PrefName("max_text_size", new Integer(1024*1024));
-	
-	//the email regular expression and phone number regular expression
-	//regular expression for validating email addresses
-	static public PrefName EMAIL_VALIDATION = new PrefName("Email_Validation","false");
-	
-//	static public PrefName EMAIL_REGEX = new PrefName ("Email_Regex", 
-//			"^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
-//					+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
-//	
-	static public PrefName PHONE_VALIDATION = new PrefName("Phone_Validation", 0);
-	
-	static public PrefName PHONE_REGEX = new PrefName ("Phone_Regex", "");
-	
-	public static PrefName ICAL_PORT = new PrefName("ical-server-port", new Integer(
-			8844));
+
+	// limit on the max text size that can be put into a text area to prevent
+	// memory issues
+	public static final PrefName MAX_TEXT_SIZE = new PrefName("max_text_size",
+			new Integer(1024 * 1024));
+
+	// the email regular expression and phone number regular expression
+	// regular expression for validating email addresses
+	static public PrefName EMAIL_VALIDATION = new PrefName("Email_Validation",
+			"false");
+
+	// static public PrefName EMAIL_REGEX = new PrefName ("Email_Regex",
+	// "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+	// + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
+	//
+	static public PrefName PHONE_VALIDATION = new PrefName("Phone_Validation",
+			0);
+
+	static public PrefName PHONE_REGEX = new PrefName("Phone_Regex", "");
+
+	public static PrefName ICAL_PORT = new PrefName("ical-server-port",
+			new Integer(8844));
 	public static PrefName ICAL_EXPORTYEARS = new PrefName("ical-export-years",
 			new Integer(2));
 
 	// option to prevent import of appts that were previously exported from borg
-		// used when the goal is to only import appointments created outside of
-		// borg, but
-		// to not import appts that were exported from borg to another calendar and
-		// then
-		// sent back to borg as part of the export from the other calendar
-		public static PrefName SKIP_BORG = new PrefName("ical-skip_borg", "true");
+	// used when the goal is to only import appointments created outside of
+	// borg, but
+	// to not import appts that were exported from borg to another calendar and
+	// then
+	// sent back to borg as part of the export from the other calendar
+	public static PrefName SKIP_BORG = new PrefName("ical-skip_borg", "true");
 
-		// FTP
-		public static PrefName FTPSERVER = new PrefName("ical-ftp-server",
-				"localhost");
-		public static PrefName FTPPATH = new PrefName("ical-ftp-path", "borg.ics");
-		public static PrefName FTPUSER = new PrefName("ical-ftp-user", "");
-		public static PrefName FTPPW = new PrefName("ical-ftp-pw", "");
-		public static PrefName FTPPW2 = new PrefName("ical-ftp-pw2", "");
+	// FTP
+	public static PrefName FTPSERVER = new PrefName("ical-ftp-server",
+			"localhost");
+	public static PrefName FTPPATH = new PrefName("ical-ftp-path", "borg.ics");
+	public static PrefName FTPUSER = new PrefName("ical-ftp-user", "");
+	public static PrefName FTPPW = new PrefName("ical-ftp-pw", "");
+	public static PrefName FTPPW2 = new PrefName("ical-ftp-pw2", "");
+	
+	public static PrefName PROXY_HOST = new PrefName("proxy_host", "");
+	public static PrefName PROXY_PORT = new PrefName("proxy_port", new Integer(8080));
+	
+
 }
