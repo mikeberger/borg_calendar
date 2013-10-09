@@ -31,7 +31,7 @@ import net.sf.borg.ui.options.OptionsView;
 
 public class IcalModule implements Module {
 
-	
+	private static PrefName url_pref = new PrefName("saved_import_url", "");
 	
 
 	@Override
@@ -93,7 +93,7 @@ public class IcalModule implements Module {
 					if (o == null)
 						return;
 
-					String warning = AppointmentIcalAdapter.importIcal(s,
+					String warning = AppointmentIcalAdapter.importIcalFromFile(s,
 							(String) o);
 					if (warning != null && !warning.isEmpty())
 						Errmsg.getErrorHandler().notice(warning);
@@ -106,6 +106,32 @@ public class IcalModule implements Module {
 
 		m.add(imp);
 
+		JMenuItem impUrl = new JMenuItem();
+		impUrl.setText(Resource.getResourceString("ImportUrl"));
+		impUrl.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+
+				// prompt for a file
+				String urlString = JOptionPane.showInputDialog(null, Resource.getResourceString("enturl"), Prefs.getPref(url_pref));
+				if( urlString == null ) return;
+				
+				Prefs.putPref(url_pref, urlString);
+				try {
+
+					String warning = AppointmentIcalAdapter.importIcalFromUrl(urlString);
+					if (warning != null && !warning.isEmpty())
+						Errmsg.getErrorHandler().notice(warning);
+				} catch (Exception e) {
+					Errmsg.getErrorHandler().errmsg(e);
+				}
+
+			}
+		});
+
+		m.add(impUrl);
+		
 		JMenuItem exp = new JMenuItem();
 		exp.setText(Resource.getResourceString("exportToFile"));
 		exp.addActionListener(new ActionListener() {
@@ -179,7 +205,7 @@ public class IcalModule implements Module {
 				for (File f : files) {
 					String warning;
 					try {
-						warning = AppointmentIcalAdapter.importIcal(
+						warning = AppointmentIcalAdapter.importIcalFromFile(
 								f.getAbsolutePath(), "");
 						if (warning != null && !warning.isEmpty())
 							Errmsg.getErrorHandler().notice(warning);

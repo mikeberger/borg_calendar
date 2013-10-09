@@ -23,6 +23,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringWriter;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -396,9 +397,36 @@ public class AppointmentIcalAdapter {
 
 		}
 	}
-
+	
+	static public String importIcalFromUrl(String urlString)
+			throws Exception {
+		
+		System.setProperty("http.proxyHost", "www-proxy.exu.ericsson.se");
+	    System.setProperty("http.proxyPort", "8080");
+	    System.setProperty("https.proxyHost", "www-proxy.exu.ericsson.se");
+	    System.setProperty("https.proxyPort", "8080");
+	    
+		CalendarBuilder builder = new CalendarBuilder();
+		URL url = new URL(urlString);
+		InputStream is = url.openStream();
+		Calendar cal = builder.build(is);
+		is.close();
+		
+		return importIcal(cal, null);
+	}
+	
+	static public String importIcalFromFile(String file, String category)
+			throws Exception {
+		CalendarBuilder builder = new CalendarBuilder();
+		InputStream is = new FileInputStream(file);
+		Calendar cal = builder.build(is);
+		is.close();
+		
+		return importIcal(cal, category);
+	}
+	
 	@SuppressWarnings("unchecked")
-	static public String importIcal(String file, String category)
+	static private String importIcal(Calendar cal, String category)
 			throws Exception {
 
 		boolean skip_borg = Prefs.getBoolPref(PrefName.SKIP_BORG);
@@ -411,11 +439,7 @@ public class AppointmentIcalAdapter {
 		CompatibilityHints.setHintEnabled(
 				CompatibilityHints.KEY_RELAXED_UNFOLDING, true);
 		StringBuffer warning = new StringBuffer();
-		CalendarBuilder builder = new CalendarBuilder();
-		InputStream is = new FileInputStream(file);
-		Calendar cal = builder.build(is);
-		is.close();
-
+		
 		try {
 			cal.validate();
 		} catch (ValidationException e) {
@@ -445,7 +469,7 @@ public class AppointmentIcalAdapter {
 				Appointment ap = amodel.getDefaultAppointment();
 				if (ap == null)
 					ap = amodel.newAppt();
-				if (category.equals("")
+				if (category == null || category.equals("")
 						|| category.equals(CategoryModel.UNCATEGORIZED)) {
 					ap.setCategory(null);
 				} else {
@@ -626,7 +650,9 @@ public class AppointmentIcalAdapter {
 		}
 
 		for (Appointment ap : aplist)
+		{
 			amodel.saveAppt(ap);
+		}
 
 		warning.append("Imported " + aplist.size() + " Appointments\n");
 		warning.append("Skipped " + skipped + " Appointments\n");
@@ -640,5 +666,12 @@ public class AppointmentIcalAdapter {
 
 	static private int tzOffset(long date) {
 		return TimeZone.getDefault().getOffset(date);
+	}
+	
+	static public void main(String args[]) throws Exception
+	{
+		
+		
+		importIcalFromUrl("https://www.google.com/calendar/ical/testborg%40gmail.com/private-1cfabbb9dec4c3d764c2f62acf127599/basic.ics");
 	}
 }
