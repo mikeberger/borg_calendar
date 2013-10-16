@@ -540,7 +540,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 		todoTable = new StripedTable();
 		todoText = new JTextField();
 
-		// add keyboard shortcut to do add TODO item when enter pressed on the
+		// add keyboard shortcut to do add todo item when enter pressed on the
 		// text field.
 		todoText.addKeyListener(new KeyAdapter() {
 			@Override

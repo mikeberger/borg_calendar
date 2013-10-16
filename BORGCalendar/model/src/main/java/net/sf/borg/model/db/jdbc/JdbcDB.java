@@ -414,6 +414,7 @@ final class JdbcDB {
 				// update size to 30
 				new JdbcDBUpgrader(null, "alter table options alter name varchar(30)").upgrade();
 			}
+			rs.close();
 			rs = st.executeQuery("select street, work_street from addresses");
 			md = rs.getMetaData();
 			if( md.getColumnDisplaySize(1) < 40) {

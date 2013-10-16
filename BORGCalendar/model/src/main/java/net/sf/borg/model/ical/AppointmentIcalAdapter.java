@@ -410,10 +410,10 @@ public class AppointmentIcalAdapter {
 			System.setProperty("http.proxyPort", Integer.toString(port));
 			System.setProperty("https.proxyPort", Integer.toString(port));
 		} else {
-			System.setProperty("http.proxyHost", null);
-			System.setProperty("https.proxyHost", null);
-			System.setProperty("http.proxyPort", null);
-			System.setProperty("https.proxyPort", null);
+			System.clearProperty("http.proxyHost");
+			System.clearProperty("https.proxyHost");
+			System.clearProperty("http.proxyPort");
+			System.clearProperty("https.proxyPort");
 		}
 
 		CalendarBuilder builder = new CalendarBuilder();

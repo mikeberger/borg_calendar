@@ -32,7 +32,6 @@ import net.sf.borg.ui.options.OptionsView;
 public class IcalModule implements Module {
 
 	private static PrefName url_pref = new PrefName("saved_import_url", "");
-	
 
 	@Override
 	public Component getComponent() {
@@ -48,14 +47,13 @@ public class IcalModule implements Module {
 	public ViewType getViewType() {
 		return null;
 	}
-	
-	public static JMenu getIcalMenu()
-	{
+
+	public static JMenu getIcalMenu() {
 		JMenu m = new JMenu();
 		m.setText("Ical");
 
-		m.setIcon(new javax.swing.ImageIcon(IcalModule.class.getResource(
-				"/resource/Export16.gif")));
+		m.setIcon(new javax.swing.ImageIcon(IcalModule.class
+				.getResource("/resource/Export16.gif")));
 		JMenuItem imp = new JMenuItem();
 		imp.setText(Resource.getResourceString("Import"));
 		imp.addActionListener(new ActionListener() {
@@ -93,8 +91,8 @@ public class IcalModule implements Module {
 					if (o == null)
 						return;
 
-					String warning = AppointmentIcalAdapter.importIcalFromFile(s,
-							(String) o);
+					String warning = AppointmentIcalAdapter.importIcalFromFile(
+							s, (String) o);
 					if (warning != null && !warning.isEmpty())
 						Errmsg.getErrorHandler().notice(warning);
 				} catch (Exception e) {
@@ -114,13 +112,17 @@ public class IcalModule implements Module {
 			public void actionPerformed(ActionEvent arg0) {
 
 				// prompt for a file
-				String urlString = JOptionPane.showInputDialog(null, Resource.getResourceString("enturl"), Prefs.getPref(url_pref));
-				if( urlString == null ) return;
-				
+				String urlString = JOptionPane.showInputDialog(null,
+						Resource.getResourceString("enturl"),
+						Prefs.getPref(url_pref));
+				if (urlString == null)
+					return;
+
 				Prefs.putPref(url_pref, urlString);
 				try {
 
-					String warning = AppointmentIcalAdapter.importIcalFromUrl(urlString);
+					String warning = AppointmentIcalAdapter
+							.importIcalFromUrl(urlString);
 					if (warning != null && !warning.isEmpty())
 						Errmsg.getErrorHandler().notice(warning);
 				} catch (Exception e) {
@@ -131,7 +133,7 @@ public class IcalModule implements Module {
 		});
 
 		m.add(impUrl);
-		
+
 		JMenuItem exp = new JMenuItem();
 		exp.setText(Resource.getResourceString("exportToFile"));
 		exp.addActionListener(new ActionListener() {
@@ -151,7 +153,8 @@ public class IcalModule implements Module {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					IcalFTP.exportftp(Prefs.getIntPref(PrefName.ICAL_EXPORTYEARS));
+					IcalFTP.exportftp(Prefs
+							.getIntPref(PrefName.ICAL_EXPORTYEARS));
 				} catch (Exception e) {
 					Errmsg.getErrorHandler().errmsg(e);
 				}
@@ -191,7 +194,6 @@ public class IcalModule implements Module {
 
 		m.add(exp4);
 
-
 		return m;
 	}
 
@@ -216,13 +218,27 @@ public class IcalModule implements Module {
 				}
 			}
 		});
+
+		// import from URL
+		String url = Prefs.getPref(PrefName.ICAL_IMPORT_URL);
+		if (url != null && !url.isEmpty())
+		{
+			try {
+
+				String warning = AppointmentIcalAdapter
+						.importIcalFromUrl(url);
+				if (warning != null && !warning.isEmpty())
+					Errmsg.getErrorHandler().notice(warning);
+			} catch (Exception e) {
+				Errmsg.getErrorHandler().errmsg(e);
+			}
+		}
 	}
 
 	@Override
 	public void print() {
 		// do nothing
 	}
-
 
 	/**
 	 * export appts

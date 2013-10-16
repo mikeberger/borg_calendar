@@ -48,6 +48,7 @@ public class IcalOptionsPanel extends OptionsPanel {
 	private JTextField ftppath = new JTextField();
 	private JTextField ftpusername = new JTextField();
 	private JPasswordField ftppassword = new JPasswordField();
+	private JTextField importurl = new JTextField();
 
 	public IcalOptionsPanel() {
 		this.setLayout(new java.awt.GridBagLayout());
@@ -88,6 +89,11 @@ public class IcalOptionsPanel extends OptionsPanel {
 		this.add(ftppassword, GridBagConstraintsFactory.create(1, 6,
 				GridBagConstraints.BOTH, 1.0, 0.0));
 		ftppassword.setEditable(true);
+		
+		this.add(new JLabel(Resource.getResourceString("ical_import_url")),
+				GridBagConstraintsFactory.create(0, 7, GridBagConstraints.BOTH));
+		this.add(importurl, GridBagConstraintsFactory.create(1, 7,
+				GridBagConstraints.BOTH, 1.0, 0.0));
 
 	}
 
@@ -120,6 +126,8 @@ public class IcalOptionsPanel extends OptionsPanel {
 
 		OptionsPanel.setBooleanPref(skipBox, PrefName.SKIP_BORG);
 
+		Prefs.putPref(PrefName.ICAL_IMPORT_URL, importurl.getText());
+
 	}
 
 	@Override
@@ -141,6 +149,8 @@ public class IcalOptionsPanel extends OptionsPanel {
 		} catch (Exception e) {
 			Errmsg.getErrorHandler().errmsg(e);
 		}
+		
+		importurl.setText(Prefs.getPref(PrefName.ICAL_IMPORT_URL));
 
 	}
 

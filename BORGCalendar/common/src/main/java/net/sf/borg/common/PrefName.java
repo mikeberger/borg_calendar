@@ -403,5 +403,7 @@ public class PrefName {
 	public static PrefName PROXY_HOST = new PrefName("proxy_host", "");
 	public static PrefName PROXY_PORT = new PrefName("proxy_port", new Integer(8080));
 	
+	public static PrefName ICAL_IMPORT_URL = new PrefName("ical-import-url", "");
+
 
 }

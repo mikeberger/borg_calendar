@@ -69,7 +69,6 @@ public class AddressOptionsPanel extends OptionsPanel {
 
 	@Override
 	public void applyChanges() {
-		// TODO Auto-generated method stub
 		OptionsPanel.setBooleanPref(emailvalidation, PrefName.EMAIL_VALIDATION);
 		String phonereg =" ";
 		int i = phoneLoc.getSelectedIndex();
