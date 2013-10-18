@@ -47,9 +47,11 @@ import net.fortuna.ical4j.model.TextList;
 import net.fortuna.ical4j.model.ValidationException;
 import net.fortuna.ical4j.model.WeekDay;
 import net.fortuna.ical4j.model.WeekDayList;
+import net.fortuna.ical4j.model.component.VAlarm;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VToDo;
 import net.fortuna.ical4j.model.parameter.Value;
+import net.fortuna.ical4j.model.property.Action;
 import net.fortuna.ical4j.model.property.Categories;
 import net.fortuna.ical4j.model.property.Clazz;
 import net.fortuna.ical4j.model.property.Description;
@@ -133,7 +135,7 @@ public class AppointmentIcalAdapter {
 			}
 
 			TextList catlist = new TextList();
-			Component ve = new VEvent();
+			VEvent ve = new VEvent();
 
 			// set a unique ical id
 			// google seems to require uniqueness even if the id was used by an
@@ -300,6 +302,36 @@ public class AppointmentIcalAdapter {
 				ve.getProperties().add(new RRule(new Recur(rec)));
 
 			}
+
+			// reminder
+			if (!AppointmentModel.isNote(ap) && ap.getReminderTimes() != null
+					&& !ap.getReminderTimes().isEmpty()) {
+				/*
+				 * sync is too slow if we add every reminder char[] remTimes =
+				 * new char[ReminderTimes.getNum()]; try { remTimes =
+				 * (ap.getReminderTimes()).toCharArray(); } catch (Exception e)
+				 * { for (int i = 0; i < ReminderTimes.getNum(); ++i) {
+				 * remTimes[i] = 'N'; } } for( int i = 0; i <
+				 * ReminderTimes.getNum(); i++) { if( remTimes[i] == 'Y') {
+				 * VAlarm va = new VAlarm(new
+				 * Dur(0,0,-1*ReminderTimes.getTimes(i),0));
+				 * va.getProperties().add(Action.DISPLAY);
+				 * va.getProperties().add(new Description(ap.getText()));
+				 * ve.getAlarms().add(va); }
+				 */
+				
+				// add a reminder
+				if (ap.getReminderTimes().contains("Y") && (ap.isRepeatFlag() || ap.getDate().after(new Date()))) {
+					VAlarm va = new VAlarm(new Dur(0, 0, -1 * 30, 0));
+					va.getProperties().add(Action.DISPLAY);
+					va.getProperties().add(new Description(ap.getText()));
+					va.getProperties().add(
+							new net.fortuna.ical4j.model.property.Repeat(2));
+					va.getProperties().add(new Duration(new Dur(0, 0, 15, 0)));
+					ve.getAlarms().add(va);
+				}
+			}
+
 			clist.add(ve);
 
 		}
@@ -662,10 +694,10 @@ public class AppointmentIcalAdapter {
 
 		for (Appointment ap : aplist) {
 			// check for dups
-			List<Appointment> appts = AppointmentModel.getReference().getAppointmentsByText(ap.getText());			
+			List<Appointment> appts = AppointmentModel.getReference()
+					.getAppointmentsByText(ap.getText());
 
-			if( appts.contains(ap))
-			{
+			if (appts.contains(ap)) {
 				dups.append("DUP: " + ap.getText() + "\n");
 				continue;
 			}
