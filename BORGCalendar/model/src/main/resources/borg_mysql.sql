@@ -49,6 +49,8 @@ CREATE TABLE `appointments` (
   `encrypted` char(1) default NULL,
    repeat_until date default NULL,
   `priority` int(11) NOT NULL default '5',
+  `create_time` timestamp NOT NULL default '1980-00-00 00:00:00',
+  `lastmod` timestamp NOT NULL default '1980-00-00 00:00:00',
 
 
   PRIMARY KEY  (`appt_num`),

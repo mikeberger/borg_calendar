@@ -76,6 +76,10 @@ public class Appointment extends EncryptableEntity<Appointment> implements Calen
 	private String Untimed;
 	private Date repeatUntil;
 	private Integer priority = 5;
+	private Date createTime;
+	private Date lastMod;
+
+
 	
 	@Override
 	@SuppressWarnings("unchecked")
@@ -105,7 +109,8 @@ public class Appointment extends EncryptableEntity<Appointment> implements Calen
 		dst.setEncrypted(isEncrypted());
 		dst.setRepeatUntil( getRepeatUntil());
 		dst.setPriority( getPriority() );
-
+		dst.setCreateTime(getCreateTime());
+		dst.setLastMod(getLastMod());
 		return(dst);
 	}
 

@@ -33,8 +33,6 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 
-import net.sf.borg.common.Errmsg;
-import net.sf.borg.common.Resource;
 import net.sf.borg.model.db.AppointmentDB;
 import net.sf.borg.model.entity.Appointment;
 
@@ -51,19 +49,13 @@ class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
      */
     public ApptJdbcDB() 
     {
-    	try {
-			JdbcDB.execSQL("select username from appointments");
-			Errmsg.getErrorHandler().notice(Resource.getResourceString("db_username_check"));
-		} catch (Exception e) {
-			// empty
-		}
 		
-		new JdbcDBUpgrader("select encrypted from appointments",
-		"alter table appointments add column encrypted char(1) default null").upgrade();
-		new JdbcDBUpgrader("select repeat_until from appointments",
-		"alter table appointments add column repeat_until date default null").upgrade();
 		new JdbcDBUpgrader("select priority from appointments",
 		"alter table appointments add column priority integer default '5' NOT NULL").upgrade();
+		new JdbcDBUpgrader("select create_time from appointments",
+				"alter table appointments add column create_time datetime default '1980-01-01 00:00:00' NOT NULL").upgrade();
+		new JdbcDBUpgrader("select lastmod from appointments",
+				"alter table appointments add column lastmod datetime default '1980-01-01 00:00:00' NOT NULL").upgrade();
 		
     }
     
@@ -74,8 +66,8 @@ class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
     public void addObj(Appointment appt) throws Exception
     {
         PreparedStatement stmt = JdbcDB.getConnection().prepareStatement( "INSERT INTO appointments (appt_date, appt_num, duration, text, skip_list," +
-        " next_todo, vacation, holiday, private, times, frequency, todo, color, rpt, category, reminders, untimed, encrypted, repeat_until, priority ) VALUES " +
-        "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        " next_todo, vacation, holiday, private, times, frequency, todo, color, rpt, category, reminders, untimed, encrypted, repeat_until, priority, create_time, lastmod ) VALUES " +
+        "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         
         
         stmt.setTimestamp( 1, new java.sql.Timestamp( appt.getDate().getTime()), Calendar.getInstance() );
@@ -114,6 +106,9 @@ class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
         	stmt.setInt(20, appt.getPriority().intValue());
         else
         	stmt.setInt(20, 5);
+        stmt.setTimestamp( 21, new java.sql.Timestamp( appt.getCreateTime().getTime()), Calendar.getInstance() );
+        stmt.setTimestamp( 22, new java.sql.Timestamp( appt.getLastMod().getTime()), Calendar.getInstance() );
+
         stmt.executeUpdate();
         
         writeCache( appt );
@@ -280,7 +275,10 @@ class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
 		if( r.getDate("repeat_until") != null )
 			appt.setRepeatUntil( new java.util.Date(r.getDate("repeat_until").getTime()));
 		appt.setPriority(new Integer(r.getInt("priority")));
-		
+		if( r.getTimestamp("create_time") != null)
+			appt.setCreateTime( new java.util.Date (r.getTimestamp("create_time").getTime()));
+		if( r.getTimestamp("lastmod") != null)
+			appt.setLastMod( new java.util.Date (r.getTimestamp("lastmod").getTime()));
 		return appt;
 	}
 	
@@ -293,7 +291,7 @@ class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
         PreparedStatement stmt = JdbcDB.getConnection().prepareStatement( "UPDATE appointments SET  appt_date = ?, " +
         "duration = ?, text = ?, skip_list = ?," +
         " next_todo = ?, vacation = ?, holiday = ?, private = ?, times = ?, frequency = ?, todo = ?, color = ?, rpt = ?, category = ?," +
-		" reminders = ?, untimed = ?, encrypted = ?, repeat_until = ?, priority = ?" +
+		" reminders = ?, untimed = ?, encrypted = ?, repeat_until = ?, priority = ?, create_time = ?, lastmod = ?" +
         " WHERE appt_num = ?");
        
         
@@ -331,7 +329,11 @@ class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
         	stmt.setInt(19, appt.getPriority().intValue());
         else
         	stmt.setInt(19, 5);
-        stmt.setInt(20, appt.getKey());
+        
+        stmt.setTimestamp( 20, new java.sql.Timestamp( appt.getCreateTime().getTime()), Calendar.getInstance() );
+        stmt.setTimestamp( 21, new java.sql.Timestamp( appt.getLastMod().getTime()), Calendar.getInstance() );
+
+        stmt.setInt(22, appt.getKey());
 
         stmt.executeUpdate();
         stmt.close();

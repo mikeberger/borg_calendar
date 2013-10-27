@@ -38,6 +38,7 @@ import net.fortuna.ical4j.data.CalendarOutputter;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.ComponentList;
+import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.Dur;
 import net.fortuna.ical4j.model.ParameterList;
 import net.fortuna.ical4j.model.Property;
@@ -54,10 +55,12 @@ import net.fortuna.ical4j.model.parameter.Value;
 import net.fortuna.ical4j.model.property.Action;
 import net.fortuna.ical4j.model.property.Categories;
 import net.fortuna.ical4j.model.property.Clazz;
+import net.fortuna.ical4j.model.property.Created;
 import net.fortuna.ical4j.model.property.Description;
 import net.fortuna.ical4j.model.property.DtEnd;
 import net.fortuna.ical4j.model.property.DtStart;
 import net.fortuna.ical4j.model.property.Duration;
+import net.fortuna.ical4j.model.property.LastModified;
 import net.fortuna.ical4j.model.property.ProdId;
 import net.fortuna.ical4j.model.property.RRule;
 import net.fortuna.ical4j.model.property.Summary;
@@ -137,15 +140,12 @@ public class AppointmentIcalAdapter {
 			TextList catlist = new TextList();
 			VEvent ve = new VEvent();
 
-			// set a unique ical id
-			// google seems to require uniqueness even if the id was used by an
-			// already deleted appt
-			// so add a timestamp
-			// the id has the borg key before the @ to be used for syncing later
-			long updated = new Date().getTime();
-			String uidval = Integer.toString(ap.getKey()) + "@BORG" + updated;
+			String uidval = Integer.toString(ap.getKey()) + "@BORG" + ap.getCreateTime().getTime();
 			Uid uid = new Uid(uidval);
 			ve.getProperties().add(uid);
+			
+			ve.getProperties().add(new Created(new DateTime(ap.getCreateTime())));
+			ve.getProperties().add(new LastModified(new DateTime(ap.getLastMod())));
 
 			// add text
 			String appttext = ap.getText();

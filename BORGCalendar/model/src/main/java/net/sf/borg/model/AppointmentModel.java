@@ -758,6 +758,8 @@ public class AppointmentModel extends Model implements Model.Listener,
 					r.setKey(db_.nextkey());
 				}
 
+				r.setCreateTime(new Date());
+				r.setLastMod(r.getCreateTime());
 				db_.addObj(r);
 				if (!undo) {
 					UndoLog.getReference().addItem(
@@ -765,6 +767,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 				}
 			} else {
 
+				r.setLastMod(new Date());
 				action = ChangeEvent.ChangeAction.CHANGE;
 				db_.updateObj(r);
 				if (!undo) {

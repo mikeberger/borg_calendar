@@ -469,6 +469,9 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 				newDate.set(Calendar.MONTH, origDate.get(Calendar.MONTH));
 				newDate.set(Calendar.DATE, origDate.get(Calendar.DATE));
 				appt.setDate(newDate.getTime());
+				
+				appt.setCreateTime(originalAppt.getCreateTime());
+				appt.setLastMod(originalAppt.getLastMod());
 
 				// determine if we can keep certain fields related to repeating
 				// and todos

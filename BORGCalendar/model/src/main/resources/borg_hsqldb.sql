@@ -59,6 +59,9 @@ CREATE CACHED TABLE appointments (
   encrypted char(1) default NULL,
   repeat_until date default NULL,
   priority integer default '5' NOT NULL,
+  create_time datetime default '1980-01-01 00:00:00' NOT NULL,
+  lastmod datetime default '1980-01-01 00:00:00' NOT NULL,
+
   PRIMARY KEY  (appt_num)
 );
 
