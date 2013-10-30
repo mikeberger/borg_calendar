@@ -691,21 +691,34 @@ public class AppointmentIcalAdapter {
 				aplist.add(ap);
 			}
 		}
+		
+		int imported = 0;
+		int dup_count = 0;
 
 		for (Appointment ap : aplist) {
 			// check for dups
 			List<Appointment> appts = AppointmentModel.getReference()
 					.getAppointmentsByText(ap.getText());
 
+			for( Appointment dbap : appts)
+			{
+				dbap.setCreateTime(null);
+				dbap.setLastMod(null);
+			}
+			
 			if (appts.contains(ap)) {
+				dup_count++;
 				dups.append("DUP: " + ap.getText() + "\n");
 				continue;
 			}
+			
+			imported++;
 			amodel.saveAppt(ap);
 		}
 
-		warning.append("Imported " + aplist.size() + " Appointments\n");
-		warning.append("Skipped " + skipped + " Appointments\n");
+		warning.append("Imported: " + imported + "\n");
+		warning.append("Skipped: " + skipped + "\n");
+		warning.append("Duplicates: " + dup_count + "\n");
 		warning.append(dups.toString());
 
 		if (warning.length() == 0)
