@@ -74,7 +74,7 @@ public class AddressOptionsPanel extends OptionsPanel {
 		int i = phoneLoc.getSelectedIndex();
 		if (i == 0)
 		{
-			phonereg=" ";
+			phonereg="";
 			Prefs.putPref(PrefName.PHONE_VALIDATION, 0);
 		}
 		else if (i == 1)

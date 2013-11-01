@@ -468,33 +468,10 @@ public class AddressView extends DockableView {
 						Pattern p1 =  Pattern.compile(Prefs.getPref(PrefName.PHONE_REGEX));
 						Matcher m1 = p1.matcher(homePageText.getText());
 						if (!m1.find()){
-							Errmsg.getErrorHandler().notice(Resource.getResourceString("Invalid_Home_Phone_Nummber"));
+							Errmsg.getErrorHandler().notice(Resource.getResourceString("Invalid_Home_Phone_Number"));
 						return;
 						}
 					}
-		}
-
-		
-		//this block checks for duplicate entries
-		//try catch to prevent a null assignment of address list
-		try {
-			
-			//cycle through all address in the database
-			for(Address addr : AddressModel.getReference().getAddresses() )
-			{
-				//do the names match?
-				if(firstNameText.getText().trim().toUpperCase().equals(addr.getFirstName().trim().toUpperCase()) &&
-                   lastNameText.getText().trim().toUpperCase().equals(addr.getLastName().trim().toUpperCase())){
-					//if someone does have the same name, notify the user and exit the save method
-					Errmsg.getErrorHandler().notice(Resource.getResourceString("Entry_Exists"));
-					return;
-				}
-			}
-			
-		} catch (Exception e) {
-			//notify user of error and return
-			Errmsg.getErrorHandler().errmsg(e);
-			return;
 		}
         
 		
