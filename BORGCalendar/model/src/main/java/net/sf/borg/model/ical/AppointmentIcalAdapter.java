@@ -173,6 +173,10 @@ public class AppointmentIcalAdapter {
 				DtStart dts = new DtStart(pl,
 						new net.fortuna.ical4j.model.Date(ap.getDate()));
 				ve.getProperties().add(dts);
+				Date end = new Date(ap.getDate().getTime() + 1000*60*60*24);
+				DtEnd dte = new DtEnd(pl,
+						new net.fortuna.ical4j.model.Date(end));
+				ve.getProperties().add(dte);
 			} else {
 				pl.add(Value.DATE_TIME);
 				DtStart dts = new DtStart(pl,
@@ -187,7 +191,7 @@ public class AppointmentIcalAdapter {
 						new Duration(new Dur(0, 0, ap.getDuration().intValue(),
 								0)));
 			}
-
+			
 			// vacation is a category
 			if (ap.getVacation() != null && ap.getVacation().intValue() != 0) {
 				catlist.add("Vacation");
@@ -364,6 +368,11 @@ public class AppointmentIcalAdapter {
 			DtStart dts = new DtStart(pl,
 					new net.fortuna.ical4j.model.Date(due));
 			ve.getProperties().add(dts);
+			
+			Date end = new Date(due.getTime() + 1000*60*60*24);
+			DtEnd dte = new DtEnd(pl,
+					new net.fortuna.ical4j.model.Date(end));
+			ve.getProperties().add(dte);
 
 			clist.add(ve);
 
@@ -395,6 +404,11 @@ public class AppointmentIcalAdapter {
 			DtStart dts = new DtStart(pl,
 					new net.fortuna.ical4j.model.Date(due));
 			ve.getProperties().add(dts);
+			
+			Date end = new Date(due.getTime() + 1000*60*60*24);
+			DtEnd dte = new DtEnd(pl,
+					new net.fortuna.ical4j.model.Date(end));
+			ve.getProperties().add(dte);
 
 			clist.add(ve);
 
@@ -426,6 +440,10 @@ public class AppointmentIcalAdapter {
 					new net.fortuna.ical4j.model.Date(due));
 			ve.getProperties().add(dts);
 
+			Date end = new Date(due.getTime() + 1000*60*60*24);
+			DtEnd dte = new DtEnd(pl,
+					new net.fortuna.ical4j.model.Date(end));
+			ve.getProperties().add(dte);
 			clist.add(ve);
 
 		}
