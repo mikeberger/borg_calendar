@@ -221,14 +221,21 @@ public class IcalModule implements Module {
 
 		// import from URL
 		String url = Prefs.getPref(PrefName.ICAL_IMPORT_URL);
-		if (url != null && !url.isEmpty())
-		{
+		if (url != null && !url.isEmpty()) {
 			try {
 
-				String warning = AppointmentIcalAdapter
-						.importIcalFromUrl(url);
-				if (warning != null && !warning.isEmpty())
-					Errmsg.getErrorHandler().notice(warning);
+				int res = JOptionPane.showConfirmDialog(null, 
+						Resource.getResourceString("ImportUrl") + ": " + url + " ?",
+						Resource.getResourceString("please_confirm"),
+						JOptionPane.OK_CANCEL_OPTION);
+
+				if (res == JOptionPane.YES_OPTION) {
+
+					String warning = AppointmentIcalAdapter
+							.importIcalFromUrl(url);
+					if (warning != null && !warning.isEmpty())
+						Errmsg.getErrorHandler().notice(warning);
+				}
 			} catch (Exception e) {
 				Errmsg.getErrorHandler().errmsg(e);
 			}
