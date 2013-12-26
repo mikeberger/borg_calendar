@@ -49,6 +49,7 @@ public class IcalOptionsPanel extends OptionsPanel {
 	private JTextField ftpusername = new JTextField();
 	private JPasswordField ftppassword = new JPasswordField();
 	private JTextField importurl = new JTextField();
+	private JCheckBox todoBox = new JCheckBox();
 
 	public IcalOptionsPanel() {
 		this.setLayout(new java.awt.GridBagLayout());
@@ -94,6 +95,10 @@ public class IcalOptionsPanel extends OptionsPanel {
 				GridBagConstraintsFactory.create(0, 7, GridBagConstraints.BOTH));
 		this.add(importurl, GridBagConstraintsFactory.create(1, 7,
 				GridBagConstraints.BOTH, 1.0, 0.0));
+		
+		todoBox.setText(Resource.getResourceString("ical_export_todos"));
+		this.add(todoBox,GridBagConstraintsFactory.create(0, 8,
+				GridBagConstraints.BOTH, 1.0, 0.0));
 
 	}
 
@@ -125,6 +130,7 @@ public class IcalOptionsPanel extends OptionsPanel {
 		Prefs.putPref(PrefName.ICAL_EXPORTYEARS, exportyears.getValue());
 
 		OptionsPanel.setBooleanPref(skipBox, PrefName.SKIP_BORG);
+		OptionsPanel.setBooleanPref(todoBox, PrefName.ICAL_EXPORT_TODO);
 
 		Prefs.putPref(PrefName.ICAL_IMPORT_URL, importurl.getText());
 
@@ -139,6 +145,7 @@ public class IcalOptionsPanel extends OptionsPanel {
 		exportyears.setValue(Prefs.getIntPref(PrefName.ICAL_EXPORTYEARS));
 
 		skipBox.setSelected(Prefs.getBoolPref(PrefName.SKIP_BORG));
+		todoBox.setSelected(Prefs.getBoolPref(PrefName.ICAL_EXPORT_TODO));
 
 		ftpusername.setText(Prefs.getPref(PrefName.FTPUSER));
 		ftpserver.setText(Prefs.getPref(PrefName.FTPSERVER));

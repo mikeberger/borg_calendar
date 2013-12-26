@@ -404,6 +404,9 @@ public class PrefName {
 	public static PrefName PROXY_PORT = new PrefName("proxy_port", new Integer(8080));
 	
 	public static PrefName ICAL_IMPORT_URL = new PrefName("ical-import-url", "");
+	
+	// option to export todos as VTODO objects instead of VEVENTS
+	public static PrefName ICAL_EXPORT_TODO = new PrefName("ical-export-todo", "false");
 
 
 }

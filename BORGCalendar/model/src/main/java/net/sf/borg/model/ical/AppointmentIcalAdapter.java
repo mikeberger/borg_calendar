@@ -127,6 +127,8 @@ public class AppointmentIcalAdapter {
 		boolean showpriv = false;
 		if (Prefs.getPref(PrefName.SHOWPRIVATE).equals("true"))
 			showpriv = true;
+		
+		boolean export_todos = Prefs.getBoolPref(PrefName.ICAL_EXPORT_TODO);
 
 		for (Appointment ap : AppointmentModel.getReference().getAllAppts()) {
 
@@ -138,7 +140,15 @@ public class AppointmentIcalAdapter {
 			}
 
 			TextList catlist = new TextList();
-			VEvent ve = new VEvent();
+			Component ve = null;
+			
+			// export todos as VTODOs if option set
+			// This works well in clients such as Mozilla Lightning, which handles VTODOs similar to BORG.
+			// On the other hand, VTODOs are not handled well at all by Android
+			if( ap.isTodo() && export_todos )
+				ve = new VToDo();
+			else
+				ve = new VEvent();
 
 			String uidval = Integer.toString(ap.getKey()) + "@BORG" + ap.getCreateTime().getTime();
 			Uid uid = new Uid(uidval);
@@ -168,7 +178,20 @@ public class AppointmentIcalAdapter {
 			ParameterList pl = new ParameterList();
 
 			// date
-			if (AppointmentModel.isNote(ap)) {
+			if( ve instanceof VToDo)
+			{
+				// date is the next todo field if present, otherwise
+				// the due date
+				Date nt = ap.getNextTodo();
+				if (nt == null) {
+					nt = ap.getDate();
+				}
+				
+				DtStart dtd = new DtStart();
+				dtd.setDate(new net.fortuna.ical4j.model.Date(nt));
+				ve.getProperties().add(dtd);
+			}
+			else if (AppointmentModel.isNote(ap)) {
 				pl.add(Value.DATE);
 				DtStart dts = new DtStart(pl,
 						new net.fortuna.ical4j.model.Date(ap.getDate()));
@@ -207,7 +230,7 @@ public class AppointmentIcalAdapter {
 				ve.getProperties().add(Clazz.PRIVATE);
 			}
 
-			// add color as a cetegory
+			// add color as a category
 			if (ap.getColor() != null
 					&& (ap.getColor().equals("black")
 							|| ap.getColor().equals("blue")
@@ -332,7 +355,11 @@ public class AppointmentIcalAdapter {
 					va.getProperties().add(
 							new net.fortuna.ical4j.model.property.Repeat(2));
 					va.getProperties().add(new Duration(new Dur(0, 0, 15, 0)));
-					ve.getAlarms().add(va);
+					if( ve instanceof VEvent )
+						((VEvent) ve).getAlarms().add(va);
+					else
+						((VToDo) ve).getAlarms().add(va);
+
 				}
 			}
 
@@ -343,6 +370,9 @@ public class AppointmentIcalAdapter {
 	}
 
 	static private void exportTasks(ComponentList clist) throws Exception {
+		
+		boolean export_todos = Prefs.getBoolPref(PrefName.ICAL_EXPORT_TODO);
+
 		for (Task t : TaskModel.getReference().getTasks()) {
 			if (TaskModel.isClosed(t))
 				continue;
@@ -351,7 +381,11 @@ public class AppointmentIcalAdapter {
 			if (due == null)
 				continue;
 
-			Component ve = new VEvent();
+			Component ve = null;		
+			if( export_todos )
+				ve = new VToDo();
+			else
+				ve = new VEvent();
 
 			long updated = new Date().getTime();
 			String uidval = Integer.toString(t.getKey()) + "@BORGT" + updated;
@@ -381,6 +415,9 @@ public class AppointmentIcalAdapter {
 	}
 
 	static private void exportProjects(ComponentList clist) throws Exception {
+		
+		boolean export_todos = Prefs.getBoolPref(PrefName.ICAL_EXPORT_TODO);
+
 		for (Project t : TaskModel.getReference().getProjects()) {
 			if (TaskModel.isClosed(t))
 				continue;
@@ -389,8 +426,12 @@ public class AppointmentIcalAdapter {
 			if (due == null)
 				continue;
 
-			Component ve = new VEvent();
-
+			Component ve = null;		
+			if( export_todos )
+				ve = new VToDo();
+			else
+				ve = new VEvent();
+			
 			long updated = new Date().getTime();
 			String uidval = Integer.toString(t.getKey()) + "@BORGP" + updated;
 			Uid uid = new Uid(uidval);
@@ -416,6 +457,9 @@ public class AppointmentIcalAdapter {
 	}
 
 	static private void exportSubTasks(ComponentList clist) throws Exception {
+		
+		boolean export_todos = Prefs.getBoolPref(PrefName.ICAL_EXPORT_TODO);
+
 		for (Subtask t : TaskModel.getReference().getSubTasks()) {
 			if (t.getCloseDate() != null)
 				continue;
@@ -424,8 +468,12 @@ public class AppointmentIcalAdapter {
 			if (due == null)
 				continue;
 
-			Component ve = new VEvent();
-
+			Component ve = null;		
+			if( export_todos )
+				ve = new VToDo();
+			else
+				ve = new VEvent();
+			
 			long updated = new Date().getTime();
 			String uidval = Integer.toString(t.getKey()) + "@BORGS" + updated;
 			Uid uid = new Uid(uidval);
