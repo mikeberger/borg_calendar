@@ -407,6 +407,12 @@ public class PrefName {
 	
 	// option to export todos as VTODO objects instead of VEVENTS
 	public static PrefName ICAL_EXPORT_TODO = new PrefName("ical-export-todo", "false");
+	
+	public static PrefName CALDAV_SERVER = new PrefName("caldav-server", "");
+	public static PrefName CALDAV_USER = new PrefName("caldav-user", "");
+	public static PrefName CALDAV_PASSWORD = new PrefName("caldav-password", "");
+	public static PrefName CALDAV_PASSWORD2 = new PrefName("caldav-password2", "");
+
 
 
 }

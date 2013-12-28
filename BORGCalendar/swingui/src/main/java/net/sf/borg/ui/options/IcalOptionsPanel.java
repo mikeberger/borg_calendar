@@ -32,6 +32,7 @@ import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
+import net.sf.borg.model.ical.CalDav;
 import net.sf.borg.model.ical.IcalFTP;
 import net.sf.borg.ui.options.OptionsView.OptionsPanel;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
@@ -50,6 +51,11 @@ public class IcalOptionsPanel extends OptionsPanel {
 	private JPasswordField ftppassword = new JPasswordField();
 	private JTextField importurl = new JTextField();
 	private JCheckBox todoBox = new JCheckBox();
+	
+	private JTextField caldavServer = new JTextField();
+	private JTextField caldavUser = new JTextField();
+	private JPasswordField caldavPassword = new JPasswordField();
+
 
 	public IcalOptionsPanel() {
 		this.setLayout(new java.awt.GridBagLayout());
@@ -99,7 +105,24 @@ public class IcalOptionsPanel extends OptionsPanel {
 		todoBox.setText(Resource.getResourceString("ical_export_todos"));
 		this.add(todoBox,GridBagConstraintsFactory.create(0, 8,
 				GridBagConstraints.BOTH, 1.0, 0.0));
+		
+		this.add(new JLabel(Resource.getResourceString("CALDAV_Server")),
+				GridBagConstraintsFactory.create(0, 9, GridBagConstraints.BOTH));
+		this.add(caldavServer, GridBagConstraintsFactory.create(1, 9,
+				GridBagConstraints.BOTH, 1.0, 0.0));
+		
+		this.add(new JLabel(Resource.getResourceString("CALDAV_User")),
+				GridBagConstraintsFactory.create(0, 10, GridBagConstraints.BOTH));
+		this.add(caldavUser, GridBagConstraintsFactory.create(1, 10,
+				GridBagConstraints.BOTH, 1.0, 0.0));
 
+		JLabel pl2 = new JLabel(Resource.getResourceString("CALDAV_Password"));
+		this.add(pl2,
+				GridBagConstraintsFactory.create(0, 11, GridBagConstraints.BOTH));
+		pl2.setLabelFor(caldavPassword);
+		this.add(caldavPassword, GridBagConstraintsFactory.create(1, 11,
+				GridBagConstraints.BOTH, 1.0, 0.0));
+		caldavPassword.setEditable(true);
 	}
 
 	@Override
@@ -134,6 +157,13 @@ public class IcalOptionsPanel extends OptionsPanel {
 
 		Prefs.putPref(PrefName.ICAL_IMPORT_URL, importurl.getText());
 
+		Prefs.putPref(PrefName.CALDAV_USER, caldavUser.getText());
+		Prefs.putPref(PrefName.CALDAV_SERVER, caldavServer.getText());
+		try {
+			CalDav.sep(new String(caldavPassword.getPassword()));
+		} catch (Exception e) {
+			Errmsg.getErrorHandler().errmsg(e);
+		}
 	}
 
 	@Override
@@ -159,6 +189,13 @@ public class IcalOptionsPanel extends OptionsPanel {
 		
 		importurl.setText(Prefs.getPref(PrefName.ICAL_IMPORT_URL));
 
+		caldavUser.setText(Prefs.getPref(PrefName.CALDAV_USER));
+		caldavServer.setText(Prefs.getPref(PrefName.CALDAV_SERVER));
+		try {
+			caldavPassword.setText(CalDav.gep());
+		} catch (Exception e) {
+			Errmsg.getErrorHandler().errmsg(e);
+		}
 	}
 
 	@Override

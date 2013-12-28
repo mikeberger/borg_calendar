@@ -150,7 +150,7 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 	 * 
 	 * @return the window size preference
 	 */
-	private PrefName getFrameSizePref() {
+	protected PrefName getFrameSizePref() {
 		return new PrefName(getFrameTitle() + "_framesize", "-1,-1,800,600,N");
 	}
 

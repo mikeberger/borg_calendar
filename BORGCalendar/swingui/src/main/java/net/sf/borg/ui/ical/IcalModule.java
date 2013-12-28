@@ -220,7 +220,7 @@ public class IcalModule implements Module {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
 					int ret = JOptionPane.showConfirmDialog(null,
-							Resource.getResourceString("Really Overwrite????"),
+							Resource.getResourceString("Caldav-Overwrite-Warn"),
 							Resource.getResourceString("Confirm"),
 							JOptionPane.OK_CANCEL_OPTION,
 							JOptionPane.WARNING_MESSAGE);

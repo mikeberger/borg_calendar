@@ -1291,6 +1291,11 @@ public class TaskView extends DockableView {
 		}
 
 	}
+	
+	@Override
+	protected PrefName getFrameSizePref() {
+		return new PrefName(Resource.getResourceString("Item") + "_framesize", "-1,-1,800,600,N");
+	}
 
 	/**
 	 * load the UI from a task

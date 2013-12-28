@@ -363,6 +363,11 @@ public class AppointmentListView extends DockableView implements
 	public String getFrameTitle() {
 		return title_;
 	}
+	
+	@Override
+	protected PrefName getFrameSizePref() {
+		return new PrefName(Resource.getResourceString("Appointment_Editor") + "_framesize", "-1,-1,800,600,N");
+	}
 
 	/**
 	 * get the reminder button
