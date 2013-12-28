@@ -44,5 +44,10 @@
 			<artifactId>commons-net</artifactId>
 			<version>3.3</version>
 		</dependency>
+		<dependency>
+			<groupId>org.mnode.ical4j</groupId>
+			<artifactId>ical4j-connector</artifactId>
+			<version>0.9.4.3</version>
+		</dependency>
 	</dependencies>
 </project>

@@ -21,6 +21,7 @@ import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.ical.AppointmentIcalAdapter;
+import net.sf.borg.model.ical.CalDav;
 import net.sf.borg.model.ical.IcalFTP;
 import net.sf.borg.model.ical.IcalFileServer;
 import net.sf.borg.ui.MultiView;
@@ -193,6 +194,23 @@ public class IcalModule implements Module {
 		});
 
 		m.add(exp4);
+		
+		JMenuItem caldav = new JMenuItem();
+		caldav.setText(Resource.getResourceString("CALDAV"));
+		caldav.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					CalDav.export(Prefs
+							.getIntPref(PrefName.ICAL_EXPORTYEARS));
+				} catch (Exception e) {
+					Errmsg.getErrorHandler().errmsg(e);
+				}
+			}
+		});
+
+		m.add(caldav);
 
 		return m;
 	}

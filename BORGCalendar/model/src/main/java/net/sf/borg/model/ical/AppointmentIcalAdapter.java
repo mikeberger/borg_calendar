@@ -101,7 +101,7 @@ public class AppointmentIcalAdapter {
 		return sw.toString();
 	}
 
-	static private Calendar exportIcal(Date after) throws Exception {
+	static public Calendar exportIcal(Date after) throws Exception {
 
 		ComponentList clist = new ComponentList();
 
@@ -150,7 +150,7 @@ public class AppointmentIcalAdapter {
 			else
 				ve = new VEvent();
 
-			String uidval = Integer.toString(ap.getKey()) + "@BORG" + ap.getCreateTime().getTime();
+			String uidval = Integer.toString(ap.getKey()) + "@BORGA" + ap.getCreateTime().getTime();
 			Uid uid = new Uid(uidval);
 			ve.getProperties().add(uid);
 			
