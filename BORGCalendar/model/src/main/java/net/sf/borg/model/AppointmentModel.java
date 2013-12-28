@@ -760,6 +760,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 
 				r.setCreateTime(new Date());
 				r.setLastMod(r.getCreateTime());
+				r.setUid(Integer.toString(r.getKey()) + "@BORGA-" + r.getCreateTime().getTime());
 				db_.addObj(r);
 				if (!undo) {
 					UndoLog.getReference().addItem(
@@ -768,6 +769,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 			} else {
 
 				r.setLastMod(new Date());
+				r.setUid(Integer.toString(r.getKey()) + "@BORGA-" + r.getCreateTime().getTime());
 				action = ChangeEvent.ChangeAction.CHANGE;
 				db_.updateObj(r);
 				if (!undo) {

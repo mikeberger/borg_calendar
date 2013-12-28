@@ -78,6 +78,7 @@ public class Appointment extends EncryptableEntity<Appointment> implements Calen
 	private Integer priority = 5;
 	private Date createTime;
 	private Date lastMod;
+	private String uid;
 
 
 	
@@ -111,6 +112,7 @@ public class Appointment extends EncryptableEntity<Appointment> implements Calen
 		dst.setPriority( getPriority() );
 		dst.setCreateTime(getCreateTime());
 		dst.setLastMod(getLastMod());
+		dst.setUid(getUid());
 		return(dst);
 	}
 

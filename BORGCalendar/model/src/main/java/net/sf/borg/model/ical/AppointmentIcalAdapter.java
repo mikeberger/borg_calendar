@@ -86,7 +86,7 @@ public class AppointmentIcalAdapter {
 
 	static public void exportIcalToFile(String filename, Date after)
 			throws Exception {
-		Calendar cal = exportIcal(after);
+		Calendar cal = exportIcal(after, true);
 		OutputStream oostr = IOHelper.createOutputStream(filename);
 		CalendarOutputter op = new CalendarOutputter();
 		op.output(cal, oostr);
@@ -94,21 +94,235 @@ public class AppointmentIcalAdapter {
 	}
 
 	static public String exportIcalToString(Date after) throws Exception {
-		Calendar cal = exportIcal(after);
+		Calendar cal = exportIcal(after, true);
 		CalendarOutputter op = new CalendarOutputter();
 		StringWriter sw = new StringWriter();
 		op.output(cal, sw);
 		return sw.toString();
 	}
 
-	static public Calendar exportIcal(Date after) throws Exception {
+	static public Component toIcal(Appointment ap) throws Exception {
+
+		boolean export_todos = Prefs.getBoolPref(PrefName.ICAL_EXPORT_TODO);
+
+		TextList catlist = new TextList();
+		Component ve = null;
+
+		// export todos as VTODOs if option set
+		// This works well in clients such as Mozilla Lightning, which handles
+		// VTODOs similar to BORG.
+		// On the other hand, VTODOs are not handled well at all by Android
+		if (ap.isTodo() && export_todos)
+			ve = new VToDo();
+		else
+			ve = new VEvent();
+
+		String uidval = Integer.toString(ap.getKey()) + "@BORGA-"
+				+ ap.getCreateTime().getTime();
+		Uid uid = new Uid(uidval);
+		ve.getProperties().add(uid);
+
+		ve.getProperties().add(new Created(new DateTime(ap.getCreateTime())));
+		ve.getProperties().add(new LastModified(new DateTime(ap.getLastMod())));
+
+		// add text
+		String appttext = ap.getText();
+		Summary sum = null;
+		Description desc = null;
+
+		int ii = appttext.indexOf('\n');
+		if (ii != -1) {
+			sum = new Summary(appttext.substring(0, ii));
+			desc = new Description(appttext.substring(ii + 1));
+		} else {
+			sum = new Summary(appttext);
+		}
+
+		ve.getProperties().add(sum);
+		if (desc != null) {
+			ve.getProperties().add(desc);
+		}
+
+		ParameterList pl = new ParameterList();
+
+		// date
+		if (ve instanceof VToDo) {
+			// date is the next todo field if present, otherwise
+			// the due date
+			Date nt = ap.getNextTodo();
+			if (nt == null) {
+				nt = ap.getDate();
+			}
+
+			DtStart dtd = new DtStart();
+			dtd.setDate(new net.fortuna.ical4j.model.Date(nt));
+			ve.getProperties().add(dtd);
+		} else if (AppointmentModel.isNote(ap)) {
+			pl.add(Value.DATE);
+			DtStart dts = new DtStart(pl, new net.fortuna.ical4j.model.Date(
+					ap.getDate()));
+			ve.getProperties().add(dts);
+			Date end = new Date(ap.getDate().getTime() + 1000 * 60 * 60 * 24);
+			DtEnd dte = new DtEnd(pl, new net.fortuna.ical4j.model.Date(end));
+			ve.getProperties().add(dte);
+		} else {
+			pl.add(Value.DATE_TIME);
+			DtStart dts = new DtStart(pl,
+					new net.fortuna.ical4j.model.DateTime(ap.getDate()));
+			dts.setUtc(true);
+			ve.getProperties().add(dts);
+		}
+
+		// duration
+		if (ap.getDuration() != null && ap.getDuration().intValue() != 0) {
+			ve.getProperties()
+					.add(new Duration(new Dur(0, 0,
+							ap.getDuration().intValue(), 0)));
+		}
+
+		// vacation is a category
+		if (ap.getVacation() != null && ap.getVacation().intValue() != 0) {
+			catlist.add("Vacation");
+		}
+
+		// holiday is a category
+		if (ap.getHoliday() != null && ap.getHoliday().intValue() != 0) {
+			catlist.add("Holidays");
+		}
+
+		// private
+		if (ap.isPrivate()) {
+			ve.getProperties().add(Clazz.PRIVATE);
+		}
+
+		// add color as a category
+		if (ap.getColor() != null
+				&& (ap.getColor().equals("black")
+						|| ap.getColor().equals("blue")
+						|| ap.getColor().equals("green")
+						|| ap.getColor().equals("red") || ap.getColor().equals(
+						"white"))) {
+			catlist.add(ap.getColor());
+		}
+
+		if (ap.getCategory() != null && !ap.getCategory().equals("")) {
+			catlist.add(ap.getCategory());
+		}
+
+		if (!catlist.isEmpty()) {
+			ve.getProperties().add(new Categories(catlist));
+		}
+
+		// repeat stuff
+		if (ap.isRepeatFlag()) {
+			// build recur string
+			String rec = "FREQ=";
+			String freq = Repeat.getFreq(ap.getFrequency());
+
+			if (freq == null || freq.equals(Repeat.DAILY)) {
+				rec += "DAILY";
+			} else if (freq.equals(Repeat.WEEKLY)) {
+				rec += "WEEKLY";
+			} else if (freq.equals(Repeat.BIWEEKLY)) {
+				rec += "WEEKLY;INTERVAL=2";
+			} else if (freq.equals(Repeat.MONTHLY)) {
+				Date dd = ap.getDate();
+				GregorianCalendar gc = new GregorianCalendar();
+				gc.setTime(dd);
+				rec += "MONTHLY;BYMONTHDAY=" + gc.get(java.util.Calendar.DATE);
+			} else if (freq.equals(Repeat.MONTHLY_DAY)) {
+				Date dd = ap.getDate();
+				GregorianCalendar gc = new GregorianCalendar();
+				gc.setTime(dd);
+				int dayOfWeek = gc.get(java.util.Calendar.DAY_OF_WEEK);
+				int dayOfWeekMonth = gc
+						.get(java.util.Calendar.DAY_OF_WEEK_IN_MONTH);
+				String days[] = new String[] { "SU", "MO", "TU", "WE", "TH",
+						"FR", "SA" };
+				rec += "MONTHLY;BYDAY=" + dayOfWeekMonth + days[dayOfWeek - 1];
+			} else if (freq.equals(Repeat.YEARLY)) {
+				rec += "YEARLY";
+			} else if (freq.equals(Repeat.NDAYS)) {
+				rec += "DAILY;INTERVAL=" + Repeat.getNValue(ap.getFrequency());
+			} else if (freq.equals(Repeat.NWEEKS)) {
+				rec += "WEEKLY;INTERVAL=" + Repeat.getNValue(ap.getFrequency());
+			} else if (freq.equals(Repeat.NMONTHS)) {
+				rec += "MONTHLY;INTERVAL="
+						+ Repeat.getNValue(ap.getFrequency());
+			} else if (freq.equals(Repeat.NYEARS)) {
+				rec += "YEARLY;INTERVAL=" + Repeat.getNValue(ap.getFrequency());
+			} else if (freq.equals(Repeat.WEEKDAYS)) {
+				rec += "WEEKLY;BYDAY=MO,TU,WE,TH,FR";
+			} else if (freq.equals(Repeat.MWF)) {
+				rec += "WEEKLY;BYDAY=MO,WE,FR";
+			} else if (freq.equals(Repeat.WEEKENDS)) {
+				rec += "WEEKLY;BYDAY=SU,SA";
+			} else if (freq.equals(Repeat.TTH)) {
+				rec += "WEEKLY;BYDAY=TU,TH";
+			} else if (freq.equals(Repeat.DAYLIST)) {
+				String days[] = new String[] { "SU", "MO", "TU", "WE", "TH",
+						"FR", "SA" };
+				rec += "WEEKLY;BYDAY=";
+				Collection<Integer> c = Repeat.getDaylist(ap.getFrequency());
+				Iterator<Integer> it = c.iterator();
+				while (it.hasNext()) {
+					Integer i = it.next();
+					rec += days[i - 1];
+					if (it.hasNext())
+						rec += ",";
+				}
+
+			} else {
+				log.warning("Could not export appt " + ap.getKey()
+						+ ap.getText());
+				return null;
+			}
+
+			if (ap.getTimes().intValue() != 9999) {
+				rec += ";COUNT=" + Repeat.calculateTimes(ap);
+			}
+			// System.out.println(rec);
+
+			ve.getProperties().add(new RRule(new Recur(rec)));
+
+		}
+
+		// reminder
+		if (!AppointmentModel.isNote(ap) && ap.getReminderTimes() != null
+				&& !ap.getReminderTimes().isEmpty()) {
+
+			// add a reminder
+			if (ap.getReminderTimes().contains("Y")
+					&& (ap.isRepeatFlag() || ap.getDate().after(new Date()))) {
+				VAlarm va = new VAlarm(new Dur(0, 0, -1 * 30, 0));
+				va.getProperties().add(Action.DISPLAY);
+				va.getProperties().add(new Description(ap.getText()));
+				va.getProperties().add(
+						new net.fortuna.ical4j.model.property.Repeat(2));
+				va.getProperties().add(new Duration(new Dur(0, 0, 15, 0)));
+				if (ve instanceof VEvent)
+					((VEvent) ve).getAlarms().add(va);
+				else
+					((VToDo) ve).getAlarms().add(va);
+
+			}
+		}
+
+		return ve;
+
+	}
+
+	static public Calendar exportIcal(Date after, boolean tasks)
+			throws Exception {
 
 		ComponentList clist = new ComponentList();
 
 		exportAppointments(clist, after);
-		exportProjects(clist);
-		exportTasks(clist);
-		exportSubTasks(clist);
+		if (tasks) {
+			exportProjects(clist);
+			exportTasks(clist);
+			exportSubTasks(clist);
+		}
 
 		PropertyList pl = new PropertyList();
 		pl.add(new ProdId("BORG Calendar"));
@@ -124,12 +338,6 @@ public class AppointmentIcalAdapter {
 	static private void exportAppointments(ComponentList clist, Date after)
 			throws Exception {
 
-		boolean showpriv = false;
-		if (Prefs.getPref(PrefName.SHOWPRIVATE).equals("true"))
-			showpriv = true;
-		
-		boolean export_todos = Prefs.getBoolPref(PrefName.ICAL_EXPORT_TODO);
-
 		for (Appointment ap : AppointmentModel.getReference().getAllAppts()) {
 
 			// limit by date
@@ -139,238 +347,16 @@ public class AppointmentIcalAdapter {
 					continue;
 			}
 
-			TextList catlist = new TextList();
-			Component ve = null;
-			
-			// export todos as VTODOs if option set
-			// This works well in clients such as Mozilla Lightning, which handles VTODOs similar to BORG.
-			// On the other hand, VTODOs are not handled well at all by Android
-			if( ap.isTodo() && export_todos )
-				ve = new VToDo();
-			else
-				ve = new VEvent();
-
-			String uidval = Integer.toString(ap.getKey()) + "@BORGA" + ap.getCreateTime().getTime();
-			Uid uid = new Uid(uidval);
-			ve.getProperties().add(uid);
-			
-			ve.getProperties().add(new Created(new DateTime(ap.getCreateTime())));
-			ve.getProperties().add(new LastModified(new DateTime(ap.getLastMod())));
-
-			// add text
-			String appttext = ap.getText();
-			Summary sum = null;
-			Description desc = null;
-
-			int ii = appttext.indexOf('\n');
-			if (ii != -1) {
-				sum = new Summary(appttext.substring(0, ii));
-				desc = new Description(appttext.substring(ii + 1));
-			} else {
-				sum = new Summary(appttext);
-			}
-
-			ve.getProperties().add(sum);
-			if (desc != null) {
-				ve.getProperties().add(desc);
-			}
-
-			ParameterList pl = new ParameterList();
-
-			// date
-			if( ve instanceof VToDo)
-			{
-				// date is the next todo field if present, otherwise
-				// the due date
-				Date nt = ap.getNextTodo();
-				if (nt == null) {
-					nt = ap.getDate();
-				}
-				
-				DtStart dtd = new DtStart();
-				dtd.setDate(new net.fortuna.ical4j.model.Date(nt));
-				ve.getProperties().add(dtd);
-			}
-			else if (AppointmentModel.isNote(ap)) {
-				pl.add(Value.DATE);
-				DtStart dts = new DtStart(pl,
-						new net.fortuna.ical4j.model.Date(ap.getDate()));
-				ve.getProperties().add(dts);
-				Date end = new Date(ap.getDate().getTime() + 1000*60*60*24);
-				DtEnd dte = new DtEnd(pl,
-						new net.fortuna.ical4j.model.Date(end));
-				ve.getProperties().add(dte);
-			} else {
-				pl.add(Value.DATE_TIME);
-				DtStart dts = new DtStart(pl,
-						new net.fortuna.ical4j.model.DateTime(ap.getDate()));
-				dts.setUtc(true);
-				ve.getProperties().add(dts);
-			}
-
-			// duration
-			if (ap.getDuration() != null && ap.getDuration().intValue() != 0) {
-				ve.getProperties().add(
-						new Duration(new Dur(0, 0, ap.getDuration().intValue(),
-								0)));
-			}
-			
-			// vacation is a category
-			if (ap.getVacation() != null && ap.getVacation().intValue() != 0) {
-				catlist.add("Vacation");
-			}
-
-			// holiday is a category
-			if (ap.getHoliday() != null && ap.getHoliday().intValue() != 0) {
-				catlist.add("Holidays");
-			}
-
-			// private
-			if (ap.isPrivate() && !showpriv) {
-				ve.getProperties().add(Clazz.PRIVATE);
-			}
-
-			// add color as a category
-			if (ap.getColor() != null
-					&& (ap.getColor().equals("black")
-							|| ap.getColor().equals("blue")
-							|| ap.getColor().equals("green")
-							|| ap.getColor().equals("red") || ap.getColor()
-							.equals("white"))) {
-				catlist.add(ap.getColor());
-			}
-
-			if (ap.getCategory() != null && !ap.getCategory().equals("")) {
-				catlist.add(ap.getCategory());
-			}
-
-			if (!catlist.isEmpty()) {
-				ve.getProperties().add(new Categories(catlist));
-			}
-
-			// repeat stuff
-			if (ap.isRepeatFlag()) {
-				// build recur string
-				String rec = "FREQ=";
-				String freq = Repeat.getFreq(ap.getFrequency());
-				if (freq == null) {
-					continue;
-				}
-				if (freq.equals(Repeat.DAILY)) {
-					rec += "DAILY";
-				} else if (freq.equals(Repeat.WEEKLY)) {
-					rec += "WEEKLY";
-				} else if (freq.equals(Repeat.BIWEEKLY)) {
-					rec += "WEEKLY;INTERVAL=2";
-				} else if (freq.equals(Repeat.MONTHLY)) {
-					Date dd = ap.getDate();
-					GregorianCalendar gc = new GregorianCalendar();
-					gc.setTime(dd);
-					rec += "MONTHLY;BYMONTHDAY="
-							+ gc.get(java.util.Calendar.DATE);
-				} else if (freq.equals(Repeat.MONTHLY_DAY)) {
-					Date dd = ap.getDate();
-					GregorianCalendar gc = new GregorianCalendar();
-					gc.setTime(dd);
-					int dayOfWeek = gc.get(java.util.Calendar.DAY_OF_WEEK);
-					int dayOfWeekMonth = gc
-							.get(java.util.Calendar.DAY_OF_WEEK_IN_MONTH);
-					String days[] = new String[] { "SU", "MO", "TU", "WE",
-							"TH", "FR", "SA" };
-					rec += "MONTHLY;BYDAY=" + dayOfWeekMonth
-							+ days[dayOfWeek - 1];
-				} else if (freq.equals(Repeat.YEARLY)) {
-					rec += "YEARLY";
-				} else if (freq.equals(Repeat.NDAYS)) {
-					rec += "DAILY;INTERVAL="
-							+ Repeat.getNValue(ap.getFrequency());
-				} else if (freq.equals(Repeat.NWEEKS)) {
-					rec += "WEEKLY;INTERVAL="
-							+ Repeat.getNValue(ap.getFrequency());
-				} else if (freq.equals(Repeat.NMONTHS)) {
-					rec += "MONTHLY;INTERVAL="
-							+ Repeat.getNValue(ap.getFrequency());
-				} else if (freq.equals(Repeat.NYEARS)) {
-					rec += "YEARLY;INTERVAL="
-							+ Repeat.getNValue(ap.getFrequency());
-				} else if (freq.equals(Repeat.WEEKDAYS)) {
-					rec += "WEEKLY;BYDAY=MO,TU,WE,TH,FR";
-				} else if (freq.equals(Repeat.MWF)) {
-					rec += "WEEKLY;BYDAY=MO,WE,FR";
-				} else if (freq.equals(Repeat.WEEKENDS)) {
-					rec += "WEEKLY;BYDAY=SU,SA";
-				} else if (freq.equals(Repeat.TTH)) {
-					rec += "WEEKLY;BYDAY=TU,TH";
-				} else if (freq.equals(Repeat.DAYLIST)) {
-					String days[] = new String[] { "SU", "MO", "TU", "WE",
-							"TH", "FR", "SA" };
-					rec += "WEEKLY;BYDAY=";
-					Collection<Integer> c = Repeat
-							.getDaylist(ap.getFrequency());
-					Iterator<Integer> it = c.iterator();
-					while (it.hasNext()) {
-						Integer i = it.next();
-						rec += days[i - 1];
-						if (it.hasNext())
-							rec += ",";
-					}
-
-				} else {
-					log.warning("Could not export appt " + ap.getKey()
-							+ ap.getText());
-					continue;
-				}
-
-				if (ap.getTimes().intValue() != 9999) {
-					rec += ";COUNT=" + Repeat.calculateTimes(ap);
-				}
-				// System.out.println(rec);
-
-				ve.getProperties().add(new RRule(new Recur(rec)));
-
-			}
-
-			// reminder
-			if (!AppointmentModel.isNote(ap) && ap.getReminderTimes() != null
-					&& !ap.getReminderTimes().isEmpty()) {
-				/*
-				 * sync is too slow if we add every reminder char[] remTimes =
-				 * new char[ReminderTimes.getNum()]; try { remTimes =
-				 * (ap.getReminderTimes()).toCharArray(); } catch (Exception e)
-				 * { for (int i = 0; i < ReminderTimes.getNum(); ++i) {
-				 * remTimes[i] = 'N'; } } for( int i = 0; i <
-				 * ReminderTimes.getNum(); i++) { if( remTimes[i] == 'Y') {
-				 * VAlarm va = new VAlarm(new
-				 * Dur(0,0,-1*ReminderTimes.getTimes(i),0));
-				 * va.getProperties().add(Action.DISPLAY);
-				 * va.getProperties().add(new Description(ap.getText()));
-				 * ve.getAlarms().add(va); }
-				 */
-				
-				// add a reminder
-				if (ap.getReminderTimes().contains("Y") && (ap.isRepeatFlag() || ap.getDate().after(new Date()))) {
-					VAlarm va = new VAlarm(new Dur(0, 0, -1 * 30, 0));
-					va.getProperties().add(Action.DISPLAY);
-					va.getProperties().add(new Description(ap.getText()));
-					va.getProperties().add(
-							new net.fortuna.ical4j.model.property.Repeat(2));
-					va.getProperties().add(new Duration(new Dur(0, 0, 15, 0)));
-					if( ve instanceof VEvent )
-						((VEvent) ve).getAlarms().add(va);
-					else
-						((VToDo) ve).getAlarms().add(va);
-
-				}
-			}
-
-			clist.add(ve);
+			Component ve = toIcal(ap);
+			if (ve != null)
+				clist.add(ve);
 
 		}
 
 	}
 
 	static private void exportTasks(ComponentList clist) throws Exception {
-		
+
 		boolean export_todos = Prefs.getBoolPref(PrefName.ICAL_EXPORT_TODO);
 
 		for (Task t : TaskModel.getReference().getTasks()) {
@@ -381,8 +367,8 @@ public class AppointmentIcalAdapter {
 			if (due == null)
 				continue;
 
-			Component ve = null;		
-			if( export_todos )
+			Component ve = null;
+			if (export_todos)
 				ve = new VToDo();
 			else
 				ve = new VEvent();
@@ -402,10 +388,9 @@ public class AppointmentIcalAdapter {
 			DtStart dts = new DtStart(pl,
 					new net.fortuna.ical4j.model.Date(due));
 			ve.getProperties().add(dts);
-			
-			Date end = new Date(due.getTime() + 1000*60*60*24);
-			DtEnd dte = new DtEnd(pl,
-					new net.fortuna.ical4j.model.Date(end));
+
+			Date end = new Date(due.getTime() + 1000 * 60 * 60 * 24);
+			DtEnd dte = new DtEnd(pl, new net.fortuna.ical4j.model.Date(end));
 			ve.getProperties().add(dte);
 
 			clist.add(ve);
@@ -415,7 +400,7 @@ public class AppointmentIcalAdapter {
 	}
 
 	static private void exportProjects(ComponentList clist) throws Exception {
-		
+
 		boolean export_todos = Prefs.getBoolPref(PrefName.ICAL_EXPORT_TODO);
 
 		for (Project t : TaskModel.getReference().getProjects()) {
@@ -426,12 +411,12 @@ public class AppointmentIcalAdapter {
 			if (due == null)
 				continue;
 
-			Component ve = null;		
-			if( export_todos )
+			Component ve = null;
+			if (export_todos)
 				ve = new VToDo();
 			else
 				ve = new VEvent();
-			
+
 			long updated = new Date().getTime();
 			String uidval = Integer.toString(t.getKey()) + "@BORGP" + updated;
 			Uid uid = new Uid(uidval);
@@ -445,10 +430,9 @@ public class AppointmentIcalAdapter {
 			DtStart dts = new DtStart(pl,
 					new net.fortuna.ical4j.model.Date(due));
 			ve.getProperties().add(dts);
-			
-			Date end = new Date(due.getTime() + 1000*60*60*24);
-			DtEnd dte = new DtEnd(pl,
-					new net.fortuna.ical4j.model.Date(end));
+
+			Date end = new Date(due.getTime() + 1000 * 60 * 60 * 24);
+			DtEnd dte = new DtEnd(pl, new net.fortuna.ical4j.model.Date(end));
 			ve.getProperties().add(dte);
 
 			clist.add(ve);
@@ -457,7 +441,7 @@ public class AppointmentIcalAdapter {
 	}
 
 	static private void exportSubTasks(ComponentList clist) throws Exception {
-		
+
 		boolean export_todos = Prefs.getBoolPref(PrefName.ICAL_EXPORT_TODO);
 
 		for (Subtask t : TaskModel.getReference().getSubTasks()) {
@@ -468,12 +452,12 @@ public class AppointmentIcalAdapter {
 			if (due == null)
 				continue;
 
-			Component ve = null;		
-			if( export_todos )
+			Component ve = null;
+			if (export_todos)
 				ve = new VToDo();
 			else
 				ve = new VEvent();
-			
+
 			long updated = new Date().getTime();
 			String uidval = Integer.toString(t.getKey()) + "@BORGS" + updated;
 			Uid uid = new Uid(uidval);
@@ -488,9 +472,8 @@ public class AppointmentIcalAdapter {
 					new net.fortuna.ical4j.model.Date(due));
 			ve.getProperties().add(dts);
 
-			Date end = new Date(due.getTime() + 1000*60*60*24);
-			DtEnd dte = new DtEnd(pl,
-					new net.fortuna.ical4j.model.Date(end));
+			Date end = new Date(due.getTime() + 1000 * 60 * 60 * 24);
+			DtEnd dte = new DtEnd(pl, new net.fortuna.ical4j.model.Date(end));
 			ve.getProperties().add(dte);
 			clist.add(ve);
 
@@ -757,7 +740,7 @@ public class AppointmentIcalAdapter {
 				aplist.add(ap);
 			}
 		}
-		
+
 		int imported = 0;
 		int dup_count = 0;
 
@@ -766,18 +749,17 @@ public class AppointmentIcalAdapter {
 			List<Appointment> appts = AppointmentModel.getReference()
 					.getAppointmentsByText(ap.getText());
 
-			for( Appointment dbap : appts)
-			{
+			for (Appointment dbap : appts) {
 				dbap.setCreateTime(null);
 				dbap.setLastMod(null);
 			}
-			
+
 			if (appts.contains(ap)) {
 				dup_count++;
 				dups.append("DUP: " + ap.getText() + "\n");
 				continue;
 			}
-			
+
 			imported++;
 			amodel.saveAppt(ap);
 		}

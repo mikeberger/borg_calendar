@@ -69,7 +69,7 @@ public class Resource {
 
 			return (sb.toString());
 		} catch (MissingResourceException m) {
-			return ("??" + key + "??");
+			return ("?" + key + "?");
 		}
 	}
 	

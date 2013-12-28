@@ -56,6 +56,8 @@ class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
 				"alter table appointments add column create_time datetime default '1980-01-01 00:00:00' NOT NULL").upgrade();
 		new JdbcDBUpgrader("select lastmod from appointments",
 				"alter table appointments add column lastmod datetime default '1980-01-01 00:00:00' NOT NULL").upgrade();
+		new JdbcDBUpgrader("select uid from appointments",
+				"alter table appointments add column uid longvarchar").upgrade();
 		
     }
     
@@ -66,8 +68,8 @@ class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
     public void addObj(Appointment appt) throws Exception
     {
         PreparedStatement stmt = JdbcDB.getConnection().prepareStatement( "INSERT INTO appointments (appt_date, appt_num, duration, text, skip_list," +
-        " next_todo, vacation, holiday, private, times, frequency, todo, color, rpt, category, reminders, untimed, encrypted, repeat_until, priority, create_time, lastmod ) VALUES " +
-        "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        " next_todo, vacation, holiday, private, times, frequency, todo, color, rpt, category, reminders, untimed, encrypted, repeat_until, priority, create_time, lastmod, uid ) VALUES " +
+        "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         
         
         stmt.setTimestamp( 1, new java.sql.Timestamp( appt.getDate().getTime()), Calendar.getInstance() );
@@ -108,7 +110,7 @@ class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
         	stmt.setInt(20, 5);
         stmt.setTimestamp( 21, new java.sql.Timestamp( appt.getCreateTime().getTime()), Calendar.getInstance() );
         stmt.setTimestamp( 22, new java.sql.Timestamp( appt.getLastMod().getTime()), Calendar.getInstance() );
-
+        stmt.setString(23, appt.getUid());
         stmt.executeUpdate();
         
         writeCache( appt );
@@ -279,6 +281,7 @@ class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
 			appt.setCreateTime( new java.util.Date (r.getTimestamp("create_time").getTime()));
 		if( r.getTimestamp("lastmod") != null)
 			appt.setLastMod( new java.util.Date (r.getTimestamp("lastmod").getTime()));
+		appt.setUid(r.getString("uid"));
 		return appt;
 	}
 	
@@ -291,7 +294,7 @@ class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
         PreparedStatement stmt = JdbcDB.getConnection().prepareStatement( "UPDATE appointments SET  appt_date = ?, " +
         "duration = ?, text = ?, skip_list = ?," +
         " next_todo = ?, vacation = ?, holiday = ?, private = ?, times = ?, frequency = ?, todo = ?, color = ?, rpt = ?, category = ?," +
-		" reminders = ?, untimed = ?, encrypted = ?, repeat_until = ?, priority = ?, create_time = ?, lastmod = ?" +
+		" reminders = ?, untimed = ?, encrypted = ?, repeat_until = ?, priority = ?, create_time = ?, lastmod = ?, uid = ?" +
         " WHERE appt_num = ?");
        
         
@@ -332,8 +335,8 @@ class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
         
         stmt.setTimestamp( 20, new java.sql.Timestamp( appt.getCreateTime().getTime()), Calendar.getInstance() );
         stmt.setTimestamp( 21, new java.sql.Timestamp( appt.getLastMod().getTime()), Calendar.getInstance() );
-
-        stmt.setInt(22, appt.getKey());
+        stmt.setString(22, appt.getUid());
+        stmt.setInt(23, appt.getKey());
 
         stmt.executeUpdate();
         stmt.close();

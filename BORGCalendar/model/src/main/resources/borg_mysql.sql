@@ -51,6 +51,7 @@ CREATE TABLE `appointments` (
   `priority` int(11) NOT NULL default '5',
   `create_time` timestamp NOT NULL default '1980-00-00 00:00:00',
   `lastmod` timestamp NOT NULL default '1980-00-00 00:00:00',
+   uid text,
 
 
   PRIMARY KEY  (`appt_num`),

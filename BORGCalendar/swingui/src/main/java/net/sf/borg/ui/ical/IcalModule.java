@@ -24,6 +24,7 @@ import net.sf.borg.model.ical.AppointmentIcalAdapter;
 import net.sf.borg.model.ical.CalDav;
 import net.sf.borg.model.ical.IcalFTP;
 import net.sf.borg.model.ical.IcalFileServer;
+import net.sf.borg.model.ical.SyncLog;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.MultiView.Module;
 import net.sf.borg.ui.MultiView.ViewType;
@@ -194,23 +195,45 @@ public class IcalModule implements Module {
 		});
 
 		m.add(exp4);
-		
-		JMenuItem caldav = new JMenuItem();
-		caldav.setText(Resource.getResourceString("CALDAV"));
-		caldav.addActionListener(new ActionListener() {
+
+		JMenuItem caldavs = new JMenuItem();
+		caldavs.setText(Resource.getResourceString("CALDAV-Sync"));
+		caldavs.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					CalDav.export(Prefs
-							.getIntPref(PrefName.ICAL_EXPORTYEARS));
+					CalDav.sync(Prefs.getIntPref(PrefName.ICAL_EXPORTYEARS));
 				} catch (Exception e) {
 					Errmsg.getErrorHandler().errmsg(e);
 				}
 			}
 		});
 
-		m.add(caldav);
+		m.add(caldavs);
+
+		JMenuItem caldavo = new JMenuItem();
+		caldavo.setText(Resource.getResourceString("CALDAV-Overwrite"));
+		caldavo.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					int ret = JOptionPane.showConfirmDialog(null,
+							Resource.getResourceString("Really Overwrite????"),
+							Resource.getResourceString("Confirm"),
+							JOptionPane.OK_CANCEL_OPTION,
+							JOptionPane.WARNING_MESSAGE);
+					if (ret != JOptionPane.OK_OPTION)
+						return;
+					CalDav.export(Prefs.getIntPref(PrefName.ICAL_EXPORTYEARS));
+				} catch (Exception e) {
+					Errmsg.getErrorHandler().errmsg(e);
+				}
+			}
+		});
+
+		m.add(caldavo);
 
 		return m;
 	}
@@ -242,8 +265,9 @@ public class IcalModule implements Module {
 		if (url != null && !url.isEmpty()) {
 			try {
 
-				int res = JOptionPane.showConfirmDialog(null, 
-						Resource.getResourceString("ImportUrl") + ": " + url + " ?",
+				int res = JOptionPane.showConfirmDialog(null,
+						Resource.getResourceString("ImportUrl") + ": " + url
+								+ " ?",
 						Resource.getResourceString("please_confirm"),
 						JOptionPane.OK_CANCEL_OPTION);
 
@@ -258,6 +282,9 @@ public class IcalModule implements Module {
 				Errmsg.getErrorHandler().errmsg(e);
 			}
 		}
+
+		SyncLog.getReference();
+
 	}
 
 	@Override
