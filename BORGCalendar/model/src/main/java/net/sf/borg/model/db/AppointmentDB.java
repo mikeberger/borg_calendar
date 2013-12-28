@@ -24,31 +24,34 @@ import java.util.List;
 
 import net.sf.borg.model.entity.Appointment;
 
-
 /**
  * A {@link EntityDB EntityDB} subclass which allows efficient retrieval of
  * appointment ToDo and Repeat keys.
  */
-public interface AppointmentDB extends EntityDB<Appointment>
-{
+public interface AppointmentDB extends EntityDB<Appointment> {
 
-/**
- * Gets the keys of all Appointments that are marked as Todo's.
- * 
- * @return the todo keys
- * 
- * @throws Exception the exception
- */
-public Collection<Integer> getTodoKeys() throws Exception;
+	/**
+	 * Gets the keys of all Appointments that are marked as Todo's.
+	 * 
+	 * @return the todo keys
+	 * 
+	 * @throws Exception
+	 *             the exception
+	 */
+	public Collection<Integer> getTodoKeys() throws Exception;
 
-/**
- * Gets the keys of all Appointments that are marked as repeating
- * 
- * @return the repeat keys
- * 
- * @throws Exception the exception
- */
-public Collection<Integer> getRepeatKeys() throws Exception;
+	/**
+	 * Gets the keys of all Appointments that are marked as repeating
+	 * 
+	 * @return the repeat keys
+	 * 
+	 * @throws Exception
+	 *             the exception
+	 */
+	public Collection<Integer> getRepeatKeys() throws Exception;
 
-public List<Appointment> getAppointmentsByText(String text) throws Exception;
+	public List<Appointment> getAppointmentsByText(String text)
+			throws Exception;
+
+	public Appointment getAppointmentByUid(String uid) throws Exception;
 }

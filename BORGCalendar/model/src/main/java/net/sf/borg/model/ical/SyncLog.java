@@ -33,6 +33,8 @@ import net.sf.borg.model.ical.SyncEvent.ObjectType;
 public class SyncLog extends Model implements Model.Listener {
 
 	static private SyncLog singleton = null;
+	
+	private boolean processUpdates = true;
 
 	static public SyncLog getReference() {
 		if (singleton == null)
@@ -53,7 +55,10 @@ public class SyncLog extends Model implements Model.Listener {
 
 	@Override
 	public void update(ChangeEvent borgEvent) {
-
+		
+		if( !isProcessUpdates())
+			return;
+		
 		if (borgEvent == null || borgEvent.getObject() == null || borgEvent.getAction() == null)
 			return;
 		
@@ -246,6 +251,14 @@ public class SyncLog extends Model implements Model.Listener {
 	@Override
 	public String getInfo() throws Exception {
 		return "Synclogs: " + getAll().size();
+	}
+
+	public boolean isProcessUpdates() {
+		return processUpdates;
+	}
+
+	public void setProcessUpdates(boolean processUpdates) {
+		this.processUpdates = processUpdates;
 	}
 
 }

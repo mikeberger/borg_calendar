@@ -72,7 +72,6 @@ import net.sf.borg.common.IOHelper;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.model.AppointmentModel;
-import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.Repeat;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.Appointment;
@@ -520,7 +519,6 @@ public class AppointmentIcalAdapter {
 	static private String importIcal(Calendar cal, String category)
 			throws Exception {
 
-		boolean skip_borg = Prefs.getBoolPref(PrefName.SKIP_BORG);
 		int skipped = 0;
 		StringBuffer dups = new StringBuffer();
 
@@ -546,199 +544,11 @@ public class AppointmentIcalAdapter {
 		Iterator<Component> it = clist.iterator();
 		while (it.hasNext()) {
 			Component comp = it.next();
-			if (comp instanceof VEvent || comp instanceof VToDo) {
 
-				Property uidProp = comp.getProperty(Property.UID);
-				if (skip_borg && uidProp != null) {
-					String uid = uidProp.getValue();
-					if (uid.contains("@BORG")) {
-						skipped++;
-						continue;
-					}
-				}
-
-				// start with default appt to pull in default options
-				Appointment ap = amodel.getDefaultAppointment();
-				if (ap == null)
-					ap = amodel.newAppt();
-				if (category == null || category.equals("")
-						|| category.equals(CategoryModel.UNCATEGORIZED)) {
-					ap.setCategory(null);
-				} else {
-					ap.setCategory(category);
-				}
-				PropertyList pl = comp.getProperties();
-				String appttext = "";
-				String summary = "";
-				Property prop = pl.getProperty(Property.SUMMARY);
-				if (prop != null) {
-					summary = prop.getValue();
-					appttext += prop.getValue();
-				}
-
-				prop = pl.getProperty(Property.LOCATION);
-				if (prop != null) {
-					appttext += "\nLocation: " + prop.getValue();
-				}
-
-				prop = pl.getProperty(Property.DESCRIPTION);
-				if (prop != null) {
-					appttext += "\n" + prop.getValue();
-				}
-
-				ap.setUntimed("Y");
-				ap.setText(appttext);
-				prop = pl.getProperty(Property.DTSTART);
-				if (prop != null) {
-					DtStart dts = (DtStart) prop;
-					Date d = dts.getDate();
-					// System.out.println("utc=" + dts.isUtc());
-					// System.out.println("dt=" +
-					// DateFormat.getDateTimeInstance().format(d));
-					// System.out.println("val=" + dts.getValue());
-
-					Date utc = new Date();
-					utc.setTime(d.getTime());
-
-					// adjust time zone
-					if (!dts.isUtc() && !dts.getValue().contains("T")) {
-						// System.out.println( "TZO=" + tzOffset(d.getTime()));
-						long u = d.getTime() - tzOffset(d.getTime());
-						utc.setTime(u);
-					}
-					// System.out.println("utcdt=" +
-					// DateFormat.getDateTimeInstance().format(utc));
-
-					ap.setDate(utc);
-
-					// check if DATE only
-					if (!dts.getValue().contains("T")) {
-						// date only
-						ap.setUntimed("Y");
-					} else {
-						ap.setUntimed("N");
-						prop = pl.getProperty(Property.DTEND);
-						if (prop != null) {
-							DtEnd dte = (DtEnd) prop;
-							Date de = dte.getDate();
-							long dur = (de.getTime() - d.getTime())
-									/ (1000 * 60);
-							ap.setDuration(new Integer((int) dur));
-						}
-					}
-
-				}
-
-				if (comp instanceof VToDo) {
-					ap.setTodo(true);
-				}
-
-				prop = pl.getProperty(Property.DURATION);
-				if (prop != null) {
-					Duration dur = (Duration) prop;
-
-					int durdays = dur.getDuration().getDays();
-					// skip the the duration if >= 1 day
-					// not much else we can do about it right now without
-					// getting
-					// really complicated
-					if (durdays < 1) {
-						ap.setDuration(new Integer(dur.getDuration()
-								.getMinutes()));
-					} else {
-						warning.append("WARNING: Cannot handle duration greater than 1 day for appt ["
-								+ summary + "], using 0\n");
-					}
-
-				}
-
-				prop = pl.getProperty(Property.CATEGORIES);
-				if (prop != null) {
-					Categories cats = (Categories) prop;
-					TextList catlist = cats.getCategories();
-					Iterator<String> cit = catlist.iterator();
-					while (cit.hasNext()) {
-						String cat = cit.next();
-						if (cat.equals("Holidays")) {
-							ap.setHoliday(new Integer(1));
-						} else if (cat.equals("Vacation")) {
-							ap.setVacation(new Integer(1));
-						} else if (cat.equals("ToDo")) {
-							ap.setTodo(true);
-						} else if (cat.equals("black") | cat.equals("red")
-								|| cat.equals("green") || cat.equals("blue")
-								|| cat.equals("white")) {
-							ap.setColor(cat);
-						} else {
-							ap.setCategory(cat);
-						}
-					}
-				}
-
-				prop = pl.getProperty(Property.CLASS);
-				if (prop != null) {
-					Clazz clazz = (Clazz) prop;
-					if (clazz.getValue().equals(Clazz.PRIVATE)) {
-						ap.setPrivate(true);
-					}
-				}
-
-				prop = pl.getProperty(Property.RRULE);
-				if (prop != null) {
-					RRule rr = (RRule) prop;
-					Recur recur = rr.getRecur();
-
-					String freq = recur.getFrequency();
-					int interval = recur.getInterval();
-					if (freq.equals(Recur.DAILY)) {
-						ap.setFrequency(Repeat.DAILY);
-					} else if (freq.equals(Recur.WEEKLY)) {
-						if (interval == 2) {
-							ap.setFrequency(Repeat.BIWEEKLY);
-						} else {
-							ap.setFrequency(Repeat.WEEKLY);
-						}
-
-						WeekDayList dl = recur.getDayList();
-						if (dl != null && !dl.isEmpty()) {
-							String f = Repeat.DAYLIST;
-							f += ",";
-							for (Object o : dl) {
-								WeekDay wd = (WeekDay) o;
-								f += WeekDay.getCalendarDay(wd);
-							}
-							ap.setFrequency(f);
-
-						}
-
-					} else if (freq.equals(Recur.MONTHLY)) {
-						ap.setFrequency(Repeat.MONTHLY);
-					} else if (freq.equals(Recur.YEARLY)) {
-						ap.setFrequency(Repeat.YEARLY);
-					} else {
-						warning.append("WARNING: Cannot handle frequency of ["
-								+ freq + "], for appt [" + summary
-								+ "], adding first occurrence only\n");
-						aplist.add(ap);
-						continue;
-					}
-
-					Date until = recur.getUntil();
-					if (until != null) {
-						ap.setRepeatUntil(until);
-					} else {
-						int times = recur.getCount();
-						if (times < 1)
-							times = 9999;
-						ap.setTimes(new Integer(times));
-					}
-
-					ap.setRepeatFlag(true);
-
-				}
-
+			Appointment ap = toBorg(comp);
+			if (ap != null)
 				aplist.add(ap);
-			}
+
 		}
 
 		int imported = 0;
@@ -783,5 +593,189 @@ public class AppointmentIcalAdapter {
 	static public void main(String args[]) throws Exception {
 
 		importIcalFromUrl("https://www.google.com/calendar/ical/testborg%40gmail.com/private-1cfabbb9dec4c3d764c2f62acf127599/basic.ics");
+	}
+
+	public static Appointment toBorg(Component comp) {
+		if (comp instanceof VEvent || comp instanceof VToDo) {
+
+			AppointmentModel amodel = AppointmentModel.getReference();
+
+			// start with default appt to pull in default options
+			Appointment ap = amodel.getDefaultAppointment();
+			if (ap == null)
+				ap = amodel.newAppt();
+
+			ap.setCategory(null);
+
+			PropertyList pl = comp.getProperties();
+			String appttext = "";
+			String summary = "";
+			Property prop = pl.getProperty(Property.SUMMARY);
+			if (prop != null) {
+				summary = prop.getValue();
+				appttext += prop.getValue();
+			}
+
+			prop = pl.getProperty(Property.LOCATION);
+			if (prop != null) {
+				appttext += "\nLocation: " + prop.getValue();
+			}
+
+			prop = pl.getProperty(Property.DESCRIPTION);
+			if (prop != null) {
+				appttext += "\n" + prop.getValue();
+			}
+
+			ap.setUntimed("Y");
+			ap.setText(appttext);
+			prop = pl.getProperty(Property.DTSTART);
+			if (prop != null) {
+				DtStart dts = (DtStart) prop;
+				Date d = dts.getDate();
+
+				Date utc = new Date();
+				utc.setTime(d.getTime());
+
+				// adjust time zone
+				if (!dts.isUtc() && !dts.getValue().contains("T")) {
+					// System.out.println( "TZO=" + tzOffset(d.getTime()));
+					long u = d.getTime() - tzOffset(d.getTime());
+					utc.setTime(u);
+				}
+
+				ap.setDate(utc);
+
+				// check if DATE only
+				if (!dts.getValue().contains("T")) {
+					// date only
+					ap.setUntimed("Y");
+				} else {
+					ap.setUntimed("N");
+					prop = pl.getProperty(Property.DTEND);
+					if (prop != null) {
+						DtEnd dte = (DtEnd) prop;
+						Date de = dte.getDate();
+						long dur = (de.getTime() - d.getTime()) / (1000 * 60);
+						ap.setDuration(new Integer((int) dur));
+					}
+				}
+
+			}
+
+			if (comp instanceof VToDo) {
+				ap.setTodo(true);
+			}
+			
+			Uid uid = (Uid) pl.getProperty(Property.UID);
+			ap.setUid(uid.getValue());
+			LastModified lm = (LastModified) pl.getProperty(Property.LAST_MODIFIED);
+			ap.setLastMod(lm.getDateTime());
+			Created cr = (Created) pl.getProperty(Property.CREATED);
+			ap.setCreateTime(cr.getDateTime());
+			prop = pl.getProperty(Property.DURATION);
+			if (prop != null) {
+				Duration dur = (Duration) prop;
+
+				int durdays = dur.getDuration().getDays();
+				// skip the the duration if >= 1 day
+				// not much else we can do about it right now without
+				// getting
+				// really complicated
+				if (durdays < 1) {
+					ap.setDuration(new Integer(dur.getDuration().getMinutes()));
+				}
+
+			}
+
+			prop = pl.getProperty(Property.CATEGORIES);
+			if (prop != null) {
+				Categories cats = (Categories) prop;
+				TextList catlist = cats.getCategories();
+				@SuppressWarnings("unchecked")
+				Iterator<String> cit = catlist.iterator();
+				while (cit.hasNext()) {
+					String cat = cit.next();
+					if (cat.equals("Holidays")) {
+						ap.setHoliday(new Integer(1));
+					} else if (cat.equals("Vacation")) {
+						ap.setVacation(new Integer(1));
+					} else if (cat.equals("ToDo")) {
+						ap.setTodo(true);
+					} else if (cat.equals("black") | cat.equals("red")
+							|| cat.equals("green") || cat.equals("blue")
+							|| cat.equals("white")) {
+						ap.setColor(cat);
+					} else {
+						ap.setCategory(cat);
+					}
+				}
+			}
+
+			prop = pl.getProperty(Property.CLASS);
+			if (prop != null) {
+				Clazz clazz = (Clazz) prop;
+				if (clazz.getValue().equals(Clazz.PRIVATE)) {
+					ap.setPrivate(true);
+				}
+			}
+
+			prop = pl.getProperty(Property.RRULE);
+			if (prop != null) {
+				RRule rr = (RRule) prop;
+				Recur recur = rr.getRecur();
+
+				String freq = recur.getFrequency();
+				int interval = recur.getInterval();
+				if (freq.equals(Recur.DAILY)) {
+					ap.setFrequency(Repeat.DAILY);
+				} else if (freq.equals(Recur.WEEKLY)) {
+					if (interval == 2) {
+						ap.setFrequency(Repeat.BIWEEKLY);
+					} else {
+						ap.setFrequency(Repeat.WEEKLY);
+					}
+
+					WeekDayList dl = recur.getDayList();
+					if (dl != null && !dl.isEmpty()) {
+						String f = Repeat.DAYLIST;
+						f += ",";
+						for (Object o : dl) {
+							WeekDay wd = (WeekDay) o;
+							f += WeekDay.getCalendarDay(wd);
+						}
+						ap.setFrequency(f);
+
+					}
+
+				} else if (freq.equals(Recur.MONTHLY)) {
+					ap.setFrequency(Repeat.MONTHLY);
+				} else if (freq.equals(Recur.YEARLY)) {
+					ap.setFrequency(Repeat.YEARLY);
+				} else {
+					log.warning("WARNING: Cannot handle frequency of [" + freq
+							+ "], for appt [" + summary
+							+ "], adding first occurrence only\n");
+					return ap;
+				}
+
+				Date until = recur.getUntil();
+				if (until != null) {
+					ap.setRepeatUntil(until);
+				} else {
+					int times = recur.getCount();
+					if (times < 1)
+						times = 9999;
+					ap.setTimes(new Integer(times));
+				}
+
+				ap.setRepeatFlag(true);
+
+			}
+
+			return ap;
+
+		}
+		return null;
+
 	}
 }

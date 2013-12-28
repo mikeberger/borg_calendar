@@ -367,6 +367,27 @@ class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB
 		}
 	}
 
+	@Override
+	public Appointment getAppointmentByUid(String uid) throws Exception {
+		PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("SELECT * FROM appointments where uid = ?" );
+		stmt.setString(1, uid);
+		Appointment ap = null;
+		
+		ResultSet r = null;
+		try {
+			r = stmt.executeQuery();
+			if (r.next()) {
+				ap = createFrom(r);
+			}
+			return ap;
+		} finally {
+			if (r != null)
+				r.close();
+			if (stmt != null)
+				stmt.close();
+		}
+	}
+
 	
 	
     
