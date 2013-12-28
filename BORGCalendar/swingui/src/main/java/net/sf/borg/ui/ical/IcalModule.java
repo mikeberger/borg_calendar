@@ -203,7 +203,7 @@ public class IcalModule implements Module {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					CalDav.sync(Prefs.getIntPref(PrefName.ICAL_EXPORTYEARS));
+					CalDav.sync(Prefs.getIntPref(PrefName.ICAL_EXPORTYEARS), false);
 				} catch (Exception e) {
 					Errmsg.getErrorHandler().errmsg(e);
 				}
@@ -211,6 +211,22 @@ public class IcalModule implements Module {
 		});
 
 		m.add(caldavs);
+		
+		JMenuItem caldavso = new JMenuItem();
+		caldavso.setText(Resource.getResourceString("CALDAV-Sync-out"));
+		caldavso.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					CalDav.sync(Prefs.getIntPref(PrefName.ICAL_EXPORTYEARS), true);
+				} catch (Exception e) {
+					Errmsg.getErrorHandler().errmsg(e);
+				}
+			}
+		});
+
+		m.add(caldavso);
 
 		JMenuItem caldavo = new JMenuItem();
 		caldavo.setText(Resource.getResourceString("CALDAV-Overwrite"));

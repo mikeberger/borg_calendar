@@ -56,7 +56,7 @@ public class CalDav {
 
 	}
 
-	static public void sync(Integer years) throws Exception {
+	static public void sync(Integer years, boolean outward_only) throws Exception {
 		CompatibilityHints.setHintEnabled(
 				CompatibilityHints.KEY_RELAXED_PARSING, true);
 		CompatibilityHints.setHintEnabled(
@@ -77,7 +77,8 @@ public class CalDav {
 
 		processSyncMap(collection);
 
-		syncFromServer(collection, years);
+		if( !outward_only )
+			syncFromServer(collection, years);
 		
 		log.info("SYNC: Done");
 
@@ -135,6 +136,7 @@ public class CalDav {
 				{
 					// was updated after BORG so update BORG
 					try {
+						newap.setKey(ap.getKey());
 						SyncLog.getReference().setProcessUpdates(false);
 						AppointmentModel.getReference().saveAppt(newap);
 					} finally {
