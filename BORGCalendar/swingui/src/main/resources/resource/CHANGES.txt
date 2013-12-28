@@ -1,5 +1,7 @@
 BORG 1.8
 --------
+Add Support for sync with CALDAV Server (Baikal)
+Ical fixes to support export/import between BORG and Android ICSSync
 Switch to maven/Reorganize project
 Merge Ical plugin into base product
 Option to FTP an Ical export on shutdown
