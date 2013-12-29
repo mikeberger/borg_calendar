@@ -185,8 +185,11 @@ public class AppointmentIcalAdapter {
 		}
 
 		// vacation is a category
-		if (ap.getVacation() != null && ap.getVacation().intValue() != 0) {
+		if (ap.getVacation() != null && ap.getVacation().intValue() == 1) {
 			catlist.add("Vacation");
+		}
+		else if (ap.getVacation() != null && ap.getVacation().intValue() == 2) {
+			catlist.add("HalfDay");
 		}
 
 		// holiday is a category
@@ -197,6 +200,7 @@ public class AppointmentIcalAdapter {
 		// private
 		if (ap.isPrivate()) {
 			ve.getProperties().add(Clazz.PRIVATE);
+			catlist.add("Private");
 		}
 
 		// add color as a category
@@ -212,6 +216,10 @@ public class AppointmentIcalAdapter {
 		if (ap.getCategory() != null && !ap.getCategory().equals("")) {
 			catlist.add(ap.getCategory());
 		}
+		
+		if( ap.isTodo())
+			catlist.add("ToDo");
+
 
 		if (!catlist.isEmpty()) {
 			ve.getProperties().add(new Categories(catlist));
@@ -713,6 +721,10 @@ public class AppointmentIcalAdapter {
 						ap.setHoliday(new Integer(1));
 					} else if (cat.equals("Vacation")) {
 						ap.setVacation(new Integer(1));
+					} else if (cat.equals("HalfDay")) {
+						ap.setVacation(new Integer(2));
+					} else if (cat.equals("Private")) {
+						ap.setPrivate(true);
 					} else if (cat.equals("ToDo")) {
 						ap.setTodo(true);
 					} else if (cat.equals("black") | cat.equals("red")

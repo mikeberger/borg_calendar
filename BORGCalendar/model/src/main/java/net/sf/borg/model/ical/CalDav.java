@@ -445,14 +445,19 @@ public class CalDav {
 		log.fine(serverUids.toString());
 
 		log.info("SYNC: check for deletes");
-
-		// find all appts in Borg that are not on the server - TODO - dangerous
+		
+		// find all appts in Borg that are not on the server
 		for (Appointment ap : AppointmentModel.getReference().getAllAppts()) {
 			if (ap.getDate().before(after))
 				continue;
 
 			if (!serverUids.contains(ap.getUid()))
+			{
 				log.info("Appointment Not Found on Server: " + ap.toString());
+				SyncLog.getReference().setProcessUpdates(false);
+				AppointmentModel.getReference().delAppt(ap.getKey());
+				SyncLog.getReference().setProcessUpdates(true);
+			}
 		}
 
 	}
