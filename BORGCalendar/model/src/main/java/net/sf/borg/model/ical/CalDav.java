@@ -38,10 +38,6 @@ import net.sf.borg.model.ical.SyncEvent.ObjectType;
 
 public class CalDav {
 
-	static private final String PRODID = "-//MBCSoft/BORG//EN";
-
-	static private final Logger log = Logger.getLogger("net.sf.borg");
-
 	public static class BaikalPathResolver extends PathResolver {
 
 		@Override
@@ -56,212 +52,49 @@ public class CalDav {
 
 	}
 
-	static public void sync(Integer years, boolean outward_only)
-			throws Exception {
-		CompatibilityHints.setHintEnabled(
-				CompatibilityHints.KEY_RELAXED_PARSING, true);
-		CompatibilityHints.setHintEnabled(
-				CompatibilityHints.KEY_RELAXED_UNFOLDING, true);
-		CompatibilityHints.setHintEnabled(
-				CompatibilityHints.KEY_RELAXED_VALIDATION, true);
-		CompatibilityHints.setHintEnabled(
-				CompatibilityHints.KEY_OUTLOOK_COMPATIBILITY, true);
+	static private final String PRODID = "-//MBCSoft/BORG//EN";
 
-		CalDavCalendarStore store = connect();
-		if (store == null)
-			throw new Exception("Failed to connect to CalDav Store");
-
-		log.info("SYNC: Get Collection");
-
-		String calname = Prefs.getPref(PrefName.CALDAV_CAL);
-
-		CalDavCalendarCollection collection = getCollection(store, calname);
-
-		// if we are exporting VTODOs and there is a second calendar set, then
-		// we need to dump the todos as VEVENTS on the second cal
-		// this is for the various clients that cannot see the todos on the first calendar - like android
-		CalDavCalendarCollection collection2 = null;
-		if (Prefs.getBoolPref(PrefName.ICAL_EXPORT_TODO)) {
-			String cal2 = Prefs.getPref(PrefName.CALDAV_CAL2);
-			if (!cal2.isEmpty()) {
-				collection2 = getCollection(store, cal2);
-			}
-		}
-
-		processSyncMap(collection, collection2);
-
-		if (!outward_only)
-			syncFromServer(collection, years);
-
-		log.info("SYNC: Done");
-
+	static private final Logger log = Logger.getLogger("net.sf.borg");
+	
+	public static boolean isSyncing(){
+		String server = Prefs.getPref(PrefName.CALDAV_SERVER);
+		if( server != null && !server.isEmpty())
+			return true;
+		return false;
 	}
 
-	static public void syncFromServer(CalDavCalendarCollection collection,
-			Integer years) throws Exception {
+	private static void addEvent(CalDavCalendarCollection collection,
+			Component comp) {
 
-		log.info("SYNC: Start Server Sync");
+		log.info("SYNC: addEvent: " + comp.toString());
 
-		Date after = null;
-		if (years != null) {
-			GregorianCalendar cal = new GregorianCalendar();
-			cal.add(java.util.Calendar.YEAR, -1 * years.intValue());
-			after = cal.getTime();
+		Calendar mycal = new Calendar();
+		mycal.getProperties().add(new ProdId(PRODID));
+		mycal.getProperties().add(Version.VERSION_2_0);
+		mycal.getComponents().add(comp);
+
+		try {
+			collection.addCalendar(mycal);
+		} catch (Exception e) {
+			log.severe(e.getMessage());
+			e.printStackTrace();
 		}
-
-		ArrayList<String> serverUids = new ArrayList<String>();
-
-		Calendar cals[] = collection.getEvents();
-		log.info("SYNC: found " + cals.length + " Event Calendars");
-		for (Calendar cal : cals) {
-			syncCalendar(cal, serverUids);
-		}
-
-		Calendar tcals[] = collection.getTasks();
-		log.info("SYNC: found " + tcals.length + " Todo Calendars");
-		for (Calendar cal : tcals) {
-			syncCalendar(cal, serverUids);
-		}
-
-		log.fine(serverUids.toString());
-
-		log.info("SYNC: check for deletes");
-
-		// find all appts in Borg that are not on the server - TODO - dangerous
-		for (Appointment ap : AppointmentModel.getReference().getAllAppts()) {
-			if (ap.getDate().before(after))
-				continue;
-
-			if (!serverUids.contains(ap.getUid()))
-				log.info("Appointment Not Found on Server: " + ap.toString());
-		}
-
 	}
 
-	static public void syncCalendar(Calendar cal, ArrayList<String> serverUids)
-			throws Exception {
-		ComponentList clist = cal.getComponents();
-		@SuppressWarnings("unchecked")
-		Iterator<Component> it = clist.iterator();
-		while (it.hasNext()) {
-			Component comp = it.next();
+	private static CalDavCalendarStore connect() throws Exception {
 
-			if (!(comp instanceof VEvent || comp instanceof VToDo))
-				continue;
-			String uid = comp.getProperty(Property.UID).getValue();
-			serverUids.add(uid);
+		URL url = new URL("http", Prefs.getPref(PrefName.CALDAV_SERVER), -1,
+				"/");
+		log.info("SYNC: connect to " + url.toString());
 
-			Appointment newap = AppointmentIcalAdapter.toBorg(comp);
-			if (newap == null)
-				continue;
+		CalDavCalendarStore store = new CalDavCalendarStore("-", url,
+				new BaikalPathResolver());
 
-			if (comp instanceof VToDo) {
-				newap.setTodo(true);
-			}
+		if (store.connect(Prefs.getPref(PrefName.CALDAV_USER), gep()
+				.toCharArray()))
+			return store;
 
-			Appointment ap = AppointmentModel.getReference().getApptByUid(uid);
-			if (ap == null) {
-				// not found in BORG, so add it
-				if (newap != null) {
-					try {
-						SyncLog.getReference().setProcessUpdates(false);
-						log.info("SYNC save: " + newap.toString());
-						AppointmentModel.getReference().saveAppt(newap);
-					} finally {
-						SyncLog.getReference().setProcessUpdates(true);
-					}
-				}
-			} else if (newap.getLastMod().after(ap.getLastMod())) {
-				// was updated after BORG so update BORG
-				try {
-					newap.setKey(ap.getKey());
-					SyncLog.getReference().setProcessUpdates(false);
-					log.info("SYNC save: " + newap.toString());
-					AppointmentModel.getReference().saveAppt(newap);
-				} finally {
-					SyncLog.getReference().setProcessUpdates(true);
-				}
-			}
-
-		}
-
-	}
-
-	static public void processSyncMap(CalDavCalendarCollection collection,
-			CalDavCalendarCollection collection2) throws Exception {
-
-		boolean export_todos = Prefs.getBoolPref(PrefName.ICAL_EXPORT_TODO);
-
-		log.info("SYNC: Process Outgoing Items");
-
-		for (SyncEvent se : SyncLog.getReference().getAll()) {
-			if (se.getObjectType() != ObjectType.APPOINTMENT)
-				continue;
-
-			try {
-				if (se.getAction().equals(ChangeAction.ADD)) {
-					Appointment ap = AppointmentModel.getReference().getAppt(
-							se.getId());
-					if (ap == null)
-						continue;
-					addEvent(collection,
-							AppointmentIcalAdapter.toIcal(ap, export_todos));
-					if( collection2 != null && ap.isTodo())
-					{
-						Component ve = AppointmentIcalAdapter.toIcal(ap, false);
-						Uid uid = (Uid) ve.getProperty(Property.UID);
-						uid.setValue(uid.getValue() + "TD");
-						addEvent(collection2, ve);
-					}
-				} else if (se.getAction().equals(ChangeAction.CHANGE)) {
-					Component comp = getEvent(collection, se.getUid());
-					Appointment ap = AppointmentModel.getReference().getAppt(
-							se.getId());
-
-					if (comp == null) {
-						addEvent(collection,
-								AppointmentIcalAdapter.toIcal(ap, export_todos));
-						if( collection2 != null && ap.isTodo())
-						{
-							Component ve = AppointmentIcalAdapter.toIcal(ap, false);
-							Uid uid = (Uid) ve.getProperty(Property.UID);
-							uid.setValue(uid.getValue() + "TD");
-							addEvent(collection2, ve);
-						}
-					} else // TODO - what if both sides updated
-					{
-						updateEvent(collection,
-								AppointmentIcalAdapter.toIcal(ap, export_todos));
-						if( collection2 != null && ap.isTodo())
-						{
-							Component ve = AppointmentIcalAdapter.toIcal(ap, false);
-							Uid uid = (Uid) ve.getProperty(Property.UID);
-							uid.setValue(uid.getValue() + "TD");
-							updateEvent(collection2, ve);
-						}
-					}
-				} else if (se.getAction().equals(ChangeAction.DELETE)) {
-
-					Component comp = getEvent(collection, se.getUid());
-					log.info("Deleted Appt: " + se.getUid()
-							+ " not found on server");
-					if (comp != null) {
-						log.info("SYNC: removeEvent: " + comp.toString());
-						collection.removeCalendar(se.getUid());
-						if( collection2 != null && comp instanceof VToDo)
-						{
-							collection2.removeCalendar(se.getUid() + "TD");
-						}
-					}
-				}
-
-				SyncLog.getReference().delete(se.getId(), se.getObjectType());
-			} catch (Exception e) {
-				log.severe("SYNC ERROR for: " + se.toString() + ":"
-						+ e.getMessage());
-				e.printStackTrace();
-			}
-		}
+		return null;
 	}
 
 	static public void export(Integer years) throws Exception {
@@ -341,63 +174,36 @@ public class CalDav {
 
 	}
 
+	public static String gep() throws Exception {
+		String p1 = Prefs.getPref(PrefName.CALDAV_PASSWORD2);
+		String p2 = Prefs.getPref(PrefName.CALDAV_PASSWORD);
+		if ("".equals(p2))
+			return p2;
+
+		if ("".equals(p1)) {
+			sep(p2); // transition case
+			return p2;
+		}
+
+		byte[] ba = Base64Coder.decode(p1);
+		SecretKey key = new SecretKeySpec(ba, "AES");
+		Cipher dec = Cipher.getInstance("AES");
+		dec.init(Cipher.DECRYPT_MODE, key);
+		byte[] decba = Base64Coder.decode(p2);
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		OutputStream os = new CipherOutputStream(baos, dec);
+		os.write(decba);
+		os.close();
+
+		return baos.toString();
+
+	}
+
 	private static CalDavCalendarCollection getCollection(
 			CalDavCalendarStore store, String calName) throws Exception {
 		String cal_id = new BaikalPathResolver().getUserPath(Prefs
 				.getPref(PrefName.CALDAV_USER)) + "/" + calName;
 		return store.getCollection(cal_id);
-	}
-
-	private static CalDavCalendarStore connect() throws Exception {
-
-		URL url = new URL("http", Prefs.getPref(PrefName.CALDAV_SERVER), -1,
-				"/");
-		log.info("SYNC: connect to " + url.toString());
-
-		CalDavCalendarStore store = new CalDavCalendarStore("-", url,
-				new BaikalPathResolver());
-
-		if (store.connect(Prefs.getPref(PrefName.CALDAV_USER), gep()
-				.toCharArray()))
-			return store;
-
-		return null;
-	}
-
-	private static void addEvent(CalDavCalendarCollection collection,
-			Component comp) {
-
-		log.info("SYNC: addEvent: " + comp.toString());
-
-		Calendar mycal = new Calendar();
-		mycal.getProperties().add(new ProdId(PRODID));
-		mycal.getProperties().add(Version.VERSION_2_0);
-		mycal.getComponents().add(comp);
-
-		try {
-			collection.addCalendar(mycal);
-		} catch (Exception e) {
-			log.severe(e.getMessage());
-			e.printStackTrace();
-		}
-	}
-
-	private static void updateEvent(CalDavCalendarCollection collection,
-			Component comp) {
-
-		log.info("SYNC: updateEvent: " + comp.toString());
-
-		Calendar mycal = new Calendar();
-		mycal.getProperties().add(new ProdId(PRODID));
-		mycal.getProperties().add(Version.VERSION_2_0);
-		mycal.getComponents().add(comp);
-
-		try {
-			collection.updateCalendar(mycal);
-		} catch (Exception e) {
-			log.severe(e.getMessage());
-			e.printStackTrace();
-		}
 	}
 
 	private static Component getEvent(CalDavCalendarCollection collection,
@@ -415,6 +221,83 @@ public class CalDav {
 				return comp;
 		}
 		return null;
+	}
+
+	static public void processSyncMap(CalDavCalendarCollection collection,
+			CalDavCalendarCollection collection2) throws Exception {
+
+		boolean export_todos = Prefs.getBoolPref(PrefName.ICAL_EXPORT_TODO);
+
+		log.info("SYNC: Process Outgoing Items");
+
+		for (SyncEvent se : SyncLog.getReference().getAll()) {
+			if (se.getObjectType() != ObjectType.APPOINTMENT)
+				continue;
+
+			try {
+				if (se.getAction().equals(ChangeAction.ADD)) {
+					Appointment ap = AppointmentModel.getReference().getAppt(
+							se.getId());
+					if (ap == null)
+						continue;
+					addEvent(collection,
+							AppointmentIcalAdapter.toIcal(ap, export_todos));
+					if( collection2 != null && ap.isTodo())
+					{
+						Component ve = AppointmentIcalAdapter.toIcal(ap, false);
+						Uid uid = (Uid) ve.getProperty(Property.UID);
+						uid.setValue(uid.getValue() + "TD");
+						addEvent(collection2, ve);
+					}
+				} else if (se.getAction().equals(ChangeAction.CHANGE)) {
+					Component comp = getEvent(collection, se.getUid());
+					Appointment ap = AppointmentModel.getReference().getAppt(
+							se.getId());
+
+					if (comp == null) {
+						addEvent(collection,
+								AppointmentIcalAdapter.toIcal(ap, export_todos));
+						if( collection2 != null && ap.isTodo())
+						{
+							Component ve = AppointmentIcalAdapter.toIcal(ap, false);
+							Uid uid = (Uid) ve.getProperty(Property.UID);
+							uid.setValue(uid.getValue() + "TD");
+							addEvent(collection2, ve);
+						}
+					} else // TODO - what if both sides updated
+					{
+						updateEvent(collection,
+								AppointmentIcalAdapter.toIcal(ap, export_todos));
+						if( collection2 != null && ap.isTodo())
+						{
+							Component ve = AppointmentIcalAdapter.toIcal(ap, false);
+							Uid uid = (Uid) ve.getProperty(Property.UID);
+							uid.setValue(uid.getValue() + "TD");
+							updateEvent(collection2, ve);
+						}
+					}
+				} else if (se.getAction().equals(ChangeAction.DELETE)) {
+
+					Component comp = getEvent(collection, se.getUid());
+					log.info("Deleted Appt: " + se.getUid()
+							+ " not found on server");
+					if (comp != null) {
+						log.info("SYNC: removeEvent: " + comp.toString());
+						collection.removeCalendar(se.getUid());
+						if( collection2 != null && comp instanceof VToDo)
+						{
+							collection2.removeCalendar(se.getUid() + "TD");
+						}
+					}
+				}
+
+				SyncLog.getReference().delete(se.getId(), se.getObjectType());
+			} catch (Exception e) {
+				log.severe("SYNC ERROR for: " + se.toString() + ":"
+						+ e.getMessage());
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public static void sep(String s) throws Exception {
@@ -443,29 +326,153 @@ public class CalDav {
 				new String(Base64Coder.encode(ba)));
 	}
 
-	public static String gep() throws Exception {
-		String p1 = Prefs.getPref(PrefName.CALDAV_PASSWORD2);
-		String p2 = Prefs.getPref(PrefName.CALDAV_PASSWORD);
-		if ("".equals(p2))
-			return p2;
+	static public void sync(Integer years, boolean outward_only)
+			throws Exception {
+		CompatibilityHints.setHintEnabled(
+				CompatibilityHints.KEY_RELAXED_PARSING, true);
+		CompatibilityHints.setHintEnabled(
+				CompatibilityHints.KEY_RELAXED_UNFOLDING, true);
+		CompatibilityHints.setHintEnabled(
+				CompatibilityHints.KEY_RELAXED_VALIDATION, true);
+		CompatibilityHints.setHintEnabled(
+				CompatibilityHints.KEY_OUTLOOK_COMPATIBILITY, true);
 
-		if ("".equals(p1)) {
-			sep(p2); // transition case
-			return p2;
+		CalDavCalendarStore store = connect();
+		if (store == null)
+			throw new Exception("Failed to connect to CalDav Store");
+
+		log.info("SYNC: Get Collection");
+
+		String calname = Prefs.getPref(PrefName.CALDAV_CAL);
+
+		CalDavCalendarCollection collection = getCollection(store, calname);
+
+		// if we are exporting VTODOs and there is a second calendar set, then
+		// we need to dump the todos as VEVENTS on the second cal
+		// this is for the various clients that cannot see the todos on the first calendar - like android
+		CalDavCalendarCollection collection2 = null;
+		if (Prefs.getBoolPref(PrefName.ICAL_EXPORT_TODO)) {
+			String cal2 = Prefs.getPref(PrefName.CALDAV_CAL2);
+			if (!cal2.isEmpty()) {
+				collection2 = getCollection(store, cal2);
+			}
 		}
 
-		byte[] ba = Base64Coder.decode(p1);
-		SecretKey key = new SecretKeySpec(ba, "AES");
-		Cipher dec = Cipher.getInstance("AES");
-		dec.init(Cipher.DECRYPT_MODE, key);
-		byte[] decba = Base64Coder.decode(p2);
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		OutputStream os = new CipherOutputStream(baos, dec);
-		os.write(decba);
-		os.close();
+		processSyncMap(collection, collection2);
 
-		return baos.toString();
+		if (!outward_only)
+			syncFromServer(collection, years);
 
+		log.info("SYNC: Done");
+
+	}
+
+	static public void syncCalendar(Calendar cal, ArrayList<String> serverUids)
+			throws Exception {
+		ComponentList clist = cal.getComponents();
+		@SuppressWarnings("unchecked")
+		Iterator<Component> it = clist.iterator();
+		while (it.hasNext()) {
+			Component comp = it.next();
+
+			if (!(comp instanceof VEvent || comp instanceof VToDo))
+				continue;
+			String uid = comp.getProperty(Property.UID).getValue();
+			serverUids.add(uid);
+
+			Appointment newap = AppointmentIcalAdapter.toBorg(comp);
+			if (newap == null)
+				continue;
+
+			if (comp instanceof VToDo) {
+				newap.setTodo(true);
+			}
+
+			Appointment ap = AppointmentModel.getReference().getApptByUid(uid);
+			if (ap == null) {
+				// not found in BORG, so add it
+				if (newap != null) {
+					try {
+						SyncLog.getReference().setProcessUpdates(false);
+						log.info("SYNC save: " + newap.toString());
+						AppointmentModel.getReference().saveAppt(newap);
+					} finally {
+						SyncLog.getReference().setProcessUpdates(true);
+					}
+				}
+			} else if (newap.getLastMod().after(ap.getLastMod())) {
+				// was updated after BORG so update BORG
+				try {
+					newap.setKey(ap.getKey());
+					SyncLog.getReference().setProcessUpdates(false);
+					log.info("SYNC save: " + newap.toString());
+					AppointmentModel.getReference().saveAppt(newap);
+				} finally {
+					SyncLog.getReference().setProcessUpdates(true);
+				}
+			}
+
+		}
+
+	}
+
+	static public void syncFromServer(CalDavCalendarCollection collection,
+			Integer years) throws Exception {
+
+		log.info("SYNC: Start Server Sync");
+
+		Date after = null;
+		if (years != null) {
+			GregorianCalendar cal = new GregorianCalendar();
+			cal.add(java.util.Calendar.YEAR, -1 * years.intValue());
+			after = cal.getTime();
+		}
+
+		ArrayList<String> serverUids = new ArrayList<String>();
+
+		Calendar cals[] = collection.getEvents();
+		log.info("SYNC: found " + cals.length + " Event Calendars");
+		for (Calendar cal : cals) {
+			syncCalendar(cal, serverUids);
+		}
+
+		Calendar tcals[] = collection.getTasks();
+		log.info("SYNC: found " + tcals.length + " Todo Calendars");
+		for (Calendar cal : tcals) {
+			syncCalendar(cal, serverUids);
+		}
+
+		log.fine(serverUids.toString());
+
+		log.info("SYNC: check for deletes");
+
+		// find all appts in Borg that are not on the server - TODO - dangerous
+		for (Appointment ap : AppointmentModel.getReference().getAllAppts()) {
+			if (ap.getDate().before(after))
+				continue;
+
+			if (!serverUids.contains(ap.getUid()))
+				log.info("Appointment Not Found on Server: " + ap.toString());
+		}
+
+	}
+
+	private static void updateEvent(CalDavCalendarCollection collection,
+			Component comp) {
+
+		log.info("SYNC: updateEvent: " + comp.toString());
+
+		Calendar mycal = new Calendar();
+		mycal.getProperties().add(new ProdId(PRODID));
+		mycal.getProperties().add(Version.VERSION_2_0);
+		mycal.getComponents().add(comp);
+
+		try {
+			collection.updateCalendar(mycal);
+		} catch (Exception e) {
+			log.severe(e.getMessage());
+			e.printStackTrace();
+		}
 	}
 
 }

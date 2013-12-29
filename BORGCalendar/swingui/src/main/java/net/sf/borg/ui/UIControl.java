@@ -22,6 +22,7 @@ import net.sf.borg.common.Warning;
 import net.sf.borg.model.ExportImport;
 import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.model.ical.IcalFTP;
+import net.sf.borg.model.ical.SyncLog;
 import net.sf.borg.ui.address.AddrListView;
 import net.sf.borg.ui.calendar.DayPanel;
 import net.sf.borg.ui.calendar.MonthPanel;
@@ -217,6 +218,16 @@ public class UIControl {
 	 * shuts down the UI, including db backup
 	 */
 	public static void shutDownUI() {
+		
+		// warn about syncing
+		try {
+			if( SyncLog.getReference().isProcessUpdates() && !SyncLog.getReference().getAll().isEmpty())
+			{
+				JOptionPane.showMessageDialog(null, Resource.getResourceString("Sync-Warn"), null, JOptionPane.WARNING_MESSAGE);
+			}
+		} catch (Exception e1) {
+			Errmsg.getErrorHandler().errmsg(e1);
+		}
 
 		// prompt for shutdown and backup options
 		boolean do_backup = false;

@@ -15,6 +15,7 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import net.sf.borg.common.Errmsg;
+import net.sf.borg.common.Prefs;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Model;
 import net.sf.borg.model.TaskModel;
@@ -30,7 +31,7 @@ import net.sf.borg.model.ical.SyncEvent.ObjectType;
  * class to track all appointment model changes since the last sync it will
  * persist this information to a file
  */
-public class SyncLog extends Model implements Model.Listener {
+public class SyncLog extends Model implements Model.Listener, Prefs.Listener {
 
 	static private SyncLog singleton = null;
 	
@@ -43,14 +44,15 @@ public class SyncLog extends Model implements Model.Listener {
 	}
 
 	public SyncLog() {
+		
 		new JdbcDBUpgrader(
 				"select id from syncmap",
 				"CREATE CACHED TABLE syncmap (id integer NOT NULL,uid longvarchar, objtype varchar(25) NOT NULL,action varchar(25) NOT NULL,PRIMARY KEY (id,objtype))")
 				.upgrade();
 		AppointmentModel.getReference().addListener(this);
 		TaskModel.getReference().addListener(this);
+		Prefs.addListener(this);
 	}
-	
 	
 
 	@Override
@@ -62,8 +64,6 @@ public class SyncLog extends Model implements Model.Listener {
 		if (borgEvent == null || borgEvent.getObject() == null || borgEvent.getAction() == null)
 			return;
 		
-	
-
 		try {
 
 			Object obj = borgEvent.getObject();
@@ -259,6 +259,13 @@ public class SyncLog extends Model implements Model.Listener {
 
 	public void setProcessUpdates(boolean processUpdates) {
 		this.processUpdates = processUpdates;
+	}
+
+	@Override
+	public void prefsChanged() {
+
+		setProcessUpdates(CalDav.isSyncing());
+		
 	}
 
 }

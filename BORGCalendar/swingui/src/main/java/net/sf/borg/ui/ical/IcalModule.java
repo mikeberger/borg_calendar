@@ -203,6 +203,11 @@ public class IcalModule implements Module {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				try {
+					if( !CalDav.isSyncing())
+					{
+						JOptionPane.showMessageDialog(null, Resource.getResourceString("Sync-Not-Set"), null, JOptionPane.ERROR_MESSAGE);
+						return;
+					}
 					CalDav.sync(Prefs.getIntPref(PrefName.ICAL_EXPORTYEARS), false);
 				} catch (Exception e) {
 					Errmsg.getErrorHandler().errmsg(e);
@@ -219,6 +224,11 @@ public class IcalModule implements Module {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				try {
+					if( !CalDav.isSyncing())
+					{
+						JOptionPane.showMessageDialog(null, Resource.getResourceString("Sync-Not-Set"), null, JOptionPane.ERROR_MESSAGE);
+						return;
+					}
 					CalDav.sync(Prefs.getIntPref(PrefName.ICAL_EXPORTYEARS), true);
 				} catch (Exception e) {
 					Errmsg.getErrorHandler().errmsg(e);
@@ -235,6 +245,11 @@ public class IcalModule implements Module {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				try {
+					if( !CalDav.isSyncing())
+					{
+						JOptionPane.showMessageDialog(null, Resource.getResourceString("Sync-Not-Set"), null, JOptionPane.ERROR_MESSAGE);
+						return;
+					}
 					int ret = JOptionPane.showConfirmDialog(null,
 							Resource.getResourceString("Caldav-Overwrite-Warn"),
 							Resource.getResourceString("Confirm"),
