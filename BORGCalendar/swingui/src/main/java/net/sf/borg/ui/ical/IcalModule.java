@@ -12,6 +12,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.SwingWorker;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import net.iharder.dnd.FileDrop;
@@ -30,6 +31,7 @@ import net.sf.borg.ui.MultiView.Module;
 import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.options.IcalOptionsPanel;
 import net.sf.borg.ui.options.OptionsView;
+import net.sf.borg.ui.util.ModalMessage;
 
 public class IcalModule implements Module {
 
@@ -203,12 +205,15 @@ public class IcalModule implements Module {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					if( !CalDav.isSyncing())
-					{
-						JOptionPane.showMessageDialog(null, Resource.getResourceString("Sync-Not-Set"), null, JOptionPane.ERROR_MESSAGE);
+					if (!CalDav.isSyncing()) {
+						JOptionPane.showMessageDialog(null,
+								Resource.getResourceString("Sync-Not-Set"),
+								null, JOptionPane.ERROR_MESSAGE);
 						return;
 					}
-					CalDav.sync(Prefs.getIntPref(PrefName.ICAL_EXPORTYEARS), false);
+
+					runBackgroundSync(Synctype.FULL);
+
 				} catch (Exception e) {
 					Errmsg.getErrorHandler().errmsg(e);
 				}
@@ -216,7 +221,7 @@ public class IcalModule implements Module {
 		});
 
 		m.add(caldavs);
-		
+
 		JMenuItem caldavso = new JMenuItem();
 		caldavso.setText(Resource.getResourceString("CALDAV-Sync-out"));
 		caldavso.addActionListener(new ActionListener() {
@@ -224,12 +229,14 @@ public class IcalModule implements Module {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					if( !CalDav.isSyncing())
-					{
-						JOptionPane.showMessageDialog(null, Resource.getResourceString("Sync-Not-Set"), null, JOptionPane.ERROR_MESSAGE);
+					if (!CalDav.isSyncing()) {
+						JOptionPane.showMessageDialog(null,
+								Resource.getResourceString("Sync-Not-Set"),
+								null, JOptionPane.ERROR_MESSAGE);
 						return;
 					}
-					CalDav.sync(Prefs.getIntPref(PrefName.ICAL_EXPORTYEARS), true);
+					runBackgroundSync(Synctype.ONEWAY);
+
 				} catch (Exception e) {
 					Errmsg.getErrorHandler().errmsg(e);
 				}
@@ -245,19 +252,21 @@ public class IcalModule implements Module {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					if( !CalDav.isSyncing())
-					{
-						JOptionPane.showMessageDialog(null, Resource.getResourceString("Sync-Not-Set"), null, JOptionPane.ERROR_MESSAGE);
+					if (!CalDav.isSyncing()) {
+						JOptionPane.showMessageDialog(null,
+								Resource.getResourceString("Sync-Not-Set"),
+								null, JOptionPane.ERROR_MESSAGE);
 						return;
 					}
-					int ret = JOptionPane.showConfirmDialog(null,
+					int ret = JOptionPane.showConfirmDialog(
+							null,
 							Resource.getResourceString("Caldav-Overwrite-Warn"),
 							Resource.getResourceString("Confirm"),
 							JOptionPane.OK_CANCEL_OPTION,
 							JOptionPane.WARNING_MESSAGE);
 					if (ret != JOptionPane.OK_OPTION)
 						return;
-					CalDav.export(Prefs.getIntPref(PrefName.ICAL_EXPORTYEARS));
+					runBackgroundSync(Synctype.OVERWRITE);
 				} catch (Exception e) {
 					Errmsg.getErrorHandler().errmsg(e);
 				}
@@ -267,6 +276,48 @@ public class IcalModule implements Module {
 		m.add(caldavo);
 
 		return m;
+	}
+
+	private enum Synctype {
+		FULL, ONEWAY, OVERWRITE
+	}
+
+	static private void runBackgroundSync(Synctype type) {
+		final ModalMessage modal = new ModalMessage(
+				Resource.getResourceString("syncing"), false);
+		final Synctype ty = type;
+		class SyncWorker extends SwingWorker<Void, Object> {
+			@Override
+			public Void doInBackground() {
+				try {
+					if (ty == Synctype.FULL)
+						CalDav.sync(
+								Prefs.getIntPref(PrefName.ICAL_EXPORTYEARS),
+								false);
+					else if (ty == Synctype.ONEWAY)
+						CalDav.sync(
+								Prefs.getIntPref(PrefName.ICAL_EXPORTYEARS),
+								true);
+					else if (ty == Synctype.OVERWRITE)
+						CalDav.export(Prefs
+								.getIntPref(PrefName.ICAL_EXPORTYEARS));
+
+				} catch (Exception e) {
+					Errmsg.getErrorHandler().errmsg(e);
+				}
+				return null;
+			}
+
+			@Override
+			protected void done() {
+				modal.appendText(Resource.getResourceString("done"));
+				modal.setEnabled(true);
+			}
+		}
+
+		(new SyncWorker()).execute();
+		modal.setVisible(true);
+
 	}
 
 	@Override
