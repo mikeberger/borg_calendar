@@ -100,55 +100,15 @@ public class CalDav {
 		ArrayList<String> serverUids = new ArrayList<String>();
 
 		Calendar cals[] = collection.getEvents();
-		
-		log.info("SYNC: found " + cals.length + " Calendars");
+		log.info("SYNC: found " + cals.length + " Event Calendars");
 		for (Calendar cal : cals) {
-
-
-			ComponentList clist = cal.getComponents();
-			@SuppressWarnings("unchecked")
-			Iterator<Component> it = clist.iterator();
-			while (it.hasNext()) {
-				Component comp = it.next();
-				
-				if( !(comp instanceof VEvent || comp instanceof VToDo))
-					continue;
-				String uid = comp.getProperty(Property.UID).getValue();
-				serverUids.add(uid);
-
-				Appointment newap = AppointmentIcalAdapter.toBorg(comp);
-				if( newap == null ) continue;
-
-				Appointment ap = AppointmentModel.getReference().getApptByUid(
-						uid);
-				if (ap == null) {
-					// not found in BORG, so add it
-					if (newap != null) {
-						try {
-							SyncLog.getReference().setProcessUpdates(false);
-							log.info("SYNC save: " + newap.toString());
-							AppointmentModel.getReference().saveAppt(newap);
-						} finally {
-							SyncLog.getReference().setProcessUpdates(true);
-						}
-					}
-				}
-				else if( newap.getLastMod().after(ap.getLastMod()))
-				{
-					// was updated after BORG so update BORG
-					try {
-						newap.setKey(ap.getKey());
-						SyncLog.getReference().setProcessUpdates(false);
-						log.info("SYNC save: " + newap.toString());
-						AppointmentModel.getReference().saveAppt(newap);
-					} finally {
-						SyncLog.getReference().setProcessUpdates(true);
-					}
-				}
-
-			}
-			
-			
+			syncCalendar(cal, serverUids);
+		}
+		
+		Calendar tcals[] = collection.getTasks();
+		log.info("SYNC: found " + tcals.length + " Todo Calendars");
+		for (Calendar cal : tcals) {
+			syncCalendar(cal, serverUids);
 		}
 		
 		log.fine(serverUids.toString());
@@ -165,6 +125,58 @@ public class CalDav {
 				log.info("Appointment Not Found on Server: " + ap.toString());
 		}
 
+	}
+	
+	static public void syncCalendar(Calendar cal, ArrayList<String> serverUids) throws Exception
+	{
+		ComponentList clist = cal.getComponents();
+		@SuppressWarnings("unchecked")
+		Iterator<Component> it = clist.iterator();
+		while (it.hasNext()) {
+			Component comp = it.next();
+			
+			if( !(comp instanceof VEvent || comp instanceof VToDo))
+				continue;
+			String uid = comp.getProperty(Property.UID).getValue();
+			serverUids.add(uid);
+
+			Appointment newap = AppointmentIcalAdapter.toBorg(comp);
+			if( newap == null ) continue;
+			
+			if( comp instanceof VToDo )
+			{
+				newap.setTodo(true);
+			}
+
+			Appointment ap = AppointmentModel.getReference().getApptByUid(
+					uid);
+			if (ap == null) {
+				// not found in BORG, so add it
+				if (newap != null) {
+					try {
+						SyncLog.getReference().setProcessUpdates(false);
+						log.info("SYNC save: " + newap.toString());
+						AppointmentModel.getReference().saveAppt(newap);
+					} finally {
+						SyncLog.getReference().setProcessUpdates(true);
+					}
+				}
+			}
+			else if( newap.getLastMod().after(ap.getLastMod()))
+			{
+				// was updated after BORG so update BORG
+				try {
+					newap.setKey(ap.getKey());
+					SyncLog.getReference().setProcessUpdates(false);
+					log.info("SYNC save: " + newap.toString());
+					AppointmentModel.getReference().saveAppt(newap);
+				} finally {
+					SyncLog.getReference().setProcessUpdates(true);
+				}
+			}
+
+		}
+		
 	}
 
 	static public void processSyncMap(CalDavCalendarCollection collection)
