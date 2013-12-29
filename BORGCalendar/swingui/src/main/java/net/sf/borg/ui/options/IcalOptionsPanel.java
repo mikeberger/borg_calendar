@@ -20,13 +20,17 @@
 package net.sf.borg.ui.options;
 
 import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 
 import javax.swing.JCheckBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.border.TitledBorder;
 
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
@@ -51,16 +55,23 @@ public class IcalOptionsPanel extends OptionsPanel {
 	private JPasswordField ftppassword = new JPasswordField();
 	private JTextField importurl = new JTextField();
 	private JCheckBox todoBox = new JCheckBox();
-	
+
 	private JTextField caldavServer = new JTextField();
 	private JTextField caldavUser = new JTextField();
 	private JPasswordField caldavPassword = new JPasswordField();
 	private JTextField caldavCal = new JTextField();
 	private JTextField caldavCal2 = new JTextField();
 
-
 	public IcalOptionsPanel() {
 		this.setLayout(new java.awt.GridBagLayout());
+
+		JPanel ftppanel = new JPanel();
+		ftppanel.setBorder(new TitledBorder("FTP"));
+		ftppanel.setLayout(new GridBagLayout());
+
+		JPanel calpanel = new JPanel();
+		calpanel.setBorder(new TitledBorder("CALDAV"));
+		calpanel.setLayout(new GridBagLayout());
 
 		this.add(new JLabel(Resource.getResourceString("years_to_export")),
 				GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH));
@@ -71,71 +82,86 @@ public class IcalOptionsPanel extends OptionsPanel {
 				GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH));
 		this.add(port, GridBagConstraintsFactory.create(1, 1,
 				GridBagConstraints.BOTH, 1.0, 0.0));
-		
+
 		skipBox.setText(Resource.getResourceString("skip_borg_ical"));
-		this.add(skipBox,GridBagConstraintsFactory.create(0, 2,
+		this.add(skipBox, GridBagConstraintsFactory.create(0, 2,
 				GridBagConstraints.BOTH, 1.0, 0.0));
-		
-		this.add(new JLabel(Resource.getResourceString("ftpserver")),
-				GridBagConstraintsFactory.create(0, 3, GridBagConstraints.BOTH));
-		this.add(ftpserver, GridBagConstraintsFactory.create(1, 3,
-				GridBagConstraints.BOTH, 1.0, 0.0));
-		
-		this.add(new JLabel(Resource.getResourceString("ftppath")),
-				GridBagConstraintsFactory.create(0, 4, GridBagConstraints.BOTH));
-		this.add(ftppath, GridBagConstraintsFactory.create(1, 4,
-				GridBagConstraints.BOTH, 1.0, 0.0));
-		
-		this.add(new JLabel(Resource.getResourceString("ftpusername")),
-				GridBagConstraintsFactory.create(0, 5, GridBagConstraints.BOTH));
-		this.add(ftpusername, GridBagConstraintsFactory.create(1, 5,
-				GridBagConstraints.BOTH, 1.0, 0.0));
-		
-		JLabel pl = new JLabel(Resource.getResourceString("ftppassword"));
-		this.add(pl,
-				GridBagConstraintsFactory.create(0, 6, GridBagConstraints.BOTH));
-		pl.setLabelFor(ftppassword);
-		this.add(ftppassword, GridBagConstraintsFactory.create(1, 6,
-				GridBagConstraints.BOTH, 1.0, 0.0));
-		ftppassword.setEditable(true);
 		
 		this.add(new JLabel(Resource.getResourceString("ical_import_url")),
-				GridBagConstraintsFactory.create(0, 7, GridBagConstraints.BOTH));
-		this.add(importurl, GridBagConstraintsFactory.create(1, 7,
+				GridBagConstraintsFactory.create(0, 3, GridBagConstraints.BOTH));
+		this.add(importurl, GridBagConstraintsFactory.create(1, 3,
 				GridBagConstraints.BOTH, 1.0, 0.0));
-		
+
 		todoBox.setText(Resource.getResourceString("ical_export_todos"));
-		this.add(todoBox,GridBagConstraintsFactory.create(0, 8,
+		this.add(todoBox, GridBagConstraintsFactory.create(0, 4,
 				GridBagConstraints.BOTH, 1.0, 0.0));
+
+
+		ftppanel.add(new JLabel(Resource.getResourceString("ftpserver")),
+				GridBagConstraintsFactory.create(0, 3, GridBagConstraints.BOTH));
+		ftppanel.add(ftpserver, GridBagConstraintsFactory.create(1, 3,
+				GridBagConstraints.BOTH, 1.0, 0.0));
+
+		ftppanel.add(new JLabel(Resource.getResourceString("ftppath")),
+				GridBagConstraintsFactory.create(0, 4, GridBagConstraints.BOTH));
+		ftppanel.add(ftppath, GridBagConstraintsFactory.create(1, 4,
+				GridBagConstraints.BOTH, 1.0, 0.0));
+
+		ftppanel.add(new JLabel(Resource.getResourceString("ftpusername")),
+				GridBagConstraintsFactory.create(0, 5, GridBagConstraints.BOTH));
+		ftppanel.add(ftpusername, GridBagConstraintsFactory.create(1, 5,
+				GridBagConstraints.BOTH, 1.0, 0.0));
+
+		JLabel pl = new JLabel(Resource.getResourceString("ftppassword"));
+		ftppanel.add(pl,
+				GridBagConstraintsFactory.create(0, 6, GridBagConstraints.BOTH));
+		pl.setLabelFor(ftppassword);
+		ftppanel.add(ftppassword, GridBagConstraintsFactory.create(1, 6,
+				GridBagConstraints.BOTH, 1.0, 0.0));
+		ftppassword.setEditable(true);
+
+		GridBagConstraints gbc = GridBagConstraintsFactory.create(0, 5,
+				GridBagConstraints.BOTH, 1.0, 0.0);
+		gbc.gridwidth = GridBagConstraints.REMAINDER;
+		this.add(ftppanel, gbc);
+
 		
-		this.add(new JLabel(Resource.getResourceString("CALDAV_Server")),
+		calpanel.add(new JLabel(Resource.getResourceString("CALDAV_Server")),
 				GridBagConstraintsFactory.create(0, 9, GridBagConstraints.BOTH));
-		this.add(caldavServer, GridBagConstraintsFactory.create(1, 9,
+		calpanel.add(caldavServer, GridBagConstraintsFactory.create(1, 9,
 				GridBagConstraints.BOTH, 1.0, 0.0));
-		
-		this.add(new JLabel(Resource.getResourceString("CALDAV_User")),
-				GridBagConstraintsFactory.create(0, 10, GridBagConstraints.BOTH));
-		this.add(caldavUser, GridBagConstraintsFactory.create(1, 10,
+
+		calpanel.add(new JLabel(Resource.getResourceString("CALDAV_User")),
+				GridBagConstraintsFactory
+						.create(0, 10, GridBagConstraints.BOTH));
+		calpanel.add(caldavUser, GridBagConstraintsFactory.create(1, 10,
 				GridBagConstraints.BOTH, 1.0, 0.0));
 
 		JLabel pl2 = new JLabel(Resource.getResourceString("CALDAV_Password"));
-		this.add(pl2,
-				GridBagConstraintsFactory.create(0, 11, GridBagConstraints.BOTH));
+		calpanel.add(pl2, GridBagConstraintsFactory.create(0, 11,
+				GridBagConstraints.BOTH));
 		pl2.setLabelFor(caldavPassword);
-		this.add(caldavPassword, GridBagConstraintsFactory.create(1, 11,
+		calpanel.add(caldavPassword, GridBagConstraintsFactory.create(1, 11,
 				GridBagConstraints.BOTH, 1.0, 0.0));
 		caldavPassword.setEditable(true);
-		
-		this.add(new JLabel(Resource.getResourceString("CALDAV_Cal")),
-				GridBagConstraintsFactory.create(0, 12, GridBagConstraints.BOTH));
-		this.add(caldavCal, GridBagConstraintsFactory.create(1, 12,
+
+		calpanel.add(new JLabel(Resource.getResourceString("CALDAV_Cal")),
+				GridBagConstraintsFactory
+						.create(0, 12, GridBagConstraints.BOTH));
+		calpanel.add(caldavCal, GridBagConstraintsFactory.create(1, 12,
 				GridBagConstraints.BOTH, 1.0, 0.0));
-		
-		this.add(new JLabel(Resource.getResourceString("CALDAV_Cal2")),
-				GridBagConstraintsFactory.create(0, 13, GridBagConstraints.BOTH));
-		this.add(caldavCal2, GridBagConstraintsFactory.create(1, 13,
+
+		calpanel.add(new JLabel(Resource.getResourceString("CALDAV_Cal2")),
+				GridBagConstraintsFactory
+						.create(0, 13, GridBagConstraints.BOTH));
+		calpanel.add(caldavCal2, GridBagConstraintsFactory.create(1, 13,
 				GridBagConstraints.BOTH, 1.0, 0.0));
-		
+
+		gbc = GridBagConstraintsFactory.create(0, 6, GridBagConstraints.BOTH,
+				1.0, 0.0);
+		gbc.gridwidth = GridBagConstraints.REMAINDER;
+		this.add(calpanel, gbc);
+
 	}
 
 	@Override
@@ -177,7 +203,7 @@ public class IcalOptionsPanel extends OptionsPanel {
 		} catch (Exception e) {
 			Errmsg.getErrorHandler().errmsg(e);
 		}
-		
+
 		Prefs.putPref(PrefName.CALDAV_CAL, caldavCal.getText());
 		Prefs.putPref(PrefName.CALDAV_CAL2, caldavCal2.getText());
 
@@ -203,7 +229,7 @@ public class IcalOptionsPanel extends OptionsPanel {
 		} catch (Exception e) {
 			Errmsg.getErrorHandler().errmsg(e);
 		}
-		
+
 		importurl.setText(Prefs.getPref(PrefName.ICAL_IMPORT_URL));
 
 		caldavUser.setText(Prefs.getPref(PrefName.CALDAV_USER));
@@ -222,5 +248,10 @@ public class IcalOptionsPanel extends OptionsPanel {
 		return Resource.getResourceString("ical_options");
 	}
 
-	
+	static public void main(String args[]) {
+		JFrame jf = new JFrame();
+		jf.setContentPane(new IcalOptionsPanel());
+		jf.setVisible(true);
+	}
+
 }
