@@ -413,6 +413,9 @@ public class PrefName {
 	public static PrefName CALDAV_PASSWORD = new PrefName("caldav-password", "");
 	public static PrefName CALDAV_PASSWORD2 = new PrefName("caldav-password2", "");
 
+	public static PrefName CALDAV_CAL = new PrefName("caldav-cal", "default");
+	public static PrefName CALDAV_CAL2 = new PrefName("caldav-cal2", "");
+
 
 
 }

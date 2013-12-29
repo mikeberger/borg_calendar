@@ -55,6 +55,8 @@ public class IcalOptionsPanel extends OptionsPanel {
 	private JTextField caldavServer = new JTextField();
 	private JTextField caldavUser = new JTextField();
 	private JPasswordField caldavPassword = new JPasswordField();
+	private JTextField caldavCal = new JTextField();
+	private JTextField caldavCal2 = new JTextField();
 
 
 	public IcalOptionsPanel() {
@@ -123,6 +125,17 @@ public class IcalOptionsPanel extends OptionsPanel {
 		this.add(caldavPassword, GridBagConstraintsFactory.create(1, 11,
 				GridBagConstraints.BOTH, 1.0, 0.0));
 		caldavPassword.setEditable(true);
+		
+		this.add(new JLabel(Resource.getResourceString("CALDAV_Cal")),
+				GridBagConstraintsFactory.create(0, 12, GridBagConstraints.BOTH));
+		this.add(caldavCal, GridBagConstraintsFactory.create(1, 12,
+				GridBagConstraints.BOTH, 1.0, 0.0));
+		
+		this.add(new JLabel(Resource.getResourceString("CALDAV_Cal2")),
+				GridBagConstraintsFactory.create(0, 13, GridBagConstraints.BOTH));
+		this.add(caldavCal2, GridBagConstraintsFactory.create(1, 13,
+				GridBagConstraints.BOTH, 1.0, 0.0));
+		
 	}
 
 	@Override
@@ -164,6 +177,10 @@ public class IcalOptionsPanel extends OptionsPanel {
 		} catch (Exception e) {
 			Errmsg.getErrorHandler().errmsg(e);
 		}
+		
+		Prefs.putPref(PrefName.CALDAV_CAL, caldavCal.getText());
+		Prefs.putPref(PrefName.CALDAV_CAL2, caldavCal2.getText());
+
 	}
 
 	@Override
@@ -190,6 +207,8 @@ public class IcalOptionsPanel extends OptionsPanel {
 		importurl.setText(Prefs.getPref(PrefName.ICAL_IMPORT_URL));
 
 		caldavUser.setText(Prefs.getPref(PrefName.CALDAV_USER));
+		caldavCal.setText(Prefs.getPref(PrefName.CALDAV_CAL));
+		caldavCal2.setText(Prefs.getPref(PrefName.CALDAV_CAL2));
 		caldavServer.setText(Prefs.getPref(PrefName.CALDAV_SERVER));
 		try {
 			caldavPassword.setText(CalDav.gep());

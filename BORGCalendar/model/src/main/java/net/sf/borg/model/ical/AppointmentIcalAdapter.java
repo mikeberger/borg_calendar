@@ -70,7 +70,6 @@ import net.fortuna.ical4j.model.property.Summary;
 import net.fortuna.ical4j.model.property.Uid;
 import net.fortuna.ical4j.model.property.Version;
 import net.fortuna.ical4j.util.CompatibilityHints;
-import net.sf.borg.common.DateUtil;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.IOHelper;
 import net.sf.borg.common.PrefName;
@@ -104,9 +103,8 @@ public class AppointmentIcalAdapter {
 		return sw.toString();
 	}
 
-	static public Component toIcal(Appointment ap) throws Exception {
+	static public Component toIcal(Appointment ap, boolean export_todos) throws Exception {
 
-		boolean export_todos = Prefs.getBoolPref(PrefName.ICAL_EXPORT_TODO);
 
 		TextList catlist = new TextList();
 		Component ve = null;
@@ -352,6 +350,7 @@ public class AppointmentIcalAdapter {
 
 	static private void exportAppointments(ComponentList clist, Date after)
 			throws Exception {
+		boolean export_todos = Prefs.getBoolPref(PrefName.ICAL_EXPORT_TODO);
 
 		for (Appointment ap : AppointmentModel.getReference().getAllAppts()) {
 
@@ -362,7 +361,7 @@ public class AppointmentIcalAdapter {
 					continue;
 			}
 
-			Component ve = toIcal(ap);
+			Component ve = toIcal(ap, export_todos);
 			if (ve != null)
 				clist.add(ve);
 
@@ -606,10 +605,6 @@ public class AppointmentIcalAdapter {
 		return TimeZone.getDefault().getOffset(date);
 	}
 
-	static public void main(String args[]) throws Exception {
-
-		importIcalFromUrl("https://www.google.com/calendar/ical/testborg%40gmail.com/private-1cfabbb9dec4c3d764c2f62acf127599/basic.ics");
-	}
 
 	public static Appointment toBorg(Component comp) {
 		if (comp instanceof VEvent || comp instanceof VToDo) {
@@ -777,7 +772,8 @@ public class AppointmentIcalAdapter {
 
 				Date until = recur.getUntil();
 				if (until != null) {
-					ap.setRepeatUntil(until);
+					long u = until.getTime() - tzOffset(until.getTime());
+					ap.setRepeatUntil(new Date(u));
 				} else {
 					int times = recur.getCount();
 					if (times < 1)
