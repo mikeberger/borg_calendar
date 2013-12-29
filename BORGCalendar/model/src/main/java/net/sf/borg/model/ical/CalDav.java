@@ -26,6 +26,7 @@ import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VToDo;
 import net.fortuna.ical4j.model.property.ProdId;
+import net.fortuna.ical4j.model.property.Uid;
 import net.fortuna.ical4j.model.property.Version;
 import net.fortuna.ical4j.util.CompatibilityHints;
 import net.sf.borg.common.PrefName;
@@ -208,6 +209,8 @@ public class CalDav {
 					if( collection2 != null && ap.isTodo())
 					{
 						Component ve = AppointmentIcalAdapter.toIcal(ap, false);
+						Uid uid = (Uid) ve.getProperty(Property.UID);
+						uid.setValue(uid.getValue() + "TD");
 						addEvent(collection2, ve);
 					}
 				} else if (se.getAction().equals(ChangeAction.CHANGE)) {
@@ -221,6 +224,8 @@ public class CalDav {
 						if( collection2 != null && ap.isTodo())
 						{
 							Component ve = AppointmentIcalAdapter.toIcal(ap, false);
+							Uid uid = (Uid) ve.getProperty(Property.UID);
+							uid.setValue(uid.getValue() + "TD");
 							addEvent(collection2, ve);
 						}
 					} else // TODO - what if both sides updated
@@ -230,6 +235,8 @@ public class CalDav {
 						if( collection2 != null && ap.isTodo())
 						{
 							Component ve = AppointmentIcalAdapter.toIcal(ap, false);
+							Uid uid = (Uid) ve.getProperty(Property.UID);
+							uid.setValue(uid.getValue() + "TD");
 							updateEvent(collection2, ve);
 						}
 					}
@@ -243,7 +250,7 @@ public class CalDav {
 						collection.removeCalendar(se.getUid());
 						if( collection2 != null && comp instanceof VToDo)
 						{
-							collection2.removeCalendar(se.getUid());
+							collection2.removeCalendar(se.getUid() + "TD");
 						}
 					}
 				}
@@ -306,26 +313,27 @@ public class CalDav {
 		if (Prefs.getBoolPref(PrefName.ICAL_EXPORT_TODO)) {
 			String cal2 = Prefs.getPref(PrefName.CALDAV_CAL2);
 			if (!cal2.isEmpty()) {
-				cal_id = new BaikalPathResolver().getUserPath(Prefs
+				String cal_id2 = new BaikalPathResolver().getUserPath(Prefs
 						.getPref(PrefName.CALDAV_USER)) + "/" + cal2;
 				try {
-					store.removeCollection(cal_id);
+					store.removeCollection(cal_id2);
 				} catch (Exception e) {
 					log.severe(e.getMessage());
 				}
 
-				collection = store.addCollection(cal_id, cal2, cal2,
+				CalDavCalendarCollection collection2 = store.addCollection(cal_id2, cal2, cal2,
 						new String[] { "VEVENT", "VTODO" }, null);
 
-				clist = calendar.getComponents();
+				ComponentList clist2 = calendar.getComponents();
 				@SuppressWarnings("unchecked")
-				Iterator<Component> it1 = clist.iterator();
+				Iterator<Component> it1 = clist2.iterator();
 				while (it1.hasNext()) {
 					Component comp = it1.next();
 					if (comp instanceof VToDo) {
 						Appointment ap = AppointmentIcalAdapter.toBorg(comp);
+						ap.setUid(ap.getUid() + "TD");
 						Component ve = AppointmentIcalAdapter.toIcal(ap, false);
-						addEvent(collection, ve);
+						addEvent(collection2, ve);
 					}
 				}
 			}

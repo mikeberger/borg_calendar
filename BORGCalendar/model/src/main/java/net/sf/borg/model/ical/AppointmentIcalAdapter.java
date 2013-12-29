@@ -103,8 +103,8 @@ public class AppointmentIcalAdapter {
 		return sw.toString();
 	}
 
-	static public Component toIcal(Appointment ap, boolean export_todos) throws Exception {
-
+	static public Component toIcal(Appointment ap, boolean export_todos)
+			throws Exception {
 
 		TextList catlist = new TextList();
 		Component ve = null;
@@ -118,8 +118,11 @@ public class AppointmentIcalAdapter {
 		else
 			ve = new VEvent();
 
-		String uidval = Integer.toString(ap.getKey()) + "@BORGA-"
-				+ ap.getCreateTime().getTime();
+		String uidval = ap.getUid();
+		if (uidval == null || uidval.isEmpty()) {
+			uidval = Integer.toString(ap.getKey()) + "@BORGA-"
+					+ ap.getCreateTime().getTime();
+		}
 		Uid uid = new Uid(uidval);
 		ve.getProperties().add(uid);
 
@@ -605,7 +608,6 @@ public class AppointmentIcalAdapter {
 		return TimeZone.getDefault().getOffset(date);
 	}
 
-
 	public static Appointment toBorg(Component comp) {
 		if (comp instanceof VEvent || comp instanceof VToDo) {
 
@@ -796,7 +798,8 @@ public class AppointmentIcalAdapter {
 					while (it.hasNext()) {
 						Object o = it.next();
 						if (o instanceof net.fortuna.ical4j.model.Date) {
-							int rkey = (int)(((net.fortuna.ical4j.model.Date) o).getTime() / 1000 / 60 / 60 / 24);
+							int rkey = (int) (((net.fortuna.ical4j.model.Date) o)
+									.getTime() / 1000 / 60 / 60 / 24);
 							vect.add(Integer.toString(rkey));
 						}
 					}
