@@ -126,6 +126,7 @@ public class CalDav {
 					if (newap != null) {
 						try {
 							SyncLog.getReference().setProcessUpdates(false);
+							log.info("SYNC save: " + newap.toString());
 							AppointmentModel.getReference().saveAppt(newap);
 						} finally {
 							SyncLog.getReference().setProcessUpdates(true);
@@ -138,6 +139,7 @@ public class CalDav {
 					try {
 						newap.setKey(ap.getKey());
 						SyncLog.getReference().setProcessUpdates(false);
+						log.info("SYNC save: " + newap.toString());
 						AppointmentModel.getReference().saveAppt(newap);
 					} finally {
 						SyncLog.getReference().setProcessUpdates(true);
@@ -198,6 +200,7 @@ public class CalDav {
 					Component comp = getEvent(collection, se.getUid());
 					log.info("Deleted Appt: " + se.getUid() + " not found on server");
 					if (comp != null) {
+						log.info("SYNC: removeEvent: " + comp.toString());
 						collection.removeCalendar(se.getUid());
 					}
 				}
@@ -277,6 +280,9 @@ public class CalDav {
 
 	private static void addEvent(CalDavCalendarCollection collection,
 			Component comp) {
+		
+		log.info("SYNC: addEvent: " + comp.toString());
+		
 		Calendar mycal = new Calendar();
 		mycal.getProperties().add(new ProdId(PRODID));
 		mycal.getProperties().add(Version.VERSION_2_0);
@@ -292,6 +298,9 @@ public class CalDav {
 
 	private static void updateEvent(CalDavCalendarCollection collection,
 			Component comp) {
+		
+		log.info("SYNC: updateEvent: " + comp.toString());
+
 		Calendar mycal = new Calendar();
 		mycal.getProperties().add(new ProdId(PRODID));
 		mycal.getProperties().add(Version.VERSION_2_0);

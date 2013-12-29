@@ -31,6 +31,7 @@ import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.TimeZone;
+import java.util.Vector;
 import java.util.logging.Logger;
 
 import net.fortuna.ical4j.data.CalendarBuilder;
@@ -38,6 +39,7 @@ import net.fortuna.ical4j.data.CalendarOutputter;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.ComponentList;
+import net.fortuna.ical4j.model.DateList;
 import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.Dur;
 import net.fortuna.ical4j.model.ParameterList;
@@ -60,6 +62,7 @@ import net.fortuna.ical4j.model.property.Description;
 import net.fortuna.ical4j.model.property.DtEnd;
 import net.fortuna.ical4j.model.property.DtStart;
 import net.fortuna.ical4j.model.property.Duration;
+import net.fortuna.ical4j.model.property.ExDate;
 import net.fortuna.ical4j.model.property.LastModified;
 import net.fortuna.ical4j.model.property.ProdId;
 import net.fortuna.ical4j.model.property.RRule;
@@ -67,6 +70,7 @@ import net.fortuna.ical4j.model.property.Summary;
 import net.fortuna.ical4j.model.property.Uid;
 import net.fortuna.ical4j.model.property.Version;
 import net.fortuna.ical4j.util.CompatibilityHints;
+import net.sf.borg.common.DateUtil;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.IOHelper;
 import net.sf.borg.common.PrefName;
@@ -283,6 +287,18 @@ public class AppointmentIcalAdapter {
 			// System.out.println(rec);
 
 			ve.getProperties().add(new RRule(new Recur(rec)));
+
+			// skip list
+			if (ap.getSkipList() != null) {
+				DateList dl = new DateList(Value.DATE);
+				for (String rkey : ap.getSkipList()) {
+					long epoch = Long.parseLong(rkey);
+					Date skdate = new Date(epoch * 1000L * 60L * 60L * 24L);
+					dl.add(new net.fortuna.ical4j.model.Date(skdate));
+				}
+				dl.setUtc(true);
+				ve.getProperties().add(new ExDate(dl));
+			}
 
 		}
 
@@ -665,10 +681,11 @@ public class AppointmentIcalAdapter {
 			if (comp instanceof VToDo) {
 				ap.setTodo(true);
 			}
-			
+
 			Uid uid = (Uid) pl.getProperty(Property.UID);
 			ap.setUid(uid.getValue());
-			LastModified lm = (LastModified) pl.getProperty(Property.LAST_MODIFIED);
+			LastModified lm = (LastModified) pl
+					.getProperty(Property.LAST_MODIFIED);
 			ap.setLastMod(lm.getDateTime());
 			Created cr = (Created) pl.getProperty(Property.CREATED);
 			ap.setCreateTime(cr.getDateTime());
@@ -769,6 +786,28 @@ public class AppointmentIcalAdapter {
 				}
 
 				ap.setRepeatFlag(true);
+
+				ExDate ex = (ExDate) pl.getProperty(Property.EXDATE);
+				if (ex != null) {
+
+					Vector<String> vect = new Vector<String>();
+
+					// add the current appt key to the SKip list
+					DateList dl = ex.getDates();
+					dl.setUtc(true);
+					@SuppressWarnings("rawtypes")
+					Iterator it = dl.iterator();
+					while (it.hasNext()) {
+						Object o = it.next();
+						if (o instanceof net.fortuna.ical4j.model.Date) {
+							int rkey = (int)(((net.fortuna.ical4j.model.Date) o).getTime() / 1000 / 60 / 60 / 24);
+							vect.add(Integer.toString(rkey));
+						}
+					}
+
+					ap.setSkipList(vect);
+
+				}
 
 			}
 
