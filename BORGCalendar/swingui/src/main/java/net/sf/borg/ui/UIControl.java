@@ -223,7 +223,14 @@ public class UIControl {
 		try {
 			if( SyncLog.getReference().isProcessUpdates() && !SyncLog.getReference().getAll().isEmpty())
 			{
-				JOptionPane.showMessageDialog(null, Resource.getResourceString("Sync-Warn"), null, JOptionPane.WARNING_MESSAGE);
+				int res = JOptionPane.showConfirmDialog(null, 
+						Resource.getResourceString("Sync-Warn"), null,
+						JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+
+				if (res != JOptionPane.YES_OPTION) {
+					return;
+				}
+
 			}
 		} catch (Exception e1) {
 			Errmsg.getErrorHandler().errmsg(e1);

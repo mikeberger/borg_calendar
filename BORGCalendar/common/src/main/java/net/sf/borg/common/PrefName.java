@@ -400,6 +400,7 @@ public class PrefName {
 	public static PrefName FTPPW = new PrefName("ical-ftp-pw", "");
 	public static PrefName FTPPW2 = new PrefName("ical-ftp-pw2", "");
 	
+	public static PrefName USE_PROXY = new PrefName("use_proxy", "false");
 	public static PrefName PROXY_HOST = new PrefName("proxy_host", "");
 	public static PrefName PROXY_PORT = new PrefName("proxy_port", new Integer(8080));
 	

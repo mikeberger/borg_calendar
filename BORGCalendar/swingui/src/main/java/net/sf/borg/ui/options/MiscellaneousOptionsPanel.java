@@ -55,11 +55,11 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 
 	private static final long serialVersionUID = 2246952528811147049L;
 	private JTextField backupDir = new JTextField();
-	private JCheckBox colorprint;
+	private JCheckBox colorprint = new JCheckBox();
 
 	private JTextField socketPort = new JTextField();
-	private JCheckBox splashbox;
-	private JCheckBox stackbox;
+	private JCheckBox splashbox = new JCheckBox();
+	private JCheckBox stackbox = new JCheckBox();
 
 	private JCheckBox useSysTray = new JCheckBox();
 	private JCheckBox startToSysTray = new JCheckBox();
@@ -67,6 +67,7 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 
 	private JCheckBox dynamicLoading = new JCheckBox();
 	private JCheckBox verboseLogging = new JCheckBox();
+	private JCheckBox useProxy = new JCheckBox();
 
 	private JComboBox<String> shutdownAction = new JComboBox<String>();
 
@@ -77,13 +78,6 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 	 * Instantiates a new miscellaneous options panel.
 	 */
 	public MiscellaneousOptionsPanel() {
-
-		colorprint = new JCheckBox();
-
-		splashbox = new JCheckBox();
-		stackbox = new JCheckBox();
-		dynamicLoading = new JCheckBox();
-		verboseLogging = new JCheckBox();
 
 		this.setLayout(new java.awt.GridBagLayout());
 
@@ -172,15 +166,20 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 		gbc1.gridwidth = 2;
 		this.add(verboseLogging, gbc1);
 		
+		useProxy.setText(Resource.getResourceString("Use_Proxy"));
+		gbc1 = GridBagConstraintsFactory.create(0, 11, GridBagConstraints.BOTH);
+		gbc1.gridwidth = 2;
+		this.add(useProxy, gbc1);
+		
 		this.add(new JLabel(Resource.getResourceString("proxy_host")),
-				GridBagConstraintsFactory.create(0, 11, GridBagConstraints.BOTH));
+				GridBagConstraintsFactory.create(0, 12, GridBagConstraints.BOTH));
 		this.add(proxyHostText,
-				GridBagConstraintsFactory.create(1, 11, GridBagConstraints.BOTH));
+				GridBagConstraintsFactory.create(1, 12, GridBagConstraints.BOTH));
 		
 		this.add(new JLabel(Resource.getResourceString("proxy_port")),
-				GridBagConstraintsFactory.create(0, 12, GridBagConstraints.BOTH));
+				GridBagConstraintsFactory.create(0, 13, GridBagConstraints.BOTH));
 		this.add(proxyPortText,
-				GridBagConstraintsFactory.create(1, 12, GridBagConstraints.BOTH));
+				GridBagConstraintsFactory.create(1, 13, GridBagConstraints.BOTH));
 
 
 	}
@@ -209,6 +208,7 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 		OptionsPanel.setBooleanPref(dateInSysTray, PrefName.SYSTRAYDATE);
 		OptionsPanel.setBooleanPref(dynamicLoading, PrefName.DYNAMIC_LOADING);
 		OptionsPanel.setBooleanPref(verboseLogging, PrefName.DEBUG);
+		OptionsPanel.setBooleanPref(useProxy, PrefName.USE_PROXY);
 		
 		Prefs.putPref(PrefName.BACKUPDIR, backupDir.getText());
 
@@ -260,6 +260,7 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 		OptionsPanel.setCheckBox(dateInSysTray, PrefName.SYSTRAYDATE);
 		OptionsPanel.setCheckBox(dynamicLoading, PrefName.DYNAMIC_LOADING);
 		OptionsPanel.setCheckBox(verboseLogging, PrefName.DEBUG);
+		OptionsPanel.setCheckBox(useProxy, PrefName.USE_PROXY);
 
 		String shutdown_action = Prefs.getPref(PrefName.SHUTDOWN_ACTION);
 		if (shutdown_action.isEmpty()

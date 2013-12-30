@@ -29,6 +29,7 @@ import net.fortuna.ical4j.model.property.ProdId;
 import net.fortuna.ical4j.model.property.Uid;
 import net.fortuna.ical4j.model.property.Version;
 import net.fortuna.ical4j.util.CompatibilityHints;
+import net.sf.borg.common.IOHelper;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.model.AppointmentModel;
@@ -82,7 +83,9 @@ public class CalDav {
 	}
 
 	private static CalDavCalendarStore connect() throws Exception {
-
+		
+		IOHelper.setProxy();
+		
 		URL url = new URL("http", Prefs.getPref(PrefName.CALDAV_SERVER), -1,
 				"/");
 		log.info("SYNC: connect to " + url.toString());

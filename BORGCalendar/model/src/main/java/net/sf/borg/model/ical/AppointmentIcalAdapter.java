@@ -507,20 +507,7 @@ public class AppointmentIcalAdapter {
 
 	static public String importIcalFromUrl(String urlString) throws Exception {
 
-		String host = Prefs.getPref(PrefName.PROXY_HOST);
-		if (host != null && !host.isEmpty()) {
-			System.setProperty("http.proxyHost", host);
-			System.setProperty("https.proxyHost", host);
-
-			int port = Prefs.getIntPref(PrefName.PROXY_PORT);
-			System.setProperty("http.proxyPort", Integer.toString(port));
-			System.setProperty("https.proxyPort", Integer.toString(port));
-		} else {
-			System.clearProperty("http.proxyHost");
-			System.clearProperty("https.proxyHost");
-			System.clearProperty("http.proxyPort");
-			System.clearProperty("https.proxyPort");
-		}
+		IOHelper.setProxy();
 
 		CalendarBuilder builder = new CalendarBuilder();
 		URL url = new URL(urlString);
