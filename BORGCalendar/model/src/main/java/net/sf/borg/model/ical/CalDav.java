@@ -391,7 +391,10 @@ public class CalDav {
 			if (ap == null) {
 				// not found in BORG, so add it
 				try {
-					SyncLog.getReference().setProcessUpdates(false);
+					
+					// for now, VTodo updates should update the synclog so that they get sent back out 
+					// to the second cal on the next sync
+					SyncLog.getReference().setProcessUpdates(comp instanceof VToDo);
 					log.info("SYNC save: " + newap.toString());
 					AppointmentModel.getReference().saveAppt(newap);
 				} finally {
@@ -401,7 +404,10 @@ public class CalDav {
 				// was updated after BORG so update BORG
 				try {
 					newap.setKey(ap.getKey());
-					SyncLog.getReference().setProcessUpdates(false);
+					
+					// for now, VTodo updates should update the synclog so that they get sent back out 
+					// to the second cal on the next sync
+					SyncLog.getReference().setProcessUpdates(comp instanceof VToDo);
 					log.info("SYNC save: " + newap.toString());
 					AppointmentModel.getReference().saveAppt(newap);
 				} finally {
