@@ -74,22 +74,30 @@ public class SyncLog extends Model implements Model.Listener, Prefs.Listener {
 				newEvent.setObjectType(ObjectType.APPOINTMENT);
 				newEvent.setUid(((Appointment)obj).getUid());
 			}
+			else
+			{
+				return;
+			}
+			/* ignore Task/Project objects for now - the sync is just for CALDAV appointments
 			else if( obj instanceof Task)
 			{
 				newEvent.setId(new Integer(((Task)obj).getKey()));
 				newEvent.setObjectType(ObjectType.TASK);
+				newEvent.setUid("na");
 			}
 			else if( obj instanceof Subtask)
 			{
 				newEvent.setId(new Integer(((Subtask)obj).getKey()));
 				newEvent.setObjectType(ObjectType.SUBTASK);
+				newEvent.setUid("na");
 			}
 			else if( obj instanceof Project)
 			{
 				newEvent.setId(new Integer(((Project)obj).getKey()));
 				newEvent.setObjectType(ObjectType.PROJECT);
+				newEvent.setUid("na");
 			}
-			
+			*/
 			newEvent.setAction(borgEvent.getAction());
 			
 			Integer id = newEvent.getId();
