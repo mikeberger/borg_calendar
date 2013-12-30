@@ -28,6 +28,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.print.PrinterException;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -37,6 +40,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -50,7 +54,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import net.sf.borg.common.Errmsg;
-import net.sf.borg.common.IOHelper;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
@@ -103,39 +106,41 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 
 	/** decrypt button */
 	private JButton decryptButton = null;
-	
-	private boolean isInitialized = false;
 
+	private boolean isInitialized = false;
 
 	/**
 	 * encryption checkbox
 	 */
 	private JCheckBox encryptBox = null;
-	
-	private ActionListener renameAction = new ActionListener(){
+
+	private ActionListener renameAction = new ActionListener() {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			
+
 			String name = getSelectedMemoName();
 			if (name == null) {
-				Errmsg.getErrorHandler().notice(Resource.getResourceString("Select_Memo_Warning"));
+				Errmsg.getErrorHandler().notice(
+						Resource.getResourceString("Select_Memo_Warning"));
 				return;
 			}
-			
-			String newname = JOptionPane.showInputDialog(Resource
-					.getResourceString("Enter_Memo_Name"), name);
+
+			String newname = JOptionPane.showInputDialog(
+					Resource.getResourceString("Enter_Memo_Name"), name);
 			if (newname == null || newname.isEmpty() || newname.equals(name))
 				return;
-			
+
 			if (newname.length() > 50) {
-				Errmsg.getErrorHandler().notice(
-						Resource.getResourceString("max_length", new String[] {
-								Resource.getResourceString("Memo_Name"),
-								"50" }));
+				Errmsg.getErrorHandler()
+						.notice(Resource.getResourceString(
+								"max_length",
+								new String[] {
+										Resource.getResourceString("Memo_Name"),
+										"50" }));
 				return;
 			}
-			
+
 			Memo m;
 			try {
 				m = MemoModel.getReference().getMemo(name);
@@ -147,10 +152,9 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 			} catch (Exception e1) {
 				Errmsg.getErrorHandler().errmsg(e1);
 			}
-			
 
 		}
-		
+
 	};
 
 	/**
@@ -158,8 +162,6 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 	 */
 	public MemoPanel() {
 		super();
-
-		
 
 	}
 
@@ -169,17 +171,16 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 	private void deleteMemo() {
 		String name = getSelectedMemoName();
 		if (name == null) {
-			Errmsg.getErrorHandler().notice(Resource.getResourceString("Select_Memo_Warning"));
+			Errmsg.getErrorHandler().notice(
+					Resource.getResourceString("Select_Memo_Warning"));
 			return;
 		}
-		
+
 		// confirm delete
-		int ret = JOptionPane.showConfirmDialog(null, Resource
-				.getResourceString("Really_Delete_")
-				+ "?", Resource
-				.getResourceString("Confirm_Delete"),
-				JOptionPane.OK_CANCEL_OPTION,
-				JOptionPane.QUESTION_MESSAGE);
+		int ret = JOptionPane.showConfirmDialog(null,
+				Resource.getResourceString("Really_Delete_") + "?",
+				Resource.getResourceString("Confirm_Delete"),
+				JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
 		if (ret != JOptionPane.OK_OPTION)
 			return;
 
@@ -243,7 +244,7 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 		memoSplitPane.setLeftComponent(memoListScroll);
 		JScrollPane memoTextScroll = new JScrollPane();
 		memoTextScroll.setPreferredSize(new Dimension(400, 400));
-		
+
 		HTMLLimitDocument newLimitDocument = new HTMLLimitDocument();
 		newLimitDocument.setMaxLength(Prefs.getIntPref(PrefName.MAX_TEXT_SIZE));
 
@@ -357,19 +358,20 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent e) {
 				// export a single memo to a file
-				
+
 				String name = getSelectedMemoName();
 				if (name == null) {
-					Errmsg.getErrorHandler().notice(Resource.getResourceString("Select_Memo_Warning"));
+					Errmsg.getErrorHandler().notice(
+							Resource.getResourceString("Select_Memo_Warning"));
 					return;
 				}
-				
-				if( decryptButton.isEnabled())
-				{
-					Errmsg.getErrorHandler().notice(Resource.getResourceString("Export_Memo_Decrypt"));
+
+				if (decryptButton.isEnabled()) {
+					Errmsg.getErrorHandler().notice(
+							Resource.getResourceString("Export_Memo_Decrypt"));
 					return;
 				}
-				
+
 				StringBuffer sb = new StringBuffer();
 				String s = memoText.getPlainText();
 				for (int i = 0; i < s.length(); i++) {
@@ -382,7 +384,7 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 				byte[] buf2 = sb.toString().getBytes();
 				ByteArrayInputStream istr = new ByteArrayInputStream(buf2);
 				try {
-					IOHelper.fileSave(".", istr, "");
+					fileSave(".", istr, "");
 				} catch (Exception e1) {
 					Errmsg.getErrorHandler().errmsg(e1);
 				}
@@ -422,9 +424,32 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 		encryptBox.setText(Resource.getResourceString("EncryptOnSave"));
 		buttonPanel.add(encryptBox, null);
 
-		this.add(buttonPanel, GridBagConstraintsFactory.create(0, 2,
-				GridBagConstraints.BOTH));
+		this.add(buttonPanel,
+				GridBagConstraintsFactory.create(0, 2, GridBagConstraints.BOTH));
 
+	}
+
+	private static void fileSave(String startDirectory, InputStream istr,
+			String defaultFilename) throws Exception {
+		JFileChooser chooser = new JFileChooser();
+
+		chooser.setCurrentDirectory(new File(startDirectory));
+		chooser.setDialogTitle(Resource.getResourceString("Save"));
+		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+
+		int returnVal = chooser.showSaveDialog(null);
+		if (returnVal != JFileChooser.APPROVE_OPTION)
+			return;
+
+		String s = chooser.getSelectedFile().getAbsolutePath();
+		FileOutputStream ostr = new FileOutputStream(s);
+
+		int b;
+		while ((b = istr.read()) != -1)
+			ostr.write(b);
+
+		istr.close();
+		ostr.close();
 	}
 
 	/**
@@ -452,9 +477,9 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 		// if the user is currently editing another memo, confirm that we
 		// should discard changes
 		if (this.isMemoEdited) {
-			int ret = JOptionPane.showConfirmDialog(null, Resource
-					.getResourceString("Edited_Memo"), Resource
-					.getResourceString("Discard_Text?"),
+			int ret = JOptionPane.showConfirmDialog(null,
+					Resource.getResourceString("Edited_Memo"),
+					Resource.getResourceString("Discard_Text?"),
 					JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
 			if (ret != JOptionPane.OK_OPTION)
 				return;
@@ -470,7 +495,8 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 			Memo existing = MemoModel.getReference().getMemo(name);
 			if (existing != null) {
 				// memo name already used
-				Errmsg.getErrorHandler().notice(Resource.getResourceString("Existing_Memo"));
+				Errmsg.getErrorHandler().notice(
+						Resource.getResourceString("Existing_Memo"));
 				return;
 			}
 		} catch (Exception e1) {
@@ -508,7 +534,7 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 		}
 
 	}
-	
+
 	@Override
 	public void update(ChangeEvent event) {
 		refresh();
@@ -520,7 +546,8 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 	private void saveMemo() {
 		String name = getSelectedMemoName();
 		if (name == null) {
-			Errmsg.getErrorHandler().notice(Resource.getResourceString("Select_Memo_Warning"));
+			Errmsg.getErrorHandler().notice(
+					Resource.getResourceString("Select_Memo_Warning"));
 			return;
 		}
 		try {
@@ -588,9 +615,9 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 			// selection is moving to a new memo - prompt about
 			// discarding
 			// changes
-			int ret = JOptionPane.showConfirmDialog(null, Resource
-					.getResourceString("Edited_Memo"), Resource
-					.getResourceString("Discard_Text?"),
+			int ret = JOptionPane.showConfirmDialog(null,
+					Resource.getResourceString("Edited_Memo"),
+					Resource.getResourceString("Discard_Text?"),
 					JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
 
 			// if user does not want to lose changes, we need to set
@@ -660,20 +687,18 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 
 	@Override
 	public JComponent getComponent() {
-		
-		if( !isInitialized)
-		{
+
+		if (!isInitialized) {
 			// initialize UI
 			initializeComponents();
 
 			memoText.setEditable(false);
 			saveButton.setEnabled(false);
 			decryptButton.setEnabled(false);
-			
-			new PopupMenuHelper(memoListTable, new PopupMenuHelper.Entry[] {
-					new PopupMenuHelper.Entry(renameAction, "Rename")
-			});
-		
+
+			new PopupMenuHelper(memoListTable,
+					new PopupMenuHelper.Entry[] { new PopupMenuHelper.Entry(
+							renameAction, "Rename") });
 
 			refresh();
 
@@ -693,29 +718,29 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 	public void initialize(MultiView parent) {
 
 		final MultiView par = parent;
-		parent.addToolBarItem(new ImageIcon(getClass().getResource(
-				"/resource/Edit16.gif")), getModuleName(),
-				new ActionListener() {
+		parent.addToolBarItem(
+				new ImageIcon(getClass().getResource("/resource/Edit16.gif")),
+				getModuleName(), new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent evt) {
 						par.setView(ViewType.MEMO);
 					}
 				});
-		SunTrayIconProxy.addAction(getModuleName(),
-				new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent evt) {
-						par.setView(ViewType.MEMO);
-					}
-				});
+		SunTrayIconProxy.addAction(getModuleName(), new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent evt) {
+				par.setView(ViewType.MEMO);
+			}
+		});
 	}
 
 	@Override
 	public void print() {
 		try {
 			String selectedMemo = getSelectedMemoName();
-			if( selectedMemo == null ) return;
-			
+			if (selectedMemo == null)
+				return;
+
 			this.memoText.print(new MessageFormat(selectedMemo),
 					new MessageFormat("{0}"));
 		} catch (PrinterException e) {
@@ -739,9 +764,9 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 			/*
 			 * confirm discard of changes
 			 */
-			int ret = JOptionPane.showConfirmDialog(null, Resource
-					.getResourceString("Edited_Memo"), Resource
-					.getResourceString("Discard_Text?"),
+			int ret = JOptionPane.showConfirmDialog(null,
+					Resource.getResourceString("Edited_Memo"),
+					Resource.getResourceString("Discard_Text?"),
 					JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
 
 			// if user does not want to lose changes, we need to set
@@ -766,38 +791,41 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 	 * find action
 	 */
 	private String searchString = null;
+
 	private void doFind() {
 
 		// current caret is the root of the search. search is forwards.
 		int caretIndex = memoText.getCaretPosition();
 
 		// prompt for search string - remember last string
-		searchString = JOptionPane.showInputDialog(null, Resource
-				.getResourceString("Search_For"), searchString);
+		searchString = JOptionPane.showInputDialog(null,
+				Resource.getResourceString("Search_For"), searchString);
 		if (searchString != null) {
 
 			// search forwards
-			int foundIndex = memoText.getPlainText().indexOf(searchString, caretIndex);
+			int foundIndex = memoText.getPlainText().indexOf(searchString,
+					caretIndex);
 			if (foundIndex != -1) {
-				// highlight found text - this also moves caret to end of found string as a side-effect,
+				// highlight found text - this also moves caret to end of found
+				// string as a side-effect,
 				// which is what we want
 				memoText.select(foundIndex, foundIndex + searchString.length());
 			} else {
-				// indicate string not found - put caret back to top so next search will
+				// indicate string not found - put caret back to top so next
+				// search will
 				// begin at the top
-				JOptionPane.showMessageDialog(null, Resource
-						.getResourceString("Not_Found_End"));
+				JOptionPane.showMessageDialog(null,
+						Resource.getResourceString("Not_Found_End"));
 				memoText.setCaretPosition(0);
 			}
 		}
 
 	}
-	
+
 	@Override
 	public String getFrameTitle() {
 		return this.getModuleName();
 	}
-
 
 	@Override
 	public void cleanUp() {
@@ -805,5 +833,4 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 		memoListTable.clearSelection();
 	}
 
-	
 }

@@ -58,6 +58,90 @@ public class IcalModule implements Module {
 
 		m.setIcon(new javax.swing.ImageIcon(IcalModule.class
 				.getResource("/resource/Export16.gif")));
+		
+		JMenu calmenu = new JMenu("CALDAV");
+		
+		JMenuItem caldavs = new JMenuItem();
+		caldavs.setText(Resource.getResourceString("CALDAV-Sync"));
+		caldavs.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					if (!CalDav.isSyncing()) {
+						JOptionPane.showMessageDialog(null,
+								Resource.getResourceString("Sync-Not-Set"),
+								null, JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+
+					runBackgroundSync(Synctype.FULL);
+
+				} catch (Exception e) {
+					Errmsg.getErrorHandler().errmsg(e);
+				}
+			}
+		});
+
+		calmenu.add(caldavs);
+
+		JMenuItem caldavso = new JMenuItem();
+		caldavso.setText(Resource.getResourceString("CALDAV-Sync-out"));
+		caldavso.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					if (!CalDav.isSyncing()) {
+						JOptionPane.showMessageDialog(null,
+								Resource.getResourceString("Sync-Not-Set"),
+								null, JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+					runBackgroundSync(Synctype.ONEWAY);
+
+				} catch (Exception e) {
+					Errmsg.getErrorHandler().errmsg(e);
+				}
+			}
+		});
+
+		calmenu.add(caldavso);
+
+		JMenuItem caldavo = new JMenuItem();
+		caldavo.setText(Resource.getResourceString("CALDAV-Overwrite"));
+		caldavo.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					if (!CalDav.isSyncing()) {
+						JOptionPane.showMessageDialog(null,
+								Resource.getResourceString("Sync-Not-Set"),
+								null, JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+					int ret = JOptionPane.showConfirmDialog(
+							null,
+							Resource.getResourceString("Caldav-Overwrite-Warn"),
+							Resource.getResourceString("Confirm"),
+							JOptionPane.OK_CANCEL_OPTION,
+							JOptionPane.WARNING_MESSAGE);
+					if (ret != JOptionPane.OK_OPTION)
+						return;
+					runBackgroundSync(Synctype.OVERWRITE);
+				} catch (Exception e) {
+					Errmsg.getErrorHandler().errmsg(e);
+				}
+			}
+		});
+
+		calmenu.add(caldavo);
+		
+		m.add(calmenu);
+		
+		JMenu icsmenu = new JMenu("ICS");
+			
 		JMenuItem imp = new JMenuItem();
 		imp.setText(Resource.getResourceString("Import"));
 		imp.addActionListener(new ActionListener() {
@@ -106,7 +190,7 @@ public class IcalModule implements Module {
 			}
 		});
 
-		m.add(imp);
+		icsmenu.add(imp);
 
 		JMenuItem impUrl = new JMenuItem();
 		impUrl.setText(Resource.getResourceString("ImportUrl"));
@@ -136,7 +220,7 @@ public class IcalModule implements Module {
 			}
 		});
 
-		m.add(impUrl);
+		icsmenu.add(impUrl);
 
 		JMenuItem exp = new JMenuItem();
 		exp.setText(Resource.getResourceString("exportToFile"));
@@ -148,7 +232,7 @@ public class IcalModule implements Module {
 			}
 		});
 
-		m.add(exp);
+		icsmenu.add(exp);
 
 		JMenuItem expftp = new JMenuItem();
 		expftp.setText(Resource.getResourceString("exportToFTP"));
@@ -165,7 +249,7 @@ public class IcalModule implements Module {
 			}
 		});
 
-		m.add(expftp);
+		icsmenu.add(expftp);
 
 		JMenuItem exp3 = new JMenuItem();
 		exp3.setText(Resource.getResourceString("start_server"));
@@ -182,7 +266,7 @@ public class IcalModule implements Module {
 			}
 		});
 
-		m.add(exp3);
+		icsmenu.add(exp3);
 
 		JMenuItem exp4 = new JMenuItem();
 		exp4.setText(Resource.getResourceString("stop_server"));
@@ -196,84 +280,10 @@ public class IcalModule implements Module {
 			}
 		});
 
-		m.add(exp4);
+		icsmenu.add(exp4);
 
-		JMenuItem caldavs = new JMenuItem();
-		caldavs.setText(Resource.getResourceString("CALDAV-Sync"));
-		caldavs.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				try {
-					if (!CalDav.isSyncing()) {
-						JOptionPane.showMessageDialog(null,
-								Resource.getResourceString("Sync-Not-Set"),
-								null, JOptionPane.ERROR_MESSAGE);
-						return;
-					}
-
-					runBackgroundSync(Synctype.FULL);
-
-				} catch (Exception e) {
-					Errmsg.getErrorHandler().errmsg(e);
-				}
-			}
-		});
-
-		m.add(caldavs);
-
-		JMenuItem caldavso = new JMenuItem();
-		caldavso.setText(Resource.getResourceString("CALDAV-Sync-out"));
-		caldavso.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				try {
-					if (!CalDav.isSyncing()) {
-						JOptionPane.showMessageDialog(null,
-								Resource.getResourceString("Sync-Not-Set"),
-								null, JOptionPane.ERROR_MESSAGE);
-						return;
-					}
-					runBackgroundSync(Synctype.ONEWAY);
-
-				} catch (Exception e) {
-					Errmsg.getErrorHandler().errmsg(e);
-				}
-			}
-		});
-
-		m.add(caldavso);
-
-		JMenuItem caldavo = new JMenuItem();
-		caldavo.setText(Resource.getResourceString("CALDAV-Overwrite"));
-		caldavo.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				try {
-					if (!CalDav.isSyncing()) {
-						JOptionPane.showMessageDialog(null,
-								Resource.getResourceString("Sync-Not-Set"),
-								null, JOptionPane.ERROR_MESSAGE);
-						return;
-					}
-					int ret = JOptionPane.showConfirmDialog(
-							null,
-							Resource.getResourceString("Caldav-Overwrite-Warn"),
-							Resource.getResourceString("Confirm"),
-							JOptionPane.OK_CANCEL_OPTION,
-							JOptionPane.WARNING_MESSAGE);
-					if (ret != JOptionPane.OK_OPTION)
-						return;
-					runBackgroundSync(Synctype.OVERWRITE);
-				} catch (Exception e) {
-					Errmsg.getErrorHandler().errmsg(e);
-				}
-			}
-		});
-
-		m.add(caldavo);
+		m.add(icsmenu);
+		
 
 		return m;
 	}
@@ -282,6 +292,9 @@ public class IcalModule implements Module {
 		FULL, ONEWAY, OVERWRITE
 	}
 
+	/**
+	 * run a sync command in a background thread while a modal message is presented
+	 */
 	static private void runBackgroundSync(Synctype type) {
 		final ModalMessage modal = new ModalMessage(
 				Resource.getResourceString("syncing"), false);

@@ -32,7 +32,6 @@ import java.util.LinkedList;
 import java.util.TreeSet;
 import java.util.Vector;
 
-import javax.swing.JOptionPane;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
@@ -455,13 +454,6 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 	 *             the exception
 	 */
 	public void deleteProject(int id) throws Exception {
-
-		int ret = JOptionPane.showConfirmDialog(null,
-				Resource.getResourceString("cannot_undo"), null,
-				JOptionPane.OK_CANCEL_OPTION);
-
-		if (ret != JOptionPane.OK_OPTION)
-			return;
 
 		Project tmp = new Project();
 		tmp.setKey(id);

@@ -490,11 +490,11 @@ class MainMenu {
 
 	/** export preferences to an XML file */
 	private void expPrefs() {
-	    File file;
+		File file;
 		while (true) {
 			// prompt for a file
 			JFileChooser chooser = new JFileChooser();
-			
+
 			chooser.setCurrentDirectory(IOHelper.getHomeDirectory());
 			chooser.setDialogTitle(Resource.getResourceString("choose_file"));
 			chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -508,16 +508,33 @@ class MainMenu {
 			file = new File(s);
 
 			break;
-			
+
 		}
 
 		try {
-			if (IOHelper.checkOverwrite(file.getAbsolutePath()) == true)
+			if (checkOverwrite(file.getAbsolutePath()) == true)
 				Prefs.export(file.getAbsolutePath());
 		} catch (Exception e) {
 			Errmsg.getErrorHandler().errmsg(e);
 		}
-    
+
+	}
+
+	static public boolean checkOverwrite(String fname) {
+
+		File f = new File(fname);
+		if (!f.exists())
+			return true;
+
+		int ret = JOptionPane.showConfirmDialog(
+				null,
+				net.sf.borg.common.Resource
+						.getResourceString("overwrite_warning") + fname + " ?",
+				"confirm_overwrite", JOptionPane.OK_CANCEL_OPTION);
+		if (ret != JOptionPane.OK_OPTION)
+			return false;
+
+		return (true);
 	}
 
 	/**
