@@ -70,8 +70,13 @@ public class JdbcDBHelper implements DBHelper.Factory, DBHelper.Controller {
 	}
 
 	@Override
-	public ResultSet execSQL(String string) throws Exception {
-		return JdbcDB.execSQL(string);
+	public void execSQL(String string) throws Exception {
+		JdbcDB.execSQL(string);
+	}
+	
+	@Override
+	public ResultSet execQuery(String string) throws Exception {
+		return JdbcDB.execQuery(string);
 	}
 
 	@Override

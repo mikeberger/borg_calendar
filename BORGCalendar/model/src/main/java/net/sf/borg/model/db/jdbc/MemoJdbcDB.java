@@ -96,7 +96,7 @@ class MemoJdbcDB implements MemoDB {
 
 	}
 	
-	private PreparedStatement getPSOne(String name) throws SQLException {
+	private static PreparedStatement getPSOne(String name) throws SQLException {
 		PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("SELECT * FROM memos WHERE memoname = ?");
 		stmt.setString(1, name);
 		return stmt;
@@ -104,7 +104,7 @@ class MemoJdbcDB implements MemoDB {
 
 
 
-	private PreparedStatement getPSAll() throws SQLException {
+	private static PreparedStatement getPSAll() throws SQLException {
 		PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("SELECT * FROM memos");
 		return stmt;
 	}
@@ -116,7 +116,7 @@ class MemoJdbcDB implements MemoDB {
 	 * @return the Memo object
 	 * @throws SQLException
 	 */
-	private Memo createFrom(ResultSet r) throws SQLException {
+	private static Memo createFrom(ResultSet r) throws SQLException {
 		Memo m = new Memo();
 
 		m.setMemoName(r.getString("memoname"));

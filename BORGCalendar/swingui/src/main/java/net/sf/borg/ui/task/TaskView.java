@@ -664,6 +664,7 @@ public class TaskView extends DockableView {
 	/**
 	 * Initializes the log table.
 	 */
+	@SuppressWarnings("unused")
 	private void initLogTable() {
 
 		logtable.setModel(new TableSorter(new String[] {
@@ -716,6 +717,7 @@ public class TaskView extends DockableView {
 	/**
 	 * Initialize the subtask table.
 	 */
+	@SuppressWarnings("unused")
 	private void initSubtaskTable() {
 
 		defaultIntegerCellRenderer = subTaskTable
@@ -1105,10 +1107,11 @@ public class TaskView extends DockableView {
 
 			String num = taskIdText.getText();
 
+			TaskModel.getReference();
 			// need to use a transaction as we update a number of tables and may
 			// need
 			// to roll them all back together
-			TaskModel.getReference().beginTransaction();
+			TaskModel.beginTransaction();
 
 			Task task = TaskModel.getReference().newMR();
 
@@ -1256,8 +1259,9 @@ public class TaskView extends DockableView {
 			// save subtasks
 			saveSubtasks(task);
 
+			TaskModel.getReference();
 			// can commit now - task, subtasks, tasklogs
-			TaskModel.getReference().commitTransaction();
+			TaskModel.commitTransaction();
 
 			// remove this view
 			Container p = this.getParent();
@@ -1275,7 +1279,8 @@ public class TaskView extends DockableView {
 		} catch (Warning w) {
 			Errmsg.getErrorHandler().notice(w.getMessage());
 			try {
-				TaskModel.getReference().rollbackTransaction();
+				TaskModel.getReference();
+				TaskModel.rollbackTransaction();
 			} catch (Exception e) {
 				Errmsg.getErrorHandler().errmsg(e);
 			}
@@ -1283,7 +1288,8 @@ public class TaskView extends DockableView {
 		} catch (Exception e) {
 			Errmsg.getErrorHandler().errmsg(e);
 			try {
-				TaskModel.getReference().rollbackTransaction();
+				TaskModel.getReference();
+				TaskModel.rollbackTransaction();
 			} catch (Exception e1) {
 				Errmsg.getErrorHandler().errmsg(e1);
 			}

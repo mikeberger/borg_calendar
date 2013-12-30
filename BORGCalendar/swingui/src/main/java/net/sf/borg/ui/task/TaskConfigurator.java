@@ -200,7 +200,7 @@ public class TaskConfigurator extends View {
 					if (subtask == null)
 						return;
 		
-					taskTypes.addSubtask((String) typeList.getSelectedValue(),
+					taskTypes.addSubtask(typeList.getSelectedValue(),
 							subtask);
 					refresh();
 				}
@@ -221,10 +221,10 @@ public class TaskConfigurator extends View {
 					if (subtask == null)
 						return;
 					// set subtask value
-					taskTypes.deleteSubtask((String) typeList
-							.getSelectedValue(), (String) subTaskList
+					taskTypes.deleteSubtask(typeList
+							.getSelectedValue(), subTaskList
 							.getSelectedValue());
-					taskTypes.addSubtask((String) typeList.getSelectedValue(),
+					taskTypes.addSubtask(typeList.getSelectedValue(),
 							subtask);
 					refresh();
 				}
@@ -240,8 +240,8 @@ public class TaskConfigurator extends View {
 					if (subTaskList.getSelectedIndex() < 0)
 						return;
 					// set subtask to null
-					taskTypes.deleteSubtask((String) typeList
-							.getSelectedValue(), (String) subTaskList
+					taskTypes.deleteSubtask(typeList
+							.getSelectedValue(), subTaskList
 							.getSelectedValue());
 					refresh();
 				}
@@ -278,7 +278,7 @@ public class TaskConfigurator extends View {
 
 					// prompt for selection of next state from a list
 					Collection<String> states = taskTypes
-							.getStates((String) typeList.getSelectedValue());
+							.getStates(typeList.getSelectedValue());
 					Object sarray[] = states.toArray();
 					String ns = (String) JOptionPane.showInputDialog(null,
 							net.sf.borg.common.Resource
@@ -292,8 +292,8 @@ public class TaskConfigurator extends View {
 
 					// add next state
 					taskTypes.addNextState(
-							(String) typeList.getSelectedValue(),
-							(String) stateList.getSelectedValue(), ns);
+							typeList.getSelectedValue(),
+							stateList.getSelectedValue(), ns);
 					refresh();
 				}
 			});
@@ -316,9 +316,9 @@ public class TaskConfigurator extends View {
 					}
 
 					// delete next state
-					String ns = (String) nextStateList.getSelectedValue();
-					taskTypes.deleteNextState((String) typeList
-							.getSelectedValue(), (String) stateList
+					String ns = nextStateList.getSelectedValue();
+					taskTypes.deleteNextState(typeList
+							.getSelectedValue(), stateList
 							.getSelectedValue(), ns);
 					refresh();
 				}
@@ -359,7 +359,7 @@ public class TaskConfigurator extends View {
 						return;
 
 					// add a new state
-					taskTypes.addState((String) typeList.getSelectedValue(),
+					taskTypes.addState(typeList.getSelectedValue(),
 							newstate);
 					refresh();
 				}
@@ -388,8 +388,8 @@ public class TaskConfigurator extends View {
 						return;
 
 					// rename state
-					taskTypes.changeState((String) typeList.getSelectedValue(),
-							(String) stateList.getSelectedValue(), newstate);
+					taskTypes.changeState(typeList.getSelectedValue(),
+							stateList.getSelectedValue(), newstate);
 					refresh();
 				}
 			});
@@ -422,8 +422,8 @@ public class TaskConfigurator extends View {
 					if (ret != JOptionPane.OK_OPTION)
 						return;
 					// delete state
-					taskTypes.deleteState((String) typeList.getSelectedValue(),
-							(String) stateList.getSelectedValue());
+					taskTypes.deleteState(typeList.getSelectedValue(),
+							stateList.getSelectedValue());
 					refresh();
 				}
 			});
@@ -481,7 +481,7 @@ public class TaskConfigurator extends View {
 					if (newtype == null)
 						return;
 					// rename type
-					taskTypes.changeType((String) typeList.getSelectedValue(),
+					taskTypes.changeType(typeList.getSelectedValue(),
 							newtype);
 					refresh();
 				}
@@ -514,7 +514,7 @@ public class TaskConfigurator extends View {
 					if (ret != JOptionPane.OK_OPTION)
 						return;
 					// delete type
-					taskTypes.deleteType((String) typeList.getSelectedValue());
+					taskTypes.deleteType(typeList.getSelectedValue());
 					refresh();
 				}
 			});
@@ -538,7 +538,7 @@ public class TaskConfigurator extends View {
 
 					// prompt for selection of initial state from a list
 					Collection<String> states = taskTypes
-							.getStates((String) typeList.getSelectedValue());
+							.getStates(typeList.getSelectedValue());
 					Object sarray[] = states.toArray();
 					String ns = (String) JOptionPane.showInputDialog(null,
 							net.sf.borg.common.Resource
@@ -551,7 +551,7 @@ public class TaskConfigurator extends View {
 						return;
 
 					// set initial state
-					taskTypes.setInitialState((String) typeList
+					taskTypes.setInitialState(typeList
 							.getSelectedValue(), ns);
 					refresh();
 				}
@@ -810,8 +810,8 @@ public class TaskConfigurator extends View {
 	 * display next states when user selects a state
 	 */
 	private void stateSelectHandler() {
-		String type = (String) typeList.getSelectedValue();
-		String state = (String) stateList.getSelectedValue();
+		String type = typeList.getSelectedValue();
+		String state = stateList.getSelectedValue();
 		if (state == null)
 			return;
 		Collection<String> states = taskTypes.nextStates(type, state);
@@ -824,7 +824,7 @@ public class TaskConfigurator extends View {
 	 * subtasks
 	 */
 	private void typeSelectHandler() {
-		String type = (String) typeList.getSelectedValue();
+		String type = typeList.getSelectedValue();
 		if (type == null)
 			return;
 		Collection<String> states = taskTypes.getStates(type);

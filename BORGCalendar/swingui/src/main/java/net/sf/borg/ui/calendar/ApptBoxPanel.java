@@ -788,9 +788,9 @@ abstract class ApptBoxPanel extends JPanel implements ComponentListener {
 						bot = top + draggedApptBox.getBottomAdjustment() - draggedApptBox.getTopAdjustment();
 					}
 				}
-				else if( resizedBox != null && resizedBox instanceof ApptBox)
+				else if( resizedBox != null )
 				{
-					ApptBox resizedApptBox = (ApptBox) resizedBox;
+					ApptBox resizedApptBox = resizedBox;
 					if( dragStarted == false )
 					{
 						// we haven't moved yet, so use the appt start and end

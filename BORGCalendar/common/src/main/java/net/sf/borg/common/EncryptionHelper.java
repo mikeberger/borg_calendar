@@ -39,7 +39,9 @@ public class EncryptionHelper {
 			throws Exception {
 		KeyStore store = KeyStore.getInstance("JCEKS");
 		store.load(null, password.toCharArray());
-		store.store(new FileOutputStream(location), password.toCharArray());
+		FileOutputStream fos = new FileOutputStream(location);
+		store.store(fos, password.toCharArray());
+		fos.close();
 	}
 
 	/**
@@ -53,7 +55,9 @@ public class EncryptionHelper {
 	static public void generateKey(String location, String password, String name)
 			throws Exception {
 		KeyStore store = KeyStore.getInstance("JCEKS");
-		store.load(new FileInputStream(location), password.toCharArray());
+		FileInputStream fis = new FileInputStream(location);
+		store.load(fis, password.toCharArray());
+		fis.close();
 
 		KeyGenerator keyGen = KeyGenerator.getInstance("AES");
 		SecretKey key = keyGen.generateKey();
@@ -62,8 +66,9 @@ public class EncryptionHelper {
 	        new KeyStore.SecretKeyEntry(key);
 		store.setEntry(name, skEntry, 
 	        new KeyStore.PasswordProtection(password.toCharArray()));
-
-		store.store(new FileOutputStream(location), password.toCharArray());
+		FileOutputStream fos = new FileOutputStream(location);
+		store.store(fos, password.toCharArray());
+		fos.close();
 
 	}
 
@@ -86,9 +91,11 @@ public class EncryptionHelper {
 		{
 			throw new Warning(Resource.getResourceString("No_Key_Store") + keyStoreLocation);
 		}
-		keyStore = KeyStore.getInstance("JCEKS");
-		keyStore.load(new FileInputStream(keyStoreLocation), password
+		this.keyStore = KeyStore.getInstance("JCEKS");
+		FileInputStream fis = new FileInputStream(keyStoreLocation);
+		this.keyStore.load(fis, this.password
 				.toCharArray());
+		fis.close();
 	}
 
 	/**
@@ -104,7 +111,7 @@ public class EncryptionHelper {
 		/*
 		 * get the key and create the Cipher
 		 */
-		Key key = keyStore.getKey(keyAlias, password.toCharArray());
+		Key key = this.keyStore.getKey(keyAlias, this.password.toCharArray());
 		Cipher enc = Cipher.getInstance("AES");
 		enc.init(Cipher.ENCRYPT_MODE, key);
 
@@ -137,7 +144,7 @@ public class EncryptionHelper {
 		/*
 		 * get the key and create the Cipher
 		 */
-		Key key = keyStore.getKey(keyAlias, password.toCharArray());
+		Key key = this.keyStore.getKey(keyAlias, this.password.toCharArray());
 		Cipher dec = Cipher.getInstance("AES");
 		dec.init(Cipher.DECRYPT_MODE, key);
 
@@ -166,7 +173,7 @@ public class EncryptionHelper {
 	 */
 	public String exportKey(String keyAlias, String keyStorePassword) throws Exception
 	{
-		Key key = keyStore.getKey(keyAlias, keyStorePassword.toCharArray());
+		Key key = this.keyStore.getKey(keyAlias, keyStorePassword.toCharArray());
 		return new String(Base64Coder.encode(key.getEncoded()));
 	}
 	
@@ -181,7 +188,9 @@ public class EncryptionHelper {
 	static public void importKey(String location, String encodedKey, String keyAlias, String password) throws Exception
 	{
 		KeyStore store = KeyStore.getInstance("JCEKS");
-		store.load(new FileInputStream(location), password.toCharArray());
+		FileInputStream fis = new FileInputStream(location);
+		store.load(fis, password.toCharArray());
+		fis.close();
 		
 		byte[] ba = Base64Coder.decode(encodedKey);
 		SecretKey key = new SecretKeySpec(ba,"AES");
@@ -189,8 +198,9 @@ public class EncryptionHelper {
 	        new KeyStore.SecretKeyEntry(key);
 		store.setEntry(keyAlias, skEntry, 
 	        new KeyStore.PasswordProtection(password.toCharArray()));
-
-		store.store(new FileOutputStream(location), password.toCharArray());
+		FileOutputStream fos = new FileOutputStream(location);
+		store.store(fos, password.toCharArray());
+		fos.close();
 
 	}
 

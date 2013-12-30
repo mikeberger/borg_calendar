@@ -25,8 +25,6 @@ import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
-import javax.swing.KeyStroke;
-
 /**
  * Common logic for dealing with Resource Bundles. Resource strings are stored
  * in a standard resource bundle, but may have extra keyboard shortcut
@@ -47,10 +45,10 @@ public class Resource {
 	 * 
 	 * @return the resource string or "??key??" if the string is not found
 	 */
-	private static String getRawResourceString(String key) {
+	public static String getRawResourceString(String key) {
 		try {
-			String res = ResourceBundle.getBundle("borg_resource")
-					.getString(key);
+			String res = ResourceBundle.getBundle("borg_resource").getString(
+					key);
 
 			if (res.indexOf("\\n") == -1)
 				return (res);
@@ -72,25 +70,25 @@ public class Resource {
 			return ("?" + key + "?");
 		}
 	}
-	
+
 	/**
-	 * Get a resource string from the borg resource bundle. Translates escaped newlines
-	 * to real newlines. Substitute variables
+	 * Get a resource string from the borg resource bundle. Translates escaped
+	 * newlines to real newlines. Substitute variables
 	 * 
 	 * @param resourceKey
 	 *            the resource key
-	 * @param params substitutable parameters
+	 * @param params
+	 *            substitutable parameters
 	 * 
 	 * @return the resource string
 	 */
 	public static String getResourceString(String resourceKey, Object[] params) {
-		ComponentParms parms = parseParms(resourceKey);
-		return MessageFormat.format(parms.getText(), params);
+		return MessageFormat.format(getResourceString(resourceKey), params);
 	}
 
 	/**
-	 * Get a resource string from the borg resource bundle. Translates escaped newlines
-	 * to real newlines.
+	 * Get a resource string from the borg resource bundle. Translates escaped
+	 * newlines to real newlines.
 	 * 
 	 * @param resourceKey
 	 *            the resource key
@@ -98,8 +96,7 @@ public class Resource {
 	 * @return the resource string
 	 */
 	public static String getResourceString(String resourceKey) {
-		ComponentParms parms = parseParms(resourceKey);
-		return parms.getText();
+		return parseResourceText(getRawResourceString(resourceKey));
 	}
 
 	/**
@@ -126,104 +123,12 @@ public class Resource {
 		return (version_);
 	}
 
-	/**
-	 * get a resource string and parse out the various parts - the text and the
-	 * keyboard shortcut into
-	 * 
-	 * @param resourceKey
-	 *            the resource key
-	 * 
-	 * @return the ComponentParms object
-	 */
-	public static ComponentParms parseParms(String resourceKey) {
-		String parmsText = getRawResourceString(resourceKey);
-
-		if (parmsText.startsWith("Goto"))
-			parmsText = parmsText.substring(0);
-
-		String text = parmsText;
-		int mnemonic = -1;
-		KeyStroke accel = null;
+	private static String parseResourceText(String s) {
 		int pos;
-		if ((pos = parmsText.indexOf('|')) != -1) {
-			text = parmsText.substring(0, pos);
-			String parmsTextRem = parmsText.substring(pos + 1);
-			String mnemonicText = parmsTextRem;
-
-			if ((pos = parmsTextRem.indexOf('|')) != -1) {
-				mnemonicText = parmsTextRem.substring(0, pos);
-				String accelText = parmsTextRem.substring(pos + 1);
-				accel = KeyStroke.getKeyStroke(accelText);
-			}
-
-			if (mnemonicText.length() > 0)
-				mnemonic = KeyStroke.getKeyStroke(mnemonicText).getKeyCode();
-		}
-		return new ComponentParms(text, mnemonic, accel);
+		if ((pos = s.indexOf('|')) != -1)
+			return (s.substring(0, pos));
+		return s;
 	}
 
-	/**
-	 * ComponentParms contains the text and keyboard shortcut info for a resource string.
-	 * Most resource strings do not have keyboard shortcut info.
-	 */
-	public static class ComponentParms {
-
-		/**
-		 * Gets the key event.
-		 * 
-		 * @return the key event
-		 */
-		public final int getKeyEvent() {
-			return keyEvent;
-		}
-
-		/**
-		 * Gets the key stroke.
-		 * 
-		 * @return the key stroke
-		 */
-		public final KeyStroke getKeyStroke() {
-			return keyStroke;
-		}
-
-		/**
-		 * Gets the text.
-		 * 
-		 * @return the text
-		 */
-		public final String getText() {
-			return text;
-		}
-
-		// "internal" //
-		/**
-		 * Instantiates a new component parms.
-		 * 
-		 * @param text
-		 *            the text
-		 * @param keyEvent
-		 *            the key event
-		 * @param keyStroke
-		 *            the key stroke
-		 */
-		public ComponentParms(String text, int keyEvent, KeyStroke keyStroke) {
-			this.text = text;
-			this.keyEvent = keyEvent;
-			this.keyStroke = keyStroke;
-		}
-
-		// private //
-		/** The text. */
-		private String text;
-
-		/** The key event. */
-		private int keyEvent;
-
-		/** The key stroke. */
-		private KeyStroke keyStroke;
-	}
-
-	// end nested class ComponentParms
-	// //////////////////////////////////////////////////////////////
 
 }

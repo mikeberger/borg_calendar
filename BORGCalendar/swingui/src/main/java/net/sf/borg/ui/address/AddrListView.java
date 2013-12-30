@@ -241,6 +241,7 @@ public class AddrListView extends DockableView implements Module {
 	/**
 	 * init the UI components
 	 */
+	@SuppressWarnings("unused")
 	private void initComponents() {
 
 		tableScrollPane = new JScrollPane();

@@ -392,8 +392,9 @@ public class NoteBox extends Box implements Box.Draggable {
 	 * react to a drag of this box on the UI
 	 */
 	@Override
-	public void move(int realtime, Date d) throws Exception {
+	public void move(int real_time, Date d) throws Exception {
 
+		int realtime = real_time;
 		if (bean instanceof Appointment) {
 			// change appointment date based on move
 			Appointment ap = AppointmentModel.getReference().getAppt(

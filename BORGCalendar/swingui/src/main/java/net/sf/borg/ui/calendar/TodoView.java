@@ -532,6 +532,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 	/**
 	 * Inits the components.
 	 */
+	@SuppressWarnings("unused")
 	private void initComponents() {
 
 		// create widgets (all bunched up because of code generation - not worth

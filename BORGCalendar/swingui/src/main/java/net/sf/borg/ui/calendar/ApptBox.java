@@ -545,7 +545,7 @@ class ApptBox extends Box implements Box.Draggable {
 	/**
 	 * draw a string with word wrap.
 	 */
-	private void drawWrappedString(Graphics2D g2, String tx, int x, int y, int w, boolean strike) {
+	private static void drawWrappedString(Graphics2D g2, String tx, int x, int y, int w, boolean strike) {
 		int fontDesent = g2.getFontMetrics().getDescent();
 		HashMap<TextAttribute, Serializable> hm = new HashMap<TextAttribute, Serializable>();
 		hm.put(TextAttribute.FONT, g2.getFont());
@@ -581,7 +581,7 @@ class ApptBox extends Box implements Box.Draggable {
 	 * 	
 	 * @return the box color
 	 */
-	private Color getBoxColor() {
+	private static Color getBoxColor() {
 		return new Color(Theme.getCurrentTheme().getDefaultBg());
 	}
 

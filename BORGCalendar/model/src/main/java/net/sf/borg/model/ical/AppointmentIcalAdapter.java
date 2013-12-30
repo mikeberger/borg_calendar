@@ -541,7 +541,6 @@ public class AppointmentIcalAdapter {
 		return importIcal(cal, category);
 	}
 
-	@SuppressWarnings("unchecked")
 	static private String importIcal(Calendar cal, String category)
 			throws Exception {
 
@@ -713,7 +712,6 @@ public class AppointmentIcalAdapter {
 			if (prop != null) {
 				Categories cats = (Categories) prop;
 				TextList catlist = cats.getCategories();
-				@SuppressWarnings("unchecked")
 				Iterator<String> cit = catlist.iterator();
 				while (cit.hasNext()) {
 					String cat = cit.next();

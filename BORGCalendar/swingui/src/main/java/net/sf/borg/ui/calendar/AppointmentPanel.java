@@ -398,7 +398,7 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 	 * 
 	 * @throws Exception
 	 */
-	private void encryptAppt(Appointment appt) throws Exception {
+	private static void encryptAppt(Appointment appt) throws Exception {
 		String pw = PasswordHelper.getReference().getPassword();
 		if (pw == null)
 			return;

@@ -60,15 +60,6 @@ final class JdbcDB {
 	static private String url_;
 
 	/**
-	 * Gets the JDBC url.
-	 * 
-	 * @return the JDBC url
-	 */
-	public static String getUrl() {
-		return url_;
-	}
-
-	/**
 	 * begin a JDBC transaction on the shared connection
 	 * 
 	 * @throws Exception
@@ -85,6 +76,7 @@ final class JdbcDB {
 	static public final void commitTransaction() throws Exception {
 		PreparedStatement stmt = connection_.prepareStatement("COMMIT");
 		stmt.execute();
+		stmt.close();
 		connection_.setAutoCommit(true);
 	}
 
@@ -96,6 +88,7 @@ final class JdbcDB {
 	static public final void rollbackTransaction() throws Exception {
 		PreparedStatement stmt = connection_.prepareStatement("ROLLBACK");
 		stmt.execute();
+		stmt.close();
 		connection_.setAutoCommit(true);
 	}
 
@@ -150,6 +143,7 @@ final class JdbcDB {
 									break;
 								sb.append((char) ch);
 							}
+							r.close();
 							props.setProperty("ifexists", "false");
 							connection_ = DriverManager.getConnection(url,
 									props);
@@ -180,6 +174,7 @@ final class JdbcDB {
 								break;
 							sb.append((char) ch);
 						}
+						r.close();
 						props.setProperty("ifexists", "false");
 						connection_ = DriverManager.getConnection(url, props);
 						execSQL(sb.toString());
@@ -213,6 +208,7 @@ final class JdbcDB {
 									break;
 								sb.append((char) ch);
 							}
+							r.close();
 							props.setProperty("ifexists", "false");
 							connection_ = DriverManager.getConnection(url,
 									props);
@@ -312,12 +308,19 @@ final class JdbcDB {
 	 * @throws Exception
 	 *             the exception
 	 */
-	static final public ResultSet execSQL(String sql) throws Exception {
+	static final public void execSQL(String sql) throws Exception {
+		PreparedStatement stmt = connection_.prepareStatement(sql);
+		stmt.execute();
+		stmt.close();
+	}
+
+	@SuppressWarnings("resource")
+	static final public ResultSet execQuery(String sql) throws Exception {
 		PreparedStatement stmt = connection_.prepareStatement(sql);
 		stmt.execute();
 		return stmt.getResultSet();
 	}
-
+	
 	/**
 	 * Gets the connection.
 	 * 

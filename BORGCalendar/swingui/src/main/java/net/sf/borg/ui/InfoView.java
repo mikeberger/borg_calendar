@@ -67,6 +67,7 @@ class InfoView extends DockableView implements Module {
 		file_ = file;
 	}
 	
+	@Override
 	public void showView()
 	{
 		if( !isInitialized)

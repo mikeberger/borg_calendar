@@ -13,7 +13,8 @@ public class DynamicHTMLEditorKit extends HTMLEditorKit {
 	private static final long serialVersionUID = 1L;
 	private HTMLLinkController linkController = new HTMLLinkController();
 	
-    public void install(JEditorPane c) {    	
+    @Override
+	public void install(JEditorPane c) {    	
         MouseListener[] oldMouseListeners = c.getMouseListeners();
         MouseMotionListener[] oldMouseMotionListeners = c.getMouseMotionListeners();
         

@@ -21,6 +21,7 @@ public class HTMLLinkController extends LinkController {
 		return needsCursorChange;
 	}
 	
+	@Override
 	public void mouseClicked(MouseEvent e) {
         JTextPane textPane = (JTextPane) e.getSource();
 
@@ -34,7 +35,8 @@ public class HTMLLinkController extends LinkController {
 
     }
 	
-    public void mouseMoved(MouseEvent e) {
+    @Override
+	public void mouseMoved(MouseEvent e) {
     	JTextPane textPane = (JTextPane) e.getSource();
 
         if (textPane.isEditable()) {

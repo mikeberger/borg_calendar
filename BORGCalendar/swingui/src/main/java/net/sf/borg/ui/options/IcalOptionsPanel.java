@@ -174,7 +174,7 @@ public class IcalOptionsPanel extends OptionsPanel {
 		} catch (NumberFormatException e) {
 			Errmsg.getErrorHandler().notice(
 					Resource.getResourceString("port_warning"));
-			;
+		
 			port.setText(((Integer) PrefName.ICAL_PORT.getDefault()).toString());
 			Prefs.putPref(PrefName.ICAL_PORT, PrefName.ICAL_PORT.getDefault());
 			return;

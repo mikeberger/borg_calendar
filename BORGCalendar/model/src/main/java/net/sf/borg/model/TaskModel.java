@@ -1163,7 +1163,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 	 * 
 	 * @see net.sf.borg.model.Transactional#beginTransaction()
 	 */
-	public void beginTransaction() throws Exception {
+	public static void beginTransaction() throws Exception {
 		DBHelper.getController().beginTransaction();
 	}
 
@@ -1172,7 +1172,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 	 * 
 	 * @see net.sf.borg.model.Transactional#commitTransaction()
 	 */
-	public void commitTransaction() throws Exception {
+	public static void commitTransaction() throws Exception {
 		DBHelper.getController().commitTransaction();
 	}
 
@@ -1181,7 +1181,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 	 * 
 	 * @see net.sf.borg.model.Transactional#rollbackTransaction()
 	 */
-	public void rollbackTransaction() throws Exception {
+	public static void rollbackTransaction() throws Exception {
 		DBHelper.getController().rollbackTransaction();
 	}
 

@@ -43,7 +43,8 @@ public class HTMLTextPane extends JTextPane {
         getDocument().addDocumentListener(docListener);
         
         addHyperlinkListener(new HyperlinkListener() {
-            public void hyperlinkUpdate(HyperlinkEvent evt) {
+            @Override
+			public void hyperlinkUpdate(HyperlinkEvent evt) {
                 if (evt.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
                     String url = evt.getURL().toString();
                     try {
@@ -56,7 +57,8 @@ public class HTMLTextPane extends JTextPane {
         });
         
         addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent evt) {
+            @Override
+			public void mouseClicked(MouseEvent evt) {
             	if( evt.getButton() == MouseEvent.BUTTON3)
             	{
                     setCaretPosition(viewToModel(evt.getPoint()));
@@ -65,6 +67,7 @@ public class HTMLTextPane extends JTextPane {
         });
 	}
 	
+	@Override
 	public void setCursor(Cursor cursor) {
         if (kit != null && kit.getHTMLLinkcontroller().getNeedsCursorChange()) {
             super.setCursor(cursor);
@@ -96,6 +99,7 @@ public class HTMLTextPane extends JTextPane {
 		return "";
 	}
 	
+	@Override
 	public void setText(String text) {
 		try {
 			docListener.setInitializingDoc(true);

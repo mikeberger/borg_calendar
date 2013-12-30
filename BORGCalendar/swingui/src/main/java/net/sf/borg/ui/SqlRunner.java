@@ -43,10 +43,10 @@ import net.sf.borg.ui.util.ScrolledDialog;
 import net.sf.borg.ui.util.TableSorter;
 
 /**
- * SqlRunner is a UI that lets a user run SQL against the database. It presents the
- * results (if any) in a read-only table. It is mainly for debugging. the average user would never
- * use this.
- *
+ * SqlRunner is a UI that lets a user run SQL against the database. It presents
+ * the results (if any) in a read-only table. It is mainly for debugging. the
+ * average user would never use this.
+ * 
  */
 
 class SqlRunner extends JDialog {
@@ -72,22 +72,22 @@ class SqlRunner extends JDialog {
 	}
 
 	/**
-	 * initialize the ui - a simple editor with buttons to run the sql or clear the sql
+	 * initialize the ui - a simple editor with buttons to run the sql or clear
+	 * the sql
 	 */
-	private void initComponents()
-	{
+	private void initComponents() {
 		this.getContentPane().setLayout(new GridBagLayout());
 
-		editor = new JEditorPane();
+		this.editor = new JEditorPane();
 		JPanel jPanel1 = new JPanel();
 		JButton runButton = new JButton();
 
-		editor.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(
+		this.editor.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(
 				0, 0, 0)));
 
 		JScrollPane jScrollPane1 = new JScrollPane();
 		jScrollPane1.setPreferredSize(new java.awt.Dimension(554, 404));
-		jScrollPane1.setViewportView(editor);
+		jScrollPane1.setViewportView(this.editor);
 
 		runButton.setIcon(new javax.swing.ImageIcon(getClass().getResource(
 				"/resource/Forward16.gif")));
@@ -109,28 +109,34 @@ class SqlRunner extends JDialog {
 		clearButton.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				editor.setText("");
+				SqlRunner.this.editor.setText("");
 			}
 		});
 
-		this.getContentPane().add(jScrollPane1, GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH, 1.0, 1.0));
+		this.getContentPane().add(
+				jScrollPane1,
+				GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH,
+						1.0, 1.0));
 		jPanel1.add(clearButton, clearButton.getName());
-		this.getContentPane().add(jPanel1, GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH));
+		this.getContentPane()
+				.add(jPanel1,
+						GridBagConstraintsFactory.create(0, 1,
+								GridBagConstraints.BOTH));
 
 	}
 
 	/**
-	 * run the SQL 
+	 * run the SQL
 	 */
 	private void runbuttonActionPerformed() {
 		try {
 
 			DBHelper.getController().beginTransaction();
-			
-			// run the sql 
-			ResultSet r = DBHelper.getController().execSQL(editor.getText());
+
+			// run the sql
+			ResultSet r = DBHelper.getController().execQuery(this.editor.getText());
 			DBHelper.getController().commitTransaction();
-			
+
 			// display the results in a table
 			if (r != null && r.next()) {
 				JTable tbl = new JTable();
@@ -153,24 +159,26 @@ class SqlRunner extends JDialog {
 					}
 					ts.addRow(row);
 				}
-				
+
 				// use a ScrolledDialog to display the table
 				ScrolledDialog.showTable(tbl);
 			} else
 				ScrolledDialog.showNotice(Resource
 						.getResourceString("noOutput"));
-			
+			if (r != null)
+				r.close();
+
 		} catch (Exception e) {
 			log.severe(e.toString());
 			try {
 				DBHelper.getController().rollbackTransaction();
 			} catch (Exception e2) {
-			  // empty
+				// empty
 			}
 			Errmsg.getErrorHandler().errmsg(e);
 		}
 
-		// since the SQL may affect any of the tables, we need to 
+		// since the SQL may affect any of the tables, we need to
 		// just tell all models to refresh
 		AppointmentModel.getReference().refresh();
 		TaskModel.getReference().refresh();

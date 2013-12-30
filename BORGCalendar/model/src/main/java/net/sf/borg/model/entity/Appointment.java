@@ -32,25 +32,26 @@ import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 
-
-
 /**
  * The Appointment Entity
  */
-@XmlRootElement(name="Appointment")
+@XmlRootElement(name = "Appointment")
 @XmlAccessorType(XmlAccessType.FIELD)
 @Data
-@EqualsAndHashCode(callSuper=false) // exclude key and encryption field from hashcode
-public class Appointment extends EncryptableEntity<Appointment> implements CalendarEntity {
+@EqualsAndHashCode(callSuper = false)
+// exclude key and encryption field from hashcode
+public class Appointment extends EncryptableEntity<Appointment> implements
+		CalendarEntity {
 
-	
 	private static final long serialVersionUID = 7225675837209156249L;
-		
+
 	private Date Date;
 	/** The Duration in minutes */
 	private Integer Duration = 0;
 	private String Text;
-	/** The Skip list. - a list of repeat occurrences that are marked as skipped. */
+	/**
+	 * The Skip list. - a list of repeat occurrences that are marked as skipped.
+	 */
 	private Vector<String> SkipList;
 	/** The Next todo - the date of the next todo for repeating todos */
 	private Date NextTodo;
@@ -69,10 +70,12 @@ public class Appointment extends EncryptableEntity<Appointment> implements Calen
 	private String Color;
 	private boolean RepeatFlag;
 	private String Category;
-	/** The Reminder times.  See ReminderTimes.java*/
+	/** The Reminder times. See ReminderTimes.java */
 	private String ReminderTimes;
-	/** The Untimed flag.Y = untimed
-	 * provides a positive indication that an appointment has no specific time of day */
+	/**
+	 * The Untimed flag.Y = untimed provides a positive indication that an
+	 * appointment has no specific time of day
+	 */
 	private String Untimed;
 	private Date repeatUntil;
 	private Integer priority = 5;
@@ -80,76 +83,74 @@ public class Appointment extends EncryptableEntity<Appointment> implements Calen
 	private Date lastMod;
 	private String uid;
 
-
-	
 	@Override
-	@SuppressWarnings("unchecked")
 	protected Appointment clone() {
 		Appointment dst = new Appointment();
-		dst.setKey( getKey());
-		dst.setDate( getDate() );
-		dst.setDuration( getDuration() );
-		dst.setText( getText() );
+		dst.setKey(getKey());
+		dst.setDate(getDate());
+		dst.setDuration(getDuration());
+		dst.setText(getText());
 		Vector<String> v = getSkipList();
-		if( v != null )
-		{		
-			dst.setSkipList((Vector<String>)v.clone());
-		}		
-		dst.setNextTodo( getNextTodo() );
-		dst.setVacation( getVacation() );
-		dst.setHoliday( getHoliday() );
-		dst.setPrivate( isPrivate() );
-		dst.setTimes( getTimes() );
-		dst.setFrequency( getFrequency() );
-		dst.setTodo( isTodo() );
-		dst.setColor( getColor() );
-		dst.setRepeatFlag( isRepeatFlag() );
-		dst.setCategory( getCategory() );
-		dst.setReminderTimes( getReminderTimes() );
-		dst.setUntimed( getUntimed() );
+		if (v != null) {
+			dst.setSkipList((Vector<String>) v.clone());
+		}
+		dst.setNextTodo(getNextTodo());
+		dst.setVacation(getVacation());
+		dst.setHoliday(getHoliday());
+		dst.setPrivate(isPrivate());
+		dst.setTimes(getTimes());
+		dst.setFrequency(getFrequency());
+		dst.setTodo(isTodo());
+		dst.setColor(getColor());
+		dst.setRepeatFlag(isRepeatFlag());
+		dst.setCategory(getCategory());
+		dst.setReminderTimes(getReminderTimes());
+		dst.setUntimed(getUntimed());
 		dst.setEncrypted(isEncrypted());
-		dst.setRepeatUntil( getRepeatUntil());
-		dst.setPriority( getPriority() );
+		dst.setRepeatUntil(getRepeatUntil());
+		dst.setPriority(getPriority());
 		dst.setCreateTime(getCreateTime());
 		dst.setLastMod(getLastMod());
 		dst.setUid(getUid());
-		return(dst);
+		return (dst);
 	}
 
 	@Override
 	public void decrypt(String password) throws Exception {
-		if( !isEncrypted() )
+		if (!isEncrypted())
 			return;
-		
-		EncryptionHelper helper = new EncryptionHelper(Prefs.getPref(PrefName.KEYSTORE), password);
-		String clearText = helper.decrypt(this.getText(), Prefs.getPref(PrefName.KEYALIAS));
+
+		EncryptionHelper helper = new EncryptionHelper(
+				Prefs.getPref(PrefName.KEYSTORE), password);
+		String clearText = helper.decrypt(this.getText(),
+				Prefs.getPref(PrefName.KEYALIAS));
 		this.setText(clearText);
 		this.setEncrypted(false);
 	}
 
 	@Override
 	public void encrypt(String password) throws Exception {
-		if( isEncrypted() )
+		if (isEncrypted())
 			return;
-		
-		EncryptionHelper helper = new EncryptionHelper(Prefs.getPref(PrefName.KEYSTORE), password);
-		String cipherText = helper.encrypt(this.getText(), Prefs.getPref(PrefName.KEYALIAS));
+
+		EncryptionHelper helper = new EncryptionHelper(
+				Prefs.getPref(PrefName.KEYSTORE), password);
+		String cipherText = helper.encrypt(this.getText(),
+				Prefs.getPref(PrefName.KEYALIAS));
 		this.setText(cipherText);
 		this.setEncrypted(true);
-		
-	}
-	
-	/**
-	 * get the appointment text or a generic message if encrypted
-	 * @return
-	 */
-	public String getClearText()
-	{
-		if( isEncrypted())
-			return (Resource.getResourceString("EncryptedItemShort"));
-		else
-			return getText();
+
 	}
 
-	
+	/**
+	 * get the appointment text or a generic message if encrypted
+	 * 
+	 * @return
+	 */
+	public String getClearText() {
+		if (isEncrypted())
+			return (Resource.getResourceString("EncryptedItemShort"));
+		return getText();
+	}
+
 }

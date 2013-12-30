@@ -119,7 +119,7 @@ public class TaskModule extends DockableView implements Module {
 	/**
 	 * reset task state action
 	 */
-	private void resetstActionPerformed() {
+	private static void resetstActionPerformed() {
 		try {
 			String msg = Resource.getResourceString("reset_state_warning");
 			int ret = JOptionPane.showConfirmDialog(null, msg, Resource

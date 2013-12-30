@@ -196,8 +196,8 @@ public class NwFontChooserS extends JDialog {
                 jl.addListSelectionListener(new ListSelectionListener() {
                     @Override
                     public void valueChanged(ListSelectionEvent e) {
-                        jt.setText((String) jl.getSelectedValue());
-                        si = (String) jl.getSelectedValue();
+                        jt.setText(jl.getSelectedValue());
+                        si = jl.getSelectedValue();
                         showSample();
                     }
                 });

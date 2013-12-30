@@ -355,7 +355,7 @@ public class TaskTypes {
 	 * 
 	 * @return the child elements
 	 */
-	private ArrayList<Element> getChildElements(Node n) {
+	private static ArrayList<Element> getChildElements(Node n) {
 		ArrayList<Element> ret = new ArrayList<Element>();
 		NodeList nl = n.getChildNodes();
 		for (int i = 0; i < nl.getLength(); i++) {

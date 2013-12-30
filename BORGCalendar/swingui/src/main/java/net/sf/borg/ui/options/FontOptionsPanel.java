@@ -188,7 +188,7 @@ public class FontOptionsPanel extends OptionsPanel {
 	 * @param fontname
 	 *            the preference name associated with the font
 	 */
-	private void fontActionPerformed(JTextField fontText) {
+	private static void fontActionPerformed(JTextField fontText) {
 
 		// get font from pref name
 		Font pf = Font.decode(fontText.getText());

@@ -94,6 +94,7 @@ public class Borg implements SocketHandler, Observer {
 	 * @throws IOException
 	 */
 	private static void addURL(URL u) throws IOException {
+		@SuppressWarnings("resource")
 		URLClassLoader sysloader = (URLClassLoader) ClassLoader
 				.getSystemClassLoader();
 		Class<?> sysclass = URLClassLoader.class;
@@ -199,14 +200,14 @@ public class Borg implements SocketHandler, Observer {
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override
 				public void run() {
-					if (modalMessage == null || !modalMessage.isShowing()) {
-						modalMessage = new ModalMessage(lockmsg, false);
-						modalMessage.setVisible(true);
+					if (Borg.this.modalMessage == null || !Borg.this.modalMessage.isShowing()) {
+						Borg.this.modalMessage = new ModalMessage(lockmsg, false);
+						Borg.this.modalMessage.setVisible(true);
 					} else {
-						modalMessage.appendText(lockmsg);
+						Borg.this.modalMessage.appendText(lockmsg);
 					}
-					modalMessage.setEnabled(false);
-					modalMessage.toFront();
+					Borg.this.modalMessage.setEnabled(false);
+					Borg.this.modalMessage.toFront();
 				}
 			});
 
@@ -215,8 +216,8 @@ public class Borg implements SocketHandler, Observer {
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override
 				public void run() {
-					if (modalMessage.isShowing()) {
-						modalMessage.setEnabled(true);
+					if (Borg.this.modalMessage.isShowing()) {
+						Borg.this.modalMessage.setEnabled(true);
 					}
 				}
 			});
@@ -326,6 +327,7 @@ public class Borg implements SocketHandler, Observer {
 				String home = System.getProperty("user.home", "");
 				FileOutputStream errStr = new FileOutputStream(home
 						+ "/.borg.out", false);
+				@SuppressWarnings("resource")
 				PrintStream printStream = new PrintStream(errStr);
 				System.setErr(printStream);
 				System.setOut(printStream);
@@ -478,8 +480,8 @@ public class Borg implements SocketHandler, Observer {
 			}
 
 			// start up email check timer - every 24 hours
-			mailTimer_ = new java.util.Timer("MailTimer");
-			mailTimer_.schedule(new TimerTask() {
+			this.mailTimer_ = new java.util.Timer("MailTimer");
+			this.mailTimer_.schedule(new TimerTask() {
 				@Override
 				public void run() {
 					try {
@@ -501,8 +503,8 @@ public class Borg implements SocketHandler, Observer {
 			String dbtype = Prefs.getPref(PrefName.DBTYPE);
 			if ((dbtype.equals("mysql") || dbtype.equals("jdbc"))
 					&& syncmins != 0) {
-				syncTimer_ = new java.util.Timer("SyncTimer");
-				syncTimer_.schedule(new TimerTask() {
+				this.syncTimer_ = new java.util.Timer("SyncTimer");
+				this.syncTimer_.schedule(new TimerTask() {
 					@Override
 					public void run() {
 						SwingUtilities.invokeLater(new Runnable() {
@@ -520,8 +522,8 @@ public class Borg implements SocketHandler, Observer {
 			}
 
 			// start socket listener
-			if (port != -1 && socketServer_ == null) {
-				socketServer_ = new SocketServer(port, this);
+			if (port != -1 && this.socketServer_ == null) {
+				this.socketServer_ = new SocketServer(port, this);
 			}
 
 		} catch (Exception e) {

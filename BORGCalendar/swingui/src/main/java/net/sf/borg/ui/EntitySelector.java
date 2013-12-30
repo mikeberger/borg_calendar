@@ -347,7 +347,6 @@ public class EntitySelector extends JDialog {
 	/**
 	 * Load the entities from the database into the table.
 	 */
-	@SuppressWarnings("unchecked")
 	public void loadData() {
 
 		// init the table to empty

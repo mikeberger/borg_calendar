@@ -67,14 +67,7 @@ public abstract class View extends JFrame implements Model.Listener {
 		initialize();
 	}
 
-	/**
-	 * registers this view with a model.
-	 * 
-	 * @param m the model
-	 */
-	protected void addModel(Model m) {
-		m.addListener(this);
-	}
+	
 
 	/**
 	 * Destroy the view

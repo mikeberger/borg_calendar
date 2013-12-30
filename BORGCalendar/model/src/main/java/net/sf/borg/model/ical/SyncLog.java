@@ -126,7 +126,7 @@ public class SyncLog extends Model implements Model.Listener, Prefs.Listener {
 
 	}
 
-	private SyncEvent createFrom(ResultSet r) throws SQLException {
+	private static SyncEvent createFrom(ResultSet r) throws SQLException {
 		int id = r.getInt("id");
 		ChangeEvent.ChangeAction action = ChangeEvent.ChangeAction.valueOf(r
 				.getString("action"));

@@ -333,12 +333,14 @@ public class IcalModule implements Module {
 
 	}
 
+	@SuppressWarnings("unused")
 	@Override
 	public void initialize(MultiView parent) {
 
 		OptionsView.getReference().addPanel(new IcalOptionsPanel());
 
 		new FileDrop(parent, new FileDrop.Listener() {
+			@Override
 			public void filesDropped(java.io.File[] files) {
 				for (File f : files) {
 					String warning;

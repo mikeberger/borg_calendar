@@ -21,11 +21,10 @@
 package net.sf.borg.ui;
 
 import javax.swing.AbstractButton;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import javax.swing.JTabbedPane;
+import javax.swing.KeyStroke;
 
 import net.sf.borg.common.Resource;
 
@@ -46,7 +45,7 @@ public class ResourceHelper {
 	 *            the resource string with optional pnemonic data
 	 */
 	public static void setText(JMenu mnu, String resourceKey) {
-		Resource.ComponentParms parms = Resource.parseParms(resourceKey);
+		ComponentParms parms = parseParms(resourceKey);
 		mnu.setText(parms.getText());
 		if (parms.getKeyEvent() != -1)
 			mnu.setMnemonic(parms.getKeyEvent());
@@ -61,7 +60,7 @@ public class ResourceHelper {
 	 *            the resource string with optional pnemonic data
 	 */
 	public static void setText(JMenuItem mnuitm, String resourceKey) {
-		Resource.ComponentParms parms = Resource.parseParms(resourceKey);
+		ComponentParms parms = parseParms(resourceKey);
 		mnuitm.setText(parms.getText());
 		if (parms.getKeyEvent() != -1)
 			mnuitm.setMnemonic(parms.getKeyEvent());
@@ -78,7 +77,7 @@ public class ResourceHelper {
 	 *            the resource string with optional pnemonic data
 	 */
 	public static void setText(AbstractButton button, String resourceKey) {
-		Resource.ComponentParms parms = Resource.parseParms(resourceKey);
+		ComponentParms parms = parseParms(resourceKey);
 		button.setText(parms.getText());
 		if (parms.getKeyEvent() != -1)
 			button.setMnemonic(parms.getKeyEvent());
@@ -93,29 +92,78 @@ public class ResourceHelper {
 	 *            the resource string with optional pnemonic data
 	 */
 	public static void setText(JLabel label, String resourceKey) {
-		Resource.ComponentParms parms = Resource.parseParms(resourceKey);
+		ComponentParms parms = parseParms(resourceKey);
 		label.setText(parms.getText());
 		if (parms.getKeyEvent() != -1)
 			label.setDisplayedMnemonic(parms.getKeyEvent());
 	}
 
+	
+	
 	/**
-	 * add a tab to a tabbed pane and its text and pnemonic
+	 * get a resource string and parse out the various parts - the text and the
+	 * keyboard shortcut into
 	 * 
-	 * @param tabbedPane
-	 *            the tabbed pane
 	 * @param resourceKey
-	 *            the resource string with optional pnemonic data
-	 * @param comp
-	 *            the component to add as a tab
+	 *            the resource key
+	 * 
+	 * @return the ComponentParms object
 	 */
-	public static void addTab(JTabbedPane tabbedPane, String resourceKey,
-			JComponent comp) {
-		Resource.ComponentParms parms = Resource.parseParms(resourceKey);
-		tabbedPane.add(parms.getText(), comp);
-		if (parms.getKeyEvent() != -1)
-			tabbedPane.setMnemonicAt(tabbedPane.getTabCount() - 1, parms
-					.getKeyEvent());
+	public static ComponentParms parseParms(String resourceKey) {
+		String parmsText = Resource.getRawResourceString(resourceKey);
+
+		String text = parmsText;
+		int mnemonic = -1;
+		KeyStroke accel = null;
+		int pos;
+		if ((pos = parmsText.indexOf('|')) != -1) {
+			text = parmsText.substring(0, pos);
+			String parmsTextRem = parmsText.substring(pos + 1);
+			String mnemonicText = parmsTextRem;
+
+			if ((pos = parmsTextRem.indexOf('|')) != -1) {
+				mnemonicText = parmsTextRem.substring(0, pos);
+				String accelText = parmsTextRem.substring(pos + 1);
+				accel = KeyStroke.getKeyStroke(accelText);
+			}
+
+			if (mnemonicText.length() > 0)
+				mnemonic = KeyStroke.getKeyStroke(mnemonicText).getKeyCode();
+		}
+		return new ComponentParms(text, mnemonic, accel);
 	}
+
+	/**
+	 * ComponentParms contains the text and keyboard shortcut info for a
+	 * resource string. Most resource strings do not have keyboard shortcut
+	 * info.
+	 */
+	public static class ComponentParms {
+
+		public final int getKeyEvent() {
+			return keyEvent;
+		}
+
+		public final KeyStroke getKeyStroke() {
+			return keyStroke;
+		}
+
+		public final String getText() {
+			return text;
+		}
+
+		public ComponentParms(String text, int keyEvent, KeyStroke keyStroke) {
+			this.text = text;
+			this.keyEvent = keyEvent;
+			this.keyStroke = keyStroke;
+		}
+
+		private String text;
+
+		private int keyEvent;
+
+		private KeyStroke keyStroke;
+	}
+
 
 }

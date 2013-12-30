@@ -108,6 +108,7 @@ class CheckListJdbcDB implements CheckListDB {
 
 	}
 
+	@SuppressWarnings("static-method")
 	private PreparedStatement getPSOne(String name) throws SQLException {
 		PreparedStatement stmt = JdbcDB.getConnection()
 				.prepareStatement("SELECT * FROM checkLists WHERE name = ?");
@@ -115,6 +116,7 @@ class CheckListJdbcDB implements CheckListDB {
 		return stmt;
 	}
 
+	@SuppressWarnings("static-method")
 	private PreparedStatement getPSAll() throws SQLException {
 		PreparedStatement stmt = JdbcDB.getConnection()
 				.prepareStatement("SELECT * FROM checkLists");
@@ -129,6 +131,7 @@ class CheckListJdbcDB implements CheckListDB {
 	 * @return the CheckList object
 	 * @throws SQLException
 	 */
+	@SuppressWarnings("static-method")
 	private CheckList createFrom(ResultSet r) throws Exception {
 		CheckList m = new CheckList();
 
@@ -224,7 +227,7 @@ class CheckListJdbcDB implements CheckListDB {
 	 * @return items XML string
 	 * @throws JAXBException
 	 */
-	private String getItemsXml(CheckList cl) throws JAXBException {
+	private static String getItemsXml(CheckList cl) throws JAXBException {
 		JAXBContext jc = JAXBContext.newInstance(XmlContainer.class);
 		Marshaller m = jc.createMarshaller();
 		XmlContainer container = new XmlContainer();
@@ -244,7 +247,7 @@ class CheckListJdbcDB implements CheckListDB {
 	 *            - the XML
 	 * @throws JAXBException 
 	 */
-	private void setItemsFromXml(CheckList cl, String itemXml) throws JAXBException {
+	private static void setItemsFromXml(CheckList cl, String itemXml) throws JAXBException {
 		JAXBContext jc = JAXBContext.newInstance(XmlContainer.class);
 		Unmarshaller u = jc.createUnmarshaller();
 

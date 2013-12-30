@@ -414,6 +414,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 	 * 
 	 * @throws Exception
 	 */
+	@SuppressWarnings("unused")
 	private void initComponents() throws Exception {
 
 		this.setLayout(new GridBagLayout());

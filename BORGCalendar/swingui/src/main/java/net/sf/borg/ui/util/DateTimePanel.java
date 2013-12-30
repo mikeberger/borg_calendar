@@ -229,8 +229,8 @@ public class DateTimePanel extends JPanel {
 	 * @param showDate - show the date
 	 * @param milTime - use 24 hour time
 	 */
-	public void update(boolean showDate, boolean milTime) {
-		if (milTime) {
+	public void update(boolean show_date, boolean mil_Time) {
+		if (mil_Time) {
 			hourBox.setModel(milHourModel);
 			ampmBox.setVisible(false);
 		} else {
@@ -238,6 +238,6 @@ public class DateTimePanel extends JPanel {
 			ampmBox.setVisible(true);
 		}
 
-		dateChooser.setVisible(showDate);
+		dateChooser.setVisible(show_date);
 	}
 }

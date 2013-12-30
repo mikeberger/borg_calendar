@@ -258,7 +258,7 @@ class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
      * 
      * @throws SQLException the SQL exception
      */
-    private Subtask createSubtask(ResultSet r) throws SQLException {
+    private static Subtask createSubtask(ResultSet r) throws SQLException {
         Subtask s = new Subtask();
         s.setKey(r.getInt("id"));
         s.setTask(new Integer(r.getInt("task")));
@@ -451,7 +451,7 @@ class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
      * 
      * @throws SQLException the SQL exception
      */
-    private int nextLogKey() throws SQLException {
+    private static int nextLogKey() throws SQLException {
         PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("SELECT MAX(id) FROM tasklog");
         ResultSet r = stmt.executeQuery();
         int maxKey = 0;
@@ -510,7 +510,7 @@ class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
      * 
      * @throws SQLException the SQL exception
      */
-    private Tasklog createTasklog(ResultSet r) throws SQLException {
+    private static Tasklog createTasklog(ResultSet r) throws SQLException {
         Tasklog s = new Tasklog();
         s.setKey(r.getInt("id"));
         s.setTask(new Integer(r.getInt("task")));
@@ -781,7 +781,7 @@ class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
      * 
      * @throws SQLException the SQL exception
      */
-    private Project createProject(ResultSet r) throws SQLException {
+    private static Project createProject(ResultSet r) throws SQLException {
         Project s = new Project();
         s.setKey(r.getInt("id"));
         if (r.getTimestamp("due_date") != null)

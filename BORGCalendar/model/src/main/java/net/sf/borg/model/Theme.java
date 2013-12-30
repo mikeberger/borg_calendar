@@ -40,6 +40,7 @@ import net.sf.borg.common.Warning;
 import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.entity.Option;
 
+@SuppressWarnings("unused")
 @XmlRootElement(name = "Theme")
 @XmlAccessorType(XmlAccessType.FIELD)
 /**

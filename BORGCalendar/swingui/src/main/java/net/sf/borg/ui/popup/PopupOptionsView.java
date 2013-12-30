@@ -235,7 +235,7 @@ public class PopupOptionsView extends JDialog {
 	 * 
 	 * @return the string
 	 */
-	private String minutes_string(int i) {
+	private static String minutes_string(int i) {
 		
 		int reminderTimeMinutes = ReminderTimes.getTimes(i);
 		int reminderTimeMinutesAbsoluteValue = (reminderTimeMinutes >= 0 ? reminderTimeMinutes : -reminderTimeMinutes);

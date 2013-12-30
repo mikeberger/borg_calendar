@@ -7,7 +7,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.swing.JEditorPane;
-import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentEvent.EventType;
@@ -80,8 +79,7 @@ public class HTMLDocumentListener implements DocumentListener {
 		for (HTMLHyperlinkRange hl : hyperlinkList) {
 			if (hl.getStart() < offset)
 				continue;
-			else
-				hl.setStart(hl.getStart() + len);
+			hl.setStart(hl.getStart() + len);
 		}
 	}
 
@@ -122,16 +120,15 @@ public class HTMLDocumentListener implements DocumentListener {
 
 		Element element = doc.getCharacterElement(linkRange.getStart());
 		replaceLinkElementWithText(doc, element);
-		
 
 		// Pressing Enter is weird, it splits a hyperlink into two, so we have
 		// to
 		// invalidate the second one as well.
 		if (wasEnter) {
-			replaceLinkElementWithText(doc, doc.getCharacterElement(textPane
-					.getCaretPosition()));
+			replaceLinkElementWithText(doc,
+					doc.getCharacterElement(textPane.getCaretPosition()));
 		}
-		
+
 		removeFromHyperlinkList(linkRange);
 	}
 
@@ -154,15 +151,6 @@ public class HTMLDocumentListener implements DocumentListener {
 		initializingDoc = newState;
 	}
 
-	public void showHyperlinkRanges() {
-		String displayString = "";
-		for (HTMLHyperlinkRange h : hyperlinkList)
-			displayString += "Start: " + h.getStart() + "\n" + "Length: "
-					+ h.getLength() + "\n\n";
-
-		JOptionPane.showMessageDialog(null, displayString);
-	}
-
 	@Override
 	public void insertUpdate(DocumentEvent evt) {
 		final DocumentEvent e = evt;
@@ -175,6 +163,7 @@ public class HTMLDocumentListener implements DocumentListener {
 			return;
 
 		SwingUtilities.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				if (e.getDocument() instanceof HTMLDocument
 						&& e.getType() != EventType.CHANGE) {
@@ -183,8 +172,8 @@ public class HTMLDocumentListener implements DocumentListener {
 
 					try {
 						text = doc.getText(e.getOffset(), e.getLength());
-					} catch (BadLocationException e) {
-						e.printStackTrace();
+					} catch (BadLocationException e1) {
+						e1.printStackTrace();
 					}
 
 					if (isChangeInHyperlink(e))
@@ -217,6 +206,7 @@ public class HTMLDocumentListener implements DocumentListener {
 			return;
 
 		SwingUtilities.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				if (e.getDocument() instanceof HTMLDocument) {
 					HTMLDocument doc = (HTMLDocument) e.getDocument();
@@ -228,8 +218,7 @@ public class HTMLDocumentListener implements DocumentListener {
 		});
 	}
 
-
-	private void replaceLinkElementWithText(HTMLDocument doc, Element element) {
+	private static void replaceLinkElementWithText(HTMLDocument doc, Element element) {
 		String plaintext = null;
 
 		try {

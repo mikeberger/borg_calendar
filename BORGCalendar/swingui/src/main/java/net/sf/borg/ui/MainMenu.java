@@ -294,7 +294,7 @@ class MainMenu {
 
 	}
 
-	private void importZipMIActionPerformed() {
+	private static void importZipMIActionPerformed() {
 
 		JFileChooser chooser = new JFileChooser();
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
@@ -424,7 +424,7 @@ class MainMenu {
 	}
 
 	/** show database info */
-	private void dbMIActionPerformed() {
+	private static void dbMIActionPerformed() {
 		String dbtype = Prefs.getPref(PrefName.DBTYPE);
 		String info = Resource.getResourceString("DatabaseInformation")
 				+ ":\n\n";
@@ -444,7 +444,7 @@ class MainMenu {
 	}
 
 	/** export */
-	private void exportMIActionPerformed() {
+	private static void exportMIActionPerformed() {
 
 		// user wants to export the task and calendar DBs to an XML file
 		String s;
@@ -489,7 +489,7 @@ class MainMenu {
 	}
 
 	/** export preferences to an XML file */
-	private void expPrefs() {
+	private static void expPrefs() {
 		File file;
 		while (true) {
 			// prompt for a file
@@ -665,7 +665,7 @@ class MainMenu {
 	}
 
 	/** import from file */
-	private void importMIActionPerformed() {
+	private static void importMIActionPerformed() {
 		try {
 
 			JFileChooser chooser = new JFileChooser();
@@ -687,7 +687,7 @@ class MainMenu {
 			BufferedReader in = new BufferedReader(new FileReader(new File(
 					fileName)));
 			Model model = ExportImport.getImportModelForXML(in);
-
+			in.close();
 			if (model == null) {
 				Errmsg.getErrorHandler().notice(
 						Resource.getResourceString("import_format_error"));
@@ -702,7 +702,9 @@ class MainMenu {
 					JOptionPane.OK_CANCEL_OPTION);
 
 			if (ret != JOptionPane.OK_OPTION)
+			{
 				return;
+			}
 
 			try {
 				ExportImport.importFromXmlFile(model, new FileInputStream(
@@ -718,7 +720,7 @@ class MainMenu {
 	}
 
 	/** import preferences */
-	private void impPrefs() {
+	private static void impPrefs() {
 		File file;
 		while (true) {
 			// prompt for a file

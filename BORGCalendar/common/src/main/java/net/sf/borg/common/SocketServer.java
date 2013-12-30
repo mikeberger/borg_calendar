@@ -29,14 +29,14 @@ public class SocketServer extends Thread {
 
 	    // Initialize the streams and start the thread
 	    public Connection(Socket client_socket, SocketHandler handler) {
-	        client = client_socket;
-	        handler_1 = handler;
+	        this.client = client_socket;
+	        this.handler_1 = handler;
 	        try { 
-	            in = new BufferedReader(new InputStreamReader(client.getInputStream()));
-	            out = new PrintStream(client.getOutputStream());
+	            this.in = new BufferedReader(new InputStreamReader(this.client.getInputStream()));
+	            this.out = new PrintStream(this.client.getOutputStream());
 	        }
 	        catch (IOException e) {
-	            try { client.close(); } catch (IOException e2) {  /* empty */}
+	            try { this.client.close(); } catch (IOException e2) {  /* empty */}
 	            log.severe("Exception while getting socket streams: " + e);
 	            return;
 	        }
@@ -52,14 +52,14 @@ public class SocketServer extends Thread {
 	        try {
 	            for(;;) {
 	                // read in a line
-	                String line = in.readLine();
+	                String line = this.in.readLine();
 	                if (line == null) break;
-	                String output = handler_1.processMessage(line);
-	                out.println(output);
+	                String output = this.handler_1.processMessage(line);
+	                this.out.println(output);
 	            }
 	        }
 	        catch (IOException e) {  /* empty */ }
-	        finally { try {client.close();} catch (IOException e2) {  /* empty */ } }
+	        finally { try {this.client.close();} catch (IOException e2) {  /* empty */ } }
 	    }
 	}
 	
@@ -80,7 +80,7 @@ public class SocketServer extends Thread {
      */
     public SocketServer(int port, SocketHandler handler) {
         this.handler_ = handler;
-        try { listen_socket = new ServerSocket(port); }
+        try { this.listen_socket = new ServerSocket(port); }
         catch (IOException e) { fail(e, "Exception creating server socket"); }
         log.info("Server: listening on port " + port);
         this.setName("Socket Server");
@@ -94,12 +94,14 @@ public class SocketServer extends Thread {
     /* (non-Javadoc)
      * @see java.lang.Thread#run()
      */
-    @Override
+    @SuppressWarnings("unused")
+	@Override
     public void run() {
         try {
             while(true) {
-                Socket client_socket = listen_socket.accept();
-                new Connection(client_socket, handler_);
+                @SuppressWarnings("resource")
+				Socket client_socket = this.listen_socket.accept();
+                new Connection(client_socket, this.handler_);
             }
         }
         catch (IOException e) { 

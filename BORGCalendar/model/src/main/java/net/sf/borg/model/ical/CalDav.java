@@ -55,10 +55,10 @@ public class CalDav {
 	static private final String PRODID = "-//MBCSoft/BORG//EN";
 
 	static private final Logger log = Logger.getLogger("net.sf.borg");
-	
-	public static boolean isSyncing(){
+
+	public static boolean isSyncing() {
 		String server = Prefs.getPref(PrefName.CALDAV_SERVER);
-		if( server != null && !server.isEmpty())
+		if (server != null && !server.isEmpty())
 			return true;
 		return false;
 	}
@@ -134,7 +134,6 @@ public class CalDav {
 				calname, calname, new String[] { "VEVENT", "VTODO" }, null);
 
 		ComponentList clist = calendar.getComponents();
-		@SuppressWarnings("unchecked")
 		Iterator<Component> it = clist.iterator();
 		while (it.hasNext()) {
 			Component comp = it.next();
@@ -154,11 +153,11 @@ public class CalDav {
 					log.severe(e.getMessage());
 				}
 
-				CalDavCalendarCollection collection2 = store.addCollection(cal_id2, cal2, cal2,
+				CalDavCalendarCollection collection2 = store.addCollection(
+						cal_id2, cal2, cal2,
 						new String[] { "VEVENT", "VTODO" }, null);
 
 				ComponentList clist2 = calendar.getComponents();
-				@SuppressWarnings("unchecked")
 				Iterator<Component> it1 = clist2.iterator();
 				while (it1.hasNext()) {
 					Component comp = it1.next();
@@ -213,7 +212,6 @@ public class CalDav {
 			return null;
 
 		ComponentList clist = cal.getComponents();
-		@SuppressWarnings("unchecked")
 		Iterator<Component> it = clist.iterator();
 		while (it.hasNext()) {
 			Component comp = it.next();
@@ -242,8 +240,7 @@ public class CalDav {
 						continue;
 					addEvent(collection,
 							AppointmentIcalAdapter.toIcal(ap, export_todos));
-					if( collection2 != null && ap.isTodo())
-					{
+					if (collection2 != null && ap.isTodo()) {
 						Component ve = AppointmentIcalAdapter.toIcal(ap, false);
 						Uid uid = (Uid) ve.getProperty(Property.UID);
 						uid.setValue(uid.getValue() + "TD");
@@ -257,9 +254,9 @@ public class CalDav {
 					if (comp == null) {
 						addEvent(collection,
 								AppointmentIcalAdapter.toIcal(ap, export_todos));
-						if( collection2 != null && ap.isTodo())
-						{
-							Component ve = AppointmentIcalAdapter.toIcal(ap, false);
+						if (collection2 != null && ap.isTodo()) {
+							Component ve = AppointmentIcalAdapter.toIcal(ap,
+									false);
 							Uid uid = (Uid) ve.getProperty(Property.UID);
 							uid.setValue(uid.getValue() + "TD");
 							addEvent(collection2, ve);
@@ -268,9 +265,9 @@ public class CalDav {
 					{
 						updateEvent(collection,
 								AppointmentIcalAdapter.toIcal(ap, export_todos));
-						if( collection2 != null && ap.isTodo())
-						{
-							Component ve = AppointmentIcalAdapter.toIcal(ap, false);
+						if (collection2 != null && ap.isTodo()) {
+							Component ve = AppointmentIcalAdapter.toIcal(ap,
+									false);
 							Uid uid = (Uid) ve.getProperty(Property.UID);
 							uid.setValue(uid.getValue() + "TD");
 							updateEvent(collection2, ve);
@@ -284,8 +281,7 @@ public class CalDav {
 					if (comp != null) {
 						log.info("SYNC: removeEvent: " + comp.toString());
 						collection.removeCalendar(se.getUid());
-						if( collection2 != null && comp instanceof VToDo)
-						{
+						if (collection2 != null && comp instanceof VToDo) {
 							collection2.removeCalendar(se.getUid() + "TD");
 						}
 					}
@@ -349,7 +345,8 @@ public class CalDav {
 
 		// if we are exporting VTODOs and there is a second calendar set, then
 		// we need to dump the todos as VEVENTS on the second cal
-		// this is for the various clients that cannot see the todos on the first calendar - like android
+		// this is for the various clients that cannot see the todos on the
+		// first calendar - like android
 		CalDavCalendarCollection collection2 = null;
 		if (Prefs.getBoolPref(PrefName.ICAL_EXPORT_TODO)) {
 			String cal2 = Prefs.getPref(PrefName.CALDAV_CAL2);
@@ -370,7 +367,6 @@ public class CalDav {
 	static public void syncCalendar(Calendar cal, ArrayList<String> serverUids)
 			throws Exception {
 		ComponentList clist = cal.getComponents();
-		@SuppressWarnings("unchecked")
 		Iterator<Component> it = clist.iterator();
 		while (it.hasNext()) {
 			Component comp = it.next();
@@ -391,14 +387,12 @@ public class CalDav {
 			Appointment ap = AppointmentModel.getReference().getApptByUid(uid);
 			if (ap == null) {
 				// not found in BORG, so add it
-				if (newap != null) {
-					try {
-						SyncLog.getReference().setProcessUpdates(false);
-						log.info("SYNC save: " + newap.toString());
-						AppointmentModel.getReference().saveAppt(newap);
-					} finally {
-						SyncLog.getReference().setProcessUpdates(true);
-					}
+				try {
+					SyncLog.getReference().setProcessUpdates(false);
+					log.info("SYNC save: " + newap.toString());
+					AppointmentModel.getReference().saveAppt(newap);
+				} finally {
+					SyncLog.getReference().setProcessUpdates(true);
 				}
 			} else if (newap.getLastMod().after(ap.getLastMod())) {
 				// was updated after BORG so update BORG
@@ -445,14 +439,13 @@ public class CalDav {
 		log.fine(serverUids.toString());
 
 		log.info("SYNC: check for deletes");
-		
+
 		// find all appts in Borg that are not on the server
 		for (Appointment ap : AppointmentModel.getReference().getAllAppts()) {
 			if (ap.getDate().before(after))
 				continue;
 
-			if (!serverUids.contains(ap.getUid()))
-			{
+			if (!serverUids.contains(ap.getUid())) {
 				log.info("Appointment Not Found on Server: " + ap.toString());
 				SyncLog.getReference().setProcessUpdates(false);
 				AppointmentModel.getReference().delAppt(ap.getKey());
