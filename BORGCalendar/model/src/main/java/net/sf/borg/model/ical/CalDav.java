@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.crypto.Cipher;
@@ -88,6 +89,7 @@ public class CalDav {
 
 		URL url = new URL("http", Prefs.getPref(PrefName.CALDAV_SERVER), -1,
 				"/");
+		IOHelper.sendLogMessage("SYNC: connect to " + url.toString());
 		log.info("SYNC: connect to " + url.toString());
 
 		CalDavCalendarStore store = new CalDavCalendarStore("-", url,
@@ -229,9 +231,11 @@ public class CalDav {
 
 		boolean export_todos = Prefs.getBoolPref(PrefName.ICAL_EXPORT_TODO);
 
-		log.info("SYNC: Process Outgoing Items");
+		List<SyncEvent> syncEvents = SyncLog.getReference().getAll();
+		IOHelper.sendLogMessage("SYNC: Process " + syncEvents.size() + " Outgoing Items");
+		log.info("SYNC: Process " + syncEvents.size() + " Outgoing Items");
 
-		for (SyncEvent se : SyncLog.getReference().getAll()) {
+		for (SyncEvent se : syncEvents) {
 			if (se.getObjectType() != ObjectType.APPOINTMENT)
 				continue;
 
@@ -304,8 +308,7 @@ public class CalDav {
 				} else if (se.getAction().equals(ChangeAction.DELETE)) {
 
 					Component comp = getEvent(collection, se.getUid());
-					log.info("Deleted Appt: " + se.getUid()
-							+ " not found on server");
+					
 					if (comp != null) {
 						log.info("SYNC: removeEvent: " + comp.toString());
 						collection.removeCalendar(se.getUid());
@@ -313,10 +316,17 @@ public class CalDav {
 							collection2.removeCalendar(se.getUid() + "TD");
 						}
 					}
+					else
+					{
+						log.info("Deleted Appt: " + se.getUid()
+								+ " not found on server");
+					}
 				}
 
 				SyncLog.getReference().delete(se.getId(), se.getObjectType());
 			} catch (Exception e) {
+				IOHelper.sendLogMessage("SYNC ERROR for: " + se.toString() + ":"
+						+ e.getMessage());
 				log.severe("SYNC ERROR for: " + se.toString() + ":"
 						+ e.getMessage());
 				e.printStackTrace();
@@ -451,7 +461,8 @@ public class CalDav {
 	static public void syncFromServer(CalDavCalendarCollection collection,
 			Integer years) throws Exception {
 
-		log.info("SYNC: Start Server Sync");
+		IOHelper.sendLogMessage("SYNC: Start Incoming Sync");
+		log.info("SYNC: Start Incoming Sync");
 
 		Date after = null;
 		if (years != null) {
@@ -463,19 +474,22 @@ public class CalDav {
 		ArrayList<String> serverUids = new ArrayList<String>();
 
 		Calendar cals[] = collection.getEvents();
-		log.info("SYNC: found " + cals.length + " Event Calendars");
+		IOHelper.sendLogMessage("SYNC: found " + cals.length + " Event Calendars on server");
+		log.info("SYNC: found " + cals.length + " Event Calendars on server");
 		for (Calendar cal : cals) {
 			syncCalendar(cal, serverUids);
 		}
 
 		Calendar tcals[] = collection.getTasks();
-		log.info("SYNC: found " + tcals.length + " Todo Calendars");
+		IOHelper.sendLogMessage("SYNC: found " + tcals.length + " Todo Calendars on server");
+		log.info("SYNC: found " + tcals.length + " Todo Calendars on server");
 		for (Calendar cal : tcals) {
 			syncCalendar(cal, serverUids);
 		}
 
 		log.fine(serverUids.toString());
 
+		IOHelper.sendLogMessage("SYNC: check for deletes");
 		log.info("SYNC: check for deletes");
 
 		// find all appts in Borg that are not on the server
@@ -484,7 +498,8 @@ public class CalDav {
 				continue;
 
 			if (!serverUids.contains(ap.getUid())) {
-				log.info("Appointment Not Found on Server: " + ap.toString());
+				IOHelper.sendLogMessage("Appointment Not Found in Borg - Deleting: " + ap.toString());
+				log.info("Appointment Not Found in Borg - Deleting: " + ap.toString());
 				SyncLog.getReference().setProcessUpdates(false);
 				AppointmentModel.getReference().delAppt(ap.getKey());
 				SyncLog.getReference().setProcessUpdates(true);

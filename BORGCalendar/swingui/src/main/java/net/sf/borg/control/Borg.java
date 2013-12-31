@@ -200,14 +200,32 @@ public class Borg implements SocketHandler, Observer {
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override
 				public void run() {
-					if (Borg.this.modalMessage == null || !Borg.this.modalMessage.isShowing()) {
-						Borg.this.modalMessage = new ModalMessage(lockmsg, false);
+					if (Borg.this.modalMessage == null
+							|| !Borg.this.modalMessage.isShowing()) {
+						Borg.this.modalMessage = new ModalMessage(lockmsg,
+								false);
 						Borg.this.modalMessage.setVisible(true);
 					} else {
 						Borg.this.modalMessage.appendText(lockmsg);
 					}
 					Borg.this.modalMessage.setEnabled(false);
 					Borg.this.modalMessage.toFront();
+				}
+			});
+
+			return ("ok");
+		} else if (msg.startsWith("log:")) {
+			final String lockmsg = msg.substring(4);
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					if (Borg.this.modalMessage != null
+							&& Borg.this.modalMessage.isShowing()) {
+						Borg.this.modalMessage.appendText(lockmsg);
+						Borg.this.modalMessage.setEnabled(false);
+						Borg.this.modalMessage.toFront();
+					}
+					
 				}
 			});
 
@@ -286,11 +304,11 @@ public class Borg implements SocketHandler, Observer {
 			}
 
 		}
-		
+
 		// if testing, use alternate prefs so regular prefs can be left alone
-		if( testing )
+		if (testing)
 			Prefs.setPrefRootNode("net/sf/borg/test");
-		
+
 		// logging
 		ConsoleHandler ch = new ConsoleHandler();
 		ch.setLevel(Level.ALL);
@@ -331,7 +349,7 @@ public class Borg implements SocketHandler, Observer {
 				PrintStream printStream = new PrintStream(errStr);
 				System.setErr(printStream);
 				System.setOut(printStream);
-				
+
 				FileHandler fh = new FileHandler("%h/.borg.log");
 				fh.setFormatter(new SimpleFormatter());
 				fh.setLevel(ch.getLevel());
@@ -393,7 +411,7 @@ public class Borg implements SocketHandler, Observer {
 		if (!language.equals("")) {
 			Locale.setDefault(new Locale(language, country));
 		}
-		
+
 		// JDBC is only choice for now. In the future, set this based on DBType
 		DBHelper.setFactory(new JdbcDBHelper());
 		DBHelper.setController(new JdbcDBHelper());
@@ -405,7 +423,9 @@ public class Borg implements SocketHandler, Observer {
 			if (testdb != null)
 				dbdir = testdb;
 			else
-				dbdir = DBHelper.getController().buildURL(); // derive db url from user prefs
+				dbdir = DBHelper.getController().buildURL(); // derive db url
+																// from user
+																// prefs
 
 			if (dbdir.equals("not-set")) {
 

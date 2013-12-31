@@ -17,6 +17,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import net.iharder.dnd.FileDrop;
 import net.sf.borg.common.Errmsg;
+import net.sf.borg.common.IOHelper;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
@@ -31,7 +32,6 @@ import net.sf.borg.ui.MultiView.Module;
 import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.options.IcalOptionsPanel;
 import net.sf.borg.ui.options.OptionsView;
-import net.sf.borg.ui.util.ModalMessage;
 
 public class IcalModule implements Module {
 
@@ -296,13 +296,15 @@ public class IcalModule implements Module {
 	 * run a sync command in a background thread while a modal message is presented
 	 */
 	static private void runBackgroundSync(Synctype type) {
-		final ModalMessage modal = new ModalMessage(
-				Resource.getResourceString("syncing"), false);
+		
 		final Synctype ty = type;
 		class SyncWorker extends SwingWorker<Void, Object> {
 			@Override
 			public Void doInBackground() {
 				try {
+					
+					// modally lock borg
+					IOHelper.sendMessage("lock:" + Resource.getResourceString("syncing"));
 					if (ty == Synctype.FULL)
 						CalDav.sync(
 								Prefs.getIntPref(PrefName.ICAL_EXPORTYEARS),
@@ -316,20 +318,24 @@ public class IcalModule implements Module {
 								.getIntPref(PrefName.ICAL_EXPORTYEARS));
 
 				} catch (Exception e) {
-					Errmsg.getErrorHandler().errmsg(e);
+					e.printStackTrace();
+					IOHelper.sendLogMessage(e.toString());
 				}
+				
+				IOHelper.sendLogMessage(Resource.getResourceString("done"));
+
+				
 				return null;
 			}
 
 			@Override
 			protected void done() {
-				modal.appendText(Resource.getResourceString("done"));
-				modal.setEnabled(true);
+				IOHelper.sendMessage("unlock");
+
 			}
 		}
 
 		(new SyncWorker()).execute();
-		modal.setVisible(true);
 
 	}
 

@@ -22,6 +22,7 @@ package net.sf.borg.common;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
@@ -107,6 +108,26 @@ public class IOHelper {
 			System.clearProperty("https.proxyPort");
 		}
 
+	}
+	
+	static public void sendMessage(String msg) {
+		int port = Prefs.getIntPref(PrefName.SOCKETPORT);
+		if (port != -1) {
+			String resp;
+			try {
+				resp = SocketClient.sendMsg("localhost", port, msg);
+				if (resp != null && resp.equals("ok")) {
+					// do nothing
+				}
+			} catch (IOException e) {
+				// empty
+			}
+	
+		}
+	}
+
+	static public void sendLogMessage(String msg) {
+		sendMessage("log:" + msg);
 	}
 
 }
