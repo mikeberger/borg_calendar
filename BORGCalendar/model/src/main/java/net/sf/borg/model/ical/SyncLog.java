@@ -22,9 +22,6 @@ import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.model.db.jdbc.JdbcDBUpgrader;
 import net.sf.borg.model.entity.Appointment;
-import net.sf.borg.model.entity.Project;
-import net.sf.borg.model.entity.Subtask;
-import net.sf.borg.model.entity.Task;
 import net.sf.borg.model.ical.SyncEvent.ObjectType;
 
 /**
@@ -200,6 +197,8 @@ public class SyncLog extends Model implements Model.Listener, Prefs.Listener {
 		stmt.setString(4, event.getObjectType().toString());
 		stmt.executeUpdate();
 		stmt.close();
+		
+		this.refreshListeners();
 
 	}
 
@@ -212,6 +211,8 @@ public class SyncLog extends Model implements Model.Listener, Prefs.Listener {
 		stmt.executeUpdate();
 		stmt.close();
 
+		this.refreshListeners();
+
 	}
 
 	public void deleteAll() throws Exception {
@@ -220,6 +221,9 @@ public class SyncLog extends Model implements Model.Listener, Prefs.Listener {
 
 		stmt.executeUpdate();
 		stmt.close();
+		
+		this.refreshListeners();
+
 
 	}
 	

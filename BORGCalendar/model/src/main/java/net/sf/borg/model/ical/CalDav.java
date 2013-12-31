@@ -15,7 +15,6 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
-import biz.source_code.base64Coder.Base64Coder;
 import net.fortuna.ical4j.connector.dav.CalDavCalendarCollection;
 import net.fortuna.ical4j.connector.dav.CalDavCalendarStore;
 import net.fortuna.ical4j.connector.dav.PathResolver;
@@ -36,6 +35,7 @@ import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Model.ChangeEvent.ChangeAction;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.ical.SyncEvent.ObjectType;
+import biz.source_code.base64Coder.Base64Coder;
 
 public class CalDav {
 
@@ -83,9 +83,9 @@ public class CalDav {
 	}
 
 	private static CalDavCalendarStore connect() throws Exception {
-		
+
 		IOHelper.setProxy();
-		
+
 		URL url = new URL("http", Prefs.getPref(PrefName.CALDAV_SERVER), -1,
 				"/");
 		log.info("SYNC: connect to " + url.toString());
@@ -241,12 +241,15 @@ public class CalDav {
 							se.getId());
 					if (ap == null)
 						continue;
-					addEvent(collection,
-							AppointmentIcalAdapter.toIcal(ap, export_todos));
+					Component ve1 = AppointmentIcalAdapter.toIcal(ap,
+							export_todos);
+					addEvent(collection, ve1);
 					if (collection2 != null && ap.isTodo()) {
 						Component ve = AppointmentIcalAdapter.toIcal(ap, false);
 						Uid uid = (Uid) ve.getProperty(Property.UID);
 						uid.setValue(uid.getValue() + "TD");
+						ve.getProperty(Property.DTSTART).setValue(
+								ve1.getProperty(Property.DTSTART).getValue());
 						addEvent(collection2, ve);
 					}
 				} else if (se.getAction().equals(ChangeAction.CHANGE)) {
@@ -255,24 +258,46 @@ public class CalDav {
 							se.getId());
 
 					if (comp == null) {
-						addEvent(collection,
-								AppointmentIcalAdapter.toIcal(ap, export_todos));
+						Component ve1 = AppointmentIcalAdapter.toIcal(ap,
+								export_todos);
+						addEvent(collection, ve1);
 						if (collection2 != null && ap.isTodo()) {
 							Component ve = AppointmentIcalAdapter.toIcal(ap,
 									false);
 							Uid uid = (Uid) ve.getProperty(Property.UID);
 							uid.setValue(uid.getValue() + "TD");
+							ve.getProperty(Property.DTSTART)
+									.setValue(
+											ve1.getProperty(Property.DTSTART)
+													.getValue());
 							addEvent(collection2, ve);
 						}
 					} else // TODO - what if both sides updated
 					{
+						// in order to detect if both sides updated, borg would
+						// need to store the
+						// last modified time sent from borg to the server.
+
+						/*
+						 * LastModified lm = null; if (comp instanceof VEvent) {
+						 * lm = ((VEvent) comp).getLastModified(); } else if
+						 * (comp instanceof VToDo) { lm = ((VToDo)
+						 * comp).getLastModified(); } long serverTime =
+						 * lm.getDateTime().getTime();
+						 */
+						Component ve1 = AppointmentIcalAdapter.toIcal(ap,
+								export_todos);
 						updateEvent(collection,
-								AppointmentIcalAdapter.toIcal(ap, export_todos));
+								ve1);
 						if (collection2 != null && ap.isTodo()) {
 							Component ve = AppointmentIcalAdapter.toIcal(ap,
 									false);
 							Uid uid = (Uid) ve.getProperty(Property.UID);
 							uid.setValue(uid.getValue() + "TD");
+							ve.getProperty(Property.DTSTART)
+							.setValue(
+									ve1.getProperty(Property.DTSTART)
+											.getValue());
 							updateEvent(collection2, ve);
 						}
 					}
@@ -391,10 +416,12 @@ public class CalDav {
 			if (ap == null) {
 				// not found in BORG, so add it
 				try {
-					
-					// for now, VTodo updates should update the synclog so that they get sent back out 
+
+					// for now, VTodo updates should update the synclog so that
+					// they get sent back out
 					// to the second cal on the next sync
-					SyncLog.getReference().setProcessUpdates(comp instanceof VToDo);
+					SyncLog.getReference().setProcessUpdates(
+							comp instanceof VToDo);
 					log.info("SYNC save: " + newap.toString());
 					AppointmentModel.getReference().saveAppt(newap);
 				} finally {
@@ -404,10 +431,12 @@ public class CalDav {
 				// was updated after BORG so update BORG
 				try {
 					newap.setKey(ap.getKey());
-					
-					// for now, VTodo updates should update the synclog so that they get sent back out 
+
+					// for now, VTodo updates should update the synclog so that
+					// they get sent back out
 					// to the second cal on the next sync
-					SyncLog.getReference().setProcessUpdates(comp instanceof VToDo);
+					SyncLog.getReference().setProcessUpdates(
+							comp instanceof VToDo);
 					log.info("SYNC save: " + newap.toString());
 					AppointmentModel.getReference().saveAppt(newap);
 				} finally {
