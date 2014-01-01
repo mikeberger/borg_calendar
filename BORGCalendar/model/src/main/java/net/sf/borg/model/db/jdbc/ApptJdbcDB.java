@@ -57,8 +57,11 @@ class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB {
 				"select lastmod from appointments",
 				"alter table appointments add column lastmod datetime default '1980-01-01 00:00:00' NOT NULL")
 				.upgrade();
-		new JdbcDBUpgrader("select uid from appointments",
-				"alter table appointments add column uid longvarchar")
+		new JdbcDBUpgrader(
+				"select uid from appointments",
+				new String[] {
+						"alter table appointments add column uid longvarchar",
+						"update appointments set uid = CONCAT(appt_num,'@BORGU', RAND())" })
 				.upgrade();
 
 	}
