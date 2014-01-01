@@ -70,6 +70,7 @@ import net.fortuna.ical4j.model.property.Summary;
 import net.fortuna.ical4j.model.property.Uid;
 import net.fortuna.ical4j.model.property.Version;
 import net.fortuna.ical4j.util.CompatibilityHints;
+import net.sf.borg.common.DateUtil;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.IOHelper;
 import net.sf.borg.common.PrefName;
@@ -187,8 +188,7 @@ public class AppointmentIcalAdapter {
 		// vacation is a category
 		if (ap.getVacation() != null && ap.getVacation().intValue() == 1) {
 			catlist.add("Vacation");
-		}
-		else if (ap.getVacation() != null && ap.getVacation().intValue() == 2) {
+		} else if (ap.getVacation() != null && ap.getVacation().intValue() == 2) {
 			catlist.add("HalfDay");
 		}
 
@@ -216,10 +216,9 @@ public class AppointmentIcalAdapter {
 		if (ap.getCategory() != null && !ap.getCategory().equals("")) {
 			catlist.add(ap.getCategory());
 		}
-		
-		if( ap.isTodo())
-			catlist.add("ToDo");
 
+		if (ap.isTodo())
+			catlist.add("ToDo");
 
 		if (!catlist.isEmpty()) {
 			ve.getProperties().add(new Categories(catlist));
@@ -299,14 +298,30 @@ public class AppointmentIcalAdapter {
 
 			// skip list
 			if (ap.getSkipList() != null) {
-				DateList dl = new DateList(Value.DATE);
-				for (String rkey : ap.getSkipList()) {
-					long epoch = Long.parseLong(rkey);
-					Date skdate = new Date(epoch * 1000L * 60L * 60L * 24L);
-					dl.add(new net.fortuna.ical4j.model.Date(skdate));
+				
+				long start_epoch = DateUtil.dayOfEpoch(ap.getDate());
+				if (AppointmentModel.isNote(ap)) {
+					DateList dl = new DateList(Value.DATE);
+					for (String rkey : ap.getSkipList()) {
+						long skip_epoch = Long.parseLong(rkey);
+						long real_skip = ((skip_epoch - start_epoch)*24L*60L*60L*1000L) + ap.getDate().getTime();
+						Date skdate = new Date(real_skip);
+						dl.add(new net.fortuna.ical4j.model.Date(skdate));
+					}
+					dl.setUtc(true);
+					ve.getProperties().add(new ExDate(dl));
+				} else {
+					DateList dl = new DateList(Value.DATE_TIME);
+					for (String rkey : ap.getSkipList()) {
+						long skip_epoch = Long.parseLong(rkey);
+						long real_skip = ((skip_epoch - start_epoch)*24L*60L*60L*1000L) + ap.getDate().getTime();
+						DateTime skdate = new DateTime(real_skip);
+						dl.add(new net.fortuna.ical4j.model.DateTime(skdate));
+					}
+					dl.setUtc(true);
+					ve.getProperties().add(new ExDate(dl));
 				}
-				dl.setUtc(true);
-				ve.getProperties().add(new ExDate(dl));
+				
 			}
 
 		}
