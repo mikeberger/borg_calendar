@@ -402,8 +402,11 @@ public class CalDav {
 
 	}
 
-	static public void syncCalendar(Calendar cal, ArrayList<String> serverUids)
+	static public int syncCalendar(Calendar cal, ArrayList<String> serverUids)
 			throws Exception {
+		
+		int count = 0;
+		
 		ComponentList clist = cal.getComponents();
 		Iterator<Component> it = clist.iterator();
 		while (it.hasNext()) {
@@ -432,6 +435,7 @@ public class CalDav {
 					// to the second cal on the next sync
 					SyncLog.getReference().setProcessUpdates(
 							comp instanceof VToDo);
+					count++;
 					log.info("SYNC save: " + newap.toString());
 					AppointmentModel.getReference().saveAppt(newap);
 				} finally {
@@ -447,6 +451,7 @@ public class CalDav {
 					// to the second cal on the next sync
 					SyncLog.getReference().setProcessUpdates(
 							comp instanceof VToDo);
+					count++;
 					log.info("SYNC save: " + newap.toString());
 					AppointmentModel.getReference().saveAppt(newap);
 				} finally {
@@ -455,6 +460,8 @@ public class CalDav {
 			}
 
 		}
+		
+		return count;
 
 	}
 
@@ -476,16 +483,22 @@ public class CalDav {
 		Calendar cals[] = collection.getEvents();
 		IOHelper.sendLogMessage("SYNC: found " + cals.length + " Event Calendars on server");
 		log.info("SYNC: found " + cals.length + " Event Calendars on server");
+		int count = 0;
 		for (Calendar cal : cals) {
-			syncCalendar(cal, serverUids);
+			count += syncCalendar(cal, serverUids);
 		}
+		
+		IOHelper.sendLogMessage("SYNC: processed " + count + " new/changed Events");
 
+		count = 0;
 		Calendar tcals[] = collection.getTasks();
 		IOHelper.sendLogMessage("SYNC: found " + tcals.length + " Todo Calendars on server");
 		log.info("SYNC: found " + tcals.length + " Todo Calendars on server");
 		for (Calendar cal : tcals) {
-			syncCalendar(cal, serverUids);
+			count += syncCalendar(cal, serverUids);
 		}
+
+		IOHelper.sendLogMessage("SYNC: processed " + count + " new/changed Tasks");
 
 		log.fine(serverUids.toString());
 
