@@ -159,15 +159,29 @@ public class AppointmentIcalAdapter {
 			if (nt == null) {
 				nt = ap.getDate();
 			}
+			
+			if( AppointmentModel.isNote(ap))
+			{
+				pl.add(Value.DATE);
+				DtStart dtd = new DtStart(pl,new net.fortuna.ical4j.model.Date(nt));
+				ve.getProperties().add(dtd);
 
-			DtStart dtd = new DtStart();
-			dtd.setDate(new net.fortuna.ical4j.model.Date(nt));
-			ve.getProperties().add(dtd);
+				VToDo todo = (VToDo) ve;
+				Due due = new Due(pl,new net.fortuna.ical4j.model.Date(nt));
+				todo.getProperties().add(due);
+			}
+			else
+			{
+				pl.add(Value.DATE_TIME);
+				DtStart dtd = new DtStart(pl,new net.fortuna.ical4j.model.Date(nt));
+				ve.getProperties().add(dtd);
 
-			VToDo todo = (VToDo) ve;
-			Due due = new Due();
-			due.setDate(new net.fortuna.ical4j.model.Date(nt));
-			todo.getProperties().add(due);
+				VToDo todo = (VToDo) ve;
+				Due due = new Due(pl,new net.fortuna.ical4j.model.Date(nt));
+				todo.getProperties().add(due);
+			}
+
+			
 		} else if (AppointmentModel.isNote(ap)) {
 			pl.add(Value.DATE);
 			DtStart dts = new DtStart(pl, new net.fortuna.ical4j.model.Date(
@@ -335,7 +349,7 @@ public class AppointmentIcalAdapter {
 		}
 
 		// reminder
-		if (!AppointmentModel.isNote(ap) && ap.getReminderTimes() != null
+		if (/*!AppointmentModel.isNote(ap) && */ap.getReminderTimes() != null
 				&& !ap.getReminderTimes().isEmpty()) {
 
 			// add a reminder
