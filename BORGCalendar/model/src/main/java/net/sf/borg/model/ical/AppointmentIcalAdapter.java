@@ -61,6 +61,7 @@ import net.fortuna.ical4j.model.property.Created;
 import net.fortuna.ical4j.model.property.Description;
 import net.fortuna.ical4j.model.property.DtEnd;
 import net.fortuna.ical4j.model.property.DtStart;
+import net.fortuna.ical4j.model.property.Due;
 import net.fortuna.ical4j.model.property.Duration;
 import net.fortuna.ical4j.model.property.ExDate;
 import net.fortuna.ical4j.model.property.LastModified;
@@ -162,6 +163,11 @@ public class AppointmentIcalAdapter {
 			DtStart dtd = new DtStart();
 			dtd.setDate(new net.fortuna.ical4j.model.Date(nt));
 			ve.getProperties().add(dtd);
+
+			VToDo todo = (VToDo) ve;
+			Due due = new Due();
+			due.setDate(new net.fortuna.ical4j.model.Date(nt));
+			todo.getProperties().add(due);
 		} else if (AppointmentModel.isNote(ap)) {
 			pl.add(Value.DATE);
 			DtStart dts = new DtStart(pl, new net.fortuna.ical4j.model.Date(
@@ -298,13 +304,14 @@ public class AppointmentIcalAdapter {
 
 			// skip list
 			if (ap.getSkipList() != null) {
-				
+
 				long start_epoch = DateUtil.dayOfEpoch(ap.getDate());
 				if (AppointmentModel.isNote(ap)) {
 					DateList dl = new DateList(Value.DATE);
 					for (String rkey : ap.getSkipList()) {
 						long skip_epoch = Long.parseLong(rkey);
-						long real_skip = ((skip_epoch - start_epoch)*24L*60L*60L*1000L) + ap.getDate().getTime();
+						long real_skip = ((skip_epoch - start_epoch) * 24L * 60L * 60L * 1000L)
+								+ ap.getDate().getTime();
 						Date skdate = new Date(real_skip);
 						dl.add(new net.fortuna.ical4j.model.Date(skdate));
 					}
@@ -314,14 +321,15 @@ public class AppointmentIcalAdapter {
 					DateList dl = new DateList(Value.DATE_TIME);
 					for (String rkey : ap.getSkipList()) {
 						long skip_epoch = Long.parseLong(rkey);
-						long real_skip = ((skip_epoch - start_epoch)*24L*60L*60L*1000L) + ap.getDate().getTime();
+						long real_skip = ((skip_epoch - start_epoch) * 24L * 60L * 60L * 1000L)
+								+ ap.getDate().getTime();
 						DateTime skdate = new DateTime(real_skip);
 						dl.add(new net.fortuna.ical4j.model.DateTime(skdate));
 					}
 					dl.setUtc(true);
 					ve.getProperties().add(new ExDate(dl));
 				}
-				
+
 			}
 
 		}
