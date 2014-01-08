@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.logging.Logger;
 
 import javax.crypto.Cipher;
@@ -25,7 +26,9 @@ import net.fortuna.ical4j.model.ComponentList;
 import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VToDo;
+import net.fortuna.ical4j.model.property.Completed;
 import net.fortuna.ical4j.model.property.ProdId;
+import net.fortuna.ical4j.model.property.RecurrenceId;
 import net.fortuna.ical4j.model.property.Uid;
 import net.fortuna.ical4j.model.property.Version;
 import net.fortuna.ical4j.util.CompatibilityHints;
@@ -232,7 +235,8 @@ public class CalDav {
 		boolean export_todos = Prefs.getBoolPref(PrefName.ICAL_EXPORT_TODO);
 
 		List<SyncEvent> syncEvents = SyncLog.getReference().getAll();
-		IOHelper.sendLogMessage("SYNC: Process " + syncEvents.size() + " Outgoing Items");
+		IOHelper.sendLogMessage("SYNC: Process " + syncEvents.size()
+				+ " Outgoing Items");
 		log.info("SYNC: Process " + syncEvents.size() + " Outgoing Items");
 
 		for (SyncEvent se : syncEvents) {
@@ -270,10 +274,9 @@ public class CalDav {
 									false);
 							Uid uid = (Uid) ve.getProperty(Property.UID);
 							uid.setValue(uid.getValue() + "TD");
-							ve.getProperty(Property.DTSTART)
-									.setValue(
-											ve1.getProperty(Property.DTSTART)
-													.getValue());
+							ve.getProperty(Property.DTSTART).setValue(
+									ve1.getProperty(Property.DTSTART)
+											.getValue());
 							addEvent(collection2, ve);
 						}
 					} else // TODO - what if both sides updated
@@ -291,15 +294,13 @@ public class CalDav {
 						 */
 						Component ve1 = AppointmentIcalAdapter.toIcal(ap,
 								export_todos);
-						updateEvent(collection,
-								ve1);
+						updateEvent(collection, ve1);
 						if (collection2 != null && ap.isTodo()) {
 							Component ve = AppointmentIcalAdapter.toIcal(ap,
 									false);
 							Uid uid = (Uid) ve.getProperty(Property.UID);
 							uid.setValue(uid.getValue() + "TD");
-							ve.getProperty(Property.DTSTART)
-							.setValue(
+							ve.getProperty(Property.DTSTART).setValue(
 									ve1.getProperty(Property.DTSTART)
 											.getValue());
 							updateEvent(collection2, ve);
@@ -308,16 +309,14 @@ public class CalDav {
 				} else if (se.getAction().equals(ChangeAction.DELETE)) {
 
 					Component comp = getEvent(collection, se.getUid());
-					
+
 					if (comp != null) {
 						log.info("SYNC: removeEvent: " + comp.toString());
 						collection.removeCalendar(se.getUid());
 						if (collection2 != null && comp instanceof VToDo) {
 							collection2.removeCalendar(se.getUid() + "TD");
 						}
-					}
-					else
-					{
+					} else {
 						log.info("Deleted Appt: " + se.getUid()
 								+ " not found on server");
 					}
@@ -325,8 +324,8 @@ public class CalDav {
 
 				SyncLog.getReference().delete(se.getId(), se.getObjectType());
 			} catch (Exception e) {
-				IOHelper.sendLogMessage("SYNC ERROR for: " + se.toString() + ":"
-						+ e.getMessage());
+				IOHelper.sendLogMessage("SYNC ERROR for: " + se.toString()
+						+ ":" + e.getMessage());
 				log.severe("SYNC ERROR for: " + se.toString() + ":"
 						+ e.getMessage());
 				e.printStackTrace();
@@ -402,11 +401,72 @@ public class CalDav {
 
 	}
 
+	static public void processRecurrence(Component comp, String uid)
+			throws Exception {
+
+		RecurrenceId rid = (RecurrenceId) comp
+				.getProperty(Property.RECURRENCE_ID);
+
+		Appointment ap = AppointmentModel.getReference().getApptByUid(uid);
+		if (ap != null) {
+
+			//LastModified lm = (LastModified) comp
+			//		.getProperty(Property.LAST_MODIFIED);
+			//Date lmdate = lm.getDateTime();
+			//if (lmdate.after(ap.getLastMod())) {
+				if (comp instanceof VEvent) {
+					log.warning("SYNC: ignoring Vevent for single recurrence - cannot process\n"
+							+ comp.toString());
+					IOHelper.sendLogMessage("SYNC: ignoring Vevent for single recurrence - cannot process\n"
+							+ comp.toString());
+					return;
+				}
+				// for a recurrence of a VToDo, we only use the
+				// COMPLETED
+				// status if present - otherwise, we ignore
+				Completed cpltd = (Completed) comp
+						.getProperty(Property.COMPLETED);
+				if (cpltd == null) {
+					log.warning("SYNC: ignoring VToDo for single recurrence - cannot process\n"
+							+ comp.toString());
+					IOHelper.sendLogMessage("SYNC: ignoring VToDo for single recurrence - cannot process\n"
+							+ comp.toString());
+					return;
+				}
+
+				Date riddate = rid.getDate();
+
+				Date utc = new Date();
+				utc.setTime(riddate.getTime());
+
+				// adjust time zone
+				if (!rid.isUtc() && !rid.getValue().contains("T")) {
+					long u = riddate.getTime() - TimeZone.getDefault().getOffset(riddate.getTime());
+					utc.setTime(u);
+				}
+
+				Date nt = ap.getNextTodo();
+				if( nt == null )
+					nt = ap.getDate();
+				if (!utc.before(nt)) {
+					log.warning("SYNC: completing Todo\n"
+							+ comp.toString());
+					IOHelper.sendLogMessage("SYNC: completing Todo\n"
+							+ comp.toString());
+					AppointmentModel.getReference().do_todo(ap.getKey(), false,
+							utc);
+
+				}
+
+			//}
+		}
+	}
+
 	static public int syncCalendar(Calendar cal, ArrayList<String> serverUids)
 			throws Exception {
-		
+
 		int count = 0;
-		
+
 		ComponentList clist = cal.getComponents();
 		Iterator<Component> it = clist.iterator();
 		while (it.hasNext()) {
@@ -416,6 +476,14 @@ public class CalDav {
 				continue;
 			String uid = comp.getProperty(Property.UID).getValue();
 			serverUids.add(uid);
+
+			// detect single occurrence
+			RecurrenceId rid = (RecurrenceId) comp
+					.getProperty(Property.RECURRENCE_ID);
+			if (rid != null) {
+				processRecurrence(comp, uid);
+				continue;
+			}
 
 			Appointment newap = AppointmentIcalAdapter.toBorg(comp);
 			if (newap == null)
@@ -436,6 +504,7 @@ public class CalDav {
 					SyncLog.getReference().setProcessUpdates(
 							comp instanceof VToDo);
 					count++;
+					log.info("SYNC save: " + comp.toString());
 					log.info("SYNC save: " + newap.toString());
 					AppointmentModel.getReference().saveAppt(newap);
 				} finally {
@@ -452,6 +521,7 @@ public class CalDav {
 					SyncLog.getReference().setProcessUpdates(
 							comp instanceof VToDo);
 					count++;
+					log.info("SYNC save: " + comp.toString());
 					log.info("SYNC save: " + newap.toString());
 					AppointmentModel.getReference().saveAppt(newap);
 				} finally {
@@ -460,7 +530,7 @@ public class CalDav {
 			}
 
 		}
-		
+
 		return count;
 
 	}
@@ -481,24 +551,28 @@ public class CalDav {
 		ArrayList<String> serverUids = new ArrayList<String>();
 
 		Calendar cals[] = collection.getEvents();
-		IOHelper.sendLogMessage("SYNC: found " + cals.length + " Event Calendars on server");
+		IOHelper.sendLogMessage("SYNC: found " + cals.length
+				+ " Event Calendars on server");
 		log.info("SYNC: found " + cals.length + " Event Calendars on server");
 		int count = 0;
 		for (Calendar cal : cals) {
 			count += syncCalendar(cal, serverUids);
 		}
-		
-		IOHelper.sendLogMessage("SYNC: processed " + count + " new/changed Events");
+
+		IOHelper.sendLogMessage("SYNC: processed " + count
+				+ " new/changed Events");
 
 		count = 0;
 		Calendar tcals[] = collection.getTasks();
-		IOHelper.sendLogMessage("SYNC: found " + tcals.length + " Todo Calendars on server");
+		IOHelper.sendLogMessage("SYNC: found " + tcals.length
+				+ " Todo Calendars on server");
 		log.info("SYNC: found " + tcals.length + " Todo Calendars on server");
 		for (Calendar cal : tcals) {
 			count += syncCalendar(cal, serverUids);
 		}
 
-		IOHelper.sendLogMessage("SYNC: processed " + count + " new/changed Tasks");
+		IOHelper.sendLogMessage("SYNC: processed " + count
+				+ " new/changed Tasks");
 
 		log.fine(serverUids.toString());
 
@@ -511,8 +585,10 @@ public class CalDav {
 				continue;
 
 			if (!serverUids.contains(ap.getUid())) {
-				IOHelper.sendLogMessage("Appointment Not Found in Borg - Deleting: " + ap.toString());
-				log.info("Appointment Not Found in Borg - Deleting: " + ap.toString());
+				IOHelper.sendLogMessage("Appointment Not Found in Borg - Deleting: "
+						+ ap.toString());
+				log.info("Appointment Not Found in Borg - Deleting: "
+						+ ap.toString());
 				SyncLog.getReference().setProcessUpdates(false);
 				AppointmentModel.getReference().delAppt(ap.getKey());
 				SyncLog.getReference().setProcessUpdates(true);

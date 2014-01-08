@@ -329,7 +329,7 @@ public class Repeat {
 	 * @param frequency
 	 *            the frequency string from the appointment
 	 */
-	Repeat(Calendar start, String frequency) {
+	public Repeat(Calendar start, String frequency) {
 		this.start_ = start;
 		this.frequency_ = frequency;
 		cal = new GregorianCalendar(0, 0, 0);
@@ -387,7 +387,7 @@ public class Repeat {
 	 * 
 	 * @return true, if this object represents a repeating item
 	 */
-	final boolean isRepeating() {
+	public final boolean isRepeating() {
 		String f = getFreq(frequency_);
 		return f != null && !f.equals(ONCE);
 	}
@@ -410,7 +410,7 @@ public class Repeat {
 	 * 
 	 * @return the current date
 	 */
-	final Calendar current() {
+	public final Calendar current() {
 		return current_;
 	}
 
@@ -449,7 +449,7 @@ public class Repeat {
 	 * 
 	 * @return the next repeat date
 	 */
-	final Calendar next() {
+	public final Calendar next() {
 		if (!isRepeating()) {
 			current_ = null;
 			return current_;
