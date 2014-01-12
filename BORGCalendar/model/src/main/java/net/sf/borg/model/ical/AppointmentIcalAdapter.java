@@ -714,9 +714,15 @@ public class AppointmentIcalAdapter {
 			ap.setUid(uid.getValue());
 			LastModified lm = (LastModified) pl
 					.getProperty(Property.LAST_MODIFIED);
-			ap.setLastMod(lm.getDateTime());
+			if( lm != null )
+				ap.setLastMod(lm.getDateTime());
+			else
+				ap.setLastMod(new Date());
 			Created cr = (Created) pl.getProperty(Property.CREATED);
-			ap.setCreateTime(cr.getDateTime());
+			if( cr != null )
+				ap.setCreateTime(cr.getDateTime());
+			else
+				ap.setCreateTime(new Date());
 			prop = pl.getProperty(Property.DURATION);
 			if (prop != null) {
 				Duration dur = (Duration) prop;
