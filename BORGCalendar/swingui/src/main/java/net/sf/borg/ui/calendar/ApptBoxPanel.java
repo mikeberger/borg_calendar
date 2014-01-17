@@ -112,9 +112,12 @@ abstract class ApptBoxPanel extends JPanel implements ComponentListener {
 			// prompt for appt text
 			String text = JOptionPane.showInputDialog("", Resource
 					.getResourceString("Please_enter_some_appointment_text"));
-			if (text == null || text.isEmpty())
-				return;	
-
+			if (text == null || text.trim().isEmpty()) {
+				Errmsg.getErrorHandler()
+						.notice(Resource
+								.getResourceString("Please_enter_some_appointment_text"));
+				return;
+			}
 			// get default appt values, if any from prefs
 			Appointment appt = AppointmentModel.getReference().getDefaultAppointment();
 

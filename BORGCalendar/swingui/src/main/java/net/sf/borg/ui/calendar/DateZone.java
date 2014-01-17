@@ -37,9 +37,10 @@ import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.ui.ClipBoard;
 
 /**
- * A DateZone is used to mark a rectagular area on the calendar UIs that corresponds
- * to a particular date. It provides the popup menu and the on-click action that
- * occurs when the user clicks on a date, but outside of any other calendar items
+ * A DateZone is used to mark a rectagular area on the calendar UIs that
+ * corresponds to a particular date. It provides the popup menu and the on-click
+ * action that occurs when the user clicks on a date, but outside of any other
+ * calendar items
  */
 class DateZone {
 
@@ -53,12 +54,13 @@ class DateZone {
 	private JPopupMenu popmenu = null;
 	private JMenuItem pasteItem = null;
 
-
 	/**
 	 * constructor.
 	 * 
-	 * @param d the date that this zone represents
-	 * @param bounds the bounds of this zone
+	 * @param d
+	 *            the date that this zone represents
+	 * @param bounds
+	 *            the bounds of this zone
 	 */
 	public DateZone(Date d, Rectangle bounds) {
 		this.date = d;
@@ -83,7 +85,6 @@ class DateZone {
 		return date;
 	}
 
-	
 	/**
 	 * Gets the popup menu.
 	 * 
@@ -122,14 +123,17 @@ class DateZone {
 			pasteItem.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					Appointment appt = (Appointment) ClipBoard.getReference().get(Appointment.class);
+					Appointment appt = (Appointment) ClipBoard.getReference()
+							.get(Appointment.class);
 					pasteAppt(appt);
 				}
 			});
-			
+
 		}
-		
-		pasteItem.setEnabled(ClipBoard.getReference().get(Appointment.class) == null ? false : true);
+
+		pasteItem
+				.setEnabled(ClipBoard.getReference().get(Appointment.class) == null ? false
+						: true);
 		return popmenu;
 	}
 
@@ -140,45 +144,51 @@ class DateZone {
 		GregorianCalendar cal = new GregorianCalendar();
 		cal.setTime(date);
 		AppointmentListView ag = new AppointmentListView(
-				cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal
-						.get(Calendar.DATE));
+				cal.get(Calendar.YEAR), cal.get(Calendar.MONTH),
+				cal.get(Calendar.DATE));
 		ag.showView();
 		ag.showApp(-1);
 	}
-	
+
 	/**
-	 * take action on a user mouse double-click on time interval
-	 * open an appt editor for a new appt with preset start hour and minute
+	 * take action on a user mouse double-click on time interval open an appt
+	 * editor for a new appt with preset start hour and minute
 	 */
 	void onClick(GregorianCalendar cal) {
 		AppointmentListView ag = new AppointmentListView(
-				cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal
-						.get(Calendar.DATE));
-		//set double-click time
+				cal.get(Calendar.YEAR), cal.get(Calendar.MONTH),
+				cal.get(Calendar.DATE));
+		// set double-click time
 		ag.setTime(cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE));
 		ag.showView();
 		ag.showApp(-1);
 	}
 
 	/**
-	 * quick add menu action - prompt for text and create an appt based
-	 * on default values
-	 * @param todo - true if added appt should be a todo
+	 * quick add menu action - prompt for text and create an appt based on
+	 * default values
+	 * 
+	 * @param todo
+	 *            - true if added appt should be a todo
 	 */
 	private void quickAdd(boolean todo) {
 
 		// prompt for todo text
 		String tdtext = JOptionPane.showInputDialog("", Resource
 				.getResourceString("Please_enter_some_appointment_text"));
-		if (tdtext == null || tdtext.isEmpty())
+		if (tdtext == null || tdtext.trim().isEmpty()) {
+			Errmsg.getErrorHandler()
+					.notice(Resource
+							.getResourceString("Please_enter_some_appointment_text"));
 			return;
+		}
 
 		// load up a default appt from any saved prefs
-		Appointment appt = AppointmentModel.getReference().getDefaultAppointment();
-		if( appt == null )
+		Appointment appt = AppointmentModel.getReference()
+				.getDefaultAppointment();
+		if (appt == null)
 			appt = AppointmentModel.getReference().newAppt();
-		
-		
+
 		// set the appt date. leave the appt untimed
 		GregorianCalendar cal = new GregorianCalendar();
 		cal.setTime(date);
@@ -194,12 +204,11 @@ class DateZone {
 		AppointmentModel.getReference().saveAppt(appt);
 
 	}
-	
-	private void pasteAppt(Appointment appt)
-	{
+
+	private void pasteAppt(Appointment appt) {
 		GregorianCalendar newcal = new GregorianCalendar();
 		newcal.setTime(date);
-		
+
 		GregorianCalendar cal = new GregorianCalendar();
 		cal.setTime(appt.getDate());
 		cal.set(Calendar.YEAR, newcal.get(Calendar.YEAR));
@@ -207,17 +216,19 @@ class DateZone {
 		cal.set(Calendar.DATE, newcal.get(Calendar.DATE));
 
 		String freq = appt.getFrequency();
-		
-		try{
-			if(!Repeat.isCompatible(cal, Repeat.getFreqString(Repeat.getFreq(freq)), Repeat.getDaylist(freq)))
+
+		try {
+			if (!Repeat.isCompatible(cal,
+					Repeat.getFreqString(Repeat.getFreq(freq)),
+					Repeat.getDaylist(freq)))
 				throw new Warning(Resource.getResourceString("recur_compat"));
-		}catch(Exception e){
+		} catch (Exception e) {
 			Errmsg.getErrorHandler().errmsg(e);
 			return;
 		}
-		
+
 		appt.setDate(cal.getTime());
-		
+
 		appt.setKey(-1);
 		AppointmentModel.getReference().saveAppt(appt);
 
@@ -226,7 +237,8 @@ class DateZone {
 	/**
 	 * Sets the bounds.
 	 * 
-	 * @param bounds the new bounds
+	 * @param bounds
+	 *            the new bounds
 	 */
 	public void setBounds(Rectangle bounds) {
 		this.bounds = bounds;
@@ -235,7 +247,8 @@ class DateZone {
 	/**
 	 * Sets the date.
 	 * 
-	 * @param date the new date
+	 * @param date
+	 *            the new date
 	 */
 	public void setDate(Date date) {
 		this.date = date;
