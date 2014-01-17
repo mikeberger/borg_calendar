@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.TreeSet;
 
 import net.sf.borg.common.Resource;
@@ -47,6 +48,22 @@ public class CategoryModel extends Model {
 		public Collection<String> getCategories();
 	}
 
+	static class CategoryComparator implements Comparator<String>
+	{
+
+		@Override
+		public int compare(String o1, String o2) {
+			if( o1.compareTo(o2) == 0)
+				return 0;
+			if( o1.equals(UNCATEGORIZED))
+				return -1;
+			if( o2.equals(UNCATEGORIZED))
+				return 1;
+			return( o1.compareTo(o2));
+		}
+		
+	}
+	
 	/** The singleton */
 	static private CategoryModel self_ = new CategoryModel();
 
@@ -64,10 +81,10 @@ public class CategoryModel extends Model {
 	}
 
 	/** The collection of all categories_. */
-	private Collection<String> categories_ = new TreeSet<String>();
+	private Collection<String> categories_ = new TreeSet<String>(new CategoryComparator());
 
 	/** The categories that are being shown (i.e. that are not being hidden) */
-	private Collection<String> shownCategories_ = new TreeSet<String>();
+	private Collection<String> shownCategories_ = new TreeSet<String>(new CategoryComparator());
 
 	/** The set of category source models */
 	Collection<CategorySource> sources = new ArrayList<CategorySource>();
@@ -194,7 +211,7 @@ public class CategoryModel extends Model {
 	@Override
 	public void sync() {
 		
-		Collection<String> oldCategories = new TreeSet<String>();
+		Collection<String> oldCategories = new TreeSet<String>(new CategoryComparator());
 		oldCategories.addAll(categories_);
 		categories_.clear();
 		for( CategorySource s : sources )
