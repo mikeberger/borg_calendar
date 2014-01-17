@@ -140,6 +140,18 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 										"50" }));
 				return;
 			}
+			
+			try {
+				Memo existing = MemoModel.getReference().getMemo(newname);
+				if (existing != null) {
+					// memo name already used
+					Errmsg.getErrorHandler().notice(
+							Resource.getResourceString("Existing_Memo"));
+					return;
+				}
+			} catch (Exception e1) {
+				Errmsg.getErrorHandler().errmsg(e1);
+			}
 
 			Memo m;
 			try {
