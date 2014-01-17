@@ -952,6 +952,7 @@ public class CheckListPanel extends DockableView implements
 		for (int i = 0; i < model.getRowCount(); i++) {
 			model.setValueAt(Boolean.FALSE, i, COMPLETE_COLUMN);
 		}
+		model.fireTableDataChanged();
 	}
 
 	@Override
