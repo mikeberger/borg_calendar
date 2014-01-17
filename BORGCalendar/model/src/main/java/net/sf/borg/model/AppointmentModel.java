@@ -769,6 +769,9 @@ public class AppointmentModel extends Model implements Model.Listener,
 				}
 			} else {
 
+				if( r.getCreateTime() == null )
+					r.setCreateTime(new Date());
+
 				r.setLastMod(new Date());
 				if( r.getUid() == null)
 					r.setUid(Integer.toString(r.getKey()) + "@BORGA-" + r.getCreateTime().getTime());
