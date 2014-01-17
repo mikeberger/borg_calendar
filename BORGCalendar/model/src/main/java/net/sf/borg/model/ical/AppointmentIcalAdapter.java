@@ -690,7 +690,8 @@ public class AppointmentIcalAdapter {
 				ap.setDate(utc);
 
 				// check if DATE only
-				if (!dts.getValue().contains("T")) {
+				// but assume appt at midnight is untimed
+				if (!dts.getValue().contains("T") || dts.getValue().contains("T000000")) {
 					// date only
 					ap.setUntimed("Y");
 				} else {
