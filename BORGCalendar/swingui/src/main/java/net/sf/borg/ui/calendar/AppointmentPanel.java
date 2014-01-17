@@ -1251,14 +1251,9 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 		if (repeatUntilRadio.isSelected()
 				&& repeatFrequencyComboBox.getSelectedIndex() != 0) {
 			Date until = untilDate.getDate();
-			
-			if( until == null )
-			{
-				throw new Warning(
-						Resource.getResourceString("until_null_error"));			}
 
 			if (until.before(appt.getDate())) {
-				throw new Warning(
+				throw new Exception(
 						Resource.getResourceString("until_date_error"));
 			}
 			appt.setRepeatUntil(until);

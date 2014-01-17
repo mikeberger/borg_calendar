@@ -677,11 +677,16 @@ public class AppointmentModel extends Model implements Model.Listener,
 					appt.setPriority(null);
 					log.warning("XML Import: Ignoring invalid priority for appointment: " + appt.getKey() + ":" + appt.getClearText());
 				}
+				if( appt.getCreateTime() == null)
+					appt.setCreateTime(new Date());
+				if( appt.getLastMod() == null )
+					appt.setLastMod(new Date());
 				db_.addObj(appt);
 			}
 		} catch (Exception e) {
 			Errmsg.getErrorHandler().notice(
 					e + "\n" + Resource.getResourceString("Import_XML_error"));
+			e.printStackTrace();
 		}
 
 		// rebuild the hashmap
