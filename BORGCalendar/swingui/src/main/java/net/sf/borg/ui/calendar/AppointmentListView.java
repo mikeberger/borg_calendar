@@ -292,6 +292,12 @@ public class AppointmentListView extends DockableView implements
 			Errmsg.getErrorHandler().errmsg(e);
 			return;
 		}
+		
+		if( appt.isEncrypted())
+		{
+			Errmsg.getErrorHandler().notice(Resource.getResourceString("no_copy_enc"));
+			return;
+		}
 		appointmentPanel.showapp(-1, appt);
 		refresh();
 
