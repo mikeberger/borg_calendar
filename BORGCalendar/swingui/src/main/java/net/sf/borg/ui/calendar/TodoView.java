@@ -1150,6 +1150,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 	private void loadCategories() {
 		// load categories
 		try {
+			categoryComboBox.removeAllItems();
 			Collection<String> acats = CategoryModel.getReference()
 					.getCategories();
 			Iterator<String> ait = acats.iterator();
