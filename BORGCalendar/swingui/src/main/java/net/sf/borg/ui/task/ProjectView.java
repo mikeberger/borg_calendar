@@ -397,7 +397,7 @@ public class ProjectView extends DockableView {
 	private void saveProject() {
 
 		// validate that description is present
-		if (description.getText() == null || description.getText().equals("")) {
+		if (description.getText() == null || description.getText().trim().equals("")) {
 			Errmsg.getErrorHandler().notice(
 					Resource.getResourceString("empty_desc"));
 			return;

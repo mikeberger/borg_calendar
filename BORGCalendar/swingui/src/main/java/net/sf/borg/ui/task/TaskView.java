@@ -1098,7 +1098,7 @@ public class TaskView extends DockableView {
 	private void savetask() {
 
 		// validate description
-		if (summaryText.getText() == null || summaryText.getText().equals("")) {
+		if (summaryText.getText() == null || summaryText.getText().trim().equals("")) {
 			Errmsg.getErrorHandler().notice(
 					Resource.getResourceString("empty_summ"));
 			return;
