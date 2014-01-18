@@ -36,9 +36,10 @@ import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.CategoryModel;
-import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.Model.ChangeEvent;
+import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.Appointment;
+import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Task;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 import net.sf.borg.ui.util.InputDialog;
@@ -337,6 +338,16 @@ public class CategoryChooser extends View {
 								String cat = t.getCategory();
 								if (cat != null && cat.equals(o))
 									TaskModel.getReference().delete(t.getKey());
+							}
+							
+							//projects
+							itr = TaskModel.getReference().getProjects()
+									.iterator();
+							while (itr.hasNext()) {
+								Project t = (Project) itr.next();
+								String cat = t.getCategory();
+								if (cat != null && cat.equals(o))
+									TaskModel.getReference().deleteProject(t.getKey());
 							}
 
 							try {
