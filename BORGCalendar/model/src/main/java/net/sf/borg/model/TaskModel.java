@@ -1256,6 +1256,12 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 							Resource.getResourceString("close_proj_warn"));
 				}
 			}
+			for (Project pt : TaskModel.getReference().getProjects()) {
+				if (!isClosed(pt) && pt.getParent() != null && pt.getParent().intValue() == p.getKey()) {
+					throw new Warning(
+							Resource.getResourceString("close_proj_warn"));
+				}
+			}
 		}
 
 		ChangeAction action = ChangeAction.ADD;
