@@ -370,15 +370,6 @@ public class PrefName {
 	static public PrefName EMAIL_VALIDATION = new PrefName("Email_Validation",
 			"false");
 
-	// static public PrefName EMAIL_REGEX = new PrefName ("Email_Regex",
-	// "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
-	// + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
-	//
-	static public PrefName PHONE_VALIDATION = new PrefName("Phone_Validation",
-			0);
-
-	static public PrefName PHONE_REGEX = new PrefName("Phone_Regex", "");
-
 	public static PrefName ICAL_PORT = new PrefName("ical-server-port",
 			new Integer(8844));
 	public static PrefName ICAL_EXPORTYEARS = new PrefName("ical-export-years",

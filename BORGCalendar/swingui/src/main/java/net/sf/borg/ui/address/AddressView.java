@@ -22,8 +22,6 @@ package net.sf.borg.ui.address;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.Date;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
@@ -451,28 +449,6 @@ public class AddressView extends DockableView {
 			}
 		}
 		
-		if ((Prefs.getIntPref(PrefName.PHONE_VALIDATION) != 0 ||
-				(!Prefs.getPref(PrefName.PHONE_REGEX).equals(""))))
-		{
-					if (!workPhoneText.getText().equals(""))
-					{
-						Pattern p =  Pattern.compile(Prefs.getPref(PrefName.PHONE_REGEX));
-						Matcher m = p.matcher(workPhoneText.getText());
-						if (!m.find()){
-							Errmsg.getErrorHandler().notice(Resource.getResourceString("Invalid_Work_Phone_Number"));
-						return;
-						}
-					}
-					if (!homePageText.getText().equals(""))
-					{
-						Pattern p1 =  Pattern.compile(Prefs.getPref(PrefName.PHONE_REGEX));
-						Matcher m1 = p1.matcher(homePageText.getText());
-						if (!m1.find()){
-							Errmsg.getErrorHandler().notice(Resource.getResourceString("Invalid_Home_Phone_Number"));
-						return;
-						}
-					}
-		}
         
 		
 		Date bd = birthdayChooser.getDate();
