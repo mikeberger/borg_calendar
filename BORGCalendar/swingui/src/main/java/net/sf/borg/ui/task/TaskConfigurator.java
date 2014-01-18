@@ -816,7 +816,7 @@ public class TaskConfigurator extends View {
 			return;
 		Collection<String> states = taskTypes.nextStates(type, state);
 		states.remove(state);
-		nextStateList.setListData((String[]) states.toArray());
+		nextStateList.setListData(states.toArray(new String[0]));
 	}
 
 	/**
@@ -828,7 +828,7 @@ public class TaskConfigurator extends View {
 		if (type == null)
 			return;
 		Collection<String> states = taskTypes.getStates(type);
-		stateList.setListData((String[]) states.toArray());
+		stateList.setListData(states.toArray(new String[0]));
 		String cbs[] = taskTypes.getSubTasks(type);
 		subTaskList.setListData(cbs);
 		nextStateList.setListData(new Vector<String>());

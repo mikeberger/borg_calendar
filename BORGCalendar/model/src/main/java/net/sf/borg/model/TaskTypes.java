@@ -428,7 +428,7 @@ public class TaskTypes {
 	 */
 	public Collection<String> getStates(String type) {
 
-		Vector<String> v = new Vector<String>();
+		ArrayList<String> v = new ArrayList<String>();
 		TaskType tt = getType(type);
 		if (tt != null) {
 			for (TaskState ts : tt.states) {
