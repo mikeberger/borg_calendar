@@ -1210,6 +1210,18 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 	 *             the exception
 	 */
 	public void saveProject(Project p, boolean undo) throws Exception {
+		
+		// validate no cycles in project tree
+		Integer pi = p.getParent();
+		while( pi != null )
+		{
+			if( pi.intValue() == p.getKey())
+				throw new Warning(Resource.getResourceString("project_cycle"));
+			
+			Project par = TaskModel.getReference().getProject(pi);
+			pi = par.getParent();
+			
+		}
 
 		// validation that task due dates are before project due date
 		if (p.getKey() != -1) {
