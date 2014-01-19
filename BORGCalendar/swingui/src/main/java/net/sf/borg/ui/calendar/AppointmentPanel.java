@@ -14,6 +14,7 @@ package net.sf.borg.ui.calendar;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
@@ -61,7 +62,7 @@ import net.sf.borg.model.ReminderTimes;
 import net.sf.borg.model.Repeat;
 import net.sf.borg.model.Theme;
 import net.sf.borg.model.entity.Appointment;
-import net.sf.borg.ui.MultiView;
+import net.sf.borg.ui.DockableView;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.link.LinkPanel;
 import net.sf.borg.ui.popup.PopupOptionsView;
@@ -315,6 +316,7 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 	 */
 	private JButton saveCloseButton = null;
 	private JButton saveButton = null;
+	
 
 	/**
 	 * Instantiates a new appointment panel.
@@ -944,7 +946,8 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 					return;
 				}
 
-				MultiView.getMainView().closeSelectedTab();
+				DockableView parent = DockableView.findDockableParent(saveCloseButton);
+				if( parent != null ) parent.close();
 			}
 		});
 		buttonPanel.add(saveCloseButton);

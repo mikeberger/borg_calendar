@@ -21,6 +21,7 @@ Copyright 2003 by Mike Berger
 package net.sf.borg.ui;
 
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Image;
@@ -342,6 +343,19 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 		if (vs.getDock() == DockType.DOCK) {
 			this.dock();
 		}
+	}
+	
+	public static DockableView findDockableParent(Component c)
+	{
+		for(Container cont = c.getParent(); cont != null; cont = cont.getParent())
+		{
+			if( cont instanceof DockableView)
+			{
+				return (DockableView) cont;
+			}
+		}
+		
+		return null;
 	}
 
 }
