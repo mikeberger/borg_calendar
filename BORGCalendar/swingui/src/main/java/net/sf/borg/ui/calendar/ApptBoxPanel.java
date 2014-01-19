@@ -557,6 +557,9 @@ abstract class ApptBoxPanel extends JPanel implements ComponentListener {
 
 				double centerx = evt.getX();
 				double centery = evt.getY();
+				
+				centery = Math.max(centery, dragYMin);
+				centery = Math.min(centery, dragYMax);
 				Date d = getDateForCoord(centerx, centery);
 				try {
 					// if we moved the box inside the resize area, send it the
