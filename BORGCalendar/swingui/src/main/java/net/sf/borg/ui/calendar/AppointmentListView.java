@@ -65,6 +65,7 @@ import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.ui.DockableView;
+import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.util.DateDialog;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
@@ -705,6 +706,7 @@ public class AppointmentListView extends DockableView implements
 		Date d = cal_.getTime();
 		title_ = Resource.getResourceString("Appointment_Editor_for_") + " "
 				+ DateFormat.getDateInstance(DateFormat.SHORT).format(d);
+		updateTitle();
 
 		// clear all rows
 		TableSorter tm = (TableSorter) apptTable.getModel();

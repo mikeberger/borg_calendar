@@ -328,6 +328,17 @@ public class MultiView extends View {
 		this.dispose();
 		mainView = null;
 	}
+	
+	/*
+	 * set the title of the tab that contains the given component
+	 */
+	public void setTabTitle(String title, Component c)
+	{
+		int i = tabs_.indexOfComponent(c);
+		if( i >= 0)
+			tabs_.setTitleAt(i, title);
+		
+	}
 
 	/**
 	 * Add a plain component as a tab, and do not treat as a module

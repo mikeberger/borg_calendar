@@ -144,6 +144,18 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 		vs.setDock(DockType.DOCK);
 		Prefs.putPref(getFrameSizePref(), vs.toString());
 	}
+	
+	protected void updateTitle()
+	{
+		if( isDocked())
+		{
+			MultiView.getMainView().setTabTitle(getFrameTitle(), this);
+		}
+		else if( frame != null)
+		{
+			frame.setTitle(getFrameTitle());
+		}
+	}
 
 	/**
 	 * Gets the window size preference.
