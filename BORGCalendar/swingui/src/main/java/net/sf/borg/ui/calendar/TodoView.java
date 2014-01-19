@@ -379,7 +379,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 		}
 
 		// warn the user if text or date is missing
-		if (tdtext.length() == 0 || c == null) {
+		if (tdtext.trim().isEmpty() || c == null) {
 			Errmsg.getErrorHandler().notice(
 					Resource.getResourceString("todomissingdata"));
 			return;
