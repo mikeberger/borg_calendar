@@ -282,7 +282,7 @@ public class SearchCriteria {
 		{
 			if( searchStr.trim().isEmpty())
 				return false;
-			return source.matches(".*?\\b" + searchStr + "\\b.*?");
+			return source.matches("[\\s\\S]*?\\b" + searchStr + "\\b[\\s\\S]*?");
 		}
 		
 		return source.contains(searchStr);
