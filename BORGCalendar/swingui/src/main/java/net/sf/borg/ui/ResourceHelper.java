@@ -24,10 +24,12 @@ import javax.swing.AbstractButton;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import javax.swing.KeyStroke;
 
 import net.sf.borg.common.Resource;
 
+/*
+ * Disable mnemonic feature in 1.8. Feature was never properly maintained - causing problems.
+ */
 /**
  * Helps parse resource strings (containing text and optional mnemonics and
  * accelerators) for GUI widgets.
@@ -45,10 +47,13 @@ public class ResourceHelper {
 	 *            the resource string with optional pnemonic data
 	 */
 	public static void setText(JMenu mnu, String resourceKey) {
+		mnu.setText(Resource.getResourceString(resourceKey));
+		/*
 		ComponentParms parms = parseParms(resourceKey);
 		mnu.setText(parms.getText());
 		if (parms.getKeyEvent() != -1)
 			mnu.setMnemonic(parms.getKeyEvent());
+			*/
 	}
 
 	/**
@@ -60,12 +65,14 @@ public class ResourceHelper {
 	 *            the resource string with optional pnemonic data
 	 */
 	public static void setText(JMenuItem mnuitm, String resourceKey) {
+		mnuitm.setText(Resource.getResourceString(resourceKey));
+/*
 		ComponentParms parms = parseParms(resourceKey);
 		mnuitm.setText(parms.getText());
 		if (parms.getKeyEvent() != -1)
 			mnuitm.setMnemonic(parms.getKeyEvent());
 		if (parms.getKeyStroke() != null)
-			mnuitm.setAccelerator(parms.getKeyStroke());
+			mnuitm.setAccelerator(parms.getKeyStroke());*/
 	}
 
 	/**
@@ -77,10 +84,12 @@ public class ResourceHelper {
 	 *            the resource string with optional pnemonic data
 	 */
 	public static void setText(AbstractButton button, String resourceKey) {
-		ComponentParms parms = parseParms(resourceKey);
+		button.setText(Resource.getResourceString(resourceKey));
+
+/*		ComponentParms parms = parseParms(resourceKey);
 		button.setText(parms.getText());
 		if (parms.getKeyEvent() != -1)
-			button.setMnemonic(parms.getKeyEvent());
+			button.setMnemonic(parms.getKeyEvent()); */
 	}
 
 	/**
@@ -92,10 +101,12 @@ public class ResourceHelper {
 	 *            the resource string with optional pnemonic data
 	 */
 	public static void setText(JLabel label, String resourceKey) {
-		ComponentParms parms = parseParms(resourceKey);
+		label.setText(Resource.getResourceString(resourceKey));
+
+	/*	ComponentParms parms = parseParms(resourceKey);
 		label.setText(parms.getText());
 		if (parms.getKeyEvent() != -1)
-			label.setDisplayedMnemonic(parms.getKeyEvent());
+			label.setDisplayedMnemonic(parms.getKeyEvent()); */
 	}
 
 	
@@ -109,6 +120,7 @@ public class ResourceHelper {
 	 * 
 	 * @return the ComponentParms object
 	 */
+	/*
 	public static ComponentParms parseParms(String resourceKey) {
 		String parmsText = Resource.getRawResourceString(resourceKey);
 
@@ -132,12 +144,13 @@ public class ResourceHelper {
 		}
 		return new ComponentParms(text, mnemonic, accel);
 	}
-
+*/
 	/**
 	 * ComponentParms contains the text and keyboard shortcut info for a
 	 * resource string. Most resource strings do not have keyboard shortcut
 	 * info.
 	 */
+	/*
 	public static class ComponentParms {
 
 		public final int getKeyEvent() {
@@ -164,6 +177,6 @@ public class ResourceHelper {
 
 		private KeyStroke keyStroke;
 	}
-
+*/
 
 }
