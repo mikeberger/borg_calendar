@@ -5,7 +5,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.GregorianCalendar;
 
 import javax.swing.JFileChooser;
@@ -21,7 +20,6 @@ import net.sf.borg.common.IOHelper;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
-import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.ical.AppointmentIcalAdapter;
 import net.sf.borg.model.ical.CalDav;
 import net.sf.borg.model.ical.IcalFTP;
@@ -58,9 +56,9 @@ public class IcalModule implements Module {
 
 		m.setIcon(new javax.swing.ImageIcon(IcalModule.class
 				.getResource("/resource/Export16.gif")));
-		
+
 		JMenu calmenu = new JMenu("CALDAV");
-		
+
 		JMenuItem caldavs = new JMenuItem();
 		caldavs.setText(Resource.getResourceString("CALDAV-Sync"));
 		caldavs.addActionListener(new ActionListener() {
@@ -137,11 +135,11 @@ public class IcalModule implements Module {
 		});
 
 		calmenu.add(caldavo);
-		
+
 		m.add(calmenu);
-		
+
 		JMenu icsmenu = new JMenu("ICS");
-			
+
 		JMenuItem imp = new JMenuItem();
 		imp.setText(Resource.getResourceString("Import"));
 		imp.addActionListener(new ActionListener() {
@@ -168,19 +166,8 @@ public class IcalModule implements Module {
 
 				try {
 
-					CategoryModel catmod = CategoryModel.getReference();
-					Collection<String> allcats = catmod.getCategories();
-					Object[] cats = allcats.toArray();
-
-					Object o = JOptionPane.showInputDialog(null,
-							Resource.getResourceString("import_cat_choose"),
-							"", JOptionPane.QUESTION_MESSAGE, null, cats,
-							cats[0]);
-					if (o == null)
-						return;
-
-					String warning = AppointmentIcalAdapter.importIcalFromFile(
-							s, (String) o);
+					String warning = AppointmentIcalAdapter
+							.importIcalFromFile(s);
 					if (warning != null && !warning.isEmpty())
 						Errmsg.getErrorHandler().notice(warning);
 				} catch (Exception e) {
@@ -283,7 +270,6 @@ public class IcalModule implements Module {
 		icsmenu.add(exp4);
 
 		m.add(icsmenu);
-		
 
 		return m;
 	}
@@ -293,18 +279,20 @@ public class IcalModule implements Module {
 	}
 
 	/**
-	 * run a sync command in a background thread while a modal message is presented
+	 * run a sync command in a background thread while a modal message is
+	 * presented
 	 */
 	static private void runBackgroundSync(Synctype type) {
-		
+
 		final Synctype ty = type;
 		class SyncWorker extends SwingWorker<Void, Object> {
 			@Override
 			public Void doInBackground() {
 				try {
-					
+
 					// modally lock borg
-					IOHelper.sendMessage("lock:" + Resource.getResourceString("syncing"));
+					IOHelper.sendMessage("lock:"
+							+ Resource.getResourceString("syncing"));
 					if (ty == Synctype.FULL)
 						CalDav.sync(
 								Prefs.getIntPref(PrefName.ICAL_EXPORTYEARS),
@@ -321,10 +309,9 @@ public class IcalModule implements Module {
 					e.printStackTrace();
 					IOHelper.sendLogMessage(e.toString());
 				}
-				
+
 				IOHelper.sendLogMessage(Resource.getResourceString("done"));
 
-				
 				return null;
 			}
 
@@ -352,7 +339,7 @@ public class IcalModule implements Module {
 					String warning;
 					try {
 						warning = AppointmentIcalAdapter.importIcalFromFile(
-								f.getAbsolutePath(), "");
+								f.getAbsolutePath());
 						if (warning != null && !warning.isEmpty())
 							Errmsg.getErrorHandler().notice(warning);
 					} catch (Exception e) {

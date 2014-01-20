@@ -552,20 +552,20 @@ public class AppointmentIcalAdapter {
 		Calendar cal = builder.build(is);
 		is.close();
 
-		return importIcal(cal, null);
+		return importIcal(cal);
 	}
 
-	static public String importIcalFromFile(String file, String category)
+	static public String importIcalFromFile(String file)
 			throws Exception {
 		CalendarBuilder builder = new CalendarBuilder();
 		InputStream is = new FileInputStream(file);
 		Calendar cal = builder.build(is);
 		is.close();
 
-		return importIcal(cal, category);
+		return importIcal(cal);
 	}
 
-	static private String importIcal(Calendar cal, String category)
+	static private String importIcal(Calendar cal)
 			throws Exception {
 
 		int skipped = 0;
