@@ -279,7 +279,7 @@ public class CheckListPanel extends DockableView implements
 
 		String newname = JOptionPane.showInputDialog(Resource
 				.getResourceString("Enter_CheckList_Name"));
-		if (newname == null)
+		if (newname == null || newname.trim().isEmpty())
 			return;
 
 		try {
