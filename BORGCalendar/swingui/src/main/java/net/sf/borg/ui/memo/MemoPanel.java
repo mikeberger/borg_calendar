@@ -68,6 +68,7 @@ import net.sf.borg.ui.SunTrayIconProxy;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 import net.sf.borg.ui.util.HTMLLimitDocument;
 import net.sf.borg.ui.util.HTMLTextPane;
+import net.sf.borg.ui.util.InputDialog;
 import net.sf.borg.ui.util.PasswordHelper;
 import net.sf.borg.ui.util.PopupMenuHelper;
 import net.sf.borg.ui.util.StripedTable;
@@ -498,8 +499,9 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 		}
 
 		// get memo name
-		String name = JOptionPane.showInputDialog(Resource
-				.getResourceString("Enter_Memo_Name"));
+		String name = InputDialog.show(Resource
+				.getResourceString("Enter_Memo_Name"), 50);
+		
 		if (name == null || name.trim().isEmpty())
 			return;
 
