@@ -26,6 +26,7 @@ javax.help.TOCView
 default/BorgHelpTOC.xml
   </data>
  </view>
+ <!--
  <view>
   <name>
 Search
@@ -40,4 +41,5 @@ javax.help.SearchView
 JavaHelpSearch
   </data>
  </view>
+ -->
 </helpset>
