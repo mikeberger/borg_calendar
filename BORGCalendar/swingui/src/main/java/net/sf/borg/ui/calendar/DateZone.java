@@ -177,9 +177,6 @@ class DateZone {
 		String tdtext = JOptionPane.showInputDialog("", Resource
 				.getResourceString("Please_enter_some_appointment_text"));
 		if (tdtext == null || tdtext.trim().isEmpty()) {
-			Errmsg.getErrorHandler()
-					.notice(Resource
-							.getResourceString("Please_enter_some_appointment_text"));
 			return;
 		}
 
