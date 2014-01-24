@@ -57,6 +57,7 @@ import net.sf.borg.ui.MultiView.Module;
 import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.SunTrayIconProxy;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
+import net.sf.borg.ui.util.InputDialog;
 import net.sf.borg.ui.util.PopupMenuHelper;
 import net.sf.borg.ui.util.StripedTable;
 import net.sf.borg.ui.util.TablePrinter;
@@ -670,8 +671,9 @@ public class CheckListPanel extends DockableView implements
 		}
 
 		// get checkList name
-		String name = JOptionPane.showInputDialog(Resource
-				.getResourceString("Enter_CheckList_Name"));
+		String name = InputDialog.show(Resource
+				.getResourceString("Enter_CheckList_Name"), 50);
+		
 		if (name == null || name.trim().isEmpty())
 			return;
 
