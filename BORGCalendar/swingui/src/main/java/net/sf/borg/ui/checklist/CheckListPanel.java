@@ -940,6 +940,13 @@ public class CheckListPanel extends DockableView implements
 	}
 
 	private void uncheckAll() {
+		
+		String name = getSelectedCheckListName();
+		if (name == null) {
+			Errmsg.getErrorHandler().notice(
+					Resource.getResourceString("Select_CheckList_Warning"));
+			return;
+		}
 
 		int ret = JOptionPane.showConfirmDialog(null,
 				Resource.getResourceString("Uncheck_All") + "?",
