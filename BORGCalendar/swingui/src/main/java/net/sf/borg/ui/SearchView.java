@@ -699,8 +699,9 @@ public class SearchView extends DockableView implements Module {
 			for (Appointment appt : appointments) {
 				Object[] ro = new Object[5];
 
+				
 				try {
-					ro[0] = appt.getText();
+					ro[0] = appt.getText().replace('\n', ' ');
 					ro[1] = Resource.getResourceString("appointment");
 					ro[2] = appt.getDate();
 					ro[3] = new Integer(appt.getKey());
