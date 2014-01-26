@@ -521,6 +521,9 @@ public class AppointmentListView extends DockableView implements
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				
+				int[] keys = getSelectedKeys();
+				if( keys.length == 0)
+					return;
 				int ret = JOptionPane.showConfirmDialog(null, Resource
 						.getResourceString("Really_Delete_Apps")
 						+ "?", Resource
@@ -530,7 +533,6 @@ public class AppointmentListView extends DockableView implements
 				if (ret != JOptionPane.OK_OPTION)
 					return;
 
-				int[] keys = getSelectedKeys();
 				AppointmentModel model = AppointmentModel.getReference();
 				for (int i = 0; i < keys.length; ++i)
 					model.delAppt(keys[i]);
