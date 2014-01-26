@@ -209,21 +209,30 @@ public class CategoryChooser extends View {
 		addCategoryMI.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				String inputValue = InputDialog.show(Resource
-						.getResourceString("AddCat"), 15);
-				if(inputValue == null)
-				    return; // cancel case
-				else if(inputValue.trim().isEmpty())
+				String inputValue = null;
+				while(true)
 				{
-					Errmsg.getErrorHandler().notice(Resource.getResourceString("Category_Name_Required"));
-					return;
+					inputValue = InputDialog.show(Resource
+							.getResourceString("AddCat"), 15);
+					if(inputValue == null)
+					    return; // cancel case
+					else if(inputValue.trim().isEmpty())
+					{
+						Errmsg.getErrorHandler().notice(Resource.getResourceString("Category_Name_Required"));
+						continue;
+					}
+					
+					break;
+					
 				}
+				
 				try {
 					CategoryModel.getReference().addCategory(inputValue);
 					CategoryModel.getReference().showCategory(inputValue);
 				} catch (Exception e) {
 					Errmsg.getErrorHandler().errmsg(e);
 				}
+				
 			}
 		});
 		catmenu.add(addCategoryMI);
