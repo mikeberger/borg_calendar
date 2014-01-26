@@ -42,6 +42,8 @@ public class SyncLog extends Model implements Model.Listener, Prefs.Listener {
 
 	public SyncLog() {
 		
+		setProcessUpdates(CalDav.isSyncing());
+
 		new JdbcDBUpgrader(
 				"select id from syncmap",
 				"CREATE CACHED TABLE syncmap (id integer NOT NULL,uid longvarchar, objtype varchar(25) NOT NULL,action varchar(25) NOT NULL,PRIMARY KEY (id,objtype))")
