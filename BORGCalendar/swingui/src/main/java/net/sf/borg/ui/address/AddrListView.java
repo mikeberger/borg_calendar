@@ -219,6 +219,8 @@ public class AddrListView extends DockableView implements Module {
 												Resource
 														.getResourceString("Search_Next"),
 												searchstring);
+								iRow++;
+								jCol=0;
 							}
 						}
 					}
