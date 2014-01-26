@@ -1180,6 +1180,12 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 
 		// to do
 		appt.setTodo(todoCheckBox.isSelected());
+		
+		if( vacationCheckBox.isSelected() && halfDayVacationCheckBox.isSelected())
+		{
+			throw new Warning(
+					Resource.getResourceString("vacation_warning"));
+		}
 
 		// vacation, half-day, and private checkboxes
 		if (vacationCheckBox.isSelected())
