@@ -29,6 +29,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.HashMap;
 
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
@@ -68,6 +69,9 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 		MouseListener, Model.Listener, Prefs.Listener {
 
 	private static final long serialVersionUID = 1L;
+
+	// cache to prevent painting of project tree from accessing the db
+	private HashMap<Integer, Integer> daysLeftCache = new HashMap<Integer, Integer>();
 
 	/**
 	 * Custom Tree Cell Renderer that shows empty projects as closed folders
@@ -109,13 +113,25 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 					// determine the icon for a task based on days left until
 					// next due item
 					if (node.getEntity() instanceof Task) {
+						
+						Task task = (Task) node.getEntity();
 
 						if (TaskModel.isClosed(((Task) node.getEntity()))) {
 							this.setIcon(doneIcon);
 						} else {
 							try {
-								int daysLeft = TaskModel.getReference()
-										.daysLeft(((Task) node.getEntity()));
+								int daysLeft;
+								Integer dl = daysLeftCache.get(new Integer(task.getKey()));
+								if( dl == null )
+								{
+									daysLeft = TaskModel.getReference()
+											.daysLeft(task);
+									daysLeftCache.put(new Integer(task.getKey()), new Integer(daysLeft));
+								}
+								else
+								{
+									daysLeft = dl.intValue();
+								}
 								if (daysLeft < Prefs
 										.getIntPref(PrefName.RED_DAYS))
 									this.setIcon(redIcon);
@@ -677,21 +693,24 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 
 	@Override
 	public void update(ChangeEvent event) {
+		
+		daysLeftCache.clear();
 		refresh();
 
 		// check if the object being edited has been deleted
 		Object o = entityScrollPane.getViewport().getView();
 		if (o instanceof ProjectView && event.getObject() instanceof Project) {
 			ProjectView pv = (ProjectView) o;
-			Project p = (Project)event.getObject();
-			if( event.getAction() == ChangeAction.DELETE && p.getKey() == pv.getShownId()){
+			Project p = (Project) event.getObject();
+			if (event.getAction() == ChangeAction.DELETE
+					&& p.getKey() == pv.getShownId()) {
 				entityScrollPane.setViewportView(null);
 			}
-		}
-		else if (o instanceof TaskView && event.getObject() instanceof Task) {
+		} else if (o instanceof TaskView && event.getObject() instanceof Task) {
 			TaskView pv = (TaskView) o;
-			Task p = (Task)event.getObject();
-			if( event.getAction() == ChangeAction.DELETE && p.getKey() == pv.getShownId()){
+			Task p = (Task) event.getObject();
+			if (event.getAction() == ChangeAction.DELETE
+					&& p.getKey() == pv.getShownId()) {
 				entityScrollPane.setViewportView(null);
 			}
 		}
