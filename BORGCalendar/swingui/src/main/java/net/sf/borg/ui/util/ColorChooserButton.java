@@ -122,7 +122,8 @@ public class ColorChooserButton extends JButton {
 				null, 
 				"", 
 				getColorProperty());
-			setColorProperty(selected);
+			if( selected != null )
+				setColorProperty(selected);
       }
    }
 
