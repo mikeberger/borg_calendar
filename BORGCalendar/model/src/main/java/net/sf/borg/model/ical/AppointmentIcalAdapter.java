@@ -608,11 +608,6 @@ public class AppointmentIcalAdapter {
 			List<Appointment> appts = AppointmentModel.getReference()
 					.getAppointmentsByText(ap.getText());
 
-			for (Appointment dbap : appts) {
-				dbap.setCreateTime(null);
-				dbap.setLastMod(null);
-			}
-
 			if (appts.contains(ap)) {
 				dup_count++;
 				dups.append("DUP: " + ap.getText() + "\n");

@@ -38,7 +38,7 @@ import net.sf.borg.common.Resource;
 @XmlRootElement(name = "Appointment")
 @XmlAccessorType(XmlAccessType.FIELD)
 @Data
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = false,exclude={"createTime", "lastMod"})
 // exclude key and encryption field from hashcode
 public class Appointment extends EncryptableEntity<Appointment> implements
 		CalendarEntity {
