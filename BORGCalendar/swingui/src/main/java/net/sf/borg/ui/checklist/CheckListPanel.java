@@ -152,8 +152,9 @@ public class CheckListPanel extends DockableView implements
 				return;
 			}
 
-			String newname = JOptionPane.showInputDialog(
-					Resource.getResourceString("Enter_CheckList_Name"), name);
+			String newname = InputDialog.show(Resource
+					.getResourceString("Enter_CheckList_Name"), 50);
+
 			if (newname == null || newname.isEmpty() || newname.equals(name))
 				return;
 
@@ -278,8 +279,9 @@ public class CheckListPanel extends DockableView implements
 			// return;
 		}
 
-		String newname = JOptionPane.showInputDialog(Resource
-				.getResourceString("Enter_CheckList_Name"));
+		String newname = InputDialog.show(Resource
+				.getResourceString("Enter_CheckList_Name"), 50);
+
 		if (newname == null || newname.trim().isEmpty())
 			return;
 
