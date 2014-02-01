@@ -1,4 +1,4 @@
 borg_calendar
 =============
 
-http://mbcsoft.com/borg
+http://borg.mbcsoft.com/
