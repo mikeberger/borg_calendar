@@ -1,4 +1,5 @@
 borg_calendar
 =============
 
-http://borg.mbcsoft.com/
+Website: http://borg.mbcsoft.com/
+GitHub: https://github.com/mikeberger/borg_calendar
