@@ -782,18 +782,17 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 
 		} else if (o instanceof Project) {
 			try {
-				ProjectView tskg = new ProjectView((Project) o,
-						ProjectView.Action.CHANGE, null);
-				tskg.setVisible(true);
+				new ProjectView((Project) o,
+						ProjectView.Action.CHANGE, null).showView();
+		
 			} catch (Exception e) {
 				Errmsg.getErrorHandler().errmsg(e);
 				return;
 			}
 		} else if (o instanceof Task) {
 			try {
-				TaskView tskg = new TaskView((Task) o, TaskView.Action.CHANGE,
-						null);
-				tskg.setVisible(true);
+				new TaskView((Task) o, TaskView.Action.CHANGE,
+						null).showView();
 			} catch (Exception e) {
 				Errmsg.getErrorHandler().errmsg(e);
 				return;
