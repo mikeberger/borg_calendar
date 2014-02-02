@@ -194,6 +194,12 @@ public class TaskConfigurator extends View {
 			addItem.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
+					if( typeList.getSelectedValue() == null )
+					{
+						Errmsg.getErrorHandler().notice(Resource
+								.getResourceString("Please_select_a_type"));
+						return;
+					}
 					String subtask = JOptionPane
 							.showInputDialog(net.sf.borg.common.Resource
 									.getResourceString("New_Subtask_Value"));
