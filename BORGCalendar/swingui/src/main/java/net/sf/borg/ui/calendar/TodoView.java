@@ -28,6 +28,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -53,6 +54,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTable;
@@ -102,8 +104,6 @@ import com.toedter.calendar.JDateChooser;
  * take action on the todos, and lets the user quickly enter a new todo
  */
 public class TodoView extends DockableView implements Prefs.Listener, Module {
-
-	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Adds user colors to the todo table
@@ -259,14 +259,15 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 		}
 	}
 
+	private static final long serialVersionUID = 1L;
+
 	/** The change date action. */
 	private ActionListener changeDateAction = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent evt) {
 			List<Appointment> aplist = new ArrayList<Appointment>();
-			for( KeyedEntity<?> ke : getSelectedItems(true))
-			{
-				aplist.add((Appointment)ke);
+			for (KeyedEntity<?> ke : getSelectedItems(true)) {
+				aplist.add((Appointment) ke);
 			}
 			AppointmentListView.onChangeDate(aplist);
 		}
@@ -293,9 +294,8 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 		@Override
 		public void actionPerformed(ActionEvent evt) {
 			List<Appointment> aplist = new ArrayList<Appointment>();
-			for( KeyedEntity<?> ke : getSelectedItems(true))
-			{
-				aplist.add((Appointment)ke);
+			for (KeyedEntity<?> ke : getSelectedItems(true)) {
+				aplist.add((Appointment) ke);
 			}
 			AppointmentListView.onMoveToFollowingDay(aplist);
 		}
@@ -338,15 +338,8 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 	private boolean user_colors = false;
 
 	private JLabel totalLabel;
-	
-	private boolean isInitialized = false;
 
-	private JLabel getTotalLabel() {
-		if (totalLabel == null) {
-			totalLabel = new JLabel();
-		}
-		return totalLabel;
-	}
+	private boolean isInitialized = false;
 
 	/**
 	 * Instantiates a new todo view.
@@ -354,8 +347,6 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 	public TodoView() {
 
 		super();
-
-		
 
 	}
 
@@ -445,6 +436,17 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 
 	}
 
+	private boolean allAppointmentsSelected() {
+		List<KeyedEntity<?>> items = getSelectedItems(false);
+		for (int i = 0; i < items.size(); ++i) {
+			Object o = items.get(i);
+			if (!(o instanceof Appointment)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	/**
 	 * mark selected items as done. For appointments, mark the todo as done. For
 	 * task, projects, subtasks, mark the item as closed
@@ -482,6 +484,64 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 		}
 	}
 
+	@Override
+	public JPanel getComponent() {
+
+		if (!isInitialized) {
+			// listen for pref changes
+			Prefs.addListener(this);
+
+			// listen for appt and task model changes
+			addModel(AppointmentModel.getReference());
+			addModel(TaskModel.getReference());
+			addModel(CategoryModel.getReference());
+
+			// init the gui components
+			initComponents();
+
+			// the todos will be displayed in a sorted table with 2 columns -
+			// data and todo text
+			todoTable.setModel(new TableSorter(new String[] {
+					Resource.getResourceString("Date"),
+					Resource.getResourceString("To_Do"),
+					Resource.getResourceString("Category"),
+					Resource.getResourceString("Color"), "key",
+					Resource.getResourceString("Priority") }, new Class[] {
+					Date.class, java.lang.String.class, java.lang.String.class,
+					java.lang.String.class, java.lang.Integer.class,
+					java.lang.Integer.class }));
+
+			todoTable.getColumnModel().getColumn(0).setPreferredWidth(140);
+			todoTable.getColumnModel().getColumn(1).setPreferredWidth(400);
+			todoTable.getColumnModel().getColumn(2).setPreferredWidth(120);
+			todoTable.getColumnModel().getColumn(5).setPreferredWidth(50);
+
+			user_colors = Prefs.getBoolPref(PrefName.UCS_ONTODO);
+
+			// set user color renderer
+			TableCellRenderer defaultObjectRenderer = todoTable
+					.getDefaultRenderer(Object.class);
+			todoTable.setDefaultRenderer(Object.class,
+					new TodoTableCellRenderer(defaultObjectRenderer));
+			TableCellRenderer defaultDateRenderer = todoTable
+					.getDefaultRenderer(Date.class);
+			todoTable.setDefaultRenderer(Date.class, new TodoTableCellRenderer(
+					defaultDateRenderer));
+			TableCellRenderer defaultIntegerRenderer = todoTable
+					.getDefaultRenderer(Integer.class);
+			todoTable.setDefaultRenderer(Integer.class,
+					new TodoTableCellRenderer(defaultIntegerRenderer));
+
+			// remove the hidden columns - color and key
+			todoTable.removeColumn(todoTable.getColumnModel().getColumn(3));
+			todoTable.removeColumn(todoTable.getColumnModel().getColumn(3));
+
+			refresh();
+			isInitialized = true;
+		}
+		return this;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -490,6 +550,11 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 	@Override
 	public String getFrameTitle() {
 		return Resource.getResourceString("To_Do_List");
+	}
+
+	@Override
+	public String getModuleName() {
+		return Resource.getResourceString("To_Do");
 	}
 
 	/**
@@ -529,10 +594,21 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 		return lst;
 	}
 
+	private JLabel getTotalLabel() {
+		if (totalLabel == null) {
+			totalLabel = new JLabel();
+		}
+		return totalLabel;
+	}
+
+	@Override
+	public ViewType getViewType() {
+		return ViewType.TODO;
+	}
+
 	/**
 	 * Inits the components.
 	 */
-	@SuppressWarnings("unused")
 	private void initComponents() {
 
 		// create widgets (all bunched up because of code generation - not worth
@@ -686,14 +762,74 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 				onEditTodo();
 			}
 		};
-		new PopupMenuHelper(todoTable, new PopupMenuHelper.Entry[] {
-				new PopupMenuHelper.Entry(doneDeleteAction, "Done_(Delete)"),
-				new PopupMenuHelper.Entry(doneNoDeleteAction,
-						"Done_(No_Delete)"),
-				new PopupMenuHelper.Entry(alEdit, "Edit"),
-				new PopupMenuHelper.Entry(moveToFollowingDayAction,
-						"Move_To_Following_Day"),
-				new PopupMenuHelper.Entry(changeDateAction, "changedate"), });
+
+		final JPopupMenu apptPopupMenu = PopupMenuHelper
+				.createPopupMenu(new PopupMenuHelper.Entry[] {
+						new PopupMenuHelper.Entry(doneDeleteAction,
+								"Done_(Delete)"),
+						new PopupMenuHelper.Entry(doneNoDeleteAction,
+								"Done_(No_Delete)"),
+						new PopupMenuHelper.Entry(alEdit, "Edit"),
+						new PopupMenuHelper.Entry(moveToFollowingDayAction,
+								"Move_To_Following_Day"),
+						new PopupMenuHelper.Entry(changeDateAction,
+								"changedate") });
+
+		final JPopupMenu todoPopupMenu = PopupMenuHelper
+				.createPopupMenu(new PopupMenuHelper.Entry[] {
+						new PopupMenuHelper.Entry(doneDeleteAction,
+								"Done_(No_Delete)"),
+						new PopupMenuHelper.Entry(alEdit, "Edit") });
+
+		todoTable.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				switch (e.getKeyCode()) {
+				case 0x020D:
+					int[] selIndices = todoTable.getSelectedRows();
+					if (selIndices.length == 0)
+						return;
+					int rowIndex = selIndices[0];
+					Rectangle rct = todoTable.getCellRect(rowIndex, 0, false);
+					if( getSelectedItems(false).isEmpty())
+						return;
+					if( allAppointmentsSelected())
+						apptPopupMenu.show(todoTable, rct.x, rct.y + rct.height);
+					else
+						todoPopupMenu.show(todoTable, rct.x, rct.y + rct.height);
+						
+					break;
+				}
+			}
+		});
+
+		todoTable.addMouseListener(new MouseAdapter() {
+			private void maybeShowPopup(MouseEvent e) {
+				if (e.isPopupTrigger()) {
+					int row = todoTable.rowAtPoint(e.getPoint());
+					if (row != -1 && !todoTable.isRowSelected(row)) {
+						todoTable.getSelectionModel().setSelectionInterval(row,
+								row);
+					}
+					if( getSelectedItems(false).isEmpty())
+						return;
+					if( allAppointmentsSelected())
+						apptPopupMenu.show(e.getComponent(), e.getX(), e.getY());
+					else
+						todoPopupMenu.show(e.getComponent(), e.getX(), e.getY());
+				}
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				maybeShowPopup(e);
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				maybeShowPopup(e);
+			}
+		});
 
 		// *******************************************************************
 		// button panel
@@ -743,6 +879,42 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 
 	}
 
+	@Override
+	public void initialize(MultiView parent) {
+		final MultiView par = parent;
+		parent.addToolBarItem(
+				new ImageIcon(getClass().getResource(
+						"/resource/Properties16.gif")), getModuleName(),
+				new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent evt) {
+						par.setView(getViewType());
+					}
+				});
+		SunTrayIconProxy.addAction(getModuleName(), new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent evt) {
+				par.setView(getViewType());
+			}
+		});
+	}
+
+	private void loadCategories() {
+		// load categories
+		try {
+			categoryComboBox.removeAllItems();
+			Collection<String> acats = CategoryModel.getReference()
+					.getCategories();
+			Iterator<String> ait = acats.iterator();
+			while (ait.hasNext()) {
+				categoryComboBox.addItem(ait.next());
+			}
+			categoryComboBox.setSelectedIndex(0);
+		} catch (Exception e) {
+			Errmsg.getErrorHandler().errmsg(e);
+		}
+	}
+
 	/**
 	 * open a todo item for editing
 	 */
@@ -782,17 +954,16 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 
 		} else if (o instanceof Project) {
 			try {
-				new ProjectView((Project) o,
-						ProjectView.Action.CHANGE, null).showView();
-		
+				new ProjectView((Project) o, ProjectView.Action.CHANGE, null)
+						.showView();
+
 			} catch (Exception e) {
 				Errmsg.getErrorHandler().errmsg(e);
 				return;
 			}
 		} else if (o instanceof Task) {
 			try {
-				new TaskView((Task) o, TaskView.Action.CHANGE,
-						null).showView();
+				new TaskView((Task) o, TaskView.Action.CHANGE, null).showView();
 			} catch (Exception e) {
 				Errmsg.getErrorHandler().errmsg(e);
 				return;
@@ -1055,110 +1226,5 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 		}
 
 		refresh();
-	}
-
-	@Override
-	public String getModuleName() {
-		return Resource.getResourceString("To_Do");
-	}
-
-	@Override
-	public JPanel getComponent() {
-		
-		if( !isInitialized)
-		{
-			// listen for pref changes
-			Prefs.addListener(this);
-
-			// listen for appt and task model changes
-			addModel(AppointmentModel.getReference());
-			addModel(TaskModel.getReference());
-			addModel(CategoryModel.getReference());
-
-			// init the gui components
-			initComponents();
-
-			// the todos will be displayed in a sorted table with 2 columns -
-			// data and todo text
-			todoTable.setModel(new TableSorter(new String[] {
-					Resource.getResourceString("Date"),
-					Resource.getResourceString("To_Do"),
-					Resource.getResourceString("Category"),
-					Resource.getResourceString("Color"), "key",
-					Resource.getResourceString("Priority") }, new Class[] {
-					Date.class, java.lang.String.class, java.lang.String.class,
-					java.lang.String.class, java.lang.Integer.class,
-					java.lang.Integer.class }));
-
-			todoTable.getColumnModel().getColumn(0).setPreferredWidth(140);
-			todoTable.getColumnModel().getColumn(1).setPreferredWidth(400);
-			todoTable.getColumnModel().getColumn(2).setPreferredWidth(120);
-			todoTable.getColumnModel().getColumn(5).setPreferredWidth(50);
-
-			user_colors = Prefs.getBoolPref(PrefName.UCS_ONTODO);
-
-			// set user color renderer
-			TableCellRenderer defaultObjectRenderer = todoTable
-					.getDefaultRenderer(Object.class);
-			todoTable.setDefaultRenderer(Object.class, new TodoTableCellRenderer(
-					defaultObjectRenderer));
-			TableCellRenderer defaultDateRenderer = todoTable
-					.getDefaultRenderer(Date.class);
-			todoTable.setDefaultRenderer(Date.class, new TodoTableCellRenderer(
-					defaultDateRenderer));
-			TableCellRenderer defaultIntegerRenderer = todoTable
-					.getDefaultRenderer(Integer.class);
-			todoTable.setDefaultRenderer(Integer.class, new TodoTableCellRenderer(
-					defaultIntegerRenderer));
-
-			// remove the hidden columns - color and key
-			todoTable.removeColumn(todoTable.getColumnModel().getColumn(3));
-			todoTable.removeColumn(todoTable.getColumnModel().getColumn(3));
-
-			refresh();
-			isInitialized = true;
-		}
-		return this;
-	}
-
-	@Override
-	public void initialize(MultiView parent) {
-		final MultiView par = parent;
-		parent.addToolBarItem(
-				new ImageIcon(getClass().getResource(
-						"/resource/Properties16.gif")), getModuleName(),
-				new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent evt) {
-						par.setView(getViewType());
-					}
-				});
-		SunTrayIconProxy.addAction(getModuleName(), new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent evt) {
-				par.setView(getViewType());
-			}
-		});
-	}
-
-	@Override
-	public ViewType getViewType() {
-		return ViewType.TODO;
-	}
-
-	private void loadCategories() {
-		// load categories
-		try {
-			categoryComboBox.removeAllItems();
-			Collection<String> acats = CategoryModel.getReference()
-					.getCategories();
-			Iterator<String> ait = acats.iterator();
-			while (ait.hasNext()) {
-				categoryComboBox.addItem(ait.next());
-			}
-			categoryComboBox.setSelectedIndex(0);
-		} catch (Exception e) {
-			Errmsg.getErrorHandler().errmsg(e);
-		}
 	}
 }

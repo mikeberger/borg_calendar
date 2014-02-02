@@ -33,7 +33,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 
-import net.sf.borg.ui.ResourceHelper;
+import net.sf.borg.common.Resource;
 
 /**
  * Helps create and manage context menus for a JTable.
@@ -143,14 +143,28 @@ public class PopupMenuHelper {
 		}
 	}
 
-	/** The menu items. */
-	private JMenuItem[] menuItems;
 
 	/** The popup menu. */
 	private JPopupMenu popup;
 
 	/** The table. */
 	private JComponent component;
+
+	static public JPopupMenu createPopupMenu(Entry[] entries) {
+		
+		JPopupMenu p = new JPopupMenu();
+
+		// create menu items from the entries
+		for (int i = 0; i < entries.length; ++i) {
+			Entry entry = entries[i];
+			JMenuItem mnuitm = new JMenuItem();
+			p.add(mnuitm);
+			mnuitm.setText(Resource.getResourceString(entry.getResourceKey()));
+			mnuitm.addActionListener(entry.getListener());
+		}
+		
+		return p;
+	}
 
 	/**
 	 * Instantiates a new popup menu helper.
@@ -163,18 +177,7 @@ public class PopupMenuHelper {
 	public PopupMenuHelper(final JComponent c, Entry[] entries) {
 		this.component = c;
 
-		JMenuItem mnuitm;
-		menuItems = new JMenuItem[entries.length];
-		popup = new JPopupMenu();
-
-		// create menu items from the entries
-		for (int i = 0; i < entries.length; ++i) {
-			Entry entry = entries[i];
-			popup.add(mnuitm = new JMenuItem());
-			ResourceHelper.setText(mnuitm, entry.getResourceKey());
-			mnuitm.addActionListener(entry.getListener());
-			menuItems[i] = mnuitm;
-		}
+		popup = createPopupMenu(entries);
 
 		// listen for mouse events
 		c.addMouseListener(new MyPopupListener());
@@ -194,12 +197,11 @@ public class PopupMenuHelper {
 						int rowIndex = selIndices[0];
 						Rectangle rct = table.getCellRect(rowIndex, 0, false);
 						popup.show(c, rct.x, rct.y + rct.height);
-					}
-					else if( component instanceof JList)
-					{
+					} else if (component instanceof JList) {
 						JList<?> t = (JList<?>) component;
 						int index = t.getSelectedIndex();
-						if( index == -1 ) return;
+						if (index == -1)
+							return;
 						Rectangle rct = t.getCellBounds(index, index);
 						popup.show(c, rct.x, rct.y + rct.height);
 					}
