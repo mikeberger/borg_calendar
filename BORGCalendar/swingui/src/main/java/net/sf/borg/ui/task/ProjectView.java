@@ -108,7 +108,12 @@ public class ProjectView extends DockableView {
 	 * @return the project string
 	 */
 	static private String getProjectString(Project p) {
-		return p.getKey() + ":" + p.getDescription();
+		String desc = p.getDescription();
+		if( desc != null && desc.length() > 20)
+		{
+			desc = desc.substring(0, 20) + "...";
+		}
+		return p.getKey() + ":" + desc;
 	}
 
 	/** The category box. */
@@ -222,7 +227,7 @@ public class ProjectView extends DockableView {
 		projectIdText = new JTextField();
 		projectIdText.setText("projectIdText");
 
-		description = new JTextField();
+		description = new JTextField(10);
 		JLabel lblItemNum = new JLabel();
 		lblItemNum.setText(Resource.getResourceString("Item_#"));
 
@@ -272,6 +277,7 @@ public class ProjectView extends DockableView {
 		GridBagConstraints dgbc = GridBagConstraintsFactory.create(1,
 				3, GridBagConstraints.BOTH, 1.0, 0.0);
 		dgbc.gridwidth = 5;
+		dgbc.weightx = 0.0;
 		projectInfoPanel.add(description, dgbc);
 
 		JLabel parentLabel = new JLabel(Resource.getResourceString("parent"));
@@ -286,7 +292,7 @@ public class ProjectView extends DockableView {
 						GridBagConstraints.BOTH));
 
 		projectInfoPanel.add(parentProjectComboBox, GridBagConstraintsFactory
-				.create(3, 0, GridBagConstraints.BOTH, 1.0, 0.0));
+				.create(3, 0, GridBagConstraints.BOTH, 0.0, 0.0));
 		projectInfoPanel.add(startDateChooser, GridBagConstraintsFactory
 				.create(3, 1, GridBagConstraints.BOTH, 1.0, 0.0));
 		projectInfoPanel.add(dueDateChooser, GridBagConstraintsFactory.create(
@@ -320,7 +326,7 @@ public class ProjectView extends DockableView {
 				2, GridBagConstraints.BOTH, 1.0, 0.0));
 
 		add(projectInfoPanel, GridBagConstraintsFactory.create(0, 0,
-				GridBagConstraints.BOTH, 1.0, 0.0));
+				GridBagConstraints.BOTH, 0.0, 0.0));
 
 		/*
 		 * button panel
