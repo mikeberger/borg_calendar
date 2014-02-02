@@ -1109,6 +1109,12 @@ public class TaskView extends DockableView {
 				}
 
 			}
+			
+			if (s.getStartDate() != null && s.getDueDate() != null && DateUtil.isAfter(s.getStartDate(), s.getDueDate())) {
+				String msg = Resource.getResourceString("sd_dd_warn")
+						+ ": " + desc;
+				throw new Warning(msg);
+			}
 
 			s.setTask(new Integer(tasknum));
 
