@@ -277,7 +277,12 @@ public class TaskView extends DockableView {
 	 * @return the project string
 	 */
 	static public String getProjectString(Project p) {
-		return p.getKey() + ":" + p.getDescription();
+		String desc = p.getDescription();
+		if( desc != null && desc.length() > 20)
+		{
+			desc = desc.substring(0, 20) + "...";
+		}
+		return p.getKey() + ":" + desc;
 	}
 
 	/** The link panel. */
