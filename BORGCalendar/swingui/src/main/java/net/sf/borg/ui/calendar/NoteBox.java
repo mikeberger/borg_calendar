@@ -31,6 +31,7 @@ import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.Serializable;
 import java.text.AttributedString;
+import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -457,6 +458,7 @@ public class NoteBox extends Box implements Box.Draggable {
 
 			Task task = TaskModel.getReference()
 					.getTask(((Task) bean).getKey());
+			Date origd = task.getDueDate();
 			task.setDueDate(d);
 
 			// reject change if it was dragged before its start date
@@ -466,6 +468,11 @@ public class NoteBox extends Box implements Box.Draggable {
 			}
 
 			TaskModel.getReference().savetask(task);
+			TaskModel.getReference().addLog(
+					task.getKey(),
+					Resource.getResourceString("DueDate") + " "
+							+ Resource.getResourceString("Change")
+							+ ": " + DateFormat.getDateInstance().format(origd) + " --> " + DateFormat.getDateInstance().format(d));
 
 		} else if (bean instanceof Subtask) {
 
