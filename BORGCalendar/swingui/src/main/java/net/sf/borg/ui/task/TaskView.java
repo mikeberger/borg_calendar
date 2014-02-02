@@ -27,6 +27,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -42,6 +44,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
@@ -722,7 +725,6 @@ public class TaskView extends DockableView {
 	/**
 	 * Initialize the subtask table.
 	 */
-	@SuppressWarnings("unused")
 	private void initSubtaskTable() {
 
 		defaultIntegerCellRenderer = subTaskTable
@@ -808,115 +810,149 @@ public class TaskView extends DockableView {
 		// sort by due date
 		// ts.sortByColumn(4);
 		ts.addMouseListenerToHeaderInTable(subTaskTable);
+		
+		final JPopupMenu stmenu = PopupMenuHelper.createPopupMenu(new PopupMenuHelper.Entry[] {
 
-		// popup menu
-		new PopupMenuHelper(subTaskTable, new PopupMenuHelper.Entry[] {
+				new PopupMenuHelper.Entry(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent evt) {
 
-		new PopupMenuHelper.Entry(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent evt) {
-
-				TableSorter ts2 = (TableSorter) subTaskTable.getModel();
-				Integer ids[] = getSelectedSubtaskIds();
-				for (int i = 0; i < ids.length; ++i) {
-					if (ids[i] == null)
-						continue;
-					for (int row = 0; row < ts2.getRowCount(); row++) {
-						Integer rowid = (Integer) ts2.getValueAt(row, 1);
-						if (rowid != null
-								&& rowid.intValue() == ids[i].intValue()) {
-							ts2.setValueAt(null, row, 4);
-							break;
+						TableSorter ts2 = (TableSorter) subTaskTable.getModel();
+						Integer ids[] = getSelectedSubtaskIds();
+						for (int i = 0; i < ids.length; ++i) {
+							if (ids[i] == null)
+								continue;
+							for (int row = 0; row < ts2.getRowCount(); row++) {
+								Integer rowid = (Integer) ts2.getValueAt(row, 1);
+								if (rowid != null
+										&& rowid.intValue() == ids[i].intValue()) {
+									ts2.setValueAt(null, row, 4);
+									break;
+								}
+							}
 						}
 					}
-				}
-			}
-		}, "Clear_DueDate"), new PopupMenuHelper.Entry(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent evt) {
+				}, "Clear_DueDate"), new PopupMenuHelper.Entry(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent evt) {
 
-				TableSorter ts2 = (TableSorter) subTaskTable.getModel();
+						TableSorter ts2 = (TableSorter) subTaskTable.getModel();
 
-				int[] indices = subTaskTable.getSelectedRows();
-				if (indices.length == 0)
-					return;
+						int[] indices = subTaskTable.getSelectedRows();
+						if (indices.length == 0)
+							return;
 
-				// prompt user for due date
-				DateDialog dlg = new DateDialog(null);
-				dlg.setCalendar(new GregorianCalendar());
-				dlg.setVisible(true);
-				Calendar dlgcal = dlg.getCalendar();
-				if (dlgcal == null)
-					return;
+						// prompt user for due date
+						DateDialog dlg = new DateDialog(null);
+						dlg.setCalendar(new GregorianCalendar());
+						dlg.setVisible(true);
+						Calendar dlgcal = dlg.getCalendar();
+						if (dlgcal == null)
+							return;
 
-				// set the due date
-				Integer ids[] = getSelectedSubtaskIds();
-				for (int i = 0; i < ids.length; ++i) {
-					if (ids[i] == null)
-						continue;
-					for (int row = 0; row < ts2.getRowCount(); row++) {
-						Integer rowid = (Integer) ts2.getValueAt(row, 1);
-						if (rowid != null
-								&& rowid.intValue() == ids[i].intValue()) {
-							ts2.setValueAt(dlgcal.getTime(), row, 4);
-							break;
+						// set the due date
+						Integer ids[] = getSelectedSubtaskIds();
+						for (int i = 0; i < ids.length; ++i) {
+							if (ids[i] == null)
+								continue;
+							for (int row = 0; row < ts2.getRowCount(); row++) {
+								Integer rowid = (Integer) ts2.getValueAt(row, 1);
+								if (rowid != null
+										&& rowid.intValue() == ids[i].intValue()) {
+									ts2.setValueAt(dlgcal.getTime(), row, 4);
+									break;
+								}
+							}
 						}
 					}
-				}
-			}
-		}, "Set_DueDate"), new PopupMenuHelper.Entry(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent evt) {
+				}, "Set_DueDate"), new PopupMenuHelper.Entry(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent evt) {
 
-				TableSorter ts2 = (TableSorter) subTaskTable.getModel();
-				Integer ids[] = getSelectedSubtaskIds();
-				if (ids.length == 0)
-					return;
+						TableSorter ts2 = (TableSorter) subTaskTable.getModel();
+						Integer ids[] = getSelectedSubtaskIds();
+						if (ids.length == 0)
+							return;
 
-				// confirm delete
-				int ret = JOptionPane.showConfirmDialog(null,
-						Resource.getResourceString("Really_Delete_") + "?",
-						Resource.getResourceString("Confirm_Delete"),
-						JOptionPane.OK_CANCEL_OPTION,
-						JOptionPane.QUESTION_MESSAGE);
-				if (ret != JOptionPane.OK_OPTION)
-					return;
+						// confirm delete
+						int ret = JOptionPane.showConfirmDialog(null,
+								Resource.getResourceString("Really_Delete_") + "?",
+								Resource.getResourceString("Confirm_Delete"),
+								JOptionPane.OK_CANCEL_OPTION,
+								JOptionPane.QUESTION_MESSAGE);
+						if (ret != JOptionPane.OK_OPTION)
+							return;
 
-				// to delete, we have to save the id in a list for
-				// deletion and
-				// null out the table rows so it is not added back
-				for (int i = 0; i < ids.length; ++i) {
-					if (ids[i] == null)
-						continue;
+						// to delete, we have to save the id in a list for
+						// deletion and
+						// null out the table rows so it is not added back
+						for (int i = 0; i < ids.length; ++i) {
+							if (ids[i] == null)
+								continue;
 
-					subTaskIdsToBeDeleted.add(ids[i]);
+							subTaskIdsToBeDeleted.add(ids[i]);
 
-					for (int row = 0; row < ts2.getRowCount(); row++) {
-						Integer rowid = (Integer) ts2.getValueAt(row, 1);
-						if (rowid != null
-								&& rowid.intValue() == ids[i].intValue()) {
-							// clear the row
-							ts2.setValueAt(new Boolean(false), row, 0);
-							ts2.setValueAt(null, row, 1);
-							ts2.setValueAt(null, row, 2);
-							ts2.setValueAt(null, row, 3);
-							ts2.setValueAt(null, row, 4);
-							ts2.setValueAt(null, row, 5);
-							ts2.setValueAt(null, row, 6);
-							ts2.setValueAt(null, row, 7);
-							break;
+							for (int row = 0; row < ts2.getRowCount(); row++) {
+								Integer rowid = (Integer) ts2.getValueAt(row, 1);
+								if (rowid != null
+										&& rowid.intValue() == ids[i].intValue()) {
+									// clear the row
+									ts2.setValueAt(new Boolean(false), row, 0);
+									ts2.setValueAt(null, row, 1);
+									ts2.setValueAt(null, row, 2);
+									ts2.setValueAt(null, row, 3);
+									ts2.setValueAt(null, row, 4);
+									ts2.setValueAt(null, row, 5);
+									ts2.setValueAt(null, row, 6);
+									ts2.setValueAt(null, row, 7);
+									break;
+								}
+							}
+						}
+
+						// if table is now empty - add 1 row back so the user
+						// can edit
+						if (ts2.getRowCount() == 0) {
+							insertSubtask();
 						}
 					}
-				}
+				}, "Delete"), });
 
-				// if table is now empty - add 1 row back so the user
-				// can edit
-				if (ts2.getRowCount() == 0) {
-					insertSubtask();
-				}
-			}
-		}, "Delete"), });
+			
+				subTaskTable.addMouseListener(new MouseAdapter(){
+					private void maybeShowPopup(MouseEvent e) {
+						if (e.isPopupTrigger()) {
+							int row = subTaskTable.rowAtPoint(e.getPoint());
+							if (row != -1 && !subTaskTable.isRowSelected(row)) {
+								subTaskTable.getSelectionModel().setSelectionInterval(row,
+										row);
+							}
+							if( rowsSelected())
+								stmenu.show(e.getComponent(), e.getX(), e.getY());
+						}
+					}
 
+					@Override
+					public void mousePressed(MouseEvent e) {
+						maybeShowPopup(e);
+					}
+
+					@Override
+					public void mouseReleased(MouseEvent e) {
+						maybeShowPopup(e);
+					}
+				});
+
+	}
+	
+	private boolean rowsSelected()
+	{
+		Integer ids[] = getSelectedSubtaskIds();
+		for (int i = 0; i < ids.length; ++i) {
+			if (ids[i] != null)
+				return true;
+		}
+		return false;
 	}
 
 	/**
