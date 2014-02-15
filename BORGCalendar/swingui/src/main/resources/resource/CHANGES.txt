@@ -7,6 +7,75 @@ Merge Ical plugin into base product
 Option to FTP an Ical export on shutdown
 Add pending Projects, Tasks, Subtasks with due dates to Ical export
 Import Ical from URL
+Remove Mnemonics
+Remove Address Phone Number and Email Validation
+
+Closed Tickets
+==============
+Type	#	Summary
+Defect	377	Adding a SubTask without selecting a Task does not result in the creation of a SubTask.
+Defect	376	Attempting to add a Subtask without selecting a task does not invoke an error.
+Defect	374	Attempting to Sync displays an error indicating that sync is not on in the Ical properties, but it is unclear as to how to turn sync on.
+Defect	360	JdbcSQLException upon copying a checklist and naming it with > 50 letters
+Enhancement	356	Checklist renaming allows input of more than 50 characters
+Defect	350	Duplicate Holiday entries for the same *.ics file
+Enhancement	345	Local language list is not ordered
+Defect	338	Opening colour setting and clicking cancel changes original colour to black
+Defect	328	Help menu URLs do not function properly, and causes mouse malfunctions
+Defect	327	“Tasks” and “Project” can not properly handle “Move Following Day” and “Change Date”
+Defect	326	“Tasks” and “Project” can not do “Edit” and double click in “To Do List” window
+Defect	325	Appointment editor right-click menu on delete is misleading
+Defect	322	"Clean Due Date", "Set Due Date" and "Delete" don’t work.
+Defect	307	Save button shifts to the right as the length of the description increases
+Enhancement	304	Category wizard window disappears after asking for input
+Defect	303	Editing appointments with vacation unchecked in properties part
+Defect	302	Repeat to find the same row in "Address Book"
+Defect	301	Delete in appointment editor always prompts Confirm Delete
+Defect	297	User can copy checklist into a list with no name
+Defect	296	Getting a JdbcSQLException when entering a long name for a new memo
+Defect	292	Appointment search result contains description attached in item name
+Defect	285	Memo import fails upon importing Entire Backup Zipfile on v1.8
+Defect	283	jdbcSQLException error occurs upon importing Entire Backup Zipfile on v.18
+Defect	280	The "Search" feature in the Help section does not work or takes too long to find a given term.
+Defect	278	Alt + L, Alt + S, Alt + E and Alt + o doesn't have any effect under Appearance even though it has underlined L, S, E, o indicating a mnemonic.
+Defect	277	Alt + R doesn't have any effect in the Reminder Email Time under Email Parameters even though it has underlined R indicating a mnemonic.
+Defect	276	Alt + S doesn't have any effect in the SMTP Server under Email Parameters even though it has underlined S indicating a mnemonic.
+Defect	275	conflict “Alt-h” in the edit preferences
+Defect	274	Pressing "Alt-q" does not activate the "Frequency" menu in the Appointment Editor.
+Defect	273	While importing “.ics” calendar file, the chosen category for imported appointments is reset to “No Category” after the import
+Defect	272	Cannot Remove Empty Item in Checklist
+Defect	269	Canceling "Quick ToDo" window shows the same warning of empty textbox
+Defect	268	"mark todo in month view" checkbox marks also day view and week view.
+Defect	267	Using up button when setting 'Times' value in Recurrence doesn't work for 0
+Defect	255	checklist name with more than 50 characters causes SQL exception
+Defect	252	"Uncheck All" button doesn't produce a warning when performed with no checklist selected.
+Defect	243	Pressing "Alt-r" does not open "Categories" menu, even though it contains an underlined r (indicating "r" mnemonic).
+Defect	242	Pressing "Alt-o" does not open "Options" menu, even though it contains an underlined o (indicating "o" mnemonic).
+Defect	241	Pressing "Alt-c" does not open "Action" menu, even though it contains underlined "c" (indicating "c" mnemonic).
+Defect	240	Dragging an event off the top of the month view and releasing left mouse button throws the event into the previous month.
+Defect	237	The due date is earlier than the start date of the SubTask
+Defect	236	space “ “ can be used to add an appointment in Quick ToDo list
+Defect	234	"Search String" fails for "Memo" when "Memo" has more than one line
+Defect	233	Space " " can be used as description/summary for creating a project/task.
+Defect	219	Task State Editor does not allow creation/modification of new/existing Task Types
+Defect	218	Valid Home Phone and Work Phone numbers not accepted in Address Book
+Defect	217	"Null Pointer Exception" thrown when trying to import backup appointments from version 1.7.9 into version 1.8 (Compatibility Issues)
+Defect	216	A task can be brought back to OPEN state even its Project is in CLOSED state
+Defect	214	A Project can be closed before its sub projects (with open tasks) can be closed.
+Defect	213	A cyclic loop can be created between a project and its parent causing the looped parts to disappear from the ‘Project Tree’.
+Defect	209	Deleted Projects still appear in Parent drop down menu as options
+Defect	206	Space " " can be used as Appointment Text for appointments.
+Defect	204	Changing the date in ‘Appointment List’ on the ‘Appointment Editor’ view changes the date the appointment gets added to, even though the title of the ‘Appointment Editor’ tab still reflects the original date.
+Defect	202	Using ‘Save & Close’ with an undocked ‘Appointment Editor’ causes the selected docked view in the main application window to close.
+Defect	201	"Category" drop down menu under the "To do List" tab keeps populating with repeated categories.
+Defect	199	can’t change an appointment’s category to <no category>
+Defect	197	Changing the date of the appointment using "Change Date" checkbox in appointment editor throws "Null Pointer Exception"
+Defect	196	Throws Null Pointer Exception when Recurrence End Date is left Empty for an appointment.
+Defect	195	History field of a task does not log change in due date when task is moved in the Month view
+Defect	193	Inconsistent behavior while copying encrypted appointments
+Defect	192	Uncheck all option for checklists does not remove line through item name
+Defect	190	Renaming of a memo with an existing memo deletes the original memo
+Defect	187	Cannot edit entry in the address book ('Entry Exists')
 
 BORG 1.7.9
 ----------
