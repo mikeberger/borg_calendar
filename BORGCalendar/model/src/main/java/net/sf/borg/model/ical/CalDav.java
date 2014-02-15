@@ -395,7 +395,13 @@ public class CalDav {
 		processSyncMap(collection, collection2);
 
 		if (!outward_only)
+		{
 			syncFromServer(collection, years);
+			
+			// incoming sync could cause additional outward activity due to borg needing to convert multiple events
+			// into one - a limitation of borg
+			processSyncMap(collection, collection2);
+		}
 
 		log.info("SYNC: Done");
 
