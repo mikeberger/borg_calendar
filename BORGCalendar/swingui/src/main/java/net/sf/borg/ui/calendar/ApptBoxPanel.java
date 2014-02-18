@@ -261,6 +261,9 @@ abstract class ApptBoxPanel extends JPanel implements ComponentListener {
 			
 			// right click
 			if (evt.getButton() == MouseEvent.BUTTON3) {
+				
+				if( dragStarted && draggedBox != null)
+					return;
 
 				// if no box or zone - do nothing
 				if (b == null)
