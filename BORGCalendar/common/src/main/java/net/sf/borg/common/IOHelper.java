@@ -24,8 +24,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.InetAddress;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.UnknownHostException;
 
 /**
  * standard routines for file I/O with prompting
@@ -93,8 +95,20 @@ public class IOHelper {
 
 	public static void setProxy() {
 		
+		
 		if (Prefs.getBoolPref(PrefName.USE_PROXY)) {
 			String host = Prefs.getPref(PrefName.PROXY_HOST);
+			
+			try {
+				InetAddress.getByName(host);
+			} catch (UnknownHostException e) {
+				Errmsg.getErrorHandler().notice(e.toString());
+				System.clearProperty("http.proxyHost");
+				System.clearProperty("https.proxyHost");
+				System.clearProperty("http.proxyPort");
+				System.clearProperty("https.proxyPort");
+				return;
+			}
 			System.setProperty("http.proxyHost", host);
 			System.setProperty("https.proxyHost", host);
 
