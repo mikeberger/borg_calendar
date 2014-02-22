@@ -28,11 +28,14 @@ import java.net.InetAddress;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.UnknownHostException;
+import java.util.logging.Logger;
 
 /**
  * standard routines for file I/O with prompting
  */
 public class IOHelper {
+
+	static private final Logger log = Logger.getLogger("net.sf.borg");
 
 	/**
 	 * The home directory; gets updated to ensure it is the last used directory,
@@ -102,7 +105,8 @@ public class IOHelper {
 			try {
 				InetAddress.getByName(host);
 			} catch (UnknownHostException e) {
-				Errmsg.getErrorHandler().notice(e.toString());
+				log.info(e.toString());
+				log.info("Clearing Proxy Settings");
 				System.clearProperty("http.proxyHost");
 				System.clearProperty("https.proxyHost");
 				System.clearProperty("http.proxyPort");
