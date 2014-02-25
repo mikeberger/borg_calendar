@@ -7,6 +7,7 @@ import java.io.File;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -20,6 +21,8 @@ import net.sf.borg.common.IOHelper;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
+import net.sf.borg.model.Model;
+import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.ical.AppointmentIcalAdapter;
 import net.sf.borg.model.ical.CalDav;
 import net.sf.borg.model.ical.IcalFTP;
@@ -31,9 +34,30 @@ import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.options.IcalOptionsPanel;
 import net.sf.borg.ui.options.OptionsView;
 
-public class IcalModule implements Module {
+public class IcalModule implements Module, Prefs.Listener, Model.Listener {
 
 	private static PrefName url_pref = new PrefName("saved_import_url", "");
+
+	private JButton syncToolbarButton = null;
+	
+	private static ActionListener syncListener = new ActionListener(){
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			try {
+				if (!CalDav.isSyncing()) {
+					JOptionPane.showMessageDialog(null,
+							Resource.getResourceString("Sync-Not-Set"),
+							null, JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+
+				runBackgroundSync(Synctype.FULL);
+
+			} catch (Exception e) {
+				Errmsg.getErrorHandler().errmsg(e);
+			}
+		}
+	};
 
 	@Override
 	public Component getComponent() {
@@ -61,25 +85,7 @@ public class IcalModule implements Module {
 
 		JMenuItem caldavs = new JMenuItem();
 		caldavs.setText(Resource.getResourceString("CALDAV-Sync"));
-		caldavs.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				try {
-					if (!CalDav.isSyncing()) {
-						JOptionPane.showMessageDialog(null,
-								Resource.getResourceString("Sync-Not-Set"),
-								null, JOptionPane.ERROR_MESSAGE);
-						return;
-					}
-
-					runBackgroundSync(Synctype.FULL);
-
-				} catch (Exception e) {
-					Errmsg.getErrorHandler().errmsg(e);
-				}
-			}
-		});
+		caldavs.addActionListener(syncListener);
 
 		calmenu.add(caldavs);
 
@@ -329,6 +335,9 @@ public class IcalModule implements Module {
 	@SuppressWarnings("unused")
 	@Override
 	public void initialize(MultiView parent) {
+		
+		Prefs.addListener(this);
+		SyncLog.getReference().addListener(this);
 
 		OptionsView.getReference().addPanel(new IcalOptionsPanel());
 
@@ -350,6 +359,15 @@ public class IcalModule implements Module {
 			}
 		});
 
+		syncToolbarButton = MultiView.getMainView().addToolBarItem(new javax.swing.ImageIcon(IcalModule.class
+				.getResource("/resource/Refresh16.gif")), Resource.getResourceString("CALDAV-Sync"), syncListener);
+		
+		try {
+			updateSyncButton();
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		
 		// import from URL
 		String url = Prefs.getPref(PrefName.ICAL_IMPORT_URL);
 		if (url != null && !url.isEmpty()) {
@@ -424,6 +442,46 @@ public class IcalModule implements Module {
 
 		} catch (Exception e) {
 			Errmsg.getErrorHandler().errmsg(e);
+		}
+	}
+
+	@Override
+	public void prefsChanged() {
+		try {
+			updateSyncButton();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void updateSyncButton() throws Exception {
+		
+		String label = Integer.toString(SyncLog.getReference().getAll().size());
+		syncToolbarButton.setText(label);
+
+		if( syncToolbarButton.isEnabled() )
+		{
+			if( !CalDav.isSyncing() || SyncLog.getReference().getAll().isEmpty())
+			{
+				syncToolbarButton.setEnabled(false);
+			}
+		}
+		else
+		{
+			if( CalDav.isSyncing() && !SyncLog.getReference().getAll().isEmpty())
+			{
+				syncToolbarButton.setEnabled(true);
+			}
+		}
+		
+	}
+
+	@Override
+	public void update(ChangeEvent event) {
+		try {
+			updateSyncButton();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 

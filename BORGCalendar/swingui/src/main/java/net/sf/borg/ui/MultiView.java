@@ -250,13 +250,15 @@ public class MultiView extends View {
 	 * @param action
 	 *            the action listener for the button
 	 */
-	public void addToolBarItem(Icon icon, String tooltip, ActionListener action) {
+	public JButton addToolBarItem(Icon icon, String tooltip, ActionListener action) {
 		JButton button = new JButton(icon);
 		button.setToolTipText(tooltip);
 		button.addActionListener(action);
 		bar.add(button, toolBarInsertIndex);
 
 		mainMenu.addAction(icon, tooltip, action, toolBarInsertIndex++);
+		
+		return button;
 	}
 
 	/**
