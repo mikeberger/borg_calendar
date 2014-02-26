@@ -1,6 +1,9 @@
 package net.sf.borg.ui.ical;
 
 import java.awt.Component;
+import java.awt.SystemTray;
+import java.awt.Toolkit;
+import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -31,6 +34,7 @@ import net.sf.borg.model.ical.SyncLog;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.MultiView.Module;
 import net.sf.borg.ui.MultiView.ViewType;
+import net.sf.borg.ui.SunTrayIconProxy;
 import net.sf.borg.ui.options.IcalOptionsPanel;
 import net.sf.borg.ui.options.OptionsView;
 
@@ -39,15 +43,18 @@ public class IcalModule implements Module, Prefs.Listener, Model.Listener {
 	private static PrefName url_pref = new PrefName("saved_import_url", "");
 
 	private JButton syncToolbarButton = null;
-	
-	private static ActionListener syncListener = new ActionListener(){
+
+	private TrayIcon trayIcon = new TrayIcon(Toolkit.getDefaultToolkit()
+			.getImage(getClass().getResource("/resource/Refresh16.gif")));
+
+	private static ActionListener syncListener = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			try {
 				if (!CalDav.isSyncing()) {
 					JOptionPane.showMessageDialog(null,
-							Resource.getResourceString("Sync-Not-Set"),
-							null, JOptionPane.ERROR_MESSAGE);
+							Resource.getResourceString("Sync-Not-Set"), null,
+							JOptionPane.ERROR_MESSAGE);
 					return;
 				}
 
@@ -335,7 +342,7 @@ public class IcalModule implements Module, Prefs.Listener, Model.Listener {
 	@SuppressWarnings("unused")
 	@Override
 	public void initialize(MultiView parent) {
-		
+
 		Prefs.addListener(this);
 		SyncLog.getReference().addListener(this);
 
@@ -347,8 +354,8 @@ public class IcalModule implements Module, Prefs.Listener, Model.Listener {
 				for (File f : files) {
 					String warning;
 					try {
-						warning = AppointmentIcalAdapter.importIcalFromFile(
-								f.getAbsolutePath());
+						warning = AppointmentIcalAdapter.importIcalFromFile(f
+								.getAbsolutePath());
 						if (warning != null && !warning.isEmpty())
 							Errmsg.getErrorHandler().notice(warning);
 					} catch (Exception e) {
@@ -359,15 +366,22 @@ public class IcalModule implements Module, Prefs.Listener, Model.Listener {
 			}
 		});
 
-		syncToolbarButton = MultiView.getMainView().addToolBarItem(new javax.swing.ImageIcon(IcalModule.class
-				.getResource("/resource/Refresh16.gif")), Resource.getResourceString("CALDAV-Sync"), syncListener);
+		syncToolbarButton = MultiView
+				.getMainView()
+				.addToolBarItem(
+						new javax.swing.ImageIcon(IcalModule.class
+								.getResource("/resource/Refresh16.gif")),
+						Resource.getResourceString("CALDAV-Sync"), syncListener);
+
+		trayIcon.setToolTip("BORG " + Resource.getResourceString("CALDAV-Sync"));
 		
 		try {
 			updateSyncButton();
+			showTrayIcon();
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
-		
+
 		// import from URL
 		String url = Prefs.getPref(PrefName.ICAL_IMPORT_URL);
 		if (url != null && !url.isEmpty()) {
@@ -449,37 +463,53 @@ public class IcalModule implements Module, Prefs.Listener, Model.Listener {
 	public void prefsChanged() {
 		try {
 			updateSyncButton();
+			showTrayIcon();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	private void updateSyncButton() throws Exception {
-		
+
 		String label = Integer.toString(SyncLog.getReference().getAll().size());
 		syncToolbarButton.setText(label);
 
-		if( syncToolbarButton.isEnabled() )
-		{
-			if( !CalDav.isSyncing() || SyncLog.getReference().getAll().isEmpty())
-			{
+		if (syncToolbarButton.isEnabled()) {
+			if (!CalDav.isSyncing()
+					|| SyncLog.getReference().getAll().isEmpty()) {
 				syncToolbarButton.setEnabled(false);
 			}
-		}
-		else
-		{
-			if( CalDav.isSyncing() && !SyncLog.getReference().getAll().isEmpty())
-			{
+		} else {
+			if (CalDav.isSyncing()
+					&& !SyncLog.getReference().getAll().isEmpty()) {
 				syncToolbarButton.setEnabled(true);
 			}
 		}
-		
+
+	}
+
+	private void showTrayIcon() {
+
+		if (SunTrayIconProxy.hasTrayIcon()) {
+
+			try {
+				if (!CalDav.isSyncing()
+						|| SyncLog.getReference().getAll().isEmpty()) {
+					SystemTray.getSystemTray().remove(trayIcon);
+				} else {
+					SystemTray.getSystemTray().add(trayIcon);
+				}
+			} catch (Exception e) {
+				// ignore
+			}
+		}
 	}
 
 	@Override
 	public void update(ChangeEvent event) {
 		try {
 			updateSyncButton();
+			showTrayIcon();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
