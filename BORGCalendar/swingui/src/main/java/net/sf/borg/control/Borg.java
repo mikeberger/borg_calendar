@@ -223,7 +223,7 @@ public class Borg implements SocketHandler, Observer {
 							&& Borg.this.modalMessage.isShowing()) {
 						Borg.this.modalMessage.appendText(lockmsg);
 						Borg.this.modalMessage.setEnabled(false);
-						Borg.this.modalMessage.toFront();
+						//Borg.this.modalMessage.toFront();
 					}
 					
 				}
