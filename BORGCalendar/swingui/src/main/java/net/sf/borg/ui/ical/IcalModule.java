@@ -1,6 +1,8 @@
 package net.sf.borg.ui.ical;
 
 import java.awt.Component;
+import java.awt.MenuItem;
+import java.awt.PopupMenu;
 import java.awt.SystemTray;
 import java.awt.Toolkit;
 import java.awt.TrayIcon;
@@ -374,6 +376,12 @@ public class IcalModule implements Module, Prefs.Listener, Model.Listener {
 						Resource.getResourceString("CALDAV-Sync"), syncListener);
 
 		trayIcon.setToolTip("BORG " + Resource.getResourceString("CALDAV-Sync"));
+		PopupMenu menu = new PopupMenu();
+		MenuItem item = new MenuItem();
+		item.setLabel(Resource.getResourceString("CALDAV-Sync"));
+		item.addActionListener(syncListener);
+		menu.add(item);
+		trayIcon.setPopupMenu(menu);
 		
 		try {
 			updateSyncButton();
