@@ -45,8 +45,10 @@ import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.MemoModel;
+import net.sf.borg.model.Model;
 import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.SearchCriteria;
+import net.sf.borg.model.Searchable;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.Address;
 import net.sf.borg.model.entity.Appointment;
@@ -508,12 +510,11 @@ public class SearchView extends DockableView implements Module {
 			// init the UI components
 			initComponents();
 
-			// listen for appointment model changes
-			addModel(AppointmentModel.getReference());
-			addModel(AddressModel.getReference());
-			addModel(TaskModel.getReference());
-			addModel(MemoModel.getReference());
-
+			for( Model m : Model.getExistingModels())
+			{
+				if( m instanceof Searchable )
+					addModel(m);
+			}
 			// show the search results as a 2 column sortable table
 			// showing the appt date and text
 			resultsTable.setModel(new TableSorter(new String[] {

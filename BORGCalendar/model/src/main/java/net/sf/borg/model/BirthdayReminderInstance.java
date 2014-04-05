@@ -1,4 +1,4 @@
-package net.sf.borg.ui.popup;
+package net.sf.borg.model;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -7,7 +7,6 @@ import java.util.GregorianCalendar;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
-import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.entity.Address;
 
 /**

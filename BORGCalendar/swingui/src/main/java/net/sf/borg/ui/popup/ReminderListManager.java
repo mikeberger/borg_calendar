@@ -28,6 +28,7 @@ package net.sf.borg.ui.popup;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.sf.borg.model.ReminderInstance;
 import net.sf.borg.model.Model.ChangeEvent;
 
 /**

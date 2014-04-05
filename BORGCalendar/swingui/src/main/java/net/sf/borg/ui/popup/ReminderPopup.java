@@ -36,6 +36,7 @@ import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.Model.ChangeEvent;
+import net.sf.borg.model.ReminderInstance;
 import net.sf.borg.model.ReminderTimes;
 import net.sf.borg.model.Theme;
 import net.sf.borg.ui.ResourceHelper;

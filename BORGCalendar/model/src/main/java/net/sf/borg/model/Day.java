@@ -31,13 +31,13 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
+import java.util.List;
 import java.util.TimeZone;
 import java.util.TreeSet;
 
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
-import net.sf.borg.model.entity.Address;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.CalendarEntity;
 import net.sf.borg.model.entity.LabelEntity;
@@ -406,34 +406,17 @@ public class Day {
 
 			}
 		}
-		// add birthdays from address book
-		Collection<Address> addrs = AddressModel.getReference().getAddresses(
-				new GregorianCalendar(year, month, day, 00, 00).getTime());
-		if (addrs != null) {
-			for (Address addr : addrs) {
-				LabelEntity info = new LabelEntity();
-				String color = info.getColor();
-
-				if (color == null)
-					info.setColor("brick");
-
-				Date bd = addr.getBirthday();
-				GregorianCalendar g = new GregorianCalendar();
-				g.setTime(bd);
-				int bdyear = g.get(Calendar.YEAR);
-				int yrs = year - bdyear;
-				if (yrs < 0)
-					continue;
-
-				String tx = Resource.getResourceString("Birthday") + ": "
-						+ addr.getFirstName() + " " + addr.getLastName() + "("
-						+ yrs + ")";
-				info.setText(tx);
-				info.setDate(new GregorianCalendar(year, month, day, 00, 00)
-						.getTime());
-				ret.addItem(info);
+		
+		for( Model m : Model.getExistingModels())
+		{
+			if( m instanceof CalendarEntityProvider)
+			{
+				List<CalendarEntity> el  = ((CalendarEntityProvider) m).getEntities(cal.getTime());
+				for( CalendarEntity e : el )
+					ret.addItem(e);
 			}
 		}
+		
 
 		return (ret);
 

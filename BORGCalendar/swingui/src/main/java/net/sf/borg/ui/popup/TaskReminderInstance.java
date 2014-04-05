@@ -25,6 +25,7 @@ import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
+import net.sf.borg.model.ReminderInstance;
 import net.sf.borg.model.ReminderTimes;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.Task;

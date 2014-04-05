@@ -41,13 +41,13 @@ import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
-import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.Model;
+import net.sf.borg.model.ReminderInstance;
+import net.sf.borg.model.ReminderProducer;
 import net.sf.borg.model.ReminderTimes;
 import net.sf.borg.model.TaskModel;
-import net.sf.borg.model.entity.Address;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Subtask;
@@ -90,7 +90,13 @@ public abstract class ReminderManager implements Model.Listener, Prefs.Listener 
 		// listen for appointment model changes
 		AppointmentModel.getReference().addListener(this);
 		TaskModel.getReference().addListener(this);
-		AddressModel.getReference().addListener(this);
+		for( Model m : Model.getExistingModels())
+		{
+			if( m instanceof ReminderProducer)
+			{
+				m.addListener(this);
+			}
+		}
 		Prefs.addListener(this);
 
 		// start the popup timer
@@ -236,54 +242,21 @@ public abstract class ReminderManager implements Model.Listener, Prefs.Listener 
 				}
 			}
 		}
-
-		// birthdays
-		int bd_days = Prefs.getIntPref(PrefName.BIRTHDAYREMINDERDAYS);
-		if (bd_days >= 0) {
-			Date now = new Date();
-			cal.setTime(now);
-			cal.set(Calendar.SECOND, 0);
-			cal.set(Calendar.MINUTE, 0);
-			cal.set(Calendar.HOUR_OF_DAY, 0);
-			Collection<Address> addrs;
-			try {
-				addrs = AddressModel.getReference().getAddresses();
-				if (addrs != null) {
-					for (Address addr : addrs) {
-
-						Date bd = addr.getBirthday();
-						if (bd == null)
-							continue;
-
-						// set time to end of the day. this will allow reminders to pop up all day on the
-						// birthday itself
-						Calendar bdcal = new GregorianCalendar();
-						bdcal.setTime(bd);
-						bdcal.set(Calendar.YEAR, cal.get(Calendar.YEAR)); // set to this year
-						bdcal.set(Calendar.SECOND, 59);
-						bdcal.set(Calendar.MINUTE, 59);
-						bdcal.set(Calendar.HOUR_OF_DAY, 23);
-
-						// if the birthday is passed for this year, try next year (in case we are close enough
-						// to January birthdays for next year)
-						if (bdcal.before(cal)) {
-							bdcal.add(Calendar.YEAR, 1);
-						}
-
-						ReminderInstance inst = new BirthdayReminderInstance(
-								addr, bdcal.getTime());
-
-						if (!inst.shouldBeShown())
-							continue;
-
-						addToUI(inst);
-
-					}
+		
+		for( Model m : Model.getExistingModels())
+		{
+			if( m instanceof ReminderProducer)
+			{
+				List<ReminderInstance> rems = ((ReminderProducer)m).getReminders();
+				for( ReminderInstance ri : rems)
+				{
+					addToUI(ri);
 				}
-			} catch (Exception e1) {
-				Errmsg.getErrorHandler().errmsg(e1);
 			}
 		}
+
+		
+		
 
 		if (Prefs.getBoolPref(PrefName.TASKREMINDERS)) {
 

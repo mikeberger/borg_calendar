@@ -382,6 +382,10 @@ public class MultiView extends View {
 		return null;
 	}
 
+	public List<Module> getModuleSet() {
+		return moduleSet;
+	}
+
 	/**
 	 * Gets the tabs.
 	 * 
