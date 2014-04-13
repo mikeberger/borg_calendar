@@ -32,9 +32,9 @@ import net.fortuna.ical4j.model.property.RecurrenceId;
 import net.fortuna.ical4j.model.property.Uid;
 import net.fortuna.ical4j.model.property.Version;
 import net.fortuna.ical4j.util.CompatibilityHints;
-import net.sf.borg.common.IOHelper;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
+import net.sf.borg.common.SocketClient;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Model.ChangeEvent.ChangeAction;
 import net.sf.borg.model.entity.Appointment;
@@ -88,11 +88,11 @@ public class CalDav {
 
 	private static CalDavCalendarStore connect() throws Exception {
 
-		IOHelper.setProxy();
+		Prefs.setProxy();
 
 		URL url = new URL("http", Prefs.getPref(PrefName.CALDAV_SERVER), -1,
 				"/");
-		IOHelper.sendLogMessage("SYNC: connect to " + url.toString());
+		SocketClient.sendLogMessage("SYNC: connect to " + url.toString());
 		log.info("SYNC: connect to " + url.toString());
 
 		CalDavCalendarStore store = new CalDavCalendarStore("-", url,
@@ -235,7 +235,7 @@ public class CalDav {
 		boolean export_todos = Prefs.getBoolPref(PrefName.ICAL_EXPORT_TODO);
 
 		List<SyncEvent> syncEvents = SyncLog.getReference().getAll();
-		IOHelper.sendLogMessage("SYNC: Process " + syncEvents.size()
+		SocketClient.sendLogMessage("SYNC: Process " + syncEvents.size()
 				+ " Outgoing Items");
 		log.info("SYNC: Process " + syncEvents.size() + " Outgoing Items");
 
@@ -324,7 +324,7 @@ public class CalDav {
 
 				SyncLog.getReference().delete(se.getId(), se.getObjectType());
 			} catch (Exception e) {
-				IOHelper.sendLogMessage("SYNC ERROR for: " + se.toString()
+				SocketClient.sendLogMessage("SYNC ERROR for: " + se.toString()
 						+ ":" + e.getMessage());
 				log.severe("SYNC ERROR for: " + se.toString() + ":"
 						+ e.getMessage());
@@ -423,7 +423,7 @@ public class CalDav {
 				if (comp instanceof VEvent) {
 					log.warning("SYNC: ignoring Vevent for single recurrence - cannot process\n"
 							+ comp.toString());
-					IOHelper.sendLogMessage("SYNC: ignoring Vevent for single recurrence - cannot process\n"
+					SocketClient.sendLogMessage("SYNC: ignoring Vevent for single recurrence - cannot process\n"
 							+ comp.toString());
 					return;
 				}
@@ -435,7 +435,7 @@ public class CalDav {
 				if (cpltd == null) {
 					log.warning("SYNC: ignoring VToDo for single recurrence - cannot process\n"
 							+ comp.toString());
-					IOHelper.sendLogMessage("SYNC: ignoring VToDo for single recurrence - cannot process\n"
+					SocketClient.sendLogMessage("SYNC: ignoring VToDo for single recurrence - cannot process\n"
 							+ comp.toString());
 					return;
 				}
@@ -457,7 +457,7 @@ public class CalDav {
 				if (!utc.before(nt)) {
 					log.warning("SYNC: completing Todo\n"
 							+ comp.toString());
-					IOHelper.sendLogMessage("SYNC: completing Todo\n"
+					SocketClient.sendLogMessage("SYNC: completing Todo\n"
 							+ comp.toString());
 					AppointmentModel.getReference().do_todo(ap.getKey(), false,
 							utc);
@@ -544,7 +544,7 @@ public class CalDav {
 	static public void syncFromServer(CalDavCalendarCollection collection,
 			Integer years) throws Exception {
 
-		IOHelper.sendLogMessage("SYNC: Start Incoming Sync");
+		SocketClient.sendLogMessage("SYNC: Start Incoming Sync");
 		log.info("SYNC: Start Incoming Sync");
 
 		Date after = null;
@@ -557,7 +557,7 @@ public class CalDav {
 		ArrayList<String> serverUids = new ArrayList<String>();
 
 		Calendar cals[] = collection.getEvents();
-		IOHelper.sendLogMessage("SYNC: found " + cals.length
+		SocketClient.sendLogMessage("SYNC: found " + cals.length
 				+ " Event Calendars on server");
 		log.info("SYNC: found " + cals.length + " Event Calendars on server");
 		int count = 0;
@@ -565,24 +565,24 @@ public class CalDav {
 			count += syncCalendar(cal, serverUids);
 		}
 
-		IOHelper.sendLogMessage("SYNC: processed " + count
+		SocketClient.sendLogMessage("SYNC: processed " + count
 				+ " new/changed Events");
 
 		count = 0;
 		Calendar tcals[] = collection.getTasks();
-		IOHelper.sendLogMessage("SYNC: found " + tcals.length
+		SocketClient.sendLogMessage("SYNC: found " + tcals.length
 				+ " Todo Calendars on server");
 		log.info("SYNC: found " + tcals.length + " Todo Calendars on server");
 		for (Calendar cal : tcals) {
 			count += syncCalendar(cal, serverUids);
 		}
 
-		IOHelper.sendLogMessage("SYNC: processed " + count
+		SocketClient.sendLogMessage("SYNC: processed " + count
 				+ " new/changed Tasks");
 
 		log.fine(serverUids.toString());
 
-		IOHelper.sendLogMessage("SYNC: check for deletes");
+		SocketClient.sendLogMessage("SYNC: check for deletes");
 		log.info("SYNC: check for deletes");
 
 		// find all appts in Borg that are not on the server
@@ -591,7 +591,7 @@ public class CalDav {
 				continue;
 
 			if (!serverUids.contains(ap.getUid())) {
-				IOHelper.sendLogMessage("Appointment Not Found in Borg - Deleting: "
+				SocketClient.sendLogMessage("Appointment Not Found in Borg - Deleting: "
 						+ ap.toString());
 				log.info("Appointment Not Found in Borg - Deleting: "
 						+ ap.toString());

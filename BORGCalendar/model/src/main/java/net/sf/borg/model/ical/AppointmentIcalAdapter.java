@@ -544,7 +544,7 @@ public class AppointmentIcalAdapter {
 
 	static public String importIcalFromUrl(String urlString) throws Exception {
 
-		IOHelper.setProxy();
+		Prefs.setProxy();
 
 		CalendarBuilder builder = new CalendarBuilder();
 		URL url = new URL(urlString);

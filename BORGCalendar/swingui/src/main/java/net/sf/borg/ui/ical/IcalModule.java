@@ -22,10 +22,10 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import net.iharder.dnd.FileDrop;
 import net.sf.borg.common.Errmsg;
-import net.sf.borg.common.IOHelper;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
+import net.sf.borg.common.SocketClient;
 import net.sf.borg.model.Model;
 import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.ical.AppointmentIcalAdapter;
@@ -306,7 +306,7 @@ public class IcalModule implements Module, Prefs.Listener, Model.Listener {
 				try {
 
 					// modally lock borg
-					IOHelper.sendMessage("lock:"
+					SocketClient.sendMessage("lock:"
 							+ Resource.getResourceString("syncing"));
 					if (ty == Synctype.FULL)
 						CalDav.sync(
@@ -322,17 +322,17 @@ public class IcalModule implements Module, Prefs.Listener, Model.Listener {
 
 				} catch (Exception e) {
 					e.printStackTrace();
-					IOHelper.sendLogMessage(e.toString());
+					SocketClient.sendLogMessage(e.toString());
 				}
 
-				IOHelper.sendLogMessage(Resource.getResourceString("done"));
+				SocketClient.sendLogMessage(Resource.getResourceString("done"));
 
 				return null;
 			}
 
 			@Override
 			protected void done() {
-				IOHelper.sendMessage("unlock");
+				SocketClient.sendMessage("unlock");
 
 			}
 		}

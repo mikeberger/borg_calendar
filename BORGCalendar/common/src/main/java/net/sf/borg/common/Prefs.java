@@ -22,6 +22,8 @@ package net.sf.borg.common;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
@@ -199,5 +201,37 @@ public class Prefs {
 
 	public static void setPrefRootNode(String prefRootNode) {
 		Prefs.prefRootNode = prefRootNode;
+	}
+
+	public static void setProxy() {
+		
+		
+		if (getBoolPref(PrefName.USE_PROXY)) {
+			String host = getPref(PrefName.PROXY_HOST);
+			
+			try {
+				InetAddress.getByName(host);
+			} catch (UnknownHostException e) {
+				IOHelper.log.info(e.toString());
+				IOHelper.log.info("Clearing Proxy Settings");
+				System.clearProperty("http.proxyHost");
+				System.clearProperty("https.proxyHost");
+				System.clearProperty("http.proxyPort");
+				System.clearProperty("https.proxyPort");
+				return;
+			}
+			System.setProperty("http.proxyHost", host);
+			System.setProperty("https.proxyHost", host);
+	
+			int port = getIntPref(PrefName.PROXY_PORT);
+			System.setProperty("http.proxyPort", Integer.toString(port));
+			System.setProperty("https.proxyPort", Integer.toString(port));
+		} else {
+			System.clearProperty("http.proxyHost");
+			System.clearProperty("https.proxyHost");
+			System.clearProperty("http.proxyPort");
+			System.clearProperty("https.proxyPort");
+		}
+	
 	}
 }

@@ -29,6 +29,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.TreeSet;
 import java.util.Vector;
 
@@ -47,6 +48,7 @@ import net.sf.borg.model.CategoryModel.CategorySource;
 import net.sf.borg.model.Model.ChangeEvent.ChangeAction;
 import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.model.db.TaskDB;
+import net.sf.borg.model.entity.CalendarEntity;
 import net.sf.borg.model.entity.KeyedEntity;
 import net.sf.borg.model.entity.Link;
 import net.sf.borg.model.entity.Option;
@@ -63,7 +65,7 @@ import net.sf.borg.model.undo.UndoLog;
  * TaksModel manages all of the task related entities - Task, Project, Subtask,
  * and Tasklog
  */
-public class TaskModel extends Model implements Model.Listener, CategorySource,
+public class TaskModel extends Model implements Model.Listener, CategorySource, CalendarEntityProvider,
 		Searchable<KeyedEntity<?>> {
 
 	static private final String TASKTYPES_OPTION = "TASKTYPES";
@@ -1432,5 +1434,47 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 				+ Resource.getResourceString("Logs") + ": " + getLogs().size()
 				+ "\n" + Resource.getResourceString("projects") + ": "
 				+ getReference().getProjects().size();
+	}
+
+	@Override
+	public List<CalendarEntity> getEntities(Date d) {
+		
+		List<CalendarEntity> ret = new ArrayList<CalendarEntity>();
+		GregorianCalendar cal = new GregorianCalendar();
+		cal.setTime(d);
+		
+		// load any tasks
+		if (Prefs.getBoolPref(PrefName.CAL_SHOW_TASKS)) {
+			Collection<Project> pcol = TaskModel.getReference().get_projects(
+					cal.getTime());
+			if (pcol != null) {
+				for (Project pj : pcol) {
+					ret.add(pj);
+
+				}
+			}
+			Collection<Task> tasks = TaskModel.getReference().get_tasks(
+					cal.getTime());
+			if (tasks != null) {
+				for (Task task : tasks) {
+					ret.add(task);
+				}
+
+			}
+		}
+		// subtasks
+		if (Prefs.getBoolPref(PrefName.CAL_SHOW_SUBTASKS)) {
+			Collection<Subtask> sts = TaskModel.getReference().get_subtasks(
+					cal.getTime());
+			if (sts != null) {
+				for (Subtask st : sts) {
+					ret.add(st);
+				}
+
+			}
+		}
+		
+		return ret;
+		
 	}
 }

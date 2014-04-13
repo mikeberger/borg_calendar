@@ -41,9 +41,7 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.CalendarEntity;
 import net.sf.borg.model.entity.LabelEntity;
-import net.sf.borg.model.entity.Project;
-import net.sf.borg.model.entity.Subtask;
-import net.sf.borg.model.entity.Task;
+
 
 /**
  * Class Day pulls together and manages all of the items that make up the
@@ -139,8 +137,7 @@ public class Day {
 	 * @throws Exception
 	 *             the exception
 	 */
-	private static void addToDay(Day day, Collection<Integer> l, int year,
-			int month, int date) throws Exception {
+	private static void addToDay(Day day, Collection<Integer> l) throws Exception {
 
 		boolean pub = false;
 		boolean priv = false;
@@ -216,7 +213,7 @@ public class Day {
 		// get the list of appt keys from the map_
 		Collection<Integer> l = AppointmentModel.getReference().getAppts(
 				cal.getTime());
-		addToDay(ret, l, year, month, day);
+		addToDay(ret, l);
 
 		// daylight savings time
 		GregorianCalendar gc = new GregorianCalendar(year, month, day, 11, 00);
@@ -376,37 +373,7 @@ public class Day {
 
 		}
 
-		// load any tasks
-		if (Prefs.getBoolPref(PrefName.CAL_SHOW_TASKS)) {
-			Collection<Project> pcol = TaskModel.getReference().get_projects(
-					cal.getTime());
-			if (pcol != null) {
-				for (Project pj : pcol) {
-					ret.addItem(pj);
 
-				}
-			}
-			Collection<Task> tasks = TaskModel.getReference().get_tasks(
-					cal.getTime());
-			if (tasks != null) {
-				for (Task task : tasks) {
-					ret.addItem(task);
-				}
-
-			}
-		}
-		// subtasks
-		if (Prefs.getBoolPref(PrefName.CAL_SHOW_SUBTASKS)) {
-			Collection<Subtask> sts = TaskModel.getReference().get_subtasks(
-					cal.getTime());
-			if (sts != null) {
-				for (Subtask st : sts) {
-					ret.addItem(st);
-				}
-
-			}
-		}
-		
 		for( Model m : Model.getExistingModels())
 		{
 			if( m instanceof CalendarEntityProvider)

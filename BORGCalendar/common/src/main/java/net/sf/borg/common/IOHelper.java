@@ -22,12 +22,9 @@ package net.sf.borg.common;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
-import java.net.InetAddress;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.UnknownHostException;
 import java.util.logging.Logger;
 
 /**
@@ -35,7 +32,7 @@ import java.util.logging.Logger;
  */
 public class IOHelper {
 
-	static private final Logger log = Logger.getLogger("net.sf.borg");
+	static final Logger log = Logger.getLogger("net.sf.borg");
 
 	/**
 	 * The home directory; gets updated to ensure it is the last used directory,
@@ -94,58 +91,6 @@ public class IOHelper {
 		// already exist.
 		return new FileOutputStream(fil);
 
-	}
-
-	public static void setProxy() {
-		
-		
-		if (Prefs.getBoolPref(PrefName.USE_PROXY)) {
-			String host = Prefs.getPref(PrefName.PROXY_HOST);
-			
-			try {
-				InetAddress.getByName(host);
-			} catch (UnknownHostException e) {
-				log.info(e.toString());
-				log.info("Clearing Proxy Settings");
-				System.clearProperty("http.proxyHost");
-				System.clearProperty("https.proxyHost");
-				System.clearProperty("http.proxyPort");
-				System.clearProperty("https.proxyPort");
-				return;
-			}
-			System.setProperty("http.proxyHost", host);
-			System.setProperty("https.proxyHost", host);
-
-			int port = Prefs.getIntPref(PrefName.PROXY_PORT);
-			System.setProperty("http.proxyPort", Integer.toString(port));
-			System.setProperty("https.proxyPort", Integer.toString(port));
-		} else {
-			System.clearProperty("http.proxyHost");
-			System.clearProperty("https.proxyHost");
-			System.clearProperty("http.proxyPort");
-			System.clearProperty("https.proxyPort");
-		}
-
-	}
-	
-	static public void sendMessage(String msg) {
-		int port = Prefs.getIntPref(PrefName.SOCKETPORT);
-		if (port != -1) {
-			String resp;
-			try {
-				resp = SocketClient.sendMsg("localhost", port, msg);
-				if (resp != null && resp.equals("ok")) {
-					// do nothing
-				}
-			} catch (IOException e) {
-				// empty
-			}
-	
-		}
-	}
-
-	static public void sendLogMessage(String msg) {
-		sendMessage("log:" + msg);
 	}
 
 }
