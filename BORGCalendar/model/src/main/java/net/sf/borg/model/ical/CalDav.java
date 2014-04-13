@@ -41,6 +41,7 @@ import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.ical.SyncEvent.ObjectType;
 import biz.source_code.base64Coder.Base64Coder;
 
+@SuppressWarnings("unchecked")
 public class CalDav {
 
 	public static class BaikalPathResolver extends PathResolver {

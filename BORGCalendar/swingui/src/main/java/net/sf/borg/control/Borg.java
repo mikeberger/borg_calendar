@@ -94,7 +94,6 @@ public class Borg implements SocketHandler, Observer {
 	 * @throws IOException
 	 */
 	private static void addURL(URL u) throws IOException {
-		@SuppressWarnings("resource")
 		URLClassLoader sysloader = (URLClassLoader) ClassLoader
 				.getSystemClassLoader();
 		Class<?> sysclass = URLClassLoader.class;
@@ -345,7 +344,6 @@ public class Borg implements SocketHandler, Observer {
 				String home = System.getProperty("user.home", "");
 				FileOutputStream errStr = new FileOutputStream(home
 						+ "/.borg.out", false);
-				@SuppressWarnings("resource")
 				PrintStream printStream = new PrintStream(errStr);
 				System.setErr(printStream);
 				System.setOut(printStream);

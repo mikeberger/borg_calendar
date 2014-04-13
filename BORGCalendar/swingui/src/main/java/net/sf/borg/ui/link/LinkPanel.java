@@ -176,7 +176,6 @@ public class LinkPanel extends JPanel implements Model.Listener {
 	/**
 	 * initialize the UI
 	 */
-	@SuppressWarnings("unused")
 	public void initComponents() {
 
 		this.setLayout(new GridBagLayout());

@@ -341,7 +341,6 @@ public class IcalModule implements Module, Prefs.Listener, Model.Listener {
 
 	}
 
-	@SuppressWarnings("unused")
 	@Override
 	public void initialize(MultiView parent) {
 

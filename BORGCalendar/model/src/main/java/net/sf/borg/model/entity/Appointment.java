@@ -83,6 +83,7 @@ public class Appointment extends EncryptableEntity<Appointment> implements
 	private Date lastMod;
 	private String uid;
 
+	@SuppressWarnings("unchecked")
 	@Override
 	protected Appointment clone() {
 		Appointment dst = new Appointment();

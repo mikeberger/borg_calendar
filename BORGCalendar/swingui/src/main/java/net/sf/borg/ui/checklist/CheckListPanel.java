@@ -315,7 +315,6 @@ public class CheckListPanel extends DockableView implements
 	 * 
 	 * @see net.sf.borg.ui.MultiView.Module#getComponent()
 	 */
-	@SuppressWarnings("unused")
 	@Override
 	public JComponent getComponent() {
 		if (!isInitialized) {
@@ -385,7 +384,6 @@ public class CheckListPanel extends DockableView implements
 	 * This method initializes the UI.
 	 * 
 	 * */
-	@SuppressWarnings("unused")
 	private void initializeComponents() {
 
 		this.setLayout(new GridBagLayout());

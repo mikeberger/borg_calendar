@@ -314,7 +314,6 @@ final class JdbcDB {
 		stmt.close();
 	}
 
-	@SuppressWarnings("resource")
 	static final public ResultSet execQuery(String sql) throws Exception {
 		PreparedStatement stmt = connection_.prepareStatement(sql);
 		stmt.execute();

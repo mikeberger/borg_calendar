@@ -565,6 +565,7 @@ public class AppointmentIcalAdapter {
 		return importIcal(cal);
 	}
 
+	@SuppressWarnings("unchecked")
 	static private String importIcal(Calendar cal)
 			throws Exception {
 
@@ -634,6 +635,7 @@ public class AppointmentIcalAdapter {
 		return TimeZone.getDefault().getOffset(date);
 	}
 
+	@SuppressWarnings("unchecked")
 	public static Appointment toBorg(Component comp) {
 		if (comp instanceof VEvent || comp instanceof VToDo) {
 

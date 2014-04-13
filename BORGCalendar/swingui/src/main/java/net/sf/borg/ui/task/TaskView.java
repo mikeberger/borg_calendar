@@ -672,7 +672,6 @@ public class TaskView extends DockableView {
 	/**
 	 * Initializes the log table.
 	 */
-	@SuppressWarnings("unused")
 	private void initLogTable() {
 
 		logtable.setModel(new TableSorter(new String[] {

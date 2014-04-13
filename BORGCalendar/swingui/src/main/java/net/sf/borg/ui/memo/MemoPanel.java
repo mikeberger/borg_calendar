@@ -700,7 +700,6 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 
 	}
 
-	@SuppressWarnings("unused")
 	@Override
 	public JComponent getComponent() {
 

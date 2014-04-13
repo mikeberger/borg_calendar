@@ -63,7 +63,6 @@ public class PasswordHelper {
 	 * @return the password
 	 * @throws Exception 
 	 */
-	@SuppressWarnings("unused")
 	public String getPassword() throws Exception {
 		// always check current value of password expiration time in prefs in case it has changed
 		int pw_ttl = Prefs.getIntPref(PrefName.PASSWORD_TTL);

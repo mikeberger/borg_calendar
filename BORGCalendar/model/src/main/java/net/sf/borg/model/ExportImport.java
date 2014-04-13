@@ -220,7 +220,6 @@ public class ExportImport {
 	 *            the backup file name
 	 * @throws Exception
 	 */
-	@SuppressWarnings("resource")
 	static public void importFromZip(String zipFileName) throws Exception {
 		UncloseableZipInputStream in = new UncloseableZipInputStream(
 				new FileInputStream(zipFileName));

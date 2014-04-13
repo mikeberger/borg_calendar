@@ -94,13 +94,11 @@ public class SocketServer extends Thread {
     /* (non-Javadoc)
      * @see java.lang.Thread#run()
      */
-    @SuppressWarnings("unused")
-	@Override
+    @Override
     public void run() {
         try {
             while(true) {
-                @SuppressWarnings("resource")
-				Socket client_socket = this.listen_socket.accept();
+                Socket client_socket = this.listen_socket.accept();
                 new Connection(client_socket, this.handler_);
             }
         }

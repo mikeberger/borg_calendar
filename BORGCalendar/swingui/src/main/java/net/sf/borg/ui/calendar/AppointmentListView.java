@@ -469,7 +469,6 @@ public class AppointmentListView extends DockableView implements
 	/**
 	 * init the ui components
 	 */
-	@SuppressWarnings("unused")
 	private void initComponents()// GEN-BEGIN:initComponents
 	{
 
