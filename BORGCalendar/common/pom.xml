@@ -33,5 +33,30 @@
 				<filtering>true</filtering>
 			</resource>
 		</resources>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>buildnumber-maven-plugin</artifactId>
+				<version>1.2</version>
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>create</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<timestampFormat>{0, date, yyyy-MM-dd HH:mm:ss}</timestampFormat>
+					<revisionOnScmFailure>no-git-found</revisionOnScmFailure>
+					<doCheck>false</doCheck>
+					<doUpdate>false</doUpdate>
+				</configuration>
+			</plugin>
+		</plugins>
 	</build>
+	<scm>
+		<url>https://github.com/mikeberger/borg_calendar.git</url>
+		<connection>scm:git:https://github.com/mikeberger/borg_calendar.git</connection>
+	</scm>
 </project>

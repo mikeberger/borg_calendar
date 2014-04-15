@@ -392,6 +392,7 @@ class MainMenu {
 			version = Resource.getVersion();
 			build_info = Resource.getResourceString("Build_Time:_")
 					+ props.getProperty("build.time");
+			build_info += "\nGit: " + props.getProperty("build.number");
 
 		} catch (Exception e) {
 			Errmsg.getErrorHandler().errmsg(e);
