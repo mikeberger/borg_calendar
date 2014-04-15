@@ -480,18 +480,20 @@ public class IcalModule implements Module, Prefs.Listener, Model.Listener {
 
 		String label = Integer.toString(SyncLog.getReference().getAll().size());
 		syncToolbarButton.setText(label);
+		
+		// always leave button enabled in order to sync incoming changes easily
 
-		if (syncToolbarButton.isEnabled()) {
-			if (!CalDav.isSyncing()
-					|| SyncLog.getReference().getAll().isEmpty()) {
-				syncToolbarButton.setEnabled(false);
-			}
-		} else {
-			if (CalDav.isSyncing()
-					&& !SyncLog.getReference().getAll().isEmpty()) {
-				syncToolbarButton.setEnabled(true);
-			}
-		}
+//		if (syncToolbarButton.isEnabled()) {
+//			if (!CalDav.isSyncing()
+//					|| SyncLog.getReference().getAll().isEmpty()) {
+//				syncToolbarButton.setEnabled(false);
+//			}
+//		} else {
+//			if (CalDav.isSyncing()
+//					&& !SyncLog.getReference().getAll().isEmpty()) {
+//				syncToolbarButton.setEnabled(true);
+//			}
+//		}
 
 	}
 
