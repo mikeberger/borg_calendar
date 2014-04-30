@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+<project name="borg-calendar-installer" default="main" basedir=".">
+
+
+	<!-- PATH to IzPack dir to create the installer -->
+	<condition property="iz.dir" value="/Applications/IzPack">
+		<os family="mac" />
+	</condition>
+
+	<condition property="iz.dir" value="/apps/IzPack">
+		<os family="unix" />
+	</condition>
+
+	<condition property="iz.dir" value="c:/Program Files/IzPack">
+		<os family="windows" />
+	</condition>
+
+	<available file="${iz.dir}" property="have.izpack" />
+
+	<target name="init">
+		<tstamp />
+		<condition property="iz.dir.found" value="IzPack installation found at: ${iz.dir}" else="IzPack installation not found.">
+			<available file="${iz.dir}" />
+		</condition>
+		<echo message="${iz.dir.found}" />
+	</target>
+
+	<target name="copy">
+
+		<mkdir dir="target/installer" />
+		<mkdir dir="target/installer/lib" />
+		<mkdir dir="target/installer/lib/ext" />
+		<copy file="src/main/resources/lib/ext/README.txt" todir="target/installer/lib/ext" />
+		<copy file="../swingui/src/main/resources/resource/RELEASE_NOTES.txt" todir="target/installer" />
+		<copy file="../swingui/src/main/resources/resource/license.htm" todir="target/installer" />
+		<copy file="../swingui/src/main/resources/resource/COPYING" todir="target/installer" />
+		<copy file="../swingui/src/main/resources/resource/borg.jpg" todir="target/installer" />
+
+		<copy todir="target/installer/lib">
+			<fileset dir="../swingui/target/lib" includes="*" />
+		</copy>
+		<copy file="../swingui/target/swingui-${project.version}.jar" tofile="target/installer/borg.jar" />
+
+	</target>
+
+	<target name="installer" if="have.izpack">
+		<property name="version" value="${project.version}" />
+
+		<taskdef name="izpack" classpath="${iz.dir}/lib/standalone-compiler.jar" classname="com.izforge.izpack.ant.IzPackTask" />
+
+		<copy file="${iz.dir}/bin/native/izpack/ShellLink.dll" todir="target/installer" />
+
+		<izpack input="target/installer/install.xml" inheritAll="true" output="target/borg_installer-${project.version}.jar" installerType="standard" basedir="target/installer" izPackDir="${iz.dir}/" />
+
+		<copy todir="target" file="${iz.dir}/utils/wrappers/izpack2exe/7zS.sfx" />
+
+		<exec osfamily="windows" dir="target" executable="c:/Python/python">
+			<arg value="${iz.dir}/utils/wrappers/izpack2exe/izpack2exe.py" />
+			<arg value="--with-7z=${iz.dir}/utils/wrappers/izpack2exe/7za.exe" />
+			<arg value="--file=borg_installer-${project.version}.jar" />
+			<arg value="--output=borg_installer-${project.version}.exe" />
+			<arg value="--no-upx" />
+		</exec>
+
+		<exec osfamily="unix" dir="target" executable="python">
+			<arg value="${iz.dir}/utils/wrappers/izpack2exe/izpack2exe.py" />
+			<arg value="--with-7z=7z" />
+			<arg value="--file=borg_installer-${project.version}.jar" />
+			<arg value="--output=borg_installer-${project.version}.exe" />
+			<arg value="--no-upx" />
+		</exec>
+
+	</target>
+
+	<target name="borg_zip">
+		<zip destfile="target/borg.zip">
+			<fileset dir="target/installer" />
+		</zip>
+	</target>
+
+	<target name="main" depends="init,copy,borg_zip,installer" />
+
+
+</project>
