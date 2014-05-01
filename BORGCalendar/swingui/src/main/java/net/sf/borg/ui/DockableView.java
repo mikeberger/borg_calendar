@@ -247,7 +247,7 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 			if (this instanceof Module) {
 				final Module mod = (Module) this;
 				mainMenu.addAction(
-						new ImageIcon(getClass().getResource(
+						new ImageIcon(DockableView.class.getResource(
 								"/resource/Print16.gif")),
 						Resource.getResourceString("Print"),
 						new ActionListener() {

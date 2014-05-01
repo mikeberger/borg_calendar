@@ -84,7 +84,7 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 	private static final long serialVersionUID = 1L;
 
 	/** The memo date format. */
-	private static SimpleDateFormat memoDateFormat = new SimpleDateFormat(
+	private SimpleDateFormat memoDateFormat = new SimpleDateFormat(
 			"MM/dd/yyyy hh:mm aa");
 
 	/** The date label. */

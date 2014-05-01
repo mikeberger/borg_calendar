@@ -81,7 +81,7 @@ class ApptBox extends Box implements Box.Draggable {
 	// rounded rectangle radius
 	final static private int radius = 2;
 	
-	private static SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
+	private SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
 
 
 	/**

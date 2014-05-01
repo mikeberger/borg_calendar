@@ -593,7 +593,7 @@ abstract class ApptBoxPanel extends JPanel implements ComponentListener {
 	}
 	
 	// format for time markers on resize/drag box
-	private static SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
+	private SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
 
 
 	// to adjust, since since Graphics2D is translated

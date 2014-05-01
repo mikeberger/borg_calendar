@@ -71,7 +71,7 @@ import net.sf.borg.ui.util.ScrolledDialog;
 public class Borg implements SocketHandler, Observer {
 
 	/** The singleton. */
-	static private Borg singleton = null;
+	static volatile private Borg singleton = null;
 
 	static private final Logger log = Logger.getLogger("net.sf.borg");
 
@@ -82,7 +82,10 @@ public class Borg implements SocketHandler, Observer {
 	 */
 	static public Borg getReference() {
 		if (singleton == null)
-			singleton = new Borg();
+		{
+			Borg b = new Borg();
+			singleton = b;
+		}
 		return (singleton);
 	}
 

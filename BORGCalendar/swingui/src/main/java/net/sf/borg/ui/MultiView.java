@@ -147,7 +147,7 @@ public class MultiView extends View {
 	/**
 	 * the main menu
 	 */
-	MainMenu mainMenu = new MainMenu();
+	private MainMenu mainMenu = new MainMenu();
 
 	/**
 	 * Set of all modules ordered by the Module ordering number
@@ -328,7 +328,6 @@ public class MultiView extends View {
 	@Override
 	public void destroy() {
 		this.dispose();
-		mainView = null;
 	}
 	
 	/*

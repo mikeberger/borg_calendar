@@ -1642,7 +1642,7 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 						&& (rpt.equals(Repeat.NDAYS)
 								|| rpt.equals(Repeat.NWEEKS) || rpt
 								.equals(Repeat.NMONTHS)
-								| rpt.equals(Repeat.NYEARS))) {
+								|| rpt.equals(Repeat.NYEARS))) {
 					nTimesValue.setValue(new Integer(Repeat.getNValue(appt
 							.getFrequency())));
 				}
