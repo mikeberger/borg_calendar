@@ -766,7 +766,7 @@ public class AppointmentIcalAdapter {
 			prop = pl.getProperty(Property.CLASS);
 			if (prop != null) {
 				Clazz clazz = (Clazz) prop;
-				if (clazz.getValue().equals(Clazz.PRIVATE)) {
+				if (clazz.getValue().equals(Clazz.PRIVATE.getValue())) {
 					ap.setPrivate(true);
 				}
 			}
