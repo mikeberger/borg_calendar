@@ -47,7 +47,7 @@ import net.sf.borg.model.undo.UndoLog;
 public class MemoModel extends Model implements Searchable<Memo> {
 
 	/** The normalized date format for timestamps in a memo  */
-	private static SimpleDateFormat normalDateFormat_ = new SimpleDateFormat(
+	private SimpleDateFormat normalDateFormat_ = new SimpleDateFormat(
 			"MM/dd/yyyy hh:mm aa");
 
 	/**
@@ -208,7 +208,7 @@ public class MemoModel extends Model implements Searchable<Memo> {
 	 * 
 	 * @param m the memo
 	 */
-	static private void addDateString(Memo m) {
+	private void addDateString(Memo m) {
 		if (m.getCreated() == null || m.getUpdated() == null)
 			return;
 		if (m.getMemoText() == null)
@@ -237,7 +237,7 @@ public class MemoModel extends Model implements Searchable<Memo> {
 	 * 
 	 * @param m the memp
 	 */
-	static private void parseOutDates(Memo m) {
+	private void parseOutDates(Memo m) {
 
 		// separate timestamps if needed TS:created;updated;
 		String text = m.getMemoText();

@@ -23,12 +23,14 @@ public class IcalFileServer {
 	public static void start() throws Exception {
 		if (server != null)
 			stop();
-		server = HttpServer.create(new InetSocketAddress(Prefs.getIntPref(PrefName.ICAL_PORT)), 0);
-		server.createContext("/icals/borg.ics", new MyHandler());
-		server.setExecutor(null);
-		server.start();
-		InetSocketAddress addr = server.getAddress();
+		
+		HttpServer aServer = HttpServer.create(new InetSocketAddress(Prefs.getIntPref(PrefName.ICAL_PORT)), 0);
+		aServer.createContext("/icals/borg.ics", new MyHandler());
+		aServer.setExecutor(null);
+		aServer.start();
+		InetSocketAddress addr = aServer.getAddress();
 		Errmsg.getErrorHandler().notice(Resource.getResourceString("server_started") + ": http://localhost:" + addr.getPort() + "/icals/borg.ics");
+		server = aServer;
 	}
 
 	public static void stop() {

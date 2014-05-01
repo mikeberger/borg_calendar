@@ -36,7 +36,7 @@ import lombok.Data;
 @XmlRootElement(name="CheckList")
 @XmlAccessorType(XmlAccessType.FIELD)
 @Data
-public class CheckList {
+public class CheckList implements Cloneable {
 
 	/**
 	 * Item hold a single net.sf.borg.ui.checklist entry.

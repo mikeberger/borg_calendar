@@ -48,18 +48,18 @@ public class ApptKeyConverter implements ConversionTool{
 		DBHelper.getController().connect(dbdir);
 		
 		// try to remove extra palm columns
-		try{DBHelper.getController().execSQL("ALTER table appointments drop new");}catch(Exception e){ /* empty */ }
-		try{DBHelper.getController().execSQL("ALTER table appointments drop deleted");}catch(Exception e){ /* empty */ }
-		try{DBHelper.getController().execSQL("ALTER table appointments drop modified");}catch(Exception e){ /* empty */ }
-		try{DBHelper.getController().execSQL("ALTER table appointments drop alarm");}catch(Exception e){ /* empty */ }
-		try{DBHelper.getController().execSQL("ALTER table addresses drop new");}catch(Exception e){ /* empty */ }
-		try{DBHelper.getController().execSQL("ALTER table addresses drop deleted");}catch(Exception e){ /* empty */ }
-		try{DBHelper.getController().execSQL("ALTER table addresses drop modified");}catch(Exception e){ /* empty */ }
-		try{DBHelper.getController().execSQL("ALTER table memos drop new");}catch(Exception e){ /* empty */ }
-		try{DBHelper.getController().execSQL("ALTER table memos drop deleted");}catch(Exception e){ /* empty */ }
-		try{DBHelper.getController().execSQL("ALTER table memos drop modified");}catch(Exception e){ /* empty */ }
-		try{DBHelper.getController().execSQL("ALTER table memos drop palmid");}catch(Exception e){ /* empty */ }
-		try{DBHelper.getController().execSQL("ALTER table memos drop private");}catch(Exception e){ /* empty */ }
+		try{DBHelper.getController().execSQL("ALTER table appointments drop new");}catch(Exception e){ e.printStackTrace(); }
+		try{DBHelper.getController().execSQL("ALTER table appointments drop deleted");}catch(Exception e){ e.printStackTrace(); }
+		try{DBHelper.getController().execSQL("ALTER table appointments drop modified");}catch(Exception e){ e.printStackTrace(); }
+		try{DBHelper.getController().execSQL("ALTER table appointments drop alarm");}catch(Exception e){ e.printStackTrace(); }
+		try{DBHelper.getController().execSQL("ALTER table addresses drop new");}catch(Exception e){ e.printStackTrace(); }
+		try{DBHelper.getController().execSQL("ALTER table addresses drop deleted");}catch(Exception e){ e.printStackTrace(); }
+		try{DBHelper.getController().execSQL("ALTER table addresses drop modified");}catch(Exception e){ e.printStackTrace(); }
+		try{DBHelper.getController().execSQL("ALTER table memos drop new");}catch(Exception e){ e.printStackTrace(); }
+		try{DBHelper.getController().execSQL("ALTER table memos drop deleted");}catch(Exception e){ e.printStackTrace(); }
+		try{DBHelper.getController().execSQL("ALTER table memos drop modified");}catch(Exception e){ e.printStackTrace(); }
+		try{DBHelper.getController().execSQL("ALTER table memos drop palmid");}catch(Exception e){ e.printStackTrace(); }
+		try{DBHelper.getController().execSQL("ALTER table memos drop private");}catch(Exception e){ e.printStackTrace(); }
 
 		// go directly to jdbc. going through the model, which maintains all
 		// kinds

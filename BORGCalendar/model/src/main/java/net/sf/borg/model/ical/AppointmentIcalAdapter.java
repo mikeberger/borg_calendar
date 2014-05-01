@@ -753,7 +753,7 @@ public class AppointmentIcalAdapter {
 						ap.setPrivate(true);
 					} else if (cat.equals("ToDo")) {
 						ap.setTodo(true);
-					} else if (cat.equals("black") | cat.equals("red")
+					} else if (cat.equals("black") || cat.equals("red")
 							|| cat.equals("green") || cat.equals("blue")
 							|| cat.equals("white")) {
 						ap.setColor(cat);

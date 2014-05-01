@@ -62,8 +62,7 @@ public abstract class KeyedEntity<T> implements Serializable
      */
     @Override
     protected T clone(){
-    	// should never get here
-        return( null );
+    	throw new UnsupportedOperationException();
     }
     
 }
