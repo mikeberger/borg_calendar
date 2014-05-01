@@ -50,7 +50,7 @@
 
 		<copy file="${iz.dir}/bin/native/izpack/ShellLink.dll" todir="target/installer" />
 
-		<izpack input="target/installer/install.xml" inheritAll="true" output="target/borg_installer-${project.version}.jar" installerType="standard" basedir="target/installer" izPackDir="${iz.dir}/" />
+		<izpack input="${basedir}/target/installer/install.xml" inheritAll="true" output="${basedir}/target/borg_installer-${project.version}.jar" installerType="standard" basedir="${basedir}/target/installer" izPackDir="${iz.dir}/" />
 
 		<copy todir="target" file="${iz.dir}/utils/wrappers/izpack2exe/7zS.sfx" />
 
