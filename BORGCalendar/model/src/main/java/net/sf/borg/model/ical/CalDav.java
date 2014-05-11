@@ -20,6 +20,7 @@ import javax.crypto.spec.SecretKeySpec;
 import net.fortuna.ical4j.connector.dav.CalDavCalendarCollection;
 import net.fortuna.ical4j.connector.dav.CalDavCalendarStore;
 import net.fortuna.ical4j.connector.dav.PathResolver;
+import net.fortuna.ical4j.connector.dav.property.CSDavPropertyName;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.ComponentList;
@@ -37,12 +38,16 @@ import net.sf.borg.common.Prefs;
 import net.sf.borg.common.SocketClient;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Model.ChangeEvent.ChangeAction;
+import net.sf.borg.model.OptionModel;
 import net.sf.borg.model.entity.Appointment;
+import net.sf.borg.model.entity.Option;
 import net.sf.borg.model.ical.SyncEvent.ObjectType;
 import biz.source_code.base64Coder.Base64Coder;
 
 @SuppressWarnings("unchecked")
 public class CalDav {
+	
+	public static final String CTAG_OPTION = "CTAG";
 
 	public static class BaikalPathResolver extends PathResolver {
 
@@ -380,6 +385,15 @@ public class CalDav {
 		String calname = Prefs.getPref(PrefName.CALDAV_CAL);
 
 		CalDavCalendarCollection collection = getCollection(store, calname);
+		
+		String ctag = collection.getProperty(CSDavPropertyName.CTAG, String.class);
+		log.info("SYNC: CTAG=" + ctag);
+		
+		boolean incoming_changes = true;
+		
+		String lastCtag = OptionModel.getReference().getOption(CTAG_OPTION);
+		if( lastCtag != null && lastCtag.equals(ctag))
+			incoming_changes = false;
 
 		// if we are exporting VTODOs and there is a second calendar set, then
 		// we need to dump the todos as VEVENTS on the second cal
@@ -394,8 +408,11 @@ public class CalDav {
 		}
 
 		processSyncMap(collection, collection2);
+		
+		if( !incoming_changes )
+			SocketClient.sendLogMessage("SYNC: no incoming changes\n");
 
-		if (!outward_only)
+		if (!outward_only && incoming_changes)
 		{
 			syncFromServer(collection, years);
 			
@@ -403,6 +420,12 @@ public class CalDav {
 			// into one - a limitation of borg
 			processSyncMap(collection, collection2);
 		}
+		
+		// update saved ctag
+		collection = getCollection(store, calname);
+		ctag = collection.getProperty(CSDavPropertyName.CTAG, String.class);
+		OptionModel.getReference().setOption(new Option(CTAG_OPTION,ctag));
+		log.info("SYNC: NEW CTAG=" + ctag);
 
 		log.info("SYNC: Done");
 
