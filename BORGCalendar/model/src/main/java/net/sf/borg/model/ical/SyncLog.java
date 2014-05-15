@@ -250,6 +250,9 @@ public class SyncLog extends Model implements Model.Listener, Prefs.Listener {
 
 		XmlContainer container = (XmlContainer) u
 				.unmarshal(is);
+		
+		if( container.SyncEvents == null)
+			return;
 
 		for (SyncEvent evt : container.SyncEvents) {
 			insert(evt);
