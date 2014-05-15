@@ -1,3 +1,7 @@
+BORG 1.8.1
+----------
+TBD
+
 BORG 1.8
 --------
 Add Support for sync with CALDAV Server (Baikal)
