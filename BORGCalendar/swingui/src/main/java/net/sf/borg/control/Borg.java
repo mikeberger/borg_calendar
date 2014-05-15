@@ -52,8 +52,14 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.common.SocketClient;
 import net.sf.borg.common.SocketHandler;
 import net.sf.borg.common.SocketServer;
+import net.sf.borg.model.AddressModel;
+import net.sf.borg.model.AppointmentModel;
+import net.sf.borg.model.CheckListModel;
 import net.sf.borg.model.EmailReminder;
+import net.sf.borg.model.LinkModel;
+import net.sf.borg.model.MemoModel;
 import net.sf.borg.model.Model;
+import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.model.db.jdbc.JdbcDBHelper;
 import net.sf.borg.model.tool.ConversionTool;
@@ -465,6 +471,14 @@ public class Borg implements SocketHandler, Observer {
 
 			// connect to the db - for now, it is jdbc only
 			DBHelper.getController().connect(dbdir);
+			
+			// force models to be instantiated
+			AppointmentModel.getReference();
+			MemoModel.getReference();
+			CheckListModel.getReference();
+			AddressModel.getReference();
+			TaskModel.getReference();
+			LinkModel.getReference();
 
 			UIControl.setShutdownListener(this);
 
