@@ -86,7 +86,7 @@
 			<parsable targetfile="$INSTALL_PATH/run_borg.sh" type="shell" />
 			<executable targetfile="$INSTALL_PATH/run_borg.sh" stage="never" />
 			<updatecheck>
-				<include name="**" />
+				<include name="lib/**" />
 				<exclude name="lib/ext" />
 			</updatecheck>
 
