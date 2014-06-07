@@ -276,7 +276,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 		// confirm delete
 		int ret = JOptionPane.showConfirmDialog(null, Resource
 				.getResourceString("Really_delete_number_")
-				+ " " + num, "", JOptionPane.YES_NO_OPTION);
+				+ " " + num, Resource.getResourceString("Confirm_Delete"), JOptionPane.YES_NO_OPTION);
 		if (ret == JOptionPane.YES_OPTION) {
 			// delete the task
 			try {
