@@ -199,7 +199,7 @@ public class AppointmentIcalAdapter {
 		}
 
 		// duration
-		if (ap.getDuration() != null && ap.getDuration().intValue() != 0) {
+		if (!(ve instanceof VToDo) && ap.getDuration() != null && ap.getDuration().intValue() != 0) {
 			ve.getProperties()
 					.add(new Duration(new Dur(0, 0,
 							ap.getDuration().intValue(), 0)));
