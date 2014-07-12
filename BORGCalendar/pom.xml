@@ -5,6 +5,12 @@
 	<artifactId>BORGCalendar</artifactId>
 	<version>1.8.1</version>
 	<packaging>pom</packaging>
+	<inceptionYear>2003</inceptionYear>
+	<organization>
+		<name>Michael Berger</name>
+	</organization>
+
+
 	<modules>
 		<module>common</module>
 		<module>model</module>
@@ -40,7 +46,35 @@
 		</dependencies>
 	</dependencyManagement>
 	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>license-maven-plugin</artifactId>
+					<version>1.7</version>
+					<executions>
+						<execution>
+							<id>third-party</id>
+							<goals>
+								<goal>update-project-license</goal>
+								<goal>aggregate-add-third-party</goal>
+								<goal>download-licenses</goal>
+							</goals>
+							<configuration>
+								<licenseName>gpl_v2</licenseName>
+								<generateBundle>true</generateBundle>
+								<licensesOutputDirectory>${session.executionRootDirectory}/target/generated-sources/licenses</licensesOutputDirectory>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>

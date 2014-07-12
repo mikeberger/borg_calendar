@@ -29,6 +29,7 @@
 
 		<mkdir dir="target/installer" />
 		<mkdir dir="target/installer/lib" />
+		<mkdir dir="target/installer/licenses" />
 		<mkdir dir="target/installer/lib/ext" />
 		<copy file="src/main/resources/lib/ext/README.txt" todir="target/installer/lib/ext" />
 		<copy file="../swingui/src/main/resources/resource/RELEASE_NOTES.txt" todir="target/installer" />
@@ -38,6 +39,12 @@
 
 		<copy todir="target/installer/lib">
 			<fileset dir="../swingui/target/lib" includes="*" />
+		</copy>
+		<copy todir="target/installer/licenses">
+			<fileset dir="../target/generated-sources/licenses" includes="*" />
+		</copy>
+		<copy todir="target/installer/licenses">
+			<fileset dir="../target/generated-sources/license/META-INF" includes="*" />
 		</copy>
 		<copy file="../swingui/target/swingui-${project.version}.jar" tofile="target/installer/borg.jar" />
 
