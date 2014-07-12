@@ -41,6 +41,9 @@
 			<fileset dir="../swingui/target/lib" includes="*" />
 		</copy>
 		<copy todir="target/installer/licenses">
+			<fileset dir="src/main/resources/licenses" includes="*" />
+		</copy>
+		<copy todir="target/installer/licenses">
 			<fileset dir="../target/generated-sources/licenses" includes="*" />
 		</copy>
 		<copy todir="target/installer/licenses">
