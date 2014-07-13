@@ -57,6 +57,9 @@ public class IcalOptionsPanel extends OptionsPanel {
 	private JCheckBox todoBox = new JCheckBox();
 
 	private JTextField caldavServer = new JTextField();
+	private JTextField caldavPath = new JTextField();
+	private JTextField caldavPrincipalPath = new JTextField();
+	private JTextField caldavUserPath = new JTextField();
 	private JTextField caldavUser = new JTextField();
 	private JPasswordField caldavPassword = new JPasswordField();
 	private JTextField caldavCal = new JTextField();
@@ -98,25 +101,25 @@ public class IcalOptionsPanel extends OptionsPanel {
 
 
 		ftppanel.add(new JLabel(Resource.getResourceString("ftpserver")),
-				GridBagConstraintsFactory.create(0, 3, GridBagConstraints.BOTH));
-		ftppanel.add(ftpserver, GridBagConstraintsFactory.create(1, 3,
+				GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH));
+		ftppanel.add(ftpserver, GridBagConstraintsFactory.create(1, 0,
 				GridBagConstraints.BOTH, 1.0, 0.0));
 
 		ftppanel.add(new JLabel(Resource.getResourceString("ftppath")),
-				GridBagConstraintsFactory.create(0, 4, GridBagConstraints.BOTH));
-		ftppanel.add(ftppath, GridBagConstraintsFactory.create(1, 4,
+				GridBagConstraintsFactory.create(2, 0, GridBagConstraints.BOTH));
+		ftppanel.add(ftppath, GridBagConstraintsFactory.create(3, 0,
 				GridBagConstraints.BOTH, 1.0, 0.0));
 
 		ftppanel.add(new JLabel(Resource.getResourceString("ftpusername")),
-				GridBagConstraintsFactory.create(0, 5, GridBagConstraints.BOTH));
-		ftppanel.add(ftpusername, GridBagConstraintsFactory.create(1, 5,
+				GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH));
+		ftppanel.add(ftpusername, GridBagConstraintsFactory.create(1, 1,
 				GridBagConstraints.BOTH, 1.0, 0.0));
 
 		JLabel pl = new JLabel(Resource.getResourceString("ftppassword"));
 		ftppanel.add(pl,
-				GridBagConstraintsFactory.create(0, 6, GridBagConstraints.BOTH));
+				GridBagConstraintsFactory.create(2, 1, GridBagConstraints.BOTH));
 		pl.setLabelFor(ftppassword);
-		ftppanel.add(ftppassword, GridBagConstraintsFactory.create(1, 6,
+		ftppanel.add(ftppassword, GridBagConstraintsFactory.create(3, 1,
 				GridBagConstraints.BOTH, 1.0, 0.0));
 		ftppassword.setEditable(true);
 
@@ -127,34 +130,49 @@ public class IcalOptionsPanel extends OptionsPanel {
 
 		
 		calpanel.add(new JLabel(Resource.getResourceString("CALDAV_Server")),
-				GridBagConstraintsFactory.create(0, 9, GridBagConstraints.BOTH));
-		calpanel.add(caldavServer, GridBagConstraintsFactory.create(1, 9,
+				GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH));
+		calpanel.add(caldavServer, GridBagConstraintsFactory.create(1, 0,
+				GridBagConstraints.BOTH, 1.0, 0.0));
+		
+		calpanel.add(new JLabel(Resource.getResourceString("CALDAV_Path")),
+				GridBagConstraintsFactory.create(2, 0, GridBagConstraints.BOTH));
+		calpanel.add(caldavPath, GridBagConstraintsFactory.create(3, 0,
 				GridBagConstraints.BOTH, 1.0, 0.0));
 
 		calpanel.add(new JLabel(Resource.getResourceString("CALDAV_User")),
 				GridBagConstraintsFactory
-						.create(0, 10, GridBagConstraints.BOTH));
-		calpanel.add(caldavUser, GridBagConstraintsFactory.create(1, 10,
+						.create(0, 1, GridBagConstraints.BOTH));
+		calpanel.add(caldavUser, GridBagConstraintsFactory.create(1, 1,
 				GridBagConstraints.BOTH, 1.0, 0.0));
 
 		JLabel pl2 = new JLabel(Resource.getResourceString("CALDAV_Password"));
-		calpanel.add(pl2, GridBagConstraintsFactory.create(0, 11,
+		calpanel.add(pl2, GridBagConstraintsFactory.create(2, 1,
 				GridBagConstraints.BOTH));
 		pl2.setLabelFor(caldavPassword);
-		calpanel.add(caldavPassword, GridBagConstraintsFactory.create(1, 11,
+		calpanel.add(caldavPassword, GridBagConstraintsFactory.create(3, 1,
 				GridBagConstraints.BOTH, 1.0, 0.0));
 		caldavPassword.setEditable(true);
 
 		calpanel.add(new JLabel(Resource.getResourceString("CALDAV_Cal")),
 				GridBagConstraintsFactory
-						.create(0, 12, GridBagConstraints.BOTH));
-		calpanel.add(caldavCal, GridBagConstraintsFactory.create(1, 12,
+						.create(0, 2, GridBagConstraints.BOTH));
+		calpanel.add(caldavCal, GridBagConstraintsFactory.create(1, 2,
 				GridBagConstraints.BOTH, 1.0, 0.0));
 
 		calpanel.add(new JLabel(Resource.getResourceString("CALDAV_Cal2")),
 				GridBagConstraintsFactory
-						.create(0, 13, GridBagConstraints.BOTH));
-		calpanel.add(caldavCal2, GridBagConstraintsFactory.create(1, 13,
+						.create(2, 2, GridBagConstraints.BOTH));
+		calpanel.add(caldavCal2, GridBagConstraintsFactory.create(3, 2,
+				GridBagConstraints.BOTH, 1.0, 0.0));
+		
+		calpanel.add(new JLabel(Resource.getResourceString("CALDAV_PrincipalPath")),
+				GridBagConstraintsFactory.create(0, 3, GridBagConstraints.BOTH));
+		calpanel.add(caldavPrincipalPath, GridBagConstraintsFactory.create(1, 3,
+				GridBagConstraints.BOTH, 1.0, 0.0));
+		
+		calpanel.add(new JLabel(Resource.getResourceString("CALDAV_UserPath")),
+				GridBagConstraintsFactory.create(2, 3, GridBagConstraints.BOTH));
+		calpanel.add(caldavUserPath, GridBagConstraintsFactory.create(3, 3,
 				GridBagConstraints.BOTH, 1.0, 0.0));
 
 		gbc = GridBagConstraintsFactory.create(0, 6, GridBagConstraints.BOTH,
@@ -198,6 +216,9 @@ public class IcalOptionsPanel extends OptionsPanel {
 
 		Prefs.putPref(PrefName.CALDAV_USER, caldavUser.getText());
 		Prefs.putPref(PrefName.CALDAV_SERVER, caldavServer.getText());
+		Prefs.putPref(PrefName.CALDAV_PATH, caldavPath.getText());
+		Prefs.putPref(PrefName.CALDAV_PRINCIPAL_PATH, caldavPrincipalPath.getText());
+		Prefs.putPref(PrefName.CALDAV_USER_PATH, caldavUserPath.getText());
 		try {
 			CalDav.sep(new String(caldavPassword.getPassword()));
 		} catch (Exception e) {
@@ -236,6 +257,9 @@ public class IcalOptionsPanel extends OptionsPanel {
 		caldavCal.setText(Prefs.getPref(PrefName.CALDAV_CAL));
 		caldavCal2.setText(Prefs.getPref(PrefName.CALDAV_CAL2));
 		caldavServer.setText(Prefs.getPref(PrefName.CALDAV_SERVER));
+		caldavPath.setText(Prefs.getPref(PrefName.CALDAV_PATH));
+		caldavPrincipalPath.setText(Prefs.getPref(PrefName.CALDAV_PRINCIPAL_PATH));
+		caldavUserPath.setText(Prefs.getPref(PrefName.CALDAV_USER_PATH));
 		try {
 			caldavPassword.setText(CalDav.gep());
 		} catch (Exception e) {

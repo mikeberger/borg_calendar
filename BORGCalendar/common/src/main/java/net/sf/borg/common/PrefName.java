@@ -401,6 +401,9 @@ public class PrefName {
 	public static PrefName ICAL_EXPORT_TODO = new PrefName("ical-export-todo", "false");
 	
 	public static PrefName CALDAV_SERVER = new PrefName("caldav-server", "");
+	public static PrefName CALDAV_PATH = new PrefName("caldav-path", "/");
+	public static PrefName CALDAV_USER_PATH = new PrefName("caldav-user-path", "/cal.php/calendars/");
+	public static PrefName CALDAV_PRINCIPAL_PATH = new PrefName("caldav-principal-path", "/cal.php/principals/");
 	public static PrefName CALDAV_USER = new PrefName("caldav-user", "");
 	public static PrefName CALDAV_PASSWORD = new PrefName("caldav-password", "");
 	public static PrefName CALDAV_PASSWORD2 = new PrefName("caldav-password2", "");

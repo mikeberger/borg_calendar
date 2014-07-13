@@ -20,6 +20,7 @@ import javax.crypto.spec.SecretKeySpec;
 import net.fortuna.ical4j.connector.dav.CalDavCalendarCollection;
 import net.fortuna.ical4j.connector.dav.CalDavCalendarStore;
 import net.fortuna.ical4j.connector.dav.PathResolver;
+import net.fortuna.ical4j.connector.dav.PathResolver.GenericPathResolver;
 import net.fortuna.ical4j.connector.dav.property.CSDavPropertyName;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
@@ -46,22 +47,8 @@ import biz.source_code.base64Coder.Base64Coder;
 
 @SuppressWarnings("unchecked")
 public class CalDav {
-	
+
 	public static final String CTAG_OPTION = "CTAG";
-
-	public static class BaikalPathResolver extends PathResolver {
-
-		@Override
-		public String getPrincipalPath(String username) {
-			return ("/bkal/cal.php/principals/" + username);
-		}
-
-		@Override
-		public String getUserPath(String username) {
-			return ("/bkal/cal.php/calendars/" + username);
-		}
-
-	}
 
 	static private final String PRODID = "-//MBCSoft/BORG//EN";
 
@@ -72,6 +59,17 @@ public class CalDav {
 		if (server != null && !server.isEmpty())
 			return true;
 		return false;
+	}
+	
+	public static PathResolver createPathResolver()
+	{
+		GenericPathResolver pathResolver = new GenericPathResolver();
+		String basePath = Prefs.getPref(PrefName.CALDAV_PATH);
+		if( !basePath.endsWith("/")) basePath += "/";
+		pathResolver.setPrincipalPath(basePath + Prefs
+				.getPref(PrefName.CALDAV_PRINCIPAL_PATH));
+		pathResolver.setUserPath(basePath + Prefs.getPref(PrefName.CALDAV_USER_PATH));
+		return pathResolver;
 	}
 
 	private static void addEvent(CalDavCalendarCollection collection,
@@ -97,12 +95,13 @@ public class CalDav {
 		Prefs.setProxy();
 
 		URL url = new URL("http", Prefs.getPref(PrefName.CALDAV_SERVER), -1,
-				"/");
+				Prefs.getPref(PrefName.CALDAV_PATH));
 		SocketClient.sendLogMessage("SYNC: connect to " + url.toString());
 		log.info("SYNC: connect to " + url.toString());
 
+		
 		CalDavCalendarStore store = new CalDavCalendarStore("-", url,
-				new BaikalPathResolver());
+				createPathResolver());
 
 		if (store.connect(Prefs.getPref(PrefName.CALDAV_USER), gep()
 				.toCharArray()))
@@ -136,7 +135,7 @@ public class CalDav {
 		if (store == null)
 			throw new Exception("Failed to connect to CalDav Store");
 
-		String cal_id = new BaikalPathResolver().getUserPath(Prefs
+		String cal_id = createPathResolver().getUserPath(Prefs
 				.getPref(PrefName.CALDAV_USER)) + "/" + calname;
 		try {
 			store.removeCollection(cal_id);
@@ -159,7 +158,7 @@ public class CalDav {
 		if (Prefs.getBoolPref(PrefName.ICAL_EXPORT_TODO)) {
 			String cal2 = Prefs.getPref(PrefName.CALDAV_CAL2);
 			if (!cal2.isEmpty()) {
-				String cal_id2 = new BaikalPathResolver().getUserPath(Prefs
+				String cal_id2 = createPathResolver().getUserPath(Prefs
 						.getPref(PrefName.CALDAV_USER)) + "/" + cal2;
 				try {
 					store.removeCollection(cal_id2);
@@ -214,7 +213,7 @@ public class CalDav {
 
 	private static CalDavCalendarCollection getCollection(
 			CalDavCalendarStore store, String calName) throws Exception {
-		String cal_id = new BaikalPathResolver().getUserPath(Prefs
+		String cal_id = createPathResolver().getUserPath(Prefs
 				.getPref(PrefName.CALDAV_USER)) + "/" + calName;
 		return store.getCollection(cal_id);
 	}
@@ -385,14 +384,15 @@ public class CalDav {
 		String calname = Prefs.getPref(PrefName.CALDAV_CAL);
 
 		CalDavCalendarCollection collection = getCollection(store, calname);
-		
-		String ctag = collection.getProperty(CSDavPropertyName.CTAG, String.class);
+
+		String ctag = collection.getProperty(CSDavPropertyName.CTAG,
+				String.class);
 		log.info("SYNC: CTAG=" + ctag);
-		
+
 		boolean incoming_changes = true;
-		
+
 		String lastCtag = OptionModel.getReference().getOption(CTAG_OPTION);
-		if( lastCtag != null && lastCtag.equals(ctag))
+		if (lastCtag != null && lastCtag.equals(ctag))
 			incoming_changes = false;
 
 		// if we are exporting VTODOs and there is a second calendar set, then
@@ -408,23 +408,23 @@ public class CalDav {
 		}
 
 		processSyncMap(collection, collection2);
-		
-		if( !incoming_changes )
+
+		if (!incoming_changes)
 			SocketClient.sendLogMessage("SYNC: no incoming changes\n");
 
-		if (!outward_only && incoming_changes)
-		{
+		if (!outward_only && incoming_changes) {
 			syncFromServer(collection, years);
-			
-			// incoming sync could cause additional outward activity due to borg needing to convert multiple events
+
+			// incoming sync could cause additional outward activity due to borg
+			// needing to convert multiple events
 			// into one - a limitation of borg
 			processSyncMap(collection, collection2);
 		}
-		
+
 		// update saved ctag
 		collection = getCollection(store, calname);
 		ctag = collection.getProperty(CSDavPropertyName.CTAG, String.class);
-		OptionModel.getReference().setOption(new Option(CTAG_OPTION,ctag));
+		OptionModel.getReference().setOption(new Option(CTAG_OPTION, ctag));
 		log.info("SYNC: NEW CTAG=" + ctag);
 
 		log.info("SYNC: Done");
@@ -440,55 +440,56 @@ public class CalDav {
 		Appointment ap = AppointmentModel.getReference().getApptByUid(uid);
 		if (ap != null) {
 
-			//LastModified lm = (LastModified) comp
-			//		.getProperty(Property.LAST_MODIFIED);
-			//Date lmdate = lm.getDateTime();
-			//if (lmdate.after(ap.getLastMod())) {
-				if (comp instanceof VEvent) {
-					log.warning("SYNC: ignoring Vevent for single recurrence - cannot process\n"
-							+ comp.toString());
-					SocketClient.sendLogMessage("SYNC: ignoring Vevent for single recurrence - cannot process\n"
-							+ comp.toString());
-					return;
-				}
-				// for a recurrence of a VToDo, we only use the
-				// COMPLETED
-				// status if present - otherwise, we ignore
-				Completed cpltd = (Completed) comp
-						.getProperty(Property.COMPLETED);
-				if (cpltd == null) {
-					log.warning("SYNC: ignoring VToDo for single recurrence - cannot process\n"
-							+ comp.toString());
-					SocketClient.sendLogMessage("SYNC: ignoring VToDo for single recurrence - cannot process\n"
-							+ comp.toString());
-					return;
-				}
+			// LastModified lm = (LastModified) comp
+			// .getProperty(Property.LAST_MODIFIED);
+			// Date lmdate = lm.getDateTime();
+			// if (lmdate.after(ap.getLastMod())) {
+			if (comp instanceof VEvent) {
+				log.warning("SYNC: ignoring Vevent for single recurrence - cannot process\n"
+						+ comp.toString());
+				SocketClient
+						.sendLogMessage("SYNC: ignoring Vevent for single recurrence - cannot process\n"
+								+ comp.toString());
+				return;
+			}
+			// for a recurrence of a VToDo, we only use the
+			// COMPLETED
+			// status if present - otherwise, we ignore
+			Completed cpltd = (Completed) comp.getProperty(Property.COMPLETED);
+			if (cpltd == null) {
+				log.warning("SYNC: ignoring VToDo for single recurrence - cannot process\n"
+						+ comp.toString());
+				SocketClient
+						.sendLogMessage("SYNC: ignoring VToDo for single recurrence - cannot process\n"
+								+ comp.toString());
+				return;
+			}
 
-				Date riddate = rid.getDate();
+			Date riddate = rid.getDate();
 
-				Date utc = new Date();
-				utc.setTime(riddate.getTime());
+			Date utc = new Date();
+			utc.setTime(riddate.getTime());
 
-				// adjust time zone
-				if (!rid.isUtc() && !rid.getValue().contains("T")) {
-					long u = riddate.getTime() - TimeZone.getDefault().getOffset(riddate.getTime());
-					utc.setTime(u);
-				}
+			// adjust time zone
+			if (!rid.isUtc() && !rid.getValue().contains("T")) {
+				long u = riddate.getTime()
+						- TimeZone.getDefault().getOffset(riddate.getTime());
+				utc.setTime(u);
+			}
 
-				Date nt = ap.getNextTodo();
-				if( nt == null )
-					nt = ap.getDate();
-				if (!utc.before(nt)) {
-					log.warning("SYNC: completing Todo\n"
-							+ comp.toString());
-					SocketClient.sendLogMessage("SYNC: completing Todo\n"
-							+ comp.toString());
-					AppointmentModel.getReference().do_todo(ap.getKey(), false,
-							utc);
+			Date nt = ap.getNextTodo();
+			if (nt == null)
+				nt = ap.getDate();
+			if (!utc.before(nt)) {
+				log.warning("SYNC: completing Todo\n" + comp.toString());
+				SocketClient.sendLogMessage("SYNC: completing Todo\n"
+						+ comp.toString());
+				AppointmentModel.getReference()
+						.do_todo(ap.getKey(), false, utc);
 
-				}
+			}
 
-			//}
+			// }
 		}
 	}
 
@@ -615,8 +616,9 @@ public class CalDav {
 				continue;
 
 			if (!serverUids.contains(ap.getUid())) {
-				SocketClient.sendLogMessage("Appointment Not Found in Borg - Deleting: "
-						+ ap.toString());
+				SocketClient
+						.sendLogMessage("Appointment Not Found in Borg - Deleting: "
+								+ ap.toString());
 				log.info("Appointment Not Found in Borg - Deleting: "
 						+ ap.toString());
 				SyncLog.getReference().setProcessUpdates(false);
