@@ -33,7 +33,7 @@
 		<mkdir dir="target/installer/lib/ext" />
 		<copy file="src/main/resources/lib/ext/README.txt" todir="target/installer/lib/ext" />
 		<copy file="../swingui/src/main/resources/resource/RELEASE_NOTES.txt" todir="target/installer" />
-		<copy file="../swingui/src/main/resources/resource/license.htm" todir="target/installer" />
+		<copy file="../swingui/src/main/resources/resource/license.txt" todir="target/installer" />
 		<copy file="../swingui/src/main/resources/resource/COPYING" todir="target/installer" />
 		<copy file="../swingui/src/main/resources/resource/borg.jpg" todir="target/installer" />
 

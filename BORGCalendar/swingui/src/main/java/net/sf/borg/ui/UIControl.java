@@ -175,7 +175,7 @@ public class UIControl {
 				.getResourceString("rlsnotes")));
 		mv.addModule(new InfoView("/resource/CHANGES.txt", Resource
 				.getResourceString("viewchglog")));
-		mv.addModule(new InfoView("/resource/license.htm", Resource
+		mv.addModule(new InfoView("/resource/license.txt", Resource
 				.getResourceString("License")));
 		mv.addModule(new FileView(System.getProperty("user.home", "")
 				+ "/.borg.log", Resource.getResourceString("view_log")));

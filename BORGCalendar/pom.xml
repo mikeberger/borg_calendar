@@ -5,11 +5,18 @@
 	<artifactId>BORGCalendar</artifactId>
 	<version>1.8.1</version>
 	<packaging>pom</packaging>
+	<url>http://borg.mbcsoft.com</url>
 	<inceptionYear>2003</inceptionYear>
 	<organization>
 		<name>Michael Berger</name>
 	</organization>
-
+	<licenses>
+		<license>
+			<name>GNU General Public License - Version 2</name>
+			<url>http://www.gnu.org/licenses/gpl-2.0.html</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
 
 	<modules>
 		<module>common</module>
@@ -55,6 +62,7 @@
 					<executions>
 						<execution>
 							<id>third-party</id>
+							<phase>package</phase>
 							<goals>
 								<goal>update-project-license</goal>
 								<goal>aggregate-add-third-party</goal>

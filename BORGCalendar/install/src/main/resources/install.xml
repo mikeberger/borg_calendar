@@ -78,7 +78,7 @@
 		<pack name="Base" required="yes">
 			<description>The base program and help files</description>
 			<file src="RELEASE_NOTES.txt" targetdir="$INSTALL_PATH" />
-			<file src="license.htm" targetdir="$INSTALL_PATH" />
+			<file src="license.txt" targetdir="$INSTALL_PATH" />
 			<file src="COPYING" targetdir="$INSTALL_PATH" />
 			<file src="borg.jar" targetdir="$INSTALL_PATH" />
 			<fileset dir="lib" targetdir="$INSTALL_PATH/lib" />
