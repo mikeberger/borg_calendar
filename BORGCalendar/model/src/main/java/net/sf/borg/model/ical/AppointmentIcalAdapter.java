@@ -196,14 +196,16 @@ public class AppointmentIcalAdapter {
 					new net.fortuna.ical4j.model.DateTime(ap.getDate()));
 			dts.setUtc(true);
 			ve.getProperties().add(dts);
+			
+			// duration
+			if ( ap.getDuration() != null && ap.getDuration().intValue() != 0) {
+				ve.getProperties()
+						.add(new Duration(new Dur(0, 0,
+								ap.getDuration().intValue(), 0)));
+			}
 		}
 
-		// duration
-		if (!(ve instanceof VToDo) && ap.getDuration() != null && ap.getDuration().intValue() != 0) {
-			ve.getProperties()
-					.add(new Duration(new Dur(0, 0,
-							ap.getDuration().intValue(), 0)));
-		}
+		
 
 		// vacation is a category
 		if (ap.getVacation() != null && ap.getVacation().intValue() == 1) {
