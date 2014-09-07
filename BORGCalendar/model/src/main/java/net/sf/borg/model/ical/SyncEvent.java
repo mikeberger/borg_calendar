@@ -17,7 +17,7 @@ import net.sf.borg.model.Model.ChangeEvent.ChangeAction;
 public class SyncEvent {
 
 	public static enum ObjectType {
-		APPOINTMENT, TASK, PROJECT, SUBTASK
+		APPOINTMENT, TASK, PROJECT, SUBTASK, REMOTE
 	}
 
 	private Integer id;

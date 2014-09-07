@@ -374,6 +374,9 @@ public class PrefName {
 			new Integer(8844));
 	public static PrefName ICAL_EXPORTYEARS = new PrefName("ical-export-years",
 			new Integer(2));
+	
+	public static PrefName ICAL_SYNCMINS = new PrefName("ical-syncmins",
+			new Integer(15));
 
 	// option to prevent import of appts that were previously exported from borg
 	// used when the goal is to only import appointments created outside of

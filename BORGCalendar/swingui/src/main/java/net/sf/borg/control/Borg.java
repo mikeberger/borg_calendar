@@ -62,6 +62,7 @@ import net.sf.borg.model.Model;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.model.db.jdbc.JdbcDBHelper;
+import net.sf.borg.model.ical.CalDav;
 import net.sf.borg.model.tool.ConversionTool;
 import net.sf.borg.ui.UIControl;
 import net.sf.borg.ui.options.OptionsView;
@@ -87,8 +88,7 @@ public class Borg implements SocketHandler, Observer {
 	 * @return the singleton
 	 */
 	static public Borg getReference() {
-		if (singleton == null)
-		{
+		if (singleton == null) {
 			Borg b = new Borg();
 			singleton = b;
 		}
@@ -231,9 +231,9 @@ public class Borg implements SocketHandler, Observer {
 							&& Borg.this.modalMessage.isShowing()) {
 						Borg.this.modalMessage.appendText(lockmsg);
 						Borg.this.modalMessage.setEnabled(false);
-						//Borg.this.modalMessage.toFront();
+						// Borg.this.modalMessage.toFront();
 					}
-					
+
 				}
 			});
 
@@ -471,7 +471,7 @@ public class Borg implements SocketHandler, Observer {
 
 			// connect to the db - for now, it is jdbc only
 			DBHelper.getController().connect(dbdir);
-			
+
 			// force models to be instantiated
 			AppointmentModel.getReference();
 			MemoModel.getReference();
@@ -554,6 +554,40 @@ public class Borg implements SocketHandler, Observer {
 						});
 					}
 				}, syncmins * 60 * 1000, syncmins * 60 * 1000);
+			}
+
+			syncmins = Prefs.getIntPref(PrefName.ICAL_SYNCMINS);
+			if (syncmins != 0) {
+				this.syncTimer_ = new java.util.Timer("IcalSyncTimer");
+				this.syncTimer_.schedule(new TimerTask() {
+					@Override
+					public void run() {
+						
+						try {
+							if( !CalDav.isServerSyncNeeded())
+							{
+								boolean needed = CalDav.checkRemoteSync();
+								if( needed )
+								{
+									SwingUtilities.invokeLater(new Runnable() {
+										@Override
+										public void run() {
+											try {
+												CalDav.setServerSyncNeeded(true);
+											} catch (Exception e) {
+												Errmsg.getErrorHandler().errmsg(e);
+											}
+										}
+									});
+								}
+							}
+						} catch (Exception e) {
+							Errmsg.logError(e);
+						}
+						
+						
+					}
+				}, 10 * 1000, syncmins * 60 * 1000);
 			}
 
 			// start socket listener

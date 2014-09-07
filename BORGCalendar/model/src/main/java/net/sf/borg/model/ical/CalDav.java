@@ -38,6 +38,7 @@ import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.SocketClient;
 import net.sf.borg.model.AppointmentModel;
+import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.Model.ChangeEvent.ChangeAction;
 import net.sf.borg.model.OptionModel;
 import net.sf.borg.model.entity.Appointment;
@@ -52,6 +53,8 @@ public class CalDav {
 
 	static private final String PRODID = "-//MBCSoft/BORG//EN";
 
+	static private final int REMOTE_ID = 1;
+
 	static private final Logger log = Logger.getLogger("net.sf.borg");
 
 	public static boolean isSyncing() {
@@ -60,15 +63,16 @@ public class CalDav {
 			return true;
 		return false;
 	}
-	
-	public static PathResolver createPathResolver()
-	{
+
+	public static PathResolver createPathResolver() {
 		GenericPathResolver pathResolver = new GenericPathResolver();
 		String basePath = Prefs.getPref(PrefName.CALDAV_PATH);
-		if( !basePath.endsWith("/")) basePath += "/";
-		pathResolver.setPrincipalPath(basePath + Prefs
-				.getPref(PrefName.CALDAV_PRINCIPAL_PATH));
-		pathResolver.setUserPath(basePath + Prefs.getPref(PrefName.CALDAV_USER_PATH));
+		if (!basePath.endsWith("/"))
+			basePath += "/";
+		pathResolver.setPrincipalPath(basePath
+				+ Prefs.getPref(PrefName.CALDAV_PRINCIPAL_PATH));
+		pathResolver.setUserPath(basePath
+				+ Prefs.getPref(PrefName.CALDAV_USER_PATH));
 		return pathResolver;
 	}
 
@@ -99,7 +103,6 @@ public class CalDav {
 		SocketClient.sendLogMessage("SYNC: connect to " + url.toString());
 		log.info("SYNC: connect to " + url.toString());
 
-		
 		CalDavCalendarStore store = new CalDavCalendarStore("-", url,
 				createPathResolver());
 
@@ -135,8 +138,9 @@ public class CalDav {
 		if (store == null)
 			throw new Exception("Failed to connect to CalDav Store");
 
-		String cal_id = createPathResolver().getUserPath(Prefs
-				.getPref(PrefName.CALDAV_USER)) + "/" + calname;
+		String cal_id = createPathResolver().getUserPath(
+				Prefs.getPref(PrefName.CALDAV_USER))
+				+ "/" + calname;
 		try {
 			store.removeCollection(cal_id);
 		} catch (Exception e) {
@@ -158,8 +162,9 @@ public class CalDav {
 		if (Prefs.getBoolPref(PrefName.ICAL_EXPORT_TODO)) {
 			String cal2 = Prefs.getPref(PrefName.CALDAV_CAL2);
 			if (!cal2.isEmpty()) {
-				String cal_id2 = createPathResolver().getUserPath(Prefs
-						.getPref(PrefName.CALDAV_USER)) + "/" + cal2;
+				String cal_id2 = createPathResolver().getUserPath(
+						Prefs.getPref(PrefName.CALDAV_USER))
+						+ "/" + cal2;
 				try {
 					store.removeCollection(cal_id2);
 				} catch (Exception e) {
@@ -213,8 +218,9 @@ public class CalDav {
 
 	private static CalDavCalendarCollection getCollection(
 			CalDavCalendarStore store, String calName) throws Exception {
-		String cal_id = createPathResolver().getUserPath(Prefs
-				.getPref(PrefName.CALDAV_USER)) + "/" + calName;
+		String cal_id = createPathResolver().getUserPath(
+				Prefs.getPref(PrefName.CALDAV_USER))
+				+ "/" + calName;
 		return store.getCollection(cal_id);
 	}
 
@@ -364,6 +370,66 @@ public class CalDav {
 				new String(Base64Coder.encode(ba)));
 	}
 
+	/**
+	 * check remote server to see if sync needed - must not be run on Event
+	 * thread
+	 * 
+	 * @throws Exception
+	 */
+	static public boolean checkRemoteSync() throws Exception {
+		CalDavCalendarStore store = connect();
+		if (store == null)
+			throw new Exception("Failed to connect to CalDav Store");
+
+		log.info("SYNC: Get Collection");
+
+		String calname = Prefs.getPref(PrefName.CALDAV_CAL);
+
+		CalDavCalendarCollection collection = getCollection(store, calname);
+
+		String ctag = collection.getProperty(CSDavPropertyName.CTAG,
+				String.class);
+		log.info("SYNC: CTAG=" + ctag);
+
+		boolean incoming_changes = true;
+
+		String lastCtag = OptionModel.getReference().getOption(CTAG_OPTION);
+		if (lastCtag != null && lastCtag.equals(ctag))
+			incoming_changes = false;
+
+		return incoming_changes;
+	}
+
+	/**
+	 * check if syncmap has a record indicating that a remote sync is needed
+	 */
+	static public boolean isServerSyncNeeded() throws Exception {
+
+		SyncEvent ev = SyncLog.getReference().get(REMOTE_ID,
+				SyncEvent.ObjectType.REMOTE);
+		if (ev != null)
+			return true;
+
+		return false;
+
+	}
+
+	/**
+	 * add/delete the symcmap record that indicates that a remote sync is needed
+	 * MUST be run on the Event thread as it sends a change event notification
+	 */
+	static public void setServerSyncNeeded(boolean needed) throws Exception {
+		if (needed)
+			SyncLog.getReference().insert(
+					new SyncEvent(REMOTE_ID, "",
+							ChangeEvent.ChangeAction.CHANGE,
+							SyncEvent.ObjectType.REMOTE));
+		else
+			SyncLog.getReference().delete(REMOTE_ID,
+					SyncEvent.ObjectType.REMOTE);
+
+	}
+
 	static public void sync(Integer years, boolean outward_only)
 			throws Exception {
 		CompatibilityHints.setHintEnabled(
@@ -426,6 +492,9 @@ public class CalDav {
 		ctag = collection.getProperty(CSDavPropertyName.CTAG, String.class);
 		OptionModel.getReference().setOption(new Option(CTAG_OPTION, ctag));
 		log.info("SYNC: NEW CTAG=" + ctag);
+
+		// remove any remote sync event
+		setServerSyncNeeded(false);
 
 		log.info("SYNC: Done");
 

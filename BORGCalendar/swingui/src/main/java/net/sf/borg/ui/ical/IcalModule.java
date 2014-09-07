@@ -479,6 +479,10 @@ public class IcalModule implements Module, Prefs.Listener, Model.Listener {
 	private void updateSyncButton() throws Exception {
 
 		String label = Integer.toString(SyncLog.getReference().getAll().size());
+		
+		if( CalDav.isServerSyncNeeded())
+			label += "^";
+		
 		syncToolbarButton.setText(label);
 		
 		// always leave button enabled in order to sync incoming changes easily
