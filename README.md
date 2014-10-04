@@ -42,11 +42,12 @@ more ...
  
 BORG downloads are available from http://borg-calendar.sourceforge.net
 
+BORG downloads and snapshot releases are also available on Github: https://github.com/mikeberger/borg_calendar/releases
+
 BORG needs only Java to run, which now comes pre-installed on most systems. If you don't have Java, you need to get the JAVA SE (standard environment) runtime version 6. It is available from http://www.oracle.com/technetwork/java/javase/downloads/.  
 
 The source code is available on github - https://github.com/mikeberger/borg_calendar
 
-Snapshot Builds http://mbcsoft.com/borg_downloads
 >Be sure to check the dates to see if a build is older or newer than the latest official release.
 
 ## More info
