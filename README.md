@@ -48,7 +48,6 @@ BORG needs only Java to run, which now comes pre-installed on most systems. If y
 
 The source code is available on github - https://github.com/mikeberger/borg_calendar
 
->Be sure to check the dates to see if a build is older or newer than the latest official release.
 
 ## More info
  
