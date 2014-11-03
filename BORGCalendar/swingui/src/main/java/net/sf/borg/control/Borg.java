@@ -564,7 +564,7 @@ public class Borg implements SocketHandler, Observer {
 					public void run() {
 						
 						try {
-							if( !CalDav.isServerSyncNeeded())
+							if( CalDav.isSyncing() && !CalDav.isServerSyncNeeded())
 							{
 								boolean needed = CalDav.checkRemoteSync();
 								if( needed )

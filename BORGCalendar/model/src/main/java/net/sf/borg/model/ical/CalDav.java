@@ -95,7 +95,10 @@ public class CalDav {
 	}
 
 	private static CalDavCalendarStore connect() throws Exception {
-
+		
+		if( !isSyncing())
+			return null;
+			
 		Prefs.setProxy();
 
 		URL url = new URL("http", Prefs.getPref(PrefName.CALDAV_SERVER), -1,
