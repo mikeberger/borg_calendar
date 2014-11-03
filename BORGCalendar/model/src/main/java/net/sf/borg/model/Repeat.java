@@ -44,6 +44,7 @@ public class Repeat {
 	public static final String WEEKDAYS = "weekdays";
 	public static final String YEARLY = "yearly";
 	public static final String MONTHLY_DAY = "monthly_day";
+	public static final String MONTHLY_DAY_LAST = "monthly_day_last";
 	public static final String MONTHLY = "monthly";
 	public static final String BIWEEKLY = "biweekly";
 	public static final String WEEKLY = "weekly";
@@ -54,9 +55,8 @@ public class Repeat {
 	public static final String NYEARS = "nyears";
 	public static final String DAYLIST = "dlist";
 	public static final String ONCE = "once";
-	
-	public final static int MAGIC_RPT_FOREVER_VALUE = 9999;
 
+	public final static int MAGIC_RPT_FOREVER_VALUE = 9999;
 
 	/** the appointment date (ie the first occurrence) */
 	private Calendar start_;
@@ -91,8 +91,8 @@ public class Repeat {
 
 	/** The frequencies string values in an array for mapping (legacy code) */
 	static private String freqs[] = { ONCE, DAILY, WEEKLY, BIWEEKLY, MONTHLY,
-			MONTHLY_DAY, YEARLY, WEEKDAYS, WEEKENDS, MWF, TTH, NDAYS, NWEEKS,
-			NMONTHS, NYEARS, DAYLIST };
+			MONTHLY_DAY, MONTHLY_DAY_LAST, YEARLY, WEEKDAYS, WEEKENDS, MWF,
+			TTH, NDAYS, NWEEKS, NMONTHS, NYEARS, DAYLIST };
 
 	/**
 	 * Checks to see if a particular day is valid for certain strict repeat
@@ -125,6 +125,15 @@ public class Repeat {
 			return false;
 		else if (f.equals(DAYLIST) && !daylist.contains(new Integer(day)))
 			return false;
+		else if( f.equals(MONTHLY_DAY_LAST))
+		{
+			Calendar copy = new GregorianCalendar();
+			copy.setTime(date.getTime());
+			int doy = date.get(Calendar.DAY_OF_YEAR);
+			copy.set(Calendar.DAY_OF_WEEK_IN_MONTH,-1);
+			if( doy != copy.get(Calendar.DAY_OF_YEAR))
+				return false;
+		}
 		return true;
 	}
 
@@ -355,13 +364,17 @@ public class Repeat {
 			incr = 0;
 			dayOfWeek = start.get(Calendar.DAY_OF_WEEK);
 			dayOfWeekMonth = start.get(Calendar.DAY_OF_WEEK_IN_MONTH);
+		} else if (freq_.equals(MONTHLY_DAY_LAST)) {
+			incr = 0;
+			dayOfWeek = start.get(Calendar.DAY_OF_WEEK);
+			dayOfWeekMonth = -1;
 		} else if (freq_.equals(YEARLY)) {
-            // 12 months fixes the leap year condition (bug #124)
-            // this is probably a bug with the java calendar not realizing next year is a leap year when added
-            field = Calendar.MONTH;
-            incr = 12;
-		}
-		else if (freq_.equals(MWF)) {
+			// 12 months fixes the leap year condition (bug #124)
+			// this is probably a bug with the java calendar not realizing next
+			// year is a leap year when added
+			field = Calendar.MONTH;
+			incr = 12;
+		} else if (freq_.equals(MWF)) {
 			incr = 0;
 		} else if (freq_.equals(TTH)) {
 			incr = 0;
@@ -373,10 +386,10 @@ public class Repeat {
 			incr = getNValue(frequency_);
 			field = Calendar.MONTH;
 		} else if (freq_.equals(NYEARS)) {
-            // this fixes that same leap year bug (bug #124)
-            // using months instead of years
-            incr = getNValue(frequency_) * 12;
-            field = Calendar.MONTH;
+			// this fixes that same leap year bug (bug #124)
+			// using months instead of years
+			incr = getNValue(frequency_) * 12;
+			field = Calendar.MONTH;
 		} else if (freq_.equals(DAYLIST)) {
 			incr = 0;
 		}
@@ -494,24 +507,28 @@ public class Repeat {
 				cal.add(Calendar.DATE, 2);
 			}
 		} else if (freq_.equals(MONTHLY_DAY)) {
-			
+
 			// Attempt to find a date falling on the
 			// same day of week and week number
 			// within a subsequent month.
-			while(true)
-			{
+			while (true) {
 				cal.add(Calendar.MONTH, 1);
 				cal.set(Calendar.DAY_OF_WEEK, dayOfWeek);
 				cal.set(Calendar.DAY_OF_WEEK_IN_MONTH, dayOfWeekMonth);
 				int dowm = cal.get(Calendar.DAY_OF_WEEK_IN_MONTH);
-				if (dowm == dayOfWeekMonth)
-				{
+				if (dowm == dayOfWeekMonth) {
 					break;
 				}
-				
+
 			}
-			
+
 			// not enough days in this month
+		} else if (freq_.equals(MONTHLY_DAY_LAST)) {
+
+			cal.add(Calendar.MONTH, 1);
+			cal.set(Calendar.DAY_OF_WEEK, dayOfWeek);
+			cal.set(Calendar.DAY_OF_WEEK_IN_MONTH, -1);
+
 		} else if (freq_.equals(DAYLIST)) {
 			Collection<Integer> daylist = getDaylist(frequency_);
 			if (daylist != null && !daylist.isEmpty()) {
@@ -541,36 +558,36 @@ public class Repeat {
 
 		return current_;
 	}
-	
+
 	/**
 	 * Calculate the date of the last repeat of an appt
+	 * 
 	 * @param appt
 	 * @return the date of the last repeat or null if repeats forever
 	 */
-	static public Date calculateLastRepeat(Appointment appt)
-	{
-		if( !isRepeating(appt))
+	static public Date calculateLastRepeat(Appointment appt) {
+		if (!isRepeating(appt))
 			return appt.getDate();
-		
-		if( appt.getTimes() == MAGIC_RPT_FOREVER_VALUE)
+
+		if (appt.getTimes() == MAGIC_RPT_FOREVER_VALUE)
 			return null;
-		
-		if( appt.getRepeatUntil() != null )
+
+		if (appt.getRepeatUntil() != null)
 			return appt.getRepeatUntil();
-		
+
 		Calendar start = new GregorianCalendar();
 		Calendar c = start;
 		start.setTime(appt.getDate());
 		Repeat r = new Repeat(start, appt.getFrequency());
-		for (int i = 1;i < appt.getTimes(); i++) {
+		for (int i = 1; i < appt.getTimes(); i++) {
 			c = r.next();
 		}
-		
-		if( c == null )
+
+		if (c == null)
 			return null;
-		
+
 		return c.getTime();
-		
+
 	}
 
 	/**
