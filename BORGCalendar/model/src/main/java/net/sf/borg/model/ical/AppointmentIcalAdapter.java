@@ -273,6 +273,14 @@ public class AppointmentIcalAdapter {
 				String days[] = new String[] { "SU", "MO", "TU", "WE", "TH",
 						"FR", "SA" };
 				rec += "MONTHLY;BYDAY=" + dayOfWeekMonth + days[dayOfWeek - 1];
+			} else if (freq.equals(Repeat.MONTHLY_DAY_LAST)) {
+				Date dd = ap.getDate();
+				GregorianCalendar gc = new GregorianCalendar();
+				gc.setTime(dd);
+				int dayOfWeek = gc.get(java.util.Calendar.DAY_OF_WEEK);
+				String days[] = new String[] { "SU", "MO", "TU", "WE", "TH",
+						"FR", "SA" };
+				rec += "MONTHLY;BYDAY=" + "-1" + days[dayOfWeek - 1];
 			} else if (freq.equals(Repeat.YEARLY)) {
 				rec += "YEARLY";
 			} else if (freq.equals(Repeat.NDAYS)) {
