@@ -199,9 +199,12 @@ public class AppointmentIcalAdapter {
 			
 			// duration
 			if ( ap.getDuration() != null && ap.getDuration().intValue() != 0) {
-				ve.getProperties()
-						.add(new Duration(new Dur(0, 0,
-								ap.getDuration().intValue(), 0)));
+//				ve.getProperties()
+//						.add(new Duration(new Dur(0, 0,
+//								ap.getDuration().intValue(), 0)));
+				DtEnd dte = new DtEnd(pl, new net.fortuna.ical4j.model.DateTime(ap.getDate().getTime() + 1000 * 60 * ap.getDuration().intValue()));
+				dte.setUtc(true);
+				ve.getProperties().add(dte);
 			}
 		}
 
