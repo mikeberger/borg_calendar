@@ -65,8 +65,8 @@ import net.sf.borg.model.undo.UndoLog;
  * TaksModel manages all of the task related entities - Task, Project, Subtask,
  * and Tasklog
  */
-public class TaskModel extends Model implements Model.Listener, CategorySource, CalendarEntityProvider,
-		Searchable<KeyedEntity<?>> {
+public class TaskModel extends Model implements Model.Listener, CategorySource,
+		CalendarEntityProvider, Searchable<KeyedEntity<?>> {
 
 	static private final String TASKTYPES_OPTION = "TASKTYPES";
 
@@ -515,9 +515,9 @@ public class TaskModel extends Model implements Model.Listener, CategorySource, 
 					&& DateUtil.isAfter(task.getDueDate(), p.getDueDate())) {
 				throw new Warning(Resource.getResourceString("taskdd_warning"));
 			}
-			if( p != null && TaskModel.isClosed(p) && !TaskModel.isClosed(task))
-			{
-				throw new Warning(Resource.getResourceString("task_parent_closed"));
+			if (p != null && TaskModel.isClosed(p) && !TaskModel.isClosed(task)) {
+				throw new Warning(
+						Resource.getResourceString("task_parent_closed"));
 			}
 		}
 
@@ -702,76 +702,80 @@ public class TaskModel extends Model implements Model.Listener, CategorySource, 
 		if (dbtype.equals("mysql"))
 			DBHelper.getController().execSQL("SET foreign_key_checks = 0;");
 		else
-			DBHelper.getController().execSQL("SET REFERENTIAL_INTEGRITY FALSE;");
+			DBHelper.getController()
+					.execSQL("SET REFERENTIAL_INTEGRITY FALSE;");
 
-		/*
-		 * 
-		 * The option import code is being left in to handle old import files
-		 * where the OPTIONS were included with the Task XML
-		 */
-		if (container.OPTION != null) {
-			OptionModel.getReference().importOptions(container.OPTION);
-		}
-
-		if (container.Task != null) {
-			for (Task task : container.Task) {
-				if (task.getPriority() == null)
-					task.setPriority(new Integer(3));
-
-				if (task.getStartDate() == null)
-					task.setStartDate(new Date());
-
-				if (task.getKey() == -1)
-					task.setKey(db_.nextkey());
-
-				if (task.getState() == null)
-					task.setState(TaskModel.getReference().getTaskTypes()
-							.getInitialState(task.getType()));
-
-				db_.addObj(task);
-
+		try {
+			/*
+			 * 
+			 * The option import code is being left in to handle old import
+			 * files where the OPTIONS were included with the Task XML
+			 */
+			if (container.OPTION != null) {
+				OptionModel.getReference().importOptions(container.OPTION);
 			}
-		}
 
-		// use key from import file if importing into empty db
-		int nextSubTaskKey = db_.nextSubTaskKey();
-		boolean use_keys = (nextSubTaskKey == 1) ? true : false;
+			if (container.Task != null) {
+				for (Task task : container.Task) {
+					if (task.getPriority() == null)
+						task.setPriority(new Integer(3));
 
-		if (container.Subtask != null) {
-			for (Subtask subtask : container.Subtask) {
-				if (!use_keys)
-					subtask.setKey(nextSubTaskKey++);
-				db_.addSubTask(subtask);
-			}
-		}
+					if (task.getStartDate() == null)
+						task.setStartDate(new Date());
 
-		if (container.Tasklog != null) {
-			for (Tasklog tlog : container.Tasklog) {
-				try {
-					tlog.setKey(-1);
-					saveLog(tlog);
-				} catch (Exception e) {
-					Errmsg.getErrorHandler().errmsg(e);
+					if (task.getKey() == -1)
+						task.setKey(db_.nextkey());
+
+					if (task.getState() == null)
+						task.setState(TaskModel.getReference().getTaskTypes()
+								.getInitialState(task.getType()));
+
+					db_.addObj(task);
+
 				}
 			}
-		}
 
-		if (container.Project != null) {
-			for (Project p : container.Project) {
-				try {
-					db_.addProject(p);
-				} catch (Exception e) {
-					Errmsg.getErrorHandler().errmsg(e);
+			// use key from import file if importing into empty db
+			int nextSubTaskKey = db_.nextSubTaskKey();
+			boolean use_keys = (nextSubTaskKey == 1) ? true : false;
+
+			if (container.Subtask != null) {
+				for (Subtask subtask : container.Subtask) {
+					if (!use_keys)
+						subtask.setKey(nextSubTaskKey++);
+					db_.addSubTask(subtask);
 				}
 			}
-		}
-		if (dbtype.equals("mysql"))
-			DBHelper.getController().execSQL("SET foreign_key_checks = 1;");
-		else
-			DBHelper.getController().execSQL("SET REFERENTIAL_INTEGRITY TRUE;");
 
-		load_map();
-		refreshListeners();
+			if (container.Tasklog != null) {
+				for (Tasklog tlog : container.Tasklog) {
+					try {
+						tlog.setKey(-1);
+						saveLog(tlog);
+					} catch (Exception e) {
+						Errmsg.getErrorHandler().errmsg(e);
+					}
+				}
+			}
+
+			if (container.Project != null) {
+				for (Project p : container.Project) {
+					try {
+						db_.addProject(p);
+					} catch (Exception e) {
+						Errmsg.getErrorHandler().errmsg(e);
+					}
+				}
+			}
+		} finally {
+			if (dbtype.equals("mysql"))
+				DBHelper.getController().execSQL("SET foreign_key_checks = 1;");
+			else
+				DBHelper.getController().execSQL(
+						"SET REFERENTIAL_INTEGRITY TRUE;");
+			load_map();
+			refreshListeners();
+		}
 
 	}
 
@@ -1100,32 +1104,35 @@ public class TaskModel extends Model implements Model.Listener, CategorySource, 
 			days = 0;
 		return days;
 	}
-	
+
 	public static final int NO_DAYS_VALUE = 9999999;
+
 	/**
 	 * return the days left to complete the next due item for a task
-	 * @param t - the task
+	 * 
+	 * @param t
+	 *            - the task
 	 * @return the days left
-	 * @throws Exception 
+	 * @throws Exception
 	 */
-	public int daysLeft(Task t) throws Exception
-	{
+	public int daysLeft(Task t) throws Exception {
 		int daysLeft = NO_DAYS_VALUE;
-		if( isClosed(t)) return daysLeft;
-		
-		if( t.getDueDate() != null )
+		if (isClosed(t))
+			return daysLeft;
+
+		if (t.getDueDate() != null)
 			daysLeft = daysLeft(t.getDueDate());
-		
-		for( Subtask st : getSubTasks(t.getKey()))
-		{
-			if( st.getCloseDate() != null ) continue;
-			
-			if( st.getDueDate() != null )
+
+		for (Subtask st : getSubTasks(t.getKey())) {
+			if (st.getCloseDate() != null)
+				continue;
+
+			if (st.getDueDate() != null)
 				daysLeft = Math.min(daysLeft(st.getDueDate()), daysLeft);
 
 		}
 		return daysLeft;
-		
+
 	}
 
 	/**
@@ -1216,17 +1223,16 @@ public class TaskModel extends Model implements Model.Listener, CategorySource, 
 	 *             the exception
 	 */
 	public void saveProject(Project p, boolean undo) throws Exception {
-		
+
 		// validate no cycles in project tree
 		Integer pi = p.getParent();
-		while( pi != null )
-		{
-			if( pi.intValue() == p.getKey())
+		while (pi != null) {
+			if (pi.intValue() == p.getKey())
 				throw new Warning(Resource.getResourceString("project_cycle"));
-			
+
 			Project par = TaskModel.getReference().getProject(pi);
 			pi = par.getParent();
-			
+
 		}
 
 		// validation that task due dates are before project due date
@@ -1275,7 +1281,8 @@ public class TaskModel extends Model implements Model.Listener, CategorySource, 
 				}
 			}
 			for (Project pt : TaskModel.getReference().getProjects()) {
-				if (!isClosed(pt) && pt.getParent() != null && pt.getParent().intValue() == p.getKey()) {
+				if (!isClosed(pt) && pt.getParent() != null
+						&& pt.getParent().intValue() == p.getKey()) {
 					throw new Warning(
 							Resource.getResourceString("close_proj_warn"));
 				}
@@ -1380,7 +1387,8 @@ public class TaskModel extends Model implements Model.Listener, CategorySource, 
 				if (!CategoryModel.getReference().isShown(t.getCategory()))
 					continue;
 
-				String tx = t.getSummary() + " " + t.getDescription() + " " + t.getResolution();
+				String tx = t.getSummary() + " " + t.getDescription() + " "
+						+ t.getResolution();
 				Collection<Subtask> subtasks = this.getSubTasks(t.getKey());
 				for (Subtask st : subtasks) {
 					tx += " " + st.getDescription();
@@ -1438,11 +1446,11 @@ public class TaskModel extends Model implements Model.Listener, CategorySource, 
 
 	@Override
 	public List<CalendarEntity> getEntities(Date d) {
-		
+
 		List<CalendarEntity> ret = new ArrayList<CalendarEntity>();
 		GregorianCalendar cal = new GregorianCalendar();
 		cal.setTime(d);
-		
+
 		// load any tasks
 		if (Prefs.getBoolPref(PrefName.CAL_SHOW_TASKS)) {
 			Collection<Project> pcol = TaskModel.getReference().get_projects(
@@ -1473,8 +1481,8 @@ public class TaskModel extends Model implements Model.Listener, CategorySource, 
 
 			}
 		}
-		
+
 		return ret;
-		
+
 	}
 }
