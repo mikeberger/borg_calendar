@@ -328,6 +328,8 @@ class ApptBox extends Box implements Box.Draggable {
 	private double left; // fraction of the available grid width at which the left side is drawn
 
 	private int maxAcrossAtOneTime = 0; // max number of appts overlapping any others that overlap this one
+	
+	private String displayText;
 
 	private int oldFontHeight = -1; // used for sizing the todo marker image
 
@@ -379,7 +381,8 @@ class ApptBox extends Box implements Box.Draggable {
 		}
 		
 		// format the appt text
-		appt.setText(AppointmentTextFormat.format(appt, d));
+		//appt.setText(AppointmentTextFormat.format(appt, d));
+		displayText = AppointmentTextFormat.format((Appointment) ap, d);
 
 	}
 
@@ -716,7 +719,7 @@ class ApptBox extends Box implements Box.Draggable {
 	 */
 	@Override
 	public String getText() {
-		return appt.getText();
+		return displayText;
 	}
 
 	/**
