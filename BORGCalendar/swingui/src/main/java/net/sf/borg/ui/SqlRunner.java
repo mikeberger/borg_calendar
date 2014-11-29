@@ -24,8 +24,8 @@ import java.sql.ResultSet;
 import java.util.logging.Logger;
 
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JEditorPane;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -45,7 +45,7 @@ import net.sf.borg.ui.util.TableSorter;
  * 
  */
 
-class SqlRunner extends JDialog {
+class SqlRunner extends JFrame {
 
 	static private final Logger log = Logger.getLogger("net.sf.borg");
 
@@ -55,8 +55,6 @@ class SqlRunner extends JDialog {
 	public SqlRunner() {
 
 		super();
-
-		setModal(false);
 
 		// init the gui components
 		initComponents();
