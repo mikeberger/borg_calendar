@@ -249,9 +249,14 @@ public class CalDav {
 		boolean export_todos = Prefs.getBoolPref(PrefName.ICAL_EXPORT_TODO);
 
 		List<SyncEvent> syncEvents = SyncLog.getReference().getAll();
-		SocketClient.sendLogMessage("SYNC: Process " + syncEvents.size()
+		
+		int num_outgoing = syncEvents.size();
+		if( isServerSyncNeeded() )
+			num_outgoing--;
+
+		SocketClient.sendLogMessage("SYNC: Process " + num_outgoing
 				+ " Outgoing Items");
-		log.info("SYNC: Process " + syncEvents.size() + " Outgoing Items");
+		log.info("SYNC: Process " + num_outgoing + " Outgoing Items");
 
 		for (SyncEvent se : syncEvents) {
 			if (se.getObjectType() != ObjectType.APPOINTMENT)
