@@ -151,6 +151,18 @@ public class CheckListPanel extends DockableView implements
 						Resource.getResourceString("Select_CheckList_Warning"));
 				return;
 			}
+			
+			if (isCheckListEdited) {
+				int ret = JOptionPane.showConfirmDialog(null,
+						Resource.getResourceString("Edited_CheckList"),
+						Resource.getResourceString("Discard_Text?"),
+						JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+				if (ret != JOptionPane.OK_OPTION)
+					return;
+			}
+			
+			isCheckListEdited = false;
+
 
 			String newname = InputDialog.show(Resource
 					.getResourceString("Enter_CheckList_Name"), 50);

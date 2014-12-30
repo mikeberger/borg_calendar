@@ -126,6 +126,17 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 						Resource.getResourceString("Select_Memo_Warning"));
 				return;
 			}
+			
+			if (isMemoEdited) {
+				int ret = JOptionPane.showConfirmDialog(null,
+						Resource.getResourceString("Edited_Memo"),
+						Resource.getResourceString("Discard_Text?"),
+						JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+				if (ret != JOptionPane.OK_OPTION)
+					return;
+			}
+			
+			isMemoEdited = false;
 
 			
 			String newname = InputDialog.show(Resource
