@@ -578,6 +578,15 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 		}
 		try {
 			Memo m = MemoModel.getReference().getMemo(name);
+			
+			if( m == null )
+			{
+				Errmsg.getErrorHandler().notice(Resource.getResourceString("Memo_not_exist"));
+				isMemoEdited = false;
+				loadMemosFromModel();
+				return;
+			}
+			
 			m.setMemoText(memoText.getPlainText());
 			m.setEncrypted(false);
 			if (encryptBox.isSelected()) {
