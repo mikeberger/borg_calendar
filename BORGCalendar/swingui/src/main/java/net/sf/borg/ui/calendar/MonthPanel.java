@@ -500,6 +500,7 @@ public class MonthPanel extends JPanel implements Printable, CalendarModule {
 			month_ = cal.get(Calendar.MONTH);
 			clearData();
 			repaint();
+			MultiView.getMainView().goTo(cal);
 		}
 
 		@Override
@@ -538,6 +539,8 @@ public class MonthPanel extends JPanel implements Printable, CalendarModule {
 			month_ = cal.get(Calendar.MONTH);
 			clearData();
 			repaint();
+			MultiView.getMainView().goTo(cal);
+
 		}
 
 		/**
@@ -580,6 +583,8 @@ public class MonthPanel extends JPanel implements Printable, CalendarModule {
 			month_ = cal.get(Calendar.MONTH);
 			clearData();
 			repaint();
+			MultiView.getMainView().goTo(cal);
+
 		}
 
 	}

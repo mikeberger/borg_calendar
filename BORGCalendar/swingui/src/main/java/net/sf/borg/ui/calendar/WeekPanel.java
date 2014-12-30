@@ -642,6 +642,8 @@ public class WeekPanel extends DockableView implements Printable,
 			date_ = cal.get(Calendar.DATE);
 			clearData();
 			repaint();
+			MultiView.getMainView().goTo(cal);
+
 		}
 
 		@Override
@@ -681,6 +683,8 @@ public class WeekPanel extends DockableView implements Printable,
 			date_ = cal.get(Calendar.DATE);
 			clearData();
 			repaint();
+			MultiView.getMainView().goTo(cal);
+
 		}
 
 		/**
@@ -735,6 +739,8 @@ public class WeekPanel extends DockableView implements Printable,
 			date_ = cal.get(Calendar.DATE);
 			clearData();
 			repaint();
+			MultiView.getMainView().goTo(cal);
+
 		}
 	}
 

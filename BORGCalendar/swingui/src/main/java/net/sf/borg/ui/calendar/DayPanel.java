@@ -562,6 +562,8 @@ public class DayPanel extends DockableView implements Printable, CalendarModule 
 			date_ = cal.get(Calendar.DATE);
 			clearData();
 			repaint();
+			MultiView.getMainView().goTo(cal);
+
 		}
 
 		/*
@@ -606,6 +608,8 @@ public class DayPanel extends DockableView implements Printable, CalendarModule 
 			date_ = cal.get(Calendar.DATE);
 			clearData();
 			repaint();
+			MultiView.getMainView().goTo(cal);
+
 		}
 
 		/**
@@ -660,6 +664,8 @@ public class DayPanel extends DockableView implements Printable, CalendarModule 
 			date_ = cal.get(Calendar.DATE);
 			clearData();
 			repaint();
+			MultiView.getMainView().goTo(cal);
+
 		}
 
 	}
