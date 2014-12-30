@@ -38,6 +38,8 @@ public class HTMLDocumentListener implements DocumentListener {
 			+ "(&(?:[-\\w~!$+|.,*:]|%[a-f\\d{2}])+=?"
 			+ "([-\\w~!$+|.,*:=]|%[a-f\\d]{2})*)*)*"
 			+ "(#([-\\w~!$+|.,*:=]|%[a-f\\d]{2})*)?\\b";
+	
+	private final Pattern pattern = Pattern.compile(linkRegex);
 
 	public HTMLDocumentListener(JEditorPane newTextPane) {
 		hyperlinkList = new ArrayList<HTMLHyperlinkRange>();
@@ -135,7 +137,7 @@ public class HTMLDocumentListener implements DocumentListener {
 	private void checkForHyperlinks(HTMLDocument doc) {
 		Matcher matcher;
 		try {
-			matcher = Pattern.compile(linkRegex).matcher(
+			matcher = pattern.matcher(
 					doc.getText(0, doc.getLength()));
 
 			while (matcher.find())
