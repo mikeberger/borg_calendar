@@ -57,8 +57,11 @@ import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
+import net.sf.borg.model.LinkModel;
+import net.sf.borg.model.LinkModel.LinkType;
 import net.sf.borg.model.MemoModel;
 import net.sf.borg.model.Model.ChangeEvent;
+import net.sf.borg.model.entity.Link;
 import net.sf.borg.model.entity.Memo;
 import net.sf.borg.ui.DockableView;
 import net.sf.borg.ui.MultiView;
@@ -126,21 +129,21 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 						Resource.getResourceString("Select_Memo_Warning"));
 				return;
 			}
-			
+
 			if (isMemoEdited) {
 				int ret = JOptionPane.showConfirmDialog(null,
 						Resource.getResourceString("Edited_Memo"),
 						Resource.getResourceString("Discard_Text?"),
-						JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+						JOptionPane.OK_CANCEL_OPTION,
+						JOptionPane.QUESTION_MESSAGE);
 				if (ret != JOptionPane.OK_OPTION)
 					return;
 			}
-			
+
 			isMemoEdited = false;
 
-			
-			String newname = InputDialog.show(Resource
-					.getResourceString("Enter_Memo_Name"), 50);
+			String newname = InputDialog.show(
+					Resource.getResourceString("Enter_Memo_Name"), 50);
 			if (newname == null || newname.isEmpty() || newname.equals(name))
 				return;
 
@@ -153,7 +156,7 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 										"50" }));
 				return;
 			}
-			
+
 			try {
 				Memo existing = MemoModel.getReference().getMemo(newname);
 				if (existing != null) {
@@ -168,10 +171,24 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 
 			Memo m;
 			try {
+
+				
 				m = MemoModel.getReference().getMemo(name);
 				m.setMemoName(newname);
 				MemoModel.getReference().saveMemo(m);
+				
+				// move any links to this memo
+				Collection<Link> links = LinkModel.getReference().getLinks();
+				for (Link link : links) {
+					if (link.getLinkType().equals(LinkType.MEMO.toString())
+							&& link.getPath().equals(name)) {
+						link.setPath(newname);
+						LinkModel.getReference().saveLink(link);
+					}
+				}
+				
 				MemoModel.getReference().delete(name, false);
+
 				loadMemosFromModel();
 
 			} catch (Exception e1) {
@@ -511,9 +528,9 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 		}
 
 		// get memo name
-		String name = InputDialog.show(Resource
-				.getResourceString("Enter_Memo_Name"), 50);
-		
+		String name = InputDialog.show(
+				Resource.getResourceString("Enter_Memo_Name"), 50);
+
 		if (name == null || name.trim().isEmpty())
 			return;
 
@@ -578,15 +595,15 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 		}
 		try {
 			Memo m = MemoModel.getReference().getMemo(name);
-			
-			if( m == null )
-			{
-				Errmsg.getErrorHandler().notice(Resource.getResourceString("Memo_not_exist"));
+
+			if (m == null) {
+				Errmsg.getErrorHandler().notice(
+						Resource.getResourceString("Memo_not_exist"));
 				isMemoEdited = false;
 				loadMemosFromModel();
 				return;
 			}
-			
+
 			m.setMemoText(memoText.getPlainText());
 			m.setEncrypted(false);
 			if (encryptBox.isSelected()) {
