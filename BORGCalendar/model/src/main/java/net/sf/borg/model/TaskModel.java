@@ -510,14 +510,23 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 		if (task.getProject() != null) {
 			Project p = TaskModel.getReference().getProject(
 					task.getProject().intValue());
-			if (p != null && task.getDueDate() != null
-					&& p.getDueDate() != null
-					&& DateUtil.isAfter(task.getDueDate(), p.getDueDate())) {
-				throw new Warning(Resource.getResourceString("taskdd_warning"));
-			}
-			if (p != null && TaskModel.isClosed(p) && !TaskModel.isClosed(task)) {
-				throw new Warning(
-						Resource.getResourceString("task_parent_closed"));
+
+			while( p != null )
+			{
+				if (p != null && task.getDueDate() != null
+						&& p.getDueDate() != null
+						&& DateUtil.isAfter(task.getDueDate(), p.getDueDate())) {
+					throw new Warning(Resource.getResourceString("taskdd_warning"));
+				}
+				if (p != null && TaskModel.isClosed(p) && !TaskModel.isClosed(task)) {
+					throw new Warning(
+							Resource.getResourceString("task_parent_closed"));
+				}
+				
+				Integer parent = p.getParent();
+				if( parent == null )
+					break;
+				p = TaskModel.getReference().getProject(parent);
 			}
 		}
 
