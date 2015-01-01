@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import javax.swing.Box;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -44,10 +45,12 @@ import javax.swing.border.BevelBorder;
 
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
+import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.ui.options.StartupViewsOptionsPanel;
 import net.sf.borg.ui.util.JTabbedPaneWithCloseIcons;
+import net.sf.borg.ui.util.MemoryPanel;
 
 /**
  * This is the main Borg UI class. It provides the the main borg tabbed window.
@@ -428,7 +431,15 @@ public class MultiView extends View {
 			}
 		});
 		bar.add(clearbut);
+		
 
+		// add a memory indicator for debugging if a hidden preference is set
+		int membar_timeout = Prefs.getIntPref(PrefName.MEMBAR_TIMEOUT);
+		if( membar_timeout > 0)
+		{
+			bar.add(Box.createHorizontalGlue());
+			bar.add(new MemoryPanel());
+		}
 		return bar;
 	}
 

@@ -414,6 +414,7 @@ public class PrefName {
 	public static PrefName CALDAV_CAL = new PrefName("caldav-cal", "default");
 	public static PrefName CALDAV_CAL2 = new PrefName("caldav-cal2", "");
 
+	public static PrefName MEMBAR_TIMEOUT = new PrefName("membar-timeout", -1);
 
 
 }
