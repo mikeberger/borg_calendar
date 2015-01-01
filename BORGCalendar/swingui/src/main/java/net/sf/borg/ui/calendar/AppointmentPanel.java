@@ -57,6 +57,8 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.common.Warning;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.CategoryModel;
+import net.sf.borg.model.Model;
+import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.ReminderTimes;
 import net.sf.borg.model.Repeat;
 import net.sf.borg.model.Theme;
@@ -76,12 +78,13 @@ import com.toedter.calendar.JDateChooser;
 /**
  * AppointmentPanel is the UI for editing an Appointment.
  */
-public class AppointmentPanel extends JPanel implements PopupOptionsListener {
+public class AppointmentPanel extends JPanel implements PopupOptionsListener,
+		Model.Listener {
 
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * renders the colro selection pull-down with colored boxes as the choices.
+	 * renders the color selection pull-down with colored boxes as the choices.
 	 */
 	static private class ColorBoxRenderer extends JLabel implements
 			ListCellRenderer<Object> {
@@ -101,8 +104,9 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 		 * get the color choice label for a given color value.
 		 */
 		@Override
-		public Component getListCellRendererComponent(JList<?> list, Object value,
-				int index, boolean isSelected, boolean cellHasFocus) {
+		public Component getListCellRendererComponent(JList<?> list,
+				Object value, int index, boolean isSelected,
+				boolean cellHasFocus) {
 			String sel = (String) value;
 
 			if (isSelected) {
@@ -139,8 +143,8 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 	}
 
 	/**
-	 * Long, thin, rectanglular icon that goes in the color chooser pulldown
-	 * list items.
+	 * Long, thin, rectangular icon that goes in the color chooser pulldown list
+	 * items.
 	 */
 	static private class SolidComboBoxIcon implements Icon {
 
@@ -315,7 +319,6 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 	 */
 	private JButton saveCloseButton = null;
 	private JButton saveButton = null;
-	
 
 	/**
 	 * Instantiates a new appointment panel.
@@ -392,6 +395,8 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 			}
 
 		});
+		
+		CategoryModel.getReference().addListener(this);
 	}
 
 	/**
@@ -470,7 +475,7 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 				newDate.set(Calendar.MONTH, origDate.get(Calendar.MONTH));
 				newDate.set(Calendar.DATE, origDate.get(Calendar.DATE));
 				appt.setDate(newDate.getTime());
-				
+
 				appt.setCreateTime(originalAppt.getCreateTime());
 				appt.setLastMod(originalAppt.getLastMod());
 				appt.setUid(originalAppt.getUid());
@@ -945,8 +950,10 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 					return;
 				}
 
-				DockableView parent = DockableView.findDockableParent(saveCloseButton);
-				if( parent != null ) parent.close();
+				DockableView parent = DockableView
+						.findDockableParent(saveCloseButton);
+				if (parent != null)
+					parent.close();
 			}
 		});
 		buttonPanel.add(saveCloseButton);
@@ -1179,11 +1186,10 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 
 		// to do
 		appt.setTodo(todoCheckBox.isSelected());
-		
-		if( vacationCheckBox.isSelected() && halfDayVacationCheckBox.isSelected())
-		{
-			throw new Warning(
-					Resource.getResourceString("vacation_warning"));
+
+		if (vacationCheckBox.isSelected()
+				&& halfDayVacationCheckBox.isSelected()) {
+			throw new Warning(Resource.getResourceString("vacation_warning"));
 		}
 
 		// vacation, half-day, and private checkboxes
@@ -1514,16 +1520,15 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 							currentlyShownAppointmentKey);
 					linkPanel.setOwner(appt);
 				}
-				
+
 				// duration
 				Integer duration = appt.getDuration();
 				int dur = 0;
 				if (duration != null)
 					dur = duration.intValue();
-				
+
 				// if preset time - don't take time from default appt
-				if( currentlyShownAppointmentKey == -1 && starthour > 0)
-				{
+				if (currentlyShownAppointmentKey == -1 && starthour > 0) {
 					// set start and end time to time passed from double-click
 					GregorianCalendar cal = new GregorianCalendar();
 					cal.set(Calendar.HOUR_OF_DAY, starthour);
@@ -1539,9 +1544,7 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 					startTimePanel.setEnabled(true);
 					endTimePanel.setEnabled(true);
 					untimedCheckBox.setSelected(false);
-				}
-				else
-				{
+				} else {
 					// set hour and minute widgets
 					startTimePanel.setTime(appt.getDate());
 
@@ -1559,9 +1562,7 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 					}
 
 				}
-				
-				
-				
+
 				// set ToDo checkbox
 				todoCheckBox.setSelected(appt.isTodo());
 
@@ -1640,9 +1641,9 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 				String rpt = Repeat.getFreq(appt.getFrequency());
 				if (rpt != null
 						&& (rpt.equals(Repeat.NDAYS)
-								|| rpt.equals(Repeat.NWEEKS) || rpt
-								.equals(Repeat.NMONTHS)
-								|| rpt.equals(Repeat.NYEARS))) {
+								|| rpt.equals(Repeat.NWEEKS)
+								|| rpt.equals(Repeat.NMONTHS) || rpt
+									.equals(Repeat.NYEARS))) {
 					nTimesValue.setValue(new Integer(Repeat.getNValue(appt
 							.getFrequency())));
 				}
@@ -1770,6 +1771,41 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener {
 		} else {
 			selectDayButtonPanel.setVisible(false);
 			nTimesValue.setVisible(false);
+		}
+	}
+
+	@Override
+	public void update(ChangeEvent event) {
+		if (event.getModel() instanceof CategoryModel) {
+			reloadCategories();
+		}
+
+	}
+	
+	public void cleanup()
+	{
+		CategoryModel.getReference().removeListener(this);
+	}
+
+	private void reloadCategories() {
+
+		String cat = (String) categoryBox.getSelectedItem();
+		categoryBox.removeAllItems();
+		try {
+			Collection<String> cats = CategoryModel.getReference()
+					.getCategories();
+			Iterator<String> it = cats.iterator();
+			while (it.hasNext()) {
+				categoryBox.addItem(it.next());
+			}
+
+			if (cat != null && !cat.equals("")) {
+				categoryBox.setSelectedItem(cat);
+			} else {
+				categoryBox.setSelectedIndex(0);
+			}
+		} catch (Exception e) {
+			Errmsg.getErrorHandler().errmsg(e);
 		}
 	}
 }

@@ -30,6 +30,8 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
@@ -60,6 +62,8 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 
 	/** main menu bar */
 	private MainMenu mainMenu = null;
+	
+	private Set<Model> models = new HashSet<Model>();
 
 	/**
 	 * store the window size, position, and maximized status in a preference.
@@ -94,6 +98,7 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 	 */
 	protected void addModel(Model m) {
 		m.addListener(this);
+		models.add(m);
 	}
 
 	/**
@@ -111,7 +116,8 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 	 * or resets.
 	 */
 	protected void cleanUp() {
-		// no default cleanup
+		for( Model m : models )
+			m.removeListener(this);
 	}
 
 	/**

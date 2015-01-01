@@ -84,6 +84,13 @@ public class AppointmentListView extends DockableView implements
 
 	private static final long serialVersionUID = 1L;
 
+	@Override
+	protected void cleanUp() {
+		super.cleanUp();
+		if( appointmentPanel != null )
+			appointmentPanel.cleanup();
+	}
+
 	/**
 	 * show the time of an appointment in the appt table - and shopw dashes for
 	 * appointments with no time
