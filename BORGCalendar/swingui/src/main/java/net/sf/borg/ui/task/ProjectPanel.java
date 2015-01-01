@@ -162,6 +162,10 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 		}
 
 	}
+	
+	public void cleanup(){
+		TaskModel.getReference().removeListener(this);
+	}
 
 	/**
 	 * project change requested- bring up the project editor

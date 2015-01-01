@@ -1785,6 +1785,8 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener,
 	public void cleanup()
 	{
 		CategoryModel.getReference().removeListener(this);
+		if( linkPanel != null )
+			linkPanel.cleanup();
 	}
 
 	private void reloadCategories() {

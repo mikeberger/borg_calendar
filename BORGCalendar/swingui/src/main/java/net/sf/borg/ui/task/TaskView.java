@@ -1595,4 +1595,11 @@ public class TaskView extends DockableView {
 
 		return -1;
 	}
+
+	@Override
+	protected void cleanUp() {
+		super.cleanUp();
+		if( linkPanel != null )
+			linkPanel.cleanup();
+	}
 }

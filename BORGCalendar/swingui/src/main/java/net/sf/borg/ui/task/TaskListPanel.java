@@ -210,6 +210,10 @@ class TaskListPanel extends JPanel implements Model.Listener {
 		}
 
 	}
+	
+	public void cleanUp() {
+		TaskModel.getReference().removeListener(this);
+	}
 
 	/**
 	 * Instantiates a new task list panel tied to a particular project

@@ -153,6 +153,11 @@ public class LinkPanel extends JPanel implements Model.Listener {
 		// listen for link model changes
 		LinkModel.getReference().addListener(this);
 	}
+	
+	public void cleanup()
+	{
+		LinkModel.getReference().removeListener(this);
+	}
 
 	/**
 	 * indicate if the entity shown by this panel has any links
