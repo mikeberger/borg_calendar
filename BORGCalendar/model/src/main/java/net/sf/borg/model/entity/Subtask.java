@@ -155,4 +155,9 @@ public class Subtask extends KeyedEntity<Subtask> implements CalendarEntity {
 	public Integer getPriority() {
 		return null;
 	}
+
+	@Override
+	public boolean isPrivate() {
+		return false;
+	}
 }

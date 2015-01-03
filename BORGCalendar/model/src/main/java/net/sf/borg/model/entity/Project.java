@@ -124,4 +124,9 @@ public class Project extends KeyedEntity<Project> implements CalendarEntity {
 		return null;
 	}
 
+	@Override
+	public boolean isPrivate() {
+		return false;
+	}
+
 }

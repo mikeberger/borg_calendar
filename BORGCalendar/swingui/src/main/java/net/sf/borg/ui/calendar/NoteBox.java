@@ -90,6 +90,7 @@ public class NoteBox extends Box implements Box.Draggable {
 	private JPopupMenu popmenu = null; // popup menu
 
 	private Icon todoIcon = null; // icon to mark todos
+	private Icon lockIcon = null; // icon to mark private items
 
 	private String todoMarker = null; // textual todo marker
 
@@ -123,6 +124,9 @@ public class NoteBox extends Box implements Box.Draggable {
 				todoMarker = iconname;
 			}
 		}
+		
+		lockIcon = new javax.swing.ImageIcon(getClass().getResource(
+				"/resource/" + "lock16.png"));
 
 		// set the link flag
 		Collection<Link> atts;
@@ -179,6 +183,24 @@ public class NoteBox extends Box implements Box.Draggable {
 							AffineTransformOp.TYPE_BICUBIC);
 					BufferedImage rImage = op.filter(image1, null);
 					todoIcon = new ImageIcon(rImage);
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				try {
+					// get image
+					BufferedImage image1 = ImageIO.read(getClass().getResource(
+							"/resource/" + "lock16.png"));
+					double size = image1.getHeight();
+
+					// scale to 1/2 font height
+					double scale = smfontHeight / (2 * size);
+					AffineTransform tx = AffineTransform.getScaleInstance(
+							scale, scale);
+					AffineTransformOp op = new AffineTransformOp(tx,
+							AffineTransformOp.TYPE_BICUBIC);
+					BufferedImage rImage = op.filter(image1, null);
+					lockIcon = new ImageIcon(rImage);
 
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -251,6 +273,12 @@ public class NoteBox extends Box implements Box.Draggable {
 				offset = todoIcon.getIconWidth();
 			} else if (isTodo() && todoMarker != null) {
 				text = todoMarker + " " + text;
+			}
+			if( bean.isPrivate() )
+			{
+				lockIcon.paintIcon(comp, g2, bounds.x + offset, bounds.y
+						+ bounds.height / 2);
+				offset += lockIcon.getIconWidth();
 			}
 			g2.drawString(text, bounds.x + offset, bounds.y + smfontHeight);
 			g2.setColor(Color.black);

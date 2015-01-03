@@ -75,5 +75,5 @@ public interface CalendarEntity {
 	 */
 	public Integer getPriority();
 	
-	
+	public boolean isPrivate();
 }

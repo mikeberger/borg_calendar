@@ -65,6 +65,11 @@ public class LabelEntity implements CalendarEntity {
 	public Integer getPriority() {
 		return null;
 	}
+
+	@Override
+	public boolean isPrivate() {
+		return false;
+	}
 	
 	
 }

@@ -143,4 +143,9 @@ public class Task extends KeyedEntity<Task> implements CalendarEntity {
 		dst.setSummary( getSummary() );
 		return(dst);
 	}
+
+	@Override
+	public boolean isPrivate() {
+		return false;
+	}
 }

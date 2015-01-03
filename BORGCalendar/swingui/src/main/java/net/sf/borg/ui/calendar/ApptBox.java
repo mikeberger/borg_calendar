@@ -338,6 +338,7 @@ class ApptBox extends Box implements Box.Draggable {
 	private double right; // fraction of the available grid width at which the right side should be drawn
 
 	private Icon todoIcon = null; // todo icon
+	private Icon lockIcon = null; // private icon
 
 	private String todoMarker = null; // textual todo marker
 
@@ -369,6 +370,9 @@ class ApptBox extends Box implements Box.Draggable {
 				todoMarker = iconname;
 			}
 		}
+		
+		lockIcon = new javax.swing.ImageIcon(getClass().getResource(
+				"/resource/" + "lock16.png"));
 
 		// determine links flag
 		Collection<Link> atts;
@@ -460,6 +464,24 @@ class ApptBox extends Box implements Box.Draggable {
 					e.printStackTrace();
 				}
 			}
+			try {
+				// get todo marker image
+				BufferedImage image1 = ImageIO.read(getClass().getResource(
+						"/resource/" + "lock16.png"));
+				double size = image1.getHeight();
+
+				// scale to 1/2 font height
+				double scale = smfontHeight / (2 * size);
+				AffineTransform tx = AffineTransform.getScaleInstance(
+						scale, scale);
+				AffineTransformOp op = new AffineTransformOp(tx,
+						AffineTransformOp.TYPE_BICUBIC);
+				BufferedImage rImage = op.filter(image1, null);
+				lockIcon = new ImageIcon(rImage);
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			oldFontHeight = smfontHeight;
 		}
 
@@ -507,21 +529,28 @@ class ApptBox extends Box implements Box.Draggable {
 			text = "@ " + text;
 		}
 		
+		int offset = 0;
 
 		// prepend todo marker and draw the string
 		if (isTodo() && todoIcon != null) {
+			offset = todoIcon.getIconWidth();
 			todoIcon.paintIcon(comp, g2, bounds.x + radius, bounds.y + radius
 					+ smfontHeight / 2);
-			drawWrappedString(g2, text, bounds.x + radius
-					+ todoIcon.getIconWidth(), bounds.y + radius, bounds.width
-					- radius, getTextColor().equals("strike"));
+			
 		} else if (isTodo() && todoMarker != null) {
-			drawWrappedString(g2, todoMarker + " " + text, bounds.x + radius,
-					bounds.y + radius, bounds.width - radius, getTextColor().equals("strike"));
-		} else {
-			drawWrappedString(g2, text, bounds.x + radius, bounds.y + radius,
-					bounds.width - radius, getTextColor().equals("strike"));
+			text = todoMarker + " " + text;
 		}
+		
+		if( appt.isPrivate())
+		{
+			lockIcon.paintIcon(comp, g2, bounds.x + radius + offset, bounds.y + radius
+					+ smfontHeight / 2);
+			offset += lockIcon.getIconWidth();
+		}
+		
+		drawWrappedString(g2, text, bounds.x + radius
+				+ offset, bounds.y + radius, bounds.width
+				- radius, getTextColor().equals("strike"));
 		
 		if( isSelected)
 		{
