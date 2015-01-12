@@ -1,6 +1,12 @@
 BORG 1.8.1
 ----------
-TBD
+- IMPORTANT: This release provides support for Java 8.
+- IMPORTANT: This release requires Java 7 or higher.
+
+Many Caldav-sync improvements including support for owncloud
+Add new repeat option - Monthly Day (Last)
+Many minor bug fixes
+
 
 BORG 1.8
 --------
