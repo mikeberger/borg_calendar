@@ -62,23 +62,25 @@
 
 		<izpack input="${basedir}/target/installer/install.xml" inheritAll="true" output="${basedir}/target/borg_installer-${project.version}.jar" installerType="standard" basedir="${basedir}/target/installer" izPackDir="${iz.dir}/" />
 
+		<!-- windows wrapper is buggy with Java 8 - manually use launch4j for now 
 		<copy todir="target" file="${iz.dir}/utils/wrappers/izpack2exe/7zS.sfx" />
 
 		<exec osfamily="windows" dir="target" executable="c:/Python/python">
 			<arg value="${iz.dir}/utils/wrappers/izpack2exe/izpack2exe.py" />
-			<arg value="--with-7z=${iz.dir}/utils/wrappers/izpack2exe/7za.exe" />
-			<arg value="--file=borg_installer-${project.version}.jar" />
-			<arg value="--output=borg_installer-${project.version}.exe" />
-			<arg value="--no-upx" />
+			<arg value="- -with-7z=${iz.dir}/utils/wrappers/izpack2exe/7za.exe" />
+			<arg value="- -file=borg_installer-${project.version}.jar" />
+			<arg value="- -output=borg_installer-${project.version}.exe" />
+			<arg value="- -no-upx" />
 		</exec>
 
 		<exec osfamily="unix" dir="target" executable="python">
 			<arg value="${iz.dir}/utils/wrappers/izpack2exe/izpack2exe.py" />
-			<arg value="--with-7z=7z" />
-			<arg value="--file=borg_installer-${project.version}.jar" />
-			<arg value="--output=borg_installer-${project.version}.exe" />
-			<arg value="--no-upx" />
+			<arg value="- -with-7z=7z" />
+			<arg value="- -file=borg_installer-${project.version}.jar" />
+			<arg value="- -output=borg_installer-${project.version}.exe" />
+			<arg value="- -no-upx" />
 		</exec>
+		-->
 
 	</target>
 
