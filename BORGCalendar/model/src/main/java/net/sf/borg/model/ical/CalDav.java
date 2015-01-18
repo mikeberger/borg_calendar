@@ -597,10 +597,6 @@ public class CalDav {
 			if (newap == null)
 				continue;
 
-			if (comp instanceof VToDo) {
-				newap.setTodo(true);
-			}
-
 			Appointment ap = AppointmentModel.getReference().getApptByUid(uid);
 			if (ap == null) {
 				// not found in BORG, so add it

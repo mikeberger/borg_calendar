@@ -67,6 +67,7 @@ import net.fortuna.ical4j.model.property.ExDate;
 import net.fortuna.ical4j.model.property.LastModified;
 import net.fortuna.ical4j.model.property.ProdId;
 import net.fortuna.ical4j.model.property.RRule;
+import net.fortuna.ical4j.model.property.Status;
 import net.fortuna.ical4j.model.property.Summary;
 import net.fortuna.ical4j.model.property.Uid;
 import net.fortuna.ical4j.model.property.Version;
@@ -159,29 +160,27 @@ public class AppointmentIcalAdapter {
 			if (nt == null) {
 				nt = ap.getDate();
 			}
-			
-			if( AppointmentModel.isNote(ap))
-			{
+
+			if (AppointmentModel.isNote(ap)) {
 				pl.add(Value.DATE);
-				DtStart dtd = new DtStart(pl,new net.fortuna.ical4j.model.Date(nt));
+				DtStart dtd = new DtStart(pl,
+						new net.fortuna.ical4j.model.Date(nt));
 				ve.getProperties().add(dtd);
 
 				VToDo todo = (VToDo) ve;
-				Due due = new Due(pl,new net.fortuna.ical4j.model.Date(nt));
+				Due due = new Due(pl, new net.fortuna.ical4j.model.Date(nt));
 				todo.getProperties().add(due);
-			}
-			else
-			{
+			} else {
 				pl.add(Value.DATE_TIME);
-				DtStart dtd = new DtStart(pl,new net.fortuna.ical4j.model.Date(nt));
+				DtStart dtd = new DtStart(pl,
+						new net.fortuna.ical4j.model.Date(nt));
 				ve.getProperties().add(dtd);
 
 				VToDo todo = (VToDo) ve;
-				Due due = new Due(pl,new net.fortuna.ical4j.model.Date(nt));
+				Due due = new Due(pl, new net.fortuna.ical4j.model.Date(nt));
 				todo.getProperties().add(due);
 			}
 
-			
 		} else if (AppointmentModel.isNote(ap)) {
 			pl.add(Value.DATE);
 			DtStart dts = new DtStart(pl, new net.fortuna.ical4j.model.Date(
@@ -196,19 +195,22 @@ public class AppointmentIcalAdapter {
 					new net.fortuna.ical4j.model.DateTime(ap.getDate()));
 			dts.setUtc(true);
 			ve.getProperties().add(dts);
-			
+
 			// duration
-			if ( ap.getDuration() != null && ap.getDuration().intValue() != 0) {
-//				ve.getProperties()
-//						.add(new Duration(new Dur(0, 0,
-//								ap.getDuration().intValue(), 0)));
-				DtEnd dte = new DtEnd(pl, new net.fortuna.ical4j.model.DateTime(ap.getDate().getTime() + 1000 * 60 * ap.getDuration().intValue()));
+			if (ap.getDuration() != null && ap.getDuration().intValue() != 0) {
+				// ve.getProperties()
+				// .add(new Duration(new Dur(0, 0,
+				// ap.getDuration().intValue(), 0)));
+				DtEnd dte = new DtEnd(pl,
+						new net.fortuna.ical4j.model.DateTime(ap.getDate()
+								.getTime()
+								+ 1000
+								* 60
+								* ap.getDuration().intValue()));
 				dte.setUtc(true);
 				ve.getProperties().add(dte);
 			}
 		}
-
-		
 
 		// vacation is a category
 		if (ap.getVacation() != null && ap.getVacation().intValue() == 1) {
@@ -362,7 +364,7 @@ public class AppointmentIcalAdapter {
 		}
 
 		// reminder
-		if (/*!AppointmentModel.isNote(ap) && */ap.getReminderTimes() != null
+		if (/* !AppointmentModel.isNote(ap) && */ap.getReminderTimes() != null
 				&& !ap.getReminderTimes().isEmpty()) {
 
 			// add a reminder
@@ -568,8 +570,7 @@ public class AppointmentIcalAdapter {
 		return importIcal(cal);
 	}
 
-	static public String importIcalFromFile(String file)
-			throws Exception {
+	static public String importIcalFromFile(String file) throws Exception {
 		CalendarBuilder builder = new CalendarBuilder();
 		InputStream is = new FileInputStream(file);
 		Calendar cal = builder.build(is);
@@ -579,8 +580,7 @@ public class AppointmentIcalAdapter {
 	}
 
 	@SuppressWarnings("unchecked")
-	static private String importIcal(Calendar cal)
-			throws Exception {
+	static private String importIcal(Calendar cal) throws Exception {
 
 		int skipped = 0;
 		StringBuffer dups = new StringBuffer();
@@ -701,7 +701,8 @@ public class AppointmentIcalAdapter {
 
 				// check if DATE only
 				// but assume appt at midnight is untimed
-				if (!dts.getValue().contains("T") || dts.getValue().contains("T000000")) {
+				if (!dts.getValue().contains("T")
+						|| dts.getValue().contains("T000000")) {
 					// date only
 					ap.setUntimed("Y");
 				} else {
@@ -717,20 +718,18 @@ public class AppointmentIcalAdapter {
 
 			}
 
-			if (comp instanceof VToDo) {
-				ap.setTodo(true);
-			}
+			
 
 			Uid uid = (Uid) pl.getProperty(Property.UID);
 			ap.setUid(uid.getValue());
 			LastModified lm = (LastModified) pl
 					.getProperty(Property.LAST_MODIFIED);
-			if( lm != null )
+			if (lm != null)
 				ap.setLastMod(lm.getDateTime());
 			else
 				ap.setLastMod(new Date());
 			Created cr = (Created) pl.getProperty(Property.CREATED);
-			if( cr != null )
+			if (cr != null)
 				ap.setCreateTime(cr.getDateTime());
 			else
 				ap.setCreateTime(new Date());
@@ -781,6 +780,20 @@ public class AppointmentIcalAdapter {
 				Clazz clazz = (Clazz) prop;
 				if (clazz.getValue().equals(Clazz.PRIVATE.getValue())) {
 					ap.setPrivate(true);
+				}
+			}
+			
+			if (comp instanceof VToDo) {
+
+				ap.setTodo(true);
+
+				prop = pl.getProperty(Property.STATUS);
+				if (prop != null) {
+					Status stat = (Status) prop;
+					if (stat.equals(Status.VTODO_COMPLETED)) {
+						ap.setTodo(false);
+						ap.setColor("strike");
+					}
 				}
 			}
 
