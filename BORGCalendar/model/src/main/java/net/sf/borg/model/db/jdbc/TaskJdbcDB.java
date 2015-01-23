@@ -41,8 +41,7 @@ import net.sf.borg.model.entity.Tasklog;
 class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
 
 	public TaskJdbcDB() {
-		new JdbcDBUpgrader("select summary from tasks",
-				"alter table tasks add column summary longvarchar;alter table tasks modify column description longvarchar").upgrade();
+		
 	}
 
     /* (non-Javadoc)

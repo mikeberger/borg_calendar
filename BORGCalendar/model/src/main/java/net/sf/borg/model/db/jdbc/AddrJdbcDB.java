@@ -38,8 +38,7 @@ class AddrJdbcDB extends JdbcBeanDB<Address> implements EntityDB<Address>
 	
 	public AddrJdbcDB()
 	{
-		new JdbcDBUpgrader("select cell_phone from addresses",
-				"alter table addresses add column cell_phone varchar(25) default null").upgrade();
+		
 	}
     
     /* (non-Javadoc)

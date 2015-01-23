@@ -38,8 +38,7 @@ class MemoJdbcDB implements MemoDB {
 
 	public MemoJdbcDB()
 	{
-		new JdbcDBUpgrader("select encrypted from memos",
-				"alter table memos add column encrypted char(1) default null").upgrade();
+		
 	}
 	
 	

@@ -44,10 +44,7 @@ import net.sf.borg.model.entity.CheckList;
 class CheckListJdbcDB implements CheckListDB {
 
 	public CheckListJdbcDB() {
-		new JdbcDBUpgrader(
-				"select name from checkLists",
-				"CREATE CACHED TABLE checkLists (name varchar(50) NOT NULL,text longvarchar,PRIMARY KEY (name));")
-				.upgrade();
+		
 	}
 
 	/*
