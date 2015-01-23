@@ -399,33 +399,22 @@ final class JdbcDB {
 	 */
 	private static void doDBUpgrades() throws Exception {
 		
-		
-		/*
-		 * 
-		 * Upgrade size of options.name from 10 to 30
-		 * 
-		 */
+		// increase category size
+		alterVarcharColumnSize("appointments", "category", 255);
+		alterVarcharColumnSize("tasks", "category", 255);
+		alterVarcharColumnSize("projects", "category", 255);
+	}
+	
+	static private void alterVarcharColumnSize(String table, String column, int size) throws Exception
+	{
 		Statement st = null;
 		ResultSet rs = null;
 		try {
 			st = connection_.createStatement();
-			rs = st.executeQuery("select * from options");
+			rs = st.executeQuery("select " + column + " from " + table);
 			ResultSetMetaData md = rs.getMetaData();
-			if( md.getColumnDisplaySize(1) == 10)
-			{
-				// update size to 30
-				new JdbcDBUpgrader(null, "alter table options alter name varchar(30)").upgrade();
-			}
-			rs.close();
-			rs = st.executeQuery("select street, work_street from addresses");
-			md = rs.getMetaData();
-			if( md.getColumnDisplaySize(1) < 40) {
-				// update size to 40
-				new JdbcDBUpgrader(null, "alter table addresses alter street varchar(40)").upgrade();
-			}
-			if( md.getColumnDisplaySize(2) < 40) {
-				// update size to 40
-				new JdbcDBUpgrader(null, "alter table addresses alter work_street varchar(40)").upgrade();
+			if( md.getColumnDisplaySize(1) != size) {
+				new JdbcDBUpgrader(null, "alter table " + table + " alter " + column + " varchar(" + size + ")").upgrade();
 			}
 		} catch (Exception e) {
 			Errmsg.getErrorHandler().errmsg(e);

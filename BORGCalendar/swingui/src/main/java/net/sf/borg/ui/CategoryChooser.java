@@ -213,7 +213,7 @@ public class CategoryChooser extends View {
 				while(true)
 				{
 					inputValue = InputDialog.show(Resource
-							.getResourceString("AddCat"), 15);
+							.getResourceString("AddCat"), 100);
 					if(inputValue == null)
 					    return; // cancel case
 					else if(inputValue.trim().isEmpty())
