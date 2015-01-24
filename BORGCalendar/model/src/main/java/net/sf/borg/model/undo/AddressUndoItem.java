@@ -32,7 +32,7 @@ public class AddressUndoItem extends UndoItem<Address> {
 	 * @see net.sf.borg.model.undo.UndoItem#executeUndo()
 	 */
 	@Override
-	public void executeUndo() {
+	public void executeUndo() throws Exception {
 		if (action == actionType.DELETE) {
 			AddressModel.getReference().saveAddress(item, true);
 		} else if (action == actionType.UPDATE) {

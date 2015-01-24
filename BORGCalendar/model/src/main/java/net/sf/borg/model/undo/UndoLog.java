@@ -91,8 +91,9 @@ public class UndoLog {
 
 	/**
 	 * execute the top undo item on the stack and remove it from the stack.
+	 * @throws Exception 
 	 */
-	public void executeUndo()
+	public void executeUndo() throws Exception
 	{
 		if( !undoStack.empty())
 		{

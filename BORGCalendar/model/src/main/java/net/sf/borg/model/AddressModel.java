@@ -30,6 +30,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
@@ -39,6 +41,7 @@ import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
+import net.sf.borg.common.Warning;
 import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.model.db.EntityDB;
 import net.sf.borg.model.entity.Address;
@@ -239,7 +242,13 @@ public class AddressModel extends Model implements Searchable<Address>,
 		for (Address addr : container.Address) {
 			if (!use_keys)
 				addr.setKey(nextkey++);
-			db_.addObj(addr);
+
+			try {
+				validate(addr);
+				db_.addObj(addr);
+			} catch (Warning e) {
+				Errmsg.getErrorHandler().notice(e.getMessage() + "\n\n" + addr.toString());
+			}
 		}
 
 		refresh();
@@ -308,9 +317,30 @@ public class AddressModel extends Model implements Searchable<Address>,
 	 * 
 	 * @param addr
 	 *            the address
+	 * @throws Exception
 	 */
-	public void saveAddress(Address addr) {
+	public void saveAddress(Address addr) throws Exception {
 		saveAddress(addr, false);
+	}
+
+	public void validate(Address addr) throws Exception {
+		if (addr.getFirstName() == null
+				|| addr.getFirstName().trim().length() == 0
+				|| addr.getLastName() == null
+				|| addr.getLastName().trim().length() == 0) {
+			throw new Warning(
+					Resource.getResourceString("First_and_Last_name_are_Required"));
+		}
+
+		if (addr.getEmail() != null && !addr.getEmail().isEmpty()
+				&& Prefs.getBoolPref(PrefName.EMAIL_VALIDATION)) {
+			try {
+				new InternetAddress(addr.getEmail()).getAddress();
+			} catch (AddressException e) {
+				throw new Warning(
+						Resource.getResourceString("Invalid_Email_Address"));
+			}
+		}
 	}
 
 	/**
@@ -320,8 +350,11 @@ public class AddressModel extends Model implements Searchable<Address>,
 	 *            the address
 	 * @param undo
 	 *            true if we are executing an undo
+	 * @throws Exception
 	 */
-	public void saveAddress(Address addr, boolean undo) {
+	public void saveAddress(Address addr, boolean undo) throws Exception {
+
+		validate(addr);
 
 		int num = addr.getKey();
 		try {
@@ -463,14 +496,14 @@ public class AddressModel extends Model implements Searchable<Address>,
 				ret.add(info);
 			}
 		}
-		
+
 		return ret;
 
 	}
 
 	@Override
 	public List<ReminderInstance> getReminders() {
-		
+
 		List<ReminderInstance> rems = new ArrayList<ReminderInstance>();
 		// birthdays
 		int bd_days = Prefs.getIntPref(PrefName.BIRTHDAYREMINDERDAYS);
@@ -521,12 +554,12 @@ public class AddressModel extends Model implements Searchable<Address>,
 
 					}
 				}
-				
+
 			} catch (Exception e1) {
 				Errmsg.getErrorHandler().errmsg(e1);
 			}
 		}
-		
+
 		return rems;
 	}
 }

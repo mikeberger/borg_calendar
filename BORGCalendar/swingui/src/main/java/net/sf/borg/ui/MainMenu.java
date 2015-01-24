@@ -613,7 +613,11 @@ class MainMenu {
 									"", JOptionPane.OK_CANCEL_OPTION);
 							if (ret != JOptionPane.OK_OPTION)
 								return;
-							UndoLog.getReference().executeUndo();
+							try {
+								UndoLog.getReference().executeUndo();
+							} catch (Exception e) {
+								Errmsg.getErrorHandler().errmsg(e);
+							}
 						}
 
 					});

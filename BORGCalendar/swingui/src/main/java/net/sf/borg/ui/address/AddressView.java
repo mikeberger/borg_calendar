@@ -439,25 +439,6 @@ public class AddressView extends DockableView {
 	 */
 	private void saveaddr() {
 
-		if (firstNameText.getText().equals("") || firstNameText.getText().trim().length() == 0
-				|| lastNameText.getText().equals("") || lastNameText.getText().trim().length() == 0) {
-			Errmsg.getErrorHandler()
-					.notice(Resource
-							.getResourceString("First_and_Last_name_are_Required"));
-			return;
-		}
-		
-		if (!emailText.getText().isEmpty() && Prefs.getBoolPref(PrefName.EMAIL_VALIDATION)){
-			try {
-				new InternetAddress(emailText.getText()).getAddress();
-			} catch (AddressException e) {
-				Errmsg.getErrorHandler().notice(Resource.getResourceString("Invalid_Email_Address"));
-				return;
-			}
-		}
-		
-        
-		
 		Date bd = birthdayChooser.getDate();
 		if( bd != null && DateUtil.isAfter(bd, new Date()))
 		{

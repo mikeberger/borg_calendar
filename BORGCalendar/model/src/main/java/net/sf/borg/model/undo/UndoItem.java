@@ -44,7 +44,7 @@ public abstract class UndoItem<T> {
 	/**
 	 * execute the undo action on the item.
 	 */
-	public abstract void executeUndo();
+	public abstract void executeUndo() throws Exception;
 
 	/**
 	 * Sets the undo item description.
