@@ -1,5 +1,5 @@
 ==================================
-RELEASE NOTES for BORG 1.8.1
+RELEASE NOTES for BORG 1.8.2
 ==================================
 
 There are always new text strings that have not been translated. 

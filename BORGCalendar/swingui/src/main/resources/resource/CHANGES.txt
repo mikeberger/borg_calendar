@@ -1,3 +1,8 @@
+BORG 1.8.2
+----------
+TBD
+
+
 BORG 1.8.1
 ----------
 - IMPORTANT: This release provides support for Java 8.
