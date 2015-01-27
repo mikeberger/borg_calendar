@@ -68,6 +68,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
+import net.sf.borg.common.DateUtil;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
@@ -133,60 +134,53 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 			Component c = originalRenderer.getTableCellRendererComponent(table,
 					value, isSelected, hasFocus, row, column);
 
-			if (!user_colors)
-				return c;
-
 			DateFormat sdf = DateFormat.getDateInstance();
 
 			JLabel theTableCellComponent = (JLabel) c;
-			if (isSelected) {
-				theTableCellComponent.setForeground(Color.BLACK);
-				theTableCellComponent.setBackground(Color.ORANGE);
-			} else {
-				// set text color by looking up the "logical" color in the prefs
-				// logical color is left over legacy thing
-				Theme t = Theme.getCurrentTheme();
-				String color = table.getModel().getValueAt(row, 3).toString();
-				if (color.equals("red")) {
-					theTableCellComponent.setForeground(new Color(t
-							.getTextColor1()));
-				} else if (color.equals("blue")) {
-					theTableCellComponent.setForeground(new Color(t
-							.getTextColor2()));
-				} else if (color.equals("green")) {
-					theTableCellComponent.setForeground(new Color(t
-							.getTextColor3()));
-				} else if (color.equals("black")) {
-					theTableCellComponent.setForeground(new Color(t
-							.getTextColor4()));
-				} else if (color.equals("white")) {
-					theTableCellComponent.setForeground(new Color(t
-							.getTextColor5()));
-				} else if (color.equals("navy")) {
-					theTableCellComponent.setForeground(new Color(t
-							.getTaskTextColor()));
-				} else if (color.equals("brick")) {
-					theTableCellComponent.setForeground(new Color(t
-							.getBirthdayTextColor()));
-				} else if (color.equals("purple")) {
-					theTableCellComponent.setForeground(new Color(t
-							.getHolidayTextColor()));
-				} else if (color.equals("pink") && column > 1) {
-					theTableCellComponent.setForeground(new Color(t
-							.getTodayBg()));
-				} else {
-					theTableCellComponent.setForeground(Color.BLACK);
-				}
 
-				// special background color for the "today" divider row
-				if (table
-						.getModel()
-						.getValueAt(row, 1)
-						.equals(Resource
-								.getResourceString("======_Today_======"))) {
-					theTableCellComponent.setBackground(new Color(t
-							.getTodayBg()));
+			// user colors
+			if (user_colors) {
+				if (isSelected) {
+					theTableCellComponent.setForeground(Color.BLACK);
+					theTableCellComponent.setBackground(Color.ORANGE);
 				} else {
+					// set text color by looking up the "logical" color in the
+					// prefs
+					// logical color is left over legacy thing
+					Theme t = Theme.getCurrentTheme();
+					String color = table.getModel().getValueAt(row, 3)
+							.toString();
+					if (color.equals("red")) {
+						theTableCellComponent.setForeground(new Color(t
+								.getTextColor1()));
+					} else if (color.equals("blue")) {
+						theTableCellComponent.setForeground(new Color(t
+								.getTextColor2()));
+					} else if (color.equals("green")) {
+						theTableCellComponent.setForeground(new Color(t
+								.getTextColor3()));
+					} else if (color.equals("black")) {
+						theTableCellComponent.setForeground(new Color(t
+								.getTextColor4()));
+					} else if (color.equals("white")) {
+						theTableCellComponent.setForeground(new Color(t
+								.getTextColor5()));
+					} else if (color.equals("navy")) {
+						theTableCellComponent.setForeground(new Color(t
+								.getTaskTextColor()));
+					} else if (color.equals("brick")) {
+						theTableCellComponent.setForeground(new Color(t
+								.getBirthdayTextColor()));
+					} else if (color.equals("purple")) {
+						theTableCellComponent.setForeground(new Color(t
+								.getHolidayTextColor()));
+					} else if (color.equals("pink") && column > 1) {
+						theTableCellComponent.setForeground(new Color(t
+								.getTodayBg()));
+					} else {
+						theTableCellComponent.setForeground(Color.BLACK);
+					}
+
 					theTableCellComponent.setBackground(new Color(t
 							.getWeekdayBg()));
 
@@ -194,7 +188,10 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 			}
 			if (column == 0) {
 				// format dates
-				theTableCellComponent.setText(sdf.format(value));
+				String dateText = sdf.format(value);
+				if (!DateUtil.isAfter((Date) value, new Date()))
+					dateText = "* " + dateText;
+				theTableCellComponent.setText(dateText);
 			} else if (column == 1) {
 				// set tooltip to todo text
 				theTableCellComponent.setToolTipText(theTableCellComponent
@@ -577,12 +574,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 				TableSorter tm = (TableSorter) todoTable.getModel();
 				int k = tm.getMappedIndex(index);
 
-				// ignore the "today" row - which was the first in the original
-				// table (index=0)
-				if (k == 0)
-					continue;
-
-				Object o = theTodoList.toArray()[k - 1];
+				Object o = theTodoList.toArray()[k];
 				if (!appts_only || o instanceof Appointment) {
 					lst.add((KeyedEntity<?>) o);
 				}
@@ -791,13 +783,15 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 						return;
 					int rowIndex = selIndices[0];
 					Rectangle rct = todoTable.getCellRect(rowIndex, 0, false);
-					if( getSelectedItems(false).isEmpty())
+					if (getSelectedItems(false).isEmpty())
 						return;
-					if( allAppointmentsSelected())
-						apptPopupMenu.show(todoTable, rct.x, rct.y + rct.height);
+					if (allAppointmentsSelected())
+						apptPopupMenu
+								.show(todoTable, rct.x, rct.y + rct.height);
 					else
-						todoPopupMenu.show(todoTable, rct.x, rct.y + rct.height);
-						
+						todoPopupMenu
+								.show(todoTable, rct.x, rct.y + rct.height);
+
 					break;
 				}
 			}
@@ -811,9 +805,9 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 						todoTable.getSelectionModel().setSelectionInterval(row,
 								row);
 					}
-					if( getSelectedItems(false).isEmpty())
+					if (getSelectedItems(false).isEmpty())
 						return;
-					if( allAppointmentsSelected())
+					if (allAppointmentsSelected())
 						apptPopupMenu.show(e.getComponent(), e.getX(), e.getY());
 					else
 						todoPopupMenu.show(e.getComponent(), e.getX(), e.getY());
@@ -930,13 +924,8 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 		TableSorter tm = (TableSorter) todoTable.getModel();
 		int k = tm.getMappedIndex(row);
 
-		// ignore the "today" row - which was the first in the original table
-		// (index=0)
-		if (k == 0)
-			return;
-
 		// get the object and edit differently based on type
-		Object o = theTodoList.toArray()[k - 1];
+		Object o = theTodoList.toArray()[k];
 		if (o instanceof Appointment) {
 
 			Date d = (Date) tm.getValueAt(row, 0);
@@ -1023,21 +1012,6 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 		TableSorter tm = (TableSorter) todoTable.getModel();
 		tm.addMouseListenerToHeaderInTable(todoTable);
 		tm.setRowCount(0);
-
-		// add a table row to mark the current date - it will sort
-		// to the right spot by date
-		GregorianCalendar gc = new GregorianCalendar();
-		gc.set(Calendar.HOUR_OF_DAY, 23);
-		gc.set(Calendar.MINUTE, 59);
-		Date d = gc.getTime();
-		Object[] tod = new Object[6];
-		tod[0] = d;
-		tod[1] = Resource.getResourceString("======_Today_======");
-		tod[2] = "Today is";
-		tod[3] = "pink";
-		tod[4] = null;
-		tm.addRow(tod);
-		tm.tableChanged(new TableModelEvent(tm));
 
 		// add the todo appointment rows to the table
 		Iterator<KeyedEntity<?>> tdit = theTodoList.iterator();
