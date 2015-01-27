@@ -1134,7 +1134,8 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener,
 		boolean dateChg = false;
 		if (dateChangeCheckBox.isSelected()) {
 			nd = newdatefield.getDate();
-			dateChg = true;
+			if( nd != null )
+				dateChg = true;
 		}
 
 		Date d = startTimePanel.getTime();
