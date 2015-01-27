@@ -119,6 +119,7 @@ public class DateDialog extends JDialog {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				calendar = dateComboBox.getCalendar();
+				if( calendar == null ) return;
 				setVisible(false);
 			}
 		});
