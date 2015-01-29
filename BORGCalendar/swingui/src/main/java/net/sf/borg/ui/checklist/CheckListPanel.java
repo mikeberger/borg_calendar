@@ -177,6 +177,18 @@ public class CheckListPanel extends DockableView implements
 								"50" }));
 				return;
 			}
+			
+			try {
+				CheckList existing = CheckListModel.getReference().getCheckList(newname);
+				if (existing != null) {
+					// name already used
+					Errmsg.getErrorHandler().notice(
+							Resource.getResourceString("Existing_CheckList"));
+					return;
+				}
+			} catch (Exception e1) {
+				Errmsg.getErrorHandler().errmsg(e1);
+			}
 
 			CheckList m;
 			try {
