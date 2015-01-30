@@ -5,6 +5,8 @@ import java.awt.Font;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.text.MessageFormat;
 import java.util.Observer;
 import java.util.logging.Logger;
 
@@ -218,14 +220,15 @@ public class UIControl {
 	 * shuts down the UI, including db backup
 	 */
 	public static void shutDownUI() {
-		
+
 		// warn about syncing
 		try {
-			if( SyncLog.getReference().isProcessUpdates() && !SyncLog.getReference().getAll().isEmpty())
-			{
-				int res = JOptionPane.showConfirmDialog(null, 
+			if (SyncLog.getReference().isProcessUpdates()
+					&& !SyncLog.getReference().getAll().isEmpty()) {
+				int res = JOptionPane.showConfirmDialog(null,
 						Resource.getResourceString("Sync-Warn"), null,
-						JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+						JOptionPane.OK_CANCEL_OPTION,
+						JOptionPane.WARNING_MESSAGE);
 
 				if (res != JOptionPane.YES_OPTION) {
 					return;
@@ -278,6 +281,24 @@ public class UIControl {
 			} else if (SHUTDOWN_ACTION.EMAIL.toString().equals(shutdown_action)) {
 				do_backup = true;
 				backup_email = true;
+			}
+
+		}
+
+		if (do_backup == true) {
+			File f = new File(backupdir);
+
+			// verify backup dir
+			if (!f.exists()) {
+				try {
+					f.mkdir();
+				} catch (Exception e) {
+					// handle the error below
+				}
+			}
+			if (!f.isDirectory() || !f.canWrite()) {
+				String msg = MessageFormat.format(Resource.getResourceString("backup_dir_error"), backupdir);
+				Errmsg.getErrorHandler().notice(msg);
 			}
 
 		}
