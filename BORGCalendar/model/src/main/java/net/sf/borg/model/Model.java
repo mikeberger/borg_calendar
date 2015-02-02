@@ -29,6 +29,8 @@ import java.io.InputStream;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import lombok.Data;
 import net.sf.borg.model.Model.ChangeEvent.ChangeAction;
@@ -41,6 +43,7 @@ import net.sf.borg.model.Model.ChangeEvent.ChangeAction;
  */
 public abstract class Model
 {
+	static private final Logger log = Logger.getLogger("net.sf.borg");
 
     /**
 	 * The Class ChangeEvent.
@@ -156,11 +159,17 @@ public abstract class Model
      */
     protected void refreshListeners(ChangeEvent event)
     {
+  
+        if( log.isLoggable(Level.FINE))
+        	log.fine("Sending ChangeEvent[" + event.toString());
+
     	event.model = this;
         for( int i = 0; i < listeners.size(); i++ )
         {
             Listener v = listeners.get(i);
             v.update(event);
+            if( log.isLoggable(Level.FINE))
+            	log.fine("...To Listener: " + v.toString());
         }
     }
     

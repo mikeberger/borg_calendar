@@ -57,6 +57,7 @@ import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.PrintHelper;
 import net.sf.borg.common.Resource;
+import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Day;
 import net.sf.borg.model.Model;
@@ -133,6 +134,7 @@ public class DayPanel extends DockableView implements Printable, CalendarModule 
 			// refresh if the appt or task models change
 			AppointmentModel.getReference().addListener(this);
 			TaskModel.getReference().addListener(this);
+			AddressModel.getReference().addListener(this);
 
 			goTo(new GregorianCalendar());
 

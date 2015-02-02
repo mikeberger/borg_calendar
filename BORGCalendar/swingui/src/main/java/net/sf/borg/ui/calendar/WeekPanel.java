@@ -59,6 +59,7 @@ import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.PrintHelper;
 import net.sf.borg.common.Resource;
+import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Day;
 import net.sf.borg.model.Model;
@@ -146,6 +147,7 @@ public class WeekPanel extends DockableView implements Printable,
 			// react to appt or task model changes
 			AppointmentModel.getReference().addListener(this);
 			TaskModel.getReference().addListener(this);
+			AddressModel.getReference().addListener(this);
 
 			goTo(new GregorianCalendar());
 
