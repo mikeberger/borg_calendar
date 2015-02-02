@@ -82,6 +82,8 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener,
 		Model.Listener {
 
 	private static final long serialVersionUID = 1L;
+	
+	private static final Integer DEFAULT_PRIORITY = new Integer(5);
 
 	/**
 	 * renders the color selection pull-down with colored boxes as the choices.
@@ -1508,6 +1510,10 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener,
 
 			setCustRemTimes(null);
 			setPopupTimesString(new String(custRemTimes));
+			
+			linkPanel.setOwner(null);
+			prioritySpinner.setValue(DEFAULT_PRIORITY);
+
 
 		} else {
 
@@ -1722,7 +1728,7 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener,
 				}
 
 				// set priority
-				Integer p = new Integer(5);
+				Integer p = new Integer(DEFAULT_PRIORITY);
 				Integer priority = appt.getPriority();
 				if (priority != null)
 					p = priority;
