@@ -28,7 +28,8 @@ package net.sf.borg.model;
 import java.io.InputStream;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -81,13 +82,13 @@ public abstract class Model
 	/**
 	 * list of all instatiated models
 	 */
-	private static List<Model> modelList = new ArrayList<Model>();
+	private static Set<Model> modelList = new HashSet<Model>();
 	
 	/**
 	 * get a list of all instantiated models
 	 * @return list of models
 	 */
-	public static List<Model> getExistingModels()
+	public static Set<Model> getExistingModels()
 	{
 		return modelList;
 	}

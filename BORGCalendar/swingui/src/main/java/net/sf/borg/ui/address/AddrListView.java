@@ -88,12 +88,7 @@ public class AddrListView extends DockableView implements Module {
 	 * constructor
 	 */
 	public AddrListView() {
-
 		super();
-
-
-		
-
 	}
 
 	/**
@@ -393,9 +388,10 @@ public class AddrListView extends DockableView implements Module {
 	@Override
 	public JPanel getComponent() {
 		
+		addModel(AddressModel.getReference());
+
 		if( !isInitialized)
 		{
-			addModel(AddressModel.getReference());
 
 			this.setLayout(new GridBagLayout());
 
