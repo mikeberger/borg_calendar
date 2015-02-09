@@ -44,6 +44,10 @@ import net.sf.borg.model.OptionModel;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.Option;
 import net.sf.borg.model.ical.SyncEvent.ObjectType;
+
+import org.apache.commons.httpclient.protocol.Protocol;
+import org.apache.commons.httpclient.protocol.SSLProtocolSocketFactory;
+
 import biz.source_code.base64Coder.Base64Coder;
 
 @SuppressWarnings("unchecked")
@@ -94,14 +98,29 @@ public class CalDav {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	private static CalDavCalendarStore connect() throws Exception {
-		
-		if( !isSyncing())
+
+		if (!isSyncing())
 			return null;
-			
+
 		Prefs.setProxy();
 
-		URL url = new URL("http", Prefs.getPref(PrefName.CALDAV_SERVER), -1,
+		if (Prefs.getBoolPref(PrefName.CALDAV_ALLOW_SELF_SIGNED_CERT)) {
+			// Allow access even though certificate is self signed
+			Protocol lEasyHttps = new Protocol("https",
+					new EasySslProtocolSocketFactory(), 443);
+			Protocol.registerProtocol("https", lEasyHttps);
+		} else {
+			Protocol sslprot = new Protocol("https",
+					new SSLProtocolSocketFactory(), 443);
+			Protocol.registerProtocol("https", sslprot);
+		}
+
+		String protocol = Prefs.getBoolPref(PrefName.CALDAV_USE_SSL) ? "https"
+				: "http";
+
+		URL url = new URL(protocol, Prefs.getPref(PrefName.CALDAV_SERVER), -1,
 				Prefs.getPref(PrefName.CALDAV_PATH));
 		SocketClient.sendLogMessage("SYNC: connect to " + url.toString());
 		log.info("SYNC: connect to " + url.toString());
@@ -249,9 +268,9 @@ public class CalDav {
 		boolean export_todos = Prefs.getBoolPref(PrefName.ICAL_EXPORT_TODO);
 
 		List<SyncEvent> syncEvents = SyncLog.getReference().getAll();
-		
+
 		int num_outgoing = syncEvents.size();
-		if( isServerSyncNeeded() )
+		if (isServerSyncNeeded())
 			num_outgoing--;
 
 		SocketClient.sendLogMessage("SYNC: Process " + num_outgoing

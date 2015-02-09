@@ -65,6 +65,9 @@ public class IcalOptionsPanel extends OptionsPanel {
 	private JTextField caldavCal = new JTextField();
 	private JTextField caldavCal2 = new JTextField();
 
+	private JCheckBox caldavSSL = new JCheckBox();
+	private JCheckBox caldavSelfSigned = new JCheckBox();
+
 	public IcalOptionsPanel() {
 		this.setLayout(new java.awt.GridBagLayout());
 
@@ -89,7 +92,7 @@ public class IcalOptionsPanel extends OptionsPanel {
 		skipBox.setText(Resource.getResourceString("skip_borg_ical"));
 		this.add(skipBox, GridBagConstraintsFactory.create(0, 2,
 				GridBagConstraints.BOTH, 1.0, 0.0));
-		
+
 		this.add(new JLabel(Resource.getResourceString("ical_import_url")),
 				GridBagConstraintsFactory.create(0, 3, GridBagConstraints.BOTH));
 		this.add(importurl, GridBagConstraintsFactory.create(1, 3,
@@ -98,7 +101,6 @@ public class IcalOptionsPanel extends OptionsPanel {
 		todoBox.setText(Resource.getResourceString("ical_export_todos"));
 		this.add(todoBox, GridBagConstraintsFactory.create(0, 4,
 				GridBagConstraints.BOTH, 1.0, 0.0));
-
 
 		ftppanel.add(new JLabel(Resource.getResourceString("ftpserver")),
 				GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH));
@@ -128,52 +130,57 @@ public class IcalOptionsPanel extends OptionsPanel {
 		gbc.gridwidth = GridBagConstraints.REMAINDER;
 		this.add(ftppanel, gbc);
 
-		
 		calpanel.add(new JLabel(Resource.getResourceString("CALDAV_Server")),
 				GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH));
 		calpanel.add(caldavServer, GridBagConstraintsFactory.create(1, 0,
 				GridBagConstraints.BOTH, 1.0, 0.0));
-		
+
 		calpanel.add(new JLabel(Resource.getResourceString("CALDAV_Path")),
 				GridBagConstraintsFactory.create(2, 0, GridBagConstraints.BOTH));
 		calpanel.add(caldavPath, GridBagConstraintsFactory.create(3, 0,
 				GridBagConstraints.BOTH, 1.0, 0.0));
 
 		calpanel.add(new JLabel(Resource.getResourceString("CALDAV_User")),
-				GridBagConstraintsFactory
-						.create(0, 1, GridBagConstraints.BOTH));
+				GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH));
 		calpanel.add(caldavUser, GridBagConstraintsFactory.create(1, 1,
 				GridBagConstraints.BOTH, 1.0, 0.0));
 
 		JLabel pl2 = new JLabel(Resource.getResourceString("CALDAV_Password"));
-		calpanel.add(pl2, GridBagConstraintsFactory.create(2, 1,
-				GridBagConstraints.BOTH));
+		calpanel.add(pl2,
+				GridBagConstraintsFactory.create(2, 1, GridBagConstraints.BOTH));
 		pl2.setLabelFor(caldavPassword);
 		calpanel.add(caldavPassword, GridBagConstraintsFactory.create(3, 1,
 				GridBagConstraints.BOTH, 1.0, 0.0));
 		caldavPassword.setEditable(true);
 
 		calpanel.add(new JLabel(Resource.getResourceString("CALDAV_Cal")),
-				GridBagConstraintsFactory
-						.create(0, 2, GridBagConstraints.BOTH));
+				GridBagConstraintsFactory.create(0, 2, GridBagConstraints.BOTH));
 		calpanel.add(caldavCal, GridBagConstraintsFactory.create(1, 2,
 				GridBagConstraints.BOTH, 1.0, 0.0));
 
 		calpanel.add(new JLabel(Resource.getResourceString("CALDAV_Cal2")),
-				GridBagConstraintsFactory
-						.create(2, 2, GridBagConstraints.BOTH));
+				GridBagConstraintsFactory.create(2, 2, GridBagConstraints.BOTH));
 		calpanel.add(caldavCal2, GridBagConstraintsFactory.create(3, 2,
 				GridBagConstraints.BOTH, 1.0, 0.0));
-		
-		calpanel.add(new JLabel(Resource.getResourceString("CALDAV_PrincipalPath")),
+
+		calpanel.add(
+				new JLabel(Resource.getResourceString("CALDAV_PrincipalPath")),
 				GridBagConstraintsFactory.create(0, 3, GridBagConstraints.BOTH));
-		calpanel.add(caldavPrincipalPath, GridBagConstraintsFactory.create(1, 3,
-				GridBagConstraints.BOTH, 1.0, 0.0));
-		
+		calpanel.add(caldavPrincipalPath, GridBagConstraintsFactory.create(1,
+				3, GridBagConstraints.BOTH, 1.0, 0.0));
+
 		calpanel.add(new JLabel(Resource.getResourceString("CALDAV_UserPath")),
 				GridBagConstraintsFactory.create(2, 3, GridBagConstraints.BOTH));
 		calpanel.add(caldavUserPath, GridBagConstraintsFactory.create(3, 3,
 				GridBagConstraints.BOTH, 1.0, 0.0));
+
+		caldavSSL.setText(Resource.getResourceString("use_ssl"));
+		caldavSelfSigned.setText(Resource.getResourceString("allow_self_signed"));
+
+		calpanel.add(caldavSSL,
+				GridBagConstraintsFactory.create(0, 4, GridBagConstraints.BOTH));
+		calpanel.add(caldavSelfSigned,
+				GridBagConstraintsFactory.create(2, 4, GridBagConstraints.BOTH));
 
 		gbc = GridBagConstraintsFactory.create(0, 6, GridBagConstraints.BOTH,
 				1.0, 0.0);
@@ -192,7 +199,7 @@ public class IcalOptionsPanel extends OptionsPanel {
 		} catch (NumberFormatException e) {
 			Errmsg.getErrorHandler().notice(
 					Resource.getResourceString("port_warning"));
-		
+
 			port.setText(((Integer) PrefName.ICAL_PORT.getDefault()).toString());
 			Prefs.putPref(PrefName.ICAL_PORT, PrefName.ICAL_PORT.getDefault());
 			return;
@@ -217,7 +224,8 @@ public class IcalOptionsPanel extends OptionsPanel {
 		Prefs.putPref(PrefName.CALDAV_USER, caldavUser.getText());
 		Prefs.putPref(PrefName.CALDAV_SERVER, caldavServer.getText());
 		Prefs.putPref(PrefName.CALDAV_PATH, caldavPath.getText());
-		Prefs.putPref(PrefName.CALDAV_PRINCIPAL_PATH, caldavPrincipalPath.getText());
+		Prefs.putPref(PrefName.CALDAV_PRINCIPAL_PATH,
+				caldavPrincipalPath.getText());
 		Prefs.putPref(PrefName.CALDAV_USER_PATH, caldavUserPath.getText());
 		try {
 			CalDav.sep(new String(caldavPassword.getPassword()));
@@ -227,6 +235,8 @@ public class IcalOptionsPanel extends OptionsPanel {
 
 		Prefs.putPref(PrefName.CALDAV_CAL, caldavCal.getText());
 		Prefs.putPref(PrefName.CALDAV_CAL2, caldavCal2.getText());
+		OptionsPanel.setBooleanPref(caldavSSL, PrefName.CALDAV_USE_SSL);
+		OptionsPanel.setBooleanPref(caldavSelfSigned, PrefName.CALDAV_ALLOW_SELF_SIGNED_CERT);
 
 	}
 
@@ -258,8 +268,13 @@ public class IcalOptionsPanel extends OptionsPanel {
 		caldavCal2.setText(Prefs.getPref(PrefName.CALDAV_CAL2));
 		caldavServer.setText(Prefs.getPref(PrefName.CALDAV_SERVER));
 		caldavPath.setText(Prefs.getPref(PrefName.CALDAV_PATH));
-		caldavPrincipalPath.setText(Prefs.getPref(PrefName.CALDAV_PRINCIPAL_PATH));
+		caldavPrincipalPath.setText(Prefs
+				.getPref(PrefName.CALDAV_PRINCIPAL_PATH));
 		caldavUserPath.setText(Prefs.getPref(PrefName.CALDAV_USER_PATH));
+		caldavSSL.setSelected(Prefs.getBoolPref(PrefName.CALDAV_USE_SSL));
+		caldavSelfSigned.setSelected(Prefs.getBoolPref(PrefName.CALDAV_ALLOW_SELF_SIGNED_CERT));
+
+		
 		try {
 			caldavPassword.setText(CalDav.gep());
 		} catch (Exception e) {
