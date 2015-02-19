@@ -40,17 +40,15 @@ more ...
 
 ## How to Get BORG
  
-BORG downloads are available from http://borg-calendar.sourceforge.net
+BORG downloads and releases are also available on Github: https://github.com/mikeberger/borg_calendar/releases
 
-BORG downloads and snapshot releases are also available on Github: https://github.com/mikeberger/borg_calendar/releases
-
-BORG needs only Java to run, which now comes pre-installed on most systems. If you don't have Java, you need to get the JAVA SE (standard environment) runtime version 6. It is available from http://www.oracle.com/technetwork/java/javase/downloads/.  
+BORG needs only Java to run, which now comes pre-installed on most systems. If you don't have Java, you need to get the JAVA SE (standard environment) runtime version 7 or higher. It is available from http://www.oracle.com/technetwork/java/javase/downloads/.  
 
 The source code is available on github - https://github.com/mikeberger/borg_calendar
 
 
 ## More info
  
-Website: http://borg.mbcsoft.com/
+Website: https://mikeberger.github.io/borg_calendar
 GitHub: https://github.com/mikeberger/borg_calendar
 lombok: http://projectlombok.org/
