@@ -50,5 +50,7 @@ The source code is available on github - https://github.com/mikeberger/borg_cale
 ## More info
  
 Website: https://mikeberger.github.io/borg_calendar
+
 GitHub: https://github.com/mikeberger/borg_calendar
+
 lombok: http://projectlombok.org/
