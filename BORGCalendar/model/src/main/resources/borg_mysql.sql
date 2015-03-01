@@ -52,6 +52,7 @@ CREATE TABLE `appointments` (
   `create_time` timestamp NOT NULL default '1980-00-00 00:00:00',
   `lastmod` timestamp NOT NULL default '1980-00-00 00:00:00',
    uid text,
+   url text,
 
 
   PRIMARY KEY  (`appt_num`),

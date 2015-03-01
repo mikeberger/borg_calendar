@@ -82,6 +82,7 @@ public class Appointment extends EncryptableEntity<Appointment> implements
 	private Date createTime;
 	private Date lastMod;
 	private String uid;
+	private String url;
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -113,6 +114,7 @@ public class Appointment extends EncryptableEntity<Appointment> implements
 		dst.setCreateTime(getCreateTime());
 		dst.setLastMod(getLastMod());
 		dst.setUid(getUid());
+		dst.setUrl(getUrl());
 		return (dst);
 	}
 

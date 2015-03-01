@@ -89,9 +89,14 @@ public class CalDav {
 		mycal.getProperties().add(new ProdId(PRODID));
 		mycal.getProperties().add(Version.VERSION_2_0);
 		mycal.getComponents().add(comp);
+		Property url = comp.getProperty(Property.URL);
+		String urlValue = null;
+		if( url != null )
+			urlValue = url.getValue();
 
 		try {
-			collection.addCalendar(mycal);
+			collection.writeCalendarOnServer(mycal, true, urlValue);
+			//collection.addCalendar(mycal);
 		} catch (Exception e) {
 			log.severe(e.getMessage());
 			e.printStackTrace();
@@ -594,6 +599,8 @@ public class CalDav {
 
 		int count = 0;
 
+		log.fine("Incoming calendar: " + cal.toString());
+
 		ComponentList clist = cal.getComponents();
 		Iterator<Component> it = clist.iterator();
 		while (it.hasNext()) {
@@ -601,6 +608,12 @@ public class CalDav {
 
 			if (!(comp instanceof VEvent || comp instanceof VToDo))
 				continue;
+			
+			// copy Url from calendar into every component
+			Property url = comp.getProperty(Property.URL);
+			if( url == null)
+				comp.getProperties().add(cal.getProperty(Property.URL));
+			
 			String uid = comp.getProperty(Property.UID).getValue();
 			serverUids.add(uid);
 
@@ -612,6 +625,7 @@ public class CalDav {
 				continue;
 			}
 
+			log.fine("Incoming event: " + comp.toString());
 			Appointment newap = AppointmentIcalAdapter.toBorg(comp);
 			if (newap == null)
 				continue;
@@ -730,9 +744,14 @@ public class CalDav {
 		mycal.getProperties().add(new ProdId(PRODID));
 		mycal.getProperties().add(Version.VERSION_2_0);
 		mycal.getComponents().add(comp);
-
+		Property url = comp.getProperty(Property.URL);
+		String urlValue = null;
+		if( url != null )
+			urlValue = url.getValue();
+		
 		try {
-			collection.updateCalendar(mycal);
+			collection.writeCalendarOnServer(mycal, false, urlValue);
+			//collection.updateCalendar(mycal);
 		} catch (Exception e) {
 			log.severe(e.getMessage());
 			e.printStackTrace();

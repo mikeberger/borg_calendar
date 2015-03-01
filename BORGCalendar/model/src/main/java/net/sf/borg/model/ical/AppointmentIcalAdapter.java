@@ -70,6 +70,7 @@ import net.fortuna.ical4j.model.property.RRule;
 import net.fortuna.ical4j.model.property.Status;
 import net.fortuna.ical4j.model.property.Summary;
 import net.fortuna.ical4j.model.property.Uid;
+import net.fortuna.ical4j.model.property.Url;
 import net.fortuna.ical4j.model.property.Version;
 import net.fortuna.ical4j.util.CompatibilityHints;
 import net.sf.borg.common.DateUtil;
@@ -128,6 +129,14 @@ public class AppointmentIcalAdapter {
 		}
 		Uid uid = new Uid(uidval);
 		ve.getProperties().add(uid);
+		
+		String urlVal = ap.getUrl();
+		if( urlVal != null && !urlVal.isEmpty())
+		{
+			Url url = new Url();
+			url.setValue(urlVal);
+			ve.getProperties().add(url);
+		}
 
 		ve.getProperties().add(new Created(new DateTime(ap.getCreateTime())));
 		ve.getProperties().add(new LastModified(new DateTime(ap.getLastMod())));
@@ -722,6 +731,25 @@ public class AppointmentIcalAdapter {
 
 			Uid uid = (Uid) pl.getProperty(Property.UID);
 			ap.setUid(uid.getValue());
+			
+			// store the URL coming back from the caldav server
+			// only store the last part
+			Url url = (Url) pl.getProperty(Property.URL);
+			if( url != null)
+			{
+				String urlVal = url.getValue();
+				int idx = urlVal.lastIndexOf('/');
+				if( idx == -1 )
+				{
+					ap.setUrl(urlVal);
+				}
+				else
+				{
+					ap.setUrl(urlVal.substring(idx+1));
+				}
+					
+			}
+			
 			LastModified lm = (LastModified) pl
 					.getProperty(Property.LAST_MODIFIED);
 			if (lm != null)

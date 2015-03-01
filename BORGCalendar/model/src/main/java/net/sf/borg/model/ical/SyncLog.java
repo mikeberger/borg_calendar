@@ -71,7 +71,18 @@ public class SyncLog extends Model implements Model.Listener, Prefs.Listener {
 			{
 				newEvent.setId(new Integer(((Appointment)obj).getKey()));
 				newEvent.setObjectType(ObjectType.APPOINTMENT);
-				newEvent.setUid(((Appointment)obj).getUid());
+				
+				// use the URL first. If null, user the UID
+				Appointment ap = (Appointment) obj;
+				if( ap.getUrl() != null)	
+				{
+					newEvent.setUid(((Appointment)obj).getUrl());
+				}
+				else
+				{
+					newEvent.setUid(((Appointment)obj).getUid());
+				}
+				
 			}
 			else
 			{

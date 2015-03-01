@@ -481,6 +481,7 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener,
 				appt.setCreateTime(originalAppt.getCreateTime());
 				appt.setLastMod(originalAppt.getLastMod());
 				appt.setUid(originalAppt.getUid());
+				appt.setUrl(originalAppt.getUrl());
 
 				// determine if we can keep certain fields related to repeating
 				// and todos

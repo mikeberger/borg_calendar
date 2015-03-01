@@ -63,6 +63,9 @@ class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB {
 						"alter table appointments add column uid longvarchar",
 						"update appointments set uid = CONCAT(appt_num,'@BORGU', RAND())" })
 				.upgrade();
+		new JdbcDBUpgrader("select url from appointments",
+				"alter table appointments add column url longvarchar")
+				.upgrade();
 
 	}
 
@@ -79,8 +82,8 @@ class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB {
 				.getConnection()
 				.prepareStatement(
 						"INSERT INTO appointments (appt_date, appt_num, duration, text, skip_list,"
-								+ " next_todo, vacation, holiday, private, times, frequency, todo, color, rpt, category, reminders, untimed, encrypted, repeat_until, priority, create_time, lastmod, uid ) VALUES "
-								+ "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+								+ " next_todo, vacation, holiday, private, times, frequency, todo, color, rpt, category, reminders, untimed, encrypted, repeat_until, priority, create_time, lastmod, uid, url ) VALUES "
+								+ "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
 		stmt.setTimestamp(1, new java.sql.Timestamp(appt.getDate().getTime()),
 				Calendar.getInstance());
@@ -124,6 +127,7 @@ class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB {
 		stmt.setTimestamp(22, new java.sql.Timestamp(appt.getLastMod()
 				.getTime()), Calendar.getInstance());
 		stmt.setString(23, appt.getUid());
+		stmt.setString(24, appt.getUrl());
 		stmt.executeUpdate();
 
 		writeCache(appt);
@@ -312,6 +316,7 @@ class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB {
 			appt.setLastMod(new java.util.Date(r.getTimestamp("lastmod")
 					.getTime()));
 		appt.setUid(r.getString("uid"));
+		appt.setUrl(r.getString("url"));
 		return appt;
 	}
 
@@ -330,7 +335,7 @@ class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB {
 						"UPDATE appointments SET  appt_date = ?, "
 								+ "duration = ?, text = ?, skip_list = ?,"
 								+ " next_todo = ?, vacation = ?, holiday = ?, private = ?, times = ?, frequency = ?, todo = ?, color = ?, rpt = ?, category = ?,"
-								+ " reminders = ?, untimed = ?, encrypted = ?, repeat_until = ?, priority = ?, create_time = ?, lastmod = ?, uid = ?"
+								+ " reminders = ?, untimed = ?, encrypted = ?, repeat_until = ?, priority = ?, create_time = ?, lastmod = ?, uid = ?, url = ?"
 								+ " WHERE appt_num = ?");
 
 		stmt.setTimestamp(1, new java.sql.Timestamp(appt.getDate().getTime()),
@@ -374,7 +379,8 @@ class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB {
 		stmt.setTimestamp(21, new java.sql.Timestamp(appt.getLastMod()
 				.getTime()), Calendar.getInstance());
 		stmt.setString(22, appt.getUid());
-		stmt.setInt(23, appt.getKey());
+		stmt.setString(23, appt.getUrl());
+		stmt.setInt(24, appt.getKey());
 
 		stmt.executeUpdate();
 		stmt.close();
