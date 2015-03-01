@@ -48,12 +48,12 @@
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
-				<version>4.11</version>
+				<version>4.12</version>
 			</dependency>
 			<dependency>
 				<groupId>org.projectlombok</groupId>
 				<artifactId>lombok</artifactId>
-				<version>1.14.8</version>
+				<version>1.16.2</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
