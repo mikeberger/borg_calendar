@@ -208,7 +208,7 @@ public abstract class ReminderManager implements Model.Listener, Prefs.Listener 
 			cal.add(Calendar.DATE, 1);
 		}
 
-		// get past untimed todos that are not done
+		// get todos that are not done
 		Collection<Appointment> tds = AppointmentModel.getReference()
 				.get_todos();
 		if (tds != null) {
@@ -219,10 +219,6 @@ public abstract class ReminderManager implements Model.Listener, Prefs.Listener 
 				Appointment appt = it.next();
 
 				try {
-
-					// the only old todos we are checking for here are non-timed
-					if (!AppointmentModel.isNote(appt))
-						continue;
 
 					// instance date is date of next todo
 					Date nt = appt.getNextTodo();

@@ -271,7 +271,7 @@ public class ApptReminderInstance extends ReminderInstance {
 				return true;
 			}
 
-			if (isNote() && isTodo()) {
+			if (isTodo()) {
 				// skip if inst time changed for untimed todos
 				Date nt = appt.getNextTodo();
 				if (nt == null)
@@ -326,8 +326,8 @@ public class ApptReminderInstance extends ReminderInstance {
 		boolean expires = true; // true if the reminder eventually stops at some
 		// point after the appt
 
-		// untimed todos never expire
-		if (isNote() && isTodo()
+		// todos never expire
+		if (isTodo()
 				&& appt.getReminderTimes() != null
 				&& appt.getReminderTimes().indexOf('Y') != -1) {
 			expires = false;
