@@ -182,11 +182,11 @@ public class AppointmentIcalAdapter {
 			} else {
 				pl.add(Value.DATE_TIME);
 				DtStart dtd = new DtStart(pl,
-						new net.fortuna.ical4j.model.Date(nt));
+						new net.fortuna.ical4j.model.DateTime(nt));
 				ve.getProperties().add(dtd);
 
 				VToDo todo = (VToDo) ve;
-				Due due = new Due(pl, new net.fortuna.ical4j.model.Date(nt));
+				Due due = new Due(pl, new net.fortuna.ical4j.model.DateTime(nt));
 				todo.getProperties().add(due);
 			}
 
