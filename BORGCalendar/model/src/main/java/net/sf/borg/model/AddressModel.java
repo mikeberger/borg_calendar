@@ -55,7 +55,7 @@ import net.sf.borg.model.undo.UndoLog;
  * AddressModel provides the model layer APIs for working with Addresses
  */
 public class AddressModel extends Model implements Searchable<Address>,
-		CalendarEntityProvider, ReminderProducer {
+		CalendarEntityProvider {
 
 	static private AddressModel self_ = new AddressModel();
 
@@ -501,65 +501,5 @@ public class AddressModel extends Model implements Searchable<Address>,
 
 	}
 
-	@Override
-	public List<ReminderInstance> getReminders() {
-
-		List<ReminderInstance> rems = new ArrayList<ReminderInstance>();
-		// birthdays
-		int bd_days = Prefs.getIntPref(PrefName.BIRTHDAYREMINDERDAYS);
-		if (bd_days >= 0) {
-			Date now = new Date();
-			GregorianCalendar cal = new GregorianCalendar();
-			cal.setTime(now);
-			cal.set(Calendar.SECOND, 0);
-			cal.set(Calendar.MINUTE, 0);
-			cal.set(Calendar.HOUR_OF_DAY, 0);
-			Collection<Address> addrs;
-			try {
-				addrs = AddressModel.getReference().getAddresses();
-				if (addrs != null) {
-					for (Address addr : addrs) {
-
-						Date bd = addr.getBirthday();
-						if (bd == null)
-							continue;
-
-						// set time to end of the day. this will allow reminders
-						// to pop up all day on the
-						// birthday itself
-						Calendar bdcal = new GregorianCalendar();
-						bdcal.setTime(bd);
-						bdcal.set(Calendar.YEAR, cal.get(Calendar.YEAR)); // set
-																			// to
-																			// this
-																			// year
-						bdcal.set(Calendar.SECOND, 59);
-						bdcal.set(Calendar.MINUTE, 59);
-						bdcal.set(Calendar.HOUR_OF_DAY, 23);
-
-						// if the birthday is passed for this year, try next
-						// year (in case we are close enough
-						// to January birthdays for next year)
-						if (bdcal.before(cal)) {
-							bdcal.add(Calendar.YEAR, 1);
-						}
-
-						ReminderInstance inst = new BirthdayReminderInstance(
-								addr, bdcal.getTime());
-
-						if (!inst.shouldBeShown())
-							continue;
-
-						rems.add(inst);
-
-					}
-				}
-
-			} catch (Exception e1) {
-				Errmsg.getErrorHandler().errmsg(e1);
-			}
-		}
-
-		return rems;
-	}
+	
 }

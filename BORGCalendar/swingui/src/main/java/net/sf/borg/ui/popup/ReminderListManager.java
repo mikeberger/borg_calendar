@@ -28,7 +28,6 @@ package net.sf.borg.ui.popup;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sf.borg.model.ReminderInstance;
 import net.sf.borg.model.Model.ChangeEvent;
 
 /**
@@ -154,10 +153,6 @@ public class ReminderListManager extends ReminderManager {
 
 		// loop through the existing reminders
 		for (ReminderInstance reminderInstance : reminders) {
-
-			// let the instance decide if a hidden item should be unhidden
-			//if (reminderInstance.isHidden())
-			//	continue;
 
 			// check if db has changed
 			if (reminderInstance.reloadAndCheckForChanges())

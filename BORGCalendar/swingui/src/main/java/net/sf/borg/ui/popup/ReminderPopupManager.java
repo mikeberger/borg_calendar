@@ -30,7 +30,6 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import net.sf.borg.model.ReminderInstance;
 import net.sf.borg.model.Model.ChangeEvent;
 
 /**

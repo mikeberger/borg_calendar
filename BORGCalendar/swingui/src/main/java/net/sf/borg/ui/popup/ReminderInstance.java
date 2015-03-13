@@ -17,12 +17,13 @@
 
  Copyright 2010 by Mike Berger
  */
-package net.sf.borg.model;
+package net.sf.borg.ui.popup;
 
 import java.util.Date;
 
 import lombok.Data;
 import net.sf.borg.common.Resource;
+import net.sf.borg.model.ReminderTimes;
 
 /**
  * holds an instance of a reminder message. Keeps track of which reminder times

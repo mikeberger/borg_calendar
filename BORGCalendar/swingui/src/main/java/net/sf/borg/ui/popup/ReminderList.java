@@ -39,7 +39,6 @@ import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
-import net.sf.borg.model.ReminderInstance;
 import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.View;
@@ -272,7 +271,7 @@ public class ReminderList extends View {
 					for (ReminderInstance inst : list)
 						inst.setHidden(false);
 					refresh(true);
-					ReminderManager.getReminderManager().checkPopups();
+					ReminderManager.getReminderManager().checkModelsForReminders();
 				} catch (Exception e) {
 					Errmsg.getErrorHandler().errmsg(e);
 				}

@@ -41,13 +41,13 @@ import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
+import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.Model;
-import net.sf.borg.model.ReminderInstance;
-import net.sf.borg.model.ReminderProducer;
 import net.sf.borg.model.ReminderTimes;
 import net.sf.borg.model.TaskModel;
+import net.sf.borg.model.entity.Address;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Subtask;
@@ -69,10 +69,10 @@ public abstract class ReminderManager implements Model.Listener, Prefs.Listener 
 	}
 
 	/** runnable task that checks if we need to pop up any popups */
-	final Runnable doPopupChk = new Runnable() {
+	final Runnable doModelCheck = new Runnable() {
 		@Override
 		public void run() {
-			checkPopups();
+			checkModelsForReminders();
 		}
 	};
 
@@ -90,25 +90,20 @@ public abstract class ReminderManager implements Model.Listener, Prefs.Listener 
 		// listen for appointment model changes
 		AppointmentModel.getReference().addListener(this);
 		TaskModel.getReference().addListener(this);
-		for( Model m : Model.getExistingModels())
-		{
-			if( m instanceof ReminderProducer)
-			{
-				m.addListener(this);
-			}
-		}
+		AddressModel.getReference().addListener(this);
+
 		Prefs.addListener(this);
 
-		// start the popup timer
+		// start the timer
 		// for consistency - it will start at the beginning of the next minute
 		// the interval between runs is a user preference
-		timer = new Timer("PopupTimer");
+		timer = new Timer("ReminderTimer");
 		GregorianCalendar cur = new GregorianCalendar();
 		int secs_left = 60 - cur.get(Calendar.SECOND);
 		timer.schedule(new TimerTask() {
 			@Override
 			public void run() {
-				SwingUtilities.invokeLater(doPopupChk);
+				SwingUtilities.invokeLater(doModelCheck);
 			}
 		}, secs_left * 1000, 1 * 60 * 1000);
 
@@ -120,7 +115,7 @@ public abstract class ReminderManager implements Model.Listener, Prefs.Listener 
 	}
 
 	/**
-	 * show a reminder
+	 * add a reminder to the UI
 	 * 
 	 * @param instance
 	 *            the reminder instance
@@ -128,10 +123,10 @@ public abstract class ReminderManager implements Model.Listener, Prefs.Listener 
 	public abstract void addToUI(ReminderInstance instance);
 
 	/**
-	 * check if any new reminder messages needed and show them. Also update any
-	 * messages that are already being shown
+	 * check the models to see if any new reminder messages needed and show
+	 * them. Also update any messages that are already being shown
 	 */
-	public void checkPopups() {
+	public void checkModelsForReminders() {
 
 		// do nothing if the reminder feature is off
 		// this check is inside the timer logic so that
@@ -141,6 +136,99 @@ public abstract class ReminderManager implements Model.Listener, Prefs.Listener 
 		if (enable.equals("false"))
 			return;
 
+		getAppointmentReminders();
+
+		getBirthdayReminders();
+
+		getTaskReminders();
+
+		// update the existing reminders in the model and UI as needed due to
+		// passage of time
+		periodicUpdate();
+
+	}
+
+	private void getTaskReminders() {
+		if (Prefs.getBoolPref(PrefName.TASKREMINDERS)) {
+
+			try {
+				Collection<Project> pjs = TaskModel.getReference()
+						.getProjects();
+				for (Project pj : pjs) {
+					if (pj.getDueDate() == null)
+						continue;
+
+					// skip closed projects
+					if (pj.getStatus().equals(
+							Resource.getResourceString("CLOSED")))
+						continue;
+
+					// filter by category
+					if (!CategoryModel.getReference().isShown(pj.getCategory()))
+						continue;
+
+					ReminderInstance inst = new ProjectReminderInstance(pj);
+
+					if (!inst.shouldBeShown())
+						continue;
+
+					addToUI(inst);
+
+				}
+			} catch (Exception e) {
+				Errmsg.getErrorHandler().errmsg(e);
+			}
+
+			// get all tasks
+			Vector<Task> mrs = TaskModel.getReference().get_tasks();
+			for (int i = 0; i < mrs.size(); i++) {
+
+				Task mr = mrs.elementAt(i);
+				if (mr.getDueDate() == null)
+					continue;
+
+				ReminderInstance inst = new TaskReminderInstance(mr);
+
+				if (!inst.shouldBeShown())
+					continue;
+
+				addToUI(inst);
+
+			}
+
+			try {
+				Collection<Subtask> sts = TaskModel.getReference()
+						.getSubTasks();
+				for (Subtask st : sts) {
+					if (st.getDueDate() == null)
+						continue;
+					if (st.getCloseDate() != null)
+						continue;
+
+					Task task = TaskModel.getReference().getTask(
+							st.getTask().intValue());
+					String cat = task.getCategory();
+
+					if (!CategoryModel.getReference().isShown(cat))
+						continue;
+
+					ReminderInstance inst = new SubtaskReminderInstance(st);
+
+					if (!inst.shouldBeShown())
+						continue;
+
+					addToUI(inst);
+
+				}
+			} catch (Exception e) {
+
+			}
+		}
+
+	}
+
+	public void getAppointmentReminders() {
+		
 		// determine most future day that we have to consider
 		int earliestReminderTime = -100000;
 		for (int i = 0; i < ReminderTimes.getNum(); i++) {
@@ -238,103 +326,62 @@ public abstract class ReminderManager implements Model.Listener, Prefs.Listener 
 				}
 			}
 		}
-		
-		for( Model m : Model.getExistingModels())
-		{
-			if( m instanceof ReminderProducer)
-			{
-				List<ReminderInstance> rems = ((ReminderProducer)m).getReminders();
-				for( ReminderInstance ri : rems)
-				{
-					addToUI(ri);
+
+	}
+
+	public void getBirthdayReminders() {
+
+		// birthdays
+		int bd_days = Prefs.getIntPref(PrefName.BIRTHDAYREMINDERDAYS);
+		if (bd_days >= 0) {
+			Date now = new Date();
+			GregorianCalendar cal = new GregorianCalendar();
+			cal.setTime(now);
+			cal.set(Calendar.SECOND, 0);
+			cal.set(Calendar.MINUTE, 0);
+			cal.set(Calendar.HOUR_OF_DAY, 0);
+			Collection<Address> addrs;
+			try {
+				addrs = AddressModel.getReference().getAddresses();
+				if (addrs != null) {
+					for (Address addr : addrs) {
+
+						Date bd = addr.getBirthday();
+						if (bd == null)
+							continue;
+
+						// set time to end of the day. this will allow reminders
+						// to pop up all day on the
+						// birthday itself
+						Calendar bdcal = new GregorianCalendar();
+						bdcal.setTime(bd);
+						bdcal.set(Calendar.YEAR, cal.get(Calendar.YEAR)); 
+						bdcal.set(Calendar.SECOND, 59);
+						bdcal.set(Calendar.MINUTE, 59);
+						bdcal.set(Calendar.HOUR_OF_DAY, 23);
+
+						// if the birthday is passed for this year, try next
+						// year (in case we are close enough
+						// to January birthdays for next year)
+						if (bdcal.before(cal)) {
+							bdcal.add(Calendar.YEAR, 1);
+						}
+
+						ReminderInstance inst = new BirthdayReminderInstance(
+								addr, bdcal.getTime());
+
+						if (!inst.shouldBeShown())
+							continue;
+
+						addToUI(inst);
+
+					}
 				}
+
+			} catch (Exception e1) {
+				Errmsg.getErrorHandler().errmsg(e1);
 			}
 		}
-
-		
-		
-
-		if (Prefs.getBoolPref(PrefName.TASKREMINDERS)) {
-
-			try {
-				Collection<Project> pjs = TaskModel.getReference()
-						.getProjects();
-				for (Project pj : pjs) {
-					if (pj.getDueDate() == null)
-						continue;
-
-					// skip closed projects
-					if (pj.getStatus().equals(
-							Resource.getResourceString("CLOSED")))
-						continue;
-
-					// filter by category
-					if (!CategoryModel.getReference().isShown(pj.getCategory()))
-						continue;
-
-					ReminderInstance inst = new ProjectReminderInstance(pj);
-
-					if (!inst.shouldBeShown())
-						continue;
-
-					addToUI(inst);
-
-				}
-			} catch (Exception e) {
-				Errmsg.getErrorHandler().errmsg(e);
-				return;
-			}
-
-			// get all tasks
-			Vector<Task> mrs = TaskModel.getReference().get_tasks();
-			for (int i = 0; i < mrs.size(); i++) {
-
-				Task mr = mrs.elementAt(i);
-				if (mr.getDueDate() == null)
-					continue;
-
-				ReminderInstance inst = new TaskReminderInstance(mr);
-
-				if (!inst.shouldBeShown())
-					continue;
-
-				addToUI(inst);
-
-			}
-
-			try {
-				Collection<Subtask> sts = TaskModel.getReference()
-						.getSubTasks();
-				for (Subtask st : sts) {
-					if (st.getDueDate() == null)
-						continue;
-					if (st.getCloseDate() != null)
-						continue;
-
-					Task task = TaskModel.getReference().getTask(
-							st.getTask().intValue());
-					String cat = task.getCategory();
-
-					if (!CategoryModel.getReference().isShown(cat))
-						continue;
-
-					ReminderInstance inst = new SubtaskReminderInstance(st);
-
-					if (!inst.shouldBeShown())
-						continue;
-
-					addToUI(inst);
-
-				}
-			} catch (Exception e) {
-				// Errmsg.getErrorHandler().errmsg(e);
-				return;
-			}
-		}
-
-		// update the existing reminders in the model and UI as needed due to
-		// passage of time
-		periodicUpdate();
 
 	}
 
@@ -355,8 +402,8 @@ public abstract class ReminderManager implements Model.Listener, Prefs.Listener 
 	 * @see net.sf.borg.model.Model.Listener#refresh()
 	 */
 	/**
-	 * refresh the popup states depending on the state of the appointment model.
-	 * In particular, clean up any popups that should no longer be shown because
+	 * refresh the popup states depending on the state of the models.
+	 * In particular, clean up any reminders that should no longer be shown because
 	 * of model changes.
 	 */
 	abstract public void refresh();
