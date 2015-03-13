@@ -413,6 +413,8 @@ public abstract class ReminderManager implements Model.Listener, Prefs.Listener 
 	 */
 	public void remove() {
 		timer.cancel();
+		
+		singleton = null;
 	}
 
 	/**
