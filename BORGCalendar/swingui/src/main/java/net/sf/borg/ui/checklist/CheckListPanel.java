@@ -161,8 +161,10 @@ public class CheckListPanel extends DockableView implements
 					return;
 			}
 			
-			isCheckListEdited = false;
+			if (itemTable.isEditing())
+				itemTable.getCellEditor().stopCellEditing();
 
+			isCheckListEdited = false;
 
 			String newname = InputDialog.show(Resource
 					.getResourceString("Enter_CheckList_Name"), 50);
