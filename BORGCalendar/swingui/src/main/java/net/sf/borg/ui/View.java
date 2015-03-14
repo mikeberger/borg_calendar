@@ -94,16 +94,26 @@ public abstract class View extends JFrame implements Model.Listener {
 		// set the initial size
 		String s = Prefs.getPref(prefName_);
 		ViewSize vs = ViewSize.fromString(s);
-
-		if (vs.getX() != -1) {
-			setBounds(new Rectangle(vs.getX(), vs.getY(), vs.getWidth(), vs
-					.getHeight()));
-		} else if (vs.getWidth() != -1) {
-			setSize(new Dimension(vs.getWidth(), vs.getHeight()));
-		}
+		
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		
+		// get dimensions from pref or use defaults
+		int x = (vs.getX() != -1) ? vs.getX() : 0;
+		int y = (vs.getY() != -1) ? vs.getY() : 0;
+		int w = (vs.getWidth() != -1 ) ? vs.getWidth() : 800;
+		int h = (vs.getHeight() != -1 ) ? vs.getHeight() : 600;
+		
+		// move window onscreen if needed
+		if( x < 0 || x > screenSize.width ) x = 0;
+		if( y < 0 || y > screenSize.width ) y = 0;
+		
+		setBounds(new Rectangle(x,y,w,h));
+		
 		if (vs.isMaximized()) {
 			setExtendedState(Frame.MAXIMIZED_BOTH);
 		}
+		
+					
 		validate();
 
 		// add listeners to record any changes
