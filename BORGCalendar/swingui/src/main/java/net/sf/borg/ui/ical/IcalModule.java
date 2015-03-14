@@ -26,6 +26,7 @@ import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.common.SocketClient;
+import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.Model;
 import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.ical.AppointmentIcalAdapter;
@@ -185,6 +186,7 @@ public class IcalModule implements Module, Prefs.Listener, Model.Listener {
 							.importIcalFromFile(s);
 					if (warning != null && !warning.isEmpty())
 						Errmsg.getErrorHandler().notice(warning);
+					CategoryModel.syncModels();
 				} catch (Exception e) {
 					Errmsg.getErrorHandler().errmsg(e);
 				}
