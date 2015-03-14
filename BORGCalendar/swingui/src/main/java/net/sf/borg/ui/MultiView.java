@@ -185,6 +185,18 @@ public class MultiView extends View {
 			}
 		}, KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0),
 				JComponent.WHEN_IN_FOCUSED_WINDOW);
+		
+		getLayeredPane().registerKeyboardAction(new ActionListener() {
+			@Override
+			public final void actionPerformed(ActionEvent e) {
+				try {
+					HelpLauncher.launchHelp();
+				} catch (Exception e1) {
+					Errmsg.getErrorHandler().errmsg(e1);
+				}
+			}
+		}, KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0),
+				JComponent.WHEN_IN_FOCUSED_WINDOW);
 
 		// window close button closes the window
 		addWindowListener(new java.awt.event.WindowAdapter() {
