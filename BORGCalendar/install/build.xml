@@ -43,12 +43,14 @@
 		<copy todir="target/installer/licenses">
 			<fileset dir="src/main/resources/licenses" includes="*" />
 		</copy>
+		<!--
 		<copy todir="target/installer/licenses">
 			<fileset dir="../target/generated-sources/licenses" includes="*" />
 		</copy>
 		<copy todir="target/installer/licenses">
 			<fileset dir="../target/generated-sources/license/META-INF" includes="*" />
 		</copy>
+		-->
 		<copy file="../swingui/target/swingui-${project.version}.jar" tofile="target/installer/borg.jar" />
 
 	</target>

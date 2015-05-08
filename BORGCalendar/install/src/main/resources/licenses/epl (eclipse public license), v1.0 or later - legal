@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="M. Ward Nov 18/05" />
+    <meta name="keywords" content="legal, documents, about" />
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:400,700,300,600,100" rel="stylesheet" type="text/css">
+		<link rel="shortcut icon" href="/eclipse.org-common/themes/solstice/public/images/favicon.ico"/>
+    <title>Legal Resources</title>
+    <meta property="og:title" content="" />
+    <meta property="og:description" content="Eclipse is probably best known as a Java IDE, but it is more: it is an IDE framework, a tools framework, an open source project, a community, an eco-system, and a foundation." />
+    <meta property="og:image" content="https://www.eclipse.org/eclipse.org-common/themes/Nova/images/eclipse.png" />
+
+    <link rel="stylesheet" href="/eclipse.org-common/themes/solstice/public/stylesheets/styles.min.css">
+
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body class="" id="body_solstice">
+	  <a class="sr-only" href="#content">Skip to main content</a>
+    <header role="banner">
+      <div class="container">
+        <div id="row-toolbar" class="text-right hidden-print">
+          <div id="row-toolbar-col" class="col-md-24">
+            <ul class="list-inline">
+              <li><a href="https://dev.eclipse.org/site_login/createaccount.php"><i class="fa fa-user fa-fw"></i> Create account</a></li>
+              <li><a href="https://dev.eclipse.org/site_login/?takemeback=http://www.eclipse.org/legal/"><i class="fa fa-sign-in fa-fw"></i> Log in</a></li>
+                          </ul>
+          </div>
+        </div>
+        <div id="row-logo-search">
+          <div id="header-left" class="col-sm-14 col-md-16 col-lg-19">
+            <div class="row">
+              <div class="hidden-xs">
+                <a href="http://www.eclipse.org/"><img src="/eclipse.org-common/themes/solstice/public/images/logo/eclipse-800x188.png" alt="Eclipse.org logo" class="logo-eclipse-default"/></a>              </div>
+               <div id="main-menu" class="navbar row yamm">
+                <div id="navbar-collapse-1" class="navbar-collapse collapse">
+                  <ul class="nav navbar-nav">
+                    <li class="visible-thin"><a href="http://www.eclipse.org/downloads/" target="_self">Download</a></li><li><a href="http://www.eclipse.org/users/" target="_self">Getting Started </a></li><li><a href="http://www.eclipse.org/membership/" target="_self">Members</a></li><li><a href="http://www.eclipse.org/projects/" target="_self">Projects</a></li>                    <li class="dropdown visible-xs"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Community <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="http://marketplace.eclipse.org">Marketplace</a></li><li><a href="http://events.eclipse.org">Events</a></li><li><a href="http://www.planeteclipse.org/">Planet Eclipse</a></li><li><a href="http://www.eclipse.org/community/eclipse_newsletter/">Newsletter</a></li><li><a href="https://www.youtube.com/user/EclipseFdn">Videos</a></li></ul></li><li class="dropdown visible-xs"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Participate <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="https://bugs.eclipse.org/bugs/">Report a Bug</a></li><li><a href="http://www.eclipse.org/forums/">Forums</a></li><li><a href="http://www.eclipse.org/mail/">Mailing Lists</a></li><li><a href="https://wiki.eclipse.org/">Wiki</a></li><li><a href="https://wiki.eclipse.org/IRC">IRC</a></li><li><a href="http://www.eclipse.org/contribute/">How to Contribute</a></li></ul></li><li class="dropdown visible-xs"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Working Groups <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="http://wiki.eclipse.org/Auto_IWG">Automotive</a></li><li><a href="http://iot.eclipse.org">Internet of Things</a></li><li><a href="http://locationtech.org">LocationTech</a></li><li><a href="http://lts.eclipse.org">Long-Term Support</a></li><li><a href="http://polarsys.org">PolarSys</a></li><li><a href="http://science.eclipse.org">Science</a></li><li><a href="http://www.openmdm.org">OpenMDM</a></li></ul></li>                    <!-- More -->
+                    <li class="dropdown hidden-xs"><a data-toggle="dropdown" class="dropdown-toggle">More<b class="caret"></b></a>
+                      <ul class="dropdown-menu">
+                        <li>
+                          <!-- Content container to add padding -->
+                          <div class="yamm-content">
+                            <div class="row">
+                              <ul class="col-sm-8 list-unstyled"><li><p><strong>Community</strong></p></li><li><a href="http://marketplace.eclipse.org">Marketplace</a></li><li><a href="http://events.eclipse.org">Events</a></li><li><a href="http://www.planeteclipse.org/">Planet Eclipse</a></li><li><a href="http://www.eclipse.org/community/eclipse_newsletter/">Newsletter</a></li><li><a href="https://www.youtube.com/user/EclipseFdn">Videos</a></li></ul><ul class="col-sm-8 list-unstyled"><li><p><strong>Participate</strong></p></li><li><a href="https://bugs.eclipse.org/bugs/">Report a Bug</a></li><li><a href="http://www.eclipse.org/forums/">Forums</a></li><li><a href="http://www.eclipse.org/mail/">Mailing Lists</a></li><li><a href="https://wiki.eclipse.org/">Wiki</a></li><li><a href="https://wiki.eclipse.org/IRC">IRC</a></li><li><a href="http://www.eclipse.org/contribute/">How to Contribute</a></li></ul><ul class="col-sm-8 list-unstyled"><li><p><strong>Working Groups</strong></p></li><li><a href="http://wiki.eclipse.org/Auto_IWG">Automotive</a></li><li><a href="http://iot.eclipse.org">Internet of Things</a></li><li><a href="http://locationtech.org">LocationTech</a></li><li><a href="http://lts.eclipse.org">Long-Term Support</a></li><li><a href="http://polarsys.org">PolarSys</a></li><li><a href="http://science.eclipse.org">Science</a></li><li><a href="http://www.openmdm.org">OpenMDM</a></li></ul>                            </div>
+                          </div>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </div>
+                <div class="navbar-header">
+                  <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                  </button>
+                  <a href="http://www.eclipse.org/" class="navbar-brand visible-xs"><img src="/eclipse.org-common/themes/solstice/public/images/logo/eclipse-800x188.png" alt="Eclipse.org logo" width="174" class="logo-eclipse-default"/></a>                </div>
+              </div>
+            </div>
+          </div>
+          <div id="header-right" class="form-inline col-sm-10 col-md-8 col-lg-5 hidden-print hidden-xs">
+            <div id="header-right-container">
+              <div id="custom-search-form">
+                <form action="//www.google.com/cse" id="form-eclipse-search" role="form" class="input-group">
+                  <input type="hidden" name="cx" value="017941334893793413703:sqfrdtd112s" />
+                  <input id="search-box" placeholder="Search eclipse.org" type="text" name="q" size="25" class="form-control"/>
+                  <span class="input-group-btn">
+                    <button class="btn btn-default" type="submit">
+                      <i class="fa fa-search"></i>
+                    </button>
+                  </span>
+                </form>
+              </div><!-- /input-group -->
+              <a id="btn-call-for-action" href="//www.eclipse.org/downloads/" class="btn btn-huge btn-warning"><i class="fa fa-download"></i> Download</a>            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+          <section id="breadcrumb" class="defaut-breadcrumbs hidden-print">
+        <div class="container">
+          <div class="col-xs-24">
+            <ol class="breadcrumb"><li><a href="http://www.eclipse.org/">Home</a></li><li><a href="http://www.eclipse.org/legal">Legal</a></li></ol>          </div>
+                    </div>
+        </section>
+              <main role="main" class=" no-promo">
+      <div class="container background-image-none" id="novaContent">
+                              <!-- nav -->
+<aside id="leftcol" class="col-md-4">
+    <ul id="leftnav" class="ul-left-nav fa-ul hidden-print">
+    
+      
+                  <li class="separator">
+            <a class="separator" href="/org/">
+              About Us            </a>
+          </li>
+        
+          
+      
+                  <li>
+            <i class="fa fa-angle-double-right orange fa-fw"></i>
+            <a href="/org/foundation/reports/annual_report.php" target="_self">
+              Annual Report            </a>
+          </li>
+        
+          
+      
+                  <li>
+            <i class="fa fa-angle-double-right orange fa-fw"></i>
+            <a href="/org/foundation/" target="_self">
+              Foundation            </a>
+          </li>
+        
+          
+      
+                  <li>
+            <i class="fa fa-angle-double-right orange fa-fw"></i>
+            <a href="/org/documents/" target="_self">
+              Governance            </a>
+          </li>
+        
+          
+      
+                  <li>
+            <i class="fa fa-angle-double-right orange fa-fw"></i>
+            <a href="/legal/" target="_self">
+              Legal Resources            </a>
+          </li>
+        
+          
+      
+                  <li>
+            <i class="fa fa-angle-double-right orange fa-fw"></i>
+            <a href="/org/foundation/contact.php" target="_self">
+              Contact Us            </a>
+          </li>
+        
+            </ul>
+  </aside>
+
+    <div id="midcolumn">
+    <h1>Legal Resources</h1>
+    <p>Legal resource page for the Eclipse Foundation.</p>
+      <blockquote>
+      <ul>
+        <li><a href="#GettingStarted" class=jump>Getting Started</a></li>
+        <li><a href="#Agreements" class=jump>Agreement and Licenses</a></li>
+        <li><a href="#Trademarks" class=jump>Privacy and Trademarks</a></li>
+        <li><a href="#CommitterAgreements" class=jump>Committer Agreements</a></li>
+        <li><a href="#Committers" class=jump>Committer Resources</a></li>
+      </ul>
+      </blockquote>
+          
+      <div class="homeitem3col">
+	    <h3><a name="GettingStarted"></a>Getting Started</h3>
+	      <ul>
+		    <li><a href="guidetolegaldoc.php">Guide to the Legal Documents:</a>	    
+	          This provides an in-depth look at the many legal documents related to the Eclipse open source community. This content is of value to committers, contributors, redistributors of Eclipse content, developers of Eclipse-based products and users of Eclipse technologies.
+	        </li>    
+	 		<li><A href="eplfaq.php">EPL Frequently Asked Questions:</A>
+	        	This FAQ answers some of the commonly asked questions about the Eclipse Public License (EPL).
+	      	</li>
+          	<li><A href="legalfaq.php">Eclipse Foundation Legal Frequently Asked Questions:</A>
+	        	This document answers some of the commonly asked questions about Eclipse.org licensing, contributions, working as a committer, and cryptography.
+	      	</li>
+          	<li>For other questions, email: license (at) eclipse.org
+          	</li>
+          </ul>
+      </div>
+      
+	  <div class="homeitem3col">
+        <h3><a name="Agreements"></a>Agreements and Licenses</h3>
+         <ul>
+          <li><a href="termsofuse.php">Web Site Terms of Use:</a>
+	        By accessing, browsing or using this web site, you acknowledge that you have 
+            read, understood, and agree to be bound by the terms and conditions 
+            contained in this agreement.
+          </li>
+          <li><A href="../org/documents/epl-v10.php">Eclipse Public License (EPL):</A>
+	        	The fundamental license document for the Eclipse projects and community.
+	      </li>
+	      <li><A href="../org/documents/edl-v10.php">Eclipse Distribution License (EDL):</A>
+	        	The BSD license used by some Eclipse projects which require dual-licensing along with the EPL.
+	        	Other than for <a href="noncodelicenses.php">example code or build scipts</a>, use of this 
+	        	license by an Eclipse project is on a case-by-case basis and requires unanimous approval
+	        	of the <a href="../org/foundation/directors.php">Board of Directors</a>.
+	      </li>
+	      <li><a href="CLA.php">Contributor License Agreement:</a>
+	      		If you are contributing code or documentation to Eclipse Foundation projects you are
+	      		required to complete this agreement.
+	      </li>
+	      <li><a href="CoO.php">Contributor's Certificate of Originality:</a>
+	      		If you are contributing code or documentation to Eclipse Foundation projects, and using
+	      		the git signed-off-by mechanism, you are agreeing to this certificate.
+	      </li>
+	      <li><a href="copyright.php">Copyright Agent:</a>
+	      		Contact information for the Eclipse Foundation's Copyright Agent.
+	      </li>
+          <li><A href="epl/notice.php">Eclipse Foundation Software User Agreement:</A>
+            By downloading builds or accessing the CVS repository, you 
+            acknowledge that you have read, understood, and agree to be bound by the 
+            terms and conditions contained in this agreement.  This agreement
+	        is used for projects that default to the Eclipse Public License (EPL).
+	      </li>
+	      <li><a href="noncodelicenses.php">Approved Licenses for Non-Code, Example, and Other Content:</a>
+	      	The Board of Directors has approved the use of certain licenses for specific types of
+	      	content on eclipse.org. 
+	      </li>
+          <li><A href="updatemanager.php">Eclipse Foundation Update Manager Agreement:</A>
+	        If you package &quot;downloadable features&quot; to be installed
+	        from your web site using the Eclipse Update Manager, you must read,
+	        understand, and agree to the terms and conditions contained in this agreement.
+	      </li>
+         </ul>
+      </div>
+      <div class="homeitem3col">
+        <h3><a name="Trademarks"></a>Privacy and Trademarks</h3>
+        <ul>
+          <li><A href="privacy.php">Privacy Policy:</A>
+	        Your privacy is important to us. This statement discloses the information practices for this web site, including what type of 
+            information is gathered and tracked, how the information is used, and with whom the information is shared.
+          </li>
+          <li><A href="logo_guidelines.php">Trademark Usage Guidelines:</A>
+	        Guidelines on permissable use of Eclipse logos and trademarks.
+	      </li>    
+	      <li><A href="Trademark_Transfer_Agreement.pdf">Trademark Transfer Agreement:</A>
+	        Pre-existing projects which move to the Eclipse Foundation will be required to execute this agreement
+	        to ensure that the Eclipse Foundation has rights to any trademarks associated with the project name.
+	      </li>       
+          <li><A href="trademarkattributions.php">Trademark Attributions:</A>
+	        Content on this web site may make reference to trademarks requiring attribution.
+	      </li>
+        </ul>
+      </div>
+      <div class="homeitem3col">
+        <h3><a name="CommitterAgreements"></a>Committer Agreements</h3>
+        <ul>
+          <li><A href="committer_process/EclipseMemberCommitterAgreementFinal.pdf">Member Committer Agreement:</A>
+	        This agreement is used by Member companies to cover all of their committers participating in Eclipse projects.
+	      </li>
+          <li><A href="committer_process/EclipseIndividualCommitterAgreementFinal.pdf">Individual Committer Agreement:</A>
+	        This agreement is used by committers participating in Eclipse projects who are not covered by a Member
+	        Committer Agreement.
+	      </li>
+          <li><A href="committer_process/employer_consent.pdf">Employer Consent Form:</A>
+	        Committers covered by an Individual Committer Agreement must document the consent of their employer
+	        when participating in Eclipse projects.
+	      </li>
+	
+        </ul>
+      </div>
+      <div class="homeitem3col">
+        <h3><a name="Committers"></a>Resources for Committers</h3>
+        <ul>
+          <li><A href="EclipseLegalProcessPoster.pdf">Due Diligence Process:</A>
+	        This document provides a quick pictorial overview of the due diligence process.
+	      </li>
+          <li><A href="../org/documents/Eclipse_Policy_and_Procedure_for_3rd_Party_Dependencies_Final.pdf">Third Party Dependencies:</A>
+	        This document contains the guidelines for the review of third-party dependencies.
+	      </li>
+	      <li><A href="committerguidelines.php">Committer Guidelines:</A>
+	        This document outlines the issues to be aware of and the processes one should follow when working as a committer on Eclipse.org projects.  A committer is a person
+	        that has been granted commit rights to systems on the Eclipse.org servers such as the CVS repository, web pages, download servers, mailing lists and so forth.
+	      </li>
+		  <li><A href="ContributionQuestionnairePart1-v1.0.php">Contribution Questionnaire:</A>
+	        Prior to committing a significant contribution of content to an Eclipse Foundation project, the committer must fill out this questionnaire and submit it to  the Eclipse Management Organization (EMO) for approval. In addition to the EMO, the relevant PMC  must also provide a technical review and approval of the contribution. Follow the link to find out more about what we mean by &quot;significant contribution&quot;. Bug fixes or minor enhancements do not require PMC or EMO approval.
+	      </li>
+	      
+	      <li><A href="epl/about.php">&quot;About&quot; Templates:</A>
+	        This provides templates for the &quot;about.html&quot; (&quot;About&quot;) files used to describe 
+	        EPL-licensed content. 
+	      </li>
+          <li><A href="copyrightandlicensenotice.php">Default Copyright and License Notice:</A>
+	        The standard copyright and license notice should appear in all source files where possible.  Variations on this notice may be required (for example where a license other than
+	        the CPL or EPL governs the use of the file).
+	      </li>
+	      <li><A href="http://wiki.eclipse.org/Development_Resources/Automatic_IP_Log#Contributors">Using the IPLog+ Flag in Bugzilla:</A>
+	        There are two different ways to mark a contribution in bugzilla. If the contribution is an attachment to a bug such as a patch, the attachment itself should be marked with the iplog+ flag. If the contribution is in the form of a comment in the bug, then the iplog+ flag should be set on the bug itself. 
+	      </li>
+	      <li><A href="/projects/dev_process/new-committer.php">New Committer Process:</A>
+	        The process for project leads and PMC members to add additional
+	        committers to an existing project.
+	      </li>
+	      <li><a href="http://live.eclipse.org/search/node/Janet+Campbell">Recorded IP Presentations</a>
+	      </li>
+	    </ul>
+	  </div>		
+  </div>
+	<div id="rightcolumn">
+		<div class="sideitem">
+			<h6>Archives</h6>
+			<ul>
+				<li><a href="cpl2epl">CPL to EPL Conversion</a></li>
+			</ul>
+		</div>
+	</div>
+  
+      </div>
+    </main> <!-- /#main-content-container-row -->
+    <p id="back-to-top">
+      <a class="visible-xs" href="#top">Back to the top</a>
+    </p>
+    <footer role="contentinfo" id="solstice-footer">
+
+      <div class="container">
+
+        <div class="row">
+          <section id="footer-eclipse-foundation" class="col-xs-offset-1 col-xs-11 col-sm-7 col-md-6 col-md-offset-0 hidden-print">
+            <h2 class="section-title">Eclipse Foundation</h2>
+            <ul class="nav">
+              <li><a href="http://www.eclipse.org/org/">About us</a></li>
+              <li><a href="http://www.eclipse.org/org/foundation/contact.php">Contact Us</a></li>
+              <li><a href="http://www.eclipse.org/donate">Donate</a></li>
+              <li><a href="http://www.eclipse.org/org/documents/">Governance</a></li>
+              <li><a href="http://www.eclipse.org/artwork/">Logo and Artwork</a></li>
+              <li><a href="http://www.eclipse.org/org/foundation/directors.php">Board of Directors</a></li>
+            </ul>
+          </section>
+          <section id="footer-legal" class="col-xs-offset-1 col-xs-11 col-sm-7 col-md-6 col-md-offset-0 hidden-print ">
+            <h2 class="section-title">Legal</h2>
+            <ul class="nav">
+              <li><a href="http://www.eclipse.org/legal/privacy.php">Privacy Policy</a></li>
+              <li><a href="http://www.eclipse.org/legal/termsofuse.php">Terms of Use</a></li>
+              <li><a href="http://www.eclipse.org/legal/copyright.php">Copyright Agent</a></li>
+              <li><a href="http://www.eclipse.org/org/documents/epl-v10.php">Eclipse Public License </a></li>
+              <li><a href="http://www.eclipse.org/legal/">Legal Resources </a></li>
+
+            </ul>
+          </section>
+
+          <section id="footer-useful-links" class="col-xs-offset-1 col-xs-11 col-sm-7 col-md-6 col-md-offset-0 hidden-print">
+            <h2 class="section-title">Useful Links</h2>
+            <ul class="nav">
+              <li><a href="https://bugs.eclipse.org/bugs/">Report a Bug</a></li>
+              <li><a href="//help.eclipse.org/">Documentation</a></li>
+              <li><a href="http://www.eclipse.org/contribute/">How to Contribute</a></li>
+              <li><a href="http://www.eclipse.org/mail/">Mailing Lists</a></li>
+              <li><a href="http://www.eclipse.org/forums/">Forums</a></li>
+              <li><a href="//marketplace.eclipse.org">Marketplace</a></li>
+            </ul>
+          </section>
+
+          <section id="footer-other" class="col-xs-offset-1 col-xs-11 col-sm-7 col-md-6 col-md-offset-0 hidden-print">
+
+            <h2 class="section-title">Other</h2>
+            <ul class="nav">
+               <li><a href="http://www.eclipse.org/ide/">IDE and Tools</a></li>
+              <li><a href="http://www.eclipse.org/projects">Community of Projects</a></li>
+              <li><a href="http://www.eclipse.org/org/workinggroups/">Working Groups</a></li>
+            </ul>
+
+            <ul class="list-inline social-media">
+              <li><a href="https://twitter.com/EclipseFdn"><i class="fa fa-twitter-square"></i></a></li>
+              <li><a href="https://plus.google.com/+Eclipse"><i class="fa fa-google-plus-square"></i></a></li>
+              <li><a href="https://www.facebook.com/eclipse.org"><i class="fa fa-facebook-square"></i> </a></li>
+              <li><a href="https://www.youtube.com/user/EclipseFdn"><i class="fa fa-youtube-square"></i></a></li>
+            </ul>
+
+          </section>
+          <div id="copyright"  class="col-xs-offset-1 col-sm-14 col-md-24 col-md-offset-0">
+            <div>
+              <span class="hidden-print"><img src="/eclipse.org-common/themes/solstice/public/images/logo/eclipse-logo-bw-800x188.png" alt="Eclipse.org black and white logo" width="166" height="39" id="logo-eclipse-white"/></span>
+              <p id="copyright-text">Copyright &copy; 2015 The Eclipse Foundation. All Rights Reserved.</p>
+            </div>
+          </div>
+        <a href="#" class="scrollup">Back to the top</a>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/eclipse.org-common/themes/solstice/public/javascript/main.min.js"></script>
+        <script type="text/javascript" src="//www.google.com/coop/cse/brand?form=searchbox_017941334893793413703%3Asqfrdtd112s&amp;lang=en"></script>
+          <script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-910670-2']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+      </script>
+  </body>
+</html>
