@@ -147,3 +147,12 @@ CREATE TABLE checkLists (
   text text,
   PRIMARY KEY  (name)
 );
+
+CREATE TABLE syncmap (
+ id integer NOT NULL,
+ uid varchar(255), 
+ objtype varchar(25) NOT NULL,
+ `action` varchar(25) NOT NULL,
+ PRIMARY KEY (id,objtype)
+ );
+
