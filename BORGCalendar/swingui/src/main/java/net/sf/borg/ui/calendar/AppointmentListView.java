@@ -611,16 +611,21 @@ public class AppointmentListView extends DockableView implements
 	 */
 	public void refresh() {
 
+		int shownAppt = appointmentPanel.getCurrentlyShownAppointmentKey();
+		
 		TableSorter tm = (TableSorter) apptTable.getModel();
 
-		// clear all table rows
-		tm.setRowCount(0);
-		tm.tableChanged(new TableModelEvent(tm));
-
-		String priv = Prefs.getPref(PrefName.SHOWPRIVATE);
-		String pub = Prefs.getPref(PrefName.SHOWPUBLIC);
-
+		
 		try {
+			
+			apptTable.getSelectionModel().removeListSelectionListener(this);
+			
+			// clear all table rows
+			tm.setRowCount(0);
+			tm.tableChanged(new TableModelEvent(tm));
+
+			String priv = Prefs.getPref(PrefName.SHOWPRIVATE);
+			String pub = Prefs.getPref(PrefName.SHOWPUBLIC);
 
 			List<Integer> alist_ = AppointmentModel.getReference().getAppts(
 					cal_.getTime());
@@ -662,20 +667,35 @@ public class AppointmentListView extends DockableView implements
 					tm.tableChanged(new TableModelEvent(tm));
 				}
 			}
+			
+			// resize the table based on new row count
+			int row = apptTable.getRowCount();
+			apptTable.setPreferredSize(new Dimension(150, row * 16));
+
+			// apply default sort to the table
+			if (!tm.isSorted())
+				tm.sortByColumn(1);
+			else
+				tm.sort();
+							
+			for( int i = 0; i < tm.getRowCount(); i++)
+			{
+				int key = (int) tm.getValueAt(i, 2);
+				if( key == shownAppt )
+				{
+					apptTable.getSelectionModel().setSelectionInterval(i, i);
+					break;
+				}
+			}
 
 		} catch (Exception e) {
 			Errmsg.getErrorHandler().errmsg(e);
+		} finally {
+			apptTable.getSelectionModel().addListSelectionListener(this);
 		}
 
-		// resize the table based on new row count
-		int row = apptTable.getRowCount();
-		apptTable.setPreferredSize(new Dimension(150, row * 16));
 
-		// apply default sort to the table
-		if (!tm.isSorted())
-			tm.sortByColumn(1);
-		else
-			tm.sort();
+		
 	}
 
 	/**
@@ -765,7 +785,23 @@ public class AppointmentListView extends DockableView implements
 	
 	@Override
 	public void update(ChangeEvent event) {
+		
 		refresh();
+		
+		if( event.getModel() instanceof AppointmentModel )
+		{
+			if( event.getObject() instanceof Appointment )
+			{
+				Appointment appt = (Appointment) event.getObject();
+				if( appt.getKey() == appointmentPanel.getCurrentlyShownAppointmentKey())
+				{
+					// currently shown appt has changed, so show new
+					// if may have moved to another day - not worth checking
+					apptTable.clearSelection();
+					appointmentPanel.showapp(-1, null);
+				}
+			}
+		}
 	}
 
 

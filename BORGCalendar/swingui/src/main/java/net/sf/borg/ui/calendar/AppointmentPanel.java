@@ -49,6 +49,9 @@ import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
 
+import com.toedter.calendar.JDateChooser;
+
+import lombok.Getter;
 import net.sf.borg.common.DateUtil;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
@@ -72,8 +75,6 @@ import net.sf.borg.ui.util.DateTimePanel;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 import net.sf.borg.ui.util.LimitDocument;
 import net.sf.borg.ui.util.PasswordHelper;
-
-import com.toedter.calendar.JDateChooser;
 
 /**
  * AppointmentPanel is the UI for editing an Appointment.
@@ -259,6 +260,7 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener,
 	private JCheckBox holidayCheckBox;
 
 	// currently shown appt key
+	@Getter
 	private int currentlyShownAppointmentKey;
 
 	// number of days spinner for N days repeat
