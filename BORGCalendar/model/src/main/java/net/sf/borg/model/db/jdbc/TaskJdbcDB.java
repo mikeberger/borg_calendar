@@ -821,4 +821,16 @@ class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
 	        }
 	        return lst;
 	}
+
+	@Override
+	public void renameTaskType(String oldtype, String newtype) throws Exception {
+		PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("UPDATE tasks SET type = ? WHERE type = ?");
+		
+        stmt.setString(1, newtype);
+        stmt.setString(2, oldtype);
+        
+        stmt.executeUpdate();
+        stmt.close();
+
+	}
 }

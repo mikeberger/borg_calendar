@@ -1509,4 +1509,10 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 		return ret;
 
 	}
+
+	public void renameTaskType(String oldtype, String newtype) throws Exception {
+		db_.renameTaskType(oldtype,newtype);
+		refreshListeners(new ChangeEvent(null, ChangeAction.CHANGE));
+
+	}
 }

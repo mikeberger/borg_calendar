@@ -222,5 +222,13 @@ public interface TaskDB extends EntityDB<Task>{
      * @throws Exception
      */
     public Collection<Task> getTasksByType(String type) throws Exception;
+    
+    /**
+     * rename a task type in existing tasks
+     * @param oldtype
+     * @param newtype
+     * @throws Exception
+     */
+    public void renameTaskType(String oldtype, String newtype) throws Exception;
 
 }

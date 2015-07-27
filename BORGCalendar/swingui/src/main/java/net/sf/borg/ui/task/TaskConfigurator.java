@@ -66,11 +66,10 @@ import net.sf.borg.ui.util.GridBagConstraintsFactory;
 public class TaskConfigurator extends View {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	/** size of the task config window */
-	static private PrefName TASKCONFVIEWSIZE = new PrefName("taskconfviewsize",
-			"-1,-1,-1,-1,N");
-	
+	static private PrefName TASKCONFVIEWSIZE = new PrefName("taskconfviewsize", "-1,-1,-1,-1,N");
+
 	/**
 	 * Renders the initial task state in a different color
 	 */
@@ -82,15 +81,14 @@ public class TaskConfigurator extends View {
 		}
 
 		@Override
-		public Component getListCellRendererComponent(JList<?> list, Object value,
-				int index, boolean isSelected, boolean cellHasFocus) {
+		public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
+				boolean cellHasFocus) {
 			setText(value.toString());
 
 			// get initial state for the selected type
 			String init = "";
 			if (typeList.getSelectedValue() != null) {
-				init = taskTypes.getInitialState(typeList.getSelectedValue()
-						.toString());
+				init = taskTypes.getInitialState(typeList.getSelectedValue().toString());
 			}
 
 			// highlist this state if it is the initial state
@@ -99,8 +97,7 @@ public class TaskConfigurator extends View {
 				setForeground(isSelected ? Color.white : Color.red);
 			} else {
 				// return default component
-				return defaultRenderer.getListCellRendererComponent(list,
-						value, index, isSelected, cellHasFocus);
+				return defaultRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 			}
 			return this;
 		}
@@ -195,20 +192,16 @@ public class TaskConfigurator extends View {
 			addItem.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					if( typeList.getSelectedValue() == null )
-					{
-						Errmsg.getErrorHandler().notice(Resource
-								.getResourceString("Please_select_a_type"));
+					if (typeList.getSelectedValue() == null) {
+						Errmsg.getErrorHandler().notice(Resource.getResourceString("Please_select_a_type"));
 						return;
 					}
 					String subtask = JOptionPane
-							.showInputDialog(net.sf.borg.common.Resource
-									.getResourceString("New_Subtask_Value"));
+							.showInputDialog(net.sf.borg.common.Resource.getResourceString("New_Subtask_Value"));
 					if (subtask == null)
 						return;
-		
-					taskTypes.addSubtask(typeList.getSelectedValue(),
-							subtask);
+
+					taskTypes.addSubtask(typeList.getSelectedValue(), subtask);
 					refresh();
 				}
 			});
@@ -216,23 +209,18 @@ public class TaskConfigurator extends View {
 			subTaskMenu.add(addItem);
 
 			JMenuItem changeSubtaskItem = new JMenuItem();
-			changeSubtaskItem.setText(net.sf.borg.common.Resource
-					.getResourceString("Change"));
+			changeSubtaskItem.setText(net.sf.borg.common.Resource.getResourceString("Change"));
 			changeSubtaskItem.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 
 					String subtask = JOptionPane
-							.showInputDialog(net.sf.borg.common.Resource
-									.getResourceString("New_Subtask_Value"));
+							.showInputDialog(net.sf.borg.common.Resource.getResourceString("New_Subtask_Value"));
 					if (subtask == null)
 						return;
 					// set subtask value
-					taskTypes.deleteSubtask(typeList
-							.getSelectedValue(), subTaskList
-							.getSelectedValue());
-					taskTypes.addSubtask(typeList.getSelectedValue(),
-							subtask);
+					taskTypes.deleteSubtask(typeList.getSelectedValue(), subTaskList.getSelectedValue());
+					taskTypes.addSubtask(typeList.getSelectedValue(), subtask);
 					refresh();
 				}
 			});
@@ -247,9 +235,7 @@ public class TaskConfigurator extends View {
 					if (subTaskList.getSelectedIndex() < 0)
 						return;
 					// set subtask to null
-					taskTypes.deleteSubtask(typeList
-							.getSelectedValue(), subTaskList
-							.getSelectedValue());
+					taskTypes.deleteSubtask(typeList.getSelectedValue(), subTaskList.getSelectedValue());
 					refresh();
 				}
 			});
@@ -269,38 +255,28 @@ public class TaskConfigurator extends View {
 			nextStateMenu = new JPopupMenu();
 
 			JMenuItem addItem = new JMenuItem();
-			addItem.setText(net.sf.borg.common.Resource
-					.getResourceString("Add"));
+			addItem.setText(net.sf.borg.common.Resource.getResourceString("Add"));
 			addItem.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					if (stateList.getSelectedIndex() < 0) {
-						JOptionPane
-								.showMessageDialog(
-										null,
-										net.sf.borg.common.Resource
-												.getResourceString("Please_select_a_state"));
+						JOptionPane.showMessageDialog(null,
+								net.sf.borg.common.Resource.getResourceString("Please_select_a_state"));
 						return;
 					}
 
 					// prompt for selection of next state from a list
-					Collection<String> states = taskTypes
-							.getStates(typeList.getSelectedValue());
+					Collection<String> states = taskTypes.getStates(typeList.getSelectedValue());
 					Object sarray[] = states.toArray();
 					String ns = (String) JOptionPane.showInputDialog(null,
-							net.sf.borg.common.Resource
-									.getResourceString("Select_next_state"),
-							net.sf.borg.common.Resource
-									.getResourceString("Select_next_state"),
-							JOptionPane.QUESTION_MESSAGE, null, sarray,
-							sarray[0]);
+							net.sf.borg.common.Resource.getResourceString("Select_next_state"),
+							net.sf.borg.common.Resource.getResourceString("Select_next_state"),
+							JOptionPane.QUESTION_MESSAGE, null, sarray, sarray[0]);
 					if (ns == null)
 						return;
 
 					// add next state
-					taskTypes.addNextState(
-							typeList.getSelectedValue(),
-							stateList.getSelectedValue(), ns);
+					taskTypes.addNextState(typeList.getSelectedValue(), stateList.getSelectedValue(), ns);
 					refresh();
 				}
 			});
@@ -308,25 +284,19 @@ public class TaskConfigurator extends View {
 			nextStateMenu.add(addItem);
 
 			JMenuItem deleteItem = new JMenuItem();
-			deleteItem.setText(net.sf.borg.common.Resource
-					.getResourceString("Delete"));
+			deleteItem.setText(net.sf.borg.common.Resource.getResourceString("Delete"));
 			deleteItem.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					if (nextStateList.getSelectedIndex() < 0) {
-						JOptionPane
-								.showMessageDialog(
-										null,
-										net.sf.borg.common.Resource
-												.getResourceString("Please_select_a_state"));
+						JOptionPane.showMessageDialog(null,
+								net.sf.borg.common.Resource.getResourceString("Please_select_a_state"));
 						return;
 					}
 
 					// delete next state
 					String ns = nextStateList.getSelectedValue();
-					taskTypes.deleteNextState(typeList
-							.getSelectedValue(), stateList
-							.getSelectedValue(), ns);
+					taskTypes.deleteNextState(typeList.getSelectedValue(), stateList.getSelectedValue(), ns);
 					refresh();
 				}
 			});
@@ -346,28 +316,22 @@ public class TaskConfigurator extends View {
 			stateMenu = new JPopupMenu();
 
 			JMenuItem addItem = new JMenuItem();
-			addItem.setText(net.sf.borg.common.Resource
-					.getResourceString("Add_State"));
+			addItem.setText(net.sf.borg.common.Resource.getResourceString("Add_State"));
 			addItem.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					if (typeList.getSelectedIndex() < 0) {
-						JOptionPane
-								.showMessageDialog(
-										null,
-										net.sf.borg.common.Resource
-												.getResourceString("Please_select_a_type"));
+						JOptionPane.showMessageDialog(null,
+								net.sf.borg.common.Resource.getResourceString("Please_select_a_type"));
 						return;
 					}
 					String newstate = JOptionPane
-							.showInputDialog(net.sf.borg.common.Resource
-									.getResourceString("New_State"));
+							.showInputDialog(net.sf.borg.common.Resource.getResourceString("New_State"));
 					if (newstate == null)
 						return;
 
 					// add a new state
-					taskTypes.addState(typeList.getSelectedValue(),
-							newstate);
+					taskTypes.addState(typeList.getSelectedValue(), newstate);
 					refresh();
 				}
 			});
@@ -375,28 +339,22 @@ public class TaskConfigurator extends View {
 			stateMenu.add(addItem);
 
 			JMenuItem renameItem = new JMenuItem();
-			renameItem.setText(net.sf.borg.common.Resource
-					.getResourceString("Rename_State"));
+			renameItem.setText(net.sf.borg.common.Resource.getResourceString("Rename_State"));
 			renameItem.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					if (stateList.getSelectedIndex() < 0) {
-						JOptionPane
-								.showMessageDialog(
-										null,
-										net.sf.borg.common.Resource
-												.getResourceString("Please_select_a_state"));
+						JOptionPane.showMessageDialog(null,
+								net.sf.borg.common.Resource.getResourceString("Please_select_a_state"));
 						return;
 					}
 					String newstate = JOptionPane
-							.showInputDialog(net.sf.borg.common.Resource
-									.getResourceString("New_State"));
+							.showInputDialog(net.sf.borg.common.Resource.getResourceString("New_State"));
 					if (newstate == null)
 						return;
 
 					// rename state
-					taskTypes.changeState(typeList.getSelectedValue(),
-							stateList.getSelectedValue(), newstate);
+					taskTypes.changeState(typeList.getSelectedValue(), stateList.getSelectedValue(), newstate);
 					refresh();
 				}
 			});
@@ -404,33 +362,26 @@ public class TaskConfigurator extends View {
 			stateMenu.add(renameItem);
 
 			JMenuItem deleteItem = new JMenuItem();
-			deleteItem.setText(net.sf.borg.common.Resource
-					.getResourceString("Delete_State"));
+			deleteItem.setText(net.sf.borg.common.Resource.getResourceString("Delete_State"));
 			deleteItem.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					if (stateList.getSelectedIndex() < 0) {
-						JOptionPane
-								.showMessageDialog(
-										null,
-										net.sf.borg.common.Resource
-												.getResourceString("Please_select_a_state"));
+						JOptionPane.showMessageDialog(null,
+								net.sf.borg.common.Resource.getResourceString("Please_select_a_state"));
 						return;
 					}
 
 					// confirm delete
 					int ret = JOptionPane.showConfirmDialog(null,
-							net.sf.borg.common.Resource
-									.getResourceString("Really_Delete_")
-									+ " " + stateList.getSelectedValue(),
-							net.sf.borg.common.Resource
-									.getResourceString("Confirm_Delete"),
+							net.sf.borg.common.Resource.getResourceString("Really_Delete_") + " "
+									+ stateList.getSelectedValue(),
+							net.sf.borg.common.Resource.getResourceString("Confirm_Delete"),
 							JOptionPane.OK_CANCEL_OPTION);
 					if (ret != JOptionPane.OK_OPTION)
 						return;
 					// delete state
-					taskTypes.deleteState(typeList.getSelectedValue(),
-							stateList.getSelectedValue());
+					taskTypes.deleteState(typeList.getSelectedValue(), stateList.getSelectedValue());
 					refresh();
 				}
 			});
@@ -450,14 +401,12 @@ public class TaskConfigurator extends View {
 			typeMenu = new JPopupMenu();
 
 			JMenuItem addItem = new JMenuItem();
-			addItem.setText(net.sf.borg.common.Resource
-					.getResourceString("Add_Type"));
+			addItem.setText(net.sf.borg.common.Resource.getResourceString("Add_Type"));
 			addItem.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					String newtype = JOptionPane
-							.showInputDialog(net.sf.borg.common.Resource
-									.getResourceString("New_Task_Type"));
+							.showInputDialog(net.sf.borg.common.Resource.getResourceString("New_Task_Type"));
 					if (newtype == null)
 						return;
 					// add a new type
@@ -469,70 +418,93 @@ public class TaskConfigurator extends View {
 			typeMenu.add(addItem);
 
 			JMenuItem renameItem = new JMenuItem();
-			renameItem.setText(net.sf.borg.common.Resource
-					.getResourceString("Rename_Type"));
+			renameItem.setText(net.sf.borg.common.Resource.getResourceString("Rename_Type"));
 			renameItem.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					if (typeList.getSelectedIndex() < 0) {
-						JOptionPane
-								.showMessageDialog(
-										null,
-										net.sf.borg.common.Resource
-												.getResourceString("Please_select_a_type"));
+						JOptionPane.showMessageDialog(null,
+								net.sf.borg.common.Resource.getResourceString("Please_select_a_type"));
 						return;
 					}
+
+					boolean exists = false;
+
+					// check for existing tasks
+					try {
+						Collection<Task> tasks = TaskModel.getReference().getTasksByType(typeList.getSelectedValue());
+						if (tasks != null && !tasks.isEmpty()) {
+
+							int ret = JOptionPane.showConfirmDialog(null,
+									net.sf.borg.common.Resource.getResourceString("rename_task_warning",
+											new Object[] { typeList.getSelectedValue() }),
+									net.sf.borg.common.Resource.getResourceString("Confirm"),
+									JOptionPane.OK_CANCEL_OPTION);
+							if (ret != JOptionPane.OK_OPTION)
+								return;
+							exists = true;
+						}
+					} catch (Exception e1) {
+						Errmsg.getErrorHandler().errmsg(e1);
+						return;
+					}
+
 					String newtype = JOptionPane
-							.showInputDialog(net.sf.borg.common.Resource
-									.getResourceString("New_Task_Type"));
+							.showInputDialog(net.sf.borg.common.Resource.getResourceString("New_Task_Type"));
 					if (newtype == null)
 						return;
-					// rename type
-					taskTypes.changeType(typeList.getSelectedValue(),
-							newtype);
-					refresh();
+
+					try {
+						
+						if( exists )
+						{
+							TaskModel.getReference().renameTaskType(typeList.getSelectedValue(), newtype);
+						}
+
+						// rename type
+						taskTypes.changeType(typeList.getSelectedValue(), newtype);
+						TaskModel.getReference().saveTaskTypes(taskTypes);
+						refresh();
+					} catch (Exception e2) {
+						Errmsg.getErrorHandler().errmsg(e2);
+						return;
+					}
+
 				}
 			});
 
 			typeMenu.add(renameItem);
 
 			JMenuItem deleteItem = new JMenuItem();
-			deleteItem.setText(net.sf.borg.common.Resource
-					.getResourceString("Delete_Type"));
+			deleteItem.setText(net.sf.borg.common.Resource.getResourceString("Delete_Type"));
 			deleteItem.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					if (typeList.getSelectedIndex() < 0) {
-						JOptionPane
-								.showMessageDialog(
-										null,
-										net.sf.borg.common.Resource
-												.getResourceString("Please_select_a_type"));
+						JOptionPane.showMessageDialog(null,
+								net.sf.borg.common.Resource.getResourceString("Please_select_a_type"));
 						return;
 					}
-					
+
 					// check for existing tasks
 					try {
 						Collection<Task> tasks = TaskModel.getReference().getTasksByType(typeList.getSelectedValue());
-						if( tasks != null && !tasks.isEmpty())
-						{
-							
-							Errmsg.getErrorHandler().notice(Resource.getResourceString("del_task_warning", new Object[]{typeList.getSelectedValue()}));
+						if (tasks != null && !tasks.isEmpty()) {
+
+							Errmsg.getErrorHandler().notice(Resource.getResourceString("del_task_warning",
+									new Object[] { typeList.getSelectedValue() }));
 							return;
 						}
 					} catch (Exception e1) {
 						Errmsg.getErrorHandler().errmsg(e1);
 						return;
 					}
-					
-					
+
 					// confirm delete
 					int ret = JOptionPane.showConfirmDialog(null,
-							net.sf.borg.common.Resource
-									.getResourceString("Really_Delete_")
-									+ " " + typeList.getSelectedValue(),
-							net.sf.borg.common.Resource
-									.getResourceString("Confirm_Delete"),
+							net.sf.borg.common.Resource.getResourceString("Really_Delete_") + " "
+									+ typeList.getSelectedValue(),
+							net.sf.borg.common.Resource.getResourceString("Confirm_Delete"),
 							JOptionPane.OK_CANCEL_OPTION);
 					if (ret != JOptionPane.OK_OPTION)
 						return;
@@ -545,37 +517,28 @@ public class TaskConfigurator extends View {
 			typeMenu.add(deleteItem);
 
 			JMenuItem initialStateItem = new JMenuItem();
-			initialStateItem.setText(net.sf.borg.common.Resource
-					.getResourceString("Set_Initial_State"));
+			initialStateItem.setText(net.sf.borg.common.Resource.getResourceString("Set_Initial_State"));
 			initialStateItem.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					if (typeList.getSelectedIndex() < 0) {
-						JOptionPane
-								.showMessageDialog(
-										null,
-										net.sf.borg.common.Resource
-												.getResourceString("Please_select_a_type"));
+						JOptionPane.showMessageDialog(null,
+								net.sf.borg.common.Resource.getResourceString("Please_select_a_type"));
 						return;
 					}
 
 					// prompt for selection of initial state from a list
-					Collection<String> states = taskTypes
-							.getStates(typeList.getSelectedValue());
+					Collection<String> states = taskTypes.getStates(typeList.getSelectedValue());
 					Object sarray[] = states.toArray();
 					String ns = (String) JOptionPane.showInputDialog(null,
-							net.sf.borg.common.Resource
-									.getResourceString("Select_initial_state"),
-							net.sf.borg.common.Resource
-									.getResourceString("Select_initial_state"),
-							JOptionPane.QUESTION_MESSAGE, null, sarray,
-							sarray[0]);
+							net.sf.borg.common.Resource.getResourceString("Select_initial_state"),
+							net.sf.borg.common.Resource.getResourceString("Select_initial_state"),
+							JOptionPane.QUESTION_MESSAGE, null, sarray, sarray[0]);
 					if (ns == null)
 						return;
 
 					// set initial state
-					taskTypes.setInitialState(typeList
-							.getSelectedValue(), ns);
+					taskTypes.setInitialState(typeList.getSelectedValue(), ns);
 					refresh();
 				}
 			});
@@ -591,8 +554,7 @@ public class TaskConfigurator extends View {
 	 */
 	private void initialize() {
 
-		this.setTitle(net.sf.borg.common.Resource
-				.getResourceString("Task_State_Editor"));
+		this.setTitle(net.sf.borg.common.Resource.getResourceString("Task_State_Editor"));
 		this.setSize(564, 219);
 
 		JPanel topPanel = new JPanel();
@@ -614,10 +576,9 @@ public class TaskConfigurator extends View {
 		 */
 		JPanel taskTypePanel = new JPanel();
 		taskTypePanel.setLayout(gridLayout9);
-		taskTypePanel.setBorder(BorderFactory.createTitledBorder(null,
-				net.sf.borg.common.Resource.getResourceString("Task_Types"),
-				TitledBorder.DEFAULT_JUSTIFICATION,
-				TitledBorder.DEFAULT_POSITION, null, null));
+		taskTypePanel.setBorder(
+				BorderFactory.createTitledBorder(null, net.sf.borg.common.Resource.getResourceString("Task_Types"),
+						TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
 		gridLayout9.setRows(1);
 
 		JScrollPane taskTypeScroll = new JScrollPane();
@@ -640,10 +601,8 @@ public class TaskConfigurator extends View {
 		});
 
 		taskTypeScroll.setViewportView(typeList);
-		taskTypeScroll
-				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		taskTypeScroll
-				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		taskTypeScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		taskTypeScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
 		taskTypePanel.add(taskTypeScroll, null);
 
@@ -655,10 +614,9 @@ public class TaskConfigurator extends View {
 		GridLayout gridLayout10 = new GridLayout();
 		JPanel taskStatesPanel = new JPanel();
 		taskStatesPanel.setLayout(gridLayout10);
-		taskStatesPanel.setBorder(BorderFactory.createTitledBorder(null,
-				net.sf.borg.common.Resource.getResourceString("States"),
-				TitledBorder.DEFAULT_JUSTIFICATION,
-				TitledBorder.DEFAULT_POSITION, null, null));
+		taskStatesPanel.setBorder(
+				BorderFactory.createTitledBorder(null, net.sf.borg.common.Resource.getResourceString("States"),
+						TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
 		gridLayout10.setRows(1);
 
 		JScrollPane stateScroll = new JScrollPane();
@@ -681,14 +639,11 @@ public class TaskConfigurator extends View {
 		stateList.setCellRenderer(new TypeListRenderer());
 
 		stateScroll.setViewportView(stateList);
-		stateScroll
-				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		stateScroll
-				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		
+		stateScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		stateScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
 		taskStatesPanel.add(stateScroll, null);
-		
+
 		listContainerPanel.add(taskStatesPanel, null);
 
 		/*
@@ -697,10 +652,9 @@ public class TaskConfigurator extends View {
 		GridLayout gridLayout8 = new GridLayout();
 		JPanel nextStatePanel = new JPanel();
 		nextStatePanel.setLayout(gridLayout8);
-		nextStatePanel.setBorder(BorderFactory.createTitledBorder(null,
-				net.sf.borg.common.Resource.getResourceString("Next_States"),
-				TitledBorder.DEFAULT_JUSTIFICATION,
-				TitledBorder.DEFAULT_POSITION, null, null));
+		nextStatePanel.setBorder(
+				BorderFactory.createTitledBorder(null, net.sf.borg.common.Resource.getResourceString("Next_States"),
+						TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
 		gridLayout8.setRows(1);
 
 		JScrollPane nextStateScroll = new JScrollPane();
@@ -710,17 +664,14 @@ public class TaskConfigurator extends View {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				if (e.getButton() == MouseEvent.BUTTON3) {
-					getNextStateMenu().show(e.getComponent(), e.getX(),
-							e.getY());
+					getNextStateMenu().show(e.getComponent(), e.getX(), e.getY());
 				}
 			}
 		});
 
 		nextStateScroll.setViewportView(nextStateList);
-		nextStateScroll
-				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		nextStateScroll
-				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		nextStateScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		nextStateScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
 		nextStatePanel.add(nextStateScroll, null);
 
@@ -732,10 +683,9 @@ public class TaskConfigurator extends View {
 		GridLayout gridLayout7 = new GridLayout();
 		JPanel subTaskPanel = new JPanel();
 		subTaskPanel.setLayout(gridLayout7);
-		subTaskPanel.setBorder(BorderFactory.createTitledBorder(null,
-				net.sf.borg.common.Resource.getResourceString("SubTasks"),
-				TitledBorder.DEFAULT_JUSTIFICATION,
-				TitledBorder.DEFAULT_POSITION, null, null));
+		subTaskPanel.setBorder(
+				BorderFactory.createTitledBorder(null, net.sf.borg.common.Resource.getResourceString("SubTasks"),
+						TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
 		gridLayout7.setRows(1);
 
 		subTaskList = new JList<String>();
@@ -747,20 +697,17 @@ public class TaskConfigurator extends View {
 				}
 			}
 		});
-		
+
 		JScrollPane subTaskScroll = new JScrollPane();
 		subTaskScroll.setViewportView(subTaskList);
-		subTaskScroll
-				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		subTaskScroll
-				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		subTaskScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		subTaskScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
 		subTaskPanel.add(subTaskScroll, null);
 
 		listContainerPanel.add(subTaskPanel, null);
 
-		topPanel.add(listContainerPanel, GridBagConstraintsFactory.create(0, 0,
-				GridBagConstraints.BOTH, 1.0, 1.0));
+		topPanel.add(listContainerPanel, GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH, 1.0, 1.0));
 
 		/*
 		 * button panel
@@ -792,7 +739,7 @@ public class TaskConfigurator extends View {
 				try {
 					TaskConfigurator.getReference().dispose();
 				} catch (Exception e1) {
-				  // empty
+					// empty
 				}
 			}
 		});
@@ -800,8 +747,7 @@ public class TaskConfigurator extends View {
 
 		buttonPanel.add(dismissButton, null);
 
-		topPanel.add(buttonPanel, GridBagConstraintsFactory.create(0, 1,
-				GridBagConstraints.NONE, 0.0, 0.0));
+		topPanel.add(buttonPanel, GridBagConstraintsFactory.create(0, 1, GridBagConstraints.NONE, 0.0, 0.0));
 
 		this.setContentPane(topPanel);
 	}
@@ -823,7 +769,7 @@ public class TaskConfigurator extends View {
 		if (typesel != null)
 			typeList.setSelectedValue(typesel, true);
 	}
-	
+
 	@Override
 	public void update(ChangeEvent event) {
 		refresh();
