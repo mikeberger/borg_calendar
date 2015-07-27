@@ -798,4 +798,27 @@ class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
 
         return s;
     }
+
+	@Override
+	public Collection<Task> getTasksByType(String type) throws Exception {
+		  PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("SELECT * from tasks where type = ?");
+	        ResultSet r = null;
+	        List<Task> lst = new ArrayList<Task>();
+	        try {
+
+	            stmt.setString(1, type);
+	            r = stmt.executeQuery();
+	            while (r.next()) {
+	                Task s = createFrom(r);
+	                lst.add(s);
+	            }
+
+	        } finally {
+	            if (r != null)
+	                r.close();
+	            if (stmt != null)
+	                stmt.close();
+	        }
+	        return lst;
+	}
 }

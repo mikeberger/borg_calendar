@@ -214,5 +214,13 @@ public interface TaskDB extends EntityDB<Task>{
      * @throws Exception the exception
      */
     public Collection<Project> getSubProjects(int projid) throws Exception;
+    
+    /**
+     * get all tasks with a given type
+     * @param type the type
+     * @return the tasks
+     * @throws Exception
+     */
+    public Collection<Task> getTasksByType(String type) throws Exception;
 
 }

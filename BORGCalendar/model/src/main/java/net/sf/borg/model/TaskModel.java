@@ -886,6 +886,21 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 	public Collection<Task> getTasks(int projectid) throws Exception {
 		return db_.getTasks(projectid);
 	}
+	
+	/**
+	 * Get all tasks for a given type.
+	 * 
+	 * @param type
+	 *            the type
+	 * 
+	 * @return the tasks
+	 * 
+	 * @throws Exception
+	 *             the exception
+	 */
+	public Collection<Task> getTasksByType(String type) throws Exception {
+		return db_.getTasksByType(type);
+	}
 
 	/**
 	 * Get sub projects for a project - direct children only

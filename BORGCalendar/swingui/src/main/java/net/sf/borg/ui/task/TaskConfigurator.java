@@ -52,9 +52,10 @@ import javax.swing.event.ListSelectionListener;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Resource;
+import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.TaskTypes;
-import net.sf.borg.model.Model.ChangeEvent;
+import net.sf.borg.model.entity.Task;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.View;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
@@ -509,6 +510,22 @@ public class TaskConfigurator extends View {
 												.getResourceString("Please_select_a_type"));
 						return;
 					}
+					
+					// check for existing tasks
+					try {
+						Collection<Task> tasks = TaskModel.getReference().getTasksByType(typeList.getSelectedValue());
+						if( tasks != null && !tasks.isEmpty())
+						{
+							
+							Errmsg.getErrorHandler().notice(Resource.getResourceString("del_task_warning", new Object[]{typeList.getSelectedValue()}));
+							return;
+						}
+					} catch (Exception e1) {
+						Errmsg.getErrorHandler().errmsg(e1);
+						return;
+					}
+					
+					
 					// confirm delete
 					int ret = JOptionPane.showConfirmDialog(null,
 							net.sf.borg.common.Resource
