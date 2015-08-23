@@ -422,25 +422,8 @@ class ApptBox extends Box implements Box.Draggable {
 		// which maps the legacy color names to the new user color prefs
 		// the legacy names have no special meaning
 		Color textColor = Color.BLACK;
-		textColor = Color.BLACK;
 		Theme t = Theme.getCurrentTheme();
-		if (getTextColor().equals("red"))
-			textColor = new Color(t.getTextColor1());
-		else if (getTextColor().equals("green"))
-			textColor = new Color(t.getTextColor3());
-		else if (getTextColor().equals("blue"))
-			textColor = new Color(t.getTextColor2());
-		else if (getTextColor().equals("black"))
-			textColor = new Color(t.getTextColor4());
-		else if (getTextColor().equals("white"))
-			textColor = new Color(t.getTextColor5());
-		else if (getTextColor().equals("navy"))
-			textColor = new Color(t.getTaskTextColor());
-		else if (getTextColor().equals("purple"))
-			textColor = new Color(t.getHolidayTextColor());
-		else if (getTextColor().equals("brick"))
-			textColor = new Color(t.getBirthdayTextColor());
-
+		textColor = new Color(t.colorFromString(getTextColor()));
 
 		// resize todoIcon if needed to match the text size
 		if (oldFontHeight != smfontHeight) {

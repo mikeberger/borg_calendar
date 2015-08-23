@@ -242,22 +242,9 @@ public class NoteBox extends Box implements Box.Draggable {
 			// be color1
 			if (isSelected == true)
 				g2.setColor(new Color(t.getDefaultBg()));
-			else if (getTextColor().equals("red"))
-				g2.setColor(new Color(t.getTextColor1()));
-			else if (getTextColor().equals("green"))
-				g2.setColor(new Color(t.getTextColor3()));
-			else if (getTextColor().equals("blue"))
-				g2.setColor(new Color(t.getTextColor2()));
-			else if (getTextColor().equals("black"))
-				g2.setColor(new Color(t.getTextColor4()));
-			else if (getTextColor().equals("white"))
-				g2.setColor(new Color(t.getTextColor5()));
-			else if (getTextColor().equals("navy"))
-				g2.setColor(new Color(t.getTaskTextColor()));
-			else if (getTextColor().equals("purple"))
-				g2.setColor(new Color(t.getHolidayTextColor()));
-			else if (getTextColor().equals("brick"))
-				g2.setColor(new Color(t.getBirthdayTextColor()));
+			else
+				g2.setColor(new Color(t.colorFromString(getTextColor())));
+			
 
 			// preprend link indicator if needed
 			int offset = 2;

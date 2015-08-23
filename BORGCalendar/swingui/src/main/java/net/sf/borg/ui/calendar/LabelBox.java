@@ -62,25 +62,9 @@ class LabelBox extends Box {
 			g2.setColor(Color.WHITE);
 			g2.fillRect(bounds.x, bounds.y + 2, bounds.width, bounds.height);
 		}
-		g2.setColor(Color.black);
 
 		Theme t = Theme.getCurrentTheme();
-		if (getTextColor().equals("red"))
-			g2.setColor(new Color(t.getTextColor1()));
-		else if (getTextColor().equals("green"))
-			g2.setColor(new Color(t.getTextColor3()));
-		else if (getTextColor().equals("blue"))
-			g2.setColor(new Color(t.getTextColor2()));
-		else if (getTextColor().equals("black"))
-			g2.setColor(new Color(t.getTextColor4()));
-		else if (getTextColor().equals("white"))
-			g2.setColor(new Color(t.getTextColor5()));
-		else if (getTextColor().equals("navy"))
-			g2.setColor(new Color(t.getTaskTextColor()));
-		else if (getTextColor().equals("purple"))
-			g2.setColor(new Color(t.getHolidayTextColor()));
-		else if (getTextColor().equals("brick"))
-			g2.setColor(new Color(t.getBirthdayTextColor()));
+		g2.setColor(new Color(t.colorFromString(getTextColor())));
 
 		g2.drawString(getText(), bounds.x + 2, bounds.y + smfontHeight);
 		g2.setColor(Color.black);

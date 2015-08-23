@@ -150,37 +150,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 					Theme t = Theme.getCurrentTheme();
 					String color = table.getModel().getValueAt(row, 3)
 							.toString();
-					if (color.equals("red")) {
-						theTableCellComponent.setForeground(new Color(t
-								.getTextColor1()));
-					} else if (color.equals("blue")) {
-						theTableCellComponent.setForeground(new Color(t
-								.getTextColor2()));
-					} else if (color.equals("green")) {
-						theTableCellComponent.setForeground(new Color(t
-								.getTextColor3()));
-					} else if (color.equals("black")) {
-						theTableCellComponent.setForeground(new Color(t
-								.getTextColor4()));
-					} else if (color.equals("white")) {
-						theTableCellComponent.setForeground(new Color(t
-								.getTextColor5()));
-					} else if (color.equals("navy")) {
-						theTableCellComponent.setForeground(new Color(t
-								.getTaskTextColor()));
-					} else if (color.equals("brick")) {
-						theTableCellComponent.setForeground(new Color(t
-								.getBirthdayTextColor()));
-					} else if (color.equals("purple")) {
-						theTableCellComponent.setForeground(new Color(t
-								.getHolidayTextColor()));
-					} else if (color.equals("pink") && column > 1) {
-						theTableCellComponent.setForeground(new Color(t
-								.getTodayBg()));
-					} else {
-						theTableCellComponent.setForeground(Color.BLACK);
-					}
-
+					theTableCellComponent.setForeground(new Color(t.colorFromString(color)));
 					theTableCellComponent.setBackground(new Color(t
 							.getWeekdayBg()));
 
