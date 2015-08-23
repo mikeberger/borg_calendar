@@ -47,6 +47,7 @@ import net.sf.borg.common.Prefs;
 import net.sf.borg.common.PrintHelper;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.Day;
+import net.sf.borg.model.Theme;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.CalendarEntity;
 
@@ -265,7 +266,7 @@ public class MonthPrintPanel extends JPanel implements Printable {
 							g2.setColor(Color.black);
 						}
 						
-						
+						Theme t = Theme.getCurrentTheme();
 						Collection<CalendarEntity> appts = dayInfo.getItems();
 						if (appts != null) {
 
@@ -281,12 +282,9 @@ public class MonthPrintPanel extends JPanel implements Printable {
 								// should be changed some time
 								if (cp.equals("false"))
 									g2.setColor(Color.black);
-								else if (entity.getColor().equals("red"))
-									g2.setColor(Color.red);
-								else if (entity.getColor().equals("green"))
-									g2.setColor(Color.green);
-								else if (entity.getColor().equals("blue"))
-									g2.setColor(Color.blue);
+								else
+									g2.setColor(new Color(t.colorFromString(entity.getColor())));
+								
 								
 								String text = entity.getText();
 								if( entity instanceof Appointment)
