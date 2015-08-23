@@ -77,7 +77,7 @@
 							<mode>development</mode>
 							<url>http://borg-calendar.sf.net</url>
 							<key>value</key>
-							<Class-Path>lib/filedrop.jar</Class-Path>
+							<Class-Path>lib/filedrop-1.1.jar</Class-Path>
 						</manifestEntries>
 					</archive>
 				</configuration>
