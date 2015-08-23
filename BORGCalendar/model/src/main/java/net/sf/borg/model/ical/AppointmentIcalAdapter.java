@@ -90,8 +90,7 @@ public class AppointmentIcalAdapter {
 
 	static private final Logger log = Logger.getLogger("net.sf.borg");
 
-	static public void exportIcalToFile(String filename, Date after)
-			throws Exception {
+	static public void exportIcalToFile(String filename, Date after) throws Exception {
 		Calendar cal = exportIcal(after, true);
 		OutputStream oostr = IOHelper.createOutputStream(filename);
 		CalendarOutputter op = new CalendarOutputter();
@@ -107,8 +106,7 @@ public class AppointmentIcalAdapter {
 		return sw.toString();
 	}
 
-	static public Component toIcal(Appointment ap, boolean export_todos)
-			throws Exception {
+	static public Component toIcal(Appointment ap, boolean export_todos) throws Exception {
 
 		TextList catlist = new TextList();
 		Component ve = null;
@@ -124,15 +122,13 @@ public class AppointmentIcalAdapter {
 
 		String uidval = ap.getUid();
 		if (uidval == null || uidval.isEmpty()) {
-			uidval = Integer.toString(ap.getKey()) + "@BORGA-"
-					+ ap.getCreateTime().getTime();
+			uidval = Integer.toString(ap.getKey()) + "@BORGA-" + ap.getCreateTime().getTime();
 		}
 		Uid uid = new Uid(uidval);
 		ve.getProperties().add(uid);
-		
+
 		String urlVal = ap.getUrl();
-		if( urlVal != null && !urlVal.isEmpty())
-		{
+		if (urlVal != null && !urlVal.isEmpty()) {
 			Url url = new Url();
 			url.setValue(urlVal);
 			ve.getProperties().add(url);
@@ -172,8 +168,7 @@ public class AppointmentIcalAdapter {
 
 			if (AppointmentModel.isNote(ap)) {
 				pl.add(Value.DATE);
-				DtStart dtd = new DtStart(pl,
-						new net.fortuna.ical4j.model.Date(nt));
+				DtStart dtd = new DtStart(pl, new net.fortuna.ical4j.model.Date(nt));
 				ve.getProperties().add(dtd);
 
 				VToDo todo = (VToDo) ve;
@@ -181,8 +176,7 @@ public class AppointmentIcalAdapter {
 				todo.getProperties().add(due);
 			} else {
 				pl.add(Value.DATE_TIME);
-				DtStart dtd = new DtStart(pl,
-						new net.fortuna.ical4j.model.DateTime(nt));
+				DtStart dtd = new DtStart(pl, new net.fortuna.ical4j.model.DateTime(nt));
 				ve.getProperties().add(dtd);
 
 				VToDo todo = (VToDo) ve;
@@ -192,16 +186,14 @@ public class AppointmentIcalAdapter {
 
 		} else if (AppointmentModel.isNote(ap)) {
 			pl.add(Value.DATE);
-			DtStart dts = new DtStart(pl, new net.fortuna.ical4j.model.Date(
-					ap.getDate()));
+			DtStart dts = new DtStart(pl, new net.fortuna.ical4j.model.Date(ap.getDate()));
 			ve.getProperties().add(dts);
 			Date end = new Date(ap.getDate().getTime() + 1000 * 60 * 60 * 24);
 			DtEnd dte = new DtEnd(pl, new net.fortuna.ical4j.model.Date(end));
 			ve.getProperties().add(dte);
 		} else {
 			pl.add(Value.DATE_TIME);
-			DtStart dts = new DtStart(pl,
-					new net.fortuna.ical4j.model.DateTime(ap.getDate()));
+			DtStart dts = new DtStart(pl, new net.fortuna.ical4j.model.DateTime(ap.getDate()));
 			dts.setUtc(true);
 			ve.getProperties().add(dts);
 
@@ -210,12 +202,8 @@ public class AppointmentIcalAdapter {
 				// ve.getProperties()
 				// .add(new Duration(new Dur(0, 0,
 				// ap.getDuration().intValue(), 0)));
-				DtEnd dte = new DtEnd(pl,
-						new net.fortuna.ical4j.model.DateTime(ap.getDate()
-								.getTime()
-								+ 1000
-								* 60
-								* ap.getDuration().intValue()));
+				DtEnd dte = new DtEnd(pl, new net.fortuna.ical4j.model.DateTime(
+						ap.getDate().getTime() + 1000 * 60 * ap.getDuration().intValue()));
 				dte.setUtc(true);
 				ve.getProperties().add(dte);
 			}
@@ -240,13 +228,13 @@ public class AppointmentIcalAdapter {
 		}
 
 		// add color as a category
-		if (ap.getColor() != null
-				&& (ap.getColor().equals("black")
-						|| ap.getColor().equals("blue")
-						|| ap.getColor().equals("green")
-						|| ap.getColor().equals("red") || ap.getColor().equals(
-						"white"))) {
-			catlist.add(ap.getColor());
+		if (ap.getColor() != null) {
+			if (ap.getColor().equals("black") || ap.getColor().equals("blue") || ap.getColor().equals("green")
+					|| ap.getColor().equals("red") || ap.getColor().equals("white")) {
+				catlist.add(ap.getColor());
+			} else {
+				catlist.add("c_" + ap.getColor());
+			}
 		}
 
 		if (ap.getCategory() != null && !ap.getCategory().equals("")) {
@@ -282,18 +270,15 @@ public class AppointmentIcalAdapter {
 				GregorianCalendar gc = new GregorianCalendar();
 				gc.setTime(dd);
 				int dayOfWeek = gc.get(java.util.Calendar.DAY_OF_WEEK);
-				int dayOfWeekMonth = gc
-						.get(java.util.Calendar.DAY_OF_WEEK_IN_MONTH);
-				String days[] = new String[] { "SU", "MO", "TU", "WE", "TH",
-						"FR", "SA" };
+				int dayOfWeekMonth = gc.get(java.util.Calendar.DAY_OF_WEEK_IN_MONTH);
+				String days[] = new String[] { "SU", "MO", "TU", "WE", "TH", "FR", "SA" };
 				rec += "MONTHLY;BYDAY=" + dayOfWeekMonth + days[dayOfWeek - 1];
 			} else if (freq.equals(Repeat.MONTHLY_DAY_LAST)) {
 				Date dd = ap.getDate();
 				GregorianCalendar gc = new GregorianCalendar();
 				gc.setTime(dd);
 				int dayOfWeek = gc.get(java.util.Calendar.DAY_OF_WEEK);
-				String days[] = new String[] { "SU", "MO", "TU", "WE", "TH",
-						"FR", "SA" };
+				String days[] = new String[] { "SU", "MO", "TU", "WE", "TH", "FR", "SA" };
 				rec += "MONTHLY;BYDAY=" + "-1" + days[dayOfWeek - 1];
 			} else if (freq.equals(Repeat.YEARLY)) {
 				rec += "YEARLY";
@@ -302,8 +287,7 @@ public class AppointmentIcalAdapter {
 			} else if (freq.equals(Repeat.NWEEKS)) {
 				rec += "WEEKLY;INTERVAL=" + Repeat.getNValue(ap.getFrequency());
 			} else if (freq.equals(Repeat.NMONTHS)) {
-				rec += "MONTHLY;INTERVAL="
-						+ Repeat.getNValue(ap.getFrequency());
+				rec += "MONTHLY;INTERVAL=" + Repeat.getNValue(ap.getFrequency());
 			} else if (freq.equals(Repeat.NYEARS)) {
 				rec += "YEARLY;INTERVAL=" + Repeat.getNValue(ap.getFrequency());
 			} else if (freq.equals(Repeat.WEEKDAYS)) {
@@ -315,8 +299,7 @@ public class AppointmentIcalAdapter {
 			} else if (freq.equals(Repeat.TTH)) {
 				rec += "WEEKLY;BYDAY=TU,TH";
 			} else if (freq.equals(Repeat.DAYLIST)) {
-				String days[] = new String[] { "SU", "MO", "TU", "WE", "TH",
-						"FR", "SA" };
+				String days[] = new String[] { "SU", "MO", "TU", "WE", "TH", "FR", "SA" };
 				rec += "WEEKLY;BYDAY=";
 				Collection<Integer> c = Repeat.getDaylist(ap.getFrequency());
 				Iterator<Integer> it = c.iterator();
@@ -328,8 +311,7 @@ public class AppointmentIcalAdapter {
 				}
 
 			} else {
-				log.warning("Could not export appt " + ap.getKey()
-						+ ap.getText());
+				log.warning("Could not export appt " + ap.getKey() + ap.getText());
 				return null;
 			}
 
@@ -373,17 +355,14 @@ public class AppointmentIcalAdapter {
 		}
 
 		// reminder
-		if (/* !AppointmentModel.isNote(ap) && */ap.getReminderTimes() != null
-				&& !ap.getReminderTimes().isEmpty()) {
+		if (/* !AppointmentModel.isNote(ap) && */ap.getReminderTimes() != null && !ap.getReminderTimes().isEmpty()) {
 
 			// add a reminder
-			if (ap.getReminderTimes().contains("Y")
-					&& (ap.isRepeatFlag() || ap.getDate().after(new Date()))) {
+			if (ap.getReminderTimes().contains("Y") && (ap.isRepeatFlag() || ap.getDate().after(new Date()))) {
 				VAlarm va = new VAlarm(new Dur(0, 0, -1 * 30, 0));
 				va.getProperties().add(Action.DISPLAY);
 				va.getProperties().add(new Description(ap.getText()));
-				va.getProperties().add(
-						new net.fortuna.ical4j.model.property.Repeat(2));
+				va.getProperties().add(new net.fortuna.ical4j.model.property.Repeat(2));
 				va.getProperties().add(new Duration(new Dur(0, 0, 15, 0)));
 				if (ve instanceof VEvent)
 					((VEvent) ve).getAlarms().add(va);
@@ -397,8 +376,7 @@ public class AppointmentIcalAdapter {
 
 	}
 
-	static public Calendar exportIcal(Date after, boolean tasks)
-			throws Exception {
+	static public Calendar exportIcal(Date after, boolean tasks) throws Exception {
 
 		ComponentList clist = new ComponentList();
 
@@ -412,16 +390,14 @@ public class AppointmentIcalAdapter {
 		PropertyList pl = new PropertyList();
 		pl.add(new ProdId("BORG Calendar"));
 		pl.add(Version.VERSION_2_0);
-		net.fortuna.ical4j.model.Calendar cal = new net.fortuna.ical4j.model.Calendar(
-				pl, clist);
+		net.fortuna.ical4j.model.Calendar cal = new net.fortuna.ical4j.model.Calendar(pl, clist);
 
 		cal.validate();
 
 		return cal;
 	}
 
-	static private void exportAppointments(ComponentList clist, Date after)
-			throws Exception {
+	static private void exportAppointments(ComponentList clist, Date after) throws Exception {
 		boolean export_todos = Prefs.getBoolPref(PrefName.ICAL_EXPORT_TODO);
 
 		for (Appointment ap : AppointmentModel.getReference().getAllAppts()) {
@@ -471,8 +447,7 @@ public class AppointmentIcalAdapter {
 
 			ParameterList pl = new ParameterList();
 			pl.add(Value.DATE);
-			DtStart dts = new DtStart(pl,
-					new net.fortuna.ical4j.model.Date(due));
+			DtStart dts = new DtStart(pl, new net.fortuna.ical4j.model.Date(due));
 			ve.getProperties().add(dts);
 
 			Date end = new Date(due.getTime() + 1000 * 60 * 60 * 24);
@@ -513,8 +488,7 @@ public class AppointmentIcalAdapter {
 
 			ParameterList pl = new ParameterList();
 			pl.add(Value.DATE);
-			DtStart dts = new DtStart(pl,
-					new net.fortuna.ical4j.model.Date(due));
+			DtStart dts = new DtStart(pl, new net.fortuna.ical4j.model.Date(due));
 			ve.getProperties().add(dts);
 
 			Date end = new Date(due.getTime() + 1000 * 60 * 60 * 24);
@@ -554,8 +528,7 @@ public class AppointmentIcalAdapter {
 
 			ParameterList pl = new ParameterList();
 			pl.add(Value.DATE);
-			DtStart dts = new DtStart(pl,
-					new net.fortuna.ical4j.model.Date(due));
+			DtStart dts = new DtStart(pl, new net.fortuna.ical4j.model.Date(due));
 			ve.getProperties().add(dts);
 
 			Date end = new Date(due.getTime() + 1000 * 60 * 60 * 24);
@@ -594,19 +567,15 @@ public class AppointmentIcalAdapter {
 		int skipped = 0;
 		StringBuffer dups = new StringBuffer();
 
-		CompatibilityHints.setHintEnabled(
-				CompatibilityHints.KEY_OUTLOOK_COMPATIBILITY, true);
-		CompatibilityHints.setHintEnabled(
-				CompatibilityHints.KEY_RELAXED_PARSING, true);
-		CompatibilityHints.setHintEnabled(
-				CompatibilityHints.KEY_RELAXED_UNFOLDING, true);
+		CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_OUTLOOK_COMPATIBILITY, true);
+		CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_PARSING, true);
+		CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_UNFOLDING, true);
 		StringBuffer warning = new StringBuffer();
 
 		try {
 			cal.validate();
 		} catch (ValidationException e) {
-			Errmsg.getErrorHandler().notice(
-					"Ical4j validation error: " + e.getLocalizedMessage());
+			Errmsg.getErrorHandler().notice("Ical4j validation error: " + e.getLocalizedMessage());
 		}
 
 		ArrayList<Appointment> aplist = new ArrayList<Appointment>();
@@ -628,8 +597,7 @@ public class AppointmentIcalAdapter {
 
 		for (Appointment ap : aplist) {
 			// check for dups
-			List<Appointment> appts = AppointmentModel.getReference()
-					.getAppointmentsByText(ap.getText());
+			List<Appointment> appts = AppointmentModel.getReference().getAppointmentsByText(ap.getText());
 
 			if (appts.contains(ap)) {
 				dup_count++;
@@ -710,8 +678,7 @@ public class AppointmentIcalAdapter {
 
 				// check if DATE only
 				// but assume appt at midnight is untimed
-				if (!dts.getValue().contains("T")
-						|| dts.getValue().contains("T000000")) {
+				if (!dts.getValue().contains("T") || dts.getValue().contains("T000000")) {
 					// date only
 					ap.setUntimed("Y");
 				} else {
@@ -727,31 +694,24 @@ public class AppointmentIcalAdapter {
 
 			}
 
-			
-
 			Uid uid = (Uid) pl.getProperty(Property.UID);
 			ap.setUid(uid.getValue());
-			
+
 			// store the URL coming back from the caldav server
 			// only store the last part
 			Url url = (Url) pl.getProperty(Property.URL);
-			if( url != null)
-			{
+			if (url != null) {
 				String urlVal = url.getValue();
 				int idx = urlVal.lastIndexOf('/');
-				if( idx == -1 )
-				{
+				if (idx == -1) {
 					ap.setUrl(urlVal);
+				} else {
+					ap.setUrl(urlVal.substring(idx + 1));
 				}
-				else
-				{
-					ap.setUrl(urlVal.substring(idx+1));
-				}
-					
+
 			}
-			
-			LastModified lm = (LastModified) pl
-					.getProperty(Property.LAST_MODIFIED);
+
+			LastModified lm = (LastModified) pl.getProperty(Property.LAST_MODIFIED);
 			if (lm != null)
 				ap.setLastMod(lm.getDateTime());
 			else
@@ -793,10 +753,11 @@ public class AppointmentIcalAdapter {
 						ap.setPrivate(true);
 					} else if (cat.equals("ToDo")) {
 						ap.setTodo(true);
-					} else if (cat.equals("black") || cat.equals("red")
-							|| cat.equals("green") || cat.equals("blue")
+					} else if (cat.equals("black") || cat.equals("red") || cat.equals("green") || cat.equals("blue")
 							|| cat.equals("white")) {
 						ap.setColor(cat);
+					} else if (cat.startsWith("c_")) {
+						ap.setColor(cat.substring(2));
 					} else {
 						ap.setCategory(cat);
 					}
@@ -810,7 +771,7 @@ public class AppointmentIcalAdapter {
 					ap.setPrivate(true);
 				}
 			}
-			
+
 			if (comp instanceof VToDo) {
 
 				ap.setTodo(true);
@@ -858,8 +819,7 @@ public class AppointmentIcalAdapter {
 				} else if (freq.equals(Recur.YEARLY)) {
 					ap.setFrequency(Repeat.YEARLY);
 				} else {
-					log.warning("WARNING: Cannot handle frequency of [" + freq
-							+ "], for appt [" + summary
+					log.warning("WARNING: Cannot handle frequency of [" + freq + "], for appt [" + summary
 							+ "], adding first occurrence only\n");
 					return ap;
 				}
@@ -890,8 +850,7 @@ public class AppointmentIcalAdapter {
 					while (it.hasNext()) {
 						Object o = it.next();
 						if (o instanceof net.fortuna.ical4j.model.Date) {
-							int rkey = (int) (((net.fortuna.ical4j.model.Date) o)
-									.getTime() / 1000 / 60 / 60 / 24);
+							int rkey = (int) (((net.fortuna.ical4j.model.Date) o).getTime() / 1000 / 60 / 60 / 24);
 							vect.add(Integer.toString(rkey));
 						}
 					}
