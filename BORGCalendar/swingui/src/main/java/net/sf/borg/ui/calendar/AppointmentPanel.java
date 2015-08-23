@@ -139,9 +139,11 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener, Mo
 				setIcon(new SolidComboBoxIcon(new Color(t.getTextColor3())));
 			} else if (sel.equals("white")) {
 				setIcon(new SolidComboBoxIcon(new Color(t.getTextColor5())));
+			} else if (sel.equals("chosen")) {
+				setIcon(new SolidComboBoxIcon(chosenColor));
 			} else if (sel.equals("choose")) {
 				setText(Resource.getResourceString("choose"));
-				setIcon(new SolidComboBoxIcon(chosenColor, 30));
+				setIcon(null);
 			} else {
 				// just for strike-through, we use text
 				setText(Resource.getResourceString("strike"));
@@ -152,29 +154,32 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener, Mo
 		}
 
 	}
-	
+
 	static private class ComboItemListener implements ItemListener {
-		
+
 		@Getter
 		@Setter
 		private boolean active = true;
-		
+
 		private ColorBoxRenderer cbr;
-		
-		public ComboItemListener(ColorBoxRenderer cbr)
-		{
+		private JComboBox<String> box;
+
+		public ComboItemListener(ColorBoxRenderer cbr, JComboBox<String> colorComboBox) {
 			this.cbr = cbr;
+			box = colorComboBox;
 		}
 
 		@Override
 		public void itemStateChanged(ItemEvent e) {
-			if( !active ) return;
+			if (!active)
+				return;
 			if (e.getStateChange() == ItemEvent.SELECTED) {
 				String l = (String) e.getItem();
 				if (l.equals("choose")) {
 					Color selected = JColorChooser.showDialog(null, "", cbr.getChosenColor());
 					if (selected != null)
 						cbr.setChosenColor(selected);
+					    box.setSelectedIndex(6);
 				}
 
 			}
@@ -190,7 +195,7 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener, Mo
 
 		private Color color = Color.BLACK; // color
 		private final int h = 10; // height
-		private int w = 60; // width
+		private final int w = 60; // width
 
 		/**
 		 * Instantiates a new solid combo box icon.
@@ -200,11 +205,6 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener, Mo
 		 */
 		public SolidComboBoxIcon(Color col) {
 			color = col;
-		}
-		
-		public SolidComboBoxIcon(Color col, int iconWidth) {
-			color = col;
-			w = iconWidth;
 		}
 
 		/*
@@ -263,17 +263,17 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener, Mo
 	private JCheckBox dateChangeCheckBox;
 
 	// color select combo box
-	private JComboBox<String> colorComboBox;
+	private final JComboBox<String> colorComboBox = new JComboBox<String>();
 
 	private final ColorBoxRenderer cbr = new ColorBoxRenderer();
-	
-	private final ComboItemListener comboItemListener = new ComboItemListener(cbr);
+
+	private final ComboItemListener comboItemListener = new ComboItemListener(cbr, colorComboBox);
 
 	// names of the borg "logical" colors. the names no longer imply a
 	// particular color
 	// but remain to support old databases. eahc name maps to a user defined
 	// color
-	private String colors[] = { "red", "blue", "green", "black", "white", "strike", "choose" };
+	private String colors[] = { "red", "blue", "green", "black", "white", "strike", "chosen", "choose" };
 
 	// reminder times
 	private char[] custRemTimes;
@@ -710,7 +710,6 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener, Mo
 		holidayCheckBox = new JCheckBox();
 		privateCheckBox = new JCheckBox();
 		JLabel lblColor = new JLabel();
-		colorComboBox = new JComboBox<String>();
 		categoryBox = new JComboBox<String>();
 		JLabel lblCategory = new JLabel();
 		JLabel lblPriority = new JLabel();
@@ -1178,7 +1177,7 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener, Mo
 
 		// color
 		String colorString = (String) colorComboBox.getSelectedItem();
-		if (colorString.equals("choose"))
+		if (colorString.equals("chosen"))
 			appt.setColor(Integer.toString(cbr.getChosenColor().getRGB()));
 		else
 			appt.setColor(colorString);
@@ -1592,7 +1591,8 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener, Mo
 					} else if (sel.equals("white")) {
 						colorComboBox.setSelectedIndex(4);
 					} else {
-						// if int, then update the color chooser, otherwise, default to strike
+						// if int, then update the color chooser, otherwise,
+						// default to strike
 						try {
 							Integer i = Integer.parseInt(sel);
 							cbr.setChosenColor(new Color(i));
