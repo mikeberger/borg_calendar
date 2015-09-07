@@ -18,6 +18,7 @@
  */
 package net.sf.borg.model.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -25,8 +26,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-
 import net.sf.borg.common.EncryptionHelper;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
@@ -40,8 +39,7 @@ import net.sf.borg.common.Prefs;
 @XmlRootElement(name="Memo")
 @XmlAccessorType(XmlAccessType.FIELD)
 @Data
-@EqualsAndHashCode(callSuper=true)
-public class Memo extends EncryptableEntity<Memo> {
+public class Memo implements EncryptableEntity, Serializable {
 
 	
 	private static final long serialVersionUID = -6793670294661709573L;
@@ -50,15 +48,15 @@ public class Memo extends EncryptableEntity<Memo> {
 	private String MemoText;
 	private Date Created;
 	private Date Updated;
-	
+	private boolean encrypted = false;
+
 	
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.entity.KeyedEntity#clone()
 	 */
 	@Override
-	protected Memo clone() {
+	public Memo clone() {
 		Memo dst = new Memo();
-		dst.setKey( getKey());
 		dst.setMemoName( getMemoName() );
 		dst.setMemoText( getMemoText() );
 		dst.setEncrypted(isEncrypted());

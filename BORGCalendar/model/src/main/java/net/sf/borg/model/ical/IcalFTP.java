@@ -13,13 +13,12 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
-import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
-
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
 
 import biz.source_code.base64Coder.Base64Coder;
+import net.sf.borg.common.PrefName;
+import net.sf.borg.common.Prefs;
 
 public class IcalFTP {
 
@@ -37,10 +36,10 @@ public class IcalFTP {
 			if (years != null) {
 				GregorianCalendar cal = new GregorianCalendar();
 				cal.add(Calendar.YEAR, -1 * years.intValue());
-				icalString = AppointmentIcalAdapter.exportIcalToString(cal
+				icalString = ICal.exportIcalToString(cal
 						.getTime());
 			} else {
-				icalString = AppointmentIcalAdapter.exportIcalToString(null);
+				icalString = ICal.exportIcalToString(null);
 			}
 
 			//System.out.println(icalString);

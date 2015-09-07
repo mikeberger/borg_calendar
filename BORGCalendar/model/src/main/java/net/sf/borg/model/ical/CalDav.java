@@ -157,7 +157,7 @@ public class CalDav {
 			cal.add(java.util.Calendar.YEAR, -1 * years.intValue());
 			after = cal.getTime();
 		}
-		Calendar calendar = AppointmentIcalAdapter.exportIcal(after, false);
+		Calendar calendar = ICal.exportIcal(after, false);
 
 		String calname = Prefs.getPref(PrefName.CALDAV_CAL);
 
@@ -207,9 +207,9 @@ public class CalDav {
 				while (it1.hasNext()) {
 					Component comp = it1.next();
 					if (comp instanceof VToDo) {
-						Appointment ap = AppointmentIcalAdapter.toBorg(comp);
+						Appointment ap = EntityIcalAdapter.toBorg(comp);
 						ap.setUid(ap.getUid() + "TD");
-						Component ve = AppointmentIcalAdapter.toIcal(ap, false);
+						Component ve = EntityIcalAdapter.toIcal(ap, false);
 						addEvent(collection2, ve);
 					}
 				}
@@ -292,11 +292,11 @@ public class CalDav {
 							se.getId());
 					if (ap == null)
 						continue;
-					Component ve1 = AppointmentIcalAdapter.toIcal(ap,
+					Component ve1 = EntityIcalAdapter.toIcal(ap,
 							export_todos);
 					addEvent(collection, ve1);
 					if (collection2 != null && ap.isTodo()) {
-						Component ve = AppointmentIcalAdapter.toIcal(ap, false);
+						Component ve = EntityIcalAdapter.toIcal(ap, false);
 						Uid uid = (Uid) ve.getProperty(Property.UID);
 						uid.setValue(uid.getValue() + "TD");
 						ve.getProperty(Property.DTSTART).setValue(
@@ -309,11 +309,11 @@ public class CalDav {
 							se.getId());
 
 					if (comp == null) {
-						Component ve1 = AppointmentIcalAdapter.toIcal(ap,
+						Component ve1 = EntityIcalAdapter.toIcal(ap,
 								export_todos);
 						addEvent(collection, ve1);
 						if (collection2 != null && ap.isTodo()) {
-							Component ve = AppointmentIcalAdapter.toIcal(ap,
+							Component ve = EntityIcalAdapter.toIcal(ap,
 									false);
 							Uid uid = (Uid) ve.getProperty(Property.UID);
 							uid.setValue(uid.getValue() + "TD");
@@ -335,11 +335,11 @@ public class CalDav {
 						 * comp).getLastModified(); } long serverTime =
 						 * lm.getDateTime().getTime();
 						 */
-						Component ve1 = AppointmentIcalAdapter.toIcal(ap,
+						Component ve1 = EntityIcalAdapter.toIcal(ap,
 								export_todos);
 						updateEvent(collection, ve1);
 						if (collection2 != null && ap.isTodo()) {
-							Component ve = AppointmentIcalAdapter.toIcal(ap,
+							Component ve = EntityIcalAdapter.toIcal(ap,
 									false);
 							Uid uid = (Uid) ve.getProperty(Property.UID);
 							uid.setValue(uid.getValue() + "TD");
@@ -626,7 +626,7 @@ public class CalDav {
 			}
 
 			log.fine("Incoming event: " + comp.toString());
-			Appointment newap = AppointmentIcalAdapter.toBorg(comp);
+			Appointment newap = EntityIcalAdapter.toBorg(comp);
 			if (newap == null)
 				continue;
 

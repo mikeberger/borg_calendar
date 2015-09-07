@@ -19,26 +19,15 @@ Copyright 2003 by Mike Berger
  */
 package net.sf.borg.model.ical;
 
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.StringWriter;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
-import java.util.List;
 import java.util.TimeZone;
 import java.util.Vector;
 import java.util.logging.Logger;
 
-import net.fortuna.ical4j.data.CalendarBuilder;
-import net.fortuna.ical4j.data.CalendarOutputter;
-import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
-import net.fortuna.ical4j.model.ComponentList;
 import net.fortuna.ical4j.model.DateList;
 import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.Dur;
@@ -47,7 +36,6 @@ import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.Recur;
 import net.fortuna.ical4j.model.TextList;
-import net.fortuna.ical4j.model.ValidationException;
 import net.fortuna.ical4j.model.WeekDay;
 import net.fortuna.ical4j.model.WeekDayList;
 import net.fortuna.ical4j.model.component.VAlarm;
@@ -65,19 +53,12 @@ import net.fortuna.ical4j.model.property.Due;
 import net.fortuna.ical4j.model.property.Duration;
 import net.fortuna.ical4j.model.property.ExDate;
 import net.fortuna.ical4j.model.property.LastModified;
-import net.fortuna.ical4j.model.property.ProdId;
 import net.fortuna.ical4j.model.property.RRule;
 import net.fortuna.ical4j.model.property.Status;
 import net.fortuna.ical4j.model.property.Summary;
 import net.fortuna.ical4j.model.property.Uid;
 import net.fortuna.ical4j.model.property.Url;
-import net.fortuna.ical4j.model.property.Version;
-import net.fortuna.ical4j.util.CompatibilityHints;
 import net.sf.borg.common.DateUtil;
-import net.sf.borg.common.Errmsg;
-import net.sf.borg.common.IOHelper;
-import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Repeat;
 import net.sf.borg.model.TaskModel;
@@ -86,25 +67,9 @@ import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Subtask;
 import net.sf.borg.model.entity.Task;
 
-public class AppointmentIcalAdapter {
+public class EntityIcalAdapter {
 
 	static private final Logger log = Logger.getLogger("net.sf.borg");
-
-	static public void exportIcalToFile(String filename, Date after) throws Exception {
-		Calendar cal = exportIcal(after, true);
-		OutputStream oostr = IOHelper.createOutputStream(filename);
-		CalendarOutputter op = new CalendarOutputter();
-		op.output(cal, oostr);
-		oostr.close();
-	}
-
-	static public String exportIcalToString(Date after) throws Exception {
-		Calendar cal = exportIcal(after, true);
-		CalendarOutputter op = new CalendarOutputter();
-		StringWriter sw = new StringWriter();
-		op.output(cal, sw);
-		return sw.toString();
-	}
 
 	static public Component toIcal(Appointment ap, boolean export_todos) throws Exception {
 
@@ -376,251 +341,6 @@ public class AppointmentIcalAdapter {
 
 	}
 
-	static public Calendar exportIcal(Date after, boolean tasks) throws Exception {
-
-		ComponentList clist = new ComponentList();
-
-		exportAppointments(clist, after);
-		if (tasks) {
-			exportProjects(clist);
-			exportTasks(clist);
-			exportSubTasks(clist);
-		}
-
-		PropertyList pl = new PropertyList();
-		pl.add(new ProdId("BORG Calendar"));
-		pl.add(Version.VERSION_2_0);
-		net.fortuna.ical4j.model.Calendar cal = new net.fortuna.ical4j.model.Calendar(pl, clist);
-
-		cal.validate();
-
-		return cal;
-	}
-
-	static private void exportAppointments(ComponentList clist, Date after) throws Exception {
-		boolean export_todos = Prefs.getBoolPref(PrefName.ICAL_EXPORT_TODO);
-
-		for (Appointment ap : AppointmentModel.getReference().getAllAppts()) {
-
-			// limit by date
-			if (after != null) {
-				Date latestInstance = Repeat.calculateLastRepeat(ap);
-				if (latestInstance != null && latestInstance.before(after))
-					continue;
-			}
-
-			Component ve = toIcal(ap, export_todos);
-			if (ve != null)
-				clist.add(ve);
-
-		}
-
-	}
-
-	static private void exportTasks(ComponentList clist) throws Exception {
-
-		boolean export_todos = Prefs.getBoolPref(PrefName.ICAL_EXPORT_TODO);
-
-		for (Task t : TaskModel.getReference().getTasks()) {
-			if (TaskModel.isClosed(t))
-				continue;
-
-			Date due = t.getDueDate();
-			if (due == null)
-				continue;
-
-			Component ve = null;
-			if (export_todos)
-				ve = new VToDo();
-			else
-				ve = new VEvent();
-
-			long updated = new Date().getTime();
-			String uidval = Integer.toString(t.getKey()) + "@BORGT" + updated;
-			Uid uid = new Uid(uidval);
-			ve.getProperties().add(uid);
-
-			// add text
-			ve.getProperties().add(new Summary("[T]" + t.getSummary()));
-			if (t.getDescription() != null && !t.getDescription().isEmpty())
-				ve.getProperties().add(new Description(t.getDescription()));
-
-			ParameterList pl = new ParameterList();
-			pl.add(Value.DATE);
-			DtStart dts = new DtStart(pl, new net.fortuna.ical4j.model.Date(due));
-			ve.getProperties().add(dts);
-
-			Date end = new Date(due.getTime() + 1000 * 60 * 60 * 24);
-			DtEnd dte = new DtEnd(pl, new net.fortuna.ical4j.model.Date(end));
-			ve.getProperties().add(dte);
-
-			clist.add(ve);
-
-		}
-
-	}
-
-	static private void exportProjects(ComponentList clist) throws Exception {
-
-		boolean export_todos = Prefs.getBoolPref(PrefName.ICAL_EXPORT_TODO);
-
-		for (Project t : TaskModel.getReference().getProjects()) {
-			if (TaskModel.isClosed(t))
-				continue;
-
-			Date due = t.getDueDate();
-			if (due == null)
-				continue;
-
-			Component ve = null;
-			if (export_todos)
-				ve = new VToDo();
-			else
-				ve = new VEvent();
-
-			long updated = new Date().getTime();
-			String uidval = Integer.toString(t.getKey()) + "@BORGP" + updated;
-			Uid uid = new Uid(uidval);
-			ve.getProperties().add(uid);
-
-			// add text
-			ve.getProperties().add(new Summary("[P]" + t.getDescription()));
-
-			ParameterList pl = new ParameterList();
-			pl.add(Value.DATE);
-			DtStart dts = new DtStart(pl, new net.fortuna.ical4j.model.Date(due));
-			ve.getProperties().add(dts);
-
-			Date end = new Date(due.getTime() + 1000 * 60 * 60 * 24);
-			DtEnd dte = new DtEnd(pl, new net.fortuna.ical4j.model.Date(end));
-			ve.getProperties().add(dte);
-
-			clist.add(ve);
-
-		}
-	}
-
-	static private void exportSubTasks(ComponentList clist) throws Exception {
-
-		boolean export_todos = Prefs.getBoolPref(PrefName.ICAL_EXPORT_TODO);
-
-		for (Subtask t : TaskModel.getReference().getSubTasks()) {
-			if (t.getCloseDate() != null)
-				continue;
-
-			Date due = t.getDueDate();
-			if (due == null)
-				continue;
-
-			Component ve = null;
-			if (export_todos)
-				ve = new VToDo();
-			else
-				ve = new VEvent();
-
-			long updated = new Date().getTime();
-			String uidval = Integer.toString(t.getKey()) + "@BORGS" + updated;
-			Uid uid = new Uid(uidval);
-			ve.getProperties().add(uid);
-
-			// add text
-			ve.getProperties().add(new Summary("[S]" + t.getDescription()));
-
-			ParameterList pl = new ParameterList();
-			pl.add(Value.DATE);
-			DtStart dts = new DtStart(pl, new net.fortuna.ical4j.model.Date(due));
-			ve.getProperties().add(dts);
-
-			Date end = new Date(due.getTime() + 1000 * 60 * 60 * 24);
-			DtEnd dte = new DtEnd(pl, new net.fortuna.ical4j.model.Date(end));
-			ve.getProperties().add(dte);
-			clist.add(ve);
-
-		}
-	}
-
-	static public String importIcalFromUrl(String urlString) throws Exception {
-
-		Prefs.setProxy();
-
-		CalendarBuilder builder = new CalendarBuilder();
-		URL url = new URL(urlString);
-		InputStream is = url.openStream();
-		Calendar cal = builder.build(is);
-		is.close();
-
-		return importIcal(cal);
-	}
-
-	static public String importIcalFromFile(String file) throws Exception {
-		CalendarBuilder builder = new CalendarBuilder();
-		InputStream is = new FileInputStream(file);
-		Calendar cal = builder.build(is);
-		is.close();
-
-		return importIcal(cal);
-	}
-
-	@SuppressWarnings("unchecked")
-	static private String importIcal(Calendar cal) throws Exception {
-
-		int skipped = 0;
-		StringBuffer dups = new StringBuffer();
-
-		CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_OUTLOOK_COMPATIBILITY, true);
-		CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_PARSING, true);
-		CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_UNFOLDING, true);
-		StringBuffer warning = new StringBuffer();
-
-		try {
-			cal.validate();
-		} catch (ValidationException e) {
-			Errmsg.getErrorHandler().notice("Ical4j validation error: " + e.getLocalizedMessage());
-		}
-
-		ArrayList<Appointment> aplist = new ArrayList<Appointment>();
-
-		AppointmentModel amodel = AppointmentModel.getReference();
-		ComponentList clist = cal.getComponents();
-		Iterator<Component> it = clist.iterator();
-		while (it.hasNext()) {
-			Component comp = it.next();
-
-			Appointment ap = toBorg(comp);
-			if (ap != null)
-				aplist.add(ap);
-
-		}
-
-		int imported = 0;
-		int dup_count = 0;
-
-		for (Appointment ap : aplist) {
-			// check for dups
-			List<Appointment> appts = AppointmentModel.getReference().getAppointmentsByText(ap.getText());
-
-			if (appts.contains(ap)) {
-				dup_count++;
-				dups.append("DUP: " + ap.getText() + "\n");
-				continue;
-			}
-
-			imported++;
-			amodel.saveAppt(ap);
-		}
-
-		warning.append("Imported: " + imported + "\n");
-		warning.append("Skipped: " + skipped + "\n");
-		warning.append("Duplicates: " + dup_count + "\n");
-		warning.append(dups.toString());
-
-		if (warning.length() == 0)
-			return (null);
-
-		return (warning.toString());
-
-	}
-
 	static private int tzOffset(long date) {
 		return TimeZone.getDefault().getOffset(date);
 	}
@@ -867,4 +587,113 @@ public class AppointmentIcalAdapter {
 		return null;
 
 	}
+	
+	static public Component toIcal(Project t, boolean export_todos) throws Exception {
+		if (TaskModel.isClosed(t))
+			return null;
+
+		Date due = t.getDueDate();
+		if (due == null)
+			return null;
+
+		Component ve = null;
+		if (export_todos)
+			ve = new VToDo();
+		else
+			ve = new VEvent();
+
+		long updated = new Date().getTime();
+		String uidval = Integer.toString(t.getKey()) + "@BORGP" + updated;
+		Uid uid = new Uid(uidval);
+		ve.getProperties().add(uid);
+
+		// add text
+		ve.getProperties().add(new Summary("[P]" + t.getDescription()));
+
+		ParameterList pl = new ParameterList();
+		pl.add(Value.DATE);
+		DtStart dts = new DtStart(pl, new net.fortuna.ical4j.model.Date(due));
+		ve.getProperties().add(dts);
+
+		Date end = new Date(due.getTime() + 1000 * 60 * 60 * 24);
+		DtEnd dte = new DtEnd(pl, new net.fortuna.ical4j.model.Date(end));
+		ve.getProperties().add(dte);
+		
+		return ve;
+
+	}
+
+	static public Component toIcal(Task t, boolean export_todos) throws Exception {
+		if (TaskModel.isClosed(t))
+			return null;
+
+		Date due = t.getDueDate();
+		if (due == null)
+			return null;
+
+		Component ve = null;
+		if (export_todos)
+			ve = new VToDo();
+		else
+			ve = new VEvent();
+
+		long updated = new Date().getTime();
+		String uidval = Integer.toString(t.getKey()) + "@BORGT" + updated;
+		Uid uid = new Uid(uidval);
+		ve.getProperties().add(uid);
+
+		// add text
+		ve.getProperties().add(new Summary("[T]" + t.getSummary()));
+		if (t.getDescription() != null && !t.getDescription().isEmpty())
+			ve.getProperties().add(new Description(t.getDescription()));
+
+		ParameterList pl = new ParameterList();
+		pl.add(Value.DATE);
+		DtStart dts = new DtStart(pl, new net.fortuna.ical4j.model.Date(due));
+		ve.getProperties().add(dts);
+
+		Date end = new Date(due.getTime() + 1000 * 60 * 60 * 24);
+		DtEnd dte = new DtEnd(pl, new net.fortuna.ical4j.model.Date(end));
+		ve.getProperties().add(dte);
+		
+		return ve;
+
+	}
+	
+	
+	static public Component toIcal(Subtask t, boolean export_todos) throws Exception {
+	
+		if (t.getCloseDate() != null)
+			return null;
+
+		Date due = t.getDueDate();
+		if (due == null)
+			return null;
+
+		Component ve = null;
+		if (export_todos)
+			ve = new VToDo();
+		else
+			ve = new VEvent();
+
+		long updated = new Date().getTime();
+		String uidval = Integer.toString(t.getKey()) + "@BORGS" + updated;
+		Uid uid = new Uid(uidval);
+		ve.getProperties().add(uid);
+
+		// add text
+		ve.getProperties().add(new Summary("[S]" + t.getDescription()));
+
+		ParameterList pl = new ParameterList();
+		pl.add(Value.DATE);
+		DtStart dts = new DtStart(pl, new net.fortuna.ical4j.model.Date(due));
+		ve.getProperties().add(dts);
+
+		Date end = new Date(due.getTime() + 1000 * 60 * 60 * 24);
+		DtEnd dte = new DtEnd(pl, new net.fortuna.ical4j.model.Date(end));
+		ve.getProperties().add(dte);
+		
+		return ve;
+	}
+
 }

@@ -135,7 +135,7 @@ public class MemoModel extends Model implements Searchable<Memo> {
 
 			if (m == null)
 				return;
-			Memo orig = m.copy();
+			Memo orig = m.clone();
 
 			db_.delete(m.getMemoName());
 			if (!undo) {
@@ -322,7 +322,6 @@ public class MemoModel extends Model implements Searchable<Memo> {
 		if( container.Memo == null ) return;
 
 		for (Memo memo : container.Memo ) {
-			memo.setKey(-1);
 			saveMemo(memo, true);
 		}
 

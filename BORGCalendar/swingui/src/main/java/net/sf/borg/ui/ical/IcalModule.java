@@ -29,8 +29,8 @@ import net.sf.borg.common.SocketClient;
 import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.Model;
 import net.sf.borg.model.Model.ChangeEvent;
-import net.sf.borg.model.ical.AppointmentIcalAdapter;
 import net.sf.borg.model.ical.CalDav;
+import net.sf.borg.model.ical.ICal;
 import net.sf.borg.model.ical.IcalFTP;
 import net.sf.borg.model.ical.IcalFileServer;
 import net.sf.borg.model.ical.SyncLog;
@@ -182,7 +182,7 @@ public class IcalModule implements Module, Prefs.Listener, Model.Listener {
 
 				try {
 
-					String warning = AppointmentIcalAdapter
+					String warning = ICal
 							.importIcalFromFile(s);
 					if (warning != null && !warning.isEmpty())
 						Errmsg.getErrorHandler().notice(warning);
@@ -213,7 +213,7 @@ public class IcalModule implements Module, Prefs.Listener, Model.Listener {
 				Prefs.putPref(url_pref, urlString);
 				try {
 
-					String warning = AppointmentIcalAdapter
+					String warning = ICal
 							.importIcalFromUrl(urlString);
 					if (warning != null && !warning.isEmpty())
 						Errmsg.getErrorHandler().notice(warning);
@@ -357,7 +357,7 @@ public class IcalModule implements Module, Prefs.Listener, Model.Listener {
 				for (File f : files) {
 					String warning;
 					try {
-						warning = AppointmentIcalAdapter.importIcalFromFile(f
+						warning = ICal.importIcalFromFile(f
 								.getAbsolutePath());
 						if (warning != null && !warning.isEmpty())
 							Errmsg.getErrorHandler().notice(warning);
@@ -404,7 +404,7 @@ public class IcalModule implements Module, Prefs.Listener, Model.Listener {
 
 				if (res == JOptionPane.YES_OPTION) {
 
-					String warning = AppointmentIcalAdapter
+					String warning = ICal
 							.importIcalFromUrl(url);
 					if (warning != null && !warning.isEmpty())
 						Errmsg.getErrorHandler().notice(warning);
@@ -458,9 +458,9 @@ public class IcalModule implements Module, Prefs.Listener, Model.Listener {
 			if (years != null) {
 				GregorianCalendar cal = new GregorianCalendar();
 				cal.add(Calendar.YEAR, -1 * years.intValue());
-				AppointmentIcalAdapter.exportIcalToFile(s, cal.getTime());
+				ICal.exportIcalToFile(s, cal.getTime());
 			} else {
-				AppointmentIcalAdapter.exportIcalToFile(s, null);
+				ICal.exportIcalToFile(s, null);
 			}
 
 		} catch (Exception e) {

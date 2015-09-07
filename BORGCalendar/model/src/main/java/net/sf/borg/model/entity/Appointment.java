@@ -40,8 +40,8 @@ import net.sf.borg.common.Resource;
 @Data
 @EqualsAndHashCode(callSuper = false,exclude={"createTime", "lastMod"})
 // exclude key and encryption field from hashcode
-public class Appointment extends EncryptableEntity<Appointment> implements
-		CalendarEntity {
+public class Appointment extends KeyedEntity<Appointment> implements
+		CalendarEntity, EncryptableEntity {
 
 	private static final long serialVersionUID = 7225675837209156249L;
 
@@ -83,6 +83,8 @@ public class Appointment extends EncryptableEntity<Appointment> implements
 	private Date lastMod;
 	private String uid;
 	private String url;
+	private boolean encrypted = false;
+
 
 	@SuppressWarnings("unchecked")
 	@Override

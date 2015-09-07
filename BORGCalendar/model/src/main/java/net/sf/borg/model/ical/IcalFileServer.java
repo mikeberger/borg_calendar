@@ -6,14 +6,14 @@ import java.net.InetSocketAddress;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
+import com.sun.net.httpserver.HttpServer;
+
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
-
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
-import com.sun.net.httpserver.HttpServer;
 
 @SuppressWarnings("restriction")
 public class IcalFileServer {
@@ -52,7 +52,7 @@ public class IcalFileServer {
 			try {
 				GregorianCalendar cal = new GregorianCalendar();
 				cal.add(Calendar.YEAR, -2);
-				String response = AppointmentIcalAdapter.exportIcalToString(cal.getTime());
+				String response = ICal.exportIcalToString(cal.getTime());
 				
 				t.getResponseHeaders().add("Content-Disposition",
 						"attachment; filename=borg.ics");
