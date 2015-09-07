@@ -145,7 +145,7 @@ public class CalDav {
 			cal.add(java.util.Calendar.YEAR, -1 * years.intValue());
 			after = cal.getTime();
 		}
-		Calendar calendar = ICal.exportIcal(after, false);
+		Calendar calendar = ICal.exportIcal(after, true);
 
 		String calname = Prefs.getPref(PrefName.CALDAV_CAL);
 
@@ -217,8 +217,7 @@ public class CalDav {
 		return null;
 	}
 
-	static public void processSyncMap(CalDavCalendarCollection collection)
-			throws Exception {
+	static public void processSyncMap(CalDavCalendarCollection collection) throws Exception {
 
 		boolean export_todos = Prefs.getBoolPref(PrefName.ICAL_EXPORT_TODO);
 
@@ -241,7 +240,7 @@ public class CalDav {
 							continue;
 						Component ve1 = EntityIcalAdapter.toIcal(ap, export_todos);
 						addEvent(collection, ve1);
-						
+
 					} else if (se.getAction().equals(ChangeAction.CHANGE)) {
 						Component comp = getEvent(collection, se.getUid());
 						Appointment ap = AppointmentModel.getReference().getAppt(se.getId());
@@ -249,13 +248,13 @@ public class CalDav {
 						if (comp == null) {
 							Component ve1 = EntityIcalAdapter.toIcal(ap, export_todos);
 							addEvent(collection, ve1);
-							
+
 						} else // TODO - what if both sides updated
 						{
-							
+
 							Component ve1 = EntityIcalAdapter.toIcal(ap, export_todos);
 							updateEvent(collection, ve1);
-							
+
 						}
 					} else if (se.getAction().equals(ChangeAction.DELETE)) {
 
@@ -264,7 +263,7 @@ public class CalDav {
 						if (comp != null) {
 							log.info("SYNC: removeEvent: " + comp.toString());
 							collection.removeCalendar(se.getUid());
-							
+
 						} else {
 							log.info("Deleted Appt: " + se.getUid() + " not found on server");
 						}
@@ -291,12 +290,18 @@ public class CalDav {
 
 						if (comp == null) {
 							Component ve1 = EntityIcalAdapter.toIcal(task, export_todos);
-							addEvent(collection, ve1);
+							if (ve1 != null)
+								addEvent(collection, ve1);
 
 						} else // TODO - what if both sides updated
 						{
 							Component ve1 = EntityIcalAdapter.toIcal(task, export_todos);
-							updateEvent(collection, ve1);
+							if (ve1 != null) {
+								updateEvent(collection, ve1);
+							} else {
+								collection.removeCalendar(se.getUid());
+
+							}
 						}
 					} else if (se.getAction().equals(ChangeAction.DELETE)) {
 
@@ -461,10 +466,7 @@ public class CalDav {
 		Appointment ap = AppointmentModel.getReference().getApptByUid(uid);
 		if (ap != null) {
 
-			// LastModified lm = (LastModified) comp
-			// .getProperty(Property.LAST_MODIFIED);
-			// Date lmdate = lm.getDateTime();
-			// if (lmdate.after(ap.getLastMod())) {
+			
 			if (comp instanceof VEvent) {
 				log.warning("SYNC: ignoring Vevent for single recurrence - cannot process\n" + comp.toString());
 				SocketClient.sendLogMessage(
@@ -527,12 +529,12 @@ public class CalDav {
 				comp.getProperties().add(cal.getProperty(Property.URL));
 
 			String uid = comp.getProperty(Property.UID).getValue();
-			
+
 			// ignore incoming tasks
 			// TODO - process completion??
-			if( uid.contains("BORGT"))
+			if (uid.contains("BORGT"))
 				continue;
-			
+
 			serverUids.add(uid);
 
 			// detect single occurrence
@@ -543,8 +545,7 @@ public class CalDav {
 			}
 
 			log.fine("Incoming event: " + comp.toString());
-			
-						
+
 			Appointment newap = EntityIcalAdapter.toBorg(comp);
 			if (newap == null)
 				continue;
@@ -553,11 +554,8 @@ public class CalDav {
 			if (ap == null) {
 				// not found in BORG, so add it
 				try {
-
-					// for now, VTodo updates should update the synclog so that
-					// they get sent back out
-					// to the second cal on the next sync
-					SyncLog.getReference().setProcessUpdates(comp instanceof VToDo);
+					
+					SyncLog.getReference().setProcessUpdates(false);
 					count++;
 					log.info("SYNC save: " + comp.toString());
 					log.info("SYNC save: " + newap.toString());
@@ -570,10 +568,7 @@ public class CalDav {
 				try {
 					newap.setKey(ap.getKey());
 
-					// for now, VTodo updates should update the synclog so that
-					// they get sent back out
-					// to the second cal on the next sync
-					SyncLog.getReference().setProcessUpdates(comp instanceof VToDo);
+					SyncLog.getReference().setProcessUpdates(false);
 					count++;
 					log.info("SYNC save: " + comp.toString());
 					log.info("SYNC save: " + newap.toString());

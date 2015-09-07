@@ -34,7 +34,7 @@ import net.sf.borg.model.entity.Task;
 
 public class ICal {
 	static public void exportIcalToFile(String filename, Date after) throws Exception {
-		Calendar cal = exportIcal(after, true);
+		Calendar cal = exportIcal(after, false);
 		OutputStream oostr = IOHelper.createOutputStream(filename);
 		CalendarOutputter op = new CalendarOutputter();
 		op.output(cal, oostr);
@@ -42,21 +42,22 @@ public class ICal {
 	}
 
 	static public String exportIcalToString(Date after) throws Exception {
-		Calendar cal = exportIcal(after, true);
+		Calendar cal = exportIcal(after, false);
 		CalendarOutputter op = new CalendarOutputter();
 		StringWriter sw = new StringWriter();
 		op.output(cal, sw);
 		return sw.toString();
 	}
 
-	static public Calendar exportIcal(Date after, boolean tasks) throws Exception {
+	static public Calendar exportIcal(Date after, boolean caldav) throws Exception {
 
 		ComponentList clist = new ComponentList();
 
 		exportAppointments(clist, after);
-		if (tasks) {
+		exportTasks(clist);
+
+		if (!caldav) {
 			exportProjects(clist);
-			exportTasks(clist);
 			exportSubTasks(clist);
 		}
 

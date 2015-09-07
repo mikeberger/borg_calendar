@@ -664,6 +664,8 @@ public class EntityIcalAdapter {
 		pl.add(Value.DATE);
 		DtStart dts = new DtStart(pl, new net.fortuna.ical4j.model.Date(due));
 		ve.getProperties().add(dts);
+		Due du = new Due(pl, new net.fortuna.ical4j.model.Date(due));
+		ve.getProperties().add(du);
 
 		Date end = new Date(due.getTime() + 1000 * 60 * 60 * 24);
 		DtEnd dte = new DtEnd(pl, new net.fortuna.ical4j.model.Date(end));

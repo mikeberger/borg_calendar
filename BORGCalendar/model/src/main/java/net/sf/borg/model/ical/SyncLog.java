@@ -21,12 +21,8 @@ import net.sf.borg.model.Model;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.model.db.jdbc.JdbcDBUpgrader;
-import net.sf.borg.model.entity.Appointment;
-import net.sf.borg.model.entity.Project;
-import net.sf.borg.model.entity.Subtask;
 import net.sf.borg.model.entity.SyncableEntity;
 import net.sf.borg.model.entity.SyncableEntity.ObjectType;
-import net.sf.borg.model.entity.Task;
 
 /**
  * class to track all appointment model changes since the last sync it will

@@ -1268,6 +1268,15 @@ public class TaskView extends DockableView {
 
 			// save the task to the DB
 			Task orig = TaskModel.getReference().getTask(task.getKey());
+			
+			if( orig != null )
+			{
+				task.setUid(orig.getUid());
+				task.setUrl(orig.getUrl());
+				task.setCreateTime(orig.getCreateTime());
+				task.setLastMod(orig.getLastMod());
+			}
+			
 			TaskModel.getReference().savetask(task);
 
 			// add various task log records
@@ -1275,6 +1284,8 @@ public class TaskView extends DockableView {
 				TaskModel.getReference().addLog(task.getKey(),
 						Resource.getResourceString("Task_Created"));
 			} else {
+				
+				
 				if (orig != null && !orig.getState().equals(task.getState())) {
 					TaskModel.getReference().addLog(
 							task.getKey(),
