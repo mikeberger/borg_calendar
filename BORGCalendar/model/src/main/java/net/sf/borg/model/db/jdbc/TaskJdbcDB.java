@@ -41,23 +41,21 @@ import net.sf.borg.model.entity.Tasklog;
 class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
 
 	public TaskJdbcDB() {
-		new JdbcDBUpgrader(
-				"select create_time from tasks",
-				"alter table tasks add column create_time datetime default '1980-01-01 00:00:00' NOT NULL")
-				.upgrade();
-		new JdbcDBUpgrader(
-				"select lastmod from tasks",
-				"alter table tasks add column lastmod datetime default '1980-01-01 00:00:00' NOT NULL")
-				.upgrade();
-		new JdbcDBUpgrader(
-				"select uid from tasks",
-				new String[] {
-						"alter table tasks add column uid longvarchar",
-						"update tasks set uid = CONCAT(tasknum,'@BORGT', RAND())" })
-				.upgrade();
-		new JdbcDBUpgrader("select url from tasks",
-				"alter table tasks add column url longvarchar")
-				.upgrade();
+		new JdbcDBUpgrader("select create_time from tasks",
+				"alter table tasks add column create_time datetime default '1980-01-01 00:00:00' NOT NULL").upgrade();
+		new JdbcDBUpgrader("select lastmod from tasks",
+				"alter table tasks add column lastmod datetime default '1980-01-01 00:00:00' NOT NULL").upgrade();
+		new JdbcDBUpgrader("select uid from tasks", new String[] { "alter table tasks add column uid longvarchar",
+				"update tasks set uid = CONCAT(tasknum,'@BORGT', RAND())" }).upgrade();
+		new JdbcDBUpgrader("select url from tasks", "alter table tasks add column url longvarchar").upgrade();
+		
+		new JdbcDBUpgrader("select create_time from subtasks",
+				"alter table subtasks add column create_time datetime default '1980-01-01 00:00:00' NOT NULL").upgrade();
+		new JdbcDBUpgrader("select lastmod from subtasks",
+				"alter table subtasks add column lastmod datetime default '1980-01-01 00:00:00' NOT NULL").upgrade();
+		new JdbcDBUpgrader("select uid from subtasks", new String[] { "alter table subtasks add column uid longvarchar",
+				"update subtasks set uid = CONCAT(id,'@BORGS', RAND())" }).upgrade();
+		new JdbcDBUpgrader("select url from subtasks", "alter table subtasks add column url longvarchar").upgrade();
 	}
 
     /* (non-Javadoc)
@@ -305,6 +303,15 @@ class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
         if (r.getTimestamp("close_date") != null)
             s.setCloseDate(new java.util.Date(r.getTimestamp("close_date").getTime()));
         s.setDescription(r.getString("description"));
+        if (r.getTimestamp("create_time") != null)
+        	s.setCreateTime(new java.util.Date(r.getTimestamp("create_time")
+					.getTime()));
+		if (r.getTimestamp("lastmod") != null)
+			s.setLastMod(new java.util.Date(r.getTimestamp("lastmod")
+					.getTime()));
+		s.setUid(r.getString("uid"));
+		s.setUrl(r.getString("url"));
+
 
         return s;
     }
@@ -398,7 +405,7 @@ class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
     @Override
     public void addSubTask(Subtask s) throws SQLException {
         PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("INSERT INTO subtasks ( id, create_date, due_date,"
-                + " close_date, description, task ) VALUES " + "( ?, ?, ?, ?, ?, ?)");
+                + " close_date, description, task, create_time, lastmod, uid, url ) VALUES " + "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
         stmt.setInt(1, s.getKey());
 
@@ -422,6 +429,13 @@ class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
 
         stmt.setString(5, s.getDescription());
         stmt.setInt(6, s.getTask().intValue());
+        
+        stmt.setTimestamp(7, new java.sql.Timestamp(s.getCreateTime()
+				.getTime()), Calendar.getInstance());
+		stmt.setTimestamp(8, new java.sql.Timestamp(s.getLastMod()
+				.getTime()), Calendar.getInstance());
+		stmt.setString(9, s.getUid());
+		stmt.setString(10, s.getUrl());
 
         stmt.executeUpdate();
         stmt.close();
@@ -434,9 +448,8 @@ class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
     @Override
     public void updateSubTask(Subtask s) throws SQLException {
         PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("UPDATE subtasks SET create_date = ?, due_date = ?,"
-                + " close_date = ?, description = ?, task = ?  WHERE id = ?");
+                + " close_date = ?, description = ?, task = ?, create_time = ?, lastmod = ?, uid = ?, url = ?  WHERE id = ?");
 
-        stmt.setInt(6, s.getKey());
 
         java.util.Date sd = s.getStartDate();
         if (sd != null)
@@ -458,6 +471,16 @@ class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
 
         stmt.setString(4, s.getDescription());
         stmt.setInt(5, s.getTask().intValue());
+
+        stmt.setTimestamp(6, new java.sql.Timestamp(s.getCreateTime()
+				.getTime()), Calendar.getInstance());
+		stmt.setTimestamp(7, new java.sql.Timestamp(s.getLastMod()
+				.getTime()), Calendar.getInstance());
+		stmt.setString(8, s.getUid());
+		stmt.setString(9, s.getUrl());
+		
+        stmt.setInt(10, s.getKey());
+
 
         stmt.executeUpdate();
         stmt.close();

@@ -112,6 +112,10 @@ CREATE TABLE subtasks (
   close_date date default NULL default '0000-00-00',
   description text NOT NULL,
   task integer NOT NULL default '0',
+   `create_time` timestamp NOT NULL default '1980-00-00 00:00:00',
+  `lastmod` timestamp NOT NULL default '1980-00-00 00:00:00',
+   uid text,
+   url text,
   PRIMARY KEY  (id),
   FOREIGN KEY (task) REFERENCES tasks ( tasknum )
      ON DELETE CASCADE

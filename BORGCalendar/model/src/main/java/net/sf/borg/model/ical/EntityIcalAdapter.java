@@ -690,11 +690,24 @@ public class EntityIcalAdapter {
 			ve = new VToDo();
 		else
 			ve = new VEvent();
-
-		long updated = new Date().getTime();
-		String uidval = Integer.toString(t.getKey()) + "@BORGS" + updated;
+		
+		String uidval = t.getUid();
+		if (uidval == null || uidval.isEmpty()) {
+			uidval = Integer.toString(t.getKey()) + "@BORGS-" + t.getCreateTime().getTime();
+		}
 		Uid uid = new Uid(uidval);
 		ve.getProperties().add(uid);
+
+		String urlVal = t.getUrl();
+		if (urlVal != null && !urlVal.isEmpty()) {
+			Url url = new Url();
+			url.setValue(urlVal);
+			ve.getProperties().add(url);
+		}
+
+		ve.getProperties().add(new Created(new DateTime(t.getCreateTime())));
+		ve.getProperties().add(new LastModified(new DateTime(t.getLastMod())));
+		
 
 		// add text
 		ve.getProperties().add(new Summary("[S]" + t.getDescription()));
@@ -703,6 +716,8 @@ public class EntityIcalAdapter {
 		pl.add(Value.DATE);
 		DtStart dts = new DtStart(pl, new net.fortuna.ical4j.model.Date(due));
 		ve.getProperties().add(dts);
+		Due du = new Due(pl, new net.fortuna.ical4j.model.Date(due));
+		ve.getProperties().add(du);
 
 		Date end = new Date(due.getTime() + 1000 * 60 * 60 * 24);
 		DtEnd dte = new DtEnd(pl, new net.fortuna.ical4j.model.Date(end));

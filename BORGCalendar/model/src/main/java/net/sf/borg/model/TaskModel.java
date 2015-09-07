@@ -1032,16 +1032,31 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 		if (s.getKey() <= 0 || null == db_.getSubTask(s.getKey())) {
 			if (!undo || s.getKey() == -1)
 				s.setKey(db_.nextSubTaskKey());
+			s.setCreateTime(new Date());
+			s.setLastMod(s.getCreateTime());
+			if( s.getUid() == null)
+				s.setUid(Integer.toString(s.getKey()) + "@BORGS-" + s.getCreateTime().getTime());
 			db_.addSubTask(s);
 			if (!undo) {
 				Subtask st = db_.getSubTask(s.getKey());
 				SubtaskUndoItem.recordAdd(st);
 			}
 		} else {
+			Subtask st = db_.getSubTask(s.getKey());
 			if (!undo) {
-				Subtask st = db_.getSubTask(s.getKey());
 				SubtaskUndoItem.recordUpdate(st);
 			}
+			
+			s.setCreateTime(st.getCreateTime());
+			s.setUid(st.getUid());
+			s.setUrl(st.getUrl());
+			
+			if( s.getCreateTime() == null )
+				s.setCreateTime(new Date());
+
+			s.setLastMod(new Date());
+			if( s.getUid() == null)
+				s.setUid(Integer.toString(s.getKey()) + "@BORGS-" + s.getCreateTime().getTime());
 			db_.updateSubTask(s);
 			action = ChangeAction.CHANGE;
 

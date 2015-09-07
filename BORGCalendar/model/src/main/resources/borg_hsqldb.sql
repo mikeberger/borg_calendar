@@ -125,6 +125,10 @@ CREATE CACHED TABLE subtasks (
   close_date date default NULL,
   description longvarchar NOT NULL,
   task integer default '0' NOT NULL,
+   create_time datetime default '1980-01-01 00:00:00' NOT NULL,
+  lastmod datetime default '1980-01-01 00:00:00' NOT NULL,
+  uid longvarchar,
+  url longvarchar,
   PRIMARY KEY  (id),
   FOREIGN KEY (task) REFERENCES tasks ( tasknum)
      ON DELETE CASCADE

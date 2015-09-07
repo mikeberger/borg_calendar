@@ -47,6 +47,7 @@ import net.sf.borg.model.OptionModel;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.Option;
+import net.sf.borg.model.entity.Subtask;
 import net.sf.borg.model.entity.SyncableEntity;
 import net.sf.borg.model.entity.SyncableEntity.ObjectType;
 import net.sf.borg.model.entity.Task;
@@ -239,7 +240,8 @@ public class CalDav {
 						if (ap == null)
 							continue;
 						Component ve1 = EntityIcalAdapter.toIcal(ap, export_todos);
-						addEvent(collection, ve1);
+						if( ve1 != null )
+							addEvent(collection, ve1);
 
 					} else if (se.getAction().equals(ChangeAction.CHANGE)) {
 						Component comp = getEvent(collection, se.getUid());
@@ -247,13 +249,15 @@ public class CalDav {
 
 						if (comp == null) {
 							Component ve1 = EntityIcalAdapter.toIcal(ap, export_todos);
-							addEvent(collection, ve1);
+							if( ve1 != null )
+								addEvent(collection, ve1);
 
 						} else // TODO - what if both sides updated
 						{
 
 							Component ve1 = EntityIcalAdapter.toIcal(ap, export_todos);
-							updateEvent(collection, ve1);
+							if( ve1 != null )
+								updateEvent(collection, ve1);
 
 						}
 					} else if (se.getAction().equals(ChangeAction.DELETE)) {
@@ -282,7 +286,8 @@ public class CalDav {
 						if (task == null)
 							continue;
 						Component ve1 = EntityIcalAdapter.toIcal(task, export_todos);
-						addEvent(collection, ve1);
+						if( ve1 != null )
+							addEvent(collection, ve1);
 
 					} else if (se.getAction().equals(ChangeAction.CHANGE)) {
 						Component comp = getEvent(collection, se.getUid());
@@ -296,6 +301,54 @@ public class CalDav {
 						} else // TODO - what if both sides updated
 						{
 							Component ve1 = EntityIcalAdapter.toIcal(task, export_todos);
+							if (ve1 != null) {
+								updateEvent(collection, ve1);
+							} else {
+								collection.removeCalendar(se.getUid());
+
+							}
+						}
+					} else if (se.getAction().equals(ChangeAction.DELETE)) {
+
+						Component comp = getEvent(collection, se.getUid());
+
+						if (comp != null) {
+							log.info("SYNC: removeEvent: " + comp.toString());
+							collection.removeCalendar(se.getUid());
+
+						} else {
+							log.info("Deleted Appt: " + se.getUid() + " not found on server");
+						}
+					}
+
+					SyncLog.getReference().delete(se.getId(), se.getObjectType());
+				} catch (Exception e) {
+					SocketClient.sendLogMessage("SYNC ERROR for: " + se.toString() + ":" + e.getMessage());
+					log.severe("SYNC ERROR for: " + se.toString() + ":" + e.getMessage());
+					e.printStackTrace();
+				}
+			} else if (se.getObjectType() == ObjectType.SUBTASK) {
+				try {
+					if (se.getAction().equals(ChangeAction.ADD)) {
+						Subtask subtask = TaskModel.getReference().getSubTask(se.getId());
+						if (subtask == null)
+							continue;
+						Component ve1 = EntityIcalAdapter.toIcal(subtask, export_todos);
+						if( ve1 != null )
+							addEvent(collection, ve1);
+
+					} else if (se.getAction().equals(ChangeAction.CHANGE)) {
+						Component comp = getEvent(collection, se.getUid());
+						Subtask subtask = TaskModel.getReference().getSubTask(se.getId());
+
+						if (comp == null) {
+							Component ve1 = EntityIcalAdapter.toIcal(subtask, export_todos);
+							if (ve1 != null)
+								addEvent(collection, ve1);
+
+						} else // TODO - what if both sides updated
+						{
+							Component ve1 = EntityIcalAdapter.toIcal(subtask, export_todos);
 							if (ve1 != null) {
 								updateEvent(collection, ve1);
 							} else {
@@ -532,7 +585,7 @@ public class CalDav {
 
 			// ignore incoming tasks
 			// TODO - process completion??
-			if (uid.contains("BORGT"))
+			if (uid.contains("BORGT") || uid.contains("BORGS"))
 				continue;
 
 			serverUids.add(uid);

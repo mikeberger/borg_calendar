@@ -55,10 +55,10 @@ public class ICal {
 
 		exportAppointments(clist, after);
 		exportTasks(clist);
+		exportSubTasks(clist);
 
 		if (!caldav) {
 			exportProjects(clist);
-			exportSubTasks(clist);
 		}
 
 		PropertyList pl = new PropertyList();

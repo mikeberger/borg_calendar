@@ -30,6 +30,7 @@ import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.model.TaskModel;
+import net.sf.borg.model.entity.SyncableEntity.ObjectType;
 
 /**
  * Subtask entity
@@ -38,7 +39,7 @@ import net.sf.borg.model.TaskModel;
 @XmlAccessorType(XmlAccessType.FIELD)
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class Subtask extends KeyedEntity<Subtask> implements CalendarEntity {
+public class Subtask extends KeyedEntity<Subtask> implements CalendarEntity, SyncableEntity {
 
 	private static final long serialVersionUID = -5794908342032518360L;
 
@@ -47,6 +48,10 @@ public class Subtask extends KeyedEntity<Subtask> implements CalendarEntity {
 	private Date DueDate;
 	private String Description;
 	private Integer Task;
+	private Date createTime;
+	private Date lastMod;
+	private String uid;
+	private String url;
 
 	// cached task description
 	private String taskDesc = null;
@@ -65,6 +70,10 @@ public class Subtask extends KeyedEntity<Subtask> implements CalendarEntity {
 		dst.setDueDate(getDueDate());
 		dst.setDescription(getDescription());
 		dst.setTask(getTask());
+		dst.setCreateTime(getCreateTime());
+		dst.setLastMod(getLastMod());
+		dst.setUid(getUid());
+		dst.setUrl(getUrl());
 		return (dst);
 	}
 
@@ -159,5 +168,10 @@ public class Subtask extends KeyedEntity<Subtask> implements CalendarEntity {
 	@Override
 	public boolean isPrivate() {
 		return false;
+	}
+	
+	@Override
+	public ObjectType getObjectType() {
+		return ObjectType.SUBTASK;
 	}
 }
