@@ -513,12 +513,12 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 
 			while( p != null )
 			{
-				if (p != null && task.getDueDate() != null
+				if (task.getDueDate() != null
 						&& p.getDueDate() != null
 						&& DateUtil.isAfter(task.getDueDate(), p.getDueDate())) {
 					throw new Warning(Resource.getResourceString("taskdd_warning"));
 				}
-				if (p != null && TaskModel.isClosed(p) && !TaskModel.isClosed(task)) {
+				if (TaskModel.isClosed(p) && !TaskModel.isClosed(task)) {
 					throw new Warning(
 							Resource.getResourceString("task_parent_closed"));
 				}

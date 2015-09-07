@@ -32,15 +32,15 @@ public class CheckListUndoItem extends UndoItem<CheckList> {
 	 */
 	@Override
 	public void executeUndo() {
-		if( action == actionType.DELETE )
+		if( action == ActionType.DELETE )
 		{
 			CheckListModel.getReference().saveCheckList(item, true);
 		}
-		else if( action == actionType.UPDATE )
+		else if( action == ActionType.UPDATE )
 		{
 			CheckListModel.getReference().saveCheckList(item, true);
 		}
-		else if( action == actionType.ADD )
+		else if( action == ActionType.ADD )
 		{
 			CheckListModel.getReference().delete(item.getCheckListName(), true);
 		}
@@ -77,7 +77,7 @@ public class CheckListUndoItem extends UndoItem<CheckList> {
 	{
 		CheckListUndoItem undoItem = new CheckListUndoItem();
 		undoItem.item = checkList;
-		undoItem.action = actionType.UPDATE;
+		undoItem.action = ActionType.UPDATE;
 		undoItem.setDescription(Resource.getResourceString("Change") + " " + 
 				Resource.getResourceString("CheckList") + " " + checkListString(checkList));
 		return undoItem;
@@ -94,7 +94,7 @@ public class CheckListUndoItem extends UndoItem<CheckList> {
 	{
 		CheckListUndoItem undoItem = new CheckListUndoItem();
 		undoItem.item = checkList;
-		undoItem.action = actionType.ADD;
+		undoItem.action = ActionType.ADD;
 		undoItem.setDescription(Resource.getResourceString("Add") + " " + 
 				Resource.getResourceString("checkList") + " " + checkListString(checkList));
 		return undoItem;
@@ -111,7 +111,7 @@ public class CheckListUndoItem extends UndoItem<CheckList> {
 	{
 		CheckListUndoItem undoItem = new CheckListUndoItem();
 		undoItem.item = checkList;
-		undoItem.action = actionType.DELETE;
+		undoItem.action = ActionType.DELETE;
 		undoItem.setDescription(Resource.getResourceString("Delete") + " " +
 				Resource.getResourceString("checkList") + " " + checkListString(checkList));
 		return undoItem;

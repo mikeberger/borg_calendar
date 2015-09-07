@@ -567,17 +567,17 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 
 				// strip newlines from the description
 				String de = project.getDescription();
-				String tmp = "";
+				StringBuffer tmp = new StringBuffer();
 				for (int i = 0; de != null && i < de.length(); i++) {
 					char c = de.charAt(i);
 					if (c == '\n' || c == '\r') {
-						tmp += ' ';
+						tmp.append(' ');
 						continue;
 					}
 
-					tmp += c;
+					tmp.append(c);
 				}
-				ro[8] = tmp;
+				ro[8] = tmp.toString();
 
 				// add the task row to table
 				tm.addRow(ro);

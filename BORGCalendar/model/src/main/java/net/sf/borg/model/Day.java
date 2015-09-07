@@ -25,6 +25,7 @@
 
 package net.sf.borg.model;
 
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Comparator;
@@ -54,7 +55,10 @@ public class Day {
 	/**
 	 * class to compare appointment strings for sorting.
 	 */
-	private static class apcompare implements Comparator<CalendarEntity> {
+	private static class apcompare implements Comparator<CalendarEntity>, Serializable {
+
+		
+		private static final long serialVersionUID = 1L;
 
 		/*
 		 * (non-Javadoc)

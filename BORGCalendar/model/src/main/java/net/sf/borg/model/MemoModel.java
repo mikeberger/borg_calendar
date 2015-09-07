@@ -135,7 +135,7 @@ public class MemoModel extends Model implements Searchable<Memo> {
 
 			if (m == null)
 				return;
-			Memo orig = m.clone();
+			Memo orig = m.copy();
 
 			db_.delete(m.getMemoName());
 			if (!undo) {

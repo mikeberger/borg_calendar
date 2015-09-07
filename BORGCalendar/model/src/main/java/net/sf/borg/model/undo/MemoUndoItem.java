@@ -32,15 +32,15 @@ public class MemoUndoItem extends UndoItem<Memo> {
 	 */
 	@Override
 	public void executeUndo() {
-		if( action == actionType.DELETE )
+		if( action == ActionType.DELETE )
 		{
 			MemoModel.getReference().saveMemo(item, true);
 		}
-		else if( action == actionType.UPDATE )
+		else if( action == ActionType.UPDATE )
 		{
 			MemoModel.getReference().saveMemo(item, true);
 		}
-		else if( action == actionType.ADD )
+		else if( action == ActionType.ADD )
 		{
 			MemoModel.getReference().delete(item.getMemoName(), true);
 		}
@@ -77,7 +77,7 @@ public class MemoUndoItem extends UndoItem<Memo> {
 	{
 		MemoUndoItem undoItem = new MemoUndoItem();
 		undoItem.item = memo;
-		undoItem.action = actionType.UPDATE;
+		undoItem.action = ActionType.UPDATE;
 		undoItem.setDescription(Resource.getResourceString("Change") + " " + 
 				Resource.getResourceString("memo") + " " + memoString(memo));
 		return undoItem;
@@ -94,7 +94,7 @@ public class MemoUndoItem extends UndoItem<Memo> {
 	{
 		MemoUndoItem undoItem = new MemoUndoItem();
 		undoItem.item = memo;
-		undoItem.action = actionType.ADD;
+		undoItem.action = ActionType.ADD;
 		undoItem.setDescription(Resource.getResourceString("Add") + " " + 
 				Resource.getResourceString("memo") + " " + memoString(memo));
 		return undoItem;
@@ -111,7 +111,7 @@ public class MemoUndoItem extends UndoItem<Memo> {
 	{
 		MemoUndoItem undoItem = new MemoUndoItem();
 		undoItem.item = memo;
-		undoItem.action = actionType.DELETE;
+		undoItem.action = ActionType.DELETE;
 		undoItem.setDescription(Resource.getResourceString("Delete") + " " +
 				Resource.getResourceString("memo") + " " + memoString(memo));
 		return undoItem;

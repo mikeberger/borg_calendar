@@ -103,12 +103,10 @@ public class Borg implements SocketHandler, Observer {
 	 * @throws IOException
 	 */
 	private static void addURL(URL u) throws IOException {
-		URLClassLoader sysloader = (URLClassLoader) ClassLoader
-				.getSystemClassLoader();
+		URLClassLoader sysloader = (URLClassLoader) ClassLoader.getSystemClassLoader();
 		Class<?> sysclass = URLClassLoader.class;
 		try {
-			Method method = sysclass.getDeclaredMethod("addURL",
-					new Class[] { URL.class });
+			Method method = sysclass.getDeclaredMethod("addURL", new Class[] { URL.class });
 			method.setAccessible(true);
 			method.invoke(sysloader, new Object[] { u });
 		} catch (Throwable t) {
@@ -208,10 +206,8 @@ public class Borg implements SocketHandler, Observer {
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override
 				public void run() {
-					if (Borg.this.modalMessage == null
-							|| !Borg.this.modalMessage.isShowing()) {
-						Borg.this.modalMessage = new ModalMessage(lockmsg,
-								false);
+					if (Borg.this.modalMessage == null || !Borg.this.modalMessage.isShowing()) {
+						Borg.this.modalMessage = new ModalMessage(lockmsg, false);
 						Borg.this.modalMessage.setVisible(true);
 					} else {
 						Borg.this.modalMessage.appendText(lockmsg);
@@ -227,10 +223,9 @@ public class Borg implements SocketHandler, Observer {
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override
 				public void run() {
-					if (Borg.this.modalMessage != null
-							&& Borg.this.modalMessage.isShowing()) {
+					if (Borg.this.modalMessage != null && Borg.this.modalMessage.isShowing()) {
 						Borg.this.modalMessage.appendText(lockmsg);
-						//Borg.this.modalMessage.setEnabled(false);
+						// Borg.this.modalMessage.setEnabled(false);
 						// Borg.this.modalMessage.toFront();
 					}
 
@@ -282,8 +277,7 @@ public class Borg implements SocketHandler, Observer {
 			} else if (args[i].equals("-db")) {
 				i++;
 				if (i >= args.length) {
-					System.out.println(Resource
-							.getResourceString("-db_argument_is_missing"));
+					System.out.println(Resource.getResourceString("-db_argument_is_missing"));
 					System.exit(1);
 				}
 				testdb = args[i];
@@ -297,8 +291,7 @@ public class Borg implements SocketHandler, Observer {
 				}
 				String toolName = args[i];
 				try {
-					Class<?> toolClass = Class
-							.forName("net.sf.borg.model.tool." + toolName);
+					Class<?> toolClass = Class.forName("net.sf.borg.model.tool." + toolName);
 					Object tool = toolClass.newInstance();
 					if (tool instanceof ConversionTool) {
 						((ConversionTool) tool).convert();
@@ -351,8 +344,7 @@ public class Borg implements SocketHandler, Observer {
 		try {
 			if (!testing) {
 				String home = System.getProperty("user.home", "");
-				FileOutputStream errStr = new FileOutputStream(home
-						+ "/.borg.out", false);
+				FileOutputStream errStr = new FileOutputStream(home + "/.borg.out", false);
 				PrintStream printStream = new PrintStream(errStr);
 				System.setErr(printStream);
 				System.setOut(printStream);
@@ -400,13 +392,15 @@ public class Borg implements SocketHandler, Observer {
 			log.info("using ext lib dir=" + ext);
 			if (ext.exists() && ext.isDirectory()) {
 				File[] files = ext.listFiles();
-				for (File file : files) {
-					if (file.getName().endsWith(".jar")) {
-						log.info("Loading JAR: " + file.getName());
-						try {
-							Borg.addURL(file.toURI().toURL());
-						} catch (Exception e) {
-							e.printStackTrace();
+				if (files != null) {
+					for (File file : files) {
+						if (file.getName().endsWith(".jar")) {
+							log.info("Loading JAR: " + file.getName());
+							try {
+								Borg.addURL(file.toURI().toURL());
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
 						}
 					}
 				}
@@ -458,10 +452,8 @@ public class Borg implements SocketHandler, Observer {
 					Prefs.putPref(PrefName.DBTYPE, "h2");
 					dbdir = DBHelper.getController().buildURL();
 				} else {
-					JOptionPane.showMessageDialog(null,
-							Resource.getResourceString("selectdb"),
-							Resource.getResourceString("Notice"),
-							JOptionPane.INFORMATION_MESSAGE);
+					JOptionPane.showMessageDialog(null, Resource.getResourceString("selectdb"),
+							Resource.getResourceString("Notice"), JOptionPane.INFORMATION_MESSAGE);
 
 					// if user wants to set db - let them
 					OptionsView.dbSelectOnly();
@@ -494,8 +486,7 @@ public class Borg implements SocketHandler, Observer {
 			// calculate email time in minutes from now
 			Calendar cal = new GregorianCalendar();
 			int emailmins = Prefs.getIntPref(PrefName.EMAILTIME);
-			int curmins = 60 * cal.get(Calendar.HOUR_OF_DAY)
-					+ cal.get(Calendar.MINUTE);
+			int curmins = 60 * cal.get(Calendar.HOUR_OF_DAY) + cal.get(Calendar.MINUTE);
 			int mailtime = emailmins - curmins;
 			if (mailtime < 0) {
 				// we are past mailtime - send it now
@@ -536,8 +527,7 @@ public class Borg implements SocketHandler, Observer {
 			// start autosync timer
 			int syncmins = Prefs.getIntPref(PrefName.SYNCMINS);
 			String dbtype = Prefs.getPref(PrefName.DBTYPE);
-			if ((dbtype.equals("mysql") || dbtype.equals("jdbc"))
-					&& syncmins != 0) {
+			if ((dbtype.equals("mysql") || dbtype.equals("jdbc")) && syncmins != 0) {
 				this.syncTimer_ = new java.util.Timer("SyncTimer");
 				this.syncTimer_.schedule(new TimerTask() {
 					@Override
@@ -562,13 +552,11 @@ public class Borg implements SocketHandler, Observer {
 				this.syncTimer_.schedule(new TimerTask() {
 					@Override
 					public void run() {
-						
+
 						try {
-							if( CalDav.isSyncing() && !CalDav.isServerSyncNeeded())
-							{
+							if (CalDav.isSyncing() && !CalDav.isServerSyncNeeded()) {
 								boolean needed = CalDav.checkRemoteSync();
-								if( needed )
-								{
+								if (needed) {
 									SwingUtilities.invokeLater(new Runnable() {
 										@Override
 										public void run() {
@@ -584,8 +572,7 @@ public class Borg implements SocketHandler, Observer {
 						} catch (Exception e) {
 							Errmsg.logError(e);
 						}
-						
-						
+
 					}
 				}, 10 * 1000, syncmins * 60 * 1000);
 			}

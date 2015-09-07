@@ -34,19 +34,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.awt.font.TextAttribute;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
-import java.io.Serializable;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
@@ -180,12 +176,6 @@ public class DayPanel extends DockableView implements Printable, CalendarModule 
 			Graphics2D g2 = (Graphics2D) g;
 			g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
 					RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-
-			// set up strike-through fonts
-			Map<TextAttribute, Serializable> stmap = new HashMap<TextAttribute, Serializable>();
-			stmap.put(TextAttribute.STRIKETHROUGH,
-					TextAttribute.STRIKETHROUGH_ON);
-			stmap.put(TextAttribute.FONT, sm_font);
 
 			// draw a white background
 			g2.setColor(new Color(t.getDefaultBg()));

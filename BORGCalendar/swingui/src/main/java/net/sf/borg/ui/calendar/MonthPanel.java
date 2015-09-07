@@ -82,7 +82,7 @@ public class MonthPanel extends JPanel implements Printable, CalendarModule {
 		private static final long serialVersionUID = 1L;
 
 		// number of boxes on the calendar - 6 rows of 7 days
-		final private int numBoxes = 42;
+		static final private int numBoxes = 42;
 
 		// width of a column of days
 		private int colwidth;

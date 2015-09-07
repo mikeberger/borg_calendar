@@ -511,7 +511,7 @@ public class TableSorter extends AbstractTableModel {
     // compatibility with the old SUN TableSorter
     // ===============================================================================
     
-    private class NewTableModel extends DefaultTableModel{
+    static private class NewTableModel extends DefaultTableModel{
         private static final long serialVersionUID = 1L;
         Class<?> [] classes_;
         boolean [] editable_;

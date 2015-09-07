@@ -221,8 +221,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 				}
 
 				// add the appt key to the day's list
-				LinkedList<Integer> l = (LinkedList<Integer>) o;
-				l.add(new Integer(key));
+				o.add(new Integer(key));
 
 				// add day key to vacation map if appt has vacation
 				if (appt.getVacation() != null

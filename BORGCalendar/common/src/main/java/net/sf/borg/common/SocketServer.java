@@ -21,7 +21,7 @@ public class SocketServer extends Thread {
 
     
 	// This class is the thread that handles all communication with a client
-	private class Connection extends Thread {
+	static private class Connection extends Thread {
 	    protected Socket client;
 	    protected BufferedReader in;
 	    protected PrintStream out;

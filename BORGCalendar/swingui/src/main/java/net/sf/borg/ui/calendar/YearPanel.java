@@ -82,7 +82,7 @@ public class YearPanel extends DockableView implements Printable,
 		private static final long serialVersionUID = 1L;
 
 		// number of day boxes - 37 per month. not all are used.
-		final private int numBoxes = 37 * 12;
+		static final private int numBoxes = 37 * 12;
 
 		// cached day box colors
 		Color colors[] = new Color[numBoxes];

@@ -110,7 +110,7 @@ public class EmailReminder {
 		// tx is the contents of the email
 		String ap_tx = "Appointments for "
 				+ DateFormat.getDateInstance().format(cal.getTime()) + "\n";
-		String tx = "";
+		StringBuffer tx = new StringBuffer();
 
 		// get the list of appts for the requested day
 		Collection<Integer> l = AppointmentModel.getReference().getAppts(
@@ -137,23 +137,23 @@ public class EmailReminder {
 						// note
 						Date d = appt.getDate();
 						SimpleDateFormat df = AppointmentModel.getTimeFormat();
-						tx += df.format(d) + " ";
+						tx.append(df.format(d) + " ");
 					}
 
 					// add the appointment text
 					if (appt.isEncrypted())
-						tx += Resource.getResourceString("EncryptedItemShort");
+						tx.append(Resource.getResourceString("EncryptedItemShort"));
 					else {
 						// only show first line of appointment text
 						String s = appt.getText();
 						int ii = s.indexOf('\n');
 						if (ii != -1) {
-							tx += s.substring(0, ii);
+							tx.append(s.substring(0, ii));
 						} else {
-							tx += s;
+							tx.append(s);
 						}
 					}
-					tx += "\n";
+					tx.append("\n");
 				} catch (Exception e) {
 					log.severe(e.toString());
 					return;
@@ -169,15 +169,15 @@ public class EmailReminder {
 
 			for (Task task : tasks) {
 				// add each task to the email - and remove newlines
-				tx += "Task[" + task.getKey() + "] ";
-				tx += task.getSummary();
-				tx += "\n";
+				tx.append("Task[" + task.getKey() + "] ");
+				tx.append(task.getSummary());
+				tx.append("\n");
 			}
 		}
 
 		// send the email using SMTP
-		if (!tx.equals("")) {
-			tx = ap_tx + tx;
+		if (!tx.toString().equals("")) {
+			String stx = ap_tx + tx;
 			StringTokenizer stk = new StringTokenizer(addr, ",;");
 			while (stk.hasMoreTokens()) {
 				String a = stk.nextToken();
@@ -188,7 +188,7 @@ public class EmailReminder {
 					f= from;
 				if (!a.equals("")) {
 					
-					SendJavaMail.sendMail(host, tx,
+					SendJavaMail.sendMail(host, stx,
 							Resource.getResourceString("Reminder_Notice"),
 							f, a.trim(),
 							Prefs.getPref(PrefName.EMAILUSER), gep());

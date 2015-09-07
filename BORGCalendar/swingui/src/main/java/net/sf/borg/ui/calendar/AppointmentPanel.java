@@ -194,8 +194,8 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener, Mo
 	static private class SolidComboBoxIcon implements Icon {
 
 		private Color color = Color.BLACK; // color
-		private final int h = 10; // height
-		private final int w = 60; // width
+		static private final int h = 10; // height
+		static private final int w = 60; // width
 
 		/**
 		 * Instantiates a new solid combo box icon.

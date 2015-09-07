@@ -20,6 +20,7 @@ Copyright 2003 by Mike Berger
 package net.sf.borg.model;
 
 import java.io.InputStream;
+import java.io.Serializable;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -48,8 +49,10 @@ public class CategoryModel extends Model {
 		public Collection<String> getCategories();
 	}
 
-	static class CategoryComparator implements Comparator<String>
+	static class CategoryComparator implements Comparator<String>, Serializable
 	{
+
+		private static final long serialVersionUID = 1L;
 
 		@Override
 		public int compare(String o1, String o2) {

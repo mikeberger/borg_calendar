@@ -35,20 +35,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.awt.font.TextAttribute;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
-import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
@@ -63,9 +59,9 @@ import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Day;
 import net.sf.borg.model.Model;
-import net.sf.borg.model.Theme;
 import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.TaskModel;
+import net.sf.borg.model.Theme;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.CalendarEntity;
 import net.sf.borg.ui.DockableView;
@@ -173,11 +169,6 @@ public class WeekPanel extends DockableView implements Printable,
 			g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
 					RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
-			// strike-font
-			Map<TextAttribute, Serializable> stmap = new HashMap<TextAttribute, Serializable>();
-			stmap.put(TextAttribute.STRIKETHROUGH,
-					TextAttribute.STRIKETHROUGH_ON);
-			stmap.put(TextAttribute.FONT, sm_font);
 
 			g2.setColor(new Color(t.getDefaultBg()));
 			g2.fillRect(0, 0, (int) width, (int) height);

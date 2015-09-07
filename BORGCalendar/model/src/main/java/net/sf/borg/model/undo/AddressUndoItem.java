@@ -33,11 +33,11 @@ public class AddressUndoItem extends UndoItem<Address> {
 	 */
 	@Override
 	public void executeUndo() throws Exception {
-		if (action == actionType.DELETE) {
+		if (action == ActionType.DELETE) {
 			AddressModel.getReference().saveAddress(item, true);
-		} else if (action == actionType.UPDATE) {
+		} else if (action == ActionType.UPDATE) {
 			AddressModel.getReference().saveAddress(item, true);
-		} else if (action == actionType.ADD) {
+		} else if (action == ActionType.ADD) {
 			AddressModel.getReference().delete(item, true);
 		}
 	}
@@ -70,7 +70,7 @@ public class AddressUndoItem extends UndoItem<Address> {
 	public static AddressUndoItem recordUpdate(Address addr) {
 		AddressUndoItem undoItem = new AddressUndoItem();
 		undoItem.item = addr;
-		undoItem.action = actionType.UPDATE;
+		undoItem.action = ActionType.UPDATE;
 		undoItem.setDescription(Resource.getResourceString("Change") + " "
 				+ Resource.getResourceString("Address") + " "
 				+ addrString(addr));
@@ -87,7 +87,7 @@ public class AddressUndoItem extends UndoItem<Address> {
 	public static AddressUndoItem recordAdd(Address addr) {
 		AddressUndoItem undoItem = new AddressUndoItem();
 		undoItem.item = addr;
-		undoItem.action = actionType.ADD;
+		undoItem.action = ActionType.ADD;
 		undoItem.setDescription(Resource.getResourceString("Add") + " "
 				+ Resource.getResourceString("Address") + " "
 				+ addrString(addr));
@@ -104,7 +104,7 @@ public class AddressUndoItem extends UndoItem<Address> {
 	public static AddressUndoItem recordDelete(Address addr) {
 		AddressUndoItem undoItem = new AddressUndoItem();
 		undoItem.item = addr;
-		undoItem.action = actionType.DELETE;
+		undoItem.action = ActionType.DELETE;
 		undoItem.setDescription(Resource.getResourceString("Delete") + " "
 				+ Resource.getResourceString("Address") + " "
 				+ addrString(addr));

@@ -170,7 +170,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 	 * A Node in the tree that contains the visible node name and the related
 	 * object
 	 */
-	private class Node {
+	static private class Node {
 
 		/** The entity name. */
 		private String name;

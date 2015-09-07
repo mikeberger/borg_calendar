@@ -177,8 +177,8 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 	static private class ToggleButtonIcon implements Icon {
 
 		private Color color = Color.BLACK;
-		private final int height = 10;
-		private final int width = 30;
+		static private final int height = 10;
+		static private final int width = 30;
 
 		/**
 		 * Instantiates a new toggle button icon.

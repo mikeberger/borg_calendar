@@ -20,7 +20,6 @@ package net.sf.borg.ui.calendar;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Graphics2D;
 import java.awt.Paint;
@@ -48,7 +47,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
@@ -410,13 +408,7 @@ class ApptBox extends Box implements Box.Draggable {
 		if (clip != null)
 			g2.setClip(clip);
 
-		Font sm_font = g2.getFont();
 		int smfontHeight = g2.getFontMetrics().getHeight();
-		
-		// set strike-through text map
-		Map<TextAttribute, Serializable> stmap = new HashMap<TextAttribute, Serializable>();
-		stmap.put(TextAttribute.STRIKETHROUGH, TextAttribute.STRIKETHROUGH_ON);
-		stmap.put(TextAttribute.FONT, sm_font);
 		
 		// determine appt text color based on "logical" color
 		// which maps the legacy color names to the new user color prefs

@@ -691,7 +691,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 				ro[5] = task.getSummary();
 
 				// project
-				String ps = "";
+				StringBuffer ps = new StringBuffer();
 				if (pid != null) {
 					Project p = TaskModel.getReference().getProject(
 							pid.intValue());
@@ -701,11 +701,11 @@ class TaskListPanel extends JPanel implements Model.Listener {
 						for (int i = 0; tt != null && i < tt.length(); i++) {
 							char c = tt.charAt(i);
 							if (c == '\n' || c == '\r') {
-								ps += ' ';
+								ps.append(' ');
 								continue;
 							}
 
-							ps += c;
+							ps.append(c);
 						}
 					}
 				}

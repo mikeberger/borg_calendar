@@ -28,7 +28,7 @@ public abstract class UndoItem<T> {
 	private String description;
 
 	/** The action that was taken. */
-	protected actionType action;
+	protected ActionType action;
 
 	/** the KeyedEntity that can be undone */
 	protected T item;
@@ -36,7 +36,7 @@ public abstract class UndoItem<T> {
 	/**
 	 * actions that can be applied to an item that need to be undone
 	 */
-	protected enum actionType {
+	protected enum ActionType {
 
 		ADD, DELETE, UPDATE
 	}

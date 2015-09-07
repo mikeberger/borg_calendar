@@ -54,8 +54,7 @@ public class Memo implements EncryptableEntity, Serializable {
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.entity.KeyedEntity#clone()
 	 */
-	@Override
-	public Memo clone() {
+	public Memo copy() {
 		Memo dst = new Memo();
 		dst.setMemoName( getMemoName() );
 		dst.setMemoText( getMemoText() );

@@ -70,7 +70,7 @@ abstract class ApptBoxPanel extends JPanel implements ComponentListener {
 	 * ClickedBoxInfo contains information about where the mouse is and what
 	 * Box and/or DateZone it is within
 	 */
-	private class ClickedBoxInfo {
+	static private class ClickedBoxInfo {
 		public Box box = null; //box that the mouse is in
 		public boolean onBottomBorder = false; //true if mouse is on the bottom border of a box
 		public boolean onTopBorder = false; // true if the mouse is on the top border of a box

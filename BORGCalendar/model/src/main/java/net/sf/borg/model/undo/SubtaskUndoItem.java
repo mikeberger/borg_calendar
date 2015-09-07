@@ -34,11 +34,11 @@ public class SubtaskUndoItem extends UndoItem<Subtask> {
 	@Override
 	public void executeUndo() {
 		try {
-			if (action == actionType.DELETE) {
+			if (action == ActionType.DELETE) {
 				TaskModel.getReference().saveSubTask(item, true);
-			} else if (action == actionType.UPDATE) {
+			} else if (action == ActionType.UPDATE) {
 				TaskModel.getReference().saveSubTask(item, true);
-			} else if (action == actionType.ADD) {
+			} else if (action == ActionType.ADD) {
 				TaskModel.getReference().deleteSubTask(item.getKey(),true);
 			}
 		} catch (Exception e) {
@@ -74,7 +74,7 @@ public class SubtaskUndoItem extends UndoItem<Subtask> {
 	public static SubtaskUndoItem recordUpdate(Subtask subtask) {
 		SubtaskUndoItem undoItem = new SubtaskUndoItem();
 		undoItem.item = subtask;
-		undoItem.action = actionType.UPDATE;
+		undoItem.action = ActionType.UPDATE;
 		undoItem.setDescription(Resource.getResourceString("Change") + " "
 				+ Resource.getResourceString("subtask") + " "
 				+ itemString(subtask));
@@ -95,7 +95,7 @@ public class SubtaskUndoItem extends UndoItem<Subtask> {
 	public static SubtaskUndoItem recordAdd(Subtask subtask) {
 		SubtaskUndoItem undoItem = new SubtaskUndoItem();
 		undoItem.item = subtask;
-		undoItem.action = actionType.ADD;
+		undoItem.action = ActionType.ADD;
 		undoItem.setDescription(Resource.getResourceString("Add") + " "
 				+ Resource.getResourceString("subtask") + " "
 				+ itemString(subtask));
@@ -115,7 +115,7 @@ public class SubtaskUndoItem extends UndoItem<Subtask> {
 	public static SubtaskUndoItem recordDelete(Subtask subtask) {
 		SubtaskUndoItem undoItem = new SubtaskUndoItem();
 		undoItem.item = subtask;
-		undoItem.action = actionType.DELETE;
+		undoItem.action = ActionType.DELETE;
 		undoItem.setDescription(Resource.getResourceString("Delete") + " "
 				+ Resource.getResourceString("subtask") + " "
 				+ itemString(subtask));

@@ -75,7 +75,7 @@ public class ReminderList extends View {
 	 * renderer to add the todo marker to the reminder text in the table
 	 *
 	 */
-	private class MyTableCellRenderer extends DefaultTableCellRenderer {
+	static private class MyTableCellRenderer extends DefaultTableCellRenderer {
 
 		private static final long serialVersionUID = 1L;
 

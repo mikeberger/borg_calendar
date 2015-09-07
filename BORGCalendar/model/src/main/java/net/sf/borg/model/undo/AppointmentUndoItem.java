@@ -35,11 +35,11 @@ public class AppointmentUndoItem extends UndoItem<Appointment> {
 	 */
 	@Override
 	public void executeUndo() {
-		if (action == actionType.DELETE) {
+		if (action == ActionType.DELETE) {
 			AppointmentModel.getReference().saveAppt(item, true);
-		} else if (action == actionType.UPDATE) {
+		} else if (action == ActionType.UPDATE) {
 			AppointmentModel.getReference().saveAppt(item, true);
-		} else if (action == actionType.ADD) {
+		} else if (action == ActionType.ADD) {
 			AppointmentModel.getReference().delAppt(item, true);
 		} 
 	}
@@ -78,7 +78,7 @@ public class AppointmentUndoItem extends UndoItem<Appointment> {
 	public static AppointmentUndoItem recordUpdate(Appointment appt) {
 		AppointmentUndoItem undoItem = new AppointmentUndoItem();
 		undoItem.item = appt;
-		undoItem.action = actionType.UPDATE;
+		undoItem.action = ActionType.UPDATE;
 		undoItem.setDescription(Resource.getResourceString("Change") + " "
 				+ Resource.getResourceString("appointment") + " "
 				+ apptString(appt));
@@ -95,7 +95,7 @@ public class AppointmentUndoItem extends UndoItem<Appointment> {
 	public static AppointmentUndoItem recordAdd(Appointment appt) {
 		AppointmentUndoItem undoItem = new AppointmentUndoItem();
 		undoItem.item = appt;
-		undoItem.action = actionType.ADD;
+		undoItem.action = ActionType.ADD;
 		undoItem.setDescription(Resource.getResourceString("Add") + " "
 				+ Resource.getResourceString("appointment") + " "
 				+ apptString(appt));
@@ -112,7 +112,7 @@ public class AppointmentUndoItem extends UndoItem<Appointment> {
 	public static AppointmentUndoItem recordDelete(Appointment appt) {
 		AppointmentUndoItem undoItem = new AppointmentUndoItem();
 		undoItem.item = appt;
-		undoItem.action = actionType.DELETE;
+		undoItem.action = ActionType.DELETE;
 		undoItem.setDescription(Resource.getResourceString("Delete") + " "
 				+ Resource.getResourceString("appointment") + " "
 				+ apptString(appt));

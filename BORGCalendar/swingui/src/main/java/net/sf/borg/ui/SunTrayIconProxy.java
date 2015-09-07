@@ -53,7 +53,7 @@ import net.sf.borg.ui.popup.ReminderManager;
 public class SunTrayIconProxy implements Prefs.Listener {
 
 	// action that opens the main view
-	private class OpenListener implements ActionListener {
+	static private class OpenListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			UIControl.toFront();

@@ -34,11 +34,11 @@ public class ProjectUndoItem extends UndoItem<Project> {
 	@Override
 	public void executeUndo() {
 		try {
-			if (action == actionType.DELETE) {
+			if (action == ActionType.DELETE) {
 				TaskModel.getReference().saveProject(item, true);
-			} else if (action == actionType.UPDATE) {
+			} else if (action == ActionType.UPDATE) {
 				TaskModel.getReference().saveProject(item, true);
-			} else if (action == actionType.ADD) {
+			} else if (action == ActionType.ADD) {
 					TaskModel.getReference().deleteProject(item.getKey());
 			}
 		} catch (Exception e) {
@@ -74,7 +74,7 @@ public class ProjectUndoItem extends UndoItem<Project> {
 	public static ProjectUndoItem recordUpdate(Project project) {
 		ProjectUndoItem undoItem = new ProjectUndoItem();
 		undoItem.item = project;
-		undoItem.action = actionType.UPDATE;
+		undoItem.action = ActionType.UPDATE;
 		undoItem.setDescription(Resource.getResourceString("Change") + " "
 				+ Resource.getResourceString("project") + " "
 				+ itemString(project));
@@ -91,7 +91,7 @@ public class ProjectUndoItem extends UndoItem<Project> {
 	public static ProjectUndoItem recordAdd(Project project) {
 		ProjectUndoItem undoItem = new ProjectUndoItem();
 		undoItem.item = project;
-		undoItem.action = actionType.ADD;
+		undoItem.action = ActionType.ADD;
 		undoItem.setDescription(Resource.getResourceString("Add") + " "
 				+ Resource.getResourceString("project") + " "
 				+ itemString(project));

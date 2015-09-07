@@ -46,7 +46,7 @@ public class TaskUndoItem extends UndoItem<Task> {
 	@Override
 	public void executeUndo() {
 		try {
-			if (action == actionType.DELETE) {
+			if (action == ActionType.DELETE) {
 				
 				// check if parent project exists
 				Integer pid = item.getProject();
@@ -72,7 +72,7 @@ public class TaskUndoItem extends UndoItem<Task> {
 					s.item.setTask(new Integer(item.getKey()));
 					s.executeUndo();
 				}
-			} else if (action == actionType.UPDATE) {
+			} else if (action == ActionType.UPDATE) {
 				
 				// BORG updates subtasks during the same transaction that updates the
 				// task, so rolling back a task needs to include a rollback of any subtask
@@ -82,7 +82,7 @@ public class TaskUndoItem extends UndoItem<Task> {
 					s.executeUndo();
 				}
 				TaskModel.getReference().savetask(item, true);
-			} else if (action == actionType.ADD) {
+			} else if (action == ActionType.ADD) {
 				
 				// we don't need to delete the subtasks separately
 				// there is a cascading delete when the task is deleted
@@ -121,7 +121,7 @@ public class TaskUndoItem extends UndoItem<Task> {
 	public static TaskUndoItem recordUpdate(Task task) {
 		TaskUndoItem undoItem = new TaskUndoItem();
 		undoItem.item = task;
-		undoItem.action = actionType.UPDATE;
+		undoItem.action = ActionType.UPDATE;
 		undoItem.setDescription(Resource.getResourceString("Change") + " "
 				+ Resource.getResourceString("task") + " "
 				+ itemString(task));
@@ -138,7 +138,7 @@ public class TaskUndoItem extends UndoItem<Task> {
 	public static TaskUndoItem recordAdd(Task task) {
 		TaskUndoItem undoItem = new TaskUndoItem();
 		undoItem.item = task;
-		undoItem.action = actionType.ADD;
+		undoItem.action = ActionType.ADD;
 		undoItem.setDescription(Resource.getResourceString("Add") + " "
 				+ Resource.getResourceString("task") + " "
 				+ itemString(task));
@@ -155,7 +155,7 @@ public class TaskUndoItem extends UndoItem<Task> {
 	public static TaskUndoItem recordDelete(Task task) {
 		TaskUndoItem undoItem = new TaskUndoItem();
 		undoItem.item = task;
-		undoItem.action = actionType.DELETE;
+		undoItem.action = ActionType.DELETE;
 		undoItem.setDescription(Resource.getResourceString("Delete") + " "
 				+ Resource.getResourceString("task") + " "
 				+ itemString(task));

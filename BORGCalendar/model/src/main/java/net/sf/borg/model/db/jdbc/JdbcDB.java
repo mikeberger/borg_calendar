@@ -256,19 +256,20 @@ final class JdbcDB {
 	// db representation of String Lists, Integer, and boolean
 	//
 	public final static String toStr(Vector<String> v) {
-		String val = "";
+		StringBuffer val = new StringBuffer();
 		if (v == null)
 			return ("");
 		try {
 			while (true) {
 				String s = v.remove(0);
-				val += s;
-				val += ",";
+				val.append(s);
+				val.append(",");
+				
 			}
 		} catch (Exception e) {
 			// empty
 		}
-		return (val);
+		return (val.toString());
 	}
 
 	public final static int toInt(Integer in) {
