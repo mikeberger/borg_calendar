@@ -108,6 +108,10 @@ CREATE CACHED TABLE tasks (
   close_date date default NULL,
   project integer default NULL,
   summary longvarchar NOT NULL,
+  create_time datetime default '1980-01-01 00:00:00' NOT NULL,
+  lastmod datetime default '1980-01-01 00:00:00' NOT NULL,
+  uid longvarchar,
+  url longvarchar,
   PRIMARY KEY  (tasknum),
   FOREIGN KEY (project) REFERENCES projects ( id)
      ON DELETE CASCADE

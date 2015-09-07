@@ -543,6 +543,10 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 				int newkey = db_.nextkey();
 				task.setKey(newkey);
 			}
+			task.setCreateTime(new Date());
+			task.setLastMod(task.getCreateTime());
+			if( task.getUid() == null)
+				task.setUid(Integer.toString(task.getKey()) + "@BORGT-" + task.getCreateTime().getTime());
 			db_.addObj(task);
 			if (!undo) {
 				Task t = getTask(task.getKey());
@@ -561,6 +565,12 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 				Task t = getTask(task.getKey());
 				UndoLog.getReference().addItem(TaskUndoItem.recordUpdate(t));
 			}
+			if( task.getCreateTime() == null )
+				task.setCreateTime(new Date());
+
+			task.setLastMod(new Date());
+			if( task.getUid() == null)
+				task.setUid(Integer.toString(task.getKey()) + "@BORGT-" + task.getCreateTime().getTime());
 			db_.updateObj(task);
 			action = ChangeAction.CHANGE;
 

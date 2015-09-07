@@ -637,10 +637,23 @@ public class EntityIcalAdapter {
 		else
 			ve = new VEvent();
 
-		long updated = new Date().getTime();
-		String uidval = Integer.toString(t.getKey()) + "@BORGT" + updated;
+		String uidval = t.getUid();
+		if (uidval == null || uidval.isEmpty()) {
+			uidval = Integer.toString(t.getKey()) + "@BORGT-" + t.getCreateTime().getTime();
+		}
 		Uid uid = new Uid(uidval);
 		ve.getProperties().add(uid);
+
+		String urlVal = t.getUrl();
+		if (urlVal != null && !urlVal.isEmpty()) {
+			Url url = new Url();
+			url.setValue(urlVal);
+			ve.getProperties().add(url);
+		}
+
+		ve.getProperties().add(new Created(new DateTime(t.getCreateTime())));
+		ve.getProperties().add(new LastModified(new DateTime(t.getLastMod())));
+		
 
 		// add text
 		ve.getProperties().add(new Summary("[T]" + t.getSummary()));

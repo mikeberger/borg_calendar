@@ -63,7 +63,6 @@ public class IcalOptionsPanel extends OptionsPanel {
 	private JTextField caldavUser = new JTextField();
 	private JPasswordField caldavPassword = new JPasswordField();
 	private JTextField caldavCal = new JTextField();
-	private JTextField caldavCal2 = new JTextField();
 
 	private JCheckBox caldavSSL = new JCheckBox();
 	private JCheckBox caldavSelfSigned = new JCheckBox();
@@ -158,11 +157,6 @@ public class IcalOptionsPanel extends OptionsPanel {
 		calpanel.add(caldavCal, GridBagConstraintsFactory.create(1, 2,
 				GridBagConstraints.BOTH, 1.0, 0.0));
 
-		calpanel.add(new JLabel(Resource.getResourceString("CALDAV_Cal2")),
-				GridBagConstraintsFactory.create(2, 2, GridBagConstraints.BOTH));
-		calpanel.add(caldavCal2, GridBagConstraintsFactory.create(3, 2,
-				GridBagConstraints.BOTH, 1.0, 0.0));
-
 		calpanel.add(
 				new JLabel(Resource.getResourceString("CALDAV_PrincipalPath")),
 				GridBagConstraintsFactory.create(0, 3, GridBagConstraints.BOTH));
@@ -234,7 +228,6 @@ public class IcalOptionsPanel extends OptionsPanel {
 		}
 
 		Prefs.putPref(PrefName.CALDAV_CAL, caldavCal.getText());
-		Prefs.putPref(PrefName.CALDAV_CAL2, caldavCal2.getText());
 		OptionsPanel.setBooleanPref(caldavSSL, PrefName.CALDAV_USE_SSL);
 		OptionsPanel.setBooleanPref(caldavSelfSigned, PrefName.CALDAV_ALLOW_SELF_SIGNED_CERT);
 
@@ -265,7 +258,6 @@ public class IcalOptionsPanel extends OptionsPanel {
 
 		caldavUser.setText(Prefs.getPref(PrefName.CALDAV_USER));
 		caldavCal.setText(Prefs.getPref(PrefName.CALDAV_CAL));
-		caldavCal2.setText(Prefs.getPref(PrefName.CALDAV_CAL2));
 		caldavServer.setText(Prefs.getPref(PrefName.CALDAV_SERVER));
 		caldavPath.setText(Prefs.getPref(PrefName.CALDAV_PATH));
 		caldavPrincipalPath.setText(Prefs

@@ -412,7 +412,7 @@ public class PrefName {
 	public static PrefName CALDAV_PASSWORD2 = new PrefName("caldav-password2", "");
 
 	public static PrefName CALDAV_CAL = new PrefName("caldav-cal", "default");
-	public static PrefName CALDAV_CAL2 = new PrefName("caldav-cal2", "");
+	//public static PrefName CALDAV_CAL2 = new PrefName("caldav-cal2", "");
 	public static PrefName CALDAV_USE_SSL = new PrefName("caldav-use-ssl", "false");
 	public static PrefName CALDAV_ALLOW_SELF_SIGNED_CERT = new PrefName("caldav-self-signed", "false");
 	

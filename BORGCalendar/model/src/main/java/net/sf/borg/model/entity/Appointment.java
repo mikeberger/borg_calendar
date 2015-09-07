@@ -41,7 +41,7 @@ import net.sf.borg.common.Resource;
 @EqualsAndHashCode(callSuper = false,exclude={"createTime", "lastMod"})
 // exclude key and encryption field from hashcode
 public class Appointment extends KeyedEntity<Appointment> implements
-		CalendarEntity, EncryptableEntity {
+		CalendarEntity, EncryptableEntity, SyncableEntity {
 
 	private static final long serialVersionUID = 7225675837209156249L;
 
@@ -156,6 +156,11 @@ public class Appointment extends KeyedEntity<Appointment> implements
 		if (isEncrypted())
 			return (Resource.getResourceString("EncryptedItemShort"));
 		return getText();
+	}
+
+	@Override
+	public SyncableEntity.ObjectType getObjectType() {
+		return SyncableEntity.ObjectType.APPOINTMENT;
 	}
 
 }

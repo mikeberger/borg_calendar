@@ -96,6 +96,10 @@ CREATE TABLE `tasks` (
   `close_date` date default NULL,
   project integer default NULL,
    `summary` text NOT NULL,
+   `create_time` timestamp NOT NULL default '1980-00-00 00:00:00',
+  `lastmod` timestamp NOT NULL default '1980-00-00 00:00:00',
+   uid text,
+   url text,
   PRIMARY KEY  (`tasknum`),
   FOREIGN KEY (project) REFERENCES projects ( id)
      ON DELETE CASCADE

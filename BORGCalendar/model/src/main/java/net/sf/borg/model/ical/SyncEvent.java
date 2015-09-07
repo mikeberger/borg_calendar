@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import net.sf.borg.model.Model.ChangeEvent.ChangeAction;
+import net.sf.borg.model.entity.SyncableEntity.ObjectType;
 
 @Data
 @NoArgsConstructor
@@ -16,9 +17,7 @@ import net.sf.borg.model.Model.ChangeEvent.ChangeAction;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class SyncEvent {
 
-	public static enum ObjectType {
-		APPOINTMENT, TASK, PROJECT, SUBTASK, REMOTE
-	}
+	
 
 	private Integer id;
 	private String uid;

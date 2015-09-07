@@ -24,8 +24,9 @@ import net.sf.borg.model.db.jdbc.JdbcDBUpgrader;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Subtask;
+import net.sf.borg.model.entity.SyncableEntity;
+import net.sf.borg.model.entity.SyncableEntity.ObjectType;
 import net.sf.borg.model.entity.Task;
-import net.sf.borg.model.ical.SyncEvent.ObjectType;
 
 /**
  * class to track all appointment model changes since the last sync it will
@@ -68,31 +69,20 @@ public class SyncLog extends Model implements Model.Listener, Prefs.Listener {
 
 			Object obj = borgEvent.getObject();
 			SyncEvent newEvent = new SyncEvent();
-			if (obj instanceof Appointment) {
-				newEvent.setId(new Integer(((Appointment) obj).getKey()));
-				newEvent.setObjectType(ObjectType.APPOINTMENT);
+			if (obj instanceof SyncableEntity) {
+				SyncableEntity se = (SyncableEntity) obj;
+				newEvent.setId(new Integer(se.getKey()));
+				newEvent.setObjectType(se.getObjectType());
 
 				// use the URL first. If null, user the UID
-				Appointment ap = (Appointment) obj;
-				if (ap.getUrl() != null) {
-					newEvent.setUid(((Appointment) obj).getUrl());
+
+				if (se.getUrl() != null) {
+					newEvent.setUid(se.getUrl());
 				} else {
-					newEvent.setUid(((Appointment) obj).getUid());
+					newEvent.setUid(se.getUid());
 				}
 
-			}
-			else if (obj instanceof Task) {
-				newEvent.setId(new Integer(((Task) obj).getKey()));
-				newEvent.setObjectType(ObjectType.TASK);
-				newEvent.setUid("na");
-			} else if (obj instanceof Subtask) {
-				newEvent.setId(new Integer(((Subtask) obj).getKey()));
-				newEvent.setObjectType(ObjectType.SUBTASK);
-				newEvent.setUid("na");
-			} else if (obj instanceof Project) {
-				newEvent.setId(new Integer(((Project) obj).getKey()));
-				newEvent.setObjectType(ObjectType.PROJECT);
-				newEvent.setUid("na");
+
 			} else {
 				return;
 			}

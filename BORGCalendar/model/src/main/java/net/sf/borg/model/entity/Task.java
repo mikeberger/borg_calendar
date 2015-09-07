@@ -38,7 +38,7 @@ import net.sf.borg.common.Prefs;
 @XmlAccessorType(XmlAccessType.FIELD)
 @Data
 @EqualsAndHashCode(callSuper=true)
-public class Task extends KeyedEntity<Task> implements CalendarEntity {
+public class Task extends KeyedEntity<Task> implements CalendarEntity, SyncableEntity {
 
 	
 	private static final long serialVersionUID = -8980203293028263282L;
@@ -55,6 +55,10 @@ public class Task extends KeyedEntity<Task> implements CalendarEntity {
 	private String Category;
 	private Integer Project;
 	private String summary;
+	private Date createTime;
+	private Date lastMod;
+	private String uid;
+	private String url;
 
 	
 	/* (non-Javadoc)
@@ -141,11 +145,20 @@ public class Task extends KeyedEntity<Task> implements CalendarEntity {
 		dst.setCategory( getCategory() );
 		dst.setProject( getProject() );
 		dst.setSummary( getSummary() );
+		dst.setCreateTime(getCreateTime());
+		dst.setLastMod(getLastMod());
+		dst.setUid(getUid());
+		dst.setUrl(getUrl());
 		return(dst);
 	}
 
 	@Override
 	public boolean isPrivate() {
 		return false;
+	}
+
+	@Override
+	public ObjectType getObjectType() {
+		return ObjectType.TASK;
 	}
 }

@@ -41,7 +41,23 @@ import net.sf.borg.model.entity.Tasklog;
 class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
 
 	public TaskJdbcDB() {
-		
+		new JdbcDBUpgrader(
+				"select create_time from tasks",
+				"alter table tasks add column create_time datetime default '1980-01-01 00:00:00' NOT NULL")
+				.upgrade();
+		new JdbcDBUpgrader(
+				"select lastmod from tasks",
+				"alter table tasks add column lastmod datetime default '1980-01-01 00:00:00' NOT NULL")
+				.upgrade();
+		new JdbcDBUpgrader(
+				"select uid from tasks",
+				new String[] {
+						"alter table tasks add column uid longvarchar",
+						"update tasks set uid = CONCAT(tasknum,'@BORGT', RAND())" })
+				.upgrade();
+		new JdbcDBUpgrader("select url from tasks",
+				"alter table tasks add column url longvarchar")
+				.upgrade();
 	}
 
     /* (non-Javadoc)
@@ -51,8 +67,8 @@ class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
     public void addObj(Task task) throws Exception {
         PreparedStatement stmt = JdbcDB.getConnection()
                 .prepareStatement("INSERT INTO tasks ( tasknum, start_date, due_date, person_assigned,"
-                        + " priority, state, type, description, resolution, category, close_date, project, summary) VALUES "
-                        + "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                        + " priority, state, type, description, resolution, category, close_date, project, summary, create_time, lastmod, uid, url) VALUES "
+                        + "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
         stmt.setInt(1, task.getKey());
        
@@ -88,6 +104,12 @@ class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
         else
             stmt.setNull(12, java.sql.Types.INTEGER);
         stmt.setString(13, task.getSummary());
+        stmt.setTimestamp(14, new java.sql.Timestamp(task.getCreateTime()
+				.getTime()), Calendar.getInstance());
+		stmt.setTimestamp(15, new java.sql.Timestamp(task.getLastMod()
+				.getTime()), Calendar.getInstance());
+		stmt.setString(16, task.getUid());
+		stmt.setString(17, task.getUrl());
         stmt.executeUpdate();
 
         writeCache(task);
@@ -193,6 +215,14 @@ class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
             task.setCompletionDate(new java.util.Date(r.getDate("close_date").getTime()));
         task.setProject((Integer) r.getObject("project"));
         task.setSummary(r.getString("summary"));
+        if (r.getTimestamp("create_time") != null)
+        	task.setCreateTime(new java.util.Date(r.getTimestamp("create_time")
+					.getTime()));
+		if (r.getTimestamp("lastmod") != null)
+			task.setLastMod(new java.util.Date(r.getTimestamp("lastmod")
+					.getTime()));
+		task.setUid(r.getString("uid"));
+		task.setUrl(r.getString("url"));
 
         return task;
     }
@@ -205,7 +235,7 @@ class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
         PreparedStatement stmt = JdbcDB.getConnection()
                 .prepareStatement("UPDATE tasks SET  start_date = ?, due_date = ?, person_assigned = ?,"
                         + " priority = ?, state = ?, type = ?, description = ?, resolution = ?,"
-                        + " category = ?, close_date = ?, project = ?, summary = ? WHERE tasknum = ?");
+                        + " category = ?, close_date = ?, project = ?, summary = ?, create_time = ?, lastmod = ?, uid = ?, url = ? WHERE tasknum = ?");
 
         
         java.util.Date sd = task.getStartDate();
@@ -237,8 +267,15 @@ class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
         else
             stmt.setNull(11, java.sql.Types.INTEGER);
         stmt.setString(12, task.getSummary());
+        
+        stmt.setTimestamp(13, new java.sql.Timestamp(task.getCreateTime()
+				.getTime()), Calendar.getInstance());
+		stmt.setTimestamp(14, new java.sql.Timestamp(task.getLastMod()
+				.getTime()), Calendar.getInstance());
+		stmt.setString(15, task.getUid());
+		stmt.setString(16, task.getUrl());
 
-        stmt.setInt(13, task.getKey());
+        stmt.setInt(17, task.getKey());
 
         stmt.executeUpdate();
 
