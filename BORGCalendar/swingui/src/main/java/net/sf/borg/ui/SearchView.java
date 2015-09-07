@@ -342,14 +342,17 @@ public class SearchView extends DockableView implements Module {
 
 				// get selected items
 				TableSorter tm = (TableSorter) resultsTable.getModel();
-				ArrayList<KeyedEntity<?>> entities = new ArrayList<KeyedEntity<?>>();
+				ArrayList<Object> entities = new ArrayList<Object>();
 				for (int i = 0; i < rows.length; i++) {
 					Integer key = (Integer) tm.getValueAt(rows[i], 3);
 					Class<?> cl = (Class<?>) tm.getValueAt(rows[i], 4);
 					try {
-						KeyedEntity<?> ent = (KeyedEntity<?>) cl.newInstance();
-						ent.setKey(key.intValue());
-						if (ent instanceof Memo)
+						Object ent = (Object) cl.newInstance();
+						if( ent instanceof KeyedEntity )
+						{
+							((KeyedEntity<?>)ent).setKey(key.intValue());
+						}
+						else if (ent instanceof Memo)
 							((Memo) ent).setMemoName((String) tm.getValueAt(
 									rows[i], 0));
 						entities.add(ent);
@@ -360,9 +363,9 @@ public class SearchView extends DockableView implements Module {
 				}
 
 				// delete the items
-				for (KeyedEntity<?> ent : entities) {
+				for (Object ent : entities) {
 					if (ent instanceof Appointment)
-						AppointmentModel.getReference().delAppt(ent.getKey());
+						AppointmentModel.getReference().delAppt(((Appointment)ent).getKey());
 					else if (ent instanceof Address)
 						AddressModel.getReference().delete((Address) ent);
 					else if (ent instanceof Memo)

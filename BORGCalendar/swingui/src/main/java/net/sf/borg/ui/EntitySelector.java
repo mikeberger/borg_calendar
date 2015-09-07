@@ -46,7 +46,6 @@ import net.sf.borg.model.MemoModel;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.Address;
 import net.sf.borg.model.entity.Appointment;
-import net.sf.borg.model.entity.KeyedEntity;
 import net.sf.borg.model.entity.Memo;
 import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Task;
@@ -62,7 +61,7 @@ public class EntitySelector extends JDialog {
 	private static final long serialVersionUID = 1L;
 
 	/** The used to hold the chosen entities */
-	private static ArrayList<KeyedEntity<?>> list_ = new ArrayList<KeyedEntity<?>>();
+	private static ArrayList<Object> list_ = new ArrayList<Object>();
 
 	/**
 	 * Prompt the user to select an address.
@@ -74,13 +73,13 @@ public class EntitySelector extends JDialog {
 	 */
 	public static Address selectAddress() throws Exception {
 		Collection<Address> addrs = AddressModel.getReference().getAddresses();
-		return ((Address) EntitySelector.selectBean(
-				addrs,
-				new TableSorter(new String[] {
-						Resource.getResourceString("Last"),
-						Resource.getResourceString("First") }, new Class[] {
-						String.class, String.class }), new String[] {
-						"LastName", "FirstName" }));
+		return ((Address) EntitySelector
+				.selectBean(addrs,
+						new TableSorter(
+								new String[] { Resource.getResourceString("Last"),
+										Resource.getResourceString("First") },
+								new Class[] { String.class, String.class }),
+						new String[] { "LastName", "FirstName" }));
 	}
 
 	/**
@@ -93,8 +92,7 @@ public class EntitySelector extends JDialog {
 	 */
 	public static Appointment selectAppointment(List<Appointment> exclude) throws Exception {
 
-		Collection<Appointment> apps = AppointmentModel.getReference()
-				.getAllAppts();
+		Collection<Appointment> apps = AppointmentModel.getReference().getAllAppts();
 		apps.removeAll(exclude);
 		if (Prefs.getPref(PrefName.SHOWPRIVATE).equals("false")) {
 			Collection<Appointment> privAppts = new LinkedList<Appointment>();
@@ -104,13 +102,11 @@ public class EntitySelector extends JDialog {
 			}
 			apps.removeAll(privAppts);
 		}
-		return ((Appointment) selectBean(
-				apps,
-				new TableSorter(new String[] {
-						Resource.getResourceString("Text"),
-						Resource.getResourceString("Time") }, new Class[] {
-						String.class, Date.class }), new String[] {
-						"ClearText", "Date" }));
+		Object ap = selectBean(apps,
+				new TableSorter(new String[] { Resource.getResourceString("Text"), Resource.getResourceString("Time") },
+						new Class[] { String.class, Date.class }),
+				new String[] { "ClearText", "Date" });
+		return (Appointment)ap;
 
 	}
 
@@ -126,9 +122,7 @@ public class EntitySelector extends JDialog {
 	 * 
 	 * @return the object
 	 */
-	private static Object selectBean(
-			Collection<? extends KeyedEntity<?>> records, TableModel tm,
-			String fields[]) {
+	private static Object selectBean(Collection<? extends Object> records, TableModel tm, String fields[]) {
 		new EntitySelector(records, tm, fields, false).setVisible(true);
 		if (list_.size() != 0) {
 			Object b = list_.get(0);
@@ -149,9 +143,9 @@ public class EntitySelector extends JDialog {
 	public static Memo selectMemo() throws Exception {
 
 		Collection<Memo> memos = MemoModel.getReference().getMemos();
-		return ((Memo) selectBean(memos, new TableSorter(
-				new String[] { Resource.getResourceString("Memo_Name") },
-				new Class[] { String.class }), new String[] { "MemoName" }));
+		return ((Memo) selectBean(memos,
+				new TableSorter(new String[] { Resource.getResourceString("Memo_Name") }, new Class[] { String.class }),
+				new String[] { "MemoName" }));
 	}
 
 	/**
@@ -164,11 +158,10 @@ public class EntitySelector extends JDialog {
 	 */
 	public static Project selectProject() throws Exception {
 		Collection<Project> projects = TaskModel.getReference().getProjects();
-		return ((Project) EntitySelector.selectBean(
-				projects,
-				new TableSorter(new String[] {
-						Resource.getResourceString("Item_#"),
-						Resource.getResourceString("Description") },
+		return ((Project) EntitySelector.selectBean(projects,
+				new TableSorter(
+						new String[] { Resource.getResourceString("Item_#"),
+								Resource.getResourceString("Description") },
 						new Class[] { Integer.class, String.class }),
 				new String[] { "Key", "Description" }));
 	}
@@ -183,11 +176,10 @@ public class EntitySelector extends JDialog {
 	 */
 	public static Task selectTask() throws Exception {
 		Collection<Task> tasks = TaskModel.getReference().getTasks();
-		return ((Task) EntitySelector.selectBean(
-				tasks,
-				new TableSorter(new String[] {
-						Resource.getResourceString("Item_#"),
-						Resource.getResourceString("Description") },
+		return ((Task) EntitySelector.selectBean(tasks,
+				new TableSorter(
+						new String[] { Resource.getResourceString("Item_#"),
+								Resource.getResourceString("Description") },
 						new Class[] { Integer.class, String.class }),
 				new String[] { "Key", "Description" }));
 	}
@@ -204,7 +196,7 @@ public class EntitySelector extends JDialog {
 	private javax.swing.JTable jTable1;
 
 	/** The records_. */
-	private Collection<? extends KeyedEntity<?>> records_ = null;
+	private Collection<? extends Object> records_ = null;
 
 	private javax.swing.JButton selectButton;
 
@@ -221,8 +213,7 @@ public class EntitySelector extends JDialog {
 	 * @param multiple
 	 *            if true, allow multiple entities to be selected
 	 */
-	private EntitySelector(Collection<? extends KeyedEntity<?>> records,
-			TableModel tm, String fields[], boolean multiple) {
+	private EntitySelector(Collection<? extends Object> records, TableModel tm, String fields[], boolean multiple) {
 
 		super();
 		setModal(true);
@@ -278,12 +269,10 @@ public class EntitySelector extends JDialog {
 		jPanel1 = new javax.swing.JPanel();
 		selectButton = new javax.swing.JButton();
 
-		jTable1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(
-				0, 0, 0)));
+		jTable1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0)));
 
 		DefaultListSelectionModel mylsmodel = new DefaultListSelectionModel();
-		mylsmodel
-				.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		mylsmodel.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		jTable1.setSelectionModel(mylsmodel);
 		jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
 			@Override
@@ -296,8 +285,7 @@ public class EntitySelector extends JDialog {
 		jScrollPane1.setPreferredSize(new java.awt.Dimension(554, 404));
 		jScrollPane1.setViewportView(jTable1);
 
-		selectButton.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/Add16.gif")));
+		selectButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Add16.gif")));
 		selectButton.setText(Resource.getResourceString("Select"));
 
 		selectButton.addActionListener(new java.awt.event.ActionListener() {
@@ -310,8 +298,7 @@ public class EntitySelector extends JDialog {
 		jPanel1.add(selectButton);
 
 		clearButton = new JButton();
-		clearButton.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/Undo16.gif")));
+		clearButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Undo16.gif")));
 		clearButton.setText(Resource.getResourceString("Clear"));
 		clearButton.addActionListener(new java.awt.event.ActionListener() {
 			@Override
@@ -322,13 +309,10 @@ public class EntitySelector extends JDialog {
 
 		jPanel1.add(clearButton);
 
-		this.getContentPane().add(
-				jScrollPane1,
-				GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH,
-						1.0, 1.0));
+		this.getContentPane().add(jScrollPane1,
+				GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH, 1.0, 1.0));
 
-		this.getContentPane().add(jPanel1,
-				GridBagConstraintsFactory.create(0, 2));
+		this.getContentPane().add(jPanel1, GridBagConstraintsFactory.create(0, 2));
 
 	}
 
@@ -347,7 +331,6 @@ public class EntitySelector extends JDialog {
 	/**
 	 * Load the entities from the database into the table.
 	 */
-	@SuppressWarnings("unchecked")
 	public void loadData() {
 
 		// init the table to empty
@@ -355,13 +338,12 @@ public class EntitySelector extends JDialog {
 		tm.addMouseListenerToHeaderInTable(jTable1);
 		tm.setRowCount(0);
 
-		Iterator<? extends KeyedEntity<?>> it = records_.iterator();
+		Iterator<? extends Object> it = records_.iterator();
 		while (it.hasNext()) {
-			KeyedEntity<?> r = it.next();
+			Object r = it.next();
 
 			try {
-				Class<? extends KeyedEntity<?>> beanClass = (Class<? extends KeyedEntity<?>>) r
-						.getClass();
+				Class<? extends Object> beanClass = (Class<? extends Object>) r.getClass();
 				Object[] ro = new Object[fields_.length];
 				for (int i = 0; i < fields_.length; i++) {
 					// find method
@@ -406,8 +388,7 @@ public class EntitySelector extends JDialog {
 				// current sorted position in
 				// tbl
 				Object[] oa = records_.toArray();
-				KeyedEntity<?> b = (KeyedEntity<?>) oa[k];
-				list_.add(b);
+				list_.add(oa[k]);
 
 			} catch (Exception e) {
 				Errmsg.getErrorHandler().errmsg(e);
