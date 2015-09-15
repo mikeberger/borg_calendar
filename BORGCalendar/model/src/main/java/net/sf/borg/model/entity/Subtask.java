@@ -30,7 +30,6 @@ import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.model.TaskModel;
-import net.sf.borg.model.entity.SyncableEntity.ObjectType;
 
 /**
  * Subtask entity

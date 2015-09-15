@@ -416,15 +416,13 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 	 */
 	public void delete(int tasknum, boolean undo) throws Exception {
 
-		Task tmp = new Task();
-		tmp.setKey(tasknum);
+		Task task = getTask(tasknum);
 		try {
 
-			LinkModel.getReference().deleteLinksFromEntity(tmp);
-			LinkModel.getReference().deleteLinksToEntity(tmp);
+			LinkModel.getReference().deleteLinksFromEntity(task);
+			LinkModel.getReference().deleteLinksToEntity(task);
 
 			if (!undo) {
-				Task task = getTask(tasknum);
 				UndoLog.getReference().addItem(TaskUndoItem.recordDelete(task));
 				// subtasks are removed by cascading delete, so set undo records
 				// here
@@ -442,7 +440,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 
 		load_map();
 
-		refreshListeners(new ChangeEvent(tmp, ChangeAction.DELETE));
+		refreshListeners(new ChangeEvent(task, ChangeAction.DELETE));
 
 	}
 
@@ -457,15 +455,14 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 	 */
 	public void deleteProject(int id) throws Exception {
 
-		Project tmp = new Project();
-		tmp.setKey(id);
+		Project p = getProject(id);
 
 		try {
 
 			beginTransaction();
 
-			LinkModel.getReference().deleteLinksFromEntity(tmp);
-			LinkModel.getReference().deleteLinksToEntity(tmp);
+			LinkModel.getReference().deleteLinksFromEntity(p);
+			LinkModel.getReference().deleteLinksToEntity(p);
 
 			db_.deleteProject(id);
 			commitTransaction();
@@ -476,7 +473,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 
 		load_map();
 
-		refreshListeners(new ChangeEvent(tmp, ChangeAction.DELETE));
+		refreshListeners(new ChangeEvent(p, ChangeAction.DELETE));
 
 	}
 
@@ -989,16 +986,14 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 	 *             the exception
 	 */
 	public void deleteSubTask(int id, boolean undo) throws Exception {
+		Subtask st = db_.getSubTask(id);
 		if (!undo) {
-			Subtask st = db_.getSubTask(id);
 			SubtaskUndoItem.recordDelete(st);
 		}
 		db_.deleteSubTask(id);
 		load_map();
 
-		Subtask tmp = new Subtask();
-		tmp.setKey(id);
-		refreshListeners(new ChangeEvent(tmp, ChangeAction.DELETE));
+		refreshListeners(new ChangeEvent(st, ChangeAction.DELETE));
 	}
 
 	/**
