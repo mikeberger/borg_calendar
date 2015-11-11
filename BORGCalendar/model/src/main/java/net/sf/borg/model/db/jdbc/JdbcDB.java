@@ -64,7 +64,7 @@ final class JdbcDB {
 	 * 
 	 * @throws Exception
 	 */
-	static public void beginTransaction() throws Exception {
+	static synchronized public void beginTransaction() throws Exception {
 		connection_.setAutoCommit(false);
 	}
 
@@ -73,7 +73,7 @@ final class JdbcDB {
 	 * 
 	 * @throws Exception
 	 */
-	static public final void commitTransaction() throws Exception {
+	static synchronized public final void commitTransaction() throws Exception {
 		PreparedStatement stmt = connection_.prepareStatement("COMMIT");
 		stmt.execute();
 		stmt.close();
@@ -85,11 +85,21 @@ final class JdbcDB {
 	 * 
 	 * @throws Exception
 	 */
-	static public final void rollbackTransaction() throws Exception {
+	static synchronized public final void rollbackTransaction() throws Exception {
 		PreparedStatement stmt = connection_.prepareStatement("ROLLBACK");
 		stmt.execute();
 		stmt.close();
 		connection_.setAutoCommit(true);
+	}
+	
+	/**
+	 * close and reopen the db. For H2 - this will force a flush to disk which otherwise doesn't happen while the db is open
+	 * @throws Exception
+	 */
+	static synchronized public void reopen() throws Exception {
+		close();
+		connect(url_);
+		
 	}
 
 	/**
@@ -102,7 +112,7 @@ final class JdbcDB {
 	 * @throws Exception
 	 *             the exception
 	 */
-	static public void connect(String urlIn) throws Exception {
+	static synchronized public void connect(String urlIn) throws Exception {
 		String url = urlIn;
 		if (url == null)
 			url = buildDbDir();
@@ -238,7 +248,7 @@ final class JdbcDB {
 	/**
 	 * perform a clean HSQL shutdown if we are using HSQL
 	 */
-	static private final void cleanup() {
+	static synchronized private final void cleanup() {
 		try {
 			if (connection_ != null && !connection_.isClosed()
 					&& url_.startsWith("jdbc:hsqldb:file")) {
@@ -309,13 +319,13 @@ final class JdbcDB {
 	 * @throws Exception
 	 *             the exception
 	 */
-	static final public void execSQL(String sql) throws Exception {
+	static synchronized final public void execSQL(String sql) throws Exception {
 		PreparedStatement stmt = connection_.prepareStatement(sql);
 		stmt.execute();
 		stmt.close();
 	}
 
-	static final public ResultSet execQuery(String sql) throws Exception {
+	static synchronized final public ResultSet execQuery(String sql) throws Exception {
 		PreparedStatement stmt = connection_.prepareStatement(sql);
 		stmt.execute();
 		return stmt.getResultSet();
@@ -326,7 +336,7 @@ final class JdbcDB {
 	 * 
 	 * @return the connection
 	 */
-	static public Connection getConnection() {
+	static synchronized public Connection getConnection() {
 		return connection_;
 	}
 
@@ -336,7 +346,7 @@ final class JdbcDB {
 	 * @throws Exception
 	 *             the exception
 	 */
-	public static void close() throws Exception {
+	public synchronized static void close() throws Exception {
 		writeTimestamp();
 		cleanup();
 		if (connection_ != null)

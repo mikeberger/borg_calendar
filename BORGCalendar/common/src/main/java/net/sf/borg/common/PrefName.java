@@ -419,5 +419,7 @@ public class PrefName {
 
 	public static PrefName MEMBAR_TIMEOUT = new PrefName("membar-timeout", -1);
 
+	public static PrefName FLUSH_MINS = new PrefName("flush_mins",
+			new Integer(0));
 
 }

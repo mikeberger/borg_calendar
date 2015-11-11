@@ -132,8 +132,12 @@ public class Borg implements SocketHandler, Observer {
 	 */
 	static public void shutdown() {
 
-		if (getReference().syncTimer_ != null)
-			getReference().syncTimer_.cancel();
+		if (getReference().dbSyncTimer_ != null)
+			getReference().dbSyncTimer_.cancel();
+		if (getReference().caldavSyncTimer_ != null)
+			getReference().caldavSyncTimer_.cancel();
+		if (getReference().flushTimer_ != null)
+			getReference().flushTimer_.cancel();
 		if (getReference().mailTimer_ != null)
 			getReference().mailTimer_.cancel();
 
@@ -173,7 +177,11 @@ public class Borg implements SocketHandler, Observer {
 	 * The sync timer - controls auto-sync with db - only needed for mysql - and
 	 * then not really
 	 */
-	private java.util.Timer syncTimer_ = null;
+	private java.util.Timer dbSyncTimer_ = null;
+
+	private java.util.Timer caldavSyncTimer_ = null;
+
+	private java.util.Timer flushTimer_ = null;
 
 	/**
 	 * constructor
@@ -528,8 +536,8 @@ public class Borg implements SocketHandler, Observer {
 			int syncmins = Prefs.getIntPref(PrefName.SYNCMINS);
 			String dbtype = Prefs.getPref(PrefName.DBTYPE);
 			if ((dbtype.equals("mysql") || dbtype.equals("jdbc")) && syncmins != 0) {
-				this.syncTimer_ = new java.util.Timer("SyncTimer");
-				this.syncTimer_.schedule(new TimerTask() {
+				this.dbSyncTimer_ = new java.util.Timer("SyncTimer");
+				this.dbSyncTimer_.schedule(new TimerTask() {
 					@Override
 					public void run() {
 						SwingUtilities.invokeLater(new Runnable() {
@@ -548,8 +556,8 @@ public class Borg implements SocketHandler, Observer {
 
 			syncmins = Prefs.getIntPref(PrefName.ICAL_SYNCMINS);
 			if (syncmins != 0) {
-				this.syncTimer_ = new java.util.Timer("IcalSyncTimer");
-				this.syncTimer_.schedule(new TimerTask() {
+				this.caldavSyncTimer_ = new java.util.Timer("IcalSyncTimer");
+				this.caldavSyncTimer_.schedule(new TimerTask() {
 					@Override
 					public void run() {
 
@@ -571,6 +579,24 @@ public class Borg implements SocketHandler, Observer {
 							}
 						} catch (Exception e) {
 							Errmsg.logError(e);
+						}
+
+					}
+				}, 10 * 1000, syncmins * 60 * 1000);
+			}
+			
+			// DB Flush timer to force write of files to disk - H2
+			syncmins = Prefs.getIntPref(PrefName.FLUSH_MINS);
+			if (syncmins != 0) {
+				this.flushTimer_ = new java.util.Timer("FlushTimer");
+				this.flushTimer_.schedule(new TimerTask() {
+					@Override
+					public void run() {
+
+						try {
+							DBHelper.getController().reopen();
+						} catch (Exception e) {
+							Errmsg.getErrorHandler().errmsg(e);
 						}
 
 					}
