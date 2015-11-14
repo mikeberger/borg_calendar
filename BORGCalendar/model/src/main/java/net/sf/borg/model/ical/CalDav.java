@@ -44,6 +44,7 @@ import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.Model.ChangeEvent.ChangeAction;
 import net.sf.borg.model.OptionModel;
+import net.sf.borg.model.Repeat;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.Option;
@@ -240,7 +241,7 @@ public class CalDav {
 						if (ap == null)
 							continue;
 						Component ve1 = EntityIcalAdapter.toIcal(ap, export_todos);
-						if( ve1 != null )
+						if (ve1 != null)
 							addEvent(collection, ve1);
 
 					} else if (se.getAction().equals(ChangeAction.CHANGE)) {
@@ -249,14 +250,14 @@ public class CalDav {
 
 						if (comp == null) {
 							Component ve1 = EntityIcalAdapter.toIcal(ap, export_todos);
-							if( ve1 != null )
+							if (ve1 != null)
 								addEvent(collection, ve1);
 
 						} else // TODO - what if both sides updated
 						{
 
 							Component ve1 = EntityIcalAdapter.toIcal(ap, export_todos);
-							if( ve1 != null )
+							if (ve1 != null)
 								updateEvent(collection, ve1);
 
 						}
@@ -286,7 +287,7 @@ public class CalDav {
 						if (task == null)
 							continue;
 						Component ve1 = EntityIcalAdapter.toIcal(task, export_todos);
-						if( ve1 != null )
+						if (ve1 != null)
 							addEvent(collection, ve1);
 
 					} else if (se.getAction().equals(ChangeAction.CHANGE)) {
@@ -334,7 +335,7 @@ public class CalDav {
 						if (subtask == null)
 							continue;
 						Component ve1 = EntityIcalAdapter.toIcal(subtask, export_todos);
-						if( ve1 != null )
+						if (ve1 != null)
 							addEvent(collection, ve1);
 
 					} else if (se.getAction().equals(ChangeAction.CHANGE)) {
@@ -519,7 +520,6 @@ public class CalDav {
 		Appointment ap = AppointmentModel.getReference().getApptByUid(uid);
 		if (ap != null) {
 
-			
 			if (comp instanceof VEvent) {
 				log.warning("SYNC: ignoring Vevent for single recurrence - cannot process\n" + comp.toString());
 				SocketClient.sendLogMessage(
@@ -607,7 +607,7 @@ public class CalDav {
 			if (ap == null) {
 				// not found in BORG, so add it
 				try {
-					
+
 					SyncLog.getReference().setProcessUpdates(false);
 					count++;
 					log.info("SYNC save: " + comp.toString());
@@ -618,16 +618,31 @@ public class CalDav {
 				}
 			} else if (newap.getLastMod().after(ap.getLastMod())) {
 				// was updated after BORG so update BORG
-				try {
-					newap.setKey(ap.getKey());
 
-					SyncLog.getReference().setProcessUpdates(false);
-					count++;
-					log.info("SYNC save: " + comp.toString());
-					log.info("SYNC save: " + newap.toString());
-					AppointmentModel.getReference().saveAppt(newap);
-				} finally {
-					SyncLog.getReference().setProcessUpdates(true);
+				// check for special case - incoming is repeating todo that is
+				// completed
+				// if so, then just complete the latest todo instance as android
+				// task app can't
+				// properly handle recurrence it completes the entire todo
+				// instead of one instance.
+				if (Repeat.isRepeating(ap) && ap.isTodo() && !newap.isTodo()) {
+						count++;
+						log.info("SYNC do todo: " + ap.toString());
+						AppointmentModel.getReference().do_todo(ap.getKey(), true);
+						// don't suppress sync log - need to sync this todo
+				} else {
+
+					try {
+						newap.setKey(ap.getKey());
+
+						SyncLog.getReference().setProcessUpdates(false);
+						count++;
+						log.info("SYNC save: " + comp.toString());
+						log.info("SYNC save: " + newap.toString());
+						AppointmentModel.getReference().saveAppt(newap);
+					} finally {
+						SyncLog.getReference().setProcessUpdates(true);
+					}
 				}
 			}
 
