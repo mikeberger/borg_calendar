@@ -587,7 +587,7 @@ public class Borg implements SocketHandler, Observer {
 			
 			// DB Flush timer to force write of files to disk - H2
 			syncmins = Prefs.getIntPref(PrefName.FLUSH_MINS);
-			if (syncmins != 0) {
+			if (syncmins > 0) {
 				this.flushTimer_ = new java.util.Timer("FlushTimer");
 				this.flushTimer_.schedule(new TimerTask() {
 					@Override

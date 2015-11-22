@@ -30,7 +30,9 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
 
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
@@ -73,6 +75,8 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 
 	private JTextField proxyHostText = new JTextField();
 	private JTextField proxyPortText = new JTextField();
+	
+	private JSpinner flushSpinner = new JSpinner();
 
 	/**
 	 * Instantiates a new miscellaneous options panel.
@@ -181,6 +185,12 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 		this.add(proxyPortText,
 				GridBagConstraintsFactory.create(1, 13, GridBagConstraints.BOTH));
 
+		flushSpinner.setModel(new SpinnerNumberModel(0,0,null,1));
+		this.add(new JLabel(Resource.getResourceString("db_flush")),
+				GridBagConstraintsFactory.create(0, 14, GridBagConstraints.BOTH));
+		this.add(flushSpinner,
+				GridBagConstraintsFactory.create(1, 14, GridBagConstraints.BOTH));
+
 
 	}
 
@@ -239,6 +249,10 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 		} catch (NumberFormatException e) {
 			Errmsg.getErrorHandler().notice(Resource.getResourceString("proxy_warn"));
 		}
+		
+		int fmins = (int) flushSpinner.getValue();
+		Prefs.putPref(PrefName.FLUSH_MINS, fmins);
+		
 
 	}
 
@@ -280,6 +294,9 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 		
 		int port = Prefs.getIntPref(PrefName.PROXY_PORT);
 		proxyPortText.setText(Integer.toString(port));
+		
+		int flushMins = Prefs.getIntPref(PrefName.FLUSH_MINS);
+		flushSpinner.setValue(flushMins);
 
 	}
 
