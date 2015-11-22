@@ -4,7 +4,9 @@ Add unlimited color choices for appointments
 Add caldav sync of Tasks/Subtasks (outgoing only)
 Add optional periodic DB flush (close/reopen)
 Fix bug when completing a periodic todo from Android
-miscellaneous bug fixes
+Allow SSL connections for CALDAV
+Allow switching between a list of reminders or individual post it notes without requiring a restart
+lots of miscellaneous bug fixes - see github for the full list
 
 
 BORG 1.8.1
