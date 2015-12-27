@@ -122,7 +122,18 @@ public class CalDav {
 
 		String protocol = Prefs.getBoolPref(PrefName.CALDAV_USE_SSL) ? "https" : "http";
 
-		URL url = new URL(protocol, Prefs.getPref(PrefName.CALDAV_SERVER), -1, Prefs.getPref(PrefName.CALDAV_PATH));
+		String server = Prefs.getPref(PrefName.CALDAV_SERVER);
+		String serverPart[] = server.split(":");
+		int port = -1;
+		if( serverPart.length == 2)
+		{
+			try {
+				port = Integer.parseInt(serverPart[1]);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		URL url = new URL(protocol, serverPart[0], port, Prefs.getPref(PrefName.CALDAV_PATH));
 		SocketClient.sendLogMessage("SYNC: connect to " + url.toString());
 		log.info("SYNC: connect to " + url.toString());
 
