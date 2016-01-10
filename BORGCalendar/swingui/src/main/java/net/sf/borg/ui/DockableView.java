@@ -116,6 +116,11 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 	 * or resets.
 	 */
 	protected void cleanUp() {
+		
+		// modules persist when closed, so don't deregister the listeners
+		if( this instanceof MultiView.Module)
+			return;
+		
 		for( Model m : models )
 			m.removeListener(this);
 	}
