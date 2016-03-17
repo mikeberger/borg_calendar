@@ -95,25 +95,31 @@ public class UIControl {
 			Font f = Font.decode(deffont);
 			NwFontChooserS.setDefaultFont(f);
 		}
+		//JGoodies Plastic L&F does not support the mac cmd key,
+		//If the user is running OS X, go to default Java L&F instead
+		String os = System.getProperty("os.name").toLowerCase();
+		if(os.contains("mac")) {
+			//Do nothing.
+		} else {
+			// set the look and feel
+			String lnf = Prefs.getPref(PrefName.LNF);
+			try {
 
-		// set the look and feel
-		String lnf = Prefs.getPref(PrefName.LNF);
-		try {
-
-			// set default jgoodies theme
-			if (lnf.contains("jgoodies")) {
-				String theme = System.getProperty("Plastic.defaultTheme");
-				if (theme == null) {
-					System.setProperty("Plastic.defaultTheme",
-							Prefs.getPref(PrefName.GOODIESTHEME));
+				// set default jgoodies theme
+				if (lnf.contains("jgoodies")) {
+					String theme = System.getProperty("Plastic.defaultTheme");
+					if (theme == null) {
+						System.setProperty("Plastic.defaultTheme",
+								Prefs.getPref(PrefName.GOODIESTHEME));
+					}
 				}
-			}
 
-			UIManager.setLookAndFeel(lnf);
-			UIManager.getLookAndFeelDefaults().put("ClassLoader",
-					UIControl.class.getClassLoader());
-		} catch (Exception e) {
-			log.severe(e.toString());
+				UIManager.setLookAndFeel(lnf);
+				UIManager.getLookAndFeelDefaults().put("ClassLoader",
+						UIControl.class.getClassLoader());
+			} catch (Exception e) {
+				log.severe(e.toString());
+			}
 		}
 
 		// pop up the splash if the option is set
