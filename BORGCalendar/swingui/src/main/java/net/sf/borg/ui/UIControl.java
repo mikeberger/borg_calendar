@@ -46,8 +46,8 @@ import net.sf.borg.ui.util.UIErrorHandler;
 /**
  * Class UIControl provides access to the UI from non-UI classes. UIControl
  * provides the main UI entry point.
- * 
- * 
+ *
+ *
  */
 
 public class UIControl {
@@ -58,7 +58,7 @@ public class UIControl {
 
 	/**
 	 * set a shutdown listener to be called back when the UI shuts down
-	 * 
+	 *
 	 * @param shutdownListener
 	 */
 	public static void setShutdownListener(Observer shutdownListener) {
@@ -72,7 +72,7 @@ public class UIControl {
 
 	/**
 	 * Main UI initialization.
-	 * 
+	 *
 	 * @param trayname
 	 *            - name for the tray icon
 	 */
@@ -98,11 +98,12 @@ public class UIControl {
 		//JGoodies Plastic L&F does not support the mac cmd key,
 		//If the user is running OS X, go to default Java L&F instead
 		String os = System.getProperty("os.name").toLowerCase();
-		if(os.contains("mac")) {
+		String lnf = Prefs.getPref(PrefName.LNF);
+
+		if(os.contains("mac") && lnf.contains("jgoodies")) {
 			//Do nothing.
 		} else {
 			// set the look and feel
-			String lnf = Prefs.getPref(PrefName.LNF);
 			try {
 
 				// set default jgoodies theme
@@ -150,7 +151,7 @@ public class UIControl {
 	/**
 	 * complete the parts of the UI initialization that run after the splash
 	 * screen has shown for a while
-	 * 
+	 *
 	 * @param trayname
 	 *            name for the tray icon
 	 */
@@ -373,7 +374,7 @@ public class UIControl {
 
 	/**
 	 * load and add a module that is found on the classpath
-	 * 
+	 *
 	 * @param className
 	 *            - the name of the module class
 	 */
