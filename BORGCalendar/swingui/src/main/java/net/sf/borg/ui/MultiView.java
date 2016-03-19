@@ -134,6 +134,7 @@ public class MultiView extends View {
 	public static MultiView getMainView() {
 		if (mainView == null)
 			mainView = new MultiView();
+		handleMinimumSize(mainView);
 		return (mainView);
 	}
 
@@ -248,8 +249,6 @@ public class MultiView extends View {
 		pack();
 		setView(ViewType.MONTH); // start month view
 		manageMySize(MULTIVIEWSIZE);
-
-		manageMinimumSize(this);
 	}
 
 	/**
@@ -583,36 +582,20 @@ public class MultiView extends View {
 		}
 
 	}
-
 	public void addMenu(JMenu m) {
 		mainMenu.getMenuBar().add(m);
 	}
 
-	//In order to avoid unsightly UI behavior, set a minimum
-	//size to the view that fits the UI components.
-	private void manageMinimumSize(final View view) {
-		view.addComponentListener(new ComponentAdapter() {
-			@Override
-			public void componentResized(ComponentEvent e) {
-				int width = view.getWidth();
-				int height = view.getHeight();
+	//If the user has a display big enough, set a minimum
+	//size to the window. Avoids the components
+	//getting pushed together.
+	private static void handleMinimumSize(MultiView mv) {
+		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+		double width = d.getWidth();
+		double height = d.getHeight();
 
-				int MIN_WIDTH = 970;
-				int MIN_HEIGHT = 700;
-				boolean resize = false;
-
-				if(width < MIN_WIDTH) {
-					resize = true;
-					width = MIN_WIDTH;
-				}
-				if(height < MIN_HEIGHT) {
-					resize = true;
-					height = MIN_HEIGHT;
-				}
-				if(resize) {
-					view.setSize(new Dimension(width, height));
-				}
-			}
-		});
+		if(width > 1000 && height >= 800) {
+			mv.setMinimumSize(new Dimension(900, 700));
+		}
 	}
 }
