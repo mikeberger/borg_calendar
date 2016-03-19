@@ -134,7 +134,6 @@ public class MultiView extends View {
 	public static MultiView getMainView() {
 		if (mainView == null)
 			mainView = new MultiView();
-		handleMinimumSize(mainView);
 		return (mainView);
 	}
 
@@ -161,6 +160,8 @@ public class MultiView extends View {
 	 */
 	private MultiView() {
 		super();
+
+		handleMinimumSize(mainView);
 
 		// escape key closes the window
 		getLayeredPane().registerKeyboardAction(new ActionListener() {
@@ -586,9 +587,8 @@ public class MultiView extends View {
 		mainMenu.getMenuBar().add(m);
 	}
 
-	//If the user has a display big enough, set a minimum
-	//size to the window. Avoids the components
-	//getting pushed together.
+	//Set the minimum size if the
+	//user's display is big enough.
 	private static void handleMinimumSize(MultiView mv) {
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 		double width = d.getWidth();
