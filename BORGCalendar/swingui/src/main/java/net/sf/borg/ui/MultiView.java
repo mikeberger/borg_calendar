@@ -19,13 +19,8 @@
  */
 package net.sf.borg.ui;
 
-import java.awt.Component;
-import java.awt.Frame;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
+import java.awt.*;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -165,6 +160,8 @@ public class MultiView extends View {
 	 */
 	private MultiView() {
 		super();
+
+		handleMinimumSize(mainView);
 
 		// escape key closes the window
 		getLayeredPane().registerKeyboardAction(new ActionListener() {
@@ -537,7 +534,6 @@ public class MultiView extends View {
 							MultiView.getMainView().setState(Frame.NORMAL);
 						}
 					}
-
 					return component;
 				}
 
@@ -587,8 +583,19 @@ public class MultiView extends View {
 		}
 
 	}
-
 	public void addMenu(JMenu m) {
 		mainMenu.getMenuBar().add(m);
+	}
+
+	//Set the minimum size if the
+	//user's display is big enough.
+	private static void handleMinimumSize(MultiView mv) {
+		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+		double width = d.getWidth();
+		double height = d.getHeight();
+
+		if(width > 1000 && height >= 800) {
+			mv.setMinimumSize(new Dimension(900, 700));
+		}
 	}
 }
