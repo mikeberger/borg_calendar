@@ -161,7 +161,7 @@ public class MultiView extends View {
 	private MultiView() {
 		super();
 
-		handleMinimumSize(mainView);
+		handleMinimumSize(this);
 
 		// escape key closes the window
 		getLayeredPane().registerKeyboardAction(new ActionListener() {
