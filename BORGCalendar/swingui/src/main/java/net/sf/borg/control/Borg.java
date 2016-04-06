@@ -84,7 +84,7 @@ public class Borg implements SocketHandler, Observer {
 
 	/**
 	 * Gets the singleton.
-	 * 
+	 *
 	 * @return the singleton
 	 */
 	static public Borg getReference() {
@@ -97,7 +97,7 @@ public class Borg implements SocketHandler, Observer {
 
 	/**
 	 * add a url to the classpath
-	 * 
+	 *
 	 * @param u
 	 *            - the url
 	 * @throws IOException
@@ -116,7 +116,7 @@ public class Borg implements SocketHandler, Observer {
 
 	/**
 	 * The main method.
-	 * 
+	 *
 	 * @param args
 	 *            the arguments
 	 */
@@ -258,7 +258,7 @@ public class Borg implements SocketHandler, Observer {
 
 	/**
 	 * Initialize the application
-	 * 
+	 *
 	 * @param args
 	 *            the args
 	 */
@@ -584,7 +584,7 @@ public class Borg implements SocketHandler, Observer {
 					}
 				}, 10 * 1000, syncmins * 60 * 1000);
 			}
-			
+
 			// DB Flush timer to force write of files to disk - H2
 			syncmins = Prefs.getIntPref(PrefName.FLUSH_MINS);
 			if (syncmins > 0) {
@@ -592,15 +592,20 @@ public class Borg implements SocketHandler, Observer {
 				this.flushTimer_.schedule(new TimerTask() {
 					@Override
 					public void run() {
+						SwingUtilities.invokeLater(new Runnable() {
+							@Override
+							public void run() {
+								try {
+									DBHelper.getController().reopen();
+								} catch (Exception e) {
+									Errmsg.getErrorHandler().errmsg(e);
+								}
+							}
+						});
 
-						try {
-							DBHelper.getController().reopen();
-						} catch (Exception e) {
-							Errmsg.getErrorHandler().errmsg(e);
-						}
 
 					}
-				}, 10 * 1000, syncmins * 60 * 1000);
+				}, syncmins * 60 * 1000, syncmins * 60 * 1000);
 			}
 
 			// start socket listener
@@ -636,7 +641,7 @@ public class Borg implements SocketHandler, Observer {
 	/**
 	 * Constructs a URL expression for the location to this current class, where
 	 * it lives in the jar file.
-	 * 
+	 *
 	 * @return
 	 * @throws MalformedURLException
 	 */
