@@ -56,7 +56,7 @@ import net.sf.borg.model.entity.Task;
 @SuppressWarnings("unchecked")
 public class CalDav {
 
-	public static final String CTAG_OPTION = "CTAG";
+	private static final String CTAG_OPTION = "CTAG";
 
 	static private final String PRODID = "-//MBCSoft/BORG//EN";
 
@@ -71,7 +71,7 @@ public class CalDav {
 		return false;
 	}
 
-	public static PathResolver createPathResolver() {
+	private static PathResolver createPathResolver() {
 		GenericPathResolver pathResolver = new GenericPathResolver();
 		String basePath = Prefs.getPref(PrefName.CALDAV_PATH);
 		if (!basePath.endsWith("/"))
@@ -145,7 +145,7 @@ public class CalDav {
 		return null;
 	}
 
-	static public void export(Integer years) throws Exception {
+	static public synchronized void export(Integer years) throws Exception {
 
 		CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_PARSING, true);
 		CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_UNFOLDING, true);
@@ -230,7 +230,7 @@ public class CalDav {
 		return null;
 	}
 
-	static public void processSyncMap(CalDavCalendarCollection collection) throws Exception {
+	static private void processSyncMap(CalDavCalendarCollection collection) throws Exception {
 
 		boolean export_todos = Prefs.getBoolPref(PrefName.ICAL_EXPORT_TODO);
 
@@ -420,10 +420,10 @@ public class CalDav {
 	/**
 	 * check remote server to see if sync needed - must not be run on Event
 	 * thread
-	 * 
+	 *
 	 * @throws Exception
 	 */
-	static public boolean checkRemoteSync() throws Exception {
+	static public synchronized boolean checkRemoteSync() throws Exception {
 		CalDavCalendarStore store = connect();
 		if (store == null)
 			throw new Exception("Failed to connect to CalDav Store");
@@ -472,7 +472,7 @@ public class CalDav {
 
 	}
 
-	static public void sync(Integer years, boolean outward_only) throws Exception {
+	static public synchronized void sync(Integer years, boolean outward_only) throws Exception {
 		CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_PARSING, true);
 		CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_UNFOLDING, true);
 		CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_VALIDATION, true);
@@ -524,7 +524,7 @@ public class CalDav {
 
 	}
 
-	static public void processRecurrence(Component comp, String uid) throws Exception {
+	static private void processRecurrence(Component comp, String uid) throws Exception {
 
 		RecurrenceId rid = (RecurrenceId) comp.getProperty(Property.RECURRENCE_ID);
 
@@ -573,7 +573,7 @@ public class CalDav {
 		}
 	}
 
-	static public int syncCalendar(Calendar cal, ArrayList<String> serverUids) throws Exception {
+	static private int syncCalendar(Calendar cal, ArrayList<String> serverUids) throws Exception {
 
 		int count = 0;
 
@@ -663,7 +663,7 @@ public class CalDav {
 
 	}
 
-	static public void syncFromServer(CalDavCalendarCollection collection, Integer years) throws Exception {
+	static private void syncFromServer(CalDavCalendarCollection collection, Integer years) throws Exception {
 
 		SocketClient.sendLogMessage("SYNC: Start Incoming Sync");
 		log.info("SYNC: Start Incoming Sync");
