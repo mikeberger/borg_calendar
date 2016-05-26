@@ -26,6 +26,7 @@
 package net.sf.borg.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Comparator;
@@ -124,6 +125,45 @@ public class Day {
 
 	}
 
+	
+	private List<SpecialDay> initSpecialDays(int year, int month) {
+		
+		List<SpecialDay> specialDays = new ArrayList<SpecialDay>();
+		
+		// American
+		specialDays.add(new SpecialDay("Halloween", 31, 9, false));
+		specialDays.add(new SpecialDay("Independence_Day ", 4, 6, true));
+		specialDays.add(new SpecialDay("Ground_Hog_Day", 2, 1, false));
+		specialDays.add(new SpecialDay("Valentine's_Day", 14, 1, false));
+		specialDays.add(new SpecialDay("St._Patrick's_Day", 17, 2, false));
+		specialDays.add(new SpecialDay("Veteran's_Day", 11, 10, false));
+		specialDays.add(new SpecialDay("Labor_Day", nthdom(year, month, Calendar.MONDAY, 1), 8, true));
+		specialDays.add(new SpecialDay("Martin_Luther_King_Day", nthdom(year, month, Calendar.MONDAY, 3), 0, false));
+		specialDays.add(new SpecialDay("Presidents_Day", nthdom(year, month, Calendar.MONDAY, 3), 1, false));
+		specialDays.add(new SpecialDay("Memorial_Day", nthdom(year, month, Calendar.MONDAY, -1), 4, true));
+		specialDays.add(new SpecialDay("Columbus_Day", nthdom(year, month, Calendar.MONDAY, 2),  9, false));
+		specialDays.add(new SpecialDay("Mother's_Day", nthdom(year, month, Calendar.SUNDAY, 2), 4, false));
+		specialDays.add(new SpecialDay("Father's_Day", nthdom(year, month, Calendar.SUNDAY, 3), 5, false));
+		specialDays.add(new SpecialDay("Thanksgiving", nthdom(year, month, Calendar.THURSDAY, 4), 10, true));
+		
+		// Canadian
+		specialDays.add(new SpecialDay("Canada_Day", 1, 6, false));
+		specialDays.add(new SpecialDay("Boxing_Day", 26, 11, false));
+		specialDays.add(new SpecialDay("Civic_Holiday", nthdom(year, month, Calendar.MONDAY, 1), 7, false));
+		specialDays.add(new SpecialDay("Remembrance_Day", 11, 10, false));
+		specialDays.add(new SpecialDay("Labour_Day_(Can)", nthdom(year, month, Calendar.MONDAY, 1), 8, false));
+		specialDays.add(new SpecialDay("Commonwealth_Day", nthdom(year, month, Calendar.MONDAY, 2), 2, false));
+		specialDays.add(new SpecialDay("Thanksgiving_(Can)", nthdom(year, month, Calendar.MONDAY, 2), 9, false));
+		// apart iets
+		specialDays.add(new SpecialDay("Victoria_Day", 31, 9, false));
+		
+		// Common
+		specialDays.add(new SpecialDay("New_Year's_Day", 1, 0, true));
+		specialDays.add(new SpecialDay("Christmas", 25, 11, true));
+		
+		return specialDays;
+	}
+	
 	/**
 	 * Adds appointments to the to day.
 	 * 
@@ -256,10 +296,14 @@ public class Day {
 
 			hol.setDate(new GregorianCalendar(year, month, day, 00, 00)
 					.getTime());
-
+			
+			
 			hol.setColor("purple");
 
 			hol.setText(null);
+			
+			
+			/*
 			if (month == 9 && day == 31) {
 				hol.setText(Resource.getResourceString("Halloween"));
 			} else if (month == 6 && day == 4) {
@@ -301,7 +345,7 @@ public class Day {
 					&& day == nthdom(year, month, Calendar.THURSDAY, 4)) {
 				hol.setText(Resource.getResourceString("Thanksgiving"));
 				ret.setHoliday(1);
-			}
+			}*/
 
 			if (hol.getText() != null)
 				ret.addItem(hol);
