@@ -281,17 +281,17 @@ public class Day {
 		for (SpecialDay current : initSpecialDays(year, month)) {
 
 			if (current.getRegion().equals("US") && show_us_hols.equals("true") && current.isSpecialDay(day, month)) {
-				// ret.setHoliday(current.isFreeDay());
+				ret.setHoliday(current.isFreeDay() ? 1 : 0);
 				hol.setText(Resource.getResourceString(current.getName()));
 			}
 
 			if (current.getRegion().equals("CAN") && show_can_hols.equals("true") && current.isSpecialDay(day, month)) {
-				// ret.setHoliday(current.isFreeDay());
+				ret.setHoliday(current.isFreeDay() ? 1 : 0);
 				hol.setText(Resource.getResourceString(current.getName()));
 			}
 
 			if (current.getRegion().equals("GLOBAL") && current.isSpecialDay(day, month)) {
-				// ret.setHoliday(current.isFreeDay());
+				ret.setHoliday(current.isFreeDay() ? 1 : 0);
 				hol.setText(Resource.getResourceString(current.getName()));
 			}
 
