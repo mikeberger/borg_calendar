@@ -6,17 +6,27 @@ public class SpecialDay {
 	 private int month;
 	 private int day;
 	 private boolean isFreeDay = false;
+	 private String region = "";
 	 
-	 public SpecialDay(String name, int day, int month, boolean isFreeDay) {
+	 public SpecialDay(String name, int day, int month, boolean isFreeDay, String region) {
 		 setName(name);
 		 setDay(day);
 		 setMonth(month);
 		 setFreeDay(isFreeDay);
+		 setRegion(region);
 	 }
 
 	 public boolean isSpecialDay(int day, int month) {
 	  		return (day == this.day && month == this.month) ? true : false;
 	 }
+
+	public String getRegion() {
+		return region;
+	}
+
+	public void setRegion(String region) {
+		this.region = region;
+	}
 
 	public String getName() {
 		return name;
