@@ -269,25 +269,13 @@ public class Day {
 			ret.addItem(hol);
 		}
 
-		// add canned US holidays
-		// check user preferences first
+
 		String show_us_hols = Prefs.getPref(PrefName.SHOWUSHOLIDAYS);
 		String show_can_hols = Prefs.getPref(PrefName.SHOWCANHOLIDAYS);
-		// ok, we will add holiday appts
-		// to the dayinfo for the US holidays below
-		// the dayinfo.holiday flag is set if the holiday
-		// is a day off from work and should cause the day to have
-		// holiday coloring on the gui
-		//
-		// so, holidays only exist in the dayinfo objects, which are
-		// temporary. they do not get added to the DB or even the appt
-		// map_
+
 		LabelEntity hol = new LabelEntity();
-
 		hol.setDate(new GregorianCalendar(year, month, day, 00, 00).getTime());
-
 		hol.setColor("purple");
-
 		hol.setText(null);
 
 		for (SpecialDay current : initSpecialDays(year, month)) {
@@ -318,100 +306,10 @@ public class Day {
 				}
 			}
 
-			if (hol.getText() != null)
+			if (hol.getText() != null) {
 				ret.addItem(hol);
+			}
 		}
-
-		/*
-		 * if (month == 9 && day == 31) {
-		 * hol.setText(Resource.getResourceString("Halloween")); } else if
-		 * (month == 6 && day == 4) {
-		 * hol.setText(Resource.getResourceString("Independence_Day"));
-		 * ret.setHoliday(1); } else if (month == 1 && day == 2) {
-		 * hol.setText(Resource.getResourceString("Ground_Hog_Day")); } else if
-		 * (month == 1 && day == 14) {
-		 * hol.setText(Resource.getResourceString("Valentine's_Day")); } else if
-		 * (month == 2 && day == 17) {
-		 * hol.setText(Resource.getResourceString("St._Patrick's_Day")); } else
-		 * if (month == 10 && day == 11) {
-		 * hol.setText(Resource.getResourceString("Veteran's_Day")); } else if
-		 * (month == 8 && day == nthdom(year, month, Calendar.MONDAY, 1)) {
-		 * hol.setText(Resource.getResourceString("Labor_Day"));
-		 * ret.setHoliday(1); } else if (month == 0 && day == nthdom(year,
-		 * month, Calendar.MONDAY, 3)) { hol.setText(Resource
-		 * .getResourceString("Martin_Luther_King_Day")); } else if (month == 1
-		 * && day == nthdom(year, month, Calendar.MONDAY, 3)) {
-		 * hol.setText(Resource.getResourceString("Presidents_Day")); } else if
-		 * (month == 4 && day == nthdom(year, month, Calendar.MONDAY, -1)) {
-		 * hol.setText(Resource.getResourceString("Memorial_Day"));
-		 * ret.setHoliday(1); } else if (month == 9 && day == nthdom(year,
-		 * month, Calendar.MONDAY, 2)) {
-		 * hol.setText(Resource.getResourceString("Columbus_Day")); } else if
-		 * (month == 4 && day == nthdom(year, month, Calendar.SUNDAY, 2)) {
-		 * hol.setText(Resource.getResourceString("Mother's_Day")); } else if
-		 * (month == 5 && day == nthdom(year, month, Calendar.SUNDAY, 3)) {
-		 * hol.setText(Resource.getResourceString("Father's_Day")); } else if
-		 * (month == 10 && day == nthdom(year, month, Calendar.THURSDAY, 4)) {
-		 * hol.setText(Resource.getResourceString("Thanksgiving"));
-		 * ret.setHoliday(1); }
-		 */
-		/*
-		 * if (hol.getText() != null) ret.addItem(hol);
-		 */
-
-		// add canned Canadian holidays
-		// check user preferences first
-		/*
-		 * String show_can_hols = Prefs.getPref(PrefName.SHOWCANHOLIDAYS); if
-		 * (show_can_hols.equals("true")) {
-		 * 
-		 * LabelEntity hol = new LabelEntity(); hol.setDate(new
-		 * GregorianCalendar(year, month, day, 00, 00).getTime());
-		 * 
-		 * hol.setColor("purple");
-		 * 
-		 * hol.setText(null); if (month == 6 && day == 1) {
-		 * hol.setText(Resource.getResourceString("Canada_Day")); } else if
-		 * (month == 11 && day == 26) {
-		 * hol.setText(Resource.getResourceString("Boxing_Day")); } else if
-		 * (month == 7 && day == nthdom(year, month, Calendar.MONDAY, 1)) {
-		 * hol.setText(Resource.getResourceString("Civic_Holiday")); } else if
-		 * (month == 10 && day == 11) {
-		 * hol.setText(Resource.getResourceString("Remembrance_Day")); } else if
-		 * (month == 8 && day == nthdom(year, month, Calendar.MONDAY, 1)) {
-		 * hol.setText(Resource.getResourceString("Labour_Day_(Can)")); } else
-		 * if (month == 2 && day == nthdom(year, month, Calendar.MONDAY, 2)) {
-		 * hol.setText(Resource.getResourceString("Commonwealth_Day")); } else
-		 * if (month == 9 && day == nthdom(year, month, Calendar.MONDAY, 2)) {
-		 * hol.setText(Resource.getResourceString("Thanksgiving_(Can)")); } else
-		 * if (month == 4) { gc = new GregorianCalendar(year, month, 25); int
-		 * diff = gc.get(Calendar.DAY_OF_WEEK); diff += 5; if (diff > 7) diff -=
-		 * 7; if (day == 25 - diff) {
-		 * hol.setText(Resource.getResourceString("Victoria_Day")); } }
-		 * 
-		 * if (hol.getText() != null) ret.addItem(hol);
-		 * 
-		 * }
-		 */
-		/*
-		 * // common holidays if (show_can_hols.equals("true") ||
-		 * show_us_hols.equals("true")) {
-		 * 
-		 * LabelEntity hol = new LabelEntity(); hol.setDate(new
-		 * GregorianCalendar(year, month, day, 00, 00).getTime());
-		 * 
-		 * hol.setColor("purple");
-		 * 
-		 * hol.setText(null); if (month == 0 && day == 1) {
-		 * hol.setText(Resource.getResourceString("New_Year's_Day"));
-		 * ret.setHoliday(1); } else if (month == 11 && day == 25) {
-		 * hol.setText(Resource.getResourceString("Christmas"));
-		 * ret.setHoliday(1); }
-		 * 
-		 * if (hol.getText() != null) ret.addItem(hol);
-		 * 
-		 * }
-		 */
 
 		for (Model m : Model.getExistingModels()) {
 			if (m instanceof CalendarEntityProvider) {
@@ -422,7 +320,6 @@ public class Day {
 		}
 
 		return (ret);
-
 	}
 
 	/**
