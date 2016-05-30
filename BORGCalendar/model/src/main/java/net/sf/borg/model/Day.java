@@ -52,6 +52,10 @@ public class Day {
 	private static final String TRUE = "true";
 	private static final String BLACK = "black";
 	private static final String PURPLE = "purple";
+	public static final boolean SHOW_CAN_HOLIDAYS = Prefs.getPref(PrefName.SHOWCANHOLIDAYS).equals(TRUE);
+	public static final boolean SHOW_US_HOLIDAYS = Prefs.getPref(PrefName.SHOWUSHOLIDAYS).equals(TRUE);
+	public static final boolean SHOW_PRIVATE_APPT = Prefs.getPref(PrefName.SHOWPRIVATE).equals(TRUE);
+	public static final boolean SHOW_PUBLIC_APPT = Prefs.getPref(PrefName.SHOWPUBLIC).equals(TRUE);
 
 
 	/**
@@ -79,12 +83,8 @@ public class Day {
 		 */
 		@Override
 		public int compare(CalendarEntity so1, CalendarEntity so2) {
-
-			String s1 = so1.getText();
-			String s2 = so2.getText();
-
-			String psort = Prefs.getPref(PrefName.PRIORITY_SORT);
-			if (psort.equals(TRUE)) {
+			boolean prioritySort = Prefs.getPref(PrefName.PRIORITY_SORT).equals(TRUE);
+			if (prioritySort) {
 				Integer p1 = so1.getPriority();
 				Integer p2 = so2.getPriority();
 
@@ -117,16 +117,17 @@ public class Day {
 
 			// if we got here, just compare
 			// strings lexicographically
-			int res = s1.compareTo(s2);
+			int res = so1.getText().compareTo(so2.getText());
 			if (res != 0)
-				return (res);
-			return (1);
+				return res;
+			return 1;
 
 		}
+
 		private Date getTimeWithoutDate(Appointment appointment) {
 			Calendar cal = new GregorianCalendar();
 			cal.setTime(appointment.getDate());
-			cal.set(1, 1, 2000);
+			cal.set(1, Calendar.FEBRUARY, 2000);
 			return cal.getTime();
 		}
 
@@ -144,8 +145,7 @@ public class Day {
 		specialDays.add(new SpecialDay("St._Patrick's_Day", 17, 2, false, US));
 		specialDays.add(new SpecialDay("Veteran's_Day", 11, 10, false, US));
 		specialDays.add(new SpecialDay("Labor_Day", nthdom(year, month, Calendar.MONDAY, 1), 8, true, US));
-		specialDays
-				.add(new SpecialDay("Martin_Luther_King_Day", nthdom(year, month, Calendar.MONDAY, 3), 0, false, US));
+		specialDays.add(new SpecialDay("Martin_Luther_King_Day", nthdom(year, month, Calendar.MONDAY, 3), 0, false, US));
 		specialDays.add(new SpecialDay("Presidents_Day", nthdom(year, month, Calendar.MONDAY, 3), 1, false, US));
 		specialDays.add(new SpecialDay("Memorial_Day", nthdom(year, month, Calendar.MONDAY, -1), 4, true, US));
 		specialDays.add(new SpecialDay("Columbus_Day", nthdom(year, month, Calendar.MONDAY, 2), 9, false, US));
@@ -174,55 +174,49 @@ public class Day {
 	 * 
 	 * @param day
 	 *            the day
-	 * @param llistOfAppointmentKeys
+	 * @param listOfAppointmentKeys
 	 *            list of appointment keys to add	 *
 	 * @throws Exception
 	 *             the exception
 	 */
-	private static void addToDay(Day day, Collection<Integer> llistOfAppointmentKeys) throws Exception {
-
-		boolean pub = Prefs.getPref(PrefName.SHOWPUBLIC).equals(TRUE);
-		boolean priv = Prefs.getPref(PrefName.SHOWPRIVATE).equals(TRUE);
-
-		if (llistOfAppointmentKeys != null) {
-			Iterator<Integer> it = llistOfAppointmentKeys.iterator();
-			Appointment appt;
-
+	private static void addToDay(Day day, Collection<Integer> listOfAppointmentKeys) throws Exception {
+		if (listOfAppointmentKeys != null) {
 			// iterate through the day's appts
-			while (it.hasNext()) {
-				Integer ik = it.next();
-
-				// read the appt from the DB
-				appt = AppointmentModel.getReference().getAppt(ik);
-
-				// skip based on public/private flags
-				if (appt.isPrivate()) {
-					if (!priv)
-						continue;
-				} else {
-					if (!pub)
-						continue;
-				}
-
-				String color = appt.getColor();
-				if (color == null)
-					appt.setColor(BLACK);
-
-				// add apptto day
-				day.addItem(appt);
-
-				// set vacation and holiday flags at dayinfo level
-				Integer v = appt.getVacation();
-				if (v != null && v != 0)
-					day.setVacation(v);
-
-				v = appt.getHoliday();
-				if (v != null && v == 1)
-					day.setHoliday(1);
-
+			for (Integer listOfAppointmentKey : listOfAppointmentKeys) {
+				Appointment appt = AppointmentModel.getReference().getAppt(listOfAppointmentKey);
+				if(checkIfAppointmentToShow(appt))
+					setAppointmentToDay(day, appt);
 			}
 		}
+	}
 
+	private static boolean checkIfAppointmentToShow(Appointment appointment) {
+		if (appointment.isPrivate()) {
+			if (!SHOW_PRIVATE_APPT)
+				return false;
+		} else {
+			if (!SHOW_PUBLIC_APPT)
+				return false;
+		}
+		return true;
+	}
+
+	private static void setAppointmentToDay(Day day, Appointment appointment) {
+		// skip based on public/private flags
+		if (appointment.getColor() == null)
+            appointment.setColor(BLACK);
+
+		// add apptto day
+		day.addItem(appointment);
+
+		// set vacation and holiday flags at dayinfo level
+		Integer vacationValue = appointment.getVacation();
+		if (vacationValue != null && vacationValue != 0)
+            day.setVacation(vacationValue);
+
+		Integer holidayValue = appointment.getHoliday();
+		if (holidayValue != null && holidayValue == 1)
+            day.setHoliday(1);
 	}
 
 	/**
@@ -267,10 +261,6 @@ public class Day {
 			dayToGet.addItem(hol);
 		}
 
-
-		String show_us_hols = Prefs.getPref(PrefName.SHOWUSHOLIDAYS);
-		String show_can_hols = Prefs.getPref(PrefName.SHOWCANHOLIDAYS);
-
 		LabelEntity specialDayLabel = new LabelEntity();
 		specialDayLabel.setDate(new GregorianCalendar(year, month, day, 00, 00).getTime());
 		specialDayLabel.setColor(PURPLE);
@@ -278,27 +268,18 @@ public class Day {
 
 		for (SpecialDay currentSpecialDay : initSpecialDays(year, month)) {
 
-			if (currentSpecialDay.getRegion().equals(US) && show_us_hols.equals(TRUE) && currentSpecialDay.isSpecialDay(day, month)) {
+			if (checkIfDayHasSpecialDayToShow(month, day, currentSpecialDay, US)) {
 				setHolidayLabelToDay(dayToGet, specialDayLabel, currentSpecialDay);
 			}
-
-			if (currentSpecialDay.getRegion().equals(CANADA) && show_can_hols.equals(TRUE) && currentSpecialDay.isSpecialDay(day, month)) {
+			if (checkIfDayHasSpecialDayToShow(month, day, currentSpecialDay, CANADA)) {
 				setHolidayLabelToDay(dayToGet, specialDayLabel, currentSpecialDay);
 			}
 
 			if (currentSpecialDay.getRegion().equals(GLOBAL) && currentSpecialDay.isSpecialDay(day, month)) {
 				setHolidayLabelToDay(dayToGet, specialDayLabel, currentSpecialDay);
 			}
-
-			if (currentSpecialDay.getRegion().equals(CANADA) && month == 4) {
-				gc = new GregorianCalendar(year, month, 25);
-				int diff = gc.get(Calendar.DAY_OF_WEEK);
-				diff += 5;
-				if (diff > 7)
-					diff -= 7;
-				if (day == 25 - diff) {
-					specialDayLabel.setText(Resource.getResourceString("Victoria_Day"));
-				}
+			if(currentSpecialDay.getRegion().equals(CANADA) && SHOW_CAN_HOLIDAYS && checkIfDayIsVictoriaDay(year, month, day)) {
+				specialDayLabel.setText(Resource.getResourceString("Victoria_Day"));
 			}
 
 			if (specialDayLabel.getText() != null) {
@@ -315,6 +296,28 @@ public class Day {
 		}
 
 		return dayToGet;
+	}
+
+	private static boolean checkIfDayHasSpecialDayToShow(int month, int day, SpecialDay currentSpecialDay, String region) {
+		if(region.equals(US))
+			return currentSpecialDay.getRegion().equals(region) && SHOW_US_HOLIDAYS && currentSpecialDay.isSpecialDay(day, month);
+		else if(region.equals(CANADA))
+			return currentSpecialDay.getRegion().equals(region) && SHOW_CAN_HOLIDAYS && currentSpecialDay.isSpecialDay(day, month);
+		return false;
+	}
+
+	private static boolean checkIfDayIsVictoriaDay(int year, int month, int day) {
+		if (month == 4) {
+			GregorianCalendar gc = new GregorianCalendar(year, month, 25);
+            int diff = gc.get(Calendar.DAY_OF_WEEK);
+            diff += 5;
+            if (diff > 7)
+                diff -= 7;
+            if (day == 25 - diff) {
+                return true;
+            }
+        }
+		return false;
 	}
 
 	private static void setHolidayLabelToDay(Day ret, LabelEntity specialDayLabel, SpecialDay current) {
