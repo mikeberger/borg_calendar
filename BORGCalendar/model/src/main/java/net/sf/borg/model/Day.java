@@ -25,24 +25,15 @@
 
 package net.sf.borg.model;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Iterator;
-import java.util.List;
-import java.util.TimeZone;
-import java.util.TreeSet;
-
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.CalendarEntity;
 import net.sf.borg.model.entity.LabelEntity;
+
+import java.io.Serializable;
+import java.util.*;
 
 /**
  * Class Day pulls together and manages all of the items that make up the
@@ -89,16 +80,10 @@ public class Day {
 			Date dt1 = null;
 			Date dt2 = null;
 			if (so1 instanceof Appointment && !AppointmentModel.isNote((Appointment) so1)) {
-				Calendar cal = new GregorianCalendar();
-				cal.setTime(((Appointment) so1).getDate());
-				cal.set(1, 1, 2000);
-				dt1 = cal.getTime();
+				dt1 = getTimeWithoutDate((Appointment) so1);
 			}
 			if (so2 instanceof Appointment && !AppointmentModel.isNote((Appointment) so2)) {
-				Calendar cal = new GregorianCalendar();
-				cal.setTime(((Appointment) so2).getDate());
-				cal.set(1, 1, 2000);
-				dt2 = cal.getTime();
+				dt2 = getTimeWithoutDate((Appointment) so2);
 			}
 
 			if (dt1 != null && dt2 != null)
@@ -117,6 +102,13 @@ public class Day {
 
 		}
 
+	}
+
+	private static Date getTimeWithoutDate(Appointment appointment) {
+		Calendar cal = new GregorianCalendar();
+		cal.setTime(appointment.getDate());
+		cal.set(1, 1, 2000);
+		return cal.getTime();
 	}
 
 	private static List<SpecialDay> initSpecialDays(int year, int month) {
@@ -266,41 +258,41 @@ public class Day {
 		String show_us_hols = Prefs.getPref(PrefName.SHOWUSHOLIDAYS);
 		String show_can_hols = Prefs.getPref(PrefName.SHOWCANHOLIDAYS);
 
-		LabelEntity hol = new LabelEntity();
-		hol.setDate(new GregorianCalendar(year, month, day, 00, 00).getTime());
-		hol.setColor("purple");
-		hol.setText(null);
+		LabelEntity specialDayLabel = new LabelEntity();
+		specialDayLabel.setDate(new GregorianCalendar(year, month, day, 00, 00).getTime());
+		specialDayLabel.setColor("purple");
+		specialDayLabel.setText(null);
 
 		for (SpecialDay current : initSpecialDays(year, month)) {
 
 			if (current.getRegion().equals("US") && show_us_hols.equals("true") && current.isSpecialDay(day, month)) {
 				ret.setHoliday(current.isFreeDay() ? 1 : 0);
-				hol.setText(Resource.getResourceString(current.getName()));
+				specialDayLabel.setText(Resource.getResourceString(current.getName()));
 			}
 
 			if (current.getRegion().equals("CAN") && show_can_hols.equals("true") && current.isSpecialDay(day, month)) {
 				ret.setHoliday(current.isFreeDay() ? 1 : 0);
-				hol.setText(Resource.getResourceString(current.getName()));
+				specialDayLabel.setText(Resource.getResourceString(current.getName()));
 			}
 
 			if (current.getRegion().equals("GLOBAL") && current.isSpecialDay(day, month)) {
 				ret.setHoliday(current.isFreeDay() ? 1 : 0);
-				hol.setText(Resource.getResourceString(current.getName()));
+				specialDayLabel.setText(Resource.getResourceString(current.getName()));
 			}
 
-			if (month == 4) {
+			if (current.getRegion().equals("CAN") && month == 4) {
 				gc = new GregorianCalendar(year, month, 25);
 				int diff = gc.get(Calendar.DAY_OF_WEEK);
 				diff += 5;
 				if (diff > 7)
 					diff -= 7;
 				if (day == 25 - diff) {
-					hol.setText(Resource.getResourceString("Victoria_Day"));
+					specialDayLabel.setText(Resource.getResourceString("Victoria_Day"));
 				}
 			}
 
-			if (hol.getText() != null) {
-				ret.addItem(hol);
+			if (specialDayLabel.getText() != null) {
+				ret.addItem(specialDayLabel);
 			}
 		}
 
