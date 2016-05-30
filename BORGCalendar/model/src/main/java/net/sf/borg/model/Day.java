@@ -46,16 +46,9 @@ public class Day {
 	private TreeSet<CalendarEntity> items; // list of appts for the day
 	private int vacation; // vacation value for the day
 
-	private static final String CANADA = "CAN";
-	private static final String US = "US";
-	private static final String GLOBAL = "GLOBAL";
-	private static final String TRUE = "true";
 	private static final String BLACK = "black";
-	private static final String PURPLE = "purple";
-	public static final boolean SHOW_CAN_HOLIDAYS = Prefs.getPref(PrefName.SHOWCANHOLIDAYS).equals(TRUE);
-	public static final boolean SHOW_US_HOLIDAYS = Prefs.getPref(PrefName.SHOWUSHOLIDAYS).equals(TRUE);
-	public static final boolean SHOW_PRIVATE_APPT = Prefs.getPref(PrefName.SHOWPRIVATE).equals(TRUE);
-	public static final boolean SHOW_PUBLIC_APPT = Prefs.getPref(PrefName.SHOWPUBLIC).equals(TRUE);
+	private static final boolean SHOW_PRIVATE_APPT = Prefs.getPref(PrefName.SHOWPRIVATE).equals(SpecialDay.TRUE);
+	private static final boolean SHOW_PUBLIC_APPT = Prefs.getPref(PrefName.SHOWPUBLIC).equals(SpecialDay.TRUE);
 
 
 	/**
@@ -65,14 +58,14 @@ public class Day {
 
 		holiday = 0;
 		vacation = 0;
-		items = new TreeSet<>(new apcompare());
+		items = new TreeSet<>(new AppointmentCompare());
 
 	}
 
 	/**
 	 * class to compare appointment strings for sorting.
 	 */
-	private static class apcompare implements Comparator<CalendarEntity>, Serializable {
+	private static class AppointmentCompare implements Comparator<CalendarEntity>, Serializable {
 
 		private static final long serialVersionUID = 1L;
 
@@ -83,14 +76,14 @@ public class Day {
 		 */
 		@Override
 		public int compare(CalendarEntity so1, CalendarEntity so2) {
-			boolean prioritySort = Prefs.getPref(PrefName.PRIORITY_SORT).equals(TRUE);
+			boolean prioritySort = Prefs.getPref(PrefName.PRIORITY_SORT).equals(SpecialDay.TRUE);
 			if (prioritySort) {
 				Integer p1 = so1.getPriority();
 				Integer p2 = so2.getPriority();
 
 				if (p1 != null && p2 != null) {
 					if (p1.intValue() != p2.intValue())
-						return (p1.intValue() > p2.intValue() ? 1 : -1);
+						return p1 > p2 ? 1 : -1;
 				} else if (p1 != null)
 					return -1;
 				else if (p2 != null)
@@ -109,7 +102,7 @@ public class Day {
 			}
 
 			if (dt1 != null && dt2 != null)
-				return (dt1.after(dt2) ? 1 : -1);
+				return dt1.after(dt2) ? 1 : -1;
 			if (dt1 != null)
 				return -1;
 			if (dt2 != null)
@@ -131,42 +124,6 @@ public class Day {
 			return cal.getTime();
 		}
 
-	}
-
-	private static List<SpecialDay> initSpecialDays(int year, int month) {
-
-		List<SpecialDay> specialDays = new ArrayList<>();
-
-		// American
-		specialDays.add(new SpecialDay("Halloween", 31, 9, false, US));
-		specialDays.add(new SpecialDay("Independence_Day ", 4, 6, true, US));
-		specialDays.add(new SpecialDay("Ground_Hog_Day", 2, 1, false, US));
-		specialDays.add(new SpecialDay("Valentine's_Day", 14, 1, false, US));
-		specialDays.add(new SpecialDay("St._Patrick's_Day", 17, 2, false, US));
-		specialDays.add(new SpecialDay("Veteran's_Day", 11, 10, false, US));
-		specialDays.add(new SpecialDay("Labor_Day", nthdom(year, month, Calendar.MONDAY, 1), 8, true, US));
-		specialDays.add(new SpecialDay("Martin_Luther_King_Day", nthdom(year, month, Calendar.MONDAY, 3), 0, false, US));
-		specialDays.add(new SpecialDay("Presidents_Day", nthdom(year, month, Calendar.MONDAY, 3), 1, false, US));
-		specialDays.add(new SpecialDay("Memorial_Day", nthdom(year, month, Calendar.MONDAY, -1), 4, true, US));
-		specialDays.add(new SpecialDay("Columbus_Day", nthdom(year, month, Calendar.MONDAY, 2), 9, false, US));
-		specialDays.add(new SpecialDay("Mother's_Day", nthdom(year, month, Calendar.SUNDAY, 2), 4, false, US));
-		specialDays.add(new SpecialDay("Father's_Day", nthdom(year, month, Calendar.SUNDAY, 3), 5, false, US));
-		specialDays.add(new SpecialDay("Thanksgiving", nthdom(year, month, Calendar.THURSDAY, 4), 10, true, US));
-
-		// Canadian
-		specialDays.add(new SpecialDay("Canada_Day", 1, 6, false, CANADA));
-		specialDays.add(new SpecialDay("Boxing_Day", 26, 11, false, CANADA));
-		specialDays.add(new SpecialDay("Civic_Holiday", nthdom(year, month, Calendar.MONDAY, 1), 7, false, CANADA));
-		specialDays.add(new SpecialDay("Remembrance_Day", 11, 10, false, CANADA));
-		specialDays.add(new SpecialDay("Labour_Day_(Can)", nthdom(year, month, Calendar.MONDAY, 1), 8, false, CANADA));
-		specialDays.add(new SpecialDay("Commonwealth_Day", nthdom(year, month, Calendar.MONDAY, 2), 2, false, CANADA));
-		specialDays.add(new SpecialDay("Thanksgiving_(Can)", nthdom(year, month, Calendar.MONDAY, 2), 9, false, CANADA));
-
-		// Common
-		specialDays.add(new SpecialDay("New_Year's_Day", 1, 0, true, GLOBAL));
-		specialDays.add(new SpecialDay("Christmas", 25, 11, true, GLOBAL));
-
-		return specialDays;
 	}
 
 	/**
@@ -245,7 +202,7 @@ public class Day {
 		addToDay(dayToGet, listOfAppointments);
 
 		// daylight savings time
-		GregorianCalendar gc = new GregorianCalendar(year, month, day, 11, 00);
+		GregorianCalendar gc = new GregorianCalendar(year, month, day, 11, 0);
 		boolean dstNow = TimeZone.getDefault().inDaylightTime(gc.getTime());
 		gc.add(Calendar.DATE, -1);
 		boolean dstYesterday = TimeZone.getDefault().inDaylightTime(gc.getTime());
@@ -260,32 +217,9 @@ public class Day {
 			hol.setText(Resource.getResourceString("Standard_Time"));
 			dayToGet.addItem(hol);
 		}
-
-		LabelEntity specialDayLabel = new LabelEntity();
-		specialDayLabel.setDate(new GregorianCalendar(year, month, day, 00, 00).getTime());
-		specialDayLabel.setColor(PURPLE);
-		specialDayLabel.setText(null);
-
-		for (SpecialDay currentSpecialDay : initSpecialDays(year, month)) {
-
-			if (checkIfDayHasSpecialDayToShow(month, day, currentSpecialDay, US)) {
-				setHolidayLabelToDay(dayToGet, specialDayLabel, currentSpecialDay);
-			}
-			if (checkIfDayHasSpecialDayToShow(month, day, currentSpecialDay, CANADA)) {
-				setHolidayLabelToDay(dayToGet, specialDayLabel, currentSpecialDay);
-			}
-
-			if (currentSpecialDay.getRegion().equals(GLOBAL) && currentSpecialDay.isSpecialDay(day, month)) {
-				setHolidayLabelToDay(dayToGet, specialDayLabel, currentSpecialDay);
-			}
-			if(currentSpecialDay.getRegion().equals(CANADA) && SHOW_CAN_HOLIDAYS && checkIfDayIsVictoriaDay(year, month, day)) {
-				specialDayLabel.setText(Resource.getResourceString("Victoria_Day"));
-			}
-
-			if (specialDayLabel.getText() != null) {
-				dayToGet.addItem(specialDayLabel);
-			}
-		}
+		LabelEntity specialDayLabel = SpecialDay.getPossibleSpecialDayLabel(year, month, day, dayToGet);
+		if(specialDayLabel != null)
+			dayToGet.addItem(specialDayLabel);
 
 		for (Model m : Model.getExistingModels()) {
 			if (m instanceof CalendarEntityProvider) {
@@ -296,54 +230,6 @@ public class Day {
 		}
 
 		return dayToGet;
-	}
-
-	private static boolean checkIfDayHasSpecialDayToShow(int month, int day, SpecialDay currentSpecialDay, String region) {
-		if(region.equals(US))
-			return currentSpecialDay.getRegion().equals(region) && SHOW_US_HOLIDAYS && currentSpecialDay.isSpecialDay(day, month);
-		else if(region.equals(CANADA))
-			return currentSpecialDay.getRegion().equals(region) && SHOW_CAN_HOLIDAYS && currentSpecialDay.isSpecialDay(day, month);
-		return false;
-	}
-
-	private static boolean checkIfDayIsVictoriaDay(int year, int month, int day) {
-		if (month == 4) {
-			GregorianCalendar gc = new GregorianCalendar(year, month, 25);
-            int diff = gc.get(Calendar.DAY_OF_WEEK);
-            diff += 5;
-            if (diff > 7)
-                diff -= 7;
-            if (day == 25 - diff) {
-                return true;
-            }
-        }
-		return false;
-	}
-
-	private static void setHolidayLabelToDay(Day ret, LabelEntity specialDayLabel, SpecialDay current) {
-		ret.setHoliday(current.isFreeDay() ? 1 : 0);
-		specialDayLabel.setText(Resource.getResourceString(current.getName()));
-	}
-
-	/**
-	 * compute nth day of month for calculating when certain holidays fall.
-	 * 
-	 * @param year
-	 *            the year
-	 * @param month
-	 *            the month
-	 * @param dayofweek
-	 *            the day of the week
-	 * @param week
-	 *            the week of the month
-	 * 
-	 * @return the date
-	 */
-	private static int nthdom(int year, int month, int dayofweek, int week) {
-		GregorianCalendar cal = new GregorianCalendar(year, month, 1);
-		cal.set(Calendar.DAY_OF_WEEK, dayofweek);
-		cal.set(Calendar.DAY_OF_WEEK_IN_MONTH, week);
-		return cal.get(Calendar.DATE);
 	}
 
 	/**
