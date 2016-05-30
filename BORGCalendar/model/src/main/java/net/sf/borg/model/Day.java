@@ -42,6 +42,28 @@ import java.util.*;
  * 
  */
 public class Day {
+	private int holiday; // set to indicate if any appt in the list is a holiday
+	private TreeSet<CalendarEntity> items; // list of appts for the day
+	private int vacation; // vacation value for the day
+
+	private static final String CANADA = "CAN";
+	private static final String US = "US";
+	private static final String GLOBAL = "GLOBAL";
+	private static final String TRUE = "true";
+	private static final String BLACK = "black";
+	private static final String PURPLE = "purple";
+
+
+	/**
+	 * Instantiates a new day.
+	 */
+	private Day() {
+
+		holiday = 0;
+		vacation = 0;
+		items = new TreeSet<>(new apcompare());
+
+	}
 
 	/**
 	 * class to compare appointment strings for sorting.
@@ -62,7 +84,7 @@ public class Day {
 			String s2 = so2.getText();
 
 			String psort = Prefs.getPref(PrefName.PRIORITY_SORT);
-			if (psort.equals("true")) {
+			if (psort.equals(TRUE)) {
 				Integer p1 = so1.getPriority();
 				Integer p2 = so2.getPriority();
 
@@ -101,51 +123,48 @@ public class Day {
 			return (1);
 
 		}
+		private Date getTimeWithoutDate(Appointment appointment) {
+			Calendar cal = new GregorianCalendar();
+			cal.setTime(appointment.getDate());
+			cal.set(1, 1, 2000);
+			return cal.getTime();
+		}
 
-	}
-
-	private static Date getTimeWithoutDate(Appointment appointment) {
-		Calendar cal = new GregorianCalendar();
-		cal.setTime(appointment.getDate());
-		cal.set(1, 1, 2000);
-		return cal.getTime();
 	}
 
 	private static List<SpecialDay> initSpecialDays(int year, int month) {
 
-		List<SpecialDay> specialDays = new ArrayList<SpecialDay>();
+		List<SpecialDay> specialDays = new ArrayList<>();
 
 		// American
-		specialDays.add(new SpecialDay("Halloween", 31, 9, false, "US"));
-		specialDays.add(new SpecialDay("Independence_Day ", 4, 6, true, "US"));
-		specialDays.add(new SpecialDay("Ground_Hog_Day", 2, 1, false, "US"));
-		specialDays.add(new SpecialDay("Valentine's_Day", 14, 1, false, "US"));
-		specialDays.add(new SpecialDay("St._Patrick's_Day", 17, 2, false, "US"));
-		specialDays.add(new SpecialDay("Veteran's_Day", 11, 10, false, "US"));
-		specialDays.add(new SpecialDay("Labor_Day", nthdom(year, month, Calendar.MONDAY, 1), 8, true, "US"));
+		specialDays.add(new SpecialDay("Halloween", 31, 9, false, US));
+		specialDays.add(new SpecialDay("Independence_Day ", 4, 6, true, US));
+		specialDays.add(new SpecialDay("Ground_Hog_Day", 2, 1, false, US));
+		specialDays.add(new SpecialDay("Valentine's_Day", 14, 1, false, US));
+		specialDays.add(new SpecialDay("St._Patrick's_Day", 17, 2, false, US));
+		specialDays.add(new SpecialDay("Veteran's_Day", 11, 10, false, US));
+		specialDays.add(new SpecialDay("Labor_Day", nthdom(year, month, Calendar.MONDAY, 1), 8, true, US));
 		specialDays
-				.add(new SpecialDay("Martin_Luther_King_Day", nthdom(year, month, Calendar.MONDAY, 3), 0, false, "US"));
-		specialDays.add(new SpecialDay("Presidents_Day", nthdom(year, month, Calendar.MONDAY, 3), 1, false, "US"));
-		specialDays.add(new SpecialDay("Memorial_Day", nthdom(year, month, Calendar.MONDAY, -1), 4, true, "US"));
-		specialDays.add(new SpecialDay("Columbus_Day", nthdom(year, month, Calendar.MONDAY, 2), 9, false, "US"));
-		specialDays.add(new SpecialDay("Mother's_Day", nthdom(year, month, Calendar.SUNDAY, 2), 4, false, "US"));
-		specialDays.add(new SpecialDay("Father's_Day", nthdom(year, month, Calendar.SUNDAY, 3), 5, false, "US"));
-		specialDays.add(new SpecialDay("Thanksgiving", nthdom(year, month, Calendar.THURSDAY, 4), 10, true, "US"));
+				.add(new SpecialDay("Martin_Luther_King_Day", nthdom(year, month, Calendar.MONDAY, 3), 0, false, US));
+		specialDays.add(new SpecialDay("Presidents_Day", nthdom(year, month, Calendar.MONDAY, 3), 1, false, US));
+		specialDays.add(new SpecialDay("Memorial_Day", nthdom(year, month, Calendar.MONDAY, -1), 4, true, US));
+		specialDays.add(new SpecialDay("Columbus_Day", nthdom(year, month, Calendar.MONDAY, 2), 9, false, US));
+		specialDays.add(new SpecialDay("Mother's_Day", nthdom(year, month, Calendar.SUNDAY, 2), 4, false, US));
+		specialDays.add(new SpecialDay("Father's_Day", nthdom(year, month, Calendar.SUNDAY, 3), 5, false, US));
+		specialDays.add(new SpecialDay("Thanksgiving", nthdom(year, month, Calendar.THURSDAY, 4), 10, true, US));
 
 		// Canadian
-		specialDays.add(new SpecialDay("Canada_Day", 1, 6, false, "CAN"));
-		specialDays.add(new SpecialDay("Boxing_Day", 26, 11, false, "CAN"));
-		specialDays.add(new SpecialDay("Civic_Holiday", nthdom(year, month, Calendar.MONDAY, 1), 7, false, "CAN"));
-		specialDays.add(new SpecialDay("Remembrance_Day", 11, 10, false, "CAN"));
-		specialDays.add(new SpecialDay("Labour_Day_(Can)", nthdom(year, month, Calendar.MONDAY, 1), 8, false, "CAN"));
-		specialDays.add(new SpecialDay("Commonwealth_Day", nthdom(year, month, Calendar.MONDAY, 2), 2, false, "CAN"));
-		specialDays.add(new SpecialDay("Thanksgiving_(Can)", nthdom(year, month, Calendar.MONDAY, 2), 9, false, "CAN"));
-		// apart iets
-		specialDays.add(new SpecialDay("Victoria_Day", 31, 9, false, "CAN"));
+		specialDays.add(new SpecialDay("Canada_Day", 1, 6, false, CANADA));
+		specialDays.add(new SpecialDay("Boxing_Day", 26, 11, false, CANADA));
+		specialDays.add(new SpecialDay("Civic_Holiday", nthdom(year, month, Calendar.MONDAY, 1), 7, false, CANADA));
+		specialDays.add(new SpecialDay("Remembrance_Day", 11, 10, false, CANADA));
+		specialDays.add(new SpecialDay("Labour_Day_(Can)", nthdom(year, month, Calendar.MONDAY, 1), 8, false, CANADA));
+		specialDays.add(new SpecialDay("Commonwealth_Day", nthdom(year, month, Calendar.MONDAY, 2), 2, false, CANADA));
+		specialDays.add(new SpecialDay("Thanksgiving_(Can)", nthdom(year, month, Calendar.MONDAY, 2), 9, false, CANADA));
 
 		// Common
-		specialDays.add(new SpecialDay("New_Year's_Day", 1, 0, true, "GLOBAL"));
-		specialDays.add(new SpecialDay("Christmas", 25, 11, true, "GLOBAL"));
+		specialDays.add(new SpecialDay("New_Year's_Day", 1, 0, true, GLOBAL));
+		specialDays.add(new SpecialDay("Christmas", 25, 11, true, GLOBAL));
 
 		return specialDays;
 	}
@@ -155,24 +174,18 @@ public class Day {
 	 * 
 	 * @param day
 	 *            the day
-	 * @param l
+	 * @param llistOfAppointmentKeys
 	 *            list of appointment keys to add	 *
 	 * @throws Exception
 	 *             the exception
 	 */
-	private static void addToDay(Day day, Collection<Integer> l) throws Exception {
+	private static void addToDay(Day day, Collection<Integer> llistOfAppointmentKeys) throws Exception {
 
-		boolean pub = false;
-		boolean priv = false;
-		String sp = Prefs.getPref(PrefName.SHOWPUBLIC);
-		if (sp.equals("true"))
-			pub = true;
-		sp = Prefs.getPref(PrefName.SHOWPRIVATE);
-		if (sp.equals("true"))
-			priv = true;
+		boolean pub = Prefs.getPref(PrefName.SHOWPUBLIC).equals(TRUE);
+		boolean priv = Prefs.getPref(PrefName.SHOWPRIVATE).equals(TRUE);
 
-		if (l != null) {
-			Iterator<Integer> it = l.iterator();
+		if (llistOfAppointmentKeys != null) {
+			Iterator<Integer> it = llistOfAppointmentKeys.iterator();
 			Appointment appt;
 
 			// iterate through the day's appts
@@ -180,7 +193,7 @@ public class Day {
 				Integer ik = it.next();
 
 				// read the appt from the DB
-				appt = AppointmentModel.getReference().getAppt(ik.intValue());
+				appt = AppointmentModel.getReference().getAppt(ik);
 
 				// skip based on public/private flags
 				if (appt.isPrivate()) {
@@ -193,18 +206,18 @@ public class Day {
 
 				String color = appt.getColor();
 				if (color == null)
-					appt.setColor("black");
+					appt.setColor(BLACK);
 
 				// add apptto day
 				day.addItem(appt);
 
 				// set vacation and holiday flags at dayinfo level
 				Integer v = appt.getVacation();
-				if (v != null && v.intValue() != 0)
-					day.setVacation(v.intValue());
+				if (v != null && v != 0)
+					day.setVacation(v);
 
 				v = appt.getHoliday();
-				if (v != null && v.intValue() == 1)
+				if (v != null && v == 1)
 					day.setHoliday(1);
 
 			}
@@ -231,11 +244,11 @@ public class Day {
 		// get the base day key
 		Calendar cal = new GregorianCalendar(year, month, day);
 
-		Day ret = new Day();
+		Day dayToGet = new Day();
 
 		// get the list of appt keys from the map_
-		Collection<Integer> l = AppointmentModel.getReference().getAppts(cal.getTime());
-		addToDay(ret, l);
+		Collection<Integer> listOfAppointments = AppointmentModel.getReference().getAppts(cal.getTime());
+		addToDay(dayToGet, listOfAppointments);
 
 		// daylight savings time
 		GregorianCalendar gc = new GregorianCalendar(year, month, day, 11, 00);
@@ -244,14 +257,14 @@ public class Day {
 		boolean dstYesterday = TimeZone.getDefault().inDaylightTime(gc.getTime());
 		if (dstNow && !dstYesterday) {
 			LabelEntity hol = new LabelEntity();
-			hol.setColor("black");
+			hol.setColor(BLACK);
 			hol.setText(Resource.getResourceString("Daylight_Savings_Time"));
-			ret.addItem(hol);
+			dayToGet.addItem(hol);
 		} else if (!dstNow && dstYesterday) {
 			LabelEntity hol = new LabelEntity();
-			hol.setColor("black");
+			hol.setColor(BLACK);
 			hol.setText(Resource.getResourceString("Standard_Time"));
-			ret.addItem(hol);
+			dayToGet.addItem(hol);
 		}
 
 
@@ -260,27 +273,24 @@ public class Day {
 
 		LabelEntity specialDayLabel = new LabelEntity();
 		specialDayLabel.setDate(new GregorianCalendar(year, month, day, 00, 00).getTime());
-		specialDayLabel.setColor("purple");
+		specialDayLabel.setColor(PURPLE);
 		specialDayLabel.setText(null);
 
-		for (SpecialDay current : initSpecialDays(year, month)) {
+		for (SpecialDay currentSpecialDay : initSpecialDays(year, month)) {
 
-			if (current.getRegion().equals("US") && show_us_hols.equals("true") && current.isSpecialDay(day, month)) {
-				ret.setHoliday(current.isFreeDay() ? 1 : 0);
-				specialDayLabel.setText(Resource.getResourceString(current.getName()));
+			if (currentSpecialDay.getRegion().equals(US) && show_us_hols.equals(TRUE) && currentSpecialDay.isSpecialDay(day, month)) {
+				setHolidayLabelToDay(dayToGet, specialDayLabel, currentSpecialDay);
 			}
 
-			if (current.getRegion().equals("CAN") && show_can_hols.equals("true") && current.isSpecialDay(day, month)) {
-				ret.setHoliday(current.isFreeDay() ? 1 : 0);
-				specialDayLabel.setText(Resource.getResourceString(current.getName()));
+			if (currentSpecialDay.getRegion().equals(CANADA) && show_can_hols.equals(TRUE) && currentSpecialDay.isSpecialDay(day, month)) {
+				setHolidayLabelToDay(dayToGet, specialDayLabel, currentSpecialDay);
 			}
 
-			if (current.getRegion().equals("GLOBAL") && current.isSpecialDay(day, month)) {
-				ret.setHoliday(current.isFreeDay() ? 1 : 0);
-				specialDayLabel.setText(Resource.getResourceString(current.getName()));
+			if (currentSpecialDay.getRegion().equals(GLOBAL) && currentSpecialDay.isSpecialDay(day, month)) {
+				setHolidayLabelToDay(dayToGet, specialDayLabel, currentSpecialDay);
 			}
 
-			if (current.getRegion().equals("CAN") && month == 4) {
+			if (currentSpecialDay.getRegion().equals(CANADA) && month == 4) {
 				gc = new GregorianCalendar(year, month, 25);
 				int diff = gc.get(Calendar.DAY_OF_WEEK);
 				diff += 5;
@@ -292,7 +302,7 @@ public class Day {
 			}
 
 			if (specialDayLabel.getText() != null) {
-				ret.addItem(specialDayLabel);
+				dayToGet.addItem(specialDayLabel);
 			}
 		}
 
@@ -300,11 +310,16 @@ public class Day {
 			if (m instanceof CalendarEntityProvider) {
 				List<CalendarEntity> el = ((CalendarEntityProvider) m).getEntities(cal.getTime());
 				for (CalendarEntity e : el)
-					ret.addItem(e);
+					dayToGet.addItem(e);
 			}
 		}
 
-		return (ret);
+		return dayToGet;
+	}
+
+	private static void setHolidayLabelToDay(Day ret, LabelEntity specialDayLabel, SpecialDay current) {
+		ret.setHoliday(current.isFreeDay() ? 1 : 0);
+		specialDayLabel.setText(Resource.getResourceString(current.getName()));
 	}
 
 	/**
@@ -325,24 +340,7 @@ public class Day {
 		GregorianCalendar cal = new GregorianCalendar(year, month, 1);
 		cal.set(Calendar.DAY_OF_WEEK, dayofweek);
 		cal.set(Calendar.DAY_OF_WEEK_IN_MONTH, week);
-		return (cal.get(Calendar.DATE));
-	}
-
-	private int holiday; // set to indicate if any appt in the list is a
-
-	private TreeSet<CalendarEntity> items; // list of appts for the day
-
-	private int vacation; // vacation value for the day
-
-	/**
-	 * Instantiates a new day.
-	 */
-	private Day() {
-
-		holiday = 0;
-		vacation = 0;
-		items = new TreeSet<CalendarEntity>(new apcompare());
-
+		return cal.get(Calendar.DATE);
 	}
 
 	/**
@@ -361,7 +359,7 @@ public class Day {
 	 * @return the holiday (1 = holiday)
 	 */
 	public int getHoliday() {
-		return (holiday);
+		return holiday;
 	}
 
 	/**
@@ -370,7 +368,7 @@ public class Day {
 	 * @return the items
 	 */
 	public Collection<CalendarEntity> getItems() {
-		return (items);
+		return items;
 	}
 
 	/**
@@ -379,7 +377,7 @@ public class Day {
 	 * @return the vacation value (0 = none, 1 = full day, 2 = half day)
 	 */
 	public int getVacation() {
-		return (vacation);
+		return vacation;
 	}
 
 	/**
