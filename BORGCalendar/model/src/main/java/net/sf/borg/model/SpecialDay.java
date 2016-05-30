@@ -25,7 +25,7 @@ public class SpecialDay {
 	 private boolean isFreeDay = false;
 	 private String region = "";
 	 
-	 public SpecialDay(String name, int day, int month, boolean isFreeDay, String region) {
+	 private SpecialDay(String name, int day, int month, boolean isFreeDay, String region) {
 		 setName(name);
 		 setDay(day);
 		 setMonth(month);
@@ -44,23 +44,23 @@ public class SpecialDay {
 		specialDays.add(new SpecialDay("Valentine's_Day", 14, 1, false, US));
 		specialDays.add(new SpecialDay("St._Patrick's_Day", 17, 2, false, US));
 		specialDays.add(new SpecialDay("Veteran's_Day", 11, 10, false, US));
-		specialDays.add(new SpecialDay("Labor_Day", nthdom(year, month, Calendar.MONDAY, 1), 8, true, US));
-		specialDays.add(new SpecialDay("Martin_Luther_King_Day", nthdom(year, month, Calendar.MONDAY, 3), 0, false, US));
-		specialDays.add(new SpecialDay("Presidents_Day", nthdom(year, month, Calendar.MONDAY, 3), 1, false, US));
-		specialDays.add(new SpecialDay("Memorial_Day", nthdom(year, month, Calendar.MONDAY, -1), 4, true, US));
-		specialDays.add(new SpecialDay("Columbus_Day", nthdom(year, month, Calendar.MONDAY, 2), 9, false, US));
-		specialDays.add(new SpecialDay("Mother's_Day", nthdom(year, month, Calendar.SUNDAY, 2), 4, false, US));
-		specialDays.add(new SpecialDay("Father's_Day", nthdom(year, month, Calendar.SUNDAY, 3), 5, false, US));
-		specialDays.add(new SpecialDay("Thanksgiving", nthdom(year, month, Calendar.THURSDAY, 4), 10, true, US));
+		specialDays.add(new SpecialDay("Labor_Day", nthDOM(year, month, Calendar.MONDAY, 1), 8, true, US));
+		specialDays.add(new SpecialDay("Martin_Luther_King_Day", nthDOM(year, month, Calendar.MONDAY, 3), 0, false, US));
+		specialDays.add(new SpecialDay("Presidents_Day", nthDOM(year, month, Calendar.MONDAY, 3), 1, false, US));
+		specialDays.add(new SpecialDay("Memorial_Day", nthDOM(year, month, Calendar.MONDAY, -1), 4, true, US));
+		specialDays.add(new SpecialDay("Columbus_Day", nthDOM(year, month, Calendar.MONDAY, 2), 9, false, US));
+		specialDays.add(new SpecialDay("Mother's_Day", nthDOM(year, month, Calendar.SUNDAY, 2), 4, false, US));
+		specialDays.add(new SpecialDay("Father's_Day", nthDOM(year, month, Calendar.SUNDAY, 3), 5, false, US));
+		specialDays.add(new SpecialDay("Thanksgiving", nthDOM(year, month, Calendar.THURSDAY, 4), 10, true, US));
 
 		// Canadian
 		specialDays.add(new SpecialDay("Canada_Day", 1, 6, false, CANADA));
 		specialDays.add(new SpecialDay("Boxing_Day", 26, 11, false, CANADA));
-		specialDays.add(new SpecialDay("Civic_Holiday", nthdom(year, month, Calendar.MONDAY, 1), 7, false, CANADA));
+		specialDays.add(new SpecialDay("Civic_Holiday", nthDOM(year, month, Calendar.MONDAY, 1), 7, false, CANADA));
 		specialDays.add(new SpecialDay("Remembrance_Day", 11, 10, false, CANADA));
-		specialDays.add(new SpecialDay("Labour_Day_(Can)", nthdom(year, month, Calendar.MONDAY, 1), 8, false, CANADA));
-		specialDays.add(new SpecialDay("Commonwealth_Day", nthdom(year, month, Calendar.MONDAY, 2), 2, false, CANADA));
-		specialDays.add(new SpecialDay("Thanksgiving_(Can)", nthdom(year, month, Calendar.MONDAY, 2), 9, false, CANADA));
+		specialDays.add(new SpecialDay("Labour_Day_(Can)", nthDOM(year, month, Calendar.MONDAY, 1), 8, false, CANADA));
+		specialDays.add(new SpecialDay("Commonwealth_Day", nthDOM(year, month, Calendar.MONDAY, 2), 2, false, CANADA));
+		specialDays.add(new SpecialDay("Thanksgiving_(Can)", nthDOM(year, month, Calendar.MONDAY, 2), 9, false, CANADA));
 
 		// Common
 		specialDays.add(new SpecialDay("New_Year's_Day", 1, 0, true, GLOBAL));
@@ -137,61 +137,53 @@ public class SpecialDay {
 	 *            the year
 	 * @param month
 	 *            the month
-	 * @param dayofweek
+	 * @param dayOfWeek
 	 *            the day of the week
 	 * @param week
 	 *            the week of the month
 	 *
 	 * @return the date
 	 */
-	private static int nthdom(int year, int month, int dayofweek, int week) {
+	private static int nthDOM(int year, int month, int dayOfWeek, int week) {
 		GregorianCalendar cal = new GregorianCalendar(year, month, 1);
-		cal.set(Calendar.DAY_OF_WEEK, dayofweek);
+		cal.set(Calendar.DAY_OF_WEEK, dayOfWeek);
 		cal.set(Calendar.DAY_OF_WEEK_IN_MONTH, week);
 		return cal.get(Calendar.DATE);
 	}
 
-	public boolean isSpecialDay(int day, int month) {
-	  		return (day == this.day && month == this.month);
+	private boolean isSpecialDay(int day, int month) {
+	  		return day == this.day && month == this.month;
 	 }
 
-	public String getRegion() {
+	private String getRegion() {
 		return region;
 	}
 
-	public void setRegion(String region) {
+	private void setRegion(String region) {
 		this.region = region;
 	}
 
-	public String getName() {
+	private String getName() {
 		return name;
 	}
 
-	public void setName(String name) {
+	private void setName(String name) {
 		this.name = name;
 	}
 
-	public int getMonth() {
-		return month;
-	}
-
-	public void setMonth(int month) {
+	private void setMonth(int month) {
 		this.month = month;
 	}
 
-	public int getDay() {
-		return day;
-	}
-
-	public void setDay(int day) {
+	private void setDay(int day) {
 		this.day = day;
 	}
 
-	public boolean isFreeDay() {
+	private boolean isFreeDay() {
 		return isFreeDay;
 	}
 
-	public void setFreeDay(boolean isFreeDay) {
+	private void setFreeDay(boolean isFreeDay) {
 		this.isFreeDay = isFreeDay;
 	}
 

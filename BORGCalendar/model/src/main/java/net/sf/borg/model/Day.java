@@ -42,14 +42,14 @@ import java.util.*;
  * 
  */
 public class Day {
-	private int holiday; // set to indicate if any appt in the list is a holiday
-	private TreeSet<CalendarEntity> items; // list of appts for the day
+	private int holiday; // set to indicate if any appointment in the list is a holiday
+	private final TreeSet<CalendarEntity> items; // list of appointments for the day
 	private int vacation; // vacation value for the day
 
 	private static final String BLACK = "black";
 	private static final String TRUE = "true";
-	private static final boolean SHOW_PRIVATE_APPT = Prefs.getPref(PrefName.SHOWPRIVATE).equals(TRUE);
-	private static final boolean SHOW_PUBLIC_APPT = Prefs.getPref(PrefName.SHOWPUBLIC).equals(TRUE);
+	private static final boolean SHOW_PRIVATE_APPOINTMENTS = Prefs.getPref(PrefName.SHOWPRIVATE).equals(TRUE);
+	private static final boolean SHOW_PUBLIC_APPOINTMENTS = Prefs.getPref(PrefName.SHOWPUBLIC).equals(TRUE);
 
 
 	/**
@@ -82,8 +82,8 @@ public class Day {
 				return compareByPriority(so1, so2);
 			}
 
-			// use appt time of day (not date - due to repeats) to sort next
-			// appts with a time come before notes
+			// use appointment time of day (not date - due to repeats) to sort next
+			// appointments with a time come before notes
 			Integer compareValue = compareByTime(so1, so2);
 			if (compareValue != null)
 				return compareValue;
@@ -144,21 +144,21 @@ public class Day {
 	 */
 	private static void addToDay(Day day, Collection<Integer> listOfAppointmentKeys) throws Exception {
 		if (listOfAppointmentKeys != null) {
-			// iterate through the day's appts
+			// iterate through the day's appointments
 			for (Integer listOfAppointmentKey : listOfAppointmentKeys) {
-				Appointment appt = AppointmentModel.getReference().getAppt(listOfAppointmentKey);
-				if(checkIfAppointmentToShow(appt))
-					setAppointmentToDay(day, appt);
+				Appointment appointment = AppointmentModel.getReference().getAppt(listOfAppointmentKey);
+				if(checkIfAppointmentToShow(appointment))
+					setAppointmentToDay(day, appointment);
 			}
 		}
 	}
 
 	private static boolean checkIfAppointmentToShow(Appointment appointment) {
 		if (appointment.isPrivate()) {
-			if (!SHOW_PRIVATE_APPT)
+			if (!SHOW_PRIVATE_APPOINTMENTS)
 				return false;
 		} else {
-			if (!SHOW_PUBLIC_APPT)
+			if (!SHOW_PUBLIC_APPOINTMENTS)
 				return false;
 		}
 		return true;
@@ -169,10 +169,10 @@ public class Day {
 		if (appointment.getColor() == null)
             appointment.setColor(BLACK);
 
-		// add apptto day
+		// add appointment to day
 		day.addItem(appointment);
 
-		// set vacation and holiday flags at dayinfo level
+		// set vacation and holiday flags at day-info level
 		Integer vacationValue = appointment.getVacation();
 		if (vacationValue != null && vacationValue != 0)
             day.setVacation(vacationValue);
@@ -203,7 +203,7 @@ public class Day {
 
 		Day dayToGet = new Day();
 
-		// get the list of appt keys from the map_
+		// get the list of appointment keys from the map_
 		Collection<Integer> listOfAppointments = AppointmentModel.getReference().getAppts(cal.getTime());
 		addToDay(dayToGet, listOfAppointments);
 
@@ -290,7 +290,7 @@ public class Day {
 	 * @param i
 	 *            the new vacation value
 	 */
-	public void setVacation(int i) {
+	private void setVacation(int i) {
 		vacation = i;
 	}
 }
