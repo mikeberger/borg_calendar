@@ -15,9 +15,9 @@ public class SpecialDay {
 	private static final String CANADA = "CAN";
 	private static final String US = "US";
 	private static final String GLOBAL = "GLOBAL";
-	static final String TRUE = "true";
-	public static final boolean SHOW_US_HOLIDAYS = Prefs.getPref(PrefName.SHOWUSHOLIDAYS).equals(TRUE);
-	public static final boolean SHOW_CAN_HOLIDAYS = Prefs.getPref(PrefName.SHOWCANHOLIDAYS).equals(TRUE);
+	private static final String TRUE = "true";
+	private static final boolean SHOW_US_HOLIDAYS = Prefs.getPref(PrefName.SHOWUSHOLIDAYS).equals(TRUE);
+	private static final boolean SHOW_CAN_HOLIDAYS = Prefs.getPref(PrefName.SHOWCANHOLIDAYS).equals(TRUE);
 	private static final String PURPLE = "purple";
 	private String name = "";
 	 private int month;
@@ -70,31 +70,36 @@ public class SpecialDay {
 	}
 
 	static LabelEntity getPossibleSpecialDayLabel(int year, int month, int day, Day dayToGet) {
+		for (SpecialDay currentSpecialDay : initSpecialDays(year, month)) {
+			LabelEntity specialDayLabel = checkAndGetSpecialDayLabel(year, month, day, dayToGet, currentSpecialDay);
+			if (specialDayLabel != null)
+				return specialDayLabel;
+		}
+		return null;
+	}
+
+	private static LabelEntity checkAndGetSpecialDayLabel(int year, int month, int day, Day dayToGet, SpecialDay currentSpecialDay) {
 		LabelEntity specialDayLabel = new LabelEntity();
-		specialDayLabel.setDate(new GregorianCalendar(year, month, day, 00, 00).getTime());
+		specialDayLabel.setDate(new GregorianCalendar(year, month, day, 0, 0).getTime());
 		specialDayLabel.setColor(PURPLE);
 		specialDayLabel.setText(null);
 
-		for (SpecialDay currentSpecialDay : initSpecialDays(year, month)) {
+		if (checkIfDayHasSpecialDayToShow(month, day, currentSpecialDay, US) || checkIfDayHasSpecialDayToShow(month, day, currentSpecialDay, CANADA)) {
+            setHolidayLabelToDay(dayToGet, specialDayLabel, currentSpecialDay);
+        }
 
-			if (checkIfDayHasSpecialDayToShow(month, day, currentSpecialDay, US)) {
-				setHolidayLabelToDay(dayToGet, specialDayLabel, currentSpecialDay);
-			}
-			if (checkIfDayHasSpecialDayToShow(month, day, currentSpecialDay, CANADA)) {
-				setHolidayLabelToDay(dayToGet, specialDayLabel, currentSpecialDay);
-			}
+		if (currentSpecialDay.getRegion().equals(GLOBAL) && currentSpecialDay.isSpecialDay(day, month)) {
+            setHolidayLabelToDay(dayToGet, specialDayLabel, currentSpecialDay);
+        }
 
-			if (currentSpecialDay.getRegion().equals(GLOBAL) && currentSpecialDay.isSpecialDay(day, month)) {
-				setHolidayLabelToDay(dayToGet, specialDayLabel, currentSpecialDay);
-			}
-			if(currentSpecialDay.getRegion().equals(CANADA) && SHOW_CAN_HOLIDAYS && checkIfDayIsVictoriaDay(year, month, day)) {
-				specialDayLabel.setText(Resource.getResourceString("Victoria_Day"));
-			}
+		if(currentSpecialDay.getRegion().equals(CANADA) && SHOW_CAN_HOLIDAYS && checkIfDayIsVictoriaDay(year, month, day)) {
+            specialDayLabel.setText(Resource.getResourceString("Victoria_Day"));
+        }
 
-			if (specialDayLabel.getText() != null) {
-				return specialDayLabel;
-			}
-		}
+		if (specialDayLabel.getText() != null) {
+            return specialDayLabel;
+        }
+
 		return null;
 	}
 
@@ -147,7 +152,7 @@ public class SpecialDay {
 	}
 
 	public boolean isSpecialDay(int day, int month) {
-	  		return (day == this.day && month == this.month) ? true : false;
+	  		return (day == this.day && month == this.month);
 	 }
 
 	public String getRegion() {
