@@ -47,8 +47,9 @@ public class Day {
 	private int vacation; // vacation value for the day
 
 	private static final String BLACK = "black";
-	private static final boolean SHOW_PRIVATE_APPT = Prefs.getPref(PrefName.SHOWPRIVATE).equals(SpecialDay.TRUE);
-	private static final boolean SHOW_PUBLIC_APPT = Prefs.getPref(PrefName.SHOWPUBLIC).equals(SpecialDay.TRUE);
+	private static final String TRUE = "true";
+	private static final boolean SHOW_PRIVATE_APPT = Prefs.getPref(PrefName.SHOWPRIVATE).equals(TRUE);
+	private static final boolean SHOW_PUBLIC_APPT = Prefs.getPref(PrefName.SHOWPUBLIC).equals(TRUE);
 
 
 	/**
@@ -76,45 +77,50 @@ public class Day {
 		 */
 		@Override
 		public int compare(CalendarEntity so1, CalendarEntity so2) {
-			boolean prioritySort = Prefs.getPref(PrefName.PRIORITY_SORT).equals(SpecialDay.TRUE);
+			boolean prioritySort = Prefs.getPref(PrefName.PRIORITY_SORT).equals(TRUE);
 			if (prioritySort) {
-				Integer p1 = so1.getPriority();
-				Integer p2 = so2.getPriority();
-
-				if (p1 != null && p2 != null) {
-					if (p1.intValue() != p2.intValue())
-						return p1 > p2 ? 1 : -1;
-				} else if (p1 != null)
-					return -1;
-				else if (p2 != null)
-					return 1;
+				return compareByPriority(so1, so2);
 			}
 
 			// use appt time of day (not date - due to repeats) to sort next
 			// appts with a time come before notes
-			Date dt1 = null;
-			Date dt2 = null;
-			if (so1 instanceof Appointment && !AppointmentModel.isNote((Appointment) so1)) {
-				dt1 = getTimeWithoutDate((Appointment) so1);
-			}
-			if (so2 instanceof Appointment && !AppointmentModel.isNote((Appointment) so2)) {
-				dt2 = getTimeWithoutDate((Appointment) so2);
-			}
-
-			if (dt1 != null && dt2 != null)
-				return dt1.after(dt2) ? 1 : -1;
-			if (dt1 != null)
-				return -1;
-			if (dt2 != null)
-				return 1;
+			Integer compareValue = compareByTime(so1, so2);
+			if (compareValue != null)
+				return compareValue;
 
 			// if we got here, just compare
 			// strings lexicographically
-			int res = so1.getText().compareTo(so2.getText());
-			if (res != 0)
-				return res;
-			return 1;
+			return compareByLexicographically(so1, so2);
 
+		}
+
+		private Integer compareByTime(CalendarEntity so1, CalendarEntity so2) {
+			if (isAppointment(so1) && isAppointment(so2)) {
+				Date dt1 = getTimeWithoutDate((Appointment) so1);
+				Date dt2  = getTimeWithoutDate((Appointment) so2);
+				return dt1.after(dt2) ? 1 : -1;
+			}
+			return null;
+		}
+
+		private boolean isAppointment(CalendarEntity calendarEntity) {
+			return calendarEntity instanceof Appointment && !AppointmentModel.isNote((Appointment) calendarEntity);
+		}
+
+		private int compareByLexicographically(CalendarEntity so1, CalendarEntity so2) {
+			return (so1.getText().compareTo(so2.getText()) != 0) ? so1.getText().compareTo(so2.getText()) : 1;
+		}
+
+		private Integer compareByPriority(CalendarEntity so1, CalendarEntity so2) {
+			Integer p1 = so1.getPriority();
+			Integer p2 = so2.getPriority();
+
+			if (p1 != null && p2 != null) {
+                if (p1.intValue() != p2.intValue())
+                    return p1 > p2 ? 1 : -1;
+            } else if (p1 != null)
+                return -1;
+            return 1;
 		}
 
 		private Date getTimeWithoutDate(Appointment appointment) {
@@ -228,7 +234,6 @@ public class Day {
 					dayToGet.addItem(e);
 			}
 		}
-
 		return dayToGet;
 	}
 
@@ -288,5 +293,4 @@ public class Day {
 	public void setVacation(int i) {
 		vacation = i;
 	}
-
 }
