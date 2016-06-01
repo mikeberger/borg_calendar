@@ -42,32 +42,25 @@ import java.util.*;
  * 
  */
 public class Day {
-	private int holiday; // set to indicate if any appointment in the list is a holiday
-	private final TreeSet<CalendarEntity> items; // list of appointments for the day
-	private int vacation; // vacation value for the day
-
+	private final TreeSet<CalendarEntity> items;
 	private static final String BLACK = "black";
 	private static final String TRUE = "true";
 	private static final boolean SHOW_PRIVATE_APPOINTMENTS = Prefs.getPref(PrefName.SHOWPRIVATE).equals(TRUE);
 	private static final boolean SHOW_PUBLIC_APPOINTMENTS = Prefs.getPref(PrefName.SHOWPUBLIC).equals(TRUE);
 
+	private int vacation;
+	private int holiday;
 
-	/**
-	 * Instantiates a new day.
-	 */
 	private Day() {
-
 		holiday = 0;
 		vacation = 0;
 		items = new TreeSet<>(new AppointmentCompare());
-
 	}
 
 	/**
 	 * class to compare appointment strings for sorting.
 	 */
 	private static class AppointmentCompare implements Comparator<CalendarEntity>, Serializable {
-
 		private static final long serialVersionUID = 1L;
 
 		/*
@@ -77,12 +70,10 @@ public class Day {
 		 */
 		@Override
 		public int compare(CalendarEntity so1, CalendarEntity so2) {
-			boolean prioritySort = Prefs.getPref(PrefName.PRIORITY_SORT).equals(TRUE);
-			if (prioritySort) {
+			if (Prefs.getPref(PrefName.PRIORITY_SORT).equals(TRUE)) {
 				return compareByPriority(so1, so2);
 			}
 
-			// use appointment time of day (not date - due to repeats) to sort next
 			// appointments with a time come before notes
 			Integer compareValue = compareByTime(so1, so2);
 			if (compareValue != null)
@@ -95,6 +86,7 @@ public class Day {
 		}
 
 		private Integer compareByTime(CalendarEntity so1, CalendarEntity so2) {
+			// use appointment time of day (not date - due to repeats) to sort next
 			if (isAppointment(so1) && isAppointment(so2)) {
 				Date dt1 = getTimeWithoutDate((Appointment) so1);
 				Date dt2  = getTimeWithoutDate((Appointment) so2);
@@ -197,44 +189,54 @@ public class Day {
 	 *             the exception
 	 */
 	public static Day getDay(int year, int month, int day) throws Exception {
-
 		// get the base day key
-		Calendar cal = new GregorianCalendar(year, month, day);
+		Calendar calendar = new GregorianCalendar(year, month, day);
 
 		Day dayToGet = new Day();
 
 		// get the list of appointment keys from the map_
-		Collection<Integer> listOfAppointments = AppointmentModel.getReference().getAppts(cal.getTime());
+		Collection<Integer> listOfAppointments = AppointmentModel.getReference().getAppts(calendar.getTime());
 		addToDay(dayToGet, listOfAppointments);
 
 		// daylight savings time
+		addDaylightSavingsTimeOrStandardTime(year, month, day, dayToGet);
+
+		// add possible special day
+		addPossibleSpecialDay(year, month, day, dayToGet);
+
+		for (Model model : Model.getExistingModels()) {
+			if (model instanceof CalendarEntityProvider) {
+				List<CalendarEntity> entityList = ((CalendarEntityProvider) model).getEntities(calendar.getTime());
+				for (CalendarEntity entity : entityList)
+					dayToGet.addItem(entity);
+			}
+		}
+		return dayToGet;
+	}
+
+	private static void addPossibleSpecialDay(int year, int month, int day, Day dayToGet) {
+		LabelEntity specialDayLabel = SpecialDay.getPossibleSpecialDayLabel(year, month, day, dayToGet);
+		if(specialDayLabel != null)
+			dayToGet.addItem(specialDayLabel);
+	}
+
+	private static void addDaylightSavingsTimeOrStandardTime(int year, int month, int day, Day dayToGet) {
 		GregorianCalendar gc = new GregorianCalendar(year, month, day, 11, 0);
 		boolean dstNow = TimeZone.getDefault().inDaylightTime(gc.getTime());
 		gc.add(Calendar.DATE, -1);
 		boolean dstYesterday = TimeZone.getDefault().inDaylightTime(gc.getTime());
 		if (dstNow && !dstYesterday) {
-			LabelEntity hol = new LabelEntity();
-			hol.setColor(BLACK);
-			hol.setText(Resource.getResourceString("Daylight_Savings_Time"));
-			dayToGet.addItem(hol);
+			addTimeLabel(dayToGet, Resource.getResourceString("Daylight_Savings_Time"));
 		} else if (!dstNow && dstYesterday) {
-			LabelEntity hol = new LabelEntity();
-			hol.setColor(BLACK);
-			hol.setText(Resource.getResourceString("Standard_Time"));
-			dayToGet.addItem(hol);
+			addTimeLabel(dayToGet, Resource.getResourceString("Standard_Time"));
 		}
-		LabelEntity specialDayLabel = SpecialDay.getPossibleSpecialDayLabel(year, month, day, dayToGet);
-		if(specialDayLabel != null)
-			dayToGet.addItem(specialDayLabel);
+	}
 
-		for (Model m : Model.getExistingModels()) {
-			if (m instanceof CalendarEntityProvider) {
-				List<CalendarEntity> el = ((CalendarEntityProvider) m).getEntities(cal.getTime());
-				for (CalendarEntity e : el)
-					dayToGet.addItem(e);
-			}
-		}
-		return dayToGet;
+	private static void addTimeLabel(Day dayToGet, String timeLabel) {
+		LabelEntity label = new LabelEntity();
+		label.setColor(BLACK);
+		label.setText(timeLabel);
+		dayToGet.addItem(label);
 	}
 
 	/**

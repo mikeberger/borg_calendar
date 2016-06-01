@@ -11,7 +11,6 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 public class SpecialDay {
-
 	private static final String CANADA = "CAN";
 	private static final String US = "US";
 	private static final String GLOBAL = "GLOBAL";
@@ -19,11 +18,12 @@ public class SpecialDay {
 	private static final boolean SHOW_US_HOLIDAYS = Prefs.getPref(PrefName.SHOWUSHOLIDAYS).equals(TRUE);
 	private static final boolean SHOW_CAN_HOLIDAYS = Prefs.getPref(PrefName.SHOWCANHOLIDAYS).equals(TRUE);
 	private static final String PURPLE = "purple";
+
 	private String name = "";
-	 private int month;
-	 private int day;
-	 private boolean isFreeDay = false;
-	 private String region = "";
+	private int month;
+	private int day;
+	private boolean isFreeDay = false;
+	private String region = "";
 	 
 	 private SpecialDay(String name, int day, int month, boolean isFreeDay, String region) {
 		 setName(name);
@@ -34,7 +34,6 @@ public class SpecialDay {
 	 }
 
 	private static List<SpecialDay> initSpecialDays(int year, int month) {
-
 		List<SpecialDay> specialDays = new ArrayList<>();
 
 		// American
@@ -186,6 +185,4 @@ public class SpecialDay {
 	private void setFreeDay(boolean isFreeDay) {
 		this.isFreeDay = isFreeDay;
 	}
-
-	 
 }
