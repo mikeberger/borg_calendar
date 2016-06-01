@@ -171,13 +171,13 @@ public class SpecialDay {
 
 	/**
 	 * Method to set a holidayLabel to a day if it is needed
-	 * @param ret
-	 * @param specialDayLabel
-	 * @param current
+	 * @param dayToSetHoliday
+	 * @param labelEntity
+	 * @param specialDay
      */
-	private static void setHolidayLabelToDay(Day ret, LabelEntity specialDayLabel, SpecialDay current) {
-		ret.setHoliday(current.isFreeDay() ? 1 : 0);
-		specialDayLabel.setText(Resource.getResourceString(current.getName()));
+	private static void setHolidayLabelToDay(Day dayToSetHoliday, LabelEntity labelEntity, SpecialDay specialDay) {
+		dayToSetHoliday.setHoliday(specialDay.isFreeDay() ? 1 : 0);
+		labelEntity.setText(Resource.getResourceString(specialDay.getName()));
 	}
 
 	/**
