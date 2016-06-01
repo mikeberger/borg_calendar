@@ -10,6 +10,9 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+/**
+ * Class that has the business logic of a special day object to add to a day in the calndar UI
+ */
 public class SpecialDay {
 	private static final String CANADA = "CAN";
 	private static final String US = "US";
@@ -25,14 +28,21 @@ public class SpecialDay {
 	private boolean isFreeDay = false;
 	private String region = "";
 	 
-	 private SpecialDay(String name, int day, int month, boolean isFreeDay, String region) {
-		 setName(name);
-		 setDay(day);
-		 setMonth(month);
-		 setFreeDay(isFreeDay);
-		 setRegion(region);
-	 }
+	private SpecialDay(String name, int day, int month, boolean isFreeDay, String region) {
+		setName(name);
+		setDay(day);
+		setMonth(month);
+		setFreeDay(isFreeDay);
+		setRegion(region);
+	}
 
+	/**
+	 * Method to create a list of special days
+	 *
+	 * @param year
+	 * @param month
+     * @return
+     */
 	private static List<SpecialDay> initSpecialDays(int year, int month) {
 		List<SpecialDay> specialDays = new ArrayList<>();
 
@@ -68,7 +78,16 @@ public class SpecialDay {
 		return specialDays;
 	}
 
-	static LabelEntity getPossibleSpecialDayLabel(int year, int month, int day, Day dayToGet) {
+	/**
+	 * Method to get a special day label if it is a special day according to the list made by SpecialDay.initSpecialDays
+	 *
+	 * @param year
+	 * @param month
+	 * @param day
+	 * @param dayToGet
+     * @return
+     */
+	public static LabelEntity getPossibleSpecialDayLabel(int year, int month, int day, Day dayToGet) {
 		for (SpecialDay currentSpecialDay : initSpecialDays(year, month)) {
 			LabelEntity specialDayLabel = checkAndGetSpecialDayLabel(year, month, day, dayToGet, currentSpecialDay);
 			if (specialDayLabel != null)
@@ -77,6 +96,16 @@ public class SpecialDay {
 		return null;
 	}
 
+	/**
+	 * method to create a LabelEntity of an special day if it is one according to SpecialDay.initSpecialDays
+	 *
+	 * @param year
+	 * @param month
+	 * @param day
+	 * @param dayToGet
+	 * @param currentSpecialDay
+     * @return
+     */
 	private static LabelEntity checkAndGetSpecialDayLabel(int year, int month, int day, Day dayToGet, SpecialDay currentSpecialDay) {
 		LabelEntity specialDayLabel = new LabelEntity();
 		specialDayLabel.setDate(new GregorianCalendar(year, month, day, 0, 0).getTime());
@@ -102,6 +131,14 @@ public class SpecialDay {
 		return null;
 	}
 
+	/**
+	 * Method to check if it is a specialday in the US or Canada
+	 * @param month
+	 * @param day
+	 * @param currentSpecialDay
+	 * @param region
+     * @return
+     */
 	private static boolean checkIfDayHasSpecialDayToShow(int month, int day, SpecialDay currentSpecialDay, String region) {
 		if(region.equals(US))
 			return currentSpecialDay.getRegion().equals(region) && SHOW_US_HOLIDAYS && currentSpecialDay.isSpecialDay(day, month);
@@ -110,6 +147,14 @@ public class SpecialDay {
 		return false;
 	}
 
+	/**
+	 * Different method to check if it is Victoria Day
+	 * Victoria day is the last Monday preceding May 25
+	 * @param year
+	 * @param month
+	 * @param day
+     * @return
+     */
 	private static boolean checkIfDayIsVictoriaDay(int year, int month, int day) {
 		if (month == 4) {
 			GregorianCalendar gc = new GregorianCalendar(year, month, 25);
@@ -124,6 +169,12 @@ public class SpecialDay {
 		return false;
 	}
 
+	/**
+	 * Method to set a holidayLabel to a day if it is needed
+	 * @param ret
+	 * @param specialDayLabel
+	 * @param current
+     */
 	private static void setHolidayLabelToDay(Day ret, LabelEntity specialDayLabel, SpecialDay current) {
 		ret.setHoliday(current.isFreeDay() ? 1 : 0);
 		specialDayLabel.setText(Resource.getResourceString(current.getName()));
@@ -150,38 +201,67 @@ public class SpecialDay {
 		return cal.get(Calendar.DATE);
 	}
 
+	/**
+	 * @param day
+	 * @param month
+	 * @return
+	 */
 	private boolean isSpecialDay(int day, int month) {
 	  		return day == this.day && month == this.month;
 	 }
 
+	/**
+	 * @return
+	 */
 	private String getRegion() {
 		return region;
 	}
 
+	/**
+	 * @param region
+	 */
 	private void setRegion(String region) {
 		this.region = region;
 	}
 
+	/**
+	 * @return
+	 */
 	private String getName() {
 		return name;
 	}
 
+	/**
+	 * @param name
+	 */
 	private void setName(String name) {
 		this.name = name;
 	}
 
+	/**
+	 * @param month
+	 */
 	private void setMonth(int month) {
 		this.month = month;
 	}
 
+	/**
+	 * @param day
+	 */
 	private void setDay(int day) {
 		this.day = day;
 	}
 
+	/**
+	 * @return
+	 */
 	private boolean isFreeDay() {
 		return isFreeDay;
 	}
 
+	/**
+	 * @param isFreeDay
+	 */
 	private void setFreeDay(boolean isFreeDay) {
 		this.isFreeDay = isFreeDay;
 	}
