@@ -85,6 +85,12 @@ public class Day {
 
 		}
 
+		/**
+		 * Method to compare two CalendarEntities by Time
+		 * @param so1
+		 * @param so2
+         * @return
+         */
 		private Integer compareByTime(CalendarEntity so1, CalendarEntity so2) {
 			// use appointment time of day (not date - due to repeats) to sort next
 			if (isAppointment(so1) && isAppointment(so2)) {
@@ -95,14 +101,31 @@ public class Day {
 			return null;
 		}
 
+		/**
+		 * Check if a CalendarEntity is an appointment and not a note
+		 * @param calendarEntity
+         * @return
+         */
 		private boolean isAppointment(CalendarEntity calendarEntity) {
 			return calendarEntity instanceof Appointment && !AppointmentModel.isNote((Appointment) calendarEntity);
 		}
 
+		/**
+		 * Method to sort CalendarEntities by Lexico Graphically
+		 * @param so1
+		 * @param so2
+         * @return
+         */
 		private int compareByLexicographically(CalendarEntity so1, CalendarEntity so2) {
 			return (so1.getText().compareTo(so2.getText()) != 0) ? so1.getText().compareTo(so2.getText()) : 1;
 		}
 
+		/**
+		 * Method to sort CalendarEntities by priority
+		 * @param so1
+		 * @param so2
+         * @return
+         */
 		private Integer compareByPriority(CalendarEntity so1, CalendarEntity so2) {
 			Integer p1 = so1.getPriority();
 			Integer p2 = so2.getPriority();
@@ -115,6 +138,11 @@ public class Day {
             return 1;
 		}
 
+		/**
+		 * Method to get the time of an appointment without looking at de date
+		 * @param appointment
+         * @return
+         */
 		private Date getTimeWithoutDate(Appointment appointment) {
 			Calendar cal = new GregorianCalendar();
 			cal.setTime(appointment.getDate());
@@ -145,6 +173,11 @@ public class Day {
 		}
 	}
 
+	/**
+	 * check if a appoint has to been shown at the calendar UI
+	 * @param appointment
+	 * @return
+     */
 	private static boolean checkIfAppointmentToShow(Appointment appointment) {
 		if (appointment.isPrivate()) {
 			if (!SHOW_PRIVATE_APPOINTMENTS)
@@ -156,6 +189,11 @@ public class Day {
 		return true;
 	}
 
+	/**
+	 * Method to set an Appointment to a day object for the calendar UI
+	 * @param day
+	 * @param appointment
+     */
 	private static void setAppointmentToDay(Day day, Appointment appointment) {
 		// skip based on public/private flags
 		if (appointment.getColor() == null)
@@ -214,12 +252,26 @@ public class Day {
 		return dayToGet;
 	}
 
+	/**
+	 * Method to add a special day to a Day object for the calendar UI
+	 * @param year
+	 * @param month
+	 * @param day
+	 * @param dayToGet
+     */
 	private static void addPossibleSpecialDay(int year, int month, int day, Day dayToGet) {
 		LabelEntity specialDayLabel = SpecialDay.getPossibleSpecialDayLabel(year, month, day, dayToGet);
 		if(specialDayLabel != null)
 			dayToGet.addItem(specialDayLabel);
 	}
 
+	/**
+	 * A method to add Daylight savings Time or Standard Time change to a day
+	 * @param year
+	 * @param month
+	 * @param day
+	 * @param dayToGet
+     */
 	private static void addDaylightSavingsTimeOrStandardTime(int year, int month, int day, Day dayToGet) {
 		GregorianCalendar gc = new GregorianCalendar(year, month, day, 11, 0);
 		boolean dstNow = TimeZone.getDefault().inDaylightTime(gc.getTime());
@@ -232,6 +284,12 @@ public class Day {
 		}
 	}
 
+	/**
+	 * Method to add an Time Label to a day
+	 *
+	 * @param dayToGet is the day that gets the label
+	 * @param timeLabel a string as text of the label
+     */
 	private static void addTimeLabel(Day dayToGet, String timeLabel) {
 		LabelEntity label = new LabelEntity();
 		label.setColor(BLACK);
