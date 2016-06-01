@@ -69,33 +69,33 @@ public class Day {
 		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
 		 */
 		@Override
-		public int compare(CalendarEntity so1, CalendarEntity so2) {
+		public int compare(CalendarEntity calendarEntity1, CalendarEntity calendarEntity2) {
 			if (Prefs.getPref(PrefName.PRIORITY_SORT).equals(TRUE)) {
-				return compareByPriority(so1, so2);
+				return compareByPriority(calendarEntity1, calendarEntity2);
 			}
 
 			// appointments with a time come before notes
-			Integer compareValue = compareByTime(so1, so2);
+			Integer compareValue = compareByTime(calendarEntity1, calendarEntity2);
 			if (compareValue != null)
 				return compareValue;
 
 			// if we got here, just compare
 			// strings lexicographically
-			return compareByLexicographically(so1, so2);
+			return compareByLexicographically(calendarEntity1, calendarEntity2);
 
 		}
 
 		/**
 		 * Method to compare two CalendarEntities by Time
-		 * @param so1
-		 * @param so2
+		 * @param calendarEntity1
+		 * @param calendarEntity2
          * @return
          */
-		private Integer compareByTime(CalendarEntity so1, CalendarEntity so2) {
+		private Integer compareByTime(CalendarEntity calendarEntity1, CalendarEntity calendarEntity2) {
 			// use appointment time of day (not date - due to repeats) to sort next
-			if (isAppointment(so1) && isAppointment(so2)) {
-				Date dt1 = getTimeWithoutDate((Appointment) so1);
-				Date dt2  = getTimeWithoutDate((Appointment) so2);
+			if (isAppointment(calendarEntity1) && isAppointment(calendarEntity2)) {
+				Date dt1 = getTimeWithoutDate((Appointment) calendarEntity1);
+				Date dt2  = getTimeWithoutDate((Appointment) calendarEntity2);
 				return dt1.after(dt2) ? 1 : -1;
 			}
 			return null;
@@ -112,28 +112,28 @@ public class Day {
 
 		/**
 		 * Method to sort CalendarEntities by Lexico Graphically
-		 * @param so1
-		 * @param so2
+		 * @param calendarEntity1
+		 * @param calendarEntity2
          * @return
          */
-		private int compareByLexicographically(CalendarEntity so1, CalendarEntity so2) {
-			return (so1.getText().compareTo(so2.getText()) != 0) ? so1.getText().compareTo(so2.getText()) : 1;
+		private int compareByLexicographically(CalendarEntity calendarEntity1, CalendarEntity calendarEntity2) {
+			return (calendarEntity1.getText().compareTo(calendarEntity2.getText()) != 0) ? calendarEntity1.getText().compareTo(calendarEntity2.getText()) : 1;
 		}
 
 		/**
 		 * Method to sort CalendarEntities by priority
-		 * @param so1
-		 * @param so2
+		 * @param calendarEntity1
+		 * @param calendarEntity2
          * @return
          */
-		private Integer compareByPriority(CalendarEntity so1, CalendarEntity so2) {
-			Integer p1 = so1.getPriority();
-			Integer p2 = so2.getPriority();
+		private Integer compareByPriority(CalendarEntity calendarEntity1, CalendarEntity calendarEntity2) {
+			Integer calendarEntity1Priority = calendarEntity1.getPriority();
+			Integer calendarEntity2Priority = calendarEntity2.getPriority();
 
-			if (p1 != null && p2 != null) {
-                if (p1.intValue() != p2.intValue())
-                    return p1 > p2 ? 1 : -1;
-            } else if (p1 != null)
+			if (calendarEntity1Priority != null && calendarEntity2Priority != null) {
+                if (calendarEntity1Priority.intValue() != calendarEntity2Priority.intValue())
+                    return calendarEntity1Priority > calendarEntity2Priority ? 1 : -1;
+            } else if (calendarEntity1Priority != null)
                 return -1;
             return 1;
 		}
@@ -257,12 +257,12 @@ public class Day {
 	 * @param year
 	 * @param month
 	 * @param day
-	 * @param dayToGet
+	 * @param dayToAddLabel
      */
-	private static void addPossibleSpecialDay(int year, int month, int day, Day dayToGet) {
-		LabelEntity specialDayLabel = SpecialDay.getPossibleSpecialDayLabel(year, month, day, dayToGet);
+	private static void addPossibleSpecialDay(int year, int month, int day, Day dayToAddLabel) {
+		LabelEntity specialDayLabel = SpecialDay.getPossibleSpecialDayLabel(year, month, day, dayToAddLabel);
 		if(specialDayLabel != null)
-			dayToGet.addItem(specialDayLabel);
+			dayToAddLabel.addItem(specialDayLabel);
 	}
 
 	/**
@@ -270,31 +270,31 @@ public class Day {
 	 * @param year
 	 * @param month
 	 * @param day
-	 * @param dayToGet
+	 * @param dayToAddLabel
      */
-	private static void addDaylightSavingsTimeOrStandardTime(int year, int month, int day, Day dayToGet) {
+	private static void addDaylightSavingsTimeOrStandardTime(int year, int month, int day, Day dayToAddLabel) {
 		GregorianCalendar gc = new GregorianCalendar(year, month, day, 11, 0);
-		boolean dstNow = TimeZone.getDefault().inDaylightTime(gc.getTime());
+		boolean dateNow = TimeZone.getDefault().inDaylightTime(gc.getTime());
 		gc.add(Calendar.DATE, -1);
-		boolean dstYesterday = TimeZone.getDefault().inDaylightTime(gc.getTime());
-		if (dstNow && !dstYesterday) {
-			addTimeLabel(dayToGet, Resource.getResourceString("Daylight_Savings_Time"));
-		} else if (!dstNow && dstYesterday) {
-			addTimeLabel(dayToGet, Resource.getResourceString("Standard_Time"));
+		boolean dayBeforeNow = TimeZone.getDefault().inDaylightTime(gc.getTime());
+		if (dateNow && !dayBeforeNow) {
+			addTimeLabel(dayToAddLabel, Resource.getResourceString("Daylight_Savings_Time"));
+		} else if (!dateNow && dayBeforeNow) {
+			addTimeLabel(dayToAddLabel, Resource.getResourceString("Standard_Time"));
 		}
 	}
 
 	/**
 	 * Method to add an Time Label to a day
 	 *
-	 * @param dayToGet is the day that gets the label
+	 * @param dayToAddLabel is the day that gets the label
 	 * @param timeLabel a string as text of the label
      */
-	private static void addTimeLabel(Day dayToGet, String timeLabel) {
+	private static void addTimeLabel(Day dayToAddLabel, String timeLabel) {
 		LabelEntity label = new LabelEntity();
 		label.setColor(BLACK);
 		label.setText(timeLabel);
-		dayToGet.addItem(label);
+		dayToAddLabel.addItem(label);
 	}
 
 	/**
