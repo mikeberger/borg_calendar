@@ -1,20 +1,20 @@
 /*
 This file is part of BORG.
- 
+
     BORG is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 2 of the License, or
     (at your option) any later version.
- 
+
     BORG is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
- 
+
     You should have received a copy of the GNU General Public License
     along with BORG; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- 
+
 Copyright 2003 by Mike Berger
  */
 package net.sf.borg.model.ical;
@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.TimeZone;
+import java.util.UUID;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -415,7 +416,12 @@ public class EntityIcalAdapter {
 			}
 
 			Uid uid = (Uid) pl.getProperty(Property.UID);
-			ap.setUid(uid.getValue());
+			// if no uid - create one - mainly can happen on ics import - not from caldav
+			if (uid == null) {
+				ap.setUid("@NOUID-" + UUID.randomUUID());
+			} else {
+				ap.setUid(uid.getValue());
+			}
 
 			// store the URL coming back from the caldav server
 			// only store the last part
@@ -587,7 +593,7 @@ public class EntityIcalAdapter {
 		return null;
 
 	}
-	
+
 	static public Component toIcal(Project t, boolean export_todos) throws Exception {
 		if (TaskModel.isClosed(t))
 			return null;
@@ -618,7 +624,7 @@ public class EntityIcalAdapter {
 		Date end = new Date(due.getTime() + 1000 * 60 * 60 * 24);
 		DtEnd dte = new DtEnd(pl, new net.fortuna.ical4j.model.Date(end));
 		ve.getProperties().add(dte);
-		
+
 		return ve;
 
 	}
@@ -653,7 +659,6 @@ public class EntityIcalAdapter {
 
 		ve.getProperties().add(new Created(new DateTime(t.getCreateTime())));
 		ve.getProperties().add(new LastModified(new DateTime(t.getLastMod())));
-		
 
 		// add text
 		ve.getProperties().add(new Summary("[T]" + t.getSummary()));
@@ -670,14 +675,13 @@ public class EntityIcalAdapter {
 		Date end = new Date(due.getTime() + 1000 * 60 * 60 * 24);
 		DtEnd dte = new DtEnd(pl, new net.fortuna.ical4j.model.Date(end));
 		ve.getProperties().add(dte);
-		
+
 		return ve;
 
 	}
-	
-	
+
 	static public Component toIcal(Subtask t, boolean export_todos) throws Exception {
-	
+
 		if (t.getCloseDate() != null)
 			return null;
 
@@ -690,7 +694,7 @@ public class EntityIcalAdapter {
 			ve = new VToDo();
 		else
 			ve = new VEvent();
-		
+
 		String uidval = t.getUid();
 		if (uidval == null || uidval.isEmpty()) {
 			uidval = Integer.toString(t.getKey()) + "@BORGS-" + t.getCreateTime().getTime();
@@ -707,7 +711,6 @@ public class EntityIcalAdapter {
 
 		ve.getProperties().add(new Created(new DateTime(t.getCreateTime())));
 		ve.getProperties().add(new LastModified(new DateTime(t.getLastMod())));
-		
 
 		// add text
 		ve.getProperties().add(new Summary("[S]" + t.getDescription()));
@@ -722,7 +725,7 @@ public class EntityIcalAdapter {
 		Date end = new Date(due.getTime() + 1000 * 60 * 60 * 24);
 		DtEnd dte = new DtEnd(pl, new net.fortuna.ical4j.model.Date(end));
 		ve.getProperties().add(dte);
-		
+
 		return ve;
 	}
 
