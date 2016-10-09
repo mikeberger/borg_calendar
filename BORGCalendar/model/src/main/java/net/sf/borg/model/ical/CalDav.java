@@ -25,6 +25,7 @@ import net.fortuna.ical4j.connector.dav.CalDavCalendarCollection;
 import net.fortuna.ical4j.connector.dav.CalDavCalendarStore;
 import net.fortuna.ical4j.connector.dav.PathResolver;
 import net.fortuna.ical4j.connector.dav.PathResolver.GenericPathResolver;
+import net.fortuna.ical4j.connector.dav.property.BaseDavPropertyName;
 import net.fortuna.ical4j.connector.dav.property.CSDavPropertyName;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
@@ -63,6 +64,10 @@ public class CalDav {
 	static private final int REMOTE_ID = 1;
 
 	static private final Logger log = Logger.getLogger("net.sf.borg");
+
+	private static enum SyncType {
+		ALL, VEVENTS, VTODOS
+	}
 
 	public static boolean isSyncing() {
 		String server = Prefs.getPref(PrefName.CALDAV_SERVER);
@@ -125,8 +130,7 @@ public class CalDav {
 		String server = Prefs.getPref(PrefName.CALDAV_SERVER);
 		String serverPart[] = server.split(":");
 		int port = -1;
-		if( serverPart.length == 2)
-		{
+		if (serverPart.length == 2) {
 			try {
 				port = Integer.parseInt(serverPart[1]);
 			} catch (Exception e) {
@@ -230,7 +234,7 @@ public class CalDav {
 		return null;
 	}
 
-	static private void processSyncMap(CalDavCalendarCollection collection) throws Exception {
+	static private void processSyncMap(CalDavCalendarCollection collection, SyncType syncType) throws Exception {
 
 		boolean export_todos = Prefs.getBoolPref(PrefName.ICAL_EXPORT_TODO);
 
@@ -244,6 +248,26 @@ public class CalDav {
 		log.info("SYNC: Process " + num_outgoing + " Outgoing Items");
 
 		for (SyncEvent se : syncEvents) {
+
+			if (syncType == SyncType.VEVENTS) {
+				// only APPTs to VEVENT cal
+				if (se.getObjectType() != ObjectType.APPOINTMENT)
+					continue;
+
+				Appointment ap = AppointmentModel.getReference().getAppt(se.getId());
+				if (ap == null || ap.isTodo())
+					continue;
+
+			} else if (syncType == SyncType.VTODOS) {
+				// only TODOs to VTODO cal
+				if (se.getObjectType() == ObjectType.APPOINTMENT) {
+					Appointment ap = AppointmentModel.getReference().getAppt(se.getId());
+					if (ap == null || !ap.isTodo())
+						continue;
+				}
+
+			}
+
 			if (se.getObjectType() == ObjectType.APPOINTMENT) {
 
 				try {
@@ -473,6 +497,23 @@ public class CalDav {
 	}
 
 	static public synchronized void sync(Integer years, boolean outward_only) throws Exception {
+
+		String calname = Prefs.getPref(PrefName.CALDAV_CAL);
+		String taskcalname = Prefs.getPref(PrefName.TASK_CAL);
+		if (taskcalname == null || taskcalname.isEmpty())
+			sync(years, outward_only, SyncType.ALL, calname);
+		else {
+			sync(years, outward_only, SyncType.VEVENTS, calname);
+			sync(years, outward_only, SyncType.VTODOS, taskcalname);
+		}
+
+		// remove any remote sync event
+		setServerSyncNeeded(false);
+
+		log.info("SYNC: Done");
+	}
+
+	static private void sync(Integer years, boolean outward_only, SyncType syncType, String calname) throws Exception {
 		CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_PARSING, true);
 		CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_UNFOLDING, true);
 		CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_VALIDATION, true);
@@ -484,12 +525,12 @@ public class CalDav {
 
 		log.info("SYNC: Get Collection");
 
-		String calname = Prefs.getPref(PrefName.CALDAV_CAL);
-
 		CalDavCalendarCollection collection = getCollection(store, calname);
 
 		String ctag = collection.getProperty(CSDavPropertyName.CTAG, String.class);
 		log.info("SYNC: CTAG=" + ctag);
+		String token = collection.getProperty(BaseDavPropertyName.SYNC_TOKEN, String.class);
+		log.info("SYNC: TOKEN=" + token);
 
 		boolean incoming_changes = true;
 
@@ -497,18 +538,18 @@ public class CalDav {
 		if (lastCtag != null && lastCtag.equals(ctag))
 			incoming_changes = false;
 
-		processSyncMap(collection);
+		processSyncMap(collection, syncType);
 
 		if (!incoming_changes)
 			SocketClient.sendLogMessage("SYNC: no incoming changes\n");
 
 		if (!outward_only && incoming_changes) {
-			syncFromServer(collection, years);
+			syncFromServer(collection, years, syncType);
 
 			// incoming sync could cause additional outward activity due to borg
 			// needing to convert multiple events
 			// into one - a limitation of borg
-			processSyncMap(collection);
+			processSyncMap(collection, syncType);
 		}
 
 		// update saved ctag
@@ -637,10 +678,10 @@ public class CalDav {
 				// properly handle recurrence it completes the entire todo
 				// instead of one instance.
 				if (Repeat.isRepeating(ap) && ap.isTodo() && !newap.isTodo()) {
-						count++;
-						log.info("SYNC do todo: " + ap.toString());
-						AppointmentModel.getReference().do_todo(ap.getKey(), true);
-						// don't suppress sync log - need to sync this todo
+					count++;
+					log.info("SYNC do todo: " + ap.toString());
+					AppointmentModel.getReference().do_todo(ap.getKey(), true);
+					// don't suppress sync log - need to sync this todo
 				} else {
 
 					try {
@@ -663,7 +704,7 @@ public class CalDav {
 
 	}
 
-	static private void syncFromServer(CalDavCalendarCollection collection, Integer years) throws Exception {
+	static private void syncFromServer(CalDavCalendarCollection collection, Integer years, SyncType syncType) throws Exception {
 
 		SocketClient.sendLogMessage("SYNC: Start Incoming Sync");
 		log.info("SYNC: Start Incoming Sync");
@@ -705,6 +746,9 @@ public class CalDav {
 		// find all appts in Borg that are not on the server
 		for (Appointment ap : AppointmentModel.getReference().getAllAppts()) {
 			if (ap.getDate().before(after))
+				continue;
+			
+			if( (ap.isTodo() && syncType == SyncType.VEVENTS) || (!ap.isTodo() && syncType == SyncType.VTODOS ))
 				continue;
 
 			if (!serverUids.contains(ap.getUid())) {

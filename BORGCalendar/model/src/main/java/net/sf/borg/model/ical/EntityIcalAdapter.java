@@ -413,6 +413,36 @@ public class EntityIcalAdapter {
 				}
 
 			}
+			else
+			{
+				// no DTSTART - use DTEND
+				prop = pl.getProperty(Property.DTEND);
+				if (prop != null) {
+					DtEnd dte = (DtEnd) prop;
+					Date de = dte.getDate();
+					Date utc = new Date();
+					utc.setTime(de.getTime());
+
+					// adjust time zone
+					if (!dte.isUtc() && !dte.getValue().contains("T")) {
+						// System.out.println( "TZO=" + tzOffset(d.getTime()));
+						long u = de.getTime() - tzOffset(de.getTime());
+						utc.setTime(u);
+					}
+
+					ap.setDate(utc);
+
+					// check if DATE only
+					// but assume appt at midnight is untimed
+					if (!dte.getValue().contains("T") || dte.getValue().contains("T000000")) {
+						// date only
+						ap.setUntimed("Y");
+					} else {
+						ap.setUntimed("N");
+					}
+
+				}
+			}
 
 			Uid uid = (Uid) pl.getProperty(Property.UID);
 			ap.setUid(uid.getValue());
