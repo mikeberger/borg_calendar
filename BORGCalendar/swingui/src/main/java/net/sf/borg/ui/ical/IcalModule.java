@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.logging.Logger;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -44,19 +45,18 @@ import net.sf.borg.ui.options.OptionsView;
 public class IcalModule implements Module, Prefs.Listener, Model.Listener {
 
 	private static PrefName url_pref = new PrefName("saved_import_url", "");
+	static private final Logger log = Logger.getLogger("net.sf.borg");
 
 	private JButton syncToolbarButton = null;
 
-	private TrayIcon trayIcon = new TrayIcon(Toolkit.getDefaultToolkit()
-			.getImage(getClass().getResource("/resource/Refresh16.gif")));
+	private TrayIcon trayIcon;
 
 	private static ActionListener syncListener = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			try {
 				if (!CalDav.isSyncing()) {
-					JOptionPane.showMessageDialog(null,
-							Resource.getResourceString("Sync-Not-Set"), null,
+					JOptionPane.showMessageDialog(null, Resource.getResourceString("Sync-Not-Set"), null,
 							JOptionPane.ERROR_MESSAGE);
 					return;
 				}
@@ -68,6 +68,15 @@ public class IcalModule implements Module, Prefs.Listener, Model.Listener {
 			}
 		}
 	};
+
+	public IcalModule() {
+		try {
+			trayIcon = new TrayIcon(
+					Toolkit.getDefaultToolkit().getImage(getClass().getResource("/resource/Refresh16.gif")));
+		} catch (Exception e) {
+			log.warning(e.getMessage());
+		}
+	}
 
 	@Override
 	public Component getComponent() {
@@ -88,8 +97,7 @@ public class IcalModule implements Module, Prefs.Listener, Model.Listener {
 		JMenu m = new JMenu();
 		m.setText("Ical");
 
-		m.setIcon(new javax.swing.ImageIcon(IcalModule.class
-				.getResource("/resource/Export16.gif")));
+		m.setIcon(new javax.swing.ImageIcon(IcalModule.class.getResource("/resource/Export16.gif")));
 
 		JMenu calmenu = new JMenu("CALDAV");
 
@@ -107,9 +115,8 @@ public class IcalModule implements Module, Prefs.Listener, Model.Listener {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
 					if (!CalDav.isSyncing()) {
-						JOptionPane.showMessageDialog(null,
-								Resource.getResourceString("Sync-Not-Set"),
-								null, JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(null, Resource.getResourceString("Sync-Not-Set"), null,
+								JOptionPane.ERROR_MESSAGE);
 						return;
 					}
 					runBackgroundSync(Synctype.ONEWAY);
@@ -130,16 +137,12 @@ public class IcalModule implements Module, Prefs.Listener, Model.Listener {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
 					if (!CalDav.isSyncing()) {
-						JOptionPane.showMessageDialog(null,
-								Resource.getResourceString("Sync-Not-Set"),
-								null, JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(null, Resource.getResourceString("Sync-Not-Set"), null,
+								JOptionPane.ERROR_MESSAGE);
 						return;
 					}
-					int ret = JOptionPane.showConfirmDialog(
-							null,
-							Resource.getResourceString("Caldav-Overwrite-Warn"),
-							Resource.getResourceString("Confirm"),
-							JOptionPane.OK_CANCEL_OPTION,
+					int ret = JOptionPane.showConfirmDialog(null, Resource.getResourceString("Caldav-Overwrite-Warn"),
+							Resource.getResourceString("Confirm"), JOptionPane.OK_CANCEL_OPTION,
 							JOptionPane.WARNING_MESSAGE);
 					if (ret != JOptionPane.OK_OPTION)
 						return;
@@ -165,13 +168,11 @@ public class IcalModule implements Module, Prefs.Listener, Model.Listener {
 
 				// prompt for a file
 				JFileChooser chooser = new JFileChooser();
-				FileNameExtensionFilter filter = new FileNameExtensionFilter(
-						Resource.getResourceString("ical_files"), "ics", "ICS",
-						"ical", "ICAL", "icalendar");
+				FileNameExtensionFilter filter = new FileNameExtensionFilter(Resource.getResourceString("ical_files"),
+						"ics", "ICS", "ical", "ICAL", "icalendar");
 				chooser.setFileFilter(filter);
 				chooser.setCurrentDirectory(new File("."));
-				chooser.setDialogTitle(Resource
-						.getResourceString("choose_file"));
+				chooser.setDialogTitle(Resource.getResourceString("choose_file"));
 				chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
 				int returnVal = chooser.showOpenDialog(null);
@@ -182,8 +183,7 @@ public class IcalModule implements Module, Prefs.Listener, Model.Listener {
 
 				try {
 
-					String warning = ICal
-							.importIcalFromFile(s);
+					String warning = ICal.importIcalFromFile(s);
 					if (warning != null && !warning.isEmpty())
 						Errmsg.getErrorHandler().notice(warning);
 					CategoryModel.syncModels();
@@ -204,8 +204,7 @@ public class IcalModule implements Module, Prefs.Listener, Model.Listener {
 			public void actionPerformed(ActionEvent arg0) {
 
 				// prompt for a file
-				String urlString = JOptionPane.showInputDialog(null,
-						Resource.getResourceString("enturl"),
+				String urlString = JOptionPane.showInputDialog(null, Resource.getResourceString("enturl"),
 						Prefs.getPref(url_pref));
 				if (urlString == null)
 					return;
@@ -213,8 +212,7 @@ public class IcalModule implements Module, Prefs.Listener, Model.Listener {
 				Prefs.putPref(url_pref, urlString);
 				try {
 
-					String warning = ICal
-							.importIcalFromUrl(urlString);
+					String warning = ICal.importIcalFromUrl(urlString);
 					if (warning != null && !warning.isEmpty())
 						Errmsg.getErrorHandler().notice(warning);
 				} catch (Exception e) {
@@ -245,8 +243,7 @@ public class IcalModule implements Module, Prefs.Listener, Model.Listener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					IcalFTP.exportftp(Prefs
-							.getIntPref(PrefName.ICAL_EXPORTYEARS));
+					IcalFTP.exportftp(Prefs.getIntPref(PrefName.ICAL_EXPORTYEARS));
 				} catch (Exception e) {
 					Errmsg.getErrorHandler().errmsg(e);
 				}
@@ -279,8 +276,7 @@ public class IcalModule implements Module, Prefs.Listener, Model.Listener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				IcalFileServer.stop();
-				Errmsg.getErrorHandler().notice(
-						Resource.getResourceString("server_stopped"));
+				Errmsg.getErrorHandler().notice(Resource.getResourceString("server_stopped"));
 			}
 		});
 
@@ -308,19 +304,13 @@ public class IcalModule implements Module, Prefs.Listener, Model.Listener {
 				try {
 
 					// modally lock borg
-					SocketClient.sendMessage("lock:"
-							+ Resource.getResourceString("syncing"));
+					SocketClient.sendMessage("lock:" + Resource.getResourceString("syncing"));
 					if (ty == Synctype.FULL)
-						CalDav.sync(
-								Prefs.getIntPref(PrefName.ICAL_EXPORTYEARS),
-								false);
+						CalDav.sync(Prefs.getIntPref(PrefName.ICAL_EXPORTYEARS), false);
 					else if (ty == Synctype.ONEWAY)
-						CalDav.sync(
-								Prefs.getIntPref(PrefName.ICAL_EXPORTYEARS),
-								true);
+						CalDav.sync(Prefs.getIntPref(PrefName.ICAL_EXPORTYEARS), true);
 					else if (ty == Synctype.OVERWRITE)
-						CalDav.export(Prefs
-								.getIntPref(PrefName.ICAL_EXPORTYEARS));
+						CalDav.export(Prefs.getIntPref(PrefName.ICAL_EXPORTYEARS));
 
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -357,8 +347,7 @@ public class IcalModule implements Module, Prefs.Listener, Model.Listener {
 				for (File f : files) {
 					String warning;
 					try {
-						warning = ICal.importIcalFromFile(f
-								.getAbsolutePath());
+						warning = ICal.importIcalFromFile(f.getAbsolutePath());
 						if (warning != null && !warning.isEmpty())
 							Errmsg.getErrorHandler().notice(warning);
 					} catch (Exception e) {
@@ -369,21 +358,20 @@ public class IcalModule implements Module, Prefs.Listener, Model.Listener {
 			}
 		});
 
-		syncToolbarButton = MultiView
-				.getMainView()
-				.addToolBarItem(
-						new javax.swing.ImageIcon(IcalModule.class
-								.getResource("/resource/Refresh16.gif")),
-						Resource.getResourceString("CALDAV-Sync"), syncListener);
+		syncToolbarButton = MultiView.getMainView().addToolBarItem(
+				new javax.swing.ImageIcon(IcalModule.class.getResource("/resource/Refresh16.gif")),
+				Resource.getResourceString("CALDAV-Sync"), syncListener);
 
-		trayIcon.setToolTip("BORG " + Resource.getResourceString("CALDAV-Sync"));
+		if (trayIcon != null)
+			trayIcon.setToolTip("BORG " + Resource.getResourceString("CALDAV-Sync"));
 		PopupMenu menu = new PopupMenu();
 		MenuItem item = new MenuItem();
 		item.setLabel(Resource.getResourceString("CALDAV-Sync"));
 		item.addActionListener(syncListener);
 		menu.add(item);
-		trayIcon.setPopupMenu(menu);
-		
+		if (trayIcon != null)
+			trayIcon.setPopupMenu(menu);
+
 		try {
 			updateSyncButton();
 			showTrayIcon();
@@ -397,15 +385,12 @@ public class IcalModule implements Module, Prefs.Listener, Model.Listener {
 			try {
 
 				int res = JOptionPane.showConfirmDialog(null,
-						Resource.getResourceString("ImportUrl") + ": " + url
-								+ " ?",
-						Resource.getResourceString("please_confirm"),
-						JOptionPane.OK_CANCEL_OPTION);
+						Resource.getResourceString("ImportUrl") + ": " + url + " ?",
+						Resource.getResourceString("please_confirm"), JOptionPane.OK_CANCEL_OPTION);
 
 				if (res == JOptionPane.YES_OPTION) {
 
-					String warning = ICal
-							.importIcalFromUrl(url);
+					String warning = ICal.importIcalFromUrl(url);
 					if (warning != null && !warning.isEmpty())
 						Errmsg.getErrorHandler().notice(warning);
 				}
@@ -425,7 +410,7 @@ public class IcalModule implements Module, Prefs.Listener, Model.Listener {
 
 	/**
 	 * export appts
-	 * 
+	 *
 	 * @param years
 	 *            - number of years to export or null
 	 */
@@ -434,9 +419,8 @@ public class IcalModule implements Module, Prefs.Listener, Model.Listener {
 		// prompt for a file
 		JFileChooser chooser = new JFileChooser();
 		chooser.setCurrentDirectory(new File("."));
-		FileNameExtensionFilter filter = new FileNameExtensionFilter(
-				Resource.getResourceString("ical_files"), "ics", "ICS", "ical",
-				"ICAL", "icalendar");
+		FileNameExtensionFilter filter = new FileNameExtensionFilter(Resource.getResourceString("ical_files"), "ics",
+				"ICS", "ical", "ICAL", "icalendar");
 		chooser.setFileFilter(filter);
 		chooser.setDialogTitle(Resource.getResourceString("choose_file"));
 		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -481,25 +465,12 @@ public class IcalModule implements Module, Prefs.Listener, Model.Listener {
 	private void updateSyncButton() throws Exception {
 
 		String label = Integer.toString(SyncLog.getReference().getAll().size());
-		
-		if( CalDav.isServerSyncNeeded())
-			label += "^";
-		
-		syncToolbarButton.setText(label);
-		
-		// always leave button enabled in order to sync incoming changes easily
 
-//		if (syncToolbarButton.isEnabled()) {
-//			if (!CalDav.isSyncing()
-//					|| SyncLog.getReference().getAll().isEmpty()) {
-//				syncToolbarButton.setEnabled(false);
-//			}
-//		} else {
-//			if (CalDav.isSyncing()
-//					&& !SyncLog.getReference().getAll().isEmpty()) {
-//				syncToolbarButton.setEnabled(true);
-//			}
-//		}
+		if (CalDav.isServerSyncNeeded())
+			label += "^";
+
+		syncToolbarButton.setText(label);
+
 
 	}
 
@@ -508,8 +479,7 @@ public class IcalModule implements Module, Prefs.Listener, Model.Listener {
 		if (SunTrayIconProxy.hasTrayIcon()) {
 
 			try {
-				if (!CalDav.isSyncing()
-						|| SyncLog.getReference().getAll().isEmpty()) {
+				if (!CalDav.isSyncing() || SyncLog.getReference().getAll().isEmpty()) {
 					SystemTray.getSystemTray().remove(trayIcon);
 				} else {
 					SystemTray.getSystemTray().add(trayIcon);
