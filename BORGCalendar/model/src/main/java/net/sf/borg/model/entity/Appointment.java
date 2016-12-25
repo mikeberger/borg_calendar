@@ -26,6 +26,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import com.mbcsoft.platform.common.EncryptionHelper;
+import com.mbcsoft.platform.common.PrefName;
 import com.mbcsoft.platform.common.Prefs;
 import com.mbcsoft.platform.common.Resource;
 import com.mbcsoft.platform.model.KeyedEntity;
@@ -128,7 +129,7 @@ public class Appointment extends KeyedEntity<Appointment> implements
 			return;
 
 		EncryptionHelper helper = new EncryptionHelper(
-				Prefs.getPref(BorgPref.KEYSTORE), password);
+				Prefs.getPref(PrefName.KEYSTORE), password);
 		String clearText = helper.decrypt(this.getText(),
 				Prefs.getPref(BorgPref.KEYALIAS));
 		this.setText(clearText);
@@ -141,7 +142,7 @@ public class Appointment extends KeyedEntity<Appointment> implements
 			return;
 
 		EncryptionHelper helper = new EncryptionHelper(
-				Prefs.getPref(BorgPref.KEYSTORE), password);
+				Prefs.getPref(PrefName.KEYSTORE), password);
 		String cipherText = helper.encrypt(this.getText(),
 				Prefs.getPref(BorgPref.KEYALIAS));
 		this.setText(cipherText);

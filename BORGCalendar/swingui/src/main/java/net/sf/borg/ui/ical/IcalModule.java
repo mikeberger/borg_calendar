@@ -21,15 +21,15 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import com.mbcsoft.platform.common.Errmsg;
+import com.mbcsoft.platform.common.Prefs;
+import com.mbcsoft.platform.common.Resource;
+import com.mbcsoft.platform.common.SocketClient;
+import com.mbcsoft.platform.model.Model.ChangeEvent;
+
 import net.iharder.dnd.FileDrop;
-import net.sf.borg.common.Errmsg;
-import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
-import net.sf.borg.common.Resource;
-import net.sf.borg.common.SocketClient;
+import net.sf.borg.common.BorgPref;
 import net.sf.borg.model.CategoryModel;
-import net.sf.borg.model.Model;
-import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.ical.CalDav;
 import net.sf.borg.model.ical.ICal;
 import net.sf.borg.model.ical.IcalFTP;
@@ -42,9 +42,9 @@ import net.sf.borg.ui.SunTrayIconProxy;
 import net.sf.borg.ui.options.IcalOptionsPanel;
 import net.sf.borg.ui.options.OptionsView;
 
-public class IcalModule implements Module, Prefs.Listener, Model.Listener {
+public class IcalModule implements Module, Prefs.Listener, com.mbcsoft.platform.model.Model.Listener {
 
-	private static PrefName url_pref = new PrefName("saved_import_url", "");
+	private static BorgPref url_pref = new BorgPref("saved_import_url", "");
 	static private final Logger log = Logger.getLogger("net.sf.borg");
 
 	private JButton syncToolbarButton = null;
@@ -230,7 +230,7 @@ public class IcalModule implements Module, Prefs.Listener, Model.Listener {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				export(Prefs.getIntPref(PrefName.ICAL_EXPORTYEARS));
+				export(Prefs.getIntPref(BorgPref.ICAL_EXPORTYEARS));
 			}
 		});
 
@@ -243,7 +243,7 @@ public class IcalModule implements Module, Prefs.Listener, Model.Listener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					IcalFTP.exportftp(Prefs.getIntPref(PrefName.ICAL_EXPORTYEARS));
+					IcalFTP.exportftp(Prefs.getIntPref(BorgPref.ICAL_EXPORTYEARS));
 				} catch (Exception e) {
 					Errmsg.getErrorHandler().errmsg(e);
 				}
@@ -306,11 +306,11 @@ public class IcalModule implements Module, Prefs.Listener, Model.Listener {
 					// modally lock borg
 					SocketClient.sendMessage("lock:" + Resource.getResourceString("syncing"));
 					if (ty == Synctype.FULL)
-						CalDav.sync(Prefs.getIntPref(PrefName.ICAL_EXPORTYEARS), false);
+						CalDav.sync(Prefs.getIntPref(BorgPref.ICAL_EXPORTYEARS), false);
 					else if (ty == Synctype.ONEWAY)
-						CalDav.sync(Prefs.getIntPref(PrefName.ICAL_EXPORTYEARS), true);
+						CalDav.sync(Prefs.getIntPref(BorgPref.ICAL_EXPORTYEARS), true);
 					else if (ty == Synctype.OVERWRITE)
-						CalDav.export(Prefs.getIntPref(PrefName.ICAL_EXPORTYEARS));
+						CalDav.export(Prefs.getIntPref(BorgPref.ICAL_EXPORTYEARS));
 
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -380,7 +380,7 @@ public class IcalModule implements Module, Prefs.Listener, Model.Listener {
 		}
 
 		// import from URL
-		String url = Prefs.getPref(PrefName.ICAL_IMPORT_URL);
+		String url = Prefs.getPref(BorgPref.ICAL_IMPORT_URL);
 		if (url != null && !url.isEmpty()) {
 			try {
 

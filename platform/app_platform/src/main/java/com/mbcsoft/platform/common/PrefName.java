@@ -75,6 +75,28 @@ public class PrefName {
 	
 	public static final PrefName SHUTDOWNTIME = new PrefName("shuttime", "0");
 	
+	public static PrefName MEMBAR_TIMEOUT = new PrefName("membar-timeout", -1);
+	
+	/** keystore location */
+	static public PrefName KEYSTORE = new PrefName("key_store", "");
+
+	/** cached password time to live in seconds */
+	static public PrefName PASSWORD_TTL = new PrefName("pw_ttl", new Integer(
+			300));
+	
+	/** The COUNTRY. */
+	static public PrefName COUNTRY = new PrefName("country", "");
+
+	/** The LANGUAGE. */
+	static public PrefName LANGUAGE = new PrefName("language", "");
+
+
+
+	// misc
+	/** show a stack trace button on error dialogs */
+	static public PrefName STACKTRACE = new PrefName("stacktrace", "false");
+
+
 	/** preference name */
 	private String name_;
 

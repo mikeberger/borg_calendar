@@ -26,6 +26,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import com.mbcsoft.platform.common.EncryptionHelper;
+import com.mbcsoft.platform.common.PrefName;
 import com.mbcsoft.platform.common.Prefs;
 
 import lombok.Data;
@@ -71,7 +72,7 @@ public class Memo implements EncryptableEntity, Serializable {
 			return;
 		
 		/* decrypt the memo text field */
-		EncryptionHelper helper = new EncryptionHelper(Prefs.getPref(BorgPref.KEYSTORE), password);
+		EncryptionHelper helper = new EncryptionHelper(Prefs.getPref(PrefName.KEYSTORE), password);
 		String clearText = helper.decrypt(this.getMemoText(), Prefs.getPref(BorgPref.KEYALIAS));
 		this.setMemoText(clearText);
 		this.setEncrypted(false);
@@ -83,7 +84,7 @@ public class Memo implements EncryptableEntity, Serializable {
 			return;
 		
 		/* encrypt the memo text field */
-		EncryptionHelper helper = new EncryptionHelper(Prefs.getPref(BorgPref.KEYSTORE), password);
+		EncryptionHelper helper = new EncryptionHelper(Prefs.getPref(PrefName.KEYSTORE), password);
 		String cipherText = helper.encrypt(this.getMemoText(), Prefs.getPref(BorgPref.KEYALIAS));
 		this.setMemoText(cipherText);
 		this.setEncrypted(true);

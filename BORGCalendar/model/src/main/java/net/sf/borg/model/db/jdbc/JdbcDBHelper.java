@@ -3,6 +3,7 @@ package net.sf.borg.model.db.jdbc;
 import java.sql.Connection;
 import java.sql.ResultSet;
 
+import com.mbcsoft.platform.model.DBController;
 import com.mbcsoft.platform.model.EntityDB;
 import com.mbcsoft.platform.model.JdbcDB;
 import com.mbcsoft.platform.model.OptionDB;
@@ -20,7 +21,7 @@ import net.sf.borg.model.entity.Address;
  * Helper class that provides a db factory and some db control functionality to packages outside of the jdbc package.
  * This is the only functionality from the jdbc package that is visible to other packages
  */
-public class JdbcDBHelper implements DBHelper.Factory, DBHelper.Controller {
+public class JdbcDBHelper implements DBHelper.Factory, DBController {
 
 	@Override
 	public AppointmentDB createAppointmentDB() {

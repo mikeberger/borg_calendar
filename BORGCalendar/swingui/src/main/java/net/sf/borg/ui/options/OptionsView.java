@@ -22,28 +22,27 @@ package net.sf.borg.ui.options;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
 
-import net.sf.borg.common.Errmsg;
-import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
-import net.sf.borg.common.Resource;
-import net.sf.borg.model.Model.ChangeEvent;
-import net.sf.borg.ui.ResourceHelper;
+import com.mbcsoft.platform.common.PrefName;
+import com.mbcsoft.platform.common.Prefs;
+import com.mbcsoft.platform.common.Resource;
+import com.mbcsoft.platform.model.Model.ChangeEvent;
+import com.mbcsoft.platform.ui.OptionsPanel;
+import com.mbcsoft.platform.ui.ResourceHelper;
+import com.mbcsoft.platform.ui.StartupViewsOptionsPanel;
+import com.mbcsoft.platform.ui.View;
+import com.mbcsoft.platform.ui.util.GridBagConstraintsFactory;
+
 import net.sf.borg.ui.SunTrayIconProxy;
-import net.sf.borg.ui.View;
-import net.sf.borg.ui.util.GridBagConstraintsFactory;
 
 /**
  * UI for editing BORG options
@@ -54,102 +53,7 @@ public class OptionsView extends View {
 	static private PrefName OPTVIEWSIZE = new PrefName("optviewsize",
 			"-1,-1,-1,-1,N");
 
-	/**
-	 * 
-	 * abstract base class for tabs in the options view
-	 * 
-	 */
-	static public abstract class OptionsPanel extends JPanel {
-		private static final long serialVersionUID = -4942616624428977307L;
-
-		/**
-		 * set a boolean preference from a checkbox
-		 * 
-		 * @param box
-		 *            the checkbox
-		 * @param pn
-		 *            the preference name
-		 */
-		static public void setBooleanPref(JCheckBox box, PrefName pn) {
-			if (box.isSelected()) {
-				Prefs.putPref(pn, "true");
-			} else {
-				Prefs.putPref(pn, "false");
-			}
-		}
-
-		/**
-		 * set a check box from a boolean preference
-		 * 
-		 * @param box
-		 *            the checkbox
-		 * @param pn
-		 *            the preference name
-		 */
-		static public void setCheckBox(JCheckBox box, PrefName pn) {
-			String val = Prefs.getPref(pn);
-			if (val.equals("true")) {
-				box.setSelected(true);
-			} else {
-				box.setSelected(false);
-			}
-		}
-
-		/**
-		 * return the panel's display name
-		 */
-		public abstract String getPanelName();
-
-		/**
-		 * save options from the UI to the preference store
-		 */
-		public abstract void applyChanges();
-
-		/**
-		 * load options from the preference store into the UI
-		 */
-		public abstract void loadOptions();
-
-		/**
-		 * Prompt the user to choose a folder
-		 * 
-		 * @return the folder path or null
-		 */
-		static String chooseDir() {
-
-			String path = null;
-			while (true) {
-				JFileChooser chooser = new JFileChooser();
-
-				chooser.setCurrentDirectory(new File("."));
-				chooser.setDialogTitle("Please choose directory for database files");
-				chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-
-				int returnVal = chooser.showOpenDialog(null);
-				if (returnVal != JFileChooser.APPROVE_OPTION) {
-					return (null);
-				}
-
-				path = chooser.getSelectedFile().getAbsolutePath();
-				File dir = new File(path);
-				String err = null;
-				if (!dir.exists()) {
-					err = "Directory [" + path + "] does not exist";
-				} else if (!dir.isDirectory()) {
-					err = "Directory [" + path + "] is not a directory";
-				}
-
-				if (err == null) {
-					break;
-				}
-
-				Errmsg.getErrorHandler().notice(err);
-			}
-
-			return (path);
-		}
-	}
-
+	
 	private static final long serialVersionUID = 1L;
 
 	private static OptionsView singleton = null;

@@ -1,7 +1,5 @@
 package net.sf.borg.model.db;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
 import java.text.DateFormat;
 import java.util.Date;
 
@@ -9,6 +7,7 @@ import com.mbcsoft.platform.common.PrefName;
 import com.mbcsoft.platform.common.Prefs;
 import com.mbcsoft.platform.common.Resource;
 import com.mbcsoft.platform.common.Warning;
+import com.mbcsoft.platform.model.DBController;
 import com.mbcsoft.platform.model.EntityDB;
 import com.mbcsoft.platform.model.OptionDB;
 
@@ -29,7 +28,7 @@ public class DBHelper {
 	private static Factory factory;
 	@Getter
 	@Setter
-	private static Controller controller;
+	private static DBController controller;
 	
 	/**
 	 * check if the shutdown timestamp stored in the DB differs from the timestamp
@@ -82,30 +81,5 @@ public class DBHelper {
 		public EntityDB<Address> createAddressDB();
 	}
 	
-	/**
-	 * Interface to be implemented by all DB controllers
-	 * It contains methods that are not specific to a DB type
-	 *
-	 */
-	public static interface Controller
-	{
-		/**
-		 * build the DB URL based on the user's DB options
-		 */
-		public String buildURL();
-		/**
-		 * perform the initial connection to the DB
-		 * @param url
-		 * @throws Exception
-		 */
-		public void connect(String url) throws Exception;
-		public void close() throws Exception;
-		public void reopen() throws Exception;
-		public void execSQL(String string) throws Exception;
-		public ResultSet execQuery(String string) throws Exception;
-		public void beginTransaction() throws Exception;
-		public void commitTransaction() throws Exception;
-		public void rollbackTransaction() throws Exception;
-		public Connection getConnection();
-	}
+	
 }

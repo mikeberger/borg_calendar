@@ -33,10 +33,6 @@ public class BorgPref  {
 
 
 
-	// misc
-	/** show a stack trace button on error dialogs */
-	static public PrefName STACKTRACE = new PrefName("stacktrace", "false");
-
 	/** show the spash window */
 	static public PrefName SPLASH = new PrefName("splash", "true");
 
@@ -241,16 +237,11 @@ public class BorgPref  {
 	static public PrefName YELLOW_DAYS = new PrefName("yellow_days",
 			new Integer(14));
 
-	/** keystore location */
-	static public PrefName KEYSTORE = new PrefName("key_store", "");
 
 	/** encryption key alias in the keystore */
 	static public PrefName KEYALIAS = new PrefName("key_alias", "borg_key");
 
-	/** cached password time to live in seconds */
-	static public PrefName PASSWORD_TTL = new PrefName("pw_ttl", new Integer(
-			300));
-
+	
 	/** todo quick add, clear text after add */
 	static public PrefName TODO_QUICK_ENTRY_AUTO_CLEAR_TEXT_FIELD = new PrefName(
 			"todo_option_auto_clear_text", "false");
@@ -326,7 +317,6 @@ public class BorgPref  {
 	public static PrefName CALDAV_ALLOW_SELF_SIGNED_CERT = new PrefName("caldav-self-signed", "false");
 	
 
-	public static PrefName MEMBAR_TIMEOUT = new PrefName("membar-timeout", -1);
 
 	public static PrefName FLUSH_MINS = new PrefName("flush_mins",
 			new Integer(0));
