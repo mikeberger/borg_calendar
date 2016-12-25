@@ -35,6 +35,8 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.mbcsoft.platform.model.JdbcDB;
+
 import net.sf.borg.model.db.CheckListDB;
 import net.sf.borg.model.entity.CheckList;
 

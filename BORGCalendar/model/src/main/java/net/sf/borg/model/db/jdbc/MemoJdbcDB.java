@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.mbcsoft.platform.model.JdbcDB;
+
 import net.sf.borg.model.db.MemoDB;
 import net.sf.borg.model.entity.Memo;
 

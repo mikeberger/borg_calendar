@@ -22,6 +22,8 @@ package net.sf.borg.model.db;
 import java.util.Collection;
 import java.util.List;
 
+import com.mbcsoft.platform.model.EntityDB;
+
 import net.sf.borg.model.entity.Appointment;
 
 /**

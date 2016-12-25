@@ -14,13 +14,14 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import net.sf.borg.common.Errmsg;
-import net.sf.borg.common.Prefs;
+import com.mbcsoft.platform.common.Errmsg;
+import com.mbcsoft.platform.common.Prefs;
+import com.mbcsoft.platform.model.JdbcDBUpgrader;
+import com.mbcsoft.platform.model.Model;
+
 import net.sf.borg.model.AppointmentModel;
-import net.sf.borg.model.Model;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.db.DBHelper;
-import net.sf.borg.model.db.jdbc.JdbcDBUpgrader;
 import net.sf.borg.model.entity.SyncableEntity;
 import net.sf.borg.model.entity.SyncableEntity.ObjectType;
 

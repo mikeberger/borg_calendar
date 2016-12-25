@@ -28,6 +28,8 @@ import java.util.UUID;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import com.mbcsoft.platform.common.DateUtil;
+
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.DateList;
 import net.fortuna.ical4j.model.DateTime;
@@ -59,7 +61,6 @@ import net.fortuna.ical4j.model.property.Status;
 import net.fortuna.ical4j.model.property.Summary;
 import net.fortuna.ical4j.model.property.Uid;
 import net.fortuna.ical4j.model.property.Url;
-import net.sf.borg.common.DateUtil;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Repeat;
 import net.sf.borg.model.TaskModel;

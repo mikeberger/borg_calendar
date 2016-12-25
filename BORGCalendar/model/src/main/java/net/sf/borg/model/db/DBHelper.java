@@ -5,12 +5,15 @@ import java.sql.ResultSet;
 import java.text.DateFormat;
 import java.util.Date;
 
+import com.mbcsoft.platform.common.PrefName;
+import com.mbcsoft.platform.common.Prefs;
+import com.mbcsoft.platform.common.Resource;
+import com.mbcsoft.platform.common.Warning;
+import com.mbcsoft.platform.model.EntityDB;
+import com.mbcsoft.platform.model.OptionDB;
+
 import lombok.Getter;
 import lombok.Setter;
-import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
-import net.sf.borg.common.Resource;
-import net.sf.borg.common.Warning;
 import net.sf.borg.model.entity.Address;
 
 /**

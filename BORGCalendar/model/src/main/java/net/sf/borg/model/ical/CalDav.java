@@ -20,6 +20,13 @@ import javax.crypto.spec.SecretKeySpec;
 import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.commons.httpclient.protocol.SSLProtocolSocketFactory;
 
+import com.mbcsoft.platform.common.Prefs;
+import com.mbcsoft.platform.common.SocketClient;
+import com.mbcsoft.platform.model.Model.ChangeEvent;
+import com.mbcsoft.platform.model.Model.ChangeEvent.ChangeAction;
+import com.mbcsoft.platform.model.Option;
+import com.mbcsoft.platform.model.OptionModel;
+
 import biz.source_code.base64Coder.Base64Coder;
 import net.fortuna.ical4j.connector.dav.CalDavCalendarCollection;
 import net.fortuna.ical4j.connector.dav.CalDavCalendarStore;
@@ -37,17 +44,11 @@ import net.fortuna.ical4j.model.property.ProdId;
 import net.fortuna.ical4j.model.property.RecurrenceId;
 import net.fortuna.ical4j.model.property.Version;
 import net.fortuna.ical4j.util.CompatibilityHints;
-import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
-import net.sf.borg.common.SocketClient;
+import net.sf.borg.common.BorgPref;
 import net.sf.borg.model.AppointmentModel;
-import net.sf.borg.model.Model.ChangeEvent;
-import net.sf.borg.model.Model.ChangeEvent.ChangeAction;
-import net.sf.borg.model.OptionModel;
 import net.sf.borg.model.Repeat;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.Appointment;
-import net.sf.borg.model.entity.Option;
 import net.sf.borg.model.entity.Subtask;
 import net.sf.borg.model.entity.SyncableEntity;
 import net.sf.borg.model.entity.SyncableEntity.ObjectType;
@@ -65,7 +66,7 @@ public class CalDav {
 	static private final Logger log = Logger.getLogger("net.sf.borg");
 
 	public static boolean isSyncing() {
-		String server = Prefs.getPref(PrefName.CALDAV_SERVER);
+		String server = Prefs.getPref(BorgPref.CALDAV_SERVER);
 		if (server != null && !server.isEmpty())
 			return true;
 		return false;
@@ -73,11 +74,11 @@ public class CalDav {
 
 	private static PathResolver createPathResolver() {
 		GenericPathResolver pathResolver = new GenericPathResolver();
-		String basePath = Prefs.getPref(PrefName.CALDAV_PATH);
+		String basePath = Prefs.getPref(BorgPref.CALDAV_PATH);
 		if (!basePath.endsWith("/"))
 			basePath += "/";
-		pathResolver.setPrincipalPath(basePath + Prefs.getPref(PrefName.CALDAV_PRINCIPAL_PATH));
-		pathResolver.setUserPath(basePath + Prefs.getPref(PrefName.CALDAV_USER_PATH));
+		pathResolver.setPrincipalPath(basePath + Prefs.getPref(BorgPref.CALDAV_PRINCIPAL_PATH));
+		pathResolver.setUserPath(basePath + Prefs.getPref(BorgPref.CALDAV_USER_PATH));
 		return pathResolver;
 	}
 
@@ -111,7 +112,7 @@ public class CalDav {
 
 		Prefs.setProxy();
 
-		if (Prefs.getBoolPref(PrefName.CALDAV_ALLOW_SELF_SIGNED_CERT)) {
+		if (Prefs.getBoolPref(BorgPref.CALDAV_ALLOW_SELF_SIGNED_CERT)) {
 			// Allow access even though certificate is self signed
 			Protocol lEasyHttps = new Protocol("https", new EasySslProtocolSocketFactory(), 443);
 			Protocol.registerProtocol("https", lEasyHttps);
@@ -120,9 +121,9 @@ public class CalDav {
 			Protocol.registerProtocol("https", sslprot);
 		}
 
-		String protocol = Prefs.getBoolPref(PrefName.CALDAV_USE_SSL) ? "https" : "http";
+		String protocol = Prefs.getBoolPref(BorgPref.CALDAV_USE_SSL) ? "https" : "http";
 
-		String server = Prefs.getPref(PrefName.CALDAV_SERVER);
+		String server = Prefs.getPref(BorgPref.CALDAV_SERVER);
 		String serverPart[] = server.split(":");
 		int port = -1;
 		if( serverPart.length == 2)
@@ -133,13 +134,13 @@ public class CalDav {
 				e.printStackTrace();
 			}
 		}
-		URL url = new URL(protocol, serverPart[0], port, Prefs.getPref(PrefName.CALDAV_PATH));
+		URL url = new URL(protocol, serverPart[0], port, Prefs.getPref(BorgPref.CALDAV_PATH));
 		SocketClient.sendLogMessage("SYNC: connect to " + url.toString());
 		log.info("SYNC: connect to " + url.toString());
 
 		CalDavCalendarStore store = new CalDavCalendarStore("-", url, createPathResolver());
 
-		if (store.connect(Prefs.getPref(PrefName.CALDAV_USER), gep().toCharArray()))
+		if (store.connect(Prefs.getPref(BorgPref.CALDAV_USER), gep().toCharArray()))
 			return store;
 
 		return null;
@@ -160,13 +161,13 @@ public class CalDav {
 		}
 		Calendar calendar = ICal.exportIcal(after, true);
 
-		String calname = Prefs.getPref(PrefName.CALDAV_CAL);
+		String calname = Prefs.getPref(BorgPref.CALDAV_CAL);
 
 		CalDavCalendarStore store = connect();
 		if (store == null)
 			throw new Exception("Failed to connect to CalDav Store");
 
-		String cal_id = createPathResolver().getUserPath(Prefs.getPref(PrefName.CALDAV_USER)) + "/" + calname;
+		String cal_id = createPathResolver().getUserPath(Prefs.getPref(BorgPref.CALDAV_USER)) + "/" + calname;
 		try {
 			store.removeCollection(cal_id);
 		} catch (Exception e) {
@@ -186,8 +187,8 @@ public class CalDav {
 	}
 
 	public static String gep() throws Exception {
-		String p1 = Prefs.getPref(PrefName.CALDAV_PASSWORD2);
-		String p2 = Prefs.getPref(PrefName.CALDAV_PASSWORD);
+		String p1 = Prefs.getPref(BorgPref.CALDAV_PASSWORD2);
+		String p2 = Prefs.getPref(BorgPref.CALDAV_PASSWORD);
 		if ("".equals(p2))
 			return p2;
 
@@ -211,7 +212,7 @@ public class CalDav {
 	}
 
 	private static CalDavCalendarCollection getCollection(CalDavCalendarStore store, String calName) throws Exception {
-		String cal_id = createPathResolver().getUserPath(Prefs.getPref(PrefName.CALDAV_USER)) + "/" + calName;
+		String cal_id = createPathResolver().getUserPath(Prefs.getPref(BorgPref.CALDAV_USER)) + "/" + calName;
 		return store.getCollection(cal_id);
 	}
 
@@ -232,7 +233,7 @@ public class CalDav {
 
 	static private void processSyncMap(CalDavCalendarCollection collection) throws Exception {
 
-		boolean export_todos = Prefs.getBoolPref(PrefName.ICAL_EXPORT_TODO);
+		boolean export_todos = Prefs.getBoolPref(BorgPref.ICAL_EXPORT_TODO);
 
 		List<SyncEvent> syncEvents = SyncLog.getReference().getAll();
 
@@ -394,15 +395,15 @@ public class CalDav {
 
 	public static void sep(String s) throws Exception {
 		if ("".equals(s)) {
-			Prefs.putPref(PrefName.CALDAV_PASSWORD, s);
+			Prefs.putPref(BorgPref.CALDAV_PASSWORD, s);
 			return;
 		}
-		String p1 = Prefs.getPref(PrefName.CALDAV_PASSWORD2);
+		String p1 = Prefs.getPref(BorgPref.CALDAV_PASSWORD2);
 		if ("".equals(p1)) {
 			KeyGenerator keyGen = KeyGenerator.getInstance("AES");
 			SecretKey key = keyGen.generateKey();
 			p1 = new String(Base64Coder.encode(key.getEncoded()));
-			Prefs.putPref(PrefName.CALDAV_PASSWORD2, p1);
+			Prefs.putPref(BorgPref.CALDAV_PASSWORD2, p1);
 		}
 
 		byte[] ba = Base64Coder.decode(p1);
@@ -414,7 +415,7 @@ public class CalDav {
 		os.write(s.getBytes());
 		os.close();
 		ba = baos.toByteArray();
-		Prefs.putPref(PrefName.CALDAV_PASSWORD, new String(Base64Coder.encode(ba)));
+		Prefs.putPref(BorgPref.CALDAV_PASSWORD, new String(Base64Coder.encode(ba)));
 	}
 
 	/**
@@ -430,7 +431,7 @@ public class CalDav {
 
 		log.info("SYNC: Get Collection");
 
-		String calname = Prefs.getPref(PrefName.CALDAV_CAL);
+		String calname = Prefs.getPref(BorgPref.CALDAV_CAL);
 
 		CalDavCalendarCollection collection = getCollection(store, calname);
 
@@ -484,7 +485,7 @@ public class CalDav {
 
 		log.info("SYNC: Get Collection");
 
-		String calname = Prefs.getPref(PrefName.CALDAV_CAL);
+		String calname = Prefs.getPref(BorgPref.CALDAV_CAL);
 
 		CalDavCalendarCollection collection = getCollection(store, calname);
 

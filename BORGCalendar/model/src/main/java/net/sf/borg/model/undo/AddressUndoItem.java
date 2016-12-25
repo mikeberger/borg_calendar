@@ -18,7 +18,8 @@ getResourceString
  */
 package net.sf.borg.model.undo;
 
-import net.sf.borg.common.Resource;
+import com.mbcsoft.platform.common.Resource;
+
 import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.entity.Address;
 

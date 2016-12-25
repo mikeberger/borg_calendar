@@ -25,12 +25,14 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.mbcsoft.platform.common.EncryptionHelper;
+import com.mbcsoft.platform.common.Prefs;
+import com.mbcsoft.platform.common.Resource;
+import com.mbcsoft.platform.model.KeyedEntity;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import net.sf.borg.common.EncryptionHelper;
-import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
-import net.sf.borg.common.Resource;
+import net.sf.borg.common.BorgPref;
 
 /**
  * The Appointment Entity
@@ -126,9 +128,9 @@ public class Appointment extends KeyedEntity<Appointment> implements
 			return;
 
 		EncryptionHelper helper = new EncryptionHelper(
-				Prefs.getPref(PrefName.KEYSTORE), password);
+				Prefs.getPref(BorgPref.KEYSTORE), password);
 		String clearText = helper.decrypt(this.getText(),
-				Prefs.getPref(PrefName.KEYALIAS));
+				Prefs.getPref(BorgPref.KEYALIAS));
 		this.setText(clearText);
 		this.setEncrypted(false);
 	}
@@ -139,9 +141,9 @@ public class Appointment extends KeyedEntity<Appointment> implements
 			return;
 
 		EncryptionHelper helper = new EncryptionHelper(
-				Prefs.getPref(PrefName.KEYSTORE), password);
+				Prefs.getPref(BorgPref.KEYSTORE), password);
 		String cipherText = helper.encrypt(this.getText(),
-				Prefs.getPref(PrefName.KEYALIAS));
+				Prefs.getPref(BorgPref.KEYALIAS));
 		this.setText(cipherText);
 		this.setEncrypted(true);
 

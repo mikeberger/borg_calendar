@@ -42,13 +42,14 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
-import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
-import net.sf.borg.common.Resource;
-import net.sf.borg.common.SendJavaMail;
+import com.mbcsoft.platform.common.Prefs;
+import com.mbcsoft.platform.common.Resource;
+import com.mbcsoft.platform.common.SendJavaMail;
+
+import biz.source_code.base64Coder.Base64Coder;
+import net.sf.borg.common.BorgPref;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.Task;
-import biz.source_code.base64Coder.Base64Coder;
 
 /**
  * this class handles the daily email reminder
@@ -72,14 +73,14 @@ public class EmailReminder {
 			throws Exception {
 
 		// check if the email feature has been enabled
-		String email = Prefs.getPref(PrefName.EMAILENABLED);
+		String email = Prefs.getPref(BorgPref.EMAILENABLED);
 		if (email.equals("false"))
 			return;
 
 		// get the SMTP host and address
-		String host = Prefs.getPref(PrefName.EMAILSERVER);
-		String addr = Prefs.getPref(PrefName.EMAILADDR);
-		String from = Prefs.getPref(PrefName.EMAILFROM);
+		String host = Prefs.getPref(BorgPref.EMAILSERVER);
+		String addr = Prefs.getPref(BorgPref.EMAILADDR);
+		String from = Prefs.getPref(BorgPref.EMAILFROM);
 
 		if (host.equals("") || addr.equals(""))
 			return;
@@ -93,7 +94,7 @@ public class EmailReminder {
 		int doy = -1;
 		if (emailday == null) {
 			// get the last day that email was sent
-			int lastday = Prefs.getIntPref(PrefName.EMAILLAST);
+			int lastday = Prefs.getIntPref(BorgPref.EMAILLAST);
 
 			// if email was already sent today - don't send again
 			doy = cal.get(Calendar.DAY_OF_YEAR);
@@ -191,13 +192,13 @@ public class EmailReminder {
 					SendJavaMail.sendMail(host, stx,
 							Resource.getResourceString("Reminder_Notice"),
 							f, a.trim(),
-							Prefs.getPref(PrefName.EMAILUSER), gep());
+							Prefs.getPref(BorgPref.EMAILUSER), gep());
 				}
 			}
 		}
 		// record that we sent email today
 		if (doy != -1)
-			Prefs.putPref(PrefName.EMAILLAST, new Integer(doy));
+			Prefs.putPref(BorgPref.EMAILLAST, new Integer(doy));
 
 		return;
 	}
@@ -205,8 +206,8 @@ public class EmailReminder {
 	// intentionally undocumented - not foolproof. unrelated to memo and appt
 	// encryption, which is fully secure
 	public static String gep() throws Exception {
-		String p1 = Prefs.getPref(PrefName.EMAILPASS2);
-		String p2 = Prefs.getPref(PrefName.EMAILPASS);
+		String p1 = Prefs.getPref(BorgPref.EMAILPASS2);
+		String p2 = Prefs.getPref(BorgPref.EMAILPASS);
 		if ("".equals(p2))
 			return p2;
 
@@ -234,15 +235,15 @@ public class EmailReminder {
 	// fully secure
 	public static void sep(String s) throws Exception {
 		if ("".equals(s)) {
-			Prefs.putPref(PrefName.EMAILPASS, s);
+			Prefs.putPref(BorgPref.EMAILPASS, s);
 			return;
 		}
-		String p1 = Prefs.getPref(PrefName.EMAILPASS2);
+		String p1 = Prefs.getPref(BorgPref.EMAILPASS2);
 		if ("".equals(p1)) {
 			KeyGenerator keyGen = KeyGenerator.getInstance("AES");
 			SecretKey key = keyGen.generateKey();
 			p1 = new String(Base64Coder.encode(key.getEncoded()));
-			Prefs.putPref(PrefName.EMAILPASS2, p1);
+			Prefs.putPref(BorgPref.EMAILPASS2, p1);
 		}
 
 		byte[] ba = Base64Coder.decode(p1);
@@ -254,7 +255,7 @@ public class EmailReminder {
 		os.write(s.getBytes());
 		os.close();
 		ba = baos.toByteArray();
-		Prefs.putPref(PrefName.EMAILPASS, new String(Base64Coder.encode(ba)));
+		Prefs.putPref(BorgPref.EMAILPASS, new String(Base64Coder.encode(ba)));
 	}
 
 }

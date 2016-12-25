@@ -16,9 +16,10 @@ import javax.crypto.spec.SecretKeySpec;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
 
+import com.mbcsoft.platform.common.Prefs;
+
 import biz.source_code.base64Coder.Base64Coder;
-import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
+import net.sf.borg.common.BorgPref;
 
 public class IcalFTP {
 
@@ -46,10 +47,10 @@ public class IcalFTP {
 			FTPClient client = new FTPClient();
 
 			try {
-				client.connect(Prefs.getPref(PrefName.FTPSERVER));
+				client.connect(Prefs.getPref(BorgPref.FTPSERVER));
 				checkReply(client);
 
-				client.login(Prefs.getPref(PrefName.FTPUSER),
+				client.login(Prefs.getPref(BorgPref.FTPUSER),
 						gep());
 				checkReply(client);
 				client.enterLocalPassiveMode();
@@ -59,7 +60,7 @@ public class IcalFTP {
 				//
 				// Store file to server
 				//
-				client.storeFile(Prefs.getPref(PrefName.FTPPATH), is);
+				client.storeFile(Prefs.getPref(BorgPref.FTPPATH), is);
 				checkReply(client);
 
 				client.logout();
@@ -71,15 +72,15 @@ public class IcalFTP {
 
 	public static void sep(String s) throws Exception {
 		if ("".equals(s)) {
-			Prefs.putPref(PrefName.FTPPW, s);
+			Prefs.putPref(BorgPref.FTPPW, s);
 			return;
 		}
-		String p1 = Prefs.getPref(PrefName.FTPPW2);
+		String p1 = Prefs.getPref(BorgPref.FTPPW2);
 		if ("".equals(p1)) {
 			KeyGenerator keyGen = KeyGenerator.getInstance("AES");
 			SecretKey key = keyGen.generateKey();
 			p1 = new String(Base64Coder.encode(key.getEncoded()));
-			Prefs.putPref(PrefName.FTPPW2, p1);
+			Prefs.putPref(BorgPref.FTPPW2, p1);
 		}
 
 		byte[] ba = Base64Coder.decode(p1);
@@ -91,12 +92,12 @@ public class IcalFTP {
 		os.write(s.getBytes());
 		os.close();
 		ba = baos.toByteArray();
-		Prefs.putPref(PrefName.FTPPW, new String(Base64Coder.encode(ba)));
+		Prefs.putPref(BorgPref.FTPPW, new String(Base64Coder.encode(ba)));
 	}
 
 	public static String gep() throws Exception {
-		String p1 = Prefs.getPref(PrefName.FTPPW2);
-		String p2 = Prefs.getPref(PrefName.FTPPW);
+		String p1 = Prefs.getPref(BorgPref.FTPPW2);
+		String p2 = Prefs.getPref(BorgPref.FTPPW);
 		if ("".equals(p2))
 			return p2;
 

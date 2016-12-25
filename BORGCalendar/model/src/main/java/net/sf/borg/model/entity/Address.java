@@ -22,6 +22,8 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.mbcsoft.platform.model.KeyedEntity;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

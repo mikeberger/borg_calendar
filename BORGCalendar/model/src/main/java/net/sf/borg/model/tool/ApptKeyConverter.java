@@ -5,7 +5,8 @@ import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.Vector;
 
-import net.sf.borg.common.DateUtil;
+import com.mbcsoft.platform.common.DateUtil;
+
 import net.sf.borg.model.LinkModel;
 import net.sf.borg.model.db.AppointmentDB;
 import net.sf.borg.model.db.DBHelper;

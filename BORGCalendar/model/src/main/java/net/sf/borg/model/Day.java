@@ -36,9 +36,11 @@ import java.util.List;
 import java.util.TimeZone;
 import java.util.TreeSet;
 
-import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
-import net.sf.borg.common.Resource;
+import com.mbcsoft.platform.common.Prefs;
+import com.mbcsoft.platform.common.Resource;
+import com.mbcsoft.platform.model.Model;
+
+import net.sf.borg.common.BorgPref;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.CalendarEntity;
 import net.sf.borg.model.entity.LabelEntity;
@@ -71,7 +73,7 @@ public class Day {
 			String s1 = so1.getText();
 			String s2 = so2.getText();
 
-			String psort = Prefs.getPref(PrefName.PRIORITY_SORT);
+			String psort = Prefs.getPref(BorgPref.PRIORITY_SORT);
 			if (psort.equals("true")) {
 				Integer p1 = so1.getPriority();
 				Integer p2 = so2.getPriority();
@@ -145,10 +147,10 @@ public class Day {
 
 		boolean pub = false;
 		boolean priv = false;
-		String sp = Prefs.getPref(PrefName.SHOWPUBLIC);
+		String sp = Prefs.getPref(BorgPref.SHOWPUBLIC);
 		if (sp.equals("true"))
 			pub = true;
-		sp = Prefs.getPref(PrefName.SHOWPRIVATE);
+		sp = Prefs.getPref(BorgPref.SHOWPRIVATE);
 		if (sp.equals("true"))
 			priv = true;
 
@@ -239,7 +241,7 @@ public class Day {
 
 		// add canned US holidays
 		// check user preferences first
-		String show_us_hols = Prefs.getPref(PrefName.SHOWUSHOLIDAYS);
+		String show_us_hols = Prefs.getPref(BorgPref.SHOWUSHOLIDAYS);
 
 		if (show_us_hols.equals("true")) {
 
@@ -310,7 +312,7 @@ public class Day {
 
 		// add canned Canadian holidays
 		// check user preferences first
-		String show_can_hols = Prefs.getPref(PrefName.SHOWCANHOLIDAYS);
+		String show_can_hols = Prefs.getPref(BorgPref.SHOWCANHOLIDAYS);
 		if (show_can_hols.equals("true")) {
 
 			LabelEntity hol = new LabelEntity();

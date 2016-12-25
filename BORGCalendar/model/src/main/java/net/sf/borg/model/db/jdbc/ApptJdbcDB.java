@@ -33,13 +33,17 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 
+import com.mbcsoft.platform.model.JdbcBeanDB;
+import com.mbcsoft.platform.model.JdbcDB;
+import com.mbcsoft.platform.model.JdbcDBUpgrader;
+
 import net.sf.borg.model.db.AppointmentDB;
 import net.sf.borg.model.entity.Appointment;
 
 /**
  * this is the JDBC layer for access to the appointment table.
  */
-class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB {
+class ApptJdbcDB extends JdbcBeanDB<Appointment>implements AppointmentDB {
 
 	/**
 	 * Creates a new instance of AppJdbcDB.
@@ -47,24 +51,17 @@ class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB {
 	public ApptJdbcDB() {
 
 		new JdbcDBUpgrader("select priority from appointments",
-				"alter table appointments add column priority integer default '5' NOT NULL")
-				.upgrade();
-		new JdbcDBUpgrader(
-				"select create_time from appointments",
+				"alter table appointments add column priority integer default '5' NOT NULL").upgrade();
+		new JdbcDBUpgrader("select create_time from appointments",
 				"alter table appointments add column create_time datetime default '1980-01-01 00:00:00' NOT NULL")
-				.upgrade();
-		new JdbcDBUpgrader(
-				"select lastmod from appointments",
+						.upgrade();
+		new JdbcDBUpgrader("select lastmod from appointments",
 				"alter table appointments add column lastmod datetime default '1980-01-01 00:00:00' NOT NULL")
-				.upgrade();
-		new JdbcDBUpgrader(
-				"select uid from appointments",
-				new String[] {
-						"alter table appointments add column uid longvarchar",
-						"update appointments set uid = CONCAT(appt_num,'@BORGU', RAND())" })
-				.upgrade();
-		new JdbcDBUpgrader("select url from appointments",
-				"alter table appointments add column url longvarchar")
+						.upgrade();
+		new JdbcDBUpgrader("select uid from appointments",
+				new String[] { "alter table appointments add column uid longvarchar",
+						"update appointments set uid = CONCAT(appt_num,'@BORGU', RAND())" }).upgrade();
+		new JdbcDBUpgrader("select url from appointments", "alter table appointments add column url longvarchar")
 				.upgrade();
 
 	}
@@ -78,15 +75,12 @@ class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB {
 	 */
 	@Override
 	public void addObj(Appointment appt) throws Exception {
-		PreparedStatement stmt = JdbcDB
-				.getConnection()
-				.prepareStatement(
-						"INSERT INTO appointments (appt_date, appt_num, duration, text, skip_list,"
-								+ " next_todo, vacation, holiday, private, times, frequency, todo, color, rpt, category, reminders, untimed, encrypted, repeat_until, priority, create_time, lastmod, uid, url ) VALUES "
-								+ "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		PreparedStatement stmt = JdbcDB.getConnection()
+				.prepareStatement("INSERT INTO appointments (appt_date, appt_num, duration, text, skip_list,"
+						+ " next_todo, vacation, holiday, private, times, frequency, todo, color, rpt, category, reminders, untimed, encrypted, repeat_until, priority, create_time, lastmod, uid, url ) VALUES "
+						+ "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
-		stmt.setTimestamp(1, new java.sql.Timestamp(appt.getDate().getTime()),
-				Calendar.getInstance());
+		stmt.setTimestamp(1, new java.sql.Timestamp(appt.getDate().getTime()), Calendar.getInstance());
 		stmt.setInt(2, appt.getKey());
 
 		stmt.setInt(3, JdbcDB.toInt(appt.getDuration()));
@@ -122,10 +116,8 @@ class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB {
 			stmt.setInt(20, appt.getPriority().intValue());
 		else
 			stmt.setInt(20, 5);
-		stmt.setTimestamp(21, new java.sql.Timestamp(appt.getCreateTime()
-				.getTime()), Calendar.getInstance());
-		stmt.setTimestamp(22, new java.sql.Timestamp(appt.getLastMod()
-				.getTime()), Calendar.getInstance());
+		stmt.setTimestamp(21, new java.sql.Timestamp(appt.getCreateTime().getTime()), Calendar.getInstance());
+		stmt.setTimestamp(22, new java.sql.Timestamp(appt.getLastMod().getTime()), Calendar.getInstance());
 		stmt.setString(23, appt.getUid());
 		stmt.setString(24, appt.getUrl());
 		stmt.executeUpdate();
@@ -142,8 +134,7 @@ class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB {
 	 */
 	@Override
 	public void delete(int key) throws Exception {
-		PreparedStatement stmt = JdbcDB.getConnection().prepareStatement(
-				"DELETE FROM appointments WHERE appt_num = ?");
+		PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("DELETE FROM appointments WHERE appt_num = ?");
 		stmt.setInt(1, key);
 		stmt.executeUpdate();
 
@@ -163,8 +154,7 @@ class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB {
 	 */
 	public static Collection<Integer> getKeys() throws Exception {
 		ArrayList<Integer> keys = new ArrayList<Integer>();
-		PreparedStatement stmt = JdbcDB.getConnection().prepareStatement(
-				"SELECT appt_num FROM appointments");
+		PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("SELECT appt_num FROM appointments");
 		ResultSet rs = stmt.executeQuery();
 		while (rs.next()) {
 			keys.add(new Integer(rs.getInt("appt_num")));
@@ -184,8 +174,8 @@ class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB {
 	@Override
 	public Collection<Integer> getTodoKeys() throws Exception {
 		ArrayList<Integer> keys = new ArrayList<Integer>();
-		PreparedStatement stmt = JdbcDB.getConnection().prepareStatement(
-				"SELECT appt_num FROM appointments WHERE todo = '1'");
+		PreparedStatement stmt = JdbcDB.getConnection()
+				.prepareStatement("SELECT appt_num FROM appointments WHERE todo = '1'");
 		ResultSet rs = stmt.executeQuery();
 		while (rs.next()) {
 			keys.add(new Integer(rs.getInt("appt_num")));
@@ -205,8 +195,8 @@ class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB {
 	@Override
 	public Collection<Integer> getRepeatKeys() throws Exception {
 		ArrayList<Integer> keys = new ArrayList<Integer>();
-		PreparedStatement stmt = JdbcDB.getConnection().prepareStatement(
-				"SELECT appt_num FROM appointments WHERE rpt = '1'");
+		PreparedStatement stmt = JdbcDB.getConnection()
+				.prepareStatement("SELECT appt_num FROM appointments WHERE rpt = '1'");
 		ResultSet rs = stmt.executeQuery();
 		while (rs.next()) {
 			keys.add(new Integer(rs.getInt("appt_num")));
@@ -226,8 +216,7 @@ class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB {
 	 */
 	@Override
 	public int nextkey() throws Exception {
-		PreparedStatement stmt = JdbcDB.getConnection().prepareStatement(
-				"SELECT MAX(appt_num) FROM appointments");
+		PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("SELECT MAX(appt_num) FROM appointments");
 		ResultSet r = stmt.executeQuery();
 		int maxKey = 0;
 		if (r.next())
@@ -254,9 +243,9 @@ class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB {
 	 * @see net.sf.borg.model.db.jdbc.JdbcBeanDB#getPSOne(int)
 	 */
 	@Override
-	PreparedStatement getPSOne(int key) throws SQLException {
-		PreparedStatement stmt = JdbcDB.getConnection().prepareStatement(
-				"SELECT * FROM appointments WHERE appt_num = ?");
+	public PreparedStatement getPSOne(int key) throws SQLException {
+		PreparedStatement stmt = JdbcDB.getConnection()
+				.prepareStatement("SELECT * FROM appointments WHERE appt_num = ?");
 		stmt.setInt(1, key);
 		return stmt;
 	}
@@ -267,9 +256,8 @@ class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB {
 	 * @see net.sf.borg.model.db.jdbc.JdbcBeanDB#getPSAll()
 	 */
 	@Override
-	PreparedStatement getPSAll() throws SQLException {
-		PreparedStatement stmt = JdbcDB.getConnection().prepareStatement(
-				"SELECT * FROM appointments");
+	public PreparedStatement getPSAll() throws SQLException {
+		PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("SELECT * FROM appointments");
 		return stmt;
 	}
 
@@ -279,18 +267,16 @@ class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB {
 	 * @see net.sf.borg.model.db.jdbc.JdbcBeanDB#createFrom(java.sql.ResultSet)
 	 */
 	@Override
-	Appointment createFrom(ResultSet r) throws SQLException {
+	public Appointment createFrom(ResultSet r) throws SQLException {
 		Appointment appt = new Appointment();
 		appt.setKey(r.getInt("appt_num"));
 		if (r.getTimestamp("appt_date") != null)
-			appt.setDate(new java.util.Date(r.getTimestamp("appt_date")
-					.getTime()));
+			appt.setDate(new java.util.Date(r.getTimestamp("appt_date").getTime()));
 		appt.setDuration(new Integer(r.getInt("duration")));
 		appt.setText(r.getString("text"));
 		appt.setSkipList(JdbcDB.toVect(r.getString("skip_list")));
 		if (r.getDate("next_todo") != null)
-			appt.setNextTodo(new java.util.Date(r.getDate("next_todo")
-					.getTime()));
+			appt.setNextTodo(new java.util.Date(r.getDate("next_todo").getTime()));
 		appt.setVacation(new Integer(r.getInt("vacation")));
 		appt.setHoliday(new Integer(r.getInt("holiday")));
 		appt.setPrivate(r.getInt("private") != 0);
@@ -306,15 +292,12 @@ class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB {
 		if (enc != null && enc.equals("Y"))
 			appt.setEncrypted(true);
 		if (r.getDate("repeat_until") != null)
-			appt.setRepeatUntil(new java.util.Date(r.getDate("repeat_until")
-					.getTime()));
+			appt.setRepeatUntil(new java.util.Date(r.getDate("repeat_until").getTime()));
 		appt.setPriority(new Integer(r.getInt("priority")));
 		if (r.getTimestamp("create_time") != null)
-			appt.setCreateTime(new java.util.Date(r.getTimestamp("create_time")
-					.getTime()));
+			appt.setCreateTime(new java.util.Date(r.getTimestamp("create_time").getTime()));
 		if (r.getTimestamp("lastmod") != null)
-			appt.setLastMod(new java.util.Date(r.getTimestamp("lastmod")
-					.getTime()));
+			appt.setLastMod(new java.util.Date(r.getTimestamp("lastmod").getTime()));
 		appt.setUid(r.getString("uid"));
 		appt.setUrl(r.getString("url"));
 		return appt;
@@ -323,23 +306,18 @@ class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * net.sf.borg.model.db.EntityDB#updateObj(net.sf.borg.model.entity.KeyedEntity
-	 * )
+	 * @see net.sf.borg.model.db.EntityDB#updateObj(net.sf.borg.model.entity.
+	 * KeyedEntity )
 	 */
 	@Override
 	public void updateObj(Appointment appt) throws Exception {
-		PreparedStatement stmt = JdbcDB
-				.getConnection()
-				.prepareStatement(
-						"UPDATE appointments SET  appt_date = ?, "
-								+ "duration = ?, text = ?, skip_list = ?,"
-								+ " next_todo = ?, vacation = ?, holiday = ?, private = ?, times = ?, frequency = ?, todo = ?, color = ?, rpt = ?, category = ?,"
-								+ " reminders = ?, untimed = ?, encrypted = ?, repeat_until = ?, priority = ?, create_time = ?, lastmod = ?, uid = ?, url = ?"
-								+ " WHERE appt_num = ?");
+		PreparedStatement stmt = JdbcDB.getConnection()
+				.prepareStatement("UPDATE appointments SET  appt_date = ?, " + "duration = ?, text = ?, skip_list = ?,"
+						+ " next_todo = ?, vacation = ?, holiday = ?, private = ?, times = ?, frequency = ?, todo = ?, color = ?, rpt = ?, category = ?,"
+						+ " reminders = ?, untimed = ?, encrypted = ?, repeat_until = ?, priority = ?, create_time = ?, lastmod = ?, uid = ?, url = ?"
+						+ " WHERE appt_num = ?");
 
-		stmt.setTimestamp(1, new java.sql.Timestamp(appt.getDate().getTime()),
-				Calendar.getInstance());
+		stmt.setTimestamp(1, new java.sql.Timestamp(appt.getDate().getTime()), Calendar.getInstance());
 
 		stmt.setInt(2, JdbcDB.toInt(appt.getDuration()));
 		stmt.setString(3, appt.getText());
@@ -374,10 +352,8 @@ class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB {
 		else
 			stmt.setInt(19, 5);
 
-		stmt.setTimestamp(20, new java.sql.Timestamp(appt.getCreateTime()
-				.getTime()), Calendar.getInstance());
-		stmt.setTimestamp(21, new java.sql.Timestamp(appt.getLastMod()
-				.getTime()), Calendar.getInstance());
+		stmt.setTimestamp(20, new java.sql.Timestamp(appt.getCreateTime().getTime()), Calendar.getInstance());
+		stmt.setTimestamp(21, new java.sql.Timestamp(appt.getLastMod().getTime()), Calendar.getInstance());
 		stmt.setString(22, appt.getUid());
 		stmt.setString(23, appt.getUrl());
 		stmt.setInt(24, appt.getKey());
@@ -390,11 +366,9 @@ class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB {
 	}
 
 	@Override
-	public List<Appointment> getAppointmentsByText(String text)
-			throws Exception {
+	public List<Appointment> getAppointmentsByText(String text) throws Exception {
 
-		PreparedStatement stmt = JdbcDB.getConnection().prepareStatement(
-				"SELECT * FROM appointments where text = ?");
+		PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("SELECT * FROM appointments where text = ?");
 		stmt.setString(1, text);
 		List<Appointment> lst = new ArrayList<Appointment>();
 		ResultSet r = null;
@@ -415,8 +389,7 @@ class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB {
 
 	@Override
 	public Appointment getAppointmentByUid(String uid) throws Exception {
-		PreparedStatement stmt = JdbcDB.getConnection().prepareStatement(
-				"SELECT * FROM appointments where uid = ?");
+		PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("SELECT * FROM appointments where uid = ?");
 		stmt.setString(1, uid);
 		Appointment ap = null;
 

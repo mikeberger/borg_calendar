@@ -3,13 +3,16 @@ package net.sf.borg.model.db.jdbc;
 import java.sql.Connection;
 import java.sql.ResultSet;
 
+import com.mbcsoft.platform.model.EntityDB;
+import com.mbcsoft.platform.model.JdbcDB;
+import com.mbcsoft.platform.model.OptionDB;
+import com.mbcsoft.platform.model.OptionJdbcDB;
+
 import net.sf.borg.model.db.AppointmentDB;
 import net.sf.borg.model.db.CheckListDB;
 import net.sf.borg.model.db.DBHelper;
-import net.sf.borg.model.db.EntityDB;
 import net.sf.borg.model.db.LinkDB;
 import net.sf.borg.model.db.MemoDB;
-import net.sf.borg.model.db.OptionDB;
 import net.sf.borg.model.db.TaskDB;
 import net.sf.borg.model.entity.Address;
 

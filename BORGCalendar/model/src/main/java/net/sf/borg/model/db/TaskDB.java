@@ -20,6 +20,8 @@ package net.sf.borg.model.db;
 
 import java.util.Collection;
 
+import com.mbcsoft.platform.model.EntityDB;
+
 import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Subtask;
 import net.sf.borg.model.entity.Task;

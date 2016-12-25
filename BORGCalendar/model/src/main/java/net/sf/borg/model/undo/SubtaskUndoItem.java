@@ -18,8 +18,9 @@
  */
 package net.sf.borg.model.undo;
 
-import net.sf.borg.common.Errmsg;
-import net.sf.borg.common.Resource;
+import com.mbcsoft.platform.common.Errmsg;
+import com.mbcsoft.platform.common.Resource;
+
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.Subtask;
 

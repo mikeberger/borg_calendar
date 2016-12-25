@@ -24,11 +24,13 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.mbcsoft.platform.common.Errmsg;
+import com.mbcsoft.platform.common.Prefs;
+import com.mbcsoft.platform.model.KeyedEntity;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import net.sf.borg.common.Errmsg;
-import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
+import net.sf.borg.common.BorgPref;
 import net.sf.borg.model.TaskModel;
 
 /**
@@ -125,7 +127,7 @@ public class Subtask extends KeyedEntity<Subtask> implements CalendarEntity, Syn
 	@Override
 	public String getText() {
 		// return the text as it should appear on the calendar
-		String showabb = Prefs.getPref(PrefName.TASK_SHOW_ABBREV);
+		String showabb = Prefs.getPref(BorgPref.TASK_SHOW_ABBREV);
 		String abb = "";
 		if (showabb.equals("true"))
 			abb = "BT" + getTask() + "/ST" + getKey() + " ";

@@ -28,8 +28,10 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import net.sf.borg.common.Errmsg;
-import net.sf.borg.common.Resource;
+import com.mbcsoft.platform.common.Errmsg;
+import com.mbcsoft.platform.common.Resource;
+import com.mbcsoft.platform.model.Model;
+
 import net.sf.borg.model.db.CheckListDB;
 import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.model.entity.CheckList;

@@ -2,8 +2,9 @@ package net.sf.borg.model;
 
 import java.util.StringTokenizer;
 
-import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
+import com.mbcsoft.platform.common.Prefs;
+
+import net.sf.borg.common.BorgPref;
 
 /**
  * This class converts the appointment reminder times to and from a string in the preferences
@@ -40,7 +41,7 @@ public class ReminderTimes {
 		{
 			// get times array from prefs if there are none loaded
 			times_ = new int[NUM];
-			String s = Prefs.getPref(PrefName.REMMINS);
+			String s = Prefs.getPref(BorgPref.REMMINS);
 			arrayFromString(s);
 		}
 		return times_[i];
@@ -55,7 +56,7 @@ public class ReminderTimes {
 	{
 		times_ = times;
 		String s = arrayToString(times_);
-		Prefs.putPref(PrefName.REMMINS, s);
+		Prefs.putPref(BorgPref.REMMINS, s);
 	}
 	
 	/**

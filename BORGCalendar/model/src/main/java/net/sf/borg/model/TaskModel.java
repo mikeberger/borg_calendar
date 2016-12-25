@@ -38,20 +38,24 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import net.sf.borg.common.DateUtil;
-import net.sf.borg.common.Errmsg;
-import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
-import net.sf.borg.common.Resource;
-import net.sf.borg.common.Warning;
+import com.mbcsoft.platform.common.DateUtil;
+import com.mbcsoft.platform.common.Errmsg;
+import com.mbcsoft.platform.common.PrefName;
+import com.mbcsoft.platform.common.Prefs;
+import com.mbcsoft.platform.common.Resource;
+import com.mbcsoft.platform.common.Warning;
+import com.mbcsoft.platform.model.KeyedEntity;
+import com.mbcsoft.platform.model.Model;
+import com.mbcsoft.platform.model.Model.ChangeEvent.ChangeAction;
+import com.mbcsoft.platform.model.Option;
+import com.mbcsoft.platform.model.OptionModel;
+
+import net.sf.borg.common.BorgPref;
 import net.sf.borg.model.CategoryModel.CategorySource;
-import net.sf.borg.model.Model.ChangeEvent.ChangeAction;
 import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.model.db.TaskDB;
 import net.sf.borg.model.entity.CalendarEntity;
-import net.sf.borg.model.entity.KeyedEntity;
 import net.sf.borg.model.entity.Link;
-import net.sf.borg.model.entity.Option;
 import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Subtask;
 import net.sf.borg.model.entity.Task;
@@ -1496,7 +1500,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 		cal.setTime(d);
 
 		// load any tasks
-		if (Prefs.getBoolPref(PrefName.CAL_SHOW_TASKS)) {
+		if (Prefs.getBoolPref(BorgPref.CAL_SHOW_TASKS)) {
 			Collection<Project> pcol = TaskModel.getReference().get_projects(
 					cal.getTime());
 			if (pcol != null) {
@@ -1515,7 +1519,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 			}
 		}
 		// subtasks
-		if (Prefs.getBoolPref(PrefName.CAL_SHOW_SUBTASKS)) {
+		if (Prefs.getBoolPref(BorgPref.CAL_SHOW_SUBTASKS)) {
 			Collection<Subtask> sts = TaskModel.getReference().get_subtasks(
 					cal.getTime());
 			if (sts != null) {

@@ -45,20 +45,22 @@ import java.util.logging.SimpleFormatter;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
-import net.sf.borg.common.Errmsg;
-import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
-import net.sf.borg.common.Resource;
-import net.sf.borg.common.SocketClient;
-import net.sf.borg.common.SocketHandler;
-import net.sf.borg.common.SocketServer;
+import com.mbcsoft.platform.common.Errmsg;
+import com.mbcsoft.platform.common.PrefName;
+import com.mbcsoft.platform.common.Prefs;
+import com.mbcsoft.platform.common.Resource;
+import com.mbcsoft.platform.common.SocketClient;
+import com.mbcsoft.platform.common.SocketHandler;
+import com.mbcsoft.platform.common.SocketServer;
+import com.mbcsoft.platform.model.Model;
+
+import net.sf.borg.common.BorgPref;
 import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.CheckListModel;
 import net.sf.borg.model.EmailReminder;
 import net.sf.borg.model.LinkModel;
 import net.sf.borg.model.MemoModel;
-import net.sf.borg.model.Model;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.model.db.jdbc.JdbcDBHelper;
@@ -324,7 +326,7 @@ public class Borg implements SocketHandler, Observer {
 		log.addHandler(ch);
 		log.setUseParentHandlers(false);
 
-		boolean debug = Prefs.getBoolPref(PrefName.DEBUG);
+		boolean debug = Prefs.getBoolPref(BorgPref.DEBUG);
 		if (debug == true)
 			log.setLevel(Level.ALL);
 		else
@@ -368,7 +370,7 @@ public class Borg implements SocketHandler, Observer {
 		}
 
 		// add the lib folder to the classpath
-		if (Prefs.getBoolPref(PrefName.DYNAMIC_LOADING) == true) {
+		if (Prefs.getBoolPref(BorgPref.DYNAMIC_LOADING) == true) {
 			// compute lib folder relative to the borg.jar file location
 			File parentDir = null;
 			try {
@@ -415,8 +417,8 @@ public class Borg implements SocketHandler, Observer {
 			}
 		}
 		// locale
-		String country = Prefs.getPref(PrefName.COUNTRY);
-		String language = Prefs.getPref(PrefName.LANGUAGE);
+		String country = Prefs.getPref(BorgPref.COUNTRY);
+		String language = Prefs.getPref(BorgPref.LANGUAGE);
 		if (!language.equals("")) {
 			Locale.setDefault(new Locale(language, country));
 		}
@@ -493,7 +495,7 @@ public class Borg implements SocketHandler, Observer {
 
 			// calculate email time in minutes from now
 			Calendar cal = new GregorianCalendar();
-			int emailmins = Prefs.getIntPref(PrefName.EMAILTIME);
+			int emailmins = Prefs.getIntPref(BorgPref.EMAILTIME);
 			int curmins = 60 * cal.get(Calendar.HOUR_OF_DAY) + cal.get(Calendar.MINUTE);
 			int mailtime = emailmins - curmins;
 			if (mailtime < 0) {
@@ -554,7 +556,7 @@ public class Borg implements SocketHandler, Observer {
 				}, syncmins * 60 * 1000, syncmins * 60 * 1000);
 			}
 
-			syncmins = Prefs.getIntPref(PrefName.ICAL_SYNCMINS);
+			syncmins = Prefs.getIntPref(BorgPref.ICAL_SYNCMINS);
 			if (syncmins != 0) {
 				this.caldavSyncTimer_ = new java.util.Timer("IcalSyncTimer");
 				this.caldavSyncTimer_.schedule(new TimerTask() {
@@ -586,7 +588,7 @@ public class Borg implements SocketHandler, Observer {
 			}
 
 			// DB Flush timer to force write of files to disk - H2
-			syncmins = Prefs.getIntPref(PrefName.FLUSH_MINS);
+			syncmins = Prefs.getIntPref(BorgPref.FLUSH_MINS);
 			if (syncmins > 0) {
 				this.flushTimer_ = new java.util.Timer("FlushTimer");
 				this.flushTimer_.schedule(new TimerTask() {

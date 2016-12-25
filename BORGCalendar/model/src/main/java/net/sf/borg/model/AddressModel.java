@@ -37,13 +37,15 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import net.sf.borg.common.Errmsg;
-import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
-import net.sf.borg.common.Resource;
-import net.sf.borg.common.Warning;
+import com.mbcsoft.platform.common.Errmsg;
+import com.mbcsoft.platform.common.Prefs;
+import com.mbcsoft.platform.common.Resource;
+import com.mbcsoft.platform.common.Warning;
+import com.mbcsoft.platform.model.EntityDB;
+import com.mbcsoft.platform.model.Model;
+
+import net.sf.borg.common.BorgPref;
 import net.sf.borg.model.db.DBHelper;
-import net.sf.borg.model.db.EntityDB;
 import net.sf.borg.model.entity.Address;
 import net.sf.borg.model.entity.CalendarEntity;
 import net.sf.borg.model.entity.LabelEntity;
@@ -333,7 +335,7 @@ public class AddressModel extends Model implements Searchable<Address>,
 		}
 
 		if (addr.getEmail() != null && !addr.getEmail().isEmpty()
-				&& Prefs.getBoolPref(PrefName.EMAIL_VALIDATION)) {
+				&& Prefs.getBoolPref(BorgPref.EMAIL_VALIDATION)) {
 			try {
 				new InternetAddress(addr.getEmail()).getAddress();
 			} catch (AddressException e) {

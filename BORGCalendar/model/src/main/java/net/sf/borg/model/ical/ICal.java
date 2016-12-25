@@ -10,6 +10,10 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import com.mbcsoft.platform.common.Errmsg;
+import com.mbcsoft.platform.common.IOHelper;
+import com.mbcsoft.platform.common.Prefs;
+
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.CalendarOutputter;
 import net.fortuna.ical4j.model.Calendar;
@@ -20,10 +24,7 @@ import net.fortuna.ical4j.model.ValidationException;
 import net.fortuna.ical4j.model.property.ProdId;
 import net.fortuna.ical4j.model.property.Version;
 import net.fortuna.ical4j.util.CompatibilityHints;
-import net.sf.borg.common.Errmsg;
-import net.sf.borg.common.IOHelper;
-import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
+import net.sf.borg.common.BorgPref;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Repeat;
 import net.sf.borg.model.TaskModel;
@@ -72,7 +73,7 @@ public class ICal {
 	}
 
 	static private void exportAppointments(ComponentList clist, Date after) throws Exception {
-		boolean export_todos = Prefs.getBoolPref(PrefName.ICAL_EXPORT_TODO);
+		boolean export_todos = Prefs.getBoolPref(BorgPref.ICAL_EXPORT_TODO);
 
 		for (Appointment ap : AppointmentModel.getReference().getAllAppts()) {
 
@@ -93,7 +94,7 @@ public class ICal {
 
 	static private void exportTasks(ComponentList clist) throws Exception {
 
-		boolean export_todos = Prefs.getBoolPref(PrefName.ICAL_EXPORT_TODO);
+		boolean export_todos = Prefs.getBoolPref(BorgPref.ICAL_EXPORT_TODO);
 
 		for (Task t : TaskModel.getReference().getTasks()) {
 			Component c = EntityIcalAdapter.toIcal(t, export_todos);
@@ -106,7 +107,7 @@ public class ICal {
 
 	static private void exportProjects(ComponentList clist) throws Exception {
 
-		boolean export_todos = Prefs.getBoolPref(PrefName.ICAL_EXPORT_TODO);
+		boolean export_todos = Prefs.getBoolPref(BorgPref.ICAL_EXPORT_TODO);
 
 		for (Project t : TaskModel.getReference().getProjects()) {
 			Component c = EntityIcalAdapter.toIcal(t, export_todos);
@@ -118,7 +119,7 @@ public class ICal {
 
 	static private void exportSubTasks(ComponentList clist) throws Exception {
 
-		boolean export_todos = Prefs.getBoolPref(PrefName.ICAL_EXPORT_TODO);
+		boolean export_todos = Prefs.getBoolPref(BorgPref.ICAL_EXPORT_TODO);
 
 		for (Subtask t : TaskModel.getReference().getSubTasks()) {
 			Component c = EntityIcalAdapter.toIcal(t, export_todos);

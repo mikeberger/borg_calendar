@@ -2,8 +2,9 @@ package net.sf.borg.model.tool;
 
 import java.util.Collection;
 
+import com.mbcsoft.platform.model.Model.ChangeEvent;
+
 import net.sf.borg.model.AppointmentModel;
-import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.model.db.jdbc.JdbcDBHelper;
 import net.sf.borg.model.entity.Appointment;

@@ -21,99 +21,17 @@ package net.sf.borg.common;
 
 import java.util.Calendar;
 
+import com.mbcsoft.platform.common.PrefName;
+
 /**
  * PrefName contains all of the Borg preference definitions and default values.
  * It enforces compile time checking of preference names
  */
-public class PrefName {
+public class BorgPref  {
 
-	/** preference name */
-	private String name_;
 
-	/** default value */
-	private Object default_;
 
-	/**
-	 * Instantiates a new pref name.
-	 * 
-	 * @param name
-	 *            the name
-	 * @param def
-	 *            the default value
-	 */
-	public PrefName(String name, Object def) {
-		setName(name);
-		setDefault(def);
-	}
 
-	/**
-	 * Sets the name.
-	 * 
-	 * @param name_
-	 *            the new name
-	 */
-	void setName(String name_) {
-		this.name_ = name_;
-	}
-
-	/**
-	 * Gets the name.
-	 * 
-	 * @return the name
-	 */
-	public String getName() {
-		return name_;
-	}
-
-	/**
-	 * Sets the default value
-	 * 
-	 * @param default_
-	 *            the new default
-	 */
-	void setDefault(Object default_) {
-		this.default_ = default_;
-	}
-
-	/**
-	 * Gets the default value
-	 * 
-	 * @return the default
-	 */
-	public Object getDefault() {
-		return default_;
-	}
-
-	// database related prefs
-	/** database type. */
-	static public PrefName DBTYPE = new PrefName("dbtype", "hsqldb");
-
-	/** database host */
-	static public PrefName DBHOST = new PrefName("dbhost", "localhost");
-
-	/** databse port */
-	static public PrefName DBPORT = new PrefName("dbport", "3306");
-
-	/** database name */
-	static public PrefName DBNAME = new PrefName("dbname", "borg");
-
-	/** database user */
-	static public PrefName DBUSER = new PrefName("dbuser", "borg");
-
-	/** database password */
-	static public PrefName DBPASS = new PrefName("dbpass", "borg");
-
-	/** jdbc url - for generic jdbc only, not hsql or mysql */
-	static public PrefName JDBCURL = new PrefName("jdbcurl", "");
-
-	/** interval for db auto-sync in minutes */
-	static public PrefName SYNCMINS = new PrefName("sync_mins", new Integer(0));
-
-	/** hsql database directory */
-	static public PrefName HSQLDBDIR = new PrefName("hsqldbdir", "not-set");
-
-	/** h2 database directory */
-	static public PrefName H2DIR = new PrefName("h2dir", "not-set");
 
 	// misc
 	/** show a stack trace button on error dialogs */
@@ -122,9 +40,7 @@ public class PrefName {
 	/** show the spash window */
 	static public PrefName SPLASH = new PrefName("splash", "true");
 
-	/** port for the socket listener */
-	static public PrefName SOCKETPORT = new PrefName("socketport", new Integer(
-			2929));
+	
 
 	/** start as iconified to system tray */
 	static public PrefName BACKGSTART = new PrefName("backgstart", "false");
@@ -231,8 +147,7 @@ public class PrefName {
 	static public PrefName EMAILLAST = new PrefName("email_last",
 			new Integer(0));
 
-	/** The EMAILDEBUG. */
-	static public PrefName EMAILDEBUG = new PrefName("email_debug", "0");
+	
 
 	/** The EMAILTIME. */
 	static public PrefName EMAILTIME = new PrefName("email_time",
@@ -245,11 +160,7 @@ public class PrefName {
 	static public PrefName EMAILPASS = new PrefName("email_pass", "");
 	static public PrefName EMAILPASS2 = new PrefName("email_pass2", "");
 
-	/** The EMAILPORT. */
-	static public PrefName EMAILPORT = new PrefName("email_port", "25");
 
-	/** TLS flag */
-	static public PrefName ENABLETLS = new PrefName("enable_tls", "false");
 
 	/** The REMMINS. */
 	static public PrefName REMMINS = new PrefName("remmins",
@@ -355,7 +266,7 @@ public class PrefName {
 	/** shutdown action */
 	static public PrefName SHUTDOWN_ACTION = new PrefName("shutdown_action", "");
 
-	public static final PrefName SHUTDOWNTIME = new PrefName("shuttime", "0");
+
 
 	/** debug flag - trigger debug logging */
 	public static final PrefName DEBUG = new PrefName("debug", "false");
@@ -394,9 +305,7 @@ public class PrefName {
 	public static PrefName FTPPW = new PrefName("ical-ftp-pw", "");
 	public static PrefName FTPPW2 = new PrefName("ical-ftp-pw2", "");
 	
-	public static PrefName USE_PROXY = new PrefName("use_proxy", "false");
-	public static PrefName PROXY_HOST = new PrefName("proxy_host", "");
-	public static PrefName PROXY_PORT = new PrefName("proxy_port", new Integer(8080));
+	
 	
 	public static PrefName ICAL_IMPORT_URL = new PrefName("ical-import-url", "");
 	

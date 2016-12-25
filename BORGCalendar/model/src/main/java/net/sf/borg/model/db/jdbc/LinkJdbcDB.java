@@ -27,6 +27,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.mbcsoft.platform.model.JdbcBeanDB;
+import com.mbcsoft.platform.model.JdbcDB;
+
 import net.sf.borg.model.db.LinkDB;
 import net.sf.borg.model.entity.Link;
 
@@ -125,7 +128,7 @@ class LinkJdbcDB extends JdbcBeanDB<Link> implements LinkDB {
 	 * @see net.sf.borg.model.db.jdbc.JdbcBeanDB#getPSOne(int)
 	 */
 	@Override
-	PreparedStatement getPSOne(int key) throws SQLException {
+	public PreparedStatement getPSOne(int key) throws SQLException {
 		PreparedStatement stmt = JdbcDB.getConnection()
 				.prepareStatement("SELECT * FROM links WHERE id = ?");
 		stmt.setInt(1, key);
@@ -137,7 +140,7 @@ class LinkJdbcDB extends JdbcBeanDB<Link> implements LinkDB {
 	 * @see net.sf.borg.model.db.jdbc.JdbcBeanDB#getPSAll()
 	 */
 	@Override
-	PreparedStatement getPSAll() throws SQLException {
+	public PreparedStatement getPSAll() throws SQLException {
 		PreparedStatement stmt = JdbcDB.getConnection()
 				.prepareStatement("SELECT * FROM links");
 		return stmt;
@@ -147,7 +150,7 @@ class LinkJdbcDB extends JdbcBeanDB<Link> implements LinkDB {
 	 * @see net.sf.borg.model.db.jdbc.JdbcBeanDB#createFrom(java.sql.ResultSet)
 	 */
 	@Override
-	Link createFrom(ResultSet r) throws SQLException {
+	public Link createFrom(ResultSet r) throws SQLException {
 		Link att = new Link();
 		att.setKey(r.getInt("id"));
 		att.setLinkType(r.getString("linktype"));

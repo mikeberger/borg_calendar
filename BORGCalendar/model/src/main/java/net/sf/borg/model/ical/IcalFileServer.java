@@ -6,14 +6,14 @@ import java.net.InetSocketAddress;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import com.mbcsoft.platform.common.Errmsg;
+import com.mbcsoft.platform.common.Prefs;
+import com.mbcsoft.platform.common.Resource;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
-import net.sf.borg.common.Errmsg;
-import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
-import net.sf.borg.common.Resource;
+import net.sf.borg.common.BorgPref;
 
 @SuppressWarnings("restriction")
 public class IcalFileServer {
@@ -25,7 +25,7 @@ public class IcalFileServer {
 		if (server != null)
 			stop();
 		
-		HttpServer aServer = HttpServer.create(new InetSocketAddress(Prefs.getIntPref(PrefName.ICAL_PORT)), 0);
+		HttpServer aServer = HttpServer.create(new InetSocketAddress(Prefs.getIntPref(BorgPref.ICAL_PORT)), 0);
 		aServer.createContext("/icals/borg.ics", new MyHandler());
 		aServer.setExecutor(null);
 		aServer.start();

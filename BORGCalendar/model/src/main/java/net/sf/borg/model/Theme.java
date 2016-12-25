@@ -32,13 +32,16 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.mbcsoft.platform.common.Errmsg;
+import com.mbcsoft.platform.common.PrefName;
+import com.mbcsoft.platform.common.Prefs;
+import com.mbcsoft.platform.common.Warning;
+import com.mbcsoft.platform.model.Model.ChangeEvent;
+import com.mbcsoft.platform.model.Model;
+import com.mbcsoft.platform.model.Option;
+import com.mbcsoft.platform.model.OptionModel;
+
 import lombok.Data;
-import net.sf.borg.common.Errmsg;
-import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
-import net.sf.borg.common.Warning;
-import net.sf.borg.model.Model.ChangeEvent;
-import net.sf.borg.model.entity.Option;
 
 @XmlRootElement(name = "Theme")
 @XmlAccessorType(XmlAccessType.FIELD)

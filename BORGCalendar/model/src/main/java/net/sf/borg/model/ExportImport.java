@@ -35,10 +35,12 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
-import net.sf.borg.common.Resource;
-import net.sf.borg.common.SendJavaMail;
+import com.mbcsoft.platform.common.Prefs;
+import com.mbcsoft.platform.common.Resource;
+import com.mbcsoft.platform.common.SendJavaMail;
+import com.mbcsoft.platform.model.Model;
+
+import net.sf.borg.common.BorgPref;
 
 /**
  * contains common import/export utilities
@@ -92,13 +94,13 @@ public class ExportImport {
 
 		if (backup_email) {
 
-			if (Prefs.getBoolPref(PrefName.EMAILENABLED) == false)
+			if (Prefs.getBoolPref(BorgPref.EMAILENABLED) == false)
 				return;
 
 			// get the SMTP host and address
-			String host = Prefs.getPref(PrefName.EMAILSERVER);
-			String addr = Prefs.getPref(PrefName.EMAILADDR);
-			String from = Prefs.getPref(PrefName.EMAILFROM);
+			String host = Prefs.getPref(BorgPref.EMAILSERVER);
+			String addr = Prefs.getPref(BorgPref.EMAILADDR);
+			String from = Prefs.getPref(BorgPref.EMAILFROM);
 
 			StringTokenizer stk = new StringTokenizer(addr, ",;");
 			if (stk.hasMoreTokens())
@@ -111,7 +113,7 @@ public class ExportImport {
 			SendJavaMail.sendMailWithAttachments(host,
 					Resource.getResourceString("borg_backup"),
 					Resource.getResourceString("borg_backup"), f, addr,
-					Prefs.getPref(PrefName.EMAILUSER), EmailReminder.gep(),
+					Prefs.getPref(BorgPref.EMAILUSER), EmailReminder.gep(),
 					new String[] { backupFilename });
 
 		}

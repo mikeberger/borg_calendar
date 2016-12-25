@@ -25,10 +25,11 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.mbcsoft.platform.common.EncryptionHelper;
+import com.mbcsoft.platform.common.Prefs;
+
 import lombok.Data;
-import net.sf.borg.common.EncryptionHelper;
-import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
+import net.sf.borg.common.BorgPref;
 
 
 
@@ -70,8 +71,8 @@ public class Memo implements EncryptableEntity, Serializable {
 			return;
 		
 		/* decrypt the memo text field */
-		EncryptionHelper helper = new EncryptionHelper(Prefs.getPref(PrefName.KEYSTORE), password);
-		String clearText = helper.decrypt(this.getMemoText(), Prefs.getPref(PrefName.KEYALIAS));
+		EncryptionHelper helper = new EncryptionHelper(Prefs.getPref(BorgPref.KEYSTORE), password);
+		String clearText = helper.decrypt(this.getMemoText(), Prefs.getPref(BorgPref.KEYALIAS));
 		this.setMemoText(clearText);
 		this.setEncrypted(false);
 	}
@@ -82,8 +83,8 @@ public class Memo implements EncryptableEntity, Serializable {
 			return;
 		
 		/* encrypt the memo text field */
-		EncryptionHelper helper = new EncryptionHelper(Prefs.getPref(PrefName.KEYSTORE), password);
-		String cipherText = helper.encrypt(this.getMemoText(), Prefs.getPref(PrefName.KEYALIAS));
+		EncryptionHelper helper = new EncryptionHelper(Prefs.getPref(BorgPref.KEYSTORE), password);
+		String cipherText = helper.encrypt(this.getMemoText(), Prefs.getPref(BorgPref.KEYALIAS));
 		this.setMemoText(cipherText);
 		this.setEncrypted(true);
 		

@@ -4,10 +4,11 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.mbcsoft.platform.model.Model.ChangeEvent.ChangeAction;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import net.sf.borg.model.Model.ChangeEvent.ChangeAction;
 import net.sf.borg.model.entity.SyncableEntity.ObjectType;
 
 @Data

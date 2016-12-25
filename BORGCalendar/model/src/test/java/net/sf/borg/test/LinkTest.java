@@ -5,6 +5,12 @@ import static org.junit.Assert.assertEquals;
 import java.util.Collection;
 import java.util.Date;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import com.mbcsoft.platform.model.KeyedEntity;
+
 import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.LinkModel;
@@ -15,15 +21,10 @@ import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.model.db.jdbc.JdbcDBHelper;
 import net.sf.borg.model.entity.Address;
 import net.sf.borg.model.entity.Appointment;
-import net.sf.borg.model.entity.KeyedEntity;
 import net.sf.borg.model.entity.Link;
 import net.sf.borg.model.entity.Memo;
 import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Task;
-
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 public class LinkTest {
 

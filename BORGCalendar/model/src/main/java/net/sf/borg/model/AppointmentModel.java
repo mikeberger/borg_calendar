@@ -43,15 +43,17 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import net.sf.borg.common.DateUtil;
-import net.sf.borg.common.Errmsg;
-import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
-import net.sf.borg.common.Resource;
+import com.mbcsoft.platform.common.DateUtil;
+import com.mbcsoft.platform.common.Errmsg;
+import com.mbcsoft.platform.common.Prefs;
+import com.mbcsoft.platform.common.Resource;
+import com.mbcsoft.platform.model.EntityDB;
+import com.mbcsoft.platform.model.Model;
+
+import net.sf.borg.common.BorgPref;
 import net.sf.borg.model.CategoryModel.CategorySource;
 import net.sf.borg.model.db.AppointmentDB;
 import net.sf.borg.model.db.DBHelper;
-import net.sf.borg.model.db.EntityDB;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.Link;
 import net.sf.borg.model.undo.AppointmentUndoItem;
@@ -94,7 +96,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 	 * @return the time format
 	 */
 	public static SimpleDateFormat getTimeFormat() {
-		String mt = Prefs.getPref(PrefName.MILTIME);
+		String mt = Prefs.getPref(BorgPref.MILTIME);
 		if (mt.equals("true")) {
 			return (new SimpleDateFormat("HH:mm"));
 		}
@@ -878,7 +880,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 			Marshaller m = jc.createMarshaller();
 			StringWriter sw = new StringWriter();
 			m.marshal(appt, sw);
-			Prefs.putPref(PrefName.DEFAULT_APPT, sw.toString());
+			Prefs.putPref(BorgPref.DEFAULT_APPT, sw.toString());
 		} catch (Exception e) {
 			Errmsg.getErrorHandler().errmsg(e);
 		}
@@ -891,7 +893,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 	 */
 	public Appointment getDefaultAppointment() {
 
-		String defApptXml = Prefs.getPref(PrefName.DEFAULT_APPT);
+		String defApptXml = Prefs.getPref(BorgPref.DEFAULT_APPT);
 		if (!defApptXml.equals("")) {
 			try {
 				JAXBContext jc = JAXBContext.newInstance(Appointment.class);

@@ -27,7 +27,8 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.TreeSet;
 
-import net.sf.borg.common.Resource;
+import com.mbcsoft.platform.common.Resource;
+import com.mbcsoft.platform.model.Model;
 
 /**
  * The Class CategoryModel manages Categories. Categories are not entities, they are plain text strings.

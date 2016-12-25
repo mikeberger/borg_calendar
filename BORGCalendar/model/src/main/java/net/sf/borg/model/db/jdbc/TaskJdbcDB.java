@@ -29,6 +29,10 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import com.mbcsoft.platform.model.JdbcBeanDB;
+import com.mbcsoft.platform.model.JdbcDB;
+import com.mbcsoft.platform.model.JdbcDBUpgrader;
+
 import net.sf.borg.model.db.TaskDB;
 import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Subtask;
@@ -177,7 +181,7 @@ class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
      * @see net.sf.borg.model.db.jdbc.JdbcBeanDB#getPSOne(int)
      */
     @Override
-    PreparedStatement getPSOne(int key) throws SQLException {
+    public PreparedStatement getPSOne(int key) throws SQLException {
         PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("SELECT * FROM tasks WHERE tasknum = ?");
         stmt.setInt(1, key);
         return stmt;
@@ -187,7 +191,7 @@ class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
      * @see net.sf.borg.model.db.jdbc.JdbcBeanDB#getPSAll()
      */
     @Override
-    PreparedStatement getPSAll() throws SQLException {
+    public PreparedStatement getPSAll() throws SQLException {
         PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("SELECT * FROM tasks");
         return stmt;
     }
@@ -196,7 +200,7 @@ class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
      * @see net.sf.borg.model.db.jdbc.JdbcBeanDB#createFrom(java.sql.ResultSet)
      */
     @Override
-    Task createFrom(ResultSet r) throws SQLException {
+    public Task createFrom(ResultSet r) throws SQLException {
         Task task = new Task();
         task.setKey(r.getInt("tasknum"));
         task.setStartDate(r.getDate("start_date"));

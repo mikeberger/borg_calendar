@@ -4,11 +4,11 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 
-import net.sf.borg.common.EncryptionHelper;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.mbcsoft.platform.common.EncryptionHelper;
 
 public class EncryptionTest {
 

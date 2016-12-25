@@ -22,8 +22,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Stack;
 
-import net.sf.borg.common.Errmsg;
-import net.sf.borg.common.Resource;
+import com.mbcsoft.platform.common.Errmsg;
+import com.mbcsoft.platform.common.Resource;
+
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Task;

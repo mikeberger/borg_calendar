@@ -35,17 +35,19 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import net.sf.borg.common.Errmsg;
-import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
-import net.sf.borg.common.Resource;
+import com.mbcsoft.platform.common.Errmsg;
+import com.mbcsoft.platform.common.PrefName;
+import com.mbcsoft.platform.common.Prefs;
+import com.mbcsoft.platform.common.Resource;
+import com.mbcsoft.platform.model.EntityDB;
+import com.mbcsoft.platform.model.KeyedEntity;
+import com.mbcsoft.platform.model.Model;
+
 import net.sf.borg.model.db.DBHelper;
-import net.sf.borg.model.db.EntityDB;
 import net.sf.borg.model.db.LinkDB;
 import net.sf.borg.model.entity.Address;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.CheckList;
-import net.sf.borg.model.entity.KeyedEntity;
 import net.sf.borg.model.entity.Link;
 import net.sf.borg.model.entity.Memo;
 import net.sf.borg.model.entity.Project;

@@ -26,7 +26,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import net.sf.borg.model.db.EntityDB;
+import com.mbcsoft.platform.model.EntityDB;
+import com.mbcsoft.platform.model.JdbcBeanDB;
+import com.mbcsoft.platform.model.JdbcDB;
+
 import net.sf.borg.model.entity.Address;
 
 
@@ -159,7 +162,7 @@ class AddrJdbcDB extends JdbcBeanDB<Address> implements EntityDB<Address>
 	 * @see net.sf.borg.model.db.jdbc.JdbcBeanDB#getPSOne(int)
 	 */
 	@Override
-	PreparedStatement getPSOne(int key) throws SQLException
+	public PreparedStatement getPSOne(int key) throws SQLException
 	{
 		PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("SELECT * FROM addresses WHERE address_num = ?" );
 		stmt.setInt( 1, key );
@@ -170,7 +173,7 @@ class AddrJdbcDB extends JdbcBeanDB<Address> implements EntityDB<Address>
 	 * @see net.sf.borg.model.db.jdbc.JdbcBeanDB#getPSAll()
 	 */
 	@Override
-	PreparedStatement getPSAll() throws SQLException
+	public PreparedStatement getPSAll() throws SQLException
 	{
 		PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("SELECT * FROM addresses" );
 		return stmt;
@@ -180,7 +183,7 @@ class AddrJdbcDB extends JdbcBeanDB<Address> implements EntityDB<Address>
 	 * @see net.sf.borg.model.db.jdbc.JdbcBeanDB#createFrom(java.sql.ResultSet)
 	 */
 	@Override
-	Address createFrom(ResultSet r) throws SQLException
+	public Address createFrom(ResultSet r) throws SQLException
 	{
 		Address addr = new Address();
 		addr.setKey(r.getInt("address_num"));
