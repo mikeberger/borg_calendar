@@ -52,7 +52,7 @@
 		<dependency>
 			<groupId>com.github.mikeberger</groupId>
 			<artifactId>ical4j-connector</artifactId>
-			<version>borg1</version>
+			<version>borg2</version>
 		</dependency>
 		<!-- <dependency> -->
 		<!-- <groupId>org.mnode.ical4j</groupId> -->

@@ -104,7 +104,7 @@ public class CalDav {
 	}
 
 	@SuppressWarnings("deprecation")
-	private static CalDavCalendarStore connect() throws Exception {
+	public static CalDavCalendarStore connect() throws Exception {
 
 		if (!isSyncing())
 			return null;
@@ -125,8 +125,7 @@ public class CalDav {
 		String server = Prefs.getPref(PrefName.CALDAV_SERVER);
 		String serverPart[] = server.split(":");
 		int port = -1;
-		if( serverPart.length == 2)
-		{
+		if (serverPart.length == 2) {
 			try {
 				port = Integer.parseInt(serverPart[1]);
 			} catch (Exception e) {
@@ -210,7 +209,7 @@ public class CalDav {
 
 	}
 
-	private static CalDavCalendarCollection getCollection(CalDavCalendarStore store, String calName) throws Exception {
+	public static CalDavCalendarCollection getCollection(CalDavCalendarStore store, String calName) throws Exception {
 		String cal_id = createPathResolver().getUserPath(Prefs.getPref(PrefName.CALDAV_USER)) + "/" + calName;
 		return store.getCollection(cal_id);
 	}
@@ -637,10 +636,10 @@ public class CalDav {
 				// properly handle recurrence it completes the entire todo
 				// instead of one instance.
 				if (Repeat.isRepeating(ap) && ap.isTodo() && !newap.isTodo()) {
-						count++;
-						log.info("SYNC do todo: " + ap.toString());
-						AppointmentModel.getReference().do_todo(ap.getKey(), true);
-						// don't suppress sync log - need to sync this todo
+					count++;
+					log.info("SYNC do todo: " + ap.toString());
+					AppointmentModel.getReference().do_todo(ap.getKey(), true);
+					// don't suppress sync log - need to sync this todo
 				} else {
 
 					try {
@@ -669,15 +668,22 @@ public class CalDav {
 		log.info("SYNC: Start Incoming Sync");
 
 		Date after = null;
-		if (years != null) {
-			GregorianCalendar cal = new GregorianCalendar();
-			cal.add(java.util.Calendar.YEAR, -1 * years.intValue());
-			after = cal.getTime();
-		}
+		GregorianCalendar gcal = new GregorianCalendar();
+
+		gcal.add(java.util.Calendar.YEAR, -1 * ((years == null ) ? 50 : years.intValue()));
+		after = gcal.getTime();
+
+		gcal = new GregorianCalendar();
+		gcal.add(java.util.Calendar.YEAR, 10 * years.intValue());
+		Date tenYears = gcal.getTime();
 
 		ArrayList<String> serverUids = new ArrayList<String>();
 
-		Calendar cals[] = collection.getEvents();
+		net.fortuna.ical4j.model.DateTime dtstart = new net.fortuna.ical4j.model.DateTime(after);
+		net.fortuna.ical4j.model.DateTime dtend = new net.fortuna.ical4j.model.DateTime(tenYears);
+		log.info("SYNC: " + dtstart.toString() + "--" + dtend.toString());
+
+		Calendar cals[] = collection.getEventsForTimePeriod(dtstart,dtend);
 		SocketClient.sendLogMessage("SYNC: found " + cals.length + " Event Calendars on server");
 		log.info("SYNC: found " + cals.length + " Event Calendars on server");
 		int count = 0;
