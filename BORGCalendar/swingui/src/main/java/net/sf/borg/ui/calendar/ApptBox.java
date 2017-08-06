@@ -808,6 +808,16 @@ class ApptBox extends Box implements Box.Draggable {
                 newCal.setTime(ap.getDate());
                 newCal.add(Calendar.DATE, incdate);
                 newTime = newCal.getTime();
+                
+                // move next todo by the same amount
+                Date nt = ap.getNextTodo();
+                if( nt != null )
+                {
+            		GregorianCalendar newTodo = new GregorianCalendar();
+            		newTodo.setTime(nt);
+            		newTodo.add(Calendar.DATE, incdate);
+            		ap.setNextTodo(newTodo.getTime());
+                }
 			}
 		}
 		ap.setDate(newTime);
