@@ -1,9 +1,8 @@
-<?xml version="1.0" encoding="iso-8859-1" standalone="yes" ?>
+<izpack:installation version="5.0"
+                     xmlns:izpack="http://izpack.org/schema/installation"
+                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                     xsi:schemaLocation="http://izpack.org/schema/installation http://izpack.org/schema/5.0/izpack-installation-5.0.xsd">
 
-<!-- To compile it : - go in the bin directory where you installed IzPack 
-	- call "compile ../sample/install.xml -b ../sample" -->
-
-<installation version="5.0">
 
 	<!-- The info section. The meaning of the tags should be natural ... -->
 	<info>
@@ -19,7 +18,7 @@
 		<url>http://mikeberger.github.io/borg_calendar/</url>
 	</info>
 
-	<!-- The gui preferences indication. Sets the installer window to 640x480. 
+	<!-- The gui preferences indication. Sets the installer window to 640x480.
 		It will not be able to change the size. -->
 	<guiprefs width="640" height="480" resizable="yes">
 		<modifier key="useHeadingPanel" value="yes" />
@@ -47,7 +46,7 @@
 		<langpack iso3="ukr" />
 	</locale>
 
-	<!-- The resources section. The ids must be these ones if you want to use 
+	<!-- The resources section. The ids must be these ones if you want to use
 		the LicencePanel and/or the InfoPanel. -->
 	<resources>
 		<res id="LicencePanel.licence" src="COPYING" />
@@ -62,7 +61,7 @@
 		<native type="izpack" name="ShellLink.dll" />
 		<native type="izpack" name="ShellLink_x64.dll" />
 	</natives>
-	<!-- The panels section. We indicate here which panels we want to use. The 
+	<!-- The panels section. We indicate here which panels we want to use. The
 		order will be respected. -->
 	<panels>
 		<panel classname="HelloPanel" />
@@ -74,7 +73,7 @@
 		<panel classname="SimpleFinishPanel" />
 	</panels>
 
-	<!-- <panel classname="PacksPanel"/> The packs section. We specify here 
+	<!-- <panel classname="PacksPanel"/> The packs section. We specify here
 		our packs. -->
 	<packs>
 		<pack name="Base" required="yes">
@@ -97,4 +96,5 @@
 
 	</packs>
 
-</installation>
+</izpack:installation>
+
