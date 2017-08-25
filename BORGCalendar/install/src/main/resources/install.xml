@@ -3,20 +3,20 @@
 <!-- To compile it : - go in the bin directory where you installed IzPack 
 	- call "compile ../sample/install.xml -b ../sample" -->
 
-<installation version="1.0">
+<installation version="5.0">
 
 	<!-- The info section. The meaning of the tags should be natural ... -->
 	<info>
 		<appname>BORG Calendar</appname>
-		<appversion>${project.version}</appversion>
+		<appversion>1.8.2</appversion>
 		<appsubpath>BORGCalendar</appsubpath>
 
 		<authors>
-			<author name="Michael Berger" email="i_flem@users.sourceforge.net" />
+			<author name="Michael Berger" email="mike@mbcsoft.com" />
 
 		</authors>
 		<javaversion>1.7</javaversion>
-		<url>http://borg-calendar.sourceforge.net/</url>
+		<url>http://mikeberger.github.io/borg_calendar/</url>
 	</info>
 
 	<!-- The gui preferences indication. Sets the installer window to 640x480. 
@@ -39,9 +39,9 @@
 		<langpack iso3="spa" />
 		<langpack iso3="deu" />
 		<langpack iso3="ita" />
-		<langpack iso3="ned" />
+		<langpack iso3="nld" />
 		<langpack iso3="pol" />
-		<langpack iso3="por" />
+		<langpack iso3="prt" />
 		<langpack iso3="rus" />
 		<langpack iso3="chn" />
 		<langpack iso3="ukr" />
@@ -58,8 +58,10 @@
 
 	</resources>
 
-	<native type="izpack" name="ShellLink.dll" />
-	<native type="izpack" name="ShellLink_x64.dll" />
+	<natives>
+		<native type="izpack" name="ShellLink.dll" />
+		<native type="izpack" name="ShellLink_x64.dll" />
+	</natives>
 	<!-- The panels section. We indicate here which panels we want to use. The 
 		order will be respected. -->
 	<panels>

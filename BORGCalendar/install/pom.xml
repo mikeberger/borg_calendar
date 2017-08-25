@@ -7,6 +7,8 @@
 		<version>1.8.2</version>
 	</parent>
 	<artifactId>install</artifactId>
+	<packaging>izpack-jar</packaging>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -15,7 +17,7 @@
 				<executions>
 					<execution>
 						<id>copy-resources</id>
-						<phase>package</phase>
+						<phase>process-resources</phase>
 						<goals>
 							<goal>copy-resources</goal>
 						</goals>
@@ -32,22 +34,46 @@
 				</executions>
 			</plugin>
 			<plugin>
+				<groupId>org.codehaus.izpack</groupId>
+				<artifactId>izpack-maven-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<baseDir>${project.build.directory}/installer</baseDir>
+					<installFile>${basedir}/src/main/resources/install.xml</installFile>
+					<outputDirectory>${project.build.directory}</outputDirectory>
+					<finalName>borg_installer-${project.version}</finalName>
+					<enableOverrideArtifact>true</enableOverrideArtifact>
+					<mkdirs>true</mkdirs>
+					<autoIncludeUrl>false</autoIncludeUrl>
+					<autoIncludeDevelopers>false</autoIncludeDevelopers>
+				</configuration>
+			</plugin>
+			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<version>1.7</version>
 				<inherited>false</inherited>
 				<executions>
 					<execution>
-						<id>izpack</id>
-						<phase>package</phase>
+						<id>default-cli</id>
+						<phase>process-resources</phase>
 						<goals>
 							<goal>run</goal>
 						</goals>
 						<configuration>
-						<target><ant/></target>
+							<target>
+								<ant />
+							</target>
 						</configuration>
 					</execution>
 				</executions>
 			</plugin>
 		</plugins>
 	</build>
+	<dependencies>
+		<dependency>
+			<groupId>org.codehaus.izpack</groupId>
+			<artifactId>izpack-maven-plugin</artifactId>
+			<version>5.1.2</version>
+		</dependency>
+	</dependencies>
 </project>
