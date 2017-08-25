@@ -674,7 +674,7 @@ public class CalDav {
 		after = gcal.getTime();
 
 		gcal = new GregorianCalendar();
-		gcal.add(java.util.Calendar.YEAR, 10 * years.intValue());
+		gcal.add(java.util.Calendar.YEAR, 10 );
 		Date tenYears = gcal.getTime();
 
 		ArrayList<String> serverUids = new ArrayList<String>();
