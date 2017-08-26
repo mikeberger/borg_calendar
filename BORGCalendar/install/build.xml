@@ -26,6 +26,7 @@
 		</copy>
 		
 		<copy file="../swingui/target/swingui-${project.version}.jar" tofile="target/installer/borg.jar" />
+		<copy file="../swingui/target/borg.exe" tofile="target/installer/borg.exe" />
 
 	</target>
 

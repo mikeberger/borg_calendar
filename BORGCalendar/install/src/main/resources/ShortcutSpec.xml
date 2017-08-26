@@ -3,7 +3,7 @@
                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                   xsi:schemaLocation="http://izpack.org/schema/shortcuts http://izpack.org/schema/5.0/izpack-shortcuts-5.0.xsd">
 	<programGroup defaultName="BORG Calendar" location="applications/startMenu" />
-	<shortcut name="BORG Calendar" target="$INSTALL_PATH/borg.jar"
+	<shortcut name="BORG Calendar" target="$INSTALL_PATH/borg.exe"
 		workingDirectory="$INSTALL_PATH" initialState="normal" programGroup="yes"
 		desktop="yes" applications="no" startMenu="no" startup="no">
 		<createForPack name="Base" />

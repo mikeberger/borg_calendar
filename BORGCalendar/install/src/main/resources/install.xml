@@ -82,6 +82,7 @@
 			<file src="borglicense.txt" targetdir="$INSTALL_PATH" />
 			<file src="COPYING" targetdir="$INSTALL_PATH" />
 			<file src="borg.jar" targetdir="$INSTALL_PATH" />
+			<file src="borg.exe" targetdir="$INSTALL_PATH" />
 			<fileset dir="lib" targetdir="$INSTALL_PATH/lib" />
 			<fileset dir="licenses" targetdir="$INSTALL_PATH/licenses" />
 			<file src="run_borg.sh" targetdir="$INSTALL_PATH" />
