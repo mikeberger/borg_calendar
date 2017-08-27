@@ -50,6 +50,7 @@
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
 				<version>4.12</version>
+				<scope>test</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.projectlombok</groupId>
@@ -59,35 +60,9 @@
 		</dependencies>
 	</dependencyManagement>
 	<build>
-<!-- 		<pluginManagement> -->
-<!-- 			<plugins> -->
-<!-- 				<plugin> -->
-<!-- 					<groupId>org.codehaus.mojo</groupId> -->
-<!-- 					<artifactId>license-maven-plugin</artifactId> -->
-<!-- 					<version>1.7</version> -->
-<!-- 					<executions> -->
-<!-- 						<execution> -->
-<!-- 							<id>third-party</id> -->
-<!-- 							<goals> -->
-<!-- 								<goal>update-project-license</goal> -->
-<!-- 								<goal>aggregate-add-third-party</goal> -->
-<!-- 								<goal>download-licenses</goal> -->
-<!-- 							</goals> -->
-<!-- 							<configuration> -->
-<!-- 								<licenseName>gpl_v2</licenseName> -->
-<!-- 								<generateBundle>true</generateBundle> -->
-<!-- 								<licensesOutputDirectory>${session.executionRootDirectory}/target/generated-sources/licenses</licensesOutputDirectory> -->
-<!-- 							</configuration> -->
-<!-- 						</execution> -->
-<!-- 					</executions> -->
-<!-- 				</plugin> -->
-<!-- 			</plugins> -->
-<!-- 		</pluginManagement> -->
+
 		<plugins>
-<!-- 			<plugin> -->
-<!-- 				<groupId>org.codehaus.mojo</groupId> -->
-<!-- 				<artifactId>license-maven-plugin</artifactId> -->
-<!-- 			</plugin> -->
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>

@@ -105,7 +105,6 @@ class CheckListJdbcDB implements CheckListDB {
 
 	}
 
-	@SuppressWarnings("static-method")
 	private PreparedStatement getPSOne(String name) throws SQLException {
 		PreparedStatement stmt = JdbcDB.getConnection()
 				.prepareStatement("SELECT * FROM checkLists WHERE name = ?");
@@ -113,7 +112,6 @@ class CheckListJdbcDB implements CheckListDB {
 		return stmt;
 	}
 
-	@SuppressWarnings("static-method")
 	private PreparedStatement getPSAll() throws SQLException {
 		PreparedStatement stmt = JdbcDB.getConnection()
 				.prepareStatement("SELECT * FROM checkLists");
@@ -128,7 +126,6 @@ class CheckListJdbcDB implements CheckListDB {
 	 * @return the CheckList object
 	 * @throws SQLException
 	 */
-	@SuppressWarnings("static-method")
 	private CheckList createFrom(ResultSet r) throws Exception {
 		CheckList m = new CheckList();
 

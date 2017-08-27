@@ -20,11 +20,3 @@ As of release 1.7.6, BORG uses lombok to simplify certain code. lombok must be i
 to properly view the code. The lombok JAR included with BORG is executable. Execute this JAR and follow
 the instructions to add it to Eclipse.
 
-Installer
----------
-BORG uses IzPack as its installer. To build the IzPack installation package, you will need to download and install 
-IzPack and then adjust the build.xml ant script in the install project, which contains paths for IzPack and Python that may need
-adjustment.
-Even if IzPack is not found, a simple ZIP package is always created. 
-Recently, I stopped using IzPack to build the windows installer as it gives problems for some people. 
-I now just use IzPack to create the Java installer and then manually use Launch4j to create a windows executable.

@@ -97,11 +97,5 @@
 			</plugin>
 		</plugins>
 	</build>
-	<dependencies>
-		<dependency>
-			<groupId>org.codehaus.izpack</groupId>
-			<artifactId>izpack-maven-plugin</artifactId>
-			<version>5.1.2</version>
-		</dependency>
-	</dependencies>
+
 </project>
