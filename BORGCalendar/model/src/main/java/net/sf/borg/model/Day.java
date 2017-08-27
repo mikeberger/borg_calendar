@@ -25,17 +25,6 @@
 
 package net.sf.borg.model;
 
-import java.io.Serializable;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Iterator;
-import java.util.List;
-import java.util.TimeZone;
-import java.util.TreeSet;
-
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
@@ -43,6 +32,8 @@ import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.CalendarEntity;
 import net.sf.borg.model.entity.LabelEntity;
 
+import java.io.Serializable;
+import java.util.*;
 
 /**
  * Class Day pulls together and manages all of the items that make up the
@@ -51,13 +42,25 @@ import net.sf.borg.model.entity.LabelEntity;
  * 
  */
 public class Day {
+	private final TreeSet<CalendarEntity> items;
+	private static final String BLACK = "black";
+	private static final String TRUE = "true";
+	private static final boolean SHOW_PRIVATE_APPOINTMENTS = Prefs.getPref(PrefName.SHOWPRIVATE).equals(TRUE);
+	private static final boolean SHOW_PUBLIC_APPOINTMENTS = Prefs.getPref(PrefName.SHOWPUBLIC).equals(TRUE);
+
+	private int vacation;
+	private int holiday;
+
+	private Day() {
+		holiday = 0;
+		vacation = 0;
+		items = new TreeSet<>(new AppointmentCompare());
+	}
 
 	/**
 	 * class to compare appointment strings for sorting.
 	 */
-	private static class apcompare implements Comparator<CalendarEntity>, Serializable {
-
-		
+	private static class AppointmentCompare implements Comparator<CalendarEntity>, Serializable {
 		private static final long serialVersionUID = 1L;
 
 		/*
@@ -66,60 +69,85 @@ public class Day {
 		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
 		 */
 		@Override
-		public int compare(CalendarEntity so1, CalendarEntity so2) {
-
-			String s1 = so1.getText();
-			String s2 = so2.getText();
-
-			String psort = Prefs.getPref(PrefName.PRIORITY_SORT);
-			if (psort.equals("true")) {
-				Integer p1 = so1.getPriority();
-				Integer p2 = so2.getPriority();
-				
-				if( p1 != null && p2 != null )
-				{
-					if( p1.intValue() != p2.intValue())
-						return (p1.intValue() > p2.intValue() ? 1 : -1);
-				}
-				else if (p1 != null)
-					return -1;
-				else if (p2 != null)
-					return 1;
+		public int compare(CalendarEntity calendarEntity1, CalendarEntity calendarEntity2) {
+			if (Prefs.getPref(PrefName.PRIORITY_SORT).equals(TRUE)) {
+				return compareByPriority(calendarEntity1, calendarEntity2);
 			}
 
-			// use appt time of day (not date - due to repeats) to sort next
-			// appts with a time come before notes
-			Date dt1 = null;
-			Date dt2 = null;
-			if (so1 instanceof Appointment
-					&& !AppointmentModel.isNote((Appointment) so1)) {
-				Calendar cal = new GregorianCalendar();
-				cal.setTime(((Appointment) so1).getDate());
-				cal.set(1, 1, 2000);
-				dt1 = cal.getTime();
-			}
-			if (so2 instanceof Appointment
-					&& !AppointmentModel.isNote((Appointment) so2)) {
-				Calendar cal = new GregorianCalendar();
-				cal.setTime(((Appointment) so2).getDate());
-				cal.set(1, 1, 2000);
-				dt2 = cal.getTime();
-			}
-
-			if (dt1 != null && dt2 != null)
-				return (dt1.after(dt2) ? 1 : -1);
-			if (dt1 != null)
-				return -1;
-			if (dt2 != null)
-				return 1;
+			// appointments with a time come before notes
+			Integer compareValue = compareByTime(calendarEntity1, calendarEntity2);
+			if (compareValue != null)
+				return compareValue;
 
 			// if we got here, just compare
 			// strings lexicographically
-			int res = s1.compareTo(s2);
-			if (res != 0)
-				return (res);
-			return (1);
+			return compareByLexicographically(calendarEntity1, calendarEntity2);
 
+		}
+
+		/**
+		 * Method to compare two CalendarEntities by Time
+		 * @param calendarEntity1
+		 * @param calendarEntity2
+         * @return
+         */
+		private Integer compareByTime(CalendarEntity calendarEntity1, CalendarEntity calendarEntity2) {
+			// use appointment time of day (not date - due to repeats) to sort next
+			if (isAppointment(calendarEntity1) && isAppointment(calendarEntity2)) {
+				Date dt1 = getTimeWithoutDate((Appointment) calendarEntity1);
+				Date dt2  = getTimeWithoutDate((Appointment) calendarEntity2);
+				return dt1.after(dt2) ? 1 : -1;
+			}
+			return null;
+		}
+
+		/**
+		 * Check if a CalendarEntity is an appointment and not a note
+		 * @param calendarEntity
+         * @return
+         */
+		private boolean isAppointment(CalendarEntity calendarEntity) {
+			return calendarEntity instanceof Appointment && !AppointmentModel.isNote((Appointment) calendarEntity);
+		}
+
+		/**
+		 * Method to sort CalendarEntities by Lexico Graphically
+		 * @param calendarEntity1
+		 * @param calendarEntity2
+         * @return
+         */
+		private int compareByLexicographically(CalendarEntity calendarEntity1, CalendarEntity calendarEntity2) {
+			return (calendarEntity1.getText().compareTo(calendarEntity2.getText()) != 0) ? calendarEntity1.getText().compareTo(calendarEntity2.getText()) : 1;
+		}
+
+		/**
+		 * Method to sort CalendarEntities by priority
+		 * @param calendarEntity1
+		 * @param calendarEntity2
+         * @return
+         */
+		private Integer compareByPriority(CalendarEntity calendarEntity1, CalendarEntity calendarEntity2) {
+			Integer calendarEntity1Priority = calendarEntity1.getPriority();
+			Integer calendarEntity2Priority = calendarEntity2.getPriority();
+
+			if (calendarEntity1Priority != null && calendarEntity2Priority != null) {
+                if (calendarEntity1Priority.intValue() != calendarEntity2Priority.intValue())
+                    return calendarEntity1Priority > calendarEntity2Priority ? 1 : -1;
+            } else if (calendarEntity1Priority != null)
+                return -1;
+            return 1;
+		}
+
+		/**
+		 * Method to get the time of an appointment without looking at de date
+		 * @param appointment
+         * @return
+         */
+		private Date getTimeWithoutDate(Appointment appointment) {
+			Calendar cal = new GregorianCalendar();
+			cal.setTime(appointment.getDate());
+			cal.set(1, Calendar.FEBRUARY, 2000);
+			return cal.getTime();
 		}
 
 	}
@@ -129,68 +157,59 @@ public class Day {
 	 * 
 	 * @param day
 	 *            the day
-	 * @param l
-	 *            list of appointment keys to add
-	 * @param year
-	 *            the year
-	 * @param month
-	 *            the month
-	 * @param date
-	 *            the date
-	 * 
+	 * @param listOfAppointmentKeys
+	 *            list of appointment keys to add	 *
 	 * @throws Exception
 	 *             the exception
 	 */
-	private static void addToDay(Day day, Collection<Integer> l) throws Exception {
-
-		boolean pub = false;
-		boolean priv = false;
-		String sp = Prefs.getPref(PrefName.SHOWPUBLIC);
-		if (sp.equals("true"))
-			pub = true;
-		sp = Prefs.getPref(PrefName.SHOWPRIVATE);
-		if (sp.equals("true"))
-			priv = true;
-
-		if (l != null) {
-			Iterator<Integer> it = l.iterator();
-			Appointment appt;
-
-			// iterate through the day's appts
-			while (it.hasNext()) {
-				Integer ik = it.next();
-
-				// read the appt from the DB
-				appt = AppointmentModel.getReference().getAppt(ik.intValue());
-
-				// skip based on public/private flags
-				if (appt.isPrivate()) {
-					if (!priv)
-						continue;
-				} else {
-					if (!pub)
-						continue;
-				}
-
-				String color = appt.getColor();
-				if (color == null)
-					appt.setColor("black");
-
-				// add apptto day
-				day.addItem(appt);
-
-				// set vacation and holiday flags at dayinfo level
-				Integer v = appt.getVacation();
-				if (v != null && v.intValue() != 0)
-					day.setVacation(v.intValue());
-
-				v = appt.getHoliday();
-				if (v != null && v.intValue() == 1)
-					day.setHoliday(1);
-
+	private static void addToDay(Day day, Collection<Integer> listOfAppointmentKeys) throws Exception {
+		if (listOfAppointmentKeys != null) {
+			// iterate through the day's appointments
+			for (Integer listOfAppointmentKey : listOfAppointmentKeys) {
+				Appointment appointment = AppointmentModel.getReference().getAppt(listOfAppointmentKey);
+				if(checkIfAppointmentToShow(appointment))
+					setAppointmentToDay(day, appointment);
 			}
 		}
+	}
 
+	/**
+	 * check if a appoint has to been shown at the calendar UI
+	 * @param appointment
+	 * @return
+     */
+	private static boolean checkIfAppointmentToShow(Appointment appointment) {
+		if (appointment.isPrivate()) {
+			if (!SHOW_PRIVATE_APPOINTMENTS)
+				return false;
+		} else {
+			if (!SHOW_PUBLIC_APPOINTMENTS)
+				return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Method to set an Appointment to a day object for the calendar UI
+	 * @param day
+	 * @param appointment
+     */
+	private static void setAppointmentToDay(Day day, Appointment appointment) {
+		// skip based on public/private flags
+		if (appointment.getColor() == null)
+            appointment.setColor(BLACK);
+
+		// add appointment to day
+		day.addItem(appointment);
+
+		// set vacation and holiday flags at day-info level
+		Integer vacationValue = appointment.getVacation();
+		if (vacationValue != null && vacationValue != 0)
+            day.setVacation(vacationValue);
+
+		Integer holidayValue = appointment.getHoliday();
+		if (holidayValue != null && holidayValue == 1)
+            day.setHoliday(1);
 	}
 
 	/**
@@ -208,227 +227,74 @@ public class Day {
 	 *             the exception
 	 */
 	public static Day getDay(int year, int month, int day) throws Exception {
-
 		// get the base day key
-		Calendar cal = new GregorianCalendar(year, month, day);
+		Calendar calendar = new GregorianCalendar(year, month, day);
 
-		Day ret = new Day();
+		Day dayToGet = new Day();
 
-		// get the list of appt keys from the map_
-		Collection<Integer> l = AppointmentModel.getReference().getAppts(
-				cal.getTime());
-		addToDay(ret, l);
+		// get the list of appointment keys from the map_
+		Collection<Integer> listOfAppointments = AppointmentModel.getReference().getAppts(calendar.getTime());
+		addToDay(dayToGet, listOfAppointments);
 
 		// daylight savings time
-		GregorianCalendar gc = new GregorianCalendar(year, month, day, 11, 00);
-		boolean dstNow = TimeZone.getDefault().inDaylightTime(gc.getTime());
-		gc.add(Calendar.DATE, -1);
-		boolean dstYesterday = TimeZone.getDefault().inDaylightTime(
-				gc.getTime());
-		if (dstNow && !dstYesterday) {
-			LabelEntity hol = new LabelEntity();
-			hol.setColor("black");
-			hol.setText(Resource.getResourceString("Daylight_Savings_Time"));
-			ret.addItem(hol);
-		} else if (!dstNow && dstYesterday) {
-			LabelEntity hol = new LabelEntity();
-			hol.setColor("black");
-			hol.setText(Resource.getResourceString("Standard_Time"));
-			ret.addItem(hol);
-		}
+		addDaylightSavingsTimeOrStandardTime(year, month, day, dayToGet);
 
-		// add canned US holidays
-		// check user preferences first
-		String show_us_hols = Prefs.getPref(PrefName.SHOWUSHOLIDAYS);
+		// add possible special day
+		addPossibleSpecialDay(year, month, day, dayToGet);
 
-		if (show_us_hols.equals("true")) {
-
-			// ok, we will add holiday appts
-			// to the dayinfo for the US holidays below
-			// the dayinfo.holiday flag is set if the holiday
-			// is a day off from work and should cause the day to have
-			// holiday coloring on the gui
-			//
-			// so, holidays only exist in the dayinfo objects, which are
-			// temporary. they do not get added to the DB or even the appt
-			// map_
-			LabelEntity hol = new LabelEntity();
-
-			hol.setDate(new GregorianCalendar(year, month, day, 00, 00)
-					.getTime());
-
-			hol.setColor("purple");
-
-			hol.setText(null);
-			if (month == 9 && day == 31) {
-				hol.setText(Resource.getResourceString("Halloween"));
-			} else if (month == 6 && day == 4) {
-				hol.setText(Resource.getResourceString("Independence_Day"));
-				ret.setHoliday(1);
-			} else if (month == 1 && day == 2) {
-				hol.setText(Resource.getResourceString("Ground_Hog_Day"));
-			} else if (month == 1 && day == 14) {
-				hol.setText(Resource.getResourceString("Valentine's_Day"));
-			} else if (month == 2 && day == 17) {
-				hol.setText(Resource.getResourceString("St._Patrick's_Day"));
-			} else if (month == 10 && day == 11) {
-				hol.setText(Resource.getResourceString("Veteran's_Day"));
-			} else if (month == 8
-					&& day == nthdom(year, month, Calendar.MONDAY, 1)) {
-				hol.setText(Resource.getResourceString("Labor_Day"));
-				ret.setHoliday(1);
-			} else if (month == 0
-					&& day == nthdom(year, month, Calendar.MONDAY, 3)) {
-				hol.setText(Resource
-						.getResourceString("Martin_Luther_King_Day"));
-			} else if (month == 1
-					&& day == nthdom(year, month, Calendar.MONDAY, 3)) {
-				hol.setText(Resource.getResourceString("Presidents_Day"));
-			} else if (month == 4
-					&& day == nthdom(year, month, Calendar.MONDAY, -1)) {
-				hol.setText(Resource.getResourceString("Memorial_Day"));
-				ret.setHoliday(1);
-			} else if (month == 9
-					&& day == nthdom(year, month, Calendar.MONDAY, 2)) {
-				hol.setText(Resource.getResourceString("Columbus_Day"));
-			} else if (month == 4
-					&& day == nthdom(year, month, Calendar.SUNDAY, 2)) {
-				hol.setText(Resource.getResourceString("Mother's_Day"));
-			} else if (month == 5
-					&& day == nthdom(year, month, Calendar.SUNDAY, 3)) {
-				hol.setText(Resource.getResourceString("Father's_Day"));
-			} else if (month == 10
-					&& day == nthdom(year, month, Calendar.THURSDAY, 4)) {
-				hol.setText(Resource.getResourceString("Thanksgiving"));
-				ret.setHoliday(1);
-			}
-
-			if (hol.getText() != null)
-				ret.addItem(hol);
-
-		}
-
-		// add canned Canadian holidays
-		// check user preferences first
-		String show_can_hols = Prefs.getPref(PrefName.SHOWCANHOLIDAYS);
-		if (show_can_hols.equals("true")) {
-
-			LabelEntity hol = new LabelEntity();
-			hol.setDate(new GregorianCalendar(year, month, day, 00, 00)
-					.getTime());
-
-			hol.setColor("purple");
-
-			hol.setText(null);
-			if (month == 6 && day == 1) {
-				hol.setText(Resource.getResourceString("Canada_Day"));
-			} else if (month == 11 && day == 26) {
-				hol.setText(Resource.getResourceString("Boxing_Day"));
-			} else if (month == 7
-					&& day == nthdom(year, month, Calendar.MONDAY, 1)) {
-				hol.setText(Resource.getResourceString("Civic_Holiday"));
-			} else if (month == 10 && day == 11) {
-				hol.setText(Resource.getResourceString("Remembrance_Day"));
-			} else if (month == 8
-					&& day == nthdom(year, month, Calendar.MONDAY, 1)) {
-				hol.setText(Resource.getResourceString("Labour_Day_(Can)"));
-			} else if (month == 2
-					&& day == nthdom(year, month, Calendar.MONDAY, 2)) {
-				hol.setText(Resource.getResourceString("Commonwealth_Day"));
-			} else if (month == 9
-					&& day == nthdom(year, month, Calendar.MONDAY, 2)) {
-				hol.setText(Resource.getResourceString("Thanksgiving_(Can)"));
-			} else if (month == 4) {
-				gc = new GregorianCalendar(year, month, 25);
-				int diff = gc.get(Calendar.DAY_OF_WEEK);
-				diff += 5;
-				if (diff > 7)
-					diff -= 7;
-				if (day == 25 - diff) {
-					hol.setText(Resource.getResourceString("Victoria_Day"));
-				}
-			}
-
-			if (hol.getText() != null)
-				ret.addItem(hol);
-
-		}
-		
-		// common holidays
-		if (show_can_hols.equals("true") || show_us_hols.equals("true")) {
-
-			LabelEntity hol = new LabelEntity();
-			hol.setDate(new GregorianCalendar(year, month, day, 00, 00)
-					.getTime());
-
-			hol.setColor("purple");
-
-			hol.setText(null);
-			if (month == 0 && day == 1) {
-				hol.setText(Resource.getResourceString("New_Year's_Day"));
-				ret.setHoliday(1);
-			} else if (month == 11 && day == 25) {
-				hol.setText(Resource.getResourceString("Christmas"));
-				ret.setHoliday(1);
-			}
-
-			if (hol.getText() != null)
-				ret.addItem(hol);
-
-		}
-
-
-		for( Model m : Model.getExistingModels())
-		{
-			if( m instanceof CalendarEntityProvider)
-			{
-				List<CalendarEntity> el  = ((CalendarEntityProvider) m).getEntities(cal.getTime());
-				for( CalendarEntity e : el )
-					ret.addItem(e);
+		for (Model model : Model.getExistingModels()) {
+			if (model instanceof CalendarEntityProvider) {
+				List<CalendarEntity> entityList = ((CalendarEntityProvider) model).getEntities(calendar.getTime());
+				for (CalendarEntity entity : entityList)
+					dayToGet.addItem(entity);
 			}
 		}
-		
-
-		return (ret);
-
+		return dayToGet;
 	}
 
 	/**
-	 * compute nth day of month for calculating when certain holidays fall.
-	 * 
+	 * Method to add a special day to a Day object for the calendar UI
 	 * @param year
-	 *            the year
 	 * @param month
-	 *            the month
-	 * @param dayofweek
-	 *            the day of the week
-	 * @param week
-	 *            the week of the month
-	 * 
-	 * @return the date
-	 */
-	private static int nthdom(int year, int month, int dayofweek, int week) {
-		GregorianCalendar cal = new GregorianCalendar(year, month, 1);
-		cal.set(Calendar.DAY_OF_WEEK, dayofweek);
-		cal.set(Calendar.DAY_OF_WEEK_IN_MONTH, week);
-		return (cal.get(Calendar.DATE));
+	 * @param day
+	 * @param dayToAddLabel
+     */
+	private static void addPossibleSpecialDay(int year, int month, int day, Day dayToAddLabel) {
+		LabelEntity specialDayLabel = SpecialDay.getPossibleSpecialDayLabel(year, month, day, dayToAddLabel);
+		if(specialDayLabel != null)
+			dayToAddLabel.addItem(specialDayLabel);
 	}
 
-	private int holiday; // set to indicate if any appt in the list is a
-
-	private TreeSet<CalendarEntity> items; // list of appts for the day
-
-	private int vacation; // vacation value for the day
+	/**
+	 * A method to add Daylight savings Time or Standard Time change to a day
+	 * @param year
+	 * @param month
+	 * @param day
+	 * @param dayToAddLabel
+     */
+	private static void addDaylightSavingsTimeOrStandardTime(int year, int month, int day, Day dayToAddLabel) {
+		GregorianCalendar gc = new GregorianCalendar(year, month, day, 11, 0);
+		boolean dateNow = TimeZone.getDefault().inDaylightTime(gc.getTime());
+		gc.add(Calendar.DATE, -1);
+		boolean dayBeforeNow = TimeZone.getDefault().inDaylightTime(gc.getTime());
+		if (dateNow && !dayBeforeNow) {
+			addTimeLabel(dayToAddLabel, Resource.getResourceString("Daylight_Savings_Time"));
+		} else if (!dateNow && dayBeforeNow) {
+			addTimeLabel(dayToAddLabel, Resource.getResourceString("Standard_Time"));
+		}
+	}
 
 	/**
-	 * Instantiates a new day.
-	 */
-	private Day() {
-
-		holiday = 0;
-		vacation = 0;
-		items = new TreeSet<CalendarEntity>(new apcompare());
-
+	 * Method to add an Time Label to a day
+	 *
+	 * @param dayToAddLabel is the day that gets the label
+	 * @param timeLabel a string as text of the label
+     */
+	private static void addTimeLabel(Day dayToAddLabel, String timeLabel) {
+		LabelEntity label = new LabelEntity();
+		label.setColor(BLACK);
+		label.setText(timeLabel);
+		dayToAddLabel.addItem(label);
 	}
 
 	/**
@@ -447,7 +313,7 @@ public class Day {
 	 * @return the holiday (1 = holiday)
 	 */
 	public int getHoliday() {
-		return (holiday);
+		return holiday;
 	}
 
 	/**
@@ -456,7 +322,7 @@ public class Day {
 	 * @return the items
 	 */
 	public Collection<CalendarEntity> getItems() {
-		return (items);
+		return items;
 	}
 
 	/**
@@ -465,7 +331,7 @@ public class Day {
 	 * @return the vacation value (0 = none, 1 = full day, 2 = half day)
 	 */
 	public int getVacation() {
-		return (vacation);
+		return vacation;
 	}
 
 	/**
@@ -484,8 +350,7 @@ public class Day {
 	 * @param i
 	 *            the new vacation value
 	 */
-	public void setVacation(int i) {
+	private void setVacation(int i) {
 		vacation = i;
 	}
-
 }
