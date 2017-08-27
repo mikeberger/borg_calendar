@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>BORGCalendar</groupId>
 		<artifactId>BORGCalendar</artifactId>
-		<version>1.8.2</version>
+		<version>1.8.3</version>
 	</parent>
 	<artifactId>common</artifactId>
 	<properties>
@@ -15,12 +15,12 @@
 		<dependency>
 			<groupId>biz.source_code</groupId>
 			<artifactId>base64coder</artifactId>
-			<version>2010-09-21</version>
+			<version>2010-12-19</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.mail</groupId>
 			<artifactId>mail</artifactId>
-			<version>1.4.7</version>
+			<version>1.5.0-b01</version>
 		</dependency>
 	</dependencies>
 	<build>
