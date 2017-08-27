@@ -1,3 +1,15 @@
+BORG 1.8.3
+----------
+#69 - update next_todo properly when moving a repeating todo
+#68 - when retrieving caldav events, always query with a time range instead of getting all
+Set Frame minimum size properly
+For Mac OS, use the L&F as set in the user preferences, unless it is a jgoodies L&F.
+Allow non standard ports for caldav server - #63
+upgrade to izpack 5, use maven izpack plugin so that install of izpack is not required to build the installer
+use launch4j maven plugin to create windows .exe so that a separate launch4j install is not required
+for windows, include a launch4j program launcher borg.exe for better windows support
+Bug Fixes
+
 BORG 1.8.2
 ----------
 Add unlimited color choices for appointments
