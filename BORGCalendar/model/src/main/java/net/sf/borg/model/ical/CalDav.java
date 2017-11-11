@@ -30,6 +30,7 @@ import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.ComponentList;
 import net.fortuna.ical4j.model.Property;
+import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VToDo;
 import net.fortuna.ical4j.model.property.Completed;
@@ -53,7 +54,6 @@ import net.sf.borg.model.entity.SyncableEntity;
 import net.sf.borg.model.entity.SyncableEntity.ObjectType;
 import net.sf.borg.model.entity.Task;
 
-@SuppressWarnings("unchecked")
 public class CalDav {
 
 	private static final String CTAG_OPTION = "CTAG";
@@ -81,7 +81,7 @@ public class CalDav {
 		return pathResolver;
 	}
 
-	private static void addEvent(CalDavCalendarCollection collection, Component comp) {
+	private static void addEvent(CalDavCalendarCollection collection, CalendarComponent comp) {
 
 		log.info("SYNC: addEvent: " + comp.toString());
 
@@ -175,10 +175,10 @@ public class CalDav {
 		CalDavCalendarCollection collection = store.addCollection(cal_id, calname, calname,
 				new String[] { "VEVENT", "VTODO" }, null);
 
-		ComponentList clist = calendar.getComponents();
-		Iterator<Component> it = clist.iterator();
+		ComponentList<CalendarComponent> clist = calendar.getComponents();
+		Iterator<CalendarComponent> it = clist.iterator();
 		while (it.hasNext()) {
-			Component comp = it.next();
+			CalendarComponent comp = it.next();
 			addEvent(collection, comp);
 		}
 
@@ -219,8 +219,8 @@ public class CalDav {
 		if (cal == null)
 			return null;
 
-		ComponentList clist = cal.getComponents();
-		Iterator<Component> it = clist.iterator();
+		ComponentList<CalendarComponent> clist = cal.getComponents();
+		Iterator<CalendarComponent> it = clist.iterator();
 		while (it.hasNext()) {
 			Component comp = it.next();
 			if (comp instanceof VEvent || comp instanceof VToDo)
@@ -250,7 +250,7 @@ public class CalDav {
 						Appointment ap = AppointmentModel.getReference().getAppt(se.getId());
 						if (ap == null)
 							continue;
-						Component ve1 = EntityIcalAdapter.toIcal(ap, export_todos);
+						CalendarComponent ve1 = EntityIcalAdapter.toIcal(ap, export_todos);
 						if (ve1 != null)
 							addEvent(collection, ve1);
 
@@ -259,14 +259,14 @@ public class CalDav {
 						Appointment ap = AppointmentModel.getReference().getAppt(se.getId());
 
 						if (comp == null) {
-							Component ve1 = EntityIcalAdapter.toIcal(ap, export_todos);
+							CalendarComponent ve1 = EntityIcalAdapter.toIcal(ap, export_todos);
 							if (ve1 != null)
 								addEvent(collection, ve1);
 
 						} else // TODO - what if both sides updated
 						{
 
-							Component ve1 = EntityIcalAdapter.toIcal(ap, export_todos);
+							CalendarComponent ve1 = EntityIcalAdapter.toIcal(ap, export_todos);
 							if (ve1 != null)
 								updateEvent(collection, ve1);
 
@@ -296,7 +296,7 @@ public class CalDav {
 						Task task = TaskModel.getReference().getTask(se.getId());
 						if (task == null)
 							continue;
-						Component ve1 = EntityIcalAdapter.toIcal(task, export_todos);
+						CalendarComponent ve1 = EntityIcalAdapter.toIcal(task, export_todos);
 						if (ve1 != null)
 							addEvent(collection, ve1);
 
@@ -305,13 +305,13 @@ public class CalDav {
 						Task task = TaskModel.getReference().getTask(se.getId());
 
 						if (comp == null) {
-							Component ve1 = EntityIcalAdapter.toIcal(task, export_todos);
+							CalendarComponent ve1 = EntityIcalAdapter.toIcal(task, export_todos);
 							if (ve1 != null)
 								addEvent(collection, ve1);
 
 						} else // TODO - what if both sides updated
 						{
-							Component ve1 = EntityIcalAdapter.toIcal(task, export_todos);
+							CalendarComponent ve1 = EntityIcalAdapter.toIcal(task, export_todos);
 							if (ve1 != null) {
 								updateEvent(collection, ve1);
 							} else {
@@ -344,7 +344,7 @@ public class CalDav {
 						Subtask subtask = TaskModel.getReference().getSubTask(se.getId());
 						if (subtask == null)
 							continue;
-						Component ve1 = EntityIcalAdapter.toIcal(subtask, export_todos);
+						CalendarComponent ve1 = EntityIcalAdapter.toIcal(subtask, export_todos);
 						if (ve1 != null)
 							addEvent(collection, ve1);
 
@@ -353,13 +353,13 @@ public class CalDav {
 						Subtask subtask = TaskModel.getReference().getSubTask(se.getId());
 
 						if (comp == null) {
-							Component ve1 = EntityIcalAdapter.toIcal(subtask, export_todos);
+							CalendarComponent ve1 = EntityIcalAdapter.toIcal(subtask, export_todos);
 							if (ve1 != null)
 								addEvent(collection, ve1);
 
 						} else // TODO - what if both sides updated
 						{
-							Component ve1 = EntityIcalAdapter.toIcal(subtask, export_todos);
+							CalendarComponent ve1 = EntityIcalAdapter.toIcal(subtask, export_todos);
 							if (ve1 != null) {
 								updateEvent(collection, ve1);
 							} else {
@@ -578,8 +578,8 @@ public class CalDav {
 
 		log.fine("Incoming calendar: " + cal.toString());
 
-		ComponentList clist = cal.getComponents();
-		Iterator<Component> it = clist.iterator();
+		ComponentList<CalendarComponent> clist = cal.getComponents();
+		Iterator<CalendarComponent> it = clist.iterator();
 		while (it.hasNext()) {
 			Component comp = it.next();
 
@@ -724,7 +724,7 @@ public class CalDav {
 
 	}
 
-	private static void updateEvent(CalDavCalendarCollection collection, Component comp) {
+	private static void updateEvent(CalDavCalendarCollection collection, CalendarComponent comp) {
 
 		log.info("SYNC: updateEvent: " + comp.toString());
 

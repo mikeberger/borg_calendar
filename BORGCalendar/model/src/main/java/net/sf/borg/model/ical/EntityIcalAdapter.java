@@ -39,6 +39,7 @@ import net.fortuna.ical4j.model.Recur;
 import net.fortuna.ical4j.model.TextList;
 import net.fortuna.ical4j.model.WeekDay;
 import net.fortuna.ical4j.model.WeekDayList;
+import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VAlarm;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VToDo;
@@ -72,10 +73,10 @@ public class EntityIcalAdapter {
 
 	static private final Logger log = Logger.getLogger("net.sf.borg");
 
-	static public Component toIcal(Appointment ap, boolean export_todos) throws Exception {
+	static public CalendarComponent toIcal(Appointment ap, boolean export_todos) throws Exception {
 
 		TextList catlist = new TextList();
-		Component ve = null;
+		CalendarComponent ve = null;
 
 		// export todos as VTODOs if option set
 		// This works well in clients such as Mozilla Lightning, which handles
@@ -346,7 +347,6 @@ public class EntityIcalAdapter {
 		return TimeZone.getDefault().getOffset(date);
 	}
 
-	@SuppressWarnings("unchecked")
 	public static Appointment toBorg(Component comp) {
 		if (comp instanceof VEvent || comp instanceof VToDo) {
 
@@ -359,7 +359,7 @@ public class EntityIcalAdapter {
 
 			ap.setCategory(null);
 
-			PropertyList pl = comp.getProperties();
+			PropertyList<Property> pl = comp.getProperties();
 			String appttext = "";
 			String summary = "";
 			Property prop = pl.getProperty(Property.SUMMARY);
@@ -594,7 +594,7 @@ public class EntityIcalAdapter {
 
 	}
 
-	static public Component toIcal(Project t, boolean export_todos) throws Exception {
+	static public CalendarComponent toIcal(Project t, boolean export_todos) throws Exception {
 		if (TaskModel.isClosed(t))
 			return null;
 
@@ -602,7 +602,7 @@ public class EntityIcalAdapter {
 		if (due == null)
 			return null;
 
-		Component ve = null;
+		CalendarComponent ve = null;
 		if (export_todos)
 			ve = new VToDo();
 		else
@@ -629,7 +629,7 @@ public class EntityIcalAdapter {
 
 	}
 
-	static public Component toIcal(Task t, boolean export_todos) throws Exception {
+	static public CalendarComponent toIcal(Task t, boolean export_todos) throws Exception {
 		if (TaskModel.isClosed(t))
 			return null;
 
@@ -637,7 +637,7 @@ public class EntityIcalAdapter {
 		if (due == null)
 			return null;
 
-		Component ve = null;
+		CalendarComponent ve = null;
 		if (export_todos)
 			ve = new VToDo();
 		else
@@ -680,7 +680,7 @@ public class EntityIcalAdapter {
 
 	}
 
-	static public Component toIcal(Subtask t, boolean export_todos) throws Exception {
+	static public CalendarComponent toIcal(Subtask t, boolean export_todos) throws Exception {
 
 		if (t.getCloseDate() != null)
 			return null;
@@ -689,7 +689,7 @@ public class EntityIcalAdapter {
 		if (due == null)
 			return null;
 
-		Component ve = null;
+		CalendarComponent ve = null;
 		if (export_todos)
 			ve = new VToDo();
 		else

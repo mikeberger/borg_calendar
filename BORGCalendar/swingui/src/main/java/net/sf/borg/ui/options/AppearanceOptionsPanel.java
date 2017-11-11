@@ -25,6 +25,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Locale;
 import java.util.TreeSet;
@@ -43,7 +44,6 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.options.OptionsView.OptionsPanel;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
-import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
  * Provides the UI for editing general appearance options

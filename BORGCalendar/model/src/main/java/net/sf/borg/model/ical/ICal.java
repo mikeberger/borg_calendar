@@ -15,11 +15,13 @@ import net.fortuna.ical4j.data.CalendarOutputter;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.ComponentList;
+import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.PropertyList;
-import net.fortuna.ical4j.model.ValidationException;
+import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.property.ProdId;
 import net.fortuna.ical4j.model.property.Version;
 import net.fortuna.ical4j.util.CompatibilityHints;
+import net.fortuna.ical4j.validate.ValidationException;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.IOHelper;
 import net.sf.borg.common.PrefName;
@@ -51,7 +53,7 @@ public class ICal {
 
 	static public Calendar exportIcal(Date after, boolean caldav) throws Exception {
 
-		ComponentList clist = new ComponentList();
+		ComponentList<CalendarComponent> clist = new ComponentList<CalendarComponent>();
 
 		exportAppointments(clist, after);
 		exportTasks(clist);
@@ -61,7 +63,7 @@ public class ICal {
 			exportProjects(clist);
 		}
 
-		PropertyList pl = new PropertyList();
+		PropertyList<Property> pl = new PropertyList<Property>();
 		pl.add(new ProdId("BORG Calendar"));
 		pl.add(Version.VERSION_2_0);
 		net.fortuna.ical4j.model.Calendar cal = new net.fortuna.ical4j.model.Calendar(pl, clist);
@@ -71,7 +73,7 @@ public class ICal {
 		return cal;
 	}
 
-	static private void exportAppointments(ComponentList clist, Date after) throws Exception {
+	static private void exportAppointments(ComponentList<CalendarComponent> clist, Date after) throws Exception {
 		boolean export_todos = Prefs.getBoolPref(PrefName.ICAL_EXPORT_TODO);
 
 		for (Appointment ap : AppointmentModel.getReference().getAllAppts()) {
@@ -83,7 +85,7 @@ public class ICal {
 					continue;
 			}
 
-			Component ve = EntityIcalAdapter.toIcal(ap, export_todos);
+			CalendarComponent ve = EntityIcalAdapter.toIcal(ap, export_todos);
 			if (ve != null)
 				clist.add(ve);
 
@@ -91,12 +93,12 @@ public class ICal {
 
 	}
 
-	static private void exportTasks(ComponentList clist) throws Exception {
+	static private void exportTasks(ComponentList<CalendarComponent> clist) throws Exception {
 
 		boolean export_todos = Prefs.getBoolPref(PrefName.ICAL_EXPORT_TODO);
 
 		for (Task t : TaskModel.getReference().getTasks()) {
-			Component c = EntityIcalAdapter.toIcal(t, export_todos);
+			CalendarComponent c = EntityIcalAdapter.toIcal(t, export_todos);
 			if (c != null)
 				clist.add(c);
 
@@ -104,24 +106,24 @@ public class ICal {
 
 	}
 
-	static private void exportProjects(ComponentList clist) throws Exception {
+	static private void exportProjects(ComponentList<CalendarComponent> clist) throws Exception {
 
 		boolean export_todos = Prefs.getBoolPref(PrefName.ICAL_EXPORT_TODO);
 
 		for (Project t : TaskModel.getReference().getProjects()) {
-			Component c = EntityIcalAdapter.toIcal(t, export_todos);
+			CalendarComponent c = EntityIcalAdapter.toIcal(t, export_todos);
 			if (c != null)
 				clist.add(c);
 
 		}
 	}
 
-	static private void exportSubTasks(ComponentList clist) throws Exception {
+	static private void exportSubTasks(ComponentList<CalendarComponent> clist) throws Exception {
 
 		boolean export_todos = Prefs.getBoolPref(PrefName.ICAL_EXPORT_TODO);
 
 		for (Subtask t : TaskModel.getReference().getSubTasks()) {
-			Component c = EntityIcalAdapter.toIcal(t, export_todos);
+			CalendarComponent c = EntityIcalAdapter.toIcal(t, export_todos);
 			if (c != null)
 				clist.add(c);
 
@@ -150,7 +152,6 @@ public class ICal {
 		return importIcal(cal);
 	}
 
-	@SuppressWarnings("unchecked")
 	static private String importIcal(Calendar cal) throws Exception {
 
 		int skipped = 0;
@@ -170,8 +171,8 @@ public class ICal {
 		ArrayList<Appointment> aplist = new ArrayList<Appointment>();
 
 		AppointmentModel amodel = AppointmentModel.getReference();
-		ComponentList clist = cal.getComponents();
-		Iterator<Component> it = clist.iterator();
+		ComponentList<CalendarComponent> clist = cal.getComponents();
+		Iterator<CalendarComponent> it = clist.iterator();
 		while (it.hasNext()) {
 			Component comp = it.next();
 
