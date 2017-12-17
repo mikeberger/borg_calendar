@@ -554,7 +554,11 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener, Mo
 			calmod_.saveAppt(appt);
 		} else {
 			// for a date change - everything comes from the screen
-			// the old appt info is tossed out
+			// the old appt info is tossed out - except for caldav UID
+			
+			Appointment originalAppt = calmod_.getAppt(currentlyShownAppointmentKey);
+			appt.setUid(originalAppt.getUid());
+
 			appt.setKey(currentlyShownAppointmentKey);
 			try {
 				// encrypt it
