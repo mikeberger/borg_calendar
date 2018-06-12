@@ -116,7 +116,7 @@ public abstract class ReminderManager implements Model.Listener, Prefs.Listener 
 
 	/**
 	 * add a reminder to the UI
-	 * 
+	 *
 	 * @param instance
 	 *            the reminder instance
 	 */
@@ -228,7 +228,7 @@ public abstract class ReminderManager implements Model.Listener, Prefs.Listener 
 	}
 
 	public void getAppointmentReminders() {
-		
+
 		// determine most future day that we have to consider
 		int earliestReminderTime = -100000;
 		for (int i = 0; i < ReminderTimes.getNum(); i++) {
@@ -306,6 +306,10 @@ public abstract class ReminderManager implements Model.Listener, Prefs.Listener 
 
 				Appointment appt = it.next();
 
+				// skip timed todos here - done above
+				if (!AppointmentModel.isNote(appt))
+					continue;
+
 				try {
 
 					// instance date is date of next todo
@@ -355,7 +359,7 @@ public abstract class ReminderManager implements Model.Listener, Prefs.Listener 
 						// birthday itself
 						Calendar bdcal = new GregorianCalendar();
 						bdcal.setTime(bd);
-						bdcal.set(Calendar.YEAR, cal.get(Calendar.YEAR)); 
+						bdcal.set(Calendar.YEAR, cal.get(Calendar.YEAR));
 						bdcal.set(Calendar.SECOND, 59);
 						bdcal.set(Calendar.MINUTE, 59);
 						bdcal.set(Calendar.HOUR_OF_DAY, 23);
@@ -398,7 +402,7 @@ public abstract class ReminderManager implements Model.Listener, Prefs.Listener 
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see net.sf.borg.model.Model.Listener#refresh()
 	 */
 	/**
@@ -413,7 +417,7 @@ public abstract class ReminderManager implements Model.Listener, Prefs.Listener 
 	 */
 	public void remove() {
 		timer.cancel();
-		
+
 		singleton = null;
 	}
 
@@ -425,7 +429,7 @@ public abstract class ReminderManager implements Model.Listener, Prefs.Listener 
 	/**
 	 * determine if we should show a reminder for untimed todos during this
 	 * periodic update
-	 * 
+	 *
 	 * @return true if we should show the reminder
 	 */
 	protected boolean shouldShowUntimedTodosNow() {
