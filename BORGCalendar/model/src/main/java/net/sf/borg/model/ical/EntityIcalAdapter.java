@@ -19,6 +19,7 @@ Copyright 2003 by Mike Berger
  */
 package net.sf.borg.model.ical;
 
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -142,6 +143,18 @@ public class EntityIcalAdapter {
 				Due due = new Due(pl, new net.fortuna.ical4j.model.Date(nt));
 				todo.getProperties().add(due);
 			} else {
+
+				// set time from appt date - next todo has no time
+				Calendar dcal = new GregorianCalendar();
+				dcal.setTime(ap.getDate());
+				Calendar ncal = new GregorianCalendar();
+				ncal.setTime(nt);
+				ncal.set(Calendar.SECOND, dcal.get(Calendar.SECOND));
+				ncal.set(Calendar.MINUTE, dcal.get(Calendar.MINUTE));
+				ncal.set(Calendar.HOUR, dcal.get(Calendar.HOUR));
+				ncal.set(Calendar.AM_PM, dcal.get(Calendar.AM_PM));
+				nt = ncal.getTime();
+
 				pl.add(Value.DATE_TIME);
 				DtStart dtd = new DtStart(pl, new net.fortuna.ical4j.model.DateTime(nt));
 				ve.getProperties().add(dtd);
