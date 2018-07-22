@@ -1,7 +1,7 @@
 <izpack:installation version="5.0"
-                     xmlns:izpack="http://izpack.org/schema/installation"
-                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                     xsi:schemaLocation="http://izpack.org/schema/installation http://izpack.org/schema/5.0/izpack-installation-5.0.xsd">
+	xmlns:izpack="http://izpack.org/schema/installation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://izpack.org/schema/installation http://izpack.org/schema/5.0/izpack-installation-5.0.xsd">
 
 
 	<!-- The info section. The meaning of the tags should be natural ... -->
@@ -18,7 +18,13 @@
 		<url>http://mikeberger.github.io/borg_calendar/</url>
 	</info>
 
-	<!-- The gui preferences indication. Sets the installer window to 640x480.
+	<conditions>
+		<condition type="exists" id="jre_exists">
+			<file>..\jre</file>
+		</condition>
+	</conditions>
+
+	<!-- The gui preferences indication. Sets the installer window to 640x480. 
 		It will not be able to change the size. -->
 	<guiprefs width="640" height="480" resizable="yes">
 		<modifier key="useHeadingPanel" value="yes" />
@@ -46,7 +52,7 @@
 		<langpack iso3="ukr" />
 	</locale>
 
-	<!-- The resources section. The ids must be these ones if you want to use
+	<!-- The resources section. The ids must be these ones if you want to use 
 		the LicencePanel and/or the InfoPanel. -->
 	<resources>
 		<res id="LicencePanel.licence" src="COPYING" />
@@ -61,22 +67,23 @@
 		<native type="izpack" name="ShellLink.dll" />
 		<native type="izpack" name="ShellLink_x64.dll" />
 	</natives>
-	<!-- The panels section. We indicate here which panels we want to use. The
+	<!-- The panels section. We indicate here which panels we want to use. The 
 		order will be respected. -->
 	<panels>
 		<panel classname="HelloPanel" />
 		<panel classname="InfoPanel" />
 		<panel classname="LicencePanel" />
 		<panel classname="TargetPanel" />
+		<panel classname="PacksPanel" />
 		<panel classname="InstallPanel" />
 		<panel classname="ShortcutPanel" />
 		<panel classname="SimpleFinishPanel" />
 	</panels>
 
-	<!-- <panel classname="PacksPanel"/> The packs section. We specify here
+	<!-- <panel classname="PacksPanel"/> The packs section. We specify here 
 		our packs. -->
 	<packs>
-		<pack name="Base" required="yes">
+		<pack id="base" name="Base" required="yes">
 			<description>The base program and help files</description>
 			<file src="RELEASE_NOTES.txt" targetdir="$INSTALL_PATH" />
 			<file src="borglicense.txt" targetdir="$INSTALL_PATH" />
@@ -86,11 +93,21 @@
 			<fileset dir="lib" targetdir="$INSTALL_PATH/lib" />
 			<fileset dir="licenses" targetdir="$INSTALL_PATH/licenses" />
 			<file src="run_borg.sh" targetdir="$INSTALL_PATH" />
-			<parsable targetfile="$INSTALL_PATH/run_borg.sh" type="shell" />
-			<executable targetfile="$INSTALL_PATH/run_borg.sh" stage="never" />
+			<parsable targetfile="$INSTALL_PATH/run_borg.sh"
+				type="shell" />
+			<executable targetfile="$INSTALL_PATH/run_borg.sh"
+				stage="never" />
 			<updatecheck>
 				<include name="lib/**" />
 				<exclude name="lib/ext" />
+			</updatecheck>
+
+		</pack>
+		<pack id="jre" name="JRE" required="no" os="windows" loose="true" >
+			<description>Included Java Runtime</description>
+			<fileset dir="../jre" targetdir="$INSTALL_PATH/jre" />
+			<updatecheck>
+				<include name="../jre/**" />
 			</updatecheck>
 
 		</pack>
