@@ -7,14 +7,13 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.security.Key;
 import java.security.KeyStore;
+import java.util.Base64;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherOutputStream;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
-
-import biz.source_code.base64Coder.Base64Coder;
 
 
 /**
@@ -127,7 +126,7 @@ public class EncryptionHelper {
 		 * get the encrypted bytes and encode to a string
 		 */
 		byte[] ba = baos.toByteArray();
-		return new String(Base64Coder.encode(ba));
+		return new String(Base64.getEncoder().encode(ba));
 
 	}
 
@@ -151,7 +150,7 @@ public class EncryptionHelper {
 		/*
 		 * decode the cipher text from base64 back to a byte array
 		 */
-		byte[] decba = Base64Coder.decodeLines(cipherText);
+		byte[] decba = Base64.getDecoder().decode(cipherText);
 
 		/*
 		 * decrpyt the bytes
@@ -174,7 +173,7 @@ public class EncryptionHelper {
 	public String exportKey(String keyAlias, String keyStorePassword) throws Exception
 	{
 		Key key = this.keyStore.getKey(keyAlias, keyStorePassword.toCharArray());
-		return new String(Base64Coder.encode(key.getEncoded()));
+		return new String(Base64.getEncoder().encode(key.getEncoded()));
 	}
 	
 	/**
@@ -192,7 +191,7 @@ public class EncryptionHelper {
 		store.load(fis, password.toCharArray());
 		fis.close();
 		
-		byte[] ba = Base64Coder.decode(encodedKey);
+		byte[] ba = Base64.getDecoder().decode(encodedKey);
 		SecretKey key = new SecretKeySpec(ba,"AES");
 		KeyStore.SecretKeyEntry skEntry =
 	        new KeyStore.SecretKeyEntry(key);

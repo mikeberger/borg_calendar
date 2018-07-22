@@ -4,62 +4,19 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.logging.Logger;
+
+import javax.net.ssl.SSLSocketFactory;
 
 import org.apache.commons.httpclient.ConnectTimeoutException;
-import org.apache.commons.httpclient.HttpClientError;
 import org.apache.commons.httpclient.params.HttpConnectionParams;
 import org.apache.commons.httpclient.protocol.ControllerThreadSocketFactory;
 import org.apache.commons.httpclient.protocol.SecureProtocolSocketFactory;
 
-import com.sun.net.ssl.SSLContext;
-import com.sun.net.ssl.TrustManager;
 
-/**
- * <p>
- * EasySSLProtocolSocketFactory can be used to create SSL {@link Socket}s  that accept self-signed certificates.
- * </p>
- * 
- * <p>
- * This socket factory SHOULD NOT be used for productive systems  due to security reasons, unless it is a conscious
- * decision and  you are perfectly aware of security implications of accepting  self-signed certificates
- * </p>
- * 
- * <p>
- * Example of using custom protocol socket factory for a specific host:
- * <pre>
- *     Protocol easyhttps = new Protocol("https", new EasySSLProtocolSocketFactory(), 443);
- * 
- *     HttpClient client = new HttpClient();
- *     client.getHostConfiguration().setHost("localhost", 443, easyhttps);
- *     // use relative url only
- *     GetMethod httpget = new GetMethod("/");
- *     client.executeMethod(httpget);
- *     </pre>
- * </p>
- * 
- * <p>
- * Example of using custom protocol socket factory per default instead of the standard one:
- * <pre>
- *     Protocol easyhttps = new Protocol("https", new EasySSLProtocolSocketFactory(), 443);
- *     Protocol.registerProtocol("https", easyhttps);
- * 
- *     HttpClient client = new HttpClient();
- *     GetMethod httpget = new GetMethod("https://localhost/");
- *     client.executeMethod(httpget);
- *     </pre>
- * </p>
- *
- * @author <a href="mailto:oleg -at- ural.ru">Oleg Kalnichevski</a><p>
- */
-@SuppressWarnings({"deprecation","restriction"})
+
 public class EasySslProtocolSocketFactory implements SecureProtocolSocketFactory
 {    
-  /** Log object for this class. */
-	static private final Logger LOG = Logger.getLogger("net.sf.borg");
-
-private SSLContext sslcontext = null;
-
+  
   /**
    * Constructor for EasySSLProtocolSocketFactory.
    */
@@ -74,7 +31,7 @@ private SSLContext sslcontext = null;
   public Socket createSocket(String host, int port, InetAddress clientHost, int clientPort)
     throws IOException, UnknownHostException
   {
-    return getSSLContext().getSocketFactory().createSocket(host, port, clientHost, clientPort);
+    return SSLSocketFactory.getDefault().createSocket(host, port, clientHost, clientPort);
   }
 
   /**
@@ -125,7 +82,7 @@ private SSLContext sslcontext = null;
    */
   public Socket createSocket(String host, int port) throws IOException, UnknownHostException
   {
-    return getSSLContext().getSocketFactory().createSocket(host, port);
+    return SSLSocketFactory.getDefault().createSocket(host, port);
   }
 
   /**
@@ -134,7 +91,7 @@ private SSLContext sslcontext = null;
   public Socket createSocket(Socket socket, String host, int port, boolean autoClose)
     throws IOException, UnknownHostException
   {
-    return getSSLContext().getSocketFactory().createSocket(socket, host, port, autoClose);
+    return SSLSocketFactory.getDefault().createSocket(host, port, InetAddress.getLocalHost(), port);
   }
 
   public boolean equals(Object obj)
@@ -147,29 +104,7 @@ private SSLContext sslcontext = null;
     return EasySslProtocolSocketFactory.class.hashCode();
   }
 
-  private static SSLContext createEasySSLContext()
-  {
-    try
-    {
-      SSLContext context = SSLContext.getInstance("SSL");
-      context.init(null, new TrustManager[] { new EasyX509TrustManager(null) }, null);
+  
 
-      return context;
-    }
-    catch (Exception e)
-    {
-      LOG.severe(e.getMessage());
-      throw new HttpClientError(e.toString());
-    }
-  }
-
-  private SSLContext getSSLContext()
-  {
-    if (this.sslcontext == null)
-    {
-      this.sslcontext = createEasySSLContext();
-    }
-
-    return this.sslcontext;
-  }
+  
 }

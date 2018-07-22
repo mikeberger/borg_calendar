@@ -12,11 +12,7 @@
 		<maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
 	</properties>
 	<dependencies>
-		<dependency>
-			<groupId>biz.source_code</groupId>
-			<artifactId>base64coder</artifactId>
-			<version>2010-12-19</version>
-		</dependency>
+
 		<dependency>
 			<groupId>javax.mail</groupId>
 			<artifactId>mail</artifactId>

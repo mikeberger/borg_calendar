@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Base64;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -16,7 +17,6 @@ import javax.crypto.spec.SecretKeySpec;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
 
-import biz.source_code.base64Coder.Base64Coder;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 
@@ -78,11 +78,11 @@ public class IcalFTP {
 		if ("".equals(p1)) {
 			KeyGenerator keyGen = KeyGenerator.getInstance("AES");
 			SecretKey key = keyGen.generateKey();
-			p1 = new String(Base64Coder.encode(key.getEncoded()));
+			p1 = new String(Base64.getEncoder().encode(key.getEncoded()));
 			Prefs.putPref(PrefName.FTPPW2, p1);
 		}
 
-		byte[] ba = Base64Coder.decode(p1);
+		byte[] ba = Base64.getDecoder().decode(p1);
 		SecretKey key = new SecretKeySpec(ba, "AES");
 		Cipher enc = Cipher.getInstance("AES");
 		enc.init(Cipher.ENCRYPT_MODE, key);
@@ -91,7 +91,7 @@ public class IcalFTP {
 		os.write(s.getBytes());
 		os.close();
 		ba = baos.toByteArray();
-		Prefs.putPref(PrefName.FTPPW, new String(Base64Coder.encode(ba)));
+		Prefs.putPref(PrefName.FTPPW, new String(Base64.getEncoder().encode(ba)));
 	}
 
 	public static String gep() throws Exception {
@@ -105,11 +105,11 @@ public class IcalFTP {
 			return p2;
 		}
 
-		byte[] ba = Base64Coder.decode(p1);
+		byte[] ba = Base64.getDecoder().decode(p1);
 		SecretKey key = new SecretKeySpec(ba, "AES");
 		Cipher dec = Cipher.getInstance("AES");
 		dec.init(Cipher.DECRYPT_MODE, key);
-		byte[] decba = Base64Coder.decode(p2);
+		byte[] decba = Base64.getDecoder().decode(p2);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		OutputStream os = new CipherOutputStream(baos, dec);
 		os.write(decba);

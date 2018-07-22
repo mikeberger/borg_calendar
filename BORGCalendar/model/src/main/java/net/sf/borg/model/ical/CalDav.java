@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
@@ -20,7 +21,6 @@ import javax.crypto.spec.SecretKeySpec;
 import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.commons.httpclient.protocol.SSLProtocolSocketFactory;
 
-import biz.source_code.base64Coder.Base64Coder;
 import net.fortuna.ical4j.connector.dav.CalDavCalendarCollection;
 import net.fortuna.ical4j.connector.dav.CalDavCalendarStore;
 import net.fortuna.ical4j.connector.dav.PathResolver;
@@ -195,11 +195,11 @@ public class CalDav {
 			return p2;
 		}
 
-		byte[] ba = Base64Coder.decode(p1);
+		byte[] ba = Base64.getDecoder().decode(p1);
 		SecretKey key = new SecretKeySpec(ba, "AES");
 		Cipher dec = Cipher.getInstance("AES");
 		dec.init(Cipher.DECRYPT_MODE, key);
-		byte[] decba = Base64Coder.decode(p2);
+		byte[] decba = Base64.getDecoder().decode(p2);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		OutputStream os = new CipherOutputStream(baos, dec);
 		os.write(decba);
@@ -400,11 +400,11 @@ public class CalDav {
 		if ("".equals(p1)) {
 			KeyGenerator keyGen = KeyGenerator.getInstance("AES");
 			SecretKey key = keyGen.generateKey();
-			p1 = new String(Base64Coder.encode(key.getEncoded()));
+			p1 = new String(Base64.getEncoder().encode(key.getEncoded()));
 			Prefs.putPref(PrefName.CALDAV_PASSWORD2, p1);
 		}
 
-		byte[] ba = Base64Coder.decode(p1);
+		byte[] ba = Base64.getDecoder().decode(p1);
 		SecretKey key = new SecretKeySpec(ba, "AES");
 		Cipher enc = Cipher.getInstance("AES");
 		enc.init(Cipher.ENCRYPT_MODE, key);
@@ -413,7 +413,7 @@ public class CalDav {
 		os.write(s.getBytes());
 		os.close();
 		ba = baos.toByteArray();
-		Prefs.putPref(PrefName.CALDAV_PASSWORD, new String(Base64Coder.encode(ba)));
+		Prefs.putPref(PrefName.CALDAV_PASSWORD, new String(Base64.getEncoder().encode(ba)));
 	}
 
 	/**
