@@ -103,9 +103,11 @@
 			</updatecheck>
 
 		</pack>
-		<pack id="jre" name="JRE" required="no" os="windows" loose="true" >
+		<pack id="jre" name="JRE" required="no" loose="true" >
 			<description>Included Java Runtime</description>
 			<fileset dir="../jre" targetdir="$INSTALL_PATH/jre" />
+			<executable targetfile="$INSTALL_PATH/jre/bin/java"
+				stage="never" />
 			<updatecheck>
 				<include name="../jre/**" />
 			</updatecheck>

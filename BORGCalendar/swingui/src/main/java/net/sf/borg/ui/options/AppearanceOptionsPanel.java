@@ -367,7 +367,7 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 			try {
 				Class.forName(look);
 				lnfs.add(look);
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				// empty
 			}
 		}
