@@ -120,7 +120,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 	 * @return the tasks
 	 */
 	public Collection<Task> get_tasks(Date d) {
-		return (btmap_.get(new Integer(DateUtil.dayOfEpoch(d))));
+		return (btmap_.get(Integer.valueOf(DateUtil.dayOfEpoch(d))));
 	}
 
 	/**
@@ -132,7 +132,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 	 * @return the subtasks
 	 */
 	public Collection<Subtask> get_subtasks(Date d) {
-		return (stmap_.get(new Integer(DateUtil.dayOfEpoch(d))));
+		return (stmap_.get(Integer.valueOf(DateUtil.dayOfEpoch(d))));
 	}
 
 	/**
@@ -144,7 +144,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 	 * @return the projects
 	 */
 	public Collection<Project> get_projects(Date d) {
-		return (pmap_.get(new Integer(DateUtil.dayOfEpoch(d))));
+		return (pmap_.get(Integer.valueOf(DateUtil.dayOfEpoch(d))));
 	}
 
 	/**
@@ -275,10 +275,10 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 
 				// add the task string to the btmap_
 				// add the task to the mrs_ Vector. This is used by the todo gui
-				Collection<Task> o = btmap_.get(new Integer(key));
+				Collection<Task> o = btmap_.get(Integer.valueOf(key));
 				if (o == null) {
 					o = new LinkedList<Task>();
-					btmap_.put(new Integer(key), o);
+					btmap_.put(Integer.valueOf(key), o);
 				}
 
 				o.add(mr);
@@ -300,10 +300,10 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 				int key = DateUtil.dayOfEpoch(due);
 
 				// add the string to the btmap_
-				Collection<Project> o = pmap_.get(new Integer(key));
+				Collection<Project> o = pmap_.get(Integer.valueOf(key));
 				if (o == null) {
 					o = new LinkedList<Project>();
-					pmap_.put(new Integer(key), o);
+					pmap_.put(Integer.valueOf(key), o);
 				}
 
 				o.add(pj);
@@ -326,10 +326,10 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 				int key = DateUtil.dayOfEpoch(due);
 
 				// add the string to the btmap_
-				Collection<Subtask> o = stmap_.get(new Integer(key));
+				Collection<Subtask> o = stmap_.get(Integer.valueOf(key));
 				if (o == null) {
 					o = new LinkedList<Subtask>();
-					stmap_.put(new Integer(key), o);
+					stmap_.put(Integer.valueOf(key), o);
 				}
 
 				o.add(st);
@@ -528,7 +528,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 		}
 
 		// add task to DB
-		Integer num = new Integer(task.getKey());
+		Integer num = Integer.valueOf(task.getKey());
 		Task indb = getTask(num.intValue());
 
 		ChangeAction action = ChangeAction.ADD;
@@ -734,7 +734,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 			if (container.Task != null) {
 				for (Task task : container.Task) {
 					if (task.getPriority() == null)
-						task.setPriority(new Integer(3));
+						task.setPriority(Integer.valueOf(3));
 
 					if (task.getStartDate() == null)
 						task.setStartDate(new Date());
@@ -1138,7 +1138,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 			days = dcal.get(Calendar.DAY_OF_YEAR)
 					- today.get(Calendar.DAY_OF_YEAR);
 		} else {
-			days = new Long((dd.getTime() - today.getTime().getTime())
+			days = Long.valueOf((dd.getTime() - today.getTime().getTime())
 					/ (1000 * 60 * 60 * 24)).intValue();
 		}
 
@@ -1204,7 +1204,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 			days = dcal.get(Calendar.DAY_OF_YEAR)
 					- startcal.get(Calendar.DAY_OF_YEAR);
 		} else {
-			days = new Long((dd.getTime() - startcal.getTime().getTime())
+			days = Long.valueOf((dd.getTime() - startcal.getTime().getTime())
 					/ (1000 * 60 * 60 * 24)).intValue();
 		}
 

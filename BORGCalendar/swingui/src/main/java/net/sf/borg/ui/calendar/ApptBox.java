@@ -884,7 +884,7 @@ class ApptBox extends Box implements Box.Draggable {
 			
 			// update appt
 			ap.setDate(newTime);
-			ap.setDuration(new Integer(newDur));
+			ap.setDuration(Integer.valueOf(newDur));
 			AppointmentModel.getReference().saveAppt(ap);
 			
 		} else {
@@ -916,7 +916,7 @@ class ApptBox extends Box implements Box.Draggable {
 				return;
 			
 			// update appt
-			ap.setDuration(new Integer(newDur));
+			ap.setDuration(Integer.valueOf(newDur));
 			AppointmentModel.getReference().saveAppt(ap);
 		}
 	}

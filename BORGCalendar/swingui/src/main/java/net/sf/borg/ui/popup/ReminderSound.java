@@ -19,11 +19,15 @@
  */
 package net.sf.borg.ui.popup;
 
-import java.applet.Applet;
-import java.applet.AudioClip;
 import java.awt.Toolkit;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 
 public class ReminderSound {
 	/**
@@ -37,22 +41,21 @@ public class ReminderSound {
 		if (soundOption.equals("system-beep")) {
 			Toolkit.getDefaultToolkit().beep();
 		} else if (soundOption.equals("true")) {
-			URL snd = ReminderPopupManager.class
-					.getResource("/resource/blip.wav");
-			AudioClip theSound;
-			theSound = Applet.newAudioClip(snd);
-			if (theSound != null) {
-				theSound.play();
+			URL snd = ReminderPopupManager.class.getResource("/resource/blip.wav");
+			try {
+				Clip sound = AudioSystem.getClip();
+				sound.open(AudioSystem.getAudioInputStream(snd));
+				sound.start();
+
+			} catch (LineUnavailableException | IOException | UnsupportedAudioFileException e) {
+				// no error
 			}
+			
 		} else if (!soundOption.equals("false")) {
 			try {
-				File f = new File(soundOption);
-				URL snd = f.toURI().toURL();
-				AudioClip theSound;
-				theSound = Applet.newAudioClip(snd);
-				if (theSound != null) {
-					theSound.play();
-				}
+				Clip sound = AudioSystem.getClip();
+				sound.open(AudioSystem.getAudioInputStream(new File(soundOption)));
+				sound.start();
 			} catch (Exception e) {
 				// no error
 			}

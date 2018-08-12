@@ -87,7 +87,7 @@ class LinkJdbcDB extends JdbcBeanDB<Link> implements LinkDB {
 				.prepareStatement("SELECT id FROM links");
 		ResultSet rs = stmt.executeQuery();
 		while (rs.next()) {
-			keys.add(new Integer(rs.getInt("id")));
+			keys.add(Integer.valueOf(rs.getInt("id")));
 		}
 		rs.close();
         stmt.close();
@@ -151,7 +151,7 @@ class LinkJdbcDB extends JdbcBeanDB<Link> implements LinkDB {
 		Link att = new Link();
 		att.setKey(r.getInt("id"));
 		att.setLinkType(r.getString("linktype"));
-		att.setOwnerKey(new Integer(r.getInt("ownerkey")));
+		att.setOwnerKey(Integer.valueOf(r.getInt("ownerkey")));
 		att.setOwnerType(r.getString("ownertype"));
 		att.setPath(r.getString("path"));
 		return att;

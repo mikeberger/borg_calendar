@@ -349,9 +349,9 @@ public class ReminderList extends View {
 			row[ReminderList.REMINDER_INSTANCE_COLUMN] = inst;
 
 			if (inst.isNote() && inst.isTodo())
-				row[ReminderList.TOGO_MINUTES_COLUMN] = new Long(inst.getInstanceTime().getTime()); // sort todos last
+				row[ReminderList.TOGO_MINUTES_COLUMN] = Long.valueOf(inst.getInstanceTime().getTime()); // sort todos last
 			else
-				row[ReminderList.TOGO_MINUTES_COLUMN] = new Long(inst.minutesToGo());
+				row[ReminderList.TOGO_MINUTES_COLUMN] = Long.valueOf(inst.minutesToGo());
 			
 			
 

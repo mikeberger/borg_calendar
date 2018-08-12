@@ -119,7 +119,7 @@ public class Prefs {
 		Preferences prefs = getPrefNode();
 		if (pn.getDefault() instanceof Integer) {
 			int val = prefs.getInt(pn.getName(), ((Integer) pn.getDefault()).intValue());
-			return (new Integer(val));
+			return (Integer.valueOf(val));
 		}
 
 		String val = prefs.get(pn.getName(), (String) pn.getDefault());

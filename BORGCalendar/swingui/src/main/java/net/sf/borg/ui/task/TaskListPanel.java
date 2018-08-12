@@ -647,7 +647,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 				// if we get here - we are displaying this task as a row
 				// so fill in an array of objects for the row
 				Object[] ro = new Object[13];
-				ro[0] = new Integer(task.getKey());
+				ro[0] = Integer.valueOf(task.getKey());
 				ro[1] = task.getState();
 				ro[2] = task.getType();
 				ro[12] = task.getCategory();
@@ -658,7 +658,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 
 				// duration
 				if (task.getDueDate() != null) {
-					ro[9] = new Integer(TaskModel.daysBetween(task
+					ro[9] = Integer.valueOf(TaskModel.daysBetween(task
 							.getStartDate(), task.getDueDate()));
 				} else {
 					ro[9] = null;
@@ -676,7 +676,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 				if (end == null) {
 					ro[10] = null;
 				} else {
-					ro[10] = new Integer(TaskModel.daysBetween(task
+					ro[10] = Integer.valueOf(TaskModel.daysBetween(task
 							.getStartDate(), end));
 				}
 
@@ -685,7 +685,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 					ro[4] = null;
 				else {
 					Date dd = (Date) ro[7];
-					ro[4] = new Integer(TaskModel.daysLeft(dd));
+					ro[4] = Integer.valueOf(TaskModel.daysLeft(dd));
 				}
 
 				ro[5] = task.getSummary();
@@ -732,7 +732,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 						ro[7] = subtask.getDueDate();
 						
 						if (subtask.getDueDate() != null) {
-							ro[8] = new Integer(TaskModel.daysBetween(subtask
+							ro[8] = Integer.valueOf(TaskModel.daysBetween(subtask
 									.getStartDate(), subtask.getDueDate()));
 						} else {
 							ro[8] = null;
@@ -749,7 +749,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 						if (end == null) {
 							ro[9] = null;
 						} else {
-							ro[9] = new Integer(TaskModel.daysBetween(subtask
+							ro[9] = Integer.valueOf(TaskModel.daysBetween(subtask
 									.getStartDate(), end));
 						}
 
@@ -758,7 +758,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 							ro[4] = null;
 						else {
 							Date dd = (Date) ro[7];
-							ro[4] = new Integer(TaskModel.daysLeft(dd));
+							ro[4] = Integer.valueOf(TaskModel.daysLeft(dd));
 						}
 
 						ro[5] = subtask.getDescription();

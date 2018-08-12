@@ -15,7 +15,6 @@ import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 
-@SuppressWarnings("restriction")
 public class IcalFileServer {
 
 	private static HttpServer server = null;

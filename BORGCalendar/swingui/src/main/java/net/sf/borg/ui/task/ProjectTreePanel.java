@@ -121,12 +121,12 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 						} else {
 							try {
 								int daysLeft;
-								Integer dl = daysLeftCache.get(new Integer(task.getKey()));
+								Integer dl = daysLeftCache.get(Integer.valueOf(task.getKey()));
 								if( dl == null )
 								{
 									daysLeft = TaskModel.getReference()
 											.daysLeft(task);
-									daysLeftCache.put(new Integer(task.getKey()), new Integer(daysLeft));
+									daysLeftCache.put(Integer.valueOf(task.getKey()), Integer.valueOf(daysLeft));
 								}
 								else
 								{
@@ -458,7 +458,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 				ProjectView pv;
 				try {
 					pv = new ProjectView(null, ProjectView.Action.ADD,
-							new Integer(p.getKey()));
+							Integer.valueOf(p.getKey()));
 					entityScrollPane.setViewportView(pv);
 				} catch (Exception e) {
 					Errmsg.getErrorHandler().errmsg(e);
@@ -483,7 +483,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 			Project p = (Project) o;
 			try {
 				TaskView pv = new TaskView(null, TaskView.Action.ADD,
-						new Integer(p.getKey()));
+						Integer.valueOf(p.getKey()));
 				entityScrollPane.setViewportView(pv);
 			} catch (Exception e1) {
 				Errmsg.getErrorHandler().errmsg(e1);

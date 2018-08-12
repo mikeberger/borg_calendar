@@ -431,7 +431,7 @@ public class NoteBox extends Box implements Box.Draggable {
 			if (hour != 0 || min != 0) {
 
 				// we are moving to be timed - set duration
-				ap.setDuration(new Integer(15));
+				ap.setDuration(Integer.valueOf(15));
 				ap.setUntimed("N");
 				newCal.set(Calendar.HOUR_OF_DAY, hour);
 				int roundMin = (min / 5) * 5;

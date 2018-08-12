@@ -69,7 +69,7 @@ public class TaskUndoItem extends UndoItem<Task> {
 				// add back the subtasks
 				for (SubtaskUndoItem s : subtasks)
 				{
-					s.item.setTask(new Integer(item.getKey()));
+					s.item.setTask(Integer.valueOf(item.getKey()));
 					s.executeUndo();
 				}
 			} else if (action == ActionType.UPDATE) {

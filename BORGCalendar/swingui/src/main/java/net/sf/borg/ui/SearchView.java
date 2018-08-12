@@ -203,7 +203,7 @@ public class SearchView extends DockableView implements Module {
 										4);
 								try {
 									KeyedEntity<?> ent = (KeyedEntity<?>) cl
-											.newInstance();
+											.getDeclaredConstructor().newInstance();
 									ent.setKey(key.intValue());
 									entities.add(ent);
 								} catch (Exception e1) {
@@ -347,7 +347,7 @@ public class SearchView extends DockableView implements Module {
 					Integer key = (Integer) tm.getValueAt(rows[i], 3);
 					Class<?> cl = (Class<?>) tm.getValueAt(rows[i], 4);
 					try {
-						Object ent = (Object) cl.newInstance();
+						Object ent = (Object) cl.getDeclaredConstructor().newInstance();
 						if( ent instanceof KeyedEntity )
 						{
 							((KeyedEntity<?>)ent).setKey(key.intValue());
@@ -708,7 +708,7 @@ public class SearchView extends DockableView implements Module {
 					ro[0] = appt.getText().replace('\n', ' ');
 					ro[1] = Resource.getResourceString("appointment");
 					ro[2] = appt.getDate();
-					ro[3] = new Integer(appt.getKey());
+					ro[3] = Integer.valueOf(appt.getKey());
 					ro[4] = Appointment.class;
 					tm.addRow(ro);
 					tm.tableChanged(new TableModelEvent(tm));
@@ -734,7 +734,7 @@ public class SearchView extends DockableView implements Module {
 									.getLastName());
 					ro[1] = Resource.getResourceString("Address");
 					ro[2] = null;
-					ro[3] = new Integer(addr.getKey());
+					ro[3] = Integer.valueOf(addr.getKey());
 					ro[4] = Address.class;
 					tm.addRow(ro);
 					tm.tableChanged(new TableModelEvent(tm));
@@ -756,7 +756,7 @@ public class SearchView extends DockableView implements Module {
 					ro[0] = ((Project) item).getDescription();
 					ro[1] = Resource.getResourceString("project");
 					ro[2] = null;
-					ro[3] = new Integer(item.getKey());
+					ro[3] = Integer.valueOf(item.getKey());
 					ro[4] = Project.class;
 					tm.addRow(ro);
 					tm.tableChanged(new TableModelEvent(tm));
@@ -764,7 +764,7 @@ public class SearchView extends DockableView implements Module {
 					ro[0] = ((Task) item).getSummary();
 					ro[1] = Resource.getResourceString("task");
 					ro[2] = null;
-					ro[3] = new Integer(item.getKey());
+					ro[3] = Integer.valueOf(item.getKey());
 					ro[4] = Task.class;
 					tm.addRow(ro);
 					tm.tableChanged(new TableModelEvent(tm));
@@ -786,7 +786,7 @@ public class SearchView extends DockableView implements Module {
 					ro[0] = memo.getMemoName();
 					ro[1] = Resource.getResourceString("memo");
 					ro[2] = null;
-					ro[3] = new Integer(0);
+					ro[3] = Integer.valueOf(0);
 					ro[4] = Memo.class;
 					tm.addRow(ro);
 					tm.tableChanged(new TableModelEvent(tm));

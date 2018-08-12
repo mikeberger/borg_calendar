@@ -535,7 +535,7 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 				// if we get here - we are displaying this task as a row
 				// so fill in an array of objects for the row
 				Object[] ro = new Object[10];
-				ro[0] = new Integer(project.getKey());
+				ro[0] = Integer.valueOf(project.getKey());
 				ro[1] = project.getCategory();
 				ro[2] = project.getStatus();
 				ro[3] = project.getStartDate();
@@ -544,7 +544,7 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 				// number of tasks
 				Collection<Task> ptasks = TaskModel.getReference().getTasks(
 						project.getKey());
-				ro[5] = new Integer(ptasks.size());
+				ro[5] = Integer.valueOf(ptasks.size());
 
 				// open tasks
 				int open = 0;
@@ -553,16 +553,16 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 						open++;
 					}
 				}
-				ro[6] = new Integer(open);
+				ro[6] = Integer.valueOf(open);
 
 				// days left
-				ro[7] = new Integer(0);
+				ro[7] = Integer.valueOf(0);
 				if (ro[4] == null)
 					// if no due date 
-					ro[7] = new Integer(MAGIC_NO_DUE_DATE);
+					ro[7] = Integer.valueOf(MAGIC_NO_DUE_DATE);
 				else {
 					Date dd = (Date) ro[4];
-					ro[7] = new Integer(TaskModel.daysLeft(dd));
+					ro[7] = Integer.valueOf(TaskModel.daysLeft(dd));
 				}
 
 				// strip newlines from the description

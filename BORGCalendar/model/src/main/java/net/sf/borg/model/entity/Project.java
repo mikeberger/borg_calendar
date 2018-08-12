@@ -83,7 +83,7 @@ public class Project extends KeyedEntity<Project> implements CalendarEntity {
 	@Override
 	public Integer getDuration()
 	{
-		return new Integer(0);
+		return Integer.valueOf(0);
 	}
 	
 	/* (non-Javadoc)

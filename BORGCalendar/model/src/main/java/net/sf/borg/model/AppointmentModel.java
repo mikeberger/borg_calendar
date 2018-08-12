@@ -210,23 +210,23 @@ public class AppointmentModel extends Model implements Model.Listener,
 			// if appt does not repeat, we can add its
 			// key to a single day
 			int key = appt.getKey();
-			Integer ki = new Integer(key);
+			Integer ki = Integer.valueOf(key);
 			if (!rptkeys.contains(ki)) {
 
 				// get/add entry for the day in the map
-				Collection<Integer> o = map_.get(new Integer(dkey));
+				Collection<Integer> o = map_.get(Integer.valueOf(dkey));
 				if (o == null) {
 					o = new LinkedList<Integer>();
-					map_.put(new Integer(dkey), o);
+					map_.put(Integer.valueOf(dkey), o);
 				}
 
 				// add the appt key to the day's list
-				o.add(new Integer(key));
+				o.add(Integer.valueOf(key));
 
 				// add day key to vacation map if appt has vacation
 				if (appt.getVacation() != null
 						&& appt.getVacation().intValue() != 0) {
-					vacationMap_.put(new Integer(dkey), appt.getVacation());
+					vacationMap_.put(Integer.valueOf(dkey), appt.getVacation());
 				}
 			} else {
 
@@ -262,18 +262,18 @@ public class AppointmentModel extends Model implements Model.Listener,
 					// if so, skip it
 					if (!isSkipped(appt, current)) {
 						// add the repeat key to the map
-						Collection<Integer> o = map_.get(new Integer(rkey));
+						Collection<Integer> o = map_.get(Integer.valueOf(rkey));
 						if (o == null) {
 							o = new LinkedList<Integer>();
-							map_.put(new Integer(rkey), o);
+							map_.put(Integer.valueOf(rkey), o);
 						}
 						LinkedList<Integer> l = (LinkedList<Integer>) o;
-						l.add(new Integer(key));
+						l.add(Integer.valueOf(key));
 
 						// add day key to vacation map if appt has vacation
 						if (appt.getVacation() != null
 								&& appt.getVacation().intValue() != 0) {
-							vacationMap_.put(new Integer(rkey),
+							vacationMap_.put(Integer.valueOf(rkey),
 									appt.getVacation());
 						}
 					}
@@ -606,7 +606,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 	 * @return the appts
 	 */
 	public List<Integer> getAppts(Date d) {
-		return ((List<Integer>) map_.get(new Integer(DateUtil.dayOfEpoch(d))));
+		return ((List<Integer>) map_.get(Integer.valueOf(DateUtil.dayOfEpoch(d))));
 	}
 
 	/*

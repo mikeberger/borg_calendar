@@ -185,7 +185,7 @@ class EmailOptionsPanel extends OptionsPanel {
 		cal.setTime(d);
 		int hour = cal.get(Calendar.HOUR_OF_DAY);
 		int min = cal.get(Calendar.MINUTE);
-		Prefs.putPref(PrefName.EMAILTIME, new Integer(hour * 60 + min));
+		Prefs.putPref(PrefName.EMAILTIME, Integer.valueOf(hour * 60 + min));
 
 	}
 

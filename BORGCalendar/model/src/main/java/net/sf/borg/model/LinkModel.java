@@ -204,7 +204,7 @@ public class LinkModel extends Model {
 
 		Link at = newLink();
 		at.setKey(-1);
-		at.setOwnerKey(new Integer(owner.getKey()));
+		at.setOwnerKey(Integer.valueOf(owner.getKey()));
 		LinkType type = typemap.get(owner.getClass());
 		if (type == null)
 			throw new Exception("illegal link owner type");
@@ -219,7 +219,7 @@ public class LinkModel extends Model {
 				|| linkType == LinkType.TASK) {
 			Link at2way = newLink();
 			at2way.setKey(-1);
-			at2way.setOwnerKey(new Integer(at.getPath()));
+			at2way.setOwnerKey(Integer.valueOf(at.getPath()));
 			at2way.setOwnerType(at.getLinkType());
 			at2way.setPath(at.getOwnerKey().toString());
 			at2way.setLinkType(at.getOwnerType());
@@ -235,7 +235,7 @@ public class LinkModel extends Model {
 			if (!(owner instanceof Address) || !at.getOwnerKey().toString().equals(at.getPath())) {
 				Link at2way = newLink();
 				at2way.setKey(-1);
-				at2way.setOwnerKey(new Integer(at.getPath()));
+				at2way.setOwnerKey(Integer.valueOf(at.getPath()));
 				at2way.setOwnerType(at.getLinkType());
 				at2way.setPath(at.getOwnerKey().toString());
 				at2way.setLinkType(at.getOwnerType());
@@ -503,7 +503,7 @@ public class LinkModel extends Model {
 		Iterator<Link> it = atts.iterator();
 		while (it.hasNext()) {
 			Link at = it.next();
-			at.setOwnerKey(new Integer(newOwner.getKey()));
+			at.setOwnerKey(Integer.valueOf(newOwner.getKey()));
 			LinkType type = typemap.get(newOwner.getClass());
 			if (type == null)
 				throw new Exception("illegal link owner type");

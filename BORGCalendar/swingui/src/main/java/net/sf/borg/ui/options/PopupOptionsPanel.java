@@ -282,10 +282,10 @@ class PopupOptionsPanel extends OptionsPanel {
 		}
 
 		int mins = Prefs.getIntPref(PrefName.TODOREMINDERMINS);
-		checkfreq.setValue(new Integer(mins));
+		checkfreq.setValue(Integer.valueOf(mins));
 
 		int bddays = Prefs.getIntPref(PrefName.BIRTHDAYREMINDERDAYS);
-		birthdayDays.setValue(new Integer(bddays));
+		birthdayDays.setValue(Integer.valueOf(bddays));
 
 		// load the times
 		loadTimes();
@@ -297,7 +297,7 @@ class PopupOptionsPanel extends OptionsPanel {
 	 */
 	private void loadTimes() {
 		for (int i = 0; i < numberOfReminderTimes; i++) {
-			spinners[i].setValue(new Integer(ReminderTimes.getTimes(i)));
+			spinners[i].setValue(Integer.valueOf(ReminderTimes.getTimes(i)));
 		}
 	}
 

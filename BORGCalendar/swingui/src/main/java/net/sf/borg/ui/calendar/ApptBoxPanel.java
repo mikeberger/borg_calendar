@@ -152,7 +152,7 @@ abstract class ApptBoxPanel extends JPanel implements ComponentListener {
 			int emin = realend % 60;
 			emin = (emin / 5) * 5;
 			int dur = 60 * (ehour - hour) + emin - min;
-			appt.setDuration(new Integer(dur));
+			appt.setDuration(Integer.valueOf(dur));
 
 			// set untimed if no duration
 			if (dur > 0)

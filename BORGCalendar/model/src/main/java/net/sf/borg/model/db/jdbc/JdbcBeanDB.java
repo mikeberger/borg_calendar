@@ -73,7 +73,7 @@ abstract class JdbcBeanDB<T extends KeyedEntity<T>> {
 	protected void writeCache(T bean) {
 		// put a copy of the bean in the cache
 		if (objectCacheOn_) {
-			objectCache_.put(new Integer(bean.getKey()), bean.copy());
+			objectCache_.put(Integer.valueOf(bean.getKey()), bean.copy());
 		}
 	}
 
@@ -85,7 +85,7 @@ abstract class JdbcBeanDB<T extends KeyedEntity<T>> {
 	protected void delCache(int key) {
 		// remove the bean from the cache
 		if (objectCacheOn_) {
-			objectCache_.remove(new Integer(key));
+			objectCache_.remove(Integer.valueOf(key));
 		}
 	}
 
@@ -96,7 +96,7 @@ abstract class JdbcBeanDB<T extends KeyedEntity<T>> {
 
 		// if the bean is in the cache - return it
 		if (objectCacheOn_) {
-			T o = objectCache_.get(new Integer(key));
+			T o = objectCache_.get(Integer.valueOf(key));
 
 			if (o != null) {
 				return o.copy();

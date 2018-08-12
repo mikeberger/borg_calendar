@@ -203,7 +203,7 @@ public class AddressModel extends Model implements Searchable<Address>,
 	public Collection<Address> getAddresses(Date d) {
 		// don't consider year for birthdays
 		int bdkey = birthdayKey(d);
-		return (bdmap_.get(new Integer(bdkey)));
+		return (bdmap_.get(Integer.valueOf(bdkey)));
 	}
 
 	/**
@@ -277,10 +277,10 @@ public class AddressModel extends Model implements Searchable<Address>,
 
 				// add the task string to the btmap_
 				// add the task to the mrs_ Vector. This is used by the todo gui
-				LinkedList<Address> o = bdmap_.get(new Integer(bdkey));
+				LinkedList<Address> o = bdmap_.get(Integer.valueOf(bdkey));
 				if (o == null) {
 					o = new LinkedList<Address>();
-					bdmap_.put(new Integer(bdkey), o);
+					bdmap_.put(Integer.valueOf(bdkey), o);
 				}
 
 				o.add(addr);

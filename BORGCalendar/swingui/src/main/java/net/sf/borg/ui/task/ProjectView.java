@@ -103,7 +103,7 @@ public class ProjectView extends DockableView {
 		String ss = s.substring(0, i);
 
 		int pid = Integer.parseInt(ss);
-		return new Integer(pid);
+		return Integer.valueOf(pid);
 
 	}
 

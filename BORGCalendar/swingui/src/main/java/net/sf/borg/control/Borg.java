@@ -32,8 +32,8 @@ import java.security.ProtectionDomain;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
-import java.util.Observable;
-import java.util.Observer;
+
+
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.ConsoleHandler;
@@ -46,6 +46,8 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import net.sf.borg.common.Errmsg;
+import net.sf.borg.common.Observable;
+import net.sf.borg.common.Observer;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
@@ -300,7 +302,7 @@ public class Borg implements SocketHandler, Observer {
 				String toolName = args[i];
 				try {
 					Class<?> toolClass = Class.forName("net.sf.borg.model.tool." + toolName);
-					Object tool = toolClass.newInstance();
+					Object tool = toolClass.getDeclaredConstructor().newInstance();
 					if (tool instanceof ConversionTool) {
 						((ConversionTool) tool).convert();
 					}

@@ -107,7 +107,7 @@ public class PrefName {
 	static public PrefName JDBCURL = new PrefName("jdbcurl", "");
 
 	/** interval for db auto-sync in minutes */
-	static public PrefName SYNCMINS = new PrefName("sync_mins", new Integer(0));
+	static public PrefName SYNCMINS = new PrefName("sync_mins", Integer.valueOf(0));
 
 	/** hsql database directory */
 	static public PrefName HSQLDBDIR = new PrefName("hsqldbdir", "not-set");
@@ -123,7 +123,7 @@ public class PrefName {
 	static public PrefName SPLASH = new PrefName("splash", "true");
 
 	/** port for the socket listener */
-	static public PrefName SOCKETPORT = new PrefName("socketport", new Integer(
+	static public PrefName SOCKETPORT = new PrefName("socketport", Integer.valueOf(
 			2929));
 
 	/** start as iconified to system tray */
@@ -162,7 +162,7 @@ public class PrefName {
 			"false");
 
 	/** the first day of the week */
-	static public PrefName FIRSTDOW = new PrefName("first_dow", new Integer(
+	static public PrefName FIRSTDOW = new PrefName("first_dow", Integer.valueOf(
 			Calendar.SUNDAY));
 
 	/** show military time */
@@ -204,7 +204,7 @@ public class PrefName {
 
 	/** how often tp pop up reminders for untimed todos */
 	static public PrefName TODOREMINDERMINS = new PrefName(
-			"todo_reminder_mins", new Integer(30));
+			"todo_reminder_mins", Integer.valueOf(30));
 
 	/** option to consolidate all reminders in a single list window */
 	static public PrefName REMINDERLIST = new PrefName("reminder_list", "true");
@@ -215,7 +215,7 @@ public class PrefName {
 
 	/** days before a birthday to show birthday reminders */
 	static public PrefName BIRTHDAYREMINDERDAYS = new PrefName(
-			"bd_reminder_days", new Integer(7));
+			"bd_reminder_days", Integer.valueOf(7));
 
 	/** The EMAILENABLED. */
 	static public PrefName EMAILENABLED = new PrefName("email_enabled", "false");
@@ -229,14 +229,14 @@ public class PrefName {
 
 	/** The EMAILLAST. */
 	static public PrefName EMAILLAST = new PrefName("email_last",
-			new Integer(0));
+			Integer.valueOf(0));
 
 	/** The EMAILDEBUG. */
 	static public PrefName EMAILDEBUG = new PrefName("email_debug", "0");
 
 	/** The EMAILTIME. */
 	static public PrefName EMAILTIME = new PrefName("email_time",
-			new Integer(0));
+			Integer.valueOf(0));
 
 	/** The EMAILUSER. */
 	static public PrefName EMAILUSER = new PrefName("email_user", "");
@@ -324,11 +324,11 @@ public class PrefName {
 			"task_tree_show_status", "false");
 
 	// days left until due for each color
-	static public PrefName RED_DAYS = new PrefName("red_days", new Integer(2));
+	static public PrefName RED_DAYS = new PrefName("red_days", Integer.valueOf(2));
 	static public PrefName ORANGE_DAYS = new PrefName("orange_days",
-			new Integer(7));
+			Integer.valueOf(7));
 	static public PrefName YELLOW_DAYS = new PrefName("yellow_days",
-			new Integer(14));
+			Integer.valueOf(14));
 
 	/** keystore location */
 	static public PrefName KEYSTORE = new PrefName("key_store", "");
@@ -337,7 +337,7 @@ public class PrefName {
 	static public PrefName KEYALIAS = new PrefName("key_alias", "borg_key");
 
 	/** cached password time to live in seconds */
-	static public PrefName PASSWORD_TTL = new PrefName("pw_ttl", new Integer(
+	static public PrefName PASSWORD_TTL = new PrefName("pw_ttl", Integer.valueOf(
 			300));
 
 	/** todo quick add, clear text after add */
@@ -363,7 +363,7 @@ public class PrefName {
 	// limit on the max text size that can be put into a text area to prevent
 	// memory issues
 	public static final PrefName MAX_TEXT_SIZE = new PrefName("max_text_size",
-			new Integer(1024 * 1024));
+			Integer.valueOf(1024 * 1024));
 
 	// the email regular expression and phone number regular expression
 	// regular expression for validating email addresses
@@ -371,12 +371,12 @@ public class PrefName {
 			"false");
 
 	public static PrefName ICAL_PORT = new PrefName("ical-server-port",
-			new Integer(8844));
+			Integer.valueOf(8844));
 	public static PrefName ICAL_EXPORTYEARS = new PrefName("ical-export-years",
-			new Integer(2));
+			Integer.valueOf(2));
 	
 	public static PrefName ICAL_SYNCMINS = new PrefName("ical-syncmins",
-			new Integer(15));
+			Integer.valueOf(15));
 
 	// option to prevent import of appts that were previously exported from borg
 	// used when the goal is to only import appointments created outside of
@@ -396,7 +396,7 @@ public class PrefName {
 	
 	public static PrefName USE_PROXY = new PrefName("use_proxy", "false");
 	public static PrefName PROXY_HOST = new PrefName("proxy_host", "");
-	public static PrefName PROXY_PORT = new PrefName("proxy_port", new Integer(8080));
+	public static PrefName PROXY_PORT = new PrefName("proxy_port", Integer.valueOf(8080));
 	
 	public static PrefName ICAL_IMPORT_URL = new PrefName("ical-import-url", "");
 	
@@ -420,6 +420,6 @@ public class PrefName {
 	public static PrefName MEMBAR_TIMEOUT = new PrefName("membar-timeout", -1);
 
 	public static PrefName FLUSH_MINS = new PrefName("flush_mins",
-			new Integer(0));
+			Integer.valueOf(0));
 
 }

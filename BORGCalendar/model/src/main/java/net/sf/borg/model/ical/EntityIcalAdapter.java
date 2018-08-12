@@ -409,7 +409,7 @@ public class EntityIcalAdapter {
 						DtEnd dte = (DtEnd) prop;
 						Date de = dte.getDate();
 						long dur = (de.getTime() - d.getTime()) / (1000 * 60);
-						ap.setDuration(new Integer((int) dur));
+						ap.setDuration(Integer.valueOf((int) dur));
 					}
 				}
 
@@ -457,7 +457,7 @@ public class EntityIcalAdapter {
 				// getting
 				// really complicated
 				if (durdays < 1) {
-					ap.setDuration(new Integer(dur.getDuration().getMinutes()));
+					ap.setDuration(Integer.valueOf(dur.getDuration().getMinutes()));
 				}
 
 			}
@@ -470,11 +470,11 @@ public class EntityIcalAdapter {
 				while (cit.hasNext()) {
 					String cat = cit.next();
 					if (cat.equals("Holidays")) {
-						ap.setHoliday(new Integer(1));
+						ap.setHoliday(Integer.valueOf(1));
 					} else if (cat.equals("Vacation")) {
-						ap.setVacation(new Integer(1));
+						ap.setVacation(Integer.valueOf(1));
 					} else if (cat.equals("HalfDay")) {
-						ap.setVacation(new Integer(2));
+						ap.setVacation(Integer.valueOf(2));
 					} else if (cat.equals("Private")) {
 						ap.setPrivate(true);
 					} else if (cat.equals("ToDo")) {
@@ -558,7 +558,7 @@ public class EntityIcalAdapter {
 					int times = recur.getCount();
 					if (times < 1)
 						times = 9999;
-					ap.setTimes(new Integer(times));
+					ap.setTimes(Integer.valueOf(times));
 				}
 
 				ap.setRepeatFlag(true);

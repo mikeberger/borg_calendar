@@ -650,7 +650,7 @@ public class LinkPanel extends JPanel implements Model.Listener {
 			while (it.hasNext()) {
 				Link at = (it.next());
 				tm.addRow(new Object[] { LinkPanel.getName(at),
-						new Integer(at.getKey()) });
+						Integer.valueOf(at.getKey()) });
 			}
 		} catch (Exception e) {
 			Errmsg.getErrorHandler().errmsg(e);

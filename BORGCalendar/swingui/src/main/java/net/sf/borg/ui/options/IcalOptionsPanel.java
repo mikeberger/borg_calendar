@@ -189,7 +189,7 @@ public class IcalOptionsPanel extends OptionsPanel {
 		// validate that port is a number
 		try {
 			int socket = Integer.parseInt(port.getText());
-			Prefs.putPref(PrefName.ICAL_PORT, new Integer(socket));
+			Prefs.putPref(PrefName.ICAL_PORT, Integer.valueOf(socket));
 		} catch (NumberFormatException e) {
 			Errmsg.getErrorHandler().notice(
 					Resource.getResourceString("port_warning"));

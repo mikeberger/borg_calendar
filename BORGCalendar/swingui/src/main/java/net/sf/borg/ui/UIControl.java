@@ -7,7 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.text.MessageFormat;
-import java.util.Observer;
 import java.util.logging.Logger;
 
 import javax.swing.JCheckBox;
@@ -17,6 +16,7 @@ import javax.swing.Timer;
 import javax.swing.UIManager;
 
 import net.sf.borg.common.Errmsg;
+import net.sf.borg.common.Observer;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
@@ -382,7 +382,7 @@ public class UIControl {
 		try {
 			ClassLoader cl = ClassLoader.getSystemClassLoader();
 			Class<?> clazz = cl.loadClass(className);
-			MultiView.Module module = (MultiView.Module) clazz.newInstance();
+			MultiView.Module module = (MultiView.Module) clazz.getDeclaredConstructor().newInstance();
 			MultiView.getMainView().addModule(module);
 		} catch (Exception e) {
 

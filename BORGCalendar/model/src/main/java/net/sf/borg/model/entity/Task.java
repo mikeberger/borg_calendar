@@ -76,7 +76,7 @@ public class Task extends KeyedEntity<Task> implements CalendarEntity, SyncableE
 	@Override
 	public Integer getDuration()
 	{
-		return new Integer(0);
+		return Integer.valueOf(0);
 	}
 	
 	/* (non-Javadoc)

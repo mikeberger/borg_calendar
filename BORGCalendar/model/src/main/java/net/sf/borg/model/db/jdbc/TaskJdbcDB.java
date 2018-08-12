@@ -140,7 +140,7 @@ class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
         PreparedStatement stmt = JdbcDB.getConnection().prepareStatement("SELECT tasknum FROM tasks");
         ResultSet rs = stmt.executeQuery();
         while (rs.next()) {
-            keys.add(new Integer(rs.getInt("tasknum")));
+            keys.add(Integer.valueOf(rs.getInt("tasknum")));
         }
         rs.close();
         stmt.close();
@@ -203,7 +203,7 @@ class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
         if (r.getDate("due_date") != null)
             task.setDueDate(new java.util.Date(r.getDate("due_date").getTime()));
         task.setPersonAssigned(r.getString("person_assigned"));
-        task.setPriority(new Integer(r.getInt("priority")));
+        task.setPriority(Integer.valueOf(r.getInt("priority")));
         task.setState(r.getString("state"));
         task.setType(r.getString("type"));
         task.setDescription(r.getString("description"));
@@ -295,7 +295,7 @@ class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
     private static Subtask createSubtask(ResultSet r) throws SQLException {
         Subtask s = new Subtask();
         s.setKey(r.getInt("id"));
-        s.setTask(new Integer(r.getInt("task")));
+        s.setTask(Integer.valueOf(r.getInt("task")));
         if (r.getTimestamp("due_date") != null)
             s.setDueDate(new java.util.Date(r.getTimestamp("due_date").getTime()));
         if (r.getTimestamp("create_date") != null)
@@ -572,7 +572,7 @@ class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
     private static Tasklog createTasklog(ResultSet r) throws SQLException {
         Tasklog s = new Tasklog();
         s.setKey(r.getInt("id"));
-        s.setTask(new Integer(r.getInt("task")));
+        s.setTask(Integer.valueOf(r.getInt("task")));
         if (r.getTimestamp("logtime") != null)
             s.setLogTime(new java.util.Date(r.getTimestamp("logtime").getTime()));
         s.setDescription(r.getString("description"));
@@ -854,7 +854,7 @@ class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
         if (r.wasNull())
             s.setParent(null);
         else
-            s.setParent(new Integer(parent));
+            s.setParent(Integer.valueOf(parent));
 
         return s;
     }

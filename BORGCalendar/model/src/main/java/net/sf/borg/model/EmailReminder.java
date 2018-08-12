@@ -197,7 +197,7 @@ public class EmailReminder {
 		}
 		// record that we sent email today
 		if (doy != -1)
-			Prefs.putPref(PrefName.EMAILLAST, new Integer(doy));
+			Prefs.putPref(PrefName.EMAILLAST, Integer.valueOf(doy));
 
 		return;
 	}

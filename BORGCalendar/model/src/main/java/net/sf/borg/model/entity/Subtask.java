@@ -104,7 +104,7 @@ public class Subtask extends KeyedEntity<Subtask> implements CalendarEntity, Syn
 	 */
 	@Override
 	public Integer getDuration() {
-		return new Integer(0);
+		return Integer.valueOf(0);
 	}
 
 	/*

@@ -87,7 +87,7 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener, Mo
 
 	private static final long serialVersionUID = 1L;
 
-	private static final Integer DEFAULT_PRIORITY = new Integer(5);
+	private static final Integer DEFAULT_PRIORITY = Integer.valueOf(5);
 
 	/**
 	 * renders the color selection pull-down with colored boxes as the choices.
@@ -649,8 +649,8 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener, Mo
 		numberOfRepeatsSpinner = new JSpinner();
 		theRepeatPanel.add(numberOfRepeatsSpinner, GridBagConstraintsFactory.create(1, 1, GridBagConstraints.BOTH));
 		SpinnerNumberModel mod = (SpinnerNumberModel) numberOfRepeatsSpinner.getModel();
-		mod.setMinimum(new Integer(1));
-		mod.setMaximum(new Integer(99999));
+		mod.setMinimum(Integer.valueOf(1));
+		mod.setMaximum(Integer.valueOf(99999));
 
 		repeatUntilRadio = new JRadioButton();
 		ResourceHelper.setText(repeatUntilRadio, "Until");
@@ -1147,7 +1147,7 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener, Mo
 			du += (24 * 60);
 
 		if (du != 0)
-			appt.setDuration(new Integer(du));
+			appt.setDuration(Integer.valueOf(du));
 
 		// appointment text of some sort is required if we are validating
 		if (apptTitleField.getText().trim().isEmpty() && validate) {
@@ -1170,11 +1170,11 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener, Mo
 
 		// vacation, half-day, and private checkboxes
 		if (vacationCheckBox.isSelected())
-			appt.setVacation(new Integer(1));
+			appt.setVacation(Integer.valueOf(1));
 		if (halfDayVacationCheckBox.isSelected())
-			appt.setVacation(new Integer(2));
+			appt.setVacation(Integer.valueOf(2));
 		if (holidayCheckBox.isSelected())
-			appt.setHoliday(new Integer(1));
+			appt.setHoliday(Integer.valueOf(1));
 
 		// private
 		appt.setPrivate(privateCheckBox.isSelected());
@@ -1190,19 +1190,19 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener, Mo
 		if (repeatFrequencyComboBox.getSelectedIndex() != 0) {
 			ArrayList<Integer> daylist = new ArrayList<Integer>();
 			if (dayToggles[0].isSelected())
-				daylist.add(new Integer(Calendar.SUNDAY));
+				daylist.add(Integer.valueOf(Calendar.SUNDAY));
 			if (dayToggles[1].isSelected())
-				daylist.add(new Integer(Calendar.MONDAY));
+				daylist.add(Integer.valueOf(Calendar.MONDAY));
 			if (dayToggles[2].isSelected())
-				daylist.add(new Integer(Calendar.TUESDAY));
+				daylist.add(Integer.valueOf(Calendar.TUESDAY));
 			if (dayToggles[3].isSelected())
-				daylist.add(new Integer(Calendar.WEDNESDAY));
+				daylist.add(Integer.valueOf(Calendar.WEDNESDAY));
 			if (dayToggles[4].isSelected())
-				daylist.add(new Integer(Calendar.THURSDAY));
+				daylist.add(Integer.valueOf(Calendar.THURSDAY));
 			if (dayToggles[5].isSelected())
-				daylist.add(new Integer(Calendar.FRIDAY));
+				daylist.add(Integer.valueOf(Calendar.FRIDAY));
 			if (dayToggles[6].isSelected())
-				daylist.add(new Integer(Calendar.SATURDAY));
+				daylist.add(Integer.valueOf(Calendar.SATURDAY));
 			if (!Repeat.isCompatible(g, (String) repeatFrequencyComboBox.getSelectedItem(), daylist)) {
 				throw new Warning(Resource.getResourceString("recur_compat"));
 			}
@@ -1213,7 +1213,7 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener, Mo
 		// repeat times
 		Integer tm = null;
 		if (repeatForeverRadio.isSelected()) {
-			tm = new Integer(Repeat.MAGIC_RPT_FOREVER_VALUE);
+			tm = Integer.valueOf(Repeat.MAGIC_RPT_FOREVER_VALUE);
 		} else {
 			tm = (Integer) numberOfRepeatsSpinner.getValue();
 		}
@@ -1230,7 +1230,7 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener, Mo
 				throw new Exception(Resource.getResourceString("Could_not_parse_times:_") + tm);
 			}
 		} else {
-			appt.setTimes(new Integer(1));
+			appt.setTimes(Integer.valueOf(1));
 		}
 
 		// until
@@ -1456,7 +1456,7 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener, Mo
 			appointmentBodyTextArea.setText(""); // clear appt text
 			repeatFrequencyComboBox.setSelectedIndex(0); // freq = once
 			numberOfRepeatsSpinner.setEnabled(true);
-			numberOfRepeatsSpinner.setValue(new Integer(1)); // times = 1
+			numberOfRepeatsSpinner.setValue(Integer.valueOf(1)); // times = 1
 			repeatForeverRadio.setSelected(false);
 			repeatUntilRadio.setSelected(false);
 			untilDate.setEnabled(false);
@@ -1620,25 +1620,25 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener, Mo
 				String rpt = Repeat.getFreq(appt.getFrequency());
 				if (rpt != null && (rpt.equals(Repeat.NDAYS) || rpt.equals(Repeat.NWEEKS) || rpt.equals(Repeat.NMONTHS)
 						|| rpt.equals(Repeat.NYEARS))) {
-					nTimesValue.setValue(new Integer(Repeat.getNValue(appt.getFrequency())));
+					nTimesValue.setValue(Integer.valueOf(Repeat.getNValue(appt.getFrequency())));
 				}
 
 				if (rpt != null && rpt.equals(Repeat.DAYLIST)) {
 					Collection<Integer> daylist = Repeat.getDaylist(appt.getFrequency());
 					if (daylist != null) {
-						if (daylist.contains(new Integer(Calendar.SUNDAY)))
+						if (daylist.contains(Integer.valueOf(Calendar.SUNDAY)))
 							dayToggles[0].setSelected(true);
-						if (daylist.contains(new Integer(Calendar.MONDAY)))
+						if (daylist.contains(Integer.valueOf(Calendar.MONDAY)))
 							dayToggles[1].setSelected(true);
-						if (daylist.contains(new Integer(Calendar.TUESDAY)))
+						if (daylist.contains(Integer.valueOf(Calendar.TUESDAY)))
 							dayToggles[2].setSelected(true);
-						if (daylist.contains(new Integer(Calendar.WEDNESDAY)))
+						if (daylist.contains(Integer.valueOf(Calendar.WEDNESDAY)))
 							dayToggles[3].setSelected(true);
-						if (daylist.contains(new Integer(Calendar.THURSDAY)))
+						if (daylist.contains(Integer.valueOf(Calendar.THURSDAY)))
 							dayToggles[4].setSelected(true);
-						if (daylist.contains(new Integer(Calendar.FRIDAY)))
+						if (daylist.contains(Integer.valueOf(Calendar.FRIDAY)))
 							dayToggles[5].setSelected(true);
-						if (daylist.contains(new Integer(Calendar.SATURDAY)))
+						if (daylist.contains(Integer.valueOf(Calendar.SATURDAY)))
 							dayToggles[6].setSelected(true);
 					}
 				}
@@ -1649,7 +1649,7 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener, Mo
 
 				// repeat times
 				Integer tm = appt.getTimes();
-				numberOfRepeatsSpinner.setValue(new Integer(1));
+				numberOfRepeatsSpinner.setValue(Integer.valueOf(1));
 				untilDate.setDate(null);
 
 				// if until date is set, then that takes priority
@@ -1687,7 +1687,7 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener, Mo
 				}
 
 				// set priority
-				Integer p = new Integer(DEFAULT_PRIORITY);
+				Integer p = Integer.valueOf(DEFAULT_PRIORITY);
 				Integer priority = appt.getPriority();
 				if (priority != null)
 					p = priority;

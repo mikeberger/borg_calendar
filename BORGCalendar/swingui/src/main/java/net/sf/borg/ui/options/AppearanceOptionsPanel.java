@@ -245,9 +245,9 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 
 		// first day of week - either monday or sunday
 		if (mondaycb.isSelected()) {
-			Prefs.putPref(PrefName.FIRSTDOW, new Integer(Calendar.MONDAY));
+			Prefs.putPref(PrefName.FIRSTDOW, Integer.valueOf(Calendar.MONDAY));
 		} else {
-			Prefs.putPref(PrefName.FIRSTDOW, new Integer(Calendar.SUNDAY));
+			Prefs.putPref(PrefName.FIRSTDOW, Integer.valueOf(Calendar.SUNDAY));
 		}
 
 		Prefs.putPref(PrefName.WKENDHOUR, wkendhr.getSelectedItem());

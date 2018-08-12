@@ -267,7 +267,7 @@ public class TaskView extends DockableView {
 		String ss = s.substring(0, i);
 
 		int pid = Integer.parseInt(ss);
-		return new Integer(pid);
+		return Integer.valueOf(pid);
 
 	}
 
@@ -466,7 +466,7 @@ public class TaskView extends DockableView {
 		dueDateChooser = new JDateChooser();
 		priorityText = new JComboBox<Integer>();
 		for (int p = 1; p <= 5; p++) {
-			priorityText.addItem(new Integer(p));
+			priorityText.addItem(Integer.valueOf(p));
 		}
 
 		personAssignedText = new JTextField(new LimitDocument(10), null, 10);
@@ -799,7 +799,7 @@ public class TaskView extends DockableView {
 						return;
 					}
 				}
-				Object o[] = { new Boolean(false), null, null, null, null,
+				Object o[] = { Boolean.valueOf(false), null, null, null, null,
 						null, null };
 				model.addRow(o);
 			}
@@ -896,7 +896,7 @@ public class TaskView extends DockableView {
 								if (rowid != null
 										&& rowid.intValue() == ids[i].intValue()) {
 									// clear the row
-									ts2.setValueAt(new Boolean(false), row, 0);
+									ts2.setValueAt(Boolean.valueOf(false), row, 0);
 									ts2.setValueAt(null, row, 1);
 									ts2.setValueAt(null, row, 2);
 									ts2.setValueAt(null, row, 3);
@@ -958,7 +958,7 @@ public class TaskView extends DockableView {
 	 * Insert a blank subtask row in the table
 	 */
 	private void insertSubtask() {
-		Object o[] = { new Boolean(false), null, null, null, null, null, null };
+		Object o[] = { Boolean.valueOf(false), null, null, null, null, null, null };
 		TableSorter ts = (TableSorter) subTaskTable.getModel();
 		ts.addRow(o);
 	}
@@ -1115,7 +1115,7 @@ public class TaskView extends DockableView {
 				throw new Warning(msg);
 			}
 
-			s.setTask(new Integer(tasknum));
+			s.setTask(Integer.valueOf(tasknum));
 
 			TaskModel.getReference().saveSubTask(s);
 
@@ -1173,7 +1173,7 @@ public class TaskView extends DockableView {
 						.getSubTasks(
 								(String) taskTypeComboBox.getSelectedItem());
 				for (int i = 0; i < prefDefinedTasks.length; i++) {
-					Object o[] = { new Boolean(false), null,
+					Object o[] = { Boolean.valueOf(false), null,
 							prefDefinedTasks[i], new Date(), null, null };
 					ts.addRow(o);
 				}
@@ -1191,7 +1191,7 @@ public class TaskView extends DockableView {
 						.getInitialState(
 								(String) taskTypeComboBox.getSelectedItem()));
 			} else {
-				task.setKey(new Integer(num).intValue());
+				task.setKey(Integer.valueOf(num).intValue());
 				task.setState((String) statusComboBox.getSelectedItem());
 			}
 
@@ -1450,16 +1450,16 @@ public class TaskView extends DockableView {
 					.getSubTasks(task.getKey());
 			for (Subtask subtask : subtasks) {
 				Object o[] = {
-						subtask.getCloseDate() == null ? new Boolean(false)
-								: new Boolean(true),
-						new Integer(subtask.getKey()),
+						subtask.getCloseDate() == null ? Boolean.valueOf(false)
+								: Boolean.valueOf(true),
+						Integer.valueOf(subtask.getKey()),
 						subtask.getDescription(),
 						subtask.getStartDate(),
 						subtask.getDueDate(),
-						subtask.getDueDate() != null ? new Integer(
+						subtask.getDueDate() != null ? Integer.valueOf(
 								TaskModel.daysBetween(subtask.getStartDate(),
 										subtask.getDueDate())) : null,
-						subtask.getDueDate() != null ? new Integer(
+						subtask.getDueDate() != null ? Integer.valueOf(
 								TaskModel.daysLeft(subtask.getDueDate()))
 								: null, subtask.getCloseDate() };
 
@@ -1497,7 +1497,7 @@ public class TaskView extends DockableView {
 			// title
 			windowTitle = Resource.getResourceString("NEW_Item");
 
-			priorityText.setSelectedItem(new Integer(3)); // priority default to
+			priorityText.setSelectedItem(Integer.valueOf(3)); // priority default to
 			// 3
 			personAssignedText.setText("");
 			categoryComboBox.setSelectedIndex(0);

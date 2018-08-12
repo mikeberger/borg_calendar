@@ -379,7 +379,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 
 		// no repeating
 		appt.setFrequency(Repeat.ONCE);
-		appt.setTimes(new Integer(1));
+		appt.setTimes(Integer.valueOf(1));
 		appt.setRepeatFlag(false);
 
 		// set category
@@ -1014,7 +1014,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 					ro[3] = r.getColor();
 
 				// key
-				ro[4] = new Integer(r.getKey());
+				ro[4] = Integer.valueOf(r.getKey());
 
 				// priority
 				ro[5] = r.getPriority();

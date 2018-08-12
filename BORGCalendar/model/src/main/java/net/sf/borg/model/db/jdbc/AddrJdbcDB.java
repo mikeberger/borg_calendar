@@ -119,7 +119,7 @@ class AddrJdbcDB extends JdbcBeanDB<Address> implements EntityDB<Address>
         ResultSet rs = stmt.executeQuery();
         while( rs.next() )
         {
-            keys.add( new Integer(rs.getInt("address_num")) );
+            keys.add( Integer.valueOf(rs.getInt("address_num")) );
         }
         rs.close();
         

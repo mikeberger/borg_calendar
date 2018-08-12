@@ -123,7 +123,7 @@ public class Repeat {
 		else if (f.equals(TTH)
 				&& (day != Calendar.TUESDAY && day != Calendar.THURSDAY))
 			return false;
-		else if (f.equals(DAYLIST) && !daylist.contains(new Integer(day)))
+		else if (f.equals(DAYLIST) && !daylist.contains(Integer.valueOf(day)))
 			return false;
 		else if( f.equals(MONTHLY_DAY_LAST))
 		{
@@ -206,19 +206,19 @@ public class Repeat {
 		if (f.equals(DAYLIST)) {
 			f += ",";
 			if (daylist != null) {
-				if (daylist.contains(new Integer(Calendar.SUNDAY)))
+				if (daylist.contains(Integer.valueOf(Calendar.SUNDAY)))
 					f += "1";
-				if (daylist.contains(new Integer(Calendar.MONDAY)))
+				if (daylist.contains(Integer.valueOf(Calendar.MONDAY)))
 					f += "2";
-				if (daylist.contains(new Integer(Calendar.TUESDAY)))
+				if (daylist.contains(Integer.valueOf(Calendar.TUESDAY)))
 					f += "3";
-				if (daylist.contains(new Integer(Calendar.WEDNESDAY)))
+				if (daylist.contains(Integer.valueOf(Calendar.WEDNESDAY)))
 					f += "4";
-				if (daylist.contains(new Integer(Calendar.THURSDAY)))
+				if (daylist.contains(Integer.valueOf(Calendar.THURSDAY)))
 					f += "5";
-				if (daylist.contains(new Integer(Calendar.FRIDAY)))
+				if (daylist.contains(Integer.valueOf(Calendar.FRIDAY)))
 					f += "6";
-				if (daylist.contains(new Integer(Calendar.SATURDAY)))
+				if (daylist.contains(Integer.valueOf(Calendar.SATURDAY)))
 					f += "7";
 			}
 		}
@@ -286,19 +286,19 @@ public class Repeat {
 			list = f.substring(DAYLIST.length() + 1);
 
 		if (list.indexOf("1") != -1)
-			daylist.add(new Integer(Calendar.SUNDAY));
+			daylist.add(Integer.valueOf(Calendar.SUNDAY));
 		if (list.indexOf("2") != -1)
-			daylist.add(new Integer(Calendar.MONDAY));
+			daylist.add(Integer.valueOf(Calendar.MONDAY));
 		if (list.indexOf("3") != -1)
-			daylist.add(new Integer(Calendar.TUESDAY));
+			daylist.add(Integer.valueOf(Calendar.TUESDAY));
 		if (list.indexOf("4") != -1)
-			daylist.add(new Integer(Calendar.WEDNESDAY));
+			daylist.add(Integer.valueOf(Calendar.WEDNESDAY));
 		if (list.indexOf("5") != -1)
-			daylist.add(new Integer(Calendar.THURSDAY));
+			daylist.add(Integer.valueOf(Calendar.THURSDAY));
 		if (list.indexOf("6") != -1)
-			daylist.add(new Integer(Calendar.FRIDAY));
+			daylist.add(Integer.valueOf(Calendar.FRIDAY));
 		if (list.indexOf("7") != -1)
-			daylist.add(new Integer(Calendar.SATURDAY));
+			daylist.add(Integer.valueOf(Calendar.SATURDAY));
 
 		return (daylist);
 
@@ -536,7 +536,7 @@ public class Repeat {
 				while (true) {
 					cal.add(Calendar.DATE, 1);
 					int dow = cal.get(Calendar.DAY_OF_WEEK);
-					if (daylist.contains(new Integer(dow))) {
+					if (daylist.contains(Integer.valueOf(dow))) {
 						break;
 					}
 				}

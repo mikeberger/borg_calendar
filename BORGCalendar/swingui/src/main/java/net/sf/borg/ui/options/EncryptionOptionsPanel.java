@@ -173,7 +173,7 @@ public class EncryptionOptionsPanel extends OptionsPanel {
 	@Override
 	public void loadOptions() {
 		keyStoreText.setText(Prefs.getPref(PrefName.KEYSTORE));
-		passwordTimeSpinner.setValue(new Integer(Prefs
+		passwordTimeSpinner.setValue(Integer.valueOf(Prefs
 				.getIntPref(PrefName.PASSWORD_TTL)));
 
 	}

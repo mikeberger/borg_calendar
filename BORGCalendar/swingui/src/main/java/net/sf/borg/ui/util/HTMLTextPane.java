@@ -61,7 +61,7 @@ public class HTMLTextPane extends JTextPane {
 			public void mouseClicked(MouseEvent evt) {
             	if( evt.getButton() == MouseEvent.BUTTON3)
             	{
-                    setCaretPosition(viewToModel(evt.getPoint()));
+                    setCaretPosition(viewToModel2D(evt.getPoint()));
             	}
             }
         });

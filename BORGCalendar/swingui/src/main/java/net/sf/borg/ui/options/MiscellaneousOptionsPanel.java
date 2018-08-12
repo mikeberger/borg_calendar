@@ -234,18 +234,18 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 		// validate that socket is a number
 		try {
 			int socket = Integer.parseInt(socketPort.getText());
-			Prefs.putPref(PrefName.SOCKETPORT, new Integer(socket));
+			Prefs.putPref(PrefName.SOCKETPORT, Integer.valueOf(socket));
 		} catch (NumberFormatException e) {
 			Errmsg.getErrorHandler().notice(Resource.getResourceString("socket_warn"));
 			socketPort.setText("-1");
-			Prefs.putPref(PrefName.SOCKETPORT, new Integer(-1));
+			Prefs.putPref(PrefName.SOCKETPORT, Integer.valueOf(-1));
 		}
 		
 		Prefs.putPref(PrefName.PROXY_HOST, proxyHostText.getText());
 
 		try {
 			int port = Integer.parseInt(proxyPortText.getText());
-			Prefs.putPref(PrefName.PROXY_PORT, new Integer(port));
+			Prefs.putPref(PrefName.PROXY_PORT, Integer.valueOf(port));
 		} catch (NumberFormatException e) {
 			Errmsg.getErrorHandler().notice(Resource.getResourceString("proxy_warn"));
 		}

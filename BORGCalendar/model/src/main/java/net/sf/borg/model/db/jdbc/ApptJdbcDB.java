@@ -167,7 +167,7 @@ class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB {
 				"SELECT appt_num FROM appointments");
 		ResultSet rs = stmt.executeQuery();
 		while (rs.next()) {
-			keys.add(new Integer(rs.getInt("appt_num")));
+			keys.add(Integer.valueOf(rs.getInt("appt_num")));
 		}
 
 		rs.close();
@@ -188,7 +188,7 @@ class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB {
 				"SELECT appt_num FROM appointments WHERE todo = '1'");
 		ResultSet rs = stmt.executeQuery();
 		while (rs.next()) {
-			keys.add(new Integer(rs.getInt("appt_num")));
+			keys.add(Integer.valueOf(rs.getInt("appt_num")));
 		}
 		rs.close();
 		stmt.close();
@@ -209,7 +209,7 @@ class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB {
 				"SELECT appt_num FROM appointments WHERE rpt = '1'");
 		ResultSet rs = stmt.executeQuery();
 		while (rs.next()) {
-			keys.add(new Integer(rs.getInt("appt_num")));
+			keys.add(Integer.valueOf(rs.getInt("appt_num")));
 		}
 
 		rs.close();
@@ -285,16 +285,16 @@ class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB {
 		if (r.getTimestamp("appt_date") != null)
 			appt.setDate(new java.util.Date(r.getTimestamp("appt_date")
 					.getTime()));
-		appt.setDuration(new Integer(r.getInt("duration")));
+		appt.setDuration(Integer.valueOf(r.getInt("duration")));
 		appt.setText(r.getString("text"));
 		appt.setSkipList(JdbcDB.toVect(r.getString("skip_list")));
 		if (r.getDate("next_todo") != null)
 			appt.setNextTodo(new java.util.Date(r.getDate("next_todo")
 					.getTime()));
-		appt.setVacation(new Integer(r.getInt("vacation")));
-		appt.setHoliday(new Integer(r.getInt("holiday")));
+		appt.setVacation(Integer.valueOf(r.getInt("vacation")));
+		appt.setHoliday(Integer.valueOf(r.getInt("holiday")));
 		appt.setPrivate(r.getInt("private") != 0);
-		appt.setTimes(new Integer(r.getInt("times")));
+		appt.setTimes(Integer.valueOf(r.getInt("times")));
 		appt.setFrequency(r.getString("frequency"));
 		appt.setTodo(r.getInt("todo") != 0);
 		appt.setColor(r.getString("color"));
@@ -308,7 +308,7 @@ class ApptJdbcDB extends JdbcBeanDB<Appointment> implements AppointmentDB {
 		if (r.getDate("repeat_until") != null)
 			appt.setRepeatUntil(new java.util.Date(r.getDate("repeat_until")
 					.getTime()));
-		appt.setPriority(new Integer(r.getInt("priority")));
+		appt.setPriority(Integer.valueOf(r.getInt("priority")));
 		if (r.getTimestamp("create_time") != null)
 			appt.setCreateTime(new java.util.Date(r.getTimestamp("create_time")
 					.getTime()));

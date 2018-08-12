@@ -67,7 +67,7 @@ public class SyncLog extends Model implements Model.Listener, Prefs.Listener {
 			SyncEvent newEvent = new SyncEvent();
 			if (obj instanceof SyncableEntity) {
 				SyncableEntity se = (SyncableEntity) obj;
-				newEvent.setId(new Integer(se.getKey()));
+				newEvent.setId(Integer.valueOf(se.getKey()));
 				newEvent.setObjectType(se.getObjectType());
 
 				// use the URL first. If null, user the UID
@@ -123,7 +123,7 @@ public class SyncLog extends Model implements Model.Listener, Prefs.Listener {
 		String uid = r.getString("uid");
 		String type = r.getString("objtype");
 		ObjectType otype = ObjectType.valueOf(type);
-		SyncEvent event = new SyncEvent(new Integer(id), uid, action, otype);
+		SyncEvent event = new SyncEvent(Integer.valueOf(id), uid, action, otype);
 		return event;
 	}
 
