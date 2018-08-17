@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>BORGCalendar</groupId>
 		<artifactId>BORGCalendar</artifactId>
-		<version>1.8.3</version>
+		<version>1.9</version>
 	</parent>
 	<artifactId>install</artifactId>
 	<packaging>izpack-jar</packaging>

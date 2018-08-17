@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>BORGCalendar</groupId>
 	<artifactId>BORGCalendar</artifactId>
-	<version>1.8.3</version>
+	<version>1.9</version>
 	<packaging>pom</packaging>
 	<url>http://borg.mbcsoft.com</url>
 	<inceptionYear>2003</inceptionYear>
@@ -55,7 +55,7 @@
 			<dependency>
 				<groupId>org.projectlombok</groupId>
 				<artifactId>lombok</artifactId>
-				<version>1.18.0</version>
+				<version>1.18.2</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

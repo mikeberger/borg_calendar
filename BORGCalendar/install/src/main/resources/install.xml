@@ -7,7 +7,7 @@
 	<!-- The info section. The meaning of the tags should be natural ... -->
 	<info>
 		<appname>BORG Calendar</appname>
-		<appversion>1.8.3</appversion>
+		<appversion>1.9</appversion>
 		<appsubpath>BORGCalendar</appsubpath>
 
 		<authors>

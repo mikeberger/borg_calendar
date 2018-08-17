@@ -1,3 +1,11 @@
+BORG 1.9
+--------
+Support Java 10
+Support embedded JRE
+[#77] Timed Todo is synced without time to caldav
+[#76] - Timed todo shows up twice in the popup reminder list - and one has the wrong time
+#71 - Appt change date option doesn't sync correctly to caldav
+
 BORG 1.8.3
 ----------
 #69 - update next_todo properly when moving a repeating todo
