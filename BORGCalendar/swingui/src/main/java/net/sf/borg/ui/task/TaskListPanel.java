@@ -247,6 +247,8 @@ class TaskListPanel extends JPanel implements Model.Listener {
 			return null;
 		TableSorter tm = (TableSorter) taskTable.getModel();
 		Integer num = (Integer) tm.getValueAt(row, 0);
+		if( num == null)
+			Errmsg.getErrorHandler().notice(Resource.getResourceString("no_subtask_action"));
 		return num;
 	}
 
@@ -409,8 +411,8 @@ class TaskListPanel extends JPanel implements Model.Listener {
 			}
 
 		});
-		//buttonPanel.add(showSubTasksBox);
-		//refresh();
+		buttonPanel.add(showSubTasksBox);
+		refresh();
 	}
 
 	/**
@@ -722,6 +724,13 @@ class TaskListPanel extends JPanel implements Model.Listener {
 					Collection<Subtask> subtasks = TaskModel.getReference().getSubTasks(task.getKey());
 					for( Subtask subtask : subtasks )
 					{
+												
+						if ((taskStatus.equals(Resource.getResourceString("All_Open")) || taskStatus.equals(Resource.getResourceString("OPEN"))) && subtask.getCloseDate() != null) 
+								continue;				
+										
+						if( showClosedTasksCheckBox != null && !showClosedTasksCheckBox.isSelected() && subtask.getCloseDate() != null)
+								continue;
+						
 						ro = new Object[12];
 						ro[0] = null;
 						ro[1] = (subtask.getCloseDate() == null) ? Resource.getResourceString("OPEN"): Resource.getResourceString("CLOSED");
