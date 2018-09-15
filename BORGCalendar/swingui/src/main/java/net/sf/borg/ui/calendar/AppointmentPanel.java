@@ -1660,7 +1660,7 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener, Mo
 					if (tm.intValue() == Repeat.MAGIC_RPT_FOREVER_VALUE) {
 						repeatForeverRadio.setSelected(true);
 					} else {
-						numberOfRepeatsSpinner.setValue(tm);
+						numberOfRepeatsSpinner.setValue(tm == 0 ? 1 : tm);
 						repeatTimesRadio.setSelected(true);
 					}
 				} else {

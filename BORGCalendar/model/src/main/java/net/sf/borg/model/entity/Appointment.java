@@ -62,7 +62,7 @@ public class Appointment extends KeyedEntity<Appointment> implements
 	/** The Private flag (1 = private) */
 	private boolean Private;
 	/** The number of Repeat Times. */
-	private Integer Times = 0;
+	private Integer Times = 1;
 	/** The repeat Frequency. */
 	private String Frequency;
 	/** The Todo flag. */
