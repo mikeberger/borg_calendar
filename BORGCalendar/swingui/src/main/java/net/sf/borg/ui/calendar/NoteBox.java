@@ -301,12 +301,26 @@ public class NoteBox extends Box implements Box.Draggable {
 			mnuitm.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					int ret = JOptionPane.showConfirmDialog(null, Resource
-							.getResourceString("Really_Delete_")
-							+ "?", Resource
-							.getResourceString("Confirm_Delete"),
-							JOptionPane.OK_CANCEL_OPTION,
-							JOptionPane.QUESTION_MESSAGE);
+					
+					int ret = -1;
+					if( bean instanceof Appointment && AppointmentModel.getReference().next_todo((Appointment) bean, date) != null )
+					{
+						ret = JOptionPane.showConfirmDialog(null, Resource
+								.getResourceString("Future_Todo_Warn"), Resource
+								.getResourceString("Really_Delete_") + "?",
+								JOptionPane.OK_CANCEL_OPTION,
+								JOptionPane.WARNING_MESSAGE);
+					}
+					else
+					{
+						ret = JOptionPane.showConfirmDialog(null, Resource
+								.getResourceString("Really_Delete_")
+								+ "?", Resource
+								.getResourceString("Confirm_Delete"),
+								JOptionPane.OK_CANCEL_OPTION,
+								JOptionPane.QUESTION_MESSAGE);
+					}
+					
 					if (ret != JOptionPane.OK_OPTION)
 						return;
 

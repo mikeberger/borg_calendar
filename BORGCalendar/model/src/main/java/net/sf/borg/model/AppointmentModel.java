@@ -62,14 +62,13 @@ import net.sf.borg.model.undo.UndoLog;
  * Appointment Entities
  * 
  */
-public class AppointmentModel extends Model implements Model.Listener,
-		CategorySource, Searchable<Appointment> {
+public class AppointmentModel extends Model implements Model.Listener, CategorySource, Searchable<Appointment> {
 
 	static private final Logger log = Logger.getLogger("net.sf.borg");
 
 	/**
-	 * class XmlContainer is solely for JAXB XML export/import to keep the same
-	 * XML structure as before JAXB was used
+	 * class XmlContainer is solely for JAXB XML export/import to keep the same XML
+	 * structure as before JAXB was used
 	 */
 	@XmlRootElement(name = "APPTS")
 	private static class XmlContainer {
@@ -151,8 +150,8 @@ public class AppointmentModel extends Model implements Model.Listener,
 	private HashMap<Integer, Collection<Integer>> map_;
 
 	/**
-	 * The vacation map - a map of vacation values for each day (i.e. no
-	 * vacation, half-day, full-day)
+	 * The vacation map - a map of vacation values for each day (i.e. no vacation,
+	 * half-day, full-day)
 	 */
 	private HashMap<Integer, Integer> vacationMap_;
 
@@ -179,9 +178,9 @@ public class AppointmentModel extends Model implements Model.Listener,
 	}
 
 	/**
-	 * Builds the map (cache) of days to appointments. Also builds the vacation
-	 * map. This is not purely for caching as it also maps multiple days to a
-	 * single appointment to support repeating appointments
+	 * Builds the map (cache) of days to appointments. Also builds the vacation map.
+	 * This is not purely for caching as it also maps multiple days to a single
+	 * appointment to support repeating appointments
 	 * 
 	 * @throws Exception
 	 *             the exception
@@ -224,8 +223,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 				o.add(Integer.valueOf(key));
 
 				// add day key to vacation map if appt has vacation
-				if (appt.getVacation() != null
-						&& appt.getVacation().intValue() != 0) {
+				if (appt.getVacation() != null && appt.getVacation().intValue() != 0) {
 					vacationMap_.put(Integer.valueOf(dkey), appt.getVacation());
 				}
 			} else {
@@ -271,10 +269,8 @@ public class AppointmentModel extends Model implements Model.Listener,
 						l.add(Integer.valueOf(key));
 
 						// add day key to vacation map if appt has vacation
-						if (appt.getVacation() != null
-								&& appt.getVacation().intValue() != 0) {
-							vacationMap_.put(Integer.valueOf(rkey),
-									appt.getVacation());
+						if (appt.getVacation() != null && appt.getVacation().intValue() != 0) {
+							vacationMap_.put(Integer.valueOf(rkey), appt.getVacation());
 						}
 					}
 
@@ -315,8 +311,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 
 			db_.delete(appt.getKey());
 			if (!undo) {
-				UndoLog.getReference().addItem(
-						AppointmentUndoItem.recordDelete(orig_appt));
+				UndoLog.getReference().addItem(AppointmentUndoItem.recordDelete(orig_appt));
 			}
 
 		} catch (Exception e) {
@@ -333,8 +328,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 
 			// refresh all views that are displaying appt data from this
 			// model
-			refreshListeners(new ChangeEvent(appt,
-					ChangeEvent.ChangeAction.DELETE));
+			refreshListeners(new ChangeEvent(appt, ChangeEvent.ChangeAction.DELETE));
 		} catch (Exception e) {
 			Errmsg.getErrorHandler().errmsg(e);
 			return;
@@ -399,15 +393,14 @@ public class AppointmentModel extends Model implements Model.Listener,
 	}
 
 	/**
-	 * Mark a todo appointment as done. If the appointment repeats, adjust the
-	 * next todo value. If the todo is all done (including repeats), optionally
-	 * delete it
+	 * Mark a todo appointment as done. If the appointment repeats, adjust the next
+	 * todo value. If the todo is all done (including repeats), optionally delete it
 	 * 
 	 * @param key
 	 *            the appointment key
 	 * @param del
-	 *            if true, delete the todo when all done. Otherwise, mark it as
-	 *            no longer being a todo.
+	 *            if true, delete the todo when all done. Otherwise, mark it as no
+	 *            longer being a todo.
 	 * 
 	 * @throws Exception
 	 *             the exception
@@ -417,27 +410,18 @@ public class AppointmentModel extends Model implements Model.Listener,
 	}
 
 	/**
-	 * Mark a todo appointment as done. If the appointment repeats, adjust the
-	 * next todo value. If the todo is all done (including repeats), optionally
-	 * delete it
+	 * find the date of the next un-skipped todo occurrence, if any
 	 * 
-	 * @param key
-	 *            the appointment key
-	 * @param del
-	 *            if true, delete the todo when all done. Otherwise, mark it as
-	 *            no longer being a todo.
-	 * @param date
-	 *            date of the repeat that is being marked as done. If null, then
-	 *            the next todo is the one. If set, then all todos up to and
-	 *            including the date are marked as done.
+	 * @param appt - the appointment
 	 * 
-	 * @throws Exception
-	 *             the exception
+	 * @param date - the date of the occurrence to start from. if null, the next one is used.
+	 * 
+	 * @return date of the next todo occurrence or null if none
 	 */
-	public void do_todo(int key, boolean del, Date date) throws Exception {
-		// read the DB row for the ToDo
-		Appointment appt = db_.readObj(key);
-
+	public Date next_todo(Appointment appt, Date date) {
+		
+		if( !appt.isTodo()) return null;
+		
 		// curtodo is the date of the todo that is to be "done"
 		Date curtodo = appt.getNextTodo();
 		Date d = appt.getDate();
@@ -470,8 +454,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 			Repeat repeat = new Repeat(ncal, appt.getFrequency());
 			for (int i = 1; i < tm; i++) {
 
-				if (ncal != null
-						&& ncal.get(Calendar.YEAR) == ccal.get(Calendar.YEAR)
+				if (ncal != null && ncal.get(Calendar.YEAR) == ccal.get(Calendar.YEAR)
 						&& ncal.get(Calendar.MONTH) == ccal.get(Calendar.MONTH)
 						&& ncal.get(Calendar.DATE) == ccal.get(Calendar.DATE)) {
 
@@ -493,6 +476,32 @@ public class AppointmentModel extends Model implements Model.Listener,
 
 			}
 		}
+		
+		return newtodo;
+	}
+
+	/**
+	 * Mark a todo appointment as done. If the appointment repeats, adjust the next
+	 * todo value. If the todo is all done (including repeats), optionally delete it
+	 * 
+	 * @param key
+	 *            the appointment key
+	 * @param del
+	 *            if true, delete the todo when all done. Otherwise, mark it as no
+	 *            longer being a todo.
+	 * @param date
+	 *            date of the repeat that is being marked as done. If null, then the
+	 *            next todo is the one. If set, then all todos up to and including
+	 *            the date are marked as done.
+	 * 
+	 * @throws Exception
+	 *             the exception
+	 */
+	public void do_todo(int key, boolean del, Date date) throws Exception {
+		// read the DB row for the ToDo
+		Appointment appt = db_.readObj(key);
+		
+		Date newtodo = next_todo(appt, date);
 
 		if (newtodo != null) {
 			// a next todo was found, set NT to that value
@@ -671,20 +680,19 @@ public class AppointmentModel extends Model implements Model.Listener,
 				if (!use_keys)
 					appt.setKey(nextkey++);
 				// validate priority
-				if (appt.getPriority() != null
-						&& (appt.getPriority() > 10 || appt.getPriority() < 1)) {
+				if (appt.getPriority() != null && (appt.getPriority() > 10 || appt.getPriority() < 1)) {
 					appt.setPriority(null);
-					log.warning("XML Import: Ignoring invalid priority for appointment: " + appt.getKey() + ":" + appt.getClearText());
+					log.warning("XML Import: Ignoring invalid priority for appointment: " + appt.getKey() + ":"
+							+ appt.getClearText());
 				}
-				if( appt.getCreateTime() == null)
+				if (appt.getCreateTime() == null)
 					appt.setCreateTime(new Date());
-				if( appt.getLastMod() == null )
+				if (appt.getLastMod() == null)
 					appt.setLastMod(new Date());
 				db_.addObj(appt);
 			}
 		} catch (Exception e) {
-			Errmsg.getErrorHandler().notice(
-					e + "\n" + Resource.getResourceString("Import_XML_error"));
+			Errmsg.getErrorHandler().notice(e + "\n" + Resource.getResourceString("Import_XML_error"));
 			e.printStackTrace();
 		}
 
@@ -764,26 +772,24 @@ public class AppointmentModel extends Model implements Model.Listener,
 
 				r.setCreateTime(new Date());
 				r.setLastMod(r.getCreateTime());
-				if( r.getUid() == null)
+				if (r.getUid() == null)
 					r.setUid(Integer.toString(r.getKey()) + "@BORGA-" + r.getCreateTime().getTime());
 				db_.addObj(r);
 				if (!undo) {
-					UndoLog.getReference().addItem(
-							AppointmentUndoItem.recordAdd(r));
+					UndoLog.getReference().addItem(AppointmentUndoItem.recordAdd(r));
 				}
 			} else {
 
-				if( r.getCreateTime() == null )
+				if (r.getCreateTime() == null)
 					r.setCreateTime(new Date());
 
 				r.setLastMod(new Date());
-				if( r.getUid() == null)
+				if (r.getUid() == null)
 					r.setUid(Integer.toString(r.getKey()) + "@BORGA-" + r.getCreateTime().getTime());
 				action = ChangeEvent.ChangeAction.CHANGE;
 				db_.updateObj(r);
 				if (!undo) {
-					UndoLog.getReference().addItem(
-							AppointmentUndoItem.recordUpdate(orig_appt));
+					UndoLog.getReference().addItem(AppointmentUndoItem.recordUpdate(orig_appt));
 				}
 			}
 
@@ -830,8 +836,8 @@ public class AppointmentModel extends Model implements Model.Listener,
 	}
 
 	/**
-	 * determine the number of vacation days up to and including the given day
-	 * in a particular year
+	 * determine the number of vacation days up to and including the given day in a
+	 * particular year
 	 * 
 	 * @param d
 	 *            the Date
@@ -897,8 +903,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 				JAXBContext jc = JAXBContext.newInstance(Appointment.class);
 				Unmarshaller u = jc.createUnmarshaller();
 				String xmlString = defApptXml.toString();
-				Appointment ap = (Appointment) u.unmarshal(new StringReader(
-						xmlString));
+				Appointment ap = (Appointment) u.unmarshal(new StringReader(xmlString));
 
 				// transition from pre-1.7.2
 				if (ap.getDate() == null)
@@ -914,8 +919,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * net.sf.borg.model.Searchable#search(net.sf.borg.model.SearchCriteria)
+	 * @see net.sf.borg.model.Searchable#search(net.sf.borg.model.SearchCriteria)
 	 */
 	@Override
 	public Collection<Appointment> search(SearchCriteria criteria) {
@@ -966,14 +970,11 @@ public class AppointmentModel extends Model implements Model.Listener,
 					continue;
 
 				// filter by category
-				if (criteria.getCategory().equals(CategoryModel.UNCATEGORIZED)
-						&& appt.getCategory() != null
-						&& !appt.getCategory().equals(
-								CategoryModel.UNCATEGORIZED))
+				if (criteria.getCategory().equals(CategoryModel.UNCATEGORIZED) && appt.getCategory() != null
+						&& !appt.getCategory().equals(CategoryModel.UNCATEGORIZED))
 					continue;
 				else if (!criteria.getCategory().equals("")
-						&& !criteria.getCategory().equals(
-								CategoryModel.UNCATEGORIZED)
+						&& !criteria.getCategory().equals(CategoryModel.UNCATEGORIZED)
 						&& !criteria.getCategory().equals(appt.getCategory()))
 					continue;
 
@@ -1019,8 +1020,7 @@ public class AppointmentModel extends Model implements Model.Listener,
 
 	@Override
 	public String getInfo() throws Exception {
-		return Resource.getResourceString("appointments") + ": "
-				+ getAllAppts().size();
+		return Resource.getResourceString("appointments") + ": " + getAllAppts().size();
 	}
 
 	public List<Appointment> getAppointmentsByText(String text) throws Exception {
