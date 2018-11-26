@@ -90,6 +90,9 @@ public class MonthPrintPanel extends JPanel implements Printable {
 		Integer i = (Integer) choice;
 		cp.setPages(i.intValue());
 		PrintHelper.printPrintable(cp);
+		//JFrame f = new JFrame();
+		//f.setContentPane(cp);
+		//f.setVisible(true);
 
 	}
 
@@ -147,6 +150,10 @@ public class MonthPrintPanel extends JPanel implements Printable {
 		// get font sizes
 		int fontHeight = g2.getFontMetrics().getHeight();
 		int fontDesent = g2.getFontMetrics().getDescent();
+		
+		// bug fix if font metrics missing
+		if( fontHeight == 0) fontHeight = 16;
+		if( fontDesent == 0) fontDesent = 3;
 
 		// translate coordinates based on the page margins
 		g2.translate(pagex, pagey);
@@ -236,6 +243,7 @@ public class MonthPrintPanel extends JPanel implements Printable {
 				// set small font for appt text
 				g2.setFont(sm_font);
 				int smfontHeight = g2.getFontMetrics().getHeight();
+				if( smfontHeight == 0) smfontHeight = 7;
 
 				// set clip to the day box to truncate long appointment text
 				g2.clipRect(colleft, rowtop, colwidth, rowheight);
@@ -361,8 +369,8 @@ public class MonthPrintPanel extends JPanel implements Printable {
 			Graphics2D g2 = (Graphics2D) g;
 			g2.scale(prev_scale, prev_scale);
 			drawIt(g, getWidth() / prev_scale, getHeight() / prev_scale,
-					getWidth() / prev_scale - 20,
-					getHeight() / prev_scale - 20, 10, 10, 0);
+					getWidth() / prev_scale - 90,
+					getHeight() / prev_scale - 126, 45, 63, 0);
 
 		} catch (Exception e) {
 			Errmsg.getErrorHandler().errmsg(e);

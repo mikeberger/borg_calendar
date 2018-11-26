@@ -178,6 +178,10 @@ public class WeekPanel extends DockableView implements Printable,
 			int fontHeight = g2.getFontMetrics().getHeight();
 			int fontDesent = g2.getFontMetrics().getDescent();
 
+			// bug fix if font metrics missing
+			if( fontHeight == 0) fontHeight = 16;
+			if( fontDesent == 0) fontDesent = 3;
+			
 			// translate coordinates to page margins
 			g2.translate(pagex, pagey);
 
@@ -265,6 +269,7 @@ public class WeekPanel extends DockableView implements Printable,
 			// set small font for appt text
 			g2.setFont(sm_font);
 			int smfontHeight = g2.getFontMetrics().getHeight();
+			if( smfontHeight == 0) smfontHeight = 7;
 
 			// loop through the days of the week
 			for (int col = 0; col < 7; col++) {
