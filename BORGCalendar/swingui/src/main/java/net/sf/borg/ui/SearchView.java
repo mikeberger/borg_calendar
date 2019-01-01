@@ -18,6 +18,11 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -30,6 +35,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -38,6 +44,8 @@ import javax.swing.JTextField;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+
+import com.toedter.calendar.JDateChooser;
 
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Resource;
@@ -55,6 +63,7 @@ import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.KeyedEntity;
 import net.sf.borg.model.entity.Memo;
 import net.sf.borg.model.entity.Project;
+import net.sf.borg.model.entity.Subtask;
 import net.sf.borg.model.entity.Task;
 import net.sf.borg.ui.MultiView.Module;
 import net.sf.borg.ui.MultiView.ViewType;
@@ -67,8 +76,6 @@ import net.sf.borg.ui.util.GridBagConstraintsFactory;
 import net.sf.borg.ui.util.StripedTable;
 import net.sf.borg.ui.util.TablePrinter;
 import net.sf.borg.ui.util.TableSorter;
-
-import com.toedter.calendar.JDateChooser;
 
 /**
  * UI for searching records.
@@ -138,8 +145,7 @@ public class SearchView extends DockableView implements Module {
 		categoryComboBox.removeAllItems();
 		categoryComboBox.addItem("");
 		try {
-			Collection<String> cats = CategoryModel.getReference()
-					.getCategories();
+			Collection<String> cats = CategoryModel.getReference().getCategories();
 			Iterator<String> it = cats.iterator();
 			while (it.hasNext()) {
 				categoryComboBox.addItem(it.next());
@@ -159,92 +165,77 @@ public class SearchView extends DockableView implements Module {
 	private JButton createChangeCategoryButton() {
 		JButton changeCategoryButton = new JButton();
 		ResourceHelper.setText(changeCategoryButton, "chg_cat");
-		changeCategoryButton.setIcon(new ImageIcon(getClass().getResource(
-				"/resource/Preferences16.gif"))); // Generated
-		changeCategoryButton
-				.addActionListener(new java.awt.event.ActionListener() {
-					@Override
-					public void actionPerformed(java.awt.event.ActionEvent e) {
+		changeCategoryButton.setIcon(new ImageIcon(getClass().getResource("/resource/Preferences16.gif"))); // Generated
+		changeCategoryButton.addActionListener(new java.awt.event.ActionListener() {
+			@Override
+			public void actionPerformed(java.awt.event.ActionEvent e) {
 
-						// change the category of all selected rows
-						int rows[] = resultsTable.getSelectedRows();
-						if (rows.length == 0) {
-							return;
-						}
+				// change the category of all selected rows
+				int rows[] = resultsTable.getSelectedRows();
+				if (rows.length == 0) {
+					return;
+				}
 
+				try {
+
+					Collection<String> allcats = CategoryModel.getReference().getCategories();
+					Object[] cats = allcats.toArray();
+
+					// ask the user to choose the new category
+					Object o = JOptionPane.showInputDialog(null, Resource.getResourceString("cat_choose"), "",
+							JOptionPane.QUESTION_MESSAGE, null, cats, cats[0]);
+					if (o == null)
+						return;
+
+					String cat = (String) o;
+					if (cat.isEmpty() || CategoryModel.UNCATEGORIZED.equals(cat))
+						cat = null;
+
+					TableSorter tm = (TableSorter) resultsTable.getModel();
+
+					// get a list of selected items
+					ArrayList<KeyedEntity<?>> entities = new ArrayList<KeyedEntity<?>>();
+					for (int i = 0; i < rows.length; i++) {
+						Integer key = (Integer) tm.getValueAt(rows[i], 3);
+						Class<?> cl = (Class<?>) tm.getValueAt(rows[i], 4);
 						try {
-
-							Collection<String> allcats = CategoryModel
-									.getReference().getCategories();
-							Object[] cats = allcats.toArray();
-
-							// ask the user to choose the new category
-							Object o = JOptionPane.showInputDialog(null,
-									Resource.getResourceString("cat_choose"),
-									"", JOptionPane.QUESTION_MESSAGE, null,
-									cats, cats[0]);
-							if (o == null)
-								return;
-
-							String cat = (String) o;
-							if (cat.isEmpty()
-									|| CategoryModel.UNCATEGORIZED.equals(cat))
-								cat = null;
-
-							TableSorter tm = (TableSorter) resultsTable
-									.getModel();
-
-							// get a list of selected items
-							ArrayList<KeyedEntity<?>> entities = new ArrayList<KeyedEntity<?>>();
-							for (int i = 0; i < rows.length; i++) {
-								Integer key = (Integer) tm.getValueAt(rows[i],
-										3);
-								Class<?> cl = (Class<?>) tm.getValueAt(rows[i],
-										4);
-								try {
-									KeyedEntity<?> ent = (KeyedEntity<?>) cl
-											.getDeclaredConstructor().newInstance();
-									ent.setKey(key.intValue());
-									entities.add(ent);
-								} catch (Exception e1) {
-									Errmsg.getErrorHandler().errmsg(e1);
-								}
-
-							}
-
-							// change the categories
-							for (KeyedEntity<?> ent : entities) {
-								if (ent instanceof Appointment) {
-									Appointment ap = AppointmentModel
-											.getReference().getAppt(
-													ent.getKey());
-									ap.setCategory(cat);
-									AppointmentModel.getReference()
-											.saveAppt(ap);
-								}
-								if (ent instanceof Project) {
-									Project ap = TaskModel.getReference()
-											.getProject(ent.getKey());
-									ap.setCategory(cat);
-									TaskModel.getReference().saveProject(ap);
-								}
-								if (ent instanceof Task) {
-									Task ap = TaskModel.getReference().getTask(
-											ent.getKey());
-									ap.setCategory(cat);
-									TaskModel.getReference().savetask(ap);
-								}
-
-							}
-
-						} catch (Exception ex) {
-							Errmsg.getErrorHandler().errmsg(ex);
-							return;
+							KeyedEntity<?> ent = (KeyedEntity<?>) cl.getDeclaredConstructor().newInstance();
+							ent.setKey(key.intValue());
+							entities.add(ent);
+						} catch (Exception e1) {
+							Errmsg.getErrorHandler().errmsg(e1);
 						}
 
-						refresh(); // refresh results
 					}
-				});
+
+					// change the categories
+					for (KeyedEntity<?> ent : entities) {
+						if (ent instanceof Appointment) {
+							Appointment ap = AppointmentModel.getReference().getAppt(ent.getKey());
+							ap.setCategory(cat);
+							AppointmentModel.getReference().saveAppt(ap);
+						}
+						if (ent instanceof Project) {
+							Project ap = TaskModel.getReference().getProject(ent.getKey());
+							ap.setCategory(cat);
+							TaskModel.getReference().saveProject(ap);
+						}
+						if (ent instanceof Task) {
+							Task ap = TaskModel.getReference().getTask(ent.getKey());
+							ap.setCategory(cat);
+							TaskModel.getReference().savetask(ap);
+						}
+
+					}
+
+				} catch (Exception ex) {
+					Errmsg.getErrorHandler().errmsg(ex);
+					return;
+				}
+
+				refresh(); // refresh results
+			}
+		});
 
 		return changeCategoryButton;
 	}
@@ -261,53 +252,43 @@ public class SearchView extends DockableView implements Module {
 		apptCheckBox = new JCheckBox();
 		apptCheckBox.setSelected(true);
 		ResourceHelper.setText(apptCheckBox, "appointment");
-		checkBoxPanel.add(apptCheckBox, GridBagConstraintsFactory.create(0, 0,
-				GridBagConstraints.BOTH, 1.0, 1.0));
+		checkBoxPanel.add(apptCheckBox, GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH, 1.0, 1.0));
 		taskCheckBox = new JCheckBox();
 		taskCheckBox.setSelected(true);
 		ResourceHelper.setText(taskCheckBox, "task");
-		checkBoxPanel.add(taskCheckBox, GridBagConstraintsFactory.create(2, 0,
-				GridBagConstraints.BOTH, 1.0, 1.0));
+		checkBoxPanel.add(taskCheckBox, GridBagConstraintsFactory.create(2, 0, GridBagConstraints.BOTH, 1.0, 1.0));
 		addressCheckBox = new JCheckBox();
 		addressCheckBox.setSelected(true);
 		ResourceHelper.setText(addressCheckBox, "Address");
-		checkBoxPanel.add(addressCheckBox, GridBagConstraintsFactory.create(1,
-				0, GridBagConstraints.BOTH, 1.0, 1.0));
+		checkBoxPanel.add(addressCheckBox, GridBagConstraintsFactory.create(1, 0, GridBagConstraints.BOTH, 1.0, 1.0));
 		projectCheckBox = new JCheckBox();
 		projectCheckBox.setSelected(true);
 		ResourceHelper.setText(projectCheckBox, "project");
-		checkBoxPanel.add(projectCheckBox, GridBagConstraintsFactory.create(3,
-				0, GridBagConstraints.BOTH, 1.0, 1.0));
+		checkBoxPanel.add(projectCheckBox, GridBagConstraintsFactory.create(3, 0, GridBagConstraints.BOTH, 1.0, 1.0));
 		memoCheckBox = new JCheckBox();
 		memoCheckBox.setSelected(true);
 		ResourceHelper.setText(memoCheckBox, "memo");
-		checkBoxPanel.add(memoCheckBox, GridBagConstraintsFactory.create(4, 0,
-				GridBagConstraints.BOTH, 1.0, 1.0));
+		checkBoxPanel.add(memoCheckBox, GridBagConstraintsFactory.create(4, 0, GridBagConstraints.BOTH, 1.0, 1.0));
 
 		todoCheckBox = new JCheckBox();
 		ResourceHelper.setText(todoCheckBox, "To_Do");
-		checkBoxPanel.add(todoCheckBox, GridBagConstraintsFactory.create(0, 1,
-				GridBagConstraints.BOTH, 1.0, 1.0));
+		checkBoxPanel.add(todoCheckBox, GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH, 1.0, 1.0));
 
 		repeatCheckBox = new JCheckBox();
 		ResourceHelper.setText(repeatCheckBox, "repeating");
-		checkBoxPanel.add(repeatCheckBox, GridBagConstraintsFactory.create(1,
-				1, GridBagConstraints.BOTH, 1.0, 1.0));
+		checkBoxPanel.add(repeatCheckBox, GridBagConstraintsFactory.create(1, 1, GridBagConstraints.BOTH, 1.0, 1.0));
 
 		vacationCheckBox = new JCheckBox();
 		ResourceHelper.setText(vacationCheckBox, "Vacation");
-		checkBoxPanel.add(vacationCheckBox, GridBagConstraintsFactory.create(2,
-				1, GridBagConstraints.BOTH, 1.0, 1.0));
+		checkBoxPanel.add(vacationCheckBox, GridBagConstraintsFactory.create(2, 1, GridBagConstraints.BOTH, 1.0, 1.0));
 
 		holidayCheckBox = new JCheckBox();
 		ResourceHelper.setText(holidayCheckBox, "Holiday");
-		checkBoxPanel.add(holidayCheckBox, GridBagConstraintsFactory.create(3,
-				1, GridBagConstraints.BOTH, 1.0, 1.0));
+		checkBoxPanel.add(holidayCheckBox, GridBagConstraintsFactory.create(3, 1, GridBagConstraints.BOTH, 1.0, 1.0));
 
 		linkCheckBox = new JCheckBox();
 		linkCheckBox.setText(Resource.getResourceString("haslinks"));
-		checkBoxPanel.add(linkCheckBox, GridBagConstraintsFactory.create(4, 1,
-				GridBagConstraints.BOTH, 1.0, 1.0));
+		checkBoxPanel.add(linkCheckBox, GridBagConstraintsFactory.create(4, 1, GridBagConstraints.BOTH, 1.0, 1.0));
 		return checkBoxPanel;
 	}
 
@@ -319,8 +300,7 @@ public class SearchView extends DockableView implements Module {
 	private JButton createDeleteButton() {
 		JButton deleteButton = new JButton();
 		ResourceHelper.setText(deleteButton, "delete_selected");
-		deleteButton.setIcon(new ImageIcon(getClass().getResource(
-				"/resource/Stop16.gif")));
+		deleteButton.setIcon(new ImageIcon(getClass().getResource("/resource/Stop16.gif")));
 		deleteButton.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -333,9 +313,8 @@ public class SearchView extends DockableView implements Module {
 				}
 
 				// confirm delete
-				int ret = JOptionPane.showConfirmDialog(null,
-						Resource.getResourceString("delete_selected") + "?",
-						"", JOptionPane.YES_NO_OPTION);
+				int ret = JOptionPane.showConfirmDialog(null, Resource.getResourceString("delete_selected") + "?", "",
+						JOptionPane.YES_NO_OPTION);
 				if (ret != JOptionPane.YES_OPTION) {
 					return;
 				}
@@ -348,13 +327,10 @@ public class SearchView extends DockableView implements Module {
 					Class<?> cl = (Class<?>) tm.getValueAt(rows[i], 4);
 					try {
 						Object ent = (Object) cl.getDeclaredConstructor().newInstance();
-						if( ent instanceof KeyedEntity )
-						{
-							((KeyedEntity<?>)ent).setKey(key.intValue());
-						}
-						else if (ent instanceof Memo)
-							((Memo) ent).setMemoName((String) tm.getValueAt(
-									rows[i], 0));
+						if (ent instanceof KeyedEntity) {
+							((KeyedEntity<?>) ent).setKey(key.intValue());
+						} else if (ent instanceof Memo)
+							((Memo) ent).setMemoName((String) tm.getValueAt(rows[i], 0));
 						entities.add(ent);
 					} catch (Exception e1) {
 						Errmsg.getErrorHandler().errmsg(e1);
@@ -365,12 +341,11 @@ public class SearchView extends DockableView implements Module {
 				// delete the items
 				for (Object ent : entities) {
 					if (ent instanceof Appointment)
-						AppointmentModel.getReference().delAppt(((Appointment)ent).getKey());
+						AppointmentModel.getReference().delAppt(((Appointment) ent).getKey());
 					else if (ent instanceof Address)
 						AddressModel.getReference().delete((Address) ent);
 					else if (ent instanceof Memo)
-						MemoModel.getReference().delete(
-								((Memo) ent).getMemoName(), false);
+						MemoModel.getReference().delete(((Memo) ent).getMemoName(), false);
 				}
 
 				refresh(); // reload results
@@ -390,14 +365,12 @@ public class SearchView extends DockableView implements Module {
 		JPanel resultsPanel = new JPanel();
 
 		resultsPanel.setLayout(new GridBagLayout());
-		resultsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(
-				null, Resource.getResourceString("Search_Results"),
-				javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
+		resultsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null,
+				Resource.getResourceString("Search_Results"), javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
 				javax.swing.border.TitledBorder.DEFAULT_POSITION, null, null));
 
 		resultsTable = new StripedTable();
-		resultsTable
-				.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		resultsTable.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		resultsTable.addMouseListener(new java.awt.event.MouseAdapter() {
 			@Override
 			public void mouseClicked(java.awt.event.MouseEvent e) {
@@ -415,15 +388,48 @@ public class SearchView extends DockableView implements Module {
 		tableScroll.setViewportView(resultsTable);
 		// tableScroll.setPreferredSize(new java.awt.Dimension(100, 100));
 
-		GridBagConstraints gridBagConstraints2 = GridBagConstraintsFactory
-				.create(0, 0, GridBagConstraints.BOTH, 1.0, 1.0);
-		gridBagConstraints2.gridwidth = 2;
+		GridBagConstraints gridBagConstraints2 = GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH, 1.0,
+				1.0);
+		gridBagConstraints2.gridwidth = 3;
 		resultsPanel.add(tableScroll, gridBagConstraints2);
-		resultsPanel.add(createDeleteButton(), GridBagConstraintsFactory
-				.create(0, 1, GridBagConstraints.NONE, 1.0, 0.0));
+		resultsPanel.add(createDeleteButton(),
+				GridBagConstraintsFactory.create(0, 1, GridBagConstraints.NONE, 1.0, 0.0));
 		resultsPanel.add(createChangeCategoryButton(),
-				GridBagConstraintsFactory.create(1, 1, GridBagConstraints.NONE,
-						1.0, 0.0));
+				GridBagConstraintsFactory.create(1, 1, GridBagConstraints.NONE, 1.0, 0.0));
+		JButton csvButton = new JButton();
+		csvButton.setText("CSV");
+		csvButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					// prompt for a file
+					JFileChooser chooser = new JFileChooser();
+					chooser.setCurrentDirectory(new File("."));
+					chooser.setDialogTitle(Resource.getResourceString("choose_file"));
+					chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+
+					int returnVal = chooser.showSaveDialog(null);
+					if (returnVal != JFileChooser.APPROVE_OPTION)
+						return;
+
+					String s = chooser.getSelectedFile().getAbsolutePath();
+
+					// auto append extension
+					if (chooser.getFileFilter() != chooser.getAcceptAllFileFilter()) {
+						if (!s.contains(".")) {
+							s += ".csv";
+						}
+					}
+					
+					FileWriter w = new FileWriter(s);
+					exportToCSV(w);
+				} catch (IOException e1) {
+					Errmsg.getErrorHandler().errmsg(e1);
+				}
+				
+			}});
+		resultsPanel.add(csvButton,GridBagConstraintsFactory.create(2, 1, GridBagConstraints.NONE, 1.0, 0.0));
 
 		return resultsPanel;
 	}
@@ -437,67 +443,55 @@ public class SearchView extends DockableView implements Module {
 
 		JPanel searchCriteriaPanel = new JPanel();
 		searchCriteriaPanel.setLayout(new GridBagLayout());
-		searchCriteriaPanel.setBorder(javax.swing.BorderFactory
-				.createTitledBorder(null, "",
-						javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
-						javax.swing.border.TitledBorder.DEFAULT_POSITION, null,
-						null));
+		searchCriteriaPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "",
+				javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION,
+				null, null));
 
 		JLabel searchStringLabel = new JLabel();
 		ResourceHelper.setText(searchStringLabel, "SearchString");
-		searchCriteriaPanel.add(searchStringLabel, GridBagConstraintsFactory
-				.create(0, 0, GridBagConstraints.HORIZONTAL));
+		searchCriteriaPanel.add(searchStringLabel,
+				GridBagConstraintsFactory.create(0, 0, GridBagConstraints.HORIZONTAL));
 
 		JLabel categoryLabel = new JLabel();
 		ResourceHelper.setText(categoryLabel, "Category");
-		searchCriteriaPanel.add(categoryLabel, GridBagConstraintsFactory
-				.create(0, 1, GridBagConstraints.HORIZONTAL));
+		searchCriteriaPanel.add(categoryLabel, GridBagConstraintsFactory.create(0, 1, GridBagConstraints.HORIZONTAL));
 
 		searchText = new JTextField();
-		searchCriteriaPanel.add(searchText, GridBagConstraintsFactory.create(1,
-				0, GridBagConstraints.HORIZONTAL, 1.0, 0.0));
+		searchCriteriaPanel.add(searchText,
+				GridBagConstraintsFactory.create(1, 0, GridBagConstraints.HORIZONTAL, 1.0, 0.0));
 
 		categoryComboBox = new JComboBox<String>();
-		searchCriteriaPanel.add(categoryComboBox, GridBagConstraintsFactory
-				.create(1, 1, GridBagConstraints.HORIZONTAL, 1.0, 0.0));
+		searchCriteriaPanel.add(categoryComboBox,
+				GridBagConstraintsFactory.create(1, 1, GridBagConstraints.HORIZONTAL, 1.0, 0.0));
 
 		caseSensitiveCheckBox = new JCheckBox();
-		caseSensitiveCheckBox.setText(Resource
-				.getResourceString("case_sensitive"));
-		searchCriteriaPanel
-				.add(caseSensitiveCheckBox, GridBagConstraintsFactory.create(2,
-						0, GridBagConstraints.BOTH));
+		caseSensitiveCheckBox.setText(Resource.getResourceString("case_sensitive"));
+		searchCriteriaPanel.add(caseSensitiveCheckBox, GridBagConstraintsFactory.create(2, 0, GridBagConstraints.BOTH));
 
 		wholeWordBox = new JCheckBox();
 		wholeWordBox.setText(Resource.getResourceString("WholeWord"));
-		searchCriteriaPanel
-				.add(wholeWordBox, GridBagConstraintsFactory.create(2, 1,
-						GridBagConstraints.BOTH));
+		searchCriteriaPanel.add(wholeWordBox, GridBagConstraintsFactory.create(2, 1, GridBagConstraints.BOTH));
 
 		JLabel startDateLabel = new JLabel();
 		ResourceHelper.setText(startDateLabel, "StartDate");
-		searchCriteriaPanel.add(startDateLabel, GridBagConstraintsFactory
-				.create(3, 0, GridBagConstraints.HORIZONTAL));
+		searchCriteriaPanel.add(startDateLabel, GridBagConstraintsFactory.create(3, 0, GridBagConstraints.HORIZONTAL));
 
 		JLabel endDateLabel = new JLabel();
 		ResourceHelper.setText(endDateLabel, "EndDate");
-		searchCriteriaPanel.add(endDateLabel, GridBagConstraintsFactory.create(
-				3, 1, GridBagConstraints.HORIZONTAL));
+		searchCriteriaPanel.add(endDateLabel, GridBagConstraintsFactory.create(3, 1, GridBagConstraints.HORIZONTAL));
 
 		startDateChooser = new JDateChooser();
-		GridBagConstraints gbc1 = GridBagConstraintsFactory.create(4, 0,
-				GridBagConstraints.NONE, 0.0, 0.0);
+		GridBagConstraints gbc1 = GridBagConstraintsFactory.create(4, 0, GridBagConstraints.NONE, 0.0, 0.0);
 		gbc1.anchor = GridBagConstraints.WEST;
 		searchCriteriaPanel.add(startDateChooser, gbc1);
 
 		endDateChooser = new JDateChooser();
-		GridBagConstraints gbc2 = GridBagConstraintsFactory.create(4, 1,
-				GridBagConstraints.NONE, 0.0, 0.0);
+		GridBagConstraints gbc2 = GridBagConstraintsFactory.create(4, 1, GridBagConstraints.NONE, 0.0, 0.0);
 		gbc2.anchor = GridBagConstraints.WEST;
 		searchCriteriaPanel.add(endDateChooser, gbc2);
 
-		GridBagConstraints gridBagConstraints25 = GridBagConstraintsFactory
-				.create(0, 2, GridBagConstraints.BOTH, 0.0, 1.0);
+		GridBagConstraints gridBagConstraints25 = GridBagConstraintsFactory.create(0, 2, GridBagConstraints.BOTH, 0.0,
+				1.0);
 		gridBagConstraints25.gridwidth = 5;
 		searchCriteriaPanel.add(createCheckBoxPanel(), gridBagConstraints25);
 
@@ -513,19 +507,16 @@ public class SearchView extends DockableView implements Module {
 			// init the UI components
 			initComponents();
 
-			for( Model m : Model.getExistingModels())
-			{
-				if( m instanceof Searchable )
+			for (Model m : Model.getExistingModels()) {
+				if (m instanceof Searchable)
 					addModel(m);
 			}
 			// show the search results as a 2 column sortable table
 			// showing the appt date and text
-			resultsTable.setModel(new TableSorter(new String[] {
-					Resource.getResourceString("Item"),
-					Resource.getResourceString("Type"),
-					Resource.getResourceString("Date"), "key", "class" },
-					new Class[] { String.class, String.class, Date.class,
-							Integer.class, Class.class }));
+			resultsTable.setModel(new TableSorter(
+					new String[] { Resource.getResourceString("Item"), Resource.getResourceString("Type"),
+							Resource.getResourceString("Date"), "key", "class" },
+					new Class[] { String.class, String.class, Date.class, Integer.class, Class.class }));
 
 			// hide columns with the key, class
 			TableColumnModel colModel = resultsTable.getColumnModel();
@@ -602,8 +593,7 @@ public class SearchView extends DockableView implements Module {
 
 		setLayout(new GridBagLayout());
 
-		add(createSearchCriteriaPanel(), GridBagConstraintsFactory.create(0, 0,
-				GridBagConstraints.BOTH, 0.0, 0.0));
+		add(createSearchCriteriaPanel(), GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH, 0.0, 0.0));
 
 		JPanel searchButtonPanel = new JPanel();
 		GridLayout gridLayout18 = new GridLayout();
@@ -613,15 +603,13 @@ public class SearchView extends DockableView implements Module {
 
 		JButton searchButton = new JButton();
 		ResourceHelper.setText(searchButton, "srch");
-		searchButton.setIcon(new ImageIcon(getClass().getResource(
-				"/resource/Find16.gif")));
+		searchButton.setIcon(new ImageIcon(getClass().getResource("/resource/Find16.gif")));
 		searchButton.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent e) {
 				SearchCriteria criteria = getCriteria();
 
-				if (criteria.getStartDate() != null
-						&& criteria.getEndDate() != null
+				if (criteria.getStartDate() != null && criteria.getEndDate() != null
 						&& criteria.getStartDate().after(criteria.getEndDate())) {
 					Errmsg.getErrorHandler().notice(Resource.getResourceString("Start_After_End"));
 					return;
@@ -632,20 +620,17 @@ public class SearchView extends DockableView implements Module {
 		});
 		searchButtonPanel.add(searchButton, null);
 
-		add(searchButtonPanel,
-				GridBagConstraintsFactory.create(0, 2, GridBagConstraints.NONE));
+		add(searchButtonPanel, GridBagConstraintsFactory.create(0, 2, GridBagConstraints.NONE));
 
-		add(createResultsPanel(), GridBagConstraintsFactory.create(0, 3,
-				GridBagConstraints.BOTH, 1.0, 1.0));
+		add(createResultsPanel(), GridBagConstraintsFactory.create(0, 3, GridBagConstraints.BOTH, 1.0, 1.0));
 
 	}
 
 	@Override
 	public void initialize(MultiView parent) {
 		final MultiView par = parent;
-		parent.addToolBarItem(
-				new ImageIcon(getClass().getResource("/resource/Find16.gif")),
-				getModuleName(), new ActionListener() {
+		parent.addToolBarItem(new ImageIcon(getClass().getResource("/resource/Find16.gif")), getModuleName(),
+				new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent evt) {
 						par.setView(ViewType.SEARCH);
@@ -698,12 +683,10 @@ public class SearchView extends DockableView implements Module {
 		// search criteria
 
 		if (apptCheckBox.isSelected()) {
-			Collection<Appointment> appointments = AppointmentModel
-					.getReference().search(criteria);
+			Collection<Appointment> appointments = AppointmentModel.getReference().search(criteria);
 			for (Appointment appt : appointments) {
 				Object[] ro = new Object[5];
 
-				
 				try {
 					ro[0] = appt.getText().replace('\n', ' ');
 					ro[1] = Resource.getResourceString("appointment");
@@ -722,18 +705,15 @@ public class SearchView extends DockableView implements Module {
 
 		if (addressCheckBox.isSelected()) {
 
-			Collection<Address> addresses = AddressModel.getReference().search(
-					criteria);
+			Collection<Address> addresses = AddressModel.getReference().search(criteria);
 			for (Address addr : addresses) {
 				Object[] ro = new Object[5];
 
 				try {
-					ro[0] = ((addr.getFirstName() == null) ? "" : (addr
-							.getFirstName() + " "))
-							+ ((addr.getLastName() == null) ? "" : addr
-									.getLastName());
+					ro[0] = ((addr.getFirstName() == null) ? "" : (addr.getFirstName() + " "))
+							+ ((addr.getLastName() == null) ? "" : addr.getLastName());
 					ro[1] = Resource.getResourceString("Address");
-					ro[2] = null;
+					ro[2] = addr.getBirthday();
 					ro[3] = Integer.valueOf(addr.getKey());
 					ro[4] = Address.class;
 					tm.addRow(ro);
@@ -746,8 +726,7 @@ public class SearchView extends DockableView implements Module {
 			}
 		}
 
-		Collection<KeyedEntity<?>> taskItems = TaskModel.getReference().search(
-				criteria);
+		Collection<KeyedEntity<?>> taskItems = TaskModel.getReference().search(criteria);
 		for (KeyedEntity<?> item : taskItems) {
 			Object[] ro = new Object[5];
 
@@ -755,7 +734,7 @@ public class SearchView extends DockableView implements Module {
 				if (item instanceof Project && projectCheckBox.isSelected()) {
 					ro[0] = ((Project) item).getDescription();
 					ro[1] = Resource.getResourceString("project");
-					ro[2] = null;
+					ro[2] = ((Project) item).getDueDate();
 					ro[3] = Integer.valueOf(item.getKey());
 					ro[4] = Project.class;
 					tm.addRow(ro);
@@ -763,9 +742,17 @@ public class SearchView extends DockableView implements Module {
 				} else if (item instanceof Task && taskCheckBox.isSelected()) {
 					ro[0] = ((Task) item).getSummary();
 					ro[1] = Resource.getResourceString("task");
-					ro[2] = null;
+					ro[2] = ((Task) item).getDueDate();
 					ro[3] = Integer.valueOf(item.getKey());
 					ro[4] = Task.class;
+					tm.addRow(ro);
+					tm.tableChanged(new TableModelEvent(tm));
+				} else if (item instanceof Subtask && taskCheckBox.isSelected()) {
+					ro[0] = ((Subtask) item).getDescription();
+					ro[1] = Resource.getResourceString("subtask");
+					ro[2] = ((Subtask) item).getDueDate();
+					ro[3] = Integer.valueOf(item.getKey());
+					ro[4] = Subtask.class;
 					tm.addRow(ro);
 					tm.tableChanged(new TableModelEvent(tm));
 				}
@@ -828,8 +815,7 @@ public class SearchView extends DockableView implements Module {
 			cal.setTime(ap.getDate());
 
 			// bring up an appt editor window
-			AppointmentListView ag = new AppointmentListView(
-					cal.get(Calendar.YEAR), cal.get(Calendar.MONTH),
+			AppointmentListView ag = new AppointmentListView(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH),
 					cal.get(Calendar.DATE));
 			ag.showApp(ap.getKey());
 			ag.showView();
@@ -870,6 +856,49 @@ public class SearchView extends DockableView implements Module {
 				mp.selectMemo((String) tm.getValueAt(row, 0));
 			}
 		}
+	}
+	
+	@SuppressWarnings("rawtypes")
+    public void exportToCSV(Writer writer) throws IOException {
+
+		try {
+
+			TableSorter ts = (TableSorter)resultsTable.getModel();
+			TableColumnModel cm = resultsTable.getColumnModel();
+			StringBuffer header = new StringBuffer();
+			for (int j = 0; j < cm.getColumnCount(); j++) {
+				header.append(esc((String)cm.getColumn(j).getHeaderValue()));
+				if (j != cm.getColumnCount())
+					header.append(", ");
+			}
+			writer.write(header.toString() + "\r\n");
+
+			for (int i = 0; i < ts.getRowCount(); i++) {
+				StringBuffer buffer = new StringBuffer();
+				for (int j = 0; j < cm.getColumnCount(); j++) {
+					int cidx = cm.getColumn(j).getModelIndex();
+					Object o = ts.getValueAt(i, cidx);
+					if (o instanceof Date) {
+						buffer.append(esc(DateFormat.getDateTimeInstance().format((Date) o)));
+					} else if (o instanceof Number) {
+						buffer.append(((Number) o).toString());
+					} else if( o instanceof Class) {
+						buffer.append(((Class)o).getTypeName());
+					} else
+						buffer.append(esc((String) o));
+					if (j != cm.getColumnCount())
+						buffer.append(", ");
+				}
+				writer.write(buffer.toString() + "\r\n");
+			}
+		} finally {
+			writer.close();
+		}
+	}
+
+	private String esc(String s) {
+		if( s == null ) return "";
+		return s.replace(",", " ");
 	}
 
 }
