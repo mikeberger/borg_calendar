@@ -430,6 +430,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 				if (coll != null) {
 					for (Subtask st : coll) {
 						SubtaskUndoItem.recordDelete(st);
+						refreshListeners(new ChangeEvent(st, ChangeAction.DELETE));
 					}
 				}
 			}
@@ -1038,9 +1039,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 			}
 		} else {
 			Subtask st = db_.getSubTask(s.getKey());
-			if (!undo) {
-				SubtaskUndoItem.recordUpdate(st);
-			}
+			
 			
 			s.setCreateTime(st.getCreateTime());
 			s.setUid(st.getUid());
@@ -1052,6 +1051,14 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 			s.setLastMod(new Date());
 			if( s.getUid() == null)
 				s.setUid(Integer.toString(s.getKey()) + "@BORGS-" + s.getCreateTime().getTime());
+
+			// don't update if no difference - to prevent unneeded syncs
+			if( st.equals(s)) return;
+			
+			if (!undo) {
+				SubtaskUndoItem.recordUpdate(st);
+			}
+			
 			db_.updateSubTask(s);
 			action = ChangeAction.CHANGE;
 

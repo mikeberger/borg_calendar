@@ -37,7 +37,7 @@ import net.sf.borg.model.TaskModel;
 @XmlRootElement(name = "Subtask")
 @XmlAccessorType(XmlAccessType.FIELD)
 @Data
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, exclude = {"lastMod","createTime"})
 public class Subtask extends KeyedEntity<Subtask> implements CalendarEntity, SyncableEntity {
 
 	private static final long serialVersionUID = -5794908342032518360L;
