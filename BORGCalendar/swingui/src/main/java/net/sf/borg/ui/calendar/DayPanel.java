@@ -250,6 +250,7 @@ public class DayPanel extends DockableView implements Printable, CalendarModule 
 			// set small font for appt text
 			g2.setFont(sm_font);
 			int smfontHeight = g2.getFontMetrics().getHeight();
+			if( smfontHeight == 0) smfontHeight = 7;
 
 			int colleft = (int) (timecolwidth);
 

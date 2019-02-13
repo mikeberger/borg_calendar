@@ -1472,7 +1472,13 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 				}
 
 				res.add(t);
+				
+				for (Subtask st : subtasks) {
+					res.add(st);
+				}
 			}
+			
+
 
 		} catch (Exception e) {
 			Errmsg.getErrorHandler().errmsg(e);
