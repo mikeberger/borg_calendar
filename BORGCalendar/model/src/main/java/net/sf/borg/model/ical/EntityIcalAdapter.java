@@ -49,6 +49,7 @@ import net.fortuna.ical4j.model.property.Action;
 import net.fortuna.ical4j.model.property.Categories;
 import net.fortuna.ical4j.model.property.Clazz;
 import net.fortuna.ical4j.model.property.Created;
+import net.fortuna.ical4j.model.property.DateProperty;
 import net.fortuna.ical4j.model.property.Description;
 import net.fortuna.ical4j.model.property.DtEnd;
 import net.fortuna.ical4j.model.property.DtStart;
@@ -394,8 +395,13 @@ public class EntityIcalAdapter {
 			ap.setUntimed("Y");
 			ap.setText(appttext);
 			prop = pl.getProperty(Property.DTSTART);
+			
+			// for todos, fallback to use DUE if no DTSTART
+			if( prop == null && comp instanceof VToDo )
+				prop = pl.getProperty(Property.DUE);
+			
 			if (prop != null) {
-				DtStart dts = (DtStart) prop;
+				DateProperty dts = (DateProperty) prop;
 				Date d = dts.getDate();
 
 				Date utc = new Date();
