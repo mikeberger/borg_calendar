@@ -154,7 +154,7 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.7</version>
+				<version>1.7</version><!--$NO-MVN-MAN-VER$-->
 				<inherited>false</inherited>
 				<executions>
 					<execution>

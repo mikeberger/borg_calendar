@@ -49,14 +49,6 @@
 					<groupId>org.codehaus.groovy</groupId>
 					<artifactId>groovy-all</artifactId>
 				</exclusion>
-				<exclusion>
-					<groupId>org.mnode.ical4j</groupId>
-					<artifactId>ical4j-extensions</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.mnode.ical4j</groupId>
-					<artifactId>ical4j-vcard</artifactId>
-				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
