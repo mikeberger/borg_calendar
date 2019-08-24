@@ -21,6 +21,7 @@ public class SyncEvent {
 
 	private Integer id;
 	private String uid;
+	private String url;
 	private ChangeAction action;
 	private ObjectType objectType;
 

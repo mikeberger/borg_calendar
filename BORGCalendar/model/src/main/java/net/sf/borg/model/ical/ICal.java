@@ -132,7 +132,7 @@ public class ICal {
 
 	static public String importIcalFromUrl(String urlString) throws Exception {
 
-		Prefs.setProxy();
+		//Prefs.setProxy();
 
 		CalendarBuilder builder = new CalendarBuilder();
 		URL url = new URL(urlString);

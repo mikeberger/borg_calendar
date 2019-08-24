@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
@@ -7,12 +8,6 @@
 		<version>1.9</version>
 	</parent>
 	<artifactId>model</artifactId>
-	<repositories>
-		<repository>
-			<id>jitpack.io</id>
-			<url>https://jitpack.io</url>
-		</repository>
-	</repositories>
 	<dependencies>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -44,16 +39,35 @@
 			<artifactId>commons-net</artifactId>
 			<version>3.6</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.mnode.ical4j/ical4j-connector -->
 		<dependency>
-			<groupId>com.github.mikeberger</groupId>
+			<groupId>org.mnode.ical4j</groupId>
 			<artifactId>ical4j-connector</artifactId>
-			<version>borg3</version>
+			<version>1.0.1</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.codehaus.groovy</groupId>
 					<artifactId>groovy-all</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>org.mnode.ical4j</groupId>
+					<artifactId>ical4j-extensions</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.mnode.ical4j</groupId>
+					<artifactId>ical4j-vcard</artifactId>
+				</exclusion>
 			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.mnode.ical4j</groupId>
+			<artifactId>ical4j</artifactId>
+			<version>2.2.5</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.jackrabbit</groupId>
+			<artifactId>jackrabbit-webdav</artifactId>
+			<version>2.8.0</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.xml.bind</groupId>

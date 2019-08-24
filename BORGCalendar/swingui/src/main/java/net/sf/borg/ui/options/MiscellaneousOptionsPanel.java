@@ -69,12 +69,12 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 
 	private JCheckBox dynamicLoading = new JCheckBox();
 	private JCheckBox verboseLogging = new JCheckBox();
-	private JCheckBox useProxy = new JCheckBox();
+	//private JCheckBox useProxy = new JCheckBox();
 
 	private JComboBox<String> shutdownAction = new JComboBox<String>();
 
-	private JTextField proxyHostText = new JTextField();
-	private JTextField proxyPortText = new JTextField();
+	//private JTextField proxyHostText = new JTextField();
+	//private JTextField proxyPortText = new JTextField();
 	
 	private JSpinner flushSpinner = new JSpinner();
 
@@ -170,7 +170,7 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 		gbc1.gridwidth = 2;
 		this.add(verboseLogging, gbc1);
 		
-		useProxy.setText(Resource.getResourceString("Use_Proxy"));
+/*		useProxy.setText(Resource.getResourceString("Use_Proxy"));
 		gbc1 = GridBagConstraintsFactory.create(0, 11, GridBagConstraints.BOTH);
 		gbc1.gridwidth = 2;
 		this.add(useProxy, gbc1);
@@ -184,7 +184,7 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 				GridBagConstraintsFactory.create(0, 13, GridBagConstraints.BOTH));
 		this.add(proxyPortText,
 				GridBagConstraintsFactory.create(1, 13, GridBagConstraints.BOTH));
-
+*/
 		flushSpinner.setModel(new SpinnerNumberModel(0,0,null,1));
 		this.add(new JLabel(Resource.getResourceString("db_flush")),
 				GridBagConstraintsFactory.create(0, 14, GridBagConstraints.BOTH));
@@ -218,7 +218,7 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 		OptionsPanel.setBooleanPref(dateInSysTray, PrefName.SYSTRAYDATE);
 		OptionsPanel.setBooleanPref(dynamicLoading, PrefName.DYNAMIC_LOADING);
 		OptionsPanel.setBooleanPref(verboseLogging, PrefName.DEBUG);
-		OptionsPanel.setBooleanPref(useProxy, PrefName.USE_PROXY);
+		//OptionsPanel.setBooleanPref(useProxy, PrefName.USE_PROXY);
 		
 		Prefs.putPref(PrefName.BACKUPDIR, backupDir.getText());
 
@@ -241,15 +241,15 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 			Prefs.putPref(PrefName.SOCKETPORT, Integer.valueOf(-1));
 		}
 		
-		Prefs.putPref(PrefName.PROXY_HOST, proxyHostText.getText());
+		//Prefs.putPref(PrefName.PROXY_HOST, proxyHostText.getText());
 
-		try {
-			int port = Integer.parseInt(proxyPortText.getText());
-			Prefs.putPref(PrefName.PROXY_PORT, Integer.valueOf(port));
-		} catch (NumberFormatException e) {
-			Errmsg.getErrorHandler().notice(Resource.getResourceString("proxy_warn"));
-		}
-		
+//		try {
+//			int port = Integer.parseInt(proxyPortText.getText());
+//			Prefs.putPref(PrefName.PROXY_PORT, Integer.valueOf(port));
+//		} catch (NumberFormatException e) {
+//			Errmsg.getErrorHandler().notice(Resource.getResourceString("proxy_warn"));
+//		}
+//		
 		int fmins = (int) flushSpinner.getValue();
 		Prefs.putPref(PrefName.FLUSH_MINS, fmins);
 		
@@ -274,7 +274,7 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 		OptionsPanel.setCheckBox(dateInSysTray, PrefName.SYSTRAYDATE);
 		OptionsPanel.setCheckBox(dynamicLoading, PrefName.DYNAMIC_LOADING);
 		OptionsPanel.setCheckBox(verboseLogging, PrefName.DEBUG);
-		OptionsPanel.setCheckBox(useProxy, PrefName.USE_PROXY);
+		//OptionsPanel.setCheckBox(useProxy, PrefName.USE_PROXY);
 
 		String shutdown_action = Prefs.getPref(PrefName.SHUTDOWN_ACTION);
 		if (shutdown_action.isEmpty()
@@ -290,10 +290,10 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 		int socket = Prefs.getIntPref(PrefName.SOCKETPORT);
 		socketPort.setText(Integer.toString(socket));
 		
-		proxyHostText.setText(Prefs.getPref(PrefName.PROXY_HOST));
-		
-		int port = Prefs.getIntPref(PrefName.PROXY_PORT);
-		proxyPortText.setText(Integer.toString(port));
+//		proxyHostText.setText(Prefs.getPref(PrefName.PROXY_HOST));
+//		
+//		int port = Prefs.getIntPref(PrefName.PROXY_PORT);
+//		proxyPortText.setText(Integer.toString(port));
 		
 		int flushMins = Prefs.getIntPref(PrefName.FLUSH_MINS);
 		flushSpinner.setValue(flushMins);

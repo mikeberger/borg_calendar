@@ -22,8 +22,6 @@ package net.sf.borg.common;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
@@ -203,6 +201,7 @@ public class Prefs {
 		Prefs.prefRootNode = prefRootNode;
 	}
 
+	/*
 	public static void setProxy() {
 		
 		
@@ -233,5 +232,5 @@ public class Prefs {
 			System.clearProperty("https.proxyPort");
 		}
 	
-	}
+	}*/
 }

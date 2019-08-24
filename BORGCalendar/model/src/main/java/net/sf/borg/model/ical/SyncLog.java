@@ -5,6 +5,7 @@ import java.io.Writer;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -45,7 +46,10 @@ public class SyncLog extends Model implements Model.Listener, Prefs.Listener {
 		setProcessUpdates(CalDav.isSyncing());
 
 		new JdbcDBUpgrader("select id from syncmap",
-				"CREATE CACHED TABLE syncmap (id integer NOT NULL,uid longvarchar, objtype varchar(25) NOT NULL,action varchar(25) NOT NULL,PRIMARY KEY (id,objtype))")
+				"CREATE CACHED TABLE syncmap (id integer NOT NULL,uid longvarchar, url longvarchar, objtype varchar(25) NOT NULL,action varchar(25) NOT NULL,PRIMARY KEY (id,objtype))")
+						.upgrade();
+		new JdbcDBUpgrader("select url from syncmap",
+				"ALTER TABLE syncmap ADD url longvarchar")
 						.upgrade();
 		AppointmentModel.getReference().addListener(this);
 		TaskModel.getReference().addListener(this);
@@ -69,15 +73,8 @@ public class SyncLog extends Model implements Model.Listener, Prefs.Listener {
 				SyncableEntity se = (SyncableEntity) obj;
 				newEvent.setId(Integer.valueOf(se.getKey()));
 				newEvent.setObjectType(se.getObjectType());
-
-				// use the URL first. If null, user the UID
-
-				if (se.getUrl() != null) {
-					newEvent.setUid(se.getUrl());
-				} else {
-					newEvent.setUid(se.getUid());
-				}
-
+				newEvent.setUrl(se.getUrl());
+				newEvent.setUid(se.getUid());
 
 			} else {
 				return;
@@ -89,6 +86,7 @@ public class SyncLog extends Model implements Model.Listener, Prefs.Listener {
 			ObjectType type = newEvent.getObjectType();
 			SyncEvent existingEvent = get(id.intValue(), type);
 			String uid = newEvent.getUid();
+			String url = newEvent.getUrl();
 
 			// any condition not listed is either a no-op or cannot occur
 			if (existingEvent == null) {
@@ -100,12 +98,12 @@ public class SyncLog extends Model implements Model.Listener, Prefs.Listener {
 					this.delete(id.intValue(), type);
 				} else if (existingEvent.getAction() == ChangeEvent.ChangeAction.CHANGE
 						&& newEvent.getAction() == ChangeEvent.ChangeAction.DELETE) {
-					SyncEvent event = new SyncEvent(id, uid, ChangeEvent.ChangeAction.DELETE, type);
+					SyncEvent event = new SyncEvent(id, uid, url, ChangeEvent.ChangeAction.DELETE, type);
 					this.delete(id.intValue(), type);
 					this.insert(event);
 				} else if (existingEvent.getAction() == ChangeEvent.ChangeAction.DELETE
 						&& newEvent.getAction() == ChangeEvent.ChangeAction.ADD) {
-					SyncEvent event = new SyncEvent(id, uid, ChangeEvent.ChangeAction.CHANGE, type);
+					SyncEvent event = new SyncEvent(id, uid, url, ChangeEvent.ChangeAction.CHANGE, type);
 					this.delete(id.intValue(), type);
 					this.insert(event);
 				}
@@ -121,9 +119,10 @@ public class SyncLog extends Model implements Model.Listener, Prefs.Listener {
 		int id = r.getInt("id");
 		ChangeEvent.ChangeAction action = ChangeEvent.ChangeAction.valueOf(r.getString("action"));
 		String uid = r.getString("uid");
+		String url = r.getString("url");
 		String type = r.getString("objtype");
 		ObjectType otype = ObjectType.valueOf(type);
-		SyncEvent event = new SyncEvent(Integer.valueOf(id), uid, action, otype);
+		SyncEvent event = new SyncEvent(Integer.valueOf(id), uid, url, action, otype);
 		return event;
 	}
 
@@ -173,12 +172,16 @@ public class SyncLog extends Model implements Model.Listener, Prefs.Listener {
 
 	public void insert(SyncEvent event) throws Exception {
 		PreparedStatement stmt = DBHelper.getController().getConnection()
-				.prepareStatement("INSERT INTO syncmap ( id, uid, action, objtype) " + " VALUES " + "( ?, ?, ?, ?)");
+				.prepareStatement("INSERT INTO syncmap ( id, uid, url, action, objtype) " + " VALUES " + "( ?, ?, ?, ?, ?)");
 
 		stmt.setInt(1, event.getId().intValue());
 		stmt.setString(2, event.getUid().toString());
-		stmt.setString(3, event.getAction().toString());
-		stmt.setString(4, event.getObjectType().toString());
+		if( event.getUrl() != null)
+			stmt.setString(3, event.getUrl().toString());
+		else
+			stmt.setNull(3, Types.LONGVARCHAR);
+		stmt.setString(4, event.getAction().toString());
+		stmt.setString(5, event.getObjectType().toString());
 		stmt.executeUpdate();
 		stmt.close();
 

@@ -95,8 +95,10 @@ public class CalDav {
 			urlValue = url.getValue();
 
 		try {
-			collection.writeCalendarOnServer(mycal, true, urlValue);
-			// collection.addCalendar(mycal);
+			if (urlValue != null)
+				collection.addCalendar(urlValue, mycal);
+			else
+				collection.addCalendar(mycal);
 		} catch (Exception e) {
 			log.severe(e.getMessage());
 			e.printStackTrace();
@@ -109,7 +111,7 @@ public class CalDav {
 		if (!isSyncing())
 			return null;
 
-		Prefs.setProxy();
+		//Prefs.setProxy();
 
 		if (Prefs.getBoolPref(PrefName.CALDAV_ALLOW_SELF_SIGNED_CERT)) {
 			// Allow access even though certificate is self signed
@@ -214,8 +216,13 @@ public class CalDav {
 		return store.getCollection(cal_id);
 	}
 
-	private static Component getEvent(CalDavCalendarCollection collection, String uid) {
-		Calendar cal = collection.getCalendar(uid);
+	private static Component getEvent(CalDavCalendarCollection collection, SyncEvent se) {
+		
+		Calendar cal = null;
+		if( se.getUrl() != null && !se.getUrl().isEmpty())
+			cal = collection.getCalendarFromUri(se.getUrl());
+		else
+			cal = collection.getCalendar(se.getUid());
 		if (cal == null)
 			return null;
 
@@ -255,7 +262,7 @@ public class CalDav {
 							addEvent(collection, ve1);
 
 					} else if (se.getAction().equals(ChangeAction.CHANGE)) {
-						Component comp = getEvent(collection, se.getUid());
+						Component comp = getEvent(collection, se);
 						Appointment ap = AppointmentModel.getReference().getAppt(se.getId());
 
 						if (comp == null) {
@@ -273,11 +280,11 @@ public class CalDav {
 						}
 					} else if (se.getAction().equals(ChangeAction.DELETE)) {
 
-						Component comp = getEvent(collection, se.getUid());
+						Component comp = getEvent(collection, se);
 
 						if (comp != null) {
 							log.info("SYNC: removeEvent: " + comp.toString());
-							collection.removeCalendar(se.getUid());
+							removeEvent(collection, se);
 
 						} else {
 							log.info("Deleted Appt: " + se.getUid() + " not found on server");
@@ -301,7 +308,7 @@ public class CalDav {
 							addEvent(collection, ve1);
 
 					} else if (se.getAction().equals(ChangeAction.CHANGE)) {
-						Component comp = getEvent(collection, se.getUid());
+						Component comp = getEvent(collection, se);
 						Task task = TaskModel.getReference().getTask(se.getId());
 
 						if (comp == null) {
@@ -315,17 +322,17 @@ public class CalDav {
 							if (ve1 != null) {
 								updateEvent(collection, ve1);
 							} else {
-								collection.removeCalendar(se.getUid());
+								removeEvent(collection, se);
 
 							}
 						}
 					} else if (se.getAction().equals(ChangeAction.DELETE)) {
 
-						Component comp = getEvent(collection, se.getUid());
+						Component comp = getEvent(collection, se);
 
 						if (comp != null) {
 							log.info("SYNC: removeEvent: " + comp.toString());
-							collection.removeCalendar(se.getUid());
+							removeEvent(collection, se);
 
 						} else {
 							log.info("Deleted Appt: " + se.getUid() + " not found on server");
@@ -349,7 +356,7 @@ public class CalDav {
 							addEvent(collection, ve1);
 
 					} else if (se.getAction().equals(ChangeAction.CHANGE)) {
-						Component comp = getEvent(collection, se.getUid());
+						Component comp = getEvent(collection, se);
 						Subtask subtask = TaskModel.getReference().getSubTask(se.getId());
 
 						if (comp == null) {
@@ -363,17 +370,17 @@ public class CalDav {
 							if (ve1 != null) {
 								updateEvent(collection, ve1);
 							} else {
-								collection.removeCalendar(se.getUid());
+								removeEvent(collection, se);
 
 							}
 						}
 					} else if (se.getAction().equals(ChangeAction.DELETE)) {
 
-						Component comp = getEvent(collection, se.getUid());
+						Component comp = getEvent(collection, se);
 
 						if (comp != null) {
 							log.info("SYNC: removeEvent: " + comp.toString());
-							collection.removeCalendar(se.getUid());
+							removeEvent(collection, se);
 
 						} else {
 							log.info("Deleted Appt: " + se.getUid() + " not found on server");
@@ -389,6 +396,13 @@ public class CalDav {
 			}
 		}
 
+	}
+	
+	static private void removeEvent(CalDavCalendarCollection collection, SyncEvent se) throws Exception {
+		if( se.getUrl() != null && !se.getUrl().isEmpty())
+			collection.removeCalendarFromUri(se.getUrl());
+		else
+			collection.removeCalendar(se.getUid());
 	}
 
 	public static void sep(String s) throws Exception {
@@ -417,8 +431,7 @@ public class CalDav {
 	}
 
 	/**
-	 * check remote server to see if sync needed - must not be run on Event
-	 * thread
+	 * check remote server to see if sync needed - must not be run on Event thread
 	 *
 	 * @throws Exception
 	 */
@@ -465,7 +478,7 @@ public class CalDav {
 	static public void setServerSyncNeeded(boolean needed) throws Exception {
 		if (needed)
 			SyncLog.getReference().insert(
-					new SyncEvent(REMOTE_ID, "", ChangeEvent.ChangeAction.CHANGE, SyncableEntity.ObjectType.REMOTE));
+					new SyncEvent(REMOTE_ID, "", "", ChangeEvent.ChangeAction.CHANGE, SyncableEntity.ObjectType.REMOTE));
 		else
 			SyncLog.getReference().delete(REMOTE_ID, SyncableEntity.ObjectType.REMOTE);
 
@@ -476,6 +489,8 @@ public class CalDav {
 		CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_UNFOLDING, true);
 		CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_VALIDATION, true);
 		CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_OUTLOOK_COMPATIBILITY, true);
+		
+		System.setProperty("net.fortuna.ical4j.timezone.cache.impl", "net.fortuna.ical4j.util.MapTimeZoneCache");
 
 		CalDavCalendarStore store = connect();
 		if (store == null)
@@ -588,8 +603,11 @@ public class CalDav {
 
 			// copy Url from calendar into every component
 			Property url = comp.getProperty(Property.URL);
-			if (url == null)
-				comp.getProperties().add(cal.getProperty(Property.URL));
+			if (url == null) {
+				url = cal.getProperty(Property.URL);
+				if( url != null )
+					comp.getProperties().add(url);
+			}
 
 			String uid = comp.getProperty(Property.UID).getValue();
 
@@ -670,11 +688,11 @@ public class CalDav {
 		Date after = null;
 		GregorianCalendar gcal = new GregorianCalendar();
 
-		gcal.add(java.util.Calendar.YEAR, -1 * ((years == null ) ? 50 : years.intValue()));
+		gcal.add(java.util.Calendar.YEAR, -1 * ((years == null) ? 50 : years.intValue()));
 		after = gcal.getTime();
 
 		gcal = new GregorianCalendar();
-		gcal.add(java.util.Calendar.YEAR, 10 );
+		gcal.add(java.util.Calendar.YEAR, 10);
 		Date tenYears = gcal.getTime();
 
 		ArrayList<String> serverUids = new ArrayList<String>();
@@ -683,7 +701,7 @@ public class CalDav {
 		net.fortuna.ical4j.model.DateTime dtend = new net.fortuna.ical4j.model.DateTime(tenYears);
 		log.info("SYNC: " + dtstart.toString() + "--" + dtend.toString());
 
-		Calendar cals[] = collection.getEventsForTimePeriod(dtstart,dtend);
+		Calendar cals[] = collection.getEventsForTimePeriod(dtstart, dtend);
 		SocketClient.sendLogMessage("SYNC: found " + cals.length + " Event Calendars on server");
 		log.info("SYNC: found " + cals.length + " Event Calendars on server");
 		int count = 0;
@@ -738,8 +756,11 @@ public class CalDav {
 			urlValue = url.getValue();
 
 		try {
-			collection.writeCalendarOnServer(mycal, false, urlValue);
-			// collection.updateCalendar(mycal);
+			if (urlValue != null)
+				collection.updateCalendar(urlValue, mycal);
+			else
+				collection.updateCalendar(mycal);
+			
 		} catch (Exception e) {
 			log.severe(e.getMessage());
 			e.printStackTrace();
