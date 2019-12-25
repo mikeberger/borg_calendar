@@ -36,6 +36,7 @@ import net.fortuna.ical4j.model.component.VToDo;
 import net.fortuna.ical4j.model.property.Completed;
 import net.fortuna.ical4j.model.property.ProdId;
 import net.fortuna.ical4j.model.property.RecurrenceId;
+import net.fortuna.ical4j.model.property.Status;
 import net.fortuna.ical4j.model.property.Version;
 import net.fortuna.ical4j.util.CompatibilityHints;
 import net.sf.borg.common.PrefName;
@@ -555,7 +556,8 @@ public class CalDav {
 			// COMPLETED
 			// status if present - otherwise, we ignore
 			Completed cpltd = (Completed) comp.getProperty(Property.COMPLETED);
-			if (cpltd == null) {
+			Status stat = (Status) comp.getProperty(Property.STATUS);
+			if (cpltd == null && (stat == null || !stat.equals(Status.VTODO_COMPLETED))) {
 				log.warning("SYNC: ignoring VToDo for single recurrence - cannot process\n" + comp.toString());
 				SocketClient.sendLogMessage(
 						"SYNC: ignoring VToDo for single recurrence - cannot process\n" + comp.toString());
