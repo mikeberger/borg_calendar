@@ -34,7 +34,14 @@ import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Subtask;
 import net.sf.borg.model.entity.Task;
 
+
+
 public class ICal {
+	
+	static {
+		System.setProperty("net.fortuna.ical4j.timezone.cache.impl", "net.fortuna.ical4j.util.MapTimeZoneCache");
+	}
+	
 	static public void exportIcalToFile(String filename, Date after) throws Exception {
 		Calendar cal = exportIcal(after, false);
 		OutputStream oostr = IOHelper.createOutputStream(filename);
