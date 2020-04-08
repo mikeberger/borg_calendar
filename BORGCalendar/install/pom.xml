@@ -39,7 +39,7 @@
 								<argument>/C</argument>
 								<argument>buildjre.bat</argument>
 								<!-- JAVA_HOME -->
-								<argument>c:\jdk-12</argument>
+								<argument>c:\java\jdk-13</argument>
 							</arguments>
 						</configuration>
 					</plugin>

@@ -404,7 +404,7 @@ class MainMenu {
 				+ version
 				+ "\n"
 				+ Resource.getResourceString("copyright")
-				+ " (2003-2018) Michael Berger <mike@mbcsoft.com>\nhttp://mikeberger.github.io/borg_calendar/\n\n"
+				+ " (2003-2020) Michael Berger <mike@mbcsoft.com>\nhttp://mikeberger.github.io/borg_calendar/\n\n"
 				+ Resource.getResourceString("contributions_by") + "\n"
 				+ Resource.getResourceString("contrib") + "\n"
 				+ Resource.getResourceString("translations") + "\n\n"
