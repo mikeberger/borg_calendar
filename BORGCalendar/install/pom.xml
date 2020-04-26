@@ -48,7 +48,7 @@
 
 		</profile>
 		<profile>
-		<id>l</id>
+			<id>l</id>
 			<activation>
 				<os>
 					<family>!windows</family>
@@ -72,7 +72,7 @@
 							<executable>bash</executable>
 							<arguments>
 								<argument>buildjre.sh</argument>
-								
+
 							</arguments>
 						</configuration>
 					</plugin>
@@ -121,15 +121,12 @@
 							<headerType>gui</headerType>
 							<outfile>target/borg_installer-${project.version}.exe</outfile>
 							<jar>target/borg_installer-${project.version}.jar</jar>
-							<downloadUrl>http://java.com/download</downloadUrl>
+							<downloadUrl>none</downloadUrl>
 							<jre>
 								<path>jre</path>
+								<minVersion>13</minVersion>
 								<bundledJre64Bit>true</bundledJre64Bit>
-								<bundledJreAsFallback>false</bundledJreAsFallback>
-								<minVersion>1.7.0</minVersion>
-								<maxVersion></maxVersion>
-								<jdkPreference>preferJre</jdkPreference>
-								<runtimeBits>64/32</runtimeBits>
+								<jdkPreference>jdkOnly</jdkPreference>
 							</jre>
 						</configuration>
 					</execution>
@@ -154,7 +151,7 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.7</version><!--$NO-MVN-MAN-VER$-->
+				<version>1.7</version><!--$NO-MVN-MAN-VER$ -->
 				<inherited>false</inherited>
 				<executions>
 					<execution>

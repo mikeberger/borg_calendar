@@ -60,16 +60,13 @@
 							<outfile>target/borg.exe</outfile>
 							<jar>borg.jar</jar>
 							<dontWrapJar>true</dontWrapJar>
-							<downloadUrl>http://java.com/download</downloadUrl>
+							<downloadUrl>none</downloadUrl>
 							<icon>${project.basedir}/src/main/resources/resource/borg32x32.ico</icon>
 							<jre>
 								<path>jre</path>
+								<minVersion>13</minVersion>
 								<bundledJre64Bit>true</bundledJre64Bit>
-								<bundledJreAsFallback>false</bundledJreAsFallback>
-								<minVersion>1.7.0</minVersion>
-								<maxVersion></maxVersion>
-								<jdkPreference>preferJre</jdkPreference>
-								<runtimeBits>64/32</runtimeBits>
+								<jdkPreference>jdkOnly</jdkPreference>
 							</jre>
 						</configuration>
 					</execution>
