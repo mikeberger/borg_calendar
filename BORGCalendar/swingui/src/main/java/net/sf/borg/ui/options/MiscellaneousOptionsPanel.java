@@ -67,15 +67,10 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 	private JCheckBox startToSysTray = new JCheckBox();
 	private JCheckBox dateInSysTray = new JCheckBox();
 
-	private JCheckBox dynamicLoading = new JCheckBox();
 	private JCheckBox verboseLogging = new JCheckBox();
-	//private JCheckBox useProxy = new JCheckBox();
 
 	private JComboBox<String> shutdownAction = new JComboBox<String>();
 
-	//private JTextField proxyHostText = new JTextField();
-	//private JTextField proxyPortText = new JTextField();
-	
 	private JSpinner flushSpinner = new JSpinner();
 
 	/**
@@ -160,11 +155,7 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 		this.add(colorprint,
 				GridBagConstraintsFactory.create(0, 8, GridBagConstraints.BOTH));
 
-		dynamicLoading.setText(Resource.getResourceString("enable_plugins"));
-		gbc1 = GridBagConstraintsFactory.create(0, 9, GridBagConstraints.BOTH);
-		gbc1.gridwidth = 2;
-		this.add(dynamicLoading, gbc1);
-		
+	
 		verboseLogging.setText(Resource.getResourceString("verbose_logging"));
 		gbc1 = GridBagConstraintsFactory.create(0, 10, GridBagConstraints.BOTH);
 		gbc1.gridwidth = 2;
@@ -216,7 +207,6 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 		OptionsPanel.setBooleanPref(useSysTray, PrefName.USESYSTRAY);
 		OptionsPanel.setBooleanPref(startToSysTray, PrefName.BACKGSTART);
 		OptionsPanel.setBooleanPref(dateInSysTray, PrefName.SYSTRAYDATE);
-		OptionsPanel.setBooleanPref(dynamicLoading, PrefName.DYNAMIC_LOADING);
 		OptionsPanel.setBooleanPref(verboseLogging, PrefName.DEBUG);
 		//OptionsPanel.setBooleanPref(useProxy, PrefName.USE_PROXY);
 		
@@ -272,7 +262,6 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 		OptionsPanel.setCheckBox(useSysTray, PrefName.USESYSTRAY);
 		OptionsPanel.setCheckBox(startToSysTray, PrefName.BACKGSTART);
 		OptionsPanel.setCheckBox(dateInSysTray, PrefName.SYSTRAYDATE);
-		OptionsPanel.setCheckBox(dynamicLoading, PrefName.DYNAMIC_LOADING);
 		OptionsPanel.setCheckBox(verboseLogging, PrefName.DEBUG);
 		//OptionsPanel.setCheckBox(useProxy, PrefName.USE_PROXY);
 

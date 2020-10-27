@@ -23,17 +23,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.security.CodeSource;
 import java.security.ProtectionDomain;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
-
-
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.ConsoleHandler;
@@ -97,25 +93,7 @@ public class Borg implements SocketHandler, Observer {
 		return (singleton);
 	}
 
-	/**
-	 * add a url to the classpath
-	 *
-	 * @param u
-	 *            - the url
-	 * @throws IOException
-	 */
-	private static void addURL(URL u) throws IOException {
-		URLClassLoader sysloader = (URLClassLoader) ClassLoader.getSystemClassLoader();
-		Class<?> sysclass = URLClassLoader.class;
-		try {
-			Method method = sysclass.getDeclaredMethod("addURL", new Class[] { URL.class });
-			method.setAccessible(true);
-			method.invoke(sysloader, new Object[] { u });
-		} catch (Throwable t) {
-			t.printStackTrace();
-		}
-	}
-
+	
 	/**
 	 * The main method.
 	 *
@@ -369,53 +347,7 @@ public class Borg implements SocketHandler, Observer {
 			e.printStackTrace();
 		}
 
-		// add the lib folder to the classpath
-		if (Prefs.getBoolPref(PrefName.DYNAMIC_LOADING) == true) {
-			// compute lib folder relative to the borg.jar file location
-			File parentDir = null;
-			try {
-				URL jarURL = getJarURL();
-				String jarPath = jarURL.toURI().getPath();
-				if (jarPath != null) {
-					parentDir = new File(jarPath).getParentFile();
-				}
-			} catch (Exception e1) {
-				e1.printStackTrace();
-			}
 
-			File ext = null;
-
-			if (parentDir != null) {
-				ext = new File(parentDir, "lib/ext");
-
-				// fall back to relative directory if folder not child of
-				// same folder where borg.jar is
-				if (!ext.exists() || !ext.isDirectory()) {
-					ext = null;
-				}
-			}
-
-			if (ext == null) {
-				ext = new File("lib/ext");
-			}
-
-			log.info("using ext lib dir=" + ext);
-			if (ext.exists() && ext.isDirectory()) {
-				File[] files = ext.listFiles();
-				if (files != null) {
-					for (File file : files) {
-						if (file.getName().endsWith(".jar")) {
-							log.info("Loading JAR: " + file.getName());
-							try {
-								Borg.addURL(file.toURI().toURL());
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
-						}
-					}
-				}
-			}
-		}
 		// locale
 		String country = Prefs.getPref(PrefName.COUNTRY);
 		String language = Prefs.getPref(PrefName.LANGUAGE);

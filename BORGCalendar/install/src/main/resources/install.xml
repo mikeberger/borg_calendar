@@ -99,7 +99,6 @@
 				stage="never" />
 			<updatecheck>
 				<include name="lib/**" />
-				<exclude name="lib/ext" />
 			</updatecheck>
 
 		</pack>

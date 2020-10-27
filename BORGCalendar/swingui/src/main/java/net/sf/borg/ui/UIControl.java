@@ -190,10 +190,6 @@ public class UIControl {
 				+ "/.borg.log", Resource.getResourceString("view_log")));
 		mv.addModule(new IcalModule());
 
-		if (Prefs.getBoolPref(PrefName.DYNAMIC_LOADING) == true) {
-			addExternalModule("net.sf.borg.plugin.reports.ReportModule");
-			addExternalModule("net.sf.borg.plugin.sync.SyncModule");
-		}
 
 		// allow start to system tray if option set and there is a system tray
 		boolean bgStart = Prefs.getBoolPref(PrefName.BACKGSTART)
@@ -372,23 +368,5 @@ public class UIControl {
 
 	}
 
-	/**
-	 * load and add a module that is found on the classpath
-	 *
-	 * @param className
-	 *            - the name of the module class
-	 */
-	private static void addExternalModule(String className) {
-		try {
-			ClassLoader cl = ClassLoader.getSystemClassLoader();
-			Class<?> clazz = cl.loadClass(className);
-			MultiView.Module module = (MultiView.Module) clazz.getDeclaredConstructor().newInstance();
-			MultiView.getMainView().addModule(module);
-		} catch (Exception e) {
-
-			log.info(e.toString());
-
-		}
-	}
-
+	
 }

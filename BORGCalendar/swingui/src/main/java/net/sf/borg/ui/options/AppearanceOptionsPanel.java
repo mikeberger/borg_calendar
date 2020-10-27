@@ -112,7 +112,7 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 		this.add(jLabel4,
 				GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH));
 
-		lnfBox.setEditable(true);
+		lnfBox.setEditable(false);
 		lnfBox.setMaximumSize(new java.awt.Dimension(131, 24));
 		lnfBox.setPreferredSize(new java.awt.Dimension(50, 24));
 		lnfBox.setAutoscrolls(true);
@@ -381,7 +381,7 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 		}
 
 		lnfBox.setSelectedItem(curlnf);
-		lnfBox.setEditable(true);
+		lnfBox.setEditable(false);
 
 		String curtheme = Prefs.getPref(PrefName.GOODIESTHEME);
 		themeBox.setSelectedItem(curtheme);
