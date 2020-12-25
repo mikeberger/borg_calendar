@@ -45,33 +45,7 @@
 	</dependencies>
 	<build>
 		<plugins>
-			<plugin>
-				<groupId>com.akathist.maven.plugins.launch4j</groupId>
-				<artifactId>launch4j-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>l4j-clui</id>
-						<phase>package</phase>
-						<goals>
-							<goal>launch4j</goal>
-						</goals>
-						<configuration>
-							<headerType>gui</headerType>
-							<outfile>target/borg.exe</outfile>
-							<jar>borg.jar</jar>
-							<dontWrapJar>true</dontWrapJar>
-							<downloadUrl>none</downloadUrl>
-							<icon>${project.basedir}/src/main/resources/resource/borg32x32.ico</icon>
-							<jre>
-								<path>jre</path>
-								<minVersion>13</minVersion>
-								<bundledJre64Bit>true</bundledJre64Bit>
-								<jdkPreference>jdkOnly</jdkPreference>
-							</jre>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
+			
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
