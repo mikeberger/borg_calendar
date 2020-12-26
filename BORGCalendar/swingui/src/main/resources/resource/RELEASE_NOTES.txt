@@ -9,17 +9,6 @@ received translations will be posted as patches and then included in
 the next release.
 
 
-RUNNING
--------
-For Windows: The installer can create shortcuts in the start menu and 
-desktop (optional)
-   Otherwise, double-click borg.exe from windows explorer.
-   It is found in the install folder that you choose from the installer.
-   
-For Unix/Linux: Run the run_borg.sh script in the installation directory
-
-
-
 LICENSE
 -------
 BORG is open source under the GPL. A copy of the GPL is included with it.

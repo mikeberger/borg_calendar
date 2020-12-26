@@ -1,3 +1,22 @@
+BORG 1.9.0.2
+------------
+Java 15
+#88 - fix the SSL self-cert code
+remove dynamic loading (of java libs)
+remove IzPack and Launch4j - Switch to simple jpackage install
+
+BORG 1.9.0.1
+------------
+Java 13
+Fix #70 - add change events for subtask deletes when task is deleted. Also prevent
+subtask updates when there are no changes in order to stop unnecessary caldav syncs
+Calendar Printing Broken in Java 11 #79 - work around added for jdk bug
+add subtasks to search results, add task dates to search results, add CSV export for search results
+Tasks fail to sync to Borg if they lack a start date (#81)
+#82 - upgrade to official ical4j-connector. remove proxy support
+Synced task fails to complete #83
+set property needed for ical4j libs when importing ical appt from file.
+
 BORG 1.9
 --------
 Support Java 10
