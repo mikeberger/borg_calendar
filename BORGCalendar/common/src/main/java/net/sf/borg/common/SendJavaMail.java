@@ -97,6 +97,8 @@ public class SendJavaMail {
 	 */
 	public static void sendMail(String host, String msgText, String subject,
 			String from, String to, String user, String pass) throws Exception {
+		
+		log.info("Sending mail to: " + to);
 
 		// create some properties and get the default Session
 		Properties props = new Properties();
@@ -135,6 +137,8 @@ public class SendJavaMail {
 			processMessagingException(mex);
 			throw mex;
 		}
+		
+		log.info("mail sent");
 	}
 
 	/**

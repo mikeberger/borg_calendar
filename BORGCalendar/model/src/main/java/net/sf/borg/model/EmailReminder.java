@@ -131,6 +131,10 @@ public class EmailReminder {
 					// if so, don't include it in the email
 					if (appt.isPrivate())
 						continue;
+					
+					// skip strike through appts
+					if( "strike".equals(appt.getColor()))
+						continue;
 
 					if (!AppointmentModel.isNote(appt)) {
 						// add the appointment time to the email if it is not a
