@@ -48,6 +48,7 @@ import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.common.SendJavaMail;
 import net.sf.borg.model.entity.Appointment;
+import net.sf.borg.model.entity.CalendarEntity;
 import net.sf.borg.model.entity.Task;
 
 /**
@@ -57,6 +58,23 @@ import net.sf.borg.model.entity.Task;
 public class EmailReminder {
 	
 	static private final Logger log = Logger.getLogger("net.sf.borg");
+
+	/**
+	 * Checks if entity should be shown as strike-through on a certain date.
+	 * 
+	 * @param appt the entity
+	 * @param date the date
+	 * 
+	 * @return true, if is strike
+	 */
+	private static boolean isStrike(CalendarEntity appt, Date date) {
+		if ((appt.getColor() != null && appt.getColor().equals("strike"))
+				|| (appt.isTodo() && !(appt.getNextTodo() == null || !appt
+						.getNextTodo().after(date)))) {
+			return (true);
+		}
+		return false;
+	}
 
 
 	/**
@@ -132,9 +150,9 @@ public class EmailReminder {
 					if (appt.isPrivate())
 						continue;
 					
-					// skip strike through appts
-					if( "strike".equals(appt.getColor()))
-						continue;
+					// skip strike through items
+					if( isStrike(appt, cal.getTime()))
+						continue;				
 
 					if (!AppointmentModel.isNote(appt)) {
 						// add the appointment time to the email if it is not a
@@ -198,6 +216,10 @@ public class EmailReminder {
 							Prefs.getPref(PrefName.EMAILUSER), gep());
 				}
 			}
+		}
+		else
+		{
+			log.info("Skipping email");
 		}
 		// record that we sent email today
 		if (doy != -1)
