@@ -22,10 +22,7 @@ package net.sf.borg.ui;
 
 import java.awt.Component;
 import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.Frame;
 import java.awt.Image;
-import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -54,38 +51,17 @@ import net.sf.borg.ui.ViewSize.DockType;
 public abstract class DockableView extends JPanel implements Model.Listener {
 
 	/** The icon for the title bar. */
-	static Image image = Toolkit.getDefaultToolkit().getImage(
-			DockableView.class.getResource("/resource/borg32x32.jpg"));
+	static Image image = Toolkit.getDefaultToolkit()
+			.getImage(DockableView.class.getResource("/resource/borg32x32.jpg"));
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	/** main menu bar */
 	private MainMenu mainMenu = null;
-	
+
 	private Set<Model> models = new HashSet<Model>();
 
-	/**
-	 * store the window size, position, and maximized status in a preference.
-	 * used to have windows remember their sizes automatically.
-	 * 
-	 * @param c
-	 *            the window component
-	 * @param pn
-	 *            the preference
-	 */
-	static private void recordSize(Component c, PrefName pn) {
-		String s = Prefs.getPref(pn);
-		ViewSize vs = ViewSize.fromString(s);
-		vs.setX(c.getBounds().x);
-		vs.setY(c.getBounds().y);
-		vs.setWidth(c.getBounds().width);
-		vs.setHeight(c.getBounds().height);
-		JFrame v = (JFrame) c;
-		vs.setMaximized(v.getExtendedState() == Frame.MAXIMIZED_BOTH);
-		Prefs.putPref(pn, vs.toString());
-
-	}
 
 	/** The main frame. */
 	private JFrame frame = null;
@@ -93,8 +69,7 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 	/**
 	 * register the view for model change callbacks.
 	 * 
-	 * @param m
-	 *            the model
+	 * @param m the model
 	 */
 	protected void addModel(Model m) {
 		m.addListener(this);
@@ -112,16 +87,16 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 	}
 
 	/**
-	 * method called when view is being closed to allow the view to do clean up
-	 * or resets.
+	 * method called when view is being closed to allow the view to do clean up or
+	 * resets.
 	 */
 	protected void cleanUp() {
-		
+
 		// modules persist when closed, so don't deregister the listeners
-		if( this instanceof MultiView.Module)
+		if (this instanceof MultiView.Module)
 			return;
-		
-		for( Model m : models )
+
+		for (Model m : models)
 			m.removeListener(this);
 	}
 
@@ -156,15 +131,11 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 		vs.setDock(DockType.DOCK);
 		Prefs.putPref(getFrameSizePref(), vs.toString());
 	}
-	
-	protected void updateTitle()
-	{
-		if( isDocked())
-		{
+
+	protected void updateTitle() {
+		if (isDocked()) {
 			MultiView.getMainView().setTabTitle(getFrameTitle(), this);
-		}
-		else if( frame != null)
-		{
+		} else if (frame != null) {
 			frame.setTitle(getFrameTitle());
 		}
 	}
@@ -185,7 +156,6 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 	 */
 	public abstract String getFrameTitle();
 
-
 	/**
 	 * determine if the view is docked.
 	 * 
@@ -195,51 +165,6 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 		return frame == null;
 	}
 
-	/**
-	 * Sets the window size and position from the stored preference and then
-	 * sets up listeners to store any updates to the window size and position
-	 * based on user actions.
-	 * 
-	 * @param pname
-	 *            the preference name
-	 * @return the ViewSize object, which may be of use to the caller
-	 */
-	private ViewSize manageMySize(PrefName pname) {
-
-		// set the initial size
-		String s = Prefs.getPref(pname);
-		ViewSize vs = ViewSize.fromString(s);
-		vs.setDock(DockType.UNDOCK);
-		Prefs.putPref(pname, vs.toString());
-
-		if (vs.isMaximized()) {
-			frame.setExtendedState(Frame.MAXIMIZED_BOTH);
-		} else if (vs.getX() != -1) {
-			frame.setBounds(new Rectangle(vs.getX(), vs.getY(), vs.getWidth(),
-					vs.getHeight()));
-		} else if (vs.getWidth() != -1) {
-			frame.setSize(new Dimension(vs.getWidth(), vs.getHeight()));
-		}
-
-		frame.validate();
-
-		final PrefName pn = pname;
-
-		// add listeners to record any changes
-		frame.addComponentListener(new java.awt.event.ComponentAdapter() {
-			@Override
-			public void componentMoved(java.awt.event.ComponentEvent e) {
-				recordSize(e.getComponent(), pn);
-			}
-
-			@Override
-			public void componentResized(java.awt.event.ComponentEvent e) {
-				recordSize(e.getComponent(), pn);
-			}
-		});
-
-		return vs;
-	}
 
 	/**
 	 * Open the view in a frame.
@@ -248,20 +173,17 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 	 */
 	public JFrame openInFrame() {
 		frame = new JFrame();
-		manageMySize(getFrameSizePref());
+		ViewSize.manageMySize(frame, getFrameSizePref());
 		frame.setContentPane(this);
 
 		if (mainMenu == null) {
 			mainMenu = new MainMenu();
-			
+
 			/* add a print option if available */
 			if (this instanceof Module) {
 				final Module mod = (Module) this;
-				mainMenu.addAction(
-						new ImageIcon(DockableView.class.getResource(
-								"/resource/Print16.gif")),
-						Resource.getResourceString("Print"),
-						new ActionListener() {
+				mainMenu.addAction(new ImageIcon(DockableView.class.getResource("/resource/Print16.gif")),
+						Resource.getResourceString("Print"), new ActionListener() {
 							@Override
 							public void actionPerformed(ActionEvent evt) {
 								mod.print();
@@ -270,13 +192,12 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 			}
 
 			// add a dock menu option
-			mainMenu.addAction(null, Resource.getResourceString("dock"),
-					new ActionListener() {
-						@Override
-						public void actionPerformed(ActionEvent evt) {
-							dock();
-						}
-					}, 0);
+			mainMenu.addAction(null, Resource.getResourceString("dock"), new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent evt) {
+					dock();
+				}
+			}, 0);
 		}
 
 		frame.setJMenuBar(mainMenu.getMenuBar());
@@ -298,8 +219,7 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 			public final void actionPerformed(ActionEvent e) {
 				dv.close();
 			}
-		}, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
-				JComponent.WHEN_IN_FOCUSED_WINDOW);
+		}, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
 		frame.setVisible(true);
 
 		return frame;
@@ -343,29 +263,25 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 			this.openInFrame();
 		}
 	}
-	
+
 	/**
 	 * start this view in the background (dock-only) - when starting to system tray
 	 */
-	public void bgStart()
-	{
+	public void bgStart() {
 		PrefName p = getFrameSizePref();
 		ViewSize vs = ViewSize.fromString(Prefs.getPref(p));
 		if (vs.getDock() == DockType.DOCK) {
 			this.dock();
 		}
 	}
-	
-	public static DockableView findDockableParent(Component c)
-	{
-		for(Container cont = c.getParent(); cont != null; cont = cont.getParent())
-		{
-			if( cont instanceof DockableView)
-			{
+
+	public static DockableView findDockableParent(Component c) {
+		for (Container cont = c.getParent(); cont != null; cont = cont.getParent()) {
+			if (cont instanceof DockableView) {
 				return (DockableView) cont;
 			}
 		}
-		
+
 		return null;
 	}
 

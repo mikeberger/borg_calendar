@@ -25,10 +25,7 @@ Copyright 2003 by Mike Berger
 
 package net.sf.borg.ui;
 
-import java.awt.Dimension;
-import java.awt.Frame;
 import java.awt.Image;
-import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -40,7 +37,6 @@ import javax.swing.JFrame;
 import javax.swing.KeyStroke;
 
 import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
 import net.sf.borg.model.Model;
 
 
@@ -56,9 +52,6 @@ public abstract class View extends JFrame implements Model.Listener {
 	/** The icon image. */
 	static Image image = Toolkit.getDefaultToolkit().getImage(
 			View.class.getResource("/resource/borg32x32.jpg"));
-
-	/** The preference name used for remembering this windows size and position. */
-	private PrefName prefName_ = null;
 
 	/**
 	 * Instantiates a new view.
@@ -89,88 +82,10 @@ public abstract class View extends JFrame implements Model.Listener {
 	 * @param pname the pname
 	 */
 	public void manageMySize(PrefName pname) {
-		prefName_ = pname;
-
-		// set the initial size
-		String s = Prefs.getPref(prefName_);
-		ViewSize vs = ViewSize.fromString(s);
-		
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		
-		// get dimensions from pref or use defaults
-		int x = (vs.getX() != -1) ? vs.getX() : 0;
-		int y = (vs.getY() != -1) ? vs.getY() : 0;
-		int w = (vs.getWidth() != -1 ) ? vs.getWidth() : 800;
-		int h = (vs.getHeight() != -1 ) ? vs.getHeight() : 600;
-		
-		// move window onscreen if needed
-		if( x < 0 || x > screenSize.width ) x = 0;
-		if( y < 0 || y > screenSize.width ) y = 0;
-		
-		setBounds(new Rectangle(x,y,w,h));
-		
-		if (vs.isMaximized()) {
-			setExtendedState(Frame.MAXIMIZED_BOTH);
-		}
-		
-					
-		validate();
-
-		// add listeners to record any changes
-		this.addComponentListener(new java.awt.event.ComponentAdapter() {
-			@Override
-			public void componentMoved(java.awt.event.ComponentEvent e) {
-				recordSize(false);
-			}
-
-			@Override
-			public void componentResized(java.awt.event.ComponentEvent e) {
-				recordSize(true);
-			}
-		});
+		ViewSize.manageMySize(this, pname);
 	}
 
-	/**
-	 * store the views size and position.
-	 * 
-	 * @param resize true if the window is being resized
-	 */
-	private void recordSize(boolean resize) {
-		String s = Prefs.getPref(prefName_);
-		ViewSize vsnew = ViewSize.fromString(s);
-
-		if (!resize) {
-			// for a move, ignore the event if the size changes - this is
-			// part of a maximize or minimize and the resize will follow
-			if (vsnew.getHeight() != this.getBounds().height
-					|| vsnew.getWidth() != this.getBounds().width)
-				return;
-
-			// if x or y < 0, then this is likely the move before a maximize
-			// so ignore it
-			if (this.getBounds().x < 0 || this.getBounds().y < 0)
-				return;
-
-			vsnew.setX(this.getBounds().x);
-			vsnew.setY(this.getBounds().y);
-			vsnew.setWidth(this.getBounds().width);
-			vsnew.setHeight(this.getBounds().height);
-		} else if (this.getExtendedState() == Frame.MAXIMIZED_BOTH) {
-			vsnew.setMaximized(true);
-		} else {
-			// only reset bounds if we are not maximized
-			vsnew.setMaximized(false);
-			vsnew.setX(this.getBounds().x);
-			vsnew.setY(this.getBounds().y);
-			vsnew.setWidth(this.getBounds().width);
-			vsnew.setHeight(this.getBounds().height);
-
-		}
-
-		Prefs.putPref(this.prefName_, vsnew.toString());
-
-	}
-
+	
 	/**
 	 * refresh the view. called when one of the registered models changes. can
 	 * be called any time a refresh is needed as well.
