@@ -395,11 +395,11 @@ public class EntityIcalAdapter {
 			ap.setUntimed("Y");
 			ap.setText(appttext);
 			prop = pl.getProperty(Property.DTSTART);
-			
+
 			// for todos, fallback to use DUE if no DTSTART
-			if( prop == null && comp instanceof VToDo )
+			if (prop == null && comp instanceof VToDo)
 				prop = pl.getProperty(Property.DUE);
-			
+
 			if (prop != null) {
 				DateProperty dts = (DateProperty) prop;
 				Date d = dts.getDate();
@@ -539,10 +539,15 @@ public class EntityIcalAdapter {
 				String freq = recur.getFrequency();
 				int interval = recur.getInterval();
 				if (freq.equals(Recur.DAILY)) {
-					ap.setFrequency(Repeat.DAILY);
+					if (interval > 1) {
+						ap.setFrequency(Repeat.NDAYS + "," + interval);
+					} else
+						ap.setFrequency(Repeat.DAILY);
 				} else if (freq.equals(Recur.WEEKLY)) {
 					if (interval == 2) {
 						ap.setFrequency(Repeat.BIWEEKLY);
+					} else if (interval > 2) {
+						ap.setFrequency(Repeat.NWEEKS + "," + interval);
 					} else {
 						ap.setFrequency(Repeat.WEEKLY);
 					}
@@ -560,9 +565,15 @@ public class EntityIcalAdapter {
 					}
 
 				} else if (freq.equals(Recur.MONTHLY)) {
-					ap.setFrequency(Repeat.MONTHLY);
+					if (interval > 1) {
+						ap.setFrequency(Repeat.NMONTHS + "," + interval);
+					} else
+						ap.setFrequency(Repeat.MONTHLY);
 				} else if (freq.equals(Recur.YEARLY)) {
-					ap.setFrequency(Repeat.YEARLY);
+					if (interval > 1) {
+						ap.setFrequency(Repeat.NYEARS + "," + interval);
+					} else
+						ap.setFrequency(Repeat.YEARLY);
 				} else {
 					log.warning("WARNING: Cannot handle frequency of [" + freq + "], for appt [" + summary
 							+ "], adding first occurrence only\n");
@@ -747,5 +758,6 @@ public class EntityIcalAdapter {
 
 		return ve;
 	}
+
 
 }

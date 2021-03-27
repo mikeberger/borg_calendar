@@ -664,6 +664,7 @@ public class CalDav {
 
 					try {
 						newap.setKey(ap.getKey());
+						newap.setReminderTimes(ap.getReminderTimes());
 
 						SyncLog.getReference().setProcessUpdates(false);
 						count++;
