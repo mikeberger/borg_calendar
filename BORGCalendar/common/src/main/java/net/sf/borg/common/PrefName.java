@@ -347,7 +347,11 @@ public class PrefName {
 	/** todo quick add, default date to today */
 	static public PrefName TODO_QUICK_ENTRY_AUTO_SET_DATE_FIELD = new PrefName(
 			"todo_option_auto_date_today", "false");
-
+	
+	/** show only current todo in a repeating todo */
+	static public PrefName TODO_ONLY_SHOW_CURRENT = new PrefName(
+			"todo_only_show_current", "false");
+	
 	/** shutdown action */
 	static public PrefName SHUTDOWN_ACTION = new PrefName("shutdown_action", "");
 

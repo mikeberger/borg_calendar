@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.TimeZone;
 import java.util.TreeSet;
 
+import net.sf.borg.common.DateUtil;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
@@ -171,6 +172,13 @@ public class Day {
 					if (!pub)
 						continue;
 				}
+				
+				// only show current todo
+				if( Prefs.getBoolPref(PrefName.TODO_ONLY_SHOW_CURRENT) ) {
+					if( appt.isTodo() && appt.getNextTodo() != null && DateUtil.dayOfEpoch(day.cal.getTime()) != DateUtil.dayOfEpoch(appt.getNextTodo())) {
+						continue;
+					}
+				}
 
 				String color = appt.getColor();
 				if (color == null)
@@ -212,7 +220,7 @@ public class Day {
 		// get the base day key
 		Calendar cal = new GregorianCalendar(year, month, day);
 
-		Day ret = new Day();
+		Day ret = new Day(cal);
 
 		// get the list of appt keys from the map_
 		Collection<Integer> l = AppointmentModel.getReference().getAppts(
@@ -419,15 +427,18 @@ public class Day {
 	private TreeSet<CalendarEntity> items; // list of appts for the day
 
 	private int vacation; // vacation value for the day
+	
+	private Calendar cal;
 
 	/**
 	 * Instantiates a new day.
 	 */
-	private Day() {
+	private Day(Calendar cal) {
 
 		holiday = 0;
 		vacation = 0;
 		items = new TreeSet<CalendarEntity>(new apcompare());
+		this.cal = cal;
 
 	}
 

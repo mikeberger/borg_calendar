@@ -34,6 +34,12 @@ public class TodoOptionsPanel extends OptionsPanel {
 	 * creating a new todo item.
 	 */
 	private JCheckBox todoQuickEntryAutoSetDateField = new JCheckBox();
+	
+	/**
+	 * If set, only the current todo is shown, if the todo repeats.
+	 */
+	private JCheckBox todoOnlyShowCurrent = new JCheckBox();
+
 
 	/**
 	 * Instantiates a new Todo Options Panel.
@@ -43,6 +49,8 @@ public class TodoOptionsPanel extends OptionsPanel {
 		todoQuickEntryAutoClearTextField.setHorizontalAlignment(SwingConstants.LEFT);
 		todoQuickEntryAutoSetDateField.setName("todoQuickEntryAutoSetDateField");
 		todoQuickEntryAutoSetDateField.setHorizontalAlignment(SwingConstants.LEFT);
+		todoOnlyShowCurrent.setName("todoOnlyShowCurrent");
+		todoOnlyShowCurrent.setHorizontalAlignment(SwingConstants.LEFT);
 
 		GridBagConstraints gridBagConstraints = GridBagConstraintsFactory.create(0, -1, GridBagConstraints.NONE);
 		gridBagConstraints.anchor = GridBagConstraints.WEST;
@@ -50,9 +58,11 @@ public class TodoOptionsPanel extends OptionsPanel {
 		this.setLayout(new GridBagLayout());
 		this.add(todoQuickEntryAutoClearTextField, gridBagConstraints);
 		this.add(todoQuickEntryAutoSetDateField, gridBagConstraints);
+		this.add(todoOnlyShowCurrent, gridBagConstraints);
 		
 		todoQuickEntryAutoClearTextField.setText(Resource.getResourceString("todo_option_auto_clear_text"));
 		todoQuickEntryAutoSetDateField.setText(Resource.getResourceString("todo_option_auto_date_today"));
+		todoOnlyShowCurrent.setText(Resource.getResourceString("todo_only_show_current"));
 	}
 
 	/*
@@ -74,6 +84,7 @@ public class TodoOptionsPanel extends OptionsPanel {
 	public void applyChanges() {
 		OptionsPanel.setBooleanPref(todoQuickEntryAutoClearTextField, PrefName.TODO_QUICK_ENTRY_AUTO_CLEAR_TEXT_FIELD);
 		OptionsPanel.setBooleanPref(todoQuickEntryAutoSetDateField, PrefName.TODO_QUICK_ENTRY_AUTO_SET_DATE_FIELD);
+		OptionsPanel.setBooleanPref(todoOnlyShowCurrent, PrefName.TODO_ONLY_SHOW_CURRENT);
 	}
 
 	/*
@@ -85,6 +96,7 @@ public class TodoOptionsPanel extends OptionsPanel {
 	public void loadOptions() {
 		OptionsPanel.setCheckBox(todoQuickEntryAutoClearTextField, PrefName.TODO_QUICK_ENTRY_AUTO_CLEAR_TEXT_FIELD);
 		OptionsPanel.setCheckBox(todoQuickEntryAutoSetDateField, PrefName.TODO_QUICK_ENTRY_AUTO_SET_DATE_FIELD);
+		OptionsPanel.setCheckBox(todoQuickEntryAutoSetDateField, PrefName.TODO_ONLY_SHOW_CURRENT);
 	}
 
 }
