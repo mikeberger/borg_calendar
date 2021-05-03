@@ -227,6 +227,7 @@ class DateZone {
 		appt.setDate(cal.getTime());
 
 		appt.setKey(-1);
+		appt.setUid(null);
 		AppointmentModel.getReference().saveAppt(appt);
 
 	}

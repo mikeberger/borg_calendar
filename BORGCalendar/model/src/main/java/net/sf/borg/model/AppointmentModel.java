@@ -514,10 +514,15 @@ public class AppointmentModel extends Model implements Model.Listener, CategoryS
 			if (del) {
 				delAppt(appt);
 			} else {
-				appt.setTodo(false);
-				appt.setColor("strike"); // strike the text to indicate a done
+				// this needs to be a delete and add for caldav since a task is being changed to an event and caldasv won't delete the task
+				Appointment newEvent = appt.copy();
+				newEvent.setKey(-1);
+				newEvent.setUid(null);
+				newEvent.setTodo(false);
+				newEvent.setColor("strike"); // strike the text to indicate a done
 				// todo
-				saveAppt(appt, false);
+				saveAppt(newEvent, false);
+				delAppt(appt);
 			}
 		}
 
