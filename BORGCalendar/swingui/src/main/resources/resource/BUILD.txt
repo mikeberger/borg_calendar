@@ -1,4 +1,4 @@
-To build BORG from the source, you need the JAVA SDK 1.7 or later, available from java.sun.com.
+To build BORG from the source, you need the JAVA SDK 15 or later.
 
 To use Eclipse, download a version of eclipse that has the Maven m2e plugin or install this plugin separately.
 

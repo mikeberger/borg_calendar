@@ -1,3 +1,13 @@
+BORG 1.9.03
+-----------
+getting an ical parse exception when dragging a valid ics file onto Borg #109
+done no-delete fails to update caldav correctly #107
+copy and paste of appt doesn't sync correctly to caldav #108
+add option to only show the current todo for a repeating todo #106
+caldav sync doesn't handle recurrences of Every N days/weeks/months/years #101
+Windows can be created off-screen if monitor configurations change #99
+do not include strike-through items in email reminder #98 
+
 BORG 1.9.0.2
 ------------
 Java 15
