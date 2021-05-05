@@ -136,10 +136,17 @@ public class ICal {
 
 		}
 	}
+	
+	static private void setHints() {
+		CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_PARSING, true);
+		CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_UNFOLDING, true);
+		CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_VALIDATION, true);
+		CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_OUTLOOK_COMPATIBILITY, true);
+	}
 
 	static public String importIcalFromUrl(String urlString) throws Exception {
 
-		//Prefs.setProxy();
+		setHints();
 
 		CalendarBuilder builder = new CalendarBuilder();
 		URL url = new URL(urlString);
@@ -151,6 +158,10 @@ public class ICal {
 	}
 
 	static public String importIcalFromFile(String file) throws Exception {
+		
+		setHints();
+
+		
 		CalendarBuilder builder = new CalendarBuilder();
 		InputStream is = new FileInputStream(file);
 		Calendar cal = builder.build(is);
@@ -164,9 +175,9 @@ public class ICal {
 		int skipped = 0;
 		StringBuffer dups = new StringBuffer();
 
-		CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_OUTLOOK_COMPATIBILITY, true);
-		CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_PARSING, true);
-		CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_UNFOLDING, true);
+		setHints();
+
+
 		StringBuffer warning = new StringBuffer();
 
 		try {
