@@ -19,12 +19,10 @@ Copyright 2003 by Mike Berger
  */
 package net.sf.borg.ui;
 
-import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
-import java.awt.Toolkit;
 
 import javax.swing.JFrame;
 
