@@ -178,6 +178,9 @@ public class Day {
 					if( appt.isTodo() && appt.getNextTodo() != null && DateUtil.dayOfEpoch(day.cal.getTime()) != DateUtil.dayOfEpoch(appt.getNextTodo())) {
 						continue;
 					}
+					if( appt.isTodo() && appt.getNextTodo() == null && Repeat.isRepeating(appt) && DateUtil.dayOfEpoch(day.cal.getTime()) != DateUtil.dayOfEpoch(appt.getDate())) {
+						continue;
+					}
 				}
 
 				String color = appt.getColor();
