@@ -615,6 +615,9 @@ public class SearchView extends DockableView implements Module {
 					return;
 				}
 				refresh();
+				TableSorter tm = (TableSorter) resultsTable.getModel();
+				if( tm.getRowCount() == 0)
+					Errmsg.getErrorHandler().notice(Resource.getResourceString("no_search_results"));
 			}
 
 		});
