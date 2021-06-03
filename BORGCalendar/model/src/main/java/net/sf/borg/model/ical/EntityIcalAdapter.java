@@ -396,9 +396,12 @@ public class EntityIcalAdapter {
 			ap.setText(appttext);
 			prop = pl.getProperty(Property.DTSTART);
 
-			// for todos, fallback to use DUE if no DTSTART
-			if (prop == null && comp instanceof VToDo)
-				prop = pl.getProperty(Property.DUE);
+			// for todos, use DUE over DTSTART - chg for aCalendar+
+			if (comp instanceof VToDo) {
+				Property propdue = pl.getProperty(Property.DUE);
+				if( propdue != null )
+					prop = propdue;
+			}
 
 			if (prop != null) {
 				DateProperty dts = (DateProperty) prop;
