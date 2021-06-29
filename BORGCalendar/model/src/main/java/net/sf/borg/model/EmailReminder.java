@@ -127,7 +127,7 @@ public class EmailReminder {
 
 		// tx is the contents of the email
 		String ap_tx = "Appointments for "
-				+ DateFormat.getDateInstance().format(cal.getTime()) + "\n";
+				+ DateFormat.getDateInstance().format(cal.getTime()) + ":\n";
 		StringBuffer tx = new StringBuffer();
 
 		// get the list of appts for the requested day
@@ -195,6 +195,57 @@ public class EmailReminder {
 				tx.append(task.getSummary());
 				tx.append("\n");
 			}
+		}
+		
+		// add any outstanding todos
+		Collection<Appointment> todos = AppointmentModel.getReference().get_todos();
+		StringBuffer tdbuf = new StringBuffer();
+		for( Appointment todo : todos ) {
+			Date nt = todo.getNextTodo();
+			if (nt == null) {
+				nt = todo.getDate();
+			}
+			
+			Calendar tdcal = new GregorianCalendar();
+			tdcal.setTime(nt);
+			tdcal.set(Calendar.SECOND, 59);
+			tdcal.set(Calendar.MINUTE, 59);
+			tdcal.set(Calendar.HOUR_OF_DAY, 23);
+			
+			if( tdcal.before(cal))
+			{
+				if (!AppointmentModel.isNote(todo)) {
+					// add the appointment time to the email if it is not a
+					// note
+					Date d = todo.getDate();
+					SimpleDateFormat df = AppointmentModel.getTimeFormat();
+					tdbuf.append(df.format(d) + " ");
+				}
+
+				// add the appointment text
+				if (todo.isEncrypted())
+					tdbuf.append(Resource.getResourceString("EncryptedItemShort"));
+				else {
+					// only show first line of appointment text
+					String s = todo.getText();
+					int ii = s.indexOf('\n');
+					if (ii != -1) {
+						tdbuf.append(s.substring(0, ii));
+					} else {
+						tdbuf.append(s);
+					}
+				}
+				tdbuf.append("\n");
+			}
+			
+		
+		}
+		
+		if( !tdbuf.toString().equals(""))
+		{
+			tx.append("\n\n");
+			tx.append(Resource.getResourceString("OverDue"));
+			tx.append("\n" + tdbuf.toString());
 		}
 
 		// send the email using SMTP
