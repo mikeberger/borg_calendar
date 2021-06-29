@@ -96,7 +96,7 @@ public class TodoOptionsPanel extends OptionsPanel {
 	public void loadOptions() {
 		OptionsPanel.setCheckBox(todoQuickEntryAutoClearTextField, PrefName.TODO_QUICK_ENTRY_AUTO_CLEAR_TEXT_FIELD);
 		OptionsPanel.setCheckBox(todoQuickEntryAutoSetDateField, PrefName.TODO_QUICK_ENTRY_AUTO_SET_DATE_FIELD);
-		OptionsPanel.setCheckBox(todoQuickEntryAutoSetDateField, PrefName.TODO_ONLY_SHOW_CURRENT);
+		OptionsPanel.setCheckBox(todoOnlyShowCurrent, PrefName.TODO_ONLY_SHOW_CURRENT);
 	}
 
 }
