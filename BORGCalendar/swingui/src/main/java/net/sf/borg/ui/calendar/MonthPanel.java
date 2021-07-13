@@ -646,7 +646,7 @@ public class MonthPanel extends JPanel implements Printable, CalendarModule {
 	public void initialize(MultiView parent) {
 		final MultiView par = parent;
 		parent.addToolBarItem(new ImageIcon(getClass().getResource(
-		"/resource/month.jpg")), getModuleName(), 
+		"/resource/month.gif")), getModuleName(), 
 		new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
