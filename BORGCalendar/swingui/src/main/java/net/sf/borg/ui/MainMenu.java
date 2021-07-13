@@ -71,8 +71,8 @@ class MainMenu {
 
 		menuBar.setBorder(new javax.swing.border.BevelBorder(
 				javax.swing.border.BevelBorder.RAISED));
-		actionMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/Application16.gif")));
+		//actionMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource(
+		//		"/resource/Application16.gif")));
 
 		/*
 		 * 
@@ -112,7 +112,7 @@ class MainMenu {
 
 		JMenuItem exitMenuItem = new JMenuItem();
 		exitMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/Stop16.gif")));
+				"/resource/Stop.png")));
 		exitMenuItem.setText(Resource.getResourceString("Exit"));
 		exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
 			@Override
@@ -129,8 +129,8 @@ class MainMenu {
 		 * Option Menu
 		 */
 
-		optionsMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/Preferences16.gif")));
+		//optionsMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource(
+		//		"/resource/Preferences16.gif")));
 		ResourceHelper.setText(optionsMenu, "Options");
 
 		JMenuItem editPrefsMenuItem = new JMenuItem();
@@ -180,8 +180,8 @@ class MainMenu {
 		 * Import/Export Menu
 		 */
 		JMenu impexpMenu = new JMenu();
-		impexpMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/Export16.gif")));
+		//impexpMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource(
+		//		"/resource/Export16.gif")));
 		ResourceHelper.setText(impexpMenu, "impexpMenu");
 
 		JMenuItem importMI = new JMenuItem();
@@ -575,8 +575,8 @@ class MainMenu {
 	private JMenu getUndoMenu() {
 		JMenu m = new JMenu();
 		m.setText(Resource.getResourceString("undo"));
-		m.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/Refresh16.gif")));
+		//m.setIcon(new javax.swing.ImageIcon(getClass().getResource(
+		//		"/resource/Refresh16.gif")));
 		final JMenu menu = m;
 		m.addMenuListener(new MenuListener() {
 

@@ -97,7 +97,7 @@ public class IcalModule implements Module, Prefs.Listener, Model.Listener {
 		JMenu m = new JMenu();
 		m.setText("Ical");
 
-		m.setIcon(new javax.swing.ImageIcon(IcalModule.class.getResource("/resource/Export16.gif")));
+		//m.setIcon(new javax.swing.ImageIcon(IcalModule.class.getResource("/resource/Export16.gif")));
 
 		JMenu calmenu = new JMenu("CALDAV");
 

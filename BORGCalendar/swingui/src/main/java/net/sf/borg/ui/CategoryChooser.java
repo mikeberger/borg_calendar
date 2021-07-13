@@ -184,8 +184,8 @@ public class CategoryChooser extends View {
 		 */
 		JMenu catmenu = new JMenu();
 
-		catmenu.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/Preferences16.gif")));
+		//catmenu.setIcon(new javax.swing.ImageIcon(getClass().getResource(
+		//		"/resource/Preferences16.gif")));
 		ResourceHelper.setText(catmenu, "Categories");
 
 		JMenuItem chooseCategoriesMI = new JMenuItem();

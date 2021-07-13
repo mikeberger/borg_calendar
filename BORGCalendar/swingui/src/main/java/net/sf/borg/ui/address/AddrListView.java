@@ -249,7 +249,7 @@ public class AddrListView extends DockableView implements Module {
 		findbutton = new JButton();
 
 		tableScrollPane.setPreferredSize(new java.awt.Dimension(554, 404));
-		addressTable.setBorder(new LineBorder(new java.awt.Color(0, 0, 0)));
+		//addressTable.setBorder(new LineBorder(new java.awt.Color(0, 0, 0)));
 		// jTable1.setGridColor(java.awt.Color.blue);
 		DefaultListSelectionModel mylsmodel = new DefaultListSelectionModel();
 		mylsmodel
@@ -422,7 +422,7 @@ public class AddrListView extends DockableView implements Module {
 	public void initialize(MultiView parent) {
 		final MultiView par = parent;
 		parent.addToolBarItem(new ImageIcon(getClass().getResource(
-				"/resource/addr16.jpg")), getModuleName(),
+				"/resource/addr.png")), getModuleName(),
 				new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent evt) {

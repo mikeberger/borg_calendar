@@ -361,7 +361,9 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 				"de.javasoft.plaf.synthetica.SyntheticaStandardLookAndFeel",
 				"net.infonode.gui.laf.InfoNodeLookAndFeel",
 				"com.lipstikLF.LipstikLookAndFeel",
-				"org.fife.plaf.Office2003.Office2003LookAndFeel" };
+				"org.fife.plaf.Office2003.Office2003LookAndFeel",
+				"com.formdev.flatlaf.FlatLightLaf",
+				"com.formdev.flatlaf.FlatDarkLaf"};
 
 		for (String look : looks) {
 			try {
