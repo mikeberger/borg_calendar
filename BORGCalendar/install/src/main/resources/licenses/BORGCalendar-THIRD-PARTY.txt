@@ -1,10 +1,8 @@
 
-Lists of 24 third-party dependencies.
-     (GNU General Public License - Version 2) common (BORGCalendar:common:1.8.3 - http://borg.mbcsoft.com/common)
-     (GNU General Public License - Version 2) model (BORGCalendar:model:1.8.3 - http://borg.mbcsoft.com/model)
+Lists of third-party dependencies.
      (Public Domain) Backport of JSR 166 (backport-util-concurrent:backport-util-concurrent:3.1 - http://backport-jsr166.sourceforge.net/)
      (Apache License, V2.0 or later) (BSD License) (EPL (Eclipse Public License), V1.0 or later) (GNU LGP (GNU General Public License), V2 or later) (GNU LGPL (GNU Lesser General Public License), V2.1 or later) Base64Coder (biz.source_code:base64coder:2010-12-19 - http://www.source-code.biz/base64coder/java)
-     (iCal4j - License) iCal4j Connector (com.github.mikeberger:ical4j-connector:borg2 - http://ical4j.sourceforge.net)
+     (iCal4j - License) iCal4j Connector (http://ical4j.sourceforge.net)
      (MPL 2.0 or EPL 1.0) H2 Database Engine (com.h2database:h2:1.4.196 - http://www.h2database.com)
      (The BSD License) JGoodies Looks (com.jgoodies:looks:2.2.2 - https://looks.dev.java.net/)
      (GNU LESSER GENERAL PUBLIC LICENSE) JCalendar (com.toedter:jcalendar:1.4 - http://www.toedter.com/en/jcalendar/)
@@ -24,3 +22,5 @@ Lists of 24 third-party dependencies.
      (The MIT License) Project Lombok (org.projectlombok:lombok:1.16.18 - https://projectlombok.org)
      (MIT License) JCL 1.1.1 implemented over SLF4J (org.slf4j:jcl-over-slf4j:1.7.4 - http://www.slf4j.org)
      (MIT License) SLF4J API Module (org.slf4j:slf4j-api:1.6.6 - http://www.slf4j.org)
+     (The Apache Software License, Version 2.0) FlatLaf  (https://www.formdev.com/flatlaf/)
+     

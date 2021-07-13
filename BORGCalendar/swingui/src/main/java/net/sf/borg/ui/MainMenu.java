@@ -112,7 +112,7 @@ class MainMenu {
 
 		JMenuItem exitMenuItem = new JMenuItem();
 		exitMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/Stop.png")));
+				"/resource/stop.png")));
 		exitMenuItem.setText(Resource.getResourceString("Exit"));
 		exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
 			@Override

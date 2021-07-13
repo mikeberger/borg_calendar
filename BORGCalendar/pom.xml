@@ -5,7 +5,7 @@
 	<artifactId>BORGCalendar</artifactId>
 	<version>1.9</version>
 	<packaging>pom</packaging>
-	<url>http://borg.mbcsoft.com</url>
+	<url>http://mbcsoft.com</url>
 	<inceptionYear>2003</inceptionYear>
 	<organization>
 		<name>Michael Berger</name>
