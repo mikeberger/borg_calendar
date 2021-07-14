@@ -34,8 +34,13 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.LookAndFeel;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
+
+import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
+import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes.FlatIJLookAndFeelInfo;
 
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
@@ -281,9 +286,18 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 			Prefs.putPref(PrefName.GOODIESTHEME, newtheme);
 		}
 
-		if (lnfChange)
-			Errmsg.getErrorHandler().notice(
-					Resource.getResourceString("lfrestart"));
+		if (lnfChange) {
+			try {
+			LookAndFeel l = (LookAndFeel) Class.forName(newlnf).newInstance();
+			UIManager.setLookAndFeel(l);
+			FlatLaf.updateUI();
+			}
+			catch( Exception e) {
+				Errmsg.getErrorHandler().errmsg(e);
+			}
+			//Errmsg.getErrorHandler().notice(
+			//		Resource.getResourceString("lfrestart"));
+		}
 
 	}
 
@@ -372,6 +386,11 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 			} catch (Throwable e) {
 				// empty
 			}
+		}
+		
+		for( FlatIJLookAndFeelInfo ijInfo : FlatAllIJThemes.INFOS )
+		{
+			lnfs.add(ijInfo.getClassName());
 		}
 
 		// add the look and feel in the preference store

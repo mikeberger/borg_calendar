@@ -37,7 +37,11 @@
 			<groupId>com.formdev</groupId>
 			<artifactId>flatlaf</artifactId>
 			<version>1.4</version>
-			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.formdev</groupId>
+			<artifactId>flatlaf-intellij-themes</artifactId>
+			<version>1.4</version>
 		</dependency>
 		<dependency>
 			<groupId>filedrop</groupId>
