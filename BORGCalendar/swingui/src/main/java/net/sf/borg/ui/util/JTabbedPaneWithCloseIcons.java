@@ -161,8 +161,10 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 				boolean highlightUndock, Graphics g) {
 
 			Graphics2D g2 = (Graphics2D) g;
+			
+			Color orig = g2.getColor();
 
-			g2.setColor(Color.black);
+			//g2.setColor(Color.black);
 
 			isHighlighted = false;
 
@@ -187,7 +189,7 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 
 			if (undock) {
 
-				g2.setColor(Color.black);
+				g2.setColor(orig);
 				if (highlightUndock) {
 					g2.setColor(Color.red);
 					isHighlighted = true;

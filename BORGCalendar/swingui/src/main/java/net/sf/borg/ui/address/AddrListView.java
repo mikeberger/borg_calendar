@@ -35,8 +35,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
-import javax.swing.border.LineBorder;
 import javax.swing.event.TableModelEvent;
 
 import net.sf.borg.common.Errmsg;
@@ -52,7 +52,6 @@ import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.SunTrayIconProxy;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 import net.sf.borg.ui.util.PopupMenuHelper;
-import net.sf.borg.ui.util.StripedTable;
 import net.sf.borg.ui.util.TablePrinter;
 import net.sf.borg.ui.util.TableSorter;
 
@@ -80,7 +79,7 @@ public class AddrListView extends DockableView implements Module {
 	private JScrollPane tableScrollPane;
 
 	// the table
-	private StripedTable addressTable;
+	private JTable addressTable;
 	
 	private boolean isInitialized = false;
 
@@ -241,7 +240,7 @@ public class AddrListView extends DockableView implements Module {
 	private void initComponents() {
 
 		tableScrollPane = new JScrollPane();
-		addressTable = new StripedTable();
+		addressTable = new JTable();
 		JPanel buttonPanel = new JPanel();
 		newbutton = new JButton();
 		editbutton = new JButton();

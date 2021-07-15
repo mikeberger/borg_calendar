@@ -55,6 +55,8 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
+import com.toedter.calendar.JDateChooser;
+
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
@@ -69,10 +71,7 @@ import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.util.DateDialog;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 import net.sf.borg.ui.util.PopupMenuHelper;
-import net.sf.borg.ui.util.StripedTable;
 import net.sf.borg.ui.util.TableSorter;
-
-import com.toedter.calendar.JDateChooser;
 
 /**
  * AppointmentListView provides a UI for editing the appoitnments for a day. The
@@ -200,7 +199,7 @@ public class AppointmentListView extends DockableView implements
 
 	private JButton addButton;
 	private AppointmentPanel appointmentPanel = null;
-	private StripedTable apptTable;
+	private JTable apptTable;
 	private GregorianCalendar cal_ = null; // date of the appt list
 	private JDateChooser dateChooser = null;
 	private JButton copyButton = null;
@@ -481,7 +480,7 @@ public class AppointmentListView extends DockableView implements
 
 		appointmentListPanel = new JPanel();
 		apptTableScrollPane = new JScrollPane();
-		apptTable = new StripedTable();
+		apptTable = new JTable();
 		buttonPanel = new JPanel();
 		addButton = new JButton();
 		deleteButton = new JButton();

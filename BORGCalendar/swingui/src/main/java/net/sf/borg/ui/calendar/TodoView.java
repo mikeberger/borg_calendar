@@ -68,6 +68,8 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
+import com.toedter.calendar.JDateChooser;
+
 import net.sf.borg.common.DateUtil;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
@@ -94,11 +96,8 @@ import net.sf.borg.ui.task.ProjectView;
 import net.sf.borg.ui.task.TaskView;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 import net.sf.borg.ui.util.PopupMenuHelper;
-import net.sf.borg.ui.util.StripedTable;
 import net.sf.borg.ui.util.TablePrinter;
 import net.sf.borg.ui.util.TableSorter;
-
-import com.toedter.calendar.JDateChooser;
 
 /**
  * Dockable window that shows a sorted list of all todos, allows the user to
@@ -293,7 +292,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 	private JDateChooser todoDate;
 
 	/** The todo table. */
-	private StripedTable todoTable;
+	private JTable todoTable;
 
 	/** The todo text. */
 	private JTextField todoText;
@@ -576,7 +575,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 		// create widgets (all bunched up because of code generation - not worth
 		// cleanup up
 		JScrollPane tableScroll = new JScrollPane();
-		todoTable = new StripedTable();
+		todoTable = new JTable();
 		todoText = new JTextField();
 
 		// add keyboard shortcut to do add todo item when enter pressed on the

@@ -35,10 +35,10 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+import com.toedter.calendar.JDateChooser;
+
 import net.sf.borg.common.Resource;
 import net.sf.borg.common.Warning;
-
-import com.toedter.calendar.JDateChooser;
 
 /**
  * Creates a JPanel that lets the user select a date and time

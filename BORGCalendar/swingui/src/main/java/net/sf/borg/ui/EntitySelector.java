@@ -32,6 +32,7 @@ import javax.swing.DefaultListSelectionModel;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.TableModel;
@@ -50,7 +51,6 @@ import net.sf.borg.model.entity.Memo;
 import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Task;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
-import net.sf.borg.ui.util.StripedTable;
 import net.sf.borg.ui.util.TableSorter;
 
 /**
@@ -265,7 +265,7 @@ public class EntitySelector extends JDialog {
 	private void initComponents() {
 
 		this.getContentPane().setLayout(new GridBagLayout());
-		jTable1 = new StripedTable();
+		jTable1 = new JTable();
 		jPanel1 = new javax.swing.JPanel();
 		selectButton = new javax.swing.JButton();
 

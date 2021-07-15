@@ -35,10 +35,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
+import com.toedter.calendar.JDateChooser;
+
 import net.sf.borg.common.Resource;
 import net.sf.borg.ui.ResourceHelper;
-
-import com.toedter.calendar.JDateChooser;
 
 /**
  * A dialog for picking a date that wraps JDateChooser

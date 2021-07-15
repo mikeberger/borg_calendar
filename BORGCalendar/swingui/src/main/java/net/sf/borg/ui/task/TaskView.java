@@ -58,6 +58,9 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableCellRenderer;
 
+import com.toedter.calendar.JDateChooser;
+import com.toedter.calendar.JDateChooserCellEditor;
+
 import net.sf.borg.common.DateUtil;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
@@ -82,11 +85,7 @@ import net.sf.borg.ui.util.DateDialog;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 import net.sf.borg.ui.util.LimitDocument;
 import net.sf.borg.ui.util.PopupMenuHelper;
-import net.sf.borg.ui.util.StripedTable;
 import net.sf.borg.ui.util.TableSorter;
-
-import com.toedter.calendar.JDateChooser;
-import com.toedter.calendar.JDateChooserCellEditor;
 
 /**
  * UI for Viewing and Editing individual Tasks and their Subtasks
@@ -327,7 +326,7 @@ public class TaskView extends DockableView {
 	private JTextArea resolutionText;
 
 	/** The log table. */
-	private StripedTable logtable = new StripedTable();
+	private JTable logtable = new JTable();
 
 	/** The person assigned text. */
 	private JTextField personAssignedText;
@@ -339,7 +338,7 @@ public class TaskView extends DockableView {
 	private JComboBox<String> projectComboBox = new JComboBox<String>();
 
 	/** The sub task table. */
-	private StripedTable subTaskTable = new StripedTable();
+	private JTable subTaskTable = new JTable();
 
 	/** The start date chooser. */
 	private JDateChooser startDateChooser;

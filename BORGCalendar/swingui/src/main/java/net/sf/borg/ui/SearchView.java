@@ -40,6 +40,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.TableColumn;
@@ -73,7 +74,6 @@ import net.sf.borg.ui.memo.MemoPanel;
 import net.sf.borg.ui.task.ProjectView;
 import net.sf.borg.ui.task.TaskView;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
-import net.sf.borg.ui.util.StripedTable;
 import net.sf.borg.ui.util.TablePrinter;
 import net.sf.borg.ui.util.TableSorter;
 
@@ -111,7 +111,7 @@ public class SearchView extends DockableView implements Module {
 	private JCheckBox repeatCheckBox = null;
 
 	/** The results table. */
-	private StripedTable resultsTable = null;
+	private JTable resultsTable = null;
 
 	/** The search text. */
 	private JTextField searchText = null;
@@ -369,7 +369,7 @@ public class SearchView extends DockableView implements Module {
 				Resource.getResourceString("Search_Results"), javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
 				javax.swing.border.TitledBorder.DEFAULT_POSITION, null, null));
 
-		resultsTable = new StripedTable();
+		resultsTable = new JTable();
 		resultsTable.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		resultsTable.addMouseListener(new java.awt.event.MouseAdapter() {
 			@Override

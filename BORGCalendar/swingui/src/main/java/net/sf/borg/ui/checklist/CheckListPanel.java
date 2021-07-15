@@ -59,7 +59,6 @@ import net.sf.borg.ui.SunTrayIconProxy;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 import net.sf.borg.ui.util.InputDialog;
 import net.sf.borg.ui.util.PopupMenuHelper;
-import net.sf.borg.ui.util.StripedTable;
 import net.sf.borg.ui.util.TablePrinter;
 import net.sf.borg.ui.util.TableSorter;
 
@@ -127,7 +126,7 @@ public class CheckListPanel extends DockableView implements
 	static private final int TEXT_COLUMN = 1;
 
 	/** The checkList list table. */
-	private StripedTable checkListListTable = null;
+	private JTable checkListListTable = null;
 
 	/** The edited checkList index. */
 	private int editedCheckListIndex = -1;
@@ -136,7 +135,7 @@ public class CheckListPanel extends DockableView implements
 	private boolean isCheckListEdited = false;
 
 	/** The table of checklist items. */
-	private StripedTable itemTable = null;
+	private JTable itemTable = null;
 
 	private boolean isInitialized = false;
 
@@ -425,7 +424,7 @@ public class CheckListPanel extends DockableView implements
 				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		checkListListScroll.setPreferredSize(new Dimension(100, 423));
 
-		checkListListTable = new StripedTable();
+		checkListListTable = new JTable();
 		checkListListTable
 				.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		checkListListTable.setShowGrid(true);
@@ -442,7 +441,7 @@ public class CheckListPanel extends DockableView implements
 		JScrollPane checkListTextScroll = new JScrollPane();
 		checkListTextScroll.setPreferredSize(new Dimension(400, 400));
 
-		itemTable = new StripedTable();
+		itemTable = new JTable();
 
 		defaultTextRenderer = itemTable.getDefaultRenderer(String.class);
 		itemTable.setDefaultRenderer(String.class, new ItemTextRenderer());

@@ -288,6 +288,7 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 
 		if (lnfChange) {
 			try {
+			@SuppressWarnings("deprecation")
 			LookAndFeel l = (LookAndFeel) Class.forName(newlnf).newInstance();
 			UIManager.setLookAndFeel(l);
 			FlatLaf.updateUI();

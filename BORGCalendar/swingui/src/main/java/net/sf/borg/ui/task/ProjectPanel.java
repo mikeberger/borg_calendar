@@ -44,13 +44,12 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.common.Warning;
 import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.Model;
-import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.Model.ChangeEvent;
+import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Task;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 import net.sf.borg.ui.util.PopupMenuHelper;
-import net.sf.borg.ui.util.StripedTable;
 import net.sf.borg.ui.util.TablePrinter;
 import net.sf.borg.ui.util.TableSorter;
 
@@ -112,22 +111,6 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 			if (daysLeft == MAGIC_NO_DUE_DATE)
 				this.setText("--");
 
-			// keep selected color as is
-			if (isSelected)
-				return this;
-
-			// yellow alert -- <10 days left
-			if (daysLeft < 10)
-				this.setBackground(new Color(255, 255, 175));
-
-			if (daysLeft < 5)
-				this.setBackground(new Color(255, 200, 120));
-
-			// red alert -- <2 days left
-			if (daysLeft < 2) {
-				this.setBackground(new Color(255, 120, 120));
-			}
-
 			return this;
 		}
 	}
@@ -139,7 +122,7 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 	private TableCellRenderer defaultTableCellRenderer;
 
 	/** The project table. */
-	private StripedTable projectTable;
+	private JTable projectTable;
 
 	/** The project status combo box. */
 	private JComboBox<String> projectStatusComboBox = new JComboBox<String>();
@@ -391,7 +374,7 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 		 * project table
 		 */
 		JScrollPane tableScroll = new JScrollPane();
-		projectTable = new StripedTable();
+		projectTable = new JTable();
 
 		defaultTableCellRenderer = projectTable
 				.getDefaultRenderer(Integer.class);

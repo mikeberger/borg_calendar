@@ -21,7 +21,6 @@
 package net.sf.borg.ui.task;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -45,8 +44,6 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.table.TableCellRenderer;
 
 import net.sf.borg.common.Errmsg;
-import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.Model;
@@ -58,7 +55,6 @@ import net.sf.borg.model.entity.Subtask;
 import net.sf.borg.model.entity.Task;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 import net.sf.borg.ui.util.PopupMenuHelper;
-import net.sf.borg.ui.util.StripedTable;
 import net.sf.borg.ui.util.TablePrinter;
 import net.sf.borg.ui.util.TableSorter;
 
@@ -125,36 +121,6 @@ class TaskListPanel extends JPanel implements Model.Listener {
 			this.setBackground(l.getBackground());
 			this.setForeground(l.getForeground());
 
-			int i = ((Integer) obj).intValue();
-
-			// set the priority background color
-			if (nm.equals(Resource.getResourceString("Pri"))) {
-
-				if (i == 1) {
-					this.setBackground(new Color(255, 120, 120));
-				} else if (i == 2) {
-					this.setBackground(new Color(255, 200, 120));
-				} else if (i == 3) {
-					this.setBackground(new Color(255, 255, 175));
-				} else if (i == 4) {
-					this.setBackground(new Color(220, 220, 255));
-				} else if (i == 5) {
-					this.setBackground(new Color(200, 255, 175));
-				}
-				return this;
-			}
-
-			// yellow alert 
-			if (i < Prefs.getIntPref(PrefName.YELLOW_DAYS))
-				this.setBackground(new Color(255, 255, 175));
-
-			if (i < Prefs.getIntPref(PrefName.ORANGE_DAYS))
-				this.setBackground(new Color(255, 200, 120));
-
-			// red alert 
-			if (i < Prefs.getIntPref(PrefName.RED_DAYS)) {
-				this.setBackground(new Color(255, 120, 120));
-			}
 
 			return this;
 		}
@@ -194,7 +160,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 	private String taskStatus = Resource.getResourceString("All");
 
 	/** The task table. */
-	private StripedTable taskTable;
+	private JTable taskTable;
 
 	/**
 	 * constructor
@@ -427,7 +393,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 		/*
 		 * task table
 		 */
-		taskTable = new StripedTable();
+		taskTable = new JTable();
 		defaultTableCellRenderer = taskTable.getDefaultRenderer(Integer.class);
 
 		// set renderer to the custom one for integers

@@ -46,6 +46,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.event.DocumentEvent;
@@ -74,7 +75,6 @@ import net.sf.borg.ui.util.HTMLTextPane;
 import net.sf.borg.ui.util.InputDialog;
 import net.sf.borg.ui.util.PasswordHelper;
 import net.sf.borg.ui.util.PopupMenuHelper;
-import net.sf.borg.ui.util.StripedTable;
 import net.sf.borg.ui.util.TableSorter;
 
 /**
@@ -100,7 +100,7 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 	private boolean isMemoEdited = false;
 
 	/** The memo list table. */
-	private StripedTable memoListTable = null;
+	private JTable memoListTable = null;
 
 	/** The memo text. */
 	private HTMLTextPane memoText = null;
@@ -271,7 +271,7 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		memoListScroll.setPreferredSize(new Dimension(100, 423));
 
-		memoListTable = new StripedTable();
+		memoListTable = new JTable();
 		memoListTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		memoListTable.setShowGrid(true);
 		memoListScroll.setViewportView(memoListTable);
