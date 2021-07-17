@@ -553,18 +553,19 @@ public class EntityIcalAdapter {
 						ap.setFrequency(Repeat.NWEEKS + "," + interval);
 					} else {
 						ap.setFrequency(Repeat.WEEKLY);
-					}
+						
+						// BORG can only handle daylist for weekly
+						WeekDayList dl = recur.getDayList();
+						if (dl != null && !dl.isEmpty()) {
+							String f = Repeat.DAYLIST;
+							f += ",";
+							for (Object o : dl) {
+								WeekDay wd = (WeekDay) o;
+								f += WeekDay.getCalendarDay(wd);
+							}
+							ap.setFrequency(f);
 
-					WeekDayList dl = recur.getDayList();
-					if (dl != null && !dl.isEmpty()) {
-						String f = Repeat.DAYLIST;
-						f += ",";
-						for (Object o : dl) {
-							WeekDay wd = (WeekDay) o;
-							f += WeekDay.getCalendarDay(wd);
 						}
-						ap.setFrequency(f);
-
 					}
 
 				} else if (freq.equals(Recur.MONTHLY)) {

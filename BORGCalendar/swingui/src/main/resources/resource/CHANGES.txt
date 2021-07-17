@@ -1,3 +1,14 @@
+BORG 1.9.04
+-----------
+Add more themes (look-and-feel). Support Dark themes. #137
+Add past due todos to reminder email #135
+Fix where the "For repeating ToDo's, only show the current instance" option is loaded from when displaying the options UI. #134
+completing tasks in aCalendar+ tasks (Android) doesn't properly update BORG for repeating todos #133
+display a notification if delete or delete one only is pressed in the appt editor and no appts are selected #115
+popup a notification if search returns no results #112
+add option to only show the current todo for a repeating todo #106 - fix
+Wrong recurrence saved when importing biweekly todo created on aCalendar+ (android) #139
+
 BORG 1.9.03
 -----------
 getting an ical parse exception when dragging a valid ics file onto Borg #109
