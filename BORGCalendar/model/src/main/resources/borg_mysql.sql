@@ -24,6 +24,7 @@ CREATE TABLE `addresses` (
   `notes` text,
   `birthday` date default NULL,
   `cell_phone` varchar(25) default NULL,
+  `vcard` text,
   PRIMARY KEY  (`address_num`)
 );
 

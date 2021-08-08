@@ -63,6 +63,7 @@ public class Address extends KeyedEntity<Address>  {
 	private String WebPage;
 	private String Notes;
 	private java.util.Date Birthday;
+	private String vcard;
 
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.entity.KeyedEntity#clone()
@@ -95,6 +96,7 @@ public class Address extends KeyedEntity<Address>  {
 		dst.setWebPage( getWebPage() );
 		dst.setNotes( getNotes() );
 		dst.setBirthday( getBirthday() );
+		dst.setVcard(getVcard());
 		return(dst);
 	}
 	

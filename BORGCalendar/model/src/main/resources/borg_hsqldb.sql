@@ -29,6 +29,7 @@ CREATE CACHED TABLE addresses (
   notes longvarchar,
   birthday date default NULL,
   cell_phone varchar(25) default NULL,
+  vcard longvarchar default NULL,
   PRIMARY KEY  (address_num)
 );
 
