@@ -23,7 +23,6 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.common.Warning;
 import net.sf.borg.model.ExportImport;
 import net.sf.borg.model.db.DBHelper;
-import net.sf.borg.model.ical.IcalFTP;
 import net.sf.borg.model.ical.SyncLog;
 import net.sf.borg.ui.address.AddrListView;
 import net.sf.borg.ui.calendar.DayPanel;
@@ -244,8 +243,6 @@ public class UIControl {
 
 		// prompt for shutdown and backup options
 		boolean do_backup = false;
-		boolean backup_email = false;
-		boolean export_ical = false;
 		final String backupdir = Prefs.getPref(PrefName.BACKUPDIR);
 
 		if (backupdir != null && !backupdir.equals("")) {
@@ -257,12 +254,9 @@ public class UIControl {
 				JCheckBox b1 = new JCheckBox(
 						Resource.getResourceString("backup_notice") + " "
 								+ backupdir);
-				JCheckBox b4 = new JCheckBox(
-						Resource.getResourceString("backup_with_email"));
-				JCheckBox ic = new JCheckBox("ical: "
-						+ Resource.getResourceString("exportToFTP"));
+				
 
-				Object[] array = { b1, b4, ic };
+				Object[] array = { b1 };
 
 				int res = JOptionPane.showConfirmDialog(null, array,
 						Resource.getResourceString("shutdown_options"),
@@ -272,20 +266,14 @@ public class UIControl {
 					return;
 				}
 
-				if (b1.isSelected() || b4.isSelected())
+				if (b1.isSelected() )
 					do_backup = true;
-				if (b4.isSelected())
-					backup_email = true;
-				if (ic.isSelected())
-					export_ical = true;
+				
+				
 			} else if (SHUTDOWN_ACTION.BACKUP.toString()
 					.equals(shutdown_action)) {
 				do_backup = true;
-			} else if (SHUTDOWN_ACTION.EMAIL.toString().equals(shutdown_action)) {
-				do_backup = true;
-				backup_email = true;
 			}
-
 		}
 
 		if (do_backup == true) {
@@ -311,7 +299,7 @@ public class UIControl {
 		if (rm != null)
 			rm.remove();
 
-		new NonUIShutdown(do_backup, backup_email, export_ical).execute();
+		new NonUIShutdown(do_backup).execute();
 
 		// show a splash screen for shutdown which locks the UI
 		try {
@@ -328,13 +316,9 @@ public class UIControl {
 	static private class NonUIShutdown extends SwingWorker<Object, Object> {
 
 		private boolean do_backup;
-		private boolean backup_email;
-		private boolean export_ical;
 
-		public NonUIShutdown(boolean b, boolean e, boolean ic) {
+		public NonUIShutdown(boolean b) {
 			do_backup = b;
-			backup_email = e;
-			export_ical = ic;
 		}
 
 		@Override
@@ -343,22 +327,13 @@ public class UIControl {
 			if (do_backup == true) {
 				try {
 					final String backupdir = Prefs.getPref(PrefName.BACKUPDIR);
-					ExportImport.exportToZip(backupdir, backup_email);
+					ExportImport.exportToZip(backupdir, false);
 					log.info("Export to ZIP Complete");
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 
-			if (export_ical == true) {
-				try {
-					IcalFTP.exportftp(Prefs
-							.getIntPref(PrefName.ICAL_EXPORTYEARS));
-					log.info("FTP Ical Complete");
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
 
 			// non-UI shutdown
 			if (shutdownListener != null)

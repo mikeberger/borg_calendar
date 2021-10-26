@@ -52,7 +52,7 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 
 
 	public enum SHUTDOWN_ACTION {
-		PROMPT, BACKUP, EMAIL, NONE
+		PROMPT, BACKUP, NONE
 	}
 
 	private static final long serialVersionUID = 2246952528811147049L;
@@ -140,7 +140,6 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 		shutdownAction.addItem(Resource.getResourceString("prompt_for_backup"));
 		shutdownAction.addItem(Resource.getResourceString("exit_no_backup"));
 		shutdownAction.addItem(Resource.getResourceString("write_backup_file"));
-		shutdownAction.addItem(Resource.getResourceString("backup_with_email"));
 
 		backp.add(shutdownAction, GridBagConstraintsFactory.create(1, 1,
 				GridBagConstraints.BOTH, 1.0, 0.0));
@@ -161,21 +160,7 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 		gbc1.gridwidth = 2;
 		this.add(verboseLogging, gbc1);
 		
-/*		useProxy.setText(Resource.getResourceString("Use_Proxy"));
-		gbc1 = GridBagConstraintsFactory.create(0, 11, GridBagConstraints.BOTH);
-		gbc1.gridwidth = 2;
-		this.add(useProxy, gbc1);
-		
-		this.add(new JLabel(Resource.getResourceString("proxy_host")),
-				GridBagConstraintsFactory.create(0, 12, GridBagConstraints.BOTH));
-		this.add(proxyHostText,
-				GridBagConstraintsFactory.create(1, 12, GridBagConstraints.BOTH));
-		
-		this.add(new JLabel(Resource.getResourceString("proxy_port")),
-				GridBagConstraintsFactory.create(0, 13, GridBagConstraints.BOTH));
-		this.add(proxyPortText,
-				GridBagConstraintsFactory.create(1, 13, GridBagConstraints.BOTH));
-*/
+
 		flushSpinner.setModel(new SpinnerNumberModel(0,0,null,1));
 		this.add(new JLabel(Resource.getResourceString("db_flush")),
 				GridBagConstraintsFactory.create(0, 14, GridBagConstraints.BOTH));
@@ -208,7 +193,6 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 		OptionsPanel.setBooleanPref(startToSysTray, PrefName.BACKGSTART);
 		OptionsPanel.setBooleanPref(dateInSysTray, PrefName.SYSTRAYDATE);
 		OptionsPanel.setBooleanPref(verboseLogging, PrefName.DEBUG);
-		//OptionsPanel.setBooleanPref(useProxy, PrefName.USE_PROXY);
 		
 		Prefs.putPref(PrefName.BACKUPDIR, backupDir.getText());
 
@@ -218,9 +202,7 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 			Prefs.putPref(PrefName.SHUTDOWN_ACTION, SHUTDOWN_ACTION.NONE.toString());
 		else if (shutdownAction.getSelectedIndex() == 2)
 			Prefs.putPref(PrefName.SHUTDOWN_ACTION, SHUTDOWN_ACTION.BACKUP.toString());
-		else if (shutdownAction.getSelectedIndex() == 3)
-			Prefs.putPref(PrefName.SHUTDOWN_ACTION, SHUTDOWN_ACTION.EMAIL.toString());
-
+	
 		// validate that socket is a number
 		try {
 			int socket = Integer.parseInt(socketPort.getText());
@@ -231,15 +213,7 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 			Prefs.putPref(PrefName.SOCKETPORT, Integer.valueOf(-1));
 		}
 		
-		//Prefs.putPref(PrefName.PROXY_HOST, proxyHostText.getText());
 
-//		try {
-//			int port = Integer.parseInt(proxyPortText.getText());
-//			Prefs.putPref(PrefName.PROXY_PORT, Integer.valueOf(port));
-//		} catch (NumberFormatException e) {
-//			Errmsg.getErrorHandler().notice(Resource.getResourceString("proxy_warn"));
-//		}
-//		
 		int fmins = (int) flushSpinner.getValue();
 		Prefs.putPref(PrefName.FLUSH_MINS, fmins);
 		
@@ -263,7 +237,6 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 		OptionsPanel.setCheckBox(startToSysTray, PrefName.BACKGSTART);
 		OptionsPanel.setCheckBox(dateInSysTray, PrefName.SYSTRAYDATE);
 		OptionsPanel.setCheckBox(verboseLogging, PrefName.DEBUG);
-		//OptionsPanel.setCheckBox(useProxy, PrefName.USE_PROXY);
 
 		String shutdown_action = Prefs.getPref(PrefName.SHUTDOWN_ACTION);
 		if (shutdown_action.isEmpty()
@@ -273,16 +246,10 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 			shutdownAction.setSelectedIndex(1);
 		else if (SHUTDOWN_ACTION.BACKUP.toString().equals(shutdown_action))
 			shutdownAction.setSelectedIndex(2);
-		else if (SHUTDOWN_ACTION.EMAIL.toString().equals(shutdown_action))
-			shutdownAction.setSelectedIndex(3);
+		
 
 		int socket = Prefs.getIntPref(PrefName.SOCKETPORT);
 		socketPort.setText(Integer.toString(socket));
-		
-//		proxyHostText.setText(Prefs.getPref(PrefName.PROXY_HOST));
-//		
-//		int port = Prefs.getIntPref(PrefName.PROXY_PORT);
-//		proxyPortText.setText(Integer.toString(port));
 		
 		int flushMins = Prefs.getIntPref(PrefName.FLUSH_MINS);
 		flushSpinner.setValue(flushMins);
