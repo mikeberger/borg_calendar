@@ -33,7 +33,6 @@ import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.ical.CalDav;
 import net.sf.borg.model.ical.ICal;
 import net.sf.borg.model.ical.IcalFTP;
-import net.sf.borg.model.ical.IcalFileServer;
 import net.sf.borg.model.ical.SyncLog;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.MultiView.Module;
@@ -251,36 +250,6 @@ public class IcalModule implements Module, Prefs.Listener, Model.Listener {
 		});
 
 		icsmenu.add(expftp);
-
-		JMenuItem exp3 = new JMenuItem();
-		exp3.setText(Resource.getResourceString("start_server"));
-		exp3.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				try {
-					IcalFileServer.start();
-					// Errmsg.getErrorHandler().notice(Resource.getResourceString("server_started"));
-				} catch (Exception e) {
-					Errmsg.getErrorHandler().errmsg(e);
-				}
-			}
-		});
-
-		icsmenu.add(exp3);
-
-		JMenuItem exp4 = new JMenuItem();
-		exp4.setText(Resource.getResourceString("stop_server"));
-		exp4.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				IcalFileServer.stop();
-				Errmsg.getErrorHandler().notice(Resource.getResourceString("server_stopped"));
-			}
-		});
-
-		icsmenu.add(exp4);
 
 		m.add(icsmenu);
 
