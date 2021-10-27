@@ -76,17 +76,24 @@ public class EmailReminder {
 		return false;
 	}
 
+	static public void sendDailyEmailReminder(Calendar emailday)
+			throws Exception {
+		sendDailyEmailReminder(emailday, false);
+	}
 
 	/**
 	 * Send daily email reminder.
 	 * 
 	 * @param emailday
 	 *            the emailday
+	 *            
+	 * @param forceResend
+	 *    		resend the daily email, even if it was already sent
 	 * 
 	 * @throws Exception
 	 *             the exception
 	 */
-	static public void sendDailyEmailReminder(Calendar emailday)
+	static public void sendDailyEmailReminder(Calendar emailday, boolean forceResend)
 			throws Exception {
 
 		// check if the email feature has been enabled
@@ -115,7 +122,7 @@ public class EmailReminder {
 
 			// if email was already sent today - don't send again
 			doy = cal.get(Calendar.DAY_OF_YEAR);
-			if (doy == lastday)
+			if (doy == lastday && forceResend == false)
 				return;
 
 			// create the calendar model key for tomorrow

@@ -44,6 +44,7 @@ import net.sf.borg.common.IOHelper;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
+import net.sf.borg.model.EmailReminder;
 import net.sf.borg.model.ExportImport;
 import net.sf.borg.model.Model;
 import net.sf.borg.model.db.DBHelper;
@@ -109,6 +110,28 @@ class MainMenu {
 			}
 		});
 		actionMenu.add(sqlMI);
+		
+		JMenuItem resendEmailMI = new JMenuItem();
+		//resendEmailMI.setIcon(new javax.swing.ImageIcon(getClass().getResource(
+		//		"/resource/Refresh16.gif")));
+		ResourceHelper.setText(resendEmailMI, "resendEmail");
+		resendEmailMI.addActionListener(new java.awt.event.ActionListener() {
+			@Override
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				try {
+					String email = Prefs.getPref(PrefName.EMAILENABLED);
+					if (email.equals("false")) {
+						Errmsg.getErrorHandler().notice(Resource.getResourceString("emailNotEnabled"));
+						return;
+					}
+
+					EmailReminder.sendDailyEmailReminder(null, true);
+				} catch (Exception e) {
+					Errmsg.getErrorHandler().errmsg(e);
+				}
+			}
+		});
+		actionMenu.add(resendEmailMI);
 
 		JMenuItem exitMenuItem = new JMenuItem();
 		exitMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource(
