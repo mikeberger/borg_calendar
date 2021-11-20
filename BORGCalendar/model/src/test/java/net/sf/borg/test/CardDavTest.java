@@ -7,6 +7,8 @@ import java.util.logging.Logger;
 import net.fortuna.ical4j.connector.dav.CardDavCollection;
 import net.fortuna.ical4j.connector.dav.CardDavStore;
 import net.fortuna.ical4j.vcard.VCard;
+import net.sf.borg.common.PrefName;
+import net.sf.borg.common.Prefs;
 import net.sf.borg.model.ical.AddressVcardAdapter;
 import net.sf.borg.model.ical.CardDav;
 
@@ -24,9 +26,7 @@ public class CardDavTest {
 
 		CardDavStore store = CardDav.connect();
 
-		//CardDavCollection col = store.getCollection("/baikal/html/dav.php/addressbooks/mike/default");
-
-		CardDavCollection col = CardDav.getCollection(store, "default");
+		CardDavCollection col = CardDav.getCollection(store, Prefs.getPref(PrefName.CARDDAV_BOOK));
 		System.out.println(col.getId());
 
 		for (VCard vc : col.getComponents()) {
