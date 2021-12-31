@@ -35,6 +35,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -70,22 +71,19 @@ class MainMenu {
 	 */
 	public MainMenu() {
 
-		menuBar.setBorder(new javax.swing.border.BevelBorder(
-				javax.swing.border.BevelBorder.RAISED));
-		//actionMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-		//		"/resource/Application16.gif")));
+		menuBar.setBorder(new javax.swing.border.BevelBorder(javax.swing.border.BevelBorder.RAISED));
+		// actionMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource(
+		// "/resource/Application16.gif")));
 
 		/*
 		 * 
-		 * Action Menu - will contain static items below and other actions
-		 * inserted by UI Modules UI Module actions will be inserted above the
-		 * items below
+		 * Action Menu - will contain static items below and other actions inserted by
+		 * UI Modules UI Module actions will be inserted above the items below
 		 */
 		ResourceHelper.setText(actionMenu, "Action");
 
 		JMenuItem syncMI = new JMenuItem();
-		syncMI.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/Refresh16.gif")));
+		syncMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Refresh16.gif")));
 		syncMI.setText(Resource.getResourceString("Synchronize"));
 		syncMI.addActionListener(new java.awt.event.ActionListener() {
 			@Override
@@ -100,8 +98,7 @@ class MainMenu {
 		actionMenu.add(syncMI);
 
 		JMenuItem sqlMI = new JMenuItem();
-		sqlMI.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/Refresh16.gif")));
+		sqlMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Refresh16.gif")));
 		ResourceHelper.setText(sqlMI, "RunSQL");
 		sqlMI.addActionListener(new java.awt.event.ActionListener() {
 			@Override
@@ -110,10 +107,10 @@ class MainMenu {
 			}
 		});
 		actionMenu.add(sqlMI);
-		
+
 		JMenuItem resendEmailMI = new JMenuItem();
-		//resendEmailMI.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-		//		"/resource/Refresh16.gif")));
+		// resendEmailMI.setIcon(new javax.swing.ImageIcon(getClass().getResource(
+		// "/resource/Refresh16.gif")));
 		ResourceHelper.setText(resendEmailMI, "resendEmail");
 		resendEmailMI.addActionListener(new java.awt.event.ActionListener() {
 			@Override
@@ -125,7 +122,29 @@ class MainMenu {
 						return;
 					}
 
-					EmailReminder.sendDailyEmailReminder(null, true);
+					class MailThread extends Thread {
+						public MailThread() {
+							this.setName("Reminder Mail Thread");
+						}
+
+						@Override
+						public void run() {
+							try {
+								EmailReminder.sendDailyEmailReminder(null, true);
+							} catch (Exception e) {
+								final Exception fe = e;
+								SwingUtilities.invokeLater(new Runnable() {
+									@Override
+									public void run() {
+										Errmsg.getErrorHandler().errmsg(fe);
+									}
+								});
+							}
+						}
+					}
+
+					new MailThread().start();
+
 				} catch (Exception e) {
 					Errmsg.getErrorHandler().errmsg(e);
 				}
@@ -134,8 +153,7 @@ class MainMenu {
 		actionMenu.add(resendEmailMI);
 
 		JMenuItem exitMenuItem = new JMenuItem();
-		exitMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/stop.png")));
+		exitMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/stop.png")));
 		exitMenuItem.setText(Resource.getResourceString("Exit"));
 		exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
 			@Override
@@ -152,24 +170,22 @@ class MainMenu {
 		 * Option Menu
 		 */
 
-		//optionsMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-		//		"/resource/Preferences16.gif")));
+		// optionsMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource(
+		// "/resource/Preferences16.gif")));
 		ResourceHelper.setText(optionsMenu, "Options");
 
 		JMenuItem editPrefsMenuItem = new JMenuItem();
 		ResourceHelper.setText(editPrefsMenuItem, "ep");
-		editPrefsMenuItem
-				.addActionListener(new java.awt.event.ActionListener() {
-					@Override
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						OptionsView.getReference().setVisible(true);
-					}
-				});
+		editPrefsMenuItem.addActionListener(new java.awt.event.ActionListener() {
+			@Override
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				OptionsView.getReference().setVisible(true);
+			}
+		});
 		optionsMenu.add(editPrefsMenuItem);
 
 		JMenuItem exportPrefsMI = new JMenuItem();
-		exportPrefsMI.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/Export16.gif")));
+		exportPrefsMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Export16.gif")));
 		ResourceHelper.setText(exportPrefsMI, "export_prefs");
 		exportPrefsMI.addActionListener(new java.awt.event.ActionListener() {
 			@Override
@@ -180,8 +196,7 @@ class MainMenu {
 		optionsMenu.add(exportPrefsMI);
 
 		JMenuItem importPrefsMI = new JMenuItem();
-		importPrefsMI.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/Import16.gif")));
+		importPrefsMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Import16.gif")));
 		ResourceHelper.setText(importPrefsMI, "import_prefs");
 		importPrefsMI.addActionListener(new java.awt.event.ActionListener() {
 			@Override
@@ -203,8 +218,8 @@ class MainMenu {
 		 * Import/Export Menu
 		 */
 		JMenu impexpMenu = new JMenu();
-		//impexpMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-		//		"/resource/Export16.gif")));
+		// impexpMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource(
+		// "/resource/Export16.gif")));
 		ResourceHelper.setText(impexpMenu, "impexpMenu");
 
 		JMenuItem importMI = new JMenuItem();
@@ -214,8 +229,7 @@ class MainMenu {
 				importMIActionPerformed();
 			}
 		});
-		importMI.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/Import16.gif")));
+		importMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Import16.gif")));
 		ResourceHelper.setText(importMI, "impXML");
 		impexpMenu.add(importMI);
 
@@ -227,8 +241,7 @@ class MainMenu {
 				importZipMIActionPerformed();
 			}
 		});
-		importZipMI.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/Import16.gif")));
+		importZipMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Import16.gif")));
 		impexpMenu.add(importZipMI);
 
 		JMenuItem exportMI = new JMenuItem();
@@ -238,8 +251,7 @@ class MainMenu {
 				exportMIActionPerformed();
 			}
 		});
-		exportMI.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/Export16.gif")));
+		exportMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Export16.gif")));
 		ResourceHelper.setText(exportMI, "expXML");
 		impexpMenu.add(exportMI);
 
@@ -266,8 +278,7 @@ class MainMenu {
 		 * 
 		 * Help Menu
 		 */
-		helpmenu.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-				"/resource/Help16.gif")));
+		helpmenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Help16.gif")));
 		ResourceHelper.setText(helpmenu, "Help");
 
 		JMenuItem helpMI = new JMenuItem();
@@ -320,12 +331,10 @@ class MainMenu {
 	private static void importZipMIActionPerformed() {
 
 		JFileChooser chooser = new JFileChooser();
-		FileNameExtensionFilter filter = new FileNameExtensionFilter(
-				"*.zip,*.ZIP", "zip", "ZIP");
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("*.zip,*.ZIP", "zip", "ZIP");
 		chooser.setFileFilter(filter);
 		chooser.setCurrentDirectory(IOHelper.getHomeDirectory());
-		chooser.setDialogTitle(Resource
-				.getResourceString("Please_choose_File_to_Import_From"));
+		chooser.setDialogTitle(Resource.getResourceString("Please_choose_File_to_Import_From"));
 		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
 		int returnVal = chooser.showOpenDialog(null);
@@ -345,17 +354,12 @@ class MainMenu {
 	/**
 	 * Add an action to the action menu
 	 * 
-	 * @param icon
-	 *            the icon for the menu item
-	 * @param text
-	 *            the text for the menu item
-	 * @param action
-	 *            the action listener for the menu item
-	 * @param insertIndex
-	 *            the index to insert the menu item at
+	 * @param icon        the icon for the menu item
+	 * @param text        the text for the menu item
+	 * @param action      the action listener for the menu item
+	 * @param insertIndex the index to insert the menu item at
 	 */
-	public void addAction(Icon icon, String text, ActionListener action,
-			int insertIndex) {
+	public void addAction(Icon icon, String text, ActionListener action, int insertIndex) {
 		JMenuItem item = new JMenuItem();
 		item.setIcon(icon);
 		item.setText(text);
@@ -367,12 +371,9 @@ class MainMenu {
 	/**
 	 * add an item to the help menu
 	 * 
-	 * @param icon
-	 *            the icon for the menu item
-	 * @param text
-	 *            the menu item text
-	 * @param action
-	 *            the menu item action
+	 * @param icon   the icon for the menu item
+	 * @param text   the menu item text
+	 * @param action the menu item action
 	 */
 	public void addHelpMenuItem(Icon icon, String text, ActionListener action) {
 		JMenuItem item = new JMenuItem();
@@ -387,8 +388,7 @@ class MainMenu {
 	/**
 	 * add a menu item to the options menu
 	 * 
-	 * @param item
-	 *            the item
+	 * @param item the item
 	 */
 	public void addOptionsMenuItem(JMenuItem item) {
 		optionsMenu.add(item);
@@ -407,14 +407,12 @@ class MainMenu {
 			// get the version and build info from a properties file in the
 			// jar
 			// file
-			InputStream is = MainMenu.class.getResource("/properties")
-					.openStream();
+			InputStream is = MainMenu.class.getResource("/properties").openStream();
 			Properties props = new Properties();
 			props.load(is);
 			is.close();
 			version = Resource.getVersion();
-			build_info = Resource.getResourceString("Build_Time:_")
-					+ props.getProperty("build.time");
+			build_info = Resource.getResourceString("Build_Time:_") + props.getProperty("build.time");
 			build_info += "\nGit: " + props.getProperty("build.number");
 
 		} catch (Exception e) {
@@ -423,37 +421,23 @@ class MainMenu {
 
 		// build and show the version info.
 
-		String info = Resource.getResourceString("Berger-Organizer_v")
-				+ version
-				+ "\n"
-				+ Resource.getResourceString("copyright")
-				+ " (2003-2021) Michael Berger <mike@mbcsoft.com>\n\n"
-				+ Resource.getResourceString("contributions_by") + "\n"
-				+ Resource.getResourceString("contrib") + "\n"
-				+ Resource.getResourceString("translations") + "\n\n"
-				+ build_info + "\n" + "Java "
+		String info = Resource.getResourceString("Berger-Organizer_v") + version + "\n"
+				+ Resource.getResourceString("copyright") + " (2003-2021) Michael Berger <mike@mbcsoft.com>\n\n"
+				+ Resource.getResourceString("contributions_by") + "\n" + Resource.getResourceString("contrib") + "\n"
+				+ Resource.getResourceString("translations") + "\n\n" + build_info + "\n" + "Java "
 				+ System.getProperty("java.version");
 		Object opts[] = { Resource.getResourceString("Dismiss") };
-		JOptionPane
-				.showOptionDialog(
-						null,
-						info,
-						Resource.getResourceString("About_BORG"),
-						JOptionPane.YES_NO_OPTION,
-						JOptionPane.INFORMATION_MESSAGE,
-						new ImageIcon(MainMenu.class
-								.getResource("/resource/borg.jpg")), opts,
-						opts[0]);
+		JOptionPane.showOptionDialog(null, info, Resource.getResourceString("About_BORG"), JOptionPane.YES_NO_OPTION,
+				JOptionPane.INFORMATION_MESSAGE, new ImageIcon(MainMenu.class.getResource("/resource/borg.jpg")), opts,
+				opts[0]);
 
 	}
 
 	/** show database info */
 	private static void dbMIActionPerformed() {
 		String dbtype = Prefs.getPref(PrefName.DBTYPE);
-		String info = Resource.getResourceString("DatabaseInformation")
-				+ ":\n\n";
-		info += dbtype + " URL: " + DBHelper.getController().buildURL()
-				+ "\n\n";
+		String info = Resource.getResourceString("DatabaseInformation") + ":\n\n";
+		info += dbtype + " URL: " + DBHelper.getController().buildURL() + "\n\n";
 
 		try {
 			for (Model model : Model.getExistingModels()) {
@@ -477,11 +461,9 @@ class MainMenu {
 			JFileChooser chooser = new JFileChooser();
 
 			chooser.setCurrentDirectory(IOHelper.getHomeDirectory());
-			chooser.setDialogTitle(Resource
-					.getResourceString("Please_choose_directory_to_place_XML_files"));
+			chooser.setDialogTitle(Resource.getResourceString("Please_choose_directory_to_place_XML_files"));
 			chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-			chooser.setApproveButtonText(Resource
-					.getResourceString("select_export_dir"));
+			chooser.setApproveButtonText(Resource.getResourceString("select_export_dir"));
 
 			int returnVal = chooser.showOpenDialog(null);
 			if (returnVal != JFileChooser.APPROVE_OPTION)
@@ -492,11 +474,9 @@ class MainMenu {
 			File dir = new File(s);
 			String err = null;
 			if (!dir.exists()) {
-				err = Resource.getResourceString("Directory_[") + s
-						+ Resource.getResourceString("]_does_not_exist");
+				err = Resource.getResourceString("Directory_[") + s + Resource.getResourceString("]_does_not_exist");
 			} else if (!dir.isDirectory()) {
-				err = "[" + s
-						+ Resource.getResourceString("]_is_not_a_directory");
+				err = "[" + s + Resource.getResourceString("]_is_not_a_directory");
 			}
 
 			if (err == null)
@@ -550,11 +530,9 @@ class MainMenu {
 		if (!f.exists())
 			return true;
 
-		int ret = JOptionPane.showConfirmDialog(
-				null,
-				net.sf.borg.common.Resource
-						.getResourceString("overwrite_warning") + fname + " ?",
-				"confirm_overwrite", JOptionPane.OK_CANCEL_OPTION);
+		int ret = JOptionPane.showConfirmDialog(null,
+				net.sf.borg.common.Resource.getResourceString("overwrite_warning") + fname + " ?", "confirm_overwrite",
+				JOptionPane.OK_CANCEL_OPTION);
 		if (ret != JOptionPane.OK_OPTION)
 			return false;
 
@@ -576,8 +554,7 @@ class MainMenu {
 		if (pluginMenu == null) {
 			pluginMenu = new JMenu();
 			pluginMenu.setText(Resource.getResourceString("Plugins"));
-			pluginMenu.setIcon(new javax.swing.ImageIcon(getClass()
-					.getResource("/resource/Preferences16.gif")));
+			pluginMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Preferences16.gif")));
 			pluginMenu.setVisible(false);
 		}
 		return pluginMenu;
@@ -586,8 +563,7 @@ class MainMenu {
 	/**
 	 * add a sub menu to the plugin menu
 	 * 
-	 * @param menu
-	 *            the sub menu
+	 * @param menu the sub menu
 	 */
 	public void addPluginSubMenu(JMenu menu) {
 		pluginMenu.add(menu);
@@ -598,8 +574,8 @@ class MainMenu {
 	private JMenu getUndoMenu() {
 		JMenu m = new JMenu();
 		m.setText(Resource.getResourceString("undo"));
-		//m.setIcon(new javax.swing.ImageIcon(getClass().getResource(
-		//		"/resource/Refresh16.gif")));
+		// m.setIcon(new javax.swing.ImageIcon(getClass().getResource(
+		// "/resource/Refresh16.gif")));
 		final JMenu menu = m;
 		m.addMenuListener(new MenuListener() {
 
@@ -619,20 +595,14 @@ class MainMenu {
 
 				final String top = UndoLog.getReference().getTopItem();
 				if (top != null) {
-					JMenuItem mi = new JMenuItem(Resource
-							.getResourceString("undo") + ": " + top);
+					JMenuItem mi = new JMenuItem(Resource.getResourceString("undo") + ": " + top);
 					mi.addActionListener(new ActionListener() {
 
 						@Override
 						public void actionPerformed(ActionEvent arg0) {
-							int ret = JOptionPane.showConfirmDialog(
-									null,
-									Resource.getResourceString("undo")
-											+ ": "
-											+ top
-											+ "\n\n"
-											+ Resource
-													.getResourceString("please_confirm"),
+							int ret = JOptionPane.showConfirmDialog(null,
+									Resource.getResourceString("undo") + ": " + top + "\n\n"
+											+ Resource.getResourceString("please_confirm"),
 									"", JOptionPane.OK_CANCEL_OPTION);
 							if (ret != JOptionPane.OK_OPTION)
 								return;
@@ -651,12 +621,9 @@ class MainMenu {
 
 						@Override
 						public void actionPerformed(ActionEvent arg0) {
-							int ret = JOptionPane.showConfirmDialog(
-									null,
-									Resource.getResourceString("clear_undos")
-											+ "\n\n"
-											+ Resource
-													.getResourceString("please_confirm"),
+							int ret = JOptionPane.showConfirmDialog(null,
+									Resource.getResourceString("clear_undos") + "\n\n"
+											+ Resource.getResourceString("please_confirm"),
 									"", JOptionPane.OK_CANCEL_OPTION);
 							if (ret != JOptionPane.OK_OPTION)
 								return;
@@ -666,23 +633,18 @@ class MainMenu {
 					});
 					menu.add(cmi);
 
-					boolean show_stack = Prefs
-							.getBoolPref(PrefName.SHOW_UNDO_STACK);
+					boolean show_stack = Prefs.getBoolPref(PrefName.SHOW_UNDO_STACK);
 					if (show_stack == true) {
-						JMenu all_mi = new JMenu(Resource
-								.getResourceString("all_undos"));
-						for (String item : UndoLog.getReference()
-								.getItemStrings()) {
-							JMenuItem item_mi = new JMenuItem(Resource
-									.getResourceString("undo") + ": " + item);
+						JMenu all_mi = new JMenu(Resource.getResourceString("all_undos"));
+						for (String item : UndoLog.getReference().getItemStrings()) {
+							JMenuItem item_mi = new JMenuItem(Resource.getResourceString("undo") + ": " + item);
 							all_mi.add(item_mi);
 						}
 
 						menu.add(all_mi);
 					}
 				} else {
-					menu.add(new JMenuItem(Resource
-							.getResourceString("no_undos")));
+					menu.add(new JMenuItem(Resource.getResourceString("no_undos")));
 				}
 
 			}
@@ -697,12 +659,11 @@ class MainMenu {
 		try {
 
 			JFileChooser chooser = new JFileChooser();
-			FileNameExtensionFilter filter = new FileNameExtensionFilter(
-					Resource.getResourceString("xml_file"), "xml", "XML");
+			FileNameExtensionFilter filter = new FileNameExtensionFilter(Resource.getResourceString("xml_file"), "xml",
+					"XML");
 			chooser.setFileFilter(filter);
 			chooser.setCurrentDirectory(IOHelper.getHomeDirectory());
-			chooser.setDialogTitle(Resource
-					.getResourceString("Please_choose_File_to_Import_From"));
+			chooser.setDialogTitle(Resource.getResourceString("Please_choose_File_to_Import_From"));
 			chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
 			int returnVal = chooser.showOpenDialog(null);
@@ -712,35 +673,27 @@ class MainMenu {
 			String fileName = chooser.getSelectedFile().getAbsolutePath();
 			IOHelper.setHomeDirectory(fileName);
 
-			BufferedReader in = new BufferedReader(new FileReader(new File(
-					fileName)));
+			BufferedReader in = new BufferedReader(new FileReader(new File(fileName)));
 			Model model = ExportImport.getImportModelForXML(in);
 			in.close();
 			if (model == null) {
-				Errmsg.getErrorHandler().notice(
-						Resource.getResourceString("import_format_error"));
+				Errmsg.getErrorHandler().notice(Resource.getResourceString("import_format_error"));
 				return;
 			}
 
-			int ret = JOptionPane.showConfirmDialog(
-					null,
-					Resource.getResourceString("Importing_") + " "
-							+ model.getExportName() + ", OK?",
-					Resource.getResourceString("Import_WARNING"),
-					JOptionPane.OK_CANCEL_OPTION);
+			int ret = JOptionPane.showConfirmDialog(null,
+					Resource.getResourceString("Importing_") + " " + model.getExportName() + ", OK?",
+					Resource.getResourceString("Import_WARNING"), JOptionPane.OK_CANCEL_OPTION);
 
-			if (ret != JOptionPane.OK_OPTION)
-			{
+			if (ret != JOptionPane.OK_OPTION) {
 				return;
 			}
 
 			try {
-				ExportImport.importFromXmlFile(model, new FileInputStream(
-						fileName));
+				ExportImport.importFromXmlFile(model, new FileInputStream(fileName));
 			} catch (Exception e) {
 				Errmsg.logError(e);
-				Errmsg.getErrorHandler().notice(
-						Resource.getResourceString("Import_error"));
+				Errmsg.getErrorHandler().notice(Resource.getResourceString("Import_error"));
 			}
 		} catch (Exception e) {
 			Errmsg.getErrorHandler().errmsg(e);
@@ -774,8 +727,7 @@ class MainMenu {
 			Prefs.importPrefs(file.getAbsolutePath());
 		} catch (Exception e) {
 
-			String err = Resource.getResourceString("import_format_error")
-					+ ": " + e.getLocalizedMessage();
+			String err = Resource.getResourceString("import_format_error") + ": " + e.getLocalizedMessage();
 			Errmsg.getErrorHandler().notice(err);
 		}
 
