@@ -984,16 +984,10 @@ public class TaskView extends DockableView {
 		}
 	}
 
-	/**
-	 * refresh only updates the link panel tab to indicate links it does not
-	 * refresh task data because the user might be editing
-	 */
+	
 	@Override
 	public void refresh() {
-		if (linkPanel != null && linkPanel.hasLinks()) {
-			taskTabbedPanel.setForegroundAt(3, Color.red);
-		} else
-			taskTabbedPanel.setForegroundAt(3, Color.black);
+	
 	}
 
 	@Override
