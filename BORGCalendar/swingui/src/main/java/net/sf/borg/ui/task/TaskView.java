@@ -84,6 +84,7 @@ import net.sf.borg.ui.link.LinkPanel;
 import net.sf.borg.ui.util.DateDialog;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 import net.sf.borg.ui.util.LimitDocument;
+import net.sf.borg.ui.util.PlainDateEditor;
 import net.sf.borg.ui.util.PopupMenuHelper;
 import net.sf.borg.ui.util.TableSorter;
 
@@ -438,8 +439,8 @@ public class TaskView extends DockableView {
 		taskIdText = new JTextField();
 		JLabel lblItemNum = new JLabel();
 		JLabel lblStatus = new JLabel();
-		startDateChooser = new JDateChooser();
-		dueDateChooser = new JDateChooser();
+		startDateChooser = new JDateChooser(new PlainDateEditor());
+		dueDateChooser = new JDateChooser(new PlainDateEditor());
 		priorityText = new JComboBox<Integer>();
 		for (int p = 1; p <= 5; p++) {
 			priorityText.addItem(Integer.valueOf(p));

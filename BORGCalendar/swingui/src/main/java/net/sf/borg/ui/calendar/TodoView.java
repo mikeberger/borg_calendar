@@ -95,6 +95,7 @@ import net.sf.borg.ui.SunTrayIconProxy;
 import net.sf.borg.ui.task.ProjectView;
 import net.sf.borg.ui.task.TaskView;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
+import net.sf.borg.ui.util.PlainDateEditor;
 import net.sf.borg.ui.util.PopupMenuHelper;
 import net.sf.borg.ui.util.TablePrinter;
 import net.sf.borg.ui.util.TableSorter;
@@ -589,7 +590,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 			}
 		});
 
-		todoDate = new JDateChooser();
+		todoDate = new JDateChooser(new PlainDateEditor());
 
 		JButton addTodoButton = new JButton();
 		JLabel todoLabel = new JLabel();

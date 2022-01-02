@@ -48,6 +48,7 @@ import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.link.LinkPanel;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 import net.sf.borg.ui.util.LimitDocument;
+import net.sf.borg.ui.util.PlainDateEditor;
 
 /**
  * UI for editing a single address record.
@@ -141,7 +142,7 @@ public class AddressView extends DockableView {
 		emailText = new JTextField(new LimitDocument(50), null, 50);
 		webPageText = new JTextField(new LimitDocument(100), null, 100);
 		companyText = new JTextField(new LimitDocument(25), null, 25);
-		birthdayChooser = new JDateChooser();
+		birthdayChooser = new JDateChooser(new PlainDateEditor());
 		cellPhoneText = new JTextField(new LimitDocument(25),null,25);
 		JPanel homeAddressPanel = new JPanel();
 		streetAddresText = new JTextField(new LimitDocument(40), null, 25);

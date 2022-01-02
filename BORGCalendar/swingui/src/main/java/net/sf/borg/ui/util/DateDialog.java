@@ -95,7 +95,7 @@ public class DateDialog extends JDialog {
 		JPanel pnlFields = new JPanel();
 		pnlInput.add(pnlFields, BorderLayout.CENTER);
 		pnlFields.setLayout(new GridLayout(0, 1));
-		pnlFields.add(dateComboBox = new JDateChooser());
+		pnlFields.add(dateComboBox = new JDateChooser(new PlainDateEditor()));
 
 		JPanel pnlLabels = new JPanel();
 		pnlInput.add(pnlLabels, BorderLayout.WEST);

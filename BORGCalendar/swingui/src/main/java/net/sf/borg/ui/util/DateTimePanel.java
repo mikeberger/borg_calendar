@@ -70,7 +70,7 @@ public class DateTimePanel extends JPanel {
 	private DefaultComboBoxModel<String> ampmModel = new DefaultComboBoxModel<String>(
 			new String[] { "AM", "PM" });
 
-	private JDateChooser dateChooser = new JDateChooser();
+	private JDateChooser dateChooser = new JDateChooser(new PlainDateEditor());
 
 	/** The hour box. */
 	private JComboBox<String> hourBox = new JComboBox<String>();

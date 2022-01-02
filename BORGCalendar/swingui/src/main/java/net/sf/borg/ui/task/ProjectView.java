@@ -54,6 +54,7 @@ import net.sf.borg.ui.DockableView;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.link.LinkPanel;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
+import net.sf.borg.ui.util.PlainDateEditor;
 
 /**
  * UI for viewing and editing a single project
@@ -240,7 +241,7 @@ public class ProjectView extends DockableView {
 		JLabel lblItemNum = new JLabel();
 		lblItemNum.setText(Resource.getResourceString("Item_#"));
 
-		dueDateChooser = new JDateChooser();
+		dueDateChooser = new JDateChooser(new PlainDateEditor());
 		JLabel lblStartDate = new JLabel();
 		JLabel lblDueDate = new JLabel();
 		statusComboBox = new JComboBox<String>();
@@ -250,7 +251,7 @@ public class ProjectView extends DockableView {
 		ResourceHelper.setText(lblStatus, "Status");
 		lblStatus.setLabelFor(statusComboBox);
 
-		startDateChooser = new JDateChooser();
+		startDateChooser = new JDateChooser(new PlainDateEditor());
 		ResourceHelper.setText(lblStartDate, "Start_Date");
 		lblStartDate.setLabelFor(startDateChooser);
 

@@ -70,6 +70,7 @@ import net.sf.borg.ui.DockableView;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.util.DateDialog;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
+import net.sf.borg.ui.util.PlainDateEditor;
 import net.sf.borg.ui.util.PopupMenuHelper;
 import net.sf.borg.ui.util.TableSorter;
 
@@ -336,7 +337,7 @@ public class AppointmentListView extends DockableView implements
 
 		public JDateChooserNoMnemonic()
 		{
-			super();
+			super(new PlainDateEditor());
 			calendarButton.setMnemonic(KeyEvent.VK_F24); // set to harmless key
 		}
 	}

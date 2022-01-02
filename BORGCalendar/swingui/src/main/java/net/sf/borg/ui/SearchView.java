@@ -74,6 +74,7 @@ import net.sf.borg.ui.memo.MemoPanel;
 import net.sf.borg.ui.task.ProjectView;
 import net.sf.borg.ui.task.TaskView;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
+import net.sf.borg.ui.util.PlainDateEditor;
 import net.sf.borg.ui.util.TablePrinter;
 import net.sf.borg.ui.util.TableSorter;
 
@@ -480,12 +481,12 @@ public class SearchView extends DockableView implements Module {
 		ResourceHelper.setText(endDateLabel, "EndDate");
 		searchCriteriaPanel.add(endDateLabel, GridBagConstraintsFactory.create(3, 1, GridBagConstraints.HORIZONTAL));
 
-		startDateChooser = new JDateChooser();
+		startDateChooser = new JDateChooser(new PlainDateEditor());
 		GridBagConstraints gbc1 = GridBagConstraintsFactory.create(4, 0, GridBagConstraints.NONE, 0.0, 0.0);
 		gbc1.anchor = GridBagConstraints.WEST;
 		searchCriteriaPanel.add(startDateChooser, gbc1);
 
-		endDateChooser = new JDateChooser();
+		endDateChooser = new JDateChooser(new PlainDateEditor());
 		GridBagConstraints gbc2 = GridBagConstraintsFactory.create(4, 1, GridBagConstraints.NONE, 0.0, 0.0);
 		gbc2.anchor = GridBagConstraints.WEST;
 		searchCriteriaPanel.add(endDateChooser, gbc2);

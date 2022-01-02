@@ -79,6 +79,7 @@ import net.sf.borg.ui.util.DateTimePanel;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 import net.sf.borg.ui.util.LimitDocument;
 import net.sf.borg.ui.util.PasswordHelper;
+import net.sf.borg.ui.util.PlainDateEditor;
 
 /**
  * AppointmentPanel is the UI for editing an Appointment.
@@ -657,7 +658,7 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener, Mo
 		theRepeatPanel.add(repeatUntilRadio, GridBagConstraintsFactory.create(0, 2, GridBagConstraints.BOTH));
 		buttonGroup.add(repeatUntilRadio);
 
-		untilDate = new JDateChooser();
+		untilDate = new JDateChooser(new PlainDateEditor());
 		theRepeatPanel.add(untilDate, GridBagConstraintsFactory.create(1, 2, GridBagConstraints.BOTH));
 
 		nTimesValue = new JSpinner();
@@ -704,7 +705,7 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener, Mo
 		JLabel endTimeLabel = new JLabel();
 		untimedCheckBox = new JCheckBox();
 		JLabel newDateLabel = new JLabel();
-		newdatefield = new JDateChooser();
+		newdatefield = new JDateChooser(new PlainDateEditor());
 		newdatefield.setDateFormatString("MMM dd, yyyy");
 		dateChangeCheckBox = new JCheckBox();
 		JPanel appointmentPropetiesPanel = new JPanel();
