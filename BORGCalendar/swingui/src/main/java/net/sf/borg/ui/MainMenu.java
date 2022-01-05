@@ -422,7 +422,7 @@ class MainMenu {
 		// build and show the version info.
 
 		String info = Resource.getResourceString("Berger-Organizer_v") + version + "\n"
-				+ Resource.getResourceString("copyright") + " (2003-2021) Michael Berger <mike@mbcsoft.com>\n\n"
+				+ Resource.getResourceString("copyright") + " (2003-2022) Michael Berger\n\n"
 				+ Resource.getResourceString("contributions_by") + "\n" + Resource.getResourceString("contrib") + "\n"
 				+ Resource.getResourceString("translations") + "\n\n" + build_info + "\n" + "Java "
 				+ System.getProperty("java.version");
