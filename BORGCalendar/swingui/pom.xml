@@ -43,13 +43,7 @@
 			<artifactId>flatlaf-intellij-themes</artifactId>
 			<version>1.4</version>
 		</dependency>
-		<dependency>
-			<groupId>filedrop</groupId>
-			<artifactId>filedrop</artifactId>
-			<version>1.1</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/filedrop.jar</systemPath>
-		</dependency>
+		
 
 
 	</dependencies>
