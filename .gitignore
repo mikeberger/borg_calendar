@@ -7,3 +7,6 @@ target/
 bin/
 LICENSE.txt
 /.idea/
+*.iml
+/desktop.ini
+*.msi
