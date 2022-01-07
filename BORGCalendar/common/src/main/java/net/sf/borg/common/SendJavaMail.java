@@ -46,6 +46,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import javax.net.ssl.SSLContext;
 
 /**
  * utility class to send out email via java mail
@@ -100,6 +101,8 @@ public class SendJavaMail {
 		
 		log.info("Sending mail to: " + to);
 
+		//log.info("protocols:" + String.join(" ", SSLContext.getDefault().getSupportedSSLParameters().getProtocols()));
+
 		// create some properties and get the default Session
 		Properties props = new Properties();
 		props.put("mail.smtp.host", host);
@@ -110,6 +113,15 @@ public class SendJavaMail {
 			props.put("mail.debug", "true");
 		if (Prefs.getBoolPref(PrefName.ENABLETLS))
 			props.put("mail.smtp.starttls.enable", "true");
+
+		String protocols = String.join(" ",
+				SSLContext
+						.getDefault()
+						.getSupportedSSLParameters()
+						.getProtocols()
+		);
+
+		props.put("mail.smtp.ssl.protocols", protocols);
 
 		Authenticator auth = null;
 		if (user != null && !user.equals("") && pass != null
