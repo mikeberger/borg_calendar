@@ -1,3 +1,14 @@
+BORG 1.9.05
+-----------
+Java 17
+Wrong recurrence saved when importing biweekly todo created on aCalendar+ (android) #139
+Simplify backup options
+Remove ical server
+add option to resend daily email reminder
+fixes for dark themes
+allow type change for tasks in initial state
+3pp upgrades
+
 BORG 1.9.04
 -----------
 Add more themes (look-and-feel). Support Dark themes. #137
@@ -103,10 +114,10 @@ Defect	350	Duplicate Holiday entries for the same *.ics file
 Enhancement	345	Local language list is not ordered
 Defect	338	Opening colour setting and clicking cancel changes original colour to black
 Defect	328	Help menu URLs do not function properly, and causes mouse malfunctions
-Defect	327	“Tasks” and “Project” can not properly handle “Move Following Day” and “Change Date”
-Defect	326	“Tasks” and “Project” can not do “Edit” and double click in “To Do List” window
+Defect	327	ï¿½Tasksï¿½ and ï¿½Projectï¿½ can not properly handle ï¿½Move Following Dayï¿½ and ï¿½Change Dateï¿½
+Defect	326	ï¿½Tasksï¿½ and ï¿½Projectï¿½ can not do ï¿½Editï¿½ and double click in ï¿½To Do Listï¿½ window
 Defect	325	Appointment editor right-click menu on delete is misleading
-Defect	322	"Clean Due Date", "Set Due Date" and "Delete" don’t work.
+Defect	322	"Clean Due Date", "Set Due Date" and "Delete" donï¿½t work.
 Defect	307	Save button shifts to the right as the length of the description increases
 Enhancement	304	Category wizard window disappears after asking for input
 Defect	303	Editing appointments with vacation unchecked in properties part
@@ -121,9 +132,9 @@ Defect	280	The "Search" feature in the Help section does not work or takes too l
 Defect	278	Alt + L, Alt + S, Alt + E and Alt + o doesn't have any effect under Appearance even though it has underlined L, S, E, o indicating a mnemonic.
 Defect	277	Alt + R doesn't have any effect in the Reminder Email Time under Email Parameters even though it has underlined R indicating a mnemonic.
 Defect	276	Alt + S doesn't have any effect in the SMTP Server under Email Parameters even though it has underlined S indicating a mnemonic.
-Defect	275	conflict “Alt-h” in the edit preferences
+Defect	275	conflict ï¿½Alt-hï¿½ in the edit preferences
 Defect	274	Pressing "Alt-q" does not activate the "Frequency" menu in the Appointment Editor.
-Defect	273	While importing “.ics” calendar file, the chosen category for imported appointments is reset to “No Category” after the import
+Defect	273	While importing ï¿½.icsï¿½ calendar file, the chosen category for imported appointments is reset to ï¿½No Categoryï¿½ after the import
 Defect	272	Cannot Remove Empty Item in Checklist
 Defect	269	Canceling "Quick ToDo" window shows the same warning of empty textbox
 Defect	268	"mark todo in month view" checkbox marks also day view and week view.
@@ -135,7 +146,7 @@ Defect	242	Pressing "Alt-o" does not open "Options" menu, even though it contain
 Defect	241	Pressing "Alt-c" does not open "Action" menu, even though it contains underlined "c" (indicating "c" mnemonic).
 Defect	240	Dragging an event off the top of the month view and releasing left mouse button throws the event into the previous month.
 Defect	237	The due date is earlier than the start date of the SubTask
-Defect	236	space “ “ can be used to add an appointment in Quick ToDo list
+Defect	236	space ï¿½ ï¿½ can be used to add an appointment in Quick ToDo list
 Defect	234	"Search String" fails for "Memo" when "Memo" has more than one line
 Defect	233	Space " " can be used as description/summary for creating a project/task.
 Defect	219	Task State Editor does not allow creation/modification of new/existing Task Types
@@ -143,13 +154,13 @@ Defect	218	Valid Home Phone and Work Phone numbers not accepted in Address Book
 Defect	217	"Null Pointer Exception" thrown when trying to import backup appointments from version 1.7.9 into version 1.8 (Compatibility Issues)
 Defect	216	A task can be brought back to OPEN state even its Project is in CLOSED state
 Defect	214	A Project can be closed before its sub projects (with open tasks) can be closed.
-Defect	213	A cyclic loop can be created between a project and its parent causing the looped parts to disappear from the ‘Project Tree’.
+Defect	213	A cyclic loop can be created between a project and its parent causing the looped parts to disappear from the ï¿½Project Treeï¿½.
 Defect	209	Deleted Projects still appear in Parent drop down menu as options
 Defect	206	Space " " can be used as Appointment Text for appointments.
-Defect	204	Changing the date in ‘Appointment List’ on the ‘Appointment Editor’ view changes the date the appointment gets added to, even though the title of the ‘Appointment Editor’ tab still reflects the original date.
-Defect	202	Using ‘Save & Close’ with an undocked ‘Appointment Editor’ causes the selected docked view in the main application window to close.
+Defect	204	Changing the date in ï¿½Appointment Listï¿½ on the ï¿½Appointment Editorï¿½ view changes the date the appointment gets added to, even though the title of the ï¿½Appointment Editorï¿½ tab still reflects the original date.
+Defect	202	Using ï¿½Save & Closeï¿½ with an undocked ï¿½Appointment Editorï¿½ causes the selected docked view in the main application window to close.
 Defect	201	"Category" drop down menu under the "To do List" tab keeps populating with repeated categories.
-Defect	199	can’t change an appointment’s category to <no category>
+Defect	199	canï¿½t change an appointmentï¿½s category to <no category>
 Defect	197	Changing the date of the appointment using "Change Date" checkbox in appointment editor throws "Null Pointer Exception"
 Defect	196	Throws Null Pointer Exception when Recurrence End Date is left Empty for an appointment.
 Defect	195	History field of a task does not log change in due date when task is moved in the Month view
