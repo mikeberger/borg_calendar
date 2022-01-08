@@ -95,9 +95,7 @@ abstract class ApptBoxPanel extends JPanel implements ComponentListener {
 
 		/**
 		 * Instantiates a new drag new box.
-		 * 
-		 * @param bounds the bounds
-		 * @param clip the clip
+		 *
 		 */
 		public DragNewBox(DateZone zone) {
 			super(null, null);
@@ -258,31 +256,6 @@ abstract class ApptBoxPanel extends JPanel implements ComponentListener {
 			
 			// get the box and/or zone clicked
 			ClickedBoxInfo b = getClickedBoxInfo(evt);
-			
-			// right click
-			if (evt.getButton() == MouseEvent.BUTTON3) {
-				
-				if( dragStarted && draggedBox != null)
-					return;
-
-				// if no box or zone - do nothing
-				if (b == null)
-					return;
-
-				// show a box's menu
-				if (b.box != null) {
-					if (b.box.getMenu() != null) {
-						b.box.getMenu().show(evt.getComponent(), evt.getX(),
-								evt.getY());
-					}
-				// show a zone's menu
-				} else if (b.zone != null) {
-					b.zone.getMenu().show(evt.getComponent(), evt.getX(),
-							evt.getY());
-				}
-
-				return;
-			}
 			
 			if( !SwingUtilities.isLeftMouseButton(evt))
 				return;
@@ -535,9 +508,32 @@ abstract class ApptBoxPanel extends JPanel implements ComponentListener {
 		public void mouseReleased(MouseEvent evt) {
 			evt.translatePoint(translation, translation);
 
-			// ignore release of right button
-			if (evt.getButton() == MouseEvent.BUTTON3)
+			// get the box and/or zone clicked
+			ClickedBoxInfo b = getClickedBoxInfo(evt);
+			// right click
+			if (evt.getButton() == MouseEvent.BUTTON3) {
+
+				if( dragStarted && draggedBox != null)
+					return;
+
+				// if no box or zone - do nothing
+				if (b == null)
+					return;
+
+				// show a box's menu
+				if (b.box != null) {
+					if (b.box.getMenu() != null) {
+						b.box.getMenu().show(evt.getComponent(), evt.getX(),
+								evt.getY());
+					}
+					// show a zone's menu
+				} else if (b.zone != null) {
+					b.zone.getMenu().show(evt.getComponent(), evt.getX(),
+							evt.getY());
+				}
+
 				return;
+			}
 			
 			// if we have been resizing, then send a resize call to
 			// the resized box so it can deal with the resize
