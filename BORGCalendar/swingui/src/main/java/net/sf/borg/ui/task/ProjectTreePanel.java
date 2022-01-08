@@ -225,7 +225,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 		/**
 		 * Sets the entity.
 		 * 
-		 * @param entity
+		 * @param obj
 		 *            the new entity
 		 */
 		@SuppressWarnings("unused")
@@ -378,6 +378,16 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 			}
 
 		});
+		JMenuItem jrt = rootmenu.add(Resource.getResourceString("Add") + " "
+				+ Resource.getResourceString("task"));
+		jrt.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				addTask();
+			}
+
+		});
 
 		JMenuItem jmex = rootmenu.add(Resource.getResourceString("expand"));
 		jmex.addActionListener(new ActionListener() {
@@ -389,6 +399,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 			}
 
 		});
+
 		JMenuItem jmcol = rootmenu.add(Resource.getResourceString("collapse"));
 		jmcol.addActionListener(new ActionListener() {
 
@@ -476,19 +487,18 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 	 * for it
 	 */
 	private void addTask() {
+		Integer pid = null;
 		Object o = getSelectedEntity();
-		if (o == null)
-			return;
 		if (o instanceof Project) {
 			Project p = (Project) o;
-			try {
-				TaskView pv = new TaskView(null, TaskView.Action.ADD,
-						Integer.valueOf(p.getKey()));
-				entityScrollPane.setViewportView(pv);
-			} catch (Exception e1) {
-				Errmsg.getErrorHandler().errmsg(e1);
-				return;
-			}
+			pid = p.getKey();
+		}
+		try {
+			TaskView pv = new TaskView(null, TaskView.Action.ADD,
+					pid);
+			entityScrollPane.setViewportView(pv);
+		} catch (Exception e1) {
+			Errmsg.getErrorHandler().errmsg(e1);
 		}
 
 	}
@@ -507,8 +517,18 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 	private void addProjectChildren(Project p, DefaultMutableTreeNode node)
 			throws Exception {
 
-		Collection<Task> tasks = TaskModel.getReference().getTasks(p.getKey());
+		Collection<Task> tasks = null;
+		if( p != null )
+			tasks = TaskModel.getReference().getTasks(p.getKey());
+		else {
+			tasks = TaskModel.getReference().getTasks();
+		}
+
 		for (Task task : tasks) {
+
+			// don't add tasks that have a project to the top node
+			if( p == null && task.getProject() != null) continue;
+
 			if (!CategoryModel.getReference().isShown(task.getCategory()))
 				continue;
 
@@ -527,6 +547,8 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 				node.add(new DefaultMutableTreeNode(new Node(taskdesc, task)));
 			}
 		}
+
+		if( p == null ) return;
 
 		Collection<Project> subpcoll = TaskModel.getReference().getSubProjects(
 				p.getKey());
@@ -577,6 +599,10 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 				// add the project's children
 				addProjectChildren(p, pnode);
 			}
+
+			// add project-less nodes
+			addProjectChildren(null, top);
+
 		} catch (Exception e) {
 			Errmsg.getErrorHandler().errmsg(e);
 		}
@@ -622,31 +648,6 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 	 */
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		if (e.getButton() == MouseEvent.BUTTON1)
-			return;
-
-		TreePath selPath = projectTree.getPathForLocation(e.getX(), e.getY());
-		if (selPath == null)
-			return;
-		DefaultMutableTreeNode node = (DefaultMutableTreeNode) selPath
-				.getLastPathComponent();
-		if (node == null)
-			return;
-
-		projectTree.setSelectionPath(selPath);
-		Object nodeobj = node.getUserObject();
-		if (!(nodeobj instanceof Node)) {
-			rootmenu.show(this, e.getX(), e.getY());
-			return;
-		}
-
-		Node mynode = (Node) node.getUserObject();
-
-		Object o = mynode.getEntity();
-		if (o == null)
-			return;
-		if (o instanceof Project)
-			projmenu.show(this, e.getX(), e.getY());
 
 	}
 
@@ -677,7 +678,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 	 */
 	@Override
 	public void mousePressed(MouseEvent e) {
-		// empty
+
 	}
 
 	/*
@@ -687,8 +688,33 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 	 * java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
 	 */
 	@Override
-	public void mouseReleased(MouseEvent arg0) {
-		// empty
+	public void mouseReleased(MouseEvent e) {
+		if (e.getButton() == MouseEvent.BUTTON1)
+			return;
+
+		TreePath selPath = projectTree.getPathForLocation(e.getX(), e.getY());
+		if (selPath == null)
+			return;
+		DefaultMutableTreeNode node = (DefaultMutableTreeNode) selPath
+				.getLastPathComponent();
+		if (node == null)
+			return;
+
+		projectTree.setSelectionPath(selPath);
+		Object nodeobj = node.getUserObject();
+		if (!(nodeobj instanceof Node)) {
+			rootmenu.show(this, e.getX(), e.getY());
+			return;
+		}
+
+		Node mynode = (Node) node.getUserObject();
+
+		Object o = mynode.getEntity();
+		if (o == null)
+			return;
+		if (o instanceof Project)
+			projmenu.show(this, e.getX(), e.getY());
+
 	}
 
 	@Override

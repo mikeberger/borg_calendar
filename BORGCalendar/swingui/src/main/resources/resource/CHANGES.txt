@@ -8,6 +8,7 @@ add option to resend daily email reminder
 fixes for dark themes
 allow type change for tasks in initial state
 3pp upgrades
+display project-less tasks in the task tree
 
 BORG 1.9.04
 -----------
