@@ -60,7 +60,8 @@ public class CardDav {
 		for( Address addr : AddressModel.getReference().getAddresses()) {
 			wr.write(AddressVcardAdapter.toVcard(addr).toString());
 		}
-		
+
+		wr.close();
 		oostr.close();
 	}
 	
@@ -109,13 +110,17 @@ public class CardDav {
 		for (Address addr : addrs) {
 			// check for dups - TODO
 
-			imported++;
 			try {
 				amodel.saveAddress(addr);
+				imported++;
 			}
 			catch(Warning w){
 				Errmsg.getErrorHandler().notice(w.getMessage() + "\n\n" + addr.toString());
 			}
+			catch(Exception e){
+				Errmsg.getErrorHandler().errmsg(e);
+			}
+
 		}
 
 		warning.append("Imported: " + imported + "\n");

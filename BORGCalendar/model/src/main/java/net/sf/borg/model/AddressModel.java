@@ -55,275 +55,260 @@ import net.sf.borg.model.undo.UndoLog;
  * AddressModel provides the model layer APIs for working with Addresses
  */
 public class AddressModel extends Model implements Searchable<Address>,
-		CalendarEntityProvider {
+        CalendarEntityProvider {
 
-	static private AddressModel self_ = new AddressModel();
+    static private AddressModel self_ = new AddressModel();
 
-	/**
-	 * class XmlContainer is solely for JAXB XML export/import to keep the same
-	 * XML structure as before JAXB was used
-	 */
-	@XmlRootElement(name = "ADDRESSES")
-	private static class XmlContainer {
-		public Collection<Address> Address;
-	}
+    /**
+     * class XmlContainer is solely for JAXB XML export/import to keep the same
+     * XML structure as before JAXB was used
+     */
+    @XmlRootElement(name = "ADDRESSES")
+    private static class XmlContainer {
+        public Collection<Address> Address;
+    }
 
-	/**
-	 * Gets the reference.
-	 * 
-	 * @return the reference
-	 */
-	public static AddressModel getReference() {
-		return (self_);
-	}
+    /**
+     * Gets the reference.
+     *
+     * @return the reference
+     */
+    public static AddressModel getReference() {
+        return (self_);
+    }
 
-	/**
-	 * compute an integer has key from a date
-	 * 
-	 * @param d
-	 *            the date
-	 * @return the integer key
-	 */
-	private static int birthdayKey(Date d) {
-		GregorianCalendar g = new GregorianCalendar();
-		g.setTime(d);
-		return g.get(Calendar.MONTH) * 100 + g.get(Calendar.DATE);
-	}
+    /**
+     * compute an integer has key from a date
+     *
+     * @param d the date
+     * @return the integer key
+     */
+    private static int birthdayKey(Date d) {
+        GregorianCalendar g = new GregorianCalendar();
+        g.setTime(d);
+        return g.get(Calendar.MONTH) * 100 + g.get(Calendar.DATE);
+    }
 
-	/** map of birthdays to addresses */
-	private HashMap<Integer, LinkedList<Address>> bdmap_ = new HashMap<Integer, LinkedList<Address>>();
+    /**
+     * map of birthdays to addresses
+     */
+    private HashMap<Integer, LinkedList<Address>> bdmap_ = new HashMap<Integer, LinkedList<Address>>();
 
-	/** The db_. */
-	private EntityDB<Address> db_; // the database
+    /**
+     * The db_.
+     */
+    private EntityDB<Address> db_; // the database
 
-	/**
-	 * Instantiates a new address model.
-	 */
-	private AddressModel() {
-		db_ = DBHelper.getFactory().createAddressDB();
-		load_map();
-	}
+    /**
+     * Instantiates a new address model.
+     */
+    private AddressModel() {
+        db_ = DBHelper.getFactory().createAddressDB();
+        load_map();
+    }
 
-	/**
-	 * Delete an Address
-	 * 
-	 * @param addr
-	 *            the Address
-	 */
-	public void delete(Address addr) {
-		delete(addr, false);
-	}
+    /**
+     * Delete an Address
+     *
+     * @param addr the Address
+     */
+    public void delete(Address addr) {
+        delete(addr, false);
+    }
 
-	/**
-	 * Delete an Address.
-	 * 
-	 * @param addr
-	 *            the Address
-	 * @param undo
-	 *            true if we are executing an undo
-	 */
-	public void delete(Address addr, boolean undo) {
+    /**
+     * Delete an Address.
+     *
+     * @param addr the Address
+     * @param undo true if we are executing an undo
+     */
+    public void delete(Address addr, boolean undo) {
 
-		try {
-			Address orig_addr = getAddress(addr.getKey());
-			LinkModel.getReference().deleteLinksFromEntity(addr);
-			LinkModel.getReference().deleteLinksToEntity(addr);
+        try {
+            Address orig_addr = getAddress(addr.getKey());
+            LinkModel.getReference().deleteLinksFromEntity(addr);
+            LinkModel.getReference().deleteLinksToEntity(addr);
 
-			db_.delete(addr.getKey());
+            db_.delete(addr.getKey());
 
-			// don't store an undo record if we are currently running an undo
-			if (!undo) {
-				UndoLog.getReference().addItem(
-						AddressUndoItem.recordDelete(orig_addr));
-			}
+            // don't store an undo record if we are currently running an undo
+            if (!undo) {
+                UndoLog.getReference().addItem(
+                        AddressUndoItem.recordDelete(orig_addr));
+            }
 
-		} catch (Exception e) {
-			Errmsg.getErrorHandler().errmsg(e);
-		}
+        } catch (Exception e) {
+            Errmsg.getErrorHandler().errmsg(e);
+        }
 
-		refresh();
-	}
+        refresh();
+    }
 
-	/**
-	 * Export all Addresses to XML.
-	 * 
-	 * @param fw
-	 *            the Writer to write XML to
-	 * 
-	 * @throws Exception
-	 *             the exception
-	 */
-	@Override
-	public void export(Writer fw) throws Exception {
+    /**
+     * Export all Addresses to XML.
+     *
+     * @param fw the Writer to write XML to
+     * @throws Exception the exception
+     */
+    @Override
+    public void export(Writer fw) throws Exception {
 
-		JAXBContext jc = JAXBContext.newInstance(XmlContainer.class);
-		Marshaller m = jc.createMarshaller();
-		XmlContainer container = new XmlContainer();
-		container.Address = getAddresses();
-		m.marshal(container, fw);
+        JAXBContext jc = JAXBContext.newInstance(XmlContainer.class);
+        Marshaller m = jc.createMarshaller();
+        XmlContainer container = new XmlContainer();
+        container.Address = getAddresses();
+        m.marshal(container, fw);
 
-	}
+    }
 
-	/**
-	 * Get an Address by key
-	 * 
-	 * @param num
-	 *            the key
-	 * 
-	 * @return the address
-	 * 
-	 * @throws Exception
-	 *             the exception
-	 */
-	public Address getAddress(int num) throws Exception {
-		return (db_.readObj(num));
-	}
+    /**
+     * Get an Address by key
+     *
+     * @param num the key
+     * @return the address
+     * @throws Exception the exception
+     */
+    public Address getAddress(int num) throws Exception {
+        return (db_.readObj(num));
+    }
 
-	/**
-	 * Get all addresses.
-	 * 
-	 * @return the addresses
-	 * 
-	 * @throws Exception
-	 *             the exception
-	 */
-	public Collection<Address> getAddresses() throws Exception {
-		Collection<Address> addrs = db_.readAll();
-		return addrs;
-	}
+    /**
+     * Get all addresses.
+     *
+     * @return the addresses
+     * @throws Exception the exception
+     */
+    public Collection<Address> getAddresses() throws Exception {
+        Collection<Address> addrs = db_.readAll();
+        return addrs;
+    }
 
-	/**
-	 * Get all addresses with birthdays on a given day.
-	 * 
-	 * @param d
-	 *            the day
-	 * 
-	 * @return the addresses
-	 */
-	public Collection<Address> getAddresses(Date d) {
-		// don't consider year for birthdays
-		int bdkey = birthdayKey(d);
-		return (bdmap_.get(Integer.valueOf(bdkey)));
-	}
+    /**
+     * Get all addresses with birthdays on a given day.
+     *
+     * @param d the day
+     * @return the addresses
+     */
+    public Collection<Address> getAddresses(Date d) {
+        // don't consider year for birthdays
+        int bdkey = birthdayKey(d);
+        return (bdmap_.get(Integer.valueOf(bdkey)));
+    }
 
-	/**
-	 * Gets the dB.
-	 * 
-	 * @return the dB
-	 */
-	@Deprecated
-	public EntityDB<Address> getDB() {
-		return (db_);
-	}
+    /**
+     * Gets the dB.
+     *
+     * @return the dB
+     */
+    @Deprecated
+    public EntityDB<Address> getDB() {
+        return (db_);
+    }
 
-	/**
-	 * Import xml.
-	 * 
-	 * @param is
-	 *            the input stream containing the XML
-	 * 
-	 * @throws Exception
-	 *             the exception
-	 */
-	@Override
-	public void importXml(InputStream is) throws Exception {
+    /**
+     * Import xml.
+     *
+     * @param is the input stream containing the XML
+     * @throws Exception the exception
+     */
+    @Override
+    public void importXml(InputStream is) throws Exception {
 
-		JAXBContext jc = JAXBContext.newInstance(XmlContainer.class);
-		Unmarshaller u = jc.createUnmarshaller();
+        JAXBContext jc = JAXBContext.newInstance(XmlContainer.class);
+        Unmarshaller u = jc.createUnmarshaller();
 
-		XmlContainer container = (XmlContainer) u.unmarshal(is);
+        XmlContainer container = (XmlContainer) u.unmarshal(is);
 
-		if (container.Address == null)
-			return;
+        if (container.Address == null)
+            return;
 
-		// use key from import file if importing into empty db
-		int nextkey = db_.nextkey();
-		boolean use_keys = (nextkey == 1) ? true : false;
-		for (Address addr : container.Address) {
-			if (!use_keys)
-				addr.setKey(nextkey++);
+        // use key from import file if importing into empty db
+        int nextkey = db_.nextkey();
+        boolean use_keys = (nextkey == 1) ? true : false;
+        for (Address addr : container.Address) {
+            if (!use_keys)
+                addr.setKey(nextkey++);
 
-			try {
-				validate(addr);
-				db_.addObj(addr);
-			} catch (Warning e) {
-				Errmsg.getErrorHandler().notice(e.getMessage() + "\n\n" + addr.toString());
-			}
-		}
+            try {
+                validate(addr);
+                db_.addObj(addr);
+            } catch (Warning e) {
+                Errmsg.getErrorHandler().notice(e.getMessage() + "\n\n" + addr.toString());
+            }
+        }
 
-		refresh();
-	}
+        refresh();
+    }
 
-	/**
-	 * populate the map of birthdays
-	 */
-	private void load_map() {
+    /**
+     * populate the map of birthdays
+     */
+    private void load_map() {
 
-		// clear map
-		bdmap_.clear();
+        // clear map
+        bdmap_.clear();
 
-		try {
+        try {
 
-			// iterate through tasks using taskmodel
-			Collection<Address> addrs = getAddresses();
-			for (Address addr : addrs) {
+            // iterate through tasks using taskmodel
+            Collection<Address> addrs = getAddresses();
+            for (Address addr : addrs) {
 
-				// use birthday to build a day key
-				Date bd = addr.getBirthday();
-				if (bd == null)
-					continue;
+                // use birthday to build a day key
+                Date bd = addr.getBirthday();
+                if (bd == null)
+                    continue;
 
-				int bdkey = birthdayKey(bd);
+                int bdkey = birthdayKey(bd);
 
-				// add the task string to the btmap_
-				// add the task to the mrs_ Vector. This is used by the todo gui
-				LinkedList<Address> o = bdmap_.get(Integer.valueOf(bdkey));
-				if (o == null) {
-					o = new LinkedList<Address>();
-					bdmap_.put(Integer.valueOf(bdkey), o);
-				}
+                // add the task string to the btmap_
+                // add the task to the mrs_ Vector. This is used by the todo gui
+                LinkedList<Address> o = bdmap_.get(Integer.valueOf(bdkey));
+                if (o == null) {
+                    o = new LinkedList<Address>();
+                    bdmap_.put(Integer.valueOf(bdkey), o);
+                }
 
-				o.add(addr);
-			}
+                o.add(addr);
+            }
 
-		} catch (Exception e) {
+        } catch (Exception e) {
 
-			Errmsg.getErrorHandler().errmsg(e);
-			return;
-		}
+            Errmsg.getErrorHandler().errmsg(e);
+            return;
+        }
 
-	}
+    }
 
-	/**
-	 * get a new address object
-	 * 
-	 * @return the address
-	 */
-	public Address newAddress() {
-		return (db_.newObj());
-	}
+    /**
+     * get a new address object
+     *
+     * @return the address
+     */
+    public Address newAddress() {
+        return (db_.newObj());
+    }
 
-	/**
-	 * Refresh the birthday map and notify any listeners that the model has
-	 * changed
-	 */
-	public void refresh() {
-		load_map();
-		refreshListeners();
-	}
+    /**
+     * Refresh the birthday map and notify any listeners that the model has
+     * changed
+     */
+    public void refresh() {
+        load_map();
+        refreshListeners();
+    }
 
-	/**
-	 * Save an address.
-	 * 
-	 * @param addr
-	 *            the address
-	 * @throws Exception
-	 */
-	public void saveAddress(Address addr) throws Exception {
-		saveAddress(addr, false);
-	}
+    /**
+     * Save an address.
+     *
+     * @param addr the address
+     * @throws Exception
+     */
+    public void saveAddress(Address addr) throws Exception {
+        saveAddress(addr, false);
+    }
 
-	public void validate(Address addr) throws Exception {
+    public void validate(Address addr) throws Exception {
 		/*
 		if (addr.getFirstName() == null
 				|| addr.getFirstName().trim().length() == 0
@@ -342,165 +327,161 @@ public class AddressModel extends Model implements Searchable<Address>,
 						Resource.getResourceString("Invalid_Email_Address"));
 			}
 		}*/
-	}
+    }
 
-	/**
-	 * Save an address.
-	 * 
-	 * @param addr
-	 *            the address
-	 * @param undo
-	 *            true if we are executing an undo
-	 * @throws Exception
-	 */
-	public void saveAddress(Address addr, boolean undo) throws Exception {
+    /**
+     * Save an address.
+     *
+     * @param addr the address
+     * @param undo true if we are executing an undo
+     * @throws Exception
+     */
+    public void saveAddress(Address addr, boolean undo) throws Exception {
 
-		validate(addr);
+        validate(addr);
 
-		int num = addr.getKey();
-		try {
-			Address orig_addr = getAddress(addr.getKey());
-			if (num == -1 || orig_addr == null) {
+        int num = addr.getKey();
 
-				int newkey = db_.nextkey();
-				if (undo && num != -1 && orig_addr == null) {
-					newkey = num;
-				}
-				addr.setKey(newkey);
-				db_.addObj(addr);
-				if (!undo) {
-					UndoLog.getReference().addItem(
-							AddressUndoItem.recordAdd(addr));
-				}
-			} else {
-				db_.updateObj(addr);
-				if (!undo) {
-					UndoLog.getReference().addItem(
-							AddressUndoItem.recordUpdate(orig_addr));
-				}
-			}
-		} catch (Exception e) {
-			Errmsg.getErrorHandler().errmsg(e);
-		}
+        Address orig_addr = getAddress(addr.getKey());
+        if (num == -1 || orig_addr == null) {
 
-		// inform views of data change
-		refresh();
-	}
+            int newkey = db_.nextkey();
+            if (undo && num != -1 && orig_addr == null) {
+                newkey = num;
+            }
+            addr.setKey(newkey);
+            db_.addObj(addr);
+            if (!undo) {
+                UndoLog.getReference().addItem(
+                        AddressUndoItem.recordAdd(addr));
+            }
+        } else {
+            db_.updateObj(addr);
+            if (!undo) {
+                UndoLog.getReference().addItem(
+                        AddressUndoItem.recordUpdate(orig_addr));
+            }
+        }
 
-	/**
-	 * Sync with the underlying db
-	 */
-	@Override
-	public void sync() {
-		db_.sync();
-		refresh();
-	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * net.sf.borg.model.Searchable#search(net.sf.borg.model.SearchCriteria)
-	 */
-	@Override
-	public Collection<Address> search(SearchCriteria criteria) {
-		Collection<Address> res = new ArrayList<Address>(); // result collection
-		try {
+        // inform views of data change
+        refresh();
+    }
 
-			// do not match if a search category is set
-			if (!criteria.getCategory().equals("")
-					&& !criteria.getCategory().equals(
-							CategoryModel.UNCATEGORIZED))
-				return res;
+    /**
+     * Sync with the underlying db
+     */
+    @Override
+    public void sync() {
+        db_.sync();
+        refresh();
+    }
 
-			// load all addresses into appt list
-			Collection<Address> addresses = getAddresses();
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * net.sf.borg.model.Searchable#search(net.sf.borg.model.SearchCriteria)
+     */
+    @Override
+    public Collection<Address> search(SearchCriteria criteria) {
+        Collection<Address> res = new ArrayList<Address>(); // result collection
+        try {
 
-			for (Address addr : addresses) {
-				// read each appt
+            // do not match if a search category is set
+            if (!criteria.getCategory().equals("")
+                    && !criteria.getCategory().equals(
+                    CategoryModel.UNCATEGORIZED))
+                return res;
 
-				String addrString = addr.getFirstName() + " "
-						+ addr.getLastName() + " " + addr.getStreetAddress()
-						+ " " + addr.getWorkStreetAddress() + " "
-						+ addr.getCompany() + " " + addr.getCity() + " "
-						+ addr.getCountry() + " " + addr.getWorkCity() + " "
-						+ addr.getWorkCountry() + " " + addr.getEmail() + " "
-						+ addr.getState() + " " + addr.getWorkState() + " "
-						+ addr.getNickname() + " " + addr.getCellPhone();
+            // load all addresses into appt list
+            Collection<Address> addresses = getAddresses();
 
-				if (!criteria.search(addrString))
-					continue;
+            for (Address addr : addresses) {
+                // read each appt
 
-				// filter by links
-				if (criteria.hasLinks()) {
-					LinkModel lm = LinkModel.getReference();
-					try {
-						Collection<Link> lnks = lm.getLinks(addr);
-						if (lnks.isEmpty())
-							continue;
-					} catch (Exception e) {
-						Errmsg.getErrorHandler().errmsg(e);
-					}
-				}
+                String addrString = addr.getFirstName() + " "
+                        + addr.getLastName() + " " + addr.getStreetAddress()
+                        + " " + addr.getWorkStreetAddress() + " "
+                        + addr.getCompany() + " " + addr.getCity() + " "
+                        + addr.getCountry() + " " + addr.getWorkCity() + " "
+                        + addr.getWorkCountry() + " " + addr.getEmail() + " "
+                        + addr.getState() + " " + addr.getWorkState() + " "
+                        + addr.getNickname() + " " + addr.getCellPhone();
 
-				// add the appt to the search results
-				res.add(addr);
+                if (!criteria.search(addrString))
+                    continue;
 
-			}
+                // filter by links
+                if (criteria.hasLinks()) {
+                    LinkModel lm = LinkModel.getReference();
+                    try {
+                        Collection<Link> lnks = lm.getLinks(addr);
+                        if (lnks.isEmpty())
+                            continue;
+                    } catch (Exception e) {
+                        Errmsg.getErrorHandler().errmsg(e);
+                    }
+                }
 
-		} catch (Exception e) {
-			Errmsg.getErrorHandler().errmsg(e);
-		}
-		return (res);
-	}
+                // add the appt to the search results
+                res.add(addr);
 
-	@Override
-	public String getExportName() {
-		return "ADDRESSES";
-	}
+            }
 
-	@Override
-	public String getInfo() throws Exception {
-		return Resource.getResourceString("addresses") + ": "
-				+ getAddresses().size();
-	}
+        } catch (Exception e) {
+            Errmsg.getErrorHandler().errmsg(e);
+        }
+        return (res);
+    }
 
-	@Override
-	public List<CalendarEntity> getEntities(Date d) {
+    @Override
+    public String getExportName() {
+        return "ADDRESSES";
+    }
 
-		List<CalendarEntity> ret = new ArrayList<CalendarEntity>();
-		// add birthdays from address book
-		GregorianCalendar gc = new GregorianCalendar();
-		gc.setTime(d);
-		Collection<Address> addrs = AddressModel.getReference().getAddresses(d);
-		if (addrs != null) {
-			for (Address addr : addrs) {
-				LabelEntity info = new LabelEntity();
-				String color = info.getColor();
+    @Override
+    public String getInfo() throws Exception {
+        return Resource.getResourceString("addresses") + ": "
+                + getAddresses().size();
+    }
 
-				if (color == null)
-					info.setColor("brick");
+    @Override
+    public List<CalendarEntity> getEntities(Date d) {
 
-				Date bd = addr.getBirthday();
-				GregorianCalendar g = new GregorianCalendar();
-				g.setTime(bd);
-				int bdyear = g.get(Calendar.YEAR);
-				int yrs = gc.get(Calendar.YEAR) - bdyear;
-				if (yrs < 0)
-					continue;
+        List<CalendarEntity> ret = new ArrayList<CalendarEntity>();
+        // add birthdays from address book
+        GregorianCalendar gc = new GregorianCalendar();
+        gc.setTime(d);
+        Collection<Address> addrs = AddressModel.getReference().getAddresses(d);
+        if (addrs != null) {
+            for (Address addr : addrs) {
+                LabelEntity info = new LabelEntity();
+                String color = info.getColor();
 
-				String tx = Resource.getResourceString("Birthday") + ": "
-						+ addr.getFirstName() + " " + addr.getLastName() + "("
-						+ yrs + ")";
-				info.setText(tx);
-				info.setDate(d);
-				ret.add(info);
-			}
-		}
+                if (color == null)
+                    info.setColor("brick");
 
-		return ret;
+                Date bd = addr.getBirthday();
+                GregorianCalendar g = new GregorianCalendar();
+                g.setTime(bd);
+                int bdyear = g.get(Calendar.YEAR);
+                int yrs = gc.get(Calendar.YEAR) - bdyear;
+                if (yrs < 0)
+                    continue;
 
-	}
+                String tx = Resource.getResourceString("Birthday") + ": "
+                        + addr.getFirstName() + " " + addr.getLastName() + "("
+                        + yrs + ")";
+                info.setText(tx);
+                info.setDate(d);
+                ret.add(info);
+            }
+        }
 
-	
+        return ret;
+
+    }
+
+
 }

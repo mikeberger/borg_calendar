@@ -361,7 +361,7 @@ public class AddrListView extends DockableView implements Module {
 				ro[0] = r.getFirstName();
 				ro[1] = r.getLastName();
 				ro[2] = r.getEmail();
-				ro[3] = r.getScreenName();
+				ro[3] = r.getCellPhone();
 				ro[4] = r.getHomePhone();
 				ro[5] = r.getWorkPhone();
 				ro[6] = r.getBirthday();
@@ -402,7 +402,7 @@ public class AddrListView extends DockableView implements Module {
 					Resource.getResourceString("First"),
 					Resource.getResourceString("Last"),
 					Resource.getResourceString("Email"),
-					Resource.getResourceString("Screen_Name"),
+					Resource.getResourceString("Cell_Phone:"),
 					Resource.getResourceString("Home_Phone"),
 					Resource.getResourceString("Work_Phone"),
 					Resource.getResourceString("Birthday") }, new Class[] {

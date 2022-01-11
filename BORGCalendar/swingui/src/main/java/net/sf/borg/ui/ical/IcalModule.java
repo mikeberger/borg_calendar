@@ -292,6 +292,18 @@ public class IcalModule implements Module, Prefs.Listener, Model.Listener {
 
         vcardmenu.add(impvc);
 
+        JMenuItem expvc = new JMenuItem();
+        expvc.setText(Resource.getResourceString("exportToFile"));
+        expvc.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                exportVcard();
+            }
+        });
+
+        vcardmenu.add(expvc);
+
 
         m.add(vcardmenu);
 
@@ -457,6 +469,37 @@ public class IcalModule implements Module, Prefs.Listener, Model.Listener {
                 ICal.exportIcalToFile(s, null);
             }
 
+        } catch (Exception e) {
+            Errmsg.getErrorHandler().errmsg(e);
+        }
+    }
+
+    private static void exportVcard() {
+
+        // prompt for a file
+        JFileChooser chooser = new JFileChooser();
+        chooser.setCurrentDirectory(new File("."));
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("VCARD", "vcs",
+                "VCS", "VCF", "vcf", "vcard", "VCARD");
+        chooser.setFileFilter(filter);
+        chooser.setDialogTitle(Resource.getResourceString("choose_file"));
+        chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+
+        int returnVal = chooser.showSaveDialog(null);
+        if (returnVal != JFileChooser.APPROVE_OPTION)
+            return;
+
+        String s = chooser.getSelectedFile().getAbsolutePath();
+
+        // auto append extension
+        if (chooser.getFileFilter() != chooser.getAcceptAllFileFilter()) {
+            if (!s.contains(".")) {
+                s += ".vcf";
+            }
+        }
+
+        try {
+          CardDav.exportToFile(s);
         } catch (Exception e) {
             Errmsg.getErrorHandler().errmsg(e);
         }
