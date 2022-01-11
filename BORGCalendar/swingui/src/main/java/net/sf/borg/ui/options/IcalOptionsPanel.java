@@ -176,10 +176,10 @@ public class IcalOptionsPanel extends OptionsPanel {
 		calpanel.add(caldavUserPath, GridBagConstraintsFactory.create(3, 3,
 				GridBagConstraints.BOTH, 1.0, 0.0));
 		
-		calpanel.add(new JLabel(Resource.getResourceString("CARDDAV_UserPath")),
-				GridBagConstraintsFactory.create(0, 4, GridBagConstraints.BOTH));
-		calpanel.add(carddavPath, GridBagConstraintsFactory.create(1, 4,
-				GridBagConstraints.BOTH, 1.0, 0.0));
+		//calpanel.add(new JLabel(Resource.getResourceString("CARDDAV_UserPath")),
+		//		GridBagConstraintsFactory.create(0, 4, GridBagConstraints.BOTH));
+		//calpanel.add(carddavPath, GridBagConstraintsFactory.create(1, 4,
+		//		GridBagConstraints.BOTH, 1.0, 0.0));
 
 		caldavSSL.setText(Resource.getResourceString("use_ssl"));
 		caldavSelfSigned.setText(Resource.getResourceString("allow_self_signed"));

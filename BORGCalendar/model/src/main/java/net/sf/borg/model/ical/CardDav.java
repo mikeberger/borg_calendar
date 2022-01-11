@@ -5,9 +5,19 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
+import net.fortuna.ical4j.model.Calendar;
+import net.fortuna.ical4j.model.Component;
+import net.fortuna.ical4j.model.ComponentList;
+import net.fortuna.ical4j.model.component.CalendarComponent;
+import net.fortuna.ical4j.validate.ValidationException;
+import net.sf.borg.common.*;
+import net.sf.borg.model.AppointmentModel;
+import net.sf.borg.model.entity.Appointment;
 import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.commons.httpclient.protocol.SSLProtocolSocketFactory;
 
@@ -18,10 +28,6 @@ import net.fortuna.ical4j.connector.dav.PathResolver.GenericPathResolver;
 import net.fortuna.ical4j.util.CompatibilityHints;
 import net.fortuna.ical4j.vcard.VCard;
 import net.fortuna.ical4j.vcard.VCardBuilder;
-import net.sf.borg.common.IOHelper;
-import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
-import net.sf.borg.common.SocketClient;
 import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.entity.Address;
 
@@ -63,11 +69,65 @@ public class CardDav {
 		setHints();
 		
 		InputStream is = new FileInputStream(file);
+		return importVcardFromInputStream(is);
+	}
+
+	static public List<VCard> importVcardFromInputStream(InputStream is) throws Exception {
+
+		setHints();
+
 		VCardBuilder builder = new VCardBuilder(is);
 		List<VCard> l = builder.buildAll();
 		is.close();
 
 		return l;
+	}
+
+	static public String importVCard(List<VCard> vcards) throws Exception {
+
+		int skipped = 0;
+		StringBuffer dups = new StringBuffer();
+
+		setHints();
+
+		StringBuffer warning = new StringBuffer();
+
+		ArrayList<Address> addrs = new ArrayList<Address>();
+
+		AddressModel amodel = AddressModel.getReference();
+		for( VCard vc : vcards){
+
+			Address addr = AddressVcardAdapter.fromVcard(vc);
+			if (addr != null)
+				addrs.add(addr);
+
+		}
+
+		int imported = 0;
+		int dup_count = 0;
+
+		for (Address addr : addrs) {
+			// check for dups - TODO
+
+			imported++;
+			try {
+				amodel.saveAddress(addr);
+			}
+			catch(Warning w){
+				Errmsg.getErrorHandler().notice(w.getMessage() + "\n\n" + addr.toString());
+			}
+		}
+
+		warning.append("Imported: " + imported + "\n");
+		warning.append("Skipped: " + (vcards.size() - imported) + "\n");
+		//warning.append("Duplicates: " + dup_count + "\n");
+		warning.append(dups.toString());
+
+		if (warning.length() == 0)
+			return (null);
+
+		return (warning.toString());
+
 	}
 
 	@SuppressWarnings("deprecation")

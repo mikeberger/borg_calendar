@@ -60,8 +60,9 @@ public class AddressVcardAdapter {
 			addr.setWebPage(url.getValue());
 
 		for (Property p2 : vc.getProperties(Property.Id.EMAIL)) {
+			addr.setEmail(p2.getValue());
 			for (Parameter pm : p2.getParameters(Parameter.Id.TYPE)) {
-				addr.setEmail(p2.getValue());
+
 				Type t = (Type) pm;
 				if (t.getValue().contains("PREF"))
 					break;

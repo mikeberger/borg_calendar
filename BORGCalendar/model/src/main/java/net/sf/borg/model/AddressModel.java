@@ -324,6 +324,7 @@ public class AddressModel extends Model implements Searchable<Address>,
 	}
 
 	public void validate(Address addr) throws Exception {
+		/*
 		if (addr.getFirstName() == null
 				|| addr.getFirstName().trim().length() == 0
 				|| addr.getLastName() == null
@@ -340,7 +341,7 @@ public class AddressModel extends Model implements Searchable<Address>,
 				throw new Warning(
 						Resource.getResourceString("Invalid_Email_Address"));
 			}
-		}
+		}*/
 	}
 
 	/**

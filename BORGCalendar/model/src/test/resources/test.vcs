@@ -1,0 +1,47 @@
+BEGIN:VCARD
+VERSION:4.0
+PRODID:-//MailClient.VObject/8.2.1659.0
+UID:urn:uuid:c3ce345a-c06e-4b0b-8a59-01e85c3ae473
+REV:20211122T141029Z
+N;SORT-AS="Berger, Michael":Berger;Michael;;;
+FN:Michael  Berger
+EMAIL;PREF=1:mike@mbcsoft.com
+EMAIL:mike@comcast.net
+TEL;TYPE=CELL:9081112222
+TEL;TYPE=HOME,VOICE:1111111111
+TEL;TYPE=WORK,VOICE:2222222222
+TEL;TYPE=WORK,FAX:ffffffffff
+TEL;TYPE=PAGER:ppppp
+IMPP:ymsgr:i_flem6
+ADR;TYPE=HOME:;;922 Main St;Some Town;Florida;12345;United States of
+ America
+ADR;TYPE=WORK:;;work st;Piscataway;New Jersey;08854;Albania
+BDAY;VALUE=date:20211122
+ORG:MBCSoft;
+NOTE:notes here
+URL:mbcsoft.com
+NICKNAME:NICK
+END:VCARD
+BEGIN:VCARD
+VERSION:4.0
+PRODID:-//MailClient.VObject/8.2.1659.0
+UID:urn:uuid:c3ce345a-c06e-8a59-8a59-01e85c3ae473
+REV:20211022T141029Z
+N;SORT-AS="Berger, Cathy":Berger;Cathy;;;
+FN:Cathy  Berger
+EMAIL;PREF=1:cathy@mbcsoft.com
+EMAIL:cathy@comcast.net
+TEL;TYPE=CELL:9084442222
+TEL;TYPE=HOME,VOICE:4441111111
+TEL;TYPE=WORK,VOICE:2244422222
+TEL;TYPE=WORK,FAX:fffxxxxfff
+TEL;TYPE=PAGER:eeee
+IMPP:ymsgr:cathmsgr
+ADR;TYPE=HOME:;;922 Main St;Some Town;Florida;12345;United States of
+ America
+ADR;TYPE=WORK:;;work st;Piscataway;New Jersey;08854;Albania
+BDAY;VALUE=date:20211122
+ORG:MBCSoft;
+NOTE:notes here
+URL:mbcsoft.com
+END:VCARD
