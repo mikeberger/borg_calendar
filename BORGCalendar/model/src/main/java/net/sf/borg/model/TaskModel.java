@@ -19,47 +19,24 @@
  */
 package net.sf.borg.model;
 
-import java.io.InputStream;
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.TreeSet;
-import java.util.Vector;
+import net.sf.borg.common.*;
+import net.sf.borg.model.CategoryModel.CategorySource;
+import net.sf.borg.model.Model.ChangeEvent.ChangeAction;
+import net.sf.borg.model.db.DBHelper;
+import net.sf.borg.model.db.TaskDB;
+import net.sf.borg.model.entity.*;
+import net.sf.borg.model.undo.ProjectUndoItem;
+import net.sf.borg.model.undo.SubtaskUndoItem;
+import net.sf.borg.model.undo.TaskUndoItem;
+import net.sf.borg.model.undo.UndoLog;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import net.sf.borg.common.DateUtil;
-import net.sf.borg.common.Errmsg;
-import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
-import net.sf.borg.common.Resource;
-import net.sf.borg.common.Warning;
-import net.sf.borg.model.CategoryModel.CategorySource;
-import net.sf.borg.model.Model.ChangeEvent.ChangeAction;
-import net.sf.borg.model.db.DBHelper;
-import net.sf.borg.model.db.TaskDB;
-import net.sf.borg.model.entity.CalendarEntity;
-import net.sf.borg.model.entity.KeyedEntity;
-import net.sf.borg.model.entity.Link;
-import net.sf.borg.model.entity.Option;
-import net.sf.borg.model.entity.Project;
-import net.sf.borg.model.entity.Subtask;
-import net.sf.borg.model.entity.Task;
-import net.sf.borg.model.entity.Tasklog;
-import net.sf.borg.model.undo.ProjectUndoItem;
-import net.sf.borg.model.undo.SubtaskUndoItem;
-import net.sf.borg.model.undo.TaskUndoItem;
-import net.sf.borg.model.undo.UndoLog;
+import java.io.InputStream;
+import java.io.Writer;
+import java.util.*;
 
 /**
  * TaksModel manages all of the task related entities - Task, Project, Subtask,

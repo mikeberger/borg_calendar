@@ -1,18 +1,17 @@
 package net.sf.borg.test;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.Collection;
-import java.util.List;
-
 import net.sf.borg.model.CheckListModel;
 import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.model.db.jdbc.JdbcDBHelper;
 import net.sf.borg.model.entity.CheckList;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.util.Collection;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 public class CheckListTest {
 

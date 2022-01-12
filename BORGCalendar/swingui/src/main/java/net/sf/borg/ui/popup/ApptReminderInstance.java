@@ -19,8 +19,6 @@
  */
 package net.sf.borg.ui.popup;
 
-import java.util.Date;
-
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
@@ -28,6 +26,8 @@ import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.ReminderTimes;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.ui.calendar.AppointmentTextFormat;
+
+import java.util.Date;
 
 /**
  * holds an instance of a reminder message. Keeps track of which reminder times

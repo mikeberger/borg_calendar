@@ -1,10 +1,5 @@
 package net.sf.borg.model.ical;
 
-import java.io.StringReader;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.logging.Logger;
-
 import net.fortuna.ical4j.model.Date;
 import net.fortuna.ical4j.vcard.Parameter;
 import net.fortuna.ical4j.vcard.Property;
@@ -14,6 +9,10 @@ import net.fortuna.ical4j.vcard.parameter.Type;
 import net.fortuna.ical4j.vcard.property.*;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.model.entity.Address;
+
+import java.io.StringReader;
+import java.net.URI;
+import java.util.logging.Logger;
 
 public class AddressVcardAdapter {
 

@@ -19,19 +19,6 @@
  */
 package net.sf.borg.model;
 
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-
 import lombok.Data;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
@@ -39,6 +26,18 @@ import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Warning;
 import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.entity.Option;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 @XmlRootElement(name = "Theme")
 @XmlAccessorType(XmlAccessType.FIELD)

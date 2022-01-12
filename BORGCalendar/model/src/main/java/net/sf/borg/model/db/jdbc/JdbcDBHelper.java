@@ -1,17 +1,10 @@
 package net.sf.borg.model.db.jdbc;
 
+import net.sf.borg.model.db.*;
+import net.sf.borg.model.entity.Address;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
-
-import net.sf.borg.model.db.AppointmentDB;
-import net.sf.borg.model.db.CheckListDB;
-import net.sf.borg.model.db.DBHelper;
-import net.sf.borg.model.db.EntityDB;
-import net.sf.borg.model.db.LinkDB;
-import net.sf.borg.model.db.MemoDB;
-import net.sf.borg.model.db.OptionDB;
-import net.sf.borg.model.db.TaskDB;
-import net.sf.borg.model.entity.Address;
 
 /**
  * Helper class that provides a db factory and some db control functionality to packages outside of the jdbc package.

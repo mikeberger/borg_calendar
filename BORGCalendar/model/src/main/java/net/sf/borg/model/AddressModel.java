@@ -19,27 +19,7 @@
  */
 package net.sf.borg.model;
 
-import java.io.InputStream;
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.annotation.XmlRootElement;
-
 import net.sf.borg.common.Errmsg;
-import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.common.Warning;
 import net.sf.borg.model.db.DBHelper;
@@ -50,6 +30,14 @@ import net.sf.borg.model.entity.LabelEntity;
 import net.sf.borg.model.entity.Link;
 import net.sf.borg.model.undo.AddressUndoItem;
 import net.sf.borg.model.undo.UndoLog;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlRootElement;
+import java.io.InputStream;
+import java.io.Writer;
+import java.util.*;
 
 /**
  * AddressModel provides the model layer APIs for working with Addresses

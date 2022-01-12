@@ -19,19 +19,6 @@
  */
 package net.sf.borg.ui.options;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-
-import javax.swing.JCheckBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JSpinner;
-import javax.swing.JTextField;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.border.TitledBorder;
-
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
@@ -40,6 +27,10 @@ import net.sf.borg.model.ical.CalDav;
 import net.sf.borg.model.ical.IcalFTP;
 import net.sf.borg.ui.options.OptionsView.OptionsPanel;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
+
+import javax.swing.*;
+import javax.swing.border.TitledBorder;
+import java.awt.*;
 
 public class IcalOptionsPanel extends OptionsPanel {
 
@@ -60,7 +51,7 @@ public class IcalOptionsPanel extends OptionsPanel {
 	private JTextField caldavPath = new JTextField();
 	private JTextField caldavPrincipalPath = new JTextField();
 	private JTextField caldavUserPath = new JTextField();
-	private JTextField carddavPath = new JTextField();
+	//private JTextField carddavPath = new JTextField();
 	private JTextField caldavUser = new JTextField();
 	private JPasswordField caldavPassword = new JPasswordField();
 	private JTextField caldavCal = new JTextField();
@@ -77,7 +68,7 @@ public class IcalOptionsPanel extends OptionsPanel {
 		ftppanel.setLayout(new GridBagLayout());
 
 		JPanel calpanel = new JPanel();
-		calpanel.setBorder(new TitledBorder("CALDAV/CARDDAV"));
+		calpanel.setBorder(new TitledBorder("CALDAV"));
 		calpanel.setLayout(new GridBagLayout());
 
 		this.add(new JLabel(Resource.getResourceString("years_to_export")),
@@ -234,7 +225,7 @@ public class IcalOptionsPanel extends OptionsPanel {
 		Prefs.putPref(PrefName.CALDAV_PRINCIPAL_PATH,
 				caldavPrincipalPath.getText());
 		Prefs.putPref(PrefName.CALDAV_USER_PATH, caldavUserPath.getText());
-		Prefs.putPref(PrefName.CARDDAV_USER_PATH, carddavPath.getText());
+		//Prefs.putPref(PrefName.CARDDAV_USER_PATH, carddavPath.getText());
 		try {
 			CalDav.sep(new String(caldavPassword.getPassword()));
 		} catch (Exception e) {
@@ -279,7 +270,7 @@ public class IcalOptionsPanel extends OptionsPanel {
 		caldavPrincipalPath.setText(Prefs
 				.getPref(PrefName.CALDAV_PRINCIPAL_PATH));
 		caldavUserPath.setText(Prefs.getPref(PrefName.CALDAV_USER_PATH));
-		carddavPath.setText(Prefs.getPref(PrefName.CARDDAV_USER_PATH));
+	//	carddavPath.setText(Prefs.getPref(PrefName.CARDDAV_USER_PATH));
 		caldavSSL.setSelected(Prefs.getBoolPref(PrefName.CALDAV_USE_SSL));
 		caldavSelfSigned.setSelected(Prefs.getBoolPref(PrefName.CALDAV_ALLOW_SELF_SIGNED_CERT));
 

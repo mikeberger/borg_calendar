@@ -19,15 +19,6 @@
  */
 package net.sf.borg.model;
 
-import java.io.InputStream;
-import java.io.Writer;
-import java.util.Collection;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.annotation.XmlRootElement;
-
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.db.CheckListDB;
@@ -35,6 +26,14 @@ import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.model.entity.CheckList;
 import net.sf.borg.model.undo.CheckListUndoItem;
 import net.sf.borg.model.undo.UndoLog;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlRootElement;
+import java.io.InputStream;
+import java.io.Writer;
+import java.util.Collection;
 
 /**
  * The CheckList Model manages the CheckList Entities. CheckLists are keyed by a name. CheckLists contain simple text and

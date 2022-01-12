@@ -22,16 +22,13 @@
  */
 package net.sf.borg.ui.util;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import net.sf.borg.common.PrintHelper;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
-
-import javax.swing.JTable;
-
-import net.sf.borg.common.PrintHelper;
 
 /**
  * wraps a JTable in a class to make it Printable. contains a methos to send the JTable to a printer

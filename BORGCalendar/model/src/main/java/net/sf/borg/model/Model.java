@@ -25,6 +25,10 @@ Copyright 2003 by Mike Berger
  */
 
 package net.sf.borg.model;
+
+import lombok.Data;
+import net.sf.borg.model.Model.ChangeEvent.ChangeAction;
+
 import java.io.InputStream;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -32,9 +36,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import lombok.Data;
-import net.sf.borg.model.Model.ChangeEvent.ChangeAction;
 
 
 

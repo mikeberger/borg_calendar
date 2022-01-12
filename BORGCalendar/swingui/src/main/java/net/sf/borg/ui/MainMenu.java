@@ -18,33 +18,7 @@
  */
 package net.sf.borg.ui;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.InputStream;
-import java.util.Properties;
-
-import javax.swing.Box;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JFileChooser;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
-import javax.swing.event.MenuEvent;
-import javax.swing.event.MenuListener;
-import javax.swing.filechooser.FileNameExtensionFilter;
-
-import net.sf.borg.common.Errmsg;
-import net.sf.borg.common.IOHelper;
-import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
-import net.sf.borg.common.Resource;
+import net.sf.borg.common.*;
 import net.sf.borg.model.EmailReminder;
 import net.sf.borg.model.ExportImport;
 import net.sf.borg.model.Model;
@@ -53,6 +27,15 @@ import net.sf.borg.model.undo.UndoLog;
 import net.sf.borg.ui.ical.IcalModule;
 import net.sf.borg.ui.options.OptionsView;
 import net.sf.borg.ui.util.ScrolledDialog;
+
+import javax.swing.*;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.*;
+import java.util.Properties;
 
 /**
  * The borg main menu bar

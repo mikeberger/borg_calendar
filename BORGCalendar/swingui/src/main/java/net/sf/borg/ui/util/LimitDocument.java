@@ -1,10 +1,9 @@
 package net.sf.borg.ui.util;
 
-import java.awt.Toolkit;
-
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
+import java.awt.*;
 
 /**
  * document that limits length

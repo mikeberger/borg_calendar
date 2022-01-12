@@ -20,15 +20,15 @@ Copyright 2003 by Mike Berger
 
 package net.sf.borg.model.db.jdbc;
 
+import net.sf.borg.model.db.LinkDB;
+import net.sf.borg.model.entity.Link;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import net.sf.borg.model.db.LinkDB;
-import net.sf.borg.model.entity.Link;
 
 /**
  * provides the JDBC layer for reading/writing Links

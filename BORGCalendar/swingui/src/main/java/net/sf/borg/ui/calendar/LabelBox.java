@@ -18,14 +18,10 @@
  */
 package net.sf.borg.ui.calendar;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import java.awt.Shape;
-
 import net.sf.borg.model.Theme;
 import net.sf.borg.model.entity.LabelEntity;
+
+import java.awt.*;
 
 /**
  * A Box that shows a text label on the calendar. It cannot be edited, moved, or deleted.

@@ -1,26 +1,5 @@
 package net.sf.borg.model.ical;
 
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.logging.Logger;
-
-import net.fortuna.ical4j.model.Calendar;
-import net.fortuna.ical4j.model.Component;
-import net.fortuna.ical4j.model.ComponentList;
-import net.fortuna.ical4j.model.component.CalendarComponent;
-import net.fortuna.ical4j.validate.ValidationException;
-import net.sf.borg.common.*;
-import net.sf.borg.model.AppointmentModel;
-import net.sf.borg.model.entity.Appointment;
-import org.apache.commons.httpclient.protocol.Protocol;
-import org.apache.commons.httpclient.protocol.SSLProtocolSocketFactory;
-
 import net.fortuna.ical4j.connector.dav.CardDavCollection;
 import net.fortuna.ical4j.connector.dav.CardDavStore;
 import net.fortuna.ical4j.connector.dav.PathResolver;
@@ -28,8 +7,20 @@ import net.fortuna.ical4j.connector.dav.PathResolver.GenericPathResolver;
 import net.fortuna.ical4j.util.CompatibilityHints;
 import net.fortuna.ical4j.vcard.VCard;
 import net.fortuna.ical4j.vcard.VCardBuilder;
+import net.sf.borg.common.*;
 import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.entity.Address;
+import org.apache.commons.httpclient.protocol.Protocol;
+import org.apache.commons.httpclient.protocol.SSLProtocolSocketFactory;
+
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
 
 public class CardDav {
 	

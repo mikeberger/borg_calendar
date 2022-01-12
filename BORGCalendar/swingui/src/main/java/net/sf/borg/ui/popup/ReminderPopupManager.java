@@ -25,12 +25,12 @@
 
 package net.sf.borg.ui.popup;
 
+import net.sf.borg.model.Model.ChangeEvent;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Set;
-
-import net.sf.borg.model.Model.ChangeEvent;
 
 /**
  * Manages the lifecycle of Reminder Popup windows.

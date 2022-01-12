@@ -18,15 +18,15 @@
  */
 package net.sf.borg.model.undo;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Stack;
-
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Task;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Stack;
 
 /**
  * Task Undo Item.

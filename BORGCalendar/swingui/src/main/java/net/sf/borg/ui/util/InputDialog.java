@@ -25,18 +25,10 @@ Copyright 2003 by Mike Berger
 
 package net.sf.borg.ui.util;
 
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Toolkit;
-
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-
 import net.sf.borg.common.Resource;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * modal dialog that prompts for input and can limit the input length

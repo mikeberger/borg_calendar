@@ -1,35 +1,11 @@
 package net.sf.borg.ui;
 
-import java.awt.Dialog.ModalityType;
-import java.awt.Font;
-import java.awt.Frame;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.text.MessageFormat;
-import java.util.logging.Logger;
-
-import javax.swing.JCheckBox;
-import javax.swing.JOptionPane;
-import javax.swing.SwingWorker;
-import javax.swing.Timer;
-import javax.swing.UIManager;
-
-import net.sf.borg.common.Errmsg;
-import net.sf.borg.common.Observer;
-import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
-import net.sf.borg.common.Resource;
-import net.sf.borg.common.Warning;
+import net.sf.borg.common.*;
 import net.sf.borg.model.ExportImport;
 import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.model.ical.SyncLog;
 import net.sf.borg.ui.address.AddrListView;
-import net.sf.borg.ui.calendar.DayPanel;
-import net.sf.borg.ui.calendar.MonthPanel;
-import net.sf.borg.ui.calendar.TodoView;
-import net.sf.borg.ui.calendar.WeekPanel;
-import net.sf.borg.ui.calendar.YearPanel;
+import net.sf.borg.ui.calendar.*;
 import net.sf.borg.ui.checklist.CheckListPanel;
 import net.sf.borg.ui.ical.IcalModule;
 import net.sf.borg.ui.memo.MemoPanel;
@@ -41,6 +17,15 @@ import net.sf.borg.ui.task.TaskModule;
 import net.sf.borg.ui.util.NwFontChooserS;
 import net.sf.borg.ui.util.SplashScreen;
 import net.sf.borg.ui.util.UIErrorHandler;
+
+import javax.swing.*;
+import java.awt.Dialog.ModalityType;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.text.MessageFormat;
+import java.util.logging.Logger;
 
 /**
  * Class UIControl provides access to the UI from non-UI classes. UIControl

@@ -1,15 +1,15 @@
 package net.sf.borg.model.tool;
 
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.GregorianCalendar;
-import java.util.Vector;
-
 import net.sf.borg.common.DateUtil;
 import net.sf.borg.model.LinkModel;
 import net.sf.borg.model.db.AppointmentDB;
 import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.model.entity.Appointment;
+
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.GregorianCalendar;
+import java.util.Vector;
 
 /**
  * 

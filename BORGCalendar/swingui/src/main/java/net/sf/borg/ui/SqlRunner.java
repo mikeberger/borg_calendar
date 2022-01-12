@@ -18,18 +18,6 @@
  */
 package net.sf.borg.ui;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.sql.ResultSet;
-import java.util.logging.Logger;
-
-import javax.swing.JButton;
-import javax.swing.JEditorPane;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.Model;
@@ -37,6 +25,11 @@ import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 import net.sf.borg.ui.util.ScrolledDialog;
 import net.sf.borg.ui.util.TableSorter;
+
+import javax.swing.*;
+import java.awt.*;
+import java.sql.ResultSet;
+import java.util.logging.Logger;
 
 /**
  * SqlRunner is a UI that lets a user run SQL against the database. It presents

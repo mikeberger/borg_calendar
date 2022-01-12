@@ -18,13 +18,18 @@
  */
 package net.sf.borg.ui.calendar;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.GradientPaint;
-import java.awt.Graphics2D;
-import java.awt.Paint;
-import java.awt.Rectangle;
-import java.awt.Shape;
+import net.sf.borg.common.*;
+import net.sf.borg.model.AppointmentModel;
+import net.sf.borg.model.LinkModel;
+import net.sf.borg.model.Repeat;
+import net.sf.borg.model.Theme;
+import net.sf.borg.model.entity.Appointment;
+import net.sf.borg.model.entity.Link;
+import net.sf.borg.ui.ClipBoard;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.font.FontRenderContext;
 import java.awt.font.LineBreakMeasurer;
@@ -38,35 +43,8 @@ import java.io.Serializable;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.List;
-
-import javax.imageio.ImageIO;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
-
-import net.sf.borg.common.DateUtil;
-import net.sf.borg.common.Errmsg;
-import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
-import net.sf.borg.common.Resource;
-import net.sf.borg.model.AppointmentModel;
-import net.sf.borg.model.LinkModel;
-import net.sf.borg.model.Repeat;
-import net.sf.borg.model.Theme;
-import net.sf.borg.model.entity.Appointment;
-import net.sf.borg.model.entity.Link;
-import net.sf.borg.ui.ClipBoard;
+import java.util.*;
 
 /**
  * ApptBox is used to draw timed appointments on the time-grid part of the day

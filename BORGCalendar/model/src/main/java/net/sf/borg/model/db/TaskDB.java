@@ -18,12 +18,12 @@
  */
 package net.sf.borg.model.db;
 
-import java.util.Collection;
-
 import net.sf.borg.model.entity.Project;
 import net.sf.borg.model.entity.Subtask;
 import net.sf.borg.model.entity.Task;
 import net.sf.borg.model.entity.Tasklog;
+
+import java.util.Collection;
 
 
 /**

@@ -20,6 +20,14 @@
 
 package net.sf.borg.model.db.jdbc;
 
+import net.sf.borg.model.db.CheckListDB;
+import net.sf.borg.model.entity.CheckList;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.sql.PreparedStatement;
@@ -28,15 +36,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import net.sf.borg.model.db.CheckListDB;
-import net.sf.borg.model.entity.CheckList;
 
 /**
  * provides the JDBC layer for reading/writing CheckLists.

@@ -20,29 +20,6 @@
 
 package net.sf.borg.ui.task;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Collection;
-import java.util.Date;
-
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
-import javax.swing.event.TableModelEvent;
-import javax.swing.table.TableCellRenderer;
-
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.CategoryModel;
@@ -58,6 +35,14 @@ import net.sf.borg.ui.util.PopupMenuHelper;
 import net.sf.borg.ui.util.TablePrinter;
 import net.sf.borg.ui.util.TableSorter;
 
+import javax.swing.*;
+import javax.swing.event.TableModelEvent;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Collection;
+import java.util.Date;
+
 /**
  * Shows a table of tasks action buttons.
  */
@@ -65,66 +50,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * renderer for the priority and days left columns in the task table that
-	 * shows them in color.
-	 */
-	private class DLRenderer extends JLabel implements TableCellRenderer {
 
-		private static final long serialVersionUID = 1L;
-
-		/**
-		 * constructor.
-		 */
-		public DLRenderer() {
-			super();
-			setOpaque(true); // MUST do this for background to show up.
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * javax.swing.table.TableCellRenderer#getTableCellRendererComponent
-		 * (javax.swing.JTable, java.lang.Object, boolean, boolean, int, int)
-		 */
-		@Override
-		public Component getTableCellRendererComponent(JTable table,
-				Object obj, boolean isSelected, boolean hasFocus, int row,
-				int column) {
-
-			// start with default component that would be rendered
-			JLabel l = (JLabel) defaultTableCellRenderer
-					.getTableCellRendererComponent(table, obj, isSelected,
-							hasFocus, row, column);
-
-			// if null object - show dashes
-			if (obj == null) {
-				l.setText("--");
-				l.setHorizontalAlignment(CENTER);
-				return l;
-			}
-
-			// return the default rendered component if this is not the priority
-			// or days left column
-			String nm = table.getColumnName(column);
-			if (!nm.equals(Resource.getResourceString("Pri"))
-					&& !nm.equals(Resource.getResourceString("Days_Left")))
-				return l;
-
-			// return the default rendered component if the row is selected
-			if (isSelected)
-				return l;
-
-			this.setText(l.getText());
-			this.setHorizontalAlignment(CENTER);
-			this.setBackground(l.getBackground());
-			this.setForeground(l.getForeground());
-
-
-			return this;
-		}
-	}
 
 	/** The button panel. */
 	private JPanel buttonPanel = null;
@@ -142,9 +68,6 @@ class TaskListPanel extends JPanel implements Model.Listener {
 		}
 		return totalLabel;
 	}
-
-	/** The default table cell renderer. */
-	private TableCellRenderer defaultTableCellRenderer;
 
 	/** The filter string. */
 	private String filterString = "";
@@ -394,11 +317,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 		 * task table
 		 */
 		taskTable = new JTable();
-		defaultTableCellRenderer = taskTable.getDefaultRenderer(Integer.class);
 
-		// set renderer to the custom one for integers
-		taskTable.setDefaultRenderer(Integer.class,
-				new TaskListPanel.DLRenderer());
 
 		// use a sorted table model
 		taskTable.setModel(new TableSorter(new String[] {
@@ -451,6 +370,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 		taskTable.getColumnModel().getColumn(6).setPreferredWidth(100);
 		taskTable.getColumnModel().getColumn(5).setPreferredWidth(400);
 		taskTable.setPreferredScrollableViewportSize(new Dimension(800, 200));
+		taskTable.setShowGrid(true);
 
 		/*
 		 * popup menu for task table

@@ -19,6 +19,8 @@ Copyright 2003 by Mike Berger
  */
 package net.sf.borg.model;
 
+import net.sf.borg.common.Resource;
+
 import java.io.InputStream;
 import java.io.Serializable;
 import java.io.Writer;
@@ -26,8 +28,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.TreeSet;
-
-import net.sf.borg.common.Resource;
 
 /**
  * The Class CategoryModel manages Categories. Categories are not entities, they are plain text strings.

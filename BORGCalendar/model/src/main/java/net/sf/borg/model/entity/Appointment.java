@@ -18,19 +18,18 @@
  */
 package net.sf.borg.model.entity;
 
-import java.util.Date;
-import java.util.Vector;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import net.sf.borg.common.EncryptionHelper;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import java.util.Date;
+import java.util.Vector;
 
 /**
  * The Appointment Entity

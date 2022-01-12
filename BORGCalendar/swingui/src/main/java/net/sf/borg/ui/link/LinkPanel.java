@@ -20,50 +20,12 @@ Copyright 2003 by Mike Berger
 
 package net.sf.borg.ui.link;
 
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Desktop;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.GregorianCalendar;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
-
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Resource;
-import net.sf.borg.model.AddressModel;
-import net.sf.borg.model.AppointmentModel;
-import net.sf.borg.model.LinkModel;
+import net.sf.borg.model.*;
 import net.sf.borg.model.LinkModel.LinkType;
-import net.sf.borg.model.Model;
 import net.sf.borg.model.Model.ChangeEvent;
-import net.sf.borg.model.TaskModel;
-import net.sf.borg.model.entity.Address;
-import net.sf.borg.model.entity.Appointment;
-import net.sf.borg.model.entity.KeyedEntity;
-import net.sf.borg.model.entity.Link;
-import net.sf.borg.model.entity.Memo;
-import net.sf.borg.model.entity.Project;
-import net.sf.borg.model.entity.Task;
+import net.sf.borg.model.entity.*;
 import net.sf.borg.ui.EntitySelector;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.MultiView.ViewType;
@@ -75,6 +37,17 @@ import net.sf.borg.ui.task.TaskView;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 import net.sf.borg.ui.util.PopupMenuHelper;
 import net.sf.borg.ui.util.TableSorter;
+
+import javax.swing.*;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.net.URI;
+import java.util.List;
+import java.util.*;
 
 /**
  * Panel for managing links. This panel is included in the UIs for entities that

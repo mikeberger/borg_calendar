@@ -25,19 +25,14 @@ Copyright 2003 by Mike Berger
 
 package net.sf.borg.ui;
 
-import java.awt.Image;
-import java.awt.Toolkit;
+import net.sf.borg.common.PrefName;
+import net.sf.borg.model.Model;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.KeyStroke;
-
-import net.sf.borg.common.PrefName;
-import net.sf.borg.model.Model;
 
 
 /**

@@ -25,17 +25,6 @@
 
 package net.sf.borg.model;
 
-import java.io.Serializable;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Iterator;
-import java.util.List;
-import java.util.TimeZone;
-import java.util.TreeSet;
-
 import net.sf.borg.common.DateUtil;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
@@ -43,6 +32,9 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.CalendarEntity;
 import net.sf.borg.model.entity.LabelEntity;
+
+import java.io.Serializable;
+import java.util.*;
 
 
 /**

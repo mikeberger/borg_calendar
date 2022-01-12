@@ -18,9 +18,9 @@
  */
 package net.sf.borg.model.entity;
 
-import java.util.Date;
-
 import lombok.Data;
+
+import java.util.Date;
 
 
 

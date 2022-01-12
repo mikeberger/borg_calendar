@@ -19,10 +19,10 @@ Copyright 2003 by Mike Berger
  */
 package net.sf.borg.model.db;
 
+import net.sf.borg.model.entity.Appointment;
+
 import java.util.Collection;
 import java.util.List;
-
-import net.sf.borg.model.entity.Appointment;
 
 /**
  * A {@link EntityDB EntityDB} subclass which allows efficient retrieval of

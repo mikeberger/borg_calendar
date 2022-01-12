@@ -18,12 +18,9 @@
  */
 package net.sf.borg.ui.calendar;
 
-import java.awt.Component;
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
+import javax.swing.*;
+import java.awt.*;
 import java.util.Date;
-
-import javax.swing.JPopupMenu;
 
 /**
  * Interface for objects that appear as boxes on the day/week/month UIs

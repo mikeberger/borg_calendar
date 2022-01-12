@@ -18,16 +18,11 @@
  */
 package net.sf.borg.ui.calendar;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import java.awt.Shape;
-import java.util.Date;
-
-import javax.swing.Icon;
-
 import net.sf.borg.model.Theme;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.Date;
 
 /**
  * base class for a box that represents a clickable label on the calendar ui

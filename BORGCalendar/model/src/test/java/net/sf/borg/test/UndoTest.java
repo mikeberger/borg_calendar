@@ -1,28 +1,23 @@
 package net.sf.borg.test;
 
 
-import static org.junit.Assert.assertTrue;
-
-import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
-
 import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.MemoModel;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.model.db.jdbc.JdbcDBHelper;
-import net.sf.borg.model.entity.Address;
-import net.sf.borg.model.entity.Appointment;
-import net.sf.borg.model.entity.Memo;
-import net.sf.borg.model.entity.Subtask;
-import net.sf.borg.model.entity.Task;
+import net.sf.borg.model.entity.*;
 import net.sf.borg.model.undo.UndoLog;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.util.Collection;
+import java.util.Date;
+import java.util.Iterator;
+
+import static org.junit.Assert.assertTrue;
 
 public class UndoTest {
 

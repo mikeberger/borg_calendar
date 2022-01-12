@@ -18,27 +18,16 @@
  */
 package net.sf.borg.ui.util;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Frame;
-import java.awt.GridLayout;
+import com.toedter.calendar.JDateChooser;
+import net.sf.borg.common.Resource;
+import net.sf.borg.ui.ResourceHelper;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.Calendar;
-
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.KeyStroke;
-
-import com.toedter.calendar.JDateChooser;
-
-import net.sf.borg.common.Resource;
-import net.sf.borg.ui.ResourceHelper;
 
 /**
  * A dialog for picking a date that wraps JDateChooser

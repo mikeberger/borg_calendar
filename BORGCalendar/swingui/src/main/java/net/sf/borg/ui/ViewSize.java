@@ -19,16 +19,12 @@ Copyright 2003 by Mike Berger
  */
 package net.sf.borg.ui;
 
-import java.awt.Frame;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-import java.awt.Rectangle;
-
-import javax.swing.JFrame;
-
 import lombok.Data;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * ViewSize contains the data associated with a windows's position, size, and

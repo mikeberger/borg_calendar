@@ -1,9 +1,5 @@
 package net.sf.borg.test;
 
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.logging.Logger;
-
 import net.fortuna.ical4j.connector.dav.CalDavCalendarCollection;
 import net.fortuna.ical4j.connector.dav.CalDavCalendarStore;
 import net.fortuna.ical4j.model.Calendar;
@@ -11,6 +7,10 @@ import net.fortuna.ical4j.util.CompatibilityHints;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.model.ical.CalDav;
+
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.logging.Logger;
 
 public class CalDavTest {
 	

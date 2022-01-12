@@ -20,72 +20,11 @@
 
 package net.sf.borg.ui.calendar;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.FlowLayout;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Vector;
-
-import javax.swing.BorderFactory;
-import javax.swing.ButtonGroup;
-import javax.swing.DefaultListSelectionModel;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JSpinner;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.JToggleButton;
-import javax.swing.ListSelectionModel;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.border.LineBorder;
-import javax.swing.border.TitledBorder;
-import javax.swing.event.TableModelEvent;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableCellRenderer;
-
 import com.toedter.calendar.JDateChooser;
-
-import net.sf.borg.common.DateUtil;
-import net.sf.borg.common.Errmsg;
-import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
-import net.sf.borg.common.Resource;
-import net.sf.borg.model.AppointmentModel;
-import net.sf.borg.model.CategoryModel;
+import net.sf.borg.common.*;
+import net.sf.borg.model.*;
 import net.sf.borg.model.Model.ChangeEvent;
-import net.sf.borg.model.Repeat;
-import net.sf.borg.model.TaskModel;
-import net.sf.borg.model.Theme;
-import net.sf.borg.model.entity.Appointment;
-import net.sf.borg.model.entity.KeyedEntity;
-import net.sf.borg.model.entity.Project;
-import net.sf.borg.model.entity.Subtask;
-import net.sf.borg.model.entity.Task;
+import net.sf.borg.model.entity.*;
 import net.sf.borg.ui.DockableView;
 import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.MultiView.Module;
@@ -94,11 +33,19 @@ import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.SunTrayIconProxy;
 import net.sf.borg.ui.task.ProjectView;
 import net.sf.borg.ui.task.TaskView;
-import net.sf.borg.ui.util.GridBagConstraintsFactory;
-import net.sf.borg.ui.util.PlainDateEditor;
-import net.sf.borg.ui.util.PopupMenuHelper;
-import net.sf.borg.ui.util.TablePrinter;
-import net.sf.borg.ui.util.TableSorter;
+import net.sf.borg.ui.util.*;
+
+import javax.swing.*;
+import javax.swing.border.LineBorder;
+import javax.swing.border.TitledBorder;
+import javax.swing.event.TableModelEvent;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
+import java.awt.*;
+import java.awt.event.*;
+import java.text.DateFormat;
+import java.util.List;
+import java.util.*;
 
 /**
  * Dockable window that shows a sorted list of all todos, allows the user to
@@ -632,6 +579,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 		});
 
 		tableScroll.setViewportView(todoTable);
+		todoTable.setShowGrid(true);
 
 		// *******************************************************************
 		// quick entry panel

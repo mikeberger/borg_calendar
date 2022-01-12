@@ -18,12 +18,18 @@
  */
 package net.sf.borg.ui.calendar;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Font;
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import java.awt.Shape;
+import net.sf.borg.common.*;
+import net.sf.borg.model.*;
+import net.sf.borg.model.entity.*;
+import net.sf.borg.ui.ClipBoard;
+import net.sf.borg.ui.MultiView;
+import net.sf.borg.ui.MultiView.ViewType;
+import net.sf.borg.ui.task.ProjectView;
+import net.sf.borg.ui.task.TaskView;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.font.TextAttribute;
 import java.awt.geom.AffineTransform;
@@ -32,43 +38,7 @@ import java.awt.image.BufferedImage;
 import java.io.Serializable;
 import java.text.AttributedString;
 import java.text.DateFormat;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.imageio.ImageIO;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
-
-import net.sf.borg.common.DateUtil;
-import net.sf.borg.common.Errmsg;
-import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
-import net.sf.borg.common.Resource;
-import net.sf.borg.common.Warning;
-import net.sf.borg.model.AppointmentModel;
-import net.sf.borg.model.LinkModel;
-import net.sf.borg.model.Repeat;
-import net.sf.borg.model.TaskModel;
-import net.sf.borg.model.Theme;
-import net.sf.borg.model.entity.Appointment;
-import net.sf.borg.model.entity.CalendarEntity;
-import net.sf.borg.model.entity.KeyedEntity;
-import net.sf.borg.model.entity.Link;
-import net.sf.borg.model.entity.Project;
-import net.sf.borg.model.entity.Subtask;
-import net.sf.borg.model.entity.Task;
-import net.sf.borg.ui.ClipBoard;
-import net.sf.borg.ui.MultiView;
-import net.sf.borg.ui.MultiView.ViewType;
-import net.sf.borg.ui.task.ProjectView;
-import net.sf.borg.ui.task.TaskView;
+import java.util.*;
 
 /**
  * 

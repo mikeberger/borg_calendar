@@ -18,9 +18,9 @@
  */
 package net.sf.borg.model.db;
 
-import java.util.Collection;
-
 import net.sf.borg.model.entity.Option;
+
+import java.util.Collection;
 
 /**
  * The Interface for an Option DB.

@@ -1,26 +1,5 @@
 package net.sf.borg.model.ical;
 
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Iterator;
-import java.util.List;
-import java.util.TimeZone;
-import java.util.logging.Logger;
-
-import javax.crypto.Cipher;
-import javax.crypto.CipherOutputStream;
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-
-import org.apache.commons.httpclient.protocol.Protocol;
-import org.apache.commons.httpclient.protocol.SSLProtocolSocketFactory;
-
 import net.fortuna.ical4j.connector.dav.CalDavCalendarCollection;
 import net.fortuna.ical4j.connector.dav.CalDavCalendarStore;
 import net.fortuna.ical4j.connector.dav.PathResolver;
@@ -33,11 +12,7 @@ import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VToDo;
-import net.fortuna.ical4j.model.property.Completed;
-import net.fortuna.ical4j.model.property.ProdId;
-import net.fortuna.ical4j.model.property.RecurrenceId;
-import net.fortuna.ical4j.model.property.Status;
-import net.fortuna.ical4j.model.property.Version;
+import net.fortuna.ical4j.model.property.*;
 import net.fortuna.ical4j.util.CompatibilityHints;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
@@ -48,12 +23,21 @@ import net.sf.borg.model.Model.ChangeEvent.ChangeAction;
 import net.sf.borg.model.OptionModel;
 import net.sf.borg.model.Repeat;
 import net.sf.borg.model.TaskModel;
-import net.sf.borg.model.entity.Appointment;
-import net.sf.borg.model.entity.Option;
-import net.sf.borg.model.entity.Subtask;
-import net.sf.borg.model.entity.SyncableEntity;
+import net.sf.borg.model.entity.*;
 import net.sf.borg.model.entity.SyncableEntity.ObjectType;
-import net.sf.borg.model.entity.Task;
+import org.apache.commons.httpclient.protocol.Protocol;
+import org.apache.commons.httpclient.protocol.SSLProtocolSocketFactory;
+
+import javax.crypto.Cipher;
+import javax.crypto.CipherOutputStream;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
+import java.net.URL;
+import java.util.*;
+import java.util.logging.Logger;
 
 public class CalDav {
 

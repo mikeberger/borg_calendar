@@ -19,15 +19,14 @@
  */
 package net.sf.borg.ui.popup;
 
-import java.awt.Toolkit;
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 
 public class ReminderSound {
 	/**

@@ -19,45 +19,11 @@
 
 package net.sf.borg.control;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.security.CodeSource;
-import java.security.ProtectionDomain;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.Locale;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
-
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
-
-import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Observable;
 import net.sf.borg.common.Observer;
-import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
-import net.sf.borg.common.Resource;
-import net.sf.borg.common.SocketClient;
 import net.sf.borg.common.SocketHandler;
-import net.sf.borg.common.SocketServer;
-import net.sf.borg.model.AddressModel;
-import net.sf.borg.model.AppointmentModel;
-import net.sf.borg.model.CheckListModel;
-import net.sf.borg.model.EmailReminder;
-import net.sf.borg.model.LinkModel;
-import net.sf.borg.model.MemoModel;
-import net.sf.borg.model.Model;
-import net.sf.borg.model.TaskModel;
+import net.sf.borg.common.*;
+import net.sf.borg.model.*;
 import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.model.db.jdbc.JdbcDBHelper;
 import net.sf.borg.model.ical.CalDav;
@@ -66,6 +32,19 @@ import net.sf.borg.ui.UIControl;
 import net.sf.borg.ui.options.OptionsView;
 import net.sf.borg.ui.util.ModalMessage;
 import net.sf.borg.ui.util.ScrolledDialog;
+
+import javax.swing.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.security.CodeSource;
+import java.security.ProtectionDomain;
+import java.util.Timer;
+import java.util.*;
+import java.util.logging.*;
 
 /**
  * The Main Class of Borg. It's responsible for starting up the model and

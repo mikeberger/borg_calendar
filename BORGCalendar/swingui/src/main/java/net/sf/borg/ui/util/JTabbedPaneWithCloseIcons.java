@@ -3,19 +3,14 @@ package net.sf.borg.ui.util;
 // This file was copied from a forum and was unlicensed.
 // It has been modified
 // BORG does not apply any copyright to this file.
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
+
+import net.sf.borg.ui.DockableView;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-
-import javax.swing.Icon;
-import javax.swing.JTabbedPane;
-
-import net.sf.borg.ui.DockableView;
 
 /**
  * A JTabbedPane with Close and Undock icons drawn in the tab.

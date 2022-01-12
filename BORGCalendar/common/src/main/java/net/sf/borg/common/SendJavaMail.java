@@ -25,28 +25,19 @@
 
 package net.sf.borg.common;
 
-import java.io.File;
-import java.util.Date;
-import java.util.Properties;
-import java.util.logging.Logger;
-
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
-import javax.mail.Address;
-import javax.mail.Authenticator;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Multipart;
-import javax.mail.PasswordAuthentication;
-import javax.mail.SendFailedException;
-import javax.mail.Session;
-import javax.mail.Transport;
+import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.net.ssl.SSLContext;
+import java.io.File;
+import java.util.Date;
+import java.util.Properties;
+import java.util.logging.Logger;
 
 /**
  * utility class to send out email via java mail

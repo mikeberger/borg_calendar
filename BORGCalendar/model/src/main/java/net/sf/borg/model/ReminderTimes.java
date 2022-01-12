@@ -1,9 +1,9 @@
 package net.sf.borg.model;
 
-import java.util.StringTokenizer;
-
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
+
+import java.util.StringTokenizer;
 
 /**
  * This class converts the appointment reminder times to and from a string in the preferences

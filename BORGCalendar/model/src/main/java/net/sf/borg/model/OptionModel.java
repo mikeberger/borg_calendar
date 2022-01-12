@@ -19,19 +19,18 @@
  */
 package net.sf.borg.model;
 
-import java.io.InputStream;
-import java.io.Writer;
-import java.util.Collection;
+import net.sf.borg.common.Resource;
+import net.sf.borg.model.db.DBHelper;
+import net.sf.borg.model.db.OptionDB;
+import net.sf.borg.model.entity.Option;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import net.sf.borg.common.Resource;
-import net.sf.borg.model.db.DBHelper;
-import net.sf.borg.model.db.OptionDB;
-import net.sf.borg.model.entity.Option;
+import java.io.InputStream;
+import java.io.Writer;
+import java.util.Collection;
 
 /**
  * The Option Model manages the Borg Options

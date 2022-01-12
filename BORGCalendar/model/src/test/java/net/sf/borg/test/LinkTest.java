@@ -1,29 +1,18 @@
 package net.sf.borg.test;
 
-import static org.junit.Assert.assertEquals;
+import net.sf.borg.model.*;
+import net.sf.borg.model.LinkModel.LinkType;
+import net.sf.borg.model.db.DBHelper;
+import net.sf.borg.model.db.jdbc.JdbcDBHelper;
+import net.sf.borg.model.entity.*;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.util.Collection;
 import java.util.Date;
 
-import net.sf.borg.model.AddressModel;
-import net.sf.borg.model.AppointmentModel;
-import net.sf.borg.model.LinkModel;
-import net.sf.borg.model.LinkModel.LinkType;
-import net.sf.borg.model.MemoModel;
-import net.sf.borg.model.TaskModel;
-import net.sf.borg.model.db.DBHelper;
-import net.sf.borg.model.db.jdbc.JdbcDBHelper;
-import net.sf.borg.model.entity.Address;
-import net.sf.borg.model.entity.Appointment;
-import net.sf.borg.model.entity.KeyedEntity;
-import net.sf.borg.model.entity.Link;
-import net.sf.borg.model.entity.Memo;
-import net.sf.borg.model.entity.Project;
-import net.sf.borg.model.entity.Task;
-
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 public class LinkTest {
 

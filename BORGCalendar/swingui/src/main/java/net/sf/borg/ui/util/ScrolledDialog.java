@@ -20,23 +20,13 @@ Copyright 2003 by Mike Berger
 package net.sf.borg.ui.util;
 
 
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Toolkit;
-import java.util.logging.Logger;
-
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextArea;
-import javax.swing.ScrollPaneConstants;
-
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.logging.Logger;
 
 /**
  * Common dialog class with a scrolled text area.

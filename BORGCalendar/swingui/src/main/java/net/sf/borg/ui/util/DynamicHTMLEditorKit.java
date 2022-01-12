@@ -1,10 +1,9 @@
 package net.sf.borg.ui.util;
 
+import javax.swing.*;
+import javax.swing.text.html.HTMLEditorKit;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-
-import javax.swing.JEditorPane;
-import javax.swing.text.html.HTMLEditorKit;
 
 
 public class DynamicHTMLEditorKit extends HTMLEditorKit {

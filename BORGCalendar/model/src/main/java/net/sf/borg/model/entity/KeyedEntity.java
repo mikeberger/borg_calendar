@@ -24,13 +24,12 @@
 
 package net.sf.borg.model.entity;
 
-import java.io.Serializable;
+import lombok.Data;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-
-import lombok.Data;
+import java.io.Serializable;
 
 /**
  * Abstract base class for all Entities that are keyed by a simple integer key

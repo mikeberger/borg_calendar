@@ -1,13 +1,5 @@
 package net.sf.borg.test;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
-import java.io.InputStream;
-
-import org.junit.Test;
-
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
@@ -17,6 +9,11 @@ import net.fortuna.ical4j.model.component.VAlarm;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.property.Summary;
 import net.fortuna.ical4j.util.CompatibilityHints;
+import org.junit.Test;
+
+import java.io.InputStream;
+
+import static org.junit.Assert.*;
 
 public class IcalTest {
 

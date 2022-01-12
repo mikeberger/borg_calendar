@@ -18,11 +18,11 @@
  */
 package net.sf.borg.model.undo;
 
-import java.text.DateFormat;
-
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.entity.Appointment;
+
+import java.text.DateFormat;
 
 /**
  * Appointment Undo Item.

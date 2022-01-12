@@ -19,22 +19,6 @@ Copyright 2003 by Mike Berger
  */
 package net.sf.borg.model;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.annotation.XmlRootElement;
-
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
@@ -42,14 +26,17 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.model.db.EntityDB;
 import net.sf.borg.model.db.LinkDB;
-import net.sf.borg.model.entity.Address;
-import net.sf.borg.model.entity.Appointment;
-import net.sf.borg.model.entity.CheckList;
-import net.sf.borg.model.entity.KeyedEntity;
-import net.sf.borg.model.entity.Link;
-import net.sf.borg.model.entity.Memo;
-import net.sf.borg.model.entity.Project;
-import net.sf.borg.model.entity.Task;
+import net.sf.borg.model.entity.*;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlRootElement;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
 
 /**
  * LinkModel manages the Link Entities, which are associations between BORG

@@ -1,5 +1,15 @@
 package net.sf.borg.model.ical;
 
+import net.sf.borg.common.PrefName;
+import net.sf.borg.common.Prefs;
+import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPReply;
+
+import javax.crypto.Cipher;
+import javax.crypto.CipherOutputStream;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -7,18 +17,6 @@ import java.io.OutputStream;
 import java.util.Base64;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-
-import javax.crypto.Cipher;
-import javax.crypto.CipherOutputStream;
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-
-import org.apache.commons.net.ftp.FTPClient;
-import org.apache.commons.net.ftp.FTPReply;
-
-import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
 
 public class IcalFTP {
 

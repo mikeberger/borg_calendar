@@ -1,9 +1,9 @@
 package net.sf.borg.model;
 
+import net.sf.borg.model.entity.CalendarEntity;
+
 import java.util.Date;
 import java.util.List;
-
-import net.sf.borg.model.entity.CalendarEntity;
 
 public interface CalendarEntityProvider {
 	

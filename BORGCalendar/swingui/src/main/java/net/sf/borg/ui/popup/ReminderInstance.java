@@ -19,11 +19,11 @@
  */
 package net.sf.borg.ui.popup;
 
-import java.util.Date;
-
 import lombok.Data;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.ReminderTimes;
+
+import java.util.Date;
 
 /**
  * holds an instance of a reminder message. Keeps track of which reminder times

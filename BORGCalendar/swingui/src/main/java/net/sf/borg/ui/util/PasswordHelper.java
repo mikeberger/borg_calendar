@@ -19,16 +19,13 @@ Copyright 2009 by Mike Berger
  */
 package net.sf.borg.ui.util;
 
-import java.util.Date;
-
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPasswordField;
-
 import net.sf.borg.common.EncryptionHelper;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
+
+import javax.swing.*;
+import java.util.Date;
 
 /**
  * PasswordHelper provides logic to prompt for an encryption password and cache

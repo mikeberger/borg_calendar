@@ -20,25 +20,6 @@ Copyright 2003 by Mike Berger
 
 package net.sf.borg.ui.address;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-
-import javax.swing.DefaultListSelectionModel;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollBar;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
-import javax.swing.event.TableModelEvent;
-
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.AddressModel;
@@ -54,6 +35,15 @@ import net.sf.borg.ui.util.GridBagConstraintsFactory;
 import net.sf.borg.ui.util.PopupMenuHelper;
 import net.sf.borg.ui.util.TablePrinter;
 import net.sf.borg.ui.util.TableSorter;
+
+import javax.swing.*;
+import javax.swing.event.TableModelEvent;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * UI that displays the address book in tabular form and allows actions to be
@@ -248,8 +238,7 @@ public class AddrListView extends DockableView implements Module {
 		findbutton = new JButton();
 
 		tableScrollPane.setPreferredSize(new java.awt.Dimension(554, 404));
-		//addressTable.setBorder(new LineBorder(new java.awt.Color(0, 0, 0)));
-		// jTable1.setGridColor(java.awt.Color.blue);
+
 		DefaultListSelectionModel mylsmodel = new DefaultListSelectionModel();
 		mylsmodel
 				.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
@@ -264,6 +253,7 @@ public class AddrListView extends DockableView implements Module {
 		});
 
 		tableScrollPane.setViewportView(addressTable);
+		addressTable.setShowGrid(true);
 		add(tableScrollPane, GridBagConstraintsFactory.create(0, 0,
 				GridBagConstraints.BOTH, 1.0, 1.0));
 

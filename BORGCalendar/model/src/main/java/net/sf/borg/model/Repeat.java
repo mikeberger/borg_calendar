@@ -20,14 +20,10 @@ Copyright 2003 by Mike Berger
 
 package net.sf.borg.model;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.GregorianCalendar;
-
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.entity.Appointment;
+
+import java.util.*;
 
 /**
  * A helper class for calculating all things about repeating appointments. It is

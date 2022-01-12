@@ -1,11 +1,7 @@
 package net.sf.borg.ui.util;
 
 import java.awt.datatransfer.DataFlavor;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.io.Reader;
+import java.io.*;
 
 /**
  * This class makes it easy to drag and drop files from the operating system to

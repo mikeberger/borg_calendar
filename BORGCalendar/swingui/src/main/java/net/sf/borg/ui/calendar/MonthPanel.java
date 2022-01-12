@@ -19,14 +19,22 @@ Copyright 2003 by Mike Berger
  */
 package net.sf.borg.ui.calendar;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GridBagConstraints;
-import java.awt.Rectangle;
-import java.awt.RenderingHints;
-import java.awt.Shape;
+import net.sf.borg.common.Errmsg;
+import net.sf.borg.common.PrefName;
+import net.sf.borg.common.Prefs;
+import net.sf.borg.common.Resource;
+import net.sf.borg.model.*;
+import net.sf.borg.model.Model.ChangeEvent;
+import net.sf.borg.model.entity.CalendarEntity;
+import net.sf.borg.ui.MultiView;
+import net.sf.borg.ui.MultiView.CalendarModule;
+import net.sf.borg.ui.MultiView.ViewType;
+import net.sf.borg.ui.NavPanel;
+import net.sf.borg.ui.SunTrayIconProxy;
+import net.sf.borg.ui.util.GridBagConstraintsFactory;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseWheelEvent;
@@ -38,29 +46,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JPanel;
-
-import net.sf.borg.common.Errmsg;
-import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
-import net.sf.borg.common.Resource;
-import net.sf.borg.model.AddressModel;
-import net.sf.borg.model.AppointmentModel;
-import net.sf.borg.model.Day;
-import net.sf.borg.model.Model;
-import net.sf.borg.model.Model.ChangeEvent;
-import net.sf.borg.model.TaskModel;
-import net.sf.borg.model.Theme;
-import net.sf.borg.model.entity.CalendarEntity;
-import net.sf.borg.ui.MultiView;
-import net.sf.borg.ui.MultiView.CalendarModule;
-import net.sf.borg.ui.MultiView.ViewType;
-import net.sf.borg.ui.NavPanel;
-import net.sf.borg.ui.SunTrayIconProxy;
-import net.sf.borg.ui.util.GridBagConstraintsFactory;
 
 /**
  * MonthPanel is the UI for a calendar month. It is Printable, but is NOT used

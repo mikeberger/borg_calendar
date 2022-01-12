@@ -12,60 +12,12 @@
  */
 package net.sf.borg.ui;
 
-import java.awt.Component;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
-import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Iterator;
-
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.event.TableModelEvent;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
-
 import com.toedter.calendar.JDateChooser;
-
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Resource;
-import net.sf.borg.model.AddressModel;
-import net.sf.borg.model.AppointmentModel;
-import net.sf.borg.model.CategoryModel;
-import net.sf.borg.model.MemoModel;
-import net.sf.borg.model.Model;
+import net.sf.borg.model.*;
 import net.sf.borg.model.Model.ChangeEvent;
-import net.sf.borg.model.SearchCriteria;
-import net.sf.borg.model.Searchable;
-import net.sf.borg.model.TaskModel;
-import net.sf.borg.model.entity.Address;
-import net.sf.borg.model.entity.Appointment;
-import net.sf.borg.model.entity.KeyedEntity;
-import net.sf.borg.model.entity.Memo;
-import net.sf.borg.model.entity.Project;
-import net.sf.borg.model.entity.Subtask;
-import net.sf.borg.model.entity.Task;
+import net.sf.borg.model.entity.*;
 import net.sf.borg.ui.MultiView.Module;
 import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.address.AddressView;
@@ -77,6 +29,20 @@ import net.sf.borg.ui.util.GridBagConstraintsFactory;
 import net.sf.borg.ui.util.PlainDateEditor;
 import net.sf.borg.ui.util.TablePrinter;
 import net.sf.borg.ui.util.TableSorter;
+
+import javax.swing.*;
+import javax.swing.event.TableModelEvent;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
+import java.text.DateFormat;
+import java.util.*;
 
 /**
  * UI for searching records.
@@ -387,6 +353,7 @@ public class SearchView extends DockableView implements Module {
 
 		JScrollPane tableScroll = new JScrollPane();
 		tableScroll.setViewportView(resultsTable);
+		resultsTable.setShowGrid(true);
 		// tableScroll.setPreferredSize(new java.awt.Dimension(100, 100));
 
 		GridBagConstraints gridBagConstraints2 = GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH, 1.0,

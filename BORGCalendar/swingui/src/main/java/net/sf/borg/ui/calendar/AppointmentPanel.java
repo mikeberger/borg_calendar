@@ -12,74 +12,30 @@
  */
 package net.sf.borg.ui.calendar;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Iterator;
-
-import javax.swing.ButtonGroup;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JColorChooser;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
-import javax.swing.JSpinner;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.JToggleButton;
-import javax.swing.ListCellRenderer;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingConstants;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.TitledBorder;
-
 import com.toedter.calendar.JDateChooser;
-
 import lombok.Getter;
 import lombok.Setter;
-import net.sf.borg.common.DateUtil;
-import net.sf.borg.common.Errmsg;
-import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
-import net.sf.borg.common.Resource;
-import net.sf.borg.common.Warning;
-import net.sf.borg.model.AppointmentModel;
-import net.sf.borg.model.CategoryModel;
-import net.sf.borg.model.Model;
+import net.sf.borg.common.*;
+import net.sf.borg.model.*;
 import net.sf.borg.model.Model.ChangeEvent;
-import net.sf.borg.model.ReminderTimes;
-import net.sf.borg.model.Repeat;
-import net.sf.borg.model.Theme;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.ui.DockableView;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.link.LinkPanel;
 import net.sf.borg.ui.popup.PopupOptionsView;
 import net.sf.borg.ui.popup.PopupOptionsView.PopupOptionsListener;
-import net.sf.borg.ui.util.DateTimePanel;
-import net.sf.borg.ui.util.GridBagConstraintsFactory;
-import net.sf.borg.ui.util.LimitDocument;
-import net.sf.borg.ui.util.PasswordHelper;
-import net.sf.borg.ui.util.PlainDateEditor;
+import net.sf.borg.ui.util.*;
+
+import javax.swing.*;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.TitledBorder;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * AppointmentPanel is the UI for editing an Appointment.

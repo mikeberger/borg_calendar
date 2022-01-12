@@ -19,11 +19,14 @@ Copyright 2003 by Mike Berger
  */
 package net.sf.borg.ui.calendar;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Shape;
+import net.sf.borg.common.*;
+import net.sf.borg.model.Day;
+import net.sf.borg.model.Theme;
+import net.sf.borg.model.entity.Appointment;
+import net.sf.borg.model.entity.CalendarEntity;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.font.TextAttribute;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
@@ -31,25 +34,7 @@ import java.awt.print.PrinterException;
 import java.io.Serializable;
 import java.text.AttributedString;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-
-import net.sf.borg.common.Errmsg;
-import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
-import net.sf.borg.common.PrintHelper;
-import net.sf.borg.common.Resource;
-import net.sf.borg.model.Day;
-import net.sf.borg.model.Theme;
-import net.sf.borg.model.entity.Appointment;
-import net.sf.borg.model.entity.CalendarEntity;
+import java.util.*;
 
 /**
  * MonthPrintPanel creates the Borg month printouts

@@ -18,9 +18,9 @@
  */
 package net.sf.borg.model.db;
 
-import java.util.Collection;
-
 import net.sf.borg.model.entity.Memo;
+
+import java.util.Collection;
 
 /**
  * The Interface for a Memo DB.

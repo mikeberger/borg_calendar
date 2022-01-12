@@ -20,24 +20,6 @@
 
 package net.sf.borg.ui.task;
 
-import java.awt.FlowLayout;
-import java.awt.GridBagConstraints;
-import java.util.Collection;
-import java.util.Date;
-
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
-import javax.swing.event.TableModelEvent;
-import javax.swing.table.TableCellRenderer;
-
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Resource;
 import net.sf.borg.common.Warning;
@@ -52,6 +34,12 @@ import net.sf.borg.ui.util.PopupMenuHelper;
 import net.sf.borg.ui.util.TablePrinter;
 import net.sf.borg.ui.util.TableSorter;
 
+import javax.swing.*;
+import javax.swing.event.TableModelEvent;
+import java.awt.*;
+import java.util.Collection;
+import java.util.Date;
+
 /**
  * shows a list of projects in a table
  */
@@ -60,65 +48,12 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 	private static final long serialVersionUID = 1L;
 	private static final int MAGIC_NO_DUE_DATE = 9999; // magic days left value if no due date
 
-	/**
-	 * renderer to show the days left column in color
-	 */
-	private class ProjIntRenderer extends JLabel implements TableCellRenderer {
 
-		private static final long serialVersionUID = 1L;
 
-		/**
-		 * constructor
-		 */
-		public ProjIntRenderer() {
-			super();
-			setOpaque(true); // MUST do this for background to show up.
-		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * javax.swing.table.TableCellRenderer#getTableCellRendererComponent
-		 * (javax.swing.JTable, java.lang.Object, boolean, boolean, int, int)
-		 */
-		@Override
-		public JComponent getTableCellRendererComponent(JTable table,
-				Object obj, boolean isSelected, boolean hasFocus, int row,
-				int column) {
-
-			// get the default component to start with
-			JLabel l = (JLabel) defaultTableCellRenderer
-					.getTableCellRendererComponent(table, obj, isSelected,
-							hasFocus, row, column);
-
-			// if this is not the days left column then return the default
-			// component
-			String nm = table.getColumnName(column);
-			if (obj == null
-					|| !nm.equals(Resource.getResourceString("Days_Left")))
-				return l;
-
-			// get the days left
-			int daysLeft = ((Integer) obj).intValue();
-
-			this.setText(l.getText());
-			this.setHorizontalAlignment(CENTER);
-			this.setBackground(l.getBackground());
-			this.setForeground(l.getForeground());
-
-			if (daysLeft == MAGIC_NO_DUE_DATE)
-				this.setText("--");
-
-			return this;
-		}
-	}
 
 	/** The button panel. */
 	private JPanel buttonPanel = null;
-
-	/** The default table cell renderer. */
-	private TableCellRenderer defaultTableCellRenderer;
 
 	/** The project table. */
 	private JTable projectTable;
@@ -375,12 +310,7 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 		JScrollPane tableScroll = new JScrollPane();
 		projectTable = new JTable();
 
-		defaultTableCellRenderer = projectTable
-				.getDefaultRenderer(Integer.class);
 
-		// set renderer to the custom one for integers
-		projectTable.setDefaultRenderer(Integer.class,
-				new ProjectPanel.ProjIntRenderer());
 
 		// use a sorted table model
 		projectTable.setModel(new TableSorter(new String[] {
@@ -457,6 +387,8 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 		tableScroll.setViewportView(projectTable);
 
 		projectTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+
+		projectTable.setShowGrid(true);
 
 		this.add(tableScroll, GridBagConstraintsFactory.create(0, 1,
 				GridBagConstraints.BOTH, 1.0, 1.0));

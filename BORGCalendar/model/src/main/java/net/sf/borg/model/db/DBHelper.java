@@ -1,10 +1,5 @@
 package net.sf.borg.model.db;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.text.DateFormat;
-import java.util.Date;
-
 import lombok.Getter;
 import lombok.Setter;
 import net.sf.borg.common.PrefName;
@@ -12,6 +7,11 @@ import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.common.Warning;
 import net.sf.borg.model.entity.Address;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.text.DateFormat;
+import java.util.Date;
 
 /**
  * DBHelper abstracts and hides the lower level db implementation from the model

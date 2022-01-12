@@ -1,12 +1,12 @@
 package net.sf.borg.model.db.jdbc;
 
+import net.sf.borg.model.db.OptionDB;
+import net.sf.borg.model.entity.Option;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collection;
-
-import net.sf.borg.model.db.OptionDB;
-import net.sf.borg.model.entity.Option;
 
 class OptionJdbcDB implements OptionDB {
 

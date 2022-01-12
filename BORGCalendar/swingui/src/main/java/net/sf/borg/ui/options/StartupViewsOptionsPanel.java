@@ -1,12 +1,6 @@
 
 package net.sf.borg.ui.options;
 
-import java.awt.GridLayout;
-import java.util.HashMap;
-import java.util.Map.Entry;
-
-import javax.swing.JCheckBox;
-
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
@@ -14,6 +8,11 @@ import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.MultiView.Module;
 import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.options.OptionsView.OptionsPanel;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 /**
  * Options for which views to open on startup

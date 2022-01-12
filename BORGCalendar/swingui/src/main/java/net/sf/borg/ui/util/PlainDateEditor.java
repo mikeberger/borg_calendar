@@ -1,12 +1,11 @@
 package net.sf.borg.ui.util;
 
-import java.util.Date;
-
-import javax.swing.JLabel;
-import javax.swing.event.CaretEvent;
-
 import com.toedter.calendar.IDateEditor;
 import com.toedter.calendar.JTextFieldDateEditor;
+
+import javax.swing.*;
+import javax.swing.event.CaretEvent;
+import java.util.Date;
 
 public class PlainDateEditor extends JTextFieldDateEditor implements IDateEditor {
 

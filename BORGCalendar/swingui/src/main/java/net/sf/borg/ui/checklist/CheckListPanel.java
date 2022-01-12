@@ -19,33 +19,6 @@
  */
 package net.sf.borg.ui.checklist;
 
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Collection;
-import java.util.Iterator;
-
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
-import javax.swing.table.TableCellRenderer;
-
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.CheckListModel;
@@ -56,11 +29,19 @@ import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.MultiView.Module;
 import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.SunTrayIconProxy;
-import net.sf.borg.ui.util.GridBagConstraintsFactory;
-import net.sf.borg.ui.util.InputDialog;
-import net.sf.borg.ui.util.PopupMenuHelper;
-import net.sf.borg.ui.util.TablePrinter;
-import net.sf.borg.ui.util.TableSorter;
+import net.sf.borg.ui.util.*;
+
+import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.TableCellRenderer;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * UI for editing checkLists. It has a table that shows all checkLists by name
@@ -80,7 +61,7 @@ public class CheckListPanel extends DockableView implements
 
 		public ItemTextRenderer() {
 			super();
-			setOpaque(true); // MUST do this for background to show up.
+			//setOpaque(true); // MUST do this for background to show up.
 		}
 
 		/*
@@ -459,6 +440,7 @@ public class CheckListPanel extends DockableView implements
 		itemTable.getSelectionModel().setSelectionMode(
 				ListSelectionModel.SINGLE_SELECTION);
 
+
 		ts.addMouseListenerToHeaderInTable(itemTable);
 
 		// popup menu
@@ -493,6 +475,8 @@ public class CheckListPanel extends DockableView implements
 				}, "Remove") });
 
 		checkListTextScroll.setViewportView(itemTable);
+		itemTable.setShowGrid(true);
+
 		checkListSplitPane.setRightComponent(checkListTextScroll);
 		this.add(checkListSplitPane, GridBagConstraintsFactory.create(0, 0,
 				GridBagConstraints.BOTH, 1.0, 1.0));

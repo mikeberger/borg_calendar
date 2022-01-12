@@ -19,26 +19,16 @@ Copyright 2012 by Mike Berger
  */
 package net.sf.borg.ui.util;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import com.toedter.calendar.JDateChooser;
+import net.sf.borg.common.Resource;
+import net.sf.borg.common.Warning;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-
-import javax.swing.ComboBoxEditor;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-
-import com.toedter.calendar.JDateChooser;
-
-import net.sf.borg.common.Resource;
-import net.sf.borg.common.Warning;
 
 /**
  * Creates a JPanel that lets the user select a date and time

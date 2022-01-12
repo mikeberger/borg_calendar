@@ -19,8 +19,7 @@ Copyright 2008 by Mike Berger
  */
 package net.sf.borg.ui.util;
 
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
+import java.awt.*;
 
 /**
  * A factory for creating GridBagConstraints objects in a standard way. Saves lots

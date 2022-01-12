@@ -1,10 +1,8 @@
 package net.sf.borg.ui.util;
 
-import java.awt.event.MouseEvent;
-
-import javax.swing.JTextPane;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.text.html.HTMLEditorKit.LinkController;
+import java.awt.event.MouseEvent;
 
 
 public class HTMLLinkController extends LinkController {

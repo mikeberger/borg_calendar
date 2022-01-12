@@ -25,14 +25,14 @@
 
 package net.sf.borg.model.db.jdbc;
 
+import net.sf.borg.model.entity.KeyedEntity;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-
-import net.sf.borg.model.entity.KeyedEntity;
 
 
 /**

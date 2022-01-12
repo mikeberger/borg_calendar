@@ -25,10 +25,10 @@
 
 package net.sf.borg.ui.popup;
 
+import net.sf.borg.model.Model.ChangeEvent;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import net.sf.borg.model.Model.ChangeEvent;
 
 /**
  * A Reminder List Manager. This class manages a list of reminder instances and

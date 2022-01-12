@@ -19,54 +19,9 @@
  */
 package net.sf.borg.ui.task;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Iterator;
-import java.util.Vector;
-
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTable;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.JViewport;
-import javax.swing.ListSelectionModel;
-import javax.swing.border.TitledBorder;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
-import javax.swing.table.TableCellRenderer;
-
 import com.toedter.calendar.JDateChooser;
 import com.toedter.calendar.JDateChooserCellEditor;
-
-import net.sf.borg.common.DateUtil;
-import net.sf.borg.common.Errmsg;
-import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
-import net.sf.borg.common.Resource;
-import net.sf.borg.common.Warning;
+import net.sf.borg.common.*;
 import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.LinkModel;
 import net.sf.borg.model.Model.ChangeEvent;
@@ -81,12 +36,19 @@ import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.link.LinkPanel;
-import net.sf.borg.ui.util.DateDialog;
-import net.sf.borg.ui.util.GridBagConstraintsFactory;
-import net.sf.borg.ui.util.LimitDocument;
-import net.sf.borg.ui.util.PlainDateEditor;
-import net.sf.borg.ui.util.PopupMenuHelper;
-import net.sf.borg.ui.util.TableSorter;
+import net.sf.borg.ui.util.*;
+
+import javax.swing.*;
+import javax.swing.border.TitledBorder;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.text.DateFormat;
+import java.util.*;
 
 /**
  * UI for Viewing and Editing individual Tasks and their Subtasks
@@ -95,138 +57,9 @@ public class TaskView extends DockableView {
 
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * Render log table dates in a particular date format
-	 */
-	private class LogTableDateRenderer extends JLabel implements TableCellRenderer {
-		private static final long serialVersionUID = 1L;
 
-		public LogTableDateRenderer() {
-			super();
-			setOpaque(true); // MUST do this for background to show up.
-		}
 
-		@Override
-		public Component getTableCellRendererComponent(JTable table, Object obj, boolean isSelected, boolean hasFocus,
-				int row, int column) {
 
-			Date d = (Date) obj;
-			JLabel l = (JLabel) defaultDateCellRenderer.getTableCellRendererComponent(table, obj, isSelected, hasFocus,
-					row, column);
-
-			this.setBackground(l.getBackground());
-			this.setForeground(l.getForeground());
-			// use MEDIUM format
-			this.setText(DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM).format(d));
-			return this;
-		}
-	}
-
-	/**
-	 * Renders subtask due date in different colors based on proximity to due date
-	 */
-	private class SubTaskDueDateRenderer extends JLabel implements TableCellRenderer {
-		private static final long serialVersionUID = 1L;
-
-		public SubTaskDueDateRenderer() {
-			super();
-			setOpaque(true); // MUST do this for background to show up.
-		}
-
-		@Override
-		public Component getTableCellRendererComponent(JTable table, Object obj, boolean isSelected, boolean hasFocus,
-				int row, int column) {
-
-			Boolean closed = (Boolean) table.getModel().getValueAt(row, 0);
-			Date dd = (Date) obj;
-
-			JLabel l = (JLabel) defaultDateCellRenderer.getTableCellRendererComponent(table, obj, isSelected, hasFocus,
-					row, column);
-
-			this.setBackground(l.getBackground());
-			this.setForeground(l.getForeground());
-			this.setHorizontalAlignment(l.getHorizontalAlignment());
-
-			// if no date, then show dashes
-			if (dd != null)
-				this.setText(DateFormat.getDateInstance().format(dd));
-			else {
-				this.setText("--");
-				this.setHorizontalAlignment(CENTER);
-			}
-
-			// go no further if the task is closed or this is not the due date
-			// column
-			String nm = table.getColumnName(column);
-			if (closed.booleanValue() == true || !nm.equals(Resource.getResourceString("Due_Date")) || obj == null)
-				return this;
-
-			/*
-			 * color the due date background based on days left
-			 */
-			int days = TaskModel.daysLeft(dd);
-			if (!isSelected) {
-				// yellow alert
-				if (days < Prefs.getIntPref(PrefName.YELLOW_DAYS))
-					this.setBackground(new Color(255, 255, 175));
-
-				if (days < Prefs.getIntPref(PrefName.ORANGE_DAYS))
-					this.setBackground(new Color(255, 200, 120));
-
-				// red alert
-				if (days < Prefs.getIntPref(PrefName.RED_DAYS)) {
-					this.setBackground(new Color(255, 120, 120));
-				}
-			}
-
-			return this;
-		}
-	}
-
-	/**
-	 * Renderer for subtask int columns - shows dashes for unsaved subtasks
-	 */
-	private class SubtaskIntRenderer extends JLabel implements TableCellRenderer {
-
-		private static final long serialVersionUID = 1L;
-
-		/**
-		 * Instantiates a new sT int renderer.
-		 */
-		public SubtaskIntRenderer() {
-			super();
-			setOpaque(true); // MUST do this for background to show up.
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see javax.swing.table.TableCellRenderer#getTableCellRendererComponent
-		 * (javax.swing.JTable, java.lang.Object, boolean, boolean, int, int)
-		 */
-		@Override
-		public Component getTableCellRendererComponent(JTable table, Object obj, boolean isSelected, boolean hasFocus,
-				int row, int column) {
-
-			JLabel l = (JLabel) defaultIntegerCellRenderer.getTableCellRendererComponent(table, obj, isSelected,
-					hasFocus, row, column);
-			this.setHorizontalAlignment(CENTER);
-			this.setForeground(l.getForeground());
-			this.setBackground(l.getBackground());
-
-			if (obj != null && obj instanceof Integer) {
-				int i = ((Integer) obj).intValue();
-				if (column == 1 && i == 0) {
-					this.setText("--");
-				} else {
-					this.setText(Integer.toString(i));
-				}
-			} else if (obj == null)
-				this.setText("--");
-			return this;
-
-		}
-	}
 
 	/**
 	 * Actions being taken on a task when starting the editor
@@ -282,12 +115,6 @@ public class TaskView extends DockableView {
 
 	/** The days left text. */
 	private JTextField daysLeftText = null;
-
-	/** The default date cell renderer. */
-	private TableCellRenderer defaultDateCellRenderer;
-
-	/** The default integer cell renderer. */
-	private TableCellRenderer defaultIntegerCellRenderer;
 
 	/** The due date chooser. */
 	private JDateChooser dueDateChooser;
@@ -635,8 +462,7 @@ public class TaskView extends DockableView {
 		logtable.getColumnModel().getColumn(0).setPreferredWidth(5);
 		logtable.getColumnModel().getColumn(1).setPreferredWidth(300);
 
-		// renderer for formatting the date
-		logtable.setDefaultRenderer(Date.class, new LogTableDateRenderer());
+		logtable.setShowGrid(true);
 
 		TableSorter ts = (TableSorter) logtable.getModel();
 
@@ -673,9 +499,6 @@ public class TaskView extends DockableView {
 	 */
 	private void initSubtaskTable() {
 
-		defaultIntegerCellRenderer = subTaskTable.getDefaultRenderer(Integer.class);
-		defaultDateCellRenderer = subTaskTable.getDefaultRenderer(Date.class);
-
 		subTaskTable.setModel(new TableSorter(
 				new String[] { Resource.getResourceString("Closed"), Resource.getResourceString("subtask_id"),
 						Resource.getResourceString("Description"), Resource.getResourceString("Start_Date"),
@@ -685,10 +508,6 @@ public class TaskView extends DockableView {
 						Integer.class, Integer.class, Date.class },
 				new boolean[] { true, false, true, true, true, false, false, false }));
 
-		// renderer for centering ints, dealing with nulls
-		subTaskTable.setDefaultRenderer(Integer.class, new SubtaskIntRenderer());
-		// renderer for colorizing approaching due dates
-		subTaskTable.setDefaultRenderer(Date.class, new SubTaskDueDateRenderer());
 
 		subTaskTable.getColumnModel().getColumn(0).setPreferredWidth(5);
 		subTaskTable.getColumnModel().getColumn(1).setPreferredWidth(5);
@@ -742,6 +561,8 @@ public class TaskView extends DockableView {
 			}
 
 		});
+
+		subTaskTable.setShowGrid(true);
 
 		// sort by due date
 		// ts.sortByColumn(4);

@@ -18,17 +18,13 @@
  */
 package net.sf.borg.ui;
 
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-
-import javax.swing.JButton;
-import javax.swing.JPanel;
-
 import net.sf.borg.common.Resource;
 import net.sf.borg.ui.util.DateDialog;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 /**
  * A NavPanel provides common navigation buttons to other classes that navigate among dates

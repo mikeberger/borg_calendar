@@ -1,14 +1,13 @@
 package net.sf.borg.test;
 
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-
 import net.sf.borg.common.EncryptionHelper;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.io.File;
+
+import static org.junit.Assert.assertTrue;
 
 public class EncryptionTest {
 

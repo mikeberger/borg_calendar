@@ -20,12 +20,9 @@
 
 package net.sf.borg.ui;
 
-import javax.swing.AbstractButton;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-
 import net.sf.borg.common.Resource;
+
+import javax.swing.*;
 
 /*
  * Disable mnemonic feature in 1.8. Feature was never properly maintained - causing problems.

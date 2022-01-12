@@ -18,25 +18,6 @@
  */
 package net.sf.borg.ui;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-
-import javax.swing.DefaultListSelectionModel;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
-import javax.swing.event.TableModelEvent;
-import javax.swing.table.TableModel;
-
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
@@ -45,13 +26,17 @@ import net.sf.borg.model.AddressModel;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.MemoModel;
 import net.sf.borg.model.TaskModel;
-import net.sf.borg.model.entity.Address;
-import net.sf.borg.model.entity.Appointment;
-import net.sf.borg.model.entity.Memo;
-import net.sf.borg.model.entity.Project;
-import net.sf.borg.model.entity.Task;
+import net.sf.borg.model.entity.*;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 import net.sf.borg.ui.util.TableSorter;
+
+import javax.swing.*;
+import javax.swing.event.TableModelEvent;
+import javax.swing.table.TableModel;
+import java.awt.*;
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.*;
 
 /**
  * displays dialogs to let the user select various borg entities
@@ -284,6 +269,7 @@ public class EntitySelector extends JDialog {
 		jScrollPane1 = new JScrollPane();
 		jScrollPane1.setPreferredSize(new java.awt.Dimension(554, 404));
 		jScrollPane1.setViewportView(jTable1);
+		jTable1.setShowGrid(true);
 
 		selectButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Add16.gif")));
 		selectButton.setText(Resource.getResourceString("Select"));

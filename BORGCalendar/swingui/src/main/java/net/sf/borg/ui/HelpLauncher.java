@@ -18,10 +18,9 @@
  */
 package net.sf.borg.ui;
 
-import java.net.URL;
-
 import javax.help.HelpBroker;
 import javax.help.HelpSet;
+import java.net.URL;
 
 /**
  * launches the borg java help

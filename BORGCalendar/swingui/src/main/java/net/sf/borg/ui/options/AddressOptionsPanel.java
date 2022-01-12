@@ -1,14 +1,13 @@
 package net.sf.borg.ui.options;
 
-import java.awt.GridBagConstraints;
-
-import javax.swing.JCheckBox;
-
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Resource;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.options.OptionsView.OptionsPanel;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
+
+import javax.swing.*;
+import java.awt.*;
 
 public class AddressOptionsPanel extends OptionsPanel {
 

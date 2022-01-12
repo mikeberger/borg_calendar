@@ -20,14 +20,14 @@ Copyright 2003 by Mike Berger
 
 package net.sf.borg.model.db.jdbc;
 
+import net.sf.borg.model.db.EntityDB;
+import net.sf.borg.model.entity.Address;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
-
-import net.sf.borg.model.db.EntityDB;
-import net.sf.borg.model.entity.Address;
 
 
 /**
