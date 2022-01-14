@@ -33,7 +33,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name="Address")
 @XmlAccessorType(XmlAccessType.FIELD)
 @Data
-@EqualsAndHashCode(callSuper=true)
+@EqualsAndHashCode(callSuper=false)
 public class Address extends KeyedEntity<Address>  {
 
 	
@@ -63,7 +63,7 @@ public class Address extends KeyedEntity<Address>  {
 	private String WebPage;
 	private String Notes;
 	private java.util.Date Birthday;
-	private String vcard;
+	@EqualsAndHashCode.Exclude private String vcard;
 
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.entity.KeyedEntity#clone()

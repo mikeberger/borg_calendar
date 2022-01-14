@@ -77,9 +77,6 @@ public class CardDav {
 
 	static public String importVCard(List<VCard> vcards) throws Exception {
 
-		int skipped = 0;
-		StringBuffer dups = new StringBuffer();
-
 		setHints();
 
 		StringBuffer warning = new StringBuffer();
@@ -96,10 +93,8 @@ public class CardDav {
 		}
 
 		int imported = 0;
-		int dup_count = 0;
 
 		for (Address addr : addrs) {
-			// check for dups - TODO
 
 			try {
 				amodel.saveAddress(addr);
@@ -114,10 +109,11 @@ public class CardDav {
 
 		}
 
+		int dels = amodel.removeDuplicates();
+
 		warning.append("Imported: " + imported + "\n");
+		warning.append("Duplicates Removed: " + dels + "\n");
 		warning.append("Skipped: " + (vcards.size() - imported) + "\n");
-		//warning.append("Duplicates: " + dup_count + "\n");
-		warning.append(dups.toString());
 
 		if (warning.length() == 0)
 			return (null);

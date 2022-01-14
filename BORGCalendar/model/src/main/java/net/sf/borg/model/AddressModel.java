@@ -218,7 +218,6 @@ public class AddressModel extends Model implements Searchable<Address>,
                 addr.setKey(nextkey++);
 
             try {
-                validate(addr);
                 db_.addObj(addr);
             } catch (Warning e) {
                 Errmsg.getErrorHandler().notice(e.getMessage() + "\n\n" + addr.toString());
@@ -296,27 +295,6 @@ public class AddressModel extends Model implements Searchable<Address>,
         saveAddress(addr, false);
     }
 
-    public void validate(Address addr) throws Exception {
-		/*
-		if (addr.getFirstName() == null
-				|| addr.getFirstName().trim().length() == 0
-				|| addr.getLastName() == null
-				|| addr.getLastName().trim().length() == 0) {
-			throw new Warning(
-					Resource.getResourceString("First_and_Last_name_are_Required"));
-		}
-
-		if (addr.getEmail() != null && !addr.getEmail().isEmpty()
-				&& Prefs.getBoolPref(PrefName.EMAIL_VALIDATION)) {
-			try {
-				new InternetAddress(addr.getEmail()).getAddress();
-			} catch (AddressException e) {
-				throw new Warning(
-						Resource.getResourceString("Invalid_Email_Address"));
-			}
-		}*/
-    }
-
     /**
      * Save an address.
      *
@@ -325,8 +303,6 @@ public class AddressModel extends Model implements Searchable<Address>,
      * @throws Exception
      */
     public void saveAddress(Address addr, boolean undo) throws Exception {
-
-        validate(addr);
 
         int num = addr.getKey();
 
@@ -468,6 +444,21 @@ public class AddressModel extends Model implements Searchable<Address>,
         }
 
         return ret;
+
+    }
+
+
+    public int removeDuplicates() throws Exception {
+        int dels = 0;
+        Set<Address> addressSet = new HashSet<Address>();
+        for (Address addr : getAddresses()) {
+            if (addressSet.add(addr) == false){
+                delete(addr);
+                dels++;
+            }
+        }
+
+        return dels;
 
     }
 
