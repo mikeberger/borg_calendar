@@ -240,7 +240,7 @@ public class IcalModule implements Module, Prefs.Listener, Model.Listener {
         JMenu vcardmenu = new JMenu("VCARD");
 
         JMenuItem impvc = new JMenuItem();
-        impvc.setText(Resource.getResourceString("Import"));
+        impvc.setText(Resource.getResourceString("ImportFile"));
         impvc.addActionListener(new ActionListener() {
 
             @Override
@@ -276,6 +276,30 @@ public class IcalModule implements Module, Prefs.Listener, Model.Listener {
         });
 
         vcardmenu.add(impvc);
+
+        JMenuItem imcarddav = new JMenuItem();
+        imcarddav.setText(Resource.getResourceString("ImportCarddav"));
+        imcarddav.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+
+
+                try {
+
+                    List<VCard> vcards = CardDav.importVcardFromCarddav();
+                    String warning = CardDav.importVCard(vcards);
+                    if (warning != null && !warning.isEmpty())
+                        Errmsg.getErrorHandler().notice(warning);
+                    CategoryModel.syncModels();
+                } catch (Exception e) {
+                    Errmsg.getErrorHandler().errmsg(e);
+                }
+
+            }
+        });
+
+        vcardmenu.add(imcarddav);
 
         JMenuItem expvc = new JMenuItem();
         expvc.setText(Resource.getResourceString("exportToFile"));

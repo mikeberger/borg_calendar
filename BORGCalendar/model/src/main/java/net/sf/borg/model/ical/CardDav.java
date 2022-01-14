@@ -64,6 +64,22 @@ public class CardDav {
 		return importVcardFromInputStream(is);
 	}
 
+	static public List<VCard> importVcardFromCarddav() throws Exception {
+
+		setHints();
+
+		List<VCard> list = new ArrayList<VCard>();
+
+		CardDavStore store = CardDav.connect();
+		CardDavCollection col = CardDav.getCollection(store, Prefs.getPref(PrefName.CARDDAV_BOOK));
+
+		for (VCard vc : col.getComponents()) {
+			list.add(vc);
+		}
+
+		return list;
+	}
+
 	static public List<VCard> importVcardFromInputStream(InputStream is) throws Exception {
 
 		setHints();
