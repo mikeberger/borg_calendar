@@ -26,10 +26,7 @@ import net.sf.borg.ui.calendar.AppointmentListView;
 import net.sf.borg.ui.memo.MemoPanel;
 import net.sf.borg.ui.task.ProjectView;
 import net.sf.borg.ui.task.TaskView;
-import net.sf.borg.ui.util.GridBagConstraintsFactory;
-import net.sf.borg.ui.util.PlainDateEditor;
-import net.sf.borg.ui.util.TablePrinter;
-import net.sf.borg.ui.util.TableSorter;
+import net.sf.borg.ui.util.*;
 
 import javax.swing.*;
 import javax.swing.event.TableModelEvent;
@@ -67,6 +64,8 @@ public class SearchView extends DockableView implements Module {
      * The category combo box.
      */
     private JComboBox<String> categoryComboBox = null;
+
+    private ColorComboBox colorComboBox = new ColorComboBox();
 
     /**
      * The end date chooser.
@@ -289,6 +288,74 @@ public class SearchView extends DockableView implements Module {
         return changeCategoryButton;
     }
 
+
+    private JButton createChangeColorButton() {
+        JButton changeColorButton = new JButton();
+        ResourceHelper.setText(changeColorButton, "chg_color");
+        changeColorButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+
+                // change the category of all selected rows
+                int rows[] = resultsTable.getSelectedRows();
+                if (rows.length == 0) {
+                    return;
+                }
+
+                try {
+
+
+                    TableSorter tm = (TableSorter) resultsTable.getModel();
+
+                    // get a list of selected items
+                    ArrayList<KeyedEntity<?>> entities = new ArrayList<KeyedEntity<?>>();
+                    for (int i = 0; i < rows.length; i++) {
+                        Integer key = (Integer) tm.getValueAt(rows[i], 3);
+                        Class<?> cl = (Class<?>) tm.getValueAt(rows[i], 4);
+                        try {
+                            KeyedEntity<?> ent = (KeyedEntity<?>) cl.getDeclaredConstructor().newInstance();
+                            ent.setKey(key.intValue());
+                            entities.add(ent);
+                        } catch (Exception e1) {
+                            Errmsg.getErrorHandler().errmsg(e1);
+                        }
+
+                    }
+
+                    String colorString = (String) colorComboBox.getSelectedItem();
+                    if (colorString.equals("chosen"))
+                        colorString = Integer.toString(colorComboBox.getChosenColor().getRGB());
+
+                    boolean warn = false;
+                    // change the categories
+                    for (KeyedEntity<?> ent : entities) {
+                        if (ent instanceof Appointment) {
+                            Appointment ap = AppointmentModel.getReference().getAppt(ent.getKey());
+                            ap.setColor(colorString);
+                            AppointmentModel.getReference().saveAppt(ap);
+                        } else {
+                            warn = true;
+                        }
+                    }
+
+                    if( warn == true){
+                        Errmsg.getErrorHandler().notice(Resource.getResourceString("search_color_warn"));
+                    }
+
+                } catch (Exception ex) {
+                    Errmsg.getErrorHandler().errmsg(ex);
+                    return;
+                }
+
+                refresh(); // refresh results
+
+
+            }
+        });
+
+        return changeColorButton;
+    }
+
     /**
      * creates the check box panel
      *
@@ -441,12 +508,17 @@ public class SearchView extends DockableView implements Module {
 
         GridBagConstraints gridBagConstraints2 = GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH, 1.0,
                 1.0);
-        gridBagConstraints2.gridwidth = 3;
+        gridBagConstraints2.gridwidth = 4;
         resultsPanel.add(tableScroll, gridBagConstraints2);
         resultsPanel.add(createDeleteButton(),
                 GridBagConstraintsFactory.create(0, 1, GridBagConstraints.NONE, 1.0, 0.0));
         resultsPanel.add(createChangeCategoryButton(),
                 GridBagConstraintsFactory.create(1, 1, GridBagConstraints.NONE, 1.0, 0.0));
+        JPanel colorPanel = new JPanel();
+        colorPanel.add(createChangeColorButton());
+        colorPanel.add(colorComboBox);
+        resultsPanel.add(colorPanel,
+                GridBagConstraintsFactory.create(2, 1, GridBagConstraints.NONE, 1.0, 0.0));
         JButton csvButton = new JButton();
         csvButton.setText("CSV");
         csvButton.addActionListener(new ActionListener() {
@@ -481,7 +553,7 @@ public class SearchView extends DockableView implements Module {
 
             }
         });
-        resultsPanel.add(csvButton, GridBagConstraintsFactory.create(2, 1, GridBagConstraints.NONE, 1.0, 0.0));
+        resultsPanel.add(csvButton, GridBagConstraintsFactory.create(3, 1, GridBagConstraints.NONE, 1.0, 0.0));
 
         return resultsPanel;
     }
