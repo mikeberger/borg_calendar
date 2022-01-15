@@ -89,6 +89,8 @@ public class Theme {
 	 */
 	public int colorFromString(String s) {
 
+		if( s == null ) return getTextColor4();
+
 		// legacy mappings of color strings to use tunable colors
 		// should only be in this class
 		if (s.equals("red")) {
