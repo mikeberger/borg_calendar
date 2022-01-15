@@ -389,6 +389,8 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 		projectTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
 
 		projectTable.setShowGrid(true);
+		projectTable.setIntercellSpacing(new Dimension(1, 1));
+
 
 		this.add(tableScroll, GridBagConstraintsFactory.create(0, 1,
 				GridBagConstraints.BOTH, 1.0, 1.0));

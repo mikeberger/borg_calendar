@@ -371,6 +371,8 @@ class TaskListPanel extends JPanel implements Model.Listener {
 		taskTable.getColumnModel().getColumn(5).setPreferredWidth(400);
 		taskTable.setPreferredScrollableViewportSize(new Dimension(800, 200));
 		taskTable.setShowGrid(true);
+		taskTable.setIntercellSpacing(new Dimension(1, 1));
+
 
 		/*
 		 * popup menu for task table

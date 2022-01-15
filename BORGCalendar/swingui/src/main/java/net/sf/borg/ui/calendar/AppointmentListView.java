@@ -481,6 +481,7 @@ public class AppointmentListView extends DockableView implements
 		apptTableScrollPane.setViewport(apptTableScrollPane.getViewport());
 		apptTableScrollPane.setViewportView(apptTable);
 		apptTable.setShowGrid(true);
+		apptTable.setIntercellSpacing(new Dimension(1, 1));
 
 		buttonPanel.setLayout(new java.awt.GridLayout(0, 1));
 

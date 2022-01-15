@@ -140,6 +140,8 @@ public class ReminderList extends View {
 		reminderTable.setDefaultRenderer(String.class, new MyTableCellRenderer());
 		reminderTable.getTableHeader().setReorderingAllowed(false);
 		reminderTable.setShowGrid(true);
+		reminderTable.setIntercellSpacing(new Dimension(1, 1));
+
 		pack();
 
 		manageMySize(REMINDERLISTSIZE);

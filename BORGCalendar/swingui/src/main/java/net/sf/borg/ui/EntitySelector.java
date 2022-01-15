@@ -270,6 +270,8 @@ public class EntitySelector extends JDialog {
 		jScrollPane1.setPreferredSize(new java.awt.Dimension(554, 404));
 		jScrollPane1.setViewportView(jTable1);
 		jTable1.setShowGrid(true);
+		jTable1.setIntercellSpacing(new Dimension(1, 1));
+
 
 		selectButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Add16.gif")));
 		selectButton.setText(Resource.getResourceString("Select"));

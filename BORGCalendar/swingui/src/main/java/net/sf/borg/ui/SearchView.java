@@ -436,6 +436,7 @@ public class SearchView extends DockableView implements Module {
         JScrollPane tableScroll = new JScrollPane();
         tableScroll.setViewportView(resultsTable);
         resultsTable.setShowGrid(true);
+        resultsTable.setIntercellSpacing(new Dimension(1, 1));
         // tableScroll.setPreferredSize(new java.awt.Dimension(100, 100));
 
         GridBagConstraints gridBagConstraints2 = GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH, 1.0,

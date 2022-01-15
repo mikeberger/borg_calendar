@@ -463,6 +463,8 @@ public class TaskView extends DockableView {
 		logtable.getColumnModel().getColumn(1).setPreferredWidth(300);
 
 		logtable.setShowGrid(true);
+		logtable.setIntercellSpacing(new Dimension(1, 1));
+
 
 		TableSorter ts = (TableSorter) logtable.getModel();
 
@@ -563,6 +565,8 @@ public class TaskView extends DockableView {
 		});
 
 		subTaskTable.setShowGrid(true);
+		subTaskTable.setIntercellSpacing(new Dimension(1, 1));
+
 
 		// sort by due date
 		// ts.sortByColumn(4);

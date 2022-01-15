@@ -409,6 +409,8 @@ public class CheckListPanel extends DockableView implements
 		checkListListTable
 				.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		checkListListTable.setShowGrid(true);
+		checkListListTable.setIntercellSpacing(new Dimension(1, 1));
+
 		checkListListScroll.setViewportView(checkListListTable);
 
 		// table will contain only checkList names
@@ -476,6 +478,7 @@ public class CheckListPanel extends DockableView implements
 
 		checkListTextScroll.setViewportView(itemTable);
 		itemTable.setShowGrid(true);
+		itemTable.setIntercellSpacing(new Dimension(1, 1));
 
 		checkListSplitPane.setRightComponent(checkListTextScroll);
 		this.add(checkListSplitPane, GridBagConstraintsFactory.create(0, 0,

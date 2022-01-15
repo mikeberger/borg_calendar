@@ -254,6 +254,8 @@ public class AddrListView extends DockableView implements Module {
 
 		tableScrollPane.setViewportView(addressTable);
 		addressTable.setShowGrid(true);
+		addressTable.setIntercellSpacing(new Dimension(1, 1));
+
 		add(tableScrollPane, GridBagConstraintsFactory.create(0, 0,
 				GridBagConstraints.BOTH, 1.0, 1.0));
 

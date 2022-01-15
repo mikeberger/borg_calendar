@@ -580,6 +580,8 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 
 		tableScroll.setViewportView(todoTable);
 		todoTable.setShowGrid(true);
+		todoTable.setIntercellSpacing(new Dimension(1, 1));
+
 
 		// *******************************************************************
 		// quick entry panel

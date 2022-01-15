@@ -252,6 +252,8 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 		memoListTable = new JTable();
 		memoListTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		memoListTable.setShowGrid(true);
+		memoListTable.setIntercellSpacing(new Dimension(1, 1));
+
 		memoListScroll.setViewportView(memoListTable);
 
 		// table will contain only memo names
