@@ -9,6 +9,11 @@ fixes for dark themes
 allow type change for tasks in initial state
 3pp upgrades
 display project-less tasks in the task tree
+VCARD import/export from file
+VCARD import from CARDDAV server
+Display appointment colors in search results
+Allow bulk color change for appointments in search results
+
 
 BORG 1.9.04
 -----------
