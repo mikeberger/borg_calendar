@@ -27,7 +27,8 @@ import java.util.Calendar;
  */
 public class PrefName {
 
-	/** preference name */
+
+    /** preference name */
 	private String name_;
 
 	/** default value */
@@ -422,5 +423,9 @@ public class PrefName {
 
 	public static PrefName FLUSH_MINS = new PrefName("flush_mins",
 			Integer.valueOf(0));
+
+	public static final PrefName GOOGLE_SYNC = new PrefName("google_sync", "false");
+	public static final PrefName GCAL_CAL_ID = new PrefName("google_cal_id", "primary");
+
 
 }

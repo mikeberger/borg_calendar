@@ -1,4 +1,4 @@
-package net.sf.borg.model.ical;
+package net.sf.borg.model.sync.ical;
 
 import net.fortuna.ical4j.connector.dav.CardDavCollection;
 import net.fortuna.ical4j.connector.dav.CardDavStore;

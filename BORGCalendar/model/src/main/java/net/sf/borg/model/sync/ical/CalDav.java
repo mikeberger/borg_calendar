@@ -1,4 +1,4 @@
-package net.sf.borg.model.ical;
+package net.sf.borg.model.sync.ical;
 
 import net.fortuna.ical4j.connector.dav.CalDavCalendarCollection;
 import net.fortuna.ical4j.connector.dav.CalDavCalendarStore;
@@ -25,6 +25,9 @@ import net.sf.borg.model.Repeat;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.*;
 import net.sf.borg.model.entity.SyncableEntity.ObjectType;
+import net.sf.borg.model.sync.SyncEvent;
+import net.sf.borg.model.sync.SyncLog;
+import net.sf.borg.model.sync.google.GCal;
 import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.commons.httpclient.protocol.SSLProtocolSocketFactory;
 
@@ -50,6 +53,9 @@ public class CalDav {
 	static private final Logger log = Logger.getLogger("net.sf.borg");
 
 	public static boolean isSyncing() {
+
+		if(GCal.isSyncing() ) return false;
+
 		String server = Prefs.getPref(PrefName.CALDAV_SERVER);
 		if (server != null && !server.isEmpty())
 			return true;

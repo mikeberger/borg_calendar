@@ -26,7 +26,7 @@ import net.sf.borg.common.*;
 import net.sf.borg.model.*;
 import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.model.db.jdbc.JdbcDBHelper;
-import net.sf.borg.model.ical.CalDav;
+import net.sf.borg.model.sync.ical.CalDav;
 import net.sf.borg.model.tool.ConversionTool;
 import net.sf.borg.ui.UIControl;
 import net.sf.borg.ui.options.OptionsView;

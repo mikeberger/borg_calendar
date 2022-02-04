@@ -1,15 +1,18 @@
-package net.sf.borg.ui.ical;
+package net.sf.borg.ui;
 
 import net.fortuna.ical4j.vcard.VCard;
 import net.sf.borg.common.*;
 import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.Model;
 import net.sf.borg.model.Model.ChangeEvent;
-import net.sf.borg.model.ical.*;
-import net.sf.borg.ui.MultiView;
+import net.sf.borg.model.sync.SyncLog;
+import net.sf.borg.model.sync.google.GCal;
+import net.sf.borg.model.sync.ical.CalDav;
+import net.sf.borg.model.sync.ical.CardDav;
+import net.sf.borg.model.sync.ical.ICal;
+import net.sf.borg.model.sync.ical.IcalFTP;
 import net.sf.borg.ui.MultiView.Module;
 import net.sf.borg.ui.MultiView.ViewType;
-import net.sf.borg.ui.SunTrayIconProxy;
 import net.sf.borg.ui.options.IcalOptionsPanel;
 import net.sf.borg.ui.options.OptionsView;
 import net.sf.borg.ui.util.FileDrop;
@@ -25,15 +28,29 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class IcalModule implements Module, Prefs.Listener, Model.Listener {
+public class SyncModule implements Module, Prefs.Listener, Model.Listener {
 
-    private static PrefName url_pref = new PrefName("saved_import_url", "");
     static private final Logger log = Logger.getLogger("net.sf.borg");
+    private static PrefName url_pref = new PrefName("saved_import_url", "");
+    private static ActionListener syncButtonListener = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent arg0) {
+            try {
 
-    private JButton syncToolbarButton = null;
+                if (GCal.isSyncing()) {
+                    runGcalSync();
+                } else if (CalDav.isSyncing()) {
+                    runBackgroundSync(Synctype.FULL);
+                } else {
+                    JOptionPane.showMessageDialog(null, Resource.getResourceString("Sync-Not-Set"), null,
+                            JOptionPane.ERROR_MESSAGE);
+                }
 
-    private TrayIcon trayIcon;
-
+            } catch (Exception e) {
+                Errmsg.getErrorHandler().errmsg(e);
+            }
+        }
+    };
     private static ActionListener syncListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent arg0) {
@@ -51,8 +68,10 @@ public class IcalModule implements Module, Prefs.Listener, Model.Listener {
             }
         }
     };
+    private JButton syncToolbarButton = null;
+    private TrayIcon trayIcon;
 
-    public IcalModule() {
+    public SyncModule() {
         try {
             trayIcon = new TrayIcon(
                     Toolkit.getDefaultToolkit().getImage(getClass().getResource("/resource/Refresh16.gif")));
@@ -61,24 +80,9 @@ public class IcalModule implements Module, Prefs.Listener, Model.Listener {
         }
     }
 
-    @Override
-    public Component getComponent() {
-        return null;
-    }
-
-    @Override
-    public String getModuleName() {
-        return "ICAL";
-    }
-
-    @Override
-    public ViewType getViewType() {
-        return null;
-    }
-
     public static JMenu getIcalMenu() {
         JMenu m = new JMenu();
-        m.setText("Ical");
+        m.setText("Sync");
 
         //m.setIcon(new javax.swing.ImageIcon(IcalModule.class.getResource("/resource/Export16.gif")));
 
@@ -316,11 +320,61 @@ public class IcalModule implements Module, Prefs.Listener, Model.Listener {
 
         m.add(vcardmenu);
 
+        JMenu gcalmenu = new JMenu("Google");
+        JMenuItem gcalsyncmi = new JMenuItem("Sync");
+        gcalsyncmi.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                try {
+                    if (!GCal.isSyncing()) {
+                        JOptionPane.showMessageDialog(null, Resource.getResourceString("Sync-Not-Set"), null,
+                                JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+
+                    runGcalSync();
+
+                } catch (Exception e) {
+                    Errmsg.getErrorHandler().errmsg(e);
+                }
+            }
+        });
+
+        gcalmenu.add(gcalsyncmi);
+
+        m.add(gcalmenu);
         return m;
     }
 
-    private enum Synctype {
-        FULL, ONEWAY, OVERWRITE
+    private static void runGcalSync() {
+        class SyncWorker extends SwingWorker<Void, Object> {
+            @Override
+            public Void doInBackground() {
+                try {
+
+                    // modally lock borg
+                    SocketClient.sendMessage("lock:" + Resource.getResourceString("syncing"));
+                    GCal.sync(Prefs.getIntPref(PrefName.ICAL_EXPORTYEARS), false);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    SocketClient.sendLogMessage(e.toString());
+                }
+
+                SocketClient.sendLogMessage(Resource.getResourceString("done"));
+
+                return null;
+            }
+
+            @Override
+            protected void done() {
+                SocketClient.sendMessage("unlock");
+
+            }
+        }
+
+        (new SyncWorker()).execute();
     }
 
     /**
@@ -363,81 +417,6 @@ public class IcalModule implements Module, Prefs.Listener, Model.Listener {
 
         (new SyncWorker()).execute();
 
-    }
-
-    @Override
-    public void initialize(MultiView parent) {
-
-        Prefs.addListener(this);
-        SyncLog.getReference().addListener(this);
-
-        OptionsView.getReference().addPanel(new IcalOptionsPanel());
-
-        new FileDrop(parent, new FileDrop.Listener() {
-            @Override
-            public void filesDropped(java.io.File[] files) {
-                for (File f : files) {
-                    String warning;
-                    try {
-                        warning = ICal.importIcalFromFile(f.getAbsolutePath());
-                        if (warning != null && !warning.isEmpty())
-                            Errmsg.getErrorHandler().notice(warning);
-                    } catch (Exception e) {
-                        Errmsg.getErrorHandler().errmsg(e);
-                    }
-
-                }
-            }
-        });
-
-        syncToolbarButton = MultiView.getMainView().addToolBarItem(
-                new javax.swing.ImageIcon(IcalModule.class.getResource("/resource/Refresh16.gif")),
-                Resource.getResourceString("CALDAV-Sync"), syncListener);
-
-        if (trayIcon != null)
-            trayIcon.setToolTip("BORG " + Resource.getResourceString("CALDAV-Sync"));
-        PopupMenu menu = new PopupMenu();
-        MenuItem item = new MenuItem();
-        item.setLabel(Resource.getResourceString("CALDAV-Sync"));
-        item.addActionListener(syncListener);
-        menu.add(item);
-        if (trayIcon != null)
-            trayIcon.setPopupMenu(menu);
-
-        try {
-            updateSyncButton();
-            showTrayIcon();
-        } catch (Exception e1) {
-            e1.printStackTrace();
-        }
-
-        // import from URL
-        String url = Prefs.getPref(PrefName.ICAL_IMPORT_URL);
-        if (url != null && !url.isEmpty()) {
-            try {
-
-                int res = JOptionPane.showConfirmDialog(null,
-                        Resource.getResourceString("ImportUrl") + ": " + url + " ?",
-                        Resource.getResourceString("please_confirm"), JOptionPane.OK_CANCEL_OPTION);
-
-                if (res == JOptionPane.YES_OPTION) {
-
-                    String warning = ICal.importIcalFromUrl(url);
-                    if (warning != null && !warning.isEmpty())
-                        Errmsg.getErrorHandler().notice(warning);
-                }
-            } catch (Exception e) {
-                Errmsg.getErrorHandler().errmsg(e);
-            }
-        }
-
-        SyncLog.getReference();
-
-    }
-
-    @Override
-    public void print() {
-        // do nothing
     }
 
     /**
@@ -508,10 +487,116 @@ public class IcalModule implements Module, Prefs.Listener, Model.Listener {
         }
 
         try {
-          CardDav.exportToFile(s);
+            CardDav.exportToFile(s);
         } catch (Exception e) {
             Errmsg.getErrorHandler().errmsg(e);
         }
+    }
+
+    @Override
+    public Component getComponent() {
+        return null;
+    }
+
+    @Override
+    public String getModuleName() {
+        return "SYNC";
+    }
+
+    @Override
+    public ViewType getViewType() {
+        return null;
+    }
+
+    @Override
+    public void initialize(MultiView parent) {
+
+        Prefs.addListener(this);
+        SyncLog.getReference().addListener(this);
+
+        OptionsView.getReference().addPanel(new IcalOptionsPanel());
+
+        new FileDrop(parent, new FileDrop.Listener() {
+            @Override
+            public void filesDropped(java.io.File[] files) {
+                for (File f : files) {
+                    String warning;
+                    try {
+                        warning = ICal.importIcalFromFile(f.getAbsolutePath());
+                        if (warning != null && !warning.isEmpty())
+                            Errmsg.getErrorHandler().notice(warning);
+                    } catch (Exception e) {
+                        Errmsg.getErrorHandler().errmsg(e);
+                    }
+
+                }
+            }
+        });
+
+        syncToolbarButton = MultiView.getMainView().addToolBarItem(
+                new javax.swing.ImageIcon(SyncModule.class.getResource("/resource/Refresh16.gif")),
+                Resource.getResourceString("CALDAV-Sync"), syncButtonListener);
+
+        if (trayIcon != null)
+            trayIcon.setToolTip("BORG " + Resource.getResourceString("CALDAV-Sync"));
+        PopupMenu menu = new PopupMenu();
+        MenuItem item = new MenuItem();
+        item.setLabel(Resource.getResourceString("CALDAV-Sync"));
+        item.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                try {
+                    if (!CalDav.isSyncing()) {
+                        JOptionPane.showMessageDialog(null, Resource.getResourceString("Sync-Not-Set"), null,
+                                JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+
+                    runBackgroundSync(Synctype.FULL);
+
+                } catch (Exception e) {
+                    Errmsg.getErrorHandler().errmsg(e);
+                }
+            }
+        });
+        menu.add(item);
+        if (trayIcon != null)
+            trayIcon.setPopupMenu(menu);
+
+        try {
+            updateSyncButton();
+            showTrayIcon();
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
+
+        // import from URL
+        String url = Prefs.getPref(PrefName.ICAL_IMPORT_URL);
+        if (url != null && !url.isEmpty()) {
+            try {
+
+                int res = JOptionPane.showConfirmDialog(null,
+                        Resource.getResourceString("ImportUrl") + ": " + url + " ?",
+                        Resource.getResourceString("please_confirm"), JOptionPane.OK_CANCEL_OPTION);
+
+                if (res == JOptionPane.YES_OPTION) {
+
+                    String warning = ICal.importIcalFromUrl(url);
+                    if (warning != null && !warning.isEmpty())
+                        Errmsg.getErrorHandler().notice(warning);
+                }
+            } catch (Exception e) {
+                Errmsg.getErrorHandler().errmsg(e);
+            }
+        }
+
+        SyncLog.getReference();
+
+    }
+
+    @Override
+    public void print() {
+        // do nothing
     }
 
     @Override
@@ -541,7 +626,7 @@ public class IcalModule implements Module, Prefs.Listener, Model.Listener {
         if (SunTrayIconProxy.hasTrayIcon()) {
 
             try {
-                if (!CalDav.isSyncing() || SyncLog.getReference().getAll().isEmpty()) {
+                if (!(CalDav.isSyncing() || GCal.isSyncing()) || SyncLog.getReference().getAll().isEmpty()) {
                     SystemTray.getSystemTray().remove(trayIcon);
                 } else {
                     SystemTray.getSystemTray().add(trayIcon);
@@ -560,6 +645,10 @@ public class IcalModule implements Module, Prefs.Listener, Model.Listener {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private enum Synctype {
+        FULL, ONEWAY, OVERWRITE
     }
 
 }

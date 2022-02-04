@@ -1,4 +1,4 @@
-package net.sf.borg.model.ical;
+package net.sf.borg.model.sync;
 
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Prefs;
@@ -9,6 +9,8 @@ import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.model.db.jdbc.JdbcDBUpgrader;
 import net.sf.borg.model.entity.SyncableEntity;
 import net.sf.borg.model.entity.SyncableEntity.ObjectType;
+import net.sf.borg.model.sync.google.GCal;
+import net.sf.borg.model.sync.ical.CalDav;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
@@ -23,12 +25,16 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * class to track all appointment model changes since the last sync it will
  * persist this information to a file
  */
 public class SyncLog extends Model implements Model.Listener, Prefs.Listener {
+
+	static private final Logger log = Logger.getLogger("net.sf.borg");
+
 
 	static private SyncLog singleton = null;
 
@@ -42,7 +48,7 @@ public class SyncLog extends Model implements Model.Listener, Prefs.Listener {
 
 	public SyncLog() {
 
-		setProcessUpdates(CalDav.isSyncing());
+		setProcessUpdates(CalDav.isSyncing() || GCal.isSyncing());
 
 		new JdbcDBUpgrader("select id from syncmap",
 				"CREATE CACHED TABLE syncmap (id integer NOT NULL,uid longvarchar, url longvarchar, objtype varchar(25) NOT NULL,action varchar(25) NOT NULL,PRIMARY KEY (id,objtype))")
@@ -57,6 +63,8 @@ public class SyncLog extends Model implements Model.Listener, Prefs.Listener {
 
 	@Override
 	public void update(ChangeEvent borgEvent) {
+
+		log.fine("SyncLog update: " + borgEvent.toString());
 
 		if (!isProcessUpdates())
 			return;
@@ -170,6 +178,9 @@ public class SyncLog extends Model implements Model.Listener, Prefs.Listener {
 	}
 
 	public void insert(SyncEvent event) throws Exception {
+
+		log.fine("SyncLog insert: " + event.toString());
+
 		PreparedStatement stmt = DBHelper.getController().getConnection()
 				.prepareStatement("INSERT INTO syncmap ( id, uid, url, action, objtype) " + " VALUES " + "( ?, ?, ?, ?, ?)");
 
@@ -262,7 +273,7 @@ public class SyncLog extends Model implements Model.Listener, Prefs.Listener {
 	@Override
 	public void prefsChanged() {
 
-		setProcessUpdates(CalDav.isSyncing());
+		setProcessUpdates(CalDav.isSyncing() || GCal.isSyncing());
 
 	}
 

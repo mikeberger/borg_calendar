@@ -1,4 +1,4 @@
-package net.sf.borg.model.ical;
+package net.sf.borg.model.sync.ical;
 
 import org.apache.commons.httpclient.ConnectTimeoutException;
 import org.apache.commons.httpclient.HttpClientError;

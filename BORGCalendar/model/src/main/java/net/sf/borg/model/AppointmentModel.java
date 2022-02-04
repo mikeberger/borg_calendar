@@ -885,7 +885,7 @@ public class AppointmentModel extends Model implements Model.Listener, CategoryS
 	 * 
 	 * @return the default appointment
 	 */
-	public Appointment getDefaultAppointment() {
+	public static Appointment getDefaultAppointment() {
 
 		String defApptXml = Prefs.getPref(PrefName.DEFAULT_APPT);
 		if (!defApptXml.equals("")) {
