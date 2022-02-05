@@ -27,7 +27,7 @@ public class GCalTest {
         log.setLevel(Level.ALL);
         DBHelper.setFactory(new JdbcDBHelper());
         DBHelper.setController(new JdbcDBHelper());
-        DBHelper.getController().connect("jdbc:h2:mem:C:/Users/i_fle/.borg_db/borgdb;USER=sa");
+        DBHelper.getController().connect("jdbc:h2:file:C:/Users/i_fle/.gcaltest/borgdb;USER=sa");
 
         Prefs.setPrefRootNode("net/sf/borg/test");
 

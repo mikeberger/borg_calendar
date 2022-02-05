@@ -133,7 +133,9 @@ public class GCal {
                             addEvent(service, ve1);
 
                     } else if (se.getAction().equals(Model.ChangeEvent.ChangeAction.CHANGE)) {
-                        Event comp = getEvent(service, se);
+                        String id = EntityGCalAdapter.getIdFromJSON(se.getUrl());
+                        if( id == null ) id = se.getUid();
+                        Event comp = getEvent(service, id);
                         Appointment ap = AppointmentModel.getReference().getAppt(se.getId());
 
                         if (comp == null) {
@@ -151,11 +153,13 @@ public class GCal {
                         }
                     } else if (se.getAction().equals(Model.ChangeEvent.ChangeAction.DELETE)) {
 
-                        Event comp = getEvent(service, se);
+                        String id = EntityGCalAdapter.getIdFromJSON(se.getUrl());
+                        if( id == null ) id = se.getUid();
+                        Event comp = getEvent(service, id);
 
                         if (comp != null) {
                             log.info("SYNC: removeEvent: " + comp.toString());
-                            removeEvent(service, se);
+                            removeEvent(service, comp.getId());
 
                         } else {
                             log.info("Deleted Appt: " + se.getUid() + " not found on server");
@@ -270,12 +274,17 @@ public class GCal {
 
     }
 
-    private static Event getEvent(Calendar service, SyncEvent se) throws IOException {
-       return service.events().get(calendarId,se.getUid()).execute();
+    private static Event getEvent(Calendar service, String id)  {
+        try {
+            return service.events().get(calendarId,id).execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
-    private static void removeEvent(Calendar service, SyncEvent se) throws IOException {
-        service.events().delete(calendarId,se.getUid()).execute();
+    private static void removeEvent(Calendar service, String id) throws IOException {
+        service.events().delete(calendarId,id).execute();
     }
 
     private static void updateEvent(Calendar service, Event ve1) throws IOException {
@@ -315,7 +324,7 @@ public class GCal {
         log.info("SYNC: found " + items.size() + " Event Calendars on server");
         int count = 0;
         for (Event event : items) {
-            count += syncCalendar(event, serverUids);
+            count += syncEvent(event, serverUids);
         }
 
         SocketClient.sendLogMessage("SYNC: processed " + count + " new/changed Events");
@@ -326,7 +335,7 @@ public class GCal {
         SocketClient.sendLogMessage("SYNC: found " + tcals.length + " Todo Calendars on server");
         log.info("SYNC: found " + tcals.length + " Todo Calendars on server");
         for (net.fortuna.ical4j.model.Calendar cal : tcals) {
-            count += syncCalendar(cal, serverUids);
+            count += syncEvent(cal, serverUids);
         }
 
         SocketClient.sendLogMessage("SYNC: processed " + count + " new/changed Tasks");
@@ -354,7 +363,7 @@ public class GCal {
 
     }
 
-    static private int syncCalendar(Event event, ArrayList<String> serverUids) throws Exception {
+    static private int syncEvent(Event event, ArrayList<String> serverUids) throws Exception {
 
 
         log.fine("Incoming event: " + event.toString());
@@ -403,8 +412,14 @@ public class GCal {
                 SyncLog.getReference().setProcessUpdates(true);
                 return 1;
             }
-        } else if (newap.getLastMod().after(ap.getLastMod())) {
-            // was updated after BORG so update BORG
+        } else  if( ap.getUrl() != null){
+
+            // if Borg has same etag as google, then skip
+            Event orig = new GsonFactory().fromString(ap.getUrl(), Event.class);
+            if( orig.getEtag().equals(event.getEtag())) {
+                log.fine("Etags match - skipping " + event.getSummary());
+                return 0;
+            }
 
             // check for special case - incoming is repeating todo that is
             // completed

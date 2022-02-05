@@ -13,6 +13,7 @@ import net.sf.borg.model.Repeat;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.sync.RecurrenceRule;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -27,6 +28,10 @@ public class EntityGCalAdapter {
         Appointment ap = AppointmentModel.getDefaultAppointment();
         if (ap == null)
             ap = new Appointment();
+
+        // For GCal - URL is used to store Event JSON
+        event.setFactory(new GsonFactory());
+        ap.setUrl(event.toPrettyString());
 
         ap.setCategory(null);
 
@@ -188,18 +193,49 @@ public class EntityGCalAdapter {
         return ap;
     }
 
+    // get the Event id from the Event JSON
+    public static String getIdFromJSON(String json){
+
+        if( json == null ) return null;
+        GsonFactory f = new GsonFactory();
+        Event e = null;
+        try {
+            e = f.fromString(json, Event.class);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+        return e.getId();
+
+    }
+
     public static Event toGCalEvent(Appointment ap) {
         Event ev = new Event();
         ev.setKind("calendar#event");
         ev.setEventType("default");
         ev.setFactory(new GsonFactory());
+
+        // Get original event if any and copy conserved fields
+        if( ap.getUrl() != null ){
+            try {
+                Event orig = ev.getFactory().fromString(ap.getUrl(), Event.class);
+                ev.setId(orig.getId());
+                ev.setKind(orig.getKind());
+                ev.setEventType(orig.getEventType());
+                ev.setEtag(orig.getEtag());
+                ev.setSequence(orig.getSequence());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+
         if (ap.isTodo()) return null;
         String uidval = ap.getUid();
         if (uidval == null || uidval.isEmpty()) {
             uidval = ap.getKey() + "@BORGA-" + ap.getCreateTime().getTime();
         }
         ev.setICalUID(uidval);
-        //ev.setId(uidval);
 
         ev.setCreated(new DateTime(ap.getCreateTime()));
         ev.setUpdated(new DateTime(ap.getLastMod()));
