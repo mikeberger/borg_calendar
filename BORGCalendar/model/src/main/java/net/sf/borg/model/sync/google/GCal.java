@@ -51,15 +51,23 @@ public class GCal {
     private static final String CREDENTIALS_FILE_PATH = "/tmp/credentials.json";
 
     static private final Logger log = Logger.getLogger("net.sf.borg");
-
-    static private String calendarId = "primary";
+    static volatile private GCal singleton = null;
+    private String calendarId = "primary";
+    private Calendar service = null;
 
     public static boolean isSyncing() {
         return Prefs.getBoolPref(PrefName.GOOGLE_SYNC);
     }
 
+    static public GCal getReference() {
+        if (singleton == null) {
+            GCal b = new GCal();
+            singleton = b;
+        }
+        return (singleton);
+    }
 
-    private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
+    private Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
         // Load client secrets.
         File f = new File(CREDENTIALS_FILE_PATH);
         //InputStream in = CalendarQuickstart.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
@@ -81,36 +89,39 @@ public class GCal {
         return credential;
     }
 
-    static private Calendar connect() throws Exception {
+    public void connect() throws Exception {
+
+        if (service != null) return;
+
         // Build a new authorized API client service.
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-        Calendar service = new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
+        service = new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
                 .setApplicationName(APPLICATION_NAME)
                 .build();
-        return service;
+
     }
 
-    static public synchronized void sync(Integer years, boolean outward_only) throws Exception {
+    public synchronized void sync(Integer years, boolean outward_only) throws Exception {
 
         calendarId = Prefs.getPref(PrefName.GCAL_CAL_ID);
         log.info("SYNC: Connect");
-        Calendar service = connect();
+        connect();
 
-        processSyncMap(service);
+        processSyncMap();
 
         if (!outward_only) {
-            syncFromServer(service, years);
+            syncFromServer(years);
 
             // incoming sync could cause additional outward activity due to borg
             // needing to convert multiple events
             // into one - a limitation of borg
-            processSyncMap(service);
+            processSyncMap();
         }
 
         log.info("SYNC: Done");
     }
 
-    static private void processSyncMap(Calendar service) throws Exception {
+    private void processSyncMap() throws Exception {
 
 
         List<SyncEvent> syncEvents = SyncLog.getReference().getAll();
@@ -130,36 +141,36 @@ public class GCal {
                             continue;
                         Event ve1 = EntityGCalAdapter.toGCalEvent(ap);
                         if (ve1 != null)
-                            addEvent(service, ve1);
+                            addEvent(ve1);
 
                     } else if (se.getAction().equals(Model.ChangeEvent.ChangeAction.CHANGE)) {
                         String id = EntityGCalAdapter.getIdFromJSON(se.getUrl());
-                        if( id == null ) id = se.getUid();
-                        Event comp = getEvent(service, id);
+                        if (id == null) id = se.getUid();
+                        Event comp = getEvent(id);
                         Appointment ap = AppointmentModel.getReference().getAppt(se.getId());
 
                         if (comp == null) {
                             Event ve1 = EntityGCalAdapter.toGCalEvent(ap);
                             if (ve1 != null)
-                                addEvent(service, ve1);
+                                addEvent(ve1);
 
                         } else // TODO - what if both sides updated
                         {
 
                             Event ve1 = EntityGCalAdapter.toGCalEvent(ap);
                             if (ve1 != null)
-                                updateEvent(service, ve1);
+                                updateEvent(ve1);
 
                         }
                     } else if (se.getAction().equals(Model.ChangeEvent.ChangeAction.DELETE)) {
 
                         String id = EntityGCalAdapter.getIdFromJSON(se.getUrl());
-                        if( id == null ) id = se.getUid();
-                        Event comp = getEvent(service, id);
+                        if (id == null) id = se.getUid();
+                        Event comp = getEvent(id);
 
                         if (comp != null) {
                             log.info("SYNC: removeEvent: " + comp.toString());
-                            removeEvent(service, comp.getId());
+                            removeEvent(comp.getId());
 
                         } else {
                             log.info("Deleted Appt: " + se.getUid() + " not found on server");
@@ -274,30 +285,30 @@ public class GCal {
 
     }
 
-    private static Event getEvent(Calendar service, String id)  {
+    public Event getEvent(String id) {
         try {
-            return service.events().get(calendarId,id).execute();
+            return service.events().get(calendarId, id).execute();
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    private static void removeEvent(Calendar service, String id) throws IOException {
-        service.events().delete(calendarId,id).execute();
+    public void removeEvent(String id) throws IOException {
+        service.events().delete(calendarId, id).execute();
     }
 
-    private static void updateEvent(Calendar service, Event ve1) throws IOException {
-        service.events().update(calendarId,ve1.getId(),ve1).execute();
+    public void updateEvent(Event ve1) throws IOException {
+        service.events().update(calendarId, ve1.getId(), ve1).execute();
     }
 
-    private static void addEvent(Calendar service, Event ve1) throws IOException {
+    public void addEvent(Event ve1) throws IOException {
         ve1.setId(null);
         log.info(ve1.toPrettyString());
-        service.events().insert(calendarId,ve1).execute();
+        service.events().insert(calendarId, ve1).execute();
     }
 
-    static private void syncFromServer(Calendar service, Integer years) throws Exception {
+    private void syncFromServer(Integer years) throws Exception {
 
         SocketClient.sendLogMessage("SYNC: Start Incoming Sync");
         log.info("SYNC: Start Incoming Sync");
@@ -363,7 +374,7 @@ public class GCal {
 
     }
 
-    static private int syncEvent(Event event, ArrayList<String> serverUids) throws Exception {
+    private int syncEvent(Event event, ArrayList<String> serverUids) throws Exception {
 
 
         log.fine("Incoming event: " + event.toString());
@@ -412,13 +423,15 @@ public class GCal {
                 SyncLog.getReference().setProcessUpdates(true);
                 return 1;
             }
-        } else  if( ap.getUrl() != null){
+        } else {
 
             // if Borg has same etag as google, then skip
-            Event orig = new GsonFactory().fromString(ap.getUrl(), Event.class);
-            if( orig.getEtag().equals(event.getEtag())) {
-                log.fine("Etags match - skipping " + event.getSummary());
-                return 0;
+            if (ap.getUrl() != null) {
+                Event orig = new GsonFactory().fromString(ap.getUrl(), Event.class);
+                if (orig.getEtag().equals(event.getEtag())) {
+                    log.fine("Etags match - skipping " + event.getSummary());
+                    return 0;
+                }
             }
 
             // check for special case - incoming is repeating todo that is
@@ -451,7 +464,6 @@ public class GCal {
         }
 
 
-        return 0;
 
     }
 /*

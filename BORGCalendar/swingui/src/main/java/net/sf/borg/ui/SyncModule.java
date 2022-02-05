@@ -355,7 +355,7 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
 
                     // modally lock borg
                     SocketClient.sendMessage("lock:" + Resource.getResourceString("syncing"));
-                    GCal.sync(Prefs.getIntPref(PrefName.ICAL_EXPORTYEARS), false);
+                    GCal.getReference().sync(Prefs.getIntPref(PrefName.ICAL_EXPORTYEARS), false);
 
                 } catch (Exception e) {
                     e.printStackTrace();

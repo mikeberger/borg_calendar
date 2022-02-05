@@ -194,9 +194,9 @@ public class EntityGCalAdapter {
     }
 
     // get the Event id from the Event JSON
-    public static String getIdFromJSON(String json){
+    public static String getIdFromJSON(String json) {
 
-        if( json == null ) return null;
+        if (json == null) return null;
         GsonFactory f = new GsonFactory();
         Event e = null;
         try {
@@ -216,7 +216,7 @@ public class EntityGCalAdapter {
         ev.setFactory(new GsonFactory());
 
         // Get original event if any and copy conserved fields
-        if( ap.getUrl() != null ){
+        if (ap.getUrl() != null) {
             try {
                 Event orig = ev.getFactory().fromString(ap.getUrl(), Event.class);
                 ev.setId(orig.getId());
@@ -251,17 +251,22 @@ public class EntityGCalAdapter {
         }
 
         EventDateTime dt = new EventDateTime();
-        dt.setDateTime(new DateTime(ap.getDate()));
-        dt.setTimeZone("America/New_York");
+        if (AppointmentModel.isNote(ap)) {
+            dt.setDate(new DateTime(true,ap.getDate().getTime(),0));
+        } else {
+            dt.setDateTime(new DateTime(ap.getDate()));
+            dt.setTimeZone("America/New_York");
+        }
+
         ev.setStart(dt);
 
         EventDateTime edt = new EventDateTime();
         if (!AppointmentModel.isNote(ap) && ap.getDuration() != null && ap.getDuration().intValue() != 0) {
             edt.setDateTime(new DateTime(ap.getDate().getTime() + 1000 * 60 * ap.getDuration().intValue()));
+            edt.setTimeZone("America/New_York");
         } else {
-            edt.setDateTime(new DateTime(ap.getDate().getTime() + 1000 * 60 * 60 * 24));
+            edt.setDate(new DateTime(true,ap.getDate().getTime() + 1000 * 60 * 30 ,0));
         }
-        edt.setTimeZone("America/New_York");
 
         ev.setEnd(edt);
 
@@ -292,7 +297,7 @@ public class EntityGCalAdapter {
             propmap.put("category", ap.getCategory());
         }
 
-        if( ev.getExtendedProperties() == null )
+        if (ev.getExtendedProperties() == null)
             ev.setExtendedProperties(new Event.ExtendedProperties());
         ev.getExtendedProperties().setPrivate(propmap);
 
