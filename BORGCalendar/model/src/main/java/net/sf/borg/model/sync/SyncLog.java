@@ -7,6 +7,7 @@ import net.sf.borg.model.Model;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.model.db.jdbc.JdbcDBUpgrader;
+import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.SyncableEntity;
 import net.sf.borg.model.entity.SyncableEntity.ObjectType;
 import net.sf.borg.model.sync.google.GCal;
@@ -70,6 +71,9 @@ public class SyncLog extends Model implements Model.Listener, Prefs.Listener {
 			return;
 
 		if (borgEvent == null || borgEvent.getObject() == null || borgEvent.getAction() == null)
+			return;
+
+		if( GCal.isSyncing() && !(borgEvent.getObject() instanceof Appointment))
 			return;
 
 		try {
