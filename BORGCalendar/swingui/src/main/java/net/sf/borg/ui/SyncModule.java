@@ -563,24 +563,25 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
 
         syncToolbarButton = MultiView.getMainView().addToolBarItem(
                 new javax.swing.ImageIcon(SyncModule.class.getResource("/resource/Refresh16.gif")),
-                Resource.getResourceString("CALDAV-Sync"), syncButtonListener);
+                Resource.getResourceString("Sync"), syncButtonListener);
 
         if (trayIcon != null)
-            trayIcon.setToolTip("BORG " + Resource.getResourceString("CALDAV-Sync"));
+            trayIcon.setToolTip("BORG " + Resource.getResourceString("Sync"));
         PopupMenu menu = new PopupMenu();
         MenuItem item = new MenuItem();
-        item.setLabel(Resource.getResourceString("CALDAV-Sync"));
+        item.setLabel(Resource.getResourceString("Sync"));
         item.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
                 try {
-                    if (!CalDav.isSyncing()) {
+                    if (GCal.isSyncing()) {
+                        runGcalSync(false);
+                    } else if (CalDav.isSyncing()) {
+                        runBackgroundSync(Synctype.FULL);
+                    } else {
                         JOptionPane.showMessageDialog(null, Resource.getResourceString("Sync-Not-Set"), null,
                                 JOptionPane.ERROR_MESSAGE);
-                        return;
                     }
-
-                    runBackgroundSync(Synctype.FULL);
 
                 } catch (Exception e) {
                     Errmsg.getErrorHandler().errmsg(e);

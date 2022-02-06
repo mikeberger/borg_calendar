@@ -60,6 +60,12 @@
 			<groupId>org.mnode.ical4j</groupId>
 			<artifactId>ical4j-vcard</artifactId>
 			<version>1.0.1</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.codehaus.groovy</groupId>
+					<artifactId>groovy-all</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.jackrabbit</groupId>

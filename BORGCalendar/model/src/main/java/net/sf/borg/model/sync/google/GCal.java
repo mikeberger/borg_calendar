@@ -22,7 +22,6 @@ import com.google.api.services.tasks.TasksScopes;
 import com.google.api.services.tasks.model.Task;
 import com.google.api.services.tasks.model.TaskList;
 import com.google.api.services.tasks.model.TaskLists;
-import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.SocketClient;
@@ -47,13 +46,10 @@ public class GCal {
 
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
 
-    /**
-     * Global instance of the scopes required by this quickstart.
-     * If modifying these scopes, delete your previously saved tokens/ folder.
-     */
     private static final List<String> SCOPES = List.of(CalendarScopes.CALENDAR, TasksScopes.TASKS);
 
     static private final Logger log = Logger.getLogger("net.sf.borg");
+
     static volatile private GCal singleton = null;
 
     private String calendarId;
@@ -129,18 +125,16 @@ public class GCal {
         connect();
         setIds();
 
-        if( overwrite ){
+        if (overwrite) {
             // get all appointments and add to syncmap
             for (Appointment ap : AppointmentModel.getReference().getAllAppts()) {
                 if (ap.getDate().before(after))
                     continue;
 
                 // if not in syncmap then add and null out URL if needed
-                if( ap.getUrl() == null )
-                {
+                if (ap.getUrl() == null) {
                     // never been synced - so force a new entry if none exists
-                    if( SyncLog.getReference().get(ap.getKey(), SyncableEntity.ObjectType.APPOINTMENT) == null )
-                    {
+                    if (SyncLog.getReference().get(ap.getKey(), SyncableEntity.ObjectType.APPOINTMENT) == null) {
                         SyncEvent event = new SyncEvent();
                         event.setId(ap.getKey());
                         event.setAction(Model.ChangeEvent.ChangeAction.ADD);
@@ -148,12 +142,10 @@ public class GCal {
                         event.setUid(ap.getUid());
                         SyncLog.getReference().insert(event);
                     }
-                }
-                else
-                {
+                } else {
                     // removing the URL will force a new sync log entry
                     ap.setUrl(null);
-                    AppointmentModel.getReference().saveAppt(ap,false);
+                    AppointmentModel.getReference().saveAppt(ap, false);
                 }
 
             }
@@ -171,7 +163,7 @@ public class GCal {
         log.info("SYNC: Done");
     }
 
-    private void setIds() throws IOException {
+    private void setIds() throws Exception {
 
         String calname = Prefs.getPref(PrefName.GCAL_CAL_ID);
         String taskname = Prefs.getPref(PrefName.GCAL_TASKLIST_ID);
@@ -185,6 +177,7 @@ public class GCal {
                     break;
                 }
             }
+
         }
         if (taskList == null) {
             TaskLists result = tservice.tasklists().list().execute();
@@ -200,6 +193,11 @@ public class GCal {
                 }
             }
         }
+
+        if( calendarId == null )
+            throw new Exception("Could not determine calender id matching: " + calname );
+        if( taskList == null )
+            throw new Exception("Could not determine task list id matching: " + taskname );
     }
 
     private void processSyncMap() throws Exception {
@@ -282,13 +280,12 @@ public class GCal {
                                 Event comp = getEvent(id);
 
                                 if (comp != null) {
-                                    log.info("SYNC: removeEvent: " + comp.toString());
+                                    log.info("SYNC: removeEvent: " + comp);
                                     try {
                                         removeEvent(comp.getId());
-                                    }
-                                    catch (IOException e){
-                                        SocketClient.sendLogMessage("SYNC ERROR for: " + se.toString() + ":" + e.getMessage());
-                                        log.severe("SYNC ERROR for: " + se.toString() + ":" + e.getMessage());
+                                    } catch (IOException e) {
+                                        SocketClient.sendLogMessage("SYNC ERROR for: " + se + ":" + e.getMessage());
+                                        log.severe("SYNC ERROR for: " + se + ":" + e.getMessage());
                                     }
 
                                 } else {
@@ -300,8 +297,8 @@ public class GCal {
 
                     SyncLog.getReference().delete(se.getId(), se.getObjectType());
                 } catch (Exception e) {
-                    SocketClient.sendLogMessage("SYNC ERROR for: " + se.toString() + ":" + e.getMessage());
-                    log.severe("SYNC ERROR for: " + se.toString() + ":" + e.getMessage());
+                    SocketClient.sendLogMessage("SYNC ERROR for: " + se + ":" + e.getMessage());
+                    log.severe("SYNC ERROR for: " + se + ":" + e.getMessage());
                     e.printStackTrace();
                 }
 
@@ -354,7 +351,6 @@ public class GCal {
         log.info("SYNC: Start Incoming Sync");
 
 
-
         ArrayList<String> serverUids = new ArrayList<String>();
 
         DateTime a = new DateTime(after);
@@ -365,7 +361,7 @@ public class GCal {
                 .execute();
         List<Event> items = events.getItems();
 
-        log.info("SYNC: " + a.toString());
+        log.info("SYNC: " + a);
 
         SocketClient.sendLogMessage("SYNC: found " + items.size() + " Event Calendars on server");
         log.info("SYNC: found " + items.size() + " Event Calendars on server");
@@ -400,14 +396,14 @@ public class GCal {
 
             // if appt was not synced, then don't delete
             if (ap.getUrl() == null || !ap.getUrl().contains("etag")) {
-                log.fine("Appt was not synced - so do not delete: " + ap.toString());
+                log.fine("Appt was not synced - so do not delete: " + ap);
                 continue;
             }
 
             // NOTE - a delete of a google task will not cause delete of the BORG appt
             if (!serverUids.contains(ap.getUid()) && !ap.isTodo()) {
-                SocketClient.sendLogMessage("Appointment Not Found on server - Deleting: " + ap.toString());
-                log.info("Appointment Not Found on server - Deleting: " + ap.toString());
+                SocketClient.sendLogMessage("Appointment Not Found on server - Deleting: " + ap);
+                log.info("Appointment Not Found on server - Deleting: " + ap);
                 SyncLog.getReference().setProcessUpdates(false);
                 AppointmentModel.getReference().delAppt(ap.getKey());
                 SyncLog.getReference().setProcessUpdates(true);
@@ -446,7 +442,7 @@ public class GCal {
             return 0;
         }
 
-        log.fine("Incoming event: " + event.toString());
+        log.fine("Incoming event: " + event);
 
         Appointment newap = EntityGCalAdapter.toBorg(event);
         if (newap == null)
@@ -458,8 +454,8 @@ public class GCal {
             try {
 
                 SyncLog.getReference().setProcessUpdates(false);
-                log.info("SYNC save: " + event.toString());
-                log.info("SYNC save: " + newap.toString());
+                log.info("SYNC save: " + event);
+                log.info("SYNC save: " + newap);
                 AppointmentModel.getReference().saveAppt(newap);
             } finally {
                 SyncLog.getReference().setProcessUpdates(true);
@@ -482,8 +478,8 @@ public class GCal {
                 newap.setReminderTimes(ap.getReminderTimes());
 
                 SyncLog.getReference().setProcessUpdates(false);
-                log.info("SYNC save: " + event.toString());
-                log.info("SYNC save: " + newap.toString());
+                log.info("SYNC save: " + event);
+                log.info("SYNC save: " + newap);
                 AppointmentModel.getReference().saveAppt(newap);
             } finally {
                 SyncLog.getReference().setProcessUpdates(true);
@@ -521,7 +517,7 @@ public class GCal {
                 ap.setUrl(task.toPrettyString());
                 try {
                     SyncLog.getReference().setProcessUpdates(false);
-                    log.info("SYNC save: " + ap.toString());
+                    log.info("SYNC save: " + ap);
                     AppointmentModel.getReference().saveAppt(ap);
                 } finally {
                     SyncLog.getReference().setProcessUpdates(true);
@@ -537,7 +533,7 @@ public class GCal {
 
             // TODO - check if date chgd - case where acalendar+ updates recurring todo
             DateTime due = new DateTime(task.getDue());
-            log.fine("task due:" + due.toString());
+            log.fine("task due:" + due);
             log.fine("ap due:" + ap.getDate());
             log.fine("ap nt:" + ap.getNextTodo());
 
@@ -546,7 +542,7 @@ public class GCal {
             // google created task - add new appt
             Appointment ap = EntityGCalAdapter.toBorg(task);
             AppointmentModel.getReference().saveAppt(ap);
-            log.info("SYNC save from google-created task: " + ap.toString());
+            log.info("SYNC save from google-created task: " + ap);
             return 1;
 
         }
