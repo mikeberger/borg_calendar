@@ -15,7 +15,9 @@ import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.CalendarScopes;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.Events;
+import com.google.api.services.tasks.Tasks;
 import com.google.api.services.tasks.TasksScopes;
+import com.google.api.services.tasks.model.Task;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.SocketClient;
@@ -53,7 +55,9 @@ public class GCal {
     static private final Logger log = Logger.getLogger("net.sf.borg");
     static volatile private GCal singleton = null;
     private String calendarId = "primary";
+    private String taskList;
     private Calendar service = null;
+    private Tasks tservice = null;
 
     public static boolean isSyncing() {
         return Prefs.getBoolPref(PrefName.GOOGLE_SYNC);
@@ -99,11 +103,16 @@ public class GCal {
                 .setApplicationName(APPLICATION_NAME)
                 .build();
 
+        tservice = new Tasks.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
+                .setApplicationName(APPLICATION_NAME)
+                .build();
+
     }
 
     public synchronized void sync(Integer years, boolean outward_only) throws Exception {
 
         calendarId = Prefs.getPref(PrefName.GCAL_CAL_ID);
+        taskList = Prefs.getPref(PrefName.GCAL_TASKLIST_ID);
         log.info("SYNC: Connect");
         connect();
 
@@ -137,141 +146,68 @@ public class GCal {
                 try {
                     if (se.getAction().equals(Model.ChangeEvent.ChangeAction.ADD)) {
                         Appointment ap = AppointmentModel.getReference().getAppt(se.getId());
-                        if (ap == null)
-                            continue;
-                        Event ve1 = EntityGCalAdapter.toGCalEvent(ap);
-                        if (ve1 != null)
-                            addEvent(ve1);
+                        if (ap != null) {
+                            if (ap.isTodo()) {
+                                Task t = EntityGCalAdapter.toGCalTask(ap);
+                                if (t != null)
+                                    addTask(t);
+                            } else {
+                                Event ve1 = EntityGCalAdapter.toGCalEvent(ap);
+                                if (ve1 != null)
+                                    addEvent(ve1);
+                            }
+                        }
 
                     } else if (se.getAction().equals(Model.ChangeEvent.ChangeAction.CHANGE)) {
-                        String id = EntityGCalAdapter.getIdFromJSON(se.getUrl());
-                        if (id == null) id = se.getUid();
-                        Event comp = getEvent(id);
+
                         Appointment ap = AppointmentModel.getReference().getAppt(se.getId());
-
-                        if (comp == null) {
-                            Event ve1 = EntityGCalAdapter.toGCalEvent(ap);
-                            if (ve1 != null)
-                                addEvent(ve1);
-
-                        } else // TODO - what if both sides updated
-                        {
-
-                            Event ve1 = EntityGCalAdapter.toGCalEvent(ap);
-                            if (ve1 != null)
-                                updateEvent(ve1);
-
-                        }
-                    } else if (se.getAction().equals(Model.ChangeEvent.ChangeAction.DELETE)) {
-
-                        String id = EntityGCalAdapter.getIdFromJSON(se.getUrl());
-                        if (id == null) id = se.getUid();
-                        Event comp = getEvent(id);
-
-                        if (comp != null) {
-                            log.info("SYNC: removeEvent: " + comp.toString());
-                            removeEvent(comp.getId());
-
-                        } else {
-                            log.info("Deleted Appt: " + se.getUid() + " not found on server");
-                        }
-                    }
-
-                    SyncLog.getReference().delete(se.getId(), se.getObjectType());
-                } catch (Exception e) {
-                    SocketClient.sendLogMessage("SYNC ERROR for: " + se.toString() + ":" + e.getMessage());
-                    log.severe("SYNC ERROR for: " + se.toString() + ":" + e.getMessage());
-                    e.printStackTrace();
-                }
-
-            } /*else if (se.getObjectType() == SyncableEntity.ObjectType.TASK) {
-                try {
-                    if (se.getAction().equals(Model.ChangeEvent.ChangeAction.ADD)) {
-                        Task task = TaskModel.getReference().getTask(se.getId());
-                        if (task == null)
-                            continue;
-                        CalendarComponent ve1 = EntityIcalAdapter.toIcal(task, export_todos);
-                        if (ve1 != null)
-                            addEvent(collection, ve1);
-
-                    } else if (se.getAction().equals(Model.ChangeEvent.ChangeAction.CHANGE)) {
-                        Component comp = getEvent(collection, se);
-                        Task task = TaskModel.getReference().getTask(se.getId());
-
-                        if (comp == null) {
-                            CalendarComponent ve1 = EntityIcalAdapter.toIcal(task, export_todos);
-                            if (ve1 != null)
-                                addEvent(collection, ve1);
-
-                        } else // TODO - what if both sides updated
-                        {
-                            CalendarComponent ve1 = EntityIcalAdapter.toIcal(task, export_todos);
-                            if (ve1 != null) {
-                                updateEvent(collection, ve1);
+                        if (ap != null) {
+                            if (ap.isTodo()) {
+                                Task t = EntityGCalAdapter.toGCalTask(ap);
+                                if (t != null)
+                                    updateTask(t);
                             } else {
-                                removeEvent(collection, se);
+                                String id = EntityGCalAdapter.getIdFromJSON(se.getUrl());
+                                if (id == null) id = se.getUid();
+                                Event comp = getEvent(id);
 
+                                if (comp == null) {
+                                    Event ve1 = EntityGCalAdapter.toGCalEvent(ap);
+                                    if (ve1 != null)
+                                        addEvent(ve1);
+
+                                } else // TODO - what if both sides updated
+                                {
+
+                                    Event ve1 = EntityGCalAdapter.toGCalEvent(ap);
+                                    if (ve1 != null)
+                                        updateEvent(ve1);
+
+                                }
                             }
                         }
+
                     } else if (se.getAction().equals(Model.ChangeEvent.ChangeAction.DELETE)) {
 
-                        Component comp = getEvent(collection, se);
-
-                        if (comp != null) {
-                            log.info("SYNC: removeEvent: " + comp.toString());
-                            removeEvent(collection, se);
-
-                        } else {
-                            log.info("Deleted Appt: " + se.getUid() + " not found on server");
-                        }
-                    }
-
-                    SyncLog.getReference().delete(se.getId(), se.getObjectType());
-                } catch (Exception e) {
-                    SocketClient.sendLogMessage("SYNC ERROR for: " + se.toString() + ":" + e.getMessage());
-                    log.severe("SYNC ERROR for: " + se.toString() + ":" + e.getMessage());
-                    e.printStackTrace();
-                }
-            } else if (se.getObjectType() == SyncableEntity.ObjectType.SUBTASK) {
-                try {
-                    if (se.getAction().equals(Model.ChangeEvent.ChangeAction.ADD)) {
-                        Subtask subtask = TaskModel.getReference().getSubTask(se.getId());
-                        if (subtask == null)
-                            continue;
-                        CalendarComponent ve1 = EntityIcalAdapter.toIcal(subtask, export_todos);
-                        if (ve1 != null)
-                            addEvent(collection, ve1);
-
-                    } else if (se.getAction().equals(Model.ChangeEvent.ChangeAction.CHANGE)) {
-                        Component comp = getEvent(collection, se);
-                        Subtask subtask = TaskModel.getReference().getSubTask(se.getId());
-
-                        if (comp == null) {
-                            CalendarComponent ve1 = EntityIcalAdapter.toIcal(subtask, export_todos);
-                            if (ve1 != null)
-                                addEvent(collection, ve1);
-
-                        } else // TODO - what if both sides updated
-                        {
-                            CalendarComponent ve1 = EntityIcalAdapter.toIcal(subtask, export_todos);
-                            if (ve1 != null) {
-                                updateEvent(collection, ve1);
+                        if (se.getUrl() != null) {
+                            if (se.getUrl().contains("tasks#task")) {
+                                String id = EntityGCalAdapter.getIdFromTaskJSON(se.getUrl());
+                                if (id != null)
+                                    removeTask(id);
                             } else {
-                                removeEvent(collection, se);
+                                String id = EntityGCalAdapter.getIdFromJSON(se.getUrl());
+                                if (id == null) id = se.getUid();
+                                Event comp = getEvent(id);
 
+                                if (comp != null) {
+                                    log.info("SYNC: removeEvent: " + comp.toString());
+                                    removeEvent(comp.getId());
+
+                                } else {
+                                    log.info("Deleted Appt: " + se.getUid() + " not found on server");
+                                }
                             }
                         }
-                    } else if (se.getAction().equals(Model.ChangeEvent.ChangeAction.DELETE)) {
-
-                        Component comp = getEvent(collection, se);
-
-                        if (comp != null) {
-                            log.info("SYNC: removeEvent: " + comp.toString());
-                            removeEvent(collection, se);
-
-                        } else {
-                            log.info("Deleted Appt: " + se.getUid() + " not found on server");
-                        }
                     }
 
                     SyncLog.getReference().delete(se.getId(), se.getObjectType());
@@ -280,16 +216,32 @@ public class GCal {
                     log.severe("SYNC ERROR for: " + se.toString() + ":" + e.getMessage());
                     e.printStackTrace();
                 }
-            }*/
+
+            }
         }
 
+    }
+
+    private void updateTask(Task t) throws IOException {
+        tservice.tasks().update(taskList,t.getId(),t).execute();
+    }
+
+    private void removeTask(String id) throws IOException {
+        log.fine("removeTask:" + id);
+        tservice.tasks().delete(taskList,id).execute();
+    }
+
+
+    private void addTask(Task t) throws IOException {
+        tservice.tasks().insert(taskList, t).execute();
     }
 
     public Event getEvent(String id) {
         try {
             return service.events().get(calendarId, id).execute();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.info(e.getMessage());
+            // e.printStackTrace();
             return null;
         }
     }
@@ -340,18 +292,17 @@ public class GCal {
 
         SocketClient.sendLogMessage("SYNC: processed " + count + " new/changed Events");
 
-        /*
         count = 0;
-        net.fortuna.ical4j.model.Calendar tcals[] = collection.getTasks();
-        SocketClient.sendLogMessage("SYNC: found " + tcals.length + " Todo Calendars on server");
-        log.info("SYNC: found " + tcals.length + " Todo Calendars on server");
-        for (net.fortuna.ical4j.model.Calendar cal : tcals) {
-            count += syncEvent(cal, serverUids);
+        com.google.api.services.tasks.model.Tasks result2 = tservice.tasks().list(Prefs.getPref(PrefName.GCAL_TASKLIST_ID)).execute();
+        List<Task> tasks = result2.getItems();
+        if (tasks != null) {
+            log.info("SYNC: found " + tasks.size() + " Tasks on server");
+
+            for (Task task : tasks) {
+                count += syncTask(task, serverUids);
+            }
         }
-
         SocketClient.sendLogMessage("SYNC: processed " + count + " new/changed Tasks");
-
-         */
 
         log.fine(serverUids.toString());
 
@@ -363,7 +314,7 @@ public class GCal {
             if (ap.getDate().before(after))
                 continue;
 
-            if (!serverUids.contains(ap.getUid())) {
+            if (!serverUids.contains(ap.getUid()) && !ap.isTodo()) {
                 SocketClient.sendLogMessage("Appointment Not Found in Borg - Deleting: " + ap.toString());
                 log.info("Appointment Not Found in Borg - Deleting: " + ap.toString());
                 SyncLog.getReference().setProcessUpdates(false);
@@ -464,6 +415,62 @@ public class GCal {
         }
 
 
+    }
+
+    private int syncTask(Task task, ArrayList<String> serverUids) throws Exception {
+
+
+        log.fine("Incoming task: " + task.toPrettyString());
+
+        String notes = task.getNotes();
+        int idx = notes.indexOf("UID:");
+        if (idx != -1) {
+            // match to BORG appt
+            String uid = notes.substring(idx + 4);
+            if (uid.contains("BORGT") || uid.contains("BORGS"))
+                return 0;
+            serverUids.add(uid);
+            Appointment ap = AppointmentModel.getReference().getApptByUid(uid);
+            if (ap == null) {
+                log.info("SYNC: could not find appt with UID: " + uid + " ignoring....");
+                return 0;
+            }
+
+            if( ap.getUrl() == null ){
+                ap.setUrl(task.toPrettyString());
+                try {
+                    SyncLog.getReference().setProcessUpdates(false);
+                    log.info("SYNC save: " + ap.toString());
+                    AppointmentModel.getReference().saveAppt(ap);
+                } finally {
+                    SyncLog.getReference().setProcessUpdates(true);
+                    return 1;
+                }
+            }
+
+            if (task.getStatus().equals("completed")) {
+                // do_todo
+                AppointmentModel.getReference().do_todo(ap.getKey(), false);
+                return 1;
+            }
+
+            // TODO - check if date chgd - case where acalendar+ updates recurring todo
+            DateTime due = new DateTime(task.getDue());
+            log.fine("task due:" + due.toString());
+            log.fine("ap due:" + ap.getDate());
+            log.fine("ap nt:" + ap.getNextTodo());
+
+
+        } else {
+            // google created task - add new appt
+            Appointment ap = EntityGCalAdapter.toBorg(task);
+            AppointmentModel.getReference().saveAppt(ap);
+            log.info("SYNC save from google-created task: " + ap.toString());
+            return 1;
+
+        }
+
+        return 0;
 
     }
 /*

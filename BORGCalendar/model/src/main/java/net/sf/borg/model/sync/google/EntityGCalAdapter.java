@@ -21,7 +21,23 @@ public class EntityGCalAdapter {
 
     static private final Logger log = Logger.getLogger("net.sf.borg");
 
+    // for a google created task
+    public static Appointment toBorg(Task t) throws IOException {
+        Appointment ap = AppointmentModel.getDefaultAppointment();
+        if (ap == null)
+            ap = new Appointment();
 
+        t.setFactory(new GsonFactory());
+        ap.setUrl(t.toPrettyString());
+        ap.setText(t.getTitle());
+        ap.setTodo(true);
+        ap.setUntimed("Y");
+        String d = t.getDue();
+        DateTime dt = new DateTime(d);
+        ap.setDate(new Date(dt.getValue()));
+        return ap;
+
+    }
     public static Appointment toBorg(Event event) throws Exception {
 
         // start with default appt to pull in default options
@@ -209,6 +225,21 @@ public class EntityGCalAdapter {
 
     }
 
+    public static String getIdFromTaskJSON(String json) {
+
+        if (json == null) return null;
+        GsonFactory f = new GsonFactory();
+        Task e = null;
+        try {
+            e = f.fromString(json, Task.class);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+        return e.getId();
+
+    }
+
     public static Event toGCalEvent(Appointment ap) {
         Event ev = new Event();
         ev.setKind("calendar#event");
@@ -312,6 +343,49 @@ public class EntityGCalAdapter {
     }
 
     public static Task toGCalTask(Appointment appt) {
-        return null;
+
+        if( !appt.isTodo()) return null;
+
+        Task task = new Task();
+        task.setKind("tasks#task");
+        task.setTitle(appt.getText());
+        task.setFactory(new GsonFactory());
+
+        if (appt.getUrl() != null) {
+            try {
+                Task orig = task.getFactory().fromString(appt.getUrl(), Task.class);
+                task.setId(orig.getId());
+                task.setKind(orig.getKind());
+                task.setEtag(orig.getEtag());
+                task.setStatus(orig.getStatus());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        Date nt = appt.getNextTodo();
+        if (nt == null) {
+            nt = appt.getDate();
+        }
+        DateTime due = new DateTime(nt);
+
+        task.setDue(due.toStringRfc3339());
+
+        String uidval = appt.getUid();
+        if (uidval == null || uidval.isEmpty()) {
+            uidval = appt.getKey() + "@BORGA-" + appt.getCreateTime().getTime();
+        }
+
+        String notes = "";
+        if( appt.isRepeatFlag())
+        {
+            notes += "[" + RecurrenceRule.getRRule(appt) + "]";
+        }
+
+        notes += " UID:" + uidval;
+
+        task.setNotes(notes);
+
+        return task;
     }
 }

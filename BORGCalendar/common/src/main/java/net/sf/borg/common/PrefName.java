@@ -426,6 +426,7 @@ public class PrefName {
 
 	public static final PrefName GOOGLE_SYNC = new PrefName("google_sync", "false");
 	public static final PrefName GCAL_CAL_ID = new PrefName("google_cal_id", "primary");
+	public static final PrefName GCAL_TASKLIST_ID = new PrefName("google_tasklist_id", "My Tasks");
 
 
 }

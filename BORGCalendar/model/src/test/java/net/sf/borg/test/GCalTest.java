@@ -12,6 +12,7 @@ import net.sf.borg.model.sync.google.EntityGCalAdapter;
 import net.sf.borg.model.sync.google.GCal;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Date;
@@ -19,6 +20,7 @@ import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+@Ignore
 public class GCalTest {
 
     static private final Logger log = Logger.getLogger("net.sf.borg");
@@ -40,6 +42,7 @@ public class GCalTest {
 
         Prefs.putPref(PrefName.GOOGLE_SYNC, "true");
         Prefs.putPref(PrefName.GCAL_CAL_ID, "8b6erha7qmkjasa1u1nk7848g8@group.calendar.google.com");
+        Prefs.putPref(PrefName.GCAL_TASKLIST_ID, "MTc1MjMwMzA0ODkwNjY1NDc0NzU6MDow");
         SyncLog.getReference();
 
     }
@@ -134,6 +137,43 @@ public class GCalTest {
 
         //GCal.getReference().removeEvent(e.getId());
 
+
+    }
+
+    @Test
+    public void singleTodo() throws Exception {
+
+        Appointment ap = AppointmentModel.getDefaultAppointment();
+        if( ap == null ) ap = AppointmentModel.getReference().newAppt();
+        ap.setText("test todo 2");
+        ap.setUntimed("Y");
+        ap.setDate(new Date());
+        ap.setTodo(true);
+        AppointmentModel.getReference().saveAppt(ap);
+
+        log.info(EntityGCalAdapter.toGCalTask(ap).toPrettyString());
+
+        GCal.getReference().sync(1, false);
+
+    }
+
+    @Test
+    public void recurringTodo() throws Exception {
+
+        Appointment ap = AppointmentModel.getDefaultAppointment();
+        if( ap == null ) ap = AppointmentModel.getReference().newAppt();
+        ap.setText("test todo 1");
+        ap.setUntimed("Y");
+        ap.setDate(new Date());
+        ap.setTodo(true);
+        ap.setFrequency("weekly");
+        ap.setTimes(52);
+        ap.setRepeatFlag(true);
+        AppointmentModel.getReference().saveAppt(ap);
+
+        log.info(EntityGCalAdapter.toGCalTask(ap).toPrettyString());
+
+        GCal.getReference().sync(1, false);
 
     }
 }

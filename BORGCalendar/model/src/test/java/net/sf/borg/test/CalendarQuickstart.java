@@ -17,7 +17,11 @@ import com.google.api.services.calendar.model.CalendarList;
 import com.google.api.services.calendar.model.CalendarListEntry;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.Events;
+import com.google.api.services.tasks.Tasks;
 import com.google.api.services.tasks.TasksScopes;
+import com.google.api.services.tasks.model.Task;
+import com.google.api.services.tasks.model.TaskList;
+import com.google.api.services.tasks.model.TaskLists;
 import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.model.db.jdbc.JdbcDBHelper;
 import net.sf.borg.model.entity.Appointment;
@@ -77,8 +81,10 @@ public class CalendarQuickstart {
         DBHelper.setController(new JdbcDBHelper());
         DBHelper.getController().connect("jdbc:h2:mem:");
 
-        // Build a new authorized API client service.
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+
+/*
+        // Build a new authorized API client service.
         Calendar service = new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
                 .setApplicationName(APPLICATION_NAME)
                 .build();
@@ -122,7 +128,9 @@ public class CalendarQuickstart {
 
             }
         }
-/*
+
+ */
+
         Tasks tserv = new Tasks.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
                 .setApplicationName(APPLICATION_NAME)
                 .build();
@@ -155,7 +163,7 @@ public class CalendarQuickstart {
             }
         }
 
-*/
+
 
     }
 
