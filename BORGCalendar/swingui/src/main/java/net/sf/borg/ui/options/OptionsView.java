@@ -41,286 +41,292 @@ import java.util.Collection;
  */
 public class OptionsView extends View {
 
-	/** size of the option window. */
-	static private PrefName OPTVIEWSIZE = new PrefName("optviewsize",
-			"-1,-1,-1,-1,N");
+    private static final long serialVersionUID = 1L;
+    /**
+     * size of the option window.
+     */
+    static private PrefName OPTVIEWSIZE = new PrefName("optviewsize",
+            "-1,-1,-1,-1,N");
+    private static OptionsView singleton = null;
+    private JButton applyButton;
+    private JButton dismissButton;
+    private JTabbedPane jTabbedPane1;
+    private JPanel topPanel = null;
+    private Collection<OptionsPanel> panels = new ArrayList<OptionsPanel>();
 
-	/**
-	 * 
-	 * abstract base class for tabs in the options view
-	 * 
-	 */
-	static public abstract class OptionsPanel extends JPanel {
-		private static final long serialVersionUID = -4942616624428977307L;
+    /**
+     * constructor
+     *
+     * @param dbonly if true, restrict changes to selecting the db only
+     */
+    private OptionsView(boolean dbonly) {
+        super();
 
-		/**
-		 * set a boolean preference from a checkbox
-		 * 
-		 * @param box
-		 *            the checkbox
-		 * @param pn
-		 *            the preference name
-		 */
-		static public void setBooleanPref(JCheckBox box, PrefName pn) {
-			if (box.isSelected()) {
-				Prefs.putPref(pn, "true");
-			} else {
-				Prefs.putPref(pn, "false");
-			}
-		}
+        jTabbedPane1 = new JTabbedPane();
 
-		/**
-		 * set a check box from a boolean preference
-		 * 
-		 * @param box
-		 *            the checkbox
-		 * @param pn
-		 *            the preference name
-		 */
-		static public void setCheckBox(JCheckBox box, PrefName pn) {
-			String val = Prefs.getPref(pn);
-			if (val.equals("true")) {
-				box.setSelected(true);
-			} else {
-				box.setSelected(false);
-			}
-		}
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        this.setTitle(Resource.getResourceString("Options"));
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                destroy();
+            }
+        });
 
-		/**
-		 * return the panel's display name
-		 */
-		public abstract String getPanelName();
+        topPanel = new JPanel();
+        topPanel.setLayout(new GridBagLayout());
 
-		/**
-		 * save options from the UI to the preference store
-		 */
-		public abstract void applyChanges();
+        topPanel.add(jTabbedPane1, GridBagConstraintsFactory.create(0, 0,
+                GridBagConstraints.BOTH, 1.0, 1.0));
 
-		/**
-		 * load options from the preference store into the UI
-		 */
-		public abstract void loadOptions();
+        if (dbonly) {
+            // setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        } else {
 
-		/**
-		 * Prompt the user to choose a folder
-		 * 
-		 * @return the folder path or null
-		 */
-		static String chooseDir() {
+            dismissButton = new JButton();
+            applyButton = new JButton();
 
-			String path = null;
-			while (true) {
-				JFileChooser chooser = new JFileChooser();
+            JPanel applyDismissPanel = new JPanel();
 
-				chooser.setCurrentDirectory(new File("."));
-				chooser.setDialogTitle("Please choose directory for database files");
-				chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            applyButton.setIcon(new ImageIcon(getClass().getResource(
+                    "/resource/Save16.gif")));
+            ResourceHelper.setText(applyButton, "apply");
+            applyButton.addActionListener(new java.awt.event.ActionListener() {
+                @Override
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    applyChanges();
+                }
+            });
+            applyDismissPanel.add(applyButton, null);
 
-				int returnVal = chooser.showOpenDialog(null);
-				if (returnVal != JFileChooser.APPROVE_OPTION) {
-					return (null);
-				}
+            dismissButton.setIcon(new ImageIcon(getClass().getResource(
+                    "/resource/Stop16.gif")));
+            ResourceHelper.setText(dismissButton, "Dismiss");
+            dismissButton
+                    .addActionListener(new java.awt.event.ActionListener() {
+                        @Override
+                        public void actionPerformed(
+                                java.awt.event.ActionEvent evt) {
+                            destroy();
+                        }
+                    });
+            setDismissButton(dismissButton);
+            applyDismissPanel.add(dismissButton, null);
 
-				path = chooser.getSelectedFile().getAbsolutePath();
-				File dir = new File(path);
-				String err = null;
-				if (!dir.exists()) {
-					err = "Directory [" + path + "] does not exist";
-				} else if (!dir.isDirectory()) {
-					err = "Directory [" + path + "] is not a directory";
-				}
+            topPanel.add(applyDismissPanel, GridBagConstraintsFactory.create(0,
+                    1, GridBagConstraints.BOTH));
 
-				if (err == null) {
-					break;
-				}
+            addPanel(new AppearanceOptionsPanel());
+            addPanel(new FontOptionsPanel());
+            addPanel(new EmailOptionsPanel());
+            addPanel(new PopupOptionsPanel());
+            addPanel(new MiscellaneousOptionsPanel());
+            addPanel(new ColorOptionsPanel());
+            addPanel(new TaskOptionsPanel());
+            addPanel(new TodoOptionsPanel());
+            addPanel(new EncryptionOptionsPanel());
+            addPanel(new StartupViewsOptionsPanel());
+            addPanel(new AddressOptionsPanel());
+        }
 
-				Errmsg.getErrorHandler().notice(err);
-			}
+        addPanel(new DatabaseOptionsPanel());
 
-			return (path);
-		}
-	}
+        JScrollPane sp = new JScrollPane();
+        sp.setViewportView(topPanel);
+        this.setContentPane(sp);
+        this.setSize(629, 493);
 
-	private static final long serialVersionUID = 1L;
+        pack();
 
-	private static OptionsView singleton = null;
+        // automatically maintain the size and position of this view in
+        // a preference
+        if (!dbonly)
+            manageMySize(OPTVIEWSIZE);
+    }
 
-	/**
-	 * open the options window but with a restricted view that only allows the
-	 * db to be set
-	 */
-	public static void dbSelectOnly() {
-		singleton = new OptionsView(true);
-		singleton.setVisible(true);
-	}
+    /**
+     * open the options window but with a restricted view that only allows the
+     * db to be set
+     */
+    public static void dbSelectOnly() {
+        singleton = new OptionsView(true);
+        singleton.setVisible(true);
+    }
 
-	/**
-	 * get the options view singleton
-	 * 
-	 * @return the singleton
-	 */
-	public static OptionsView getReference() {
-		if (singleton == null) {
-			singleton = new OptionsView(false);
-		} else if (!singleton.isShowing()) {
-			// reload options to reset the tabs
-			for (int t = 0; t < singleton.jTabbedPane1.getTabCount(); t++) {
-				OptionsPanel panel = (OptionsPanel)singleton.jTabbedPane1.getComponentAt(t);
-				panel.loadOptions();
-			}
-		}
+    /**
+     * get the options view singleton
+     *
+     * @return the singleton
+     */
+    public static OptionsView getReference() {
+        if (singleton == null) {
+            singleton = new OptionsView(false);
+        } else if (!singleton.isShowing()) {
+            // reload options to reset the tabs
+            for (int t = 0; t < singleton.jTabbedPane1.getTabCount(); t++) {
+                OptionsPanel panel = (OptionsPanel) singleton.jTabbedPane1.getComponentAt(t);
+                panel.loadOptions();
+            }
+        }
 
-		return (singleton);
-	}
+        return (singleton);
+    }
 
-	private JButton applyButton;
+    /**
+     * save all preferences to the preference store based on the current UI
+     * values
+     */
+    private void applyChanges() {
 
-	private JButton dismissButton;
+        for (OptionsPanel panel : panels)
+            panel.applyChanges();
 
-	private JTabbedPane jTabbedPane1;
+        // notify all parts of borg that have registered to know about
+        // options changes
+        Prefs.notifyListeners();
 
-	private JPanel topPanel = null;
+        if (SunTrayIconProxy.hasTrayIcon())
+            SunTrayIconProxy.getReference().updateImage();
 
-	private Collection<OptionsPanel> panels = new ArrayList<OptionsPanel>();
+    }
 
-	/**
-	 * constructor
-	 * 
-	 * @param dbonly
-	 *            if true, restrict changes to selecting the db only
-	 */
-	private OptionsView(boolean dbonly) {
-		super();
+    /**
+     * destroy this view
+     */
+    @Override
+    public void destroy() {
+        this.dispose();
+    }
 
-		jTabbedPane1 = new JTabbedPane();
+    @Override
+    public void refresh() {
+        // empty
+    }
 
-		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		this.setTitle(Resource.getResourceString("Options"));
-		addWindowListener(new java.awt.event.WindowAdapter() {
-			@Override
-			public void windowClosing(java.awt.event.WindowEvent evt) {
-				destroy();
-			}
-		});
+    @Override
+    public void update(ChangeEvent event) {
+        refresh();
+    }
 
-		topPanel = new JPanel();
-		topPanel.setLayout(new GridBagLayout());
+    /**
+     * add an options panel to the options view
+     *
+     * @param panel - the panel
+     */
+    public void addPanel(OptionsPanel panel) {
+        panel.loadOptions();
+        jTabbedPane1.addTab(panel.getPanelName(), panel);
+        // jTabbedPane1.add(panel.getPanelName(), panel);
+        panels.add(panel);
+    }
 
-		topPanel.add(jTabbedPane1, GridBagConstraintsFactory.create(0, 0,
-				GridBagConstraints.BOTH, 1.0, 1.0));
+    /**
+     * abstract base class for tabs in the options view
+     */
+    static public abstract class OptionsPanel extends JPanel {
+        private static final long serialVersionUID = -4942616624428977307L;
 
-		if (dbonly) {
-			// setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		} else {
+        /**
+         * set a boolean preference from a checkbox
+         *
+         * @param box the checkbox
+         * @param pn  the preference name
+         */
+        static public void setBooleanPref(JCheckBox box, PrefName pn) {
+            if (box.isSelected()) {
+                Prefs.putPref(pn, "true");
+            } else {
+                Prefs.putPref(pn, "false");
+            }
+        }
 
-			dismissButton = new JButton();
-			applyButton = new JButton();
+        /**
+         * set a check box from a boolean preference
+         *
+         * @param box the checkbox
+         * @param pn  the preference name
+         */
+        static public void setCheckBox(JCheckBox box, PrefName pn) {
+            String val = Prefs.getPref(pn);
+            if (val.equals("true")) {
+                box.setSelected(true);
+            } else {
+                box.setSelected(false);
+            }
+        }
 
-			JPanel applyDismissPanel = new JPanel();
+        /**
+         * Prompt the user to choose a folder
+         *
+         * @return the folder path or null
+         */
+        static String chooseDir() {
 
-			applyButton.setIcon(new ImageIcon(getClass().getResource(
-					"/resource/Save16.gif")));
-			ResourceHelper.setText(applyButton, "apply");
-			applyButton.addActionListener(new java.awt.event.ActionListener() {
-				@Override
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
-					applyChanges();
-				}
-			});
-			applyDismissPanel.add(applyButton, null);
+            String path = null;
+            while (true) {
+                JFileChooser chooser = new JFileChooser();
 
-			dismissButton.setIcon(new ImageIcon(getClass().getResource(
-					"/resource/Stop16.gif")));
-			ResourceHelper.setText(dismissButton, "Dismiss");
-			dismissButton
-					.addActionListener(new java.awt.event.ActionListener() {
-						@Override
-						public void actionPerformed(
-								java.awt.event.ActionEvent evt) {
-							destroy();
-						}
-					});
-			setDismissButton(dismissButton);
-			applyDismissPanel.add(dismissButton, null);
+                chooser.setCurrentDirectory(new File("."));
+                chooser.setDialogTitle("Please choose directory");
+                chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
-			topPanel.add(applyDismissPanel, GridBagConstraintsFactory.create(0,
-					1, GridBagConstraints.BOTH));
+                int returnVal = chooser.showOpenDialog(null);
+                if (returnVal != JFileChooser.APPROVE_OPTION) {
+                    return (null);
+                }
 
-			addPanel(new AppearanceOptionsPanel());
-			addPanel(new FontOptionsPanel());
-			addPanel(new EmailOptionsPanel());
-			addPanel(new PopupOptionsPanel());
-			addPanel(new MiscellaneousOptionsPanel());
-			addPanel(new ColorOptionsPanel());
-			addPanel(new TaskOptionsPanel());
-			addPanel(new TodoOptionsPanel());
-			addPanel(new EncryptionOptionsPanel());
-			addPanel(new StartupViewsOptionsPanel());
-			addPanel(new AddressOptionsPanel());
-		}
+                path = chooser.getSelectedFile().getAbsolutePath();
+                File dir = new File(path);
+                String err = null;
+                if (!dir.exists()) {
+                    err = "Directory [" + path + "] does not exist";
+                } else if (!dir.isDirectory()) {
+                    err = "Directory [" + path + "] is not a directory";
+                }
 
-		addPanel(new DatabaseOptionsPanel());
+                if (err == null) {
+                    break;
+                }
 
-		JScrollPane sp = new JScrollPane();
-		sp.setViewportView(topPanel);
-		this.setContentPane(sp);
-		this.setSize(629, 493);
+                Errmsg.getErrorHandler().notice(err);
+            }
 
-		pack();
+            return (path);
+        }
 
-		// automatically maintain the size and position of this view in
-		// a preference
-		if (!dbonly)
-			manageMySize(OPTVIEWSIZE);
-	}
+        static String chooseFile() {
 
-	/**
-	 * save all preferences to the preference store based on the current UI
-	 * values
-	 */
-	private void applyChanges() {
 
-		for (OptionsPanel panel : panels)
-			panel.applyChanges();
+            JFileChooser chooser = new JFileChooser();
 
-		// notify all parts of borg that have registered to know about
-		// options changes
-		Prefs.notifyListeners();
-		
-		if (SunTrayIconProxy.hasTrayIcon())
-			SunTrayIconProxy.getReference().updateImage();
+            chooser.setCurrentDirectory(new File("."));
+            chooser.setDialogTitle("Please choose files");
+            chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
-	}
+            int returnVal = chooser.showOpenDialog(null);
+            if (returnVal != JFileChooser.APPROVE_OPTION) {
+                return (null);
+            }
 
-	/**
-	 * destroy this view
-	 */
-	@Override
-	public void destroy() {
-		this.dispose();
-	}
+            return chooser.getSelectedFile().getAbsolutePath();
 
-	@Override
-	public void refresh() {
-		// empty
-	}
 
-	@Override
-	public void update(ChangeEvent event) {
-		refresh();
-	}
+        }
 
-	/**
-	 * add an options panel to the options view
-	 * 
-	 * @param panel
-	 *            - the panel
-	 */
-	public void addPanel(OptionsPanel panel) {
-		panel.loadOptions();
-		jTabbedPane1.addTab(panel.getPanelName(), panel);
-		// jTabbedPane1.add(panel.getPanelName(), panel);
-		panels.add(panel);
-	}
+        /**
+         * return the panel's display name
+         */
+        public abstract String getPanelName();
+
+        /**
+         * save options from the UI to the preference store
+         */
+        public abstract void applyChanges();
+
+        /**
+         * load options from the preference store into the UI
+         */
+        public abstract void loadOptions();
+    }
 
 }

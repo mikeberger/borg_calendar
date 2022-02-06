@@ -21,7 +21,7 @@ public class EntityGCalAdapter {
 
     static private final Logger log = Logger.getLogger("net.sf.borg");
 
-    // for a google created task
+    // to create a new appt from a google created task
     public static Appointment toBorg(Task t) throws IOException {
         Appointment ap = AppointmentModel.getDefaultAppointment();
         if (ap == null)
@@ -34,10 +34,13 @@ public class EntityGCalAdapter {
         ap.setUntimed("Y");
         String d = t.getDue();
         DateTime dt = new DateTime(d);
+
+        // TODO - assumes untimed only
         ap.setDate(new Date(dt.getValue()));
         return ap;
 
     }
+
     public static Appointment toBorg(Event event) throws Exception {
 
         // start with default appt to pull in default options
@@ -81,7 +84,7 @@ public class EntityGCalAdapter {
 
                 long dur = event.getEnd().getDateTime().getValue() - utc.getTime();
 
-                ap.setDuration(Integer.valueOf((int) dur));
+                ap.setDuration((int) dur);
             }
         }
 
@@ -179,7 +182,7 @@ public class EntityGCalAdapter {
                     ap.setRepeatFlag(true);
                 } else if (rl.startsWith("EXDATE")) {
                     // TODO
-                    log.warning("skipping rrule: " + rl);
+                    log.warning("skipping EXDATE: " + rl);
                     /*
                 ExDate ex = (ExDate) pl.getProperty(Property.EXDATE);
                 if (ex != null) {

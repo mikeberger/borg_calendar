@@ -18,12 +18,12 @@ import com.google.api.services.calendar.model.Events;
 import com.google.api.services.tasks.Tasks;
 import com.google.api.services.tasks.TasksScopes;
 import com.google.api.services.tasks.model.Task;
+import net.fortuna.ical4j.vcard.parameter.Pref;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.SocketClient;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Model;
-import net.sf.borg.model.Repeat;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.SyncableEntity;
 import net.sf.borg.model.sync.SyncEvent;
@@ -43,14 +43,11 @@ public class GCal {
 
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
 
-    private static final String TOKENS_DIRECTORY_PATH = "/tmp/tokens";
-
     /**
      * Global instance of the scopes required by this quickstart.
      * If modifying these scopes, delete your previously saved tokens/ folder.
      */
     private static final List<String> SCOPES = List.of(CalendarScopes.CALENDAR, TasksScopes.TASKS);
-    private static final String CREDENTIALS_FILE_PATH = "/tmp/credentials.json";
 
     static private final Logger log = Logger.getLogger("net.sf.borg");
     static volatile private GCal singleton = null;
@@ -73,18 +70,18 @@ public class GCal {
 
     private Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
         // Load client secrets.
-        File f = new File(CREDENTIALS_FILE_PATH);
+        File f = new File(Prefs.getPref(PrefName.GOOGLE_CRED_FILE));
         //InputStream in = CalendarQuickstart.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
         InputStream in = new FileInputStream(f);
         if (in == null) {
-            throw new FileNotFoundException("Resource not found: " + CREDENTIALS_FILE_PATH);
+            throw new FileNotFoundException("Resource not found: " + Prefs.getPref(PrefName.GOOGLE_CRED_FILE));
         }
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
 
         // Build flow and trigger user authorization request.
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
                 HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
-                .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
+                .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(Prefs.getPref(PrefName.GOOGLE_TOKEN_DIR))))
                 .setAccessType("offline")
                 .build();
         LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
@@ -149,8 +146,13 @@ public class GCal {
                         if (ap != null) {
                             if (ap.isTodo()) {
                                 Task t = EntityGCalAdapter.toGCalTask(ap);
-                                if (t != null)
-                                    addTask(t);
+                                if (t != null) {
+                                    // check if task exists in google already
+                                    if (t.getEtag() == null)
+                                        addTask(t);
+                                    else
+                                        updateTask(t);
+                                }
                             } else {
                                 Event ve1 = EntityGCalAdapter.toGCalEvent(ap);
                                 if (ve1 != null)
@@ -164,8 +166,13 @@ public class GCal {
                         if (ap != null) {
                             if (ap.isTodo()) {
                                 Task t = EntityGCalAdapter.toGCalTask(ap);
-                                if (t != null)
-                                    updateTask(t);
+                                if (t != null) {
+                                    // check if task exists in google already
+                                    if (t.getEtag() == null)
+                                        addTask(t);
+                                    else
+                                        updateTask(t);
+                                }
                             } else {
                                 String id = EntityGCalAdapter.getIdFromJSON(se.getUrl());
                                 if (id == null) id = se.getUid();
@@ -223,12 +230,12 @@ public class GCal {
     }
 
     private void updateTask(Task t) throws IOException {
-        tservice.tasks().update(taskList,t.getId(),t).execute();
+        tservice.tasks().update(taskList, t.getId(), t).execute();
     }
 
     private void removeTask(String id) throws IOException {
         log.fine("removeTask:" + id);
-        tservice.tasks().delete(taskList,id).execute();
+        tservice.tasks().delete(taskList, id).execute();
     }
 
 
@@ -314,9 +321,16 @@ public class GCal {
             if (ap.getDate().before(after))
                 continue;
 
+            // if appt was not synced, then don't delete
+            if (ap.getUrl() == null || ap.getUrl().contains("etag")) {
+                log.fine("Appt was not synced - so do not delete: " + ap.toString());
+                continue;
+            }
+
+            // NOTE - a delete of a google task will not cause delete of the BORG appt
             if (!serverUids.contains(ap.getUid()) && !ap.isTodo()) {
-                SocketClient.sendLogMessage("Appointment Not Found in Borg - Deleting: " + ap.toString());
-                log.info("Appointment Not Found in Borg - Deleting: " + ap.toString());
+                SocketClient.sendLogMessage("Appointment Not Found on server - Deleting: " + ap.toString());
+                log.info("Appointment Not Found on server - Deleting: " + ap.toString());
                 SyncLog.getReference().setProcessUpdates(false);
                 AppointmentModel.getReference().delAppt(ap.getKey());
                 SyncLog.getReference().setProcessUpdates(true);
@@ -350,7 +364,7 @@ public class GCal {
             }
         }
 
-        // don't process recurring events - only tasks
+        // don't process recurring events - only recurring tasks
         if (recur) {
             return 0;
         }
@@ -385,32 +399,18 @@ public class GCal {
                 }
             }
 
-            // check for special case - incoming is repeating todo that is
-            // completed
-            // if so, then just complete the latest todo instance as android
-            // task app can't
-            // properly handle recurrence it completes the entire todo
-            // instead of one instance.
-            if (Repeat.isRepeating(ap) && ap.isTodo() && !newap.isTodo()) {
 
-                log.info("SYNC do todo: " + ap.toString());
-                AppointmentModel.getReference().do_todo(ap.getKey(), true);
-                // don't suppress sync log - need to sync this todo
+            try {
+                newap.setKey(ap.getKey());
+                newap.setReminderTimes(ap.getReminderTimes());
+
+                SyncLog.getReference().setProcessUpdates(false);
+                log.info("SYNC save: " + event.toString());
+                log.info("SYNC save: " + newap.toString());
+                AppointmentModel.getReference().saveAppt(newap);
+            } finally {
+                SyncLog.getReference().setProcessUpdates(true);
                 return 1;
-            } else {
-
-                try {
-                    newap.setKey(ap.getKey());
-                    newap.setReminderTimes(ap.getReminderTimes());
-
-                    SyncLog.getReference().setProcessUpdates(false);
-                    log.info("SYNC save: " + event.toString());
-                    log.info("SYNC save: " + newap.toString());
-                    AppointmentModel.getReference().saveAppt(newap);
-                } finally {
-                    SyncLog.getReference().setProcessUpdates(true);
-                    return 1;
-                }
             }
         }
 
@@ -422,8 +422,10 @@ public class GCal {
 
         log.fine("Incoming task: " + task.toPrettyString());
 
+        int idx = -1;
         String notes = task.getNotes();
-        int idx = notes.indexOf("UID:");
+        if (notes != null)
+            idx = notes.indexOf("UID:");
         if (idx != -1) {
             // match to BORG appt
             String uid = notes.substring(idx + 4);
@@ -432,11 +434,13 @@ public class GCal {
             serverUids.add(uid);
             Appointment ap = AppointmentModel.getReference().getApptByUid(uid);
             if (ap == null) {
-                log.info("SYNC: could not find appt with UID: " + uid + " ignoring....");
+                log.warning("SYNC: ***WARNING*** could not find appt with UID: " + uid + " ignoring....");
+                SocketClient.sendLogMessage("SYNC: ***WARNING*** could not find appt with UID: " + uid + " ignoring....");
                 return 0;
             }
 
-            if( ap.getUrl() == null ){
+            // this is where a newly created todo gets the URL updated
+            if (ap.getUrl() == null) {
                 ap.setUrl(task.toPrettyString());
                 try {
                     SyncLog.getReference().setProcessUpdates(false);
@@ -473,57 +477,7 @@ public class GCal {
         return 0;
 
     }
-/*
-    static private void processRecurrence(Task task, String uid) throws Exception {
 
-
-        Appointment ap = AppointmentModel.getReference().getApptByUid(uid);
-        if (ap != null) {
-
-            if (comp instanceof VEvent) {
-                log.warning("SYNC: ignoring Vevent for single recurrence - cannot process\n" + comp.toString());
-                SocketClient.sendLogMessage(
-                        "SYNC: ignoring Vevent for single recurrence - cannot process\n" + comp.toString());
-                return;
-            }
-            // for a recurrence of a VToDo, we only use the
-            // COMPLETED
-            // status if present - otherwise, we ignore
-            Completed cpltd = (Completed) comp.getProperty(Property.COMPLETED);
-            Status stat = (Status) comp.getProperty(Property.STATUS);
-            if (cpltd == null && (stat == null || !stat.equals(Status.VTODO_COMPLETED))) {
-                log.warning("SYNC: ignoring VToDo for single recurrence - cannot process\n" + comp.toString());
-                SocketClient.sendLogMessage(
-                        "SYNC: ignoring VToDo for single recurrence - cannot process\n" + comp.toString());
-                return;
-            }
-
-            Date riddate = rid.getDate();
-
-            Date utc = new Date();
-            utc.setTime(riddate.getTime());
-
-            // adjust time zone
-            if (!rid.isUtc() && !rid.getValue().contains("T")) {
-                long u = riddate.getTime() - TimeZone.getDefault().getOffset(riddate.getTime());
-                utc.setTime(u);
-            }
-
-            Date nt = ap.getNextTodo();
-            if (nt == null)
-                nt = ap.getDate();
-            if (!utc.before(nt)) {
-                log.warning("SYNC: completing Todo\n" + comp.toString());
-                SocketClient.sendLogMessage("SYNC: completing Todo\n" + comp.toString());
-                AppointmentModel.getReference().do_todo(ap.getKey(), false, utc);
-
-            }
-
-            // }
-        }
-    }
-
- */
 }
 
 

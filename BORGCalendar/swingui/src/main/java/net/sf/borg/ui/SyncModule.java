@@ -13,6 +13,7 @@ import net.sf.borg.model.sync.ical.ICal;
 import net.sf.borg.model.sync.ical.IcalFTP;
 import net.sf.borg.ui.MultiView.Module;
 import net.sf.borg.ui.MultiView.ViewType;
+import net.sf.borg.ui.options.GoogleOptionsPanel;
 import net.sf.borg.ui.options.IcalOptionsPanel;
 import net.sf.borg.ui.options.OptionsView;
 import net.sf.borg.ui.util.FileDrop;
@@ -515,6 +516,11 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
         SyncLog.getReference().addListener(this);
 
         OptionsView.getReference().addPanel(new IcalOptionsPanel());
+
+        if( Prefs.getBoolPref(PrefName.ENABLE_GOOGLE_FEATURE))
+        {
+            OptionsView.getReference().addPanel(new GoogleOptionsPanel());
+        }
 
         new FileDrop(parent, new FileDrop.Listener() {
             @Override
