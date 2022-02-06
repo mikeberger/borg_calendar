@@ -39,7 +39,7 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
             try {
 
                 if (GCal.isSyncing()) {
-                    runGcalSync();
+                    runGcalSync(false);
                 } else if (CalDav.isSyncing()) {
                     runBackgroundSync(Synctype.FULL);
                 } else {
@@ -334,7 +334,7 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
                         return;
                     }
 
-                    runGcalSync();
+                    runGcalSync(false);
 
                 } catch (Exception e) {
                     Errmsg.getErrorHandler().errmsg(e);
@@ -344,11 +344,33 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
 
         gcalmenu.add(gcalsyncmi);
 
+        JMenuItem gcalow = new JMenuItem("Overwrite");
+        gcalow.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                try {
+                    if (!GCal.isSyncing()) {
+                        JOptionPane.showMessageDialog(null, Resource.getResourceString("Sync-Not-Set"), null,
+                                JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+
+                    runGcalSync(true);
+
+                } catch (Exception e) {
+                    Errmsg.getErrorHandler().errmsg(e);
+                }
+            }
+        });
+        gcalmenu.add(gcalow);
         m.add(gcalmenu);
         return m;
     }
 
-    private static void runGcalSync() {
+    private static void runGcalSync(boolean overwrite) {
+
+        final boolean ov = overwrite;
         class SyncWorker extends SwingWorker<Void, Object> {
             @Override
             public Void doInBackground() {
@@ -356,7 +378,7 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
 
                     // modally lock borg
                     SocketClient.sendMessage("lock:" + Resource.getResourceString("syncing"));
-                    GCal.getReference().sync(Prefs.getIntPref(PrefName.ICAL_EXPORTYEARS), false);
+                    GCal.getReference().sync(Prefs.getIntPref(PrefName.ICAL_EXPORTYEARS), ov);
 
                 } catch (Exception e) {
                     e.printStackTrace();

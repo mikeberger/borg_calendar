@@ -23,6 +23,7 @@ package net.sf.borg.ui.options;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
+import net.sf.borg.model.sync.google.GCal;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.options.OptionsView.OptionsPanel;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
@@ -142,6 +143,7 @@ public class GoogleOptionsPanel extends OptionsPanel {
         Prefs.putPref(PrefName.GOOGLE_CRED_FILE, credentials_file_box.getText());
         Prefs.putPref(PrefName.GOOGLE_TOKEN_DIR, token_dir_box.getText());
 
+        GCal.getReference().resetGoogleIds();
 
     }
 

@@ -74,18 +74,20 @@ public class EntityGCalAdapter {
             utc.setTime(event.getStart().getDateTime().getValue());
             ap.setDate(utc);
             ap.setUntimed("N");
-        } else {
-            Date utc = new Date();
-            utc.setTime(event.getStart().getDate().getValue());
-            ap.setDate(utc);
-            ap.setUntimed("Y");
-
             if (event.getEnd().getDateTime() != null) {
 
                 long dur = event.getEnd().getDateTime().getValue() - utc.getTime();
 
                 ap.setDuration((int) dur);
             }
+        } else {
+            Date utc = new Date();
+            utc.setTime(event.getStart().getDate().getValue()-tzOffset(event.getStart().getDate().getValue()));
+            //utc.setTime(u);
+            ap.setDate(utc);
+            ap.setUntimed("Y");
+
+
         }
 
         String uid = event.getICalUID();

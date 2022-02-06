@@ -13,12 +13,16 @@ import com.google.api.client.util.DateTime;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.CalendarScopes;
+import com.google.api.services.calendar.model.CalendarList;
+import com.google.api.services.calendar.model.CalendarListEntry;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.Events;
 import com.google.api.services.tasks.Tasks;
 import com.google.api.services.tasks.TasksScopes;
 import com.google.api.services.tasks.model.Task;
-import net.fortuna.ical4j.vcard.parameter.Pref;
+import com.google.api.services.tasks.model.TaskList;
+import com.google.api.services.tasks.model.TaskLists;
+import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.SocketClient;
@@ -51,7 +55,8 @@ public class GCal {
 
     static private final Logger log = Logger.getLogger("net.sf.borg");
     static volatile private GCal singleton = null;
-    private String calendarId = "primary";
+
+    private String calendarId;
     private String taskList;
     private Calendar service = null;
     private Tasks tservice = null;
@@ -90,6 +95,12 @@ public class GCal {
         return credential;
     }
 
+    // null out the google ids so that they are fetched again
+    public void resetGoogleIds() {
+        calendarId = null;
+        taskList = null;
+    }
+
     public void connect() throws Exception {
 
         if (service != null) return;
@@ -106,25 +117,89 @@ public class GCal {
 
     }
 
-    public synchronized void sync(Integer years, boolean outward_only) throws Exception {
+    public synchronized void sync(Integer years, boolean overwrite) throws Exception {
 
-        calendarId = Prefs.getPref(PrefName.GCAL_CAL_ID);
-        taskList = Prefs.getPref(PrefName.GCAL_TASKLIST_ID);
+        Date after = null;
+        GregorianCalendar gcal = new GregorianCalendar();
+
+        gcal.add(java.util.Calendar.YEAR, -1 * ((years == null) ? 50 : years.intValue()));
+        after = gcal.getTime();
+
         log.info("SYNC: Connect");
         connect();
+        setIds();
 
+        if( overwrite ){
+            // get all appointments and add to syncmap
+            for (Appointment ap : AppointmentModel.getReference().getAllAppts()) {
+                if (ap.getDate().before(after))
+                    continue;
+
+                // if not in syncmap then add and null out URL if needed
+                if( ap.getUrl() == null )
+                {
+                    // never been synced - so force a new entry if none exists
+                    if( SyncLog.getReference().get(ap.getKey(), SyncableEntity.ObjectType.APPOINTMENT) == null )
+                    {
+                        SyncEvent event = new SyncEvent();
+                        event.setId(ap.getKey());
+                        event.setAction(Model.ChangeEvent.ChangeAction.ADD);
+                        event.setObjectType(SyncableEntity.ObjectType.APPOINTMENT);
+                        event.setUid(ap.getUid());
+                        SyncLog.getReference().insert(event);
+                    }
+                }
+                else
+                {
+                    // removing the URL will force a new sync log entry
+                    ap.setUrl(null);
+                    AppointmentModel.getReference().saveAppt(ap,false);
+                }
+
+            }
+        }
         processSyncMap();
 
-        if (!outward_only) {
-            syncFromServer(years);
+        syncFromServer(after);
 
-            // incoming sync could cause additional outward activity due to borg
-            // needing to convert multiple events
-            // into one - a limitation of borg
-            processSyncMap();
-        }
+        // incoming sync could cause additional outward activity due to borg
+        // needing to convert multiple events
+        // into one - a limitation of borg
+        processSyncMap();
+
 
         log.info("SYNC: Done");
+    }
+
+    private void setIds() throws IOException {
+
+        String calname = Prefs.getPref(PrefName.GCAL_CAL_ID);
+        String taskname = Prefs.getPref(PrefName.GCAL_TASKLIST_ID);
+
+        if (calendarId == null) {
+            CalendarList cals = service.calendarList().list().execute();
+            for (CalendarListEntry c : cals.getItems()) {
+                log.fine("Cal Entry: " + c.getSummary() + " : " + c.getId());
+                if (calname.equals(c.getSummary())) {
+                    calendarId = c.getId();
+                    break;
+                }
+            }
+        }
+        if (taskList == null) {
+            TaskLists result = tservice.tasklists().list().execute();
+            List<TaskList> taskLists = result.getItems();
+
+            if (taskLists != null) {
+                for (TaskList tasklist : taskLists) {
+                    log.fine("TaskList Entry: " + tasklist.getTitle() + " : " + tasklist.getId());
+                    if (taskname.equals(tasklist.getTitle())) {
+                        taskList = tasklist.getId();
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     private void processSyncMap() throws Exception {
@@ -208,7 +283,13 @@ public class GCal {
 
                                 if (comp != null) {
                                     log.info("SYNC: removeEvent: " + comp.toString());
-                                    removeEvent(comp.getId());
+                                    try {
+                                        removeEvent(comp.getId());
+                                    }
+                                    catch (IOException e){
+                                        SocketClient.sendLogMessage("SYNC ERROR for: " + se.toString() + ":" + e.getMessage());
+                                        log.severe("SYNC ERROR for: " + se.toString() + ":" + e.getMessage());
+                                    }
 
                                 } else {
                                     log.info("Deleted Appt: " + se.getUid() + " not found on server");
@@ -267,16 +348,12 @@ public class GCal {
         service.events().insert(calendarId, ve1).execute();
     }
 
-    private void syncFromServer(Integer years) throws Exception {
+    private void syncFromServer(Date after) throws Exception {
 
         SocketClient.sendLogMessage("SYNC: Start Incoming Sync");
         log.info("SYNC: Start Incoming Sync");
 
-        Date after = null;
-        GregorianCalendar gcal = new GregorianCalendar();
 
-        gcal.add(java.util.Calendar.YEAR, -1 * ((years == null) ? 50 : years.intValue()));
-        after = gcal.getTime();
 
         ArrayList<String> serverUids = new ArrayList<String>();
 
@@ -300,7 +377,7 @@ public class GCal {
         SocketClient.sendLogMessage("SYNC: processed " + count + " new/changed Events");
 
         count = 0;
-        com.google.api.services.tasks.model.Tasks result2 = tservice.tasks().list(Prefs.getPref(PrefName.GCAL_TASKLIST_ID)).execute();
+        com.google.api.services.tasks.model.Tasks result2 = tservice.tasks().list(taskList).execute();
         List<Task> tasks = result2.getItems();
         if (tasks != null) {
             log.info("SYNC: found " + tasks.size() + " Tasks on server");
@@ -322,7 +399,7 @@ public class GCal {
                 continue;
 
             // if appt was not synced, then don't delete
-            if (ap.getUrl() == null || ap.getUrl().contains("etag")) {
+            if (ap.getUrl() == null || !ap.getUrl().contains("etag")) {
                 log.fine("Appt was not synced - so do not delete: " + ap.toString());
                 continue;
             }
