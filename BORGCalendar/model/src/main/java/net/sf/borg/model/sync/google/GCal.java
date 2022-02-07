@@ -194,10 +194,10 @@ public class GCal {
             }
         }
 
-        if( calendarId == null )
-            throw new Exception("Could not determine calender id matching: " + calname );
-        if( taskList == null )
-            throw new Exception("Could not determine task list id matching: " + taskname );
+        if (calendarId == null)
+            throw new Exception("Could not determine calender id matching: " + calname);
+        if (taskList == null)
+            throw new Exception("Could not determine task list id matching: " + taskname);
     }
 
     private void processSyncMap() throws Exception {
@@ -527,6 +527,7 @@ public class GCal {
 
             if (task.getStatus().equals("completed")) {
                 // do_todo
+                log.info("SYNC: do_todo");
                 AppointmentModel.getReference().do_todo(ap.getKey(), false);
                 return 1;
             }
@@ -536,6 +537,17 @@ public class GCal {
             log.fine("task due:" + due);
             log.fine("ap due:" + ap.getDate());
             log.fine("ap nt:" + ap.getNextTodo());
+
+            Date d = ap.getNextTodo();
+            if (d == null)
+                d = ap.getDate();
+
+            // if incoming date is greater than BORG date, then just do_todo
+            if (due.getValue() - d.getTime() > 1000 * 60 * 60) { // 1 hr cushion - should be exact though?
+                log.info("SYNC: do_todo");
+                AppointmentModel.getReference().do_todo(ap.getKey(), false);
+                return 1;
+            }
 
 
         } else {
