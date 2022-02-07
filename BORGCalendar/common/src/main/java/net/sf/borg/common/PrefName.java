@@ -366,11 +366,6 @@ public class PrefName {
 	public static final PrefName MAX_TEXT_SIZE = new PrefName("max_text_size",
 			Integer.valueOf(1024 * 1024));
 
-	// the email regular expression and phone number regular expression
-	// regular expression for validating email addresses
-	static public PrefName EMAIL_VALIDATION = new PrefName("Email_Validation",
-			"false");
-
 	public static PrefName ICAL_PORT = new PrefName("ical-server-port",
 			Integer.valueOf(8844));
 	public static PrefName ICAL_EXPORTYEARS = new PrefName("ical-export-years",
