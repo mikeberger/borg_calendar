@@ -1,4 +1,4 @@
-package net.sf.borg.model.ical;
+package net.sf.borg.model.sync.ical;
 
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;

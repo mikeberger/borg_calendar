@@ -1,4 +1,4 @@
-package net.sf.borg.model.ical;
+package net.sf.borg.model.sync.ical;
 
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;

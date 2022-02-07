@@ -6,7 +6,7 @@ import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.model.db.jdbc.JdbcDBHelper;
 import net.sf.borg.model.entity.Appointment;
-import net.sf.borg.model.ical.EntityIcalAdapter;
+import net.sf.borg.model.sync.ical.EntityIcalAdapter;
 import org.junit.Assert;
 
 import java.util.Collection;

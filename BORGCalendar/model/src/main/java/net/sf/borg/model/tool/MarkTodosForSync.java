@@ -5,7 +5,7 @@ import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.model.db.jdbc.JdbcDBHelper;
 import net.sf.borg.model.entity.Appointment;
-import net.sf.borg.model.ical.SyncLog;
+import net.sf.borg.model.sync.SyncLog;
 
 import java.util.Collection;
 

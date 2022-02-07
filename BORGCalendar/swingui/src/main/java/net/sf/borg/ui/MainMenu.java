@@ -24,7 +24,6 @@ import net.sf.borg.model.ExportImport;
 import net.sf.borg.model.Model;
 import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.model.undo.UndoLog;
-import net.sf.borg.ui.ical.IcalModule;
 import net.sf.borg.ui.options.OptionsView;
 import net.sf.borg.ui.util.ScrolledDialog;
 
@@ -246,7 +245,7 @@ class MainMenu {
 		 */
 		menuBar.add(getUndoMenu());
 
-		menuBar.add(IcalModule.getIcalMenu());
+		menuBar.add(SyncModule.getIcalMenu());
 		/*
 		 * plugin menu
 		 */

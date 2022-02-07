@@ -6,7 +6,7 @@ import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.util.CompatibilityHints;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
-import net.sf.borg.model.ical.CalDav;
+import net.sf.borg.model.sync.ical.CalDav;
 
 import java.util.Date;
 import java.util.GregorianCalendar;

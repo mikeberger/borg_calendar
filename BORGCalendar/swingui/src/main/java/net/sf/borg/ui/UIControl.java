@@ -3,11 +3,10 @@ package net.sf.borg.ui;
 import net.sf.borg.common.*;
 import net.sf.borg.model.ExportImport;
 import net.sf.borg.model.db.DBHelper;
-import net.sf.borg.model.ical.SyncLog;
+import net.sf.borg.model.sync.SyncLog;
 import net.sf.borg.ui.address.AddrListView;
 import net.sf.borg.ui.calendar.*;
 import net.sf.borg.ui.checklist.CheckListPanel;
-import net.sf.borg.ui.ical.IcalModule;
 import net.sf.borg.ui.memo.MemoPanel;
 import net.sf.borg.ui.options.MiscellaneousOptionsPanel.SHUTDOWN_ACTION;
 import net.sf.borg.ui.popup.ReminderListManager;
@@ -172,7 +171,7 @@ public class UIControl {
 				.getResourceString("License")));
 		mv.addModule(new FileView(System.getProperty("user.home", "")
 				+ "/.borg.log", Resource.getResourceString("view_log")));
-		mv.addModule(new IcalModule());
+		mv.addModule(new SyncModule());
 
 
 		// allow start to system tray if option set and there is a system tray

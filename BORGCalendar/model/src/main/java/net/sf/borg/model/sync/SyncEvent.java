@@ -1,4 +1,4 @@
-package net.sf.borg.model.ical;
+package net.sf.borg.model.sync;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

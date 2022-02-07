@@ -23,8 +23,8 @@ import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
-import net.sf.borg.model.ical.CalDav;
-import net.sf.borg.model.ical.IcalFTP;
+import net.sf.borg.model.sync.ical.CalDav;
+import net.sf.borg.model.sync.ical.IcalFTP;
 import net.sf.borg.ui.options.OptionsView.OptionsPanel;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 
