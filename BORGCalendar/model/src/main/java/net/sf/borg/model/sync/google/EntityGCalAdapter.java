@@ -36,7 +36,7 @@ public class EntityGCalAdapter {
         DateTime dt = new DateTime(d);
 
         // TODO - assumes untimed only
-        ap.setDate(new Date(dt.getValue()));
+        ap.setDate(new Date(dt.getValue()-tzOffset(dt.getValue())));
         return ap;
 
     }
