@@ -58,7 +58,7 @@ public class GCal {
     private Tasks tservice = null;
 
     public static boolean isSyncing() {
-        return Prefs.getBoolPref(PrefName.GOOGLE_SYNC);
+        return Prefs.getBoolPref(PrefName.GOOGLE_SYNC) && Prefs.getBoolPref(PrefName.ENABLE_GOOGLE_FEATURE);
     }
 
     static public GCal getReference() {

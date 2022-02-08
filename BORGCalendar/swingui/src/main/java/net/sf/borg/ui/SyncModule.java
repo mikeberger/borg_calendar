@@ -321,50 +321,54 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
 
         m.add(vcardmenu);
 
-        JMenu gcalmenu = new JMenu("Google");
-        JMenuItem gcalsyncmi = new JMenuItem("Sync");
-        gcalsyncmi.addActionListener(new ActionListener() {
+        if( Prefs.getBoolPref(PrefName.ENABLE_GOOGLE_FEATURE)) {
 
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                try {
-                    if (!GCal.isSyncing()) {
-                        JOptionPane.showMessageDialog(null, Resource.getResourceString("Sync-Not-Set"), null,
-                                JOptionPane.ERROR_MESSAGE);
-                        return;
+            JMenu gcalmenu = new JMenu("Google");
+            JMenuItem gcalsyncmi = new JMenuItem("Sync");
+            gcalsyncmi.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent arg0) {
+                    try {
+                        if (!GCal.isSyncing()) {
+                            JOptionPane.showMessageDialog(null, Resource.getResourceString("Sync-Not-Set"), null,
+                                    JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+
+                        runGcalSync(false);
+
+                    } catch (Exception e) {
+                        Errmsg.getErrorHandler().errmsg(e);
                     }
-
-                    runGcalSync(false);
-
-                } catch (Exception e) {
-                    Errmsg.getErrorHandler().errmsg(e);
                 }
-            }
-        });
+            });
 
-        gcalmenu.add(gcalsyncmi);
+            gcalmenu.add(gcalsyncmi);
 
-        JMenuItem gcalow = new JMenuItem("Overwrite");
-        gcalow.addActionListener(new ActionListener() {
+            JMenuItem gcalow = new JMenuItem("Overwrite");
+            gcalow.addActionListener(new ActionListener() {
 
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                try {
-                    if (!GCal.isSyncing()) {
-                        JOptionPane.showMessageDialog(null, Resource.getResourceString("Sync-Not-Set"), null,
-                                JOptionPane.ERROR_MESSAGE);
-                        return;
+                @Override
+                public void actionPerformed(ActionEvent arg0) {
+                    try {
+                        if (!GCal.isSyncing()) {
+                            JOptionPane.showMessageDialog(null, Resource.getResourceString("Sync-Not-Set"), null,
+                                    JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+
+                        runGcalSync(true);
+
+                    } catch (Exception e) {
+                        Errmsg.getErrorHandler().errmsg(e);
                     }
-
-                    runGcalSync(true);
-
-                } catch (Exception e) {
-                    Errmsg.getErrorHandler().errmsg(e);
                 }
-            }
-        });
-        gcalmenu.add(gcalow);
-        m.add(gcalmenu);
+            });
+            gcalmenu.add(gcalow);
+            m.add(gcalmenu);
+        }
+
         return m;
     }
 
