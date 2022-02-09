@@ -22,6 +22,7 @@ import com.google.api.services.tasks.TasksScopes;
 import com.google.api.services.tasks.model.Task;
 import com.google.api.services.tasks.model.TaskList;
 import com.google.api.services.tasks.model.TaskLists;
+import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.SocketClient;
@@ -241,8 +242,13 @@ public class GCal {
                                 Task t = EntityGCalAdapter.toGCalTask(ap);
                                 if (t != null) {
                                     // check if task exists in google already
-                                    if (t.getEtag() == null)
+                                    if (t.getEtag() == null) {
+                                        // suspicious case - provide warning
+                                        SocketClient.sendLogMessage("*** WARNING ***");
+                                        SocketClient.sendLogMessage("Todo was changed in BORG that has no record of google task. Please check google. Manual delete may be needed.");
+                                        SocketClient.sendLogMessage(ap.toString());
                                         addTask(t);
+                                    }
                                     else
                                         updateTask(t);
                                 }
