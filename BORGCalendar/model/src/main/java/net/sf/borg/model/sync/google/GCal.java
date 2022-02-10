@@ -527,7 +527,9 @@ public class GCal {
                     AppointmentModel.getReference().saveAppt(ap);
                 } finally {
                     SyncLog.getReference().setProcessUpdates(true);
-                    return 1;
+                    // keep going - if there was a problem and URL was incorrectly null, then
+                    // we still might have to do todo
+                    //return 1;
                 }
             }
 
