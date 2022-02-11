@@ -357,7 +357,11 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
                                     JOptionPane.ERROR_MESSAGE);
                             return;
                         }
-
+                        int ret = JOptionPane.showConfirmDialog(null, Resource.getResourceString("Caldav-Overwrite-Warn"),
+                                Resource.getResourceString("Confirm"), JOptionPane.OK_CANCEL_OPTION,
+                                JOptionPane.WARNING_MESSAGE);
+                        if (ret != JOptionPane.OK_OPTION)
+                            return;
                         runGcalSync(true);
 
                     } catch (Exception e) {
@@ -386,7 +390,9 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
 
                 } catch (Exception e) {
                     e.printStackTrace();
+                    log.severe("***ERROR during sync***, please check logs");
                     SocketClient.sendLogMessage(e.toString());
+                    SocketClient.sendLogMessage("***ERROR during sync***, please check logs");
                 }
 
                 SocketClient.sendLogMessage(Resource.getResourceString("done"));
