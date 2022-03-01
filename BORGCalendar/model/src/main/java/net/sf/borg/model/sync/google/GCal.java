@@ -362,7 +362,6 @@ public class GCal {
         DateTime a = new DateTime(after);
         Events events = service.events().list(calendarId)
                 .setMaxResults(1000)
-                .setTimeMin(a)
                 .setSingleEvents(false)
                 .execute();
         List<Event> items = events.getItems();
@@ -379,10 +378,11 @@ public class GCal {
         SocketClient.sendLogMessage("SYNC: processed " + count + " new/changed Events");
 
         count = 0;
-        com.google.api.services.tasks.model.Tasks result2 = tservice.tasks().list(taskList).execute();
+        com.google.api.services.tasks.model.Tasks result2 = tservice.tasks().list(taskList).setMaxResults(100).execute();
         List<Task> tasks = result2.getItems();
         if (tasks != null) {
             log.info("SYNC: found " + tasks.size() + " Tasks on server");
+            SocketClient.sendLogMessage("SYNC: found " + tasks.size() + " Tasks on server");
 
             for (Task task : tasks) {
                 count += syncTask(task, serverUids);
