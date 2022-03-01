@@ -32,19 +32,47 @@ public class GCalTest {
         ch.setLevel(Level.FINE);
         log.addHandler(ch);
         log.setUseParentHandlers(false);
-        log.setLevel(Level.ALL);
+        log.setLevel(Level.INFO);
         DBHelper.setFactory(new JdbcDBHelper());
         DBHelper.setController(new JdbcDBHelper());
-        DBHelper.getController().connect("jdbc:h2:mem:C:/Users/i_fle/.gcaltest/borgdb;USER=sa");
+        DBHelper.getController().connect("jdbc:h2:file:C:/Users/deskp/borgut;USER=sa");
 
 
-        Prefs.setPrefRootNode("net/sf/borg/unittest");
+        Prefs.setPrefRootNode("net/sf/borg/test");
 
         Prefs.putPref(PrefName.GOOGLE_SYNC, "true");
-        Prefs.putPref(PrefName.GCAL_CAL_ID, "8b6erha7qmkjasa1u1nk7848g8@group.calendar.google.com");
-        Prefs.putPref(PrefName.GCAL_TASKLIST_ID, "MTc1MjMwMzA0ODkwNjY1NDc0NzU6MDow");
+        Prefs.putPref(PrefName.GCAL_CAL_ID, "borgtest");
+        Prefs.putPref(PrefName.GCAL_TASKLIST_ID, "testtasks");
         SyncLog.getReference();
 
+    }
+
+    @Test
+    public void sync() throws Exception{
+        GCal.getReference().sync(10,false);
+    }
+
+    @Test
+    public void load_db() throws Exception {
+        Date now = new Date();
+        for( int i = 0; i < 200; i++){
+            Appointment appt = AppointmentModel.getReference().newAppt();
+            appt.setDate(now);
+            appt.setText("appt" + i);
+            AppointmentModel.getReference().saveAppt(appt);
+        }
+        for( int i = 0; i < 200; i++){
+            Appointment appt = AppointmentModel.getReference().newAppt();
+            appt.setDate(now);
+            appt.setText("task" + i);
+            appt.setTodo(true);
+            AppointmentModel.getReference().saveAppt(appt);
+        }
+    }
+
+    @Test
+    public void overwrite() throws Exception {
+        GCal.getReference().sync(10,true);
     }
 
     @Test

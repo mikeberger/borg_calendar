@@ -248,8 +248,7 @@ public class GCal {
                                         SocketClient.sendLogMessage("Todo was changed in BORG that has no record of google task. Please check google. Manual delete may be needed.");
                                         SocketClient.sendLogMessage(ap.toString());
                                         addTask(t);
-                                    }
-                                    else
+                                    } else
                                         updateTask(t);
                                 }
                             } else {
@@ -356,37 +355,57 @@ public class GCal {
         SocketClient.sendLogMessage("SYNC: Start Incoming Sync");
         log.info("SYNC: Start Incoming Sync");
 
-
+        String pageToken = "";
+        int count = 0;
         ArrayList<String> serverUids = new ArrayList<String>();
 
         DateTime a = new DateTime(after);
-        Events events = service.events().list(calendarId)
-                .setMaxResults(1000)
-                .setSingleEvents(false)
-                .execute();
-        List<Event> items = events.getItems();
 
-        log.info("SYNC: " + a);
+        while (true) {
+            Events events = service.events().list(calendarId)
+                    .setMaxResults(1000)
+                    .setPageToken(pageToken)
+                    .setSingleEvents(false)
+                    .execute();
+            List<Event> items = events.getItems();
 
-        SocketClient.sendLogMessage("SYNC: found " + items.size() + " Event Calendars on server");
-        log.info("SYNC: found " + items.size() + " Event Calendars on server");
-        int count = 0;
-        for (Event event : items) {
-            count += syncEvent(event, serverUids);
+            log.info("SYNC: " + a);
+
+            SocketClient.sendLogMessage("SYNC: found " + items.size() + " Event Calendars on server");
+            log.info("SYNC: found " + items.size() + " Event Calendars on server");
+
+            for (Event event : items) {
+                count += syncEvent(event, serverUids);
+            }
+
+            if (events.getNextPageToken() == null)
+                break;
+
+            pageToken = events.getNextPageToken();
+
         }
 
         SocketClient.sendLogMessage("SYNC: processed " + count + " new/changed Events");
 
         count = 0;
-        com.google.api.services.tasks.model.Tasks result2 = tservice.tasks().list(taskList).setMaxResults(100).execute();
-        List<Task> tasks = result2.getItems();
-        if (tasks != null) {
-            log.info("SYNC: found " + tasks.size() + " Tasks on server");
-            SocketClient.sendLogMessage("SYNC: found " + tasks.size() + " Tasks on server");
+        pageToken = "";
+        while (true) {
+            com.google.api.services.tasks.model.Tasks result2 = tservice.tasks().list(taskList).setMaxResults(100).setPageToken(pageToken).execute();
+            List<Task> tasks = result2.getItems();
+            if (tasks != null) {
+                log.info("SYNC: found " + tasks.size() + " Tasks on server ");
+                SocketClient.sendLogMessage("SYNC: found " + tasks.size() + " Tasks on server");
 
-            for (Task task : tasks) {
-                count += syncTask(task, serverUids);
-            }
+                for (Task task : tasks) {
+                    count += syncTask(task, serverUids);
+                }
+            } else
+                break;
+
+            if (result2.getNextPageToken() == null)
+                break;
+
+            pageToken = result2.getNextPageToken();
         }
         SocketClient.sendLogMessage("SYNC: processed " + count + " new/changed Tasks");
 
