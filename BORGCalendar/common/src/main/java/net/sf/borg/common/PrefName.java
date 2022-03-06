@@ -373,13 +373,6 @@ public class PrefName {
 			Integer.valueOf(15));
 
 
-	// FTP
-	public static PrefName FTPSERVER = new PrefName("ical-ftp-server",
-			"localhost");
-	public static PrefName FTPPATH = new PrefName("ical-ftp-path", "borg.ics");
-	public static PrefName FTPUSER = new PrefName("ical-ftp-user", "");
-	public static PrefName FTPPW = new PrefName("ical-ftp-pw", "");
-	public static PrefName FTPPW2 = new PrefName("ical-ftp-pw2", "");
 	
 	// option to export todos as VTODO objects instead of VEVENTS
 	public static PrefName ICAL_EXPORT_TODO = new PrefName("ical-export-todo", "false");

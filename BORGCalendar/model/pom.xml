@@ -35,12 +35,6 @@
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
-			<groupId>commons-net</groupId>
-			<artifactId>commons-net</artifactId>
-			<version>3.8.0</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.mnode.ical4j/ical4j-connector -->
-		<dependency>
 			<groupId>org.mnode.ical4j</groupId>
 			<artifactId>ical4j-connector</artifactId>
 			<version>1.0.1</version>

@@ -24,7 +24,6 @@ import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.sync.ical.CalDav;
-import net.sf.borg.model.sync.ical.IcalFTP;
 import net.sf.borg.ui.options.OptionsView.OptionsPanel;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 
@@ -38,10 +37,7 @@ public class IcalOptionsPanel extends OptionsPanel {
 
 	private JSpinner exportyears = new JSpinner(new SpinnerNumberModel(2, 1,
 			100, 1));
-	private JTextField ftpserver = new JTextField();
-	private JTextField ftppath = new JTextField();
-	private JTextField ftpusername = new JTextField();
-	private JPasswordField ftppassword = new JPasswordField();
+
 	private JCheckBox todoBox = new JCheckBox();
 
 	private JTextField caldavServer = new JTextField();
@@ -60,9 +56,6 @@ public class IcalOptionsPanel extends OptionsPanel {
 	public IcalOptionsPanel() {
 		this.setLayout(new java.awt.GridBagLayout());
 
-		JPanel ftppanel = new JPanel();
-		ftppanel.setBorder(new TitledBorder("FTP"));
-		ftppanel.setLayout(new GridBagLayout());
 
 		JPanel calpanel = new JPanel();
 		calpanel.setBorder(new TitledBorder("CALDAV"));
@@ -77,33 +70,6 @@ public class IcalOptionsPanel extends OptionsPanel {
 		this.add(todoBox, GridBagConstraintsFactory.create(0, 4,
 				GridBagConstraints.BOTH, 1.0, 0.0));
 
-		ftppanel.add(new JLabel(Resource.getResourceString("ftpserver")),
-				GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH));
-		ftppanel.add(ftpserver, GridBagConstraintsFactory.create(1, 0,
-				GridBagConstraints.BOTH, 1.0, 0.0));
-
-		ftppanel.add(new JLabel(Resource.getResourceString("ftppath")),
-				GridBagConstraintsFactory.create(2, 0, GridBagConstraints.BOTH));
-		ftppanel.add(ftppath, GridBagConstraintsFactory.create(3, 0,
-				GridBagConstraints.BOTH, 1.0, 0.0));
-
-		ftppanel.add(new JLabel(Resource.getResourceString("ftpusername")),
-				GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH));
-		ftppanel.add(ftpusername, GridBagConstraintsFactory.create(1, 1,
-				GridBagConstraints.BOTH, 1.0, 0.0));
-
-		JLabel pl = new JLabel(Resource.getResourceString("ftppassword"));
-		ftppanel.add(pl,
-				GridBagConstraintsFactory.create(2, 1, GridBagConstraints.BOTH));
-		pl.setLabelFor(ftppassword);
-		ftppanel.add(ftppassword, GridBagConstraintsFactory.create(3, 1,
-				GridBagConstraints.BOTH, 1.0, 0.0));
-		ftppassword.setEditable(true);
-
-		GridBagConstraints gbc = GridBagConstraintsFactory.create(0, 5,
-				GridBagConstraints.BOTH, 1.0, 0.0);
-		gbc.gridwidth = GridBagConstraints.REMAINDER;
-		this.add(ftppanel, gbc);
 
 		calpanel.add(new JLabel(Resource.getResourceString("CALDAV_Server")),
 				GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH));
@@ -163,7 +129,7 @@ public class IcalOptionsPanel extends OptionsPanel {
 		calpanel.add(caldavSelfSigned,
 				GridBagConstraintsFactory.create(2, 5, GridBagConstraints.BOTH));
 
-		gbc = GridBagConstraintsFactory.create(0, 6, GridBagConstraints.BOTH,
+		GridBagConstraints gbc = GridBagConstraintsFactory.create(0, 6, GridBagConstraints.BOTH,
 				1.0, 0.0);
 		gbc.gridwidth = GridBagConstraints.REMAINDER;
 		this.add(calpanel, gbc);
@@ -173,15 +139,6 @@ public class IcalOptionsPanel extends OptionsPanel {
 	@Override
 	public void applyChanges() {
 
-
-		Prefs.putPref(PrefName.FTPUSER, ftpusername.getText());
-		Prefs.putPref(PrefName.FTPSERVER, ftpserver.getText());
-		Prefs.putPref(PrefName.FTPPATH, ftppath.getText());
-		try {
-			IcalFTP.sep(new String(ftppassword.getPassword()));
-		} catch (Exception e) {
-			Errmsg.getErrorHandler().errmsg(e);
-		}
 
 		Prefs.putPref(PrefName.ICAL_EXPORTYEARS, exportyears.getValue());
 
@@ -215,15 +172,6 @@ public class IcalOptionsPanel extends OptionsPanel {
 
 		todoBox.setSelected(Prefs.getBoolPref(PrefName.ICAL_EXPORT_TODO));
 
-		ftpusername.setText(Prefs.getPref(PrefName.FTPUSER));
-		ftpserver.setText(Prefs.getPref(PrefName.FTPSERVER));
-		ftppath.setText(Prefs.getPref(PrefName.FTPPATH));
-
-		try {
-			ftppassword.setText(IcalFTP.gep());
-		} catch (Exception e) {
-			Errmsg.getErrorHandler().errmsg(e);
-		}
 
 		caldavUser.setText(Prefs.getPref(PrefName.CALDAV_USER));
 		caldavCal.setText(Prefs.getPref(PrefName.CALDAV_CAL));

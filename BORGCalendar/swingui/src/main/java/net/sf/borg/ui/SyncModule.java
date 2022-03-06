@@ -10,7 +10,6 @@ import net.sf.borg.model.sync.google.GCal;
 import net.sf.borg.model.sync.ical.CalDav;
 import net.sf.borg.model.sync.ical.CardDav;
 import net.sf.borg.model.sync.ical.ICal;
-import net.sf.borg.model.sync.ical.IcalFTP;
 import net.sf.borg.ui.MultiView.Module;
 import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.options.GoogleOptionsPanel;
@@ -224,21 +223,6 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
 
         icsmenu.add(exp);
 
-        JMenuItem expftp = new JMenuItem();
-        expftp.setText(Resource.getResourceString("exportToFTP"));
-        expftp.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                try {
-                    IcalFTP.exportftp(Prefs.getIntPref(PrefName.ICAL_EXPORTYEARS));
-                } catch (Exception e) {
-                    Errmsg.getErrorHandler().errmsg(e);
-                }
-            }
-        });
-
-        icsmenu.add(expftp);
 
         m.add(icsmenu);
 
