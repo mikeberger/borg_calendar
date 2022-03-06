@@ -366,21 +366,12 @@ public class PrefName {
 	public static final PrefName MAX_TEXT_SIZE = new PrefName("max_text_size",
 			Integer.valueOf(1024 * 1024));
 
-	public static PrefName ICAL_PORT = new PrefName("ical-server-port",
-			Integer.valueOf(8844));
 	public static PrefName ICAL_EXPORTYEARS = new PrefName("ical-export-years",
 			Integer.valueOf(2));
 	
 	public static PrefName ICAL_SYNCMINS = new PrefName("ical-syncmins",
 			Integer.valueOf(15));
 
-	// option to prevent import of appts that were previously exported from borg
-	// used when the goal is to only import appointments created outside of
-	// borg, but
-	// to not import appts that were exported from borg to another calendar and
-	// then
-	// sent back to borg as part of the export from the other calendar
-	public static PrefName SKIP_BORG = new PrefName("ical-skip_borg", "true");
 
 	// FTP
 	public static PrefName FTPSERVER = new PrefName("ical-ftp-server",
@@ -389,12 +380,6 @@ public class PrefName {
 	public static PrefName FTPUSER = new PrefName("ical-ftp-user", "");
 	public static PrefName FTPPW = new PrefName("ical-ftp-pw", "");
 	public static PrefName FTPPW2 = new PrefName("ical-ftp-pw2", "");
-	
-	//public static PrefName USE_PROXY = new PrefName("use_proxy", "false");
-	//public static PrefName PROXY_HOST = new PrefName("proxy_host", "");
-	//public static PrefName PROXY_PORT = new PrefName("proxy_port", Integer.valueOf(8080));
-	
-	public static PrefName ICAL_IMPORT_URL = new PrefName("ical-import-url", "");
 	
 	// option to export todos as VTODO objects instead of VEVENTS
 	public static PrefName ICAL_EXPORT_TODO = new PrefName("ical-export-todo", "false");

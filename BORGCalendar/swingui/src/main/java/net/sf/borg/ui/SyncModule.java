@@ -609,26 +609,6 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
             e1.printStackTrace();
         }
 
-        // import from URL
-        String url = Prefs.getPref(PrefName.ICAL_IMPORT_URL);
-        if (url != null && !url.isEmpty()) {
-            try {
-
-                int res = JOptionPane.showConfirmDialog(null,
-                        Resource.getResourceString("ImportUrl") + ": " + url + " ?",
-                        Resource.getResourceString("please_confirm"), JOptionPane.OK_CANCEL_OPTION);
-
-                if (res == JOptionPane.YES_OPTION) {
-
-                    String warning = ICal.importIcalFromUrl(url);
-                    if (warning != null && !warning.isEmpty())
-                        Errmsg.getErrorHandler().notice(warning);
-                }
-            } catch (Exception e) {
-                Errmsg.getErrorHandler().errmsg(e);
-            }
-        }
-
         SyncLog.getReference();
 
     }

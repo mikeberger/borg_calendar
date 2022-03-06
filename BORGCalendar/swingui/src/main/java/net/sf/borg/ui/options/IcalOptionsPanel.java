@@ -36,15 +36,12 @@ public class IcalOptionsPanel extends OptionsPanel {
 
 	private static final long serialVersionUID = 795364188303457966L;
 
-	private JTextField port = new JTextField();
 	private JSpinner exportyears = new JSpinner(new SpinnerNumberModel(2, 1,
 			100, 1));
-	private JCheckBox skipBox = new JCheckBox();
 	private JTextField ftpserver = new JTextField();
 	private JTextField ftppath = new JTextField();
 	private JTextField ftpusername = new JTextField();
 	private JPasswordField ftppassword = new JPasswordField();
-	private JTextField importurl = new JTextField();
 	private JCheckBox todoBox = new JCheckBox();
 
 	private JTextField caldavServer = new JTextField();
@@ -75,20 +72,6 @@ public class IcalOptionsPanel extends OptionsPanel {
 				GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH));
 		this.add(exportyears,
 				GridBagConstraintsFactory.create(1, 0, GridBagConstraints.BOTH));
-
-		this.add(new JLabel(Resource.getResourceString("server_port")),
-				GridBagConstraintsFactory.create(0, 1, GridBagConstraints.BOTH));
-		this.add(port, GridBagConstraintsFactory.create(1, 1,
-				GridBagConstraints.BOTH, 1.0, 0.0));
-
-		skipBox.setText(Resource.getResourceString("skip_borg_ical"));
-		this.add(skipBox, GridBagConstraintsFactory.create(0, 2,
-				GridBagConstraints.BOTH, 1.0, 0.0));
-
-		this.add(new JLabel(Resource.getResourceString("ical_import_url")),
-				GridBagConstraintsFactory.create(0, 3, GridBagConstraints.BOTH));
-		this.add(importurl, GridBagConstraintsFactory.create(1, 3,
-				GridBagConstraints.BOTH, 1.0, 0.0));
 
 		todoBox.setText(Resource.getResourceString("ical_export_todos"));
 		this.add(todoBox, GridBagConstraintsFactory.create(0, 4,
@@ -190,18 +173,6 @@ public class IcalOptionsPanel extends OptionsPanel {
 	@Override
 	public void applyChanges() {
 
-		// validate that port is a number
-		try {
-			int socket = Integer.parseInt(port.getText());
-			Prefs.putPref(PrefName.ICAL_PORT, Integer.valueOf(socket));
-		} catch (NumberFormatException e) {
-			Errmsg.getErrorHandler().notice(
-					Resource.getResourceString("port_warning"));
-
-			port.setText(((Integer) PrefName.ICAL_PORT.getDefault()).toString());
-			Prefs.putPref(PrefName.ICAL_PORT, PrefName.ICAL_PORT.getDefault());
-			return;
-		}
 
 		Prefs.putPref(PrefName.FTPUSER, ftpusername.getText());
 		Prefs.putPref(PrefName.FTPSERVER, ftpserver.getText());
@@ -214,10 +185,7 @@ public class IcalOptionsPanel extends OptionsPanel {
 
 		Prefs.putPref(PrefName.ICAL_EXPORTYEARS, exportyears.getValue());
 
-		OptionsPanel.setBooleanPref(skipBox, PrefName.SKIP_BORG);
 		OptionsPanel.setBooleanPref(todoBox, PrefName.ICAL_EXPORT_TODO);
-
-		Prefs.putPref(PrefName.ICAL_IMPORT_URL, importurl.getText());
 
 		Prefs.putPref(PrefName.CALDAV_USER, caldavUser.getText());
 		Prefs.putPref(PrefName.CALDAV_SERVER, caldavServer.getText());
@@ -242,12 +210,9 @@ public class IcalOptionsPanel extends OptionsPanel {
 	@Override
 	public void loadOptions() {
 
-		int p = Prefs.getIntPref(PrefName.ICAL_PORT);
-		port.setText(Integer.toString(p));
 
 		exportyears.setValue(Prefs.getIntPref(PrefName.ICAL_EXPORTYEARS));
 
-		skipBox.setSelected(Prefs.getBoolPref(PrefName.SKIP_BORG));
 		todoBox.setSelected(Prefs.getBoolPref(PrefName.ICAL_EXPORT_TODO));
 
 		ftpusername.setText(Prefs.getPref(PrefName.FTPUSER));
@@ -259,8 +224,6 @@ public class IcalOptionsPanel extends OptionsPanel {
 		} catch (Exception e) {
 			Errmsg.getErrorHandler().errmsg(e);
 		}
-
-		importurl.setText(Prefs.getPref(PrefName.ICAL_IMPORT_URL));
 
 		caldavUser.setText(Prefs.getPref(PrefName.CALDAV_USER));
 		caldavCal.setText(Prefs.getPref(PrefName.CALDAV_CAL));
