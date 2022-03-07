@@ -305,57 +305,56 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
 
         m.add(vcardmenu);
 
-        if( Prefs.getBoolPref(PrefName.ENABLE_GOOGLE_FEATURE)) {
 
-            JMenu gcalmenu = new JMenu("Google");
-            JMenuItem gcalsyncmi = new JMenuItem("Sync");
-            gcalsyncmi.addActionListener(new ActionListener() {
+        JMenu gcalmenu = new JMenu("Google");
+        JMenuItem gcalsyncmi = new JMenuItem("Sync");
+        gcalsyncmi.addActionListener(new ActionListener() {
 
-                @Override
-                public void actionPerformed(ActionEvent arg0) {
-                    try {
-                        if (!GCal.isSyncing()) {
-                            JOptionPane.showMessageDialog(null, Resource.getResourceString("Sync-Not-Set"), null,
-                                    JOptionPane.ERROR_MESSAGE);
-                            return;
-                        }
-
-                        runGcalSync(false);
-
-                    } catch (Exception e) {
-                        Errmsg.getErrorHandler().errmsg(e);
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                try {
+                    if (!GCal.isSyncing()) {
+                        JOptionPane.showMessageDialog(null, Resource.getResourceString("Sync-Not-Set"), null,
+                                JOptionPane.ERROR_MESSAGE);
+                        return;
                     }
+
+                    runGcalSync(false);
+
+                } catch (Exception e) {
+                    Errmsg.getErrorHandler().errmsg(e);
                 }
-            });
+            }
+        });
 
-            gcalmenu.add(gcalsyncmi);
+        gcalmenu.add(gcalsyncmi);
 
-            JMenuItem gcalow = new JMenuItem("Overwrite");
-            gcalow.addActionListener(new ActionListener() {
+        JMenuItem gcalow = new JMenuItem("Overwrite");
+        gcalow.addActionListener(new ActionListener() {
 
-                @Override
-                public void actionPerformed(ActionEvent arg0) {
-                    try {
-                        if (!GCal.isSyncing()) {
-                            JOptionPane.showMessageDialog(null, Resource.getResourceString("Sync-Not-Set"), null,
-                                    JOptionPane.ERROR_MESSAGE);
-                            return;
-                        }
-                        int ret = JOptionPane.showConfirmDialog(null, Resource.getResourceString("Caldav-Overwrite-Warn"),
-                                Resource.getResourceString("Confirm"), JOptionPane.OK_CANCEL_OPTION,
-                                JOptionPane.WARNING_MESSAGE);
-                        if (ret != JOptionPane.OK_OPTION)
-                            return;
-                        runGcalSync(true);
-
-                    } catch (Exception e) {
-                        Errmsg.getErrorHandler().errmsg(e);
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                try {
+                    if (!GCal.isSyncing()) {
+                        JOptionPane.showMessageDialog(null, Resource.getResourceString("Sync-Not-Set"), null,
+                                JOptionPane.ERROR_MESSAGE);
+                        return;
                     }
+                    int ret = JOptionPane.showConfirmDialog(null, Resource.getResourceString("Caldav-Overwrite-Warn"),
+                            Resource.getResourceString("Confirm"), JOptionPane.OK_CANCEL_OPTION,
+                            JOptionPane.WARNING_MESSAGE);
+                    if (ret != JOptionPane.OK_OPTION)
+                        return;
+                    runGcalSync(true);
+
+                } catch (Exception e) {
+                    Errmsg.getErrorHandler().errmsg(e);
                 }
-            });
-            gcalmenu.add(gcalow);
-            m.add(gcalmenu);
-        }
+            }
+        });
+        gcalmenu.add(gcalow);
+        m.add(gcalmenu);
+
 
         return m;
     }
@@ -375,7 +374,7 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
                 } catch (Exception e) {
                     e.printStackTrace();
                     log.severe("***ERROR during sync***, please check logs");
-                    SocketClient.sendLogMessage(e.toString());
+                    SocketClient.sendLogMessage(e.getMessage());
                     SocketClient.sendLogMessage("***ERROR during sync***, please check logs");
                 }
 
@@ -533,10 +532,8 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
 
         OptionsView.getReference().addPanel(new IcalOptionsPanel());
 
-        if( Prefs.getBoolPref(PrefName.ENABLE_GOOGLE_FEATURE))
-        {
-            OptionsView.getReference().addPanel(new GoogleOptionsPanel());
-        }
+        OptionsView.getReference().addPanel(new GoogleOptionsPanel());
+
 
         new FileDrop(parent, new FileDrop.Listener() {
             @Override

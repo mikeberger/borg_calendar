@@ -22,7 +22,7 @@ import com.google.api.services.tasks.TasksScopes;
 import com.google.api.services.tasks.model.Task;
 import com.google.api.services.tasks.model.TaskList;
 import com.google.api.services.tasks.model.TaskLists;
-import net.sf.borg.common.Errmsg;
+import com.google.gson.stream.MalformedJsonException;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.SocketClient;
@@ -59,7 +59,7 @@ public class GCal {
     private Tasks tservice = null;
 
     public static boolean isSyncing() {
-        return Prefs.getBoolPref(PrefName.GOOGLE_SYNC) && Prefs.getBoolPref(PrefName.ENABLE_GOOGLE_FEATURE);
+        return Prefs.getBoolPref(PrefName.GOOGLE_SYNC);
     }
 
     static public GCal getReference() {
@@ -70,26 +70,35 @@ public class GCal {
         return (singleton);
     }
 
-    private Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
+    private Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws Exception {
         // Load client secrets.
         File f = new File(Prefs.getPref(PrefName.GOOGLE_CRED_FILE));
         //InputStream in = CalendarQuickstart.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
-        InputStream in = new FileInputStream(f);
-        if (in == null) {
-            throw new FileNotFoundException("Resource not found: " + Prefs.getPref(PrefName.GOOGLE_CRED_FILE));
-        }
-        GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
+        try {
+            InputStream in = new FileInputStream(f);
+            if (in == null) {
+                throw new Exception("Credentials File not found: " + Prefs.getPref(PrefName.GOOGLE_CRED_FILE));
+            }
+            GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
 
-        // Build flow and trigger user authorization request.
-        GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
-                HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
-                .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(Prefs.getPref(PrefName.GOOGLE_TOKEN_DIR))))
-                .setAccessType("offline")
-                .build();
-        LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
-        Credential credential = new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
-        //returns an authorized Credential object.
-        return credential;
+            // Build flow and trigger user authorization request.
+            GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
+                    HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
+                    .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(Prefs.getPref(PrefName.GOOGLE_TOKEN_DIR))))
+                    .setAccessType("offline")
+                    .build();
+            LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
+            Credential credential = new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
+            //returns an authorized Credential object.
+            return credential;
+        } catch (FileNotFoundException fe) {
+            throw new Exception("Credentials File not found: " + Prefs.getPref(PrefName.GOOGLE_CRED_FILE));
+        } catch ( MalformedJsonException mj ) {
+            log.severe(mj.toString());
+            throw new Exception("could not parse JSON credentials file: " + Prefs.getPref(PrefName.GOOGLE_CRED_FILE));
+        }
+
+
     }
 
     // null out the google ids so that they are fetched again
