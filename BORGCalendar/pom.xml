@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>BORGCalendar</groupId>
 	<artifactId>BORGCalendar</artifactId>
-	<version>1.9</version>
+	<version>1.10</version>
 	<packaging>pom</packaging>
 	<url>http://mbcsoft.com</url>
 	<inceptionYear>2003</inceptionYear>

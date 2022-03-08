@@ -1,5 +1,5 @@
-BORG 1.9.05
------------
+BORG 1.10.01
+------------
 Java 17
 Wrong recurrence saved when importing biweekly todo created on aCalendar+ (android) #139
 Simplify backup options
@@ -13,6 +13,8 @@ VCARD import/export from file
 VCARD import from CARDDAV server
 Display appointment colors in search results
 Allow bulk color change for appointments in search results
+Sync with Google Calendar and Tasks (experimental)
+misc fixes
 
 
 BORG 1.9.04
