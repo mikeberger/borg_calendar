@@ -510,6 +510,7 @@ public class GCal {
             try {
                 newap.setKey(ap.getKey());
                 newap.setReminderTimes(ap.getReminderTimes());
+                newap.setEncrypted(ap.isEncrypted());
 
                 SyncLog.getReference().setProcessUpdates(false);
                 log.info("SYNC save: " + event);
