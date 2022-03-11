@@ -23,6 +23,7 @@ import com.google.api.services.tasks.model.Task;
 import com.google.api.services.tasks.model.TaskList;
 import com.google.api.services.tasks.model.TaskLists;
 import com.google.gson.stream.MalformedJsonException;
+import net.sf.borg.common.DateUtil;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.common.SocketClient;
@@ -34,10 +35,7 @@ import net.sf.borg.model.sync.SyncEvent;
 import net.sf.borg.model.sync.SyncLog;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Logger;
 
 public class GCal {
@@ -542,8 +540,7 @@ public class GCal {
             serverUids.add(uid);
             Appointment ap = AppointmentModel.getReference().getApptByUid(uid);
             if (ap == null) {
-                log.warning("SYNC: ***WARNING*** could not find appt with UID: " + uid + " ignoring....");
-                SocketClient.sendLogMessage("SYNC: ***WARNING*** could not find appt with UID: " + uid + " ignoring....");
+                logBoth("SYNC: ***WARNING*** could not find appt with UID: " + uid + " ignoring....");
                 return 0;
             }
 
@@ -571,20 +568,37 @@ public class GCal {
 
             // TODO - check if date chgd - case where acalendar+ updates recurring todo
             DateTime due = new DateTime(task.getDue());
-            log.fine("task due:" + due);
+            Date taskDate = new Date(due.getValue()-tzOffset(due.getValue()));
+            log.fine("task due:" + taskDate);
             log.fine("ap due:" + ap.getDate());
             log.fine("ap nt:" + ap.getNextTodo());
+
 
             Date d = ap.getNextTodo();
             if (d == null)
                 d = ap.getDate();
 
-            // if incoming date is greater than BORG date, then just do_todo
-            if (due.getValue() - d.getTime() > 1000 * 60 * 60) { // 1 hr cushion - should be exact though?
-                log.info("SYNC: do_todo");
-                AppointmentModel.getReference().do_todo(ap.getKey(), false);
-                return 1;
+            log.fine("ap doe:" + DateUtil.dayOfEpoch(d));
+            log.fine("task doe:" + DateUtil.dayOfEpoch(taskDate));
+
+            if( Math.abs(taskDate.getTime() - d.getTime()) > 1000 * 60 * 60 * 12){
+                logBoth("** TODO time changed on google for " + ap.toString());
+
+                // if incoming date is greater than BORG date, then just do_todo
+                if (ap.isRepeatFlag() && taskDate.getTime() - d.getTime() > 1000 * 60 * 60) { // 1 hr cushion - should be exact though?
+                    logBoth("time advanced for repeating todo - do_todo - please verify");
+                    AppointmentModel.getReference().do_todo(ap.getKey(), false);
+                    return 1;
+                }
+                else if( !ap.isRepeatFlag()){
+                    ap.setDate(DateUtil.setToMidnight(taskDate));
+                    AppointmentModel.getReference().saveAppt(ap);
+                    logBoth("non-repeating todo date change - please check:" + ap.toString());
+                    return 0;
+                }
             }
+
+
 
 
         } else {
@@ -598,6 +612,16 @@ public class GCal {
 
         return 0;
 
+    }
+
+    static private int tzOffset(long date) {
+        return TimeZone.getDefault().getOffset(date);
+    }
+
+    // log to both logfile and SYNC popup
+    private void logBoth(String s){
+        log.info(s);
+        SocketClient.sendLogMessage(s);
     }
 
 }
