@@ -469,10 +469,7 @@ public class GCal {
             }
         }
 
-        // don't process recurring events - only recurring tasks
-        if (recur) {
-            return 0;
-        }
+
 
         log.fine("Incoming event: " + event);
 
@@ -504,6 +501,24 @@ public class GCal {
                 }
             }
 
+            // ******* for recurring events, only update the text (and url) - so don't update more than that on the google side
+            // to make more changes than that - delete and add on google
+            if (recur) {
+                logBoth("*** recurring event, partial update only: " + event.toString());
+                try {
+                    ap.setText(newap.getText());
+                    ap.setUrl(newap.getUrl());
+
+                    SyncLog.getReference().setProcessUpdates(false);
+                    log.info("SYNC save: " + event);
+                    log.info("SYNC save: " + ap);
+                    AppointmentModel.getReference().saveAppt(ap);
+                } finally {
+                    SyncLog.getReference().setProcessUpdates(true);
+                    return 1;
+                }
+            }
+
 
             try {
                 newap.setKey(ap.getKey());
@@ -524,6 +539,19 @@ public class GCal {
     }
 
     private int syncTask(Task task, ArrayList<String> serverUids) throws Exception {
+
+
+        // limited task sync - google tasks are limited in functionality
+        // BORG is the master. edits on the google side are not fully supported
+        // Here are the limited set of sync conditions when updates are made to google tasks:
+        // 1. complete task on google -> do_todo on BORG
+        // 2. move non-recurring tasks on google -> update date only in BORG
+        // 3. date changed forward on recurring tasks - do_todo in BORG
+        //    this case assumes the task was completed using aCalendar+ on ANDROID, which handles recurrence, and not a date change to the task
+        //    BORG recurring tasks are NOT recurring on the google side, except in aCalendar+, so we are limited in what we should do when they
+        //    are updated on the google side
+        // 4. brand new google task - save as new
+        // Otherwise, no change in BORG
 
 
         log.fine("Incoming task: " + task.toPrettyString());
@@ -594,7 +622,7 @@ public class GCal {
                     ap.setDate(DateUtil.setToMidnight(taskDate));
                     AppointmentModel.getReference().saveAppt(ap);
                     logBoth("non-repeating todo date change - please check:" + ap.toString());
-                    return 0;
+                    return 1;
                 }
             }
 
