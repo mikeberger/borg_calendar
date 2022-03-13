@@ -52,7 +52,7 @@ public class SyncLog extends Model implements Model.Listener, Prefs.Listener {
 		setProcessUpdates(CalDav.isSyncing() || GCal.isSyncing());
 
 		new JdbcDBUpgrader("select id from syncmap",
-				"CREATE CACHED TABLE syncmap (id integer NOT NULL,uid longvarchar, url longvarchar, objtype varchar(25) NOT NULL,action varchar(25) NOT NULL,PRIMARY KEY (id,objtype))")
+				"CREATE TABLE IF NOT EXISTS syncmap (id integer NOT NULL,uid longvarchar, url longvarchar, objtype varchar(25) NOT NULL,action varchar(25) NOT NULL,PRIMARY KEY (id,objtype))")
 						.upgrade();
 		new JdbcDBUpgrader("select url from syncmap",
 				"ALTER TABLE syncmap ADD url longvarchar")

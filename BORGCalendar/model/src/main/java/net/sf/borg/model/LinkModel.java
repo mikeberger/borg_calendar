@@ -125,6 +125,22 @@ public class LinkModel extends Model {
 			}
 			return path;
 		}
+		if(  dbtype.equals("jdbc")) {
+			String url  = Prefs.getPref(PrefName.JDBCURL);
+			if( url.startsWith("jdbc:sqlite:")){
+				String path = url.substring(12, url.lastIndexOf('/')) + "/attachments";
+				File f = new File(path);
+				if (!f.exists()) {
+					if (!f.mkdir()) {
+						Errmsg.getErrorHandler()
+								.notice(Resource
+										.getResourceString("att_folder_err") + path);
+						return null;
+					}
+				}
+				return path;
+			}
+		}
 		return null;
 	}
 

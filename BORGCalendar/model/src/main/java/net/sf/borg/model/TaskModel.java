@@ -37,6 +37,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.io.Writer;
 import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * TaksModel manages all of the task related entities - Task, Project, Subtask,
@@ -46,6 +47,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 		CalendarEntityProvider, Searchable<KeyedEntity<?>> {
 
 	static private final String TASKTYPES_OPTION = "TASKTYPES";
+	static private final Logger log = Logger.getLogger("net.sf.borg");
 
 	/**
 	 * class XmlContainer is solely for JAXB XML export/import to keep the same
@@ -445,6 +447,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 			db_.deleteProject(id);
 			commitTransaction();
 		} catch (Exception e) {
+			e.printStackTrace();
 			rollbackTransaction();
 			Errmsg.getErrorHandler().errmsg(e);
 		}
@@ -695,9 +698,15 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 		String dbtype = Prefs.getPref(PrefName.DBTYPE);
 		if (dbtype.equals("mysql"))
 			DBHelper.getController().execSQL("SET foreign_key_checks = 0;");
-		else
-			DBHelper.getController()
-					.execSQL("SET REFERENTIAL_INTEGRITY FALSE;");
+		else {
+			try {
+				DBHelper.getController()
+						.execSQL("SET REFERENTIAL_INTEGRITY FALSE;");
+			}
+			catch(Exception e){
+				log.info(e.getMessage());
+			}
+		}
 
 		try {
 			/*
@@ -765,8 +774,13 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 			if (dbtype.equals("mysql"))
 				DBHelper.getController().execSQL("SET foreign_key_checks = 1;");
 			else
-				DBHelper.getController().execSQL(
-						"SET REFERENTIAL_INTEGRITY TRUE;");
+				try {
+					DBHelper.getController().execSQL(
+							"SET REFERENTIAL_INTEGRITY TRUE;");
+				}
+				catch( Exception e){
+					log.info(e.getMessage());
+				}
 			load_map();
 			refreshListeners();
 		}

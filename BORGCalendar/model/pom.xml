@@ -101,5 +101,11 @@
 			<artifactId>google-api-services-tasks</artifactId>
 			<version>v1-rev20210709-1.32.1</version>
 		</dependency>
+		<dependency>
+			<groupId>org.xerial</groupId>
+			<artifactId>sqlite-jdbc</artifactId>
+			<version>3.36.0.3</version>
+		</dependency>
+
 	</dependencies>
 </project>
