@@ -27,7 +27,6 @@ import net.sf.borg.model.*;
 import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.model.db.jdbc.JdbcDBHelper;
 import net.sf.borg.model.sync.ical.CalDav;
-import net.sf.borg.model.tool.ConversionTool;
 import net.sf.borg.ui.UIControl;
 import net.sf.borg.ui.options.OptionsView;
 import net.sf.borg.ui.util.ModalMessage;
@@ -250,25 +249,6 @@ public class Borg implements SocketHandler, Observer {
 				testdb = args[i];
 			} else if (args[i].equals("-test")) {
 				testing = true;
-			} else if (args[i].equals("-runtool")) {
-				i++;
-				if (i >= args.length) {
-					System.out.println("tool name is missing");
-					System.exit(1);
-				}
-				String toolName = args[i];
-				try {
-					Class<?> toolClass = Class.forName("net.sf.borg.model.tool." + toolName);
-					Object tool = toolClass.getDeclaredConstructor().newInstance();
-					if (tool instanceof ConversionTool) {
-						((ConversionTool) tool).convert();
-					}
-					System.exit(0);
-				} catch (Exception e) {
-					e.printStackTrace();
-					System.exit(1);
-				}
-
 			}
 
 		}
