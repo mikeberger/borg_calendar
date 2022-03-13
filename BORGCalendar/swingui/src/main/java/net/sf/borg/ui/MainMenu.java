@@ -302,7 +302,7 @@ class MainMenu {
 		menuBar.add(helpmenu);
 
 		String dbtype = Prefs.getPref(PrefName.DBTYPE);
-		if (dbtype.equals("mysql") || dbtype.equals("jdbc")) {
+		if (dbtype.equals("jdbc")) {
 			syncMI.setEnabled(true);
 		} else {
 			syncMI.setEnabled(false);

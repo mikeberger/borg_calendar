@@ -696,7 +696,8 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 		XmlContainer container = (XmlContainer) u.unmarshal(is);
 
 		String dbtype = Prefs.getPref(PrefName.DBTYPE);
-		if (dbtype.equals("mysql"))
+		String url = Prefs.getPref(PrefName.JDBCURL);
+		if (dbtype.equals("jdbc") && url != null && url.contains("mysql"))
 			DBHelper.getController().execSQL("SET foreign_key_checks = 0;");
 		else {
 			try {
@@ -771,7 +772,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 				}
 			}
 		} finally {
-			if (dbtype.equals("mysql"))
+			if (dbtype.equals("jdbc") && url != null && url.contains("mysql"))
 				DBHelper.getController().execSQL("SET foreign_key_checks = 1;");
 			else
 				try {

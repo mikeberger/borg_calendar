@@ -90,19 +90,12 @@ public class JdbcDBUpgrader {
 
 	/**
 	 * Execute the upgrade SQL.
-	 * If MYSQL - just show the SQL to the user - do not upgrade
-	 * 
+	 *
 	 * @throws Exception the exception
 	 */
 	private void performUpgrade() throws Exception {
-		String dbtype = Prefs.getPref(PrefName.DBTYPE);
 		for( int i = 0; i < updSql.length; i++ )
 		{
-			
-			if (dbtype.equals("mysql")) {
-			    Errmsg.getErrorHandler().notice(Resource.getResourceString("update_error") + updSql[i]);
-				continue;
-			} 
 			log.info("Running Upgrade SQL:" + updSql[i]);
 			JdbcDB.execSQL(updSql[i]);
 		}

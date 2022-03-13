@@ -5,9 +5,10 @@
 	<title></title>
 	<meta name="generator" content="LibreOffice 7.2.1.2 (Windows)"/>
 	<meta name="created" content="00:00:00"/>
-	<meta name="changed" content="2022-03-06T11:35:31.575000000"/>
+	<meta name="changed" content="2022-03-13T18:53:22.541000000"/>
 	<meta name="Originator" content="Microsoft Word 11"/>
 	<meta name="ProgId" content="Word.Document"/>
+	<meta name="created" content="00:00:00">
 	<style type="text/css">
 		p { color: #000000 }
 		a:link { color: #0000ff }
@@ -15,7 +16,7 @@
 	</style>
 </head>
 <body lang="en-US" text="#000000" link="#0000ff" vlink="#800080" dir="ltr"><p>
-<font face="Arial"><font size="5" style="font-size: 18pt"><u><b>Databases</b></u></font></font></p>
+<u><font face="Arial"><font size="5" style="font-size: 18pt"><b>Databases</b></u></font></font></p>
 <p style="font-weight: normal; text-decoration: none"><font face="Arial, sans-serif"><font size="3" style="font-size: 12pt">Borg
 will create an H2 database in a default location when started after
 the first install. Most users should never alter the database
@@ -26,51 +27,18 @@ settings, the available choices are:</font></p>
 <ul>
 	<li><p><font face="Arial">HSQLDB</font></p>
 	<li><p><font face="Arial">H2</font></p>
-	<li><p><font face="Arial">MySQL</font></p>
+	<li><p><font face="Arial"><font color="#000000">Generic JDBC</font></font></p>
 </ul>
-<p><font face="Arial">There is also a Generic JDBC option, which
-takes a jdbc url. This can be used by more advanced users if
-non-standard URL options are needed. It is not guaranteed to work in
-all cases.</font></p>
-<p><font face="Arial"><u><b>H2</b></u></font></p>
-<p style="font-weight: normal; text-decoration: none"><font face="Arial">Support
-for H2 is new in release 1.7.5 and is the default as of 1.7.7. BORG
-will manage the H2 files without any actions from the user. No
-pre-requisite software is needed.</font></p>
-<p><font face="Arial"><u><b>HSQLDB</b></u></font></p>
-<p><font face="Arial">BORG continues to support HSQLDB. <span style="text-decoration: none"><span style="font-weight: normal">No
-pre-requisite software is needed.</span></span></font></p>
-<p><font face="Arial"><u><b>MySQL</b></u></font></p>
-<p><font face="Arial">Using MySQL with BORG requires the user to
-download at setup the MySQL software. In addition, the user must also
-download and install a JDBC database driver for MySQL.</font></p>
-<p><font face="Arial">Some familiarity with MYSQL is assumed in the
-instructions below.</font></p>
-<p><font face="Arial">To use RDBMS support with MYSQL:</font></p>
-<p><font face="Arial">1.Install MYSQL and make it accessible on your
-machine or network. See </font><a href="http://www.mysql.com/"><span style="text-decoration: none"><font face="Arial">www.mysql.com</font></span></a>
-<font face="Arial">for the software (which is free).</font></p>
-<p><font face="Arial">2.</font> <font face="Arial">Create a database
-for BORG data in MYSQL. Name it whatever you like.</font></p>
-<p><font face="Arial">3.</font> <font face="Arial">Create a user with
-at least select/insert/update/delete access to your database </font>
-</p>
-<p><font face="Arial">4.</font> <font face="Arial">Create the BORG
-database tables in your database. This is done by running the SQL
-contained in the borg_mysql.sql file that comes with BORG. From the
-mysql command line you would do this:<br/>
+<p><font face="Arial"><font color="#000000">Borg has code to
+explicitly support Sqlite when an Sqlite URL is entered via the JDBC
+option.</font></font></p>
+<p><font face="Arial"><font color="#000000">Borg has legacy code to
+detect when a Mysql URL is entered and provides support for Mysql
+specific issues. However, Mysql is no longer being tested with Borg
+and is deprecated.</font></font></p>
+<p><br/>
 <br/>
-mysql&gt;use
-your-database-name<br/>
-mysql&gt;source borg_mysql.sql &lt;=== you
-need the full path to borg_mysql.sql if it is not in your current
-folder.</font></p>
-<p><font face="Arial">5.BORG looks for a database driver for MYSQL in
-the CLASSPATH. The driver is ** NOT ** shipped with BORG. You have to
-download and install this separately. It must be included in the
-CLASSPATH by the JRE. BORG can no longer use dynamic loading to find
-it due to security changes in the JRE.</font></p>
-<p><font face="Arial">6. Run BORG and set the MySQL database
-parameters from the database options screen.</font></p>
+
+</p>
 </body>
 </html>

@@ -428,7 +428,7 @@ public class Borg implements SocketHandler, Observer {
 			// start autosync timer
 			int syncmins = Prefs.getIntPref(PrefName.SYNCMINS);
 			String dbtype = Prefs.getPref(PrefName.DBTYPE);
-			if ((dbtype.equals("mysql") || dbtype.equals("jdbc")) && syncmins != 0) {
+			if ( dbtype.equals("jdbc") && syncmins != 0) {
 				this.dbSyncTimer_ = new java.util.Timer("SyncTimer");
 				this.dbSyncTimer_.schedule(new TimerTask() {
 					@Override

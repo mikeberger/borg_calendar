@@ -107,8 +107,7 @@ final class JdbcDB {
     }
 
     /**
-     * Connect to the database. The logic varies based on the URL. Supports
-     * MYSQL, HSQL For HSQL - if the DB doesn't exist, it will be created
+     * Connect to the database. The logic varies based on the URL.
      *
      * @param urlIn the JDBC url
      * @throws Exception the exception
@@ -118,13 +117,7 @@ final class JdbcDB {
         if (url == null)
             url = buildDbDir();
         url_ = url;
-        if (url.startsWith("jdbc:mysql")) {
-            Class.forName("com.mysql.jdbc.Driver");
-            if (connection_ == null) {
-                connection_ = DriverManager.getConnection(url);
-            }
-
-        } else if (url.startsWith("jdbc:hsqldb")) {
+        if (url.startsWith("jdbc:hsqldb")) {
             Class.forName("org.hsqldb.jdbcDriver");
             if (connection_ == null) {
                 Properties props = new Properties();
@@ -252,7 +245,7 @@ final class JdbcDB {
                             int ch = r.read();
                             if (ch == ';') {
                                 sb.append(";\n");
-                                log.info("SQL: " + sb.toString());
+                                log.fine("SQL: " + sb.toString());
                                 execSQL(sb.toString());
                                 sb.setLength(0);
                                 continue;
@@ -278,7 +271,6 @@ final class JdbcDB {
             }
         }
 
-        JdbcDB.doDBUpgrades();
 
     }
 
@@ -431,41 +423,14 @@ final class JdbcDB {
                     + Prefs.getPref(PrefName.DBNAME) + "?user="
                     + Prefs.getPref(PrefName.DBUSER) + "&password="
                     + Prefs.getPref(PrefName.DBPASS) + "&autoReconnect=true";
+            log.info("converting MYSQL prefs to Generic JDBC");
+            Prefs.putPref(PrefName.JDBCURL, dbdir);
+            Prefs.putPref(PrefName.DBTYPE, "jdbc");
         }
 
         log.info("DB URL is: " + dbdir);
         return (dbdir);
     }
 
-    /**
-     * do any db upgrades that are too complex for JdbcDBUpgrader or not portable via SQL
-     */
-    private static void doDBUpgrades() throws Exception {
 
-        // increase category size
-        //alterVarcharColumnSize("appointments", "category", 255);
-        //alterVarcharColumnSize("tasks", "category", 255);
-        //alterVarcharColumnSize("projects", "category", 255);
-    }
-
-	/*
-    static private void alterVarcharColumnSize(String table, String column, int size) throws Exception {
-        Statement st = null;
-        ResultSet rs = null;
-        try {
-            st = connection_.createStatement();
-            rs = st.executeQuery("select " + column + " from " + table);
-            ResultSetMetaData md = rs.getMetaData();
-            if (md.getColumnDisplaySize(1) != size) {
-                new JdbcDBUpgrader(null, "alter table " + table + " alter " + column + " varchar(" + size + ")").upgrade();
-            }
-        } catch (Exception e) {
-            Errmsg.getErrorHandler().errmsg(e);
-        } finally {
-            if (rs != null)
-                rs.close();
-            if (st != null)
-                st.close();
-        }
-    }*/
 }
