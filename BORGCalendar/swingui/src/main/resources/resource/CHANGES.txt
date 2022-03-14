@@ -14,6 +14,10 @@ VCARD import from CARDDAV server
 Display appointment colors in search results
 Allow bulk color change for appointments in search results
 Sync with Google Calendar and Tasks (experimental)
+Support Sqlite Database
+Increase address field sizes
+cleanup old code
+remove Mysql specific DB options
 misc fixes
 
 
