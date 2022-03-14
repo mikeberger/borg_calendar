@@ -37,10 +37,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.security.CodeSource;
-import java.security.ProtectionDomain;
 import java.util.Timer;
 import java.util.*;
 import java.util.logging.*;
@@ -225,22 +221,12 @@ public class Borg implements SocketHandler, Observer {
 		// override for testing a different db
 		String testdb = null;
 
-		// override for tray icon name
-		String trayname = "BORG";
-
 		// testing flag
 		boolean testing = false;
 
 		// process command line args
 		for (int i = 0; i < args.length; i++) {
-			if (args[i].equals("-trayname")) {
-				i++;
-				if (i >= args.length) {
-					System.out.println("Error: missing trayname argument");
-					System.exit(1);
-				}
-				trayname = args[i];
-			} else if (args[i].equals("-db")) {
+			if (args[i].equals("-db")) {
 				i++;
 				if (i >= args.length) {
 					System.out.println(Resource.getResourceString("-db_argument_is_missing"));
@@ -376,11 +362,10 @@ public class Borg implements SocketHandler, Observer {
 			UIControl.setShutdownListener(this);
 
 			// start the UI thread
-			final String traynm = trayname;
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override
 				public void run() {
-					UIControl.startUI(traynm);
+					UIControl.startUI();
 				}
 			});
 
@@ -425,29 +410,8 @@ public class Borg implements SocketHandler, Observer {
 				}
 			}, mailtime * 60 * 1000, 24 * 60 * 60 * 1000);
 
-			// start autosync timer
-			int syncmins = Prefs.getIntPref(PrefName.SYNCMINS);
-			String dbtype = Prefs.getPref(PrefName.DBTYPE);
-			if ( dbtype.equals("jdbc") && syncmins != 0) {
-				this.dbSyncTimer_ = new java.util.Timer("SyncTimer");
-				this.dbSyncTimer_.schedule(new TimerTask() {
-					@Override
-					public void run() {
-						SwingUtilities.invokeLater(new Runnable() {
-							@Override
-							public void run() {
-								try {
-									Model.syncModels();
-								} catch (Exception e) {
-									Errmsg.getErrorHandler().errmsg(e);
-								}
-							}
-						});
-					}
-				}, syncmins * 60 * 1000, syncmins * 60 * 1000);
-			}
 
-			syncmins = Prefs.getIntPref(PrefName.ICAL_SYNCMINS);
+			int syncmins = Prefs.getIntPref(PrefName.ICAL_SYNCMINS);
 			if (syncmins != 0) {
 				this.caldavSyncTimer_ = new java.util.Timer("IcalSyncTimer");
 				this.caldavSyncTimer_.schedule(new TimerTask() {
@@ -531,20 +495,6 @@ public class Borg implements SocketHandler, Observer {
 
 	}
 
-	/**
-	 * Constructs a URL expression for the location to this current class, where
-	 * it lives in the jar file.
-	 *
-	 * @return
-	 * @throws MalformedURLException
-	 */
-	protected URL getJarURL() throws MalformedURLException {
-		Class<?> cls = this.getClass();
-		ProtectionDomain domain = cls.getProtectionDomain();
-		CodeSource codeSource = domain.getCodeSource();
-		URL sourceLocation = codeSource.getLocation();
-		return new URL(sourceLocation.toString());
-	}
 
 	@Override
 	public void update(Observable o, Object arg) {

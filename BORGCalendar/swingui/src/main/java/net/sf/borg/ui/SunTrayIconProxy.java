@@ -68,7 +68,7 @@ public class SunTrayIconProxy implements Prefs.Listener {
 		return trayIconStarted;
 	}
 
-	static public void startTrayIcon(String trayname) {
+	static public void startTrayIcon() {
 		// start the system tray icon - or at least attempt to
 		// it doesn't run on all OSs and all WMs
 		trayIconStarted = true;
@@ -78,7 +78,7 @@ public class SunTrayIconProxy implements Prefs.Listener {
 		} else {
 			try {
 				singleton = new SunTrayIconProxy();
-				singleton.init(trayname);
+				singleton.init();
 			} catch (UnsatisfiedLinkError le) {
 				le.printStackTrace();
 				trayIconStarted = false;
@@ -98,12 +98,10 @@ public class SunTrayIconProxy implements Prefs.Listener {
 
 	/**
 	 * initalize the system tray
-	 * 
-	 * @param trayname
-	 *            the tray name (when the user hovers over the tray icon)
+	 *
 	 * @throws Exception
 	 */
-	private void init(String trayname) throws Exception {
+	private void init() throws Exception {
 
 		if (!SystemTray.isSupported())
 			throw new Exception("Systray not supported");
@@ -113,7 +111,7 @@ public class SunTrayIconProxy implements Prefs.Listener {
 		trayIcon = new TrayIcon(Toolkit.getDefaultToolkit().getImage(
 				getClass().getResource("/resource/borg16.jpg")));
 
-		trayIcon.setToolTip(trayname);
+		trayIcon.setToolTip("BORG");
 
 		actionMenu.setLabel(Resource.getResourceString("Open"));
 

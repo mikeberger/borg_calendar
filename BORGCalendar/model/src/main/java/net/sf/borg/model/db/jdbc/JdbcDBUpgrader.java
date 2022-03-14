@@ -19,9 +19,6 @@
 package net.sf.borg.model.db.jdbc;
 
 import net.sf.borg.common.Errmsg;
-import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
-import net.sf.borg.common.Resource;
 
 import java.sql.SQLException;
 import java.util.logging.Logger;

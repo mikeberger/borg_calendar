@@ -107,9 +107,6 @@ public class PrefName {
 	/** jdbc url - for generic jdbc only, not hsql or mysql */
 	static public PrefName JDBCURL = new PrefName("jdbcurl", "");
 
-	/** interval for db auto-sync in minutes */
-	static public PrefName SYNCMINS = new PrefName("sync_mins", Integer.valueOf(0));
-
 	/** hsql database directory */
 	static public PrefName HSQLDBDIR = new PrefName("hsqldbdir", "not-set");
 

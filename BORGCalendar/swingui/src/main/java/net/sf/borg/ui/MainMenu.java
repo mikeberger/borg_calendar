@@ -64,21 +64,6 @@ class MainMenu {
 		 */
 		ResourceHelper.setText(actionMenu, "Action");
 
-		JMenuItem syncMI = new JMenuItem();
-		syncMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Refresh16.gif")));
-		syncMI.setText(Resource.getResourceString("Synchronize"));
-		syncMI.addActionListener(new java.awt.event.ActionListener() {
-			@Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				try {
-					Model.syncModels();
-				} catch (Exception e) {
-					Errmsg.getErrorHandler().errmsg(e);
-				}
-			}
-		});
-		actionMenu.add(syncMI);
-
 		JMenuItem sqlMI = new JMenuItem();
 		sqlMI.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/Refresh16.gif")));
 		ResourceHelper.setText(sqlMI, "RunSQL");
@@ -301,12 +286,6 @@ class MainMenu {
 
 		menuBar.add(helpmenu);
 
-		String dbtype = Prefs.getPref(PrefName.DBTYPE);
-		if (dbtype.equals("jdbc")) {
-			syncMI.setEnabled(true);
-		} else {
-			syncMI.setEnabled(false);
-		}
 
 	}
 

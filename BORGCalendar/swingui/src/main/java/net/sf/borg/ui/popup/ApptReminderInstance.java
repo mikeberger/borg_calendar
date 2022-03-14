@@ -185,10 +185,6 @@ public class ApptReminderInstance extends ReminderInstance {
 	 * determine if an appointment time is outside of the range of its reminder
 	 * times.
 	 * 
-	 * @param nonexpiring
-	 *            if true, the reminder never expires, so do not check the
-	 *            latest reminder time
-	 * 
 	 * @return true, if the appointment tome is not in range of its reminder
 	 *         times
 	 */

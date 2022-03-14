@@ -216,8 +216,6 @@ public class DateTimePanel extends JPanel {
 
 	/**
 	 * update to reflect the settings of show date and military time
-	 * @param showDate - show the date
-	 * @param milTime - use 24 hour time
 	 */
 	public void update(boolean show_date, boolean mil_Time) {
 		if (mil_Time) {

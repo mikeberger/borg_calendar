@@ -124,13 +124,6 @@ public class Day {
 	 *            the day
 	 * @param l
 	 *            list of appointment keys to add
-	 * @param year
-	 *            the year
-	 * @param month
-	 *            the month
-	 * @param date
-	 *            the date
-	 * 
 	 * @throws Exception
 	 *             the exception
 	 */

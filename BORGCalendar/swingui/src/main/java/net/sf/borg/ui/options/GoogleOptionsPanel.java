@@ -22,7 +22,6 @@ package net.sf.borg.ui.options;
 
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
-import net.sf.borg.common.Resource;
 import net.sf.borg.model.sync.google.GCal;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.options.OptionsView.OptionsPanel;

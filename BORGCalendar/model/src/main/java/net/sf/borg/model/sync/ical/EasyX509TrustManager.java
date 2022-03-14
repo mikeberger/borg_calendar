@@ -57,21 +57,18 @@ public class EasyX509TrustManager implements X509TrustManager {
 	}
 
 	/**
-	 * @see com.sun.net.ssl.X509TrustManager#getAcceptedIssuers()
 	 */
 	public X509Certificate[] getAcceptedIssuers() {
 		return this.standardTrustManager.getAcceptedIssuers();
 	}
 
 	/**
-	 * @see com.sun.net.ssl.X509TrustManager#isClientTrusted(X509Certificate[])
 	 */
 	public boolean isClientTrusted(X509Certificate[] certificates) {
 		return true;
 	}
 
 	/**
-	 * @see com.sun.net.ssl.X509TrustManager#isServerTrusted(X509Certificate[])
 	 */
 	public boolean isServerTrusted(X509Certificate[] certificates) {
 		if ((certificates != null)) {

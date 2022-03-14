@@ -56,10 +56,8 @@ public class UIControl {
 	/**
 	 * Main UI initialization.
 	 *
-	 * @param trayname
-	 *            - name for the tray icon
-	 */
-	public static void startUI(String trayname) {
+	*/
+	public static void startUI() {
 
 		Errmsg.setErrorHandler(new UIErrorHandler());
 
@@ -111,7 +109,6 @@ public class UIControl {
 			splashScreen = new SplashScreen(ModalityType.MODELESS);
 			splashScreen.setText(Resource.getResourceString("Initializing"));
 			splashScreen.setVisible(true);
-			final String tn = trayname;
 
 			/*
 			 * in order for the splash to be seen, we will complete
@@ -121,13 +118,13 @@ public class UIControl {
 
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
-					completeUIInitialization(tn);
+					completeUIInitialization();
 				}
 			});
 			t.setRepeats(false);
 			t.start();
 		} else
-			completeUIInitialization(trayname);
+			completeUIInitialization();
 
 	}
 
@@ -135,13 +132,11 @@ public class UIControl {
 	 * complete the parts of the UI initialization that run after the splash
 	 * screen has shown for a while
 	 *
-	 * @param trayname
-	 *            name for the tray icon
 	 */
-	private static void completeUIInitialization(String trayname) {
+	private static void completeUIInitialization() {
 
 		// tray icon
-		SunTrayIconProxy.startTrayIcon(trayname);
+		SunTrayIconProxy.startTrayIcon();
 
 		// create reminder manager
 		if (Prefs.getBoolPref(PrefName.REMINDERLIST))
