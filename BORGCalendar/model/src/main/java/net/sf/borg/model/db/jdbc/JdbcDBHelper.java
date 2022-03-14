@@ -92,10 +92,6 @@ public class JdbcDBHelper implements DBHelper.Factory, DBHelper.Controller {
 		return JdbcDB.getConnection();
 	}
 
-	@Override
-	public void reopen() throws Exception {
-		JdbcDB.reopen();
 
-	}
 
 }

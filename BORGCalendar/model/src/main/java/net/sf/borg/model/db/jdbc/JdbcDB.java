@@ -95,16 +95,6 @@ final class JdbcDB {
         connection_.setAutoCommit(true);
     }
 
-    /**
-     * close and reopen the db. For H2 - this will force a flush to disk which otherwise doesn't happen while the db is open
-     *
-     * @throws Exception
-     */
-    static synchronized public void reopen() throws Exception {
-        close();
-        connect(url_);
-
-    }
 
     /**
      * Connect to the database. The logic varies based on the URL.

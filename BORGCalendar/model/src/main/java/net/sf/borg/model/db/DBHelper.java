@@ -97,7 +97,6 @@ public class DBHelper {
 		 */
 		public void connect(String url) throws Exception;
 		public void close() throws Exception;
-		public void reopen() throws Exception;
 		public void execSQL(String string) throws Exception;
 		public ResultSet execQuery(String string) throws Exception;
 		public void beginTransaction() throws Exception;

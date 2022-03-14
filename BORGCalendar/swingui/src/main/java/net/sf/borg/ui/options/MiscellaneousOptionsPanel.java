@@ -62,8 +62,6 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 
 	private JComboBox<String> shutdownAction = new JComboBox<String>();
 
-	private JSpinner flushSpinner = new JSpinner();
-
 	/**
 	 * Instantiates a new miscellaneous options panel.
 	 */
@@ -150,13 +148,6 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 		gbc1 = GridBagConstraintsFactory.create(0, 10, GridBagConstraints.BOTH);
 		gbc1.gridwidth = 2;
 		this.add(verboseLogging, gbc1);
-		
-
-		flushSpinner.setModel(new SpinnerNumberModel(0,0,null,1));
-		this.add(new JLabel(Resource.getResourceString("db_flush")),
-				GridBagConstraintsFactory.create(0, 14, GridBagConstraints.BOTH));
-		this.add(flushSpinner,
-				GridBagConstraintsFactory.create(1, 14, GridBagConstraints.BOTH));
 
 
 	}
@@ -205,9 +196,6 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 		}
 		
 
-		int fmins = (int) flushSpinner.getValue();
-		Prefs.putPref(PrefName.FLUSH_MINS, fmins);
-		
 
 	}
 
@@ -241,9 +229,7 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 
 		int socket = Prefs.getIntPref(PrefName.SOCKETPORT);
 		socketPort.setText(Integer.toString(socket));
-		
-		int flushMins = Prefs.getIntPref(PrefName.FLUSH_MINS);
-		flushSpinner.setValue(flushMins);
+
 
 	}
 
