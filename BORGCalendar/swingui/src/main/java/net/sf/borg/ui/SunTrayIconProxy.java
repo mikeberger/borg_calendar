@@ -33,6 +33,7 @@ import java.awt.image.BufferedImage;
 import java.text.DateFormat;
 import java.util.Timer;
 import java.util.*;
+import java.util.logging.Logger;
 
 /** communicates with the new java built-in system tray APIs */
 public class SunTrayIconProxy implements Prefs.Listener {
@@ -44,6 +45,8 @@ public class SunTrayIconProxy implements Prefs.Listener {
 			UIControl.toFront();
 		}
 	}
+
+	static private final Logger log = Logger.getLogger("net.sf.borg");
 
 	private static int iconSize = 16;
 
@@ -225,6 +228,8 @@ public class SunTrayIconProxy implements Prefs.Listener {
 		Image image = null;
 		if (Prefs.getBoolPref(PrefName.SYSTRAYDATE)) {
 
+			log.fine("Updating systray image...");
+
 			// get date text
 			String text = Integer.toString(new GregorianCalendar()
 					.get(Calendar.DATE));
@@ -265,13 +270,8 @@ public class SunTrayIconProxy implements Prefs.Listener {
 
 	}
 
-	/** start a timer that updates the date icon each day */
+	/** start a timer that updates the date icon */
 	private void startRefreshTimer() {
-
-		Calendar cal = new GregorianCalendar();
-		int curmins = 60 * cal.get(Calendar.HOUR_OF_DAY)
-				+ cal.get(Calendar.MINUTE);
-		int midnight = 1440 - curmins;
 
 		Timer updatetimer = new Timer("SysTrayTimer");
 		updatetimer.schedule(new TimerTask() {
@@ -284,7 +284,7 @@ public class SunTrayIconProxy implements Prefs.Listener {
 					}
 				});
 			}
-		}, midnight * 60 * 1000, 24 * 60 * 60 * 1000);
+		}, 60 * 1000, 15 * 60 * 1000);
 
 	}
 
