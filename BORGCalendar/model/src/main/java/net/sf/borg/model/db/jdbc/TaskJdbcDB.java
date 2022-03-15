@@ -37,21 +37,7 @@ import java.util.*;
 class TaskJdbcDB extends JdbcBeanDB<Task> implements TaskDB {
 
 	public TaskJdbcDB() {
-		new JdbcDBUpgrader("select create_time from tasks",
-				"alter table tasks add column create_time datetime default '1980-01-01 00:00:00' NOT NULL").upgrade();
-		new JdbcDBUpgrader("select lastmod from tasks",
-				"alter table tasks add column lastmod datetime default '1980-01-01 00:00:00' NOT NULL").upgrade();
-		new JdbcDBUpgrader("select uid from tasks", new String[] { "alter table tasks add column uid longvarchar",
-				"update tasks set uid = CONCAT(tasknum,'@BORGT', RAND())" }).upgrade();
-		new JdbcDBUpgrader("select url from tasks", "alter table tasks add column url longvarchar").upgrade();
-		
-		new JdbcDBUpgrader("select create_time from subtasks",
-				"alter table subtasks add column create_time datetime default '1980-01-01 00:00:00' NOT NULL").upgrade();
-		new JdbcDBUpgrader("select lastmod from subtasks",
-				"alter table subtasks add column lastmod datetime default '1980-01-01 00:00:00' NOT NULL").upgrade();
-		new JdbcDBUpgrader("select uid from subtasks", new String[] { "alter table subtasks add column uid longvarchar",
-				"update subtasks set uid = CONCAT(id,'@BORGS', RAND())" }).upgrade();
-		new JdbcDBUpgrader("select url from subtasks", "alter table subtasks add column url longvarchar").upgrade();
+
 	}
 
     /* (non-Javadoc)
