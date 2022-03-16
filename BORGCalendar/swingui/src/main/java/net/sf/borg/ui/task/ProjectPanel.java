@@ -20,6 +20,7 @@
 
 package net.sf.borg.ui.task;
 
+import net.sf.borg.common.DateUtil;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Resource;
 import net.sf.borg.common.Warning;
@@ -478,7 +479,7 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 					ro[7] = Integer.valueOf(MAGIC_NO_DUE_DATE);
 				else {
 					Date dd = (Date) ro[4];
-					ro[7] = Integer.valueOf(TaskModel.daysLeft(dd));
+					ro[7] = Integer.valueOf(DateUtil.daysLeft(dd));
 				}
 
 				// strip newlines from the description

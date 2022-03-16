@@ -20,6 +20,7 @@
 
 package net.sf.borg.ui.task;
 
+import net.sf.borg.common.DateUtil;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.CategoryModel;
@@ -548,7 +549,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 
 				// duration
 				if (task.getDueDate() != null) {
-					ro[9] = Integer.valueOf(TaskModel.daysBetween(task
+					ro[9] = Integer.valueOf(DateUtil.daysBetween(task
 							.getStartDate(), task.getDueDate()));
 				} else {
 					ro[9] = null;
@@ -566,7 +567,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 				if (end == null) {
 					ro[10] = null;
 				} else {
-					ro[10] = Integer.valueOf(TaskModel.daysBetween(task
+					ro[10] = Integer.valueOf(DateUtil.daysBetween(task
 							.getStartDate(), end));
 				}
 
@@ -575,7 +576,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 					ro[4] = null;
 				else {
 					Date dd = (Date) ro[7];
-					ro[4] = Integer.valueOf(TaskModel.daysLeft(dd));
+					ro[4] = Integer.valueOf(DateUtil.daysLeft(dd));
 				}
 
 				ro[5] = task.getSummary();
@@ -629,7 +630,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 						ro[7] = subtask.getDueDate();
 						
 						if (subtask.getDueDate() != null) {
-							ro[8] = Integer.valueOf(TaskModel.daysBetween(subtask
+							ro[8] = Integer.valueOf(DateUtil.daysBetween(subtask
 									.getStartDate(), subtask.getDueDate()));
 						} else {
 							ro[8] = null;
@@ -646,7 +647,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 						if (end == null) {
 							ro[9] = null;
 						} else {
-							ro[9] = Integer.valueOf(TaskModel.daysBetween(subtask
+							ro[9] = Integer.valueOf(DateUtil.daysBetween(subtask
 									.getStartDate(), end));
 						}
 
@@ -655,7 +656,7 @@ class TaskListPanel extends JPanel implements Model.Listener {
 							ro[4] = null;
 						else {
 							Date dd = (Date) ro[7];
-							ro[4] = Integer.valueOf(TaskModel.daysLeft(dd));
+							ro[4] = Integer.valueOf(DateUtil.daysLeft(dd));
 						}
 
 						ro[5] = subtask.getDescription();

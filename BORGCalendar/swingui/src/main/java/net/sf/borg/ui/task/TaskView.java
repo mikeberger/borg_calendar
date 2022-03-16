@@ -1128,7 +1128,7 @@ public class TaskView extends DockableView {
 			if (cd != null)
 				closeDate.setText(DateFormat.getDateInstance(DateFormat.MEDIUM).format(cd));
 
-			int daysleft = TaskModel.daysLeft(task.getDueDate());
+			int daysleft = DateUtil.daysLeft(task.getDueDate());
 			daysLeftText.setText(Integer.toString(daysleft));
 
 			String cat = task.getCategory();
@@ -1169,9 +1169,9 @@ public class TaskView extends DockableView {
 						Integer.valueOf(subtask.getKey()), subtask.getDescription(), subtask.getStartDate(),
 						subtask.getDueDate(),
 						subtask.getDueDate() != null
-								? Integer.valueOf(TaskModel.daysBetween(subtask.getStartDate(), subtask.getDueDate()))
+								? Integer.valueOf(DateUtil.daysBetween(subtask.getStartDate(), subtask.getDueDate()))
 								: null,
-						subtask.getDueDate() != null ? Integer.valueOf(TaskModel.daysLeft(subtask.getDueDate())) : null,
+						subtask.getDueDate() != null ? Integer.valueOf(DateUtil.daysLeft(subtask.getDueDate())) : null,
 						subtask.getCloseDate() };
 
 				ts.addRow(o);

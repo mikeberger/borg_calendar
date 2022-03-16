@@ -525,7 +525,7 @@ public class ProjectView extends DockableView {
 				gc2.setTime(dd);
 			startDateChooser.setCalendar(gc2);
 
-			int daysleft = TaskModel.daysLeft(p.getDueDate());
+			int daysleft = DateUtil.daysLeft(p.getDueDate());
 			daysLeftText.setText(Integer.toString(daysleft));
 
 			String cat = p.getCategory();

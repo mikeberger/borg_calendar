@@ -263,59 +263,6 @@ public class TaskTypes {
 			taskTypes.remove(tt);
 	}
 
-	/**
-	 * This method will read a string containin the pre-1.7.2 XML that describes a task state model
-	 * and convert it to the 1.7.2 format. As of 1.7.2, this old format would be only found in the SMODEL 
-	 * rows of the options table. This method will never be called for a database created by version 1.7.2 or later.
-	 * @param xml the pre-1.7.2 format XML for task types
-	 * @throws Exception
-	 */
-	public void fillFromLegacyXml(String xml) throws Exception {
-
-		/*
-		 * 
-		 * there is no good reason to comment this
-		 * 
-		 */
-		taskTypes.clear();
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder builder = factory.newDocumentBuilder();
-		Document stateModel = builder.parse(new InputSource(new StringReader(xml)));
-		Collection<Element> types = getChildElements(stateModel
-				.getDocumentElement());
-		for (Element type : types) {
-			TaskType taskType = new TaskType();
-			taskType.name = type.getNodeName();
-
-			Collection<Element> typeChildren = getChildElements(type);
-			for (Element typeChild : typeChildren) {
-				if (typeChild.getNodeName().equals("CB")) {
-					// subtask
-					if (!typeChild.getTextContent().equals("---------------")) {
-						taskType.defaultSubtasks
-								.add(typeChild.getTextContent());
-					}
-				} else {
-					TaskState state = new TaskState();
-					state.name = typeChild.getNodeName();
-					Collection<Element> stateChildren = getChildElements(typeChild);
-					for (Element stateChild : stateChildren) {
-						if (stateChild.getNodeName().equals("__INIT__")) {
-							taskType.initialState = state.name;
-						} else if (stateChild.getNodeName().equals("__FINAL__")) {
-							taskType.finalState = state.name;
-						} else {
-							state.nextStates.add(stateChild.getNodeName());
-						}
-					}
-
-					taskType.states.add(state);
-				}
-
-				taskTypes.add(taskType);
-			}
-		}
-	}
 
 	/**
 	 * load this TaskTypes object from an XML string. Discard any data that was already present
