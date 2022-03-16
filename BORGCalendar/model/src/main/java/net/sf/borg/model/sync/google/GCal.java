@@ -68,6 +68,10 @@ public class GCal {
         return (singleton);
     }
 
+    static private int tzOffset(long date) {
+        return TimeZone.getDefault().getOffset(date);
+    }
+
     private Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws Exception {
         // Load client secrets.
         File f = new File(Prefs.getPref(PrefName.GOOGLE_CRED_FILE));
@@ -91,7 +95,7 @@ public class GCal {
             return credential;
         } catch (FileNotFoundException fe) {
             throw new Exception("Credentials File not found: " + Prefs.getPref(PrefName.GOOGLE_CRED_FILE));
-        } catch ( MalformedJsonException mj ) {
+        } catch (MalformedJsonException mj) {
             log.severe(mj.toString());
             throw new Exception("could not parse JSON credentials file: " + Prefs.getPref(PrefName.GOOGLE_CRED_FILE));
         }
@@ -328,7 +332,6 @@ public class GCal {
         tservice.tasks().delete(taskList, id).execute();
     }
 
-
     private void addTask(Task t) throws IOException {
         tservice.tasks().insert(taskList, t).execute();
     }
@@ -359,8 +362,7 @@ public class GCal {
 
     private void syncFromServer(Date after) throws Exception {
 
-        SocketClient.sendLogMessage("SYNC: Start Incoming Sync");
-        log.info("SYNC: Start Incoming Sync");
+        logBoth("SYNC: Start Incoming Sync");
 
         String pageToken = "";
         int count = 0;
@@ -378,8 +380,7 @@ public class GCal {
 
             log.info("SYNC: " + a);
 
-            SocketClient.sendLogMessage("SYNC: found " + items.size() + " Event Calendars on server");
-            log.info("SYNC: found " + items.size() + " Event Calendars on server");
+            logBoth("SYNC: found " + items.size() + " Event Calendars on server");
 
             for (Event event : items) {
                 count += syncEvent(event, serverUids);
@@ -392,7 +393,7 @@ public class GCal {
 
         }
 
-        SocketClient.sendLogMessage("SYNC: processed " + count + " new/changed Events");
+        logBoth("SYNC: processed " + count + " new/changed Events");
 
         count = 0;
         pageToken = "";
@@ -400,8 +401,7 @@ public class GCal {
             com.google.api.services.tasks.model.Tasks result2 = tservice.tasks().list(taskList).setMaxResults(100).setPageToken(pageToken).execute();
             List<Task> tasks = result2.getItems();
             if (tasks != null) {
-                log.info("SYNC: found " + tasks.size() + " Tasks on server ");
-                SocketClient.sendLogMessage("SYNC: found " + tasks.size() + " Tasks on server");
+                logBoth("SYNC: found " + tasks.size() + " Tasks on server ");
 
                 for (Task task : tasks) {
                     count += syncTask(task, serverUids);
@@ -414,12 +414,11 @@ public class GCal {
 
             pageToken = result2.getNextPageToken();
         }
-        SocketClient.sendLogMessage("SYNC: processed " + count + " new/changed Tasks");
+        logBoth("SYNC: processed " + count + " new/changed Tasks");
 
         log.fine(serverUids.toString());
 
-        SocketClient.sendLogMessage("SYNC: check for deletes");
-        log.info("SYNC: check for deletes");
+        logBoth("SYNC: check for deletes");
 
         // find all appts in Borg that are not on the server
         for (Appointment ap : AppointmentModel.getReference().getAllAppts()) {
@@ -433,12 +432,17 @@ public class GCal {
             }
 
             // NOTE - a delete of a google task will not cause delete of the BORG appt
-            if (!serverUids.contains(ap.getUid()) && !ap.isTodo()) {
-                SocketClient.sendLogMessage("Appointment Not Found on server - Deleting: " + ap);
-                log.info("Appointment Not Found on server - Deleting: " + ap);
-                SyncLog.getReference().setProcessUpdates(false);
-                AppointmentModel.getReference().delAppt(ap.getKey());
-                SyncLog.getReference().setProcessUpdates(true);
+            if (!serverUids.contains(ap.getUid())) {
+
+                if (ap.isTodo()) {
+                    logBoth("*** Todo not found on google - WILL LEAVE IN BORG: " + ap);
+                } else {
+                    logBoth("Appointment Not Found on server - Deleting: " + ap);
+                    SyncLog.getReference().setProcessUpdates(false);
+                    AppointmentModel.getReference().delAppt(ap.getKey());
+                    SyncLog.getReference().setProcessUpdates(true);
+                }
+
             }
         }
 
@@ -468,7 +472,6 @@ public class GCal {
                 }
             }
         }
-
 
 
         log.fine("Incoming event: " + event);
@@ -596,7 +599,7 @@ public class GCal {
 
             // TODO - check if date chgd - case where acalendar+ updates recurring todo
             DateTime due = new DateTime(task.getDue());
-            Date taskDate = new Date(due.getValue()-tzOffset(due.getValue()));
+            Date taskDate = new Date(due.getValue() - tzOffset(due.getValue()));
             log.fine("task due:" + taskDate);
             log.fine("ap due:" + ap.getDate());
             log.fine("ap nt:" + ap.getNextTodo());
@@ -609,7 +612,7 @@ public class GCal {
             log.fine("ap doe:" + DateUtil.dayOfEpoch(d));
             log.fine("task doe:" + DateUtil.dayOfEpoch(taskDate));
 
-            if( Math.abs(taskDate.getTime() - d.getTime()) > 1000 * 60 * 60 * 12){
+            if (Math.abs(taskDate.getTime() - d.getTime()) > 1000 * 60 * 60 * 12) {
                 logBoth("** TODO time changed on google for " + ap.toString());
 
                 // if incoming date is greater than BORG date, then just do_todo
@@ -617,16 +620,13 @@ public class GCal {
                     logBoth("time advanced for repeating todo - do_todo - please verify");
                     AppointmentModel.getReference().do_todo(ap.getKey(), false);
                     return 1;
-                }
-                else if( !ap.isRepeatFlag()){
+                } else if (!ap.isRepeatFlag()) {
                     ap.setDate(DateUtil.setToMidnight(taskDate));
                     AppointmentModel.getReference().saveAppt(ap);
                     logBoth("non-repeating todo date change - please check:" + ap.toString());
                     return 1;
                 }
             }
-
-
 
 
         } else {
@@ -642,12 +642,8 @@ public class GCal {
 
     }
 
-    static private int tzOffset(long date) {
-        return TimeZone.getDefault().getOffset(date);
-    }
-
     // log to both logfile and SYNC popup
-    private void logBoth(String s){
+    private void logBoth(String s) {
         log.info(s);
         SocketClient.sendLogMessage(s);
     }
