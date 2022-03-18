@@ -633,6 +633,7 @@ public class GCal {
             // google created task - add new appt
             Appointment ap = EntityGCalAdapter.toBorg(task);
             AppointmentModel.getReference().saveAppt(ap);
+            serverUids.add(ap.getUid());
             log.info("SYNC save from google-created task: " + ap);
             return 1;
 
