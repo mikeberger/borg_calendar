@@ -350,6 +350,7 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener, Mo
 
             Appointment originalAppt = calmod_.getAppt(currentlyShownAppointmentKey);
             appt.setUid(originalAppt.getUid());
+            appt.setUrl(originalAppt.getUrl());
 
             appt.setKey(currentlyShownAppointmentKey);
             try {
