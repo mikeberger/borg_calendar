@@ -63,9 +63,9 @@ public class TaskTypes {
 	 * information about a task type
 	 */
 	static private class TaskType {
-		// default subtasks for this task type
+		// default subtasks element kept for legacy reasons to prevent parse error - but is no longer used
 		@XmlElement(name="DefaultSubtask")
-		public HashSet<String> defaultSubtasks = new HashSet<String>(); 
+		private HashSet<String> defaultSubtasks = new HashSet<String>();
 		// final state (defualt is CLOSED)
 		@XmlElement(name="FinalState")
 		public String finalState;
@@ -129,17 +129,7 @@ public class TaskTypes {
 		}
 	}
 
-	/**
-	 * add a subtask to a type
-	 * @param type the type
-	 * @param value the subtask text
-	 */
-	public void addSubtask(String type, String value) {
-		TaskType tt = getType(type);
-		if (tt != null)
-			tt.defaultSubtasks.add(value);
 
-	}
 
 	/**
 	 * Adds a new type to the state model with default OPEN and CLOSE states.
@@ -239,17 +229,7 @@ public class TaskTypes {
 			tt.states.remove(ts);
 	}
 
-	/**
-	 * delete a subtask from a type
-	 * @param type the type
-	 * @param value the subtask text
-	 */
-	public void deleteSubtask(String type, String value) {
-		TaskType tt = getType(type);
-		if (tt != null)
-			tt.defaultSubtasks.remove(value);
 
-	}
 
 	/**
 	 * Delete a type.
@@ -379,21 +359,6 @@ public class TaskTypes {
 		return v;
 	}
 
-	/**
-	 * get the built-in subtasks for a type.
-	 * 
-	 * @param type
-	 *            the type
-	 * 
-	 * @return the subtasks
-	 */
-	public String[] getSubTasks(String type) {
-
-		TaskType tt = getType(type);
-		if (tt != null)
-			return tt.defaultSubtasks.toArray(new String[0]);
-		return new String[0];
-	}
 
 	/**
 	 * Gets all task types.

@@ -127,7 +127,7 @@ public class LinkModel extends Model {
 		}
 		if(  dbtype.equals("jdbc")) {
 			String url  = Prefs.getPref(PrefName.JDBCURL);
-			if( url.startsWith("jdbc:sqlite:")){
+			if( url.startsWith("jdbc:sqlite:") && url.contains("/")){
 				String path = url.substring(12, url.lastIndexOf('/')) + "/attachments";
 				File f = new File(path);
 				if (!f.exists()) {

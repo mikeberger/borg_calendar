@@ -104,8 +104,6 @@ public class TaskConfigurator extends View {
 		return (singleton);
 	}
 
-	/** The sub task menu. */
-	private JPopupMenu subTaskMenu = null;
 
 	/** The next state list. */
 	private JList<String> nextStateList = null;
@@ -118,9 +116,6 @@ public class TaskConfigurator extends View {
 
 	/** The state menu. */
 	private JPopupMenu stateMenu = null;
-
-	/** The sub task list. */
-	private JList<String> subTaskList = null;
 
 	/** The task types. */
 	private TaskTypes taskTypes;
@@ -159,73 +154,6 @@ public class TaskConfigurator extends View {
 
 	}
 
-	/**
-	 * Gets the sub task menu.
-	 * 
-	 * @return the sub task menu
-	 */
-	private JPopupMenu getSubTaskMenu() {
-
-		if (subTaskMenu == null) {
-			subTaskMenu = new JPopupMenu();
-
-			JMenuItem addItem = new JMenuItem();
-			addItem.setText(Resource.getResourceString("Add"));
-			addItem.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					if (typeList.getSelectedValue() == null) {
-						Errmsg.getErrorHandler().notice(Resource.getResourceString("Please_select_a_type"));
-						return;
-					}
-					String subtask = JOptionPane
-							.showInputDialog(net.sf.borg.common.Resource.getResourceString("New_Subtask_Value"));
-					if (subtask == null)
-						return;
-
-					taskTypes.addSubtask(typeList.getSelectedValue(), subtask);
-					refresh();
-				}
-			});
-
-			subTaskMenu.add(addItem);
-
-			JMenuItem changeSubtaskItem = new JMenuItem();
-			changeSubtaskItem.setText(net.sf.borg.common.Resource.getResourceString("Change"));
-			changeSubtaskItem.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-
-					String subtask = JOptionPane
-							.showInputDialog(net.sf.borg.common.Resource.getResourceString("New_Subtask_Value"));
-					if (subtask == null)
-						return;
-					// set subtask value
-					taskTypes.deleteSubtask(typeList.getSelectedValue(), subTaskList.getSelectedValue());
-					taskTypes.addSubtask(typeList.getSelectedValue(), subtask);
-					refresh();
-				}
-			});
-
-			subTaskMenu.add(changeSubtaskItem);
-
-			JMenuItem deleteItem = new JMenuItem();
-			deleteItem.setText(Resource.getResourceString("Delete"));
-			deleteItem.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					if (subTaskList.getSelectedIndex() < 0)
-						return;
-					// set subtask to null
-					taskTypes.deleteSubtask(typeList.getSelectedValue(), subTaskList.getSelectedValue());
-					refresh();
-				}
-			});
-
-			subTaskMenu.add(deleteItem);
-		}
-		return subTaskMenu;
-	}
 
 	/**
 	 * Gets the next state menu.
@@ -659,36 +587,6 @@ public class TaskConfigurator extends View {
 
 		listContainerPanel.add(nextStatePanel, null);
 
-		/*
-		 * sub task panel
-		 */
-		GridLayout gridLayout7 = new GridLayout();
-		JPanel subTaskPanel = new JPanel();
-		subTaskPanel.setLayout(gridLayout7);
-		subTaskPanel.setBorder(
-				BorderFactory.createTitledBorder(null, net.sf.borg.common.Resource.getResourceString("SubTasks"),
-						TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-		gridLayout7.setRows(1);
-
-		subTaskList = new JList<String>();
-		subTaskList.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mousePressed(MouseEvent e) {
-				if (e.getButton() == MouseEvent.BUTTON3) {
-					getSubTaskMenu().show(e.getComponent(), e.getX(), e.getY());
-				}
-			}
-		});
-
-		JScrollPane subTaskScroll = new JScrollPane();
-		subTaskScroll.setViewportView(subTaskList);
-		subTaskScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		subTaskScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-
-		subTaskPanel.add(subTaskScroll, null);
-
-		listContainerPanel.add(subTaskPanel, null);
-
 		topPanel.add(listContainerPanel, GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH, 1.0, 1.0));
 
 		/*
@@ -780,8 +678,6 @@ public class TaskConfigurator extends View {
 			return;
 		Collection<String> states = taskTypes.getStates(type);
 		stateList.setListData(states.toArray(new String[0]));
-		String cbs[] = taskTypes.getSubTasks(type);
-		subTaskList.setListData(cbs);
 		nextStateList.setListData(new Vector<String>());
 	}
 }

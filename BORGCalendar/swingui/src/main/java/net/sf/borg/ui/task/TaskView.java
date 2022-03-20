@@ -893,15 +893,6 @@ public class TaskView extends DockableView {
 			TableSorter ts = (TableSorter) subTaskTable.getModel();
 			if (num.equals("NEW")) {
 
-				// ah legacy crap - add any pre-defined subtasks when creating
-				// the new task
-				// ancient versions of borg allowed something like this
-				String prefDefinedTasks[] = TaskModel.getReference().getTaskTypes()
-						.getSubTasks((String) taskTypeComboBox.getSelectedItem());
-				for (int i = 0; i < prefDefinedTasks.length; i++) {
-					Object o[] = { Boolean.valueOf(false), null, prefDefinedTasks[i], new Date(), null, null };
-					ts.addRow(o);
-				}
 				// set to initial state
 				task.setState(TaskModel.getReference().getTaskTypes()
 						.getInitialState((String) taskTypeComboBox.getSelectedItem()));
