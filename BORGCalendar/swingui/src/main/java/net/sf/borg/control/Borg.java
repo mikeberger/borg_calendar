@@ -53,6 +53,7 @@ public class Borg implements SocketHandler, Observer {
 	static volatile private Borg singleton = null;
 
 	static private final Logger log = Logger.getLogger("net.sf.borg");
+	static private final Logger auditLog = Logger.getLogger("net.sf.borg.audit");
 
 	/**
 	 * Gets the singleton.
@@ -287,6 +288,16 @@ public class Borg implements SocketHandler, Observer {
 				fh.setLevel(ch.getLevel());
 				log.removeHandler(ch);
 				log.addHandler(fh);
+
+				FileHandler fh2 = new FileHandler("%h/.borgaudit.log", 1024*1024, 5, true );
+				fh2.setFormatter(new SimpleFormatter());
+				fh2.setLevel(Level.INFO);
+				auditLog.addHandler(fh2);
+
+				if( Prefs.getBoolPref(PrefName.AUDITLOG))
+					auditLog.setLevel(Level.INFO);
+				else
+					auditLog.setLevel(Level.SEVERE);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

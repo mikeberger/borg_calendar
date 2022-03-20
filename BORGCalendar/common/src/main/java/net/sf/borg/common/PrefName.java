@@ -357,6 +357,7 @@ public class PrefName {
 
 	/** debug flag - trigger debug logging */
 	public static final PrefName DEBUG = new PrefName("debug", "false");
+	public static final PrefName AUDITLOG = new PrefName("auditlog", "false");
 
 	// limit on the max text size that can be put into a text area to prevent
 	// memory issues

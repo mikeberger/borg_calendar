@@ -40,6 +40,7 @@ import java.util.logging.Logger;
 public class MiscellaneousOptionsPanel extends OptionsPanel {
 	
 	static private final Logger log = Logger.getLogger("net.sf.borg");
+	static private final Logger auditLog = Logger.getLogger("net.sf.borg.audit");
 
 
 	public enum SHUTDOWN_ACTION {
@@ -59,6 +60,7 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 	private JCheckBox dateInSysTray = new JCheckBox();
 
 	private JCheckBox verboseLogging = new JCheckBox();
+	private JCheckBox auditLogging = new JCheckBox();
 
 	private JComboBox<String> shutdownAction = new JComboBox<String>();
 
@@ -149,6 +151,12 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 		gbc1.gridwidth = 2;
 		this.add(verboseLogging, gbc1);
 
+		auditLogging.setText(Resource.getResourceString("audit_logging"));
+		gbc1 = GridBagConstraintsFactory.create(0, 11, GridBagConstraints.BOTH);
+		gbc1.gridwidth = 2;
+		this.add(auditLogging, gbc1);
+
+
 
 	}
 
@@ -165,6 +173,11 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 		else
 			log.setLevel(Level.INFO);
 
+		if (auditLogging.isSelected())
+			auditLog.setLevel(Level.INFO);
+		else
+			auditLog.setLevel(Level.SEVERE);
+
 		
 		OptionsPanel.setBooleanPref(colorprint, PrefName.COLORPRINT);
 
@@ -175,7 +188,8 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 		OptionsPanel.setBooleanPref(startToSysTray, PrefName.BACKGSTART);
 		OptionsPanel.setBooleanPref(dateInSysTray, PrefName.SYSTRAYDATE);
 		OptionsPanel.setBooleanPref(verboseLogging, PrefName.DEBUG);
-		
+		OptionsPanel.setBooleanPref(auditLogging, PrefName.AUDITLOG);
+
 		Prefs.putPref(PrefName.BACKUPDIR, backupDir.getText());
 
 		if (shutdownAction.getSelectedIndex() == 0)
@@ -216,6 +230,7 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 		OptionsPanel.setCheckBox(startToSysTray, PrefName.BACKGSTART);
 		OptionsPanel.setCheckBox(dateInSysTray, PrefName.SYSTRAYDATE);
 		OptionsPanel.setCheckBox(verboseLogging, PrefName.DEBUG);
+		OptionsPanel.setCheckBox(auditLogging, PrefName.AUDITLOG);
 
 		String shutdown_action = Prefs.getPref(PrefName.SHUTDOWN_ACTION);
 		if (shutdown_action.isEmpty()

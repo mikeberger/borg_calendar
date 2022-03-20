@@ -22,11 +22,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Stack;
+import java.util.logging.Logger;
 
 /**
  * The UndoLog. This class maintains a stack of items that can be undone.
  */
 public class UndoLog {
+
+	static private final Logger auditLog = Logger.getLogger("net.sf.borg.audit");
 
 	/** The undo stack. */
 	private Stack<UndoItem<?>> undoStack = new Stack<UndoItem<?>>();
@@ -59,6 +62,7 @@ public class UndoLog {
 	 */
 	public void addItem(UndoItem<?> item)
 	{
+		auditLog.info(item.toString());
 		undoStack.push(item);
 	}
 	

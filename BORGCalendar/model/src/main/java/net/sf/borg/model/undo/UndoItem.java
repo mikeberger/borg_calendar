@@ -19,9 +19,12 @@
 package net.sf.borg.model.undo;
 
 
+import lombok.Data;
+
 /**
  * Abstract base class for holding a single item of work that can be undone.
  */
+@Data
 public abstract class UndoItem<T> {
 
 	/** The description of the event that can be undone. */
@@ -46,23 +49,6 @@ public abstract class UndoItem<T> {
 	 */
 	public abstract void executeUndo() throws Exception;
 
-	/**
-	 * Sets the undo item description.
-	 * 
-	 * @param description
-	 *            the new description
-	 */
-	public void setDescription(String description) {
-		this.description = description;
-	}
 
-	/**
-	 * Gets the undo item description.
-	 * 
-	 * @return the description
-	 */
-	public String getDescription() {
-		return description;
-	}
 
 }
