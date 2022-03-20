@@ -163,9 +163,7 @@ public class SearchView extends DockableView implements Module {
                 theTableCellComponent.setForeground(Color.BLACK);
                 theTableCellComponent.setBackground(Color.ORANGE);
             } else {
-                // set text color by looking up the "logical" color in the
-                // prefs
-                // logical color is left over legacy thing
+
                 Theme t = Theme.getCurrentTheme();
                 String color = (String) table.getModel().getValueAt(row, 5);
 

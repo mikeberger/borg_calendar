@@ -49,6 +49,15 @@ import java.util.Map;
 @Data
 public class Theme {
 
+	static public final String COLOR1 = "color1";
+	static public final String COLOR2 = "color2";
+	static public final String COLOR3 = "color3";
+	static public final String COLOR4 = "color4";
+	static public final String COLOR5 = "color5";
+	static public final String TASKCOLOR = "taskColor";
+	static public final String BIRTHDAYCOLOR = "birthdayColor";
+	static public final String HOLIDAYCOLOR = "holidayColor";
+
 	// the preference which holds the name of the current (active) theme
 	static private PrefName CURRENT_THEME = new PrefName("current_theme", "BORG");
 
@@ -84,33 +93,30 @@ public class Theme {
 
 	/**
 	 * convert a string containing a color to an integer 
-	 * handle legacy color name mappings
 	 * code calling this method should handle the value "strike" outside of this method if needed
 	 */
 	public int colorFromString(String s) {
 
 		if( s == null ) return getTextColor4();
 
-		// legacy mappings of color strings to use tunable colors
+		// includes legacy mappings of color strings to use tunable colors
 		// should only be in this class
-		if (s.equals("red")) {
+		if (s.equals("red") || s.equals(COLOR1)) {
 			return getTextColor1();
-		} else if (s.equals("blue")) {
+		} else if (s.equals("blue")|| s.equals(COLOR2)) {
 			return getTextColor2();
-		} else if (s.equals("green")) {
+		} else if (s.equals("green")|| s.equals(COLOR3)) {
 			return getTextColor3();
-		} else if (s.equals("black")) {
+		} else if (s.equals("black")|| s.equals(COLOR4)) {
 			return getTextColor4();
-		} else if (s.equals("white")) {
+		} else if (s.equals("white")|| s.equals(COLOR5)) {
 			return getTextColor5();
-		} else if (s.equals("navy")) {
+		} else if (s.equals(TASKCOLOR)) {
 			return getTaskTextColor();
-		} else if (s.equals("brick")) {
+		} else if (s.equals(BIRTHDAYCOLOR)) {
 			return getBirthdayTextColor();
-		} else if (s.equals("purple")) {
+		} else if (s.equals(HOLIDAYCOLOR)) {
 			return getHolidayTextColor();
-		} else if (s.equals("pink")) {
-			return getTodayBg();
 		}
 		
 		// if string is a number, return it

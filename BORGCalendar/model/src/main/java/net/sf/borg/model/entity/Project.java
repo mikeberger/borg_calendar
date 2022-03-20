@@ -22,6 +22,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
+import net.sf.borg.model.Theme;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -71,9 +72,7 @@ public class Project extends KeyedEntity<Project> implements CalendarEntity {
 	@Override
 	public String getColor()
 	{
-		// for showing on calendar
-		// legacy color name - maps to a user-defined color
-		return "navy";
+		return Theme.TASKCOLOR;
 	}
 	
 	/* (non-Javadoc)

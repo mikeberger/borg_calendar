@@ -388,9 +388,7 @@ class ApptBox extends Box implements Box.Draggable {
 
 		int smfontHeight = g2.getFontMetrics().getHeight();
 		
-		// determine appt text color based on "logical" color
-		// which maps the legacy color names to the new user color prefs
-		// the legacy names have no special meaning
+
 		Color textColor = Color.BLACK;
 		Theme t = Theme.getCurrentTheme();
 		textColor = new Color(t.colorFromString(getTextColor()));

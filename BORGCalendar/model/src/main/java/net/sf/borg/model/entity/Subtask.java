@@ -82,8 +82,7 @@ public class Subtask extends KeyedEntity<Subtask> implements CalendarEntity, Syn
 	 */
 	@Override
 	public String getColor() {
-		// logical color - maps to a user-defined color - legacy code
-		return "navy";
+		return "taskColor";
 	}
 
 	/*

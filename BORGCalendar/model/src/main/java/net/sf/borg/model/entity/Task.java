@@ -22,6 +22,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
+import net.sf.borg.model.Theme;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -66,7 +67,7 @@ public class Task extends KeyedEntity<Task> implements CalendarEntity, SyncableE
 	@Override
 	public String getColor()
 	{
-		return "navy";
+		return Theme.TASKCOLOR;
 	}
 	
 	/* (non-Javadoc)

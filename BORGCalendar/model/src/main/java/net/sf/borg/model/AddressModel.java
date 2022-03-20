@@ -424,7 +424,7 @@ public class AddressModel extends Model implements Searchable<Address>,
                 String color = info.getColor();
 
                 if (color == null)
-                    info.setColor("brick");
+                    info.setColor(Theme.BIRTHDAYCOLOR);
 
                 Date bd = addr.getBirthday();
                 GregorianCalendar g = new GregorianCalendar();

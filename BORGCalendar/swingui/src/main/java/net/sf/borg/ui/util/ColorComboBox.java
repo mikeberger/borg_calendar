@@ -52,15 +52,15 @@ public class ColorComboBox extends JComboBox<String>{
             // set the icon based on the user defined colors
             // map the "logical" color names to the user defined color
             Theme t = Theme.getCurrentTheme();
-            if (sel.equals("black")) {
+            if (sel.equals(colors[3])) {
                 setIcon(new SolidComboBoxIcon(new Color(t.getTextColor4())));
-            } else if (sel.equals("red")) {
+            } else if (sel.equals(colors[0])) {
                 setIcon(new SolidComboBoxIcon(new Color(t.getTextColor1())));
-            } else if (sel.equals("blue")) {
+            } else if (sel.equals(colors[1])) {
                 setIcon(new SolidComboBoxIcon(new Color(t.getTextColor2())));
-            } else if (sel.equals("green")) {
+            } else if (sel.equals(colors[2])) {
                 setIcon(new SolidComboBoxIcon(new Color(t.getTextColor3())));
-            } else if (sel.equals("white")) {
+            } else if (sel.equals(colors[4])) {
                 setIcon(new SolidComboBoxIcon(new Color(t.getTextColor5())));
             } else if (sel.equals("chosen")) {
                 setIcon(new SolidComboBoxIcon(chosenColor));
@@ -169,12 +169,7 @@ public class ColorComboBox extends JComboBox<String>{
 
     private final ComboItemListener comboItemListener = new ComboItemListener(cbr, this);
 
-
-    // names of the borg "logical" colors. the names no longer imply a
-    // particular color
-    // but remain to support old databases. eahc name maps to a user defined
-    // color
-    private String colors[] = { "red", "blue", "green", "black", "white", "strike", "chosen", "choose" };
+    private static final String colors[] = { Theme.COLOR1, Theme.COLOR2, Theme.COLOR3, Theme.COLOR4, Theme.COLOR5, "strike", "chosen", "choose" };
 
     public ColorComboBox() {
 

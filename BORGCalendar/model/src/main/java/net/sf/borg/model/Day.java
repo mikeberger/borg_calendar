@@ -170,7 +170,7 @@ public class Day {
 
 				String color = appt.getColor();
 				if (color == null)
-					appt.setColor("black");
+					appt.setColor(Theme.COLOR4);
 
 				// add apptto day
 				day.addItem(appt);
@@ -223,12 +223,12 @@ public class Day {
 				gc.getTime());
 		if (dstNow && !dstYesterday) {
 			LabelEntity hol = new LabelEntity();
-			hol.setColor("black");
+			hol.setColor(Theme.COLOR4);
 			hol.setText(Resource.getResourceString("Daylight_Savings_Time"));
 			ret.addItem(hol);
 		} else if (!dstNow && dstYesterday) {
 			LabelEntity hol = new LabelEntity();
-			hol.setColor("black");
+			hol.setColor(Theme.COLOR4);
 			hol.setText(Resource.getResourceString("Standard_Time"));
 			ret.addItem(hol);
 		}
@@ -253,7 +253,7 @@ public class Day {
 			hol.setDate(new GregorianCalendar(year, month, day, 00, 00)
 					.getTime());
 
-			hol.setColor("purple");
+			hol.setColor(Theme.HOLIDAYCOLOR);
 
 			hol.setText(null);
 			if (month == 9 && day == 31) {
@@ -313,7 +313,7 @@ public class Day {
 			hol.setDate(new GregorianCalendar(year, month, day, 00, 00)
 					.getTime());
 
-			hol.setColor("purple");
+			hol.setColor(Theme.HOLIDAYCOLOR);
 
 			hol.setText(null);
 			if (month == 6 && day == 1) {
@@ -357,7 +357,7 @@ public class Day {
 			hol.setDate(new GregorianCalendar(year, month, day, 00, 00)
 					.getTime());
 
-			hol.setColor("purple");
+			hol.setColor(Theme.HOLIDAYCOLOR);
 
 			hol.setText(null);
 			if (month == 0 && day == 1) {

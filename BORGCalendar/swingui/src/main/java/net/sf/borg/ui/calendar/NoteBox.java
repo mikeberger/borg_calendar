@@ -205,11 +205,6 @@ public class NoteBox extends Box implements Box.Draggable {
 		} else {
 			// change color for a single appointment based on
 			// its color - only if color print option set
-
-			// map "logical" color names to user defined colors
-			// "logical" color names used to be the hard-coded colors. Now they
-			// mean nothing. If it weren't for legacy databases, then red could
-			// be color1
 			if (isSelected == true)
 				g2.setColor(new Color(t.getDefaultBg()));
 			else

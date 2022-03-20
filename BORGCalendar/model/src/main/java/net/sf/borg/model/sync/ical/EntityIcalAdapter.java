@@ -181,12 +181,7 @@ public class EntityIcalAdapter {
 
 		// add color as a category
 		if (ap.getColor() != null) {
-			if (ap.getColor().equals("black") || ap.getColor().equals("blue") || ap.getColor().equals("green")
-					|| ap.getColor().equals("red") || ap.getColor().equals("white")) {
-				catlist.add(ap.getColor());
-			} else {
 				catlist.add("c_" + ap.getColor());
-			}
 		}
 
 		if (ap.getCategory() != null && !ap.getCategory().equals("")) {
@@ -406,9 +401,6 @@ public class EntityIcalAdapter {
 						ap.setPrivate(true);
 					} else if (cat.equals("ToDo")) {
 						ap.setTodo(true);
-					} else if (cat.equals("black") || cat.equals("red") || cat.equals("green") || cat.equals("blue")
-							|| cat.equals("white")) {
-						ap.setColor(cat);
 					} else if (cat.startsWith("c_")) {
 						ap.setColor(cat.substring(2));
 					} else {

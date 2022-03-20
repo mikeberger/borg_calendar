@@ -91,9 +91,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 					theTableCellComponent.setForeground(Color.BLACK);
 					theTableCellComponent.setBackground(Color.ORANGE);
 				} else {
-					// set text color by looking up the "logical" color in the
-					// prefs
-					// logical color is left over legacy thing
+
 					Theme t = Theme.getCurrentTheme();
 					String color = table.getModel().getValueAt(row, 3)
 							.toString();
