@@ -268,25 +268,6 @@ public class TaskTypes {
 		this.taskTypes = tt.taskTypes;
 	}
 
-	/**
-	 * DOM code used by the legacy XML parser. Gets the child elements of a node.
-	 * 
-	 * @param n
-	 *            the node
-	 * 
-	 * @return the child elements
-	 */
-	private static ArrayList<Element> getChildElements(Node n) {
-		ArrayList<Element> ret = new ArrayList<Element>();
-		NodeList nl = n.getChildNodes();
-		for (int i = 0; i < nl.getLength(); i++) {
-			Node node = nl.item(i);
-			if (node instanceof Element) {
-				ret.add((Element) node);
-			}
-		}
-		return ret;
-	}
 
 	/**
 	 * Gets the final state for a type.

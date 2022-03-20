@@ -186,18 +186,6 @@ public class ExportImport {
 
 	}
 
-	/**
-	 * map legacy import file names to new ones
-	 */
-	static private final Map<String, String> legacyFileMap = new HashMap<String, String>();
-	static {
-		legacyFileMap.put("borg.xml", "APPTS.xml");
-		legacyFileMap.put("task.xml", "TASKS.xml");
-		legacyFileMap.put("addr.xml", "ADDRESSES.xml");
-		legacyFileMap.put("memo.xml", "MEMOS.xml");
-		legacyFileMap.put("link.xml", "LINKS.xml");
-		legacyFileMap.put("checklist.xml", "CHECKLISTS.xml");
-	}
 
 	/**
 	 * Import an entire backup Zip file
@@ -218,13 +206,10 @@ public class ExportImport {
 		for (ZipEntry entry = in.getNextEntry(); entry != null; entry = in
 				.getNextEntry()) {
 
-			String legacyFileName = legacyFileMap.get(entry.getName());
 
 			boolean import_done = false;
 			for (Model model : Model.getExistingModels()) {
-				if (entry.getName().equals(model.getExportName() + ".xml")
-						|| (legacyFileName != null && legacyFileName
-								.equals(model.getExportName() + ".xml"))) {
+				if (entry.getName().equals(model.getExportName() + ".xml")) {
 					importFromXmlFile(model, in);
 					import_done = true;
 					break;
