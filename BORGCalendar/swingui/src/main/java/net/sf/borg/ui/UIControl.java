@@ -1,6 +1,7 @@
 package net.sf.borg.ui;
 
 import net.sf.borg.common.*;
+import net.sf.borg.control.Borg;
 import net.sf.borg.model.ExportImport;
 import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.model.sync.SyncLog;
@@ -24,6 +25,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.text.MessageFormat;
+import java.util.Observer;
 import java.util.logging.Logger;
 
 /**
@@ -37,16 +39,6 @@ public class UIControl {
 
 	static private final Logger log = Logger.getLogger("net.sf.borg");
 
-	private static Observer shutdownListener = null;
-
-	/**
-	 * set a shutdown listener to be called back when the UI shuts down
-	 *
-	 * @param shutdownListener
-	 */
-	public static void setShutdownListener(Observer shutdownListener) {
-		UIControl.shutdownListener = shutdownListener;
-	}
 
 	/**
 	 * splash screen
@@ -315,8 +307,7 @@ public class UIControl {
 
 
 			// non-UI shutdown
-			if (shutdownListener != null)
-				shutdownListener.update(null, null);
+			Borg.shutdown();
 			return null;
 		}
 

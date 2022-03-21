@@ -19,8 +19,6 @@
 
 package net.sf.borg.control;
 
-import net.sf.borg.common.Observable;
-import net.sf.borg.common.Observer;
 import net.sf.borg.common.SocketHandler;
 import net.sf.borg.common.*;
 import net.sf.borg.model.*;
@@ -47,7 +45,7 @@ import java.util.logging.*;
  * threads. It also handles shutdown.
  */
 
-public class Borg implements SocketHandler, Observer {
+public class Borg implements SocketHandler {
 
 	/** The singleton. */
 	static volatile private Borg singleton = null;
@@ -370,8 +368,6 @@ public class Borg implements SocketHandler, Observer {
 			TaskModel.getReference();
 			LinkModel.getReference();
 
-			UIControl.setShutdownListener(this);
-
 			// start the UI thread
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override
@@ -485,8 +481,4 @@ public class Borg implements SocketHandler, Observer {
 	}
 
 
-	@Override
-	public void update(Observable o, Object arg) {
-		Borg.shutdown();
-	}
 }

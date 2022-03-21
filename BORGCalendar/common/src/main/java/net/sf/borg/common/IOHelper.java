@@ -56,22 +56,6 @@ public class IOHelper {
 		homeDirectory = new File(newHome);
 	}
 
-	/**
-	 * Creates an output stream to a URL
-	 * 
-	 * @param url
-	 *            the url
-	 * 
-	 * @return the output stream
-	 * 
-	 * @throws Exception
-	 *             the exception
-	 */
-	public static OutputStream createOutputStream(URL url) throws Exception {
-		URLConnection connection = url.openConnection();
-		connection.setDoOutput(true);
-		return connection.getOutputStream();
-	}
 
 	/**
 	 * create an output stream to a file, creating parent dirs as needed

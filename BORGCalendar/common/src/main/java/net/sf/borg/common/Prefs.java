@@ -193,10 +193,6 @@ public class Prefs {
 		}
 	}
 
-	public static String getPrefRootNode() {
-		return prefRootNode;
-	}
-
 	public static void setPrefRootNode(String prefRootNode) {
 		Prefs.prefRootNode = prefRootNode;
 	}
