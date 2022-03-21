@@ -45,14 +45,14 @@ public class OptionsView extends View {
     /**
      * size of the option window.
      */
-    static private PrefName OPTVIEWSIZE = new PrefName("optviewsize",
+    static private final PrefName OPTVIEWSIZE = new PrefName("optviewsize",
             "-1,-1,-1,-1,N");
     private static OptionsView singleton = null;
     private JButton applyButton;
     private JButton dismissButton;
-    private JTabbedPane jTabbedPane1;
+    private final JTabbedPane jTabbedPane1;
     private JPanel topPanel = null;
-    private Collection<OptionsPanel> panels = new ArrayList<OptionsPanel>();
+    private final Collection<OptionsPanel> panels = new ArrayList<OptionsPanel>();
 
     /**
      * constructor
@@ -247,11 +247,7 @@ public class OptionsView extends View {
          */
         static public void setCheckBox(JCheckBox box, PrefName pn) {
             String val = Prefs.getPref(pn);
-            if (val.equals("true")) {
-                box.setSelected(true);
-            } else {
-                box.setSelected(false);
-            }
+            box.setSelected(val.equals("true"));
         }
 
         /**

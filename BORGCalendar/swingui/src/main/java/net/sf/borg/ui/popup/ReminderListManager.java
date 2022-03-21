@@ -52,10 +52,10 @@ public class ReminderListManager extends ReminderManager {
 	}
 
 	// the UI
-	private ReminderList reminderList = new ReminderList();
+	private final ReminderList reminderList = new ReminderList();
 
 	// managed reminder instances
-	private List<ReminderInstance> reminders = new ArrayList<ReminderInstance>();
+	private final List<ReminderInstance> reminders = new ArrayList<ReminderInstance>();
 
 	/**
 	 * constructor

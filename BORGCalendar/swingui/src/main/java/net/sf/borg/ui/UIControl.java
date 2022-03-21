@@ -286,7 +286,7 @@ public class UIControl {
 
 	static private class NonUIShutdown extends SwingWorker<Object, Object> {
 
-		private boolean do_backup;
+		private final boolean do_backup;
 
 		public NonUIShutdown(boolean b) {
 			do_backup = b;

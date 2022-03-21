@@ -31,8 +31,8 @@ import java.util.logging.Logger;
 public class SyncModule implements Module, Prefs.Listener, Model.Listener {
 
     static private final Logger log = Logger.getLogger("net.sf.borg");
-    private static PrefName url_pref = new PrefName("saved_import_url", "");
-    private static ActionListener syncButtonListener = new ActionListener() {
+    private static final PrefName url_pref = new PrefName("saved_import_url", "");
+    private static final ActionListener syncButtonListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent arg0) {
             try {
@@ -51,7 +51,7 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
             }
         }
     };
-    private static ActionListener syncListener = new ActionListener() {
+    private static final ActionListener syncListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent arg0) {
             try {

@@ -189,9 +189,9 @@ public class SyncLog extends Model implements Model.Listener, Prefs.Listener {
 				.prepareStatement("INSERT INTO syncmap ( id, uid, url, action, objtype) " + " VALUES " + "( ?, ?, ?, ?, ?)");
 
 		stmt.setInt(1, event.getId().intValue());
-		stmt.setString(2, event.getUid().toString());
+		stmt.setString(2, event.getUid());
 		if( event.getUrl() != null)
-			stmt.setString(3, event.getUrl().toString());
+			stmt.setString(3, event.getUrl());
 		else
 			stmt.setNull(3, Types.LONGVARCHAR);
 		stmt.setString(4, event.getAction().toString());

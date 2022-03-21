@@ -42,33 +42,33 @@ public class ColorOptionsPanel extends OptionsPanel implements Prefs.Listener {
 	/*
 	 * the user color scheme buttons that let the user set colors
 	 */
-	private ColorChooserButton btn_ucs_birthdays;
-	private ColorChooserButton btn_ucs_black;
-	private ColorChooserButton btn_ucs_blue;
-	private ColorChooserButton btn_ucs_defaultBg;
-	private ColorChooserButton btn_ucs_defaultFg;
-	private ColorChooserButton btn_ucs_green;
-	private ColorChooserButton btn_ucs_halfday;
-	private ColorChooserButton btn_ucs_holiday;
-	private ColorChooserButton btn_ucs_holidays;
-	private ColorChooserButton btn_ucs_red;
-	private ColorChooserButton btn_ucs_reminderBg;
-	private ColorChooserButton btn_ucs_stripe;
-	private ColorChooserButton btn_ucs_tasks;
-	private ColorChooserButton btn_ucs_today;
-	private ColorChooserButton btn_ucs_vacation;
-	private ColorChooserButton btn_ucs_weekday;
-	private ColorChooserButton btn_ucs_weekend;
-	private ColorChooserButton btn_ucs_white;
-	private ColorChooserButton btn_tray_fg;
-	private ColorChooserButton btn_tray_bg;
+	private final ColorChooserButton btn_ucs_birthdays;
+	private final ColorChooserButton btn_ucs_black;
+	private final ColorChooserButton btn_ucs_blue;
+	private final ColorChooserButton btn_ucs_defaultBg;
+	private final ColorChooserButton btn_ucs_defaultFg;
+	private final ColorChooserButton btn_ucs_green;
+	private final ColorChooserButton btn_ucs_halfday;
+	private final ColorChooserButton btn_ucs_holiday;
+	private final ColorChooserButton btn_ucs_holidays;
+	private final ColorChooserButton btn_ucs_red;
+	private final ColorChooserButton btn_ucs_reminderBg;
+	private final ColorChooserButton btn_ucs_stripe;
+	private final ColorChooserButton btn_ucs_tasks;
+	private final ColorChooserButton btn_ucs_today;
+	private final ColorChooserButton btn_ucs_vacation;
+	private final ColorChooserButton btn_ucs_weekday;
+	private final ColorChooserButton btn_ucs_weekend;
+	private final ColorChooserButton btn_ucs_white;
+	private final ColorChooserButton btn_tray_fg;
+	private final ColorChooserButton btn_tray_bg;
 
-	private JCheckBox cb_ucs_marktodo;
-	private JCheckBox cb_ucs_ontodo;
-	private JCheckBox gradientApptBox = new JCheckBox();
-	private JTextField tf_ucs_marker;
+	private final JCheckBox cb_ucs_marktodo;
+	private final JCheckBox cb_ucs_ontodo;
+	private final JCheckBox gradientApptBox = new JCheckBox();
+	private final JTextField tf_ucs_marker;
 
-	private JComboBox<String> themeChooser = new JComboBox<String>();
+	private final JComboBox<String> themeChooser = new JComboBox<String>();
 
 	/**
 	 * Instantiates a new color options panel.

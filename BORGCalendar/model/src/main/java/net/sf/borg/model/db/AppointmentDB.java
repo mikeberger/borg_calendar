@@ -38,7 +38,7 @@ public interface AppointmentDB extends EntityDB<Appointment> {
 	 * @throws Exception
 	 *             the exception
 	 */
-	public Collection<Integer> getTodoKeys() throws Exception;
+    Collection<Integer> getTodoKeys() throws Exception;
 
 	/**
 	 * Gets the keys of all Appointments that are marked as repeating
@@ -48,10 +48,10 @@ public interface AppointmentDB extends EntityDB<Appointment> {
 	 * @throws Exception
 	 *             the exception
 	 */
-	public Collection<Integer> getRepeatKeys() throws Exception;
+    Collection<Integer> getRepeatKeys() throws Exception;
 
-	public List<Appointment> getAppointmentsByText(String text)
+	List<Appointment> getAppointmentsByText(String text)
 			throws Exception;
 
-	public Appointment getAppointmentByUid(String uid) throws Exception;
+	Appointment getAppointmentByUid(String uid) throws Exception;
 }

@@ -60,7 +60,7 @@ public class ProjectPanel extends JPanel implements Model.Listener {
 	private JTable projectTable;
 
 	/** The project status combo box. */
-	private JComboBox<String> projectStatusComboBox = new JComboBox<String>();
+	private final JComboBox<String> projectStatusComboBox = new JComboBox<String>();
 
 	/**
 	 * constructor

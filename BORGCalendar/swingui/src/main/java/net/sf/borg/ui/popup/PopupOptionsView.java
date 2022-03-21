@@ -40,8 +40,8 @@ public class PopupOptionsView extends JDialog {
 	 * interface implemented by the component that is waiting for the
 	 * resulting popup times string
 	 */
-	public static interface PopupOptionsListener {
-		public void setPopupTimesString(String popupTimesString);
+	public interface PopupOptionsListener {
+		void setPopupTimesString(String popupTimesString);
 	}
 
 	private static final long serialVersionUID = 1L;
@@ -50,10 +50,10 @@ public class PopupOptionsView extends JDialog {
 	private JCheckBox[] reminderTimeCheckBoxes;
 	
 	/** The parent component */
-	private PopupOptionsListener popupOptionsListener;
+	private final PopupOptionsListener popupOptionsListener;
 	
 	/** The reminder times on off array. */
-	private char[] reminderTimesOnOffArray;
+	private final char[] reminderTimesOnOffArray;
 
 	/**
 	 * Instantiates a new popup options view.
@@ -193,11 +193,7 @@ public class PopupOptionsView extends JDialog {
 					1, 0.0, 0.0, GridBagConstraints.WEST,
 					GridBagConstraints.BOTH, new Insets(4, 4, 4, 4), 0, 0));
 
-			if (reminderTimesOnOffArray[i] == 'Y') {
-				reminderTimeCheckBoxes[i].setSelected(true);
-			} else {
-				reminderTimeCheckBoxes[i].setSelected(false);
-			}
+            reminderTimeCheckBoxes[i].setSelected(reminderTimesOnOffArray[i] == 'Y');
 		}
 
 		// right column
@@ -205,11 +201,7 @@ public class PopupOptionsView extends JDialog {
 			checkBoxPanel.add(reminderTimeCheckBoxes[i], new GridBagConstraints(1, i - boxesPerColumn
 					+ 1, 1, 1, 0.0, 0.0, GridBagConstraints.WEST,
 					GridBagConstraints.BOTH, new Insets(4, 4, 4, 4), 0, 0));
-			if (reminderTimesOnOffArray[i] == 'Y') {
-				reminderTimeCheckBoxes[i].setSelected(true);
-			} else {
-				reminderTimeCheckBoxes[i].setSelected(false);
-			}
+            reminderTimeCheckBoxes[i].setSelected(reminderTimesOnOffArray[i] == 'Y');
 		}
 		
 		topPanel.add(checkBoxPanel, GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH, 1.0, 1.0));

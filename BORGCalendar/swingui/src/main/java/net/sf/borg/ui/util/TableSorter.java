@@ -78,7 +78,7 @@ public class TableSorter extends AbstractTableModel {
     public static final int NOT_SORTED = 0;
     public static final int ASCENDING = 1;
 
-    private static Directive EMPTY_DIRECTIVE = new Directive(-1, NOT_SORTED);
+    private static final Directive EMPTY_DIRECTIVE = new Directive(-1, NOT_SORTED);
 
     public static final Comparator<Object> COMPARABLE_COMAPRATOR = new Comparator<Object>() {
         @Override
@@ -101,8 +101,8 @@ public class TableSorter extends AbstractTableModel {
     private JTableHeader tableHeader;
 
 
-    private Map<Class<?>, Comparator<Object>> columnComparators = new HashMap<Class<?>, Comparator<Object>>();
-    private List<Directive> sortingColumns = new ArrayList<Directive>();
+    private final Map<Class<?>, Comparator<Object>> columnComparators = new HashMap<Class<?>, Comparator<Object>>();
+    private final List<Directive> sortingColumns = new ArrayList<Directive>();
 
     public TableSorter() {
       // empty
@@ -283,7 +283,7 @@ public class TableSorter extends AbstractTableModel {
     // Helper classes
     
     private class Row implements Comparable<Object> {
-        private int modelIndex;
+        private final int modelIndex;
 
         public Row(int index) {
             this.modelIndex = index;
@@ -319,7 +319,7 @@ public class TableSorter extends AbstractTableModel {
         }
     }
 
-    private TableModelListener tableModelListener = new TableModelListener (){
+    private final TableModelListener tableModelListener = new TableModelListener (){
         @Override
         public void tableChanged(TableModelEvent e) {
             // If we're not sorting by anything, just pass the event along.             
@@ -376,7 +376,7 @@ public class TableSorter extends AbstractTableModel {
         }
     };
 
-    private MouseAdapter mouseListener_ = new MouseAdapter (){
+    private final MouseAdapter mouseListener_ = new MouseAdapter (){
         @Override
         public void mouseClicked(MouseEvent e) {
             JTableHeader h = (JTableHeader) e.getSource();
@@ -398,9 +398,9 @@ public class TableSorter extends AbstractTableModel {
     };
     
     private static class Arrow implements Icon {
-        private boolean descending;
-        private int size;
-        private int priority;
+        private final boolean descending;
+        private final int size;
+        private final int priority;
 
         public Arrow(boolean descending, int size, int priority) {
             this.descending = descending;
@@ -454,7 +454,7 @@ public class TableSorter extends AbstractTableModel {
     }
 
     private class SortableHeaderRenderer implements TableCellRenderer {
-        private TableCellRenderer tableCellRenderer;
+        private final TableCellRenderer tableCellRenderer;
 
         public SortableHeaderRenderer(TableCellRenderer tableCellRenderer) {
             this.tableCellRenderer = tableCellRenderer;
@@ -480,8 +480,8 @@ public class TableSorter extends AbstractTableModel {
     }
 
     private static class Directive {
-        private int column;
-        private int direction;
+        private final int column;
+        private final int direction;
 
         public Directive(int column, int direction) {
             this.column = column;
@@ -500,7 +500,7 @@ public class TableSorter extends AbstractTableModel {
         Class<?> [] classes_;
         boolean [] editable_;
         
-        public NewTableModel( String cols[], Class<?> classes[], boolean editable[])
+        public NewTableModel(String[] cols, Class<?>[] classes, boolean[] editable)
         {
             super( cols, 0 );
             classes_ = classes;
@@ -528,12 +528,12 @@ public class TableSorter extends AbstractTableModel {
 
     }
     
-    public TableSorter( String cols[], Class<?> classes[], boolean editable[])
+    public TableSorter(String[] cols, Class<?>[] classes, boolean[] editable)
     {
         setTableModel(new NewTableModel(cols,classes, editable));
     }
     
-    public TableSorter( String cols[], Class<?> classes[])
+    public TableSorter(String[] cols, Class<?>[] classes)
     {
         setTableModel(new NewTableModel(cols,classes, null));
     }

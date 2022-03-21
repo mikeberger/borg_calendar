@@ -56,9 +56,9 @@ public abstract class Model
 		/**
 		 * Enum to hold actions that can happen to an object
 		 */
-		public static enum ChangeAction {
-			ADD, CHANGE, DELETE;
-		}
+		public enum ChangeAction {
+			ADD, CHANGE, DELETE
+        }
 
 		private ChangeAction action;
 
@@ -83,7 +83,7 @@ public abstract class Model
 	/**
 	 * list of all instatiated models
 	 */
-	private static Set<Model> modelList = new HashSet<Model>();
+	private static final Set<Model> modelList = new HashSet<Model>();
 	
 	/**
 	 * get a list of all instantiated models
@@ -120,12 +120,12 @@ public abstract class Model
 		/**
 		 * Called to notify Listener when the Model is changed.
 		 */
-		public abstract void update(ChangeEvent event);
+        void update(ChangeEvent event);
 		
 	}
 	
 	// list of clients to notify when the model changes
-    private ArrayList<Listener> listeners;
+    private final ArrayList<Listener> listeners;
     
     /**
      * Instantiates a new model.
@@ -171,7 +171,7 @@ public abstract class Model
             Listener v = listeners.get(i);
             v.update(event);
             if( log.isLoggable(Level.FINE))
-            	log.fine("...To Listener: " + v.toString());
+            	log.fine("...To Listener: " + v);
         }
     }
     

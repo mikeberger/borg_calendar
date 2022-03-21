@@ -50,7 +50,7 @@ public class TaskConfigurator extends View {
 	private static final long serialVersionUID = 1L;
 
 	/** size of the task config window */
-	static private PrefName TASKCONFVIEWSIZE = new PrefName("taskconfviewsize", "-1,-1,-1,-1,N");
+	static private final PrefName TASKCONFVIEWSIZE = new PrefName("taskconfviewsize", "-1,-1,-1,-1,N");
 
 	/**
 	 * Renders the initial task state in a different color
@@ -70,7 +70,7 @@ public class TaskConfigurator extends View {
 			// get initial state for the selected type
 			String init = "";
 			if (typeList.getSelectedValue() != null) {
-				init = taskTypes.getInitialState(typeList.getSelectedValue().toString());
+				init = taskTypes.getInitialState(typeList.getSelectedValue());
 			}
 
 			// highlist this state if it is the initial state
@@ -86,7 +86,7 @@ public class TaskConfigurator extends View {
 	}
 
 	/** The default table cell Renderer */
-	static private ListCellRenderer<Object> defaultRenderer = new DefaultListCellRenderer();
+	static private final ListCellRenderer<Object> defaultRenderer = new DefaultListCellRenderer();
 
 	/** The singleton */
 	private static TaskConfigurator singleton = null;
@@ -118,7 +118,7 @@ public class TaskConfigurator extends View {
 	private JPopupMenu stateMenu = null;
 
 	/** The task types. */
-	private TaskTypes taskTypes;
+	private final TaskTypes taskTypes;
 
 	/** The type list. */
 	private JList<String> typeList = null;
@@ -177,7 +177,7 @@ public class TaskConfigurator extends View {
 
 					// prompt for selection of next state from a list
 					Collection<String> states = taskTypes.getStates(typeList.getSelectedValue());
-					Object sarray[] = states.toArray();
+					Object[] sarray = states.toArray();
 					String ns = (String) JOptionPane.showInputDialog(null,
 							net.sf.borg.common.Resource.getResourceString("Select_next_state"),
 							net.sf.borg.common.Resource.getResourceString("Select_next_state"),
@@ -439,7 +439,7 @@ public class TaskConfigurator extends View {
 
 					// prompt for selection of initial state from a list
 					Collection<String> states = taskTypes.getStates(typeList.getSelectedValue());
-					Object sarray[] = states.toArray();
+					Object[] sarray = states.toArray();
 					String ns = (String) JOptionPane.showInputDialog(null,
 							net.sf.borg.common.Resource.getResourceString("Select_initial_state"),
 							net.sf.borg.common.Resource.getResourceString("Select_initial_state"),

@@ -43,29 +43,29 @@ class EmailOptionsPanel extends OptionsPanel {
 	private static final long serialVersionUID = 795364188303457966L;
 	
 	/** The emailbox. */
-	private JCheckBox emailbox = new JCheckBox();
+	private final JCheckBox emailbox = new JCheckBox();
 
 	/** The emailtext. */
-	private JTextField emailtext = new JTextField();
-	private JTextField emailfrom = new JTextField();
+	private final JTextField emailtext = new JTextField();
+	private final JTextField emailfrom = new JTextField();
 
 	/** The emailtimebox. */
 	private JSpinner emailtimebox = new JSpinner();
 	
 	/** The smpw. */
-	private JPasswordField smpw = new JPasswordField();
+	private final JPasswordField smpw = new JPasswordField();
 
 	/** The smtpport. */
-	private JTextField smtpport = new JTextField();
+	private final JTextField smtpport = new JTextField();
 	
 	/** The smtptext. */
-	private JTextField smtptext = new JTextField();
+	private final JTextField smtptext = new JTextField();
 	
 	/** The tlsbox. */
-	private JCheckBox tlsbox = new JCheckBox();
+	private final JCheckBox tlsbox = new JCheckBox();
 	
 	/** The usertext. */
-	private JTextField usertext = new JTextField();
+	private final JTextField usertext = new JTextField();
 
 	/**
 	 * Instantiates a new email options panel.

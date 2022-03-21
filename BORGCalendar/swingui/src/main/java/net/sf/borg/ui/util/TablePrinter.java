@@ -48,7 +48,7 @@ public class TablePrinter implements Printable {
 	}
 
 	/** The table */
-	private JTable theTable;
+	private final JTable theTable;
 
 	/**
 	 * constructor

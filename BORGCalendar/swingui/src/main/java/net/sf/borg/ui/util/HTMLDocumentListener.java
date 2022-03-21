@@ -22,9 +22,9 @@ public class HTMLDocumentListener implements DocumentListener {
 
 	private boolean initializingDoc;
 
-	private JEditorPane textPane;
+	private final JEditorPane textPane;
 
-	private List<HTMLHyperlinkRange> hyperlinkList;
+	private final List<HTMLHyperlinkRange> hyperlinkList;
 
 	public static final String linkRegex = "\\b(((ht|f)tp(s?)\\:\\/\\/|~\\/|\\/))"
 			+ "(\\w+:\\w+@)?(([-\\w]+\\.)+(com|org|net|gov"

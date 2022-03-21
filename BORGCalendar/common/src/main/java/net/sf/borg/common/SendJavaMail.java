@@ -52,8 +52,8 @@ public class SendJavaMail {
 	 */
 	private static class MyAuthenticator extends Authenticator {
 
-		private String username;
-		private String password;
+		private final String username;
+		private final String password;
 
 		public MyAuthenticator(String user, String pass) {
 			username = user;

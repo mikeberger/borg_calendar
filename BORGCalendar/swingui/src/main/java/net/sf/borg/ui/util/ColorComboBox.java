@@ -84,8 +84,8 @@ public class ColorComboBox extends JComboBox<String>{
         @Setter
         private boolean active = true;
 
-        private ColorBoxRenderer cbr;
-        private JComboBox<String> box;
+        private final ColorBoxRenderer cbr;
+        private final JComboBox<String> box;
 
         public ComboItemListener(ColorBoxRenderer cbr, JComboBox<String> colorComboBox) {
             this.cbr = cbr;
@@ -108,7 +108,7 @@ public class ColorComboBox extends JComboBox<String>{
             }
         }
 
-    };
+    }
 
     /**
      * Long, thin, rectangular icon that goes in the color chooser pulldown list
@@ -169,7 +169,7 @@ public class ColorComboBox extends JComboBox<String>{
 
     private final ComboItemListener comboItemListener = new ComboItemListener(cbr, this);
 
-    private static final String colors[] = { Theme.COLOR1, Theme.COLOR2, Theme.COLOR3, Theme.COLOR4, Theme.COLOR5, "strike", "chosen", "choose" };
+    private static final String[] colors = { Theme.COLOR1, Theme.COLOR2, Theme.COLOR3, Theme.COLOR4, Theme.COLOR5, "strike", "chosen", "choose" };
 
     public ColorComboBox() {
 

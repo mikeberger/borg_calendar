@@ -39,14 +39,14 @@ public class CategoryModel extends Model {
 	/**
 	 * interface implemented by Models whose entities contain categories
 	 */
-	static interface CategorySource {
+	interface CategorySource {
 		
 		/**
 		 * Gets the list of all categories from all entities in the source model
 		 * 
 		 * @return the categories
 		 */
-		public Collection<String> getCategories();
+		Collection<String> getCategories();
 	}
 
 	static class CategoryComparator implements Comparator<String>, Serializable
@@ -68,7 +68,7 @@ public class CategoryModel extends Model {
 	}
 	
 	/** The singleton */
-	static private CategoryModel self_ = new CategoryModel();
+	static private final CategoryModel self_ = new CategoryModel();
 
 	/** a non-null value to represent the lack of a category */
 	static public final String UNCATEGORIZED = Resource
@@ -84,7 +84,7 @@ public class CategoryModel extends Model {
 	}
 
 	/** The collection of all categories_. */
-	private Collection<String> categories_ = new TreeSet<String>(new CategoryComparator());
+	private final Collection<String> categories_ = new TreeSet<String>(new CategoryComparator());
 
 	/** The categories that are being shown (i.e. that are not being hidden) */
 	private Collection<String> shownCategories_ = new TreeSet<String>(new CategoryComparator());

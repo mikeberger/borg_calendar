@@ -183,8 +183,8 @@ public class AddrListView extends DockableView implements Module {
 								String colvalue2 = colvalue.toLowerCase();
 								String searchstring2 = searchstring
 										.toLowerCase();
-								int indexint = colvalue2.indexOf(searchstring2,
-										0);
+								int indexint = colvalue2.indexOf(searchstring2
+								);
 								match = indexint > -1;
 							}
 							if (match) {

@@ -52,7 +52,7 @@ public abstract class DockableView extends JPanel implements Model.Listener {
 	/** main menu bar */
 	private MainMenu mainMenu = null;
 
-	private Set<Model> models = new HashSet<Model>();
+	private final Set<Model> models = new HashSet<Model>();
 
 
 	/** The main frame. */

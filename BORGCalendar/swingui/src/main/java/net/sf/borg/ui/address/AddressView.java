@@ -52,7 +52,7 @@ public class AddressView extends DockableView {
 	private static final long serialVersionUID = 1L;
 	
 	// address being edited
-	private Address addr_;
+	private final Address addr_;
 
 	// the address fields
 	private JDateChooser birthdayChooser;

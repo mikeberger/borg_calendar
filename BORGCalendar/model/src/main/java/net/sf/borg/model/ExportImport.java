@@ -25,6 +25,7 @@ import net.sf.borg.common.Resource;
 import net.sf.borg.common.SendJavaMail;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -57,7 +58,7 @@ public class ExportImport {
 		String backupFilename = dir + "/borg" + uniq + ".zip";
 		ZipOutputStream out = new ZipOutputStream(new FileOutputStream(
 				backupFilename));
-		Writer fw = new OutputStreamWriter(out, "UTF8");
+		Writer fw = new OutputStreamWriter(out, StandardCharsets.UTF_8);
 
 		for (Model model : Model.getExistingModels()) {
 			// links must be last

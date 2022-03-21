@@ -112,10 +112,10 @@ public class LinkPanel extends JPanel implements Model.Listener {
 	private KeyedEntity<?> owningEntity;
 
 	/** table to show the links */
-	private JTable linkTable = new JTable();
+	private final JTable linkTable = new JTable();
 
 	/* scroll panel to hold the links table */
-	private JScrollPane scrollPanel = new JScrollPane();
+	private final JScrollPane scrollPanel = new JScrollPane();
 
 	/**
 	 * constructor
@@ -629,14 +629,11 @@ public class LinkPanel extends JPanel implements Model.Listener {
 			Errmsg.getErrorHandler().errmsg(e);
 		}
 
-		if (tm.getRowCount() > 0)
-			scrollPanel.setVisible(true);
-		else
-			scrollPanel.setVisible(false);
+		scrollPanel.setVisible(tm.getRowCount() > 0);
 
 		for (Container p = this.getParent(); p != null; p = p.getParent()) {
 			if (p instanceof JFrame) {
-				((JFrame) p).validate();
+				p.validate();
 			}
 		}
 

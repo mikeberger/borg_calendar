@@ -91,11 +91,8 @@ public class ApptReminderInstance extends ReminderInstance {
 		}
 
 		if (getInstanceTime() == null) {
-			if (other.getInstanceTime() != null)
-				return false;
-		} else if (!getInstanceTime().equals(other.getInstanceTime()))
-			return false;
-		return true;
+			return other.getInstanceTime() == null;
+		} else return getInstanceTime().equals(other.getInstanceTime());
 	}
 	
 	
@@ -318,22 +315,16 @@ public class ApptReminderInstance extends ReminderInstance {
 		if (isNote() && !isTodo())
 			return false;
 
-		boolean expires = true; // true if the reminder eventually stops at some
+		boolean expires = !isTodo()
+				|| appt.getReminderTimes() == null
+				|| appt.getReminderTimes().indexOf('Y') == -1; // true if the reminder eventually stops at some
 		// point after the appt
 
 		// todos never expire
-		if (isTodo()
-				&& appt.getReminderTimes() != null
-				&& appt.getReminderTimes().indexOf('Y') != -1) {
-			expires = false;
-		}
 
 		// a normal timed appt only gets a popup
 		// if it's within its range of reminder times
-		if (isOutsideOfReminderTimes(!expires))
-			return false;
-
-		return true;
+		return !isOutsideOfReminderTimes(!expires);
 	}
 
 }

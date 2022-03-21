@@ -46,10 +46,10 @@ public class OptionModel extends Model implements Searchable<Option> {
 	}
 
 	/** The db */
-	private OptionDB db_; // the database
+	private final OptionDB db_; // the database
 
 	/** The singleton */
-	static private OptionModel self_ = new OptionModel();
+	static private final OptionModel self_ = new OptionModel();
 
 	/**
 	 * Gets the singleton.

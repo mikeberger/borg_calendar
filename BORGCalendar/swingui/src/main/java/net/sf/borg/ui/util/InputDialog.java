@@ -55,7 +55,7 @@ public class InputDialog extends JDialog {
 	}
 
 	/** The input field. */
-	private JTextField inputText;
+	private final JTextField inputText;
 
 	/**
 	 * Instantiates a new Input Dialog

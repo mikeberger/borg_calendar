@@ -65,11 +65,8 @@ public class SubtaskReminderInstance extends ReminderInstance {
 		}
 
 		if (getInstanceTime() == null) {
-			if (other.getInstanceTime() != null)
-				return false;
-		} else if (!getInstanceTime().equals(other.getInstanceTime()))
-			return false;
-		return true;
+			return other.getInstanceTime() == null;
+		} else return getInstanceTime().equals(other.getInstanceTime());
 	}
 
 	@Override

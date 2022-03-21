@@ -39,6 +39,6 @@ public interface LinkDB extends EntityDB<Link>
 	 * 
 	 * @throws Exception
 	 */
-	public Collection<Link> getLinks(int ownerkey, String ownertype) throws Exception;
+    Collection<Link> getLinks(int ownerkey, String ownertype) throws Exception;
 
 }

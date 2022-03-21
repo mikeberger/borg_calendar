@@ -62,8 +62,8 @@ public class DayPanel extends DockableView implements Printable, CalendarModule 
 
 		private static final long serialVersionUID = 1L;
 		// set up dash line stroke for time-grid divisions
-		private float dash1[] = { 1.0f, 3.0f };
-		private BasicStroke dashed = new BasicStroke(0.02f,
+		private final float[] dash1 = { 1.0f, 3.0f };
+		private final BasicStroke dashed = new BasicStroke(0.02f,
 				BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 3.0f, dash1, 0.0f);
 
 		// date being shown
@@ -452,7 +452,7 @@ public class DayPanel extends DockableView implements Printable, CalendarModule 
 				if (!mt && hr > 12)
 					hr = hr - 12;
 
-				String tmlabel = Integer.toString(hr) + ":00";
+				String tmlabel = hr + ":00";
 				g2.drawString(tmlabel, 2, y + smfontHeight / 2);
 			}
 

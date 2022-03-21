@@ -62,7 +62,7 @@ public class EntityIcalAdapter {
 
 		String uidval = ap.getUid();
 		if (uidval == null || uidval.isEmpty()) {
-			uidval = Integer.toString(ap.getKey()) + "@BORGA-" + ap.getCreateTime().getTime();
+			uidval = ap.getKey() + "@BORGA-" + ap.getCreateTime().getTime();
 		}
 		Uid uid = new Uid(uidval);
 		ve.getProperties().add(uid);
@@ -267,7 +267,7 @@ public class EntityIcalAdapter {
 			AppointmentModel amodel = AppointmentModel.getReference();
 
 			// start with default appt to pull in default options
-			Appointment ap = amodel.getDefaultAppointment();
+			Appointment ap = AppointmentModel.getDefaultAppointment();
 			if (ap == null)
 				ap = amodel.newAppt();
 
@@ -337,7 +337,7 @@ public class EntityIcalAdapter {
 
 			}
 
-			Uid uid = (Uid) pl.getProperty(Property.UID);
+			Uid uid = pl.getProperty(Property.UID);
 			// if no uid - create one - mainly can happen on ics import - not from caldav
 			if (uid == null) {
 				ap.setUid("@NOUID-" + UUID.randomUUID());
@@ -347,7 +347,7 @@ public class EntityIcalAdapter {
 
 			// store the URL coming back from the caldav server
 			// only store the last part
-			Url url = (Url) pl.getProperty(Property.URL);
+			Url url = pl.getProperty(Property.URL);
 			if (url != null) {
 				String urlVal = url.getValue();
 				int idx = urlVal.lastIndexOf('/');
@@ -359,12 +359,12 @@ public class EntityIcalAdapter {
 
 			}
 
-			LastModified lm = (LastModified) pl.getProperty(Property.LAST_MODIFIED);
+			LastModified lm = pl.getProperty(Property.LAST_MODIFIED);
 			if (lm != null)
 				ap.setLastMod(lm.getDateTime());
 			else
 				ap.setLastMod(new Date());
-			Created cr = (Created) pl.getProperty(Property.CREATED);
+			Created cr = pl.getProperty(Property.CREATED);
 			if (cr != null)
 				ap.setCreateTime(cr.getDateTime());
 			else
@@ -494,7 +494,7 @@ public class EntityIcalAdapter {
 
 				ap.setRepeatFlag(true);
 
-				ExDate ex = (ExDate) pl.getProperty(Property.EXDATE);
+				ExDate ex = pl.getProperty(Property.EXDATE);
 				if (ex != null) {
 
 					Vector<String> vect = new Vector<String>();
@@ -540,7 +540,7 @@ public class EntityIcalAdapter {
 			ve = new VEvent();
 
 		long updated = new Date().getTime();
-		String uidval = Integer.toString(t.getKey()) + "@BORGP" + updated;
+		String uidval = t.getKey() + "@BORGP" + updated;
 		Uid uid = new Uid(uidval);
 		ve.getProperties().add(uid);
 
@@ -576,7 +576,7 @@ public class EntityIcalAdapter {
 
 		String uidval = t.getUid();
 		if (uidval == null || uidval.isEmpty()) {
-			uidval = Integer.toString(t.getKey()) + "@BORGT-" + t.getCreateTime().getTime();
+			uidval = t.getKey() + "@BORGT-" + t.getCreateTime().getTime();
 		}
 		Uid uid = new Uid(uidval);
 		ve.getProperties().add(uid);
@@ -628,7 +628,7 @@ public class EntityIcalAdapter {
 
 		String uidval = t.getUid();
 		if (uidval == null || uidval.isEmpty()) {
-			uidval = Integer.toString(t.getKey()) + "@BORGS-" + t.getCreateTime().getTime();
+			uidval = t.getKey() + "@BORGS-" + t.getCreateTime().getTime();
 		}
 		Uid uid = new Uid(uidval);
 		ve.getProperties().add(uid);

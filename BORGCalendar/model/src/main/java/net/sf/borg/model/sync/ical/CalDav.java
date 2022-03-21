@@ -57,9 +57,7 @@ public class CalDav {
 		if(GCal.isSyncing() ) return false;
 
 		String server = Prefs.getPref(PrefName.CALDAV_SERVER);
-		if (server != null && !server.isEmpty())
-			return true;
-		return false;
+		return server != null && !server.isEmpty();
 	}
 
 	private static PathResolver createPathResolver() {
@@ -116,7 +114,7 @@ public class CalDav {
 		String protocol = Prefs.getBoolPref(PrefName.CALDAV_USE_SSL) ? "https" : "http";
 
 		String server = Prefs.getPref(PrefName.CALDAV_SERVER);
-		String serverPart[] = server.split(":");
+		String[] serverPart = server.split(":");
 		int port = -1;
 		if (serverPart.length == 2) {
 			try {
@@ -126,8 +124,8 @@ public class CalDav {
 			}
 		}
 		URL url = new URL(protocol, serverPart[0], port, Prefs.getPref(PrefName.CALDAV_PATH));
-		SocketClient.sendLogMessage("SYNC: connect to " + url.toString());
-		log.info("SYNC: connect to " + url.toString());
+		SocketClient.sendLogMessage("SYNC: connect to " + url);
+		log.info("SYNC: connect to " + url);
 
 		CalDavCalendarStore store = new CalDavCalendarStore("-", url, createPathResolver());
 
@@ -274,7 +272,7 @@ public class CalDav {
 						Component comp = getEvent(collection, se);
 
 						if (comp != null) {
-							log.info("SYNC: removeEvent: " + comp.toString());
+							log.info("SYNC: removeEvent: " + comp);
 							removeEvent(collection, se);
 
 						} else {
@@ -284,8 +282,8 @@ public class CalDav {
 
 					SyncLog.getReference().delete(se.getId(), se.getObjectType());
 				} catch (Exception e) {
-					SocketClient.sendLogMessage("SYNC ERROR for: " + se.toString() + ":" + e.getMessage());
-					log.severe("SYNC ERROR for: " + se.toString() + ":" + e.getMessage());
+					SocketClient.sendLogMessage("SYNC ERROR for: " + se + ":" + e.getMessage());
+					log.severe("SYNC ERROR for: " + se + ":" + e.getMessage());
 					e.printStackTrace();
 				}
 			} else if (se.getObjectType() == ObjectType.TASK) {
@@ -322,7 +320,7 @@ public class CalDav {
 						Component comp = getEvent(collection, se);
 
 						if (comp != null) {
-							log.info("SYNC: removeEvent: " + comp.toString());
+							log.info("SYNC: removeEvent: " + comp);
 							removeEvent(collection, se);
 
 						} else {
@@ -332,8 +330,8 @@ public class CalDav {
 
 					SyncLog.getReference().delete(se.getId(), se.getObjectType());
 				} catch (Exception e) {
-					SocketClient.sendLogMessage("SYNC ERROR for: " + se.toString() + ":" + e.getMessage());
-					log.severe("SYNC ERROR for: " + se.toString() + ":" + e.getMessage());
+					SocketClient.sendLogMessage("SYNC ERROR for: " + se + ":" + e.getMessage());
+					log.severe("SYNC ERROR for: " + se + ":" + e.getMessage());
 					e.printStackTrace();
 				}
 			} else if (se.getObjectType() == ObjectType.SUBTASK) {
@@ -370,7 +368,7 @@ public class CalDav {
 						Component comp = getEvent(collection, se);
 
 						if (comp != null) {
-							log.info("SYNC: removeEvent: " + comp.toString());
+							log.info("SYNC: removeEvent: " + comp);
 							removeEvent(collection, se);
 
 						} else {
@@ -380,8 +378,8 @@ public class CalDav {
 
 					SyncLog.getReference().delete(se.getId(), se.getObjectType());
 				} catch (Exception e) {
-					SocketClient.sendLogMessage("SYNC ERROR for: " + se.toString() + ":" + e.getMessage());
-					log.severe("SYNC ERROR for: " + se.toString() + ":" + e.getMessage());
+					SocketClient.sendLogMessage("SYNC ERROR for: " + se + ":" + e.getMessage());
+					log.severe("SYNC ERROR for: " + se + ":" + e.getMessage());
 					e.printStackTrace();
 				}
 			}
@@ -455,10 +453,7 @@ public class CalDav {
 	static public boolean isServerSyncNeeded() throws Exception {
 
 		SyncEvent ev = SyncLog.getReference().get(REMOTE_ID, SyncableEntity.ObjectType.REMOTE);
-		if (ev != null)
-			return true;
-
-		return false;
+		return ev != null;
 
 	}
 
@@ -531,26 +526,26 @@ public class CalDav {
 
 	static private void processRecurrence(Component comp, String uid) throws Exception {
 
-		RecurrenceId rid = (RecurrenceId) comp.getProperty(Property.RECURRENCE_ID);
+		RecurrenceId rid = comp.getProperty(Property.RECURRENCE_ID);
 
 		Appointment ap = AppointmentModel.getReference().getApptByUid(uid);
 		if (ap != null) {
 
 			if (comp instanceof VEvent) {
-				log.warning("SYNC: ignoring Vevent for single recurrence - cannot process\n" + comp.toString());
+				log.warning("SYNC: ignoring Vevent for single recurrence - cannot process\n" + comp);
 				SocketClient.sendLogMessage(
-						"SYNC: ignoring Vevent for single recurrence - cannot process\n" + comp.toString());
+						"SYNC: ignoring Vevent for single recurrence - cannot process\n" + comp);
 				return;
 			}
 			// for a recurrence of a VToDo, we only use the
 			// COMPLETED
 			// status if present - otherwise, we ignore
-			Completed cpltd = (Completed) comp.getProperty(Property.COMPLETED);
-			Status stat = (Status) comp.getProperty(Property.STATUS);
+			Completed cpltd = comp.getProperty(Property.COMPLETED);
+			Status stat = comp.getProperty(Property.STATUS);
 			if (cpltd == null && (stat == null || !stat.equals(Status.VTODO_COMPLETED))) {
-				log.warning("SYNC: ignoring VToDo for single recurrence - cannot process\n" + comp.toString());
+				log.warning("SYNC: ignoring VToDo for single recurrence - cannot process\n" + comp);
 				SocketClient.sendLogMessage(
-						"SYNC: ignoring VToDo for single recurrence - cannot process\n" + comp.toString());
+						"SYNC: ignoring VToDo for single recurrence - cannot process\n" + comp);
 				return;
 			}
 
@@ -569,8 +564,8 @@ public class CalDav {
 			if (nt == null)
 				nt = ap.getDate();
 			if (!utc.before(nt)) {
-				log.warning("SYNC: completing Todo\n" + comp.toString());
-				SocketClient.sendLogMessage("SYNC: completing Todo\n" + comp.toString());
+				log.warning("SYNC: completing Todo\n" + comp);
+				SocketClient.sendLogMessage("SYNC: completing Todo\n" + comp);
 				AppointmentModel.getReference().do_todo(ap.getKey(), false, utc);
 
 			}
@@ -611,13 +606,13 @@ public class CalDav {
 			serverUids.add(uid);
 
 			// detect single occurrence
-			RecurrenceId rid = (RecurrenceId) comp.getProperty(Property.RECURRENCE_ID);
+			RecurrenceId rid = comp.getProperty(Property.RECURRENCE_ID);
 			if (rid != null) {
 				processRecurrence(comp, uid);
 				continue;
 			}
 
-			log.fine("Incoming event: " + comp.toString());
+			log.fine("Incoming event: " + comp);
 
 			Appointment newap = EntityIcalAdapter.toBorg(comp);
 			if (newap == null)
@@ -630,8 +625,8 @@ public class CalDav {
 
 					SyncLog.getReference().setProcessUpdates(false);
 					count++;
-					log.info("SYNC save: " + comp.toString());
-					log.info("SYNC save: " + newap.toString());
+					log.info("SYNC save: " + comp);
+					log.info("SYNC save: " + newap);
 					AppointmentModel.getReference().saveAppt(newap);
 				} finally {
 					SyncLog.getReference().setProcessUpdates(true);
@@ -647,7 +642,7 @@ public class CalDav {
 				// instead of one instance.
 				if (Repeat.isRepeating(ap) && ap.isTodo() && !newap.isTodo()) {
 					count++;
-					log.info("SYNC do todo: " + ap.toString());
+					log.info("SYNC do todo: " + ap);
 					AppointmentModel.getReference().do_todo(ap.getKey(), true);
 					// don't suppress sync log - need to sync this todo
 				} else {
@@ -658,8 +653,8 @@ public class CalDav {
 
 						SyncLog.getReference().setProcessUpdates(false);
 						count++;
-						log.info("SYNC save: " + comp.toString());
-						log.info("SYNC save: " + newap.toString());
+						log.info("SYNC save: " + comp);
+						log.info("SYNC save: " + newap);
 						AppointmentModel.getReference().saveAppt(newap);
 					} finally {
 						SyncLog.getReference().setProcessUpdates(true);
@@ -692,9 +687,9 @@ public class CalDav {
 
 		net.fortuna.ical4j.model.DateTime dtstart = new net.fortuna.ical4j.model.DateTime(after);
 		net.fortuna.ical4j.model.DateTime dtend = new net.fortuna.ical4j.model.DateTime(tenYears);
-		log.info("SYNC: " + dtstart.toString() + "--" + dtend.toString());
+		log.info("SYNC: " + dtstart + "--" + dtend);
 
-		Calendar cals[] = collection.getEventsForTimePeriod(dtstart, dtend);
+		Calendar[] cals = collection.getEventsForTimePeriod(dtstart, dtend);
 		SocketClient.sendLogMessage("SYNC: found " + cals.length + " Event Calendars on server");
 		log.info("SYNC: found " + cals.length + " Event Calendars on server");
 		int count = 0;
@@ -705,7 +700,7 @@ public class CalDav {
 		SocketClient.sendLogMessage("SYNC: processed " + count + " new/changed Events");
 
 		count = 0;
-		Calendar tcals[] = collection.getTasks();
+		Calendar[] tcals = collection.getTasks();
 		SocketClient.sendLogMessage("SYNC: found " + tcals.length + " Todo Calendars on server");
 		log.info("SYNC: found " + tcals.length + " Todo Calendars on server");
 		for (Calendar cal : tcals) {
@@ -725,8 +720,8 @@ public class CalDav {
 				continue;
 
 			if (!serverUids.contains(ap.getUid())) {
-				SocketClient.sendLogMessage("Appointment Not Found in Borg - Deleting: " + ap.toString());
-				log.info("Appointment Not Found in Borg - Deleting: " + ap.toString());
+				SocketClient.sendLogMessage("Appointment Not Found in Borg - Deleting: " + ap);
+				log.info("Appointment Not Found in Borg - Deleting: " + ap);
 				SyncLog.getReference().setProcessUpdates(false);
 				AppointmentModel.getReference().delAppt(ap.getKey());
 				SyncLog.getReference().setProcessUpdates(true);

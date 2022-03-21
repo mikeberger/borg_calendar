@@ -48,21 +48,21 @@ public class MiscellaneousOptionsPanel extends OptionsPanel {
 	}
 
 	private static final long serialVersionUID = 2246952528811147049L;
-	private JTextField backupDir = new JTextField();
-	private JCheckBox colorprint = new JCheckBox();
+	private final JTextField backupDir = new JTextField();
+	private final JCheckBox colorprint = new JCheckBox();
 
-	private JTextField socketPort = new JTextField();
-	private JCheckBox splashbox = new JCheckBox();
-	private JCheckBox stackbox = new JCheckBox();
+	private final JTextField socketPort = new JTextField();
+	private final JCheckBox splashbox = new JCheckBox();
+	private final JCheckBox stackbox = new JCheckBox();
 
-	private JCheckBox useSysTray = new JCheckBox();
-	private JCheckBox startToSysTray = new JCheckBox();
-	private JCheckBox dateInSysTray = new JCheckBox();
+	private final JCheckBox useSysTray = new JCheckBox();
+	private final JCheckBox startToSysTray = new JCheckBox();
+	private final JCheckBox dateInSysTray = new JCheckBox();
 
-	private JCheckBox verboseLogging = new JCheckBox();
-	private JCheckBox auditLogging = new JCheckBox();
+	private final JCheckBox verboseLogging = new JCheckBox();
+	private final JCheckBox auditLogging = new JCheckBox();
 
-	private JComboBox<String> shutdownAction = new JComboBox<String>();
+	private final JComboBox<String> shutdownAction = new JComboBox<String>();
 
 	/**
 	 * Instantiates a new miscellaneous options panel.

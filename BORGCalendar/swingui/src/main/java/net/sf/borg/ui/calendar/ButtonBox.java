@@ -32,7 +32,7 @@ import java.util.Date;
  */
 public abstract class ButtonBox extends Box {
 
-	private Date date; // date that the box is associated with
+	private final Date date; // date that the box is associated with
 
 	private Icon icon_ = null; // optinal icon for the label
 

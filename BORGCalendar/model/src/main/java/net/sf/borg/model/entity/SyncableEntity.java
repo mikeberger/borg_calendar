@@ -4,21 +4,21 @@ import java.util.Date;
 
 public interface SyncableEntity {
 	
-	public static enum ObjectType {
+	enum ObjectType {
 		APPOINTMENT, TASK, PROJECT, SUBTASK, REMOTE
 	}
 	
-	public int getKey();
+	int getKey();
 	
-	public Date getCreateTime();
+	Date getCreateTime();
 
-	public Date getLastMod();
+	Date getLastMod();
 
-	public String getUid();
+	String getUid();
 
-	public String getUrl();
+	String getUrl();
 	
-	public ObjectType getObjectType();
+	ObjectType getObjectType();
 
 //	public void setCreateTime(Date d);
 //

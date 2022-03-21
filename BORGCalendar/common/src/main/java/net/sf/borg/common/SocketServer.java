@@ -25,7 +25,7 @@ public class SocketServer extends Thread {
 	    protected Socket client;
 	    protected BufferedReader in;
 	    protected PrintStream out;
-	    private SocketHandler handler_1;
+	    private final SocketHandler handler_1;
 
 	    // Initialize the streams and start the thread
 	    public Connection(Socket client_socket, SocketHandler handler) {
@@ -66,7 +66,7 @@ public class SocketServer extends Thread {
     protected ServerSocket listen_socket;
     
     /** the socket handler that will be called for each incoming message */
-    private SocketHandler handler_;
+    private final SocketHandler handler_;
     
     private static void fail(Exception e, String msg) {
         log.severe(msg + ": " +  e);

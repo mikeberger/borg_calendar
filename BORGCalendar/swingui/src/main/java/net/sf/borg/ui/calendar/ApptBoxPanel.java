@@ -65,7 +65,7 @@ abstract class ApptBoxPanel extends JPanel implements ComponentListener {
 	private class DragNewBox extends Box {
 		
 		// border thickness
-		private BasicStroke thicker = new BasicStroke(4.0f);
+		private final BasicStroke thicker = new BasicStroke(4.0f);
 
 		// zone that the box is in
 		DateZone zone;
@@ -97,7 +97,7 @@ abstract class ApptBoxPanel extends JPanel implements ComponentListener {
 				return;
 			}
 			// get default appt values, if any from prefs
-			Appointment appt = AppointmentModel.getReference().getDefaultAppointment();
+			Appointment appt = AppointmentModel.getDefaultAppointment();
 
 			// get a new appt if no defaults
 			if (appt == null) {
@@ -436,11 +436,7 @@ abstract class ApptBoxPanel extends JPanel implements ComponentListener {
 					resizedBox = (ApptBox) b.box;
 					setResizeBox(b.box.getBounds().x, b.box.getBounds().y,
 							b.box.getBounds().width, b.box.getBounds().height);
-					if (b.onBottomBorder) {
-						resizeTop = false;
-					} else {
-						resizeTop = true;
-					}
+					resizeTop = !b.onBottomBorder;
 				// start resize of the drag new box
 				} else if (b.box == dragNewBox) {
 					if (b.onBottomBorder) {
@@ -569,7 +565,7 @@ abstract class ApptBoxPanel extends JPanel implements ComponentListener {
 	}
 	
 	// format for time markers on resize/drag box
-	private SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
+	private final SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
 
 
 	// to adjust, since since Graphics2D is translated
@@ -584,12 +580,9 @@ abstract class ApptBoxPanel extends JPanel implements ComponentListener {
 	 * @return true, if is strike
 	 */
 	public static boolean isStrike(CalendarEntity appt, Date date) {
-		if ((appt.getColor() != null && appt.getColor().equals("strike"))
+		return (appt.getColor() != null && appt.getColor().equals("strike"))
 				|| (appt.isTodo() && !(appt.getNextTodo() == null || !appt
-						.getNextTodo().after(date)))) {
-			return (true);
-		}
-		return false;
+				.getNextTodo().after(date)));
 	}
 
 	/** the Boxes managed by this container */
@@ -634,7 +627,7 @@ abstract class ApptBoxPanel extends JPanel implements ComponentListener {
 	protected double startmin = 0;
 
 	// DateZones managed by this container
-	private Collection<DateZone> zones = new ArrayList<DateZone>();
+	private final Collection<DateZone> zones = new ArrayList<DateZone>();
 	
 	/**
 	 * Instantiates a new appt box panel.
@@ -921,9 +914,7 @@ abstract class ApptBoxPanel extends JPanel implements ComponentListener {
 	 * @return true, if is inside resize area
 	 */
 	private boolean isInsideResizeArea(int top, int bot) {
-		if (top >= resizeYMin && bot <= resizeYMax)
-			return true;
-		return false;
+		return top >= resizeYMin && bot <= resizeYMax;
 
 	}
 

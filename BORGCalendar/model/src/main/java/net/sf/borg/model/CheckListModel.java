@@ -51,10 +51,10 @@ public class CheckListModel extends Model  {
 	}
 	
 	/** The db */
-	private CheckListDB db_; // the database
+	private final CheckListDB db_; // the database
 
 	/** The singleton */
-	static private CheckListModel self_ = new CheckListModel();
+	static private final CheckListModel self_ = new CheckListModel();
 
 	/**
 	 * Gets the singleton.

@@ -49,7 +49,7 @@ public class NoteBox extends Box implements Box.Draggable {
 
 	private CalendarEntity bean = null; // entity associated with this box
 
-	private Date date; // date being displayed - not necessarily date of the
+	private final Date date; // date being displayed - not necessarily date of the
 	// entity in the case of repeats
 
 	private boolean hasLink = false; // does entity have a link

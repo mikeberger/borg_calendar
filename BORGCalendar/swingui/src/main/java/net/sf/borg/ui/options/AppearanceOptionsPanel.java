@@ -44,30 +44,30 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 
 	private static final long serialVersionUID = -2799946173831477902L;
 
-	private JCheckBox canadabox;
+	private final JCheckBox canadabox;
 
-	private JCheckBox prioritySortBox;
+	private final JCheckBox prioritySortBox;
 
 	private JCheckBox doyBox = null;
-	private JCheckBox hide_strike_box = new JCheckBox();
+	private final JCheckBox hide_strike_box = new JCheckBox();
 
-	private JCheckBox holiday1;
-	private JCheckBox iso8601Box = new JCheckBox();
+	private final JCheckBox holiday1;
+	private final JCheckBox iso8601Box = new JCheckBox();
 
-	private JComboBox<String> lnfBox;
-	private JComboBox<String> themeBox;
-	private JComboBox<String> localebox;
+	private final JComboBox<String> lnfBox;
+	private final JComboBox<String> themeBox;
+	private final JComboBox<String> localebox;
 
-	private JCheckBox miltime;
-	private JCheckBox mondaycb;
-	private JCheckBox privbox;
+	private final JCheckBox miltime;
+	private final JCheckBox mondaycb;
+	private final JCheckBox privbox;
 
-	private JCheckBox pubbox;
+	private final JCheckBox pubbox;
 
 	private JCheckBox truncbox = null;
-	private JComboBox<String> wkendhr;
+	private final JComboBox<String> wkendhr;
 
-	private JComboBox<String> wkstarthr;
+	private final JComboBox<String> wkstarthr;
 
 	/**
 	 * Instantiates a new appearance options panel.
@@ -246,7 +246,7 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 		Prefs.putPref(PrefName.WKSTARTHOUR, wkstarthr.getSelectedItem());
 
 		// locale
-		Locale locs[] = Locale.getAvailableLocales();
+		Locale[] locs = Locale.getAvailableLocales();
 		String choice = (String) localebox.getSelectedItem();
 		for (int ii = 0; ii < locs.length; ii++) {
 			if (choice.equals(locs[ii].getDisplayName())) {
@@ -310,11 +310,7 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 
 		// monday first day of week option
 		int fdow = Prefs.getIntPref(PrefName.FIRSTDOW);
-		if (fdow == Calendar.MONDAY) {
-			mondaycb.setSelected(true);
-		} else {
-			mondaycb.setSelected(false);
-		}
+		mondaycb.setSelected(fdow == Calendar.MONDAY);
 
 		// start and end hour for the time grids
 		String shr = Prefs.getPref(PrefName.WKSTARTHOUR);
@@ -324,7 +320,7 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 
 		// add locales
 		localebox.removeAllItems();
-		Locale locs[] = Locale.getAvailableLocales();
+		Locale[] locs = Locale.getAvailableLocales();
 		ArrayList<Locale> loclist = new ArrayList<Locale>();
 		Collections.addAll(loclist, locs);
 		Comparator<Locale> comparator = new Comparator<Locale>() {
@@ -348,7 +344,7 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 		String curlnf = Prefs.getPref(PrefName.LNF);
 
 		// add installed JRE look and feels
-		LookAndFeelInfo lnfinfo[] = UIManager.getInstalledLookAndFeels();
+		LookAndFeelInfo[] lnfinfo = UIManager.getInstalledLookAndFeels();
 		for (int i = 0; i < lnfinfo.length; i++) {
 			String name = lnfinfo[i].getClassName();
 			lnfs.add(name);
@@ -408,10 +404,7 @@ public class AppearanceOptionsPanel extends OptionsPanel {
 		if (lnf == null)
 			return;
 
-		if (lnf.contains("goodies"))
-			themeBox.setEnabled(true);
-		else
-			themeBox.setEnabled(false);
+		themeBox.setEnabled(lnf.contains("goodies"));
 	}
 
 }

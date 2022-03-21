@@ -32,10 +32,10 @@ public class UndoLog {
 	static private final Logger auditLog = Logger.getLogger("net.sf.borg.audit");
 
 	/** The undo stack. */
-	private Stack<UndoItem<?>> undoStack = new Stack<UndoItem<?>>();
+	private final Stack<UndoItem<?>> undoStack = new Stack<UndoItem<?>>();
 	
 	/** The singleton. */
-	private static UndoLog singleton = new UndoLog();
+	private static final UndoLog singleton = new UndoLog();
 	
 	/**
 	 * get a reference to the undo log singleton.

@@ -38,7 +38,7 @@ public interface EntityDB<T extends KeyedEntity<T>>
 	 * 
 	 * @throws Exception
 	 */
-	public Collection<T> readAll() throws  Exception;
+    Collection<T> readAll() throws  Exception;
     
     /**
      * Read a single KeyedEntity from the database by key
@@ -49,14 +49,14 @@ public interface EntityDB<T extends KeyedEntity<T>>
      * 
      * @throws Exception 
      */
-    public T readObj( int key ) throws  Exception;
+    T readObj(int key) throws  Exception;
     
     /**
      * Return a new instance of the KeyedEntity
      * 
      * @return the new KeyedEntity
      */
-    public T newObj();
+    T newObj();
     
     /**
      * Adds a KeyedEntity to the database
@@ -65,7 +65,7 @@ public interface EntityDB<T extends KeyedEntity<T>>
      * 
      * @throws Exception 
      */
-    public void addObj( T entity ) throws  Exception;
+    void addObj(T entity) throws  Exception;
     
     /**
      * Update a KeyedEntity in the database
@@ -74,7 +74,7 @@ public interface EntityDB<T extends KeyedEntity<T>>
      * 
      * @throws Exception 
      */
-    public void updateObj( T entity ) throws  Exception;
+    void updateObj(T entity) throws  Exception;
     
     /**
      * Delete a KeyedEntity from the database
@@ -83,7 +83,7 @@ public interface EntityDB<T extends KeyedEntity<T>>
      * 
      * @throws Exception
      */
-    public void delete( int key ) throws Exception;
+    void delete(int key) throws Exception;
     
     /**
      * get the next available key value for this entity type
@@ -92,10 +92,10 @@ public interface EntityDB<T extends KeyedEntity<T>>
      * 
      * @throws Exception
      */
-    public int nextkey() throws Exception;
+    int nextkey() throws Exception;
     
     /**
      * Sync with the database (likely to just be a cache flush)
      */
-    public void sync();
+    void sync();
 }

@@ -48,25 +48,25 @@ class PopupOptionsPanel extends OptionsPanel {
 	private static final long serialVersionUID = -5238561005974597879L;
 
 	/** The checkfreq. */
-	private JSpinner checkfreq = new JSpinner();
+	private final JSpinner checkfreq = new JSpinner();
 
 	/** The number Of Reminder Times. */
 	private int numberOfReminderTimes = 0;
 
 	/** The popenablebox. */
-	private JCheckBox popenablebox = new JCheckBox();
+	private final JCheckBox popenablebox = new JCheckBox();
 
-	private JCheckBox reminderListBox = new JCheckBox();
+	private final JCheckBox reminderListBox = new JCheckBox();
 
-	private JCheckBox taskReminderBox = new JCheckBox();
+	private final JCheckBox taskReminderBox = new JCheckBox();
 
 	/** The soundbox. */
-	private JComboBox<String> soundbox = new JComboBox<String>();
+	private final JComboBox<String> soundbox = new JComboBox<String>();
 
 	/** The spinners for setting the reminder times */
-	private JSpinner spinners[];
+	private final JSpinner[] spinners;
 
-	private JSpinner birthdayDays = new JSpinner();
+	private final JSpinner birthdayDays = new JSpinner();
 
 	/**
 	 * Instantiates a new popup options panel.
@@ -220,7 +220,7 @@ class PopupOptionsPanel extends OptionsPanel {
 		Integer bddays = (Integer) birthdayDays.getValue();
 		Prefs.putPref(PrefName.BIRTHDAYREMINDERDAYS, bddays);
 
-		int arr[] = new int[numberOfReminderTimes];
+		int[] arr = new int[numberOfReminderTimes];
 		for (int i = 0; i < numberOfReminderTimes; i++) {
 			Integer ii = (Integer) spinners[i].getValue();
 			arr[i] = ii.intValue();

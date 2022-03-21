@@ -24,18 +24,18 @@ public class TodoOptionsPanel extends OptionsPanel {
 	/**
 	 * If set, the text field is cleared on creation of a new todo item.
 	 */
-	private JCheckBox todoQuickEntryAutoClearTextField = new JCheckBox();
+	private final JCheckBox todoQuickEntryAutoClearTextField = new JCheckBox();
 
 	/**
 	 * If set, the date field is defaulted to today's date initially and after
 	 * creating a new todo item.
 	 */
-	private JCheckBox todoQuickEntryAutoSetDateField = new JCheckBox();
+	private final JCheckBox todoQuickEntryAutoSetDateField = new JCheckBox();
 	
 	/**
 	 * If set, only the current todo is shown, if the todo repeats.
 	 */
-	private JCheckBox todoOnlyShowCurrent = new JCheckBox();
+	private final JCheckBox todoOnlyShowCurrent = new JCheckBox();
 
 
 	/**

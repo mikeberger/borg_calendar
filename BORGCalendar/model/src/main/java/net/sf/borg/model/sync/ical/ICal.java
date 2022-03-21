@@ -216,7 +216,7 @@ public class ICal {
 		warning.append("Imported: " + imported + "\n");
 		warning.append("Skipped: " + skipped + "\n");
 		warning.append("Duplicates: " + dup_count + "\n");
-		warning.append(dups.toString());
+		warning.append(dups);
 
 		if (warning.length() == 0)
 			return (null);

@@ -66,7 +66,7 @@ public class TaskView extends DockableView {
 	 */
 	public enum Action {
 
-		ADD, CHANGE, CLONE;
+		ADD, CHANGE, CLONE
 	}
 
 	/**
@@ -137,7 +137,7 @@ public class TaskView extends DockableView {
 	private JTextArea resolutionText;
 
 	/** The log table. */
-	private JTable logtable = new JTable();
+	private final JTable logtable = new JTable();
 
 	/** The person assigned text. */
 	private JTextField personAssignedText;
@@ -146,10 +146,10 @@ public class TaskView extends DockableView {
 	private JComboBox<Integer> priorityText;
 
 	/** The project combo box. */
-	private JComboBox<String> projectComboBox = new JComboBox<String>();
+	private final JComboBox<String> projectComboBox = new JComboBox<String>();
 
 	/** The sub task table. */
-	private JTable subTaskTable = new JTable();
+	private final JTable subTaskTable = new JTable();
 
 	/** The start date chooser. */
 	private JDateChooser startDateChooser;
@@ -158,7 +158,7 @@ public class TaskView extends DockableView {
 	private JComboBox<String> statusComboBox;
 
 	/** The sub task ids to be deleted. */
-	private ArrayList<Integer> subTaskIdsToBeDeleted = new ArrayList<Integer>();
+	private final ArrayList<Integer> subTaskIdsToBeDeleted = new ArrayList<Integer>();
 
 	/** The window title. */
 	private String windowTitle = "";
@@ -558,7 +558,7 @@ public class TaskView extends DockableView {
 						return;
 					}
 				}
-				Object o[] = { Boolean.valueOf(false), null, null, null, null, null, null };
+				Object[] o = { Boolean.valueOf(false), null, null, null, null, null, null };
 				model.addRow(o);
 			}
 
@@ -579,7 +579,7 @@ public class TaskView extends DockableView {
 					public void actionPerformed(ActionEvent evt) {
 
 						TableSorter ts2 = (TableSorter) subTaskTable.getModel();
-						Integer ids[] = getSelectedSubtaskIds();
+						Integer[] ids = getSelectedSubtaskIds();
 						for (int i = 0; i < ids.length; ++i) {
 							if (ids[i] == null)
 								continue;
@@ -611,7 +611,7 @@ public class TaskView extends DockableView {
 							return;
 
 						// set the due date
-						Integer ids[] = getSelectedSubtaskIds();
+						Integer[] ids = getSelectedSubtaskIds();
 						for (int i = 0; i < ids.length; ++i) {
 							if (ids[i] == null)
 								continue;
@@ -629,7 +629,7 @@ public class TaskView extends DockableView {
 					public void actionPerformed(ActionEvent evt) {
 
 						TableSorter ts2 = (TableSorter) subTaskTable.getModel();
-						Integer ids[] = getSelectedSubtaskIds();
+						Integer[] ids = getSelectedSubtaskIds();
 						if (ids.length == 0)
 							return;
 
@@ -701,7 +701,7 @@ public class TaskView extends DockableView {
 	}
 
 	private boolean rowsSelected() {
-		Integer ids[] = getSelectedSubtaskIds();
+		Integer[] ids = getSelectedSubtaskIds();
 		for (int i = 0; i < ids.length; ++i) {
 			if (ids[i] != null)
 				return true;
@@ -713,7 +713,7 @@ public class TaskView extends DockableView {
 	 * Insert a blank subtask row in the table
 	 */
 	private void insertSubtask() {
-		Object o[] = { Boolean.valueOf(false), null, null, null, null, null, null };
+		Object[] o = { Boolean.valueOf(false), null, null, null, null, null, null };
 		TableSorter ts = (TableSorter) subTaskTable.getModel();
 		ts.addRow(o);
 	}
@@ -734,7 +734,7 @@ public class TaskView extends DockableView {
 		// add log entries
 		Collection<Tasklog> logs = TaskModel.getReference().getLogs(taskid);
 		for (Tasklog log : logs) {
-			Object o[] = { log.getLogTime(), log.getDescription() };
+			Object[] o = { log.getLogTime(), log.getDescription() };
 			tslog.addRow(o);
 		}
 	}
@@ -773,7 +773,7 @@ public class TaskView extends DockableView {
 		// delete subtasks marked for deletion
 		for (Integer id : subTaskIdsToBeDeleted) {
 			TaskModel.getReference().deleteSubTask(id.intValue());
-			TaskModel.getReference().addLog(tasknum, Resource.getResourceString("subtask") + " " + id.toString() + " "
+			TaskModel.getReference().addLog(tasknum, Resource.getResourceString("subtask") + " " + id + " "
 					+ Resource.getResourceString("deleted"));
 		}
 
@@ -1156,7 +1156,7 @@ public class TaskView extends DockableView {
 			// add subtasks
 			Collection<Subtask> subtasks = TaskModel.getReference().getSubTasks(task.getKey());
 			for (Subtask subtask : subtasks) {
-				Object o[] = { subtask.getCloseDate() == null ? Boolean.valueOf(false) : Boolean.valueOf(true),
+				Object[] o = { subtask.getCloseDate() == null ? Boolean.valueOf(false) : Boolean.valueOf(true),
 						Integer.valueOf(subtask.getKey()), subtask.getDescription(), subtask.getStartDate(),
 						subtask.getDueDate(),
 						subtask.getDueDate() != null

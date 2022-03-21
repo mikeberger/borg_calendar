@@ -68,15 +68,15 @@ public class DBHelper {
 	 * It contains methods to create the types of DBs used by the models
 	 *
 	 */
-	public static interface Factory
+	public interface Factory
 	{
-		public AppointmentDB createAppointmentDB();
-		public CheckListDB createCheckListDB();
-		public LinkDB createLinkDB();
-		public MemoDB createMemoDB();
-		public OptionDB createOptionDB();
-		public TaskDB createTaskDB();
-		public EntityDB<Address> createAddressDB();
+		AppointmentDB createAppointmentDB();
+		CheckListDB createCheckListDB();
+		LinkDB createLinkDB();
+		MemoDB createMemoDB();
+		OptionDB createOptionDB();
+		TaskDB createTaskDB();
+		EntityDB<Address> createAddressDB();
 	}
 	
 	/**
@@ -84,24 +84,24 @@ public class DBHelper {
 	 * It contains methods that are not specific to a DB type
 	 *
 	 */
-	public static interface Controller
+	public interface Controller
 	{
 		/**
 		 * build the DB URL based on the user's DB options
 		 */
-		public String buildURL();
+		String buildURL();
 		/**
 		 * perform the initial connection to the DB
 		 * @param url
 		 * @throws Exception
 		 */
-		public void connect(String url) throws Exception;
-		public void close() throws Exception;
-		public void execSQL(String string) throws Exception;
-		public ResultSet execQuery(String string) throws Exception;
-		public void beginTransaction() throws Exception;
-		public void commitTransaction() throws Exception;
-		public void rollbackTransaction() throws Exception;
-		public Connection getConnection();
+		void connect(String url) throws Exception;
+		void close() throws Exception;
+		void execSQL(String string) throws Exception;
+		ResultSet execQuery(String string) throws Exception;
+		void beginTransaction() throws Exception;
+		void commitTransaction() throws Exception;
+		void rollbackTransaction() throws Exception;
+		Connection getConnection();
 	}
 }

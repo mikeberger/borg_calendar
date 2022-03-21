@@ -51,9 +51,9 @@ abstract class JdbcBeanDB<T extends KeyedEntity<T>> {
 	// some info to indicate when another process has written the DB to
 	// force
 	// a flush of the cache
-	private boolean objectCacheOn_; // is caching on?
+	private final boolean objectCacheOn_; // is caching on?
 
-	private HashMap<Integer,T> objectCache_; // the cache
+	private final HashMap<Integer,T> objectCache_; // the cache
 
 	/**
 	 * Creates a new instance of JdbcDB.

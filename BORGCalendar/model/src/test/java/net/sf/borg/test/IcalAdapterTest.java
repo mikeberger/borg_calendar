@@ -13,7 +13,7 @@ import java.util.Collection;
 
 public class IcalAdapterTest {
 
-	public static void main(String args[]) throws Exception {
+	public static void main(String[] args) throws Exception {
 		System.setProperty("net.fortuna.ical4j.timezone.cache.impl", "net.fortuna.ical4j.util.MapTimeZoneCache");
 		CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_PARSING, true);
 		CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_UNFOLDING, true);
@@ -69,9 +69,9 @@ public class IcalAdapterTest {
 			} catch (Throwable e) {
 				e.printStackTrace();
 				System.out.println(e.getMessage());
-				System.out.println(appt.toString());
+				System.out.println(appt);
 				System.out.println(ap2.toString());
-				System.out.println(comp.toString());
+				System.out.println(comp);
 
 				break;
 			}

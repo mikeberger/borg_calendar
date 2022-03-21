@@ -57,7 +57,7 @@ class ApptBox extends Box implements Box.Draggable {
 	// rounded rectangle radius
 	final static private int radius = 2;
 	
-	private SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
+	private final SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
 
 
 	/**
@@ -294,7 +294,7 @@ class ApptBox extends Box implements Box.Draggable {
 	// fraction of the available grid height at which the bottom should be drawn
 	private double bottom; 
 
-	private Date date; // date being displayed - not necessarily date of the appt
+	private final Date date; // date being displayed - not necessarily date of the appt
 	
 	// flag to indicate if the appt has links
 	private boolean hasLink = false;
@@ -305,7 +305,7 @@ class ApptBox extends Box implements Box.Draggable {
 
 	private int maxAcrossAtOneTime = 0; // max number of appts overlapping any others that overlap this one
 	
-	private String displayText;
+	private final String displayText;
 
 	private int oldFontHeight = -1; // used for sizing the todo marker image
 
@@ -362,7 +362,7 @@ class ApptBox extends Box implements Box.Draggable {
 		
 		// format the appt text
 		//appt.setText(AppointmentTextFormat.format(appt, d));
-		displayText = AppointmentTextFormat.format((Appointment) ap, d);
+		displayText = AppointmentTextFormat.format(ap, d);
 
 	}
 
@@ -617,7 +617,7 @@ class ApptBox extends Box implements Box.Draggable {
 				@Override
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
 					int ret = -1;
-					if( AppointmentModel.getReference().next_todo((Appointment) appt, date) != null )
+					if( AppointmentModel.getReference().next_todo(appt, date) != null )
 					{
 						ret = JOptionPane.showConfirmDialog(null, Resource
 								.getResourceString("Future_Todo_Warn"), Resource

@@ -46,7 +46,7 @@ import java.util.Iterator;
 public class MemoModel extends Model implements Searchable<Memo> {
 
 	/** The normalized date format for timestamps in a memo  */
-	private SimpleDateFormat normalDateFormat_ = new SimpleDateFormat(
+	private final SimpleDateFormat normalDateFormat_ = new SimpleDateFormat(
 			"MM/dd/yyyy hh:mm aa");
 
 	/**
@@ -59,10 +59,10 @@ public class MemoModel extends Model implements Searchable<Memo> {
 	}
 	
 	/** The db */
-	private MemoDB db_; // the database
+	private final MemoDB db_; // the database
 
 	/** The singleton */
-	static private MemoModel self_ = new MemoModel();
+	static private final MemoModel self_ = new MemoModel();
 
 	/**
 	 * Gets the singleton.

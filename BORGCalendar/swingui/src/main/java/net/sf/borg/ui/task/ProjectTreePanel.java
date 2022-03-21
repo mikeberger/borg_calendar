@@ -55,7 +55,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 	private static final long serialVersionUID = 1L;
 
 	// cache to prevent painting of project tree from accessing the db
-	private HashMap<Integer, Integer> daysLeftCache = new HashMap<Integer, Integer>();
+	private final HashMap<Integer, Integer> daysLeftCache = new HashMap<Integer, Integer>();
 
 	/**
 	 * Custom Tree Cell Renderer that shows empty projects as closed folders
@@ -269,16 +269,16 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 	private boolean isExpanded = true;
 
 	/** The project popup menu. */
-	private JPopupMenu projmenu = new JPopupMenu();
+	private final JPopupMenu projmenu = new JPopupMenu();
 
 	/** The root node popup menu */
-	private JPopupMenu rootmenu = new JPopupMenu();
+	private final JPopupMenu rootmenu = new JPopupMenu();
 
 	/** The show closed. */
-	private JCheckBox showClosedCheckBox = new JCheckBox(
+	private final JCheckBox showClosedCheckBox = new JCheckBox(
 			Resource.getResourceString("show_closed"));
 
-	private JCheckBox showClosedTasksCheckBox = new JCheckBox(
+	private final JCheckBox showClosedTasksCheckBox = new JCheckBox(
 			Resource.getResourceString("show_closed_tasks"));
 
 	/** The tree. */
@@ -288,7 +288,7 @@ public class ProjectTreePanel extends JPanel implements TreeSelectionListener,
 	private JScrollPane treeScrollPane = null;
 
 	/** The entity Scroll Pane. */
-	private JScrollPane entityScrollPane = new JScrollPane(new JPanel());
+	private final JScrollPane entityScrollPane = new JScrollPane(new JPanel());
 
 	/**
 	 * constructor

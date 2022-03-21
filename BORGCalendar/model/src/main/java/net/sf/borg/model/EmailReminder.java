@@ -62,13 +62,10 @@ public class EmailReminder {
 	 * @return true, if is strike
 	 */
 	private static boolean isStrike(CalendarEntity appt, Date date) {
-		if ((appt.getColor() != null && appt.getColor().equals("strike"))
-				|| (appt.isTodo() && !(appt.getNextTodo() == null || !appt
-						.getNextTodo().after(date)))) {
-			return (true);
-		}
-		return false;
-	}
+        return (appt.getColor() != null && appt.getColor().equals("strike"))
+                || (appt.isTodo() && !(appt.getNextTodo() == null || !appt
+                .getNextTodo().after(date)));
+    }
 
 	static public void sendDailyEmailReminder(Calendar emailday)
 			throws Exception {
@@ -171,7 +168,7 @@ public class EmailReminder {
 						String s = appt.getText();
 						int ii = s.indexOf('\n');
 						if (ii != -1) {
-							tx.append(s.substring(0, ii));
+							tx.append(s, 0, ii);
 						} else {
 							tx.append(s);
 						}
@@ -231,7 +228,7 @@ public class EmailReminder {
 					String s = todo.getText();
 					int ii = s.indexOf('\n');
 					if (ii != -1) {
-						tdbuf.append(s.substring(0, ii));
+						tdbuf.append(s, 0, ii);
 					} else {
 						tdbuf.append(s);
 					}
@@ -246,7 +243,7 @@ public class EmailReminder {
 		{
 			tx.append("\n\n");
 			tx.append(Resource.getResourceString("OverDue"));
-			tx.append("\n" + tdbuf.toString());
+			tx.append("\n" + tdbuf);
 		}
 
 		// send the email using SMTP

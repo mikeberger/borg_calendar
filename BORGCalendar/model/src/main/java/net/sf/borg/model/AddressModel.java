@@ -45,7 +45,7 @@ import java.util.*;
 public class AddressModel extends Model implements Searchable<Address>,
         CalendarEntityProvider {
 
-    static private AddressModel self_ = new AddressModel();
+    static private final AddressModel self_ = new AddressModel();
 
     /**
      * class XmlContainer is solely for JAXB XML export/import to keep the same
@@ -80,12 +80,12 @@ public class AddressModel extends Model implements Searchable<Address>,
     /**
      * map of birthdays to addresses
      */
-    private HashMap<Integer, LinkedList<Address>> bdmap_ = new HashMap<Integer, LinkedList<Address>>();
+    private final HashMap<Integer, LinkedList<Address>> bdmap_ = new HashMap<Integer, LinkedList<Address>>();
 
     /**
      * The db_.
      */
-    private EntityDB<Address> db_; // the database
+    private final EntityDB<Address> db_; // the database
 
     /**
      * Instantiates a new address model.
@@ -212,7 +212,7 @@ public class AddressModel extends Model implements Searchable<Address>,
 
         // use key from import file if importing into empty db
         int nextkey = db_.nextkey();
-        boolean use_keys = (nextkey == 1) ? true : false;
+        boolean use_keys = nextkey == 1;
         for (Address addr : container.Address) {
             if (!use_keys)
                 addr.setKey(nextkey++);

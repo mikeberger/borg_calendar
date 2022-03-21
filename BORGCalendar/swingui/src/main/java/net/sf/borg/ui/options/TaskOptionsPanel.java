@@ -35,15 +35,15 @@ import java.awt.*;
 public class TaskOptionsPanel extends OptionsPanel {
 
 	private static final long serialVersionUID = 1192889023921958906L;
-	private JCheckBox calShowSubtaskBox = new JCheckBox();
+	private final JCheckBox calShowSubtaskBox = new JCheckBox();
 
-	private JCheckBox calShowTaskBox = new JCheckBox();
-	private JCheckBox taskAbbrevBox = new JCheckBox();
-	private JCheckBox taskTreeStatusBox = new JCheckBox();
+	private final JCheckBox calShowTaskBox = new JCheckBox();
+	private final JCheckBox taskAbbrevBox = new JCheckBox();
+	private final JCheckBox taskTreeStatusBox = new JCheckBox();
 
-	private JSpinner redSpinner = new JSpinner(new SpinnerNumberModel());
-	private JSpinner orangeSpinner = new JSpinner(new SpinnerNumberModel());
-	private JSpinner yellowSpinner = new JSpinner(new SpinnerNumberModel());
+	private final JSpinner redSpinner = new JSpinner(new SpinnerNumberModel());
+	private final JSpinner orangeSpinner = new JSpinner(new SpinnerNumberModel());
+	private final JSpinner yellowSpinner = new JSpinner(new SpinnerNumberModel());
 
 	private final ImageIcon redIcon = new ImageIcon(getClass().getResource(
 			"/resource/red.png"));

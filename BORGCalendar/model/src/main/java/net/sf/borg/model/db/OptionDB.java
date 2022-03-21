@@ -38,7 +38,7 @@ public interface OptionDB {
 	 * @throws Exception
 	 *             the exception
 	 */
-	public String getOption(String oname) throws Exception;
+    String getOption(String oname) throws Exception;
 
 	/**
 	 * Gets all options from the options table.
@@ -48,7 +48,7 @@ public interface OptionDB {
 	 * @throws Exception
 	 *             the exception
 	 */
-	public Collection<Option> getOptions() throws Exception;
+    Collection<Option> getOptions() throws Exception;
 
 	/**
 	 * Sets an option in the options table.
@@ -59,6 +59,6 @@ public interface OptionDB {
 	 * @throws Exception
 	 *             the exception
 	 */
-	public void setOption(Option option) throws Exception;
+    void setOption(Option option) throws Exception;
 
 }

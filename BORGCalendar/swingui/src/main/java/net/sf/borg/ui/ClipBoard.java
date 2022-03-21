@@ -7,9 +7,9 @@ import java.util.HashMap;
  */
 public class ClipBoard {
 	
-	private static ClipBoard singleton = new ClipBoard();
+	private static final ClipBoard singleton = new ClipBoard();
 	
-	private HashMap<Class<?>, Object> map = new HashMap<Class<?>, Object>();
+	private final HashMap<Class<?>, Object> map = new HashMap<Class<?>, Object>();
 	
 	public static ClipBoard getReference() {
 		return singleton;

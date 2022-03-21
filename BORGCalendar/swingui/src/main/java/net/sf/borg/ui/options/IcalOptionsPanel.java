@@ -35,23 +35,23 @@ public class IcalOptionsPanel extends OptionsPanel {
 
 	private static final long serialVersionUID = 795364188303457966L;
 
-	private JSpinner exportyears = new JSpinner(new SpinnerNumberModel(2, 1,
+	private final JSpinner exportyears = new JSpinner(new SpinnerNumberModel(2, 1,
 			100, 1));
 
-	private JCheckBox todoBox = new JCheckBox();
+	private final JCheckBox todoBox = new JCheckBox();
 
-	private JTextField caldavServer = new JTextField();
-	private JTextField caldavPath = new JTextField();
-	private JTextField caldavPrincipalPath = new JTextField();
-	private JTextField caldavUserPath = new JTextField();
-	private JTextField carddavPath = new JTextField();
-	private JTextField caldavUser = new JTextField();
-	private JPasswordField caldavPassword = new JPasswordField();
-	private JTextField caldavCal = new JTextField();
-	private JTextField addrBook = new JTextField();
+	private final JTextField caldavServer = new JTextField();
+	private final JTextField caldavPath = new JTextField();
+	private final JTextField caldavPrincipalPath = new JTextField();
+	private final JTextField caldavUserPath = new JTextField();
+	private final JTextField carddavPath = new JTextField();
+	private final JTextField caldavUser = new JTextField();
+	private final JPasswordField caldavPassword = new JPasswordField();
+	private final JTextField caldavCal = new JTextField();
+	private final JTextField addrBook = new JTextField();
 
-	private JCheckBox caldavSSL = new JCheckBox();
-	private JCheckBox caldavSelfSigned = new JCheckBox();
+	private final JCheckBox caldavSSL = new JCheckBox();
+	private final JCheckBox caldavSelfSigned = new JCheckBox();
 
 	public IcalOptionsPanel() {
 		this.setLayout(new java.awt.GridBagLayout());
@@ -198,7 +198,7 @@ public class IcalOptionsPanel extends OptionsPanel {
 		return Resource.getResourceString("ical_options");
 	}
 
-	static public void main(String args[]) {
+	static public void main(String[] args) {
 		JFrame jf = new JFrame();
 		jf.setContentPane(new IcalOptionsPanel());
 		jf.setVisible(true);

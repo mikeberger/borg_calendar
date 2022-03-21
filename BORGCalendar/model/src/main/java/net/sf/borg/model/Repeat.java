@@ -55,10 +55,10 @@ public class Repeat {
 	public final static int MAGIC_RPT_FOREVER_VALUE = 9999;
 
 	/** the appointment date (ie the first occurrence) */
-	private Calendar start_;
+	private final Calendar start_;
 
 	// scratch
-	private Calendar cal;
+	private final Calendar cal;
 
 	/** The current repeat occurrence that this object is set to (via iteration) */
 	private Calendar current_;
@@ -86,7 +86,7 @@ public class Repeat {
 	private int incr;
 
 	/** The frequencies string values in an array for mapping (legacy code) */
-	static private String freqs[] = { ONCE, DAILY, WEEKLY, BIWEEKLY, MONTHLY,
+	static private final String[] freqs = { ONCE, DAILY, WEEKLY, BIWEEKLY, MONTHLY,
 			MONTHLY_DAY, MONTHLY_DAY_LAST, YEARLY, WEEKDAYS, WEEKENDS, MWF,
 			TTH, NDAYS, NWEEKS, NMONTHS, NYEARS, DAYLIST };
 
@@ -127,8 +127,7 @@ public class Repeat {
 			copy.setTime(date.getTime());
 			int doy = date.get(Calendar.DAY_OF_YEAR);
 			copy.set(Calendar.DAY_OF_WEEK_IN_MONTH,-1);
-			if( doy != copy.get(Calendar.DAY_OF_YEAR))
-				return false;
+			return doy == copy.get(Calendar.DAY_OF_YEAR);
 		}
 		return true;
 	}
@@ -256,9 +255,7 @@ public class Repeat {
 	static public boolean getRptNum(String f) {
 		if (f == null)
 			return false;
-		if (f.endsWith(",Y"))
-			return true;
-		return false;
+		return f.endsWith(",Y");
 	}
 
 	/**

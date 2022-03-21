@@ -39,10 +39,10 @@ public class PopupMenuHelper {
 	public static class Entry {
 
 		/** The listener. */
-		private ActionListener listener;
+		private final ActionListener listener;
 
 		/** The resource key. */
-		private String resourceKey;
+		private final String resourceKey;
 
 		/**
 		 * Instantiates a new entry.
@@ -136,10 +136,10 @@ public class PopupMenuHelper {
 
 
 	/** The popup menu. */
-	private JPopupMenu popup;
+	private final JPopupMenu popup;
 
 	/** The table. */
-	private JComponent component;
+	private final JComponent component;
 
 	static public JPopupMenu createPopupMenu(Entry[] entries) {
 		

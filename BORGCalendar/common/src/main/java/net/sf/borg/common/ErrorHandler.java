@@ -32,7 +32,7 @@ public interface ErrorHandler {
 	 * @param e
 	 *            the e
 	 */
-	public void errmsg( Exception e );
+    void errmsg(Exception e);
     
 	/**
 	 * output a notice/warning - just shows text
@@ -40,6 +40,6 @@ public interface ErrorHandler {
 	 * @param s
 	 *            the text to show
 	 */
-	public void notice( String s );
+    void notice(String s);
    
 }

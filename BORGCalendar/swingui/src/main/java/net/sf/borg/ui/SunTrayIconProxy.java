@@ -60,7 +60,7 @@ public class SunTrayIconProxy implements Prefs.Listener {
 	/* flag to indicate is a tray icon was started */
 	private static boolean trayIconStarted = false;
 
-	static private Menu actionMenu = new Menu();
+	static private final Menu actionMenu = new Menu();
 
 	/**
 	 * Checks for presence of the tray icon.

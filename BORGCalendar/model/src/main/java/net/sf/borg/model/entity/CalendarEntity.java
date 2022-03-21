@@ -32,48 +32,48 @@ public interface CalendarEntity {
 	 * 
 	 * @return the text
 	 */
-	public String getText();
+    String getText();
 	
 	/**
 	 * Gets the color.
 	 * 
 	 * @return the color
 	 */
-	public String getColor();
+    String getColor();
 	
 	/**
 	 * Gets the date.
 	 * 
 	 * @return the date
 	 */
-	public Date getDate();
+    Date getDate();
 	
 	/**
 	 * Gets the duration.
 	 * 
 	 * @return the duration
 	 */
-	public Integer getDuration();	
+    Integer getDuration();
 	
 	/**
 	 * Gets the todo flag.
 	 * 
 	 * @return the todo flag
 	 */
-	public boolean isTodo();
+    boolean isTodo();
 	
 	/**
 	 * Gets the next todo date.
 	 * 
 	 * @return the next todo date
 	 */
-	public Date getNextTodo();
+    Date getNextTodo();
 	
 	/**
 	 * Gets the priority
 	 * @return the priority
 	 */
-	public Integer getPriority();
+    Integer getPriority();
 	
-	public boolean isPrivate();
+	boolean isPrivate();
 }

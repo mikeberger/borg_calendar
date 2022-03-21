@@ -40,7 +40,7 @@ public class StartupViewsOptionsPanel extends OptionsPanel {
 		Prefs.putPref(getPrefForView(vt), start ? "true" : "false");
 	}
 	
-	private HashMap<ViewType, JCheckBox> boxMap = new HashMap<ViewType, JCheckBox>();
+	private final HashMap<ViewType, JCheckBox> boxMap = new HashMap<ViewType, JCheckBox>();
 	
 	/**
 	 * Instantiates a new Todo Options Panel.

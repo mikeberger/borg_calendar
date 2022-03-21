@@ -11,9 +11,9 @@ import static org.junit.Assert.assertTrue;
 
 public class EncryptionTest {
 
-	private static String location = "keystore";
-	private static String pw = "1234";
-	private static String keyname = "borg_key";
+	private static final String location = "keystore";
+	private static final String pw = "1234";
+	private static final String keyname = "borg_key";
 
 	@BeforeClass
 	static public void setup() throws Exception {
@@ -62,7 +62,7 @@ public class EncryptionTest {
 	/*
 	 * just to export keys for testing
 	 */
-	public static void main(String args[]) throws Exception
+	public static void main(String[] args) throws Exception
 	{
 		EncryptionHelper helper = new EncryptionHelper(args[0], args[1]);
 		String export = helper.exportKey(keyname, args[1]);

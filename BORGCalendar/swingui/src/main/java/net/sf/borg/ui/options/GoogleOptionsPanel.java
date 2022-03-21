@@ -41,12 +41,12 @@ public class GoogleOptionsPanel extends OptionsPanel {
 
 
     private static final long serialVersionUID = 2246952528811147049L;
-    private JCheckBox enable_sync_box = new JCheckBox();
+    private final JCheckBox enable_sync_box = new JCheckBox();
 
-    private JTextField cal_box = new JTextField();
-    private JTextField task_list_box = new JTextField();
-    private JTextField credentials_file_box = new JTextField();
-    private JTextField token_dir_box = new JTextField();
+    private final JTextField cal_box = new JTextField();
+    private final JTextField task_list_box = new JTextField();
+    private final JTextField credentials_file_box = new JTextField();
+    private final JTextField token_dir_box = new JTextField();
 
 
     /**

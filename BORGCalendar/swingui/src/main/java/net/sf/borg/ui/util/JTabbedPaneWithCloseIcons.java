@@ -32,10 +32,10 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 		/**
 		 * is undock icon being shown
 		 */
-		private boolean undock;
+		private final boolean undock;
 
 		/** The width. */
-		private int width;
+		private final int width;
 
 		/** The x_pos. */
 		private int x_pos;
@@ -94,11 +94,7 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 
 			Rectangle rect = new Rectangle(x_pos + 2, y_pos + 2, ICON_WIDTH - 4,
 					ICON_WIDTH - 4);
-			if (rect.contains(x, y)) {
-				return true;
-			}
-
-			return false;
+			return rect.contains(x, y);
 		}
 
 		/**
@@ -112,11 +108,7 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 		public boolean contains(int x, int y) {
 			Rectangle rect = new Rectangle(x_pos, y_pos, getIconWidth(),
 					getIconHeight());
-			if (rect.contains(x, y)) {
-				return true;
-			}
-
-			return false;
+			return rect.contains(x, y);
 		}
 
 		/**
@@ -135,11 +127,7 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane implements
 
 			Rectangle rect = new Rectangle(x_pos + ICON_WIDTH + 2, y_pos + 2,
 					ICON_WIDTH - 4, ICON_WIDTH - 4);
-			if (rect.contains(x, y)) {
-				return true;
-			}
-
-			return false;
+			return rect.contains(x, y);
 		}
 
 		/**

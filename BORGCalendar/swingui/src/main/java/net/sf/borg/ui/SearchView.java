@@ -65,7 +65,7 @@ public class SearchView extends DockableView implements Module {
      */
     private JComboBox<String> categoryComboBox = null;
 
-    private ColorComboBox colorComboBox = new ColorComboBox();
+    private final ColorComboBox colorComboBox = new ColorComboBox();
 
     /**
      * The end date chooser.
@@ -217,7 +217,7 @@ public class SearchView extends DockableView implements Module {
             public void actionPerformed(java.awt.event.ActionEvent e) {
 
                 // change the category of all selected rows
-                int rows[] = resultsTable.getSelectedRows();
+                int[] rows = resultsTable.getSelectedRows();
                 if (rows.length == 0) {
                     return;
                 }
@@ -295,7 +295,7 @@ public class SearchView extends DockableView implements Module {
             public void actionPerformed(java.awt.event.ActionEvent e) {
 
                 // change the category of all selected rows
-                int rows[] = resultsTable.getSelectedRows();
+                int[] rows = resultsTable.getSelectedRows();
                 if (rows.length == 0) {
                     return;
                 }
@@ -421,7 +421,7 @@ public class SearchView extends DockableView implements Module {
 
                 // delete all selected rows
 
-                int rows[] = resultsTable.getSelectedRows();
+                int[] rows = resultsTable.getSelectedRows();
                 if (rows.length == 0) {
                     return;
                 }
@@ -440,7 +440,7 @@ public class SearchView extends DockableView implements Module {
                     Integer key = (Integer) tm.getValueAt(rows[i], 3);
                     Class<?> cl = (Class<?>) tm.getValueAt(rows[i], 4);
                     try {
-                        Object ent = (Object) cl.getDeclaredConstructor().newInstance();
+                        Object ent = cl.getDeclaredConstructor().newInstance();
                         if (ent instanceof KeyedEntity) {
                             ((KeyedEntity<?>) ent).setKey(key.intValue());
                         } else if (ent instanceof Memo)
@@ -944,7 +944,7 @@ public class SearchView extends DockableView implements Module {
     private void showSelectedItem() throws Exception {
 
         // get the selected row
-        int rows[] = resultsTable.getSelectedRows();
+        int[] rows = resultsTable.getSelectedRows();
         if (rows.length != 1)
             return;
         int row = rows[0];
@@ -1018,7 +1018,7 @@ public class SearchView extends DockableView implements Module {
                 if (j != cm.getColumnCount())
                     header.append(", ");
             }
-            writer.write(header.toString() + "\r\n");
+            writer.write(header + "\r\n");
 
             for (int i = 0; i < ts.getRowCount(); i++) {
                 StringBuffer buffer = new StringBuffer();
@@ -1028,7 +1028,7 @@ public class SearchView extends DockableView implements Module {
                     if (o instanceof Date) {
                         buffer.append(esc(DateFormat.getDateTimeInstance().format((Date) o)));
                     } else if (o instanceof Number) {
-                        buffer.append(((Number) o).toString());
+                        buffer.append(o);
                     } else if (o instanceof Class) {
                         buffer.append(((Class) o).getTypeName());
                     } else
@@ -1036,7 +1036,7 @@ public class SearchView extends DockableView implements Module {
                     if (j != cm.getColumnCount())
                         buffer.append(", ");
                 }
-                writer.write(buffer.toString() + "\r\n");
+                writer.write(buffer + "\r\n");
             }
         } finally {
             writer.close();

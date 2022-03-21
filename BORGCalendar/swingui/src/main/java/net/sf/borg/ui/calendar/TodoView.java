@@ -174,7 +174,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 	private static final long serialVersionUID = 1L;
 
 	/** The change date action. */
-	private ActionListener changeDateAction = new ActionListener() {
+	private final ActionListener changeDateAction = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent evt) {
 			List<Appointment> aplist = new ArrayList<Appointment>();
@@ -186,7 +186,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 	};
 
 	/** The done delete action. */
-	private ActionListener doneDeleteAction = new ActionListener() {
+	private final ActionListener doneDeleteAction = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent evt) {
 			doTodoAction(true);
@@ -194,7 +194,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 	};
 
 	/** The done no delete action. */
-	private ActionListener doneNoDeleteAction = new ActionListener() {
+	private final ActionListener doneNoDeleteAction = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent evt) {
 			doTodoAction(false);
@@ -202,7 +202,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 	};
 
 	/** The move to following day action. */
-	private ActionListener moveToFollowingDayAction = new ActionListener() {
+	private final ActionListener moveToFollowingDayAction = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent evt) {
 			List<Appointment> aplist = new ArrayList<Appointment>();
@@ -289,7 +289,7 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 		}
 
 		// load up a default appt from any saved prefs
-		Appointment appt = AppointmentModel.getReference()
+		Appointment appt = AppointmentModel
 				.getDefaultAppointment();
 		if (appt == null)
 			appt = AppointmentModel.getReference().newAppt();

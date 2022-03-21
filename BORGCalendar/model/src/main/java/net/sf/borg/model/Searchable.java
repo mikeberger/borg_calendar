@@ -32,5 +32,5 @@ public interface Searchable<T> {
 	 * @param criteria the search criteria
 	 * @return collection of matching records
 	 */
-	public Collection<T> search(SearchCriteria criteria);
+    Collection<T> search(SearchCriteria criteria);
 }

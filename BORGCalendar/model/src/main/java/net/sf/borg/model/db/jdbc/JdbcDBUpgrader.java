@@ -35,10 +35,10 @@ public class JdbcDBUpgrader {
 
 
 	/** The check sql. */
-	private String checkSql;
+	private final String checkSql;
 
 	/** The upd sql. */
-	private String updSql[];
+	private final String[] updSql;
 
 	/**
 	 * Instantiates a new jdbc db upgrader.
@@ -58,7 +58,7 @@ public class JdbcDBUpgrader {
 	 * @param checkSql the sql that checks if an upgrade is needed
 	 * @param usql an array of SQL statements to execute to perform the upgrade
 	 */
-	public JdbcDBUpgrader(String checkSql, String usql[]) {
+	public JdbcDBUpgrader(String checkSql, String[] usql) {
 		this.updSql = usql;
 		this.checkSql = checkSql;
 	}

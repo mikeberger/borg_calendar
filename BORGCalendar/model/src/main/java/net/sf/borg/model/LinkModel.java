@@ -65,7 +65,7 @@ public class LinkModel extends Model {
 
 		private final String value;
 
-		private LinkType(String n) {
+		LinkType(String n) {
 			value = n;
 		}
 
@@ -77,10 +77,10 @@ public class LinkModel extends Model {
 	}
 
 	/** The singleton */
-	static private LinkModel self_ = new LinkModel();
+	static private final LinkModel self_ = new LinkModel();
 
 	/** map of entity types to class names */
-	private static HashMap<Class<?>, LinkType> typemap = new HashMap<Class<?>, LinkType>();
+	private static final HashMap<Class<?>, LinkType> typemap = new HashMap<Class<?>, LinkType>();
 
 	static {
 		// owner types
@@ -154,7 +154,7 @@ public class LinkModel extends Model {
 	}
 
 	/** The db */
-	private EntityDB<Link> db_; // the database
+	private final EntityDB<Link> db_; // the database
 
 	/**
 	 * Adds a link.
@@ -195,7 +195,7 @@ public class LinkModel extends Model {
 				if (!newfile.exists())
 					break;
 
-				fname = Integer.toString(i) + orig.getName();
+				fname = i + orig.getName();
 				newpath = atfolder + "/" + fname;
 				i++;
 			}
@@ -479,7 +479,7 @@ public class LinkModel extends Model {
 
 		// use key from import file if importing into empty db
 		int nextkey = db_.nextkey();
-		boolean use_keys = (nextkey == 1) ? true : false;
+		boolean use_keys = nextkey == 1;
 		for (Link link : container.Link) {
 			if (!use_keys)
 				link.setKey(nextkey++);

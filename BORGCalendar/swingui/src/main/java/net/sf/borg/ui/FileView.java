@@ -50,8 +50,8 @@ class FileView extends DockableView implements Module {
 	private JScrollPane jScrollPane1;
 
 	/** window title */
-	private String title_;
-	private String file_;
+	private final String title_;
+	private final String file_;
 	
 	private boolean isInitialized = false;
 

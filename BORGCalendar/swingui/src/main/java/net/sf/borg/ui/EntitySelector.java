@@ -46,7 +46,7 @@ public class EntitySelector extends JDialog {
 	private static final long serialVersionUID = 1L;
 
 	/** The used to hold the chosen entities */
-	private static ArrayList<Object> list_ = new ArrayList<Object>();
+	private static final ArrayList<Object> list_ = new ArrayList<Object>();
 
 	/**
 	 * Prompt the user to select an address.
@@ -107,7 +107,7 @@ public class EntitySelector extends JDialog {
 	 * 
 	 * @return the object
 	 */
-	private static Object selectBean(Collection<? extends Object> records, TableModel tm, String fields[]) {
+	private static Object selectBean(Collection<? extends Object> records, TableModel tm, String[] fields) {
 		new EntitySelector(records, tm, fields, false).setVisible(true);
 		if (list_.size() != 0) {
 			Object b = list_.get(0);
@@ -172,7 +172,7 @@ public class EntitySelector extends JDialog {
 	private JButton clearButton;
 
 	/** The names of the entity fields to show in the table */
-	private String fields_[];
+	private final String[] fields_;
 
 	private javax.swing.JPanel jPanel1;
 
@@ -198,7 +198,7 @@ public class EntitySelector extends JDialog {
 	 * @param multiple
 	 *            if true, allow multiple entities to be selected
 	 */
-	private EntitySelector(Collection<? extends Object> records, TableModel tm, String fields[], boolean multiple) {
+	private EntitySelector(Collection<? extends Object> records, TableModel tm, String[] fields, boolean multiple) {
 
 		super();
 		setModal(true);
@@ -331,7 +331,7 @@ public class EntitySelector extends JDialog {
 			Object r = it.next();
 
 			try {
-				Class<? extends Object> beanClass = (Class<? extends Object>) r.getClass();
+				Class<? extends Object> beanClass = r.getClass();
 				Object[] ro = new Object[fields_.length];
 				for (int i = 0; i < fields_.length; i++) {
 					// find method
@@ -361,7 +361,7 @@ public class EntitySelector extends JDialog {
 	private void selectbuttonActionPerformed(java.awt.event.ActionEvent evt) {
 		// figure out which row is selected.
 		list_.clear();
-		int index[] = jTable1.getSelectedRows();
+		int[] index = jTable1.getSelectedRows();
 		if (index.length == 0)
 			return;
 

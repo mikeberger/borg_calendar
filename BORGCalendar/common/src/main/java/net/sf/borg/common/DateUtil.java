@@ -50,11 +50,7 @@ public class DateUtil {
 		dcal.set(Calendar.MINUTE, 10);
 		dcal.set(Calendar.SECOND, 0);
 
-		if (tcal.getTime().after(dcal.getTime())) {
-			return true;
-		}
-
-		return false;
+		return tcal.getTime().after(dcal.getTime());
 	}
 	
 	/**

@@ -378,7 +378,7 @@ public class AppointmentListView extends DockableView implements
 						public void actionPerformed(
 								java.awt.event.ActionEvent evt) {
 							class MailThread extends Thread {
-								private Calendar cal;
+								private final Calendar cal;
 
 								public MailThread(Calendar c) {
 									cal = c;

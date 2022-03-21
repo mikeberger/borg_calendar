@@ -65,11 +65,11 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 	private static final long serialVersionUID = 1L;
 
 	/** The memo date format. */
-	private SimpleDateFormat memoDateFormat = new SimpleDateFormat(
+	private final SimpleDateFormat memoDateFormat = new SimpleDateFormat(
 			"MM/dd/yyyy hh:mm aa");
 
 	/** The date label. */
-	private JLabel dateLabel = new JLabel();
+	private final JLabel dateLabel = new JLabel();
 
 	/** The edited memo index. */
 	private int editedMemoIndex = -1;
@@ -96,7 +96,7 @@ public class MemoPanel extends DockableView implements ListSelectionListener,
 	 */
 	private JCheckBox encryptBox = null;
 
-	private ActionListener renameAction = new ActionListener() {
+	private final ActionListener renameAction = new ActionListener() {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {

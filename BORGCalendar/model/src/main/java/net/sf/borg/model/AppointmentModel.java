@@ -61,7 +61,7 @@ public class AppointmentModel extends Model implements Model.Listener, CategoryS
 	}
 
 	/** The singleton */
-	static private AppointmentModel self_ = new AppointmentModel();
+	static private final AppointmentModel self_ = new AppointmentModel();
 
 	/**
 	 * Gets the singleton reference.
@@ -98,9 +98,7 @@ public class AppointmentModel extends Model implements Model.Listener, CategoryS
 	public static boolean isNote(Appointment appt) {
 		// return true if the appt Appointment represents a "note" or
 		// "non-timed" appt
-		if (appt.getUntimed() != null && appt.getUntimed().equals("Y"))
-			return true;
-		return (false);
+		return appt.getUntimed() != null && appt.getUntimed().equals("Y");
 
 	}
 
@@ -118,27 +116,23 @@ public class AppointmentModel extends Model implements Model.Listener, CategoryS
 		int dk = DateUtil.dayOfEpoch(cal.getTime());
 		String sk = Integer.toString(dk);
 		Vector<String> skv = ap.getSkipList();
-		if (skv != null && skv.contains(sk)) {
-			return true;
-		}
-
-		return false;
+		return skv != null && skv.contains(sk);
 	}
 
 	/** The underlying database object */
-	private EntityDB<Appointment> db_;
+	private final EntityDB<Appointment> db_;
 
 	/**
 	 * map_ contains each "base" day key that has appts and maps it to a list of
 	 * appt keys for that day.
 	 */
-	private HashMap<Integer, Collection<Integer>> map_;
+	private final HashMap<Integer, Collection<Integer>> map_;
 
 	/**
 	 * The vacation map - a map of vacation values for each day (i.e. no vacation,
 	 * half-day, full-day)
 	 */
-	private HashMap<Integer, Integer> vacationMap_;
+	private final HashMap<Integer, Integer> vacationMap_;
 
 	/**
 	 * Instantiates a new appointment model.
@@ -665,7 +659,7 @@ public class AppointmentModel extends Model implements Model.Listener, CategoryS
 		try {
 			// use key from import file if importing into empty db
 			int nextkey = db_.nextkey();
-			boolean use_keys = (nextkey == 1) ? true : false;
+			boolean use_keys = nextkey == 1;
 			for (Appointment appt : container.Appointment) {
 				if (!use_keys)
 					appt.setKey(nextkey++);
@@ -763,7 +757,7 @@ public class AppointmentModel extends Model implements Model.Listener, CategoryS
 				r.setCreateTime(new Date());
 				r.setLastMod(r.getCreateTime());
 				if (r.getUid() == null)
-					r.setUid(Integer.toString(r.getKey()) + "@BORGA-" + r.getCreateTime().getTime());
+					r.setUid(r.getKey() + "@BORGA-" + r.getCreateTime().getTime());
 				db_.addObj(r);
 				if (!undo) {
 					UndoLog.getReference().addItem(AppointmentUndoItem.recordAdd(r));
@@ -775,7 +769,7 @@ public class AppointmentModel extends Model implements Model.Listener, CategoryS
 
 				r.setLastMod(new Date());
 				if (r.getUid() == null)
-					r.setUid(Integer.toString(r.getKey()) + "@BORGA-" + r.getCreateTime().getTime());
+					r.setUid(r.getKey() + "@BORGA-" + r.getCreateTime().getTime());
 				action = ChangeEvent.ChangeAction.CHANGE;
 				db_.updateObj(r);
 				if (!undo) {
@@ -892,7 +886,7 @@ public class AppointmentModel extends Model implements Model.Listener, CategoryS
 			try {
 				JAXBContext jc = JAXBContext.newInstance(Appointment.class);
 				Unmarshaller u = jc.createUnmarshaller();
-				String xmlString = defApptXml.toString();
+				String xmlString = defApptXml;
 				Appointment ap = (Appointment) u.unmarshal(new StringReader(xmlString));
 
 				// transition from pre-1.7.2

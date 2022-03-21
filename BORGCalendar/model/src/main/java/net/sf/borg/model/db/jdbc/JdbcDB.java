@@ -235,7 +235,7 @@ final class JdbcDB {
                             int ch = r.read();
                             if (ch == ';') {
                                 sb.append(";\n");
-                                log.fine("SQL: " + sb.toString());
+                                log.fine("SQL: " + sb);
                                 execSQL(sb.toString());
                                 sb.setLength(0);
                                 continue;

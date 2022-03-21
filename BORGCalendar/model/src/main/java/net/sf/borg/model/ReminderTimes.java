@@ -12,10 +12,10 @@ import java.util.StringTokenizer;
 public class ReminderTimes {
 
 	/** The times array - each element is a reminder time in minutes */
-	static private int times_[] = null;
+	static private int[] times_ = null;
 	
 	/** The number fo reminder times */
-	static private int NUM = 20;
+	static private final int NUM = 20;
 	
 	/**
 	 * Gets the number of reminder times
@@ -51,7 +51,7 @@ public class ReminderTimes {
 	 * 
 	 * @param times  the reminder times array
 	 */
-	static public void setTimes(int times[])
+	static public void setTimes(int[] times)
 	{
 		times_ = times;
 		String s = arrayToString(times_);
@@ -65,12 +65,12 @@ public class ReminderTimes {
 	 * 
 	 * @return the string
 	 */
-	static private String arrayToString( int a[])
+	static private String arrayToString(int[] a)
 	{
 		StringBuffer sb = new StringBuffer();
 		for( int i = 0; i < a.length; i++)
 		{
-			sb.append(Integer.toString(a[i]));
+			sb.append(a[i]);
 			if( sb.length() != 0)
 				sb.append(',');
 		}

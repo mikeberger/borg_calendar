@@ -39,7 +39,7 @@ public class DatabaseOptionsPanel extends OptionsPanel {
 
     private static final long serialVersionUID = 7695315940556870216L;
 
-    private JTextField dbDirText;
+    private final JTextField dbDirText;
 
     private ButtonGroup dbTypeGroup;
 
@@ -48,8 +48,8 @@ public class DatabaseOptionsPanel extends OptionsPanel {
     private JRadioButton hsqldbButton;
     private JRadioButton h2Button;
 
-    private JTextField hsqldbdir = new JTextField();
-    private JTextField h2dir = new JTextField();
+    private final JTextField hsqldbdir = new JTextField();
+    private final JTextField h2dir = new JTextField();
 
     private JPanel hsqldbPanel;
     private JPanel h2Panel;

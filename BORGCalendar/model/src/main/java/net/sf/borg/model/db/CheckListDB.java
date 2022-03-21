@@ -34,7 +34,7 @@ public interface CheckListDB {
      * 
      * @throws Exception
      */
-    public void addCheckList(CheckList m) throws Exception;
+    void addCheckList(CheckList m) throws Exception;
 
     /**
      * Delete a checkList by name.
@@ -43,7 +43,7 @@ public interface CheckListDB {
      * 
      * @throws Exception
      */
-    public void delete(String name) throws Exception;
+    void delete(String name) throws Exception;
 
     /**
      * Gets all checkList names form the db
@@ -52,7 +52,7 @@ public interface CheckListDB {
      * 
      * @throws Exception
      */
-    public Collection<String> getNames() throws Exception;
+    Collection<String> getNames() throws Exception;
 
     /**
      * Read all checkLists from the db
@@ -61,7 +61,7 @@ public interface CheckListDB {
      * 
      * @throws Exception
      */
-    public Collection<CheckList> readAll() throws Exception;
+    Collection<CheckList> readAll() throws Exception;
 
     /**
      * Read a checkList by name
@@ -72,7 +72,7 @@ public interface CheckListDB {
      * 
      * @throws Exception
      */
-    public CheckList readCheckList(String name) throws Exception;
+    CheckList readCheckList(String name) throws Exception;
 
     /**
      * Update a checkList in the db.
@@ -81,7 +81,7 @@ public interface CheckListDB {
      * 
      * @throws Exception
      */
-    public void updateCheckList(CheckList m) throws Exception;
+    void updateCheckList(CheckList m) throws Exception;
         
     
 }

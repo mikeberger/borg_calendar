@@ -72,7 +72,7 @@ public class YearPanel extends DockableView implements Printable,
 		static final private int numBoxes = 37 * 12;
 
 		// cached day box colors
-		Color colors[] = new Color[numBoxes];
+		Color[] colors = new Color[numBoxes];
 
 		// width of a day column
 		private int colwidth;

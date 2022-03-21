@@ -73,7 +73,7 @@ public class Borg implements SocketHandler {
 	 * @param args
 	 *            the arguments
 	 */
-	public static void main(String args[]) {
+	public static void main(String[] args) {
 		// create a new borg object and call its init routine with the command
 		// line args
 		Borg b = getReference();
@@ -130,11 +130,11 @@ public class Borg implements SocketHandler {
 	 * The sync timer - controls auto-sync with db - only needed for mysql - and
 	 * then not really
 	 */
-	private java.util.Timer dbSyncTimer_ = null;
+	private final java.util.Timer dbSyncTimer_ = null;
 
 	private java.util.Timer caldavSyncTimer_ = null;
 
-	private java.util.Timer flushTimer_ = null;
+	private final java.util.Timer flushTimer_ = null;
 
 	/**
 	 * constructor
@@ -155,7 +155,7 @@ public class Borg implements SocketHandler {
 				return ("sync success");
 			} catch (Exception e) {
 				e.printStackTrace();
-				return ("sync error: " + e.toString());
+				return ("sync error: " + e);
 			}
 		} else if (msg.equals("shutdown")) {
 			System.exit(0);
@@ -215,7 +215,7 @@ public class Borg implements SocketHandler {
 	 * @param args
 	 *            the args
 	 */
-	private void init(String args[]) {
+	private void init(String[] args) {
 
 		// override for testing a different db
 		String testdb = null;

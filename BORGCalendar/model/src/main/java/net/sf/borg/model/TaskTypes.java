@@ -65,7 +65,7 @@ public class TaskTypes {
 	static private class TaskType {
 		// default subtasks element kept for legacy reasons to prevent parse error - but is no longer used
 		@XmlElement(name="DefaultSubtask")
-		private HashSet<String> defaultSubtasks = new HashSet<String>();
+		private final HashSet<String> defaultSubtasks = new HashSet<String>();
 		// final state (defualt is CLOSED)
 		@XmlElement(name="FinalState")
 		public String finalState;

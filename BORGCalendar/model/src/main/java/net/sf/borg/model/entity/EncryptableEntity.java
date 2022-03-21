@@ -18,7 +18,7 @@ public interface EncryptableEntity {
 	 * @param password the keystore password
 	 * @throws Exception
 	 */
-	public abstract void decrypt(String password) throws Exception;
+    void decrypt(String password) throws Exception;
 	
 	/**
 	 * encrypt the entity. This will use the password to get the borg encryption
@@ -27,7 +27,7 @@ public interface EncryptableEntity {
 	 * @param password the keystore password
 	 * @throws Exception
 	 */
-	public abstract void encrypt(String password) throws Exception;
+    void encrypt(String password) throws Exception;
 
 
 }

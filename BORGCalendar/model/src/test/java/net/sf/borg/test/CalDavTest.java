@@ -16,7 +16,7 @@ public class CalDavTest {
 	
 	static private final Logger log = Logger.getLogger("net.sf.borg");
 
-	public static void main(String args[])  throws Exception {
+	public static void main(String[] args)  throws Exception {
 		CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_PARSING, true);
 		CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_UNFOLDING, true);
 		CompatibilityHints.setHintEnabled(CompatibilityHints.KEY_RELAXED_VALIDATION, true);
@@ -39,11 +39,11 @@ public class CalDavTest {
 
 		net.fortuna.ical4j.model.DateTime dtstart = new net.fortuna.ical4j.model.DateTime(after);
 		net.fortuna.ical4j.model.DateTime dtend = new net.fortuna.ical4j.model.DateTime(tenYears);
-		log.info("SYNC: " + dtstart.toString() + "--" + dtend.toString());
+		log.info("SYNC: " + dtstart + "--" + dtend);
 		String calname = Prefs.getPref(PrefName.CALDAV_CAL);
 
 		CalDavCalendarCollection collection = CalDav.getCollection(store, calname);
-		Calendar cals[] = collection.getEventsForTimePeriod(dtstart,dtend);
+		Calendar[] cals = collection.getEventsForTimePeriod(dtstart,dtend);
 		log.info("SYNC: found " + cals.length + " Event Calendars on server");
 		log.info(cals[0].toString());
 		cals = collection.getEvents();

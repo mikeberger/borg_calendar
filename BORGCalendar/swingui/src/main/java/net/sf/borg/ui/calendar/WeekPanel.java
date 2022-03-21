@@ -72,8 +72,8 @@ public class WeekPanel extends DockableView implements Printable,
 		private double colwidth = 0;
 
 		// set up dash line stroke
-		private float dash1[] = { 1.0f, 3.0f };
-		private BasicStroke dashed = new BasicStroke(0.02f,
+		private final float[] dash1 = { 1.0f, 3.0f };
+		private final BasicStroke dashed = new BasicStroke(0.02f,
 				BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 3.0f, dash1, 0.0f);
 
 		// date passed in - its week is the week to show
@@ -97,7 +97,7 @@ public class WeekPanel extends DockableView implements Printable,
 		private double timecolwidth = 0;
 
 		// daily background colors
-		private Color backgroundColors[] = new Color[7];
+		private final Color[] backgroundColors = new Color[7];
 
 		// zoom factor
 		private int zoom = 0;
@@ -514,7 +514,7 @@ public class WeekPanel extends DockableView implements Printable,
 				if (!mt && hr > 12)
 					hr = hr - 12;
 
-				String tmlabel = Integer.toString(hr) + ":00";
+				String tmlabel = hr + ":00";
 				g2.drawString(tmlabel, 2, y + smfontHeight / 2);
 			}
 

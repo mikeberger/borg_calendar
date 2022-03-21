@@ -39,7 +39,7 @@ public class ReminderPopupManager extends ReminderManager {
 
 	// map that maps each known reminder instance to the associated popup window
 	// windows
-	private HashMap<ReminderInstance, ReminderPopup> pops = new HashMap<ReminderInstance, ReminderPopup>();
+	private final HashMap<ReminderInstance, ReminderPopup> pops = new HashMap<ReminderInstance, ReminderPopup>();
 
 	/**
 	 * Gets the singleton.

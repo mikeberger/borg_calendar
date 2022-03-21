@@ -35,14 +35,14 @@ public class RecurrenceRule {
             gc.setTime(dd);
             int dayOfWeek = gc.get(java.util.Calendar.DAY_OF_WEEK);
             int dayOfWeekMonth = gc.get(java.util.Calendar.DAY_OF_WEEK_IN_MONTH);
-            String days[] = new String[] { "SU", "MO", "TU", "WE", "TH", "FR", "SA" };
+            String[] days = new String[] { "SU", "MO", "TU", "WE", "TH", "FR", "SA" };
             rec += "MONTHLY;BYDAY=" + dayOfWeekMonth + days[dayOfWeek - 1];
         } else if (freq.equals(Repeat.MONTHLY_DAY_LAST)) {
             Date dd = ap.getDate();
             GregorianCalendar gc = new GregorianCalendar();
             gc.setTime(dd);
             int dayOfWeek = gc.get(java.util.Calendar.DAY_OF_WEEK);
-            String days[] = new String[] { "SU", "MO", "TU", "WE", "TH", "FR", "SA" };
+            String[] days = new String[] { "SU", "MO", "TU", "WE", "TH", "FR", "SA" };
             rec += "MONTHLY;BYDAY=" + "-1" + days[dayOfWeek - 1];
         } else if (freq.equals(Repeat.YEARLY)) {
             rec += "YEARLY";
@@ -63,7 +63,7 @@ public class RecurrenceRule {
         } else if (freq.equals(Repeat.TTH)) {
             rec += "WEEKLY;BYDAY=TU,TH";
         } else if (freq.equals(Repeat.DAYLIST)) {
-            String days[] = new String[] { "SU", "MO", "TU", "WE", "TH", "FR", "SA" };
+            String[] days = new String[] { "SU", "MO", "TU", "WE", "TH", "FR", "SA" };
             rec += "WEEKLY;BYDAY=";
             Collection<Integer> c = Repeat.getDaylist(ap.getFrequency());
             Iterator<Integer> it = c.iterator();

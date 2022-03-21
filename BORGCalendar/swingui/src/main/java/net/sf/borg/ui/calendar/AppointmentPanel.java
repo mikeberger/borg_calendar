@@ -44,7 +44,7 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener, Mo
     private static final Integer DEFAULT_PRIORITY = Integer.valueOf(5);
 
 
-    static private SpinnerNumberModel prioritySpinnerModel = new SpinnerNumberModel(5, 1, 10, 1);
+    static private final SpinnerNumberModel prioritySpinnerModel = new SpinnerNumberModel(5, 1, 10, 1);
 
     // appt text area
     private JTextArea appointmentBodyTextArea;
@@ -82,7 +82,7 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener, Mo
 
     // the seven toggle buttons for selecting repeat days for a repeat
     // type of select days
-    private JToggleButton dayToggles[] = new JToggleButton[7];
+    private final JToggleButton[] dayToggles = new JToggleButton[7];
 
     // the panel containing the day toggle buttons
     private JPanel selectDayButtonPanel = null;
@@ -138,7 +138,7 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener, Mo
      */
     private JButton decryptButton = null;
 
-    private JLabel durationLabel = new JLabel();
+    private final JLabel durationLabel = new JLabel();
 
     /**
      * encryption checkbox
@@ -1156,7 +1156,7 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener, Mo
         }
 
         // set the label, which is html for formatting
-        popupTimesLabel.setText("<html><p align=RIGHT>" + line1.toString() + "<br>" + line2.toString());
+        popupTimesLabel.setText("<html><p align=RIGHT>" + line1 + "<br>" + line2);
     }
 
     /**
@@ -1191,7 +1191,7 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener, Mo
 
         // get default appt values from XML, if any
         if (defaultAppt == null) {
-            defaultAppt = AppointmentModel.getReference().getDefaultAppointment();
+            defaultAppt = AppointmentModel.getDefaultAppointment();
         }
         // a key of -1 means to show a new blank appointment
         if (currentlyShownAppointmentKey == -1 && defaultAppt == null) {

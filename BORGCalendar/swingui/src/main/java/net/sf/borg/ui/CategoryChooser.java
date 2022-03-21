@@ -312,7 +312,7 @@ public class CategoryChooser extends View {
 						// confirm with user
 						int ret = JOptionPane.showConfirmDialog(null, Resource
 								.getResourceString("delcat_warn")
-								+ " [" + (String) o + "]!", "",
+								+ " [" + o + "]!", "",
 								JOptionPane.OK_CANCEL_OPTION,
 								JOptionPane.WARNING_MESSAGE);
 						if (ret == JOptionPane.OK_OPTION) {

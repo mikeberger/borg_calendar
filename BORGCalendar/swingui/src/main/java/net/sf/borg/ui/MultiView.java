@@ -44,7 +44,7 @@ public class MultiView extends View {
 	private static final long serialVersionUID = 1L;
 
 	/** The size of the main borg window. */
-	static private PrefName MULTIVIEWSIZE = new PrefName("dayviewsize",
+	static private final PrefName MULTIVIEWSIZE = new PrefName("dayviewsize",
 			"-1,-1,-1,-1,Y");
 
 	/**
@@ -54,33 +54,33 @@ public class MultiView extends View {
 	 * toolbar and menu items
 	 * 
 	 */
-	public static interface Module {
+	public interface Module {
 
 		/**
 		 * get the module's name
 		 * 
 		 * @return the name
 		 */
-		public String getModuleName();
+		String getModuleName();
 
 		/**
 		 * get the modules ViewType
 		 * 
 		 * @return the ViewType
 		 */
-		public ViewType getViewType();
+		ViewType getViewType();
 
 		/**
 		 * get the Component for this Module
 		 * 
 		 * @return the Component or null if none to show
 		 */
-		public Component getComponent();
+		Component getComponent();
 
 		/**
 		 * print the Module
 		 */
-		public void print();
+		void print();
 
 		/**
 		 * called by the parent Multiview to allow the Module to initialize its
@@ -90,7 +90,7 @@ public class MultiView extends View {
 		 * @param parent
 		 *            the parent MultiView
 		 */
-		public void initialize(MultiView parent);
+		void initialize(MultiView parent);
 	}
 
 	/**
@@ -98,18 +98,18 @@ public class MultiView extends View {
 	 * react to requests to change the shown date
 	 * 
 	 */
-	public static interface CalendarModule extends Module {
+	public interface CalendarModule extends Module {
 		/**
 		 * update the module to show a particular date
 		 * 
 		 * @param cal
 		 */
-		public void goTo(Calendar cal);
+		void goTo(Calendar cal);
 	}
 
 	/** argument values for setView() */
 	public enum ViewType {
-		DAY, MONTH, WEEK, YEAR, TASK, MEMO, SEARCH, TODO, ADDRESS, CHECKLIST;
+		DAY, MONTH, WEEK, YEAR, TASK, MEMO, SEARCH, TODO, ADDRESS, CHECKLIST
 	}
 
 	/** The main view singleton */
@@ -129,17 +129,17 @@ public class MultiView extends View {
 	/**
 	 * toolbar
 	 */
-	private JToolBar bar = new JToolBar();
+	private final JToolBar bar = new JToolBar();
 
 	/**
 	 * the main menu
 	 */
-	private MainMenu mainMenu = new MainMenu();
+	private final MainMenu mainMenu = new MainMenu();
 
 	/**
 	 * Set of all modules ordered by the Module ordering number
 	 */
-	private List<Module> moduleSet = new ArrayList<Module>();
+	private final List<Module> moduleSet = new ArrayList<Module>();
 
 	/** The tabs */
 	private JTabbedPaneWithCloseIcons tabs_ = null;

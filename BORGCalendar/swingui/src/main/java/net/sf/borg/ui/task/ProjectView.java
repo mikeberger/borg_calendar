@@ -69,7 +69,7 @@ public class ProjectView extends DockableView {
 		/** edit existing project */
 		CHANGE,
 		/** close existing project and edit as new */
-		CLONE;
+		CLONE
 	}
 
 	/**
@@ -129,13 +129,13 @@ public class ProjectView extends DockableView {
 	private JTextField projectIdText;
 
 	/** The link panel. */
-	private LinkPanel linkPanel = new LinkPanel();
+	private final LinkPanel linkPanel = new LinkPanel();
 
 	/** The open task count. */
 	private JTextField openTaskCount = null;
 
 	/** The parent project combo box. */
-	private JComboBox<String> parentProjectComboBox = new JComboBox<String>();
+	private final JComboBox<String> parentProjectComboBox = new JComboBox<String>();
 
 	/** The start date chooser. */
 	private JDateChooser startDateChooser;

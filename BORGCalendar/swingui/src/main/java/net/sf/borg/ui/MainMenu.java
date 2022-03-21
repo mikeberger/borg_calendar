@@ -42,11 +42,11 @@ import java.util.Properties;
  */
 class MainMenu {
 
-	private JMenu actionMenu = new JMenu();
-	private JMenu helpmenu = new JMenu();
-	private JMenu optionsMenu = new JMenu();
+	private final JMenu actionMenu = new JMenu();
+	private final JMenu helpmenu = new JMenu();
+	private final JMenu optionsMenu = new JMenu();
 	private JMenu pluginMenu = null;
-	private JMenuBar menuBar = new JMenuBar();
+	private final JMenuBar menuBar = new JMenuBar();
 
 	/**
 	 * constructor
@@ -387,7 +387,7 @@ class MainMenu {
 				+ Resource.getResourceString("contributions_by") + "\n" + Resource.getResourceString("contrib") + "\n"
 				+ Resource.getResourceString("translations") + "\n\n" + build_info + "\n" + "Java "
 				+ System.getProperty("java.version");
-		Object opts[] = { Resource.getResourceString("Dismiss") };
+		Object[] opts = { Resource.getResourceString("Dismiss") };
 		JOptionPane.showOptionDialog(null, info, Resource.getResourceString("About_BORG"), JOptionPane.YES_NO_OPTION,
 				JOptionPane.INFORMATION_MESSAGE, new ImageIcon(MainMenu.class.getResource("/resource/borg.jpg")), opts,
 				opts[0]);
@@ -494,11 +494,8 @@ class MainMenu {
 		int ret = JOptionPane.showConfirmDialog(null,
 				net.sf.borg.common.Resource.getResourceString("overwrite_warning") + fname + " ?", "confirm_overwrite",
 				JOptionPane.OK_CANCEL_OPTION);
-		if (ret != JOptionPane.OK_OPTION)
-			return false;
-
-		return (true);
-	}
+        return ret == JOptionPane.OK_OPTION;
+    }
 
 	/**
 	 * get the menu bar

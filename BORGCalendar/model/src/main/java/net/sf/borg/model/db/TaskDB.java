@@ -40,7 +40,7 @@ public interface TaskDB extends EntityDB<Task>{
      * 
      * @throws Exception the exception
      */
-    public Collection<Subtask> getSubTasks(int taskid) throws Exception;
+    Collection<Subtask> getSubTasks(int taskid) throws Exception;
     
     /**
      * Gets all sub tasks in the database.
@@ -49,7 +49,7 @@ public interface TaskDB extends EntityDB<Task>{
      * 
      * @throws Exception the exception
      */
-    public Collection<Subtask> getSubTasks() throws Exception;
+    Collection<Subtask> getSubTasks() throws Exception;
     
     /**
      * Gets a sub task by subtask id.
@@ -60,7 +60,7 @@ public interface TaskDB extends EntityDB<Task>{
      * 
      * @throws Exception the exception
      */
-    public Subtask getSubTask(int id) throws Exception;
+    Subtask getSubTask(int id) throws Exception;
 
     /**
      * Delete a sub task by id.
@@ -69,7 +69,7 @@ public interface TaskDB extends EntityDB<Task>{
      * 
      * @throws Exception the exception
      */
-    public void deleteSubTask(int id) throws Exception;
+    void deleteSubTask(int id) throws Exception;
 
     /**
      * Adds a sub task.
@@ -78,7 +78,7 @@ public interface TaskDB extends EntityDB<Task>{
      * 
      * @throws Exception the exception
      */
-    public void addSubTask(Subtask s) throws Exception;
+    void addSubTask(Subtask s) throws Exception;
     
     /**
      * Update a sub task.
@@ -87,7 +87,7 @@ public interface TaskDB extends EntityDB<Task>{
      * 
      * @throws Exception the exception
      */
-    public void updateSubTask(Subtask s) throws Exception;
+    void updateSubTask(Subtask s) throws Exception;
     
     /**
      * get the Next available sub task key.
@@ -96,7 +96,7 @@ public interface TaskDB extends EntityDB<Task>{
      * 
      * @throws Exception the exception
      */
-    public int nextSubTaskKey() throws Exception;
+    int nextSubTaskKey() throws Exception;
     
     /**
      * Gets all task logs for a given task.
@@ -107,7 +107,7 @@ public interface TaskDB extends EntityDB<Task>{
      * 
      * @throws Exception the exception
      */
-    public Collection<Tasklog> getLogs( int taskid ) throws Exception;
+    Collection<Tasklog> getLogs(int taskid) throws Exception;
     
     /**
      * Gets all task logs in the db.
@@ -116,7 +116,7 @@ public interface TaskDB extends EntityDB<Task>{
      * 
      * @throws Exception the exception
      */
-    public Collection<Tasklog> getLogs( ) throws Exception;
+    Collection<Tasklog> getLogs() throws Exception;
     
     /**
      * Adds a task log for a task.
@@ -126,7 +126,7 @@ public interface TaskDB extends EntityDB<Task>{
      * 
      * @throws Exception the exception
      */
-    public void addLog(int taskid, String desc) throws Exception;
+    void addLog(int taskid, String desc) throws Exception;
     
     /**
      * Save a task log in the db.
@@ -135,7 +135,7 @@ public interface TaskDB extends EntityDB<Task>{
      * 
      * @throws Exception the exception
      */
-    public void saveLog( Tasklog tlog ) throws Exception;
+    void saveLog(Tasklog tlog) throws Exception;
     
     /**
      * Gets all projects in the database.
@@ -144,7 +144,7 @@ public interface TaskDB extends EntityDB<Task>{
      * 
      * @throws Exception the exception
      */
-    public Collection<Project> getProjects() throws Exception;
+    Collection<Project> getProjects() throws Exception;
     
     /**
      * Gets all tasks for a given project.
@@ -155,7 +155,7 @@ public interface TaskDB extends EntityDB<Task>{
      * 
      * @throws Exception the exception
      */
-    public Collection<Task> getTasks(int projectid) throws Exception;
+    Collection<Task> getTasks(int projectid) throws Exception;
     
     /**
      * Gets a project by id.
@@ -166,7 +166,7 @@ public interface TaskDB extends EntityDB<Task>{
      * 
      * @throws Exception the exception
      */
-    public Project getProject(int projectid) throws Exception;
+    Project getProject(int projectid) throws Exception;
     
     /**
      * Delete a project by id 
@@ -175,7 +175,7 @@ public interface TaskDB extends EntityDB<Task>{
      * 
      * @throws Exception the exception
      */
-    public void deleteProject(int id) throws Exception;
+    void deleteProject(int id) throws Exception;
 
     /**
      * Adds a project to the db.
@@ -184,7 +184,7 @@ public interface TaskDB extends EntityDB<Task>{
      * 
      * @throws Exception the exception
      */
-    public void addProject(Project p) throws Exception;
+    void addProject(Project p) throws Exception;
     
     /**
      * Updates a project in the db.
@@ -193,7 +193,7 @@ public interface TaskDB extends EntityDB<Task>{
      * 
      * @throws Exception the exception
      */
-    public void updateProject(Project p) throws Exception;
+    void updateProject(Project p) throws Exception;
     
     /**
      * get the Next available project key.
@@ -202,7 +202,7 @@ public interface TaskDB extends EntityDB<Task>{
      * 
      * @throws Exception the exception
      */
-    public int nextProjectKey() throws Exception;
+    int nextProjectKey() throws Exception;
     
     /**
      * Gets all sub projects (child projects) for a given project.
@@ -213,7 +213,7 @@ public interface TaskDB extends EntityDB<Task>{
      * 
      * @throws Exception the exception
      */
-    public Collection<Project> getSubProjects(int projid) throws Exception;
+    Collection<Project> getSubProjects(int projid) throws Exception;
     
     /**
      * get all tasks with a given type
@@ -221,7 +221,7 @@ public interface TaskDB extends EntityDB<Task>{
      * @return the tasks
      * @throws Exception
      */
-    public Collection<Task> getTasksByType(String type) throws Exception;
+    Collection<Task> getTasksByType(String type) throws Exception;
     
     /**
      * rename a task type in existing tasks
@@ -229,6 +229,6 @@ public interface TaskDB extends EntityDB<Task>{
      * @param newtype
      * @throws Exception
      */
-    public void renameTaskType(String oldtype, String newtype) throws Exception;
+    void renameTaskType(String oldtype, String newtype) throws Exception;
 
 }

@@ -34,7 +34,7 @@ public interface MemoDB {
      * 
      * @throws Exception
      */
-    public void addMemo(Memo m) throws Exception;
+    void addMemo(Memo m) throws Exception;
 
     /**
      * Delete a memo by name.
@@ -43,7 +43,7 @@ public interface MemoDB {
      * 
      * @throws Exception
      */
-    public void delete(String name) throws Exception;
+    void delete(String name) throws Exception;
 
     /**
      * Gets all memo names form the db
@@ -52,7 +52,7 @@ public interface MemoDB {
      * 
      * @throws Exception
      */
-    public Collection<String> getNames() throws Exception;
+    Collection<String> getNames() throws Exception;
 
     /**
      * Read all memos from the db
@@ -61,7 +61,7 @@ public interface MemoDB {
      * 
      * @throws Exception
      */
-    public Collection<Memo> readAll() throws Exception;
+    Collection<Memo> readAll() throws Exception;
 
     /**
      * Read a memo by name
@@ -72,7 +72,7 @@ public interface MemoDB {
      * 
      * @throws Exception
      */
-    public Memo readMemo(String name) throws Exception;
+    Memo readMemo(String name) throws Exception;
 
     /**
      * Update a memo in the db.
@@ -81,7 +81,7 @@ public interface MemoDB {
      * 
      * @throws Exception
      */
-    public void updateMemo(Memo m) throws Exception;
+    void updateMemo(Memo m) throws Exception;
         
     
 }

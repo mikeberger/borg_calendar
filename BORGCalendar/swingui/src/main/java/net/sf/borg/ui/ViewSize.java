@@ -38,7 +38,7 @@ class ViewSize {
 	 * DockType stores the various dock statuses for a view - always DOCK, always
 	 * UNDOCK, or NOT_SET - whoch means to use the default preference
 	 */
-	static public enum DockType {
+	public enum DockType {
 		DOCK, UNDOCK
 	}
 
@@ -153,15 +153,12 @@ class ViewSize {
 	 */
 	static public ViewSize fromString(String s) {
 		ViewSize vs = new ViewSize();
-		String toks[] = s.split(",");
+		String[] toks = s.split(",");
 		vs.x = Integer.parseInt(toks[0]);
 		vs.y = Integer.parseInt(toks[1]);
 		vs.width = Integer.parseInt(toks[2]);
 		vs.height = Integer.parseInt(toks[3]);
-		if (toks[4].equals("Y"))
-			vs.maximized = true;
-		else
-			vs.maximized = false;
+		vs.maximized = toks[4].equals("Y");
 		if (toks.length > 5) {
 			try {
 				vs.dock = DockType.valueOf(toks[5]);
@@ -191,7 +188,7 @@ class ViewSize {
 	@Override
 	public String toString() {
 
-		return (Integer.toString(x) + "," + Integer.toString(y) + "," + Integer.toString(width) + ","
-				+ Integer.toString(height) + "," + ((maximized == true) ? "Y" : "N") + "," + dock.toString());
+		return (x + "," + y + "," + width + ","
+				+ height + "," + ((maximized == true) ? "Y" : "N") + "," + dock.toString());
 	}
 }

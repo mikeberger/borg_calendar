@@ -60,7 +60,7 @@ public class MonthPrintPanel extends JPanel implements Printable {
 		// this relies on monthPanel.print to fill in a Graphic object and
 		// respond to the Printable API
 		MonthPrintPanel cp = new MonthPrintPanel(month, year);
-		Object options[] = { Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3),
+		Object[] options = { Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3),
 				Integer.valueOf(4), Integer.valueOf(5), Integer.valueOf(6), Integer.valueOf(7),
 				Integer.valueOf(8), Integer.valueOf(9), Integer.valueOf(10),
 				Integer.valueOf(11), Integer.valueOf(12) };
@@ -82,13 +82,13 @@ public class MonthPrintPanel extends JPanel implements Printable {
 	}
 
 	// start month
-	private int month_;
+	private final int month_;
 
 	// number of pages to print
 	private int pages_ = 1;
 
 	// start year
-	private int year_;
+	private final int year_;
 
 	/**
 	 * constructor

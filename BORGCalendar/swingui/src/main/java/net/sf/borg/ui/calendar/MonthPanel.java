@@ -73,7 +73,7 @@ public class MonthPanel extends JPanel implements Printable, CalendarModule {
 		private int colwidth;
 
 		// colors of the days
-		Color colors[] = new Color[numBoxes];
+		Color[] colors = new Color[numBoxes];
 
 		// top of a day - including the day label
 		private int daytop;

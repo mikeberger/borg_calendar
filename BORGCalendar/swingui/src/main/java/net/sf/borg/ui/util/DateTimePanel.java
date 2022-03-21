@@ -37,7 +37,7 @@ public class DateTimePanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
-	public static void main(String args[]) {
+	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
@@ -55,37 +55,37 @@ public class DateTimePanel extends JPanel {
 	}
 
 	/** The ampm box. */
-	private JComboBox<String> ampmBox = new JComboBox<String>();
+	private final JComboBox<String> ampmBox = new JComboBox<String>();
 
-	private DefaultComboBoxModel<String> ampmModel = new DefaultComboBoxModel<String>(
+	private final DefaultComboBoxModel<String> ampmModel = new DefaultComboBoxModel<String>(
 			new String[] { "AM", "PM" });
 
-	private JDateChooser dateChooser = new JDateChooser(new PlainDateEditor());
+	private final JDateChooser dateChooser = new JDateChooser(new PlainDateEditor());
 
 	/** The hour box. */
-	private JComboBox<String> hourBox = new JComboBox<String>();
+	private final JComboBox<String> hourBox = new JComboBox<String>();
 	
 	/**
 	 * combo box choices for setting the hour if we are using 24-hour time
 	 */
-	private DefaultComboBoxModel<String> milHourModel = new DefaultComboBoxModel<String>(
+	private final DefaultComboBoxModel<String> milHourModel = new DefaultComboBoxModel<String>(
 			new String[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
 					"10", "11", "12", "13", "14", "15", "16", "17", "18", "19",
 					"20", "21", "22", "23" });
 
 	private boolean milTime = false;
 
-	private DefaultComboBoxModel<String> minModel = new DefaultComboBoxModel<String>(
+	private final DefaultComboBoxModel<String> minModel = new DefaultComboBoxModel<String>(
 			new String[] { "00", "05", "10", "15", "20", "25", "30", "35",
 					"40", "45", "50", "55" });
 
 	/** The minute box. */
-	private JComboBox<String> minuteBox = new JComboBox<String>();
+	private final JComboBox<String> minuteBox = new JComboBox<String>();
 
 	/**
 	 * combo box choices for setting 12-hr time
 	 */
-	private DefaultComboBoxModel<String> normHourModel = new DefaultComboBoxModel<String>(
+	private final DefaultComboBoxModel<String> normHourModel = new DefaultComboBoxModel<String>(
 			new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
 					"11", "12" });
 

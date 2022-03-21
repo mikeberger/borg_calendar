@@ -157,7 +157,7 @@ public class CardDav {
 		String protocol = Prefs.getBoolPref(PrefName.CALDAV_USE_SSL) ? "https" : "http";
 
 		String server = Prefs.getPref(PrefName.CALDAV_SERVER);
-		String serverPart[] = server.split(":");
+		String[] serverPart = server.split(":");
 		int port = -1;
 		if (serverPart.length == 2) {
 			try {
@@ -168,8 +168,8 @@ public class CardDav {
 		}
 		
 		URL url = new URL(protocol, serverPart[0], port, Prefs.getPref(PrefName.CALDAV_PATH));
-		SocketClient.sendLogMessage("SYNC: connect to " + url.toString());
-		log.info("SYNC: connect to " + url.toString());
+		SocketClient.sendLogMessage("SYNC: connect to " + url);
+		log.info("SYNC: connect to " + url);
 
 		CardDavStore store = new CardDavStore("-", url, createPathResolver());
 

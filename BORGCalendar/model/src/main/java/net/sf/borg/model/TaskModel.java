@@ -52,30 +52,30 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
     /**
      * The singleton
      */
-    static private TaskModel self_ = new TaskModel();
+    static private final TaskModel self_ = new TaskModel();
     /**
      * The db
      */
-    private TaskDB db_;
+    private final TaskDB db_;
     /**
      * map of tasks keyed by due date
      */
-    private HashMap<Integer, Collection<Task>> btmap_;
+    private final HashMap<Integer, Collection<Task>> btmap_;
 
     /**
      * cache of all open tasks with a due date
      */
-    private Vector<Task> openTaskMap;
+    private final Vector<Task> openTaskMap;
 
     /**
      * map of subtasks keyed by due date
      */
-    private HashMap<Integer, Collection<Subtask>> stmap_;
+    private final HashMap<Integer, Collection<Subtask>> stmap_;
 
     /**
      * map of projects keyed by due date
      */
-    private HashMap<Integer, Collection<Project>> pmap_;
+    private final HashMap<Integer, Collection<Project>> pmap_;
 
     /**
      * The task types
@@ -539,7 +539,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
             task.setCreateTime(new Date());
             task.setLastMod(task.getCreateTime());
             if (task.getUid() == null)
-                task.setUid(Integer.toString(task.getKey()) + "@BORGT-" + task.getCreateTime().getTime());
+                task.setUid(task.getKey() + "@BORGT-" + task.getCreateTime().getTime());
             db_.addObj(task);
             if (!undo) {
                 Task t = getTask(task.getKey());
@@ -563,7 +563,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 
             task.setLastMod(new Date());
             if (task.getUid() == null)
-                task.setUid(Integer.toString(task.getKey()) + "@BORGT-" + task.getCreateTime().getTime());
+                task.setUid(task.getKey() + "@BORGT-" + task.getCreateTime().getTime());
             db_.updateObj(task);
             action = ChangeAction.CHANGE;
 
@@ -731,7 +731,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 
             // use key from import file if importing into empty db
             int nextSubTaskKey = db_.nextSubTaskKey();
-            boolean use_keys = (nextSubTaskKey == 1) ? true : false;
+            boolean use_keys = nextSubTaskKey == 1;
 
             if (container.Subtask != null) {
                 for (Subtask subtask : container.Subtask) {
@@ -972,7 +972,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
             s.setCreateTime(new Date());
             s.setLastMod(s.getCreateTime());
             if (s.getUid() == null)
-                s.setUid(Integer.toString(s.getKey()) + "@BORGS-" + s.getCreateTime().getTime());
+                s.setUid(s.getKey() + "@BORGS-" + s.getCreateTime().getTime());
             db_.addSubTask(s);
             if (!undo) {
                 Subtask st = db_.getSubTask(s.getKey());
@@ -991,7 +991,7 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 
             s.setLastMod(new Date());
             if (s.getUid() == null)
-                s.setUid(Integer.toString(s.getKey()) + "@BORGS-" + s.getCreateTime().getTime());
+                s.setUid(s.getKey() + "@BORGS-" + s.getCreateTime().getTime());
 
             // don't update if no difference - to prevent unneeded syncs
             if (st.equals(s)) return;

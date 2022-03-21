@@ -507,7 +507,7 @@ public class GCal {
             // ******* for recurring events, only update the text (and url) - so don't update more than that on the google side
             // to make more changes than that - delete and add on google
             if (recur) {
-                logBoth("*** recurring event, partial update only: " + event.toString());
+                logBoth("*** recurring event, partial update only: " + event);
                 try {
                     ap.setText(newap.getText());
                     ap.setUrl(newap.getUrl());
@@ -613,7 +613,7 @@ public class GCal {
             log.fine("task doe:" + DateUtil.dayOfEpoch(taskDate));
 
             if (Math.abs(taskDate.getTime() - d.getTime()) > 1000 * 60 * 60 * 12) {
-                logBoth("** TODO time changed on google for " + ap.toString());
+                logBoth("** TODO time changed on google for " + ap);
 
                 // if incoming date is greater than BORG date, then just do_todo
                 if (ap.isRepeatFlag() && taskDate.getTime() - d.getTime() > 1000 * 60 * 60) { // 1 hr cushion - should be exact though?
@@ -623,7 +623,7 @@ public class GCal {
                 } else if (!ap.isRepeatFlag()) {
                     ap.setDate(DateUtil.setToMidnight(taskDate));
                     AppointmentModel.getReference().saveAppt(ap);
-                    logBoth("non-repeating todo date change - please check:" + ap.toString());
+                    logBoth("non-repeating todo date change - please check:" + ap);
                     return 1;
                 }
             }

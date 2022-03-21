@@ -42,7 +42,7 @@ abstract public class Box {
 		 *            date that the object was dragged to
 		 * @throws Exception
 		 */
-		public abstract void move(int realtime, Date d) throws Exception;
+        void move(int realtime, Date d) throws Exception;
 	}
 
 	protected Rectangle bounds, clip;
@@ -156,10 +156,7 @@ abstract public class Box {
 	public boolean isClickable() {
 
 		// if a box is completely clipped, then it cannot be clicked
-		if (clip != null && bounds != null && !bounds.intersects(clip))
-			return false;
-
-		return true;
-	}
+        return clip == null || bounds == null || bounds.intersects(clip);
+    }
 
 }

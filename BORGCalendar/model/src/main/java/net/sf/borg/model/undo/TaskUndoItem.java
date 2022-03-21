@@ -38,7 +38,7 @@ public class TaskUndoItem extends UndoItem<Task> {
 	// the subtask undo items are stored as children inside the task ndo item so that
 	// the user need not see undo items for every subtask. 
 	/** The subtasks. */
-	private Collection<SubtaskUndoItem> subtasks = new ArrayList<SubtaskUndoItem>();
+	private final Collection<SubtaskUndoItem> subtasks = new ArrayList<SubtaskUndoItem>();
 
 	/* (non-Javadoc)
 	 * @see net.sf.borg.model.undo.UndoItem#executeUndo()
@@ -173,8 +173,8 @@ public class TaskUndoItem extends UndoItem<Task> {
 		for( int idx = items.size() - 1; idx >= 0; idx-- )
 		{
 			UndoItem<?> item = items.elementAt(idx);
-			if( TaskUndoItem.class.isInstance(item) )
-				return TaskUndoItem.class.cast(item);
+			if(item instanceof TaskUndoItem)
+				return (TaskUndoItem) item;
 		}
 		
 		return null;

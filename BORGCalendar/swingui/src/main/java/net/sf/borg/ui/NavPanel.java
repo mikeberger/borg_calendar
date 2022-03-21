@@ -39,29 +39,29 @@ public class NavPanel extends JPanel {
 	 * of a NavPanel navigator
 	 *
 	 */
-	static public interface Navigator {
+	public interface Navigator {
 
 		/**
 		 * get the navigator label - i.e. a string indicating the current date
 		 * @return the text to show on the navigator main label
 		 */
-		public String getNavLabel();
+        String getNavLabel();
 
 		/** navigate to a particular date */
-		public void goTo(Calendar cal);
+        void goTo(Calendar cal);
 
 		/** go to the next item */
-		public void next();
+        void next();
 
 		/** go to the previous item */
-		public void prev();
+        void prev();
 
 		/** go to today */
-		public void today();
+        void today();
 	}
 
 	/** the main navigator label - showing the current date */
-	private JButton label = new JButton();
+	private final JButton label = new JButton();
 
 	/** the attached navigator object */
 	private Navigator nav_ = null;

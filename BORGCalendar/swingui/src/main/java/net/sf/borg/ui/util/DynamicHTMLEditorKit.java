@@ -10,7 +10,7 @@ public class DynamicHTMLEditorKit extends HTMLEditorKit {
 	
 	
 	private static final long serialVersionUID = 1L;
-	private HTMLLinkController linkController = new HTMLLinkController();
+	private final HTMLLinkController linkController = new HTMLLinkController();
 	
     @Override
 	public void install(JEditorPane c) {    	

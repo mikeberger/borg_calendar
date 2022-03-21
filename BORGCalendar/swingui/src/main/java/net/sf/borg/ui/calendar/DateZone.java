@@ -129,8 +129,7 @@ class DateZone {
 		}
 
 		pasteItem
-				.setEnabled(ClipBoard.getReference().get(Appointment.class) == null ? false
-						: true);
+				.setEnabled(ClipBoard.getReference().get(Appointment.class) != null);
 		return popmenu;
 	}
 
@@ -178,7 +177,7 @@ class DateZone {
 		}
 
 		// load up a default appt from any saved prefs
-		Appointment appt = AppointmentModel.getReference()
+		Appointment appt = AppointmentModel
 				.getDefaultAppointment();
 		if (appt == null)
 			appt = AppointmentModel.getReference().newAppt();

@@ -120,7 +120,7 @@ public class CheckListPanel extends DockableView implements
 
 	private boolean isInitialized = false;
 
-	private ActionListener renameAction = new ActionListener() {
+	private final ActionListener renameAction = new ActionListener() {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {

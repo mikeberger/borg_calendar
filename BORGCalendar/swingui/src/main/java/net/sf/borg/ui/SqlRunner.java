@@ -130,8 +130,8 @@ class SqlRunner extends JFrame {
 				tbl.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
 				int cols = r.getMetaData().getColumnCount();
-				String colnames[] = new String[cols];
-				Class<?> classes[] = new Class[cols];
+				String[] colnames = new String[cols];
+				Class<?>[] classes = new Class[cols];
 				for (int c = 0; c < cols; c++) {
 					colnames[c] = r.getMetaData().getColumnName(c + 1);
 					classes[c] = String.class;
@@ -139,7 +139,7 @@ class SqlRunner extends JFrame {
 				TableSorter ts = new TableSorter(colnames, classes);
 				ts.addMouseListenerToHeaderInTable(tbl);
 				tbl.setModel(ts);
-				Object row[] = new Object[cols];
+				Object[] row = new Object[cols];
 				for (; !r.isAfterLast(); r.next()) {
 					for (int i = 1; i <= cols; i++) {
 						row[i - 1] = r.getString(i);

@@ -234,7 +234,7 @@ public class NwFontChooserS extends JDialog {
             
         }
         
-        public static void main(String args[]) {
+        public static void main(String[] args) {
             Font font = null;
             font = NwFontChooserS.showDialog(null, null, null);
             

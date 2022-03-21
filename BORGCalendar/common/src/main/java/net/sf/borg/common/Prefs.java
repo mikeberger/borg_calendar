@@ -42,11 +42,11 @@ public class Prefs {
 		
 		/**called when preferences changed.
 		 */
-		public abstract void prefsChanged();
+		void prefsChanged();
 	}
 
 	/** list of listeners */
-	static private ArrayList<Listener> listeners = new ArrayList<Listener>();
+	static private final ArrayList<Listener> listeners = new ArrayList<Listener>();
 
 	/**
 	 * add a listener
@@ -101,9 +101,7 @@ public class Prefs {
 	 */
 	public static boolean getBoolPref(PrefName pn) {
 		String s = getPref(pn);
-		if (s != null && s.equals("true"))
-			return true;
-		return false;
+		return s != null && s.equals("true");
 	}
 
 	/**

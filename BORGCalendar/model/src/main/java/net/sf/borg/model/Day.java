@@ -87,14 +87,14 @@ public class Day {
 			if (so1 instanceof Appointment
 					&& !AppointmentModel.isNote((Appointment) so1)) {
 				Calendar cal = new GregorianCalendar();
-				cal.setTime(((Appointment) so1).getDate());
+				cal.setTime(so1.getDate());
 				cal.set(1, 1, 2000);
 				dt1 = cal.getTime();
 			}
 			if (so2 instanceof Appointment
 					&& !AppointmentModel.isNote((Appointment) so2)) {
 				Calendar cal = new GregorianCalendar();
-				cal.setTime(((Appointment) so2).getDate());
+				cal.setTime(so2.getDate());
 				cal.set(1, 1, 2000);
 				dt2 = cal.getTime();
 			}
@@ -412,11 +412,11 @@ public class Day {
 
 	private int holiday; // set to indicate if any appt in the list is a
 
-	private TreeSet<CalendarEntity> items; // list of appts for the day
+	private final TreeSet<CalendarEntity> items; // list of appts for the day
 
 	private int vacation; // vacation value for the day
 	
-	private Calendar cal;
+	private final Calendar cal;
 
 	/**
 	 * Instantiates a new day.

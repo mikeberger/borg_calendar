@@ -43,8 +43,8 @@ public class PrintHelper {
 			Method method = klass.getMethod("getPrintService", (Class[]) null);
 			Object printService = method.invoke(job, (Object[]) null);
 			method = klass.getMethod("setPrintService",
-					new Class[] { printServiceClass });
-			method.invoke(job, new Object[] { printService });
+					printServiceClass);
+			method.invoke(job, printService);
 		} catch (NoSuchMethodException e) {
 		  // empty
 		} catch (IllegalAccessException e) {

@@ -35,7 +35,7 @@ public class EncryptionOptionsPanel extends OptionsPanel {
 
 	private static final long serialVersionUID = 3485306815964774388L;
 
-	private JTextField keyStoreText = new JTextField();
+	private final JTextField keyStoreText = new JTextField();
 
 	private JSpinner passwordTimeSpinner = null;
 

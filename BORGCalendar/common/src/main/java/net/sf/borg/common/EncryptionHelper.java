@@ -18,10 +18,10 @@ import java.util.Base64;
 public class EncryptionHelper {
 
 	/* the cached keystore object */
-	private KeyStore keyStore;
+	private final KeyStore keyStore;
 	
 	/* cached password */
-    private String password;
+    private final String password;
     
 	/**
 	 * create a new JCEKS Key Store 
