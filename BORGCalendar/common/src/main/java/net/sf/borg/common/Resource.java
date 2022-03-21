@@ -26,10 +26,7 @@ import java.util.Properties;
 import java.util.ResourceBundle;
 
 /**
- * Common logic for dealing with Resource Bundles. Resource strings are stored
- * in a standard resource bundle, but may have extra keyboard shortcut
- * information added which defines the keyboard shortcuts for manu items and
- * buttons.
+ * Common logic for dealing with Resource Bundles.
  */
 public class Resource {
 
@@ -38,14 +35,14 @@ public class Resource {
 
 	/**
 	 * Get a resource string from the borg bundle. Translates escaped newlines
-	 * to real newlines. String will contain any keyboard shortcut info
+	 * to real newlines.
 	 * 
 	 * @param key
 	 *            the resource key
 	 * 
 	 * @return the resource string or "??key??" if the string is not found
 	 */
-	public static String getRawResourceString(String key) {
+	private static String getRawResourceString(String key) {
 		try {
 			String res = ResourceBundle.getBundle("borg_resource").getString(
 					key);
