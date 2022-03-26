@@ -41,4 +41,8 @@ public class HelpLauncher {
 		hb.initPresentation();
 		hb.setDisplayed(true);
 	}
+
+	static public void main(String[] args) throws Exception {
+		launchHelp();
+	}
 }
