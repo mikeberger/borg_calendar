@@ -34,6 +34,8 @@ import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import static net.sf.borg.model.Theme.*;
+
 /**
  * AppointmentPanel is the UI for editing an Appointment.
  */
@@ -1358,15 +1360,15 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener, Mo
                 String sel = appt.getColor();
                 if (sel != null) {
 
-                    if (sel.equals("black")) {
-                        colorComboBox.setSelectedIndex(3);
-                    } else if (sel.equals("red")) {
+                    if (sel.equals("red") || sel.equals(COLOR1)) {
                         colorComboBox.setSelectedIndex(0);
-                    } else if (sel.equals("blue")) {
+                    } else if (sel.equals("blue")|| sel.equals(COLOR2)) {
                         colorComboBox.setSelectedIndex(1);
-                    } else if (sel.equals("green")) {
+                    } else if (sel.equals("green")|| sel.equals(COLOR3)) {
                         colorComboBox.setSelectedIndex(2);
-                    } else if (sel.equals("white")) {
+                    } else if (sel.equals("black")|| sel.equals(COLOR4)) {
+                        colorComboBox.setSelectedIndex(3);
+                    } else if (sel.equals("white")|| sel.equals(COLOR5)) {
                         colorComboBox.setSelectedIndex(4);
                     } else {
                         // if int, then update the color chooser, otherwise,
