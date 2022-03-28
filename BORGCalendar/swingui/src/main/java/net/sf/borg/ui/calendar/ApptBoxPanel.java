@@ -566,6 +566,7 @@ abstract class ApptBoxPanel extends JPanel implements ComponentListener {
 	
 	// format for time markers on resize/drag box
 	private final SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
+	private final SimpleDateFormat sdf24 = new SimpleDateFormat("HH:mm");
 
 
 	// to adjust, since since Graphics2D is translated
@@ -902,6 +903,8 @@ abstract class ApptBoxPanel extends JPanel implements ComponentListener {
 		newCal.set(Calendar.HOUR_OF_DAY, hour);
 		newCal.set(Calendar.MINUTE, min);
 		Date newTime = newCal.getTime();
+		if( Prefs.getBoolPref(PrefName.MILTIME))
+			return sdf24.format(newTime);
 		return sdf.format(newTime);
 	}
 

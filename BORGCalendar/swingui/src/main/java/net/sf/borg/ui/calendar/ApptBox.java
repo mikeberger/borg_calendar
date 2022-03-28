@@ -56,8 +56,9 @@ class ApptBox extends Box implements Box.Draggable {
 
 	// rounded rectangle radius
 	final static private int radius = 2;
-	
+
 	private final SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
+	private final SimpleDateFormat sdf24 = new SimpleDateFormat("HH:mm");
 
 
 	/**
@@ -515,8 +516,12 @@ class ApptBox extends Box implements Box.Draggable {
 			g2.setColor(Color.WHITE);
 			
 			Date endtime = new Date(appt.getDate().getTime() + 1000*60*appt.getDuration().intValue());
-			g2.drawString(sdf.format(endtime), bounds.x + 2,
+			if( Prefs.getBoolPref(PrefName.MILTIME))
+				g2.drawString(sdf24.format(endtime), bounds.x + 2,
 					bounds.y + bounds.height - 2);
+			else
+				g2.drawString(sdf.format(endtime), bounds.x + 2,
+						bounds.y + bounds.height - 2);
 		}
 
 		g2.setClip(s);
