@@ -49,7 +49,7 @@ public class GCalTest {
 
     @Test
     public void sync() throws Exception{
-        GCal.getReference().sync(10,false);
+        GCal.getReference().sync(10,false, false);
     }
 
     @Test
@@ -72,7 +72,7 @@ public class GCalTest {
 
     @Test
     public void overwrite() throws Exception {
-        GCal.getReference().sync(10,true);
+        GCal.getReference().sync(10,true, false);
     }
 
     @Test
@@ -87,7 +87,7 @@ public class GCalTest {
         ap.setDuration(45);
         AppointmentModel.getReference().saveAppt(ap);
 
-        GCal.getReference().sync(1, false);
+        GCal.getReference().sync(1, false, false);
         ap = AppointmentModel.getReference().getAppointmentsByText("test timed 1").get(0);
 
         Assert.assertNotNull(ap);
@@ -102,14 +102,14 @@ public class GCalTest {
 
         ap.setText("test timed 1a");
         AppointmentModel.getReference().saveAppt(ap);
-        GCal.getReference().sync(1, false);
+        GCal.getReference().sync(1, false, false);
 
         e = GCal.getReference().getEvent(gid);
         Assert.assertNotNull(e);
         Assert.assertEquals("test timed 1a", e.getSummary());
 
         AppointmentModel.getReference().delAppt(ap.getKey());
-        GCal.getReference().sync(1, false);
+        GCal.getReference().sync(1, false, false);
 
         e = GCal.getReference().getEvent(gid);
         if( e != null )
@@ -133,7 +133,7 @@ public class GCalTest {
         ap.setDate(new Date());
         AppointmentModel.getReference().saveAppt(ap);
 
-        GCal.getReference().sync(1, false);
+        GCal.getReference().sync(1, false, false);
         ap = AppointmentModel.getReference().getAppointmentsByText("test untimed 1").get(0);
 
         Assert.assertNotNull(ap);
@@ -148,14 +148,14 @@ public class GCalTest {
 
         ap.setText("test untimed 1a");
         AppointmentModel.getReference().saveAppt(ap);
-        GCal.getReference().sync(1, false);
+        GCal.getReference().sync(1, false, false);
 
         e = GCal.getReference().getEvent(gid);
         Assert.assertNotNull(e);
         Assert.assertEquals("test untimed 1a", e.getSummary());
 
         AppointmentModel.getReference().delAppt(ap.getKey());
-        GCal.getReference().sync(1, false);
+        GCal.getReference().sync(1, false, false);
 
         e = GCal.getReference().getEvent(gid);
         if( e != null )
@@ -181,7 +181,7 @@ public class GCalTest {
 
         log.info(EntityGCalAdapter.toGCalTask(ap).toPrettyString());
 
-        GCal.getReference().sync(1, false);
+        GCal.getReference().sync(1, false, false);
 
     }
 
@@ -201,7 +201,7 @@ public class GCalTest {
 
         log.info(EntityGCalAdapter.toGCalTask(ap).toPrettyString());
 
-        GCal.getReference().sync(1, false);
+        GCal.getReference().sync(1, false, false);
 
     }
 }

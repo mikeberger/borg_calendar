@@ -38,7 +38,7 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
             try {
 
                 if (GCal.isSyncing()) {
-                    runGcalSync(false);
+                    runGcalSync(false, false);
                 } else if (CalDav.isSyncing()) {
                     runBackgroundSync(Synctype.FULL);
                 } else {
@@ -319,7 +319,7 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
                         return;
                     }
 
-                    runGcalSync(false);
+                    runGcalSync(false, false);
 
                 } catch (Exception e) {
                     Errmsg.getErrorHandler().errmsg(e);
@@ -328,6 +328,27 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
         });
 
         gcalmenu.add(gcalsyncmi);
+        JMenuItem gcalsyncCleanmi = new JMenuItem(Resource.getResourceString("Sync_Cleanup"));
+        gcalsyncCleanmi.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                try {
+                    if (!GCal.isSyncing()) {
+                        JOptionPane.showMessageDialog(null, Resource.getResourceString("Sync-Not-Set"), null,
+                                JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+
+                    runGcalSync(false, true);
+
+                } catch (Exception e) {
+                    Errmsg.getErrorHandler().errmsg(e);
+                }
+            }
+        });
+
+        gcalmenu.add(gcalsyncCleanmi);
 
         JMenuItem gcalow = new JMenuItem("Overwrite");
         gcalow.addActionListener(new ActionListener() {
@@ -345,7 +366,7 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
                             JOptionPane.WARNING_MESSAGE);
                     if (ret != JOptionPane.OK_OPTION)
                         return;
-                    runGcalSync(true);
+                    runGcalSync(true, false);
 
                 } catch (Exception e) {
                     Errmsg.getErrorHandler().errmsg(e);
@@ -359,7 +380,7 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
         return m;
     }
 
-    private static void runGcalSync(boolean overwrite) {
+    private static void runGcalSync(boolean overwrite, boolean cleanup) {
 
         final boolean ov = overwrite;
         class SyncWorker extends SwingWorker<Void, Object> {
@@ -369,7 +390,7 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
 
                     // modally lock borg
                     SocketClient.sendMessage("lock:" + Resource.getResourceString("syncing"));
-                    GCal.getReference().sync(Prefs.getIntPref(PrefName.ICAL_EXPORTYEARS), ov);
+                    GCal.getReference().sync(Prefs.getIntPref(PrefName.ICAL_EXPORTYEARS), ov, cleanup);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -566,7 +587,7 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
             public void actionPerformed(ActionEvent arg0) {
                 try {
                     if (GCal.isSyncing()) {
-                        runGcalSync(false);
+                        runGcalSync(false, false);
                     } else if (CalDav.isSyncing()) {
                         runBackgroundSync(Synctype.FULL);
                     } else {

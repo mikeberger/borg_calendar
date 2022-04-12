@@ -125,7 +125,7 @@ public class GCal {
 
     }
 
-    public synchronized void sync(Integer years, boolean overwrite) throws Exception {
+    public synchronized void sync(Integer years, boolean overwrite, boolean cleanup) throws Exception {
 
         Date after = null;
         GregorianCalendar gcal = new GregorianCalendar();
@@ -164,7 +164,7 @@ public class GCal {
         }
         processSyncMap();
 
-        syncFromServer(after);
+        syncFromServer(after, cleanup);
 
         // incoming sync could cause additional outward activity due to borg
         // needing to convert multiple events
@@ -360,7 +360,7 @@ public class GCal {
         service.events().insert(calendarId, ve1).execute();
     }
 
-    private void syncFromServer(Date after) throws Exception {
+    private void syncFromServer(Date after, boolean cleanup) throws Exception {
 
         logBoth("SYNC: Start Incoming Sync");
 
@@ -434,8 +434,11 @@ public class GCal {
             // NOTE - a delete of a google task will not cause delete of the BORG appt
             if (!serverUids.contains(ap.getUid())) {
 
-                if (ap.isTodo()) {
+                if (ap.isTodo() && !cleanup) {
+                    logBoth("-----------------------------------------------------");
                     logBoth("*** Todo not found on google - WILL LEAVE IN BORG: " + ap);
+                    logBoth("-----------------------------------------------------");
+
                 } else {
                     logBoth("Appointment Not Found on server - Deleting: " + ap);
                     SyncLog.getReference().setProcessUpdates(false);
@@ -613,17 +616,22 @@ public class GCal {
             log.fine("task doe:" + DateUtil.dayOfEpoch(taskDate));
 
             if (Math.abs(taskDate.getTime() - d.getTime()) > 1000 * 60 * 60 * 12) {
-                logBoth("** TODO time changed on google for " + ap);
+                logBoth("TODO time changed on google for " + ap.getText());
 
                 // if incoming date is greater than BORG date, then just do_todo
                 if (ap.isRepeatFlag() && taskDate.getTime() - d.getTime() > 1000 * 60 * 60) { // 1 hr cushion - should be exact though?
-                    logBoth("time advanced for repeating todo - do_todo - please verify");
+                    logBoth("-----------------------------------------------------");
+                    logBoth("CHECK: time advanced for repeating todo - do_todo - please verify");
+                    logBoth("-----------------------------------------------------");
                     AppointmentModel.getReference().do_todo(ap.getKey(), false);
                     return 1;
                 } else if (!ap.isRepeatFlag()) {
                     ap.setDate(DateUtil.setToMidnight(taskDate));
                     AppointmentModel.getReference().saveAppt(ap);
-                    logBoth("non-repeating todo date change - please check:" + ap);
+                    logBoth("-----------------------------------------------------");
+                    logBoth("CHECK: non-repeating todo date change - please check:" + ap);
+                    logBoth("-----------------------------------------------------");
+
                     return 1;
                 }
             }
