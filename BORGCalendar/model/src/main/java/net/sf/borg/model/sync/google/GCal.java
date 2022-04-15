@@ -627,6 +627,7 @@ public class GCal {
                     return 1;
                 } else if (!ap.isRepeatFlag()) {
                     ap.setDate(DateUtil.setToMidnight(taskDate));
+                    ap.setText(task.getTitle());
                     AppointmentModel.getReference().saveAppt(ap);
                     logBoth("-----------------------------------------------------");
                     logBoth("CHECK: non-repeating todo date change - please check:" + ap);
@@ -634,6 +635,14 @@ public class GCal {
 
                     return 1;
                 }
+            }
+            else if( !ap.getText().equals(task.getTitle())){
+                // text only chg
+                ap.setText(task.getTitle());
+                AppointmentModel.getReference().saveAppt(ap);
+                logBoth("-----------------------------------------------------");
+                logBoth("CHECK: todo text-only change - please check:" + ap);
+                logBoth("-----------------------------------------------------");
             }
 
 
