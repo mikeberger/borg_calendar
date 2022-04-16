@@ -595,7 +595,7 @@ public class GCal {
 
             if (task.getStatus().equals("completed")) {
                 // do_todo
-                log.info("SYNC: do_todo");
+                logBoth("SYNC: do_todo: " + ap);
                 AppointmentModel.getReference().do_todo(ap.getKey(), false);
                 return 1;
             }
