@@ -1,3 +1,11 @@
+BORG 1.10.02
+------------
+12 hour format in some places when 24 hour format option is on #158
+get rid of hard-coded colors in the font chooser #157
+Google sync fixes
+clean up lots of old code
+
+
 BORG 1.10.01
 ------------
 Java 17
