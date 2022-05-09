@@ -55,6 +55,8 @@ public class ReminderList extends View {
 	private JPanel buttonPanel = new JPanel();
 
 	private JTable reminderTable = new JTable();
+
+	private JCheckBox quietBox = new JCheckBox();
 	
 	// table columns
 	static private final int SELECT_COLUMN = 0;
@@ -275,6 +277,10 @@ public class ReminderList extends View {
 
 		buttonPanel.add(resetButton);
 
+		quietBox.setText(Resource.getResourceString("Quiet"));
+
+		buttonPanel.add(quietBox);
+
 		this.getContentPane().add(
 				jScrollPane1,
 				GridBagConstraintsFactory.create(0, 0, GridBagConstraints.BOTH,
@@ -355,7 +361,7 @@ public class ReminderList extends View {
 
 		}
 
-		if (!silent) {
+		if (!silent && !quietBox.isSelected()) {
 			this.setVisible(true);
 			this.toFront();
 			ReminderSound.playReminderSound(Prefs
