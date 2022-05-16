@@ -215,6 +215,8 @@ public class AppointmentModel extends Model implements Model.Listener, CategoryS
 
 				int tm = Repeat.calculateTimes(appt);
 
+				int apptYear = cal.get(Calendar.YEAR);
+
 				// ok, plod through the repeats now
 				for (int i = 0; i < tm; i++) {
 					Calendar current = repeat.current();
@@ -228,11 +230,8 @@ public class AppointmentModel extends Model implements Model.Listener, CategoryS
 
 					int cyear = current.get(Calendar.YEAR);
 
-					// limit the repeats to 2 years
-					// from the current year
-					// otherwise, an appt repeating 9999 times
-					// could kill BORG
-					if (cyear > curyr + 2)
+					// limit the repeats to 10 years
+					if (cyear > curyr + 10 && cyear > apptYear + 10)
 						break;
 
 					// check if the repeat is in the skip list
