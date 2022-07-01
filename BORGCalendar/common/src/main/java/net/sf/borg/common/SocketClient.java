@@ -63,26 +63,6 @@ public class SocketClient {
 	}
 
 
-	static public void sendMessage(String msg) {
-		int port = Prefs.getIntPref(PrefName.SOCKETPORT);
-		if (port != -1) {
-			String resp;
-			try {
-				resp = sendMsg("localhost", port, msg);
-				if (resp != null && resp.equals("ok")) {
-					// do nothing
-				}
-			} catch (IOException e) {
-				// empty
-			}
-	
-		}
-	}
-
-
-	static public void sendLogMessage(String msg) {
-		sendMessage("log:" + msg);
-	}
 
 	
 }

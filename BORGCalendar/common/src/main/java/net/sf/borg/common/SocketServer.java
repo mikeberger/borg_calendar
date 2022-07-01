@@ -54,7 +54,7 @@ public class SocketServer extends Thread {
 	                // read in a line
 	                String line = this.in.readLine();
 	                if (line == null) break;
-	                String output = this.handler_1.processMessage(line);
+	                String output = this.handler_1.processSocketMessage(line);
 	                this.out.println(output);
 	            }
 	        }
@@ -106,7 +106,22 @@ public class SocketServer extends Thread {
             fail(e, "Exception while listening for connections");
         }
     }
-    
+
+    /**
+     * Interface for a class that can process messages from a socket server
+     */
+    public static interface SocketHandler {
+
+        /**
+         * Process a message.
+         *
+         * @param msg the msg
+         *
+         * @return the response string to be sent back to the socket client
+         */
+        String processSocketMessage(String msg);
+
+    }
 }
 
 

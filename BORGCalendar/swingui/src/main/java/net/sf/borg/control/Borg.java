@@ -19,15 +19,12 @@
 
 package net.sf.borg.control;
 
-import net.sf.borg.common.SocketHandler;
 import net.sf.borg.common.*;
 import net.sf.borg.model.*;
 import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.model.db.jdbc.JdbcDBHelper;
-import net.sf.borg.model.sync.ical.CalDav;
 import net.sf.borg.ui.UIControl;
 import net.sf.borg.ui.options.OptionsView;
-import net.sf.borg.common.ModalMessage;
 import net.sf.borg.ui.util.ScrolledDialog;
 
 import javax.swing.*;
@@ -45,7 +42,7 @@ import java.util.logging.*;
  * threads. It also handles shutdown.
  */
 
-public class Borg implements SocketHandler {
+public class Borg implements SocketServer.SocketHandler {
 
 	/** The singleton. */
 	static volatile private Borg singleton = null;
@@ -85,12 +82,6 @@ public class Borg implements SocketHandler {
 	 */
 	static public void shutdown() {
 
-		if (getReference().dbSyncTimer_ != null)
-			getReference().dbSyncTimer_.cancel();
-		if (getReference().caldavSyncTimer_ != null)
-			getReference().caldavSyncTimer_.cancel();
-		if (getReference().flushTimer_ != null)
-			getReference().flushTimer_.cancel();
 		if (getReference().mailTimer_ != null)
 			getReference().mailTimer_.cancel();
 
@@ -123,16 +114,6 @@ public class Borg implements SocketHandler {
 	private SocketServer socketServer_ = null;
 
 	/**
-	 * The sync timer - controls auto-sync with db - only needed for mysql - and
-	 * then not really
-	 */
-	private final java.util.Timer dbSyncTimer_ = null;
-
-	private java.util.Timer caldavSyncTimer_ = null;
-
-	private final java.util.Timer flushTimer_ = null;
-
-	/**
 	 * constructor
 	 */
 	private Borg() {
@@ -143,7 +124,7 @@ public class Borg implements SocketHandler {
 	 * process a socket message
 	 */
 	@Override
-	public synchronized String processMessage(String msg) {
+	public synchronized String processSocketMessage(String msg) {
 		log.fine("Got msg: " + msg);
 		if (msg.equals("open")) {
 			UIControl.toFront();
@@ -359,39 +340,6 @@ public class Borg implements SocketHandler {
 					}
 				}
 			}, mailtime * 60 * 1000, 24 * 60 * 60 * 1000);
-
-
-			int syncmins = Prefs.getIntPref(PrefName.ICAL_SYNCMINS);
-			if (syncmins != 0) {
-				this.caldavSyncTimer_ = new java.util.Timer("IcalSyncTimer");
-				this.caldavSyncTimer_.schedule(new TimerTask() {
-					@Override
-					public void run() {
-
-						try {
-							if (CalDav.isSyncing() && !CalDav.isServerSyncNeeded()) {
-								boolean needed = CalDav.checkRemoteSync();
-								if (needed) {
-									SwingUtilities.invokeLater(new Runnable() {
-										@Override
-										public void run() {
-											try {
-												CalDav.setServerSyncNeeded(true);
-											} catch (Exception e) {
-												Errmsg.getErrorHandler().errmsg(e);
-											}
-										}
-									});
-								}
-							}
-						} catch (Exception e) {
-							Errmsg.logError(e);
-						}
-
-					}
-				}, 10 * 1000, syncmins * 60 * 1000);
-			}
-
 
 			// start socket listener
 			if (port != -1 && this.socketServer_ == null) {

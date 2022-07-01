@@ -283,8 +283,6 @@ public class PrefName {
 	public static final PrefName MAX_TEXT_SIZE = new PrefName("max_text_size", Integer.valueOf(1024 * 1024));
 
 	public static PrefName ICAL_EXPORTYEARS = new PrefName("ical-export-years", Integer.valueOf(2));
-	
-	public static PrefName ICAL_SYNCMINS = new PrefName("ical-syncmins", Integer.valueOf(15));
 
 	// option to export todos as VTODO objects instead of VEVENTS
 	public static PrefName ICAL_EXPORT_TODO = new PrefName("ical-export-todo", "false");
