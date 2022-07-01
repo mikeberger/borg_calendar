@@ -168,7 +168,7 @@ public class CardDav {
 		}
 		
 		URL url = new URL(protocol, serverPart[0], port, Prefs.getPref(PrefName.CALDAV_PATH));
-		SocketClient.sendLogMessage("SYNC: connect to " + url);
+		ModalMessageServer.getReference().sendLogMessage("SYNC: connect to " + url);
 		log.info("SYNC: connect to " + url);
 
 		CardDavStore store = new CardDavStore("-", url, createPathResolver());

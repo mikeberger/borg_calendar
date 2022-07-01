@@ -389,24 +389,24 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
                 try {
 
                     // modally lock borg
-                    SocketClient.sendMessage("lock:" + Resource.getResourceString("syncing"));
+                    ModalMessageServer.getReference().sendMessage("lock:" + Resource.getResourceString("syncing"));
                     GCal.getReference().sync(Prefs.getIntPref(PrefName.ICAL_EXPORTYEARS), ov, cleanup);
 
                 } catch (Exception e) {
                     e.printStackTrace();
                     log.severe("***ERROR during sync***, please check logs");
-                    SocketClient.sendLogMessage(e.getMessage());
-                    SocketClient.sendLogMessage("***ERROR during sync***, please check logs");
+                    ModalMessageServer.getReference().sendLogMessage(e.getMessage());
+                    ModalMessageServer.getReference().sendLogMessage("***ERROR during sync***, please check logs");
                 }
 
-                SocketClient.sendLogMessage(Resource.getResourceString("done"));
+                ModalMessageServer.getReference().sendLogMessage(Resource.getResourceString("done"));
 
                 return null;
             }
 
             @Override
             protected void done() {
-                SocketClient.sendMessage("unlock");
+                ModalMessageServer.getReference().sendMessage("unlock");
 
             }
         }
@@ -427,7 +427,7 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
                 try {
 
                     // modally lock borg
-                    SocketClient.sendMessage("lock:" + Resource.getResourceString("syncing"));
+                    ModalMessageServer.getReference().sendMessage("lock:" + Resource.getResourceString("syncing"));
                     if (ty == Synctype.FULL)
                         CalDav.sync(Prefs.getIntPref(PrefName.ICAL_EXPORTYEARS), false);
                     else if (ty == Synctype.ONEWAY)
@@ -437,17 +437,17 @@ public class SyncModule implements Module, Prefs.Listener, Model.Listener {
 
                 } catch (Exception e) {
                     e.printStackTrace();
-                    SocketClient.sendLogMessage(e.toString());
+                    ModalMessageServer.getReference().sendLogMessage(e.toString());
                 }
 
-                SocketClient.sendLogMessage(Resource.getResourceString("done"));
+                ModalMessageServer.getReference().sendLogMessage(Resource.getResourceString("done"));
 
                 return null;
             }
 
             @Override
             protected void done() {
-                SocketClient.sendMessage("unlock");
+                ModalMessageServer.getReference().sendMessage("unlock");
 
             }
         }

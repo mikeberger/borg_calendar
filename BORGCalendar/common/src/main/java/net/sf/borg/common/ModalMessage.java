@@ -19,7 +19,7 @@ Copyright 2003 by Mike Berger
  */
 
 
-package net.sf.borg.ui.util;
+package net.sf.borg.common;
 
 import net.sf.borg.common.Resource;
 
@@ -34,6 +34,7 @@ import java.awt.*;
 public class ModalMessage extends JDialog {
 
 	private static final long serialVersionUID = 1L;
+
 
 	/** The message scroll. */
 	private JScrollPane messageScroll = null;
@@ -89,8 +90,14 @@ public class ModalMessage extends JDialog {
 
 		messageScroll.setViewportView(messageText);
 
-		topPanel.add(messageScroll, GridBagConstraintsFactory.create(0, 0,
-				GridBagConstraints.BOTH, 1.0, 1.0));
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.insets = new Insets(4, 4, 4, 4);
+		gbc.weightx = 1.0;
+		gbc.weighty = 1.0;
+		gbc.fill = GridBagConstraints.BOTH;
+		topPanel.add(messageScroll, gbc);
 
 		JPanel buttonPanel = new JPanel();
 
@@ -105,8 +112,14 @@ public class ModalMessage extends JDialog {
 
 		buttonPanel.add(okButton, null);
 
-		topPanel.add(buttonPanel, GridBagConstraintsFactory.create(0, 1,
-				GridBagConstraints.BOTH, 0.0, 0.0));
+		GridBagConstraints gbc2 = new GridBagConstraints();
+		gbc2.gridx = 0;
+		gbc2.gridy = 1;
+		gbc2.insets = new Insets(4, 4, 4, 4);
+		gbc2.weightx = 0.0;
+		gbc2.weighty = 0.0;
+		gbc2.fill = GridBagConstraints.BOTH;
+		topPanel.add(buttonPanel, gbc2);
 
 		this.setContentPane(topPanel);
 

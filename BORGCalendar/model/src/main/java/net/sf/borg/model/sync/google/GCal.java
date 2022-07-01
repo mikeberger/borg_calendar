@@ -23,10 +23,7 @@ import com.google.api.services.tasks.model.Task;
 import com.google.api.services.tasks.model.TaskList;
 import com.google.api.services.tasks.model.TaskLists;
 import com.google.gson.stream.MalformedJsonException;
-import net.sf.borg.common.DateUtil;
-import net.sf.borg.common.PrefName;
-import net.sf.borg.common.Prefs;
-import net.sf.borg.common.SocketClient;
+import net.sf.borg.common.*;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Model;
 import net.sf.borg.model.entity.Appointment;
@@ -219,7 +216,7 @@ public class GCal {
 
         int num_outgoing = syncEvents.size();
 
-        SocketClient.sendLogMessage("SYNC: Process " + num_outgoing + " Outgoing Items");
+        ModalMessageServer.getReference().sendLogMessage("SYNC: Process " + num_outgoing + " Outgoing Items");
         log.info("SYNC: Process " + num_outgoing + " Outgoing Items");
 
         for (SyncEvent se : syncEvents) {
@@ -255,9 +252,9 @@ public class GCal {
                                     // check if task exists in google already
                                     if (t.getEtag() == null) {
                                         // suspicious case - provide warning
-                                        SocketClient.sendLogMessage("*** WARNING ***");
-                                        SocketClient.sendLogMessage("Todo was changed in BORG that has no record of google task. Please check google. Manual delete may be needed.");
-                                        SocketClient.sendLogMessage(ap.toString());
+                                        ModalMessageServer.getReference().sendLogMessage("*** WARNING ***");
+                                        ModalMessageServer.getReference().sendLogMessage("Todo was changed in BORG that has no record of google task. Please check google. Manual delete may be needed.");
+                                        ModalMessageServer.getReference().sendLogMessage(ap.toString());
                                         addTask(t);
                                     } else
                                         updateTask(t);
@@ -300,7 +297,7 @@ public class GCal {
                                     try {
                                         removeEvent(comp.getId());
                                     } catch (IOException e) {
-                                        SocketClient.sendLogMessage("SYNC ERROR for: " + se + ":" + e.getMessage());
+                                        ModalMessageServer.getReference().sendLogMessage("SYNC ERROR for: " + se + ":" + e.getMessage());
                                         log.severe("SYNC ERROR for: " + se + ":" + e.getMessage());
                                     }
 
@@ -313,7 +310,7 @@ public class GCal {
 
                     SyncLog.getReference().delete(se.getId(), se.getObjectType());
                 } catch (Exception e) {
-                    SocketClient.sendLogMessage("SYNC ERROR for: " + se + ":" + e.getMessage());
+                    ModalMessageServer.getReference().sendLogMessage("SYNC ERROR for: " + se + ":" + e.getMessage());
                     log.severe("SYNC ERROR for: " + se + ":" + e.getMessage());
                     e.printStackTrace();
                 }
@@ -663,7 +660,7 @@ public class GCal {
     // log to both logfile and SYNC popup
     private void logBoth(String s) {
         log.info(s);
-        SocketClient.sendLogMessage(s);
+        ModalMessageServer.getReference().sendLogMessage(s);
     }
 
 }

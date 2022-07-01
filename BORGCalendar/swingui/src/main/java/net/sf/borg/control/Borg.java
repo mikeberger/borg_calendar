@@ -27,7 +27,7 @@ import net.sf.borg.model.db.jdbc.JdbcDBHelper;
 import net.sf.borg.model.sync.ical.CalDav;
 import net.sf.borg.ui.UIControl;
 import net.sf.borg.ui.options.OptionsView;
-import net.sf.borg.ui.util.ModalMessage;
+import net.sf.borg.common.ModalMessage;
 import net.sf.borg.ui.util.ScrolledDialog;
 
 import javax.swing.*;
@@ -115,11 +115,7 @@ public class Borg implements SocketHandler {
 
 	/** The timer for sending reminder email. */
 	private Timer mailTimer_ = null;
-
-	/**
-	 * message popped up if the socket thread has something to tell the user.
-	 */
-	private ModalMessage modalMessage = null;
+	
 
 	/**
 	 * The socket server - listens for incoming requests such as open requests
@@ -149,61 +145,8 @@ public class Borg implements SocketHandler {
 	@Override
 	public synchronized String processMessage(String msg) {
 		log.fine("Got msg: " + msg);
-		if (msg.equals("sync")) {
-			try {
-				Model.syncModels();
-				return ("sync success");
-			} catch (Exception e) {
-				e.printStackTrace();
-				return ("sync error: " + e);
-			}
-		} else if (msg.equals("shutdown")) {
-			System.exit(0);
-		} else if (msg.equals("open")) {
+		if (msg.equals("open")) {
 			UIControl.toFront();
-			return ("ok");
-		} else if (msg.startsWith("lock:")) {
-			final String lockmsg = msg.substring(5);
-			SwingUtilities.invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					if (Borg.this.modalMessage == null || !Borg.this.modalMessage.isShowing()) {
-						Borg.this.modalMessage = new ModalMessage(lockmsg, false);
-						Borg.this.modalMessage.setVisible(true);
-					} else {
-						Borg.this.modalMessage.appendText(lockmsg);
-					}
-					Borg.this.modalMessage.setEnabled(false);
-					Borg.this.modalMessage.toFront();
-				}
-			});
-
-			return ("ok");
-		} else if (msg.startsWith("log:")) {
-			final String lockmsg = msg.substring(4);
-			SwingUtilities.invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					if (Borg.this.modalMessage != null && Borg.this.modalMessage.isShowing()) {
-						Borg.this.modalMessage.appendText(lockmsg);
-						// Borg.this.modalMessage.setEnabled(false);
-						// Borg.this.modalMessage.toFront();
-					}
-
-				}
-			});
-
-			return ("ok");
-		} else if (msg.equals("unlock")) {
-			SwingUtilities.invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					if (Borg.this.modalMessage.isShowing()) {
-						Borg.this.modalMessage.setEnabled(true);
-					}
-				}
-			});
-
 			return ("ok");
 		}
 		return ("Unknown msg: " + msg);

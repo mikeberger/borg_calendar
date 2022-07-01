@@ -14,9 +14,9 @@ import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VToDo;
 import net.fortuna.ical4j.model.property.*;
 import net.fortuna.ical4j.util.CompatibilityHints;
+import net.sf.borg.common.ModalMessageServer;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
-import net.sf.borg.common.SocketClient;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.model.Model.ChangeEvent.ChangeAction;
@@ -124,7 +124,7 @@ public class CalDav {
 			}
 		}
 		URL url = new URL(protocol, serverPart[0], port, Prefs.getPref(PrefName.CALDAV_PATH));
-		SocketClient.sendLogMessage("SYNC: connect to " + url);
+		ModalMessageServer.getReference().sendLogMessage("SYNC: connect to " + url);
 		log.info("SYNC: connect to " + url);
 
 		CalDavCalendarStore store = new CalDavCalendarStore("-", url, createPathResolver());
@@ -235,7 +235,7 @@ public class CalDav {
 		if (isServerSyncNeeded())
 			num_outgoing--;
 
-		SocketClient.sendLogMessage("SYNC: Process " + num_outgoing + " Outgoing Items");
+		ModalMessageServer.getReference().sendLogMessage("SYNC: Process " + num_outgoing + " Outgoing Items");
 		log.info("SYNC: Process " + num_outgoing + " Outgoing Items");
 
 		for (SyncEvent se : syncEvents) {
@@ -282,7 +282,7 @@ public class CalDav {
 
 					SyncLog.getReference().delete(se.getId(), se.getObjectType());
 				} catch (Exception e) {
-					SocketClient.sendLogMessage("SYNC ERROR for: " + se + ":" + e.getMessage());
+					ModalMessageServer.getReference().sendLogMessage("SYNC ERROR for: " + se + ":" + e.getMessage());
 					log.severe("SYNC ERROR for: " + se + ":" + e.getMessage());
 					e.printStackTrace();
 				}
@@ -330,7 +330,7 @@ public class CalDav {
 
 					SyncLog.getReference().delete(se.getId(), se.getObjectType());
 				} catch (Exception e) {
-					SocketClient.sendLogMessage("SYNC ERROR for: " + se + ":" + e.getMessage());
+					ModalMessageServer.getReference().sendLogMessage("SYNC ERROR for: " + se + ":" + e.getMessage());
 					log.severe("SYNC ERROR for: " + se + ":" + e.getMessage());
 					e.printStackTrace();
 				}
@@ -378,7 +378,7 @@ public class CalDav {
 
 					SyncLog.getReference().delete(se.getId(), se.getObjectType());
 				} catch (Exception e) {
-					SocketClient.sendLogMessage("SYNC ERROR for: " + se + ":" + e.getMessage());
+					ModalMessageServer.getReference().sendLogMessage("SYNC ERROR for: " + se + ":" + e.getMessage());
 					log.severe("SYNC ERROR for: " + se + ":" + e.getMessage());
 					e.printStackTrace();
 				}
@@ -500,7 +500,7 @@ public class CalDav {
 		processSyncMap(collection);
 
 		if (!incoming_changes)
-			SocketClient.sendLogMessage("SYNC: no incoming changes\n");
+			ModalMessageServer.getReference().sendLogMessage("SYNC: no incoming changes\n");
 
 		if (!outward_only && incoming_changes) {
 			syncFromServer(collection, years);
@@ -533,7 +533,7 @@ public class CalDav {
 
 			if (comp instanceof VEvent) {
 				log.warning("SYNC: ignoring Vevent for single recurrence - cannot process\n" + comp);
-				SocketClient.sendLogMessage(
+				ModalMessageServer.getReference().sendLogMessage(
 						"SYNC: ignoring Vevent for single recurrence - cannot process\n" + comp);
 				return;
 			}
@@ -544,7 +544,7 @@ public class CalDav {
 			Status stat = comp.getProperty(Property.STATUS);
 			if (cpltd == null && (stat == null || !stat.equals(Status.VTODO_COMPLETED))) {
 				log.warning("SYNC: ignoring VToDo for single recurrence - cannot process\n" + comp);
-				SocketClient.sendLogMessage(
+				ModalMessageServer.getReference().sendLogMessage(
 						"SYNC: ignoring VToDo for single recurrence - cannot process\n" + comp);
 				return;
 			}
@@ -565,7 +565,7 @@ public class CalDav {
 				nt = ap.getDate();
 			if (!utc.before(nt)) {
 				log.warning("SYNC: completing Todo\n" + comp);
-				SocketClient.sendLogMessage("SYNC: completing Todo\n" + comp);
+				ModalMessageServer.getReference().sendLogMessage("SYNC: completing Todo\n" + comp);
 				AppointmentModel.getReference().do_todo(ap.getKey(), false, utc);
 
 			}
@@ -670,7 +670,7 @@ public class CalDav {
 
 	static private void syncFromServer(CalDavCalendarCollection collection, Integer years) throws Exception {
 
-		SocketClient.sendLogMessage("SYNC: Start Incoming Sync");
+		ModalMessageServer.getReference().sendLogMessage("SYNC: Start Incoming Sync");
 		log.info("SYNC: Start Incoming Sync");
 
 		Date after = null;
@@ -690,28 +690,28 @@ public class CalDav {
 		log.info("SYNC: " + dtstart + "--" + dtend);
 
 		Calendar[] cals = collection.getEventsForTimePeriod(dtstart, dtend);
-		SocketClient.sendLogMessage("SYNC: found " + cals.length + " Event Calendars on server");
+		ModalMessageServer.getReference().sendLogMessage("SYNC: found " + cals.length + " Event Calendars on server");
 		log.info("SYNC: found " + cals.length + " Event Calendars on server");
 		int count = 0;
 		for (Calendar cal : cals) {
 			count += syncCalendar(cal, serverUids);
 		}
 
-		SocketClient.sendLogMessage("SYNC: processed " + count + " new/changed Events");
+		ModalMessageServer.getReference().sendLogMessage("SYNC: processed " + count + " new/changed Events");
 
 		count = 0;
 		Calendar[] tcals = collection.getTasks();
-		SocketClient.sendLogMessage("SYNC: found " + tcals.length + " Todo Calendars on server");
+		ModalMessageServer.getReference().sendLogMessage("SYNC: found " + tcals.length + " Todo Calendars on server");
 		log.info("SYNC: found " + tcals.length + " Todo Calendars on server");
 		for (Calendar cal : tcals) {
 			count += syncCalendar(cal, serverUids);
 		}
 
-		SocketClient.sendLogMessage("SYNC: processed " + count + " new/changed Tasks");
+		ModalMessageServer.getReference().sendLogMessage("SYNC: processed " + count + " new/changed Tasks");
 
 		log.fine(serverUids.toString());
 
-		SocketClient.sendLogMessage("SYNC: check for deletes");
+		ModalMessageServer.getReference().sendLogMessage("SYNC: check for deletes");
 		log.info("SYNC: check for deletes");
 
 		// find all appts in Borg that are not on the server
@@ -720,7 +720,7 @@ public class CalDav {
 				continue;
 
 			if (!serverUids.contains(ap.getUid())) {
-				SocketClient.sendLogMessage("Appointment Not Found in Borg - Deleting: " + ap);
+				ModalMessageServer.getReference().sendLogMessage("Appointment Not Found in Borg - Deleting: " + ap);
 				log.info("Appointment Not Found in Borg - Deleting: " + ap);
 				SyncLog.getReference().setProcessUpdates(false);
 				AppointmentModel.getReference().delAppt(ap.getKey());
