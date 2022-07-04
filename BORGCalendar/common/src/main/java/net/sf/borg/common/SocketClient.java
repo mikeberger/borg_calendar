@@ -55,7 +55,7 @@ public class SocketClient {
 				if (s != null)
 					s.close();
 			} catch (IOException e2) {
-				// empty
+				throw e2;
 			}
 		}
 		

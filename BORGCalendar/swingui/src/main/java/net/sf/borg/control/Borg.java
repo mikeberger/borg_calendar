@@ -26,6 +26,7 @@ import net.sf.borg.model.db.jdbc.JdbcDBHelper;
 import net.sf.borg.ui.UIControl;
 import net.sf.borg.ui.options.OptionsView;
 import net.sf.borg.ui.util.ScrolledDialog;
+import net.sf.borg.ui.util.UIErrorHandler;
 
 import javax.swing.*;
 import java.io.File;
@@ -182,13 +183,18 @@ public class Borg implements SocketServer.SocketHandler {
 
 		// open existing BORG if there is one
 		int port = Prefs.getIntPref(PrefName.SOCKETPORT);
-		if (port != -1 && !testing) {
+		if (port != -1 ) {
 			String resp;
 			try {
 				resp = SocketClient.sendMsg("localhost", port, "open");
 				if (resp != null && resp.equals("ok")) {
 					// if we found a running borg to open, then exit
 					System.exit(0);
+				}
+				else {
+					Errmsg.setErrorHandler(new UIErrorHandler());
+					Errmsg.getErrorHandler().notice("A program running on BORG's port [" + port + "] did not respond. BORG cannot tell if it is already running.\nShutting down.");
+					System.exit(1);
 				}
 			} catch (IOException e) {
 				// empty
