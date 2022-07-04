@@ -73,9 +73,9 @@ public class PrintHelper {
 		
 		PageFormat pageFormat = printJob.defaultPage();
 		Paper paper = pageFormat.getPaper();
-		pageFormat.setOrientation(PageFormat.LANDSCAPE);
-		paper.setSize(8.5*72,11*72);
-		paper.setImageableArea(0.875*72,0.625*72,6.75*72,9.75*72);
+		//pageFormat.setOrientation(PageFormat.LANDSCAPE);
+		//paper.setSize(8.5*72,11*72);
+		//paper.setImageableArea(0.875*72,0.625*72,6.75*72,9.75*72);
 		pageFormat.setPaper(paper);
 
 		printJob.setPrintable(p,pageFormat);
