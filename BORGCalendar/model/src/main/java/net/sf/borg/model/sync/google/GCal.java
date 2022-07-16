@@ -434,6 +434,7 @@ public class GCal {
                 if (ap.isTodo() && !cleanup) {
                     logBoth("-----------------------------------------------------");
                     logBoth("*** Todo not found on google - WILL LEAVE IN BORG: " + ap);
+                    logBoth("*** Use Sync with cleanup option to delete or handle manually");
                     logBoth("-----------------------------------------------------");
 
                 } else {

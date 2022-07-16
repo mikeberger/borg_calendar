@@ -102,6 +102,9 @@ public class EntityGCalAdapter {
         ap.setCreateTime(new Date(event.getCreated().getValue()));
         ap.setLastMod(new Date(event.getUpdated().getValue()));
 
+        if( "private".equals(event.getVisibility()))
+            ap.setPrivate(true);
+
         if (event.getExtendedProperties() != null) {
             Map<String, String> props = event.getExtendedProperties().getPrivate();
 
@@ -322,6 +325,7 @@ public class EntityGCalAdapter {
         // private
         if (ap.isPrivate()) {
             propmap.put("private", "true");
+            ev.setVisibility("private");
         }
 
         // add color as a category
