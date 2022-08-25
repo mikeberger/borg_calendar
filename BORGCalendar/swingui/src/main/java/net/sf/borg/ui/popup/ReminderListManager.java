@@ -104,8 +104,18 @@ public class ReminderListManager extends ReminderManager {
 
 		boolean needUpdate = false;
 
+		// list of keys to reminders that no longer need to be shown
+		ArrayList<ReminderInstance> deletedReminders = new ArrayList<ReminderInstance>();
+
 		// iterate through existing popups
 		for (ReminderInstance reminderInstance : reminders) {
+
+			if (!reminderInstance.shouldBeShown()) {
+				// dispose of popup and add to delete list
+				deletedReminders.add(reminderInstance);
+				needUpdate = true;
+				continue;
+			}
 
 			// skip hidden reminders
 			if (reminderInstance.isHidden())
@@ -125,6 +135,11 @@ public class ReminderListManager extends ReminderManager {
 				break;
 			}
 
+		}
+
+		// delete the popup map entries for reminders that we disposed of
+		for (ReminderInstance inst : deletedReminders) {
+			reminders.remove(inst);
 		}
 
 		if (needUpdate)

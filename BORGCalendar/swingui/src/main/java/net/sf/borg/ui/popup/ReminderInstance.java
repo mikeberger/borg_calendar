@@ -88,9 +88,9 @@ abstract public class ReminderInstance {
 			// since w are adding it to the UI
 			// it may already have been marked as shown - no problem
 			int reminderIndex = getCurrentReminder();
-			if (reminderIndex == -1)
-				return null;
-			markAsShown(reminderIndex);
+			if (reminderIndex != -1) {
+				markAsShown(reminderIndex);
+			}
 
 			int minutesToGo = minutesToGo();
 
@@ -153,7 +153,7 @@ abstract public class ReminderInstance {
 		// trigger a new
 		// popup - it is either already showing or has been hidden
 
-		if (getRemindersShown()[index] == 'N') {
+		if (index >= 0 && getRemindersShown()[index] == 'N') {
 			return index;
 		}
 
