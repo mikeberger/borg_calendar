@@ -1,5 +1,9 @@
 package net.sf.borg.model.sync;
 
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.Marshaller;
+import jakarta.xml.bind.Unmarshaller;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.model.AppointmentModel;
@@ -13,10 +17,6 @@ import net.sf.borg.model.entity.SyncableEntity.ObjectType;
 import net.sf.borg.model.sync.google.GCal;
 import net.sf.borg.model.sync.ical.CalDav;
 
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.Marshaller;
-import jakarta.xml.bind.Unmarshaller;
-import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.io.Writer;
 import java.sql.PreparedStatement;

@@ -1,6 +1,5 @@
 package net.sf.borg.model.sync.ical;
 
-import org.apache.commons.httpclient.ConnectTimeoutException;
 import org.apache.commons.httpclient.HttpClientError;
 import org.apache.commons.httpclient.params.HttpConnectionParams;
 import org.apache.commons.httpclient.protocol.ControllerThreadSocketFactory;
@@ -11,7 +10,6 @@ import javax.net.ssl.TrustManager;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.logging.Logger;
 
 

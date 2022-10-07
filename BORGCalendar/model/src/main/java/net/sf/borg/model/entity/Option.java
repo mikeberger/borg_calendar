@@ -20,12 +20,11 @@ Copyright 2003 by Mike Berger
 
 package net.sf.borg.model.entity;
 
-import lombok.Data;
-
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import lombok.Data;
 
 /**
  * Each BorgOption instance holds a single row from the options table in the database

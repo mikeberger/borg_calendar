@@ -20,14 +20,14 @@
 
 package net.sf.borg.model.db.jdbc;
 
-import net.sf.borg.model.db.CheckListDB;
-import net.sf.borg.model.entity.CheckList;
-
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Marshaller;
 import jakarta.xml.bind.Unmarshaller;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import net.sf.borg.model.db.CheckListDB;
+import net.sf.borg.model.entity.CheckList;
+
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.sql.PreparedStatement;

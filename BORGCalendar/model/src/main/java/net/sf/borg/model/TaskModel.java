@@ -19,6 +19,10 @@
  */
 package net.sf.borg.model;
 
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.Marshaller;
+import jakarta.xml.bind.Unmarshaller;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import net.sf.borg.common.*;
 import net.sf.borg.model.CategoryModel.CategorySource;
 import net.sf.borg.model.Model.ChangeEvent.ChangeAction;
@@ -30,10 +34,6 @@ import net.sf.borg.model.undo.SubtaskUndoItem;
 import net.sf.borg.model.undo.TaskUndoItem;
 import net.sf.borg.model.undo.UndoLog;
 
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.Marshaller;
-import jakarta.xml.bind.Unmarshaller;
-import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.io.Writer;
 import java.util.*;

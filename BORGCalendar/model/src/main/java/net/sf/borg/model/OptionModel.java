@@ -19,15 +19,15 @@
  */
 package net.sf.borg.model;
 
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.Marshaller;
+import jakarta.xml.bind.Unmarshaller;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.model.db.OptionDB;
 import net.sf.borg.model.entity.Option;
 
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.Marshaller;
-import jakarta.xml.bind.Unmarshaller;
-import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.io.Writer;
 import java.util.Collection;

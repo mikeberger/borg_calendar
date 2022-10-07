@@ -1,14 +1,13 @@
 package net.sf.borg.model.sync;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import net.sf.borg.model.Model.ChangeEvent.ChangeAction;
 import net.sf.borg.model.entity.SyncableEntity.ObjectType;
-
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlRootElement;
 
 @Data
 @NoArgsConstructor

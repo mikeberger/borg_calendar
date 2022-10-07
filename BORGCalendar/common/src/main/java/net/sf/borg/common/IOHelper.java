@@ -23,8 +23,6 @@ package net.sf.borg.common;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.logging.Logger;
 
 /**

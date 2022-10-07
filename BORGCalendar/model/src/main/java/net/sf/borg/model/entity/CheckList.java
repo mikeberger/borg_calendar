@@ -19,11 +19,11 @@
  */
 package net.sf.borg.model.entity;
 
-import lombok.Data;
-
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import lombok.Data;
+
 import java.util.ArrayList;
 import java.util.List;
 

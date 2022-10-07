@@ -19,6 +19,10 @@ Copyright 2003 by Mike Berger
  */
 package net.sf.borg.model;
 
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.Marshaller;
+import jakarta.xml.bind.Unmarshaller;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
@@ -28,10 +32,6 @@ import net.sf.borg.model.db.EntityDB;
 import net.sf.borg.model.db.LinkDB;
 import net.sf.borg.model.entity.*;
 
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.Marshaller;
-import jakarta.xml.bind.Unmarshaller;
-import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collection;

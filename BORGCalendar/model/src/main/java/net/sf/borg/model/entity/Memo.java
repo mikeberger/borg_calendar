@@ -18,14 +18,14 @@
  */
 package net.sf.borg.model.entity;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.Data;
 import net.sf.borg.common.EncryptionHelper;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.Date;
 
