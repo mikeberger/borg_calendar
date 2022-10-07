@@ -27,10 +27,10 @@ import net.sf.borg.model.entity.Memo;
 import net.sf.borg.model.undo.MemoUndoItem;
 import net.sf.borg.model.undo.UndoLog;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.Marshaller;
+import jakarta.xml.bind.Unmarshaller;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.io.Writer;
 import java.text.SimpleDateFormat;

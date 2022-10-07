@@ -26,6 +26,7 @@ import com.google.gson.stream.MalformedJsonException;
 import net.sf.borg.common.*;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Model;
+import net.sf.borg.model.Repeat;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.SyncableEntity;
 import net.sf.borg.model.sync.SyncEvent;
@@ -137,7 +138,10 @@ public class GCal {
         if (overwrite) {
             // get all appointments and add to syncmap
             for (Appointment ap : AppointmentModel.getReference().getAllAppts()) {
-                if (ap.getDate().before(after))
+
+                // limit by date
+                Date latestInstance = Repeat.calculateLastRepeat(ap);
+                if (latestInstance != null && latestInstance.before(after))
                     continue;
 
                 // if not in syncmap then add and null out URL if needed
