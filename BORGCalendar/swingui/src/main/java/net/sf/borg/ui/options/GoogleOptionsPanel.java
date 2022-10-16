@@ -20,6 +20,15 @@
 package net.sf.borg.ui.options;
 
 
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
 import net.sf.borg.model.sync.google.GCal;
@@ -27,17 +36,12 @@ import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.options.OptionsView.OptionsPanel;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 
-import javax.swing.*;
-import java.awt.*;
-import java.util.logging.Logger;
-
 /**
  * Provides the UI for editing Miscellaneous options
  */
 
 public class GoogleOptionsPanel extends OptionsPanel {
 
-    static private final Logger log = Logger.getLogger("net.sf.borg");
 
 
     private static final long serialVersionUID = 2246952528811147049L;

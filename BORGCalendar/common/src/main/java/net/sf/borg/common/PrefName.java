@@ -192,6 +192,7 @@ public class PrefName {
 	static public PrefName BIRTHDAYREMINDERDAYS = new PrefName("bd_reminder_days", Integer.valueOf(7));
 
 	static public PrefName EMAILENABLED = new PrefName("email_enabled", "false");
+	public static PrefName DAILYEMAILENABLED = new PrefName("daily_email_enabled", "true");;
 	static public PrefName EMAILSERVER = new PrefName("email_server", "");
 	static public PrefName EMAILADDR = new PrefName("email_addr", "");
 	static public PrefName EMAILFROM = new PrefName("email_from", "");
@@ -307,6 +308,7 @@ public class PrefName {
 	public static final PrefName GCAL_TASKLIST_ID = new PrefName("google_tasklist_id", "");
 	public static final PrefName GOOGLE_CRED_FILE = new PrefName("google_cred_file", "");
 	public static final PrefName GOOGLE_TOKEN_DIR = new PrefName("google_token_dir", "");
+
 
 
 }

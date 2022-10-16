@@ -64,12 +64,10 @@ public class Borg implements SocketServer.SocketHandler {
 		return (singleton);
 	}
 
-	
 	/**
 	 * The main method.
 	 *
-	 * @param args
-	 *            the arguments
+	 * @param args the arguments
 	 */
 	public static void main(String[] args) {
 		// create a new borg object and call its init routine with the command
@@ -107,7 +105,6 @@ public class Borg implements SocketServer.SocketHandler {
 
 	/** The timer for sending reminder email. */
 	private Timer mailTimer_ = null;
-	
 
 	/**
 	 * The socket server - listens for incoming requests such as open requests
@@ -137,8 +134,7 @@ public class Borg implements SocketServer.SocketHandler {
 	/**
 	 * Initialize the application
 	 *
-	 * @param args
-	 *            the args
+	 * @param args the args
 	 */
 	private void init(String[] args) {
 
@@ -183,17 +179,17 @@ public class Borg implements SocketServer.SocketHandler {
 
 		// open existing BORG if there is one
 		int port = Prefs.getIntPref(PrefName.SOCKETPORT);
-		if (port != -1 ) {
+		if (port != -1) {
 			String resp;
 			try {
 				resp = SocketClient.sendMsg("localhost", port, "open");
 				if (resp != null && resp.equals("ok")) {
 					// if we found a running borg to open, then exit
 					System.exit(0);
-				}
-				else {
+				} else {
 					Errmsg.setErrorHandler(new UIErrorHandler());
-					Errmsg.getErrorHandler().notice("A program running on BORG's port [" + port + "] did not respond. BORG cannot tell if it is already running.\nShutting down.");
+					Errmsg.getErrorHandler().notice("A program running on BORG's port [" + port
+							+ "] did not respond. BORG cannot tell if it is already running.\nShutting down.");
 					System.exit(1);
 				}
 			} catch (IOException e) {
@@ -217,12 +213,12 @@ public class Borg implements SocketServer.SocketHandler {
 				log.removeHandler(ch);
 				log.addHandler(fh);
 
-				FileHandler fh2 = new FileHandler("%h/.borgaudit.log", 1024*1024, 5, true );
+				FileHandler fh2 = new FileHandler("%h/.borgaudit.log", 1024 * 1024, 5, true);
 				fh2.setFormatter(new SimpleFormatter());
 				fh2.setLevel(Level.INFO);
 				auditLog.addHandler(fh2);
 
-				if( Prefs.getBoolPref(PrefName.AUDITLOG))
+				if (Prefs.getBoolPref(PrefName.AUDITLOG))
 					auditLog.setLevel(Level.INFO);
 				else
 					auditLog.setLevel(Level.SEVERE);
@@ -230,7 +226,6 @@ public class Borg implements SocketServer.SocketHandler {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 
 		// locale
 		String country = Prefs.getPref(PrefName.COUNTRY);
@@ -314,7 +309,10 @@ public class Borg implements SocketServer.SocketHandler {
 			if (mailtime < 0) {
 				// we are past mailtime - send it now
 				try {
-					EmailReminder.sendDailyEmailReminder(null);
+					if (Prefs.getBoolPref(PrefName.DAILYEMAILENABLED))
+						EmailReminder.sendDailyEmailReminder(null);
+					else
+						log.info("Skipping Daily Email");
 				} catch (Exception e) {
 					final Exception fe = e;
 					SwingUtilities.invokeLater(new Runnable() {
@@ -334,7 +332,10 @@ public class Borg implements SocketServer.SocketHandler {
 				@Override
 				public void run() {
 					try {
-						EmailReminder.sendDailyEmailReminder(null);
+						if (Prefs.getBoolPref(PrefName.DAILYEMAILENABLED))
+							EmailReminder.sendDailyEmailReminder(null);
+						else
+							log.info("Skipping Daily Email");
 					} catch (Exception e) {
 						final Exception fe = e;
 						SwingUtilities.invokeLater(new Runnable() {
@@ -354,9 +355,9 @@ public class Borg implements SocketServer.SocketHandler {
 
 		} catch (Exception e) {
 			/*
-			 * if something goes wrong, it might be that the database directory
-			 * is bad. Maybe it does not exist anymore or something, so give the
-			 * user a chance to change it if it will fix the problem
+			 * if something goes wrong, it might be that the database directory is bad.
+			 * Maybe it does not exist anymore or something, so give the user a chance to
+			 * change it if it will fix the problem
 			 */
 			Errmsg.getErrorHandler().errmsg(e);
 
@@ -376,6 +377,5 @@ public class Borg implements SocketServer.SocketHandler {
 		}
 
 	}
-
 
 }

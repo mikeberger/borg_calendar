@@ -79,9 +79,7 @@ public class GCal {
         //InputStream in = CalendarQuickstart.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
         try {
             InputStream in = new FileInputStream(f);
-            if (in == null) {
-                throw new Exception("Credentials File not found: " + Prefs.getPref(PrefName.GOOGLE_CRED_FILE));
-            }
+            
             GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
 
             // Build flow and trigger user authorization request.
@@ -499,8 +497,8 @@ public class GCal {
                 AppointmentModel.getReference().saveAppt(newap);
             } finally {
                 SyncLog.getReference().setProcessUpdates(true);
-                return 1;
             }
+            return 1;
         } else {
 
             // if Borg has same etag as google, then skip
@@ -526,8 +524,8 @@ public class GCal {
                     AppointmentModel.getReference().saveAppt(ap);
                 } finally {
                     SyncLog.getReference().setProcessUpdates(true);
-                    return 1;
                 }
+                return 1;
             }
 
 
@@ -542,8 +540,9 @@ public class GCal {
                 AppointmentModel.getReference().saveAppt(newap);
             } finally {
                 SyncLog.getReference().setProcessUpdates(true);
-                return 1;
             }
+            return 1;
+
         }
 
 

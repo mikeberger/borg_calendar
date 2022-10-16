@@ -39,32 +39,24 @@ import java.util.GregorianCalendar;
  */
 class EmailOptionsPanel extends OptionsPanel {
 
-	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 795364188303457966L;
 	
-	/** The emailbox. */
 	private final JCheckBox emailbox = new JCheckBox();
+	private final JCheckBox dailybox = new JCheckBox();
 
-	/** The emailtext. */
 	private final JTextField emailtext = new JTextField();
 	private final JTextField emailfrom = new JTextField();
 
-	/** The emailtimebox. */
 	private JSpinner emailtimebox = new JSpinner();
 	
-	/** The smpw. */
 	private final JPasswordField smpw = new JPasswordField();
 
-	/** The smtpport. */
 	private final JTextField smtpport = new JTextField();
 	
-	/** The smtptext. */
 	private final JTextField smtptext = new JTextField();
 	
-	/** The tlsbox. */
 	private final JCheckBox tlsbox = new JCheckBox();
 	
-	/** The usertext. */
 	private final JTextField usertext = new JTextField();
 
 	/**
@@ -72,80 +64,86 @@ class EmailOptionsPanel extends OptionsPanel {
 	 */
 	public EmailOptionsPanel() {
 		this.setLayout(new java.awt.GridBagLayout());
-
-		JLabel jLabel1 = new JLabel();
-		ResourceHelper.setText(jLabel1, "SMTP_Server");
-		this.add(jLabel1, GridBagConstraintsFactory.create(0, 1,
-				GridBagConstraints.BOTH));
-		jLabel1.setLabelFor(smtptext);
-
-		smtptext.setColumns(30);
-		this.add(smtptext, GridBagConstraintsFactory.create(1, 1,
-				GridBagConstraints.BOTH, 1.0, 0.0));
-
-		JLabel portLabel = new JLabel();
-		ResourceHelper.setText(portLabel, "SMTP_Port");
-		this.add(portLabel, GridBagConstraintsFactory.create(0, 2,
-				GridBagConstraints.BOTH));
-		jLabel1.setLabelFor(smtpport);
-
-		smtpport.setColumns(30);
-		this.add(smtpport, GridBagConstraintsFactory.create(1, 2,
-				GridBagConstraints.BOTH, 1.0, 0.0));
-
-		JLabel userlabel = new JLabel();
-		ResourceHelper.setText(userlabel, "SMTP_user");
-		this.add(userlabel, GridBagConstraintsFactory.create(0, 3,
-				GridBagConstraints.BOTH));
-		userlabel.setLabelFor(usertext);
-
-		this.add(usertext, GridBagConstraintsFactory.create(1, 3,
-				GridBagConstraints.BOTH));
-
-		JLabel passlabel = new JLabel();
-		ResourceHelper.setText(passlabel, "SMTP_password");
-		this.add(passlabel, GridBagConstraintsFactory.create(0, 4,
-				GridBagConstraints.BOTH));
-		passlabel.setLabelFor(smpw);
-
-		this.add(smpw, GridBagConstraintsFactory.create(1, 4,
-				GridBagConstraints.BOTH));
-
-		JLabel jLabel2 = new JLabel();
-		ResourceHelper.setText(jLabel2, "Your_Email_Address");
-		this.add(jLabel2, GridBagConstraintsFactory.create(0, 5,
-				GridBagConstraints.BOTH));
-		jLabel2.setLabelFor(emailtext);
-
-		emailtext.setColumns(30);
-		this.add(emailtext, GridBagConstraintsFactory.create(1, 5,
-				GridBagConstraints.BOTH, 1.0, 0.0));
 		
-		this.add(new JLabel(Resource.getResourceString("EmailFrom")), GridBagConstraintsFactory.create(0, 6,
-				GridBagConstraints.BOTH));
-
-		emailfrom.setColumns(30);
-		this.add(emailfrom, GridBagConstraintsFactory.create(1, 6,
-				GridBagConstraints.BOTH, 1.0, 0.0));
-
 		ResourceHelper.setText(emailbox, "Enable_Email");
 		this.add(emailbox, GridBagConstraintsFactory.create(0, 0,
 				GridBagConstraints.BOTH));
 
+		ResourceHelper.setText(dailybox, "Enable_Daily_Email");
+		this.add(dailybox, GridBagConstraintsFactory.create(0, 1,
+				GridBagConstraints.BOTH));
+		
+		JLabel jLabel1 = new JLabel();
+		ResourceHelper.setText(jLabel1, "SMTP_Server");
+		this.add(jLabel1, GridBagConstraintsFactory.create(0, 2,
+				GridBagConstraints.BOTH));
+		jLabel1.setLabelFor(smtptext);
+
+		smtptext.setColumns(30);
+		this.add(smtptext, GridBagConstraintsFactory.create(1, 2,
+				GridBagConstraints.BOTH, 1.0, 0.0));
+
+		JLabel portLabel = new JLabel();
+		ResourceHelper.setText(portLabel, "SMTP_Port");
+		this.add(portLabel, GridBagConstraintsFactory.create(0, 3,
+				GridBagConstraints.BOTH));
+		jLabel1.setLabelFor(smtpport);
+
+		smtpport.setColumns(30);
+		this.add(smtpport, GridBagConstraintsFactory.create(1, 3,
+				GridBagConstraints.BOTH, 1.0, 0.0));
+
+		JLabel userlabel = new JLabel();
+		ResourceHelper.setText(userlabel, "SMTP_user");
+		this.add(userlabel, GridBagConstraintsFactory.create(0, 4,
+				GridBagConstraints.BOTH));
+		userlabel.setLabelFor(usertext);
+
+		this.add(usertext, GridBagConstraintsFactory.create(1, 4,
+				GridBagConstraints.BOTH));
+
+		JLabel passlabel = new JLabel();
+		ResourceHelper.setText(passlabel, "SMTP_password");
+		this.add(passlabel, GridBagConstraintsFactory.create(0, 5,
+				GridBagConstraints.BOTH));
+		passlabel.setLabelFor(smpw);
+
+		this.add(smpw, GridBagConstraintsFactory.create(1, 5,
+				GridBagConstraints.BOTH));
+
+		JLabel jLabel2 = new JLabel();
+		ResourceHelper.setText(jLabel2, "Your_Email_Address");
+		this.add(jLabel2, GridBagConstraintsFactory.create(0, 6,
+				GridBagConstraints.BOTH));
+		jLabel2.setLabelFor(emailtext);
+
+		emailtext.setColumns(30);
+		this.add(emailtext, GridBagConstraintsFactory.create(1, 6,
+				GridBagConstraints.BOTH, 1.0, 0.0));
+		
+		this.add(new JLabel(Resource.getResourceString("EmailFrom")), GridBagConstraintsFactory.create(0, 7,
+				GridBagConstraints.BOTH));
+
+		emailfrom.setColumns(30);
+		this.add(emailfrom, GridBagConstraintsFactory.create(1, 7,
+				GridBagConstraints.BOTH, 1.0, 0.0));
+
+	
+
 		JLabel remtimelabel = new JLabel();
 		ResourceHelper.setText(remtimelabel, "reminder_time");
 		remtimelabel.setLabelFor(emailtimebox);
-		this.add(remtimelabel, GridBagConstraintsFactory.create(0, 7,
+		this.add(remtimelabel, GridBagConstraintsFactory.create(0, 8,
 				GridBagConstraints.BOTH));
 
 		emailtimebox = new JSpinner(new SpinnerDateModel());
 		JSpinner.DateEditor de = new JSpinner.DateEditor(emailtimebox, "HH:mm");
 		emailtimebox.setEditor(de);
-		this.add(emailtimebox, GridBagConstraintsFactory.create(1, 7,
+		this.add(emailtimebox, GridBagConstraintsFactory.create(1, 8,
 				GridBagConstraints.BOTH, 1.0, 0.0));
 
 		tlsbox.setText(Resource.getResourceString("enable_tls"));
-		this.add(tlsbox, GridBagConstraintsFactory.create(0, 8,
+		this.add(tlsbox, GridBagConstraintsFactory.create(0, 9,
 				GridBagConstraints.BOTH));
 
 	}
@@ -157,6 +155,7 @@ class EmailOptionsPanel extends OptionsPanel {
 	public void applyChanges() {
 		
 		OptionsPanel.setBooleanPref(emailbox, PrefName.EMAILENABLED);
+		OptionsPanel.setBooleanPref(dailybox, PrefName.DAILYEMAILENABLED);
 		OptionsPanel.setBooleanPref(tlsbox, PrefName.ENABLETLS);
 		
 		// only save email options if email is enabled
@@ -196,6 +195,7 @@ class EmailOptionsPanel extends OptionsPanel {
 		emailtimebox.setValue(cal.getTime());
 
 		OptionsPanel.setCheckBox(emailbox, PrefName.EMAILENABLED);
+		OptionsPanel.setCheckBox(dailybox, PrefName.DAILYEMAILENABLED);
 		OptionsPanel.setCheckBox(tlsbox, PrefName.ENABLETLS);
 		
 		// email server and address

@@ -12,7 +12,10 @@ import java.awt.event.ItemListener;
 
 public class ColorComboBox extends JComboBox<String>{
 
-    /**
+  
+	private static final long serialVersionUID = 1L;
+
+	/**
      * renders the color selection pull-down with colored boxes as the choices.
      */
     static private class ColorBoxRenderer extends JLabel implements ListCellRenderer<Object> {
