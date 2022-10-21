@@ -231,4 +231,8 @@ public interface TaskDB extends EntityDB<Task>{
      */
     void renameTaskType(String oldtype, String newtype) throws Exception;
 
+	Subtask getSubTaskByUid(String uid) throws Exception;
+
+	Task getTaskByUid(String uid) throws Exception;
+
 }

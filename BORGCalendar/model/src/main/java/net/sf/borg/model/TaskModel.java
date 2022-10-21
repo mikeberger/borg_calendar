@@ -564,6 +564,9 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
             task.setLastMod(new Date());
             if (task.getUid() == null)
                 task.setUid(task.getKey() + "@BORGT-" + task.getCreateTime().getTime());
+            
+            if( task.getUrl() == null && indb.getUrl() != null)
+            	task.setUrl(indb.getUrl());
             db_.updateObj(task);
             action = ChangeAction.CHANGE;
 
@@ -984,7 +987,9 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
 
             s.setCreateTime(st.getCreateTime());
             s.setUid(st.getUid());
-            s.setUrl(st.getUrl());
+            
+            if( s.getUrl() == null )
+            	s.setUrl(st.getUrl());
 
             if (s.getCreateTime() == null)
                 s.setCreateTime(new Date());
@@ -1355,4 +1360,14 @@ public class TaskModel extends Model implements Model.Listener, CategorySource,
         public Collection<Subtask> Subtask;
         public Collection<Tasklog> Tasklog;
     }
+
+	public Task getTaskByUid(String uid) throws Exception {
+		return db_.getTaskByUid(uid);
+	}
+
+	public Subtask getSubTaskByUid(String uid) throws Exception {
+		return db_.getSubTaskByUid(uid);
+	}
+
+	
 }

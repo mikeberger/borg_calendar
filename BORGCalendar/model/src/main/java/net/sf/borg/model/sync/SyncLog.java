@@ -1,5 +1,16 @@
 package net.sf.borg.model.sync;
 
+import java.io.InputStream;
+import java.io.Writer;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Types;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.logging.Logger;
+
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.Marshaller;
 import jakarta.xml.bind.Unmarshaller;
@@ -11,22 +22,10 @@ import net.sf.borg.model.Model;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.db.DBHelper;
 import net.sf.borg.model.db.jdbc.JdbcDBUpgrader;
-import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.SyncableEntity;
 import net.sf.borg.model.entity.SyncableEntity.ObjectType;
 import net.sf.borg.model.sync.google.GCal;
 import net.sf.borg.model.sync.ical.CalDav;
-
-import java.io.InputStream;
-import java.io.Writer;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Types;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * class to track all appointment model changes since the last sync it will
@@ -73,8 +72,8 @@ public class SyncLog extends Model implements Model.Listener, Prefs.Listener {
 		if (borgEvent == null || borgEvent.getObject() == null || borgEvent.getAction() == null)
 			return;
 
-		if( GCal.isSyncing() && !(borgEvent.getObject() instanceof Appointment))
-			return;
+		//if( GCal.isSyncing() && !(borgEvent.getObject() instanceof Appointment))
+		//	return;
 
 		try {
 
