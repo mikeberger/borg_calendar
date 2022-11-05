@@ -20,6 +20,7 @@ Copyright 2003 by Mike Berger
 package net.sf.borg.model.sync.ical;
 
 import java.net.URISyntaxException;
+import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -38,8 +39,6 @@ import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.Recur;
 import net.fortuna.ical4j.model.TextList;
-import net.fortuna.ical4j.model.WeekDay;
-import net.fortuna.ical4j.model.WeekDayList;
 import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VAlarm;
 import net.fortuna.ical4j.model.component.VEvent;
@@ -64,7 +63,6 @@ import net.fortuna.ical4j.model.property.Uid;
 import net.fortuna.ical4j.model.property.Url;
 import net.sf.borg.common.DateUtil;
 import net.sf.borg.model.AppointmentModel;
-import net.sf.borg.model.Repeat;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.entity.Project;
@@ -300,7 +298,7 @@ public class EntityIcalAdapter {
 		return TimeZone.getDefault().getOffset(date);
 	}
 
-	public static Appointment toBorg(Component comp) {
+	public static Appointment toBorg(Component comp) throws ParseException {
 		if (comp instanceof VEvent || comp instanceof VToDo) {
 
 			AppointmentModel amodel = AppointmentModel.getReference();
@@ -314,10 +312,8 @@ public class EntityIcalAdapter {
 
 			PropertyList<Property> pl = comp.getProperties();
 			String appttext = "";
-			String summary = "";
 			Property prop = pl.getProperty(Property.SUMMARY);
 			if (prop != null) {
-				summary = prop.getValue();
 				appttext += prop.getValue();
 			}
 
@@ -474,64 +470,8 @@ public class EntityIcalAdapter {
 			if (prop != null) {
 				RRule rr = (RRule) prop;
 				Recur recur = rr.getRecur();
-
-				String freq = recur.getFrequency();
-				int interval = recur.getInterval();
-				if (freq.equals(Recur.DAILY)) {
-					if (interval > 1) {
-						ap.setFrequency(Repeat.NDAYS + "," + interval);
-					} else
-						ap.setFrequency(Repeat.DAILY);
-				} else if (freq.equals(Recur.WEEKLY)) {
-					if (interval == 2) {
-						ap.setFrequency(Repeat.BIWEEKLY);
-					} else if (interval > 2) {
-						ap.setFrequency(Repeat.NWEEKS + "," + interval);
-					} else {
-						ap.setFrequency(Repeat.WEEKLY);
-
-						// BORG can only handle daylist for weekly
-						WeekDayList dl = recur.getDayList();
-						if (dl != null && !dl.isEmpty()) {
-							String f = Repeat.DAYLIST;
-							f += ",";
-							for (Object o : dl) {
-								WeekDay wd = (WeekDay) o;
-								f += WeekDay.getCalendarDay(wd);
-							}
-							ap.setFrequency(f);
-
-						}
-					}
-
-				} else if (freq.equals(Recur.MONTHLY)) {
-					if (interval > 1) {
-						ap.setFrequency(Repeat.NMONTHS + "," + interval);
-					} else
-						ap.setFrequency(Repeat.MONTHLY);
-				} else if (freq.equals(Recur.YEARLY)) {
-					if (interval > 1) {
-						ap.setFrequency(Repeat.NYEARS + "," + interval);
-					} else
-						ap.setFrequency(Repeat.YEARLY);
-				} else {
-					log.warning("WARNING: Cannot handle frequency of [" + freq + "], for appt [" + summary
-							+ "], adding first occurrence only\n");
-					return ap;
-				}
-
-				Date until = recur.getUntil();
-				if (until != null) {
-					long u = until.getTime() - tzOffset(until.getTime());
-					ap.setRepeatUntil(new Date(u));
-				} else {
-					int times = recur.getCount();
-					if (times < 1)
-						times = 9999;
-					ap.setTimes(Integer.valueOf(times));
-				}
-
-				ap.setRepeatFlag(true);
+				
+				RecurrenceRule.setRecur(ap, recur);
 
 				ExDate ex = pl.getProperty(Property.EXDATE);
 				if (ex != null) {

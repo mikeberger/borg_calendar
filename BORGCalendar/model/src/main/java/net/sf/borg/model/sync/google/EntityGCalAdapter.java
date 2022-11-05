@@ -8,6 +8,7 @@ import com.google.api.services.tasks.model.Task;
 import net.fortuna.ical4j.model.Recur;
 import net.fortuna.ical4j.model.WeekDay;
 import net.fortuna.ical4j.model.WeekDayList;
+import net.sf.borg.common.ModalMessageServer;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Repeat;
 import net.sf.borg.model.TaskModel;
@@ -15,6 +16,7 @@ import net.sf.borg.model.entity.Appointment;
 import net.sf.borg.model.sync.RecurrenceRule;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -36,9 +38,25 @@ public class EntityGCalAdapter {
 		String d = t.getDue();
 		if( d == null ) return null;
 		DateTime dt = new DateTime(d);
-
-		// TODO - assumes untimed only
 		ap.setDate(new Date(dt.getValue() - tzOffset(dt.getValue())));
+
+		
+		// look for aCalendar+ recurrence rule
+		if( t.getNotes() != null ) {
+			int idx1 = t.getNotes().indexOf('[');
+			int idx2 = t.getNotes().indexOf(']');
+			if( idx1 != -1 && idx2 != -1) {
+				String rrule = t.getNotes().substring(idx1+1, idx2);
+				Recur recur;
+				try {
+					recur = new Recur(rrule);
+					RecurrenceRule.setRecur(ap, recur);
+				} catch (ParseException e) {
+					logBoth("Could not parse recurrence: " + rrule + " ignoring for appt " + ap.toString());
+				}
+			}
+		}
+		
 		return ap;
 
 	}
@@ -392,14 +410,14 @@ public class EntityGCalAdapter {
 	}
 
 	public static Task toGCalTask(net.sf.borg.model.entity.Task t) {
-		
+
 		if (TaskModel.isClosed(t))
 			return null;
 
 		Date due = t.getDueDate();
 		if (due == null)
 			return null;
-		
+
 		Task task = new Task();
 		task.setKind("tasks#task");
 		task.setTitle(t.getSummary());
@@ -424,17 +442,15 @@ public class EntityGCalAdapter {
 		if (uidval == null || uidval.isEmpty()) {
 			uidval = t.getKey() + "@BORGT-" + t.getCreateTime().getTime();
 		}
-		
+
 		String notes = " UID:" + uidval;
-	
+
 		task.setNotes(notes);
 
-		
 		return task;
 
 	}
 
-	
 	public static Task toGCalTask(net.sf.borg.model.entity.Subtask s) {
 		if (s.getCloseDate() != null)
 			return null;
@@ -442,7 +458,7 @@ public class EntityGCalAdapter {
 		Date due = s.getDueDate();
 		if (due == null)
 			return null;
-		
+
 		Task task = new Task();
 		task.setKind("tasks#task");
 		task.setTitle(s.getText());
@@ -467,13 +483,18 @@ public class EntityGCalAdapter {
 		if (uidval == null || uidval.isEmpty()) {
 			uidval = s.getKey() + "@BORGS-" + s.getCreateTime().getTime();
 		}
-		
+
 		String notes = " UID:" + uidval;
-	
+
 		task.setNotes(notes);
 
-		
 		return task;
 
+	}
+
+	// log to both logfile and SYNC popup
+	static private void logBoth(String s) {
+		log.info(s);
+		ModalMessageServer.getReference().sendLogMessage(s);
 	}
 }
