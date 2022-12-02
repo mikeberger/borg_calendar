@@ -1,3 +1,16 @@
+BORG 1.10.03
+------------
+Add new "Quiet" option on the reminder list to suppress periodic popping of the window to the front and grabbing focus
+Sync tasks and subtasks to google tasks - one way
+Add separate option to turn daily emails on/off to allow manual emails to be sent without the automatic daily ones.
+Update 3pp versions
+The popup reminder pop up timing is not accurate #169
+Stop setting Letter paper size during printing #163
+Error and shutdown if a program is running on BORG's socket port but doesn't respond with "ok".
+code cleanup
+Future repeating appointments not showing more than 2 years in advance #161
+Support recurring tasks created in aCalendar+ and synced to google by parsing the incoming RRULE in the notes
+
 BORG 1.10.02
 ------------
 12 hour format in some places when 24 hour format option is on #158
