@@ -1,10 +1,21 @@
 package net.sf.borg.model.sync.google;
 
+import java.io.IOException;
+import java.text.ParseException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TimeZone;
+import java.util.UUID;
+import java.util.logging.Logger;
+
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventDateTime;
 import com.google.api.services.tasks.model.Task;
+
 import net.fortuna.ical4j.model.Recur;
 import net.fortuna.ical4j.model.WeekDay;
 import net.fortuna.ical4j.model.WeekDayList;
@@ -13,12 +24,8 @@ import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.Repeat;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.Appointment;
+import net.sf.borg.model.entity.Subtask;
 import net.sf.borg.model.sync.RecurrenceRule;
-
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.*;
-import java.util.logging.Logger;
 
 public class EntityGCalAdapter {
 
@@ -409,18 +416,15 @@ public class EntityGCalAdapter {
 		return task;
 	}
 
-	public static Task toGCalTask(net.sf.borg.model.entity.Task t) {
+	public static Task toGCalTask(net.sf.borg.model.entity.Task t) throws Exception {
 
 		if (TaskModel.isClosed(t))
 			return null;
 
-		Date due = t.getDueDate();
-		if (due == null)
-			return null;
 
 		Task task = new Task();
 		task.setKind("tasks#task");
-		task.setTitle(t.getSummary());
+		task.setTitle(t.getText());
 		task.setFactory(new GsonFactory());
 
 		if (t.getUrl() != null) {
@@ -435,15 +439,37 @@ public class EntityGCalAdapter {
 			}
 		}
 
-		DateTime tdue = new DateTime(due);
-		task.setDue(tdue.toStringRfc3339());
+		Date due = t.getDueDate();
+		if (due != null) {
+			DateTime tdue = new DateTime(due);
+			task.setDue(tdue.toStringRfc3339());
+		}
 
 		String uidval = t.getUid();
 		if (uidval == null || uidval.isEmpty()) {
 			uidval = t.getKey() + "@BORGT-" + t.getCreateTime().getTime();
 		}
+		
+		StringBuffer sb = new StringBuffer();
+		if( t.getDescription() != null) {
+			sb.append("\n" + t.getDescription() + "\n");
+		}
+		if( t.getResolution() != null) {
+			sb.append("\n" + t.getResolution() + "\n");
+		}
+		for( Subtask subtask : TaskModel.getReference().getSubTasks(t.getKey()))
+		{
+			if( subtask.getCloseDate() == null ) {
+				sb.append("\n" + subtask.getText());
+				if( subtask.getDueDate() != null)
+					sb.append("  " + subtask.getDueDate());
+				sb.append("\n");
+			}
+		}
+		
+		sb.append("\n" + " UID:" + uidval);
 
-		String notes = " UID:" + uidval;
+		String notes = sb.toString();
 
 		task.setNotes(notes);
 
