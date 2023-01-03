@@ -57,10 +57,6 @@ public class TaskView extends DockableView {
 
 	private static final long serialVersionUID = 1L;
 
-
-
-
-
 	/**
 	 * Actions being taken on a task when starting the editor
 	 */
@@ -465,7 +461,6 @@ public class TaskView extends DockableView {
 		logtable.setShowGrid(true);
 		logtable.setIntercellSpacing(new Dimension(1, 1));
 
-
 		TableSorter ts = (TableSorter) logtable.getModel();
 
 		// sort by date
@@ -509,7 +504,6 @@ public class TaskView extends DockableView {
 				new Class[] { java.lang.Boolean.class, Integer.class, java.lang.String.class, Date.class, Date.class,
 						Integer.class, Integer.class, Date.class },
 				new boolean[] { true, false, true, true, true, false, false, false }));
-
 
 		subTaskTable.getColumnModel().getColumn(0).setPreferredWidth(5);
 		subTaskTable.getColumnModel().getColumn(1).setPreferredWidth(5);
@@ -566,7 +560,6 @@ public class TaskView extends DockableView {
 
 		subTaskTable.setShowGrid(true);
 		subTaskTable.setIntercellSpacing(new Dimension(1, 1));
-
 
 		// sort by due date
 		// ts.sortByColumn(4);
@@ -773,8 +766,8 @@ public class TaskView extends DockableView {
 		// delete subtasks marked for deletion
 		for (Integer id : subTaskIdsToBeDeleted) {
 			TaskModel.getReference().deleteSubTask(id.intValue());
-			TaskModel.getReference().addLog(tasknum, Resource.getResourceString("subtask") + " " + id + " "
-					+ Resource.getResourceString("deleted"));
+			TaskModel.getReference().addLog(tasknum,
+					Resource.getResourceString("subtask") + " " + id + " " + Resource.getResourceString("deleted"));
 		}
 
 		subTaskIdsToBeDeleted.clear();
@@ -970,10 +963,10 @@ public class TaskView extends DockableView {
 					}
 				}
 			}
-			
+
 			// fix invalid task if type was changed
 			Collection<String> states = TaskModel.getReference().getTaskTypes().getStates(task.getType());
-			if( !states.contains(task.getState())) {
+			if (!states.contains(task.getState())) {
 				task.setState(TaskModel.getReference().getTaskTypes().getInitialState(task.getType()));
 			}
 
@@ -1143,8 +1136,7 @@ public class TaskView extends DockableView {
 
 			// if not in initial state - disable change of type
 			String initState = TaskModel.getReference().getTaskTypes().getInitialState(type);
-			if( initState.equals(task.getState()))
-			{
+			if (initState.equals(task.getState())) {
 				taskTypeComboBox.setEnabled(true);
 				Vector<String> tv = TaskModel.getReference().getTaskTypes().getTaskTypes();
 				for (int i = 0; i < tv.size(); i++) {
@@ -1264,10 +1256,20 @@ public class TaskView extends DockableView {
 					.getInitialState(taskTypeComboBox.getSelectedItem().toString()));
 			statusComboBox.setEnabled(false);
 
+			startDateChooser.setCalendar(null);
+			dueDateChooser.setCalendar(null);
+			closeDate.setText(null);
+			
 			// reset all subtask id's - but keep the subtasks - which will be
 			// saved with new ids
 			for (int row = 0; row < subTaskTable.getRowCount(); row++) {
+				subTaskTable.setValueAt(false, row, 0);
 				subTaskTable.setValueAt(null, row, 1);
+				subTaskTable.setValueAt(null, row, 3);
+				subTaskTable.setValueAt(null, row, 4);
+				subTaskTable.setValueAt(null, row, 5);
+				subTaskTable.setValueAt(null, row, 6);
+				subTaskTable.setValueAt(null, row, 7);
 			}
 
 		}
