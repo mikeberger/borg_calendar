@@ -225,6 +225,12 @@ final class JdbcDB {
                     Properties props = new Properties();
                     props.setProperty("allowMultiQueries", "true");
                     connection_ = DriverManager.getConnection(url, props);
+                    
+                    // turn on foreign key validation
+                    String s = "PRAGMA foreign_keys = true";
+                    log.fine("SQL: " + s);
+                    execSQL(s);
+                    
                     InputStream is = JdbcDB.class
                             .getResourceAsStream("/borg_sqlite.sql");
                     StringBuffer sb = new StringBuffer();
