@@ -19,9 +19,53 @@
  */
 package net.sf.borg.ui.task;
 
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Iterator;
+import java.util.Vector;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.JViewport;
+import javax.swing.ListSelectionModel;
+import javax.swing.border.TitledBorder;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.DefaultTableCellRenderer;
+
 import com.toedter.calendar.JDateChooser;
 import com.toedter.calendar.JDateChooserCellEditor;
-import net.sf.borg.common.*;
+
+import net.sf.borg.common.DateUtil;
+import net.sf.borg.common.Errmsg;
+import net.sf.borg.common.PrefName;
+import net.sf.borg.common.Prefs;
+import net.sf.borg.common.Resource;
+import net.sf.borg.common.Warning;
 import net.sf.borg.model.CategoryModel;
 import net.sf.borg.model.LinkModel;
 import net.sf.borg.model.Model.ChangeEvent;
@@ -36,19 +80,12 @@ import net.sf.borg.ui.MultiView;
 import net.sf.borg.ui.MultiView.ViewType;
 import net.sf.borg.ui.ResourceHelper;
 import net.sf.borg.ui.link.LinkPanel;
-import net.sf.borg.ui.util.*;
-
-import javax.swing.*;
-import javax.swing.border.TitledBorder;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.text.DateFormat;
-import java.util.*;
+import net.sf.borg.ui.util.DateDialog;
+import net.sf.borg.ui.util.GridBagConstraintsFactory;
+import net.sf.borg.ui.util.LimitDocument;
+import net.sf.borg.ui.util.PlainDateEditor;
+import net.sf.borg.ui.util.PopupMenuHelper;
+import net.sf.borg.ui.util.TableSorter;
 
 /**
  * UI for Viewing and Editing individual Tasks and their Subtasks
@@ -161,6 +198,7 @@ public class TaskView extends DockableView {
 
 	/** The task type combo box. */
 	private JComboBox<String> taskTypeComboBox;
+	
 
 	/**
 	 * constructor
@@ -490,6 +528,61 @@ public class TaskView extends DockableView {
 		}, "Add_Log"), });
 
 	}
+	
+	static private class DaysLeftCellRenderer extends DefaultTableCellRenderer {
+
+		private static final long serialVersionUID = 1L;
+		private final ImageIcon redIcon = new ImageIcon(getClass().getResource(
+				"/resource/red.png"));
+		private final ImageIcon orangeIcon = new ImageIcon(getClass()
+				.getResource("/resource/orange.png"));
+		private final ImageIcon yellowIcon = new ImageIcon(getClass()
+				.getResource("/resource/yellow.png"));
+		private final ImageIcon greenIcon = new ImageIcon(getClass()
+				.getResource("/resource/green.png"));
+		private final ImageIcon emptyIcon = new ImageIcon(getClass()
+				.getResource("/resource/empty.png"));
+		//private final ImageIcon doneIcon = new ImageIcon(getClass()
+		//		.getResource("/resource/done.png"));
+
+
+		@Override
+		public Component getTableCellRendererComponent(JTable table, Object value,
+	    		boolean isSelected, boolean hasFocus, int row, int column) {
+
+	    	JLabel label = (JLabel)super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+			label.setIcon(null);
+			setHorizontalAlignment(JLabel.CENTER);
+			
+			if( value != null ) {
+				
+				Integer daysLeft = (Integer) value;
+				
+				TableSorter ts = (TableSorter) table.getModel();
+
+				Boolean closed = (Boolean)ts.getValueAt(row, 1);
+				
+				if( closed != null && closed == true)
+					this.setIcon(null);
+				else if (daysLeft < Prefs
+						.getIntPref(PrefName.RED_DAYS))
+					this.setIcon(redIcon);
+				else if (daysLeft < Prefs
+						.getIntPref(PrefName.ORANGE_DAYS))
+					this.setIcon(orangeIcon);
+				else if (daysLeft < Prefs
+						.getIntPref(PrefName.YELLOW_DAYS))
+					this.setIcon(yellowIcon);
+				else if (daysLeft == TaskModel.NO_DAYS_VALUE)
+					this.setIcon(emptyIcon);
+				else
+					this.setIcon(greenIcon);
+			}
+
+	    	return label;
+	    }
+	}
 
 	/**
 	 * Initialize the subtask table.
@@ -497,13 +590,13 @@ public class TaskView extends DockableView {
 	private void initSubtaskTable() {
 
 		subTaskTable.setModel(new TableSorter(
-				new String[] { Resource.getResourceString("Closed"), Resource.getResourceString("subtask_id"),
+				new String[] { Resource.getResourceString("subtask_id"), Resource.getResourceString("Closed"), 
 						Resource.getResourceString("Description"), Resource.getResourceString("Start_Date"),
 						Resource.getResourceString("Due_Date"), Resource.getResourceString("duration"),
 						Resource.getResourceString("Days_Left"), Resource.getResourceString("close_date") },
-				new Class[] { java.lang.Boolean.class, Integer.class, java.lang.String.class, Date.class, Date.class,
+				new Class[] { Integer.class, java.lang.Boolean.class, java.lang.String.class, Date.class, Date.class,
 						Integer.class, Integer.class, Date.class },
-				new boolean[] { true, false, true, true, true, false, false, false }));
+				new boolean[] { false, true, true, true, true, false, false, false }));
 
 		subTaskTable.getColumnModel().getColumn(0).setPreferredWidth(5);
 		subTaskTable.getColumnModel().getColumn(1).setPreferredWidth(5);
@@ -513,6 +606,12 @@ public class TaskView extends DockableView {
 		subTaskTable.getColumnModel().getColumn(5).setPreferredWidth(30);
 		subTaskTable.getColumnModel().getColumn(6).setPreferredWidth(30);
 		subTaskTable.getColumnModel().getColumn(7).setPreferredWidth(30);
+		
+		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+		centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+		subTaskTable.setDefaultRenderer(Integer.class, centerRenderer);
+		
+		subTaskTable.getColumnModel().getColumn(6).setCellRenderer(new DaysLeftCellRenderer());
 
 		// use a date chooser to edit subtask dates in the table
 		subTaskTable.setDefaultEditor(Date.class, new JDateChooserCellEditor());
@@ -552,7 +651,7 @@ public class TaskView extends DockableView {
 						return;
 					}
 				}
-				Object[] o = { Boolean.valueOf(false), null, null, null, null, null, null };
+				Object[] o = { null, Boolean.valueOf(false), null, null, null, null, null };
 				model.addRow(o);
 			}
 
@@ -647,8 +746,8 @@ public class TaskView extends DockableView {
 								Integer rowid = (Integer) ts2.getValueAt(row, 1);
 								if (rowid != null && rowid.intValue() == ids[i].intValue()) {
 									// clear the row
-									ts2.setValueAt(Boolean.valueOf(false), row, 0);
-									ts2.setValueAt(null, row, 1);
+									ts2.setValueAt(Boolean.valueOf(false), row, 1);
+									ts2.setValueAt(null, row, 0);
 									ts2.setValueAt(null, row, 2);
 									ts2.setValueAt(null, row, 3);
 									ts2.setValueAt(null, row, 4);
@@ -706,7 +805,7 @@ public class TaskView extends DockableView {
 	 * Insert a blank subtask row in the table
 	 */
 	private void insertSubtask() {
-		Object[] o = { Boolean.valueOf(false), null, null, null, null, null, null };
+		Object[] o = { null, Boolean.valueOf(false), null, null, null, null, null };
 		TableSorter ts = (TableSorter) subTaskTable.getModel();
 		ts.addRow(o);
 	}
@@ -786,9 +885,9 @@ public class TaskView extends DockableView {
 				continue;
 
 			// get subtask fields
-			Integer id = (Integer) ts.getValueAt(r, 1);
+			Integer id = (Integer) ts.getValueAt(r, 0);
 
-			Boolean closed = (Boolean) ts.getValueAt(r, 0);
+			Boolean closed = (Boolean) ts.getValueAt(r, 1);
 
 			// do not allow adding new open subtasks if task is closed
 			if (TaskModel.isClosed(task) && id == null && closed.booleanValue() == false) {
@@ -953,8 +1052,8 @@ public class TaskView extends DockableView {
 			// do not close task if subtasks are open
 			if (TaskModel.isClosed(task)) {
 				for (int r = 0; r < subTaskTable.getRowCount(); r++) {
-					Boolean closed = (Boolean) ts.getValueAt(r, 0);
-					Integer id = (Integer) ts.getValueAt(r, 1);
+					Boolean closed = (Boolean) ts.getValueAt(r, 1);
+					Integer id = (Integer) ts.getValueAt(r, 0);
 					if (id == null || id.intValue() == 0)
 						continue;
 					if (closed.booleanValue() != true) {
@@ -1148,8 +1247,8 @@ public class TaskView extends DockableView {
 			// add subtasks
 			Collection<Subtask> subtasks = TaskModel.getReference().getSubTasks(task.getKey());
 			for (Subtask subtask : subtasks) {
-				Object[] o = { subtask.getCloseDate() == null ? Boolean.valueOf(false) : Boolean.valueOf(true),
-						Integer.valueOf(subtask.getKey()), subtask.getDescription(), subtask.getStartDate(),
+				Object[] o = { Integer.valueOf(subtask.getKey()), subtask.getCloseDate() == null ? Boolean.valueOf(false) : Boolean.valueOf(true),
+						 subtask.getDescription(), subtask.getStartDate(),
 						subtask.getDueDate(),
 						subtask.getDueDate() != null
 								? Integer.valueOf(DateUtil.daysBetween(subtask.getStartDate(), subtask.getDueDate()))
@@ -1263,8 +1362,8 @@ public class TaskView extends DockableView {
 			// reset all subtask id's - but keep the subtasks - which will be
 			// saved with new ids
 			for (int row = 0; row < subTaskTable.getRowCount(); row++) {
-				subTaskTable.setValueAt(false, row, 0);
-				subTaskTable.setValueAt(null, row, 1);
+				subTaskTable.setValueAt(null, row, 0);
+				subTaskTable.setValueAt(false, row, 1);
 				subTaskTable.setValueAt(null, row, 3);
 				subTaskTable.setValueAt(null, row, 4);
 				subTaskTable.setValueAt(null, row, 5);
