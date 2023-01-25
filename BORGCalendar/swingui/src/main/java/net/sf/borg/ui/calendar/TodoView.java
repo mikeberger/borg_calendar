@@ -1011,7 +1011,10 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 					ro[0] = pj.getDueDate();
 					ro[1] = todostring;
 					ro[2] = pj.getCategory();
-					ro[3] = "navy";
+					if (pj.getColor() == null)
+						ro[3] = "black";
+					else
+						ro[3] = pj.getColor();
 					ro[4] = null;
 					ro[5] = null;
 
@@ -1044,7 +1047,10 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 					ro[0] = mr.getDueDate();
 					ro[1] = btstring;
 					ro[2] = mr.getCategory();
-					ro[3] = "navy";
+					if (mr.getColor() == null)
+						ro[3] = "black";
+					else
+						ro[3] = mr.getColor();
 					ro[4] = null;
 					ro[5] = mr.getPriority();
 
@@ -1091,7 +1097,10 @@ public class TodoView extends DockableView implements Prefs.Listener, Module {
 					ro[0] = st.getDueDate();
 					ro[1] = btstring;
 					ro[2] = cat;
-					ro[3] = "navy";
+					if (st.getColor() == null)
+						ro[3] = "black";
+					else
+						ro[3] = st.getColor();
 					ro[4] = null;
 					ro[5] = null;
 
