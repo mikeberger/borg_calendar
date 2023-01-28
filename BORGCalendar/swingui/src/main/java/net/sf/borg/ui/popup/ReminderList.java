@@ -25,6 +25,7 @@ import net.sf.borg.common.Prefs;
 import net.sf.borg.common.Resource;
 import net.sf.borg.model.Model.ChangeEvent;
 import net.sf.borg.ui.ResourceHelper;
+import net.sf.borg.ui.SunTrayIconProxy;
 import net.sf.borg.ui.View;
 import net.sf.borg.ui.util.GridBagConstraintsFactory;
 import net.sf.borg.ui.util.TableSorter;
@@ -319,6 +320,8 @@ public class ReminderList extends View {
 
 		// clear selection
 		reminderTable.clearSelection();
+		
+		ArrayList<String> notifiers = new ArrayList<String>();
 
 		// add all reminders
 		for (ReminderInstance inst : list) {
@@ -336,7 +339,12 @@ public class ReminderList extends View {
 			// set the shown flag for this reminder - meaning that it was shown
 			// for any of its times
 			inst.setShown(true);
-
+			
+			String tx = DateFormat.getDateInstance(DateFormat.SHORT).format(
+					inst.getInstanceTime());
+			tx += " " + inst.getText();
+			notifiers.add(tx);
+			
 			// build a table row
 			Object[] row = new Object[5];
 
@@ -358,6 +366,11 @@ public class ReminderList extends View {
 
 			tm.addRow(row);
 			tm.tableChanged(new TableModelEvent(tm));
+			
+			if( !silent && Prefs.getBoolPref(PrefName.TASKBAR_REMINDERS)) {
+				for( String s : notifiers)
+					SunTrayIconProxy.displayNotification("Borg " + Resource.getResourceString("Reminder"), s);
+			}
 
 		}
 
@@ -367,6 +380,8 @@ public class ReminderList extends View {
 			ReminderSound.playReminderSound(Prefs
 					.getPref(PrefName.BEEPINGREMINDERS));
 		}
+		
+		
 	}
 
 	/**

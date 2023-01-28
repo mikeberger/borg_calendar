@@ -59,6 +59,8 @@ class PopupOptionsPanel extends OptionsPanel {
 	private final JCheckBox reminderListBox = new JCheckBox();
 
 	private final JCheckBox taskReminderBox = new JCheckBox();
+	
+	private final JCheckBox taskbarBox = new JCheckBox();
 
 	/** The soundbox. */
 	private final JComboBox<String> soundbox = new JComboBox<String>();
@@ -188,12 +190,18 @@ class PopupOptionsPanel extends OptionsPanel {
 				.getResourceString("show_task_reminders"));
 		this.add(taskReminderBox,
 				GridBagConstraintsFactory.create(0, 5, GridBagConstraints.BOTH));
+		
+		taskbarBox.setText(Resource
+				.getResourceString("show_taskbar_reminders"));
+		this.add(taskbarBox,
+				GridBagConstraintsFactory.create(0, 6, GridBagConstraints.BOTH));
+		
 
 		this.add(new JLabel(Resource.getResourceString("bd_rem_days")),
-				GridBagConstraintsFactory.create(0, 6, GridBagConstraints.BOTH));
+				GridBagConstraintsFactory.create(0, 7, GridBagConstraints.BOTH));
 
 		birthdayDays.setMinimumSize(new java.awt.Dimension(50, 20));
-		this.add(birthdayDays, GridBagConstraintsFactory.create(1, 6,
+		this.add(birthdayDays, GridBagConstraintsFactory.create(1, 7,
 				GridBagConstraints.BOTH, 1.0, 0.0));
 
 	}
@@ -207,6 +215,7 @@ class PopupOptionsPanel extends OptionsPanel {
 	public void applyChanges() {
 		OptionsPanel.setBooleanPref(popenablebox, PrefName.REMINDERS);
 		OptionsPanel.setBooleanPref(taskReminderBox, PrefName.TASKREMINDERS);
+		OptionsPanel.setBooleanPref(taskbarBox, PrefName.TASKBAR_REMINDERS);
 		Prefs.putPref(PrefName.BEEPINGREMINDERS, getSoundOption());
 
 		Integer checkMins = (Integer) checkfreq.getValue();
@@ -256,6 +265,7 @@ class PopupOptionsPanel extends OptionsPanel {
 		OptionsPanel.setCheckBox(popenablebox, PrefName.REMINDERS);
 		OptionsPanel.setCheckBox(reminderListBox, PrefName.REMINDERLIST);
 		OptionsPanel.setCheckBox(taskReminderBox, PrefName.TASKREMINDERS);
+		OptionsPanel.setCheckBox(taskbarBox, PrefName.TASKBAR_REMINDERS);
 
 		String beep = Prefs.getPref(PrefName.BEEPINGREMINDERS);
 		if (beep.equals("true")) {

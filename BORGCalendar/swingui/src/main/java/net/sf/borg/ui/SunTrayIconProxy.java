@@ -27,6 +27,7 @@ import net.sf.borg.ui.popup.ReminderManager;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.TrayIcon.MessageType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -302,6 +303,19 @@ public class SunTrayIconProxy implements Prefs.Listener {
 		item.addActionListener(action);
 
 		actionMenu.add(item);
+	}
+	
+	private void sendNotification(String title, String text) {
+		trayIcon.displayMessage(title, text, MessageType.INFO);
+	}
+	
+	static public void displayNotification(String title, String text) {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				SunTrayIconProxy.getReference().sendNotification(title, text);
+			}
+		});
 	}
 
 }
