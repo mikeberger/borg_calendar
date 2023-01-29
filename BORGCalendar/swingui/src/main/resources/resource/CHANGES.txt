@@ -1,3 +1,12 @@
+BORG 1.10.04
+------------
+Taskbar notifications for reminders
+Subtask table readability changes
+Turn on FK validation for SQLite
+Improved sync of tasks to google
+Misc fixes
+
+
 BORG 1.10.03
 ------------
 Add new "Quiet" option on the reminder list to suppress periodic popping of the window to the front and grabbing focus
