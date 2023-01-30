@@ -19,6 +19,7 @@
  */
 package net.sf.borg.ui.popup;
 
+import net.sf.borg.common.DateUtil;
 import net.sf.borg.common.Errmsg;
 import net.sf.borg.common.PrefName;
 import net.sf.borg.common.Prefs;
@@ -165,7 +166,8 @@ public class SubtaskReminderInstance extends ReminderInstance {
 			return false;
 
 		// determine how far away the task is
-		long minutesToGo = getInstanceTime().getTime() / (1000 * 60)
+		Date d = DateUtil.setToMidnight(getInstanceTime());
+		long minutesToGo =d.getTime() / (1000 * 60)
 				- new Date().getTime() / (1000 * 60);
 
 		int earliestReminderTime = -100000;
