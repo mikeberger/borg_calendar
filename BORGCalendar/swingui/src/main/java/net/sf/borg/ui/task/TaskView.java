@@ -268,7 +268,7 @@ public class TaskView extends DockableView {
 
 		for (int i = 0; i < indices.length; ++i) {
 			int index = indices[i];
-			ret[i] = (Integer) ts.getValueAt(index, 1);
+			ret[i] = (Integer) ts.getValueAt(index, 0);
 		}
 
 		return ret;
@@ -676,7 +676,7 @@ public class TaskView extends DockableView {
 							if (ids[i] == null)
 								continue;
 							for (int row = 0; row < ts2.getRowCount(); row++) {
-								Integer rowid = (Integer) ts2.getValueAt(row, 1);
+								Integer rowid = (Integer) ts2.getValueAt(row, 0);
 								if (rowid != null && rowid.intValue() == ids[i].intValue()) {
 									ts2.setValueAt(null, row, 4);
 									break;
@@ -708,7 +708,7 @@ public class TaskView extends DockableView {
 							if (ids[i] == null)
 								continue;
 							for (int row = 0; row < ts2.getRowCount(); row++) {
-								Integer rowid = (Integer) ts2.getValueAt(row, 1);
+								Integer rowid = (Integer) ts2.getValueAt(row, 0);
 								if (rowid != null && rowid.intValue() == ids[i].intValue()) {
 									ts2.setValueAt(dlgcal.getTime(), row, 4);
 									break;
@@ -743,7 +743,7 @@ public class TaskView extends DockableView {
 							subTaskIdsToBeDeleted.add(ids[i]);
 
 							for (int row = 0; row < ts2.getRowCount(); row++) {
-								Integer rowid = (Integer) ts2.getValueAt(row, 1);
+								Integer rowid = (Integer) ts2.getValueAt(row, 0);
 								if (rowid != null && rowid.intValue() == ids[i].intValue()) {
 									// clear the row
 									ts2.setValueAt(Boolean.valueOf(false), row, 1);
