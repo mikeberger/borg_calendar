@@ -235,7 +235,7 @@ public class MultiView extends View {
 		getContentPane().add(getTabs(), cons);
 
 		setTitle("BORG " + Resource.getVersion());
-		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		pack();
 		setView(ViewType.MONTH); // start month view
 		manageMySize(MULTIVIEWSIZE);
