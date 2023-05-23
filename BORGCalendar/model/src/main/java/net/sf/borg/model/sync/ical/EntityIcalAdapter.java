@@ -62,6 +62,7 @@ import net.fortuna.ical4j.model.property.Summary;
 import net.fortuna.ical4j.model.property.Uid;
 import net.fortuna.ical4j.model.property.Url;
 import net.sf.borg.common.DateUtil;
+import net.sf.borg.common.Errmsg;
 import net.sf.borg.model.AppointmentModel;
 import net.sf.borg.model.TaskModel;
 import net.sf.borg.model.entity.Appointment;
@@ -103,9 +104,7 @@ public class EntityIcalAdapter {
 				url.setValue(urlVal);
 				ve.getProperties().add(url);
 			}
-		}
-
-		catch (URISyntaxException e) {
+		} catch (URISyntaxException e) {
 
 			// ignore url parsing. it's almost certainly because url is filled with google
 			// calendar data from google sync
@@ -470,7 +469,7 @@ public class EntityIcalAdapter {
 			if (prop != null) {
 				RRule rr = (RRule) prop;
 				Recur recur = rr.getRecur();
-				
+
 				RecurrenceRule.setRecur(ap, recur);
 
 				ExDate ex = pl.getProperty(Property.EXDATE);
@@ -615,8 +614,14 @@ public class EntityIcalAdapter {
 		String urlVal = t.getUrl();
 		if (urlVal != null && !urlVal.isEmpty()) {
 			Url url = new Url();
-			url.setValue(urlVal);
-			ve.getProperties().add(url);
+			try {
+				url.setValue(urlVal);
+				ve.getProperties().add(url);
+			} catch( URISyntaxException ue){
+				// could be google junk in the url column, so ignore
+				Errmsg.logError(ue);
+			}
+
 		}
 
 		ve.getProperties().add(new Created(new DateTime(t.getCreateTime())));
