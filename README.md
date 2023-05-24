@@ -41,3 +41,4 @@ BORG downloads and releases are available on Github: https://github.com/mikeberg
 * Build using Maven from the IDE or by installing Apache Maven and running mvn from the command line (use clean and install targets)
 * To build an executable installer with bundled Java, edit and run the appropriate script in the install folder - winpackage.bat for windows or linpackage.sh for linux
 * The installer is built using the jpackage utility that is part of openjdk. An additional product called WiX Toolset needs to be installed for jpackage to build an msi installer on windows.
+* For a contribution head-start view available [project architecture diagrams](https://sourcespy.com/github/mikebergerborgcalendar/).
