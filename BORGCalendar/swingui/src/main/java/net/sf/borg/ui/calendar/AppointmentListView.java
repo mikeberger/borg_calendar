@@ -188,7 +188,6 @@ public class AppointmentListView extends DockableView implements
 	private JButton deleteOneOnlyButton;
 	private JPanel buttonPanel;
 	private JPanel appointmentListPanel;
-	private JScrollPane apptTableScrollPane;
 	private JButton reminderButton = null;
 	private String title_ = ""; // tab/window title
 
@@ -214,8 +213,7 @@ public class AppointmentListView extends DockableView implements
 
 		title_ = Resource.getResourceString("Appointment_Editor");
 
-		// add scroll to the table
-		apptTableScrollPane.setViewportView(apptTable);
+
 
 		// use a sorted table model
 		apptTable.setModel(new TableSorter(new String[] {
@@ -235,8 +233,6 @@ public class AppointmentListView extends DockableView implements
 		// set column widths
 		apptTable.getColumnModel().getColumn(0).setPreferredWidth(125);
 		apptTable.getColumnModel().getColumn(1).setPreferredWidth(75);
-
-		apptTable.setPreferredScrollableViewportSize(new Dimension(150, 100));
 
 		ListSelectionModel rowSM = apptTable.getSelectionModel();
 		rowSM.addListSelectionListener(this);
@@ -459,14 +455,13 @@ public class AppointmentListView extends DockableView implements
 	{
 
 		appointmentListPanel = new JPanel();
-		apptTableScrollPane = new JScrollPane();
 		apptTable = new JTable();
 		buttonPanel = new JPanel();
 		addButton = new JButton();
 		deleteButton = new JButton();
 		deleteOneOnlyButton = new JButton();
 
-		appointmentListPanel.setLayout(new java.awt.GridBagLayout());
+		appointmentListPanel.setLayout(new GridBagLayout());
 
 		appointmentListPanel.setBorder(new TitledBorder(Resource
 				.getResourceString("apptlist")));
@@ -475,11 +470,7 @@ public class AppointmentListView extends DockableView implements
 		apptTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		apptTable
 				.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-		apptTable.setPreferredSize(new java.awt.Dimension(700, 500));
 
-		apptTableScrollPane.setBorder(null);
-		apptTableScrollPane.setViewport(apptTableScrollPane.getViewport());
-		apptTableScrollPane.setViewportView(apptTable);
 		apptTable.setShowGrid(true);
 		apptTable.setIntercellSpacing(new Dimension(1, 1));
 
@@ -578,8 +569,8 @@ public class AppointmentListView extends DockableView implements
 
 		appointmentListPanel.add(getDateCB(), GridBagConstraintsFactory.create(
 				0, 0, GridBagConstraints.BOTH, 1.0, 0.0));
-		appointmentListPanel.add(apptTableScrollPane, GridBagConstraintsFactory
-				.create(0, 1, GridBagConstraints.BOTH, 1.0, 10.0));
+		appointmentListPanel.add(apptTable, GridBagConstraintsFactory
+				.create(0, 1, GridBagConstraints.BOTH, 1.0, 1.0));
 		appointmentListPanel.add(buttonPanel, GridBagConstraintsFactory.create(
 				0, 2));
 
