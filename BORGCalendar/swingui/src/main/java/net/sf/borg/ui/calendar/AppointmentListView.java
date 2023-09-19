@@ -181,7 +181,7 @@ public class AppointmentListView extends DockableView implements
 	private AppointmentPanel appointmentPanel = null;
 	private JTable apptTable;
 	private GregorianCalendar cal_ = null; // date of the appt list
-	private JDateChooser dateChooser = null;
+	private MyDateChooser dateChooser = null;
 	private JButton copyButton = null;
 	private TableCellRenderer defrend = null; // default table cell renderer
 	private JButton deleteButton;
@@ -305,17 +305,7 @@ public class AppointmentListView extends DockableView implements
 		}
 		return copyButton;
 	}
-	
-	private static class JDateChooserNoMnemonic extends JDateChooser {
-		
-		private static final long serialVersionUID = 120268996535847635L;
 
-		public JDateChooserNoMnemonic()
-		{
-			super(new PlainDateEditor());
-			calendarButton.setMnemonic(KeyEvent.VK_F24); // set to harmless key
-		}
-	}
 
 	/**
 	 * Gets the date chooser
@@ -324,7 +314,7 @@ public class AppointmentListView extends DockableView implements
 	 */
 	private JDateChooser getDateCB() {
 		if (dateChooser == null) {
-			dateChooser = new JDateChooserNoMnemonic();
+			dateChooser = new MyDateChooser();
 			// cb.setCalendar(cal_);
 			dateChooser.addPropertyChangeListener("date",
 					new PropertyChangeListener() {

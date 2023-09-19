@@ -452,7 +452,7 @@ public class AppointmentPanel extends JPanel implements PopupOptionsListener, Mo
         theRepeatPanel.add(repeatUntilRadio, GridBagConstraintsFactory.create(0, 2, GridBagConstraints.BOTH));
         buttonGroup.add(repeatUntilRadio);
 
-        untilDate = new JDateChooser(new PlainDateEditor());
+        untilDate = new MyDateChooser(new PlainDateEditor());
         theRepeatPanel.add(untilDate, GridBagConstraintsFactory.create(1, 2, GridBagConstraints.BOTH));
 
         nTimesValue = new JSpinner();
